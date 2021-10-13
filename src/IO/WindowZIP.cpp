@@ -27,7 +27,7 @@ IO::WindowZIP::WindowZIP(const WChar *zipFile)
 	{
 		UInt8 buff[] = {80,75,5,6,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 		IO::FileStream *fs;
-		NEW_CLASS(fs, IO::FileStream(zipFile, IO::FileStream::FILE_MODE_CREATE, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+		NEW_CLASS(fs, IO::FileStream(zipFile, IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		if (fs->Write(buff, 22) == 22)
 			this->error = false;
 		DEL_CLASS(fs);

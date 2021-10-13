@@ -23,18 +23,18 @@ Int32 Exporter::GIFExporter::GetName()
 IO::FileExporter::SupportType Exporter::GIFExporter::IsObjectSupported(IO::ParsedObject *pobj)
 {
 	if (pobj->GetParserType() != IO::ParsedObject::PT_IMAGE_LIST_PARSER)
-		return IO::FileExporter::ST_NOT_SUPPORTED;
+		return IO::FileExporter::SupportType::NotSupported;
 	Media::ImageList *imgList = (Media::ImageList*)pobj;
 	UInt32 imgTime;
 	if (imgList->GetCount() != 1)
-		return IO::FileExporter::ST_NOT_SUPPORTED;
+		return IO::FileExporter::SupportType::NotSupported;
 	Media::Image *img = imgList->GetImage(0, &imgTime);
 	if (img->info->fourcc != 0)
-		return IO::FileExporter::ST_NOT_SUPPORTED;
+		return IO::FileExporter::SupportType::NotSupported;
 	if (img->info->pf == Media::PF_PAL_8 || img->info->pf == Media::PF_PAL_W8)
 	{
 		if (img->info->atype == Media::AT_NO_ALPHA)
-			return IO::FileExporter::ST_NORMAL_STREAM;
+			return IO::FileExporter::SupportType::NormalStream;
 		OSInt i;
 		Bool found = false;
 		i = 0;
@@ -46,18 +46,18 @@ IO::FileExporter::SupportType Exporter::GIFExporter::IsObjectSupported(IO::Parse
 			else if (img->pal[i + 3] == 0)
 			{
 				if (found)
-					return IO::FileExporter::ST_NOT_SUPPORTED;
+					return IO::FileExporter::SupportType::NotSupported;
 				found = true;
 			}
 			else
 			{
-				return IO::FileExporter::ST_NOT_SUPPORTED;
+				return IO::FileExporter::SupportType::NotSupported;
 			}
 			i += 4;
 		}
-		return IO::FileExporter::ST_NORMAL_STREAM;
+		return IO::FileExporter::SupportType::NormalStream;
 	}
-	return IO::FileExporter::ST_NOT_SUPPORTED;
+	return IO::FileExporter::SupportType::NotSupported;
 }
 
 Bool Exporter::GIFExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8Char *fileNameBuff)
@@ -77,7 +77,7 @@ void Exporter::GIFExporter::SetCodePage(UInt32 codePage)
 
 Bool Exporter::GIFExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *fileName, IO::ParsedObject *pobj, void *param)
 {
-	if (!IsObjectSupported(pobj))
+	if (IsObjectSupported(pobj) == SupportType::NotSupported)
 		return false;
 	UInt8 buff[256];
 	Media::ImageList *imgList = (Media::ImageList*)pobj;

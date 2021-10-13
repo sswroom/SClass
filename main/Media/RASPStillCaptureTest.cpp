@@ -16,7 +16,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		IO::FileStream *fs;
 		Media::IPhotoCapture::PhotoFormat pf;
 		Sync::Thread::Sleep(5000);
-		NEW_CLASS(fs, IO::FileStream((const UTF8Char*)"Capture.jpg", IO::FileStream::FILE_MODE_CREATE, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+		NEW_CLASS(fs, IO::FileStream((const UTF8Char*)"Capture.jpg", IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		if (!capture->CapturePhoto(&pf, fs))
 		{
 			console.WriteLine((const UTF8Char*)"Error in capturing image");
@@ -28,7 +28,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		DEL_CLASS(fs);
 
 		Sync::Thread::Sleep(5000);
-		NEW_CLASS(fs, IO::FileStream((const UTF8Char*)"Capture2.jpg", IO::FileStream::FILE_MODE_CREATE, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+		NEW_CLASS(fs, IO::FileStream((const UTF8Char*)"Capture2.jpg", IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		if (!capture->CapturePhoto(&pf, fs))
 		{
 			console.WriteLine((const UTF8Char*)"Error in capturing image");

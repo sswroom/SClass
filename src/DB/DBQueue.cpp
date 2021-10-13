@@ -180,7 +180,7 @@ DB::DBQueue::~DBQueue()
 			{
 				if (fs == 0)
 				{
-					NEW_CLASS(fs, IO::FileStream((const UTF8Char*)"FailSQL.txt", IO::FileStream::FILE_MODE_APPEND, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+					NEW_CLASS(fs, IO::FileStream((const UTF8Char*)"FailSQL.txt", IO::FileStream::FileMode::Append, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 					NEW_CLASS(writer, Text::UTF8Writer(fs));
 				}
 				writer->Write(((DB::DBQueue::SQLCmd*)c)->GetSQL());
@@ -201,7 +201,7 @@ DB::DBQueue::~DBQueue()
 				{
 					if (fs == 0)
 					{
-						NEW_CLASS(fs, IO::FileStream((const UTF8Char*)"FailSQL.txt", IO::FileStream::FILE_MODE_APPEND, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+						NEW_CLASS(fs, IO::FileStream((const UTF8Char*)"FailSQL.txt", IO::FileStream::FileMode::Append, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 						NEW_CLASS(writer, Text::UTF8Writer(fs));
 					}
 					writer->Write(((DB::DBQueue::SQLCmd*)c)->GetSQL());
@@ -505,7 +505,7 @@ void DB::DBHandler::WriteError(const UTF8Char *errMsg, const UTF8Char *sqlCmd)
 	IO::FileStream *fs;
 
 	Sync::MutexUsage mutUsage(this->mut);
-	NEW_CLASS(fs, IO::FileStream((const UTF8Char*)"FailSQL.txt", IO::FileStream::FILE_MODE_APPEND, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+	NEW_CLASS(fs, IO::FileStream((const UTF8Char*)"FailSQL.txt", IO::FileStream::FileMode::Append, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	NEW_CLASS(writer, Text::UTF8Writer(fs));
 	writer->Write(sqlCmd);
 	writer->WriteLine((const UTF8Char*)";");

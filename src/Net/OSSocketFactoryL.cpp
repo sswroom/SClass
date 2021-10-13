@@ -66,7 +66,7 @@ Net::OSSocketFactory::OSSocketFactory(Bool noV6DNS) : Net::SocketFactory(noV6DNS
 	if (IO::Path::GetPathType(fileName) == IO::Path::PT_FILE)
 	{
 		IO::FileStream *fs;
-		NEW_CLASS(fs, IO::FileStream(fileName, IO::FileStream::FILE_MODE_CREATEWRITE, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+		NEW_CLASS(fs, IO::FileStream(fileName, IO::FileStream::FileMode::CreateWRITE, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		if (fs->IsError())
 		{
 			wprintf(L"bindv6only cannot open\r\n");
@@ -911,7 +911,7 @@ Bool Net::OSSocketFactory::GetDefDNS(Net::SocketUtil::AddressInfo *addr)
 {
 	Text::UTF8Reader *reader;
 	IO::FileStream *fs;
-	NEW_CLASS(fs, IO::FileStream((const UTF8Char*)"/etc/resolv.conf", IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+	NEW_CLASS(fs, IO::FileStream((const UTF8Char*)"/etc/resolv.conf", IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (fs->IsError())
 	{
 		DEL_CLASS(fs);
@@ -957,7 +957,7 @@ UOSInt Net::OSSocketFactory::GetDNSList(Data::ArrayList<UInt32> *dnsList)
 {
 	Text::UTF8Reader *reader;
 	IO::FileStream *fs;
-	NEW_CLASS(fs, IO::FileStream((const UTF8Char*)"/etc/resolv.conf", IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+	NEW_CLASS(fs, IO::FileStream((const UTF8Char*)"/etc/resolv.conf", IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (fs->IsError())
 	{
 		DEL_CLASS(fs);
@@ -1010,7 +1010,7 @@ Bool Net::OSSocketFactory::LoadHosts(Net::DNSHandler *dnsHdlr)
 	Net::SocketUtil::AddressInfo addr;
 	UOSInt i;
 	UTF8Char *sarr[2];
-	NEW_CLASS(fs, IO::FileStream((const UTF8Char*)"/etc/hosts", IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+	NEW_CLASS(fs, IO::FileStream((const UTF8Char*)"/etc/hosts", IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (fs->IsError())
 	{
 		DEL_CLASS(fs);
@@ -1095,7 +1095,7 @@ UOSInt Net::OSSocketFactory::GetConnInfoList(Data::ArrayList<Net::ConnectionInfo
 	UInt32 gw;
 	UOSInt i;
 	UTF8Char *sarr[4];
-	NEW_CLASS(fs, IO::FileStream((const UTF8Char*)"/proc/net/route", IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+	NEW_CLASS(fs, IO::FileStream((const UTF8Char*)"/proc/net/route", IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (!fs->IsError())
 	{
 		NEW_CLASS(reader, Text::UTF8Reader(fs));
@@ -1197,7 +1197,7 @@ UOSInt OSSocketFactory_LoadPortInfo(Data::ArrayList<Net::SocketFactory::PortInfo
 	IO::FileStream *fs;
 	Text::UTF8Reader *reader;
 	Net::SocketFactory::PortInfo *port;
-	NEW_CLASS(fs, IO::FileStream(path, IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+	NEW_CLASS(fs, IO::FileStream(path, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (fs->IsError())
 	{
 		
@@ -1299,7 +1299,7 @@ UOSInt OSSocketFactory_LoadPortInfov4(Data::ArrayList<Net::SocketFactory::PortIn
 	IO::FileStream *fs;
 	Text::UTF8Reader *reader;
 	Net::SocketFactory::PortInfo2 *port;
-	NEW_CLASS(fs, IO::FileStream(path, IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+	NEW_CLASS(fs, IO::FileStream(path, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (fs->IsError())
 	{
 		
@@ -1401,7 +1401,7 @@ UOSInt OSSocketFactory_LoadPortInfov6(Data::ArrayList<Net::SocketFactory::PortIn
 	IO::FileStream *fs;
 	Text::UTF8Reader *reader;
 	Net::SocketFactory::PortInfo2 *port;
-	NEW_CLASS(fs, IO::FileStream(path, IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+	NEW_CLASS(fs, IO::FileStream(path, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (fs->IsError())
 	{
 		

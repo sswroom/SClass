@@ -138,7 +138,7 @@ Net::ConnectionInfo::ConnectionInfo(void *info)
 		sb.Append((const UTF8Char*)"/address");
 	
 		UOSInt readSize;
-		NEW_CLASS(fs, IO::FileStream(sb.ToString(), IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+		NEW_CLASS(fs, IO::FileStream(sb.ToString(), IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		readSize = fs->Read(buff, 63);
 		DEL_CLASS(fs);
 		buff[readSize] = 0;
@@ -188,7 +188,7 @@ Net::ConnectionInfo::ConnectionInfo(void *info)
 	
 	Text::UTF8Reader *reader;
 	NEW_CLASS(this->ent.dnsaddr, Data::ArrayListUInt32(4));
-	NEW_CLASS(fs, IO::FileStream((const UTF8Char*)"/etc/resolv.conf", IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+	NEW_CLASS(fs, IO::FileStream((const UTF8Char*)"/etc/resolv.conf", IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (!fs->IsError())
 	{
 		UTF8Char *sarr[3];
@@ -214,7 +214,7 @@ Net::ConnectionInfo::ConnectionInfo(void *info)
 	DEL_CLASS(fs);
 	this->ent.defGW = 0;
 
-/*	NEW_CLASS(fs, IO::FileStream(L"/proc/net/route", IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+/*	NEW_CLASS(fs, IO::FileStream(L"/proc/net/route", IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (!fs->IsError())
 	{
 		WChar *sarr[4];

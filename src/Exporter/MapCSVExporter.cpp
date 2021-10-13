@@ -27,14 +27,14 @@ IO::FileExporter::SupportType Exporter::MapCSVExporter::IsObjectSupported(IO::Pa
 {
 	if (pobj->GetParserType() != IO::ParsedObject::PT_MAP_LAYER_PARSER)
 	{
-		return IO::FileExporter::ST_NOT_SUPPORTED;
+		return IO::FileExporter::SupportType::NotSupported;
 	}
 	Map::IMapDrawLayer *layer = (Map::IMapDrawLayer *)pobj;
 	if (layer->GetLayerType() != Map::DRAW_LAYER_POLYLINE && layer->GetLayerType() != Map::DRAW_LAYER_POLYLINE3D)
 	{
-		return IO::FileExporter::ST_NOT_SUPPORTED;
+		return IO::FileExporter::SupportType::NotSupported;
 	}
-	return IO::FileExporter::ST_NORMAL_STREAM;
+	return IO::FileExporter::SupportType::NormalStream;
 }
 
 Bool Exporter::MapCSVExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8Char *fileNameBuff)

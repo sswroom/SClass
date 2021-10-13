@@ -104,11 +104,11 @@ void __stdcall SSWR::AVIRead::AVIRLogMergeForm::OnConvertClicked(void *userObj)
 		Text::UTF8Reader *reader1;
 		Text::UTF8Reader *reader2;
 		Text::UTF8Writer *writer;
-		NEW_CLASS(fs1, IO::FileStream(sb1.ToString(), IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+		NEW_CLASS(fs1, IO::FileStream(sb1.ToString(), IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		NEW_CLASS(reader1, Text::UTF8Reader(fs1));
-		NEW_CLASS(fs2, IO::FileStream(sb2.ToString(), IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+		NEW_CLASS(fs2, IO::FileStream(sb2.ToString(), IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		NEW_CLASS(reader2, Text::UTF8Reader(fs2));
-		NEW_CLASS(fs3, IO::FileStream(sb3.ToString(), IO::FileStream::FILE_MODE_CREATE, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+		NEW_CLASS(fs3, IO::FileStream(sb3.ToString(), IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		if (fs3->IsError())
 		{
 			UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in creating Output file", (const UTF8Char*)"Error", me);

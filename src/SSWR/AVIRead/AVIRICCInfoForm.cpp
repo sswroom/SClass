@@ -15,7 +15,7 @@ void __stdcall SSWR::AVIRead::AVIRICCInfoForm::OnFileDrop(void *userObj, const U
 	i = 0;
 	while (i < fileCnt)
 	{
-		NEW_CLASS(fs, IO::FileStream(files[i], IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NO_BUFFER));
+		NEW_CLASS(fs, IO::FileStream(files[i], IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::NoBuffer));
 		fileSize = fs->Read(buff, 1048576);
 		DEL_CLASS(fs);
 		if (fileSize == 0 || fileSize >= 1048576)

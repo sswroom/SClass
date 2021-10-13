@@ -318,7 +318,7 @@ void SSWR::AVIRead::AVIRCoreWin::SaveData(UI::GUIForm *ownerForm, IO::ParsedObje
 					NEW_CLASS(frm, AVIRExportParamForm(0, this->ui, this, fileExp, param));
 					if (frm->ShowDialog(ownerForm) == UI::GUIForm::DR_OK)
 					{
-						if (suppType == IO::FileExporter::ST_PATH_ONLY)
+						if (suppType == IO::FileExporter::SupportType::PathOnly)
 						{
 							if (!fileExp->ExportFile(0, sfd->GetFileName(), pobj, param))
 							{
@@ -327,7 +327,7 @@ void SSWR::AVIRead::AVIRCoreWin::SaveData(UI::GUIForm *ownerForm, IO::ParsedObje
 						}
 						else
 						{
-							NEW_CLASS(fs, IO::FileStream(sfd->GetFileName(), IO::FileStream::FILE_MODE_CREATE, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+							NEW_CLASS(fs, IO::FileStream(sfd->GetFileName(), IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 							if (!fileExp->ExportFile(fs, sfd->GetFileName(), pobj, param))
 							{
 								UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in saving file", (const UTF8Char*)"Save Data", ownerForm);
@@ -341,7 +341,7 @@ void SSWR::AVIRead::AVIRCoreWin::SaveData(UI::GUIForm *ownerForm, IO::ParsedObje
 			}
 			else
 			{
-				if (suppType == IO::FileExporter::ST_PATH_ONLY)
+				if (suppType == IO::FileExporter::SupportType::PathOnly)
 				{
 					if (!fileExp->ExportFile(0, sfd->GetFileName(), pobj, 0))
 					{
@@ -350,7 +350,7 @@ void SSWR::AVIRead::AVIRCoreWin::SaveData(UI::GUIForm *ownerForm, IO::ParsedObje
 				}
 				else
 				{
-					NEW_CLASS(fs, IO::FileStream(sfd->GetFileName(), IO::FileStream::FILE_MODE_CREATE, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+					NEW_CLASS(fs, IO::FileStream(sfd->GetFileName(), IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 					if (!fileExp->ExportFile(fs, sfd->GetFileName(), pobj, 0))
 					{
 						UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in saving file", (const UTF8Char*)"Save Data", ownerForm);

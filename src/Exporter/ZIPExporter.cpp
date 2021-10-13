@@ -19,9 +19,9 @@ IO::FileExporter::SupportType Exporter::ZIPExporter::IsObjectSupported(IO::Parse
 {
 	if (pobj->GetParserType() == IO::ParsedObject::PT_PACKAGE_PARSER)
 	{
-		return IO::FileExporter::ST_NORMAL_STREAM;
+		return IO::FileExporter::SupportType::NormalStream;
 	}
-	return IO::FileExporter::ST_NOT_SUPPORTED;
+	return IO::FileExporter::SupportType::NotSupported;
 }
 
 Bool Exporter::ZIPExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8Char *fileNameBuff)

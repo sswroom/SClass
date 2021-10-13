@@ -225,7 +225,7 @@ WChar *Manage::Process::GetFilename(WChar *buff)
 	{
 		Text::StrConcat(Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"/proc/"), this->procId), (const UTF8Char*)"/cmdline");
 		IO::FileStream *fs;
-		NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+		NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		sz = (OSInt)fs->Read((UInt8*)sbuff2, 511);
 		DEL_CLASS(fs);
 		sbuff2[sz] = 0;
@@ -249,7 +249,7 @@ Bool Manage::Process::GetFilename(Text::StringBuilderUTF *sb)
 	{
 		Text::StrConcat(Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"/proc/"), this->procId), (const UTF8Char*)"/cmdline");
 		IO::FileStream *fs;
-		NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+		NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		if (fs->IsError())
 		{
 			sz = 0;
@@ -388,7 +388,7 @@ UOSInt Manage::Process::GetModules(Data::ArrayList<Manage::ModuleInfo *> *modLis
 		UOSInt i;
 		Text::StringBuilderUTF8 sb;
 		Text::StrConcat(Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"/proc/"), this->procId), (const UTF8Char*)"/maps");
-		NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+		NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		NEW_CLASS(reader, Text::UTF8Reader(fs));
 		sb.ClearStr();
 		while (reader->ReadLine(&sb, 512))
@@ -497,7 +497,7 @@ Bool Manage::Process::GetMemoryInfo(UOSInt *pageFault, UOSInt *workingSetSize, U
 	Bool succ = false;
 	Text::StrConcat(Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"/proc/"), this->procId), (const UTF8Char*)"/statm");
 	Text::StringBuilderUTF8 sb;
-	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	NEW_CLASS(reader, Text::UTF8Reader(fs));
 	sb.ClearStr();
 	if (reader->ReadLine(&sb, 512))
@@ -543,7 +543,7 @@ Bool Manage::Process::GetTimeInfo(Data::DateTime *createTime, Data::DateTime *ke
 	Bool succ = false;
 	Text::StrConcat(Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"/proc/"), this->procId), (const UTF8Char*)"/stat");
 	Text::StringBuilderUTF8 sb;
-	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	NEW_CLASS(reader, Text::UTF8Reader(fs));
 	sb.ClearStr();
 	if (reader->ReadLine(&sb, 512))
@@ -766,7 +766,7 @@ UTF8Char *Manage::Process::FindProcessNext(UTF8Char *processNameBuff, Manage::Pr
 			info->parentId = 0;
 
 			Text::StrConcat(sptr2, (const UTF8Char*)"/status");
-			NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+			NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 			if (!fs->IsError())
 			{
 				NEW_CLASS(reader, Text::UTF8Reader(fs));
@@ -788,7 +788,7 @@ UTF8Char *Manage::Process::FindProcessNext(UTF8Char *processNameBuff, Manage::Pr
 			DEL_CLASS(fs);
 
 			Text::StrConcat(sptr2, (const UTF8Char*)"/comm");
-			NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+			NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 			if (!fs->IsError())
 			{
 				NEW_CLASS(reader, Text::UTF8Reader(fs));
@@ -835,7 +835,7 @@ WChar *Manage::Process::FindProcessNextW(WChar *processNameBuff, Manage::Process
 			info->parentId = 0;
 
 			Text::StrConcat(sptr2, (const UTF8Char*)"/status");
-			NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+			NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 			if (!fs->IsError())
 			{
 				NEW_CLASS(reader, Text::UTF8Reader(fs));
@@ -857,7 +857,7 @@ WChar *Manage::Process::FindProcessNextW(WChar *processNameBuff, Manage::Process
 			DEL_CLASS(fs);
 
 			Text::StrConcat(sptr2, (const UTF8Char*)"/comm");
-			NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+			NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 			if (!fs->IsError())
 			{
 				NEW_CLASS(reader, Text::UTF8Reader(fs));

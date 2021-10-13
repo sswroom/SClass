@@ -617,7 +617,7 @@ Bool SSWR::DiscDB::DiscDBEnv::AddMD5(IO::IStreamData *fd)
 	{
 		return false;
 	}
-	if (fileChk->GetCheckType() != IO::FileCheck::CT_MD5)
+	if (fileChk->GetCheckType() != IO::FileCheck::CheckType::MD5)
 	{
 		DEL_CLASS(fileChk);
 		return false;

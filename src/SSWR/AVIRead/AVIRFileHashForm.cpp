@@ -105,19 +105,19 @@ UInt32 __stdcall SSWR::AVIRead::AVIRFileHashForm::HashThread(void *userObj)
 		if (found)
 		{
 			chkType = me->currHashType;
-			if (chkType == IO::FileCheck::CT_MD5)
+			if (chkType == IO::FileCheck::CheckType::MD5)
 			{
 				Text::StrConcat(Text::StrConcat(sbuff, status->fileName), (const UTF8Char*)".md5");
 			}
-			else if (chkType == IO::FileCheck::CT_CRC32)
+			else if (chkType == IO::FileCheck::CheckType::CRC32)
 			{
 				Text::StrConcat(Text::StrConcat(sbuff, status->fileName), (const UTF8Char*)".sfv");
 			}
-			else if (chkType == IO::FileCheck::CT_SHA1)
+			else if (chkType == IO::FileCheck::CheckType::SHA1)
 			{
 				Text::StrConcat(Text::StrConcat(sbuff, status->fileName), (const UTF8Char*)".sha1");
 			}
-			else if (chkType == IO::FileCheck::CT_MD4)
+			else if (chkType == IO::FileCheck::CheckType::MD4)
 			{
 				Text::StrConcat(Text::StrConcat(sbuff, status->fileName), (const UTF8Char*)".md4");
 			}
@@ -127,19 +127,19 @@ UInt32 __stdcall SSWR::AVIRead::AVIRFileHashForm::HashThread(void *userObj)
 				IO::FileStream *fs;
 				if (fchk)
 				{
-					if (chkType == IO::FileCheck::CT_CRC32)
+					if (chkType == IO::FileCheck::CheckType::CRC32)
 					{
 						NEW_CLASS(exporter, Exporter::SFVExporter());
 					}
-					else if (chkType == IO::FileCheck::CT_MD4)
+					else if (chkType == IO::FileCheck::CheckType::MD4)
 					{
 						NEW_CLASS(exporter, Exporter::MD4Exporter());
 					}
-					else if (chkType == IO::FileCheck::CT_MD5)
+					else if (chkType == IO::FileCheck::CheckType::MD5)
 					{
 						NEW_CLASS(exporter, Exporter::MD5Exporter());
 					}
-					else if (chkType == IO::FileCheck::CT_SHA1)
+					else if (chkType == IO::FileCheck::CheckType::SHA1)
 					{
 						NEW_CLASS(exporter, Exporter::SHA1Exporter());
 					}
@@ -150,7 +150,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRFileHashForm::HashThread(void *userObj)
 					if (exporter)
 					{
 						exporter->SetCodePage(me->core->GetCurrCodePage());
-						NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FILE_MODE_CREATE, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+						NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 						exporter->ExportFile(fs, sbuff, fchk, 0);
 						DEL_CLASS(fs);
 						DEL_CLASS(exporter);
@@ -251,7 +251,7 @@ SSWR::AVIRead::AVIRFileHashForm::AVIRFileHashForm(UI::GUIClientControl *parent, 
 	this->progCount = 0;
 	this->threadStatus = 0;
 	this->threadToStop = false;
-	this->currHashType = IO::FileCheck::CT_MD5;
+	this->currHashType = IO::FileCheck::CheckType::MD5;
 	this->readSize = 0;
 	this->totalRead = 0;
 	NEW_CLASS(this->lastTimerTime, Data::DateTime());
@@ -263,10 +263,10 @@ SSWR::AVIRead::AVIRFileHashForm::AVIRFileHashForm(UI::GUIClientControl *parent, 
 	this->lblCheckType->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->cboCheckType, UI::GUIComboBox(ui, this->pnlCheckType, false));
 	this->cboCheckType->SetRect(104, 4, 100, 23, false);
-	this->cboCheckType->AddItem((const UTF8Char*)"MD5", (void*)(OSInt)IO::FileCheck::CT_MD5);
-	this->cboCheckType->AddItem((const UTF8Char*)"MD4", (void*)(OSInt)IO::FileCheck::CT_MD4);
-	this->cboCheckType->AddItem((const UTF8Char*)"CRC", (void*)(OSInt)IO::FileCheck::CT_CRC32);
-	this->cboCheckType->AddItem((const UTF8Char*)"SHA1", (void*)(OSInt)IO::FileCheck::CT_SHA1);
+	this->cboCheckType->AddItem((const UTF8Char*)"MD5", (void*)(OSInt)IO::FileCheck::CheckType::MD5);
+	this->cboCheckType->AddItem((const UTF8Char*)"MD4", (void*)(OSInt)IO::FileCheck::CheckType::MD4);
+	this->cboCheckType->AddItem((const UTF8Char*)"CRC", (void*)(OSInt)IO::FileCheck::CheckType::CRC32);
+	this->cboCheckType->AddItem((const UTF8Char*)"SHA1", (void*)(OSInt)IO::FileCheck::CheckType::SHA1);
 	this->cboCheckType->SetSelectedIndex(0);
 	this->cboCheckType->HandleSelectionChange(OnCheckTypeChg, this);
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));

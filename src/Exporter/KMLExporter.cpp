@@ -34,34 +34,34 @@ IO::FileExporter::SupportType Exporter::KMLExporter::IsObjectSupported(IO::Parse
 {
 	if (pobj->GetParserType() != IO::ParsedObject::PT_MAP_LAYER_PARSER)
 	{
-		return IO::FileExporter::ST_NOT_SUPPORTED;
+		return IO::FileExporter::SupportType::NotSupported;
 	}
 	Map::IMapDrawLayer *layer = (Map::IMapDrawLayer *)pobj;
 	if (layer->GetLayerType() == Map::DRAW_LAYER_POINT)
 	{
-		return IO::FileExporter::ST_NORMAL_STREAM;
+		return IO::FileExporter::SupportType::NormalStream;
 	}
 	else if (layer->GetLayerType() == Map::DRAW_LAYER_POLYLINE)
 	{
-		return IO::FileExporter::ST_NORMAL_STREAM;
+		return IO::FileExporter::SupportType::NormalStream;
 	}
 	else if (layer->GetLayerType() == Map::DRAW_LAYER_POINT3D)
 	{
-		return IO::FileExporter::ST_NORMAL_STREAM;
+		return IO::FileExporter::SupportType::NormalStream;
 	}
 	else if (layer->GetLayerType() == Map::DRAW_LAYER_POLYLINE3D)
 	{
-		return IO::FileExporter::ST_NORMAL_STREAM;
+		return IO::FileExporter::SupportType::NormalStream;
 	}
 	else if (layer->GetLayerType() == Map::DRAW_LAYER_POLYGON)
 	{
-		return IO::FileExporter::ST_NORMAL_STREAM;
+		return IO::FileExporter::SupportType::NormalStream;
 	}
 	else if (layer->GetLayerType() == Map::DRAW_LAYER_IMAGE && layer->GetObjectClass() != Map::IMapDrawLayer::OC_TILE_MAP_LAYER)
 	{
-		return IO::FileExporter::ST_NORMAL_STREAM;
+		return IO::FileExporter::SupportType::NormalStream;
 	}
-	return IO::FileExporter::ST_NOT_SUPPORTED;
+	return IO::FileExporter::SupportType::NotSupported;
 }
 
 Bool Exporter::KMLExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8Char *fileNameBuff)
@@ -590,7 +590,7 @@ Bool Exporter::KMLExporter::GetParamInfo(UOSInt index, ParamInfo *info)
 	if (index != 0)
 		return false;
 	info->name = (const UTF8Char *)"Default Height";
-	info->paramType = IO::FileExporter::PT_INT32;
+	info->paramType = IO::FileExporter::ParamType::INT32;
 	info->allowNull = false;
 	return true;
 }

@@ -61,7 +61,7 @@ IO::Stream *IO::HIDInfo::OpenHID()
 {
 	ClassData *data = (ClassData*)this->clsData;
 	IO::FileStream *fs;
-	NEW_CLASS(fs, IO::FileStream(data->devPath, IO::FileStream::FILE_MODE_READWRITEEXISTING, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+	NEW_CLASS(fs, IO::FileStream(data->devPath, IO::FileStream::FileMode::ReadWriteExisting, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (fs->IsError())
 	{
 		DEL_CLASS(fs);

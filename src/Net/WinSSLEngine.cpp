@@ -799,7 +799,7 @@ Bool Net::WinSSLEngine::SetServerCertsASN1(Crypto::Cert::X509File *certASN1, Cry
 			return false;
 		}
 	}
-	if (keyASN1->GetFileType() == Crypto::Cert::X509File::FT_PRIV_KEY)
+	if (keyASN1->GetFileType() == Crypto::Cert::X509File::FileType::PrivateKey)
 	{
 		if (!WinSSLEngine_CryptImportPrivateKey(&hKey, hProv, keyASN1->GetASN1Buff(), (ULONG)keyASN1->GetASN1BuffSize()))
 		{
@@ -807,7 +807,7 @@ Bool Net::WinSSLEngine::SetServerCertsASN1(Crypto::Cert::X509File *certASN1, Cry
 			return false;
 		}
 	}
-	else if (keyASN1->GetFileType() == Crypto::Cert::X509File::FT_KEY)
+	else if (keyASN1->GetFileType() == Crypto::Cert::X509File::FileType::Key)
 	{
 		Crypto::Cert::X509PrivKey *privKey = Crypto::Cert::X509PrivKey::CreateFromKey((Crypto::Cert::X509Key*)keyASN1);
 		if (!WinSSLEngine_CryptImportPrivateKey(&hKey, hProv, keyASN1->GetASN1Buff(), (ULONG)keyASN1->GetASN1BuffSize()))
@@ -1089,7 +1089,7 @@ Bool Net::WinSSLEngine::GenerateCert(const UTF8Char *country, const UTF8Char *co
 		return false;
 	}
 	NEW_CLASS(*certASN1, Crypto::Cert::X509Cert((const UTF8Char *)"SelfSigned", pCertContext->pbCertEncoded, pCertContext->cbCertEncoded));
-	*keyASN1 = Crypto::Cert::X509PrivKey::CreateFromKeyBuff(Crypto::Cert::X509File::KT_RSA, certBuff, certBuffSize);
+	*keyASN1 = Crypto::Cert::X509PrivKey::CreateFromKeyBuff(Crypto::Cert::X509File::KeyType::RSA, certBuff, certBuffSize);
 	CertFreeCertificateContext(pCertContext);
 	//CryptReleaseContext(hCryptProvOrNCryptKey, 0);
 	MemFree(pbEncoded);

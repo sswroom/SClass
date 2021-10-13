@@ -24,14 +24,14 @@ Int32 Exporter::ICOExporter::GetName()
 IO::FileExporter::SupportType Exporter::ICOExporter::IsObjectSupported(IO::ParsedObject *pobj)
 {
 	if (pobj->GetParserType() != IO::ParsedObject::PT_IMAGE_LIST_PARSER)
-		return IO::FileExporter::ST_NOT_SUPPORTED;
+		return IO::FileExporter::SupportType::NotSupported;
 	Media::ImageList *imgList = (Media::ImageList*)pobj;
 	UInt32 imgTime;
 	Media::Image *img;
 	UOSInt i = imgList->GetCount();
 	if (i <= 0)
 	{
-		return IO::FileExporter::ST_NOT_SUPPORTED;
+		return IO::FileExporter::SupportType::NotSupported;
 	}
 	
 	while (i-- > 0)
@@ -39,10 +39,10 @@ IO::FileExporter::SupportType Exporter::ICOExporter::IsObjectSupported(IO::Parse
 		img = imgList->GetImage(0, &imgTime);
 		if (!Exporter::CURExporter::ImageSupported(img))
 		{
-			return IO::FileExporter::ST_NOT_SUPPORTED;
+			return IO::FileExporter::SupportType::NotSupported;
 		}
 	}
-	return IO::FileExporter::ST_NORMAL_STREAM;
+	return IO::FileExporter::SupportType::NormalStream;
 }
 
 Bool Exporter::ICOExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8Char *fileNameBuff)

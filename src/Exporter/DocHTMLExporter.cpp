@@ -27,9 +27,9 @@ IO::FileExporter::SupportType Exporter::DocHTMLExporter::IsObjectSupported(IO::P
 {
 	if (pobj->GetParserType() != IO::ParsedObject::PT_TEXT_DOCUMENT)
 	{
-		return IO::FileExporter::ST_NOT_SUPPORTED;
+		return IO::FileExporter::SupportType::NotSupported;
 	}
-	return IO::FileExporter::ST_NORMAL_STREAM;
+	return IO::FileExporter::SupportType::NormalStream;
 }
 
 Bool Exporter::DocHTMLExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8Char *fileNameBuff)

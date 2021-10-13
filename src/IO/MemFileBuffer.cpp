@@ -10,7 +10,7 @@ IO::MemFileBuffer::MemFileBuffer(const UTF8Char *fileName)
 {
 	IO::FileStream *file;
 
-	NEW_CLASS(file, IO::FileStream(fileName, IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+	NEW_CLASS(file, IO::FileStream(fileName, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	this->fileSize = file->GetLength();
 	if (this->fileSize > 0)
 	{

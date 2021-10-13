@@ -381,7 +381,7 @@ Bool Text::MailCreator::SetContentFile(const UTF8Char *filePath)
 	OSInt buffSize;
 	UInt8 *buff;
 	IO::FileStream *fs;
-	NEW_CLASS(fs, IO::FileStream(filePath, IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+	NEW_CLASS(fs, IO::FileStream(filePath, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (fs->IsError())
 	{
 		DEL_CLASS(fs);

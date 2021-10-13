@@ -30,15 +30,15 @@ IO::FileExporter::SupportType Exporter::SHPExporter::IsObjectSupported(IO::Parse
 {
 	if (pobj->GetParserType() != IO::ParsedObject::PT_MAP_LAYER_PARSER)
 	{
-		return IO::FileExporter::ST_NOT_SUPPORTED;
+		return IO::FileExporter::SupportType::NotSupported;
 	}
 	Map::IMapDrawLayer *layer = (Map::IMapDrawLayer *)pobj;
 	Map::DrawLayerType layerType = layer->GetLayerType();
 	if (layerType == Map::DRAW_LAYER_POINT || layerType == Map::DRAW_LAYER_POINT3D || layerType == Map::DRAW_LAYER_POLYLINE || layerType == Map::DRAW_LAYER_POLYLINE3D || layerType == Map::DRAW_LAYER_POLYGON)
 	{
-		return IO::FileExporter::ST_MULTI_FILES;
+		return IO::FileExporter::SupportType::MultiFiles;
 	}
-	return IO::FileExporter::ST_NOT_SUPPORTED;
+	return IO::FileExporter::SupportType::NotSupported;
 }
 
 Bool Exporter::SHPExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8Char *fileNameBuff)
@@ -88,7 +88,7 @@ Bool Exporter::SHPExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 	}
 	Text::StrConcat(fileName2, fileName);
 	IO::Path::ReplaceExt(fileName2, (const UTF8Char*)"shx");
-	NEW_CLASS(shx, IO::FileStream(fileName2, IO::FileStream::FILE_MODE_CREATE, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+	NEW_CLASS(shx, IO::FileStream(fileName2, IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (shx->IsError())
 	{
 		DEL_CLASS(shx);
@@ -476,7 +476,7 @@ Bool Exporter::SHPExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 	DEL_CLASS(shx);
 
 	IO::Path::ReplaceExt(fileName2, (const UTF8Char*)"dbf");
-	NEW_CLASS(shx, IO::FileStream(fileName2, IO::FileStream::FILE_MODE_CREATE, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+	NEW_CLASS(shx, IO::FileStream(fileName2, IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	NEW_CLASS(exporter, Exporter::DBFExporter());
 	exporter->SetCodePage(this->codePage);
 	exporter->ExportFile(shx, fileName2, layer, 0);
@@ -490,7 +490,7 @@ Bool Exporter::SHPExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 		Char projArr[1024];
 		Math::SRESRIWKTWriter wkt;
 		Char *cptr = wkt.WriteCSys(csys, projArr, 0, Text::LBT_NONE);
-		NEW_CLASS(shx, IO::FileStream(fileName2, IO::FileStream::FILE_MODE_CREATE, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+		NEW_CLASS(shx, IO::FileStream(fileName2, IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		shx->Write((UInt8*)projArr, (UOSInt)(cptr - projArr));
 		DEL_CLASS(shx);
 	}

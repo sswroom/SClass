@@ -68,7 +68,7 @@ Int32 Map::MapLayer::Draw(UInt8 *buff, Int32 width, Int32 height, Double lat, Do
 	sptr = Text::StrConcat(sptr, lang);
 	sptr = Text::StrConcat(sptr, L".txt");
 //	debugMut->Lock();
-	NEW_CLASS(fstm, IO::FileStream(fileName, IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE));
+	NEW_CLASS(fstm, IO::FileStream(fileName, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone));
 	if (fstm->IsError())
 	{
 	}

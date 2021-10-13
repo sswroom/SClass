@@ -85,7 +85,7 @@ void __stdcall OnDetectResult(void *userObj, UOSInt objCnt, const Media::OpenCV:
 			dt.SetCurrTime();
 			sptr = dt.ToString(sptr, "yyyyMMdd_HHmmssfff");
 			sptr = Text::StrConcat(sptr, (const UTF8Char*)".jpg");
-			NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FILE_MODE_CREATE, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+			NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 			exporter->ExportFile(fs, sbuff, imgList, 0);
 			DEL_CLASS(fs);
 

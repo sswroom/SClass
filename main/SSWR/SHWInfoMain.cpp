@@ -136,7 +136,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 
 	IO::Path::GetProcessFileName(sbuff);
 	IO::Path::ReplaceExt(sbuff, (const UTF8Char*)"txt");
-	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FILE_MODE_CREATE, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	NEW_CLASS(writer, Text::UTF8Writer(fs));
 
 	console->WriteLine((const UTF8Char*)"Computer Info:");

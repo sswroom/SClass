@@ -26,13 +26,13 @@ Int32 Exporter::MDBExporter::GetName()
 IO::FileExporter::SupportType Exporter::MDBExporter::IsObjectSupported(IO::ParsedObject *pobj)
 {
 #if defined(_WIN32_WCE)
-	return IO::FileExporter::ST_NOT_SUPPORTED;
+	return IO::FileExporter::SupportType::NotSupported;
 #else
 	if (pobj->GetParserType() != IO::ParsedObject::PT_READINGDB_PARSER && pobj->GetParserType() != IO::ParsedObject::PT_MAP_LAYER_PARSER)
 	{
-		return IO::FileExporter::ST_NOT_SUPPORTED;
+		return IO::FileExporter::SupportType::NotSupported;
 	}
-	return IO::FileExporter::ST_PATH_ONLY;
+	return IO::FileExporter::SupportType::PathOnly;
 #endif
 }
 
@@ -103,7 +103,7 @@ Bool Exporter::MDBExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 			{
 /*				IO::FileStream *debugFS;
 				Text::UTF8Writer *debugWriter;
-				NEW_CLASS(debugFS, IO::FileStream((const UTF8Char*)"I:\\ProgTest\\Debug.txt", IO::FileStream::FILE_MODE_CREATE, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+				NEW_CLASS(debugFS, IO::FileStream((const UTF8Char*)"I:\\ProgTest\\Debug.txt", IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 				NEW_CLASS(debugWriter, Text::UTF8Writer(debugFS));
 				debugWriter->WriteLineW(sql.ToString());
 				DEL_CLASS(debugWriter);

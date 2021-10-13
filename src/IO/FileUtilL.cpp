@@ -172,7 +172,7 @@ Bool IO::FileUtil::CopyFile(const UTF8Char *file1, const UTF8Char *file2, FileEx
 		if (IO::Path::GetPathType(file2) != IO::Path::PT_UNKNOWN)
 			return false;
 	}
-	NEW_CLASS(fs1, IO::FileStream(file1, IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+	NEW_CLASS(fs1, IO::FileStream(file1, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (fs1->IsError())
 	{
 		DEL_CLASS(fs1);
@@ -180,11 +180,11 @@ Bool IO::FileUtil::CopyFile(const UTF8Char *file1, const UTF8Char *file2, FileEx
 	}
 	if (fea == FEA_CONTINUE)
 	{
-		NEW_CLASS(fs2, IO::FileStream(file2, IO::FileStream::FILE_MODE_APPEND, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NO_WRITE_BUFFER));
+		NEW_CLASS(fs2, IO::FileStream(file2, IO::FileStream::FileMode::Append, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
 	}
 	else
 	{
-		NEW_CLASS(fs2, IO::FileStream(file2, IO::FileStream::FILE_MODE_CREATE, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NO_WRITE_BUFFER));
+		NEW_CLASS(fs2, IO::FileStream(file2, IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
 	}
 	if (fs2->IsError())
 	{
@@ -310,7 +310,7 @@ Bool IO::FileUtil::CopyFile(const UTF8Char *file1, const UTF8Char *file2, FileEx
 		if (IO::Path::GetPathType(file2) != IO::Path::PT_UNKNOWN)
 			return false;
 	}
-	NEW_CLASS(fs1, IO::FileStream(file1, IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+	NEW_CLASS(fs1, IO::FileStream(file1, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (fs1->IsError())
 	{
 		DEL_CLASS(fs1);
@@ -318,11 +318,11 @@ Bool IO::FileUtil::CopyFile(const UTF8Char *file1, const UTF8Char *file2, FileEx
 	}
 	if (fea == FEA_CONTINUE)
 	{
-		NEW_CLASS(fs2, IO::FileStream(file2, IO::FileStream::FILE_MODE_APPEND, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NO_WRITE_BUFFER));
+		NEW_CLASS(fs2, IO::FileStream(file2, IO::FileStream::FileMode::Append, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
 	}
 	else
 	{
-		NEW_CLASS(fs2, IO::FileStream(file2, IO::FileStream::FILE_MODE_CREATE, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NO_WRITE_BUFFER));
+		NEW_CLASS(fs2, IO::FileStream(file2, IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
 	}
 	if (fs2->IsError())
 	{

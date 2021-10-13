@@ -32,7 +32,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		UInt8 *fileBuff = 0;
 		UOSInt fileSize = 0;
 		IO::FileStream *fs;
-		NEW_CLASS(fs, IO::FileStream(file, IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+		NEW_CLASS(fs, IO::FileStream(file, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		fileSize = fs->GetLength();
 		if (fileSize > 0)
 		{
@@ -145,7 +145,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 
 /*					IO::FileStream *fs;
 					UInt8 *fileBuff;
-					NEW_CLASS(fs, IO::FileStream(fileName, IO::FileStream::FILE_MODE_CREATE, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+					NEW_CLASS(fs, IO::FileStream(fileName, IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 					fileBuff = mstm->GetBuff(&argc);
 					argc = fs->Write(fileBuff, argc);
 					DEL_CLASS(fs);

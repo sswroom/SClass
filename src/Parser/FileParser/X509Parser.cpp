@@ -66,20 +66,20 @@ IO::ParsedObject *Parser::FileParser::X509Parser::ParseFile(IO::IStreamData *fd,
 		{
 			Text::TextBinEnc::Base64Enc b64;
 			dataLen = b64.DecodeBin(&buff[31], (UOSInt)len - 61, dataBuff);
-			NEW_CLASS(ret, Crypto::Cert::X509Key(fd->GetFullFileName(), dataBuff, dataLen, Crypto::Cert::X509File::KT_RSA));
+			NEW_CLASS(ret, Crypto::Cert::X509Key(fd->GetFullFileName(), dataBuff, dataLen, Crypto::Cert::X509File::KeyType::RSA));
 		}
 	}
 	else if (Text::StrStartsWith(buff, (const UTF8Char*)"-----BEGIN DSA PRIVATE KEY-----") && Text::StrStartsWith(&buff[len - 30], (const UTF8Char*)"-----END DSA PRIVATE KEY-----\n"))
 	{
 		Text::TextBinEnc::Base64Enc b64;
 		dataLen = b64.DecodeBin(&buff[31], (UOSInt)len - 61, dataBuff);
-		NEW_CLASS(ret, Crypto::Cert::X509Key(fd->GetFullFileName(), dataBuff, dataLen, Crypto::Cert::X509File::KT_DSA));
+		NEW_CLASS(ret, Crypto::Cert::X509Key(fd->GetFullFileName(), dataBuff, dataLen, Crypto::Cert::X509File::KeyType::DSA));
 	}
 	else if (Text::StrStartsWith(buff, (const UTF8Char*)"-----BEGIN EC PRIVATE KEY-----") && Text::StrStartsWith(&buff[len - 29], (const UTF8Char*)"-----END EC PRIVATE KEY-----\n"))
 	{
 		Text::TextBinEnc::Base64Enc b64;
 		dataLen = b64.DecodeBin(&buff[30], (UOSInt)len - 59, dataBuff);
-		NEW_CLASS(ret, Crypto::Cert::X509Key(fd->GetFullFileName(), dataBuff, dataLen, Crypto::Cert::X509File::KT_ECDSA));
+		NEW_CLASS(ret, Crypto::Cert::X509Key(fd->GetFullFileName(), dataBuff, dataLen, Crypto::Cert::X509File::KeyType::ECDSA));
 	}
 	else if (Text::StrStartsWith(buff, (const UTF8Char*)"-----BEGIN PRIVATE KEY-----") && Text::StrStartsWith(&buff[len - 26], (const UTF8Char*)"-----END PRIVATE KEY-----\n"))
 	{

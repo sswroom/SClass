@@ -16,19 +16,19 @@ IO::SimpleFileWriter::SimpleFileWriter(const UTF8Char *fileName, IO::FileStream:
 {
 	handle = 0;
 	const Char *cfileName = (const Char*)fileName;
-	if (mode == FileStream::FILE_MODE_CREATE)
+	if (mode == FileStream::FileMode::Create)
 	{
 		handle = fopen(cfileName, "wb+");
 	}
-	else if (mode == FileStream::FILE_MODE_CREATEWRITE)
+	else if (mode == FileStream::FileMode::CreateWrite)
 	{
 		handle = fopen(cfileName, "wb");
 	}
-	else if (mode == FileStream::FILE_MODE_APPEND)
+	else if (mode == FileStream::FileMode::Append)
 	{
 		handle = fopen(cfileName, "ab+");
 	}
-	else if (mode == FileStream::FILE_MODE_READONLY)
+	else if (mode == FileStream::FileMode::ReadOnly)
 	{
 		handle = fopen(cfileName, "rb");
 	}

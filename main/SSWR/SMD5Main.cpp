@@ -180,7 +180,7 @@ Bool ParseFile(const UTF8Char *fileName)
 	{
 		ProgressHandler *progress;
 		NEW_CLASS(progress, ProgressHandler());
-		IO::FileCheck *fileChk = IO::FileCheck::CreateCheck(fileName, IO::FileCheck::CT_MD5, progress, false);
+		IO::FileCheck *fileChk = IO::FileCheck::CreateCheck(fileName, IO::FileCheck::CheckType::MD5, progress, false);
 		DEL_CLASS(progress);
 		console->WriteLine();
 		if (fileChk)
@@ -190,7 +190,7 @@ Bool ParseFile(const UTF8Char *fileName)
 			Exporter::MD5Exporter exporter;
 			sb.Append(fileName);
 			sb.Append((const UTF8Char*)".md5");
-			NEW_CLASS(fs, IO::FileStream(sb.ToString(), IO::FileStream::FILE_MODE_CREATE, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+			NEW_CLASS(fs, IO::FileStream(sb.ToString(), IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 			exporter.ExportFile(fs, sb.ToString(), fileChk, 0);
 			DEL_CLASS(fs);
 			DEL_CLASS(fileChk);

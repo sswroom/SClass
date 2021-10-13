@@ -62,22 +62,22 @@ IO::ParsedObject *Parser::FileParser::MD5Parser::ParseFile(IO::IStreamData *fd, 
 	}
 	else if (Text::StrCompareICase(&u8buff[i], (const UTF8Char*)".MD5") == 0)
 	{
-		ctype = IO::FileCheck::CT_MD5;
+		ctype = IO::FileCheck::CheckType::MD5;
 		chkSize = 16;
 	}
 	else if (Text::StrCompareICase(&u8buff[i], (const UTF8Char*)".MD4") == 0)
 	{
-		ctype = IO::FileCheck::CT_MD4;
+		ctype = IO::FileCheck::CheckType::MD4;
 		chkSize = 16;
 	}
 	else if (Text::StrCompareICase(&u8buff[i], (const UTF8Char*)".SHA1") == 0)
 	{
-		ctype = IO::FileCheck::CT_SHA1;
+		ctype = IO::FileCheck::CheckType::SHA1;
 		chkSize = 20;
 	}
 	else if (Text::StrCompareICase(&u8buff[i], (const UTF8Char*)".MD5SUM") == 0)
 	{
-		ctype = IO::FileCheck::CT_MD5;
+		ctype = IO::FileCheck::CheckType::MD5;
 		chkSize = 16;
 	}
 	else

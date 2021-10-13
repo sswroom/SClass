@@ -70,7 +70,7 @@ void __stdcall SSWR::AVIRead::AVIRTimedFileCopyForm::OnStartClicked(void *userOb
 	{
 		IO::ZIPBuilder *zip;
 		IO::FileStream *fs;
-		NEW_CLASS(fs, IO::FileStream(dlg->GetFileName(), IO::FileStream::FILE_MODE_CREATE, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+		NEW_CLASS(fs, IO::FileStream(dlg->GetFileName(), IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		if (fs->IsError())
 		{
 			UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in creating zip file", me->GetFormName(), me);
@@ -128,7 +128,7 @@ Bool SSWR::AVIRead::AVIRTimedFileCopyForm::CopyToZip(IO::ZIPBuilder *zip, const 
 					if (startTime->CompareTo(&dt) <= 0 && endTime->CompareTo(&dt) >= 0)
 					{
 						IO::FileStream *fs;
-						NEW_CLASS(fs, IO::FileStream(buffStart, IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+						NEW_CLASS(fs, IO::FileStream(buffStart, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 						if (fs->IsError())
 						{
 							succ = false;

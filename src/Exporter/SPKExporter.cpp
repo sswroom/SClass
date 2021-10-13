@@ -25,7 +25,7 @@ IO::FileExporter::SupportType Exporter::SPKExporter::IsObjectSupported(IO::Parse
 {
 	if (pobj->GetParserType() == IO::ParsedObject::PT_PACKAGE_PARSER)
 	{
-		return IO::FileExporter::ST_NORMAL_STREAM;
+		return IO::FileExporter::SupportType::NormalStream;
 	}
 	else if (pobj->GetParserType() == IO::ParsedObject::PT_MAP_LAYER_PARSER)
 	{
@@ -37,15 +37,15 @@ IO::FileExporter::SupportType Exporter::SPKExporter::IsObjectSupported(IO::Parse
 			Map::TileMap *tileMap = tileMapLayer->GetTileMap();
 			if (tileMap->GetTileType() == Map::TileMap::TT_OSM)
 			{
-				return IO::FileExporter::ST_NORMAL_STREAM;
+				return IO::FileExporter::SupportType::NormalStream;
 			}
 		}
 		else if (oc == Map::IMapDrawLayer::OC_ORUX_DB_LAYER)
 		{
-			return IO::FileExporter::ST_NORMAL_STREAM;
+			return IO::FileExporter::SupportType::NormalStream;
 		}
 	}
-	return IO::FileExporter::ST_NOT_SUPPORTED;
+	return IO::FileExporter::SupportType::NotSupported;
 }
 
 Bool Exporter::SPKExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8Char *fileNameBuff)

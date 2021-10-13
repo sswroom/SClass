@@ -144,7 +144,7 @@ UOSInt Sync::Thread::GetThreadCnt()
 	UOSInt procCnt;
 	OSInt procSys;
 	UTF8Char u8buff[128];
-	NEW_CLASS(fs, IO::FileStream((const UTF8Char*)"/proc/cpuinfo", IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+	NEW_CLASS(fs, IO::FileStream((const UTF8Char*)"/proc/cpuinfo", IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	NEW_CLASS(reader, Text::UTF8Reader(fs));
 	procCnt = 0;
 	while (reader->ReadLine(u8buff, 127))

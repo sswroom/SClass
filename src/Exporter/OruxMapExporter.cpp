@@ -36,7 +36,7 @@ IO::FileExporter::SupportType Exporter::OruxMapExporter::IsObjectSupported(IO::P
 {
 	if (pobj->GetParserType() != IO::ParsedObject::PT_MAP_LAYER_PARSER)
 	{
-		return IO::FileExporter::ST_NOT_SUPPORTED;
+		return IO::FileExporter::SupportType::NotSupported;
 	}
 	Map::IMapDrawLayer *layer = (Map::IMapDrawLayer *)pobj;
 	if (layer->GetObjectClass() == Map::IMapDrawLayer::OC_TILE_MAP_LAYER)
@@ -45,18 +45,18 @@ IO::FileExporter::SupportType Exporter::OruxMapExporter::IsObjectSupported(IO::P
 		Map::TileMap::TileType ttype = tileMap->GetTileType();
 		if (ttype == Map::TileMap::TT_OSMLOCAL)
 		{
-			return IO::FileExporter::ST_MULTI_FILES;
+			return IO::FileExporter::SupportType::MultiFiles;
 		}
 		else if (ttype == Map::TileMap::TT_OSM)
 		{
 			Map::OSM::OSMTileMap *osm = (Map::OSM::OSMTileMap*)tileMap;
 			if (osm->HasSPackageFile())
 			{
-				return IO::FileExporter::ST_MULTI_FILES;
+				return IO::FileExporter::SupportType::MultiFiles;
 			}
 		}
 	}
-	return IO::FileExporter::ST_NOT_SUPPORTED;
+	return IO::FileExporter::SupportType::NotSupported;
 }
 
 Bool Exporter::OruxMapExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8Char *fileNameBuff)

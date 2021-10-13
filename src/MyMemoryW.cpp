@@ -370,7 +370,7 @@ IO::Writer *MemOpenWriter()
 {
 	if (mcLogFile)
 	{
-		return new IO::SimpleFileWriter(mcLogFile, IO::FileStream::FILE_MODE_APPEND, IO::FileStream::FILE_SHARE_DENY_NONE);
+		return new IO::SimpleFileWriter(mcLogFile, IO::FileStream::FileMode::Append, IO::FileStream::FileShare::DenyNone);
 	}
 	else
 	{

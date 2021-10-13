@@ -24,9 +24,9 @@ IO::FileExporter::SupportType Exporter::DBHTMLExporter::IsObjectSupported(IO::Pa
 {
 	if (!DB::ReadingDB::IsDBObj(pobj))
 	{
-		return IO::FileExporter::ST_NOT_SUPPORTED;
+		return IO::FileExporter::SupportType::NotSupported;
 	}
-	return IO::FileExporter::ST_NORMAL_STREAM;
+	return IO::FileExporter::SupportType::NormalStream;
 }
 
 Bool Exporter::DBHTMLExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8Char *fileNameBuff)
@@ -172,7 +172,7 @@ Bool Exporter::DBHTMLExporter::GetParamInfo(UOSInt index, IO::FileExporter::Para
 	if (index == 0)
 	{
 		info->name = (const UTF8Char*)"Table";
-		info->paramType = IO::FileExporter::PT_SELECTION;
+		info->paramType = IO::FileExporter::ParamType::SELECTION;
 		info->allowNull = true;
 		return true;
 	}

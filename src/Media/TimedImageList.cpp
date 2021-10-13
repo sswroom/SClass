@@ -31,7 +31,7 @@ Media::TimedImageList::TimedImageList(const UTF8Char *fileName)
 {
 	UInt8 hdr[16];
 	NEW_CLASS(this->indexStm, IO::MemoryStream((const UTF8Char*)"Media.TimedImageLIst.indexStm"));
-	NEW_CLASS(this->fs, IO::FileStream(fileName, IO::FileStream::FILE_MODE_APPEND, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NO_WRITE_BUFFER));
+	NEW_CLASS(this->fs, IO::FileStream(fileName, IO::FileStream::FileMode::Append, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
 	if (this->IsError())
 	{
 		DEL_CLASS(this->fs);

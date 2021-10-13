@@ -13,7 +13,7 @@ Crypto::JKSFile::~JKSFile()
 
 Crypto::Cert::X509File::FileType Crypto::JKSFile::GetFileType()
 {
-	return FT_JKS;
+	return FileType::Jks;
 }
 
 void Crypto::JKSFile::ToShortName(Text::StringBuilderUTF *sb)

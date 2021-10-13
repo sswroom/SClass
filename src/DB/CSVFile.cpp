@@ -53,7 +53,7 @@ DB::DBReader *DB::CSVFile::GetTableData(const UTF8Char *name, UOSInt maxCnt, voi
 		IO::StreamReader *rdr;
 		DB::CSVReader *r;
 		IO::FileStream *fs;
-		NEW_CLASS(fs, IO::FileStream(this->fileName, IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_SEQUENTIAL));
+		NEW_CLASS(fs, IO::FileStream(this->fileName, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
 		if (!fs->IsError())
 		{
 			NEW_CLASS(rdr, IO::StreamReader(fs, codePage));

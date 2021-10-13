@@ -30,15 +30,15 @@ IO::SimpleFileWriter::SimpleFileWriter(const UTF8Char *fileName, IO::FileStream:
 	secAttr.nLength = sizeof(secAttr);
 	secAttr.lpSecurityDescriptor = 0;
 	secAttr.bInheritHandle = TRUE;
-	if (share == IO::FileStream::FILE_SHARE_DENY_NONE)
+	if (share == IO::FileStream::FileShare::DenyNone)
 	{
 		shflag = FILE_SHARE_READ | FILE_SHARE_WRITE;
 	}
-	else if (share == IO::FileStream::FILE_SHARE_DENY_READ)
+	else if (share == IO::FileStream::FileShare::DenyRead)
 	{
 		shflag = FILE_SHARE_WRITE;
 	}
-	else if (share == IO::FileStream::FILE_SHARE_DENY_WRITE)
+	else if (share == IO::FileStream::FileShare::DenyWrite)
 	{
 		shflag = FILE_SHARE_READ;
 	}
@@ -47,11 +47,11 @@ IO::SimpleFileWriter::SimpleFileWriter(const UTF8Char *fileName, IO::FileStream:
 		shflag = 0;
 	}
 
-	if (mode == FileStream::FILE_MODE_CREATE)
+	if (mode == FileStream::FileMode::Create)
 	{
 		handle = CreateFileW(wfileName, GENERIC_READ | GENERIC_WRITE, shflag, &secAttr, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
 	}
-	else if (mode == FileStream::FILE_MODE_APPEND)
+	else if (mode == FileStream::FileMode::Append)
 	{
 		handle = CreateFileW(wfileName, GENERIC_READ | GENERIC_WRITE, shflag, &secAttr, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
 		if (handle != INVALID_HANDLE_VALUE)
@@ -60,15 +60,15 @@ IO::SimpleFileWriter::SimpleFileWriter(const UTF8Char *fileName, IO::FileStream:
 			SetFilePointer(handle, 0, (PLONG)&fleng, FILE_END);
 		}
 	}
-	else if (mode == FileStream::FILE_MODE_READONLY)
+	else if (mode == FileStream::FileMode::ReadOnly)
 	{
 		handle = CreateFileW(wfileName, GENERIC_READ, shflag, &secAttr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
 	}
-	else if (mode == FileStream::FILE_MODE_READWRITEEXISTING)
+	else if (mode == FileStream::FileMode::ReadWriteExisting)
 	{
 		handle = CreateFileW(wfileName, GENERIC_READ | GENERIC_WRITE, shflag, &secAttr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
 	}
-	else if (mode == FileStream::FILE_MODE_DEVICE)
+	else if (mode == FileStream::FileMode::Device)
 	{
 		handle = CreateFileW(wfileName, GENERIC_READ | GENERIC_WRITE, 0, 0, OPEN_EXISTING, 0, 0);
 	}

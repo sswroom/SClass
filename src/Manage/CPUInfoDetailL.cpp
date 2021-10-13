@@ -15,7 +15,7 @@ Manage::CPUInfoDetail::CPUInfoDetail()
 	IO::FileStream *fs;
 	this->cpuModel = 0;
 
-	NEW_CLASS(fs, IO::FileStream((const UTF8Char*)"/proc/cpuinfo", IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+	NEW_CLASS(fs, IO::FileStream((const UTF8Char*)"/proc/cpuinfo", IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (!fs->IsError())
 	{
 		Int32 cpuPart = 0;
@@ -89,7 +89,7 @@ Manage::CPUInfoDetail::CPUInfoDetail()
 			{
 				IO::FileStream *fs2;
 				UInt8 fileBuff[33];
-				NEW_CLASS(fs2, IO::FileStream((const UTF8Char*)"/sys/devices/soc0/machine", IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+				NEW_CLASS(fs2, IO::FileStream((const UTF8Char*)"/sys/devices/soc0/machine", IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 				if (!fs2->IsError())
 				{
 					UOSInt i = fs2->Read(fileBuff, 32);
@@ -241,7 +241,7 @@ Bool Manage::CPUInfoDetail::GetCPUTemp(UOSInt index, Double *temp)
 	Text::StringBuilderUTF8 sb;
 	IO::FileStream *fs;
 	Text::UTF8Reader *reader;
-	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	NEW_CLASS(reader, Text::UTF8Reader(fs));
 	sb.ClearStr();
 	if (reader->ReadLine(&sb, 512))
@@ -263,7 +263,7 @@ Bool Manage::CPUInfoDetail::GetCPUTemp(UOSInt index, Double *temp)
 		return true;
 
 	Text::StrConcat(Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"/sys/class/hwmon/hwmon"), index), (const UTF8Char*)"/device/temperature");
-	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	NEW_CLASS(reader, Text::UTF8Reader(fs));
 	sb.ClearStr();
 	if (reader->ReadLine(&sb, 512))

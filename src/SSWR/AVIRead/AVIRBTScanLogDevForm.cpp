@@ -19,7 +19,7 @@ void __stdcall SSWR::AVIRead::AVIRBTScanLogDevForm::OnCSVClicked(void *userObj)
 		UTF8Char sbuff[256];
 		IO::FileStream *fs;
 		IO::WriteCacheStream *stm;
-		NEW_CLASS(fs, IO::FileStream(dlg->GetFileName(), IO::FileStream::FILE_MODE_CREATE, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+		NEW_CLASS(fs, IO::FileStream(dlg->GetFileName(), IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		NEW_CLASS(stm, IO::WriteCacheStream(fs));
 		Data::DateTime dt;
 		IO::BTScanLog::LogEntry *log;

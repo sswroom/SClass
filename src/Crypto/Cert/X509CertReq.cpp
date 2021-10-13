@@ -14,7 +14,7 @@ Crypto::Cert::X509CertReq::~X509CertReq()
 
 Crypto::Cert::X509File::FileType Crypto::Cert::X509CertReq::GetFileType()
 {
-	return FT_CERT_REQ;
+	return FileType::CertRequest;
 }
 
 void Crypto::Cert::X509CertReq::ToShortName(Text::StringBuilderUTF *sb)

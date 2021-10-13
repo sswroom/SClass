@@ -25,7 +25,7 @@ Bool SystemInfo_ReadFile(const UTF8Char *fileName, Text::StringBuilderUTF *sb)
 	Bool succ = false;
 	IO::FileStream *fs;
 	Text::UTF8Reader *reader;
-	NEW_CLASS(fs, IO::FileStream(fileName, IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+	NEW_CLASS(fs, IO::FileStream(fileName, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (!fs->IsError())
 	{
 		NEW_CLASS(reader, Text::UTF8Reader(fs));

@@ -149,7 +149,7 @@ Math::CoordinateSystem *Math::CoordinateSystemManager::ParsePRJFile(const UTF8Ch
 	UInt8 buff[512];
 	UOSInt buffSize;
 	IO::FileStream *fs;
-	NEW_CLASS(fs, IO::FileStream(fileName, IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_SEQUENTIAL));
+	NEW_CLASS(fs, IO::FileStream(fileName, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
 	if (fs->IsError())
 	{
 		DEL_CLASS(fs);

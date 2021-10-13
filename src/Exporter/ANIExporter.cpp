@@ -1,13 +1,13 @@
 #include "Stdafx.h"
 #include "Data/ByteTool.h"
-#include "Exporter/CURExporter.h"
+#include "Exporter/ANIExporter.h"
 #include "IO/MemoryStream.h"
 #include "Math/Math.h"
 #include "Media/ImageList.h"
 #include "Media/StaticImage.h"
 #include "Text/MyString.h"
 
-Bool Exporter::CURExporter::ImageSupported(Media::Image *img)
+Bool Exporter::ANIExporter::ImageSupported(Media::Image *img)
 {
 	if (img->info->dispWidth <= 0 || img->info->dispWidth > 256 || img->info->dispHeight <= 0 || img->info->dispHeight > 256)
 	{
@@ -40,11 +40,11 @@ Bool Exporter::CURExporter::ImageSupported(Media::Image *img)
 	return false;
 }
 
-OSInt Exporter::CURExporter::CalcBuffSize(Media::ImageList *imgList)
+OSInt Exporter::ANIExporter::CalcBuffSize(Media::ImageList *imgList)
 {
 	OSInt i;
 	OSInt j;
-	Int32 imgDelay;
+	UInt32 imgDelay;
 	OSInt imgSize;
 	OSInt maskSize;
 	Media::Image *img;
@@ -132,7 +132,7 @@ OSInt Exporter::CURExporter::CalcBuffSize(Media::ImageList *imgList)
 	return retSize;
 }
 
-OSInt Exporter::CURExporter::BuildBuff(UInt8 *buff, Media::ImageList *imgList, Bool hasHotSpot)
+OSInt Exporter::ANIExporter::BuildBuff(UInt8 *buff, Media::ImageList *imgList, Bool hasHotSpot)
 {
 	UInt8 *indexPtr;
 	UInt8 *imgPtr;
@@ -146,7 +146,7 @@ OSInt Exporter::CURExporter::BuildBuff(UInt8 *buff, Media::ImageList *imgList, B
 	UInt8 *currPtr;
 	OSInt sbpl;
 	UInt8 *maskPtr;
-	Int32 imgDelay;
+	UInt32 imgDelay;
 	OSInt imgSize;
 	OSInt maskSize;
 	OSInt imgAdd;
@@ -616,30 +616,30 @@ OSInt Exporter::CURExporter::BuildBuff(UInt8 *buff, Media::ImageList *imgList, B
 	return retSize;
 }
 
-Exporter::CURExporter::CURExporter()
+Exporter::ANIExporter::ANIExporter()
 {
 }
 
-Exporter::CURExporter::~CURExporter()
+Exporter::ANIExporter::~ANIExporter()
 {
 }
 
-Int32 Exporter::CURExporter::GetName()
+Int32 Exporter::ANIExporter::GetName()
 {
-	return *(Int32*)"CURE";
+	return *(Int32*)"ANIE";
 }
 
-IO::FileExporter::SupportType Exporter::CURExporter::IsObjectSupported(IO::ParsedObject *pobj)
+IO::FileExporter::SupportType Exporter::ANIExporter::IsObjectSupported(IO::ParsedObject *pobj)
 {
 	if (pobj->GetParserType() != IO::ParsedObject::PT_IMAGE_LIST_PARSER)
-		return IO::FileExporter::ST_NOT_SUPPORTED;
+		return IO::FileExporter::SupportType::NotSupported;
 	Media::ImageList *imgList = (Media::ImageList*)pobj;
-	Int32 imgTime;
+	UInt32 imgTime;
 	Media::Image *img;
 	OSInt i = imgList->GetCount();
 	if (i <= 0)
 	{
-		return IO::FileExporter::ST_NOT_SUPPORTED;
+		return IO::FileExporter::SupportType::NotSupported;
 	}
 	
 	while (i-- > 0)
@@ -647,13 +647,13 @@ IO::FileExporter::SupportType Exporter::CURExporter::IsObjectSupported(IO::Parse
 		img = imgList->GetImage(0, &imgTime);
 		if (!img->HasHotSpot() || !ImageSupported(img))
 		{
-			return IO::FileExporter::ST_NOT_SUPPORTED;
+			return IO::FileExporter::SupportType::NotSupported;
 		}
 	}
-	return IO::FileExporter::ST_NORMAL_STREAM;
+	return IO::FileExporter::SupportType::NormalStream;
 }
 
-Bool Exporter::CURExporter::GetOutputName(OSInt index, UTF8Char *nameBuff, UTF8Char *fileNameBuff)
+Bool Exporter::ANIExporter::GetOutputName(OSInt index, UTF8Char *nameBuff, UTF8Char *fileNameBuff)
 {
 	if (index == 0)
 	{
@@ -664,11 +664,11 @@ Bool Exporter::CURExporter::GetOutputName(OSInt index, UTF8Char *nameBuff, UTF8C
 	return false;
 }
 
-void Exporter::CURExporter::SetCodePage(UInt32 codePage)
+void Exporter::ANIExporter::SetCodePage(UInt32 codePage)
 {
 }
 
-Bool Exporter::CURExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *fileName, IO::ParsedObject *pobj, void *param)
+Bool Exporter::ANIExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *fileName, IO::ParsedObject *pobj, void *param)
 {
 	if (pobj->GetParserType() != IO::ParsedObject::PT_IMAGE_LIST_PARSER)
 		return 0;

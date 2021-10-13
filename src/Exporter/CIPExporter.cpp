@@ -24,23 +24,23 @@ IO::FileExporter::SupportType Exporter::CIPExporter::IsObjectSupported(IO::Parse
 {
 	if (pobj->GetParserType() != IO::ParsedObject::PT_MAP_LAYER_PARSER)
 	{
-		return IO::FileExporter::ST_NOT_SUPPORTED;
+		return IO::FileExporter::SupportType::NotSupported;
 	}
 	Map::IMapDrawLayer *layer = (Map::IMapDrawLayer *)pobj;
 	Map::DrawLayerType layerType = layer->GetLayerType();
 	if (layerType == Map::DRAW_LAYER_POINT || layerType == Map::DRAW_LAYER_POINT3D)
 	{
-		return IO::FileExporter::ST_MULTI_FILES;
+		return IO::FileExporter::SupportType::MultiFiles;
 	}
 	else if (layerType == Map::DRAW_LAYER_POLYLINE || layerType == Map::DRAW_LAYER_POLYLINE3D)
 	{
-		return IO::FileExporter::ST_MULTI_FILES;
+		return IO::FileExporter::SupportType::MultiFiles;
 	}
 	else if (layer->GetLayerType() == Map::DRAW_LAYER_POLYGON)
 	{
-		return IO::FileExporter::ST_MULTI_FILES;
+		return IO::FileExporter::SupportType::MultiFiles;
 	}
-	return IO::FileExporter::ST_NOT_SUPPORTED;
+	return IO::FileExporter::SupportType::NotSupported;
 }
 
 Bool Exporter::CIPExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8Char *fileNameBuff)
@@ -89,11 +89,11 @@ Bool Exporter::CIPExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 	IO::FileStream *blk;
 	Text::StrConcat(u8buff, fileName);
 	IO::Path::ReplaceExt(u8buff, (const UTF8Char*)"cix");
-	NEW_CLASS(cix, IO::FileStream(u8buff, IO::FileStream::FILE_MODE_CREATE, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+	NEW_CLASS(cix, IO::FileStream(u8buff, IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	IO::Path::ReplaceExt(u8buff, (const UTF8Char*)"ciu");
-	NEW_CLASS(cib, IO::FileStream(u8buff, IO::FileStream::FILE_MODE_CREATE, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+	NEW_CLASS(cib, IO::FileStream(u8buff, IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	IO::Path::ReplaceExt(u8buff, (const UTF8Char*)"blk");
-	NEW_CLASS(blk, IO::FileStream(u8buff, IO::FileStream::FILE_MODE_CREATE, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+	NEW_CLASS(blk, IO::FileStream(u8buff, IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 
 
 	Data::ArrayListInt64 *objIds;
@@ -375,7 +375,7 @@ UOSInt Exporter::CIPExporter::GetParamCnt()
 
 void *Exporter::CIPExporter::CreateParam(IO::ParsedObject *pobj)
 {
-	if (this->IsObjectSupported(pobj) == IO::FileExporter::ST_MULTI_FILES)
+	if (this->IsObjectSupported(pobj) == IO::FileExporter::SupportType::MultiFiles)
 	{
 		Exporter::CIPExporter::CIPParam *param;
 		param = MemAlloc(Exporter::CIPExporter::CIPParam, 1);
@@ -405,14 +405,14 @@ Bool Exporter::CIPExporter::GetParamInfo(UOSInt index, IO::FileExporter::ParamIn
 	if (index == 0)
 	{
 		info->name = (const UTF8Char*)"Scale";
-		info->paramType = IO::FileExporter::PT_INT32;
+		info->paramType = IO::FileExporter::ParamType::INT32;
 		info->allowNull = false;
 		return true;
 	}
 	else if (index == 1)
 	{
 		info->name = (const UTF8Char*)"Display Column";
-		info->paramType = IO::FileExporter::PT_SELECTION;
+		info->paramType = IO::FileExporter::ParamType::SELECTION;
 		info->allowNull = false;
 		return true;
 	}

@@ -183,15 +183,15 @@ IO::FileStream *IO::CEControl::OpenFile(const WChar *fileName, IO::FileStream::F
 	Int64 currPos;
 	void *handle;
 
-	if (share == IO::FileStream::FILE_SHARE_DENY_NONE)
+	if (share == IO::FileStream::FileShare::DenyNone)
 	{
 		shflag = FILE_SHARE_READ | FILE_SHARE_WRITE;
 	}
-	else if (share == IO::FileStream::FILE_SHARE_DENY_READ)
+	else if (share == IO::FileStream::FileShare::DenyRead)
 	{
 		shflag = FILE_SHARE_WRITE;
 	}
-	else if (share == IO::FileStream::FILE_SHARE_DENY_WRITE)
+	else if (share == IO::FileStream::FileShare::DenyWrite)
 	{
 		shflag = FILE_SHARE_READ;
 	}

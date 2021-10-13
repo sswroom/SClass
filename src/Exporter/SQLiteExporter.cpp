@@ -28,9 +28,9 @@ IO::FileExporter::SupportType Exporter::SQLiteExporter::IsObjectSupported(IO::Pa
 {
 	if (pobj->GetParserType() != IO::ParsedObject::PT_READINGDB_PARSER && pobj->GetParserType() != IO::ParsedObject::PT_MAP_LAYER_PARSER)
 	{
-		return IO::FileExporter::ST_NOT_SUPPORTED;
+		return IO::FileExporter::SupportType::NotSupported;
 	}
-	return IO::FileExporter::ST_PATH_ONLY;
+	return IO::FileExporter::SupportType::PathOnly;
 }
 
 Bool Exporter::SQLiteExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8Char *fileNameBuff)
@@ -120,7 +120,7 @@ Bool Exporter::SQLiteExporter::ExportFile(IO::SeekableStream *stm, const UTF8Cha
 			{
 				IO::FileStream *debugFS;
 				Text::UTF8Writer *debugWriter;
-				NEW_CLASS(debugFS, IO::FileStream((const UTF8Char*)"Debug.txt", IO::FileStream::FILE_MODE_APPEND, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+				NEW_CLASS(debugFS, IO::FileStream((const UTF8Char*)"Debug.txt", IO::FileStream::FileMode::Append, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 				NEW_CLASS(debugWriter, Text::UTF8Writer(debugFS));
 				debugWriter->WriteLine(sql.ToString());
 				DEL_CLASS(debugWriter);
@@ -152,7 +152,7 @@ Bool Exporter::SQLiteExporter::ExportFile(IO::SeekableStream *stm, const UTF8Cha
 
 					IO::FileStream *debugFS;
 					Text::UTF8Writer *debugWriter;
-					NEW_CLASS(debugFS, IO::FileStream((const UTF8Char*)"Debug.txt", IO::FileStream::FILE_MODE_APPEND, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+					NEW_CLASS(debugFS, IO::FileStream((const UTF8Char*)"Debug.txt", IO::FileStream::FileMode::Append, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 					NEW_CLASS(debugWriter, Text::UTF8Writer(debugFS));
 					debugWriter->WriteLine(sql.ToString());
 					debugWriter->WriteLine(sb.ToString());

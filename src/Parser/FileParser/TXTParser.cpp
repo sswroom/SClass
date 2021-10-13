@@ -392,7 +392,7 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 		Double *ptList;
 		Double *hList;
 
-		NEW_CLASS(fs2, IO::FileStream(u8buff, IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+		NEW_CLASS(fs2, IO::FileStream(u8buff, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		NEW_CLASS(reader2, IO::StreamReader(fs2, 0));
 		while (reader2->ReadLine(sbuff2, 512))
 		{

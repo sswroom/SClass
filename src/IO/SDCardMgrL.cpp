@@ -11,7 +11,7 @@ Bool SDCardMgr_ReadId(const UTF8Char *fileName, UInt8 *buff)
 	Bool ret = false;
 	UInt8 fileBuff[64];
 	IO::FileStream *fs;
-	NEW_CLASS(fs, IO::FileStream(fileName, IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+	NEW_CLASS(fs, IO::FileStream(fileName, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	i = fs->Read(fileBuff, 64);
 	if (i >= 32)
 	{

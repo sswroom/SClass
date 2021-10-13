@@ -154,7 +154,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::UploadReq(SSWR::Benchmark::
 				sptr = Text::StrInt64(sptr, t);
 				sptr = Text::StrConcat(sptr, (const UTF8Char*)".txt");
 
-				NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FILE_MODE_CREATE, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+				NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 				if (fs->IsError())
 				{
 					printf("Error in creating file\r\n");
@@ -196,7 +196,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(SSWR::Benchmark:
 		u8ptr = IO::Path::AppendPath(path, (const UTF8Char*)"CPUInfo");
 		*u8ptr++ = IO::Path::PATH_SEPERATOR;
 		u8ptr = Text::StrConcat(u8ptr, fileName);
-		NEW_CLASS(fs, IO::FileStream(path, IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+		NEW_CLASS(fs, IO::FileStream(path, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		fileSize = (UOSInt)fs->GetLength();
 		if (fileSize > 0)
 		{
@@ -234,7 +234,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(SSWR::Benchmark:
 			{
 				IO::Path::GetProcessFileName(path);
 				u8ptr = IO::Path::AppendPath(path, (const UTF8Char*)"X86CPUInfo.txt");
-				NEW_CLASS(fs, IO::FileStream(path, IO::FileStream::FILE_MODE_APPEND, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+				NEW_CLASS(fs, IO::FileStream(path, IO::FileStream::FileMode::Append, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 
 				u8ptr = Text::StrInt32(fileName, cpuFamily);
 				*u8ptr++ = '\t';
@@ -303,7 +303,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(SSWR::Benchmark:
 
 					if (IO::Path::GetPathType(path) == IO::Path::PT_UNKNOWN)
 					{
-						NEW_CLASS(fs, IO::FileStream(path, IO::FileStream::FILE_MODE_CREATE, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+						NEW_CLASS(fs, IO::FileStream(path, IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 						if (fileSize == fs->Write(fileBuff, fileSize))
 						{
 						}
@@ -321,7 +321,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(SSWR::Benchmark:
 					u8ptr = Text::StrConcat(u8ptr, (const UTF8Char*)"Unknown_");
 					u8ptr = Text::StrInt64(u8ptr, dt.ToTicks());
 
-					NEW_CLASS(fs, IO::FileStream(path, IO::FileStream::FILE_MODE_CREATE, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+					NEW_CLASS(fs, IO::FileStream(path, IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 					if (fileSize == fs->Write(fileBuff, fileSize))
 					{
 						msg = (const UTF8Char*)"File uploaded successfully";

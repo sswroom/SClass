@@ -89,15 +89,15 @@ IO::FileStream::FileStream(const WChar *fileName, IO::FileStream::FileMode mode,
 #endif
 #else
 	Int32 shflag;
-	if (share == IO::FileStream::FILE_SHARE_DENY_NONE)
+	if (share == IO::FileStream::FileShare::DenyNone)
 	{
 		shflag = _SH_DENYNO;
 	}
-	else if (share == IO::FileStream::FILE_SHARE_DENY_READ)
+	else if (share == IO::FileStream::FileShare::DenyRead)
 	{
 		shflag = _SH_DENYRD;
 	}
-	else if (share == IO::FileStream::FILE_SHARE_DENY_WRITE)
+	else if (share == IO::FileStream::FileShare::DenyWrite)
 	{
 		shflag = _SH_DENYWR;
 	}
@@ -169,15 +169,15 @@ IO::FileStream::FileStream(const Char *fileName, FileMode mode, FileShare share,
 	}
 #else
 	Int32 shflag;
-	if (share == IO::FileStream::FILE_SHARE_DENY_NONE)
+	if (share == IO::FileStream::FileShare::DenyNone)
 	{
 		shflag = _SH_DENYNO;
 	}
-	else if (share == IO::FileStream::FILE_SHARE_DENY_READ)
+	else if (share == IO::FileStream::FileShare::DenyRead)
 	{
 		shflag = _SH_DENYRD;
 	}
-	else if (share == IO::FileStream::FILE_SHARE_DENY_WRITE)
+	else if (share == IO::FileStream::FileShare::DenyWrite)
 	{
 		shflag = _SH_DENYWR;
 	}

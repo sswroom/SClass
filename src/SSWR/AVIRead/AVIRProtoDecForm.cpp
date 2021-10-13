@@ -58,7 +58,7 @@ void __stdcall SSWR::AVIRead::AVIRProtoDecForm::OnLoadClicked(void *userObj)
 	{
 		me->ClearList();
 		SDEL_CLASS(me->currFile);
-		NEW_CLASS(me->currFile, IO::FileStream(sb.ToString(), IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_SEQUENTIAL));
+		NEW_CLASS(me->currFile, IO::FileStream(sb.ToString(), IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
 		if (me->currFile->IsError())
 		{
 			DEL_CLASS(me->currFile);

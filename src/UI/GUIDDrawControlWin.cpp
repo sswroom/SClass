@@ -472,7 +472,7 @@ UI::GUIDDrawControl::GUIDDrawControl(GUICore *ui, UI::GUIClientControl *parent, 
 #if defined(_DEBUG)
 	{
 		IO::FileStream *fs;
-		NEW_CLASS(fs, IO::FileStream((const UTF8Char*)"Ddraw.log", IO::FileStream::FILE_MODE_APPEND, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+		NEW_CLASS(fs, IO::FileStream((const UTF8Char*)"Ddraw.log", IO::FileStream::FileMode::Append, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		this->debugFS = fs;
 		NEW_CLASS(this->debugWriter, Text::UTF8Writer(fs));
 	}

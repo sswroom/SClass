@@ -178,7 +178,7 @@ UTF8Char *__stdcall SSWR::AVIRead::AVIRSMTPServerForm::OnMailReceived(UTF8Char *
 		email->rcptList->Add(Text::StrCopyNew(sb.ToString()));
 		i++;
 	}
-	NEW_CLASS(fs, IO::FileStream(email->fileName, IO::FileStream::FILE_MODE_CREATE, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+	NEW_CLASS(fs, IO::FileStream(email->fileName, IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	buff = mail->dataStm->GetBuff(&buffSize);
 	fs->Write(buff, buffSize);
 	DEL_CLASS(fs);
@@ -545,7 +545,7 @@ Bool SSWR::AVIRead::AVIRSMTPServerForm::GetMessageContent(Int32 userId, UInt32 m
 	email = this->mailList->GetItem(msgId);
 	if (email)
 	{
-		NEW_CLASS(fs, IO::FileStream(email->fileName, IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NO_BUFFER));
+		NEW_CLASS(fs, IO::FileStream(email->fileName, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::NoBuffer));
 		if (fs->IsError())
 		{
 

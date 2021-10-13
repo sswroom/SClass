@@ -89,7 +89,7 @@ void __stdcall SSWR::AVIRead::AVIRFileExForm::OnStartClicked(void *userObj)
 	}
 	sb.ClearStr();
 	me->txtSrc->GetText(&sb);
-	NEW_CLASS(srcFS, IO::FileStream(sb.ToString(), IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_SEQUENTIAL));
+	NEW_CLASS(srcFS, IO::FileStream(sb.ToString(), IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
 	if (srcFS->IsError())
 	{
 		DEL_CLASS(srcFS);
@@ -105,7 +105,7 @@ void __stdcall SSWR::AVIRead::AVIRFileExForm::OnStartClicked(void *userObj)
 	}
 	sb.ClearStr();
 	me->txtDest->GetText(&sb);
-	NEW_CLASS(destFS, IO::FileStream(sb.ToString(), IO::FileStream::FILE_MODE_CREATE, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+	NEW_CLASS(destFS, IO::FileStream(sb.ToString(), IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (destFS->IsError())
 	{
 		DEL_CLASS(destFS);

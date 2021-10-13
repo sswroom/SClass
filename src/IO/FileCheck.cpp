@@ -21,19 +21,19 @@ typedef struct
 Crypto::Hash::IHash *IO::FileCheck::CreateHash(CheckType chkType)
 {
 	Crypto::Hash::IHash *hash;
-	if (chkType == IO::FileCheck::CT_CRC32)
+	if (chkType == IO::FileCheck::CheckType::CRC32)
 	{
 		NEW_CLASS(hash, Crypto::Hash::CRC32R(Crypto::Hash::CRC32::GetPolynormialIEEE()));
 	}
-	else if (chkType == IO::FileCheck::CT_MD4)
+	else if (chkType == IO::FileCheck::CheckType::MD4)
 	{
 		return 0;
 	}
-	else if (chkType == IO::FileCheck::CT_MD5)
+	else if (chkType == IO::FileCheck::CheckType::MD5)
 	{
 		NEW_CLASS(hash, Crypto::Hash::MD5());
 	}
-	else if (chkType == IO::FileCheck::CT_SHA1)
+	else if (chkType == IO::FileCheck::CheckType::SHA1)
 	{
 		NEW_CLASS(hash, Crypto::Hash::SHA1());
 	}
@@ -68,7 +68,7 @@ IO::FileCheck *IO::FileCheck::CreateCheck(const UTF8Char *path, IO::FileCheck::C
 	{
 		NEW_CLASS(fchk, IO::FileCheck(path, chkType));
 
-		NEW_CLASS(fs, IO::FileStream(path, IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_WRITE, IO::FileStream::BT_NO_BUFFER));
+		NEW_CLASS(fs, IO::FileStream(path, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyWrite, IO::FileStream::BufferType::NoBuffer));
 		if (fs->IsError())
 		{
 			DEL_CLASS(fchk);
@@ -203,7 +203,7 @@ Bool IO::FileCheck::CheckDir(UTF8Char *fullPath, UTF8Char *hashPath, Crypto::Has
 			}
 			else if (pt == IO::Path::PT_FILE)
 			{
-				NEW_CLASS(fs, IO::FileStream(fullPath, IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_WRITE, IO::FileStream::BT_NO_BUFFER));
+				NEW_CLASS(fs, IO::FileStream(fullPath, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyWrite, IO::FileStream::BufferType::NoBuffer));
 				if (fs->IsError())
 				{
 					DEL_CLASS(fs);
@@ -259,25 +259,25 @@ IO::FileCheck::FileCheck(const UTF8Char *name, CheckType chkType) : IO::ParsedOb
 {
 	this->chkType = chkType;
 
-	if (chkType == IO::FileCheck::CT_MD5)
+	if (chkType == IO::FileCheck::CheckType::MD5)
 	{
 		this->hashSize = 16;
 	}
-	else if (chkType == IO::FileCheck::CT_SHA1)
+	else if (chkType == IO::FileCheck::CheckType::SHA1)
 	{
 		this->hashSize = 20;
 	}
-	else if (chkType == IO::FileCheck::CT_MD4)
+	else if (chkType == IO::FileCheck::CheckType::MD4)
 	{
 		this->hashSize = 16;
 	}
-	else if (chkType == IO::FileCheck::CT_CRC32)
+	else if (chkType == IO::FileCheck::CheckType::CRC32)
 	{
 		this->hashSize = 4;
 	}
 	else
 	{
-		this->chkType = IO::FileCheck::CT_CRC32;
+		this->chkType = IO::FileCheck::CheckType::CRC32;
 		this->hashSize = 4;
 	}
 
@@ -299,13 +299,13 @@ IO::FileCheck::~FileCheck()
 
 IO::FileCheck::HashType IO::FileCheck::GetHashType()
 {
-	if (this->chkType == IO::FileCheck::CT_CRC32)
+	if (this->chkType == IO::FileCheck::CheckType::CRC32)
 	{
-		return IO::FileCheck::HT_INT32;
+		return IO::FileCheck::HashType::INT32;
 	}
 	else
 	{
-		return IO::FileCheck::HT_BYTEARR;
+		return IO::FileCheck::HashType::ByteArray;
 	}
 }
 
@@ -379,7 +379,7 @@ Bool IO::FileCheck::CheckEntryHash(UOSInt index, UInt8 *hashVal)
 	if (hash == 0)
 		return false;
 
-	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_WRITE, IO::FileStream::BT_NO_BUFFER));
+	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyWrite, IO::FileStream::BufferType::NoBuffer));
 	if (fs->IsError())
 	{
 		DEL_CLASS(fs);

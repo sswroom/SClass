@@ -25,7 +25,7 @@ IO::FileExporter::SupportType Exporter::DBFExporter::IsObjectSupported(IO::Parse
 {
 	if (pobj->GetParserType() != IO::ParsedObject::PT_READINGDB_PARSER && pobj->GetParserType() != IO::ParsedObject::PT_MAP_LAYER_PARSER)
 	{
-		return IO::FileExporter::ST_NOT_SUPPORTED;
+		return IO::FileExporter::SupportType::NotSupported;
 	}
 	DB::ReadingDB *conn = (DB::ReadingDB *)pobj;
 	UOSInt tableCnt;
@@ -35,8 +35,8 @@ IO::FileExporter::SupportType Exporter::DBFExporter::IsObjectSupported(IO::Parse
 	tableCnt = tableNames->GetCount();
 	DEL_CLASS(tableNames);
 	if (tableCnt == 1)
-		return IO::FileExporter::ST_NORMAL_STREAM;
-	return IO::FileExporter::ST_NOT_SUPPORTED;
+		return IO::FileExporter::SupportType::NormalStream;
+	return IO::FileExporter::SupportType::NotSupported;
 }
 
 Bool Exporter::DBFExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8Char *fileNameBuff)

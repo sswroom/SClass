@@ -173,7 +173,7 @@ void Net::WebServer::HTTPDirectoryHandler::ResponsePackageFile(Net::WebServer::I
 			if (IO::Path::GetPathType(sbTmp.ToString()) == IO::Path::PT_UNKNOWN)
 			{
 				IO::FileStream *uplFS;
-				NEW_CLASS(uplFS, IO::FileStream(sbTmp.ToString(), IO::FileStream::FILE_MODE_CREATE, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NO_WRITE_BUFFER));
+				NEW_CLASS(uplFS, IO::FileStream(sbTmp.ToString(), IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
 				uplFS->Write(uplfile, uplSize);
 				DEL_CLASS(uplFS);
 			}
@@ -263,7 +263,7 @@ void Net::WebServer::HTTPDirectoryHandler::StatLoad(Net::WebServer::HTTPDirector
 {
 	IO::FileStream *fs;
 	Text::StringBuilderUTF8 sb;
-	NEW_CLASS(fs, IO::FileStream(stat->statFileName, IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+	NEW_CLASS(fs, IO::FileStream(stat->statFileName, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (!fs->IsError())
 	{
 		UTF8Char *sarr[2];
@@ -292,7 +292,7 @@ void Net::WebServer::HTTPDirectoryHandler::StatSave(Net::WebServer::HTTPDirector
 	stat->updated = false;
 	if (nameList->GetCount() > 0)
 	{
-		NEW_CLASS(fs, IO::FileStream(stat->statFileName, IO::FileStream::FILE_MODE_CREATE, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+		NEW_CLASS(fs, IO::FileStream(stat->statFileName, IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		if (!fs->IsError())
 		{
 			Text::UTF8Writer *writer;
@@ -646,7 +646,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 			UInt64 sizeLeft;
 
 			IO::Path::GetFileExt(sbuff, sptr);
-			NEW_CLASS(fs, IO::FileStream(sptr, IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_SEQUENTIAL));
+			NEW_CLASS(fs, IO::FileStream(sptr, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
 			fs->GetFileTimes(0, 0, &t);
 
 			sb2.ClearStr();
@@ -737,7 +737,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 						if (IO::Path::GetPathType(sbTmp.ToString()) == IO::Path::PT_UNKNOWN)
 						{
 							IO::FileStream *uplFS;
-							NEW_CLASS(uplFS, IO::FileStream(sbTmp.ToString(), IO::FileStream::FILE_MODE_CREATE, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NO_WRITE_BUFFER));
+							NEW_CLASS(uplFS, IO::FileStream(sbTmp.ToString(), IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
 							uplFS->Write(uplfile, uplSize);
 							DEL_CLASS(uplFS);
 						}
@@ -1077,7 +1077,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 		IO::FileStream *fs;
 		UInt64 sizeLeft;
 
-		NEW_CLASS(fs, IO::FileStream(sptr, IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_SEQUENTIAL));
+		NEW_CLASS(fs, IO::FileStream(sptr, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
 		fs->GetFileTimes(0, 0, &t);
 
 		if (req->GetHeader(&sb2, (const UTF8Char*)"If-Modified-Since"))

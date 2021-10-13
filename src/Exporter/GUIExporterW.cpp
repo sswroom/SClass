@@ -21,7 +21,7 @@ Exporter::GUIExporter::~GUIExporter()
 
 IO::FileExporter::SupportType Exporter::GUIExporter::IsObjectSupported(IO::ParsedObject *pobj)
 {
-	return IO::FileExporter::ST_NOT_SUPPORTED;
+	return IO::FileExporter::SupportType::NotSupported;
 }
 
 void *Exporter::GUIExporter::ToImage(IO::ParsedObject *pobj, UInt8 **relBuff)
@@ -57,29 +57,29 @@ IO::FileExporter::SupportType Exporter::GUIExporter::IsObjectSupported(IO::Parse
 {
 	Media::ImageList *imgList;
 	if (pobj == 0)
-		return IO::FileExporter::ST_NOT_SUPPORTED;
+		return IO::FileExporter::SupportType::NotSupported;
 	if (pobj->GetParserType() != IO::ParsedObject::PT_IMAGE_LIST_PARSER)
-		return IO::FileExporter::ST_NOT_SUPPORTED;
+		return IO::FileExporter::SupportType::NotSupported;
 	imgList = (Media::ImageList*)pobj;
 	if (imgList->GetCount() != 1)
-		return IO::FileExporter::ST_NOT_SUPPORTED;
+		return IO::FileExporter::SupportType::NotSupported;
 	Media::Image *img = imgList->GetImage(0, 0);
 	if (img->info->fourcc != 0)
-		return IO::FileExporter::ST_NOT_SUPPORTED;
+		return IO::FileExporter::SupportType::NotSupported;
 	switch (img->info->pf)
 	{
 	case Media::PF_B8G8R8A8:
-		return IO::FileExporter::ST_NORMAL_STREAM;
+		return IO::FileExporter::SupportType::NormalStream;
 	case Media::PF_B8G8R8:
-		return IO::FileExporter::ST_NORMAL_STREAM;
+		return IO::FileExporter::SupportType::NormalStream;
 	case Media::PF_LE_R5G6B5:
-		return IO::FileExporter::ST_NORMAL_STREAM;
+		return IO::FileExporter::SupportType::NormalStream;
 	case Media::PF_PAL_8:
-		return IO::FileExporter::ST_NORMAL_STREAM;
+		return IO::FileExporter::SupportType::NormalStream;
 	case Media::PF_PAL_4:
-		return IO::FileExporter::ST_NORMAL_STREAM;
+		return IO::FileExporter::SupportType::NormalStream;
 	case Media::PF_PAL_1:
-		return IO::FileExporter::ST_NORMAL_STREAM;
+		return IO::FileExporter::SupportType::NormalStream;
 	case Media::PF_LE_R5G5B5:
 	case Media::PF_LE_B16G16R16A16:
 	case Media::PF_LE_B16G16R16:
@@ -105,7 +105,7 @@ IO::FileExporter::SupportType Exporter::GUIExporter::IsObjectSupported(IO::Parse
 	case Media::PF_B8G8R8A1:
 	case Media::PF_UNKNOWN:
 	default:
-		return IO::FileExporter::ST_NOT_SUPPORTED;
+		return IO::FileExporter::SupportType::NotSupported;
 	}
 }
 

@@ -235,7 +235,7 @@ void SSWR::AVIRead::AVIRGISTileDownloadForm::SaveTiles(const WChar *folderName)
 					{
 						sb.Append((const UTF8Char*)".jpg");
 					}
-					NEW_CLASS(fs, IO::FileStream(sb.ToString(), IO::FileStream::FILE_MODE_CREATE, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NO_WRITE_BUFFER));
+					NEW_CLASS(fs, IO::FileStream(sb.ToString(), IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
 					fs->Write(fileBuff, (OSInt)fileSize);
 					DEL_CLASS(fs);
 				}
@@ -521,7 +521,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::ProcThread(void *userOb
 						{
 							sb->Append((const UTF8Char*)".jpg");
 						}
-						NEW_CLASS(fs, IO::FileStream(sb->ToString(), IO::FileStream::FILE_MODE_CREATE, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NO_WRITE_BUFFER));
+						NEW_CLASS(fs, IO::FileStream(sb->ToString(), IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
 						fs->Write(fileBuff, (UOSInt)fileSize);
 						DEL_CLASS(fs);
 					}

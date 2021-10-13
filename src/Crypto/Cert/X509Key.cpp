@@ -14,7 +14,7 @@ Crypto::Cert::X509Key::~X509Key()
 
 Crypto::Cert::X509File::FileType Crypto::Cert::X509Key::GetFileType()
 {
-	return FT_KEY;
+	return FileType::Key;
 }
 
 void Crypto::Cert::X509Key::ToShortName(Text::StringBuilderUTF *sb)

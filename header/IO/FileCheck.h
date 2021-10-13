@@ -10,19 +10,19 @@ namespace IO
 	class FileCheck : public IO::ParsedObject
 	{
 	public:
-		typedef enum
+		enum class CheckType
 		{
-			CT_CRC32,
-			CT_MD5,
-			CT_SHA1,
-			CT_MD4
-		} CheckType;
+			CRC32,
+			MD5,
+			SHA1,
+			MD4
+		};
 
-		typedef enum
+		enum class HashType
 		{
-			HT_INT32,
-			HT_BYTEARR
-		} HashType;
+			INT32,
+			ByteArray
+		};
 	private:
 		Data::ArrayListStrUTF8 *fileNames;
 		UInt8 *chkValues;

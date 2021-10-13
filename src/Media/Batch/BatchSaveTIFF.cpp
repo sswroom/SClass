@@ -26,7 +26,7 @@ void Media::Batch::BatchSaveTIFF::ImageOutput(Media::ImageList *imgList, const U
 	sptr = Text::StrConcat(sbuff, fileId);
 	void *param;
 	Text::StrConcat(Text::StrConcat(sptr, targetId), (const UTF8Char*)".tif");
-	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FILE_MODE_CREATE, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NO_WRITE_BUFFER));
+	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
 	param = exporter->CreateParam(imgList);
 	exporter->SetParamBool(param, 0, this->isCompressed);
 	exporter->ExportFile(fs, sbuff, imgList, param);

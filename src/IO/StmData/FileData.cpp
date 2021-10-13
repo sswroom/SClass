@@ -12,7 +12,7 @@ void IO::StmData::FileData::ReopenFile()
 		return;
 	Sync::MutexUsage mutUsage(fdh->mut);
 	IO::FileStream *fs;
-	NEW_CLASS(fs, IO::FileStream(fdh->filePath, IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+	NEW_CLASS(fs, IO::FileStream(fdh->filePath, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (fs->IsError())
 	{
 		DEL_CLASS(fs);
@@ -31,7 +31,7 @@ IO::StmData::FileData::FileData(const UTF8Char* fname, Bool deleteOnClose)
 	fdh = 0;
 	IO::FileStream *fs;
 	this->fdn = 0;
-	NEW_CLASS(fs, IO::FileStream(fname, IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+	NEW_CLASS(fs, IO::FileStream(fname, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (fs->IsError())
 	{
 		DEL_CLASS(fs);

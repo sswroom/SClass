@@ -13,29 +13,29 @@ namespace IO
 
 		FileStream();
 	public:
-		enum BufferType
+		enum class BufferType
 		{
-			BT_RANDOM_ACCESS,
-			BT_NORMAL,
-			BT_SEQUENTIAL,
-			BT_NO_BUFFER,
-			BT_NO_WRITE_BUFFER
-		} ;
-		enum FileMode
-		{
-			FILE_MODE_CREATE,
-			FILE_MODE_APPEND,
-			FILE_MODE_READONLY,
-			FILE_MODE_READWRITEEXISTING,
-			FILE_MODE_DEVICE,
-			FILE_MODE_CREATEWRITE
+			RandomAccess,
+			Normal,
+			Sequential,
+			NoBuffer,
+			NoWriteBuffer
 		};
-		enum FileShare
+		enum class FileMode
 		{
-			FILE_SHARE_DENY_NONE,
-			FILE_SHARE_DENY_READ,
-			FILE_SHARE_DENY_WRITE,
-			FILE_SHARE_DENY_ALL
+			Create,
+			Append,
+			ReadOnly,
+			ReadWriteExisting,
+			Device,
+			CreateWrite
+		};
+		enum class FileShare
+		{
+			DenyNone,
+			DenyRead,
+			DenyWrite,
+			DenyAll
 		};
 
 	private:

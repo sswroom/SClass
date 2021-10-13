@@ -28,15 +28,15 @@ void IO::FileStream::InitStream(const WChar *fileName, FileMode mode, FileShare 
 	secAttr.nLength = sizeof(secAttr);
 	secAttr.lpSecurityDescriptor = 0;
 	secAttr.bInheritHandle = FALSE; ////////////////////////////////////
-	if (share == IO::FileStream::FILE_SHARE_DENY_NONE)
+	if (share == IO::FileStream::FileShare::DenyNone)
 	{
 		shflag = FILE_SHARE_READ | FILE_SHARE_WRITE;
 	}
-	else if (share == IO::FileStream::FILE_SHARE_DENY_READ)
+	else if (share == IO::FileStream::FileShare::DenyRead)
 	{
 		shflag = FILE_SHARE_WRITE;
 	}
-	else if (share == IO::FileStream::FILE_SHARE_DENY_WRITE)
+	else if (share == IO::FileStream::FileShare::DenyWrite)
 	{
 		shflag = FILE_SHARE_READ;
 	}
@@ -48,19 +48,19 @@ void IO::FileStream::InitStream(const WChar *fileName, FileMode mode, FileShare 
 	UInt32 fileFlag;
 	switch (buffType)
 	{
-	case BT_RANDOM_ACCESS:
+	case BufferType::RandomAccess:
 		fileFlag = FILE_FLAG_RANDOM_ACCESS;
 		break;
-	case BT_NORMAL:
+	case BufferType::Normal:
 		fileFlag = 0;
 		break;
-	case BT_SEQUENTIAL:
+	case BufferType::Sequential:
 		fileFlag = FILE_FLAG_SEQUENTIAL_SCAN;
 		break;
-	case BT_NO_BUFFER:
+	case BufferType::NoBuffer:
 		fileFlag = FILE_FLAG_NO_BUFFERING;
 		break;
-	case BT_NO_WRITE_BUFFER:
+	case BufferType::NoWriteBuffer:
 		fileFlag = FILE_FLAG_WRITE_THROUGH;
 		break;
 	default:
@@ -68,17 +68,17 @@ void IO::FileStream::InitStream(const WChar *fileName, FileMode mode, FileShare 
 		break;
 	}
 
-	if (mode == FileStream::FILE_MODE_CREATE)
+	if (mode == FileStream::FileMode::Create)
 	{
 		handle = CreateFileW(fileName, GENERIC_READ | GENERIC_WRITE, shflag, &secAttr, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL | fileFlag, 0);
 		currPos = 0;
 	}
-	else if (mode == FileStream::FILE_MODE_CREATEWRITE)
+	else if (mode == FileStream::FileMode::CreateWrite)
 	{
 		handle = CreateFileW(fileName, GENERIC_WRITE, shflag, &secAttr, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL | fileFlag, 0);
 		currPos = 0;
 	}
-	else if (mode == FileStream::FILE_MODE_APPEND)
+	else if (mode == FileStream::FileMode::Append)
 	{
 		handle = CreateFileW(fileName, GENERIC_READ | GENERIC_WRITE, shflag, &secAttr, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL | fileFlag, 0);
 		if (handle == INVALID_HANDLE_VALUE)
@@ -92,17 +92,17 @@ void IO::FileStream::InitStream(const WChar *fileName, FileMode mode, FileShare 
 			((Int32*)&this->currPos)[1] = fleng;
 		}
 	}
-	else if (mode == FileStream::FILE_MODE_READONLY)
+	else if (mode == FileStream::FileMode::ReadOnly)
 	{
 		handle = CreateFileW(fileName, GENERIC_READ, shflag, &secAttr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL | fileFlag, 0);
 		currPos = 0;
 	}
-	else if (mode == FileStream::FILE_MODE_READWRITEEXISTING)
+	else if (mode == FileStream::FileMode::ReadWriteExisting)
 	{
 		handle = CreateFileW(fileName, GENERIC_READ | GENERIC_WRITE, shflag, &secAttr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL | fileFlag, 0);
 		currPos = 0;
 	}
-	else if (mode == FileStream::FILE_MODE_DEVICE)
+	else if (mode == FileStream::FileMode::Device)
 	{
 		handle = CreateFileW(fileName, GENERIC_READ | GENERIC_WRITE, 0, 0, OPEN_EXISTING, 0, 0);
 		currPos = 0;
@@ -136,15 +136,15 @@ IO::FileStream::FileStream(const UTF8Char *fileName, IO::FileStream::FileMode mo
 	secAttr.nLength = sizeof(secAttr);
 	secAttr.lpSecurityDescriptor = 0;
 	secAttr.bInheritHandle = FALSE;////////////////////////////
-	if (share == IO::FileStream::FILE_SHARE_DENY_NONE)
+	if (share == IO::FileStream::FileShare::DenyNone)
 	{
 		shflag = FILE_SHARE_READ | FILE_SHARE_WRITE;
 	}
-	else if (share == IO::FileStream::FILE_SHARE_DENY_READ)
+	else if (share == IO::FileStream::FileShare::DenyRead)
 	{
 		shflag = FILE_SHARE_WRITE;
 	}
-	else if (share == IO::FileStream::FILE_SHARE_DENY_WRITE)
+	else if (share == IO::FileStream::FileShare::DenyWrite)
 	{
 		shflag = FILE_SHARE_READ;
 	}
@@ -156,19 +156,19 @@ IO::FileStream::FileStream(const UTF8Char *fileName, IO::FileStream::FileMode mo
 	UInt32 fileFlag;
 	switch (buffType)
 	{
-	case BT_RANDOM_ACCESS:
+	case BufferType::RandomAccess:
 		fileFlag = FILE_FLAG_RANDOM_ACCESS;
 		break;
-	case BT_NORMAL:
+	case BufferType::Normal:
 		fileFlag = 0;
 		break;
-	case BT_SEQUENTIAL:
+	case BufferType::Sequential:
 		fileFlag = FILE_FLAG_SEQUENTIAL_SCAN;
 		break;
-	case BT_NO_BUFFER:
+	case BufferType::NoBuffer:
 		fileFlag = FILE_FLAG_NO_BUFFERING;
 		break;
-	case BT_NO_WRITE_BUFFER:
+	case BufferType::NoWriteBuffer:
 		fileFlag = FILE_FLAG_WRITE_THROUGH;
 		break;
 	default:
@@ -178,17 +178,17 @@ IO::FileStream::FileStream(const UTF8Char *fileName, IO::FileStream::FileMode mo
 
 
 	const WChar *wptr = Text::StrToWCharNew(fileName);
-	if (mode == FileStream::FILE_MODE_CREATE)
+	if (mode == FileStream::FileMode::Create)
 	{
 		handle = CreateFileW(wptr, GENERIC_READ | GENERIC_WRITE, shflag, &secAttr, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL | fileFlag, 0);
 		currPos = 0;
 	}
-	else if (mode == FileStream::FILE_MODE_CREATEWRITE)
+	else if (mode == FileStream::FileMode::CreateWrite)
 	{
 		handle = CreateFileW(wptr, GENERIC_WRITE, shflag, &secAttr, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL | fileFlag, 0);
 		currPos = 0;
 	}
-	else if (mode == FileStream::FILE_MODE_APPEND)
+	else if (mode == FileStream::FileMode::Append)
 	{
 		handle = CreateFileW(wptr, GENERIC_READ | GENERIC_WRITE, shflag, &secAttr, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL | fileFlag, 0);
 		if (handle == INVALID_HANDLE_VALUE)
@@ -202,7 +202,7 @@ IO::FileStream::FileStream(const UTF8Char *fileName, IO::FileStream::FileMode mo
 			((Int32*)&this->currPos)[1] = fleng;
 		}
 	}
-	else if (mode == FileStream::FILE_MODE_READONLY)
+	else if (mode == FileStream::FileMode::ReadOnly)
 	{
 		handle = CreateFileW(wptr, GENERIC_READ, shflag, &secAttr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL | fileFlag, 0);
 		currPos = 0;
@@ -452,7 +452,7 @@ IO::FileStream *IO::FileStream::OpenNamedPipe(const UTF8Char *server, const UTF8
 	sptr = Text::StrConcat(sptr, (const UTF8Char*)"\\pipe\\");
 	sptr = Text::StrConcat(sptr, pipeName);
 	IO::FileStream *outStm;
-	NEW_CLASS(outStm, IO::FileStream(sbuff, IO::FileStream::FILE_MODE_DEVICE, IO::FileStream::FILE_SHARE_DENY_ALL, IO::FileStream::BT_NORMAL));
+	NEW_CLASS(outStm, IO::FileStream(sbuff, IO::FileStream::FileMode::Device, IO::FileStream::FileShare::DenyAll, IO::FileStream::BufferType::Normal));
 	if (outStm->IsError())
 	{
 		DEL_CLASS(outStm);

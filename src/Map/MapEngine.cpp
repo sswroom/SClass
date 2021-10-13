@@ -2886,7 +2886,7 @@ void SelectPen(MapVars *map, MyLine *lines, Int32 index, Int32 maxScale)
 	b = img->NewBrushARGB(0xffff0000);
 	f = img->NewFont("MingLiU", 14, 0);
 	//f = img->NewFont("Arial", 12, 0);
-	utf8Buff[enc.ToBytes((UInt8*)utf8Buff, L"ABc‘ª??ƒeƒXƒgDef", 12)] = 0;
+	utf8Buff[enc.ToBytes((UInt8*)utf8Buff, L"ABcï¿½ï¿½??ï¿½eï¿½Xï¿½gDef", 12)] = 0;
 	img->DrawStringRot(160, 120, utf8Buff, f, b, 45);
 	img->DelFont(f);
 	img->DelBrush(b);
@@ -3186,7 +3186,7 @@ Bool Map::MapEngine::SaveImg(void *m, WChar *fileName, Int32 imgFormat)
 	map = (MapVars*)m;
 	MapAfterDraw(map);
 
-	NEW_CLASS(stm, IO::FileStream(fileName, IO::FileStream::FILE_MODE_CREATE, IO::FileStream::FILE_SHARE_DENY_READ));
+	NEW_CLASS(stm, IO::FileStream(fileName, IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyRead));
 	if (imgFormat == 1)
 	{
 		ret = map->img->SaveGIF(stm);

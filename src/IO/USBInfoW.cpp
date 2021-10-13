@@ -61,7 +61,7 @@ UInt16 USBInfo_ReadI16(const UTF8Char *fileName)
 	UInt8 buff[33];
 	UOSInt readSize;
 	IO::FileStream *fs;
-	NEW_CLASS(fs, IO::FileStream(fileName, IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+	NEW_CLASS(fs, IO::FileStream(fileName, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	readSize = fs->Read(buff, 32);
 	buff[readSize] = 0;
 	while (readSize > 0)
@@ -168,7 +168,7 @@ OSInt IO::USBInfo::GetUSBList(Data::ArrayList<USBInfo*> *usbList)
 					{
 						sb.ClearStr();
 						Text::StrConcat(sptr2, (const UTF8Char*)"\\manufacturer");
-						NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+						NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 						if (!fs->IsError())
 						{
 							readSize = fs->Read(cbuff, 250);
@@ -193,7 +193,7 @@ OSInt IO::USBInfo::GetUSBList(Data::ArrayList<USBInfo*> *usbList)
 						DEL_CLASS(fs);
 						
 						Text::StrConcat(sptr2, (const UTF8Char*)"\\product");
-						NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+						NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 						if (!fs->IsError())
 						{
 							readSize = fs->Read(cbuff, 250);

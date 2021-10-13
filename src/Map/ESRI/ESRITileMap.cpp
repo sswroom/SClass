@@ -500,7 +500,7 @@ Media::ImageList *Map::ESRI::ESRITileMap::LoadTileImage(UOSInt level, Int64 imgI
 	sptr = Text::StrInt32(sptr, imgX);
 
 	cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, url, "GET", true);
-	NEW_CLASS(fs, IO::FileStream(filePath, IO::FileStream::FILE_MODE_CREATE, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+	NEW_CLASS(fs, IO::FileStream(filePath, IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	while ((readSize = cli->Read(dataBuff, 2048)) > 0)
 	{
 		fs->Write(dataBuff, readSize);
@@ -624,7 +624,7 @@ IO::IStreamData *Map::ESRI::ESRITileMap::LoadTileImageData(UOSInt level, Int64 i
 	u8ptr = Text::StrInt32(u8ptr, imgX);
 
 	cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, url, "GET", true);
-	NEW_CLASS(fs, IO::FileStream(filePath, IO::FileStream::FILE_MODE_CREATE, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+	NEW_CLASS(fs, IO::FileStream(filePath, IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	while ((readSize = cli->Read(dataBuff, 2048)) > 0)
 	{
 		fs->Write(dataBuff, readSize);

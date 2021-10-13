@@ -105,7 +105,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnRequestClicked(void *userObj
 		const UTF8Char *fileName = me->fileList->GetItem(0);
 		UTF8Char sbuff[32];
 		IO::FileStream *fs;
-		NEW_CLASS(fs, IO::FileStream(fileName, IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+		NEW_CLASS(fs, IO::FileStream(fileName, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		me->reqBodyLen = (UOSInt)fs->GetLength();
 		me->reqBody = MemAlloc(UInt8, me->reqBodyLen);
 		fs->Read((UInt8*)me->reqBody, me->reqBodyLen);
@@ -164,7 +164,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnRequestClicked(void *userObj
 			UInt64 fileLength;
 			UInt64 ofst;
 			const UTF8Char *csptr2;
-			NEW_CLASS(fs, IO::FileStream(csptr, IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+			NEW_CLASS(fs, IO::FileStream(csptr, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 			fileLength = fs->GetLength();
 			if (fileLength > 0 && fileLength < 104857600)
 			{
@@ -282,7 +282,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnSaveClicked(void *userObj)
 	{
 		IO::FileStream *fs;
 		Bool succ = false;
-		NEW_CLASS(fs, IO::FileStream(dlg->GetFileName(), IO::FileStream::FILE_MODE_CREATE, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+		NEW_CLASS(fs, IO::FileStream(dlg->GetFileName(), IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		Sync::MutexUsage mutUsage(me->respMut);
 		if (me->respData)
 		{

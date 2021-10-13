@@ -23,14 +23,14 @@ IO::FileExporter::SupportType Exporter::SFVExporter::IsObjectSupported(IO::Parse
 {
 	if (pobj->GetParserType() != IO::ParsedObject::PT_FILE_CHECK)
 	{
-		return IO::FileExporter::ST_NOT_SUPPORTED;
+		return IO::FileExporter::SupportType::NotSupported;
 	}
 	IO::FileCheck *fchk = (IO::FileCheck *)pobj;
-	if (fchk->GetCheckType() != IO::FileCheck::CT_CRC32)
+	if (fchk->GetCheckType() != IO::FileCheck::CheckType::CRC32)
 	{
-		return IO::FileExporter::ST_NOT_SUPPORTED;
+		return IO::FileExporter::SupportType::NotSupported;
 	}
-	return IO::FileExporter::ST_NORMAL_STREAM;
+	return IO::FileExporter::SupportType::NormalStream;
 }
 
 Bool Exporter::SFVExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8Char *fileNameBuff)
@@ -51,7 +51,7 @@ Bool Exporter::SFVExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 		return false;
 	}
 	IO::FileCheck *fchk = (IO::FileCheck *)pobj;
-	if (fchk->GetCheckType() != IO::FileCheck::CT_CRC32)
+	if (fchk->GetCheckType() != IO::FileCheck::CheckType::CRC32)
 	{
 		return false;
 	}

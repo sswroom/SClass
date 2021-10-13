@@ -9,22 +9,22 @@ namespace Crypto
 		class X509File : public Net::ASN1Data
 		{
 		public:
-			enum FileType
+			enum class FileType
 			{
-				FT_CERT,
-				FT_KEY,
-				FT_CERT_REQ,
-				FT_PRIV_KEY,
-				FT_JKS
+				Cert,
+				Key,
+				CertRequest,
+				PrivateKey,
+				Jks
 			};
 
-			enum KeyType
+			enum class KeyType
 			{
-				KT_UNKNOWN,
-				KT_RSA,
-				KT_DSA,
-				KT_ECDSA,
-				KT_ED25519
+				Unknown,
+				RSA,
+				DSA,
+				ECDSA,
+				ED25519
 			};
 
 		protected:

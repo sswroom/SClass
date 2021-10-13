@@ -260,7 +260,7 @@ IO::SPackageFile::SPackageFile(const UTF8Char *fileName)
 	UInt64 flength;
 	UInt64 dirSize;
 	UTF8Char sbuff[512];
-	NEW_CLASS(this->stm, IO::FileStream(fileName, IO::FileStream::FILE_MODE_APPEND, IO::FileStream::FILE_SHARE_DENY_WRITE, IO::FileStream::BT_NO_WRITE_BUFFER));
+	NEW_CLASS(this->stm, IO::FileStream(fileName, IO::FileStream::FileMode::Append, IO::FileStream::FileShare::DenyWrite, IO::FileStream::BufferType::NoWriteBuffer));
 	this->toRelease = true;
 	this->customType = 0;
 	this->customSize = 0;
@@ -660,7 +660,7 @@ Bool IO::SPackageFile::OptimizeFile(const UTF8Char *newFile)
 	this->Commit();
 	IO::FileStream *fs;
 	IO::SPackageFile *spkg;
-	NEW_CLASS(fs, IO::FileStream(newFile, IO::FileStream::FILE_MODE_CREATE, IO::FileStream::FILE_SHARE_DENY_WRITE, IO::FileStream::BT_NO_WRITE_BUFFER));
+	NEW_CLASS(fs, IO::FileStream(newFile, IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyWrite, IO::FileStream::BufferType::NoWriteBuffer));
 	if (fs->IsError())
 	{
 		DEL_CLASS(fs);

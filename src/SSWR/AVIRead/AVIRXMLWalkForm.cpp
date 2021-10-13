@@ -51,7 +51,7 @@ void SSWR::AVIRead::AVIRXMLWalkForm::LoadFile(const UTF8Char *fileName)
 	{
 		mode = Text::XMLReader::PM_XML;
 	}
-	NEW_CLASS(fs, IO::FileStream(fileName, IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+	NEW_CLASS(fs, IO::FileStream(fileName, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	NEW_CLASS(reader, Text::XMLReader(this->core->GetEncFactory(), fs, mode));
 	while (reader->ReadNext())
 	{

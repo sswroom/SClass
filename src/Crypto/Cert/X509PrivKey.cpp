@@ -15,7 +15,7 @@ Crypto::Cert::X509PrivKey::~X509PrivKey()
 
 Crypto::Cert::X509File::FileType Crypto::Cert::X509PrivKey::GetFileType()
 {
-	return FT_PRIV_KEY;
+	return FileType::PrivateKey;
 }
 
 void Crypto::Cert::X509PrivKey::ToShortName(Text::StringBuilderUTF *sb)

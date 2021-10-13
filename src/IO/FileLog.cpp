@@ -122,7 +122,7 @@ IO::FileLog::FileLog(const UTF8Char *fileName, LogType style, LogGroup groupStyl
 	dt.SetCurrTime();
 	GetNewName(buff, &dt);
 
-	NEW_CLASS(fileStm, FileStream(buff, IO::FileStream::FILE_MODE_APPEND, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+	NEW_CLASS(fileStm, FileStream(buff, IO::FileStream::FileMode::Append, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	NEW_CLASS(log, Text::UTF8Writer(fileStm));
 	log->WriteSignature();
 }
@@ -203,7 +203,7 @@ void IO::FileLog::LogAdded(Data::DateTime *time, const UTF8Char *logMsg, LogLeve
 		DEL_CLASS(log);
 		DEL_CLASS(fileStm);
 
-		NEW_CLASS(fileStm, IO::FileStream(buff, IO::FileStream::FILE_MODE_APPEND, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+		NEW_CLASS(fileStm, IO::FileStream(buff, IO::FileStream::FileMode::Append, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		NEW_CLASS(log, Text::UTF8Writer(fileStm));
 		log->WriteSignature();
 

@@ -62,7 +62,7 @@ void Map::TileMapGenerator::AppendDBFile(IO::Writer *writer, Int32 x, Int32 y, U
 	}
 
 	GenFileName(sbuff2, x, y, scale, (const UTF8Char*)".db");
-	NEW_CLASS(sfs, IO::FileStream(sbuff2, IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+	NEW_CLASS(sfs, IO::FileStream(sbuff2, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (!sfs->IsError())
 	{
 		NEW_CLASS(reader, IO::StreamReader(sfs, 65001));
@@ -223,7 +223,7 @@ Bool Map::TileMapGenerator::GenerateTile(Int64 tileId, UInt32 scale, Map::MapSch
 	}
 	DEL_CLASS(mstm);
 
-	NEW_CLASS(dfs, IO::FileStream(sbuff2, IO::FileStream::FILE_MODE_CREATE, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+	NEW_CLASS(dfs, IO::FileStream(sbuff2, IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	dimg->SavePng(dfs);
 	geng->DeleteImage(dimg);
 	DEL_CLASS(dfs);

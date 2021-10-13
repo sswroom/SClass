@@ -74,7 +74,7 @@ WChar *Map::MapBar::MapBarRevGeo::SearchNameAdjusted(WChar *buff, Double adjLat,
 	}
 	DEL_CLASS(cli);
 	xmlBuff = mstm.GetBuff(&buffSize);
-	NEW_CLASS(fs, IO::FileStream(L"MapBarRevGeo.xml", IO::FileStream::FILE_MODE_CREATE, IO::FileStream::FILE_SHARE_DENY_NONE));
+	NEW_CLASS(fs, IO::FileStream(L"MapBarRevGeo.xml", IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone));
 	fs->Write(xmlBuff, buffSize);
 	DEL_CLASS(fs);
 

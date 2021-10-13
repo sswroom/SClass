@@ -3975,7 +3975,7 @@ Map::MapConfig2::MapConfig2(const UTF8Char *fileName, Media::DrawEngine *eng, Da
 	this->fonts = 0;
 	this->drawList = 0;
 
-	NEW_CLASS(fstm, IO::FileStream(fileName, IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+	NEW_CLASS(fstm, IO::FileStream(fileName, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (fstm->IsError())
 	{
 		this->bgColor = 0;

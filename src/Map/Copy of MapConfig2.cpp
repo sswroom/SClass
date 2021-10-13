@@ -2516,7 +2516,7 @@ Map::MapConfig2::MapConfig2(WChar *fileName, Media::DrawEngine *eng, Data::Array
 	this->drawEng = eng;
 	this->inited = false;
 
-	NEW_CLASS(fstm, IO::FileStream(fileName, IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE));
+	NEW_CLASS(fstm, IO::FileStream(fileName, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone));
 	if (fstm->IsError())
 	{
 		this->bgColor = 0;

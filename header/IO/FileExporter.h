@@ -9,28 +9,28 @@ namespace IO
 	class FileExporter
 	{
 	public:
-		typedef enum
+		enum class SupportType
 		{
-			ST_NOT_SUPPORTED = 0,
-			ST_NORMAL_STREAM = 1,
-			ST_MULTI_FILES = 2,
-			ST_PATH_ONLY = 3
-		} SupportType;
+			NotSupported,
+			NormalStream,
+			MultiFiles,
+			PathOnly
+		};
 
-		typedef enum
+		enum class ParamType
 		{
-			PT_INT32,
-			PT_STRINGUTF8,
-			PT_SELECTION,
-			PT_BOOL
-		} ParamType;
+			INT32,
+			STRINGUTF8,
+			SELECTION,
+			BOOL
+		};
 
-		typedef struct
+		struct ParamInfo
 		{
 			const UTF8Char *name;
 			ParamType paramType;
 			Bool allowNull;
-		} ParamInfo;
+		};
 	public:
 		virtual ~FileExporter(){};
 

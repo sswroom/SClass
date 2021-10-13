@@ -158,7 +158,7 @@ UOSInt Exporter::ExporterList::GetSupportedExporters(Data::ArrayList<IO::FileExp
 	while (i < j)
 	{
 		exporter = this->exporters->GetItem(i);
-		if (exporter->IsObjectSupported(obj))
+		if (exporter->IsObjectSupported(obj) != IO::FileExporter::SupportType::NotSupported)
 		{
 			exporters->Add(exporter);
 			cnt++;

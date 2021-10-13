@@ -294,7 +294,7 @@ Media::ImageList *Map::GoogleMap::GoogleTileMap::LoadTileImage(UOSInt level, Int
 	}
 	if (cli->GetRespStatus() == 304)
 	{
-		NEW_CLASS(fs, IO::FileStream(filePathU, IO::FileStream::FILE_MODE_APPEND, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+		NEW_CLASS(fs, IO::FileStream(filePathU, IO::FileStream::FileMode::Append, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		dt.SetCurrTimeUTC();
 		fs->SetFileTimes(&dt, 0, 0);
 		DEL_CLASS(fs);
@@ -319,7 +319,7 @@ Media::ImageList *Map::GoogleMap::GoogleTileMap::LoadTileImage(UOSInt level, Int
 			{
 				if (this->cacheDir)
 				{
-					NEW_CLASS(fs, IO::FileStream(filePathU, IO::FileStream::FILE_MODE_CREATE, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NO_WRITE_BUFFER));
+					NEW_CLASS(fs, IO::FileStream(filePathU, IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
 					fs->Write(imgBuff, (OSInt)contLeng);
 					if (cli->GetLastModified(&dt))
 					{
@@ -500,7 +500,7 @@ IO::IStreamData *Map::GoogleMap::GoogleTileMap::LoadTileImageData(UOSInt level, 
 	}
 	if (cli->GetRespStatus() == 304)
 	{
-		NEW_CLASS(fs, IO::FileStream(filePathU, IO::FileStream::FILE_MODE_APPEND, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+		NEW_CLASS(fs, IO::FileStream(filePathU, IO::FileStream::FileMode::Append, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		dt.SetCurrTimeUTC();
 		fs->SetFileTimes(&dt, 0, 0);
 		DEL_CLASS(fs);
@@ -525,7 +525,7 @@ IO::IStreamData *Map::GoogleMap::GoogleTileMap::LoadTileImageData(UOSInt level, 
 			{
 				if (this->cacheDir)
 				{
-					NEW_CLASS(fs, IO::FileStream(filePathU, IO::FileStream::FILE_MODE_CREATE, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NO_WRITE_BUFFER));
+					NEW_CLASS(fs, IO::FileStream(filePathU, IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
 					fs->Write(imgBuff, (OSInt)contLeng);
 					if (cli->GetLastModified(&dt))
 					{

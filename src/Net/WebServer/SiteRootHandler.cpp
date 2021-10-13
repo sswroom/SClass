@@ -40,7 +40,7 @@ Net::WebServer::SiteRootHandler::SiteRootHandler(const UTF8Char *faviconPath)
 	this->faviconBuff = 0;
 	this->faviconSize = 0;
 	IO::FileStream *fs;
-	NEW_CLASS(fs, IO::FileStream(faviconPath, IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+	NEW_CLASS(fs, IO::FileStream(faviconPath, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (!fs->IsError())
 	{
 		UInt64 leng = fs->GetLength();

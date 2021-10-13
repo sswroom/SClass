@@ -1521,7 +1521,7 @@ Bool IO::FileAnalyse::QTFileAnalyse::TrimPadding(const UTF8Char *outputFile)
 	Int64 readOfst;
 	Bool valid = true;
 	IO::FileStream *dfs;
-	NEW_CLASS(dfs, IO::FileStream(outputFile, IO::FileStream::FILE_MODE_CREATE, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+	NEW_CLASS(dfs, IO::FileStream(outputFile, IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (dfs->IsError())
 	{
 		DEL_CLASS(dfs);

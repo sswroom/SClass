@@ -17,16 +17,16 @@ IO::FileExporter::SupportType Exporter::GUIExporter::IsObjectSupported(IO::Parse
 {
 	Media::ImageList *imgList;
 	if (pobj == 0)
-		return IO::FileExporter::ST_NOT_SUPPORTED;
+		return IO::FileExporter::SupportType::NotSupported;
 	if (pobj->GetParserType() != IO::ParsedObject::PT_IMAGE_LIST_PARSER)
-		return IO::FileExporter::ST_NOT_SUPPORTED;
+		return IO::FileExporter::SupportType::NotSupported;
 	imgList = (Media::ImageList*)pobj;
 	if (imgList->GetCount() != 1)
-		return IO::FileExporter::ST_NOT_SUPPORTED;
+		return IO::FileExporter::SupportType::NotSupported;
 	Media::Image *img = imgList->GetImage(0, 0);
 	if (img->info->fourcc != 0)
-		return IO::FileExporter::ST_NOT_SUPPORTED;
-	return IO::FileExporter::ST_NORMAL_STREAM;
+		return IO::FileExporter::SupportType::NotSupported;
+	return IO::FileExporter::SupportType::NormalStream;
 }
 
 void *Exporter::GUIExporter::ToImage(IO::ParsedObject *pobj, UInt8 **relBuff)

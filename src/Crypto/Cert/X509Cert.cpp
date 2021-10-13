@@ -33,7 +33,7 @@ void Crypto::Cert::X509Cert::GetSubjectCN(Text::StringBuilderUTF *sb)
 
 Crypto::Cert::X509File::FileType Crypto::Cert::X509Cert::GetFileType()
 {
-	return FT_CERT;
+	return FileType::Cert;
 }
 
 void Crypto::Cert::X509Cert::ToShortName(Text::StringBuilderUTF *sb)

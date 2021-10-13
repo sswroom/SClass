@@ -609,7 +609,7 @@ UOSInt Crypto::Cert::X509File::KeyGetLeng(const UInt8 *pdu, const UInt8 *pduEnd,
 	Net::ASN1Util::ItemType itemType;
 	switch (keyType)
 	{
-	case KT_RSA:
+	case KeyType::RSA:
 		keyPDU = Net::ASN1Util::PDUGetItem(pdu, pduEnd, "1", &keyLen, &itemType);
 		if (keyPDU && itemType == Net::ASN1Util::IT_SEQUENCE)
 		{
@@ -627,10 +627,10 @@ UOSInt Crypto::Cert::X509File::KeyGetLeng(const UInt8 *pdu, const UInt8 *pduEnd,
 			}
 		}
 		return 0;
-	case KT_DSA:
-	case KT_ECDSA:
-	case KT_ED25519:
-	case KT_UNKNOWN:
+	case KeyType::DSA:
+	case KeyType::ECDSA:
+	case KeyType::ED25519:
+	case KeyType::Unknown:
 	default:
 		return 0;
 	}
@@ -640,9 +640,9 @@ Crypto::Cert::X509File::KeyType Crypto::Cert::X509File::KeyTypeFromOID(const UIn
 {
 	if (Net::ASN1Util::OIDEqualsText(oid, oidLen, "1.2.840.113549.1.1.1"))
 	{
-		return KT_RSA;
+		return KeyType::RSA;
 	}
-	return KT_UNKNOWN;
+	return KeyType::Unknown;
 }
 
 Crypto::Cert::X509File::X509File(const UTF8Char *sourceName, const UInt8 *buff, UOSInt buffSize) : Net::ASN1Data(sourceName, buff, buffSize)
@@ -669,15 +669,15 @@ const UTF8Char *Crypto::Cert::X509File::FileTypeGetName(FileType fileType)
 {
 	switch (fileType)
 	{
-	case FT_CERT:
+	case FileType::Cert:
 		return (const UTF8Char*)"Cert";
-	case FT_CERT_REQ:
+	case FileType::CertRequest:
 		return (const UTF8Char*)"CertReq";
-	case FT_KEY:
+	case FileType::Key:
 		return (const UTF8Char*)"Key";
-	case FT_PRIV_KEY:
+	case FileType::PrivateKey:
 		return (const UTF8Char*)"PrivateKey";
-	case FT_JKS:
+	case FileType::Jks:
 		return (const UTF8Char*)"JavaKeyStore";
 	default:
 		return (const UTF8Char*)"Unknown";
@@ -688,15 +688,15 @@ const UTF8Char *Crypto::Cert::X509File::KeyTypeGetName(KeyType keyType)
 {
 	switch (keyType)
 	{
-	case KT_RSA:
+	case KeyType::RSA:
 		return (const UTF8Char*)"RSA";
-	case KT_DSA:
+	case KeyType::DSA:
 		return (const UTF8Char*)"DSA";
-	case KT_ECDSA:
+	case KeyType::ECDSA:
 		return (const UTF8Char*)"ECDSA";
-	case KT_ED25519:
+	case KeyType::ED25519:
 		return (const UTF8Char*)"ED25519";
-	case KT_UNKNOWN:
+	case KeyType::Unknown:
 	default:
 		return (const UTF8Char*)"Unknown";
 	}
@@ -706,15 +706,15 @@ const Char *Crypto::Cert::X509File::KeyTypeGetOID(KeyType keyType)
 {
 	switch (keyType)
 	{
-	case KT_RSA:
+	case KeyType::RSA:
 		return "1.2.840.113549.1.1.1";
-	case KT_DSA:
+	case KeyType::DSA:
 		return "1.2.840.10040.4.1";
-	case KT_ECDSA:
+	case KeyType::ECDSA:
 		return "1.2.840.10045.2.1";
-	case KT_ED25519:
+	case KeyType::ED25519:
 		return "1.3.101.112";
-	case KT_UNKNOWN:
+	case KeyType::Unknown:
 	default:
 		return "1.2.840.113549.1.1.1";
 	}

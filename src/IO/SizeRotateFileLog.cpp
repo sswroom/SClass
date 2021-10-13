@@ -37,7 +37,7 @@ IO::SizeRotateFileLog::SizeRotateFileLog(const WChar *fileName, Int32 nFiles, In
 
 	NEW_CLASS(enc, Text::Encoding(65001));
 	Text::StrConcat(Text::StrConcat(buff, fileName), L"0.log");
-	NEW_CLASS(fileStm, IO::FileStream(buff, IO::FileStream::FILE_MODE_APPEND, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+	NEW_CLASS(fileStm, IO::FileStream(buff, IO::FileStream::FileMode::Append, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	NEW_CLASS(log, IO::StreamWriter(fileStm, enc));
 	log->WriteSignature();
 
@@ -116,7 +116,7 @@ void IO::SizeRotateFileLog::LogAdded(Data::DateTime *time, const WChar *logMsg, 
 		SwapFiles();
 		Text::StrConcat(Text::StrConcat(buff, fileName), L"0.log");
 
-		NEW_CLASS(fileStm, IO::FileStream(buff, IO::FileStream::FILE_MODE_APPEND, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+		NEW_CLASS(fileStm, IO::FileStream(buff, IO::FileStream::FileMode::Append, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		NEW_CLASS(log, IO::StreamWriter(fileStm, enc));
 		log->WriteSignature();
 

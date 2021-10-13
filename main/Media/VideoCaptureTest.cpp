@@ -42,7 +42,7 @@ void __stdcall CaptureTest(UInt32 frameTime, UInt32 frameNum, UInt8 **imgData, U
 		{
 			converter->ConvertV2(imgData, simg->data, info.dispWidth, info.dispHeight, info.storeWidth, info.storeHeight, (OSInt)info.storeWidth * 4, frameType, info.ycOfst);
 		}
-		NEW_CLASS(fs, IO::FileStream(fileName, IO::FileStream::FILE_MODE_CREATE, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+		NEW_CLASS(fs, IO::FileStream(fileName, IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		exporter.ExportFile(fs, fileName, imgList, 0);
 		DEL_CLASS(fs);
 		DEL_CLASS(imgList);

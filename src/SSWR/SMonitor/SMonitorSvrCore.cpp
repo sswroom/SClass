@@ -747,7 +747,7 @@ void SSWR::SMonitor::SMonitorSvrCore::SaveDatas()
 				sptr = dt.ToString(sptr, "yyyyMMdd");
 				sptr = Text::StrConcat(sptr, (const UTF8Char*)".rec");
 
-				NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FILE_MODE_APPEND, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+				NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FileMode::Append, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 				if (fs->IsError())
 				{
 					DEL_CLASS(fs);
@@ -813,7 +813,7 @@ void SSWR::SMonitor::SMonitorSvrCore::SavePhoto(Int64 cliId, Int64 photoTime, In
 	*sptr++ = IO::Path::PATH_SEPERATOR;
 	sptr = Text::StrInt64(sptr, photoTime);
 	sptr = Text::StrConcat(sptr, (const UTF8Char*)".jpg");
-	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FILE_MODE_CREATE, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	fs->Write(photoBuff, photoSize);
 	DEL_CLASS(fs);
 
@@ -1150,7 +1150,7 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(IO::Writer *writer, Media::Draw
 		Text::UTF8Reader *reader;
 		IO::Path::GetProcessFileName(sbuff);
 		IO::Path::AppendPath(sbuff, (const UTF8Char*)"UserAgent.txt");
-		NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+		NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		NEW_CLASS(reader, Text::UTF8Reader(fs));
 		this->uaLog->ReadLogs(reader);
 		DEL_CLASS(reader);
@@ -1158,7 +1158,7 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(IO::Writer *writer, Media::Draw
 
 		IO::Path::GetProcessFileName(sbuff);
 		IO::Path::AppendPath(sbuff, (const UTF8Char*)"Referer.txt");
-		NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+		NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		NEW_CLASS(reader, Text::UTF8Reader(fs));
 		this->refererLog->ReadLogs(reader);
 		DEL_CLASS(reader);
@@ -2095,7 +2095,7 @@ UOSInt SSWR::SMonitor::SMonitorSvrCore::DeviceQueryRec(Int64 cliId, Int64 startT
 		sptr = dt.ToString(sptr, "yyyyMMdd");
 		sptr = Text::StrConcat(sptr, (const UTF8Char*)".rec");
 
-		NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+		NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		if (!fs->IsError())
 		{
 			fileBuffSize = 0;
@@ -2578,7 +2578,7 @@ void SSWR::SMonitor::SMonitorSvrCore::UserAgentStore()
 		Text::UTF8Writer *writer;
 		IO::Path::GetProcessFileName(sbuff);
 		IO::Path::AppendPath(sbuff, (const UTF8Char*)"UserAgent.txt");
-		NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FILE_MODE_CREATE, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+		NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		NEW_CLASS(writer, Text::UTF8Writer(fs));
 		this->uaLog->WriteLogs(writer);
 		DEL_CLASS(writer);
@@ -2609,7 +2609,7 @@ void SSWR::SMonitor::SMonitorSvrCore::RefererStore()
 		Text::UTF8Writer *writer;
 		IO::Path::GetProcessFileName(sbuff);
 		IO::Path::AppendPath(sbuff, (const UTF8Char*)"Referer.txt");
-		NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FILE_MODE_CREATE, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+		NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		NEW_CLASS(writer, Text::UTF8Writer(fs));
 		this->refererLog->WriteLogs(writer);
 		DEL_CLASS(writer);

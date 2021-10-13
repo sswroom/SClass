@@ -1588,7 +1588,7 @@ Int32 SSWR::OrganMgr::OrganWebHandler::UserfileAdd(Int32 userId, Int32 spId, con
 				}
 
 				IO::FileStream *fs;
-				NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FILE_MODE_CREATE, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+				NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 				Bool succ = (fs->Write(fileCont, fileSize) == fileSize);
 				DEL_CLASS(fs);
 				if (succ)
@@ -1792,7 +1792,7 @@ Int32 SSWR::OrganMgr::OrganWebHandler::UserfileAdd(Int32 userId, Int32 spId, con
 					sptr = Text::StrConcat(sptr, &fileName[i]);
 				}
 				IO::FileStream *fs;
-				NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FILE_MODE_CREATE, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+				NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 				Bool succ = (fs->Write(fileCont, fileSize) == fileSize);
 				DEL_CLASS(fs);
 				if (succ)
@@ -1875,7 +1875,7 @@ Int32 SSWR::OrganMgr::OrganWebHandler::UserfileAdd(Int32 userId, Int32 spId, con
 						sptr = Text::StrConcat(sptr, (const UTF8Char*)"_");
 						sptr = Text::StrHexVal32(sptr, crcVal);
 						sptr = Text::StrConcat(sptr, (const UTF8Char*)".png");
-						NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FILE_MODE_CREATE, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NO_WRITE_BUFFER));
+						NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
 						graphImg->SavePng(fs);
 						DEL_CLASS(fs);
 						this->eng->DeleteImage(graphImg);
@@ -3561,7 +3561,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpecies(Net::WebServer::IWebR
 			Text::UTF8Reader *reader;
 			IO::FileStream *fs;
 			UTF8Char *sarr[4];
-			NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_SEQUENTIAL));
+			NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
 			NEW_CLASS(reader, Text::UTF8Reader(fs));
 			sb.ClearStr();
 			while (reader->ReadLine(&sb, 4096))
@@ -4645,7 +4645,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 					{
 						Bool found;
 						Text::StrConcat(u8ptr, (const UTF8Char*)"web.txt");
-						NEW_CLASS(fs, IO::FileStream(u8buff, IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_SEQUENTIAL));
+						NEW_CLASS(fs, IO::FileStream(u8buff, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
 						NEW_CLASS(reader, Text::UTF8Reader(fs));
 						sb.ClearStr();
 						found = false;
@@ -5013,7 +5013,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 					{
 						Bool found;
 						Text::StrConcat(u8ptr, (const UTF8Char*)"web.txt");
-						NEW_CLASS(fs, IO::FileStream(u8buff, IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_SEQUENTIAL));
+						NEW_CLASS(fs, IO::FileStream(u8buff, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
 						NEW_CLASS(reader, Text::UTF8Reader(fs));
 						sb.ClearStr();
 						found = false;
@@ -5157,7 +5157,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 
 				Text::StrConcat(Text::StrConcat(u8buff2, &fileName[4]), (const UTF8Char*)".");
 				Text::StrToUpper(u8buff2, u8buff2);
-				NEW_CLASS(fs, IO::FileStream(u8buff, IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_SEQUENTIAL));
+				NEW_CLASS(fs, IO::FileStream(u8buff, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
 				NEW_CLASS(reader, Text::UTF8Reader(fs));
 				sb.ClearStr();
 				found = false;
@@ -5393,7 +5393,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 					{
 						Bool found;
 						Text::StrConcat(u8ptr, (const UTF8Char*)"web.txt");
-						NEW_CLASS(fs, IO::FileStream(u8buff, IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_SEQUENTIAL));
+						NEW_CLASS(fs, IO::FileStream(u8buff, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
 						NEW_CLASS(reader, Text::UTF8Reader(fs));
 						sb.ClearStr();
 						found = false;
@@ -7400,7 +7400,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcBookView(Net::WebServer::IWeb
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 		sptr = Text::StrInt32(sptr, book->id);
 		sptr = Text::StrConcat(sptr, (const UTF8Char*)".pdf");
-		NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+		NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		UInt64 fileLen = fs->GetLength();
 		if (fileLen <= 16)
 		{
@@ -7955,7 +7955,7 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhoto(Net::WebServer::IWebRequest 
 					Text::StrConcat(Text::StrConcat(u8ptr, fileName), (const UTF8Char*)".jpg");
 				}
 
-				NEW_CLASS(fs, IO::FileStream(u8buff, IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+				NEW_CLASS(fs, IO::FileStream(u8buff, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 				if (fs->IsError())
 				{
 					DEL_CLASS(fs);
@@ -7989,7 +7989,7 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhoto(Net::WebServer::IWebRequest 
 			sb.Append(sp->dirName);
 			sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
 			sb.Append((const UTF8Char*)"setting.txt");
-			NEW_CLASS(fs, IO::FileStream(sb.ToString(), IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_SEQUENTIAL));
+			NEW_CLASS(fs, IO::FileStream(sb.ToString(), IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
 			if (!fs->IsError())
 			{
 				UTF8Char *sarr[3];
@@ -8172,7 +8172,7 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhoto(Net::WebServer::IWebRequest 
 
 						if (this->cacheDir && imgWidth == PREVIEW_SIZE && imgHeight == PREVIEW_SIZE && buffSize > 0)
 						{
-							NEW_CLASS(fs, IO::FileStream(u8buff, IO::FileStream::FILE_MODE_CREATE, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+							NEW_CLASS(fs, IO::FileStream(u8buff, IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 							fs->Write(buff, buffSize);
 							DEL_CLASS(fs);
 						}
@@ -8200,7 +8200,7 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhoto(Net::WebServer::IWebRequest 
 
 						if (this->cacheDir && imgWidth == PREVIEW_SIZE && imgHeight == PREVIEW_SIZE && buffSize > 0)
 						{
-							NEW_CLASS(fs, IO::FileStream(u8buff, IO::FileStream::FILE_MODE_CREATE, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+							NEW_CLASS(fs, IO::FileStream(u8buff, IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 							fs->Write(buff, buffSize);
 							DEL_CLASS(fs);
 						}
@@ -8279,7 +8279,7 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhotoId(Net::WebServer::IWebReques
 					return;
 				}
 			}
-			NEW_CLASS(fs, IO::FileStream(u8buff2, IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+			NEW_CLASS(fs, IO::FileStream(u8buff2, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 			UOSInt buffSize = (UOSInt)fs->GetLength();
 			if (fs->IsError() || buffSize == 0)
 			{
@@ -8499,7 +8499,7 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhotoId(Net::WebServer::IWebReques
 
 					if (this->cacheDir && imgWidth == PREVIEW_SIZE && imgHeight == PREVIEW_SIZE)
 					{
-						NEW_CLASS(fs, IO::FileStream(u8buff2, IO::FileStream::FILE_MODE_CREATE, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+						NEW_CLASS(fs, IO::FileStream(u8buff2, IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 						fs->Write(buff, buffSize);
 						DEL_CLASS(fs);
 						if (userFile->prevUpdated)
@@ -8531,7 +8531,7 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhotoId(Net::WebServer::IWebReques
 
 					if (this->cacheDir && imgWidth == PREVIEW_SIZE && imgHeight == PREVIEW_SIZE)
 					{
-						NEW_CLASS(fs, IO::FileStream(u8buff2, IO::FileStream::FILE_MODE_CREATE, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+						NEW_CLASS(fs, IO::FileStream(u8buff2, IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 						fs->Write(buff, buffSize);
 						DEL_CLASS(fs);
 						if (userFile->prevUpdated)
@@ -8591,7 +8591,7 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhotoWId(Net::WebServer::IWebReque
 
 			if (this->cacheDir && imgWidth == PREVIEW_SIZE && imgHeight == PREVIEW_SIZE && wfile->prevUpdated == 0)
 			{
-				NEW_CLASS(fs, IO::FileStream(u8buff2, IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+				NEW_CLASS(fs, IO::FileStream(u8buff2, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 				UOSInt buffSize = (UOSInt)fs->GetLength();
 				if (fs->IsError() || buffSize == 0)
 				{
@@ -8750,7 +8750,7 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhotoWId(Net::WebServer::IWebReque
 
 					if (this->cacheDir && imgWidth == PREVIEW_SIZE && imgHeight == PREVIEW_SIZE)
 					{
-						NEW_CLASS(fs, IO::FileStream(u8buff2, IO::FileStream::FILE_MODE_CREATE, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+						NEW_CLASS(fs, IO::FileStream(u8buff2, IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 						fs->Write(buff, buffSize);
 						DEL_CLASS(fs);
 						if (wfile->prevUpdated)

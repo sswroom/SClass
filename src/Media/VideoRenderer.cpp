@@ -125,7 +125,7 @@ void Media::VideoRenderer::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, Vid
 			imgList->AddImage(simg, 0);
 			Exporter::PNGExporter exporter;
 			IO::FileStream *fs;
-			NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FILE_MODE_CREATE, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+			NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 			exporter.ExportFile(fs, sbuff, imgList, 0);
 			DEL_CLASS(imgList);
 			DEL_CLASS(csconv);

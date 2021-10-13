@@ -66,7 +66,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		UOSInt j;
 		if (pinCapture->GetCaptureData(&times, &isHighs) > 0)
 		{
-			NEW_CLASS(fs, IO::FileStream((const UTF8Char*)"Capture.csv", IO::FileStream::FILE_MODE_CREATE, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+			NEW_CLASS(fs, IO::FileStream((const UTF8Char*)"Capture.csv", IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 			NEW_CLASS(writer, IO::StreamWriter(fs, 65001));
 			writer->WriteLine((const UTF8Char*)"Time, State");
 			i = 0;

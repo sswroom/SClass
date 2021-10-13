@@ -120,7 +120,7 @@ void SSWR::AVIRead::AVIRSSLCertKeyForm::LoadFile(const UTF8Char *fileName)
 		return;
 	}
 	Crypto::Cert::X509File *x509 = (Crypto::Cert::X509File*)asn1;
-	if (x509->GetFileType() == Crypto::Cert::X509File::FT_CERT)
+	if (x509->GetFileType() == Crypto::Cert::X509File::FileType::Cert)
 	{
 		SDEL_CLASS(this->cert);
 		this->cert = x509;
@@ -130,7 +130,7 @@ void SSWR::AVIRead::AVIRSSLCertKeyForm::LoadFile(const UTF8Char *fileName)
 		this->lblFileCert->SetText(sb.ToString());
 		this->tcMain->SetSelectedPage(this->tpFile);
 	}
-	else if (x509->GetFileType() == Crypto::Cert::X509File::FT_PRIV_KEY || x509->GetFileType() == Crypto::Cert::X509File::FT_KEY)
+	else if (x509->GetFileType() == Crypto::Cert::X509File::FileType::PrivateKey || x509->GetFileType() == Crypto::Cert::X509File::FileType::Key)
 	{
 		SDEL_CLASS(this->key);
 		this->key = x509;

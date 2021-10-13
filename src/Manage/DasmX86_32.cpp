@@ -868,7 +868,7 @@ Int32 __stdcall DasmX86_32_GetFuncStack(Manage::DasmX86_32::DasmX86_32_Sess* ses
 #ifdef _CONSOLE
 			IO::ConsoleWriter console;
 #else
-			IO::FileStream fs((const UTF8Char*)"ErrorMsg.txt", IO::FileStream::FILE_MODE_APPEND, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL);
+			IO::FileStream fs((const UTF8Char*)"ErrorMsg.txt", IO::FileStream::FileMode::Append, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 			Text::UTF8Writer console(&fs);
 #endif
 			UInt8 *buff;

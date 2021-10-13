@@ -186,7 +186,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			{
 				ProgressHandler *progress;
 				NEW_CLASS(progress, ProgressHandler());
-				IO::FileCheck *fileChk = IO::FileCheck::CreateCheck(cmdLines[1], IO::FileCheck::CT_CRC32, progress, false);
+				IO::FileCheck *fileChk = IO::FileCheck::CreateCheck(cmdLines[1], IO::FileCheck::CheckType::CRC32, progress, false);
 				DEL_CLASS(progress);
 				console->WriteLine();
 				if (fileChk)
@@ -196,7 +196,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 					Exporter::SFVExporter exporter;
 					sb.Append(cmdLines[1]);
 					sb.Append((const UTF8Char*)".sfv");
-					NEW_CLASS(fs, IO::FileStream(sb.ToString(), IO::FileStream::FILE_MODE_CREATE, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+					NEW_CLASS(fs, IO::FileStream(sb.ToString(), IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 					exporter.ExportFile(fs, sb.ToString(), fileChk, 0);
 					DEL_CLASS(fs);
 					DEL_CLASS(fileChk);

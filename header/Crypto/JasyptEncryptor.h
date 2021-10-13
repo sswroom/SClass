@@ -10,21 +10,21 @@ namespace Crypto
 	class JasyptEncryptor
 	{
 	public:
-		typedef enum
+		enum KeyAlgorithm
 		{
 			KA_PBEWITHHMACSHA512,
 
 			KA_FIRST = KA_PBEWITHHMACSHA512,
 			KA_LAST = KA_PBEWITHHMACSHA512
-		} KeyAlgorithm;
+		};
 
-		typedef enum
+		enum CipherAlgorithm
 		{
 			CA_AES256,
 
 			CA_FIRST = CA_AES256,
 			CA_LAST = CA_AES256
-		} CipherAlgorithm;
+		};
 
 	private:
 		KeyAlgorithm keyAlgorithmn;

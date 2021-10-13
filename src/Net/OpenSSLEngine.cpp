@@ -247,7 +247,7 @@ Bool Net::OpenSSLEngine::SetServerCertsASN1(Crypto::Cert::X509File *certASN1, Cr
 		return false;
 	}
 	
-	if (certASN1 != 0 && certASN1->GetFileType() == Crypto::Cert::X509File::FT_CERT && keyASN1 != 0 && keyASN1->GetFileType() == Crypto::Cert::X509File::FT_PRIV_KEY)
+	if (certASN1 != 0 && certASN1->GetFileType() == Crypto::Cert::X509File::FileType::Cert && keyASN1 != 0 && keyASN1->GetFileType() == Crypto::Cert::X509File::FileType::PrivateKey)
 	{
 		SSL_CTX_set_ecdh_auto(this->clsData->ctx, 1);
 		if (SSL_CTX_use_certificate_ASN1(this->clsData->ctx, (int)certASN1->GetASN1BuffSize(), certASN1->GetASN1Buff()) <= 0)
@@ -260,7 +260,7 @@ Bool Net::OpenSSLEngine::SetServerCertsASN1(Crypto::Cert::X509File *certASN1, Cr
 		}
 		return true;
 	}
-	else if (certASN1 != 0 && certASN1->GetFileType() == Crypto::Cert::X509File::FT_CERT && keyASN1 != 0 && keyASN1->GetFileType() == Crypto::Cert::X509File::FT_KEY)
+	else if (certASN1 != 0 && certASN1->GetFileType() == Crypto::Cert::X509File::FileType::Cert && keyASN1 != 0 && keyASN1->GetFileType() == Crypto::Cert::X509File::FileType::Key)
 	{
 		SSL_CTX_set_ecdh_auto(this->clsData->ctx, 1);
 		if (SSL_CTX_use_certificate_ASN1(this->clsData->ctx, (int)certASN1->GetASN1BuffSize(), certASN1->GetASN1Buff()) <= 0)

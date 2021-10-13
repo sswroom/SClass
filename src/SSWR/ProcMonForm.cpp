@@ -98,7 +98,7 @@ void SSWR::ProcMonForm::LoadProgList()
 
 	IO::Path::GetProcessFileName(sbuff);
 	IO::Path::ReplaceExt(sbuff, (const UTF8Char*)"prg");
-	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_ALL, IO::FileStream::BT_NORMAL));
+	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyAll, IO::FileStream::BufferType::Normal));
 	if (!fs->IsError())
 	{
 		NEW_CLASS(reader, IO::StreamReader(fs, 65001));
@@ -137,7 +137,7 @@ void SSWR::ProcMonForm::SaveProgList()
 
 	IO::Path::GetProcessFileName(sbuff);
 	IO::Path::ReplaceExt(sbuff, (const UTF8Char*)"prg");
-	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FILE_MODE_CREATE, IO::FileStream::FILE_SHARE_DENY_ALL, IO::FileStream::BT_NO_WRITE_BUFFER));
+	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyAll, IO::FileStream::BufferType::NoWriteBuffer));
 	NEW_CLASS(writer, Text::UTF8Writer(fs));
 	i = 0;
 	j = this->progList->GetCount();

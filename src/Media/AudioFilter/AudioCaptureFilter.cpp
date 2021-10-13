@@ -134,7 +134,7 @@ Bool Media::AudioFilter::AudioCaptureFilter::StartCapture(const UTF8Char *fileNa
 	WriteUInt16(&buff[70], format.bitpersample);
 	WriteUInt16(&buff[72], (UInt16)format.extraSize);
 	Sync::MutexUsage mutUsage(this->writeMut);
-	NEW_CLASS(this->waveStm, IO::FileStream(fileName, IO::FileStream::FILE_MODE_CREATE, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+	NEW_CLASS(this->waveStm, IO::FileStream(fileName, IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	this->waveStm->Write(buff, 74);
 	if (format.extraSize > 0)
 	{

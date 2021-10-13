@@ -41,7 +41,7 @@ Net::HTTPMyClient::HTTPMyClient(Net::SocketFactory *sockf, Net::SSLEngine *ssl, 
 	}
 #if defined(LOGREPLY)
 	this->clsData = MemAlloc(ClassData, 1);
-	NEW_CLASS(this->clsData->fs, IO::FileStream((const UTF8Char*)"HTTPClientData.dat", IO::FileStream::FILE_MODE_CREATE, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+	NEW_CLASS(this->clsData->fs, IO::FileStream((const UTF8Char*)"HTTPClientData.dat", IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 #endif
 	this->ssl = ssl;
 	this->cli = 0;

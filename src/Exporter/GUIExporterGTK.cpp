@@ -18,21 +18,21 @@ IO::FileExporter::SupportType Exporter::GUIExporter::IsObjectSupported(IO::Parse
 {
 	Media::ImageList *imgList;
 	if (pobj == 0)
-		return IO::FileExporter::ST_NOT_SUPPORTED;
+		return IO::FileExporter::SupportType::NotSupported;
 	if (pobj->GetParserType() != IO::ParsedObject::PT_IMAGE_LIST_PARSER)
-		return IO::FileExporter::ST_NOT_SUPPORTED;
+		return IO::FileExporter::SupportType::NotSupported;
 	imgList = (Media::ImageList*)pobj;
 	if (imgList->GetCount() != 1)
-		return IO::FileExporter::ST_NOT_SUPPORTED;
+		return IO::FileExporter::SupportType::NotSupported;
 	Media::Image *img = imgList->GetImage(0, 0);
 	if (img->info->fourcc != 0)
-		return IO::FileExporter::ST_NOT_SUPPORTED;
+		return IO::FileExporter::SupportType::NotSupported;
 	switch (img->info->pf)
 	{
 	case Media::PF_B8G8R8A8:
-		return IO::FileExporter::ST_NORMAL_STREAM;
+		return IO::FileExporter::SupportType::NormalStream;
 	case Media::PF_B8G8R8:
-		return IO::FileExporter::ST_NORMAL_STREAM;
+		return IO::FileExporter::SupportType::NormalStream;
 	case Media::PF_R8G8B8:
 	case Media::PF_R8G8B8A8:
 	case Media::PF_PAL_1:
@@ -62,7 +62,7 @@ IO::FileExporter::SupportType Exporter::GUIExporter::IsObjectSupported(IO::Parse
 	case Media::PF_B8G8R8A1:
 	case Media::PF_UNKNOWN:
 	default:
-		return IO::FileExporter::ST_NOT_SUPPORTED;
+		return IO::FileExporter::SupportType::NotSupported;
 	}
 }
 

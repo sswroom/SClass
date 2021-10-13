@@ -48,7 +48,7 @@ IO::ParsedObject *Parser::FileParser::SFVParser::ParseFile(IO::IStreamData *fd, 
 	i = Text::StrLastIndexOf(u8buff, '.');
 	if (i != INVALID_INDEX && Text::StrEqualsICase(&u8buff[i], (const UTF8Char*)".SFV"))
 	{
-		ctype = IO::FileCheck::CT_CRC32;
+		ctype = IO::FileCheck::CheckType::CRC32;
 		chkSize = 4;
 	}
 	else

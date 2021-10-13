@@ -2670,7 +2670,7 @@ Bool Text::Cpp::CppCodeParser::ParseFile(const UTF8Char *fileName, Data::ArrayLi
 		fs = 0;
 	}
 
-	NEW_CLASS(fs, IO::FileStream(fileName, IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_SEQUENTIAL));
+	NEW_CLASS(fs, IO::FileStream(fileName, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
 	if (fs->IsError())
 	{
 		Text::Cpp::CppParseStatus::FileParseStatus *fileStatus = status->GetFileStatus();

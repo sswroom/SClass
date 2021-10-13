@@ -129,7 +129,7 @@ void IO::MTFileLog::WriteArr(const UTF8Char **msgArr, Int64 *dateArr, UOSInt arr
 			DEL_CLASS(log);
 			DEL_CLASS(fileStm);
 
-			NEW_CLASS(fileStm, FileStream(buff, FileStream::FILE_MODE_APPEND, FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+			NEW_CLASS(fileStm, FileStream(buff, FileStream::FileMode::Append, FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 			NEW_CLASS(log, Text::UTF8Writer(fileStm));
 			log->WriteSignature();
 
@@ -248,7 +248,7 @@ IO::MTFileLog::MTFileLog(const UTF8Char *fileName, LogType style, LogGroup group
 	dt.SetCurrTime();
 	GetNewName(buff, &dt);
 
-	NEW_CLASS(fileStm, FileStream(buff, FileStream::FILE_MODE_APPEND, FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+	NEW_CLASS(fileStm, FileStream(buff, FileStream::FileMode::Append, FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	NEW_CLASS(log, Text::UTF8Writer(fileStm));
 	log->WriteSignature();
 	Sync::Thread::Create(FileThread, this, 0x20000);

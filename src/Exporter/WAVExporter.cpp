@@ -23,17 +23,17 @@ IO::FileExporter::SupportType Exporter::WAVExporter::IsObjectSupported(IO::Parse
 {
 	if (pobj->GetParserType() != IO::ParsedObject::PT_VIDEO_PARSER)
 	{
-		return IO::FileExporter::ST_NOT_SUPPORTED;
+		return IO::FileExporter::SupportType::NotSupported;
 	}
 	Media::MediaFile *file = (Media::MediaFile *)pobj;
 	if (file->GetStream(1, 0) != 0)
-		return IO::FileExporter::ST_NOT_SUPPORTED;
+		return IO::FileExporter::SupportType::NotSupported;
 	Media::IMediaSource *stm = file->GetStream(0, 0);
 	if (stm == 0)
-		return IO::FileExporter::ST_NOT_SUPPORTED;
+		return IO::FileExporter::SupportType::NotSupported;
 	if (stm->GetMediaType() != Media::MEDIA_TYPE_AUDIO)
-		return IO::FileExporter::ST_NOT_SUPPORTED;
-	return IO::FileExporter::ST_NORMAL_STREAM;
+		return IO::FileExporter::SupportType::NotSupported;
+	return IO::FileExporter::SupportType::NormalStream;
 }
 
 Bool Exporter::WAVExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8Char *fileNameBuff)

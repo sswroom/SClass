@@ -23,14 +23,14 @@ IO::FileExporter::SupportType Exporter::SHA1Exporter::IsObjectSupported(IO::Pars
 {
 	if (pobj->GetParserType() != IO::ParsedObject::PT_FILE_CHECK)
 	{
-		return IO::FileExporter::ST_NOT_SUPPORTED;
+		return IO::FileExporter::SupportType::NotSupported;
 	}
 	IO::FileCheck *fchk = (IO::FileCheck *)pobj;
-	if (fchk->GetCheckType() != IO::FileCheck::CT_SHA1)
+	if (fchk->GetCheckType() != IO::FileCheck::CheckType::SHA1)
 	{
-		return IO::FileExporter::ST_NOT_SUPPORTED;
+		return IO::FileExporter::SupportType::NotSupported;
 	}
-	return IO::FileExporter::ST_NORMAL_STREAM;
+	return IO::FileExporter::SupportType::NormalStream;
 }
 
 Bool Exporter::SHA1Exporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8Char *fileNameBuff)
@@ -56,7 +56,7 @@ Bool Exporter::SHA1Exporter::ExportFile(IO::SeekableStream *stm, const UTF8Char 
 		return false;
 	}
 	IO::FileCheck *fchk = (IO::FileCheck *)pobj;
-	if (fchk->GetCheckType() != IO::FileCheck::CT_SHA1)
+	if (fchk->GetCheckType() != IO::FileCheck::CheckType::SHA1)
 	{
 		return false;
 	}

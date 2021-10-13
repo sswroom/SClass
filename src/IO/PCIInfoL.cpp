@@ -51,7 +51,7 @@ UInt16 PCIInfo_ReadI16(const UTF8Char *fileName)
 	UInt8 buff[33];
 	UOSInt readSize;
 	IO::FileStream *fs;
-	NEW_CLASS(fs, IO::FileStream(fileName, IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+	NEW_CLASS(fs, IO::FileStream(fileName, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	readSize = fs->Read(buff, 32);
 	buff[readSize] = 0;
 	while (readSize > 0)

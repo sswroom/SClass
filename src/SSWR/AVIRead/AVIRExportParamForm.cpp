@@ -19,7 +19,7 @@ void __stdcall SSWR::AVIRead::AVIRExportParamForm::OnOKClicked(void *userObj)
 	{
 		me->exporter->GetParamInfo(i, &pi);
 
-		if (pi.paramType == IO::FileExporter::PT_INT32)
+		if (pi.paramType == IO::FileExporter::ParamType::INT32)
 		{
 			me->ctrls[i]->GetText(sbuff);
 			val = Text::StrToInt32(sbuff);
@@ -30,10 +30,10 @@ void __stdcall SSWR::AVIRead::AVIRExportParamForm::OnOKClicked(void *userObj)
 				return;
 			}
 		}
-		else if (pi.paramType == ::IO::FileExporter::PT_STRINGUTF8)
+		else if (pi.paramType == ::IO::FileExporter::ParamType::STRINGUTF8)
 		{
 		}
-		else if (pi.paramType == ::IO::FileExporter::PT_SELECTION)
+		else if (pi.paramType == ::IO::FileExporter::ParamType::SELECTION)
 		{
 			j = ((UI::GUIComboBox *)me->ctrls[i])->GetSelectedIndex();
 			if (!me->exporter->SetParamSel(me->param, i, j))
@@ -80,7 +80,7 @@ SSWR::AVIRead::AVIRExportParamForm::AVIRExportParamForm(UI::GUIClientControl *pa
 		lbl->SetRect(20, (Int32)i * 24, 120, 23, false);
 		//lbl->TextAlign = System::Drawing::ContentAlignment::MiddleLeft;
 
-		if (pi.paramType == ::IO::FileExporter::PT_INT32)
+		if (pi.paramType == ::IO::FileExporter::ParamType::INT32)
 		{
 			UI::GUITextBox *txt;
 			Text::StrInt32(sbuff, this->exporter->GetParamInt32(this->param, i));
@@ -88,10 +88,10 @@ SSWR::AVIRead::AVIRExportParamForm::AVIRExportParamForm(UI::GUIClientControl *pa
 			txt->SetRect(140, (Int32)i * 24, 120, 23, false);
 			this->ctrls[i] = txt;
 		}
-		else if (pi.paramType == ::IO::FileExporter::PT_STRINGUTF8)
+		else if (pi.paramType == ::IO::FileExporter::ParamType::STRINGUTF8)
 		{
 		}
-		else if (pi.paramType == ::IO::FileExporter::PT_SELECTION)
+		else if (pi.paramType == ::IO::FileExporter::ParamType::SELECTION)
 		{
 			UI::GUIComboBox *cbo;
 			NEW_CLASS(cbo, UI::GUIComboBox(ui, this, false));

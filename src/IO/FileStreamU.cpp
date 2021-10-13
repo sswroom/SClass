@@ -44,44 +44,44 @@ IO::FileStream::FileStream(const UTF8Char *fileName, FileMode mode, FileShare sh
 	this->handle = clsData;
 	clsData->fileName = Text::StrCopyNew(fileName);
 
-	if (mode == FileStream::FILE_MODE_CREATE)
+	if (mode == FileMode::Create)
 	{
 		flags |= O_CREAT|O_RDWR|O_TRUNC;
 	}
-	else if (mode == FileStream::FILE_MODE_CREATEWRITE)
+	else if (mode == FileMode::CreateWrite)
 	{
 		flags |= O_CREAT|O_WRONLY;
 	}
-	else if (mode == FileStream::FILE_MODE_APPEND)
+	else if (mode == FileMode::Append)
 	{
 		flags |= O_CREAT|O_RDWR;
 	}
-	else if (mode == FileStream::FILE_MODE_READONLY)
+	else if (mode == FileMode::ReadOnly)
 	{
 		flags |= O_RDONLY;
 	}
-	else if (mode == FileStream::FILE_MODE_READWRITEEXISTING)
+	else if (mode == FileMode::ReadWriteExisting)
 	{
 		flags |= O_RDWR;
 	}
-	else if (mode == FileStream::FILE_MODE_DEVICE)
+	else if (mode == FileMode::Device)
 	{
 		flags |= O_RDWR;
 	}
 
 	switch (buffType)
 	{
-	case BT_NO_WRITE_BUFFER:
+	case BufferType::NoWriteBuffer:
 #if defined(__FreeBSD__)
 		flags |= O_SYNC;
 #else
 		flags |= O_DSYNC;
 #endif
 		break;
-	case BT_RANDOM_ACCESS:
-	case BT_NORMAL:
-	case BT_SEQUENTIAL:
-	case BT_NO_BUFFER:
+	case BufferType::RandomAccess:
+	case BufferType::Normal:
+	case BufferType::Sequential:
+	case BufferType::NoBuffer:
 	default:
 		break;
 	}
@@ -95,7 +95,7 @@ IO::FileStream::FileStream(const UTF8Char *fileName, FileMode mode, FileShare sh
 	{
 		clsData->hand = 0;
 	}
-	if (mode == FileStream::FILE_MODE_APPEND && clsData->hand > 0)
+	if (mode == FileMode::Append && clsData->hand > 0)
 	{
 		this->SeekFromEnd(0);
 	}

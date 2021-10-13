@@ -472,7 +472,7 @@ void SSWR::DownloadMonitor::DownMonMainForm::LoadList()
 	UTF8Char sbuff[32];
 	UTF8Char *sarr[2];
 	UOSInt i;
-	NEW_CLASS(fs, IO::FileStream(this->core->GetListFile(), IO::FileStream::FILE_MODE_READONLY, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+	NEW_CLASS(fs, IO::FileStream(this->core->GetListFile(), IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	NEW_CLASS(reader, Text::UTF8Reader(fs));
 	while (reader->ReadLine(&sb, 4096))
 	{
@@ -535,7 +535,7 @@ void SSWR::DownloadMonitor::DownMonMainForm::SaveList()
 	UOSInt i;
 	UOSInt j;
 
-	NEW_CLASS(fs, IO::FileStream(this->core->GetListFile(), IO::FileStream::FILE_MODE_CREATE, IO::FileStream::FILE_SHARE_DENY_NONE, IO::FileStream::BT_NORMAL));
+	NEW_CLASS(fs, IO::FileStream(this->core->GetListFile(), IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	NEW_CLASS(writer, Text::UTF8Writer(fs));
 	writer->WriteSignature();
 	i = 0;

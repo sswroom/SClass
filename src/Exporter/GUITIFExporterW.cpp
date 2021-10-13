@@ -115,7 +115,7 @@ Bool Exporter::GUITIFExporter::GetParamInfo(UOSInt index, ParamInfo *info)
 	if (index == 0)
 	{
 		info->name = (const UTF8Char *)"Compression";
-		info->paramType = IO::FileExporter::PT_BOOL;
+		info->paramType = IO::FileExporter::ParamType::BOOL;
 		info->allowNull = false;
 		return true;
 	}

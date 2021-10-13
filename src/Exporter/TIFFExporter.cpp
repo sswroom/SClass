@@ -149,54 +149,54 @@ Int32 Exporter::TIFFExporter::GetName()
 IO::FileExporter::SupportType Exporter::TIFFExporter::IsObjectSupported(IO::ParsedObject *pobj)
 {
 	if (pobj->GetParserType() != IO::ParsedObject::PT_IMAGE_LIST_PARSER)
-		return IO::FileExporter::ST_NOT_SUPPORTED;
+		return IO::FileExporter::SupportType::NotSupported;
 	Media::ImageList *imgList = (Media::ImageList*)pobj;
 	UInt32 imgTime;
 	if (imgList->GetCount() != 1)
-		return IO::FileExporter::ST_NOT_SUPPORTED;
+		return IO::FileExporter::SupportType::NotSupported;
 	Media::Image *img = imgList->GetImage(0, &imgTime);
 	if (img->info->fourcc == 0)
 	{
 		if (img->info->pf == Media::PF_PAL_W1)
-			return IO::FileExporter::ST_NORMAL_STREAM;
+			return IO::FileExporter::SupportType::NormalStream;
 		if (img->info->pf == Media::PF_PAL_W2)
-			return IO::FileExporter::ST_NORMAL_STREAM;
+			return IO::FileExporter::SupportType::NormalStream;
 		if (img->info->pf == Media::PF_PAL_W4)
-			return IO::FileExporter::ST_NORMAL_STREAM;
+			return IO::FileExporter::SupportType::NormalStream;
 		if (img->info->pf == Media::PF_PAL_1)
-			return IO::FileExporter::ST_NORMAL_STREAM;
+			return IO::FileExporter::SupportType::NormalStream;
 		if (img->info->pf == Media::PF_PAL_2)
-			return IO::FileExporter::ST_NORMAL_STREAM;
+			return IO::FileExporter::SupportType::NormalStream;
 		if (img->info->pf == Media::PF_PAL_4)
-			return IO::FileExporter::ST_NORMAL_STREAM;
+			return IO::FileExporter::SupportType::NormalStream;
 		if (img->info->pf == Media::PF_PAL_8)
-			return IO::FileExporter::ST_NORMAL_STREAM;
+			return IO::FileExporter::SupportType::NormalStream;
 		if (img->info->pf == Media::PF_B8G8R8A8)
-			return IO::FileExporter::ST_NORMAL_STREAM;
+			return IO::FileExporter::SupportType::NormalStream;
 		if (img->info->pf == Media::PF_B8G8R8)
-			return IO::FileExporter::ST_NORMAL_STREAM;
+			return IO::FileExporter::SupportType::NormalStream;
 		if (img->info->pf == Media::PF_W8A8)
-			return IO::FileExporter::ST_NORMAL_STREAM;
+			return IO::FileExporter::SupportType::NormalStream;
 		if (img->info->pf == Media::PF_PAL_W8)
-			return IO::FileExporter::ST_NORMAL_STREAM;
+			return IO::FileExporter::SupportType::NormalStream;
 		if (img->info->pf == Media::PF_LE_B16G16R16A16)
-			return IO::FileExporter::ST_NORMAL_STREAM;
+			return IO::FileExporter::SupportType::NormalStream;
 		if (img->info->pf == Media::PF_LE_B16G16R16)
-			return IO::FileExporter::ST_NORMAL_STREAM;
+			return IO::FileExporter::SupportType::NormalStream;
 		if (img->info->pf == Media::PF_LE_W16A16)
-			return IO::FileExporter::ST_NORMAL_STREAM;
+			return IO::FileExporter::SupportType::NormalStream;
 		if (img->info->pf == Media::PF_LE_W16)
-			return IO::FileExporter::ST_NORMAL_STREAM;
+			return IO::FileExporter::SupportType::NormalStream;
 		if (img->info->pf == Media::PF_LE_FB32G32R32A32)
-			return IO::FileExporter::ST_NORMAL_STREAM;
+			return IO::FileExporter::SupportType::NormalStream;
 		if (img->info->pf == Media::PF_LE_FB32G32R32)
-			return IO::FileExporter::ST_NORMAL_STREAM;
+			return IO::FileExporter::SupportType::NormalStream;
 		if (img->info->pf == Media::PF_LE_FW32A32)
-			return IO::FileExporter::ST_NORMAL_STREAM;
+			return IO::FileExporter::SupportType::NormalStream;
 		if (img->info->pf == Media::PF_LE_FW32)
-			return IO::FileExporter::ST_NORMAL_STREAM;
+			return IO::FileExporter::SupportType::NormalStream;
 	}
-	return IO::FileExporter::ST_NOT_SUPPORTED;
+	return IO::FileExporter::SupportType::NotSupported;
 }
 
 Bool Exporter::TIFFExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8Char *fileNameBuff)
