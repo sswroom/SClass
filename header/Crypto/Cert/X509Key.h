@@ -21,6 +21,15 @@ namespace Crypto
 			virtual void ToString(Text::StringBuilderUTF *sb);
 
 			KeyType GetKeyType();
+
+			const UInt8 *GetRSAModulus(UOSInt *size);
+			const UInt8 *GetRSAPublicExponent(UOSInt *size);
+			const UInt8 *GetRSAPrivateExponent(UOSInt *size);
+			const UInt8 *GetRSAPrime1(UOSInt *size);
+			const UInt8 *GetRSAPrime2(UOSInt *size);
+			const UInt8 *GetRSAExponent1(UOSInt *size);
+			const UInt8 *GetRSAExponent2(UOSInt *size);
+			const UInt8 *GetRSACoefficient(UOSInt *size);
 		};
 	}
 }

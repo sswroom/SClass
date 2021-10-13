@@ -9,6 +9,7 @@ namespace Net
 	private:
 		Net::ACMEConn *acme;
 		Bool keyReady;
+		Bool accReady;
 
 	public:
 		ACMEClient(Net::SocketFactory *sockf, const UTF8Char *serverHost, UInt16 port, const UTF8Char *keyFile);

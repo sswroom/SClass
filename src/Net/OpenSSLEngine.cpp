@@ -499,3 +499,58 @@ Crypto::Cert::X509Key *Net::OpenSSLEngine::GenerateRSAKey()
 	BN_free(bn);
 	return 0;
 }
+
+Bool Net::OpenSSLEngine::Signature(Crypto::Cert::X509Key *key, Crypto::Hash::HashType hashType, const UInt8 *payload, UOSInt payloadLen, UInt8 *signData, UOSInt *signLen)
+{
+	const EVP_MD *htype = 0;
+	if (hashType == Crypto::Hash::HT_SHA256)
+	{
+		htype = EVP_sha256();
+	}
+	else if (hashType == Crypto::Hash::HT_SHA384)
+	{
+		htype = EVP_sha384();
+	}
+	else if (hashType == Crypto::Hash::HT_SHA512)
+	{
+		htype = EVP_sha512();
+	}
+	else
+	{
+		return false;
+	}
+	const UInt8 *keyPtr = key->GetASN1Buff();
+	EVP_PKEY *pkey = d2i_PrivateKey(EVP_PKEY_RSA, 0, &keyPtr, (long)key->GetASN1BuffSize());
+	if (pkey == 0)
+	{
+		return false;
+	}
+	EVP_MD_CTX *emc = EVP_MD_CTX_create();
+    if (emc == 0)
+	{
+		EVP_PKEY_free(pkey);
+		return false;
+    }
+	unsigned int len;
+    if (!EVP_SignInit_ex(emc, htype, NULL))
+	{
+		EVP_MD_CTX_destroy(emc);
+		EVP_PKEY_free(pkey);
+		return false;
+    }
+    if (!EVP_SignUpdate(emc, payload, payloadLen))
+	{
+		EVP_MD_CTX_destroy(emc);
+		EVP_PKEY_free(pkey);
+		return false;
+    }
+    if (!EVP_SignFinal(emc, signData, &len, pkey)) {
+		EVP_MD_CTX_destroy(emc);
+		EVP_PKEY_free(pkey);
+		return false;
+    }
+    *signLen = len;
+	EVP_MD_CTX_destroy(emc);
+	EVP_PKEY_free(pkey);
+	return true;
+}

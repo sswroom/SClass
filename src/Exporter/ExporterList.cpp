@@ -25,6 +25,7 @@
 #include "Exporter/MDBExporter.h"
 #include "Exporter/MEVExporter.h"
 #include "Exporter/OruxMapExporter.h"
+#include "Exporter/PEMExporter.h"
 #include "Exporter/PLTExporter.h"
 #include "Exporter/PNGExporter.h"
 #include "Exporter/SFVExporter.h"
@@ -62,6 +63,8 @@ Exporter::ExporterList::ExporterList()
 	NEW_CLASS(exporter, Exporter::DocHTMLExporter());
 	this->exporters->Add(exporter);
 	NEW_CLASS(exporter, Exporter::ZIPExporter());
+	this->exporters->Add(exporter);
+	NEW_CLASS(exporter, Exporter::PEMExporter());
 	this->exporters->Add(exporter);
 
 	NEW_CLASS(exporter, Exporter::DBCSVExporter());

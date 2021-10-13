@@ -54,6 +54,22 @@ void Crypto::Cert::X509PrivKey::ToString(Text::StringBuilderUTF *sb)
 	}
 }
 
+Crypto::Cert::X509Key *Crypto::Cert::X509PrivKey::CreateKey()
+{
+	Net::ASN1Util::ItemType itemType;
+	UOSInt keyTypeLen;
+	UOSInt keyDataLen;
+	const UInt8 *keyTypeOID = Net::ASN1Util::PDUGetItem(this->buff, this->buff + this->buffSize, "1.2.1", &keyTypeLen, &itemType);
+	const UInt8 *keyData = Net::ASN1Util::PDUGetItem(this->buff, this->buff + this->buffSize, "1.3", &keyDataLen, &itemType);
+	if (keyTypeOID != 0 && keyData != 0)
+	{
+		Crypto::Cert::X509Key *key;
+		NEW_CLASS(key, Crypto::Cert::X509Key(this->GetSourceNameObj(), keyData, keyDataLen, KeyTypeFromOID(keyTypeOID, keyTypeLen)));
+		return key;
+	}
+	return 0;
+}
+
 Crypto::Cert::X509PrivKey *Crypto::Cert::X509PrivKey::CreateFromKeyBuff(KeyType keyType, const UInt8 *buff, UOSInt buffSize)
 {
 	Net::ASN1PDUBuilder keyPDU;

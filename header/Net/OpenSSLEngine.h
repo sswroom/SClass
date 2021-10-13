@@ -26,6 +26,7 @@ namespace Net
 		virtual Net::SSLClient *ClientInit(Socket *s, const UTF8Char *hostName, ErrorType *err);
 		virtual Bool GenerateCert(const UTF8Char *country, const UTF8Char *company, const UTF8Char *commonName, Crypto::Cert::X509File **certASN1, Crypto::Cert::X509File **keyASN1);
 		virtual Crypto::Cert::X509Key *GenerateRSAKey();
+		virtual Bool Signature(Crypto::Cert::X509Key *key, Crypto::Hash::HashType hashType, const UInt8 *payload, UOSInt payloadLen, UInt8 *signData, UOSInt *signLen);
 	};
 }
 #endif

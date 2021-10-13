@@ -6,7 +6,10 @@
 #include "Net/HTTPClient.h"
 #include "Parser/FileParser/X509Parser.h"
 #include "Text/JSON.h"
+#include "Text/TextBinEnc/Base64Enc.h"
 
+#include <openssl/ssl.h>
+#include <openssl/err.h>
 
 /*
 https://datatracker.ietf.org/doc/html/rfc8555
@@ -17,6 +20,91 @@ https://acme-staging-v02.api.letsencrypt.org/directory
 Production:
 https://acme-v02.api.letsencrypt.org/directory
 */
+
+const UTF8Char *Net::ACMEConn::JWK(Crypto::Cert::X509Key *key, Crypto::Token::JWSignature::Algorithm *alg)
+{
+	Text::TextBinEnc::Base64Enc b64;
+	switch (key->GetKeyType())
+	{
+	case Crypto::Cert::X509Key::KeyType::RSA:
+		{
+			UOSInt mSize;
+			UOSInt eSize;
+			const UInt8 *m = key->GetRSAModulus(&mSize);
+			const UInt8 *e = key->GetRSAPublicExponent(&eSize);
+			if (m == 0 || e == 0)
+			{
+				return 0;
+			}
+			Text::StringBuilderUTF8 sb;
+			sb.Append((const UTF8Char*)"{\"kty\":\"RSA\",\"n\":\"");
+			b64.EncodeBin(&sb, m, mSize);
+			sb.Append((const UTF8Char*)"\",\"e\":\"");
+			b64.EncodeBin(&sb, e, eSize);
+			sb.Append((const UTF8Char*)"\"}");
+			*alg = Crypto::Token::JWSignature::Algorithm::ES256;
+			return Text::StrCopyNew(sb.ToString());
+		}
+	case Crypto::Cert::X509Key::KeyType::ECDSA:
+		return 0;
+	case Crypto::Cert::X509Key::KeyType::DSA:
+	case Crypto::Cert::X509Key::KeyType::ED25519:
+	case Crypto::Cert::X509Key::KeyType::Unknown:
+	default:
+		return 0;
+	}
+}
+
+const UTF8Char *Net::ACMEConn::ProtectedJWK(const UTF8Char *nonce, const UTF8Char *url, Crypto::Cert::X509Key *key)
+{
+	Crypto::Token::JWSignature::Algorithm alg;
+	const UTF8Char *jwk = JWK(key, &alg);
+	if (jwk == 0)
+	{
+		return 0;
+	}
+	Text::StringBuilderUTF8 sb;
+	sb.Append((const UTF8Char*)"{\"alg\":\"");
+	sb.Append(Crypto::Token::JWSignature::AlgorithmGetName(alg));
+	sb.Append((const UTF8Char*)"\",\"nonce\":\"");
+	sb.Append(nonce);
+	sb.Append((const UTF8Char*)"\",\"url\":\"");
+	sb.Append(url);
+	sb.Append((const UTF8Char*)"\",\"jwk\":");
+	sb.Append(jwk);
+	sb.Append((const UTF8Char*)"}");
+	Text::StrDelNew(jwk);
+	return Text::StrCopyNew(sb.ToString());
+}
+
+const UTF8Char *Net::ACMEConn::EncodeJWS(const UTF8Char *protStr, const UTF8Char *data, Crypto::Cert::X509Key *key)
+{
+	return 0;
+}
+
+Net::HTTPClient *Net::ACMEConn::ACMEPost(const UTF8Char *url, const Char *data)
+{
+	if (this->nonce == 0)
+	{
+		return 0;
+	}
+	const UTF8Char *protStr;
+	protStr = ProtectedJWK(this->nonce, url, this->key);
+	if (protStr == 0)
+	{
+		return 0;
+	}
+	const UTF8Char *jws = EncodeJWS(protStr, (const UTF8Char*)data, this->key);
+	Text::StrDelNew(protStr);
+	if (jws == 0)
+	{
+		return 0;
+	}
+	UOSInt jwsLen = Text::StrCharCnt(jws);
+	Net::HTTPClient *cli = 0;
+	Text::StrDelNew(jws);
+	return cli;
+}
 
 Net::ACMEConn::ACMEConn(Net::SocketFactory *sockf, const UTF8Char *serverHost, UInt16 port)
 {
@@ -35,6 +123,7 @@ Net::ACMEConn::ACMEConn(Net::SocketFactory *sockf, const UTF8Char *serverHost, U
 	this->urlKeyChange = 0;
 	this->urlTermOfService = 0;
 	this->urlWebsite = 0;
+	this->nonce = 0;
 	Text::StringBuilderUTF8 sb;
 	sb.Append((const UTF8Char *)"https://");
 	sb.Append(serverHost);
@@ -129,6 +218,7 @@ Net::ACMEConn::~ACMEConn()
 	SDEL_TEXT(this->urlKeyChange);
 	SDEL_TEXT(this->urlTermOfService);
 	SDEL_TEXT(this->urlWebsite);
+	SDEL_TEXT(this->nonce);
 }
 
 Bool Net::ACMEConn::IsError()
@@ -152,6 +242,57 @@ const UTF8Char *Net::ACMEConn::GetTermOfService()
 const UTF8Char *Net::ACMEConn::GetWebsite()
 {
 	return this->urlWebsite;
+}
+
+Bool Net::ACMEConn::NewNonce()
+{
+	if (this->urlNewNonce == 0)
+	{
+		return false;
+	}
+	Net::HTTPClient *cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, this->urlNewNonce, "GET", true);
+	if (cli == 0)
+	{
+		return false;
+	}
+	Bool succ = false;
+	if (cli->GetRespStatus() == Net::WebStatus::SC_NO_CONTENT)
+	{
+		Text::StringBuilderUTF8 sb;
+		if (cli->GetRespHeader((const UTF8Char*)"Replay-Nonce", &sb))
+		{
+			SDEL_TEXT(this->nonce);
+			this->nonce = Text::StrCopyNew(sb.ToString());
+			succ = true;
+		}
+	}
+	DEL_CLASS(cli);
+	return succ;
+}
+
+Bool Net::ACMEConn::AccountNew()
+{
+	if (this->urlNewAccount == 0)
+	{
+		return false;
+	}
+	Net::HTTPClient *cli = this->ACMEPost(this->urlNewAccount, "{\"onlyReturnExisting\":true}");
+	if (cli == 0)
+	{
+		return false;
+	}
+
+	DEL_CLASS(cli);
+	return false;
+}
+
+Bool Net::ACMEConn::AccountRetr()
+{
+	if (this->urlNewAccount == 0)
+	{
+		return false;
+	}
+	return false;
 }
 
 Bool Net::ACMEConn::NewKey()

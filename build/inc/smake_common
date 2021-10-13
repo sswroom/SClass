@@ -1009,6 +1009,8 @@ Crypto/Hash/SHA512.h: ../../src/Crypto/Hash/SHA512.cpp
 @SHA512.o
 @SHA512_CPP.o
 Crypto/Hash/SuperFastHash.h:
+Crypto/Token/JWSignature.h: ../../src/Crypto/Token/JWSignature.cpp
+@JWSignature.o
 Crypto/Token/JWTHandler.h: ../../src/Crypto/Token/JWTHandler.cpp
 @JWTHandler.o
 Crypto/Token/JWTParam.h: ../../src/Crypto/Token/JWTHandler.cpp
@@ -3694,6 +3696,7 @@ SHA256_CPP.o: ../../src/Crypto/Hash/SHA256_CPP.cpp
 SHA384.o: ../../src/Crypto/Hash/SHA384.cpp
 SHA512.o: ../../src/Crypto/Hash/SHA512.cpp
 SHA512_CPP.o: ../../src/Crypto/Hash/SHA512_CPP.cpp
+JWSignature.o: ../../src/Crypto/Token/JWSignature.cpp
 JWTHandler.o: ../../src/Crypto/Token/JWTHandler.cpp
 JWTParam.o: ../../src/Crypto/Token/JWTParam.cpp
 ArrayListCmp.o: ../../src/Data/ArrayListCmp.cpp

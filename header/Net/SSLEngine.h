@@ -2,6 +2,7 @@
 #define _SM_NET_SSLENGINE
 #include "Crypto/Cert/X509File.h"
 #include "Crypto/Cert/X509Key.h"
+#include "Crypto/Hash/IHash.h"
 #include "Net/SSLClient.h"
 
 namespace Net
@@ -78,6 +79,7 @@ namespace Net
 		virtual Net::SSLClient *ClientInit(Socket *s, const UTF8Char *hostName, ErrorType *err) = 0;
 		virtual Bool GenerateCert(const UTF8Char *country, const UTF8Char *company, const UTF8Char *commonName, Crypto::Cert::X509File **certASN1, Crypto::Cert::X509File **keyASN1) = 0;
 		virtual Crypto::Cert::X509Key *GenerateRSAKey() = 0;
+		virtual Bool Signature(Crypto::Cert::X509Key *key, Crypto::Hash::HashType hashType, const UInt8 *payload, UOSInt payloadLen, UInt8 *signData, UOSInt *signLen) = 0;
 
 		Bool SetServerCerts(const UTF8Char *certFile, const UTF8Char *keyFile);
 		void ServerInit(Socket *s, ClientReadyHandler readyHdlr, void *userObj);

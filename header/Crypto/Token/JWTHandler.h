@@ -1,7 +1,9 @@
 #ifndef _SM_CRYPTO_TOKEN_JWTHANDLER
 #define _SM_CRYPTO_TOKEN_JWTHANDLER
+#include "Crypto/Token/JWSignature.h"
 #include "Crypto/Token/JWTParam.h"
 #include "Data/StringUTF8Map.h"
+#include "Net/SSLEngine.h"
 #include "Text/StringBuilderUTF8.h"
 
 namespace Crypto
@@ -10,34 +12,14 @@ namespace Crypto
 	{
 		class JWTHandler
 		{
-		public:
-			typedef enum
-			{
-				UNKNOWN,
-				HS256,
-				HS384,
-				HS512,
-				PS256,
-				PS384,
-				PS512,
-				RS256,
-				RS384,
-				RS512,
-				ES256,
-				ES256K,
-				ES384,
-				ES512,
-				EDDSA
-			} Algorithm;
-
 		private:
-			Algorithm alg;
+			Net::SSLEngine *ssl;
+			JWSignature::Algorithm alg;
 			UInt8 *privateKey;
 			UOSInt privateKeyLeng;
 
-		private:
-			JWTHandler(Algorithm alg, const UInt8 *privateKey, UOSInt privateKeyLeng);
 		public:
+			JWTHandler(Net::SSLEngine *ssl, JWSignature::Algorithm alg, const UInt8 *privateKey, UOSInt privateKeyLeng);
 			~JWTHandler();
 
 			Bool Generate(Text::StringBuilderUTF8 *sb, Data::StringUTF8Map<const UTF8Char*> *payload, JWTParam *param);
@@ -45,9 +27,7 @@ namespace Crypto
 
 			void FreeResult(Data::StringUTF8Map<const UTF8Char*> *result);
 
-			static JWTHandler *CreateHMAC(Algorithm alg, const UInt8 *key, UOSInt keyLeng);
-			static const UTF8Char *GetAlgorithmName(Algorithm alg);
-			static Algorithm GetAlgorithmByName(const UTF8Char *name);
+			static JWTHandler *CreateHMAC(Net::SSLEngine *ssl, JWSignature::Algorithm alg, const UInt8 *key, UOSInt keyLeng);
 		};
 	}
 }

@@ -6,14 +6,14 @@
 #include "Crypto/Hash/SHA384.h"
 #include "Crypto/Hash/SHA512.h"
 #include "Crypto/Token/JWTHandler.h"
-#include "Text/EnumFinder.h"
 #include "Text/JSON.h"
 #include "Text/JSONBuilder.h"
 #include "Text/MyString.h"
 #include "Text/TextBinEnc/Base64Enc.h"
 
-Crypto::Token::JWTHandler::JWTHandler(Algorithm alg, const UInt8 *privateKey, UOSInt privateKeyLeng)
+Crypto::Token::JWTHandler::JWTHandler(Net::SSLEngine *ssl, JWSignature::Algorithm alg, const UInt8 *privateKey, UOSInt privateKeyLeng)
 {
+	this->ssl = ssl;
 	this->alg = alg;
 	this->privateKey = MemAlloc(UInt8, privateKeyLeng);
 	this->privateKeyLeng = privateKeyLeng;
@@ -30,7 +30,7 @@ Bool Crypto::Token::JWTHandler::Generate(Text::StringBuilderUTF8 *sb, Data::Stri
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
 	sptr = Text::StrConcat(sbuff, (const UTF8Char*)"{\"alg\":\"");
-	sptr = Text::StrConcat(sptr, GetAlgorithmName(alg));
+	sptr = Text::StrConcat(sptr, JWSignature::AlgorithmGetName(alg));
 	sptr = Text::StrConcat(sptr, (const UTF8Char*)"\",\"typ\":\"JWT\"}");
 	Text::TextBinEnc::Base64Enc b64(Text::TextBinEnc::Base64Enc::CS_URL, true);
 	b64.EncodeBin(sb, sbuff, (UOSInt)(sptr - sbuff));
@@ -83,46 +83,13 @@ Bool Crypto::Token::JWTHandler::Generate(Text::StringBuilderUTF8 *sb, Data::Stri
 	}
 	DEL_CLASS(json);
 	b64.EncodeBin(sb, sbJson.ToString(), sbJson.GetLength());
-	Crypto::Hash::IHash *hash;
-	Crypto::Hash::IHash *ihash;
-	switch (alg)
+	Crypto::Token::JWSignature sign(this->ssl, this->alg, this->privateKey, this->privateKeyLeng);
+	if (!sign.CalcHash(sb->ToString(), sb->GetLength()))
 	{
-	case HS256:
-		NEW_CLASS(ihash, Crypto::Hash::SHA256());
-		NEW_CLASS(hash, Crypto::Hash::HMAC(ihash, this->privateKey, this->privateKeyLeng));
-		DEL_CLASS(ihash);
-		break;
-	case HS384:
-		NEW_CLASS(ihash, Crypto::Hash::SHA384());
-		NEW_CLASS(hash, Crypto::Hash::HMAC(ihash, this->privateKey, this->privateKeyLeng));
-		DEL_CLASS(ihash);
-		break;
-	case HS512:
-		NEW_CLASS(ihash, Crypto::Hash::SHA512());
-		NEW_CLASS(hash, Crypto::Hash::HMAC(ihash, this->privateKey, this->privateKeyLeng));
-		DEL_CLASS(ihash);
-		break;
-	case PS256:
-	case PS384:
-	case PS512:
-	case RS256:
-	case RS384:
-	case RS512:
-	case ES256:
-	case ES256K:
-	case ES384:
-	case ES512:
-	case EDDSA:
-	case UNKNOWN:
-	default:
 		return false;
 	}
-
-	hash->Calc(sb->ToString(), sb->GetLength());
-	hash->GetValue(sbuff);
 	sb->AppendChar('.', 1);
-	b64.EncodeBin(sb, sbuff, hash->GetResultSize());
-	DEL_CLASS(hash);
+	sign.GetHashB64(sb);
 	return true;
 }
 
@@ -147,7 +114,7 @@ Data::StringUTF8Map<const UTF8Char*> *Crypto::Token::JWTHandler::Parse(const UTF
 	headerSize = b64url.DecodeBin(token, i1, headerBuff);
 	payloadSize = b64url.DecodeBin(&token[i1 + 1], i2 - i1 - 1, payloadBuff);
 	Text::JSONBase *hdrJson = Text::JSONBase::ParseJSONStrLen(headerBuff, headerSize);
-	Algorithm tokenAlg = UNKNOWN;
+	JWSignature::Algorithm tokenAlg = JWSignature::Algorithm::Unknown;
 	if (hdrJson != 0)
 	{
 		if (hdrJson->GetJSType() == Text::JSONBase::JST_OBJECT)
@@ -155,7 +122,7 @@ Data::StringUTF8Map<const UTF8Char*> *Crypto::Token::JWTHandler::Parse(const UTF
 			Text::JSONBase *algJson = ((Text::JSONObject*)hdrJson)->GetObjectValue((const UTF8Char*)"alg");
 			if (algJson != 0 && algJson->GetJSType() == Text::JSONBase::JST_STRINGUTF8)
 			{
-				tokenAlg = GetAlgorithmByName(((Text::JSONStringUTF8*)algJson)->GetValue());
+				tokenAlg = JWSignature::AlgorithmGetByName(((Text::JSONStringUTF8*)algJson)->GetValue());
 			}
 
 		}
@@ -167,55 +134,21 @@ Data::StringUTF8Map<const UTF8Char*> *Crypto::Token::JWTHandler::Parse(const UTF
 		MemFree(payloadBuff);
 		return 0;
 	}
-	Crypto::Hash::IHash *hash;
-	Crypto::Hash::IHash *ihash;
-	switch (this->alg)
+	Crypto::Token::JWSignature sign(this->ssl, this->alg, this->privateKey, this->privateKeyLeng);
+	if (!sign.CalcHash(token, (UOSInt)i2))
 	{
-	case HS256:
-		NEW_CLASS(ihash, Crypto::Hash::SHA256());
-		NEW_CLASS(hash, Crypto::Hash::HMAC(ihash, this->privateKey, this->privateKeyLeng));
-		DEL_CLASS(ihash);
-		break;
-	case HS384:
-		NEW_CLASS(ihash, Crypto::Hash::SHA384());
-		NEW_CLASS(hash, Crypto::Hash::HMAC(ihash, this->privateKey, this->privateKeyLeng));
-		DEL_CLASS(ihash);
-		break;
-	case HS512:
-		NEW_CLASS(ihash, Crypto::Hash::SHA512());
-		NEW_CLASS(hash, Crypto::Hash::HMAC(ihash, this->privateKey, this->privateKeyLeng));
-		DEL_CLASS(ihash);
-		break;
-	case PS256:
-	case PS384:
-	case PS512:
-	case RS256:
-	case RS384:
-	case RS512:
-	case ES256:
-	case ES256K:
-	case ES384:
-	case ES512:
-	case EDDSA:
-	case UNKNOWN:
-	default:
 		MemFree(headerBuff);
 		MemFree(payloadBuff);
 		return 0;
 	}
-	UInt8 hashBuff[128];
 	Text::StringBuilderUTF8 sb;
-	hash->Calc(token, (UOSInt)i2);
-	hash->GetValue(hashBuff);
-	b64url.EncodeBin(&sb, hashBuff, hash->GetResultSize());
-	if (!sb.EqualsICase(&token[i2 + 1]))
+	sign.GetHashB64(&sb);
+	if (!sb.Equals(&token[i2 + 1]))
 	{
-		DEL_CLASS(hash);
 		MemFree(headerBuff);
 		MemFree(payloadBuff);
 		return 0;
 	}
-	DEL_CLASS(hash);
 
 	param->Clear();
 	Text::JSONBase *payloadJson = Text::JSONBase::ParseJSONStrLen(payloadBuff, payloadSize);
@@ -320,89 +253,4 @@ void Crypto::Token::JWTHandler::FreeResult(Data::StringUTF8Map<const UTF8Char*> 
 	Data::ArrayList<const UTF8Char*> *vals = result->GetValues();
 	LIST_FREE_FUNC(vals, Text::StrDelNew);
 	DEL_CLASS(result);
-}
-
-Crypto::Token::JWTHandler *Crypto::Token::JWTHandler::CreateHMAC(Algorithm alg, const UInt8 *key, UOSInt keyLeng)
-{
-	JWTHandler *jwt;
-	switch (alg)
-	{
-	case HS256:
-	case HS384:
-	case HS512:
-		NEW_CLASS(jwt, JWTHandler(alg, key, keyLeng));
-		return jwt;
-	case PS256:
-	case PS384:
-	case PS512:
-	case RS256:
-	case RS384:
-	case RS512:
-	case ES256:
-	case ES256K:
-	case ES384:
-	case ES512:
-	case EDDSA:
-	case UNKNOWN:
-	default:
-		return 0;
-	}
-}
-
-const UTF8Char *Crypto::Token::JWTHandler::GetAlgorithmName(Algorithm alg)
-{
-	switch (alg)
-	{
-	case HS256:
-		return (const UTF8Char*)"HS256";
-	case HS384:
-		return (const UTF8Char*)"HS384";
-	case HS512:
-		return (const UTF8Char*)"HS512";
-	case PS256:
-		return (const UTF8Char*)"PS256";
-	case PS384:
-		return (const UTF8Char*)"PS384";
-	case PS512:
-		return (const UTF8Char*)"PS512";
-	case RS256:
-		return (const UTF8Char*)"RS256";
-	case RS384:
-		return (const UTF8Char*)"RS384";
-	case RS512:
-		return (const UTF8Char*)"RS512";
-	case ES256:
-		return (const UTF8Char*)"ES256";
-	case ES256K:
-		return (const UTF8Char*)"ES256K";
-	case ES384:
-		return (const UTF8Char*)"ES384";
-	case ES512:
-		return (const UTF8Char*)"ES512";
-	case EDDSA:
-		return (const UTF8Char*)"EdDSA";
-	case UNKNOWN:
-	default:
-		return (const UTF8Char*)"UNK";
-	}
-}
-
-Crypto::Token::JWTHandler::Algorithm Crypto::Token::JWTHandler::GetAlgorithmByName(const UTF8Char *name)
-{
-	Text::EnumFinder<Algorithm> finder((const Char*)name, UNKNOWN);
-	finder.Entry("HS256", HS256);
-	finder.Entry("HS384", HS384);
-	finder.Entry("HS512", HS512);
-	finder.Entry("PS256", PS256);
-	finder.Entry("PS384", PS384);
-	finder.Entry("PS512", PS512);
-	finder.Entry("RS256", RS256);
-	finder.Entry("RS384", RS384);
-	finder.Entry("RS512", RS512);
-	finder.Entry("ES256", ES256);
-	finder.Entry("ES256K", ES256K);
-	finder.Entry("ES384", ES384);
-	finder.Entry("ES512", ES512);
-	finder.Entry("EdDSA", EDDSA);
-	return finder.GetResult();
 }

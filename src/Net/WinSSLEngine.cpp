@@ -13,7 +13,7 @@
 #include <sspi.h>
 #include <schnlsp.h>
 
-//#define VERBOSE
+#define VERBOSE
 #if defined(VERBOSE)
 #include <stdio.h>
 #endif
@@ -761,7 +761,19 @@ Bool WinSSLEngine_CryptImportPrivateKey(_Out_ HCRYPTKEY* phKey,
 		if (succ)
 		{
 			succ = CryptImportKey(hProv, (PUCHAR)ppks, cb, 0, CRYPT_EXPORTABLE, phKey);
+			if (!succ)
+			{
+#if defined(VERBOSE)
+				printf("SSL: Import Key failed: CryptImportKey\r\n");
+#endif
+			}
 			LocalFree(ppks);
+		}
+		else
+		{
+#if defined(VERBOSE)
+			printf("SSL: Import Key failed: CryptDecodeObjectEx\r\n");
+#endif
 		}
 
 /*		if (succ)
@@ -773,6 +785,12 @@ Bool WinSSLEngine_CryptImportPrivateKey(_Out_ HCRYPTKEY* phKey,
 				succ = TRUE;
 			}
 		}*/
+	}
+	else
+	{
+#if defined(VERBOSE)
+		printf("SSL: Import Key failed: GetKeyDecodeSize\r\n");
+#endif
 	}
 
 	return succ;
@@ -1137,4 +1155,110 @@ Crypto::Cert::X509Key *Net::WinSSLEngine::GenerateRSAKey()
 	CryptDestroyKey(hKey);
 	CryptReleaseContext(hProv, 0);
 	return key;
+}
+
+Bool Net::WinSSLEngine::Signature(Crypto::Cert::X509Key *key, Crypto::Hash::HashType hashType, const UInt8 *payload, UOSInt payloadLen, UInt8 *signData, UOSInt *signLen)
+{
+	if (key == 0)
+	{
+#if defined(VERBOSE)
+		printf("SSL: key is null\r\n");
+#endif
+		return false;
+	}
+	ALG_ID alg;
+	if (hashType == Crypto::Hash::HT_SHA256)
+	{
+		alg = ALG_CLASS_SIGNATURE | ALG_SID_SHA_256;
+	}
+	else if (hashType == Crypto::Hash::HT_SHA384)
+	{
+		alg = ALG_CLASS_SIGNATURE | ALG_SID_SHA_384;
+	}
+	else if (hashType == Crypto::Hash::HT_SHA512)
+	{
+		alg = ALG_CLASS_SIGNATURE | ALG_SID_SHA_512;
+	}
+	else
+	{
+#if defined(VERBOSE)
+		printf("SSL: hashType not supported\r\n");
+#endif
+		return false;
+	}
+	if (key->GetKeyType() == Crypto::Cert::X509Key::KeyType::RSA)
+	{
+		alg |= ALG_TYPE_RSA;
+	}
+	else
+	{
+#if defined(VERBOSE)
+		printf("SSL: key type not supported\r\n");
+#endif
+		return false;
+	}
+
+	const WChar *containerName = L"Signature";
+	HCRYPTKEY hKey;
+	HCRYPTPROV hProv;
+	if (!CryptAcquireContext(&hProv, containerName, NULL, PROV_RSA_FULL, CRYPT_MACHINE_KEYSET))
+	{
+		if (!CryptAcquireContext(&hProv, containerName, NULL, PROV_RSA_FULL, CRYPT_NEWKEYSET | CRYPT_MACHINE_KEYSET))
+		{
+#if defined(VERBOSE)
+			printf("SSL: CryptAcquireContext failed\r\n");
+#endif
+			return false;
+		}
+	}
+	Crypto::Cert::X509PrivKey *privKey = Crypto::Cert::X509PrivKey::CreateFromKey(key);
+	if (!WinSSLEngine_CryptImportPrivateKey(&hKey, hProv, privKey->GetASN1Buff(), (ULONG)privKey->GetASN1BuffSize()))
+	{
+#if defined(VERBOSE)
+		printf("SSL: Import Key failed\r\n");
+#endif
+		DEL_CLASS(privKey);
+		CryptReleaseContext(hProv, 0);
+		return false;
+	}
+	DEL_CLASS(privKey);
+	HCRYPTHASH hHash;
+	if (!CryptCreateHash(hProv, ALG_CLASS_SIGNATURE | ALG_TYPE_RSA | ALG_SID_SHA_256, hKey, 0, &hHash))
+	{
+		CryptReleaseContext(hProv, 0);
+		CryptDestroyKey(hKey);
+#if defined(VERBOSE)
+		printf("SSL: CryptCreateHash failed\r\n");
+#endif
+		return false;
+	}
+	if (!CryptHashData(hHash, payload, (DWORD)payloadLen, 0))
+	{
+		CryptReleaseContext(hProv, 0);
+		CryptDestroyHash(hHash);
+		CryptDestroyKey(hKey);
+#if defined(VERBOSE)
+		printf("SSL: CryptHashData failed\r\n");
+#endif
+		return false;
+	}
+	DWORD len;
+	if (!CryptSignHash(hHash, AT_SIGNATURE, 0, 0, signData, &len))
+	{
+		CryptReleaseContext(hProv, 0);
+		CryptDestroyHash(hHash);
+		CryptDestroyKey(hKey);
+#if defined(VERBOSE)
+		printf("SSL: CryptSignHash failed\r\n");
+#endif
+		return false;
+	}
+	*signLen = len;
+	CryptReleaseContext(hProv, 0);
+	CryptDestroyHash(hHash);
+	CryptDestroyKey(hKey);
+#if defined(VERBOSE)
+	printf("SSL: Signature success, len = %d\r\n", (UInt32)len);
+#endif
+	return true;
 }

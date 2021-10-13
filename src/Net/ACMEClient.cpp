@@ -6,15 +6,24 @@ Net::ACMEClient::ACMEClient(Net::SocketFactory *sockf, const UTF8Char *serverHos
 {
 	NEW_CLASS(this->acme, Net::ACMEConn(sockf, serverHost, port));
 	this->keyReady = false;
+	this->accReady = false;
 	if (!this->acme->IsError())
 	{
 		if (IO::Path::GetPathType(keyFile) == IO::Path::PathType::File)
 		{
 			this->keyReady = this->acme->LoadKey(keyFile);
+			if (this->keyReady)
+			{
+				this->accReady = this->acme->NewNonce() && this->acme->AccountRetr();
+			}
 		}
 		else
 		{
 			this->keyReady = (this->acme->NewKey() && this->acme->SaveKey(keyFile));
+			if (this->keyReady)
+			{
+				this->accReady = this->acme->NewNonce() && this->acme->AccountNew();
+			}
 		}
 	}
 }
@@ -26,7 +35,7 @@ Net::ACMEClient::~ACMEClient()
 
 Bool Net::ACMEClient::IsError()
 {
-	return this->acme->IsError() || !this->keyReady;
+	return this->acme->IsError() || !this->keyReady || !this->accReady;
 }
 
 const UTF8Char *Net::ACMEClient::GetTermOfService()
