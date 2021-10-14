@@ -31,7 +31,7 @@ void Text::JSONBase::EndUse()
 
 Bool Text::JSONBase::IsStringUTF8()
 {
-	return this->GetJSType() == JST_STRINGUTF8;
+	return this->GetType() == JSONType::StringUTF8;
 }
 
 Text::JSONBase *Text::JSONBase::ParseJSONStr(const UTF8Char *jsonStr)
@@ -589,9 +589,9 @@ Text::JSONNumber::~JSONNumber()
 {
 }
 
-Text::JSONBase::JSType Text::JSONNumber::GetJSType()
+Text::JSONType Text::JSONNumber::GetType()
 {
-	return Text::JSONBase::JST_NUMBER;
+	return Text::JSONType::Number;
 }
 
 void Text::JSONNumber::ToJSONString(Text::StringBuilderUTF *sb)
@@ -606,7 +606,7 @@ Bool Text::JSONNumber::Equals(const UTF8Char *s)
 
 Bool Text::JSONNumber::Identical(Text::JSONBase *obj)
 {
-	if (obj->GetJSType() != Text::JSONBase::JST_NUMBER)
+	if (obj->GetType() != Text::JSONType::Number)
 		return false;
 	return ((Text::JSONNumber*)obj)->GetValue() == this->val;
 }
@@ -625,9 +625,9 @@ Text::JSONInt32::~JSONInt32()
 {
 }
 
-Text::JSONBase::JSType Text::JSONInt32::GetJSType()
+Text::JSONType Text::JSONInt32::GetType()
 {
-	return Text::JSONBase::JST_INT32;
+	return Text::JSONType::INT32;
 }
 
 void Text::JSONInt32::ToJSONString(Text::StringBuilderUTF *sb)
@@ -642,7 +642,7 @@ Bool Text::JSONInt32::Equals(const UTF8Char *s)
 
 Bool Text::JSONInt32::Identical(Text::JSONBase *obj)
 {
-	if (obj->GetJSType() != Text::JSONBase::JST_INT32)
+	if (obj->GetType() != Text::JSONType::INT32)
 		return false;
 	return ((Text::JSONInt32*)obj)->GetValue() == this->val;
 }
@@ -661,9 +661,9 @@ Text::JSONInt64::~JSONInt64()
 {
 }
 
-Text::JSONBase::JSType Text::JSONInt64::GetJSType()
+Text::JSONType Text::JSONInt64::GetType()
 {
-	return Text::JSONBase::JST_INT64;
+	return Text::JSONType::INT64;
 }
 
 void Text::JSONInt64::ToJSONString(Text::StringBuilderUTF *sb)
@@ -678,7 +678,7 @@ Bool Text::JSONInt64::Equals(const UTF8Char *s)
 
 Bool Text::JSONInt64::Identical(Text::JSONBase *obj)
 {
-	if (obj->GetJSType() != Text::JSONBase::JST_INT64)
+	if (obj->GetType() != Text::JSONType::INT64)
 		return false;
 	return ((Text::JSONInt64*)obj)->GetValue() == this->val;
 }
@@ -705,9 +705,9 @@ Text::JSONStringUTF8::~JSONStringUTF8()
 	SDEL_TEXT(this->val);
 }
 
-Text::JSONBase::JSType Text::JSONStringUTF8::GetJSType()
+Text::JSONType Text::JSONStringUTF8::GetType()
 {
-	return Text::JSONBase::JST_STRINGUTF8;
+	return Text::JSONType::StringUTF8;
 }
 
 void Text::JSONStringUTF8::ToJSONString(Text::StringBuilderUTF *sb)
@@ -774,7 +774,7 @@ Bool Text::JSONStringUTF8::Equals(const UTF8Char *s)
 
 Bool Text::JSONStringUTF8::Identical(Text::JSONBase *obj)
 {
-	if (obj->GetJSType() != Text::JSONBase::JST_STRINGUTF8)
+	if (obj->GetType() != Text::JSONType::StringUTF8)
 		return false;
 	const UTF8Char *cs = ((Text::JSONStringUTF8*)obj)->GetValue();
 	if (this->val == 0)
@@ -805,9 +805,9 @@ Text::JSONBool::~JSONBool()
 {
 }
 
-Text::JSONBase::JSType Text::JSONBool::GetJSType()
+Text::JSONType Text::JSONBool::GetType()
 {
-	return Text::JSONBase::JST_BOOL;
+	return Text::JSONType::BOOL;
 }
 
 void Text::JSONBool::ToJSONString(Text::StringBuilderUTF *sb)
@@ -832,7 +832,7 @@ Bool Text::JSONBool::Equals(const UTF8Char *s)
 
 Bool Text::JSONBool::Identical(Text::JSONBase *obj)
 {
-	if (obj->GetJSType() != Text::JSONBase::JST_BOOL)
+	if (obj->GetType() != Text::JSONType::BOOL)
 		return false;
 	return ((Text::JSONBool*)obj)->GetValue() == val;
 }
@@ -861,9 +861,9 @@ Text::JSONObject::~JSONObject()
 	DEL_CLASS(this->objVals);
 }
 
-Text::JSONBase::JSType Text::JSONObject::GetJSType()
+Text::JSONType Text::JSONObject::GetType()
 {
-	return Text::JSONBase::JST_OBJECT;
+	return Text::JSONType::Object;
 }
 
 void Text::JSONObject::ToJSONString(Text::StringBuilderUTF *sb)
@@ -935,7 +935,7 @@ void Text::JSONObject::GetObjectNames(Data::ArrayList<const UTF8Char *> *names)
 const UTF8Char *Text::JSONObject::GetObjectString(const UTF8Char *name)
 {
 	Text::JSONBase *baseObj = this->objVals->Get(name);
-	if (baseObj == 0 || baseObj->GetJSType() != Text::JSONBase::JST_STRINGUTF8)
+	if (baseObj == 0 || baseObj->GetType() != Text::JSONType::StringUTF8)
 	{
 		return 0;
 	}
@@ -957,9 +957,9 @@ Text::JSONArray::~JSONArray()
 	DEL_CLASS(this->arrVals);
 }
 
-Text::JSONBase::JSType Text::JSONArray::GetJSType()
+Text::JSONType Text::JSONArray::GetType()
 {
-	return Text::JSONBase::JST_ARRAY;
+	return Text::JSONType::Array;
 }
 
 void Text::JSONArray::ToJSONString(Text::StringBuilderUTF *sb)
@@ -1042,9 +1042,9 @@ Text::JSONNull::~JSONNull()
 {
 }
 
-Text::JSONBase::JSType Text::JSONNull::GetJSType()
+Text::JSONType Text::JSONNull::GetType()
 {
-	return Text::JSONBase::JST_NULL;
+	return Text::JSONType::Null;
 }
 
 void Text::JSONNull::ToJSONString(Text::StringBuilderUTF *sb)
@@ -1059,5 +1059,32 @@ Bool Text::JSONNull::Equals(const UTF8Char *s)
 
 Bool Text::JSONNull::Identical(Text::JSONBase *obj)
 {
-	return obj->GetJSType() == Text::JSONBase::JST_NULL;
+	return obj->GetType() == Text::JSONType::Null;
+}
+
+const UTF8Char *Text::JSONTypeGetName(JSONType t)
+{
+	switch (t)
+	{
+	case JSONType::Object:
+		return (const UTF8Char*)"Object";
+	case JSONType::Array:
+		return (const UTF8Char*)"Array";
+	case JSONType::Number:
+		return (const UTF8Char*)"Number";
+	case JSONType::StringUTF8:
+		return (const UTF8Char*)"StringUTF8";
+	case JSONType::BOOL:
+		return (const UTF8Char*)"BOOL";
+	case JSONType::Null:
+		return (const UTF8Char*)"Null";
+	case JSONType::INT32:
+		return (const UTF8Char*)"INT32";
+	case JSONType::INT64:
+		return (const UTF8Char*)"INT64";
+	case JSONType::StringWO:
+		return (const UTF8Char*)"StringWO";
+	default:
+		return (const UTF8Char*)"Unknown";
+	}
 }

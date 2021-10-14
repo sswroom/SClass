@@ -29,7 +29,7 @@ void __stdcall SSWR::AVIRead::AVIREWDTU01Form::OnMQTTMessage(void *userObj, cons
 	{
 		return;
 	}
-	if (jsonObj->GetJSType() == Text::JSONBase::JST_ARRAY)
+	if (jsonObj->GetType() == Text::JSONType::Array)
 	{
 		Sync::MutexUsage mutUsage(me->dataMut);
 		me->dataChg = true;
@@ -40,7 +40,7 @@ void __stdcall SSWR::AVIRead::AVIREWDTU01Form::OnMQTTMessage(void *userObj, cons
 		while (i < j)
 		{
 			baseObj = arr->GetArrayValue(i);
-			if (baseObj && baseObj->GetJSType() == Text::JSONBase::JST_OBJECT)
+			if (baseObj && baseObj->GetType() == Text::JSONType::Object)
 			{
 				obj = (Text::JSONObject*)baseObj;
 				name = obj->GetObjectString((const UTF8Char*)"name");

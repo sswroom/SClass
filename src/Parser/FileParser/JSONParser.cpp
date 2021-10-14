@@ -66,7 +66,7 @@ IO::ParsedObject *Parser::FileParser::JSONParser::ParseFile(IO::IStreamData *fd,
 		return 0;
 	}
 
-	if (fileJSON->GetJSType() == Text::JSONBase::JST_OBJECT)
+	if (fileJSON->GetType() == Text::JSONType::Object)
 	{
 		Text::JSONObject *jobj = (Text::JSONObject*)fileJSON;
 		Text::JSONBase *jbase = jobj->GetObjectValue((const UTF8Char*)"type");
@@ -74,15 +74,15 @@ IO::ParsedObject *Parser::FileParser::JSONParser::ParseFile(IO::IStreamData *fd,
 		{
 			Math::CoordinateSystem *csys = 0;
 			Text::JSONBase *crs = jobj->GetObjectValue((const UTF8Char*)"crs");
-			if (crs && crs->GetJSType() == Text::JSONBase::JST_OBJECT)
+			if (crs && crs->GetType() == Text::JSONType::Object)
 			{
 				Text::JSONBase *crsProp = ((Text::JSONObject*)crs)->GetObjectValue((const UTF8Char*)"properties");
-				if (crsProp && crsProp->GetJSType() == Text::JSONBase::JST_OBJECT)
+				if (crsProp && crsProp->GetType() == Text::JSONType::Object)
 				{
 					Text::JSONBase *crsName = ((Text::JSONObject*)crsProp)->GetObjectValue((const UTF8Char*)"name");
 					if (crsName)
 					{
-						if (crsName->GetJSType() == Text::JSONBase::JST_STRINGUTF8)
+						if (crsName->GetType() == Text::JSONType::StringUTF8)
 						{
 							csys = Math::CoordinateSystemManager::CreateFromName(((Text::JSONStringUTF8*)crsName)->GetValue());
 							if (csys)
@@ -95,7 +95,7 @@ IO::ParsedObject *Parser::FileParser::JSONParser::ParseFile(IO::IStreamData *fd,
 			}
 
 			jbase = jobj->GetObjectValue((const UTF8Char*)"features");
-			if (jbase && jbase->GetJSType() == Text::JSONBase::JST_ARRAY)
+			if (jbase && jbase->GetType() == Text::JSONType::Array)
 			{
 				Map::VectorLayer *lyr = 0;
 				const UTF8Char *tabHdrs[10];
@@ -110,12 +110,12 @@ IO::ParsedObject *Parser::FileParser::JSONParser::ParseFile(IO::IStreamData *fd,
 				Text::JSONBase *featProp;
 				Text::JSONBase *featGeom;
 				Math::Vector2D *vec;
-				if (feature && feature->GetJSType() == Text::JSONBase::JST_OBJECT)
+				if (feature && feature->GetType() == Text::JSONType::Object)
 				{
 					featType = ((Text::JSONObject*)feature)->GetObjectValue((const UTF8Char*)"type");
 					featProp = ((Text::JSONObject*)feature)->GetObjectValue((const UTF8Char*)"properties");
 					featGeom = ((Text::JSONObject*)feature)->GetObjectValue((const UTF8Char*)"geometry");
-					if (featType && featType->GetJSType() == Text::JSONBase::JST_STRINGUTF8 && featProp && featProp->GetJSType() == Text::JSONBase::JST_OBJECT && featGeom && featGeom->GetJSType() == Text::JSONBase::JST_OBJECT)
+					if (featType && featType->GetType() == Text::JSONType::StringUTF8 && featProp && featProp->GetType() == Text::JSONType::Object && featGeom && featGeom->GetType() == Text::JSONType::Object)
 					{
 						Data::ArrayList<const UTF8Char *> colNames;
 						((Text::JSONObject*)featProp)->GetObjectNames(&colNames);
@@ -141,18 +141,18 @@ IO::ParsedObject *Parser::FileParser::JSONParser::ParseFile(IO::IStreamData *fd,
 					while (i < j)
 					{
 						feature = features->GetArrayValue(i);
-						if (feature && feature->GetJSType() == Text::JSONBase::JST_OBJECT)
+						if (feature && feature->GetType() == Text::JSONType::Object)
 						{
 							featType = ((Text::JSONObject*)feature)->GetObjectValue((const UTF8Char*)"type");
 							featProp = ((Text::JSONObject*)feature)->GetObjectValue((const UTF8Char*)"properties");
 							featGeom = ((Text::JSONObject*)feature)->GetObjectValue((const UTF8Char*)"geometry");
-							if (featType && featType->GetJSType() == Text::JSONBase::JST_STRINGUTF8 && featProp && featProp->GetJSType() == Text::JSONBase::JST_OBJECT && featGeom && featGeom->GetJSType() == Text::JSONBase::JST_OBJECT)
+							if (featType && featType->GetType() == Text::JSONType::StringUTF8 && featProp && featProp->GetType() == Text::JSONType::Object && featGeom && featGeom->GetType() == Text::JSONType::Object)
 							{
 								k = 0;
 								while (k < colCnt)
 								{
 									jbase = ((Text::JSONObject*)featProp)->GetObjectValue(tabHdrs[k]);
-									if (jbase && jbase->GetJSType() == Text::JSONBase::JST_STRINGUTF8)
+									if (jbase && jbase->GetType() == Text::JSONType::StringUTF8)
 									{
 										tabCols[k] = ((Text::JSONStringUTF8*)jbase)->GetValue();
 									}
@@ -192,13 +192,13 @@ IO::ParsedObject *Parser::FileParser::JSONParser::ParseFile(IO::IStreamData *fd,
 Math::Vector2D *Parser::FileParser::JSONParser::ParseGeomJSON(Text::JSONObject *obj, UInt32 srid)
 {
 	Text::JSONBase *jbase = obj->GetObjectValue((const UTF8Char*)"type");
-	if (jbase && jbase->GetJSType() == Text::JSONBase::JST_STRINGUTF8)
+	if (jbase && jbase->GetType() == Text::JSONType::StringUTF8)
 	{
 		const UTF8Char *sType = ((Text::JSONStringUTF8*)jbase)->GetValue();
 		if (sType && Text::StrEquals(sType, (const UTF8Char*)"LineString"))
 		{
 			jbase = obj->GetObjectValue((const UTF8Char*)"coordinates");
-			if (jbase && jbase->GetJSType() == Text::JSONBase::JST_ARRAY)
+			if (jbase && jbase->GetType() == Text::JSONType::Array)
 			{
 				Text::JSONArray *coord = (Text::JSONArray*)jbase;
 				Data::ArrayList<Double> ptList;
@@ -210,14 +210,14 @@ Math::Vector2D *Parser::FileParser::JSONParser::ParseGeomJSON(Text::JSONObject *
 				while (i < j)
 				{
 					jbase = coord->GetArrayValue(i);
-					if (jbase && jbase->GetJSType() == Text::JSONBase::JST_ARRAY)
+					if (jbase && jbase->GetType() == Text::JSONType::Array)
 					{
 						pt = (Text::JSONArray*)jbase;
 						if (pt->GetArrayLength() == 3)
 						{
 							hasZ = true;
 							jbase = pt->GetArrayValue(0);
-							if (jbase && jbase->GetJSType() == Text::JSONBase::JST_NUMBER)
+							if (jbase && jbase->GetType() == Text::JSONType::Number)
 							{
 								ptList.Add(((Text::JSONNumber*)jbase)->GetValue());
 							}
@@ -226,7 +226,7 @@ Math::Vector2D *Parser::FileParser::JSONParser::ParseGeomJSON(Text::JSONObject *
 								ptList.Add(0);
 							}
 							jbase = pt->GetArrayValue(1);
-							if (jbase && jbase->GetJSType() == Text::JSONBase::JST_NUMBER)
+							if (jbase && jbase->GetType() == Text::JSONType::Number)
 							{
 								ptList.Add(((Text::JSONNumber*)jbase)->GetValue());
 							}
@@ -235,7 +235,7 @@ Math::Vector2D *Parser::FileParser::JSONParser::ParseGeomJSON(Text::JSONObject *
 								ptList.Add(0);
 							}
 							jbase = pt->GetArrayValue(2);
-							if (jbase && jbase->GetJSType() == Text::JSONBase::JST_NUMBER)
+							if (jbase && jbase->GetType() == Text::JSONType::Number)
 							{
 								zList.Add(((Text::JSONNumber*)jbase)->GetValue());
 							}
@@ -247,7 +247,7 @@ Math::Vector2D *Parser::FileParser::JSONParser::ParseGeomJSON(Text::JSONObject *
 						else if (pt->GetArrayLength() == 2)
 						{
 							jbase = pt->GetArrayValue(0);
-							if (jbase && jbase->GetJSType() == Text::JSONBase::JST_NUMBER)
+							if (jbase && jbase->GetType() == Text::JSONType::Number)
 							{
 								ptList.Add(((Text::JSONNumber*)jbase)->GetValue());
 							}
@@ -256,7 +256,7 @@ Math::Vector2D *Parser::FileParser::JSONParser::ParseGeomJSON(Text::JSONObject *
 								ptList.Add(0);
 							}
 							jbase = pt->GetArrayValue(1);
-							if (jbase && jbase->GetJSType() == Text::JSONBase::JST_NUMBER)
+							if (jbase && jbase->GetType() == Text::JSONType::Number)
 							{
 								ptList.Add(((Text::JSONNumber*)jbase)->GetValue());
 							}
@@ -309,7 +309,7 @@ Math::Vector2D *Parser::FileParser::JSONParser::ParseGeomJSON(Text::JSONObject *
 		else if (sType && Text::StrEquals(sType, (const UTF8Char*)"Polygon"))
 		{
 			jbase = obj->GetObjectValue((const UTF8Char*)"coordinates");
-			if (jbase && jbase->GetJSType() == Text::JSONBase::JST_ARRAY)
+			if (jbase && jbase->GetType() == Text::JSONType::Array)
 			{
 				Text::JSONArray *coord = (Text::JSONArray*)jbase;
 				Data::ArrayList<Double> ptList;
@@ -324,7 +324,7 @@ Math::Vector2D *Parser::FileParser::JSONParser::ParseGeomJSON(Text::JSONObject *
 				while (i < j)
 				{
 					jbase = coord->GetArrayValue(i);
-					if (jbase && jbase->GetJSType() == Text::JSONBase::JST_ARRAY)
+					if (jbase && jbase->GetType() == Text::JSONType::Array)
 					{
 						ptArr = (Text::JSONArray*)jbase;
 						hasData = false;
@@ -333,7 +333,7 @@ Math::Vector2D *Parser::FileParser::JSONParser::ParseGeomJSON(Text::JSONObject *
 						while (k < l)
 						{
 							jbase = ptArr->GetArrayValue(k);
-							if (jbase && jbase->GetJSType() == Text::JSONBase::JST_ARRAY)
+							if (jbase && jbase->GetType() == Text::JSONType::Array)
 							{
 								pt = (Text::JSONArray*)jbase;
 								if (pt->GetArrayLength() == 2)
@@ -344,7 +344,7 @@ Math::Vector2D *Parser::FileParser::JSONParser::ParseGeomJSON(Text::JSONObject *
 										partList.Add((UInt32)ptList.GetCount() >> 1);
 									}
 									jbase = pt->GetArrayValue(0);
-									if (jbase && jbase->GetJSType() == Text::JSONBase::JST_NUMBER)
+									if (jbase && jbase->GetType() == Text::JSONType::Number)
 									{
 										ptList.Add(((Text::JSONNumber*)jbase)->GetValue());
 									}
@@ -353,7 +353,7 @@ Math::Vector2D *Parser::FileParser::JSONParser::ParseGeomJSON(Text::JSONObject *
 										ptList.Add(0);
 									}
 									jbase = pt->GetArrayValue(1);
-									if (jbase && jbase->GetJSType() == Text::JSONBase::JST_NUMBER)
+									if (jbase && jbase->GetType() == Text::JSONType::Number)
 									{
 										ptList.Add(((Text::JSONNumber*)jbase)->GetValue());
 									}

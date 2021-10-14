@@ -23,7 +23,7 @@ const UInt8 Text::TextBinEnc::Base64Enc::decArr[] = {
 
 const UTF8Char *Text::TextBinEnc::Base64Enc::GetEncArr(Charset cs)
 {
-	if (cs == CS_URL)
+	if (cs == Charset::URL)
 	{
 		return (const UTF8Char*)"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
 	}
@@ -35,7 +35,7 @@ const UTF8Char *Text::TextBinEnc::Base64Enc::GetEncArr(Charset cs)
 
 Text::TextBinEnc::Base64Enc::Base64Enc()
 {
-	this->cs = CS_NORMAL;
+	this->cs = Charset::URL;
 	this->noPadding = false;
 }
 

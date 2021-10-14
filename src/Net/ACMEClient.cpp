@@ -14,7 +14,8 @@ Net::ACMEClient::ACMEClient(Net::SocketFactory *sockf, const UTF8Char *serverHos
 			this->keyReady = this->acme->LoadKey(keyFile);
 			if (this->keyReady)
 			{
-				this->accReady = this->acme->NewNonce() && this->acme->AccountRetr();
+//				this->accReady = this->acme->NewNonce() && this->acme->AccountRetr();
+				this->accReady = this->acme->NewNonce() && this->acme->AccountNew();
 			}
 		}
 		else

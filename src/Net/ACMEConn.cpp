@@ -1,6 +1,8 @@
 #include "Stdafx.h"
+#include "Crypto/Token/JWSignature.h"
 #include "Exporter/PEMExporter.h"
 #include "IO/FileStream.h"
+#include "IO/MemoryStream.h"
 #include "Net/ACMEConn.h"
 #include "Net/DefaultSSLEngine.h"
 #include "Net/HTTPClient.h"
@@ -11,6 +13,7 @@
 #include <openssl/ssl.h>
 #include <openssl/err.h>
 
+#include <stdio.h>
 /*
 https://datatracker.ietf.org/doc/html/rfc8555
 
@@ -23,7 +26,7 @@ https://acme-v02.api.letsencrypt.org/directory
 
 const UTF8Char *Net::ACMEConn::JWK(Crypto::Cert::X509Key *key, Crypto::Token::JWSignature::Algorithm *alg)
 {
-	Text::TextBinEnc::Base64Enc b64;
+	Text::TextBinEnc::Base64Enc b64(Text::TextBinEnc::Base64Enc::Charset::URL, true);
 	switch (key->GetKeyType())
 	{
 	case Crypto::Cert::X509Key::KeyType::RSA:
@@ -42,7 +45,7 @@ const UTF8Char *Net::ACMEConn::JWK(Crypto::Cert::X509Key *key, Crypto::Token::JW
 			sb.Append((const UTF8Char*)"\",\"e\":\"");
 			b64.EncodeBin(&sb, e, eSize);
 			sb.Append((const UTF8Char*)"\"}");
-			*alg = Crypto::Token::JWSignature::Algorithm::ES256;
+			*alg = Crypto::Token::JWSignature::Algorithm::RS256;
 			return Text::StrCopyNew(sb.ToString());
 		}
 	case Crypto::Cert::X509Key::KeyType::ECDSA:
@@ -55,17 +58,16 @@ const UTF8Char *Net::ACMEConn::JWK(Crypto::Cert::X509Key *key, Crypto::Token::JW
 	}
 }
 
-const UTF8Char *Net::ACMEConn::ProtectedJWK(const UTF8Char *nonce, const UTF8Char *url, Crypto::Cert::X509Key *key)
+const UTF8Char *Net::ACMEConn::ProtectedJWK(const UTF8Char *nonce, const UTF8Char *url, Crypto::Cert::X509Key *key, Crypto::Token::JWSignature::Algorithm *alg)
 {
-	Crypto::Token::JWSignature::Algorithm alg;
-	const UTF8Char *jwk = JWK(key, &alg);
+	const UTF8Char *jwk = JWK(key, alg);
 	if (jwk == 0)
 	{
 		return 0;
 	}
 	Text::StringBuilderUTF8 sb;
 	sb.Append((const UTF8Char*)"{\"alg\":\"");
-	sb.Append(Crypto::Token::JWSignature::AlgorithmGetName(alg));
+	sb.Append(Crypto::Token::JWSignature::AlgorithmGetName(*alg));
 	sb.Append((const UTF8Char*)"\",\"nonce\":\"");
 	sb.Append(nonce);
 	sb.Append((const UTF8Char*)"\",\"url\":\"");
@@ -77,9 +79,30 @@ const UTF8Char *Net::ACMEConn::ProtectedJWK(const UTF8Char *nonce, const UTF8Cha
 	return Text::StrCopyNew(sb.ToString());
 }
 
-const UTF8Char *Net::ACMEConn::EncodeJWS(const UTF8Char *protStr, const UTF8Char *data, Crypto::Cert::X509Key *key)
+const UTF8Char *Net::ACMEConn::EncodeJWS(Net::SSLEngine *ssl, const UTF8Char *protStr, const UTF8Char *data, Crypto::Cert::X509Key *key, Crypto::Token::JWSignature::Algorithm alg)
 {
-	return 0;
+	Text::StringBuilderUTF8 sb;
+	Text::TextBinEnc::Base64Enc b64(Text::TextBinEnc::Base64Enc::Charset::URL, true);
+	b64.EncodeBin(&sb, protStr, Text::StrCharCnt(protStr));
+	sb.AppendChar('.', 1);
+	b64.EncodeBin(&sb, data, Text::StrCharCnt(data));
+	Crypto::Token::JWSignature *sign;
+	NEW_CLASS(sign, Crypto::Token::JWSignature(ssl, alg, key->GetASN1Buff(), key->GetASN1BuffSize()));
+	sign->CalcHash(sb.ToString(), sb.GetLength());
+
+	sb.ClearStr();
+	sb.Append((const UTF8Char*)"{\"protected\":\"");
+	b64.EncodeBin(&sb, protStr, Text::StrCharCnt(protStr));
+	sb.Append((const UTF8Char*)"\",\"payload\":\"");
+	b64.EncodeBin(&sb, data, Text::StrCharCnt(data));
+	sb.Append((const UTF8Char*)"\",\"signature\":\"");
+	sign->GetHashB64(&sb);
+	sb.Append((const UTF8Char*)"\"}");
+	DEL_CLASS(sign);
+	printf("Protected: %s\r\n", protStr);
+	printf("Payload: %s\r\n", data);
+	printf("JWS: %s\r\n", sb.ToString());
+	return Text::StrCopyNew(sb.ToString());
 }
 
 Net::HTTPClient *Net::ACMEConn::ACMEPost(const UTF8Char *url, const Char *data)
@@ -89,12 +112,14 @@ Net::HTTPClient *Net::ACMEConn::ACMEPost(const UTF8Char *url, const Char *data)
 		return 0;
 	}
 	const UTF8Char *protStr;
-	protStr = ProtectedJWK(this->nonce, url, this->key);
+	Crypto::Token::JWSignature::Algorithm alg;
+	protStr = ProtectedJWK(this->nonce, url, this->key, &alg);
 	if (protStr == 0)
 	{
 		return 0;
 	}
-	const UTF8Char *jws = EncodeJWS(protStr, (const UTF8Char*)data, this->key);
+	const UTF8Char *jws;
+	jws = EncodeJWS(ssl, protStr, (const UTF8Char*)data, this->key, alg);
 	Text::StrDelNew(protStr);
 	if (jws == 0)
 	{
@@ -102,7 +127,21 @@ Net::HTTPClient *Net::ACMEConn::ACMEPost(const UTF8Char *url, const Char *data)
 	}
 	UOSInt jwsLen = Text::StrCharCnt(jws);
 	Net::HTTPClient *cli = 0;
+	cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, url, "POST", true);
+	if (cli)
+	{
+		cli->AddContentType((const UTF8Char*)"application/jose+json");
+		cli->AddContentLength(jwsLen);
+		cli->Write(jws, jwsLen);
+	}
 	Text::StrDelNew(jws);
+
+	Text::StringBuilderUTF8 sb;
+	if (cli->GetRespHeader((const UTF8Char*)"Replay-Nonce", &sb))
+	{
+		SDEL_TEXT(this->nonce);
+		this->nonce = Text::StrCopyNew(sb.ToString());
+	}
 	return cli;
 }
 
@@ -156,7 +195,7 @@ Net::ACMEConn::ACMEConn(Net::SocketFactory *sockf, const UTF8Char *serverHost, U
 				Text::JSONBase *json = Text::JSONBase::ParseJSONStrLen(jsonBuff, recvSize);
 				if (json)
 				{
-					if (json->GetJSType() == Text::JSONBase::JST_OBJECT)
+					if (json->GetType() == Text::JSONType::Object)
 					{
 						Text::JSONObject *o = (Text::JSONObject*)json;
 						if ((csptr = o->GetObjectString((const UTF8Char*)"newNonce")) != 0)
@@ -184,7 +223,7 @@ Net::ACMEConn::ACMEConn(Net::SocketFactory *sockf, const UTF8Char *serverHost, U
 							this->urlKeyChange = Text::StrCopyNew(csptr);
 						}
 						Text::JSONBase *metaBase = o->GetObjectValue((const UTF8Char*)"meta");
-						if (metaBase && metaBase->GetJSType() == Text::JSONBase::JST_OBJECT)
+						if (metaBase && metaBase->GetType() == Text::JSONType::Object)
 						{
 							Text::JSONObject *metaObj = (Text::JSONObject*)metaBase;
 							if ((csptr = metaObj->GetObjectString((const UTF8Char*)"termsOfService")) != 0)
@@ -281,9 +320,37 @@ Bool Net::ACMEConn::AccountNew()
 	{
 		return false;
 	}
+	Bool succ = false;
+	if (cli->GetRespStatus() == Net::WebStatus::SC_BAD_REQUEST)
+	{
+		IO::MemoryStream mstm((const UTF8Char*)"Net.ACMEConn.AccountNew.mstm");
+		cli->ReadToEnd(&mstm, 4096);
+		DEL_CLASS(cli);
+		UOSInt buffSize;
+		UInt8 *buff = mstm.GetBuff(&buffSize);
+		Text::JSONBase *base = Text::JSONBase::ParseJSONStrLen(buff, buffSize);
+		if (base != 0)
+		{
+			if (base->GetType() == Text::JSONType::Object)
+			{
+				Text::JSONObject *o = (Text::JSONObject*)base;
+				const UTF8Char *csptr = o->GetObjectString((const UTF8Char*)"type");
+				if (csptr && Text::StrEquals(csptr, (const UTF8Char*)"urn:ietf:params:acme:error:accountDoesNotExist"))
+				{
+					/////////////////////////////
+					succ = true;
+				}
+			}
+			base->EndUse();
+		}
+	}
+	else
+	{
+		DEL_CLASS(cli);
+		succ = false;
+	}
 
-	DEL_CLASS(cli);
-	return false;
+	return succ;
 }
 
 Bool Net::ACMEConn::AccountRetr()

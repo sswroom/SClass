@@ -8,7 +8,7 @@
 #include "Text/EnumFinder.h"
 #include "Text/TextBinEnc/Base64Enc.h"
 
-Crypto::Token::JWSignature::JWSignature(Net::SSLEngine *ssl, Algorithm alg, UInt8 *privateKey, UOSInt privateKeyLeng)
+Crypto::Token::JWSignature::JWSignature(Net::SSLEngine *ssl, Algorithm alg, const UInt8 *privateKey, UOSInt privateKeyLeng)
 {
 	this->ssl = ssl;
 	this->alg = alg;
@@ -91,7 +91,7 @@ Bool Crypto::Token::JWSignature::GetHashB64(Text::StringBuilderUTF *sb)
 	{
 		return false;
 	}
-	Text::TextBinEnc::Base64Enc b64(Text::TextBinEnc::Base64Enc::CS_URL, true);
+	Text::TextBinEnc::Base64Enc b64(Text::TextBinEnc::Base64Enc::Charset::URL, true);
 	b64.EncodeBin(sb, this->hashVal, this->hashValSize);
 	return true;
 }

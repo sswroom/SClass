@@ -48,11 +48,11 @@ void IO::Device::GoProCameraControl::GetMediaList()
 		UOSInt l;
 		if (jsBase)
 		{
-			if (jsBase->GetJSType() == Text::JSONBase::JST_OBJECT)
+			if (jsBase->GetType() == Text::JSONType::Object)
 			{
 				jsObj = (Text::JSONObject*)jsBase;
 				jsBase2 = jsObj->GetObjectValue((const UTF8Char *)"media");
-				if (jsBase2 && jsBase2->GetJSType() == Text::JSONBase::JST_ARRAY)
+				if (jsBase2 && jsBase2->GetType() == Text::JSONType::Array)
 				{
 					jsArrDir = (Text::JSONArray*)jsBase2;
 					i = 0;
@@ -60,11 +60,11 @@ void IO::Device::GoProCameraControl::GetMediaList()
 					while (i < j)
 					{
 						jsBase2 = jsArrDir->GetArrayValue(i);
-						if (jsBase2 && jsBase->GetJSType() == Text::JSONBase::JST_OBJECT)
+						if (jsBase2 && jsBase->GetType() == Text::JSONType::Object)
 						{
 							jsObjDir = (Text::JSONObject *)jsBase2;
 							jsBase2 = jsObjDir->GetObjectValue((const UTF8Char*)"d");
-							if (jsBase2 && jsBase2->GetJSType() == Text::JSONBase::JST_STRINGUTF8)
+							if (jsBase2 && jsBase2->GetType() == Text::JSONType::StringUTF8)
 							{
 								dirName = ((Text::JSONStringUTF8*)jsBase2)->GetValue();
 							}
@@ -74,7 +74,7 @@ void IO::Device::GoProCameraControl::GetMediaList()
 							}
 
 							jsBase2 = jsObjDir->GetObjectValue((const UTF8Char*)"fs");
-							if (dirName && jsBase2 && jsBase2->GetJSType() == Text::JSONBase::JST_ARRAY)
+							if (dirName && jsBase2 && jsBase2->GetType() == Text::JSONType::Array)
 							{
 								jsArrFS = (Text::JSONArray*)jsBase2;
 								k = 0;
@@ -82,11 +82,11 @@ void IO::Device::GoProCameraControl::GetMediaList()
 								while (k < l)
 								{
 									jsBase2 = jsArrFS->GetArrayValue(k);
-									if (jsBase2 && jsBase2->GetJSType() == Text::JSONBase::JST_OBJECT)
+									if (jsBase2 && jsBase2->GetType() == Text::JSONType::Object)
 									{
 										jsObjFS = (Text::JSONObject*)jsBase2;
 										jsBase2 = jsObjFS->GetObjectValue((const UTF8Char*)"n");
-										if (jsBase2 && jsBase2->GetJSType() == Text::JSONBase::JST_STRINGUTF8)
+										if (jsBase2 && jsBase2->GetType() == Text::JSONType::StringUTF8)
 										{
 											fileName = ((Text::JSONStringUTF8*)jsBase2)->GetValue();
 										}
@@ -95,7 +95,7 @@ void IO::Device::GoProCameraControl::GetMediaList()
 											fileName = 0;
 										}
 										jsBase2 = jsObjFS->GetObjectValue((const UTF8Char*)"mod");
-										if (jsBase2 && jsBase2->GetJSType() == Text::JSONBase::JST_STRINGUTF8)
+										if (jsBase2 && jsBase2->GetType() == Text::JSONType::StringUTF8)
 										{
 											modTime = ((Text::JSONStringUTF8*)jsBase2)->GetValue();
 										}
@@ -104,7 +104,7 @@ void IO::Device::GoProCameraControl::GetMediaList()
 											modTime = 0;
 										}
 										jsBase2 = jsObjFS->GetObjectValue((const UTF8Char*)"s");
-										if (jsBase2 && jsBase2->GetJSType() == Text::JSONBase::JST_STRINGUTF8)
+										if (jsBase2 && jsBase2->GetType() == Text::JSONType::StringUTF8)
 										{
 											fileSize = ((Text::JSONStringUTF8*)jsBase2)->GetValue();
 										}
@@ -172,21 +172,21 @@ Bool IO::Device::GoProCameraControl::GetInfo(Data::ArrayList<const UTF8Char*> *n
 	Text::JSONObject *jsInfo;
 	if (jsBase)
 	{
-		if (jsBase->GetJSType() == Text::JSONBase::JST_OBJECT)
+		if (jsBase->GetType() == Text::JSONType::Object)
 		{
 			jsObj = (Text::JSONObject*)jsBase;
 			jsBase2 = jsObj->GetObjectValue((const UTF8Char *)"info");
-			if (jsBase2 && jsBase->GetJSType() == Text::JSONBase::JST_OBJECT)
+			if (jsBase2 && jsBase->GetType() == Text::JSONType::Object)
 			{
 				jsInfo = (Text::JSONObject*)jsBase2;
 				jsBase2 = jsInfo->GetObjectValue((const UTF8Char*)"model_name");
-				if (jsBase2 && jsBase2->GetJSType() == Text::JSONBase::JST_STRINGUTF8)
+				if (jsBase2 && jsBase2->GetType() == Text::JSONType::StringUTF8)
 				{
 					nameList->Add(Text::StrCopyNew((const UTF8Char*)"Model"));
 					valueList->Add(Text::StrCopyNew(((Text::JSONStringUTF8*)jsBase2)->GetValue()));
 				}
 				jsBase2 = jsInfo->GetObjectValue((const UTF8Char*)"model_number");
-				if (jsBase2 && jsBase2->GetJSType() == Text::JSONBase::JST_NUMBER)
+				if (jsBase2 && jsBase2->GetType() == Text::JSONType::Number)
 				{
 					nameList->Add(Text::StrCopyNew((const UTF8Char*)"Model Number"));
 					sb.ClearStr();
@@ -194,19 +194,19 @@ Bool IO::Device::GoProCameraControl::GetInfo(Data::ArrayList<const UTF8Char*> *n
 					valueList->Add(Text::StrCopyNew(sb.ToString()));
 				}
 				jsBase2 = jsInfo->GetObjectValue((const UTF8Char*)"firmware_version");
-				if (jsBase2 && jsBase2->GetJSType() == Text::JSONBase::JST_STRINGUTF8)
+				if (jsBase2 && jsBase2->GetType() == Text::JSONType::StringUTF8)
 				{
 					nameList->Add(Text::StrCopyNew((const UTF8Char*)"Firmware Version"));
 					valueList->Add(Text::StrCopyNew(((Text::JSONStringUTF8*)jsBase2)->GetValue()));
 				}
 				jsBase2 = jsInfo->GetObjectValue((const UTF8Char*)"serial_number");
-				if (jsBase2 && jsBase2->GetJSType() == Text::JSONBase::JST_STRINGUTF8)
+				if (jsBase2 && jsBase2->GetType() == Text::JSONType::StringUTF8)
 				{
 					nameList->Add(Text::StrCopyNew((const UTF8Char*)"Serial Number"));
 					valueList->Add(Text::StrCopyNew(((Text::JSONStringUTF8*)jsBase2)->GetValue()));
 				}
 				jsBase2 = jsInfo->GetObjectValue((const UTF8Char*)"board_type");
-				if (jsBase2 && jsBase2->GetJSType() == Text::JSONBase::JST_STRINGUTF8)
+				if (jsBase2 && jsBase2->GetType() == Text::JSONType::StringUTF8)
 				{
 					nameList->Add(Text::StrCopyNew((const UTF8Char*)"Board Type"));
 					valueList->Add(Text::StrCopyNew(((Text::JSONStringUTF8*)jsBase2)->GetValue()));

@@ -15,8 +15,8 @@
 #include "Text/TextEnc/FormEncoding.h"
 #include "Text/TextEnc/URIEncoding.h"
 
-//#define LOGREPLY
-//#define SHOWDEBUG
+#define LOGREPLY
+#define SHOWDEBUG
 //#define DEBUGSPEED
 #if defined(SHOWDEBUG) || defined(DEBUGSPEED)
 #include <stdio.h>
@@ -24,6 +24,7 @@
 
 #if defined(LOGREPLY)
 #include "IO/FileStream.h"
+#include "IO/Path.h"
 struct Net::HTTPMyClient::ClassData
 {
 	IO::FileStream *fs;
@@ -40,8 +41,16 @@ Net::HTTPMyClient::HTTPMyClient(Net::SocketFactory *sockf, Net::SSLEngine *ssl, 
 		userAgent = (const UTF8Char*)"sswr/1.0";
 	}
 #if defined(LOGREPLY)
+	UTF8Char sbuff[512];
+	UTF8Char *sptr;
+	Data::DateTime dt;
 	this->clsData = MemAlloc(ClassData, 1);
-	NEW_CLASS(this->clsData->fs, IO::FileStream((const UTF8Char*)"HTTPClientData.dat", IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	IO::Path::GetProcessFileName(sbuff);
+	sptr = IO::Path::AppendPath(sbuff, (const UTF8Char*)"HTTPClient_");
+	dt.SetCurrTimeUTC();
+	sptr = Text::StrInt64(sptr, dt.ToTicks());
+	sptr = Text::StrConcat(sptr, (const UTF8Char*)".dat");
+	NEW_CLASS(this->clsData->fs, IO::FileStream(sbuff, IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 #endif
 	this->ssl = ssl;
 	this->cli = 0;

@@ -39,7 +39,7 @@ namespace Crypto
 			UOSInt hashValSize;
 
 		public:
-			JWSignature(Net::SSLEngine *ssl, Algorithm alg, UInt8 *privateKey, UOSInt privateKeyLeng);
+			JWSignature(Net::SSLEngine *ssl, Algorithm alg, const UInt8 *privateKey, UOSInt privateKeyLeng);
 			~JWSignature();
 
 			Bool CalcHash(const UInt8 *buff, UOSInt buffSize);

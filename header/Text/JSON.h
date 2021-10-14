@@ -5,21 +5,21 @@
 
 namespace Text
 {
+	enum class JSONType
+	{
+		Object,
+		Array,
+		Number,
+		StringUTF8,
+		BOOL,
+		Null,
+		INT32,
+		INT64,
+		StringWO
+	};
+
 	class JSONBase
 	{
-	public:
-		typedef enum
-		{
-			JST_OBJECT,
-			JST_ARRAY,
-			JST_NUMBER,
-			JST_STRINGUTF8,
-			JST_BOOL,
-			JST_NULL,
-			JST_INT32,
-			JST_INT64,
-			JST_STRINGWO
-		} JSType;
 	private:
 		OSInt useCnt;
 
@@ -29,7 +29,7 @@ namespace Text
 		virtual ~JSONBase();
 
 	public:
-		virtual JSType GetJSType() = 0;
+		virtual JSONType GetType() = 0;
 		virtual void ToJSONString(Text::StringBuilderUTF *sb) = 0;
 		virtual Bool Equals(const UTF8Char *s) = 0;
 		virtual Bool Identical(JSONBase *obj) = 0;
@@ -58,7 +58,7 @@ namespace Text
 		virtual ~JSONNumber();
 
 	public:
-		virtual JSType GetJSType();
+		virtual JSONType GetType();
 		virtual void ToJSONString(Text::StringBuilderUTF *sb);
 		virtual Bool Equals(const UTF8Char *s);
 		virtual Bool Identical(JSONBase *obj);
@@ -76,7 +76,7 @@ namespace Text
 		virtual ~JSONInt32();
 
 	public:
-		virtual JSType GetJSType();
+		virtual JSONType GetType();
 		virtual void ToJSONString(Text::StringBuilderUTF *sb);
 		virtual Bool Equals(const UTF8Char *s);
 		virtual Bool Identical(JSONBase *obj);
@@ -94,7 +94,7 @@ namespace Text
 		virtual ~JSONInt64();
 
 	public:
-		virtual JSType GetJSType();
+		virtual JSONType GetType();
 		virtual void ToJSONString(Text::StringBuilderUTF *sb);
 		virtual Bool Equals(const UTF8Char *s);
 		virtual Bool Identical(JSONBase *obj);
@@ -112,7 +112,7 @@ namespace Text
 		virtual ~JSONStringUTF8();
 
 	public:
-		virtual JSType GetJSType();
+		virtual JSONType GetType();
 		virtual void ToJSONString(Text::StringBuilderUTF *sb);
 		virtual Bool Equals(const UTF8Char *s);
 		virtual Bool Identical(JSONBase *obj);
@@ -130,7 +130,7 @@ namespace Text
 		virtual ~JSONStringW();
 
 	public:
-		virtual JSType GetJSType();
+		virtual JSONType GetType();
 		virtual void ToJSONString(Text::StringBuilderUTF *sb);
 		virtual Bool Equals(const UTF8Char *s);
 		virtual Bool Identical(JSONBase *obj);
@@ -148,7 +148,7 @@ namespace Text
 		virtual ~JSONBool();
 
 	public:
-		virtual JSType GetJSType();
+		virtual JSONType GetType();
 		virtual void ToJSONString(Text::StringBuilderUTF *sb);
 		virtual Bool Equals(const UTF8Char *s);
 		virtual Bool Identical(JSONBase *obj);
@@ -165,7 +165,7 @@ namespace Text
 		virtual ~JSONObject();
 
 	public:
-		virtual JSType GetJSType();
+		virtual JSONType GetType();
 		virtual void ToJSONString(Text::StringBuilderUTF *sb);
 		virtual Bool Equals(const UTF8Char *s);
 		virtual Bool Identical(JSONBase *obj);
@@ -185,7 +185,7 @@ namespace Text
 		virtual ~JSONArray();
 
 	public:
-		virtual JSType GetJSType();
+		virtual JSONType GetType();
 		virtual void ToJSONString(Text::StringBuilderUTF *sb);
 		virtual Bool Equals(const UTF8Char *s);
 		virtual Bool Identical(JSONBase *obj);
@@ -203,10 +203,12 @@ namespace Text
 		virtual ~JSONNull();
 
 	public:
-		virtual JSType GetJSType();
+		virtual JSONType GetType();
 		virtual void ToJSONString(Text::StringBuilderUTF *sb);
 		virtual Bool Equals(const UTF8Char *s);
 		virtual Bool Identical(JSONBase *obj);
 	};
+
+	const UTF8Char *JSONTypeGetName(JSONType t);
 }
 #endif

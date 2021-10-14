@@ -48,3 +48,27 @@ IO::ParsedObject::ParserType IO::Stream::GetParserType()
 {
 	return IO::ParsedObject::PT_STREAM;
 }
+
+UInt64 IO::Stream::ReadToEnd(IO::Stream *stm, UOSInt buffSize)
+{
+	UInt64 totalSize = 0;
+	UOSInt readSize;
+	UOSInt writeSize;
+	UInt8 *buff = MemAlloc(UInt8, buffSize);
+	while (true)
+	{
+		readSize = this->Read(buff, buffSize);
+		if (readSize <= 0)
+		{
+			break;
+		}
+		writeSize = stm->Write(buff, readSize);
+		totalSize += writeSize;
+		if (readSize != writeSize)
+		{
+			break;
+		}
+	}
+	MemFree(buff);
+	return totalSize;
+}

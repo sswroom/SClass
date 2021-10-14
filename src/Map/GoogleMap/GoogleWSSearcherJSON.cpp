@@ -176,7 +176,7 @@ UTF8Char *Map::GoogleMap::GoogleWSSearcherJSON::SearchName(UTF8Char *buff, UOSIn
 			Text::JSONBase *obj = Text::JSONBase::ParseJSONStr(sb.ToString());
 			if (obj)
 			{
-				if (obj->GetJSType() == Text::JSONBase::JST_OBJECT)
+				if (obj->GetType() == Text::JSONType::Object)
 				{
 					Text::JSONObject *jobj = (Text::JSONObject*)obj;
 					if (jobj->GetObjectValue((const UTF8Char*)"status")->Equals((const UTF8Char*)"OK"))

@@ -32,7 +32,7 @@ Bool Crypto::Token::JWTHandler::Generate(Text::StringBuilderUTF8 *sb, Data::Stri
 	sptr = Text::StrConcat(sbuff, (const UTF8Char*)"{\"alg\":\"");
 	sptr = Text::StrConcat(sptr, JWSignature::AlgorithmGetName(alg));
 	sptr = Text::StrConcat(sptr, (const UTF8Char*)"\",\"typ\":\"JWT\"}");
-	Text::TextBinEnc::Base64Enc b64(Text::TextBinEnc::Base64Enc::CS_URL, true);
+	Text::TextBinEnc::Base64Enc b64(Text::TextBinEnc::Base64Enc::Charset::URL, true);
 	b64.EncodeBin(sb, sbuff, (UOSInt)(sptr - sbuff));
 	sb->AppendChar('.', 1);
 	Text::StringBuilderUTF8 sbJson;
@@ -106,7 +106,7 @@ Data::StringUTF8Map<const UTF8Char*> *Crypto::Token::JWTHandler::Parse(const UTF
 	{
 		return 0;
 	}
-	Text::TextBinEnc::Base64Enc b64url(Text::TextBinEnc::Base64Enc::CS_URL, true);
+	Text::TextBinEnc::Base64Enc b64url(Text::TextBinEnc::Base64Enc::Charset::URL, true);
 	UInt8 *headerBuff = MemAlloc(UInt8, i1);
 	UOSInt headerSize;
 	UInt8 *payloadBuff = MemAlloc(UInt8, (i2 - i1));
@@ -117,10 +117,10 @@ Data::StringUTF8Map<const UTF8Char*> *Crypto::Token::JWTHandler::Parse(const UTF
 	JWSignature::Algorithm tokenAlg = JWSignature::Algorithm::Unknown;
 	if (hdrJson != 0)
 	{
-		if (hdrJson->GetJSType() == Text::JSONBase::JST_OBJECT)
+		if (hdrJson->GetType() == Text::JSONType::Object)
 		{
 			Text::JSONBase *algJson = ((Text::JSONObject*)hdrJson)->GetObjectValue((const UTF8Char*)"alg");
-			if (algJson != 0 && algJson->GetJSType() == Text::JSONBase::JST_STRINGUTF8)
+			if (algJson != 0 && algJson->GetType() == Text::JSONType::StringUTF8)
 			{
 				tokenAlg = JWSignature::AlgorithmGetByName(((Text::JSONStringUTF8*)algJson)->GetValue());
 			}
@@ -158,7 +158,7 @@ Data::StringUTF8Map<const UTF8Char*> *Crypto::Token::JWTHandler::Parse(const UTF
 	{
 		return 0;
 	}
-	if (payloadJson->GetJSType() != Text::JSONBase::JST_OBJECT)
+	if (payloadJson->GetType() != Text::JSONType::Object)
 	{
 		payloadJson->EndUse();
 		return 0;
@@ -178,49 +178,49 @@ Data::StringUTF8Map<const UTF8Char*> *Crypto::Token::JWTHandler::Parse(const UTF
 		json = payloadObj->GetObjectValue(name);
 		if (Text::StrEquals(name, (const UTF8Char*)"iss"))
 		{
-			if (json != 0 && json->GetJSType() == Text::JSONBase::JST_STRINGUTF8)
+			if (json != 0 && json->GetType() == Text::JSONType::StringUTF8)
 			{
 				param->SetIssuer(((Text::JSONStringUTF8*)json)->GetValue());
 			}
 		}
 		else if (Text::StrEquals(name, (const UTF8Char*)"sub"))
 		{
-			if (json != 0 && json->GetJSType() == Text::JSONBase::JST_STRINGUTF8)
+			if (json != 0 && json->GetType() == Text::JSONType::StringUTF8)
 			{
 				param->SetSubject(((Text::JSONStringUTF8*)json)->GetValue());
 			}
 		}
 		else if (Text::StrEquals(name, (const UTF8Char*)"aud"))
 		{
-			if (json != 0 && json->GetJSType() == Text::JSONBase::JST_STRINGUTF8)
+			if (json != 0 && json->GetType() == Text::JSONType::StringUTF8)
 			{
 				param->SetAudience(((Text::JSONStringUTF8*)json)->GetValue());
 			}
 		}
 		else if (Text::StrEquals(name, (const UTF8Char*)"exp"))
 		{
-			if (json != 0 && json->GetJSType() == Text::JSONBase::JST_NUMBER)
+			if (json != 0 && json->GetType() == Text::JSONType::Number)
 			{
 				param->SetExpirationTime((long)((Text::JSONNumber*)json)->GetValue());
 			}
 		}
 		else if (Text::StrEquals(name, (const UTF8Char*)"nbf"))
 		{
-			if (json != 0 && json->GetJSType() == Text::JSONBase::JST_NUMBER)
+			if (json != 0 && json->GetType() == Text::JSONType::Number)
 			{
 				param->SetNotBefore((long)((Text::JSONNumber*)json)->GetValue());
 			}
 		}
 		else if (Text::StrEquals(name, (const UTF8Char*)"iat"))
 		{
-			if (json != 0 && json->GetJSType() == Text::JSONBase::JST_NUMBER)
+			if (json != 0 && json->GetType() == Text::JSONType::Number)
 			{
 				param->SetIssuedAt((long)((Text::JSONNumber*)json)->GetValue());
 			}
 		}
 		else if (Text::StrEquals(name, (const UTF8Char*)"jti"))
 		{
-			if (json != 0 && json->GetJSType() == Text::JSONBase::JST_STRINGUTF8)
+			if (json != 0 && json->GetType() == Text::JSONType::StringUTF8)
 			{
 				param->SetJWTId(((Text::JSONStringUTF8*)json)->GetValue());
 			}
@@ -231,7 +231,7 @@ Data::StringUTF8Map<const UTF8Char*> *Crypto::Token::JWTHandler::Parse(const UTF
 			{
 				retMap->Put(name, 0);
 			}
-			else if (json->GetJSType() == Text::JSONBase::JST_STRINGUTF8)
+			else if (json->GetType() == Text::JSONType::StringUTF8)
 			{
 				retMap->Put(name, SCOPY_TEXT(((Text::JSONStringUTF8*)json)->GetValue()));
 			}

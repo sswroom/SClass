@@ -27,8 +27,8 @@ namespace Net
 		const UTF8Char *nonce;
 
 		static const UTF8Char *JWK(Crypto::Cert::X509Key *key, Crypto::Token::JWSignature::Algorithm *alg);
-		static const UTF8Char *ProtectedJWK(const UTF8Char *nonce, const UTF8Char *url, Crypto::Cert::X509Key *key);
-		static const UTF8Char *EncodeJWS(const UTF8Char *protStr, const UTF8Char *data, Crypto::Cert::X509Key *key);
+		static const UTF8Char *ProtectedJWK(const UTF8Char *nonce, const UTF8Char *url, Crypto::Cert::X509Key *key, Crypto::Token::JWSignature::Algorithm *alg);
+		static const UTF8Char *EncodeJWS(Net::SSLEngine *ssl, const UTF8Char *protStr, const UTF8Char *data, Crypto::Cert::X509Key *key, Crypto::Token::JWSignature::Algorithm alg);
 		Net::HTTPClient *ACMEPost(const UTF8Char *url, const Char *data);
 	public:
 		ACMEConn(Net::SocketFactory *sockf, const UTF8Char *serverHost, UInt16 port);

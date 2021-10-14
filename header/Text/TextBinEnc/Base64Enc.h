@@ -9,11 +9,11 @@ namespace Text
 		class Base64Enc : public Text::TextBinEnc::ITextBinEnc
 		{
 		public:
-			typedef enum
+			enum class Charset
 			{
-				CS_NORMAL,
-				CS_URL
-			} Charset;
+				Normal,
+				URL
+			};
 		private:
 			Charset cs;
 			Bool noPadding;

@@ -2148,11 +2148,11 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 					Text::JSONBase *json = Text::JSONBase::ParseJSONStrLen(&packet[12], packetSize - 12);
 					if (json)
 					{
-						if (json->GetJSType() == Text::JSONBase::JST_OBJECT)
+						if (json->GetType() == Text::JSONType::Object)
 						{
 							Text::JSONObject *jobj = (Text::JSONObject*)json;
 							Text::JSONBase *jbase = jobj->GetObjectValue((const UTF8Char*)"rxpk");
-							if (jbase && jbase->GetJSType() == Text::JSONBase::JST_ARRAY)
+							if (jbase && jbase->GetType() == Text::JSONType::Array)
 							{
 								Text::TextBinEnc::Base64Enc b64;
 								Text::JSONArray *jarr = (Text::JSONArray*)jbase;
@@ -2163,11 +2163,11 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 								while (i < j)
 								{
 									jbase = jarr->GetArrayValue(i);
-									if (jbase && jbase->GetJSType() == Text::JSONBase::JST_OBJECT)
+									if (jbase && jbase->GetType() == Text::JSONType::Object)
 									{
 										jobj = (Text::JSONObject*)jbase;
 										jbase = jobj->GetObjectValue((const UTF8Char*)"data");
-										if (jbase && jbase->GetJSType() == Text::JSONBase::JST_STRINGUTF8)
+										if (jbase && jbase->GetType() == Text::JSONType::StringUTF8)
 										{
 											Text::JSONStringUTF8 *jstr = (Text::JSONStringUTF8*)jbase;
 											UOSInt dataLen;
