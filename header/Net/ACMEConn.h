@@ -25,6 +25,7 @@ namespace Net
 		const UTF8Char *urlTermOfService;
 		const UTF8Char *urlWebsite;
 		const UTF8Char *nonce;
+		const UTF8Char *accountId;
 
 		static const UTF8Char *JWK(Crypto::Cert::X509Key *key, Crypto::Token::JWSignature::Algorithm *alg);
 		static const UTF8Char *ProtectedJWK(const UTF8Char *nonce, const UTF8Char *url, Crypto::Cert::X509Key *key, Crypto::Token::JWSignature::Algorithm *alg);
@@ -37,6 +38,7 @@ namespace Net
 		Bool IsError();
 		const UTF8Char *GetTermOfService();
 		const UTF8Char *GetWebsite();
+		const UTF8Char *GetAccountId();
 
 		Bool NewNonce();
 		Bool AccountNew();

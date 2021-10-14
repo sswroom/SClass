@@ -28,6 +28,8 @@ namespace SSWR
 			UI::GUITextBox *txtTermOfService;
 			UI::GUILabel *lblWebsite;
 			UI::GUITextBox *txtWebsite;
+			UI::GUILabel *lblAccount;
+			UI::GUITextBox *txtAccount;
 
 			static void __stdcall OnStartClicked(void *userObj);
 		public:

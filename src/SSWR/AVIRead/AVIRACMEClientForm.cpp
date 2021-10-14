@@ -68,6 +68,15 @@ void __stdcall SSWR::AVIRead::AVIRACMEClientForm::OnStartClicked(void *userObj)
 	{
 		me->txtWebsite->SetText((const UTF8Char*)"");
 	}
+	csptr = me->client->GetAccountId();
+	if (csptr)
+	{
+		me->txtAccount->SetText(csptr);
+	}
+	else
+	{
+		me->txtAccount->SetText((const UTF8Char*)"");
+	}
 }
 
 SSWR::AVIRead::AVIRACMEClientForm::AVIRACMEClientForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
@@ -105,6 +114,11 @@ SSWR::AVIRead::AVIRACMEClientForm::AVIRACMEClientForm(UI::GUIClientControl *pare
 	NEW_CLASS(this->txtWebsite, UI::GUITextBox(ui, this, (const UTF8Char*)""));
 	this->txtWebsite->SetRect(104, 100, 300, 23, false);
 	this->txtWebsite->SetReadOnly(true);
+	NEW_CLASS(this->lblAccount, UI::GUILabel(ui, this, (const UTF8Char*)"Account"));
+	this->lblAccount->SetRect(4, 124, 100, 23, false);
+	NEW_CLASS(this->txtAccount, UI::GUITextBox(ui, this, (const UTF8Char*)""));
+	this->txtAccount->SetRect(104, 124, 300, 23, false);
+	this->txtAccount->SetReadOnly(true);
 }
 
 SSWR::AVIRead::AVIRACMEClientForm::~AVIRACMEClientForm()

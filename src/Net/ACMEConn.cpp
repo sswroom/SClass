@@ -137,6 +137,7 @@ Net::HTTPClient *Net::ACMEConn::ACMEPost(const UTF8Char *url, const Char *data)
 	Text::StrDelNew(jws);
 
 	Text::StringBuilderUTF8 sb;
+	cli->GetRespStatus();
 	if (cli->GetRespHeader((const UTF8Char*)"Replay-Nonce", &sb))
 	{
 		SDEL_TEXT(this->nonce);
@@ -163,6 +164,7 @@ Net::ACMEConn::ACMEConn(Net::SocketFactory *sockf, const UTF8Char *serverHost, U
 	this->urlTermOfService = 0;
 	this->urlWebsite = 0;
 	this->nonce = 0;
+	this->accountId = 0;
 	Text::StringBuilderUTF8 sb;
 	sb.Append((const UTF8Char *)"https://");
 	sb.Append(serverHost);
@@ -258,6 +260,7 @@ Net::ACMEConn::~ACMEConn()
 	SDEL_TEXT(this->urlTermOfService);
 	SDEL_TEXT(this->urlWebsite);
 	SDEL_TEXT(this->nonce);
+	SDEL_TEXT(this->accountId);
 }
 
 Bool Net::ACMEConn::IsError()
@@ -281,6 +284,11 @@ const UTF8Char *Net::ACMEConn::GetTermOfService()
 const UTF8Char *Net::ACMEConn::GetWebsite()
 {
 	return this->urlWebsite;
+}
+
+const UTF8Char *Net::ACMEConn::GetAccountId()
+{
+	return this->accountId;
 }
 
 Bool Net::ACMEConn::NewNonce()
@@ -337,8 +345,23 @@ Bool Net::ACMEConn::AccountNew()
 				const UTF8Char *csptr = o->GetObjectString((const UTF8Char*)"type");
 				if (csptr && Text::StrEquals(csptr, (const UTF8Char*)"urn:ietf:params:acme:error:accountDoesNotExist"))
 				{
-					/////////////////////////////
-					succ = true;
+					Text::StringBuilderUTF8 sb;
+					sb.Append((const UTF8Char*)"{\"termsOfServiceAgreed\":true");
+					sb.AppendChar('}', 1);
+					cli = this->ACMEPost(this->urlNewAccount, (const Char*)sb.ToString());
+					if (cli)
+					{
+						mstm.Clear();
+						cli->ReadToEnd(&mstm, 4096);
+						sb.ClearStr();
+						if (cli->GetRespStatus() == Net::WebStatus::SC_CREATED && cli->GetRespHeader((const UTF8Char*)"Location", &sb))
+						{
+							SDEL_TEXT(this->accountId);
+							this->accountId = Text::StrCopyNew(sb.ToString());
+							succ = true;
+						}
+						DEL_CLASS(cli);
+					}
 				}
 			}
 			base->EndUse();
@@ -359,7 +382,29 @@ Bool Net::ACMEConn::AccountRetr()
 	{
 		return false;
 	}
-	return false;
+	Net::HTTPClient *cli = this->ACMEPost(this->urlNewAccount, "{\"onlyReturnExisting\":true}");
+	if (cli == 0)
+	{
+		return false;
+	}
+	Bool succ = false;
+	if (cli->GetRespStatus() == Net::WebStatus::SC_OK)
+	{
+		Text::StringBuilderUTF8 sb;
+		if (cli->GetRespHeader((const UTF8Char*)"Location", &sb))
+		{
+			SDEL_TEXT(this->accountId);
+			this->accountId = Text::StrCopyNew(sb.ToString());
+			succ = true;
+		}
+		DEL_CLASS(cli);
+	}
+	else
+	{
+		DEL_CLASS(cli);
+		succ = false;
+	}
+	return succ;
 }
 
 Bool Net::ACMEConn::NewKey()

@@ -14,8 +14,7 @@ Net::ACMEClient::ACMEClient(Net::SocketFactory *sockf, const UTF8Char *serverHos
 			this->keyReady = this->acme->LoadKey(keyFile);
 			if (this->keyReady)
 			{
-//				this->accReady = this->acme->NewNonce() && this->acme->AccountRetr();
-				this->accReady = this->acme->NewNonce() && this->acme->AccountNew();
+				this->accReady = this->acme->NewNonce() && this->acme->AccountRetr();
 			}
 		}
 		else
@@ -47,4 +46,9 @@ const UTF8Char *Net::ACMEClient::GetTermOfService()
 const UTF8Char *Net::ACMEClient::GetWebsite()
 {
 	return this->acme->GetWebsite();
+}
+
+const UTF8Char *Net::ACMEClient::GetAccountId()
+{
+	return this->acme->GetAccountId();
 }
