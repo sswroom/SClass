@@ -20,6 +20,7 @@ nodeps:
 @BcryptTest
 @BlowfishTest
 @CRC32RTest
+@CSRTest
 @HOTPTest
 @JasyptEncryptorTest
 @JWTTest
@@ -201,6 +202,9 @@ CRC32CTest:
 @ConsoleStartup.o
 CRC32RTest:
 @CRC32RTestMain.o
+@ConsoleStartup.o
+CSRTest:
+@CSRTest.o
 @ConsoleStartup.o
 HOTPTest:
 @HOTPTest.o
@@ -723,6 +727,7 @@ BcryptTest.o: ../../main/CryptoTest/BcryptTest.cpp
 BlowfishTest.o: ../../main/CryptoTest/BlowfishTest.cpp
 CRC32CTest.o: ../../main/CryptoTest/CRC32CTest.cpp
 CRC32RTestMain.o: ../../main/CryptoTest/CRC32R.cpp
+CSRTest.o: ../../main/CryptoTest/CSRTest.cpp
 HOTPTest.o: ../../main/CryptoTest/HOTPTest.cpp
 JasyptEncryptorTest.o: ../../main/CryptoTest/JasyptEncryptorTest.cpp
 JWTTest.o: ../../main/CryptoTest/JWTTest.cpp

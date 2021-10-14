@@ -32,6 +32,9 @@ namespace Net
 		void AppendOID(const UInt8 *oid, UOSInt len);
 		void AppendOIDString(const Char *oidStr);
 		void AppendChoice(UInt32 v);
+		void AppendPrintableString(const UTF8Char *s);
+		void AppendUTF8String(const UTF8Char *s);
+		void AppendIA5String(const UTF8Char *s);
 		void AppendOther(UInt8 type, const UInt8 *buff, UOSInt buffSize);
 
 		const UInt8 *GetBuff(UOSInt *buffSize);

@@ -268,6 +268,21 @@ void Net::ASN1PDUBuilder::AppendChoice(UInt32 v)
 	}
 }
 
+void Net::ASN1PDUBuilder::AppendPrintableString(const UTF8Char *s)
+{
+	this->AppendOther(0x13, s, Text::StrCharCnt(s));
+}
+
+void Net::ASN1PDUBuilder::AppendUTF8String(const UTF8Char *s)
+{
+	this->AppendOther(0x0C, s, Text::StrCharCnt(s));
+}
+
+void Net::ASN1PDUBuilder::AppendIA5String(const UTF8Char *s)
+{
+	this->AppendOther(0x16, s, Text::StrCharCnt(s));
+}
+
 void Net::ASN1PDUBuilder::AppendOther(UInt8 type, const UInt8 *buff, UOSInt buffSize)
 {
 	if (buffSize == 0)
