@@ -261,6 +261,7 @@ Net::ACMEConn::~ACMEConn()
 	SDEL_TEXT(this->urlWebsite);
 	SDEL_TEXT(this->nonce);
 	SDEL_TEXT(this->accountId);
+	SDEL_CLASS(this->key);
 }
 
 Bool Net::ACMEConn::IsError()

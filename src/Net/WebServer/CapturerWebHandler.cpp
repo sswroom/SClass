@@ -286,7 +286,7 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::WiFiDownloadFunc(Net::WebServ
 	while (i < j)
 	{
 		entry = entryList->GetItem(i);
-		sb.AppendHexBuff(entry->mac, 6, ':', Text::LBT_NONE);
+		sb.AppendHexBuff(entry->mac, 6, ':', Text::LineBreakType::None);
 		sb.AppendChar('\t', 1);
 		if (entry->ssid)
 		{
@@ -306,11 +306,11 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::WiFiDownloadFunc(Net::WebServ
 		if (entry->serialNum)
 			sb.Append(entry->serialNum);
 		sb.AppendChar('\t', 1);
-		sb.AppendHexBuff(entry->ouis[0], 3, 0, Text::LBT_NONE);
+		sb.AppendHexBuff(entry->ouis[0], 3, 0, Text::LineBreakType::None);
 		sb.AppendChar(',', 1);
-		sb.AppendHexBuff(entry->ouis[1], 3, 0, Text::LBT_NONE);
+		sb.AppendHexBuff(entry->ouis[1], 3, 0, Text::LineBreakType::None);
 		sb.AppendChar(',', 1);
-		sb.AppendHexBuff(entry->ouis[2], 3, 0, Text::LBT_NONE);
+		sb.AppendHexBuff(entry->ouis[2], 3, 0, Text::LineBreakType::None);
 		sb.AppendChar('\t', 1);
 		if (entry->country)
 		{
@@ -332,7 +332,7 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::WiFiDownloadFunc(Net::WebServ
 		sb.Append((const UTF8Char*)"\t");
 		if (entry->ieLen > 0)
 		{
-			sb.AppendHexBuff(entry->ieBuff, entry->ieLen, 0, Text::LBT_NONE);
+			sb.AppendHexBuff(entry->ieBuff, entry->ieLen, 0, Text::LineBreakType::None);
 		}
 		sb.Append((const UTF8Char*)"\r\n");
 		i++;
@@ -390,7 +390,7 @@ void Net::WebServer::CapturerWebHandler::AppendWiFiTable(Text::StringBuilderUTF 
 		if (scanTime == 0 || scanTime == entry->lastScanTimeTicks)
 		{
 			sb->Append((const UTF8Char*)"<tr><td>");
-			sb->AppendHexBuff(entry->mac, 6, ':', Text::LBT_NONE);
+			sb->AppendHexBuff(entry->mac, 6, ':', Text::LineBreakType::None);
 			sb->Append((const UTF8Char*)"</td><td>");
 			sb->Append((const UTF8Char*)Net::MACInfo::GetMACInfo(entry->macInt)->name);
 			sb->Append((const UTF8Char*)"</td><td>");
@@ -460,7 +460,7 @@ void Net::WebServer::CapturerWebHandler::AppendBTTable(Text::StringBuilderUTF *s
 		if (!inRangeOnly || (entry->inRange && (currTime - entry->lastSeenTime) <= BTTIMEOUT))
 		{
 			sb->Append((const UTF8Char*)"<tr><td>");
-			sb->AppendHexBuff(entry->mac, 6, ':', Text::LBT_NONE);
+			sb->AppendHexBuff(entry->mac, 6, ':', Text::LineBreakType::None);
 			sb->Append((const UTF8Char*)"</td><td>");
 			sb->Append(IO::BTScanLog::RadioTypeGetName(entry->radioType));
 			sb->Append((const UTF8Char*)"</td><td>");

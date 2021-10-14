@@ -16,7 +16,7 @@ void __stdcall ARPHandler(const UInt8 *hwAddr, UInt32 ipv4, void *userData)
 	UTF8Char sbuff[64];
 	sb.ClearStr();
 	sb.Append((const UTF8Char*)"ARP Reply: HW Addr = ");
-	sb.AppendHexBuff(hwAddr, 6, ':', Text::LBT_NONE);
+	sb.AppendHexBuff(hwAddr, 6, ':', Text::LineBreakType::None);
 	sb.Append((const UTF8Char*)", IP = ");
 	Net::SocketUtil::GetIPv4Name(sbuff, ipv4);
 	sb.Append(sbuff);
@@ -58,7 +58,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				{
 					sb.ClearStr();
 					sb.Append((const UTF8Char*)"Detected adapter: HW Addr = ");
-					sb.AppendHexBuff(hwAddr, 6, ':', Text::LBT_NONE);
+					sb.AppendHexBuff(hwAddr, 6, ':', Text::LineBreakType::None);
 					sb.Append((const UTF8Char*)", IP = ");
 					Net::SocketUtil::GetIPv4Name(sbuff, ip);
 					sb.Append(sbuff);

@@ -242,7 +242,7 @@ SSWR::AVIReadCE::AVIRCEThreadInfoForm::AVIRCEThreadInfoForm(UI::GUIClientControl
 				buffSize = proc->ReadMemory(eip, buff, 256);
 				if (buffSize > 0)
 				{
-					sb.AppendHexBuff(buff, buffSize, ' ', Text::LBT_CRLF);
+					sb.AppendHexBuff(buff, buffSize, ' ', Text::LineBreakType::CRLF);
 					sb.Append((const UTF8Char*)"\r\n");
 				}
 
@@ -253,7 +253,7 @@ SSWR::AVIReadCE::AVIRCEThreadInfoForm::AVIRCEThreadInfoForm(UI::GUIClientControl
 				buffSize = proc->ReadMemory(esp, buff, 256);
 				if (buffSize > 0)
 				{
-					sb.AppendHex(buff, buffSize, ' ', Text::LBT_CRLF);
+					sb.AppendHex(buff, buffSize, ' ', Text::LineBreakType::CRLF);
 					sb.Append((const UTF8Char*)"\r\n");
 				}
 				this->stacksMem->Add(Text::StrCopyNew(sb.ToString()));

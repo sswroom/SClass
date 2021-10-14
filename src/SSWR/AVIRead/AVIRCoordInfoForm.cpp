@@ -71,7 +71,7 @@ void SSWR::AVIRead::AVIRCoordInfoForm::ShowInfo(const Math::CoordinateSystemMana
 		{
 			Text::StringBuilderUTF8 sb;
 			Math::SROGCWKTWriter wkt;
-			wkt.WriteCSys(csys, sbuff, 0, Text::LBT_CRLF);
+			wkt.WriteCSys(csys, sbuff, 0, Text::LineBreakType::CRLF);
 			this->txtWKT->SetText((const UTF8Char*)sbuff);
 			csys->ToString(&sb);
 			this->txtDisp->SetText(sb.ToString());

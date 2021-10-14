@@ -26,7 +26,7 @@ void __stdcall SSWR::AVIRead::AVIRPasswordHashForm::OnGenerateClicked(void *user
 	hash->Calc(sb.ToString(), sb.GetLength());
 	hash->GetValue(buff);
 	sb.ClearStr();
-	sb.AppendHexBuff(buff, hash->GetResultSize(), 0, Text::LBT_NONE);
+	sb.AppendHexBuff(buff, hash->GetResultSize(), 0, Text::LineBreakType::None);
 	DEL_CLASS(hash);
 	me->txtHashValue->SetText(sb.ToString());
 }

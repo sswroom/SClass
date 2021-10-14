@@ -17,7 +17,7 @@ void Test(IO::ConsoleWriter *console, const Char *pwd, const Char *salt, UOSInt 
 	Crypto::PBKDF2::Calc((const UInt8*)salt, Text::StrCharCnt(salt), cnt, dkLen, hmac, dk);
 	console->Write((const UTF8Char*)"Output =  ");
 	Text::StringBuilderUTF8 sb;
-	sb.AppendHexBuff(dk, dkLen, 0, Text::LBT_NONE);
+	sb.AppendHexBuff(dk, dkLen, 0, Text::LineBreakType::None);
 	console->WriteLine(sb.ToString());
 	DEL_CLASS(hmac);
 	DEL_CLASS(sha1);

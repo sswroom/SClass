@@ -1883,7 +1883,7 @@ Int32 DB::DBMS::UserLoginMySQL(Int32 sessId, const UTF8Char *userName, const UIn
 
 			#if defined(VERBOSE)
 			Text::StringBuilderUTF8 sb;
-			sb.AppendHexBuff(hashBuff, 20, ' ', Text::LBT_NONE);
+			sb.AppendHexBuff(hashBuff, 20, ' ', Text::LineBreakType::None);
 			printf("Password Hash = %s\r\n", sb.ToString());
 			#endif
 			userId = user->userId;

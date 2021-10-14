@@ -82,7 +82,7 @@ Bool __stdcall Net::EthernetWebHandler::DeviceReq(EthernetWebHandler *me, Net::W
 			mac = macList->GetItem(i);
 			sb.Append((const UTF8Char*)"<tr><td>");
 			WriteMUInt64(sbuff, mac->macAddr);
-			sb.AppendHexBuff(&sbuff[2], 6, ':', Text::LBT_NONE);
+			sb.AppendHexBuff(&sbuff[2], 6, ':', Text::LineBreakType::None);
 			sb.Append((const UTF8Char*)"</td><td>");
 			macInfo = Net::MACInfo::GetMACInfo(mac->macAddr);
 			sb.Append((const UTF8Char*)macInfo->name);
@@ -791,7 +791,7 @@ Bool __stdcall Net::EthernetWebHandler::DHCPReq(EthernetWebHandler *me, Net::Web
 			Sync::MutexUsage mutUsage(dhcp->mut);
 			sb.Append((const UTF8Char*)"<tr><td>");
 			WriteMUInt64(sbuff, dhcp->iMAC);
-			sb.AppendHexBuff(&sbuff[2], 6, ':', Text::LBT_NONE);
+			sb.AppendHexBuff(&sbuff[2], 6, ':', Text::LineBreakType::None);
 			sb.Append((const UTF8Char*)"</td><td>");
 			macInfo = Net::MACInfo::GetMACInfo(dhcp->iMAC);
 			sb.Append((const UTF8Char*)macInfo->name);

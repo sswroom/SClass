@@ -505,7 +505,7 @@ Bool Net::EthernetAnalyzer::PacketNull(const UInt8 *packet, UOSInt packetSize)
 		{
 			this->isFirst = false;
 			Text::StringBuilderUTF8 sb;
-			sb.AppendHexBuff(packet, packetSize, ' ', Text::LBT_CRLF);
+			sb.AppendHexBuff(packet, packetSize, ' ', Text::LineBreakType::CRLF);
 			this->errWriter->WriteLine(sb.ToString());
 		}
 	}
@@ -541,7 +541,7 @@ Bool Net::EthernetAnalyzer::PacketEthernet(const UInt8 *packet, UOSInt packetSiz
 		{
 			this->isFirst = false;
 			Text::StringBuilderUTF8 sb;
-			sb.AppendHexBuff(packet, packetSize, ' ', Text::LBT_CRLF);
+			sb.AppendHexBuff(packet, packetSize, ' ', Text::LineBreakType::CRLF);
 			this->errWriter->WriteLine(sb.ToString());
 		}
 	}
@@ -593,7 +593,7 @@ Bool Net::EthernetAnalyzer::PacketLinux(const UInt8 *packet, UOSInt packetSize)
 		{
 			this->isFirst = false;
 			Text::StringBuilderUTF8 sb;
-			sb.AppendHexBuff(packet, packetSize, ' ', Text::LBT_CRLF);
+			sb.AppendHexBuff(packet, packetSize, ' ', Text::LineBreakType::CRLF);
 			this->errWriter->WriteLine(sb.ToString());
 		}
 	}

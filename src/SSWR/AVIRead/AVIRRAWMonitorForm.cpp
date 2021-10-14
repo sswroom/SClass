@@ -1055,7 +1055,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnDeviceSelChg(void *userObj)
 				sb.Append((const UTF8Char*)"\r\n");
 				sb.Append((const UTF8Char*)"Dest MAC: ");
 				WriteMUInt64(sbuff, mac->packetDestMAC[(cnt + i) & 15]);
-				sb.AppendHexBuff(&sbuff[2], 6, ':', Text::LBT_NONE);
+				sb.AppendHexBuff(&sbuff[2], 6, ':', Text::LineBreakType::None);
 				Net::PacketAnalyzerEthernet::PacketEthernetDataGetDetail(mac->packetEtherType[(cnt + i) & 15], mac->packetData[(cnt + i) & 15], mac->packetSize[(cnt + i) & 15], &sb);
 				sb.Append((const UTF8Char*)"\r\n");
 				sb.Append((const UTF8Char*)"\r\n");

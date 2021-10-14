@@ -485,12 +485,12 @@ Bool IO::FileAnalyse::PCapngFileAnalyse::GetFrameDetail(UOSInt index, Text::Stri
 			else if (optCode == 6)
 			{
 				sb->Append((const UTF8Char*)"\r\nMAC Address=");
-				sb->AppendHexBuff(&this->packetBuff[i + 4], 6, ':', Text::LBT_NONE);
+				sb->AppendHexBuff(&this->packetBuff[i + 4], 6, ':', Text::LineBreakType::None);
 			}
 			else if (optCode == 7)
 			{
 				sb->Append((const UTF8Char*)"\r\nEUI Address=");
-				sb->AppendHexBuff(&this->packetBuff[i + 4], 8, ' ', Text::LBT_NONE);
+				sb->AppendHexBuff(&this->packetBuff[i + 4], 8, ' ', Text::LineBreakType::None);
 			}
 			else if (optCode == 8)
 			{
@@ -565,7 +565,7 @@ Bool IO::FileAnalyse::PCapngFileAnalyse::GetFrameDetail(UOSInt index, Text::Stri
 			else if (optCode == 15)
 			{
 				sb->Append((const UTF8Char*)"\r\nHardware=");
-				sb->AppendHexBuff(&this->packetBuff[i + 4], 8, ' ', Text::LBT_NONE);
+				sb->AppendHexBuff(&this->packetBuff[i + 4], 8, ' ', Text::LineBreakType::None);
 			}
 
 			i += 4 + (UOSInt)optLeng;
@@ -675,7 +675,7 @@ Bool IO::FileAnalyse::PCapngFileAnalyse::GetFrameDetail(UOSInt index, Text::Stri
 		{
 			sb->Append((const UTF8Char*)"\r\n");
 			sb->Append((const UTF8Char*)"\r\n");
-			sb->AppendHexBuff(&this->packetBuff[28], block->blockLength - 32, ' ', Text::LBT_CRLF);
+			sb->AppendHexBuff(&this->packetBuff[28], block->blockLength - 32, ' ', Text::LineBreakType::CRLF);
 		}
 	}
 	else if (block->blockType == 5)
@@ -1055,7 +1055,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::PCapngFileAnalyse::GetFrameDetail
 			else if (optCode == 7)
 			{
 				sb.ClearStr();
-				sb.AppendHexBuff(&this->packetBuff[i + 4], 8, ':', Text::LBT_NONE);
+				sb.AppendHexBuff(&this->packetBuff[i + 4], 8, ':', Text::LineBreakType::None);
 				frame->AddField(i + 4, 8, (const UTF8Char*)"EUI Address", sb.ToString());
 			}
 			else if (optCode == 8)

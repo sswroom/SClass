@@ -126,17 +126,17 @@ Char *Math::SRWKTWriter::WriteDatum(const Math::CoordinateSystem::DatumData1 *da
 
 Char *Math::SRWKTWriter::WriteNextLine(Char *buff, UOSInt lev, Text::LineBreakType lbt)
 {
-	if (lbt != Text::LBT_NONE)
+	if (lbt != Text::LineBreakType::None)
 	{
-		if (lbt == Text::LBT_CR)
+		if (lbt == Text::LineBreakType::CR)
 		{
 			*buff++ = '\r';
 		}		
-		else if (lbt == Text::LBT_LF)
+		else if (lbt == Text::LineBreakType::LF)
 		{
 			*buff++ = '\n';
 		}		
-		else if (lbt == Text::LBT_CRLF)
+		else if (lbt == Text::LineBreakType::CRLF)
 		{
 			*buff++ = '\r';
 			*buff++ = '\n';

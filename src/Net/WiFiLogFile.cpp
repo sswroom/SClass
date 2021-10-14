@@ -304,7 +304,7 @@ Bool Net::WiFiLogFile::StoreFile(const UTF8Char *fileName)
 	{
 		log = this->logList->GetItem(i);
 		sb.ClearStr();
-		sb.AppendHexBuff(log->mac, 6, ':', Text::LBT_NONE);
+		sb.AppendHexBuff(log->mac, 6, ':', Text::LineBreakType::None);
 		sb.Append((const UTF8Char*)"\t");
 		sb.Append(log->ssid);
 		sb.Append((const UTF8Char*)"\t");
@@ -327,11 +327,11 @@ Bool Net::WiFiLogFile::StoreFile(const UTF8Char *fileName)
 			sb.Append(log->serialNum);
 		}
 		sb.Append((const UTF8Char*)"\t");
-		sb.AppendHexBuff(log->ouis[0], 3, 0, Text::LBT_NONE);
+		sb.AppendHexBuff(log->ouis[0], 3, 0, Text::LineBreakType::None);
 		sb.AppendChar(',', 1);
-		sb.AppendHexBuff(log->ouis[1], 3, 0, Text::LBT_NONE);
+		sb.AppendHexBuff(log->ouis[1], 3, 0, Text::LineBreakType::None);
 		sb.AppendChar(',', 1);
-		sb.AppendHexBuff(log->ouis[2], 3, 0, Text::LBT_NONE);
+		sb.AppendHexBuff(log->ouis[2], 3, 0, Text::LineBreakType::None);
 		sb.Append((const UTF8Char*)"\t");
 		if (log->country)
 		{
@@ -355,7 +355,7 @@ Bool Net::WiFiLogFile::StoreFile(const UTF8Char *fileName)
 		sb.AppendChar('\t', 1);
 		if (log->ieLen > 0)
 		{
-			sb.AppendHexBuff(log->ieBuff, log->ieLen, 0, Text::LBT_NONE);
+			sb.AppendHexBuff(log->ieBuff, log->ieLen, 0, Text::LineBreakType::None);
 		}
 		if (!writer->WriteLine(sb.ToString()))
 		{

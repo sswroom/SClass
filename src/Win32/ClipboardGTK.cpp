@@ -193,19 +193,19 @@ Bool Win32::Clipboard::GetDataTextH(void *hand, UInt32 fmtId, Text::StringBuilde
 						const guchar *rawdata = gtk_selection_data_get_data_with_length(data, &leng);
 						if (Text::StrEquals(typeName, "TIMESTAMP") && leng == 8)
 						{
-							sb->AppendHexBuff(rawdata, (UOSInt)leng, ' ', Text::LBT_CRLF);
+							sb->AppendHexBuff(rawdata, (UOSInt)leng, ' ', Text::LineBreakType::CRLF);
 /*							Data::DateTime dt;
 							dt.SetUnixTimestamp(ReadInt64(rawdata));
 							sb->Append(&dt);*/
 						}
 						else if (Text::StrEquals(typeName, "x-special/gnome-copied-files"))
 						{
-							sb->AppendHexBuff(rawdata, (UOSInt)leng, ' ', Text::LBT_CRLF);
+							sb->AppendHexBuff(rawdata, (UOSInt)leng, ' ', Text::LineBreakType::CRLF);
 //							sb->Append((const UTF8Char*)rawdata, leng);
 						}
 						else
 						{
-							sb->AppendHexBuff(rawdata, (UOSInt)leng, ' ', Text::LBT_CRLF);
+							sb->AppendHexBuff(rawdata, (UOSInt)leng, ' ', Text::LineBreakType::CRLF);
 						}
 					}
 					gtk_selection_data_free(data);

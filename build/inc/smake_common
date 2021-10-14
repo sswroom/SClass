@@ -3467,6 +3467,7 @@ Text/JSONBuilder.h: ../../src/Text/JSONBuilder.cpp
 @JSONBuilder.o
 Text/JSText.h: ../../src/Text/JSText.cpp
 @JSText.o
+Text/LineBreakType.h:
 Text/Locale.h: ../../src/Text/Locale.cpp
 @Locale.o
 Text/MailBase64Stream.h: ../../src/Text/MailBase64Stream.cpp

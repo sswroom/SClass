@@ -640,7 +640,7 @@ Bool IO::UDPLog::ParseLog(UInt8 *dataBuff, UOSInt buffSize, Text::StringBuilderU
 						sb->Append((const UTF8Char*)"\r\nSensor Port = ");
 						sb->AppendU16(ReadMUInt16(&dataBuff[15]));
 						sb->Append((const UTF8Char*)"\r\nSensor ID = ");
-						sb->AppendHexBuff(&dataBuff[17], 5, 0, Text::LBT_NONE);
+						sb->AppendHexBuff(&dataBuff[17], 5, 0, Text::LineBreakType::None);
 						Data::DateTime t;
 						sb->Append((const UTF8Char*)"\r\nGPS Time = ");
 						t.SetValue((UInt16)(Data::ByteTool::GetBCD8(dataBuff[27]) + 2000), Data::ByteTool::GetBCD8(dataBuff[26]), Data::ByteTool::GetBCD8(dataBuff[25]), Data::ByteTool::GetBCD8(dataBuff[22]), Data::ByteTool::GetBCD8(dataBuff[23]), Data::ByteTool::GetBCD8(dataBuff[24]), 0, 0);
@@ -692,7 +692,7 @@ Bool IO::UDPLog::ParseLog(UInt8 *dataBuff, UOSInt buffSize, Text::StringBuilderU
 						sb->Append((const UTF8Char*)"\r\nSensor Port = ");
 						sb->AppendU16(ReadMUInt16(&dataBuff[15]));
 						sb->Append((const UTF8Char*)"\r\nSensor ID = ");
-						sb->AppendHexBuff(&dataBuff[17], 5, 0, Text::LBT_NONE);
+						sb->AppendHexBuff(&dataBuff[17], 5, 0, Text::LineBreakType::None);
 						Data::DateTime t;
 						sb->Append((const UTF8Char*)"\r\nGPS Time = ");
 						t.SetValue((UInt16)(Data::ByteTool::GetBCD8(dataBuff[27]) + 2000), Data::ByteTool::GetBCD8(dataBuff[26]), Data::ByteTool::GetBCD8(dataBuff[25]), Data::ByteTool::GetBCD8(dataBuff[22]), Data::ByteTool::GetBCD8(dataBuff[23]), Data::ByteTool::GetBCD8(dataBuff[24]), 0, 0);
@@ -784,7 +784,7 @@ Bool IO::UDPLog::ParseLog(UInt8 *dataBuff, UOSInt buffSize, Text::StringBuilderU
 						sb->Append((const UTF8Char*)"\r\nSensor Port = ");
 						sb->AppendU16(ReadMUInt16(&dataBuff[15]));
 						sb->Append((const UTF8Char*)"\r\nSensor ID = ");
-						sb->AppendHexBuff(&dataBuff[17], 5, 0, Text::LBT_NONE);
+						sb->AppendHexBuff(&dataBuff[17], 5, 0, Text::LineBreakType::None);
 						Data::DateTime t;
 						sb->Append((const UTF8Char*)"\r\nGPS Time = ");
 						t.SetValue((UInt16)(Data::ByteTool::GetBCD8(dataBuff[27]) + 2000), Data::ByteTool::GetBCD8(dataBuff[26]), Data::ByteTool::GetBCD8(dataBuff[25]), Data::ByteTool::GetBCD8(dataBuff[22]), Data::ByteTool::GetBCD8(dataBuff[23]), Data::ByteTool::GetBCD8(dataBuff[24]), 0, 0);

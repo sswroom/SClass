@@ -28,7 +28,7 @@ void __stdcall ARPHandler(const UInt8 *hwAddr, UInt32 ipv4, void *userData)
 		sb.Append(sbuff);
 		sb.AppendChar(' ', 18 - sb.GetLength());
 		sb.Append((const UTF8Char *)", HW Addr = ");
-		sb.AppendHexBuff(hwAddr, 6, ':', Text::LBT_NONE);
+		sb.AppendHexBuff(hwAddr, 6, ':', Text::LineBreakType::None);
 		sb.Append((const UTF8Char *)", Vendor = ");
 		macEntry = Net::MACInfo::GetMACInfoBuff(hwAddr);
 		if (macEntry)
@@ -73,7 +73,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			sb.AppendChar(' ', 18 - sb.GetLength());
 			sb.Append((const UTF8Char *)", HW Addr = ");
 			arp->GetPhysicalAddr(hwAddr);
-			sb.AppendHexBuff(hwAddr, 6, ':', Text::LBT_NONE);
+			sb.AppendHexBuff(hwAddr, 6, ':', Text::LineBreakType::None);
 			sb.Append((const UTF8Char *)", Vendor = ");
 			macEntry = Net::MACInfo::GetMACInfoBuff(hwAddr);
 			if (macEntry)
@@ -116,7 +116,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 					console->WriteLine();
 					sb.ClearStr();
 					sb.Append((const UTF8Char*)"Adapter: HW Addr = ");
-					sb.AppendHexBuff(hwAddr, 6, ':', Text::LBT_NONE);
+					sb.AppendHexBuff(hwAddr, 6, ':', Text::LineBreakType::None);
 					sb.Append((const UTF8Char*)", IP = ");
 					Net::SocketUtil::GetIPv4Name(sbuff, ip);
 					sb.Append(sbuff);

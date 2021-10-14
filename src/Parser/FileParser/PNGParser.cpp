@@ -66,7 +66,7 @@ UInt8 *PNGParser_ParsePixelsBits(UInt8 *srcData, UInt8 *destBuff, UOSInt bpl, UO
 		else
 		{
 //			printf("%d, Line type = %d\r\n", px);
-//			sb.AppendHexBuff(srcData, (maxX - currX) * pxShift / 8, ' ', Text::LBT_CRLF);
+//			sb.AppendHexBuff(srcData, (maxX - currX) * pxShift / 8, ' ', Text::LineBreakType::CRLF);
 //			printf("%s\r\n", sb.ToString());
 			while (currX < maxX)
 			{

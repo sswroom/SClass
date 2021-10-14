@@ -48,7 +48,7 @@ UInt32 __stdcall Net::LDAPClient::RecvThread(void *userObj)
 		t = clk->GetTimeDiff();
 		#if defined(VERBOSE)
 		sb->ClearStr();
-		sb->AppendHexBuff(&recvBuff[buffSize], recvSize, ' ', Text::LBT_CRLF);
+		sb->AppendHexBuff(&recvBuff[buffSize], recvSize, ' ', Text::LineBreakType::CRLF);
 		printf("%s\r\n", sb->ToString());
 		#endif
 
@@ -816,11 +816,11 @@ void Net::LDAPClient::SearchResDisplay(const UTF8Char *type, const UTF8Char *val
 		sb->AppendChar('-', 1);
 		sb->AppendHex16(ReadMUInt16(&value[8]));
 		sb->AppendChar('-', 1);
-		sb->AppendHexBuff(&value[10], 6, 0, Text::LBT_NONE);
+		sb->AppendHexBuff(&value[10], 6, 0, Text::LineBreakType::None);
 	}
 	else if (Text::StrEquals(type, (const UTF8Char*)"dSASignature"))
 	{
-		sb->AppendHexBuff(value, 40, 0, Text::LBT_NONE);
+		sb->AppendHexBuff(value, 40, 0, Text::LineBreakType::None);
 	}
 	else if (Text::StrEquals(type, (const UTF8Char*)"objectSid"))
 	{

@@ -938,7 +938,7 @@ Bool Manage::DasmMIPS::Disasm32(IO::Writer *writer, Manage::AddressResolver *add
 			buffSize = sess.memReader->ReadMemory(sess.regs.pc, buff, 16);
 			if (buffSize > 0)
 			{
-				outStr->AppendHexBuff(buff, buffSize, ' ', Text::LBT_NONE);
+				outStr->AppendHexBuff(buff, buffSize, ' ', Text::LineBreakType::None);
 			}
 			outStr->Append((const UTF8Char*)"\r\n");
 			writer->Write(outStr->ToString());

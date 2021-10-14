@@ -226,7 +226,7 @@ Bool IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOSInt index, Text::StringBu
 			this->fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
 
 			sb->Append((const UTF8Char*)"\r\nData:\r\n");
-			sb->AppendHexBuff(packBuff, (UOSInt)(pack->packSize - 8), ' ', Text::LBT_CRLF);
+			sb->AppendHexBuff(packBuff, (UOSInt)(pack->packSize - 8), ' ', Text::LineBreakType::CRLF);
 
 			MemFree(packBuff);
 		}
@@ -277,7 +277,7 @@ Bool IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOSInt index, Text::StringBu
 			sb->Append((const UTF8Char*)"\r\nPreferred volume = ");
 			Text::SBAppendF64(sb, ReadMInt16(&packBuff[24]) / 256.0);
 			sb->Append((const UTF8Char*)"\r\nReserved = ");
-			sb->AppendHexBuff(&packBuff[26], 10, ' ', Text::LBT_NONE);
+			sb->AppendHexBuff(&packBuff[26], 10, ' ', Text::LineBreakType::None);
 			sb->Append((const UTF8Char*)"\r\nMatrix:");
 			sb->Append((const UTF8Char*)"\r\na b u   ");
 			Text::SBAppendF64(sb, ReadMInt32(&packBuff[36]) / 65536.0);
@@ -507,7 +507,7 @@ Bool IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOSInt index, Text::StringBu
 				sb->Append((const UTF8Char*)"\r\n-Flags = ");
 				sb->AppendHex24(ReadMUInt32(&packBuff[k + 8]));
 				sb->Append((const UTF8Char*)"\r\nData:\r\n");
-				sb->AppendHexBuff(&packBuff[k + 12], l - 12, ' ', Text::LBT_CRLF);
+				sb->AppendHexBuff(&packBuff[k + 12], l - 12, ' ', Text::LineBreakType::CRLF);
 				k += l;
 				i++;
 			}
@@ -546,7 +546,7 @@ Bool IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOSInt index, Text::StringBu
 					dataType = 2;
 				}
 				sb->Append((const UTF8Char*)"\r\n-Reserved = ");
-				sb->AppendHexBuff(&packBuff[k + 8], 6, ' ', Text::LBT_NONE);
+				sb->AppendHexBuff(&packBuff[k + 8], 6, ' ', Text::LineBreakType::None);
 				sb->Append((const UTF8Char*)"\r\n-Data reference index = ");
 				sb->AppendHex16(ReadMUInt16(&packBuff[k + 14]));
 				if (dataType == 2)
@@ -632,13 +632,13 @@ Bool IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOSInt index, Text::StringBu
 					if (endOfst < l)
 					{
 						sb->Append((const UTF8Char*)"\r\nExtra Data:\r\n");
-						sb->AppendHexBuff(&packBuff[k + endOfst], l - endOfst, ' ', Text::LBT_CRLF);
+						sb->AppendHexBuff(&packBuff[k + endOfst], l - endOfst, ' ', Text::LineBreakType::CRLF);
 					}
 				}
 				else
 				{
 					sb->Append((const UTF8Char*)"\r\nData:\r\n");
-					sb->AppendHexBuff(&packBuff[k + 16], l - 16, ' ', Text::LBT_CRLF);
+					sb->AppendHexBuff(&packBuff[k + 16], l - 16, ' ', Text::LineBreakType::CRLF);
 				}
 				k += l;
 				i++;

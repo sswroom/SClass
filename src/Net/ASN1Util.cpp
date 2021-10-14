@@ -273,7 +273,7 @@ Bool Net::ASN1Util::PDUToString(const UInt8 *pdu, const UInt8 *pduEnd, Text::Str
 			else
 			{
 				sb->AppendChar('(', 1);
-				sb->AppendHexBuff(&pdu[ofst], len, ' ', Text::LBT_NONE);
+				sb->AppendHexBuff(&pdu[ofst], len, ' ', Text::LineBreakType::None);
 				sb->AppendChar(')', 1);
 			}
 			sb->Append((const UTF8Char*)"\r\n");
@@ -296,7 +296,7 @@ Bool Net::ASN1Util::PDUToString(const UInt8 *pdu, const UInt8 *pduEnd, Text::Str
 			{
 				sb->AppendChar('\t', level);
 				sb->Append((const UTF8Char*)"INTEGER ");
-				sb->AppendHexBuff(&pdu[ofst], len, ' ', Text::LBT_NONE);
+				sb->AppendHexBuff(&pdu[ofst], len, ' ', Text::LineBreakType::None);
 				sb->Append((const UTF8Char*)"\r\n");
 				pdu += ofst + len;
 			}
@@ -304,7 +304,7 @@ Bool Net::ASN1Util::PDUToString(const UInt8 *pdu, const UInt8 *pduEnd, Text::Str
 			{
 				sb->AppendChar('\t', level);
 				sb->Append((const UTF8Char*)"INTEGER\r\n");
-				sb->AppendHexBuff(&pdu[ofst], len, ' ', Text::LBT_CRLF);
+				sb->AppendHexBuff(&pdu[ofst], len, ' ', Text::LineBreakType::CRLF);
 				sb->Append((const UTF8Char*)"\r\n");
 				pdu += ofst + len;
 			}
@@ -312,7 +312,7 @@ Bool Net::ASN1Util::PDUToString(const UInt8 *pdu, const UInt8 *pduEnd, Text::Str
 		case 0x3:
 			sb->AppendChar('\t', level);
 			sb->Append((const UTF8Char*)"BIT STRING ");
-			sb->AppendHexBuff(&pdu[ofst], len, ' ', Text::LBT_NONE);
+			sb->AppendHexBuff(&pdu[ofst], len, ' ', Text::LineBreakType::None);
 			sb->Append((const UTF8Char*)"\r\n");
 			pdu += ofst + len;
 			break;
@@ -330,7 +330,7 @@ Bool Net::ASN1Util::PDUToString(const UInt8 *pdu, const UInt8 *pduEnd, Text::Str
 			else
 			{
 				sb->Append((const UTF8Char*)"(");
-				sb->AppendHexBuff(&pdu[ofst], len, ' ', Text::LBT_NONE);
+				sb->AppendHexBuff(&pdu[ofst], len, ' ', Text::LineBreakType::None);
 				sb->Append((const UTF8Char*)")\r\n");
 			}
 			DEL_CLASS(innerSb);
@@ -419,7 +419,7 @@ Bool Net::ASN1Util::PDUToString(const UInt8 *pdu, const UInt8 *pduEnd, Text::Str
 		case 0x1E:
 			sb->AppendChar('\t', level);
 			sb->Append((const UTF8Char*)"BMPString (");
-			sb->AppendHexBuff(&pdu[ofst], len, ' ', Text::LBT_NONE);
+			sb->AppendHexBuff(&pdu[ofst], len, ' ', Text::LineBreakType::None);
 			sb->Append((const UTF8Char*)")\r\n");
 			pdu += ofst + len;
 			break;
@@ -430,7 +430,7 @@ Bool Net::ASN1Util::PDUToString(const UInt8 *pdu, const UInt8 *pduEnd, Text::Str
 				sb->Append((const UTF8Char*)"UNKNOWN 0x");
 				sb->AppendHex8(type);
 				sb->Append((const UTF8Char*)" (");
-				sb->AppendHexBuff(&pdu[ofst], len, ' ', Text::LBT_NONE);
+				sb->AppendHexBuff(&pdu[ofst], len, ' ', Text::LineBreakType::None);
 				sb->Append((const UTF8Char*)")\r\n");
 				pdu += ofst + len;
 				break;
@@ -451,7 +451,7 @@ Bool Net::ASN1Util::PDUToString(const UInt8 *pdu, const UInt8 *pduEnd, Text::Str
 				else
 				{
 					sb->Append((const UTF8Char*)" (");
-					sb->AppendHexBuff(&pdu[ofst], len, ' ', Text::LBT_NONE);
+					sb->AppendHexBuff(&pdu[ofst], len, ' ', Text::LineBreakType::None);
 					sb->Append((const UTF8Char*)")\r\n");
 				}
 				DEL_CLASS(innerSb);
@@ -501,7 +501,7 @@ Bool Net::ASN1Util::PDUToString(const UInt8 *pdu, const UInt8 *pduEnd, Text::Str
 			else
 			{
 				sb->Append((const UTF8Char*)"(");
-				sb->AppendHexBuff(&pdu[ofst], len, ' ', Text::LBT_NONE);
+				sb->AppendHexBuff(&pdu[ofst], len, ' ', Text::LineBreakType::None);
 				sb->Append((const UTF8Char*)")\r\n");
 			}
 			DEL_CLASS(innerSb);

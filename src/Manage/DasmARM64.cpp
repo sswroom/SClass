@@ -4985,7 +4985,7 @@ Bool Manage::DasmARM64::Disasm64(IO::Writer *writer, Manage::AddressResolver *ad
 			buffSize = sess.memReader->ReadMemory(oriPC, buff, 16);
 			if (buffSize > 0)
 			{
-				outStr->AppendHexBuff(buff, buffSize, ' ', Text::LBT_NONE);
+				outStr->AppendHexBuff(buff, buffSize, ' ', Text::LineBreakType::None);
 			}
 			outStr->Append((const UTF8Char*)"\r\n");
 			writer->Write(outStr->ToString());

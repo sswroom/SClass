@@ -8,7 +8,7 @@ void __stdcall SSWR::AVIRead::AVIRIPScanDetectorForm::OnIPScanEvent(const UInt8 
 	SSWR::AVIRead::AVIRIPScanDetectorForm *me = (SSWR::AVIRead::AVIRIPScanDetectorForm *)userObj;
 	Text::StringBuilderUTF8 sb;
 	sb.Append((const UTF8Char*)"IP Scan detected from ");
-	sb.AppendHexBuff(hwAddr, 6, ':', Text::LBT_NONE);
+	sb.AppendHexBuff(hwAddr, 6, ':', Text::LineBreakType::None);
 	sb.Append((const UTF8Char*)", vendor = ");
 	const Net::MACInfo::MACEntry *macEntry = Net::MACInfo::GetMACInfoBuff(hwAddr);
 	if (macEntry)

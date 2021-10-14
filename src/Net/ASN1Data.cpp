@@ -59,6 +59,6 @@ void Net::ASN1Data::AppendInteger(Text::StringBuilderUTF *sb, const UInt8 *pdu, 
 	}
 	else
 	{
-		sb->AppendHexBuff(pdu, len, ' ', Text::LBT_NONE);
+		sb->AppendHexBuff(pdu, len, ' ', Text::LineBreakType::None);
 	}
 }

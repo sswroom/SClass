@@ -16,7 +16,7 @@ void __stdcall OnScanResult(void *userObj, UInt64 mac, Int32 rssi, const Char *n
 	UInt8 buff[8];
 	WriteMUInt64(buff, mac);
 	Text::StringBuilderUTF8 sb;
-	sb.AppendHexBuff(&buff[2], 6, ':', Text::LBT_NONE);
+	sb.AppendHexBuff(&buff[2], 6, ':', Text::LineBreakType::None);
 	sb.Append((const UTF8Char*)" RSSI=");
 	sb.AppendI32(rssi);
 	sb.Append((const UTF8Char*)", name=");

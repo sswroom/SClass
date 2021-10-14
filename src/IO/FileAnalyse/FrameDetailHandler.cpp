@@ -209,7 +209,7 @@ void IO::FileAnalyse::FrameDetailHandler::AddHexBuff(UOSInt frameOfst, UOSInt si
 void IO::FileAnalyse::FrameDetailHandler::AddHexBuff(UOSInt frameOfst, UOSInt size, const Char *name, const UTF8Char *vBuff, UTF32Char seperator, Bool multiLine)
 {
 	Text::StringBuilderUTF8 sb;
-	sb.AppendHexBuff(vBuff, size, seperator, multiLine?Text::LBT_CRLF:Text::LBT_NONE);
+	sb.AppendHexBuff(vBuff, size, seperator, multiLine?Text::LineBreakType::CRLF:Text::LineBreakType::None);
 	this->AddField(frameOfst, size, (const UTF8Char*)name, sb.ToString());
 }
 
@@ -232,7 +232,7 @@ void IO::FileAnalyse::FrameDetailHandler::AddIPv6(UOSInt frameOfst, const Char *
 void IO::FileAnalyse::FrameDetailHandler::AddMACAddr(UOSInt frameOfst, const Char *name, const UInt8 *macBuff, Bool showVendor)
 {
 	Text::StringBuilderUTF8 sb;
-	sb.AppendHexBuff(macBuff, 6, ':', Text::LBT_NONE);
+	sb.AppendHexBuff(macBuff, 6, ':', Text::LineBreakType::None);
 	if (showVendor)
 	{
 		const Net::MACInfo::MACEntry *entry;
@@ -271,6 +271,6 @@ void IO::FileAnalyse::FrameDetailHandler::AddNetBIOSName(UOSInt frameOfst, UOSIn
 void IO::FileAnalyse::FrameDetailHandler::AddTextHexBuff(UOSInt frameOfst, UOSInt size, const UInt8 *vBuff, Bool multiLine)
 {
 	Text::StringBuilderUTF8 sb;
-	sb.AppendHexBuff(vBuff, size, ' ', multiLine?Text::LBT_CRLF:Text::LBT_NONE);
+	sb.AppendHexBuff(vBuff, size, ' ', multiLine?Text::LineBreakType::CRLF:Text::LineBreakType::None);
 	this->AddText(frameOfst, sb.ToString());
 }

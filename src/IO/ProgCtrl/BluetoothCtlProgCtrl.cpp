@@ -27,7 +27,7 @@ UInt32 __stdcall IO::ProgCtrl::BluetoothCtlProgCtrl::ReadThread(void *obj)
 	{
 		readSize = me->prog->Read(buff, 512);
 //		sb->ClearStr();
-//		sb->AppendHexBuff(buff, readSize, ' ', Text::LBT_CRLF);
+//		sb->AppendHexBuff(buff, readSize, ' ', Text::LineBreakType::CRLF);
 //		printf("Read Size: %d\r\n", (Int32)readSize);
 //		printf("%s\r\n", sb->ToString());
 

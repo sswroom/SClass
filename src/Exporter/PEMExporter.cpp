@@ -77,12 +77,12 @@ Bool Exporter::PEMExporter::ExportStream(IO::SeekableStream *stm, Crypto::Cert::
 	{
 	case Crypto::Cert::X509File::FileType::Cert:
 		sb.Append((const UTF8Char*)"-----BEGIN CERTIFICATE-----\n");
-		b64.EncodeBin(&sb, x509->GetASN1Buff(), x509->GetASN1BuffSize(), Text::LBT_LF, 64);
+		b64.EncodeBin(&sb, x509->GetASN1Buff(), x509->GetASN1BuffSize(), Text::LineBreakType::LF, 64);
 		sb.Append((const UTF8Char*)"\n-----END CERTIFICATE-----\n");
 		return stm->Write(sb.ToString(), sb.GetLength()) == sb.GetLength();
 	case Crypto::Cert::X509File::FileType::CertRequest:
 		sb.Append((const UTF8Char*)"-----BEGIN CERTIFICATE REQUEST-----\n");
-		b64.EncodeBin(&sb, x509->GetASN1Buff(), x509->GetASN1BuffSize(), Text::LBT_LF, 64);
+		b64.EncodeBin(&sb, x509->GetASN1Buff(), x509->GetASN1BuffSize(), Text::LineBreakType::LF, 64);
 		sb.Append((const UTF8Char*)"\n-----END CERTIFICATE REQUEST-----\n");
 		return stm->Write(sb.ToString(), sb.GetLength()) == sb.GetLength();
 	case Crypto::Cert::X509File::FileType::Jks:
@@ -94,17 +94,17 @@ Bool Exporter::PEMExporter::ExportStream(IO::SeekableStream *stm, Crypto::Cert::
 			{
 			case Crypto::Cert::X509Key::KeyType::RSA:
 				sb.Append((const UTF8Char*)"-----BEGIN RSA PRIVATE KEY-----\n");
-				b64.EncodeBin(&sb, x509->GetASN1Buff(), x509->GetASN1BuffSize(), Text::LBT_LF, 64);
+				b64.EncodeBin(&sb, x509->GetASN1Buff(), x509->GetASN1BuffSize(), Text::LineBreakType::LF, 64);
 				sb.Append((const UTF8Char*)"\n-----END RSA PRIVATE KEY-----\n");
 				return stm->Write(sb.ToString(), sb.GetLength()) == sb.GetLength();
 			case Crypto::Cert::X509Key::KeyType::DSA:
 				sb.Append((const UTF8Char*)"-----BEGIN DSA PRIVATE KEY-----\n");
-				b64.EncodeBin(&sb, x509->GetASN1Buff(), x509->GetASN1BuffSize(), Text::LBT_LF, 64);
+				b64.EncodeBin(&sb, x509->GetASN1Buff(), x509->GetASN1BuffSize(), Text::LineBreakType::LF, 64);
 				sb.Append((const UTF8Char*)"\n-----END DSA PRIVATE KEY-----\n");
 				return stm->Write(sb.ToString(), sb.GetLength()) == sb.GetLength();
 			case Crypto::Cert::X509Key::KeyType::ECDSA:
 				sb.Append((const UTF8Char*)"-----BEGIN EC PRIVATE KEY-----\n");
-				b64.EncodeBin(&sb, x509->GetASN1Buff(), x509->GetASN1BuffSize(), Text::LBT_LF, 64);
+				b64.EncodeBin(&sb, x509->GetASN1Buff(), x509->GetASN1BuffSize(), Text::LineBreakType::LF, 64);
 				sb.Append((const UTF8Char*)"\n-----END EC PRIVATE KEY-----\n");
 				return stm->Write(sb.ToString(), sb.GetLength()) == sb.GetLength();
 			case Crypto::Cert::X509Key::KeyType::ED25519:
@@ -116,7 +116,7 @@ Bool Exporter::PEMExporter::ExportStream(IO::SeekableStream *stm, Crypto::Cert::
 		return false;
 	case Crypto::Cert::X509File::FileType::PrivateKey:
 		sb.Append((const UTF8Char*)"-----BEGIN PRIVATE KEY-----\n");
-		b64.EncodeBin(&sb, x509->GetASN1Buff(), x509->GetASN1BuffSize(), Text::LBT_LF, 64);
+		b64.EncodeBin(&sb, x509->GetASN1Buff(), x509->GetASN1BuffSize(), Text::LineBreakType::LF, 64);
 		sb.Append((const UTF8Char*)"\n-----END PRIVATE KEY-----\n");
 		return stm->Write(sb.ToString(), sb.GetLength()) == sb.GetLength();
 	}

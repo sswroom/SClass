@@ -331,7 +331,7 @@ Bool IO::FileAnalyse::RIFFFileAnalyse::GetFrameDetail(UOSInt index, Text::String
 		this->fd->GetRealData(pack->fileOfst + 8, pack->packSize - 8, packBuff);
 
 		sb->Append((const UTF8Char*)"\r\n");
-		sb->AppendHexBuff(packBuff, pack->packSize - 8, ' ', Text::LBT_CRLF);
+		sb->AppendHexBuff(packBuff, pack->packSize - 8, ' ', Text::LineBreakType::CRLF);
 
 		MemFree(packBuff);
 	}
@@ -351,7 +351,7 @@ Bool IO::FileAnalyse::RIFFFileAnalyse::GetFrameDetail(UOSInt index, Text::String
 		this->fd->GetRealData(pack->fileOfst + 8, pack->packSize - 8, packBuff);
 
 		sb->Append((const UTF8Char*)"\r\n");
-		sb->AppendHexBuff(packBuff, pack->packSize - 8, ' ', Text::LBT_CRLF);
+		sb->AppendHexBuff(packBuff, pack->packSize - 8, ' ', Text::LineBreakType::CRLF);
 
 		MemFree(packBuff);
 	}

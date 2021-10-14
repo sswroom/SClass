@@ -2,6 +2,7 @@
 #define _SM_TEXT_STRINGBUILDER
 #include "MyMemory.h"
 #include "Data/DateTime.h"
+#include "Text/LineBreakType.h"
 #include "Text/MyString.h"
 
 namespace Text
@@ -245,9 +246,9 @@ namespace Text
 			return this;
 		if ((buffSize & 15) == 0)
 			lbCnt -= 1;
-		if (lineBreak == LBT_CRLF)
+		if (lineBreak == LineBreakType::CRLF)
 			lbCnt = lbCnt << 2;
-		else if (lineBreak == LBT_CR || lineBreak == LBT_LF)
+		else if (lineBreak == LineBreakType::CR || lineBreak == LineBreakType::LF)
 		{
 		}
 		else
@@ -264,16 +265,16 @@ namespace Text
 				i++;
 				if ((i & 15) == 0 && buffSize > 0)
 				{
-					if (lineBreak == LBT_CRLF)
+					if (lineBreak == LineBreakType::CRLF)
 					{
 						*buffEnd++ = '\r';
 						*buffEnd++ = '\n';
 					}
-					else if (lineBreak == LBT_CR)
+					else if (lineBreak == LineBreakType::CR)
 					{
 						*buffEnd++ = '\r';
 					}
-					else if (lineBreak == LBT_LF)
+					else if (lineBreak == LineBreakType::LF)
 					{
 						*buffEnd++ = '\n';
 					}
@@ -290,16 +291,16 @@ namespace Text
 				i++;
 				if ((i & 15) == 0 && buffSize > 0)
 				{
-					if (lineBreak == LBT_CRLF)
+					if (lineBreak == LineBreakType::CRLF)
 					{
 						*buffEnd++ = '\r';
 						*buffEnd++ = '\n';
 					}
-					else if (lineBreak == LBT_CR)
+					else if (lineBreak == LineBreakType::CR)
 					{
 						*buffEnd++ = '\r';
 					}
-					else if (lineBreak == LBT_LF)
+					else if (lineBreak == LineBreakType::LF)
 					{
 						*buffEnd++ = '\n';
 					}

@@ -65,7 +65,7 @@ Bool IO::FileAnalyse::TSFileAnalyse::GetFrameDetail(UOSInt index, Text::StringBu
 
 	UInt8 buff[192];
 	fd->GetRealData(fileOfst, this->packSize, buff);
-	sb->AppendHexBuff(buff, this->packSize, ' ', Text::LBT_CRLF);
+	sb->AppendHexBuff(buff, this->packSize, ' ', Text::LineBreakType::CRLF);
 	sb->Append((const UTF8Char*)"\r\n");
 
 	UOSInt currOfst;
@@ -191,7 +191,7 @@ Bool IO::FileAnalyse::TSFileAnalyse::GetFrameDetail(UOSInt index, Text::StringBu
 					sb->AppendU16(transport_private_data_length);
 					sb->Append((const UTF8Char*)"\r\n");
 					sb->Append((const UTF8Char*)"private_data=");
-					sb->AppendHexBuff(&buff[currOfst], transport_private_data_length, ' ', Text::LBT_NONE);
+					sb->AppendHexBuff(&buff[currOfst], transport_private_data_length, ' ', Text::LineBreakType::None);
 					sb->Append((const UTF8Char*)"\r\n");
 					currOfst += 1 + (UOSInt)transport_private_data_length;
 				}

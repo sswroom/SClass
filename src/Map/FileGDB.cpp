@@ -541,7 +541,7 @@ Bool Map::FileGDBReader::GetStr(UOSInt colIndex, Text::StringBuilderUTF *sb)
 		{
 			return false;
 		}
-//		sb->AppendHexBuff(v.shapeBuffer, v.inUseLength, 0, Text::LBT_NONE);
+//		sb->AppendHexBuff(v.shapeBuffer, v.inUseLength, 0, Text::LineBreakType::None);
 		return true;
 	}
 	case FileGDBAPI::fieldTypeBlob:
@@ -552,7 +552,7 @@ Bool Map::FileGDBReader::GetStr(UOSInt colIndex, Text::StringBuilderUTF *sb)
 		{
 			return false;
 		}
-		sb->AppendHexBuff(v.byteArray, v.inUseLength, 0, Text::LBT_NONE);
+		sb->AppendHexBuff(v.byteArray, v.inUseLength, 0, Text::LineBreakType::None);
 		return true;
 	}
 	case FileGDBAPI::fieldTypeRaster:

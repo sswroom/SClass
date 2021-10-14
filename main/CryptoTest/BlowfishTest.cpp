@@ -30,13 +30,13 @@ void BFTest(UInt64 key, UInt64 plainText, UInt64 cipherText)
 	bf.Encrypt(plainBuff, 8, cipherBuff, 0);
 	sb.ClearStr();
 	sb.Append((const UTF8Char*)"EncText = ");
-	sb.AppendHexBuff(cipherBuff, 8, 0, Text::LBT_NONE);
+	sb.AppendHexBuff(cipherBuff, 8, 0, Text::LineBreakType::None);
 	console->WriteLine(sb.ToString());
 	bf.SetKey(keyBuff, 8);
 	bf.Decrypt(cipherBuff, 8, plainBuff, 0);
 	sb.ClearStr();
 	sb.Append((const UTF8Char*)"DecText = ");
-	sb.AppendHexBuff(plainBuff, 8, 0, Text::LBT_NONE);
+	sb.AppendHexBuff(plainBuff, 8, 0, Text::LineBreakType::None);
 	console->WriteLine(sb.ToString());
 	console->WriteLine();	
 }

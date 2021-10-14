@@ -313,7 +313,7 @@ Bool IO::FileAnalyse::NFDumpFileAnalyse::GetFrameDetail(UOSInt index, Text::Stri
 		this->fd->GetRealData(pack->fileOfst, size, packBuff);
 
 		sb->Append((const UTF8Char*)"\r\n\r\n");
-		sb->AppendHexBuff(packBuff, dispSize, ' ', Text::LBT_CRLF);
+		sb->AppendHexBuff(packBuff, dispSize, ' ', Text::LineBreakType::CRLF);
 		if (this->hasLZODecomp)
 		{
 			Data::DateTime dt;
@@ -539,17 +539,17 @@ Bool IO::FileAnalyse::NFDumpFileAnalyse::GetFrameDetail(UOSInt index, Text::Stri
 								else if (extId == 20) //EX_MAC_1
 								{
 									sb->Append((const UTF8Char*)", In Src MAC = ");
-									sb->AppendHexBuff(&decBuff[i + j + 2], 6, 0, Text::LBT_NONE);
+									sb->AppendHexBuff(&decBuff[i + j + 2], 6, 0, Text::LineBreakType::None);
 									sb->Append((const UTF8Char*)", Out Dst MAC = ");
-									sb->AppendHexBuff(&decBuff[i + j + 10], 6, 0, Text::LBT_NONE);
+									sb->AppendHexBuff(&decBuff[i + j + 10], 6, 0, Text::LineBreakType::None);
 									j += 16;
 								}
 								else if (extId == 21) //EX_MAC_2
 								{
 									sb->Append((const UTF8Char*)", In Dst MAC = ");
-									sb->AppendHexBuff(&decBuff[i + j + 2], 6, 0, Text::LBT_NONE);
+									sb->AppendHexBuff(&decBuff[i + j + 2], 6, 0, Text::LineBreakType::None);
 									sb->Append((const UTF8Char*)", Out Src MAC = ");
-									sb->AppendHexBuff(&decBuff[i + j + 10], 6, 0, Text::LBT_NONE);
+									sb->AppendHexBuff(&decBuff[i + j + 10], 6, 0, Text::LineBreakType::None);
 									j += 16;
 								}
 								else if (extId == 22) //EX_MPLS
@@ -676,7 +676,7 @@ Bool IO::FileAnalyse::NFDumpFileAnalyse::GetFrameDetail(UOSInt index, Text::Stri
 						}
 						else
 						{
-							sb->AppendHexBuff(&decBuff[i + 8], 16, 0, Text::LBT_NONE);
+							sb->AppendHexBuff(&decBuff[i + 8], 16, 0, Text::LineBreakType::None);
 						}
 						sb->Append((const UTF8Char*)", Sys ID = ");
 						sb->AppendU16(ReadUInt16(&decBuff[i + 26]));
@@ -874,7 +874,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::NFDumpFileAnalyse::GetFrameDetail
 		if (dispSize > 256)
 		{
 			Text::StringBuilderUTF8 sb;
-			sb.AppendHexBuff(packBuff, 256, ' ', Text::LBT_CRLF);
+			sb.AppendHexBuff(packBuff, 256, ' ', Text::LineBreakType::CRLF);
 			frame->AddField(0, dispSize, (const UTF8Char*)"LZO Compressed", sb.ToString());
 			dispSize = 256;
 		}
@@ -1113,17 +1113,17 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::NFDumpFileAnalyse::GetFrameDetail
 								else if (extId == 20) //EX_MAC_1
 								{
 									sb->Append((const UTF8Char*)", In Src MAC = ");
-									sb->AppendHexBuff(&decBuff[i + j + 2], 6, 0, Text::LBT_NONE);
+									sb->AppendHexBuff(&decBuff[i + j + 2], 6, 0, Text::LineBreakType::None);
 									sb->Append((const UTF8Char*)", Out Dst MAC = ");
-									sb->AppendHexBuff(&decBuff[i + j + 10], 6, 0, Text::LBT_NONE);
+									sb->AppendHexBuff(&decBuff[i + j + 10], 6, 0, Text::LineBreakType::None);
 									j += 16;
 								}
 								else if (extId == 21) //EX_MAC_2
 								{
 									sb->Append((const UTF8Char*)", In Dst MAC = ");
-									sb->AppendHexBuff(&decBuff[i + j + 2], 6, 0, Text::LBT_NONE);
+									sb->AppendHexBuff(&decBuff[i + j + 2], 6, 0, Text::LineBreakType::None);
 									sb->Append((const UTF8Char*)", Out Src MAC = ");
-									sb->AppendHexBuff(&decBuff[i + j + 10], 6, 0, Text::LBT_NONE);
+									sb->AppendHexBuff(&decBuff[i + j + 10], 6, 0, Text::LineBreakType::None);
 									j += 16;
 								}
 								else if (extId == 22) //EX_MPLS
@@ -1250,7 +1250,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::NFDumpFileAnalyse::GetFrameDetail
 						}
 						else
 						{
-							sb->AppendHexBuff(&decBuff[i + 8], 16, 0, Text::LBT_NONE);
+							sb->AppendHexBuff(&decBuff[i + 8], 16, 0, Text::LineBreakType::None);
 						}
 						sb->Append((const UTF8Char*)", Sys ID = ");
 						sb->AppendU16(ReadUInt16(&decBuff[i + 26]));

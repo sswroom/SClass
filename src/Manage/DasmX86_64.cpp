@@ -1122,7 +1122,7 @@ Int32 __stdcall DasmX86_64_GetFuncStack(Manage::DasmX86_64::DasmX86_64_Sess* ses
 			if (buffSize > 0)
 			{
 				sb.ClearStr();
-				sb.AppendHex(buff, buffSize, ' ', Text::LBT_CRLF);
+				sb.AppendHex(buff, buffSize, ' ', Text::LineBreakType::CRLF);
 				console.WriteLine(sb.ToString());
 			}
 
@@ -1131,7 +1131,7 @@ Int32 __stdcall DasmX86_64_GetFuncStack(Manage::DasmX86_64::DasmX86_64_Sess* ses
 			if (buffSize > 0)
 			{
 				sb.ClearStr();
-				sb.AppendHex(buff, buffSize, ' ', Text::LBT_CRLF);
+				sb.AppendHex(buff, buffSize, ' ', Text::LineBreakType::CRLF);
 				console.WriteLine(sb.ToString());
 			}
 			MemFree(buff);
@@ -19460,7 +19460,7 @@ Bool Manage::DasmX86_64::Disasm64(IO::Writer *writer, Manage::AddressResolver *a
 			buffSize = sess.memReader->ReadMemory(sess.regs.rip, buff, 16);
 			if (buffSize > 0)
 			{
-				outStr->AppendHex(buff, buffSize, ' ', Text::LBT_NONE);
+				outStr->AppendHex(buff, buffSize, ' ', Text::LineBreakType::None);
 			}
 			outStr->Append((const UTF8Char*)"\r\n");
 			writer->Write(outStr->ToString());
@@ -19579,14 +19579,14 @@ Bool Manage::DasmX86_64::Disasm64In(Text::StringBuilderUTF *outStr, Manage::Addr
 			outStr->Append((const UTF8Char*)"Unknown opcode ");
 			if (buffSize > 0)
 			{
-				outStr->AppendHexBuff(buff, buffSize, ' ', Text::LBT_NONE);
+				outStr->AppendHexBuff(buff, buffSize, ' ', Text::LineBreakType::None);
 			}
 			outStr->Append((const UTF8Char*)"\r\n");
 			buffSize = sess.memReader->ReadMemory(initIP, buff, 256);
 			if (buffSize > 0)
 			{
 				outStr->Append((const UTF8Char*)"Inst Buff:\r\n");
-				outStr->AppendHexBuff(buff, buffSize, ' ', Text::LBT_CRLF);
+				outStr->AppendHexBuff(buff, buffSize, ' ', Text::LineBreakType::CRLF);
 				outStr->Append((const UTF8Char*)"\r\n");
 			}
 			return false;

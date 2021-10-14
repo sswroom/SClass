@@ -84,7 +84,7 @@ UOSInt Net::SNMPInfo::PDUGetDetail(const UTF8Char *name, const UInt8 *pdu, UOSIn
 	}
 	if (hdrSize + len > pduSize)
 	{
-		sb->AppendHexBuff(pdu, pduSize, ' ', Text::LBT_NONE);
+		sb->AppendHexBuff(pdu, pduSize, ' ', Text::LineBreakType::None);
 		return pduSize;
 	}
 	switch (t)
@@ -109,7 +109,7 @@ UOSInt Net::SNMPInfo::PDUGetDetail(const UTF8Char *name, const UInt8 *pdu, UOSIn
 		}
 		else
 		{
-			sb->AppendHexBuff(&pdu[hdrSize], len, ' ', Text::LBT_NONE);
+			sb->AppendHexBuff(&pdu[hdrSize], len, ' ', Text::LineBreakType::None);
 		}
 		return len + hdrSize;
 	case 4:
@@ -128,7 +128,7 @@ UOSInt Net::SNMPInfo::PDUGetDetail(const UTF8Char *name, const UInt8 *pdu, UOSIn
 			}
 			if (isBin)
 			{
-				sb->AppendHexBuff(&pdu[hdrSize], len, ' ', Text::LBT_NONE);
+				sb->AppendHexBuff(&pdu[hdrSize], len, ' ', Text::LineBreakType::None);
 			}
 			else
 			{
@@ -143,7 +143,7 @@ UOSInt Net::SNMPInfo::PDUGetDetail(const UTF8Char *name, const UInt8 *pdu, UOSIn
 		if (len > 0)
 		{
 			sb->AppendChar(' ', 1);
-			sb->AppendHexBuff(&pdu[hdrSize], len, ' ', Text::LBT_NONE);
+			sb->AppendHexBuff(&pdu[hdrSize], len, ' ', Text::LineBreakType::None);
 		}
 		return len + hdrSize;
 	case 6:
@@ -167,7 +167,7 @@ UOSInt Net::SNMPInfo::PDUGetDetail(const UTF8Char *name, const UInt8 *pdu, UOSIn
 		}
 		else
 		{
-			sb->AppendHexBuff(&pdu[hdrSize], len, ' ', Text::LBT_NONE);
+			sb->AppendHexBuff(&pdu[hdrSize], len, ' ', Text::LineBreakType::None);
 		}
 		return len + hdrSize;
 	case 0x41:
@@ -190,7 +190,7 @@ UOSInt Net::SNMPInfo::PDUGetDetail(const UTF8Char *name, const UInt8 *pdu, UOSIn
 		}
 		else
 		{
-			sb->AppendHexBuff(&pdu[hdrSize], len, ' ', Text::LBT_NONE);
+			sb->AppendHexBuff(&pdu[hdrSize], len, ' ', Text::LineBreakType::None);
 		}
 		return len + hdrSize;
 	case 0x42:
@@ -213,7 +213,7 @@ UOSInt Net::SNMPInfo::PDUGetDetail(const UTF8Char *name, const UInt8 *pdu, UOSIn
 		}
 		else
 		{
-			sb->AppendHexBuff(&pdu[hdrSize], len, ' ', Text::LBT_NONE);
+			sb->AppendHexBuff(&pdu[hdrSize], len, ' ', Text::LineBreakType::None);
 		}
 		return len + hdrSize;
 	case 0x43:
@@ -236,7 +236,7 @@ UOSInt Net::SNMPInfo::PDUGetDetail(const UTF8Char *name, const UInt8 *pdu, UOSIn
 		}
 		else
 		{
-			sb->AppendHexBuff(&pdu[hdrSize], len, ' ', Text::LBT_NONE);
+			sb->AppendHexBuff(&pdu[hdrSize], len, ' ', Text::LineBreakType::None);
 		}
 		return len + hdrSize;
 	case 0xA0:
@@ -263,7 +263,7 @@ UOSInt Net::SNMPInfo::PDUGetDetail(const UTF8Char *name, const UInt8 *pdu, UOSIn
 		sb->Append((const UTF8Char*)"UNKNOWN(");
 		sb->AppendU16(t);
 		sb->Append((const UTF8Char*)") ");
-		sb->AppendHexBuff(&pdu[hdrSize], len, ' ', Text::LBT_NONE);
+		sb->AppendHexBuff(&pdu[hdrSize], len, ' ', Text::LineBreakType::None);
 		return len + hdrSize;
 	}
 }
@@ -291,7 +291,7 @@ void Net::SNMPInfo::ValueToString(UInt8 type, const UInt8 *pduBuff, UOSInt valLe
 		}
 		else
 		{
-			sb->AppendHexBuff(pduBuff, valLen, ' ', Text::LBT_NONE);
+			sb->AppendHexBuff(pduBuff, valLen, ' ', Text::LineBreakType::None);
 		}
 		break;
 	case 4:
@@ -309,7 +309,7 @@ void Net::SNMPInfo::ValueToString(UInt8 type, const UInt8 *pduBuff, UOSInt valLe
 			}
 			if (isBin)
 			{
-				sb->AppendHexBuff(pduBuff, valLen, ' ', Text::LBT_NONE);
+				sb->AppendHexBuff(pduBuff, valLen, ' ', Text::LineBreakType::None);
 			}
 			else
 			{
@@ -323,7 +323,7 @@ void Net::SNMPInfo::ValueToString(UInt8 type, const UInt8 *pduBuff, UOSInt valLe
 		if (valLen > 0)
 		{
 			sb->AppendChar(' ', 1);
-			sb->AppendHexBuff(pduBuff, valLen, ' ', Text::LBT_NONE);
+			sb->AppendHexBuff(pduBuff, valLen, ' ', Text::LineBreakType::None);
 		}
 		break;
 	case 6:
@@ -347,7 +347,7 @@ void Net::SNMPInfo::ValueToString(UInt8 type, const UInt8 *pduBuff, UOSInt valLe
 		}
 		else
 		{
-			sb->AppendHexBuff(pduBuff, valLen, ' ', Text::LBT_NONE);
+			sb->AppendHexBuff(pduBuff, valLen, ' ', Text::LineBreakType::None);
 		}
 		break;
 	case 0x41:
@@ -369,7 +369,7 @@ void Net::SNMPInfo::ValueToString(UInt8 type, const UInt8 *pduBuff, UOSInt valLe
 		}
 		else
 		{
-			sb->AppendHexBuff(pduBuff, valLen, ' ', Text::LBT_NONE);
+			sb->AppendHexBuff(pduBuff, valLen, ' ', Text::LineBreakType::None);
 		}
 		break;
 	case 0x42:
@@ -391,7 +391,7 @@ void Net::SNMPInfo::ValueToString(UInt8 type, const UInt8 *pduBuff, UOSInt valLe
 		}
 		else
 		{
-			sb->AppendHexBuff(pduBuff, valLen, ' ', Text::LBT_NONE);
+			sb->AppendHexBuff(pduBuff, valLen, ' ', Text::LineBreakType::None);
 		}
 		break;
 	case 0x43:
@@ -413,7 +413,7 @@ void Net::SNMPInfo::ValueToString(UInt8 type, const UInt8 *pduBuff, UOSInt valLe
 		}
 		else
 		{
-			sb->AppendHexBuff(pduBuff, valLen, ' ', Text::LBT_NONE);
+			sb->AppendHexBuff(pduBuff, valLen, ' ', Text::LineBreakType::None);
 		}
 		break;
 	case 0x46:
@@ -439,7 +439,7 @@ void Net::SNMPInfo::ValueToString(UInt8 type, const UInt8 *pduBuff, UOSInt valLe
 		}
 		else
 		{
-			sb->AppendHexBuff(pduBuff, valLen, ' ', Text::LBT_NONE);
+			sb->AppendHexBuff(pduBuff, valLen, ' ', Text::LineBreakType::None);
 		}
 		break;
 	case 0xA0:
@@ -473,7 +473,7 @@ void Net::SNMPInfo::ValueToString(UInt8 type, const UInt8 *pduBuff, UOSInt valLe
 		}
 		break;
 	default:
-		sb->AppendHexBuff(pduBuff, valLen, ' ', Text::LBT_NONE);
+		sb->AppendHexBuff(pduBuff, valLen, ' ', Text::LineBreakType::None);
 		break;
 	}
 }

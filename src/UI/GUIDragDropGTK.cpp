@@ -193,7 +193,7 @@ void UI::GUIDragDataGTK::OnDataReceived(void *selData)
 		}
 		else if (Text::StrEquals(csptr, "application/x-moz-custom-clipdata"))
 		{
-			sb.AppendHexBuff(data, dataSize, ' ', Text::LBT_CRLF);
+			sb.AppendHexBuff(data, dataSize, ' ', Text::LineBreakType::CRLF);
 		}
 		else
 		{

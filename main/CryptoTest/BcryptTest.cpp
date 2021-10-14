@@ -46,7 +46,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	decSize = radix64->DecodeBin(sb.ToString(), sb.GetCharCnt(), decTest);
 	sb.ClearStr();
 	sb.Append((const UTF8Char*)"Dec: ");
-	sb.AppendHexBuff(decTest, decSize, ' ', Text::LBT_NONE);
+	sb.AppendHexBuff(decTest, decSize, ' ', Text::LineBreakType::None);
 	console.WriteLine(sb.ToString());
 	console.WriteLine();
 	BCryptTest(&console, &bcrypt, (const UTF8Char*)"$2a$10$IIlT8V9XkWW5WxvoIjC/Q.hAGkGFd54hcUaGSBo8p1xL847drOwAa", (const UTF8Char*)"admin");

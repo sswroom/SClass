@@ -479,7 +479,7 @@ const UInt8 *IO::JavaClass::DetailAttribute(const UInt8 *attr, UOSInt lev, Text:
 		sb->Append((const UTF8Char*)"Attr RuntimeVisibleAnnotations num_annotations = ");
 		sb->AppendU16(num_annotations);
 		sb->Append((const UTF8Char*)"\r\n");
-		sb->AppendHexBuff(&attr[6], len, ' ', Text::LBT_CRLF);
+		sb->AppendHexBuff(&attr[6], len, ' ', Text::LineBreakType::CRLF);
 		sb->Append((const UTF8Char*)"\r\n");
 
 		while (i < num_annotations)
@@ -1107,7 +1107,7 @@ void IO::JavaClass::DetailCode(const UInt8 *code, UOSInt codeLen, UOSInt lev, Te
 			break;
 		case 0x10:
 			sb->AppendChar(' ', lev << 1);
-			sb->AppendHexBuff(code, 2, ' ', Text::LBT_NONE);
+			sb->AppendHexBuff(code, 2, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 10);
 			sb->Append((const UTF8Char*)"bipush ");
 			val = code[1];
@@ -1118,7 +1118,7 @@ void IO::JavaClass::DetailCode(const UInt8 *code, UOSInt codeLen, UOSInt lev, Te
 			break;
 		case 0x11:
 			sb->AppendChar(' ', lev << 1);
-			sb->AppendHexBuff(code, 3, ' ', Text::LBT_NONE);
+			sb->AppendHexBuff(code, 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
 			sb->Append((const UTF8Char*)"sipush ");
 			val = ReadMUInt16(&code[1]);
@@ -1129,7 +1129,7 @@ void IO::JavaClass::DetailCode(const UInt8 *code, UOSInt codeLen, UOSInt lev, Te
 			break;
 		case 0x12:
 			sb->AppendChar(' ', lev << 1);
-			sb->AppendHexBuff(code, 2, ' ', Text::LBT_NONE);
+			sb->AppendHexBuff(code, 2, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 10);
 			sb->Append((const UTF8Char*)"ldc ");
 			val = code[1];
@@ -1141,7 +1141,7 @@ void IO::JavaClass::DetailCode(const UInt8 *code, UOSInt codeLen, UOSInt lev, Te
 			break;
 		case 0x13:
 			sb->AppendChar(' ', lev << 1);
-			sb->AppendHexBuff(code, 3, ' ', Text::LBT_NONE);
+			sb->AppendHexBuff(code, 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
 			sb->Append((const UTF8Char*)"ldc_w ");
 			val = ReadMUInt16(&code[1]);
@@ -1153,7 +1153,7 @@ void IO::JavaClass::DetailCode(const UInt8 *code, UOSInt codeLen, UOSInt lev, Te
 			break;
 		case 0x14:
 			sb->AppendChar(' ', lev << 1);
-			sb->AppendHexBuff(code, 3, ' ', Text::LBT_NONE);
+			sb->AppendHexBuff(code, 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
 			sb->Append((const UTF8Char*)"ldc2_w ");
 			val = ReadMUInt16(&code[1]);
@@ -1165,7 +1165,7 @@ void IO::JavaClass::DetailCode(const UInt8 *code, UOSInt codeLen, UOSInt lev, Te
 			break;
 		case 0x15:
 			sb->AppendChar(' ', lev << 1);
-			sb->AppendHexBuff(code, 2, ' ', Text::LBT_NONE);
+			sb->AppendHexBuff(code, 2, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 10);
 			sb->Append((const UTF8Char*)"iload ");
 			sb->AppendU16(code[1]);
@@ -1175,7 +1175,7 @@ void IO::JavaClass::DetailCode(const UInt8 *code, UOSInt codeLen, UOSInt lev, Te
 			break;
 		case 0x16:
 			sb->AppendChar(' ', lev << 1);
-			sb->AppendHexBuff(code, 2, ' ', Text::LBT_NONE);
+			sb->AppendHexBuff(code, 2, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 10);
 			sb->Append((const UTF8Char*)"lload ");
 			sb->AppendU16(code[1]);
@@ -1185,7 +1185,7 @@ void IO::JavaClass::DetailCode(const UInt8 *code, UOSInt codeLen, UOSInt lev, Te
 			break;
 		case 0x17:
 			sb->AppendChar(' ', lev << 1);
-			sb->AppendHexBuff(code, 2, ' ', Text::LBT_NONE);
+			sb->AppendHexBuff(code, 2, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 10);
 			sb->Append((const UTF8Char*)"fload ");
 			sb->AppendU16(code[1]);
@@ -1195,7 +1195,7 @@ void IO::JavaClass::DetailCode(const UInt8 *code, UOSInt codeLen, UOSInt lev, Te
 			break;
 		case 0x18:
 			sb->AppendChar(' ', lev << 1);
-			sb->AppendHexBuff(code, 2, ' ', Text::LBT_NONE);
+			sb->AppendHexBuff(code, 2, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 10);
 			sb->Append((const UTF8Char*)"dload ");
 			sb->AppendU16(code[1]);
@@ -1205,7 +1205,7 @@ void IO::JavaClass::DetailCode(const UInt8 *code, UOSInt codeLen, UOSInt lev, Te
 			break;
 		case 0x19:
 			sb->AppendChar(' ', lev << 1);
-			sb->AppendHexBuff(code, 2, ' ', Text::LBT_NONE);
+			sb->AppendHexBuff(code, 2, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 10);
 			sb->Append((const UTF8Char*)"aload ");
 			sb->AppendU16(code[1]);
@@ -1439,7 +1439,7 @@ void IO::JavaClass::DetailCode(const UInt8 *code, UOSInt codeLen, UOSInt lev, Te
 			break;
 		case 0x36:
 			sb->AppendChar(' ', lev << 1);
-			sb->AppendHexBuff(code, 2, ' ', Text::LBT_NONE);
+			sb->AppendHexBuff(code, 2, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 10);
 			sb->Append((const UTF8Char*)"istore ");
 			sb->AppendU16(code[1]);
@@ -1449,7 +1449,7 @@ void IO::JavaClass::DetailCode(const UInt8 *code, UOSInt codeLen, UOSInt lev, Te
 			break;
 		case 0x37:
 			sb->AppendChar(' ', lev << 1);
-			sb->AppendHexBuff(code, 2, ' ', Text::LBT_NONE);
+			sb->AppendHexBuff(code, 2, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 10);
 			sb->Append((const UTF8Char*)"lstore ");
 			sb->AppendU16(code[1]);
@@ -1459,7 +1459,7 @@ void IO::JavaClass::DetailCode(const UInt8 *code, UOSInt codeLen, UOSInt lev, Te
 			break;
 		case 0x38:
 			sb->AppendChar(' ', lev << 1);
-			sb->AppendHexBuff(code, 2, ' ', Text::LBT_NONE);
+			sb->AppendHexBuff(code, 2, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 10);
 			sb->Append((const UTF8Char*)"fstore ");
 			sb->AppendU16(code[1]);
@@ -1469,7 +1469,7 @@ void IO::JavaClass::DetailCode(const UInt8 *code, UOSInt codeLen, UOSInt lev, Te
 			break;
 		case 0x39:
 			sb->AppendChar(' ', lev << 1);
-			sb->AppendHexBuff(code, 2, ' ', Text::LBT_NONE);
+			sb->AppendHexBuff(code, 2, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 10);
 			sb->Append((const UTF8Char*)"dstore ");
 			sb->AppendU16(code[1]);
@@ -1479,7 +1479,7 @@ void IO::JavaClass::DetailCode(const UInt8 *code, UOSInt codeLen, UOSInt lev, Te
 			break;
 		case 0x3A:
 			sb->AppendChar(' ', lev << 1);
-			sb->AppendHexBuff(code, 2, ' ', Text::LBT_NONE);
+			sb->AppendHexBuff(code, 2, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 10);
 			sb->Append((const UTF8Char*)"astore ");
 			sb->AppendU16(code[1]);
@@ -2073,7 +2073,7 @@ void IO::JavaClass::DetailCode(const UInt8 *code, UOSInt codeLen, UOSInt lev, Te
 			break;
 		case 0x84:
 			sb->AppendChar(' ', lev << 1);
-			sb->AppendHexBuff(code, 3, ' ', Text::LBT_NONE);
+			sb->AppendHexBuff(code, 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
 			sb->Append((const UTF8Char*)"iinc ");
 			sb->AppendU16(code[1]);
@@ -2245,7 +2245,7 @@ void IO::JavaClass::DetailCode(const UInt8 *code, UOSInt codeLen, UOSInt lev, Te
 			break;
 		case 0x99:
 			sb->AppendChar(' ', lev << 1);
-			sb->AppendHexBuff(code, 3, ' ', Text::LBT_NONE);
+			sb->AppendHexBuff(code, 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
 			sb->Append((const UTF8Char*)"ifeq ");
 			sb->AppendI16(ReadMInt16(&code[1]));
@@ -2255,7 +2255,7 @@ void IO::JavaClass::DetailCode(const UInt8 *code, UOSInt codeLen, UOSInt lev, Te
 			break;
 		case 0x9A:
 			sb->AppendChar(' ', lev << 1);
-			sb->AppendHexBuff(code, 3, ' ', Text::LBT_NONE);
+			sb->AppendHexBuff(code, 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
 			sb->Append((const UTF8Char*)"ifne ");
 			sb->AppendI16(ReadMInt16(&code[1]));
@@ -2265,7 +2265,7 @@ void IO::JavaClass::DetailCode(const UInt8 *code, UOSInt codeLen, UOSInt lev, Te
 			break;
 		case 0x9B:
 			sb->AppendChar(' ', lev << 1);
-			sb->AppendHexBuff(code, 3, ' ', Text::LBT_NONE);
+			sb->AppendHexBuff(code, 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
 			sb->Append((const UTF8Char*)"iflt ");
 			sb->AppendI16(ReadMInt16(&code[1]));
@@ -2275,7 +2275,7 @@ void IO::JavaClass::DetailCode(const UInt8 *code, UOSInt codeLen, UOSInt lev, Te
 			break;
 		case 0x9C:
 			sb->AppendChar(' ', lev << 1);
-			sb->AppendHexBuff(code, 3, ' ', Text::LBT_NONE);
+			sb->AppendHexBuff(code, 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
 			sb->Append((const UTF8Char*)"ifge ");
 			sb->AppendI16(ReadMInt16(&code[1]));
@@ -2285,7 +2285,7 @@ void IO::JavaClass::DetailCode(const UInt8 *code, UOSInt codeLen, UOSInt lev, Te
 			break;
 		case 0x9D:
 			sb->AppendChar(' ', lev << 1);
-			sb->AppendHexBuff(code, 3, ' ', Text::LBT_NONE);
+			sb->AppendHexBuff(code, 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
 			sb->Append((const UTF8Char*)"ifgt ");
 			sb->AppendI16(ReadMInt16(&code[1]));
@@ -2295,7 +2295,7 @@ void IO::JavaClass::DetailCode(const UInt8 *code, UOSInt codeLen, UOSInt lev, Te
 			break;
 		case 0x9E:
 			sb->AppendChar(' ', lev << 1);
-			sb->AppendHexBuff(code, 3, ' ', Text::LBT_NONE);
+			sb->AppendHexBuff(code, 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
 			sb->Append((const UTF8Char*)"ifle ");
 			sb->AppendI16(ReadMInt16(&code[1]));
@@ -2305,7 +2305,7 @@ void IO::JavaClass::DetailCode(const UInt8 *code, UOSInt codeLen, UOSInt lev, Te
 			break;
 		case 0x9F:
 			sb->AppendChar(' ', lev << 1);
-			sb->AppendHexBuff(code, 3, ' ', Text::LBT_NONE);
+			sb->AppendHexBuff(code, 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
 			sb->Append((const UTF8Char*)"if_icmpeq ");
 			sb->AppendI16(ReadMInt16(&code[1]));
@@ -2315,7 +2315,7 @@ void IO::JavaClass::DetailCode(const UInt8 *code, UOSInt codeLen, UOSInt lev, Te
 			break;
 		case 0xA0:
 			sb->AppendChar(' ', lev << 1);
-			sb->AppendHexBuff(code, 3, ' ', Text::LBT_NONE);
+			sb->AppendHexBuff(code, 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
 			sb->Append((const UTF8Char*)"if_icmpne ");
 			sb->AppendI16(ReadMInt16(&code[1]));
@@ -2325,7 +2325,7 @@ void IO::JavaClass::DetailCode(const UInt8 *code, UOSInt codeLen, UOSInt lev, Te
 			break;
 		case 0xA1:
 			sb->AppendChar(' ', lev << 1);
-			sb->AppendHexBuff(code, 3, ' ', Text::LBT_NONE);
+			sb->AppendHexBuff(code, 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
 			sb->Append((const UTF8Char*)"if_icmplt ");
 			sb->AppendI16(ReadMInt16(&code[1]));
@@ -2335,7 +2335,7 @@ void IO::JavaClass::DetailCode(const UInt8 *code, UOSInt codeLen, UOSInt lev, Te
 			break;
 		case 0xA2:
 			sb->AppendChar(' ', lev << 1);
-			sb->AppendHexBuff(code, 3, ' ', Text::LBT_NONE);
+			sb->AppendHexBuff(code, 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
 			sb->Append((const UTF8Char*)"if_icmpge ");
 			sb->AppendI16(ReadMInt16(&code[1]));
@@ -2345,7 +2345,7 @@ void IO::JavaClass::DetailCode(const UInt8 *code, UOSInt codeLen, UOSInt lev, Te
 			break;
 		case 0xA3:
 			sb->AppendChar(' ', lev << 1);
-			sb->AppendHexBuff(code, 3, ' ', Text::LBT_NONE);
+			sb->AppendHexBuff(code, 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
 			sb->Append((const UTF8Char*)"if_icmpgt ");
 			sb->AppendI16(ReadMInt16(&code[1]));
@@ -2355,7 +2355,7 @@ void IO::JavaClass::DetailCode(const UInt8 *code, UOSInt codeLen, UOSInt lev, Te
 			break;
 		case 0xA4:
 			sb->AppendChar(' ', lev << 1);
-			sb->AppendHexBuff(code, 3, ' ', Text::LBT_NONE);
+			sb->AppendHexBuff(code, 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
 			sb->Append((const UTF8Char*)"if_icmple ");
 			sb->AppendI16(ReadMInt16(&code[1]));
@@ -2365,7 +2365,7 @@ void IO::JavaClass::DetailCode(const UInt8 *code, UOSInt codeLen, UOSInt lev, Te
 			break;
 		case 0xA5:
 			sb->AppendChar(' ', lev << 1);
-			sb->AppendHexBuff(code, 3, ' ', Text::LBT_NONE);
+			sb->AppendHexBuff(code, 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
 			sb->Append((const UTF8Char*)"if_acmpeq ");
 			sb->AppendI16(ReadMInt16(&code[1]));
@@ -2375,7 +2375,7 @@ void IO::JavaClass::DetailCode(const UInt8 *code, UOSInt codeLen, UOSInt lev, Te
 			break;
 		case 0xA6:
 			sb->AppendChar(' ', lev << 1);
-			sb->AppendHexBuff(code, 3, ' ', Text::LBT_NONE);
+			sb->AppendHexBuff(code, 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
 			sb->Append((const UTF8Char*)"if_acmpne ");
 			sb->AppendI16(ReadMInt16(&code[1]));
@@ -2385,7 +2385,7 @@ void IO::JavaClass::DetailCode(const UInt8 *code, UOSInt codeLen, UOSInt lev, Te
 			break;
 		case 0xA7:
 			sb->AppendChar(' ', lev << 1);
-			sb->AppendHexBuff(code, 3, ' ', Text::LBT_NONE);
+			sb->AppendHexBuff(code, 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
 			sb->Append((const UTF8Char*)"goto ");
 			sb->AppendI16(ReadMInt16(&code[1]));
@@ -2395,7 +2395,7 @@ void IO::JavaClass::DetailCode(const UInt8 *code, UOSInt codeLen, UOSInt lev, Te
 			break;
 		case 0xA8:
 			sb->AppendChar(' ', lev << 1);
-			sb->AppendHexBuff(code, 3, ' ', Text::LBT_NONE);
+			sb->AppendHexBuff(code, 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
 			sb->Append((const UTF8Char*)"jsr ");
 			sb->AppendI16(ReadMInt16(&code[1]));
@@ -2405,7 +2405,7 @@ void IO::JavaClass::DetailCode(const UInt8 *code, UOSInt codeLen, UOSInt lev, Te
 			break;
 		case 0xA9:
 			sb->AppendChar(' ', lev << 1);
-			sb->AppendHexBuff(code, 2, ' ', Text::LBT_NONE);
+			sb->AppendHexBuff(code, 2, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 10);
 			sb->Append((const UTF8Char*)"ret ");
 			sb->AppendU16(code[1]);
@@ -2416,7 +2416,7 @@ void IO::JavaClass::DetailCode(const UInt8 *code, UOSInt codeLen, UOSInt lev, Te
 		case 0xAA:
 			sb->AppendChar(' ', lev << 1);
 			////////////////////////////////////
-			sb->AppendHexBuff(code, 17, ' ', Text::LBT_NONE);
+			sb->AppendHexBuff(code, 17, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 1);
 			sb->Append((const UTF8Char*)"tableswitch\r\n");
 			code += 17;
@@ -2425,7 +2425,7 @@ void IO::JavaClass::DetailCode(const UInt8 *code, UOSInt codeLen, UOSInt lev, Te
 		case 0xAB:
 			sb->AppendChar(' ', lev << 1);
 			////////////////////////////////////
-			sb->AppendHexBuff(code, 8, ' ', Text::LBT_NONE);
+			sb->AppendHexBuff(code, 8, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 1);
 			sb->Append((const UTF8Char*)"lookupswitch\r\n");
 			code += 8;
@@ -2473,7 +2473,7 @@ void IO::JavaClass::DetailCode(const UInt8 *code, UOSInt codeLen, UOSInt lev, Te
 			break;
 		case 0xB2:
 			sb->AppendChar(' ', lev << 1);
-			sb->AppendHexBuff(code, 3, ' ', Text::LBT_NONE);
+			sb->AppendHexBuff(code, 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
 			val = ReadMUInt16(&code[1]);
 			sb->Append((const UTF8Char*)"getstatic ");
@@ -2485,7 +2485,7 @@ void IO::JavaClass::DetailCode(const UInt8 *code, UOSInt codeLen, UOSInt lev, Te
 			break;
 		case 0xB3:
 			sb->AppendChar(' ', lev << 1);
-			sb->AppendHexBuff(code, 3, ' ', Text::LBT_NONE);
+			sb->AppendHexBuff(code, 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
 			val = ReadMUInt16(&code[1]);
 			sb->Append((const UTF8Char*)"putstatic ");
@@ -2497,7 +2497,7 @@ void IO::JavaClass::DetailCode(const UInt8 *code, UOSInt codeLen, UOSInt lev, Te
 			break;
 		case 0xB4:
 			sb->AppendChar(' ', lev << 1);
-			sb->AppendHexBuff(code, 3, ' ', Text::LBT_NONE);
+			sb->AppendHexBuff(code, 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
 			val = ReadMUInt16(&code[1]);
 			sb->Append((const UTF8Char*)"getfield ");
@@ -2509,7 +2509,7 @@ void IO::JavaClass::DetailCode(const UInt8 *code, UOSInt codeLen, UOSInt lev, Te
 			break;
 		case 0xB5:
 			sb->AppendChar(' ', lev << 1);
-			sb->AppendHexBuff(code, 3, ' ', Text::LBT_NONE);
+			sb->AppendHexBuff(code, 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
 			val = ReadMUInt16(&code[1]);
 			sb->Append((const UTF8Char*)"putfield ");
@@ -2521,7 +2521,7 @@ void IO::JavaClass::DetailCode(const UInt8 *code, UOSInt codeLen, UOSInt lev, Te
 			break;
 		case 0xB6:
 			sb->AppendChar(' ', lev << 1);
-			sb->AppendHexBuff(code, 3, ' ', Text::LBT_NONE);
+			sb->AppendHexBuff(code, 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
 			val = ReadMUInt16(&code[1]);
 			sb->Append((const UTF8Char*)"invokevirtual ");
@@ -2533,7 +2533,7 @@ void IO::JavaClass::DetailCode(const UInt8 *code, UOSInt codeLen, UOSInt lev, Te
 			break;
 		case 0xB7:
 			sb->AppendChar(' ', lev << 1);
-			sb->AppendHexBuff(code, 3, ' ', Text::LBT_NONE);
+			sb->AppendHexBuff(code, 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
 			val = ReadMUInt16(&code[1]);
 			sb->Append((const UTF8Char*)"invokespecial ");
@@ -2545,7 +2545,7 @@ void IO::JavaClass::DetailCode(const UInt8 *code, UOSInt codeLen, UOSInt lev, Te
 			break;
 		case 0xB8:
 			sb->AppendChar(' ', lev << 1);
-			sb->AppendHexBuff(code, 3, ' ', Text::LBT_NONE);
+			sb->AppendHexBuff(code, 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
 			val = ReadMUInt16(&code[1]);
 			sb->Append((const UTF8Char*)"invokestatic ");
@@ -2557,7 +2557,7 @@ void IO::JavaClass::DetailCode(const UInt8 *code, UOSInt codeLen, UOSInt lev, Te
 			break;
 		case 0xB9:
 			sb->AppendChar(' ', lev << 1);
-			sb->AppendHexBuff(code, 5, ' ', Text::LBT_NONE);
+			sb->AppendHexBuff(code, 5, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 1);
 			val = ReadMUInt16(&code[1]);
 			sb->Append((const UTF8Char*)"invokeinterface ");
@@ -2572,7 +2572,7 @@ void IO::JavaClass::DetailCode(const UInt8 *code, UOSInt codeLen, UOSInt lev, Te
 			break;
 		case 0xBA:
 			sb->AppendChar(' ', lev << 1);
-			sb->AppendHexBuff(code, 5, ' ', Text::LBT_NONE);
+			sb->AppendHexBuff(code, 5, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 1);
 			val = ReadMUInt16(&code[1]);
 			sb->Append((const UTF8Char*)"invokedynamic ");
@@ -2584,7 +2584,7 @@ void IO::JavaClass::DetailCode(const UInt8 *code, UOSInt codeLen, UOSInt lev, Te
 			break;
 		case 0xBB:
 			sb->AppendChar(' ', lev << 1);
-			sb->AppendHexBuff(code, 3, ' ', Text::LBT_NONE);
+			sb->AppendHexBuff(code, 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
 			val = ReadMUInt16(&code[1]);
 			sb->Append((const UTF8Char*)"new ");
@@ -2596,7 +2596,7 @@ void IO::JavaClass::DetailCode(const UInt8 *code, UOSInt codeLen, UOSInt lev, Te
 			break;
 		case 0xBC:
 			sb->AppendChar(' ', lev << 1);
-			sb->AppendHexBuff(code, 2, ' ', Text::LBT_NONE);
+			sb->AppendHexBuff(code, 2, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 10);
 			val = code[1];
 			sb->Append((const UTF8Char*)"newarray ");
@@ -2634,7 +2634,7 @@ void IO::JavaClass::DetailCode(const UInt8 *code, UOSInt codeLen, UOSInt lev, Te
 			break;
 		case 0xBD:
 			sb->AppendChar(' ', lev << 1);
-			sb->AppendHexBuff(code, 3, ' ', Text::LBT_NONE);
+			sb->AppendHexBuff(code, 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
 			val = ReadMUInt16(&code[1]);
 			sb->Append((const UTF8Char*)"anewarray ");
@@ -2662,7 +2662,7 @@ void IO::JavaClass::DetailCode(const UInt8 *code, UOSInt codeLen, UOSInt lev, Te
 			break;
 		case 0xC0:
 			sb->AppendChar(' ', lev << 1);
-			sb->AppendHexBuff(code, 3, ' ', Text::LBT_NONE);
+			sb->AppendHexBuff(code, 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
 			val = ReadMUInt16(&code[1]);
 			sb->Append((const UTF8Char*)"checkcast ");
@@ -2674,7 +2674,7 @@ void IO::JavaClass::DetailCode(const UInt8 *code, UOSInt codeLen, UOSInt lev, Te
 			break;
 		case 0xC1:
 			sb->AppendChar(' ', lev << 1);
-			sb->AppendHexBuff(code, 3, ' ', Text::LBT_NONE);
+			sb->AppendHexBuff(code, 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
 			val = ReadMUInt16(&code[1]);
 			sb->Append((const UTF8Char*)"instanceof ");
@@ -2711,7 +2711,7 @@ void IO::JavaClass::DetailCode(const UInt8 *code, UOSInt codeLen, UOSInt lev, Te
 			break;
 		case 0xC5:
 			sb->AppendChar(' ', lev << 1);
-			sb->AppendHexBuff(code, 4, ' ', Text::LBT_NONE);
+			sb->AppendHexBuff(code, 4, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 4);
 			val = ReadMUInt16(&code[1]);
 			sb->Append((const UTF8Char*)"multianewarray ");
@@ -2726,7 +2726,7 @@ void IO::JavaClass::DetailCode(const UInt8 *code, UOSInt codeLen, UOSInt lev, Te
 			break;
 		case 0xC6:
 			sb->AppendChar(' ', lev << 1);
-			sb->AppendHexBuff(code, 3, ' ', Text::LBT_NONE);
+			sb->AppendHexBuff(code, 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
 			sb->Append((const UTF8Char*)"ifnull ");
 			sb->AppendI16(ReadMInt16(&code[1]));
@@ -2736,7 +2736,7 @@ void IO::JavaClass::DetailCode(const UInt8 *code, UOSInt codeLen, UOSInt lev, Te
 			break;
 		case 0xC7:
 			sb->AppendChar(' ', lev << 1);
-			sb->AppendHexBuff(code, 3, ' ', Text::LBT_NONE);
+			sb->AppendHexBuff(code, 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
 			sb->Append((const UTF8Char*)"ifnonnull ");
 			sb->AppendI16(ReadMInt16(&code[1]));
@@ -2746,7 +2746,7 @@ void IO::JavaClass::DetailCode(const UInt8 *code, UOSInt codeLen, UOSInt lev, Te
 			break;
 		case 0xC8:
 			sb->AppendChar(' ', lev << 1);
-			sb->AppendHexBuff(code, 5, ' ', Text::LBT_NONE);
+			sb->AppendHexBuff(code, 5, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 1);
 			sb->Append((const UTF8Char*)"goto_w ");
 			sb->AppendI32(ReadMInt32(&code[1]));
@@ -2756,7 +2756,7 @@ void IO::JavaClass::DetailCode(const UInt8 *code, UOSInt codeLen, UOSInt lev, Te
 			break;
 		case 0xC9:
 			sb->AppendChar(' ', lev << 1);
-			sb->AppendHexBuff(code, 5, ' ', Text::LBT_NONE);
+			sb->AppendHexBuff(code, 5, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 1);
 			sb->Append((const UTF8Char*)"jsr_w ");
 			sb->AppendI32(ReadMInt32(&code[1]));

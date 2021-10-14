@@ -275,11 +275,11 @@ Bool IO::FileAnalyse::FLVFileAnalyse::GetFrameDetail(UOSInt index, Text::StringB
 		sb->Append((const UTF8Char*)"\r\n");
 		if (tag->size >= 256 + 11)
 		{
-			sb->AppendHexBuff(tagData, 256, ' ', Text::LBT_CRLF);
+			sb->AppendHexBuff(tagData, 256, ' ', Text::LineBreakType::CRLF);
 		}
 		else
 		{
-			sb->AppendHexBuff(tagData, tag->size - 11, ' ', Text::LBT_CRLF);
+			sb->AppendHexBuff(tagData, tag->size - 11, ' ', Text::LineBreakType::CRLF);
 		}
 
 		MemFree(tagData);
@@ -292,11 +292,11 @@ Bool IO::FileAnalyse::FLVFileAnalyse::GetFrameDetail(UOSInt index, Text::StringB
 		sb->Append((const UTF8Char*)"\r\n");
 		if (tag->size >= 256 + 11)
 		{
-			sb->AppendHexBuff(tagData, 256, ' ', Text::LBT_CRLF);
+			sb->AppendHexBuff(tagData, 256, ' ', Text::LineBreakType::CRLF);
 		}
 		else
 		{
-			sb->AppendHexBuff(tagData, tag->size - 11, ' ', Text::LBT_CRLF);
+			sb->AppendHexBuff(tagData, tag->size - 11, ' ', Text::LineBreakType::CRLF);
 		}
 
 		MemFree(tagData);
@@ -407,7 +407,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::FLVFileAnalyse::GetFrameDetail(UO
 		if (tag->size >= 256 + 11)
 		{
 			Text::StringBuilderUTF8 sb;
-			sb.AppendHexBuff(&tagData[11], 256, ' ', Text::LBT_CRLF);
+			sb.AppendHexBuff(&tagData[11], 256, ' ', Text::LineBreakType::CRLF);
 			frame->AddField(11, tag->size - 11, (const UTF8Char*)"data", sb.ToString());
 		}
 		else
@@ -423,7 +423,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::FLVFileAnalyse::GetFrameDetail(UO
 		if (tag->size >= 256 + 11)
 		{
 			Text::StringBuilderUTF8 sb;
-			sb.AppendHexBuff(&tagData[11], 256, ' ', Text::LBT_CRLF);
+			sb.AppendHexBuff(&tagData[11], 256, ' ', Text::LineBreakType::CRLF);
 			frame->AddField(11, tag->size - 11, (const UTF8Char*)"data", sb.ToString());
 		}
 		else

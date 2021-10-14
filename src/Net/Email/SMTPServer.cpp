@@ -118,21 +118,21 @@ void __stdcall Net::Email::SMTPServer::ClientData(Net::TCPClient *cli, void *use
 			cliStatus->buff[i] = 0;
 			if (j < cliStatus->buffSize && cliStatus->buff[j] == '\n')
 			{
-				me->ParseCmd(cli, cliStatus, (Char*)&cliStatus->buff[j], Text::LBT_CRLF);
+				me->ParseCmd(cli, cliStatus, (Char*)&cliStatus->buff[j], Text::LineBreakType::CRLF);
 				j = i + 1;
 				j++;
 				i++;
 			}
 			else
 			{
-				me->ParseCmd(cli, cliStatus, (Char*)&cliStatus->buff[j], Text::LBT_CR);
+				me->ParseCmd(cli, cliStatus, (Char*)&cliStatus->buff[j], Text::LineBreakType::CR);
 				j = i + 1;
 			}
 		}
 		else if (cliStatus->buff[i] == '\n')
 		{
 			cliStatus->buff[i] = 0;
-			me->ParseCmd(cli, cliStatus, (Char*)&cliStatus->buff[j], Text::LBT_LF);
+			me->ParseCmd(cli, cliStatus, (Char*)&cliStatus->buff[j], Text::LineBreakType::LF);
 			j = i + 1;
 		}
 		i++;
@@ -319,15 +319,15 @@ void Net::Email::SMTPServer::ParseCmd(Net::TCPClient *cli, Net::Email::SMTPServe
 			}
 			else
 			{
-				if (cliStatus->lastLBT == Text::LBT_CRLF)
+				if (cliStatus->lastLBT == Text::LineBreakType::CRLF)
 				{
 					cliStatus->dataStm->Write((UInt8*)"\r\n", 2);
 				}
-				else if (cliStatus->lastLBT == Text::LBT_CR)
+				else if (cliStatus->lastLBT == Text::LineBreakType::CR)
 				{
 					cliStatus->dataStm->Write((UInt8*)"\r", 1);
 				}
-				else if (cliStatus->lastLBT == Text::LBT_LF)
+				else if (cliStatus->lastLBT == Text::LineBreakType::LF)
 				{
 					cliStatus->dataStm->Write((UInt8*)"\n", 1);
 				}
@@ -341,7 +341,7 @@ void Net::Email::SMTPServer::ParseCmd(Net::TCPClient *cli, Net::Email::SMTPServe
 		if (cliStatus->cliName != 0 && cliStatus->mailFrom != 0 && cliStatus->rcptTo->GetCount() > 0)
 		{
 			cliStatus->dataMode = true;
-			cliStatus->lastLBT = Text::LBT_NONE;
+			cliStatus->lastLBT = Text::LineBreakType::None;
 			WriteMessage(cli, 354, (const UTF8Char *)"End data with <CR><LF>.<CR><LF>");
 		}
 	}

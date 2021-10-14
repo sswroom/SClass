@@ -51,7 +51,7 @@ void Net::PacketAnalyzer::PacketDataGetDetail(UInt32 linkType, const UInt8 *pack
 	default:
 		{
 			Text::StringBuilderUTF8 sb;	
-			sb.AppendHexBuff(packet, packetSize, ' ', Text::LBT_CRLF);
+			sb.AppendHexBuff(packet, packetSize, ' ', Text::LineBreakType::CRLF);
 			frame->AddField(frameOfst, (UInt32)packetSize, (const UTF8Char *)"Unknown", sb.ToString());
 		}
 		break;

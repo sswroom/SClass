@@ -2263,13 +2263,13 @@ Bool Media::EXIFData::ToString(Text::StringBuilderUTF *sb, const UTF8Char *lineP
 					{
 						sb->AppendU32(subExItem->size);
 						sb->Append((const UTF8Char*)" bytes: ");
-						sb->AppendHexBuff(valBuff, 256, ' ', Text::LBT_CRLF);
+						sb->AppendHexBuff(valBuff, 256, ' ', Text::LineBreakType::CRLF);
 						sb->Append((const UTF8Char*)"\r\n...\r\n");
-						sb->AppendHexBuff(&valBuff[((Int32)subExItem->size & ~15) - 256], 256 + (subExItem->size & 15), ' ', Text::LBT_CRLF);
+						sb->AppendHexBuff(&valBuff[((Int32)subExItem->size & ~15) - 256], 256 + (subExItem->size & 15), ' ', Text::LineBreakType::CRLF);
 					}
 					else
 					{
-						sb->AppendHexBuff(valBuff, subExItem->size, ' ', Text::LBT_CRLF);
+						sb->AppendHexBuff(valBuff, subExItem->size, ' ', Text::LineBreakType::CRLF);
 					}
 				}
 				else if (subExItem->type == Media::EXIFData::ET_UINT16)
@@ -2409,7 +2409,7 @@ Bool Media::EXIFData::ToString(Text::StringBuilderUTF *sb, const UTF8Char *lineP
 					else
 					{
 						sb->Append((const UTF8Char*)", value (Other) = ");
-						sb->AppendHexBuff(valBuff, subExItem->size, ' ', Text::LBT_CRLF);
+						sb->AppendHexBuff(valBuff, subExItem->size, ' ', Text::LineBreakType::CRLF);
 					}
 				}
 				else if (subExItem->type == Media::EXIFData::ET_OTHER)
@@ -2424,7 +2424,7 @@ Bool Media::EXIFData::ToString(Text::StringBuilderUTF *sb, const UTF8Char *lineP
 					else
 					{
 						sb->Append((const UTF8Char*)", value (Other) = ");
-						sb->AppendHexBuff(valBuff, subExItem->size, ' ', Text::LBT_CRLF);
+						sb->AppendHexBuff(valBuff, subExItem->size, ' ', Text::LineBreakType::CRLF);
 					}
 				}
 				else
@@ -2439,7 +2439,7 @@ Bool Media::EXIFData::ToString(Text::StringBuilderUTF *sb, const UTF8Char *lineP
 						valBuff = (UInt8*)subExItem->dataBuff;
 					}
 					sb->Append((const UTF8Char*)", value (Unk) = ");
-					sb->AppendHexBuff(valBuff, subExItem->size, ' ', Text::LBT_CRLF);
+					sb->AppendHexBuff(valBuff, subExItem->size, ' ', Text::LineBreakType::CRLF);
 				}
 				
 				i2++;
@@ -2510,13 +2510,13 @@ Bool Media::EXIFData::ToString(Text::StringBuilderUTF *sb, const UTF8Char *lineP
 				{
 					sb->AppendU32(exItem->size);
 					sb->Append((const UTF8Char*)" bytes: ");
-					sb->AppendHexBuff(valBuff, 256, ' ', Text::LBT_CRLF);
+					sb->AppendHexBuff(valBuff, 256, ' ', Text::LineBreakType::CRLF);
 					sb->Append((const UTF8Char*)"\r\n...\r\n");
-					sb->AppendHexBuff(&valBuff[((Int32)exItem->size & ~15) - 256], 256 + (exItem->size & 15), ' ', Text::LBT_CRLF);
+					sb->AppendHexBuff(&valBuff[((Int32)exItem->size & ~15) - 256], 256 + (exItem->size & 15), ' ', Text::LineBreakType::CRLF);
 				}
 				else
 				{
-					sb->AppendHexBuff(valBuff, exItem->size, ' ', Text::LBT_CRLF);
+					sb->AppendHexBuff(valBuff, exItem->size, ' ', Text::LineBreakType::CRLF);
 				}
 			}
 		}

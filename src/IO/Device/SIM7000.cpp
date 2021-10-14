@@ -313,7 +313,7 @@ Bool IO::Device::SIM7000::NetIPSend(UOSInt index, const UInt8 *buff, UOSInt buff
 	this->channel->CmdSend(sb.ToString(), sb.GetCharCnt());
 	Sync::Thread::Sleep(1000);
 	sb.ClearStr();
-	sb.AppendHex(buff, buffSize, 0, Text::LBT_NONE);
+	sb.AppendHex(buff, buffSize, 0, Text::LineBreakType::None);
 	sb.AppendChar('\r', 1);
 	this->channel->CmdSend(sb.ToString(), sb.GetCharCnt());
 	Bool ret = false;

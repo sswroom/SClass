@@ -21,7 +21,7 @@ Bool Manage::DasmNull::Disasm32(IO::Writer *writer, Manage::AddressResolver *add
 {
 	Text::StringBuilderUTF8 sb;
 	sb.Append((const UTF8Char*)"Unknown opcode ");
-	sb.AppendHexBuff((const UInt8*)(OSInt)*currInst, 16, ' ', Text::LBT_NONE);
+	sb.AppendHexBuff((const UInt8*)(OSInt)*currInst, 16, ' ', Text::LineBreakType::None);
 	sb.Append((const UTF8Char*)"\r\n");
 	writer->Write(sb.ToString());
 	return false;

@@ -553,7 +553,7 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(void *userObj)
 			break;
 #if defined(VERBOSE)
 		sb->ClearStr();
-		sb->AppendHexBuff(&buff[buffSize], readSize, ' ', Text::LBT_CRLF);
+		sb->AppendHexBuff(&buff[buffSize], readSize, ' ', Text::LineBreakType::CRLF);
 		printf("MySQLTCP Received Buff:\r\n%s\r\n", sb->ToString());
 #endif
 		buffSize += readSize;
@@ -606,7 +606,7 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(void *userObj)
 								printf("MySQLTCP Server ver = %s\r\n", me->svrVer);
 								printf("MySQLTCP Conn Id = %d\r\n", me->connId);
 								sb->ClearStr();
-								sb->AppendHexBuff(me->authPluginData, me->authPluginDataSize, ' ', Text::LBT_NONE);
+								sb->AppendHexBuff(me->authPluginData, me->authPluginDataSize, ' ', Text::LineBreakType::None);
 								printf("MySQLTCP Auth Plugin Data = %s\r\n", sb->ToString());
 #endif
 								readSize = 0;
@@ -666,7 +666,7 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(void *userObj)
 									printf("MySQLTCP character set = %d\r\n", me->svrCS);
 									printf("MySQLTCP status = 0x%x\r\n", me->connStatus);
 									sb->ClearStr();
-									sb->AppendHexBuff(me->authPluginData, me->authPluginDataSize, ' ', Text::LBT_NONE);
+									sb->AppendHexBuff(me->authPluginData, me->authPluginDataSize, ' ', Text::LineBreakType::None);
 									printf("MySQLTCP auth plugin data = %s\r\n", sb->ToString());
 									printf("MySQLTCP auth plugin name = %s\r\n", sbuff);
 #endif
@@ -677,7 +677,7 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(void *userObj)
 									printf("MySQLTCP Conn Id = %d\r\n", me->connId);
 									printf("MySQLTCP Server Cap = 0x%x\r\n", me->svrCap);
 									sb->ClearStr();
-									sb->AppendHexBuff(me->authPluginData, me->authPluginDataSize, ' ', Text::LBT_NONE);
+									sb->AppendHexBuff(me->authPluginData, me->authPluginDataSize, ' ', Text::LineBreakType::None);
 									printf("MySQLTCP auth plugin data = %s\r\n", sb->ToString());
 #endif
 								}

@@ -1782,14 +1782,14 @@ void Net::PacketAnalyzerBluetooth::AddAdvData(IO::FileAnalyse::FrameDetailHandle
 			else
 			{
 				sb.Append((const UTF8Char*)", Value=");
-				sb.AppendHexBuff(&packet[i + 4], (UOSInt)len - 3, ' ', Text::LBT_NONE);
+				sb.AppendHexBuff(&packet[i + 4], (UOSInt)len - 3, ' ', Text::LineBreakType::None);
 				frame->AddField(frameOfst + i + 2, (UOSInt)len - 1, (const UTF8Char*)"Manufacturer Specific", sb.ToString());
 			}
 		}
 		else
 		{
 			sb.ClearStr();
-			sb.AppendHexBuff(packet + i + 2, (UOSInt)len - 1, ' ', Text::LBT_NONE);
+			sb.AppendHexBuff(packet + i + 2, (UOSInt)len - 1, ' ', Text::LineBreakType::None);
 			frame->AddField(frameOfst + i + 2, (UOSInt)len - 1, (const UTF8Char*)"Adv Item Value", sb.ToString());
 		}
 		i += (UInt32)len + 1;
@@ -2051,7 +2051,7 @@ Bool Net::PacketAnalyzerBluetooth::PacketGetName(const UInt8 *packet, UOSInt pac
 			mac[3] = packet[10];
 			mac[4] = packet[9];
 			mac[5] = packet[8];
-			sb->AppendHexBuff(mac, 6, ':', Text::LBT_NONE);
+			sb->AppendHexBuff(mac, 6, ':', Text::LineBreakType::None);
 			return true;
 		case 0x3E:
 			switch (packet[7])
@@ -2064,7 +2064,7 @@ Bool Net::PacketAnalyzerBluetooth::PacketGetName(const UInt8 *packet, UOSInt pac
 				mac[3] = packet[13];
 				mac[4] = packet[12];
 				mac[5] = packet[11];
-				sb->AppendHexBuff(mac, 6, ':', Text::LBT_NONE);
+				sb->AppendHexBuff(mac, 6, ':', Text::LineBreakType::None);
 				return true;
 			case 0xd:
 				sb->Append((const UTF8Char*)"LE AdvEx: ");
@@ -2074,7 +2074,7 @@ Bool Net::PacketAnalyzerBluetooth::PacketGetName(const UInt8 *packet, UOSInt pac
 				mac[3] = packet[14];
 				mac[4] = packet[13];
 				mac[5] = packet[12];
-				sb->AppendHexBuff(mac, 6, ':', Text::LBT_NONE);
+				sb->AppendHexBuff(mac, 6, ':', Text::LineBreakType::None);
 				return true;
 			default:
 				sb->Append((const UTF8Char*)"Bluetooth");

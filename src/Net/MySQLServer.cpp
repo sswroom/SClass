@@ -313,7 +313,7 @@ void __stdcall Net::MySQLServer::OnClientData(Net::TCPClient *cli, void *userObj
 	#if defined(VERBOSE)
 	{
 		Text::StringBuilderUTF8 sb;
-		sb.AppendHexBuff(buff, size, ' ', Text::LBT_CRLF);
+		sb.AppendHexBuff(buff, size, ' ', Text::LineBreakType::CRLF);
 		printf("Received:\r\n%s\r\n", sb.ToString());
 	}
 	#endif
@@ -404,7 +404,7 @@ void __stdcall Net::MySQLServer::OnClientData(Net::TCPClient *cli, void *userObj
 						bptr += authLen + 1;
 					}
 					sb.Append((const UTF8Char*)"\r\nAuth Response = ");
-					sb.AppendHexBuff(authResp, authLen, ' ', Text::LBT_NONE);
+					sb.AppendHexBuff(authResp, authLen, ' ', Text::LineBreakType::None);
 					if (data->clientCap & Net::MySQLUtil::CLIENT_CONNECT_WITH_DB)
 					{
 						len = (UOSInt)(Text::StrConcat(data->database, bptr) - data->database);
@@ -473,7 +473,7 @@ void __stdcall Net::MySQLServer::OnClientData(Net::TCPClient *cli, void *userObj
 						authLen = packetSize - (UOSInt)(bptr - data->buff) + 4;
 					}
 					sb.Append((const UTF8Char*)"\r\nAuth Response = ");
-					sb.AppendHexBuff(authResp, authLen, ' ', Text::LBT_NONE);
+					sb.AppendHexBuff(authResp, authLen, ' ', Text::LineBreakType::None);
 				}
 				#if defined(VERBOSE)
 				printf("%s\r\n", sb.ToString());

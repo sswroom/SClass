@@ -140,7 +140,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(void *userObj)
 						bss = bssList.GetItem(i);
 
 						sb.AppendChar('|', 1);
-						sb.AppendHex(bss->GetMAC(), 6, ':', Text::LBT_NONE);
+						sb.AppendHex(bss->GetMAC(), 6, ':', Text::LineBreakType::None);
 						sb.AppendChar('|', 1);
 						sb.Append(bss->GetSSID());
 						sb.AppendChar('|', 1);
@@ -586,7 +586,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnLogWifiSaveClicked(void *us
 		{
 			wifiLog = wifiLogList->GetItem(i);
 			sb.ClearStr();
-			sb.AppendHexBuff(wifiLog->mac, 6, ':', Text::LBT_NONE);
+			sb.AppendHexBuff(wifiLog->mac, 6, ':', Text::LineBreakType::None);
 			sb.Append((const UTF8Char*)"\t");
 			sb.Append(wifiLog->ssid);
 			sb.Append((const UTF8Char*)"\t");
@@ -609,11 +609,11 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnLogWifiSaveClicked(void *us
 				sb.Append(wifiLog->serialNum);
 			}
 			sb.Append((const UTF8Char*)"\t");
-			sb.AppendHexBuff(wifiLog->ouis[0], 3, 0, Text::LBT_NONE);
+			sb.AppendHexBuff(wifiLog->ouis[0], 3, 0, Text::LineBreakType::None);
 			sb.AppendChar(',', 1);
-			sb.AppendHexBuff(wifiLog->ouis[1], 3, 0, Text::LBT_NONE);
+			sb.AppendHexBuff(wifiLog->ouis[1], 3, 0, Text::LineBreakType::None);
 			sb.AppendChar(',', 1);
-			sb.AppendHexBuff(wifiLog->ouis[2], 3, 0, Text::LBT_NONE);
+			sb.AppendHexBuff(wifiLog->ouis[2], 3, 0, Text::LineBreakType::None);
 			sb.Append((const UTF8Char*)"\t");
 			if (wifiLog->country)
 			{
@@ -696,7 +696,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnLogWifiSaveFClicked(void *u
 			if (Text::StrEquals(Net::MACInfo::GetMACInfo(ReadMUInt64(macBuff))->name, "Unknown"))
 			{
 				sb.ClearStr();
-				sb.AppendHexBuff(wifiLog->mac, 6, ':', Text::LBT_NONE);
+				sb.AppendHexBuff(wifiLog->mac, 6, ':', Text::LineBreakType::None);
 				sb.Append((const UTF8Char*)"\t");
 				sb.Append(wifiLog->ssid);
 				sb.Append((const UTF8Char*)"\t");

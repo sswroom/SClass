@@ -61,14 +61,6 @@ extern "C"
 
 namespace Text
 {
-	typedef enum
-	{
-		LBT_NONE,
-		LBT_CR,
-		LBT_LF,
-		LBT_CRLF
-	} LineBreakType;
-
 	Char *StrConcat(Char *oriStr, const Char *strToJoin);
 	Char *StrConcatC(Char *oriStr, const Char *strToJoin, UOSInt charCnt);
 	Char *StrConcatS(Char *oriStr, const Char *strToJoin, UOSInt buffSize);

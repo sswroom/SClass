@@ -185,7 +185,7 @@ Bool IO::ProtoDec::JTT808ProtocolDecoder::GetProtocolDetail(UInt8 *buff, UOSInt 
 	msgLeng = ReadMUInt16(&proto[2]) & 0x3ff;
 	sb->AppendU16(ReadMUInt16(&proto[2]) & 0x3ff);
 	sb->Append((const UTF8Char*)"\r\nTerminal Id=");
-	sb->AppendHexBuff(&proto[4], 6, 0, Text::LBT_NONE);
+	sb->AppendHexBuff(&proto[4], 6, 0, Text::LineBreakType::None);
 	sb->Append((const UTF8Char*)"\r\nSeq=");
 	sb->AppendU16(ReadMUInt16(&proto[10]));
 	if (msgLeng == protoSize - 1 - 12)
@@ -282,7 +282,7 @@ Bool IO::ProtoDec::JTT808ProtocolDecoder::GetProtocolDetail(UInt8 *buff, UOSInt 
 			sb->Append((const UTF8Char*)"\r\nMessage Type=");
 			sb->AppendU16(proto[12]);
 			sb->Append((const UTF8Char*)"\r\nContent=");
-			sb->AppendHexBuff(&proto[13], msgLeng - 1, ' ', Text::LBT_CRLF);
+			sb->AppendHexBuff(&proto[13], msgLeng - 1, ' ', Text::LineBreakType::CRLF);
 			break;
 		case 0x8001:
 			sb->Append((const UTF8Char*)"Platform General Reply");

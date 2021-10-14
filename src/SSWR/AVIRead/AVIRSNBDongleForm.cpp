@@ -22,7 +22,7 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnProtocolReceived(void *userOb
 	sb.Append((const UTF8Char*)": ");
 	if (cmdSize > 0)
 	{
-		sb.AppendHex(cmd, cmdSize, ' ', Text::LBT_NONE);
+		sb.AppendHex(cmd, cmdSize, ' ', Text::LineBreakType::None);
 	}
 	me->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_COMMAND);
 }

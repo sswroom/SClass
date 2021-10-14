@@ -18,7 +18,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	IO::ConsoleWriter console;
 	Text::StringBuilderUTF8 sb;
 	console.WriteLine((const UTF8Char*)"HOTP key:");
-	sb.AppendHexBuff(key, 10, 0, Text::LBT_NONE);
+	sb.AppendHexBuff(key, 10, 0, Text::LineBreakType::None);
 	console.WriteLine(sb.ToString());
 	Text::TextBinEnc::Base32Enc b32;
 	sb.ClearStr();
@@ -27,7 +27,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	console.WriteLine(sb.ToString());
 	UOSInt decLen = b32.DecodeBin(sb.ToString() + 5, decKey);
 	sb.ClearStr();
-	sb.AppendHexBuff(decKey, decLen, 0, Text::LBT_NONE);
+	sb.AppendHexBuff(decKey, decLen, 0, Text::LineBreakType::None);
 	console.WriteLine(sb.ToString());
 	console.WriteLine();
 	

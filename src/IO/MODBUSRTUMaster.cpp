@@ -28,7 +28,7 @@ UInt32 __stdcall IO::MODBUSRTUMaster::ThreadProc(void *userObj)
 		if (readSize > 0)
 		{
 //			sb->ClearStr();
-//			sb->AppendHexBuff(&buff[buffSize], readSize, ' ', Text::LBT_CRLF);
+//			sb->AppendHexBuff(&buff[buffSize], readSize, ' ', Text::LineBreakType::CRLF);
 //			printf("Received: %s\r\n", sb->ToString());
 			buffSize += readSize;
 			incomplete = false;
@@ -221,7 +221,7 @@ Bool IO::MODBUSRTUMaster::ReadCoils(UInt8 devAddr, UInt16 coilAddr, UInt16 coilC
 	else
 	{
 		Text::StringBuilderUTF8 sb;
-		sb.AppendHexBuff(buff, 8, ' ', Text::LBT_NONE);
+		sb.AppendHexBuff(buff, 8, ' ', Text::LineBreakType::None);
 		printf("Calculate:%s\r\n", sb.ToString());
 	}
 	return true;
@@ -250,7 +250,7 @@ Bool IO::MODBUSRTUMaster::ReadInputs(UInt8 devAddr, UInt16 inputAddr, UInt16 inp
 	else
 	{
 		Text::StringBuilderUTF8 sb;
-		sb.AppendHexBuff(buff, 8, ' ', Text::LBT_NONE);
+		sb.AppendHexBuff(buff, 8, ' ', Text::LineBreakType::None);
 		printf("Calculate:%s\r\n", sb.ToString());
 	}
 	return true;
@@ -279,7 +279,7 @@ Bool IO::MODBUSRTUMaster::ReadHoldingRegisters(UInt8 devAddr, UInt16 regAddr, UI
 	else
 	{
 		Text::StringBuilderUTF8 sb;
-		sb.AppendHexBuff(buff, 8, ' ', Text::LBT_NONE);
+		sb.AppendHexBuff(buff, 8, ' ', Text::LineBreakType::None);
 		printf("Calculate:%s\r\n", sb.ToString());
 	}
 	return true;
@@ -308,7 +308,7 @@ Bool IO::MODBUSRTUMaster::ReadInputRegisters(UInt8 devAddr, UInt16 regAddr, UInt
 	else
 	{
 		Text::StringBuilderUTF8 sb;
-		sb.AppendHexBuff(buff, 8, ' ', Text::LBT_NONE);
+		sb.AppendHexBuff(buff, 8, ' ', Text::LineBreakType::None);
 		printf("Calculate:%s\r\n", sb.ToString());
 	}
 	return true;
@@ -344,7 +344,7 @@ Bool IO::MODBUSRTUMaster::WriteCoil(UInt8 devAddr, UInt16 coilAddr, Bool isHigh)
 	else
 	{
 		Text::StringBuilderUTF8 sb;
-		sb.AppendHexBuff(buff, 8, ' ', Text::LBT_NONE);
+		sb.AppendHexBuff(buff, 8, ' ', Text::LineBreakType::None);
 		printf("Calculate:%s\r\n", sb.ToString());
 	}
 	return true;
@@ -367,7 +367,7 @@ Bool IO::MODBUSRTUMaster::WriteHoldingRegister(UInt8 devAddr, UInt16 regAddr, UI
 			Sync::Thread::Sleep((UOSInt)(CMDDELAY - Math::Double2Int32(t * 1000)));
 		}
 //		Text::StringBuilderUTF8 sb;
-//		sb.AppendHexBuff(buff, 8, ' ', Text::LBT_NONE);
+//		sb.AppendHexBuff(buff, 8, ' ', Text::LineBreakType::None);
 //		printf("Send: %s\r\n", sb.ToString());
 
 		this->stm->Write(buff, 8);
@@ -377,7 +377,7 @@ Bool IO::MODBUSRTUMaster::WriteHoldingRegister(UInt8 devAddr, UInt16 regAddr, UI
 	else
 	{
 		Text::StringBuilderUTF8 sb;
-		sb.AppendHexBuff(buff, 8, ' ', Text::LBT_NONE);
+		sb.AppendHexBuff(buff, 8, ' ', Text::LineBreakType::None);
 		printf("Calculate:%s\r\n", sb.ToString());
 	}
 	return true;
@@ -402,7 +402,7 @@ Bool IO::MODBUSRTUMaster::WriteHoldingRegisters(UInt8 devAddr, UInt16 regAddr, U
 			Sync::Thread::Sleep((UOSInt)(CMDDELAY - Math::Double2Int32(t * 1000)));
 		}
 //		Text::StringBuilderUTF8 sb;
-//		sb.AppendHexBuff(buff, cnt * 2 + 9, ' ', Text::LBT_NONE);
+//		sb.AppendHexBuff(buff, cnt * 2 + 9, ' ', Text::LineBreakType::None);
 //		printf("Send: %s\r\n", sb.ToString());
 
 		this->stm->Write(buff, (UOSInt)cnt * 2 + 9);
@@ -412,7 +412,7 @@ Bool IO::MODBUSRTUMaster::WriteHoldingRegisters(UInt8 devAddr, UInt16 regAddr, U
 	else
 	{
 		Text::StringBuilderUTF8 sb;
-		sb.AppendHexBuff(buff, (UOSInt)cnt * 2 + 9, ' ', Text::LBT_NONE);
+		sb.AppendHexBuff(buff, (UOSInt)cnt * 2 + 9, ' ', Text::LineBreakType::None);
 		printf("Calculate:%s\r\n", sb.ToString());
 	}
 	return true;

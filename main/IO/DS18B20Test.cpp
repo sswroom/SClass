@@ -49,7 +49,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		sb.Append((const UTF8Char*)"Sensor Id = ");
 		sb.AppendHex8(sensorId[0]);
 		sb.Append((const UTF8Char*)"-");
-		sb.AppendHex(&sensorId[1], 6, 0, Text::LBT_NONE);
+		sb.AppendHex(&sensorId[1], 6, 0, Text::LineBreakType::None);
 		console.WriteLine(sb.ToString());
 
 		while (true)

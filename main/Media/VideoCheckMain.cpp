@@ -81,9 +81,9 @@ int sample_decode(const Char *fileName)
 			printf("frame size = %d\r\n", packet.size);
 			{
 				Text::StringBuilderUTF8 sb;
-				sb.AppendHexBuff(packet.data, 32, ' ', Text::LBT_CRLF);
+				sb.AppendHexBuff(packet.data, 32, ' ', Text::LineBreakType::CRLF);
 				sb.Append((const UTF8Char*)"\r\n...\r\n");
-				sb.AppendHexBuff(packet.data + packet.size - 16, 32, ' ', Text::LBT_CRLF);
+				sb.AppendHexBuff(packet.data + packet.size - 16, 32, ' ', Text::LineBreakType::CRLF);
 				printf("%s\r\n", sb.ToString());
 			}
             ret = avcodec_send_packet(dec_ctx, &packet);

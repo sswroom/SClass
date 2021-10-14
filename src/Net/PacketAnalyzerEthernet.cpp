@@ -363,7 +363,7 @@ void Net::PacketAnalyzerEthernet::PacketEthernetDataGetDetail(UInt16 etherType, 
 	default:
 		{
 			Text::StringBuilderUTF8 sb;
-			sb.AppendHexBuff(packet, packetSize, ' ', Text::LBT_CRLF);
+			sb.AppendHexBuff(packet, packetSize, ' ', Text::LineBreakType::CRLF);
 			frame->AddFieldSeperstor(frameOfst, sb.ToString());
 		}
 		return;
@@ -446,7 +446,7 @@ void Net::PacketAnalyzerEthernet::PacketIEEE802_2LLCGetDetail(const UInt8 *packe
 			if (packetSize > 38)
 			{
 				Text::StringBuilderUTF8 sb;
-				sb.AppendHexBuff(&packet[38], packetSize - 38, ' ', Text::LBT_CRLF);
+				sb.AppendHexBuff(&packet[38], packetSize - 38, ' ', Text::LineBreakType::CRLF);
 				frame->AddFieldSeperstor(frameOfst + 38, sb.ToString());
 			}
 		}
@@ -454,7 +454,7 @@ void Net::PacketAnalyzerEthernet::PacketIEEE802_2LLCGetDetail(const UInt8 *packe
 	default:
 		{
 			Text::StringBuilderUTF8 sb;
-			sb.AppendHexBuff(&packet[2], packetSize - 2, ' ', Text::LBT_CRLF);
+			sb.AppendHexBuff(&packet[2], packetSize - 2, ' ', Text::LineBreakType::CRLF);
 			frame->AddFieldSeperstor(frameOfst + 2, sb.ToString());
 		}
 		break;
@@ -467,7 +467,7 @@ void Net::PacketAnalyzerEthernet::PacketARPGetDetail(const UInt8 *packet, UOSInt
 	if (packetSize < 22)
 	{
 		Text::StringBuilderUTF8 sb;
-		sb.AppendHexBuff(packet, packetSize, ' ', Text::LBT_CRLF);
+		sb.AppendHexBuff(packet, packetSize, ' ', Text::LineBreakType::CRLF);
 		frame->AddText(frameOfst, sb.ToString());
 	}
 	else

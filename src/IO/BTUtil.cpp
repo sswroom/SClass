@@ -1298,15 +1298,15 @@ void IO::BTUtil::GetServiceName(Text::StringBuilderUTF *sb, void *serviceUUID)
 	UInt8 *uuid = (UInt8*)serviceUUID;
 	sb->Append(GetUUIDName(ReadUInt16(uuid)));
 	sb->Append((const UTF8Char*)" (");
-	sb->AppendHexBuff(uuid, 4, 0, Text::LBT_NONE);
+	sb->AppendHexBuff(uuid, 4, 0, Text::LineBreakType::None);
 	sb->Append((const UTF8Char*)"-");
-	sb->AppendHexBuff(&uuid[4], 2, 0, Text::LBT_NONE);
+	sb->AppendHexBuff(&uuid[4], 2, 0, Text::LineBreakType::None);
 	sb->Append((const UTF8Char*)"-");
-	sb->AppendHexBuff(&uuid[6], 2, 0, Text::LBT_NONE);
+	sb->AppendHexBuff(&uuid[6], 2, 0, Text::LineBreakType::None);
 	sb->Append((const UTF8Char*)"-");
-	sb->AppendHexBuff(&uuid[8], 2, 0, Text::LBT_NONE);
+	sb->AppendHexBuff(&uuid[8], 2, 0, Text::LineBreakType::None);
 	sb->Append((const UTF8Char*)"-");
-	sb->AppendHexBuff(&uuid[10], 6, 0, Text::LBT_NONE);
+	sb->AppendHexBuff(&uuid[10], 6, 0, Text::LineBreakType::None);
 	sb->Append((const UTF8Char*)")");
 }
 

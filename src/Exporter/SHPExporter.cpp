@@ -489,7 +489,7 @@ Bool Exporter::SHPExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 	{
 		Char projArr[1024];
 		Math::SRESRIWKTWriter wkt;
-		Char *cptr = wkt.WriteCSys(csys, projArr, 0, Text::LBT_NONE);
+		Char *cptr = wkt.WriteCSys(csys, projArr, 0, Text::LineBreakType::None);
 		NEW_CLASS(shx, IO::FileStream(fileName2, IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		shx->Write((UInt8*)projArr, (UOSInt)(cptr - projArr));
 		DEL_CLASS(shx);

@@ -1837,7 +1837,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 
 			sb.ClearStr();
 			sb.Append((const UTF8Char*)"LRGB First Pixel: ");
-			sb.AppendHexBuff(tmpBuff, 8, ' ', Text::LBT_NONE);
+			sb.AppendHexBuff(tmpBuff, 8, ' ', Text::LineBreakType::None);
 			sb.Append((const UTF8Char*)" (");
 			sb.AppendI32(ReadInt16(tmpBuff));
 			sb.Append((const UTF8Char*)")");
@@ -1846,7 +1846,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 
 			sb.ClearStr();
 			sb.Append((const UTF8Char*)"LRGB Second Pixel: ");
-			sb.AppendHexBuff(&tmpBuff[8], 8, ' ', Text::LBT_NONE);
+			sb.AppendHexBuff(&tmpBuff[8], 8, ' ', Text::LineBreakType::None);
 			sb.Append((const UTF8Char*)" (");
 			sb.AppendI32(ReadInt16(tmpBuff));
 			sb.Append((const UTF8Char*)")");

@@ -681,7 +681,7 @@ void WinSSLEngine_HCRYPTKEY_ToString(HCRYPTKEY hKey, Text::StringBuilderUTF *sb)
 	if (CryptGetKeyParam(hKey, KP_CERTIFICATE, buff, &dataLen, 0))
 	{
 		sb->Append((const UTF8Char*)"Key Certificate=\r\n");
-		sb->AppendHexBuff(buff, dataLen, ' ', Text::LBT_CRLF);
+		sb->AppendHexBuff(buff, dataLen, ' ', Text::LineBreakType::CRLF);
 		sb->Append((const UTF8Char*)"\r\n");
 	}
 	dataLen = sizeof(blockLen);
@@ -695,7 +695,7 @@ void WinSSLEngine_HCRYPTKEY_ToString(HCRYPTKEY hKey, Text::StringBuilderUTF *sb)
 	if (CryptGetKeyParam(hKey, KP_SALT, buff, &dataLen, 0))
 	{
 		sb->Append((const UTF8Char*)"Key Salt=");
-		sb->AppendHexBuff(buff, dataLen, ' ', Text::LBT_NONE);
+		sb->AppendHexBuff(buff, dataLen, ' ', Text::LineBreakType::None);
 		sb->Append((const UTF8Char*)"\r\n");
 	}
 	dataLen = sizeof(blockLen);

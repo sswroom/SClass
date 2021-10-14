@@ -35,7 +35,7 @@ const UTF8Char *Text::TextBinEnc::Base64Enc::GetEncArr(Charset cs)
 
 Text::TextBinEnc::Base64Enc::Base64Enc()
 {
-	this->cs = Charset::URL;
+	this->cs = Charset::Normal;
 	this->noPadding = false;
 }
 
@@ -51,13 +51,13 @@ Text::TextBinEnc::Base64Enc::~Base64Enc()
 
 UOSInt Text::TextBinEnc::Base64Enc::EncodeBin(Text::StringBuilderUTF *sb, const UInt8 *dataBuff, UOSInt buffSize)
 {
-	return this->EncodeBin(sb, dataBuff, buffSize, Text::LBT_NONE, 0);
+	return this->EncodeBin(sb, dataBuff, buffSize, Text::LineBreakType::None, 0);
 }
 
 UOSInt Text::TextBinEnc::Base64Enc::EncodeBin(Text::StringBuilderUTF *sb, const UInt8 *dataBuff, UOSInt buffSize, Text::LineBreakType lbt, UOSInt charsPerLine)
 {
 	const UTF8Char *encArr = GetEncArr(this->cs);
-	if (lbt == Text::LBT_NONE || charsPerLine == 0)
+	if (lbt == Text::LineBreakType::None || charsPerLine == 0)
 	{
 		charsPerLine = buffSize << 1;
 	}
@@ -79,14 +79,14 @@ UOSInt Text::TextBinEnc::Base64Enc::EncodeBin(Text::StringBuilderUTF *sb, const 
 	UOSInt lbSize;
 	switch (lbt)
 	{
-	case Text::LBT_CRLF:
+	case Text::LineBreakType::CRLF:
 		lbSize = 2;
 		break;
-	case Text::LBT_CR:
-	case Text::LBT_LF:
+	case Text::LineBreakType::CR:
+	case Text::LineBreakType::LF:
 		lbSize = 1;
 		break;
-	case Text::LBT_NONE:
+	case Text::LineBreakType::None:
 	default:
 		lbSize = 0;
 		break;

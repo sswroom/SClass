@@ -354,10 +354,10 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::SPKFileAnalyse::GetFrameDetail(UO
 			UInt8 buff[32];
 			Text::StringBuilderUTF8 sb;
 			this->fd->GetRealData(pack->fileOfst, 32, buff);
-			sb.AppendHexBuff(buff, 32, ' ', Text::LBT_CRLF);
+			sb.AppendHexBuff(buff, 32, ' ', Text::LineBreakType::CRLF);
 			sb.Append((const UTF8Char *)"\r\n...\r\n");
 			this->fd->GetRealData(pack->fileOfst + pack->packSize - 32, 32, buff);
-			sb.AppendHexBuff(buff, 32, ' ', Text::LBT_CRLF);
+			sb.AppendHexBuff(buff, 32, ' ', Text::LineBreakType::CRLF);
 			frame->AddField(0, pack->packSize, (const UTF8Char *)"FileData", sb.ToString());
 		}
 	}

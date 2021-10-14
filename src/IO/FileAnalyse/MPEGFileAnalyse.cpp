@@ -178,7 +178,7 @@ Bool IO::FileAnalyse::MPEGFileAnalyse::GetFrameName(UOSInt index, Text::StringBu
 		return false;
 	sb->AppendU64(pack->fileOfst);
 	sb->Append((const UTF8Char*)": Type=0x");
-	sb->AppendHexBuff(&pack->packType, 1, 0, Text::LBT_NONE);
+	sb->AppendHexBuff(&pack->packType, 1, 0, Text::LineBreakType::None);
 	switch (pack->packType)
 	{
 	case 0xb9:
@@ -290,7 +290,7 @@ Bool IO::FileAnalyse::MPEGFileAnalyse::GetFrameDetail(UOSInt index, Text::String
 				{
 					sb->Append((const UTF8Char*)"\r\n{");
 					sb->Append((const UTF8Char*)"\r\n\tStream ID = 0x");
-					sb->AppendHexBuff(&packBuff[i], 1, 0, Text::LBT_NONE);
+					sb->AppendHexBuff(&packBuff[i], 1, 0, Text::LineBreakType::None);
 					sb->Append((const UTF8Char*)"\r\n\tSTD Buffer Bound Scale = ");
 					sb->AppendU16((packBuff[i + 1] >> 5) & 1);
 					sb->Append((const UTF8Char*)"\r\n\tSTD Buffer Size Bound = ");
@@ -431,35 +431,35 @@ Bool IO::FileAnalyse::MPEGFileAnalyse::GetFrameDetail(UOSInt index, Text::String
 				sb->Append((const UTF8Char*)"\r\nSampling Frequency = ");
 				sb->AppendU32((packBuff[i + 5] & 0x30)?96000:48000);
 				sb->Append((const UTF8Char*)"\r\nVOB LPCM Header = ");
-				sb->AppendHexBuff(&packBuff[i], 7, ' ', Text::LBT_NONE);
+				sb->AppendHexBuff(&packBuff[i], 7, ' ', Text::LineBreakType::None);
 				i += 7;
 			}
 			else if ((packBuff[i] & 0xf0) == 0x80)
 			{
 				sb->Append((const UTF8Char*)" (VOB AC3 Audio)");
 				sb->Append((const UTF8Char*)"\r\nVOB AC3 Header = ");
-				sb->AppendHexBuff(&packBuff[i], 4, ' ', Text::LBT_NONE);
+				sb->AppendHexBuff(&packBuff[i], 4, ' ', Text::LineBreakType::None);
 				i += 4;
 			}
 			else if (packBuff[i] == 0xff && packBuff[i + 1] == 0xa0)
 			{
 				sb->Append((const UTF8Char*)" (PSS LPCM Audio)");
 				sb->Append((const UTF8Char*)"\r\nPSS Audio Header = ");
-				sb->AppendHexBuff(&packBuff[i], 4, ' ', Text::LBT_NONE);
+				sb->AppendHexBuff(&packBuff[i], 4, ' ', Text::LineBreakType::None);
 				i += 4;
 			}
 			else if (packBuff[i] == 0xff && packBuff[i + 1] == 0xa1)
 			{
 				sb->Append((const UTF8Char*)" (PSS ADPCM Audio)");
 				sb->Append((const UTF8Char*)"\r\nPSS Audio Header = ");
-				sb->AppendHexBuff(&packBuff[i], 4, ' ', Text::LBT_NONE);
+				sb->AppendHexBuff(&packBuff[i], 4, ' ', Text::LineBreakType::None);
 				i += 4;
 			}
 		
 			sb->Append((const UTF8Char*)"\r\nContent Size = ");
 			sb->AppendUOSInt((pack->packSize - i));
 			sb->Append((const UTF8Char*)"\r\nContent:\r\n");
-			sb->AppendHexBuff(&packBuff[i], pack->packSize - i, ' ', Text::LBT_CRLF);
+			sb->AppendHexBuff(&packBuff[i], pack->packSize - i, ' ', Text::LineBreakType::CRLF);
 		}
 		else
 		{
@@ -513,7 +513,7 @@ Bool IO::FileAnalyse::MPEGFileAnalyse::GetFrameDetail(UOSInt index, Text::String
 			sb->Append((const UTF8Char*)"\r\nContent Size = ");
 			sb->AppendI32((Int32)(pack->packSize - i));
 			sb->Append((const UTF8Char*)"\r\nContent:\r\n");
-			sb->AppendHexBuff(&packBuff[i], pack->packSize - i, ' ', Text::LBT_CRLF);
+			sb->AppendHexBuff(&packBuff[i], pack->packSize - i, ' ', Text::LineBreakType::CRLF);
 		}
 		break;
 	case 0xbe:
@@ -526,7 +526,7 @@ Bool IO::FileAnalyse::MPEGFileAnalyse::GetFrameDetail(UOSInt index, Text::String
 		sb->Append((const UTF8Char*)"\r\nContent Size = ");
 		sb->AppendI32((Int32)pack->packSize - 6);
 		sb->Append((const UTF8Char*)"\r\nContent:\r\n");
-		sb->AppendHexBuff(&packBuff[6], pack->packSize - 6, ' ', Text::LBT_CRLF);
+		sb->AppendHexBuff(&packBuff[6], pack->packSize - 6, ' ', Text::LineBreakType::CRLF);
 		break;
 	case 0xc0:
 		{
@@ -581,7 +581,7 @@ Bool IO::FileAnalyse::MPEGFileAnalyse::GetFrameDetail(UOSInt index, Text::String
 			sb->Append((const UTF8Char*)"\r\nContent Size = ");
 			sb->AppendI32((Int32)(pack->packSize - i));
 			sb->Append((const UTF8Char*)"\r\nContent:\r\n");
-			sb->AppendHexBuff(&packBuff[i], pack->packSize - i, ' ', Text::LBT_CRLF);
+			sb->AppendHexBuff(&packBuff[i], pack->packSize - i, ' ', Text::LineBreakType::CRLF);
 		}
 		break;
 	case 0xe0:
@@ -690,7 +690,7 @@ Bool IO::FileAnalyse::MPEGFileAnalyse::GetFrameDetail(UOSInt index, Text::String
 			sb->Append((const UTF8Char*)"\r\nContent Size = ");
 			sb->AppendI32((Int32)(pack->packSize - 9 - packBuff[8]));
 			sb->Append((const UTF8Char*)"\r\nContent:\r\n");
-			sb->AppendHexBuff(&packBuff[9 + packBuff[8]], pack->packSize - 9 - packBuff[8], ' ', Text::LBT_CRLF);
+			sb->AppendHexBuff(&packBuff[9 + packBuff[8]], pack->packSize - 9 - packBuff[8], ' ', Text::LineBreakType::CRLF);
 		}
 		else
 		{
@@ -744,7 +744,7 @@ Bool IO::FileAnalyse::MPEGFileAnalyse::GetFrameDetail(UOSInt index, Text::String
 			sb->Append((const UTF8Char*)"\r\nContent Size = ");
 			sb->AppendI32((Int32)(pack->packSize - i));
 			sb->Append((const UTF8Char*)"\r\nContent:\r\n");
-			sb->AppendHexBuff(&packBuff[i], pack->packSize - i, ' ', Text::LBT_CRLF);
+			sb->AppendHexBuff(&packBuff[i], pack->packSize - i, ' ', Text::LineBreakType::CRLF);
 		}
 		break;
 	}

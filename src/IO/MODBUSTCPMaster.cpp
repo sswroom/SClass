@@ -28,7 +28,7 @@ UInt32 __stdcall IO::MODBUSTCPMaster::ThreadProc(void *userObj)
 		if (readSize > 0)
 		{
 //			sb->ClearStr();
-//			sb->AppendHexBuff(&buff[buffSize], readSize, ' ', Text::LBT_CRLF);
+//			sb->AppendHexBuff(&buff[buffSize], readSize, ' ', Text::LineBreakType::CRLF);
 //			printf("Received: %s\r\n", sb->ToString());
 			buffSize += readSize;
 			incomplete = false;

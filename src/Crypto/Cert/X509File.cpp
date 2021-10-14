@@ -47,7 +47,7 @@ void Crypto::Cert::X509File::AppendSigned(const UInt8 *pdu, const UInt8 *pduEnd,
 		if (itemType == Net::ASN1Util::IT_BIT_STRING)
 		{
 			sb->Append((const UTF8Char*)"signature = ");
-			sb->AppendHexBuff(itemPDU, itemLen, ':', Text::LBT_NONE);
+			sb->AppendHexBuff(itemPDU, itemLen, ':', Text::LineBreakType::None);
 			sb->Append((const UTF8Char*)"\r\n");
 		}
 	}
@@ -126,7 +126,7 @@ void Crypto::Cert::X509File::AppendTBSCertificate(const UInt8 *pdu, const UInt8 
 		if (itemType == Net::ASN1Util::IT_INTEGER)
 		{
 			sb->Append((const UTF8Char*)"serialNumber = ");
-			sb->AppendHexBuff(itemPDU, itemLen, ':', Text::LBT_NONE);
+			sb->AppendHexBuff(itemPDU, itemLen, ':', Text::LineBreakType::None);
 			sb->Append((const UTF8Char*)"\r\n");
 		}
 	}
@@ -457,7 +457,7 @@ void Crypto::Cert::X509File::AppendSubjectPublicKeyInfo(const UInt8 *pdu, const 
 		{
 			sb->Append(varName);
 			sb->Append((const UTF8Char*)".subjectPublicKey = ");
-			sb->AppendHexBuff(itemPDU, itemLen, ':', Text::LBT_NONE);
+			sb->AppendHexBuff(itemPDU, itemLen, ':', Text::LineBreakType::None);
 			sb->Append((const UTF8Char*)"\r\n");
 		}
 	}

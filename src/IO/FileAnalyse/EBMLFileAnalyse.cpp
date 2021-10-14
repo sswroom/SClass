@@ -492,19 +492,19 @@ Bool IO::FileAnalyse::EBMLFileAnalyse::GetFrameName(UOSInt index, Text::StringBu
 	sb->Append((const UTF8Char*)": Type=");
 	if (pack->packType[0] & 0x80)
 	{
-		sb->AppendHexBuff(pack->packType, 1, ' ', Text::LBT_NONE);
+		sb->AppendHexBuff(pack->packType, 1, ' ', Text::LineBreakType::None);
 	}
 	else if (pack->packType[0] & 0x40)
 	{
-		sb->AppendHexBuff(pack->packType, 2, ' ', Text::LBT_NONE);
+		sb->AppendHexBuff(pack->packType, 2, ' ', Text::LineBreakType::None);
 	}
 	else if (pack->packType[0] & 0x20)
 	{
-		sb->AppendHexBuff(pack->packType, 3, ' ', Text::LBT_NONE);
+		sb->AppendHexBuff(pack->packType, 3, ' ', Text::LineBreakType::None);
 	}
 	else if (pack->packType[0] & 0x10)
 	{
-		sb->AppendHexBuff(pack->packType, 4, ' ', Text::LBT_NONE);
+		sb->AppendHexBuff(pack->packType, 4, ' ', Text::LineBreakType::None);
 	}
 	UInt64 eleId;
 	ReadInt(pack->packType, &eleId, 0);
@@ -531,19 +531,19 @@ Bool IO::FileAnalyse::EBMLFileAnalyse::GetFrameDetail(UOSInt index, Text::String
 	sb->Append((const UTF8Char*)"\r\nType=");
 	if (pack->packType[0] & 0x80)
 	{
-		sb->AppendHexBuff(pack->packType, 1, ' ', Text::LBT_NONE);
+		sb->AppendHexBuff(pack->packType, 1, ' ', Text::LineBreakType::None);
 	}
 	else if (pack->packType[0] & 0x40)
 	{
-		sb->AppendHexBuff(pack->packType, 2, ' ', Text::LBT_NONE);
+		sb->AppendHexBuff(pack->packType, 2, ' ', Text::LineBreakType::None);
 	}
 	else if (pack->packType[0] & 0x20)
 	{
-		sb->AppendHexBuff(pack->packType, 3, ' ', Text::LBT_NONE);
+		sb->AppendHexBuff(pack->packType, 3, ' ', Text::LineBreakType::None);
 	}
 	else if (pack->packType[0] & 0x10)
 	{
-		sb->AppendHexBuff(pack->packType, 4, ' ', Text::LBT_NONE);
+		sb->AppendHexBuff(pack->packType, 4, ' ', Text::LineBreakType::None);
 	}
 	UInt64 eleId;
 	ReadInt(pack->packType, &eleId, 0);
@@ -609,17 +609,17 @@ Bool IO::FileAnalyse::EBMLFileAnalyse::GetFrameDetail(UOSInt index, Text::String
 			{
 				buff = MemAlloc(UInt8, sz);
 				this->fd->GetRealData(pack->fileOfst + pack->hdrSize + (UOSInt)(buffPtr - hdr), sz, buff);
-				sb->AppendHexBuff(buff, sz, ' ', Text::LBT_CRLF);
+				sb->AppendHexBuff(buff, sz, ' ', Text::LineBreakType::CRLF);
 				MemFree(buff);
 			}
 			else
 			{
 				buff = MemAlloc(UInt8, 32);
 				this->fd->GetRealData(pack->fileOfst + pack->hdrSize + (UOSInt)(buffPtr - hdr), 32, buff);
-				sb->AppendHexBuff(buff, 32, ' ', Text::LBT_CRLF);
+				sb->AppendHexBuff(buff, 32, ' ', Text::LineBreakType::CRLF);
 				sb->Append((const UTF8Char*)"\r\n..\r\n");
 				this->fd->GetRealData(pack->fileOfst + pack->packSize - 32, 32, buff);
-				sb->AppendHexBuff(buff, 32, ' ', Text::LBT_CRLF);
+				sb->AppendHexBuff(buff, 32, ' ', Text::LineBreakType::CRLF);
 				MemFree(buff);
 			}
 		}
@@ -718,17 +718,17 @@ Bool IO::FileAnalyse::EBMLFileAnalyse::GetFrameDetail(UOSInt index, Text::String
 			{
 				buff = MemAlloc(UInt8, sz);
 				this->fd->GetRealData(pack->fileOfst + pack->hdrSize, sz, buff);
-				sb->AppendHexBuff(buff, sz, ' ', Text::LBT_CRLF);
+				sb->AppendHexBuff(buff, sz, ' ', Text::LineBreakType::CRLF);
 				MemFree(buff);
 			}
 			else
 			{
 				buff = MemAlloc(UInt8, 32);
 				this->fd->GetRealData(pack->fileOfst + pack->hdrSize, 32, buff);
-				sb->AppendHexBuff(buff, 32, ' ', Text::LBT_CRLF);
+				sb->AppendHexBuff(buff, 32, ' ', Text::LineBreakType::CRLF);
 				sb->Append((const UTF8Char*)"\r\n..\r\n");
 				this->fd->GetRealData(pack->fileOfst + pack->packSize - 32, 32, buff);
-				sb->AppendHexBuff(buff, 32, ' ', Text::LBT_CRLF);
+				sb->AppendHexBuff(buff, 32, ' ', Text::LineBreakType::CRLF);
 				MemFree(buff);
 			}
 		}
@@ -830,10 +830,10 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::EBMLFileAnalyse::GetFrameDetail(U
 				buff = MemAlloc(UInt8, 32);
 				this->fd->GetRealData(pack->fileOfst + pack->hdrSize + (UOSInt)(buffPtr - hdr), 32, buff);
 				Text::StringBuilderUTF8 sb;
-				sb.AppendHexBuff(buff, 32, ' ', Text::LBT_CRLF);
+				sb.AppendHexBuff(buff, 32, ' ', Text::LineBreakType::CRLF);
 				sb.Append((const UTF8Char*)"\r\n..\r\n");
 				this->fd->GetRealData(pack->fileOfst + pack->packSize - 32, 32, buff);
-				sb.AppendHexBuff(buff, 32, ' ', Text::LBT_CRLF);
+				sb.AppendHexBuff(buff, 32, ' ', Text::LineBreakType::CRLF);
 				frame->AddField(pack->hdrSize + (UOSInt)(buffPtr - hdr), sz, (const UTF8Char*)"Data", sb.ToString());
 				MemFree(buff);
 			}
@@ -936,10 +936,10 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::EBMLFileAnalyse::GetFrameDetail(U
 				buff = MemAlloc(UInt8, 32);
 				this->fd->GetRealData(pack->fileOfst + pack->hdrSize, 32, buff);
 				Text::StringBuilderUTF8 sb;
-				sb.AppendHexBuff(buff, 32, ' ', Text::LBT_CRLF);
+				sb.AppendHexBuff(buff, 32, ' ', Text::LineBreakType::CRLF);
 				sb.Append((const UTF8Char*)"\r\n..\r\n");
 				this->fd->GetRealData(pack->fileOfst + pack->packSize - 32, 32, buff);
-				sb.AppendHexBuff(buff, 32, ' ', Text::LBT_CRLF);
+				sb.AppendHexBuff(buff, 32, ' ', Text::LineBreakType::CRLF);
 				MemFree(buff);
 				frame->AddField(pack->hdrSize, sz, (const UTF8Char*)element->elementName, sb.ToString());
 			}

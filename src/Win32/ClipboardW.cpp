@@ -538,7 +538,7 @@ Bool Win32::Clipboard::GetDataTextH(void *hand, UInt32 fmtId, Text::StringBuilde
 	
 	leng = GlobalSize(hand);
 	memptr = (UInt8*)GlobalLock(hand);
-	sb->AppendHexBuff((UInt8*)memptr, leng, ' ', Text::LBT_CRLF);
+	sb->AppendHexBuff((UInt8*)memptr, leng, ' ', Text::LineBreakType::CRLF);
 	GlobalUnlock(hand);
 	return false;
 }

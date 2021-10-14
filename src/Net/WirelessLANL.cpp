@@ -649,7 +649,7 @@ UOSInt Net::WirelessLAN::Interface::GetBSSList(Data::ArrayList<Net::WirelessLAN:
 	}
 //	printf("SIOCGIWSCAN result size = %d\r\n", wrq.u.data.length);
 /*	Text::StringBuilderUTF8 sbTmp;
-	sbTmp.AppendHexBuff(buff, wrq.u.data.length, ' ', Text::LBT_CRLF);
+	sbTmp.AppendHexBuff(buff, wrq.u.data.length, ' ', Text::LineBreakType::CRLF);
 	printf("%s\r\n", sbTmp.ToString());*/
 /*
           Cell 01 - Address: C0:56:27:74:7F:F9

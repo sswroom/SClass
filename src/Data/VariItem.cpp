@@ -111,7 +111,7 @@ void Data::VariItem::ToString(Text::StringBuilderUTF *sb)
 		break;
 	case IT_BYTEARR:
 		sb->AppendChar('\"', 1);
-		sb->AppendHexBuff(this->val.byteArr->GetArray(), this->val.byteArr->GetCount(), 0, Text::LBT_NONE);
+		sb->AppendHexBuff(this->val.byteArr->GetArray(), this->val.byteArr->GetCount(), 0, Text::LineBreakType::None);
 		sb->AppendChar('\"', 1);
 		return;
 	case IT_VECTOR:

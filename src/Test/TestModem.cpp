@@ -229,7 +229,7 @@ void Test::TestModem::GSMModemTest(IO::Writer *writer, IO::GSMModemController *m
 			sb.Append((const UTF8Char*)"-");
 			sb.AppendI32(sms->index);
 			sb.Append((const UTF8Char*)", ");
-			sb.AppendHexBuff(sms->pduMessage, sms->pduLeng, 0, Text::LBT_NONE);
+			sb.AppendHexBuff(sms->pduMessage, sms->pduLeng, 0, Text::LineBreakType::None);
 			sb.Append((const UTF8Char*)", ");
 			sb.AppendI32(sms->status);
 			writer->WriteLine(sb.ToString());

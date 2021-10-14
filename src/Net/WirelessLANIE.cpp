@@ -52,7 +52,7 @@ void Net::WirelessLANIE::ToString(const UInt8 *ieBuff, Text::StringBuilderUTF *s
 		else
 		{
 			sb->AppendChar('(', 1);
-			sb->AppendHexBuff(&ieBuff[2], size, ' ', Text::LBT_NONE);
+			sb->AppendHexBuff(&ieBuff[2], size, ' ', Text::LineBreakType::None);
 			sb->AppendChar(')', 1);
 		}
 		return;
@@ -133,7 +133,7 @@ void Net::WirelessLANIE::ToString(const UInt8 *ieBuff, Text::StringBuilderUTF *s
 		else
 		{
 			sb->Append((const UTF8Char*)"FH Parameter Set - ");
-			sb->AppendHexBuff(&ieBuff[2], size, 0, Text::LBT_NONE);
+			sb->AppendHexBuff(&ieBuff[2], size, 0, Text::LineBreakType::None);
 		}
 		return;
 	case 3:
@@ -146,12 +146,12 @@ void Net::WirelessLANIE::ToString(const UInt8 *ieBuff, Text::StringBuilderUTF *s
 		else
 		{
 			sb->Append((const UTF8Char*)"DS Parameter Set - ");
-			sb->AppendHexBuff(&ieBuff[2], size, 0, Text::LBT_NONE);
+			sb->AppendHexBuff(&ieBuff[2], size, 0, Text::LineBreakType::None);
 		}
 		return;
 	case 4:
 		sb->Append((const UTF8Char*)"CF Parameter Set - ");
-		sb->AppendHexBuff(&ieBuff[2], size, 0, Text::LBT_NONE);
+		sb->AppendHexBuff(&ieBuff[2], size, 0, Text::LineBreakType::None);
 		return;
 	case 5:
 		if (size >= 3)
@@ -166,13 +166,13 @@ void Net::WirelessLANIE::ToString(const UInt8 *ieBuff, Text::StringBuilderUTF *s
 			if (size > 3)
 			{
 				sb->Append((const UTF8Char*)"\r\n\tPartial Virtual Bitmap = ");
-				sb->AppendHexBuff(&ieBuff[5], (UOSInt)size - 3, 0, Text::LBT_NONE);
+				sb->AppendHexBuff(&ieBuff[5], (UOSInt)size - 3, 0, Text::LineBreakType::None);
 			}
 		}
 		else
 		{
 			sb->Append((const UTF8Char*)"Traffic Indication Map (TIM) - ");
-			sb->AppendHexBuff(&ieBuff[2], size, 0, Text::LBT_NONE);
+			sb->AppendHexBuff(&ieBuff[2], size, 0, Text::LineBreakType::None);
 		}
 		return;
 	case 6:
@@ -185,7 +185,7 @@ void Net::WirelessLANIE::ToString(const UInt8 *ieBuff, Text::StringBuilderUTF *s
 		else
 		{
 			sb->Append((const UTF8Char*)"IBSS Parameter Set - ");
-			sb->AppendHexBuff(&ieBuff[2], size, 0, Text::LBT_NONE);
+			sb->AppendHexBuff(&ieBuff[2], size, 0, Text::LineBreakType::None);
 		}
 		return;
 	case 7:
@@ -209,20 +209,20 @@ void Net::WirelessLANIE::ToString(const UInt8 *ieBuff, Text::StringBuilderUTF *s
 		else
 		{
 			sb->Append((const UTF8Char*)"Country - ");
-			sb->AppendHexBuff(&ieBuff[2], size, 0, Text::LBT_NONE);
+			sb->AppendHexBuff(&ieBuff[2], size, 0, Text::LineBreakType::None);
 		}
 		return;
 	case 8:
 		sb->Append((const UTF8Char*)"Hopping Pattern Parameters - ");
-		sb->AppendHexBuff(&ieBuff[2], size, 0, Text::LBT_NONE);
+		sb->AppendHexBuff(&ieBuff[2], size, 0, Text::LineBreakType::None);
 		return;
 	case 9:
 		sb->Append((const UTF8Char*)"Hopping Pattern Table - ");
-		sb->AppendHexBuff(&ieBuff[2], size, 0, Text::LBT_NONE);
+		sb->AppendHexBuff(&ieBuff[2], size, 0, Text::LineBreakType::None);
 		return;
 	case 10:
 		sb->Append((const UTF8Char*)"Request - ");
-		sb->AppendHexBuff(&ieBuff[2], size, 0, Text::LBT_NONE);
+		sb->AppendHexBuff(&ieBuff[2], size, 0, Text::LineBreakType::None);
 		return;
 	case 0x0B:
 		if (size == 5)
@@ -238,12 +238,12 @@ void Net::WirelessLANIE::ToString(const UInt8 *ieBuff, Text::StringBuilderUTF *s
 		else
 		{
 			sb->Append((const UTF8Char*)"BSS Load - ");
-			sb->AppendHexBuff(&ieBuff[2], size, 0, Text::LBT_NONE);
+			sb->AppendHexBuff(&ieBuff[2], size, 0, Text::LineBreakType::None);
 		}
 		return;
 	case 0x10:
 		sb->Append((const UTF8Char*)"Challenge text - ");
-		sb->AppendHexBuff(&ieBuff[2], size, 0, Text::LBT_NONE);
+		sb->AppendHexBuff(&ieBuff[2], size, 0, Text::LineBreakType::None);
 		return;
 	case 0x20:
 		if (size == 1)
@@ -255,16 +255,16 @@ void Net::WirelessLANIE::ToString(const UInt8 *ieBuff, Text::StringBuilderUTF *s
 		else
 		{
 			sb->Append((const UTF8Char*)"Power Constraint - ");
-			sb->AppendHexBuff(&ieBuff[2], size, 0, Text::LBT_NONE);
+			sb->AppendHexBuff(&ieBuff[2], size, 0, Text::LineBreakType::None);
 		}
 		return;
 	case 0x21:
 		sb->Append((const UTF8Char*)"Power Capability - ");
-		sb->AppendHexBuff(&ieBuff[2], size, 0, Text::LBT_NONE);
+		sb->AppendHexBuff(&ieBuff[2], size, 0, Text::LineBreakType::None);
 		return;
 	case 0x22:
 		sb->Append((const UTF8Char*)"Transmit Power Control (TPC) Request - ");
-		sb->AppendHexBuff(&ieBuff[2], size, 0, Text::LBT_NONE);
+		sb->AppendHexBuff(&ieBuff[2], size, 0, Text::LineBreakType::None);
 		return;
 	case 0x23:
 		if (size == 2)
@@ -279,32 +279,32 @@ void Net::WirelessLANIE::ToString(const UInt8 *ieBuff, Text::StringBuilderUTF *s
 		else
 		{
 			sb->Append((const UTF8Char*)"TPC Report - ");
-			sb->AppendHexBuff(&ieBuff[2], size, 0, Text::LBT_NONE);
+			sb->AppendHexBuff(&ieBuff[2], size, 0, Text::LineBreakType::None);
 		}
 		return;
 	case 0x24:
 		sb->Append((const UTF8Char*)"Supported Channels - ");
-		sb->AppendHexBuff(&ieBuff[2], size, 0, Text::LBT_NONE);
+		sb->AppendHexBuff(&ieBuff[2], size, 0, Text::LineBreakType::None);
 		return;
 	case 0x25:
 		sb->Append((const UTF8Char*)"Channel Switch Announcement - ");
-		sb->AppendHexBuff(&ieBuff[2], size, 0, Text::LBT_NONE);
+		sb->AppendHexBuff(&ieBuff[2], size, 0, Text::LineBreakType::None);
 		return;
 	case 0x26:
 		sb->Append((const UTF8Char*)"Measurement Request - ");
-		sb->AppendHexBuff(&ieBuff[2], size, 0, Text::LBT_NONE);
+		sb->AppendHexBuff(&ieBuff[2], size, 0, Text::LineBreakType::None);
 		return;
 	case 0x27:
 		sb->Append((const UTF8Char*)"Measurement Report - ");
-		sb->AppendHexBuff(&ieBuff[2], size, 0, Text::LBT_NONE);
+		sb->AppendHexBuff(&ieBuff[2], size, 0, Text::LineBreakType::None);
 		return;
 	case 0x28:
 		sb->Append((const UTF8Char*)"Quiet - ");
-		sb->AppendHexBuff(&ieBuff[2], size, 0, Text::LBT_NONE);
+		sb->AppendHexBuff(&ieBuff[2], size, 0, Text::LineBreakType::None);
 		return;
 	case 0x29:
 		sb->Append((const UTF8Char*)"IBSS DFS - ");
-		sb->AppendHexBuff(&ieBuff[2], size, 0, Text::LBT_NONE);
+		sb->AppendHexBuff(&ieBuff[2], size, 0, Text::LineBreakType::None);
 		return;
 	case 0x2A:
 		if (size == 1)
@@ -321,7 +321,7 @@ void Net::WirelessLANIE::ToString(const UInt8 *ieBuff, Text::StringBuilderUTF *s
 		else
 		{
 			sb->Append((const UTF8Char*)"ERP information - ");
-			sb->AppendHexBuff(&ieBuff[2], size, 0, Text::LBT_NONE);
+			sb->AppendHexBuff(&ieBuff[2], size, 0, Text::LineBreakType::None);
 		}
 		return;
 	case 0x2D:
@@ -379,7 +379,7 @@ void Net::WirelessLANIE::ToString(const UInt8 *ieBuff, Text::StringBuilderUTF *s
 		else
 		{
 			sb->Append((const UTF8Char*)"HT Capabilities - ");
-			sb->AppendHexBuff(&ieBuff[2], size, 0, Text::LBT_NONE);
+			sb->AppendHexBuff(&ieBuff[2], size, 0, Text::LineBreakType::None);
 		}
 		return;
 	case 0x2F:
@@ -397,7 +397,7 @@ void Net::WirelessLANIE::ToString(const UInt8 *ieBuff, Text::StringBuilderUTF *s
 		else
 		{
 			sb->Append((const UTF8Char*)"ERP D4.0 - ");
-			sb->AppendHexBuff(&ieBuff[2], size, 0, Text::LBT_NONE);
+			sb->AppendHexBuff(&ieBuff[2], size, 0, Text::LineBreakType::None);
 		}
 		return;
 	case 0x30:
@@ -407,7 +407,7 @@ void Net::WirelessLANIE::ToString(const UInt8 *ieBuff, Text::StringBuilderUTF *s
 			sb->Append((const UTF8Char*)"\r\n\tVersion = ");
 			sb->AppendU16(ReadUInt16(&ieBuff[2]));
 			sb->Append((const UTF8Char*)"\r\n\tGroup cipher suite OUI = ");
-			sb->AppendHexBuff(&ieBuff[4], 3, '-', Text::LBT_NONE);
+			sb->AppendHexBuff(&ieBuff[4], 3, '-', Text::LineBreakType::None);
 			sb->Append((const UTF8Char*)" (");
 			sb->Append((const UTF8Char*)Net::MACInfo::GetMACInfoOUI(&ieBuff[4])->name);
 			sb->Append((const UTF8Char*)")");
@@ -446,7 +446,7 @@ void Net::WirelessLANIE::ToString(const UInt8 *ieBuff, Text::StringBuilderUTF *s
 			while (i <= size - 4 && j < cnt)
 			{
 				sb->Append((const UTF8Char*)"\r\n\tPairwise cipher suite OUI = ");
-				sb->AppendHexBuff(&ieBuff[i + 2], 3, '-', Text::LBT_NONE);
+				sb->AppendHexBuff(&ieBuff[i + 2], 3, '-', Text::LineBreakType::None);
 				sb->Append((const UTF8Char*)" (");
 				sb->Append((const UTF8Char*)Net::MACInfo::GetMACInfoOUI(&ieBuff[i + 2])->name);
 				sb->Append((const UTF8Char*)")");
@@ -489,7 +489,7 @@ void Net::WirelessLANIE::ToString(const UInt8 *ieBuff, Text::StringBuilderUTF *s
 				while (i <= size - 4 && j < cnt)
 				{
 					sb->Append((const UTF8Char*)"\r\n\tAuthentication Suites OUI = ");
-					sb->AppendHexBuff(&ieBuff[i + 2], 3, '-', Text::LBT_NONE);
+					sb->AppendHexBuff(&ieBuff[i + 2], 3, '-', Text::LineBreakType::None);
 					sb->Append((const UTF8Char*)" (");
 					sb->Append((const UTF8Char*)Net::MACInfo::GetMACInfoOUI(&ieBuff[i + 2])->name);
 					sb->Append((const UTF8Char*)")");
@@ -520,14 +520,14 @@ void Net::WirelessLANIE::ToString(const UInt8 *ieBuff, Text::StringBuilderUTF *s
 			if (i < size)
 			{
 				sb->Append((const UTF8Char*)"\r\n\tUnknown = ");
-				sb->AppendHexBuff(&ieBuff[i + 2], (UOSInt)(size - i), 0, Text::LBT_NONE);
+				sb->AppendHexBuff(&ieBuff[i + 2], (UOSInt)(size - i), 0, Text::LineBreakType::None);
 				i += 2;
 			}
 		}
 		else
 		{
 			sb->Append((const UTF8Char*)"Robust Security Network - ");
-			sb->AppendHexBuff(&ieBuff[2], size, 0, Text::LBT_NONE);
+			sb->AppendHexBuff(&ieBuff[2], size, 0, Text::LineBreakType::None);
 		}
 		return;
 	case 0x32:
@@ -636,7 +636,7 @@ void Net::WirelessLANIE::ToString(const UInt8 *ieBuff, Text::StringBuilderUTF *s
 		else
 		{
 			sb->Append((const UTF8Char*)"HT Operation - ");
-			sb->AppendHexBuff(&ieBuff[2], size, 0, Text::LBT_NONE);
+			sb->AppendHexBuff(&ieBuff[2], size, 0, Text::LineBreakType::None);
 		}
 		return;
 	case 0x46:
@@ -655,7 +655,7 @@ void Net::WirelessLANIE::ToString(const UInt8 *ieBuff, Text::StringBuilderUTF *s
 		else
 		{
 			sb->Append((const UTF8Char*)"Mobility Domain - ");
-			sb->AppendHexBuff(&ieBuff[2], size, 0, Text::LBT_NONE);
+			sb->AppendHexBuff(&ieBuff[2], size, 0, Text::LineBreakType::None);
 		}
 		return;
 	case 0x4A:
@@ -681,14 +681,14 @@ void Net::WirelessLANIE::ToString(const UInt8 *ieBuff, Text::StringBuilderUTF *s
 		else
 		{
 			sb->Append((const UTF8Char*)"Overlapping BSS Scan Parameters - ");
-			sb->AppendHexBuff(&ieBuff[2], size, 0, Text::LBT_NONE);
+			sb->AppendHexBuff(&ieBuff[2], size, 0, Text::LineBreakType::None);
 		}
 		return;
 	case 0x7F:
 		if (size == 8)
 		{
 			sb->Append((const UTF8Char*)"Extended Capabilities = ");
-			sb->AppendHexBuff(&ieBuff[2], 8, ' ', Text::LBT_NONE);
+			sb->AppendHexBuff(&ieBuff[2], 8, ' ', Text::LineBreakType::None);
 			sb->Append((const UTF8Char*)"\r\n\t20 40 Bss Coexistence Management Support = ");
 			sb->AppendU16((ieBuff[2] >> 0) & 1);
 			sb->Append((const UTF8Char*)"\r\n\tExtended Channel Switching = ");
@@ -807,7 +807,7 @@ void Net::WirelessLANIE::ToString(const UInt8 *ieBuff, Text::StringBuilderUTF *s
 		else
 		{
 			sb->Append((const UTF8Char*)"Extended Capabilities - ");
-			sb->AppendHexBuff(&ieBuff[2], size, 0, Text::LBT_NONE);
+			sb->AppendHexBuff(&ieBuff[2], size, 0, Text::LineBreakType::None);
 		}
 		return;
 	case 0xBF:
@@ -861,7 +861,7 @@ void Net::WirelessLANIE::ToString(const UInt8 *ieBuff, Text::StringBuilderUTF *s
 		else
 		{
 			sb->Append((const UTF8Char*)"VHT Capabilities - ");
-			sb->AppendHexBuff(&ieBuff[2], size, 0, Text::LBT_NONE);
+			sb->AppendHexBuff(&ieBuff[2], size, 0, Text::LineBreakType::None);
 		}
 		
 		return;
@@ -881,7 +881,7 @@ void Net::WirelessLANIE::ToString(const UInt8 *ieBuff, Text::StringBuilderUTF *s
 		else
 		{
 			sb->Append((const UTF8Char*)"VHT Operation - ");
-			sb->AppendHexBuff(&ieBuff[2], size, 0, Text::LBT_NONE);
+			sb->AppendHexBuff(&ieBuff[2], size, 0, Text::LineBreakType::None);
 		}
 		return;
 	case 0xC3:
@@ -900,19 +900,19 @@ void Net::WirelessLANIE::ToString(const UInt8 *ieBuff, Text::StringBuilderUTF *s
 		else
 		{
 			sb->Append((const UTF8Char*)"VHT Transmit Power Envelope - ");
-			sb->AppendHexBuff(&ieBuff[2], size, 0, Text::LBT_NONE);
+			sb->AppendHexBuff(&ieBuff[2], size, 0, Text::LineBreakType::None);
 		}
 		return;
 	case 0xDD:
 		if (size < 4)
 		{
 			sb->Append((const UTF8Char*)"Vendor Specific - ");
-			sb->AppendHexBuff(&ieBuff[2], size, 0, Text::LBT_NONE);
+			sb->AppendHexBuff(&ieBuff[2], size, 0, Text::LineBreakType::None);
 			return;
 		}
 		sb->Append((const UTF8Char*)"Vendor Specific:");
 		sb->Append((const UTF8Char*)"\r\n\tOUI = ");
-		sb->AppendHexBuff(&ieBuff[2], 3, '-', Text::LBT_NONE);
+		sb->AppendHexBuff(&ieBuff[2], 3, '-', Text::LineBreakType::None);
 		sb->Append((const UTF8Char*)" (");
 		sb->Append((const UTF8Char*)Net::MACInfo::GetMACInfoOUI(&ieBuff[2])->name);
 		sb->Append((const UTF8Char*)")");
@@ -994,7 +994,7 @@ void Net::WirelessLANIE::ToString(const UInt8 *ieBuff, Text::StringBuilderUTF *s
 				{
 				case 0x1008:
 					sb->Append((const UTF8Char*)"\r\n\tConfig methods = ");
-					sb->AppendHexBuff(&ieBuff[i + 6], itemSize, ',', Text::LBT_NONE);
+					sb->AppendHexBuff(&ieBuff[i + 6], itemSize, ',', Text::LineBreakType::None);
 					break;
 				case 0x1011:
 					sb->Append((const UTF8Char*)"\r\n\tDevice Name = ");
@@ -1051,15 +1051,15 @@ void Net::WirelessLANIE::ToString(const UInt8 *ieBuff, Text::StringBuilderUTF *s
 					sb->Append((const UTF8Char*)"\r\n\tUUID = ");
 					if (itemSize == 16)
 					{
-						sb->AppendHexBuff(&ieBuff[i + 6], 4, 0, Text::LBT_NONE);
+						sb->AppendHexBuff(&ieBuff[i + 6], 4, 0, Text::LineBreakType::None);
 						sb->AppendChar('-', 1);
-						sb->AppendHexBuff(&ieBuff[i + 10], 2, 0, Text::LBT_NONE);
+						sb->AppendHexBuff(&ieBuff[i + 10], 2, 0, Text::LineBreakType::None);
 						sb->AppendChar('-', 1);
-						sb->AppendHexBuff(&ieBuff[i + 12], 2, 0, Text::LBT_NONE);
+						sb->AppendHexBuff(&ieBuff[i + 12], 2, 0, Text::LineBreakType::None);
 						sb->AppendChar('-', 1);
-						sb->AppendHexBuff(&ieBuff[i + 14], 2, 0, Text::LBT_NONE);
+						sb->AppendHexBuff(&ieBuff[i + 14], 2, 0, Text::LineBreakType::None);
 						sb->AppendChar('-', 1);
-						sb->AppendHexBuff(&ieBuff[i + 16], 6, 0, Text::LBT_NONE);
+						sb->AppendHexBuff(&ieBuff[i + 16], 6, 0, Text::LineBreakType::None);
 					}
 					break;
 				case 0x1049:
@@ -1067,7 +1067,7 @@ void Net::WirelessLANIE::ToString(const UInt8 *ieBuff, Text::StringBuilderUTF *s
 					if (itemSize >= 3)
 					{
 						sb->Append((const UTF8Char*)"\r\n\t\tVendor OUI: ");
-						sb->AppendHexBuff(&ieBuff[i + 6], 3, '-', Text::LBT_NONE);
+						sb->AppendHexBuff(&ieBuff[i + 6], 3, '-', Text::LineBreakType::None);
 						sb->Append((const UTF8Char*)" (");
 						sb->Append((const UTF8Char*)Net::MACInfo::GetMACInfoOUI(&ieBuff[i + 6])->name);
 						sb->AppendChar(')', 1);
@@ -1088,7 +1088,7 @@ void Net::WirelessLANIE::ToString(const UInt8 *ieBuff, Text::StringBuilderUTF *s
 								break;
 							}
 							sb->Append((const UTF8Char*)", Value=");
-							sb->AppendHexBuff(&ieBuff[i + 6 + j + 2], ieBuff[i + 6 + j + 1], ' ', Text::LBT_NONE);
+							sb->AppendHexBuff(&ieBuff[i + 6 + j + 2], ieBuff[i + 6 + j + 1], ' ', Text::LineBreakType::None);
 							j += (UOSInt)(ieBuff[i + 6 + j + 1] + 2);
 						}
 					}
@@ -1102,7 +1102,7 @@ void Net::WirelessLANIE::ToString(const UInt8 *ieBuff, Text::StringBuilderUTF *s
 					}
 					else
 					{
-						sb->AppendHexBuff(&ieBuff[i + 6], itemSize, ' ', Text::LBT_NONE);
+						sb->AppendHexBuff(&ieBuff[i + 6], itemSize, ' ', Text::LineBreakType::None);
 					}
 					break;
 				case 0x1054:
@@ -1111,14 +1111,14 @@ void Net::WirelessLANIE::ToString(const UInt8 *ieBuff, Text::StringBuilderUTF *s
 					{
 						sb->AppendU16(ReadMUInt16(&ieBuff[i + 6]));
 						sb->AppendChar('-', 1);
-						sb->AppendHexBuff(&ieBuff[i + 8], 4, 0, Text::LBT_NONE);
+						sb->AppendHexBuff(&ieBuff[i + 8], 4, 0, Text::LineBreakType::None);
 						sb->AppendChar('-', 1);
 						sb->AppendU16(ReadMUInt16(&ieBuff[i + 12]));
 					}
 					break;
 				default:
 					sb->Append((const UTF8Char*)"\r\n\tWPS IE ");
-					sb->AppendHexBuff(&ieBuff[i + 2], itemSize + 4, 0, Text::LBT_NONE);
+					sb->AppendHexBuff(&ieBuff[i + 2], itemSize + 4, 0, Text::LineBreakType::None);
 					break;
 				}
 				i += 4 + itemSize; 
@@ -1127,12 +1127,12 @@ void Net::WirelessLANIE::ToString(const UInt8 *ieBuff, Text::StringBuilderUTF *s
 		if (!succ)
 		{
 			sb->Append((const UTF8Char*)"\r\n\tContent = ");
-			sb->AppendHexBuff(&ieBuff[6], size - 4, 0, Text::LBT_NONE);
+			sb->AppendHexBuff(&ieBuff[6], size - 4, 0, Text::LineBreakType::None);
 		}
 		return;
 	}
 	sb->Append((const UTF8Char*)"IE ");
-	sb->AppendHexBuff(ieBuff, size + 2, 0, Text::LBT_NONE);
+	sb->AppendHexBuff(ieBuff, size + 2, 0, Text::LineBreakType::None);
 }
 
 void Net::WirelessLANIE::GetWPSInfo(const UInt8 *iebuff, UOSInt ieLen, const UTF8Char **manuf, const UTF8Char **model, const UTF8Char **serialNum)

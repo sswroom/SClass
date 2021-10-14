@@ -19,7 +19,7 @@ void __stdcall IO::RadioSignalLogger::OnWiFiUpdate(Net::WirelessLAN::BSSInfo *bs
 		sb.AppendChar('\t', 1);
 		sb.Append((const UTF8Char*)"wifi");
 		sb.AppendChar('\t', 1);
-		sb.AppendHexBuff(bss->GetMAC(), 6, ':', Text::LBT_NONE);
+		sb.AppendHexBuff(bss->GetMAC(), 6, ':', Text::LineBreakType::None);
 		sb.AppendChar('\t', 1);
 		Text::SBAppendF64(&sb, bss->GetRSSI());
 		sb.Append((const UTF8Char*)"\r\n");
@@ -62,7 +62,7 @@ void __stdcall IO::RadioSignalLogger::OnBTUpdate(IO::BTScanLog::ScanRecord3 *dev
 			sb.Append((const UTF8Char*)"bt");
 		}
 		sb.AppendChar('\t', 1);
-		sb.AppendHexBuff(dev->mac, 6, ':', Text::LBT_NONE);
+		sb.AppendHexBuff(dev->mac, 6, ':', Text::LineBreakType::None);
 		sb.AppendChar('\t', 1);
 		sb.AppendI32(dev->rssi);
 		sb.Append((const UTF8Char*)"\r\n");

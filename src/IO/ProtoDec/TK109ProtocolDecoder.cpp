@@ -127,7 +127,7 @@ Bool IO::ProtoDec::TK109ProtocolDecoder::GetProtocolDetail(UInt8 *buff, UOSInt b
 			if (protoSize >= 10)
 			{
 				sb->Append((const UTF8Char*)"IMEI=");
-				sb->AppendHexBuff(&buff[7], 8, 0, Text::LBT_NONE);
+				sb->AppendHexBuff(&buff[7], 8, 0, Text::LineBreakType::None);
 				sb->Append((const UTF8Char*)"\r\n");
 			}
 			if (protoSize >= 11)
@@ -436,7 +436,7 @@ Bool IO::ProtoDec::TK109ProtocolDecoder::GetProtocolDetail(UInt8 *buff, UOSInt b
 		if (protoSize >= 37)
 		{
 			sb->Append((const UTF8Char*)"Pass through data=");
-			sb->AppendHexBuff(&buff[32], 10, ' ', Text::LBT_NONE);
+			sb->AppendHexBuff(&buff[32], 10, ' ', Text::LineBreakType::None);
 			sb->Append((const UTF8Char*)"\r\n");
 		}
 		break;
@@ -458,7 +458,7 @@ Bool IO::ProtoDec::TK109ProtocolDecoder::GetProtocolDetail(UInt8 *buff, UOSInt b
 		if (protoSize >= 2)
 		{
 			sb->Append((const UTF8Char*)"Pass through data=");
-			sb->AppendHexBuff(&buff[7], protoSize - 2, ' ', Text::LBT_NONE);
+			sb->AppendHexBuff(&buff[7], protoSize - 2, ' ', Text::LineBreakType::None);
 			sb->Append((const UTF8Char*)"\r\n");
 		}
 		break;

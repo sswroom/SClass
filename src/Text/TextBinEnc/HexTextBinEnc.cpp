@@ -13,7 +13,7 @@ Text::TextBinEnc::HexTextBinEnc::~HexTextBinEnc()
 UOSInt Text::TextBinEnc::HexTextBinEnc::EncodeBin(Text::StringBuilderUTF *sb, const UInt8 *dataBuff, UOSInt buffSize)
 {
 	UOSInt size = sb->GetCharCnt();
-	sb->AppendHexBuff(dataBuff, buffSize, ' ', Text::LBT_CRLF);
+	sb->AppendHexBuff(dataBuff, buffSize, ' ', Text::LineBreakType::CRLF);
 	return sb->GetCharCnt() - size;
 }
 

@@ -389,7 +389,7 @@ Bool IO::FileAnalyse::EXEFileAnalyse::GetFrameDetail(UOSInt index, Text::StringB
 	{
 		packBuff = MemAlloc(UInt8, (UOSInt)pack->packSize);
 		this->fd->GetRealData(pack->fileOfst, (UOSInt)pack->packSize, packBuff);
-		sb->AppendHexBuff(packBuff, (UOSInt)pack->packSize, ' ', Text::LBT_CRLF);
+		sb->AppendHexBuff(packBuff, (UOSInt)pack->packSize, ' ', Text::LineBreakType::CRLF);
 
 		MemFree(packBuff);
 	}

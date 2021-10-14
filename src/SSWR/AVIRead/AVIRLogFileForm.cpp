@@ -30,7 +30,7 @@ void SSWR::AVIRead::AVIRLogFileForm::UpdateLogMessages()
 		while (i < j)
 		{
 			sb->ClearStr();
-			this->logFile->GetLogMessage(this->logLevel, i, dt, sb, Text::LBT_CRLF);
+			this->logFile->GetLogMessage(this->logLevel, i, dt, sb, Text::LineBreakType::CRLF);
 			dt->ToLocalTime();
 			dt->ToString(sbuff);
 			k = this->lvLogs->AddItem(sbuff, 0);
@@ -111,7 +111,7 @@ void SSWR::AVIRead::AVIRLogFileForm::EventMenuClicked(UInt16 cmdId)
 				{
 					sb->ClearStr();
 					sb->Append((const UTF8Char*)"\t");
-					this->logFile->GetLogMessage(this->logLevel, i, &dt, sb, Text::LBT_CRLF);
+					this->logFile->GetLogMessage(this->logLevel, i, &dt, sb, Text::LineBreakType::CRLF);
 					dt.ToLocalTime();
 					dt.ToString(sbuff);
 					writer->Write(sbuff);
