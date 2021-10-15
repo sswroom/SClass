@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "Crypto/Cert/X509Key.h"
+#include "Net/ASN1PDUBuilder.h"
 #include "Net/ASN1Util.h"
 
 Crypto::Cert::X509Key::X509Key(const UTF8Char *sourceName, const UInt8 *buff, UOSInt buffSize, KeyType keyType) : Crypto::Cert::X509File(sourceName, buff, buffSize)
@@ -34,6 +35,98 @@ Net::ASN1Data *Crypto::Cert::X509Key::Clone()
 
 void Crypto::Cert::X509Key::ToString(Text::StringBuilderUTF *sb)
 {
+	if (this->keyType == KeyType::RSA)
+	{
+		Bool found = false;
+		const UInt8 *buff;
+		UOSInt buffSize;
+		buff = this->GetRSAModulus(&buffSize);
+		if (buff)
+		{
+			if (found) sb->AppendLB(Text::LineBreakType::CRLF);
+			found = true;
+			sb->Append((const UTF8Char*)"RSA.Modulus = ");
+			sb->AppendHexBuff(buff, buffSize, ' ', Text::LineBreakType::None);
+		}
+		buff = this->GetRSAPublicExponent(&buffSize);
+		if (buff)
+		{
+			if (found) sb->AppendLB(Text::LineBreakType::CRLF);
+			found = true;
+			sb->Append((const UTF8Char*)"RSA.Public Exponent = ");
+			sb->AppendHexBuff(buff, buffSize, ' ', Text::LineBreakType::None);
+		}
+		buff = this->GetRSAPrivateExponent(&buffSize);
+		if (buff)
+		{
+			if (found) sb->AppendLB(Text::LineBreakType::CRLF);
+			found = true;
+			sb->Append((const UTF8Char*)"RSA.Private Exponent = ");
+			sb->AppendHexBuff(buff, buffSize, ' ', Text::LineBreakType::None);
+		}
+		buff = this->GetRSAPrime1(&buffSize);
+		if (buff)
+		{
+			if (found) sb->AppendLB(Text::LineBreakType::CRLF);
+			found = true;
+			sb->Append((const UTF8Char*)"RSA.Prime1 = ");
+			sb->AppendHexBuff(buff, buffSize, ' ', Text::LineBreakType::None);
+		}
+		buff = this->GetRSAPrime2(&buffSize);
+		if (buff)
+		{
+			if (found) sb->AppendLB(Text::LineBreakType::CRLF);
+			found = true;
+			sb->Append((const UTF8Char*)"RSA.Prime2 = ");
+			sb->AppendHexBuff(buff, buffSize, ' ', Text::LineBreakType::None);
+		}
+		buff = this->GetRSAExponent1(&buffSize);
+		if (buff)
+		{
+			if (found) sb->AppendLB(Text::LineBreakType::CRLF);
+			found = true;
+			sb->Append((const UTF8Char*)"RSA.Exponent1 = ");
+			sb->AppendHexBuff(buff, buffSize, ' ', Text::LineBreakType::None);
+		}
+		buff = this->GetRSAExponent2(&buffSize);
+		if (buff)
+		{
+			if (found) sb->AppendLB(Text::LineBreakType::CRLF);
+			found = true;
+			sb->Append((const UTF8Char*)"RSA.Exponent2 = ");
+			sb->AppendHexBuff(buff, buffSize, ' ', Text::LineBreakType::None);
+		}
+		buff = this->GetRSACoefficient(&buffSize);
+		if (buff)
+		{
+			if (found) sb->AppendLB(Text::LineBreakType::CRLF);
+			found = true;
+			sb->Append((const UTF8Char*)"RSA.Coefficient = ");
+			sb->AppendHexBuff(buff, buffSize, ' ', Text::LineBreakType::None);
+		}
+	}
+	else if (this->keyType == KeyType::RSAPublic)
+	{
+		Bool found = false;
+		const UInt8 *buff;
+		UOSInt buffSize;
+		buff = this->GetRSAModulus(&buffSize);
+		if (buff)
+		{
+			if (found) sb->AppendLB(Text::LineBreakType::CRLF);
+			found = true;
+			sb->Append((const UTF8Char*)"RSA.Modulus = ");
+			sb->AppendHexBuff(buff, buffSize, ' ', Text::LineBreakType::None);
+		}
+		buff = this->GetRSAPublicExponent(&buffSize);
+		if (buff)
+		{
+			if (found) sb->AppendLB(Text::LineBreakType::CRLF);
+			found = true;
+			sb->Append((const UTF8Char*)"RSA.Public Exponent = ");
+			sb->AppendHexBuff(buff, buffSize, ' ', Text::LineBreakType::None);
+		}
+	}
 }
 
 Crypto::Cert::X509File::KeyType Crypto::Cert::X509Key::GetKeyType()
@@ -41,16 +134,63 @@ Crypto::Cert::X509File::KeyType Crypto::Cert::X509Key::GetKeyType()
 	return this->keyType;
 }
 
+Crypto::Cert::X509Key *Crypto::Cert::X509Key::CreatePublicKey()
+{
+	if (this->keyType == KeyType::RSAPublic)
+	{
+		return (Crypto::Cert::X509Key*)this->Clone();
+	}
+	else if (this->keyType == KeyType::RSA)
+	{
+		Net::ASN1PDUBuilder builder;
+		UOSInt buffSize;
+		const UInt8 *buff;
+		builder.BeginSequence();
+		if ((buff = this->GetRSAModulus(&buffSize)) == 0) return 0;
+		builder.AppendOther(Net::ASN1Util::IT_INTEGER, buff, buffSize);
+		if ((buff = this->GetRSAPublicExponent(&buffSize)) == 0) return 0;
+		builder.AppendOther(Net::ASN1Util::IT_INTEGER, buff, buffSize);
+		builder.EndLevel();
+		Crypto::Cert::X509Key *key;
+		NEW_CLASS(key, Crypto::Cert::X509Key(this->GetSourceNameObj(), builder.GetBuff(&buffSize), builder.GetBuffSize(), KeyType::RSAPublic));
+		return key;
+	}
+	else
+	{
+		return 0;
+	}
+}
+
 const UInt8 *Crypto::Cert::X509Key::GetRSAModulus(UOSInt *size)
 {
-	if (this->keyType != KeyType::RSA) return 0;
-	return Net::ASN1Util::PDUGetItem(this->buff, this->buff + this->buffSize, "1.2", size, 0);
+	if (this->keyType == KeyType::RSA)
+	{
+		return Net::ASN1Util::PDUGetItem(this->buff, this->buff + this->buffSize, "1.2", size, 0);
+	}
+	else if (this->keyType == KeyType::RSAPublic)
+	{
+		return Net::ASN1Util::PDUGetItem(this->buff, this->buff + this->buffSize, "1.1", size, 0);
+	}
+	else
+	{
+		return 0;
+	}
 }
 
 const UInt8 *Crypto::Cert::X509Key::GetRSAPublicExponent(UOSInt *size)
 {
-	if (this->keyType != KeyType::RSA) return 0;
-	return Net::ASN1Util::PDUGetItem(this->buff, this->buff + this->buffSize, "1.3", size, 0);
+	if (this->keyType == KeyType::RSA)
+	{
+		return Net::ASN1Util::PDUGetItem(this->buff, this->buff + this->buffSize, "1.3", size, 0);
+	}
+	else if (this->keyType == KeyType::RSAPublic)
+	{
+		return Net::ASN1Util::PDUGetItem(this->buff, this->buff + this->buffSize, "1.2", size, 0);
+	}
+	else
+	{
+		return 0;
+	}
 }
 
 const UInt8 *Crypto::Cert::X509Key::GetRSAPrivateExponent(UOSInt *size)

@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Crypto/Cert/X509File.h"
+#include "Crypto/Cert/X509PubKey.h"
 #include "Net/ASN1OIDDB.h"
 #include "Net/ASN1Util.h"
 
@@ -163,11 +164,23 @@ void Crypto::Cert::X509File::AppendTBSCertificate(const UInt8 *pdu, const UInt8 
 		}
 	}
 	Text::StrUOSInt(sptr, i++);
-	if ((itemPDU = Net::ASN1Util::PDUGetItem(pdu, pduEnd, sbuff, &itemLen, &itemType)) != 0)
+	UOSInt itemOfst;
+	if ((itemPDU = Net::ASN1Util::PDUGetItemRAW(pdu, pduEnd, sbuff, &itemLen, &itemOfst)) != 0)
 	{
-		if (itemType == Net::ASN1Util::IT_SEQUENCE)
+		if (itemPDU[0] == Net::ASN1Util::IT_SEQUENCE)
 		{
-			AppendSubjectPublicKeyInfo(itemPDU, itemPDU + itemLen, sb, (const UTF8Char*)"subjectPublicKeyInfo");
+			AppendSubjectPublicKeyInfo(itemPDU + itemOfst, itemPDU + itemOfst + itemLen, sb, (const UTF8Char*)"subjectPublicKeyInfo");
+			Crypto::Cert::X509PubKey *pubKey;
+			Crypto::Cert::X509Key *key;
+			NEW_CLASS(pubKey, Crypto::Cert::X509PubKey((const UTF8Char*)"PubKey", itemPDU, itemOfst + itemLen));
+			key = pubKey->CreateKey();
+			if (key)
+			{
+				sb->AppendLB(Text::LineBreakType::CRLF);
+				key->ToString(sb);
+				DEL_CLASS(key);
+			}
+			DEL_CLASS(pubKey);
 		}
 	}
 }
@@ -322,11 +335,23 @@ void Crypto::Cert::X509File::AppendCertificateRequestInfo(const UInt8 *pdu, cons
 		}
 	}
 	Text::StrUOSInt(sptr, i++);
-	if ((itemPDU = Net::ASN1Util::PDUGetItem(pdu, pduEnd, sbuff, &itemLen, &itemType)) != 0)
+	UOSInt itemOfst;
+	if ((itemPDU = Net::ASN1Util::PDUGetItemRAW(pdu, pduEnd, sbuff, &itemLen, &itemOfst)) != 0)
 	{
-		if (itemType == Net::ASN1Util::IT_SEQUENCE)
+		if (itemPDU[0] == Net::ASN1Util::IT_SEQUENCE)
 		{
-			AppendSubjectPublicKeyInfo(itemPDU, itemPDU + itemLen, sb, (const UTF8Char*)"subjectPublicKeyInfo");
+			AppendSubjectPublicKeyInfo(itemPDU + itemOfst, itemPDU + itemOfst + itemLen, sb, (const UTF8Char*)"subjectPublicKeyInfo");
+			Crypto::Cert::X509PubKey *pubKey;
+			Crypto::Cert::X509Key *key;
+			NEW_CLASS(pubKey, Crypto::Cert::X509PubKey((const UTF8Char*)"PubKey", itemPDU, itemOfst + itemLen));
+			key = pubKey->CreateKey();
+			if (key)
+			{
+				sb->AppendLB(Text::LineBreakType::CRLF);
+				key->ToString(sb);
+				DEL_CLASS(key);
+			}
+			DEL_CLASS(pubKey);
 		}
 	}
 }
@@ -344,6 +369,50 @@ void Crypto::Cert::X509File::AppendCertificateRequest(const UInt8 *pdu, const UI
 	Text::StrConcat(Text::StrConcat(sbuff, path), ".1");
 	AppendCertificateRequestInfo(pdu, pduEnd, sbuff, sb);
 	AppendSigned(pdu, pduEnd, path, sb);
+}
+
+Bool Crypto::Cert::X509File::IsPublicKeyInfo(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path)
+{
+	UOSInt cnt = Net::ASN1Util::PDUCountItem(pdu, pduEnd, path);
+	if (cnt < 2)
+	{
+		return false;
+	}
+	Char sbuff[256];
+	Char *sptr = Text::StrConcat(sbuff, path);
+	Text::StrConcat(sptr, ".1");
+	if (Net::ASN1Util::PDUGetItemType(pdu, pduEnd, sbuff) != Net::ASN1Util::IT_SEQUENCE)
+	{
+		return false;
+	}
+	Text::StrConcat(sptr, ".2");
+	if (Net::ASN1Util::PDUGetItemType(pdu, pduEnd, sbuff) != Net::ASN1Util::IT_BIT_STRING)
+	{
+		return false;
+	}
+	return true;
+}
+
+void Crypto::Cert::X509File::AppendPublicKeyInfo(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path, Text::StringBuilderUTF *sb)
+{
+	UOSInt itemOfst;
+	UOSInt buffSize;
+	const UInt8 *buff = Net::ASN1Util::PDUGetItemRAW(pdu, pduEnd, path, &buffSize, &itemOfst);
+	if (buff[0] == Net::ASN1Util::IT_SEQUENCE)
+	{
+		AppendSubjectPublicKeyInfo(buff + itemOfst, buff + itemOfst + buffSize, sb, (const UTF8Char*)"PubKey");
+		Crypto::Cert::X509PubKey *pubKey;
+		Crypto::Cert::X509Key *key;
+		NEW_CLASS(pubKey, Crypto::Cert::X509PubKey((const UTF8Char*)"PubKey", buff, itemOfst + buffSize));
+		key = pubKey->CreateKey();
+		if (key)
+		{
+			sb->AppendLB(Text::LineBreakType::CRLF);
+			key->ToString(sb);
+			DEL_CLASS(key);
+		}
+		DEL_CLASS(pubKey);
+	}
 }
 
 void Crypto::Cert::X509File::AppendVersion(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path, Text::StringBuilderUTF *sb)
@@ -627,6 +696,22 @@ UOSInt Crypto::Cert::X509File::KeyGetLeng(const UInt8 *pdu, const UInt8 *pduEnd,
 			}
 		}
 		return 0;
+	case KeyType::RSAPublic:
+		if (pdu[0] == 0)
+		{
+			pdu++;
+		}
+		keyPDU = Net::ASN1Util::PDUGetItem(pdu, pduEnd, "1", &keyLen, &itemType);
+		if (keyPDU && itemType == Net::ASN1Util::IT_SEQUENCE)
+		{
+			UOSInt modulusLen;
+			const UInt8 *modulus = Net::ASN1Util::PDUGetItem(keyPDU, keyPDU + keyLen, "1", &modulusLen, &itemType);
+			if (modulus)
+			{
+				return (modulusLen - 1) << 3;
+			}
+		}
+		return 0;
 	case KeyType::DSA:
 	case KeyType::ECDSA:
 	case KeyType::ED25519:
@@ -636,11 +721,18 @@ UOSInt Crypto::Cert::X509File::KeyGetLeng(const UInt8 *pdu, const UInt8 *pduEnd,
 	}
 }
 
-Crypto::Cert::X509File::KeyType Crypto::Cert::X509File::KeyTypeFromOID(const UInt8 *oid, UOSInt oidLen)
+Crypto::Cert::X509File::KeyType Crypto::Cert::X509File::KeyTypeFromOID(const UInt8 *oid, UOSInt oidLen, Bool pubKey)
 {
 	if (Net::ASN1Util::OIDEqualsText(oid, oidLen, "1.2.840.113549.1.1.1"))
 	{
-		return KeyType::RSA;
+		if (pubKey)
+		{
+			return KeyType::RSAPublic;
+		}
+		else
+		{
+			return KeyType::RSA;
+		}
 	}
 	return KeyType::Unknown;
 }
@@ -679,6 +771,8 @@ const UTF8Char *Crypto::Cert::X509File::FileTypeGetName(FileType fileType)
 		return (const UTF8Char*)"PrivateKey";
 	case FileType::Jks:
 		return (const UTF8Char*)"JavaKeyStore";
+	case FileType::PublicKey:
+		return (const UTF8Char*)"PublicKey";
 	default:
 		return (const UTF8Char*)"Unknown";
 	}
@@ -696,6 +790,8 @@ const UTF8Char *Crypto::Cert::X509File::KeyTypeGetName(KeyType keyType)
 		return (const UTF8Char*)"ECDSA";
 	case KeyType::ED25519:
 		return (const UTF8Char*)"ED25519";
+	case KeyType::RSAPublic:
+		return (const UTF8Char*)"RSAPublic";
 	case KeyType::Unknown:
 	default:
 		return (const UTF8Char*)"Unknown";
@@ -714,6 +810,7 @@ const Char *Crypto::Cert::X509File::KeyTypeGetOID(KeyType keyType)
 		return "1.2.840.10045.2.1";
 	case KeyType::ED25519:
 		return "1.3.101.112";
+	case KeyType::RSAPublic:
 	case KeyType::Unknown:
 	default:
 		return "1.2.840.113549.1.1.1";

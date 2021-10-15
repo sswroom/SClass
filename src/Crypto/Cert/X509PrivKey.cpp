@@ -27,7 +27,7 @@ void Crypto::Cert::X509PrivKey::ToShortName(Text::StringBuilderUTF *sb)
 	{
 		return;
 	}
-	KeyType keyType = KeyTypeFromOID(oidPDU, oidLen);
+	KeyType keyType = KeyTypeFromOID(oidPDU, oidLen, false);
 	UOSInt keyLen;
 	const UInt8 *keyPDU = Net::ASN1Util::PDUGetItem(this->buff, this->buff + this->buffSize, "1.3", &keyLen, &itemType);
 	if (keyPDU && itemType == Net::ASN1Util::IT_OCTET_STRING)
@@ -64,14 +64,18 @@ Crypto::Cert::X509Key *Crypto::Cert::X509PrivKey::CreateKey()
 	if (keyTypeOID != 0 && keyData != 0)
 	{
 		Crypto::Cert::X509Key *key;
-		NEW_CLASS(key, Crypto::Cert::X509Key(this->GetSourceNameObj(), keyData, keyDataLen, KeyTypeFromOID(keyTypeOID, keyTypeLen)));
+		NEW_CLASS(key, Crypto::Cert::X509Key(this->GetSourceNameObj(), keyData, keyDataLen, KeyTypeFromOID(keyTypeOID, keyTypeLen, false)));
 		return key;
 	}
 	return 0;
 }
 
-Crypto::Cert::X509PrivKey *Crypto::Cert::X509PrivKey::CreateFromKeyBuff(KeyType keyType, const UInt8 *buff, UOSInt buffSize)
+Crypto::Cert::X509PrivKey *Crypto::Cert::X509PrivKey::CreateFromKeyBuff(KeyType keyType, const UInt8 *buff, UOSInt buffSize, const UTF8Char *sourceName)
 {
+	if (sourceName == 0)
+	{
+		sourceName = (const UTF8Char*)"PrivKey";
+	}
 	Net::ASN1PDUBuilder keyPDU;
 	keyPDU.BeginSequence();
 	keyPDU.AppendInt32(0);
@@ -82,22 +86,11 @@ Crypto::Cert::X509PrivKey *Crypto::Cert::X509PrivKey::CreateFromKeyBuff(KeyType 
 	keyPDU.AppendOctetString(buff, buffSize);
 	keyPDU.EndLevel();
 	Crypto::Cert::X509PrivKey *key;
-	NEW_CLASS(key, Crypto::Cert::X509PrivKey((const UTF8Char*)"PrivKey", keyPDU.GetBuff(0), keyPDU.GetBuffSize()));
+	NEW_CLASS(key, Crypto::Cert::X509PrivKey(sourceName, keyPDU.GetBuff(0), keyPDU.GetBuffSize()));
 	return key;
 }
 
 Crypto::Cert::X509PrivKey *Crypto::Cert::X509PrivKey::CreateFromKey(Crypto::Cert::X509Key *key)
 {
-	Net::ASN1PDUBuilder keyPDU;
-	keyPDU.BeginSequence();
-	keyPDU.AppendInt32(0);
-	keyPDU.BeginSequence();
-	keyPDU.AppendOIDString(KeyTypeGetOID(key->GetKeyType()));
-	keyPDU.AppendNull();
-	keyPDU.EndLevel();
-	keyPDU.AppendOctetString(key->GetASN1Buff(), key->GetASN1BuffSize());
-	keyPDU.EndLevel();
-	Crypto::Cert::X509PrivKey *privKey;
-	NEW_CLASS(privKey, Crypto::Cert::X509PrivKey(key->GetSourceNameObj(), keyPDU.GetBuff(0), keyPDU.GetBuffSize()));
-	return privKey;
+	return CreateFromKeyBuff(key->GetKeyType(), key->GetASN1Buff(), key->GetASN1BuffSize(), key->GetSourceNameObj());
 }

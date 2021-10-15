@@ -107,6 +107,7 @@ Bool Exporter::PEMExporter::ExportStream(IO::SeekableStream *stm, Crypto::Cert::
 				b64.EncodeBin(&sb, x509->GetASN1Buff(), x509->GetASN1BuffSize(), Text::LineBreakType::LF, 64);
 				sb.Append((const UTF8Char*)"\n-----END EC PRIVATE KEY-----\n");
 				return stm->Write(sb.ToString(), sb.GetLength()) == sb.GetLength();
+			case Crypto::Cert::X509Key::KeyType::RSAPublic:
 			case Crypto::Cert::X509Key::KeyType::ED25519:
 			case Crypto::Cert::X509Key::KeyType::Unknown:
 			default:
@@ -118,6 +119,11 @@ Bool Exporter::PEMExporter::ExportStream(IO::SeekableStream *stm, Crypto::Cert::
 		sb.Append((const UTF8Char*)"-----BEGIN PRIVATE KEY-----\n");
 		b64.EncodeBin(&sb, x509->GetASN1Buff(), x509->GetASN1BuffSize(), Text::LineBreakType::LF, 64);
 		sb.Append((const UTF8Char*)"\n-----END PRIVATE KEY-----\n");
+		return stm->Write(sb.ToString(), sb.GetLength()) == sb.GetLength();
+	case Crypto::Cert::X509File::FileType::PublicKey:
+		sb.Append((const UTF8Char*)"-----BEGIN PUBLIC KEY-----\n");
+		b64.EncodeBin(&sb, x509->GetASN1Buff(), x509->GetASN1BuffSize(), Text::LineBreakType::LF, 64);
+		sb.Append((const UTF8Char*)"\n-----END PUBLIC KEY-----\n");
 		return stm->Write(sb.ToString(), sb.GetLength()) == sb.GetLength();
 	}
 	return false;

@@ -32,7 +32,7 @@ Bool Crypto::Cert::CertUtil::AppendPublicKey(Net::ASN1PDUBuilder *builder, Crypt
 		{
 			return false;
 		}
-		const UInt8 *keyBuff = MemAlloc(UInt8, pubKey->GetASN1BuffSize() + 1);
+		UInt8 *keyBuff = MemAlloc(UInt8, pubKey->GetASN1BuffSize() + 1);
 		keyBuff[0] = 0;
 		MemCopyNO(&keyBuff[1], pubKey->GetASN1Buff(), pubKey->GetASN1BuffSize());
 		builder->AppendBitString(keyBuff, pubKey->GetASN1BuffSize() + 1);

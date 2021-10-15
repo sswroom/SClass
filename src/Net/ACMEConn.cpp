@@ -10,9 +10,6 @@
 #include "Text/JSON.h"
 #include "Text/TextBinEnc/Base64Enc.h"
 
-#include <openssl/ssl.h>
-#include <openssl/err.h>
-
 #include <stdio.h>
 /*
 https://datatracker.ietf.org/doc/html/rfc8555
@@ -30,6 +27,7 @@ const UTF8Char *Net::ACMEConn::JWK(Crypto::Cert::X509Key *key, Crypto::Token::JW
 	switch (key->GetKeyType())
 	{
 	case Crypto::Cert::X509Key::KeyType::RSA:
+	case Crypto::Cert::X509Key::KeyType::RSAPublic:
 		{
 			UOSInt mSize;
 			UOSInt eSize;

@@ -15,7 +15,8 @@ namespace Crypto
 				Key,
 				CertRequest,
 				PrivateKey,
-				Jks
+				Jks,
+				PublicKey
 			};
 
 			enum class KeyType
@@ -24,7 +25,8 @@ namespace Crypto
 				RSA,
 				DSA,
 				ECDSA,
-				ED25519
+				ED25519,
+				RSAPublic
 			};
 
 		protected:
@@ -40,6 +42,8 @@ namespace Crypto
 			static void AppendCertificateRequestInfo(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path, Text::StringBuilderUTF *sb); // PKCS-10
 			static Bool IsCertificateRequest(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path); // PKCS-10
 			static void AppendCertificateRequest(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path, Text::StringBuilderUTF *sb); // PKCS-8
+			static Bool IsPublicKeyInfo(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path); // AuthenticationFramework
+			static void AppendPublicKeyInfo(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path, Text::StringBuilderUTF *sb); // AuthenticationFramework
 
 			static void AppendVersion(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path, Text::StringBuilderUTF *sb); // AuthenticationFramework
 
@@ -54,7 +58,7 @@ namespace Crypto
 			static Bool NameGetCN(const UInt8 *pdu, const UInt8 *pduEnd, Text::StringBuilderUTF *sb);
 
 			static UOSInt KeyGetLeng(const UInt8 *pdu, const UInt8 *pduEnd, KeyType keyType);
-			static KeyType KeyTypeFromOID(const UInt8 *oid, UOSInt oidLen);
+			static KeyType KeyTypeFromOID(const UInt8 *oid, UOSInt oidLen, Bool pubKey);
 
 			X509File(const UTF8Char *sourceName, const UInt8 *buff, UOSInt buffSize);
 		public:

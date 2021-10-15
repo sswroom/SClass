@@ -3,8 +3,9 @@
 #include "Crypto/Cert/X509Cert.h"
 #include "Crypto/Cert/X509CertReq.h"
 #include "Crypto/Cert/X509File.h"
-#include "Crypto/Cert/X509PrivKey.h"
 #include "Crypto/Cert/X509Key.h"
+#include "Crypto/Cert/X509PrivKey.h"
+#include "Crypto/Cert/X509PubKey.h"
 #include "Net/ASN1Util.h"
 #include "Parser/FileParser/X509Parser.h"
 #include "Text/MyString.h"
@@ -92,6 +93,12 @@ Crypto::Cert::X509File *Parser::FileParser::X509Parser::ParseBuff(const UInt8 *b
 		Text::TextBinEnc::Base64Enc b64;
 		dataLen = b64.DecodeBin(&buff[27], buffSize - 53, dataBuff);
 		NEW_CLASS(ret, Crypto::Cert::X509PrivKey(fileName, dataBuff, dataLen));
+	}
+	else if (Text::StrStartsWith(buff, (const UTF8Char*)"-----BEGIN PUBLIC KEY-----") && Text::StrStartsWith(&buff[buffSize - 25], (const UTF8Char*)"-----END PUBLIC KEY-----\n"))
+	{
+		Text::TextBinEnc::Base64Enc b64;
+		dataLen = b64.DecodeBin(&buff[26], buffSize - 51, dataBuff);
+		NEW_CLASS(ret, Crypto::Cert::X509PubKey(fileName, dataBuff, dataLen));
 	}
 	else if (Text::StrStartsWith(buff, (const UTF8Char*)"-----BEGIN CERTIFICATE REQUEST-----") && Text::StrStartsWith(&buff[buffSize - 34], (const UTF8Char*)"-----END CERTIFICATE REQUEST-----\n"))
 	{

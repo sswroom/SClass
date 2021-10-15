@@ -1,6 +1,8 @@
 #include "Stdafx.h"
 #include "Core/Core.h"
+#include "Crypto/Cert/CertUtil.h"
 #include "Crypto/Cert/X509Key.h"
+#include "Exporter/PEMExporter.h"
 #include "IO/ConsoleWriter.h"
 #include "IO/FileStream.h"
 #include "IO/Path.h"
@@ -33,6 +35,26 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		return 0;
 	}
 	Crypto::Cert::X509Key *key = (Crypto::Cert::X509Key*)x509;
+	Crypto::Cert::CertUtil::CertNames names;
+	names.countryName = (const UTF8Char*)"HK";
+	names.stateProvinceName = (const UTF8Char*)"Hong Kong";
+	names.localityName = (const UTF8Char*)"Hong Kong";
+	names.organizationName = (const UTF8Char*)"Simon Software Working Room";
+	names.organizationUnitName = (const UTF8Char*)"sswr";
+	names.commonName = (const UTF8Char*)"sswroom.no-ip.org";
+	names.emailAddress = (const UTF8Char*)"sswroom@yahoo.com";
+	Crypto::Cert::X509CertReq *csr = Crypto::Cert::CertUtil::CertReqCreate(&names, key);
+	if (csr)
+	{
+		IO::Path::GetProcessFileName(sbuff);
+		IO::Path::AppendPath(sbuff, (const UTF8Char*)"CSRTestOut.pem");
+		Exporter::PEMExporter::ExportFile(sbuff, csr);
+		DEL_CLASS(csr);
+	}
+	else
+	{
+		console.WriteLine((const UTF8Char*)"Error in creating csr");
+	}
 	DEL_CLASS(key);
 	return 0;
 }

@@ -364,7 +364,7 @@ Bool Net::MQTTConn::SendPing()
 {
 	UInt8 packet2[16];
 	UOSInt j;
-	j = this->protoHdlr->BuildPacket(packet2, 0xc0, 0, packet2, 0, this->cliData);
+	j = this->protoHdlr->BuildPacket(packet2, 0xc0, 0, 0, 0, this->cliData);
 	return this->SendPacket(packet2, j);
 }
 
@@ -372,7 +372,7 @@ Bool Net::MQTTConn::SendDisconnect()
 {
 	UInt8 packet2[16];
 	UOSInt j;
-	j = this->protoHdlr->BuildPacket(packet2, 0xe0, 0, packet2, 0, this->cliData);
+	j = this->protoHdlr->BuildPacket(packet2, 0xe0, 0, 0, 0, this->cliData);
 	return this->SendPacket(packet2, j);
 }
 

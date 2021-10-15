@@ -512,15 +512,11 @@ Bool Net::ASN1Util::PDUToString(const UInt8 *pdu, const UInt8 *pduEnd, Text::Str
 	return true;
 }
 
-const UInt8 *Net::ASN1Util::PDUGetItem(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path, UOSInt *len, ItemType *itemType)
+const UInt8 *Net::ASN1Util::PDUGetItemRAW(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path, UOSInt *len, UOSInt *itemOfst)
 {
 	if (len)
 	{
 		*len = 0;
-	}
-	if (itemType)
-	{
-		*itemType = IT_UNKNOWN;
 	}
 	Char sbuff[11];
 	UInt32 itemLen;
@@ -571,17 +567,36 @@ const UInt8 *Net::ASN1Util::PDUGetItem(const UInt8 *pdu, const UInt8 *pduEnd, co
 		{
 			if (path == 0)
 			{
+				if (itemOfst)
+					*itemOfst = ofst;
 				if (len)
 					*len = itemLen;
-				if (itemType)
-					*itemType = (ItemType)pdu[0];
-				return &pdu[ofst];
+				return pdu;
 			}
-			return PDUGetItem(&pdu[ofst], &pdu[ofst + itemLen], path, len, itemType);
+			return PDUGetItemRAW(&pdu[ofst], &pdu[ofst + itemLen], path, len, itemOfst);
 		}
 		pdu += ofst + itemLen;
 	}
 	return 0;
+}
+
+const UInt8 *Net::ASN1Util::PDUGetItem(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path, UOSInt *len, ItemType *itemType)
+{
+	if (itemType)
+	{
+		*itemType = IT_UNKNOWN;
+	}
+	UOSInt itemOfst;
+	pdu = PDUGetItemRAW(pdu, pduEnd, path, len, &itemOfst);
+	if (pdu == 0)
+	{
+		return 0;
+	}
+	if (itemType)
+	{
+		*itemType = (ItemType)pdu[0];
+	}
+	return &pdu[itemOfst];
 }
 
 Net::ASN1Util::ItemType Net::ASN1Util::PDUGetItemType(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path)
