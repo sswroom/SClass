@@ -311,7 +311,7 @@ DB::DBTool *DB::DBManager::OpenConn(const UTF8Char *connStr, IO::LogTool *log, N
 		const UTF8Char *uid = 0;
 		const UTF8Char *pwd = 0;
 		const UTF8Char *schema = 0;
-		addr.addrType = Net::SocketUtil::AT_UNKNOWN;
+		addr.addrType = Net::AddrType::Unknown;
 		UOSInt cnt;
 		sb.Append(connStr + 9);
 		UTF8Char *sarr[2];

@@ -30,7 +30,7 @@ Net::TCPClient::TCPClient(Net::SocketFactory *sockf, const UTF8Char *name, UInt1
 		this->flags = 12;
 		return;
 	}
-	if (addr.addrType == Net::SocketUtil::AT_IPV4)
+	if (addr.addrType == Net::AddrType::IPv4)
 	{
 		s = sockf->CreateTCPSocketv4();
 		if (s == 0)
@@ -39,7 +39,7 @@ Net::TCPClient::TCPClient(Net::SocketFactory *sockf, const UTF8Char *name, UInt1
 			return;
 		}
 	}
-	else if (addr.addrType == Net::SocketUtil::AT_IPV6)
+	else if (addr.addrType == Net::AddrType::IPv6)
 	{
 		s = sockf->CreateTCPSocketv6();
 		if (s == 0)
@@ -108,7 +108,7 @@ Net::TCPClient::TCPClient(Net::SocketFactory *sockf, const Net::SocketUtil::Addr
 	this->readEvent = 0;
 	this->writeEvent = 0;
 
-	if (addr->addrType == Net::SocketUtil::AT_IPV4)
+	if (addr->addrType == Net::AddrType::IPv4)
 	{
 		s = sockf->CreateTCPSocketv4();
 		if (s == 0)
@@ -120,7 +120,7 @@ Net::TCPClient::TCPClient(Net::SocketFactory *sockf, const Net::SocketUtil::Addr
 			return;
 		}
 	}
-	else if (addr->addrType == Net::SocketUtil::AT_IPV6)
+	else if (addr->addrType == Net::AddrType::IPv6)
 	{
 		s = sockf->CreateTCPSocketv6();
 		if (s == 0)

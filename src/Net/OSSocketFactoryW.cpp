@@ -151,7 +151,7 @@ Bool Net::OSSocketFactory::SocketBindv4(Socket *socket, UInt32 ip, UInt16 port)
 
 Bool Net::OSSocketFactory::SocketBind(Socket *socket, const Net::SocketUtil::AddressInfo *addr, UInt16 port)
 {
-	if (addr == 0 || addr->addrType == Net::SocketUtil::AT_IPV6)
+	if (addr == 0 || addr->addrType == Net::AddrType::IPv6)
 	{
 		UInt8 addrBuff[28];
 		WriteInt16(&addrBuff[0], AF_INET6);
@@ -168,7 +168,7 @@ Bool Net::OSSocketFactory::SocketBind(Socket *socket, const Net::SocketUtil::Add
 		}
 		return bind((SOCKET)socket, (sockaddr*)addrBuff, 28) != SOCKET_ERROR;
 	}
-	else if (addr->addrType == Net::SocketUtil::AT_IPV4)
+	else if (addr->addrType == Net::AddrType::IPv4)
 	{
 		sockaddr_in saddr;
 		saddr.sin_family = AF_INET;
@@ -213,7 +213,7 @@ Bool Net::OSSocketFactory::GetRemoteAddr(Socket *socket, Net::SocketUtil::Addres
 		{
 			if (addr)
 			{
-				addr->addrType = Net::SocketUtil::AT_IPV4;
+				addr->addrType = Net::AddrType::IPv4;
 				*(UInt32*)addr->addr = ((sockaddr_in*)addrBuff)->sin_addr.S_un.S_addr;
 			}
 			if (port)
@@ -226,7 +226,7 @@ Bool Net::OSSocketFactory::GetRemoteAddr(Socket *socket, Net::SocketUtil::Addres
 		{
 			if (addr)
 			{
-				addr->addrType = Net::SocketUtil::AT_IPV6;
+				addr->addrType = Net::AddrType::IPv6;
 				MemCopyNO(addr->addr, &addrBuff[8], 20);
 			}
 			if (port)
@@ -249,7 +249,7 @@ Bool Net::OSSocketFactory::GetLocalAddr(Socket *socket, Net::SocketUtil::Address
 		{
 			if (addr)
 			{
-				addr->addrType = Net::SocketUtil::AT_IPV4;
+				addr->addrType = Net::AddrType::IPv4;
 				*(UInt32*)addr->addr = ((sockaddr_in*)addrBuff)->sin_addr.S_un.S_addr;
 			}
 			if (port)
@@ -262,7 +262,7 @@ Bool Net::OSSocketFactory::GetLocalAddr(Socket *socket, Net::SocketUtil::Address
 		{
 			if (addr)
 			{
-				addr->addrType = Net::SocketUtil::AT_IPV6;
+				addr->addrType = Net::AddrType::IPv6;
 				MemCopyNO(addr->addr, &addrBuff[8], 20);
 			}
 			if (port)
@@ -489,13 +489,13 @@ UOSInt Net::OSSocketFactory::UDPReceive(Socket *socket, UInt8 *buff, UOSInt buff
 	{
 		if (*(Int16*)&addrBuff[0] == AF_INET)
 		{
-			addr->addrType = Net::SocketUtil::AT_IPV4;
+			addr->addrType = Net::AddrType::IPv4;
 			*(Int32*)addr->addr = *(Int32*)&addrBuff[4];
 			*port = ReadMUInt16(&addrBuff[2]);
 		}
 		else if (*(Int16*)&addrBuff[0] == AF_INET6)
 		{
-			addr->addrType = Net::SocketUtil::AT_IPV6;
+			addr->addrType = Net::AddrType::IPv6;
 			MemCopyNO(addr->addr, &addrBuff[8], 20);
 			*port = ReadMUInt16(&addrBuff[2]);
 		}
@@ -506,7 +506,7 @@ UOSInt Net::OSSocketFactory::UDPReceive(Socket *socket, UInt8 *buff, UOSInt buff
 UOSInt Net::OSSocketFactory::SendTo(Socket *socket, const UInt8 *buff, UOSInt buffSize, const Net::SocketUtil::AddressInfo *addr, UInt16 port)
 {
 	UInt8 addrBuff[28];
-	if (addr->addrType == Net::SocketUtil::AT_IPV4)
+	if (addr->addrType == Net::AddrType::IPv4)
 	{
 		*(Int16*)&addrBuff[0] = AF_INET;
 		WriteMInt16(&addrBuff[2], port);
@@ -521,7 +521,7 @@ UOSInt Net::OSSocketFactory::SendTo(Socket *socket, const UInt8 *buff, UOSInt bu
 			return (UOSInt)ret;
 		}
 	}
-	else if (addr->addrType == Net::SocketUtil::AT_IPV6)
+	else if (addr->addrType == Net::AddrType::IPv6)
 	{
 		*(Int16*)&addrBuff[0] = AF_INET6;
 		WriteMInt16(&addrBuff[2], port);
@@ -552,7 +552,7 @@ Bool Net::OSSocketFactory::IcmpSendEcho2(const Net::SocketUtil::AddressInfo *add
 	PICMP_ECHO_REPLY reply;
 
 	UInt32 dwRetVal = 0;
-	if (addr->addrType == Net::SocketUtil::AT_IPV4)
+	if (addr->addrType == Net::AddrType::IPv4)
 	{
 		if (this->icmpHand == 0)
 		{
@@ -585,14 +585,14 @@ Bool Net::OSSocketFactory::Connect(Socket *socket, UInt32 ip, UInt16 port)
 Bool Net::OSSocketFactory::Connect(Socket *socket, const Net::SocketUtil::AddressInfo *addr, UInt16 port)
 {
 	UInt8 addrBuff[28];
-	if (addr->addrType == Net::SocketUtil::AT_IPV4)
+	if (addr->addrType == Net::AddrType::IPv4)
 	{
 		*(Int16*)&addrBuff[0] = AF_INET;
 		WriteMInt16(&addrBuff[2], port);
 		*(Int32*)&addrBuff[4] = *(Int32*)addr->addr;
 		return connect((SOCKET)socket, (const sockaddr*)addrBuff, sizeof(sockaddr_in)) == 0;
 	}
-	else if (addr->addrType == Net::SocketUtil::AT_IPV6)
+	else if (addr->addrType == Net::AddrType::IPv6)
 	{
 		*(Int16*)&addrBuff[0] = AF_INET6;
 		WriteMInt16(&addrBuff[2], port);
@@ -637,13 +637,13 @@ Bool Net::OSSocketFactory::DNSResolveIPDef(const Char *host, Net::SocketUtil::Ad
 	{
 		if (result->ai_addr->sa_family ==AF_INET)
 		{
-			addr->addrType = Net::SocketUtil::AT_IPV4;
+			addr->addrType = Net::AddrType::IPv4;
 			*(UInt32*)&addr->addr = ((sockaddr_in*)result->ai_addr)->sin_addr.S_un.S_addr;
 			succ = true;
 		}
 		else if (result->ai_addr->sa_family == AF_INET6)
 		{
-			addr->addrType = Net::SocketUtil::AT_IPV6;
+			addr->addrType = Net::AddrType::IPv6;
 			MemCopyNO(addr->addr, &result->ai_addr->sa_data[6], 20);
 			succ = true;
 		}

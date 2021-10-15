@@ -7,7 +7,7 @@
 
 UTF8Char *Net::SocketUtil::GetAddrName(UTF8Char *buff, const Net::SocketUtil::AddressInfo *addr)
 {
-	if (addr->addrType == AT_IPV4)
+	if (addr->addrType == AddrType::IPv4)
 	{
 		UTF8Char *ptr;
 		ptr = Text::StrInt32(buff, addr->addr[0]);
@@ -19,7 +19,7 @@ UTF8Char *Net::SocketUtil::GetAddrName(UTF8Char *buff, const Net::SocketUtil::Ad
 		ptr = Text::StrInt32(ptr, addr->addr[3]);
 		return ptr;
 	}
-	else if (addr->addrType == AT_IPV6)
+	else if (addr->addrType == AddrType::IPv6)
 	{
 		UTF8Char *oriBuff = buff;
 		Bool skipFound = false;
@@ -80,7 +80,7 @@ UTF8Char *Net::SocketUtil::GetAddrName(UTF8Char *buff, const Net::SocketUtil::Ad
 
 WChar *Net::SocketUtil::GetAddrName(WChar *buff, const AddressInfo *addr)
 {
-	if (addr->addrType == AT_IPV4)
+	if (addr->addrType == AddrType::IPv4)
 	{
 		WChar *ptr;
 		ptr = Text::StrInt32(buff, addr->addr[0]);
@@ -92,7 +92,7 @@ WChar *Net::SocketUtil::GetAddrName(WChar *buff, const AddressInfo *addr)
 		ptr = Text::StrInt32(ptr, addr->addr[3]);
 		return ptr;
 	}
-	else if (addr->addrType == AT_IPV6)
+	else if (addr->addrType == AddrType::IPv6)
 	{
 		WChar *oriBuff = buff;
 		Bool skipFound = false;
@@ -153,11 +153,11 @@ WChar *Net::SocketUtil::GetAddrName(WChar *buff, const AddressInfo *addr)
 
 UTF8Char *Net::SocketUtil::GetAddrName(UTF8Char *buff, const AddressInfo *addr, UInt16 port)
 {
-	if (addr->addrType == AT_IPV4)
+	if (addr->addrType == AddrType::IPv4)
 	{
 		return Text::StrUInt32(Text::StrConcat(GetAddrName(buff, addr), (const UTF8Char*)":"), port);
 	}
-	else if (addr->addrType == AT_IPV6)
+	else if (addr->addrType == AddrType::IPv6)
 	{
 		*buff++ = '[';
 		buff = GetAddrName(buff, addr);
@@ -173,11 +173,11 @@ UTF8Char *Net::SocketUtil::GetAddrName(UTF8Char *buff, const AddressInfo *addr, 
 
 WChar *Net::SocketUtil::GetAddrName(WChar *buff, const AddressInfo *addr, UInt16 port)
 {
-	if (addr->addrType == AT_IPV4)
+	if (addr->addrType == AddrType::IPv4)
 	{
 		return Text::StrUInt32(Text::StrConcat(GetAddrName(buff, addr), L":"), port);
 	}
-	else if (addr->addrType == AT_IPV6)
+	else if (addr->addrType == AddrType::IPv6)
 	{
 		*buff++ = '[';
 		buff = GetAddrName(buff, addr);
@@ -276,7 +276,7 @@ Bool Net::SocketUtil::GetIPAddr(const WChar *ipName, AddressInfo *addr)
 		}
 		if (!Text::StrToUInt8(sarr[0], &addr->addr[0]) || !Text::StrToUInt8(sarr[1], &addr->addr[1]) || !Text::StrToUInt8(sarr[2], &addr->addr[2]) || !Text::StrToUInt8(sarr[3], &addr->addr[3]))
 			return false;
-		addr->addrType = AT_IPV4;
+		addr->addrType = AddrType::IPv4;
 		return true;
 	}
 	j = Text::StrIndexOf(sarr[i - 1], '%');
@@ -305,7 +305,7 @@ Bool Net::SocketUtil::GetIPAddr(const WChar *ipName, AddressInfo *addr)
 		if (i == 3 && sarr[2][0] == 0)
 		{
 			MemClear(addr->addr, 20);
-			addr->addrType = AT_IPV6;
+			addr->addrType = AddrType::IPv6;
 			return true;
 		}
 		j = 14;
@@ -331,7 +331,7 @@ Bool Net::SocketUtil::GetIPAddr(const WChar *ipName, AddressInfo *addr)
 			WriteMInt16(&addr->addr[j], 0);
 			j-= 2;
 		}
-		addr->addrType = AT_IPV6;
+		addr->addrType = AddrType::IPv6;
 		return true;
 	}
 	j = 0;
@@ -367,7 +367,7 @@ Bool Net::SocketUtil::GetIPAddr(const WChar *ipName, AddressInfo *addr)
 				WriteMInt16(&addr->addr[k << 1], 0);
 				k--;
 			}
-			addr->addrType = AT_IPV6;
+			addr->addrType = AddrType::IPv6;
 			return true;
 		}
 		else
@@ -392,7 +392,7 @@ Bool Net::SocketUtil::GetIPAddr(const WChar *ipName, AddressInfo *addr)
 	{
 		return false;
 	}
-	addr->addrType = AT_IPV6;
+	addr->addrType = AddrType::IPv6;
 	return true;
 }
 
@@ -430,7 +430,7 @@ Bool Net::SocketUtil::GetIPAddr(const UTF8Char *ipName, AddressInfo *addr)
 		}
 		if (!Text::StrToUInt8(sarr[0], &addr->addr[0]) || !Text::StrToUInt8(sarr[1], &addr->addr[1]) || !Text::StrToUInt8(sarr[2], &addr->addr[2]) || !Text::StrToUInt8(sarr[3], &addr->addr[3]))
 			return false;
-		addr->addrType = AT_IPV4;
+		addr->addrType = AddrType::IPv4;
 		return true;
 	}
 	j = Text::StrIndexOf(sarr[i - 1], '%');
@@ -459,7 +459,7 @@ Bool Net::SocketUtil::GetIPAddr(const UTF8Char *ipName, AddressInfo *addr)
 		if (i == 3 && sarr[2][0] == 0)
 		{
 			MemClear(addr->addr, 20);
-			addr->addrType = AT_IPV6;
+			addr->addrType = AddrType::IPv6;
 			return true;
 		}
 		j = 14;
@@ -485,7 +485,7 @@ Bool Net::SocketUtil::GetIPAddr(const UTF8Char *ipName, AddressInfo *addr)
 			WriteMInt16(&addr->addr[j], 0);
 			j-= 2;
 		}
-		addr->addrType = AT_IPV6;
+		addr->addrType = AddrType::IPv6;
 		return true;
 	}
 	j = 0;
@@ -521,7 +521,7 @@ Bool Net::SocketUtil::GetIPAddr(const UTF8Char *ipName, AddressInfo *addr)
 				WriteMInt16(&addr->addr[k << 1], 0);
 				k--;
 			}
-			addr->addrType = AT_IPV6;
+			addr->addrType = AddrType::IPv6;
 			return true;
 		}
 		else
@@ -546,7 +546,7 @@ Bool Net::SocketUtil::GetIPAddr(const UTF8Char *ipName, AddressInfo *addr)
 	{
 		return false;
 	}
-	addr->addrType = AT_IPV6;
+	addr->addrType = AddrType::IPv6;
 	return true;
 }
 
@@ -628,30 +628,30 @@ UInt32 Net::SocketUtil::GetDefNetMaskv4(UInt32 ip)
 
 void Net::SocketUtil::SetAddrInfoV4(AddressInfo *addr, UInt32 ipv4)
 {
-	addr->addrType = AT_IPV4;
+	addr->addrType = AddrType::IPv4;
 	*(UInt32*)addr->addr = ipv4;
 }
 
 void Net::SocketUtil::SetAddrInfoV6(AddressInfo *addr, const UInt8 *ipv6, Int32 zid)
 {
-	addr->addrType = AT_IPV6;
+	addr->addrType = AddrType::IPv6;
 	MemCopyNO(addr->addr, ipv6, 16);
 	*(Int32*)&addr->addr[16] = zid;
 }
 
 void Net::SocketUtil::SetAddrAnyV6(AddressInfo *addr)
 {
-	addr->addrType = AT_IPV6;
+	addr->addrType = AddrType::IPv6;
 	MemClear(addr->addr, 20);
 }
 
 UInt32 Net::SocketUtil::CalcCliId(const AddressInfo *addr)
 {
-	if (addr->addrType == AT_IPV4)
+	if (addr->addrType == AddrType::IPv4)
 	{
 		return *(UInt32*)addr->addr;
 	}
-	else if (addr->addrType == AT_IPV6)
+	else if (addr->addrType == AddrType::IPv6)
 	{
 		Crypto::Hash::CRC32R crc;
 		UInt8 ret[4];
@@ -693,76 +693,76 @@ Bool Net::SocketUtil::IPv4SubnetValid(UInt32 subnet)
 	return true;
 }
 
-Net::SocketUtil::IPType Net::SocketUtil::GetIPv4Type(UInt32 ipv4)
+Net::IPType Net::SocketUtil::GetIPv4Type(UInt32 ipv4)
 {
 	UInt8 ipBuff[4];
 	WriteNUInt32(ipBuff, ipv4);
 	if (ipv4 == 0)
 	{
-		return Net::SocketUtil::IT_NETWORK;
+		return Net::IPType::Network;
 	}
 	else if (ipv4 == 0xFFFFFFFF)
 	{
-		return Net::SocketUtil::IT_BROADCAST;
+		return Net::IPType::Broadcast;
 	}
 	else if (ipBuff[0] == 127)
 	{
-		return Net::SocketUtil::IT_LOCAL;
+		return Net::IPType::Local;
 	}
 	else if (ipBuff[0] >= 224 && ipBuff[0] <= 239)
 	{
-		return Net::SocketUtil::IT_MULTICAST;
+		return Net::IPType::Multicast;
 	}
 
 	if (ipBuff[0] <= 127)
 	{
 		if (ipBuff[1] == 255 && ipBuff[2] == 255 && ipBuff[3] == 255)
 		{
-			return Net::SocketUtil::IT_BROADCAST;
+			return Net::IPType::Broadcast;
 		}
 		else if (ipBuff[1] == 0 && ipBuff[2] == 0 && ipBuff[3] == 0)
 		{
-			return Net::SocketUtil::IT_NETWORK;
+			return Net::IPType::Network;
 		}
 	}
 	else if (ipBuff[0] <= 191)
 	{
 		if (ipBuff[2] == 255 && ipBuff[3] == 255)
 		{
-			return Net::SocketUtil::IT_BROADCAST;
+			return Net::IPType::Broadcast;
 		}
 		else if (ipBuff[2] == 0 && ipBuff[3] == 0)
 		{
-			return Net::SocketUtil::IT_NETWORK;
+			return Net::IPType::Network;
 		}
 	}
 	else if (ipBuff[0] <= 223)
 	{
 		if (ipBuff[3] == 255)
 		{
-			return Net::SocketUtil::IT_BROADCAST;
+			return Net::IPType::Broadcast;
 		}
 		else if (ipBuff[3] == 0)
 		{
-			return Net::SocketUtil::IT_NETWORK;
+			return Net::IPType::Network;
 		}
 	}
 	
 	if (ipBuff[0] == 10)
 	{
-		return Net::SocketUtil::IT_PRIVATE;
+		return Net::IPType::Private;
 	}
 	else if (ipBuff[0] == 172 && (ipBuff[1] & 0xf0) == 16)
 	{
-		return Net::SocketUtil::IT_PRIVATE;
+		return Net::IPType::Private;
 	}
 	else if (ipBuff[0] == 192 && ipBuff[1] == 168)
 	{
-		return Net::SocketUtil::IT_PRIVATE;
+		return Net::IPType::Private;
 	}
 	else
 	{
-		return Net::SocketUtil::IT_PUBLIC;
+		return Net::IPType::Public;
 	}
 }
 
@@ -777,11 +777,11 @@ Bool Net::SocketUtil::AddrEquals(const Net::SocketUtil::AddressInfo *addr1, cons
 	{
 		return false;
 	}
-	if (addr1->addrType == Net::SocketUtil::AT_IPV4)
+	if (addr1->addrType == Net::AddrType::IPv4)
 	{
 		return ReadNInt32(addr1->addr) == ReadNInt32(addr2->addr);
 	}
-	else if (addr1->addrType == Net::SocketUtil::AT_IPV6)
+	else if (addr1->addrType == Net::AddrType::IPv6)
 	{
 		OSInt i = 20;
 		while (i-- > 0)

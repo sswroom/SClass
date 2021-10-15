@@ -118,7 +118,7 @@ Net::SNMPManager::AgentInfo *Net::SNMPManager::AddAgent(const Net::SocketUtil::A
 	Net::SNMPUtil::BindingItem *item;
 	UTF8Char sbuff[64];
 	UOSInt i;
-	if (addr->addrType == Net::SocketUtil::AT_IPV4)
+	if (addr->addrType == Net::AddrType::IPv4)
 	{
 		UInt32 ipv4 = ReadMUInt32(addr->addr);
 		if (this->ipv4Agents->Get(ipv4))
@@ -148,7 +148,7 @@ Net::SNMPManager::AgentInfo *Net::SNMPManager::AddAgent(const Net::SocketUtil::A
 			NEW_CLASS(agent->readingList, Data::ArrayList<ReadingInfo*>());
 			Sync::MutexUsage mutUsage(this->agentMut);
 			this->agentList->Add(agent);
-			if (addr->addrType == Net::SocketUtil::AT_IPV4)
+			if (addr->addrType == Net::AddrType::IPv4)
 			{
 				UInt32 ipv4 = ReadMUInt32(addr->addr);
 				this->ipv4Agents->Put(ipv4, agent);
@@ -875,10 +875,10 @@ UOSInt Net::SNMPManager::AddAgents(const Net::SocketUtil::AddressInfo *addr, con
 {
 	AgentInfo *agent;
 	UOSInt ret = 0;
-	if (addr->addrType == Net::SocketUtil::AT_IPV4)
+	if (addr->addrType == Net::AddrType::IPv4)
 	{
-		Net::SocketUtil::IPType ipType = Net::SocketUtil::GetIPv4Type(ReadNUInt32(addr->addr));
-		if (ipType == Net::SocketUtil::IT_BROADCAST)
+		Net::IPType ipType = Net::SocketUtil::GetIPv4Type(ReadNUInt32(addr->addr));
+		if (ipType == Net::IPType::Broadcast)
 		{
 			Net::SocketUtil::AddressInfo *agentAddr;
 			Data::ArrayList<Net::SocketUtil::AddressInfo *> addrList;

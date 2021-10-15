@@ -57,53 +57,66 @@ Crypto::Cert::X509File *Parser::FileParser::X509Parser::ParseBuff(const UInt8 *b
 	Crypto::Cert::X509File *ret = 0;
 	UInt8 dataBuff[2048];
 	UOSInt dataLen;
-	if (Text::StrStartsWith(buff, (const UTF8Char*)"-----BEGIN CERTIFICATE-----") && Text::StrStartsWith(&buff[buffSize - 26], (const UTF8Char*)"-----END CERTIFICATE-----\n"))
+	UOSInt lbSize;
+	if (buff[buffSize - 2] == 13 && buff[buffSize - 1] == 10)
+	{
+		lbSize = 2;
+	}
+	else if (buff[buffSize - 1] == 10)
+	{
+		lbSize = 1;
+	}
+	else
+	{
+		return 0;
+	}
+	if (Text::StrStartsWith(buff, (const UTF8Char*)"-----BEGIN CERTIFICATE-----") && Text::StrStartsWith(&buff[buffSize - 25 - lbSize], (const UTF8Char*)"-----END CERTIFICATE-----"))
 	{
 		Text::TextBinEnc::Base64Enc b64;
-		dataLen = b64.DecodeBin(&buff[27], buffSize - 53, dataBuff);
+		dataLen = b64.DecodeBin(&buff[27], buffSize - 52 - lbSize, dataBuff);
 		NEW_CLASS(ret, Crypto::Cert::X509Cert(fileName, dataBuff, dataLen));
 	}
-	else if (Text::StrStartsWith(buff, (const UTF8Char*)"-----BEGIN RSA PRIVATE KEY-----") && Text::StrStartsWith(&buff[buffSize - 30], (const UTF8Char*)"-----END RSA PRIVATE KEY-----\n"))
+	else if (Text::StrStartsWith(buff, (const UTF8Char*)"-----BEGIN RSA PRIVATE KEY-----") && Text::StrStartsWith(&buff[buffSize - 29 - lbSize], (const UTF8Char*)"-----END RSA PRIVATE KEY-----"))
 	{
-		if (Text::StrStartsWith(&buff[32], (const UTF8Char*)"Proc-Type:"))
+		if (Text::StrStartsWith(&buff[31 + lbSize], (const UTF8Char*)"Proc-Type:"))
 		{
 
 		}
 		else
 		{
 			Text::TextBinEnc::Base64Enc b64;
-			dataLen = b64.DecodeBin(&buff[31], buffSize - 61, dataBuff);
+			dataLen = b64.DecodeBin(&buff[31], buffSize - 60 - lbSize, dataBuff);
 			NEW_CLASS(ret, Crypto::Cert::X509Key(fileName, dataBuff, dataLen, Crypto::Cert::X509File::KeyType::RSA));
 		}
 	}
-	else if (Text::StrStartsWith(buff, (const UTF8Char*)"-----BEGIN DSA PRIVATE KEY-----") && Text::StrStartsWith(&buff[buffSize - 30], (const UTF8Char*)"-----END DSA PRIVATE KEY-----\n"))
+	else if (Text::StrStartsWith(buff, (const UTF8Char*)"-----BEGIN DSA PRIVATE KEY-----") && Text::StrStartsWith(&buff[buffSize - 29 - lbSize], (const UTF8Char*)"-----END DSA PRIVATE KEY-----"))
 	{
 		Text::TextBinEnc::Base64Enc b64;
-		dataLen = b64.DecodeBin(&buff[31], buffSize - 61, dataBuff);
+		dataLen = b64.DecodeBin(&buff[31], buffSize - 60 - lbSize, dataBuff);
 		NEW_CLASS(ret, Crypto::Cert::X509Key(fileName, dataBuff, dataLen, Crypto::Cert::X509File::KeyType::DSA));
 	}
-	else if (Text::StrStartsWith(buff, (const UTF8Char*)"-----BEGIN EC PRIVATE KEY-----") && Text::StrStartsWith(&buff[buffSize - 29], (const UTF8Char*)"-----END EC PRIVATE KEY-----\n"))
+	else if (Text::StrStartsWith(buff, (const UTF8Char*)"-----BEGIN EC PRIVATE KEY-----") && Text::StrStartsWith(&buff[buffSize - 28 - lbSize], (const UTF8Char*)"-----END EC PRIVATE KEY-----"))
 	{
 		Text::TextBinEnc::Base64Enc b64;
-		dataLen = b64.DecodeBin(&buff[30], buffSize - 59, dataBuff);
+		dataLen = b64.DecodeBin(&buff[30], buffSize - 58 - lbSize, dataBuff);
 		NEW_CLASS(ret, Crypto::Cert::X509Key(fileName, dataBuff, dataLen, Crypto::Cert::X509File::KeyType::ECDSA));
 	}
-	else if (Text::StrStartsWith(buff, (const UTF8Char*)"-----BEGIN PRIVATE KEY-----") && Text::StrStartsWith(&buff[buffSize - 26], (const UTF8Char*)"-----END PRIVATE KEY-----\n"))
+	else if (Text::StrStartsWith(buff, (const UTF8Char*)"-----BEGIN PRIVATE KEY-----") && Text::StrStartsWith(&buff[buffSize - 25 - lbSize], (const UTF8Char*)"-----END PRIVATE KEY-----"))
 	{
 		Text::TextBinEnc::Base64Enc b64;
-		dataLen = b64.DecodeBin(&buff[27], buffSize - 53, dataBuff);
+		dataLen = b64.DecodeBin(&buff[27], buffSize - 52 - lbSize, dataBuff);
 		NEW_CLASS(ret, Crypto::Cert::X509PrivKey(fileName, dataBuff, dataLen));
 	}
-	else if (Text::StrStartsWith(buff, (const UTF8Char*)"-----BEGIN PUBLIC KEY-----") && Text::StrStartsWith(&buff[buffSize - 25], (const UTF8Char*)"-----END PUBLIC KEY-----\n"))
+	else if (Text::StrStartsWith(buff, (const UTF8Char*)"-----BEGIN PUBLIC KEY-----") && Text::StrStartsWith(&buff[buffSize - 24 - lbSize], (const UTF8Char*)"-----END PUBLIC KEY-----"))
 	{
 		Text::TextBinEnc::Base64Enc b64;
-		dataLen = b64.DecodeBin(&buff[26], buffSize - 51, dataBuff);
+		dataLen = b64.DecodeBin(&buff[26], buffSize - 50 - lbSize, dataBuff);
 		NEW_CLASS(ret, Crypto::Cert::X509PubKey(fileName, dataBuff, dataLen));
 	}
-	else if (Text::StrStartsWith(buff, (const UTF8Char*)"-----BEGIN CERTIFICATE REQUEST-----") && Text::StrStartsWith(&buff[buffSize - 34], (const UTF8Char*)"-----END CERTIFICATE REQUEST-----\n"))
+	else if (Text::StrStartsWith(buff, (const UTF8Char*)"-----BEGIN CERTIFICATE REQUEST-----") && Text::StrStartsWith(&buff[buffSize - 33 - lbSize], (const UTF8Char*)"-----END CERTIFICATE REQUEST-----"))
 	{
 		Text::TextBinEnc::Base64Enc b64;
-		dataLen = b64.DecodeBin(&buff[35], buffSize - 69, dataBuff);
+		dataLen = b64.DecodeBin(&buff[35], buffSize - 68 - lbSize, dataBuff);
 		NEW_CLASS(ret, Crypto::Cert::X509CertReq(fileName, dataBuff, dataLen));
 	}
 	else

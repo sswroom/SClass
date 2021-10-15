@@ -8,9 +8,9 @@
 void __stdcall SSWR::AVIRead::AVIRNetPingForm::OnPingClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRNetPingForm *me = (SSWR::AVIRead::AVIRNetPingForm*)userObj;
-	if (me->targetAddr.addrType != Net::SocketUtil::AT_UNKNOWN)
+	if (me->targetAddr.addrType != Net::AddrType::Unknown)
 	{
-		me->targetAddr.addrType = Net::SocketUtil::AT_UNKNOWN;
+		me->targetAddr.addrType = Net::AddrType::Unknown;
 		me->chkRepeat->SetEnabled(true);
 		me->txtTarget->SetReadOnly(false);
 	}
@@ -61,7 +61,7 @@ void __stdcall SSWR::AVIRead::AVIRNetPingForm::OnPingClicked(void *userObj)
 void __stdcall SSWR::AVIRead::AVIRNetPingForm::OnTimerTick(void *userObj)
 {
 	SSWR::AVIRead::AVIRNetPingForm *me = (SSWR::AVIRead::AVIRNetPingForm*)userObj;
-	if (me->targetAddr.addrType != Net::SocketUtil::AT_UNKNOWN)
+	if (me->targetAddr.addrType != Net::AddrType::Unknown)
 	{
 		UInt32 t1;
 		UInt32 ttl;
@@ -101,7 +101,7 @@ SSWR::AVIRead::AVIRNetPingForm::AVIRNetPingForm(UI::GUIClientControl *parent, UI
 
 	this->core = core;
 	this->sockf = core->GetSocketFactory();
-	this->targetAddr.addrType = Net::SocketUtil::AT_UNKNOWN;
+	this->targetAddr.addrType = Net::AddrType::Unknown;
 	NEW_CLASS(this->log, IO::LogTool());
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 

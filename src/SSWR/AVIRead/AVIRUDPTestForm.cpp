@@ -305,7 +305,7 @@ SSWR::AVIRead::AVIRUDPTestForm::AVIRUDPTestForm(UI::GUIClientControl *parent, UI
 	i = this->threadCnt;
 	while (i-- > 0)
 	{
-		this->threads[i].destAddr.addrType = Net::SocketUtil::AT_UNKNOWN;
+		this->threads[i].destAddr.addrType = Net::AddrType::Unknown;
 		this->threads[i].destPort = 0;
 		NEW_CLASS(this->threads[i].evt, Sync::Event(true, (const UTF8Char*)"SSWR.AVIRead.AVIRUDPTestForm.threads.evt"));
 		this->threads[i].me = this;

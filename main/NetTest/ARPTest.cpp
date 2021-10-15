@@ -32,7 +32,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	Text::StringBuilderUTF8 sb;
 	Data::ArrayList<Net::ConnectionInfo*> connInfoList;
 	Net::ConnectionInfo *connInfo;
-	Net::SocketUtil::IPType ipType;
+	Net::IPType ipType;
 	UInt8 hwAddr[32];
 	UTF8Char sbuff[64];
 	UOSInt i;
@@ -52,7 +52,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			if (ip == 0)
 				break;
 			ipType = Net::SocketUtil::GetIPv4Type(ip);
-			if (ipType == Net::SocketUtil::IT_PRIVATE)
+			if (ipType == Net::IPType::Private)
 			{
 				if (connInfo->GetPhysicalAddress(hwAddr, 32) == 6)
 				{

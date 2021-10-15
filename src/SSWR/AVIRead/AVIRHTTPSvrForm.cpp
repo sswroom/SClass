@@ -22,7 +22,7 @@ SSWR::AVIRead::AVIRHTTPLog::AVIRHTTPLog(UOSInt logCnt)
 		NEW_CLASS(this->entries[i].headerName, Data::ArrayListStrUTF8());
 		NEW_CLASS(this->entries[i].headerVal, Data::ArrayList<const UTF8Char *>());
 		this->entries[i].reqURI = 0;
-		this->entries[i].cliAddr.addrType = Net::SocketUtil::AT_UNKNOWN;
+		this->entries[i].cliAddr.addrType = Net::AddrType::Unknown;
 		this->entries[i].cliPort = 0;
 	}
 }

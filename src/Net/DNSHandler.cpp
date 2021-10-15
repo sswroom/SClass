@@ -99,7 +99,7 @@ Bool Net::DNSHandler::GetByDomainNamev4(Net::SocketUtil::AddressInfo *addr, cons
 			while (i < j)
 			{
 				ans = dnsStat->answers->GetItem(i);
-				if (ans->addr.addrType != Net::SocketUtil::AT_UNKNOWN)
+				if (ans->addr.addrType != Net::AddrType::Unknown)
 				{
 					*addr = ans->addr;
 					dnsStat->timeout = t + ans->ttl;
@@ -126,7 +126,7 @@ Bool Net::DNSHandler::GetByDomainNamev4(Net::SocketUtil::AddressInfo *addr, cons
 	while (i < j)
 	{
 		ans = dnsStat->answers->GetItem(i);
-		if (ans->addr.addrType != Net::SocketUtil::AT_UNKNOWN)
+		if (ans->addr.addrType != Net::AddrType::Unknown)
 		{
 			*addr = ans->addr;
 			dnsStat->timeout = t + ans->ttl;
@@ -184,7 +184,7 @@ Bool Net::DNSHandler::GetByDomainNamev6(Net::SocketUtil::AddressInfo *addr, cons
 			while (i < j)
 			{
 				ans = dnsStat->answers->GetItem(i);
-				if (ans->addr.addrType != Net::SocketUtil::AT_UNKNOWN)
+				if (ans->addr.addrType != Net::AddrType::Unknown)
 				{
 					*addr = ans->addr;
 					dnsStat->timeout = t + ans->ttl;
@@ -211,7 +211,7 @@ Bool Net::DNSHandler::GetByDomainNamev6(Net::SocketUtil::AddressInfo *addr, cons
 	while (i < j)
 	{
 		ans = dnsStat->answers->GetItem(i);
-		if (ans->addr.addrType != Net::SocketUtil::AT_UNKNOWN)
+		if (ans->addr.addrType != Net::AddrType::Unknown)
 		{
 			*addr = ans->addr;
 			dnsStat->timeout = t + ans->ttl;
@@ -236,7 +236,7 @@ Bool Net::DNSHandler::GetByDomainNamev6(Net::SocketUtil::AddressInfo *addr, cons
 Bool Net::DNSHandler::AddHost(const Net::SocketUtil::AddressInfo *addr, const UTF8Char *domain)
 {
 	DomainStatus *dnsStat;
-	if (addr->addrType == Net::SocketUtil::AT_IPV4)
+	if (addr->addrType == Net::AddrType::IPv4)
 	{
 		Sync::MutexUsage mutUsage(this->reqv4Mut);
 		dnsStat = this->reqv4Map->Get(domain);
@@ -257,7 +257,7 @@ Bool Net::DNSHandler::AddHost(const Net::SocketUtil::AddressInfo *addr, const UT
 		mutUsage.EndUse();
 		return true;
 	}
-	else if (addr->addrType == Net::SocketUtil::AT_IPV6)
+	else if (addr->addrType == Net::AddrType::IPv6)
 	{
 		Sync::MutexUsage mutUsage(this->reqv6Mut);
 		dnsStat = this->reqv6Map->Get(domain);

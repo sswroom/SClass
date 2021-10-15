@@ -26,6 +26,7 @@ namespace Net
 		void AppendInt32(Int32 v);
 		void AppendUInt32(UInt32 v);
 		void AppendBitString(const UInt8 *buff, UOSInt len);
+		void AppendBitStringWith0(const UInt8 *buff, UOSInt len);
 		void AppendOctetString(const UInt8 *buff, UOSInt len);
 		void AppendOctetStringS(const UTF8Char *s);
 		void AppendNull();
@@ -36,7 +37,9 @@ namespace Net
 		void AppendUTF8String(const UTF8Char *s);
 		void AppendIA5String(const UTF8Char *s);
 		void AppendOther(UInt8 type, const UInt8 *buff, UOSInt buffSize);
+		void AppendOtherWith0(UInt8 type, const UInt8 *buff, UOSInt buffSize);
 
+		const UInt8 *GetItemRAW(const Char *path, UOSInt *itemLen, UOSInt *itemOfst);
 		const UInt8 *GetBuff(UOSInt *buffSize);
 		UOSInt GetBuffSize();
 	};

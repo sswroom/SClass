@@ -91,7 +91,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 
 	Data::ArrayList<Net::ConnectionInfo*> connInfoList;
 	Net::ConnectionInfo *connInfo;
-	Net::SocketUtil::IPType ipType;
+	Net::IPType ipType;
 	UOSInt k;
 	UInt32 ip;
 	sockf->GetConnInfoList(&connInfoList);
@@ -107,7 +107,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			if (ip == 0)
 				break;
 			ipType = Net::SocketUtil::GetIPv4Type(ip);
-			if (ipType == Net::SocketUtil::IT_PRIVATE)
+			if (ipType == Net::IPType::Private)
 			{
 				if (connInfo->GetPhysicalAddress(hwAddr, 32) == 6)
 				{

@@ -227,11 +227,11 @@ Int64 Net::WebServer::MemoryWebSessionManager::GenSessId(Net::WebServer::IWebReq
 	buff[1] = 0;
 	*(UInt16*)&buff[2] = req->GetClientPort();
 	const Net::SocketUtil::AddressInfo *addr = req->GetClientAddr();
-	if (addr->addrType == Net::SocketUtil::AT_IPV4)
+	if (addr->addrType == Net::AddrType::IPv4)
 	{
 		*(UInt32*)&buff[4] = *(UInt32*)addr->addr;
 	}
-	else if (addr->addrType == Net::SocketUtil::AT_IPV6)
+	else if (addr->addrType == Net::AddrType::IPv6)
 	{
 		Crypto::Hash::CRC32R crc;
 		crc.Calc(addr->addr, 16);

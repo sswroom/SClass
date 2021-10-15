@@ -29,14 +29,14 @@ Net::AddressRange::AddressRange(const UTF8Char *addr, Bool scanBoardcast)
 			else
 			{
 				this->aType = AT_MASK;
-				if (this->addr1.addrType == Net::SocketUtil::AT_IPV4)
+				if (this->addr1.addrType == Net::AddrType::IPv4)
 				{
 					UInt32 mask = ((UInt32)1 << (32 - this->param)) - 1;
-					if (Net::SocketUtil::GetIPv4Type(ReadNUInt32(this->addr1.addr) | Net::SocketUtil::IPv4ToSortable(mask)) == Net::SocketUtil::IT_BROADCAST)
+					if (Net::SocketUtil::GetIPv4Type(ReadNUInt32(this->addr1.addr) | Net::SocketUtil::IPv4ToSortable(mask)) == Net::IPType::Broadcast)
 					{
 						this->skipLast = true;
 					}
-					if (Net::SocketUtil::GetIPv4Type(ReadNUInt32(this->addr1.addr) & Net::SocketUtil::IPv4ToSortable(~mask)) == Net::SocketUtil::IT_NETWORK)
+					if (Net::SocketUtil::GetIPv4Type(ReadNUInt32(this->addr1.addr) & Net::SocketUtil::IPv4ToSortable(~mask)) == Net::IPType::Network)
 					{
 						this->skipFirst = true;
 					}
@@ -64,19 +64,19 @@ Net::AddressRange::AddressRange(const UTF8Char *addr, Bool scanBoardcast)
 			{
 				this->aType = AT_ERROR;
 			}
-			else if (this->addr1.addrType == Net::SocketUtil::AT_IPV4)
+			else if (this->addr1.addrType == Net::AddrType::IPv4)
 			{
 				UInt8 buff[4];
 				buff[0] = this->addr1.addr[0];
 				buff[1] = this->addr1.addr[1];
 				buff[2] = this->addr1.addr[2];
 				buff[3] = this->addr1.addr[3];
-				if (Net::SocketUtil::GetIPv4Type(ReadNUInt32(buff)) == Net::SocketUtil::IT_NETWORK)
+				if (Net::SocketUtil::GetIPv4Type(ReadNUInt32(buff)) == Net::IPType::Network)
 				{
 					this->skipFirst = true;
 				}
 				buff[3] = this->param;
-				if (Net::SocketUtil::GetIPv4Type(ReadNUInt32(buff)) == Net::SocketUtil::IT_BROADCAST)
+				if (Net::SocketUtil::GetIPv4Type(ReadNUInt32(buff)) == Net::IPType::Broadcast)
 				{
 					this->skipLast = true;
 				}
@@ -91,10 +91,10 @@ Net::AddressRange::AddressRange(const UTF8Char *addr, Bool scanBoardcast)
 	}
 	if (Net::SocketUtil::GetIPAddr(addr, &this->addr1))
 	{
-		if (this->addr1.addrType == Net::SocketUtil::AT_IPV4)
+		if (this->addr1.addrType == Net::AddrType::IPv4)
 		{
-			Net::SocketUtil::IPType ipType = Net::SocketUtil::GetIPv4Type(ReadNUInt32(this->addr1.addr));
-			if (ipType == Net::SocketUtil::IT_BROADCAST && scanBoardcast)
+			Net::IPType ipType = Net::SocketUtil::GetIPv4Type(ReadNUInt32(this->addr1.addr));
+			if (ipType == Net::IPType::Broadcast && scanBoardcast)
 			{
 				this->aType = AT_SCAN;
 				this->skipFirst = true;
@@ -105,7 +105,7 @@ Net::AddressRange::AddressRange(const UTF8Char *addr, Bool scanBoardcast)
 				this->aType = AT_SINGLE;
 			}
 		}
-		else if (this->addr1.addrType == Net::SocketUtil::AT_IPV6)
+		else if (this->addr1.addrType == Net::AddrType::IPv6)
 		{
 			this->aType = AT_SINGLE;
 		}
@@ -250,7 +250,7 @@ Bool Net::AddressRange::GetItem(UOSInt index, Net::SocketUtil::AddressInfo *addr
 		{
 			ip++;
 		}
-		addr->addrType = Net::SocketUtil::AT_IPV4;
+		addr->addrType = Net::AddrType::IPv4;
 		WriteMUInt32(addr->addr, ip);
 		return true;
 	case AT_SCAN:
@@ -289,7 +289,7 @@ Bool Net::AddressRange::GetItem(UOSInt index, Net::SocketUtil::AddressInfo *addr
 		{
 			ip++;
 		}
-		addr->addrType = Net::SocketUtil::AT_IPV4;
+		addr->addrType = Net::AddrType::IPv4;
 		WriteMUInt32(addr->addr, ip);
 		return true;
 	default:

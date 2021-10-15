@@ -892,7 +892,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(void *userObj)
 
 			if (mac->ipv4Addr[0])
 			{
-				if (mac->ipv6Addr.addrType == Net::SocketUtil::AT_IPV6)
+				if (mac->ipv6Addr.addrType == Net::AddrType::IPv6)
 				{
 					Net::SocketUtil::GetAddrName(Text::StrConcat(Net::SocketUtil::GetIPv4Name(sbuff, mac->ipv4Addr[0]), (const UTF8Char*)", "), &mac->ipv6Addr);
 					me->lvDevice->SetSubItem(i, 9, sbuff);
@@ -905,7 +905,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(void *userObj)
 			}
 			else
 			{
-				if (mac->ipv6Addr.addrType == Net::SocketUtil::AT_IPV6)
+				if (mac->ipv6Addr.addrType == Net::AddrType::IPv6)
 				{
 					Net::SocketUtil::GetAddrName(sbuff, &mac->ipv6Addr);
 					me->lvDevice->SetSubItem(i, 9, sbuff);

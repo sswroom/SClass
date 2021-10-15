@@ -89,7 +89,7 @@ Net::LogServer::IPStatus *Net::LogServer::GetIPStatus(const Net::SocketUtil::Add
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 
-	if (addr->addrType == Net::SocketUtil::AT_IPV4)
+	if (addr->addrType == Net::AddrType::IPv4)
 	{
 		UInt32 ip = ReadMUInt32(addr->addr);
 		IPStatus *status;

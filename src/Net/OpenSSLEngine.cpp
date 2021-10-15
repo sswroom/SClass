@@ -331,11 +331,11 @@ Net::SSLClient *Net::OpenSSLEngine::Connect(const UTF8Char *hostName, UInt16 por
 		SSL_use_PrivateKey_ASN1(EVP_PKEY_RSA, ssl, this->clsData->cliKey->GetASN1Buff(), (int)(OSInt)this->clsData->cliKey->GetASN1BuffSize());
 	}
 	Socket *s;
-	if (addr.addrType == Net::SocketUtil::AT_IPV4)
+	if (addr.addrType == Net::AddrType::IPv4)
 	{
 		s = this->sockf->CreateTCPSocketv4();
 	}
-	else if (addr.addrType == Net::SocketUtil::AT_IPV6)
+	else if (addr.addrType == Net::AddrType::IPv6)
 	{
 		s = this->sockf->CreateTCPSocketv6();
 	}

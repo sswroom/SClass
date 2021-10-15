@@ -260,7 +260,7 @@ void Map::ReverseGeocoderServer::DataParsed(IO::Stream *stm, void *cliObj, Int32
 	else if (cmdType == 4)
 	{
 		UInt8 buff[16];
-		stm->Write(buff, this->protocol->BuildPacket(buff, 4, 0, buff, 0, 0));
+		stm->Write(buff, this->protocol->BuildPacket(buff, 4, 0, 0, 0, 0));
 	}
 }
 

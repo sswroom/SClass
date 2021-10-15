@@ -23,7 +23,7 @@ namespace Net
 
 	private:
 		Net::SocketFactory *sockf;
-		Net::SocketUtil::AddrType addrType;
+		Net::AddrType addrType;
 		Socket *socV4;
 		Socket *socV6;
 		UDPPacketHdlr hdlr;

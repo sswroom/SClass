@@ -16,7 +16,7 @@ Net::HTTPProxyTCPClient::HTTPProxyTCPClient(Net::SocketFactory *sockf, const UTF
 		this->flags |= 12;
 		return;
 	}
-	if (addr.addrType == Net::SocketUtil::AT_IPV4)
+	if (addr.addrType == Net::AddrType::IPv4)
 	{
 		this->s = sockf->CreateTCPSocketv4();
 		if (this->s == 0)
@@ -25,7 +25,7 @@ Net::HTTPProxyTCPClient::HTTPProxyTCPClient(Net::SocketFactory *sockf, const UTF
 			return;
 		}
 	}
-	else if (addr.addrType == Net::SocketUtil::AT_IPV4)
+	else if (addr.addrType == Net::AddrType::IPv4)
 	{
 		this->s = sockf->CreateTCPSocketv6();
 		if (this->s == 0)

@@ -82,7 +82,7 @@ Bool Net::HTTPProxyClient::Connect(const UTF8Char *url, const Char *method, Doub
 		{
 			*timeDNS = 0;
 		}
-		this->svrAddr.addrType = Net::SocketUtil::AT_IPV4;
+		this->svrAddr.addrType = Net::AddrType::IPv4;
 		WriteNUInt32(this->svrAddr.addr, this->proxyIP);
 
 		NEW_CLASS(cli, Net::TCPClient(sockf, this->proxyIP, this->proxyPort));

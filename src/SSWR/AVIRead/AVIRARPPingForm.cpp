@@ -36,10 +36,10 @@ void __stdcall SSWR::AVIRead::AVIRARPPingForm::OnARPHandler(const UInt8 *hwAddr,
 void __stdcall SSWR::AVIRead::AVIRARPPingForm::OnPingClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRARPPingForm *me = (SSWR::AVIRead::AVIRARPPingForm*)userObj;
-	if (me->arpHdlr && me->targetAddr.addrType != Net::SocketUtil::AT_UNKNOWN)
+	if (me->arpHdlr && me->targetAddr.addrType != Net::AddrType::Unknown)
 	{
 		SDEL_CLASS(me->arpHdlr);
-		me->targetAddr.addrType = Net::SocketUtil::AT_UNKNOWN;
+		me->targetAddr.addrType = Net::AddrType::Unknown;
 		me->chkRepeat->SetEnabled(true);
 		me->txtTarget->SetReadOnly(false);
 		me->requested = false;
@@ -107,7 +107,7 @@ void __stdcall SSWR::AVIRead::AVIRARPPingForm::OnPingClicked(void *userObj)
 void __stdcall SSWR::AVIRead::AVIRARPPingForm::OnTimerTick(void *userObj)
 {
 	SSWR::AVIRead::AVIRARPPingForm *me = (SSWR::AVIRead::AVIRARPPingForm*)userObj;
-	if (me->arpHdlr && me->targetAddr.addrType != Net::SocketUtil::AT_UNKNOWN)
+	if (me->arpHdlr && me->targetAddr.addrType != Net::AddrType::Unknown)
 	{
 		Double t;
 		if (me->requested)
@@ -131,7 +131,7 @@ SSWR::AVIRead::AVIRARPPingForm::AVIRARPPingForm(UI::GUIClientControl *parent, UI
 	this->reqEvt = 0;
 	NEW_CLASS(this->clk, Manage::HiResClock());
 	this->sockf = core->GetSocketFactory();
-	this->targetAddr.addrType = Net::SocketUtil::AT_UNKNOWN;
+	this->targetAddr.addrType = Net::AddrType::Unknown;
 	NEW_CLASS(this->log, IO::LogTool());
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 

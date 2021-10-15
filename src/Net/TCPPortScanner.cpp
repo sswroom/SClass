@@ -16,7 +16,7 @@ UInt32 __stdcall Net::TCPPortScanner::ScanThread(void *userObj)
 		me->threadEvt->Wait(10000);
 		Sync::MutexUsage mutUsage(me->portMut);
 		addr = me->addr;
-		if (addr.addrType != Net::SocketUtil::AT_UNKNOWN)
+		if (addr.addrType != Net::AddrType::Unknown)
 		{
 			i = 0;
 			while (i < 65536)
@@ -26,11 +26,11 @@ UInt32 __stdcall Net::TCPPortScanner::ScanThread(void *userObj)
 					me->portList[i] = 0;
 					mutUsage.EndUse();
 					s = 0;
-					if (addr.addrType == Net::SocketUtil::AT_IPV4)
+					if (addr.addrType == Net::AddrType::IPv4)
 					{
 						s = me->sockf->CreateTCPSocketv4();
 					}
-					else if (addr.addrType == Net::SocketUtil::AT_IPV6)
+					else if (addr.addrType == Net::AddrType::IPv6)
 					{
 						s = me->sockf->CreateTCPSocketv6();
 					}
@@ -78,7 +78,7 @@ Net::TCPPortScanner::TCPPortScanner(Net::SocketFactory *sockf, UOSInt threadCnt,
 	this->portList = MemAlloc(UInt8, 65536);
 	MemClear(this->portList, 65536);
 	NEW_CLASS(this->portMut, Sync::Mutex());
-	this->addr.addrType = Net::SocketUtil::AT_UNKNOWN;
+	this->addr.addrType = Net::AddrType::Unknown;
 	this->hdlr = hdlr;
 	this->hdlrObj = userObj;
 	this->threadCnt = 0;

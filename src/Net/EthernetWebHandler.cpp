@@ -131,7 +131,7 @@ Bool __stdcall Net::EthernetWebHandler::DeviceReq(EthernetWebHandler *me, Net::W
 						}
 					}
 				}
-				if (mac->ipv6Addr.addrType == Net::SocketUtil::AT_IPV6)
+				if (mac->ipv6Addr.addrType == Net::AddrType::IPv6)
 				{
 					sb.Append((const UTF8Char*)"<br/>");
 					Net::SocketUtil::GetAddrName(sbuff, &mac->ipv6Addr);
@@ -140,7 +140,7 @@ Bool __stdcall Net::EthernetWebHandler::DeviceReq(EthernetWebHandler *me, Net::W
 			}
 			else
 			{
-				if (mac->ipv6Addr.addrType == Net::SocketUtil::AT_IPV6)
+				if (mac->ipv6Addr.addrType == Net::AddrType::IPv6)
 				{
 					Net::SocketUtil::GetAddrName(sbuff, &mac->ipv6Addr);
 					sb.Append(sbuff);

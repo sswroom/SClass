@@ -187,7 +187,7 @@ SSWR::AVIRead::AVIRARPScanForm::AVIRARPScanForm(UI::GUIClientControl *parent, UI
 	Data::ArrayList<Net::ConnectionInfo*> connInfoList;
 	Net::ConnectionInfo *connInfo;
 	SSWR::AVIRead::AVIRARPScanForm::AdapterInfo *adapter;
-	Net::SocketUtil::IPType ipType;
+	Net::IPType ipType;
 	UInt8 hwAddr[32];
 	UTF8Char sbuff[128];
 	UOSInt k;
@@ -205,7 +205,7 @@ SSWR::AVIRead::AVIRARPScanForm::AVIRARPScanForm(UI::GUIClientControl *parent, UI
 			if (ip == 0)
 				break;
 			ipType = Net::SocketUtil::GetIPv4Type(ip);
-			if (ipType == Net::SocketUtil::IT_PRIVATE)
+			if (ipType == Net::IPType::Private)
 			{
 				if (connInfo->GetPhysicalAddress(hwAddr, 32) == 6)
 				{

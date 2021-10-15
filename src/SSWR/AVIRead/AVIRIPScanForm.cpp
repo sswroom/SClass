@@ -107,8 +107,8 @@ SSWR::AVIRead::AVIRIPScanForm::AVIRIPScanForm(UI::GUIClientControl *parent, UI::
 				ip = connInfo->GetIPAddress(k);
 				if (ip == 0)
 					break;
-				Net::SocketUtil::IPType ipType = Net::SocketUtil::GetIPv4Type(ip);
-				if (ipType == Net::SocketUtil::IT_PRIVATE)
+				Net::IPType ipType = Net::SocketUtil::GetIPv4Type(ip);
+				if (ipType == Net::IPType::Private)
 				{
 					Net::SocketUtil::GetIPv4Name(sbuff, ip);
 					this->cboIP->AddItem(sbuff, (void*)(OSInt)ip);

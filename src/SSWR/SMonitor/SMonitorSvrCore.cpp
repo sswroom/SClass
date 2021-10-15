@@ -591,7 +591,7 @@ void SSWR::SMonitor::SMonitorSvrCore::TCPSendCapturePhoto(IO::Stream *stm)
 {
 	UInt8 packetBuff[10];
 	UOSInt packetSize;
-	packetSize = this->protoHdlr->BuildPacket(packetBuff, 9, 0, packetBuff, 0, 0);
+	packetSize = this->protoHdlr->BuildPacket(packetBuff, 9, 0, 0, 0, 0);
 	stm->Write(packetBuff, packetSize);
 }
 

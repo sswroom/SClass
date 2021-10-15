@@ -1,4 +1,5 @@
 #include "Stdafx.h"
+#include "IO/BuildTime.h"
 #include "IO/EXEFile.h"
 #include "IO/Path.h"
 #include "SSWR/AVIRead/AVIRAboutForm.h"
@@ -54,8 +55,7 @@ SSWR::AVIRead::AVIRAboutForm::AVIRAboutForm(UI::GUIClientControl *parent, UI::GU
 	NEW_CLASS(lbl, UI::GUILabel(ui, this, sbuff));
 	lbl->SetRect(8, 32, 400, 23, false);
 
-	IO::Path::GetProcessFileName(sbuff);
-	IO::EXEFile::GetFileTime(sbuff, &t);
+	IO::BuildTime::GetBuildTime(&t);
 	t.ToString(Text::StrConcat(sbuff, (const UTF8Char*)"Build date: "), "yyyy-MM-dd HH:mm:ss");
 	NEW_CLASS(lbl, UI::GUILabel(ui, this, sbuff));
 	lbl->SetRect(8, 56, 400, 23, false);

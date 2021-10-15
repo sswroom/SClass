@@ -968,11 +968,11 @@ Net::SSLClient *Net::WinSSLEngine::Connect(const UTF8Char *hostName, UInt16 port
 			*err = ErrorType::HostnameNotResolved;
 		return 0;
 	}
-	if (addr.addrType == Net::SocketUtil::AT_IPV4)
+	if (addr.addrType == Net::AddrType::IPv4)
 	{
 		s = this->sockf->CreateTCPSocketv4();
 	}
-	else if (addr.addrType == Net::SocketUtil::AT_IPV6)
+	else if (addr.addrType == Net::AddrType::IPv6)
 	{
 		s = this->sockf->CreateTCPSocketv6();
 	}

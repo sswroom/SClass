@@ -304,7 +304,7 @@ Bool Net::HTTPOSClient::Connect(const UTF8Char *url, const Char *method, Double 
 		this->cliHost = Text::StrCopyNew(urltmp);
 		if (Text::StrEqualsICase(svrname, (const UTF8Char*)"localhost"))
 		{
-			this->svrAddr.addrType = Net::SocketUtil::AT_IPV4;
+			this->svrAddr.addrType = Net::AddrType::IPv4;
 			WriteNUInt32(this->svrAddr.addr, Net::SocketUtil::GetIPAddr((const UTF8Char*)"127.0.0.1"));
 		}
 		else if (!sockf->DNSResolveIP(svrname, &this->svrAddr))

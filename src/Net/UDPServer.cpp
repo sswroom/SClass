@@ -187,7 +187,7 @@ Net::UDPServer::UDPServer(Net::SocketFactory *sockf, Net::SocketUtil::AddressInf
 	Bool succ = false;
 	if (bindAddr == 0)
 	{
-		this->addrType = Net::SocketUtil::AT_UNKNOWN;
+		this->addrType = Net::AddrType::Unknown;
 		this->socV4 = this->sockf->CreateUDPSocketv4();
 		this->socV6 = this->sockf->CreateUDPSocketv6();
 		if (reuseAddr)
@@ -217,7 +217,7 @@ Net::UDPServer::UDPServer(Net::SocketFactory *sockf, Net::SocketUtil::AddressInf
 		this->addrType = bindAddr->addrType;
 		this->socV4 = 0;
 		this->socV6 = 0;
-		if (this->addrType == Net::SocketUtil::AT_IPV4)
+		if (this->addrType == Net::AddrType::IPv4)
 		{
 			this->socV4 = this->sockf->CreateUDPSocketv4();
 			if (reuseAddr)
@@ -234,7 +234,7 @@ Net::UDPServer::UDPServer(Net::SocketFactory *sockf, Net::SocketUtil::AddressInf
 				this->socV4 = 0;
 			}
 		}
-		else if (this->addrType == Net::SocketUtil::AT_IPV6)
+		else if (this->addrType == Net::AddrType::IPv6)
 		{
 			this->socV6 = this->sockf->CreateUDPSocketv6();
 			if (reuseAddr)
@@ -504,7 +504,7 @@ Bool Net::UDPServer::SendTo(const Net::SocketUtil::AddressInfo *addr, UInt16 por
 	}
 
 	succ = false;
-	if (addr->addrType == Net::SocketUtil::AT_IPV4)
+	if (addr->addrType == Net::AddrType::IPv4)
 	{
 //		printf("IPv4 port = %d\r\n", port);
 		if (this->sockf->SendTo(this->socV4, buff, dataSize, addr, port) != dataSize)
@@ -522,7 +522,7 @@ Bool Net::UDPServer::SendTo(const Net::SocketUtil::AddressInfo *addr, UInt16 por
 			succ = true;
 		}
 	}
-	else if (addr->addrType == Net::SocketUtil::AT_IPV6)
+	else if (addr->addrType == Net::AddrType::IPv6)
 	{
 		if (this->sockf->SendTo(this->socV6, buff, dataSize, addr, port) != dataSize)
 		{

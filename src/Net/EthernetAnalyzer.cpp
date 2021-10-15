@@ -856,8 +856,8 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, UOSInt packetSize, U
 				ipLog = this->ipLogMap->Get(sortableIP);
 				if (ipLog == 0)
 				{
-					Net::SocketUtil::IPType itype = Net::SocketUtil::GetIPv4Type(ip->srcIP);
-					if (itype == Net::SocketUtil::IT_LOCAL || itype == Net::SocketUtil::IT_PRIVATE)
+					Net::IPType itype = Net::SocketUtil::GetIPv4Type(ip->srcIP);
+					if (itype == Net::IPType::Local || itype == Net::IPType::Private)
 					{
 						ipLog = MemAlloc(IPLogInfo, 1);
 						ipLog->ip = ip->srcIP;
@@ -965,8 +965,8 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, UOSInt packetSize, U
 				ipLog = this->ipLogMap->Get(sortableIP);
 				if (ipLog == 0)
 				{
-					Net::SocketUtil::IPType itype = Net::SocketUtil::GetIPv4Type(ip->destIP);
-					if (itype == Net::SocketUtil::IT_LOCAL || itype == Net::SocketUtil::IT_PRIVATE)
+					Net::IPType itype = Net::SocketUtil::GetIPv4Type(ip->destIP);
+					if (itype == Net::IPType::Local || itype == Net::IPType::Private)
 					{
 						ipLog = MemAlloc(IPLogInfo, 1);
 						ipLog->ip = ip->destIP;
@@ -1275,7 +1275,7 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, UOSInt packetSize, U
 							{
 								dnsCli = MemAlloc(DNSClientInfo, 1);
 								dnsCli->cliId = cliId;
-								dnsCli->addr.addrType = Net::SocketUtil::AT_IPV4;
+								dnsCli->addr.addrType = Net::AddrType::IPv4;
 								WriteMUInt32(dnsCli->addr.addr, cliId);
 								NEW_CLASS(dnsCli->mut, Sync::Mutex());
 								NEW_CLASS(dnsCli->hourInfos, Data::ArrayList<DNSCliHourInfo*>());
@@ -1804,17 +1804,17 @@ Bool Net::EthernetAnalyzer::PacketIPv6(const UInt8 *packet, UOSInt packetSize, U
 		{
 			Sync::MutexUsage mutUsage(this->macMut);
 			mac = this->MACGet(srcMAC);
-			if (mac->ipv6Addr.addrType == Net::SocketUtil::AT_UNKNOWN)
+			if (mac->ipv6Addr.addrType == Net::AddrType::Unknown)
 			{
-				mac->ipv6Addr.addrType = Net::SocketUtil::AT_IPV6;
+				mac->ipv6Addr.addrType = Net::AddrType::IPv6;
 				MemCopyNO(mac->ipv6Addr.addr, &packet[8], 16);
 			}
 			mac->ipv6SrcCnt++;
 
 			mac = this->MACGet(destMAC);
-			if (mac->ipv6Addr.addrType == Net::SocketUtil::AT_UNKNOWN)
+			if (mac->ipv6Addr.addrType == Net::AddrType::Unknown)
 			{
-				mac->ipv6Addr.addrType = Net::SocketUtil::AT_IPV6;
+				mac->ipv6Addr.addrType = Net::AddrType::IPv6;
 				MemCopyNO(mac->ipv6Addr.addr, &packet[24], 16);
 			}
 			mac->ipv6DestCnt++;

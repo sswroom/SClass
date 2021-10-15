@@ -552,7 +552,7 @@ Bool Net::HTTPMyClient::Connect(const UTF8Char *url, const Char *method, Double 
 		Net::SocketUtil::AddressInfo addr;
 		if (Text::StrEqualsICase(svrname, (const UTF8Char*)"localhost"))
 		{
-			addr.addrType = Net::SocketUtil::AT_IPV4;
+			addr.addrType = Net::AddrType::IPv4;
 			WriteNUInt32(addr.addr, Net::SocketUtil::GetIPAddr((const UTF8Char*)"127.0.0.1"));
 		}
 		else if (!sockf->DNSResolveIP(svrname, &addr))
@@ -568,11 +568,11 @@ Bool Net::HTTPMyClient::Connect(const UTF8Char *url, const Char *method, Double 
 			*timeDNS = clk->GetTimeDiff();
 		}
 		this->svrAddr = addr;
-		if (addr.addrType != Net::SocketUtil::AT_UNKNOWN)
+		if (addr.addrType != Net::AddrType::Unknown)
 		{
 #ifdef SHOWDEBUG
 			Net::SocketUtil::GetAddrName(svrname, &this->svrAddr);
-			printf("Server IP: %s:%d, t = %d\r\n", svrname, port, this->svrAddr.addrType);
+			printf("Server IP: %s:%d, t = %d\r\n", svrname, port, (Int32)this->svrAddr.addrType);
 #endif
 			if (secure)
 			{

@@ -34,7 +34,7 @@ Net::UDPServerStream::UDPServerStream(Net::SocketFactory *sockf, UInt16 port, IO
 {
 	this->sockf = sockf;
 	this->log = log;
-	this->lastAddr.addrType = Net::SocketUtil::AT_UNKNOWN;
+	this->lastAddr.addrType = Net::AddrType::Unknown;
 	this->lastPort = 0;
 	this->buffSize = 0;
 	this->buff = MemAlloc(UInt8, BUFFSIZE);
@@ -85,7 +85,7 @@ UOSInt Net::UDPServerStream::Read(UInt8 *buff, UOSInt size)
 UOSInt Net::UDPServerStream::Write(const UInt8 *buff, UOSInt size)
 {
 	Sync::MutexUsage mutUsage(this->dataMut);
-	if (this->lastAddr.addrType == Net::SocketUtil::AT_UNKNOWN)
+	if (this->lastAddr.addrType == Net::AddrType::Unknown)
 	{
 		return 0;
 	}

@@ -458,7 +458,7 @@ UOSInt IO::Device::SIM7000SocketFactory::SendTo(Socket *socket, const UInt8 *buf
 	{
 		return false;
 	}
-	if (addr->addrType != Net::SocketUtil::AT_IPV4)
+	if (addr->addrType != Net::AddrType::IPv4)
 	{
 		return false;
 	}
@@ -507,7 +507,7 @@ UOSInt IO::Device::SIM7000SocketFactory::SendToIF(Socket *socket, const UInt8 *b
 Bool IO::Device::SIM7000SocketFactory::IcmpSendEcho2(const Net::SocketUtil::AddressInfo *addr, UInt32 *respTime_us, UInt32 *ttl)
 {
 	UTF8Char sbuff[32];
-	if (addr->addrType != Net::SocketUtil::AT_IPV4)
+	if (addr->addrType != Net::AddrType::IPv4)
 	{
 		return false;
 	}

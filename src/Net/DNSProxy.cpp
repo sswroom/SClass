@@ -545,11 +545,11 @@ UOSInt Net::DNSProxy::BuildEmptyReply(UInt8 *buff, UInt32 id, const UTF8Char *re
 UOSInt Net::DNSProxy::BuildAddressReply(UInt8 *buff, UInt32 id, const UTF8Char *reqName, Int32 reqClass, const Net::SocketUtil::AddressInfo *addr)
 {
 	Int16 reqType;
-	if (addr->addrType == Net::SocketUtil::AT_IPV4)
+	if (addr->addrType == Net::AddrType::IPv4)
 	{
 		reqType = 1;
 	}
-	else if (addr->addrType == Net::SocketUtil::AT_IPV6)
+	else if (addr->addrType == Net::AddrType::IPv6)
 	{
 		reqType = 28;
 	}
@@ -1045,7 +1045,7 @@ void Net::DNSProxy::SetCustomAnswer(const UTF8Char *name, const Net::SocketUtil:
 {
 	Data::DateTime currTime;
 	currTime.SetCurrTimeUTC();
-	if (addr->addrType == Net::SocketUtil::AT_IPV4)
+	if (addr->addrType == Net::AddrType::IPv4)
 	{
 		RequestResult *req;
 		Sync::MutexUsage reqv4MutUsage(this->reqv4Mut);
@@ -1075,7 +1075,7 @@ void Net::DNSProxy::SetCustomAnswer(const UTF8Char *name, const Net::SocketUtil:
 		req->customAddr = *addr;
 		mutUsage.EndUse();
 	}
-	else if (addr->addrType == Net::SocketUtil::AT_IPV6)
+	else if (addr->addrType == Net::AddrType::IPv6)
 	{
 		RequestResult *req;
 		Sync::MutexUsage reqv6MutUsage(this->reqv6Mut);

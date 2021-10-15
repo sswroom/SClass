@@ -114,7 +114,7 @@ Net::Email::SMTPConn::SMTPConn(Net::SocketFactory *sockf, Net::SSLEngine *ssl, c
 	this->authLogin = false;
 	this->authPlain = false;
 	Net::SocketUtil::AddressInfo addr;
-	addr.addrType = Net::SocketUtil::AT_UNKNOWN;
+	addr.addrType = Net::AddrType::Unknown;
 	sockf->DNSResolveIP(host, &addr);
 	this->logWriter = logWriter;
 	NEW_CLASS(this->evt, Sync::Event(true, (const UTF8Char*)"Net.SMTPConn.evt"));

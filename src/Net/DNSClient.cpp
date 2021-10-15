@@ -108,7 +108,7 @@ UOSInt Net::DNSClient::GetByType(Data::ArrayList<RequestAnswer*> *answers, const
 		Net::SocketUtil::AddressInfo addr;
 		if (Net::SocketUtil::GetIPAddr(domain, &addr))
 		{
-			if (addr.addrType == Net::SocketUtil::AT_IPV4)
+			if (addr.addrType == Net::AddrType::IPv4)
 			{
 				UTF8Char *sptr = sbuff;
 				sptr = Text::StrUInt16(sptr, addr.addr[3]);
@@ -121,7 +121,7 @@ UOSInt Net::DNSClient::GetByType(Data::ArrayList<RequestAnswer*> *answers, const
 				sptr = Text::StrConcat(sptr, (const UTF8Char*)".in-addr.arpa");
 				cptr1 = sbuff;
 			}
-			else if (addr.addrType == Net::SocketUtil::AT_IPV6)
+			else if (addr.addrType == Net::AddrType::IPv6)
 			{
 				UTF8Char *sptr = sbuff;
 				OSInt i = 16;
@@ -246,7 +246,7 @@ UOSInt Net::DNSClient::GetByAddrName(Data::ArrayList<RequestAnswer*> *answers, c
 	Char *ptr2;
 	UInt32 currId = NextId();
 
-	if (addr->addrType == Net::SocketUtil::AT_IPV4)
+	if (addr->addrType == Net::AddrType::IPv4)
 	{
 		WriteMUInt16(&buff[0], currId);
 		WriteMInt16(&buff[2], 0x100); //flags
@@ -276,7 +276,7 @@ UOSInt Net::DNSClient::GetByAddrName(Data::ArrayList<RequestAnswer*> *answers, c
 		ptr1 += 4;
 		ptr2 = (Char*)buff;
 	}
-	else if (addr->addrType == Net::SocketUtil::AT_IPV6)
+	else if (addr->addrType == Net::AddrType::IPv6)
 	{
 		WriteMInt16(&buff[0], currId);
 		WriteMInt16(&buff[2], 0x100); //flags
@@ -480,7 +480,7 @@ Net::DNSClient::RequestAnswer *Net::DNSClient::ParseAnswer(const UInt8 *buff, UO
 	ans->recType = ReadMUInt16(&buff[i]);
 	ans->recClass = ReadMUInt16(&buff[i + 2]);
 	ans->ttl = ReadMUInt32(&buff[i + 4]);
-	ans->addr.addrType = Net::SocketUtil::AT_UNKNOWN;
+	ans->addr.addrType = Net::AddrType::Unknown;
 	k = ReadMUInt16(&buff[i + 8]);
 	switch (ans->recType)
 	{

@@ -246,7 +246,7 @@ UOSInt Net::SNMPClient::V1ScanGetRequest(const Net::SocketUtil::AddressInfo *bro
 	Sync::MutexUsage scanMutUsage(this->scanMut);
 	this->scanList = addrList;
 	scanMutUsage.EndUse();
-	if (scanIP && broadcastAddr->addrType == Net::SocketUtil::AT_IPV4)
+	if (scanIP && broadcastAddr->addrType == Net::AddrType::IPv4)
 	{
 		Net::SocketUtil::AddressInfo scanAddr;
 		MemCopyNO(&scanAddr, broadcastAddr, sizeof(scanAddr));

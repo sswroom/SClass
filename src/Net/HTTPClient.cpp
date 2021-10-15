@@ -26,7 +26,7 @@ Net::HTTPClient::HTTPClient(Net::SocketFactory *sockf, Bool kaConn) : IO::Stream
 	this->hasForm = false;
 	this->formSb = 0;
 	this->kaConn = kaConn;
-	this->svrAddr.addrType = Net::SocketUtil::AT_UNKNOWN;
+	this->svrAddr.addrType = Net::AddrType::Unknown;
 	NEW_CLASS(this->headers, Data::ArrayList<UTF8Char*>());
 	NEW_CLASS(this->clk, Manage::HiResClock());
 }

@@ -4,26 +4,26 @@
 
 namespace Net
 {
+	enum class AddrType
+	{
+		Unknown,
+		IPv4,
+		IPv6
+	};
+
+	enum class IPType
+	{
+		Public,
+		Network,
+		Local,
+		Private,
+		Broadcast,
+		Multicast
+	};
+
 	class SocketUtil
 	{
 	public:
-		typedef enum
-		{
-			AT_UNKNOWN,
-			AT_IPV4,
-			AT_IPV6
-		} AddrType;
-
-		typedef enum
-		{
-			IT_PUBLIC,
-			IT_NETWORK,
-			IT_LOCAL,
-			IT_PRIVATE,
-			IT_BROADCAST,
-			IT_MULTICAST
-		} IPType;
-
 		typedef struct
 		{
 			AddrType addrType;
