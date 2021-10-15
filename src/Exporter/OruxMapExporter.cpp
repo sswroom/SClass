@@ -34,7 +34,7 @@ Int32 Exporter::OruxMapExporter::GetName()
 
 IO::FileExporter::SupportType Exporter::OruxMapExporter::IsObjectSupported(IO::ParsedObject *pobj)
 {
-	if (pobj->GetParserType() != IO::ParsedObject::PT_MAP_LAYER_PARSER)
+	if (pobj->GetParserType() != IO::ParserType::MapLayer)
 	{
 		return IO::FileExporter::SupportType::NotSupported;
 	}
@@ -75,7 +75,7 @@ Bool Exporter::OruxMapExporter::ExportFile(IO::SeekableStream *stm, const UTF8Ch
 	UTF8Char fileName2[512];
 	UTF8Char u8fileName[512];
 	UTF8Char sbuff[256];
-	if (pobj->GetParserType() != IO::ParsedObject::PT_MAP_LAYER_PARSER)
+	if (pobj->GetParserType() != IO::ParserType::MapLayer)
 	{
 		return false;
 	}

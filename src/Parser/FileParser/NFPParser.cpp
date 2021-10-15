@@ -19,17 +19,17 @@ Int32 Parser::FileParser::NFPParser::GetName()
 	return *(Int32*)"NFPP";
 }
 
-void Parser::FileParser::NFPParser::PrepareSelector(IO::IFileSelector *selector, IO::ParsedObject::ParserType t)
+void Parser::FileParser::NFPParser::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
 {
-	if (t == IO::ParsedObject::PT_UNKNOWN || t == IO::ParsedObject::PT_PACKAGE_PARSER)
+	if (t == IO::ParserType::Unknown || t == IO::ParserType::PackageFile)
 	{
 		selector->AddFilter((const UTF8Char*)"*.nfp", (const UTF8Char*)"NFP Package File");
 	}
 }
 
-IO::ParsedObject::ParserType Parser::FileParser::NFPParser::GetParserType()
+IO::ParserType Parser::FileParser::NFPParser::GetParserType()
 {
-	return IO::ParsedObject::PT_PACKAGE_PARSER;
+	return IO::ParserType::PackageFile;
 }
 
 typedef struct
@@ -41,7 +41,7 @@ typedef struct
 	UInt32 storeSize;
 } NFPFileInfo;
 
-IO::ParsedObject *Parser::FileParser::NFPParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParsedObject::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::NFPParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
 	UInt8 hdr[64];
 	UInt32 fileCnt;

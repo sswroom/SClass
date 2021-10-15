@@ -30,20 +30,20 @@ void Parser::FileParser::MDBParser::SetCodePage(UInt32 codePage)
 	this->codePage = codePage;
 }
 
-void Parser::FileParser::MDBParser::PrepareSelector(IO::IFileSelector *selector, IO::ParsedObject::ParserType t)
+void Parser::FileParser::MDBParser::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
 {
-	if (t == IO::ParsedObject::PT_UNKNOWN || t == IO::ParsedObject::PT_READINGDB_PARSER || t == IO::ParsedObject::PT_MAP_LAYER_PARSER)
+	if (t == IO::ParserType::Unknown || t == IO::ParserType::ReadingDB || t == IO::ParserType::MapLayer)
 	{
 		selector->AddFilter((const UTF8Char*)"*.mdb", (const UTF8Char*)"MDB File");
 	}
 }
 
-IO::ParsedObject::ParserType Parser::FileParser::MDBParser::GetParserType()
+IO::ParserType Parser::FileParser::MDBParser::GetParserType()
 {
-	return IO::ParsedObject::PT_READINGDB_PARSER;
+	return IO::ParserType::ReadingDB;
 }
 
-IO::ParsedObject *Parser::FileParser::MDBParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParsedObject::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::MDBParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
 	UInt8 buff[32];
 	if (!fd->IsFullFile())

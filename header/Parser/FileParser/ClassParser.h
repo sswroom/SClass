@@ -14,9 +14,9 @@ namespace Parser
 			virtual ~ClassParser();
 
 			virtual Int32 GetName();
-			virtual void PrepareSelector(IO::IFileSelector *selector, IO::ParsedObject::ParserType t);
-			virtual IO::ParsedObject::ParserType GetParserType();
-			virtual IO::ParsedObject *ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParsedObject::ParserType targetType);
+			virtual void PrepareSelector(IO::IFileSelector *selector, IO::ParserType t);
+			virtual IO::ParserType GetParserType();
+			virtual IO::ParsedObject *ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType);
 		};
 	};
 };

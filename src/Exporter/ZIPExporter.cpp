@@ -17,7 +17,7 @@ Int32 Exporter::ZIPExporter::GetName()
 
 IO::FileExporter::SupportType Exporter::ZIPExporter::IsObjectSupported(IO::ParsedObject *pobj)
 {
-	if (pobj->GetParserType() == IO::ParsedObject::PT_PACKAGE_PARSER)
+	if (pobj->GetParserType() == IO::ParserType::PackageFile)
 	{
 		return IO::FileExporter::SupportType::NormalStream;
 	}
@@ -37,7 +37,7 @@ Bool Exporter::ZIPExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8
 
 Bool Exporter::ZIPExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *fileName, IO::ParsedObject *pobj, void *param)
 {
-	if (pobj->GetParserType() != IO::ParsedObject::PT_PACKAGE_PARSER)
+	if (pobj->GetParserType() != IO::ParserType::PackageFile)
 	{
 		return false;
 	}

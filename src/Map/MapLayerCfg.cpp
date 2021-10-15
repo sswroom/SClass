@@ -2457,13 +2457,13 @@ Map::MapLayerCfg::MapLayerCfg(WChar *fileName, Media::DrawEngine *eng, Data::Arr
 				currLayer->img = 0;
 				{
 					IO::StmData::FileData *fd;
-					IO::ParsedObject::ParserType pt;
+					IO::ParserType pt;
 					NEW_CLASS(fd, IO::StmData::FileData(strs[4]));
 					IO::ParsedObject *obj = parserList->ParseFile(fd, &pt);
 					DEL_CLASS(fd);
 					if (obj)
 					{
-						if (obj->GetParserType() == IO::ParsedObject::PT_IMAGE_LIST_PARSER)
+						if (obj->GetParserType() == IO::ParserType::ImageList)
 						{
 							Media::ImageList *imgList = (Media::ImageList*)obj;
 							if (imgList->GetCount() > 0)

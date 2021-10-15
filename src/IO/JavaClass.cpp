@@ -3529,9 +3529,9 @@ IO::JavaClass::~JavaClass()
 	}
 }
 
-IO::ParsedObject::ParserType IO::JavaClass::GetParserType()
+IO::ParserType IO::JavaClass::GetParserType()
 {
-	return IO::ParsedObject::PT_JAVA_CLASS;
+	return IO::ParserType::JavaClass;
 }
 
 Bool IO::JavaClass::FileStructDetail(Text::StringBuilderUTF *sb)

@@ -77,3 +77,9 @@ Bool Text::StringTool::IsNonASCII(const UTF8Char *s)
 	}
 	return false;
 }
+
+const UTF8Char *Text::StringTool::Null2Empty(const UTF8Char *s)
+{
+	if (s) return s;
+	return (const UTF8Char*)"";
+}

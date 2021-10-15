@@ -18,20 +18,20 @@ Int32 Parser::FileParser::CIPParser::GetName()
 	return *(Int32*)"CIPP";
 }
 
-void Parser::FileParser::CIPParser::PrepareSelector(IO::IFileSelector *selector, IO::ParsedObject::ParserType t)
+void Parser::FileParser::CIPParser::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
 {
-	if (t == IO::ParsedObject::PT_UNKNOWN || t == IO::ParsedObject::PT_MAP_LAYER_PARSER)
+	if (t == IO::ParserType::Unknown || t == IO::ParserType::MapLayer)
 	{
 		selector->AddFilter((const UTF8Char*)"*.cip", (const UTF8Char*)"CIP File");
 	}
 }
 
-IO::ParsedObject::ParserType Parser::FileParser::CIPParser::GetParserType()
+IO::ParserType Parser::FileParser::CIPParser::GetParserType()
 {
-	return IO::ParsedObject::PT_MAP_LAYER_PARSER;
+	return IO::ParserType::MapLayer;
 }
 
-IO::ParsedObject *Parser::FileParser::CIPParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParsedObject::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::CIPParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
 	UTF8Char sbuff[1024];
 	UOSInt i;

@@ -137,7 +137,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	NEW_CLASS(parsers, Parser::FullParserList());
 	NEW_CLASS(checker, Media::VideoChecker());
 	NEW_CLASS(fd, IO::StmData::FileData(fileName, false));
-	mediaFile = (Media::MediaFile*)parsers->ParseFileType(fd, IO::ParsedObject::PT_VIDEO_PARSER);
+	mediaFile = (Media::MediaFile*)parsers->ParseFileType(fd, IO::ParserType::MediaFile);
 	DEL_CLASS(fd);
 
 	if (mediaFile)

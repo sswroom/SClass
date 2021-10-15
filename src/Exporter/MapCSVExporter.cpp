@@ -25,7 +25,7 @@ Int32 Exporter::MapCSVExporter::GetName()
 
 IO::FileExporter::SupportType Exporter::MapCSVExporter::IsObjectSupported(IO::ParsedObject *pobj)
 {
-	if (pobj->GetParserType() != IO::ParsedObject::PT_MAP_LAYER_PARSER)
+	if (pobj->GetParserType() != IO::ParserType::MapLayer)
 	{
 		return IO::FileExporter::SupportType::NotSupported;
 	}
@@ -55,7 +55,7 @@ void Exporter::MapCSVExporter::SetCodePage(UInt32 codePage)
 
 Bool Exporter::MapCSVExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *fileName, IO::ParsedObject *pobj, void *param)
 {
-	if (pobj->GetParserType() != IO::ParsedObject::PT_MAP_LAYER_PARSER)
+	if (pobj->GetParserType() != IO::ParserType::MapLayer)
 	{
 		return false;
 	}

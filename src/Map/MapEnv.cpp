@@ -177,9 +177,9 @@ Map::MapEnv::~MapEnv()
 	DEL_CLASS(this->mut);
 }
 
-IO::ParsedObject::ParserType Map::MapEnv::GetParserType()
+IO::ParserType Map::MapEnv::GetParserType()
 {
-	return IO::ParsedObject::PT_MAP_ENV_PARSER;
+	return IO::ParserType::MapEnv;
 }
 
 UInt32 Map::MapEnv::GetBGColor()
@@ -1112,12 +1112,12 @@ OSInt Map::MapEnv::AddImage(const UTF8Char *fileName, Parser::ParserList *parser
 		return (OSInt)imgInfo->index;
 	}
 	NEW_CLASS(fd, IO::StmData::FileData(fileName, false));
-	IO::ParsedObject::ParserType pt;
+	IO::ParserType pt;
 	IO::ParsedObject *pobj = parserList->ParseFile(fd, &pt);
 	DEL_CLASS(fd);
 	if (pobj)
 	{
-		if (pt == IO::ParsedObject::PT_IMAGE_LIST_PARSER)
+		if (pt == IO::ParserType::ImageList)
 		{
 			UOSInt i;
 			imgInfo = MemAlloc(ImageInfo, 1);

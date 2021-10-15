@@ -12,7 +12,7 @@ namespace Media
 		FontRenderer(const UTF8Char *sourceName);
 		virtual ~FontRenderer();
 
-		virtual IO::ParsedObject::ParserType GetParserType();
+		virtual IO::ParserType GetParserType();
 		virtual UTF32Char GetMinChar() = 0;
 		virtual UTF32Char GetMaxChar() = 0;
 		virtual Media::StaticImage *CreateImage(UTF32Char charCode, UOSInt targetWidth, UOSInt targetHeight) = 0;

@@ -161,7 +161,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				IO::StmData::FileData *fd;
 				IO::FileCheck *fileChk;
 				NEW_CLASS(fd, IO::StmData::FileData(cmdLines[1], false));
-				fileChk = (IO::FileCheck *)parser.ParseFile(fd, 0, IO::ParsedObject::PT_FILE_CHECK);
+				fileChk = (IO::FileCheck *)parser.ParseFile(fd, 0, IO::ParserType::FileCheck);
 				DEL_CLASS(fd);
 				if (fileChk == 0)
 				{

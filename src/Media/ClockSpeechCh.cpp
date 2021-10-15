@@ -9,13 +9,13 @@ void Media::ClockSpeechCh::AppendWAV(Media::AudioConcatSource *source, Parser::F
 {
 	IO::StmData::FileData *fd;
 	NEW_CLASS(fd, IO::StmData::FileData(fileName, false));
-	IO::ParsedObject *pobj = parser->ParseFile(fd, 0, IO::ParsedObject::PT_VIDEO_PARSER);
+	IO::ParsedObject *pobj = parser->ParseFile(fd, 0, IO::ParserType::MediaFile);
 	DEL_CLASS(fd);
 
 	if (pobj == 0)
 		return;
 
-	if (pobj->GetParserType() == IO::ParsedObject::PT_VIDEO_PARSER)
+	if (pobj->GetParserType() == IO::ParserType::MediaFile)
 	{
 		Media::MediaFile *file = (Media::MediaFile *)pobj;
 		Media::IMediaSource *msrc;

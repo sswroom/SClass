@@ -23,21 +23,21 @@ void Parser::FileParser::ISOParser::SetParserList(Parser::ParserList *parsers)
 	this->parsers = parsers;
 }
 
-void Parser::FileParser::ISOParser::PrepareSelector(IO::IFileSelector *selector, IO::ParsedObject::ParserType t)
+void Parser::FileParser::ISOParser::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
 {
-	if (t == IO::ParsedObject::PT_UNKNOWN || t == IO::ParsedObject::PT_SECTOR_DATA)
+	if (t == IO::ParserType::Unknown || t == IO::ParserType::SectorData)
 	{
 		selector->AddFilter((const UTF8Char*)"*.iso", (const UTF8Char*)"ISO9660 Image File");
 		selector->AddFilter((const UTF8Char*)"*.img", (const UTF8Char*)"Disk Image File");
 	}
 }
 
-IO::ParsedObject::ParserType Parser::FileParser::ISOParser::GetParserType()
+IO::ParserType Parser::FileParser::ISOParser::GetParserType()
 {
-	return IO::ParsedObject::PT_SECTOR_DATA;
+	return IO::ParserType::SectorData;
 }
 
-IO::ParsedObject *Parser::FileParser::ISOParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParsedObject::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::ISOParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
 	UInt8 buff[32];
 	UInt64 fileSize = fd->GetDataSize();
@@ -62,9 +62,9 @@ IO::ParsedObject *Parser::FileParser::ISOParser::ParseFile(IO::IStreamData *fd, 
 		}
 	}
 
-	if (sectorData && targetType != IO::ParsedObject::PT_SECTOR_DATA)
+	if (sectorData && targetType != IO::ParserType::SectorData)
 	{
-		IO::ParsedObject::ParserType pt;
+		IO::ParserType pt;
 		IO::ParsedObject *pobj = this->parsers->ParseObject(sectorData, &pt);
 		if (pobj)
 		{

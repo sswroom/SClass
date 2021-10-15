@@ -20,7 +20,7 @@ namespace IO
 		virtual void SetMapManager(Map::MapManager *mapMgr) {};
 		virtual void SetEncFactory(Text::EncodingFactory *encFact) {};
 		virtual void SetProgressHandler(IO::IProgressHandler *progHdlr) {};
-		virtual IO::ParsedObject::ParserType GetParserType() = 0;
+		virtual IO::ParserType GetParserType() = 0;
 		virtual IO::ParsedObject *ParseFile(IO::IStreamData *fd) = 0;
 	};
 };

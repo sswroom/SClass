@@ -16,20 +16,20 @@ Int32 Parser::FileParser::IMGParser::GetName()
 	return *(Int32*)"IMGP";
 }
 
-void Parser::FileParser::IMGParser::PrepareSelector(IO::IFileSelector *selector, IO::ParsedObject::ParserType t)
+void Parser::FileParser::IMGParser::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
 {
-	if (t == IO::ParsedObject::PT_UNKNOWN || t == IO::ParsedObject::PT_SECTOR_DATA)
+	if (t == IO::ParserType::Unknown || t == IO::ParserType::SectorData)
 	{
 		selector->AddFilter((const UTF8Char*)"*.img", (const UTF8Char*)"IMG (Floppy) File");
 	}
 }
 
-IO::ParsedObject::ParserType Parser::FileParser::IMGParser::GetParserType()
+IO::ParserType Parser::FileParser::IMGParser::GetParserType()
 {
-	return IO::ParsedObject::PT_SECTOR_DATA;
+	return IO::ParserType::SectorData;
 }
 
-IO::ParsedObject *Parser::FileParser::IMGParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParsedObject::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::IMGParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
 	UInt8 buff[512];
 	if (fd->GetRealData(0, 512, buff) != 512)

@@ -36,20 +36,20 @@ void Parser::FileParser::MEVParser::SetMapManager(Map::MapManager *mapMgr)
 	this->mapMgr = mapMgr;
 }
 
-void Parser::FileParser::MEVParser::PrepareSelector(IO::IFileSelector *selector, IO::ParsedObject::ParserType t)
+void Parser::FileParser::MEVParser::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
 {
-	if (t == IO::ParsedObject::PT_UNKNOWN || t == IO::ParsedObject::PT_MAP_ENV_PARSER)
+	if (t == IO::ParserType::Unknown || t == IO::ParserType::MapEnv)
 	{
 		selector->AddFilter((const UTF8Char*)"*.mev", (const UTF8Char*)"MEV File");
 	}
 }
 
-IO::ParsedObject::ParserType Parser::FileParser::MEVParser::GetParserType()
+IO::ParserType Parser::FileParser::MEVParser::GetParserType()
 {
-	return IO::ParsedObject::PT_MAP_ENV_PARSER;
+	return IO::ParserType::MapEnv;
 }
 
-IO::ParsedObject *Parser::FileParser::MEVParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParsedObject::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::MEVParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
 	UInt8 buff[512];
 	UInt32 currPos = 0;

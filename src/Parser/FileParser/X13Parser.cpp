@@ -19,20 +19,20 @@ Int32 Parser::FileParser::X13Parser::GetName()
 	return *(Int32*)"X13P";
 }
 
-void Parser::FileParser::X13Parser::PrepareSelector(IO::IFileSelector *selector, IO::ParsedObject::ParserType t)
+void Parser::FileParser::X13Parser::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
 {
-	if (t == IO::ParsedObject::PT_UNKNOWN || t == IO::ParsedObject::PT_MAP_LAYER_PARSER)
+	if (t == IO::ParserType::Unknown || t == IO::ParserType::MapLayer)
 	{
 		selector->AddFilter((const UTF8Char*)"*.x13", (const UTF8Char*)"X13 (Hooligans) Package File");
 	}
 }
 
-IO::ParsedObject::ParserType Parser::FileParser::X13Parser::GetParserType()
+IO::ParserType Parser::FileParser::X13Parser::GetParserType()
 {
-	return IO::ParsedObject::PT_PACKAGE_PARSER;
+	return IO::ParserType::PackageFile;
 }
 
-IO::ParsedObject *Parser::FileParser::X13Parser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParsedObject::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::X13Parser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
 	Text::Encoding enc;
 	UInt32 hdr[3];

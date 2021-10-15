@@ -17,20 +17,20 @@ Int32 Parser::FileParser::SMakeParser::GetName()
 	return *(Int32*)"TXTP";
 }
 
-void Parser::FileParser::SMakeParser::PrepareSelector(IO::IFileSelector *selector, IO::ParsedObject::ParserType t)
+void Parser::FileParser::SMakeParser::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
 {
-	if (t == IO::ParsedObject::PT_UNKNOWN || t == IO::ParsedObject::PT_SMAKE)
+	if (t == IO::ParserType::Unknown || t == IO::ParserType::Smake)
 	{
 		selector->AddFilter((const UTF8Char*)"SMake.cfg", (const UTF8Char*)"SMake config File");
 	}
 }
 
-IO::ParsedObject::ParserType Parser::FileParser::SMakeParser::GetParserType()
+IO::ParserType Parser::FileParser::SMakeParser::GetParserType()
 {
-	return IO::ParsedObject::PT_SMAKE;
+	return IO::ParserType::Smake;
 }
 
-IO::ParsedObject *Parser::FileParser::SMakeParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParsedObject::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::SMakeParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
 	if (!fd->IsFullFile())
 	{

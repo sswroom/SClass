@@ -19,19 +19,19 @@ Int32 Parser::FileParser::IPACParser::GetName()
 	return *(Int32*)"IPAC";
 }
 
-void Parser::FileParser::IPACParser::PrepareSelector(IO::IFileSelector *selector, IO::ParsedObject::ParserType t)
+void Parser::FileParser::IPACParser::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
 {
-	if (t == IO::ParsedObject::PT_UNKNOWN || t == IO::ParsedObject::PT_PACKAGE_PARSER)
+	if (t == IO::ParserType::Unknown || t == IO::ParserType::PackageFile)
 	{
 	}
 }
 
-IO::ParsedObject::ParserType Parser::FileParser::IPACParser::GetParserType()
+IO::ParserType Parser::FileParser::IPACParser::GetParserType()
 {
-	return IO::ParsedObject::PT_PACKAGE_PARSER;
+	return IO::ParserType::PackageFile;
 }
 
-IO::ParsedObject *Parser::FileParser::IPACParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParsedObject::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::IPACParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
 	UInt32 hdr[2];
 	UInt32 recCnt;

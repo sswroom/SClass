@@ -20,19 +20,19 @@ Int32 Parser::FileParser::DShowParser::GetName()
 	return *(Int32*)"DSHO";
 }
 
-void Parser::FileParser::DShowParser::PrepareSelector(IO::IFileSelector *selector, IO::ParsedObject::ParserType t)
+void Parser::FileParser::DShowParser::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
 {
-	if (t == IO::ParsedObject::PT_UNKNOWN || t == IO::ParsedObject::PT_VIDEO_PARSER)
+	if (t == IO::ParserType::Unknown || t == IO::ParserType::MediaFile)
 	{
 	}
 }
 
-IO::ParsedObject::ParserType Parser::FileParser::DShowParser::GetParserType()
+IO::ParserType Parser::FileParser::DShowParser::GetParserType()
 {
-	return IO::ParsedObject::PT_VIDEO_PARSER;
+	return IO::ParserType::MediaFile;
 }
 
-IO::ParsedObject *Parser::FileParser::DShowParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParsedObject::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::DShowParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
 #ifdef USE_DSHOW
 	WChar sbuff[256];

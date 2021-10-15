@@ -71,7 +71,7 @@ Text::CodeProjectCfg *Text::CodeProject::GetConfig(UOSInt index)
 	return this->cfgList->GetItem(index);
 }
 
-IO::ParsedObject::ParserType Text::CodeProject::GetParserType()
+IO::ParserType Text::CodeProject::GetParserType()
 {
-	return IO::ParsedObject::PT_CODEPROJECT;
+	return IO::ParserType::CodeProject;
 }

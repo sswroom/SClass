@@ -43,21 +43,21 @@ void Parser::FileParser::TIFFParser::SetParserList(Parser::ParserList *parsers)
 	this->parsers = parsers;
 }
 
-void Parser::FileParser::TIFFParser::PrepareSelector(IO::IFileSelector *selector, IO::ParsedObject::ParserType t)
+void Parser::FileParser::TIFFParser::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
 {
-	if (t == IO::ParsedObject::PT_UNKNOWN || t == IO::ParsedObject::PT_IMAGE_LIST_PARSER)
+	if (t == IO::ParserType::Unknown || t == IO::ParserType::ImageList)
 	{
 		selector->AddFilter((const UTF8Char*)"*.tif", (const UTF8Char*)"TIFF File");
 		selector->AddFilter((const UTF8Char*)"*.tiff", (const UTF8Char*)"TIFF File");
 	}
 }
 
-IO::ParsedObject::ParserType Parser::FileParser::TIFFParser::GetParserType()
+IO::ParserType Parser::FileParser::TIFFParser::GetParserType()
 {
-	return IO::ParsedObject::PT_IMAGE_LIST_PARSER;
+	return IO::ParserType::ImageList;
 }
 
-IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParsedObject::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
 	UInt8 hdr[8];
 	Media::EXIFData::RInt32Func readInt32;
@@ -262,7 +262,7 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFile(IO::IStreamData *fd,
 				IO::IStreamData *jpgFd = fd->GetPartialData(stripOfst, stripLeng);
 				if (this->parsers)
 				{
-					innerImgList = (Media::ImageList*)this->parsers->ParseFileType(jpgFd, IO::ParsedObject::PT_IMAGE_LIST_PARSER); 
+					innerImgList = (Media::ImageList*)this->parsers->ParseFileType(jpgFd, IO::ParserType::ImageList); 
 				}
 				DEL_CLASS(jpgFd);
 				if (innerImgList)
@@ -1440,7 +1440,7 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFile(IO::IStreamData *fd,
 		}
 	}
 
-	if (imgList->GetCount() == 1 && targetType != IO::ParsedObject::PT_IMAGE_LIST_PARSER)
+	if (imgList->GetCount() == 1 && targetType != IO::ParserType::ImageList)
 	{
 		Media::StaticImage *img = (Media::StaticImage*)imgList->GetImage(0, 0);
 		Double minX;

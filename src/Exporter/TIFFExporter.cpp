@@ -148,7 +148,7 @@ Int32 Exporter::TIFFExporter::GetName()
 
 IO::FileExporter::SupportType Exporter::TIFFExporter::IsObjectSupported(IO::ParsedObject *pobj)
 {
-	if (pobj->GetParserType() != IO::ParsedObject::PT_IMAGE_LIST_PARSER)
+	if (pobj->GetParserType() != IO::ParserType::ImageList)
 		return IO::FileExporter::SupportType::NotSupported;
 	Media::ImageList *imgList = (Media::ImageList*)pobj;
 	UInt32 imgTime;
@@ -216,7 +216,7 @@ void Exporter::TIFFExporter::SetCodePage(UInt32 codePage)
 
 Bool Exporter::TIFFExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *fileName, IO::ParsedObject *pobj, void *param)
 {
-	if (pobj->GetParserType() != IO::ParsedObject::PT_IMAGE_LIST_PARSER)
+	if (pobj->GetParserType() != IO::ParserType::ImageList)
 		return false;
 	Media::ImageList *imgList = (Media::ImageList*)pobj;
 	UInt32 imgTime;

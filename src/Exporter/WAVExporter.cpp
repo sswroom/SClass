@@ -21,7 +21,7 @@ Int32 Exporter::WAVExporter::GetName()
 
 IO::FileExporter::SupportType Exporter::WAVExporter::IsObjectSupported(IO::ParsedObject *pobj)
 {
-	if (pobj->GetParserType() != IO::ParsedObject::PT_VIDEO_PARSER)
+	if (pobj->GetParserType() != IO::ParserType::MediaFile)
 	{
 		return IO::FileExporter::SupportType::NotSupported;
 	}
@@ -54,7 +54,7 @@ void Exporter::WAVExporter::SetCodePage(UInt32 codePage)
 
 Bool Exporter::WAVExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *fileName, IO::ParsedObject *pobj, void *param)
 {
-	if (pobj->GetParserType() != IO::ParsedObject::PT_VIDEO_PARSER)
+	if (pobj->GetParserType() != IO::ParserType::MediaFile)
 	{
 		return false;
 	}

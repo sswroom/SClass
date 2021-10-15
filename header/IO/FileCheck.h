@@ -50,7 +50,7 @@ namespace IO
 		void AddEntry(const UTF8Char *fileName, UInt8 *hashVal);
 		Bool CheckEntryHash(UOSInt index, UInt8 *hashVal);
 
-		virtual IO::ParsedObject::ParserType GetParserType();
+		virtual IO::ParserType GetParserType();
 	};
 }
 #endif

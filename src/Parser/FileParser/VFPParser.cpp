@@ -18,20 +18,20 @@ Int32 Parser::FileParser::VFPParser::GetName()
 	return *(Int32*)"VFPP";
 }
 
-void Parser::FileParser::VFPParser::PrepareSelector(IO::IFileSelector *selector, IO::ParsedObject::ParserType t)
+void Parser::FileParser::VFPParser::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
 {
-	if (t == IO::ParsedObject::PT_UNKNOWN || t == IO::ParsedObject::PT_VIDEO_PARSER)
+	if (t == IO::ParserType::Unknown || t == IO::ParserType::MediaFile)
 	{
 		this->vfpMgr->PrepareSelector(selector);
 	}
 }
 
-IO::ParsedObject::ParserType Parser::FileParser::VFPParser::GetParserType()
+IO::ParserType Parser::FileParser::VFPParser::GetParserType()
 {
-	return IO::ParsedObject::PT_VIDEO_PARSER;
+	return IO::ParserType::MediaFile;
 }
 
-IO::ParsedObject *Parser::FileParser::VFPParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParsedObject::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::VFPParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
 	if (!fd->IsFullFile())
 		return 0;

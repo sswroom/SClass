@@ -22,20 +22,20 @@ Int32 Parser::FileParser::PCXParser::GetName()
 	return *(Int32*)"PCXP";
 }
 
-void Parser::FileParser::PCXParser::PrepareSelector(IO::IFileSelector *selector, IO::ParsedObject::ParserType t)
+void Parser::FileParser::PCXParser::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
 {
-	if (t == IO::ParsedObject::PT_UNKNOWN || t == IO::ParsedObject::PT_IMAGE_LIST_PARSER)
+	if (t == IO::ParserType::Unknown || t == IO::ParserType::ImageList)
 	{
 		selector->AddFilter((const UTF8Char*)"*.pcx", (const UTF8Char*)"PCX Image File");
 	}
 }
 
-IO::ParsedObject::ParserType Parser::FileParser::PCXParser::GetParserType()
+IO::ParserType Parser::FileParser::PCXParser::GetParserType()
 {
-	return IO::ParsedObject::PT_IMAGE_LIST_PARSER;
+	return IO::ParserType::ImageList;
 }
 
-IO::ParsedObject *Parser::FileParser::PCXParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParsedObject::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::PCXParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
 	UInt8 hdr[128];
 	UInt8 *dataBuff;

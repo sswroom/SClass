@@ -24,7 +24,7 @@ Int32 Exporter::XLSXExporter::GetName()
 
 IO::FileExporter::SupportType Exporter::XLSXExporter::IsObjectSupported(IO::ParsedObject *pobj)
 {
-	if (pobj->GetParserType() != IO::ParsedObject::PT_WORKBOOK)
+	if (pobj->GetParserType() != IO::ParserType::Workbook)
 	{
 		return IO::FileExporter::SupportType::NotSupported;
 	}
@@ -44,7 +44,7 @@ Bool Exporter::XLSXExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF
 
 Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *fileName, IO::ParsedObject *pobj, void *param)
 {
-	if (pobj->GetParserType() != IO::ParsedObject::PT_WORKBOOK)
+	if (pobj->GetParserType() != IO::ParserType::Workbook)
 	{
 		return false;
 	}

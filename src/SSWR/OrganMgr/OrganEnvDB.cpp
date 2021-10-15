@@ -1474,7 +1474,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 
 		readBuff = mstm->GetBuff(&readSize);
 		IO::StmData::MemoryData *md;
-		IO::ParsedObject::ParserType t;
+		IO::ParserType t;
 		IO::ParsedObject *pobj;
 		Bool valid = false;
 		Data::DateTime fileTime;
@@ -1491,7 +1491,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 		DEL_CLASS(md);
 		if (pobj)
 		{
-			if (t == IO::ParsedObject::PT_IMAGE_LIST_PARSER)
+			if (t == IO::ParserType::ImageList)
 			{
 				valid = true;
 
@@ -1725,7 +1725,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 		IO::StmData::FileData *fd;
 		UInt32 crcVal;
 		IO::ParsedObject *pobj;
-		IO::ParsedObject::ParserType t;
+		IO::ParserType t;
 		Data::DateTime fileTime;
 		UserFileInfo *userFile;
 		Bool valid = false;
@@ -1756,7 +1756,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 		DEL_CLASS(fd);
 		if (pobj)
 		{
-			if (t == IO::ParsedObject::PT_VIDEO_PARSER)
+			if (t == IO::ParserType::MediaFile)
 			{
 				Media::MediaFile *mediaFile = (Media::MediaFile*)pobj;
 				Media::IMediaSource *msrc = mediaFile->GetStream(0, 0);
@@ -3069,7 +3069,7 @@ Int32 SSWR::OrganMgr::OrganEnvDB::NewBook(const UTF8Char *title, const UTF8Char 
 Bool SSWR::OrganMgr::OrganEnvDB::AddDataFile(const UTF8Char *fileName)
 {
 	IO::StmData::FileData *fd;
-	IO::ParsedObject::ParserType t;
+	IO::ParserType t;
 	IO::ParsedObject *pobj;
 	NEW_CLASS(fd, IO::StmData::FileData(fileName, false));
 	pobj = this->parsers->ParseFile(fd, &t);
@@ -3094,7 +3094,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::AddDataFile(const UTF8Char *fileName)
 
 	if (pobj)
 	{
-		if (t == IO::ParsedObject::PT_MAP_LAYER_PARSER)
+		if (t == IO::ParserType::MapLayer)
 		{
 			Map::IMapDrawLayer *lyr = (Map::IMapDrawLayer*)pobj;
 			if (lyr->GetObjectClass() == Map::IMapDrawLayer::OC_GPS_TRACK)
@@ -3135,7 +3135,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::AddDataFile(const UTF8Char *fileName)
 				fileType = 1;
 			}
 		}
-		else if (t == IO::ParsedObject::PT_READINGDB_PARSER)
+		else if (t == IO::ParserType::ReadingDB)
 		{
 			DB::ReadingDB *db = (DB::ReadingDB*)pobj;
 			Data::ArrayList<const UTF8Char *> tables;
@@ -3225,7 +3225,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::AddDataFile(const UTF8Char *fileName)
 					webUser->gpsFileObj->Insert(i, dataFile);
 					
 					NEW_CLASS(fd, IO::StmData::FileData(fileName, false));
-					pobj = this->parsers->ParseFileType(fd, IO::ParsedObject::PT_MAP_LAYER_PARSER);
+					pobj = this->parsers->ParseFileType(fd, IO::ParserType::MapLayer);
 					DEL_CLASS(fd);
 
 					if (pobj)
@@ -3344,7 +3344,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::GetGPSPos(Int32 userId, Data::DateTime *t, Doub
 			*sptr++ = IO::Path::PATH_SEPERATOR;
 			sptr = Text::StrConcat(sptr, dataFile->fileName);
 			NEW_CLASS(fd, IO::StmData::FileData(u8buff, false));
-			Map::IMapDrawLayer *lyr = (Map::IMapDrawLayer*)this->parsers->ParseFileType(fd, IO::ParsedObject::PT_MAP_LAYER_PARSER);
+			Map::IMapDrawLayer *lyr = (Map::IMapDrawLayer*)this->parsers->ParseFileType(fd, IO::ParserType::MapLayer);
 			DEL_CLASS(fd);
 			if (lyr)
 			{
@@ -3389,7 +3389,7 @@ Map::GPSTrack *SSWR::OrganMgr::OrganEnvDB::OpenGPSTrack(DataFileInfo *dataFile)
 	sptr = Text::StrConcat(sptr, dataFile->fileName);
 	NEW_CLASS(fd, IO::StmData::FileData(sbuff, false));
 	Map::GPSTrack *trk = 0;
-	Map::IMapDrawLayer *lyr = (Map::IMapDrawLayer*)this->parsers->ParseFileType(fd, IO::ParsedObject::PT_MAP_LAYER_PARSER);
+	Map::IMapDrawLayer *lyr = (Map::IMapDrawLayer*)this->parsers->ParseFileType(fd, IO::ParserType::MapLayer);
 	if (lyr->GetObjectClass() == Map::IMapDrawLayer::OC_GPS_TRACK)
 	{
 		trk = (Map::GPSTrack*)lyr;
@@ -3787,7 +3787,7 @@ void SSWR::OrganMgr::OrganEnvDB::BooksInit()
 Media::ImageList *SSWR::OrganMgr::OrganEnvDB::ParseImage(OrganImageItem *img, UserFileInfo **outUserFile, WebFileInfo **outWebFile)
 {
 	IO::StmData::FileData *fd;
-	IO::ParsedObject::ParserType pt;
+	IO::ParserType pt;
 	if (img->GetFileType() == OrganImageItem::FT_USERFILE)
 	{
 		UserFileInfo *userFile = img->GetUserFile();
@@ -3835,7 +3835,7 @@ Media::ImageList *SSWR::OrganMgr::OrganEnvDB::ParseImage(OrganImageItem *img, Us
 			{
 				return 0;
 			}
-			if (pt == IO::ParsedObject::PT_IMAGE_LIST_PARSER)
+			if (pt == IO::ParserType::ImageList)
 			{
 				Media::ImageList *imgList = (Media::ImageList*)pobj;
 				if (userFile->rotType != 0)
@@ -3901,7 +3901,7 @@ Media::ImageList *SSWR::OrganMgr::OrganEnvDB::ParseImage(OrganImageItem *img, Us
 			{
 				return 0;
 			}
-			if (pt == IO::ParsedObject::PT_IMAGE_LIST_PARSER)
+			if (pt == IO::ParserType::ImageList)
 			{
 				Media::ImageList *imgList = (Media::ImageList*)pobj;
 /*				if (userFile->rotType != 0)
@@ -3950,7 +3950,7 @@ Media::ImageList *SSWR::OrganMgr::OrganEnvDB::ParseImage(OrganImageItem *img, Us
 		{
 			return 0;
 		}
-		if (pt == IO::ParsedObject::PT_IMAGE_LIST_PARSER)
+		if (pt == IO::ParserType::ImageList)
 		{
 			return (Media::ImageList*)pobj;
 		}
@@ -4082,7 +4082,7 @@ Media::ImageList *SSWR::OrganMgr::OrganEnvDB::ParseSpImage(OrganSpecies *sp)
 	Media::ImageList *imgList = 0;
 	if (pobj)
 	{
-		if (pobj->GetParserType() == IO::ParsedObject::PT_IMAGE_LIST_PARSER)
+		if (pobj->GetParserType() == IO::ParserType::ImageList)
 		{
 			imgList = (Media::ImageList*)pobj;
 		}
@@ -4097,7 +4097,7 @@ Media::ImageList *SSWR::OrganMgr::OrganEnvDB::ParseSpImage(OrganSpecies *sp)
 Media::ImageList *SSWR::OrganMgr::OrganEnvDB::ParseFileImage(UserFileInfo *userFile)
 {
 	IO::StmData::FileData *fd;
-	IO::ParsedObject::ParserType pt;
+	IO::ParserType pt;
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	Data::DateTime dt;
@@ -4122,7 +4122,7 @@ Media::ImageList *SSWR::OrganMgr::OrganEnvDB::ParseFileImage(UserFileInfo *userF
 	{
 		return 0;
 	}
-	if (pt == IO::ParsedObject::PT_IMAGE_LIST_PARSER)
+	if (pt == IO::ParserType::ImageList)
 	{
 		Media::ImageList *imgList = (Media::ImageList*)pobj;
 		if (userFile->rotType != 0)
@@ -4156,7 +4156,7 @@ Media::ImageList *SSWR::OrganMgr::OrganEnvDB::ParseFileImage(UserFileInfo *userF
 Media::ImageList *SSWR::OrganMgr::OrganEnvDB::ParseWebImage(WebFileInfo *wfile)
 {
 	IO::StmData::FileData *fd;
-	IO::ParsedObject::ParserType pt;
+	IO::ParserType pt;
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	sptr = Text::StrConcat(sbuff, this->cfgDataPath);
@@ -4177,7 +4177,7 @@ Media::ImageList *SSWR::OrganMgr::OrganEnvDB::ParseWebImage(WebFileInfo *wfile)
 	{
 		return 0;
 	}
-	if (pt == IO::ParsedObject::PT_IMAGE_LIST_PARSER)
+	if (pt == IO::ParserType::ImageList)
 	{
 		Media::ImageList *imgList = (Media::ImageList*)pobj;
 /*		if (userFile->rotType != 0)
@@ -5063,7 +5063,7 @@ void SSWR::OrganMgr::OrganEnvDB::ExportLite(const UTF8Char *folder)
 					IO::FileStream *fs;
 					IO::StmData::FileData *fd;
 					NEW_CLASS(fd, IO::StmData::FileData(sbuff2, false));
-					Media::ImageList *imgList = (Media::ImageList*)this->parsers->ParseFileType(fd, IO::ParsedObject::PT_IMAGE_LIST_PARSER);
+					Media::ImageList *imgList = (Media::ImageList*)this->parsers->ParseFileType(fd, IO::ParserType::ImageList);
 					DEL_CLASS(fd);
 
 					if (imgList)

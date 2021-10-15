@@ -84,7 +84,7 @@ namespace IO
 		JavaClass(const UTF8Char *sourceName, const UInt8 *buff, UOSInt buffSize);
 		virtual ~JavaClass();
 
-		virtual IO::ParsedObject::ParserType GetParserType();
+		virtual IO::ParserType GetParserType();
 
 		Bool FileStructDetail(Text::StringBuilderUTF *sb);
 		UOSInt FieldsGetCount();

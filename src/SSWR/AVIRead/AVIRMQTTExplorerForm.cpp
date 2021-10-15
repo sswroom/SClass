@@ -157,7 +157,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnCliCertClicked(void *userO
 	{
 		IO::StmData::FileData *fd;
 		NEW_CLASS(fd, IO::StmData::FileData(dlg->GetFileName(), false));
-		Net::ASN1Data *asn1 = (Net::ASN1Data*)me->core->GetParserList()->ParseFileType(fd, IO::ParsedObject::PT_ASN1_DATA);
+		Net::ASN1Data *asn1 = (Net::ASN1Data*)me->core->GetParserList()->ParseFileType(fd, IO::ParserType::ASN1Data);
 		DEL_CLASS(fd);
 		if (asn1 == 0)
 		{
@@ -190,7 +190,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnCliKeyClicked(void *userOb
 	{
 		IO::StmData::FileData *fd;
 		NEW_CLASS(fd, IO::StmData::FileData(dlg->GetFileName(), false));
-		Net::ASN1Data *asn1 = (Net::ASN1Data*)me->core->GetParserList()->ParseFileType(fd, IO::ParsedObject::PT_ASN1_DATA);
+		Net::ASN1Data *asn1 = (Net::ASN1Data*)me->core->GetParserList()->ParseFileType(fd, IO::ParserType::ASN1Data);
 		DEL_CLASS(fd);
 		if (asn1 == 0)
 		{

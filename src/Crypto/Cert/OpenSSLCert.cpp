@@ -67,7 +67,7 @@ Crypto::Cert::X509Cert *Crypto::Cert::OpenSSLCert::CreateX509Cert()
 	{
 		Parser::FileParser::X509Parser parser;
 		NEW_CLASS(mdata, IO::StmData::MemoryData(buff, (UInt32)readSize));
-		pobjCert = (Crypto::Cert::X509File*)parser.ParseFile(mdata, 0, IO::ParsedObject::PT_ASN1_DATA);
+		pobjCert = (Crypto::Cert::X509File*)parser.ParseFile(mdata, 0, IO::ParserType::ASN1Data);
 		DEL_CLASS(mdata);
 	}
 	BIO_free(bio1);

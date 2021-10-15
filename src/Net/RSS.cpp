@@ -265,7 +265,7 @@ Net::RSS::RSS(const UTF8Char *url, const UTF8Char *userAgent, Net::SocketFactory
 	{
 		return;
 	}
-	if (pobj->GetParserType() != IO::ParsedObject::PT_STREAM)
+	if (pobj->GetParserType() != IO::ParserType::Stream)
 	{
 		DEL_CLASS(pobj);
 		return;

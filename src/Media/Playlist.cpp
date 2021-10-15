@@ -49,9 +49,9 @@ Media::Playlist::~Playlist()
 	DEL_CLASS(this->entries);
 }
 
-IO::ParsedObject::ParserType Media::Playlist::GetParserType()
+IO::ParserType Media::Playlist::GetParserType()
 {
-	return IO::ParsedObject::PT_PLAYLIST;
+	return IO::ParserType::Playlist;
 }
 
 Bool Media::Playlist::AddFile(const UTF8Char *fileName)
@@ -59,7 +59,7 @@ Bool Media::Playlist::AddFile(const UTF8Char *fileName)
 	Media::MediaFile *file;
 	IO::StmData::FileData *fd;
 	NEW_CLASS(fd, IO::StmData::FileData(fileName, false));
-	file = (Media::MediaFile*)this->parsers->ParseFileType(fd, IO::ParsedObject::PT_VIDEO_PARSER);
+	file = (Media::MediaFile*)this->parsers->ParseFileType(fd, IO::ParserType::MediaFile);
 	DEL_CLASS(fd);
 	if (file == 0)
 	{
@@ -242,7 +242,7 @@ Bool Media::Playlist::OpenItem(UOSInt index)
 	SDEL_CLASS(this->currFile);
 	IO::StmData::FileData *fd;
 	NEW_CLASS(fd, IO::StmData::FileData(ent->fileName, false));
-	this->currFile = (Media::MediaFile*)this->parsers->ParseFileType(fd, IO::ParsedObject::PT_VIDEO_PARSER);
+	this->currFile = (Media::MediaFile*)this->parsers->ParseFileType(fd, IO::ParserType::MediaFile);
 	DEL_CLASS(fd);
 
 	if (this->currFile == 0)

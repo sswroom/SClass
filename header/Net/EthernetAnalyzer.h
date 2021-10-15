@@ -164,7 +164,7 @@ namespace Net
 		EthernetAnalyzer(IO::Writer *errWriter, AnalyzeType ctype, const UTF8Char *name);
 		virtual ~EthernetAnalyzer();
 
-		virtual IO::ParsedObject::ParserType GetParserType();
+		virtual IO::ParserType GetParserType();
 
 		UInt64 GetPacketCnt();
 		UInt64 GetPacketTotalSize();

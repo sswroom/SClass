@@ -86,7 +86,7 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchConvForm::OnConvertClicked(void *use
 			if (pt == IO::Path::PathType::File)
 			{
 				NEW_CLASS(fd, IO::StmData::FileData(sbuff, false));
-				imgList = (Media::ImageList*)me->core->GetParserList()->ParseFileType(fd, IO::ParsedObject::PT_IMAGE_LIST_PARSER);
+				imgList = (Media::ImageList*)me->core->GetParserList()->ParseFileType(fd, IO::ParserType::ImageList);
 				DEL_CLASS(fd);
 				if (imgList)
 				{

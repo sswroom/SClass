@@ -25,20 +25,20 @@ Int32 Parser::FileParser::GIFParser::GetName()
 	return *(Int32*)"GIFP";
 }
 
-void Parser::FileParser::GIFParser::PrepareSelector(IO::IFileSelector *selector, IO::ParsedObject::ParserType t)
+void Parser::FileParser::GIFParser::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
 {
-	if (t == IO::ParsedObject::PT_UNKNOWN || t == IO::ParsedObject::PT_IMAGE_LIST_PARSER)
+	if (t == IO::ParserType::Unknown || t == IO::ParserType::ImageList)
 	{
 		selector->AddFilter((const UTF8Char*)"*.gif", (const UTF8Char*)"GIF File");
 	}
 }
 
-IO::ParsedObject::ParserType Parser::FileParser::GIFParser::GetParserType()
+IO::ParserType Parser::FileParser::GIFParser::GetParserType()
 {
-	return IO::ParsedObject::PT_IMAGE_LIST_PARSER;
+	return IO::ParserType::ImageList;
 }
 
-IO::ParsedObject *Parser::FileParser::GIFParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParsedObject::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::GIFParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
 	UInt8 hdr[13];
 //	UInt8 ver;

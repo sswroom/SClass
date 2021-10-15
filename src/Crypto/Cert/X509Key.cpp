@@ -22,7 +22,7 @@ void Crypto::Cert::X509Key::ToShortName(Text::StringBuilderUTF *sb)
 {
 	sb->Append(KeyTypeGetName(this->keyType));
 	sb->AppendChar(' ', 1);
-	sb->AppendUOSInt(KeyGetLeng(this->buff, this->buff + this->buffSize, this->keyType));
+	sb->AppendUOSInt(this->GetKeySizeBits());
 	sb->Append((const UTF8Char*)" bits");
 }
 
@@ -132,6 +132,27 @@ void Crypto::Cert::X509Key::ToString(Text::StringBuilderUTF *sb)
 Crypto::Cert::X509File::KeyType Crypto::Cert::X509Key::GetKeyType()
 {
 	return this->keyType;
+}
+
+UOSInt Crypto::Cert::X509Key::GetKeySizeBits()
+{
+	return KeyGetLeng(this->buff, this->buff + this->buffSize, this->keyType);
+}
+
+Bool Crypto::Cert::X509Key::IsPrivateKey()
+{
+	switch (this->keyType)
+	{
+	case KeyType::DSA:
+	case KeyType::ECDSA:
+	case KeyType::ED25519:
+	case KeyType::RSA:
+		return true;
+	case KeyType::RSAPublic:
+	case KeyType::Unknown:
+	default:
+		return false;
+	}
 }
 
 Crypto::Cert::X509Key *Crypto::Cert::X509Key::CreatePublicKey()

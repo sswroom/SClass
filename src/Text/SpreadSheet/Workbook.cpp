@@ -65,9 +65,9 @@ Text::SpreadSheet::Workbook::~Workbook()
 	SDEL_CLASS(this->modifyTime);
 }
 
-IO::ParsedObject::ParserType Text::SpreadSheet::Workbook::GetParserType()
+IO::ParserType Text::SpreadSheet::Workbook::GetParserType()
 {
-	return IO::ParsedObject::PT_WORKBOOK;
+	return IO::ParserType::Workbook;
 }
 
 Text::SpreadSheet::Workbook *Text::SpreadSheet::Workbook::Clone()

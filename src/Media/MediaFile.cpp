@@ -38,9 +38,9 @@ Media::MediaFile::~MediaFile()
 	}
 }
 
-IO::ParsedObject::ParserType Media::MediaFile::GetParserType()
+IO::ParserType Media::MediaFile::GetParserType()
 {
-	return IO::ParsedObject::PT_VIDEO_PARSER;
+	return IO::ParserType::MediaFile;
 }
 
 UOSInt Media::MediaFile::AddSource(Media::IMediaSource *src, Int32 syncTime)

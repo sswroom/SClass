@@ -19,20 +19,20 @@ Int32 Parser::FileParser::GamedatPac2Parser::GetName()
 	return *(Int32*)"GDAT";
 }
 
-void Parser::FileParser::GamedatPac2Parser::PrepareSelector(IO::IFileSelector *selector, IO::ParsedObject::ParserType t)
+void Parser::FileParser::GamedatPac2Parser::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
 {
-	if (t == IO::ParsedObject::PT_UNKNOWN || t == IO::ParsedObject::PT_PACKAGE_PARSER)
+	if (t == IO::ParserType::Unknown || t == IO::ParserType::PackageFile)
 	{
 		selector->AddFilter((const UTF8Char*)"*.dat", (const UTF8Char*)"DAT Package File");
 	}
 }
 
-IO::ParsedObject::ParserType Parser::FileParser::GamedatPac2Parser::GetParserType()
+IO::ParserType Parser::FileParser::GamedatPac2Parser::GetParserType()
 {
-	return IO::ParsedObject::PT_PACKAGE_PARSER;
+	return IO::ParserType::PackageFile;
 }
 
-IO::ParsedObject *Parser::FileParser::GamedatPac2Parser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParsedObject::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::GamedatPac2Parser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
 	UInt8 hdrBuff[16];
 	UInt32 recCnt;

@@ -109,7 +109,7 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::FileHandler(void *userObj, const UTF8
 	Parser::ParserList *parsers = me->core->GetParserList();
 	IO::StmData::FileData *fd;
 	IO::ParsedObject *pobj;
-	IO::ParsedObject::ParserType pt;
+	IO::ParserType pt;
 	Data::ArrayList<Map::IMapDrawLayer *> *layers;
 	OSInt mousePosX;
 	OSInt mousePosY;
@@ -152,16 +152,16 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::FileHandler(void *userObj, const UTF8
 		}
 		if (pobj)
 		{
-			if (pt == IO::ParsedObject::PT_MAP_LAYER_PARSER)
+			if (pt == IO::ParserType::MapLayer)
 			{
 				layers->Add((Map::IMapDrawLayer*)pobj);
 			}
-			else if (pt == IO::ParsedObject::PT_MAP_ENV_PARSER)
+			else if (pt == IO::ParserType::MapEnv)
 			{
 				////////////////////////////
 				DEL_CLASS(pobj);
 			}
-			else if (pt == IO::ParsedObject::PT_IMAGE_LIST_PARSER)
+			else if (pt == IO::ParserType::ImageList)
 			{
 				Double x1;
 				Double y1;
@@ -495,11 +495,11 @@ Bool SSWR::AVIRead::AVIRGISForm::ParseObject(IO::ParsedObject *pobj)
 {
 	Parser::ParserList *parsers = this->core->GetParserList();
 	IO::ParsedObject *npobj;
-	IO::ParsedObject::ParserType pt;
+	IO::ParserType pt;
 	npobj = parsers->ParseObject(pobj, &pt);
 	if (npobj)
 	{
-		if (pt == IO::ParsedObject::PT_MAP_LAYER_PARSER)
+		if (pt == IO::ParserType::MapLayer)
 		{
 			this->AddLayer((Map::IMapDrawLayer*)npobj);;
 			return true;
@@ -524,12 +524,12 @@ void SSWR::AVIRead::AVIRGISForm::OpenURL(const UTF8Char *url, const UTF8Char *cu
 		{
 			fd->SetFullName(customName);
 		}
-		IO::ParsedObject::ParserType pt;
+		IO::ParserType pt;
 		IO::ParsedObject *pobj = this->core->GetParserList()->ParseFile(fd, &pt);
 		DEL_CLASS(fd);
 		if (pobj)
 		{
-			if (pt == IO::ParsedObject::PT_MAP_LAYER_PARSER)
+			if (pt == IO::ParserType::MapLayer)
 			{
 				this->AddLayer((Map::IMapDrawLayer*)pobj);
 			}
@@ -1097,12 +1097,12 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 					{
 						UI::FileDialog *dlg;
 						NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"AVIRead", L"GISImportTiles", false));
-						this->core->GetParserList()->PrepareSelector(dlg, IO::ParsedObject::PT_PACKAGE_PARSER);
+						this->core->GetParserList()->PrepareSelector(dlg, IO::ParserType::PackageFile);
 						if (dlg->ShowDialog(this->GetHandle()))
 						{
 							IO::StmData::FileData *fd;
 							NEW_CLASS(fd, IO::StmData::FileData(dlg->GetFileName(), false));
-							IO::PackageFile *pkg = (IO::PackageFile*)this->core->GetParserList()->ParseFileType(fd, IO::ParsedObject::PT_PACKAGE_PARSER);
+							IO::PackageFile *pkg = (IO::PackageFile*)this->core->GetParserList()->ParseFileType(fd, IO::ParserType::PackageFile);
 							DEL_CLASS(fd);
 							if (pkg)
 							{
@@ -1296,7 +1296,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_OPEN_FILE:
 		{
 			SSWR::AVIRead::AVIROpenFileForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIROpenFileForm(0, this->ui, this->core, IO::ParsedObject::PT_UNKNOWN));
+			NEW_CLASS(frm, SSWR::AVIRead::AVIROpenFileForm(0, this->ui, this->core, IO::ParserType::Unknown));
 			if (frm->ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
 				const UTF8Char *fname = frm->GetFileName();

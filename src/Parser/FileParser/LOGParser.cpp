@@ -26,20 +26,20 @@ void Parser::FileParser::LOGParser::SetCodePage(UInt32 codePage)
 	this->codePage = codePage;
 }
 
-void Parser::FileParser::LOGParser::PrepareSelector(IO::IFileSelector *selector, IO::ParsedObject::ParserType t)
+void Parser::FileParser::LOGParser::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
 {
-	if (t == IO::ParsedObject::PT_UNKNOWN || t == IO::ParsedObject::PT_LOG_FILE)
+	if (t == IO::ParserType::Unknown || t == IO::ParserType::LogFile)
 	{
 		selector->AddFilter((const UTF8Char*)"*.log", (const UTF8Char*)"Log File");
 	}
 }
 
-IO::ParsedObject::ParserType Parser::FileParser::LOGParser::GetParserType()
+IO::ParserType Parser::FileParser::LOGParser::GetParserType()
 {
-	return IO::ParsedObject::PT_LOG_FILE;
+	return IO::ParserType::LogFile;
 }
 
-IO::ParsedObject *Parser::FileParser::LOGParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParsedObject::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::LOGParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
 	UTF8Char sbuff[512];
 //	WChar baseDir[256];

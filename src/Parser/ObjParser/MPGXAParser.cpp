@@ -18,23 +18,23 @@ Int32 Parser::ObjParser::MPGXAParser::GetName()
 	return *(Int32*)"MPGX";
 }
 
-void Parser::ObjParser::MPGXAParser::PrepareSelector(IO::IFileSelector *selector, IO::ParsedObject::ParserType t)
+void Parser::ObjParser::MPGXAParser::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
 {
-	if (t == IO::ParsedObject::PT_VIDEO_PARSER)
+	if (t == IO::ParserType::MediaFile)
 	{
 		selector->AddFilter((const UTF8Char*)"*.dat", (const UTF8Char*)"VCD File");
 	}
 }
 
-IO::ParsedObject::ParserType Parser::ObjParser::MPGXAParser::GetParserType()
+IO::ParserType Parser::ObjParser::MPGXAParser::GetParserType()
 {
-	return IO::ParsedObject::PT_VIDEO_PARSER;
+	return IO::ParserType::MediaFile;
 }
 
-IO::ParsedObject *Parser::ObjParser::MPGXAParser::ParseObject(IO::ParsedObject *pobj, IO::PackageFile *pkgFile, IO::ParsedObject::ParserType targetType)
+IO::ParsedObject *Parser::ObjParser::MPGXAParser::ParseObject(IO::ParsedObject *pobj, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
 	IO::ISectorData *data;
-	if (pobj->GetParserType() != IO::ParsedObject::PT_SECTOR_DATA)
+	if (pobj->GetParserType() != IO::ParserType::SectorData)
 		return 0;
 	data = (IO::ISectorData*)pobj;
 	if (data->GetBytesPerSector() != 2352)

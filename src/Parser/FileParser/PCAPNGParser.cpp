@@ -21,20 +21,20 @@ Int32 Parser::FileParser::PCAPNGParser::GetName()
 	return *(Int32*)"PCAN";
 }
 
-void Parser::FileParser::PCAPNGParser::PrepareSelector(IO::IFileSelector *selector, IO::ParsedObject::ParserType t)
+void Parser::FileParser::PCAPNGParser::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
 {
-	if (t == IO::ParsedObject::PT_UNKNOWN || t == IO::ParsedObject::PT_ETHERNET_ANALYZER)
+	if (t == IO::ParserType::Unknown || t == IO::ParserType::EthernetAnalyzer)
 	{
 		selector->AddFilter((const UTF8Char*)"*.pcapng", (const UTF8Char*)"PCAPNG File");
 	}
 }
 
-IO::ParsedObject::ParserType Parser::FileParser::PCAPNGParser::GetParserType()
+IO::ParserType Parser::FileParser::PCAPNGParser::GetParserType()
 {
-	return IO::ParsedObject::PT_ETHERNET_ANALYZER;
+	return IO::ParserType::EthernetAnalyzer;
 }
 
-IO::ParsedObject *Parser::FileParser::PCAPNGParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParsedObject::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::PCAPNGParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
 	UInt8 hdr[24];
 	UInt8 *packetBuff;

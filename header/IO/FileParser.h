@@ -11,7 +11,7 @@ namespace IO
 	public:
 		virtual ~FileParser(){};
 
-		virtual IO::ParsedObject *ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParsedObject::ParserType targetType) = 0;
+		virtual IO::ParsedObject *ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType) = 0;
 
 		IO::ParsedObject *ParseFilePath(const UTF8Char *filePath);
 	};

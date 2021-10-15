@@ -64,7 +64,7 @@ namespace Media
 		ImageList(const UTF8Char *name);
 		virtual ~ImageList();
 
-		virtual IO::ParsedObject::ParserType GetParserType();
+		virtual IO::ParserType GetParserType();
 
 		UOSInt AddImage(Media::Image *img, UInt32 imageDelay);
 		void ReplaceImage(UOSInt index, Media::Image *img);

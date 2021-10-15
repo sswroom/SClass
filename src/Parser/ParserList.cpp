@@ -146,7 +146,7 @@ void Parser::ParserList::SetSSLEngine(Net::SSLEngine *ssl)
 	}
 }
 
-void Parser::ParserList::PrepareSelector(IO::IFileSelector *selector, IO::ParsedObject::ParserType t)
+void Parser::ParserList::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
 {
 	IO::IParser *parser;
 	UOSInt i;
@@ -168,7 +168,7 @@ void Parser::ParserList::PrepareSelector(IO::IFileSelector *selector, IO::Parsed
 	}
 }
 
-IO::ParsedObject *Parser::ParserList::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParsedObject::ParserType *t, IO::ParsedObject::ParserType targetType)
+IO::ParsedObject *Parser::ParserList::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType *t, IO::ParserType targetType)
 {
 	UOSInt i = 0;
 	UOSInt j = this->filePArr->GetCount();
@@ -192,19 +192,19 @@ IO::ParsedObject *Parser::ParserList::ParseFile(IO::IStreamData *fd, IO::Package
 	return 0;
 }
 
-IO::ParsedObject *Parser::ParserList::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParsedObject::ParserType *t)
+IO::ParsedObject *Parser::ParserList::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType *t)
 {
-	return ParseFile(fd, pkgFile, t, IO::ParsedObject::PT_UNKNOWN);
+	return ParseFile(fd, pkgFile, t, IO::ParserType::Unknown);
 }
 
-IO::ParsedObject *Parser::ParserList::ParseFile(IO::IStreamData *fd, IO::ParsedObject::ParserType *t)
+IO::ParsedObject *Parser::ParserList::ParseFile(IO::IStreamData *fd, IO::ParserType *t)
 {
-	return ParseFile(fd, 0, t, IO::ParsedObject::PT_UNKNOWN);
+	return ParseFile(fd, 0, t, IO::ParserType::Unknown);
 }
 
-IO::ParsedObject *Parser::ParserList::ParseFileType(IO::IStreamData *fd, IO::ParsedObject::ParserType t)
+IO::ParsedObject *Parser::ParserList::ParseFileType(IO::IStreamData *fd, IO::ParserType t)
 {
-	IO::ParsedObject::ParserType pt;
+	IO::ParserType pt;
 	IO::ParsedObject *pobj = this->ParseFile(fd, 0, &pt, t);
 	IO::ParsedObject *pobj2;
 	while (pobj)
@@ -218,7 +218,7 @@ IO::ParsedObject *Parser::ParserList::ParseFileType(IO::IStreamData *fd, IO::Par
 	return 0;
 }
 
-IO::ParsedObject *Parser::ParserList::ParseObject(IO::ParsedObject *pobj, IO::ParsedObject::ParserType *t)
+IO::ParsedObject *Parser::ParserList::ParseObject(IO::ParsedObject *pobj, IO::ParserType *t)
 {
 	UOSInt i = 0;
 	UOSInt j = this->objPArr->GetCount();
@@ -227,7 +227,7 @@ IO::ParsedObject *Parser::ParserList::ParseObject(IO::ParsedObject *pobj, IO::Pa
 	while (i < j)
 	{
 		parser = this->objPArr->GetItem(i);
-		if ((result = parser->ParseObject(pobj, 0, IO::ParsedObject::PT_UNKNOWN)) != 0)
+		if ((result = parser->ParseObject(pobj, 0, IO::ParserType::Unknown)) != 0)
 		{
 			if (t)
 			{

@@ -19,20 +19,20 @@ Int32 Parser::FileParser::AFSParser::GetName()
 	return *(Int32*)"AFSP";
 }
 
-void Parser::FileParser::AFSParser::PrepareSelector(IO::IFileSelector *selector, IO::ParsedObject::ParserType t)
+void Parser::FileParser::AFSParser::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
 {
-	if (t == IO::ParsedObject::PT_UNKNOWN || t == IO::ParsedObject::PT_PACKAGE_PARSER)
+	if (t == IO::ParserType::Unknown || t == IO::ParserType::PackageFile)
 	{
 		selector->AddFilter((const UTF8Char*)"*.afs", (const UTF8Char*)"AFS ADX ADPCM Package");
 	}
 }
 
-IO::ParsedObject::ParserType Parser::FileParser::AFSParser::GetParserType()
+IO::ParserType Parser::FileParser::AFSParser::GetParserType()
 {
-	return IO::ParsedObject::PT_PACKAGE_PARSER;
+	return IO::ParserType::PackageFile;
 }
 
-IO::ParsedObject *Parser::FileParser::AFSParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParsedObject::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::AFSParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
 	IO::PackageFile *pf;
 	UTF8Char sbuff[9];

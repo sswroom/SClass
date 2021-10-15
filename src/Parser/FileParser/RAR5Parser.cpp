@@ -38,20 +38,20 @@ Int32 Parser::FileParser::RAR5Parser::GetName()
 	return *(Int32*)"RAR5";
 }
 
-void Parser::FileParser::RAR5Parser::PrepareSelector(IO::IFileSelector *selector, IO::ParsedObject::ParserType t)
+void Parser::FileParser::RAR5Parser::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
 {
-	if (t == IO::ParsedObject::PT_UNKNOWN || t == IO::ParsedObject::PT_PACKAGE_PARSER)
+	if (t == IO::ParserType::Unknown || t == IO::ParserType::PackageFile)
 	{
 		selector->AddFilter((const UTF8Char*)"*.rar", (const UTF8Char*)"RAR File");
 	}
 }
 
-IO::ParsedObject::ParserType Parser::FileParser::RAR5Parser::GetParserType()
+IO::ParserType Parser::FileParser::RAR5Parser::GetParserType()
 {
-	return IO::ParsedObject::PT_PACKAGE_PARSER;
+	return IO::ParserType::PackageFile;
 }
 
-IO::ParsedObject *Parser::FileParser::RAR5Parser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParsedObject::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::RAR5Parser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
 	UTF8Char sbuff[512];
 	UInt8 buff[512];

@@ -23,7 +23,7 @@ Int32 Exporter::MEVExporter::GetName()
 
 IO::FileExporter::SupportType Exporter::MEVExporter::IsObjectSupported(IO::ParsedObject *pobj)
 {
-	if (pobj->GetParserType() != IO::ParsedObject::PT_MAP_ENV_PARSER)
+	if (pobj->GetParserType() != IO::ParserType::MapEnv)
 	{
 		return IO::FileExporter::SupportType::NotSupported;
 	}
@@ -43,7 +43,7 @@ Bool Exporter::MEVExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8
 
 Bool Exporter::MEVExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *fileName, IO::ParsedObject *pobj, void *param)
 {
-	if (pobj->GetParserType() != IO::ParsedObject::PT_MAP_ENV_PARSER)
+	if (pobj->GetParserType() != IO::ParserType::MapEnv)
 	{
 		return false;
 	}

@@ -21,6 +21,8 @@ namespace Crypto
 			virtual void ToString(Text::StringBuilderUTF *sb);
 
 			KeyType GetKeyType();
+			UOSInt GetKeySizeBits();
+			Bool IsPrivateKey();
 			Crypto::Cert::X509Key *CreatePublicKey();
 
 			const UInt8 *GetRSAModulus(UOSInt *size);

@@ -207,20 +207,20 @@ Int32 Parser::FileParser::SMDLParser::GetName()
 	return *(Int32*)"SMDL";
 }
 
-void Parser::FileParser::SMDLParser::PrepareSelector(IO::IFileSelector *selector, IO::ParsedObject::ParserType t)
+void Parser::FileParser::SMDLParser::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
 {
-	if (t == IO::ParsedObject::PT_UNKNOWN || t == IO::ParsedObject::PT_MAP_LAYER_PARSER)
+	if (t == IO::ParserType::Unknown || t == IO::ParserType::MapLayer)
 	{
 		selector->AddFilter((const UTF8Char*)"*.loc", (const UTF8Char*)"Location File");
 	}
 }
 
-IO::ParsedObject::ParserType Parser::FileParser::SMDLParser::GetParserType()
+IO::ParserType Parser::FileParser::SMDLParser::GetParserType()
 {
-	return IO::ParsedObject::PT_MAP_LAYER_PARSER;
+	return IO::ParserType::MapLayer;
 }
 
-IO::ParsedObject *Parser::FileParser::SMDLParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParsedObject::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::SMDLParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
 	Map::GPSTrack::GPSRecord rec;
 	UInt8 buff[384];

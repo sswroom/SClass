@@ -55,3 +55,59 @@ void Crypto::Cert::X509Cert::ToString(Text::StringBuilderUTF *sb)
 		AppendCertificate(this->buff, this->buff + this->buffSize, "1", sb);
 	}
 }
+
+Bool Crypto::Cert::X509Cert::GetIssueNames(CertNames *names)
+{
+	Net::ASN1Util::ItemType itemType;
+	UOSInt len;
+	const UInt8 *pdu = Net::ASN1Util::PDUGetItem(this->buff, this->buff + this->buffSize, "1.1.1", &len, &itemType);
+	if (pdu == 0)
+	{
+		return false;
+	}
+	if (itemType == Net::ASN1Util::IT_CONTEXT_SPECIFIC_0)
+	{
+		pdu = Net::ASN1Util::PDUGetItem(this->buff, this->buff + this->buffSize, "1.1.4", &len, &itemType);
+		if (pdu)
+		{
+			return NamesGet(pdu, pdu + len, names);
+		}
+	}
+	else
+	{
+		pdu = Net::ASN1Util::PDUGetItem(this->buff, this->buff + this->buffSize, "1.1.3", &len, &itemType);
+		if (pdu)
+		{
+			return NamesGet(pdu, pdu + len, names);
+		}
+	}
+	return false;
+}
+
+Bool Crypto::Cert::X509Cert::GetSubjNames(CertNames *names)
+{
+	Net::ASN1Util::ItemType itemType;
+	UOSInt len;
+	const UInt8 *pdu = Net::ASN1Util::PDUGetItem(this->buff, this->buff + this->buffSize, "1.1.1", &len, &itemType);
+	if (pdu == 0)
+	{
+		return false;
+	}
+	if (itemType == Net::ASN1Util::IT_CONTEXT_SPECIFIC_0)
+	{
+		pdu = Net::ASN1Util::PDUGetItem(this->buff, this->buff + this->buffSize, "1.1.6", &len, &itemType);
+		if (pdu)
+		{
+			return NamesGet(pdu, pdu + len, names);
+		}
+	}
+	else
+	{
+		pdu = Net::ASN1Util::PDUGetItem(this->buff, this->buff + this->buffSize, "1.1.5", &len, &itemType);
+		if (pdu)
+		{
+			return NamesGet(pdu, pdu + len, names);
+		}
+	}
+	return false;
+}

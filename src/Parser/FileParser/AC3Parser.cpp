@@ -18,20 +18,20 @@ Int32 Parser::FileParser::AC3Parser::GetName()
 	return *(Int32*)"AC3P";
 }
 
-void Parser::FileParser::AC3Parser::PrepareSelector(IO::IFileSelector *selector, IO::ParsedObject::ParserType t)
+void Parser::FileParser::AC3Parser::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
 {
-	if (t == IO::ParsedObject::PT_UNKNOWN || t == IO::ParsedObject::PT_VIDEO_PARSER)
+	if (t == IO::ParserType::Unknown || t == IO::ParserType::MediaFile)
 	{
 		selector->AddFilter((const UTF8Char*)"*.ac3", (const UTF8Char*)"Dolby AC-3 File");
 	}
 }
 
-IO::ParsedObject::ParserType Parser::FileParser::AC3Parser::GetParserType()
+IO::ParserType Parser::FileParser::AC3Parser::GetParserType()
 {
-	return IO::ParsedObject::PT_VIDEO_PARSER;
+	return IO::ParserType::MediaFile;
 }
 
-IO::ParsedObject *Parser::FileParser::AC3Parser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParsedObject::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::AC3Parser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
 	UInt8 buff[256];
 	fd->GetRealData(0, 32, buff);

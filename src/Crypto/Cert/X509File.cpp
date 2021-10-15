@@ -5,6 +5,17 @@
 #include "Net/ASN1OIDDB.h"
 #include "Net/ASN1Util.h"
 
+void Crypto::Cert::CertNames::FreeNames(CertNames *names)
+{
+	SDEL_TEXT(names->countryName);
+	SDEL_TEXT(names->stateOrProvinceName);
+	SDEL_TEXT(names->localityName);
+	SDEL_TEXT(names->organizationName);
+	SDEL_TEXT(names->organizationUnitName);
+	SDEL_TEXT(names->commonName);
+	SDEL_TEXT(names->emailAddress);
+}
+
 Bool Crypto::Cert::X509File::IsSigned(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path)
 {
 	UOSInt cnt = Net::ASN1Util::PDUCountItem(pdu, pduEnd, path);
@@ -669,6 +680,76 @@ Bool Crypto::Cert::X509File::NameGetByOID(const UInt8 *pdu, const UInt8 *pduEnd,
 Bool Crypto::Cert::X509File::NameGetCN(const UInt8 *pdu, const UInt8 *pduEnd, Text::StringBuilderUTF *sb)
 {
 	return NameGetByOID(pdu, pduEnd, "2.5.4.3", sb);
+}
+
+Bool Crypto::Cert::X509File::NamesGet(const UInt8 *pdu, const UInt8 *pduEnd, CertNames *names)
+{
+	Char sbuff[12];
+	const UInt8 *itemPDU;
+	const UInt8 *oidPDU;
+	const UInt8 *strPDU;
+	UOSInt itemLen;
+	UOSInt oidLen;
+	UOSInt strLen;
+	Net::ASN1Util::ItemType itemType;
+	UOSInt cnt = Net::ASN1Util::PDUCountItem(pdu, pduEnd, 0);
+	UOSInt i = 0;
+	while (i < cnt)
+	{
+		i++;
+
+		Text::StrConcat(Text::StrUOSInt(sbuff, i), ".1");
+		if ((itemPDU = Net::ASN1Util::PDUGetItem(pdu, pduEnd, sbuff, &itemLen, &itemType)) != 0)
+		{
+			if (itemType == Net::ASN1Util::IT_SEQUENCE)
+			{
+				oidPDU = Net::ASN1Util::PDUGetItem(itemPDU, itemPDU + itemLen, "1", &oidLen, &itemType);
+				if (oidPDU != 0 && itemType == Net::ASN1Util::IT_OID)
+				{
+					strPDU = Net::ASN1Util::PDUGetItem(itemPDU, itemPDU + itemLen, "2", &strLen, &itemType);
+					if (strPDU)
+					{
+						if (Net::ASN1Util::OIDEqualsText(oidPDU, oidLen, "2.5.4.6"))
+						{
+							SDEL_TEXT(names->countryName);
+							names->countryName = Text::StrCopyNewC(strPDU, strLen);
+						}
+						else if (Net::ASN1Util::OIDEqualsText(oidPDU, oidLen, "2.5.4.8"))
+						{
+							SDEL_TEXT(names->stateOrProvinceName);
+							names->stateOrProvinceName = Text::StrCopyNewC(strPDU, strLen);
+						}
+						else if (Net::ASN1Util::OIDEqualsText(oidPDU, oidLen, "2.5.4.7"))
+						{
+							SDEL_TEXT(names->localityName);
+							names->localityName = Text::StrCopyNewC(strPDU, strLen);
+						}
+						else if (Net::ASN1Util::OIDEqualsText(oidPDU, oidLen, "2.5.4.10"))
+						{
+							SDEL_TEXT(names->organizationName);
+							names->organizationName = Text::StrCopyNewC(strPDU, strLen);
+						}
+						else if (Net::ASN1Util::OIDEqualsText(oidPDU, oidLen, "2.5.4.11"))
+						{
+							SDEL_TEXT(names->organizationUnitName);
+							names->organizationUnitName = Text::StrCopyNewC(strPDU, strLen);
+						}
+						else if (Net::ASN1Util::OIDEqualsText(oidPDU, oidLen, "2.5.4.3"))
+						{
+							SDEL_TEXT(names->commonName);
+							names->commonName = Text::StrCopyNewC(strPDU, strLen);
+						}
+						else if (Net::ASN1Util::OIDEqualsText(oidPDU, oidLen, "1.2.840.113549.1.9.1"))
+						{
+							SDEL_TEXT(names->emailAddress);
+							names->emailAddress = Text::StrCopyNewC(strPDU, strLen);
+						}
+					}
+				}
+			}
+		}
+	}
+	return true;
 }
 
 UOSInt Crypto::Cert::X509File::KeyGetLeng(const UInt8 *pdu, const UInt8 *pduEnd, KeyType keyType)

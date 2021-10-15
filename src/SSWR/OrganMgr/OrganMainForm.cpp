@@ -1629,7 +1629,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnMapMouseMove(void *userObj, OSIn
 					Media::ImageList *imgList;
 					me->env->GetUserFilePath(ufile, &sb);
 					NEW_CLASS(fd, IO::StmData::FileData(sb.ToString(), false));
-					imgList = (Media::ImageList*)me->env->GetParserList()->ParseFileType(fd, IO::ParsedObject::PT_IMAGE_LIST_PARSER);
+					imgList = (Media::ImageList*)me->env->GetParserList()->ParseFileType(fd, IO::ParserType::ImageList);
 					DEL_CLASS(fd);
 
 					if (imgList)

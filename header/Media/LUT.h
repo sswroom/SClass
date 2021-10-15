@@ -25,7 +25,7 @@ namespace Media
 		LUT(UOSInt inputCh, UOSInt inputLev, UOSInt outputCh, DataFormat fmt, const UTF8Char *sourceName);
 		virtual ~LUT();
 
-		virtual IO::ParsedObject::ParserType GetParserType();
+		virtual IO::ParserType GetParserType();
 
 		void SetRemark(const UTF8Char *remark);
 		const UTF8Char *GetRemark();

@@ -55,7 +55,7 @@ namespace Media
 		virtual Bool PrintPage(Media::DrawImage *printPage); //return has more pages 
 		virtual Bool EndPrint(IPrintDocument *doc);
 
-		virtual IO::ParsedObject::ParserType GetParserType();
+		virtual IO::ParserType GetParserType();
 	};
 }
 #endif

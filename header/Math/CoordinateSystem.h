@@ -73,7 +73,7 @@ namespace Math
 		virtual Bool IsProjected() = 0;
 		virtual void ToString(Text::StringBuilderUTF *sb) = 0;
 
-		virtual IO::ParsedObject::ParserType GetParserType();
+		virtual IO::ParserType GetParserType();
 
 		virtual Bool Equals(CoordinateSystem *csys);
 		const UTF8Char *GetCSysName();

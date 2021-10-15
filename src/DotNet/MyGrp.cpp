@@ -137,7 +137,7 @@ void DotNet::MyGrp::GrpDelImage(void *img)
 void *DotNet::MyGrp::GrpLoadImage32(WChar *fileName, Int32 *width, Int32 *height)
 {
 	::IO::StmData::FileData *fd;
-	::IO::ParsedObject::ParserType pt;
+	::IO::ParserType pt;
 	NEW_CLASS(fd, IO::StmData::FileData(fileName, false));
 	if (fd->GetDataSize() <= 0)
 	{
@@ -148,7 +148,7 @@ void *DotNet::MyGrp::GrpLoadImage32(WChar *fileName, Int32 *width, Int32 *height
 	DEL_CLASS(fd);
 	if (obj == 0)
 		return false;
-	if (obj->GetParserType() != IO::ParsedObject::PT_IMAGE_LIST_PARSER)
+	if (obj->GetParserType() != IO::ParserType::ImageList)
 	{
 		DEL_CLASS(obj);
 		return false;

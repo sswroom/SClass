@@ -20,7 +20,7 @@ void __stdcall SSWR::AVIRead::AVIRGISHKTDTonnesForm::OnRoadRouteClicked(void *us
 		dlg->SetFileName(sb.ToString());
 	}
 	dlg->SetAllowMultiSel(false);
-	me->core->GetParserList()->PrepareSelector(dlg, IO::ParsedObject::PT_MAP_LAYER_PARSER);
+	me->core->GetParserList()->PrepareSelector(dlg, IO::ParserType::MapLayer);
 	if (dlg->ShowDialog(me->GetHandle()))
 	{
 		me->txtRoadRoute->SetText(dlg->GetFileName());
@@ -40,7 +40,7 @@ void __stdcall SSWR::AVIRead::AVIRGISHKTDTonnesForm::OnVehicleResClicked(void *u
 		dlg->SetFileName(sb.ToString());
 	}
 	dlg->SetAllowMultiSel(false);
-	me->core->GetParserList()->PrepareSelector(dlg, IO::ParsedObject::PT_MAP_LAYER_PARSER);
+	me->core->GetParserList()->PrepareSelector(dlg, IO::ParserType::MapLayer);
 	if (dlg->ShowDialog(me->GetHandle()))
 	{
 		me->txtVehicleRes->SetText(dlg->GetFileName());
@@ -67,7 +67,7 @@ void __stdcall SSWR::AVIRead::AVIRGISHKTDTonnesForm::OnOKClicked(void *userObj)
 	else
 	{
 		NEW_CLASS(fd, IO::StmData::FileData(sb.ToString(), false));
-		Map::IMapDrawLayer *lyr = (Map::IMapDrawLayer*)me->core->GetParserList()->ParseFileType(fd, IO::ParsedObject::PT_MAP_LAYER_PARSER);
+		Map::IMapDrawLayer *lyr = (Map::IMapDrawLayer*)me->core->GetParserList()->ParseFileType(fd, IO::ParserType::MapLayer);
 		DEL_CLASS(fd);
 		DB::DBTool *db = DB::MDBFile::CreateDBTool(sb2.ToString(), 0, 0);
 		if (lyr && db)

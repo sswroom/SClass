@@ -32,16 +32,16 @@ void Parser::FileParser::GUIImgParser::SetParserList(Parser::ParserList *parsers
 	this->parsers = parsers;
 }
 
-void Parser::FileParser::GUIImgParser::PrepareSelector(IO::IFileSelector *selector, IO::ParsedObject::ParserType t)
+void Parser::FileParser::GUIImgParser::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
 {
 }
 
-IO::ParsedObject::ParserType Parser::FileParser::GUIImgParser::GetParserType()
+IO::ParserType Parser::FileParser::GUIImgParser::GetParserType()
 {
-	return IO::ParsedObject::PT_IMAGE_LIST_PARSER;
+	return IO::ParserType::ImageList;
 }
 
-IO::ParsedObject *Parser::FileParser::GUIImgParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParsedObject::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::GUIImgParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
 	return 0;
 }

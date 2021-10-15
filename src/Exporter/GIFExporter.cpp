@@ -22,7 +22,7 @@ Int32 Exporter::GIFExporter::GetName()
 
 IO::FileExporter::SupportType Exporter::GIFExporter::IsObjectSupported(IO::ParsedObject *pobj)
 {
-	if (pobj->GetParserType() != IO::ParsedObject::PT_IMAGE_LIST_PARSER)
+	if (pobj->GetParserType() != IO::ParserType::ImageList)
 		return IO::FileExporter::SupportType::NotSupported;
 	Media::ImageList *imgList = (Media::ImageList*)pobj;
 	UInt32 imgTime;

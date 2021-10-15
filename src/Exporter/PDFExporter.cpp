@@ -23,7 +23,7 @@ Int32 Exporter::PDFExporter::GetName()
 
 IO::FileExporter::SupportType Exporter::PDFExporter::IsObjectSupported(IO::ParsedObject *pobj)
 {
-	if (pobj->GetParserType() != IO::ParsedObject::PT_VECTOR_DOCUMENT)
+	if (pobj->GetParserType() != IO::ParserType::VectorDocument)
 	{
 		return IO::FileExporter::SupportType::NotSupported;
 	}
@@ -43,7 +43,7 @@ Bool Exporter::PDFExporter::GetOutputName(OSInt index, UTF8Char *nameBuff, UTF8C
 
 Bool Exporter::PDFExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *fileName, IO::ParsedObject *pobj, void *param)
 {
-	if (pobj->GetParserType() != IO::ParsedObject::PT_VECTOR_DOCUMENT)
+	if (pobj->GetParserType() != IO::ParserType::VectorDocument)
 	{
 		return false;
 	}

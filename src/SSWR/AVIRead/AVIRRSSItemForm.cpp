@@ -15,7 +15,7 @@ void __stdcall SSWR::AVIRead::AVIRRSSItemForm::OnImageSelChg(void *userObj)
 	IO::IStreamData *fd = browser->GetData(sbuff, false, sbuff);
 	if (fd)
 	{
-		Media::ImageList *imgList = (Media::ImageList*)me->core->GetParserList()->ParseFile(fd, 0, 0, IO::ParsedObject::PT_IMAGE_LIST_PARSER);
+		Media::ImageList *imgList = (Media::ImageList*)me->core->GetParserList()->ParseFile(fd, 0, 0, IO::ParserType::ImageList);
 		DEL_CLASS(fd);
 		if (imgList)
 		{

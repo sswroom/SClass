@@ -23,22 +23,22 @@ Int32 Parser::ObjParser::FileGDBParser::GetName()
 	return *(Int32*)"FGDB";
 }
 
-void Parser::ObjParser::FileGDBParser::PrepareSelector(IO::IFileSelector *selector, IO::ParsedObject::ParserType t)
+void Parser::ObjParser::FileGDBParser::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
 {
-	if (t == IO::ParsedObject::PT_READINGDB_PARSER)
+	if (t == IO::ParserType::ReadingDB)
 	{
 		selector->AddFilter((const UTF8Char*)"*.gdb", (const UTF8Char*)"File Geodatabase File");
 	}
 }
 
-IO::ParsedObject::ParserType Parser::ObjParser::FileGDBParser::GetParserType()
+IO::ParserType Parser::ObjParser::FileGDBParser::GetParserType()
 {
-	return IO::ParsedObject::PT_READINGDB_PARSER;
+	return IO::ParserType::ReadingDB;
 }
 
-IO::ParsedObject *Parser::ObjParser::FileGDBParser::ParseObject(IO::ParsedObject *pobj, IO::PackageFile *pkgFile, IO::ParsedObject::ParserType targetType)
+IO::ParsedObject *Parser::ObjParser::FileGDBParser::ParseObject(IO::ParsedObject *pobj, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
-	if (pobj->GetParserType() != IO::ParsedObject::PT_PACKAGE_PARSER)
+	if (pobj->GetParserType() != IO::ParserType::PackageFile)
 		return 0;
 	IO::PackageFile *pkg = (IO::PackageFile*)pobj;
 	if (!Text::StrEndsWithICase(pkg->GetSourceNameObj(), (const UTF8Char*)".GDB"))

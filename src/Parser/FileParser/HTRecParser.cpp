@@ -17,20 +17,20 @@ Int32 Parser::FileParser::HTRecParser::GetName()
 	return *(Int32*)"HTRP";
 }
 
-void Parser::FileParser::HTRecParser::PrepareSelector(IO::IFileSelector *selector, IO::ParsedObject::ParserType t)
+void Parser::FileParser::HTRecParser::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
 {
-	if (t == IO::ParsedObject::PT_UNKNOWN || t == IO::ParsedObject::PT_READINGDB_PARSER)
+	if (t == IO::ParserType::Unknown || t == IO::ParserType::ReadingDB)
 	{
 		selector->AddFilter((const UTF8Char*)"*.HTRec", (const UTF8Char*)"HTRec File");
 	}
 }
 
-IO::ParsedObject::ParserType Parser::FileParser::HTRecParser::GetParserType()
+IO::ParserType Parser::FileParser::HTRecParser::GetParserType()
 {
-	return IO::ParsedObject::PT_READINGDB_PARSER;
+	return IO::ParserType::ReadingDB;
 }
 
-IO::ParsedObject *Parser::FileParser::HTRecParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParsedObject::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::HTRecParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
 	UInt8 buff[96];
 	if (fd->GetRealData(0, 96, buff) != 96)

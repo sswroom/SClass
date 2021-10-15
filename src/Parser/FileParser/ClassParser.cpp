@@ -17,20 +17,20 @@ Int32 Parser::FileParser::ClassParser::GetName()
 	return *(Int32*)"JCLS";
 }
 
-void Parser::FileParser::ClassParser::PrepareSelector(IO::IFileSelector *selector, IO::ParsedObject::ParserType t)
+void Parser::FileParser::ClassParser::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
 {
-	if (t == IO::ParsedObject::PT_UNKNOWN || t == IO::ParsedObject::PT_JAVA_CLASS)
+	if (t == IO::ParserType::Unknown || t == IO::ParserType::JavaClass)
 	{
 		selector->AddFilter((const UTF8Char*)"*.class", (const UTF8Char*)"Class File");
 	}
 }
 
-IO::ParsedObject::ParserType Parser::FileParser::ClassParser::GetParserType()
+IO::ParserType Parser::FileParser::ClassParser::GetParserType()
 {
-	return IO::ParsedObject::PT_JAVA_CLASS;
+	return IO::ParserType::JavaClass;
 }
 
-IO::ParsedObject *Parser::FileParser::ClassParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParsedObject::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::ClassParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
 	UInt8 hdr[64];
 	if (fd->GetRealData(0, 64, hdr) != 64)

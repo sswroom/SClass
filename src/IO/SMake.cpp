@@ -1260,9 +1260,9 @@ IO::SMake::~SMake()
 	SDEL_TEXT(this->debugObj);
 }
 
-IO::ParsedObject::ParserType IO::SMake::GetParserType()
+IO::ParserType IO::SMake::GetParserType()
 {
-	return PT_SMAKE;
+	return ParserType::Smake;
 }
 
 Bool IO::SMake::IsLoadFailed()

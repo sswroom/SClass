@@ -74,9 +74,9 @@ IO::PackageFile::~PackageFile()
 	DEL_CLASS(this->infoMap);
 }
 
-IO::ParsedObject::ParserType IO::PackageFile::GetParserType()
+IO::ParserType IO::PackageFile::GetParserType()
 {
-	return IO::ParsedObject::PT_PACKAGE_PARSER;
+	return IO::ParserType::PackageFile;
 }
 
 void IO::PackageFile::AddData(IO::IStreamData *fd, UInt64 ofst, UInt64 length, const UTF8Char *name, Int64 modTimeTick)
@@ -222,7 +222,7 @@ const IO::PackFileItem *IO::PackageFile::GetPackFileItem(const UTF8Char *name)
 				return item;
 			if (item->itemType != IO::PackFileItem::PIT_PARSEDOBJECT)
 				return 0;
-			if (item->pobj->GetParserType() != IO::ParsedObject::PT_PACKAGE_PARSER)
+			if (item->pobj->GetParserType() != IO::ParserType::PackageFile)
 				return 0;
 			IO::PackageFile *pf = (IO::PackageFile*)item->pobj;
 			return pf->GetPackFileItem(sptr);
@@ -243,7 +243,7 @@ IO::PackageFile::PackObjectType IO::PackageFile::GetPItemType(const PackFileItem
 	}
 	else if (itemObj->itemType == IO::PackFileItem::PIT_PARSEDOBJECT)
 	{
-		if (itemObj->pobj->GetParserType() == IO::ParsedObject::PT_PACKAGE_PARSER)
+		if (itemObj->pobj->GetParserType() == IO::ParserType::PackageFile)
 		{
 			return IO::PackageFile::POT_PACKAGEFILE;
 		}
@@ -374,7 +374,7 @@ IO::PackageFile *IO::PackageFile::GetPItemPack(const PackFileItem *item)
 {
 	if (item != 0)
 	{
-		if (item->itemType == item->PIT_PARSEDOBJECT && item->pobj->GetParserType() == IO::ParsedObject::PT_PACKAGE_PARSER)
+		if (item->itemType == item->PIT_PARSEDOBJECT && item->pobj->GetParserType() == IO::ParserType::PackageFile)
 		{
 			return ((IO::PackageFile*)item->pobj)->Clone();
 		}
@@ -562,7 +562,7 @@ IO::PackageFile *IO::PackageFile::Clone()
 		item = this->items->GetItem(i);
 		Sync::Interlocked::Increment(&item->useCnt);
 		pkg->items->Add(item);
-		if (item->itemType == IO::PackFileItem::PIT_PARSEDOBJECT && item->pobj->GetParserType() == IO::ParsedObject::PT_PACKAGE_PARSER)
+		if (item->itemType == IO::PackFileItem::PIT_PARSEDOBJECT && item->pobj->GetParserType() == IO::ParserType::PackageFile)
 		{
 			pkg->pkgFiles->Put(item->name, item);
 		}
@@ -728,7 +728,7 @@ Bool IO::PackageFile::CopyTo(UOSInt index, const UTF8Char *destPath, Bool fullFi
 
 			return succ;
 		}
-		else if (item->itemType == IO::PackFileItem::PIT_PARSEDOBJECT && item->pobj->GetParserType() == IO::ParsedObject::PT_PACKAGE_PARSER)
+		else if (item->itemType == IO::PackFileItem::PIT_PARSEDOBJECT && item->pobj->GetParserType() == IO::ParserType::PackageFile)
 		{
 			IO::PackageFile *pf = (IO::PackageFile*)item->pobj;
 			IO::Path::CreateDirectory(sb.ToString());

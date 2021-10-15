@@ -39,8 +39,8 @@ namespace IO
 		virtual void SetProgressHandler(IO::IProgressHandler *progHdlr) {};
 		virtual void SetSocketFactory(Net::SocketFactory *sockf) {};
 		virtual void SetSSLEngine(Net::SSLEngine *ssl) {};
-		virtual void PrepareSelector(IO::IFileSelector *selector, IO::ParsedObject::ParserType t) = 0;
-		virtual IO::ParsedObject::ParserType GetParserType() = 0;
+		virtual void PrepareSelector(IO::IFileSelector *selector, IO::ParserType t) = 0;
+		virtual IO::ParserType GetParserType() = 0;
 	};
 }
 #endif

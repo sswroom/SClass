@@ -187,7 +187,7 @@ void SSWR::AVIRead::AVIRImageControl::InitDir()
 			{
 				Sync::MutexUsage mutUsage(this->ioMut);
 				NEW_CLASS(fd, IO::StmData::FileData(sbuff, false));
-				Media::ImageList *imgList = (Media::ImageList*)parsers->ParseFileType(fd, IO::ParsedObject::PT_IMAGE_LIST_PARSER);
+				Media::ImageList *imgList = (Media::ImageList*)parsers->ParseFileType(fd, IO::ParserType::ImageList);
 				DEL_CLASS(fd);
 				mutUsage.EndUse();
 				if (imgList)
@@ -1003,7 +1003,7 @@ Media::StaticImage *SSWR::AVIRead::AVIRImageControl::LoadImage(const UTF8Char *f
 	{
 		Sync::MutexUsage ioMutUsage(this->ioMut);
 		NEW_CLASS(fd, IO::StmData::FileData(status->filePath, false));
-		imgList = (Media::ImageList*)this->core->GetParserList()->ParseFileType(fd, IO::ParsedObject::PT_IMAGE_LIST_PARSER);
+		imgList = (Media::ImageList*)this->core->GetParserList()->ParseFileType(fd, IO::ParserType::ImageList);
 		DEL_CLASS(fd);
 		ioMutUsage.EndUse();
 	}
@@ -1035,7 +1035,7 @@ Media::StaticImage *SSWR::AVIRead::AVIRImageControl::LoadOriImage(const UTF8Char
 	{
 		Sync::MutexUsage ioMutUsage(this->ioMut);
 		NEW_CLASS(fd, IO::StmData::FileData(status->filePath, false));
-		imgList = (Media::ImageList*)this->core->GetParserList()->ParseFileType(fd, IO::ParsedObject::PT_IMAGE_LIST_PARSER);
+		imgList = (Media::ImageList*)this->core->GetParserList()->ParseFileType(fd, IO::ParserType::ImageList);
 		DEL_CLASS(fd);
 		ioMutUsage.EndUse();
 	}

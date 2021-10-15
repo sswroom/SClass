@@ -20,7 +20,7 @@ namespace Net
 	public:
 		virtual ~ASN1Data();
 
-		virtual IO::ParsedObject::ParserType GetParserType();
+		virtual IO::ParserType GetParserType();
 		virtual ASN1Type GetASN1Type() = 0;
 		virtual ASN1Data *Clone() = 0;
 		virtual void ToString(Text::StringBuilderUTF *sb) = 0;

@@ -20,6 +20,9 @@ namespace Crypto
 
 			virtual ASN1Data *Clone();
 			virtual void ToString(Text::StringBuilderUTF *sb);
+
+			Bool GetIssueNames(CertNames *names);
+			Bool GetSubjNames(CertNames *names);
 		};
 	}
 }

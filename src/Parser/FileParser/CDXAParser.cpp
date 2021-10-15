@@ -21,20 +21,20 @@ void Parser::FileParser::CDXAParser::SetParserList(Parser::ParserList *parsers)
 	this->parsers = parsers;
 }
 
-void Parser::FileParser::CDXAParser::PrepareSelector(IO::IFileSelector *selector, IO::ParsedObject::ParserType t)
+void Parser::FileParser::CDXAParser::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
 {
-	if (t == IO::ParsedObject::PT_UNKNOWN || t == IO::ParsedObject::PT_SECTOR_DATA)
+	if (t == IO::ParserType::Unknown || t == IO::ParserType::SectorData)
 	{
 		selector->AddFilter((const UTF8Char*)"*.dat", (const UTF8Char*)"DAT (CDXA/VCD) File");
 	}
 }
 
-IO::ParsedObject::ParserType Parser::FileParser::CDXAParser::GetParserType()
+IO::ParserType Parser::FileParser::CDXAParser::GetParserType()
 {
-	return IO::ParsedObject::PT_SECTOR_DATA;
+	return IO::ParserType::SectorData;
 }
 
-IO::ParsedObject *Parser::FileParser::CDXAParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParsedObject::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::CDXAParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
 	Int32 buff[4];
 	UInt32 fileSize;

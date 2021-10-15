@@ -19,7 +19,7 @@ IO::FileExporter::SupportType Exporter::GUIExporter::IsObjectSupported(IO::Parse
 	Media::ImageList *imgList;
 	if (pobj == 0)
 		return IO::FileExporter::SupportType::NotSupported;
-	if (pobj->GetParserType() != IO::ParsedObject::PT_IMAGE_LIST_PARSER)
+	if (pobj->GetParserType() != IO::ParserType::ImageList)
 		return IO::FileExporter::SupportType::NotSupported;
 	imgList = (Media::ImageList*)pobj;
 	if (imgList->GetCount() != 1)
@@ -74,7 +74,7 @@ void *Exporter::GUIExporter::ToImage(IO::ParsedObject *pobj, UInt8 **relBuff)
 	{
 		return 0;
 	}
-	if (pobj->GetParserType() != IO::ParsedObject::PT_IMAGE_LIST_PARSER)
+	if (pobj->GetParserType() != IO::ParserType::ImageList)
 	{
 		return 0;
 	}

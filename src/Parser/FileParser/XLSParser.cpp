@@ -21,20 +21,20 @@ Int32 Parser::FileParser::XLSParser::GetName()
 	return *(Int32*)"XLSP";
 }
 
-void Parser::FileParser::XLSParser::PrepareSelector(IO::IFileSelector *selector, IO::ParsedObject::ParserType t)
+void Parser::FileParser::XLSParser::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
 {
-	if (t == IO::ParsedObject::PT_UNKNOWN || t == IO::ParsedObject::PT_WORKBOOK)
+	if (t == IO::ParserType::Unknown || t == IO::ParserType::Workbook)
 	{
 		selector->AddFilter((const UTF8Char*)"*.xls", (const UTF8Char*)"Excel Workbook File");
 	}
 }
 
-IO::ParsedObject::ParserType Parser::FileParser::XLSParser::GetParserType()
+IO::ParserType Parser::FileParser::XLSParser::GetParserType()
 {
-	return IO::ParsedObject::PT_WORKBOOK;
+	return IO::ParserType::Workbook;
 }
 
-IO::ParsedObject *Parser::FileParser::XLSParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParsedObject::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::XLSParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
 	UInt8 buff[4096];
 	IO::ParsedObject *pobj = 0;

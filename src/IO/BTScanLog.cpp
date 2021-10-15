@@ -24,9 +24,9 @@ IO::BTScanLog::~BTScanLog()
 	DEL_CLASS(this->logs);
 }
 
-IO::ParsedObject::ParserType IO::BTScanLog::GetParserType()
+IO::ParserType IO::BTScanLog::GetParserType()
 {
-	return IO::ParsedObject::PT_BTSCANLOG;
+	return IO::ParserType::BTScanLog;
 }
 
 IO::BTScanLog::LogEntry *IO::BTScanLog::AddEntry(Int64 timeTicks, UInt64 macInt, RadioType radioType, AddressType addrType, UInt16 company, const UTF8Char *name, Int8 rssi, Int8 txPower, Int8 measurePower, AdvType advType)

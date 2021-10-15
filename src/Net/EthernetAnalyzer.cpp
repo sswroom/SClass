@@ -255,9 +255,9 @@ Net::EthernetAnalyzer::~EthernetAnalyzer()
 	DEL_CLASS(this->mdnsMut);
 }
 
-IO::ParsedObject::ParserType Net::EthernetAnalyzer::GetParserType()
+IO::ParserType Net::EthernetAnalyzer::GetParserType()
 {
-	return IO::ParsedObject::PT_ETHERNET_ANALYZER;
+	return IO::ParserType::EthernetAnalyzer;
 }
 
 UInt64 Net::EthernetAnalyzer::GetPacketCnt()

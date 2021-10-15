@@ -63,9 +63,9 @@ void Parser::FileParser::XMLParser::SetEncFactory(Text::EncodingFactory *encFact
 	this->encFact = encFact;
 }
 
-void Parser::FileParser::XMLParser::PrepareSelector(IO::IFileSelector *selector, IO::ParsedObject::ParserType t)
+void Parser::FileParser::XMLParser::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
 {
-	if (t == IO::ParsedObject::PT_UNKNOWN || t == IO::ParsedObject::PT_MAP_LAYER_PARSER)
+	if (t == IO::ParserType::Unknown || t == IO::ParserType::MapLayer)
 	{
 		selector->AddFilter((const UTF8Char*)"*.xml", (const UTF8Char*)"XML File");
 		selector->AddFilter((const UTF8Char*)"*.gpx", (const UTF8Char*)"GPS Track File");
@@ -76,12 +76,12 @@ void Parser::FileParser::XMLParser::PrepareSelector(IO::IFileSelector *selector,
 	}
 }
 
-IO::ParsedObject::ParserType Parser::FileParser::XMLParser::GetParserType()
+IO::ParserType Parser::FileParser::XMLParser::GetParserType()
 {
-	return IO::ParsedObject::PT_MAP_LAYER_PARSER;
+	return IO::ParserType::MapLayer;
 }
 
-IO::ParsedObject *Parser::FileParser::XMLParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParsedObject::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::XMLParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
 	UTF8Char u8buff[512];
 	UOSInt i;
@@ -3093,7 +3093,7 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLPlacemarkLyr(Text::XM
 					}
 					if (fd)
 					{
-						Media::ImageList *imgList = (Media::ImageList*)parsers->ParseFileType(fd, IO::ParsedObject::PT_IMAGE_LIST_PARSER);
+						Media::ImageList *imgList = (Media::ImageList*)parsers->ParseFileType(fd, IO::ParserType::ImageList);
 						if (imgList)
 						{
 							if (style->iconColor != 0)

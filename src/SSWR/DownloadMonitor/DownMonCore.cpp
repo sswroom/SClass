@@ -93,7 +93,7 @@ Bool SSWR::DownloadMonitor::DownMonCore::ExtractZIP(const UTF8Char *zipFile, con
 	IO::PackageFile *pkgFile;
 	Bool valid = false;
 	NEW_CLASS(fd, IO::StmData::FileData(zipFile, false));
-	pkgFile = (IO::PackageFile*)this->parsers->ParseFileType(fd, IO::ParsedObject::PT_PACKAGE_PARSER);
+	pkgFile = (IO::PackageFile*)this->parsers->ParseFileType(fd, IO::ParserType::PackageFile);
 	DEL_CLASS(fd);
 	if (pkgFile)
 	{
@@ -118,7 +118,7 @@ Bool SSWR::DownloadMonitor::DownMonCore::VideoValid(const UTF8Char *fileName)
 	Bool valid = false;
 
 	NEW_CLASS(fd, IO::StmData::FileData(fileName, false));
-	mediaFile = (Media::MediaFile*)this->parsers->ParseFileType(fd, IO::ParsedObject::PT_VIDEO_PARSER);
+	mediaFile = (Media::MediaFile*)this->parsers->ParseFileType(fd, IO::ParserType::MediaFile);
 	DEL_CLASS(fd);
 
 	if (mediaFile)

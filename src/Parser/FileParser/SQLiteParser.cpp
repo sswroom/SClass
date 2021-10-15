@@ -19,20 +19,20 @@ Int32 Parser::FileParser::SQLiteParser::GetName()
 	return *(Int32*)"SQLI";
 }
 
-void Parser::FileParser::SQLiteParser::PrepareSelector(IO::IFileSelector *selector, IO::ParsedObject::ParserType t)
+void Parser::FileParser::SQLiteParser::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
 {
-	if (t == IO::ParsedObject::PT_UNKNOWN || t == IO::ParsedObject::PT_READINGDB_PARSER)
+	if (t == IO::ParserType::Unknown || t == IO::ParserType::ReadingDB)
 	{
 		selector->AddFilter((const UTF8Char*)"*.sqlite", (const UTF8Char*)"SQLite File");
 	}
 }
 
-IO::ParsedObject::ParserType Parser::FileParser::SQLiteParser::GetParserType()
+IO::ParserType Parser::FileParser::SQLiteParser::GetParserType()
 {
-	return IO::ParsedObject::PT_READINGDB_PARSER;
+	return IO::ParserType::ReadingDB;
 }
 
-IO::ParsedObject *Parser::FileParser::SQLiteParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParsedObject::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::SQLiteParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
 	UInt8 hdr[32];
 	fd->GetRealData(0, 32, hdr);

@@ -27,20 +27,20 @@ void Parser::FileParser::CUEParser::SetParserList(Parser::ParserList *parsers)
 	this->parsers = parsers;
 }
 
-void Parser::FileParser::CUEParser::PrepareSelector(IO::IFileSelector *selector, IO::ParsedObject::ParserType t)
+void Parser::FileParser::CUEParser::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
 {
-	if (t == IO::ParsedObject::PT_UNKNOWN || t == IO::ParsedObject::PT_VIDEO_PARSER)
+	if (t == IO::ParserType::Unknown || t == IO::ParserType::MediaFile)
 	{
 		selector->AddFilter((const UTF8Char*)"*.cue", (const UTF8Char*)"Cuesheet File");
 	}
 }
 
-IO::ParsedObject::ParserType Parser::FileParser::CUEParser::GetParserType()
+IO::ParserType Parser::FileParser::CUEParser::GetParserType()
 {
-	return IO::ParsedObject::PT_VIDEO_PARSER;
+	return IO::ParserType::MediaFile;
 }
 
-IO::ParsedObject *Parser::FileParser::CUEParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParsedObject::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::CUEParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
 	UTF8Char sbuff[512];
 	UTF8Char sbuff2[512];
@@ -143,7 +143,7 @@ IO::ParsedObject *Parser::FileParser::CUEParser::ParseFile(IO::IStreamData *fd, 
 	if (!errorFound && fileName)
 	{
 		IO::StmData::FileData *data;
-		IO::ParsedObject::ParserType pt;
+		IO::ParserType pt;
 		IO::ParsedObject *pobj;
 
 		Text::StrConcat(sbuff, fd->GetFullName());
@@ -153,7 +153,7 @@ IO::ParsedObject *Parser::FileParser::CUEParser::ParseFile(IO::IStreamData *fd, 
 		DEL_CLASS(data);
 		if (pobj)
 		{
-			if (pt == IO::ParsedObject::PT_VIDEO_PARSER)
+			if (pt == IO::ParserType::MediaFile)
 			{
 				mf = (Media::MediaFile*)pobj;
 				Media::ChapterInfo *chapters;

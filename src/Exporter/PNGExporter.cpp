@@ -1369,7 +1369,7 @@ Int32 Exporter::PNGExporter::GetName()
 
 IO::FileExporter::SupportType Exporter::PNGExporter::IsObjectSupported(IO::ParsedObject *pobj)
 {
-	if (pobj->GetParserType() != IO::ParsedObject::PT_IMAGE_LIST_PARSER)
+	if (pobj->GetParserType() != IO::ParserType::ImageList)
 		return IO::FileExporter::SupportType::NotSupported;
 	Media::ImageList *imgList = (Media::ImageList*)pobj;
 	UInt32 imgTime;

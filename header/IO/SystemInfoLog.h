@@ -50,7 +50,7 @@ namespace IO
 		SystemInfoLog(const UTF8Char *sourceName);
 		virtual ~SystemInfoLog();
 
-		virtual IO::ParsedObject::ParserType GetParserType();
+		virtual IO::ParserType GetParserType();
 
 		void SetOSName(const UTF8Char *osName);
 		const UTF8Char *GetOSName();

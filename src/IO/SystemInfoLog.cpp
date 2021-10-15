@@ -53,9 +53,9 @@ IO::SystemInfoLog::~SystemInfoLog()
 	SDEL_TEXT(this->osVer);
 }
 
-IO::ParsedObject::ParserType IO::SystemInfoLog::GetParserType()
+IO::ParserType IO::SystemInfoLog::GetParserType()
 {
-	return PT_SYSTEMINFOLOG;
+	return ParserType::SystemInfoLog;
 }
 
 void IO::SystemInfoLog::SetOSName(const UTF8Char *osName)

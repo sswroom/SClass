@@ -170,7 +170,7 @@ Bool Media::JPEGFile::ParseJPEGHeader(IO::IStreamData *fd, Media::Image *img, Me
 						Media::ImageList *innerImgList;
 						Media::Image *innerImg;
 						NEW_CLASS(mfd, IO::StmData::MemoryData(&tagBuff[blkOfst + 32], blkSize - 32));
-						innerImgList = (Media::ImageList*)parsers->ParseFileType(mfd, IO::ParsedObject::PT_IMAGE_LIST_PARSER);
+						innerImgList = (Media::ImageList*)parsers->ParseFileType(mfd, IO::ParserType::ImageList);
 						DEL_CLASS(mfd);
 						if (innerImgList)
 						{
@@ -200,7 +200,7 @@ Bool Media::JPEGFile::ParseJPEGHeader(IO::IStreamData *fd, Media::Image *img, Me
 							Media::Image *innerImg;
 							Media::StaticImage *stImg;
 							NEW_CLASS(mfd, IO::StmData::MemoryData(&tagBuff[blkOfst + 32], blkSize - 32));
-							innerImgList = (Media::ImageList*)parsers->ParseFileType(mfd, IO::ParsedObject::PT_IMAGE_LIST_PARSER);
+							innerImgList = (Media::ImageList*)parsers->ParseFileType(mfd, IO::ParserType::ImageList);
 							DEL_CLASS(mfd);
 							if (innerImgList)
 							{

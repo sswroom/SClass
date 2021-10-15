@@ -612,7 +612,7 @@ Bool SSWR::DiscDB::DiscDBEnv::AddMD5(IO::IStreamData *fd)
 {
 	Parser::FileParser::MD5Parser parser;
 	parser.SetCodePage(65001);
-	IO::FileCheck *fileChk = (IO::FileCheck*)parser.ParseFile(fd, 0, IO::ParsedObject::PT_FILE_CHECK);
+	IO::FileCheck *fileChk = (IO::FileCheck*)parser.ParseFile(fd, 0, IO::ParserType::FileCheck);
 	if (fileChk == 0)
 	{
 		return false;

@@ -270,7 +270,7 @@ Bool SSWR::AVIRead::AVIRHQMPDSForm::OpenFile(const UTF8Char *fileName)
 	IO::StmData::FileData *fd;
 
 	NEW_CLASS(fd, IO::StmData::FileData(fileName, false));
-	pobj = parsers->ParseFileType(fd, IO::ParsedObject::PT_VIDEO_PARSER);
+	pobj = parsers->ParseFileType(fd, IO::ParserType::MediaFile);
 	DEL_CLASS(fd);
 	if (pobj)
 	{
@@ -580,7 +580,7 @@ void SSWR::AVIRead::AVIRHQMPDSForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_FILE_OPEN:
 		{
 			SSWR::AVIRead::AVIROpenFileForm *dlg;
-			NEW_CLASS(dlg, SSWR::AVIRead::AVIROpenFileForm(0, this->ui, this->core, IO::ParsedObject::PT_VIDEO_PARSER));
+			NEW_CLASS(dlg, SSWR::AVIRead::AVIROpenFileForm(0, this->ui, this->core, IO::ParserType::MediaFile));
 			if (dlg->ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
 				const UTF8Char *fname = dlg->GetFileName();
@@ -598,7 +598,7 @@ void SSWR::AVIRead::AVIRHQMPDSForm::EventMenuClicked(UInt16 cmdId)
 					}
 					else
 					{
-						if (pobj->GetParserType() == IO::ParsedObject::PT_VIDEO_PARSER)
+						if (pobj->GetParserType() == IO::ParserType::MediaFile)
 						{
 							this->OpenVideo((Media::MediaFile*)pobj);
 						}

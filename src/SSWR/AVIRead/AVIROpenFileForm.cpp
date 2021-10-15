@@ -38,7 +38,7 @@ void __stdcall SSWR::AVIRead::AVIROpenFileForm::OnCancelClicked(void *userObj)
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 
-SSWR::AVIRead::AVIROpenFileForm::AVIROpenFileForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, IO::ParsedObject::ParserType t) : UI::GUIForm(parent, 640, 120, ui)
+SSWR::AVIRead::AVIROpenFileForm::AVIROpenFileForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, IO::ParserType t) : UI::GUIForm(parent, 640, 120, ui)
 {
 	this->SetText((const UTF8Char*)"Open File");
 	this->SetFont(0, 8.25, false);

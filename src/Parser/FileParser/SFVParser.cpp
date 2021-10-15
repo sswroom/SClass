@@ -20,20 +20,20 @@ Int32 Parser::FileParser::SFVParser::GetName()
 	return *(Int32*)"SFVP";
 }
 
-void Parser::FileParser::SFVParser::PrepareSelector(IO::IFileSelector *selector, IO::ParsedObject::ParserType t)
+void Parser::FileParser::SFVParser::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
 {
-	if (t == IO::ParsedObject::PT_UNKNOWN || t == IO::ParsedObject::PT_FILE_CHECK)
+	if (t == IO::ParserType::Unknown || t == IO::ParserType::FileCheck)
 	{
 		selector->AddFilter((const UTF8Char*)"*.sfv", (const UTF8Char*)"SFV File");
 	}
 }
 
-IO::ParsedObject::ParserType Parser::FileParser::SFVParser::GetParserType()
+IO::ParserType Parser::FileParser::SFVParser::GetParserType()
 {
-	return IO::ParsedObject::PT_FILE_CHECK;
+	return IO::ParserType::FileCheck;
 }
 
-IO::ParsedObject *Parser::FileParser::SFVParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParsedObject::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::SFVParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
 	UTF8Char u8buff[512];
 	UTF8Char sbuff[512];

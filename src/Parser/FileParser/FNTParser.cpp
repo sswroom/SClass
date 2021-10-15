@@ -21,20 +21,20 @@ Int32 Parser::FileParser::FNTParser::GetName()
 	return *(Int32*)"FNTP";
 }
 
-void Parser::FileParser::FNTParser::PrepareSelector(IO::IFileSelector *selector, IO::ParsedObject::ParserType t)
+void Parser::FileParser::FNTParser::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
 {
-	if (t == IO::ParsedObject::PT_UNKNOWN || t == IO::ParsedObject::PT_FONT_RENDERER)
+	if (t == IO::ParserType::Unknown || t == IO::ParserType::FontRenderer)
 	{
 		selector->AddFilter((const UTF8Char*)"*.fnt", (const UTF8Char*)"Font File");
 	}
 }
 
-IO::ParsedObject::ParserType Parser::FileParser::FNTParser::GetParserType()
+IO::ParserType Parser::FileParser::FNTParser::GetParserType()
 {
-	return IO::ParsedObject::PT_FONT_RENDERER;
+	return IO::ParserType::FontRenderer;
 }
 
-IO::ParsedObject *Parser::FileParser::FNTParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParsedObject::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::FNTParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
 	UInt8 hdr[118];
 	OSInt hdrSize;

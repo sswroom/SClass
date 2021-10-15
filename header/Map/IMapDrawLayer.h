@@ -136,7 +136,7 @@ namespace Map
 
 		virtual ObjectClass GetObjectClass() = 0;
 		const UTF8Char *GetName();
-		virtual IO::ParsedObject::ParserType GetParserType();
+		virtual IO::ParserType GetParserType();
 		virtual Math::CoordinateSystem *GetCoordinateSystem();
 		virtual void SetCoordinateSystem(Math::CoordinateSystem *csys);
 

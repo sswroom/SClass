@@ -171,9 +171,9 @@ const UTF8Char *Map::IMapDrawLayer::GetName()
 	}
 }
 
-IO::ParsedObject::ParserType Map::IMapDrawLayer::GetParserType()
+IO::ParserType Map::IMapDrawLayer::GetParserType()
 {
-	return IO::ParsedObject::PT_MAP_LAYER_PARSER;
+	return IO::ParserType::MapLayer;
 }
 
 Math::CoordinateSystem *Map::IMapDrawLayer::GetCoordinateSystem()

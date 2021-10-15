@@ -31,20 +31,20 @@ void Parser::FileParser::CSVParser::SetCodePage(UInt32 codePage)
 	this->codePage = codePage;
 }
 
-void Parser::FileParser::CSVParser::PrepareSelector(IO::IFileSelector *selector, IO::ParsedObject::ParserType t)
+void Parser::FileParser::CSVParser::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
 {
-	if (t == IO::ParsedObject::PT_UNKNOWN || t == IO::ParsedObject::PT_MAP_LAYER_PARSER || t == IO::ParsedObject::PT_READINGDB_PARSER)
+	if (t == IO::ParserType::Unknown || t == IO::ParserType::MapLayer || t == IO::ParserType::ReadingDB)
 	{
 		selector->AddFilter((const UTF8Char*)"*.csv", (const UTF8Char*)"CSV File");
 	}
 }
 
-IO::ParsedObject::ParserType Parser::FileParser::CSVParser::GetParserType()
+IO::ParserType Parser::FileParser::CSVParser::GetParserType()
 {
-	return IO::ParsedObject::PT_UNKNOWN;
+	return IO::ParserType::Unknown;
 }
 
-IO::ParsedObject *Parser::FileParser::CSVParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParsedObject::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::CSVParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
 	UTF8Char sbuff[1024];
 	UTF8Char sbuff2[64];

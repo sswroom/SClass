@@ -18,20 +18,20 @@ Int32 Parser::FileParser::APEParser::GetName()
 	return *(Int32*)"APEP";
 }
 
-void Parser::FileParser::APEParser::PrepareSelector(IO::IFileSelector *selector, IO::ParsedObject::ParserType t)
+void Parser::FileParser::APEParser::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
 {
-	if (t == IO::ParsedObject::PT_UNKNOWN || t == IO::ParsedObject::PT_VIDEO_PARSER)
+	if (t == IO::ParserType::Unknown || t == IO::ParserType::MediaFile)
 	{
 		selector->AddFilter((const UTF8Char*)"*.ape", (const UTF8Char*)"Monkey's Audio File");
 	}
 }
 
-IO::ParsedObject::ParserType Parser::FileParser::APEParser::GetParserType()
+IO::ParserType Parser::FileParser::APEParser::GetParserType()
 {
-	return IO::ParsedObject::PT_VIDEO_PARSER;
+	return IO::ParserType::MediaFile;
 }
 
-IO::ParsedObject *Parser::FileParser::APEParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParsedObject::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::APEParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
 #ifdef ENABLE_APE
 	UInt8 buff[32];

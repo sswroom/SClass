@@ -106,7 +106,7 @@ void SSWR::AVIRead::AVIRSSLCertKeyForm::LoadFile(const UTF8Char *fileName)
 {
 	IO::StmData::FileData *fd;
 	NEW_CLASS(fd, IO::StmData::FileData(fileName, false));
-	Net::ASN1Data *asn1 = (Net::ASN1Data*)this->core->GetParserList()->ParseFileType(fd, IO::ParsedObject::PT_ASN1_DATA);
+	Net::ASN1Data *asn1 = (Net::ASN1Data*)this->core->GetParserList()->ParseFileType(fd, IO::ParserType::ASN1Data);
 	DEL_CLASS(fd);
 	if (asn1 == 0)
 	{

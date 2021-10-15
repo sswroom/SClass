@@ -13,17 +13,6 @@ namespace Crypto
 		class CertUtil
 		{
 		public:
-			struct CertNames
-			{
-				const UTF8Char *countryName;
-				const UTF8Char *stateOrProvinceName;
-				const UTF8Char *localityName;
-				const UTF8Char *organizationName;
-				const UTF8Char *organizationUnitName;
-				const UTF8Char *commonName;
-				const UTF8Char *emailAddress;
-			};
-
 			struct ReqExtensions
 			{
 				Data::ArrayList<const UTF8Char *> *subjectAltName;

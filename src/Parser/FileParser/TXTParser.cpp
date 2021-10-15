@@ -47,20 +47,20 @@ void Parser::FileParser::TXTParser::SetMapManager(Map::MapManager *mapMgr)
 	this->mapMgr = mapMgr;
 }
 
-void Parser::FileParser::TXTParser::PrepareSelector(IO::IFileSelector *selector, IO::ParsedObject::ParserType t)
+void Parser::FileParser::TXTParser::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
 {
-	if (t == IO::ParsedObject::PT_UNKNOWN || t == IO::ParsedObject::PT_MAP_ENV_PARSER)
+	if (t == IO::ParserType::Unknown || t == IO::ParserType::MapEnv)
 	{
 		selector->AddFilter((const UTF8Char*)"*.txt", (const UTF8Char*)"Maplayer Defination File");
 	}
 }
 
-IO::ParsedObject::ParserType Parser::FileParser::TXTParser::GetParserType()
+IO::ParserType Parser::FileParser::TXTParser::GetParserType()
 {
-	return IO::ParsedObject::PT_MAP_ENV_PARSER;
+	return IO::ParserType::MapEnv;
 }
 
-IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParsedObject::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
 	UTF8Char sbuff[512];
 	UTF8Char baseDir[256];

@@ -119,7 +119,7 @@ void __stdcall SSWR::AVIRead::AVIRCameraControlForm::OnFilesDblClick(void *userO
 				UInt8 *buff = mstm->GetBuff(&size);
 				IO::StmData::MemoryData *fd;
 				NEW_CLASS(fd, IO::StmData::MemoryData(buff, size));
-				IO::ParsedObject *pobj = me->core->GetParserList()->ParseFileType(fd, IO::ParsedObject::PT_IMAGE_LIST_PARSER);
+				IO::ParsedObject *pobj = me->core->GetParserList()->ParseFileType(fd, IO::ParserType::ImageList);
 				DEL_CLASS(fd);
 				if (pobj)
 				{
@@ -174,7 +174,7 @@ void __stdcall SSWR::AVIRead::AVIRCameraControlForm::OnFilesSelChg(void *userObj
 		UInt8 *buff = mstm->GetBuff(&size);
 		IO::StmData::MemoryData *fd;
 		NEW_CLASS(fd, IO::StmData::MemoryData(buff, size));
-		previewImg = (Media::ImageList*)me->core->GetParserList()->ParseFileType(fd, IO::ParsedObject::PT_IMAGE_LIST_PARSER);
+		previewImg = (Media::ImageList*)me->core->GetParserList()->ParseFileType(fd, IO::ParserType::ImageList);
 		DEL_CLASS(fd);
 		if (previewImg)
 		{

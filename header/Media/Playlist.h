@@ -31,7 +31,7 @@ namespace Media
 		Playlist(const UTF8Char *sourceName, Parser::ParserList *parsers);
 		virtual ~Playlist();
 
-		virtual IO::ParsedObject::ParserType GetParserType();
+		virtual IO::ParserType GetParserType();
 		Bool AddFile(const UTF8Char *fileName);
 		Bool RemoveEntry(UOSInt index);
 		Bool AppendPlaylist(Media::Playlist *playlist);

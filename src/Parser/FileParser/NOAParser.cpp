@@ -19,20 +19,20 @@ Int32 Parser::FileParser::NOAParser::GetName()
 	return *(Int32*)"NOAP";
 }
 
-void Parser::FileParser::NOAParser::PrepareSelector(IO::IFileSelector *selector, IO::ParsedObject::ParserType t)
+void Parser::FileParser::NOAParser::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
 {
-	if (t == IO::ParsedObject::PT_UNKNOWN || t == IO::ParsedObject::PT_PACKAGE_PARSER)
+	if (t == IO::ParserType::Unknown || t == IO::ParserType::PackageFile)
 	{
 		selector->AddFilter((const UTF8Char*)"*.noa", (const UTF8Char*)"NOA Package File");
 	}
 }
 
-IO::ParsedObject::ParserType Parser::FileParser::NOAParser::GetParserType()
+IO::ParserType Parser::FileParser::NOAParser::GetParserType()
 {
-	return IO::ParsedObject::PT_PACKAGE_PARSER;
+	return IO::ParserType::PackageFile;
 }
 
-IO::ParsedObject *Parser::FileParser::NOAParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParsedObject::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::NOAParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
 	UInt8 hdrBuff[64];
 	UInt8 tagBuff[16];

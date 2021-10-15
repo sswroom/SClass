@@ -15,9 +15,9 @@ Net::ASN1Data::~ASN1Data()
 	MemFree(this->buff);
 }
 
-IO::ParsedObject::ParserType Net::ASN1Data::GetParserType()
+IO::ParserType Net::ASN1Data::GetParserType()
 {
-	return IO::ParsedObject::PT_ASN1_DATA;
+	return IO::ParserType::ASN1Data;
 }
 
 Bool Net::ASN1Data::ToASN1String(Text::StringBuilderUTF *sb)

@@ -16,7 +16,7 @@ void __stdcall SSWR::AVIRead::AVIRImagePSNRForm::OnOriFileClicked(void *userObj)
 	me->txtOriFile->GetText(&sb);
 	UI::FileDialog *dlg;
 	NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"AVIRead", L"ImagePSNRO", false));
-	me->core->GetParserList()->PrepareSelector(dlg, IO::ParsedObject::PT_IMAGE_LIST_PARSER);
+	me->core->GetParserList()->PrepareSelector(dlg, IO::ParserType::ImageList);
 	if (sb.GetLength() > 0)
 	{
 		dlg->SetFileName(sb.ToString());
@@ -35,7 +35,7 @@ void __stdcall SSWR::AVIRead::AVIRImagePSNRForm::OnLossyFileClicked(void *userOb
 	me->txtLossyFile->GetText(&sb);
 	UI::FileDialog *dlg;
 	NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"AVIRead", L"ImagePSNRL", false));
-	me->core->GetParserList()->PrepareSelector(dlg, IO::ParsedObject::PT_IMAGE_LIST_PARSER);
+	me->core->GetParserList()->PrepareSelector(dlg, IO::ParserType::ImageList);
 	if (sb.GetLength() > 0)
 	{
 		dlg->SetFileName(sb.ToString());
@@ -68,10 +68,10 @@ void __stdcall SSWR::AVIRead::AVIRImagePSNRForm::OnCompareClicked(void *userObj)
 	Media::StaticImage *simg2;
 	IO::StmData::FileData *fd;
 	NEW_CLASS(fd, IO::StmData::FileData(sb.ToString(), false));
-	imgList1 = (Media::ImageList*)me->core->GetParserList()->ParseFileType(fd, IO::ParsedObject::PT_IMAGE_LIST_PARSER);
+	imgList1 = (Media::ImageList*)me->core->GetParserList()->ParseFileType(fd, IO::ParserType::ImageList);
 	DEL_CLASS(fd);
 	NEW_CLASS(fd, IO::StmData::FileData(sb2.ToString(), false));
-	imgList2 = (Media::ImageList*)me->core->GetParserList()->ParseFileType(fd, IO::ParsedObject::PT_IMAGE_LIST_PARSER);
+	imgList2 = (Media::ImageList*)me->core->GetParserList()->ParseFileType(fd, IO::ParserType::ImageList);
 	DEL_CLASS(fd);
 	if (imgList1 && imgList2)
 	{

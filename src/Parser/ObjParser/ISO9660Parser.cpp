@@ -21,27 +21,27 @@ Int32 Parser::ObjParser::ISO9660Parser::GetName()
 	return *(Int32*)"ISO9";
 }
 
-void Parser::ObjParser::ISO9660Parser::PrepareSelector(IO::IFileSelector *selector, IO::ParsedObject::ParserType t)
+void Parser::ObjParser::ISO9660Parser::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
 {
-	if (t == IO::ParsedObject::PT_PACKAGE_PARSER)
+	if (t == IO::ParserType::PackageFile)
 	{
 		selector->AddFilter((const UTF8Char*)"*.iso", (const UTF8Char*)"CD/DVD Image File");
 		selector->AddFilter((const UTF8Char*)"*.img", (const UTF8Char*)"CD/DVD Image File");
 	}
 }
 
-IO::ParsedObject::ParserType Parser::ObjParser::ISO9660Parser::GetParserType()
+IO::ParserType Parser::ObjParser::ISO9660Parser::GetParserType()
 {
-	return IO::ParsedObject::PT_PACKAGE_PARSER;
+	return IO::ParserType::PackageFile;
 }
 
-IO::ParsedObject *Parser::ObjParser::ISO9660Parser::ParseObject(IO::ParsedObject *pobj, IO::PackageFile *pkgFile, IO::ParsedObject::ParserType targetType)
+IO::ParsedObject *Parser::ObjParser::ISO9660Parser::ParseObject(IO::ParsedObject *pobj, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
 	IO::ISectorData *data;
 	IO::ISectorData *cdData;
 	UInt8 sector[2048];
 	UOSInt sectorSize;
-	if (pobj->GetParserType() != IO::ParsedObject::PT_SECTOR_DATA)
+	if (pobj->GetParserType() != IO::ParserType::SectorData)
 		return 0;
 
 	cdData = 0;

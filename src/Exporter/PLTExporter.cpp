@@ -24,7 +24,7 @@ Int32 Exporter::PLTExporter::GetName()
 
 IO::FileExporter::SupportType Exporter::PLTExporter::IsObjectSupported(IO::ParsedObject *pobj)
 {
-	if (pobj->GetParserType() != IO::ParsedObject::PT_MAP_LAYER_PARSER)
+	if (pobj->GetParserType() != IO::ParserType::MapLayer)
 	{
 		return IO::FileExporter::SupportType::NotSupported;
 	}
@@ -49,7 +49,7 @@ Bool Exporter::PLTExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8
 
 Bool Exporter::PLTExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *fileName, IO::ParsedObject *pobj, void *param)
 {
-	if (pobj->GetParserType() != IO::ParsedObject::PT_MAP_LAYER_PARSER)
+	if (pobj->GetParserType() != IO::ParserType::MapLayer)
 	{
 		return false;
 	}

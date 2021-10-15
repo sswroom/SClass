@@ -19,20 +19,20 @@ Int32 Parser::FileParser::MAIPackParser::GetName()
 	return *(Int32*)"MAIP";
 }
 
-void Parser::FileParser::MAIPackParser::PrepareSelector(IO::IFileSelector *selector, IO::ParsedObject::ParserType t)
+void Parser::FileParser::MAIPackParser::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
 {
-	if (t == IO::ParsedObject::PT_UNKNOWN || t == IO::ParsedObject::PT_PACKAGE_PARSER)
+	if (t == IO::ParserType::Unknown || t == IO::ParserType::PackageFile)
 	{
 		selector->AddFilter((const UTF8Char*)"*.mai", (const UTF8Char*)"MAI Package File");
 	}
 }
 
-IO::ParsedObject::ParserType Parser::FileParser::MAIPackParser::GetParserType()
+IO::ParserType Parser::FileParser::MAIPackParser::GetParserType()
 {
-	return IO::ParsedObject::PT_PACKAGE_PARSER;
+	return IO::ParserType::PackageFile;
 }
 
-IO::ParsedObject *Parser::FileParser::MAIPackParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParsedObject::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::MAIPackParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
 	UInt8 hdrbuff[16];
 	UInt8 recbuff[24];

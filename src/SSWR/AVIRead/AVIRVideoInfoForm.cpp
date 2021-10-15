@@ -258,7 +258,7 @@ Bool SSWR::AVIRead::AVIRVideoInfoForm::OpenFile(const UTF8Char *fileName)
 	IO::StmData::FileData *fd;
 	Media::MediaFile *mediaFile;
 	NEW_CLASS(fd, IO::StmData::FileData(fileName, false));
-	mediaFile = (Media::MediaFile*)this->core->GetParserList()->ParseFileType(fd, IO::ParsedObject::PT_VIDEO_PARSER);
+	mediaFile = (Media::MediaFile*)this->core->GetParserList()->ParseFileType(fd, IO::ParserType::MediaFile);
 	DEL_CLASS(fd);
 	if (mediaFile == 0)
 	{

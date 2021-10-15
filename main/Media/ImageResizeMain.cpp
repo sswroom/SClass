@@ -55,7 +55,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		sb.Append(srcFile);
 		console.WriteLine(sb.ToString());
 	}
-	else if ((imgList = (Media::ImageList*)parser.ParseFile(fd, 0, IO::ParsedObject::PT_IMAGE_LIST_PARSER)) == 0)
+	else if ((imgList = (Media::ImageList*)parser.ParseFile(fd, 0, IO::ParserType::ImageList)) == 0)
 	{
 		sb.ClearStr();
 		sb.Append((const UTF8Char*)"Error in parsing srcFile: ");

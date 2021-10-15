@@ -82,9 +82,9 @@ IO::EXEFile::~EXEFile()
 	DEL_CLASS(this->resList);
 }
 
-IO::ParsedObject::ParserType IO::EXEFile::GetParserType()
+IO::ParserType IO::EXEFile::GetParserType()
 {
-	return IO::ParsedObject::PT_EXE_PARSER;
+	return IO::ParserType::EXEFile;
 }
 
 void IO::EXEFile::AddProp(const UTF8Char *name, const UTF8Char *value)

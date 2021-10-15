@@ -9,7 +9,7 @@ Media::FontRenderer::~FontRenderer()
 {
 }
 
-IO::ParsedObject::ParserType Media::FontRenderer::GetParserType()
+IO::ParserType Media::FontRenderer::GetParserType()
 {
-	return IO::ParsedObject::PT_FONT_RENDERER;
+	return IO::ParserType::FontRenderer;
 }

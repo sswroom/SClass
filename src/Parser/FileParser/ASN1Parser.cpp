@@ -18,20 +18,20 @@ Int32 Parser::FileParser::ASN1Parser::GetName()
 	return *(Int32*)"ASN1";
 }
 
-void Parser::FileParser::ASN1Parser::PrepareSelector(IO::IFileSelector *selector, IO::ParsedObject::ParserType t)
+void Parser::FileParser::ASN1Parser::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
 {
-	if (t == IO::ParsedObject::PT_UNKNOWN || t == IO::ParsedObject::PT_ASN1_DATA)
+	if (t == IO::ParserType::Unknown || t == IO::ParserType::ASN1Data)
 	{
 		selector->AddFilter((const UTF8Char*)"*.jks", (const UTF8Char*)"Java Keystore");
 	}
 }
 
-IO::ParsedObject::ParserType Parser::FileParser::ASN1Parser::GetParserType()
+IO::ParserType Parser::FileParser::ASN1Parser::GetParserType()
 {
-	return IO::ParsedObject::PT_ASN1_DATA;
+	return IO::ParserType::ASN1Data;
 }
 
-IO::ParsedObject *Parser::FileParser::ASN1Parser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParsedObject::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::ASN1Parser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
 	if (!fd->IsFullFile())
 		return 0;

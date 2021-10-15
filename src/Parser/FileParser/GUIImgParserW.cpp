@@ -62,9 +62,9 @@ void Parser::FileParser::GUIImgParser::SetParserList(Parser::ParserList *parsers
 	this->parsers = parsers;
 }
 
-void Parser::FileParser::GUIImgParser::PrepareSelector(IO::IFileSelector *selector, IO::ParsedObject::ParserType t)
+void Parser::FileParser::GUIImgParser::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
 {
-	if (t == IO::ParsedObject::PT_UNKNOWN || t == IO::ParsedObject::PT_IMAGE_LIST_PARSER)
+	if (t == IO::ParserType::Unknown || t == IO::ParserType::ImageList)
 	{
 		selector->AddFilter((const UTF8Char*)"*.tif", (const UTF8Char*)"TIFF(GDI+) File");
 		selector->AddFilter((const UTF8Char*)"*.tiff", (const UTF8Char*)"TIFF(GDI+) File");
@@ -75,12 +75,12 @@ void Parser::FileParser::GUIImgParser::PrepareSelector(IO::IFileSelector *select
 	}
 }
 
-IO::ParsedObject::ParserType Parser::FileParser::GUIImgParser::GetParserType()
+IO::ParserType Parser::FileParser::GUIImgParser::GetParserType()
 {
-	return IO::ParsedObject::PT_IMAGE_LIST_PARSER;
+	return IO::ParserType::ImageList;
 }
 
-IO::ParsedObject *Parser::FileParser::GUIImgParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParsedObject::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::GUIImgParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
 	ClassData *data = (ClassData*)this->clsData;
 	IO::StreamDataStream *stm;
@@ -273,7 +273,7 @@ IO::ParsedObject *Parser::FileParser::GUIImgParser::ParseFile(IO::IStreamData *f
 	DEL_CLASS(stm);
 	mutUsage.EndUse();
 
-	if (targetType != IO::ParsedObject::PT_IMAGE_LIST_PARSER && imgList && imgList->GetCount() == 1)
+	if (targetType != IO::ParserType::ImageList && imgList && imgList->GetCount() == 1)
 	{
 		Media::StaticImage *img = (Media::StaticImage*)imgList->GetImage(0, 0);
 		Double minX;
@@ -394,16 +394,16 @@ void Parser::FileParser::GUIImgParser::SetParserList(Parser::ParserList *parsers
 {
 }
 
-void Parser::FileParser::GUIImgParser::PrepareSelector(IO::IFileSelector *selector, IO::ParsedObject::ParserType t)
+void Parser::FileParser::GUIImgParser::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
 {
 }
 
-IO::ParsedObject::ParserType Parser::FileParser::GUIImgParser::GetParserType()
+IO::ParserType Parser::FileParser::GUIImgParser::GetParserType()
 {
-	return IO::ParsedObject::PT_IMAGE_LIST_PARSER;
+	return IO::ParserType::ImageList;
 }
 
-IO::ParsedObject *Parser::FileParser::GUIImgParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParsedObject::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::GUIImgParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
 	return 0;
 }

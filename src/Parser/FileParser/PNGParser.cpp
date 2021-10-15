@@ -2477,20 +2477,20 @@ Int32 Parser::FileParser::PNGParser::GetName()
 	return *(Int32*)"PNGP";
 }
 
-void Parser::FileParser::PNGParser::PrepareSelector(IO::IFileSelector *selector, IO::ParsedObject::ParserType t)
+void Parser::FileParser::PNGParser::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
 {
-	if (t == IO::ParsedObject::PT_UNKNOWN || t == IO::ParsedObject::PT_IMAGE_LIST_PARSER)
+	if (t == IO::ParserType::Unknown || t == IO::ParserType::ImageList)
 	{
 		selector->AddFilter((const UTF8Char*)"*.png", (const UTF8Char*)"Portable Network Graphic File");
 	}
 }
 
-IO::ParsedObject::ParserType Parser::FileParser::PNGParser::GetParserType()
+IO::ParserType Parser::FileParser::PNGParser::GetParserType()
 {
-	return IO::ParsedObject::PT_IMAGE_LIST_PARSER;
+	return IO::ParserType::ImageList;
 }
 
-IO::ParsedObject *Parser::FileParser::PNGParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParsedObject::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::PNGParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
 	UInt8 buff[12];
 	UInt8 *chunkData;

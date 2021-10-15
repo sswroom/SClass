@@ -19,20 +19,20 @@ Int32 Parser::FileParser::BurikoPackFileParser::GetName()
 	return *(Int32*)"BPAC";
 }
 
-void Parser::FileParser::BurikoPackFileParser::PrepareSelector(IO::IFileSelector *selector, IO::ParsedObject::ParserType t)
+void Parser::FileParser::BurikoPackFileParser::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
 {
-	if (t == IO::ParsedObject::PT_UNKNOWN || t == IO::ParsedObject::PT_PACKAGE_PARSER)
+	if (t == IO::ParserType::Unknown || t == IO::ParserType::PackageFile)
 	{
 		selector->AddFilter((const UTF8Char*)"*.pac", (const UTF8Char*)"PAC Package File");
 	}
 }
 
-IO::ParsedObject::ParserType Parser::FileParser::BurikoPackFileParser::GetParserType()
+IO::ParserType Parser::FileParser::BurikoPackFileParser::GetParserType()
 {
-	return IO::ParsedObject::PT_PACKAGE_PARSER;
+	return IO::ParserType::PackageFile;
 }
 
-IO::ParsedObject *Parser::FileParser::BurikoPackFileParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParsedObject::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::BurikoPackFileParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
 	UInt8 hdrBuff[16];
 	UInt32 dataOfst;

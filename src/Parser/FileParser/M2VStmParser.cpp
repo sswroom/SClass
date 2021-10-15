@@ -18,20 +18,20 @@ Int32 Parser::FileParser::M2VStmParser::GetName()
 	return *(Int32*)"M2VS";
 }
 
-void Parser::FileParser::M2VStmParser::PrepareSelector(IO::IFileSelector *selector, IO::ParsedObject::ParserType t)
+void Parser::FileParser::M2VStmParser::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
 {
-	if (t == IO::ParsedObject::PT_UNKNOWN || t == IO::ParsedObject::PT_VIDEO_PARSER)
+	if (t == IO::ParserType::Unknown || t == IO::ParserType::MediaFile)
 	{
 		selector->AddFilter((const UTF8Char*)"*.m2v", (const UTF8Char*)"MPEG-2 Video Elemental File");
 	}
 }
 
-IO::ParsedObject::ParserType Parser::FileParser::M2VStmParser::GetParserType()
+IO::ParserType Parser::FileParser::M2VStmParser::GetParserType()
 {
-	return IO::ParsedObject::PT_VIDEO_PARSER;
+	return IO::ParserType::MediaFile;
 }
 
-IO::ParsedObject *Parser::FileParser::M2VStmParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParsedObject::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::M2VStmParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
 	UInt8 tmpBuff[1024];
 	UOSInt readSize = fd->GetRealData(0, 1024, tmpBuff);

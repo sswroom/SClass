@@ -4682,7 +4682,7 @@ Map::MapConfig2TGen::MapConfig2TGen(const UTF8Char *fileName, Media::DrawEngine 
 				if (currLayer->minScale < maxScale && currLayer->maxScale >= minScale)
 				{
 					IO::StmData::FileData *fd;
-					IO::ParsedObject::ParserType pt;
+					IO::ParserType pt;
 					Text::StrConcat(sbuff, fileName);
 					IO::Path::AppendPath(sbuff, strs[4]);
 					NEW_CLASS(fd, IO::StmData::FileData(sbuff, false));
@@ -4690,7 +4690,7 @@ Map::MapConfig2TGen::MapConfig2TGen(const UTF8Char *fileName, Media::DrawEngine 
 					DEL_CLASS(fd);
 					if (obj)
 					{
-						if (obj->GetParserType() == IO::ParsedObject::PT_IMAGE_LIST_PARSER)
+						if (obj->GetParserType() == IO::ParserType::ImageList)
 						{
 							Media::ImageList *imgList = (Media::ImageList*)obj;
 							if (imgList->GetCount() > 0)

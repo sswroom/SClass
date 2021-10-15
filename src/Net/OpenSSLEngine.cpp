@@ -429,7 +429,7 @@ Bool Net::OpenSSLEngine::GenerateCert(const UTF8Char *country, const UTF8Char *c
 		if (readSize > 0)
 		{
 			NEW_CLASS(mdata, IO::StmData::MemoryData(buff, (UInt32)readSize));
-			pobjKey = (Crypto::Cert::X509File*)parser.ParseFile(mdata, 0, IO::ParsedObject::PT_ASN1_DATA);
+			pobjKey = (Crypto::Cert::X509File*)parser.ParseFile(mdata, 0, IO::ParserType::ASN1Data);
 			DEL_CLASS(mdata);
 		}
 		PEM_write_bio_X509(bio1, cert);
@@ -437,7 +437,7 @@ Bool Net::OpenSSLEngine::GenerateCert(const UTF8Char *country, const UTF8Char *c
 		if (readSize > 0)
 		{
 			NEW_CLASS(mdata, IO::StmData::MemoryData(buff, (UInt32)readSize));
-			pobjCert = (Crypto::Cert::X509File*)parser.ParseFile(mdata, 0, IO::ParsedObject::PT_ASN1_DATA);
+			pobjCert = (Crypto::Cert::X509File*)parser.ParseFile(mdata, 0, IO::ParserType::ASN1Data);
 			DEL_CLASS(mdata);
 		}
 		BIO_free(bio1);
@@ -485,7 +485,7 @@ Crypto::Cert::X509Key *Net::OpenSSLEngine::GenerateRSAKey()
 		if (readSize > 0)
 		{
 			NEW_CLASS(mdata, IO::StmData::MemoryData(buff, (UInt32)readSize));
-			pobjKey = (Crypto::Cert::X509File*)parser.ParseFile(mdata, 0, IO::ParsedObject::PT_ASN1_DATA);
+			pobjKey = (Crypto::Cert::X509File*)parser.ParseFile(mdata, 0, IO::ParserType::ASN1Data);
 			DEL_CLASS(mdata);
 		}
 		BIO_free(bio1);

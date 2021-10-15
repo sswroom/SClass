@@ -21,7 +21,7 @@ Int32 Exporter::SHA1Exporter::GetName()
 
 IO::FileExporter::SupportType Exporter::SHA1Exporter::IsObjectSupported(IO::ParsedObject *pobj)
 {
-	if (pobj->GetParserType() != IO::ParsedObject::PT_FILE_CHECK)
+	if (pobj->GetParserType() != IO::ParserType::FileCheck)
 	{
 		return IO::FileExporter::SupportType::NotSupported;
 	}
@@ -51,7 +51,7 @@ void Exporter::SHA1Exporter::SetCodePage(UInt32 codePage)
 
 Bool Exporter::SHA1Exporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *fileName, IO::ParsedObject *pobj, void *param)
 {
-	if (pobj->GetParserType() != IO::ParsedObject::PT_FILE_CHECK)
+	if (pobj->GetParserType() != IO::ParserType::FileCheck)
 	{
 		return false;
 	}

@@ -23,20 +23,20 @@ Int32 Parser::FileParser::OZF2Parser::GetName()
 	return *(Int32*)"OZF2";
 }
 
-void Parser::FileParser::OZF2Parser::PrepareSelector(IO::IFileSelector *selector, IO::ParsedObject::ParserType t)
+void Parser::FileParser::OZF2Parser::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
 {
-	if (t == IO::ParsedObject::PT_UNKNOWN || t == IO::ParsedObject::PT_IMAGE_LIST_PARSER)
+	if (t == IO::ParserType::Unknown || t == IO::ParserType::ImageList)
 	{
 		selector->AddFilter((const UTF8Char*)"*.ozf2", (const UTF8Char*)"OziExplorer File v2");
 	}
 }
 
-IO::ParsedObject::ParserType Parser::FileParser::OZF2Parser::GetParserType()
+IO::ParserType Parser::FileParser::OZF2Parser::GetParserType()
 {
-	return IO::ParsedObject::PT_IMAGE_LIST_PARSER;
+	return IO::ParserType::ImageList;
 }
 
-IO::ParsedObject *Parser::FileParser::OZF2Parser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParsedObject::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::OZF2Parser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
 	UInt8 hdr[62];
 	UInt8 tmpBuff[1036];

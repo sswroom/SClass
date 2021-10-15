@@ -64,7 +64,7 @@ Bool Exporter::GUIJPGExporter::ExportFile(IO::SeekableStream *stm, const UTF8Cha
 		Media::ImageList *imgList;
 		UInt8 *jpgBuff;
 		UOSInt jpgSize;
-		if (pobj->GetParserType() == IO::ParsedObject::PT_IMAGE_LIST_PARSER)
+		if (pobj->GetParserType() == IO::ParserType::ImageList)
 		{
 			imgList = (Media::ImageList*)pobj;
 			srcImg = imgList->GetImage(0, 0);

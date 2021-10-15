@@ -17,7 +17,7 @@ IO::ParsedObject *IO::FileParser::ParseFilePath(const UTF8Char *filePath)
 		Text::StrDelNew(dir);
 	}
 	NEW_CLASS(fd, IO::StmData::FileData(filePath, false));	
-	IO::ParsedObject *pobj = this->ParseFile(fd, pkg, IO::ParsedObject::PT_UNKNOWN);
+	IO::ParsedObject *pobj = this->ParseFile(fd, pkg, IO::ParserType::Unknown);
 	DEL_CLASS(fd);
 	SDEL_CLASS(pkg);
 	return pobj;

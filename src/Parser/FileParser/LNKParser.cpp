@@ -16,20 +16,20 @@ Int32 Parser::FileParser::LNKParser::GetName()
 	return *(Int32*)"LNKP";
 }
 
-void Parser::FileParser::LNKParser::PrepareSelector(IO::IFileSelector *selector, IO::ParsedObject::ParserType t)
+void Parser::FileParser::LNKParser::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
 {
-	if (t == IO::ParsedObject::PT_UNKNOWN || t == IO::ParsedObject::PT_PACKAGE_PARSER)
+	if (t == IO::ParserType::Unknown || t == IO::ParserType::PackageFile)
 	{
 		selector->AddFilter((const UTF8Char*)"*.lnk", (const UTF8Char*)"Link File");
 	}
 }
 
-IO::ParsedObject::ParserType Parser::FileParser::LNKParser::GetParserType()
+IO::ParserType Parser::FileParser::LNKParser::GetParserType()
 {
-	return IO::ParsedObject::PT_PACKAGE_PARSER;
+	return IO::ParserType::PackageFile;
 }
 
-IO::ParsedObject *Parser::FileParser::LNKParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParsedObject::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::LNKParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
 	return 0;
 }

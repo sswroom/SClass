@@ -90,7 +90,7 @@ namespace IO
 		BTScanLog(const UTF8Char *sourceName);
 		virtual ~BTScanLog();
 
-		virtual IO::ParsedObject::ParserType GetParserType();
+		virtual IO::ParserType GetParserType();
 
 		LogEntry *AddEntry(Int64 timeTicks, UInt64 macInt, RadioType radioType, AddressType addrType, UInt16 company, const UTF8Char *name, Int8 rssi, Int8 txPower, Int8 measurePower, AdvType advType);
 		LogEntry *AddScanRec(const ScanRecord3 *rec);

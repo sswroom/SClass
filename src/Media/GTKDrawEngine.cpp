@@ -58,7 +58,7 @@ Media::DrawImage *Media::GTKDrawEngine::LoadImage(const UTF8Char *fileName)
 	if (imgList == 0)
 	{
 		Parser::FileParser::GUIImgParser parser;
-		imgList = (Media::ImageList*)parser.ParseFile(fd, 0, IO::ParsedObject::PT_IMAGE_LIST_PARSER);
+		imgList = (Media::ImageList*)parser.ParseFile(fd, 0, IO::ParserType::ImageList);
 	}
 	DEL_CLASS(fd);
 

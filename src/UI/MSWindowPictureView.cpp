@@ -23,7 +23,7 @@ UInt32 __stdcall UI::MSWindowPictureView::ThreadProc(void *userObj)
 	OSInt i;
 	IO::StmData::FileData *fd;
 	IO::ParsedObject *pobj;
-	IO::ParsedObject::ParserType t;
+	IO::ParserType t;
 	Media::ImageList *imgList;
 	Media::StaticImage *img;
 
@@ -99,7 +99,7 @@ UInt32 __stdcall UI::MSWindowPictureView::ThreadProc(void *userObj)
 						DEL_CLASS(fd);
 						if (pobj)
 						{
-							if (t == IO::ParsedObject::PT_IMAGE_LIST_PARSER)
+							if (t == IO::ParserType::ImageList)
 							{
 								imgList = (Media::ImageList*)pobj;
 								imgList->ToStaticImage(0);

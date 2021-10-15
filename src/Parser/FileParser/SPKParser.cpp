@@ -40,20 +40,20 @@ void Parser::FileParser::SPKParser::SetSSLEngine(Net::SSLEngine *ssl)
 	this->ssl = ssl;
 }
 
-void Parser::FileParser::SPKParser::PrepareSelector(IO::IFileSelector *selector, IO::ParsedObject::ParserType t)
+void Parser::FileParser::SPKParser::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
 {
-	if (t == IO::ParsedObject::PT_UNKNOWN || t == IO::ParsedObject::PT_PACKAGE_PARSER)
+	if (t == IO::ParserType::Unknown || t == IO::ParserType::PackageFile)
 	{
 		selector->AddFilter((const UTF8Char*)"*.spk", (const UTF8Char*)"SPackage File");
 	}
 }
 
-IO::ParsedObject::ParserType Parser::FileParser::SPKParser::GetParserType()
+IO::ParserType Parser::FileParser::SPKParser::GetParserType()
 {
-	return IO::ParsedObject::PT_PACKAGE_PARSER;
+	return IO::ParserType::PackageFile;
 }
 
-IO::ParsedObject *Parser::FileParser::SPKParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParsedObject::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::SPKParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
 	UInt8 hdrBuff[24];
 	UInt64 dirOfst;
@@ -77,7 +77,7 @@ IO::ParsedObject *Parser::FileParser::SPKParser::ParseFile(IO::IStreamData *fd, 
 	fileSize = fd->GetDataSize();
 	if (dirOfst < 16 || dirOfst > fileSize)
 		return 0;
-	if (flags & 1 && targetType != IO::ParsedObject::PT_PACKAGE_PARSER)
+	if (flags & 1 && targetType != IO::ParserType::PackageFile)
 	{
 		Int32 customType;
 		UInt32 customSize;

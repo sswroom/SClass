@@ -42,7 +42,7 @@ namespace Text
 			TextDocument(const UTF8Char *name);
 			virtual ~TextDocument();
 
-			virtual IO::ParsedObject::ParserType GetParserType();
+			virtual IO::ParserType GetParserType();
 
 			void SetDocumentName(const UTF8Char *docName);
 			UTF8Char *GetDocumentName(UTF8Char *docName);

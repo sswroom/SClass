@@ -18,20 +18,20 @@ Int32 Parser::FileParser::DTSParser::GetName()
 	return *(Int32*)"DTSP";
 }
 
-void Parser::FileParser::DTSParser::PrepareSelector(IO::IFileSelector *selector, IO::ParsedObject::ParserType t)
+void Parser::FileParser::DTSParser::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
 {
-	if (t == IO::ParsedObject::PT_UNKNOWN || t == IO::ParsedObject::PT_VIDEO_PARSER)
+	if (t == IO::ParserType::Unknown || t == IO::ParserType::MediaFile)
 	{
 		selector->AddFilter((const UTF8Char*)"*.dts", (const UTF8Char*)"DTS File");
 	}
 }
 
-IO::ParsedObject::ParserType Parser::FileParser::DTSParser::GetParserType()
+IO::ParserType Parser::FileParser::DTSParser::GetParserType()
 {
-	return IO::ParsedObject::PT_VIDEO_PARSER;
+	return IO::ParserType::MediaFile;
 }
 
-IO::ParsedObject *Parser::FileParser::DTSParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParsedObject::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::DTSParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
 	UInt8 buff[256];
 	fd->GetRealData(0, 32, buff);

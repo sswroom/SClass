@@ -14,7 +14,7 @@ UInt32 __stdcall Media::Batch::BatchLoader::ThreadProc(void *userObj)
 	Bool found;
 	UOSInt i;
 	IO::ParsedObject *pobj;
-	IO::ParsedObject::ParserType pt;
+	IO::ParserType pt;
 
 	ThreadState *state = (ThreadState*)userObj;
 	state->running = true;
@@ -56,7 +56,7 @@ UInt32 __stdcall Media::Batch::BatchLoader::ThreadProc(void *userObj)
 				DEL_CLASS(fd);
 				if (pobj)
 				{
-					if (pt == IO::ParsedObject::PT_IMAGE_LIST_PARSER)
+					if (pt == IO::ParserType::ImageList)
 					{
 						Media::ImageList *imgList = (Media::ImageList*)pobj;
 						i = imgList->GetCount();
@@ -93,7 +93,7 @@ UInt32 __stdcall Media::Batch::BatchLoader::ThreadProc(void *userObj)
 				pobj = state->me->parsers->ParseFile(info->data, &pt);
 				if (pobj)
 				{
-					if (pt == IO::ParsedObject::PT_IMAGE_LIST_PARSER)
+					if (pt == IO::ParserType::ImageList)
 					{
 						Media::ImageList *imgList = (Media::ImageList*)pobj;
 						i = imgList->GetCount();

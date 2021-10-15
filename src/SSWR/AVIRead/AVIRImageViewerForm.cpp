@@ -60,7 +60,7 @@ void __stdcall SSWR::AVIRead::AVIRImageViewerForm::OnMoveToNext(void *userObj)
 					fd = me->pkgFile->GetItemStmData(i);
 					if (fd)
 					{
-						pobj = me->core->GetParserList()->ParseFileType(fd, IO::PackageFile::PT_IMAGE_LIST_PARSER);
+						pobj = me->core->GetParserList()->ParseFileType(fd, IO::ParserType::ImageList);
 						DEL_CLASS(fd);
 						if (pobj)
 						{
@@ -89,7 +89,7 @@ void __stdcall SSWR::AVIRead::AVIRImageViewerForm::OnMoveToNext(void *userObj)
 					fd = me->pkgFile->GetItemStmData(i);
 					if (fd)
 					{
-						pobj = me->core->GetParserList()->ParseFileType(fd, IO::PackageFile::PT_IMAGE_LIST_PARSER);
+						pobj = me->core->GetParserList()->ParseFileType(fd, IO::ParserType::ImageList);
 						DEL_CLASS(fd);
 						if (pobj)
 						{
@@ -127,7 +127,7 @@ void __stdcall SSWR::AVIRead::AVIRImageViewerForm::OnMoveToPrev(void *userObj)
 					fd = me->pkgFile->GetItemStmData(i);
 					if (fd)
 					{
-						pobj = me->core->GetParserList()->ParseFileType(fd, IO::PackageFile::PT_IMAGE_LIST_PARSER);
+						pobj = me->core->GetParserList()->ParseFileType(fd, IO::ParserType::ImageList);
 						DEL_CLASS(fd);
 						if (pobj)
 						{
@@ -155,7 +155,7 @@ void __stdcall SSWR::AVIRead::AVIRImageViewerForm::OnMoveToPrev(void *userObj)
 					fd = me->pkgFile->GetItemStmData(i);
 					if (fd)
 					{
-						pobj = me->core->GetParserList()->ParseFileType(fd, IO::PackageFile::PT_IMAGE_LIST_PARSER);
+						pobj = me->core->GetParserList()->ParseFileType(fd, IO::ParserType::ImageList);
 						DEL_CLASS(fd);
 						if (pobj)
 						{
@@ -415,18 +415,18 @@ void SSWR::AVIRead::AVIRImageViewerForm::SetImage(Media::ImageList *imgList, Boo
 Bool SSWR::AVIRead::AVIRImageViewerForm::ParseFile(IO::IStreamData *fd)
 {
 	IO::ParsedObject *pobj;
-	IO::ParsedObject::ParserType pt;
+	IO::ParserType pt;
 	IO::IStreamData *fd2;
 	UTF8Char sbuff[512];
 
-	pobj = this->core->GetParserList()->ParseFileType(fd, IO::ParsedObject::PT_IMAGE_LIST_PARSER);
+	pobj = this->core->GetParserList()->ParseFileType(fd, IO::ParserType::ImageList);
 	if (pobj)
 	{
 		this->SetImage((Media::ImageList*)pobj, false);
 		return true;
 	}
 
-	pobj = this->core->GetParserList()->ParseFileType(fd, IO::ParsedObject::PT_PACKAGE_PARSER);
+	pobj = this->core->GetParserList()->ParseFileType(fd, IO::ParserType::PackageFile);
 	if (pobj)
 	{
 		IO::PackageFile *pf;
@@ -452,7 +452,7 @@ Bool SSWR::AVIRead::AVIRImageViewerForm::ParseFile(IO::IStreamData *fd)
 						DEL_CLASS(fd2);
 						if (pobj2)
 						{
-							if (pt == IO::ParsedObject::PT_IMAGE_LIST_PARSER)
+							if (pt == IO::ParserType::ImageList)
 							{
 								found = true;
 								SDEL_CLASS(this->pkgFile);

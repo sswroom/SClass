@@ -28,7 +28,7 @@ IO::FileExporter::SupportType Exporter::MDBExporter::IsObjectSupported(IO::Parse
 #if defined(_WIN32_WCE)
 	return IO::FileExporter::SupportType::NotSupported;
 #else
-	if (pobj->GetParserType() != IO::ParsedObject::PT_READINGDB_PARSER && pobj->GetParserType() != IO::ParsedObject::PT_MAP_LAYER_PARSER)
+	if (pobj->GetParserType() != IO::ParserType::ReadingDB && pobj->GetParserType() != IO::ParserType::MapLayer)
 	{
 		return IO::FileExporter::SupportType::NotSupported;
 	}
@@ -52,7 +52,7 @@ Bool Exporter::MDBExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 #if defined(_WIN32_WCE)
 	return false;
 #else
-	if (pobj->GetParserType() != IO::ParsedObject::PT_READINGDB_PARSER)
+	if (pobj->GetParserType() != IO::ParserType::ReadingDB)
 	{
 		return false;
 	}

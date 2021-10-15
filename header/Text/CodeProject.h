@@ -69,7 +69,7 @@ namespace Text
 		CodeProjectCfg *GetConfig(UOSInt index);
 
 		virtual ProjectType GetProjectType() = 0;
-		virtual IO::ParsedObject::ParserType GetParserType();
+		virtual IO::ParserType GetParserType();
 	};
 }
 #endif

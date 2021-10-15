@@ -77,7 +77,7 @@ void __stdcall SSWR::MapReplay::MapReplayForm::OnFileDrop(void *userObj, const W
 	SSWR::MapReplay::MapReplayForm *me = (SSWR::MapReplay::MapReplayForm*)userObj;
 	IO::StmData::FileData *fd;
 	IO::ParsedObject *pobj;
-	IO::ParsedObject::ParserType pt;
+	IO::ParserType pt;
 
 	OSInt i = 0;
 	while (i < nFiles)
@@ -87,7 +87,7 @@ void __stdcall SSWR::MapReplay::MapReplayForm::OnFileDrop(void *userObj, const W
 		DEL_CLASS(fd);
 		if (pobj)
 		{
-			if (pt == IO::ParsedObject::PT_MAP_LAYER_PARSER)
+			if (pt == IO::ParserType::MapLayer)
 			{
 				me->env->AddLayer(0, (Map::IMapDrawLayer*)pobj, true);
 			}

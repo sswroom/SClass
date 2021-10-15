@@ -23,11 +23,11 @@ Int32 Exporter::SPKExporter::GetName()
 
 IO::FileExporter::SupportType Exporter::SPKExporter::IsObjectSupported(IO::ParsedObject *pobj)
 {
-	if (pobj->GetParserType() == IO::ParsedObject::PT_PACKAGE_PARSER)
+	if (pobj->GetParserType() == IO::ParserType::PackageFile)
 	{
 		return IO::FileExporter::SupportType::NormalStream;
 	}
-	else if (pobj->GetParserType() == IO::ParsedObject::PT_MAP_LAYER_PARSER)
+	else if (pobj->GetParserType() == IO::ParserType::MapLayer)
 	{
 		Map::IMapDrawLayer *layer = (Map::IMapDrawLayer*)pobj;
 		Map::IMapDrawLayer::ObjectClass oc = layer->GetObjectClass();
@@ -65,7 +65,7 @@ void Exporter::SPKExporter::SetCodePage(UInt32 codePage)
 
 Bool Exporter::SPKExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *fileName, IO::ParsedObject *pobj, void *param)
 {
-	if (pobj->GetParserType() == IO::ParsedObject::PT_PACKAGE_PARSER)
+	if (pobj->GetParserType() == IO::ParserType::PackageFile)
 	{
 		IO::PackageFile *pkgFile = (IO::PackageFile *)pobj;
 		UTF8Char sbuff[512];
@@ -75,7 +75,7 @@ Bool Exporter::SPKExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 		DEL_CLASS(spkg);
 		return true;
 	}
-	else if (pobj->GetParserType() == IO::ParsedObject::PT_MAP_LAYER_PARSER)
+	else if (pobj->GetParserType() == IO::ParserType::MapLayer)
 	{
 		Map::IMapDrawLayer *layer = (Map::IMapDrawLayer*)pobj;
 		Map::IMapDrawLayer::ObjectClass oc = layer->GetObjectClass();

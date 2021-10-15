@@ -23,7 +23,7 @@ Int32 Exporter::PEMExporter::GetName()
 
 IO::FileExporter::SupportType Exporter::PEMExporter::IsObjectSupported(IO::ParsedObject *pobj)
 {
-	if (pobj->GetParserType() != IO::ParsedObject::PT_ASN1_DATA)
+	if (pobj->GetParserType() != IO::ParserType::ASN1Data)
 	{
 		return IO::FileExporter::SupportType::NotSupported;
 	}
@@ -57,7 +57,7 @@ Bool Exporter::PEMExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8
 
 Bool Exporter::PEMExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *fileName, IO::ParsedObject *pobj, void *param)
 {
-	if (pobj->GetParserType() != IO::ParsedObject::PT_ASN1_DATA)
+	if (pobj->GetParserType() != IO::ParserType::ASN1Data)
 	{
 		return false;
 	}

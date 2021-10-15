@@ -19,20 +19,20 @@ Int32 Parser::FileParser::PCAPParser::GetName()
 	return *(Int32*)"PCAP";
 }
 
-void Parser::FileParser::PCAPParser::PrepareSelector(IO::IFileSelector *selector, IO::ParsedObject::ParserType t)
+void Parser::FileParser::PCAPParser::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
 {
-	if (t == IO::ParsedObject::PT_UNKNOWN || t == IO::ParsedObject::PT_ETHERNET_ANALYZER)
+	if (t == IO::ParserType::Unknown || t == IO::ParserType::EthernetAnalyzer)
 	{
 		selector->AddFilter((const UTF8Char*)"*.pcap", (const UTF8Char*)"PCAP File");
 	}
 }
 
-IO::ParsedObject::ParserType Parser::FileParser::PCAPParser::GetParserType()
+IO::ParserType Parser::FileParser::PCAPParser::GetParserType()
 {
-	return IO::ParsedObject::PT_ETHERNET_ANALYZER;
+	return IO::ParserType::EthernetAnalyzer;
 }
 
-IO::ParsedObject *Parser::FileParser::PCAPParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParsedObject::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::PCAPParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
 	UInt8 hdr[24];
 	UInt8 *packetBuff;

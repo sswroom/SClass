@@ -42,3 +42,15 @@ void Crypto::Cert::X509CertReq::ToString(Text::StringBuilderUTF *sb)
 		AppendCertificateRequest(this->buff, this->buff + this->buffSize, "1", sb);
 	}
 }
+
+Bool Crypto::Cert::X509CertReq::GetNames(CertNames *names)
+{
+	UOSInt itemLen;
+	Net::ASN1Util::ItemType itemType;
+	const UInt8 *namesPDU = Net::ASN1Util::PDUGetItem(this->buff, this->buff + this->buffSize, "1.1.2", &itemLen, &itemType);
+	if (namesPDU)
+	{
+		return NamesGet(namesPDU, namesPDU + itemLen, names);
+	}
+	return false;
+}

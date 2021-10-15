@@ -39,7 +39,7 @@ Media::DrawImage *Media::StaticEngine::LoadImage(const UTF8Char *fileName)
 	NEW_CLASS(fd, IO::StmData::FileData(fileName, false));
 	if (this->parsers)
 	{
-		imgList = (Media::ImageList*)this->parsers->ParseFileType(fd, IO::ParsedObject::PT_IMAGE_LIST_PARSER);
+		imgList = (Media::ImageList*)this->parsers->ParseFileType(fd, IO::ParserType::ImageList);
 	}
 	DEL_CLASS(fd);
 
@@ -61,7 +61,7 @@ Media::DrawImage *Media::StaticEngine::LoadImageW(const WChar *fileName)
 	Text::StrDelNew(csptr);
 	if (this->parsers)
 	{
-		imgList = (Media::ImageList*)this->parsers->ParseFileType(fd, IO::ParsedObject::PT_IMAGE_LIST_PARSER);
+		imgList = (Media::ImageList*)this->parsers->ParseFileType(fd, IO::ParserType::ImageList);
 	}
 	DEL_CLASS(fd);
 

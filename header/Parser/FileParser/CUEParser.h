@@ -16,9 +16,9 @@ namespace Parser
 
 			virtual Int32 GetName();
 			virtual void SetParserList(Parser::ParserList *parsers);
-			virtual void PrepareSelector(IO::IFileSelector *selector, IO::ParsedObject::ParserType t);
-			virtual IO::ParsedObject::ParserType GetParserType();
-			virtual IO::ParsedObject *ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParsedObject::ParserType targetType);
+			virtual void PrepareSelector(IO::IFileSelector *selector, IO::ParserType t);
+			virtual IO::ParserType GetParserType();
+			virtual IO::ParsedObject *ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType);
 		private:
 			UTF8Char *ReadString(UTF8Char *sbuff, const UTF8Char *cueStr);
 			UInt32 ReadTime(const UTF8Char *timeStr);

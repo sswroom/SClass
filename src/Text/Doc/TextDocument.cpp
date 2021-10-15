@@ -36,9 +36,9 @@ Text::Doc::TextDocument::~TextDocument()
 	}
 }
 
-IO::ParsedObject::ParserType Text::Doc::TextDocument::GetParserType()
+IO::ParserType Text::Doc::TextDocument::GetParserType()
 {
-	return IO::ParsedObject::PT_TEXT_DOCUMENT;
+	return IO::ParserType::TextDocument;
 }
 
 void Text::Doc::TextDocument::SetDocumentName(const UTF8Char *docName)

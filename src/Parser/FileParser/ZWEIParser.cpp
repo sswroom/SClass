@@ -20,20 +20,20 @@ Int32 Parser::FileParser::ZWEIParser::GetName()
 	return *(Int32*)"ZWEI";
 }
 
-void Parser::FileParser::ZWEIParser::PrepareSelector(IO::IFileSelector *selector, IO::ParsedObject::ParserType t)
+void Parser::FileParser::ZWEIParser::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
 {
-	if (t == IO::ParsedObject::PT_UNKNOWN || t == IO::ParsedObject::PT_PACKAGE_PARSER)
+	if (t == IO::ParserType::Unknown || t == IO::ParserType::PackageFile)
 	{
 		//selector->AddFilter(L"*.zip", L"ZIP File");
 	}
 }
 
-IO::ParsedObject::ParserType Parser::FileParser::ZWEIParser::GetParserType()
+IO::ParserType Parser::FileParser::ZWEIParser::GetParserType()
 {
-	return IO::ParsedObject::PT_PACKAGE_PARSER;
+	return IO::ParserType::PackageFile;
 }
 
-IO::ParsedObject *Parser::FileParser::ZWEIParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParsedObject::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::ZWEIParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
 	UInt32 hdr[2];
 	UInt32 extCnt;

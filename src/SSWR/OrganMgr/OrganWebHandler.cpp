@@ -1166,7 +1166,7 @@ Bool SSWR::OrganMgr::OrganWebHandler::UserGPSGetPos(Int32 userId, Data::DateTime
 			*sptr++ = IO::Path::PATH_SEPERATOR;
 			sptr = Text::StrConcat(sptr, dataFile->fileName);
 			NEW_CLASS(fd, IO::StmData::FileData(u8buff, false));
-			Map::IMapDrawLayer *lyr = (Map::IMapDrawLayer*)this->parsers->ParseFileType(fd, IO::ParsedObject::PT_MAP_LAYER_PARSER);
+			Map::IMapDrawLayer *lyr = (Map::IMapDrawLayer*)this->parsers->ParseFileType(fd, IO::ParserType::MapLayer);
 			DEL_CLASS(fd);
 			if (lyr)
 			{
@@ -1452,7 +1452,7 @@ Int32 SSWR::OrganMgr::OrganWebHandler::UserfileAdd(Int32 userId, Int32 spId, con
 	if (fileType == 1)
 	{
 		IO::StmData::MemoryData *md;
-		IO::ParsedObject::ParserType t;
+		IO::ParserType t;
 		IO::ParsedObject *pobj;
 		Bool valid = false;
 		Data::DateTime fileTime;
@@ -1469,7 +1469,7 @@ Int32 SSWR::OrganMgr::OrganWebHandler::UserfileAdd(Int32 userId, Int32 spId, con
 		DEL_CLASS(md);
 		if (pobj)
 		{
-			if (t == IO::ParsedObject::PT_IMAGE_LIST_PARSER)
+			if (t == IO::ParserType::ImageList)
 			{
 				valid = true;
 
@@ -1697,7 +1697,7 @@ Int32 SSWR::OrganMgr::OrganWebHandler::UserfileAdd(Int32 userId, Int32 spId, con
 		IO::StmData::FileData *fd;
 		UInt32 crcVal;
 		IO::ParsedObject *pobj;
-		IO::ParsedObject::ParserType t;
+		IO::ParserType t;
 		Data::DateTime fileTime;
 		SSWR::OrganMgr::OrganWebHandler::UserFileInfo *userFile;
 		Bool valid = false;
@@ -1713,7 +1713,7 @@ Int32 SSWR::OrganMgr::OrganWebHandler::UserfileAdd(Int32 userId, Int32 spId, con
 		DEL_CLASS(fd);
 		if (pobj)
 		{
-			if (t == IO::ParsedObject::PT_VIDEO_PARSER)
+			if (t == IO::ParserType::MediaFile)
 			{
 				Media::MediaFile *mediaFile = (Media::MediaFile*)pobj;
 				Media::IMediaSource *msrc = mediaFile->GetStream(0, 0);
@@ -4748,7 +4748,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 					Sync::MutexUsage mutUsage(me->parserMut);
 					NEW_CLASS(fd, IO::StmData::FileData(u8buff, false));
 					fileSize = fd->GetDataSize();
-					mediaFile = (Media::MediaFile*)me->parsers->ParseFileType(fd, IO::ParsedObject::PT_VIDEO_PARSER);
+					mediaFile = (Media::MediaFile*)me->parsers->ParseFileType(fd, IO::ParserType::MediaFile);
 					DEL_CLASS(fd);
 					mutUsage.EndUse();
 
@@ -5672,7 +5672,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetailD(Net::WebServer::
 				Sync::MutexUsage mutUsage(me->parserMut);
 				NEW_CLASS(fd, IO::StmData::FileData(u8buff, false));
 				fileSize = fd->GetDataSize();
-				mediaFile = (Media::MediaFile*)me->parsers->ParseFileType(fd, IO::ParsedObject::PT_VIDEO_PARSER);
+				mediaFile = (Media::MediaFile*)me->parsers->ParseFileType(fd, IO::ParserType::MediaFile);
 				DEL_CLASS(fd);
 				mutUsage.EndUse();
 
@@ -6403,7 +6403,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoUpload(Net::WebServer::I
 		Media::ImageList *imgList;
 		NEW_CLASS(fd, IO::StmData::MemoryData(fileCont, fileSize));
 		me->parserMut->Lock();
-		imgList = (Media::ImageList*)me->parsers->ParseFileType(fd, IO::ParsedObject::PT_IMAGE_LIST_PARSER);
+		imgList = (Media::ImageList*)me->parsers->ParseFileType(fd, IO::ParserType::ImageList);
 		me->parserMut->Unlock();
 		DEL_CLASS(fd);
 		if (imgList)
@@ -8050,7 +8050,7 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhoto(Net::WebServer::IWebRequest 
 			IO::StmData::FileData *fd;
 			Sync::MutexUsage mutUsage(this->parserMut);
 			NEW_CLASS(fd, IO::StmData::FileData(sb.ToString(), false));
-			imgList = (Media::ImageList*)this->parsers->ParseFileType(fd, IO::ParsedObject::PT_IMAGE_LIST_PARSER);
+			imgList = (Media::ImageList*)this->parsers->ParseFileType(fd, IO::ParserType::ImageList);
 			DEL_CLASS(fd);
 			mutUsage.EndUse();
 			if (imgList)
@@ -8334,7 +8334,7 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhotoId(Net::WebServer::IWebReques
 		IO::StmData::FileData *fd;
 		Sync::MutexUsage mutUsage(this->parserMut);
 		NEW_CLASS(fd, IO::StmData::FileData(u8buff, false));
-		imgList = (Media::ImageList*)this->parsers->ParseFileType(fd, IO::ParsedObject::PT_IMAGE_LIST_PARSER);
+		imgList = (Media::ImageList*)this->parsers->ParseFileType(fd, IO::ParserType::ImageList);
 		DEL_CLASS(fd);
 		mutUsage.EndUse();
 		if (imgList)
@@ -8633,7 +8633,7 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhotoWId(Net::WebServer::IWebReque
 			IO::StmData::FileData *fd;
 			Sync::MutexUsage mutUsage(this->parserMut);
 			NEW_CLASS(fd, IO::StmData::FileData(u8buff, false));
-			imgList = (Media::ImageList*)this->parsers->ParseFileType(fd, IO::ParsedObject::PT_IMAGE_LIST_PARSER);
+			imgList = (Media::ImageList*)this->parsers->ParseFileType(fd, IO::ParserType::ImageList);
 			DEL_CLASS(fd);
 			mutUsage.EndUse();
 			if (imgList)

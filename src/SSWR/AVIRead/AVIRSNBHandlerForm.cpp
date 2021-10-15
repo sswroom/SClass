@@ -36,7 +36,7 @@ void __stdcall SSWR::AVIRead::AVIRSNBHandlerForm::OnTypeSelChg(void *userObj)
 	Parser::ParserList *parsers = me->core->GetParserList();
 	IO::StmData::FileData *fd;
 	NEW_CLASS(fd, IO::StmData::FileData(sbuff, false));
-	Media::ImageList *imgList = (Media::ImageList*)parsers->ParseFileType(fd, IO::ParsedObject::PT_IMAGE_LIST_PARSER);
+	Media::ImageList *imgList = (Media::ImageList*)parsers->ParseFileType(fd, IO::ParserType::ImageList);
 	DEL_CLASS(fd);
 	if (imgList)
 	{

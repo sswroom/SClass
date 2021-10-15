@@ -24,27 +24,27 @@ void Parser::ObjParser::KMZParser::SetParserList(Parser::ParserList *parsers)
 	this->parsers = parsers;
 }
 
-void Parser::ObjParser::KMZParser::PrepareSelector(IO::IFileSelector *selector, IO::ParsedObject::ParserType t)
+void Parser::ObjParser::KMZParser::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
 {
-	if (t == IO::ParsedObject::PT_MAP_LAYER_PARSER)
+	if (t == IO::ParserType::MapLayer)
 	{
 		selector->AddFilter((const UTF8Char*)"*.kmz", (const UTF8Char*)"Zipped KML File");
 	}
 }
 
-IO::ParsedObject::ParserType Parser::ObjParser::KMZParser::GetParserType()
+IO::ParserType Parser::ObjParser::KMZParser::GetParserType()
 {
-	return IO::ParsedObject::PT_MAP_LAYER_PARSER;
+	return IO::ParserType::MapLayer;
 }
 
-IO::ParsedObject *Parser::ObjParser::KMZParser::ParseObject(IO::ParsedObject *pobj, IO::PackageFile *pkgFile, IO::ParsedObject::ParserType targetType)
+IO::ParsedObject *Parser::ObjParser::KMZParser::ParseObject(IO::ParsedObject *pobj, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
-	if (pobj->GetParserType() != IO::ParsedObject::PT_PACKAGE_PARSER)
+	if (pobj->GetParserType() != IO::ParserType::PackageFile)
 		return 0;
 	if (this->parsers == 0)
 		return 0;
 	IO::PackageFile *pkg = (IO::PackageFile*)pobj;
-	IO::ParsedObject::ParserType pt;
+	IO::ParserType pt;
 	UTF8Char u8buff[256];
 	Data::ArrayList<IO::ParsedObject*> *pobjList;
 	IO::IStreamData *fd;
@@ -70,7 +70,7 @@ IO::ParsedObject *Parser::ObjParser::KMZParser::ParseObject(IO::ParsedObject *po
 					{
 						pobj2->SetSourceName(pobj->GetSourceNameObj());
 					}
-					if (pt == IO::ParsedObject::PT_MAP_LAYER_PARSER)
+					if (pt == IO::ParserType::MapLayer)
 					{
 						pobjList->Add(pobj2);
 					}
@@ -103,7 +103,7 @@ IO::ParsedObject *Parser::ObjParser::KMZParser::ParseObject(IO::ParsedObject *po
 		while (i < j)
 		{
 			pobj2 = pobjList->GetItem(i);
-			if (pobj2->GetParserType() == IO::ParsedObject::PT_MAP_LAYER_PARSER)
+			if (pobj2->GetParserType() == IO::ParserType::MapLayer)
 			{
 				mapLyrColl->Add((Map::IMapDrawLayer*)pobj2);
 			}

@@ -68,7 +68,7 @@ namespace IO
 		SMake(const UTF8Char *cfgFile, UOSInt threadCnt, IO::Writer *messageWriter);
 		virtual ~SMake();
 
-		virtual IO::ParsedObject::ParserType GetParserType();
+		virtual IO::ParserType GetParserType();
 
 		Bool IsLoadFailed();
 		Bool GetErrorMsg(Text::StringBuilderUTF *sb);

@@ -130,7 +130,7 @@ namespace Map
 		MapEnv(const UTF8Char *fileName, UInt32 bgColor, Math::CoordinateSystem *csys);
 		virtual ~MapEnv();
 
-		virtual IO::ParsedObject::ParserType GetParserType();
+		virtual IO::ParserType GetParserType();
 
 		UInt32 GetBGColor();
 		UOSInt GetDefLineStyle();

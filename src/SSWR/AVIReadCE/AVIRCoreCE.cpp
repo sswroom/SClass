@@ -43,14 +43,14 @@ void SSWR::AVIReadCE::AVIRCoreCE::EndLoad()
 void SSWR::AVIReadCE::AVIRCoreCE::OpenObject(IO::ParsedObject *pobj)
 {
 	UI::GUIForm *frm;
-	IO::ParsedObject::ParserType pt = pobj->GetParserType();
+	IO::ParserType pt = pobj->GetParserType();
 	switch (pt)
 	{
-/*	case IO::ParsedObject::PT_MAP_ENV_PARSER:
+/*	case IO::ParserType::MapEnv:
 		NEW_CLASS(frm, AVIRead::AVIRGISForm(this->ui->GetHInst(), 0, this->ui, this, (Map::MapEnv*)pobj));
 		InitForm(frm);
 		break;
-	case IO::ParsedObject::PT_MAP_LAYER_PARSER:
+	case IO::ParserType::MapLayer:
 		if (this->batchLoad)
 		{
 			if (this->batchLyrs == 0)
@@ -69,7 +69,7 @@ void SSWR::AVIReadCE::AVIRCoreCE::OpenObject(IO::ParsedObject *pobj)
 			InitForm(frm);
 		}
 		break;
-	case IO::ParsedObject::PT_MAP_LAYER_COLL:
+	case IO::ParserType::MAP_LAYER_COLL:
 		{
 			Map::MapLayerCollection *lyrColl = (Map::MapLayerCollection*)pobj;
 			Map::MapEnv *env;
@@ -79,42 +79,42 @@ void SSWR::AVIReadCE::AVIRCoreCE::OpenObject(IO::ParsedObject *pobj)
 			InitForm(frm);
 		}
 		break;
-	case IO::ParsedObject::PT_IMAGE_LIST_PARSER:
+	case IO::ParserType::ImageList:
 		NEW_CLASS(frm, AVIRead::AVIRImageForm(this->ui->GetHInst(), 0, this->ui, this, (Media::ImageList*)pobj));
 		InitForm(frm);
 		frm->Show();
 		break;
-	case IO::ParsedObject::PT_PACKAGE_PARSER:
+	case IO::ParserType::PackageFile:
 		NEW_CLASS(frm, AVIRead::AVIRPackageForm(this->ui->GetHInst(), 0, this->ui, this, (IO::PackageFile*)pobj));
 		InitForm(frm);
 		frm->Show();
 		break;
-	case IO::ParsedObject::PT_VIDEO_PARSER:
+	case IO::ParserType::MediaFile:
 		NEW_CLASS(frm, AVIRead::AVIRMediaForm(this->ui->GetHInst(), 0, this->ui, this, (Media::MediaFile*)pobj));
 		InitForm(frm);
 		frm->Show();
 		break;
-	case IO::ParsedObject::PT_EXE_PARSER:
+	case IO::ParserType::EXEFile:
 		NEW_CLASS(frm, AVIRead::AVIRExeForm(this->ui->GetHInst(), 0, this->ui, this, (IO::EXEFile*)pobj));
 		InitForm(frm);
 		frm->Show();
 		break;
-	case IO::ParsedObject::PT_READINGDB_PARSER:
+	case IO::ParserType::ReadingDB:
 		NEW_CLASS(frm, AVIRead::AVIRDBForm(this->ui->GetHInst(), 0, this->ui, this, (DB::ReadingDB*)pobj, true));
 		InitForm(frm);
 		frm->Show();
 		break;
-	case IO::ParsedObject::PT_FILE_CHECK:
+	case IO::ParserType::FileCheck:
 		NEW_CLASS(frm, AVIRead::AVIRFileChkForm(this->ui->GetHInst(), 0, this->ui, this, (IO::FileCheck*)pobj));
 		InitForm(frm);
 		frm->Show();
 		break;
-	case IO::ParsedObject::PT_LOG_FILE:
+	case IO::ParserType::LogFile:
 		NEW_CLASS(frm, AVIRead::AVIRLogFileForm(this->ui->GetHInst(), 0, this->ui, this, (IO::LogFile*)pobj));
 		InitForm(frm);
 		frm->Show();
 		break;
-	case IO::ParsedObject::PT_STREAM:
+	case IO::ParserType::Stream:
 		{
 			Int64 totalSize = 0;
 			OSInt thisSize;
@@ -148,7 +148,7 @@ void SSWR::AVIReadCE::AVIRCoreCE::OpenObject(IO::ParsedObject *pobj)
 			}
 			break;
 		}
-	case IO::ParsedObject::PT_PLAYLIST:
+	case IO::ParserType::Playlist:
 		{
 			SSWR::AVIRead::AVIRPlaylistForm *frm;
 			NEW_CLASS(frm, SSWR::AVIRead::AVIRPlaylistForm(this->ui->GetHInst(), 0, this->ui, this, (Media::Playlist*)pobj));
@@ -156,7 +156,7 @@ void SSWR::AVIReadCE::AVIRCoreCE::OpenObject(IO::ParsedObject *pobj)
 			frm->Show();
 		}
 		break;
-	case IO::ParsedObject::PT_SECTOR_DATA:
+	case IO::ParserType::SectorData:
 		{
 			SSWR::AVIRead::AVIRSectorForm *frm;
 			NEW_CLASS(frm, SSWR::AVIRead::AVIRSectorForm(this->ui->GetHInst(), 0, this->ui, this, (IO::ISectorData *)pobj));
@@ -164,7 +164,7 @@ void SSWR::AVIReadCE::AVIRCoreCE::OpenObject(IO::ParsedObject *pobj)
 			frm->Show();
 		}
 		break;
-	case IO::ParsedObject::PT_CODEPROJECT:
+	case IO::ParserType::CodeProject:
 		{
 			SSWR::AVIRead::AVIRCodeProjectForm *frm;
 			NEW_CLASS(frm, SSWR::AVIRead::AVIRCodeProjectForm(this->ui->GetHInst(), 0, this->ui, this, (Text::CodeProject*)pobj));
@@ -172,9 +172,9 @@ void SSWR::AVIReadCE::AVIRCoreCE::OpenObject(IO::ParsedObject *pobj)
 			frm->Show();
 		}
 		break;*/
-	case IO::ParsedObject::PT_TEXT_DOCUMENT:
-	case IO::ParsedObject::PT_WORKBOOK:
-	case IO::ParsedObject::PT_COORDINATE_SYSTEM:
+	case IO::ParserType::TextDocument:
+	case IO::ParserType::Workbook:
+	case IO::ParserType::CoordinateSystem:
 	default:
 		DEL_CLASS(pobj);
 		break;

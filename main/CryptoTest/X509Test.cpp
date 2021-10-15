@@ -13,7 +13,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 
 	IO::StmData::FileData *fd;
 	NEW_CLASS(fd, IO::StmData::FileData(fileName, false));
-	parser.ParseFile(fd, 0, IO::ParsedObject::PT_ASN1_DATA);
+	parser.ParseFile(fd, 0, IO::ParserType::ASN1Data);
 	DEL_CLASS(fd);
 	return 0;
 }

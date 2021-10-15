@@ -23,7 +23,7 @@ Int32 Exporter::ICOExporter::GetName()
 
 IO::FileExporter::SupportType Exporter::ICOExporter::IsObjectSupported(IO::ParsedObject *pobj)
 {
-	if (pobj->GetParserType() != IO::ParsedObject::PT_IMAGE_LIST_PARSER)
+	if (pobj->GetParserType() != IO::ParserType::ImageList)
 		return IO::FileExporter::SupportType::NotSupported;
 	Media::ImageList *imgList = (Media::ImageList*)pobj;
 	UInt32 imgTime;
@@ -62,7 +62,7 @@ void Exporter::ICOExporter::SetCodePage(UInt32 codePage)
 
 Bool Exporter::ICOExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *fileName, IO::ParsedObject *pobj, void *param)
 {
-	if (pobj->GetParserType() != IO::ParsedObject::PT_IMAGE_LIST_PARSER)
+	if (pobj->GetParserType() != IO::ParserType::ImageList)
 		return 0;
 	Media::ImageList *imgList = (Media::ImageList*)pobj;
 	UOSInt buffSize = Exporter::CURExporter::CalcBuffSize(imgList);

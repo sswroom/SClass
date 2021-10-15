@@ -474,11 +474,11 @@ Media::ImageList *Map::ESRI::ESRITileMap::LoadTileImage(UOSInt level, Int64 imgI
 	NEW_CLASS(fd, IO::StmData::FileData(filePath, false));
 	if (fd->GetDataSize() > 0)
 	{
-		IO::ParsedObject::ParserType pt;
+		IO::ParserType pt;
 		pobj = parsers->ParseFile(fd, &pt);
 		if (pobj)
 		{
-			if (pt == IO::ParsedObject::PT_IMAGE_LIST_PARSER)
+			if (pt == IO::ParserType::ImageList)
 			{
 				DEL_CLASS(fd);
 				return (Media::ImageList*)pobj;
@@ -511,11 +511,11 @@ Media::ImageList *Map::ESRI::ESRITileMap::LoadTileImage(UOSInt level, Int64 imgI
 	NEW_CLASS(fd, IO::StmData::FileData(filePath, false));
 	if (fd->GetDataSize() > 0)
 	{
-		IO::ParsedObject::ParserType pt;
+		IO::ParserType pt;
 		pobj = parsers->ParseFile(fd, &pt);
 		if (pobj)
 		{
-			if (pt == IO::ParsedObject::PT_IMAGE_LIST_PARSER)
+			if (pt == IO::ParserType::ImageList)
 			{
 				DEL_CLASS(fd);
 				return (Media::ImageList*)pobj;

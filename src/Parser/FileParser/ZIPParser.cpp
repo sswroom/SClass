@@ -40,21 +40,21 @@ void Parser::FileParser::ZIPParser::SetEncFactory(Text::EncodingFactory *encFact
 	this->encFact = encFact;
 }
 
-void Parser::FileParser::ZIPParser::PrepareSelector(IO::IFileSelector *selector, IO::ParsedObject::ParserType t)
+void Parser::FileParser::ZIPParser::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
 {
-	if (t == IO::ParsedObject::PT_UNKNOWN || t == IO::ParsedObject::PT_PACKAGE_PARSER)
+	if (t == IO::ParserType::Unknown || t == IO::ParserType::PackageFile)
 	{
 		selector->AddFilter((const UTF8Char*)"*.zip", (const UTF8Char*)"ZIP File");
 	}
-	if (t == IO::ParsedObject::PT_UNKNOWN || t == IO::ParsedObject::PT_MAP_LAYER_PARSER)
+	if (t == IO::ParserType::Unknown || t == IO::ParserType::MapLayer)
 	{
 		selector->AddFilter((const UTF8Char*)"*.kmz", (const UTF8Char*)"KMZ File");
 	}
 }
 
-IO::ParsedObject::ParserType Parser::FileParser::ZIPParser::GetParserType()
+IO::ParserType Parser::FileParser::ZIPParser::GetParserType()
 {
-	return IO::ParsedObject::PT_PACKAGE_PARSER;
+	return IO::ParserType::PackageFile;
 }
 
 typedef struct
@@ -67,7 +67,7 @@ typedef struct
 	UInt32 commentSize;
 } ZIPInfoEntry;
 
-IO::ParsedObject *Parser::FileParser::ZIPParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParsedObject::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::ZIPParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
@@ -348,7 +348,7 @@ IO::ParsedObject *Parser::FileParser::ZIPParser::ParseFile(IO::IStreamData *fd, 
 		MemFree(zipInfo);
 	}
 
-	if (targetType == IO::ParsedObject::PT_MAP_LAYER_PARSER || targetType == IO::ParsedObject::PT_UNKNOWN)
+	if (targetType == IO::ParserType::MapLayer || targetType == IO::ParserType::Unknown)
 	{
 		ui = pf->GetCount();
 		while (ui-- > 0)
@@ -360,11 +360,11 @@ IO::ParsedObject *Parser::FileParser::ZIPParser::ParseFile(IO::IStreamData *fd, 
 				Parser::FileParser::XMLParser xmlParser;
 				xmlParser.SetParserList(this->parsers);
 				xmlParser.SetEncFactory(this->encFact);
-				IO::ParsedObject *pobj = xmlParser.ParseFile(stmData, pf, IO::ParsedObject::PT_MAP_LAYER_PARSER);
+				IO::ParsedObject *pobj = xmlParser.ParseFile(stmData, pf, IO::ParserType::MapLayer);
 				DEL_CLASS(stmData);
 				if (pobj)
 				{
-					if (pobj->GetParserType() == IO::ParsedObject::PT_MAP_LAYER_PARSER)
+					if (pobj->GetParserType() == IO::ParserType::MapLayer)
 					{
 						DEL_CLASS(pf);
 						return pobj;

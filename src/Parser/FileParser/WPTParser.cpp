@@ -24,20 +24,20 @@ Int32 Parser::FileParser::WPTParser::GetName()
 	return *(Int32*)"WPTP";
 }
 
-void Parser::FileParser::WPTParser::PrepareSelector(IO::IFileSelector *selector, IO::ParsedObject::ParserType t)
+void Parser::FileParser::WPTParser::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
 {
-	if (t == IO::ParsedObject::PT_UNKNOWN || t == IO::ParsedObject::PT_MAP_LAYER_PARSER)
+	if (t == IO::ParserType::Unknown || t == IO::ParserType::MapLayer)
 	{
 		selector->AddFilter((const UTF8Char*)"*.wpt", (const UTF8Char*)"OziExplorer Waypoint File");
 	}
 }
 
-IO::ParsedObject::ParserType Parser::FileParser::WPTParser::GetParserType()
+IO::ParserType Parser::FileParser::WPTParser::GetParserType()
 {
-	return IO::ParsedObject::PT_MAP_LAYER_PARSER;
+	return IO::ParserType::MapLayer;
 }
 
-IO::ParsedObject *Parser::FileParser::WPTParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParsedObject::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::WPTParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
 	UTF8Char sbuff[1024];
 	UTF8Char *tmpArr[16];

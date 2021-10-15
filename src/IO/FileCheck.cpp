@@ -413,7 +413,7 @@ Bool IO::FileCheck::CheckEntryHash(UOSInt index, UInt8 *hashVal)
 	}
 }
 
-IO::ParsedObject::ParserType IO::FileCheck::GetParserType()
+IO::ParserType IO::FileCheck::GetParserType()
 {
-	return IO::ParsedObject::PT_FILE_CHECK;
+	return IO::ParserType::FileCheck;
 }

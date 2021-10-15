@@ -105,10 +105,10 @@ void Map::WebImageLayer::LoadImage(Map::WebImageLayer::ImageStat *stat)
 	else
 	{
 		IO::ParsedObject *pobj;
-		IO::ParsedObject::ParserType pt;
+		IO::ParserType pt;
 		pobj = this->parsers->ParseFile(stat->data, &pt);
 		DEL_CLASS(stat->data);
-		if (pobj == 0 || pt != IO::ParsedObject::PT_IMAGE_LIST_PARSER)
+		if (pobj == 0 || pt != IO::ParserType::ImageList)
 		{
 			if (stat->name)
 			{
@@ -154,7 +154,7 @@ UInt32 __stdcall Map::WebImageLayer::LoadThread(void *userObj)
 	Map::WebImageLayer *me = (Map::WebImageLayer*)userObj;
 	ImageStat *stat;
 	UOSInt i;
-	IO::ParsedObject::ParserType pt;
+	IO::ParserType pt;
 	IO::ParsedObject *pobj;
 
 	me->threadRunning = true;
@@ -170,7 +170,7 @@ UInt32 __stdcall Map::WebImageLayer::LoadThread(void *userObj)
 				me->loadingList->RemoveAt(i);
 				pobj = me->parsers->ParseFile(stat->data, &pt);
 				DEL_CLASS(stat->data);
-				if (pobj == 0 || pt != IO::ParsedObject::PT_IMAGE_LIST_PARSER)
+				if (pobj == 0 || pt != IO::ParserType::ImageList)
 				{
 					if (stat->name)
 					{

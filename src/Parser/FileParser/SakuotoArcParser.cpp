@@ -19,20 +19,20 @@ Int32 Parser::FileParser::SakuotoArcParser::GetName()
 	return *(Int32*)"SARC";
 }
 
-void Parser::FileParser::SakuotoArcParser::PrepareSelector(IO::IFileSelector *selector, IO::ParsedObject::ParserType t)
+void Parser::FileParser::SakuotoArcParser::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
 {
-	if (t == IO::ParsedObject::PT_UNKNOWN || t == IO::ParsedObject::PT_PACKAGE_PARSER)
+	if (t == IO::ParserType::Unknown || t == IO::ParserType::PackageFile)
 	{
 		selector->AddFilter((const UTF8Char*)"*.arc", (const UTF8Char*)"ARC Package File");
 	}
 }
 
-IO::ParsedObject::ParserType Parser::FileParser::SakuotoArcParser::GetParserType()
+IO::ParserType Parser::FileParser::SakuotoArcParser::GetParserType()
 {
-	return IO::ParsedObject::PT_PACKAGE_PARSER;
+	return IO::ParserType::PackageFile;
 }
 
-IO::ParsedObject *Parser::FileParser::SakuotoArcParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParsedObject::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::SakuotoArcParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
 	UInt8 hdrBuff[16];
 	UInt8 *recBuff;

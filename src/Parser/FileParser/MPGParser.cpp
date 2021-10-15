@@ -20,9 +20,9 @@ Int32 Parser::FileParser::MPGParser::GetName()
 	return *(Int32*)"MPGP";
 }
 
-void Parser::FileParser::MPGParser::PrepareSelector(IO::IFileSelector *selector, IO::ParsedObject::ParserType t)
+void Parser::FileParser::MPGParser::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
 {
-	if (t == IO::ParsedObject::PT_UNKNOWN || t == IO::ParsedObject::PT_VIDEO_PARSER)
+	if (t == IO::ParserType::Unknown || t == IO::ParserType::MediaFile)
 	{
 		selector->AddFilter((const UTF8Char*)"*.mpg", (const UTF8Char*)"MPEG-1 System Stream File");
 		selector->AddFilter((const UTF8Char*)"*.m2p", (const UTF8Char*)"MPEG-2 Program Stream");
@@ -30,12 +30,12 @@ void Parser::FileParser::MPGParser::PrepareSelector(IO::IFileSelector *selector,
 	}
 }
 
-IO::ParsedObject::ParserType Parser::FileParser::MPGParser::GetParserType()
+IO::ParserType Parser::FileParser::MPGParser::GetParserType()
 {
-	return IO::ParsedObject::PT_VIDEO_PARSER;
+	return IO::ParserType::MediaFile;
 }
 
-IO::ParsedObject *Parser::FileParser::MPGParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParsedObject::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::MPGParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
 	IO::IStreamData *concatFile = 0;
 	UInt8 buff[256];

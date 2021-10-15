@@ -27,20 +27,20 @@ Int32 Parser::FileParser::XPCMParser::GetName()
 	return *(Int32*)"XPCM";
 }
 
-void Parser::FileParser::XPCMParser::PrepareSelector(IO::IFileSelector *selector, IO::ParsedObject::ParserType t)
+void Parser::FileParser::XPCMParser::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
 {
-	if (t == IO::ParsedObject::PT_UNKNOWN || t == IO::ParsedObject::PT_VIDEO_PARSER)
+	if (t == IO::ParserType::Unknown || t == IO::ParserType::MediaFile)
 	{
 		//selector->AddFilter(L"*.xml", L"XPCM File");
 	}
 }
 
-IO::ParsedObject::ParserType Parser::FileParser::XPCMParser::GetParserType()
+IO::ParserType Parser::FileParser::XPCMParser::GetParserType()
 {
-	return IO::ParsedObject::PT_VIDEO_PARSER;
+	return IO::ParserType::MediaFile;
 }
 
-IO::ParsedObject *Parser::FileParser::XPCMParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParsedObject::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::XPCMParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
 	UInt8 buff[28];
 	fd->GetRealData(0, 28, buff);

@@ -73,21 +73,21 @@ void Parser::FileParser::BMPParser::SetParserList(Parser::ParserList *parsers)
 	this->parsers = parsers;
 }
 
-void Parser::FileParser::BMPParser::PrepareSelector(IO::IFileSelector *selector, IO::ParsedObject::ParserType t)
+void Parser::FileParser::BMPParser::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
 {
-	if (t == IO::ParsedObject::PT_UNKNOWN || t == IO::ParsedObject::PT_IMAGE_LIST_PARSER)
+	if (t == IO::ParserType::Unknown || t == IO::ParserType::ImageList)
 	{
 		selector->AddFilter((const UTF8Char*)"*.bmp", (const UTF8Char*)"Bitmap File");
 		selector->AddFilter((const UTF8Char*)"*.dib", (const UTF8Char*)"DIB File");
 	}
 }
 
-IO::ParsedObject::ParserType Parser::FileParser::BMPParser::GetParserType()
+IO::ParserType Parser::FileParser::BMPParser::GetParserType()
 {
-	return IO::ParsedObject::PT_IMAGE_LIST_PARSER;
+	return IO::ParserType::ImageList;
 }
 
-IO::ParsedObject *Parser::FileParser::BMPParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParsedObject::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::BMPParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
 	UInt8 hdr[138];
 
@@ -380,7 +380,7 @@ IO::ParsedObject *Parser::FileParser::BMPParser::ParseFile(IO::IStreamData *fd, 
 	if (biCompression == 4 || biCompression == 5) //BI_JPEG / BI_PNG)
 	{
 		IO::ParsedObject *pobj = 0;
-		IO::ParsedObject::ParserType pt;
+		IO::ParserType pt;
 		if (this->parsers)
 		{
 			UInt32 currOfst = ReadUInt32(&hdr[10]);

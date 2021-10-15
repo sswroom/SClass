@@ -28,7 +28,7 @@ Int32 Exporter::SHPExporter::GetName()
 
 IO::FileExporter::SupportType Exporter::SHPExporter::IsObjectSupported(IO::ParsedObject *pobj)
 {
-	if (pobj->GetParserType() != IO::ParsedObject::PT_MAP_LAYER_PARSER)
+	if (pobj->GetParserType() != IO::ParserType::MapLayer)
 	{
 		return IO::FileExporter::SupportType::NotSupported;
 	}
@@ -61,7 +61,7 @@ Bool Exporter::SHPExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 {
 	UInt8 buff[256];
 	UTF8Char fileName2[256];
-	if (pobj->GetParserType() != IO::ParsedObject::PT_MAP_LAYER_PARSER)
+	if (pobj->GetParserType() != IO::ParserType::MapLayer)
 	{
 		return false;
 	}

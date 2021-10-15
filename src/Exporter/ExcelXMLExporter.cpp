@@ -27,7 +27,7 @@ Int32 Exporter::ExcelXMLExporter::GetName()
 
 IO::FileExporter::SupportType Exporter::ExcelXMLExporter::IsObjectSupported(IO::ParsedObject *pobj)
 {
-	if (pobj->GetParserType() != IO::ParsedObject::PT_WORKBOOK)
+	if (pobj->GetParserType() != IO::ParserType::Workbook)
 	{
 		return IO::FileExporter::SupportType::NotSupported;
 	}
@@ -58,7 +58,7 @@ Bool Exporter::ExcelXMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8C
 	UInt32 defPal[56];
 	Bool found;
 	IO::StreamWriter *writer;
-	if (pobj->GetParserType() != IO::ParsedObject::PT_WORKBOOK)
+	if (pobj->GetParserType() != IO::ParserType::Workbook)
 	{
 		return false;
 	}

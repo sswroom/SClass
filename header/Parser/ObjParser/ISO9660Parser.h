@@ -15,9 +15,9 @@ namespace Parser
 			virtual ~ISO9660Parser();
 
 			virtual Int32 GetName();
-			virtual void PrepareSelector(IO::IFileSelector *selector, IO::ParsedObject::ParserType t);
-			virtual IO::ParsedObject::ParserType GetParserType();
-			virtual IO::ParsedObject *ParseObject(IO::ParsedObject *pobj, IO::PackageFile *pkgFile, IO::ParsedObject::ParserType targetType);
+			virtual void PrepareSelector(IO::IFileSelector *selector, IO::ParserType t);
+			virtual IO::ParserType GetParserType();
+			virtual IO::ParsedObject *ParseObject(IO::ParsedObject *pobj, IO::PackageFile *pkgFile, IO::ParserType targetType);
 
 			IO::PackageFile *ParseVol(IO::ISectorData *sectorData, UInt32 sectorNum, UInt32 codePage);
 			void ParseDir(IO::PackageFile *pkgFile, IO::ISectorData *sectorData, UInt32 sectorNum, UInt32 recSize, UTF8Char *fileNameBuff, UTF8Char *fileNameEnd, UInt32 codePage);

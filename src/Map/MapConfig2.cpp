@@ -4183,13 +4183,13 @@ Map::MapConfig2::MapConfig2(const UTF8Char *fileName, Media::DrawEngine *eng, Da
 				currLayer->img = 0;
 				{
 					IO::StmData::FileData *fd;
-					IO::ParsedObject::ParserType pt;
+					IO::ParserType pt;
 					NEW_CLASS(fd, IO::StmData::FileData(strs[4], false));
 					IO::ParsedObject *obj = parserList->ParseFile(fd, &pt);
 					DEL_CLASS(fd);
 					if (obj)
 					{
-						if (obj->GetParserType() == IO::ParsedObject::PT_IMAGE_LIST_PARSER)
+						if (obj->GetParserType() == IO::ParserType::ImageList)
 						{
 							Media::ImageList *imgList = (Media::ImageList*)obj;
 							if (imgList->GetCount() > 0)

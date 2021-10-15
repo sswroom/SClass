@@ -30,12 +30,12 @@ namespace Parser
 		void SetProgressHandler(IO::IProgressHandler *progHdlr);
 		void SetSocketFactory(Net::SocketFactory *sockf);
 		void SetSSLEngine(Net::SSLEngine *ssl);
-		void PrepareSelector(IO::IFileSelector *selector, IO::ParsedObject::ParserType t);
-		IO::ParsedObject *ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParsedObject::ParserType *t, IO::ParsedObject::ParserType targetType);
-		IO::ParsedObject *ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParsedObject::ParserType *t);
-		IO::ParsedObject *ParseFile(IO::IStreamData *fd, IO::ParsedObject::ParserType *t);
-		IO::ParsedObject *ParseFileType(IO::IStreamData *fd, IO::ParsedObject::ParserType t);
-		IO::ParsedObject *ParseObject(IO::ParsedObject *pobj, IO::ParsedObject::ParserType *t);
+		void PrepareSelector(IO::IFileSelector *selector, IO::ParserType t);
+		IO::ParsedObject *ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType *t, IO::ParserType targetType);
+		IO::ParsedObject *ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType *t);
+		IO::ParsedObject *ParseFile(IO::IStreamData *fd, IO::ParserType *t);
+		IO::ParsedObject *ParseFileType(IO::IStreamData *fd, IO::ParserType t);
+		IO::ParsedObject *ParseObject(IO::ParsedObject *pobj, IO::ParserType *t);
 	};
 }
 #endif

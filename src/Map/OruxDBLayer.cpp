@@ -25,7 +25,7 @@ Map::OruxDBLayer::OruxDBLayer(const UTF8Char *sourceName, const UTF8Char *layerN
 	IO::Path::AppendPath(sbuff, (const UTF8Char*)"OruxMapsImages.db");
 	IO::StmData::FileData *fd;
 	NEW_CLASS(fd, IO::StmData::FileData(sbuff, false));
-	DB::ReadingDB *db = (DB::ReadingDB*)parsers->ParseFileType(fd, IO::ParsedObject::PT_READINGDB_PARSER);
+	DB::ReadingDB *db = (DB::ReadingDB*)parsers->ParseFileType(fd, IO::ParserType::ReadingDB);
 	if (db)
 	{
 		if (db->IsFullConn())
@@ -333,7 +333,7 @@ Math::Vector2D *Map::OruxDBLayer::GetVectorById(void *session, Int64 id)
 		r->GetBinary(0, buff);
 		IO::StmData::MemoryData *fd;
 		NEW_CLASS(fd, IO::StmData::MemoryData(buff, size));
-		imgList = (Media::ImageList*)this->parsers->ParseFileType(fd, IO::ParsedObject::PT_IMAGE_LIST_PARSER);
+		imgList = (Media::ImageList*)this->parsers->ParseFileType(fd, IO::ParserType::ImageList);
 		DEL_CLASS(fd);
 		MemFree(buff);
 	}

@@ -22,7 +22,7 @@ Int32 Exporter::CIPExporter::GetName()
 
 IO::FileExporter::SupportType Exporter::CIPExporter::IsObjectSupported(IO::ParsedObject *pobj)
 {
-	if (pobj->GetParserType() != IO::ParsedObject::PT_MAP_LAYER_PARSER)
+	if (pobj->GetParserType() != IO::ParserType::MapLayer)
 	{
 		return IO::FileExporter::SupportType::NotSupported;
 	}
@@ -61,7 +61,7 @@ Bool Exporter::CIPExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 	if (param == 0)
 		return false;
 	Exporter::CIPExporter::CIPParam *p = (Exporter::CIPExporter::CIPParam*)param;
-	if (pobj->GetParserType() != IO::ParsedObject::PT_MAP_LAYER_PARSER)
+	if (pobj->GetParserType() != IO::ParserType::MapLayer)
 	{
 		return false;
 	}

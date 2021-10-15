@@ -120,7 +120,7 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnConvFileClicked(void *userObj
 	}
 
 	NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"AVIRead", L"CoordConvFile", false));
-	parsers->PrepareSelector(dlg, IO::ParsedObject::PT_READINGDB_PARSER);
+	parsers->PrepareSelector(dlg, IO::ParserType::ReadingDB);
 	if (!dlg->ShowDialog(me->GetHandle()))
 	{
 		DEL_CLASS(dlg);
@@ -138,7 +138,7 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnConvFileClicked(void *userObj
 		IO::StmData::FileData *fd;
 		NEW_CLASS(fd, IO::StmData::FileData(dlg->GetFileName(), false));
 		DEL_CLASS(dlg);
-		db = (DB::ReadingDB*)parsers->ParseFileType(fd, IO::ParsedObject::PT_READINGDB_PARSER);
+		db = (DB::ReadingDB*)parsers->ParseFileType(fd, IO::ParserType::ReadingDB);
 		DEL_CLASS(fd);
 		if (db == 0)
 		{

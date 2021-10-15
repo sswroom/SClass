@@ -35,7 +35,7 @@ namespace Text
 			Workbook();
 			virtual ~Workbook();
 
-			virtual IO::ParsedObject::ParserType GetParserType();
+			virtual IO::ParserType GetParserType();
 
 			Workbook *Clone();
 

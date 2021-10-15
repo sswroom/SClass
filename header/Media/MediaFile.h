@@ -21,7 +21,7 @@ namespace Media
 		MediaFile(const UTF8Char *name);
 		virtual ~MediaFile();
 
-		virtual IO::ParsedObject::ParserType GetParserType();
+		virtual IO::ParserType GetParserType();
 
 		virtual UOSInt AddSource(Media::IMediaSource *src, Int32 syncTime); //-1 = fail
 		virtual Media::IMediaSource *GetStream(UOSInt index, Int32 *syncTime);

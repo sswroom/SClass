@@ -18,20 +18,20 @@ Int32 Parser::FileParser::COMParser::GetName()
 	return *(Int32*)"COMP";
 }
 
-void Parser::FileParser::COMParser::PrepareSelector(IO::IFileSelector *selector, IO::ParsedObject::ParserType t)
+void Parser::FileParser::COMParser::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
 {
-	if (t == IO::ParsedObject::PT_UNKNOWN || t == IO::ParsedObject::PT_EXE_PARSER)
+	if (t == IO::ParserType::Unknown || t == IO::ParserType::EXEFile)
 	{
 		selector->AddFilter((const UTF8Char*)"*.com", (const UTF8Char*)"COM File");
 	}
 }
 
-IO::ParsedObject::ParserType Parser::FileParser::COMParser::GetParserType()
+IO::ParserType Parser::FileParser::COMParser::GetParserType()
 {
-	return IO::ParsedObject::PT_EXE_PARSER;
+	return IO::ParserType::EXEFile;
 }
 
-IO::ParsedObject *Parser::FileParser::COMParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParsedObject::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::COMParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
 	if (!Text::StrEndsWith(fd->GetFullName(), (const UTF8Char*)".COM") && !Text::StrEndsWith(fd->GetFullName(), (const UTF8Char*)".com"))
 	{

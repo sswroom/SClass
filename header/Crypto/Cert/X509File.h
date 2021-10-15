@@ -6,6 +6,19 @@ namespace Crypto
 {
 	namespace Cert
 	{
+		struct CertNames
+		{
+			const UTF8Char *countryName;
+			const UTF8Char *stateOrProvinceName;
+			const UTF8Char *localityName;
+			const UTF8Char *organizationName;
+			const UTF8Char *organizationUnitName;
+			const UTF8Char *commonName;
+			const UTF8Char *emailAddress;
+
+			static void FreeNames(CertNames *names);
+		};
+
 		class X509File : public Net::ASN1Data
 		{
 		public:
@@ -56,6 +69,7 @@ namespace Crypto
 
 			static Bool NameGetByOID(const UInt8 *pdu, const UInt8 *pduEnd, const Char *oidText, Text::StringBuilderUTF *sb);
 			static Bool NameGetCN(const UInt8 *pdu, const UInt8 *pduEnd, Text::StringBuilderUTF *sb);
+			static Bool NamesGet(const UInt8 *pdu, const UInt8 *pduEnd, CertNames *names);
 
 			static UOSInt KeyGetLeng(const UInt8 *pdu, const UInt8 *pduEnd, KeyType keyType);
 			static KeyType KeyTypeFromOID(const UInt8 *oid, UOSInt oidLen, Bool pubKey);

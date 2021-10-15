@@ -206,7 +206,7 @@ void SSWR::AVIRead::AVIRCore::EndLoad()
 
 Bool SSWR::AVIRead::AVIRCore::LoadData(IO::IStreamData *data, IO::PackageFile *pkgFile)
 {
-	IO::ParsedObject::ParserType pt;
+	IO::ParserType pt;
 	IO::ParsedObject *pobj;
 	pobj = this->parsers->ParseFile(data, pkgFile, &pt);
 	if (pobj)
@@ -220,7 +220,7 @@ Bool SSWR::AVIRead::AVIRCore::LoadData(IO::IStreamData *data, IO::PackageFile *p
 	}
 }
 
-Bool SSWR::AVIRead::AVIRCore::LoadDataType(IO::IStreamData *data, IO::ParsedObject::ParserType targetType)
+Bool SSWR::AVIRead::AVIRCore::LoadDataType(IO::IStreamData *data, IO::ParserType targetType)
 {
 	IO::ParsedObject *pobj;
 	pobj = this->parsers->ParseFileType(data, targetType);

@@ -131,7 +131,7 @@ Bool Media::AudioFilter::FileMixFilter::LoadFile(const UTF8Char *fileName)
 	Media::MediaFile *mf;
 	IO::StmData::FileData *fd;
 	NEW_CLASS(fd, IO::StmData::FileData(fileName, false));
-	mf = (Media::MediaFile*)this->parsers->ParseFileType(fd, IO::ParsedObject::PT_VIDEO_PARSER);
+	mf = (Media::MediaFile*)this->parsers->ParseFileType(fd, IO::ParserType::MediaFile);
 	DEL_CLASS(fd);
 
 	if (mf)

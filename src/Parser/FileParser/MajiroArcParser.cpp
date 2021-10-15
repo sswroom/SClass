@@ -19,17 +19,17 @@ Int32 Parser::FileParser::MajiroArcParser::GetName()
 	return *(Int32*)"MARC";
 }
 
-void Parser::FileParser::MajiroArcParser::PrepareSelector(IO::IFileSelector *selector, IO::ParsedObject::ParserType t)
+void Parser::FileParser::MajiroArcParser::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
 {
-	if (t == IO::ParsedObject::PT_UNKNOWN || t == IO::ParsedObject::PT_PACKAGE_PARSER)
+	if (t == IO::ParserType::Unknown || t == IO::ParserType::PackageFile)
 	{
 		selector->AddFilter((const UTF8Char*)"*.arc", (const UTF8Char*)"ARC Package File");
 	}
 }
 
-IO::ParsedObject::ParserType Parser::FileParser::MajiroArcParser::GetParserType()
+IO::ParserType Parser::FileParser::MajiroArcParser::GetParserType()
 {
-	return IO::ParsedObject::PT_PACKAGE_PARSER;
+	return IO::ParserType::PackageFile;
 }
 
 typedef struct
@@ -47,7 +47,7 @@ typedef struct
 	UInt32 recSize;
 } ARCRecord;
 
-IO::ParsedObject *Parser::FileParser::MajiroArcParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParsedObject::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::MajiroArcParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
 	ARCHeader hdr;
 	ARCRecord *recBuff;

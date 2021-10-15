@@ -80,7 +80,7 @@ Crypto::Cert::X509Cert *Crypto::Cert::CurlCert::CreateX509Cert()
 			UOSInt len = Text::StrCharCnt(slist->data);
 			Parser::FileParser::X509Parser parser;
 			NEW_CLASS(mdata, IO::StmData::MemoryData((const UInt8*)slist->data + 5, (UOSInt)len - 5));
-			pobjCert = (Crypto::Cert::X509File*)parser.ParseFile(mdata, 0, IO::ParsedObject::PT_ASN1_DATA);
+			pobjCert = (Crypto::Cert::X509File*)parser.ParseFile(mdata, 0, IO::ParserType::ASN1Data);
 			DEL_CLASS(mdata);
 			return (Crypto::Cert::X509Cert*)pobjCert;
 		}

@@ -121,7 +121,7 @@ namespace IO
 		EXEFile(const UTF8Char *fileName);
 		virtual ~EXEFile();
 
-		virtual IO::ParsedObject::ParserType GetParserType();
+		virtual IO::ParserType GetParserType();
 
 		void AddProp(const UTF8Char *name, const UTF8Char *value);
 		UOSInt GetPropCount();

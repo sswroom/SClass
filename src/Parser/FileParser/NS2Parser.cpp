@@ -21,20 +21,20 @@ Int32 Parser::FileParser::NS2Parser::GetName()
 	return *(Int32*)"NS2P";
 }
 
-void Parser::FileParser::NS2Parser::PrepareSelector(IO::IFileSelector *selector, IO::ParsedObject::ParserType t)
+void Parser::FileParser::NS2Parser::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
 {
-	if (t == IO::ParsedObject::PT_UNKNOWN || t == IO::ParsedObject::PT_PACKAGE_PARSER)
+	if (t == IO::ParserType::Unknown || t == IO::ParserType::PackageFile)
 	{
 		selector->AddFilter((const UTF8Char*)"*.ns2", (const UTF8Char*)"NS2 Package File");
 	}
 }
 
-IO::ParsedObject::ParserType Parser::FileParser::NS2Parser::GetParserType()
+IO::ParserType Parser::FileParser::NS2Parser::GetParserType()
 {
-	return IO::ParsedObject::PT_PACKAGE_PARSER;
+	return IO::ParserType::PackageFile;
 }
 
-IO::ParsedObject *Parser::FileParser::NS2Parser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParsedObject::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::NS2Parser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
 	UInt8 testBuff[256];
 	UInt8 *hdrBuff;

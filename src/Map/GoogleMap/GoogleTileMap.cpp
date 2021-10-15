@@ -226,11 +226,11 @@ Media::ImageList *Map::GoogleMap::GoogleTileMap::LoadTileImage(UOSInt level, Int
 			((IO::StmData::FileData*)fd)->GetFileStream()->GetFileTimes(&dt, 0, 0);
 			if (dt.CompareTo(&currTime) > 0)
 			{
-				IO::ParsedObject::ParserType pt;
+				IO::ParserType pt;
 				pobj = parsers->ParseFile(fd, &pt);
 				if (pobj)
 				{
-					if (pt == IO::ParsedObject::PT_IMAGE_LIST_PARSER)
+					if (pt == IO::ParserType::ImageList)
 					{
 						DEL_CLASS(fd);
 						return (Media::ImageList*)pobj;
@@ -256,11 +256,11 @@ Media::ImageList *Map::GoogleMap::GoogleTileMap::LoadTileImage(UOSInt level, Int
 		fd = this->spkg->CreateStreamData(filePathU);
 		if (fd)
 		{
-			IO::ParsedObject::ParserType pt;
+			IO::ParserType pt;
 			pobj = parsers->ParseFile(fd, &pt);
 			if (pobj)
 			{
-				if (pt == IO::ParsedObject::PT_IMAGE_LIST_PARSER)
+				if (pt == IO::ParserType::ImageList)
 				{
 					DEL_CLASS(fd);
 					return (Media::ImageList*)pobj;
@@ -357,11 +357,11 @@ Media::ImageList *Map::GoogleMap::GoogleTileMap::LoadTileImage(UOSInt level, Int
 	{
 		if (fd->GetDataSize() > 0)
 		{
-			IO::ParsedObject::ParserType pt;
+			IO::ParserType pt;
 			pobj = parsers->ParseFile(fd, &pt);
 			if (pobj)
 			{
-				if (pt == IO::ParsedObject::PT_IMAGE_LIST_PARSER)
+				if (pt == IO::ParserType::ImageList)
 				{
 					DEL_CLASS(fd);
 					return (Media::ImageList*)pobj;

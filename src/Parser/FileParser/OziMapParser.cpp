@@ -35,20 +35,20 @@ void Parser::FileParser::OziMapParser::SetParserList(Parser::ParserList *parsers
 	this->parsers = parsers;
 }
 
-void Parser::FileParser::OziMapParser::PrepareSelector(IO::IFileSelector *selector, IO::ParsedObject::ParserType t)
+void Parser::FileParser::OziMapParser::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
 {
-	if (t == IO::ParsedObject::PT_UNKNOWN || t == IO::ParsedObject::PT_MAP_LAYER_PARSER)
+	if (t == IO::ParserType::Unknown || t == IO::ParserType::MapLayer)
 	{
 		selector->AddFilter((const UTF8Char*)"*.map", (const UTF8Char*)"OziExplorer Map File");
 	}
 }
 
-IO::ParsedObject::ParserType Parser::FileParser::OziMapParser::GetParserType()
+IO::ParserType Parser::FileParser::OziMapParser::GetParserType()
 {
-	return IO::ParsedObject::PT_MAP_LAYER_PARSER;
+	return IO::ParserType::MapLayer;
 }
 
-IO::ParsedObject *Parser::FileParser::OziMapParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParsedObject::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::OziMapParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
 	UInt8 buff[40];
 	UTF8Char sbuff[1024];
@@ -178,7 +178,7 @@ IO::ParsedObject *Parser::FileParser::OziMapParser::ParseFile(IO::IStreamData *f
 			Text::StrConcat(sbuff, fd->GetFullFileName());
 			IO::Path::AppendPath(sbuff, fileName);
 			NEW_CLASS(imgFd, IO::StmData::FileData(sbuff, false));
-			imgList = (Media::ImageList*)this->parsers->ParseFileType(imgFd, IO::ParsedObject::PT_IMAGE_LIST_PARSER);
+			imgList = (Media::ImageList*)this->parsers->ParseFileType(imgFd, IO::ParserType::ImageList);
 			DEL_CLASS(imgFd);
 
 			if (imgList)

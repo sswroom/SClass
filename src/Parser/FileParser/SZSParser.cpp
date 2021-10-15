@@ -21,20 +21,20 @@ Int32 Parser::FileParser::SZSParser::GetName()
 	return *(Int32*)"SZSP";
 }
 
-void Parser::FileParser::SZSParser::PrepareSelector(IO::IFileSelector *selector, IO::ParsedObject::ParserType t)
+void Parser::FileParser::SZSParser::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
 {
-	if (t == IO::ParsedObject::PT_UNKNOWN || t == IO::ParsedObject::PT_PACKAGE_PARSER)
+	if (t == IO::ParserType::Unknown || t == IO::ParserType::PackageFile)
 	{
 		selector->AddFilter((const UTF8Char*)"*.szs", (const UTF8Char*)"SZS Package File");
 	}
 }
 
-IO::ParsedObject::ParserType Parser::FileParser::SZSParser::GetParserType()
+IO::ParserType Parser::FileParser::SZSParser::GetParserType()
 {
-	return IO::ParsedObject::PT_PACKAGE_PARSER;
+	return IO::ParserType::PackageFile;
 }
 
-IO::ParsedObject *Parser::FileParser::SZSParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParsedObject::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::SZSParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
 	UInt8 hdr[16];
 	UInt8 fileBuff[272];

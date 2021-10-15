@@ -16,9 +16,9 @@ Math::CoordinateSystem::~CoordinateSystem()
 	Text::StrDelNew(this->csysName);
 }
 
-IO::ParsedObject::ParserType Math::CoordinateSystem::GetParserType()
+IO::ParserType Math::CoordinateSystem::GetParserType()
 {
-	return IO::ParsedObject::PT_COORDINATE_SYSTEM;
+	return IO::ParserType::CoordinateSystem;
 }
 
 Bool Math::CoordinateSystem::Equals(Math::CoordinateSystem *csys)

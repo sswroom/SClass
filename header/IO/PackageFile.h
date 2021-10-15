@@ -76,7 +76,7 @@ namespace IO
 		PackageFile(const UTF8Char *fileName);
 		virtual ~PackageFile();
 
-		virtual IO::ParsedObject::ParserType GetParserType();
+		virtual IO::ParserType GetParserType();
 
 		void AddData(IStreamData *fd, UInt64 ofst, UInt64 length, const UTF8Char *name, Int64 modTimeTick);
 		void AddObject(IO::ParsedObject *pobj, const UTF8Char *name, Int64 modTimeTick);

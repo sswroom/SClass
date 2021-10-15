@@ -20,21 +20,21 @@ Int32 Parser::FileParser::ICOParser::GetName()
 	return *(Int32*)"ICOP";
 }
 
-void Parser::FileParser::ICOParser::PrepareSelector(IO::IFileSelector *selector, IO::ParsedObject::ParserType t)
+void Parser::FileParser::ICOParser::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
 {
-	if (t == IO::ParsedObject::PT_UNKNOWN || t == IO::ParsedObject::PT_IMAGE_LIST_PARSER)
+	if (t == IO::ParserType::Unknown || t == IO::ParserType::ImageList)
 	{
 		selector->AddFilter((const UTF8Char*)"*.ico", (const UTF8Char*)"Icon File");
 		selector->AddFilter((const UTF8Char*)"*.cur", (const UTF8Char*)"Cursor File");
 	}
 }
 
-IO::ParsedObject::ParserType Parser::FileParser::ICOParser::GetParserType()
+IO::ParserType Parser::FileParser::ICOParser::GetParserType()
 {
-	return IO::ParsedObject::PT_IMAGE_LIST_PARSER;
+	return IO::ParserType::ImageList;
 }
 
-IO::ParsedObject *Parser::FileParser::ICOParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParsedObject::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::ICOParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
 	UInt8 icoHdr[6];
 	UInt8 icoImageHdr[16];

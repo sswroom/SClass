@@ -17,20 +17,20 @@ Int32 Parser::FileParser::LUTParser::GetName()
 	return *(Int32*)"LUTP";
 }
 
-void Parser::FileParser::LUTParser::PrepareSelector(IO::IFileSelector *selector, IO::ParsedObject::ParserType t)
+void Parser::FileParser::LUTParser::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
 {
-	if (t == IO::ParsedObject::PT_UNKNOWN || t == IO::ParsedObject::PT_LUT)
+	if (t == IO::ParserType::Unknown || t == IO::ParserType::LUT)
 	{
 		selector->AddFilter((const UTF8Char*)"*.3dlut", (const UTF8Char*)"3D LUT File");
 	}
 }
 
-IO::ParsedObject::ParserType Parser::FileParser::LUTParser::GetParserType()
+IO::ParserType Parser::FileParser::LUTParser::GetParserType()
 {
-	return IO::ParsedObject::PT_LUT;
+	return IO::ParserType::LUT;
 }
 
-IO::ParsedObject *Parser::FileParser::LUTParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParsedObject::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::LUTParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
 	UInt8 hdrBuff[96];
 	fd->GetRealData(0, 96, hdrBuff);

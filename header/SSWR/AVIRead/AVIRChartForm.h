@@ -25,6 +25,6 @@ namespace SSWR
 			virtual void EventMenuClicked(UInt16 cmdId);
 			virtual void OnMonitorChanged();
 		};
-	};
-};
+	}
+}
 #endif

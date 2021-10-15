@@ -60,9 +60,9 @@ Media::ImageList::~ImageList()
 	}
 }
 
-IO::ParsedObject::ParserType Media::ImageList::GetParserType()
+IO::ParserType Media::ImageList::GetParserType()
 {
-	return IO::ParsedObject::PT_IMAGE_LIST_PARSER;
+	return IO::ParserType::ImageList;
 }
 
 UOSInt Media::ImageList::AddImage(Media::Image *img, UInt32 imageDelay)

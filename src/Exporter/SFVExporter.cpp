@@ -21,7 +21,7 @@ Int32 Exporter::SFVExporter::GetName()
 
 IO::FileExporter::SupportType Exporter::SFVExporter::IsObjectSupported(IO::ParsedObject *pobj)
 {
-	if (pobj->GetParserType() != IO::ParsedObject::PT_FILE_CHECK)
+	if (pobj->GetParserType() != IO::ParserType::FileCheck)
 	{
 		return IO::FileExporter::SupportType::NotSupported;
 	}
@@ -46,7 +46,7 @@ Bool Exporter::SFVExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8
 
 Bool Exporter::SFVExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *fileName, IO::ParsedObject *pobj, void *param)
 {
-	if (pobj->GetParserType() != IO::ParsedObject::PT_FILE_CHECK)
+	if (pobj->GetParserType() != IO::ParserType::FileCheck)
 	{
 		return false;
 	}

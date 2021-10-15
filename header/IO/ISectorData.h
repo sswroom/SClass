@@ -18,7 +18,7 @@ namespace IO
 		virtual IO::IStreamData *GetStreamData(UInt64 startSector, UInt64 dataSize) = 0;
 		virtual UOSInt GetSeekCount() = 0;
 
-		virtual IO::ParsedObject::ParserType GetParserType() { return IO::ParsedObject::PT_SECTOR_DATA; };
+		virtual IO::ParserType GetParserType() { return IO::ParserType::SectorData; };
 	};
 }
 #endif

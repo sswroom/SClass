@@ -43,6 +43,7 @@
 #include "SSWR/AVIRead/AVIRCalculator1Form.h"
 #include "SSWR/AVIRead/AVIRCameraControlForm.h"
 #include "SSWR/AVIRead/AVIRCaptureDevForm.h"
+#include "SSWR/AVIRead/AVIRCertUtilForm.h"
 #include "SSWR/AVIRead/AVIRChineseForm.h"
 #include "SSWR/AVIRead/AVIRClipboardViewerForm.h"
 #include "SSWR/AVIRead/AVIRCodeImageGenForm.h"
@@ -398,7 +399,8 @@ typedef enum
 	MNU_NETBIOS_SCANNER,
 	MNU_HEX_VIEWER,
 	MNU_HTTP_LOAD_BALANCE,
-	MNU_ACME_CLIENT
+	MNU_ACME_CLIENT,
+	MNU_CERT_UTIL
 } MenuItems;
 
 void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(void *userObj, const UTF8Char **files, UOSInt nFiles)
@@ -445,7 +447,7 @@ void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(void *userObj, const UTF
 			{
 				NEW_CLASS(pkg, IO::DirectoryPackage(files[i]));
 				Parser::ParserList *parsers = me->core->GetParserList();
-				IO::ParsedObject::ParserType pt = IO::ParsedObject::PT_UNKNOWN;
+				IO::ParserType pt = IO::ParserType::Unknown;
 				IO::ParsedObject *pobj = parsers->ParseObject(pkg, &pt);
 				if (pobj)
 				{
@@ -534,6 +536,7 @@ SSWR::AVIRead::AVIRBaseForm::AVIRBaseForm(UI::GUIClientControl *parent, UI::GUIC
 	mnu2->AddItem((const UTF8Char*)"Jasypt Encryptor", MNU_JASYPT, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem((const UTF8Char*)"One-Time Password (OTP)", MNU_OTP, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem((const UTF8Char*)"BCrypt", MNU_BCRYPT, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem((const UTF8Char*)"Cert Util", MNU_CERT_UTIL, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2 = mnu->AddSubMenu((const UTF8Char*)"ASN.1");
 	mnu2->AddItem((const UTF8Char*)"ASN.1 MIB", MNU_ASN1MIB, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem((const UTF8Char*)"ASN.1 OID", MNU_ASN1OID, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
@@ -987,7 +990,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_OPEN_FILE:
 		{
 			SSWR::AVIRead::AVIROpenFileForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIROpenFileForm(0, this->ui, this->core, IO::ParsedObject::PT_UNKNOWN));
+			NEW_CLASS(frm, SSWR::AVIRead::AVIROpenFileForm(0, this->ui, this->core, IO::ParserType::Unknown));
 			if (frm->ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
 				const UTF8Char *fname = frm->GetFileName();
@@ -1477,13 +1480,13 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 			UI::FileDialog *dlg;
 			Parser::ParserList *parsers = this->core->GetParserList();
 			NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"AVIRead", L"OSMLocalFile", false));
-			parsers->PrepareSelector(dlg, IO::ParsedObject::PT_PACKAGE_PARSER);
+			parsers->PrepareSelector(dlg, IO::ParserType::PackageFile);
 			if (dlg->ShowDialog(this->GetHandle()))
 			{
 				IO::StmData::FileData *fd;
 				IO::PackageFile *pkg;
 				NEW_CLASS(fd, IO::StmData::FileData(dlg->GetFileName(), false));
-				pkg = (IO::PackageFile*)parsers->ParseFileType(fd, IO::ParsedObject::PT_PACKAGE_PARSER);
+				pkg = (IO::PackageFile*)parsers->ParseFileType(fd, IO::ParserType::PackageFile);
 				DEL_CLASS(fd);
 				if (pkg)
 				{
@@ -2361,6 +2364,13 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		{
 			SSWR::AVIRead::AVIRACMEClientForm *frm;
 			NEW_CLASS(frm, SSWR::AVIRead::AVIRACMEClientForm(0, this->ui, this->core));
+			this->core->ShowForm(frm);
+		}
+		break;
+	case MNU_CERT_UTIL:
+		{
+			SSWR::AVIRead::AVIRCertUtilForm *frm;
+			NEW_CLASS(frm, SSWR::AVIRead::AVIRCertUtilForm(0, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;

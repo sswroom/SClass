@@ -1379,7 +1379,7 @@ void Net::WebServer::HTTPDirectoryHandler::ExpandPackageFiles(Parser::ParserList
 			if (pt == IO::Path::PathType::File)
 			{
 				NEW_CLASS(fd, IO::StmData::FileData(sbuff, false));
-				pf = (IO::PackageFile*)parsers->ParseFileType(fd, IO::ParsedObject::PT_PACKAGE_PARSER);
+				pf = (IO::PackageFile*)parsers->ParseFileType(fd, IO::ParserType::PackageFile);
 				DEL_CLASS(fd);
 				if (pf)
 				{

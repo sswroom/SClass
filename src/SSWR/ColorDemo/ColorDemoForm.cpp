@@ -15,7 +15,7 @@ void __stdcall SSWR::ColorDemo::ColorDemoForm::FileHandler(void *userObj, const 
 		{
 			IO::StmData::FileData *fd;
 			NEW_CLASS(fd, IO::StmData::FileData(files[i], false));
-			Media::ImageList *imgList = (Media::ImageList*)me->parsers->ParseFileType(fd, IO::ParsedObject::PT_IMAGE_LIST_PARSER);
+			Media::ImageList *imgList = (Media::ImageList*)me->parsers->ParseFileType(fd, IO::ParserType::ImageList);
 			DEL_CLASS(fd);
 			if (imgList)
 			{

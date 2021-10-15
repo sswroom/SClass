@@ -17,9 +17,9 @@ Text::IMIMEObj::~IMIMEObj()
 {
 }
 
-IO::ParsedObject::ParserType Text::IMIMEObj::GetParserType()
+IO::ParserType Text::IMIMEObj::GetParserType()
 {
-	return IO::ParsedObject::PT_MIME_OBJECT;
+	return IO::ParserType::MIMEObject;
 }
 
 Text::IMIMEObj *Text::IMIMEObj::ParseFromData(IO::IStreamData *data, const UTF8Char *contentType)

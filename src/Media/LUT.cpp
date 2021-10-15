@@ -45,9 +45,9 @@ Media::LUT::~LUT()
 	SDEL_TEXT(this->remark);
 }
 
-IO::ParsedObject::ParserType Media::LUT::GetParserType()
+IO::ParserType Media::LUT::GetParserType()
 {
-	return IO::ParsedObject::PT_LUT;
+	return IO::ParserType::LUT;
 }
 
 void Media::LUT::SetRemark(const UTF8Char *remark)

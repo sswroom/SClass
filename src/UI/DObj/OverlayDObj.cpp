@@ -27,7 +27,7 @@ UI::DObj::OverlayDObj::OverlayDObj(Media::DrawEngine *deng, const UTF8Char *file
 	{
 		IO::StmData::FileData *fd;
 		NEW_CLASS(fd, IO::StmData::FileData(fileName, false));
-		this->imgList = (Media::ImageList*)parsers->ParseFileType(fd,IO::ParsedObject::PT_IMAGE_LIST_PARSER);
+		this->imgList = (Media::ImageList*)parsers->ParseFileType(fd,IO::ParserType::ImageList);
 		DEL_CLASS(fd);
 		this->frameDelay = 500;
 		this->startTime = 0;

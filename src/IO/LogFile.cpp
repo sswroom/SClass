@@ -10,8 +10,8 @@ IO::LogFile::~LogFile()
 {
 }
 
-IO::ParsedObject::ParserType IO::LogFile::GetParserType()
+IO::ParserType IO::LogFile::GetParserType()
 {
-	return IO::ParsedObject::PT_LOG_FILE;
+	return IO::ParserType::LogFile;
 }
 

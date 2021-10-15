@@ -136,6 +136,7 @@ Bool Crypto::Cert::CertUtil::AppendReqExtensions(Net::ASN1PDUBuilder *builder, c
 		builder->EndLevel();
 	}
 	builder->EndLevel();
+	return true;
 }
 
 Bool Crypto::Cert::CertUtil::AppendSign(Net::ASN1PDUBuilder *builder, Net::SSLEngine *ssl, Crypto::Cert::X509Key *key, Crypto::Hash::HashType hashType)

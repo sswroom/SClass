@@ -11,9 +11,9 @@ DB::ReadingDB::~ReadingDB()
 {
 }
 
-IO::ParsedObject::ParserType DB::ReadingDB::GetParserType()
+IO::ParserType DB::ReadingDB::GetParserType()
 {
-	return IO::ParsedObject::PT_READINGDB_PARSER;
+	return IO::ParserType::ReadingDB;
 }
 
 Bool DB::ReadingDB::IsFullConn()
@@ -23,8 +23,8 @@ Bool DB::ReadingDB::IsFullConn()
 
 Bool DB::ReadingDB::IsDBObj(IO::ParsedObject *pobj)
 {
-	IO::ParsedObject::ParserType pt = pobj->GetParserType();
-	if (pt == IO::ParsedObject::PT_MAP_LAYER_PARSER || pt == IO::ParsedObject::PT_READINGDB_PARSER)
+	IO::ParserType pt = pobj->GetParserType();
+	if (pt == IO::ParserType::MapLayer || pt == IO::ParserType::ReadingDB)
 	{
 		return true;
 	}

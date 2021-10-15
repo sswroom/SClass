@@ -37,10 +37,10 @@ Map::IMapDrawLayer *Map::MapManager::LoadLayer(const UTF8Char *fileName, Parser:
 	}
 	IO::StmData::FileData *fd;
 	NEW_CLASS(fd, IO::StmData::FileData(fileName, false));
-	IO::ParsedObject::ParserType pt;
+	IO::ParserType pt;
 	IO::ParsedObject *pobj = parsers->ParseFile(fd, &pt);
 	DEL_CLASS(fd);
-	if (pt != IO::ParsedObject::PT_MAP_LAYER_PARSER)
+	if (pt != IO::ParserType::MapLayer)
 	{
 		if (pobj)
 		{

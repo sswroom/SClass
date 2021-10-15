@@ -17,26 +17,26 @@ Int32 Parser::ObjParser::DBITParser::GetName()
 	return *(Int32*)"DBIT";
 }
 
-void Parser::ObjParser::DBITParser::PrepareSelector(IO::IFileSelector *selector, IO::ParsedObject::ParserType t)
+void Parser::ObjParser::DBITParser::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
 {
-	if (t == IO::ParsedObject::PT_MAP_LAYER_PARSER)
+	if (t == IO::ParserType::MapLayer)
 	{
 		selector->AddFilter((const UTF8Char*)"*.itm", (const UTF8Char*)"Taiwan GPS Project File");
 	}
 }
 
-IO::ParsedObject::ParserType Parser::ObjParser::DBITParser::GetParserType()
+IO::ParserType Parser::ObjParser::DBITParser::GetParserType()
 {
-	return IO::ParsedObject::PT_MAP_LAYER_PARSER;
+	return IO::ParserType::MapLayer;
 }
 
-IO::ParsedObject *Parser::ObjParser::DBITParser::ParseObject(IO::ParsedObject *pobj, IO::PackageFile *pkgFile, IO::ParsedObject::ParserType targetType)
+IO::ParsedObject *Parser::ObjParser::DBITParser::ParseObject(IO::ParsedObject *pobj, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
 	DB::ReadingDB *db;
 	DB::DBReader *r;
 	UTF8Char sbuff[512];
 	Bool valid = false;
-	if (pobj->GetParserType() != IO::ParsedObject::PT_READINGDB_PARSER)
+	if (pobj->GetParserType() != IO::ParserType::ReadingDB)
 		return 0;
 	db = (DB::ReadingDB*)pobj;
 	r = db->GetTableData((const UTF8Char*)"IT_TGVLib", 0, 0, 0);

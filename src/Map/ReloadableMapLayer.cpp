@@ -690,12 +690,12 @@ void Map::ReloadableMapLayer::Reload()
 			{
 				Sync::Thread::Sleep(10);
 			}
-			IO::ParsedObject::ParserType pt;
+			IO::ParserType pt;
 			IO::ParsedObject *pobj = this->parsers->ParseFile(data, &pt);
 			DEL_CLASS(data);
 			if (pobj)
 			{
-				if (pt == IO::ParsedObject::PT_MAP_LAYER_PARSER)
+				if (pt == IO::ParserType::MapLayer)
 				{
 					UOSInt j;
 					this->innerLayerMut->LockWrite();

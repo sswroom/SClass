@@ -229,7 +229,7 @@ Bool Media::VectorDocument::EndPrint(IPrintDocument *doc)
 	return true;
 }
 
-IO::ParsedObject::ParserType Media::VectorDocument::GetParserType()
+IO::ParserType Media::VectorDocument::GetParserType()
 {
-	return IO::ParsedObject::PT_VECTOR_DOCUMENT;
+	return IO::ParserType::VectorDocument;
 }

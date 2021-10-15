@@ -16,20 +16,20 @@ Int32 Parser::FileParser::UDPParser::GetName()
 	return *(Int32*)"UDPP";
 }
 
-void Parser::FileParser::UDPParser::PrepareSelector(IO::IFileSelector *selector, IO::ParsedObject::ParserType t)
+void Parser::FileParser::UDPParser::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
 {
-	if (t == IO::ParsedObject::PT_UNKNOWN || t == IO::ParsedObject::PT_LOG_FILE)
+	if (t == IO::ParserType::Unknown || t == IO::ParserType::LogFile)
 	{
 		selector->AddFilter((const UTF8Char*)"*.udp", (const UTF8Char*)"UDP Log File");
 	}
 }
 
-IO::ParsedObject::ParserType Parser::FileParser::UDPParser::GetParserType()
+IO::ParserType Parser::FileParser::UDPParser::GetParserType()
 {
-	return IO::ParsedObject::PT_LOG_FILE;
+	return IO::ParserType::LogFile;
 }
 
-IO::ParsedObject *Parser::FileParser::UDPParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParsedObject::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::UDPParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
 	UInt8 buff[256];
 	UOSInt i = Text::StrLastIndexOf(fd->GetFullName(), '.');

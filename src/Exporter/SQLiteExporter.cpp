@@ -26,7 +26,7 @@ Int32 Exporter::SQLiteExporter::GetName()
 
 IO::FileExporter::SupportType Exporter::SQLiteExporter::IsObjectSupported(IO::ParsedObject *pobj)
 {
-	if (pobj->GetParserType() != IO::ParsedObject::PT_READINGDB_PARSER && pobj->GetParserType() != IO::ParsedObject::PT_MAP_LAYER_PARSER)
+	if (pobj->GetParserType() != IO::ParserType::ReadingDB && pobj->GetParserType() != IO::ParserType::MapLayer)
 	{
 		return IO::FileExporter::SupportType::NotSupported;
 	}
@@ -46,7 +46,7 @@ Bool Exporter::SQLiteExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, U
 
 Bool Exporter::SQLiteExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *fileName, IO::ParsedObject *pobj, void *param)
 {
-	if (pobj->GetParserType() != IO::ParsedObject::PT_READINGDB_PARSER)
+	if (pobj->GetParserType() != IO::ParserType::ReadingDB)
 	{
 		return false;
 	}

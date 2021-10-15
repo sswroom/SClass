@@ -25,7 +25,7 @@ Int32 Exporter::DocHTMLExporter::GetName()
 
 IO::FileExporter::SupportType Exporter::DocHTMLExporter::IsObjectSupported(IO::ParsedObject *pobj)
 {
-	if (pobj->GetParserType() != IO::ParsedObject::PT_TEXT_DOCUMENT)
+	if (pobj->GetParserType() != IO::ParserType::TextDocument)
 	{
 		return IO::FileExporter::SupportType::NotSupported;
 	}
@@ -50,7 +50,7 @@ void Exporter::DocHTMLExporter::SetCodePage(UInt32 codePage)
 
 Bool Exporter::DocHTMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *fileName, IO::ParsedObject *pobj, void *param)
 {
-	if (pobj->GetParserType() != IO::ParsedObject::PT_TEXT_DOCUMENT)
+	if (pobj->GetParserType() != IO::ParserType::TextDocument)
 	{
 		return false;
 	}

@@ -16,20 +16,20 @@ Int32 Parser::FileParser::TSPParser::GetName()
 	return *(Int32*)"TSPP";
 }
 
-void Parser::FileParser::TSPParser::PrepareSelector(IO::IFileSelector *selector, IO::ParsedObject::ParserType t)
+void Parser::FileParser::TSPParser::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
 {
-	if (t == IO::ParsedObject::PT_UNKNOWN || t == IO::ParsedObject::PT_READINGDB_PARSER)
+	if (t == IO::ParserType::Unknown || t == IO::ParserType::ReadingDB)
 	{
 		selector->AddFilter((const UTF8Char*)"*.tsp", (const UTF8Char*)"Total Station Point File");
 	}
 }
 
-IO::ParsedObject::ParserType Parser::FileParser::TSPParser::GetParserType()
+IO::ParserType Parser::FileParser::TSPParser::GetParserType()
 {
-	return IO::ParsedObject::PT_READINGDB_PARSER;
+	return IO::ParserType::ReadingDB;
 }
 
-IO::ParsedObject *Parser::FileParser::TSPParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParsedObject::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::TSPParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
 	UInt8 hdr[8];
 	fd->GetRealData(0, 8, hdr);

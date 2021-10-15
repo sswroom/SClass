@@ -44,9 +44,9 @@ Bool IO::Stream::CanSeek()
 	return false;
 }
 
-IO::ParsedObject::ParserType IO::Stream::GetParserType()
+IO::ParserType IO::Stream::GetParserType()
 {
-	return IO::ParsedObject::PT_STREAM;
+	return IO::ParserType::Stream;
 }
 
 UInt64 IO::Stream::ReadToEnd(IO::Stream *stm, UOSInt buffSize)

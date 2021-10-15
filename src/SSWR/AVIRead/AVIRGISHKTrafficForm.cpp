@@ -19,7 +19,7 @@ void __stdcall SSWR::AVIRead::AVIRGISHKTrafficForm::OnRoadCenterlineClicked(void
 		dlg->SetFileName(sb.ToString());
 	}
 	dlg->SetAllowMultiSel(false);
-	me->core->GetParserList()->PrepareSelector(dlg, IO::ParsedObject::PT_MAP_LAYER_PARSER);
+	me->core->GetParserList()->PrepareSelector(dlg, IO::ParserType::MapLayer);
 	if (dlg->ShowDialog(me->GetHandle()))
 	{
 		me->txtRoadCenterline->SetText(dlg->GetFileName());
@@ -34,7 +34,7 @@ void __stdcall SSWR::AVIRead::AVIRGISHKTrafficForm::OnOKClicked(void *userObj)
 	me->txtRoadCenterline->GetText(&sb);
 	IO::StmData::FileData *fd;
 	NEW_CLASS(fd, IO::StmData::FileData(sb.ToString(), false));
-	Map::IMapDrawLayer *lyr = (Map::IMapDrawLayer*)me->core->GetParserList()->ParseFileType(fd, IO::ParsedObject::PT_MAP_LAYER_PARSER);
+	Map::IMapDrawLayer *lyr = (Map::IMapDrawLayer*)me->core->GetParserList()->ParseFileType(fd, IO::ParserType::MapLayer);
 	DEL_CLASS(fd);
 	if (lyr)
 	{

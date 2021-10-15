@@ -19,20 +19,20 @@ Int32 Parser::FileParser::SPREDParser::GetName()
 	return *(Int32*)"SRED";
 }
 
-void Parser::FileParser::SPREDParser::PrepareSelector(IO::IFileSelector *selector, IO::ParsedObject::ParserType t)
+void Parser::FileParser::SPREDParser::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
 {
-	if (t == IO::ParsedObject::PT_UNKNOWN || t == IO::ParsedObject::PT_MAP_LAYER_PARSER)
+	if (t == IO::ParserType::Unknown || t == IO::ParserType::MapLayer)
 	{
 		selector->AddFilter((const UTF8Char*)"RED*.dat", (const UTF8Char*)"Skypower Redirect Data");
 	}
 }
 
-IO::ParsedObject::ParserType Parser::FileParser::SPREDParser::GetParserType()
+IO::ParserType Parser::FileParser::SPREDParser::GetParserType()
 {
-	return IO::ParsedObject::PT_MAP_LAYER_PARSER;
+	return IO::ParserType::MapLayer;
 }
 
-IO::ParsedObject *Parser::FileParser::SPREDParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParsedObject::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::SPREDParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
 	Data::Int32Map<Data::ArrayList<Map::GPSTrack::GPSRecord*>*> *devRecs = 0;
 	Data::ArrayList<Map::GPSTrack::GPSRecord*> *currDev = 0;

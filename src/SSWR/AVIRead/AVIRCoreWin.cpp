@@ -41,14 +41,14 @@ SSWR::AVIRead::AVIRCoreWin::~AVIRCoreWin()
 void SSWR::AVIRead::AVIRCoreWin::OpenObject(IO::ParsedObject *pobj)
 {
 	UI::GUIForm *frm;
-	IO::ParsedObject::ParserType pt = pobj->GetParserType();
+	IO::ParserType pt = pobj->GetParserType();
 	switch (pt)
 	{
-	case IO::ParsedObject::PT_MAP_ENV_PARSER:
+	case IO::ParserType::MapEnv:
 		NEW_CLASS(frm, AVIRead::AVIRGISForm(0, this->ui, this, (Map::MapEnv*)pobj, ((Map::MapEnv*)pobj)->CreateMapView(320, 240)));
 		InitForm(frm);
 		break;
-	case IO::ParsedObject::PT_MAP_LAYER_PARSER:
+	case IO::ParserType::MapLayer:
 		if (this->batchLoad)
 		{
 			if (this->batchLyrs == 0)
@@ -68,42 +68,42 @@ void SSWR::AVIRead::AVIRCoreWin::OpenObject(IO::ParsedObject *pobj)
 			frm->Show();
 		}
 		break;
-	case IO::ParsedObject::PT_IMAGE_LIST_PARSER:
+	case IO::ParserType::ImageList:
 		NEW_CLASS(frm, AVIRead::AVIRImageForm(0, this->ui, this, (Media::ImageList*)pobj));
 		InitForm(frm);
 		frm->Show();
 		break;
-	case IO::ParsedObject::PT_PACKAGE_PARSER:
+	case IO::ParserType::PackageFile:
 		NEW_CLASS(frm, AVIRead::AVIRPackageForm(0, this->ui, this, (IO::PackageFile*)pobj));
 		InitForm(frm);
 		frm->Show();
 		break;
-	case IO::ParsedObject::PT_VIDEO_PARSER:
+	case IO::ParserType::MediaFile:
 		NEW_CLASS(frm, AVIRead::AVIRMediaForm(0, this->ui, this, (Media::MediaFile*)pobj));
 		InitForm(frm);
 		frm->Show();
 		break;
-	case IO::ParsedObject::PT_EXE_PARSER:
+	case IO::ParserType::EXEFile:
 		NEW_CLASS(frm, AVIRead::AVIRExeForm(0, this->ui, this, (IO::EXEFile*)pobj));
 		InitForm(frm);
 		frm->Show();
 		break;
-	case IO::ParsedObject::PT_READINGDB_PARSER:
+	case IO::ParserType::ReadingDB:
 		NEW_CLASS(frm, AVIRead::AVIRDBForm(0, this->ui, this, (DB::ReadingDB*)pobj, true));
 		InitForm(frm);
 		frm->Show();
 		break;
-	case IO::ParsedObject::PT_FILE_CHECK:
+	case IO::ParserType::FileCheck:
 		NEW_CLASS(frm, AVIRead::AVIRFileChkForm(0, this->ui, this, (IO::FileCheck*)pobj));
 		InitForm(frm);
 		frm->Show();
 		break;
-	case IO::ParsedObject::PT_LOG_FILE:
+	case IO::ParserType::LogFile:
 		NEW_CLASS(frm, AVIRead::AVIRLogFileForm(0, this->ui, this, (IO::LogFile*)pobj));
 		InitForm(frm);
 		frm->Show();
 		break;
-	case IO::ParsedObject::PT_STREAM:
+	case IO::ParserType::Stream:
 		{
 			UInt64 totalSize = 0;
 			UOSInt thisSize;
@@ -137,7 +137,7 @@ void SSWR::AVIRead::AVIRCoreWin::OpenObject(IO::ParsedObject *pobj)
 			}
 			break;
 		}
-	case IO::ParsedObject::PT_PLAYLIST:
+	case IO::ParserType::Playlist:
 		{
 			SSWR::AVIRead::AVIRPlaylistForm *frm;
 			NEW_CLASS(frm, SSWR::AVIRead::AVIRPlaylistForm(0, this->ui, this, (Media::Playlist*)pobj));
@@ -145,7 +145,7 @@ void SSWR::AVIRead::AVIRCoreWin::OpenObject(IO::ParsedObject *pobj)
 			frm->Show();
 		}
 		break;
-	case IO::ParsedObject::PT_SECTOR_DATA:
+	case IO::ParserType::SectorData:
 		{
 			SSWR::AVIRead::AVIRSectorForm *frm;
 			NEW_CLASS(frm, SSWR::AVIRead::AVIRSectorForm(0, this->ui, this, (IO::ISectorData *)pobj));
@@ -153,7 +153,7 @@ void SSWR::AVIRead::AVIRCoreWin::OpenObject(IO::ParsedObject *pobj)
 			frm->Show();
 		}
 		break;
-	case IO::ParsedObject::PT_CODEPROJECT:
+	case IO::ParserType::CodeProject:
 		{
 			SSWR::AVIRead::AVIRCodeProjectForm *frm;
 			NEW_CLASS(frm, SSWR::AVIRead::AVIRCodeProjectForm(0, this->ui, this, (Text::CodeProject*)pobj));
@@ -161,7 +161,7 @@ void SSWR::AVIRead::AVIRCoreWin::OpenObject(IO::ParsedObject *pobj)
 			frm->Show();
 		}
 		break;
-	case IO::ParsedObject::PT_LUT:
+	case IO::ParserType::LUT:
 		{
 			SSWR::AVIRead::AVIRLUTForm *frm;
 			NEW_CLASS(frm, SSWR::AVIRead::AVIRLUTForm(0, this->ui, this, (Media::LUT*)pobj));
@@ -169,7 +169,7 @@ void SSWR::AVIRead::AVIRCoreWin::OpenObject(IO::ParsedObject *pobj)
 			frm->Show();
 		}
 		break;
-	case IO::ParsedObject::PT_FONT_RENDERER:
+	case IO::ParserType::FontRenderer:
 		{
 			SSWR::AVIRead::AVIRFontRendererForm *frm;
 			NEW_CLASS(frm, SSWR::AVIRead::AVIRFontRendererForm(0, this->ui, this, (Media::FontRenderer*)pobj));
@@ -177,7 +177,7 @@ void SSWR::AVIRead::AVIRCoreWin::OpenObject(IO::ParsedObject *pobj)
 			frm->Show();
 		}
 		break;
-	case IO::ParsedObject::PT_MIME_OBJECT:
+	case IO::ParserType::MIMEObject:
 		{
 			SSWR::AVIRead::AVIRMIMEViewerForm *frm;
 			NEW_CLASS(frm, SSWR::AVIRead::AVIRMIMEViewerForm(0, this->ui, this, (Text::IMIMEObj *)pobj));
@@ -185,7 +185,7 @@ void SSWR::AVIRead::AVIRCoreWin::OpenObject(IO::ParsedObject *pobj)
 			frm->Show();
 		}
 		break;
-	case IO::ParsedObject::PT_ETHERNET_ANALYZER:
+	case IO::ParserType::EthernetAnalyzer:
 		{
 			SSWR::AVIRead::AVIRRAWMonitorForm *frm;
 			NEW_CLASS(frm, SSWR::AVIRead::AVIRRAWMonitorForm(0, this->ui, this, (Net::EthernetAnalyzer*)pobj));
@@ -193,7 +193,7 @@ void SSWR::AVIRead::AVIRCoreWin::OpenObject(IO::ParsedObject *pobj)
 			frm->Show();
 		}
 		break;
-	case IO::ParsedObject::PT_JAVA_CLASS:
+	case IO::ParserType::JavaClass:
 		{
 			SSWR::AVIRead::AVIRJavaClassForm *frm;
 			NEW_CLASS(frm, SSWR::AVIRead::AVIRJavaClassForm(0, this->ui, this, (IO::JavaClass*)pobj));
@@ -201,7 +201,7 @@ void SSWR::AVIRead::AVIRCoreWin::OpenObject(IO::ParsedObject *pobj)
 			frm->Show();
 		}
 		break;
-	case IO::ParsedObject::PT_SMAKE:
+	case IO::ParserType::Smake:
 		{
 			SSWR::AVIRead::AVIRSMakeForm *frm;
 			NEW_CLASS(frm, SSWR::AVIRead::AVIRSMakeForm(0, this->ui, this, (IO::SMake*)pobj));
@@ -209,7 +209,7 @@ void SSWR::AVIRead::AVIRCoreWin::OpenObject(IO::ParsedObject *pobj)
 			frm->Show();
 		}
 		break;
-	case IO::ParsedObject::PT_ASN1_DATA:
+	case IO::ParserType::ASN1Data:
 		{
 			SSWR::AVIRead::AVIRASN1DataForm *frm;
 			NEW_CLASS(frm, SSWR::AVIRead::AVIRASN1DataForm(0, this->ui, this, (Net::ASN1Data*)pobj));
@@ -217,7 +217,7 @@ void SSWR::AVIRead::AVIRCoreWin::OpenObject(IO::ParsedObject *pobj)
 			frm->Show();
 		}
 		break;
-	case IO::ParsedObject::PT_BTSCANLOG:
+	case IO::ParserType::BTScanLog:
 		{
 			SSWR::AVIRead::AVIRBTScanLogForm *frm;
 			NEW_CLASS(frm, SSWR::AVIRead::AVIRBTScanLogForm(0, this->ui, this, (IO::BTScanLog*)pobj));
@@ -225,7 +225,7 @@ void SSWR::AVIRead::AVIRCoreWin::OpenObject(IO::ParsedObject *pobj)
 			frm->Show();
 		}
 		break;
-	case IO::ParsedObject::PT_SYSTEMINFOLOG:
+	case IO::ParserType::SystemInfoLog:
 		{
 			SSWR::AVIRead::AVIRSystemInfoLogForm *frm;
 			NEW_CLASS(frm, SSWR::AVIRead::AVIRSystemInfoLogForm(0, this->ui, this, (IO::SystemInfoLog*)pobj));
@@ -233,7 +233,7 @@ void SSWR::AVIRead::AVIRCoreWin::OpenObject(IO::ParsedObject *pobj)
 			frm->Show();
 		}
 		break;
-	case IO::ParsedObject::PT_COORDINATE_SYSTEM:
+	case IO::ParserType::CoordinateSystem:
 		{
 			SSWR::AVIRead::AVIRCoordSysForm *frm;
 			NEW_CLASS(frm, SSWR::AVIRead::AVIRCoordSysForm(0, this->ui, this, (Math::CoordinateSystem*)pobj));
@@ -241,10 +241,10 @@ void SSWR::AVIRead::AVIRCoreWin::OpenObject(IO::ParsedObject *pobj)
 			frm->Show();
 		}
 		break;
-	case IO::ParsedObject::PT_TEXT_DOCUMENT:
-	case IO::ParsedObject::PT_WORKBOOK:
-	case IO::ParsedObject::PT_VECTOR_DOCUMENT:
-	case IO::ParsedObject::PT_UNKNOWN:
+	case IO::ParserType::TextDocument:
+	case IO::ParserType::Workbook:
+	case IO::ParserType::VectorDocument:
+	case IO::ParserType::Unknown:
 	default:
 		DEL_CLASS(pobj);
 		break;

@@ -314,7 +314,7 @@ void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(void *userObj, const UTF
 			{
 				NEW_CLASS(pkg, IO::DirectoryPackage(files[i]));
 				Parser::ParserList *parsers = me->core->GetParserList();
-				IO::ParsedObject::ParserType pt = IO::ParsedObject::PT_UNKNOWN;
+				IO::ParserType pt = IO::ParserType::Unknown;
 				IO::ParsedObject *pobj = parsers->ParseObject(pkg, &pt);
 				if (pobj)
 				{
@@ -798,7 +798,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_OPEN_FILE:
 		{
 			SSWR::AVIRead::AVIROpenFileForm *frm;
-			NEW_CLASS(frm, SSWR::AVIRead::AVIROpenFileForm(0, this->ui, this->core, IO::ParsedObject::PT_UNKNOWN));
+			NEW_CLASS(frm, SSWR::AVIRead::AVIROpenFileForm(0, this->ui, this->core, IO::ParserType::Unknown));
 			if (frm->ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
 				const UTF8Char *fname = frm->GetFileName();
@@ -1288,13 +1288,13 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 			UI::FileDialog *dlg;
 			Parser::ParserList *parsers = this->core->GetParserList();
 			NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"AVIRead", L"OSMLocalFile", false));
-			parsers->PrepareSelector(dlg, IO::ParsedObject::PT_PACKAGE_PARSER);
+			parsers->PrepareSelector(dlg, IO::ParserType::PackageFile);
 			if (dlg->ShowDialog(this->GetHandle()))
 			{
 				IO::StmData::FileData *fd;
 				IO::PackageFile *pkg;
 				NEW_CLASS(fd, IO::StmData::FileData(dlg->GetFileName(), false));
-				pkg = (IO::PackageFile*)parsers->ParseFileType(fd, IO::ParsedObject::PT_PACKAGE_PARSER);
+				pkg = (IO::PackageFile*)parsers->ParseFileType(fd, IO::ParserType::PackageFile);
 				DEL_CLASS(fd);
 				if (pkg)
 				{

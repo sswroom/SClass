@@ -19,20 +19,20 @@ Int32 Parser::FileParser::MIMEFileParser::GetName()
 	return *(Int32*)"MIME";
 }
 
-void Parser::FileParser::MIMEFileParser::PrepareSelector(IO::IFileSelector *selector, IO::ParsedObject::ParserType t)
+void Parser::FileParser::MIMEFileParser::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
 {
-	if (t == IO::ParsedObject::PT_UNKNOWN || t == IO::ParsedObject::PT_MIME_OBJECT)
+	if (t == IO::ParserType::Unknown || t == IO::ParserType::MIMEObject)
 	{
 		selector->AddFilter((const UTF8Char*)"*.eml", (const UTF8Char*)"Email File");
 	}
 }
 
-IO::ParsedObject::ParserType Parser::FileParser::MIMEFileParser::GetParserType()
+IO::ParserType Parser::FileParser::MIMEFileParser::GetParserType()
 {
-	return IO::ParsedObject::PT_MIME_OBJECT;
+	return IO::ParserType::MIMEObject;
 }
 
-IO::ParsedObject *Parser::FileParser::MIMEFileParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParsedObject::ParserType targetType)
+IO::ParsedObject *Parser::FileParser::MIMEFileParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
 	const UTF8Char *name = fd->GetFullName();
 	Text::IMIMEObj *obj;

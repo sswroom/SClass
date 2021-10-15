@@ -23,27 +23,27 @@ void Parser::ObjParser::ITMParser::SetParserList(Parser::ParserList *parsers)
 	this->parsers = parsers;
 }
 
-void Parser::ObjParser::ITMParser::PrepareSelector(IO::IFileSelector *selector, IO::ParsedObject::ParserType t)
+void Parser::ObjParser::ITMParser::PrepareSelector(IO::IFileSelector *selector, IO::ParserType t)
 {
-	if (t == IO::ParsedObject::PT_READINGDB_PARSER)
+	if (t == IO::ParserType::ReadingDB)
 	{
 		selector->AddFilter((const UTF8Char*)"*.itm", (const UTF8Char*)"Taiwan GPS Project File");
 	}
 }
 
-IO::ParsedObject::ParserType Parser::ObjParser::ITMParser::GetParserType()
+IO::ParserType Parser::ObjParser::ITMParser::GetParserType()
 {
-	return IO::ParsedObject::PT_READINGDB_PARSER;
+	return IO::ParserType::ReadingDB;
 }
 
-IO::ParsedObject *Parser::ObjParser::ITMParser::ParseObject(IO::ParsedObject *pobj, IO::PackageFile *pkgFile, IO::ParsedObject::ParserType targetType)
+IO::ParsedObject *Parser::ObjParser::ITMParser::ParseObject(IO::ParsedObject *pobj, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
-	if (pobj->GetParserType() != IO::ParsedObject::PT_PACKAGE_PARSER)
+	if (pobj->GetParserType() != IO::ParserType::PackageFile)
 		return 0;
 	if (this->parsers == 0)
 		return 0;
 	IO::PackageFile *pkg = (IO::PackageFile*)pobj;
-	IO::ParsedObject::ParserType pt;
+	IO::ParserType pt;
 	UTF8Char sbuff[512];
 	UOSInt i;
 	UOSInt j;
@@ -61,7 +61,7 @@ IO::ParsedObject *Parser::ObjParser::ITMParser::ParseObject(IO::ParsedObject *po
 				DEL_CLASS(fd);
 				if (pobj2)
 				{
-					if (pt == IO::ParsedObject::PT_READINGDB_PARSER)
+					if (pt == IO::ParserType::ReadingDB)
 					{
 						pobj2->SetSourceName(pobj->GetSourceNameObj());
 						return pobj2;

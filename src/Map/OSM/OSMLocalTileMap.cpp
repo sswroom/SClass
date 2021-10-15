@@ -410,12 +410,12 @@ Media::ImageList *Map::OSM::OSMLocalTileMap::LoadTileImage(UOSInt level, Int64 i
 	fd = this->LoadTileImageData(level, imgId, boundsXY, localOnly, &blockX, &blockY, &it);
 	if (fd)
 	{
-		IO::ParsedObject::ParserType pt;
+		IO::ParserType pt;
 		pobj = parsers->ParseFile(fd, &pt);
 		DEL_CLASS(fd);
 		if (pobj)
 		{
-			if (pt == IO::ParsedObject::PT_IMAGE_LIST_PARSER)
+			if (pt == IO::ParserType::ImageList)
 			{
 				return (Media::ImageList*)pobj;
 			}

@@ -90,7 +90,7 @@ namespace SSWR
 			void BeginLoad();
 			void EndLoad();
 			Bool LoadData(IO::IStreamData *data, IO::PackageFile *pkgFile);
-			Bool LoadDataType(IO::IStreamData *data, IO::ParsedObject::ParserType targetType);
+			Bool LoadDataType(IO::IStreamData *data, IO::ParserType targetType);
 
 			Parser::ParserList *GetParserList();
 			Map::MapManager *GetMapManager();

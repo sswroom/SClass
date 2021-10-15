@@ -25,7 +25,7 @@ namespace IO
 		virtual Bool CanSeek();
 		virtual Bool Recover() = 0;
 
-		virtual IO::ParsedObject::ParserType GetParserType();
+		virtual IO::ParserType GetParserType();
 		UInt64 ReadToEnd(IO::Stream *stm, UOSInt buffSize);
 	};
 }
