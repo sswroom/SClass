@@ -17,6 +17,8 @@ namespace SSWR
 			SSWR::AVIRead::AVIRCore *core;
 			Net::ASN1Data *asn1;
 
+			UI::GUIMainMenu *mnuMain;
+
 			UI::GUITabControl *tcMain;
 
 			UI::GUITabPage *tpDesc;
@@ -30,6 +32,7 @@ namespace SSWR
 			virtual ~AVIRASN1DataForm();
 
 			virtual void OnMonitorChanged();
+			virtual void EventMenuClicked(UInt16 cmdId);
 		};
 	}
 }

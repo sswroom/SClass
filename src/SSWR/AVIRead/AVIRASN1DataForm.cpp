@@ -2,6 +2,11 @@
 #include "SSWR/AVIRead/AVIRASN1DataForm.h"
 #include "Text/StringBuilderUTF8.h"
 
+enum MenuItem
+{
+	MNU_SAVE = 100
+};
+
 SSWR::AVIRead::AVIRASN1DataForm::AVIRASN1DataForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Net::ASN1Data *asn1) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetText((const UTF8Char*)"ASN1 Data");
@@ -10,6 +15,12 @@ SSWR::AVIRead::AVIRASN1DataForm::AVIRASN1DataForm(UI::GUIClientControl *parent, 
 	this->core = core;
 	this->asn1 = asn1;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
+
+	UI::GUIMenu *mnu;
+	NEW_CLASS(this->mnuMain, UI::GUIMainMenu());
+	mnu = this->mnuMain->AddSubMenu((const UTF8Char*)"&File");
+	mnu->AddItem((const UTF8Char*)"Save", MNU_SAVE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	this->SetMenu(this->mnuMain);
 
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
@@ -38,4 +49,14 @@ SSWR::AVIRead::AVIRASN1DataForm::~AVIRASN1DataForm()
 void SSWR::AVIRead::AVIRASN1DataForm::OnMonitorChanged()
 {
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
+}
+
+void SSWR::AVIRead::AVIRASN1DataForm::EventMenuClicked(UInt16 cmdId)
+{
+	switch (cmdId)
+	{
+	case MNU_SAVE:
+		this->core->SaveData(this, this->asn1, L"ASN1Data");
+		break;
+	}
 }

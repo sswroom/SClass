@@ -102,6 +102,42 @@ Bool Crypto::Cert::CertUtil::AppendPublicKey(Net::ASN1PDUBuilder *builder, Crypt
 	return false;
 }
 
+Bool Crypto::Cert::CertUtil::AppendReqExtensions(Net::ASN1PDUBuilder *builder, const ReqExtensions *ext)
+{
+	builder->BeginSequence();
+	if (ext->subjectAltName)
+	{
+		builder->BeginSequence();
+		builder->AppendOIDString("2.5.29.17");
+		builder->BeginOther(Net::ASN1Util::IT_OCTET_STRING);
+		builder->BeginSequence();
+		UOSInt i = 0;
+		UOSInt j = ext->subjectAltName->GetCount();
+		const UTF8Char *csptr;
+		Net::SocketUtil::AddressInfo addr;
+		while (i < j)
+		{
+			csptr = ext->subjectAltName->GetItem(i);
+			if (Net::SocketUtil::GetIPAddr(csptr, &addr))
+			{
+				if (addr.addrType == Net::AddrType::IPv4)
+				{
+					builder->AppendOther(0x87, addr.addr, 4);
+				}
+			}
+			else
+			{
+				builder->AppendOther(0x82, csptr, Text::StrCharCnt(csptr));
+			}
+			i++;
+		}
+		builder->EndLevel();
+		builder->EndLevel();
+		builder->EndLevel();
+	}
+	builder->EndLevel();
+}
+
 Bool Crypto::Cert::CertUtil::AppendSign(Net::ASN1PDUBuilder *builder, Net::SSLEngine *ssl, Crypto::Cert::X509Key *key, Crypto::Hash::HashType hashType)
 {
 	UOSInt itemLen;
@@ -147,38 +183,7 @@ Crypto::Cert::X509CertReq *Crypto::Cert::CertUtil::CertReqCreate(Net::SSLEngine 
 		builder.BeginSequence();
 		builder.AppendOIDString("1.2.840.113549.1.9.14");
 		builder.BeginSet();
-		builder.BeginSequence();
-		if (ext->subjectAltName)
-		{
-			builder.BeginSequence();
-			builder.AppendOIDString("2.5.29.17");
-			builder.BeginOther(Net::ASN1Util::IT_OCTET_STRING);
-			builder.BeginSequence();
-			UOSInt i = 0;
-			UOSInt j = ext->subjectAltName->GetCount();
-			const UTF8Char *csptr;
-			Net::SocketUtil::AddressInfo addr;
-			while (i < j)
-			{
-				csptr = ext->subjectAltName->GetItem(i);
-				if (Net::SocketUtil::GetIPAddr(csptr, &addr))
-				{
-					if (addr.addrType == Net::AddrType::IPv4)
-					{
-						builder.AppendOther(0x87, addr.addr, 4);
-					}
-				}
-				else
-				{
-					builder.AppendOther(0x82, csptr, Text::StrCharCnt(csptr));
-				}
-				i++;
-			}
-			builder.EndLevel();
-			builder.EndLevel();
-			builder.EndLevel();
-		}
-		builder.EndLevel();
+		AppendReqExtensions(&builder, ext);
 		builder.EndLevel();
 		builder.EndLevel();
 	}
