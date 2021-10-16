@@ -242,15 +242,15 @@ Crypto::Cert::X509Cert *Crypto::Cert::CertUtil::SelfSignedCertCreate(Net::SSLEng
 	Data::RandomBytesGenerator rndBytes;
 	Net::ASN1PDUBuilder builder;
 	Data::DateTime dt;
-	UInt8 buff[16];
+	UInt8 buff[20];
 	builder.BeginSequence();
 
 	builder.BeginSequence();
 	builder.BeginOther(Net::ASN1Util::IT_CONTEXT_SPECIFIC_0);
 	builder.AppendInt32(2);
 	builder.EndLevel();
-	rndBytes.NextBytes(buff, 16);
-	builder.AppendOther(Net::ASN1Util::IT_INTEGER, buff, 16);
+	rndBytes.NextBytes(buff, 20);
+	builder.AppendOther(Net::ASN1Util::IT_INTEGER, buff, 20);
 
 	builder.BeginSequence();
 	builder.AppendOIDString("1.2.840.113549.1.1.11");
@@ -280,4 +280,31 @@ Crypto::Cert::X509Cert *Crypto::Cert::CertUtil::SelfSignedCertCreate(Net::SSLEng
 	Crypto::Cert::X509Cert *cert;
 	NEW_CLASS(cert, Crypto::Cert::X509Cert(names->commonName, builder.GetBuff(0), builder.GetBuffSize()));
 	return cert;
+}
+
+Crypto::Cert::X509Cert *Crypto::Cert::CertUtil::IssueCert(Net::SSLEngine *ssl, Crypto::Cert::X509Cert *caCert, Crypto::Cert::X509Key *caKey, UOSInt validDays, const UTF8Char *serial, Crypto::Cert::X509CertReq *csr)
+{
+	UInt8 bSerial[20];
+	if (caCert == 0)
+	{
+		return 0;
+	}
+	if (caKey == 0)
+	{
+		return 0;
+	}
+	if (serial == 0 || Text::StrCharCnt(serial) != 40)
+	{
+		return 0;
+	}
+	if (Text::StrHex2Bytes(serial, bSerial) != 20)
+	{
+		return 0;
+	}
+	if (csr == 0)
+	{
+		return 0;
+	}
+	
+	return 0;
 }

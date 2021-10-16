@@ -4,6 +4,7 @@
 #include "Crypto/Cert/X509PubKey.h"
 #include "Net/ASN1OIDDB.h"
 #include "Net/ASN1Util.h"
+#include "Net/SSLEngine.h"
 
 void Crypto::Cert::CertNames::FreeNames(CertNames *names)
 {
@@ -836,6 +837,43 @@ void Crypto::Cert::X509File::ToShortString(Text::StringBuilderUTF *sb)
 	sb->Append(FileTypeGetName(this->GetFileType()));
 	sb->Append((const UTF8Char*)": ");
 	this->ToShortName(sb);
+}
+
+Bool Crypto::Cert::X509File::IsSignatureKey(Net::SSLEngine *ssl, Crypto::Cert::X509Key *key)
+{
+	UOSInt itemOfst;
+	UOSInt dataSize;
+	const UInt8 *data = Net::ASN1Util::PDUGetItemRAW(this->buff, this->buff + this->buffSize, "1.1", &dataSize, &itemOfst);
+	Net::ASN1Util::ItemType itemType;
+	UOSInt signSize;
+	const UInt8 *signature = Net::ASN1Util::PDUGetItem(this->buff, this->buff + this->buffSize, "1.3", &signSize, &itemType);
+	if (data == 0 || signature == 0 || itemType != Net::ASN1Util::IT_BIT_STRING)
+	{
+		return false;
+	}
+	if (signature[0] == 0)
+	{
+		signature++;
+		signSize--;
+	}
+	UOSInt mySignSize;
+	UInt8 mySignature[256];
+	if (!ssl->Signature(key, Crypto::Hash::HT_SHA256, data, dataSize + itemOfst, mySignature, &mySignSize))
+	{
+		return false;
+	}
+	if (signSize != mySignSize)
+	{
+		return false;
+	}
+	while (signSize-- > 0)
+	{
+		if (signature[signSize] != mySignature[signSize])
+		{
+			return false;
+		}
+	}
+	return true;
 }
 
 const UTF8Char *Crypto::Cert::X509File::FileTypeGetName(FileType fileType)

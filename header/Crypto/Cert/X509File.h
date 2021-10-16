@@ -2,6 +2,11 @@
 #define _SM_CRYPTO_CERT_X509FILE
 #include "Net/ASN1Data.h"
 
+namespace Net
+{
+	class SSLEngine;
+}
+
 namespace Crypto
 {
 	namespace Cert
@@ -18,6 +23,7 @@ namespace Crypto
 
 			static void FreeNames(CertNames *names);
 		};
+		class X509Key;
 
 		class X509File : public Net::ASN1Data
 		{
@@ -83,6 +89,8 @@ namespace Crypto
 			virtual void ToShortName(Text::StringBuilderUTF *sb) = 0;
 
 			void ToShortString(Text::StringBuilderUTF *sb);
+			Bool IsSignatureKey(Net::SSLEngine *ssl, Crypto::Cert::X509Key *key);
+
 			static const UTF8Char *FileTypeGetName(FileType fileType);
 			static const UTF8Char *KeyTypeGetName(KeyType keyType);
 			static const Char *KeyTypeGetOID(KeyType keyType);
