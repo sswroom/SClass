@@ -51,6 +51,10 @@ Bool Exporter::PEMExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8
 		Text::StrConcat(nameBuff, (const UTF8Char*)"Key file");
 		Text::StrConcat(fileNameBuff, (const UTF8Char*)"*.key");
 		return true;
+	case 3:
+		Text::StrConcat(nameBuff, (const UTF8Char*)"Cert Sign Request file");
+		Text::StrConcat(fileNameBuff, (const UTF8Char*)"*.csr");
+		return true;
 	}
 	return false;
 }

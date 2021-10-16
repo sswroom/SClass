@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "Crypto/Cert/CertUtil.h"
+#include "Data/RandomBytesGenerator.h"
 #include "Net/ASN1Util.h"
 
 Bool Crypto::Cert::CertUtil::AppendNames(Net::ASN1PDUBuilder *builder, const CertNames *names)
@@ -104,9 +105,14 @@ Bool Crypto::Cert::CertUtil::AppendPublicKey(Net::ASN1PDUBuilder *builder, Crypt
 
 Bool Crypto::Cert::CertUtil::AppendReqExtensions(Net::ASN1PDUBuilder *builder, const ReqExtensions *ext)
 {
-	builder->BeginSequence();
-	if (ext->subjectAltName)
+	Bool found = false;
+	if (ext->subjectAltName && ext->subjectAltName->GetCount() > 0)
 	{
+		if (!found)
+		{
+			builder->BeginSequence();
+			found = true;
+		}
 		builder->BeginSequence();
 		builder->AppendOIDString("2.5.29.17");
 		builder->BeginOther(Net::ASN1Util::IT_OCTET_STRING);
@@ -135,7 +141,40 @@ Bool Crypto::Cert::CertUtil::AppendReqExtensions(Net::ASN1PDUBuilder *builder, c
 		builder->EndLevel();
 		builder->EndLevel();
 	}
-	builder->EndLevel();
+	if (ext->useSubjKeyId)
+	{
+		if (!found)
+		{
+			builder->BeginSequence();
+			found = true;
+		}
+		builder->BeginSequence();
+		builder->AppendOIDString("2.5.29.14");
+		builder->BeginOther(Net::ASN1Util::IT_OCTET_STRING);
+		builder->AppendOctetString(ext->subjKeyId, 20);
+		builder->EndLevel();
+		builder->EndLevel();
+	}
+	if (ext->useAuthKeyId)
+	{
+		if (!found)
+		{
+			builder->BeginSequence();
+			found = true;
+		}
+		builder->BeginSequence();
+		builder->AppendOIDString("2.5.29.35");
+		builder->BeginOther(Net::ASN1Util::IT_OCTET_STRING);
+		builder->BeginSequence();
+		builder->AppendOctetString(ext->authKeyId, 20);
+		builder->EndLevel();
+		builder->EndLevel();
+		builder->EndLevel();
+	}
+	if (found)
+	{
+		builder->EndLevel();
+	}
 	return true;
 }
 
@@ -196,4 +235,49 @@ Crypto::Cert::X509CertReq *Crypto::Cert::CertUtil::CertReqCreate(Net::SSLEngine 
 	Crypto::Cert::X509CertReq *csr;
 	NEW_CLASS(csr, Crypto::Cert::X509CertReq((const UTF8Char*)"CertReq", builder.GetBuff(0), builder.GetBuffSize()));
 	return csr;
+}
+
+Crypto::Cert::X509Cert *Crypto::Cert::CertUtil::SelfSignedCertCreate(Net::SSLEngine *ssl, const CertNames *names, Crypto::Cert::X509Key *key, UOSInt validDays, const ReqExtensions *ext)
+{
+	Data::RandomBytesGenerator rndBytes;
+	Net::ASN1PDUBuilder builder;
+	Data::DateTime dt;
+	UInt8 buff[16];
+	builder.BeginSequence();
+
+	builder.BeginSequence();
+	builder.BeginOther(Net::ASN1Util::IT_CONTEXT_SPECIFIC_0);
+	builder.AppendInt32(2);
+	builder.EndLevel();
+	rndBytes.NextBytes(buff, 16);
+	builder.AppendOther(Net::ASN1Util::IT_INTEGER, buff, 16);
+
+	builder.BeginSequence();
+	builder.AppendOIDString("1.2.840.113549.1.1.11");
+	builder.AppendNull();
+	builder.EndLevel();
+
+	if (!AppendNames(&builder, names)) return 0;
+	dt.SetCurrTimeUTC();
+	builder.BeginSequence();
+	builder.AppendUTCTime(&dt);
+	dt.AddDay((OSInt)validDays);
+	builder.AppendUTCTime(&dt);
+	builder.EndLevel();
+
+	if (!AppendNames(&builder, names)) return 0;
+	if (!AppendPublicKey(&builder, key)) return 0;
+	builder.BeginOther(Net::ASN1Util::IT_CONTEXT_SPECIFIC_3);
+	if (ext)
+	{
+		AppendReqExtensions(&builder, ext);
+	}
+	builder.EndLevel();
+	builder.EndLevel();
+
+	if (!AppendSign(&builder, ssl, key, Crypto::Hash::HT_SHA256)) return 0;
+	builder.EndLevel();
+	Crypto::Cert::X509Cert *cert;
+	NEW_CLASS(cert, Crypto::Cert::X509Cert(names->commonName, builder.GetBuff(0), builder.GetBuffSize()));
+	return cert;
 }

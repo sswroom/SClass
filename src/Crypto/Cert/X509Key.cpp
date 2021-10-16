@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "Crypto/Cert/X509Key.h"
+#include "Crypto/Hash/SHA1.h"
 #include "Net/ASN1PDUBuilder.h"
 #include "Net/ASN1Util.h"
 
@@ -35,9 +36,9 @@ Net::ASN1Data *Crypto::Cert::X509Key::Clone()
 
 void Crypto::Cert::X509Key::ToString(Text::StringBuilderUTF *sb)
 {
+	Bool found = false;
 	if (this->keyType == KeyType::RSA)
 	{
-		Bool found = false;
 		const UInt8 *buff;
 		UOSInt buffSize;
 		buff = this->GetRSAModulus(&buffSize);
@@ -107,7 +108,6 @@ void Crypto::Cert::X509Key::ToString(Text::StringBuilderUTF *sb)
 	}
 	else if (this->keyType == KeyType::RSAPublic)
 	{
-		Bool found = false;
 		const UInt8 *buff;
 		UOSInt buffSize;
 		buff = this->GetRSAModulus(&buffSize);
@@ -126,6 +126,15 @@ void Crypto::Cert::X509Key::ToString(Text::StringBuilderUTF *sb)
 			sb->Append((const UTF8Char*)"RSA.Public Exponent = ");
 			sb->AppendHexBuff(buff, buffSize, ' ', Text::LineBreakType::None);
 		}
+	}
+
+	UInt8 keyId[20];
+	if (this->GetKeyId(keyId, 0))
+	{
+		if (found) sb->AppendLB(Text::LineBreakType::CRLF);
+		found = true;
+		sb->Append((const UTF8Char*)"KeyId = ");
+		sb->AppendHexBuff(keyId, 20, ' ', Text::LineBreakType::None);
 	}
 }
 
@@ -180,6 +189,21 @@ Crypto::Cert::X509Key *Crypto::Cert::X509Key::CreatePublicKey()
 	{
 		return 0;
 	}
+}
+
+Bool Crypto::Cert::X509Key::GetKeyId(UInt8 *keyId, UOSInt *keyIdSize)
+{
+	Crypto::Cert::X509Key *pubKey = this->CreatePublicKey();
+	if (pubKey)
+	{
+		Crypto::Hash::SHA1 sha1;
+		sha1.Calc(pubKey->GetASN1Buff(), pubKey->GetASN1BuffSize());
+		sha1.GetValue(keyId);
+		DEL_CLASS(pubKey);
+		if (keyIdSize) *keyIdSize = 20;
+		return true;
+	}
+	return false;
 }
 
 const UInt8 *Crypto::Cert::X509Key::GetRSAModulus(UOSInt *size)

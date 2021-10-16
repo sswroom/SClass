@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Text/CharUtil.h"
 #include "Text/JSText.h"
 #include "Text/StringTool.h"
 
@@ -76,6 +77,45 @@ Bool Text::StringTool::IsNonASCII(const UTF8Char *s)
 		}
 	}
 	return false;
+}
+
+Bool Text::StringTool::IsEmailAddress(const UTF8Char *s)
+{
+	UOSInt atPos = INVALID_INDEX;
+	Bool dotFound = false;
+	const UTF8Char *startPtr = s;
+	UTF8Char c;
+	while ((c = *s++) != 0)
+	{
+		if (Text::CharUtil::IsAlphaNumeric(c))
+		{
+
+		}
+		else if (c == '.')
+		{
+			if (atPos != INVALID_INDEX)
+			{
+				dotFound = true;
+			}
+		}
+		else if (c == '@')
+		{
+			if (atPos != INVALID_INDEX)
+			{
+				return false;
+			}
+			atPos = (UOSInt)(s - startPtr - 1);
+		}
+		else
+		{
+			return false;
+		}
+	}
+	if (atPos == INVALID_INDEX || atPos == 0 || !dotFound)
+	{
+		return false;
+	}
+	return true;
 }
 
 const UTF8Char *Text::StringTool::Null2Empty(const UTF8Char *s)

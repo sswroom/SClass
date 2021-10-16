@@ -175,10 +175,13 @@ Bool UI::FileDialog::ShowDialog(ControlHandle *ownerHandle)
 		sb.Append(this->patterns->GetItem(i++));
 		sb.AppendC((const UTF8Char*)"\0", 1);
 	}
-	sb.Append((const UTF8Char*)"All Files (*.*)");
-	sb.AppendC((const UTF8Char*)"\0", 1);
-	sb.Append((const UTF8Char*)"*.*");
-	sb.AppendC((const UTF8Char*)"\0", 1);
+	if (!this->isSave)
+	{
+		sb.Append((const UTF8Char*)"All Files (*.*)");
+		sb.AppendC((const UTF8Char*)"\0", 1);
+		sb.Append((const UTF8Char*)"*.*");
+		sb.AppendC((const UTF8Char*)"\0", 1);
+	}
 	if (this->allowMulti && !this->isSave)
 	{
 		multiBuff = fnameBuff = MemAlloc(WChar, 65536);

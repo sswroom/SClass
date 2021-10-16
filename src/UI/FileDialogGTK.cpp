@@ -163,10 +163,13 @@ Bool UI::FileDialog::ShowDialog(ControlHandle *ownerHandle)
 		gtk_file_filter_add_pattern(filter, (const Char*)this->patterns->GetItem(i++));
 		gtk_file_chooser_add_filter(chooser, filter);
 	}
-	filter = gtk_file_filter_new();
-	gtk_file_filter_set_name(filter, "All Files (*.*)");
-	gtk_file_filter_add_pattern(filter, (const Char*)IO::Path::ALL_FILES);
-	gtk_file_chooser_add_filter(chooser, filter);
+	if (!this->isSave)
+	{
+		filter = gtk_file_filter_new();
+		gtk_file_filter_set_name(filter, "All Files (*.*)");
+		gtk_file_filter_add_pattern(filter, (const Char*)IO::Path::ALL_FILES);
+		gtk_file_chooser_add_filter(chooser, filter);
+	}
  	
 	if (this->allowMulti && !this->isSave)
 	{

@@ -288,6 +288,16 @@ void Net::ASN1PDUBuilder::AppendIA5String(const UTF8Char *s)
 	this->AppendOther(0x16, s, Text::StrCharCnt(s));
 }
 
+void Net::ASN1PDUBuilder::AppendUTCTime(Data::DateTime *t)
+{
+	UTF8Char sbuff[13];
+	UTF8Char *sptr;
+	t->ToUTCTime();
+	sptr = t->ToString(sbuff, "yyMMddHHmmss");
+	*sptr = 'Z';
+	this->AppendOther(0x17, sbuff, 13);
+}
+
 void Net::ASN1PDUBuilder::AppendOther(UInt8 type, const UInt8 *buff, UOSInt buffSize)
 {
 	if (buffSize == 0)

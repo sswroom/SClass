@@ -1,5 +1,6 @@
 #ifndef _SM_NET_ASN1PDUBUILDER
 #define _SM_NET_ASN1PDUBUILDER
+#include "Data/DateTime.h"
 
 namespace Net
 {
@@ -36,6 +37,7 @@ namespace Net
 		void AppendPrintableString(const UTF8Char *s);
 		void AppendUTF8String(const UTF8Char *s);
 		void AppendIA5String(const UTF8Char *s);
+		void AppendUTCTime(Data::DateTime *t);
 		void AppendOther(UInt8 type, const UInt8 *buff, UOSInt buffSize);
 		void AppendOtherWith0(UInt8 type, const UInt8 *buff, UOSInt buffSize);
 

@@ -4,6 +4,7 @@
 #include "UI/GUIButton.h"
 #include "UI/GUIForm.h"
 #include "UI/GUILabel.h"
+#include "UI/GUIListBox.h"
 #include "UI/GUITextBox.h"
 
 namespace SSWR
@@ -37,12 +38,26 @@ namespace SSWR
 			UI::GUITextBox *txtCommonName;
 			UI::GUILabel *lblEmailAddress;
 			UI::GUITextBox *txtEmailAddress;
+			UI::GUILabel *lblValidDays;
+			UI::GUITextBox *txtValidDays;
+			UI::GUILabel *lblSAN;
+			UI::GUITextBox *txtSAN;
+			UI::GUIButton *btnSANAdd;
+			UI::GUIListBox *lbSAN;
+			UI::GUIButton *btnSANClear;
+			UI::GUIButton *btnCSRGenerate;
+			UI::GUIButton *btnSelfSignedCert;
 
 			static void __stdcall OnFileDrop(void *userObj, const UTF8Char **files, UOSInt nFiles);
 			static void __stdcall OnKeyGenerateClicked(void *userObj);
 			static void __stdcall OnKeyViewClicked(void *userObj);
 			static void __stdcall OnKeySaveClicked(void *userObj);
+			static void __stdcall OnSANAddClicked(void *userObj);
+			static void __stdcall OnSANClearClicked(void *userObj);
+			static void __stdcall OnCSRGenerateClicked(void *userObj);
+			static void __stdcall OnSelfSignedCertClicked(void *userObj);
 
+			Bool GetNames(Crypto::Cert::CertNames *names);
 			void UpdateKeyDetail();
 			void UpdateNames(Crypto::Cert::CertNames *names);
 		public:

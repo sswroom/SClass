@@ -6,6 +6,7 @@
 #include "Net/DefaultSSLEngine.h"
 #include "SSWR/AVIRead/AVIRCertUtilForm.h"
 #include "Text/StringTool.h"
+#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnFileDrop(void *userObj, const UTF8Char **files, UOSInt nFiles)
 {
@@ -135,6 +136,161 @@ void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnKeySaveClicked(void *userObj)
 	}
 }
 
+void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnSANAddClicked(void *userObj)
+{
+	SSWR::AVIRead::AVIRCertUtilForm *me = (SSWR::AVIRead::AVIRCertUtilForm*)userObj;
+	Text::StringBuilderUTF8 sb;
+	me->txtSAN->GetText(&sb);
+	if (sb.GetLength() > 0)
+	{
+		me->sanList->Add(Text::StrCopyNew(sb.ToString()));
+		me->txtSAN->SetText((const UTF8Char*)"");
+		me->lbSAN->AddItem(sb.ToString(), 0);
+	}
+}
+
+void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnSANClearClicked(void *userObj)
+{
+	SSWR::AVIRead::AVIRCertUtilForm *me = (SSWR::AVIRead::AVIRCertUtilForm*)userObj;
+	LIST_FREE_FUNC(me->sanList, Text::StrDelNew);
+	me->sanList->Clear();
+	me->lbSAN->ClearItems();
+}
+
+void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnCSRGenerateClicked(void *userObj)
+{
+	SSWR::AVIRead::AVIRCertUtilForm *me = (SSWR::AVIRead::AVIRCertUtilForm*)userObj;
+	if (me->key == 0)
+	{
+		UI::MessageDialog::ShowDialog((const UTF8Char*)"Key not exist", (const UTF8Char*)"Cert Util", me);
+		return;
+	}
+	Crypto::Cert::CertNames names;
+	MemClear(&names, sizeof(names));
+	if (!me->GetNames(&names))
+	{
+		return;
+	}
+	Crypto::Cert::CertUtil::ReqExtensions ext;
+	MemClear(&ext, sizeof(ext));
+	ext.subjectAltName = me->sanList;
+	Crypto::Cert::X509CertReq *csr = Crypto::Cert::CertUtil::CertReqCreate(me->ssl, &names, me->key, &ext);
+	if (csr)
+	{
+		me->core->OpenObject(csr);
+	}
+	else
+	{
+		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in creating cert request", (const UTF8Char*)"Cert Util", me);
+	}
+	Crypto::Cert::CertNames::FreeNames(&names);
+}
+
+void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnSelfSignedCertClicked(void *userObj)
+{
+	SSWR::AVIRead::AVIRCertUtilForm *me = (SSWR::AVIRead::AVIRCertUtilForm*)userObj;
+	if (me->key == 0)
+	{
+		UI::MessageDialog::ShowDialog((const UTF8Char*)"Key not exist", (const UTF8Char*)"Cert Util", me);
+		return;
+	}
+	UOSInt validDays;
+	Text::StringBuilderUTF8 sb;
+	me->txtValidDays->GetText(&sb);
+	if (!sb.ToUOSInt(&validDays))
+	{
+		UI::MessageDialog::ShowDialog((const UTF8Char*)"Valid days not valid", (const UTF8Char*)"Cert Util", me);
+		return;
+	}
+	Crypto::Cert::CertNames names;
+	MemClear(&names, sizeof(names));
+	if (!me->GetNames(&names))
+	{
+		return;
+	}
+	Crypto::Cert::CertUtil::ReqExtensions ext;
+	MemClear(&ext, sizeof(ext));
+	ext.subjectAltName = me->sanList;
+	ext.useSubjKeyId = true;
+	me->key->GetKeyId(ext.subjKeyId, 0);
+	ext.useAuthKeyId = true;
+	me->key->GetKeyId(ext.authKeyId, 0);
+	Crypto::Cert::X509Cert *cert = Crypto::Cert::CertUtil::SelfSignedCertCreate(me->ssl, &names, me->key, validDays, &ext);
+	if (cert)
+	{
+		me->core->OpenObject(cert);
+	}
+	else
+	{
+		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in creating self-signed certificate", (const UTF8Char*)"Cert Util", me);
+	}
+	Crypto::Cert::CertNames::FreeNames(&names);
+}
+
+Bool SSWR::AVIRead::AVIRCertUtilForm::GetNames(Crypto::Cert::CertNames *names)
+{
+	Text::StringBuilderUTF8 sb;
+	this->txtCountryName->GetText(&sb);
+	if (sb.GetLength() != 0)
+	{
+		if (sb.GetLength() != 2)
+		{
+			return false;
+		}
+		SDEL_TEXT(names->countryName);
+		names->countryName = Text::StrCopyNew(sb.ToString());
+	}
+	sb.ClearStr();
+	this->txtStateOrProvinceName->GetText(&sb);
+	if (sb.GetLength() != 0)
+	{
+		SDEL_TEXT(names->stateOrProvinceName);
+		names->stateOrProvinceName = Text::StrCopyNew(sb.ToString());
+	}
+	sb.ClearStr();
+	this->txtLocalityName->GetText(&sb);
+	if (sb.GetLength() != 0)
+	{
+		SDEL_TEXT(names->localityName);
+		names->localityName = Text::StrCopyNew(sb.ToString());
+	}
+	sb.ClearStr();
+	this->txtOrganizationName->GetText(&sb);
+	if (sb.GetLength() != 0)
+	{
+		SDEL_TEXT(names->organizationName);
+		names->organizationName = Text::StrCopyNew(sb.ToString());
+	}
+	sb.ClearStr();
+	this->txtOrganizationUnitName->GetText(&sb);
+	if (sb.GetLength() != 0)
+	{
+		SDEL_TEXT(names->organizationUnitName);
+		names->organizationUnitName = Text::StrCopyNew(sb.ToString());
+	}
+	sb.ClearStr();
+	this->txtCommonName->GetText(&sb);
+	if (sb.GetLength() == 0)
+	{
+		return false;
+	}
+	SDEL_TEXT(names->commonName);
+	names->commonName = Text::StrCopyNew(sb.ToString());
+
+	sb.ClearStr();
+	this->txtEmailAddress->GetText(&sb);
+	if (sb.GetLength() != 0)
+	{
+		if (!Text::StringTool::IsEmailAddress(sb.ToString()))
+		{
+			return false;
+		}
+		SDEL_TEXT(names->emailAddress);
+		names->emailAddress = Text::StrCopyNew(sb.ToString());
+	}
+	return true;
+}
+
 void SSWR::AVIRead::AVIRCertUtilForm::UpdateKeyDetail()
 {
 	if (this->key == 0)
@@ -214,6 +370,29 @@ SSWR::AVIRead::AVIRCertUtilForm::AVIRCertUtilForm(UI::GUIClientControl *parent, 
 	this->lblEmailAddress->SetRect(4, 172, 100, 23, false);
 	NEW_CLASS(this->txtEmailAddress, UI::GUITextBox(ui, this, (const UTF8Char*)""));
 	this->txtEmailAddress->SetRect(104, 172, 200, 23, false);
+	NEW_CLASS(this->lblValidDays, UI::GUILabel(ui, this, (const UTF8Char*)"Valid Days"));
+	this->lblValidDays->SetRect(4, 196, 100, 23, false);
+	NEW_CLASS(this->txtValidDays, UI::GUITextBox(ui, this, (const UTF8Char*)"365"));
+	this->txtValidDays->SetRect(104, 196, 200, 23, false);
+	NEW_CLASS(this->lblSAN, UI::GUILabel(ui, this, (const UTF8Char*)"SubjAltName"));
+	this->lblSAN->SetRect(4, 220, 100, 23, false);
+	NEW_CLASS(this->txtSAN, UI::GUITextBox(ui, this, (const UTF8Char*)""));
+	this->txtSAN->SetRect(104, 220, 200, 23, false);
+	NEW_CLASS(this->btnSANAdd, UI::GUIButton(ui, this, (const UTF8Char*)"Add"));
+	this->btnSANAdd->SetRect(304, 220, 75, 23, false);
+	this->btnSANAdd->HandleButtonClick(OnSANAddClicked, this);
+	NEW_CLASS(this->lbSAN, UI::GUIListBox(ui, this, false));
+	this->lbSAN->SetRect(104, 244, 200, 95, false);
+	NEW_CLASS(this->btnSANClear, UI::GUIButton(ui, this, (const UTF8Char*)"Clear"));
+	this->btnSANClear->SetRect(304, 244, 75, 23, false);
+	this->btnSANClear->HandleButtonClick(OnSANClearClicked, this);
+	NEW_CLASS(this->btnCSRGenerate, UI::GUIButton(ui, this, (const UTF8Char *)"Generate CSR"));
+	this->btnCSRGenerate->SetRect(104, 340, 150, 23, false);
+	this->btnCSRGenerate->HandleButtonClick(OnCSRGenerateClicked, this);
+	NEW_CLASS(this->btnSelfSignedCert, UI::GUIButton(ui, this, (const UTF8Char*)"Self-Signed Cert"));
+	this->btnSelfSignedCert->SetRect(254, 340, 150, 23, false);
+	this->btnSelfSignedCert->HandleButtonClick(OnSelfSignedCertClicked, this);
+
 	this->HandleDropFiles(OnFileDrop, this);
 }
 
