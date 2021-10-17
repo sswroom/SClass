@@ -17,6 +17,16 @@ void Crypto::Cert::CertNames::FreeNames(CertNames *names)
 	SDEL_TEXT(names->emailAddress);
 }
 
+void Crypto::Cert::CertExtensions::FreeExtensions(CertExtensions *ext)
+{
+	if (ext->subjectAltName)
+	{
+		LIST_FREE_FUNC(ext->subjectAltName, Text::StrDelNew);
+		DEL_CLASS(ext->subjectAltName);
+		ext->subjectAltName = 0;
+	}
+}
+
 Bool Crypto::Cert::X509File::IsSigned(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path)
 {
 	UOSInt cnt = Net::ASN1Util::PDUCountItem(pdu, pduEnd, path);
@@ -744,6 +754,82 @@ Bool Crypto::Cert::X509File::NamesGet(const UInt8 *pdu, const UInt8 *pduEnd, Cer
 						{
 							SDEL_TEXT(names->emailAddress);
 							names->emailAddress = Text::StrCopyNewC(strPDU, strLen);
+						}
+					}
+				}
+			}
+		}
+	}
+	return true;
+}
+
+Bool Crypto::Cert::X509File::ExtensionsGet(const UInt8 *pdu, const UInt8 *pduEnd, CertExtensions *ext)
+{
+	Char sbuff[12];
+	const UInt8 *itemPDU;
+	const UInt8 *oidPDU;
+	const UInt8 *strPDU;
+	const UInt8 *subItemPDU;
+	UOSInt itemLen;
+	UOSInt oidLen;
+	UOSInt strLen;
+	UOSInt subItemLen;
+	Net::ASN1Util::ItemType itemType;
+	UOSInt cnt = Net::ASN1Util::PDUCountItem(pdu, pduEnd, 0);
+	UOSInt i = 0;
+	while (i < cnt)
+	{
+		i++;
+
+		Text::StrUOSInt(sbuff, i);
+		if ((itemPDU = Net::ASN1Util::PDUGetItem(pdu, pduEnd, sbuff, &itemLen, &itemType)) != 0)
+		{
+			if (itemType == Net::ASN1Util::IT_SEQUENCE)
+			{
+				oidPDU = Net::ASN1Util::PDUGetItem(itemPDU, itemPDU + itemLen, "1", &oidLen, &itemType);
+				if (oidPDU != 0 && itemType == Net::ASN1Util::IT_OID)
+				{
+					strPDU = Net::ASN1Util::PDUGetItem(itemPDU, itemPDU + itemLen, "2", &strLen, &itemType);
+					if (strPDU && itemType == Net::ASN1Util::IT_OCTET_STRING)
+					{
+						if (Net::ASN1Util::OIDEqualsText(oidPDU, oidLen, "2.5.29.17")) //id-ce-subjectAltName
+						{
+							if (ext->subjectAltName)
+							{
+								LIST_FREE_FUNC(ext->subjectAltName, Text::StrDelNew);
+								SDEL_CLASS(ext->subjectAltName)
+							}
+							NEW_CLASS(ext->subjectAltName, Data::ArrayList<const UTF8Char*>());
+							UOSInt j = 0;
+							UOSInt k = Net::ASN1Util::PDUCountItem(strPDU, strPDU + strLen, "1");
+							while (j < k)
+							{
+								j++;
+								Text::StrUOSInt(Text::StrConcat(sbuff, "1."), j);
+								subItemPDU = Net::ASN1Util::PDUGetItem(strPDU, strPDU + strLen, sbuff, &subItemLen, &itemType);
+								if (subItemPDU)
+								{
+									ext->subjectAltName->Add(Text::StrCopyNewC(subItemPDU, subItemLen));
+								}
+							}
+						}
+						else if (Net::ASN1Util::OIDEqualsText(oidPDU, oidLen, "2.5.29.14")) //id-ce-subjectKeyIdentifier
+						{
+							subItemPDU = Net::ASN1Util::PDUGetItem(strPDU, strPDU + strLen, "1", &subItemLen, &itemType);
+							if (subItemPDU && subItemLen == 20)
+							{
+								ext->useSubjKeyId = true;
+								MemCopyNO(ext->subjKeyId, subItemPDU, subItemLen);
+							}
+						}
+						else if (Net::ASN1Util::OIDEqualsText(oidPDU, oidLen, "2.5.29.35")) //id-ce-authorityKeyIdentifier
+						{
+							subItemPDU = Net::ASN1Util::PDUGetItem(strPDU, strPDU + strLen, "1.1", &subItemLen, &itemType);
+							if (subItemPDU && subItemLen == 20)
+							{
+								ext->useAuthKeyId = true;
+								MemCopyNO(ext->authKeyId, subItemPDU, subItemLen);
+							}
 						}
 					}
 				}

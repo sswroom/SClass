@@ -1,5 +1,6 @@
 #ifndef _SM_CRYPTO_CERT_X509FILE
 #define _SM_CRYPTO_CERT_X509FILE
+#include "Data/ArrayList.h"
 #include "Net/ASN1Data.h"
 
 namespace Net
@@ -22,6 +23,17 @@ namespace Crypto
 			const UTF8Char *emailAddress;
 
 			static void FreeNames(CertNames *names);
+		};
+
+		struct CertExtensions
+		{
+			Data::ArrayList<const UTF8Char *> *subjectAltName;
+			Bool useSubjKeyId;
+			UInt8 subjKeyId[20];
+			Bool useAuthKeyId;
+			UInt8 authKeyId[20];
+
+			static void FreeExtensions(CertExtensions *ext);
 		};
 		class X509Key;
 
@@ -76,6 +88,7 @@ namespace Crypto
 			static Bool NameGetByOID(const UInt8 *pdu, const UInt8 *pduEnd, const Char *oidText, Text::StringBuilderUTF *sb);
 			static Bool NameGetCN(const UInt8 *pdu, const UInt8 *pduEnd, Text::StringBuilderUTF *sb);
 			static Bool NamesGet(const UInt8 *pdu, const UInt8 *pduEnd, CertNames *names);
+			static Bool ExtensionsGet(const UInt8 *pdu, const UInt8 *pduEnd, CertExtensions *ext);
 
 			static UOSInt KeyGetLeng(const UInt8 *pdu, const UInt8 *pduEnd, KeyType keyType);
 			static KeyType KeyTypeFromOID(const UInt8 *oid, UOSInt oidLen, Bool pubKey);

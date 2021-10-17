@@ -54,3 +54,25 @@ Bool Crypto::Cert::X509CertReq::GetNames(CertNames *names)
 	}
 	return false;
 }
+
+Bool Crypto::Cert::X509CertReq::GetExtensions(CertExtensions *ext)
+{
+	UOSInt itemLen;
+	Net::ASN1Util::ItemType itemType;
+	const UInt8 *extPDU = Net::ASN1Util::PDUGetItem(this->buff, this->buff + this->buffSize, "1.1.4.1", &itemLen, &itemType);
+	if (extPDU && itemType == Net::ASN1Util::IT_SEQUENCE)
+	{
+		UOSInt oidLen;
+		const UInt8 *oid = Net::ASN1Util::PDUGetItem(extPDU, extPDU + itemLen, "1", &oidLen, &itemType);
+		if (oid && Net::ASN1Util::OIDEqualsText(oid, oidLen, "1.2.840.113549.1.9.14"))
+		{
+			UOSInt extSeqSize;
+			const UInt8 *extSeq = Net::ASN1Util::PDUGetItem(extPDU, extPDU + itemLen, "2.1", &extSeqSize, &itemType);
+			if (extSeq && itemType == Net::ASN1Util::IT_SEQUENCE)
+			{
+				return ExtensionsGet(extSeq, extSeq + extSeqSize, ext);
+			}
+		}
+	}
+	return false;
+}

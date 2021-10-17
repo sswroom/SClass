@@ -23,6 +23,7 @@ namespace Crypto
 
 			Bool GetIssueNames(CertNames *names);
 			Bool GetSubjNames(CertNames *names);
+			Bool GetExtensions(CertExtensions *ext);
 		};
 	}
 }

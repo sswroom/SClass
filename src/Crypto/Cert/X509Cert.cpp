@@ -111,3 +111,31 @@ Bool Crypto::Cert::X509Cert::GetSubjNames(CertNames *names)
 	}
 	return false;
 }
+
+Bool Crypto::Cert::X509Cert::GetExtensions(CertExtensions *ext)
+{
+	Net::ASN1Util::ItemType itemType;
+	UOSInt len;
+	const UInt8 *pdu = Net::ASN1Util::PDUGetItem(this->buff, this->buff + this->buffSize, "1.1.1", &len, &itemType);
+	if (pdu == 0)
+	{
+		return false;
+	}
+	if (itemType == Net::ASN1Util::IT_CONTEXT_SPECIFIC_0)
+	{
+		pdu = Net::ASN1Util::PDUGetItem(this->buff, this->buff + this->buffSize, "1.1.8.1", &len, &itemType);
+		if (pdu)
+		{
+			return ExtensionsGet(pdu, pdu + len, ext);
+		}
+	}
+	else
+	{
+		pdu = Net::ASN1Util::PDUGetItem(this->buff, this->buff + this->buffSize, "1.1.7.1", &len, &itemType);
+		if (pdu)
+		{
+			return ExtensionsGet(pdu, pdu + len, ext);
+		}
+	}
+	return false;
+}

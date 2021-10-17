@@ -35,6 +35,7 @@ void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnFileDrop(void *userObj, const 
 					Crypto::Cert::X509CertReq *csr;
 					Crypto::Cert::X509Cert *cert;
 					Crypto::Cert::CertNames names;
+					Crypto::Cert::CertExtensions exts;
 					switch (x509->GetFileType())
 					{
 					case Crypto::Cert::X509File::FileType::Cert:
@@ -45,6 +46,16 @@ void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnFileDrop(void *userObj, const 
 							me->UpdateNames(&names);
 							Crypto::Cert::CertNames::FreeNames(&names);
 						}
+						MemClear(&exts, sizeof(exts));
+						if (cert->GetExtensions(&exts))
+						{
+							me->UpdateExtensions(&exts);
+							Crypto::Cert::CertExtensions::FreeExtensions(&exts);
+						}
+						else
+						{
+							me->ClearExtensions();
+						}
 						DEL_CLASS(x509);
 						break;
 					case Crypto::Cert::X509File::FileType::CertRequest:
@@ -54,6 +65,16 @@ void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnFileDrop(void *userObj, const 
 						{
 							me->UpdateNames(&names);
 							Crypto::Cert::CertNames::FreeNames(&names);
+						}
+						MemClear(&exts, sizeof(exts));
+						if (cert->GetExtensions(&exts))
+						{
+							me->UpdateExtensions(&exts);
+							Crypto::Cert::CertExtensions::FreeExtensions(&exts);
+						}
+						else
+						{
+							me->ClearExtensions();
 						}
 						DEL_CLASS(x509);
 						break;
@@ -171,7 +192,7 @@ void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnCSRGenerateClicked(void *userO
 	{
 		return;
 	}
-	Crypto::Cert::CertUtil::ReqExtensions ext;
+	Crypto::Cert::CertExtensions ext;
 	MemClear(&ext, sizeof(ext));
 	ext.subjectAltName = me->sanList;
 	Crypto::Cert::X509CertReq *csr = Crypto::Cert::CertUtil::CertReqCreate(me->ssl, &names, me->key, &ext);
@@ -208,7 +229,7 @@ void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnSelfSignedCertClicked(void *us
 	{
 		return;
 	}
-	Crypto::Cert::CertUtil::ReqExtensions ext;
+	Crypto::Cert::CertExtensions ext;
 	MemClear(&ext, sizeof(ext));
 	ext.subjectAltName = me->sanList;
 	ext.useSubjKeyId = true;
@@ -317,6 +338,31 @@ void SSWR::AVIRead::AVIRCertUtilForm::UpdateNames(Crypto::Cert::CertNames *names
 	this->txtOrganizationUnitName->SetText(Text::StringTool::Null2Empty(names->organizationUnitName));
 	this->txtCommonName->SetText(Text::StringTool::Null2Empty(names->commonName));
 	this->txtEmailAddress->SetText(Text::StringTool::Null2Empty(names->emailAddress));
+}
+
+void SSWR::AVIRead::AVIRCertUtilForm::UpdateExtensions(Crypto::Cert::CertExtensions *exts)
+{
+	this->ClearExtensions();
+	if (exts->subjectAltName)
+	{
+		UOSInt i = 0;
+		UOSInt j = exts->subjectAltName->GetCount();
+		const UTF8Char *csptr;
+		while (i < j)
+		{
+			csptr = exts->subjectAltName->GetItem(i);
+			this->sanList->Add(Text::StrCopyNew(csptr));
+			this->lbSAN->AddItem(csptr, 0);
+			i++;
+		}
+	}
+}
+
+void SSWR::AVIRead::AVIRCertUtilForm::ClearExtensions()
+{
+	LIST_FREE_FUNC(this->sanList, Text::StrDelNew);
+	this->sanList->Clear();
+	this->lbSAN->ClearItems();
 }
 
 SSWR::AVIRead::AVIRCertUtilForm::AVIRCertUtilForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)

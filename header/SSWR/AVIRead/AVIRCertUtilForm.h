@@ -60,6 +60,8 @@ namespace SSWR
 			Bool GetNames(Crypto::Cert::CertNames *names);
 			void UpdateKeyDetail();
 			void UpdateNames(Crypto::Cert::CertNames *names);
+			void UpdateExtensions(Crypto::Cert::CertExtensions *exts);
+			void ClearExtensions();
 		public:
 			AVIRCertUtilForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRCertUtilForm();

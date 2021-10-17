@@ -103,7 +103,7 @@ Bool Crypto::Cert::CertUtil::AppendPublicKey(Net::ASN1PDUBuilder *builder, Crypt
 	return false;
 }
 
-Bool Crypto::Cert::CertUtil::AppendReqExtensions(Net::ASN1PDUBuilder *builder, const ReqExtensions *ext)
+Bool Crypto::Cert::CertUtil::AppendReqExtensions(Net::ASN1PDUBuilder *builder, const CertExtensions *ext)
 {
 	Bool found = false;
 	if (ext->subjectAltName && ext->subjectAltName->GetCount() > 0)
@@ -166,7 +166,7 @@ Bool Crypto::Cert::CertUtil::AppendReqExtensions(Net::ASN1PDUBuilder *builder, c
 		builder->AppendOIDString("2.5.29.35");
 		builder->BeginOther(Net::ASN1Util::IT_OCTET_STRING);
 		builder->BeginSequence();
-		builder->AppendOctetString(ext->authKeyId, 20);
+		builder->AppendOther(0x80, ext->authKeyId, 20);
 		builder->EndLevel();
 		builder->EndLevel();
 		builder->EndLevel();
@@ -208,7 +208,7 @@ Bool Crypto::Cert::CertUtil::AppendSign(Net::ASN1PDUBuilder *builder, Net::SSLEn
 	}
 }
 
-Crypto::Cert::X509CertReq *Crypto::Cert::CertUtil::CertReqCreate(Net::SSLEngine *ssl, const CertNames *names, Crypto::Cert::X509Key *key, const ReqExtensions *ext)
+Crypto::Cert::X509CertReq *Crypto::Cert::CertUtil::CertReqCreate(Net::SSLEngine *ssl, const CertNames *names, Crypto::Cert::X509Key *key, const CertExtensions *ext)
 {
 	Net::ASN1PDUBuilder builder;
 	builder.BeginSequence();
@@ -237,7 +237,7 @@ Crypto::Cert::X509CertReq *Crypto::Cert::CertUtil::CertReqCreate(Net::SSLEngine 
 	return csr;
 }
 
-Crypto::Cert::X509Cert *Crypto::Cert::CertUtil::SelfSignedCertCreate(Net::SSLEngine *ssl, const CertNames *names, Crypto::Cert::X509Key *key, UOSInt validDays, const ReqExtensions *ext)
+Crypto::Cert::X509Cert *Crypto::Cert::CertUtil::SelfSignedCertCreate(Net::SSLEngine *ssl, const CertNames *names, Crypto::Cert::X509Key *key, UOSInt validDays, const CertExtensions *ext)
 {
 	Data::RandomBytesGenerator rndBytes;
 	Net::ASN1PDUBuilder builder;
@@ -305,6 +305,6 @@ Crypto::Cert::X509Cert *Crypto::Cert::CertUtil::IssueCert(Net::SSLEngine *ssl, C
 	{
 		return 0;
 	}
-	
+
 	return 0;
 }

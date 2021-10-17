@@ -20,6 +20,7 @@ namespace Crypto
 			virtual void ToString(Text::StringBuilderUTF *sb);
 
 			Bool GetNames(CertNames *names);
+			Bool GetExtensions(CertExtensions *ext);
 		};
 	}
 }

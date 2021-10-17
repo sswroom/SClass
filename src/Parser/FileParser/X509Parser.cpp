@@ -41,13 +41,13 @@ IO::ParserType Parser::FileParser::X509Parser::GetParserType()
 
 IO::ParsedObject *Parser::FileParser::X509Parser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
+	UInt8 buff[8192];
 	UInt64 len = fd->GetDataSize();
-	if (len > 4096 || (targetType != IO::ParserType::Unknown && targetType != IO::ParserType::ASN1Data))
+	if (len > sizeof(buff) || (targetType != IO::ParserType::Unknown && targetType != IO::ParserType::ASN1Data))
 	{
 		return 0;
 	}
 
-	UInt8 buff[4096];
 	fd->GetRealData(0, (UOSInt)len, buff);
 	return ParseBuff(buff, (UOSInt)len, fd->GetFullFileName());
 }
@@ -55,7 +55,7 @@ IO::ParsedObject *Parser::FileParser::X509Parser::ParseFile(IO::IStreamData *fd,
 Crypto::Cert::X509File *Parser::FileParser::X509Parser::ParseBuff(const UInt8 *buff, UOSInt buffSize, const UTF8Char *fileName)
 {
 	Crypto::Cert::X509File *ret = 0;
-	UInt8 dataBuff[2048];
+	UInt8 dataBuff[6144];
 	UOSInt dataLen;
 	UOSInt lbSize;
 	if (buff[buffSize - 2] == 13 && buff[buffSize - 1] == 10)

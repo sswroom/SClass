@@ -37,6 +37,7 @@ void __stdcall SSWR::AVIRead::AVIRCAUtilForm::OnFileDrop(void *userObj, const UT
 					Crypto::Cert::X509CertReq *csr;
 					Crypto::Cert::X509Cert *cert;
 					Crypto::Cert::CertNames names;
+					Crypto::Cert::CertExtensions exts;
 					switch (x509->GetFileType())
 					{
 					case Crypto::Cert::X509File::FileType::Cert:
@@ -74,6 +75,22 @@ void __stdcall SSWR::AVIRead::AVIRCAUtilForm::OnFileDrop(void *userObj, const UT
 							me->UpdateNames(&names);
 							me->txtCSR->SetText(names.commonName);
 							Crypto::Cert::CertNames::FreeNames(&names);
+
+							me->lbSAN->ClearItems();
+							if (csr->GetExtensions(&exts))
+							{
+								if (exts.subjectAltName)
+								{
+									UOSInt j = 0;
+									UOSInt k = exts.subjectAltName->GetCount();
+									while (j < k)
+									{
+										me->lbSAN->AddItem(exts.subjectAltName->GetItem(j), 0);
+										j++;
+									}
+								}
+								Crypto::Cert::CertExtensions::FreeExtensions(&exts);
+							}
 						}
 						else
 						{
