@@ -24,7 +24,7 @@ namespace Crypto
 			UOSInt GetKeySizeBits();
 			Bool IsPrivateKey();
 			Crypto::Cert::X509Key *CreatePublicKey();
-			Bool GetKeyId(UInt8 *keyId, UOSInt *keyIdSize);
+			Bool GetKeyId(UInt8 *keyId); //20 bytes
 
 			const UInt8 *GetRSAModulus(UOSInt *size);
 			const UInt8 *GetRSAPublicExponent(UOSInt *size);

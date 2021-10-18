@@ -170,8 +170,15 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnCliCertClicked(void *userO
 			UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in parsing file", (const UTF8Char*)"MQTT Explorer", me);
 			return;
 		}
+		Crypto::Cert::X509File *x509 = (Crypto::Cert::X509File*)asn1;
+		if (x509->GetFileType() != Crypto::Cert::X509File::FileType::Cert)
+		{
+			DEL_CLASS(asn1);
+			UI::MessageDialog::ShowDialog((const UTF8Char*)"It is not a cert file", (const UTF8Char*)"MQTT Explorer", me);
+			return;
+		}
 		SDEL_CLASS(me->cliCert);
-		me->cliCert = (Crypto::Cert::X509File*)asn1;
+		me->cliCert = (Crypto::Cert::X509Cert*)x509;
 		const UTF8Char *csptr = dlg->GetFileName();
 		UOSInt i = Text::StrLastIndexOf(csptr, IO::Path::PATH_SEPERATOR);
 		me->lblCliCert->SetText(csptr + i + 1);

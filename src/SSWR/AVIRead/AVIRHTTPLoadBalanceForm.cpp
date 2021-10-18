@@ -1,4 +1,5 @@
 #include "Stdafx.h"
+#include "Crypto/Cert/CertUtil.h"
 #include "IO/Path.h"
 #include "Net/DefaultSSLEngine.h"
 #include "SSWR/AVIRead/AVIRHTTPSvrForm.h"
@@ -42,7 +43,9 @@ void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnStartClick(void *userOb
 			return;
 		}
 		ssl = me->ssl;
-		ssl->SetServerCertsASN1(me->sslCert, me->sslKey);
+		Crypto::Cert::X509Cert *issuerCert = Crypto::Cert::CertUtil::FindIssuer(me->sslCert);
+		ssl->SetServerCertsASN1(me->sslCert, me->sslKey, issuerCert);
+		SDEL_CLASS(issuerCert);
 	}
 	if (port > 0 && port < 65535)
 	{

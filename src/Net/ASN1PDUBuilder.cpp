@@ -108,7 +108,7 @@ void Net::ASN1PDUBuilder::AppendBool(Bool v)
 	this->AllocateSize(3);
 	this->buff[this->currOffset] = 1;
 	this->buff[this->currOffset + 1] = 1;
-	this->buff[this->currOffset + 2] = v?1:0;
+	this->buff[this->currOffset + 2] = v?0xFF:0;
 	this->currOffset += 3;
 }
 

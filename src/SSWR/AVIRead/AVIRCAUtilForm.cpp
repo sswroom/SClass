@@ -49,7 +49,6 @@ void __stdcall SSWR::AVIRead::AVIRCAUtilForm::OnFileDrop(void *userObj, const UT
 							me->caCert = cert;
 							me->txtCACert->SetText(names.commonName);
 							Crypto::Cert::CertNames::FreeNames(&names);
-							me->UpdateCASerial();
 							if (me->key)
 							{
 								if (!me->caCert->IsSignatureKey(me->ssl, me->key))
@@ -77,6 +76,7 @@ void __stdcall SSWR::AVIRead::AVIRCAUtilForm::OnFileDrop(void *userObj, const UT
 							Crypto::Cert::CertNames::FreeNames(&names);
 
 							me->lbSAN->ClearItems();
+							MemClear(&exts, sizeof(exts));
 							if (csr->GetExtensions(&exts))
 							{
 								if (exts.subjectAltName)
@@ -204,9 +204,7 @@ void __stdcall SSWR::AVIRead::AVIRCAUtilForm::OnIssueClicked(void *userObj)
 		UI::MessageDialog::ShowDialog((const UTF8Char*)"Valid Days not valid", (const UTF8Char*)"CA Util", me);
 		return;
 	}
-	sb.ClearStr();
-	me->txtCASerial->GetText(&sb);
-	Crypto::Cert::X509Cert *cert = Crypto::Cert::CertUtil::IssueCert(me->ssl, me->caCert, me->key, validDays, sb.ToString(), me->csr);
+	Crypto::Cert::X509Cert *cert = Crypto::Cert::CertUtil::IssueCert(me->ssl, me->caCert, me->key, validDays, me->csr);
 	if (cert)
 	{
 		me->core->OpenObject(cert);
@@ -214,44 +212,6 @@ void __stdcall SSWR::AVIRead::AVIRCAUtilForm::OnIssueClicked(void *userObj)
 	else
 	{
 		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in issuing certificate", (const UTF8Char*)"CA Util", me);
-	}
-}
-
-void SSWR::AVIRead::AVIRCAUtilForm::UpdateCASerial()
-{
-	UInt8 serial[128];
-	UOSInt len;
-	UTF8Char sbuff[512];
-	this->caCert->GetSourceName(sbuff);
-	IO::Path::ReplaceExt(sbuff, (const UTF8Char*)"srl");
-	if ((len = IO::FileStream::LoadFile(sbuff, serial, sizeof(serial))) != 0)
-	{
-		while (len > 0)
-		{
-			if (serial[len - 1] == 13 || serial[len -1] == 10)
-			{
-				len--;
-			}
-			else
-			{
-				break;
-			}
-		}
-		serial[len] = 0;
-		this->txtCASerial->SetText(serial);
-	}
-	else
-	{
-		Text::StringBuilderUTF8 sb;
-		Data::RandomBytesGenerator random;
-		random.NextBytes(serial, 20);
-		sb.AppendHexBuff(serial, 20, 0, Text::LineBreakType::None);
-		this->txtCASerial->SetText(sb.ToString());
-		sb.AppendLB(Text::LineBreakType::LF);
-		IO::FileStream *fs;
-		NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-		fs->Write(sb.ToString(), sb.GetLength());
-		DEL_CLASS(fs);
 	}
 }
 
@@ -311,64 +271,59 @@ SSWR::AVIRead::AVIRCAUtilForm::AVIRCAUtilForm(UI::GUIClientControl *parent, UI::
 	NEW_CLASS(this->btnCACertView, UI::GUIButton(ui, this, (const UTF8Char*)"View"));
 	this->btnCACertView->SetRect(304, 28, 75, 23, false);
 	this->btnCACertView->HandleButtonClick(OnKeyViewClicked, this);
-	NEW_CLASS(this->lblCASerial, UI::GUILabel(ui, this, (const UTF8Char*)"CA Serial"));
-	this->lblCASerial->SetRect(4, 52, 100, 23, false);
-	NEW_CLASS(this->txtCASerial, UI::GUITextBox(ui, this, (const UTF8Char*)"-"));
-	this->txtCASerial->SetRect(104, 52, 300, 23, false);
-	this->txtCASerial->SetReadOnly(true);
 	NEW_CLASS(this->lblCSR, UI::GUILabel(ui, this, (const UTF8Char*)"CSR"));
-	this->lblCSR->SetRect(4, 76, 100, 23, false);
+	this->lblCSR->SetRect(4, 52, 100, 23, false);
 	NEW_CLASS(this->txtCSR, UI::GUITextBox(ui, this, (const UTF8Char*)"-"));
-	this->txtCSR->SetRect(104, 76, 200, 23, false);
+	this->txtCSR->SetRect(104, 52, 200, 23, false);
 	this->txtCSR->SetReadOnly(true);
 	NEW_CLASS(this->btnCSRView, UI::GUIButton(ui, this, (const UTF8Char*)"View"));
-	this->btnCSRView->SetRect(304, 76, 75, 23, false);
+	this->btnCSRView->SetRect(304, 52, 75, 23, false);
 	this->btnCSRView->HandleButtonClick(OnKeyViewClicked, this);
 	NEW_CLASS(this->lblCountryName, UI::GUILabel(ui, this, (const UTF8Char*)"C"));
-	this->lblCountryName->SetRect(4, 100, 100, 23, false);
+	this->lblCountryName->SetRect(4, 76, 100, 23, false);
 	NEW_CLASS(this->txtCountryName, UI::GUITextBox(ui, this, (const UTF8Char*)""));
-	this->txtCountryName->SetRect(104, 100, 200, 23, false);
+	this->txtCountryName->SetRect(104, 76, 200, 23, false);
 	this->txtCountryName->SetReadOnly(true);
 	NEW_CLASS(this->lblStateOrProvinceName, UI::GUILabel(ui, this, (const UTF8Char*)"ST"));
-	this->lblStateOrProvinceName->SetRect(4, 124, 100, 23, false);
+	this->lblStateOrProvinceName->SetRect(4, 100, 100, 23, false);
 	NEW_CLASS(this->txtStateOrProvinceName, UI::GUITextBox(ui, this, (const UTF8Char*)""));
-	this->txtStateOrProvinceName->SetRect(104, 124, 200, 23, false);
+	this->txtStateOrProvinceName->SetRect(104, 100, 200, 23, false);
 	this->txtStateOrProvinceName->SetReadOnly(true);
 	NEW_CLASS(this->lblLocalityName, UI::GUILabel(ui, this, (const UTF8Char*)"L"));
-	this->lblLocalityName->SetRect(4, 148, 100, 23, false);
+	this->lblLocalityName->SetRect(4, 124, 100, 23, false);
 	NEW_CLASS(this->txtLocalityName, UI::GUITextBox(ui, this, (const UTF8Char*)""));
-	this->txtLocalityName->SetRect(104, 148, 200, 23, false);
+	this->txtLocalityName->SetRect(104, 124, 200, 23, false);
 	this->txtLocalityName->SetReadOnly(true);
 	NEW_CLASS(this->lblOrganizationName, UI::GUILabel(ui, this, (const UTF8Char*)"O"));
-	this->lblOrganizationName->SetRect(4, 172, 100, 23, false);
+	this->lblOrganizationName->SetRect(4, 148, 100, 23, false);
 	NEW_CLASS(this->txtOrganizationName, UI::GUITextBox(ui, this, (const UTF8Char*)""));
-	this->txtOrganizationName->SetRect(104, 172, 200, 23, false);
+	this->txtOrganizationName->SetRect(104, 148, 200, 23, false);
 	this->txtOrganizationName->SetReadOnly(true);
 	NEW_CLASS(this->lblOrganizationUnitName, UI::GUILabel(ui, this, (const UTF8Char*)"OU"));
-	this->lblOrganizationUnitName->SetRect(4, 196, 100, 23, false);
+	this->lblOrganizationUnitName->SetRect(4, 172, 100, 23, false);
 	NEW_CLASS(this->txtOrganizationUnitName, UI::GUITextBox(ui, this, (const UTF8Char*)""));
-	this->txtOrganizationUnitName->SetRect(104, 196, 200, 23, false);
+	this->txtOrganizationUnitName->SetRect(104, 172, 200, 23, false);
 	this->txtOrganizationUnitName->SetReadOnly(true);
 	NEW_CLASS(this->lblCommonName, UI::GUILabel(ui, this, (const UTF8Char*)"CN"));
-	this->lblCommonName->SetRect(4, 220, 100, 23, false);
+	this->lblCommonName->SetRect(4, 196, 100, 23, false);
 	NEW_CLASS(this->txtCommonName, UI::GUITextBox(ui, this, (const UTF8Char*)""));
-	this->txtCommonName->SetRect(104, 220, 200, 23, false);
+	this->txtCommonName->SetRect(104, 196, 200, 23, false);
 	this->txtCommonName->SetReadOnly(true);
 	NEW_CLASS(this->lblEmailAddress, UI::GUILabel(ui, this, (const UTF8Char*)"Email"));
-	this->lblEmailAddress->SetRect(4, 244, 100, 23, false);
+	this->lblEmailAddress->SetRect(4, 220, 100, 23, false);
 	NEW_CLASS(this->txtEmailAddress, UI::GUITextBox(ui, this, (const UTF8Char*)""));
-	this->txtEmailAddress->SetRect(104, 244, 200, 23, false);
+	this->txtEmailAddress->SetRect(104, 220, 200, 23, false);
 	this->txtEmailAddress->SetReadOnly(true);
 	NEW_CLASS(this->lblSAN, UI::GUILabel(ui, this, (const UTF8Char*)"SubjAltName"));
-	this->lblSAN->SetRect(4, 268, 100, 23, false);
+	this->lblSAN->SetRect(4, 244, 100, 23, false);
 	NEW_CLASS(this->lbSAN, UI::GUIListBox(ui, this, false));
-	this->lbSAN->SetRect(104, 268, 200, 95, false);
+	this->lbSAN->SetRect(104, 244, 200, 95, false);
 	NEW_CLASS(this->lblValidDays, UI::GUILabel(ui, this, (const UTF8Char*)"Valid Days"));
-	this->lblValidDays->SetRect(4, 364, 100, 23, false);
+	this->lblValidDays->SetRect(4, 340, 100, 23, false);
 	NEW_CLASS(this->txtValidDays, UI::GUITextBox(ui, this, (const UTF8Char*)"365"));
-	this->txtValidDays->SetRect(104, 364, 200, 23, false);
+	this->txtValidDays->SetRect(104, 340, 200, 23, false);
 	NEW_CLASS(this->btnIssue, UI::GUIButton(ui, this, (const UTF8Char *)"Issue"));
-	this->btnIssue->SetRect(104, 388, 150, 23, false);
+	this->btnIssue->SetRect(104, 364, 150, 23, false);
 	this->btnIssue->HandleButtonClick(OnIssueClicked, this);
 
 	this->HandleDropFiles(OnFileDrop, this);

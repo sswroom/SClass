@@ -29,8 +29,6 @@ namespace SSWR
 			UI::GUILabel *lblCACert;
 			UI::GUITextBox *txtCACert;
 			UI::GUIButton *btnCACertView;
-			UI::GUILabel *lblCASerial;
-			UI::GUITextBox *txtCASerial;
 			UI::GUILabel *lblCSR;
 			UI::GUITextBox *txtCSR;
 			UI::GUIButton *btnCSRView;
@@ -60,7 +58,6 @@ namespace SSWR
 			static void __stdcall OnCSRViewClicked(void *userObj);
 			static void __stdcall OnIssueClicked(void *userObj);
 
-			void UpdateCASerial();
 			void UpdateKeyDetail();
 			void UpdateNames(Crypto::Cert::CertNames *names);
 		public:

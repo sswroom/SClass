@@ -42,7 +42,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	ssl = Net::DefaultSSLEngine::Create(sockf, true);
 	Crypto::Cert::X509Key *key = (Crypto::Cert::X509Key*)x509;
 	Crypto::Cert::CertNames names;
-	Crypto::Cert::CertUtil::ReqExtensions ext;
+	Crypto::Cert::CertExtensions ext;
 	MemClear(&names, sizeof(names));
 	MemClear(&ext, sizeof(ext));
 	names.countryName = (const UTF8Char*)"HK";

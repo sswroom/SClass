@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "Crypto/Cert/X509CertReq.h"
+#include "Crypto/Cert/X509Key.h"
 #include "Net/ASN1Util.h"
 
 Crypto::Cert::X509CertReq::X509CertReq(const UTF8Char *sourceName, const UInt8 *buff, UOSInt buffSize) : Crypto::Cert::X509File(sourceName, buff, buffSize)
@@ -74,5 +75,33 @@ Bool Crypto::Cert::X509CertReq::GetExtensions(CertExtensions *ext)
 			}
 		}
 	}
+	return false;
+}
+
+Crypto::Cert::X509Key *Crypto::Cert::X509CertReq::GetPublicKey()
+{
+	UOSInt itemLen;
+	Net::ASN1Util::ItemType itemType;
+	const UInt8 *keyPDU = Net::ASN1Util::PDUGetItem(this->buff, this->buff + this->buffSize, "1.1.3", &itemLen, &itemType);
+	if (keyPDU)
+	{
+		return PublicKeyGet(keyPDU, keyPDU + itemLen);
+	}
+	return 0;
+}
+
+Bool Crypto::Cert::X509CertReq::GetKeyId(UInt8 *keyId)
+{
+	Crypto::Cert::X509Key *key = GetPublicKey();
+	if (key == 0)
+	{
+		return false;
+	}
+	if (key->GetKeyId(keyId))
+	{
+		DEL_CLASS(key);
+		return true;
+	}
+	DEL_CLASS(key);
 	return false;
 }

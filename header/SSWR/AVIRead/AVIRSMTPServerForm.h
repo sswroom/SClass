@@ -71,7 +71,7 @@ namespace SSWR
 			UI::ListBoxLogger *logger;
 			Net::SocketFactory *sockf;
 			Net::SSLEngine *ssl;
-			Crypto::Cert::X509File *sslCert;
+			Crypto::Cert::X509Cert *sslCert;
 			Crypto::Cert::X509File *sslKey;
 			Net::Email::SMTPConn::ConnType smtpType;
 

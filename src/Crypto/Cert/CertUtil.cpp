@@ -1,7 +1,11 @@
 #include "Stdafx.h"
 #include "Crypto/Cert/CertUtil.h"
+#include "Data/ByteTool.h"
 #include "Data/RandomBytesGenerator.h"
+#include "IO/FileStream.h"
+#include "IO/Path.h"
 #include "Net/ASN1Util.h"
+#include "Parser/FileParser/X509Parser.h"
 #include "Text/StringTool.h"
 
 Bool Crypto::Cert::CertUtil::AppendNames(Net::ASN1PDUBuilder *builder, const CertNames *names)
@@ -99,6 +103,17 @@ Bool Crypto::Cert::CertUtil::AppendPublicKey(Net::ASN1PDUBuilder *builder, Crypt
 		builder->AppendBitStringWith0(pubKey->GetASN1Buff(), pubKey->GetASN1BuffSize());
 		builder->EndLevel();
 		DEL_CLASS(pubKey);
+		return true;
+	}
+	else if (key->GetKeyType() == Crypto::Cert::X509Key::KeyType::RSAPublic)
+	{
+		builder->BeginSequence();
+		builder->BeginSequence();
+		builder->AppendOIDString("1.2.840.113549.1.1.1");
+		builder->AppendNull();
+		builder->EndLevel();
+		builder->AppendBitStringWith0(key->GetASN1Buff(), key->GetASN1BuffSize());
+		builder->EndLevel();
 		return true;
 	}
 	return false;
@@ -312,8 +327,12 @@ Crypto::Cert::X509CertReq *Crypto::Cert::CertUtil::CertReqCreate(Net::SSLEngine 
 
 	if (!AppendSign(&builder, ssl, key, Crypto::Hash::HT_SHA256)) return 0;
 	builder.EndLevel();
+
+	Text::StringBuilderUTF8 sb;
+	sb.Append(names->commonName);
+	sb.Append((const UTF8Char*)".csr");
 	Crypto::Cert::X509CertReq *csr;
-	NEW_CLASS(csr, Crypto::Cert::X509CertReq((const UTF8Char*)"CertReq", builder.GetBuff(0), builder.GetBuffSize()));
+	NEW_CLASS(csr, Crypto::Cert::X509CertReq(sb.ToString(), builder.GetBuff(0), builder.GetBuffSize()));
 	return csr;
 }
 
@@ -329,7 +348,14 @@ Crypto::Cert::X509Cert *Crypto::Cert::CertUtil::SelfSignedCertCreate(Net::SSLEng
 	builder.BeginOther(Net::ASN1Util::IT_CONTEXT_SPECIFIC_0);
 	builder.AppendInt32(2);
 	builder.EndLevel();
-	rndBytes.NextBytes(buff, 20);
+	while (true)
+	{
+		rndBytes.NextBytes(buff, 20);
+		if (buff[0] != 0)
+		{
+			break;
+		}
+	}
 	builder.AppendOther(Net::ASN1Util::IT_INTEGER, buff, 20);
 
 	builder.BeginSequence();
@@ -357,12 +383,15 @@ Crypto::Cert::X509Cert *Crypto::Cert::CertUtil::SelfSignedCertCreate(Net::SSLEng
 
 	if (!AppendSign(&builder, ssl, key, Crypto::Hash::HT_SHA256)) return 0;
 	builder.EndLevel();
+	Text::StringBuilderUTF8 sb;
+	sb.Append(names->commonName);
+	sb.Append((const UTF8Char*)".crt");
 	Crypto::Cert::X509Cert *cert;
-	NEW_CLASS(cert, Crypto::Cert::X509Cert(names->commonName, builder.GetBuff(0), builder.GetBuffSize()));
+	NEW_CLASS(cert, Crypto::Cert::X509Cert(sb.ToString(), builder.GetBuff(0), builder.GetBuffSize()));
 	return cert;
 }
 
-Crypto::Cert::X509Cert *Crypto::Cert::CertUtil::IssueCert(Net::SSLEngine *ssl, Crypto::Cert::X509Cert *caCert, Crypto::Cert::X509Key *caKey, UOSInt validDays, const UTF8Char *serial, Crypto::Cert::X509CertReq *csr)
+Crypto::Cert::X509Cert *Crypto::Cert::CertUtil::IssueCert(Net::SSLEngine *ssl, Crypto::Cert::X509Cert *caCert, Crypto::Cert::X509Key *caKey, UOSInt validDays, Crypto::Cert::X509CertReq *csr)
 {
 	UInt8 bSerial[20];
 	if (caCert == 0)
@@ -373,18 +402,179 @@ Crypto::Cert::X509Cert *Crypto::Cert::CertUtil::IssueCert(Net::SSLEngine *ssl, C
 	{
 		return 0;
 	}
-	if (serial == 0 || Text::StrCharCnt(serial) != 40)
-	{
-		return 0;
-	}
-	if (Text::StrHex2Bytes(serial, bSerial) != 20)
-	{
-		return 0;
-	}
 	if (csr == 0)
 	{
 		return 0;
 	}
 
+	Text::StringBuilderUTF8 sbFileName;
+	Crypto::Cert::CertNames names;
+	Net::ASN1PDUBuilder builder;
+	Data::DateTime dt;
+	Data::RandomBytesGenerator rndBytes;
+	builder.BeginSequence();
+
+	builder.BeginSequence();
+	builder.BeginOther(Net::ASN1Util::IT_CONTEXT_SPECIFIC_0);
+	builder.AppendInt32(2);
+	builder.EndLevel();
+	while (true)
+	{
+		rndBytes.NextBytes(bSerial, 20);
+		if (bSerial[0] != 0)
+		{
+			break;
+		}
+	}
+	builder.AppendOther(Net::ASN1Util::IT_INTEGER, bSerial, 20);
+
+	builder.BeginSequence();
+	builder.AppendOIDString("1.2.840.113549.1.1.11");
+	builder.AppendNull();
+	builder.EndLevel();
+
+	MemClear(&names, sizeof(names));
+	if (!caCert->GetSubjNames(&names))
+	{
+		return 0;
+	}
+	if (!AppendNames(&builder, &names))
+	{
+		Crypto::Cert::CertNames::FreeNames(&names);
+ 		return 0;
+	}
+	Crypto::Cert::CertNames::FreeNames(&names);
+	dt.SetCurrTimeUTC();
+	builder.BeginSequence();
+	builder.AppendUTCTime(&dt);
+	dt.AddDay((OSInt)validDays);
+	builder.AppendUTCTime(&dt);
+	builder.EndLevel();
+
+	MemClear(&names, sizeof(names));
+	if (!csr->GetNames(&names))
+	{
+		return 0;
+	}
+	if (!AppendNames(&builder, &names))
+	{
+		Crypto::Cert::CertNames::FreeNames(&names);
+ 		return 0;
+	}
+	sbFileName.Append(names.commonName);
+	Crypto::Cert::CertNames::FreeNames(&names);
+	Crypto::Cert::X509Key *pubKey = csr->GetPublicKey();
+	if (pubKey == 0)
+	{
+		return 0;
+	}
+	if (!AppendPublicKey(&builder, pubKey))
+	{
+		DEL_CLASS(pubKey);
+		return 0;
+	}
+	DEL_CLASS(pubKey);
+	builder.BeginOther(Net::ASN1Util::IT_CONTEXT_SPECIFIC_3);
+	Crypto::Cert::CertExtensions ext;
+	MemClear(&ext, sizeof(ext));
+	csr->GetExtensions(&ext);
+	ext.useAuthKeyId = caKey->GetKeyId(ext.authKeyId);
+	ext.useSubjKeyId = csr->GetKeyId(ext.subjKeyId);
+	AppendExtensions(&builder, &ext);
+	Crypto::Cert::CertExtensions::FreeExtensions(&ext);
+	builder.EndLevel();
+	builder.EndLevel();
+
+	if (!AppendSign(&builder, ssl, caKey, Crypto::Hash::HT_SHA256)) return 0;
+	builder.EndLevel();
+	sbFileName.Append((const UTF8Char*)".crt");
+	Crypto::Cert::X509Cert *cert;
+	NEW_CLASS(cert, Crypto::Cert::X509Cert(sbFileName.ToString(), builder.GetBuff(0), builder.GetBuffSize()));
+	return cert;
+}
+
+Crypto::Cert::X509Cert *Crypto::Cert::CertUtil::FindIssuer(Crypto::Cert::X509Cert *cert)
+{
+	UInt8 dataBuff[8192];
+	UTF8Char sbuff[512];
+	UTF8Char *sptr;
+	UInt8 keyId[20];
+	
+	Crypto::Cert::CertExtensions ext;
+	MemClear(&ext, sizeof(ext));
+	if (!cert->GetExtensions(&ext))
+	{
+		return 0;
+	}
+	if (!ext.useAuthKeyId)
+	{
+		Crypto::Cert::CertExtensions::FreeExtensions(&ext);
+		return 0;
+	}
+	Text::StrConcat(sbuff, cert->GetSourceNameObj());
+	UOSInt i = Text::StrLastIndexOf(sbuff, IO::Path::PATH_SEPERATOR);
+	if (i == INVALID_INDEX)
+	{
+		Crypto::Cert::CertExtensions::FreeExtensions(&ext);
+		return 0;
+	}
+	if (!cert->GetKeyId(keyId))
+	{
+		Crypto::Cert::CertExtensions::FreeExtensions(&ext);
+		return 0;
+	}
+	if (BytesEquals(keyId, ext.authKeyId, 20))
+	{
+		Crypto::Cert::CertExtensions::FreeExtensions(&ext);
+		return 0;
+	}
+	sptr = &sbuff[i + 1];
+	Text::StrConcat(sptr, IO::Path::ALL_FILES);
+	Parser::FileParser::X509Parser parser;
+	IO::Path::FindFileSession *sess = IO::Path::FindFile(sbuff);
+	IO::Path::PathType pt;
+	UInt64 fileSize;
+	Crypto::Cert::X509File *x509;
+	if (sess)
+	{
+		while (IO::Path::FindNextFile(sptr, sess, 0, &pt, &fileSize))
+		{
+			if (fileSize > 0 && fileSize <= sizeof(dataBuff))
+			{
+				if (IO::FileStream::LoadFile(sbuff, dataBuff, sizeof(dataBuff)) == fileSize)
+				{
+					x509 = parser.ParseBuff(dataBuff, (UOSInt)fileSize, sbuff);
+					if (x509)
+					{
+						if (x509->GetFileType() != Crypto::Cert::X509File::FileType::Cert)
+						{
+							DEL_CLASS(x509);
+						}
+						else
+						{
+							Crypto::Cert::X509Cert *srchCert = (Crypto::Cert::X509Cert*)x509;
+							if (!srchCert->GetKeyId(keyId))
+							{
+								DEL_CLASS(srchCert);
+							}
+							else if (!BytesEquals(keyId, ext.authKeyId, 20))
+							{
+								DEL_CLASS(srchCert);
+							}
+							else
+							{
+								Crypto::Cert::CertExtensions::FreeExtensions(&ext);
+								IO::Path::FindFileClose(sess);
+								return srchCert;
+							}
+						}
+					}
+				}
+			}
+		}
+		IO::Path::FindFileClose(sess);
+	}
+
+	Crypto::Cert::CertExtensions::FreeExtensions(&ext);
 	return 0;
 }

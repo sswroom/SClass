@@ -1,4 +1,5 @@
 #include "Stdafx.h"
+#include "Crypto/Cert/CertUtil.h"
 #include "IO/FileStream.h"
 #include "IO/Path.h"
 #include "IO/StmData/FileData.h"
@@ -37,7 +38,9 @@ void __stdcall SSWR::AVIRead::AVIRSMTPServerForm::OnSMTPStartClicked(void *userO
 		}
 		if (me->sslCert && me->sslKey)
 		{
-			me->ssl->SetServerCertsASN1(me->sslCert, me->sslKey);
+			Crypto::Cert::X509Cert *issuerCert = Crypto::Cert::CertUtil::FindIssuer(me->sslCert);
+			me->ssl->SetServerCertsASN1(me->sslCert, me->sslKey, issuerCert);
+			SDEL_CLASS(issuerCert);
 		}
 		Net::Email::SMTPConn::ConnType connType = (Net::Email::SMTPConn::ConnType)(OSInt)me->cboSMTPType->GetSelectedItem();
 		NEW_CLASS(me->smtpSvr, Net::Email::SMTPServer(me->sockf, me->ssl, port, connType, me->log, (const UTF8Char *)"127.0.0.1", (const UTF8Char *)"SSWRSMTP", OnMailReceived, OnMailLogin, me));
@@ -82,7 +85,9 @@ void __stdcall SSWR::AVIRead::AVIRSMTPServerForm::OnPOP3StartClicked(void *userO
 				return;
 			}
 			ssl = me->ssl;
-			ssl->SetServerCertsASN1(me->sslCert, me->sslKey);
+			Crypto::Cert::X509Cert *issuerCert = Crypto::Cert::CertUtil::FindIssuer(me->sslCert);
+			ssl->SetServerCertsASN1(me->sslCert, me->sslKey, issuerCert);
+			SDEL_CLASS(issuerCert);
 		}
 		NEW_CLASS(me->pop3Svr, Net::Email::POP3Server(me->core->GetSocketFactory(), ssl, port, me->log, (const UTF8Char *)"Welcome to SSWR POP3 Server", me));
 		if (me->pop3Svr->IsError())

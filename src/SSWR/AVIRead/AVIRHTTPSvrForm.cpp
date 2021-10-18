@@ -1,4 +1,5 @@
 #include "Stdafx.h"
+#include "Crypto/Cert/CertUtil.h"
 #include "IO/Path.h"
 #include "Net/DefaultSSLEngine.h"
 #include "SSWR/AVIRead/AVIRHTTPSvrForm.h"
@@ -164,21 +165,9 @@ void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnStartClick(void *userObj)
 			return;
 		}
 		ssl = me->ssl;
-		ssl->SetServerCertsASN1(me->sslCert, me->sslKey);
-
-		const UTF8Char *fileName = (const UTF8Char*)"/home/sswroom/Progs/Temp/keys/SSWRCA.crt";
-		UInt8 buff[4096];
-		UOSInt buffSize = IO::FileStream::LoadFile(fileName, buff, sizeof(buff));
-		if (buffSize > 0)
-		{
-			Parser::FileParser::X509Parser parser;
-			Crypto::Cert::X509Cert *crt = (Crypto::Cert::X509Cert*)parser.ParseBuff(buff, buffSize, fileName);
-			if (crt)
-			{
-				ssl->AddChainCert(crt);
-				DEL_CLASS(crt);
-			}
-		}
+		Crypto::Cert::X509Cert *issuerCert = Crypto::Cert::CertUtil::FindIssuer(me->sslCert);
+		ssl->SetServerCertsASN1(me->sslCert, me->sslKey, issuerCert);
+		SDEL_CLASS(issuerCert);
 	}
 	if (port > 0 && port < 65535)
 	{

@@ -818,7 +818,7 @@ Bool Crypto::Cert::X509File::ExtensionsGet(const UInt8 *pdu, const UInt8 *pduEnd
 								{
 									if (itemType == 0x87)
 									{
-										Net::SocketUtil::GetIPv4Name((UTF8Char*)sbuff, ReadNUInt32(strPDU));
+										Net::SocketUtil::GetIPv4Name((UTF8Char*)sbuff, ReadNUInt32(subItemPDU));
 										ext->subjectAltName->Add(Text::StrCopyNew((const UTF8Char*)sbuff));
 									}
 									else
@@ -852,6 +852,32 @@ Bool Crypto::Cert::X509File::ExtensionsGet(const UInt8 *pdu, const UInt8 *pduEnd
 		}
 	}
 	return true;
+}
+
+Crypto::Cert::X509Key *Crypto::Cert::X509File::PublicKeyGet(const UInt8 *pdu, const UInt8 *pduEnd)
+{
+	Net::ASN1Util::ItemType oidType;
+	UOSInt oidLen;
+	const UInt8 *oidPDU = Net::ASN1Util::PDUGetItem(pdu, pduEnd, "1.1", &oidLen, &oidType);
+	Net::ASN1Util::ItemType bstrType;
+	UOSInt bstrLen;
+	const UInt8 *bstrPDU = Net::ASN1Util::PDUGetItem(pdu, pduEnd, "2", &bstrLen, &bstrType);
+	if (oidPDU != 0 && oidType == Net::ASN1Util::IT_OID && bstrPDU != 0 && bstrType == Net::ASN1Util::IT_BIT_STRING)
+	{
+		KeyType keyType = KeyTypeFromOID(oidPDU, oidLen, true);
+		if (keyType != KeyType::Unknown)
+		{
+			if (bstrPDU[0] == 0)
+			{
+				bstrPDU++;
+				bstrLen--;
+			}
+			Crypto::Cert::X509Key *key;
+			NEW_CLASS(key, Crypto::Cert::X509Key((const UTF8Char*)"public.key", bstrPDU, bstrLen, keyType));
+			return key;
+		}
+	}
+	return 0;
 }
 
 UOSInt Crypto::Cert::X509File::KeyGetLeng(const UInt8 *pdu, const UInt8 *pduEnd, KeyType keyType)

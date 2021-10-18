@@ -1,4 +1,5 @@
 #include "Stdafx.h"
+#include "Crypto/Cert/CertUtil.h"
 #include "Net/DefaultSSLEngine.h"
 #include "Net/SSLEngine.h"
 #include "Parser/FileParser/X509Parser.h"
@@ -97,6 +98,11 @@ Bool Net::SSLEngine::SetServerCerts(const UTF8Char *certFile, const UTF8Char *ke
 		{
 			return false;
 		}
+		if (certASN1->GetFileType() != Crypto::Cert::X509File::FileType::Cert)
+		{
+			DEL_CLASS(certASN1);
+			return false;
+		}
 	}
 	if (keyFile)
 	{
@@ -106,7 +112,9 @@ Bool Net::SSLEngine::SetServerCerts(const UTF8Char *certFile, const UTF8Char *ke
 			return false;
 		}
 	}
-	Bool ret = this->SetServerCertsASN1(certASN1, keyASN1);
+	Crypto::Cert::X509Cert *issuerCert = Crypto::Cert::CertUtil::FindIssuer((Crypto::Cert::X509Cert*)certASN1);
+	Bool ret = this->SetServerCertsASN1((Crypto::Cert::X509Cert*)certASN1, keyASN1, issuerCert);
+	SDEL_CLASS(issuerCert);
 	SDEL_CLASS(certASN1);
 	SDEL_CLASS(keyASN1);
 	return ret;

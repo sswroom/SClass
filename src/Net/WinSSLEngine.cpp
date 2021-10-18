@@ -165,16 +165,27 @@ Bool Net::WinSSLEngine::InitClient(Method method, void *cred)
 	return status == 0;
 }
 
-Bool Net::WinSSLEngine::InitServer(Method method, void *cred)
+Bool Net::WinSSLEngine::InitServer(Method method, void *cred, void *caCred)
 {
+	PCCERT_CONTEXT cert[2];
 	SCHANNEL_CRED credData;
 	SECURITY_STATUS status;
 	TimeStamp lifetime;
 	MemClear(&credData, sizeof(credData));
 	credData.dwVersion = SCHANNEL_CRED_VERSION;
 	credData.grbitEnabledProtocols = WinSSLEngine_GetProtocols(method, true);
-	credData.paCred = (PCCERT_CONTEXT*)&cred;
-	credData.cCreds = 1;
+	if (caCred == 0)
+	{
+		credData.paCred = (PCCERT_CONTEXT*)&cred;
+		credData.cCreds = 1;
+	}
+	else
+	{
+		cert[0] = (PCCERT_CONTEXT)cred;
+		cert[1] = (PCCERT_CONTEXT)caCred;
+		credData.paCred = cert;
+		credData.cCreds = 2;
+	}
 
 	status = AcquireCredentialsHandle(
 		NULL,
@@ -801,7 +812,7 @@ Bool WinSSLEngine_CryptImportPrivateKey(_Out_ HCRYPTKEY* phKey,
 	return succ;
 }
 
-Bool Net::WinSSLEngine::SetServerCertsASN1(Crypto::Cert::X509File *certASN1, Crypto::Cert::X509File *keyASN1)
+Bool Net::WinSSLEngine::SetServerCertsASN1(Crypto::Cert::X509Cert *certASN1, Crypto::Cert::X509File *keyASN1, Crypto::Cert::X509Cert *caCert)
 {
 	if (this->clsData->svrInit)
 	{
@@ -864,21 +875,34 @@ Bool Net::WinSSLEngine::SetServerCertsASN1(Crypto::Cert::X509File *certASN1, Cry
 	DWORD dwKeySpec;
 	CryptAcquireCertificatePrivateKey(serverCert, 0, NULL, &hCryptProvOrNCryptKey, &dwKeySpec, &fCallerFreeProvOrNCryptKey);
 
-	if (!this->InitServer(this->clsData->method, (void*)serverCert))
+	PCCERT_CONTEXT caCertCred = 0;
+	if (caCert)
+	{
+		caCertCred = CertCreateCertificateContext(X509_ASN_ENCODING, caCert->GetASN1Buff(), (DWORD)caCert->GetASN1BuffSize());
+	}
+	if (!this->InitServer(this->clsData->method, (void*)serverCert, (void*)caCertCred))
 	{
 		CertFreeCertificateContext(serverCert);
+		if (caCertCred)
+		{
+			CertFreeCertificateContext(caCertCred);
+		}
 		CryptDestroyKey(hKey);
 		CryptReleaseContext(hProv, 0);
 		return false;
 	}
 	this->clsData->svrInit = true;
 	CertFreeCertificateContext(serverCert);
+	if (caCertCred)
+	{
+		CertFreeCertificateContext(caCertCred);
+	}
 	CryptDestroyKey(hKey);
 	CryptReleaseContext(hProv, 0);
 	return true;
 }
 
-Bool Net::WinSSLEngine::SetClientCertASN1(Crypto::Cert::X509File *certASN1, Crypto::Cert::X509File *keyASN1)
+Bool Net::WinSSLEngine::SetClientCertASN1(Crypto::Cert::X509Cert *certASN1, Crypto::Cert::X509File *keyASN1)
 {
 	if (certASN1 == 0 || keyASN1 == 0)
 	{
@@ -1015,7 +1039,7 @@ Net::SSLClient *Net::WinSSLEngine::ClientInit(Socket *s, const UTF8Char *hostNam
 	return this->CreateClientConn(0, s, hostName, err);
 }
 
-Bool Net::WinSSLEngine::GenerateCert(const UTF8Char *country, const UTF8Char *company, const UTF8Char *commonName, Crypto::Cert::X509File **certASN1, Crypto::Cert::X509File **keyASN1)
+Bool Net::WinSSLEngine::GenerateCert(const UTF8Char *country, const UTF8Char *company, const UTF8Char *commonName, Crypto::Cert::X509Cert **certASN1, Crypto::Cert::X509File **keyASN1)
 {
 	HCRYPTKEY hKey;
 	HCRYPTPROV hProv;
@@ -1111,8 +1135,8 @@ Bool Net::WinSSLEngine::GenerateCert(const UTF8Char *country, const UTF8Char *co
 		CryptReleaseContext(hProv, 0);
 		return false;
 	}
-	NEW_CLASS(*certASN1, Crypto::Cert::X509Cert((const UTF8Char *)"SelfSigned", pCertContext->pbCertEncoded, pCertContext->cbCertEncoded));
-	*keyASN1 = Crypto::Cert::X509PrivKey::CreateFromKeyBuff(Crypto::Cert::X509File::KeyType::RSA, certBuff, certBuffSize, (const UTF8Char*)"SelfSigned");
+	NEW_CLASS(*certASN1, Crypto::Cert::X509Cert((const UTF8Char *)"selfsign.crt", pCertContext->pbCertEncoded, pCertContext->cbCertEncoded));
+	*keyASN1 = Crypto::Cert::X509PrivKey::CreateFromKeyBuff(Crypto::Cert::X509File::KeyType::RSA, certBuff, certBuffSize, (const UTF8Char*)"RSAKey.key");
 	CertFreeCertificateContext(pCertContext);
 	//CryptReleaseContext(hCryptProvOrNCryptKey, 0);
 	MemFree(pbEncoded);
@@ -1156,7 +1180,7 @@ Crypto::Cert::X509Key *Net::WinSSLEngine::GenerateRSAKey()
 	}
 
 	Crypto::Cert::X509Key *key;
-	NEW_CLASS(key, Crypto::Cert::X509Key((const UTF8Char*)"RSAGen", certBuff, certBuffSize, Crypto::Cert::X509File::KeyType::RSA));
+	NEW_CLASS(key, Crypto::Cert::X509Key((const UTF8Char*)"RSAKey.key", certBuff, certBuffSize, Crypto::Cert::X509File::KeyType::RSA));
 	CryptDestroyKey(hKey);
 	CryptReleaseContext(hProv, 0);
 	return key;

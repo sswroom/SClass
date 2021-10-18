@@ -34,7 +34,7 @@ namespace SSWR
 			Net::WebServer::WebListener::SERVER_STATUS lastStatus;
 			AVIRHTTPLog *reqLog;
 			UOSInt lastAccessIndex;
-			Crypto::Cert::X509File *sslCert;
+			Crypto::Cert::X509Cert *sslCert;
 			Crypto::Cert::X509File *sslKey;
 
 			UI::GUITabControl *tcMain;

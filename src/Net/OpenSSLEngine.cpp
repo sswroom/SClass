@@ -240,25 +240,61 @@ Bool Net::OpenSSLEngine::IsError()
 	return this->clsData->ctx == 0;
 }
 
-Bool Net::OpenSSLEngine::SetServerCertsASN1(Crypto::Cert::X509File *certASN1, Crypto::Cert::X509File *keyASN1)
+Bool Net::OpenSSLEngine::SetServerCertsASN1(Crypto::Cert::X509Cert *certASN1, Crypto::Cert::X509File *keyASN1, Crypto::Cert::X509Cert *caCert)
 {
 	if (this->clsData->ctx == 0)
 	{
 		return false;
 	}
 	
-	if (certASN1 != 0 && certASN1->GetFileType() == Crypto::Cert::X509File::FileType::Cert && keyASN1 != 0 && keyASN1->GetFileType() == Crypto::Cert::X509File::FileType::PrivateKey)
+	if (certASN1 != 0 && keyASN1 != 0)
 	{
 		SSL_CTX_set_ecdh_auto(this->clsData->ctx, 1);
 		if (SSL_CTX_use_certificate_ASN1(this->clsData->ctx, (int)certASN1->GetASN1BuffSize(), certASN1->GetASN1Buff()) <= 0)
 		{
 			return false;
 		}
-		if (SSL_CTX_use_PrivateKey_ASN1(EVP_PKEY_RSA, this->clsData->ctx, keyASN1->GetASN1Buff(), (long)keyASN1->GetASN1BuffSize()) <= 0)
+		if (caCert)
+		{
+			const UInt8 *asn1 = caCert->GetASN1Buff();
+			X509 *x509 = d2i_X509(0, &asn1, (long)caCert->GetASN1BuffSize());
+			if (x509 == 0)
+			{
+				return false;
+			}
+			SSL_CTX_add_extra_chain_cert(this->clsData->ctx, x509);
+		}
+
+		if (keyASN1->GetFileType() == Crypto::Cert::X509File::FileType::PrivateKey)
+		{
+			if (SSL_CTX_use_PrivateKey_ASN1(EVP_PKEY_RSA, this->clsData->ctx, keyASN1->GetASN1Buff(), (long)keyASN1->GetASN1BuffSize()) <= 0)
+			{
+				return false;
+			}
+			return true;
+		}
+		else if (keyASN1->GetFileType() == Crypto::Cert::X509File::FileType::Key && ((Crypto::Cert::X509Key*)keyASN1)->IsPrivateKey())
+		{
+			Crypto::Cert::X509PrivKey *privKey = Crypto::Cert::X509PrivKey::CreateFromKey((Crypto::Cert::X509Key*)keyASN1);
+			if (privKey)
+			{
+				if (SSL_CTX_use_PrivateKey_ASN1(EVP_PKEY_RSA, this->clsData->ctx, privKey->GetASN1Buff(), (long)privKey->GetASN1BuffSize()) <= 0)
+				{
+					DEL_CLASS(privKey);
+					return false;
+				}
+				DEL_CLASS(privKey);
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		else
 		{
 			return false;
 		}
-		return true;
 	}
 	else if (certASN1 != 0 && certASN1->GetFileType() == Crypto::Cert::X509File::FileType::Cert && keyASN1 != 0 && keyASN1->GetFileType() == Crypto::Cert::X509File::FileType::Key)
 	{
@@ -279,7 +315,7 @@ Bool Net::OpenSSLEngine::SetServerCertsASN1(Crypto::Cert::X509File *certASN1, Cr
 	return false;
 }
 
-Bool Net::OpenSSLEngine::SetClientCertASN1(Crypto::Cert::X509File *certASN1, Crypto::Cert::X509File *keyASN1)
+Bool Net::OpenSSLEngine::SetClientCertASN1(Crypto::Cert::X509Cert *certASN1, Crypto::Cert::X509File *keyASN1)
 {
 	SDEL_CLASS(this->clsData->cliCert);
 	SDEL_CLASS(this->clsData->cliKey);
@@ -291,23 +327,6 @@ Bool Net::OpenSSLEngine::SetClientCertASN1(Crypto::Cert::X509File *certASN1, Cry
 	{
 		this->clsData->cliKey = (Crypto::Cert::X509File*)keyASN1->Clone();
 	}
-	return true;
-}
-
-Bool Net::OpenSSLEngine::AddChainCert(Crypto::Cert::X509Cert *cert)
-{
-	if (this->clsData->ctx == 0)
-	{
-		return false;
-	}
-
-	const UInt8 *asn1 = cert->GetASN1Buff();
-	X509 *x509 = d2i_X509(0, &asn1, (long)cert->GetASN1BuffSize());
-	if (x509 == 0)
-	{
-		return false;
-	}
-	SSL_CTX_add_extra_chain_cert(this->clsData->ctx, x509);
 	return true;
 }
 
@@ -401,7 +420,7 @@ Net::SSLClient *Net::OpenSSLEngine::ClientInit(Socket *s, const UTF8Char *hostNa
 	return CreateClientConn(ssl, s, hostName, err);
 }
 
-Bool Net::OpenSSLEngine::GenerateCert(const UTF8Char *country, const UTF8Char *company, const UTF8Char *commonName, Crypto::Cert::X509File **certASN1, Crypto::Cert::X509File **keyASN1)
+Bool Net::OpenSSLEngine::GenerateCert(const UTF8Char *country, const UTF8Char *company, const UTF8Char *commonName, Crypto::Cert::X509Cert **certASN1, Crypto::Cert::X509File **keyASN1)
 {
 	if (certASN1 == 0 || keyASN1 == 0)
 	{
@@ -436,7 +455,7 @@ Bool Net::OpenSSLEngine::GenerateCert(const UTF8Char *country, const UTF8Char *c
 		BIO *bio2;
 		UInt8 buff[4096];
 		Crypto::Cert::X509File *pobjKey = 0;
-		Crypto::Cert::X509File *pobjCert = 0;
+		Crypto::Cert::X509Cert *pobjCert = 0;
 		IO::StmData::MemoryData *mdata;
 		Parser::FileParser::X509Parser parser;
 
@@ -454,7 +473,7 @@ Bool Net::OpenSSLEngine::GenerateCert(const UTF8Char *country, const UTF8Char *c
 		if (readSize > 0)
 		{
 			NEW_CLASS(mdata, IO::StmData::MemoryData(buff, (UInt32)readSize));
-			pobjCert = (Crypto::Cert::X509File*)parser.ParseFile(mdata, 0, IO::ParserType::ASN1Data);
+			pobjCert = (Crypto::Cert::X509Cert*)parser.ParseFile(mdata, 0, IO::ParserType::ASN1Data);
 			DEL_CLASS(mdata);
 		}
 		BIO_free(bio1);
@@ -465,6 +484,8 @@ Bool Net::OpenSSLEngine::GenerateCert(const UTF8Char *country, const UTF8Char *c
 		if (pobjCert && pobjKey)
 		{
 			succ = true;
+			pobjCert->SetSourceName((const UTF8Char*)"cert.crt");
+			pobjKey->SetSourceName((const UTF8Char*)"RSAKey.key");
 			*certASN1 = pobjCert;
 			*keyASN1 = pobjKey;
 		}
@@ -503,6 +524,10 @@ Crypto::Cert::X509Key *Net::OpenSSLEngine::GenerateRSAKey()
 		{
 			NEW_CLASS(mdata, IO::StmData::MemoryData(buff, (UInt32)readSize));
 			pobjKey = (Crypto::Cert::X509File*)parser.ParseFile(mdata, 0, IO::ParserType::ASN1Data);
+			if (pobjKey)
+			{
+				pobjKey->SetSourceName((const UTF8Char*)"RSAKey.key");
+			}
 			DEL_CLASS(mdata);
 		}
 		BIO_free(bio1);

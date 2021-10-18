@@ -20,7 +20,8 @@ namespace Crypto
 			static Bool AppendSign(Net::ASN1PDUBuilder *builder, Net::SSLEngine *ssl, Crypto::Cert::X509Key *key, Crypto::Hash::HashType hashType);
 			static Crypto::Cert::X509CertReq *CertReqCreate(Net::SSLEngine *ssl, const CertNames *names, Crypto::Cert::X509Key *key, const CertExtensions *ext);
 			static Crypto::Cert::X509Cert *SelfSignedCertCreate(Net::SSLEngine *ssl, const CertNames *names, Crypto::Cert::X509Key *key, UOSInt validDays, const CertExtensions *ext);
-			static Crypto::Cert::X509Cert *IssueCert(Net::SSLEngine *ssl, Crypto::Cert::X509Cert *caCert, Crypto::Cert::X509Key *caKey, UOSInt validDays, const UTF8Char *serial, Crypto::Cert::X509CertReq *csr);
+			static Crypto::Cert::X509Cert *IssueCert(Net::SSLEngine *ssl, Crypto::Cert::X509Cert *caCert, Crypto::Cert::X509Key *caKey, UOSInt validDays, Crypto::Cert::X509CertReq *csr);
+			static Crypto::Cert::X509Cert *FindIssuer(Crypto::Cert::X509Cert *cert);
 		};
 	}
 }

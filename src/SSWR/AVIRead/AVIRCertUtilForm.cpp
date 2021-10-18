@@ -233,9 +233,9 @@ void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnSelfSignedCertClicked(void *us
 	MemClear(&ext, sizeof(ext));
 	ext.subjectAltName = me->sanList;
 	ext.useSubjKeyId = true;
-	me->key->GetKeyId(ext.subjKeyId, 0);
+	me->key->GetKeyId(ext.subjKeyId);
 	ext.useAuthKeyId = true;
-	me->key->GetKeyId(ext.authKeyId, 0);
+	me->key->GetKeyId(ext.authKeyId);
 	ext.caCert = me->chkCACert->IsChecked();
 	Crypto::Cert::X509Cert *cert = Crypto::Cert::CertUtil::SelfSignedCertCreate(me->ssl, &names, me->key, validDays, &ext);
 	if (cert)

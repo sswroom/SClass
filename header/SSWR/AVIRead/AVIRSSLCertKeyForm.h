@@ -19,9 +19,9 @@ namespace SSWR
 		private:
 			SSWR::AVIRead::AVIRCore *core;
 			Net::SSLEngine *ssl;
-			Crypto::Cert::X509File *initCert;
+			Crypto::Cert::X509Cert *initCert;
 			Crypto::Cert::X509File *initKey;
-			Crypto::Cert::X509File *cert;
+			Crypto::Cert::X509Cert *cert;
 			Crypto::Cert::X509File *key;
 
 			UI::GUIPanel *pnlCurr;
@@ -57,12 +57,12 @@ namespace SSWR
 			void LoadFile(const UTF8Char *fileName);
 
 		public:
-			AVIRSSLCertKeyForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Net::SSLEngine *ssl, Crypto::Cert::X509File *cert, Crypto::Cert::X509File *key);
+			AVIRSSLCertKeyForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Net::SSLEngine *ssl, Crypto::Cert::X509Cert *cert, Crypto::Cert::X509File *key);
 			virtual ~AVIRSSLCertKeyForm();
 
 			virtual void OnMonitorChanged();
 
-			Crypto::Cert::X509File *GetCert();
+			Crypto::Cert::X509Cert *GetCert();
 			Crypto::Cert::X509File *GetKey();
 		};
 	}

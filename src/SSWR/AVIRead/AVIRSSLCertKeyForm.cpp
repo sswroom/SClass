@@ -75,7 +75,7 @@ void __stdcall SSWR::AVIRead::AVIRSSLCertKeyForm::OnGenerateClicked(void *userOb
 		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter common name", (const UTF8Char*)"SSL Cert/Key", me);
 		return;
 	}
-	Crypto::Cert::X509File *certASN1;
+	Crypto::Cert::X509Cert *certASN1;
 	Crypto::Cert::X509File *keyASN1;
 	if (me->ssl->GenerateCert(sbCountry.ToString(), sbCompany.ToString(), sbCommonName.ToString(), &certASN1, &keyASN1))
 	{
@@ -123,7 +123,7 @@ void SSWR::AVIRead::AVIRSSLCertKeyForm::LoadFile(const UTF8Char *fileName)
 	if (x509->GetFileType() == Crypto::Cert::X509File::FileType::Cert)
 	{
 		SDEL_CLASS(this->cert);
-		this->cert = x509;
+		this->cert = (Crypto::Cert::X509Cert*)x509;
 
 		Text::StringBuilderUTF8 sb;
 		this->cert->ToShortString(&sb);
@@ -146,7 +146,7 @@ void SSWR::AVIRead::AVIRSSLCertKeyForm::LoadFile(const UTF8Char *fileName)
 	}
 }
 
-SSWR::AVIRead::AVIRSSLCertKeyForm::AVIRSSLCertKeyForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Net::SSLEngine *ssl, Crypto::Cert::X509File *cert, Crypto::Cert::X509File *key) : UI::GUIForm(parent, 456, 200, ui)
+SSWR::AVIRead::AVIRSSLCertKeyForm::AVIRSSLCertKeyForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Net::SSLEngine *ssl, Crypto::Cert::X509Cert *cert, Crypto::Cert::X509File *key) : UI::GUIForm(parent, 456, 200, ui)
 {
 	this->SetText((const UTF8Char*)"SSL Cert/Key");
 	this->SetFont(0, 8.25, false);
@@ -233,7 +233,7 @@ void SSWR::AVIRead::AVIRSSLCertKeyForm::OnMonitorChanged()
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 }
 
-Crypto::Cert::X509File *SSWR::AVIRead::AVIRSSLCertKeyForm::GetCert()
+Crypto::Cert::X509Cert *SSWR::AVIRead::AVIRSSLCertKeyForm::GetCert()
 {
 	return this->cert;
 }

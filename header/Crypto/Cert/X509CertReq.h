@@ -21,6 +21,8 @@ namespace Crypto
 
 			Bool GetNames(CertNames *names);
 			Bool GetExtensions(CertExtensions *ext);
+			Crypto::Cert::X509Key *GetPublicKey();
+			Bool GetKeyId(UInt8 *keyId);
 		};
 	}
 }

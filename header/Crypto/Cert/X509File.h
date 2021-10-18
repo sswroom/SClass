@@ -92,6 +92,7 @@ namespace Crypto
 			static Bool NameGetCN(const UInt8 *pdu, const UInt8 *pduEnd, Text::StringBuilderUTF *sb);
 			static Bool NamesGet(const UInt8 *pdu, const UInt8 *pduEnd, CertNames *names);
 			static Bool ExtensionsGet(const UInt8 *pdu, const UInt8 *pduEnd, CertExtensions *ext);
+			static Crypto::Cert::X509Key *PublicKeyGet(const UInt8 *pdu, const UInt8 *pduEnd);
 
 			static UOSInt KeyGetLeng(const UInt8 *pdu, const UInt8 *pduEnd, KeyType keyType);
 			static KeyType KeyTypeFromOID(const UInt8 *oid, UOSInt oidLen, Bool pubKey);

@@ -709,4 +709,15 @@ FORCEINLINE Double UInt16_Float16(UInt16 val)
 #define ReadMFloat16(dptr) UInt16_Float16(ReadMUInt16(dptr))
 #define ReadNFloat16(dptr) UInt16_Float16(ReadNUInt16(dptr))
 
+FORCEINLINE Bool BytesEquals(const UInt8 *buff1, const UInt8 *buff2, UOSInt buffSize)
+{
+	UOSInt i = 0;
+	while (i < buffSize)
+	{
+		if (buff1[i] != buff2[i])
+			return false;
+		i++;
+	}
+	return true;
+}
 #endif

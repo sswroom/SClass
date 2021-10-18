@@ -1,4 +1,5 @@
 #include "Stdafx.h"
+#include "Crypto/Cert/CertUtil.h"
 #include "Data/ByteTool.h"
 #include "Net/DefaultSSLEngine.h"
 #include "SSWR/AVIRead/AVIRMQTTBrokerForm.h"
@@ -46,7 +47,9 @@ void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnStartClicked(void *userObj)
 					return;
 				}
 				ssl = me->ssl;
-				ssl->SetServerCertsASN1(me->sslCert, me->sslKey);
+				Crypto::Cert::X509Cert *issuerCert = Crypto::Cert::CertUtil::FindIssuer(me->sslCert);
+				ssl->SetServerCertsASN1(me->sslCert, me->sslKey, issuerCert);
+				SDEL_CLASS(issuerCert);
 			}
 			NEW_CLASS(me->broker, Net::MQTTBroker(me->core->GetSocketFactory(), ssl, port, me->log, true));
 			if (me->broker->IsError())
