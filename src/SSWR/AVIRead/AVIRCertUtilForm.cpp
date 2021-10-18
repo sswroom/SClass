@@ -67,7 +67,7 @@ void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnFileDrop(void *userObj, const 
 							Crypto::Cert::CertNames::FreeNames(&names);
 						}
 						MemClear(&exts, sizeof(exts));
-						if (cert->GetExtensions(&exts))
+						if (csr->GetExtensions(&exts))
 						{
 							me->UpdateExtensions(&exts);
 							Crypto::Cert::CertExtensions::FreeExtensions(&exts);
