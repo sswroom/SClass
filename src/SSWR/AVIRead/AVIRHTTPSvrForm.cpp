@@ -9,6 +9,8 @@
 #include "Text/StringBuilderUTF8.h"
 #include "UI/MessageDialog.h"
 
+#include "Parser/FileParser/X509Parser.h"
+
 SSWR::AVIRead::AVIRHTTPLog::AVIRHTTPLog(UOSInt logCnt)
 {
 	this->logCnt = logCnt;
@@ -163,6 +165,20 @@ void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnStartClick(void *userObj)
 		}
 		ssl = me->ssl;
 		ssl->SetServerCertsASN1(me->sslCert, me->sslKey);
+
+		const UTF8Char *fileName = (const UTF8Char*)"/home/sswroom/Progs/Temp/keys/SSWRCA.crt";
+		UInt8 buff[4096];
+		UOSInt buffSize = IO::FileStream::LoadFile(fileName, buff, sizeof(buff));
+		if (buffSize > 0)
+		{
+			Parser::FileParser::X509Parser parser;
+			Crypto::Cert::X509Cert *crt = (Crypto::Cert::X509Cert*)parser.ParseBuff(buff, buffSize, fileName);
+			if (crt)
+			{
+				ssl->AddChainCert(crt);
+				DEL_CLASS(crt);
+			}
+		}
 	}
 	if (port > 0 && port < 65535)
 	{

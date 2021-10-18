@@ -294,6 +294,23 @@ Bool Net::OpenSSLEngine::SetClientCertASN1(Crypto::Cert::X509File *certASN1, Cry
 	return true;
 }
 
+Bool Net::OpenSSLEngine::AddChainCert(Crypto::Cert::X509Cert *cert)
+{
+	if (this->clsData->ctx == 0)
+	{
+		return false;
+	}
+
+	const UInt8 *asn1 = cert->GetASN1Buff();
+	X509 *x509 = d2i_X509(0, &asn1, (long)cert->GetASN1BuffSize());
+	if (x509 == 0)
+	{
+		return false;
+	}
+	SSL_CTX_add_extra_chain_cert(this->clsData->ctx, x509);
+	return true;
+}
+
 UTF8Char *Net::OpenSSLEngine::GetErrorDetail(UTF8Char *sbuff)
 {
 	UInt32 err = (UInt32)ERR_get_error();

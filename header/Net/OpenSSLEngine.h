@@ -21,6 +21,7 @@ namespace Net
 		virtual Bool IsError();
 		virtual Bool SetServerCertsASN1(Crypto::Cert::X509File *certASN1, Crypto::Cert::X509File *keyASN1);
 		virtual Bool SetClientCertASN1(Crypto::Cert::X509File *certASN1, Crypto::Cert::X509File *keyASN1);
+		virtual Bool AddChainCert(Crypto::Cert::X509Cert *certASN1);
 		virtual UTF8Char *GetErrorDetail(UTF8Char *sbuff);
 		virtual Net::SSLClient *Connect(const UTF8Char *hostName, UInt16 port, ErrorType *err);
 		virtual Net::SSLClient *ClientInit(Socket *s, const UTF8Char *hostName, ErrorType *err);

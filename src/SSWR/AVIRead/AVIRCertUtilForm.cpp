@@ -236,6 +236,7 @@ void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnSelfSignedCertClicked(void *us
 	me->key->GetKeyId(ext.subjKeyId, 0);
 	ext.useAuthKeyId = true;
 	me->key->GetKeyId(ext.authKeyId, 0);
+	ext.caCert = me->chkCACert->IsChecked();
 	Crypto::Cert::X509Cert *cert = Crypto::Cert::CertUtil::SelfSignedCertCreate(me->ssl, &names, me->key, validDays, &ext);
 	if (cert)
 	{
@@ -420,23 +421,25 @@ SSWR::AVIRead::AVIRCertUtilForm::AVIRCertUtilForm(UI::GUIClientControl *parent, 
 	this->lblValidDays->SetRect(4, 196, 100, 23, false);
 	NEW_CLASS(this->txtValidDays, UI::GUITextBox(ui, this, (const UTF8Char*)"365"));
 	this->txtValidDays->SetRect(104, 196, 200, 23, false);
+	NEW_CLASS(this->chkCACert, UI::GUICheckBox(ui, this, (const UTF8Char*)"CA Cert", false));
+	this->chkCACert->SetRect(104, 220, 200, 23, false);
 	NEW_CLASS(this->lblSAN, UI::GUILabel(ui, this, (const UTF8Char*)"SubjAltName"));
-	this->lblSAN->SetRect(4, 220, 100, 23, false);
+	this->lblSAN->SetRect(4, 244, 100, 23, false);
 	NEW_CLASS(this->txtSAN, UI::GUITextBox(ui, this, (const UTF8Char*)""));
-	this->txtSAN->SetRect(104, 220, 200, 23, false);
+	this->txtSAN->SetRect(104, 244, 200, 23, false);
 	NEW_CLASS(this->btnSANAdd, UI::GUIButton(ui, this, (const UTF8Char*)"Add"));
-	this->btnSANAdd->SetRect(304, 220, 75, 23, false);
+	this->btnSANAdd->SetRect(304, 244, 75, 23, false);
 	this->btnSANAdd->HandleButtonClick(OnSANAddClicked, this);
 	NEW_CLASS(this->lbSAN, UI::GUIListBox(ui, this, false));
-	this->lbSAN->SetRect(104, 244, 200, 95, false);
+	this->lbSAN->SetRect(104, 268, 200, 95, false);
 	NEW_CLASS(this->btnSANClear, UI::GUIButton(ui, this, (const UTF8Char*)"Clear"));
-	this->btnSANClear->SetRect(304, 244, 75, 23, false);
+	this->btnSANClear->SetRect(304, 268, 75, 23, false);
 	this->btnSANClear->HandleButtonClick(OnSANClearClicked, this);
 	NEW_CLASS(this->btnCSRGenerate, UI::GUIButton(ui, this, (const UTF8Char *)"Generate CSR"));
-	this->btnCSRGenerate->SetRect(104, 340, 150, 23, false);
+	this->btnCSRGenerate->SetRect(104, 364, 150, 23, false);
 	this->btnCSRGenerate->HandleButtonClick(OnCSRGenerateClicked, this);
 	NEW_CLASS(this->btnSelfSignedCert, UI::GUIButton(ui, this, (const UTF8Char*)"Self-Signed Cert"));
-	this->btnSelfSignedCert->SetRect(254, 340, 150, 23, false);
+	this->btnSelfSignedCert->SetRect(254, 364, 150, 23, false);
 	this->btnSelfSignedCert->HandleButtonClick(OnSelfSignedCertClicked, this);
 
 	this->HandleDropFiles(OnFileDrop, this);

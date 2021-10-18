@@ -28,10 +28,13 @@ namespace Crypto
 		struct CertExtensions
 		{
 			Data::ArrayList<const UTF8Char *> *subjectAltName;
+			Data::ArrayList<const UTF8Char *> *issuerAltName;
 			Bool useSubjKeyId;
 			UInt8 subjKeyId[20];
 			Bool useAuthKeyId;
 			UInt8 authKeyId[20];
+			Bool caCert;
+			Int32 caCertPathLen;
 
 			static void FreeExtensions(CertExtensions *ext);
 		};

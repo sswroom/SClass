@@ -2,6 +2,7 @@
 #include "MyMemory.h"
 #include "Crypto/Cert/X509File.h"
 #include "Crypto/Cert/X509PubKey.h"
+#include "Data/ByteTool.h"
 #include "Net/ASN1OIDDB.h"
 #include "Net/ASN1Util.h"
 #include "Net/SSLEngine.h"
@@ -24,6 +25,12 @@ void Crypto::Cert::CertExtensions::FreeExtensions(CertExtensions *ext)
 		LIST_FREE_FUNC(ext->subjectAltName, Text::StrDelNew);
 		DEL_CLASS(ext->subjectAltName);
 		ext->subjectAltName = 0;
+	}
+	if (ext->issuerAltName)
+	{
+		LIST_FREE_FUNC(ext->issuerAltName, Text::StrDelNew);
+		DEL_CLASS(ext->issuerAltName);
+		ext->issuerAltName = 0;
 	}
 }
 
@@ -198,8 +205,8 @@ void Crypto::Cert::X509File::AppendTBSCertificate(const UInt8 *pdu, const UInt8 
 			key = pubKey->CreateKey();
 			if (key)
 			{
-				sb->AppendLB(Text::LineBreakType::CRLF);
 				key->ToString(sb);
+				sb->AppendLB(Text::LineBreakType::CRLF);
 				DEL_CLASS(key);
 			}
 			DEL_CLASS(pubKey);
@@ -369,8 +376,8 @@ void Crypto::Cert::X509File::AppendCertificateRequestInfo(const UInt8 *pdu, cons
 			key = pubKey->CreateKey();
 			if (key)
 			{
-				sb->AppendLB(Text::LineBreakType::CRLF);
 				key->ToString(sb);
+				sb->AppendLB(Text::LineBreakType::CRLF);
 				DEL_CLASS(key);
 			}
 			DEL_CLASS(pubKey);
@@ -429,8 +436,8 @@ void Crypto::Cert::X509File::AppendPublicKeyInfo(const UInt8 *pdu, const UInt8 *
 		key = pubKey->CreateKey();
 		if (key)
 		{
-			sb->AppendLB(Text::LineBreakType::CRLF);
 			key->ToString(sb);
+			sb->AppendLB(Text::LineBreakType::CRLF);
 			DEL_CLASS(key);
 		}
 		DEL_CLASS(pubKey);
@@ -809,7 +816,15 @@ Bool Crypto::Cert::X509File::ExtensionsGet(const UInt8 *pdu, const UInt8 *pduEnd
 								subItemPDU = Net::ASN1Util::PDUGetItem(strPDU, strPDU + strLen, sbuff, &subItemLen, &itemType);
 								if (subItemPDU)
 								{
-									ext->subjectAltName->Add(Text::StrCopyNewC(subItemPDU, subItemLen));
+									if (itemType == 0x87)
+									{
+										Net::SocketUtil::GetIPv4Name((UTF8Char*)sbuff, ReadNUInt32(strPDU));
+										ext->subjectAltName->Add(Text::StrCopyNew((const UTF8Char*)sbuff));
+									}
+									else
+									{
+										ext->subjectAltName->Add(Text::StrCopyNewC(subItemPDU, subItemLen));
+									}
 								}
 							}
 						}

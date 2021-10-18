@@ -1112,7 +1112,7 @@ Bool Net::WinSSLEngine::GenerateCert(const UTF8Char *country, const UTF8Char *co
 		return false;
 	}
 	NEW_CLASS(*certASN1, Crypto::Cert::X509Cert((const UTF8Char *)"SelfSigned", pCertContext->pbCertEncoded, pCertContext->cbCertEncoded));
-	*keyASN1 = Crypto::Cert::X509PrivKey::CreateFromKeyBuff(Crypto::Cert::X509File::KeyType::RSA, certBuff, certBuffSize);
+	*keyASN1 = Crypto::Cert::X509PrivKey::CreateFromKeyBuff(Crypto::Cert::X509File::KeyType::RSA, certBuff, certBuffSize, (const UTF8Char*)"SelfSigned");
 	CertFreeCertificateContext(pCertContext);
 	//CryptReleaseContext(hCryptProvOrNCryptKey, 0);
 	MemFree(pbEncoded);

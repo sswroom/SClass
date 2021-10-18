@@ -2,6 +2,7 @@
 #define _SM_SSWR_AVIREAD_AVIRCERTUTILFORM
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "UI/GUIButton.h"
+#include "UI/GUICheckBox.h"
 #include "UI/GUIForm.h"
 #include "UI/GUILabel.h"
 #include "UI/GUIListBox.h"
@@ -40,6 +41,7 @@ namespace SSWR
 			UI::GUITextBox *txtEmailAddress;
 			UI::GUILabel *lblValidDays;
 			UI::GUITextBox *txtValidDays;
+			UI::GUICheckBox *chkCACert;
 			UI::GUILabel *lblSAN;
 			UI::GUITextBox *txtSAN;
 			UI::GUIButton *btnSANAdd;

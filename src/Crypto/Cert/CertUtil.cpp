@@ -2,6 +2,7 @@
 #include "Crypto/Cert/CertUtil.h"
 #include "Data/RandomBytesGenerator.h"
 #include "Net/ASN1Util.h"
+#include "Text/StringTool.h"
 
 Bool Crypto::Cert::CertUtil::AppendNames(Net::ASN1PDUBuilder *builder, const CertNames *names)
 {
@@ -103,7 +104,7 @@ Bool Crypto::Cert::CertUtil::AppendPublicKey(Net::ASN1PDUBuilder *builder, Crypt
 	return false;
 }
 
-Bool Crypto::Cert::CertUtil::AppendReqExtensions(Net::ASN1PDUBuilder *builder, const CertExtensions *ext)
+Bool Crypto::Cert::CertUtil::AppendExtensions(Net::ASN1PDUBuilder *builder, const CertExtensions *ext)
 {
 	Bool found = false;
 	if (ext->subjectAltName && ext->subjectAltName->GetCount() > 0)
@@ -131,6 +132,10 @@ Bool Crypto::Cert::CertUtil::AppendReqExtensions(Net::ASN1PDUBuilder *builder, c
 					builder->AppendOther(0x87, addr.addr, 4);
 				}
 			}
+			else if (Text::StringTool::IsEmailAddress(csptr))
+			{
+				builder->AppendOther(0x81, csptr, Text::StrCharCnt(csptr));
+			}
 			else
 			{
 				builder->AppendOther(0x82, csptr, Text::StrCharCnt(csptr));
@@ -138,6 +143,81 @@ Bool Crypto::Cert::CertUtil::AppendReqExtensions(Net::ASN1PDUBuilder *builder, c
 			i++;
 		}
 		builder->EndLevel();
+		builder->EndLevel();
+		builder->EndLevel();
+	}
+	if (ext->issuerAltName && ext->issuerAltName->GetCount() > 0)
+	{
+		if (!found)
+		{
+			builder->BeginSequence();
+			found = true;
+		}
+		builder->BeginSequence();
+		builder->AppendOIDString("2.5.29.18");
+		builder->BeginOther(Net::ASN1Util::IT_OCTET_STRING);
+		builder->BeginSequence();
+		UOSInt i = 0;
+		UOSInt j = ext->issuerAltName->GetCount();
+		const UTF8Char *csptr;
+		Net::SocketUtil::AddressInfo addr;
+		while (i < j)
+		{
+			csptr = ext->issuerAltName->GetItem(i);
+			if (Net::SocketUtil::GetIPAddr(csptr, &addr))
+			{
+				if (addr.addrType == Net::AddrType::IPv4)
+				{
+					builder->AppendOther(0x87, addr.addr, 4);
+				}
+			}
+			else if (Text::StringTool::IsEmailAddress(csptr))
+			{
+				builder->AppendOther(0x81, csptr, Text::StrCharCnt(csptr));
+			}
+			else
+			{
+				builder->AppendOther(0x82, csptr, Text::StrCharCnt(csptr));
+			}
+			i++;
+		}
+		builder->EndLevel();
+		builder->EndLevel();
+		builder->EndLevel();
+	}
+	if (ext->caCert)
+	{
+		if (!found)
+		{
+			builder->BeginSequence();
+			found = true;
+		}
+		builder->BeginSequence();
+		builder->AppendOIDString("2.5.29.19"); //basicConstraint
+		builder->AppendBool(true); // Critical
+		builder->BeginOther(Net::ASN1Util::IT_OCTET_STRING);
+		builder->BeginSequence();
+		builder->AppendBool(true);
+		if (ext->caCertPathLen == 0)
+		{
+			builder->AppendInt32(3);
+		}
+		else
+		{
+			builder->AppendInt32(ext->caCertPathLen);
+		}
+		builder->EndLevel();
+		builder->EndLevel();
+		builder->EndLevel();
+
+		UInt8 buff[2];
+		buff[0] = 1;
+		buff[1] = 6;
+		builder->BeginSequence();
+		builder->AppendOIDString("2.5.29.15"); //keyUsage
+		builder->AppendBool(true); // Critical
+		builder->BeginOther(Net::ASN1Util::IT_OCTET_STRING);
+		builder->AppendBitString(buff, 2);
 		builder->EndLevel();
 		builder->EndLevel();
 	}
@@ -223,7 +303,7 @@ Crypto::Cert::X509CertReq *Crypto::Cert::CertUtil::CertReqCreate(Net::SSLEngine 
 		builder.BeginSequence();
 		builder.AppendOIDString("1.2.840.113549.1.9.14");
 		builder.BeginSet();
-		AppendReqExtensions(&builder, ext);
+		AppendExtensions(&builder, ext);
 		builder.EndLevel();
 		builder.EndLevel();
 	}
@@ -270,7 +350,7 @@ Crypto::Cert::X509Cert *Crypto::Cert::CertUtil::SelfSignedCertCreate(Net::SSLEng
 	builder.BeginOther(Net::ASN1Util::IT_CONTEXT_SPECIFIC_3);
 	if (ext)
 	{
-		AppendReqExtensions(&builder, ext);
+		AppendExtensions(&builder, ext);
 	}
 	builder.EndLevel();
 	builder.EndLevel();
