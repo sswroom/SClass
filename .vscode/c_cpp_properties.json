@@ -108,7 +108,7 @@
             "includePath": [
                 "${workspaceFolder}/../SClass/header",
                 "C:/Program Files/mingw-w64/x86_64-8.1.0-win32-seh-rt_v6-rev0/mingw64/x86_64-w64-mingw32/include",
-                "C:/Program Files/Microsoft SDKs/Windows/v7.1/Samples/multimedia/directshow/baseclasses",
+                "${workspaceFolder}/../SClass/ThirdParty/baseclasses",
                 "${workspaceFolder}/../opencv/build/include",
                 "${workspaceFolder}/../SClass/ThirdParty/miniz",
                 "${workspaceFolder}/../SClass/ThirdParty/sqlite3",
