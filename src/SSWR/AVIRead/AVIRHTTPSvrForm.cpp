@@ -166,7 +166,12 @@ void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnStartClick(void *userObj)
 		}
 		ssl = me->ssl;
 		Crypto::Cert::X509Cert *issuerCert = Crypto::Cert::CertUtil::FindIssuer(me->sslCert);
-		ssl->SetServerCertsASN1(me->sslCert, me->sslKey, issuerCert);
+		if (!ssl->SetServerCertsASN1(me->sslCert, me->sslKey, issuerCert))
+		{
+			SDEL_CLASS(issuerCert);
+			UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in initializing Cert/Key", (const UTF8Char*)"HTTP Server", me);
+			return;
+		}
 		SDEL_CLASS(issuerCert);
 	}
 	if (port > 0 && port < 65535)

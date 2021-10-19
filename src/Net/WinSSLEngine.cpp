@@ -174,17 +174,12 @@ Bool Net::WinSSLEngine::InitServer(Method method, void *cred, void *caCred)
 	MemClear(&credData, sizeof(credData));
 	credData.dwVersion = SCHANNEL_CRED_VERSION;
 	credData.grbitEnabledProtocols = WinSSLEngine_GetProtocols(method, true);
-	if (caCred == 0)
+	credData.paCred = (PCCERT_CONTEXT*)&cred;
+	credData.cCreds = 1;
+
+	if (caCred)
 	{
-		credData.paCred = (PCCERT_CONTEXT*)&cred;
-		credData.cCreds = 1;
-	}
-	else
-	{
-		cert[0] = (PCCERT_CONTEXT)cred;
-		cert[1] = (PCCERT_CONTEXT)caCred;
-		credData.paCred = cert;
-		credData.cCreds = 2;
+		
 	}
 
 	status = AcquireCredentialsHandle(
@@ -198,6 +193,10 @@ Bool Net::WinSSLEngine::InitServer(Method method, void *cred, void *caCred)
 		&this->clsData->hCredSvr,
 		&lifetime
 	);
+	if (status == SEC_E_INTERNAL_ERROR)
+	{
+
+	}
 	return status == 0;
 }
 
@@ -844,7 +843,7 @@ Bool Net::WinSSLEngine::SetServerCertsASN1(Crypto::Cert::X509Cert *certASN1, Cry
 	else if (keyASN1->GetFileType() == Crypto::Cert::X509File::FileType::Key)
 	{
 		Crypto::Cert::X509PrivKey *privKey = Crypto::Cert::X509PrivKey::CreateFromKey((Crypto::Cert::X509Key*)keyASN1);
-		if (!WinSSLEngine_CryptImportPrivateKey(&hKey, hProv, keyASN1->GetASN1Buff(), (ULONG)keyASN1->GetASN1BuffSize(), false))
+		if (!WinSSLEngine_CryptImportPrivateKey(&hKey, hProv, privKey->GetASN1Buff(), (ULONG)privKey->GetASN1BuffSize(), false))
 		{
 			DEL_CLASS(privKey);
 			CryptReleaseContext(hProv, 0);
@@ -852,7 +851,6 @@ Bool Net::WinSSLEngine::SetServerCertsASN1(Crypto::Cert::X509Cert *certASN1, Cry
 		}
 		DEL_CLASS(privKey);
 	}
-
 /*	IO::DebugWriter debug;
 	Text::StringBuilderUTF16 sbDebug;
 	WinSSLEngine_HCRYPTPROV_ToString(hProv, &sbDebug);
