@@ -26,6 +26,10 @@ namespace Crypto
 			Bool GetExtensions(CertExtensions *ext);
 			Crypto::Cert::X509Key *GetPublicKey();
 			Bool GetKeyId(UInt8 *keyId);
+			Bool GetNotBefore(Data::DateTime *dt);
+			Bool GetNotAfter(Data::DateTime *dt);
+			Bool DomainValid(const UTF8Char *domain);
+			Bool IsSelfSigned();
 		};
 	}
 }

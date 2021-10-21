@@ -1,4 +1,5 @@
 #include "Stdafx.h"
+#include "Crypto/Hash/SHA256.h"
 #include "Crypto/Token/JWSignature.h"
 #include "Exporter/PEMExporter.h"
 #include "IO/FileStream.h"
@@ -38,10 +39,10 @@ const UTF8Char *Net::ACMEConn::JWK(Crypto::Cert::X509Key *key, Crypto::Token::JW
 				return 0;
 			}
 			Text::StringBuilderUTF8 sb;
-			sb.Append((const UTF8Char*)"{\"kty\":\"RSA\",\"n\":\"");
-			b64.EncodeBin(&sb, m, mSize);
-			sb.Append((const UTF8Char*)"\",\"e\":\"");
+			sb.Append((const UTF8Char*)"{\"e\":\"");
 			b64.EncodeBin(&sb, e, eSize);
+			sb.Append((const UTF8Char*)"\",\"kty\":\"RSA\",\"n\":\"");
+			b64.EncodeBin(&sb, m, mSize);
 			sb.Append((const UTF8Char*)"\"}");
 			*alg = Crypto::Token::JWSignature::Algorithm::RS256;
 			return Text::StrCopyNew(sb.ToString());
@@ -56,7 +57,7 @@ const UTF8Char *Net::ACMEConn::JWK(Crypto::Cert::X509Key *key, Crypto::Token::JW
 	}
 }
 
-const UTF8Char *Net::ACMEConn::ProtectedJWK(const UTF8Char *nonce, const UTF8Char *url, Crypto::Cert::X509Key *key, Crypto::Token::JWSignature::Algorithm *alg)
+const UTF8Char *Net::ACMEConn::ProtectedJWK(const UTF8Char *nonce, const UTF8Char *url, Crypto::Cert::X509Key *key, Crypto::Token::JWSignature::Algorithm *alg, const UTF8Char *accountId)
 {
 	const UTF8Char *jwk = JWK(key, alg);
 	if (jwk == 0)
@@ -70,10 +71,19 @@ const UTF8Char *Net::ACMEConn::ProtectedJWK(const UTF8Char *nonce, const UTF8Cha
 	sb.Append(nonce);
 	sb.Append((const UTF8Char*)"\",\"url\":\"");
 	sb.Append(url);
-	sb.Append((const UTF8Char*)"\",\"jwk\":");
-	sb.Append(jwk);
-	sb.Append((const UTF8Char*)"}");
+	if (accountId)
+	{
+		sb.Append((const UTF8Char*)"\",\"kid\":\"");
+		sb.Append(accountId);
+		sb.AppendChar('\"', 1);
+	}
+	else
+	{
+		sb.Append((const UTF8Char*)"\",\"jwk\":");
+		sb.Append(jwk);
+	}
 	Text::StrDelNew(jwk);
+	sb.Append((const UTF8Char*)"}");
 	return Text::StrCopyNew(sb.ToString());
 }
 
@@ -103,6 +113,24 @@ const UTF8Char *Net::ACMEConn::EncodeJWS(Net::SSLEngine *ssl, const UTF8Char *pr
 	return Text::StrCopyNew(sb.ToString());
 }
 
+Bool Net::ACMEConn::KeyHash(Crypto::Cert::X509Key *key, Text::StringBuilderUTF *sb)
+{
+	Crypto::Token::JWSignature::Algorithm alg;
+	const UTF8Char *jwk = JWK(key, &alg);
+	if (jwk == 0)
+	{
+		return false;
+	}
+	Crypto::Hash::SHA256 sha256;
+	UInt8 hashVal[32];
+	sha256.Calc(jwk, Text::StrCharCnt(jwk));
+	sha256.GetValue(hashVal);
+	Text::StrDelNew(jwk);
+	Text::TextBinEnc::Base64Enc b64(Text::TextBinEnc::Base64Enc::Charset::URL, true);
+	b64.EncodeBin(sb, hashVal, 32);
+	return true;
+}
+
 Net::HTTPClient *Net::ACMEConn::ACMEPost(const UTF8Char *url, const Char *data)
 {
 	if (this->nonce == 0)
@@ -111,7 +139,7 @@ Net::HTTPClient *Net::ACMEConn::ACMEPost(const UTF8Char *url, const Char *data)
 	}
 	const UTF8Char *protStr;
 	Crypto::Token::JWSignature::Algorithm alg;
-	protStr = ProtectedJWK(this->nonce, url, this->key, &alg);
+	protStr = ProtectedJWK(this->nonce, url, this->key, &alg, this->accountId);
 	if (protStr == 0)
 	{
 		return 0;
@@ -142,6 +170,83 @@ Net::HTTPClient *Net::ACMEConn::ACMEPost(const UTF8Char *url, const Char *data)
 		this->nonce = Text::StrCopyNew(sb.ToString());
 	}
 	return cli;
+}
+
+Net::ACMEConn::Order *Net::ACMEConn::OrderParse(const UInt8 *buff, UOSInt buffSize)
+{
+	Text::JSONBase *json = Text::JSONBase::ParseJSONStrLen(buff, buffSize);
+	if (json)
+	{
+		const UTF8Char *csptr;
+		Order *order = 0;
+		if (json->GetType() == Text::JSONType::Object)
+		{
+			Text::JSONObject *o = (Text::JSONObject*)json;
+			order = MemAlloc(Order, 1);
+			MemClear(order, sizeof(Order));
+			order->status = ACMEStatusFromString(o->GetObjectString((const UTF8Char*)"status"));
+			csptr = o->GetObjectString((const UTF8Char*)"expires");
+			if (csptr)
+			{
+				Data::DateTime dt;
+				dt.SetValue(csptr);
+				order->expires = dt.ToTicks();
+			}
+			csptr = o->GetObjectString((const UTF8Char*)"finalize");
+			order->finalizeURL = SCOPY_TEXT(csptr);
+			Text::JSONBase *auth = o->GetObjectValue((const UTF8Char*)"authorizations");
+			if (auth && auth->GetType() == Text::JSONType::Array)
+			{
+				Text::JSONArray *authArr = (Text::JSONArray*)auth;
+				NEW_CLASS(order->authURLs, Data::ArrayList<const UTF8Char*>());
+				UOSInt i = 0;
+				UOSInt j = authArr->GetArrayLength();
+				while (i < j)
+				{
+					auth = authArr->GetArrayValue(i);
+					if (auth && auth->GetType() == Text::JSONType::StringUTF8)
+					{
+						order->authURLs->Add(Text::StrCopyNew(((Text::JSONStringUTF8*)auth)->GetValue()));
+					}
+					i++;
+				}
+			}
+		}
+		json->EndUse();
+		return order;
+	}
+	return 0;
+}
+
+Net::ACMEConn::Challenge *Net::ACMEConn::ChallengeJSON(Text::JSONBase *json)
+{
+	const UTF8Char *type = json->GetString("type");
+	const UTF8Char *status = json->GetString("status");
+	const UTF8Char *url = json->GetString("url");
+	const UTF8Char *token = json->GetString("token");
+
+	if (type && status && url && token)
+	{
+		Challenge *chall = MemAlloc(Challenge, 1);
+		chall->status = ACMEStatusFromString(status);
+		chall->type = AuthorizeTypeFromString(type);
+		chall->url = Text::StrCopyNew(url);
+		chall->token = Text::StrCopyNew(token);
+		return chall;
+	}
+	return 0;
+}
+
+Net::ACMEConn::Challenge *Net::ACMEConn::ChallengeParse(const UInt8 *buff, UOSInt buffSize)
+{
+	Text::JSONBase *json = Text::JSONBase::ParseJSONStrLen(buff, buffSize);
+	Challenge *chall = 0;
+	if (json)
+	{
+		chall = ChallengeJSON(json);
+		json->EndUse();
+	}
+	return chall;
 }
 
 Net::ACMEConn::ACMEConn(Net::SocketFactory *sockf, const UTF8Char *serverHost, UInt16 port)
@@ -406,6 +511,196 @@ Bool Net::ACMEConn::AccountRetr()
 	return succ;
 }
 
+Net::ACMEConn::Order *Net::ACMEConn::OrderNew(const UTF8Char *domainNames)
+{
+	Text::StringBuilderUTF8 sbNames;
+	Text::StringBuilderUTF8 sb;
+	Net::SocketUtil::AddressInfo addr;
+	UOSInt i;
+	UTF8Char *sarr[2];
+	Bool found = false;
+	sb.Append((const UTF8Char*)"{\"identifiers\":[");
+	sbNames.Append(domainNames);
+	sarr[1] = sbNames.ToString();
+	i = 2;
+	while (i == 2)
+	{
+		i = Text::StrSplit(sarr, 2, sarr[1], ',');
+		if (found)
+			sb.AppendChar(',', 1);
+		sb.Append((const UTF8Char*)"{\"type\":\"");
+		if (Net::SocketUtil::GetIPAddr(sarr[0], &addr))
+		{
+			sb.Append((const UTF8Char*)"ip");
+		}
+		else
+		{
+			sb.Append((const UTF8Char*)"dns");
+		}
+		sb.Append((const UTF8Char*)"\",\"value\":\"");
+		sb.Append(sarr[0]);
+		sb.Append((const UTF8Char*)"\"}");
+	}
+	sb.Append((const UTF8Char*)"]}");
+
+	Net::HTTPClient *cli = this->ACMEPost(this->urlNewOrder, (const Char*)sb.ToString());
+	if (cli->GetRespStatus() == 201)
+	{
+		Text::StringBuilderUTF8 sb;
+		IO::MemoryStream mstm((const UTF8Char*)"Net.ACMEConn.OrderNew.mstm");
+		cli->ReadToEnd(&mstm, 2048);
+		cli->GetRespHeader((const UTF8Char*)"Location", &sb);
+		DEL_CLASS(cli);
+
+		const UInt8 *replyBuff = mstm.GetBuff(&i);
+		Order *order = this->OrderParse(replyBuff, i);
+		if (order && sb.GetLength() > 0)
+		{
+			order->orderURL = Text::StrCopyNew(sb.ToString());
+		}
+		return order;
+	}
+	else
+	{
+		DEL_CLASS(cli);
+		return 0;
+	}
+}
+
+Net::ACMEConn::Challenge *Net::ACMEConn::OrderAuthorize(const UTF8Char *authorizeURL, AuthorizeType authType)
+{
+	Net::HTTPClient *cli = this->ACMEPost(authorizeURL, "");
+	if (cli)
+	{
+		cli->GetRespStatus();
+		IO::MemoryStream mstm((const UTF8Char*)"Net.ACMEConn.OrderAuthorize.mstm");
+		cli->ReadToEnd(&mstm, 2048);
+		DEL_CLASS(cli);
+
+		const UTF8Char *sAuthType = AuthorizeTypeGetName(authType);
+		if (sAuthType == 0 || Text::StrEqualsICase(sAuthType, (const UTF8Char*)"UNKNOWN"))
+		{
+			return 0;
+		}
+		UOSInt i;
+		UOSInt j;
+		const UTF8Char *csptr;
+		const UInt8 *authBuff = mstm.GetBuff(&i);
+		Text::JSONBase *json = Text::JSONBase::ParseJSONStrLen(authBuff, i);
+		if (json == 0)
+		{
+			return 0;
+		}
+		if (json->GetType() != Text::JSONType::Object)
+		{
+			json->EndUse();
+			return 0;
+		}
+		Challenge *ret = 0;
+		Text::JSONObject *authObj = (Text::JSONObject*)json;
+		json = authObj->GetObjectValue((const UTF8Char*)"challenges");
+		if (json && json->GetType() == Text::JSONType::Array)
+		{
+			Text::JSONArray *challArr = (Text::JSONArray*)json;
+			i = 0;
+			j = challArr->GetArrayLength();
+			while (i < j)
+			{
+				json = challArr->GetArrayValue(i);
+				if (json)
+				{
+					csptr = json->GetString("type");
+					if (csptr && Text::StrEqualsICase(csptr, sAuthType))
+					{
+						ret = ChallengeJSON(json);
+						break;
+					}
+				}
+				i++;
+			}
+		}
+		authObj->EndUse();
+		return ret;
+	}
+	return 0;
+}
+
+Net::ACMEConn::Order *Net::ACMEConn::OrderGetStatus(const UTF8Char *orderURL)
+{
+	return 0;
+}
+
+Net::ACMEConn::Order *Net::ACMEConn::OrderFinalize(const UTF8Char *finalizeURL, Crypto::Cert::X509CertReq *csr)
+{
+	return 0;
+}
+
+void Net::ACMEConn::OrderFree(Order *order)
+{
+	SDEL_TEXT(order->orderURL);
+	if (order->authURLs)
+	{
+		LIST_FREE_FUNC(order->authURLs, Text::StrDelNew);
+		DEL_CLASS(order->authURLs);
+	}
+	SDEL_TEXT(order->finalizeURL);
+	SDEL_TEXT(order->certificateURL);
+	MemFree(order);
+}
+
+Net::ACMEConn::Challenge *Net::ACMEConn::ChallengeBegin(const UTF8Char *challURL)
+{
+	Net::HTTPClient *cli = this->ACMEPost(challURL, "{}");
+	if (cli)
+	{
+		if (cli->GetRespStatus() == Net::WebStatus::SC_OK)
+		{
+			IO::MemoryStream mstm((const UTF8Char*)"Net.ACMEConn.ChallengeBegin.mstm");
+			cli->ReadToEnd(&mstm, 2048);
+			DEL_CLASS(cli);
+			UOSInt i;
+			const UInt8 *buff = mstm.GetBuff(&i);
+			return ChallengeParse(buff, i);
+		}
+		else
+		{
+			DEL_CLASS(cli);
+			return 0;
+		}
+	}
+	return 0;
+}
+
+Net::ACMEConn::Challenge *Net::ACMEConn::ChallengeGetStatus(const UTF8Char *challURL)
+{
+	Net::HTTPClient *cli = this->ACMEPost(challURL, "");
+	if (cli)
+	{
+		if (cli->GetRespStatus() == Net::WebStatus::SC_OK)
+		{
+			IO::MemoryStream mstm((const UTF8Char*)"Net.ACMEConn.ChallengeGetStatus.mstm");
+			cli->ReadToEnd(&mstm, 2048);
+			DEL_CLASS(cli);
+			UOSInt i;
+			const UInt8 *buff = mstm.GetBuff(&i);
+			return ChallengeParse(buff, i);
+		}
+		else
+		{
+			DEL_CLASS(cli);
+			return 0;
+		}
+	}
+	return 0;
+}
+
+void Net::ACMEConn::ChallengeFree(Challenge *chall)
+{
+	SDEL_TEXT(chall->token);
+	SDEL_TEXT(chall->url);
+	MemFree(chall);
+}
+
 Bool Net::ACMEConn::NewKey()
 {
 	Crypto::Cert::X509Key *key = this->ssl->GenerateRSAKey();
@@ -459,4 +754,73 @@ Bool Net::ACMEConn::SaveKey(const UTF8Char *fileName)
 		return false;
 	}
 	return Exporter::PEMExporter::ExportFile(fileName, this->key);
+}
+
+Net::ACMEConn::ACMEStatus Net::ACMEConn::ACMEStatusFromString(const UTF8Char* status)
+{
+	if (status == 0)
+	{
+		return ACMEStatus::Unknown;
+	}
+	if (Text::StrEqualsICase(status, (const UTF8Char*)"pending"))
+	{
+		return ACMEStatus::Pending;
+	}
+	else if (Text::StrEqualsICase(status, (const UTF8Char*)"ready"))
+	{
+		return ACMEStatus::Ready;
+	}
+	else if (Text::StrEqualsICase(status, (const UTF8Char*)"processing"))
+	{
+		return ACMEStatus::Processing;
+	}
+	else if (Text::StrEqualsICase(status, (const UTF8Char*)"valid"))
+	{
+		return ACMEStatus::Processing;
+	}
+	else if (Text::StrEqualsICase(status, (const UTF8Char*)"invalid"))
+	{
+		return ACMEStatus::Processing;
+	}
+	return ACMEStatus::Unknown;
+}
+
+const UTF8Char *Net::ACMEConn::AuthorizeTypeGetName(AuthorizeType authType)
+{
+	switch (authType)
+	{
+	case AuthorizeType::HTTP_01:
+		return (const UTF8Char*)"http-01";
+	case AuthorizeType::DNS_01:
+		return (const UTF8Char*)"dns-01";
+	case AuthorizeType::TLS_ALPN_01:
+		return (const UTF8Char*)"tls-alpn-01";
+	case AuthorizeType::Unknown:
+	default:
+		return (const UTF8Char*)"Unknown";
+	}
+}
+
+Net::ACMEConn::AuthorizeType Net::ACMEConn::AuthorizeTypeFromString(const UTF8Char *s)
+{
+	if (s == 0)
+	{
+		return AuthorizeType::Unknown;
+	}
+	if (Text::StrEqualsICase(s, (const UTF8Char*)"http-01"))
+	{
+		return AuthorizeType::HTTP_01;
+	}
+	else if (Text::StrEqualsICase(s, (const UTF8Char*)"dns-01"))
+	{
+		return AuthorizeType::DNS_01;
+	}
+	else if (Text::StrEqualsICase(s, (const UTF8Char*)"tls-alpn-01"))
+	{
+		return AuthorizeType::TLS_ALPN_01;
+	}
+	else
+	{
+		return AuthorizeType::Unknown;
+	}
 }

@@ -167,7 +167,6 @@ Bool Net::WinSSLEngine::InitClient(Method method, void *cred)
 
 Bool Net::WinSSLEngine::InitServer(Method method, void *cred, void *caCred)
 {
-	PCCERT_CONTEXT cert[2];
 	SCHANNEL_CRED credData;
 	SECURITY_STATUS status;
 	TimeStamp lifetime;

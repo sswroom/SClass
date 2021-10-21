@@ -75,76 +75,61 @@ Net::SSLClient *Net::OpenSSLEngine::CreateClientConn(void *sslObj, Socket *s, co
 				*err = ErrorType::CertNotFound;
 			return 0;
 		}
-
-		Char sbuff[512];
-		Char *sarr[10];
-		ASN1_TIME *notBefore = X509_get_notBefore(cert);
-		ASN1_TIME *notAfter = X509_get_notAfter(cert);
+		UInt8 certBuff[4096];
+		UInt8 *certPtr = certBuff;
+		Int32 certLen = i2d_X509(cert, &certPtr);
+		X509_free(cert);
+		if (certLen <= 0)
+		{
+			this->sockf->DestroySocket(s);
+			SSL_free(ssl);
+			if (err)
+				*err = ErrorType::CertNotFound;
+			return 0;
+		}
+		Crypto::Cert::X509Cert *svrCert;
+		NEW_CLASS(svrCert, Crypto::Cert::X509Cert(hostName, certBuff, (UInt32)certLen));
 		Data::DateTime dt;
 		Int64 currTime;
 		dt.SetCurrTimeUTC();
 		currTime = dt.ToTicks();
-		tm tm;
-		ASN1_TIME_to_tm(notBefore, &tm);
-		dt.SetValue((UInt16)(tm.tm_year + 1900), tm.tm_mon + 1, tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec, 0, (Int8)(tm.tm_gmtoff / 60 / 15));
-		if (currTime < dt.ToTicks())
+		if (!svrCert->GetNotBefore(&dt) || currTime < dt.ToTicks())
 		{
-			X509_free(cert);
+			DEL_CLASS(svrCert);
 			this->sockf->DestroySocket(s);
 			SSL_free(ssl);
 			if (err)
 				*err = ErrorType::InvalidPeriod;
 			return 0;
 		}
-		ASN1_TIME_to_tm(notAfter, &tm);
-		dt.SetValue((UInt16)(tm.tm_year + 1900), tm.tm_mon + 1, tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec, 0, (Int8)(tm.tm_gmtoff / 60 / 15));
-		if (currTime > dt.ToTicks())
+		if (!svrCert->GetNotAfter(&dt) || currTime > dt.ToTicks())
 		{
-			X509_free(cert);
+			DEL_CLASS(svrCert);
 			this->sockf->DestroySocket(s);
 			SSL_free(ssl);
 			if (err)
 				*err = ErrorType::InvalidPeriod;
 			return 0;
 		}
-
-		X509_NAME *name = X509_get_subject_name(cert);
-		X509_NAME_oneline(name, sbuff, 512);
-		Bool nameValid = false;
-		UOSInt i = 0;
-		UOSInt j = Text::StrSplit(sarr, 10, sbuff, '/');
-		while (i < j)
+		if (!svrCert->DomainValid(hostName))
 		{
-			if (Text::StrStartsWith(sarr[i], "CN="))
-			{
-				if (Text::StrEquals(&sarr[i][3], (const Char*)hostName))
-				{
-					nameValid = true;
-				}
-				break;
-			}
-			i++;
-		}
-		if (!nameValid)
-		{
-			X509_free(cert);
+			DEL_CLASS(svrCert);
 			this->sockf->DestroySocket(s);
 			SSL_free(ssl);
 			if (err)
 				*err = ErrorType::InvalidName;
 			return 0;
 		}
-		X509_NAME *issuer = X509_get_issuer_name(cert);
-		if (X509_NAME_cmp(name, issuer) == 0)
+		if (svrCert->IsSelfSigned())
 		{
-			X509_free(cert);
+			DEL_CLASS(svrCert);
 			this->sockf->DestroySocket(s);
 			SSL_free(ssl);
 			if (err)
 				*err = ErrorType::SelfSign;
 			return 0;
 		}
-		X509_free(cert);
+		DEL_CLASS(svrCert);
 	}
 	this->sockf->SetRecvTimeout(s, 120000);
 	Net::SSLClient *cli;

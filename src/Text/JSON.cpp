@@ -34,6 +34,121 @@ Bool Text::JSONBase::IsStringUTF8()
 	return this->GetType() == JSONType::StringUTF8;
 }
 
+Text::JSONBase *Text::JSONBase::GetValue(const Char *path)
+{
+	if (Text::StrEquals(path, "this"))
+	{
+		return this;
+	}
+	Text::StringBuilderUTF8 sb;
+	sb.Append((const UTF8Char*)path);
+	UTF8Char *sptr = sb.ToString();
+	UOSInt dotIndex;
+	UOSInt brkIndex;
+	Text::JSONBase *json = this;
+	while (json)
+	{
+		dotIndex = Text::StrIndexOf(sptr, '.');
+		brkIndex = Text::StrIndexOf(sptr, '[');
+		if (dotIndex == INVALID_INDEX && brkIndex == INVALID_INDEX)
+		{
+			if (json->GetType() == JSONType::Object)
+			{
+				return ((Text::JSONObject*)json)->GetObjectValue(sptr);
+			}
+			else if (json->GetType() == JSONType::Array)
+			{
+				if (Text::StrToUOSInt(sptr, &dotIndex))
+				{
+					return ((Text::JSONArray*)json)->GetArrayValue(dotIndex);
+				}
+			}
+			return 0;
+		}
+		else
+		{
+			Bool isDot = false;
+			if (brkIndex == INVALID_INDEX)
+			{
+				isDot = true;
+			}
+			else if (dotIndex == INVALID_INDEX)
+			{
+				dotIndex = brkIndex;
+				isDot = false;
+			}
+			else if (dotIndex < brkIndex)
+			{
+				isDot = true;
+			}
+			else
+			{
+				dotIndex = brkIndex;
+				isDot = false;
+			}
+			sptr[dotIndex] = 0;
+			if (json->GetType() == JSONType::Object)
+			{
+				json = ((Text::JSONObject*)json)->GetObjectValue(sptr);
+			}
+			else if (json->GetType() == JSONType::Array)
+			{
+				if (Text::StrToUOSInt(sptr, &brkIndex))
+				{
+					json = ((Text::JSONArray*)json)->GetArrayValue(brkIndex);
+				}
+				else
+				{
+					return 0;
+				}
+			}
+			else
+			{
+				return 0;
+			}
+			sptr += dotIndex + 1;
+			if (!isDot)
+			{
+				if (json == 0)
+				{
+					return 0;
+				}
+				dotIndex = Text::StrIndexOf(sptr, ']');
+				if (dotIndex == INVALID_INDEX)
+				{
+					return 0;
+				}
+				if (json->GetType() != JSONType::Array)
+				{
+					return 0;
+				}
+				sptr[dotIndex] = 0;
+				if (!Text::StrToUOSInt(sptr, &brkIndex))
+				{
+					return 0;
+				}
+				json = ((Text::JSONArray*)json)->GetArrayValue(brkIndex);
+				sptr += dotIndex + 1;
+				if (sptr[0] == 0)
+				{
+					return json;
+				}
+			}
+		}
+	}
+	return 0;
+}
+
+const UTF8Char *Text::JSONBase::GetString(const Char *path)
+{
+	Text::JSONBase *json = this->GetValue(path);
+	if (json && json->IsStringUTF8())
+	{
+		return ((Text::JSONStringUTF8*)json)->GetValue();
+	}
+	return 0;
+}
+
 Text::JSONBase *Text::JSONBase::ParseJSONStr(const UTF8Char *jsonStr)
 {
 	const UTF8Char *endPtr;

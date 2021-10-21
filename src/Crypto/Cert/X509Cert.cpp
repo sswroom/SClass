@@ -185,3 +185,117 @@ Bool Crypto::Cert::X509Cert::GetKeyId(UInt8 *keyId)
 	DEL_CLASS(key);
 	return false;
 }
+
+Bool Crypto::Cert::X509Cert::GetNotBefore(Data::DateTime *dt)
+{
+	UOSInt len = 0;
+	Net::ASN1Util::ItemType itemType = Net::ASN1Util::IT_UNKNOWN;
+	const UInt8 *tmpBuff;
+	if (Net::ASN1Util::PDUGetItemType(this->buff, this->buff + this->buffSize, "1.1.1") == Net::ASN1Util::IT_CONTEXT_SPECIFIC_0)
+	{
+		tmpBuff = Net::ASN1Util::PDUGetItem(this->buff, this->buff + this->buffSize, "1.1.5.1", &len, &itemType);
+	}
+	else
+	{
+		tmpBuff = Net::ASN1Util::PDUGetItem(this->buff, this->buff + this->buffSize, "1.1.4.1", &len, &itemType);
+	}
+	if (itemType == Net::ASN1Util::IT_UTCTIME)
+	{
+		return Net::ASN1Util::PDUParseUTCTimeCont(tmpBuff, len, dt);
+	}
+	return false;
+}
+
+Bool Crypto::Cert::X509Cert::GetNotAfter(Data::DateTime *dt)
+{
+	UOSInt len = 0;
+	Net::ASN1Util::ItemType itemType = Net::ASN1Util::IT_UNKNOWN;
+	const UInt8 *tmpBuff;
+	if (Net::ASN1Util::PDUGetItemType(this->buff, this->buff + this->buffSize, "1.1.1") == Net::ASN1Util::IT_CONTEXT_SPECIFIC_0)
+	{
+		tmpBuff = Net::ASN1Util::PDUGetItem(this->buff, this->buff + this->buffSize, "1.1.5.2", &len, &itemType);
+	}
+	else
+	{
+		tmpBuff = Net::ASN1Util::PDUGetItem(this->buff, this->buff + this->buffSize, "1.1.4.2", &len, &itemType);
+	}
+	if (itemType == Net::ASN1Util::IT_UTCTIME)
+	{
+		return Net::ASN1Util::PDUParseUTCTimeCont(tmpBuff, len, dt);
+	}
+	return false;
+}
+
+Bool Crypto::Cert::X509Cert::DomainValid(const UTF8Char *domain)
+{
+	Crypto::Cert::CertExtensions exts;
+	UOSInt i;
+	UOSInt j;
+	const UTF8Char *csptr;
+	Bool valid = false;
+	Crypto::Cert::CertNames subjNames;
+	MemClear(&subjNames, sizeof(subjNames));
+	if (this->GetSubjNames(&subjNames))
+	{
+		if (subjNames.commonName[0] == '*' && subjNames.commonName[1] == '.')
+		{
+			valid = Text::StrEqualsICase(domain, &subjNames.commonName[2]) || Text::StrEndsWithICase(domain, &subjNames.commonName[1]);
+		}
+		else
+		{
+			valid = Text::StrEqualsICase(domain, subjNames.commonName);
+		}
+		Crypto::Cert::CertNames::FreeNames(&subjNames);
+		if (valid)
+		{
+			return true;
+		}
+	}
+
+	MemClear(&exts, sizeof(exts));
+	if (this->GetExtensions(&exts))
+	{
+		if (exts.subjectAltName)
+		{
+			i = 0;
+			j = exts.subjectAltName->GetCount();
+			while (i < j)
+			{
+				csptr = exts.subjectAltName->GetItem(i);
+				if (csptr[0] == '*' && csptr[1] == '.')
+				{
+					valid = Text::StrEqualsICase(domain, &csptr[2]) || Text::StrEndsWithICase(domain, &csptr[1]);
+				}
+				else
+				{
+					valid = Text::StrEqualsICase(domain, csptr);
+				}
+				if (valid)
+					break;
+				i++;
+			}
+		}
+		Crypto::Cert::CertExtensions::FreeExtensions(&exts);
+		if (valid)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+Bool Crypto::Cert::X509Cert::IsSelfSigned()
+{
+	Crypto::Cert::CertNames subjNames;
+	Crypto::Cert::CertNames issueNames;
+	MemClear(&subjNames, sizeof(subjNames));
+	MemClear(&issueNames, sizeof(issueNames));
+	Bool ret = false;
+	if (this->GetIssueNames(&issueNames) && this->GetSubjNames(&subjNames))
+	{
+		ret = Text::StrEquals(issueNames.commonName, subjNames.commonName);
+	}
+	Crypto::Cert::CertNames::FreeNames(&subjNames);
+	Crypto::Cert::CertNames::FreeNames(&issueNames);
+	return ret;
+}

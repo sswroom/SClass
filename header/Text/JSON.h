@@ -37,6 +37,9 @@ namespace Text
 		void EndUse();
 		Bool IsStringUTF8();
 
+		JSONBase *GetValue(const Char *path);
+		const UTF8Char *GetString(const Char *path);
+
 		static JSONBase *ParseJSONStr(const UTF8Char *jsonStr);
 		static JSONBase *ParseJSONStrLen(const UTF8Char *jsonStr, UOSInt strLen);
 

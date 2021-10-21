@@ -19,6 +19,7 @@ namespace Net
 		const UTF8Char *GetTermOfService();
 		const UTF8Char *GetWebsite();
 		const UTF8Char *GetAccountId();
+		Net::ACMEConn *GetConn();
 	};
 }
 #endif

@@ -52,3 +52,8 @@ const UTF8Char *Net::ACMEClient::GetAccountId()
 {
 	return this->acme->GetAccountId();
 }
+
+Net::ACMEConn *Net::ACMEClient::GetConn()
+{
+	return this->acme;
+}

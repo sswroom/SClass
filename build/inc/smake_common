@@ -83,6 +83,7 @@ nodeps:
 #@RASPStillCaptureTest
 @VideoCaptureTest
 @MemFill
+@ACMETest
 @ARPScan
 @ARPTest
 @HTTPServerTest
@@ -442,6 +443,9 @@ MemFill:
 @ConsoleStartup.o
 
 #NetTest
+ACMETest:
+@ACMETest.o
+@ConsoleStartup.o
 ARPScan:
 @ARPScanMain.o
 @ConsoleStartup.o
@@ -801,6 +805,7 @@ VideoCaptureTest.o: ../../main/Media/VideoCaptureTest.cpp
 VideoCheckMain.o: ../../main/Media/VideoCheckMain.cpp
 !-lavformat
 MemFillTest.o: ../../main/Memory/MemFill.cpp
+ACMETest.o: ../../main/NetTest/ACMETest.cpp
 ARPScanMain.o: ../../main/NetTest/ARPScanMain.cpp
 ARPTest.o: ../../main/NetTest/ARPTest.cpp
 HTTPServerTest.o: ../../main/NetTest/HTTPServerTest.cpp
