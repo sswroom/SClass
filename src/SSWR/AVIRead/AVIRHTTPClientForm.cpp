@@ -925,9 +925,11 @@ SSWR::AVIRead::AVIRHTTPClientForm::HTTPCookie *SSWR::AVIRead::AVIRHTTPClientForm
 				SDEL_TEXT(cookie->value);
 				cookie->value  = Text::StrCopyNew(&cookieValue[i + 1]);
 				mutUsage.EndUse();
+				Text::StrDelNew(cookieName);
 				return cookie;
 			}
 		}
+		Text::StrDelNew(cookieName);
 		cookie = MemAlloc(SSWR::AVIRead::AVIRHTTPClientForm::HTTPCookie, 1);
 		cookie->domain = Text::StrCopyNew(domain);
 		if (path[0])
@@ -1028,6 +1030,7 @@ SSWR::AVIRead::AVIRHTTPClientForm::AVIRHTTPClientForm(UI::GUIClientControl *pare
 	this->reqBodyType = 0;
 	this->reqUserName = 0;
 	this->reqPassword = 0;
+	this->reqHeaders = 0;
 	NEW_CLASS(this->threadEvt, Sync::Event(true, (const UTF8Char*)"SSWR.AVIRead.AVIRHTTPClientForm.threadEvt"));
 	NEW_CLASS(this->respHeaders, Data::ArrayList<const UTF8Char *>());
 	NEW_CLASS(this->respMut, Sync::Mutex());
