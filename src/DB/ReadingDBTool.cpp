@@ -729,7 +729,16 @@ UOSInt DB::ReadingDBTool::GetTableNames(Data::ArrayList<const UTF8Char*> *arr)
 	}
 	else
 	{
-		return 0;
+		Data::ArrayList<const UTF8Char*> tables;
+		this->db->GetTableNames(&tables);
+		UOSInt i = 0;
+		UOSInt j = tables.GetCount();
+		while (i < j)
+		{
+			arr->Add(Text::StrCopyNew(tables.GetItem(i)));
+			i++;
+		}
+		return j;
 	}
 }
 
