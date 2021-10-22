@@ -59,6 +59,11 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnRequestClicked(void *userObj
 	{
 		me->reqPassword = Text::StrCopyNew(sbTmp.ToString());
 	}
+	sbTmp.ClearStr();
+	if (me->txtHeaders->GetText(&sbTmp) && sbTmp.GetCharCnt() > 0)
+	{
+		me->reqHeaders = Text::StrCopyNew(sbTmp.ToString());
+	}
 
 
 	me->noShutdown = me->chkNoShutdown->IsChecked();
@@ -425,6 +430,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 	const UTF8Char *currBodyType;
 	const UTF8Char *currUserName;
 	const UTF8Char *currPassword;
+	const UTF8Char *currHeaders;
 	const Char *currMeth;
 	Bool currOSClient;
 	UInt8 buff[4096];
@@ -446,12 +452,14 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 			currUserName = me->reqUserName;
 			currPassword = me->reqPassword;
 			currOSClient = me->reqOSClient;
+			currHeaders = me->reqHeaders;
 			me->reqURL = 0;
 			me->reqBody = 0;
 			me->reqBodyLen = 0;
 			me->reqBodyType = 0;
 			me->reqUserName = 0;
 			me->reqPassword = 0;
+			me->reqHeaders = 0;
 			
 			Net::HTTPClient *cli;
 			cli = Net::HTTPClient::CreateClient(me->core->GetSocketFactory(), currOSClient?0:me->ssl, me->userAgent, me->noShutdown, Text::StrStartsWith(currURL, (const UTF8Char*)"https://"));
@@ -477,6 +485,27 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 					cli->AddHeader((const UTF8Char*)"Content-Length", sbuff);
 					cli->AddHeader((const UTF8Char*)"Content-Type", (const UTF8Char*)currBodyType);
 					cli->Write(currBody, currBodyLen);
+				}
+				if (currHeaders)
+				{
+					Text::StringBuilderUTF8 sb;
+					sb.Append(currHeaders);
+					UTF8Char *sarr[2];
+					UTF8Char *sarr2[2];
+					sarr[1] = sb.ToString();
+					while (true)
+					{
+						i = Text::StrSplitLine(sarr, 2, sarr[1]);
+						if (Text::StrSplitTrim(sarr2, 2, sarr[0], ':') == 2)
+						{
+							cli->AddHeader(sarr2[0], sarr2[1]);
+						}
+
+						if (i != 2)
+						{
+							break;
+						}
+					}
 				}
 
 				cli->EndRequest(&me->respTimeReq, &me->respTimeResp);
@@ -519,6 +548,27 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 							cli->AddHeader((const UTF8Char*)"Content-Length", sbuff);
 							cli->AddHeader((const UTF8Char*)"Content-Type", (const UTF8Char*)currBodyType);
 							cli->Write(currBody, currBodyLen);
+						}
+						if (currHeaders)
+						{
+							Text::StringBuilderUTF8 sb;
+							sb.Append(currHeaders);
+							UTF8Char *sarr[2];
+							UTF8Char *sarr2[2];
+							sarr[1] = sb.ToString();
+							while (true)
+							{
+								i = Text::StrSplitLine(sarr, 2, sarr[1]);
+								if (Text::StrSplitTrim(sarr2, 2, sarr[0], ':') == 2)
+								{
+									cli->AddHeader(sarr2[0], sarr2[1]);
+								}
+
+								if (i != 2)
+								{
+									break;
+								}
+							}
 						}
 
 						cli->EndRequest(&me->respTimeReq, &me->respTimeResp);
@@ -605,6 +655,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 			SDEL_TEXT(currBodyType);
 			SDEL_TEXT(currUserName);
 			SDEL_TEXT(currPassword);
+			SDEL_TEXT(currHeaders);
 		}
 		else
 		{
@@ -995,7 +1046,7 @@ SSWR::AVIRead::AVIRHTTPClientForm::AVIRHTTPClientForm(UI::GUIClientControl *pare
 
 	this->tpRequest = this->tcMain->AddTabPage((const UTF8Char*)"Request");
 	NEW_CLASS(this->pnlRequest, UI::GUIPanel(ui, this->tpRequest));
-	this->pnlRequest->SetRect(0, 0, 100, 220, false);
+	this->pnlRequest->SetRect(0, 0, 100, 292, false);
 	this->pnlRequest->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblURL, UI::GUILabel(ui, this->pnlRequest, (const UTF8Char*)"URL"));
 	this->lblURL->SetRect(4, 4, 100, 23, false);
@@ -1056,8 +1107,12 @@ SSWR::AVIRead::AVIRHTTPClientForm::AVIRHTTPClientForm(UI::GUIClientControl *pare
 	this->cboPostFormat->AddItem((const UTF8Char*)"application/json", 0);
 	this->cboPostFormat->AddItem((const UTF8Char*)"RAW", 0);
 	this->cboPostFormat->SetSelectedIndex(0);
+	NEW_CLASS(this->lblHeaders, UI::GUILabel(ui, this->pnlRequest, (const UTF8Char*)"Headers"));
+	this->lblHeaders->SetRect(4, 196, 100, 23, false);
+	NEW_CLASS(this->txtHeaders, UI::GUITextBox(ui, this->pnlRequest, (const UTF8Char*)"", true));
+	this->txtHeaders->SetRect(104, 196, 300, 71, false);
 	NEW_CLASS(this->btnRequest, UI::GUIButton(ui, this->pnlRequest, (const UTF8Char*)"Request"));
-	this->btnRequest->SetRect(104, 196, 75, 23, false);
+	this->btnRequest->SetRect(104, 268, 75, 23, false);
 	this->btnRequest->HandleButtonClick(OnRequestClicked, this);
 	NEW_CLASS(this->lvReqData, UI::GUIListView(ui, this->tpRequest, UI::GUIListView::LVSTYLE_TABLE, 2));
 	this->lvReqData->SetDockType(UI::GUIControl::DOCK_FILL);
