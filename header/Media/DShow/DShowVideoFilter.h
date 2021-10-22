@@ -149,6 +149,16 @@ namespace Media
 					this->frameMul = 12;
 					return S_OK;
 				}
+				else if (format->bmiHeader.biCompression == *(UInt32*)"MJPG")
+				{
+					this->frameMul = 32;
+					return S_OK;
+				}
+				else if (format->bmiHeader.biCompression == *(UInt32*)"H264")
+				{
+					this->frameMul = 32;
+					return S_OK;
+				}
 				return S_FALSE;
 			}
 
