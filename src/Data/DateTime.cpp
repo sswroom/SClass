@@ -398,44 +398,44 @@ Bool Data::DateTime::SetValue(const Char *dateStr)
 			SetCurrTime();
 			dateSucc = false;
 		}
+		UOSInt i = Text::StrIndexOf(strs2[1], '-');
+		if (i == INVALID_INDEX)
+		{
+			i = Text::StrIndexOf(strs2[1], '+');
+		}
+		if (i != INVALID_INDEX)
+		{
+			Char c = strs2[1][i];
+			strs2[1][i] = 0;
+			if (Text::StrCharCnt(&strs2[1][i + 1]) == 5)
+			{
+				Int32 min = Text::StrToInt32(&strs2[1][i + 4]);
+				if (strs2[1][i + 3] == ':')
+				{
+					strs2[1][i + 3] = 0;
+				}
+				else
+				{
+					strs2[1][i + 4] = 0;
+				}
+				min = min + Text::StrToInt32(&strs2[1][i + 1]) * 60;
+				if (c == '-')
+				{
+					this->tzQhr = (Int8)(-min / 15);
+				}
+				else
+				{
+					this->tzQhr = (Int8)(min / 15);
+				}
+			}
+		}
 		if (Text::StrSplit(strs, 3, strs2[1], ':') == 3)
 		{
-			if (strs[2][2] == '-' || strs[2][2] == '+')
+			if (Text::StrEndsWith(strs[2], "Z"))
 			{
-				Char c = strs[2][2];
-				strs[2][2] = 0;
-				SetTime(strs);
-
-				if (Text::StrCharCnt(&strs[2][3]) == 5)
-				{
-					Int32 min = Text::StrToInt32(&strs[2][6]);
-					if (strs[2][5] == ':')
-					{
-						strs[2][5] = 0;
-					}
-					else
-					{
-						strs[2][6] = 0;
-					}
-					min = min + Text::StrToInt32(&strs[2][3]) * 60;
-					if (c == '-')
-					{
-						this->tzQhr = (Int8)(-min / 15);
-					}
-					else
-					{
-						this->tzQhr = (Int8)(min / 15);
-					}
-				}
+				strs[2][Text::StrCharCnt(strs[2]) - 1] = 0;
 			}
-			else
-			{
-				if (Text::StrEndsWith(strs[2], "Z"))
-				{
-					strs[2][Text::StrCharCnt(strs[2]) - 1] = 0;
-				}
-				SetTime(strs);
-			}
+			SetTime(strs);
 		}
 		else
 		{
