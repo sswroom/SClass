@@ -283,6 +283,7 @@ void SSWR::AVIRead::AVIRDBForm::UpdateTables()
 		this->lbTable->AddItem(tableNames->GetItem(i), 0);
 		i++;
 	}
+	this->dbt->ReleaseTableNames(tableNames);
 	DEL_CLASS(tableNames);
 }
 

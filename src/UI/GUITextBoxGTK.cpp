@@ -157,17 +157,20 @@ UTF8Char *UI::GUITextBox::GetText(UTF8Char *buff)
 	{
 		GtkTextIter startIter;
 		GtkTextIter endIter;
-		GtkTextBuffer *buff = gtk_text_view_get_buffer((GtkTextView*)txt->widget);
-		gtk_text_buffer_get_start_iter(buff, &startIter);
-		gtk_text_buffer_get_end_iter(buff, &endIter);
-		lbl = gtk_text_buffer_get_text(buff, &startIter, &endIter, TRUE);
+		GtkTextBuffer *txtBuff = gtk_text_view_get_buffer((GtkTextView*)txt->widget);
+		gtk_text_buffer_get_start_iter(txtBuff, &startIter);
+		gtk_text_buffer_get_end_iter(txtBuff, &endIter);
+		lbl = gtk_text_buffer_get_text(txtBuff, &startIter, &endIter, TRUE);
+		buff = Text::StrConcat(buff, (const UTF8Char*)lbl);
+		g_free((gchar*)lbl);
+		return buff;
 	}
 	else
 	{
-		GtkEntryBuffer *buff = gtk_entry_get_buffer((GtkEntry*)txt->widget);
-		lbl = gtk_entry_buffer_get_text(buff);
+		GtkEntryBuffer *entBuff = gtk_entry_get_buffer((GtkEntry*)txt->widget);
+		lbl = gtk_entry_buffer_get_text(entBuff);
+		return Text::StrConcat(buff, (const UTF8Char*)lbl);
 	}
-	return Text::StrConcat(buff, (const UTF8Char*)lbl);
 }
 
 Bool UI::GUITextBox::GetText(Text::StringBuilderUTF *sb)
@@ -182,13 +185,15 @@ Bool UI::GUITextBox::GetText(Text::StringBuilderUTF *sb)
 		gtk_text_buffer_get_start_iter(buff, &startIter);
 		gtk_text_buffer_get_end_iter(buff, &endIter);
 		lbl = gtk_text_buffer_get_text(buff, &startIter, &endIter, TRUE);
+		sb->Append((const UTF8Char*)lbl);
+		g_free((gchar*)lbl);
 	}
 	else
 	{
 		GtkEntryBuffer *buff = gtk_entry_get_buffer((GtkEntry*)txt->widget);
 		lbl = gtk_entry_buffer_get_text(buff);
+		sb->Append((const UTF8Char*)lbl);
 	}
-	sb->Append((const UTF8Char*)lbl);
 	return true;
 }
 

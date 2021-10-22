@@ -69,6 +69,8 @@ namespace SSWR
 			UI::GUIButton *btnDataStr;
 			UI::GUILabel *lblPostFormat;
 			UI::GUIComboBox *cboPostFormat;
+			UI::GUILabel *lblHeaders;
+			UI::GUITextBox *txtHeaders;
 			UI::GUIButton *btnRequest;
 			UI::GUIListView *lvReqData;
 
@@ -113,6 +115,7 @@ namespace SSWR
 			const UTF8Char *reqBodyType;
 			const UTF8Char *reqUserName;
 			const UTF8Char *reqPassword;
+			const UTF8Char *reqHeaders;
 			UOSInt reqBodyLen;
 			const Char *reqMeth;
 			Bool reqOSClient;

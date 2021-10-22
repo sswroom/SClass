@@ -117,68 +117,73 @@ Bool Media::DShow::DShowVideoCapture::GetVideoInfo(Media::FrameInfo *info, UInt3
 		return false;
 	}
 	DShowVideoFilter *filter = (DShowVideoFilter*)captureFilter;
-	CBasePin *pin = filter->GetPin(0);
-	AM_MEDIA_TYPE mt;
-	if (pin->ConnectionMediaType(&mt) == S_OK)
+	Bool succ = false;
+	Int32 pinCnt = filter->GetPinCount();
+	Int32 i = 0;
+	while (i < pinCnt)
 	{
-		if (mt.formattype == FORMAT_VideoInfo)
+		CBasePin *pin = filter->GetPin(i);
+		AM_MEDIA_TYPE mt;
+		if (pin->ConnectionMediaType(&mt) == S_OK)
 		{
-			VIDEOINFOHEADER *format = (VIDEOINFOHEADER *)mt.pbFormat;
-			info->fourcc = format->bmiHeader.biCompression;
-			if (info->fourcc == 0)
+			if (mt.formattype == FORMAT_VideoInfo)
 			{
-				info->fourcc = *(UInt32*)"DIBS";
-			}
-			info->storeBPP = format->bmiHeader.biBitCount;
-			info->pf = Media::PixelFormatGetDef(format->bmiHeader.biCompression, format->bmiHeader.biBitCount);
-			info->byteSize = format->bmiHeader.biSizeImage;
-			info->ftype = Media::FT_NON_INTERLACE;
-			info->dispWidth = (ULONG)format->bmiHeader.biWidth;
-			info->dispHeight = (ULONG)format->bmiHeader.biHeight;
-			info->storeWidth = info->dispWidth;
-			info->storeHeight = info->dispHeight;
-			info->par2 = 1;
-			info->hdpi = Math::Unit::Distance::Convert(Math::Unit::Distance::DU_INCH, Math::Unit::Distance::DU_METER, format->bmiHeader.biXPelsPerMeter);
-			info->color->SetCommonProfile(Media::ColorProfile::CPT_VUNKNOWN);
-			info->yuvType = Media::ColorProfile::YUVT_UNKNOWN;
-			info->ycOfst = Media::YCOFST_C_TOP_LEFT;
+				VIDEOINFOHEADER *format = (VIDEOINFOHEADER *)mt.pbFormat;
+				info->fourcc = format->bmiHeader.biCompression;
+				if (info->fourcc == 0)
+				{
+					info->fourcc = *(UInt32*)"DIBS";
+				}
+				info->storeBPP = format->bmiHeader.biBitCount;
+				info->pf = Media::PixelFormatGetDef(format->bmiHeader.biCompression, format->bmiHeader.biBitCount);
+				info->byteSize = format->bmiHeader.biSizeImage;
+				info->ftype = Media::FT_NON_INTERLACE;
+				info->dispWidth = (ULONG)format->bmiHeader.biWidth;
+				info->dispHeight = (ULONG)format->bmiHeader.biHeight;
+				info->storeWidth = info->dispWidth;
+				info->storeHeight = info->dispHeight;
+				info->par2 = 1;
+				info->hdpi = Math::Unit::Distance::Convert(Math::Unit::Distance::DU_INCH, Math::Unit::Distance::DU_METER, format->bmiHeader.biXPelsPerMeter);
+				info->color->SetCommonProfile(Media::ColorProfile::CPT_VUNKNOWN);
+				info->yuvType = Media::ColorProfile::YUVT_UNKNOWN;
+				info->ycOfst = Media::YCOFST_C_TOP_LEFT;
 
-			if ((::Math::Double2Int32(1000000000 / (Double)format->AvgTimePerFrame) % 100) == 0)
-			{
-				*frameRateNorm = (UInt32)::Math::Double2Int32(10000000 / (Double)format->AvgTimePerFrame);
-				*frameRateDenorm = 1;
-			}
-			else if ((::Math::Double2Int32(1001000000 / (Double)format->AvgTimePerFrame) % 100) == 0)
-			{
-				*frameRateNorm = (UInt32)::Math::Double2Int32(10010000000 / (Double)format->AvgTimePerFrame);
-				*frameRateDenorm = 1001;
-			}
-			else
-			{
-				*frameRateNorm = 10000000;
-				*frameRateDenorm = (UInt32)format->AvgTimePerFrame;
-			}
-			if (info->byteSize == 0)
-			{
-				*maxFrameSize = MulDivUOS(info->dispWidth * info->dispHeight, filter->GetFrameMul(), 8);
-			}
-			else
-			{
-				*maxFrameSize = info->byteSize;
+				if ((::Math::Double2Int32(1000000000 / (Double)format->AvgTimePerFrame) % 100) == 0)
+				{
+					*frameRateNorm = (UInt32)::Math::Double2Int32(10000000 / (Double)format->AvgTimePerFrame);
+					*frameRateDenorm = 1;
+				}
+				else if ((::Math::Double2Int32(1001000000 / (Double)format->AvgTimePerFrame) % 100) == 0)
+				{
+					*frameRateNorm = (UInt32)::Math::Double2Int32(10010000000 / (Double)format->AvgTimePerFrame);
+					*frameRateDenorm = 1001;
+				}
+				else
+				{
+					*frameRateNorm = 10000000;
+					*frameRateDenorm = (UInt32)format->AvgTimePerFrame;
+				}
+				if (info->byteSize == 0)
+				{
+					*maxFrameSize = MulDivUOS(info->dispWidth * info->dispHeight, filter->GetFrameMul(), 8);
+				}
+				else
+				{
+					*maxFrameSize = info->byteSize;
+				}
+				succ = true;
+				break;
 			}
 		}
-		else
-		{
-			info->fourcc = 0;
-			*maxFrameSize = 0;
-		}
+		i++;
 	}
-	else
+
+	if (!succ)
 	{
 		info->fourcc = 0;
 		*maxFrameSize = 0;
 	}
-	return true;
+	return succ;
 }
 
 void Media::DShow::DShowVideoCapture::SetPreferSize(UOSInt width, UOSInt height, UInt32 fourcc, UInt32 bpp, UInt32 frameRateNumer, UInt32 fraemRateDenom)
