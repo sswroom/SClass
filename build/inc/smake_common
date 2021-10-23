@@ -2469,6 +2469,8 @@ Net/SocketMonitor.h: ../../src/Net/SocketMonitor.cpp
 @SocketMonitor.o
 Net/SocketUtil.h: ../../src/Net/SocketUtil.cpp
 @SocketUtil.o
+Net/SSDPClient.h: ../../src/Net/SSDPClient.cpp
+@SSDPClient.o
 Net/SSLClient.h: ../../src/Net/SSLClient.cpp
 @SSLClient.o
 Net/SSLEngine.h: ../../src/Net/SSLEngine.cpp
@@ -3221,6 +3223,8 @@ SSWR/AVIRead/AVIRSNMPWalkForm.h: ../../src/SSWR/AVIRead/AVIRSNMPWalkForm.cpp
 @AVIRSNMPWalkForm.o
 SSWR/AVIRead/AVIRSNSManagerForm.h: ../../src/SSWR/AVIRead/AVIRSNSManagerForm.cpp
 @AVIRSNSManagerForm.o
+SSWR/AVIRead/AVIRSSDPClientForm.h: ../../src/SSWR/AVIRead/AVIRSSDPClientForm.cpp
+@AVIRSSDPClientForm.o
 SSWR/AVIRead/AVIRSSLCertKeyForm.h: ../../src/SSWR/AVIRead/AVIRSSLCertKeyForm.cpp
 @AVIRSSLCertKeyForm.o
 SSWR/AVIRead/AVIRStreamConvForm.h: ../../src/SSWR/AVIRead/AVIRStreamConvForm.cpp
@@ -4379,6 +4383,7 @@ SNMPUtil.o: ../../src/Net/SNMPUtil.cpp
 SocketFactory.o: ../../src/Net/SocketFactory.cpp
 SocketMonitor.o: ../../src/Net/SocketMonitor.cpp
 SocketUtil.o: ../../src/Net/SocketUtil.cpp
+SSDPClient.o: ../../src/Net/SSDPClient.cpp
 SSLClient.o: ../../src/Net/SSLClient.cpp
 SSLEngine.o: ../../src/Net/SSLEngine.cpp
 SyslogServer.o: ../../src/Net/SyslogServer.cpp
@@ -4751,6 +4756,7 @@ AVIRSNMPManagerForm.o: ../../src/SSWR/AVIRead/AVIRSNMPManagerForm.cpp
 AVIRSNMPTrapMonitorForm.o: ../../src/SSWR/AVIRead/AVIRSNMPTrapMonitorForm.cpp
 AVIRSNMPWalkForm.o: ../../src/SSWR/AVIRead/AVIRSNMPWalkForm.cpp
 AVIRSNSManagerForm.o: ../../src/SSWR/AVIRead/AVIRSNSManagerForm.cpp
+AVIRSSDPClientForm.o: ../../src/SSWR/AVIRead/AVIRSSDPClientForm.cpp
 AVIRSSLCertKeyForm.o: ../../src/SSWR/AVIRead/AVIRSSLCertKeyForm.cpp
 AVIRStreamConvForm.o: ../../src/SSWR/AVIRead/AVIRStreamConvForm.cpp
 AVIRStreamEchoForm.o: ../../src/SSWR/AVIRead/AVIRStreamEchoForm.cpp
