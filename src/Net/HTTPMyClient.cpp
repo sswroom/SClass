@@ -15,8 +15,8 @@
 #include "Text/TextEnc/FormEncoding.h"
 #include "Text/TextEnc/URIEncoding.h"
 
-#define LOGREPLY
-#define SHOWDEBUG
+//#define LOGREPLY
+//#define SHOWDEBUG
 //#define DEBUGSPEED
 #if defined(SHOWDEBUG) || defined(DEBUGSPEED)
 #include <stdio.h>

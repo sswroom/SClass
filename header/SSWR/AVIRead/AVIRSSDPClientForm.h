@@ -40,6 +40,28 @@ namespace SSWR
 			UI::GUITextBox *txtOpt;
 			UI::GUILabel *lblUserAgent;
 			UI::GUITextBox *txtUserAgent;
+			UI::GUILabel *lblUDN;
+			UI::GUITextBox *txtUDN;
+			UI::GUILabel *lblFriendlyName;
+			UI::GUITextBox *txtFriendlyName;
+			UI::GUILabel *lblManufacturer;
+			UI::GUITextBox *txtManufacturer;
+			UI::GUILabel *lblManufacturerURL;
+			UI::GUITextBox *txtManufacturerURL;
+			UI::GUILabel *lblModelName;
+			UI::GUITextBox *txtModelName;
+			UI::GUILabel *lblModelNumber;
+			UI::GUITextBox *txtModelNumber;
+			UI::GUILabel *lblModelURL;
+			UI::GUITextBox *txtModelURL;
+			UI::GUILabel *lblSerialNumber;
+			UI::GUITextBox *txtSerialNumber;
+			UI::GUILabel *lblPresentationURL;
+			UI::GUITextBox *txtPresentationURL;
+			UI::GUILabel *lblDeviceType;
+			UI::GUITextBox *txtDeviceType;
+			UI::GUILabel *lblDeviceURL;
+			UI::GUITextBox *txtDeviceURL;
 
 			static void __stdcall OnTimerTick(void *userObj);
 			static void __stdcall OnDeviceSelChg(void *userObj);
