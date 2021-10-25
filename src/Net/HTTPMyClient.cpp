@@ -951,6 +951,7 @@ void Net::HTTPMyClient::EndRequest(Double *timeReq, Double *timeResp)
 
 					if (Text::StrStartsWithICase(sptr, (const UTF8Char*)"Content-Length: "))
 					{
+						Text::StrTrim(&sptr[16]);
 						this->contLeng = Text::StrToUInt64(&sptr[16]);
 					}
 					else if (Text::StrStartsWithICase(sptr, (const UTF8Char*)"Transfer-Encoding: "))
