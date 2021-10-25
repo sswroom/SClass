@@ -472,6 +472,14 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 				cli->AddHeader((const UTF8Char*)"Accept", (const UTF8Char*)"*/*");
 				cli->AddHeader((const UTF8Char*)"Accept-Charset", (const UTF8Char*)"*");
 				cli->AddHeader((const UTF8Char*)"User-Agent", me->userAgent);
+				if (me->noShutdown)
+				{
+					cli->AddHeader((const UTF8Char*)"Connection", (const UTF8Char*)"keep-alive");
+				}
+				else
+				{
+					cli->AddHeader((const UTF8Char*)"Connection", (const UTF8Char*)"close");
+				}
 				
 				cookiePtr = me->AppendCookie(sbuff, currURL);
 				if (cookiePtr)

@@ -174,10 +174,16 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPTestForm::ProcessThread(void *userObj)
 							i = 0;
 						}
 					}
+					while (cli->Read(buff, 2048));
 				}
 				else
 				{
 					Sync::Interlocked::Increment(&status->me->failCnt);
+				}
+				if (cli->IsError())
+				{
+					DEL_CLASS(cli);
+					cli = Net::HTTPClient::CreateClient(status->me->sockf, status->me->ssl, 0, true, Text::StrStartsWith(url, (const UTF8Char*)"https://"));
 				}
 			}
 			else
@@ -279,7 +285,10 @@ void SSWR::AVIRead::AVIRHTTPTestForm::ClearURLs()
 	{
 		Text::StrDelNew(this->connURLs->RemoveAt(i));
 	}
-	this->lbURL->ClearItems();
+	if (this->children->GetCount() > 0)
+	{
+		this->lbURL->ClearItems();
+	}
 }
 
 const UTF8Char *SSWR::AVIRead::AVIRHTTPTestForm::GetNextURL()

@@ -104,7 +104,7 @@ Bool Net::HTTPMyClient::IsError()
 UOSInt Net::HTTPMyClient::Read(UInt8 *buff, UOSInt size)
 {
 	this->EndRequest(0, 0);
-	if (this->cli == 0 || this->respStatus == 0)
+	if (this->respStatus == 0)
 		return 0;
 
 	if (size > BUFFSIZE)
@@ -132,12 +132,21 @@ UOSInt Net::HTTPMyClient::Read(UInt8 *buff, UOSInt size)
 		{
 			if (BUFFSIZE - 1 - this->buffSize > 0)
 			{
+				if (this->cli == 0)
+				{
+					return 0;
+				}
 				i = cli->Read(&this->dataBuff[this->buffSize], BUFFSIZE - 1 - this->buffSize);
 				if (i == 0 && this->buffSize <= 0)
 				{
 #ifdef SHOWDEBUG
 					printf("Return Read size(1) = %d\r\n", 0);
 #endif
+					if (this->cli->IsClosed())
+					{
+						DEL_CLASS(this->cli);
+						this->cli = 0;
+					}
 					return 0;
 				}
 #ifdef SHOWDEBUG
@@ -224,6 +233,10 @@ UOSInt Net::HTTPMyClient::Read(UInt8 *buff, UOSInt size)
 		}
 		while (INVALID_INDEX == (i = Text::StrIndexOf((Char*)this->dataBuff, "\r\n")))
 		{
+			if (this->cli == 0)
+			{
+				return 0;
+			}
 			if ((BUFFSIZE - 1 - this->buffSize) == 0)
 			{
 #ifdef SHOWDEBUG
@@ -237,6 +250,11 @@ UOSInt Net::HTTPMyClient::Read(UInt8 *buff, UOSInt size)
 #ifdef SHOWDEBUG
 				printf("Return read size(6) = %d\r\n", 0);
 #endif
+				if (this->cli->IsClosed())
+				{
+					DEL_CLASS(this->cli);
+					this->cli = 0;
+				}
 				return 0;
 			}
 #ifdef SHOWDEBUG
@@ -338,6 +356,10 @@ UOSInt Net::HTTPMyClient::Read(UInt8 *buff, UOSInt size)
 	{
 		if (this->buffSize == 0)
 		{
+			if (this->cli == 0)
+			{
+				return 0;
+			}
 			this->buffSize = cli->Read(this->dataBuff, size);
 #ifdef SHOWDEBUG
 			printf("Read from remote(4) = %d\r\n", (Int32)this->buffSize);
@@ -352,6 +374,11 @@ UOSInt Net::HTTPMyClient::Read(UInt8 *buff, UOSInt size)
 				this->clsData->fs->Write(this->dataBuff, this->buffSize);
 			}
 #endif
+			if (this->cli->IsClosed())
+			{
+				DEL_CLASS(this->cli);
+				this->cli = 0;
+			}
 		}
 		if (this->buffSize >= size)
 		{
@@ -924,6 +951,8 @@ void Net::HTTPMyClient::EndRequest(Double *timeReq, Double *timeResp)
 			this->contLeng = 0x7fffffff;
 			this->contRead = 0;
 			Bool header = true;
+			Bool eventStream = false;
+			UInt32 keepAliveTO = 0;
 			while (header)
 			{
 				while ((i = Text::StrIndexOf(ptr, "\n")) != INVALID_INDEX && i > 0)
@@ -962,6 +991,14 @@ void Net::HTTPMyClient::EndRequest(Double *timeReq, Double *timeResp)
 							this->chunkSizeLeft = 0;
 						}
 					}
+					else if (Text::StrStartsWithICase(sptr, (const UTF8Char*)"Content-Type: text/event-stream"))
+					{
+						eventStream = true;
+					}
+					else if (Text::StrStartsWithICase(sptr, (const UTF8Char*)"Keep-Alive: timeout="))
+					{
+						keepAliveTO = Text::StrToUInt32(&sptr[20]);
+					}
 
 					ptr = &ptr[i + 1];
 				}
@@ -994,6 +1031,10 @@ void Net::HTTPMyClient::EndRequest(Double *timeReq, Double *timeResp)
 					this->dataBuff[this->buffSize] = 0;
 					ptr = (Char*)this->dataBuff;
 				}
+			}
+			if (eventStream && keepAliveTO != 0)
+			{
+				cli->SetTimeout((Int32)keepAliveTO * 1000);
 			}
 		}
 		else
