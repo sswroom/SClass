@@ -118,6 +118,7 @@
 #include "SSWR/AVIRead/AVIRMQTTPublishForm.h"
 #include "SSWR/AVIRead/AVIRMQTTSubscribeForm.h"
 #include "SSWR/AVIRead/AVIRMSSQLConnForm.h"
+#include "SSWR/AVIRead/AVIRMySQLConnForm.h"
 #include "SSWR/AVIRead/AVIRMySQLClientForm.h"
 #include "SSWR/AVIRead/AVIRMySQLServerForm.h"
 #include "SSWR/AVIRead/AVIRNetBIOSScannerForm.h"
@@ -404,7 +405,8 @@ typedef enum
 	MNU_ACME_CLIENT,
 	MNU_CERT_UTIL,
 	MNU_CA_UTIL,
-	MNU_SSDP_CLIENT
+	MNU_SSDP_CLIENT,
+	MNU_MYSQL_CONN
 } MenuItems;
 
 void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(void *userObj, const UTF8Char **files, UOSInt nFiles)
@@ -557,6 +559,7 @@ SSWR::AVIRead::AVIRBaseForm::AVIRBaseForm(UI::GUIClientControl *parent, UI::GUIC
 	mnu->AddItem((const UTF8Char*)"Open &ODBC String", MNU_OPEN_ODBC_STR, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem((const UTF8Char*)"Open O&LE DB", MNU_OLEDB, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem((const UTF8Char*)"Open MSSQL Conn", MNU_MSSQL_CONN, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu->AddItem((const UTF8Char*)"Open MySQL Conn", MNU_MYSQL_CONN, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 
 	mnu = this->mnuMain->AddSubMenu((const UTF8Char*)"&IO");
 	mnu->AddItem((const UTF8Char*)"Stream Converter", MNU_STREAM_CONV, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
@@ -2392,6 +2395,17 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 			SSWR::AVIRead::AVIRSSDPClientForm *frm;
 			NEW_CLASS(frm, SSWR::AVIRead::AVIRSSDPClientForm(0, this->ui, this->core));
 			this->core->ShowForm(frm);
+		}
+		break;
+	case MNU_MYSQL_CONN:
+		{
+			SSWR::AVIRead::AVIRMySQLConnForm *dlg;
+			NEW_CLASS(dlg, SSWR::AVIRead::AVIRMySQLConnForm(0, this->ui, this->core));
+			if (dlg->ShowDialog(this) == UI::GUIForm::DR_OK)
+			{
+				this->core->OpenObject(dlg->GetDBConn());
+			}
+			DEL_CLASS(dlg);
 		}
 		break;
 	}

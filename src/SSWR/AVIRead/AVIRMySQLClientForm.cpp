@@ -20,6 +20,7 @@ void __stdcall SSWR::AVIRead::AVIRMySQLClientForm::OnStartClicked(void *userObj)
 		me->txtUserName->SetReadOnly(false);
 		me->txtPassword->SetReadOnly(false);
 		me->txtDatabase->SetReadOnly(false);
+		me->txtStatus->SetText((const UTF8Char*)"Disconnected");
 		return;
 	}
 	Net::SocketUtil::AddressInfo addr;
@@ -84,9 +85,12 @@ void __stdcall SSWR::AVIRead::AVIRMySQLClientForm::OnStartClicked(void *userObj)
 	NEW_CLASS(me->cli, Net::MySQLTCPClient(me->core->GetSocketFactory(), &addr, port, sbUser.ToString(), sbPwd.ToString(), sDatabase));
 	if (me->cli->IsError())
 	{
+		sbUser.ClearStr();
+		sbUser.Append((const UTF8Char*)"Error in connecting to server: ");
+		me->cli->GetErrorMsg(&sbUser);
 		DEL_CLASS(me->cli);
 		me->cli = 0;
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in connecting to server", (const UTF8Char*)"MySQL Client", me);
+		UI::MessageDialog::ShowDialog(sbUser.ToString(), (const UTF8Char*)"MySQL Client", me);
 	}
 	else
 	{
@@ -155,9 +159,13 @@ void __stdcall SSWR::AVIRead::AVIRMySQLClientForm::OnTimerTick(void *userObj)
 			me->txtServerCap->SetText(sbuff);
 			Text::StrUInt16(sbuff, me->cli->GetServerCS());
 			me->txtServerCS->SetText(sbuff);
+			me->txtStatus->SetText((const UTF8Char*)"Connected");
 		}
 		if (me->cli->IsError())
 		{
+			Text::StringBuilderUTF8 sb;
+			sb.Append((const UTF8Char*)"Disconnected: ");
+			me->cli->GetErrorMsg(&sb);
 			DEL_CLASS(me->cli);
 			me->cli = 0;
 			me->txtHost->SetReadOnly(false);
@@ -165,6 +173,7 @@ void __stdcall SSWR::AVIRead::AVIRMySQLClientForm::OnTimerTick(void *userObj)
 			me->txtUserName->SetReadOnly(false);
 			me->txtPassword->SetReadOnly(false);
 			me->txtDatabase->SetReadOnly(false);
+			me->txtStatus->SetText(sb.ToString());
 		}
 	}
 }
@@ -301,6 +310,11 @@ SSWR::AVIRead::AVIRMySQLClientForm::AVIRMySQLClientForm(UI::GUIClientControl *pa
 	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this->tpControl, (const UTF8Char*)"Start"));
 	this->btnStart->SetRect(104, 124, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
+	NEW_CLASS(this->lblStatus, UI::GUILabel(ui, this->tpControl, (const UTF8Char*)"Status"));
+	this->lblStatus->SetRect(4, 148, 100, 23, false);
+	NEW_CLASS(this->txtStatus, UI::GUITextBox(ui, this->tpControl, (const UTF8Char*)"Not connected"));
+	this->txtStatus->SetRect(104, 148, 150, 23, false);
+	this->txtStatus->SetReadOnly(true);
 
 	this->tpInfo = this->tcMain->AddTabPage((const UTF8Char*)"Info");
 	NEW_CLASS(this->lblServerVer, UI::GUILabel(ui, this->tpInfo, (const UTF8Char*)"Server Ver"));

@@ -36,6 +36,8 @@ namespace SSWR
 			UI::GUILabel *lblDatabase;
 			UI::GUITextBox *txtDatabase;
 			UI::GUIButton *btnStart;
+			UI::GUILabel *lblStatus;
+			UI::GUITextBox *txtStatus;
 
 			UI::GUITabPage *tpInfo;
 			UI::GUILabel *lblServerVer;

@@ -799,9 +799,7 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(void *userObj)
 					}
 					else if (buff[3] != 2)
 					{
-#if defined(VERBOSE)
-						printf("MySQLTCP invalid login reply\r\n");
-#endif
+						me->SetLastError((const UTF8Char*)"Invalid login reply");
 						me->cli->Close();
 					}
 					else if (buff[4] == 0)
@@ -811,11 +809,17 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(void *userObj)
 						printf("MySQLTCP login success\r\n");
 #endif
 					}
+					else if (buff[4] == 0xFE)
+					{
+						Text::StringBuilderUTF8 sb;
+						sb.Append((const UTF8Char*)"AuthSwitchRequest received: plugin name = ");
+						sb.Append(&buff[5]);
+						me->SetLastError(sb.ToString());
+						me->cli->Close();
+					}
 					else
 					{
-#if defined(VERBOSE)
-						printf("MySQLTCP invalid login reply\r\n");
-#endif
+						me->SetLastError((const UTF8Char*)"Invalid reply on login");
 						me->cli->Close();
 					}
 					readSize = 0;
@@ -964,6 +968,17 @@ void Net::MySQLTCPClient::SetLastError(const UTF8Char *errMsg, UOSInt msgLen)
 {
 	SDEL_TEXT(this->lastError);
 	this->lastError = Text::StrCopyNewC(errMsg, msgLen);
+#if defined(VERBOSE)
+	Text::StringBuilderUTF8 sb;
+	this->GetErrorMsg(&sb);
+	printf("MySQLTCP Error: %s\r\n", sb.ToString());
+#endif
+}
+
+void Net::MySQLTCPClient::SetLastError(const UTF8Char *errMsg)
+{
+	SDEL_TEXT(this->lastError);
+	this->lastError = Text::StrCopyNew(errMsg);
 #if defined(VERBOSE)
 	Text::StringBuilderUTF8 sb;
 	this->GetErrorMsg(&sb);
@@ -1205,6 +1220,7 @@ void Net::MySQLTCPClient::Reconnect()
 	{
 		DEL_CLASS(this->cli);
 		this->cli = 0;
+		this->SetLastError((const UTF8Char*)"Cannot connect to server");
 	}
 	else
 	{

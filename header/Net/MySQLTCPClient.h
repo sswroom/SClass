@@ -42,6 +42,7 @@ namespace Net
 
 		static UInt32 __stdcall RecvThread(void *userObj);
 		void SetLastError(const UTF8Char *errMsg, UOSInt msgLen);
+		void SetLastError(const UTF8Char *errMsg);
 	public:
 		MySQLTCPClient(Net::SocketFactory *sockf, const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UTF8Char *userName, const UTF8Char *password, const UTF8Char *database);
 		virtual ~MySQLTCPClient();

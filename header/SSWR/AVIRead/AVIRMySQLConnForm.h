@@ -15,6 +15,8 @@ namespace SSWR
 		private:
 			UI::GUILabel *lblServer;
 			UI::GUITextBox *txtServer;
+			UI::GUILabel *lblPort;
+			UI::GUITextBox *txtPort;
 			UI::GUILabel *lblUID;
 			UI::GUITextBox *txtUID;
 			UI::GUILabel *lblPWD;
