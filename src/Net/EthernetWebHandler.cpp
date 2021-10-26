@@ -44,7 +44,7 @@ void Net::EthernetWebHandler::AppendFooter(Text::StringBuilderUTF *sbOut)
 Bool __stdcall Net::EthernetWebHandler::DeviceReq(EthernetWebHandler *me, Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp)
 {
 	UTF8Char sbuff[128];
-	if (req->GetReqMethod() == Net::WebServer::IWebRequest::REQMETH_HTTP_GET)
+	if (req->GetReqMethod() == Net::WebServer::IWebRequest::RequestMethod::HTTP_GET)
 	{
 		UOSInt i;
 		UOSInt j;
@@ -169,7 +169,7 @@ Bool __stdcall Net::EthernetWebHandler::DeviceReq(EthernetWebHandler *me, Net::W
 Bool __stdcall Net::EthernetWebHandler::IPTransferReq(EthernetWebHandler *me, Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp)
 {
 	UTF8Char sbuff[128];
-	if (req->GetReqMethod() == Net::WebServer::IWebRequest::REQMETH_HTTP_GET)
+	if (req->GetReqMethod() == Net::WebServer::IWebRequest::RequestMethod::HTTP_GET)
 	{
 		UOSInt i;
 		UOSInt j;
@@ -231,7 +231,7 @@ Bool __stdcall Net::EthernetWebHandler::IPTransferReq(EthernetWebHandler *me, Ne
 Bool __stdcall Net::EthernetWebHandler::DNSReqv4Req(EthernetWebHandler *me, Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp)
 {
 	UTF8Char sbuff[128];
-	if (req->GetReqMethod() == Net::WebServer::IWebRequest::REQMETH_HTTP_GET)
+	if (req->GetReqMethod() == Net::WebServer::IWebRequest::RequestMethod::HTTP_GET)
 	{
 		UOSInt i;
 		UOSInt j;
@@ -343,7 +343,7 @@ Bool __stdcall Net::EthernetWebHandler::DNSReqv4Req(EthernetWebHandler *me, Net:
 Bool __stdcall Net::EthernetWebHandler::DNSReqv6Req(EthernetWebHandler *me, Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp)
 {
 	UTF8Char sbuff[128];
-	if (req->GetReqMethod() == Net::WebServer::IWebRequest::REQMETH_HTTP_GET)
+	if (req->GetReqMethod() == Net::WebServer::IWebRequest::RequestMethod::HTTP_GET)
 	{
 		UOSInt i;
 		UOSInt j;
@@ -455,7 +455,7 @@ Bool __stdcall Net::EthernetWebHandler::DNSReqv6Req(EthernetWebHandler *me, Net:
 Bool __stdcall Net::EthernetWebHandler::DNSReqOthReq(EthernetWebHandler *me, Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp)
 {
 	UTF8Char sbuff[128];
-	if (req->GetReqMethod() == Net::WebServer::IWebRequest::REQMETH_HTTP_GET)
+	if (req->GetReqMethod() == Net::WebServer::IWebRequest::RequestMethod::HTTP_GET)
 	{
 		UOSInt i;
 		UOSInt j;
@@ -567,7 +567,7 @@ Bool __stdcall Net::EthernetWebHandler::DNSReqOthReq(EthernetWebHandler *me, Net
 Bool __stdcall Net::EthernetWebHandler::DNSTargetReq(EthernetWebHandler *me, Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp)
 {
 	UTF8Char sbuff[128];
-	if (req->GetReqMethod() == Net::WebServer::IWebRequest::REQMETH_HTTP_GET)
+	if (req->GetReqMethod() == Net::WebServer::IWebRequest::RequestMethod::HTTP_GET)
 	{
 		UOSInt i;
 		UOSInt j;
@@ -656,7 +656,7 @@ Bool __stdcall Net::EthernetWebHandler::DNSTargetReq(EthernetWebHandler *me, Net
 Bool __stdcall Net::EthernetWebHandler::DNSClientReq(EthernetWebHandler *me, Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp)
 {
 	UTF8Char sbuff[128];
-	if (req->GetReqMethod() == Net::WebServer::IWebRequest::REQMETH_HTTP_GET)
+	if (req->GetReqMethod() == Net::WebServer::IWebRequest::RequestMethod::HTTP_GET)
 	{
 		UOSInt i;
 		UOSInt j;
@@ -752,7 +752,7 @@ Bool __stdcall Net::EthernetWebHandler::DNSClientReq(EthernetWebHandler *me, Net
 Bool __stdcall Net::EthernetWebHandler::DHCPReq(EthernetWebHandler *me, Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp)
 {
 	UTF8Char sbuff[128];
-	if (req->GetReqMethod() == Net::WebServer::IWebRequest::REQMETH_HTTP_GET)
+	if (req->GetReqMethod() == Net::WebServer::IWebRequest::RequestMethod::HTTP_GET)
 	{
 		UOSInt i;
 		UOSInt j;
@@ -866,7 +866,7 @@ Bool __stdcall Net::EthernetWebHandler::DHCPReq(EthernetWebHandler *me, Net::Web
 Bool __stdcall Net::EthernetWebHandler::IPLogReq(EthernetWebHandler *me, Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp)
 {
 	UTF8Char sbuff[128];
-	if (req->GetReqMethod() == Net::WebServer::IWebRequest::REQMETH_HTTP_GET)
+	if (req->GetReqMethod() == Net::WebServer::IWebRequest::RequestMethod::HTTP_GET)
 	{
 		UOSInt i;
 		UOSInt j;

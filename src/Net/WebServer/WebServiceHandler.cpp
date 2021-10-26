@@ -34,7 +34,7 @@ Bool Net::WebServer::WebServiceHandler::ProcessRequest(Net::WebServer::IWebReque
 	if (service != 0)
 	{
 
-		ServiceFunc func = service->funcs->Get(req->GetReqMethod());
+		ServiceFunc func = service->funcs->Get((Int32)req->GetReqMethod());
 		if (func)
 		{
 			return func(req, resp, subReq, this);
@@ -80,5 +80,5 @@ void Net::WebServer::WebServiceHandler::AddService(const UTF8Char *svcPath, Net:
 		NEW_CLASS(service->funcs, Data::Int32Map<ServiceFunc>());
 		this->services->Put(svcPath, service);
 	}
-	service->funcs->Put(reqMeth, func);
+	service->funcs->Put((Int32)reqMeth, func);
 }

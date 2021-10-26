@@ -593,8 +593,8 @@ void Net::WebServer::WebRequest::GetRequestURLBase(Text::StringBuilderUTF *sb)
 	const UTF8Char *csptr;
 	switch (this->reqProto)
 	{
-	case REQPROTO_HTTP1_0:
-	case REQPROTO_HTTP1_1:
+	case RequestProtocol::HTTP1_0:
+	case RequestProtocol::HTTP1_1:
 		if (this->secureConn)
 		{
 			sb->Append((const UTF8Char*)"https://");
@@ -616,7 +616,7 @@ void Net::WebServer::WebRequest::GetRequestURLBase(Text::StringBuilderUTF *sb)
 //			sb->AppendU16(this->svrPort);
 		}
 		break;
-	case REQPROTO_RTSP1_0:
+	case RequestProtocol::RTSP1_0:
 		sb->Append((const UTF8Char*)"rtsp://");
 		defPort=554;
 		break;
@@ -653,7 +653,7 @@ Bool Net::WebServer::WebRequest::HasData()
 	contLeng = this->GetSHeader((const UTF8Char*)"Content-Length");
 	if (contLeng == 0)
 	{
-		if (this->GetReqMethod() != Net::WebServer::IWebRequest::REQMETH_HTTP_POST)
+		if (this->GetReqMethod() != Net::WebServer::IWebRequest::RequestMethod::HTTP_POST)
 		{
 			return false;
 		}

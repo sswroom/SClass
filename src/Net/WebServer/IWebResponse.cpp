@@ -58,6 +58,27 @@ Bool Net::WebServer::IWebResponse::ResponseNotModified(Net::WebServer::IWebReque
 	return true;
 }
 
+Bool Net::WebServer::IWebResponse::ResponseText(const UTF8Char *txt)
+{
+	return ResponseText(txt, 0);
+}
+
+Bool Net::WebServer::IWebResponse::ResponseText(const UTF8Char *txt, const UTF8Char *contentType)
+{
+	UOSInt len = Text::StrCharCnt(txt);
+	this->AddContentLength(len);
+	if (contentType == 0)
+	{
+		this->AddContentType((const UTF8Char*)"text/plain");
+	}
+	else
+	{
+		this->AddContentType(contentType);
+	}
+	this->Write(txt, len);
+	return true;
+}
+
 Bool Net::WebServer::IWebResponse::AddCacheControl(OSInt cacheAge)
 {
 	if (cacheAge == -2)

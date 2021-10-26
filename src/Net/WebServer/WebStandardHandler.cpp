@@ -81,7 +81,7 @@ void Net::WebServer::WebStandardHandler::WebRequest(Net::WebServer::IWebRequest 
 {
 	const UTF8Char *reqURL = req->GetRequestURI();
 	Net::WebServer::IWebRequest::RequestMethod reqMeth = req->GetReqMethod();
-	if (reqMeth == Net::WebServer::IWebRequest::REQMETH_RTSP_OPTIONS)
+	if (reqMeth == Net::WebServer::IWebRequest::RequestMethod::RTSP_OPTIONS)
 	{
 		UTF8Char sbuff[512];
 		if (req->GetHeader(sbuff, (const UTF8Char*)"CSeq", 512))
@@ -99,7 +99,7 @@ void Net::WebServer::WebStandardHandler::WebRequest(Net::WebServer::IWebRequest 
 		if (!this->ProcessRequest(req, resp, sbuff))
 		{
 			resp->SetStatusCode(Net::WebStatus::SC_NOT_FOUND);
-			if (req->GetProtocol() == Net::WebServer::IWebRequest::REQPROTO_HTTP1_0 || req->GetProtocol() == Net::WebServer::IWebRequest::REQPROTO_HTTP1_1)
+			if (req->GetProtocol() == Net::WebServer::IWebRequest::RequestProtocol::HTTP1_0 || req->GetProtocol() == Net::WebServer::IWebRequest::RequestProtocol::HTTP1_1)
 			{
 				resp->AddDefHeaders(req);
 

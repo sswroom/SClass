@@ -4,7 +4,7 @@
 Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::UploadReq(SSWR::Benchmark::BenchmarkWebHandler *me, Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp)
 {
 	Bool valid = true;
-	if (req->GetReqMethod() != Net::WebServer::IWebRequest::REQMETH_HTTP_POST)
+	if (req->GetReqMethod() != Net::WebServer::IWebRequest::RequestMethod::HTTP_POST)
 	{
 		valid = false;
 	}
@@ -208,7 +208,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(SSWR::Benchmark:
 			DEL_CLASS(fs);
 		}
 	}
-	if (req->GetReqMethod() == Net::WebServer::IWebRequest::REQMETH_HTTP_POST)
+	if (req->GetReqMethod() == Net::WebServer::IWebRequest::RequestMethod::HTTP_POST)
 	{
 		Int32 cpuFamily = 0;
 		Int32 cpuModel = 0;

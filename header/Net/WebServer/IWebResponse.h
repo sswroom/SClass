@@ -25,6 +25,8 @@ namespace Net
 			Bool ResponseError(Net::WebServer::IWebRequest *req, Net::WebStatus::StatusCode code);
 			Bool RedirectURL(Net::WebServer::IWebRequest *req, const UTF8Char *url, OSInt cacheAge);
 			Bool ResponseNotModified(Net::WebServer::IWebRequest *req, OSInt cacheAge);
+			Bool ResponseText(const UTF8Char *txt);
+			Bool ResponseText(const UTF8Char *txt, const UTF8Char *contentType);
 
 			Bool AddCacheControl(OSInt cacheAge);
 			Bool AddTimeHeader(const UTF8Char *name, Data::DateTime *dt);

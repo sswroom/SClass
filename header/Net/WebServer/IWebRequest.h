@@ -13,33 +13,33 @@ namespace Net
 		class IWebRequest
 		{
 		public:
-			typedef enum
+			enum class RequestMethod
 			{
-				REQMETH_HTTP_GET,
-				REQMETH_HTTP_POST,
-				REQMETH_HTTP_PUT,
-				REQMETH_HTTP_PATCH,
-				REQMETH_HTTP_DELETE,
-				REQMETH_HTTP_CONNECT,
-				REQMETH_RTSP_DESCRIBE,
-				REQMETH_RTSP_ANNOUNCE,
-				REQMETH_RTSP_GET_PARAMETER,
-				REQMETH_RTSP_OPTIONS,
-				REQMETH_RTSP_PAUSE,
-				REQMETH_RTSP_PLAY,
-				REQMETH_RTSP_RECORD,
-				REQMETH_RTSP_REDIRECT,
-				REQMETH_RTSP_SETUP,
-				REQMETH_RTSP_SET_PARAMETER,
-				REQMETH_RTSP_TEARDOWN
-			} RequestMethod;
+				HTTP_GET,
+				HTTP_POST,
+				HTTP_PUT,
+				HTTP_PATCH,
+				HTTP_DELETE,
+				HTTP_CONNECT,
+				RTSP_DESCRIBE,
+				RTSP_ANNOUNCE,
+				RTSP_GET_PARAMETER,
+				RTSP_OPTIONS,
+				RTSP_PAUSE,
+				RTSP_PLAY,
+				RTSP_RECORD,
+				RTSP_REDIRECT,
+				RTSP_SETUP,
+				RTSP_SET_PARAMETER,
+				RTSP_TEARDOWN
+			};
 
-			typedef enum
+			enum class RequestProtocol
 			{
-				REQPROTO_HTTP1_0,
-				REQPROTO_HTTP1_1,
-				REQPROTO_RTSP1_0
-			} RequestProtocol;
+				HTTP1_0,
+				HTTP1_1,
+				RTSP1_0
+			};
 
 			static UTF8Char PARAM_SEPERATOR;
 

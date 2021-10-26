@@ -50,7 +50,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::IndexReq(SSWR::SMonitor::SMon
 
 	if (!me->core->UserExist())
 	{
-		if (req->GetReqMethod() == Net::WebServer::IWebRequest::REQMETH_HTTP_POST)
+		if (req->GetReqMethod() == Net::WebServer::IWebRequest::RequestMethod::HTTP_POST)
 		{
 			req->ParseHTTPForm();
 			const UTF8Char *pwd = req->GetHTTPFormStr((const UTF8Char*)"password");
@@ -295,7 +295,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::LoginReq(SSWR::SMonitor::SMon
 		sess->EndUse();
 		return resp->RedirectURL(req, (const UTF8Char*)"index", 0);
 	}
-	if (req->GetReqMethod() == Net::WebServer::IWebRequest::REQMETH_HTTP_POST)
+	if (req->GetReqMethod() == Net::WebServer::IWebRequest::RequestMethod::HTTP_POST)
 	{
 		req->ParseHTTPForm();
 		const UTF8Char *csptr = req->GetHTTPFormStr((const UTF8Char*)"action");
@@ -568,7 +568,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceEditReq(SSWR::SMonitor:
 		return resp->RedirectURL(req, (const UTF8Char*)"device", 0);
 	}
 
-	if (req->GetReqMethod() == Net::WebServer::IWebRequest::REQMETH_HTTP_POST)
+	if (req->GetReqMethod() == Net::WebServer::IWebRequest::RequestMethod::HTTP_POST)
 	{
 		req->ParseHTTPForm();
 		const UTF8Char *action = req->GetHTTPFormStr((const UTF8Char*)"action");
@@ -693,7 +693,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingReq(SSWR::SMonit
 	}
 
 	dev = me->core->DeviceGet(cliId);
-	if (req->GetReqMethod() == Net::WebServer::IWebRequest::REQMETH_HTTP_POST)
+	if (req->GetReqMethod() == Net::WebServer::IWebRequest::RequestMethod::HTTP_POST)
 	{
 		req->ParseHTTPForm();
 		const UTF8Char *action = req->GetHTTPFormStr((const UTF8Char *)"action");
@@ -836,7 +836,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceDigitalsReq(SSWR::SMoni
 	}
 
 	dev = me->core->DeviceGet(cliId);
-	if (req->GetReqMethod() == Net::WebServer::IWebRequest::REQMETH_HTTP_POST)
+	if (req->GetReqMethod() == Net::WebServer::IWebRequest::RequestMethod::HTTP_POST)
 	{
 		req->ParseHTTPForm();
 		const UTF8Char *action = req->GetHTTPFormStr((const UTF8Char *)"action");
@@ -1825,7 +1825,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserPasswordReq(SSWR::SMonito
 		return resp->RedirectURL(req, (const UTF8Char*)"index", 0);
 	}
 
-	if (req->GetReqMethod() == Net::WebServer::IWebRequest::REQMETH_HTTP_POST)
+	if (req->GetReqMethod() == Net::WebServer::IWebRequest::RequestMethod::HTTP_POST)
 	{
 		req->ParseHTTPForm();
 		const UTF8Char *pwd = req->GetHTTPFormStr((const UTF8Char*)"password");
@@ -1985,7 +1985,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserAddReq(SSWR::SMonitor::SM
 		return resp->RedirectURL(req, (const UTF8Char*)"index", 0);
 	}
 
-	if (req->GetReqMethod() == Net::WebServer::IWebRequest::REQMETH_HTTP_POST)
+	if (req->GetReqMethod() == Net::WebServer::IWebRequest::RequestMethod::HTTP_POST)
 	{
 		req->ParseHTTPForm();
 		const UTF8Char *action;
@@ -2067,7 +2067,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserAssignReq(SSWR::SMonitor:
 		return resp->RedirectURL(req, (const UTF8Char*)"index", 0);
 	}
 
-	if (req->GetReqMethod() == Net::WebServer::IWebRequest::REQMETH_HTTP_POST)
+	if (req->GetReqMethod() == Net::WebServer::IWebRequest::RequestMethod::HTTP_POST)
 	{
 		req->ParseHTTPForm();
 		const UTF8Char *action;

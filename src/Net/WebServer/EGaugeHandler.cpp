@@ -19,12 +19,12 @@ Bool Net::WebServer::EGaugeHandler::ProcessRequest(Net::WebServer::IWebRequest *
 		return true;
 	}
 
-	if (req->GetProtocol() != Net::WebServer::IWebRequest::REQPROTO_HTTP1_0 && req->GetProtocol() != Net::WebServer::IWebRequest::REQPROTO_HTTP1_1)
+	if (req->GetProtocol() != Net::WebServer::IWebRequest::RequestProtocol::HTTP1_0 && req->GetProtocol() != Net::WebServer::IWebRequest::RequestProtocol::HTTP1_1)
 	{
 		resp->ResponseError(req, Net::WebStatus::SC_METHOD_NOT_ALLOWED);
 		return true;
 	}
-	if (req->GetReqMethod() != Net::WebServer::IWebRequest::REQMETH_HTTP_POST)
+	if (req->GetReqMethod() != Net::WebServer::IWebRequest::RequestMethod::HTTP_POST)
 	{
 		resp->ResponseError(req, Net::WebStatus::SC_NOT_ACCEPTABLE);
 		return true;

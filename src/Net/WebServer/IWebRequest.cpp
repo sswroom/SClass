@@ -299,39 +299,39 @@ const Char *Net::WebServer::IWebRequest::RequestMethodGetName(RequestMethod reqM
 {
 	switch (reqMeth)
 	{
-	case REQMETH_HTTP_GET:
+	case RequestMethod::HTTP_GET:
 		return "GET";
-	case REQMETH_HTTP_POST:
+	case RequestMethod::HTTP_POST:
 		return "POST";
-	case REQMETH_HTTP_PUT:
+	case RequestMethod::HTTP_PUT:
 		return "PUT";
-	case REQMETH_HTTP_PATCH:
+	case RequestMethod::HTTP_PATCH:
 		return "PATCH";
-	case REQMETH_HTTP_DELETE:
+	case RequestMethod::HTTP_DELETE:
 		return "DELETE";
-	case REQMETH_HTTP_CONNECT:
+	case RequestMethod::HTTP_CONNECT:
 		return "CONNECT";
-	case REQMETH_RTSP_DESCRIBE:
+	case RequestMethod::RTSP_DESCRIBE:
 		return "DESCRIBE";
-	case REQMETH_RTSP_ANNOUNCE:
+	case RequestMethod::RTSP_ANNOUNCE:
 		return "ANNOUNCE";
-	case REQMETH_RTSP_GET_PARAMETER:
+	case RequestMethod::RTSP_GET_PARAMETER:
 		return "GET_PARAMETER";
-	case REQMETH_RTSP_OPTIONS:
+	case RequestMethod::RTSP_OPTIONS:
 		return "OPTIONS";
-	case REQMETH_RTSP_PAUSE:
+	case RequestMethod::RTSP_PAUSE:
 		return "PAUSE";
-	case REQMETH_RTSP_PLAY:
+	case RequestMethod::RTSP_PLAY:
 		return "PLAY";
-	case REQMETH_RTSP_RECORD:
+	case RequestMethod::RTSP_RECORD:
 		return "RECORD";
-	case REQMETH_RTSP_REDIRECT:
+	case RequestMethod::RTSP_REDIRECT:
 		return "REDIRECT";
-	case REQMETH_RTSP_SETUP:
+	case RequestMethod::RTSP_SETUP:
 		return "SETUP";
-	case REQMETH_RTSP_SET_PARAMETER:
+	case RequestMethod::RTSP_SET_PARAMETER:
 		return "SET_PARAMETER";
-	case REQMETH_RTSP_TEARDOWN:
+	case RequestMethod::RTSP_TEARDOWN:
 		return "TEARDOWN";
 	default:
 		return "?";

@@ -630,13 +630,13 @@ Net::WebServer::CapturerWebHandler::CapturerWebHandler(Net::WiFiCapturer *wifiCa
 	this->btCapture = btCapture;
 	this->radioLogger = radioLogger;
 
-	this->AddService((const UTF8Char*)"/index.html", Net::WebServer::IWebRequest::REQMETH_HTTP_GET, IndexFunc);
-	this->AddService((const UTF8Char*)"/btcurr.html", Net::WebServer::IWebRequest::REQMETH_HTTP_GET, BTCurrentFunc);
-	this->AddService((const UTF8Char*)"/btdet.html", Net::WebServer::IWebRequest::REQMETH_HTTP_GET, BTDetailFunc);
-	this->AddService((const UTF8Char*)"/btdetpub.html", Net::WebServer::IWebRequest::REQMETH_HTTP_GET, BTDetailPubFunc);
-	this->AddService((const UTF8Char*)"/wificurr.html", Net::WebServer::IWebRequest::REQMETH_HTTP_GET, WiFiCurrentFunc);
-	this->AddService((const UTF8Char*)"/wifidet.html", Net::WebServer::IWebRequest::REQMETH_HTTP_GET, WiFiDetailFunc);
-	this->AddService((const UTF8Char*)"/wifidown.html", Net::WebServer::IWebRequest::REQMETH_HTTP_GET, WiFiDownloadFunc);
+	this->AddService((const UTF8Char*)"/index.html", Net::WebServer::IWebRequest::RequestMethod::HTTP_GET, IndexFunc);
+	this->AddService((const UTF8Char*)"/btcurr.html", Net::WebServer::IWebRequest::RequestMethod::HTTP_GET, BTCurrentFunc);
+	this->AddService((const UTF8Char*)"/btdet.html", Net::WebServer::IWebRequest::RequestMethod::HTTP_GET, BTDetailFunc);
+	this->AddService((const UTF8Char*)"/btdetpub.html", Net::WebServer::IWebRequest::RequestMethod::HTTP_GET, BTDetailPubFunc);
+	this->AddService((const UTF8Char*)"/wificurr.html", Net::WebServer::IWebRequest::RequestMethod::HTTP_GET, WiFiCurrentFunc);
+	this->AddService((const UTF8Char*)"/wifidet.html", Net::WebServer::IWebRequest::RequestMethod::HTTP_GET, WiFiDetailFunc);
+	this->AddService((const UTF8Char*)"/wifidown.html", Net::WebServer::IWebRequest::RequestMethod::HTTP_GET, WiFiDownloadFunc);
 }
 
 Net::WebServer::CapturerWebHandler::~CapturerWebHandler()
