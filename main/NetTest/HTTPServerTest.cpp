@@ -16,21 +16,44 @@ IO::ConsoleWriter *console;
 class MyHandler : public Net::WebServer::WebServiceHandler
 {
 private:
+	Data::ArrayList<Net::WebServer::IWebResponse*> *sseConns;
+	Sync::Mutex *sseMut;
+
+	static void __stdcall SSEDisconnect(Net::WebServer::IWebResponse *resp, void *userObj)
+	{
+		MyHandler *me = (MyHandler*)userObj;
+		Sync::MutexUsage mutUsage(me->sseMut);
+		me->sseConns->Remove(resp);
+		console->WriteLine((const UTF8Char*)"Disconnected");
+	}
+
 	static Bool __stdcall SSEHandler(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *subReq, WebServiceHandler *me)
 	{
+		MyHandler *myHdlr = (MyHandler*)me;
 		resp->AddDefHeaders(req);
-		resp->ResponseText((const UTF8Char*)"OK");
-		return true;
+		if (resp->ResponseSSE(30000, SSEDisconnect, myHdlr))
+		{
+			Sync::MutexUsage mutUsage(myHdlr->sseMut);
+			myHdlr->sseConns->Add(resp);
+			
+			resp->SSESend((const UTF8Char*)"INIT", 0);
+			resp->SSESend((const UTF8Char*)"Test", (const UTF8Char*)"ABC");
+			return true;
+		}
+		return false;
 	}
 public:
 	MyHandler()
 	{
+		NEW_CLASS(this->sseConns, Data::ArrayList<Net::WebServer::IWebResponse*>());
+		NEW_CLASS(this->sseMut, Sync::Mutex());
 		this->AddService((const UTF8Char*)"/sse", Net::WebServer::IWebRequest::RequestMethod::HTTP_GET, SSEHandler);
 	}
 
 	virtual ~MyHandler()
 	{
-
+		DEL_CLASS(this->sseConns);
+		DEL_CLASS(this->sseMut);
 	}
 };
 
@@ -42,7 +65,6 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	Net::SSLEngine *ssl;
 	Net::WebServer::WebStandardHandler *hdlr;
 	Text::StringBuilderUTF8 sb;
-	IO::ConsoleWriter *console;
 	UInt16 port = 0;
 	Bool succ = true;
 	NEW_CLASS(console, IO::ConsoleWriter());

@@ -23,6 +23,7 @@ Net::TCPClient::TCPClient(Net::SocketFactory *sockf, const UTF8Char *name, UInt1
 	this->sockf = sockf;
 	this->readEvent = 0;
 	this->writeEvent = 0;
+	this->timeoutMS = 0;
 
 	Net::SocketUtil::AddressInfo addr;
 	if (!sockf->DNSResolveIP(name, &addr))
@@ -74,6 +75,7 @@ Net::TCPClient::TCPClient(Net::SocketFactory *sockf, UInt32 ip, UInt16 port) : I
 	this->sockf = sockf;
 	this->readEvent = 0;
 	this->writeEvent = 0;
+	this->timeoutMS = 0;
 
 	UTF8Char sbuff[32];
 	Net::SocketUtil::GetIPv4Name(sbuff, ip, port);
@@ -107,6 +109,7 @@ Net::TCPClient::TCPClient(Net::SocketFactory *sockf, const Net::SocketUtil::Addr
 	this->sockf = sockf;
 	this->readEvent = 0;
 	this->writeEvent = 0;
+	this->timeoutMS = 0;
 
 	if (addr->addrType == Net::AddrType::IPv4)
 	{
@@ -167,6 +170,7 @@ Net::TCPClient::TCPClient(Net::SocketFactory *sockf, Socket *s) : IO::Stream((co
 	this->currCnt = 0;
 	this->readEvent = 0;
 	this->writeEvent = 0;
+	this->timeoutMS = 0;
 	if (s)
 	{
 		this->cliId = sockf->GenSocketId(s);
@@ -443,6 +447,12 @@ void Net::TCPClient::ShutdownSend()
 void Net::TCPClient::SetTimeout(Int32 ms)
 {
 	this->sockf->SetRecvTimeout(this->s, ms);
+	this->timeoutMS = ms;
+}
+
+Int32 Net::TCPClient::GetTimeoutMS()
+{
+	return this->timeoutMS;
 }
 
 Socket *Net::TCPClient::GetSocket()

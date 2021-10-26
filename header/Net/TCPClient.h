@@ -15,6 +15,7 @@ namespace Net
 		UInt64 currCnt;
 		UInt64 cliId;
 		Int32 flags; //1 = shutdown send, 2 = shutdown recv, 4 = closed, 8 = connect error
+		Int32 timeoutMS;
 
 		Sync::Event *readEvent;
 		Sync::Event *writeEvent;
@@ -57,6 +58,7 @@ namespace Net
 		void SetNoDelay(Bool val);
 		void ShutdownSend();
 		void SetTimeout(Int32 ms);
+		Int32 GetTimeoutMS();
 
 		Socket *GetSocket();
 		Socket *RemoveSocket();

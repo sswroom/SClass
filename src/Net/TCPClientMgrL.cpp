@@ -294,7 +294,7 @@ UInt32 __stdcall Net::TCPClientMgr::WorkerThread(void *o)
 		while (i-- > 0)
 		{
 			cliStat = me->cliArr->GetItem(i);
-			if (dt->DiffMS(cliStat->lastDataTime) > me->timeOutSeconds * 1000)
+			if (dt->DiffMS(cliStat->lastDataTime) > cliStat->cli->GetTimeoutMS())
 			{
 //				printf("Client data timeout\r\n");
 				cliStat->cli->Close();

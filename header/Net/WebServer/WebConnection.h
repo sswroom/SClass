@@ -40,6 +40,8 @@ namespace Net
 			SendLogger logger;
 			void *loggerObj;
 
+			SSEDisconnectHandler sseHdlr;
+			void *sseHdlrObj;
 		public:
 			WebConnection(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Net::TCPClient *cli, WebListener *svr, IWebHandler *hdlr, Bool allowProxy, Bool allowKA);
 			virtual ~WebConnection();
@@ -62,6 +64,8 @@ namespace Net
 			virtual Bool AddDefHeaders(Net::WebServer::IWebRequest *req);
 			virtual UInt64 GetRespLength();
 			virtual void ShutdownSend();
+			virtual Bool ResponseSSE(Int32 timeoutMS, SSEDisconnectHandler hdlr, void *userObj);
+			virtual Bool SSESend(const UTF8Char *eventName, const UTF8Char *data);
 
 			virtual UOSInt Read(UInt8 *buff, UOSInt size);
 			virtual UOSInt Write(const UInt8 *buff, UOSInt size);

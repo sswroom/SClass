@@ -12,6 +12,8 @@ namespace Net
 		class IWebResponse : public IO::Stream
 		{
 		public:
+			typedef void (__stdcall *SSEDisconnectHandler)(Net::WebServer::IWebResponse *resp, void *userObj);
+		public:
 			IWebResponse(const UTF8Char *sourceName);
 			virtual ~IWebResponse();
 
@@ -21,6 +23,8 @@ namespace Net
 			virtual Bool AddDefHeaders(Net::WebServer::IWebRequest *req) = 0;
 			virtual UInt64 GetRespLength() = 0;
 			virtual void ShutdownSend() = 0;
+			virtual Bool ResponseSSE(Int32 timeoutMS, SSEDisconnectHandler hdlr, void *userObj) = 0;
+			virtual Bool SSESend(const UTF8Char *eventName, const UTF8Char *data) = 0;
 
 			Bool ResponseError(Net::WebServer::IWebRequest *req, Net::WebStatus::StatusCode code);
 			Bool RedirectURL(Net::WebServer::IWebRequest *req, const UTF8Char *url, OSInt cacheAge);

@@ -29,11 +29,18 @@ Net::WebServer::WebConnection::WebConnection(Net::SocketFactory *sockf, Net::SSL
 	this->proxyCli = 0;
 	this->logger = 0;
 	this->loggerObj = 0;
+	this->sseHdlr = 0;
+	this->sseHdlrObj = 0;
 	NEW_CLASS(this->respHeaders, Text::StringBuilderUTF8());
 }
 
 Net::WebServer::WebConnection::~WebConnection()
 {
+	if (this->sseHdlr)
+	{
+		this->sseHdlr(this, this->sseHdlrObj);
+		this->sseHdlr = 0;
+	}
 	if (this->proxyMode)
 	{
 		this->proxyCli->Close();
@@ -697,21 +704,22 @@ void Net::WebServer::WebConnection::ProcessResponse()
 		{
 			this->SendHeaders(this->currReq->GetProtocol());
 		}
-
 		t = clk.GetTimeDiff();
 		this->svr->LogAccess(this->currReq, this, t);
-
-		Text::StringBuilderUTF8 sb;
-		this->currReq->GetHeader(&sb, (const UTF8Char*)"Connection");
-		if (sb.Equals((const UTF8Char*)"keep-alive") && this->allowKA)
+		if (this->sseHdlr == 0)
 		{
+			Text::StringBuilderUTF8 sb;
+			this->currReq->GetHeader(&sb, (const UTF8Char*)"Connection");
+			if (sb.Equals((const UTF8Char*)"keep-alive") && this->allowKA)
+			{
+			}
+			else
+			{
+				this->cli->ShutdownSend();
+			}
+			DEL_CLASS(this->currReq);
+			this->currReq = 0;
 		}
-		else
-		{
-			this->cli->ShutdownSend();
-		}
-		DEL_CLASS(this->currReq);
-		this->currReq = 0;
 	}
 }
 
@@ -776,6 +784,46 @@ UInt64 Net::WebServer::WebConnection::GetRespLength()
 void Net::WebServer::WebConnection::ShutdownSend()
 {
 	this->cli->ShutdownSend();
+}
+
+Bool Net::WebServer::WebConnection::ResponseSSE(Int32 timeoutMS, SSEDisconnectHandler hdlr, void *userObj)
+{
+	if (this->sseHdlr)
+	{
+		return false;
+	}
+	this->cli->SetTimeout(timeoutMS);
+	this->sseHdlrObj = userObj;
+	this->sseHdlr = hdlr;
+	this->AddContentType((const UTF8Char*)"text/event-stream");
+	if (!this->respHeaderSent)
+	{
+		this->SendHeaders(this->currReq->GetProtocol());
+	}
+	return true;
+}
+
+Bool Net::WebServer::WebConnection::SSESend(const UTF8Char *eventName, const UTF8Char *data)
+{
+	if (this->sseHdlr == 0)
+	{
+		return false;
+	}
+	Text::StringBuilderUTF8 sb;
+	if (eventName)
+	{
+		sb.Append((const UTF8Char*)"event:");
+		sb.Append(eventName);
+		sb.AppendLB(Text::LineBreakType::LF);
+	}
+	if (data)
+	{
+		sb.Append((const UTF8Char*)"data:");
+		sb.Append(data);
+		sb.AppendLB(Text::LineBreakType::LF);
+	}
+	sb.AppendLB(Text::LineBreakType::LF);
+	return this->cli->Write(sb.ToString(), sb.GetLength()) == sb.GetLength();
 }
 
 UOSInt Net::WebServer::WebConnection::Read(UInt8 *buff, UOSInt size)
