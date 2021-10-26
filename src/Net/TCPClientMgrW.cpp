@@ -73,7 +73,7 @@ UInt32 __stdcall Net::TCPClientMgr::ClientThread(void *o)
 					if (incomplete)
 					{
 						currTime->SetCurrTimeUTC();
-						if (currTime->DiffMS(cliStat->lastDataTime) > me->timeOutSeconds * 1000)
+						if (currTime->DiffMS(cliStat->lastDataTime) > cliStat->cli->GetTimeoutMS())
 						{
 							cliStat->cli->ShutdownSend();
 							cliStat->cli->Close();
@@ -322,6 +322,7 @@ Net::TCPClientMgr::~TCPClientMgr()
 void Net::TCPClientMgr::AddClient(TCPClient *cli, void *cliData)
 {
 	cli->SetNoDelay(true);
+	cli->SetTimeout(this->timeOutSeconds * 1000);
 	Sync::MutexUsage mutUsage(this->cliMut);
 	Net::TCPClientMgr::TCPClientStatus *cliStat = MemAlloc(Net::TCPClientMgr::TCPClientStatus, 1);
 	cliStat->cli = cli;
