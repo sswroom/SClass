@@ -1,16 +1,16 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/LinkedList.h"
+#include "Data/SyncLinkedList.h"
 #include "Sync/MutexUsage.h"
 
-Data::LinkedList::LinkedList()
+Data::SyncLinkedList::SyncLinkedList()
 {
 	NEW_CLASS(this->mut, Sync::Mutex());
 	this->firstItem = 0;
 	this->lastItem = 0;
 }
 
-Data::LinkedList::~LinkedList()
+Data::SyncLinkedList::~SyncLinkedList()
 {
 	Data::LinkedListItem *item;
 	Data::LinkedListItem *item2;
@@ -26,12 +26,12 @@ Data::LinkedList::~LinkedList()
 	DEL_CLASS(this->mut);
 }
 
-Bool Data::LinkedList::HasItems()
+Bool Data::SyncLinkedList::HasItems()
 {
 	return this->firstItem != 0;
 }
 
-void Data::LinkedList::Put(void *item)
+void Data::SyncLinkedList::Put(void *item)
 {
 	Sync::MutexUsage mutUsage(this->mut);
 	if (this->lastItem)
@@ -47,7 +47,7 @@ void Data::LinkedList::Put(void *item)
 	this->lastItem->nextItem = 0;
 }
 
-void *Data::LinkedList::Get()
+void *Data::SyncLinkedList::Get()
 {
 	Data::LinkedListItem *item;
 	void *obj = 0;
@@ -65,7 +65,7 @@ void *Data::LinkedList::Get()
 	return obj;
 }
 
-void *Data::LinkedList::GetNoRemove()
+void *Data::SyncLinkedList::GetNoRemove()
 {
 	void *obj = 0;
 	Sync::MutexUsage mutUsage(this->mut);
@@ -76,7 +76,7 @@ void *Data::LinkedList::GetNoRemove()
 	return obj;
 }
 
-UOSInt Data::LinkedList::GetCount()
+UOSInt Data::SyncLinkedList::GetCount()
 {
 	UOSInt cnt = 0;
 	Sync::MutexUsage mutUsage(this->mut);
@@ -89,7 +89,7 @@ UOSInt Data::LinkedList::GetCount()
 	return cnt;
 }
 
-UOSInt Data::LinkedList::IndexOf(void *item)
+UOSInt Data::SyncLinkedList::IndexOf(void *item)
 {
 	UOSInt cnt = 0;
 	Sync::MutexUsage mutUsage(this->mut);

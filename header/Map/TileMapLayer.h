@@ -1,6 +1,6 @@
 #ifndef _SM_MAP_TILEMAPLAYER
 #define _SM_MAP_TILEMAPLAYER
-#include "Data/LinkedList.h"
+#include "Data/SyncLinkedList.h"
 #include "Media/SharedImage.h"
 #include "Map/MapRenderer.h"
 #include "Map/IMapDrawLayer.h"
@@ -49,7 +49,7 @@ namespace Map
 		Sync::Mutex *idleMut;
 		Data::ArrayList<CachedImage *> *idleImgs;
 
-		Data::LinkedList *taskQueued;
+		Data::SyncLinkedList *taskQueued;
 		Sync::Event *taskEvt;
 		Sync::Mutex *taskMut;
 		Sync::Mutex *updMut;

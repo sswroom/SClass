@@ -136,8 +136,8 @@ Media::Batch::BatchLoader::BatchLoader(Parser::ParserList *parsers, Media::Batch
 	this->hdlr = hdlr;
 	NEW_CLASS(this->ioMut, Sync::Mutex());
 	NEW_CLASS(this->reqMut, Sync::Mutex());
-	NEW_CLASS(this->fileNames, Data::LinkedList());
-	NEW_CLASS(this->datas, Data::LinkedList());
+	NEW_CLASS(this->fileNames, Data::SyncLinkedList());
+	NEW_CLASS(this->datas, Data::SyncLinkedList());
 	NEW_CLASS(this->mainEvt, Sync::Event(true, (const UTF8Char*)"Media.Batch.BatchLoader.mainEvt"));
 
 	this->nextThread = 0;

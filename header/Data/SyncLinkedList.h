@@ -1,5 +1,5 @@
-#ifndef _SM_DATA_LINKEDLIST
-#define _SM_DATA_LINKEDLIST
+#ifndef _SM_DATA_SYNCLINKEDLIST
+#define _SM_DATA_SYNCLINKEDLIST
 #include "Sync/Mutex.h"
 
 namespace Data
@@ -10,7 +10,7 @@ namespace Data
 		LinkedListItem *nextItem;
 	};
 
-	class LinkedList
+	class SyncLinkedList
 	{
 	protected:
 		Sync::Mutex *mut;
@@ -18,8 +18,8 @@ namespace Data
 		LinkedListItem *lastItem;
 
 	public:
-		LinkedList();
-		~LinkedList();
+		SyncLinkedList();
+		~SyncLinkedList();
 
 		Bool HasItems();
 		void Put(void *item);

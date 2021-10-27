@@ -10,25 +10,25 @@ namespace Data
 	class VariItem
 	{
 	public:
-		enum ItemType
+		enum class ItemType
 		{
-			IT_UNKNOWN,
-			IT_NULL,
-			IT_STR,
-			IT_DATE,
-			IT_F32,
-			IT_F64,
-			IT_I8,
-			IT_U8,
-			IT_I16,
-			IT_U16,
-			IT_I32,
-			IT_U32,
-			IT_I64,
-			IT_U64,
-			IT_BOOL,
-			IT_BYTEARR,
-			IT_VECTOR
+			Unknown,
+			Null,
+			Str,
+			Date,
+			F32,
+			F64,
+			I8,
+			U8,
+			I16,
+			U16,
+			I32,
+			U32,
+			I64,
+			U64,
+			BOOL,
+			ByteArr,
+			Vector
 		};
 	
 		union ItemValue

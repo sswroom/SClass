@@ -1,7 +1,7 @@
 #ifndef _SM_MAP_OSM_OSMCACHEHANDLER
 #define _SM_MAP_OSM_OSMCACHEHANDLER
 #include "Data/ArrayListStrUTF8.h"
-#include "Data/LinkedList.h"
+#include "Data/SyncLinkedList.h"
 #include "IO/FileStream.h"
 #include "Net/SocketFactory.h"
 #include "Net/SSLEngine.h"
@@ -52,7 +52,7 @@ namespace Map
 			OSInt threadCnt;
 			ThreadStatus *threadStat;
 			Sync::Mutex *taskMut;
-			Data::LinkedList *taskList;
+			Data::SyncLinkedList *taskList;
 
 			IO::SeekableStream *GetTileData(Int32 lev, Int32 xTile, Int32 yTile);
 		public:

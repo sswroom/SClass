@@ -1,8 +1,8 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRIMAGECONTROL
 #define _SM_SSWR_AVIREAD_AVIRIMAGECONTROL
 #include "Data/ICaseStringUTF8Map.h"
-#include "Data/LinkedList.h"
 #include "Data/StringUTF8Map.h"
+#include "Data/SyncLinkedList.h"
 #include "Media/RGBColorFilter.h"
 #include "Media/Resizer/LanczosResizer8_C8.h"
 #include "SSWR/AVIRead/AVIRCore.h"
@@ -80,7 +80,7 @@ namespace SSWR
 			void *dispHdlrObj;
 			ProgressUpdated progHdlr;
 			void *progHdlrObj;
-			Data::LinkedList *exportList;
+			Data::SyncLinkedList *exportList;
 			UOSInt exportCurrCnt;
 			Sync::Mutex *exportMut;
 			ExportFormat exportFmt;

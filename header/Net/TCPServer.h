@@ -1,8 +1,8 @@
 #ifndef _SM_NET_TCPSERVER
 #define _SM_NET_TCPSERVER
-#include "Net/SocketFactory.h"
-#include "Data/LinkedList.h"
+#include "Data/SyncLinkedList.h"
 #include "IO/LogTool.h"
+#include "Net/SocketFactory.h"
 #include "Sync/Event.h"
 
 namespace Net
@@ -34,7 +34,7 @@ namespace Net
 		Socket *svrSocv6;
 		void *userObj;
 		Int32 threadRunning;
-		Data::LinkedList *socs;
+		Data::SyncLinkedList *socs;
 		Sync::Event *socsEvt;
 
 	private:
@@ -44,7 +44,7 @@ namespace Net
 		static UInt32 __stdcall Svrv6Subthread(void *o);
 		static UInt32 __stdcall Svrv6Thread(void *o);
 		static UInt32 __stdcall SvrThread2(void *o);
-
+		void AcceptSocket(Socket *svrSoc);
 	public:
 		TCPServer(SocketFactory *socf, UInt16 port, IO::LogTool *log, TCPServerConn hdlr, void *userObj, const UTF8Char *logPrefix);
 		~TCPServer();

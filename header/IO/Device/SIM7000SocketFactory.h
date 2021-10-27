@@ -1,6 +1,6 @@
 #ifndef _SM_IO_DEVICE_SIM7000SOCKETFACTORY
 #define _SM_IO_DEVICE_SIM7000SOCKETFACTORY
-#include "Data/LinkedList.h"
+#include "Data/SyncLinkedList.h"
 #include "IO/Device/SIM7000.h"
 #include "Net/SocketFactory.h"
 #include "Net/SocketUtil.h"
@@ -12,33 +12,33 @@ namespace IO
 		class SIM7000SocketFactory : public Net::SocketFactory
 		{
 		private:
-			typedef enum
+			enum class SocketState
 			{
-				SS_EMPTY,
-				SS_TCP_UNOPENED,
-				SS_TCP_OPENED,
-				SS_UDP_UNOPENED,
-				SS_UDP_OPENED
-			} SocketState;
+				Empty,
+				TCP_Unopened,
+				TCP_Opened,
+				UDP_Unopened,
+				UDP_Opened
+			};
 
-			typedef struct
+			struct DataPacket
 			{
 				UInt32 remoteIP;
 				UInt16 remotePort;
 				UOSInt dataSize;
 				UInt8 data[1];
-			} DataPacket;
+			};
 			
 
-			typedef struct
+			struct SocketStatus
 			{
 				SocketState state;
 				UInt32 udpRIP;
 				UInt16 udpRPort;
 				Sync::Mutex *dataMut;
-				Data::LinkedList *dataList;
+				Data::SyncLinkedList *dataList;
 				Sync::Event *dataEvt;
-			} SocketStatus;
+			};
 			
 		private:
 			IO::Device::SIM7000 *modem;

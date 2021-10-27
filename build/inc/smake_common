@@ -1077,8 +1077,6 @@ Data/Int32Map.h:
 Data/Int64Map.h:
 Data/LineChart.h: ../../src/Data/LineChart.cpp
 @LineChart.o
-Data/LinkedList.h: ../../src/Data/LinkedList.cpp
-@LinkedList.o
 Data/List.h:
 Data/Random.h:
 Data/RandomBytesGenerator.h: ../../src/Data/RandomBytesGenerator.cpp
@@ -1093,6 +1091,8 @@ Data/SortableArrayList.h:
 Data/StringCMap.h:
 Data/StringUTF8Map.h:
 Data/SyncArrayList.h:
+Data/SyncLinkedList.h: ../../src/Data/SyncLinkedList.cpp
+@SyncLinkedList.o
 Data/UInt32Map.h:
 Data/UInt64Map.h:
 Data/Usable.h:
@@ -3747,10 +3747,10 @@ DataComparer.o: ../../src/Data/DataComparer.cpp
 DateTime.o: ../../src/Data/DateTime.cpp
 IChart.o: ../../src/Data/IChart.cpp
 LineChart.o: ../../src/Data/LineChart.cpp
-LinkedList.o: ../../src/Data/LinkedList.cpp
 RandomBytesGenerator.o: ../../src/Data/RandomBytesGenerator.cpp
 RandomMT19937.o: ../../src/Data/RandomMT19937.cpp
 RandomOS.o: ../../src/Data/RandomOS.cpp
+SyncLinkedList.o: ../../src/Data/SyncLinkedList.cpp
 Usage.o: ../../src/Data/Usage.cpp
 VariItem.o: ../../src/Data/VariItem.cpp
 VariObject.o: ../../src/Data/VariObject.cpp

@@ -15,7 +15,6 @@
 #include "Text/Encoding.h"
 #include "Text/MyString.h"
 #include "Text/UTF8Writer.h"
-#include <wchar.h>
 
 void Net::TCPServer::AddLogMsg(const UTF8Char *msg, IO::ILogHandler::LogLevel logLev)
 {
@@ -38,25 +37,11 @@ void Net::TCPServer::AddLogMsg(const UTF8Char *msg, IO::ILogHandler::LogLevel lo
 UInt32 __stdcall Net::TCPServer::Svrv4Subthread(void *o)
 {
 	SubthreadStatus *status = (SubthreadStatus*)o;
-	UTF8Char buff[1024];
-	UTF8Char *str;
 	status->threadRunning = true;
 	status->threadEvt->Set();
 	while (!status->toStop)
 	{
-		Socket *s;
-		s = status->me->socf->SocketAccept(status->me->svrSocv4);
-		if (status->me->socf->SocketIsInvalid(s))
-		{
-			str = Text::StrConcat(buff, (const UTF8Char*)"Client connect error: ");
-			str = Text::StrInt32(str, status->me->socf->SocketGetLastError());
-			status->me->AddLogMsg(buff, IO::ILogHandler::LOG_LEVEL_ERR_DETAIL);
-		}
-		else
-		{
-			status->me->socs->Put(s);
-			status->me->socsEvt->Set();
-		}
+		status->me->AcceptSocket(status->me->svrSocv4);
 	}
 	status->threadRunning = false;
 	status->threadEvt->Set();
@@ -135,24 +120,7 @@ UInt32 __stdcall Net::TCPServer::Svrv4Thread(void *o)
 	}
 	while (!svr->toStop)
 	{
-		Socket *s;
-		s = svr->socf->SocketAccept(svr->svrSocv4);
-		if (svr->socf->SocketIsInvalid(s))
-		{
-			str = Text::StrConcat(buff, (const UTF8Char*)"Client connect error: ");
-			str = Text::StrInt32(str, svr->socf->SocketGetLastError());
-			svr->AddLogMsg(buff, IO::ILogHandler::LOG_LEVEL_ERR_DETAIL);
-		}
-		else
-		{
-			svr->socs->Put(s);
-			svr->socsEvt->Set();
-
-/*			str = Text::StrConcat(buff, L"Client connected: ");
-			str = svr->socf->GetRemoteName(str, (UInt32*)s);
-			svr->AddLogMsg(buff, IO::ILogHandler::LOG_LEVEL_ACTION);
-			svr->hdlr((UInt32*)s, svr->userObj);*/
-		}
+		svr->AcceptSocket(svr->svrSocv4);
 	}
 	if (sthreadCnt > 0)
 	{
@@ -197,25 +165,11 @@ UInt32 __stdcall Net::TCPServer::Svrv4Thread(void *o)
 UInt32 __stdcall Net::TCPServer::Svrv6Subthread(void *o)
 {
 	SubthreadStatus *status = (SubthreadStatus*)o;
-	UTF8Char buff[1024];
-	UTF8Char *str;
 	status->threadRunning = true;
 	status->threadEvt->Set();
 	while (!status->toStop)
 	{
-		Socket *s;
-		s = status->me->socf->SocketAccept(status->me->svrSocv6);
-		if (status->me->socf->SocketIsInvalid(s))
-		{
-			str = Text::StrConcat(buff, (const UTF8Char*)"Client connect error: ");
-			str = Text::StrInt32(str, status->me->socf->SocketGetLastError());
-			status->me->AddLogMsg(buff, IO::ILogHandler::LOG_LEVEL_ERR_DETAIL);
-		}
-		else
-		{
-			status->me->socs->Put(s);
-			status->me->socsEvt->Set();
-		}
+		status->me->AcceptSocket(status->me->svrSocv6);
 	}
 	status->threadRunning = false;
 	status->threadEvt->Set();
@@ -296,24 +250,7 @@ UInt32 __stdcall Net::TCPServer::Svrv6Thread(void *o)
 	}
 	while (!svr->toStop)
 	{
-		Socket *s;
-		s = svr->socf->SocketAccept(svr->svrSocv6);
-		if (svr->socf->SocketIsInvalid(s))
-		{
-			str = Text::StrConcat(buff, (const UTF8Char*)"Client connect error: ");
-			str = Text::StrInt32(str, svr->socf->SocketGetLastError());
-			svr->AddLogMsg(buff, IO::ILogHandler::LOG_LEVEL_ERR_DETAIL);
-		}
-		else
-		{
-			svr->socs->Put((UInt32*)s);
-			svr->socsEvt->Set();
-
-/*			str = Text::StrConcat(buff, L"Client connected: ");
-			str = svr->socf->GetRemoteName(str, (UInt32*)s);
-			svr->AddLogMsg(buff, IO::ILogHandler::LOG_LEVEL_ACTION);
-			svr->hdlr((UInt32*)s, svr->userObj);*/
-		}
+		svr->AcceptSocket(svr->svrSocv6);
 	}
 	if (sthreadCnt > 0)
 	{
@@ -379,6 +316,34 @@ UInt32 __stdcall Net::TCPServer::SvrThread2(void *o)
 	return 0;
 }
 
+void Net::TCPServer::AcceptSocket(Socket *svrSoc)
+{
+	UTF8Char sbuff[128];
+	UTF8Char *sptr;
+	Socket *s;
+	s = this->socf->SocketAccept(svrSoc);
+	if (this->socf->SocketIsInvalid(s))
+	{
+		Int32 errCode = this->socf->SocketGetLastError();
+		sptr = Text::StrConcat(sbuff, (const UTF8Char*)"Client connect error: ");
+		sptr = Text::StrInt32(sptr, errCode);
+		this->AddLogMsg(sbuff, IO::ILogHandler::LOG_LEVEL_ERR_DETAIL);
+		if (errCode == 24) // too many opened files
+		{
+			Sync::Thread::Sleep(2000);
+		}
+	}
+	else
+	{
+		this->socs->Put(s);
+		this->socsEvt->Set();
+
+/*		str = Text::StrConcat(buff, (const UTF8Char*)"Client connected: ");
+		str = this->socf->GetRemoteName(str, (UInt32*)s);
+		this->AddLogMsg(buff, IO::ILogHandler::LOG_LEVEL_ACTION);
+		this->hdlr((UInt32*)s, this->userObj);*/
+	}	
+}
 Net::TCPServer::TCPServer(SocketFactory *socf, UInt16 port, IO::LogTool *log, TCPServerConn hdlr, void *userObj, const UTF8Char *logPrefix)
 {
 	this->socf = socf;
@@ -400,7 +365,7 @@ Net::TCPServer::TCPServer(SocketFactory *socf, UInt16 port, IO::LogTool *log, TC
 	this->hdlr = hdlr;
 	this->userObj = userObj;
 	this->threadRunning = 0;
-	NEW_CLASS(this->socs, Data::LinkedList());
+	NEW_CLASS(this->socs, Data::SyncLinkedList());
 	NEW_CLASS(this->socsEvt, Sync::Event(true, (const UTF8Char*)"Net.TCPServer.socsEvt"));
 
 	Sync::Thread::Create(Svrv4Thread, this);

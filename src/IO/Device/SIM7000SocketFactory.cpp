@@ -13,7 +13,7 @@ void __stdcall IO::Device::SIM7000SocketFactory::OnReceiveData(void *userObj, UO
 	DataPacket *packet;
 	UTF8Char sbuff[32];
 	Net::SocketUtil::GetIPv4Name(sbuff, remoteIP, remotePort);
-	if (me->status[index].state == SS_UDP_OPENED || me->status[index].state == SS_TCP_OPENED)
+	if (me->status[index].state == SocketState::UDP_Opened || me->status[index].state == SocketState::TCP_Opened)
 	{
 		packet = (DataPacket*)MAlloc(sizeof(DataPacket) + buffSize);
 		packet->remoteIP = remoteIP;
@@ -35,18 +35,18 @@ void IO::Device::SIM7000SocketFactory::CloseAllSockets()
 	{
 		switch (this->status[i].state)
 		{
-		case SS_EMPTY:
+		case SocketState::Empty:
 			break;
 		default:
-		case SS_TCP_UNOPENED:
-		case SS_UDP_UNOPENED:
-			this->status[i].state = SS_EMPTY;
+		case SocketState::TCP_Unopened:
+		case SocketState::UDP_Unopened:
+			this->status[i].state = SocketState::Empty;
 			break;
-		case SS_TCP_OPENED:
-		case SS_UDP_OPENED:
+		case SocketState::TCP_Opened:
+		case SocketState::UDP_Opened:
 			{
 				this->modem->NetCloseSocket(i);
-				this->status[i].state = SS_EMPTY;
+				this->status[i].state = SocketState::Empty;
 				Sync::MutexUsage mutUsage(this->status[i].dataMut);
 				while ((packet = (DataPacket*)this->status[i].dataList->Get()) != 0)
 				{
@@ -68,9 +68,9 @@ IO::Device::SIM7000SocketFactory::SIM7000SocketFactory(IO::Device::SIM7000 *mode
 	OSInt i = 8;
 	while (i-- > 0)
 	{
-		this->status[i].state = SS_EMPTY;
+		this->status[i].state = SocketState::Empty;
 		NEW_CLASS(this->status[i].dataMut, Sync::Mutex());
-		NEW_CLASS(this->status[i].dataList, Data::LinkedList());
+		NEW_CLASS(this->status[i].dataList, Data::SyncLinkedList());
 		NEW_CLASS(this->status[i].dataEvt, Sync::Event(true, (const UTF8Char*)"IO.Device.SIM7000SocketFactory.status.dataEvt"));
 	}
 	this->Init();
@@ -188,9 +188,9 @@ Socket *IO::Device::SIM7000SocketFactory::CreateUDPSocketv4()
 	OSInt j = 8;
 	while (i < j)
 	{
-		if (this->status[i].state == SS_EMPTY)
+		if (this->status[i].state == SocketState::Empty)
 		{
-			this->status[i].state = SS_UDP_UNOPENED;
+			this->status[i].state = SocketState::UDP_Unopened;
 			this->status[i].udpRIP = 0;
 			this->status[i].udpRPort = 0;
 			return (Socket*)(i + 1);
@@ -240,18 +240,18 @@ void IO::Device::SIM7000SocketFactory::DestroySocket(Socket *socket)
 	}
 	switch (this->status[i].state)
 	{
-	case SS_EMPTY:
+	case SocketState::Empty:
 		break;
 	default:
-	case SS_TCP_UNOPENED:
-	case SS_UDP_UNOPENED:
-		this->status[i].state = SS_EMPTY;
+	case SocketState::TCP_Unopened:
+	case SocketState::UDP_Unopened:
+		this->status[i].state = SocketState::Empty;
 		break;
-	case SS_TCP_OPENED:
-	case SS_UDP_OPENED:
+	case SocketState::TCP_Opened:
+	case SocketState::UDP_Opened:
 		{
 			this->modem->NetCloseSocket(i);
-			this->status[i].state = SS_EMPTY;
+			this->status[i].state = SocketState::Empty;
 			Sync::MutexUsage mutUsage(this->status[i].dataMut);
 			while ((packet = (DataPacket*)this->status[i].dataList->Get()) != 0)
 			{
@@ -272,13 +272,13 @@ Bool IO::Device::SIM7000SocketFactory::SocketIsInvalid(Socket *socket)
 	}
 	switch (this->status[i].state)
 	{
-	case SS_EMPTY:
+	case SocketState::Empty:
 		return true;
 	default:
-	case SS_TCP_UNOPENED:
-	case SS_UDP_UNOPENED:
-	case SS_TCP_OPENED:
-	case SS_UDP_OPENED:
+	case SocketState::TCP_Unopened:
+	case SocketState::UDP_Unopened:
+	case SocketState::TCP_Opened:
+	case SocketState::UDP_Opened:
 		return false;
 	}
 }
@@ -290,11 +290,11 @@ Bool IO::Device::SIM7000SocketFactory::SocketBindv4(Socket *socket, UInt32 ip, U
 	{
 		return false;
 	}
-	if (this->status[i].state == SS_TCP_UNOPENED)
+	if (this->status[i].state == SocketState::TCP_Unopened)
 	{
 		return this->modem->NetSetLocalPortTCP(i, port);
 	}
-	else if (this->status[i].state == SS_UDP_UNOPENED)
+	else if (this->status[i].state == SocketState::UDP_Unopened)
 	{
 		if (this->modem->NetSetLocalPortUDP(i, port))
 		{
@@ -418,7 +418,7 @@ UOSInt IO::Device::SIM7000SocketFactory::UDPReceive(Socket *socket, UInt8 *buff,
 		return false;
 	}
 	DataPacket *packet;
-	while (this->status[i].state == SS_UDP_OPENED)
+	while (this->status[i].state == SocketState::UDP_Opened)
 	{
 		if (this->status[i].dataList->GetCount() > 0)
 		{
@@ -463,20 +463,20 @@ UOSInt IO::Device::SIM7000SocketFactory::SendTo(Socket *socket, const UInt8 *buf
 		return false;
 	}
 	UInt32 remoteIP = *(UInt32*)addr->addr;
-	if (this->status[i].state == SS_UDP_UNOPENED)
+	if (this->status[i].state == SocketState::UDP_Unopened)
 	{
 		if (this->modem->NetIPStartUDP(i, remoteIP, port))
 		{
 			this->status[i].udpRIP = remoteIP;
 			this->status[i].udpRPort = port;
-			this->status[i].state = SS_UDP_OPENED;
+			this->status[i].state = SocketState::UDP_Opened;
 		}
 		else
 		{
 			return false;
 		}
 	}
-	else if (this->status[i].state == SS_UDP_OPENED)
+	else if (this->status[i].state == SocketState::UDP_Opened)
 	{
 		if (this->status[i].udpRIP != remoteIP || this->status[i].udpRPort != port)
 		{
@@ -633,7 +633,7 @@ UOSInt IO::Device::SIM7000SocketFactory::QueryPortInfos(Data::ArrayList<PortInfo
 	{
 		while (i-- > 0)
 		{
-			if (this->status[i].state == SS_UDP_OPENED)
+			if (this->status[i].state == SocketState::UDP_Opened)
 			{
 				/////////////////////////
 			}
@@ -643,7 +643,7 @@ UOSInt IO::Device::SIM7000SocketFactory::QueryPortInfos(Data::ArrayList<PortInfo
 	{
 		while (i-- > 0)
 		{
-			if (this->status[i].state == SS_TCP_OPENED)
+			if (this->status[i].state == SocketState::TCP_Opened)
 			{
 				/////////////////////////
 			}
@@ -664,7 +664,7 @@ UOSInt IO::Device::SIM7000SocketFactory::QueryPortInfos2(Data::ArrayList<PortInf
 	{
 		while (i-- > 0)
 		{
-			if (this->status[i].state == SS_UDP_OPENED)
+			if (this->status[i].state == SocketState::UDP_Opened)
 			{
 				/////////////////////////
 			}
@@ -674,7 +674,7 @@ UOSInt IO::Device::SIM7000SocketFactory::QueryPortInfos2(Data::ArrayList<PortInf
 	{
 		while (i-- > 0)
 		{
-			if (this->status[i].state == SS_TCP_OPENED)
+			if (this->status[i].state == SocketState::TCP_Opened)
 			{
 				/////////////////////////
 			}

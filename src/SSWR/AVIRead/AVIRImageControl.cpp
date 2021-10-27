@@ -522,7 +522,7 @@ SSWR::AVIRead::AVIRImageControl::AVIRImageControl(UI::GUICore *ui, UI::GUIClient
 	NEW_CLASS(this->imgMut, Sync::Mutex());
 	NEW_CLASS(this->filterMut, Sync::Mutex());
 	NEW_CLASS(this->filter, Media::RGBColorFilter(this->core->GetColorMgr()));
-	NEW_CLASS(this->exportList, Data::LinkedList());
+	NEW_CLASS(this->exportList, Data::SyncLinkedList());
 	NEW_CLASS(this->exportMut, Sync::Mutex());
 	Media::ColorProfile srcColor(Media::ColorProfile::CPT_SRGB);
 	Media::ColorProfile destColor(Media::ColorProfile::CPT_PDISPLAY);

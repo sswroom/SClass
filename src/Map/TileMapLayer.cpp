@@ -163,7 +163,7 @@ Map::TileMapLayer::TileMapLayer(Map::TileMap *tileMap, Parser::ParserList *parse
 
 	NEW_CLASS(this->idleImgs, Data::ArrayList<CachedImage*>());
 	NEW_CLASS(this->idleMut, Sync::Mutex());
-	NEW_CLASS(this->taskQueued, Data::LinkedList());
+	NEW_CLASS(this->taskQueued, Data::SyncLinkedList());
 	NEW_CLASS(this->taskEvt, Sync::Event(true, (const UTF8Char*)"Map.ResizableTileMapRenderer.taskEvt"));
 	NEW_CLASS(this->taskMut, Sync::Mutex());
 

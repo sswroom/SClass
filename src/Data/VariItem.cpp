@@ -16,30 +16,30 @@ Data::VariItem::~VariItem()
 {
 	switch (this->itemType)
 	{
-	case IT_NULL:
-	case IT_UNKNOWN:
-	case IT_F32:
-	case IT_F64:
-	case IT_I8:
-	case IT_U8:
-	case IT_I16:
-	case IT_U16:
-	case IT_I32:
-	case IT_U32:
-	case IT_I64:
-	case IT_U64:
-	case IT_BOOL:
+	case ItemType::Null:
+	case ItemType::Unknown:
+	case ItemType::F32:
+	case ItemType::F64:
+	case ItemType::I8:
+	case ItemType::U8:
+	case ItemType::I16:
+	case ItemType::U16:
+	case ItemType::I32:
+	case ItemType::U32:
+	case ItemType::I64:
+	case ItemType::U64:
+	case ItemType::BOOL:
 		break;
-	case IT_STR:
+	case ItemType::Str:
 		Text::StrDelNew(this->val.str);
 		break;
-	case IT_DATE:
+	case ItemType::Date:
 		DEL_CLASS(this->val.date);
 		break;
-	case IT_BYTEARR:
+	case ItemType::ByteArr:
 		DEL_CLASS(this->val.byteArr);
 		break;
-	case IT_VECTOR:
+	case ItemType::Vector:
 		DEL_CLASS(this->val.vector);
 		break;
 	}
@@ -61,60 +61,60 @@ void Data::VariItem::ToString(Text::StringBuilderUTF *sb)
 	UTF8Char sbuff[64];
 	switch (this->itemType)
 	{
-	case IT_UNKNOWN:
-	case IT_NULL:
+	case ItemType::Unknown:
+	case ItemType::Null:
 		sb->Append((const UTF8Char*)"null");
 		return;
-	case IT_F32:
+	case ItemType::F32:
 		Text::SBAppendF32(sb, this->val.f32);
 		return;
-	case IT_F64:
+	case ItemType::F64:
 		Text::SBAppendF64(sb, this->val.f64);
 		return;
-	case IT_I8:
+	case ItemType::I8:
 		sb->AppendI16(this->val.i8);
 		return;
-	case IT_U8:
+	case ItemType::U8:
 		sb->AppendU16(this->val.u8);
 		return;
-	case IT_I16:
+	case ItemType::I16:
 		sb->AppendI16(this->val.i16);
 		return;
-	case IT_U16:
+	case ItemType::U16:
 		sb->AppendU16(this->val.u16);
 		return;
-	case IT_I32:
+	case ItemType::I32:
 		sb->AppendI32(this->val.i32);
 		return;
-	case IT_U32:
+	case ItemType::U32:
 		sb->AppendU32(this->val.u32);
 		return;
-	case IT_I64:
+	case ItemType::I64:
 		sb->AppendI64(this->val.i64);
 		return;
-	case IT_U64:
+	case ItemType::U64:
 		sb->AppendU64(this->val.u64);
 		return;
-	case IT_BOOL:
+	case ItemType::BOOL:
 		sb->Append(this->val.boolean?(const UTF8Char*)"true":(const UTF8Char*)"false");
 		break;
-	case IT_STR:
+	case ItemType::Str:
 		csptr = Text::JSText::ToNewJSTextDQuote(this->val.str);
 		sb->Append(csptr);
 		Text::JSText::FreeNewText(csptr);
 		return;
-	case IT_DATE:
+	case ItemType::Date:
 		this->val.date->ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
 		sb->AppendChar('\"', 1);
 		sb->Append(sbuff);
 		sb->AppendChar('\"', 1);
 		break;
-	case IT_BYTEARR:
+	case ItemType::ByteArr:
 		sb->AppendChar('\"', 1);
 		sb->AppendHexBuff(this->val.byteArr->GetArray(), this->val.byteArr->GetCount(), 0, Text::LineBreakType::None);
 		sb->AppendChar('\"', 1);
 		return;
-	case IT_VECTOR:
+	case ItemType::Vector:
 		{
 			Math::WKTWriter writer;
 			writer.GenerateWKT(sb, this->val.vector);
@@ -128,7 +128,7 @@ Data::VariItem *Data::VariItem::NewNull()
 	ItemValue ival;
 	ival.str = 0;
 	Data::VariItem *item;
-	NEW_CLASS(item, Data::VariItem(IT_NULL, ival));
+	NEW_CLASS(item, Data::VariItem(ItemType::Null, ival));
 	return item;
 }
 
@@ -137,7 +137,7 @@ Data::VariItem *Data::VariItem::NewStr(const UTF8Char *str)
 	ItemValue ival;
 	ival.str = Text::StrCopyNew(str);
 	Data::VariItem *item;
-	NEW_CLASS(item, Data::VariItem(IT_STR, ival));
+	NEW_CLASS(item, Data::VariItem(ItemType::Str, ival));
 	return item;
 }
 
@@ -146,7 +146,7 @@ Data::VariItem *Data::VariItem::NewDate(Data::DateTime *dt)
 	ItemValue ival;
 	NEW_CLASS(ival.date, Data::DateTime(dt));
 	Data::VariItem *item;
-	NEW_CLASS(item, Data::VariItem(IT_DATE, ival));
+	NEW_CLASS(item, Data::VariItem(ItemType::Date, ival));
 	return item;
 }
 
@@ -155,7 +155,7 @@ Data::VariItem *Data::VariItem::NewF32(Single val)
 	ItemValue ival;
 	ival.f32 = val;
 	Data::VariItem *item;
-	NEW_CLASS(item, Data::VariItem(IT_F32, ival));
+	NEW_CLASS(item, Data::VariItem(ItemType::F32, ival));
 	return item;
 }
 
@@ -164,7 +164,7 @@ Data::VariItem *Data::VariItem::NewF64(Double val)
 	ItemValue ival;
 	ival.f64 = val;
 	Data::VariItem *item;
-	NEW_CLASS(item, Data::VariItem(IT_F64, ival));
+	NEW_CLASS(item, Data::VariItem(ItemType::F64, ival));
 	return item;
 }
 
@@ -173,7 +173,7 @@ Data::VariItem *Data::VariItem::NewI8(Int8 val)
 	ItemValue ival;
 	ival.i8 = val;
 	Data::VariItem *item;
-	NEW_CLASS(item, Data::VariItem(IT_I8, ival));
+	NEW_CLASS(item, Data::VariItem(ItemType::I8, ival));
 	return item;
 }
 
@@ -182,7 +182,7 @@ Data::VariItem *Data::VariItem::NewU8(UInt8 val)
 	ItemValue ival;
 	ival.u8 = val;
 	Data::VariItem *item;
-	NEW_CLASS(item, Data::VariItem(IT_U8, ival));
+	NEW_CLASS(item, Data::VariItem(ItemType::U8, ival));
 	return item;
 }
 
@@ -191,7 +191,7 @@ Data::VariItem *Data::VariItem::NewI16(Int16 val)
 	ItemValue ival;
 	ival.i16 = val;
 	Data::VariItem *item;
-	NEW_CLASS(item, Data::VariItem(IT_I16, ival));
+	NEW_CLASS(item, Data::VariItem(ItemType::I16, ival));
 	return item;
 }
 
@@ -200,7 +200,7 @@ Data::VariItem *Data::VariItem::NewU16(UInt16 val)
 	ItemValue ival;
 	ival.u16 = val;
 	Data::VariItem *item;
-	NEW_CLASS(item, Data::VariItem(IT_U16, ival));
+	NEW_CLASS(item, Data::VariItem(ItemType::U16, ival));
 	return item;
 }
 
@@ -209,7 +209,7 @@ Data::VariItem *Data::VariItem::NewI32(Int32 val)
 	ItemValue ival;
 	ival.i32 = val;
 	Data::VariItem *item;
-	NEW_CLASS(item, Data::VariItem(IT_I32, ival));
+	NEW_CLASS(item, Data::VariItem(ItemType::I32, ival));
 	return item;
 }
 
@@ -218,7 +218,7 @@ Data::VariItem *Data::VariItem::NewU32(UInt32 val)
 	ItemValue ival;
 	ival.u32 = val;
 	Data::VariItem *item;
-	NEW_CLASS(item, Data::VariItem(IT_U32, ival));
+	NEW_CLASS(item, Data::VariItem(ItemType::U32, ival));
 	return item;
 }
 
@@ -227,7 +227,7 @@ Data::VariItem *Data::VariItem::NewI64(Int64 val)
 	ItemValue ival;
 	ival.i64 = val;
 	Data::VariItem *item;
-	NEW_CLASS(item, Data::VariItem(IT_I64, ival));
+	NEW_CLASS(item, Data::VariItem(ItemType::I64, ival));
 	return item;
 }
 
@@ -236,7 +236,7 @@ Data::VariItem *Data::VariItem::NewU64(UInt64 val)
 	ItemValue ival;
 	ival.u64 = val;
 	Data::VariItem *item;
-	NEW_CLASS(item, Data::VariItem(IT_U64, ival));
+	NEW_CLASS(item, Data::VariItem(ItemType::U64, ival));
 	return item;
 }
 
@@ -245,7 +245,7 @@ Data::VariItem *Data::VariItem::NewBool(Bool val)
 	ItemValue ival;
 	ival.boolean = val;
 	Data::VariItem *item;
-	NEW_CLASS(item, Data::VariItem(IT_BOOL, ival));
+	NEW_CLASS(item, Data::VariItem(ItemType::BOOL, ival));
 	return item;
 }
 
@@ -254,7 +254,7 @@ Data::VariItem *Data::VariItem::NewByteArr(const UInt8 *arr, UOSInt cnt)
 	ItemValue ival;
 	NEW_CLASS(ival.byteArr, Data::ReadonlyArray<UInt8>(arr, cnt));
 	Data::VariItem *item;
-	NEW_CLASS(item, Data::VariItem(IT_BYTEARR, ival));
+	NEW_CLASS(item, Data::VariItem(ItemType::ByteArr, ival));
 	return item;
 }
 
@@ -263,6 +263,6 @@ Data::VariItem *Data::VariItem::NewVector(Math::Vector2D *vec)
 	ItemValue ival;
 	ival.vector = vec->Clone();
 	Data::VariItem *item;
-	NEW_CLASS(item, Data::VariItem(IT_VECTOR, ival));
+	NEW_CLASS(item, Data::VariItem(ItemType::Vector, ival));
 	return item;
 }
