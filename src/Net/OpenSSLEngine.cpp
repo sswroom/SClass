@@ -16,6 +16,10 @@
 #include <stdio.h>
 #endif
 
+#if OPENSSL_VERSION_MAJOR > 1 || (OPENSSL_VERSION_MAJOR == 1 && OPENSSL_VERSION_MINOR >= 1)
+#else
+#define TLS_method() TLSv1_method()
+#endif
 struct Net::OpenSSLEngine::ClassData
 {
 	SSL_CTX *ctx;
