@@ -806,6 +806,10 @@ void UI::GUITextView::OnDraw(void *cr)
 			btnSize = clsData->scrSize;
 		}
 		UOSInt range = clsData->scrHMax - clsData->scrHMin - clsData->scrHPage;
+		if (range <= 0)
+		{
+			range = 1;
+		}
 		dimg->DrawRect(Math::UOSInt2Double((drawWidth - btnSize) * (clsData->scrHPos - clsData->scrHMin) / range), 0, Math::UOSInt2Double(btnSize), Math::UOSInt2Double(clsData->scrSize), 0, b);
 		this->deng->DeleteImage(dimg);
 	}

@@ -405,7 +405,17 @@ UOSInt Net::TCPClient::GetRecvBuffSize()
 
 UTF8Char *Net::TCPClient::GetRemoteName(UTF8Char *buff)
 {
-	return this->sockf->GetRemoteName(buff, this->s);
+	if (this->flags & 4)
+	{
+		UInt32 ip;
+		UInt16 port;
+		Net::SocketFactory::FromSocketId(this->cliId, &ip, &port);
+		return Net::SocketUtil::GetIPv4Name(buff, ip, port);
+	}
+	else
+	{
+		return this->sockf->GetRemoteName(buff, this->s);
+	}
 }
 
 UTF8Char *Net::TCPClient::GetLocalName(UTF8Char *buff)

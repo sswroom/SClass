@@ -27,19 +27,19 @@ namespace Net
 			CS_SERVER_BUSY = 137
 		} ConnectStatus;
 
-		typedef struct
+		struct TopicInfo
 		{
 			const UTF8Char *topic;
 			UInt8 *message;
 			UOSInt msgSize;
-		} TopicInfo;
+		};
 		
-		typedef struct
+		struct SubscribeInfo
 		{
 			const UTF8Char *topic;
 			Net::TCPClient *cli;
 			void *cliData;
-		} SubscribeInfo;
+		};
 		
 
 		typedef ConnectStatus (__stdcall *ConnectHandler)(void *userObj, const UTF8Char *clientId, const UTF8Char *userName, const UTF8Char *password, const Net::SocketUtil::AddressInfo *addr);
