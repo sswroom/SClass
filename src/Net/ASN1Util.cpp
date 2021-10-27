@@ -4,6 +4,7 @@
 #include "Net/ASN1Util.h"
 #include "Net/ASN1OIDDB.h"
 #include "Text/StringBuilderUTF8.h"
+#include "Text/StringTool.h"
 
 UOSInt Net::ASN1Util::PDUParseLen(const UInt8 *pdu, UOSInt ofst, UOSInt pduSize, UInt32 *len)
 {
@@ -451,7 +452,14 @@ Bool Net::ASN1Util::PDUToString(const UInt8 *pdu, const UInt8 *pduEnd, Text::Str
 				else
 				{
 					sb->Append((const UTF8Char*)" (");
-					sb->AppendHexBuff(&pdu[ofst], len, ' ', Text::LineBreakType::None);
+					if (Text::StringTool::IsASCIIText(&pdu[ofst], len))
+					{
+						sb->AppendC(&pdu[ofst], len);
+					}
+					else
+					{
+						sb->AppendHexBuff(&pdu[ofst], len, ' ', Text::LineBreakType::None);
+					}
 					sb->Append((const UTF8Char*)")\r\n");
 				}
 				DEL_CLASS(innerSb);

@@ -31,6 +31,7 @@
 #include "SSWR/AVIRead/AVIRAsmConvForm.h"
 #include "SSWR/AVIRead/AVIRASN1MIBForm.h"
 #include "SSWR/AVIRead/AVIRASN1OIDForm.h"
+#include "SSWR/AVIRead/AVIRASN1ParseForm.h"
 #include "SSWR/AVIRead/AVIRAudioFilterForm.h"
 #include "SSWR/AVIRead/AVIRBaseForm.h"
 #include "SSWR/AVIRead/AVIRBCryptForm.h"
@@ -406,7 +407,8 @@ typedef enum
 	MNU_CERT_UTIL,
 	MNU_CA_UTIL,
 	MNU_SSDP_CLIENT,
-	MNU_MYSQL_CONN
+	MNU_MYSQL_CONN,
+	MNU_ASN1_PARSE
 } MenuItems;
 
 void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(void *userObj, const UTF8Char **files, UOSInt nFiles)
@@ -547,6 +549,7 @@ SSWR::AVIRead::AVIRBaseForm::AVIRBaseForm(UI::GUIClientControl *parent, UI::GUIC
 	mnu2 = mnu->AddSubMenu((const UTF8Char*)"ASN.1");
 	mnu2->AddItem((const UTF8Char*)"ASN.1 MIB", MNU_ASN1MIB, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem((const UTF8Char*)"ASN.1 OID", MNU_ASN1OID, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem((const UTF8Char*)"ASN.1 Parse", MNU_ASN1_PARSE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddSeperator();
 	mnu->AddItem((const UTF8Char*)"RAM Speed", MNU_BENCHMARK, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem((const UTF8Char*)"Thread Speed", MNU_THREADSPEED, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
@@ -2406,6 +2409,13 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 				this->core->OpenObject(dlg->GetDBConn());
 			}
 			DEL_CLASS(dlg);
+		}
+		break;
+	case MNU_ASN1_PARSE:
+		{
+			SSWR::AVIRead::AVIRASN1ParseForm *frm;
+			NEW_CLASS(frm, SSWR::AVIRead::AVIRASN1ParseForm(0, this->ui, this->core));
+			this->core->ShowForm(frm);
 		}
 		break;
 	}

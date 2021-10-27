@@ -12,6 +12,7 @@ namespace Text
 		static void BuildString(Text::StringBuilderUTF *sb, Data::StringUTF8Map<const UTF8Char*> *map);
 		static void BuildString(Text::StringBuilderUTF *sb, Data::List<const UTF8Char*> *list);
 		static Bool IsNonASCII(const UTF8Char *s);
+		static Bool IsASCIIText(const UInt8 *buff, UOSInt buffLen);
 		static Bool IsEmailAddress(const UTF8Char *s);
 		static const UTF8Char *Null2Empty(const UTF8Char *s);
 	};

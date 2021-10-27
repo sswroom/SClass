@@ -79,6 +79,24 @@ Bool Text::StringTool::IsNonASCII(const UTF8Char *s)
 	return false;
 }
 
+Bool Text::StringTool::IsASCIIText(const UInt8 *buff, UOSInt buffLen)
+{
+	UInt8 b;
+	while (buffLen-- > 0)
+	{
+		b = *buff++;
+		if ((b >= 0x20 && b < 0x7F) || b == 13 || b == 10)
+		{
+
+		}
+		else
+		{
+			return false;
+		}
+	}
+	return true;
+}
+
 Bool Text::StringTool::IsEmailAddress(const UTF8Char *s)
 {
 	UOSInt atPos = INVALID_INDEX;

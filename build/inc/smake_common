@@ -2843,6 +2843,8 @@ SSWR/AVIRead/AVIRASN1MIBForm.h: ../../src/SSWR/AVIRead/AVIRASN1MIBForm.cpp
 @AVIRASN1MIBForm.o
 SSWR/AVIRead/AVIRASN1OIDForm.h: ../../src/SSWR/AVIRead/AVIRASN1OIDForm.cpp
 @AVIRASN1OIDForm.o
+SSWR/AVIRead/AVIRASN1ParseForm.h: ../../src/SSWR/AVIRead/AVIRASN1ParseForm.cpp
+@AVIRASN1ParseForm.o
 SSWR/AVIRead/AVIRAudioFilterForm.h: ../../src/SSWR/AVIRead/AVIRAudioFilterForm.cpp
 @AVIRAudioFilterForm.o
 SSWR/AVIRead/AVIRAudioViewerForm.h: ../../src/SSWR/AVIRead/AVIRAudioViewerForm.cpp
@@ -4566,6 +4568,7 @@ AVIRAsmConvForm.o: ../../src/SSWR/AVIRead/AVIRAsmConvForm.cpp
 AVIRASN1DataForm.o: ../../src/SSWR/AVIRead/AVIRASN1DataForm.cpp
 AVIRASN1MIBForm.o: ../../src/SSWR/AVIRead/AVIRASN1MIBForm.cpp
 AVIRASN1OIDForm.o: ../../src/SSWR/AVIRead/AVIRASN1OIDForm.cpp
+AVIRASN1ParseForm.o: ../../src/SSWR/AVIRead/AVIRASN1ParseForm.cpp
 AVIRAudioFilterForm.o: ../../src/SSWR/AVIRead/AVIRAudioFilterForm.cpp
 AVIRAudioViewerForm.o: ../../src/SSWR/AVIRead/AVIRAudioViewerForm.cpp
 AVIRBaseForm.o: ../../src/SSWR/AVIRead/AVIRBaseForm.cpp
