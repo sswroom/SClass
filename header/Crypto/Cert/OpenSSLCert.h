@@ -13,6 +13,7 @@ namespace Crypto
 			struct ClassData;
 
 			ClassData *clsData;
+			static Bool FromASN1_TIME(void *t, Data::DateTime *dt);
 		public:
 			OpenSSLCert();
 			OpenSSLCert(void *x509);

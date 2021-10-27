@@ -13,6 +13,7 @@ CFLAGS += -g
 #CFLAGS += -g -gstabs
 CFLAGS += -O
 #CFLAGS += -ffunction-sections -fdata-sections
+CFLAGS += -std=c++11
 
 CFLAGS += -I ../../header
 ASMFLAGS :=

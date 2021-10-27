@@ -10,6 +10,7 @@ CFLAGS += -O
 CFLAGS += -g
 #CFLAGS += -ffunction-sections -fdata-sections
 #CFLAGS += -mavx
+CFLAGS += -std=c++11
 ASMFLAGS :=
 CSUFFIX :=
 ASMSUFFIX :=

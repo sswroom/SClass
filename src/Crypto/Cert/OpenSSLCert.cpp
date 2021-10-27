@@ -9,6 +9,30 @@ struct Crypto::Cert::OpenSSLCert::ClassData
 	X509 *x509;
 };
 
+Bool Crypto::Cert::OpenSSLCert::FromASN1_TIME(void *t, Data::DateTime *dt)
+{
+	ASN1_TIME *asn1t = (ASN1_TIME *)t;
+	UTF8Char *sptr;
+	UInt16 year;
+	sptr = asn1t->data;
+	if (asn1t->type == V_ASN1_UTCTIME)
+	{
+		year = (UInt16)(2000 + (sptr[0] - 0x30) * 10 + (sptr[1] - 0x30));
+		sptr += 2;
+	}
+	else if (asn1t->type == V_ASN1_GENERALIZEDTIME)
+	{
+		year = (UInt16)((sptr[0] - 0x30) * 1000 + (sptr[1] - 0x30) * 100 + (sptr[2] - 0x30) * 10 + (sptr[3] - 0x30));
+		sptr += 4;
+	}
+	else
+	{
+		return false;
+	}
+	dt->SetValue(year, (sptr[0] - 0x30) * 10 + (sptr[1] - 0x30), (sptr[2] - 0x30) * 10 + (sptr[3] - 0x30), (sptr[4] - 0x30) * 10 + (sptr[5] - 0x30), (sptr[6] - 0x30) * 10 + (sptr[7] - 0x30), (sptr[8] - 0x30) * 10 + (sptr[9] - 0x30), 0, 0);
+	return true;
+}
+
 Crypto::Cert::OpenSSLCert::OpenSSLCert()
 {
 	this->clsData = MemAlloc(ClassData, 1);
@@ -29,20 +53,12 @@ Crypto::Cert::OpenSSLCert::~OpenSSLCert()
 
 Bool Crypto::Cert::OpenSSLCert::GetNotBefore(Data::DateTime *dt)
 {
-	ASN1_TIME *notBefore = X509_get_notBefore(this->clsData->x509);
-	tm tm;
-	ASN1_TIME_to_tm(notBefore, &tm);
-	dt->SetValue((UInt16)(tm.tm_year + 1900), tm.tm_mon + 1, tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec, 0, (Int8)(tm.tm_gmtoff / 60 / 15));
-	return true;
+	return FromASN1_TIME(X509_get_notBefore(this->clsData->x509), dt);
 }
 
 Bool Crypto::Cert::OpenSSLCert::GetNotAfter(Data::DateTime *dt)
 {
-	ASN1_TIME *notBefore = X509_get_notAfter(this->clsData->x509);
-	tm tm;
-	ASN1_TIME_to_tm(notBefore, &tm);
-	dt->SetValue((UInt16)(tm.tm_year + 1900), tm.tm_mon + 1, tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec, 0, (Int8)(tm.tm_gmtoff / 60 / 15));
-	return true;
+	return FromASN1_TIME(X509_get_notAfter(this->clsData->x509), dt);
 }
 
 Bool Crypto::Cert::OpenSSLCert::IsSelfSigned()
