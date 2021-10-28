@@ -28,6 +28,21 @@ void Crypto::Cert::X509PKCS12::ToShortName(Text::StringBuilderUTF *sb)
 	}*/
 }
 
+UOSInt Crypto::Cert::X509PKCS12::GetCertCount()
+{
+	return 0;
+}
+
+Bool Crypto::Cert::X509PKCS12::GetCertName(UOSInt index, Text::StringBuilderUTF *sb)
+{
+	return false;
+}
+
+Crypto::Cert::X509Cert *Crypto::Cert::X509PKCS12::NewCert(UOSInt index)
+{
+	return 0;
+}
+
 Net::ASN1Data *Crypto::Cert::X509PKCS12::Clone()
 {
 	Crypto::Cert::X509PKCS12 *asn1;

@@ -39,6 +39,7 @@ namespace Crypto
 			static void FreeExtensions(CertExtensions *ext);
 		};
 		class X509Key;
+		class X509Cert;
 
 		class X509File : public Net::ASN1Data
 		{
@@ -106,6 +107,10 @@ namespace Crypto
 			virtual Net::ASN1Data::ASN1Type GetASN1Type();
 			virtual FileType GetFileType() = 0;
 			virtual void ToShortName(Text::StringBuilderUTF *sb) = 0;
+
+			virtual UOSInt GetCertCount();
+			virtual Bool GetCertName(UOSInt index, Text::StringBuilderUTF *sb);
+			virtual X509Cert *NewCert(UOSInt index);
 
 			void ToShortString(Text::StringBuilderUTF *sb);
 			Bool IsSignatureKey(Net::SSLEngine *ssl, Crypto::Cert::X509Key *key);

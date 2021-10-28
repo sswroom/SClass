@@ -37,6 +37,7 @@ void Parser::FileParser::X509Parser::PrepareSelector(IO::IFileSelector *selector
 		selector->AddFilter((const UTF8Char*)"*.pfx", (const UTF8Char*)"PKCS 12 KeyStore File");
 		selector->AddFilter((const UTF8Char*)"*.pem", (const UTF8Char*)"PEM File");
 		selector->AddFilter((const UTF8Char*)"*.der", (const UTF8Char*)"DER File");
+		selector->AddFilter((const UTF8Char*)"*.cer", (const UTF8Char*)"CER File");
 	}
 }
 
@@ -151,6 +152,14 @@ Crypto::Cert::X509File *Parser::FileParser::X509Parser::ParseBuff(const UInt8 *b
 		else if (Text::StrEndsWithICase(fileName, (const UTF8Char*)".DER"))
 		{
 			NEW_CLASS(ret, Crypto::Cert::X509Cert(fileName, buff, buffSize));
+		}
+		else if (Text::StrEndsWithICase(fileName, (const UTF8Char*)".CER"))
+		{
+			NEW_CLASS(ret, Crypto::Cert::X509Cert(fileName, buff, buffSize));
+		}
+		else if (Text::StrEndsWithICase(fileName, (const UTF8Char*)".P7B"))
+		{
+			NEW_CLASS(ret, Crypto::Cert::X509PKCS7(fileName, buff, buffSize));
 		}
 		else
 		{

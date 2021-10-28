@@ -959,6 +959,21 @@ Net::ASN1Data::ASN1Type Crypto::Cert::X509File::GetASN1Type()
 	return ASN1Type::X509;
 }
 
+UOSInt Crypto::Cert::X509File::GetCertCount()
+{
+	return 0;
+}
+
+Bool Crypto::Cert::X509File::GetCertName(UOSInt index, Text::StringBuilderUTF *sb)
+{
+	return false;
+}
+
+Crypto::Cert::X509Cert *Crypto::Cert::X509File::NewCert(UOSInt index)
+{
+	return 0;
+}
+
 void Crypto::Cert::X509File::ToShortString(Text::StringBuilderUTF *sb)
 {
 	sb->Append(FileTypeGetName(this->GetFileType()));

@@ -4,7 +4,8 @@
 
 enum MenuItem
 {
-	MNU_SAVE = 100
+	MNU_SAVE = 100,
+	MNU_CERT_0 = 500
 };
 
 SSWR::AVIRead::AVIRASN1DataForm::AVIRASN1DataForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Net::ASN1Data *asn1) : UI::GUIForm(parent, 1024, 768, ui)
@@ -20,6 +21,36 @@ SSWR::AVIRead::AVIRASN1DataForm::AVIRASN1DataForm(UI::GUIClientControl *parent, 
 	NEW_CLASS(this->mnuMain, UI::GUIMainMenu());
 	mnu = this->mnuMain->AddSubMenu((const UTF8Char*)"&File");
 	mnu->AddItem((const UTF8Char*)"Save", MNU_SAVE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	if (this->asn1->GetASN1Type() == Net::ASN1Data::ASN1Type::X509)
+	{
+		Crypto::Cert::X509File *x509 = (Crypto::Cert::X509Cert*)this->asn1;
+		Text::StringBuilderUTF8 sb;
+		UI::GUIMenu *mnu2;
+		UOSInt i;
+		UOSInt j;
+		mnu2 = mnu->AddSubMenu((const UTF8Char*)"Certs");
+		i = 0;
+		j = x509->GetCertCount();
+		if (j == 0)
+		{
+			mnu2->AddItem((const UTF8Char*)"None", MNU_CERT_0, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+		}
+		else
+		{
+			while (i < j)
+			{
+				sb.ClearStr();
+				if (!x509->GetCertName(i, &sb))
+				{
+					sb.ClearStr();
+					sb.Append((const UTF8Char*)"Cert ");
+					sb.AppendUOSInt(i);
+				}
+				mnu2->AddItem(sb.ToString(), (UInt16)(MNU_CERT_0 + i), UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+				i++;
+			}
+		}
+	}
 	this->SetMenu(this->mnuMain);
 
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
@@ -57,6 +88,16 @@ void SSWR::AVIRead::AVIRASN1DataForm::EventMenuClicked(UInt16 cmdId)
 	{
 	case MNU_SAVE:
 		this->core->SaveData(this, this->asn1, L"ASN1Data");
+		break;
+	default:
+		if (cmdId >= MNU_CERT_0)
+		{
+			Crypto::Cert::X509Cert *cert = ((Crypto::Cert::X509File*)this->asn1)->NewCert(cmdId - MNU_CERT_0);
+			if (cert)
+			{
+				this->core->OpenObject(cert);
+			}
+		}
 		break;
 	}
 }

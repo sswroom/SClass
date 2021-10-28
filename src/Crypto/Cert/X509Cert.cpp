@@ -42,6 +42,26 @@ void Crypto::Cert::X509Cert::ToShortName(Text::StringBuilderUTF *sb)
 	this->GetSubjectCN(sb);
 }
 
+UOSInt Crypto::Cert::X509Cert::GetCertCount()
+{
+	return 0;
+}
+
+Bool Crypto::Cert::X509Cert::GetCertName(UOSInt index, Text::StringBuilderUTF *sb)
+{
+	if (index != 0)
+		return false;
+	this->GetSubjectCN(sb);
+	return true;
+}
+
+Crypto::Cert::X509Cert *Crypto::Cert::X509Cert::NewCert(UOSInt index)
+{
+	if (index != 0)
+		return 0;
+	return (Crypto::Cert::X509Cert*)this->Clone();
+}
+
 Net::ASN1Data *Crypto::Cert::X509Cert::Clone()
 {
 	Crypto::Cert::X509Cert *asn1;
