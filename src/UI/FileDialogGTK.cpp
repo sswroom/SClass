@@ -303,7 +303,7 @@ Bool UI::FileDialog::ShowDialog(ControlHandle *ownerHandle)
 	}
 	UOSInt si = nFilterIndex;
 	GSList *list = gtk_file_chooser_list_filters(chooser);
-	while (true)
+	while (list)
 	{
 		if (si == 0)
 		{

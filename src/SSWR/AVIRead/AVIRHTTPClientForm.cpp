@@ -283,6 +283,48 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnSaveClicked(void *userObj)
 	}
 	UI::FileDialog *dlg;
 	NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"AVIRead", L"HTTPClientSave", true));
+	if (me->respHeaders)
+	{
+		UOSInt i = me->respHeaders->GetCount();
+		while (i-- > 0)
+		{
+			const UTF8Char *csptr = me->respHeaders->GetItem(i);
+			if (Text::StrStartsWithICase(csptr, (const UTF8Char*)"Content-Disposition: "))
+			{
+				csptr = csptr + 21;
+				Text::StringBuilderUTF8 sb;
+				sb.Append(csptr);
+				UTF8Char *sarr[2];
+				UOSInt j;
+				sarr[1] = sb.ToString();
+				while (true)
+				{
+					j = Text::StrSplitTrim(sarr, 2, sarr[1], ';');
+					if (Text::StrStartsWith(sarr[0], (const UTF8Char*)"filename="))
+					{
+						if (sarr[0][9] == '\"')
+						{
+							j = Text::StrIndexOf(&sarr[0][10], '\"');
+							if (j != INVALID_INDEX)
+							{
+								sarr[0][10 + j] = 0;
+							}
+							dlg->SetFileName(&sarr[0][10]);
+						}
+						else
+						{
+							dlg->SetFileName(&sarr[0][9]);
+						}
+						break;
+					}
+					if (j != 2)
+					{
+						break;
+					}
+				}
+			}
+		}
+	}
 	if (dlg->ShowDialog(me->GetHandle()))
 	{
 		IO::FileStream *fs;
