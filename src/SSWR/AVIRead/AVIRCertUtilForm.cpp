@@ -108,6 +108,12 @@ void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnFileDrop(void *userObj, const 
 					case Crypto::Cert::X509File::FileType::PublicKey:
 						DEL_CLASS(x509);
 						break;
+					case Crypto::Cert::X509File::FileType::PKCS12:
+						DEL_CLASS(x509);
+						break;
+					case Crypto::Cert::X509File::FileType::PKCS7:
+						DEL_CLASS(x509);
+						break;
 					}
 				}
 				else

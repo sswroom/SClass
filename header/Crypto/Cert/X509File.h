@@ -50,7 +50,9 @@ namespace Crypto
 				CertRequest,
 				PrivateKey,
 				Jks,
-				PublicKey
+				PublicKey,
+				PKCS7,
+				PKCS12
 			};
 
 			enum class KeyType

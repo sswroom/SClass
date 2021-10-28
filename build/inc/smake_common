@@ -934,6 +934,10 @@ Crypto/Cert/X509File.h: ../../src/Crypto/Cert/X509File.cpp
 @X509File.o
 Crypto/Cert/X509Key.h: ../../src/Crypto/Cert/X509Key.cpp
 @X509Key.o
+Crypto/Cert/X509PKCS7.h: ../../src/Crypto/Cert/X509PKCS7.cpp
+@X509PKCS7.o
+Crypto/Cert/X509PKCS12.h: ../../src/Crypto/Cert/X509PKCS12.cpp
+@X509PKCS12.o
 Crypto/Cert/X509PrivKey.h: ../../src/Crypto/Cert/X509PrivKey.cpp
 @X509PrivKey.o
 Crypto/Cert/X509PubKey.h: ../../src/Crypto/Cert/X509PubKey.cpp
@@ -3682,6 +3686,8 @@ X509Cert.o: ../../src/Crypto/Cert/X509Cert.cpp
 X509CertReq.o: ../../src/Crypto/Cert/X509CertReq.cpp
 X509File.o: ../../src/Crypto/Cert/X509File.cpp
 X509Key.o: ../../src/Crypto/Cert/X509Key.cpp
+X509PKCS7.o: ../../src/Crypto/Cert/X509PKCS7.cpp
+X509PKCS12.o: ../../src/Crypto/Cert/X509PKCS12.cpp
 X509PrivKey.o: ../../src/Crypto/Cert/X509PrivKey.cpp
 X509PubKey.o: ../../src/Crypto/Cert/X509PubKey.cpp
 AES128.o: ../../src/Crypto/Encrypt/AES128.cpp

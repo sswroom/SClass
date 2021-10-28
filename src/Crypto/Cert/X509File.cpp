@@ -1019,6 +1019,10 @@ const UTF8Char *Crypto::Cert::X509File::FileTypeGetName(FileType fileType)
 		return (const UTF8Char*)"JavaKeyStore";
 	case FileType::PublicKey:
 		return (const UTF8Char*)"PublicKey";
+	case FileType::PKCS7:
+		return (const UTF8Char*)"PKCS7";
+	case FileType::PKCS12:
+		return (const UTF8Char*)"PKCS12";
 	default:
 		return (const UTF8Char*)"Unknown";
 	}
