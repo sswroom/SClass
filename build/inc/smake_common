@@ -1514,6 +1514,8 @@ IO/FileAnalyse/EBMLFileAnalyse.h: ../../src/IO/FileAnalyse/EBMLFileAnalyse.cpp
 @EBMLFileAnalyse.o
 IO/FileAnalyse/EXEFileAnalyse.h: ../../src/IO/FileAnalyse/EXEFileAnalyse.cpp
 @EXEFileAnalyse.o
+IO/FileAnalyse/FGDBFileAnalyse.h: ../../src/IO/FileAnalyse/FGDBFileAnalyse.cpp
+@FGDBFileAnalyse.o
 IO/FileAnalyse/FLVFileAnalyse.h: ../../src/IO/FileAnalyse/FLVFileAnalyse.cpp
 @FLVFileAnalyse.o
 IO/FileAnalyse/FrameDetail.h: ../../src/IO/FileAnalyse/FrameDetail.cpp
@@ -3969,6 +3971,7 @@ SIM7000SocketFactory.o: ../../src/IO/Device/SIM7000SocketFactory.cpp
 TH10SB.o: ../../src/IO/Device/TH10SB.cpp
 EBMLFileAnalyse.o: ../../src/IO/FileAnalyse/EBMLFileAnalyse.cpp
 EXEFileAnalyse.o: ../../src/IO/FileAnalyse/EXEFileAnalyse.cpp
+FGDBFileAnalyse.o: ../../src/IO/FileAnalyse/FGDBFileAnalyse.cpp
 FLVFileAnalyse.o: ../../src/IO/FileAnalyse/FLVFileAnalyse.cpp
 FrameDetail.o: ../../src/IO/FileAnalyse/FrameDetail.cpp
 FrameDetailHandler.o: ../../src/IO/FileAnalyse/FrameDetailHandler.cpp

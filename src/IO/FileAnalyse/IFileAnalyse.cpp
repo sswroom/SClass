@@ -2,6 +2,7 @@
 #include "Data/ByteTool.h"
 #include "IO/FileAnalyse/EBMLFileAnalyse.h"
 #include "IO/FileAnalyse/EXEFileAnalyse.h"
+#include "IO/FileAnalyse/FGDBFileAnalyse.h"
 #include "IO/FileAnalyse/FLVFileAnalyse.h"
 #include "IO/FileAnalyse/IFileAnalyse.h"
 #include "IO/FileAnalyse/JPGFileAnalyse.h"
@@ -97,6 +98,10 @@ IO::FileAnalyse::IFileAnalyse *IO::FileAnalyse::IFileAnalyse::AnalyseFile(IO::IS
 	else if (buffSize >= 16 && *(Int32*)&buff[0] == *(Int32*)"Smpf")
 	{
 		NEW_CLASS(analyse, IO::FileAnalyse::SPKFileAnalyse(fd));
+	}
+	else if (ReadUInt32(buff) == 3 && ReadUInt64(&buff[24]) == fd->GetDataSize())
+	{
+		NEW_CLASS(analyse, IO::FileAnalyse::FGDBFileAnalyse(fd));
 	}
 
 	if (analyse && analyse->IsError())
