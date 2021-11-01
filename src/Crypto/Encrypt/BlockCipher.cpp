@@ -5,7 +5,7 @@
 Crypto::Encrypt::BlockCipher::BlockCipher(UOSInt blockSize)
 {
 	this->blockSize = blockSize;
-	this->cm = CM_ECB;
+	this->cm = ChainMode::ECB;
 	this->iv = MemAlloc(UInt8, blockSize);
 	MemClear(this->iv, this->blockSize);
 }
@@ -21,7 +21,7 @@ UOSInt Crypto::Encrypt::BlockCipher::Encrypt(const UInt8 *inBuff, UOSInt inSize,
 	UOSInt blkCnt = 0;
 	switch (this->cm)
 	{
-	case CM_ECB:
+	case ChainMode::ECB:
 		while (inSize >= this->blockSize)
 		{
 			EncryptBlock(inBuff, outBuff, encParam);
@@ -40,7 +40,7 @@ UOSInt Crypto::Encrypt::BlockCipher::Encrypt(const UInt8 *inBuff, UOSInt inSize,
 			MemFree(blk);
 		}
 		return blkCnt * this->blockSize;
-	case CM_CBC:
+	case ChainMode::CBC:
 		blk = MemAlloc(UInt8, this->blockSize);
 		MemCopyNO(blk, this->iv, this->blockSize);
 		while (inSize >= blockSize)
@@ -61,7 +61,7 @@ UOSInt Crypto::Encrypt::BlockCipher::Encrypt(const UInt8 *inBuff, UOSInt inSize,
 		}
 		MemFree(blk);
 		return blkCnt * this->blockSize;
-	case CM_PCBC:
+	case ChainMode::PCBC:
 		blk = MemAlloc(UInt8, this->blockSize);
 		MemCopyNO(blk, this->iv, this->blockSize);
 		while (inSize >= blockSize)
@@ -82,7 +82,7 @@ UOSInt Crypto::Encrypt::BlockCipher::Encrypt(const UInt8 *inBuff, UOSInt inSize,
 		}
 		MemFree(blk);
 		return blkCnt * this->blockSize;
-	case CM_CFB:
+	case ChainMode::CFB:
 		blk = MemAlloc(UInt8, this->blockSize);
 		MemCopyNO(blk, this->iv, this->blockSize);
 		while (inSize >= blockSize)
@@ -103,7 +103,7 @@ UOSInt Crypto::Encrypt::BlockCipher::Encrypt(const UInt8 *inBuff, UOSInt inSize,
 		}
 		MemFree(blk);
 		return blkCnt * this->blockSize;
-	case CM_OFB:
+	case ChainMode::OFB:
 		blk = MemAlloc(UInt8, this->blockSize);
 		MemCopyNO(blk, this->iv, this->blockSize);
 		while (inSize >= blockSize)
@@ -135,7 +135,7 @@ UOSInt Crypto::Encrypt::BlockCipher::Decrypt(const UInt8 *inBuff, UOSInt inSize,
 	UOSInt blkCnt = 0;
 	switch (this->cm)
 	{
-	case CM_ECB:
+	case ChainMode::ECB:
 		while (inSize >= this->blockSize)
 		{
 			DecryptBlock(inBuff, outBuff, decParam);
@@ -145,7 +145,7 @@ UOSInt Crypto::Encrypt::BlockCipher::Decrypt(const UInt8 *inBuff, UOSInt inSize,
 			inSize = inSize - this->blockSize;
 		}
 		return blkCnt * this->blockSize;
-	case CM_CBC:
+	case ChainMode::CBC:
 		blk = MemAlloc(UInt8, this->blockSize);
 		MemCopyNO(blk, this->iv, this->blockSize);
 		while (inSize >= this->blockSize)
@@ -160,7 +160,7 @@ UOSInt Crypto::Encrypt::BlockCipher::Decrypt(const UInt8 *inBuff, UOSInt inSize,
 		}
 		MemFree(blk);
 		return blkCnt * this->blockSize;
-	case CM_PCBC:
+	case ChainMode::PCBC:
 		blk = MemAlloc(UInt8, this->blockSize);
 		MemCopyNO(blk, this->iv, this->blockSize);
 		while (inSize >= this->blockSize)
@@ -175,7 +175,7 @@ UOSInt Crypto::Encrypt::BlockCipher::Decrypt(const UInt8 *inBuff, UOSInt inSize,
 		}
 		MemFree(blk);
 		return blkCnt * this->blockSize;
-	case CM_CFB:
+	case ChainMode::CFB:
 		blk = MemAlloc(UInt8, this->blockSize);
 		MemCopyNO(blk, this->iv, this->blockSize);
 		while (inSize >= this->blockSize)
@@ -190,7 +190,7 @@ UOSInt Crypto::Encrypt::BlockCipher::Decrypt(const UInt8 *inBuff, UOSInt inSize,
 		}
 		MemFree(blk);
 		return blkCnt * this->blockSize;
-	case CM_OFB:
+	case ChainMode::OFB:
 		blk = MemAlloc(UInt8, this->blockSize);
 		MemCopyNO(blk, this->iv, this->blockSize);
 		while (inSize >= this->blockSize)

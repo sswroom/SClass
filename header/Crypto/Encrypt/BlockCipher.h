@@ -6,18 +6,17 @@ namespace Crypto
 {
 	namespace Encrypt
 	{
+		enum class ChainMode
+		{
+			ECB,
+			CBC,
+			PCBC,
+			CFB,
+			OFB
+		};
+
 		class BlockCipher : public ICrypto
 		{
-		public:
-			typedef enum
-			{
-				CM_ECB,
-				CM_CBC,
-				CM_PCBC,
-				CM_CFB,
-				CM_OFB
-			} ChainMode;
-
 		protected:
 			UInt8 *iv;
 			UOSInt blockSize;

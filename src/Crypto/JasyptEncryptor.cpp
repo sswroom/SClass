@@ -61,7 +61,7 @@ Crypto::Encrypt::ICrypto *Crypto::JasyptEncryptor::CreateCrypto(const UInt8 *iv,
 	case CA_AES256:
 	default:
 		NEW_CLASS(bCipher, Crypto::Encrypt::AES256(keyBuff));
-		bCipher->SetChainMode(Crypto::Encrypt::BlockCipher::CM_CBC);
+		bCipher->SetChainMode(Crypto::Encrypt::ChainMode::CBC);
 		bCipher->SetIV(iv);
 		return bCipher;
 	}

@@ -9,7 +9,7 @@ void Crypto::Hash::Bcrypt::CalcHash(UInt32 cost, const UInt8 *salt, const UTF8Ch
 {
 	Crypto::Encrypt::Blowfish bf;
 	bf.EksBlowfishSetup(cost, salt, password);
-	bf.SetChainMode(Crypto::Encrypt::BlockCipher::CM_ECB);
+	bf.SetChainMode(Crypto::Encrypt::ChainMode::ECB);
 	UInt32 tmpBuff[6];
 	const UInt8 *initVal = (const UInt8*)"OrpheanBeholderScryDoubt";
 	tmpBuff[0] = ReadMUInt32(&initVal[0]);
