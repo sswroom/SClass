@@ -22,7 +22,7 @@ namespace IO
 			PIT_COMPRESSED
 		} PackItemType;
 
-		typedef struct
+		struct CompressInfo
 		{
 			UInt64 decSize;
 			Data::Compress::Decompressor::CompressMethod compMethod;
@@ -31,7 +31,7 @@ namespace IO
 			UInt32 compExtraSize;
 			UInt8 *compExtras;
 			UInt8 checkBytes[32];
-		} CompressInfo;
+		};
 
 		const UTF8Char *name;
 		IO::IStreamData *fd;
