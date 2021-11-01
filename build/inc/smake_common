@@ -85,6 +85,7 @@ nodeps:
 @VideoCaptureTest
 @MemFill
 @ACMETest
+@ADFSTest
 @ARPScan
 @ARPTest
 @HTTPServerTest
@@ -450,6 +451,9 @@ MemFill:
 ACMETest:
 @ACMETest.o
 @ConsoleStartup.o
+ADFSTest:
+@ADFSTest.o
+@ConsoleStartup.o
 ARPScan:
 @ARPScanMain.o
 @ConsoleStartup.o
@@ -811,6 +815,7 @@ VideoCheckMain.o: ../../main/Media/VideoCheckMain.cpp
 !-lavformat
 MemFillTest.o: ../../main/Memory/MemFill.cpp
 ACMETest.o: ../../main/NetTest/ACMETest.cpp
+ADFSTest.o: ../../main/NetTest/ADFSTest.cpp
 ARPScanMain.o: ../../main/NetTest/ARPScanMain.cpp
 ARPTest.o: ../../main/NetTest/ARPTest.cpp
 HTTPServerTest.o: ../../main/NetTest/HTTPServerTest.cpp
@@ -2576,6 +2581,10 @@ Net/WebServer/MemoryWebSession.h: ../../src/Net/WebServer/MemoryWebSession.cpp
 @MemoryWebSession.o
 Net/WebServer/MemoryWebSessionManager.h: ../../src/Net/WebServer/MemoryWebSessionManager.cpp
 @MemoryWebSessionManager.o
+Net/WebServer/PrintLogWebHandler.h: ../../src/Net/WebServer/PrintLogWebHandler.cpp
+@PrintLogWebHandler.o
+Net/WebServer/PrintLogWebResponse.h: ../../src/Net/WebServer/PrintLogWebResponse.cpp
+@PrintLogWebResponse.o
 Net/WebServer/RESTfulHandler.h: ../../src/Net/WebServer/RESTfulHandler.cpp
 @RESTfulHandler.o
 Net/WebServer/SiteRootHandler.h: ../../src/Net/WebServer/SiteRootHandler.cpp
@@ -4441,6 +4450,8 @@ IWebResponse.o: ../../src/Net/WebServer/IWebResponse.cpp
 IWebSessionManager.o: ../../src/Net/WebServer/IWebSessionManager.cpp
 MemoryWebSession.o: ../../src/Net/WebServer/MemoryWebSession.cpp
 MemoryWebSessionManager.o: ../../src/Net/WebServer/MemoryWebSessionManager.cpp
+PrintLogWebHandler.o: ../../src/Net/WebServer/PrintLogWebHandler.cpp
+PrintLogWebResponse.o: ../../src/Net/WebServer/PrintLogWebResponse.cpp
 RESTfulHandler.o: ../../src/Net/WebServer/RESTfulHandler.cpp
 SiteRootHandler.o: ../../src/Net/WebServer/SiteRootHandler.cpp
 WebConnection.o: ../../src/Net/WebServer/WebConnection.cpp

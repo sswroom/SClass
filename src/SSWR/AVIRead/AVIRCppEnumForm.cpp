@@ -39,7 +39,7 @@ void SSWR::AVIRead::AVIRCppEnumForm::ConvEnum()
 
 	this->txtPrefix->GetText(&sbPrefix);
 	this->txtSource->GetText(&srcSb);
-	if (Text::CPPText::ParseEnum(&enumList, srcSb.ToString()))
+	if (Text::CPPText::ParseEnum(&enumList, srcSb.ToString(), &sbPrefix))
 	{
 		UOSInt i = 0;
 		UOSInt j = enumList.GetCount();

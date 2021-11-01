@@ -38,7 +38,8 @@ namespace Net
 			{
 				HTTP1_0,
 				HTTP1_1,
-				RTSP1_0
+				RTSP1_0,
+				HTTP2_0
 			};
 
 			static UTF8Char PARAM_SEPERATOR;
@@ -97,6 +98,7 @@ namespace Net
 			const UTF8Char *GetOSVer();
 
 			static const Char *RequestMethodGetName(RequestMethod reqMeth);
+			static const Char *RequestProtocolGetName(RequestProtocol reqProto);
 		};
 	}
 }

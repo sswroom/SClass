@@ -337,3 +337,20 @@ const Char *Net::WebServer::IWebRequest::RequestMethodGetName(RequestMethod reqM
 		return "?";
 	}
 }
+
+const Char *Net::WebServer::IWebRequest::RequestProtocolGetName(RequestProtocol reqProto)
+{
+	switch (reqProto)
+	{
+	case RequestProtocol::HTTP1_0:
+		return "HTTP/1.0";
+	case RequestProtocol::HTTP1_1:
+		return "HTTP/1.1";
+	case RequestProtocol::RTSP1_0:
+		return "RTSP/1.0";
+	case RequestProtocol::HTTP2_0:
+		return "HTTP/2";
+	default:
+		return "Unknown";
+	}
+}

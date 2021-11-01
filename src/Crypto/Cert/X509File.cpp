@@ -772,7 +772,7 @@ Bool Crypto::Cert::X509File::NamesGet(const UInt8 *pdu, const UInt8 *pduEnd, Cer
 
 Bool Crypto::Cert::X509File::ExtensionsGet(const UInt8 *pdu, const UInt8 *pduEnd, CertExtensions *ext)
 {
-	Char sbuff[12];
+	Char sbuff[32];
 	const UInt8 *itemPDU;
 	const UInt8 *oidPDU;
 	const UInt8 *strPDU;

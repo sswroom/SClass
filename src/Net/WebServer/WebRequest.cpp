@@ -595,6 +595,7 @@ void Net::WebServer::WebRequest::GetRequestURLBase(Text::StringBuilderUTF *sb)
 	{
 	case RequestProtocol::HTTP1_0:
 	case RequestProtocol::HTTP1_1:
+	case RequestProtocol::HTTP2_0:
 		if (this->secureConn)
 		{
 			sb->Append((const UTF8Char*)"https://");

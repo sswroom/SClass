@@ -227,7 +227,11 @@ void Net::WebServer::WebConnection::ReceivedData(const UInt8 *buff, UOSInt size)
 						{
 							Net::WebServer::IWebRequest::RequestProtocol reqProto;
 							Bool secureConn = false;
-							if (Text::StrEquals(sarr[2], "HTTP/1.1"))
+							if (Text::StrEquals(sarr[2], "HTTP/2"))
+							{
+								reqProto = Net::WebServer::IWebRequest::RequestProtocol::HTTP2_0;
+							}
+							else if (Text::StrEquals(sarr[2], "HTTP/1.1"))
 							{
 								reqProto = Net::WebServer::IWebRequest::RequestProtocol::HTTP1_1;
 							}

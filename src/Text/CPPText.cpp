@@ -193,7 +193,7 @@ void Text::CPPText::FromCPPString(Text::StringBuilderUTF *sb, const UTF8Char *st
 	}
 }
 
-Bool Text::CPPText::ParseEnum(Data::ArrayList<const UTF8Char*> *enumEntries, const UTF8Char *cppEnumStr)
+Bool Text::CPPText::ParseEnum(Data::ArrayList<const UTF8Char*> *enumEntries, const UTF8Char *cppEnumStr, Text::StringBuilderUTF *sbPrefix)
 {
 	IO::MemoryStream mstm((UInt8*)cppEnumStr, Text::StrCharCnt(cppEnumStr), (const UTF8Char*)"Text.CPPText.ParseEnum");
 	Text::Cpp::CppReader reader(&mstm);
@@ -225,6 +225,14 @@ Bool Text::CPPText::ParseEnum(Data::ArrayList<const UTF8Char*> *enumEntries, con
 		if (!reader.NextWord(&sb))
 		{
 			return false;
+		}
+		if (sb.Equals((const UTF8Char*)"class"))
+		{
+			if (!reader.NextWord(sbPrefix))
+			{
+				return false;
+			}
+			sbPrefix->Append((const UTF8Char*)"::");
 		}
 		sb.ClearStr();
 		if (!reader.NextWord(&sb))
