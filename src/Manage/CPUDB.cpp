@@ -415,6 +415,7 @@ Manage::CPUDB::CPUSpec Manage::CPUDB::cpuList[] = {
 	{"Intel i5-8250U",   Manage::ThreadContext::CT_X86_64, Manage::CPUVendor::CB_INTEL,     "Core i5-8250U",                 15,   14,  "x86 with HT",  4,  1600, 3400, 32,  32, 0,              0,  0,    0,    0,   0,  0,              0,  0,    0,    0,   0,  1024, 6144,  "HD Graphics 620"},
 	{"Intel i5-8265U",   Manage::ThreadContext::CT_X86_64, Manage::CPUVendor::CB_INTEL,     "Core i5-8265U",                 15,   14,  "x86 with HT",  4,  1600, 3900, 32,  32, 0,              0,  0,    0,    0,   0,  0,              0,  0,    0,    0,   0,  1024, 6144,  "HD Graphics 620"},
 	{"Intel i5-10210U",  Manage::ThreadContext::CT_X86_64, Manage::CPUVendor::CB_INTEL,     "Core i5-10210U",                15,   14,  "x86 with HT",  4,  1600, 4200, 32,  32, 0,              0,  0,    0,    0,   0,  0,              0,  0,    0,    0,   0,  1024, 6144,  "HD Graphics 620"},
+	{"Intel i7-1165G7",  Manage::ThreadContext::CT_X86_64, Manage::CPUVendor::CB_INTEL,     "Core i7-1165G7",                28,   10,  "x86 with HT",  4,  2800, 4700, 32,  32, 0,              0,  0,    0,    0,   0,  0,              0,  0,    0,    0,   0,  5120, 12288, "Iris Xe G7"},
 	{"Intel i7-3537U",   Manage::ThreadContext::CT_X86_64, Manage::CPUVendor::CB_INTEL,     "Core i7-3537U",                 17,   22,  "x86 with HT",  2,  2000, 3100, 32,  32, 0,              0,  0,    0,    0,   0,  0,              0,  0,    0,    0,   0,  256,  4096,  "HD Graphics 4000"},
 	{"Intel i7-4771",    Manage::ThreadContext::CT_X86_64, Manage::CPUVendor::CB_INTEL,     "Core i7-4771",                  84,   22,  "x86 with HT",  4,  3500, 3900, 32,  32, 0,              0,  0,    0,    0,   0,  0,              0,  0,    0,    0,   0,  256,  8192,  "HD Graphics 4600"},
 	{"Intel i7-4790",    Manage::ThreadContext::CT_X86_64, Manage::CPUVendor::CB_INTEL,     "Core i7-4790",                  84,   22,  "x86 with HT",  4,  3600, 4000, 32,  32, 0,              0,  0,    0,    0,   0,  0,              0,  0,    0,    0,   0,  256,  8192,  "HD Graphics 4600"},
@@ -690,6 +691,7 @@ Manage::CPUDB::CPUSpec Manage::CPUDB::cpuList[] = {
 
 Manage::CPUDB::CPUMapping Manage::CPUDB::cpuX86Map[] = {
 	{"11th Gen Intel(R) Core(TM) i5-1135G7 @ 2.40GHz",   "Intel i5-1135G7"},
+	{"11th Gen Intel(R) Core(TM) i7-1165G7 @ 2.80GHz",   "Intel i7-1165G7"},
 	{"AMD A10-9700E RADEON R7, 10 COMPUTE CORES 4C+6G",  "AD9700AHM44AB"},
 	{"AMD Phenom(tm) 9650 Quad-Core Processor",          "HD9650WCGHBOX"},
 	{"AMD Turion(tm) Neo X2 Dual Core Processor L625",   "TMZL625OAX5DY"},
