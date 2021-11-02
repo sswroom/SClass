@@ -1701,6 +1701,8 @@ Map/ESRI/ESRIMDBLayer.h: ../../src/Map/ESRI/ESRIMDBLayer.cpp
 @ESRIMDBLayer.o
 Map/ESRI/ESRITileMap.h: ../../src/Map/ESRI/ESRITileMap.cpp
 @ESRITileMap.o
+Map/ESRI/FileGDBUtil.h: ../../src/Map/ESRI/FileGDBUtil.cpp
+@FileGDBUtil.o
 Map/GoogleMap/GoogleMapsUtil.h: ../../src/Map/GoogleMap/GoogleMapsUtil.cpp
 @GoogleMapsUtil.o
 Map/GoogleMap/GoogleSearcher.h: ../../src/Map/GoogleMap/GoogleSearcher.cpp
@@ -4056,6 +4058,7 @@ VectorLayer.o: ../../src/Map/VectorLayer.cpp
 WebImageLayer.o: ../../src/Map/WebImageLayer.cpp
 ESRIMDBLayer.o: ../../src/Map/ESRI/ESRIMDBLayer.cpp
 ESRITileMap.o: ../../src/Map/ESRI/ESRITileMap.cpp
+FileGDBUtil.o: ../../src/Map/ESRI/FileGDBUtil.cpp
 GoogleMapsUtil.o: ../../src/Map/GoogleMap/GoogleMapsUtil.cpp
 GoogleSearcher.o: ../../src/Map/GoogleMap/GoogleSearcher.cpp
 GoogleStaticMap.o: ../../src/Map/GoogleMap/GoogleStaticMap.cpp

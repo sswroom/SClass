@@ -29,31 +29,30 @@ UInt32 __stdcall IO::FileAnalyse::FGDBFileAnalyse::ParseThread(void *userObj)
 	tag->tagType = TagType::Field;
 	me->tags->Add(tag);
 
-//	UInt8 *fieldBuff = MemAlloc(UInt8, lastSize);
+	UInt8 *fieldBuff = MemAlloc(UInt8, tag->size);
+	me->fd->GetRealData(40, tag->size, fieldBuff);
+	me->tableInfo = Map::ESRI::FileGDBUtil::ParseFieldDesc(fieldBuff);
+	MemFree(fieldBuff);
 
-/*	ofst = me->hdrSize + 4;
+	ofst = 40 + tag->size;
 	dataSize = me->fd->GetDataSize();
-	lastSize = 0;
-	while (ofst < dataSize - 11 && !me->threadToStop)
+	while (ofst < dataSize - 4 && !me->threadToStop)
 	{
-		if (me->fd->GetRealData(ofst - 4, 15, tagHdr) != 15)
+		if (me->fd->GetRealData(ofst, 4, tagHdr) != 4)
 			break;
 		
-		if (ReadMUInt32(tagHdr) != lastSize)
-			break;
-
-		lastSize = ReadMUInt24(&tagHdr[5]) + 11;
-		if (lastSize <= 11)
+		lastSize = ReadUInt32(tagHdr);
+		if (ofst + 4 + lastSize > dataSize)
 		{
 			break;
 		}
 		tag = MemAlloc(IO::FileAnalyse::FGDBFileAnalyse::TagInfo, 1);
 		tag->ofst = ofst;
-		tag->size = lastSize;
-		tag->tagType = tagHdr[4] & 0x1f;
+		tag->size = lastSize + 4;
+		tag->tagType = TagType::Row;
 		me->tags->Add(tag);
 		ofst += lastSize + 4;
-	}*/
+	}
 	
 	me->threadRunning = false;
 	return 0;
@@ -67,6 +66,7 @@ IO::FileAnalyse::FGDBFileAnalyse::FGDBFileAnalyse(IO::IStreamData *fd)
 	this->pauseParsing = false;
 	this->threadToStop = false;
 	this->threadStarted = false;
+	this->tableInfo = 0;
 	NEW_CLASS(this->tags, Data::SyncArrayList<IO::FileAnalyse::FGDBFileAnalyse::TagInfo*>());
 	fd->GetRealData(0, 40, buff);
 	if (ReadUInt64(&buff[24]) != fd->GetDataSize())
@@ -92,7 +92,11 @@ IO::FileAnalyse::FGDBFileAnalyse::~FGDBFileAnalyse()
 			Sync::Thread::Sleep(10);
 		}
 	}
-
+	if (this->tableInfo)
+	{
+		Map::ESRI::FileGDBUtil::FreeTableInfo(this->tableInfo);
+		this->tableInfo = 0;
+	}
 	SDEL_CLASS(this->fd);
 	LIST_FREE_FUNC(this->tags, MemFree);
 	DEL_CLASS(this->tags);
@@ -177,7 +181,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::FGDBFileAnalyse::GetFrameDetail(U
 	{
 		frame->AddUInt(0, 4, "Field Desc Size", ReadUInt32(&tagData[0]));
 		frame->AddUInt(4, 4, "Version", ReadUInt32(&tagData[4]));
-		frame->AddHex8Name(8, "Geometry Type", tagData[8], GeometryTypeGetName(tagData[8]));
+		frame->AddHex8Name(8, "Geometry Type", tagData[8], Map::ESRI::FileGDBUtil::GeometryTypeGetName(tagData[8]));
 		UInt32 geoFlags = ReadUInt24(&tagData[9]);
 		frame->AddHex64V(9, 3, "Flags", geoFlags);
 		UOSInt nFields = ReadUInt16(&tagData[12]);
@@ -221,7 +225,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::FGDBFileAnalyse::GetFrameDetail(U
 				UInt8 fieldType = tagData[ofst];
 				UInt32 fieldSize;
 				UInt8 fieldFlags; //bit0 = nullable, bit2 = has_default
-				frame->AddUIntName(ofst, 1, "Field Type", tagData[ofst], FieldTypeGetName(fieldType));
+				frame->AddUIntName(ofst, 1, "Field Type", tagData[ofst], Map::ESRI::FileGDBUtil::FieldTypeGetName(fieldType));
 				if (fieldType == 4)
 				{
 					fieldSize = ReadUInt32(&tagData[ofst + 1]);
@@ -268,6 +272,83 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::FGDBFileAnalyse::GetFrameDetail(U
 			i++;
 		}
 	}
+	else if (tag->tagType == TagType::Row)
+	{
+		frame->AddUInt(0, 4, "Row Size", ReadUInt32(&tagData[0]));
+		if (this->tableInfo)
+		{
+			UOSInt ofst = 4;
+			UOSInt ofst2;
+			UOSInt nullIndex = 0;
+			UOSInt i;
+			UOSInt j;
+			UOSInt v;
+			Map::ESRI::FileGDBFieldInfo *field;
+			if (this->tableInfo->nullableCnt > 0)
+			{
+				frame->AddHexBuff(4, (this->tableInfo->nullableCnt + 7) >> 3, "Null Status", &tagData[4], false);
+				ofst += (this->tableInfo->nullableCnt + 7) >> 3;
+			}
+			i = 0;
+			j = this->tableInfo->fields->GetCount();
+			while (i < j)
+			{
+				field = this->tableInfo->fields->GetItem(i);
+				Bool isNull = false;
+				if (field->flags & 1)
+				{
+					isNull = ((tagData[4 + (nullIndex >> 3)] & (1 << (nullIndex & 7))) != 0);
+					nullIndex++;
+				}
+				if (!isNull)
+				{
+					if (field->fieldType == 0) //int16
+					{
+						frame->AddInt(ofst, 2, (const Char*)field->name, ReadInt16(&tagData[ofst]));
+						ofst += 2;
+					}
+					else if (field->fieldType == 1) //int32
+					{
+						frame->AddInt(ofst, 4, (const Char*)field->name, ReadInt32(&tagData[ofst]));
+						ofst += 4;
+					}
+					else if (field->fieldType == 2) //float32
+					{
+						frame->AddFloat(ofst, 4, (const Char*)field->name, ReadFloat(&tagData[ofst]));
+						ofst += 4;
+					}
+					else if (field->fieldType == 3) //float64
+					{
+						frame->AddFloat(ofst, 8, (const Char*)field->name, ReadDouble(&tagData[ofst]));
+						ofst += 8;
+					}
+					else if (field->fieldType == 4) //String
+					{
+						ofst2 = Map::ESRI::FileGDBUtil::ReadVarUInt(tagData, ofst, &v);
+						frame->AddUInt(ofst, ofst2 - ofst, "String Length", v);
+						ofst = ofst2;
+						frame->AddStrC(ofst, v, (const Char*)field->name, &tagData[ofst]);
+						ofst += v;
+					}
+					else if (field->fieldType == 5) //datetime
+					{
+						Double t = ReadDouble(&tagData[ofst]);
+						frame->AddFloat(ofst, 8, (const Char*)field->name, t);
+						ofst += 8;
+					}
+					else if (field->fieldType == 6) //ObjectId
+					{
+
+					}
+					else
+					{
+						break;
+					}
+				}
+				i++;
+			}
+		}
+	}
 	MemFree(tagData);
 	return frame;
 }
@@ -285,90 +366,6 @@ Bool IO::FileAnalyse::FGDBFileAnalyse::IsParsing()
 Bool IO::FileAnalyse::FGDBFileAnalyse::TrimPadding(const UTF8Char *outputFile)
 {
 	return false;
-}
-
-const UTF8Char *IO::FileAnalyse::FGDBFileAnalyse::GeometryTypeGetName(UInt8 t)
-{
-	switch (t)
-	{
-	case 0:
-		return (const UTF8Char*)"None";
-	case 1:
-		return (const UTF8Char*)"Point";
-	case 2:
-		return (const UTF8Char*)"Multipoint";
-	case 3:
-		return (const UTF8Char*)"Polyline";
-	case 4:
-		return (const UTF8Char*)"Polygon";
-	case 5:
-		return (const UTF8Char*)"Rectangle";
-	case 6:
-		return (const UTF8Char*)"Path";
-	case 7:
-		return (const UTF8Char*)"Mixed";
-	case 9:
-		return (const UTF8Char*)"Multipath";
-	case 11:
-		return (const UTF8Char*)"Ring";
-	case 13:
-		return (const UTF8Char*)"Line";
-	case 14:
-		return (const UTF8Char*)"Circular Arc";
-	case 15:
-		return (const UTF8Char*)"Bezier Curves";
-	case 16:
-		return (const UTF8Char*)"Elliptic Curves";
-	case 17:
-		return (const UTF8Char*)"Geometry Collection";
-	case 18:
-		return (const UTF8Char*)"Triangle Strip";
-	case 19:
-		return (const UTF8Char*)"Triangle Fan";
-	case 20:
-		return (const UTF8Char*)"Ray";
-	case 21:
-		return (const UTF8Char*)"Sphere";
-	case 22:
-		return (const UTF8Char*)"TIN";
-	default:
-		return (const UTF8Char*)"Unknown";
-	}
-}
-
-const UTF8Char *IO::FileAnalyse::FGDBFileAnalyse::FieldTypeGetName(UInt8 t)
-{
-	switch (t)
-	{
-	case 0:
-		return (const UTF8Char*)"Int16";
-	case 1:
-		return (const UTF8Char*)"Int16";
-	case 2:
-		return (const UTF8Char*)"Int16";
-	case 3:
-		return (const UTF8Char*)"Int16";
-	case 4:
-		return (const UTF8Char*)"Int16";
-	case 5:
-		return (const UTF8Char*)"Int16";
-	case 6:
-		return (const UTF8Char*)"Int16";
-	case 7:
-		return (const UTF8Char*)"Int16";
-	case 8:
-		return (const UTF8Char*)"Int16";
-	case 9:
-		return (const UTF8Char*)"Int16";
-	case 10:
-		return (const UTF8Char*)"Int16";
-	case 11:
-		return (const UTF8Char*)"Int16";
-	case 12:
-		return (const UTF8Char*)"Int16";
-	default:
-		return (const UTF8Char*)"Int16";
-	}
 }
 
 const UTF8Char *IO::FileAnalyse::FGDBFileAnalyse::TagTypeGetName(TagType tagType)

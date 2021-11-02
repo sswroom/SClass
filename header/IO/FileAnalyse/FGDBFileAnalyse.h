@@ -3,6 +3,7 @@
 #include "Data/SyncArrayList.h"
 #include "IO/IStreamData.h"
 #include "IO/FileAnalyse/IFileAnalyse.h"
+#include "Map/ESRI/FileGDBUtil.h"
 #include "Sync/Mutex.h"
 #include "Text/StringBuilderUTF.h"
 
@@ -29,6 +30,7 @@ namespace IO
 		private:
 			IO::IStreamData *fd;
 			Data::SyncArrayList<TagInfo*> *tags;
+			Map::ESRI::FileGDBTableInfo *tableInfo;
 
 			Bool pauseParsing;
 			Bool threadRunning;
@@ -50,8 +52,6 @@ namespace IO
 			virtual Bool IsParsing();
 			virtual Bool TrimPadding(const UTF8Char *outputFile);
 
-			static const UTF8Char *GeometryTypeGetName(UInt8 t);
-			static const UTF8Char *FieldTypeGetName(UInt8 t);
 			static const UTF8Char *TagTypeGetName(TagType tagType);
 		};
 	}
