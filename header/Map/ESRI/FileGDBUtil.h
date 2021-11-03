@@ -56,6 +56,7 @@ namespace Map
 			static void FreeFieldInfo(FileGDBFieldInfo *fieldInfo);
 			static void FreeTableInfo(FileGDBTableInfo *tableInfo);
 			static UOSInt ReadVarUInt(const UInt8 *buff, UOSInt ofst, UOSInt *val);
+			static UOSInt ReadVarInt(const UInt8 *buff, UOSInt ofst, OSInt *val);
 
 			static const UTF8Char *GeometryTypeGetName(UInt8 t);
 			static const UTF8Char *FieldTypeGetName(UInt8 t);

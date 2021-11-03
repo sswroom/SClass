@@ -222,6 +222,34 @@ UOSInt Map::ESRI::FileGDBUtil::ReadVarUInt(const UInt8 *buff, UOSInt ofst, UOSIn
 	return ofst;
 }
 
+UOSInt Map::ESRI::FileGDBUtil::ReadVarInt(const UInt8 *buff, UOSInt ofst, OSInt *val)
+{
+	Bool sign = (buff[0] & 0x40) != 0;
+	OSInt v = 0;
+	UOSInt i = 0;
+	OSInt currV;
+	currV = buff[ofst];
+	ofst++;
+	i = 6;
+	v = currV & 0x3f;
+	while (currV & 0x80)
+	{
+		currV = buff[ofst];
+		ofst++;
+		v = v | ((currV & 0x7F) << i);
+		i += 7;
+	}
+	if (sign)
+	{
+		*val = -v;
+	}
+	else
+	{
+		*val = v;
+	}
+	return ofst;
+}
+
 const UTF8Char *Map::ESRI::FileGDBUtil::GeometryTypeGetName(UInt8 t)
 {
 	switch (t)
