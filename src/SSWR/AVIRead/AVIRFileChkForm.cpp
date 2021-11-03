@@ -101,6 +101,10 @@ void SSWR::AVIRead::AVIRFileChkForm::EventMenuClicked(UInt16 cmdId)
 					}
 					this->lvFileChk->SetSubItem(i, 3, eq?(const UTF8Char*)"Y":(const UTF8Char*)"N");
 				}
+				else
+				{
+					this->lvFileChk->SetSubItem(i, 3, (const UTF8Char*)"Err");
+				}
 				i++;
 			}
 			MemFree(hash2);

@@ -367,13 +367,21 @@ Bool IO::FileCheck::CheckEntryHash(UOSInt index, UInt8 *hashVal)
 	if (i == INVALID_INDEX)
 		return false;
 	sptr = &sbuff[i];
-	if (fileName[0] == IO::Path::PATH_SEPERATOR)
+	if (fileName[0] == '/' || fileName[0] == '\\')
 	{
 		Text::StrConcat(sptr, fileName);
 	}
 	else
 	{
 		Text::StrConcat(sptr + 1, fileName);
+	}
+	if (IO::Path::PATH_SEPERATOR == '/')
+	{
+		Text::StrReplace(sptr, '\\', '/');
+	}
+	else
+	{
+		Text::StrReplace(sptr, '/', '\\');
 	}
 	hash = CreateHash(this->chkType);
 	if (hash == 0)
