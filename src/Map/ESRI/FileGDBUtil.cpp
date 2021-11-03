@@ -1,12 +1,17 @@
 #include "Stdafx.h"
 #include "Data/ByteTool.h"
 #include "Map/ESRI/FileGDBUtil.h"
+#include "Math/CoordinateSystemManager.h"
 #include "Text/MyString.h"
 #include "Text/MyStringW.h"
 
+#define HAS_M_FLAG 4
+#define HAS_Z_FLAG 2
+
 Map::ESRI::FileGDBTableInfo *Map::ESRI::FileGDBUtil::ParseFieldDesc(const UInt8 *fieldDesc)
 {
-	UTF8Char sbuff[256];
+	UTF8Char sbuff[1024];
+	UTF8Char *sptr;
 	FileGDBFieldInfo *field;
 	FileGDBTableInfo *table = MemAlloc(FileGDBTableInfo, 1);
 	MemClear(table, sizeof(FileGDBTableInfo));
@@ -78,10 +83,68 @@ Map::ESRI::FileGDBTableInfo *Map::ESRI::FileGDBUtil::ParseFieldDesc(const UInt8 
 		}
 		if (field->fieldType == 7)
 		{
-			/////////////////////////////////////
-			FreeFieldInfo(field);
-			valid = false;
-			break;
+			UOSInt srsLen = ReadUInt16(&fieldDesc[ofst]);
+			sptr = Text::StrUTF16_UTF8C(sbuff, (const UTF16Char*)&fieldDesc[ofst + 2], srsLen >> 1);
+			*sptr = 0;
+			UOSInt csysLen = (UOSInt)(sptr - sbuff);
+			table->csys = Math::CoordinateSystemManager::ParsePRJBuff((const UTF8Char *)"FileGDB", (Char*)sbuff, &csysLen);
+			ofst += 2 + srsLen;
+			UInt8 flags = fieldDesc[ofst];
+			ofst += 1;
+			table->xOrigin = ReadDouble(&fieldDesc[ofst]);
+			table->yOrigin = ReadDouble(&fieldDesc[ofst + 8]);
+			table->xyScale = ReadDouble(&fieldDesc[ofst + 16]);
+			ofst += 24;
+			if (flags & HAS_M_FLAG)
+			{
+				table->mOrigin = ReadDouble(&fieldDesc[ofst]);
+				table->mScale = ReadDouble(&fieldDesc[ofst + 8]);
+				ofst += 16;
+			}
+			if (flags & HAS_Z_FLAG)
+			{
+				table->zOrigin = ReadDouble(&fieldDesc[ofst]);
+				table->zScale = ReadDouble(&fieldDesc[ofst + 8]);
+				ofst += 16;
+			}
+			table->xyTolerance = ReadDouble(&fieldDesc[ofst]);
+			ofst += 8;
+			if (flags & HAS_M_FLAG)
+			{
+				table->mTolerance = ReadDouble(&fieldDesc[ofst]);
+				ofst += 8;
+			}
+			if (flags & HAS_Z_FLAG)
+			{
+				table->zTolerance = ReadDouble(&fieldDesc[ofst]);
+				ofst += 8;
+			}
+			table->xMin = ReadDouble(&fieldDesc[ofst]);
+			table->yMin = ReadDouble(&fieldDesc[ofst + 8]);
+			table->xMax = ReadDouble(&fieldDesc[ofst + 16]);
+			table->yMax = ReadDouble(&fieldDesc[ofst + 24]);
+			ofst += 32;
+			if (table->geometryFlags & 0x80)
+			{
+				table->zMin = ReadDouble(&fieldDesc[ofst]);
+				table->zMax = ReadDouble(&fieldDesc[ofst + 8]);
+				ofst += 16;
+			}
+			if (table->geometryFlags & 0x40)
+			{
+				table->mMin = ReadDouble(&fieldDesc[ofst]);
+				table->mMax = ReadDouble(&fieldDesc[ofst + 8]);
+				ofst += 16;
+			}
+			UOSInt gridCnt = ReadUInt32(&fieldDesc[ofst + 1]);
+			UOSInt i = 0;
+			ofst += 5;
+			while (i < gridCnt)
+			{
+				table->spatialGrid[i] = ReadDouble(&fieldDesc[ofst]);
+				ofst += 8;
+				i++;
+			}
 		}
 		else if (field->fieldType == 9)
 		{
@@ -91,7 +154,7 @@ Map::ESRI::FileGDBTableInfo *Map::ESRI::FileGDBUtil::ParseFieldDesc(const UInt8 
 			break;
 		}
 
-		if (field->flags & 4) //has default value
+		if ((field->flags & 4) && (field->fieldType < 7)) //has default value
 		{
 			if (ofst >= descSize || (ofst + 1 + fieldDesc[ofst] > descSize))
 			{
@@ -108,6 +171,10 @@ Map::ESRI::FileGDBTableInfo *Map::ESRI::FileGDBUtil::ParseFieldDesc(const UInt8 
 			ofst += 1 + field->defSize;
 		}
 		table->fields->Add(field);
+		if (fieldDesc[ofst] == 0 && ofst < descSize)
+		{
+			ofst++;
+		}
 	}
 	if (!valid || ofst != descSize)
 	{
@@ -137,8 +204,22 @@ void Map::ESRI::FileGDBUtil::FreeTableInfo(FileGDBTableInfo *tableInfo)
 
 UOSInt Map::ESRI::FileGDBUtil::ReadVarUInt(const UInt8 *buff, UOSInt ofst, UOSInt *val)
 {
-	*val = buff[ofst];
-	return ofst + 1;
+	UOSInt v = 0;
+	UOSInt i = 0;
+	UOSInt currV;
+	while (true)
+	{
+		currV = buff[ofst];
+		ofst++;
+		v = v | ((currV & 0x7F) << i);
+		if ((currV & 0x80) == 0)
+		{
+			break;
+		}
+		i += 7;
+	}
+	*val = v;
+	return ofst;
 }
 
 const UTF8Char *Map::ESRI::FileGDBUtil::GeometryTypeGetName(UInt8 t)
@@ -197,31 +278,31 @@ const UTF8Char *Map::ESRI::FileGDBUtil::FieldTypeGetName(UInt8 t)
 	case 0:
 		return (const UTF8Char*)"Int16";
 	case 1:
-		return (const UTF8Char*)"Int16";
+		return (const UTF8Char*)"Int32";
 	case 2:
-		return (const UTF8Char*)"Int16";
+		return (const UTF8Char*)"Float32";
 	case 3:
-		return (const UTF8Char*)"Int16";
+		return (const UTF8Char*)"Float64";
 	case 4:
-		return (const UTF8Char*)"Int16";
+		return (const UTF8Char*)"String";
 	case 5:
-		return (const UTF8Char*)"Int16";
+		return (const UTF8Char*)"Datetime";
 	case 6:
-		return (const UTF8Char*)"Int16";
+		return (const UTF8Char*)"ObjectId";
 	case 7:
-		return (const UTF8Char*)"Int16";
+		return (const UTF8Char*)"Geometry";
 	case 8:
-		return (const UTF8Char*)"Int16";
+		return (const UTF8Char*)"Binary";
 	case 9:
-		return (const UTF8Char*)"Int16";
+		return (const UTF8Char*)"Raster";
 	case 10:
-		return (const UTF8Char*)"Int16";
+		return (const UTF8Char*)"UUID";
 	case 11:
-		return (const UTF8Char*)"Int16";
+		return (const UTF8Char*)"UUID";
 	case 12:
-		return (const UTF8Char*)"Int16";
+		return (const UTF8Char*)"XML";
 	default:
-		return (const UTF8Char*)"Int16";
+		return (const UTF8Char*)"Unknown";
 	}
 }
 

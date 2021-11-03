@@ -18,7 +18,8 @@ namespace IO
 			{
 				Header,
 				Field,
-				Row
+				Row,
+				FreeSpace
 			};
 
 			struct TagInfo

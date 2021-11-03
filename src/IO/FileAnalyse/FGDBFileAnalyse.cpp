@@ -1,8 +1,14 @@
 #include "Stdafx.h"
 #include "Data/ByteTool.h"
+#include "Data/UUID.h"
 #include "IO/FileAnalyse/FGDBFileAnalyse.h"
+#include "Math/CoordinateSystemManager.h"
+#include "Math/Math.h"
 #include "Sync/Thread.h"
 #include "Text/StringBuilderUTF8.h"
+
+#define HAS_M_FLAG 4
+#define HAS_Z_FLAG 2
 
 UInt32 __stdcall IO::FileAnalyse::FGDBFileAnalyse::ParseThread(void *userObj)
 {
@@ -10,6 +16,7 @@ UInt32 __stdcall IO::FileAnalyse::FGDBFileAnalyse::ParseThread(void *userObj)
 	UInt64 dataSize;
 	UInt64 ofst;
 	UInt32 lastSize;
+	Int32 rowSize;
 	UInt8 tagHdr[15];
 	IO::FileAnalyse::FGDBFileAnalyse::TagInfo *tag;
 	me->threadRunning = true;
@@ -40,18 +47,24 @@ UInt32 __stdcall IO::FileAnalyse::FGDBFileAnalyse::ParseThread(void *userObj)
 	{
 		if (me->fd->GetRealData(ofst, 4, tagHdr) != 4)
 			break;
-		
-		lastSize = ReadUInt32(tagHdr);
-		if (ofst + 4 + lastSize > dataSize)
+
+		TagType tagType = TagType::Row;
+		rowSize = ReadInt32(tagHdr);
+		if (rowSize < 0)
+		{
+			rowSize = -rowSize;
+			tagType = TagType::FreeSpace;
+		}
+		if (ofst + 4 + (UInt32)rowSize > dataSize)
 		{
 			break;
 		}
 		tag = MemAlloc(IO::FileAnalyse::FGDBFileAnalyse::TagInfo, 1);
 		tag->ofst = ofst;
-		tag->size = lastSize + 4;
-		tag->tagType = TagType::Row;
+		tag->size = (UInt32)rowSize + 4;
+		tag->tagType = tagType;
 		me->tags->Add(tag);
-		ofst += lastSize + 4;
+		ofst += (UInt32)rowSize + 4;
 	}
 	
 	me->threadRunning = false;
@@ -154,7 +167,8 @@ UOSInt IO::FileAnalyse::FGDBFileAnalyse::GetFrameIndex(UInt64 ofst)
 IO::FileAnalyse::FrameDetail *IO::FileAnalyse::FGDBFileAnalyse::GetFrameDetail(UOSInt index)
 {
 	IO::FileAnalyse::FrameDetail *frame;
-	UTF8Char sbuff[128];
+	UTF8Char sbuff[1024];
+	UTF8Char *sptr;
 	UInt8 *tagData;
 	IO::FileAnalyse::FGDBFileAnalyse::TagInfo *tag = this->tags->GetItem(index);
 	if (tag == 0)
@@ -175,7 +189,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::FGDBFileAnalyse::GetFrameDetail(U
 		frame->AddUInt(16, 4, "Unknown2", ReadUInt32(&tagData[16]));
 		frame->AddUInt(20, 4, "Reserved", ReadUInt32(&tagData[20]));
 		frame->AddUInt64(24, "File Size", ReadUInt64(&tagData[24]));
-		frame->AddUInt64(24, "FieldDesc Offset", ReadUInt64(&tagData[32]));
+		frame->AddUInt64(32, "FieldDesc Offset", ReadUInt64(&tagData[32]));
 	}
 	else if (tag->tagType == TagType::Field)
 	{
@@ -225,7 +239,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::FGDBFileAnalyse::GetFrameDetail(U
 				UInt8 fieldType = tagData[ofst];
 				UInt32 fieldSize;
 				UInt8 fieldFlags; //bit0 = nullable, bit2 = has_default
-				frame->AddUIntName(ofst, 1, "Field Type", tagData[ofst], Map::ESRI::FileGDBUtil::FieldTypeGetName(fieldType));
+				frame->AddUIntName(ofst, 1, "Field Type", fieldType, Map::ESRI::FileGDBUtil::FieldTypeGetName(fieldType));
 				if (fieldType == 4)
 				{
 					fieldSize = ReadUInt32(&tagData[ofst + 1]);
@@ -243,16 +257,88 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::FGDBFileAnalyse::GetFrameDetail(U
 					ofst += 3;
 				}
 
-				switch (tagData[ofst])
+				if (fieldType == 7) //Geometry
 				{
-				case 7: //Geometry
-					frame->AddUInt(ofst, 2, "SRS", ReadUInt16(&tagData[ofst]));
-					break;
-				case 9: //Raster
+					UOSInt srsLen = ReadUInt16(&tagData[ofst]);
+					frame->AddUInt(ofst, 2, "SRS Length", srsLen);
+					sptr = Text::StrUTF16_UTF8C(sbuff, (const UTF16Char*)&tagData[ofst + 2], srsLen >> 1);
+					*sptr = 0;
+					frame->AddField(ofst + 2, srsLen, (const UTF8Char*)"SRS", sbuff);
+					UOSInt csysLen = (UOSInt)(sptr - sbuff);
+					Math::CoordinateSystem *csys = Math::CoordinateSystemManager::ParsePRJBuff(this->fd->GetFullName(), (Char*)sbuff, &csysLen);
+					if (csys)
+					{
+						Text::StringBuilderUTF8 sb;
+						csys->ToString(&sb);
+						frame->AddField(ofst + 2, srsLen, (const UTF8Char*)"Coordinate System", sb.ToString());
+						DEL_CLASS(csys);
+					}
+					ofst += 2 + srsLen;
+					UInt8 flags = tagData[ofst];
+					frame->AddHex8(ofst, "Flags", flags);
+					ofst += 1;
+					frame->AddFloat(ofst, 8, "XOrigin", ReadDouble(&tagData[ofst]));
+					frame->AddFloat(ofst + 8, 8, "YOrigin", ReadDouble(&tagData[ofst + 8]));
+					frame->AddFloat(ofst + 16, 8, "XYScale", ReadDouble(&tagData[ofst + 16]));
+					ofst += 24;
+					if (flags & HAS_M_FLAG)
+					{
+						frame->AddFloat(ofst, 8, "MOrigin", ReadDouble(&tagData[ofst]));
+						frame->AddFloat(ofst + 8, 8, "MScale", ReadDouble(&tagData[ofst + 8]));
+						ofst += 16;
+					}
+					if (flags & HAS_Z_FLAG)
+					{
+						frame->AddFloat(ofst, 8, "ZOrigin", ReadDouble(&tagData[ofst]));
+						frame->AddFloat(ofst + 8, 8, "ZScale", ReadDouble(&tagData[ofst + 8]));
+						ofst += 16;
+					}
+					frame->AddFloat(ofst, 8, "XYTolerance", ReadDouble(&tagData[ofst]));
+					ofst += 8;
+					if (flags & HAS_M_FLAG)
+					{
+						frame->AddFloat(ofst, 8, "MTolerance", ReadDouble(&tagData[ofst]));
+						ofst += 8;
+					}
+					if (flags & HAS_Z_FLAG)
+					{
+						frame->AddFloat(ofst, 8, "ZTolerance", ReadDouble(&tagData[ofst]));
+						ofst += 8;
+					}
+					frame->AddFloat(ofst, 8, "XMin", ReadDouble(&tagData[ofst]));
+					frame->AddFloat(ofst + 8, 8, "YMin", ReadDouble(&tagData[ofst + 8]));
+					frame->AddFloat(ofst + 16, 8, "XMax", ReadDouble(&tagData[ofst + 16]));
+					frame->AddFloat(ofst + 24, 8, "YMax", ReadDouble(&tagData[ofst + 24]));
+					ofst += 32;
+					if (this->tableInfo && this->tableInfo->geometryFlags & 0x80)
+					{
+						frame->AddFloat(ofst, 8, "ZMin", ReadDouble(&tagData[ofst]));
+						frame->AddFloat(ofst + 8, 8, "ZMax", ReadDouble(&tagData[ofst + 8]));
+						ofst += 16;
+					}
+					if (this->tableInfo && this->tableInfo->geometryFlags & 0x40)
+					{
+						frame->AddFloat(ofst, 8, "MMin", ReadDouble(&tagData[ofst]));
+						frame->AddFloat(ofst + 8, 8, "MMax", ReadDouble(&tagData[ofst + 8]));
+						ofst += 16;
+					}
+					frame->AddUInt(ofst, 1, "Unknown", tagData[ofst]);
+					UOSInt gridCnt = ReadUInt32(&tagData[ofst + 1]);
+					frame->AddUInt(ofst + 1, 4, "Spatial Grid Count", gridCnt);
+					ofst += 5;
+					while (gridCnt-- > 0)
+					{
+						frame->AddFloat(ofst, 8, "Spatial Grid", ReadDouble(&tagData[ofst]));
+						ofst += 8;
+					}
+				}
+				else if (fieldType == 9) //Raster
+				{
 					frame->AddUInt(ofst, 1, "Name Length", tagData[ofst]);
 					break;
 				}
-				if ((fieldFlags & 4) && ofst + 1 + tagData[ofst] <= tag->size)
+
+				if ((fieldFlags & 4) && (fieldType < 7) && ofst + 1 + tagData[ofst] <= tag->size)
 				{
 					UInt8 ldf = tagData[ofst];
 					frame->AddUInt(ofst, 1, "Default Value Len", ldf);
@@ -266,8 +352,11 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::FGDBFileAnalyse::GetFrameDetail(U
 					}
 					ofst += 1 + ldf;
 				}
-				
-
+				if (ofst < tag->size && tagData[ofst] == 0)
+				{
+					frame->AddUInt(ofst, 1, "Padding", 0);
+					ofst++;
+				}
 			}
 			i++;
 		}
@@ -298,9 +387,11 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::FGDBFileAnalyse::GetFrameDetail(U
 				if (field->flags & 1)
 				{
 					isNull = ((tagData[4 + (nullIndex >> 3)] & (1 << (nullIndex & 7))) != 0);
+					Text::StrConcat(Text::StrConcat(sbuff, field->name), (const UTF8Char*)" isNull");
+					frame->AddUInt(4 + (nullIndex >> 3), 1, (const Char*)sbuff, isNull?1:0);
 					nullIndex++;
 				}
-				if (!isNull)
+				if (!isNull && ofst < tag->size)
 				{
 					if (field->fieldType == 0) //int16
 					{
@@ -333,12 +424,92 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::FGDBFileAnalyse::GetFrameDetail(U
 					else if (field->fieldType == 5) //datetime
 					{
 						Double t = ReadDouble(&tagData[ofst]);
-						frame->AddFloat(ofst, 8, (const Char*)field->name, t);
+						Text::StrConcat(Text::StrConcat(sbuff, (const UTF8Char*)"RAW "), field->name);
+						frame->AddFloat(ofst, 8, (const Char*)sbuff, t);
+						Data::DateTime dt;
+						Int32 days = (Int32)t;
+						Int8 tz;
+						dt.ToLocalTime();
+						tz = dt.GetTimeZoneQHR();
+						dt.SetTicks((days - 25569) * 86400000LL + Math::Double2OSInt((t - days) * 86400000));
+						dt.SetTimeZoneQHR(tz);
+						dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
+						frame->AddField(ofst, 8, field->name, sbuff);
 						ofst += 8;
 					}
 					else if (field->fieldType == 6) //ObjectId
 					{
+						frame->AddUInt(ofst, 0, (const Char*)field->name, index - 1);
+					}
+					else if (field->fieldType == 7) //Geometry
+					{
+						UOSInt geometryLen;
+						ofst2 = Map::ESRI::FileGDBUtil::ReadVarUInt(tagData, ofst, &geometryLen);
+						UOSInt endOfst = ofst2 + geometryLen;
+						frame->AddUInt(ofst, ofst2 - ofst, "Len", geometryLen);
+						ofst = ofst2;
+						UInt8 geometryType = tagData[ofst];
+						frame->AddUInt(ofst, 1, "GeometryType", geometryType);
+						ofst++;
 
+						switch (geometryType)
+						{
+						case 1:
+						case 9:
+						case 11:
+						case 21:
+							ofst2 = Map::ESRI::FileGDBUtil::ReadVarUInt(tagData, ofst, &v);
+							frame->AddUInt(ofst, ofst2 - ofst, "X_Raw", v);
+							frame->AddFloat(ofst, ofst2 - ofst, "X", Math::UOSInt2Double(v - 1) / this->tableInfo->xyScale + this->tableInfo->xOrigin);
+							ofst = ofst2;
+							ofst2 = Map::ESRI::FileGDBUtil::ReadVarUInt(tagData, ofst, &v);
+							frame->AddUInt(ofst, ofst2 - ofst, "Y_Raw", v);
+							frame->AddFloat(ofst, ofst2 - ofst, "Y", Math::UOSInt2Double(v - 1) / this->tableInfo->xyScale + this->tableInfo->yOrigin);
+							ofst = ofst2;
+							if (this->tableInfo->geometryFlags & 0x80)
+							{
+								ofst2 = Map::ESRI::FileGDBUtil::ReadVarUInt(tagData, ofst, &v);
+								frame->AddFloat(ofst, ofst2 - ofst, "Z", Math::UOSInt2Double(v - 1) / this->tableInfo->zScale + this->tableInfo->zOrigin);
+								ofst = ofst2;
+							}
+							if (this->tableInfo->geometryFlags & 0x40)
+							{
+								ofst2 = Map::ESRI::FileGDBUtil::ReadVarUInt(tagData, ofst, &v);
+								frame->AddFloat(ofst, ofst2 - ofst, "M", Math::UOSInt2Double(v - 1) / this->tableInfo->mScale + this->tableInfo->mOrigin);
+								ofst = ofst2;
+							}
+							break;
+						case 5:
+						case 15:
+						case 19:
+						case 25:
+							if (tagData[ofst] == 0)
+							{
+								frame->AddUInt(ofst, 1, "Number of Points", 0);
+								ofst++;
+							}
+							else
+							{
+
+							}
+							break;
+						}
+						ofst = endOfst;
+					}
+					else if (field->fieldType == 10 || field->fieldType == 11) //UUID
+					{
+						Data::UUID uuid(&tagData[ofst]);
+						uuid.ToString(sbuff);
+						frame->AddField(ofst, 16, field->name, sbuff);
+						ofst += 16;
+					}
+					else if (field->fieldType == 12) //XML
+					{
+						ofst2 = Map::ESRI::FileGDBUtil::ReadVarUInt(tagData, ofst, &v);
+						frame->AddUInt(ofst, ofst2 - ofst, "Size", v);
+						ofst = ofst2;
+						frame->AddStrC(ofst, v, (const Char*)field->name, &tagData[ofst]);
+						ofst += v;						
 					}
 					else
 					{
@@ -348,6 +519,11 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::FGDBFileAnalyse::GetFrameDetail(U
 				i++;
 			}
 		}
+	}
+	else if (tag->tagType == TagType::FreeSpace)
+	{
+		frame->AddInt(0, 4, "Size", ReadInt32(tagData));
+		frame->AddHexBuff(4, tag->size - 4, "Deleted content", &tagData[4], true);
 	}
 	MemFree(tagData);
 	return frame;
@@ -378,6 +554,8 @@ const UTF8Char *IO::FileAnalyse::FGDBFileAnalyse::TagTypeGetName(TagType tagType
 		return (const UTF8Char*)"Field descriptor";
 	case TagType::Row:
 		return (const UTF8Char*)"Row";
+	case TagType::FreeSpace:
+		return (const UTF8Char*)"FreeSpace";
 	default:
 		return 0;
 	}

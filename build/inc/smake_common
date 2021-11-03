@@ -1114,6 +1114,8 @@ Data/UInt64Map.h:
 Data/Usable.h:
 Data/Usage.h: ../../src/Data/Usage.cpp
 @Usage.o
+Data/UUID.h: ../../src/Data/UUID.cpp
+@UUID.o
 Data/VariItem.h: ../../src/Data/VariItem.cpp
 @VariItem.o
 Data/VariObject.h: ../../src/Data/VariObject.cpp
@@ -3781,6 +3783,7 @@ RandomMT19937.o: ../../src/Data/RandomMT19937.cpp
 RandomOS.o: ../../src/Data/RandomOS.cpp
 SyncLinkedList.o: ../../src/Data/SyncLinkedList.cpp
 Usage.o: ../../src/Data/Usage.cpp
+UUID.o: ../../src/Data/UUID.cpp
 VariItem.o: ../../src/Data/VariItem.cpp
 VariObject.o: ../../src/Data/VariObject.cpp
 Decompressor.o: ../../src/Data/Compress/Decompressor.cpp

@@ -1,6 +1,7 @@
 #ifndef _SM_MAP_ESRI_FILEGDBUTIL
 #define _SM_MAP_ESRI_FILEGDBUTIL
 #include "Data/ArrayList.h"
+#include "Math/CoordinateSystem.h"
 
 namespace Map
 {
@@ -24,6 +25,28 @@ namespace Map
 			UInt8 tableFlags;
 			UInt8 geometryFlags;
 			Data::ArrayList<FileGDBFieldInfo*> *fields;
+
+			Math::CoordinateSystem *csys;
+			Double xOrigin;
+			Double yOrigin;
+			Double xyScale;
+			Double zOrigin;
+			Double zScale;
+			Double mOrigin;
+			Double mScale;
+			Double xyTolerance;
+			Double zTolerance;
+			Double mTolerance;
+			Double xMin;
+			Double yMin;
+			Double xMax;
+			Double yMax;
+			Double zMin;
+			Double zMax;
+			Double mMin;
+			Double mMax;
+			UOSInt spatialGridCnt;
+			Double spatialGrid[4];
 		};
 
 		class FileGDBUtil
