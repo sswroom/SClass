@@ -372,6 +372,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::FGDBFileAnalyse::GetFrameDetail(U
 			UOSInt i;
 			UOSInt j;
 			UOSInt v;
+			OSInt diffMul = 1;
 			Map::ESRI::FileGDBFieldInfo *field;
 			if (this->tableInfo->nullableCnt > 0)
 			{
@@ -479,7 +480,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::FGDBFileAnalyse::GetFrameDetail(U
 						case 10:
 						case 13:
 						case 23:
-
+							diffMul = -1;
 						case 5:
 						case 15:
 						case 19:
@@ -532,11 +533,11 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::FGDBFileAnalyse::GetFrameDetail(U
 								while (tmpI < nPoints)
 								{
 									ofst2 = Map::ESRI::FileGDBUtil::ReadVarInt(tagData, ofst, &iv);
-									dx += iv;
+									dx += diffMul * iv;
 									frame->AddFloat(ofst, ofst2 - ofst, "X", Math::OSInt2Double(dx) / this->tableInfo->xyScale + this->tableInfo->xOrigin);
 									ofst = ofst2;
 									ofst2 = Map::ESRI::FileGDBUtil::ReadVarInt(tagData, ofst, &iv);
-									dy += iv;
+									dy += diffMul * iv;
 									frame->AddFloat(ofst, ofst2 - ofst, "Y", Math::OSInt2Double(dy) / this->tableInfo->xyScale + this->tableInfo->yOrigin);
 									ofst = ofst2;
 									tmpI++;
@@ -548,7 +549,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::FGDBFileAnalyse::GetFrameDetail(U
 									while (tmpI < nPoints)
 									{
 										ofst2 = Map::ESRI::FileGDBUtil::ReadVarInt(tagData, ofst, &iv);
-										dx += iv;
+										dx += diffMul * iv;
 										frame->AddFloat(ofst, ofst2 - ofst, "Z", Math::OSInt2Double(dx) / this->tableInfo->zScale + this->tableInfo->zOrigin);
 										ofst = ofst2;
 										tmpI++;
@@ -561,7 +562,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::FGDBFileAnalyse::GetFrameDetail(U
 									while (tmpI < nPoints)
 									{
 										ofst2 = Map::ESRI::FileGDBUtil::ReadVarInt(tagData, ofst, &iv);
-										dx += iv;
+										dx += diffMul * iv;
 										frame->AddFloat(ofst, ofst2 - ofst, "M", Math::OSInt2Double(dx) / this->tableInfo->mScale + this->tableInfo->mOrigin);
 										ofst = ofst2;
 										tmpI++;
