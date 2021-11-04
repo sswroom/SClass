@@ -47,7 +47,7 @@ DB::OLEDBConn::~OLEDBConn()
 
 DB::DBUtil::ServerType DB::OLEDBConn::GetSvrType()
 {
-	return DB::DBUtil::SVR_TYPE_UNKNOWN;
+	return DB::DBUtil::ServerType::Unknown;
 }
 
 DB::DBConn::ConnType DB::OLEDBConn::GetConnType()

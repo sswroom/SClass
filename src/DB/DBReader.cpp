@@ -54,6 +54,7 @@ Data::VariObject *DB::DBReader::CreateVariObject()
 			case DB::DBUtil::CT_Char:
 			case DB::DBUtil::CT_NVarChar:
 			case DB::DBUtil::CT_NChar:
+			case DB::DBUtil::CT_UUID:
 				csptr = this->GetNewStr(i);
 				obj->SetItemStr(sbuff, csptr);
 				this->DelNewStr(csptr);

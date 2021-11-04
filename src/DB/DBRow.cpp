@@ -40,6 +40,7 @@ DB::DBRow::DataType DB::DBRow::GetDataType(DB::DBRow::Field *field)
 	case DB::DBUtil::CT_NChar:
 	case DB::DBUtil::CT_NVarChar:
 	case DB::DBUtil::CT_VarChar:
+	case DB::DBUtil::CT_UUID:
 		return DT_STRING;
 	case DB::DBUtil::CT_Bool:
 	case DB::DBUtil::CT_Byte:

@@ -338,7 +338,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::FGDBFileAnalyse::GetFrameDetail(U
 					break;
 				}
 
-				if ((fieldFlags & 4) && (fieldType < 7) && ofst + 1 + tagData[ofst] <= tag->size)
+				if ((fieldFlags & 4) && (fieldType < 6) && ofst + 1 + tagData[ofst] <= tag->size)
 				{
 					UInt8 ldf = tagData[ofst];
 					frame->AddUInt(ofst, 1, "Default Value Len", ldf);
@@ -427,12 +427,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::FGDBFileAnalyse::GetFrameDetail(U
 						Text::StrConcat(Text::StrConcat(sbuff, (const UTF8Char*)"RAW "), field->name);
 						frame->AddFloat(ofst, 8, (const Char*)sbuff, t);
 						Data::DateTime dt;
-						Int32 days = (Int32)t;
-						Int8 tz;
-						dt.ToLocalTime();
-						tz = dt.GetTimeZoneQHR();
-						dt.SetTicks((days - 25569) * 86400000LL + Math::Double2OSInt((t - days) * 86400000));
-						dt.SetTimeZoneQHR(tz);
+						Map::ESRI::FileGDBUtil::ToDateTime(&dt, t);
 						dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
 						frame->AddField(ofst, 8, field->name, sbuff);
 						ofst += 8;

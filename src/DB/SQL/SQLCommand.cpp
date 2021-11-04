@@ -101,7 +101,7 @@ DB::SQL::SQLCommand *DB::SQL::SQLCommand::Parse(const UTF8Char *sql, DB::DBUtil:
 							printf("Expected column name, now is %s\r\n", sb.ToString());
 							break;
 						}
-						if (sb.EqualsICase((const UTF8Char*)"PRIMARY") && svrType == DB::DBUtil::SVR_TYPE_SQLITE)
+						if (sb.EqualsICase((const UTF8Char*)"PRIMARY") && svrType == DB::DBUtil::ServerType::SQLite)
 						{
 							sql = ParseNextWord(sql, &sb, svrType);
 							if (!sb.EqualsICase((const UTF8Char*)"KEY"))
@@ -178,7 +178,7 @@ DB::SQL::SQLCommand *DB::SQL::SQLCommand::Parse(const UTF8Char *sql, DB::DBUtil:
 							UOSInt colSize;
 							NEW_CLASS(col, DB::ColDef(sb.ToString()));
 							sql = ParseNextWord(sql, &sb, svrType);
-							if (svrType == DB::DBUtil::SVR_TYPE_SQLITE && (sb.Equals((const UTF8Char*)",") || sb.Equals((const UTF8Char*)")")))
+							if (svrType == DB::DBUtil::ServerType::SQLite && (sb.Equals((const UTF8Char*)",") || sb.Equals((const UTF8Char*)")")))
 							{
 
 							}

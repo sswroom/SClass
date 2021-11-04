@@ -1703,6 +1703,12 @@ Map/ESRI/ESRIMDBLayer.h: ../../src/Map/ESRI/ESRIMDBLayer.cpp
 @ESRIMDBLayer.o
 Map/ESRI/ESRITileMap.h: ../../src/Map/ESRI/ESRITileMap.cpp
 @ESRITileMap.o
+Map/ESRI/FileGDBDir.h: ../../src/Map/ESRI/FileGDBDir.cpp
+@FileGDBDir.o
+Map/ESRI/FileGDBReader.h: ../../src/Map/ESRI/FileGDBReader.cpp
+@FileGDBReader.o
+Map/ESRI/FileGDBTable.h: ../../src/Map/ESRI/FileGDBTable.cpp
+@FileGDBTable.o
 Map/ESRI/FileGDBUtil.h: ../../src/Map/ESRI/FileGDBUtil.cpp
 @FileGDBUtil.o
 Map/GoogleMap/GoogleMapsUtil.h: ../../src/Map/GoogleMap/GoogleMapsUtil.cpp
@@ -2836,6 +2842,8 @@ Parser/FileParser/ZWEIParser.h: ../../src/Parser/FileParser/ZWEIParser.cpp
 @ZWEIParser.o
 Parser/ObjParser/DBITParser.h: ../../src/Parser/ObjParser/DBITParser.cpp
 @DBITParser.o
+Parser/ObjParser/FileGDB2Parser.h: ../../src/Parser/ObjParser/FileGDB2Parser.cpp
+@FileGDB2Parser.o
 Parser/ObjParser/FileGDBParser.h: ../../src/Parser/ObjParser/FileGDBParser.cpp
 @FileGDBParser.o
 Parser/ObjParser/ISO9660Parser.h: ../../src/Parser/ObjParser/ISO9660Parser.cpp
@@ -4061,6 +4069,9 @@ VectorLayer.o: ../../src/Map/VectorLayer.cpp
 WebImageLayer.o: ../../src/Map/WebImageLayer.cpp
 ESRIMDBLayer.o: ../../src/Map/ESRI/ESRIMDBLayer.cpp
 ESRITileMap.o: ../../src/Map/ESRI/ESRITileMap.cpp
+FileGDBDir.o: ../../src/Map/ESRI/FileGDBDir.cpp
+FileGDBReader.o: ../../src/Map/ESRI/FileGDBReader.cpp
+FileGDBTable.o: ../../src/Map/ESRI/FileGDBTable.cpp
 FileGDBUtil.o: ../../src/Map/ESRI/FileGDBUtil.cpp
 GoogleMapsUtil.o: ../../src/Map/GoogleMap/GoogleMapsUtil.cpp
 GoogleSearcher.o: ../../src/Map/GoogleMap/GoogleSearcher.cpp
@@ -4586,6 +4597,7 @@ YKCParser.o: ../../src/Parser/FileParser/YKCParser.cpp
 ZIPParser.o: ../../src/Parser/FileParser/ZIPParser.cpp
 ZWEIParser.o: ../../src/Parser/FileParser/ZWEIParser.cpp
 DBITParser.o: ../../src/Parser/ObjParser/DBITParser.cpp
+FileGDB2Parser.o: ../../src/Parser/ObjParser/FileGDB2Parser.cpp
 FileGDBParser.o: ../../src/Parser/ObjParser/FileGDBParser.cpp
 ISO9660Parser.o: ../../src/Parser/ObjParser/ISO9660Parser.cpp
 ITMParser.o: ../../src/Parser/ObjParser/ITMParser.cpp

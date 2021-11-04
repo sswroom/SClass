@@ -2,6 +2,7 @@
 #include "Data/ByteTool.h"
 #include "Map/ESRI/FileGDBUtil.h"
 #include "Math/CoordinateSystemManager.h"
+#include "Math/Math.h"
 #include "Text/MyString.h"
 #include "Text/MyStringW.h"
 
@@ -154,7 +155,7 @@ Map::ESRI::FileGDBTableInfo *Map::ESRI::FileGDBUtil::ParseFieldDesc(const UInt8 
 			break;
 		}
 
-		if ((field->flags & 4) && (field->fieldType < 7)) //has default value
+		if ((field->flags & 4) && (field->fieldType < 6)) //has default value
 		{
 			if (ofst >= descSize || (ofst + 1 + fieldDesc[ofst] > descSize))
 			{
@@ -171,7 +172,7 @@ Map::ESRI::FileGDBTableInfo *Map::ESRI::FileGDBUtil::ParseFieldDesc(const UInt8 
 			ofst += 1 + field->defSize;
 		}
 		table->fields->Add(field);
-		if (fieldDesc[ofst] == 0 && ofst < descSize)
+		if (ofst < descSize && fieldDesc[ofst] == 0)
 		{
 			ofst++;
 		}
@@ -202,9 +203,46 @@ void Map::ESRI::FileGDBUtil::FreeTableInfo(FileGDBTableInfo *tableInfo)
 	MemFree(tableInfo);
 }
 
-UOSInt Map::ESRI::FileGDBUtil::ReadVarUInt(const UInt8 *buff, UOSInt ofst, UOSInt *val)
+Map::ESRI::FileGDBFieldInfo *Map::ESRI::FileGDBUtil::FieldInfoClone(FileGDBFieldInfo *field)
 {
-	UOSInt v = 0;
+	FileGDBFieldInfo *newField = MemAlloc(FileGDBFieldInfo, 1);
+	newField->name = SCOPY_TEXT(field->name);
+	newField->alias = SCOPY_TEXT(field->alias);
+	newField->fieldType = field->fieldType;
+	newField->fieldSize = field->fieldSize;
+	newField->flags = field->flags;
+	newField->defSize = field->defSize;
+	newField->defValue = 0;
+	if (field->defValue)
+	{
+		newField->defValue = MemAlloc(UInt8, field->defSize);
+		MemCopyNO(newField->defValue, field->defValue, field->defSize);
+	}
+	return newField;
+}
+
+Map::ESRI::FileGDBTableInfo *Map::ESRI::FileGDBUtil::TableInfoClone(FileGDBTableInfo *tableInfo)
+{
+	FileGDBTableInfo *newTable = MemAlloc(FileGDBTableInfo, 1);
+	MemCopyNO(newTable, tableInfo, sizeof(FileGDBTableInfo));
+	if (tableInfo->csys)
+	{
+		newTable->csys = tableInfo->csys->Clone();
+	}
+	NEW_CLASS(newTable->fields, Data::ArrayList<FileGDBFieldInfo*>());
+	UOSInt i = 0;
+	UOSInt j = tableInfo->fields->GetCount();
+	while (i < j)
+	{
+		newTable->fields->Add(FieldInfoClone(tableInfo->fields->GetItem(i)));
+		i++;
+	}
+	return newTable;
+}
+
+UOSInt Map::ESRI::FileGDBUtil::ReadVarUInt(const UInt8 *buff, UOSInt ofst, UInt64 *val)
+{
+	UInt64 v = 0;
 	UOSInt i = 0;
 	UOSInt currV;
 	while (true)
@@ -222,12 +260,12 @@ UOSInt Map::ESRI::FileGDBUtil::ReadVarUInt(const UInt8 *buff, UOSInt ofst, UOSIn
 	return ofst;
 }
 
-UOSInt Map::ESRI::FileGDBUtil::ReadVarInt(const UInt8 *buff, UOSInt ofst, OSInt *val)
+UOSInt Map::ESRI::FileGDBUtil::ReadVarInt(const UInt8 *buff, UOSInt ofst, Int64 *val)
 {
 	Bool sign = (buff[0] & 0x40) != 0;
-	OSInt v = 0;
+	Int64 v = 0;
 	UOSInt i = 0;
-	OSInt currV;
+	Int64 currV;
 	currV = buff[ofst];
 	ofst++;
 	i = 6;
@@ -248,6 +286,16 @@ UOSInt Map::ESRI::FileGDBUtil::ReadVarInt(const UInt8 *buff, UOSInt ofst, OSInt 
 		*val = v;
 	}
 	return ofst;
+}
+
+void Map::ESRI::FileGDBUtil::ToDateTime(Data::DateTime *dt, Double v)
+{
+	Int32 days = (Int32)v;
+	Int8 tz;
+	dt->ToLocalTime();
+	tz = dt->GetTimeZoneQHR();
+	dt->SetTicks((days - 25569) * 86400000LL + Math::Double2OSInt((v - days) * 86400000));
+	dt->SetTimeZoneQHR(tz);
 }
 
 const UTF8Char *Map::ESRI::FileGDBUtil::GeometryTypeGetName(UInt8 t)

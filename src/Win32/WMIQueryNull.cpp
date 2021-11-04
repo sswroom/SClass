@@ -37,7 +37,7 @@ Bool Win32::WMIQuery::IsError()
 
 DB::DBUtil::ServerType Win32::WMIQuery::GetSvrType()
 {
-	return DB::DBUtil::SVR_TYPE_UNKNOWN;
+	return DB::DBUtil::ServerType::Unknown;
 }
 
 DB::DBConn::ConnType Win32::WMIQuery::GetConnType()

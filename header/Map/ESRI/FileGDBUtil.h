@@ -55,8 +55,11 @@ namespace Map
 			static FileGDBTableInfo *ParseFieldDesc(const UInt8 *fieldDesc);
 			static void FreeFieldInfo(FileGDBFieldInfo *fieldInfo);
 			static void FreeTableInfo(FileGDBTableInfo *tableInfo);
-			static UOSInt ReadVarUInt(const UInt8 *buff, UOSInt ofst, UOSInt *val);
-			static UOSInt ReadVarInt(const UInt8 *buff, UOSInt ofst, OSInt *val);
+			static FileGDBFieldInfo *FieldInfoClone(FileGDBFieldInfo *tableInfo);
+			static FileGDBTableInfo *TableInfoClone(FileGDBTableInfo *tableInfo);
+			static UOSInt ReadVarUInt(const UInt8 *buff, UOSInt ofst, UInt64 *val);
+			static UOSInt ReadVarInt(const UInt8 *buff, UOSInt ofst, Int64 *val);
+			static void ToDateTime(Data::DateTime *dt, Double v);
 
 			static const UTF8Char *GeometryTypeGetName(UInt8 t);
 			static const UTF8Char *FieldTypeGetName(UInt8 t);

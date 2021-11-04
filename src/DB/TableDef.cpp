@@ -11,7 +11,7 @@ DB::TableDef::TableDef(const UTF8Char *tableName)
 	this->charset = 0;
 	this->attr = 0;
 	this->comments = 0;
-	this->svrType = DB::DBUtil::SVR_TYPE_UNKNOWN;
+	this->svrType = DB::DBUtil::ServerType::Unknown;
 	NEW_CLASS(this->cols, Data::ArrayList<DB::ColDef*>());
 }
 

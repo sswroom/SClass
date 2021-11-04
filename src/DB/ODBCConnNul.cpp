@@ -17,7 +17,7 @@ void DB::ODBCConn::UpdateConnInfo()
 
 Bool DB::ODBCConn::Connect(const UTF8Char *dsn, const UTF8Char *uid, const UTF8Char *pwd, const UTF8Char *schema)
 {
-	this->svrType = DB::DBUtil::SVR_TYPE_UNKNOWN;
+	this->svrType = DB::DBUtil::ServerType::UNKNOWN;
 	return false;
 }
 

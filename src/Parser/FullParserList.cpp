@@ -109,6 +109,7 @@
 #include "Parser/FileParser/ZWEIParser.h"
 #include "Parser/ObjParser/DBITParser.h"
 #include "Parser/ObjParser/FileGDBParser.h"
+#include "Parser/ObjParser/FileGDB2Parser.h"
 #include "Parser/ObjParser/ISO9660Parser.h"
 #include "Parser/ObjParser/ITMParser.h"
 #include "Parser/ObjParser/KMZParser.h"
@@ -345,6 +346,8 @@ Parser::FullParserList::FullParserList() : Parser::ParserList()
 	NEW_CLASS(oparser, Parser::ObjParser::DBITParser());
 	this->AddObjectParser(oparser);
 	NEW_CLASS(oparser, Parser::ObjParser::FileGDBParser());
+	this->AddObjectParser(oparser);
+	NEW_CLASS(oparser, Parser::ObjParser::FileGDB2Parser());
 	this->AddObjectParser(oparser);
 	NEW_CLASS(oparser, Parser::ObjParser::ISO9660Parser());
 	this->AddObjectParser(oparser);

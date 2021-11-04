@@ -164,6 +164,7 @@ Bool Exporter::DBExcelXMLExporter::ExportFile(IO::SeekableStream *stm, const UTF
 					case DB::DBUtil::CT_Vector:
 					case DB::DBUtil::CT_Binary:
 					case DB::DBUtil::CT_Bool:
+					case DB::DBUtil::CT_UUID:
 					case DB::DBUtil::CT_Unknown:
 					default:
 						lineBuff2[0] = 0;

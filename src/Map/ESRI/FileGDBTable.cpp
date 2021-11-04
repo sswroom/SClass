@@ -21,11 +21,12 @@ Map::ESRI::FileGDBTable::FileGDBTable(const UTF8Char *tableName, IO::IStreamData
 	}
 	if (ReadUInt64(&hdrBuff[32]) == 40)
 	{
-		UInt32 fieldSize = ReadUInt32(&hdrBuff[44]);
-		UInt8 *fieldDesc = MemAlloc(UInt8, fieldSize);
+		UInt32 fieldSize = ReadUInt32(&hdrBuff[40]);
+		UInt8 *fieldDesc = MemAlloc(UInt8, fieldSize + 4);
 		this->fd->GetRealData(40, fieldSize + 4, fieldDesc);
 		this->tableInfo = Map::ESRI::FileGDBUtil::ParseFieldDesc(fieldDesc);
 		MemFree(fieldDesc);
+		this->dataOfst = 40 + 4 + fieldSize;
 	}
 }
 
@@ -38,6 +39,11 @@ Map::ESRI::FileGDBTable::~FileGDBTable()
 		Map::ESRI::FileGDBUtil::FreeTableInfo(this->tableInfo);
 		this->tableInfo = 0;
 	}
+}
+
+Bool Map::ESRI::FileGDBTable::IsError()
+{
+	return this->tableInfo == 0;
 }
 
 const UTF8Char *Map::ESRI::FileGDBTable::GetName()

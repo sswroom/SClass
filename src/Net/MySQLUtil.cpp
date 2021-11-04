@@ -120,6 +120,8 @@ Net::MySQLUtil::MySQLType Net::MySQLUtil::ColType2MySQLType(DB::DBUtil::ColType 
 			return Net::MySQLUtil::MYSQL_TYPE_GEOMETRY;
 		case DB::DBUtil::CT_NVarChar:
 			return Net::MySQLUtil::MYSQL_TYPE_VARCHAR;
+		case DB::DBUtil::CT_UUID:
+			return Net::MySQLUtil::MYSQL_TYPE_VARCHAR;
 		case DB::DBUtil::CT_NChar:
 			return Net::MySQLUtil::MYSQL_TYPE_VARCHAR;
 		case DB::DBUtil::CT_Unknown:

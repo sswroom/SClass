@@ -96,6 +96,7 @@ const UTF8Char *Text::JavaText::GetJavaTypeName(DB::DBUtil::ColType colType, Boo
 	case DB::DBUtil::CT_Char:
 	case DB::DBUtil::CT_NVarChar:
 	case DB::DBUtil::CT_NChar:
+	case DB::DBUtil::CT_UUID:
 		return (const UTF8Char*)"String";
 	case DB::DBUtil::CT_DateTime:
 	case DB::DBUtil::CT_DateTime2:

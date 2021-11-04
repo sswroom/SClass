@@ -136,6 +136,7 @@ Bool Exporter::DBPListExporter::ExportFile(IO::SeekableStream *stm, const UTF8Ch
 			case DB::DBUtil::CT_VarChar:
 			case DB::DBUtil::CT_Char:
 			case DB::DBUtil::CT_Unknown:
+			case DB::DBUtil::CT_UUID:
 			default:
 				if (r->GetStr(i, lineBuff2, 65536))
 				{

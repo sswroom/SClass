@@ -356,7 +356,7 @@ IO::ParsedObject *Parser::FileParser::ZIPParser::ParseFile(IO::IStreamData *fd, 
 			pf->GetItemName(sbuff, ui);
 			if (Text::StrEquals(sbuff, (const UTF8Char*)"doc.kml") && pf->GetItemType(ui) == IO::PackageFile::POT_STREAMDATA)
 			{
-				IO::IStreamData *stmData = pf->GetItemStmData(0);
+				IO::IStreamData *stmData = pf->GetItemStmData((UOSInt)0);
 				Parser::FileParser::XMLParser xmlParser;
 				xmlParser.SetParserList(this->parsers);
 				xmlParser.SetEncFactory(this->encFact);

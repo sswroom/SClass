@@ -8,18 +8,18 @@ namespace DB
 	class DBUtil
 	{
 	public:
-		typedef enum
+		enum class ServerType
 		{
-			SVR_TYPE_UNKNOWN = 0,
-			SVR_TYPE_MSSQL = 1,
-			SVR_TYPE_MYSQL = 2,
-			SVR_TYPE_ORACLE = 3,
-			SVR_TYPE_ACCESS = 4,
-			SVR_TYPE_TEXT = 5,
-			SVR_TYPE_SQLITE = 6,
-			SVR_TYPE_WBEM = 7,
-			SVR_TYPE_MDBTOOLS = 8
-		} ServerType;
+			Unknown,
+			MSSQL,
+			MySQL,
+			Oracle,
+			Access,
+			Text,
+			SQLite,
+			WBEM,
+			MDBTools
+		};
 
 		typedef enum
 		{
@@ -41,7 +41,8 @@ namespace DB
 			CT_Vector,
 			CT_NVarChar,
 			CT_NChar,
-			CT_DateTime2 //acc = 0.1ms
+			CT_DateTime2, //acc = 0.1ms
+			CT_UUID
 		} ColType;
 
 		static UTF8Char *SDBStrUTF8(UTF8Char *sqlstr, const UTF8Char *str, ServerType svrType);

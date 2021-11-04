@@ -275,7 +275,14 @@ void SSWR::AVIRead::AVIRDBForm::UpdateTables()
 
 	this->lbTable->ClearItems();
 	NEW_CLASS(tableNames, Data::ArrayListStrUTF8());
-	this->dbt->GetTableNames(tableNames);
+	if (this->dbt)
+	{
+		this->dbt->GetTableNames(tableNames);
+	}
+	else
+	{
+		this->db->GetTableNames(tableNames);
+	}
 	i = 0;
 	j = tableNames->GetCount();
 	while (i < j)
@@ -283,7 +290,11 @@ void SSWR::AVIRead::AVIRDBForm::UpdateTables()
 		this->lbTable->AddItem(tableNames->GetItem(i), 0);
 		i++;
 	}
-	this->dbt->ReleaseTableNames(tableNames);
+
+	if (this->dbt)
+	{
+		this->dbt->ReleaseTableNames(tableNames);
+	}
 	DEL_CLASS(tableNames);
 }
 

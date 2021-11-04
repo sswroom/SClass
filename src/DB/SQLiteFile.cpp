@@ -79,7 +79,7 @@ DB::SQLiteFile::~SQLiteFile()
 
 DB::DBUtil::ServerType DB::SQLiteFile::GetSvrType()
 {
-	return DB::DBUtil::SVR_TYPE_SQLITE;
+	return DB::DBUtil::ServerType::SQLite;
 }
 
 DB::DBConn::ConnType DB::SQLiteFile::GetConnType()

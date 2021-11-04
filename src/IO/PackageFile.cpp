@@ -430,6 +430,16 @@ IO::IStreamData *IO::PackageFile::GetItemStmData(UOSInt index)
 	return GetPItemStmData(item);
 }
 
+IO::IStreamData *IO::PackageFile::GetItemStmData(const UTF8Char* name)
+{
+	UOSInt index = GetItemIndex(name);
+	if (index == INVALID_INDEX)
+	{
+		return 0;
+	}
+	return this->GetItemStmData(index);
+}
+
 IO::PackageFile *IO::PackageFile::GetItemPack(UOSInt index)
 {
 	IO::PackFileItem *item = this->items->GetItem(index);

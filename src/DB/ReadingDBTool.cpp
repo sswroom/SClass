@@ -64,27 +64,27 @@ DB::ReadingDBTool::ReadingDBTool(DB::DBConn *db, Bool needRelease, IO::LogTool *
 	this->trig = 0;
 	this->dataCnt = 0;
 	this->svrType = db->GetSvrType();
-	if (this->svrType == DB::DBUtil::SVR_TYPE_ACCESS)
+	if (this->svrType == DB::DBUtil::ServerType::Access)
 	{
 		this->AddLogMsg((const UTF8Char*)"Server type is Access", IO::ILogHandler::LOG_LEVEL_COMMAND);
 	}
-	else if (this->svrType == DB::DBUtil::SVR_TYPE_MSSQL)
+	else if (this->svrType == DB::DBUtil::ServerType::MSSQL)
 	{
 		this->AddLogMsg((const UTF8Char*)"Server type is MSSQL", IO::ILogHandler::LOG_LEVEL_COMMAND);
 	}
-	else if (this->svrType == DB::DBUtil::SVR_TYPE_MYSQL)
+	else if (this->svrType == DB::DBUtil::ServerType::MySQL)
 	{
 		this->AddLogMsg((const UTF8Char*)"Server type is MySQL", IO::ILogHandler::LOG_LEVEL_COMMAND);
 	}
-	else if (this->svrType == DB::DBUtil::SVR_TYPE_ORACLE)
+	else if (this->svrType == DB::DBUtil::ServerType::Oracle)
 	{
 		this->AddLogMsg((const UTF8Char*)"Server type is Oracle", IO::ILogHandler::LOG_LEVEL_COMMAND);
 	}
-	else if (this->svrType == DB::DBUtil::SVR_TYPE_TEXT)
+	else if (this->svrType == DB::DBUtil::ServerType::Text)
 	{
 		this->AddLogMsg((const UTF8Char*)"Server type is Text", IO::ILogHandler::LOG_LEVEL_COMMAND);
 	}
-	else if (this->svrType == DB::DBUtil::SVR_TYPE_SQLITE)
+	else if (this->svrType == DB::DBUtil::ServerType::SQLite)
 	{
 		this->AddLogMsg((const UTF8Char*)"Server type is SQLite", IO::ILogHandler::LOG_LEVEL_COMMAND);
 	}
@@ -630,7 +630,7 @@ DB::DBReader *DB::ReadingDBTool::GetTableData(const UTF8Char *tableName, UOSInt 
 
 UOSInt DB::ReadingDBTool::GetTableNames(Data::ArrayList<const UTF8Char*> *arr)
 {
-	if (this->svrType == DB::DBUtil::SVR_TYPE_MSSQL)
+	if (this->svrType == DB::DBUtil::ServerType::MSSQL)
 	{
 		UOSInt ret = 0;
 		DB::DBReader *r = this->ExecuteReader((const UTF8Char*)"select TABLE_SCHEMA, TABLE_NAME from INFORMATION_SCHEMA.TABLES where TABLE_TYPE='BASE TABLE'");
@@ -654,7 +654,7 @@ UOSInt DB::ReadingDBTool::GetTableNames(Data::ArrayList<const UTF8Char*> *arr)
 		}
 		return ret;
 	}
-	else if (this->svrType == DB::DBUtil::SVR_TYPE_MYSQL)
+	else if (this->svrType == DB::DBUtil::ServerType::MySQL)
 	{
 		DB::DBReader *r = this->ExecuteReader((const UTF8Char*)"show tables");
 		if (r)
@@ -678,7 +678,7 @@ UOSInt DB::ReadingDBTool::GetTableNames(Data::ArrayList<const UTF8Char*> *arr)
 			return 0;
 		}
 	}
-	else if (this->svrType == DB::DBUtil::SVR_TYPE_SQLITE)
+	else if (this->svrType == DB::DBUtil::ServerType::SQLite)
 	{
 		DB::DBReader *r = this->ExecuteReader((const UTF8Char*)"select name from sqlite_master where type = 'table'");
 		if (r)
@@ -702,7 +702,7 @@ UOSInt DB::ReadingDBTool::GetTableNames(Data::ArrayList<const UTF8Char*> *arr)
 			return 0;
 		}
 	}
-	else if (this->svrType == DB::DBUtil::SVR_TYPE_ACCESS || this->svrType == DB::DBUtil::SVR_TYPE_MDBTOOLS)
+	else if (this->svrType == DB::DBUtil::ServerType::Access || this->svrType == DB::DBUtil::ServerType::MDBTools)
 	{
 		DB::DBReader *r = this->ExecuteReader((const UTF8Char*)"select name, type from MSysObjects where type = 1");
 		if (r)
@@ -756,7 +756,7 @@ DB::TableDef *DB::ReadingDBTool::GetTableDef(const UTF8Char *tableName)
 	UTF8Char buff[256];
 	UTF8Char *ptr;
 	UTF8Char *u8ptr;
-	if (this->svrType == DB::DBUtil::SVR_TYPE_MYSQL)
+	if (this->svrType == DB::DBUtil::ServerType::MySQL)
 	{
 		OSInt i = 4;
 		DB::DBReader *r = 0;
@@ -794,7 +794,7 @@ DB::TableDef *DB::ReadingDBTool::GetTableDef(const UTF8Char *tableName)
 			{
 				tab->SetAttr(0);
 			}
-			tab->SetSvrType(DB::DBUtil::SVR_TYPE_MYSQL);
+			tab->SetSvrType(DB::DBUtil::ServerType::MySQL);
 			tab->SetCharset(0);
 			this->CloseReader(r);
 		}
@@ -858,11 +858,11 @@ DB::TableDef *DB::ReadingDBTool::GetTableDef(const UTF8Char *tableName)
 		}
 		return tab;
 	}
-	else if (this->svrType == DB::DBUtil::SVR_TYPE_ORACLE)
+	else if (this->svrType == DB::DBUtil::ServerType::Oracle)
 	{
 		return 0;
 	}
-	else if (this->svrType == DB::DBUtil::SVR_TYPE_MSSQL)
+	else if (this->svrType == DB::DBUtil::ServerType::MSSQL)
 	{
 		Int32 i = 4;
 		DB::DBReader *r = 0;
@@ -894,7 +894,7 @@ DB::TableDef *DB::ReadingDBTool::GetTableDef(const UTF8Char *tableName)
 		tab->SetComments(0);
 		tab->SetAttr(0);
 		tab->SetCharset(0);
-		tab->SetSvrType(DB::DBUtil::SVR_TYPE_MSSQL);
+		tab->SetSvrType(DB::DBUtil::ServerType::MSSQL);
 
 		DB::ColDef *col;
 		while (r->ReadNext())
@@ -966,11 +966,11 @@ DB::TableDef *DB::ReadingDBTool::GetTableDef(const UTF8Char *tableName)
 
 		return tab;
 	}
-	else if (this->svrType == DB::DBUtil::SVR_TYPE_ACCESS)
+	else if (this->svrType == DB::DBUtil::ServerType::Access)
 	{
 		return 0;
 	}
-	else if (this->svrType == DB::DBUtil::SVR_TYPE_SQLITE)
+	else if (this->svrType == DB::DBUtil::ServerType::SQLite)
 	{
 		DB::SQLBuilder sql(this->svrType, this->GetTzQhr());
 		sql.AppendCmd((const UTF8Char*)"select sql from sqlite_master where type='table' and name=");
@@ -1007,7 +1007,7 @@ DB::TableDef *DB::ReadingDBTool::GetTableDef(const UTF8Char *tableName)
 
 UOSInt DB::ReadingDBTool::GetDatabaseNames(Data::ArrayList<const UTF8Char*> *arr)
 {
-	if (this->svrType == DB::DBUtil::SVR_TYPE_MSSQL)
+	if (this->svrType == DB::DBUtil::ServerType::MSSQL)
 	{
 		DB::DBReader *r = this->ExecuteReader((const UTF8Char*)"select name from master.dbo.sysdatabases");
 		if (r)
@@ -1031,7 +1031,7 @@ UOSInt DB::ReadingDBTool::GetDatabaseNames(Data::ArrayList<const UTF8Char*> *arr
 			return 0;
 		}
 	}
-	else if (this->svrType == DB::DBUtil::SVR_TYPE_MYSQL)
+	else if (this->svrType == DB::DBUtil::ServerType::MySQL)
 	{
 		DB::DBReader *r = this->ExecuteReader((const UTF8Char*)"show databases");
 		if (r)
@@ -1056,7 +1056,7 @@ UOSInt DB::ReadingDBTool::GetDatabaseNames(Data::ArrayList<const UTF8Char*> *arr
 		}
 
 	}
-	else if (this->svrType == DB::DBUtil::SVR_TYPE_SQLITE)
+	else if (this->svrType == DB::DBUtil::ServerType::SQLite)
 	{
 		Text::StringBuilderUTF8 sb;
 		const UTF8Char *name = this->db->GetSourceNameObj();
@@ -1089,7 +1089,7 @@ void DB::ReadingDBTool::ReleaseDatabaseNames(Data::ArrayList<const UTF8Char*> *a
 Bool DB::ReadingDBTool::ChangeDatabase(const UTF8Char *databaseName)
 {
 	UTF8Char sbuff[256];
-	if (this->svrType == DB::DBUtil::SVR_TYPE_MSSQL)
+	if (this->svrType == DB::DBUtil::ServerType::MSSQL)
 	{
 		this->DBColUTF8(Text::StrConcat(sbuff, (const UTF8Char*)"use "), databaseName);
 		DB::DBReader *r = this->ExecuteReader(sbuff);
@@ -1104,7 +1104,7 @@ Bool DB::ReadingDBTool::ChangeDatabase(const UTF8Char *databaseName)
 			return false;
 		}
 	}
-	else if (this->svrType == DB::DBUtil::SVR_TYPE_MYSQL)
+	else if (this->svrType == DB::DBUtil::ServerType::MySQL)
 	{
 		this->DBColUTF8(Text::StrConcat(sbuff, (const UTF8Char*)"use "), databaseName);
 		DB::DBReader *r = this->ExecuteReader(sbuff);
@@ -1124,11 +1124,11 @@ Bool DB::ReadingDBTool::ChangeDatabase(const UTF8Char *databaseName)
 
 UOSInt DB::ReadingDBTool::SplitSQL(UTF8Char **outStrs, UOSInt maxCnt, UTF8Char *oriStr)
 {
-	if (this->svrType == DB::DBUtil::SVR_TYPE_MYSQL)
+	if (this->svrType == DB::DBUtil::ServerType::MySQL)
 	{
 		return SplitMySQL(outStrs, maxCnt, oriStr);
 	}
-	else if (this->svrType == DB::DBUtil::SVR_TYPE_MSSQL)
+	else if (this->svrType == DB::DBUtil::ServerType::MSSQL)
 	{
 		return SplitMSSQL(outStrs, maxCnt, oriStr);
 	}
@@ -1147,21 +1147,21 @@ void DB::ReadingDBTool::AppendColDef(DB::DBUtil::ServerType svrType, DB::SQLBuil
 	{
 		sql->AppendCmd((const UTF8Char*)" NOT NULL");
 	}
-	if (svrType == DB::DBUtil::SVR_TYPE_MSSQL)
+	if (svrType == DB::DBUtil::ServerType::MSSQL)
 	{
 		if (col->IsAutoInc())
 		{
 			sql->AppendCmd((const UTF8Char*)" IDENTITY(1,1)");
 		}
 	}
-	else if (svrType == DB::DBUtil::SVR_TYPE_MYSQL)
+	else if (svrType == DB::DBUtil::ServerType::MySQL)
 	{
 		if (col->IsAutoInc())
 		{
 			sql->AppendCmd((const UTF8Char*)" AUTO_INCREMENT");
 		}
 	}
-	else if (svrType == DB::DBUtil::SVR_TYPE_SQLITE)
+	else if (svrType == DB::DBUtil::ServerType::SQLite)
 	{
 		if (col->IsAutoInc() && col->IsPK())
 		{
@@ -1172,7 +1172,7 @@ void DB::ReadingDBTool::AppendColDef(DB::DBUtil::ServerType svrType, DB::SQLBuil
 			sql->AppendCmd((const UTF8Char*)" AUTOINCREMENT");
 		}
 	}
-	else if (svrType == DB::DBUtil::SVR_TYPE_ACCESS)
+	else if (svrType == DB::DBUtil::ServerType::Access)
 	{
 		if (col->IsPK())
 		{
@@ -1190,7 +1190,7 @@ void DB::ReadingDBTool::AppendColDef(DB::DBUtil::ServerType svrType, DB::SQLBuil
 
 void DB::ReadingDBTool::AppendColType(DB::DBUtil::ServerType svrType, DB::SQLBuilder *sql, DB::DBUtil::ColType colType, UOSInt colSize)
 {
-	if (svrType == DB::DBUtil::SVR_TYPE_MYSQL)
+	if (svrType == DB::DBUtil::ServerType::MySQL)
 	{
 		if (colType == DB::DBUtil::CT_Bool)
 		{
@@ -1256,7 +1256,7 @@ void DB::ReadingDBTool::AppendColType(DB::DBUtil::ServerType svrType, DB::SQLBui
 			////////////////////////////////////////
 		}
 	}
-	else if (svrType == DB::DBUtil::SVR_TYPE_MSSQL)
+	else if (svrType == DB::DBUtil::ServerType::MSSQL)
 	{
 		if (colType == DB::DBUtil::CT_Bool)
 		{
@@ -1322,7 +1322,7 @@ void DB::ReadingDBTool::AppendColType(DB::DBUtil::ServerType svrType, DB::SQLBui
 			////////////////////////////////////////
 		}
 	}
-	else if (svrType == DB::DBUtil::SVR_TYPE_ACCESS)
+	else if (svrType == DB::DBUtil::ServerType::Access)
 	{
 		if (colType == DB::DBUtil::CT_Bool)
 		{
@@ -1388,7 +1388,7 @@ void DB::ReadingDBTool::AppendColType(DB::DBUtil::ServerType svrType, DB::SQLBui
 			////////////////////////////////////////
 		}
 	}
-	if (svrType == DB::DBUtil::SVR_TYPE_SQLITE)
+	if (svrType == DB::DBUtil::ServerType::SQLite)
 	{
 		if (colType == DB::DBUtil::CT_Bool)
 		{

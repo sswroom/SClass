@@ -110,7 +110,7 @@ DB::MySQLConn::~MySQLConn()
 
 DB::DBUtil::ServerType DB::MySQLConn::GetSvrType()
 {
-	return DB::DBUtil::SVR_TYPE_MYSQL;
+	return DB::DBUtil::ServerType::MySQL;
 }
 
 DB::DBConn::ConnType DB::MySQLConn::GetConnType()
@@ -354,12 +354,12 @@ DB::DBReader *DB::MySQLConn::GetTableData(const UTF8Char *name, UOSInt maxCnt, v
 		j = Text::StrIndexOf(&name[i], '.');
 		if (j == INVALID_INDEX)
 		{
-			DB::DBUtil::SDBColUTF8(sbuff, &name[i], DB::DBUtil::SVR_TYPE_MYSQL);
+			DB::DBUtil::SDBColUTF8(sbuff, &name[i], DB::DBUtil::ServerType::MySQL);
 			sb.Append(sbuff);
 			break;
 		}
 		sptr = Text::StrConcatC(sbuff, &name[i], (UOSInt)j);
-		DB::DBUtil::SDBColUTF8(sptr + 1, sbuff, DB::DBUtil::SVR_TYPE_MYSQL);
+		DB::DBUtil::SDBColUTF8(sptr + 1, sbuff, DB::DBUtil::ServerType::MySQL);
 		sb.Append(sptr + 1);
 		sb.AppendChar('.', 1);
 		i += j + 1;

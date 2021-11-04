@@ -51,57 +51,57 @@ void DB::ODBCConn::UpdateConnInfo()
 //		Text::StrToLower(buff);
 		if (Text::StrStartsWith(buff, "myodbc"))
 		{
-			this->svrType = DB::DBUtil::SVR_TYPE_MYSQL;
+			this->svrType = DB::DBUtil::ServerType::MySQL;
 		}
 		else if (Text::StrStartsWith(buff, "libmyodbc"))
 		{
-			this->svrType = DB::DBUtil::SVR_TYPE_MYSQL;
+			this->svrType = DB::DBUtil::ServerType::MySQL;
 		}
 		else if (Text::StrStartsWith(buff, "SQLSVR"))
 		{
-			this->svrType = DB::DBUtil::SVR_TYPE_MSSQL;
+			this->svrType = DB::DBUtil::ServerType::MSSQL;
 		}
 		else if (Text::StrStartsWith(buff, "SQLSRV"))
 		{
-			this->svrType = DB::DBUtil::SVR_TYPE_MSSQL;
+			this->svrType = DB::DBUtil::ServerType::MSSQL;
 		}
 		else if (Text::StrStartsWith(buff, "SQORA"))
 		{
-			this->svrType = DB::DBUtil::SVR_TYPE_ORACLE;
+			this->svrType = DB::DBUtil::ServerType::Oracle;
 		}
 		else if (Text::StrStartsWithICase(buff, "sqlncli"))
 		{
-			this->svrType = DB::DBUtil::SVR_TYPE_MSSQL;
+			this->svrType = DB::DBUtil::ServerType::MSSQL;
 		}
 		else if (Text::StrIndexOf(buff, "sqlite") != INVALID_INDEX)
 		{
-			this->svrType = DB::DBUtil::SVR_TYPE_SQLITE;
+			this->svrType = DB::DBUtil::ServerType::SQLite;
 		}
 		else if (Text::StrIndexOf(buff, "odbcjt32") != INVALID_INDEX)
 		{
-			this->svrType = DB::DBUtil::SVR_TYPE_ACCESS;
+			this->svrType = DB::DBUtil::ServerType::Access;
 		}
 		else if (Text::StrStartsWith(buff, "ACEODBC"))
 		{
-			this->svrType = DB::DBUtil::SVR_TYPE_ACCESS;
+			this->svrType = DB::DBUtil::ServerType::Access;
 		}
 		else if (Text::StrIndexOf(buff, "msodbcsql") != INVALID_INDEX)
 		{
-			this->svrType = DB::DBUtil::SVR_TYPE_MSSQL;
+			this->svrType = DB::DBUtil::ServerType::MSSQL;
 		}
 		else
 		{
 		}
 	}
-	if (this->svrType == DB::DBUtil::SVR_TYPE_UNKNOWN)
+	if (this->svrType == DB::DBUtil::ServerType::Unknown)
 	{
 		if (Text::StrIndexOfICase(this->connStr, (const UTF8Char*)"DRIVER=MDBTOOLS;") != INVALID_INDEX)
 		{
-			this->svrType = DB::DBUtil::SVR_TYPE_MDBTOOLS;
+			this->svrType = DB::DBUtil::ServerType::MDBTools;
 		}
 	}
 
-	if (this->svrType == DB::DBUtil::SVR_TYPE_MSSQL)
+	if (this->svrType == DB::DBUtil::ServerType::MSSQL)
 	{
 		DB::DBReader *r = this->ExecuteReader((const UTF8Char*)"select getdate(), GETUTCDATE()");
 		if (r)
@@ -209,7 +209,7 @@ Bool DB::ODBCConn::Connect(const UTF8Char *dsn, const UTF8Char *uid, const UTF8C
 		this->connErr = CE_CONNECT_ERR;
 		return false;
 	}
-	this->svrType = DB::DBUtil::SVR_TYPE_UNKNOWN;
+	this->svrType = DB::DBUtil::ServerType::Unknown;
 	envHand = hand;
 	connHand = hConn;
 	this->lastDataError = DE_NO_ERROR;
@@ -316,7 +316,7 @@ Bool DB::ODBCConn::Connect(const UTF8Char *connStr)
 		this->connErr = CE_CONNECT_ERR;
 		return false;
 	}
-	this->svrType = DB::DBUtil::SVR_TYPE_UNKNOWN;
+	this->svrType = DB::DBUtil::ServerType::Unknown;
 	envHand = hand;
 	connHand = hConn;
 	this->lastDataError = DE_NO_ERROR;
@@ -907,15 +907,15 @@ void DB::ODBCConn::SetTraceFile(const WChar *fileName)
 
 UTF8Char *DB::ODBCConn::ShowTablesCmd(UTF8Char *sqlstr)
 {
-	if (this->svrType == DB::DBUtil::SVR_TYPE_MYSQL)
+	if (this->svrType == DB::DBUtil::ServerType::MySQL)
 		return Text::StrConcat(sqlstr, (const UTF8Char*)"show Tables");
-	else if (this->svrType == DB::DBUtil::SVR_TYPE_MSSQL)
+	else if (this->svrType == DB::DBUtil::ServerType::MSSQL)
 		return Text::StrConcat(sqlstr, (const UTF8Char*)"select TABLE_NAME from user_tables");
-	else if (this->svrType == DB::DBUtil::SVR_TYPE_ORACLE)
+	else if (this->svrType == DB::DBUtil::ServerType::Oracle)
 		return Text::StrConcat(sqlstr, (const UTF8Char*)"select table_name from user_tables");
-	else if (this->svrType == DB::DBUtil::SVR_TYPE_ACCESS)
+	else if (this->svrType == DB::DBUtil::ServerType::Access)
 		return Text::StrConcat(sqlstr, (const UTF8Char*)"select name from MSysObjects where type = 1");
-	else if (this->svrType == DB::DBUtil::SVR_TYPE_MDBTOOLS)
+	else if (this->svrType == DB::DBUtil::ServerType::MDBTools)
 		return Text::StrConcat(sqlstr, (const UTF8Char*)"select name from MSysObjects where type = 1");
 	else
 		return Text::StrConcat(sqlstr, (const UTF8Char*)"show Tables");
@@ -1004,7 +1004,7 @@ DB::DBReader *DB::ODBCConn::GetTableData(const UTF8Char *name, UOSInt maxCnt, vo
 	UTF8Char *sptr;
 	Text::StringBuilderUTF8 sb;
 	sb.Append((const UTF8Char*)"select ");
-	if (this->svrType == DB::DBUtil::SVR_TYPE_MSSQL || this->svrType == DB::DBUtil::SVR_TYPE_ACCESS)
+	if (this->svrType == DB::DBUtil::ServerType::MSSQL || this->svrType == DB::DBUtil::ServerType::Access)
 	{
 		if (maxCnt > 0)
 		{
@@ -1031,7 +1031,7 @@ DB::DBReader *DB::ODBCConn::GetTableData(const UTF8Char *name, UOSInt maxCnt, vo
 		sb.AppendChar('.', 1);
 		i += j + 1;
 	}
-	if (this->svrType == DB::DBUtil::SVR_TYPE_SQLITE || this->svrType == DB::DBUtil::SVR_TYPE_MYSQL)
+	if (this->svrType == DB::DBUtil::ServerType::SQLite || this->svrType == DB::DBUtil::ServerType::MySQL)
 	{
 		if (maxCnt > 0)
 		{
@@ -1199,6 +1199,7 @@ DB::ODBCReader::ODBCReader(DB::ODBCConn *conn, void *hStmt, Bool enableDebug, In
 		case DB::DBUtil::CT_VarChar:
 		case DB::DBUtil::CT_NChar:
 		case DB::DBUtil::CT_NVarChar:
+		case DB::DBUtil::CT_UUID:
 			NEW_CLASS(this->colDatas[i].colData, Text::StringBuilderUTF8());
 			break;
 		case DB::DBUtil::CT_Double:
@@ -1248,6 +1249,7 @@ DB::ODBCReader::~ODBCReader()
 		case DB::DBUtil::CT_VarChar:
 		case DB::DBUtil::CT_NChar:
 		case DB::DBUtil::CT_NVarChar:
+		case DB::DBUtil::CT_UUID:
 			sb = (Text::StringBuilderUTF8*)this->colDatas[i].colData;
 			DEL_CLASS(sb);
 			break;
@@ -1319,6 +1321,7 @@ Bool DB::ODBCReader::ReadNext()
 			case DB::DBUtil::CT_NVarChar:
 			case DB::DBUtil::CT_Char:
 			case DB::DBUtil::CT_VarChar:
+			case DB::DBUtil::CT_UUID:
 				{
 					len = 256;
 					sb = (Text::StringBuilderUTF8*)this->colDatas[i].colData;
@@ -1593,6 +1596,7 @@ Int32 DB::ODBCReader::GetInt32(UOSInt colIndex)
 	case DB::DBUtil::CT_VarChar:
 	case DB::DBUtil::CT_NChar:
 	case DB::DBUtil::CT_NVarChar:
+	case DB::DBUtil::CT_UUID:
 		return Text::StrToInt32(((Text::StringBuilderUTF8*)this->colDatas[colIndex].colData)->ToString());
 	case DB::DBUtil::CT_Double:
 	case DB::DBUtil::CT_Float:
@@ -1631,6 +1635,7 @@ Int64 DB::ODBCReader::GetInt64(UOSInt colIndex)
 	case DB::DBUtil::CT_VarChar:
 	case DB::DBUtil::CT_NChar:
 	case DB::DBUtil::CT_NVarChar:
+	case DB::DBUtil::CT_UUID:
 		return Text::StrToInt64(((Text::StringBuilderUTF8*)this->colDatas[colIndex].colData)->ToString());
 	case DB::DBUtil::CT_Double:
 	case DB::DBUtil::CT_Float:
@@ -1670,6 +1675,7 @@ WChar *DB::ODBCReader::GetStr(UOSInt colIndex, WChar *buff)
 	case DB::DBUtil::CT_VarChar:
 	case DB::DBUtil::CT_NChar:
 	case DB::DBUtil::CT_NVarChar:
+	case DB::DBUtil::CT_UUID:
 		return Text::StrUTF8_WChar(buff, ((Text::StringBuilderUTF8*)this->colDatas[colIndex].colData)->ToString(), 0);
 	case DB::DBUtil::CT_Double:
 	case DB::DBUtil::CT_Float:
@@ -1718,6 +1724,7 @@ Bool DB::ODBCReader::GetStr(UOSInt colIndex, Text::StringBuilderUTF *sb)
 	case DB::DBUtil::CT_NVarChar:
 	case DB::DBUtil::CT_Char:
 	case DB::DBUtil::CT_VarChar:
+	case DB::DBUtil::CT_UUID:
 		sb->Append(((Text::StringBuilderUTF8*)this->colDatas[colIndex].colData)->ToString());
 		return true;
 	case DB::DBUtil::CT_Double:
@@ -1777,6 +1784,7 @@ const UTF8Char *DB::ODBCReader::GetNewStr(UOSInt colIndex)
 	case DB::DBUtil::CT_VarChar:
 	case DB::DBUtil::CT_NChar:
 	case DB::DBUtil::CT_NVarChar:
+	case DB::DBUtil::CT_UUID:
 		return Text::StrCopyNew(((Text::StringBuilderUTF8*)this->colDatas[colIndex].colData)->ToString());
 	case DB::DBUtil::CT_Double:
 	case DB::DBUtil::CT_Float:
@@ -1836,6 +1844,7 @@ UTF8Char *DB::ODBCReader::GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSiz
 	case DB::DBUtil::CT_NVarChar:
 	case DB::DBUtil::CT_Char:
 	case DB::DBUtil::CT_VarChar:
+	case DB::DBUtil::CT_UUID:
 		return Text::StrConcatS(buff, ((Text::StringBuilderUTF8*)this->colDatas[colIndex].colData)->ToString(), buffSize);
 	case DB::DBUtil::CT_Double:
 	case DB::DBUtil::CT_Float:
@@ -1889,6 +1898,7 @@ DB::DBReader::DateErrType DB::ODBCReader::GetDate(UOSInt colIndex, Data::DateTim
 	case DB::DBUtil::CT_NVarChar:
 	case DB::DBUtil::CT_Char:
 	case DB::DBUtil::CT_VarChar:
+	case DB::DBUtil::CT_UUID:
 		outVal->SetValue(((Text::StringBuilderUTF8*)this->colDatas[colIndex].colData)->ToString());
 		return DB::DBReader::DET_OK;
 	case DB::DBUtil::CT_Double:
@@ -1929,6 +1939,7 @@ Double DB::ODBCReader::GetDbl(UOSInt colIndex)
 	case DB::DBUtil::CT_NVarChar:
 	case DB::DBUtil::CT_Char:
 	case DB::DBUtil::CT_VarChar:
+	case DB::DBUtil::CT_UUID:
 		return Text::StrToDouble(((Text::StringBuilderUTF8*)this->colDatas[colIndex].colData)->ToString());
 	case DB::DBUtil::CT_Double:
 	case DB::DBUtil::CT_Float:
@@ -1970,6 +1981,7 @@ Bool DB::ODBCReader::GetBool(UOSInt colIndex)
 	case DB::DBUtil::CT_NVarChar:
 	case DB::DBUtil::CT_Char:
 	case DB::DBUtil::CT_VarChar:
+	case DB::DBUtil::CT_UUID:
 		return Text::StrToInt32(((Text::StringBuilderUTF8*)this->colDatas[colIndex].colData)->ToString()) != 0;
 	case DB::DBUtil::CT_Double:
 	case DB::DBUtil::CT_Float:
@@ -2008,6 +2020,7 @@ UOSInt DB::ODBCReader::GetBinarySize(UOSInt colIndex)
 	case DB::DBUtil::CT_NVarChar:
 	case DB::DBUtil::CT_Char:
 	case DB::DBUtil::CT_VarChar:
+	case DB::DBUtil::CT_UUID:
 		return 0;
 	case DB::DBUtil::CT_Double:
 	case DB::DBUtil::CT_Float:
@@ -2046,6 +2059,7 @@ UOSInt DB::ODBCReader::GetBinary(UOSInt colIndex, UInt8 *buff)
 	case DB::DBUtil::CT_NVarChar:
 	case DB::DBUtil::CT_Char:
 	case DB::DBUtil::CT_VarChar:
+	case DB::DBUtil::CT_UUID:
 		return 0;
 	case DB::DBUtil::CT_Double:
 	case DB::DBUtil::CT_Float:
@@ -2079,7 +2093,7 @@ Math::Vector2D *DB::ODBCReader::GetVector(UOSInt colIndex)
 		return 0;
 	if (this->colDatas[colIndex].isNull)
 		return 0;
-	if (this->conn->GetSvrType() == DB::DBUtil::SVR_TYPE_MSSQL)
+	if (this->conn->GetSvrType() == DB::DBUtil::ServerType::MSSQL)
 	{
 		if (this->colDatas[colIndex].colType == DB::DBUtil::CT_Binary || this->colDatas[colIndex].colType == DB::DBUtil::CT_Vector)
 		{
@@ -2191,7 +2205,7 @@ DB::DBUtil::ColType DB::ODBCReader::ODBCType2DBType(Int16 odbcType, UOSInt colSi
 	case SQL_SMALLINT:
 		return DB::DBUtil::CT_Int16;
 	case SQL_INTEGER:
-		if (this->conn->GetSvrType() == DB::DBUtil::SVR_TYPE_MYSQL && colSize == 10)
+		if (this->conn->GetSvrType() == DB::DBUtil::ServerType::MySQL && colSize == 10)
 		{
 			return DB::DBUtil::CT_UInt32;
 		}

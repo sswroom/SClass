@@ -94,6 +94,7 @@ namespace IO
 		virtual PackObjectType GetItemType(UOSInt index);
 		virtual UTF8Char *GetItemName(UTF8Char *sbuff, UOSInt index);
 		virtual IO::IStreamData *GetItemStmData(UOSInt index); // need release
+		IO::IStreamData *GetItemStmData(const UTF8Char* name);
 		virtual IO::PackageFile *GetItemPack(UOSInt index); // need release
 		virtual IO::ParsedObject *GetItemPObj(UOSInt index); // no need release
 		virtual Int64 GetItemModTimeTick(UOSInt index);

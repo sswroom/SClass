@@ -1049,7 +1049,7 @@ Net::MySQLTCPClient::~MySQLTCPClient()
 
 DB::DBUtil::ServerType Net::MySQLTCPClient::GetSvrType()
 {
-	return DB::DBUtil::SVR_TYPE_MYSQL;
+	return DB::DBUtil::ServerType::MySQL;
 }
 
 DB::DBConn::ConnType Net::MySQLTCPClient::GetConnType()
@@ -1296,17 +1296,17 @@ Bool Net::MySQLTCPClient::ChangeSchema(const UTF8Char *schemaName)
 	UTF8Char sbuff[128];
 	Text::StringBuilderUTF8 sb;
 	sb.Append((const UTF8Char*)"use ");
-	UOSInt colLen = DB::DBUtil::SDBColUTF8Leng(schemaName, DB::DBUtil::SVR_TYPE_MYSQL);
+	UOSInt colLen = DB::DBUtil::SDBColUTF8Leng(schemaName, DB::DBUtil::ServerType::MySQL);
 	if (colLen > 127)
 	{
 		UTF8Char *sptr = MemAlloc(UTF8Char, colLen + 1);
-		DB::DBUtil::SDBColUTF8(sptr, schemaName, DB::DBUtil::SVR_TYPE_MYSQL);
+		DB::DBUtil::SDBColUTF8(sptr, schemaName, DB::DBUtil::ServerType::MySQL);
 		sb.Append(sptr);
 		MemFree(sptr);
 	}
 	else
 	{
-		DB::DBUtil::SDBColUTF8(sbuff, schemaName, DB::DBUtil::SVR_TYPE_MYSQL);
+		DB::DBUtil::SDBColUTF8(sbuff, schemaName, DB::DBUtil::ServerType::MySQL);
 		sb.Append(sbuff);
 	}
 	if (this->ExecuteNonQuery(sb.ToString()) >= 0)

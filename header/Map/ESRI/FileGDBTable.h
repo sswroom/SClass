@@ -19,6 +19,7 @@ namespace Map
 			FileGDBTable(const UTF8Char *tableName, IO::IStreamData *fd);
 			~FileGDBTable();
 
+			Bool IsError();
 			const UTF8Char *GetName();
 			DB::DBReader *OpenReader();	
 		};

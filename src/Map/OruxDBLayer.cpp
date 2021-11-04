@@ -311,7 +311,7 @@ Math::Vector2D *Map::OruxDBLayer::GetVectorById(void *session, Int64 id)
 	Map::OruxDBLayer::LayerInfo *lyr = this->layerMap->Get(this->currLayer);
 	if (lyr == 0)
 		return 0;
-	DB::SQLBuilder sql(DB::DBUtil::SVR_TYPE_SQLITE, 0);
+	DB::SQLBuilder sql(DB::DBUtil::ServerType::SQLite, 0);
 	Int32 x;
 	Int32 y;
 	x = (Int32)((id >> 32) & 0xffffffff);
@@ -405,7 +405,7 @@ Bool Map::OruxDBLayer::GetObjectData(Int64 objectId, IO::Stream *stm, Int32 *til
 	Map::OruxDBLayer::LayerInfo *lyr = this->layerMap->Get(this->currLayer);
 	if (lyr == 0)
 		return false;
-	DB::SQLBuilder sql(DB::DBUtil::SVR_TYPE_SQLITE, 0);
+	DB::SQLBuilder sql(DB::DBUtil::ServerType::SQLite, 0);
 	Int32 x;
 	Int32 y;
 	x = (Int32)((objectId >> 32) & 0xffffffff);

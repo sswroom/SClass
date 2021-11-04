@@ -175,6 +175,7 @@ DB::DBRow *DB::DBCache::GetTableItem(const UTF8Char *tableName, Int64 pk)
 	case DB::DBUtil::CT_Binary:
 	case DB::DBUtil::CT_Vector:
 	case DB::DBUtil::CT_Unknown:
+	case DB::DBUtil::CT_UUID:
 	default:
 		return 0;
 	}
