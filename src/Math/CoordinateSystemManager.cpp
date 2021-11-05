@@ -451,7 +451,7 @@ Math::CoordinateSystem *Math::CoordinateSystemManager::CreateFromName(const UTF8
 	}
 	else if (Text::StrEquals(name, (const UTF8Char*)"urn:ogc:def:crs:OGC:1.3:CRS84"))
 	{
-		return CreateGeogCoordinateSystem(name, Math::GeographicCoordinateSystem::GetCoordinateSystemName(Math::GeographicCoordinateSystem::GCST_WGS84));
+		return CreateGeogCoordinateSystem(name, Math::CoordinateSystemManager::GeoCoordSysTypeGetName(Math::CoordinateSystemManager::GCST_WGS84));
 	}
 	return 0;
 }
@@ -976,9 +976,9 @@ void Math::CoordinateSystemManager::FillDatumData(Math::GeographicCoordinateSyst
 	}
 }
 
-Math::ProjectedCoordinateSystem *Math::CoordinateSystemManager::CreateProjCoordinateSystemDefName(Math::ProjectedCoordinateSystem::ProjCoordSysType pcst)
+Math::ProjectedCoordinateSystem *Math::CoordinateSystemManager::CreateProjCoordinateSystemDefName(Math::CoordinateSystemManager::ProjCoordSysType pcst)
 {
-	const UTF8Char *name = Math::ProjectedCoordinateSystem::GetCoordinateSystemName(pcst);
+	const UTF8Char *name = Math::CoordinateSystemManager::ProjCoordSysTypeGetName(pcst);
 	if (name == 0)
 		return 0;
 	return CreateProjCoordinateSystem(name, name);
@@ -1009,14 +1009,14 @@ Math::ProjectedCoordinateSystem *Math::CoordinateSystemManager::CreateProjCoordi
 	return csys;
 }
 
-UOSInt Math::CoordinateSystemManager::GetProjCoordinateSystems(Data::ArrayList<Math::ProjectedCoordinateSystem::ProjCoordSysType> *csysList)
+UOSInt Math::CoordinateSystemManager::GetProjCoordinateSystems(Data::ArrayList<ProjCoordSysType> *csysList)
 {
 	UOSInt initCnt = csysList->GetCount();
-	Math::ProjectedCoordinateSystem::ProjCoordSysType pcst = Math::ProjectedCoordinateSystem::PCST_FIRST;
-	while (pcst <= Math::ProjectedCoordinateSystem::PCST_LAST)
+	Math::CoordinateSystemManager::ProjCoordSysType pcst = Math::CoordinateSystemManager::PCST_FIRST;
+	while (pcst <= Math::CoordinateSystemManager::PCST_LAST)
 	{
 		csysList->Add(pcst);
-		pcst = (Math::ProjectedCoordinateSystem::ProjCoordSysType)(pcst + 1);
+		pcst = (Math::CoordinateSystemManager::ProjCoordSysType)(pcst + 1);
 	}
 	return csysList->GetCount() - initCnt;
 }
@@ -1060,9 +1060,9 @@ const Math::CoordinateSystemManager::ProjectedCSysInfo *Math::CoordinateSystemMa
 }
 
 
-Math::GeographicCoordinateSystem *Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::GeographicCoordinateSystem::GeoCoordSysType gcst)
+Math::GeographicCoordinateSystem *Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(GeoCoordSysType gcst)
 {
-	const UTF8Char *name = Math::GeographicCoordinateSystem::GetCoordinateSystemName(gcst);
+	const UTF8Char *name = Math::CoordinateSystemManager::GeoCoordSysTypeGetName(gcst);
 	if (name == 0)
 		return 0;
 	return CreateGeogCoordinateSystem(name, name);
@@ -1088,10 +1088,10 @@ Math::GeographicCoordinateSystem *Math::CoordinateSystemManager::CreateGeogCoord
 	return csys;
 }
 
-UOSInt Math::CoordinateSystemManager::GetGeogCoordinateSystems(Data::ArrayList<Math::GeographicCoordinateSystem::GeoCoordSysType> *csysList)
+UOSInt Math::CoordinateSystemManager::GetGeogCoordinateSystems(Data::ArrayList<GeoCoordSysType> *csysList)
 {
 	UOSInt initCnt = csysList->GetCount();
-	csysList->Add(Math::GeographicCoordinateSystem::GCST_WGS84);
+	csysList->Add(GCST_WGS84);
 	return csysList->GetCount() - initCnt;
 }
 
@@ -1117,6 +1117,42 @@ const Math::CoordinateSystemManager::GeographicCSysInfo *Math::CoordinateSystemM
 		{
 			return &csysList[k];
 		}
+	}
+	return 0;
+}
+
+const UTF8Char *Math::CoordinateSystemManager::GeoCoordSysTypeGetName(GeoCoordSysType gcst)
+{
+	switch (gcst)
+	{
+	case Math::CoordinateSystemManager::GCST_CGCS2000:
+		return (const UTF8Char*)"CGCS2000";
+	case Math::CoordinateSystemManager::GCST_MACAU2009:
+		return (const UTF8Char*)"Macau_2009";
+	case Math::CoordinateSystemManager::GCST_HK1980:
+		return (const UTF8Char*)"HONGKONG";
+	case Math::CoordinateSystemManager::GCST_WGS84:
+	default:
+		return (const UTF8Char*)"WGS_1984";
+	}
+}
+
+const UTF8Char *Math::CoordinateSystemManager::ProjCoordSysTypeGetName(ProjCoordSysType pcst)
+{
+	switch (pcst)
+	{
+	case PCST_HK80:
+		return (const UTF8Char*)"Hong Kong 1980 Grid System";
+	case PCST_UK_NATIONAL_GRID:
+		return (const UTF8Char*)"UK National Grid";
+	case PCST_IRISH_NATIONAL_GRID:
+		return (const UTF8Char*)"Irish National Grid";
+	case PCST_MACAU_GRID:
+		return (const UTF8Char*)"Macau Grid";
+	case PCST_TWD67:
+		return (const UTF8Char*)"Taiwan 1967 Grid";
+	case PCST_TWD97:
+		return (const UTF8Char*)"Taiwan 1997 Grid";
 	}
 	return 0;
 }

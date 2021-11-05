@@ -659,7 +659,7 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 								{
 									colCnt = 2;
 								}
-								NEW_CLASS(layers[elemType - 1], Map::VectorLayer(Map::DRAW_LAYER_POINT, fileName, colCnt, colName, Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::GeographicCoordinateSystem::GCST_WGS84), 0, layerNames[elemType - 1]));
+								NEW_CLASS(layers[elemType - 1], Map::VectorLayer(Map::DRAW_LAYER_POINT, fileName, colCnt, colName, Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84), 0, layerNames[elemType - 1]));
 							}
 							Math::Point *pt;
 							NEW_CLASS(pt, Math::Point(4326, lon, lat));
@@ -1320,7 +1320,7 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 							{
 								colCnt = 2;
 							}
-							NEW_CLASS(layers[elemType - 1], Map::VectorLayer(Map::DRAW_LAYER_POLYGON, fileName, colCnt, pgName, Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::GeographicCoordinateSystem::GCST_WGS84), 0, layerNames[elemType - 1]));
+							NEW_CLASS(layers[elemType - 1], Map::VectorLayer(Map::DRAW_LAYER_POLYGON, fileName, colCnt, pgName, Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84), 0, layerNames[elemType - 1]));
 						}
 						Math::Polygon *pg;
 						NEW_CLASS(pg, Math::Polygon(4326, 1, latList.GetCount()));
@@ -1341,7 +1341,7 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 							{
 								colCnt = 2;
 							}
-							NEW_CLASS(layers[elemType - 1], Map::VectorLayer(Map::DRAW_LAYER_POLYLINE, fileName, colCnt, pgName, Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::GeographicCoordinateSystem::GCST_WGS84), 0, layerNames[elemType - 1]));
+							NEW_CLASS(layers[elemType - 1], Map::VectorLayer(Map::DRAW_LAYER_POLYLINE, fileName, colCnt, pgName, Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84), 0, layerNames[elemType - 1]));
 						}
 						Math::Polyline *pl;
 						NEW_CLASS(pl, Math::Polyline(4326, 1, latList.GetCount()));

@@ -171,7 +171,7 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::FileHandler(void *userObj, const UTF8
 				Media::SharedImage *simg;
 				Math::VectorImage *vimg;
 				Media::Image *stimg;
-				NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_IMAGE, files[i], 0, 0, Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::GeographicCoordinateSystem::GCST_WGS84), 0, 0, 0, 0, 0));
+				NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_IMAGE, files[i], 0, 0, Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84), 0, 0, 0, 0, 0));
 				stimg = ((Media::ImageList*)pobj)->GetImage(0, 0);
 				Double calcImgW;
 				Double calcImgH;
@@ -613,7 +613,7 @@ SSWR::AVIRead::AVIRGISForm::AVIRGISForm(UI::GUIClientControl *parent, UI::GUICor
 	this->pauseUpdate = false;
 	this->mapLyrUpdated = false;
 
-	this->wgs84CSys = Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::GeographicCoordinateSystem::GCST_WGS84);
+	this->wgs84CSys = Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84);
 	NEW_CLASS(this->ta, Text::TextAnalyzer());
 	NEW_CLASS(this->subForms, Data::ArrayList<UI::GUIForm*>());
 	UpdateTitle();
@@ -1286,7 +1286,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 			if (frm->ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
 				Map::VectorLayer *lyr;
-				NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_POLYLINE, (const UTF8Char*)"Google Polyline", 0, 0, Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::GeographicCoordinateSystem::GCST_WGS84), 0, 0, 0, 0, 0));
+				NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_POLYLINE, (const UTF8Char*)"Google Polyline", 0, 0, Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84), 0, 0, 0, 0, 0));
 				lyr->AddVector(frm->GetPolyline(), 0);
 				this->AddLayer(lyr);
 			}

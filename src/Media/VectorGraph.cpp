@@ -790,7 +790,7 @@ void Media::VectorGraph::DrawTo(Media::DrawImage *dimg, UInt32 *imgDurMS)
 			b = 0;
 		}
 
-		if (vec->GetVectorType() == Math::Vector2D::VectorType::POLYLINE)
+		if (vec->GetVectorType() == Math::Vector2D::VectorType::Polyline)
 		{
 			Math::Polyline *pl = (Math::Polyline*)vec;
 //			OSInt nParts;
@@ -809,7 +809,7 @@ void Media::VectorGraph::DrawTo(Media::DrawImage *dimg, UInt32 *imgDurMS)
 			dimg->DrawPolyline(points, nPoints, p);
 			MemFree(points);
 		}
-		else if (vec->GetVectorType() == Math::Vector2D::VectorType::STRING)
+		else if (vec->GetVectorType() == Math::Vector2D::VectorType::String)
 		{
 			Double x;
 			Double y;
@@ -844,7 +844,7 @@ void Media::VectorGraph::DrawTo(Media::DrawImage *dimg, UInt32 *imgDurMS)
 				}
 			}
 		}
-		else if (vec->GetVectorType() == Math::Vector2D::VectorType::IMAGE)
+		else if (vec->GetVectorType() == Math::Vector2D::VectorType::Image)
 		{
 			Math::VectorImage *vimg = (Math::VectorImage*)vec;
 			Double minX;
@@ -867,7 +867,7 @@ void Media::VectorGraph::DrawTo(Media::DrawImage *dimg, UInt32 *imgDurMS)
 				imgTimeMS = thisTimeMS;
 			}
 		}
-		else if (vec->GetVectorType() == Math::Vector2D::VectorType::ELLIPSE)
+		else if (vec->GetVectorType() == Math::Vector2D::VectorType::Ellipse)
 		{
 			Math::Ellipse *ellipse = (Math::Ellipse*)vec;
 			Double minX;

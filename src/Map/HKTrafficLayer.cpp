@@ -855,7 +855,7 @@ Map::HKTrafficLayer::HKTrafficLayer(Net::SocketFactory *sockf, Net::SSLEngine *s
 	this->maxY = 0;
 	this->url = Text::StrCopyNew((const UTF8Char*)"http://resource.data.one.gov.hk/td/speedmap.xml");
 	
-	this->SetCoordinateSystem(Math::CoordinateSystemManager::CreateProjCoordinateSystemDefName(Math::ProjectedCoordinateSystem::PCST_HK80));
+	this->SetCoordinateSystem(Math::CoordinateSystemManager::CreateProjCoordinateSystemDefName(Math::CoordinateSystemManager::PCST_HK80));
 }
 
 Map::HKTrafficLayer::~HKTrafficLayer()
@@ -1364,7 +1364,7 @@ Map::IMapDrawLayer *Map::HKTrafficLayer::GetNodePoints()
 	const UTF8Char *sptr = sbuff;
 	const UTF8Char *col = (const UTF8Char*)"id";
 	Math::Point *pt;
-	NEW_CLASS(layer, Map::VectorLayer(Map::DRAW_LAYER_POINT, (const UTF8Char*)"HKTrafficNode", 1, &col, Math::CoordinateSystemManager::CreateProjCoordinateSystemDefName(Math::ProjectedCoordinateSystem::PCST_HK80), 0, (const UTF8Char*)"HKTrafficNode"));
+	NEW_CLASS(layer, Map::VectorLayer(Map::DRAW_LAYER_POINT, (const UTF8Char*)"HKTrafficNode", 1, &col, Math::CoordinateSystemManager::CreateProjCoordinateSystemDefName(Math::CoordinateSystemManager::PCST_HK80), 0, (const UTF8Char*)"HKTrafficNode"));
 	OSInt i = 0;
 	OSInt j = sizeof(nodeTable) / sizeof(nodeTable[0]);
 	while (i < j)

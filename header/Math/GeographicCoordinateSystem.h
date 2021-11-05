@@ -8,18 +8,6 @@ namespace Math
 {
 	class GeographicCoordinateSystem : public Math::CoordinateSystem
 	{
-	public:
-		typedef enum
-		{
-			GCST_WGS84,
-			GCST_CGCS2000,
-			GCST_MACAU2009,
-			GCST_HK1980,
-
-			GCST_FIRST = GCST_WGS84,
-			GCST_LAST = GCST_HK1980
-		} GeoCoordSysType;
-
 	private:
 		const UTF8Char *csysName;
 		DatumData1 datum;
@@ -46,8 +34,6 @@ namespace Math
 
 		void ToCartesianCoord(Double lat, Double lon, Double h, Double *x, Double *y, Double *z);
 		void FromCartesianCoord(Double x, Double y, Double z, Double *lat, Double *lon, Double *h);
-
-		static const UTF8Char *GetCoordinateSystemName(GeoCoordSysType gcst);
 	};
 }
 #endif

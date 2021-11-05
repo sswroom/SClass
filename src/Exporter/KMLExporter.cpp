@@ -113,7 +113,7 @@ Bool Exporter::KMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 	Text::Encoding enc(this->codePage);
 	Text::StringBuilderUTF8 sb;
 	Math::CoordinateSystem *srcCsys = layer->GetCoordinateSystem();
-	Math::CoordinateSystem *destCsys = Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::GeographicCoordinateSystem::GCST_WGS84);
+	Math::CoordinateSystem *destCsys = Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84);
 	Bool needConv = false;
 	if (srcCsys && !destCsys->Equals(srcCsys))
 	{

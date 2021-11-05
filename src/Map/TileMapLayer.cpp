@@ -156,7 +156,7 @@ Map::TileMapLayer::TileMapLayer(Map::TileMap *tileMap, Parser::ParserList *parse
 	NEW_CLASS(this->updMut, Sync::Mutex());
 	NEW_CLASS(this->updHdlrs, Data::ArrayList<UpdatedHandler>());
 	NEW_CLASS(this->updObjs, Data::ArrayList<void *>());
-	this->csys = Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::GeographicCoordinateSystem::GCST_WGS84);
+	this->csys = Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84);
 	NEW_CLASS(this->lastIds, Data::ArrayListInt64());
 	NEW_CLASS(this->lastImgs, Data::ArrayList<CachedImage*>());
 	NEW_CLASS(this->lastMut, Sync::Mutex());

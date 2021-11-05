@@ -100,7 +100,7 @@ Map::CIPLayer2::CIPLayer2(const UTF8Char *layerName) : Map::IMapDrawLayer(layerN
 	}
 	DEL_CLASS(file);
 
-	this->csys = Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::GeographicCoordinateSystem::GCST_WGS84);
+	this->csys = Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84);
 	missFile = false;
 	if (!IsError())
 	{

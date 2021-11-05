@@ -29,7 +29,7 @@ Map::GPSTrack::GPSTrack(const UTF8Char *sourceName, Bool hasAltitude, UInt32 cod
 	NEW_CLASS(this->updObjs, Data::ArrayList<void *>());
 	this->maxLat = this->minLat = this->maxLon = this->minLon = 0;
 	this->hasAltitude = hasAltitude;
-	this->csys = Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::GeographicCoordinateSystem::GCST_WGS84);
+	this->csys = Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84);
 }
 
 Map::GPSTrack::~GPSTrack()

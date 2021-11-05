@@ -39,7 +39,7 @@ Map::SPDLayer::SPDLayer(const UTF8Char *layerName) : Map::IMapDrawLayer(layerNam
 	this->blkScale = 0;
 	this->blks = 0;
 	this->maxTextSize = 0;
-	this->csys = Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::GeographicCoordinateSystem::GCST_WGS84);
+	this->csys = Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84);
 	this->lyrType = (Map::DrawLayerType)0;
 	this->layerName = Text::StrCopyNew(fname);
 	NEW_CLASS(this->mut, Sync::Mutex());

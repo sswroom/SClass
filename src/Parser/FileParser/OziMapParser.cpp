@@ -186,7 +186,7 @@ IO::ParsedObject *Parser::FileParser::OziMapParser::ParseFile(IO::IStreamData *f
 				Math::PointMappingCoordinateSystem *csys = 0;
 				Math::VectorImage *vimg;
 				Media::SharedImage *shimg;
-				NEW_CLASS(csys, Math::PointMappingCoordinateSystem(fd->GetFullName(), 4326, (const UTF8Char*)"PointMapping", Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::GeographicCoordinateSystem::GCST_WGS84)));
+				NEW_CLASS(csys, Math::PointMappingCoordinateSystem(fd->GetFullName(), 4326, (const UTF8Char*)"PointMapping", Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84)));
 				currPt = 0;
 				while (currPt < nPts)
 				{

@@ -78,7 +78,7 @@ Map::FileGDBLayer::FileGDBLayer(DB::SharedReadingDB *conn, const UTF8Char *sourc
 
 	Sync::MutexUsage mutUsage;
 	this->currDB = this->conn->UseDB(&mutUsage);
-	this->csys = Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::GeographicCoordinateSystem::GCST_WGS84);
+	this->csys = Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84);
 	DB::DBReader *r = this->currDB->GetTableData(tableName, 0, 0, 0);
 	if (r)
 	{

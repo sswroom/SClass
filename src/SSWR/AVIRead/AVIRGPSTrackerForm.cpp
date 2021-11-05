@@ -200,7 +200,7 @@ SSWR::AVIRead::AVIRGPSTrackerForm::AVIRGPSTrackerForm(UI::GUIClientControl *pare
 	this->lastLat = 0;
 	this->lastLon = 0;
 	this->dist = 0;
-	this->wgs84 = Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::GeographicCoordinateSystem::GCST_WGS84);
+	this->wgs84 = Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84);
 	this->dispOffClk = false;
 	this->dispOffTime = 0;
 	this->dispIsOff = false;

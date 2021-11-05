@@ -187,19 +187,3 @@ void Math::GeographicCoordinateSystem::FromCartesianCoord(Double x, Double y, Do
 	}
 	this->datum.spheroid.ellipsoid->FromCartesianCoord(tmpX, tmpY, tmpZ, lat, lon, h);
 }
-
-const UTF8Char *Math::GeographicCoordinateSystem::GetCoordinateSystemName(GeoCoordSysType gcst)
-{
-	switch (gcst)
-	{
-	case Math::GeographicCoordinateSystem::GCST_CGCS2000:
-		return (const UTF8Char*)"CGCS2000";
-	case Math::GeographicCoordinateSystem::GCST_MACAU2009:
-		return (const UTF8Char*)"Macau_2009";
-	case Math::GeographicCoordinateSystem::GCST_HK1980:
-		return (const UTF8Char*)"HONGKONG";
-	case Math::GeographicCoordinateSystem::GCST_WGS84:
-	default:
-		return (const UTF8Char*)"WGS_1984";
-	}
-}

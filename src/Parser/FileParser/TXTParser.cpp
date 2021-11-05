@@ -100,7 +100,7 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 			return 0;
 		}
 
-		Math::CoordinateSystem *csys = Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::GeographicCoordinateSystem::GCST_WGS84);
+		Math::CoordinateSystem *csys = Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84);
 		NEW_CLASS(env, Map::MapEnv(fd->GetFullName(), ToColor(Text::StrHex2UInt32C(sarr[1])), csys));
 		env->SetNString(Text::StrToUInt32(sarr[4]));
 		fileName = baseDir;
@@ -533,7 +533,7 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 			lyrType = Map::DRAW_LAYER_MIXED;
 		}
 		j = Text::StrSplit(sarr, 20, sbuff, ',');
-		NEW_CLASS(lyr, Map::VectorLayer(lyrType, fd->GetFullFileName(), j, (const UTF8Char **)sarr, Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::GeographicCoordinateSystem::GCST_WGS84), 2, 0));
+		NEW_CLASS(lyr, Map::VectorLayer(lyrType, fd->GetFullFileName(), j, (const UTF8Char **)sarr, Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84), 2, 0));
 		while (reader->ReadLine(sbuff, 512))
 		{
 			i = Text::StrSplit(sarr, 20, sbuff, ',');

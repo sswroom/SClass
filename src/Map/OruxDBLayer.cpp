@@ -38,7 +38,7 @@ Map::OruxDBLayer::OruxDBLayer(const UTF8Char *sourceName, const UTF8Char *layerN
 		}
 	}
 	DEL_CLASS(fd);
-	this->SetCoordinateSystem(Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::GeographicCoordinateSystem::GCST_WGS84));
+	this->SetCoordinateSystem(Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84));
 }
 
 Map::OruxDBLayer::~OruxDBLayer()

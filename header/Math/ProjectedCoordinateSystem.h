@@ -6,20 +6,6 @@ namespace Math
 {
 	class ProjectedCoordinateSystem : public CoordinateSystem
 	{
-	public:
-		typedef enum
-		{
-			PCST_HK80,
-			PCST_UK_NATIONAL_GRID,
-			PCST_IRISH_NATIONAL_GRID,
-			PCST_MACAU_GRID,
-			PCST_TWD67,
-			PCST_TWD97,
-
-			PCST_FIRST = PCST_HK80,
-			PCST_LAST = PCST_TWD97
-		} ProjCoordSysType;
-
 	protected:
 		Math::GeographicCoordinateSystem *gcs;
 		Double falseEasting;
@@ -52,8 +38,6 @@ namespace Math
 		Double GetFalseEasting();
 		Double GetFalseNorthing();
 		UnitType GetUnit();
-
-		static const UTF8Char *GetCoordinateSystemName(ProjCoordSysType pcst);
 	};
 }
 #endif

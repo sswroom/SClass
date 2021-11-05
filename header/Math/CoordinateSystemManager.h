@@ -7,6 +7,30 @@ namespace Math
 	class CoordinateSystemManager
 	{
 	public:
+		typedef enum
+		{
+			GCST_WGS84,
+			GCST_CGCS2000,
+			GCST_MACAU2009,
+			GCST_HK1980,
+
+			GCST_FIRST = GCST_WGS84,
+			GCST_LAST = GCST_HK1980
+		} GeoCoordSysType;
+
+		typedef enum
+		{
+			PCST_HK80,
+			PCST_UK_NATIONAL_GRID,
+			PCST_IRISH_NATIONAL_GRID,
+			PCST_MACAU_GRID,
+			PCST_TWD67,
+			PCST_TWD97,
+
+			PCST_FIRST = PCST_HK80,
+			PCST_LAST = PCST_TWD97
+		} ProjCoordSysType;
+
 		typedef struct
 		{
 			Int32 srid;
@@ -144,18 +168,21 @@ namespace Math
 		static const Math::CoordinateSystemManager::DatumInfo *GetDatumInfoByName(const UTF8Char *name);
 		static void FillDatumData(Math::GeographicCoordinateSystem::DatumData1 *data, const DatumInfo *datum, const Char *name, Math::EarthEllipsoid *ee, const SpheroidInfo *spheroid);
 
-		static Math::ProjectedCoordinateSystem *CreateProjCoordinateSystemDefName(Math::ProjectedCoordinateSystem::ProjCoordSysType pcst);
+		static Math::ProjectedCoordinateSystem *CreateProjCoordinateSystemDefName(ProjCoordSysType pcst);
 		static Math::ProjectedCoordinateSystem *CreateProjCoordinateSystem(const UTF8Char *sourceNmae, const UTF8Char *projName);
-		static UOSInt GetProjCoordinateSystems(Data::ArrayList<Math::ProjectedCoordinateSystem::ProjCoordSysType> *csysList);
+		static UOSInt GetProjCoordinateSystems(Data::ArrayList<ProjCoordSysType> *csysList);
 		static UOSInt GetProjCoordinateSystemNames(Data::ArrayList<const UTF8Char *> *nameList);
 		static const ProjectedCSysInfo *GetProjCoordinateSystemInfo(const UTF8Char *projName);
 
-		static Math::GeographicCoordinateSystem *CreateGeogCoordinateSystemDefName(Math::GeographicCoordinateSystem::GeoCoordSysType gcst);
+		static Math::GeographicCoordinateSystem *CreateGeogCoordinateSystemDefName(GeoCoordSysType gcst);
 		static Math::GeographicCoordinateSystem *CreateGeogCoordinateSystem(const UTF8Char *sourceName, const UTF8Char *geoName);
-		static UOSInt GetGeogCoordinateSystems(Data::ArrayList<Math::GeographicCoordinateSystem::GeoCoordSysType> *csysList);
+		static UOSInt GetGeogCoordinateSystems(Data::ArrayList<GeoCoordSysType> *csysList);
 		static const GeographicCSysInfo *GetGeogCoordinateSystemInfo(const UTF8Char *geoName);
 	private:
 		static Bool ParsePRJString(Char *prjBuff, UOSInt *strSize);
+	public:
+		static const UTF8Char *GeoCoordSysTypeGetName(GeoCoordSysType gcst);
+		static const UTF8Char *ProjCoordSysTypeGetName(ProjCoordSysType pcst);
 	};
 }
 #endif

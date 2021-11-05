@@ -184,23 +184,3 @@ Math::CoordinateSystem::UnitType Math::ProjectedCoordinateSystem::GetUnit()
 {
 	return this->unit;
 }
-
-const UTF8Char *Math::ProjectedCoordinateSystem::GetCoordinateSystemName(ProjCoordSysType pcst)
-{
-	switch (pcst)
-	{
-	case PCST_HK80:
-		return (const UTF8Char*)"Hong Kong 1980 Grid System";
-	case PCST_UK_NATIONAL_GRID:
-		return (const UTF8Char*)"UK National Grid";
-	case PCST_IRISH_NATIONAL_GRID:
-		return (const UTF8Char*)"Irish National Grid";
-	case PCST_MACAU_GRID:
-		return (const UTF8Char*)"Macau Grid";
-	case PCST_TWD67:
-		return (const UTF8Char*)"Taiwan 1967 Grid";
-	case PCST_TWD97:
-		return (const UTF8Char*)"Taiwan 1997 Grid";
-	}
-	return 0;
-}

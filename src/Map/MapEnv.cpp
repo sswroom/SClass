@@ -122,7 +122,7 @@ Map::MapEnv::MapEnv(const UTF8Char *fileName, UInt32 bgColor, Math::CoordinateSy
 	this->csys = csys;
 	if (this->csys == 0)
 	{
-		this->csys = Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::GeographicCoordinateSystem::GCST_WGS84);
+		this->csys = Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84);
 	}
 	this->defFontStyle = 0;
 	this->defLineStyle = 0;

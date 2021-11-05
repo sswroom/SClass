@@ -1993,7 +1993,7 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLContainer(Text::XMLRe
 			{
 				if (imgLyr == 0)
 				{
-					NEW_CLASS(imgLyr, Map::WebImageLayer(browser, parsers, sourceName, Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::GeographicCoordinateSystem::GCST_WGS84), containerNameSb.ToString()));
+					NEW_CLASS(imgLyr, Map::WebImageLayer(browser, parsers, sourceName, Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84), containerNameSb.ToString()));
 				}
 
 				const UTF8Char *name = 0;
@@ -2170,7 +2170,7 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLContainer(Text::XMLRe
 			{
 				if (imgLyr == 0)
 				{
-					NEW_CLASS(imgLyr, Map::WebImageLayer(browser, parsers, sourceName, Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::GeographicCoordinateSystem::GCST_WGS84), containerNameSb.ToString()));
+					NEW_CLASS(imgLyr, Map::WebImageLayer(browser, parsers, sourceName, Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84), containerNameSb.ToString()));
 				}
 
 				const UTF8Char *name = 0;
@@ -2916,7 +2916,7 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLPlacemarkLyr(Text::XM
 				DB::DBUtil::ColType colType = DB::DBUtil::CT_VarChar;
 				UOSInt colSize = 256;
 				UOSInt colDP = 0;
-				NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_POLYLINE3D, sourceName, 1, &cols, Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::GeographicCoordinateSystem::GCST_WGS84), &colType, &colSize, &colDP, 0, lyrNameSb.ToString()));
+				NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_POLYLINE3D, sourceName, 1, &cols, Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84), &colType, &colSize, &colDP, 0, lyrNameSb.ToString()));
 
 				while (reader->ReadNext())
 				{
@@ -3033,7 +3033,7 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLPlacemarkLyr(Text::XM
 				DB::DBUtil::ColType colType = DB::DBUtil::CT_VarChar;
 				UOSInt colSize = 256;
 				UOSInt colDP = 0;
-				NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_POINT, sourceName, 1, &cols, Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::GeographicCoordinateSystem::GCST_WGS84), &colType, &colSize, &colDP, 0, lyrNameSb.ToString()));
+				NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_POINT, sourceName, 1, &cols, Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84), &colType, &colSize, &colDP, 0, lyrNameSb.ToString()));
 				lyr->SetLabelVisible(true);
 				while (reader->ReadNext())
 				{
@@ -3130,7 +3130,7 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLPlacemarkLyr(Text::XM
 				UOSInt colDP = 0;
 				Data::ArrayListDbl *coord;
 				Data::ArrayListDbl *altList;
-				NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_POLYGON, sourceName, 1, &cols, Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::GeographicCoordinateSystem::GCST_WGS84), &colType, &colSize, &colDP, 0, lyrNameSb.ToString()));
+				NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_POLYGON, sourceName, 1, &cols, Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84), &colType, &colSize, &colDP, 0, lyrNameSb.ToString()));
 
 				NEW_CLASS(coord, Data::ArrayListDbl());
 				NEW_CLASS(altList, Data::ArrayListDbl());

@@ -288,7 +288,7 @@ SSWR::AVIRead::AVIRGPSSimulatorForm::AVIRGPSSimulatorForm(UI::GUIClientControl *
 	this->currY = 0;
 	this->speed = 50;
 	this->stm = 0;
-	this->wgs84 = Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::GeographicCoordinateSystem::GCST_WGS84);
+	this->wgs84 = Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84);
 	NEW_CLASS(this->points, Data::ArrayList<Double>());
 
 	NEW_CLASS(this->lblStreamType, UI::GUILabel(ui, this, (const UTF8Char*)"Stream Type"));

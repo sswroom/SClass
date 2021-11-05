@@ -12,7 +12,7 @@ void __stdcall SSWR::AVIRead::AVIRGISCSysForm::OnOKClicked(void *userObj)
 		UOSInt i = me->cboGeo->GetSelectedIndex();
 		if (i != INVALID_INDEX)
 		{
-			Math::GeographicCoordinateSystem::GeoCoordSysType gcst = (Math::GeographicCoordinateSystem::GeoCoordSysType)(OSInt)me->cboGeo->GetItem(i);
+			Math::CoordinateSystemManager::GeoCoordSysType gcst = (Math::CoordinateSystemManager::GeoCoordSysType)(OSInt)me->cboGeo->GetItem(i);
 			me->outCSys = Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(gcst);
 			me->SetDialogResult(UI::GUIForm::DR_OK);
 		}
@@ -89,7 +89,7 @@ SSWR::AVIRead::AVIRGISCSysForm::AVIRGISCSysForm(UI::GUIClientControl *parent, UI
 	this->SetCancelButton(this->btnCancel);
 	UOSInt i;
 	UOSInt j;
-	Data::ArrayList<Math::GeographicCoordinateSystem::GeoCoordSysType> gcsysList;
+	Data::ArrayList<Math::CoordinateSystemManager::GeoCoordSysType> gcsysList;
 	Data::ArrayList<const UTF8Char *> pcsysList;
 	Math::CoordinateSystemManager::GetGeogCoordinateSystems(&gcsysList);
 	Math::CoordinateSystemManager::GetProjCoordinateSystemNames(&pcsysList);
@@ -99,7 +99,7 @@ SSWR::AVIRead::AVIRGISCSysForm::AVIRGISCSysForm(UI::GUIClientControl *parent, UI
 	j = gcsysList.GetCount();
 	while (i < j)
 	{
-		this->cboGeo->AddItem(Math::GeographicCoordinateSystem::GetCoordinateSystemName(gcsysList.GetItem(i)), (void*)(OSInt)gcsysList.GetItem(i));
+		this->cboGeo->AddItem(Math::CoordinateSystemManager::GeoCoordSysTypeGetName(gcsysList.GetItem(i)), (void*)(OSInt)gcsysList.GetItem(i));
 		i++;
 	}
 	if (j > 0)
