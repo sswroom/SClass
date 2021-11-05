@@ -110,6 +110,11 @@ Double Math::ProjectedCoordinateSystem::CalPLDistance3D(Math::Polyline3D *pl, Ma
 	return totalDist;
 }
 
+Bool Math::ProjectedCoordinateSystem::IsProjected()
+{
+	return true;
+}
+
 void Math::ProjectedCoordinateSystem::ToString(Text::StringBuilderUTF *sb)
 {
 	sb->Append((const UTF8Char*)"Projected File Name: ");
@@ -128,11 +133,6 @@ void Math::ProjectedCoordinateSystem::ToString(Text::StringBuilderUTF *sb)
 	Text::SBAppendF64(sb, this->scaleFactor);
 	sb->Append((const UTF8Char*)"\r\n");
 	this->gcs->ToString(sb);
-}
-
-Bool Math::ProjectedCoordinateSystem::IsProjected()
-{
-	return true;
 }
 
 Math::GeographicCoordinateSystem *Math::ProjectedCoordinateSystem::GetGeographicCoordinateSystem()
