@@ -63,8 +63,8 @@ void Net::WebServer::RESTfulHandler::AppendVector(Text::JSONBuilder *json, const
 {
 	switch (vec->GetVectorType())
 	{
-	case Math::Vector2D::VT_POLYGON:
-	case Math::Vector2D::VT_POLYLINE:
+	case Math::Vector2D::VectorType::Polygon:
+	case Math::Vector2D::VectorType::Polyline:
 		{
 			UOSInt nPtOfst;
 			UInt32 *ptOfsts;
@@ -75,7 +75,7 @@ void Net::WebServer::RESTfulHandler::AppendVector(Text::JSONBuilder *json, const
 			UOSInt k;
 			Math::PointCollection *pg = (Math::PointCollection*)vec;
 			json->ObjectBeginObject(name);
-			if (vec->GetVectorType() == Math::Vector2D::VT_POLYGON)
+			if (vec->GetVectorType() == Math::Vector2D::VectorType::Polygon)
 			{
 				json->ObjectAddStrUTF8((const UTF8Char*)"type", (const UTF8Char*)"Polygon");
 			}
@@ -114,7 +114,7 @@ void Net::WebServer::RESTfulHandler::AppendVector(Text::JSONBuilder *json, const
 			json->ObjectEnd();
 		}
 		break;
-	case Math::Vector2D::VT_POINT:
+	case Math::Vector2D::VectorType::Point:
 		{
 			Double x;
 			Double y;
@@ -129,12 +129,12 @@ void Net::WebServer::RESTfulHandler::AppendVector(Text::JSONBuilder *json, const
 			json->ObjectEnd();
 		}
 		break;
-	case Math::Vector2D::VT_MULTIPOINT:
-	case Math::Vector2D::VT_IMAGE:
-	case Math::Vector2D::VT_STRING:
-	case Math::Vector2D::VT_ELLIPSE:
-	case Math::Vector2D::VT_PIEAREA:
-	case Math::Vector2D::VT_UNKNOWN:
+	case Math::Vector2D::VectorType::Multipoint:
+	case Math::Vector2D::VectorType::Image:
+	case Math::Vector2D::VectorType::String:
+	case Math::Vector2D::VectorType::Ellipse:
+	case Math::Vector2D::VectorType::PieArea:
+	case Math::Vector2D::VectorType::Unknown:
 	default:
 		json->ObjectAddStrUTF8(name, (const UTF8Char*)"?");
 		break;

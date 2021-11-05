@@ -41,7 +41,7 @@ Math::Polyline::~Polyline()
 
 Math::Vector2D::VectorType Math::Polyline::GetVectorType()
 {
-	return Math::Vector2D::VT_POLYLINE;
+	return Math::Vector2D::VectorType::Polyline;
 }
 
 UInt32 *Math::Polyline::GetPtOfstList(UOSInt *nPtOfst)
@@ -296,7 +296,7 @@ Double Math::Polyline::CalSqrDistance(Double x, Double y, Double *nearPtX, Doubl
 
 Bool Math::Polyline::JoinVector(Math::Vector2D *vec)
 {
-	if (vec->GetVectorType() != Math::Vector2D::VT_POLYLINE)
+	if (vec->GetVectorType() != Math::Vector2D::VectorType::Polyline)
 	{
 		return false;
 	}

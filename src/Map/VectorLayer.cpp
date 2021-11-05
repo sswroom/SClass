@@ -98,7 +98,7 @@ Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, const UTF8Char *sour
 	this->colNames = MemAlloc(const UTF8Char*, strCnt);
 	this->cols = 0;
 	this->mapRate = 10000000.0;
-	this->mixedType = Math::Vector2D::VT_UNKNOWN;
+	this->mixedType = Math::Vector2D::VectorType::Unknown;
 	i = strCnt;
 	while (i-- > 0)
 	{
@@ -130,7 +130,7 @@ Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, const UTF8Char *sour
 	this->colNames = MemAlloc(const UTF8Char*, strCnt);
 	this->cols = MemAlloc(Map::VectorLayer::ColInfo, strCnt);
 	this->mapRate = 10000000.0;
-	this->mixedType = Math::Vector2D::VT_UNKNOWN;
+	this->mixedType = Math::Vector2D::VectorType::Unknown;
 	i = strCnt;
 	while (i-- > 0)
 	{
@@ -220,19 +220,19 @@ void Map::VectorLayer::SetMixedType(DrawLayerType mixedType)
 {
 	if (mixedType == Map::DRAW_LAYER_POLYLINE || mixedType == Map::DRAW_LAYER_POLYLINE3D)
 	{
-		this->mixedType = Math::Vector2D::VT_POLYLINE;
+		this->mixedType = Math::Vector2D::VectorType::Polyline;
 	}
 	else if (mixedType == Map::DRAW_LAYER_POLYGON)
 	{
-		this->mixedType = Math::Vector2D::VT_POLYGON;
+		this->mixedType = Math::Vector2D::VectorType::Polygon;
 	}
 	else if (mixedType == Map::DRAW_LAYER_POINT || mixedType == Map::DRAW_LAYER_POINT3D)
 	{
-		this->mixedType = Math::Vector2D::VT_POINT;
+		this->mixedType = Math::Vector2D::VectorType::Point;
 	}
 	else
 	{
-		this->mixedType = Math::Vector2D::VT_UNKNOWN;
+		this->mixedType = Math::Vector2D::VectorType::Unknown;
 	}
 }
 
@@ -455,7 +455,7 @@ Map::DrawObjectL *Map::VectorLayer::GetObjectByIdD(void *session, Int64 id)
 	{
 		obj = MemAlloc(Map::DrawObjectL, 1);
 		obj->objId = id;
-		if (vec->GetVectorType() == Math::Vector2D::VT_POINT)
+		if (vec->GetVectorType() == Math::Vector2D::VectorType::Point)
 		{
 			obj->nPtOfst = 0;
 			obj->ptOfstArr = 0;
@@ -463,7 +463,7 @@ Map::DrawObjectL *Map::VectorLayer::GetObjectByIdD(void *session, Int64 id)
 			obj->pointArr = MemAlloc(Double, 2);
 			vec->GetCenter(&obj->pointArr[0], &obj->pointArr[1]);
 		}
-		else if (vec->GetVectorType() == Math::Vector2D::VT_POLYLINE || vec->GetVectorType() == Math::Vector2D::VT_POLYGON || vec->GetVectorType() == Math::Vector2D::VT_MULTIPOINT)
+		else if (vec->GetVectorType() == Math::Vector2D::VectorType::Polyline || vec->GetVectorType() == Math::Vector2D::VectorType::Polygon || vec->GetVectorType() == Math::Vector2D::VectorType::Multipoint)
 		{
 			UInt32 *ptOfsts;
 			Double *points;
@@ -519,32 +519,32 @@ Bool Map::VectorLayer::AddVector(Math::Vector2D *vec, const UTF8Char **strs)
 {
 	if (this->layerType == Map::DRAW_LAYER_POINT)
 	{
-		if (vec->GetVectorType() != Math::Vector2D::VT_POINT)
+		if (vec->GetVectorType() != Math::Vector2D::VectorType::Point)
 			return false;
 	}
 	else if (this->layerType == Map::DRAW_LAYER_POINT3D)
 	{
-		if (vec->GetVectorType() != Math::Vector2D::VT_POINT || !vec->Support3D())
+		if (vec->GetVectorType() != Math::Vector2D::VectorType::Point || !vec->Support3D())
 			return false;
 	}
 	else if (this->layerType == Map::DRAW_LAYER_POLYLINE)
 	{
-		if (vec->GetVectorType() != Math::Vector2D::VT_POLYLINE)
+		if (vec->GetVectorType() != Math::Vector2D::VectorType::Polyline)
 			return false;
 	}
 	else if (this->layerType == Map::DRAW_LAYER_POLYLINE3D)
 	{
-		if (vec->GetVectorType() != Math::Vector2D::VT_POLYLINE || !vec->Support3D())
+		if (vec->GetVectorType() != Math::Vector2D::VectorType::Polyline || !vec->Support3D())
 			return false;
 	}
 	else if (this->layerType == Map::DRAW_LAYER_POLYGON)
 	{
-		if (vec->GetVectorType() != Math::Vector2D::VT_POLYGON)
+		if (vec->GetVectorType() != Math::Vector2D::VectorType::Polygon)
 			return false;
 	}
 	else if (this->layerType == Map::DRAW_LAYER_IMAGE)
 	{
-		if (vec->GetVectorType() != Math::Vector2D::VT_IMAGE)
+		if (vec->GetVectorType() != Math::Vector2D::VectorType::Image)
 			return false;
 	}
 	else if (this->layerType == Map::DRAW_LAYER_MIXED)

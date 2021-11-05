@@ -864,19 +864,19 @@ Map::DrawLayerType Map::IMapDrawLayer::VectorType2LayerType(Math::Vector2D::Vect
 {
 	switch (vtype)
 	{
-	case Math::Vector2D::VT_POINT:
+	case Math::Vector2D::VectorType::Point:
 		return Map::DRAW_LAYER_POINT;
-	case Math::Vector2D::VT_POLYGON:
+	case Math::Vector2D::VectorType::Polygon:
 		return Map::DRAW_LAYER_POLYGON;
-	case Math::Vector2D::VT_POLYLINE:
+	case Math::Vector2D::VectorType::Polyline:
 		return Map::DRAW_LAYER_POLYLINE;
-	case Math::Vector2D::VT_IMAGE:
+	case Math::Vector2D::VectorType::Image:
 		return Map::DRAW_LAYER_IMAGE;
-	case Math::Vector2D::VT_MULTIPOINT:
-	case Math::Vector2D::VT_STRING:
-	case Math::Vector2D::VT_ELLIPSE:
-	case Math::Vector2D::VT_PIEAREA:
-	case Math::Vector2D::VT_UNKNOWN:
+	case Math::Vector2D::VectorType::Multipoint:
+	case Math::Vector2D::VectorType::String:
+	case Math::Vector2D::VectorType::Ellipse:
+	case Math::Vector2D::VectorType::PieArea:
+	case Math::Vector2D::VectorType::Unknown:
 	default:
 		return Map::DRAW_LAYER_UNKNOWN;
 	}
@@ -884,7 +884,7 @@ Map::DrawLayerType Map::IMapDrawLayer::VectorType2LayerType(Math::Vector2D::Vect
 
 Map::DrawObjectL *Map::IMapDrawLayer::Vector2DrawObject(Int64 id, Math::Vector2D *vec, Map::DrawLayerType layerType)
 {
-	if (layerType == Map::DRAW_LAYER_POINT && vec->GetVectorType() == Math::Vector2D::VT_POINT)
+	if (layerType == Map::DRAW_LAYER_POINT && vec->GetVectorType() == Math::Vector2D::VectorType::Point)
 	{
 		Math::Point *pt = (Math::Point*)vec;
 		Map::DrawObjectL *dobj;

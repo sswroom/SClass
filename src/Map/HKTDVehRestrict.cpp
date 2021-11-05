@@ -50,7 +50,7 @@ Map::HKTDVehRestrict::HKTDVehRestrict(Map::IMapDrawLayer *routeLyr, DB::DBTool *
 					vec = routeLyr->GetVectorById(sess, idArr.GetItem(i));
 					if (vec)
 					{
-						if (vec->GetVectorType() == Math::Vector2D::VT_POLYLINE)
+						if (vec->GetVectorType() == Math::Vector2D::VectorType::Polyline)
 						{
 							route = MemAlloc(RouteInfo, 1);
 							route->routeId = Text::StrToInt32(sbuff);

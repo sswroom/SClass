@@ -2229,7 +2229,7 @@ void Map::DrawMapRenderer::DrawImageLayer(DrawEnv *denv, Map::IMapDrawLayer *lay
 		vec = layer->GetVectorById(sess, arri->GetItem(i));
 		if (vec)
 		{
-			if (vec->GetVectorType() == Math::Vector2D::VT_IMAGE)
+			if (vec->GetVectorType() == Math::Vector2D::VectorType::Image)
 			{
 				imgList.Add((Math::VectorImage*)vec);
 			}

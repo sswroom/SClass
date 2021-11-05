@@ -460,7 +460,7 @@ void UI::GUIMapControl::DrawScnObjects(Media::DrawImage *img, Double xOfst, Doub
 	}
 	if (this->selVec)
 	{
-		if (this->selVec->GetVectorType() == Math::Vector2D::VT_POLYLINE)
+		if (this->selVec->GetVectorType() == Math::Vector2D::VectorType::Polyline)
 		{
 			Math::Polyline *pl = (Math::Polyline*)this->selVec;
 			Media::DrawPen *p = img->NewPenARGB(0xffff0000, 3, 0, 0);
@@ -486,7 +486,7 @@ void UI::GUIMapControl::DrawScnObjects(Media::DrawImage *img, Double xOfst, Doub
 
 			img->DelPen(p);
 		}
-		else if (this->selVec->GetVectorType() == Math::Vector2D::VT_POLYGON)
+		else if (this->selVec->GetVectorType() == Math::Vector2D::VectorType::Polygon)
 		{
 			Math::Polygon *pg = (Math::Polygon*)this->selVec;
 			Media::DrawPen *p = img->NewPenARGB(0xffff0000, 3, 0, 0);
@@ -512,7 +512,7 @@ void UI::GUIMapControl::DrawScnObjects(Media::DrawImage *img, Double xOfst, Doub
 			img->DelPen(p);
 			img->DelBrush(b);
 		}
-		else if (this->selVec->GetVectorType() == Math::Vector2D::VT_ELLIPSE)
+		else if (this->selVec->GetVectorType() == Math::Vector2D::VectorType::Ellipse)
 		{
 			Math::Ellipse *circle = (Math::Ellipse*)this->selVec;
 /*			BITMAPINFOHEADER bmih;
@@ -577,7 +577,7 @@ void UI::GUIMapControl::DrawScnObjects(Media::DrawImage *img, Double xOfst, Doub
 			}
 			DeleteDC(hdcBmp);*/
 		}
-		else if (this->selVec->GetVectorType() == Math::Vector2D::VT_PIEAREA)
+		else if (this->selVec->GetVectorType() == Math::Vector2D::VectorType::PieArea)
 		{
 			Math::PieArea *pie = (Math::PieArea*)this->selVec;
 /*			BITMAPINFOHEADER bmih;
@@ -660,7 +660,7 @@ void UI::GUIMapControl::DrawScnObjects(Media::DrawImage *img, Double xOfst, Doub
 			}
 			DeleteDC(hdcBmp);*/
 		}
-		else if (this->selVec->GetVectorType() == Math::Vector2D::VT_IMAGE)
+		else if (this->selVec->GetVectorType() == Math::Vector2D::VectorType::Image)
 		{
 			Math::VectorImage *vimg = (Math::VectorImage*)this->selVec;
 			Media::DrawPen *p = img->NewPenARGB(0xffff0000, 3, 0, 0);

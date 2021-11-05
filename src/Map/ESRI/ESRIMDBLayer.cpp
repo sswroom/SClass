@@ -160,7 +160,7 @@ Map::ESRI::ESRIMDBLayer::ESRIMDBLayer(DB::SharedDBConn *conn, UInt32 srid, const
 				if (this->layerType == Map::DRAW_LAYER_UNKNOWN)
 				{
 					Math::Vector2D::VectorType vt = vec->GetVectorType();
-					if (vt == Math::Vector2D::VT_POINT)
+					if (vt == Math::Vector2D::VectorType::Point)
 					{
 						if (vec->Support3D())
 						{
@@ -171,7 +171,7 @@ Map::ESRI::ESRIMDBLayer::ESRIMDBLayer(DB::SharedDBConn *conn, UInt32 srid, const
 							this->layerType = Map::DRAW_LAYER_POINT;
 						}
 					}
-					else if (vt == Math::Vector2D::VT_POLYLINE)
+					else if (vt == Math::Vector2D::VectorType::Polyline)
 					{
 						if (vec->Support3D())
 						{
@@ -182,7 +182,7 @@ Map::ESRI::ESRIMDBLayer::ESRIMDBLayer(DB::SharedDBConn *conn, UInt32 srid, const
 							this->layerType = Map::DRAW_LAYER_POLYLINE;
 						}
 					}
-					else if (vt == Math::Vector2D::VT_POLYGON)
+					else if (vt == Math::Vector2D::VectorType::Polygon)
 					{
 						this->layerType = Map::DRAW_LAYER_POLYGON;
 					}

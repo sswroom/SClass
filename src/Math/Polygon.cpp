@@ -23,7 +23,7 @@ Math::Polygon::~Polygon()
 
 Math::Vector2D::VectorType Math::Polygon::GetVectorType()
 {
-	return Math::Vector2D::VT_POLYGON;
+	return Math::Vector2D::VectorType::Polygon;
 }
 
 UInt32 *Math::Polygon::GetPtOfstList(UOSInt *nPtOfst)
@@ -212,7 +212,7 @@ Double Math::Polygon::CalSqrDistance(Double x, Double y, Double *nearPtX, Double
 
 Bool Math::Polygon::JoinVector(Math::Vector2D *vec)
 {
-	if (vec->GetVectorType() != Math::Vector2D::VT_POLYGON)
+	if (vec->GetVectorType() != Math::Vector2D::VectorType::Polygon)
 		return false;
 	Math::Polygon *pg = (Math::Polygon*)vec;
 	Double *newPoints;

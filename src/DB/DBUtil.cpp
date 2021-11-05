@@ -1365,7 +1365,7 @@ UTF8Char *DB::DBUtil::SDBVector(UTF8Char *sqlstr, Math::Vector2D *vec, DB::DBUti
 	}
 	if (svrType == DB::DBUtil::ServerType::MSSQL)
 	{
-		if (vec->GetVectorType() == Math::Vector2D::VT_POINT)
+		if (vec->GetVectorType() == Math::Vector2D::VectorType::Point)
 		{
 			Math::Point *pt = (Math::Point*)vec;
 			UInt8 buff[22];
@@ -1412,7 +1412,7 @@ UOSInt DB::DBUtil::SDBVectorLeng(Math::Vector2D *vec, DB::DBUtil::ServerType svr
 	}
 	if (svrType == DB::DBUtil::ServerType::MSSQL)
 	{
-		if (vec->GetVectorType() == Math::Vector2D::VT_POINT)
+		if (vec->GetVectorType() == Math::Vector2D::VectorType::Point)
 		{
 			return SDBBinLeng(0, 22, svrType);
 		}

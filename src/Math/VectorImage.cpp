@@ -116,7 +116,7 @@ Math::VectorImage::~VectorImage()
 
 Math::Vector2D::VectorType Math::VectorImage::GetVectorType()
 {
-	return Math::Vector2D::VT_IMAGE;
+	return Math::Vector2D::VectorType::Image;
 }
 
 void Math::VectorImage::GetCenter(Double *x, Double *y)

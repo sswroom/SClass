@@ -7,18 +7,18 @@ namespace Math
 	class Vector2D
 	{
 	public:
-		typedef enum
+		enum class VectorType
 		{
-			VT_UNKNOWN,
-			VT_POINT,
-			VT_MULTIPOINT,
-			VT_POLYLINE,
-			VT_POLYGON,
-			VT_IMAGE,
-			VT_STRING,
-			VT_ELLIPSE,
-			VT_PIEAREA
-		} VectorType;
+			Unknown,
+			Point,
+			Multipoint,
+			Polyline,
+			Polygon,
+			Image,
+			String,
+			Ellipse,
+			PieArea
+		};
 
 	protected:
 		UInt32 srid;

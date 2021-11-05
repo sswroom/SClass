@@ -15,7 +15,7 @@ Math::Point::~Point()
 
 Math::Vector2D::VectorType Math::Point::GetVectorType()
 {
-	return Math::Vector2D::VT_POINT;
+	return Math::Vector2D::VectorType::Point;
 }
 
 void Math::Point::GetCenter(Double *x, Double *y)

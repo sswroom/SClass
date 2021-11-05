@@ -18,7 +18,7 @@ Math::MultiPoint::~MultiPoint()
 
 Math::Vector2D::VectorType Math::MultiPoint::GetVectorType()
 {
-	return Math::Vector2D::VT_MULTIPOINT;
+	return Math::Vector2D::VectorType::MULTIPOINT;
 }
 
 Int32 *Math::MultiPoint::GetPartList(OSInt *nParts)

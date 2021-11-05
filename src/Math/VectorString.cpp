@@ -21,7 +21,7 @@ Math::VectorString::~VectorString()
 
 Math::Vector2D::VectorType Math::VectorString::GetVectorType()
 {
-	return Math::Vector2D::VT_STRING;
+	return Math::Vector2D::VectorType::STRING;
 }
 
 void Math::VectorString::GetCenter(Double *x, Double *y)

@@ -18,7 +18,7 @@ Math::Ellipse::~Ellipse()
 
 Math::Vector2D::VectorType Math::Ellipse::GetVectorType()
 {
-	return Math::Vector2D::VT_ELLIPSE;
+	return Math::Vector2D::VectorType::Ellipse;
 }
 
 void Math::Ellipse::GetCenter(Double *x, Double *y)

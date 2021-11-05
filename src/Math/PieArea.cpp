@@ -19,7 +19,7 @@ Math::PieArea::~PieArea()
 
 Math::Vector2D::VectorType Math::PieArea::GetVectorType()
 {
-	return Math::Vector2D::VT_PIEAREA;
+	return Math::Vector2D::VectorType::PIEAREA;
 }
 
 void Math::PieArea::GetCenter(Double *x, Double *y)

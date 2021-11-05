@@ -31,7 +31,7 @@ Bool Math::Polyline3D::Support3D()
 
 Bool Math::Polyline3D::JoinVector(Math::Vector2D *vec)
 {
-	if (vec->GetVectorType() != Math::Vector2D::VT_POLYLINE || !vec->Support3D())
+	if (vec->GetVectorType() != Math::Vector2D::VectorType::Polyline || !vec->Support3D())
 	{
 		return false;
 	}

@@ -960,7 +960,7 @@ Bool Map::HKTrafficLayer::AddRoadLayer(Map::IMapDrawLayer *roadLayer)
 					Math::Vector2D *vec = roadLayer->GetVectorById(sess, idArr.GetItem(i));
 					if (vec)
 					{
-						if (vec->GetVectorType() == Math::Vector2D::VT_POLYLINE)
+						if (vec->GetVectorType() == Math::Vector2D::VectorType::Polyline)
 						{
 							vec->GetBounds(&minX, &minY, &maxX, &maxY);
 							if (isFirst)

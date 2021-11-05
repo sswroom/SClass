@@ -264,7 +264,7 @@ Map::ShortestPathFinder::ShortestPathFinder(Map::IMapDrawLayer *layer, Bool toRe
 		vec = layer->GetVectorById(sess, idList.GetItem(i));
 		if (vec)
 		{
-			if (vec->GetVectorType() == Math::Vector2D::VT_POLYLINE)
+			if (vec->GetVectorType() == Math::Vector2D::VectorType::POLYLINE)
 			{
 				pl = (Math::Polyline *)vec;
 				points = pl->GetPointList(&nPoints);

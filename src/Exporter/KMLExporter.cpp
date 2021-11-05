@@ -152,7 +152,7 @@ Bool Exporter::KMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 			lastId = currId;
 
 			vec = layer->GetVectorById(sess, currId);
-			if (vec->GetVectorType() == Math::Vector2D::VT_POINT)
+			if (vec->GetVectorType() == Math::Vector2D::VectorType::Point)
 			{
 				Double x;
 				Double y;
@@ -192,7 +192,7 @@ Bool Exporter::KMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 				sptr = Text::StrConcat(sptr, (const UTF8Char*)"</Placemark>");
 				writer->WriteLine(sbuff2, (UOSInt)(sptr - sbuff2));
 			}
-			else if (vec->GetVectorType() == Math::Vector2D::VT_POLYLINE)
+			else if (vec->GetVectorType() == Math::Vector2D::VectorType::Polyline)
 			{
 				UOSInt nPoints;
 				Math::Polyline *pl = (Math::Polyline*)vec;
@@ -297,7 +297,7 @@ Bool Exporter::KMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 				sb.Append((const UTF8Char*)"</coordinates></LineString></Placemark>");
 				writer->WriteLine(sb.ToString(), sb.GetLength());
 			}
-			else if (vec->GetVectorType() == Math::Vector2D::VT_POLYGON)
+			else if (vec->GetVectorType() == Math::Vector2D::VectorType::Polygon)
 			{
 				UOSInt nPoints;
 				UOSInt nParts;
@@ -370,7 +370,7 @@ Bool Exporter::KMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 				sb.Append((const UTF8Char*)"</Placemark>");
 				writer->WriteLine(sb.ToString());
 			}
-			else if (vec->GetVectorType() == Math::Vector2D::VT_IMAGE)
+			else if (vec->GetVectorType() == Math::Vector2D::VectorType::Image)
 			{
 				Math::VectorImage *img = (Math::VectorImage*)vec;
 				if (layer->GetString(sbuff, sizeof(sbuff), nameArr, currId, nameCol) == 0)

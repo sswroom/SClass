@@ -33,7 +33,7 @@ Bool Math::WKTWriter::GenerateWKT(Text::StringBuilderUTF *sb, Math::Vector2D *ve
 	}
 	switch (vec->GetVectorType())
 	{
-	case Math::Vector2D::VT_POINT:
+	case Math::Vector2D::VectorType::Point:
 		sb->Append((const UTF8Char*)"POINT(");
 		if (vec->Support3D())
 		{
@@ -65,7 +65,7 @@ Bool Math::WKTWriter::GenerateWKT(Text::StringBuilderUTF *sb, Math::Vector2D *ve
 		}
 		sb->Append((const UTF8Char*)")");
 		return true;
-	case Math::Vector2D::VT_POLYGON:
+	case Math::Vector2D::VectorType::Polygon:
 		sb->Append((const UTF8Char*)"POLYGON(");
 		{
 			Math::Polygon *pg = (Math::Polygon*)vec;
@@ -117,7 +117,7 @@ Bool Math::WKTWriter::GenerateWKT(Text::StringBuilderUTF *sb, Math::Vector2D *ve
 		}
 		sb->Append((const UTF8Char*)")");
 		return true;
-	case Math::Vector2D::VT_POLYLINE:
+	case Math::Vector2D::VectorType::Polyline:
 		sb->Append((const UTF8Char*)"POLYLINE(");
 		{
 			Math::Polyline *pl = (Math::Polyline*)vec;
@@ -169,12 +169,12 @@ Bool Math::WKTWriter::GenerateWKT(Text::StringBuilderUTF *sb, Math::Vector2D *ve
 		}
 		sb->Append((const UTF8Char*)")");
 		return true;
-	case Math::Vector2D::VT_MULTIPOINT:
-	case Math::Vector2D::VT_IMAGE:
-	case Math::Vector2D::VT_STRING:
-	case Math::Vector2D::VT_ELLIPSE:
-	case Math::Vector2D::VT_PIEAREA:
-	case Math::Vector2D::VT_UNKNOWN:
+	case Math::Vector2D::VectorType::Multipoint:
+	case Math::Vector2D::VectorType::Image:
+	case Math::Vector2D::VectorType::String:
+	case Math::Vector2D::VectorType::Ellipse:
+	case Math::Vector2D::VectorType::PieArea:
+	case Math::Vector2D::VectorType::Unknown:
 	default:
 		this->SetLastError((const UTF8Char*)"Unsupported vector type");
 		return false;
