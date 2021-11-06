@@ -3,7 +3,6 @@
 #include "Crypto/Hash/MD5.h"
 #include "Data/ByteTool.h"
 #include "DB/DBReader.h"
-#include "DB/MySQLConn.h"
 #include "DB/ODBCConn.h"
 #include "IO/FileStream.h"
 #include "IO/IniFile.h"
@@ -11,6 +10,7 @@
 #include "IO/Path.h"
 #include "IO/StreamWriter.h"
 #include "IO/ProtoHdlr/ProtoSMonHandler.h"
+#include "Net/MySQLTCPClient.h"
 #include "Net/OSSocketFactory.h"
 #include "Net/WebServer/HTTPDirectoryHandler.h"
 #include "Parser/FullParserList.h"
@@ -1202,7 +1202,7 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(IO::Writer *writer, Media::Draw
 		csptr2 = cfg->GetValue((const UTF8Char*)"MySQLDB");
 		if (csptr1 && csptr2)
 		{
-			this->db = DB::MySQLConn::CreateDBTool(this->sockf, csptr1, csptr2, cfg->GetValue((const UTF8Char*)"UID"), cfg->GetValue((const UTF8Char*)"PWD"), log, (const UTF8Char*)"DB: ");
+			this->db = Net::MySQLTCPClient::CreateDBTool(this->sockf, csptr1, csptr2, cfg->GetValue((const UTF8Char*)"UID"), cfg->GetValue((const UTF8Char*)"PWD"), log, (const UTF8Char*)"DB: ");
 			NEW_CLASS(this->dbMut, Sync::Mutex());
 			if (this->db == 0)
 			{

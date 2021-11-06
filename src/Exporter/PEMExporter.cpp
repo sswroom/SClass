@@ -129,6 +129,13 @@ Bool Exporter::PEMExporter::ExportStream(IO::SeekableStream *stm, Crypto::Cert::
 		b64.EncodeBin(&sb, x509->GetASN1Buff(), x509->GetASN1BuffSize(), Text::LineBreakType::LF, 64);
 		sb.Append((const UTF8Char*)"\n-----END PUBLIC KEY-----\n");
 		return stm->Write(sb.ToString(), sb.GetLength()) == sb.GetLength();
+	case Crypto::Cert::X509File::FileType::PKCS7:
+		sb.Append((const UTF8Char*)"-----BEGIN PKCS7-----\n");
+		b64.EncodeBin(&sb, x509->GetASN1Buff(), x509->GetASN1BuffSize(), Text::LineBreakType::LF, 64);
+		sb.Append((const UTF8Char*)"\n-----END PKCS7-----\n");
+		return stm->Write(sb.ToString(), sb.GetLength()) == sb.GetLength();
+	case Crypto::Cert::X509File::FileType::PKCS12:
+		break;
 	}
 	return false;
 }

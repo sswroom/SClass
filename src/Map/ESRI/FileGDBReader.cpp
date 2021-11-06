@@ -491,7 +491,7 @@ Math::Vector2D *Map::ESRI::FileGDBReader::GetVector(UOSInt colIndex)
 	ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, &geometryType);
 	Double x;
 	Double y;
-	Double z;
+	Double z = 0;
 	UInt64 v;
 	UInt32 srid;
 /*

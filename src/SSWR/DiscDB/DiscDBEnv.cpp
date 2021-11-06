@@ -1,12 +1,12 @@
 #include "Stdafx.h"
 #include "DB/DBReader.h"
 #include "DB/MDBFile.h"
-#include "DB/MySQLConn.h"
 #include "DB/ODBCConn.h"
 #include "DB/SQLBuilder.h"
 #include "IO/FileCheck.h"
 #include "IO/IniFile.h"
 #include "IO/Path.h"
+#include "Net/MySQLTCPClient.h"
 #include "Net/OSSocketFactory.h"
 #include "Parser/FileParser/MD5Parser.h"
 #include "SSWR/DiscDB/DiscDBEnv.h"
@@ -179,7 +179,7 @@ SSWR::DiscDB::DiscDBEnv::DiscDBEnv()
 		}
 		else if ((csptr = cfg->GetValue((const UTF8Char*)"MySQLServer")) != 0)
 		{
-			this->db = DB::MySQLConn::CreateDBTool(this->sockf, csptr, cfg->GetValue((const UTF8Char*)"MySQLDB"), cfg->GetValue((const UTF8Char*)"UID"), cfg->GetValue((const UTF8Char*)"PWD"), this->log, (const UTF8Char*)"DB: ");
+			this->db = Net::MySQLTCPClient::CreateDBTool(this->sockf, csptr, cfg->GetValue((const UTF8Char*)"MySQLDB"), cfg->GetValue((const UTF8Char*)"UID"), cfg->GetValue((const UTF8Char*)"PWD"), this->log, (const UTF8Char*)"DB: ");
 		}
 		else if ((csptr = cfg->GetValue((const UTF8Char*)"MDBFile")) != 0)
 		{

@@ -1,8 +1,8 @@
 #include "Stdafx.h"
 #include "DB/MDBFile.h"
-#include "DB/MySQLConn.h"
 #include "DB/ODBCConn.h"
 #include "IO/IniFile.h"
+#include "Net/MySQLTCPClient.h"
 #include "Net/OSSocketFactory.h"
 #include "SSWR/OrganMgr/OrganWebForm.h"
 #include "UI/MessageDialog.h"
@@ -42,17 +42,19 @@ SSWR::OrganMgr::OrganWebForm::OrganWebForm(UI::GUIClientControl *parent, UI::GUI
 	}
 	if (cfg->GetValue((const UTF8Char*)"MDBFile"))
 	{
-		db = DB::MDBFile::CreateDBTool(cfg->GetValue((const UTF8Char*)"MDBFile"), this->log, false, (const UTF8Char*)"DB: ");
+		db = DB::MDBFile::CreateDBTool(cfg->GetValue((const UTF8Char*)"MDBFile"), this->log, (const UTF8Char*)"DB: ");
 	}
 	else if (cfg->GetValue((const UTF8Char*)"MySQLServer"))
 	{
-		db = DB::MySQLConn::CreateDBTool(this->sockf, cfg->GetValue((const UTF8Char*)"MySQLServer"), cfg->GetValue((const UTF8Char*)"MySQLDB"), cfg->GetValue((const UTF8Char*)"MySQLUID"), cfg->GetValue((const UTF8Char*)"MySQLPwd"), this->log, false, (const UTF8Char*)"DB: ");
+		db = Net::MySQLTCPClient::CreateDBTool(this->sockf, cfg->GetValue((const UTF8Char*)"MySQLServer"), cfg->GetValue((const UTF8Char*)"MySQLDB"), cfg->GetValue((const UTF8Char*)"MySQLUID"), cfg->GetValue((const UTF8Char*)"MySQLPwd"), this->log, (const UTF8Char*)"DB: ");
 	}
 	else
 	{
-		db = DB::ODBCConn::CreateDBTool(cfg->GetValue((const UTF8Char*)"DBDSN"), cfg->GetValue((const UTF8Char*)"DBUID"), cfg->GetValue((const UTF8Char*)"DBPwd"), cfg->GetValue((const UTF8Char*)"DBSchema"), this->log, false, (const UTF8Char*)"DB: ");
+		db = DB::ODBCConn::CreateDBTool(cfg->GetValue((const UTF8Char*)"DBDSN"), cfg->GetValue((const UTF8Char*)"DBUID"), cfg->GetValue((const UTF8Char*)"DBPwd"), cfg->GetValue((const UTF8Char*)"DBSchema"), this->log, (const UTF8Char*)"DB: ");
 	}
-	NEW_CLASS(this->dataHdlr, OrganWebHandler(this->sockf, this->log, db, cfg->GetValue((const UTF8Char*)"ImageDir"), Text::StrToInt32(cfg->GetValue((const UTF8Char*)"SvrPort")), cfg->GetValue((const UTF8Char*)"CacheDir"), cfg->GetValue((const UTF8Char*)"DataDir"), scnSize, cfg->GetValue((const UTF8Char*)"ReloadPwd"), eng));
+	UInt16 port = 0;
+	Text::StrToUInt16(cfg->GetValue((const UTF8Char*)"SvrPort"), &port);
+	NEW_CLASS(this->dataHdlr, OrganWebHandler(this->sockf, this->log, db, cfg->GetValue((const UTF8Char*)"ImageDir"), port, cfg->GetValue((const UTF8Char*)"CacheDir"), cfg->GetValue((const UTF8Char*)"DataDir"), scnSize, cfg->GetValue((const UTF8Char*)"ReloadPwd"), 0, eng));
 	DEL_CLASS(cfg);
 
 	NEW_CLASS(this->btnReload, UI::GUIButton(ui, this, (const UTF8Char*)"&Reload"));
