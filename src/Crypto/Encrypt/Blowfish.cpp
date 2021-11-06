@@ -570,7 +570,7 @@ void Crypto::Encrypt::Blowfish::EksBlowfishSetup(UInt32 cost, const UInt8 *salt,
 
 	k = Text::StrCharCnt(password);
 	this->ExpandKey(salt, password, k + 1);
-	i = 1 << cost;
+	i = ((UOSInt)1) << cost;
 	while (i-- > 0)
 	{
 		this->Key(password, k + 1);

@@ -222,7 +222,7 @@ Bool Net::AddressRange::GetItem(UOSInt index, Net::SocketUtil::AddressInfo *addr
 		*addr = this->addr1;
 		if (this->skipFirst)
 		{
-			addr->addr[3] = (UInt8)(addr->addr[3] + 1 + index);
+			addr->addr[3] = (UInt8)((UOSInt)addr->addr[3] + 1 + index);
 		}
 		else
 		{

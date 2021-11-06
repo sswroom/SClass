@@ -212,7 +212,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::FGDBFileAnalyse::GetFrameDetail(U
 			if (tagData[ofst] > 0)
 			{
 				*Text::StrUTF16_UTF8C(sbuff, (const UTF16Char*)&tagData[ofst + 1], tagData[ofst]) = 0;
-				frame->AddField(ofst + 1, tagData[ofst] * 2, (const UTF8Char*)"Field Name", sbuff);
+				frame->AddField(ofst + 1, (UOSInt)tagData[ofst] * 2, (const UTF8Char*)"Field Name", sbuff);
 				ofst += 1 + (UOSInt)tagData[ofst] * 2;
 			}
 			else
@@ -227,7 +227,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::FGDBFileAnalyse::GetFrameDetail(U
 			if (tagData[ofst] > 0)
 			{
 				*Text::StrUTF16_UTF8C(sbuff, (const UTF16Char*)&tagData[ofst + 1], tagData[ofst]) = 0;
-				frame->AddField(ofst + 1, tagData[ofst] * 2, (const UTF8Char*)"Alias Name", sbuff);
+				frame->AddField(ofst + 1, (UOSInt)tagData[ofst] * 2, (const UTF8Char*)"Alias Name", sbuff);
 				ofst += 1 + (UOSInt)tagData[ofst] * 2;
 			}
 			else
@@ -350,7 +350,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::FGDBFileAnalyse::GetFrameDetail(U
 					{
 						frame->AddHexBuff(ofst + 1, ldf, "Default Value", &tagData[ofst + 1], false);
 					}
-					ofst += 1 + ldf;
+					ofst += 1 + (UOSInt)ldf;
 				}
 				if (ofst < tag->size && tagData[ofst] == 0)
 				{

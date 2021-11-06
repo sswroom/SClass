@@ -27,7 +27,7 @@ Map::ESRI::FileGDBTableInfo *Map::ESRI::FileGDBUtil::ParseFieldDesc(const UInt8 
 	Bool valid = true;
 	while (fieldCnt-- > 0)
 	{
-		if (fieldDesc[ofst] == 0 || (ofst + 1 + fieldDesc[ofst] * 2) > descSize)
+		if (fieldDesc[ofst] == 0 || (ofst + 1 + (UOSInt)fieldDesc[ofst] * 2) > descSize)
 		{
 			valid = false;
 			break;
@@ -41,7 +41,7 @@ Map::ESRI::FileGDBTableInfo *Map::ESRI::FileGDBUtil::ParseFieldDesc(const UInt8 
 		{
 			ofst += 1;
 		}
-		else if ((ofst + 1 + fieldDesc[ofst] * 2) > descSize)
+		else if ((ofst + 1 + (UOSInt)fieldDesc[ofst] * 2) > descSize)
 		{
 			FreeFieldInfo(field);
 			valid = false;
@@ -169,7 +169,7 @@ Map::ESRI::FileGDBTableInfo *Map::ESRI::FileGDBUtil::ParseFieldDesc(const UInt8 
 			{
 				MemCopyNO(field->defValue, &fieldDesc[ofst + 1], field->defSize);
 			}
-			ofst += 1 + field->defSize;
+			ofst += 1 + (UOSInt)field->defSize;
 		}
 		table->fields->Add(field);
 		if (ofst < descSize && fieldDesc[ofst] == 0)

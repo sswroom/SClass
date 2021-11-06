@@ -4210,7 +4210,7 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF *sb)
 			sb->AppendHex16(ReadUInt16(&dataBuff[2]));
 			sb->Append((const UTF8Char*)"\r\n");
 			sb->Append((const UTF8Char*)"Data:\r\n");
-			sb->AppendHexBuff(&dataBuff[4], dataBuff[1] - 4, ' ', Text::LineBreakType::CRLF);
+			sb->AppendHexBuff(&dataBuff[4], (UOSInt)dataBuff[1] - 4, ' ', Text::LineBreakType::CRLF);
 			sb->Append((const UTF8Char*)"\r\n");
 			l = 1;
 			while (l < k)

@@ -92,7 +92,7 @@ void SSWR::AVIRead::AVIRASN1DataForm::EventMenuClicked(UInt16 cmdId)
 	default:
 		if (cmdId >= MNU_CERT_0)
 		{
-			Crypto::Cert::X509Cert *cert = ((Crypto::Cert::X509File*)this->asn1)->NewCert(cmdId - MNU_CERT_0);
+			Crypto::Cert::X509Cert *cert = ((Crypto::Cert::X509File*)this->asn1)->NewCert((UOSInt)(cmdId - MNU_CERT_0));
 			if (cert)
 			{
 				this->core->OpenObject(cert);

@@ -22,7 +22,7 @@ UInt32 __stdcall Net::MQTTStaticClient::KAThread(void *userObj)
 			mutUsage.EndUse();
 			me->Connect();
 		}
-		me->kaEvt->Wait(me->kaSeconds * 500);
+		me->kaEvt->Wait((UOSInt)me->kaSeconds * 500);
 	}
 	me->kaRunning = false;
 	return 0;

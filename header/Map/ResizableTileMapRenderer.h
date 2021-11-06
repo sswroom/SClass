@@ -8,7 +8,7 @@
 #include "Media/ColorManager.h"
 #include "Map/TileMap.h"
 #include "Map/MapView.h"
-#include "Data/LinkedList.h"
+#include "Data/SyncLinkedList.h"
 #include "Data/ArrayListInt64.h"
 #include "Parser/ParserList.h"
 
@@ -55,7 +55,7 @@ namespace Map
 		Data::ArrayList<CachedImage *> *lastImgs;
 		Data::ArrayList<CachedImage *> *idleImgs;
 
-		Data::LinkedList *taskQueued;
+		Data::SyncLinkedList *taskQueued;
 		Sync::Event *taskEvt;
 		Sync::Mutex *taskMut;
 		UpdatedHandler updHdlr;
