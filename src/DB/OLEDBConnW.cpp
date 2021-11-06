@@ -18,22 +18,22 @@ extern "C"
 #include <msdasc.h>
 
 DB::OLEDBConn::ProviderInfo DB::OLEDBConn::providerInfo[] = {
-	{"ADsDSOObject",                     "OLE DB Provider for Microsoft Directory Services",     DB::DBUtil::ServerType::UNKNOWN},
-	{"EMPOLEDBVS71",                     "VSEE Versioning Enlistment Manager Proxy Data Source", DB::DBUtil::ServerType::UNKNOWN},
-	{"ESRI.GeoDB.OLEDB",				 "Esri GeoDatabase OLE DB Provider",                     DB::DBUtil::ServerType::UNKNOWN},
-	{"MediaCatalogDB",                   "MediaCatalogDB OLE DB Provider",                       DB::DBUtil::ServerType::UNKNOWN},
-	{"MediaCatalogMergedDB",             "MediaCatalogMergedDB OLE DB Provider",                 DB::DBUtil::ServerType::UNKNOWN},
-	{"MediaCatalogWebDB",                "MediaCatalogWebDB OLE DB Provider",                    DB::DBUtil::ServerType::UNKNOWN},
+	{"ADsDSOObject",                     "OLE DB Provider for Microsoft Directory Services",     DB::DBUtil::ServerType::Unknown},
+	{"EMPOLEDBVS71",                     "VSEE Versioning Enlistment Manager Proxy Data Source", DB::DBUtil::ServerType::Unknown},
+	{"ESRI.GeoDB.OLEDB",				 "Esri GeoDatabase OLE DB Provider",                     DB::DBUtil::ServerType::Unknown},
+	{"MediaCatalogDB",                   "MediaCatalogDB OLE DB Provider",                       DB::DBUtil::ServerType::Unknown},
+	{"MediaCatalogMergedDB",             "MediaCatalogMergedDB OLE DB Provider",                 DB::DBUtil::ServerType::Unknown},
+	{"MediaCatalogWebDB",                "MediaCatalogWebDB OLE DB Provider",                    DB::DBUtil::ServerType::Unknown},
 	{"Microsoft.SQLSERVER.CE.OLEDB.3.0", "SQL Server Compact OLE DB Provider",                   DB::DBUtil::ServerType::MSSQL},
 	{"Microsoft.SQLSERVER.CE.OLEDB.3.5", "SQL Server Compact OLE DB Provider",                   DB::DBUtil::ServerType::MSSQL},
 	{"Microsoft.SQLSERVER.CE.OLEDB.4.0", "SQL Server Compact OLE DB Provider",                   DB::DBUtil::ServerType::MSSQL},
-	{"Microsoft.Jet.OLEDB.4.0",          "Microsoft Jet 4.0 OLE DB Provider",                    DB::DBUtil::ServerType::ACCESS},
-	{"MSDAORA",                          "Microsoft OLE DB Provider for Oracle",                 DB::DBUtil::ServerType::ORACLE},
-	{"MSDAOSP",                          "Microsoft OLE DB Simple Provider",                     DB::DBUtil::ServerType::UNKNOWN},
-	{"MSDataShape",                      "MSDataShape",                                          DB::DBUtil::ServerType::UNKNOWN},
-	{"MSDMine",                          "Microsoft OLE DB Provider for Data Mining Services",   DB::DBUtil::ServerType::UNKNOWN},
-	{"MSIDXS",                           "Microsoft OLE DB Provider for Indexing Services",      DB::DBUtil::ServerType::UNKNOWN},
-	{"MSOLAP",                           "Microsoft OLE DB Provider for OLAP Services 8.0",      DB::DBUtil::ServerType::UNKNOWN},
+	{"Microsoft.Jet.OLEDB.4.0",          "Microsoft Jet 4.0 OLE DB Provider",                    DB::DBUtil::ServerType::Access},
+	{"MSDAORA",                          "Microsoft OLE DB Provider for Oracle",                 DB::DBUtil::ServerType::Oracle},
+	{"MSDAOSP",                          "Microsoft OLE DB Simple Provider",                     DB::DBUtil::ServerType::Unknown},
+	{"MSDataShape",                      "MSDataShape",                                          DB::DBUtil::ServerType::Unknown},
+	{"MSDMine",                          "Microsoft OLE DB Provider for Data Mining Services",   DB::DBUtil::ServerType::Unknown},
+	{"MSIDXS",                           "Microsoft OLE DB Provider for Indexing Services",      DB::DBUtil::ServerType::Unknown},
+	{"MSOLAP",                           "Microsoft OLE DB Provider for OLAP Services 8.0",      DB::DBUtil::ServerType::Unknown},
 	{"SQLNCLI",                          "SQL Native Client",                                    DB::DBUtil::ServerType::MSSQL},
 	{"SQLNCLI10",                        "SQL Server Native Client 10.0",                        DB::DBUtil::ServerType::MSSQL},
 	{"SQLNCLI11",                        "SQL Server Native Client 11.0",                        DB::DBUtil::ServerType::MSSQL},
@@ -265,12 +265,12 @@ DB::DBUtil::ServerType DB::OLEDBConn::GetSvrType()
 			}
 			else if (sb.EqualsICase((const UTF8Char*)"Microsoft.Jet.OLEDB.4.0"))
 			{
-				return DB::DBUtil::ServerType::ACCESS;
+				return DB::DBUtil::ServerType::Access;
 			}
-			return DB::DBUtil::ServerType::UNKNOWN;
+			return DB::DBUtil::ServerType::Unknown;
 		}
 	}
-	return DB::DBUtil::ServerType::UNKNOWN;
+	return DB::DBUtil::ServerType::Unknown;
 }
 
 DB::DBConn::ConnType DB::OLEDBConn::GetConnType()
