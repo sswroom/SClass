@@ -48,6 +48,7 @@ Map::ESRI::FileGDBReader::FileGDBReader(IO::IStreamData *fd, UInt64 ofst, FileGD
 		this->maxCnt = INVALID_INDEX;
 	}
 	this->columnIndices = 0;
+	this->conditions = conditions;
 	if (columnNames)
 	{
 		NEW_CLASS(this->columnIndices, Data::ArrayList<UOSInt>());
@@ -124,16 +125,22 @@ Bool Map::ESRI::FileGDBReader::ReadNext()
 			return false;
 		}
 		this->objectId++;
-		if (this->dataOfst == 0)
+		if (conditions && !conditions->IsValid(this))
 		{
-			if (this->maxCnt == 0)
-			{
-				return false;
-			}
-			this->maxCnt--;
-			break;
 		}
-		this->dataOfst--;
+		else
+		{
+			if (this->dataOfst == 0)
+			{
+				if (this->maxCnt == 0)
+				{
+					return false;
+				}
+				this->maxCnt--;
+				break;
+			}
+			this->dataOfst--;
+		}
 		this->currOfst += 4 + this->rowSize;
 	}
 	this->rowData = MemAlloc(UInt8, this->rowSize);
@@ -940,6 +947,104 @@ Bool Map::ESRI::FileGDBReader::GetUUID(UOSInt colIndex, Data::UUID *uuid)
 		return true;
 	}
 	return false;
+}
+
+Data::VariItem *Map::ESRI::FileGDBReader::GetNewItem(const UTF8Char *name)
+{
+	UOSInt colIndex = INVALID_INDEX;
+	UOSInt fieldIndex = INVALID_INDEX;
+	UOSInt i;
+	UOSInt j;
+	FileGDBFieldInfo *field;
+	if (this->columnIndices)
+	{
+		i = this->columnIndices->GetCount();
+		while (i-- > 0)
+		{
+			j = this->columnIndices->GetItem(i);
+			field = this->tableInfo->fields->GetItem(j);
+			if (field && Text::StrEqualsICase(name, field->name))
+			{
+				fieldIndex = j;
+				colIndex = i;
+				break;
+			}
+		}
+	}
+	else
+	{
+		i = this->tableInfo->fields->GetCount();
+		while (i-- > 0)
+		{
+			field = this->tableInfo->fields->GetItem(i);
+			if (field && Text::StrEqualsICase(name, field->name))
+			{
+				fieldIndex = i;
+				colIndex = i;
+				break;
+			}
+		}
+	}
+	if (fieldIndex == INVALID_INDEX)
+	{
+		return Data::VariItem::NewNull();
+	}
+	UOSInt ofst;
+	UInt64 v;
+	switch (field->fieldType)
+	{
+	case 0:
+		return Data::VariItem::NewI16(ReadInt16(&this->rowData[this->fieldOfst[fieldIndex]]));
+	case 1:
+		return Data::VariItem::NewI32(ReadInt32(&this->rowData[this->fieldOfst[fieldIndex]]));
+	case 2:
+		return Data::VariItem::NewF32(ReadFloat(&this->rowData[this->fieldOfst[fieldIndex]]));
+	case 3:
+		return Data::VariItem::NewF64(ReadDouble(&this->rowData[this->fieldOfst[fieldIndex]]));
+	case 12:
+	case 4:
+		ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, this->fieldOfst[fieldIndex], &v);
+		{
+			Text::StringBuilderUTF8 sb;
+			sb.AppendC(&this->rowData[ofst], (UOSInt)v);
+			return Data::VariItem::NewStr(sb.ToString());
+		}
+	case 5:
+		{
+			Data::DateTime dt;
+			Map::ESRI::FileGDBUtil::ToDateTime(&dt, ReadDouble(&this->rowData[this->fieldOfst[fieldIndex]]));
+			return Data::VariItem::NewDate(&dt);
+		}
+	case 6:
+		return Data::VariItem::NewI32(this->objectId);
+	case 7:
+		{
+			Math::Vector2D *vec = this->GetVector(colIndex);
+			if (vec)
+			{
+				Data::VariItem *item = Data::VariItem::NewVector(vec);
+				DEL_CLASS(vec);
+				return item;
+			}
+			return Data::VariItem::NewNull();
+		}
+	case 8:
+		{
+			UOSInt size = this->GetBinarySize(colIndex);
+			UInt8 *binBuff = MemAlloc(UInt8, size);
+			this->GetBinary(colIndex, binBuff);
+			Data::VariItem *item = Data::VariItem::NewByteArr(binBuff, size);
+			MemFree(binBuff);
+			return item;
+		}
+	case 10:
+	case 11:
+		{
+			Data::UUID uuid(&this->rowData[this->fieldOfst[fieldIndex]]);
+			return Data::VariItem::NewUUID(&uuid);
+		}
+	}
+	return Data::VariItem::NewNull();
 }
 
 Bool Map::ESRI::FileGDBReader::IsNull(UOSInt colIndex)

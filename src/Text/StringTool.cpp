@@ -66,6 +66,21 @@ void Text::StringTool::BuildString(Text::StringBuilderUTF *sb, Data::List<const 
 	sb->AppendChar('}', 1);
 }
 
+void Text::StringTool::Int32Join(Text::StringBuilderUTF *sb, Data::List<Int32> *list, const UTF8Char *seperator)
+{
+	UOSInt i = 0;
+	UOSInt j = list->GetCount();
+	while (i < j)
+	{
+		if (i > 0)
+		{
+			sb->Append(seperator);
+		}
+		sb->AppendI32(list->GetItem(i));
+		i++;
+	}
+}
+
 Bool Text::StringTool::IsNonASCII(const UTF8Char *s)
 {
 	UTF8Char c;

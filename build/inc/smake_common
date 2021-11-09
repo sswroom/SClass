@@ -1099,6 +1099,7 @@ Data/Int64Map.h:
 Data/LineChart.h: ../../src/Data/LineChart.cpp
 @LineChart.o
 Data/List.h:
+Data/ObjectGetter.h:
 Data/Random.h:
 Data/RandomBytesGenerator.h: ../../src/Data/RandomBytesGenerator.cpp
 @RandomBytesGenerator.o

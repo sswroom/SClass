@@ -9,7 +9,7 @@ namespace Map
 {
 	namespace ESRI
 	{
-		class FileGDBReader : public DB::DBReader
+		class FileGDBReader : public DB::DBReader, public Data::ObjectGetter
 		{
 		private:
 			IO::IStreamData *fd;
@@ -23,6 +23,7 @@ namespace Map
 			Data::ArrayList<UOSInt> *columnIndices;
 			UOSInt dataOfst;
 			UOSInt maxCnt;
+			DB::QueryConditions *conditions;
 
 			UOSInt GetFieldIndex(UOSInt colIndex);
 		public:
@@ -45,6 +46,8 @@ namespace Map
 			virtual UOSInt GetBinary(UOSInt colIndex, UInt8 *buff);
 			virtual Math::Vector2D *GetVector(UOSInt colIndex);
 			virtual Bool GetUUID(UOSInt colIndex, Data::UUID *uuid);
+
+			virtual Data::VariItem *GetNewItem(const UTF8Char *name);
 
 			virtual Bool IsNull(UOSInt colIndex);
 			virtual UTF8Char *GetName(UOSInt colIndex, UTF8Char *buff);
