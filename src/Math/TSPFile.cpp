@@ -441,6 +441,11 @@ Math::Vector2D *Math::TSPReader::GetVector(UOSInt colIndex)
 	return pt;
 }
 
+Bool Math::TSPReader::GetUUID(UOSInt colIndex, Data::UUID *uuid)
+{
+	return false;
+}
+
 UTF8Char *Math::TSPReader::GetName(UOSInt colIndex, UTF8Char *buff)
 {
 	const UTF8Char *sptr = this->GetName(colIndex);
@@ -687,6 +692,11 @@ UOSInt Math::TSPHReader::GetBinary(UOSInt colIndex, UInt8 *buff)
 Math::Vector2D *Math::TSPHReader::GetVector(UOSInt colIndex)
 {
 	return 0;
+}
+
+Bool Math::TSPHReader::GetUUID(UOSInt colIndex, Data::UUID *uuid)
+{
+	return false;
 }
 
 UTF8Char *Math::TSPHReader::GetName(UOSInt colIndex, UTF8Char *buff)

@@ -40,6 +40,7 @@ namespace DB
 		virtual UOSInt GetBinarySize(UOSInt colIndex) = 0;
 		virtual UOSInt GetBinary(UOSInt colIndex, UInt8 *buff) = 0;
 		virtual Math::Vector2D *GetVector(UOSInt colIndex) = 0;
+		virtual Bool GetUUID(UOSInt colIndex, Data::UUID *uuid) = 0;
 
 		virtual Bool IsNull(UOSInt colIndex) = 0;
 		virtual UTF8Char *GetName(UOSInt colIndex, UTF8Char *buff) = 0;

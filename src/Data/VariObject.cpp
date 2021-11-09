@@ -108,3 +108,8 @@ void Data::VariObject::SetItemVector(const UTF8Char *name, Math::Vector2D *vec)
 {
 	this->SetItem(name, Data::VariItem::NewVector(vec));
 }
+
+void Data::VariObject::SetItemUUID(const UTF8Char *name, Data::UUID *uuid)
+{
+	this->SetItem(name, Data::VariItem::NewUUID(uuid));
+}

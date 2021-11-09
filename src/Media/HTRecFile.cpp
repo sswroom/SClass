@@ -438,6 +438,11 @@ Math::Vector2D *Media::HTRecFile::HTRecReader::GetVector(UOSInt colIndex)
 	return 0;
 }
 
+Bool Media::HTRecFile::HTRecReader::GetUUID(UOSInt colIndex, Data::UUID *uuid)
+{
+	return false;
+}
+
 UTF8Char *Media::HTRecFile::HTRecReader::GetName(UOSInt colIndex, UTF8Char *buff)
 {
 	const UTF8Char *s = GetName(colIndex);

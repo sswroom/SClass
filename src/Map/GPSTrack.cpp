@@ -1443,6 +1443,11 @@ Math::Vector2D *Map::GPSDataReader::GetVector(UOSInt colIndex)
 	return pt;
 }
 
+Bool Map::GPSDataReader::GetUUID(UOSInt colIndex, Data::UUID *uuid)
+{
+	return false;
+}
+
 UTF8Char *Map::GPSDataReader::GetName(UOSInt colIndex, UTF8Char *buff)
 {
 	const UTF8Char *sptr = GetName(colIndex);

@@ -671,6 +671,11 @@ Math::Vector2D *DB::MySQLReader::GetVector(UOSInt colIndex)
 	return 0;
 }
 
+Bool DB::MySQLReader::GetUUID(UOSInt colIndex, Data::UUID *uuid)
+{
+	return false;
+}
+
 UOSInt DB::MySQLReader::ColCount()
 {
 	return this->colCount;

@@ -1077,6 +1077,11 @@ Math::Vector2D *Map::MapLayerReader::GetVector(UOSInt colIndex)
 
 }
 
+Bool Map::MapLayerReader::GetUUID(UOSInt colIndex, Data::UUID *uuid)
+{
+	return false;
+}
+ 
 Bool Map::MapLayerReader::IsNull(UOSInt colIndex)
 {
 	UTF8Char sbuff[256];

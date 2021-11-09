@@ -578,6 +578,10 @@ UOSInt DB::SQLiteReader::GetBinary(UOSInt colIndex, UInt8 *buff)
 	}
 }
 
+Bool DB::SQLiteReader::GetUUID(UOSInt colIndex, Data::UUID *uuid)
+{
+	return false;
+}
 
 UTF8Char *DB::SQLiteReader::GetName(UOSInt colIndex, UTF8Char *buff)
 {

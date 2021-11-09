@@ -2,6 +2,7 @@
 #define _SM_DATA_VARIITEM
 #include "Data/DateTime.h"
 #include "Data/ReadonlyArray.h"
+#include "Data/UUID.h"
 #include "Math/Vector2D.h"
 #include "Text/StringBuilderUTF.h"
 
@@ -28,7 +29,8 @@ namespace Data
 			U64,
 			BOOL,
 			ByteArr,
-			Vector
+			Vector,
+			UUID
 		};
 	
 		union ItemValue
@@ -48,6 +50,7 @@ namespace Data
 			Bool boolean;
 			Data::ReadonlyArray<UInt8> *byteArr;
 			Math::Vector2D *vector;
+			Data::UUID *uuid;
 		};
 	private:
 		ItemType itemType;
@@ -60,6 +63,7 @@ namespace Data
 		ItemType GetItemType();
 		const ItemValue GetItemValue();
 
+		VariItem *Clone();
 		void ToString(Text::StringBuilderUTF *sb);
 
 		static VariItem *NewNull();
@@ -78,6 +82,7 @@ namespace Data
 		static VariItem *NewBool(Bool val);
 		static VariItem *NewByteArr(const UInt8 *arr, UOSInt cnt);
 		static VariItem *NewVector(Math::Vector2D *vec);
+		static VariItem *NewUUID(Data::UUID *uuid);
 	};
 }
 #endif

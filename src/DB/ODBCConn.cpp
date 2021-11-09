@@ -2110,6 +2110,11 @@ Math::Vector2D *DB::ODBCReader::GetVector(UOSInt colIndex)
 	return 0;
 }
 
+Bool DB::ODBCReader::GetUUID(UOSInt colIndex, Data::UUID *uuid)
+{
+	return false;
+}
+
 UTF8Char *DB::ODBCReader::GetName(UOSInt colIndex, UTF8Char *buff)
 {
 	Int16 nameLen = 0;

@@ -836,6 +836,27 @@ Math::Vector2D *Map::ESRI::FileGDBReader::GetVector(UOSInt colIndex)
 	return 0;
 }
 
+Bool Map::ESRI::FileGDBReader::GetUUID(UOSInt colIndex, Data::UUID *uuid)
+{
+	if (this->rowData == 0)
+	{
+		return false;
+	}
+	Map::ESRI::FileGDBFieldInfo *field = this->tableInfo->fields->GetItem(colIndex);
+	if (field == 0 || this->fieldNull[colIndex])
+	{
+		return false;
+	}
+	switch (field->fieldType)
+	{
+	case 10:
+	case 11:
+		uuid->SetValue(&this->rowData[this->fieldOfst[colIndex]]);
+		return true;
+	}
+	return false;
+}
+
 Bool Map::ESRI::FileGDBReader::IsNull(UOSInt colIndex)
 {
 	if (colIndex >= this->tableInfo->fields->GetCount())

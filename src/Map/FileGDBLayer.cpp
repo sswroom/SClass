@@ -511,6 +511,11 @@ Math::Vector2D *Map::FileGDBLReader::GetVector(UOSInt colIndex)
 	return this->r->GetVector(colIndex);
 }
 
+Bool Map::FileGDBLReader::GetUUID(UOSInt colIndex, Data::UUID *uuid)
+{
+	return this->r->GetUUID(colIndex, uuid);
+}
+
 Bool Map::FileGDBLReader::IsNull(UOSInt colIndex)
 {
 	return this->r->IsNull((colIndex > 0)?(colIndex + 1):colIndex);

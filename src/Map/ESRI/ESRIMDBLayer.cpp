@@ -534,6 +534,11 @@ Math::Vector2D *Map::ESRI::ESRIMDBReader::GetVector(UOSInt colIndex)
 	return this->r->GetVector(colIndex);
 }
 
+Bool Map::ESRI::ESRIMDBReader::GetUUID(UOSInt colIndex, Data::UUID *uuid)
+{
+	return this->r->GetUUID(colIndex, uuid);
+}
+
 Bool Map::ESRI::ESRIMDBReader::IsNull(UOSInt colIndex)
 {
 	return this->r->IsNull((colIndex > 0)?(colIndex + 1):colIndex);

@@ -2,13 +2,23 @@
 #include "Data/ByteTool.h"
 #include "Data/UUID.h"
 
+Data::UUID::UUID()
+{
+	MemClear(this->data, 16);
+}
+
 Data::UUID::UUID(const UInt8 *buff)
 {
-	MemCopyNO(this->data, buff, 16);
+	this->SetValue(buff);
 }
 
 Data::UUID::~UUID()
 {
+}
+
+void Data::UUID::SetValue(const UInt8 *buff)
+{
+	MemCopyNO(this->data, buff, 16);
 }
 
 void Data::UUID::ToString(Text::StringBuilderUTF *sb)
@@ -36,4 +46,9 @@ UTF8Char *Data::UUID::ToString(UTF8Char *sbuff)
 	*sbuff++ = '-';
 	sbuff = Text::StrHexBytes(sbuff, &this->data[10], 6, 0);
 	return sbuff;
+}
+
+Data::UUID *Data::UUID::Clone()
+{
+	return NEW_CLASS_D(Data::UUID(this->data));	
 }

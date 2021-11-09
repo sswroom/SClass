@@ -16,6 +16,7 @@ namespace Data
 		const T *GetArray();
 		T GetItem(UOSInt index);
 		T operator [](UOSInt index);
+		ReadonlyArray<T> *Clone();
 	};
 
 	template <class T> ReadonlyArray<T>::ReadonlyArray(const T *arr, UOSInt cnt)
@@ -52,6 +53,11 @@ namespace Data
 			return 0;
 		}
 		return this->arr[index];
+	}
+
+	template <class T> ReadonlyArray<T> *ReadonlyArray<T>::Clone()
+	{
+		return NEW_CLASS_D(ReadonlyArray<T>(this->arr, this->cnt));
 	}
 }
 #endif

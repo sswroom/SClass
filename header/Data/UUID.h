@@ -10,11 +10,15 @@ namespace Data
 		UInt8 data[16];
 
 	public:
+		UUID();
 		UUID(const UInt8 *buff);
 		~UUID();
 
+		void SetValue(const UInt8 *buff);
+		
 		void ToString(Text::StringBuilderUTF *sb);
 		UTF8Char *ToString(UTF8Char *sbuff);
+		UUID *Clone();
 	};
 }
 #endif

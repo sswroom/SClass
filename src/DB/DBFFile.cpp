@@ -729,6 +729,11 @@ Math::Vector2D *DB::DBFReader::GetVector(UOSInt colIndex)
 	return 0;
 }
 
+Bool DB::DBFReader::GetUUID(UOSInt colIndex, Data::UUID *uuid)
+{
+	return false;
+}
+
 Bool DB::DBFReader::IsNull(UOSInt colIndex)
 {
 	if (!this->recordExist)

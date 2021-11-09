@@ -33,6 +33,7 @@ namespace Data
 		void SetItemBool(const UTF8Char *name, Bool val);
 		void SetItemByteArray(const UTF8Char *name, const UInt8 *arr, UOSInt cnt);
 		void SetItemVector(const UTF8Char *name, Math::Vector2D *vec);
+		void SetItemUUID(const UTF8Char *name, Data::UUID *uuid);
 	};
 }
 #endif

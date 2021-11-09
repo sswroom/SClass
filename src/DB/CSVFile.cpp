@@ -644,6 +644,11 @@ Math::Vector2D *DB::CSVReader::GetVector(UOSInt colIndex)
 	return 0;
 }
 
+Bool DB::CSVReader::GetUUID(UOSInt colIndex, Data::UUID *uuid)
+{
+	return false;
+}
+
 UTF8Char *DB::CSVReader::GetName(UOSInt colIndex, UTF8Char *buff)
 {
 	if (colIndex >= this->nHdr)

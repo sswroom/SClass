@@ -42,6 +42,8 @@ Data::VariItem::~VariItem()
 	case ItemType::Vector:
 		DEL_CLASS(this->val.vector);
 		break;
+	case ItemType::UUID:
+		DEL_CLASS(this->val.uuid);
 	}
 }
 
@@ -53,6 +55,70 @@ Data::VariItem::ItemType Data::VariItem::GetItemType()
 const Data::VariItem::ItemValue Data::VariItem::GetItemValue()
 {
 	return this->val;
+}
+
+Data::VariItem *Data::VariItem::Clone()
+{
+	ItemValue ival;
+	switch (this->itemType)
+	{
+	case ItemType::Null:
+		ival.str = 0;
+		break;
+	default:
+	case ItemType::Unknown:
+		ival.str = this->val.str;
+		break;
+	case ItemType::F32:
+		ival.f32 = this->val.f32;
+		break;
+	case ItemType::F64:
+		ival.f64 = this->val.f64;
+		break;
+	case ItemType::I8:
+		ival.i8 = this->val.i8;
+		break;
+	case ItemType::U8:
+		ival.u8 = this->val.u8;
+		break;
+	case ItemType::I16:
+		ival.i16 = this->val.i16;
+		break;
+	case ItemType::U16:
+		ival.u16 = this->val.u16;
+		break;
+	case ItemType::I32:
+		ival.i32 = this->val.i32;
+		break;
+	case ItemType::U32:
+		ival.u32 = this->val.u32;
+		break;
+	case ItemType::I64:
+		ival.i64 = this->val.i64;
+		break;
+	case ItemType::U64:
+		ival.u64 = this->val.u64;
+		break;
+	case ItemType::BOOL:
+		ival.boolean = this->val.boolean;
+		break;
+	case ItemType::Str:
+		ival.str = SCOPY_TEXT(this->val.str);
+		break;
+	case ItemType::Date:
+		NEW_CLASS(ival.date, Data::DateTime(this->val.date));
+		break;
+	case ItemType::ByteArr:
+		ival.byteArr = this->val.byteArr->Clone();
+		break;
+	case ItemType::Vector:
+		ival.vector = this->val.vector->Clone();
+		break;
+	case ItemType::UUID:
+		ival.uuid = this->val.uuid->Clone();
+		break;
+	}
+	return NEW_CLASS_D(VariItem(this->itemType, ival));
 }
 
 void Data::VariItem::ToString(Text::StringBuilderUTF *sb)
@@ -264,5 +330,14 @@ Data::VariItem *Data::VariItem::NewVector(Math::Vector2D *vec)
 	ival.vector = vec->Clone();
 	Data::VariItem *item;
 	NEW_CLASS(item, Data::VariItem(ItemType::Vector, ival));
+	return item;
+}
+
+Data::VariItem *Data::VariItem::NewUUID(Data::UUID *uuid)
+{
+	ItemValue ival;
+	ival.uuid = uuid->Clone();
+	Data::VariItem *item;
+	NEW_CLASS(item, Data::VariItem(ItemType::UUID, ival));
 	return item;
 }

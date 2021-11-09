@@ -295,6 +295,11 @@ namespace DB
 			return 0;
 		}
 
+		virtual Bool GetUUID(UOSInt colIndex, Data::UUID *uuid)
+		{
+			return false;
+		}
+
 		virtual Bool IsNull(UOSInt colIndex)
 		{
 			if (this->rows == 0 || colIndex >= this->colCount)

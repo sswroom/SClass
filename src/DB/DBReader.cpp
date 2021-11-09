@@ -54,7 +54,6 @@ Data::VariObject *DB::DBReader::CreateVariObject()
 			case DB::DBUtil::CT_Char:
 			case DB::DBUtil::CT_NVarChar:
 			case DB::DBUtil::CT_NChar:
-			case DB::DBUtil::CT_UUID:
 				csptr = this->GetNewStr(i);
 				obj->SetItemStr(sbuff, csptr);
 				this->DelNewStr(csptr);
@@ -105,6 +104,13 @@ Data::VariObject *DB::DBReader::CreateVariObject()
 				vec = this->GetVector(i);
 				obj->SetItemVector(sbuff, vec);
 				DEL_CLASS(vec);
+				break;
+			case DB::DBUtil::CT_UUID:
+				{
+					Data::UUID uuid;
+					this->GetUUID(i, &uuid);
+					obj->SetItemUUID(sbuff, &uuid);
+				}
 				break;
 			case DB::DBUtil::CT_Unknown:
 			default:
