@@ -39,7 +39,7 @@ namespace Win32
 		virtual void Rollback(void *tran);
 
 		virtual UOSInt GetTableNames(Data::ArrayList<const UTF8Char*> *names);
-		virtual DB::DBReader *GetTableData(const UTF8Char *name, UOSInt maxCnt, void *ordering, void *condition);
+		virtual DB::DBReader *GetTableData(const UTF8Char *tableName, Data::ArrayList<const UTF8Char*> *columnNames, UOSInt ofst, UOSInt maxCnt, const UTF8Char *ordering, DB::QueryConditions *condition);
 		virtual void CloseReader(DB::DBReader *reader);
 		virtual void GetErrorMsg(Text::StringBuilderUTF *str);
 		virtual void Reconnect();

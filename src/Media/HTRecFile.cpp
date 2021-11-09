@@ -693,15 +693,15 @@ UOSInt Media::HTRecFile::GetTableNames(Data::ArrayList<const UTF8Char*> *names)
 	}
 }
 
-DB::DBReader *Media::HTRecFile::GetTableData(const UTF8Char *name, UOSInt maxCnt, void *ordering, void *condition)
+DB::DBReader *Media::HTRecFile::GetTableData(const UTF8Char *tableName, Data::ArrayList<const UTF8Char*> *columnNames, UOSInt ofst, UOSInt maxCnt, const UTF8Char *ordering, DB::QueryConditions *condition)
 {
-	if (Text::StrEquals(name, (const UTF8Char*)"Setting"))
+	if (Text::StrEquals(tableName, (const UTF8Char*)"Setting"))
 	{
 		HTRecReader *reader;
 		NEW_CLASS(reader, HTRecReader(this, true));
 		return reader;
 	}
-	else if (Text::StrEquals(name, (const UTF8Char*)"Records"))
+	else if (Text::StrEquals(tableName, (const UTF8Char*)"Records"))
 	{
 		HTRecReader *reader;
 		NEW_CLASS(reader, HTRecReader(this, false));

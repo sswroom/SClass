@@ -39,6 +39,7 @@ nodeps:
 @DateTimeTest
 @Float16Test
 @SortSpeed
+@FileGDBTest
 @MySQLCheck
 @XLSXExporterTest
 @AM2315Test
@@ -268,6 +269,9 @@ SortSpeed:
 @ConsoleStartup.o
 
 #DB
+FileGDBTest:
+@FileGDBTest.o
+@ConsoleStartup.o
 MongoDBTest:
 @MongoDBTest.o
 @ConsoleStartup.o
@@ -762,6 +766,7 @@ X509Test.o: ../../main/CryptoTest/X509Test.cpp
 DateTimeTest.o: ../../main/Data/DateTimeTest.cpp
 Float16Test.o: ../../main/Data/Float16Test.cpp
 SortSpeed.o: ../../main/Data/SortSpeed.cpp
+FileGDBTest.o: ../../main/DB/FileGDBTest.cpp
 MongoDBTest.o: ../../main/DB/MongoDBTest.cpp
 MySQLCheckMain.o: ../../main/DB/MySQLCheckMain.cpp
 XLSXExporterTest.o: ../../main/Exporter/XLSXExporterTest.cpp
@@ -1196,6 +1201,8 @@ DB/MySQLMaintance.h: ../../src/DB/MySQLMaintance.cpp
 @MySQLMaintance.o
 DB/PageRequest.h: ../../src/DB/PageRequest.cpp
 @PageRequest.o
+DB/QueryConditions.h: ../../src/DB/QueryConditions.cpp
+@QueryConditions.o
 DB/ReadingDB.h: ../../src/DB/ReadingDB.cpp
 @ReadingDB.o
 DB/ReadingDBTool.h: ../../src/DB/ReadingDBTool.cpp
@@ -3830,6 +3837,7 @@ DBUtil.o: ../../src/DB/DBUtil.cpp
 MSSQLConn.o: ../../src/DB/MSSQLConn.cpp
 MySQLMaintance.o: ../../src/DB/MySQLMaintance.cpp
 PageRequest.o: ../../src/DB/PageRequest.cpp
+QueryConditions.o: ../../src/DB/QueryConditions.cpp
 ReadingDB.o: ../../src/DB/ReadingDB.cpp
 ReadingDBTool.o: ../../src/DB/ReadingDBTool.cpp
 SharedDBConn.o: ../../src/DB/SharedDBConn.cpp

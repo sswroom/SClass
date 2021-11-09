@@ -52,7 +52,7 @@ namespace DB
 		virtual void Rollback(void *tran);
 
 		virtual UOSInt GetTableNames(Data::ArrayList<const UTF8Char*> *names);
-		virtual DBReader *GetTableData(const UTF8Char *name, UOSInt maxCnt, void *ordering, void *condition);
+		virtual DBReader *GetTableData(const UTF8Char *tableName, Data::ArrayList<const UTF8Char*> *columnNames, UOSInt ofst, UOSInt maxCnt, const UTF8Char *ordering, DB::QueryConditions *condition);
 
 		Bool IsConnError();
 		const UTF8Char *GetConnServer();

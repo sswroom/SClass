@@ -148,7 +148,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateTableData(const UTF8Char *tableName
 	DB::DBReader *r;
 	tabDef = this->currDB->GetTableDef(tableName);
 
-	r = this->currDB->GetTableData(tableName, MAX_ROW_CNT, 0, 0);
+	r = this->currDB->GetTableData(tableName, 0, 0, MAX_ROW_CNT, 0, 0);
 	if (r)
 	{
 		this->UpdateResult(r);
@@ -582,7 +582,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::EventMenuClicked(UInt16 cmdId)
 			}
 			else
 			{
-				DB::DBReader *r = this->currDB->GetTableData(tableName, 0, 0, 0);
+				DB::DBReader *r = this->currDB->GetTableData(tableName, 0, 0, 0, 0, 0);
 				if (r)
 				{
 					DB::ColDef colDef((const UTF8Char*)"");

@@ -63,7 +63,7 @@ IO::ParsedObject *Parser::ObjParser::FileGDBParser::ParseObject(IO::ParsedObject
 		while (i-- > 0)
 		{
 			const UTF8Char *tableName = tableNames->GetItem(i);
-			DB::DBReader *rdr = fileGDB->GetTableData(tableName, 0, 0, 0);
+			DB::DBReader *rdr = fileGDB->GetTableData(tableName, 0, 0, 0, 0, 0);
 			if (rdr)
 			{
 				if (rdr->ColCount() >= 2)

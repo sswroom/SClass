@@ -140,14 +140,14 @@ UOSInt Map::FileGDB::GetTableNames(Data::ArrayList<const UTF8Char*> *names)
 	return this->tables->GetCount() + this->features->GetCount();
 }
 
-DB::DBReader *Map::FileGDB::GetTableData(const UTF8Char *name, UOSInt maxCnt, void *ordering, void *condition)
+DB::DBReader *Map::FileGDB::GetTableData(const UTF8Char *tableName, Data::ArrayList<const UTF8Char*> *columnNames, UOSInt ofst, UOSInt maxCnt, const UTF8Char *ordering, DB::QueryConditions *condition)
 {
 	WChar sbuff[256];
 	fgdbError hr;
 	FileGDBAPI::Geodatabase *geodatabase;
 	geodatabase = (FileGDBAPI::Geodatabase*)this->gdb;
 	sbuff[0] = '\\';
-	Text::StrUTF8_WChar(&sbuff[1], name, 0);
+	Text::StrUTF8_WChar(&sbuff[1], tableName, 0);
 
 	FileGDBAPI::Table *table;
 	table = new FileGDBAPI::Table();

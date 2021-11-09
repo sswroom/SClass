@@ -85,10 +85,10 @@ UOSInt Math::TSPFile::GetTableNames(Data::ArrayList<const UTF8Char*> *names)
 	}
 }
 
-DB::DBReader *Math::TSPFile::GetTableData(const UTF8Char *name, UOSInt maxCnt, void *ordering, void *condition)
+DB::DBReader *Math::TSPFile::GetTableData(const UTF8Char *tableName, Data::ArrayList<const UTF8Char*> *columnNames, UOSInt ofst, UOSInt maxCnt, const UTF8Char *ordering, DB::QueryConditions *condition)
 {
 	DB::DBReader *reader;
-	if (name != 0 && Text::StrEquals(name, (const UTF8Char*)"StationSetup"))
+	if (tableName != 0 && Text::StrEquals(tableName, (const UTF8Char*)"StationSetup"))
 	{
 		NEW_CLASS(reader, Math::TSPHReader(this));
 	}

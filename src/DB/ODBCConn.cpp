@@ -998,10 +998,12 @@ UOSInt DB::ODBCConn::GetTableNames(Data::ArrayList<const UTF8Char*> *names)
 	return this->tableNames->GetCount();
 }
 
-DB::DBReader *DB::ODBCConn::GetTableData(const UTF8Char *name, UOSInt maxCnt, void *ordering, void *condition)
+DB::DBReader *DB::ODBCConn::GetTableData(const UTF8Char *name, Data::ArrayList<const UTF8Char*> *columnNames, UOSInt ofst, UOSInt maxCnt, const UTF8Char *ordering, QueryConditions *condition)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
+	UOSInt i;
+	UOSInt j;
 	Text::StringBuilderUTF8 sb;
 	sb.Append((const UTF8Char*)"select ");
 	if (this->svrType == DB::DBUtil::ServerType::MSSQL || this->svrType == DB::DBUtil::ServerType::Access)
@@ -1013,9 +1015,27 @@ DB::DBReader *DB::ODBCConn::GetTableData(const UTF8Char *name, UOSInt maxCnt, vo
 			sb.AppendChar(' ', 1);
 		}
 	}
-	sb.Append((const UTF8Char*)"* from ");
-	UOSInt i = 0;
-	UOSInt j;
+	if (columnNames == 0 || columnNames->GetCount() == 0)
+	{
+		sb.Append((const UTF8Char*)"*");
+	}
+	else
+	{
+		i = 0;
+		j = columnNames->GetCount();
+		while (i < j)
+		{
+			if (i > 0)
+			{
+				sb.Append((const UTF8Char*)",");
+			}
+			DB::DBUtil::SDBColUTF8(sbuff, columnNames->GetItem(i), this->svrType);
+			sb.Append(sbuff);
+			i++;
+		}
+	}
+	sb.Append((const UTF8Char*)" from ");
+	i = 0;
 	while (true)
 	{
 		j = Text::StrIndexOf(&name[i], '.');

@@ -128,7 +128,7 @@ UOSInt Map::IMapDrawLayer::GetTableNames(Data::ArrayList<const UTF8Char*> *names
 	return 1;
 }
 
-DB::DBReader *Map::IMapDrawLayer::GetTableData(const UTF8Char *name, UOSInt maxCnt, void *ordering, void *condition)
+DB::DBReader *Map::IMapDrawLayer::GetTableData(const UTF8Char *tableName, Data::ArrayList<const UTF8Char*> *columnNames, UOSInt ofst, UOSInt maxCnt, const UTF8Char *ordering, DB::QueryConditions *condition)
 {
 	DB::DBReader *r;
 	NEW_CLASS(r, Map::MapLayerReader(this));

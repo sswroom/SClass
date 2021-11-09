@@ -76,7 +76,7 @@ Bool Exporter::DBFExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 	const UTF8Char *tableName = tableNames->GetItem(0);
 	DEL_CLASS(tableNames);
 
-	DB::DBReader *r = conn->GetTableData(tableName, 0, 0, 0);
+	DB::DBReader *r = conn->GetTableData(tableName, 0, 0, 0, 0, 0);
 	if (r == 0)
 		return false;
 	UOSInt nCol;

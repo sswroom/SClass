@@ -238,7 +238,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::GroupConvert(const UTF8Char *sourceFile, c
 	sb.Append((const UTF8Char*)"dbf");
 	NEW_CLASS(fd, IO::StmData::FileData(sb.ToString(), false));
 	NEW_CLASS(dbf, DB::DBFFile(fd, (UInt32)(UOSInt)this->lstLang->GetSelectedItem()));
-	r = dbf->GetTableData(0, 0, 0, 0);
+	r = dbf->GetTableData(0, 0, 0, 0, 0, 0);
 	if (r)
 	{
 		while (r->ReadNext())
@@ -389,7 +389,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(const UTF8Char *sourceFile, con
 			sb.Append((const UTF8Char*)".dbf");
 			NEW_CLASS(fd, IO::StmData::FileData(sb.ToString(), false));
 			NEW_CLASS(dbf, DB::DBFFile(fd, (UInt32)(UOSInt)this->lstLang->GetSelectedItem()));
-			dbfr = dbf->GetTableData(0, 0, 0, 0);
+			dbfr = dbf->GetTableData(0, 0, 0, 0, 0, 0);
 			StrRecord *strRec;
 
 //			tmpWriter = New IO.StreamWriter(sourceFile.Substring(0, sourceFile.LastIndexOf(".")) + ".txt")
@@ -805,7 +805,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(const UTF8Char *sourceFile, con
 			sb.Append((const UTF8Char*)".dbf");
 			NEW_CLASS(fd, IO::StmData::FileData(sb.ToString(), false));
 			NEW_CLASS(dbf, DB::DBFFile(fd, (UInt32)(UOSInt)this->lstLang->GetSelectedItem()));
-			dbfr = dbf->GetTableData(0, 0, 0, 0);
+			dbfr = dbf->GetTableData(0, 0, 0, 0, 0, 0);
 
 			StrRecord *strRec;
 

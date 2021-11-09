@@ -11,7 +11,7 @@ Data::Int32Map<const UTF8Char **> *Map::ESRI::ESRIMDBLayer::ReadNameArr()
 	UTF8Char sbuff[512];
 	Sync::MutexUsage mutUsage;
 	this->currDB = this->conn->UseConn(&mutUsage);
-	DB::DBReader *r = this->currDB->GetTableData(tableName, 0, 0, 0);
+	DB::DBReader *r = this->currDB->GetTableData(tableName, 0, 0, 0, 0, 0);
 	if (r)
 	{
 		Data::Int32Map<const UTF8Char **> *nameArr;
@@ -81,7 +81,7 @@ Map::ESRI::ESRIMDBLayer::ESRIMDBLayer(DB::SharedDBConn *conn, UInt32 srid, const
 
 	Sync::MutexUsage mutUsage;
 	this->currDB = this->conn->UseConn(&mutUsage);
-	DB::DBReader *r = this->currDB->GetTableData(tableName, 0, 0, 0);
+	DB::DBReader *r = this->currDB->GetTableData(tableName, 0, 0, 0, 0, 0);
 	if (r)
 	{
 		UOSInt i;
@@ -409,7 +409,7 @@ DB::DBReader *Map::ESRI::ESRIMDBLayer::GetTableData(const UTF8Char *name)
 	NEW_CLASS(mutUsage, Sync::MutexUsage());
 	this->currDB = this->conn->UseConn(mutUsage);
 	this->lastDB = this->currDB;
-	DB::DBReader *rdr = this->currDB->GetTableData(name, 0, 0, 0);
+	DB::DBReader *rdr = this->currDB->GetTableData(name, 0, 0, 0, 0, 0);
 	if (rdr)
 	{
 		Map::ESRI::ESRIMDBReader *r;

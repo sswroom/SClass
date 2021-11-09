@@ -11,7 +11,7 @@ Data::Int32Map<const UTF8Char **> *Map::FileGDBLayer::ReadNameArr()
 	UTF8Char sbuff[512];
 	Sync::MutexUsage mutUsage;
 	this->currDB = this->conn->UseDB(&mutUsage);
-	DB::DBReader *r = this->currDB->GetTableData(tableName, 0, 0, 0);
+	DB::DBReader *r = this->currDB->GetTableData(tableName, 0, 0, 0, 0, 0);
 	if (r)
 	{
 		Data::Int32Map<const UTF8Char **> *nameArr;
@@ -79,7 +79,7 @@ Map::FileGDBLayer::FileGDBLayer(DB::SharedReadingDB *conn, const UTF8Char *sourc
 	Sync::MutexUsage mutUsage;
 	this->currDB = this->conn->UseDB(&mutUsage);
 	this->csys = Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84);
-	DB::DBReader *r = this->currDB->GetTableData(tableName, 0, 0, 0);
+	DB::DBReader *r = this->currDB->GetTableData(tableName, 0, 0, 0, 0, 0);
 	if (r)
 	{
 		UOSInt i;
@@ -380,13 +380,13 @@ UOSInt Map::FileGDBLayer::GetTableNames(Data::ArrayList<const UTF8Char*> *names)
 	return 1;
 }
 
-DB::DBReader *Map::FileGDBLayer::GetTableData(const UTF8Char *name, UOSInt maxCnt, void *ordering, void *condition)
+DB::DBReader *Map::FileGDBLayer::GetTableData(const UTF8Char *tableName, Data::ArrayList<const UTF8Char*> *columnNames, UOSInt ofst, UOSInt maxCnt, const UTF8Char *ordering, DB::QueryConditions *condition)
 {
 	Sync::MutexUsage *mutUsage;
 	NEW_CLASS(mutUsage, Sync::MutexUsage());
 	this->currDB = this->conn->UseDB(mutUsage);
 	this->lastDB = this->currDB;
-	DB::DBReader *rdr = this->currDB->GetTableData(name, maxCnt, ordering, condition);
+	DB::DBReader *rdr = this->currDB->GetTableData(tableName, columnNames, ofst, maxCnt, ordering, condition);
 	if (rdr)
 	{
 		Map::FileGDBLReader *r;

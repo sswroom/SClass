@@ -95,11 +95,11 @@ UOSInt DB::MongoDB::GetTableNames(Data::ArrayList<const UTF8Char*> *names)
 	return this->tableNames->GetCount();
 }
 
-DB::DBReader *DB::MongoDB::GetTableData(const UTF8Char *name, UOSInt maxCnt, void *ordering, void *condition)
+DB::DBReader *DB::MongoDB::GetTableData(const UTF8Char *tableName, Data::ArrayList<const UTF8Char*> *columNames, UOSInt ofst, UOSInt maxCnt, const UTF8Char *ordering, DB::QueryConditions *condition)
 {
 	if (this->database && this->client)
 	{
-		mongoc_collection_t *coll = mongoc_client_get_collection((mongoc_client_t*)this->client, (const Char*)this->database, (const Char*)name);
+		mongoc_collection_t *coll = mongoc_client_get_collection((mongoc_client_t*)this->client, (const Char*)this->database, (const Char*)tableName);
 		if (coll)
 		{
 			DB::MongoDBReader *reader;

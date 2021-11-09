@@ -552,7 +552,7 @@ UInt32 DB::ReadingDBTool::GetDataCnt()
 	return this->dataCnt;
 }
 
-DB::DBReader *DB::ReadingDBTool::GetTableData(const UTF8Char *tableName, UOSInt maxCnt, void *ordering, void *condition)
+DB::DBReader *DB::ReadingDBTool::GetTableData(const UTF8Char *tableName, Data::ArrayList<const UTF8Char*> *columnNames, UOSInt ofst, UOSInt maxCnt, const UTF8Char *ordering, DB::QueryConditions *condition)
 {
 	{
 		Text::StringBuilderUTF8 logMsg;
@@ -569,7 +569,7 @@ DB::DBReader *DB::ReadingDBTool::GetTableData(const UTF8Char *tableName, UOSInt 
 
 	Data::DateTime t1;
 	Data::DateTime t2;
-	DB::DBReader *r = this->db->GetTableData(tableName, maxCnt, ordering, condition);
+	DB::DBReader *r = this->db->GetTableData(tableName, columnNames, ofst, maxCnt, ordering, condition);
 	if (r)
 	{
 		Data::DateTime t3;

@@ -341,7 +341,7 @@ UOSInt DB::MySQLConn::GetTableNames(Data::ArrayList<const UTF8Char*> *names)
 	}
 }
 
-DB::DBReader *DB::MySQLConn::GetTableData(const UTF8Char *name, UOSInt maxCnt, void *ordering, void *condition)
+DB::DBReader *DB::MySQLConn::GetTableData(const UTF8Char *tableName, Data::ArrayList<const UTF8Char*> *columnNames, UOSInt ofst, UOSInt maxCnt, const UTF8Char *ordering, DB::QueryConditions *condition)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -351,14 +351,14 @@ DB::DBReader *DB::MySQLConn::GetTableData(const UTF8Char *name, UOSInt maxCnt, v
 	UOSInt j;
 	while (true)
 	{
-		j = Text::StrIndexOf(&name[i], '.');
+		j = Text::StrIndexOf(&tableName[i], '.');
 		if (j == INVALID_INDEX)
 		{
-			DB::DBUtil::SDBColUTF8(sbuff, &name[i], DB::DBUtil::ServerType::MySQL);
+			DB::DBUtil::SDBColUTF8(sbuff, &tableName[i], DB::DBUtil::ServerType::MySQL);
 			sb.Append(sbuff);
 			break;
 		}
-		sptr = Text::StrConcatC(sbuff, &name[i], (UOSInt)j);
+		sptr = Text::StrConcatC(sbuff, &tableName[i], (UOSInt)j);
 		DB::DBUtil::SDBColUTF8(sptr + 1, sbuff, DB::DBUtil::ServerType::MySQL);
 		sb.Append(sptr + 1);
 		sb.AppendChar('.', 1);

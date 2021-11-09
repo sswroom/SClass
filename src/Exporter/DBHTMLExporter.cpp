@@ -60,7 +60,7 @@ Bool Exporter::DBHTMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8Cha
 	}
 	DB::ReadingDB *db = (DB::ReadingDB*)pobj;
 	DB::DBReader *r;
-	r = db->GetTableData(name, 0, 0, 0);
+	r = db->GetTableData(name, 0, 0, 0, 0, 0);
 	if (r == 0)
 	{
 		return false;

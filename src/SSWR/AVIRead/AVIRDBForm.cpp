@@ -27,11 +27,11 @@ void __stdcall SSWR::AVIRead::AVIRDBForm::OnTableSelChg(void *userObj)
 	{
 		tabDef = me->dbt->GetTableDef(sbuff);
 
-		r = me->db->GetTableData(sbuff, MAX_ROW_CNT, 0, 0);
+		r = me->db->GetTableData(sbuff, 0, 0, MAX_ROW_CNT, 0, 0);
 	}
 	else
 	{
-		r = me->db->GetTableData(sbuff, MAX_ROW_CNT, 0, 0);
+		r = me->db->GetTableData(sbuff, 0, 0, MAX_ROW_CNT, 0, 0);
 		if (r)
 		{
 			tabDef = r->GenTableDef(sbuff);

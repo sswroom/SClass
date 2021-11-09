@@ -86,7 +86,7 @@ Bool Exporter::SQLiteExporter::ExportFile(IO::SeekableStream *stm, const UTF8Cha
 			tabDef = srcDB->GetTableDef(tables.GetItem(i));
 			if (tabDef)
 			{
-				r = srcDB->GetTableData(tables.GetItem(i), 0, 0, 0);
+				r = srcDB->GetTableData(tables.GetItem(i), 0, 0, 0, 0, 0);
 				if (r == 0)
 				{
 					DEL_CLASS(tabDef);
@@ -102,7 +102,7 @@ Bool Exporter::SQLiteExporter::ExportFile(IO::SeekableStream *stm, const UTF8Cha
 		}
 		else
 		{
-			r = sDB->GetTableData(tables.GetItem(i), 0, 0, 0);
+			r = sDB->GetTableData(tables.GetItem(i), 0, 0, 0, 0, 0);
 			if (r)
 			{
 				tabDef = r->GenTableDef(tables.GetItem(i));

@@ -1283,12 +1283,35 @@ UOSInt Net::MySQLTCPClient::GetTableNames(Data::ArrayList<const UTF8Char*> *name
 	}
 }
 
-DB::DBReader *Net::MySQLTCPClient::GetTableData(const UTF8Char *name, UOSInt maxCnt, void *ordering, void *condition)
+DB::DBReader *Net::MySQLTCPClient::GetTableData(const UTF8Char *tableName, Data::ArrayList<const UTF8Char*> *columnNames, UOSInt ofst, UOSInt maxCnt, const UTF8Char *ordering, DB::QueryConditions *condition)
 {
+	UTF8Char sbuff[512];
 	Text::StringBuilderUTF8 sb;
+	UOSInt i;
+	UOSInt j;
 	sb.Append((const UTF8Char*)"select ");
-	sb.Append((const UTF8Char*)"* from ");
-	sb.Append(name);
+	if (columnNames == 0 || columnNames->GetCount() == 0)
+	{
+		sb.Append((const UTF8Char*)"*");
+	}
+	else
+	{
+		i = 0;
+		j = columnNames->GetCount();
+		while (i < j)
+		{
+			if (i > 0)
+			{
+				sb.AppendChar(',', 1);
+			}
+			DB::DBUtil::SDBColUTF8(sbuff, columnNames->GetItem(i), DB::DBUtil::ServerType::MySQL);
+			sb.Append(sbuff);
+			i++;
+		}
+	}
+	sb.Append((const UTF8Char*)" from ");
+	DB::DBUtil::SDBColUTF8(sbuff, tableName, DB::DBUtil::ServerType::MySQL);
+	sb.Append(sbuff);
 	if (maxCnt > 0)
 	{
 		sb.Append((const UTF8Char*)" LIMIT ");

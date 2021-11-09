@@ -91,7 +91,7 @@ Bool Exporter::DBExcelXMLExporter::ExportFile(IO::SeekableStream *stm, const UTF
 	while (j < tableCnt)
 	{
 		const UTF8Char *tableName = names->GetItem(j);
-		r = db->GetTableData(tableName, 0, 0, 0);
+		r = db->GetTableData(tableName, 0, 0, 0, 0, 0);
 		if (r)
 		{
 			UOSInt ind = Text::StrLastIndexOf(tableName, '\\');

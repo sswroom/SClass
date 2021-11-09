@@ -3144,7 +3144,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::AddDataFile(const UTF8Char *fileName)
 			{
 				if (Text::StrEquals(tables.GetItem(0), (const UTF8Char*)"Setting") && Text::StrEquals(tables.GetItem(1), (const UTF8Char*)"Records"))
 				{
-					DB::DBReader *reader = db->GetTableData((const UTF8Char*)"Records", 0, 0, 0);
+					DB::DBReader *reader = db->GetTableData((const UTF8Char*)"Records", 0, 0, 0, 0, 0);
 					Bool found = false;
 					if (reader)
 					{

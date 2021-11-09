@@ -334,11 +334,11 @@ UOSInt DB::SQLiteFile::GetTableNames(Data::ArrayList<const UTF8Char*> *names)
 	return this->tableNames->GetCount();
 }
 
-DB::DBReader *DB::SQLiteFile::GetTableData(const UTF8Char *name, UOSInt maxCnt, void *ordering, void *condition)
+DB::DBReader *DB::SQLiteFile::GetTableData(const UTF8Char *tableName, Data::ArrayList<const UTF8Char*> *columnNames, UOSInt ofst, UOSInt maxCnt, const UTF8Char *ordering, DB::QueryConditions *condition)
 {
 	Text::StringBuilderUTF8 sb;
 	sb.Append((const UTF8Char*)"select * from ");
-	sb.Append(name);
+	sb.Append(tableName);
 	if (maxCnt > 0)
 	{
 		sb.Append((const UTF8Char*)" LIMIT ");

@@ -19,7 +19,7 @@ UOSInt Map::FileGDB::GetTableNames(Data::ArrayList<const UTF8Char*> *names)
 	return 0;
 }
 
-DB::DBReader *Map::FileGDB::GetTableData(const UTF8Char *name, UOSInt maxCnt, void *ordering, void *condition)
+DB::DBReader *Map::FileGDB::GetTableData(const UTF8Char *tableName, Data::ArrayList<const UTF8Char*> *columnNames, UOSInt ofst, UOSInt maxCnt, const UTF8Char *ordering, DB::QueryConditions *condition)
 {
 	return 0;
 }

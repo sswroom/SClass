@@ -79,7 +79,7 @@ namespace DB
 		void DelNewStr(const UTF8Char *s);
 		UInt32 GetDataCnt();
 
-		DB::DBReader *GetTableData(const UTF8Char *tableName, UOSInt maxCnt, void *ordering, void *condition);
+		DB::DBReader *GetTableData(const UTF8Char *tableName, Data::ArrayList<const UTF8Char*> *columnNames, UOSInt ofst, UOSInt maxCnt, const UTF8Char *ordering, DB::QueryConditions *condition);
 		UOSInt GetTableNames(Data::ArrayList<const UTF8Char*> *arr);
 		void ReleaseTableNames(Data::ArrayList<const UTF8Char*> *arr);
 		DB::TableDef *GetTableDef(const UTF8Char *tableName);
