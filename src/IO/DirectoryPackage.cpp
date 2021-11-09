@@ -36,13 +36,21 @@ IO::DirectoryPackage::DirectoryPackage(const UTF8Char *dirName) : IO::PackageFil
 	UInt64 fileSize;
 	Data::DateTime *dt;
 	IO::Path::FindFileSession *sess;
-	this->dirName = Text::StrCopyNew(dirName);
+	if (Text::StrStartsWith(dirName, (const UTF8Char*)"~/"))
+	{
+		Text::StrConcat(IO::Path::GetUserHome(sbuff), dirName + 1);
+		this->dirName = Text::StrCopyNew(sbuff);
+	}
+	else
+	{
+		this->dirName = Text::StrCopyNew(dirName);
+	}
 	NEW_CLASS(this->files, Data::ArrayList<const UTF8Char*>());
 	NEW_CLASS(this->fileSizes, Data::ArrayListUInt64());
 	NEW_CLASS(this->fileTimes, Data::ArrayListInt64());
 	NEW_CLASS(sb, Text::StringBuilderUTF8());
 	NEW_CLASS(dt, Data::DateTime());
-	sb->Append(dirName);
+	sb->Append(this->dirName);
 	if (sb->GetLength() > 0)
 	{
 		if (sb->GetEndPtr()[-1] != IO::Path::PATH_SEPERATOR)

@@ -49,7 +49,7 @@ DB::DBReader *Map::ESRI::FileGDBDir::GetTableData(const UTF8Char *tableName, Dat
 	{
 		return 0;
 	}
-	return table->OpenReader();
+	return table->OpenReader(columnNames, ofst, maxCnt, ordering, condition);
 }
 
 void Map::ESRI::FileGDBDir::CloseReader(DB::DBReader *r)
@@ -75,6 +75,10 @@ Map::ESRI::FileGDBDir *Map::ESRI::FileGDBDir::OpenDir(IO::PackageFile *pkg)
 {
 	IO::IStreamData *fd = pkg->GetItemStmData((const UTF8Char*)"a00000001.gdbtable");
 	FileGDBTable *table;
+	if (fd == 0)
+	{
+		return 0;
+	}
 	NEW_CLASS(table, FileGDBTable((const UTF8Char*)"GDB_SystemCatalog", fd));
 	DEL_CLASS(fd);
 	if (table->IsError())
@@ -82,7 +86,7 @@ Map::ESRI::FileGDBDir *Map::ESRI::FileGDBDir::OpenDir(IO::PackageFile *pkg)
 		DEL_CLASS(table);
 		return 0;
 	}
-	FileGDBReader *reader = (FileGDBReader*)table->OpenReader();
+	FileGDBReader *reader = (FileGDBReader*)table->OpenReader(0, 0, 0, 0, 0);
 	if (reader == 0)
 	{
 		DEL_CLASS(table);

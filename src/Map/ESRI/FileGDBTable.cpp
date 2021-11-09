@@ -51,13 +51,13 @@ const UTF8Char *Map::ESRI::FileGDBTable::GetName()
 	return this->tableName;
 }
 
-DB::DBReader *Map::ESRI::FileGDBTable::OpenReader()
+DB::DBReader *Map::ESRI::FileGDBTable::OpenReader(Data::ArrayList<const UTF8Char*> *columnNames, UOSInt dataOfst, UOSInt maxCnt, const UTF8Char *ordering, DB::QueryConditions *conditions)
 {
 	if (this->tableInfo == 0)
 	{
 		return 0;
 	}
 	Map::ESRI::FileGDBReader *reader;
-	NEW_CLASS(reader, Map::ESRI::FileGDBReader(this->fd, this->dataOfst, this->tableInfo));
+	NEW_CLASS(reader, Map::ESRI::FileGDBReader(this->fd, this->dataOfst, this->tableInfo, columnNames, dataOfst, maxCnt, conditions));
 	return reader;
 }

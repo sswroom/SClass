@@ -200,6 +200,7 @@ void Map::ESRI::FileGDBUtil::FreeTableInfo(FileGDBTableInfo *tableInfo)
 {
 	LIST_FREE_FUNC(tableInfo->fields, FreeFieldInfo);
 	DEL_CLASS(tableInfo->fields);
+	SDEL_CLASS(tableInfo->csys);
 	MemFree(tableInfo);
 }
 

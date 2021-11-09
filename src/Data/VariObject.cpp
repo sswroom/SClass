@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "Data/VariObject.h"
+#include "Text/JSText.h"
 
 void Data::VariObject::SetItem(const UTF8Char *name, Data::VariItem *item)
 {
@@ -15,8 +16,13 @@ Data::VariObject::VariObject()
 Data::VariObject::~VariObject()
 {
 	Data::ArrayList<Data::VariItem*> *itemList = this->items->GetValues();
-	LIST_FREE_FUNC(itemList, DEL_CLASS);
-	DEL_CLASS(itemList);
+	UOSInt i = itemList->GetCount();
+	while (i-- > 0)
+	{
+		VariItem *item = itemList->GetItem(i);
+		DEL_CLASS(item);
+	}
+	DEL_CLASS(this->items);
 }
 
 Bool Data::VariObject::HasItem(const UTF8Char *name)
@@ -112,4 +118,27 @@ void Data::VariObject::SetItemVector(const UTF8Char *name, Math::Vector2D *vec)
 void Data::VariObject::SetItemUUID(const UTF8Char *name, Data::UUID *uuid)
 {
 	this->SetItem(name, Data::VariItem::NewUUID(uuid));
+}
+
+void Data::VariObject::ToString(Text::StringBuilderUTF *sb)
+{
+	UTF8Char sbuff[512];
+	sb->AppendChar('{', 1);
+	Data::ArrayList<const UTF8Char*> *keys = this->items->GetKeys();
+	Data::ArrayList<VariItem*> *values = this->items->GetValues();
+	UOSInt i = 0;
+	UOSInt j = keys->GetCount();
+	while (i < j)
+	{
+		if (i > 0)
+		{
+			sb->AppendChar(',', 1);
+		}
+		Text::JSText::ToJSText(sbuff, keys->GetItem(i));
+		sb->Append(sbuff);
+		sb->AppendChar('=', 1);
+		values->GetItem(i)->ToString(sb);
+		i++;
+	}
+	sb->AppendChar('}', 1);
 }

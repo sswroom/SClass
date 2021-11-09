@@ -1,11 +1,14 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Core/Core.h"
+#include "IO/ConsoleWriter.h"
 #include "IO/DirectoryPackage.h"
 #include "Map/ESRI/FileGDBDir.h"
+#include "Text/StringBuilderUTF8.h"
 
 Int32 MyMain(Core::IProgControl *progCtrl)
 {
+	IO::ConsoleWriter console;
 	IO::DirectoryPackage *dir;
 	NEW_CLASS(dir, IO::DirectoryPackage((const UTF8Char*)"~/Progs/Temp/E20210522_PLIS.gdb"));
 	Map::ESRI::FileGDBDir *fileGDB;
@@ -13,7 +16,23 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	DEL_CLASS(dir);
 	if (fileGDB)
 	{
-		//fileGDB->GetTableData()
+		Data::ArrayList<const UTF8Char*> colNames;
+		colNames.Add((const UTF8Char*)"OBJECTID");
+		colNames.Add((const UTF8Char*)"Shape");
+		DB::DBReader *r = fileGDB->GetTableData((const UTF8Char*)"LAMPPOST", &colNames, 10, 20, 0, 0);
+		if (r)
+		{
+			Text::StringBuilderUTF8 sb;
+			while (r->ReadNext())
+			{
+				Data::VariObject *obj = r->CreateVariObject();
+				sb.ClearStr();
+				obj->ToString(&sb);
+				console.WriteLine(sb.ToString());
+				DEL_CLASS(obj);
+			}
+			fileGDB->CloseReader(r);
+		}
 		DEL_CLASS(fileGDB);
 	}
 	return 0;
