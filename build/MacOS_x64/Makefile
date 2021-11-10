@@ -9,6 +9,7 @@ CLASSDIR:=../../
 CFLAGS += -I ../../header
 CFLAGS += -O
 CFLAGS += -ffunction-sections -fdata-sections
+CFLAGS += -std=c++11
 CFLAGS += -I /opt/local/include
 CFLAGS += -I /opt/local/include/mariadb/mysql
 ASMFLAGS :=

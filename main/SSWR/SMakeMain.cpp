@@ -37,6 +37,9 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	if (smake->IsLoadFailed())
 	{
 		console->WriteLine((const UTF8Char*)"Error in loading SMake.cfg");
+		Text::StringBuilderUTF8 sb;
+		smake->GetErrorMsg(&sb);
+		console->WriteLine(sb.ToString());
 	}
 	else
 	{

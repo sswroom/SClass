@@ -965,7 +965,7 @@ const UTF8Char *Manage::CPUInfo::GetFeatureShortName(UOSInt index)
 		(const UTF8Char*)"RDRAND",
 		(const UTF8Char*)"Not Used"
 	};
-	if (index < 0 || index >= 64)
+	if (index >= 64)
 		return 0;
 	return shortNames[index];
 }
@@ -1045,7 +1045,7 @@ const UTF8Char *Manage::CPUInfo::GetFeatureName(UOSInt index)
 		(const UTF8Char*)"RDRAND",
 		(const UTF8Char*)"Not Used"
 	};
-	if (index < 0 || index >= 64)
+	if (index >= 64)
 		return 0;
 	return names[index];
 }
@@ -1125,7 +1125,7 @@ const UTF8Char *Manage::CPUInfo::GetFeatureDesc(UOSInt index)
 		(const UTF8Char*)"A value of 1 indicates that processor supports RDRAND instruction",
 		(const UTF8Char*)"Always returns 0"
 	};
-	if (index < 0 || index >= 64)
+	if (index >= 64)
 		return 0;
 	return desc[index];
 }

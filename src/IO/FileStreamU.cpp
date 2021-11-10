@@ -256,7 +256,7 @@ void IO::FileStream::SetLength(UInt64 newLength)
 		return;
 #if defined(__APPLE__)
 	ClassData *clsData = (ClassData*)this->handle;
-	fstore_t store = {F_ALLOCATECONTIG, F_PEOFPOSMODE, 0, newLength};
+	fstore_t store = {F_ALLOCATECONTIG, F_PEOFPOSMODE, 0, (off_t)newLength};
 	int ret = fcntl((int)clsData->hand, F_PREALLOCATE, &store);
 	if (ret == -1)
 	{

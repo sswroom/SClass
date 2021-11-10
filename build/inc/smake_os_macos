@@ -10,7 +10,6 @@ DB/MySQLConn.h: ../../src/DB/MySQLConn.cpp
 @MySQLConn.o
 DB/ODBCConn.h: ../../src/DB/ODBCConn.cpp
 @ODBCConn.o
-DB/OLEDBConn.h:
 
 IO/BTController.h: ../../src/IO/BTControllerNull.cpp
 @BTController.o
@@ -48,7 +47,6 @@ Media/Printer.h: ../../src/Media/PrinterCUPS.cpp
 @Printer.o
 Media/Decoder/FFMPEGDecoder.h: ../../src/Media/Decoder/FFMPEGDecoder.cpp
 @FFMPEGDecoder.o
-Media/Decoder/IMSDKDecoder.h:
 Media/OpenCV/OCVFrame.h: ../../src/Media/OpenCV/OCVFrame.cpp
 @OCVFrame.o
 Media/OpenCV/OCVFrameFeeder.h: ../../src/Media/OpenCV/OCVFrameFeeder.cpp
