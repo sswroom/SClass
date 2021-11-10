@@ -1,6 +1,10 @@
 section .text
 
+%ifidn __OUTPUT_FORMAT__, macho64
+%define addrpostfix
+%else 
 %define addrpostfix wrt ..plt
+%endif
 default rel
 
 extern _MyString_StrDigit100U8
