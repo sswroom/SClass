@@ -1,5 +1,6 @@
 #ifndef _SM_DATA_SORT_INSERTIONSORT
 #define _SM_DATA_SORT_INSERTIONSORT
+#include "Data/Comparator.h"
 #include "Data/IComparable.h"
 
 extern "C"
@@ -27,4 +28,57 @@ extern "C"
 	void InsertionSort_SortCmpInv(void **arr, Data::IComparable::CompareFunc func, OSInt firstIndex, OSInt lastIndex);
 }
 
+namespace Data
+{
+	namespace Sort
+	{
+		class InsertionSort
+		{
+		public:
+			template <class T> static void SortB(T *arr, Data::Comparator<T> *comparator, OSInt firstIndex, OSInt lastIndex);
+		};
+	}
+}
+
+template <class T> void Data::Sort::InsertionSort::SortB(T *arr, Data::Comparator<T> *comparator, OSInt left, OSInt right)
+{
+	OSInt i;
+	OSInt j;
+	OSInt k;
+	OSInt l;
+	T temp;
+	T temp1;
+	T temp2;
+	temp1 = arr[left];
+	i = left + 1;
+	while (i <= right)
+	{
+		temp2 = arr[i];
+		if ( comparator->Compare(temp1, temp2) > 0)
+		{
+			j = left;
+			k = i - 1;
+			while (j <= k)
+			{
+				l = (j + k) >> 1;
+				temp = arr[l];
+				if (comparator->Compare(temp, temp2) > 0)
+				{
+					k = l - 1;
+				}
+				else
+				{
+					j = l + 1;
+				}
+			}
+			MemCopyO(&arr[j + 1], &arr[j], (UOSInt)(i - j) * sizeof(arr[0]));
+			arr[j] = temp2;
+		}
+		else
+		{
+			temp1 = temp2;
+		}
+		i++;
+	}
+}
 #endif

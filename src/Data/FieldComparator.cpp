@@ -41,6 +41,7 @@ Data::FieldComparator::~FieldComparator()
 {
 	LIST_FREE_FUNC(this->fieldNames, Text::StrDelNew);
 	DEL_CLASS(this->fieldNames);
+	DEL_CLASS(this->dirs);
 }
 
 OSInt Data::FieldComparator::Compare(VariObject *a, VariObject *b)

@@ -34,6 +34,7 @@ namespace DB
 			virtual Bool ToWhereClause(Text::StringBuilderUTF *sb, DB::DBUtil::ServerType svrType, Int8 tzQhr, UOSInt maxDBItem) = 0;
 			virtual Bool IsValid(Data::VariObject *obj) = 0;
 			virtual Bool IsValid(Data::ObjectGetter *getter) = 0;
+			virtual void GetFieldList(Data::ArrayList<const UTF8Char*> *fieldList) = 0;
 		};
 
 		class FieldCondition : public Condition
@@ -46,6 +47,7 @@ namespace DB
 
 			virtual Bool IsValid(Data::VariObject *obj);
 			virtual Bool IsValid(Data::ObjectGetter *getter);
+			virtual void GetFieldList(Data::ArrayList<const UTF8Char*> *fieldList);
 
 			virtual Bool TestValid(Data::VariItem *item) = 0;
 		};
@@ -203,6 +205,7 @@ namespace DB
 			virtual Bool ToWhereClause(Text::StringBuilderUTF *sb, DB::DBUtil::ServerType svrType, Int8 tzQhr, UOSInt maxDBItem);
 			virtual Bool IsValid(Data::VariObject *obj);
 			virtual Bool IsValid(Data::ObjectGetter *getter);
+			virtual void GetFieldList(Data::ArrayList<const UTF8Char*> *fieldList);
 
 			QueryConditions *GetConditions();
 		};
@@ -217,6 +220,7 @@ namespace DB
 			virtual Bool ToWhereClause(Text::StringBuilderUTF *sb, DB::DBUtil::ServerType svrType, Int8 tzQhr, UOSInt maxDBItem);
 			virtual Bool IsValid(Data::VariObject *obj);
 			virtual Bool IsValid(Data::ObjectGetter *getter);
+			virtual void GetFieldList(Data::ArrayList<const UTF8Char*> *fieldList);
 		};
 
 	private:
@@ -231,6 +235,7 @@ namespace DB
 		UOSInt GetCount();
 		Condition *GetItem(UOSInt index);
 		Data::ArrayList<Condition*> *GetList();
+		void GetFieldList(Data::ArrayList<const UTF8Char*> *fieldList);
 
 		QueryConditions *TimeBetween(const UTF8Char *fieldName, Int64 t1, Int64 t2);
 		QueryConditions *Or();

@@ -8,7 +8,7 @@
 
 namespace Data
 {
-	class FieldComparator : public Comparator<Data::VariObject>
+	class FieldComparator : public Comparator<Data::VariObject*>
 	{
 	private:
 		Data::ArrayList<const UTF8Char*> *fieldNames;

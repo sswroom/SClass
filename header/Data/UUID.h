@@ -15,6 +15,7 @@ namespace Data
 		~UUID();
 
 		void SetValue(const UInt8 *buff);
+		void SetValue(UUID *uuid);
 		OSInt CompareTo(UUID *uuid);
 		
 		void ToString(Text::StringBuilderUTF *sb);

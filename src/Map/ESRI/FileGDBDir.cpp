@@ -1,4 +1,5 @@
 #include "Stdafx.h"
+#include "DB/SortableDBReader.h"
 #include "Map/ESRI/FileGDBDir.h"
 #include "Map/ESRI/FileGDBReader.h"
 #include "Text/StringBuilderUTF8.h"
@@ -49,7 +50,14 @@ DB::DBReader *Map::ESRI::FileGDBDir::GetTableData(const UTF8Char *tableName, Dat
 	{
 		return 0;
 	}
-	return table->OpenReader(columnNames, ofst, maxCnt, ordering, condition);
+	if (ordering == 0)
+	{
+		return table->OpenReader(columnNames, ofst, maxCnt, ordering, condition);
+	}
+	else
+	{
+		return NEW_CLASS_D(DB::SortableDBReader(this, tableName, columnNames, ofst, maxCnt, ordering, condition));
+	}
 }
 
 void Map::ESRI::FileGDBDir::CloseReader(DB::DBReader *r)

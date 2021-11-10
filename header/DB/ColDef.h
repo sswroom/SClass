@@ -43,6 +43,8 @@ namespace DB
 		void SetDefVal(const UTF8Char *defVal);
 		void SetAttr(const UTF8Char *attr);
 
+		void Set(ColDef *colDef);
+
 		UTF8Char *ToColTypeStr(UTF8Char *sbuff);
 		ColDef *Clone();
 	};

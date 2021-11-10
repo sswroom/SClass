@@ -1084,10 +1084,13 @@ Data/BinTool.h: ../../src/Data/BinTool.cpp
 Data/BTreeUTF8Map.h:
 Data/ByteTool.h: ../../src/Data/ByteTool.cpp
 @ByteTool.o
+Data/Comparator.h:
 Data/DataComparer.h: ../../src/Data/DataComparer.cpp
 @DataComparer.o
 Data/DateTime.h: ../../src/Data/DateTime.cpp
 @DateTime.o
+Data/FieldComparator.h: ../../src/Data/FieldComparator.cpp
+@FieldComparator.o
 Data/ICaseBTreeUTF8Map.h:
 Data/ICaseStringUTF8Map.h:
 Data/IChart.h: ../../src/Data/IChart.cpp
@@ -1212,6 +1215,8 @@ DB/SharedDBConn.h: ../../src/DB/SharedDBConn.cpp
 @SharedDBConn.o
 DB/SharedReadingDB.h: ../../src/DB/SharedReadingDB.cpp
 @SharedReadingDB.o
+DB/SortableDBReader.h: ../../src/DB/SortableDBReader.cpp
+@SortableDBReader.o
 DB/SQLBuilder.h: ../../src/DB/SQLBuilder.cpp
 @SQLBuilder.o
 DB/SQLiteFile.h: ../../src/DB/SQLiteFile.cpp
@@ -3792,6 +3797,7 @@ BinTool.o: ../../src/Data/BinTool.cpp
 ByteTool.o: ../../src/Data/ByteTool.cpp
 DataComparer.o: ../../src/Data/DataComparer.cpp
 DateTime.o: ../../src/Data/DateTime.cpp
+FieldComparator.o: ../../src/Data/FieldComparator.cpp
 IChart.o: ../../src/Data/IChart.cpp
 LineChart.o: ../../src/Data/LineChart.cpp
 RandomBytesGenerator.o: ../../src/Data/RandomBytesGenerator.cpp
@@ -3843,6 +3849,7 @@ ReadingDB.o: ../../src/DB/ReadingDB.cpp
 ReadingDBTool.o: ../../src/DB/ReadingDBTool.cpp
 SharedDBConn.o: ../../src/DB/SharedDBConn.cpp
 SharedReadingDB.o: ../../src/DB/SharedReadingDB.cpp
+SortableDBReader.o: ../../src/DB/SortableDBReader.cpp
 SQLBuilder.o: ../../src/DB/SQLBuilder.cpp
 SQLiteFile.o: ../../src/DB/SQLiteFile.cpp
 $-I ../../ThirdParty/sqlite3

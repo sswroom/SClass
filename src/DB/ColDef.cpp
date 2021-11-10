@@ -153,6 +153,19 @@ void DB::ColDef::SetAttr(const UTF8Char *attr)
 	this->attr = SCOPY_TEXT(attr);
 }
 
+void DB::ColDef::Set(ColDef *colDef)
+{
+	this->SetColName(colDef->colName);
+	this->SetColType(colDef->colType);
+	this->SetColSize(colDef->colSize);
+	this->SetColDP(colDef->colDP);
+	this->SetNotNull(colDef->notNull);
+	this->SetPK(colDef->pk);
+	this->SetAutoInc(colDef->autoInc);
+	this->SetDefVal(colDef->defVal);
+	this->SetAttr(colDef->attr);
+}
+
 UTF8Char *DB::ColDef::ToColTypeStr(UTF8Char *sbuff)
 {
 	return DB::DBUtil::ColTypeGetString(sbuff, this->colType, this->colSize);
@@ -162,13 +175,6 @@ DB::ColDef *DB::ColDef::Clone()
 {
 	DB::ColDef *newObj;
 	NEW_CLASS(newObj, DB::ColDef(this->colName));
-	newObj->SetColType(this->colType);
-	newObj->SetColSize(this->colSize);
-	newObj->SetColDP(this->colDP);
-	newObj->SetNotNull(this->notNull);
-	newObj->SetPK(this->pk);
-	newObj->SetAutoInc(this->autoInc);
-	newObj->SetDefVal(this->defVal);
-	newObj->SetAttr(this->attr);
+	newObj->Set(this);
 	return newObj;
 }

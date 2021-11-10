@@ -27,6 +27,11 @@ Bool DB::QueryConditions::FieldCondition::IsValid(Data::ObjectGetter *getter)
 	return ret;
 }
 
+void DB::QueryConditions::FieldCondition::GetFieldList(Data::ArrayList<const UTF8Char*> *fieldList)
+{
+	fieldList->Add(this->fieldName);
+}
+
 DB::QueryConditions::TimeBetweenCondition::TimeBetweenCondition(const UTF8Char *fieldName, Int64 t1, Int64 t2) : FieldCondition(fieldName)
 {
 	this->t1 = t1;
@@ -805,6 +810,11 @@ Bool DB::QueryConditions::InnerCondition::IsValid(Data::ObjectGetter *getter)
 	return this->innerCond->IsValid(getter);
 }
 
+void DB::QueryConditions::InnerCondition::GetFieldList(Data::ArrayList<const UTF8Char*> *fieldList)
+{
+	this->innerCond->GetFieldList(fieldList);	
+}
+
 DB::QueryConditions *DB::QueryConditions::InnerCondition::GetConditions()
 {
 	return this->innerCond;
@@ -837,6 +847,10 @@ Bool DB::QueryConditions::OrCondition::IsValid(Data::VariObject *obj)
 Bool DB::QueryConditions::OrCondition::IsValid(Data::ObjectGetter *getter)
 {
 	return true;
+}
+
+void DB::QueryConditions::OrCondition::GetFieldList(Data::ArrayList<const UTF8Char*> *fieldList)
+{
 }
 
 DB::QueryConditions::QueryConditions()
@@ -971,6 +985,17 @@ DB::QueryConditions::Condition *DB::QueryConditions::GetItem(UOSInt index)
 Data::ArrayList<DB::QueryConditions::Condition*> *DB::QueryConditions::GetList()
 {
 	return this->conditionList;
+}
+
+void DB::QueryConditions::GetFieldList(Data::ArrayList<const UTF8Char*> *fieldList)
+{
+	UOSInt i = 0;
+	UOSInt j = this->conditionList->GetCount();
+	while (i < j)
+	{
+		this->conditionList->GetItem(i)->GetFieldList(fieldList);
+		i++;
+	}
 }
 
 DB::QueryConditions *DB::QueryConditions::TimeBetween(const UTF8Char *fieldName, Int64 t1, Int64 t2)

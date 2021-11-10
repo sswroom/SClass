@@ -34,7 +34,7 @@ namespace DB
 		Bool GetStrN(UOSInt colIndex, Text::StringBuilderUTF *sb) { sb->ClearStr(); return GetStr(colIndex, sb); }
 		virtual const UTF8Char *GetNewStr(UOSInt colIndex) = 0;
 		virtual UTF8Char *GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSize) = 0;
-		virtual DateErrType GetDate(UOSInt colIndex, Data::DateTime *outVal) = 0; //return 0 = ok, 1 = NULL, 2 = Error
+		virtual DateErrType GetDate(UOSInt colIndex, Data::DateTime *outVal) = 0;
 		virtual Double GetDbl(UOSInt colIndex) = 0;
 		virtual Bool GetBool(UOSInt colIndex) = 0;
 		virtual UOSInt GetBinarySize(UOSInt colIndex) = 0;
