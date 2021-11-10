@@ -1182,6 +1182,13 @@ WChar *IO::Path::GetOSPathW(WChar *buff)
 #endif
 }
 
+UTF8Char *IO::Path::GetUserHome(UTF8Char *buff)
+{
+	buff = Manage::EnvironmentVar::GetEnvValue(buff, (const UTF8Char*)"HOMEDRIVE");
+	buff = Manage::EnvironmentVar::GetEnvValue(buff, (const UTF8Char*)"HOMEPATH");
+	return buff;
+}
+
 Bool IO::Path::GetFileTime(const UTF8Char *path, Data::DateTime *modTime, Data::DateTime *createTime, Data::DateTime *accessTime)
 {
 	WIN32_FIND_DATAW fd;
