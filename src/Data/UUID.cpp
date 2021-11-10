@@ -21,6 +21,63 @@ void Data::UUID::SetValue(const UInt8 *buff)
 	MemCopyNO(this->data, buff, 16);
 }
 
+OSInt Data::UUID::CompareTo(UUID *uuid)
+{
+	UInt32 v1 = ReadUInt32(&this->data[0]);
+	UInt32 v2 = ReadUInt32(&uuid->data[0]);
+	if (v1 > v2)
+	{
+		return 1;
+	}
+	else if (v1 < v2)
+	{
+		return -1;
+	}
+	v1 = ReadUInt16(&this->data[4]);
+	v2 = ReadUInt16(&uuid->data[4]);
+	if (v1 > v2)
+	{
+		return 1;
+	}
+	else if (v1 < v2)
+	{
+		return -1;
+	}
+	v1 = ReadUInt16(&this->data[6]);
+	v2 = ReadUInt16(&uuid->data[6]);
+	if (v1 > v2)
+	{
+		return 1;
+	}
+	else if (v1 < v2)
+	{
+		return -1;
+	}
+	v1 = ReadUInt16(&this->data[8]);
+	v2 = ReadUInt16(&uuid->data[8]);
+	if (v1 > v2)
+	{
+		return 1;
+	}
+	else if (v1 < v2)
+	{
+		return -1;
+	}
+	UOSInt i = 10;
+	while (i < 16)
+	{
+		if (this->data[i] > uuid->data[i])
+		{
+			return 1;
+		}
+		else if (this->data[i] < uuid->data[i])
+		{
+			return -1;
+		}
+	}
+	return 0;
+}
+
 void Data::UUID::ToString(Text::StringBuilderUTF *sb)
 {
 	sb->AppendHex32(ReadUInt32(&this->data[0]));

@@ -186,6 +186,13 @@ void Data::VariItem::ToString(Text::StringBuilderUTF *sb)
 			writer.GenerateWKT(sb, this->val.vector);
 		}
 		return;
+	case ItemType::UUID:
+		{
+			sb->AppendChar('{', 1);
+			this->val.uuid->ToString(sb);
+			sb->AppendChar('}', 1);
+			return;
+		}
 	}
 }
 
