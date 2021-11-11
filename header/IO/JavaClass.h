@@ -10,40 +10,73 @@ namespace IO
 	class JavaClass : public IO::ParsedObject
 	{
 	private:
-		typedef enum
+		enum class EndType
 		{
-			ET_ERROR,
-			ET_CODEEND,
-			ET_RETURN,
-			ET_GOTO,
-			ET_THROW
-		} EndType;
+			Error,
+			CodeEnd,
+			Return,
+			Goto,
+			Throw
+		};
 
-		typedef enum
+		enum class CondType
 		{
-			CT_EQ,
-			CT_NE,
-			CT_LE,
-			CT_GE,
-			CT_LT,
-			CT_GT
-		} CondType;
+			EQ,
+			NE,
+			LE,
+			GE,
+			LT,
+			GT
+		};
 
-		typedef struct
+		struct ExceptionHdlrInfo
+		{
+			UInt16 startPC;
+			UInt16 endPC;
+			UInt16 handlerPC;
+			UInt16 catchType;
+		};
+
+		struct LocalVariableInfo
+		{
+			UInt16 startPC;
+			UInt16 length;
+			UInt16 nameIndex;
+			UInt16 descriptorIndex;
+			UInt16 index;
+		};
+
+		struct LineNumberInfo
+		{
+			UInt16 startPC;
+			UInt16 lineNumber;
+		};
+		struct MethodInfo
+		{
+			UInt16 accessFlags;
+			UInt16 nameIndex;
+			UInt16 descriptorIndex;
+			UInt8 *code;
+			UInt32 codeLen;
+			Data::ArrayList<ExceptionHdlrInfo*> *exHdlrList;
+			Data::ArrayList<LocalVariableInfo*> *lvList;
+			Data::ArrayList<LineNumberInfo*> *lineNumList;
+			Data::ArrayList<UInt16> *exList;
+		};
+		
+		struct DecompileEnv
 		{
 			Data::ArrayList<const UTF8Char*> *stacks;
 			Data::ArrayList<const UTF8Char*> *stackTypes;
 			const UTF8Char **localTypes;
-			const UTF8Char *lvTable;
-			UOSInt lvTableLen;
+			const MethodInfo *method;
 			const UInt8 *codeStart;
-			Bool staticFunc;
 			const UInt8 *endPtr;
 
 			Data::ArrayListStrUTF8 *importList;
 			const UTF8Char *packageName;
-		} DecompileEnv;
-		
+		};
+
 	private:
 		UInt8 *fileBuff;
 		UOSInt fileBuffSize;
@@ -66,8 +99,9 @@ namespace IO
 		static const UInt8 *CondType2IString(CondType ct);
 		static void DetailAccessFlags(UInt16 accessFlags, Text::StringBuilderUTF *sb);
 		static void AppendCond(Text::StringBuilderUTF *sb, DecompileEnv *env, UOSInt index, CondType ct, Bool inv);
-		static UInt32 GetParamId(UInt32 paramIndex, const UInt8 *lvTable, UOSInt lvTableLen);
+		static UInt32 GetParamId(UInt32 paramIndex, const MethodInfo *method);
 		void AppendIndent(Text::StringBuilderUTF *sb, UOSInt lev);
+		void AppendLineNum(Text::StringBuilderUTF *sb, DecompileEnv *env, const UInt8 *codePtr);
 		const UInt8 *DetailAttribute(const UInt8 *attr, UOSInt lev, Text::StringBuilderUTF *sb);
 		void DetailConstVal(UInt16 index, Text::StringBuilderUTF *sb, Bool brankets);
 		void DetailName(UInt16 index, Text::StringBuilderUTF *sb, Bool brankets);
@@ -76,7 +110,7 @@ namespace IO
 		void DetailFieldRef(UInt16 index, Text::StringBuilderUTF *sb);
 		void DetailMethodRef(UInt16 index, Text::StringBuilderUTF *sb);
 		void DetailNameAndType(UInt16 index, UInt16 classIndex, Text::StringBuilderUTF *sb);
-		void DetailNameType(UInt16 nameIndex, UInt16 typeIndex, UInt16 classIndex, const UTF8Char *prefix, Text::StringBuilderUTF *sb, UTF8Char *typeBuff, const UInt8 *lvTable, UOSInt lvTableLen, Bool isStatic, Data::ArrayListStrUTF8 *importList, const UTF8Char *packageName);
+		void DetailNameType(UInt16 nameIndex, UInt16 typeIndex, UInt16 classIndex, const UTF8Char *prefix, Text::StringBuilderUTF *sb, UTF8Char *typeBuff, MethodInfo *method, Data::ArrayListStrUTF8 *importList, const UTF8Char *packageName);
 		void DetailType(UInt16 typeIndex, Text::StringBuilderUTF *sb);
 		void DetailCode(const UInt8 *code, UOSInt codeLen, UOSInt lev, Text::StringBuilderUTF *sb);
 		const UInt8 *DetailAnnotation(const UInt8 *annoPtr, const UInt8 *annoEnd, Text::StringBuilderUTF *sb);
@@ -85,13 +119,16 @@ namespace IO
 		const UInt8 *DetailVerificationTypeInfo(const UInt8 *currPtr, const UInt8 *ptrEnd, UOSInt lev, Text::StringBuilderUTF *sb);
 		UTF8Char *GetConstName(UTF8Char *sbuff, UInt16 index);
 		Bool ClassNameString(UInt16 index, Text::StringBuilderUTF *sb);
-		UTF8Char *GetLVName(UTF8Char *sbuff, UInt16 index, const UInt8 *lvTable, UOSInt lvTableLen, UOSInt codeOfst);
+		UTF8Char *GetLVName(UTF8Char *sbuff, UInt16 index, const MethodInfo *method, UOSInt codeOfst);
+
+		Bool MethodParse(MethodInfo *method, const UInt8 *methodBuff);
+		void MethodFree(MethodInfo *method);
 
 		void AppendCodeClassName(Text::StringBuilderUTF *sb, const UTF8Char *className, Data::ArrayListStrUTF8 *importList, const UTF8Char *packageName);
 		void AppendCodeClassContent(Text::StringBuilderUTF *sb, UOSInt lev, const UTF8Char *className, Data::ArrayListStrUTF8 *importList, const UTF8Char *packageName);
 		void AppendCodeField(Text::StringBuilderUTF *sb, UOSInt index, Data::ArrayListStrUTF8 *importList, const UTF8Char *packageName);
 		void AppendCodeMethod(Text::StringBuilderUTF *sb, UOSInt index, UOSInt lev, Bool disasm, Bool decompile, Data::ArrayListStrUTF8 *importList, const UTF8Char *packageName);
-		void AppendCodeMethodCodes(Text::StringBuilderUTF *sb, UOSInt lev, Data::ArrayListStrUTF8 *importList, const UTF8Char *packageName, const UInt8 *codeAttr, Bool staticFunc, const UTF8Char *typeBuff, const UInt8 *lvTable, UOSInt lvTableLen);
+		void AppendCodeMethodCodes(Text::StringBuilderUTF *sb, UOSInt lev, Data::ArrayListStrUTF8 *importList, const UTF8Char *packageName, const UInt8 *codeAttr, const UTF8Char *typeBuff, const MethodInfo *method);
 	public:
 		JavaClass(const UTF8Char *sourceName, const UInt8 *buff, UOSInt buffSize);
 		virtual ~JavaClass();
@@ -118,6 +155,7 @@ namespace IO
 	public:
 		static JavaClass *ParseFile(const UTF8Char *fileName);
 		static JavaClass *ParseBuff(const UTF8Char *sourceName, const UInt8 *buff, UOSInt buffSize);
+		static const UTF8Char *EndTypeGetName(EndType et);
 	};
 }
 #endif

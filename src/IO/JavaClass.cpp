@@ -7,6 +7,7 @@
 #include "Text/JSText.h"
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
+
 #include <stdio.h>
 
 const UInt8 *IO::JavaClass::Type2String(const UInt8 *typeStr, Text::StringBuilderUTF *sb)
@@ -87,17 +88,17 @@ const UInt8 *IO::JavaClass::CondType2String(CondType ct)
 {
 	switch (ct)
 	{
-	case CT_EQ:
+	case CondType::EQ:
 		return (const UTF8Char*)"==";
-	case CT_NE:
+	case CondType::NE:
 		return (const UTF8Char*)"!=";
-	case CT_LE:
+	case CondType::LE:
 		return (const UTF8Char*)"<=";
-	case CT_GE:
+	case CondType::GE:
 		return (const UTF8Char*)">=";
-	case CT_LT:
+	case CondType::LT:
 		return (const UTF8Char*)"<";
-	case CT_GT:
+	case CondType::GT:
 		return (const UTF8Char*)">";
 	default:
 		return (const UTF8Char*)"?";
@@ -108,17 +109,17 @@ const UInt8 *IO::JavaClass::CondType2IString(CondType ct)
 {
 	switch (ct)
 	{
-	case CT_EQ:
+	case CondType::EQ:
 		return (const UTF8Char*)"!=";
-	case CT_NE:
+	case CondType::NE:
 		return (const UTF8Char*)"==";
-	case CT_LE:
+	case CondType::LE:
 		return (const UTF8Char*)">";
-	case CT_GE:
+	case CondType::GE:
 		return (const UTF8Char*)"<";
-	case CT_LT:
+	case CondType::LT:
 		return (const UTF8Char*)">=";
-	case CT_GT:
+	case CondType::GT:
 		return (const UTF8Char*)"<=";
 	default:
 		return (const UTF8Char*)"?";
@@ -195,7 +196,7 @@ void IO::JavaClass::AppendCond(Text::StringBuilderUTF *sb, DecompileEnv *env, UO
 {
 	if (Text::StrEquals(env->stackTypes->GetItem(index), (const UTF8Char*)"boolean"))
 	{
-		if (ct == CT_NE && !inv && Text::StrEquals(env->stacks->GetItem(index + 1), (const UTF8Char*)"0"))
+		if (ct == CondType::NE && !inv && Text::StrEquals(env->stacks->GetItem(index + 1), (const UTF8Char*)"0"))
 		{
 			sb->Append(env->stacks->GetItem(index));
 			return;	
@@ -215,25 +216,22 @@ void IO::JavaClass::AppendCond(Text::StringBuilderUTF *sb, DecompileEnv *env, UO
 	sb->Append(env->stacks->GetItem(index + 1));
 }
 
-UInt32 IO::JavaClass::GetParamId(UInt32 paramIndex, const UInt8 *lvTable, UOSInt lvTableLen)
+UInt32 IO::JavaClass::GetParamId(UInt32 paramIndex, const MethodInfo *method)
 {
-	if (lvTable == 0)
+	if (method == 0)
 	{
 		return paramIndex;
 	}
-	UOSInt local_variable_table_length = ReadMUInt16(lvTable);
-	if (local_variable_table_length * 10 + 2 <= lvTableLen)
+	UInt32 i = 0;
+	UOSInt j = method->lvList->GetCount();
+	while (i < j)
 	{
-		UInt32 i = 0;
-		while (i < local_variable_table_length)
+		LocalVariableInfo *lv = method->lvList->GetItem(i);
+		if (lv->startPC == 0 && lv->index == paramIndex)
 		{
-			if (ReadMUInt16(&lvTable[2 + i * 10 + 0]) == 0 && ReadMUInt16(&lvTable[2 + i * 10 + 8]) == paramIndex)
-			{
-				return i;
-			}
-			
-			i++;
+			return i;
 		}
+		i++;
 	}
 	return paramIndex;
 }
@@ -241,6 +239,35 @@ UInt32 IO::JavaClass::GetParamId(UInt32 paramIndex, const UInt8 *lvTable, UOSInt
 void IO::JavaClass::AppendIndent(Text::StringBuilderUTF *sb, UOSInt lev)
 {
 	sb->AppendChar('\t', lev);
+}
+
+void IO::JavaClass::AppendLineNum(Text::StringBuilderUTF *sb, DecompileEnv *env, const UInt8 *codePtr)
+{
+	UInt16 codePC = (UInt16)(codePtr - env->codeStart);
+	if (env->method == 0 || env->method->lineNumList->GetCount() == 0)
+	{
+		return;
+	}
+	LineNumberInfo *lineNum;
+	UOSInt i = 0;
+	UOSInt j = env->method->lineNumList->GetCount();
+	UOSInt k = INVALID_INDEX;
+	while (i < j)
+	{
+		lineNum = env->method->lineNumList->GetItem(i);
+		if (lineNum->startPC > codePC)
+		{
+			break;
+		}
+		k = i;
+		i++;;
+	}
+	if (k != INVALID_INDEX)
+	{
+		lineNum = env->method->lineNumList->GetItem(k);
+		sb->Append((const UTF8Char*)" // LineNum ");
+		sb->AppendU16(lineNum->lineNumber);
+	}
 }
 
 const UInt8 *IO::JavaClass::DetailAttribute(const UInt8 *attr, UOSInt lev, Text::StringBuilderUTF *sb)
@@ -859,10 +886,10 @@ void IO::JavaClass::DetailNameAndType(UInt16 index, UInt16 classIndex, Text::Str
 	}
 	UInt16 nameIndex = ReadMUInt16(&this->constPool[index][1]);
 	UInt16 typeIndex = ReadMUInt16(&this->constPool[index][3]);
-	this->DetailNameType(nameIndex, typeIndex, classIndex, (const UTF8Char*)" ", sb, 0, 0, 0, false, 0, 0);
+	this->DetailNameType(nameIndex, typeIndex, classIndex, (const UTF8Char*)" ", sb, 0, 0, 0, 0);
 }
 
-void IO::JavaClass::DetailNameType(UInt16 nameIndex, UInt16 typeIndex, UInt16 classIndex, const UTF8Char *prefix, Text::StringBuilderUTF *sb, UTF8Char *typeBuff, const UInt8 *lvTable, UOSInt lvTableLen, Bool isStatic, Data::ArrayListStrUTF8 *importList, const UTF8Char *packageName)
+void IO::JavaClass::DetailNameType(UInt16 nameIndex, UInt16 typeIndex, UInt16 classIndex, const UTF8Char *prefix, Text::StringBuilderUTF *sb, UTF8Char *typeBuff, MethodInfo *method, Data::ArrayListStrUTF8 *importList, const UTF8Char *packageName)
 {
 	if (nameIndex == 0 || nameIndex >= this->constPoolCnt || typeIndex == 0 || typeIndex >= this->constPoolCnt)
 	{
@@ -884,30 +911,27 @@ void IO::JavaClass::DetailNameType(UInt16 nameIndex, UInt16 typeIndex, UInt16 cl
 	UInt32 paramIndex;
 	UInt32 paramId;
 	UOSInt i;
+	UOSInt j;
 	const UTF8Char *paramName;
-	if (lvTable && lvTableLen > 0)
+	if (method)
 	{
-		UOSInt local_variable_table_length = ReadMUInt16(lvTable);
-		if (local_variable_table_length * 10 + 2 <= lvTableLen)
+		i = 0;
+		j = method->lvList->GetCount();
+		while (i < j)
 		{
-			i = 0;
-			while (i < local_variable_table_length)
+			if (this->GetConstName(sbuff, method->lvList->GetItem(i)->nameIndex))
 			{
-				if (this->GetConstName(sbuff, ReadMUInt16(&lvTable[2 + i * 10 + 4])))
-				{
-					typeNames.Add(Text::StrCopyNew(sbuff));
-				}
-				else
-				{
-					typeNames.Add(0);
-				}
-				
-				i++;
+				typeNames.Add(Text::StrCopyNew(sbuff));
 			}
+			else
+			{
+				typeNames.Add(0);
+			}
+			i++;
 		}
 	}
 
-	if (isStatic)
+	if (method && (method->accessFlags & 8) != 0)
 	{
 		paramIndex = 0;
 	}
@@ -936,7 +960,7 @@ void IO::JavaClass::DetailNameType(UInt16 nameIndex, UInt16 typeIndex, UInt16 cl
 			ptr = Type2String(ptr, &sbTmp);
 			this->AppendCodeClassName(&sbParam, sbTmp.ToString(), importList, packageName);
 			sbParam.AppendChar(' ', 1);
-			paramId = GetParamId(paramIndex, lvTable, lvTableLen);
+			paramId = GetParamId(paramIndex, method);
 			paramName = typeNames.GetItem(paramId);
 			if (paramName)
 			{
@@ -1012,1635 +1036,2012 @@ void IO::JavaClass::DetailType(UInt16 typeIndex, Text::StringBuilderUTF *sb)
 	Type2String(ptr, sb);
 }
 
-void IO::JavaClass::DetailCode(const UInt8 *code, UOSInt codeLen, UOSInt lev, Text::StringBuilderUTF *sb)
+void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev, Text::StringBuilderUTF *sb)
 {
 	UInt16 val;
+	UOSInt codeOfst = 0;
 	while (codeLen > 0)
 	{
-		switch (code[0])
+		switch (codePtr[codeOfst + 0])
 		{
 		case 0x00:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"nop\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x01:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"aconst_null\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x02:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"iconst_m1\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x03:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"iconst_0\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x04:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"iconst_1\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x05:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"iconst_2\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x06:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"iconst_3\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x07:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"iconst_4\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x08:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"iconst_5\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x09:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"lconst_0\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x0A:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"lconst_1\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x0B:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"fconst_0\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x0C:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"fconst_1\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x0D:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"fconst_2\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x0E:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"dconst_0\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x0F:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"dconst_1\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x10:
 			this->AppendIndent(sb, lev);
-			sb->AppendHexBuff(code, 2, ' ', Text::LineBreakType::None);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHexBuff(&codePtr[codeOfst], 2, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 10);
 			sb->Append((const UTF8Char*)"bipush ");
-			val = code[1];
+			val = codePtr[codeOfst + 1];
 			sb->AppendU16(val);
 			sb->Append((const UTF8Char*)"\r\n");
-			code += 2;
+			codeOfst += 2;
 			codeLen -= 2;
 			break;
 		case 0x11:
 			this->AppendIndent(sb, lev);
-			sb->AppendHexBuff(code, 3, ' ', Text::LineBreakType::None);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHexBuff(&codePtr[codeOfst], 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
 			sb->Append((const UTF8Char*)"sipush ");
-			val = ReadMUInt16(&code[1]);
+			val = ReadMUInt16(&codePtr[codeOfst + 1]);
 			sb->AppendU16(val);
 			sb->Append((const UTF8Char*)"\r\n");
-			code += 3;
+			codeOfst += 3;
 			codeLen -= 3;
 			break;
 		case 0x12:
 			this->AppendIndent(sb, lev);
-			sb->AppendHexBuff(code, 2, ' ', Text::LineBreakType::None);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHexBuff(&codePtr[codeOfst], 2, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 10);
 			sb->Append((const UTF8Char*)"ldc ");
-			val = code[1];
+			val = codePtr[codeOfst + 1];
 			sb->AppendU16(val);
 			this->DetailConstVal(val, sb, true);
 			sb->Append((const UTF8Char*)"\r\n");
-			code += 2;
+			codeOfst += 2;
 			codeLen -= 2;
 			break;
 		case 0x13:
 			this->AppendIndent(sb, lev);
-			sb->AppendHexBuff(code, 3, ' ', Text::LineBreakType::None);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHexBuff(&codePtr[codeOfst], 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
 			sb->Append((const UTF8Char*)"ldc_w ");
-			val = ReadMUInt16(&code[1]);
+			val = ReadMUInt16(&codePtr[codeOfst + 1]);
 			sb->AppendU16(val);
 			this->DetailConstVal(val, sb, true);
 			sb->Append((const UTF8Char*)"\r\n");
-			code += 3;
+			codeOfst += 3;
 			codeLen -= 3;
 			break;
 		case 0x14:
 			this->AppendIndent(sb, lev);
-			sb->AppendHexBuff(code, 3, ' ', Text::LineBreakType::None);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHexBuff(&codePtr[codeOfst], 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
 			sb->Append((const UTF8Char*)"ldc2_w ");
-			val = ReadMUInt16(&code[1]);
+			val = ReadMUInt16(&codePtr[codeOfst + 1]);
 			sb->AppendU16(val);
 			this->DetailConstVal(val, sb, true);
 			sb->Append((const UTF8Char*)"\r\n");
-			code += 3;
+			codeOfst += 3;
 			codeLen -= 3;
 			break;
 		case 0x15:
 			this->AppendIndent(sb, lev);
-			sb->AppendHexBuff(code, 2, ' ', Text::LineBreakType::None);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHexBuff(&codePtr[codeOfst], 2, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 10);
 			sb->Append((const UTF8Char*)"iload ");
-			sb->AppendU16(code[1]);
+			sb->AppendU16(codePtr[codeOfst + 1]);
 			sb->Append((const UTF8Char*)"\r\n");
-			code += 2;
+			codeOfst += 2;
 			codeLen -= 2;
 			break;
 		case 0x16:
 			this->AppendIndent(sb, lev);
-			sb->AppendHexBuff(code, 2, ' ', Text::LineBreakType::None);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHexBuff(&codePtr[codeOfst], 2, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 10);
 			sb->Append((const UTF8Char*)"lload ");
-			sb->AppendU16(code[1]);
+			sb->AppendU16(codePtr[codeOfst + 1]);
 			sb->Append((const UTF8Char*)"\r\n");
-			code += 2;
+			codeOfst += 2;
 			codeLen -= 2;
 			break;
 		case 0x17:
 			this->AppendIndent(sb, lev);
-			sb->AppendHexBuff(code, 2, ' ', Text::LineBreakType::None);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHexBuff(&codePtr[codeOfst], 2, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 10);
 			sb->Append((const UTF8Char*)"fload ");
-			sb->AppendU16(code[1]);
+			sb->AppendU16(codePtr[codeOfst + 1]);
 			sb->Append((const UTF8Char*)"\r\n");
-			code += 2;
+			codeOfst += 2;
 			codeLen -= 2;
 			break;
 		case 0x18:
 			this->AppendIndent(sb, lev);
-			sb->AppendHexBuff(code, 2, ' ', Text::LineBreakType::None);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHexBuff(&codePtr[codeOfst], 2, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 10);
 			sb->Append((const UTF8Char*)"dload ");
-			sb->AppendU16(code[1]);
+			sb->AppendU16(codePtr[codeOfst + 1]);
 			sb->Append((const UTF8Char*)"\r\n");
-			code += 2;
+			codeOfst += 2;
 			codeLen -= 2;
 			break;
 		case 0x19:
 			this->AppendIndent(sb, lev);
-			sb->AppendHexBuff(code, 2, ' ', Text::LineBreakType::None);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHexBuff(&codePtr[codeOfst], 2, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 10);
 			sb->Append((const UTF8Char*)"aload ");
-			sb->AppendU16(code[1]);
+			sb->AppendU16(codePtr[codeOfst + 1]);
 			sb->Append((const UTF8Char*)"\r\n");
-			code += 2;
+			codeOfst += 2;
 			codeLen -= 2;
 			break;
 		case 0x1A:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"iload_0\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x1B:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"iload_1\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x1C:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"iload_2\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x1D:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"iload_3\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x1E:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"lload_0\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x1F:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"lload_1\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x20:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"lload_2\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x21:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"lload_3\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x22:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"fload_0\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x23:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"fload_1\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x24:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"fload_2\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x25:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"fload_3\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x26:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"dload_0\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x27:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"dload_1\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x28:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"dload_2\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x29:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"dload_3\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x2A:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"aload_0\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x2B:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"aload_1\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x2C:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"aload_2\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x2D:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"aload_3\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x2E:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"iaload\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x2F:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"laload\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x30:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"faload\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x31:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"daload\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x32:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"aaload\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x33:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"baload\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x34:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"caload\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x35:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"saload\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x36:
 			this->AppendIndent(sb, lev);
-			sb->AppendHexBuff(code, 2, ' ', Text::LineBreakType::None);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHexBuff(&codePtr[codeOfst], 2, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 10);
 			sb->Append((const UTF8Char*)"istore ");
-			sb->AppendU16(code[1]);
+			sb->AppendU16(codePtr[codeOfst + 1]);
 			sb->Append((const UTF8Char*)"\r\n");
-			code += 2;
+			codeOfst += 2;
 			codeLen -= 2;
 			break;
 		case 0x37:
 			this->AppendIndent(sb, lev);
-			sb->AppendHexBuff(code, 2, ' ', Text::LineBreakType::None);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHexBuff(&codePtr[codeOfst], 2, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 10);
 			sb->Append((const UTF8Char*)"lstore ");
-			sb->AppendU16(code[1]);
+			sb->AppendU16(codePtr[codeOfst + 1]);
 			sb->Append((const UTF8Char*)"\r\n");
-			code += 2;
+			codeOfst += 2;
 			codeLen -= 2;
 			break;
 		case 0x38:
 			this->AppendIndent(sb, lev);
-			sb->AppendHexBuff(code, 2, ' ', Text::LineBreakType::None);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHexBuff(&codePtr[codeOfst], 2, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 10);
 			sb->Append((const UTF8Char*)"fstore ");
-			sb->AppendU16(code[1]);
+			sb->AppendU16(codePtr[codeOfst + 1]);
 			sb->Append((const UTF8Char*)"\r\n");
-			code += 2;
+			codeOfst += 2;
 			codeLen -= 2;
 			break;
 		case 0x39:
 			this->AppendIndent(sb, lev);
-			sb->AppendHexBuff(code, 2, ' ', Text::LineBreakType::None);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHexBuff(&codePtr[codeOfst], 2, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 10);
 			sb->Append((const UTF8Char*)"dstore ");
-			sb->AppendU16(code[1]);
+			sb->AppendU16(codePtr[codeOfst + 1]);
 			sb->Append((const UTF8Char*)"\r\n");
-			code += 2;
+			codeOfst += 2;
 			codeLen -= 2;
 			break;
 		case 0x3A:
 			this->AppendIndent(sb, lev);
-			sb->AppendHexBuff(code, 2, ' ', Text::LineBreakType::None);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHexBuff(&codePtr[codeOfst], 2, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 10);
 			sb->Append((const UTF8Char*)"astore ");
-			sb->AppendU16(code[1]);
+			sb->AppendU16(codePtr[codeOfst + 1]);
 			sb->Append((const UTF8Char*)"\r\n");
-			code += 2;
+			codeOfst += 2;
 			codeLen -= 2;
 			break;
 		case 0x3B:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"istore_0\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x3C:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"istore_1\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x3D:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"istore_2\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x3E:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"istore_3\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x3F:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"lstore_0\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x40:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"lstore_1\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x41:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"lstore_2\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x42:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"lstore_3\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x43:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"fstore_0\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x44:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"fstore_1\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x45:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"fstore_2\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x46:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"fstore_3\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x47:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"dstore_0\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x48:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"dstore_1\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x49:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"dstore_2\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x4A:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"dstore_3\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x4B:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"astore_0\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x4C:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"astore_1\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x4D:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"astore_2\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x4E:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"astore_3\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x4F:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"iastore\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x50:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"lastore\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x51:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"fastore\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x52:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"dastore\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x53:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"aastore\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x54:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"bastore\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x55:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"castore\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x56:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"sastore\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x57:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"pop\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x58:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"pop2\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x59:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"dup\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x5A:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"dup_x1\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x5B:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"dup_x2\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x5C:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"dup2\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x5D:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"dup2_x1\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x5E:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"dup2_x2\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x5F:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"swap\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x60:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"iadd\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x61:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"ladd\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x62:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"fadd\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x63:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"dadd\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x64:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"isub\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x65:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"lsub\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x66:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"fsub\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x67:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"dsub\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x68:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"imul\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x69:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"lmul\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x6A:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"fmul\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x6B:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"dmul\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x6C:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"idiv\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x6D:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"ldiv\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x6E:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"fdiv\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x6F:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"ddiv\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x70:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"irem\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x71:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"lrem\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x72:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"frem\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x73:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"drem\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x74:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"ineg\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x75:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"lneg\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x76:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"fneg\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x77:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"dneg\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x78:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"ishl\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x79:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"lshl\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x7A:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"ishr\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x7B:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"lshr\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x7C:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"iushr\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x7D:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"lushr\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x7E:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"iand\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x7F:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"land\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x80:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"ior\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x81:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"lor\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x82:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"ixor\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x83:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"lxor\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x84:
 			this->AppendIndent(sb, lev);
-			sb->AppendHexBuff(code, 3, ' ', Text::LineBreakType::None);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHexBuff(&codePtr[codeOfst], 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
 			sb->Append((const UTF8Char*)"iinc ");
-			sb->AppendU16(code[1]);
+			sb->AppendU16(codePtr[codeOfst + 1]);
 			sb->Append((const UTF8Char*)", ");
-			sb->AppendI16((Int8)code[2]);
+			sb->AppendI16((Int8)codePtr[codeOfst + 2]);
 			sb->Append((const UTF8Char*)"\r\n");
-			code += 3;
+			codeOfst += 3;
 			codeLen -= 3;
 			break;
 		case 0x85:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"i2l\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x86:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"i2f\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x87:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"i2d\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x88:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"l2i\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x89:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"l2f\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x8A:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"l2d\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x8B:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"f2i\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x8C:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"f2l\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x8D:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"f2d\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x8E:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"d2i\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x8F:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"d2l\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x90:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"d2f\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x91:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"i2b\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x92:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"i2c\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x93:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"i2s\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x94:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"lcmp\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x95:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"fcmpl\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x96:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"fcmpg\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x97:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"dcmpl\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x98:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"dcmpg\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0x99:
 			this->AppendIndent(sb, lev);
-			sb->AppendHexBuff(code, 3, ' ', Text::LineBreakType::None);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHexBuff(&codePtr[codeOfst], 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
 			sb->Append((const UTF8Char*)"ifeq ");
-			sb->AppendI16(ReadMInt16(&code[1]));
+			sb->AppendI16(ReadMInt16(&codePtr[codeOfst + 1]));
 			sb->Append((const UTF8Char*)"\r\n");
-			code += 3;
+			codeOfst += 3;
 			codeLen -= 3;
 			break;
 		case 0x9A:
 			this->AppendIndent(sb, lev);
-			sb->AppendHexBuff(code, 3, ' ', Text::LineBreakType::None);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHexBuff(&codePtr[codeOfst], 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
 			sb->Append((const UTF8Char*)"ifne ");
-			sb->AppendI16(ReadMInt16(&code[1]));
+			sb->AppendI16(ReadMInt16(&codePtr[codeOfst + 1]));
 			sb->Append((const UTF8Char*)"\r\n");
-			code += 3;
+			codeOfst += 3;
 			codeLen -= 3;
 			break;
 		case 0x9B:
 			this->AppendIndent(sb, lev);
-			sb->AppendHexBuff(code, 3, ' ', Text::LineBreakType::None);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHexBuff(&codePtr[codeOfst], 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
 			sb->Append((const UTF8Char*)"iflt ");
-			sb->AppendI16(ReadMInt16(&code[1]));
+			sb->AppendI16(ReadMInt16(&codePtr[codeOfst + 1]));
 			sb->Append((const UTF8Char*)"\r\n");
-			code += 3;
+			codeOfst += 3;
 			codeLen -= 3;
 			break;
 		case 0x9C:
 			this->AppendIndent(sb, lev);
-			sb->AppendHexBuff(code, 3, ' ', Text::LineBreakType::None);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHexBuff(&codePtr[codeOfst], 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
 			sb->Append((const UTF8Char*)"ifge ");
-			sb->AppendI16(ReadMInt16(&code[1]));
+			sb->AppendI16(ReadMInt16(&codePtr[codeOfst + 1]));
 			sb->Append((const UTF8Char*)"\r\n");
-			code += 3;
+			codeOfst += 3;
 			codeLen -= 3;
 			break;
 		case 0x9D:
 			this->AppendIndent(sb, lev);
-			sb->AppendHexBuff(code, 3, ' ', Text::LineBreakType::None);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHexBuff(&codePtr[codeOfst], 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
 			sb->Append((const UTF8Char*)"ifgt ");
-			sb->AppendI16(ReadMInt16(&code[1]));
+			sb->AppendI16(ReadMInt16(&codePtr[codeOfst + 1]));
 			sb->Append((const UTF8Char*)"\r\n");
-			code += 3;
+			codeOfst += 3;
 			codeLen -= 3;
 			break;
 		case 0x9E:
 			this->AppendIndent(sb, lev);
-			sb->AppendHexBuff(code, 3, ' ', Text::LineBreakType::None);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHexBuff(&codePtr[codeOfst], 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
 			sb->Append((const UTF8Char*)"ifle ");
-			sb->AppendI16(ReadMInt16(&code[1]));
+			sb->AppendI16(ReadMInt16(&codePtr[codeOfst + 1]));
 			sb->Append((const UTF8Char*)"\r\n");
-			code += 3;
+			codeOfst += 3;
 			codeLen -= 3;
 			break;
 		case 0x9F:
 			this->AppendIndent(sb, lev);
-			sb->AppendHexBuff(code, 3, ' ', Text::LineBreakType::None);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHexBuff(&codePtr[codeOfst], 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
 			sb->Append((const UTF8Char*)"if_icmpeq ");
-			sb->AppendI16(ReadMInt16(&code[1]));
+			sb->AppendI16(ReadMInt16(&codePtr[codeOfst + 1]));
 			sb->Append((const UTF8Char*)"\r\n");
-			code += 3;
+			codeOfst += 3;
 			codeLen -= 3;
 			break;
 		case 0xA0:
 			this->AppendIndent(sb, lev);
-			sb->AppendHexBuff(code, 3, ' ', Text::LineBreakType::None);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHexBuff(&codePtr[codeOfst], 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
 			sb->Append((const UTF8Char*)"if_icmpne ");
-			sb->AppendI16(ReadMInt16(&code[1]));
+			sb->AppendI16(ReadMInt16(&codePtr[codeOfst + 1]));
 			sb->Append((const UTF8Char*)"\r\n");
-			code += 3;
+			codeOfst += 3;
 			codeLen -= 3;
 			break;
 		case 0xA1:
 			this->AppendIndent(sb, lev);
-			sb->AppendHexBuff(code, 3, ' ', Text::LineBreakType::None);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHexBuff(&codePtr[codeOfst], 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
 			sb->Append((const UTF8Char*)"if_icmplt ");
-			sb->AppendI16(ReadMInt16(&code[1]));
+			sb->AppendI16(ReadMInt16(&codePtr[codeOfst + 1]));
 			sb->Append((const UTF8Char*)"\r\n");
-			code += 3;
+			codeOfst += 3;
 			codeLen -= 3;
 			break;
 		case 0xA2:
 			this->AppendIndent(sb, lev);
-			sb->AppendHexBuff(code, 3, ' ', Text::LineBreakType::None);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHexBuff(&codePtr[codeOfst], 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
 			sb->Append((const UTF8Char*)"if_icmpge ");
-			sb->AppendI16(ReadMInt16(&code[1]));
+			sb->AppendI16(ReadMInt16(&codePtr[codeOfst + 1]));
 			sb->Append((const UTF8Char*)"\r\n");
-			code += 3;
+			codeOfst += 3;
 			codeLen -= 3;
 			break;
 		case 0xA3:
 			this->AppendIndent(sb, lev);
-			sb->AppendHexBuff(code, 3, ' ', Text::LineBreakType::None);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHexBuff(&codePtr[codeOfst], 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
 			sb->Append((const UTF8Char*)"if_icmpgt ");
-			sb->AppendI16(ReadMInt16(&code[1]));
+			sb->AppendI16(ReadMInt16(&codePtr[codeOfst + 1]));
 			sb->Append((const UTF8Char*)"\r\n");
-			code += 3;
+			codeOfst += 3;
 			codeLen -= 3;
 			break;
 		case 0xA4:
 			this->AppendIndent(sb, lev);
-			sb->AppendHexBuff(code, 3, ' ', Text::LineBreakType::None);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHexBuff(&codePtr[codeOfst], 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
 			sb->Append((const UTF8Char*)"if_icmple ");
-			sb->AppendI16(ReadMInt16(&code[1]));
+			sb->AppendI16(ReadMInt16(&codePtr[codeOfst + 1]));
 			sb->Append((const UTF8Char*)"\r\n");
-			code += 3;
+			codeOfst += 3;
 			codeLen -= 3;
 			break;
 		case 0xA5:
 			this->AppendIndent(sb, lev);
-			sb->AppendHexBuff(code, 3, ' ', Text::LineBreakType::None);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHexBuff(&codePtr[codeOfst], 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
 			sb->Append((const UTF8Char*)"if_acmpeq ");
-			sb->AppendI16(ReadMInt16(&code[1]));
+			sb->AppendI16(ReadMInt16(&codePtr[codeOfst + 1]));
 			sb->Append((const UTF8Char*)"\r\n");
-			code += 3;
+			codeOfst += 3;
 			codeLen -= 3;
 			break;
 		case 0xA6:
 			this->AppendIndent(sb, lev);
-			sb->AppendHexBuff(code, 3, ' ', Text::LineBreakType::None);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHexBuff(&codePtr[codeOfst], 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
 			sb->Append((const UTF8Char*)"if_acmpne ");
-			sb->AppendI16(ReadMInt16(&code[1]));
+			sb->AppendI16(ReadMInt16(&codePtr[codeOfst + 1]));
 			sb->Append((const UTF8Char*)"\r\n");
-			code += 3;
+			codeOfst += 3;
 			codeLen -= 3;
 			break;
 		case 0xA7:
 			this->AppendIndent(sb, lev);
-			sb->AppendHexBuff(code, 3, ' ', Text::LineBreakType::None);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHexBuff(&codePtr[codeOfst], 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
 			sb->Append((const UTF8Char*)"goto ");
-			sb->AppendI16(ReadMInt16(&code[1]));
+			sb->AppendI16(ReadMInt16(&codePtr[codeOfst + 1]));
 			sb->Append((const UTF8Char*)"\r\n");
-			code += 3;
+			codeOfst += 3;
 			codeLen -= 3;
 			break;
 		case 0xA8:
 			this->AppendIndent(sb, lev);
-			sb->AppendHexBuff(code, 3, ' ', Text::LineBreakType::None);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHexBuff(&codePtr[codeOfst], 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
 			sb->Append((const UTF8Char*)"jsr ");
-			sb->AppendI16(ReadMInt16(&code[1]));
+			sb->AppendI16(ReadMInt16(&codePtr[codeOfst + 1]));
 			sb->Append((const UTF8Char*)"\r\n");
-			code += 3;
+			codeOfst += 3;
 			codeLen -= 3;
 			break;
 		case 0xA9:
 			this->AppendIndent(sb, lev);
-			sb->AppendHexBuff(code, 2, ' ', Text::LineBreakType::None);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHexBuff(&codePtr[codeOfst], 2, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 10);
 			sb->Append((const UTF8Char*)"ret ");
-			sb->AppendU16(code[1]);
+			sb->AppendU16(codePtr[codeOfst + 1]);
 			sb->Append((const UTF8Char*)"\r\n");
-			code += 2;
+			codeOfst += 2;
 			codeLen -= 2;
 			break;
 		case 0xAA:
 			this->AppendIndent(sb, lev);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
 			////////////////////////////////////
-			sb->AppendHexBuff(code, 17, ' ', Text::LineBreakType::None);
+			sb->AppendHexBuff(&codePtr[codeOfst], 17, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 1);
 			sb->Append((const UTF8Char*)"tableswitch\r\n");
-			code += 17;
+			codeOfst += 17;
 			codeLen -= 17;
 			break;
 		case 0xAB:
 			this->AppendIndent(sb, lev);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
 			////////////////////////////////////
-			sb->AppendHexBuff(code, 8, ' ', Text::LineBreakType::None);
+			sb->AppendHexBuff(&codePtr[codeOfst], 8, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 1);
 			sb->Append((const UTF8Char*)"lookupswitch\r\n");
-			code += 8;
+			codeOfst += 8;
 			codeLen -= 8;
 			break;
 		case 0xAC:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"ireturn\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0xAD:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"lreturn\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0xAE:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"freturn\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0xB0:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"areturn\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0xB1:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"return\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0xB2:
 			this->AppendIndent(sb, lev);
-			sb->AppendHexBuff(code, 3, ' ', Text::LineBreakType::None);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHexBuff(&codePtr[codeOfst], 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
-			val = ReadMUInt16(&code[1]);
+			val = ReadMUInt16(&codePtr[codeOfst + 1]);
 			sb->Append((const UTF8Char*)"getstatic ");
 			sb->AppendU16(val);
 			this->DetailFieldRef(val, sb);
 			sb->Append((const UTF8Char*)"\r\n");
-			code += 3;
+			codeOfst += 3;
 			codeLen -= 3;
 			break;
 		case 0xB3:
 			this->AppendIndent(sb, lev);
-			sb->AppendHexBuff(code, 3, ' ', Text::LineBreakType::None);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHexBuff(&codePtr[codeOfst], 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
-			val = ReadMUInt16(&code[1]);
+			val = ReadMUInt16(&codePtr[codeOfst + 1]);
 			sb->Append((const UTF8Char*)"putstatic ");
 			sb->AppendU16(val);
 			this->DetailFieldRef(val, sb);
 			sb->Append((const UTF8Char*)"\r\n");
-			code += 3;
+			codeOfst += 3;
 			codeLen -= 3;
 			break;
 		case 0xB4:
 			this->AppendIndent(sb, lev);
-			sb->AppendHexBuff(code, 3, ' ', Text::LineBreakType::None);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHexBuff(&codePtr[codeOfst], 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
-			val = ReadMUInt16(&code[1]);
+			val = ReadMUInt16(&codePtr[codeOfst + 1]);
 			sb->Append((const UTF8Char*)"getfield ");
 			sb->AppendU16(val);
 			this->DetailFieldRef(val, sb);
 			sb->Append((const UTF8Char*)"\r\n");
-			code += 3;
+			codeOfst += 3;
 			codeLen -= 3;
 			break;
 		case 0xB5:
 			this->AppendIndent(sb, lev);
-			sb->AppendHexBuff(code, 3, ' ', Text::LineBreakType::None);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHexBuff(&codePtr[codeOfst], 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
-			val = ReadMUInt16(&code[1]);
+			val = ReadMUInt16(&codePtr[codeOfst + 1]);
 			sb->Append((const UTF8Char*)"putfield ");
 			sb->AppendU16(val);
 			this->DetailFieldRef(val, sb);
 			sb->Append((const UTF8Char*)"\r\n");
-			code += 3;
+			codeOfst += 3;
 			codeLen -= 3;
 			break;
 		case 0xB6:
 			this->AppendIndent(sb, lev);
-			sb->AppendHexBuff(code, 3, ' ', Text::LineBreakType::None);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHexBuff(&codePtr[codeOfst], 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
-			val = ReadMUInt16(&code[1]);
+			val = ReadMUInt16(&codePtr[codeOfst + 1]);
 			sb->Append((const UTF8Char*)"invokevirtual ");
 			sb->AppendU16(val);
 			this->DetailMethodRef(val, sb);
 			sb->Append((const UTF8Char*)"\r\n");
-			code += 3;
+			codeOfst += 3;
 			codeLen -= 3;
 			break;
 		case 0xB7:
 			this->AppendIndent(sb, lev);
-			sb->AppendHexBuff(code, 3, ' ', Text::LineBreakType::None);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHexBuff(&codePtr[codeOfst], 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
-			val = ReadMUInt16(&code[1]);
+			val = ReadMUInt16(&codePtr[codeOfst + 1]);
 			sb->Append((const UTF8Char*)"invokespecial ");
 			sb->AppendU16(val);
 			this->DetailMethodRef(val, sb);
 			sb->Append((const UTF8Char*)"\r\n");
-			code += 3;
+			codeOfst += 3;
 			codeLen -= 3;
 			break;
 		case 0xB8:
 			this->AppendIndent(sb, lev);
-			sb->AppendHexBuff(code, 3, ' ', Text::LineBreakType::None);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHexBuff(&codePtr[codeOfst], 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
-			val = ReadMUInt16(&code[1]);
+			val = ReadMUInt16(&codePtr[codeOfst + 1]);
 			sb->Append((const UTF8Char*)"invokestatic ");
 			sb->AppendU16(val);
 			this->DetailMethodRef(val, sb);
 			sb->Append((const UTF8Char*)"\r\n");
-			code += 3;
+			codeOfst += 3;
 			codeLen -= 3;
 			break;
 		case 0xB9:
 			this->AppendIndent(sb, lev);
-			sb->AppendHexBuff(code, 5, ' ', Text::LineBreakType::None);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHexBuff(&codePtr[codeOfst], 5, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 1);
-			val = ReadMUInt16(&code[1]);
+			val = ReadMUInt16(&codePtr[codeOfst + 1]);
 			sb->Append((const UTF8Char*)"invokeinterface ");
 			sb->AppendU16(val);
 			sb->AppendChar(',', 1);
 			sb->AppendChar(' ', 1);
-			sb->AppendU16(code[3]);
+			sb->AppendU16(codePtr[codeOfst + 3]);
 			this->DetailMethodRef(val, sb);
 			sb->Append((const UTF8Char*)"\r\n");
-			code += 5;
+			codeOfst += 5;
 			codeLen -= 5;
 			break;
 		case 0xBA:
 			this->AppendIndent(sb, lev);
-			sb->AppendHexBuff(code, 5, ' ', Text::LineBreakType::None);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHexBuff(&codePtr[codeOfst], 5, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 1);
-			val = ReadMUInt16(&code[1]);
+			val = ReadMUInt16(&codePtr[codeOfst + 1]);
 			sb->Append((const UTF8Char*)"invokedynamic ");
 			sb->AppendU16(val);
 			this->DetailMethodRef(val, sb);
 			sb->Append((const UTF8Char*)"\r\n");
-			code += 5;
+			codeOfst += 5;
 			codeLen -= 5;
 			break;
 		case 0xBB:
 			this->AppendIndent(sb, lev);
-			sb->AppendHexBuff(code, 3, ' ', Text::LineBreakType::None);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHexBuff(&codePtr[codeOfst], 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
-			val = ReadMUInt16(&code[1]);
+			val = ReadMUInt16(&codePtr[codeOfst + 1]);
 			sb->Append((const UTF8Char*)"new ");
 			sb->AppendU16(val);
 			this->DetailClassName(val, sb);
 			sb->Append((const UTF8Char*)"\r\n");
-			code += 3;
+			codeOfst += 3;
 			codeLen -= 3;
 			break;
 		case 0xBC:
 			this->AppendIndent(sb, lev);
-			sb->AppendHexBuff(code, 2, ' ', Text::LineBreakType::None);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHexBuff(&codePtr[codeOfst], 2, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 10);
-			val = code[1];
+			val = codePtr[codeOfst + 1];
 			sb->Append((const UTF8Char*)"newarray ");
 			sb->AppendU16(val);
 			switch (val)
@@ -2671,171 +3072,205 @@ void IO::JavaClass::DetailCode(const UInt8 *code, UOSInt codeLen, UOSInt lev, Te
 				break;
 			}
 			sb->Append((const UTF8Char*)"\r\n");
-			code += 2;
+			codeOfst += 2;
 			codeLen -= 2;
 			break;
 		case 0xBD:
 			this->AppendIndent(sb, lev);
-			sb->AppendHexBuff(code, 3, ' ', Text::LineBreakType::None);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHexBuff(&codePtr[codeOfst], 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
-			val = ReadMUInt16(&code[1]);
+			val = ReadMUInt16(&codePtr[codeOfst + 1]);
 			sb->Append((const UTF8Char*)"anewarray ");
 			sb->AppendU16(val);
 			this->DetailClassName(val, sb);
 			sb->Append((const UTF8Char*)"\r\n");
-			code += 3;
+			codeOfst += 3;
 			codeLen -= 3;
 			break;
 		case 0xBE:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"arraylength\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0xBF:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"athrow\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0xC0:
 			this->AppendIndent(sb, lev);
-			sb->AppendHexBuff(code, 3, ' ', Text::LineBreakType::None);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHexBuff(&codePtr[codeOfst], 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
-			val = ReadMUInt16(&code[1]);
+			val = ReadMUInt16(&codePtr[codeOfst + 1]);
 			sb->Append((const UTF8Char*)"checkcast ");
 			sb->AppendU16(val);
 			this->DetailClassName(val, sb);
 			sb->Append((const UTF8Char*)"\r\n");
-			code += 3;
+			codeOfst += 3;
 			codeLen -= 3;
 			break;
 		case 0xC1:
 			this->AppendIndent(sb, lev);
-			sb->AppendHexBuff(code, 3, ' ', Text::LineBreakType::None);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHexBuff(&codePtr[codeOfst], 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
-			val = ReadMUInt16(&code[1]);
+			val = ReadMUInt16(&codePtr[codeOfst + 1]);
 			sb->Append((const UTF8Char*)"instanceof ");
 			sb->AppendU16(val);
 			this->DetailClassName(val, sb);
 			sb->Append((const UTF8Char*)"\r\n");
-			code += 3;
+			codeOfst += 3;
 			codeLen -= 3;
 			break;
 		case 0xC2:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"monitorenter\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0xC3:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"monitorexit\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0xC4:
 			this->AppendIndent(sb, lev);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
 			//////////////////////////////////////////
-			sb->AppendHex8(code[0]);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"wide\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0xC5:
 			this->AppendIndent(sb, lev);
-			sb->AppendHexBuff(code, 4, ' ', Text::LineBreakType::None);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHexBuff(&codePtr[codeOfst], 4, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 4);
-			val = ReadMUInt16(&code[1]);
+			val = ReadMUInt16(&codePtr[codeOfst + 1]);
 			sb->Append((const UTF8Char*)"multianewarray ");
 			sb->AppendU16(val);
 			sb->AppendChar(',', 1);
 			sb->AppendChar(' ', 1);
-			sb->AppendU16(code[3]);
+			sb->AppendU16(codePtr[codeOfst + 3]);
 			this->DetailClassName(val, sb);
 			sb->Append((const UTF8Char*)"\r\n");
-			code += 4;
+			codeOfst += 4;
 			codeLen -= 4;
 			break;
 		case 0xC6:
 			this->AppendIndent(sb, lev);
-			sb->AppendHexBuff(code, 3, ' ', Text::LineBreakType::None);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHexBuff(&codePtr[codeOfst], 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
 			sb->Append((const UTF8Char*)"ifnull ");
-			sb->AppendI16(ReadMInt16(&code[1]));
+			sb->AppendI16(ReadMInt16(&codePtr[codeOfst + 1]));
 			sb->Append((const UTF8Char*)"\r\n");
-			code += 3;
+			codeOfst += 3;
 			codeLen -= 3;
 			break;
 		case 0xC7:
 			this->AppendIndent(sb, lev);
-			sb->AppendHexBuff(code, 3, ' ', Text::LineBreakType::None);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHexBuff(&codePtr[codeOfst], 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
 			sb->Append((const UTF8Char*)"ifnonnull ");
-			sb->AppendI16(ReadMInt16(&code[1]));
+			sb->AppendI16(ReadMInt16(&codePtr[codeOfst + 1]));
 			sb->Append((const UTF8Char*)"\r\n");
-			code += 3;
+			codeOfst += 3;
 			codeLen -= 3;
 			break;
 		case 0xC8:
 			this->AppendIndent(sb, lev);
-			sb->AppendHexBuff(code, 5, ' ', Text::LineBreakType::None);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHexBuff(&codePtr[codeOfst], 5, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 1);
 			sb->Append((const UTF8Char*)"goto_w ");
-			sb->AppendI32(ReadMInt32(&code[1]));
+			sb->AppendI32(ReadMInt32(&codePtr[codeOfst + 1]));
 			sb->Append((const UTF8Char*)"\r\n");
-			code += 5;
+			codeOfst += 5;
 			codeLen -= 5;
 			break;
 		case 0xC9:
 			this->AppendIndent(sb, lev);
-			sb->AppendHexBuff(code, 5, ' ', Text::LineBreakType::None);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHexBuff(&codePtr[codeOfst], 5, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 1);
 			sb->Append((const UTF8Char*)"jsr_w ");
-			sb->AppendI32(ReadMInt32(&code[1]));
+			sb->AppendI32(ReadMInt32(&codePtr[codeOfst + 1]));
 			sb->Append((const UTF8Char*)"\r\n");
-			code += 5;
+			codeOfst += 5;
 			codeLen -= 5;
 			break;
 		case 0xCA:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"breakpoint\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0xFE:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"impdep1\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		case 0xFF:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"impdep2\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		default:
 			this->AppendIndent(sb, lev);
-			sb->AppendHex8(code[0]);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
 			sb->Append((const UTF8Char*)"Unknown opcode\r\n");
-			code++;
+			codeOfst++;
 			codeLen--;
 			break;
 		}
@@ -3204,34 +3639,158 @@ Bool IO::JavaClass::ClassNameString(UInt16 index, Text::StringBuilderUTF *sb)
 	return true;
 }
 
-UTF8Char *IO::JavaClass::GetLVName(UTF8Char *sbuff, UInt16 index, const UInt8 *lvTable, UOSInt lvTableLen, UOSInt codeOfst)
+UTF8Char *IO::JavaClass::GetLVName(UTF8Char *sbuff, UInt16 index, const MethodInfo *method, UOSInt codeOfst)
 {
-	if (lvTable && lvTableLen > 0)
+	if (method)
 	{
-		UOSInt local_variable_table_length = ReadMUInt16(lvTable);
-		if (local_variable_table_length * 10 + 2 >= lvTableLen)
+		UOSInt i = 0;
+		UOSInt j = method->lvList->GetCount();
+		while (i < j)
 		{
-			UOSInt i = 0;
-			while (i < local_variable_table_length)
+			LocalVariableInfo *lv = method->lvList->GetItem(i);
+			if (lv->index == index && lv->startPC <= codeOfst && lv->startPC + (UOSInt)lv->length > codeOfst)
 			{
-				UInt16 pcOfst = ReadMUInt16(&lvTable[2 + i * 10 + 0]);
-				UInt16 length = ReadMUInt16(&lvTable[2 + i * 10 + 2]);
-				UOSInt varI = ReadMUInt16(&lvTable[2 + i * 10 + 8]);
-
-				if (varI == index && pcOfst <= codeOfst && pcOfst + (UOSInt)length > codeOfst)
+				UTF8Char *ret = this->GetConstName(sbuff, lv->nameIndex);
+				if (ret)
 				{
-					UTF8Char *ret = this->GetConstName(sbuff, ReadMUInt16(&lvTable[2 + i * 10 + 4]));
-					if (ret)
-					{
-						return ret;
-					}
+					return ret;
 				}
-				i++;
 			}
+			i++;
 		}
 	}
 	*sbuff++ = 'v';
 	return Text::StrUInt16(sbuff, index);
+}
+
+Bool IO::JavaClass::MethodParse(MethodInfo *method, const UInt8 *methodBuff)
+{
+	NEW_CLASS(method->exHdlrList, Data::ArrayList<ExceptionHdlrInfo*>());
+	NEW_CLASS(method->lvList, Data::ArrayList<LocalVariableInfo*>());
+	NEW_CLASS(method->lineNumList, Data::ArrayList<LineNumberInfo*>());
+	NEW_CLASS(method->exList, Data::ArrayList<UInt16>());
+	method->accessFlags = ReadMUInt16(methodBuff);
+	method->nameIndex = ReadMUInt16(&methodBuff[2]);
+	method->descriptorIndex = ReadMUInt16(&methodBuff[4]);
+	method->code = 0;
+	UTF8Char sbuff[256];
+	UInt16 attrCnt = ReadMUInt16(&methodBuff[6]);
+	UInt16 i;
+	const UInt8 *ptr = &methodBuff[8];
+	i = 0;
+	while (i < attrCnt)
+	{
+		UInt32 len = ReadMUInt32(&ptr[2]);
+		UInt16 nameIndex = ReadMUInt16(&ptr[0]);
+		UInt16 j;
+		sbuff[0] = 0;
+		if (this->GetConstName(sbuff, nameIndex))
+		{
+			if (Text::StrEquals(sbuff, (const UTF8Char*)"Code"))
+			{
+				UInt32 codeLen = ReadMUInt32(&ptr[10]);
+				const UInt8 *ptr2;
+				method->code = MemAlloc(UInt8, codeLen);
+				method->codeLen = codeLen;
+				MemCopyNO(method->code, &ptr[14], codeLen);
+				ptr2 = &ptr[14 + codeLen];
+				UInt16 exceptLen = ReadMUInt16(&ptr2[0]);
+				ptr2 += 2;
+				while (exceptLen-- > 0)
+				{
+					ExceptionHdlrInfo *exHdlr = MemAlloc(ExceptionHdlrInfo, 1);
+					exHdlr->startPC = ReadMUInt16(&ptr2[0]);
+					exHdlr->endPC = ReadMUInt16(&ptr2[2]);
+					exHdlr->handlerPC = ReadMUInt16(&ptr2[4]);
+					exHdlr->catchType = ReadMUInt16(&ptr2[6]);
+					method->exHdlrList->Add(exHdlr);
+					ptr2 += 8;
+				}
+				UInt16 attrCount = ReadMUInt16(&ptr2[0]);
+				ptr2 += 2;
+				j = 0;
+				while (j < attrCount)
+				{
+					UInt32 len = ReadMUInt32(&ptr2[2]);
+					UInt16 nameIndex = ReadMUInt16(&ptr2[0]);
+					sbuff[0] = 0;
+					if (this->GetConstName(sbuff, nameIndex))
+					{
+						if (Text::StrEquals(sbuff, (const UTF8Char*)"LocalVariableTable"))
+						{
+							const UInt8 *lvTable = &ptr2[6];
+							UOSInt local_variable_table_length = ReadMUInt16(lvTable);
+							UOSInt k;
+							LocalVariableInfo *lv;
+							if (local_variable_table_length * 10 + 2 <= len)
+							{
+								k = 0;
+								while (k < local_variable_table_length)
+								{
+									lv = MemAlloc(LocalVariableInfo, 1);
+									lv->startPC = ReadMUInt16(&lvTable[2 + k * 10 + 0]);
+									lv->length = ReadMUInt16(&lvTable[2 + k * 10 + 2]);
+									lv->nameIndex = ReadMUInt16(&lvTable[2 + k * 10 + 4]);
+									lv->descriptorIndex = ReadMUInt16(&lvTable[2 + k * 10 + 6]);
+									lv->index = ReadMUInt16(&lvTable[2 + k * 10 + 8]);
+									method->lvList->Add(lv);
+									k++;
+								}
+							}
+						}
+						else if (Text::StrEquals(sbuff, (const UTF8Char*)"LineNumberTable"))
+						{
+							UInt16 line_number_table_length = ReadMUInt16(&ptr2[6]);
+							UInt16 k = 0;
+							const UInt8 *ptr3 = &ptr2[8];
+							while (k < line_number_table_length)
+							{
+								LineNumberInfo *lineNumber = MemAlloc(LineNumberInfo, 1);
+								lineNumber->startPC = ReadMUInt16(&ptr3[0]);
+								lineNumber->lineNumber = ReadMUInt16(&ptr3[2]);
+								method->lineNumList->Add(lineNumber);
+								k++;
+								ptr3 += 4;
+							}
+
+						}
+					}
+					ptr2 += 6 + len;
+					j++;
+				}
+			}
+			else if (Text::StrEquals(sbuff, (const UTF8Char*)"Exceptions"))
+			{
+				UInt16 exCnt = ReadMUInt16(&ptr[4]);
+				UInt16 j = 0;
+				while (j < exCnt)
+				{
+					method->exList->Add(ReadMUInt16(&ptr[6 + j * 2]));
+					j++;
+				}
+			}
+		}
+		ptr += len + 6;
+
+		i++;
+	}
+	return true;
+}
+
+void IO::JavaClass::MethodFree(MethodInfo *method)
+{
+	if (method->code)
+	{
+		MemFree(method->code);
+		method->code = 0;
+	}
+	LIST_FREE_FUNC(method->exHdlrList, MemFree);
+	DEL_CLASS(method->exHdlrList);
+	LIST_FREE_FUNC(method->lvList, MemFree);
+	DEL_CLASS(method->lvList);
+	LIST_FREE_FUNC(method->lineNumList, MemFree);
+	DEL_CLASS(method->lineNumList);
+	DEL_CLASS(method->exList);
 }
 
 void IO::JavaClass::AppendCodeClassName(Text::StringBuilderUTF *sb, const UTF8Char *className, Data::ArrayListStrUTF8 *importList, const UTF8Char *packageName)
@@ -3490,12 +4049,10 @@ void IO::JavaClass::AppendCodeMethod(Text::StringBuilderUTF *sb, UOSInt index, U
 	Text::StringBuilderUTF8 sbTmp;
 	UTF8Char sbuff[256];
 	UInt8 *ptr = this->methods[index];
-	UInt16 accessFlags = ReadMUInt16(ptr);
-	UInt16 attrCnt = ReadMUInt16(&ptr[6]);
 	UInt16 i;
 	UTF8Char typeBuff[256];
-	UInt8 *lvTable = 0;
-	UOSInt lvTableLen = 0;
+	MethodInfo method;
+	MethodParse(&method, ptr);
 
 	ptr = &this->methods[index][8];
 	i = 0;
@@ -3522,34 +4079,6 @@ void IO::JavaClass::AppendCodeMethod(Text::StringBuilderUTF *sb, UOSInt index, U
 					j++;
 				}
 			}
-			else if (Text::StrEquals(sbuff, (const UTF8Char*)"Code"))
-			{
-				UInt32 codeLen = ReadMUInt32(&ptr[10]);
-				UInt8 *ptr2;
-				ptr2 = &ptr[14 + codeLen];
-				UInt16 exceptLen = ReadMUInt16(&ptr2[0]);
-				ptr2 += 2 + exceptLen * 8;
-				UInt16 attrCount = ReadMUInt16(&ptr2[0]);
-				ptr2 += 2;
-				i = 0;
-				while (i < attrCount)
-				{
-					UInt32 len = ReadMUInt32(&ptr2[2]);
-					UInt16 nameIndex = ReadMUInt16(&ptr2[0]);
-					sbuff[0] = 0;
-					if (this->GetConstName(sbuff, nameIndex))
-					{
-						if (Text::StrEquals(sbuff, (const UTF8Char*)"LocalVariableTable"))
-						{
-							lvTable = &ptr2[6];
-							lvTableLen = len;
-						}
-					}
-					ptr2 += 6 + len;
-					i++;
-				}
-
-			}
 		}
 		ptr += len + 6;
 
@@ -3558,39 +4087,39 @@ void IO::JavaClass::AppendCodeMethod(Text::StringBuilderUTF *sb, UOSInt index, U
 
 	ptr = this->methods[index];
 	this->AppendIndent(sb, lev);
-	if (accessFlags & 1)
+	if (method.accessFlags & 1)
 	{
 		sb->Append((const UTF8Char*)"public ");
 	}
-	if (accessFlags & 2)
+	if (method.accessFlags & 2)
 	{
 		sb->Append((const UTF8Char*)"private ");
 	}
-	if (accessFlags & 4)
+	if (method.accessFlags & 4)
 	{
 		sb->Append((const UTF8Char*)"protected ");
 	}
-	if (accessFlags & 8)
+	if (method.accessFlags & 8)
 	{
 		sb->Append((const UTF8Char*)"static ");
 	}
-	if (accessFlags & 0x10)
+	if (method.accessFlags & 0x10)
 	{
 		sb->Append((const UTF8Char*)"final ");
 	}
-	if (accessFlags & 0x20)
+	if (method.accessFlags & 0x20)
 	{
 		sb->Append((const UTF8Char*)"synchronized ");
 	}
-	if (accessFlags & 0x100)
+	if (method.accessFlags & 0x100)
 	{
 		sb->Append((const UTF8Char*)"native ");
 	}
-	if (accessFlags & 0x400)
+	if (method.accessFlags & 0x400)
 	{
 		sb->Append((const UTF8Char*)"abstract ");
 	}
-	this->DetailNameType(ReadMUInt16(&ptr[2]), ReadMUInt16(&ptr[4]), this->thisClass, 0, sb, typeBuff, lvTable, lvTableLen, (accessFlags & 8) != 0, importList, packageName);
+	this->DetailNameType(method.nameIndex, method.descriptorIndex, this->thisClass, 0, sb, typeBuff, &method, importList, packageName);
 	ptr = &this->methods[index][8];
 	i = 0;
 	while (i < attrCnt)
@@ -3671,7 +4200,7 @@ void IO::JavaClass::AppendCodeMethod(Text::StringBuilderUTF *sb, UOSInt index, U
 			{
 				if (Text::StrEquals(sbuff, (const UTF8Char*)"Code"))
 				{
-					this->AppendCodeMethodCodes(sb, lev + 1, importList ,packageName, ptr, (accessFlags & 8) != 0, typeBuff, lvTable, lvTableLen);
+					this->AppendCodeMethodCodes(sb, lev + 1, importList ,packageName, ptr, typeBuff, &method);
 				}
 			}
 			ptr += len + 6;
@@ -3681,9 +4210,10 @@ void IO::JavaClass::AppendCodeMethod(Text::StringBuilderUTF *sb, UOSInt index, U
 	}
 	this->AppendIndent(sb, lev);
 	sb->Append((const UTF8Char*)"}\r\n");
+	MethodFree(&method);
 }
 
-void IO::JavaClass::AppendCodeMethodCodes(Text::StringBuilderUTF *sb, UOSInt lev, Data::ArrayListStrUTF8 *importList, const UTF8Char *packageName, const UInt8 *codeAttr, Bool staticFunc, const UTF8Char *typeBuff, const UInt8 *lvTable, UOSInt lvTableLen)
+void IO::JavaClass::AppendCodeMethodCodes(Text::StringBuilderUTF *sb, UOSInt lev, Data::ArrayListStrUTF8 *importList, const UTF8Char *packageName, const UInt8 *codeAttr, const UTF8Char *typeBuff, const MethodInfo *method)
 {
 	IO::JavaClass::DecompileEnv env;
 	UInt16 maxLocal = ReadMUInt16(&codeAttr[8]);
@@ -3694,11 +4224,9 @@ void IO::JavaClass::AppendCodeMethodCodes(Text::StringBuilderUTF *sb, UOSInt lev
 	UOSInt i;
 	Text::StringBuilderUTF8 sbTmp;
 	env.localTypes = MemAlloc(const UTF8Char *, maxLocal);
-	env.lvTable = lvTable;
-	env.lvTableLen = lvTableLen;
+	env.method = method;
 	env.stacks = &stackVal;
 	env.stackTypes = &stackTypes;
-	env.staticFunc = staticFunc;
 	env.importList = importList;
 	env.packageName = packageName;
 
@@ -3713,7 +4241,7 @@ void IO::JavaClass::AppendCodeMethodCodes(Text::StringBuilderUTF *sb, UOSInt lev
 		}
 	}
 
-	if (staticFunc)
+	if (method && (method->accessFlags & 8) != 0)
 	{
 		i = 0;
 	}
@@ -4313,7 +4841,8 @@ Bool IO::JavaClass::FileStructDetail(Text::StringBuilderUTF *sb)
 	i = 0;
 	while (i < this->methodCnt)
 	{
-		UInt16 accessFlags = ReadMUInt16(&this->methods[i][0]);
+		MethodInfo method;
+		this->MethodParse(&method, this->methods[i]);
 		sb->Append((const UTF8Char*)"Method ");
 		sb->AppendUOSInt(i);
 		sb->Append((const UTF8Char*)" Access Flags = ");
@@ -4328,7 +4857,7 @@ Bool IO::JavaClass::FileStructDetail(Text::StringBuilderUTF *sb)
 		sb->AppendUOSInt(i);
 		sb->Append((const UTF8Char*)" descriptor index = ");
 		sb->AppendU16(ReadMUInt16(&this->methods[i][4]));
-		this->DetailNameType(ReadMUInt16(&this->methods[i][2]), ReadMUInt16(&this->methods[i][4]), this->thisClass, (const UTF8Char*)" ", sb, 0, 0, 0, (accessFlags & 8) != 0, 0, 0);
+		this->DetailNameType(ReadMUInt16(&this->methods[i][2]), ReadMUInt16(&this->methods[i][4]), this->thisClass, (const UTF8Char*)" ", sb, 0, &method, 0, 0);
 		sb->Append((const UTF8Char*)"\r\n");
 		UInt16 attributes_count = ReadMUInt16(&this->methods[i][6]);
 		sb->Append((const UTF8Char*)"Method ");
@@ -4343,6 +4872,7 @@ Bool IO::JavaClass::FileStructDetail(Text::StringBuilderUTF *sb)
 			attr = this->DetailAttribute(attr, 1, sb);
 			j++;
 		}
+		this->MethodFree(&method);
 		i++;
 	}
 
@@ -4385,91 +4915,42 @@ Bool IO::JavaClass::MethodsGetDecl(UOSInt index, Text::StringBuilderUTF *sb)
 		return false;
 	}
 
-	UTF8Char sbuff[512];
-	UInt8 *ptr = this->methods[index];
-	UInt16 accessFlags = ReadMUInt16(ptr);
-	UInt16 attrCnt = ReadMUInt16(&ptr[6]);
-	UInt16 i;
-	UInt8 *lvTable = 0;
-	UOSInt lvTableLen = 0;
-
-	ptr = &this->methods[index][8];
-	i = 0;
-	while (i < attrCnt)
-	{
-		UInt32 len = ReadMUInt32(&ptr[2]);
-		UInt16 nameIndex = ReadMUInt16(&ptr[0]);
-		sbuff[0] = 0;
-		if (this->GetConstName(sbuff, nameIndex))
-		{
-			if (Text::StrEquals(sbuff, (const UTF8Char*)"Code"))
-			{
-				UInt32 codeLen = ReadMUInt32(&ptr[10]);
-				UInt8 *ptr2;
-				ptr2 = &ptr[14 + codeLen];
-				UInt16 exceptLen = ReadMUInt16(&ptr2[0]);
-				ptr2 += 2 + exceptLen * 8;
-				UInt16 attrCount = ReadMUInt16(&ptr2[0]);
-				ptr2 += 2;
-				i = 0;
-				while (i < attrCount)
-				{
-					UInt32 len = ReadMUInt32(&ptr2[2]);
-					UInt16 nameIndex = ReadMUInt16(&ptr2[0]);
-					sbuff[0] = 0;
-					if (this->GetConstName(sbuff, nameIndex))
-					{
-						if (Text::StrEquals(sbuff, (const UTF8Char*)"LocalVariableTable"))
-						{
-							lvTable = &ptr2[6];
-							lvTableLen = len;
-						}
-					}
-					ptr2 += 6 + len;
-					i++;
-				}
-
-			}
-		}
-		ptr += len + 6;
-
-		i++;
-	}
-
-	ptr = this->methods[index];
-	if (accessFlags & 1)
+	MethodInfo method;
+	this->MethodParse(&method, this->methods[index]);
+	if (method.accessFlags & 1)
 	{
 		sb->Append((const UTF8Char*)"public ");
 	}
-	if (accessFlags & 2)
+	if (method.accessFlags & 2)
 	{
 		sb->Append((const UTF8Char*)"private ");
 	}
-	if (accessFlags & 4)
+	if (method.accessFlags & 4)
 	{
 		sb->Append((const UTF8Char*)"protected ");
 	}
-	if (accessFlags & 8)
+	if (method.accessFlags & 8)
 	{
 		sb->Append((const UTF8Char*)"static ");
 	}
-	if (accessFlags & 0x10)
+	if (method.accessFlags & 0x10)
 	{
 		sb->Append((const UTF8Char*)"final ");
 	}
-	if (accessFlags & 0x20)
+	if (method.accessFlags & 0x20)
 	{
 		sb->Append((const UTF8Char*)"synchronized ");
 	}
-	if (accessFlags & 0x100)
+	if (method.accessFlags & 0x100)
 	{
 		sb->Append((const UTF8Char*)"native ");
 	}
-	if (accessFlags & 0x400)
+	if (method.accessFlags & 0x400)
 	{
 		sb->Append((const UTF8Char*)"abstract ");
 	}
-	this->DetailNameType(ReadMUInt16(&ptr[2]), ReadMUInt16(&ptr[4]), thisClass, 0, sb, 0, lvTable, lvTableLen, (accessFlags & 8) != 0, 0, 0);
+	this->DetailNameType(method.nameIndex, method.descriptorIndex, thisClass, 0, sb, 0, &method, 0, 0);
+	this->MethodFree(&method);
 	return true;
 }
 
@@ -4546,7 +5027,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			sb->Append((const UTF8Char*)", next code = ");
 			sb->AppendHex8(codePtr[0]);
 			sb->Append((const UTF8Char*)"\r\n");
-			return ET_ERROR;
+			return EndType::Error;
 		}
 		switch (codePtr[0])
 		{
@@ -4655,39 +5136,39 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			codePtr += 3;
 			break;
 		case 0x15: //iload
-			this->GetLVName(sbuff, codePtr[1], env->lvTable, env->lvTableLen, (UOSInt)(codePtr - env->codeStart));
+			this->GetLVName(sbuff, codePtr[1], env->method, (UOSInt)(codePtr - env->codeStart));
 			env->stacks->Add(Text::StrCopyNew(sbuff));
 			env->stackTypes->Add(Text::StrCopyNew(env->localTypes[codePtr[1]]));
 			codePtr += 2;
 			break;
 		case 0x16: //lload
-			this->GetLVName(sbuff, codePtr[1], env->lvTable, env->lvTableLen, (UOSInt)(codePtr - env->codeStart));
+			this->GetLVName(sbuff, codePtr[1], env->method, (UOSInt)(codePtr - env->codeStart));
 			env->stacks->Add(Text::StrCopyNew(sbuff));
 			env->stackTypes->Add(Text::StrCopyNew(env->localTypes[codePtr[1]]));
 			codePtr += 2;
 			break;
 		case 0x17: //fload
-			this->GetLVName(sbuff, codePtr[1], env->lvTable, env->lvTableLen, (UOSInt)(codePtr - env->codeStart));
+			this->GetLVName(sbuff, codePtr[1], env->method, (UOSInt)(codePtr - env->codeStart));
 			env->stacks->Add(Text::StrCopyNew(sbuff));
 			env->stackTypes->Add(Text::StrCopyNew(env->localTypes[codePtr[1]]));
 			codePtr += 2;
 			break;
 		case 0x18: //dload
-			this->GetLVName(sbuff, codePtr[1], env->lvTable, env->lvTableLen, (UOSInt)(codePtr - env->codeStart));
+			this->GetLVName(sbuff, codePtr[1], env->method, (UOSInt)(codePtr - env->codeStart));
 			env->stacks->Add(Text::StrCopyNew(sbuff));
 			env->stackTypes->Add(Text::StrCopyNew(env->localTypes[codePtr[1]]));
 			codePtr += 2;
 			break;
 		case 0x19: //aload
-			this->GetLVName(sbuff, codePtr[1], env->lvTable, env->lvTableLen, (UOSInt)(codePtr - env->codeStart));
+			this->GetLVName(sbuff, codePtr[1], env->method, (UOSInt)(codePtr - env->codeStart));
 			env->stacks->Add(Text::StrCopyNew(sbuff));
 			env->stackTypes->Add(Text::StrCopyNew(env->localTypes[codePtr[1]]));
 			codePtr += 2;
 			break;
 		case 0x1A: //iload_0
-			if (env->staticFunc)
+			if (env->method && (env->method->accessFlags & 8) != 0)
 			{
-				this->GetLVName(sbuff, 0, env->lvTable, env->lvTableLen, (UOSInt)(codePtr - env->codeStart));
+				this->GetLVName(sbuff, 0, env->method, (UOSInt)(codePtr - env->codeStart));
 				env->stacks->Add(Text::StrCopyNew(sbuff));
 			}
 			else
@@ -4698,27 +5179,27 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			codePtr++;
 			break;
 		case 0x1B: //iload_1
-			this->GetLVName(sbuff, 1, env->lvTable, env->lvTableLen, (UOSInt)(codePtr - env->codeStart));
+			this->GetLVName(sbuff, 1, env->method, (UOSInt)(codePtr - env->codeStart));
 			env->stacks->Add(Text::StrCopyNew(sbuff));
 			env->stackTypes->Add(Text::StrCopyNew(env->localTypes[1]));
 			codePtr++;
 			break;
 		case 0x1C: //iload_2
-			this->GetLVName(sbuff, 2, env->lvTable, env->lvTableLen, (UOSInt)(codePtr - env->codeStart));
+			this->GetLVName(sbuff, 2, env->method, (UOSInt)(codePtr - env->codeStart));
 			env->stacks->Add(Text::StrCopyNew(sbuff));
 			env->stackTypes->Add(Text::StrCopyNew(env->localTypes[2]));
 			codePtr++;
 			break;
 		case 0x1D: //iload_3
-			this->GetLVName(sbuff, 3, env->lvTable, env->lvTableLen, (UOSInt)(codePtr - env->codeStart));
+			this->GetLVName(sbuff, 3, env->method, (UOSInt)(codePtr - env->codeStart));
 			env->stacks->Add(Text::StrCopyNew(sbuff));
 			env->stackTypes->Add(Text::StrCopyNew(env->localTypes[3]));
 			codePtr++;
 			break;
 		case 0x1E: //lload_0
-			if (env->staticFunc)
+			if (env->method && (env->method->accessFlags & 8) != 0)
 			{
-				this->GetLVName(sbuff, 0, env->lvTable, env->lvTableLen, (UOSInt)(codePtr - env->codeStart));
+				this->GetLVName(sbuff, 0, env->method, (UOSInt)(codePtr - env->codeStart));
 				env->stacks->Add(Text::StrCopyNew(sbuff));
 			}
 			else
@@ -4729,27 +5210,27 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			codePtr++;
 			break;
 		case 0x1F: //lload_1
-			this->GetLVName(sbuff, 1, env->lvTable, env->lvTableLen, (UOSInt)(codePtr - env->codeStart));
+			this->GetLVName(sbuff, 1, env->method, (UOSInt)(codePtr - env->codeStart));
 			env->stacks->Add(Text::StrCopyNew(sbuff));
 			env->stackTypes->Add(Text::StrCopyNew(env->localTypes[1]));
 			codePtr++;
 			break;
 		case 0x20: //lload_2
-			this->GetLVName(sbuff, 2, env->lvTable, env->lvTableLen, (UOSInt)(codePtr - env->codeStart));
+			this->GetLVName(sbuff, 2, env->method, (UOSInt)(codePtr - env->codeStart));
 			env->stacks->Add(Text::StrCopyNew(sbuff));
 			env->stackTypes->Add(Text::StrCopyNew(env->localTypes[2]));
 			codePtr++;
 			break;
 		case 0x21: //lload_3
-			this->GetLVName(sbuff, 3, env->lvTable, env->lvTableLen, (UOSInt)(codePtr - env->codeStart));
+			this->GetLVName(sbuff, 3, env->method, (UOSInt)(codePtr - env->codeStart));
 			env->stacks->Add(Text::StrCopyNew(sbuff));
 			env->stackTypes->Add(Text::StrCopyNew(env->localTypes[3]));
 			codePtr++;
 			break;
 		case 0x22: //fload_0
-			if (env->staticFunc)
+			if (env->method && (env->method->accessFlags & 8) != 0)
 			{
-				this->GetLVName(sbuff, 0, env->lvTable, env->lvTableLen, (UOSInt)(codePtr - env->codeStart));
+				this->GetLVName(sbuff, 0, env->method, (UOSInt)(codePtr - env->codeStart));
 				env->stacks->Add(Text::StrCopyNew(sbuff));
 			}
 			else
@@ -4760,27 +5241,27 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			codePtr++;
 			break;
 		case 0x23: //fload_1
-			this->GetLVName(sbuff, 1, env->lvTable, env->lvTableLen, (UOSInt)(codePtr - env->codeStart));
+			this->GetLVName(sbuff, 1, env->method, (UOSInt)(codePtr - env->codeStart));
 			env->stacks->Add(Text::StrCopyNew(sbuff));
 			env->stackTypes->Add(Text::StrCopyNew(env->localTypes[1]));
 			codePtr++;
 			break;
 		case 0x24: //fload_2
-			this->GetLVName(sbuff, 2, env->lvTable, env->lvTableLen, (UOSInt)(codePtr - env->codeStart));
+			this->GetLVName(sbuff, 2, env->method, (UOSInt)(codePtr - env->codeStart));
 			env->stacks->Add(Text::StrCopyNew(sbuff));
 			env->stackTypes->Add(Text::StrCopyNew(env->localTypes[2]));
 			codePtr++;
 			break;
 		case 0x25: //fload_3
-			this->GetLVName(sbuff, 3, env->lvTable, env->lvTableLen, (UOSInt)(codePtr - env->codeStart));
+			this->GetLVName(sbuff, 3, env->method, (UOSInt)(codePtr - env->codeStart));
 			env->stacks->Add(Text::StrCopyNew(sbuff));
 			env->stackTypes->Add(Text::StrCopyNew(env->localTypes[3]));
 			codePtr++;
 			break;
 		case 0x26: //dload_0
-			if (env->staticFunc)
+			if (env->method && (env->method->accessFlags & 8) != 0)
 			{
-				this->GetLVName(sbuff, 0, env->lvTable, env->lvTableLen, (UOSInt)(codePtr - env->codeStart));
+				this->GetLVName(sbuff, 0, env->method, (UOSInt)(codePtr - env->codeStart));
 				env->stacks->Add(Text::StrCopyNew(sbuff));
 			}
 			else
@@ -4791,27 +5272,27 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			codePtr++;
 			break;
 		case 0x27: //dload_1
-			this->GetLVName(sbuff, 1, env->lvTable, env->lvTableLen, (UOSInt)(codePtr - env->codeStart));
+			this->GetLVName(sbuff, 1, env->method, (UOSInt)(codePtr - env->codeStart));
 			env->stacks->Add(Text::StrCopyNew(sbuff));
 			env->stackTypes->Add(Text::StrCopyNew(env->localTypes[1]));
 			codePtr++;
 			break;
 		case 0x28: //dload_2
-			this->GetLVName(sbuff, 2, env->lvTable, env->lvTableLen, (UOSInt)(codePtr - env->codeStart));
+			this->GetLVName(sbuff, 2, env->method, (UOSInt)(codePtr - env->codeStart));
 			env->stacks->Add(Text::StrCopyNew(sbuff));
 			env->stackTypes->Add(Text::StrCopyNew(env->localTypes[2]));
 			codePtr++;
 			break;
 		case 0x29: //dload_3
-			this->GetLVName(sbuff, 3, env->lvTable, env->lvTableLen, (UOSInt)(codePtr - env->codeStart));
+			this->GetLVName(sbuff, 3, env->method, (UOSInt)(codePtr - env->codeStart));
 			env->stacks->Add(Text::StrCopyNew(sbuff));
 			env->stackTypes->Add(Text::StrCopyNew(env->localTypes[3]));
 			codePtr++;
 			break;
 		case 0x2A: //aload_0
-			if (env->staticFunc)
+			if (env->method && (env->method->accessFlags & 8) != 0)
 			{
-				this->GetLVName(sbuff, 0, env->lvTable, env->lvTableLen, (UOSInt)(codePtr - env->codeStart));
+				this->GetLVName(sbuff, 0, env->method, (UOSInt)(codePtr - env->codeStart));
 				env->stacks->Add(Text::StrCopyNew(sbuff));
 			}
 			else
@@ -4822,19 +5303,19 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			codePtr++;
 			break;
 		case 0x2B: //aload_1
-			this->GetLVName(sbuff, 1, env->lvTable, env->lvTableLen, (UOSInt)(codePtr - env->codeStart));
+			this->GetLVName(sbuff, 1, env->method, (UOSInt)(codePtr - env->codeStart));
 			env->stacks->Add(Text::StrCopyNew(sbuff));
 			env->stackTypes->Add(Text::StrCopyNew(env->localTypes[1]));
 			codePtr++;
 			break;
 		case 0x2C: //aload_2
-			this->GetLVName(sbuff, 2, env->lvTable, env->lvTableLen, (UOSInt)(codePtr - env->codeStart));
+			this->GetLVName(sbuff, 2, env->method, (UOSInt)(codePtr - env->codeStart));
 			env->stacks->Add(Text::StrCopyNew(sbuff));
 			env->stackTypes->Add(Text::StrCopyNew(env->localTypes[2]));
 			codePtr++;
 			break;
 		case 0x2D: //aload_3
-			this->GetLVName(sbuff, 3, env->lvTable, env->lvTableLen, (UOSInt)(codePtr - env->codeStart));
+			this->GetLVName(sbuff, 3, env->method, (UOSInt)(codePtr - env->codeStart));
 			env->stacks->Add(Text::StrCopyNew(sbuff));
 			env->stackTypes->Add(Text::StrCopyNew(env->localTypes[3]));
 			codePtr++;
@@ -4846,7 +5327,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				sb->Append((const UTF8Char*)"// iaload stack invalid: count = ");
 				sb->AppendUOSInt(env->stacks->GetCount());
 				sb->Append((const UTF8Char*)"\r\n");
-				return ET_ERROR;
+				return EndType::Error;
 			}
 			sbTmp.ClearStr();
 			sbTmp.Append(env->stacks->GetItem(env->stacks->GetCount() - 2));
@@ -4868,7 +5349,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				sb->Append((const UTF8Char*)"// laload stack invalid: count = ");
 				sb->AppendUOSInt(env->stacks->GetCount());
 				sb->Append((const UTF8Char*)"\r\n");
-				return ET_ERROR;
+				return EndType::Error;
 			}
 			sbTmp.ClearStr();
 			sbTmp.Append(env->stacks->GetItem(env->stacks->GetCount() - 2));
@@ -4890,7 +5371,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				sb->Append((const UTF8Char*)"// faload stack invalid: count = ");
 				sb->AppendUOSInt(env->stacks->GetCount());
 				sb->Append((const UTF8Char*)"\r\n");
-				return ET_ERROR;
+				return EndType::Error;
 			}
 			sbTmp.ClearStr();
 			sbTmp.Append(env->stacks->GetItem(env->stacks->GetCount() - 2));
@@ -4912,7 +5393,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				sb->Append((const UTF8Char*)"// daload stack invalid: count = ");
 				sb->AppendUOSInt(env->stacks->GetCount());
 				sb->Append((const UTF8Char*)"\r\n");
-				return ET_ERROR;
+				return EndType::Error;
 			}
 			sbTmp.ClearStr();
 			sbTmp.Append(env->stacks->GetItem(env->stacks->GetCount() - 2));
@@ -4934,7 +5415,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				sb->Append((const UTF8Char*)"// aaload stack invalid: count = ");
 				sb->AppendUOSInt(env->stacks->GetCount());
 				sb->Append((const UTF8Char*)"\r\n");
-				return ET_ERROR;
+				return EndType::Error;
 			}
 			sbTmp2.ClearStr();
 			sbTmp2.Append(env->stackTypes->GetItem(env->stackTypes->GetCount() - 2));
@@ -4944,7 +5425,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				sb->Append((const UTF8Char*)"// aaload stack not array type: ");
 				sb->Append(env->stackTypes->GetItem(env->stackTypes->GetCount() - 2));
 				sb->Append((const UTF8Char*)"\r\n");
-				return ET_ERROR;
+				return EndType::Error;
 			}
 			sbTmp2.RemoveChars(2);
 			sbTmp.ClearStr();
@@ -4967,7 +5448,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				sb->Append((const UTF8Char*)"// baload stack invalid: count = ");
 				sb->AppendUOSInt(env->stacks->GetCount());
 				sb->Append((const UTF8Char*)"\r\n");
-				return ET_ERROR;
+				return EndType::Error;
 			}
 			sbTmp.ClearStr();
 			sbTmp.Append(env->stacks->GetItem(env->stacks->GetCount() - 2));
@@ -4989,7 +5470,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				sb->Append((const UTF8Char*)"// caload stack invalid: count = ");
 				sb->AppendUOSInt(env->stacks->GetCount());
 				sb->Append((const UTF8Char*)"\r\n");
-				return ET_ERROR;
+				return EndType::Error;
 			}
 			sbTmp.ClearStr();
 			sbTmp.Append(env->stacks->GetItem(env->stacks->GetCount() - 2));
@@ -5011,7 +5492,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				sb->Append((const UTF8Char*)"// saload stack invalid: count = ");
 				sb->AppendUOSInt(env->stacks->GetCount());
 				sb->Append((const UTF8Char*)"\r\n");
-				return ET_ERROR;
+				return EndType::Error;
 			}
 			sbTmp.ClearStr();
 			sbTmp.Append(env->stacks->GetItem(env->stacks->GetCount() - 2));
@@ -5132,7 +5613,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				this->AppendIndent(sb, lev);
 				sb->Append((const UTF8Char*)"// iastore stack invalid");
 				sb->Append((const UTF8Char*)"\r\n");
-				return ET_ERROR;
+				return EndType::Error;
 			}
 			else
 			{
@@ -5152,7 +5633,9 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				sb->Append(indexStr);
 				sb->Append((const UTF8Char*)"] = ");
 				sb->Append(valueStr);
-				sb->Append((const UTF8Char*)";\r\n");
+				sb->Append((const UTF8Char*)";");
+				this->AppendLineNum(sb, env, codePtr);
+				sb->Append((const UTF8Char*)"\r\n");
 				Text::StrDelNew(nameStr);
 				Text::StrDelNew(indexStr);
 				Text::StrDelNew(valueStr);
@@ -5166,7 +5649,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				this->AppendIndent(sb, lev);
 				sb->Append((const UTF8Char*)"// dastore stack invalid");
 				sb->Append((const UTF8Char*)"\r\n");
-				return ET_ERROR;
+				return EndType::Error;
 			}
 			else
 			{
@@ -5186,7 +5669,9 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				sb->Append(indexStr);
 				sb->Append((const UTF8Char*)"] = ");
 				sb->Append(valueStr);
-				sb->Append((const UTF8Char*)";\r\n");
+				sb->Append((const UTF8Char*)";");
+				this->AppendLineNum(sb, env, codePtr);
+				sb->Append((const UTF8Char*)"\r\n");
 				Text::StrDelNew(nameStr);
 				Text::StrDelNew(indexStr);
 				Text::StrDelNew(valueStr);
@@ -5200,7 +5685,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				this->AppendIndent(sb, lev);
 				sb->Append((const UTF8Char*)"// aastore stack invalid");
 				sb->Append((const UTF8Char*)"\r\n");
-				return ET_ERROR;
+				return EndType::Error;
 			}
 			else
 			{
@@ -5243,7 +5728,9 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 					sb->Append(indexStr);
 					sb->Append((const UTF8Char*)"] = ");
 					sb->Append(valueStr);
-					sb->Append((const UTF8Char*)";\r\n");
+					sb->Append((const UTF8Char*)";");
+					this->AppendLineNum(sb, env, codePtr);
+					sb->Append((const UTF8Char*)"\r\n");
 				}
 				Text::StrDelNew(nameStr);
 				Text::StrDelNew(indexStr);
@@ -5258,11 +5745,13 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				this->AppendIndent(sb, lev);
 				sb->Append((const UTF8Char*)"// pop stack invalid");
 				sb->Append((const UTF8Char*)"\r\n");
-				return ET_ERROR;
+				return EndType::Error;
 			}
 			this->AppendIndent(sb, lev);
 			sb->Append(env->stacks->GetItem(env->stacks->GetCount() - 1));
-			sb->Append((const UTF8Char*)";\r\n");
+			sb->Append((const UTF8Char*)";");
+			this->AppendLineNum(sb, env, codePtr);
+			sb->Append((const UTF8Char*)"\r\n");
 			Text::StrDelNew(env->stacks->RemoveAt(env->stacks->GetCount() - 1));
 			Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
 			codePtr++;
@@ -5273,7 +5762,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				this->AppendIndent(sb, lev);
 				sb->Append((const UTF8Char*)"// dup stack invalid");
 				sb->Append((const UTF8Char*)"\r\n");
-				return ET_ERROR;
+				return EndType::Error;
 			}
 			env->stacks->Add(Text::StrCopyNew(env->stacks->GetItem(env->stacks->GetCount() - 1)));
 			env->stackTypes->Add(Text::StrCopyNew(env->stackTypes->GetItem(env->stackTypes->GetCount() - 1)));
@@ -5286,7 +5775,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 					this->AppendIndent(sb, lev);
 					sb->Append((const UTF8Char*)"// dup_x1 stack invalid");
 					sb->Append((const UTF8Char*)"\r\n");
-					return ET_ERROR;
+					return EndType::Error;
 				}
 				UOSInt cnt = env->stacks->GetCount();
 				env->stacks->Insert(cnt - 2, Text::StrCopyNew(env->stacks->GetItem(cnt - 1)));
@@ -5301,7 +5790,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 					this->AppendIndent(sb, lev);
 					sb->Append((const UTF8Char*)"// iadd stack invalid");
 					sb->Append((const UTF8Char*)"\r\n");
-					return ET_ERROR;
+					return EndType::Error;
 				}
 				const UTF8Char *csptr = env->stacks->RemoveAt(env->stacks->GetCount() - 2);
 				sbTmp.ClearStr();
@@ -5323,7 +5812,29 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 					this->AppendIndent(sb, lev);
 					sb->Append((const UTF8Char*)"// ladd stack invalid");
 					sb->Append((const UTF8Char*)"\r\n");
-					return ET_ERROR;
+					return EndType::Error;
+				}
+				const UTF8Char *csptr = env->stacks->RemoveAt(env->stacks->GetCount() - 2);
+				sbTmp.ClearStr();
+				sbTmp.Append(csptr);
+				Text::StrDelNew(csptr);
+				sbTmp.Append((const UTF8Char*)" + ");
+				csptr = env->stacks->RemoveAt(env->stacks->GetCount() - 1);
+				sbTmp.Append(csptr);
+				Text::StrDelNew(csptr);
+				env->stacks->Add(Text::StrCopyNew(sbTmp.ToString()));
+				Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
+				codePtr++;
+			}
+			break;
+		case 0x62: //fadd
+			{
+				if (env->stacks->GetCount() <= 1)
+				{
+					this->AppendIndent(sb, lev);
+					sb->Append((const UTF8Char*)"// fadd stack invalid");
+					sb->Append((const UTF8Char*)"\r\n");
+					return EndType::Error;
 				}
 				const UTF8Char *csptr = env->stacks->RemoveAt(env->stacks->GetCount() - 2);
 				sbTmp.ClearStr();
@@ -5345,13 +5856,79 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 					this->AppendIndent(sb, lev);
 					sb->Append((const UTF8Char*)"// dadd stack invalid");
 					sb->Append((const UTF8Char*)"\r\n");
-					return ET_ERROR;
+					return EndType::Error;
 				}
 				const UTF8Char *csptr = env->stacks->RemoveAt(env->stacks->GetCount() - 2);
 				sbTmp.ClearStr();
 				sbTmp.Append(csptr);
 				Text::StrDelNew(csptr);
 				sbTmp.Append((const UTF8Char*)" + ");
+				csptr = env->stacks->RemoveAt(env->stacks->GetCount() - 1);
+				sbTmp.Append(csptr);
+				Text::StrDelNew(csptr);
+				env->stacks->Add(Text::StrCopyNew(sbTmp.ToString()));
+				Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
+				codePtr++;
+			}
+			break;
+		case 0x64: //isub
+			{
+				if (env->stacks->GetCount() <= 1)
+				{
+					this->AppendIndent(sb, lev);
+					sb->Append((const UTF8Char*)"// isub stack invalid");
+					sb->Append((const UTF8Char*)"\r\n");
+					return EndType::Error;
+				}
+				const UTF8Char *csptr = env->stacks->RemoveAt(env->stacks->GetCount() - 2);
+				sbTmp.ClearStr();
+				sbTmp.Append(csptr);
+				Text::StrDelNew(csptr);
+				sbTmp.Append((const UTF8Char*)" - ");
+				csptr = env->stacks->RemoveAt(env->stacks->GetCount() - 1);
+				sbTmp.Append(csptr);
+				Text::StrDelNew(csptr);
+				env->stacks->Add(Text::StrCopyNew(sbTmp.ToString()));
+				Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
+				codePtr++;
+			}
+			break;
+		case 0x65: //lsub
+			{
+				if (env->stacks->GetCount() <= 1)
+				{
+					this->AppendIndent(sb, lev);
+					sb->Append((const UTF8Char*)"// lsub stack invalid");
+					sb->Append((const UTF8Char*)"\r\n");
+					return EndType::Error;
+				}
+				const UTF8Char *csptr = env->stacks->RemoveAt(env->stacks->GetCount() - 2);
+				sbTmp.ClearStr();
+				sbTmp.Append(csptr);
+				Text::StrDelNew(csptr);
+				sbTmp.Append((const UTF8Char*)" - ");
+				csptr = env->stacks->RemoveAt(env->stacks->GetCount() - 1);
+				sbTmp.Append(csptr);
+				Text::StrDelNew(csptr);
+				env->stacks->Add(Text::StrCopyNew(sbTmp.ToString()));
+				Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
+				codePtr++;
+			}
+			break;
+		case 0x66: //fsub
+			{
+				if (env->stacks->GetCount() <= 1)
+				{
+					this->AppendIndent(sb, lev);
+					sb->Append((const UTF8Char*)"// fsub stack invalid");
+					sb->Append((const UTF8Char*)"\r\n");
+					return EndType::Error;
+				}
+				const UTF8Char *csptr = env->stacks->RemoveAt(env->stacks->GetCount() - 2);
+				sbTmp.ClearStr();
+				sbTmp.Append(csptr);
+				Text::StrDelNew(csptr);
+				sbTmp.Append((const UTF8Char*)" - ");
 				csptr = env->stacks->RemoveAt(env->stacks->GetCount() - 1);
 				sbTmp.Append(csptr);
 				Text::StrDelNew(csptr);
@@ -5367,7 +5944,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 					this->AppendIndent(sb, lev);
 					sb->Append((const UTF8Char*)"// dsub stack invalid");
 					sb->Append((const UTF8Char*)"\r\n");
-					return ET_ERROR;
+					return EndType::Error;
 				}
 				const UTF8Char *csptr = env->stacks->RemoveAt(env->stacks->GetCount() - 2);
 				sbTmp.ClearStr();
@@ -5389,7 +5966,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 					this->AppendIndent(sb, lev);
 					sb->Append((const UTF8Char*)"// dmul stack invalid");
 					sb->Append((const UTF8Char*)"\r\n");
-					return ET_ERROR;
+					return EndType::Error;
 				}
 				const UTF8Char *csptr = env->stacks->RemoveAt(env->stacks->GetCount() - 2);
 				sbTmp.ClearStr();
@@ -5429,7 +6006,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 					this->AppendIndent(sb, lev);
 					sb->Append((const UTF8Char*)"// ddiv stack invalid");
 					sb->Append((const UTF8Char*)"\r\n");
-					return ET_ERROR;
+					return EndType::Error;
 				}
 				const UTF8Char *csptr = env->stacks->RemoveAt(env->stacks->GetCount() - 2);
 				sbTmp.ClearStr();
@@ -5469,7 +6046,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 					this->AppendIndent(sb, lev);
 					sb->Append((const UTF8Char*)"// irem stack invalid");
 					sb->Append((const UTF8Char*)"\r\n");
-					return ET_ERROR;
+					return EndType::Error;
 				}
 				const UTF8Char *csptr = env->stacks->RemoveAt(env->stacks->GetCount() - 2);
 				sbTmp.ClearStr();
@@ -5491,7 +6068,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 					this->AppendIndent(sb, lev);
 					sb->Append((const UTF8Char*)"// dneg stack invalid");
 					sb->Append((const UTF8Char*)"\r\n");
-					return ET_ERROR;
+					return EndType::Error;
 				}
 				const UTF8Char *csptr = env->stacks->RemoveAt(env->stacks->GetCount() - 1);
 				sbTmp.ClearStr();
@@ -5519,7 +6096,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 					this->AppendIndent(sb, lev);
 					sb->Append((const UTF8Char*)"// ixor stack invalid");
 					sb->Append((const UTF8Char*)"\r\n");
-					return ET_ERROR;
+					return EndType::Error;
 				}
 				const UTF8Char *csptr = env->stacks->RemoveAt(env->stacks->GetCount() - 2);
 				sbTmp.ClearStr();
@@ -5546,12 +6123,19 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			break;
 		case 0x84: //iinc
 			this->AppendIndent(sb, lev);
-			this->GetLVName(sbuff, codePtr[1], env->lvTable, env->lvTableLen, (UOSInt)(codePtr - env->codeStart));
+			this->GetLVName(sbuff, codePtr[1], env->method, (UOSInt)(codePtr - env->codeStart));
 			sb->Append(sbuff);
 			sb->Append((const UTF8Char*)" += ");
 			sb->AppendI16((Int16)codePtr[2]);
-			sb->Append((const UTF8Char*)";\r\n");
+			sb->Append((const UTF8Char*)";");
+			this->AppendLineNum(sb, env, codePtr);
+			sb->Append((const UTF8Char*)"\r\n");
 			codePtr += 3;
+			break;
+		case 0x85: //i2l
+			Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
+			env->stackTypes->Add(Text::StrCopyNew((const UTF8Char*)"long"));
+			codePtr += 1;
 			break;
 		case 0x94: //lcmp
 			if (env->stacks->GetCount() <= 1)
@@ -5560,7 +6144,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				sb->Append((const UTF8Char*)"// lcmp stack invalid: ");
 				sb->AppendUOSInt(env->stacks->GetCount());
 				sb->Append((const UTF8Char*)"\r\n");
-				return ET_ERROR;
+				return EndType::Error;
 			}
 			else
 			{
@@ -5568,32 +6152,32 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				switch (codePtr[1])
 				{
 				case 0x99: //ifeq
-					ct = CT_EQ;
+					ct = CondType::EQ;
 					break;
 				case 0x9A: //ifne
-					ct = CT_NE;
+					ct = CondType::NE;
 					break;
 				case 0x9B: //iflt
-					ct = CT_LT;
+					ct = CondType::LT;
 					break;
 				case 0x9C: //ifge
-					ct = CT_GE;
+					ct = CondType::GE;
 					break;
 				case 0x9D: //ifgt
-					ct = CT_GT;
+					ct = CondType::GT;
 					break;
 				case 0x9E: //ifle
-					ct = CT_LE;
+					ct = CondType::LE;
 					break;
 				default:
 					this->AppendIndent(sb, lev);
 					sb->Append((const UTF8Char*)"// lcmp next opcode invalid: ");
 					sb->AppendHex8(codePtr[1]);
 					sb->Append((const UTF8Char*)"\r\n");
-					return ET_ERROR;
+					return EndType::Error;
 				}
 				EndType et = this->DecompileCondBranch(codePtr + 4, codePtr + ReadMInt16(&codePtr[2]) + 1, ct, env, lev, sb);
-				if (et == ET_ERROR)
+				if (et == EndType::Error)
 				{
 					return et;
 				}
@@ -5606,7 +6190,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				this->AppendIndent(sb, lev);
 				sb->Append((const UTF8Char*)"// ifeq stack invalid");
 				sb->Append((const UTF8Char*)"\r\n");
-				return ET_ERROR;
+				return EndType::Error;
 			}
 			else
 			{
@@ -5617,17 +6201,19 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				{
 					this->AppendIndent(sb, lev);
 					sb->Append((const UTF8Char*)"return ");
-					AppendCond(sb, env, env->stacks->GetCount() - 2, CT_EQ, true);
-					sb->Append((const UTF8Char*)";\r\n");
+					AppendCond(sb, env, env->stacks->GetCount() - 2, CondType::EQ, true);
+					sb->Append((const UTF8Char*)";");
+					this->AppendLineNum(sb, env, codePtr);
+					sb->Append((const UTF8Char*)"\r\n");
 					Text::StrDelNew(env->stacks->RemoveAt(env->stacks->GetCount() - 1));
 					Text::StrDelNew(env->stacks->RemoveAt(env->stacks->GetCount() - 1));
 					Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
 					Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
 					env->endPtr = codePtr + 7;
-					return ET_RETURN;
+					return EndType::Return;
 				}
-				EndType et = this->DecompileCondBranch(codePtr + 3, codePtr + codeOfst, CT_EQ, env, lev, sb);
-				if (et == ET_ERROR)
+				EndType et = this->DecompileCondBranch(codePtr + 3, codePtr + codeOfst, CondType::EQ, env, lev, sb);
+				if (et == EndType::Error)
 				{
 					return et;
 				}
@@ -5640,7 +6226,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				this->AppendIndent(sb, lev);
 				sb->Append((const UTF8Char*)"// ifne stack invalid");
 				sb->Append((const UTF8Char*)"\r\n");
-				return ET_ERROR;
+				return EndType::Error;
 			}
 			else
 			{
@@ -5651,17 +6237,19 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				{
 					this->AppendIndent(sb, lev);
 					sb->Append((const UTF8Char*)"return ");
-					AppendCond(sb, env, env->stacks->GetCount() - 2, CT_NE, true);
-					sb->Append((const UTF8Char*)";\r\n");
+					AppendCond(sb, env, env->stacks->GetCount() - 2, CondType::NE, true);
+					sb->Append((const UTF8Char*)";");
+					AppendLineNum(sb, env, codePtr);
+					sb->Append((const UTF8Char*)"\r\n");
 					Text::StrDelNew(env->stacks->RemoveAt(env->stacks->GetCount() - 1));
 					Text::StrDelNew(env->stacks->RemoveAt(env->stacks->GetCount() - 1));
 					Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
 					Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
 					env->endPtr = codePtr + 7;
-					return ET_RETURN;
+					return EndType::Return;
 				}
-				EndType et = this->DecompileCondBranch(codePtr + 3, codePtr + codeOfst, CT_NE, env, lev, sb);
-				if (et == ET_ERROR)
+				EndType et = this->DecompileCondBranch(codePtr + 3, codePtr + codeOfst, CondType::NE, env, lev, sb);
+				if (et == EndType::Error)
 				{
 					return et;
 				}
@@ -5674,7 +6262,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				this->AppendIndent(sb, lev);
 				sb->Append((const UTF8Char*)"// iflt stack invalid");
 				sb->Append((const UTF8Char*)"\r\n");
-				return ET_ERROR;
+				return EndType::Error;
 			}
 			else
 			{
@@ -5685,17 +6273,19 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				{
 					this->AppendIndent(sb, lev);
 					sb->Append((const UTF8Char*)"return ");
-					AppendCond(sb, env, env->stacks->GetCount() - 2, CT_LT, true);
-					sb->Append((const UTF8Char*)";\r\n");
+					AppendCond(sb, env, env->stacks->GetCount() - 2, CondType::LT, true);
+					sb->Append((const UTF8Char*)";");
+					this->AppendLineNum(sb, env, codePtr);
+					sb->Append((const UTF8Char*)"\r\n");
 					Text::StrDelNew(env->stacks->RemoveAt(env->stacks->GetCount() - 1));
 					Text::StrDelNew(env->stacks->RemoveAt(env->stacks->GetCount() - 1));
 					Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
 					Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
 					env->endPtr = codePtr + 7;
-					return ET_RETURN;
+					return EndType::Return;
 				}
-				EndType et = this->DecompileCondBranch(codePtr + 3, codePtr + codeOfst, CT_LT, env, lev, sb);
-				if (et == ET_ERROR)
+				EndType et = this->DecompileCondBranch(codePtr + 3, codePtr + codeOfst, CondType::LT, env, lev, sb);
+				if (et == EndType::Error)
 				{
 					return et;
 				}
@@ -5708,7 +6298,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				this->AppendIndent(sb, lev);
 				sb->Append((const UTF8Char*)"// ifge stack invalid");
 				sb->Append((const UTF8Char*)"\r\n");
-				return ET_ERROR;
+				return EndType::Error;
 			}
 			else
 			{
@@ -5719,17 +6309,19 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				{
 					this->AppendIndent(sb, lev);
 					sb->Append((const UTF8Char*)"return ");
-					AppendCond(sb, env, env->stacks->GetCount() - 2, CT_GE, true);
-					sb->Append((const UTF8Char*)";\r\n");
+					AppendCond(sb, env, env->stacks->GetCount() - 2, CondType::GE, true);
+					sb->Append((const UTF8Char*)";");
+					this->AppendLineNum(sb, env, codePtr);
+					sb->Append((const UTF8Char*)"\r\n");
 					Text::StrDelNew(env->stacks->RemoveAt(env->stacks->GetCount() - 1));
 					Text::StrDelNew(env->stacks->RemoveAt(env->stacks->GetCount() - 1));
 					Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
 					Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
 					env->endPtr = codePtr + 7;
-					return ET_RETURN;
+					return EndType::Return;
 				}
-				EndType et = this->DecompileCondBranch(codePtr + 3, codePtr + codeOfst, CT_GE, env, lev, sb);
-				if (et == ET_ERROR)
+				EndType et = this->DecompileCondBranch(codePtr + 3, codePtr + codeOfst, CondType::GE, env, lev, sb);
+				if (et == EndType::Error)
 				{
 					return et;
 				}
@@ -5742,7 +6334,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				this->AppendIndent(sb, lev);
 				sb->Append((const UTF8Char*)"// ifgt stack invalid");
 				sb->Append((const UTF8Char*)"\r\n");
-				return ET_ERROR;
+				return EndType::Error;
 			}
 			else
 			{
@@ -5753,17 +6345,19 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				{
 					this->AppendIndent(sb, lev);
 					sb->Append((const UTF8Char*)"return ");
-					AppendCond(sb, env, env->stacks->GetCount() - 2, CT_GT, true);
-					sb->Append((const UTF8Char*)";\r\n");
+					AppendCond(sb, env, env->stacks->GetCount() - 2, CondType::GT, true);
+					sb->Append((const UTF8Char*)";");
+					this->AppendLineNum(sb, env, codePtr);
+					sb->Append((const UTF8Char*)"\r\n");
 					Text::StrDelNew(env->stacks->RemoveAt(env->stacks->GetCount() - 1));
 					Text::StrDelNew(env->stacks->RemoveAt(env->stacks->GetCount() - 1));
 					Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
 					Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
 					env->endPtr = codePtr + 7;
-					return ET_RETURN;
+					return EndType::Return;
 				}
-				EndType et = this->DecompileCondBranch(codePtr + 3, codePtr + codeOfst, CT_GT, env, lev, sb);
-				if (et == ET_ERROR)
+				EndType et = this->DecompileCondBranch(codePtr + 3, codePtr + codeOfst, CondType::GT, env, lev, sb);
+				if (et == EndType::Error)
 				{
 					return et;
 				}
@@ -5776,7 +6370,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				this->AppendIndent(sb, lev);
 				sb->Append((const UTF8Char*)"// ifle stack invalid");
 				sb->Append((const UTF8Char*)"\r\n");
-				return ET_ERROR;
+				return EndType::Error;
 			}
 			else
 			{
@@ -5787,17 +6381,19 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				{
 					this->AppendIndent(sb, lev);
 					sb->Append((const UTF8Char*)"return ");
-					AppendCond(sb, env, env->stacks->GetCount() - 2, CT_LE, true);
-					sb->Append((const UTF8Char*)";\r\n");
+					AppendCond(sb, env, env->stacks->GetCount() - 2, CondType::LE, true);
+					sb->Append((const UTF8Char*)";");
+					this->AppendLineNum(sb, env, codePtr);
+					sb->Append((const UTF8Char*)"\r\n");
 					Text::StrDelNew(env->stacks->RemoveAt(env->stacks->GetCount() - 1));
 					Text::StrDelNew(env->stacks->RemoveAt(env->stacks->GetCount() - 1));
 					Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
 					Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
 					env->endPtr = codePtr + 7;
-					return ET_RETURN;
+					return EndType::Return;
 				}
-				EndType et = this->DecompileCondBranch(codePtr + 3, codePtr + codeOfst, CT_LE, env, lev, sb);
-				if (et == ET_ERROR)
+				EndType et = this->DecompileCondBranch(codePtr + 3, codePtr + codeOfst, CondType::LE, env, lev, sb);
+				if (et == EndType::Error)
 				{
 					return et;
 				}
@@ -5810,12 +6406,12 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				this->AppendIndent(sb, lev);
 				sb->Append((const UTF8Char*)"// if_icmpge stack invalid");
 				sb->Append((const UTF8Char*)"\r\n");
-				return ET_ERROR;
+				return EndType::Error;
 			}
 			else
 			{
-				EndType et = this->DecompileCondBranch(codePtr + 3, codePtr + ReadMInt16(&codePtr[1]), CT_EQ, env, lev, sb);
-				if (et == ET_ERROR)
+				EndType et = this->DecompileCondBranch(codePtr + 3, codePtr + ReadMInt16(&codePtr[1]), CondType::EQ, env, lev, sb);
+				if (et == EndType::Error)
 				{
 					return et;
 				}
@@ -5828,12 +6424,12 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				this->AppendIndent(sb, lev);
 				sb->Append((const UTF8Char*)"// if_icmpge stack invalid");
 				sb->Append((const UTF8Char*)"\r\n");
-				return ET_ERROR;
+				return EndType::Error;
 			}
 			else
 			{
-				EndType et = this->DecompileCondBranch(codePtr + 3, codePtr + ReadMInt16(&codePtr[1]), CT_NE, env, lev, sb);
-				if (et == ET_ERROR)
+				EndType et = this->DecompileCondBranch(codePtr + 3, codePtr + ReadMInt16(&codePtr[1]), CondType::NE, env, lev, sb);
+				if (et == EndType::Error)
 				{
 					return et;
 				}
@@ -5846,12 +6442,12 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				this->AppendIndent(sb, lev);
 				sb->Append((const UTF8Char*)"// if_icmpge stack invalid");
 				sb->Append((const UTF8Char*)"\r\n");
-				return ET_ERROR;
+				return EndType::Error;
 			}
 			else
 			{
-				EndType et = this->DecompileCondBranch(codePtr + 3, codePtr + ReadMInt16(&codePtr[1]), CT_LT, env, lev, sb);
-				if (et == ET_ERROR)
+				EndType et = this->DecompileCondBranch(codePtr + 3, codePtr + ReadMInt16(&codePtr[1]), CondType::LT, env, lev, sb);
+				if (et == EndType::Error)
 				{
 					return et;
 				}
@@ -5864,12 +6460,12 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				this->AppendIndent(sb, lev);
 				sb->Append((const UTF8Char*)"// if_icmpge stack invalid");
 				sb->Append((const UTF8Char*)"\r\n");
-				return ET_ERROR;
+				return EndType::Error;
 			}
 			else
 			{
-				EndType et = this->DecompileCondBranch(codePtr + 3, codePtr + ReadMInt16(&codePtr[1]), CT_GE, env, lev, sb);
-				if (et == ET_ERROR)
+				EndType et = this->DecompileCondBranch(codePtr + 3, codePtr + ReadMInt16(&codePtr[1]), CondType::GE, env, lev, sb);
+				if (et == EndType::Error)
 				{
 					return et;
 				}
@@ -5882,12 +6478,12 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				this->AppendIndent(sb, lev);
 				sb->Append((const UTF8Char*)"// if_icmpgt stack invalid");
 				sb->Append((const UTF8Char*)"\r\n");
-				return ET_ERROR;
+				return EndType::Error;
 			}
 			else
 			{
-				EndType et = this->DecompileCondBranch(codePtr + 3, codePtr + ReadMInt16(&codePtr[1]), CT_GT, env, lev, sb);
-				if (et == ET_ERROR)
+				EndType et = this->DecompileCondBranch(codePtr + 3, codePtr + ReadMInt16(&codePtr[1]), CondType::GT, env, lev, sb);
+				if (et == EndType::Error)
 				{
 					return et;
 				}
@@ -5900,12 +6496,12 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				this->AppendIndent(sb, lev);
 				sb->Append((const UTF8Char*)"// if_icmple stack invalid");
 				sb->Append((const UTF8Char*)"\r\n");
-				return ET_ERROR;
+				return EndType::Error;
 			}
 			else
 			{
-				EndType et = this->DecompileCondBranch(codePtr + 3, codePtr + ReadMInt16(&codePtr[1]), CT_LE, env, lev, sb);
-				if (et == ET_ERROR)
+				EndType et = this->DecompileCondBranch(codePtr + 3, codePtr + ReadMInt16(&codePtr[1]), CondType::LE, env, lev, sb);
+				if (et == EndType::Error)
 				{
 					return et;
 				}
@@ -5918,12 +6514,12 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				this->AppendIndent(sb, lev);
 				sb->Append((const UTF8Char*)"// if_acmpeq stack invalid");
 				sb->Append((const UTF8Char*)"\r\n");
-				return ET_ERROR;
+				return EndType::Error;
 			}
 			else
 			{
-				EndType et = this->DecompileCondBranch(codePtr + 3, codePtr + ReadMInt16(&codePtr[1]), CT_EQ, env, lev, sb);
-				if (et == ET_ERROR)
+				EndType et = this->DecompileCondBranch(codePtr + 3, codePtr + ReadMInt16(&codePtr[1]), CondType::EQ, env, lev, sb);
+				if (et == EndType::Error)
 				{
 					return et;
 				}
@@ -5936,12 +6532,12 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				this->AppendIndent(sb, lev);
 				sb->Append((const UTF8Char*)"// if_acmpne stack invalid");
 				sb->Append((const UTF8Char*)"\r\n");
-				return ET_ERROR;
+				return EndType::Error;
 			}
 			else
 			{
-				EndType et = this->DecompileCondBranch(codePtr + 3, codePtr + ReadMInt16(&codePtr[1]), CT_NE, env, lev, sb);
-				if (et == ET_ERROR)
+				EndType et = this->DecompileCondBranch(codePtr + 3, codePtr + ReadMInt16(&codePtr[1]), CondType::NE, env, lev, sb);
+				if (et == EndType::Error)
 				{
 					return et;
 				}
@@ -5954,22 +6550,22 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				if (i < 0)
 				{
 					env->endPtr = codePtr + i;
-					return ET_GOTO;
+					return EndType::Goto;
 				}
 				if (codePtr + i >= codeEnd)
 				{
 					env->endPtr = codePtr + i;
-					return ET_GOTO;
+					return EndType::Goto;
 				}
 				sbTmp.ClearStr();
 				UOSInt stackCnt = env->stacks->GetCount();
-				EndType et = ET_CODEEND;//this->DecompileCode(codePtr + 3, codePtr + i, env, lev + 1, &sbTmp);
-				if (et == ET_ERROR)
+				EndType et = EndType::CodeEnd;//this->DecompileCode(codePtr + 3, codePtr + i, env, lev + 1, &sbTmp);
+				if (et == EndType::Error)
 				{
 					sb->Append(sbTmp.ToString());
 					return et;
 				}
-				if (stackCnt == env->stacks->GetCount() && (et == ET_CODEEND || et == ET_THROW || et == ET_RETURN))
+				if (stackCnt == env->stacks->GetCount() && (et == EndType::CodeEnd || et == EndType::Throw || et == EndType::Return))
 				{
 					this->AppendIndent(sb, lev);
 					sb->Append((const UTF8Char*)"if (false)\r\n");
@@ -5983,7 +6579,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				else
 				{
 					env->endPtr = codePtr + i;
-					return ET_GOTO;
+					return EndType::Goto;
 				}
 			}
 			break;
@@ -5994,16 +6590,18 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				this->AppendIndent(sb, lev);
 				sb->Append((const UTF8Char*)"// ireturn stack invalid");
 				sb->Append((const UTF8Char*)"\r\n");
-				return ET_ERROR;
+				return EndType::Error;
 			}
 			this->AppendIndent(sb, lev);
 			sb->Append((const UTF8Char*)"return ");
 			sb->Append(env->stacks->GetItem(env->stacks->GetCount() - 1));
-			sb->Append((const UTF8Char*)";\r\n");
+			sb->Append((const UTF8Char*)";");
+			this->AppendLineNum(sb, env, codePtr);
+			sb->Append((const UTF8Char*)"\r\n");
 			Text::StrDelNew(env->stacks->RemoveAt(env->stacks->GetCount() - 1));
 			Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
 			env->endPtr = codePtr;
-			return ET_RETURN;
+			return EndType::Return;
 		case 0xAD: //lreturn
 			codePtr++;
 			if (env->stacks->GetCount() <= 0)
@@ -6011,16 +6609,18 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				this->AppendIndent(sb, lev);
 				sb->Append((const UTF8Char*)"// lreturn stack invalid");
 				sb->Append((const UTF8Char*)"\r\n");
-				return ET_ERROR;
+				return EndType::Error;
 			}
 			this->AppendIndent(sb, lev);
 			sb->Append((const UTF8Char*)"return ");
 			sb->Append(env->stacks->GetItem(env->stacks->GetCount() - 1));
-			sb->Append((const UTF8Char*)";\r\n");
+			sb->Append((const UTF8Char*)";");
+			this->AppendLineNum(sb, env, codePtr);
+			sb->Append((const UTF8Char*)"\r\n");
 			Text::StrDelNew(env->stacks->RemoveAt(env->stacks->GetCount() - 1));
 			Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
 			env->endPtr = codePtr;
-			return ET_RETURN;
+			return EndType::Return;
 		case 0xAE: //freturn
 			codePtr++;
 			if (env->stacks->GetCount() <= 0)
@@ -6028,16 +6628,18 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				this->AppendIndent(sb, lev);
 				sb->Append((const UTF8Char*)"// freturn stack invalid");
 				sb->Append((const UTF8Char*)"\r\n");
-				return ET_ERROR;
+				return EndType::Error;
 			}
 			this->AppendIndent(sb, lev);
 			sb->Append((const UTF8Char*)"return ");
 			sb->Append(env->stacks->GetItem(env->stacks->GetCount() - 1));
-			sb->Append((const UTF8Char*)";\r\n");
+			sb->Append((const UTF8Char*)";");
+			this->AppendLineNum(sb, env, codePtr);
+			sb->Append((const UTF8Char*)"\r\n");
 			Text::StrDelNew(env->stacks->RemoveAt(env->stacks->GetCount() - 1));
 			Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
 			env->endPtr = codePtr;
-			return ET_RETURN;
+			return EndType::Return;
 		case 0xB0: //areturn
 			codePtr++;
 			if (env->stacks->GetCount() <= 0)
@@ -6045,22 +6647,24 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				this->AppendIndent(sb, lev);
 				sb->Append((const UTF8Char*)"// areturn stack invalid");
 				sb->Append((const UTF8Char*)"\r\n");
-				return ET_ERROR;
+				return EndType::Error;
 			}
 			this->AppendIndent(sb, lev);
 			sb->Append((const UTF8Char*)"return ");
 			sb->Append(env->stacks->GetItem(env->stacks->GetCount() - 1));
-			sb->Append((const UTF8Char*)";\r\n");
+			sb->Append((const UTF8Char*)";");
+			this->AppendLineNum(sb, env, codePtr);
+			sb->Append((const UTF8Char*)"\r\n");
 			Text::StrDelNew(env->stacks->RemoveAt(env->stacks->GetCount() - 1));
 			Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
 			env->endPtr = codePtr;
-			return ET_RETURN;
+			return EndType::Return;
 		case 0xB1: //return
 			codePtr++;
 			this->AppendIndent(sb, lev);
 			sb->Append((const UTF8Char*)"return;\r\n");
 			env->endPtr = codePtr;
-			return ET_RETURN;
+			return EndType::Return;
 		case 0xB2: //getstatic
 			val = ReadMUInt16(&codePtr[1]);
 			if (val == 0 || val >= this->constPoolCnt)
@@ -6069,7 +6673,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				sb->Append((const UTF8Char*)"// getstatic index invalid:");
 				sb->AppendU16(val);
 				sb->Append((const UTF8Char*)"\r\n");
-				return ET_ERROR;
+				return EndType::Error;
 			}
 			if (this->constPool[val] == 0 || this->constPool[val][0] != 9)
 			{
@@ -6077,7 +6681,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				sb->Append((const UTF8Char*)"// getstatic const pool not fieldref:");
 				sb->AppendU16(val);
 				sb->Append((const UTF8Char*)"\r\n");
-				return ET_ERROR;
+				return EndType::Error;
 			}
 			else
 			{
@@ -6092,19 +6696,12 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 					sb->Append((const UTF8Char*)"// getstatic const pool not nameAndType:");
 					sb->AppendU16(nameTypeIndex);
 					sb->Append((const UTF8Char*)"\r\n");
-					return ET_ERROR;
+					return EndType::Error;
 				}
 				classIndex = ReadMUInt16(&ptr[1]);
 				nameTypeIndex = ReadMUInt16(&ptr[3]);
 				sbTmp2.ClearStr();
-				if (sbTmp.StartsWith((const UTF8Char*)"java.lang."))
-				{
-					sbTmp2.Append(sbTmp.ToString() + 10);
-				}
-				else
-				{
-					sbTmp2.Append(sbTmp.ToString());
-				}
+				this->AppendCodeClassName(&sbTmp2, sbTmp.ToString(), env->importList, env->packageName);
 				sbTmp2.AppendChar('.', 1);
 				this->GetConstName(sbuff, classIndex);
 				sbTmp2.Append(sbuff);
@@ -6123,7 +6720,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				this->AppendIndent(sb, lev);
 				sb->Append((const UTF8Char*)"// putstatic stack invalid");
 				sb->Append((const UTF8Char*)"\r\n");
-				return ET_ERROR;
+				return EndType::Error;
 			}
 			if (val == 0 || val >= this->constPoolCnt)
 			{
@@ -6131,7 +6728,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				sb->Append((const UTF8Char*)"// putstatic index invalid:");
 				sb->AppendU16(val);
 				sb->Append((const UTF8Char*)"\r\n");
-				return ET_ERROR;
+				return EndType::Error;
 			}
 			if (this->constPool[val] == 0 || this->constPool[val][0] != 9)
 			{
@@ -6139,7 +6736,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				sb->Append((const UTF8Char*)"// putstatic const pool not fieldref:");
 				sb->AppendU16(val);
 				sb->Append((const UTF8Char*)"\r\n");
-				return ET_ERROR;
+				return EndType::Error;
 			}
 			else
 			{
@@ -6154,25 +6751,20 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 					sb->Append((const UTF8Char*)"// putstatic const pool not nameAndType:");
 					sb->AppendU16(nameTypeIndex);
 					sb->Append((const UTF8Char*)"\r\n");
-					return ET_ERROR;
+					return EndType::Error;
 				}
 				classIndex = ReadMUInt16(&ptr[1]);
 				nameTypeIndex = ReadMUInt16(&ptr[3]);
 				this->AppendIndent(sb, lev);
-				if (sbTmp.StartsWith((const UTF8Char*)"java.lang."))
-				{
-					sb->Append(sbTmp.ToString() + 10);
-				}
-				else
-				{
-					sb->Append(sbTmp.ToString());
-				}
+				this->AppendCodeClassName(sb, sbTmp.ToString(), env->importList, env->packageName);
 				sb->AppendChar('.', 1);
 				this->GetConstName(sbuff, classIndex);
 				sb->Append(sbuff);
 				sb->Append((const UTF8Char*)" = ");
 				sb->Append(env->stacks->GetItem(env->stacks->GetCount() - 1));
-				sb->Append((const UTF8Char*)";\r\n");
+				sb->Append((const UTF8Char*)";");
+				this->AppendLineNum(sb, env, codePtr);
+				sb->Append((const UTF8Char*)"\r\n");
 				Text::StrDelNew(env->stacks->RemoveAt(env->stacks->GetCount() - 1));
 				Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
 			}
@@ -6185,7 +6777,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				this->AppendIndent(sb, lev);
 				sb->Append((const UTF8Char*)"// getfield stack invalid");
 				sb->Append((const UTF8Char*)"\r\n");
-				return ET_ERROR;
+				return EndType::Error;
 			}
 			if (val == 0 || val >= this->constPoolCnt)
 			{
@@ -6193,7 +6785,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				sb->Append((const UTF8Char*)"// getfield index invalid:");
 				sb->AppendU16(val);
 				sb->Append((const UTF8Char*)"\r\n");
-				return ET_ERROR;
+				return EndType::Error;
 			}
 			if (this->constPool[val] == 0 || this->constPool[val][0] != 9)
 			{
@@ -6201,7 +6793,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				sb->Append((const UTF8Char*)"// getfield const pool not fieldref:");
 				sb->AppendU16(val);
 				sb->Append((const UTF8Char*)"\r\n");
-				return ET_ERROR;
+				return EndType::Error;
 			}
 			else
 			{
@@ -6214,7 +6806,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 					sb->Append((const UTF8Char*)"// getfield const pool not nameAndType:");
 					sb->AppendU16(nameTypeIndex);
 					sb->Append((const UTF8Char*)"\r\n");
-					return ET_ERROR;
+					return EndType::Error;
 				}
 				classIndex = ReadMUInt16(&ptr[1]);
 				nameTypeIndex = ReadMUInt16(&ptr[3]);
@@ -6241,7 +6833,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				sb->Append((const UTF8Char*)"// putfield stack invalid: ");
 				sb->AppendUOSInt(env->stacks->GetCount());
 				sb->Append((const UTF8Char*)"\r\n");
-				return ET_ERROR;
+				return EndType::Error;
 			}
 			if (val == 0 || val >= this->constPoolCnt)
 			{
@@ -6249,7 +6841,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				sb->Append((const UTF8Char*)"// putfield index invalid:");
 				sb->AppendU16(val);
 				sb->Append((const UTF8Char*)"\r\n");
-				return ET_ERROR;
+				return EndType::Error;
 			}
 			if (this->constPool[val] == 0 || this->constPool[val][0] != 9)
 			{
@@ -6257,7 +6849,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				sb->Append((const UTF8Char*)"// putfield const pool not fieldref:");
 				sb->AppendU16(val);
 				sb->Append((const UTF8Char*)"\r\n");
-				return ET_ERROR;
+				return EndType::Error;
 			}
 			else
 			{
@@ -6270,7 +6862,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 					sb->Append((const UTF8Char*)"// putfield const pool not nameAndType:");
 					sb->AppendU16(nameTypeIndex);
 					sb->Append((const UTF8Char*)"\r\n");
-					return ET_ERROR;
+					return EndType::Error;
 				}
 				classIndex = ReadMUInt16(&ptr[1]);
 				nameTypeIndex = ReadMUInt16(&ptr[3]);
@@ -6281,7 +6873,9 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				sb->Append(sbuff);
 				sb->Append((const UTF8Char*)" = ");
 				sb->Append(env->stacks->GetItem(env->stacks->GetCount() - 1));
-				sb->Append((const UTF8Char*)";\r\n");
+				sb->Append((const UTF8Char*)";");
+				this->AppendLineNum(sb, env, codePtr);
+				sb->Append((const UTF8Char*)"\r\n");
 				Text::StrDelNew(env->stacks->RemoveAt(env->stacks->GetCount() - 1));
 				Text::StrDelNew(env->stacks->RemoveAt(env->stacks->GetCount() - 1));
 				Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
@@ -6297,7 +6891,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			{
 				this->AppendIndent(sb, lev);
 				sb->Append(sbTmp.ToString());
-				return ET_ERROR;
+				return EndType::Error;
 			}
 			if (env->stacks->GetCount() == 0)
 			{
@@ -6305,7 +6899,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				sb->Append((const UTF8Char*)"// invokevirtual Stack error: stack count = ");
 				sb->AppendUOSInt(env->stacks->GetCount());
 				sb->Append((const UTF8Char*)"\r\n");
-				return ET_ERROR;
+				return EndType::Error;
 			}
 			else
 			{
@@ -6325,7 +6919,9 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				{
 					this->AppendIndent(sb, lev);
 					sb->Append(sbTmp2.ToString());
-					sb->Append((const UTF8Char*)";\r\n");
+					sb->Append((const UTF8Char*)";");
+					this->AppendLineNum(sb, env, codePtr);
+					sb->Append((const UTF8Char*)"\r\n");
 				}
 			}
 			codePtr += 3;
@@ -6338,7 +6934,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			{
 				this->AppendIndent(sb, lev);
 				sb->Append(sbTmp.ToString());
-				return ET_ERROR;
+				return EndType::Error;
 			}
 			if (env->stacks->GetCount() == 0)
 			{
@@ -6346,7 +6942,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				sb->Append((const UTF8Char*)"// invokespecial Stack error: stack count = ");
 				sb->AppendUOSInt(env->stacks->GetCount());
 				sb->Append((const UTF8Char*)"\r\n");
-				return ET_ERROR;
+				return EndType::Error;
 			}
 			else
 			{
@@ -6408,7 +7004,9 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				{
 					this->AppendIndent(sb, lev);
 					sb->Append(sbTmp2.ToString());
-					sb->Append((const UTF8Char*)";\r\n");
+					sb->Append((const UTF8Char*)";");
+					this->AppendLineNum(sb, env, codePtr);
+					sb->Append((const UTF8Char*)"\r\n");
 				}
 			}
 			codePtr += 3;
@@ -6421,7 +7019,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			{
 				this->AppendIndent(sb, lev);
 				sb->Append(sbTmp.ToString());
-				return ET_ERROR;
+				return EndType::Error;
 			}
 			sbTmp2.ClearStr();
 			sbTmp3.ClearStr();
@@ -6439,7 +7037,9 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			{
 				this->AppendIndent(sb, lev);
 				sb->Append(sbTmp2.ToString());
-				sb->Append((const UTF8Char*)";\r\n");
+				sb->Append((const UTF8Char*)";");
+				this->AppendLineNum(sb, env, codePtr);
+				sb->Append((const UTF8Char*)"\r\n");
 			}
 			codePtr += 3;
 			break;
@@ -6451,7 +7051,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			{
 				this->AppendIndent(sb, lev);
 				sb->Append(sbTmp.ToString());
-				return ET_ERROR;
+				return EndType::Error;
 			}
 			if (env->stacks->GetCount() == 0)
 			{
@@ -6459,7 +7059,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				sb->Append((const UTF8Char*)"// invokeinterface Stack error: stack count = ");
 				sb->AppendUOSInt(env->stacks->GetCount());
 				sb->Append((const UTF8Char*)"\r\n");
-				return ET_ERROR;
+				return EndType::Error;
 			}
 			else
 			{
@@ -6479,7 +7079,9 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				{
 					this->AppendIndent(sb, lev);
 					sb->Append(sbTmp2.ToString());
-					sb->Append((const UTF8Char*)";\r\n");
+					sb->Append((const UTF8Char*)";");
+					this->AppendLineNum(sb, env, codePtr);
+					sb->Append((const UTF8Char*)"\r\n");
 				}
 			}
 			codePtr += 5;
@@ -6501,7 +7103,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				this->AppendIndent(sb, lev);
 				sb->Append((const UTF8Char*)"// newarray stack invalid");
 				sb->Append((const UTF8Char*)"\r\n");
-				return ET_ERROR;
+				return EndType::Error;
 			}
 			sbTmp2.ClearStr();
 			sbTmp.ClearStr();
@@ -6545,7 +7147,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				sb->Append((const UTF8Char*)"// newarray invalid type: ");
 				sb->AppendU16(codePtr[1]);
 				sb->Append((const UTF8Char*)"\r\n");
-				return ET_ERROR;
+				return EndType::Error;
 			}
 			sbTmp.Append(env->stacks->GetItem(env->stacks->GetCount() - 1));
 			sbTmp.AppendChar(']', 1);
@@ -6561,21 +7163,14 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				this->AppendIndent(sb, lev);
 				sb->Append((const UTF8Char*)"// anewarray stack invalid");
 				sb->Append((const UTF8Char*)"\r\n");
-				return ET_ERROR;
+				return EndType::Error;
 			}
 			val = ReadMUInt16(&codePtr[1]);
 			sbTmp.ClearStr();
 			this->ClassNameString(val, &sbTmp);
 			sbTmp2.ClearStr();
 			sbTmp2.Append((const UTF8Char*)"new ");
-			if (sbTmp.StartsWith((const UTF8Char*)"java.lang."))
-			{
-				sbTmp2.Append(sbTmp.ToString() + 10);
-			}
-			else
-			{
-				sbTmp2.Append(sbTmp.ToString());
-			}
+			this->AppendCodeClassName(&sbTmp2, sbTmp.ToString(), env->importList, env->packageName);
 			sbTmp.Append((const UTF8Char*)"[]");
 			sbTmp2.AppendChar('[', 1);
 			sbTmp2.Append(env->stacks->GetItem(env->stacks->GetCount() - 1));
@@ -6593,7 +7188,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				sb->Append((const UTF8Char*)"// arraylength Stack error: stack count = ");
 				sb->AppendUOSInt(env->stacks->GetCount());
 				sb->Append((const UTF8Char*)"\r\n");
-				return ET_ERROR;
+				return EndType::Error;
 			}
 			sbTmp2.ClearStr();
 			sbTmp2.Append(env->stacks->GetItem(env->stacks->GetCount() - 1));
@@ -6611,16 +7206,18 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				sb->Append((const UTF8Char*)"// athrow Stack error: stack count = ");
 				sb->AppendUOSInt(env->stacks->GetCount());
 				sb->Append((const UTF8Char*)"\r\n");
-				return ET_ERROR;
+				return EndType::Error;
 			}
 			this->AppendIndent(sb, lev);
 			sb->Append((const UTF8Char*)"throw ");
 			sb->Append(env->stacks->GetItem(env->stacks->GetCount() - 1));
-			sb->Append((const UTF8Char*)";\r\n");
+			sb->Append((const UTF8Char*)";");
+			this->AppendLineNum(sb, env, codePtr);
+			sb->Append((const UTF8Char*)"\r\n");
 			Text::StrDelNew(env->stacks->RemoveAt(env->stacks->GetCount() - 1));
 			Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
 			env->endPtr = codePtr + 1;
-			return ET_THROW;
+			return EndType::Throw;
 		case 0xC0: //checkcast
 			if (env->stacks->GetCount() == 0)
 			{
@@ -6628,27 +7225,34 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				sb->Append((const UTF8Char*)"// checkcast Stack error: stack count = ");
 				sb->AppendUOSInt(env->stacks->GetCount());
 				sb->Append((const UTF8Char*)"\r\n");
-				return ET_ERROR;
+				return EndType::Error;
 			}
 			val = ReadMUInt16(&codePtr[1]);
 			sbTmp.ClearStr();
 			this->ClassNameString(val, &sbTmp);
 			sbTmp2.ClearStr();
 			sbTmp2.AppendChar('(', 1);
-			if (sbTmp.StartsWith((const UTF8Char*)"java.lang."))
-			{
-				sbTmp2.Append(sbTmp.ToString() + 10);
-			}
-			else
-			{
-				sbTmp2.Append(sbTmp.ToString());
-			}
+			this->AppendCodeClassName(&sbTmp2, sbTmp.ToString(), env->importList, env->packageName);
 			sbTmp2.AppendChar(')', 1);
 			sbTmp2.Append(env->stacks->GetItem(env->stacks->GetCount() - 1));
 			Text::StrDelNew(env->stacks->RemoveAt(env->stacks->GetCount() - 1));
 			Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
 			env->stacks->Add(Text::StrCopyNew(sbTmp2.ToString()));
 			env->stackTypes->Add(Text::StrCopyNew(sbTmp.ToString()));
+			codePtr += 3;
+			break;
+		case 0xC1: //instanceof
+			val = ReadMUInt16(&codePtr[1]);
+			sbTmp.ClearStr();
+			this->ClassNameString(val, &sbTmp);
+			sbTmp2.ClearStr();
+			sbTmp2.Append(env->stacks->GetItem(env->stacks->GetCount() - 1));
+			sbTmp2.Append((const UTF8Char*)" instanceof ");
+			this->AppendCodeClassName(&sbTmp2, sbTmp.ToString(), env->importList, env->packageName);
+			Text::StrDelNew(env->stacks->RemoveAt(env->stacks->GetCount() - 1));
+			Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
+			env->stacks->Add(Text::StrCopyNew(sbTmp2.ToString()));
+			env->stackTypes->Add(Text::StrCopyNew((const UTF8Char*)"boolean"));
 			codePtr += 3;
 			break;
 		case 0xC2: //monitorenter
@@ -6658,7 +7262,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				sb->Append((const UTF8Char*)"// monitorenter Stack error: stack count = ");
 				sb->AppendUOSInt(env->stacks->GetCount());
 				sb->Append((const UTF8Char*)"\r\n");
-				return ET_ERROR;
+				return EndType::Error;
 			}
 			this->AppendIndent(sb, lev);
 			sb->Append((const UTF8Char*)"synchronized (");
@@ -6678,7 +7282,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				sb->Append((const UTF8Char*)"// monitorexit Stack error: stack count = ");
 				sb->AppendUOSInt(env->stacks->GetCount());
 				sb->Append((const UTF8Char*)"\r\n");
-				return ET_ERROR;
+				return EndType::Error;
 			}
 			lev--;
 			this->AppendIndent(sb, lev);
@@ -6693,14 +7297,14 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				this->AppendIndent(sb, lev);
 				sb->Append((const UTF8Char*)"// ifnull stack invalid");
 				sb->Append((const UTF8Char*)"\r\n");
-				return ET_ERROR;
+				return EndType::Error;
 			}
 			else
 			{
 				env->stacks->Add(Text::StrCopyNew((const UTF8Char*)"null"));
 				env->stackTypes->Add(Text::StrCopyNew((const UTF8Char*)"java.lang.Object"));
-				EndType et = this->DecompileCondBranch(codePtr + 3, codePtr + ReadMInt16(&codePtr[1]), CT_EQ, env, lev, sb);
-				if (et == ET_ERROR)
+				EndType et = this->DecompileCondBranch(codePtr + 3, codePtr + ReadMInt16(&codePtr[1]), CondType::EQ, env, lev, sb);
+				if (et == EndType::Error)
 				{
 					return et;
 				}
@@ -6713,14 +7317,14 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				this->AppendIndent(sb, lev);
 				sb->Append((const UTF8Char*)"// ifnonnull stack invalid");
 				sb->Append((const UTF8Char*)"\r\n");
-				return ET_ERROR;
+				return EndType::Error;
 			}
 			else
 			{
 				env->stacks->Add(Text::StrCopyNew((const UTF8Char*)"null"));
 				env->stackTypes->Add(Text::StrCopyNew((const UTF8Char*)"java.lang.Object"));
-				EndType et = this->DecompileCondBranch(codePtr + 3, codePtr + ReadMInt16(&codePtr[1]), CT_NE, env, lev, sb);
-				if (et == ET_ERROR)
+				EndType et = this->DecompileCondBranch(codePtr + 3, codePtr + ReadMInt16(&codePtr[1]), CondType::NE, env, lev, sb);
+				if (et == EndType::Error)
 				{
 					return et;
 				}
@@ -6729,17 +7333,17 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			break;
 		case 0xC8: //goto_w
 			env->endPtr = codePtr + ReadMInt32(&codePtr[1]);
-			return ET_GOTO;
+			return EndType::Goto;
 		default:
 			this->AppendIndent(sb, lev);
 			sb->Append((const UTF8Char*)"// Unsupported opcode ");
 			sb->AppendHex8(codePtr[0]);
 			sb->Append((const UTF8Char*)"\r\n");
-			return ET_ERROR;
+			return EndType::Error;
 		}
 	}
 	env->endPtr = codePtr;
-	return ET_CODEEND;
+	return EndType::CodeEnd;
 }
 
 void IO::JavaClass::DecompileLDC(UInt16 index, IO::JavaClass::DecompileEnv *env)
@@ -6782,8 +7386,10 @@ void IO::JavaClass::DecompileLDC(UInt16 index, IO::JavaClass::DecompileEnv *env)
 		if (ptr[0] == 1)
 		{
 			strLen = ReadMUInt16(&ptr[1]);
-			sb.AppendC(ptr + 3, strLen);
-			sb.Replace('/', '.');
+			Text::StringBuilderUTF8 sbTmp;
+			sbTmp.AppendC(ptr + 3, strLen);
+			sbTmp.Replace('/', '.');
+			this->AppendCodeClassName(&sb, sbTmp.ToString(), env->importList, env->packageName);
 			sb.Append((const UTF8Char*)".class");
 			env->stacks->Add(Text::StrCopyNew(sb.ToString()));
 			env->stackTypes->Add(Text::StrCopyNew((const UTF8Char*)"java.lang.Class"));
@@ -6819,11 +7425,13 @@ void IO::JavaClass::DecompileStore(UInt16 index, IO::JavaClass::DecompileEnv *en
 		this->AppendCodeClassName(sb, env->localTypes[index], env->importList, env->packageName);
 		sb->AppendChar(' ', 1);
 	}
-	this->GetLVName(sbuff, index, env->lvTable, env->lvTableLen, codeOfst);
+	this->GetLVName(sbuff, index, env->method, codeOfst);
 	sb->Append(sbuff);
 	sb->Append((const UTF8Char*)" = ");
 	sb->Append(env->stacks->GetItem(env->stacks->GetCount() - 1));
-	sb->Append((const UTF8Char*)";\r\n");
+	sb->Append((const UTF8Char*)";");
+	this->AppendLineNum(sb, env, env->codeStart + codeOfst - 1);
+	sb->Append((const UTF8Char*)"\r\n");
 	Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
 	Text::StrDelNew(env->stacks->RemoveAt(env->stacks->GetCount() - 1));
 }
@@ -6835,12 +7443,12 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCondBranch(const UInt8 *codePtr, 
 		Text::StringBuilderUTF8 sbTmp;
 		UOSInt initStackCnt = env->stacks->GetCount();
 		EndType et = DecompileCode(codeEnd, codePtr - 3, env, lev + 1, &sbTmp);
-		if (et == ET_ERROR)
+		if (et == EndType::Error)
 		{
 			sb->Append(sbTmp.ToString());
 			return et;
 		}
-		if (initStackCnt + 1 == env->stacks->GetCount() && (et == ET_RETURN || et == ET_THROW || et == ET_CODEEND))
+		if (initStackCnt + 1 == env->stacks->GetCount() && (et == EndType::Return || et == EndType::Throw || et == EndType::CodeEnd))
 		{
 			Text::StrDelNew(env->stacks->RemoveAt(env->stacks->GetCount() - 1));
 			Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
@@ -6860,7 +7468,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCondBranch(const UInt8 *codePtr, 
 			env->endPtr = codePtr;
 			return et;
 		}
-		else if (initStackCnt + 2 == env->stacks->GetCount() && (et == ET_CODEEND))
+		else if (initStackCnt + 2 == env->stacks->GetCount() && (et == EndType::CodeEnd))
 		{
 			Text::StrDelNew(env->stacks->RemoveAt(env->stacks->GetCount() - 1));
 			Text::StrDelNew(env->stacks->RemoveAt(env->stacks->GetCount() - 1));
@@ -6888,10 +7496,10 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCondBranch(const UInt8 *codePtr, 
 		sb->Append((const UTF8Char*)", ");
 		sb->AppendUOSInt(env->stacks->GetCount());
 		sb->Append((const UTF8Char*)", et = ");
-		sb->AppendI32(et);
+		sb->Append(EndTypeGetName(et));
 		sb->Append((const UTF8Char*)"\r\n");
 		sb->Append(sbTmp.ToString());
-		return ET_ERROR;
+		return EndType::Error;
 	}
 	else if (codePtr == codeEnd)
 	{
@@ -6908,29 +7516,29 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCondBranch(const UInt8 *codePtr, 
 		Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
 		Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
 		env->endPtr = codePtr;
-		return ET_CODEEND;
+		return EndType::CodeEnd;
 	}
 	Text::StringBuilderUTF8 sbTmp;
 	UOSInt initStackCnt = env->stacks->GetCount();
 	EndType et = DecompileCode(codePtr, codeEnd, env, lev + 1, &sbTmp);
-	if (et == ET_ERROR)
+	if (et == EndType::Error)
 	{
 		sb->Append(sbTmp.ToString());
 		return et;
 	}
-	if (initStackCnt + 1 == env->stacks->GetCount() && et == ET_GOTO && sbTmp.GetLength() == 0)
+	if (initStackCnt + 1 == env->stacks->GetCount() && et == EndType::Goto && sbTmp.GetLength() == 0)
 	{
 		et = DecompileCode(codeEnd, env->endPtr, env, lev + 1, &sbTmp);
-		if (et == ET_ERROR)
+		if (et == EndType::Error)
 		{
 			sb->Append(sbTmp.ToString());
 			return et;
 		}
-		else if (et == ET_CODEEND && initStackCnt + 2 == env->stacks->GetCount() && sbTmp.GetLength() == 0)
+		else if (et == EndType::CodeEnd && initStackCnt + 2 == env->stacks->GetCount() && sbTmp.GetLength() == 0)
 		{
 			sbTmp.ClearStr();
 			sbTmp.AppendChar('(', 1);
-			AppendCond(sb, env, initStackCnt - 2, ct, true);
+			AppendCond(&sbTmp, env, initStackCnt - 2, ct, true);
 			sbTmp.AppendChar(')', 1);
 			sbTmp.AppendChar('?', 1);
 			sbTmp.Append(env->stacks->GetItem(initStackCnt + 0));
@@ -6944,19 +7552,19 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCondBranch(const UInt8 *codePtr, 
 			Text::StrDelNew(env->stackTypes->RemoveAt(initStackCnt - 1));
 			Text::StrDelNew(env->stackTypes->RemoveAt(initStackCnt - 2));
 			env->stacks->Add(Text::StrCopyNew(sbTmp.ToString()));
-			return ET_CODEEND;
+			return EndType::CodeEnd;
 		}
 	}
-	else if (initStackCnt == env->stacks->GetCount() && et == ET_GOTO)
+	else if (initStackCnt == env->stacks->GetCount() && et == EndType::Goto)
 	{
 		Text::StringBuilderUTF8 sbTmp2;
 		et = DecompileCode(codeEnd, env->endPtr, env, lev + 1, &sbTmp2);
-		if (et == ET_ERROR)
+		if (et == EndType::Error)
 		{
 			sb->Append(sbTmp2.ToString());
 			return et;
 		}
-		else if (et == ET_CODEEND && initStackCnt == env->stacks->GetCount())
+		else if (et == EndType::CodeEnd && initStackCnt == env->stacks->GetCount())
 		{
 			this->AppendIndent(sb, lev);
 			sb->Append((const UTF8Char*)"if (");
@@ -6978,10 +7586,10 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCondBranch(const UInt8 *codePtr, 
 			Text::StrDelNew(env->stacks->RemoveAt(initStackCnt - 2));
 			Text::StrDelNew(env->stackTypes->RemoveAt(initStackCnt - 1));
 			Text::StrDelNew(env->stackTypes->RemoveAt(initStackCnt - 2));
-			return ET_CODEEND;
+			return EndType::CodeEnd;
 		}
 	}
-	else if (initStackCnt == env->stacks->GetCount() && (et == ET_RETURN || et == ET_THROW || et == ET_CODEEND))
+	else if (initStackCnt == env->stacks->GetCount() && (et == EndType::Return || et == EndType::Throw || et == EndType::CodeEnd))
 	{
 		this->AppendIndent(sb, lev);
 		sb->Append((const UTF8Char*)"if (");
@@ -7006,9 +7614,9 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCondBranch(const UInt8 *codePtr, 
 	sb->Append((const UTF8Char*)", ");
 	sb->AppendUOSInt(env->stacks->GetCount());
 	sb->Append((const UTF8Char*)", et = ");
-	sb->AppendI32(et);
+	sb->Append(EndTypeGetName(et));
 	sb->Append((const UTF8Char*)"\r\n");
-	return ET_ERROR;
+	return EndType::Error;
 }
 
 UTF8Char *IO::JavaClass::DecompileMethod(UInt16 methodIndex, UTF8Char *nameBuff, UInt16 *classIndex, UTF8Char *retType, IO::JavaClass::DecompileEnv *env, Text::StringBuilderUTF *sb)
@@ -7201,4 +7809,23 @@ IO::JavaClass *IO::JavaClass::ParseBuff(const UTF8Char *sourceName, const UInt8 
 	IO::JavaClass *cls;
 	NEW_CLASS(cls, IO::JavaClass(sourceName, buff, buffSize));
 	return cls;
+}
+
+const UTF8Char *IO::JavaClass::EndTypeGetName(EndType et)
+{
+	switch (et)
+	{
+	case EndType::Error:
+		return (const UTF8Char*)"Error";
+	case EndType::CodeEnd:
+		return (const UTF8Char*)"CodeEnd";
+	case EndType::Return:
+		return (const UTF8Char*)"Return";
+	case EndType::Goto:
+		return (const UTF8Char*)"Goto";
+	case EndType::Throw:
+		return (const UTF8Char*)"Throw";
+	default:
+		return (const UTF8Char*)"Unknown";
+	}
 }
