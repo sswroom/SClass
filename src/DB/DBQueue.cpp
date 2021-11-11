@@ -8,7 +8,7 @@
 #include "Text/MyString.h"
 #include "Text/UTF8Writer.h"
 
-DB::DBQueue::SQLCmd::SQLCmd(const UTF8Char *str, Int32 progId, DB::DBQueue::DBHdlr hdlr, void *userData, void *userData2)
+DB::DBQueue::SQLCmd::SQLCmd(const UTF8Char *str, Int32 progId, DB::DBQueue::DBReadHdlr hdlr, void *userData, void *userData2)
 {
 	this->str = Text::StrCopyNew(str);
 	this->hdlr = hdlr;
@@ -22,9 +22,9 @@ DB::DBQueue::SQLCmd::~SQLCmd()
 	Text::StrDelNew(this->str);
 }
 
-DB::DBQueue::IDBCmd::CmdType DB::DBQueue::SQLCmd::GetCmdType()
+DB::DBQueue::CmdType DB::DBQueue::SQLCmd::GetCmdType()
 {
-	return DB::DBQueue::IDBCmd::CMDTYPE_SQLCmd;
+	return CmdType::SQLCmd;
 }
 
 Int32 DB::DBQueue::SQLCmd::GetProgId()
@@ -37,7 +37,7 @@ const UTF8Char *DB::DBQueue::SQLCmd::GetSQL()
 	return this->str;
 }
 
-DB::DBQueue::SQLGroup::SQLGroup(Data::ArrayList<const UTF8Char*> *strs, Int32 progId, DBHdlr hdlr, void *userData, void *userData2)
+DB::DBQueue::SQLGroup::SQLGroup(Data::ArrayList<const UTF8Char*> *strs, Int32 progId, DBReadHdlr hdlr, void *userData, void *userData2)
 {
 	UOSInt i = 0;
 	UOSInt j = strs->GetCount();
@@ -63,9 +63,9 @@ DB::DBQueue::SQLGroup::~SQLGroup()
 	DEL_CLASS(this->strs);
 }
 
-DB::DBQueue::IDBCmd::CmdType DB::DBQueue::SQLGroup::GetCmdType()
+DB::DBQueue::CmdType DB::DBQueue::SQLGroup::GetCmdType()
 {
-	return DB::DBQueue::IDBCmd::CMDTYPE_SQLGroup;
+	return CmdType::SQLGroup;
 }
 
 Int32 DB::DBQueue::SQLGroup::GetProgId()
@@ -73,7 +73,7 @@ Int32 DB::DBQueue::SQLGroup::GetProgId()
 	return this->progId;
 }
 
-DB::DBQueue::SQLTrans::SQLTrans(Int32 progId, DBTransHdlr hdlr, void *userData, void *userData2)
+DB::DBQueue::SQLTrans::SQLTrans(Int32 progId, DBToolHdlr hdlr, void *userData, void *userData2)
 {
 	this->hdlr = hdlr;
 	this->userData = userData;
@@ -85,12 +85,34 @@ DB::DBQueue::SQLTrans::~SQLTrans()
 {
 }
 
-DB::DBQueue::IDBCmd::CmdType DB::DBQueue::SQLTrans::GetCmdType()
+DB::DBQueue::CmdType DB::DBQueue::SQLTrans::GetCmdType()
 {
-	return DB::DBQueue::IDBCmd::CMDTYPE_SQLTrans;
+	return CmdType::SQLTrans;
 }
 
 Int32 DB::DBQueue::SQLTrans::GetProgId()
+{
+	return this->progId;
+};
+
+DB::DBQueue::SQLGetDB::SQLGetDB(Int32 progId, DBToolHdlr hdlr, void *userData, void *userData2)
+{
+	this->hdlr = hdlr;
+	this->userData = userData;
+	this->userData2 = userData2;
+	this->progId = progId;
+}
+
+DB::DBQueue::SQLGetDB::~SQLGetDB()
+{
+}
+
+DB::DBQueue::CmdType DB::DBQueue::SQLGetDB::GetCmdType()
+{
+	return CmdType::SQLGetDB;
+}
+
+Int32 DB::DBQueue::SQLGetDB::GetProgId()
 {
 	return this->progId;
 };
@@ -176,7 +198,7 @@ DB::DBQueue::~DBQueue()
 		while (j-- > 0)
 		{
 			c = sqlList[i]->GetItem(j);
-			if (c->GetCmdType() == DB::DBQueue::IDBCmd::CMDTYPE_SQLCmd)
+			if (c->GetCmdType() == CmdType::SQLCmd)
 			{
 				if (fs == 0)
 				{
@@ -197,7 +219,7 @@ DB::DBQueue::~DBQueue()
 			while (k-- > 0)
 			{
 				c = carr[k];
-				if (c->GetCmdType() == DB::DBQueue::IDBCmd::CMDTYPE_SQLCmd)
+				if (c->GetCmdType() == CmdType::SQLCmd)
 				{
 					if (fs == 0)
 					{
@@ -252,7 +274,7 @@ void DB::DBQueue::AddSQL(const UTF8Char *str)
 	this->AddSQL(str, 0, 0, 0, 0, 0);
 }
 
-void DB::DBQueue::AddSQL(const UTF8Char *str, Int32 priority, Int32 progId, DBHdlr hdlr, void *userData, void *userData2)
+void DB::DBQueue::AddSQL(const UTF8Char *str, Int32 priority, Int32 progId, DBReadHdlr hdlr, void *userData, void *userData2)
 {
 	if (priority > DB_DBQUEUE_PRIORITY_HIGHEST)
 		priority = DB_DBQUEUE_PRIORITY_HIGHEST;
@@ -301,7 +323,7 @@ void DB::DBQueue::AddSQL(const UTF8Char *str, Int32 priority, Int32 progId, DBHd
 	mutUsage.EndUse();
 }
 
-void DB::DBQueue::AddTrans(Int32 priority, Int32 progId, DBTransHdlr hdlr, void *userData, void *userData2)
+void DB::DBQueue::AddTrans(Int32 priority, Int32 progId, DBToolHdlr hdlr, void *userData, void *userData2)
 {
 	if (priority > DB_DBQUEUE_PRIORITY_HIGHEST)
 		priority = DB_DBQUEUE_PRIORITY_HIGHEST;
@@ -309,6 +331,21 @@ void DB::DBQueue::AddTrans(Int32 priority, Int32 progId, DBTransHdlr hdlr, void 
 		priority = DB_DBQUEUE_PRIORITY_LOWEST;
 	DB::DBQueue::SQLTrans *trans;
 	NEW_CLASS(trans, DB::DBQueue::SQLTrans(progId, hdlr, userData, userData2));
+	Sync::MutexUsage mutUsage(mut);
+	sqlList[priority]->Add(trans);
+	((DB::DBHandler*)this->dbList->GetItem(this->nextDB))->Wake();
+	this->nextDB = (this->nextDB + 1) % this->dbList->GetCount();
+	mutUsage.EndUse();
+}
+
+void DB::DBQueue::GetDB(Int32 priority, Int32 progId, DBToolHdlr hdlr, void *userData, void *userData2)
+{
+	if (priority > DB_DBQUEUE_PRIORITY_HIGHEST)
+		priority = DB_DBQUEUE_PRIORITY_HIGHEST;
+	if (priority < DB_DBQUEUE_PRIORITY_LOWEST)
+		priority = DB_DBQUEUE_PRIORITY_LOWEST;
+	DB::DBQueue::SQLGetDB *trans;
+	NEW_CLASS(trans, DB::DBQueue::SQLGetDB(progId, hdlr, userData, userData2));
 	Sync::MutexUsage mutUsage(mut);
 	sqlList[priority]->Add(trans);
 	((DB::DBHandler*)this->dbList->GetItem(this->nextDB))->Wake();
@@ -547,9 +584,9 @@ UInt32 __stdcall DB::DBHandler::ProcessSQL(void *userObj)
 				while (l < cmdSize)
 				{
 					c = (DB::DBQueue::IDBCmd *)cmds[l];
-					DB::DBQueue::IDBCmd::CmdType ctyp = c->GetCmdType();
-					if (ctyp == DB::DBQueue::IDBCmd::CMDTYPE_SQLCmd)
+					switch (c->GetCmdType())
 					{
+					case DB::DBQueue::CmdType::SQLCmd:
 						me->procTime->SetCurrTimeUTC();
 						cmd = (DB::DBQueue::SQLCmd*)c;
 						s = cmd->str;
@@ -598,92 +635,107 @@ UInt32 __stdcall DB::DBHandler::ProcessSQL(void *userObj)
 								cmd->hdlr(cmd->userData, cmd->userData2, me->db, 0);
 							}
 						}
-					}
-					else if (c->GetCmdType() == DB::DBQueue::IDBCmd::CMDTYPE_SQLTrans)
-					{
-						Bool res = false;
-						me->procTime->SetCurrTimeUTC();
-						me->db->BeginTrans();
-						DB::DBQueue::SQLTrans *obj = (DB::DBQueue::SQLTrans*)c;
-						res = obj->hdlr(obj->userData, obj->userData2, me->db);
-						if (res == false)
+						break;
+					case DB::DBQueue::CmdType::SQLTrans:
 						{
-							me->dbQ->log->LogMessage((const UTF8Char*)"DB Trans failed", IO::ILogHandler::LOG_LEVEL_ERROR);
-						}
-						me->db->EndTrans(res);
-					}
-					else if (c->GetCmdType() == DB::DBQueue::IDBCmd::CMDTYPE_SQLGroup)
-					{
-						Bool hasError = false;
-						grp = (DB::DBQueue::SQLGroup *)c;
-						me->procTime->SetCurrTimeUTC();
-						me->db->BeginTrans();
-						UOSInt k;
-						k = 0;
-						if (grp->hdlr == 0)
-						{
-							i = 3;
-							while (k < grp->strs->GetCount())
+							Bool res = false;
+							me->procTime->SetCurrTimeUTC();
+							me->db->BeginTrans();
+							DB::DBQueue::SQLTrans *obj = (DB::DBQueue::SQLTrans*)c;
+							res = obj->hdlr(obj->userData, obj->userData2, me->db);
+							if (res == false)
 							{
-								s = grp->strs->GetItem(k);
-								if (me->db->ExecuteNonQuery(s) == -2)
-								{
-									i -= 1;
-									if (i <= 0)
-									{
-										me->WriteError((const UTF8Char*)"3 Times", s);
-										hasError = true;
-										break;
-									}
-								}
-								else
-								{
-									k += 1;
-								}
+								me->dbQ->log->LogMessage((const UTF8Char*)"DB Trans failed", IO::ILogHandler::LOG_LEVEL_ERROR);
 							}
-							me->dbQ->sqlCnt += k;
-							me->db->EndTrans(!hasError);
+							me->db->EndTrans(res);
+							break;
 						}
-						else
+					case DB::DBQueue::CmdType::SQLGetDB:
 						{
-							DB::DBReader *rdr = 0;
-							i = 3;
-							while (k < grp->strs->GetCount())
+							Bool res = false;
+							me->procTime->SetCurrTimeUTC();
+							DB::DBQueue::SQLGetDB *obj = (DB::DBQueue::SQLGetDB*)c;
+							res = obj->hdlr(obj->userData, obj->userData2, me->db);
+							if (res == false)
 							{
-								s = grp->strs->GetItem(k);
-								rdr = me->db->ExecuteReader(s);
-								if (rdr == 0)
-								{
-									i -= 1;
-									if (i <= 0)
-									{
-										me->WriteError((const UTF8Char*)"3 Times", s);
-										hasError = true;
-										break;
-									}
-								}
-								else
-								{
-									k += 1;
-									if (k < grp->strs->GetCount())
-									{
-										me->db->CloseReader(rdr);
-									}
-								}
+								me->dbQ->log->LogMessage((const UTF8Char*)"DB GetDB error", IO::ILogHandler::LOG_LEVEL_ERROR);
 							}
-							
-							me->dbQ->sqlCnt += k;
-							if (rdr)
+							break;
+						}
+					case DB::DBQueue::CmdType::SQLGroup:
+						{
+							Bool hasError = false;
+							grp = (DB::DBQueue::SQLGroup *)c;
+							me->procTime->SetCurrTimeUTC();
+							me->db->BeginTrans();
+							UOSInt k;
+							k = 0;
+							if (grp->hdlr == 0)
 							{
-								grp->hdlr(grp->userData, grp->userData2, me->db, rdr);
-								me->db->CloseReader(rdr);
+								i = 3;
+								while (k < grp->strs->GetCount())
+								{
+									s = grp->strs->GetItem(k);
+									if (me->db->ExecuteNonQuery(s) == -2)
+									{
+										i -= 1;
+										if (i <= 0)
+										{
+											me->WriteError((const UTF8Char*)"3 Times", s);
+											hasError = true;
+											break;
+										}
+									}
+									else
+									{
+										k += 1;
+									}
+								}
+								me->dbQ->sqlCnt += k;
+								me->db->EndTrans(!hasError);
 							}
 							else
 							{
-								grp->hdlr(grp->userData, grp->userData2, me->db, 0);
+								DB::DBReader *rdr = 0;
+								i = 3;
+								while (k < grp->strs->GetCount())
+								{
+									s = grp->strs->GetItem(k);
+									rdr = me->db->ExecuteReader(s);
+									if (rdr == 0)
+									{
+										i -= 1;
+										if (i <= 0)
+										{
+											me->WriteError((const UTF8Char*)"3 Times", s);
+											hasError = true;
+											break;
+										}
+									}
+									else
+									{
+										k += 1;
+										if (k < grp->strs->GetCount())
+										{
+											me->db->CloseReader(rdr);
+										}
+									}
+								}
+								
+								me->dbQ->sqlCnt += k;
+								if (rdr)
+								{
+									grp->hdlr(grp->userData, grp->userData2, me->db, rdr);
+									me->db->CloseReader(rdr);
+								}
+								else
+								{
+									grp->hdlr(grp->userData, grp->userData2, me->db, 0);
+								}
+								me->db->EndTrans(!hasError);
 							}
-							me->db->EndTrans(!hasError);
 						}
+						break;
 					}
 					DEL_CLASS(c);
 
