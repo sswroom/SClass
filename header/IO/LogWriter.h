@@ -15,19 +15,16 @@ namespace IO
 		Sync::Mutex *mut;
 		IO::ILogHandler::LogLevel logLev;
 
+		void CheckLines();
 	public:
 		LogWriter(IO::LogTool *log, IO::ILogHandler::LogLevel logLev);
 		virtual ~LogWriter();
 
-		virtual Bool Write(const UTF8Char *str, OSInt nChar);
+		virtual Bool Write(const UTF8Char *str, UOSInt nChar);
 		virtual Bool Write(const UTF8Char *str);
-		virtual Bool WriteLine(const UTF8Char *str, OSInt nChar);
+		virtual Bool WriteLine(const UTF8Char *str, UOSInt nChar);
 		virtual Bool WriteLine(const UTF8Char *str);
-		virtual Bool WriteW(const WChar *str, OSInt nChar);
-		virtual Bool WriteW(const WChar *str);
-		virtual Bool WriteLineW(const WChar *str, OSInt nChar);
-		virtual Bool WriteLineW(const WChar *str);
 		virtual Bool WriteLine();
 	};
-};
+}
 #endif

@@ -1393,6 +1393,8 @@ IO/LogFile.h: ../../src/IO/LogFile.cpp
 @LogFile.o
 IO/LogTool.h: ../../src/IO/LogTool.cpp
 @LogTool.o
+IO/LogWriter.h: ../../src/IO/LogWriter.cpp
+@LogWriter.o
 IO/LoopFileLog.h: ../../src/IO/LoopFileLog.cpp
 @LoopFileLog.o
 IO/MemFileBuffer.h: ../../src/IO/MemFileBuffer.cpp
@@ -3931,6 +3933,7 @@ IOTool.o: ../../src/IO/IOTool.cpp
 JavaClass.o: ../../src/IO/JavaClass.cpp
 LogFile.o: ../../src/IO/LogFile.cpp
 LogTool.o: ../../src/IO/LogTool.cpp
+LogWriter.o: ../../src/IO/LogWriter.cpp
 LoopFileLog.o: ../../src/IO/LoopFileLog.cpp
 MemFileBuffer.o: ../../src/IO/MemFileBuffer.cpp
 MemoryStream.o: ../../src/IO/MemoryStream.cpp

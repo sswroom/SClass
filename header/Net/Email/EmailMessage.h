@@ -31,6 +31,7 @@ namespace Net
 			Bool SetMessageId(const UTF8Char *msgId);
 			Bool SetFrom(const UTF8Char *name, const UTF8Char *addr);
 			Bool AddTo(const UTF8Char *name, const UTF8Char *addr);
+			Bool AddToList(const UTF8Char *addrs);
 			Bool AddCc(const UTF8Char *name, const UTF8Char *addr);
 			Bool AddBcc(const UTF8Char *addr);
 

@@ -3,12 +3,17 @@
 #include "Text/MyString.h"
 #include "IO/LogWriter.h"
 
+void IO::LogWriter::CheckLines()
+{
+
+}
+
 IO::LogWriter::LogWriter(IO::LogTool *log, IO::ILogHandler::LogLevel logLev)
 {
 	this->log = log;
 	this->logLev = logLev;
 	NEW_CLASS(this->mut, Sync::Mutex());
-	NEW_CLASS(this->sb, Text::StringBuilder());
+	NEW_CLASS(this->sb, Text::StringBuilderUTF8());
 }
 
 IO::LogWriter::~LogWriter()
@@ -17,51 +22,53 @@ IO::LogWriter::~LogWriter()
 	DEL_CLASS(this->sb);
 }
 
-OSInt IO::LogWriter::Write(const WChar *str, OSInt nChar)
+Bool IO::LogWriter::Write(const UTF8Char *str, UOSInt nChar)
 {
 	this->mut->Lock();
-	sb->Append(str, nChar);
+	sb->AppendC(str, nChar);
 	this->mut->Unlock();
-	return nChar;
+	this->CheckLines();
+	return true;
 }
 
-OSInt IO::LogWriter::Write(const WChar *str)
+Bool IO::LogWriter::Write(const UTF8Char *str)
 {
-	OSInt nChar = Text::StrCharCnt(str);
 	this->mut->Lock();
-	sb->Append(str, nChar);
+	sb->Append(str);
 	this->mut->Unlock();
-	return nChar;
+	this->CheckLines();
+	return true;
 }
 
-OSInt IO::LogWriter::WriteLine(const WChar *str, OSInt nChar)
+Bool IO::LogWriter::WriteLine(const UTF8Char *str, UOSInt nChar)
 {
 	this->mut->Lock();
-	sb->Append(str, nChar);
+	sb->AppendC(str, nChar);
+	this->CheckLines();
 	if (sb->GetLength() > 0)
 	{
 		this->log->LogMessage(sb->ToString(), this->logLev);
 		sb->ClearStr();
 	}
 	this->mut->Unlock();
-	return nChar;
+	return true;
 }
 
-OSInt IO::LogWriter::WriteLine(const WChar *str)
+Bool IO::LogWriter::WriteLine(const UTF8Char *str)
 {
-	OSInt nChar = Text::StrCharCnt(str);
 	this->mut->Lock();
-	sb->Append(str, nChar);
+	sb->Append(str);
+	this->CheckLines();
 	if (sb->GetLength() > 0)
 	{
 		this->log->LogMessage(sb->ToString(), this->logLev);
 		sb->ClearStr();
 	}
 	this->mut->Unlock();
-	return nChar;
+	return true;
 }
 
-OSInt IO::LogWriter::WriteLine()
+Bool IO::LogWriter::WriteLine()
 {
 	this->mut->Lock();
 	if (sb->GetLength() > 0)
@@ -70,5 +77,5 @@ OSInt IO::LogWriter::WriteLine()
 		sb->ClearStr();
 	}
 	this->mut->Unlock();
-	return 0;
+	return true;
 }

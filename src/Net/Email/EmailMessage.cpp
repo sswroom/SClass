@@ -204,6 +204,32 @@ Bool Net::Email::EmailMessage::AddTo(const UTF8Char *name, const UTF8Char *addr)
 	return true;
 }
 
+Bool Net::Email::EmailMessage::AddToList(const UTF8Char *addrs)
+{
+	Bool succ;
+	UOSInt i;
+	UTF8Char *sarr[2];
+	Text::StringBuilderUTF8 sb;
+	sb.Append(addrs);
+	sarr[1] = sb.ToString();
+	succ = true;
+	while (true)
+	{
+		i = Text::StrSplitTrim(sarr, 2, sarr[1], ',');
+		if (!Text::StringTool::IsEmailAddress(sarr[0]))
+		{
+			succ = false;
+		}
+		else
+		{
+			succ = succ && this->AddTo(0, sarr[0]);
+		}
+		if (i == 1)
+			break;
+	}
+	return succ;
+}
+
 Bool Net::Email::EmailMessage::AddCc(const UTF8Char *name, const UTF8Char *addr)
 {
 	UOSInt i = this->GetHeaderIndex("Cc");
