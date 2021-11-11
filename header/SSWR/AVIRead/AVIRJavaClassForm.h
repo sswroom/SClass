@@ -29,6 +29,9 @@ namespace SSWR
 			UI::GUIVSplitter *vspMethods;
 			UI::GUITextBox *txtMethods;
 
+			UI::GUITabPage *tpDecompile;
+			UI::GUITextBox *txtDecompile;
+
 			SSWR::AVIRead::AVIRCore *core;
 			IO::JavaClass *clsFile;
 

@@ -45,6 +45,11 @@ SSWR::AVIRead::AVIRJavaClassForm::AVIRJavaClassForm(UI::GUIClientControl *parent
 	this->txtMethods->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->txtMethods->SetReadOnly(true);
 
+	this->tpDecompile = this->tcMain->AddTabPage((const UTF8Char*)"Decompile");
+	NEW_CLASS(this->txtDecompile, UI::GUITextBox(ui, this->tpDecompile, (const UTF8Char*)"", true));
+	this->txtDecompile->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->txtDecompile->SetReadOnly(true);
+
 	UOSInt i = 0;
 	UOSInt j = this->clsFile->FieldsGetCount();
 	while (i < j)
@@ -64,6 +69,10 @@ SSWR::AVIRead::AVIRJavaClassForm::AVIRJavaClassForm(UI::GUIClientControl *parent
 		this->lbMethods->AddItem(sb.ToString(), (void*)i);
 		i++;
 	}
+
+	sb.ClearStr();
+	this->clsFile->DecompileFile(&sb);
+	this->txtDecompile->SetText(sb.ToString());
 }
 
 SSWR::AVIRead::AVIRJavaClassForm::~AVIRJavaClassForm()
