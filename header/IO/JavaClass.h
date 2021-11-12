@@ -56,6 +56,8 @@ namespace IO
 			UInt16 accessFlags;
 			UInt16 nameIndex;
 			UInt16 descriptorIndex;
+			UInt16 maxStacks;
+			UInt16 maxLocals;
 			UInt8 *code;
 			UInt32 codeLen;
 			Data::ArrayList<ExceptionHdlrInfo*> *exHdlrList;
@@ -72,6 +74,7 @@ namespace IO
 			const MethodInfo *method;
 			const UInt8 *codeStart;
 			const UInt8 *endPtr;
+			const UTF8Char *returnType;
 
 			Data::ArrayListStrUTF8 *importList;
 			const UTF8Char *packageName;
@@ -93,6 +96,7 @@ namespace IO
 		UInt8 **methods;
 		UOSInt attrCnt;
 		UInt8 **attrs;
+		UInt16 signatureIndex;
 
 		static const UInt8 *Type2String(const UInt8 *typeStr, Text::StringBuilderUTF *sb);
 		static const UInt8 *CondType2String(CondType ct);
@@ -109,6 +113,7 @@ namespace IO
 		void DetailClassNameStr(UInt16 index, Text::StringBuilderUTF *sb);
 		void DetailFieldRef(UInt16 index, Text::StringBuilderUTF *sb);
 		void DetailMethodRef(UInt16 index, Text::StringBuilderUTF *sb);
+		Bool MethodGetReturnType(UInt16 index, Text::StringBuilderUTF *sb);
 		void DetailNameAndType(UInt16 index, UInt16 classIndex, Text::StringBuilderUTF *sb);
 		void DetailNameType(UInt16 nameIndex, UInt16 typeIndex, UInt16 classIndex, const UTF8Char *prefix, Text::StringBuilderUTF *sb, UTF8Char *typeBuff, MethodInfo *method, Data::ArrayListStrUTF8 *importList, const UTF8Char *packageName);
 		void DetailType(UInt16 typeIndex, Text::StringBuilderUTF *sb);
@@ -120,6 +125,7 @@ namespace IO
 		UTF8Char *GetConstName(UTF8Char *sbuff, UInt16 index);
 		Bool ClassNameString(UInt16 index, Text::StringBuilderUTF *sb);
 		UTF8Char *GetLVName(UTF8Char *sbuff, UInt16 index, const MethodInfo *method, UOSInt codeOfst);
+		UTF8Char *GetLVType(UTF8Char *sbuff, UInt16 index, const MethodInfo *method, UOSInt codeOfst);
 
 		Bool MethodParse(MethodInfo *method, const UInt8 *methodBuff);
 		void MethodFree(MethodInfo *method);
