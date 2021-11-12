@@ -2832,15 +2832,44 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			codeLen -= 17;
 			break;
 		case 0xAB:
-			this->AppendIndent(sb, lev);
-			sb->AppendUOSInt(codeOfst);
-			sb->AppendChar('\t', 1);
-			////////////////////////////////////
-			sb->AppendHexBuff(&codePtr[codeOfst], 8, ' ', Text::LineBreakType::None);
-			sb->AppendChar(' ', 1);
-			sb->Append((const UTF8Char*)"lookupswitch\r\n");
-			codeOfst += 8;
-			codeLen -= 8;
+			{
+				this->AppendIndent(sb, lev);
+				sb->AppendUOSInt(codeOfst);
+				sb->AppendChar('\t', 1);
+				UOSInt currOfst = codeOfst + 1;
+				while (currOfst & 3)
+				{
+					currOfst += 1;
+				}
+				Int32 defaultPC = ReadMInt32(&codePtr[currOfst]);
+				UInt32 npairs = ReadMUInt32(&codePtr[currOfst + 4]);
+				sb->AppendHexBuff(&codePtr[codeOfst], (currOfst + 8 - codeOfst), ' ', Text::LineBreakType::None);
+				sb->AppendChar(' ', 1);
+				sb->Append((const UTF8Char*)"lookupswitch default = ");
+				sb->AppendI32(defaultPC);
+				sb->Append((const UTF8Char*)", npairs = ");
+				sb->AppendU32(npairs);
+				sb->Append((const UTF8Char*)"\r\n");
+				codeLen -= (currOfst + 8 - codeOfst);
+				codeOfst = currOfst + 8;
+				UInt32 currIndex = 0;
+				while (currIndex < npairs && codeLen >= 8)
+				{
+					this->AppendIndent(sb, lev);
+					sb->AppendUOSInt(codeOfst);
+					sb->AppendChar('\t', 1);
+					sb->AppendHexBuff(&codePtr[codeOfst], 8, ' ', Text::LineBreakType::None);
+					sb->AppendChar(' ', 1);
+					sb->AppendI32(ReadMInt32(&codePtr[codeOfst]));
+					sb->Append((const UTF8Char*)": ");
+					sb->AppendI32(ReadMInt32(&codePtr[codeOfst + 4]));
+					sb->Append((const UTF8Char*)"\r\n");
+					currIndex++;
+					codeOfst += 8;
+					codeLen -= 8;
+				}
+				sb->Append((const UTF8Char*)"\r\n");
+			}
 			break;
 		case 0xAC:
 			this->AppendIndent(sb, lev);
@@ -5334,10 +5363,10 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			sbTmp.AppendChar('[', 1);
 			sbTmp.Append(env->stacks->GetItem(env->stacks->GetCount() - 1));
 			sbTmp.AppendChar(']', 1);
-			Text::StrDelNew(env->stacks->RemoveAt(env->stacks->GetCount() - 1));
-			Text::StrDelNew(env->stacks->RemoveAt(env->stacks->GetCount() - 1));
-			Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
-			Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
+			Text::StrDelNew(env->stacks->Pop());
+			Text::StrDelNew(env->stacks->Pop());
+			Text::StrDelNew(env->stackTypes->Pop());
+			Text::StrDelNew(env->stackTypes->Pop());
 			env->stacks->Add(Text::StrCopyNew(sbTmp.ToString()));
 			env->stackTypes->Add(Text::StrCopyNew((const UTF8Char*)"int"));
 			codePtr++;
@@ -5356,10 +5385,10 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			sbTmp.AppendChar('[', 1);
 			sbTmp.Append(env->stacks->GetItem(env->stacks->GetCount() - 1));
 			sbTmp.AppendChar(']', 1);
-			Text::StrDelNew(env->stacks->RemoveAt(env->stacks->GetCount() - 1));
-			Text::StrDelNew(env->stacks->RemoveAt(env->stacks->GetCount() - 1));
-			Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
-			Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
+			Text::StrDelNew(env->stacks->Pop());
+			Text::StrDelNew(env->stacks->Pop());
+			Text::StrDelNew(env->stackTypes->Pop());
+			Text::StrDelNew(env->stackTypes->Pop());
 			env->stacks->Add(Text::StrCopyNew(sbTmp.ToString()));
 			env->stackTypes->Add(Text::StrCopyNew((const UTF8Char*)"long"));
 			codePtr++;
@@ -5378,10 +5407,10 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			sbTmp.AppendChar('[', 1);
 			sbTmp.Append(env->stacks->GetItem(env->stacks->GetCount() - 1));
 			sbTmp.AppendChar(']', 1);
-			Text::StrDelNew(env->stacks->RemoveAt(env->stacks->GetCount() - 1));
-			Text::StrDelNew(env->stacks->RemoveAt(env->stacks->GetCount() - 1));
-			Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
-			Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
+			Text::StrDelNew(env->stacks->Pop());
+			Text::StrDelNew(env->stacks->Pop());
+			Text::StrDelNew(env->stackTypes->Pop());
+			Text::StrDelNew(env->stackTypes->Pop());
 			env->stacks->Add(Text::StrCopyNew(sbTmp.ToString()));
 			env->stackTypes->Add(Text::StrCopyNew((const UTF8Char*)"float"));
 			codePtr++;
@@ -5400,10 +5429,10 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			sbTmp.AppendChar('[', 1);
 			sbTmp.Append(env->stacks->GetItem(env->stacks->GetCount() - 1));
 			sbTmp.AppendChar(']', 1);
-			Text::StrDelNew(env->stacks->RemoveAt(env->stacks->GetCount() - 1));
-			Text::StrDelNew(env->stacks->RemoveAt(env->stacks->GetCount() - 1));
-			Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
-			Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
+			Text::StrDelNew(env->stacks->Pop());
+			Text::StrDelNew(env->stacks->Pop());
+			Text::StrDelNew(env->stackTypes->Pop());
+			Text::StrDelNew(env->stackTypes->Pop());
 			env->stacks->Add(Text::StrCopyNew(sbTmp.ToString()));
 			env->stackTypes->Add(Text::StrCopyNew((const UTF8Char*)"double"));
 			codePtr++;
@@ -5433,10 +5462,10 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			sbTmp.AppendChar('[', 1);
 			sbTmp.Append(env->stacks->GetItem(env->stacks->GetCount() - 1));
 			sbTmp.AppendChar(']', 1);
-			Text::StrDelNew(env->stacks->RemoveAt(env->stacks->GetCount() - 1));
-			Text::StrDelNew(env->stacks->RemoveAt(env->stacks->GetCount() - 1));
-			Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
-			Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
+			Text::StrDelNew(env->stacks->Pop());
+			Text::StrDelNew(env->stacks->Pop());
+			Text::StrDelNew(env->stackTypes->Pop());
+			Text::StrDelNew(env->stackTypes->Pop());
 			env->stacks->Add(Text::StrCopyNew(sbTmp.ToString()));
 			env->stackTypes->Add(Text::StrCopyNew(sbTmp2.ToString()));
 			codePtr++;
@@ -5455,10 +5484,10 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			sbTmp.AppendChar('[', 1);
 			sbTmp.Append(env->stacks->GetItem(env->stacks->GetCount() - 1));
 			sbTmp.AppendChar(']', 1);
-			Text::StrDelNew(env->stacks->RemoveAt(env->stacks->GetCount() - 1));
-			Text::StrDelNew(env->stacks->RemoveAt(env->stacks->GetCount() - 1));
-			Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
-			Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
+			Text::StrDelNew(env->stacks->Pop());
+			Text::StrDelNew(env->stacks->Pop());
+			Text::StrDelNew(env->stackTypes->Pop());
+			Text::StrDelNew(env->stackTypes->Pop());
 			env->stacks->Add(Text::StrCopyNew(sbTmp.ToString()));
 			env->stackTypes->Add(Text::StrCopyNew((const UTF8Char*)"byte"));
 			codePtr++;
@@ -5477,10 +5506,10 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			sbTmp.AppendChar('[', 1);
 			sbTmp.Append(env->stacks->GetItem(env->stacks->GetCount() - 1));
 			sbTmp.AppendChar(']', 1);
-			Text::StrDelNew(env->stacks->RemoveAt(env->stacks->GetCount() - 1));
-			Text::StrDelNew(env->stacks->RemoveAt(env->stacks->GetCount() - 1));
-			Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
-			Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
+			Text::StrDelNew(env->stacks->Pop());
+			Text::StrDelNew(env->stacks->Pop());
+			Text::StrDelNew(env->stackTypes->Pop());
+			Text::StrDelNew(env->stackTypes->Pop());
 			env->stacks->Add(Text::StrCopyNew(sbTmp.ToString()));
 			env->stackTypes->Add(Text::StrCopyNew((const UTF8Char*)"char"));
 			codePtr++;
@@ -5499,10 +5528,10 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			sbTmp.AppendChar('[', 1);
 			sbTmp.Append(env->stacks->GetItem(env->stacks->GetCount() - 1));
 			sbTmp.AppendChar(']', 1);
-			Text::StrDelNew(env->stacks->RemoveAt(env->stacks->GetCount() - 1));
-			Text::StrDelNew(env->stacks->RemoveAt(env->stacks->GetCount() - 1));
-			Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
-			Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
+			Text::StrDelNew(env->stacks->Pop());
+			Text::StrDelNew(env->stacks->Pop());
+			Text::StrDelNew(env->stackTypes->Pop());
+			Text::StrDelNew(env->stackTypes->Pop());
 			env->stacks->Add(Text::StrCopyNew(sbTmp.ToString()));
 			env->stackTypes->Add(Text::StrCopyNew((const UTF8Char*)"short"));
 			codePtr++;
@@ -5620,12 +5649,12 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				const UTF8Char *nameStr = env->stacks->GetItem(env->stacks->GetCount() - 3);
 				const UTF8Char *indexStr = env->stacks->GetItem(env->stacks->GetCount() - 2);
 				const UTF8Char *valueStr = env->stacks->GetItem(env->stacks->GetCount() - 1);
-				Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
-				Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
-				Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
-				env->stacks->RemoveAt(env->stacks->GetCount() - 1);
-				env->stacks->RemoveAt(env->stacks->GetCount() - 1);
-				env->stacks->RemoveAt(env->stacks->GetCount() - 1);
+				Text::StrDelNew(env->stackTypes->Pop());
+				Text::StrDelNew(env->stackTypes->Pop());
+				Text::StrDelNew(env->stackTypes->Pop());
+				env->stacks->Pop();
+				env->stacks->Pop();
+				env->stacks->Pop();
 
 				this->AppendIndent(sb, lev);
 				sb->Append(nameStr);
@@ -5656,12 +5685,12 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				const UTF8Char *nameStr = env->stacks->GetItem(env->stacks->GetCount() - 3);
 				const UTF8Char *indexStr = env->stacks->GetItem(env->stacks->GetCount() - 2);
 				const UTF8Char *valueStr = env->stacks->GetItem(env->stacks->GetCount() - 1);
-				Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
-				Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
-				Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
-				env->stacks->RemoveAt(env->stacks->GetCount() - 1);
-				env->stacks->RemoveAt(env->stacks->GetCount() - 1);
-				env->stacks->RemoveAt(env->stacks->GetCount() - 1);
+				Text::StrDelNew(env->stackTypes->Pop());
+				Text::StrDelNew(env->stackTypes->Pop());
+				Text::StrDelNew(env->stackTypes->Pop());
+				env->stacks->Pop();
+				env->stacks->Pop();
+				env->stacks->Pop();
 
 				this->AppendIndent(sb, lev);
 				sb->Append(nameStr);
@@ -5692,12 +5721,72 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				const UTF8Char *nameStr = env->stacks->GetItem(env->stacks->GetCount() - 3);
 				const UTF8Char *indexStr = env->stacks->GetItem(env->stacks->GetCount() - 2);
 				const UTF8Char *valueStr = env->stacks->GetItem(env->stacks->GetCount() - 1);
-				Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
-				Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
-				Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
-				env->stacks->RemoveAt(env->stacks->GetCount() - 1);
-				env->stacks->RemoveAt(env->stacks->GetCount() - 1);
-				env->stacks->RemoveAt(env->stacks->GetCount() - 1);
+				Text::StrDelNew(env->stackTypes->Pop());
+				Text::StrDelNew(env->stackTypes->Pop());
+				Text::StrDelNew(env->stackTypes->Pop());
+				env->stacks->Pop();
+				env->stacks->Pop();
+				env->stacks->Pop();
+
+				if (Text::StrStartsWith(nameStr, (const UTF8Char*)"new ") && env->stacks->GetCount() > 0 && Text::StrStartsWith(env->stacks->GetItem(env->stacks->GetCount()- 1), nameStr))
+				{
+					const UTF8Char *arrStr = env->stacks->RemoveAt(env->stacks->GetCount()- 1);
+					sbTmp.ClearStr();
+					sbTmp.Append(arrStr);
+					if (sbTmp.ToString()[sbTmp.GetLength() - 1] == '}')
+					{
+						sbTmp.RemoveChars(1);
+						sbTmp.Append((const UTF8Char*)", ");
+						sbTmp.Append(valueStr);
+						sbTmp.AppendChar('}', 1);
+					}
+					else
+					{
+						sbTmp.Append((const UTF8Char*)" {");
+						sbTmp.Append(valueStr);
+						sbTmp.AppendChar('}', 1);
+					}
+					env->stacks->Add(Text::StrCopyNew(sbTmp.ToString()));
+					Text::StrDelNew(arrStr);
+				}
+				else
+				{
+					this->AppendIndent(sb, lev);
+					sb->Append(nameStr);
+					sb->AppendChar('[', 1);
+					sb->Append(indexStr);
+					sb->Append((const UTF8Char*)"] = ");
+					sb->Append(valueStr);
+					sb->Append((const UTF8Char*)";");
+					this->AppendLineNum(sb, env, codePtr);
+					sb->Append((const UTF8Char*)"\r\n");
+				}
+				Text::StrDelNew(nameStr);
+				Text::StrDelNew(indexStr);
+				Text::StrDelNew(valueStr);
+			}
+			
+			codePtr++;
+			break;
+		case 0x54: //bastore
+			if (env->stacks->GetCount() < 3)
+			{
+				this->AppendIndent(sb, lev);
+				sb->Append((const UTF8Char*)"// bastore stack invalid");
+				sb->Append((const UTF8Char*)"\r\n");
+				return EndType::Error;
+			}
+			else
+			{
+				const UTF8Char *nameStr = env->stacks->GetItem(env->stacks->GetCount() - 3);
+				const UTF8Char *indexStr = env->stacks->GetItem(env->stacks->GetCount() - 2);
+				const UTF8Char *valueStr = env->stacks->GetItem(env->stacks->GetCount() - 1);
+				Text::StrDelNew(env->stackTypes->Pop());
+				Text::StrDelNew(env->stackTypes->Pop());
+				Text::StrDelNew(env->stackTypes->Pop());
+				env->stacks->Pop();
+				env->stacks->Pop();
+				env->stacks->Pop();
 
 				if (Text::StrStartsWith(nameStr, (const UTF8Char*)"new ") && env->stacks->GetCount() > 0 && Text::StrStartsWith(env->stacks->GetItem(env->stacks->GetCount()- 1), nameStr))
 				{
@@ -5752,8 +5841,8 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			sb->Append((const UTF8Char*)";");
 			this->AppendLineNum(sb, env, codePtr);
 			sb->Append((const UTF8Char*)"\r\n");
-			Text::StrDelNew(env->stacks->RemoveAt(env->stacks->GetCount() - 1));
-			Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
+			Text::StrDelNew(env->stacks->Pop());
+			Text::StrDelNew(env->stackTypes->Pop());
 			codePtr++;
 			break;
 		case 0x59: //dup
@@ -5794,14 +5883,32 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				}
 				const UTF8Char *csptr = env->stacks->RemoveAt(env->stacks->GetCount() - 2);
 				sbTmp.ClearStr();
-				sbTmp.Append(csptr);
+				if (Text::StrContainChars(csptr, (const UTF8Char*)"<>?"))
+				{
+					sbTmp.AppendChar('(', 1);
+					sbTmp.Append(csptr);
+					sbTmp.AppendChar(')', 1);
+				}
+				else
+				{
+					sbTmp.Append(csptr);
+				}
 				Text::StrDelNew(csptr);
 				sbTmp.Append((const UTF8Char*)" + ");
-				csptr = env->stacks->RemoveAt(env->stacks->GetCount() - 1);
-				sbTmp.Append(csptr);
+				csptr = env->stacks->Pop();
+				if (Text::StrContainChars(csptr, (const UTF8Char*)"<>?"))
+				{
+					sbTmp.AppendChar('(', 1);
+					sbTmp.Append(csptr);
+					sbTmp.AppendChar(')', 1);
+				}
+				else
+				{
+					sbTmp.Append(csptr);
+				}
 				Text::StrDelNew(csptr);
 				env->stacks->Add(Text::StrCopyNew(sbTmp.ToString()));
-				Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
+				Text::StrDelNew(env->stackTypes->Pop());
 				codePtr++;
 			}
 			break;
@@ -5819,11 +5926,11 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				sbTmp.Append(csptr);
 				Text::StrDelNew(csptr);
 				sbTmp.Append((const UTF8Char*)" + ");
-				csptr = env->stacks->RemoveAt(env->stacks->GetCount() - 1);
+				csptr = env->stacks->Pop();
 				sbTmp.Append(csptr);
 				Text::StrDelNew(csptr);
 				env->stacks->Add(Text::StrCopyNew(sbTmp.ToString()));
-				Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
+				Text::StrDelNew(env->stackTypes->Pop());
 				codePtr++;
 			}
 			break;
@@ -5841,11 +5948,11 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				sbTmp.Append(csptr);
 				Text::StrDelNew(csptr);
 				sbTmp.Append((const UTF8Char*)" + ");
-				csptr = env->stacks->RemoveAt(env->stacks->GetCount() - 1);
+				csptr = env->stacks->Pop();
 				sbTmp.Append(csptr);
 				Text::StrDelNew(csptr);
 				env->stacks->Add(Text::StrCopyNew(sbTmp.ToString()));
-				Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
+				Text::StrDelNew(env->stackTypes->Pop());
 				codePtr++;
 			}
 			break;
@@ -5863,11 +5970,11 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				sbTmp.Append(csptr);
 				Text::StrDelNew(csptr);
 				sbTmp.Append((const UTF8Char*)" + ");
-				csptr = env->stacks->RemoveAt(env->stacks->GetCount() - 1);
+				csptr = env->stacks->Pop();
 				sbTmp.Append(csptr);
 				Text::StrDelNew(csptr);
 				env->stacks->Add(Text::StrCopyNew(sbTmp.ToString()));
-				Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
+				Text::StrDelNew(env->stackTypes->Pop());
 				codePtr++;
 			}
 			break;
@@ -5885,11 +5992,11 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				sbTmp.Append(csptr);
 				Text::StrDelNew(csptr);
 				sbTmp.Append((const UTF8Char*)" - ");
-				csptr = env->stacks->RemoveAt(env->stacks->GetCount() - 1);
+				csptr = env->stacks->Pop();
 				sbTmp.Append(csptr);
 				Text::StrDelNew(csptr);
 				env->stacks->Add(Text::StrCopyNew(sbTmp.ToString()));
-				Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
+				Text::StrDelNew(env->stackTypes->Pop());
 				codePtr++;
 			}
 			break;
@@ -5907,11 +6014,11 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				sbTmp.Append(csptr);
 				Text::StrDelNew(csptr);
 				sbTmp.Append((const UTF8Char*)" - ");
-				csptr = env->stacks->RemoveAt(env->stacks->GetCount() - 1);
+				csptr = env->stacks->Pop();
 				sbTmp.Append(csptr);
 				Text::StrDelNew(csptr);
 				env->stacks->Add(Text::StrCopyNew(sbTmp.ToString()));
-				Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
+				Text::StrDelNew(env->stackTypes->Pop());
 				codePtr++;
 			}
 			break;
@@ -5929,11 +6036,11 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				sbTmp.Append(csptr);
 				Text::StrDelNew(csptr);
 				sbTmp.Append((const UTF8Char*)" - ");
-				csptr = env->stacks->RemoveAt(env->stacks->GetCount() - 1);
+				csptr = env->stacks->Pop();
 				sbTmp.Append(csptr);
 				Text::StrDelNew(csptr);
 				env->stacks->Add(Text::StrCopyNew(sbTmp.ToString()));
-				Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
+				Text::StrDelNew(env->stackTypes->Pop());
 				codePtr++;
 			}
 			break;
@@ -5951,20 +6058,23 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				sbTmp.Append(csptr);
 				Text::StrDelNew(csptr);
 				sbTmp.Append((const UTF8Char*)" - ");
-				csptr = env->stacks->RemoveAt(env->stacks->GetCount() - 1);
+				csptr = env->stacks->Pop();
 				sbTmp.Append(csptr);
 				Text::StrDelNew(csptr);
 				env->stacks->Add(Text::StrCopyNew(sbTmp.ToString()));
-				Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
+				Text::StrDelNew(env->stackTypes->Pop());
 				codePtr++;
 			}
 			break;
+		case 0x68: //imul
+		case 0x69: //lmul
+		case 0x6A: //fmul
 		case 0x6B: //dmul
 			{
 				if (env->stacks->GetCount() <= 1)
 				{
 					this->AppendIndent(sb, lev);
-					sb->Append((const UTF8Char*)"// dmul stack invalid");
+					sb->Append((const UTF8Char*)"// mul stack invalid");
 					sb->Append((const UTF8Char*)"\r\n");
 					return EndType::Error;
 				}
@@ -5982,7 +6092,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				}
 				Text::StrDelNew(csptr);
 				sbTmp.Append((const UTF8Char*)" * ");
-				csptr = env->stacks->RemoveAt(env->stacks->GetCount() - 1);
+				csptr = env->stacks->Pop();
 				if (Text::StrContainChars(csptr, (const UTF8Char*)"+-"))
 				{
 					sbTmp.AppendChar('(', 1);
@@ -5995,16 +6105,19 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				}
 				Text::StrDelNew(csptr);
 				env->stacks->Add(Text::StrCopyNew(sbTmp.ToString()));
-				Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
+				Text::StrDelNew(env->stackTypes->Pop());
 				codePtr++;
 			}
 			break;
+		case 0x6C: //idiv
+		case 0x6D: //ldiv
+		case 0x6E: //fdiv
 		case 0x6F: //ddiv
 			{
 				if (env->stacks->GetCount() <= 1)
 				{
 					this->AppendIndent(sb, lev);
-					sb->Append((const UTF8Char*)"// ddiv stack invalid");
+					sb->Append((const UTF8Char*)"// div stack invalid");
 					sb->Append((const UTF8Char*)"\r\n");
 					return EndType::Error;
 				}
@@ -6022,7 +6135,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				}
 				Text::StrDelNew(csptr);
 				sbTmp.Append((const UTF8Char*)" * ");
-				csptr = env->stacks->RemoveAt(env->stacks->GetCount() - 1);
+				csptr = env->stacks->Pop();
 				if (Text::StrContainChars(csptr, (const UTF8Char*)"+-"))
 				{
 					sbTmp.AppendChar('(', 1);
@@ -6035,7 +6148,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				}
 				Text::StrDelNew(csptr);
 				env->stacks->Add(Text::StrCopyNew(sbTmp.ToString()));
-				Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
+				Text::StrDelNew(env->stackTypes->Pop());
 				codePtr++;
 			}
 			break;
@@ -6053,11 +6166,11 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				sbTmp.Append(csptr);
 				Text::StrDelNew(csptr);
 				sbTmp.Append((const UTF8Char*)" % ");
-				csptr = env->stacks->RemoveAt(env->stacks->GetCount() - 1);
+				csptr = env->stacks->Pop();
 				sbTmp.Append(csptr);
 				Text::StrDelNew(csptr);
 				env->stacks->Add(Text::StrCopyNew(sbTmp.ToString()));
-				Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
+				Text::StrDelNew(env->stackTypes->Pop());
 				codePtr++;
 			}
 			break;
@@ -6070,7 +6183,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 					sb->Append((const UTF8Char*)"\r\n");
 					return EndType::Error;
 				}
-				const UTF8Char *csptr = env->stacks->RemoveAt(env->stacks->GetCount() - 1);
+				const UTF8Char *csptr = env->stacks->Pop();
 				sbTmp.ClearStr();
 				sbTmp.AppendChar('-', 1);
 				if (Text::StrContainChars(csptr, (const UTF8Char*)"+-*/"))
@@ -6086,6 +6199,162 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 					Text::StrDelNew(csptr);
 				}
 				env->stacks->Add(Text::StrCopyNew(sbTmp.ToString()));
+				codePtr++;
+			}
+			break;
+		case 0x78: //ishl
+			{
+				if (env->stacks->GetCount() <= 1)
+				{
+					this->AppendIndent(sb, lev);
+					sb->Append((const UTF8Char*)"// ishl stack invalid");
+					sb->Append((const UTF8Char*)"\r\n");
+					return EndType::Error;
+				}
+				const UTF8Char *csptr = env->stacks->Pop();
+				const UTF8Char *csptr2 = env->stacks->Pop();
+				sbTmp.ClearStr();
+				if (Text::StrContainChars(csptr2, (const UTF8Char*)"+-*/"))
+				{
+					sbTmp.AppendChar('(', 1);
+					sbTmp.Append(csptr2);
+					Text::StrDelNew(csptr2);
+					sbTmp.AppendChar(')', 1);
+				}
+				else
+				{
+					sbTmp.Append(csptr2);
+					Text::StrDelNew(csptr2);
+				}
+				sbTmp.Append((const UTF8Char*)" << ");
+				sbTmp.Append(csptr);
+				Text::StrDelNew(csptr);
+				env->stacks->Add(Text::StrCopyNew(sbTmp.ToString()));
+				Text::StrDelNew(env->stackTypes->Pop());
+				Text::StrDelNew(env->stackTypes->Pop());
+				env->stackTypes->Add(Text::StrCopyNew((const UTF8Char*)"int"));
+				codePtr++;
+			}
+			break;
+		case 0x7C: //iushr
+			{
+				if (env->stacks->GetCount() <= 1)
+				{
+					this->AppendIndent(sb, lev);
+					sb->Append((const UTF8Char*)"// iushr stack invalid");
+					sb->Append((const UTF8Char*)"\r\n");
+					return EndType::Error;
+				}
+				const UTF8Char *csptr = env->stacks->Pop();
+				const UTF8Char *csptr2 = env->stacks->Pop();
+				sbTmp.ClearStr();
+				if (Text::StrContainChars(csptr2, (const UTF8Char*)"+-*/"))
+				{
+					sbTmp.AppendChar('(', 1);
+					sbTmp.Append(csptr2);
+					Text::StrDelNew(csptr2);
+					sbTmp.AppendChar(')', 1);
+				}
+				else
+				{
+					sbTmp.Append(csptr2);
+					Text::StrDelNew(csptr2);
+				}
+				sbTmp.Append((const UTF8Char*)" >> ");
+				sbTmp.Append(csptr);
+				Text::StrDelNew(csptr);
+				env->stacks->Add(Text::StrCopyNew(sbTmp.ToString()));
+				Text::StrDelNew(env->stackTypes->Pop());
+				Text::StrDelNew(env->stackTypes->Pop());
+				env->stackTypes->Add(Text::StrCopyNew((const UTF8Char*)"int"));
+				codePtr++;
+			}
+			break;
+		case 0x7E: //iand
+			{
+				if (env->stacks->GetCount() <= 1)
+				{
+					this->AppendIndent(sb, lev);
+					sb->Append((const UTF8Char*)"// iand stack invalid");
+					sb->Append((const UTF8Char*)"\r\n");
+					return EndType::Error;
+				}
+				const UTF8Char *csptr = env->stacks->Pop();
+				const UTF8Char *csptr2 = env->stacks->Pop();
+				sbTmp.ClearStr();
+				if (Text::StrContainChars(csptr2, (const UTF8Char*)"+-*/><"))
+				{
+					sbTmp.AppendChar('(', 1);
+					sbTmp.Append(csptr2);
+					Text::StrDelNew(csptr2);
+					sbTmp.AppendChar(')', 1);
+				}
+				else
+				{
+					sbTmp.Append(csptr2);
+					Text::StrDelNew(csptr2);
+				}
+				sbTmp.Append((const UTF8Char*)" & ");
+				if (Text::StrContainChars(csptr, (const UTF8Char*)"+-*/><"))
+				{
+					sbTmp.AppendChar('(', 1);
+					sbTmp.Append(csptr);
+					Text::StrDelNew(csptr);
+					sbTmp.AppendChar(')', 1);
+				}
+				else
+				{
+					sbTmp.Append(csptr);
+					Text::StrDelNew(csptr);
+				}
+				env->stacks->Add(Text::StrCopyNew(sbTmp.ToString()));
+				Text::StrDelNew(env->stackTypes->Pop());
+				Text::StrDelNew(env->stackTypes->Pop());
+				env->stackTypes->Add(Text::StrCopyNew((const UTF8Char*)"int"));
+				codePtr++;
+			}
+			break;
+		case 0x80: //ior
+			{
+				if (env->stacks->GetCount() <= 1)
+				{
+					this->AppendIndent(sb, lev);
+					sb->Append((const UTF8Char*)"// ior stack invalid");
+					sb->Append((const UTF8Char*)"\r\n");
+					return EndType::Error;
+				}
+				const UTF8Char *csptr = env->stacks->Pop();
+				const UTF8Char *csptr2 = env->stacks->Pop();
+				sbTmp.ClearStr();
+				if (Text::StrContainChars(csptr2, (const UTF8Char*)"+-*/><"))
+				{
+					sbTmp.AppendChar('(', 1);
+					sbTmp.Append(csptr2);
+					Text::StrDelNew(csptr2);
+					sbTmp.AppendChar(')', 1);
+				}
+				else
+				{
+					sbTmp.Append(csptr2);
+					Text::StrDelNew(csptr2);
+				}
+				sbTmp.Append((const UTF8Char*)" | ");
+				if (Text::StrContainChars(csptr, (const UTF8Char*)"+-*/><"))
+				{
+					sbTmp.AppendChar('(', 1);
+					sbTmp.Append(csptr);
+					Text::StrDelNew(csptr);
+					sbTmp.AppendChar(')', 1);
+				}
+				else
+				{
+					sbTmp.Append(csptr);
+					Text::StrDelNew(csptr);
+				}
+				env->stacks->Add(Text::StrCopyNew(sbTmp.ToString()));
+				Text::StrDelNew(env->stackTypes->Pop());
+				Text::StrDelNew(env->stackTypes->Pop());
+				env->stackTypes->Add(Text::StrCopyNew((const UTF8Char*)"int"));
 				codePtr++;
 			}
 			break;
@@ -6105,19 +6374,19 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 					sbTmp.AppendChar('~', 1);
 					sbTmp.Append(csptr);
 					Text::StrDelNew(csptr);
-					Text::StrDelNew(env->stacks->RemoveAt(env->stacks->GetCount() - 1));
+					Text::StrDelNew(env->stacks->Pop());
 				}
 				else
 				{
 					sbTmp.Append(csptr);
 					Text::StrDelNew(csptr);
 					sbTmp.Append((const UTF8Char*)" % ");
-					csptr = env->stacks->RemoveAt(env->stacks->GetCount() - 1);
+					csptr = env->stacks->Pop();
 					sbTmp.Append(csptr);
 					Text::StrDelNew(csptr);
 				}
 				env->stacks->Add(Text::StrCopyNew(sbTmp.ToString()));
-				Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
+				Text::StrDelNew(env->stackTypes->Pop());
 				codePtr++;
 			}
 			break;
@@ -6133,10 +6402,32 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			codePtr += 3;
 			break;
 		case 0x85: //i2l
-			Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
+			Text::StrDelNew(env->stackTypes->Pop());
 			env->stackTypes->Add(Text::StrCopyNew((const UTF8Char*)"long"));
 			codePtr += 1;
 			break;
+		case 0x91: //i2b
+			{
+				Text::StrDelNew(env->stackTypes->Pop());
+				env->stackTypes->Add(Text::StrCopyNew((const UTF8Char*)"byte"));
+				sbTmp.ClearStr();
+				sbTmp.Append((const UTF8Char*)"(byte)");
+				const UTF8Char *csptr = env->stacks->Pop();
+				if (Text::StrContainChars(csptr, (const UTF8Char*)"+-*/<>?|&"))
+				{
+					sbTmp.AppendChar('(', 1);
+					sbTmp.Append(csptr);
+					sbTmp.AppendChar(')', 1);
+				}
+				else
+				{
+					sbTmp.Append(csptr);
+				}
+				Text::StrDelNew(csptr);
+				env->stacks->Add(Text::StrCopyNew(sbTmp.ToString()));
+				codePtr += 1;
+				break;
+			}
 		case 0x94: //lcmp
 			if (env->stacks->GetCount() <= 1)
 			{
@@ -6205,10 +6496,10 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 					sb->Append((const UTF8Char*)";");
 					this->AppendLineNum(sb, env, codePtr);
 					sb->Append((const UTF8Char*)"\r\n");
-					Text::StrDelNew(env->stacks->RemoveAt(env->stacks->GetCount() - 1));
-					Text::StrDelNew(env->stacks->RemoveAt(env->stacks->GetCount() - 1));
-					Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
-					Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
+					Text::StrDelNew(env->stacks->Pop());
+					Text::StrDelNew(env->stacks->Pop());
+					Text::StrDelNew(env->stackTypes->Pop());
+					Text::StrDelNew(env->stackTypes->Pop());
 					env->endPtr = codePtr + 7;
 					return EndType::Return;
 				}
@@ -6241,10 +6532,10 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 					sb->Append((const UTF8Char*)";");
 					AppendLineNum(sb, env, codePtr);
 					sb->Append((const UTF8Char*)"\r\n");
-					Text::StrDelNew(env->stacks->RemoveAt(env->stacks->GetCount() - 1));
-					Text::StrDelNew(env->stacks->RemoveAt(env->stacks->GetCount() - 1));
-					Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
-					Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
+					Text::StrDelNew(env->stacks->Pop());
+					Text::StrDelNew(env->stacks->Pop());
+					Text::StrDelNew(env->stackTypes->Pop());
+					Text::StrDelNew(env->stackTypes->Pop());
 					env->endPtr = codePtr + 7;
 					return EndType::Return;
 				}
@@ -6277,10 +6568,10 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 					sb->Append((const UTF8Char*)";");
 					this->AppendLineNum(sb, env, codePtr);
 					sb->Append((const UTF8Char*)"\r\n");
-					Text::StrDelNew(env->stacks->RemoveAt(env->stacks->GetCount() - 1));
-					Text::StrDelNew(env->stacks->RemoveAt(env->stacks->GetCount() - 1));
-					Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
-					Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
+					Text::StrDelNew(env->stacks->Pop());
+					Text::StrDelNew(env->stacks->Pop());
+					Text::StrDelNew(env->stackTypes->Pop());
+					Text::StrDelNew(env->stackTypes->Pop());
 					env->endPtr = codePtr + 7;
 					return EndType::Return;
 				}
@@ -6313,10 +6604,10 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 					sb->Append((const UTF8Char*)";");
 					this->AppendLineNum(sb, env, codePtr);
 					sb->Append((const UTF8Char*)"\r\n");
-					Text::StrDelNew(env->stacks->RemoveAt(env->stacks->GetCount() - 1));
-					Text::StrDelNew(env->stacks->RemoveAt(env->stacks->GetCount() - 1));
-					Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
-					Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
+					Text::StrDelNew(env->stacks->Pop());
+					Text::StrDelNew(env->stacks->Pop());
+					Text::StrDelNew(env->stackTypes->Pop());
+					Text::StrDelNew(env->stackTypes->Pop());
 					env->endPtr = codePtr + 7;
 					return EndType::Return;
 				}
@@ -6349,10 +6640,10 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 					sb->Append((const UTF8Char*)";");
 					this->AppendLineNum(sb, env, codePtr);
 					sb->Append((const UTF8Char*)"\r\n");
-					Text::StrDelNew(env->stacks->RemoveAt(env->stacks->GetCount() - 1));
-					Text::StrDelNew(env->stacks->RemoveAt(env->stacks->GetCount() - 1));
-					Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
-					Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
+					Text::StrDelNew(env->stacks->Pop());
+					Text::StrDelNew(env->stacks->Pop());
+					Text::StrDelNew(env->stackTypes->Pop());
+					Text::StrDelNew(env->stackTypes->Pop());
 					env->endPtr = codePtr + 7;
 					return EndType::Return;
 				}
@@ -6385,10 +6676,10 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 					sb->Append((const UTF8Char*)";");
 					this->AppendLineNum(sb, env, codePtr);
 					sb->Append((const UTF8Char*)"\r\n");
-					Text::StrDelNew(env->stacks->RemoveAt(env->stacks->GetCount() - 1));
-					Text::StrDelNew(env->stacks->RemoveAt(env->stacks->GetCount() - 1));
-					Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
-					Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
+					Text::StrDelNew(env->stacks->Pop());
+					Text::StrDelNew(env->stacks->Pop());
+					Text::StrDelNew(env->stackTypes->Pop());
+					Text::StrDelNew(env->stackTypes->Pop());
 					env->endPtr = codePtr + 7;
 					return EndType::Return;
 				}
@@ -6584,7 +6875,6 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			}
 			break;
 		case 0xAC: //ireturn
-			codePtr++;
 			if (env->stacks->GetCount() <= 0)
 			{
 				this->AppendIndent(sb, lev);
@@ -6598,12 +6888,12 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			sb->Append((const UTF8Char*)";");
 			this->AppendLineNum(sb, env, codePtr);
 			sb->Append((const UTF8Char*)"\r\n");
-			Text::StrDelNew(env->stacks->RemoveAt(env->stacks->GetCount() - 1));
-			Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
+			Text::StrDelNew(env->stacks->Pop());
+			Text::StrDelNew(env->stackTypes->Pop());
+			codePtr++;
 			env->endPtr = codePtr;
 			return EndType::Return;
 		case 0xAD: //lreturn
-			codePtr++;
 			if (env->stacks->GetCount() <= 0)
 			{
 				this->AppendIndent(sb, lev);
@@ -6617,12 +6907,12 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			sb->Append((const UTF8Char*)";");
 			this->AppendLineNum(sb, env, codePtr);
 			sb->Append((const UTF8Char*)"\r\n");
-			Text::StrDelNew(env->stacks->RemoveAt(env->stacks->GetCount() - 1));
-			Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
+			Text::StrDelNew(env->stacks->Pop());
+			Text::StrDelNew(env->stackTypes->Pop());
+			codePtr++;
 			env->endPtr = codePtr;
 			return EndType::Return;
 		case 0xAE: //freturn
-			codePtr++;
 			if (env->stacks->GetCount() <= 0)
 			{
 				this->AppendIndent(sb, lev);
@@ -6636,12 +6926,12 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			sb->Append((const UTF8Char*)";");
 			this->AppendLineNum(sb, env, codePtr);
 			sb->Append((const UTF8Char*)"\r\n");
-			Text::StrDelNew(env->stacks->RemoveAt(env->stacks->GetCount() - 1));
-			Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
+			Text::StrDelNew(env->stacks->Pop());
+			Text::StrDelNew(env->stackTypes->Pop());
+			codePtr++;
 			env->endPtr = codePtr;
 			return EndType::Return;
 		case 0xB0: //areturn
-			codePtr++;
 			if (env->stacks->GetCount() <= 0)
 			{
 				this->AppendIndent(sb, lev);
@@ -6655,14 +6945,17 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			sb->Append((const UTF8Char*)";");
 			this->AppendLineNum(sb, env, codePtr);
 			sb->Append((const UTF8Char*)"\r\n");
-			Text::StrDelNew(env->stacks->RemoveAt(env->stacks->GetCount() - 1));
-			Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
+			Text::StrDelNew(env->stacks->Pop());
+			Text::StrDelNew(env->stackTypes->Pop());
+			codePtr++;
 			env->endPtr = codePtr;
 			return EndType::Return;
 		case 0xB1: //return
-			codePtr++;
 			this->AppendIndent(sb, lev);
-			sb->Append((const UTF8Char*)"return;\r\n");
+			sb->Append((const UTF8Char*)"return;");
+			this->AppendLineNum(sb, env, codePtr);
+			sb->Append((const UTF8Char*)"\r\n");
+			codePtr++;
 			env->endPtr = codePtr;
 			return EndType::Return;
 		case 0xB2: //getstatic
@@ -6765,8 +7058,8 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				sb->Append((const UTF8Char*)";");
 				this->AppendLineNum(sb, env, codePtr);
 				sb->Append((const UTF8Char*)"\r\n");
-				Text::StrDelNew(env->stacks->RemoveAt(env->stacks->GetCount() - 1));
-				Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
+				Text::StrDelNew(env->stacks->Pop());
+				Text::StrDelNew(env->stackTypes->Pop());
 			}
 			codePtr += 3;
 			break;
@@ -6818,8 +7111,8 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				this->GetConstName(sbuff, nameTypeIndex);
 				sbTmp.ClearStr();
 				Type2String(sbuff, &sbTmp);
-				Text::StrDelNew(env->stacks->RemoveAt(env->stacks->GetCount() - 1));
-				Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
+				Text::StrDelNew(env->stacks->Pop());
+				Text::StrDelNew(env->stackTypes->Pop());
 				env->stacks->Add(Text::StrCopyNew(sbTmp2.ToString()));
 				env->stackTypes->Add(Text::StrCopyNew(sbTmp.ToString()));
 			}
@@ -6876,10 +7169,10 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				sb->Append((const UTF8Char*)";");
 				this->AppendLineNum(sb, env, codePtr);
 				sb->Append((const UTF8Char*)"\r\n");
-				Text::StrDelNew(env->stacks->RemoveAt(env->stacks->GetCount() - 1));
-				Text::StrDelNew(env->stacks->RemoveAt(env->stacks->GetCount() - 1));
-				Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
-				Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
+				Text::StrDelNew(env->stacks->Pop());
+				Text::StrDelNew(env->stacks->Pop());
+				Text::StrDelNew(env->stackTypes->Pop());
+				Text::StrDelNew(env->stackTypes->Pop());
 			}
 			codePtr += 3;
 			break;
@@ -6908,8 +7201,8 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				sbTmp2.AppendChar('.', 1);
 				sbTmp2.Append(sbuff);
 				sbTmp2.Append(sbTmp.ToString());
-				Text::StrDelNew(env->stacks->RemoveAt(env->stacks->GetCount() - 1));
-				Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
+				Text::StrDelNew(env->stacks->Pop());
+				Text::StrDelNew(env->stackTypes->Pop());
 				if (typeBuff[0])
 				{
 					env->stacks->Add(Text::StrCopyNew(sbTmp2.ToString()));
@@ -6988,8 +7281,8 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 					sbTmp2.Append(sbuff);
 				}
 				sbTmp2.Append(sbTmp.ToString());
-				Text::StrDelNew(env->stacks->RemoveAt(env->stacks->GetCount() - 1));
-				Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
+				Text::StrDelNew(env->stacks->Pop());
+				Text::StrDelNew(env->stackTypes->Pop());
 				if (typeBuff[0])
 				{
 					env->stacks->Add(Text::StrCopyNew(sbTmp2.ToString()));
@@ -6997,7 +7290,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				}
 				else if (isInit && env->stacks->GetCount() > 0 && sbTmp2.StartsWith(env->stacks->GetItem(env->stacks->GetCount() - 1)))
 				{
-					Text::StrDelNew(env->stacks->RemoveAt(env->stacks->GetCount() - 1));
+					Text::StrDelNew(env->stacks->Pop());
 					env->stacks->Add(Text::StrCopyNew(sbTmp2.ToString()));
 				}
 				else
@@ -7068,8 +7361,8 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				sbTmp2.AppendChar('.', 1);
 				sbTmp2.Append(sbuff);
 				sbTmp2.Append(sbTmp.ToString());
-				Text::StrDelNew(env->stacks->RemoveAt(env->stacks->GetCount() - 1));
-				Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
+				Text::StrDelNew(env->stacks->Pop());
+				Text::StrDelNew(env->stackTypes->Pop());
 				if (typeBuff[0])
 				{
 					env->stacks->Add(Text::StrCopyNew(sbTmp2.ToString()));
@@ -7151,8 +7444,8 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			}
 			sbTmp.Append(env->stacks->GetItem(env->stacks->GetCount() - 1));
 			sbTmp.AppendChar(']', 1);
-			Text::StrDelNew(env->stacks->RemoveAt(env->stacks->GetCount() - 1));
-			Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
+			Text::StrDelNew(env->stacks->Pop());
+			Text::StrDelNew(env->stackTypes->Pop());
 			env->stacks->Add(Text::StrCopyNew(sbTmp.ToString()));
 			env->stackTypes->Add(Text::StrCopyNew(sbTmp2.ToString()));
 			codePtr += 2;
@@ -7175,8 +7468,8 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			sbTmp2.AppendChar('[', 1);
 			sbTmp2.Append(env->stacks->GetItem(env->stacks->GetCount() - 1));
 			sbTmp2.AppendChar(']', 1);
-			Text::StrDelNew(env->stacks->RemoveAt(env->stacks->GetCount() - 1));
-			Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
+			Text::StrDelNew(env->stacks->Pop());
+			Text::StrDelNew(env->stackTypes->Pop());
 			env->stacks->Add(Text::StrCopyNew(sbTmp2.ToString()));
 			env->stackTypes->Add(Text::StrCopyNew(sbTmp.ToString()));
 			codePtr += 3;
@@ -7193,8 +7486,8 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			sbTmp2.ClearStr();
 			sbTmp2.Append(env->stacks->GetItem(env->stacks->GetCount() - 1));
 			sbTmp2.Append((const UTF8Char*)".length");
-			Text::StrDelNew(env->stacks->RemoveAt(env->stacks->GetCount() - 1));
-			Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
+			Text::StrDelNew(env->stacks->Pop());
+			Text::StrDelNew(env->stackTypes->Pop());
 			env->stacks->Add(Text::StrCopyNew(sbTmp2.ToString()));
 			env->stackTypes->Add(Text::StrCopyNew((const UTF8Char*)"int"));
 			codePtr++;
@@ -7214,8 +7507,8 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			sb->Append((const UTF8Char*)";");
 			this->AppendLineNum(sb, env, codePtr);
 			sb->Append((const UTF8Char*)"\r\n");
-			Text::StrDelNew(env->stacks->RemoveAt(env->stacks->GetCount() - 1));
-			Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
+			Text::StrDelNew(env->stacks->Pop());
+			Text::StrDelNew(env->stackTypes->Pop());
 			env->endPtr = codePtr + 1;
 			return EndType::Throw;
 		case 0xC0: //checkcast
@@ -7235,8 +7528,8 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			this->AppendCodeClassName(&sbTmp2, sbTmp.ToString(), env->importList, env->packageName);
 			sbTmp2.AppendChar(')', 1);
 			sbTmp2.Append(env->stacks->GetItem(env->stacks->GetCount() - 1));
-			Text::StrDelNew(env->stacks->RemoveAt(env->stacks->GetCount() - 1));
-			Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
+			Text::StrDelNew(env->stacks->Pop());
+			Text::StrDelNew(env->stackTypes->Pop());
 			env->stacks->Add(Text::StrCopyNew(sbTmp2.ToString()));
 			env->stackTypes->Add(Text::StrCopyNew(sbTmp.ToString()));
 			codePtr += 3;
@@ -7249,8 +7542,8 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			sbTmp2.Append(env->stacks->GetItem(env->stacks->GetCount() - 1));
 			sbTmp2.Append((const UTF8Char*)" instanceof ");
 			this->AppendCodeClassName(&sbTmp2, sbTmp.ToString(), env->importList, env->packageName);
-			Text::StrDelNew(env->stacks->RemoveAt(env->stacks->GetCount() - 1));
-			Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
+			Text::StrDelNew(env->stacks->Pop());
+			Text::StrDelNew(env->stackTypes->Pop());
 			env->stacks->Add(Text::StrCopyNew(sbTmp2.ToString()));
 			env->stackTypes->Add(Text::StrCopyNew((const UTF8Char*)"boolean"));
 			codePtr += 3;
@@ -7270,8 +7563,8 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			sb->Append((const UTF8Char*)")\r\n");
 			this->AppendIndent(sb, lev);
 			sb->Append((const UTF8Char*)"{\r\n");
-			Text::StrDelNew(env->stacks->RemoveAt(env->stacks->GetCount() - 1));
-			Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
+			Text::StrDelNew(env->stacks->Pop());
+			Text::StrDelNew(env->stackTypes->Pop());
 			lev++;
 			codePtr++;
 			break;
@@ -7287,8 +7580,8 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			lev--;
 			this->AppendIndent(sb, lev);
 			sb->Append((const UTF8Char*)"}\r\n");
-			Text::StrDelNew(env->stacks->RemoveAt(env->stacks->GetCount() - 1));
-			Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
+			Text::StrDelNew(env->stacks->Pop());
+			Text::StrDelNew(env->stackTypes->Pop());
 			codePtr++;
 			break;
 		case 0xC6: //ifnull
@@ -7432,8 +7725,8 @@ void IO::JavaClass::DecompileStore(UInt16 index, IO::JavaClass::DecompileEnv *en
 	sb->Append((const UTF8Char*)";");
 	this->AppendLineNum(sb, env, env->codeStart + codeOfst - 1);
 	sb->Append((const UTF8Char*)"\r\n");
-	Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
-	Text::StrDelNew(env->stacks->RemoveAt(env->stacks->GetCount() - 1));
+	Text::StrDelNew(env->stackTypes->Pop());
+	Text::StrDelNew(env->stacks->Pop());
 }
 
 IO::JavaClass::EndType IO::JavaClass::DecompileCondBranch(const UInt8 *codePtr, const UInt8 *codeEnd, CondType ct, IO::JavaClass::DecompileEnv *env, UOSInt lev, Text::StringBuilderUTF *sb)
@@ -7450,8 +7743,8 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCondBranch(const UInt8 *codePtr, 
 		}
 		if (initStackCnt + 1 == env->stacks->GetCount() && (et == EndType::Return || et == EndType::Throw || et == EndType::CodeEnd))
 		{
-			Text::StrDelNew(env->stacks->RemoveAt(env->stacks->GetCount() - 1));
-			Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
+			Text::StrDelNew(env->stacks->Pop());
+			Text::StrDelNew(env->stackTypes->Pop());
 			this->AppendIndent(sb, lev);
 			sb->Append((const UTF8Char*)"while (");
 			AppendCond(sb, env, env->stacks->GetCount() - 2, ct, false);
@@ -7461,19 +7754,19 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCondBranch(const UInt8 *codePtr, 
 			sb->Append(sbTmp.ToString());
 			this->AppendIndent(sb, lev);
 			sb->Append((const UTF8Char*)"}\r\n");
-			Text::StrDelNew(env->stacks->RemoveAt(env->stacks->GetCount() - 1));
-			Text::StrDelNew(env->stacks->RemoveAt(env->stacks->GetCount() - 1));
-			Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
-			Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
+			Text::StrDelNew(env->stacks->Pop());
+			Text::StrDelNew(env->stacks->Pop());
+			Text::StrDelNew(env->stackTypes->Pop());
+			Text::StrDelNew(env->stackTypes->Pop());
 			env->endPtr = codePtr;
 			return et;
 		}
 		else if (initStackCnt + 2 == env->stacks->GetCount() && (et == EndType::CodeEnd))
 		{
-			Text::StrDelNew(env->stacks->RemoveAt(env->stacks->GetCount() - 1));
-			Text::StrDelNew(env->stacks->RemoveAt(env->stacks->GetCount() - 1));
-			Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
-			Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
+			Text::StrDelNew(env->stacks->Pop());
+			Text::StrDelNew(env->stacks->Pop());
+			Text::StrDelNew(env->stackTypes->Pop());
+			Text::StrDelNew(env->stackTypes->Pop());
 			this->AppendIndent(sb, lev);
 			sb->Append((const UTF8Char*)"while (");
 			AppendCond(sb, env, env->stacks->GetCount() - 2, ct, false);
@@ -7483,10 +7776,10 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCondBranch(const UInt8 *codePtr, 
 			sb->Append(sbTmp.ToString());
 			this->AppendIndent(sb, lev);
 			sb->Append((const UTF8Char*)"}\r\n");
-			Text::StrDelNew(env->stacks->RemoveAt(env->stacks->GetCount() - 1));
-			Text::StrDelNew(env->stacks->RemoveAt(env->stacks->GetCount() - 1));
-			Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
-			Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
+			Text::StrDelNew(env->stacks->Pop());
+			Text::StrDelNew(env->stacks->Pop());
+			Text::StrDelNew(env->stackTypes->Pop());
+			Text::StrDelNew(env->stackTypes->Pop());
 			env->endPtr = codePtr;
 			return et;
 		}
@@ -7511,10 +7804,10 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCondBranch(const UInt8 *codePtr, 
 		sb->Append((const UTF8Char*)"{\r\n");
 		this->AppendIndent(sb, lev);
 		sb->Append((const UTF8Char*)"}\r\n");
-		Text::StrDelNew(env->stacks->RemoveAt(env->stacks->GetCount() - 1));
-		Text::StrDelNew(env->stacks->RemoveAt(env->stacks->GetCount() - 1));
-		Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
-		Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
+		Text::StrDelNew(env->stacks->Pop());
+		Text::StrDelNew(env->stacks->Pop());
+		Text::StrDelNew(env->stackTypes->Pop());
+		Text::StrDelNew(env->stackTypes->Pop());
 		env->endPtr = codePtr;
 		return EndType::CodeEnd;
 	}
@@ -7557,17 +7850,10 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCondBranch(const UInt8 *codePtr, 
 	}
 	else if (initStackCnt == env->stacks->GetCount() && et == EndType::Goto)
 	{
-		Text::StringBuilderUTF8 sbTmp2;
-		et = DecompileCode(codeEnd, env->endPtr, env, lev + 1, &sbTmp2);
-		if (et == EndType::Error)
-		{
-			sb->Append(sbTmp2.ToString());
-			return et;
-		}
-		else if (et == EndType::CodeEnd && initStackCnt == env->stacks->GetCount())
+		if (env->endPtr < codePtr)
 		{
 			this->AppendIndent(sb, lev);
-			sb->Append((const UTF8Char*)"if (");
+			sb->Append((const UTF8Char*)"while (");
 			AppendCond(sb, env, env->stacks->GetCount() - 2, ct, true);
 			sb->Append((const UTF8Char*)")\r\n");
 			this->AppendIndent(sb, lev);
@@ -7575,18 +7861,46 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCondBranch(const UInt8 *codePtr, 
 			sb->Append(sbTmp.ToString());
 			this->AppendIndent(sb, lev);
 			sb->Append((const UTF8Char*)"}\r\n");
-			this->AppendIndent(sb, lev);
-			sb->Append((const UTF8Char*)"else\r\n");
-			this->AppendIndent(sb, lev);
-			sb->Append((const UTF8Char*)"{\r\n");
-			sb->Append(sbTmp2.ToString());
-			this->AppendIndent(sb, lev);
-			sb->Append((const UTF8Char*)"}\r\n");
 			Text::StrDelNew(env->stacks->RemoveAt(initStackCnt - 1));
 			Text::StrDelNew(env->stacks->RemoveAt(initStackCnt - 2));
 			Text::StrDelNew(env->stackTypes->RemoveAt(initStackCnt - 1));
 			Text::StrDelNew(env->stackTypes->RemoveAt(initStackCnt - 2));
+			env->endPtr = codeEnd;
 			return EndType::CodeEnd;
+		}
+		else
+		{
+			Text::StringBuilderUTF8 sbTmp2;
+			et = DecompileCode(codeEnd, env->endPtr, env, lev + 1, &sbTmp2);
+			if (et == EndType::Error)
+			{
+				sb->Append(sbTmp2.ToString());
+				return et;
+			}
+			else if (et == EndType::CodeEnd && initStackCnt == env->stacks->GetCount())
+			{
+				this->AppendIndent(sb, lev);
+				sb->Append((const UTF8Char*)"if (");
+				AppendCond(sb, env, env->stacks->GetCount() - 2, ct, true);
+				sb->Append((const UTF8Char*)")\r\n");
+				this->AppendIndent(sb, lev);
+				sb->Append((const UTF8Char*)"{\r\n");
+				sb->Append(sbTmp.ToString());
+				this->AppendIndent(sb, lev);
+				sb->Append((const UTF8Char*)"}\r\n");
+				this->AppendIndent(sb, lev);
+				sb->Append((const UTF8Char*)"else\r\n");
+				this->AppendIndent(sb, lev);
+				sb->Append((const UTF8Char*)"{\r\n");
+				sb->Append(sbTmp2.ToString());
+				this->AppendIndent(sb, lev);
+				sb->Append((const UTF8Char*)"}\r\n");
+				Text::StrDelNew(env->stacks->RemoveAt(initStackCnt - 1));
+				Text::StrDelNew(env->stacks->RemoveAt(initStackCnt - 2));
+				Text::StrDelNew(env->stackTypes->RemoveAt(initStackCnt - 1));
+				Text::StrDelNew(env->stackTypes->RemoveAt(initStackCnt - 2));
+				return EndType::CodeEnd;
+			}
 		}
 	}
 	else if (initStackCnt == env->stacks->GetCount() && (et == EndType::Return || et == EndType::Throw || et == EndType::CodeEnd))
@@ -7600,10 +7914,10 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCondBranch(const UInt8 *codePtr, 
 		sb->Append(sbTmp.ToString());
 		this->AppendIndent(sb, lev);
 		sb->Append((const UTF8Char*)"}\r\n");
-		Text::StrDelNew(env->stacks->RemoveAt(env->stacks->GetCount() - 1));
-		Text::StrDelNew(env->stacks->RemoveAt(env->stacks->GetCount() - 1));
-		Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
-		Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
+		Text::StrDelNew(env->stacks->Pop());
+		Text::StrDelNew(env->stacks->Pop());
+		Text::StrDelNew(env->stackTypes->Pop());
+		Text::StrDelNew(env->stackTypes->Pop());
 		env->endPtr = codeEnd;
 		return et;
 	}
@@ -7770,8 +8084,8 @@ UTF8Char *IO::JavaClass::DecompileMethod(UInt16 methodIndex, UTF8Char *nameBuff,
 	i = env->stacks->GetCount() - paramCnt;
 	while (env->stacks->GetCount() > i)
 	{
-		Text::StrDelNew(env->stacks->RemoveAt(env->stacks->GetCount() - 1));
-		Text::StrDelNew(env->stackTypes->RemoveAt(env->stackTypes->GetCount() - 1));
+		Text::StrDelNew(env->stacks->Pop());
+		Text::StrDelNew(env->stackTypes->Pop());
 	}
 	return this->GetConstName(nameBuff, ReadMUInt16(&constPtr[1]));
 }

@@ -39,6 +39,7 @@ namespace Data
 		UOSInt GetRange(T *outArr, UOSInt index, UOSInt cnt);
 		UOSInt RemoveRange(UOSInt index, UOSInt cnt);
 		virtual T *GetArray(UOSInt *arraySize);
+		T Pop();
 	};
 
 
@@ -336,6 +337,14 @@ namespace Data
 	{
 		*arraySize = this->objCnt;
 		return this->arr;
+	}
+	
+	template <class T> T ArrayList<T>::Pop()
+	{
+		if (this->objCnt == 0) return 0;
+		T o = arr[this->objCnt - 1];
+		this->objCnt--;
+		return o;
 	}
 }
 

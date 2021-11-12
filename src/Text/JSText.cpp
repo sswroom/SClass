@@ -54,6 +54,10 @@ UTF8Char *Text::JSText::ToJSTextDQuote(UTF8Char *buff, const UTF8Char *s)
 			*buff++ = '\\';
 			*buff++ = 'n';
 			break;
+		case '\\':
+			*buff++ = '\\';
+			*buff++ = '\\';
+			break;
 		default:
 			*buff++ = c;
 			break;
@@ -86,6 +90,10 @@ void Text::JSText::ToJSTextDQuote(Text::StringBuilderUTF *sb, const UTF8Char *s)
 		case '\r':
 			*sptr++ = '\\';
 			*sptr++ = 'n';
+			break;
+		case '\\':
+			*sptr++ = '\\';
+			*sptr++ = '\\';
 			break;
 		default:
 			*sptr++ = c;
@@ -220,6 +228,7 @@ const UTF8Char *Text::JSText::ToNewJSTextDQuote(const UTF8Char *s)
 		case '\"':
 		case '\n':
 		case '\r':
+		case '\\':
 			chCnt += 2;
 			break;
 		default:
