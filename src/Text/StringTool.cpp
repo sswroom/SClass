@@ -120,7 +120,7 @@ Bool Text::StringTool::IsEmailAddress(const UTF8Char *s)
 	UTF8Char c;
 	while ((c = *s++) != 0)
 	{
-		if (Text::CharUtil::IsAlphaNumeric(c))
+		if (Text::CharUtil::IsAlphaNumeric(c) || c == '-')
 		{
 
 		}
@@ -138,6 +138,8 @@ Bool Text::StringTool::IsEmailAddress(const UTF8Char *s)
 				return false;
 			}
 			atPos = (UOSInt)(s - startPtr - 1);
+			dotFound = false;
+
 		}
 		else
 		{

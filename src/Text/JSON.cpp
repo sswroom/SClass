@@ -133,6 +133,18 @@ Text::JSONBase *Text::JSONBase::GetValue(const Char *path)
 				{
 					return json;
 				}
+				else if (sptr[0] == '.')
+				{
+					sptr++;
+				}
+				else if (sptr[0] == '[')
+				{
+
+				}
+				else
+				{
+					return 0;
+				}
 			}
 		}
 	}

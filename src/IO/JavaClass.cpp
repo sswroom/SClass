@@ -2979,6 +2979,16 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			codeOfst++;
 			codeLen--;
 			break;
+		case 0xAF:
+			this->AppendIndent(sb, lev);
+			sb->AppendUOSInt(codeOfst);
+			sb->AppendChar('\t', 1);
+			sb->AppendHex8(codePtr[codeOfst + 0]);
+			sb->AppendChar(' ', 13);
+			sb->Append((const UTF8Char*)"dreturn\r\n");
+			codeOfst++;
+			codeLen--;
+			break;
 		case 0xB0:
 			this->AppendIndent(sb, lev);
 			sb->AppendUOSInt(codeOfst);
@@ -7048,6 +7058,54 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				codePtr = env->endPtr;
 			}
 			break;
+		case 0x97: //dcmpl
+		case 0x98: //dcmpg
+			if (env->stacks->GetCount() <= 1)
+			{
+				this->AppendIndent(sb, lev);
+				sb->Append((const UTF8Char*)"// lcmpl stack invalid: ");
+				sb->AppendUOSInt(env->stacks->GetCount());
+				sb->Append((const UTF8Char*)"\r\n");
+				return EndType::Error;
+			}
+			else
+			{
+				CondType ct;
+				switch (codePtr[1])
+				{
+				case 0x99: //ifeq
+					ct = CondType::EQ;
+					break;
+				case 0x9A: //ifne
+					ct = CondType::NE;
+					break;
+				case 0x9B: //iflt
+					ct = CondType::LT;
+					break;
+				case 0x9C: //ifge
+					ct = CondType::GE;
+					break;
+				case 0x9D: //ifgt
+					ct = CondType::GT;
+					break;
+				case 0x9E: //ifle
+					ct = CondType::LE;
+					break;
+				default:
+					this->AppendIndent(sb, lev);
+					sb->Append((const UTF8Char*)"// lcmpl next opcode invalid: ");
+					sb->AppendHex8(codePtr[1]);
+					sb->Append((const UTF8Char*)"\r\n");
+					return EndType::Error;
+				}
+				EndType et = this->DecompileCondBranch(codePtr + 4, codePtr + ReadMInt16(&codePtr[2]) + 1, ct, env, lev, sb);
+				if (et == EndType::Error)
+				{
+					return et;
+				}
+				codePtr = env->endPtr;
+			}
+			break;
 		case 0x99: //ifeq
 			if (env->stacks->GetCount() <= 0)
 			{
@@ -7516,6 +7574,25 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			{
 				this->AppendIndent(sb, lev);
 				sb->Append((const UTF8Char*)"// freturn stack invalid");
+				sb->Append((const UTF8Char*)"\r\n");
+				return EndType::Error;
+			}
+			this->AppendIndent(sb, lev);
+			sb->Append((const UTF8Char*)"return ");
+			sb->Append(env->stacks->GetItem(env->stacks->GetCount() - 1));
+			sb->Append((const UTF8Char*)";");
+			this->AppendLineNum(sb, env, codePtr);
+			sb->Append((const UTF8Char*)"\r\n");
+			Text::StrDelNew(env->stacks->Pop());
+			Text::StrDelNew(env->stackTypes->Pop());
+			codePtr++;
+			env->endPtr = codePtr;
+			return EndType::Return;
+		case 0xAF: //dreturn
+			if (env->stacks->GetCount() <= 0)
+			{
+				this->AppendIndent(sb, lev);
+				sb->Append((const UTF8Char*)"// dreturn stack invalid");
 				sb->Append((const UTF8Char*)"\r\n");
 				return EndType::Error;
 			}
