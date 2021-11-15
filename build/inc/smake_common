@@ -95,6 +95,7 @@ nodeps:
 @LogServer
 @MQTTFailover
 @NetRAWCapture
+@OAuth2Test
 @PingMonitor
 @PingScan
 @PingTest
@@ -483,6 +484,9 @@ MQTTFailover:
 NetRAWCapture:
 @NetRAWCapture.o
 @ConsoleStartup.o
+OAuth2Test:
+@OAuth2Test.o
+@ConsoleStartup.o
 PingMonitor:
 @PingMonitorMain.o
 @ConsoleStartup.o
@@ -833,6 +837,7 @@ HTTPSTest.o: ../../main/NetTest/HTTPSTest.cpp
 LogServerMain.o: ../../main/NetTest/LogServerMain.cpp
 MQTTFailoverTest.o: ../../main/NetTest/MQTTFailoverTest.cpp
 NetRAWCapture.o: ../../main/NetTest/NetRAWCapture.cpp
+OAuth2Test.o: ../../main/NetTest/OAuth2Test.cpp
 PingMonitorMain.o: ../../main/NetTest/PingMonitorMain.cpp
 PingScanMain.o: ../../main/NetTest/PingScanMain.cpp
 PingTest.o: ../../main/NetTest/PingTest.cpp
@@ -2615,6 +2620,8 @@ Net/WebServer/MemoryWebSession.h: ../../src/Net/WebServer/MemoryWebSession.cpp
 @MemoryWebSession.o
 Net/WebServer/MemoryWebSessionManager.h: ../../src/Net/WebServer/MemoryWebSessionManager.cpp
 @MemoryWebSessionManager.o
+Net/WebServer/OAuth2Handler.h: ../../src/Net/WebServer/OAuth2Handler.cpp
+@OAuth2Handler.o
 Net/WebServer/PrintLogWebHandler.h: ../../src/Net/WebServer/PrintLogWebHandler.cpp
 @PrintLogWebHandler.o
 Net/WebServer/PrintLogWebResponse.h: ../../src/Net/WebServer/PrintLogWebResponse.cpp
@@ -4497,6 +4504,7 @@ IWebResponse.o: ../../src/Net/WebServer/IWebResponse.cpp
 IWebSessionManager.o: ../../src/Net/WebServer/IWebSessionManager.cpp
 MemoryWebSession.o: ../../src/Net/WebServer/MemoryWebSession.cpp
 MemoryWebSessionManager.o: ../../src/Net/WebServer/MemoryWebSessionManager.cpp
+OAuth2Handler.o: ../../src/Net/WebServer/OAuth2Handler.cpp
 PrintLogWebHandler.o: ../../src/Net/WebServer/PrintLogWebHandler.cpp
 PrintLogWebResponse.o: ../../src/Net/WebServer/PrintLogWebResponse.cpp
 RESTfulHandler.o: ../../src/Net/WebServer/RESTfulHandler.cpp
