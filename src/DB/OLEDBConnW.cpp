@@ -559,7 +559,7 @@ UOSInt DB::OLEDBConn::GetTableNames(Data::ArrayList<const UTF8Char*> *names)
 	return data->tableNames->GetCount();
 }
 
-DB::DBReader *DB::OLEDBConn::GetTableData(const UTF8Char *tableName, Data::ArrayList<const UTF8Char*> *columnNames, UOSInt ofst, UOSInt maxCnt, const UTF8Char *ordering, DB::QueryConditions *condition)
+DB::DBReader *DB::OLEDBConn::GetTableData(const UTF8Char *tableName, Data::ArrayList<const UTF8Char*> *columnNames, UOSInt ofst, UOSInt maxCnt, const UTF8Char *ordering, Data::QueryConditions *condition)
 {
 	UTF8Char tmpBuff[256];
 	Text::StrConcat(Text::StrConcat(tmpBuff, (const UTF8Char*)"select * from "), name);

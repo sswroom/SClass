@@ -290,7 +290,7 @@ UOSInt DB::TextDB::GetTableNames(Data::ArrayList<const UTF8Char*> *names)
 	return names->GetCount() - initCnt;
 }
 
-DB::DBReader *DB::TextDB::GetTableData(const UTF8Char *tableName, Data::ArrayList<const UTF8Char*> *columnNames, UOSInt ofst, UOSInt maxCnt, const UTF8Char *ordering, DB::QueryConditions *condition)
+DB::DBReader *DB::TextDB::GetTableData(const UTF8Char *tableName, Data::ArrayList<const UTF8Char*> *columnNames, UOSInt ofst, UOSInt maxCnt, const UTF8Char *ordering, Data::QueryConditions *condition)
 {
 	DBData *data;
 	if (tableName == 0)

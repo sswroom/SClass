@@ -28,7 +28,7 @@ UOSInt Map::ESRI::FileGDBReader::GetFieldIndex(UOSInt colIndex)
 	}
 }
 
-Map::ESRI::FileGDBReader::FileGDBReader(IO::IStreamData *fd, UInt64 ofst, FileGDBTableInfo *tableInfo, Data::ArrayList<const UTF8Char*> *columnNames, UOSInt dataOfst, UOSInt maxCnt, DB::QueryConditions *conditions)
+Map::ESRI::FileGDBReader::FileGDBReader(IO::IStreamData *fd, UInt64 ofst, FileGDBTableInfo *tableInfo, Data::ArrayList<const UTF8Char*> *columnNames, UOSInt dataOfst, UOSInt maxCnt, Data::QueryConditions *conditions)
 {
 	this->fd = fd->GetPartialData(ofst, fd->GetDataSize() - ofst);
 	this->currOfst = 0;

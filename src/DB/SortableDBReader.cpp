@@ -12,7 +12,7 @@ Data::VariItem *DB::SortableDBReader::GetItem(UOSInt colIndex)
 	return obj->GetItem(this->cols->GetItem(colIndex)->GetColName());
 }
 
-DB::SortableDBReader::SortableDBReader(DB::ReadingDB *db, const UTF8Char *tableName, Data::ArrayList<const UTF8Char*> *colNames, UOSInt dataOfst, UOSInt maxCnt, const UTF8Char *ordering, QueryConditions *condition)
+DB::SortableDBReader::SortableDBReader(DB::ReadingDB *db, const UTF8Char *tableName, Data::ArrayList<const UTF8Char*> *colNames, UOSInt dataOfst, UOSInt maxCnt, const UTF8Char *ordering, Data::QueryConditions *condition)
 {
 	this->currIndex = INVALID_INDEX;
 	this->objList = 0;

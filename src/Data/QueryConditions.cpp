@@ -1,25 +1,25 @@
 #include "Stdafx.h"
-#include "DB/QueryConditions.h"
+#include "Data/QueryConditions.h"
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
 #include "Text/StringTool.h"
 
-DB::QueryConditions::FieldCondition::FieldCondition(const UTF8Char *fieldName)
+Data::QueryConditions::FieldCondition::FieldCondition(const UTF8Char *fieldName)
 {
 	this->fieldName = Text::StrCopyNew(fieldName);
 }
 
-DB::QueryConditions::FieldCondition::~FieldCondition()
+Data::QueryConditions::FieldCondition::~FieldCondition()
 {
 	Text::StrDelNew(this->fieldName);
 }
 
-Bool DB::QueryConditions::FieldCondition::IsValid(Data::VariObject *obj)
+Bool Data::QueryConditions::FieldCondition::IsValid(Data::VariObject *obj)
 {
 	return this->TestValid(obj->GetItem(this->fieldName));
 }
 
-Bool DB::QueryConditions::FieldCondition::IsValid(Data::ObjectGetter *getter)
+Bool Data::QueryConditions::FieldCondition::IsValid(Data::ObjectGetter *getter)
 {
 	Data::VariItem *item = getter->GetNewItem(this->fieldName);
 	Bool ret = this->TestValid(item);
@@ -27,27 +27,27 @@ Bool DB::QueryConditions::FieldCondition::IsValid(Data::ObjectGetter *getter)
 	return ret;
 }
 
-void DB::QueryConditions::FieldCondition::GetFieldList(Data::ArrayList<const UTF8Char*> *fieldList)
+void Data::QueryConditions::FieldCondition::GetFieldList(Data::ArrayList<const UTF8Char*> *fieldList)
 {
 	fieldList->Add(this->fieldName);
 }
 
-DB::QueryConditions::TimeBetweenCondition::TimeBetweenCondition(const UTF8Char *fieldName, Int64 t1, Int64 t2) : FieldCondition(fieldName)
+Data::QueryConditions::TimeBetweenCondition::TimeBetweenCondition(const UTF8Char *fieldName, Int64 t1, Int64 t2) : FieldCondition(fieldName)
 {
 	this->t1 = t1;
 	this->t2 = t2;
 }
 
-DB::QueryConditions::TimeBetweenCondition::~TimeBetweenCondition()
+Data::QueryConditions::TimeBetweenCondition::~TimeBetweenCondition()
 {
 }
 
-DB::QueryConditions::ConditionType DB::QueryConditions::TimeBetweenCondition::GetType()
+Data::QueryConditions::ConditionType Data::QueryConditions::TimeBetweenCondition::GetType()
 {
 	return ConditionType::TimeBetween;
 }
 
-Bool DB::QueryConditions::TimeBetweenCondition::ToWhereClause(Text::StringBuilderUTF *sb, DB::DBUtil::ServerType svrType, Int8 tzQhr, UOSInt maxDBItem)
+Bool Data::QueryConditions::TimeBetweenCondition::ToWhereClause(Text::StringBuilderUTF *sb, DB::DBUtil::ServerType svrType, Int8 tzQhr, UOSInt maxDBItem)
 {
 	UTF8Char sbuff[512];
 	Data::DateTime dt;
@@ -64,7 +64,7 @@ Bool DB::QueryConditions::TimeBetweenCondition::ToWhereClause(Text::StringBuilde
 	return true;
 }
 
-Bool DB::QueryConditions::TimeBetweenCondition::TestValid(Data::VariItem *item)
+Bool Data::QueryConditions::TimeBetweenCondition::TestValid(Data::VariItem *item)
 {
 	if (item == 0) return false;
 	switch (item->GetItemType())
@@ -96,32 +96,32 @@ Bool DB::QueryConditions::TimeBetweenCondition::TestValid(Data::VariItem *item)
 	}
 }
 
-DB::QueryConditions::Int32Condition::Int32Condition(const UTF8Char *fieldName, Int32 val, CompareCondition cond) : FieldCondition(fieldName)
+Data::QueryConditions::Int32Condition::Int32Condition(const UTF8Char *fieldName, Int32 val, CompareCondition cond) : FieldCondition(fieldName)
 {
 	this->val = val;
 	this->cond = cond;
 }
 
-DB::QueryConditions::Int32Condition::~Int32Condition()
+Data::QueryConditions::Int32Condition::~Int32Condition()
 {
 }
 
-DB::QueryConditions::ConditionType DB::QueryConditions::Int32Condition::GetType()
+Data::QueryConditions::ConditionType Data::QueryConditions::Int32Condition::GetType()
 {
 	return ConditionType::INT32;
 }
 
-Bool DB::QueryConditions::Int32Condition::ToWhereClause(Text::StringBuilderUTF *sb, DB::DBUtil::ServerType svrType, Int8 tzQhr, UOSInt maxDBItem)
+Bool Data::QueryConditions::Int32Condition::ToWhereClause(Text::StringBuilderUTF *sb, DB::DBUtil::ServerType svrType, Int8 tzQhr, UOSInt maxDBItem)
 {
 	UTF8Char sbuff[512];
-	DBUtil::SDBColUTF8(sbuff, this->fieldName, svrType);
+	DB::DBUtil::SDBColUTF8(sbuff, this->fieldName, svrType);
 	sb->Append(sbuff);
-	sb->Append(DB::QueryConditions::CompareConditionGetStr(cond));
+	sb->Append(Data::QueryConditions::CompareConditionGetStr(cond));
 	sb->AppendI32(this->val);
 	return true;
 }
 
-Bool DB::QueryConditions::Int32Condition::TestValid(Data::VariItem *item)
+Bool Data::QueryConditions::Int32Condition::TestValid(Data::VariItem *item)
 {
 	if (item == 0) return false;
 	Int64 iVal;
@@ -186,38 +186,38 @@ Bool DB::QueryConditions::Int32Condition::TestValid(Data::VariItem *item)
 	return false;
 }
 
-const UTF8Char *DB::QueryConditions::Int32Condition::GetFieldName()
+const UTF8Char *Data::QueryConditions::Int32Condition::GetFieldName()
 {
 	return this->fieldName;
 }
 
-Int32 DB::QueryConditions::Int32Condition::GetVal()
+Int32 Data::QueryConditions::Int32Condition::GetVal()
 {
 	return this->val;
 }
 
-DB::QueryConditions::CompareCondition DB::QueryConditions::Int32Condition::GetCompareCond()
+Data::QueryConditions::CompareCondition Data::QueryConditions::Int32Condition::GetCompareCond()
 {
 	return this->cond;
 }
 
-DB::QueryConditions::Int32InCondition::Int32InCondition(const UTF8Char *fieldName, Data::ArrayList<Int32> *val) : FieldCondition(fieldName)
+Data::QueryConditions::Int32InCondition::Int32InCondition(const UTF8Char *fieldName, Data::ArrayList<Int32> *val) : FieldCondition(fieldName)
 {
 	NEW_CLASS(this->vals, Data::ArrayList<Int32>());
 	this->vals->AddAll(val);
 }
 
-DB::QueryConditions::Int32InCondition::~Int32InCondition()
+Data::QueryConditions::Int32InCondition::~Int32InCondition()
 {
 	DEL_CLASS(this->vals);
 }
 
-DB::QueryConditions::ConditionType DB::QueryConditions::Int32InCondition::GetType()
+Data::QueryConditions::ConditionType Data::QueryConditions::Int32InCondition::GetType()
 {
 	return ConditionType::Int32In;
 }
 
-Bool DB::QueryConditions::Int32InCondition::ToWhereClause(Text::StringBuilderUTF *sb, DB::DBUtil::ServerType svrType, Int8 tzQhr, UOSInt maxDBItem)
+Bool Data::QueryConditions::Int32InCondition::ToWhereClause(Text::StringBuilderUTF *sb, DB::DBUtil::ServerType svrType, Int8 tzQhr, UOSInt maxDBItem)
 {
 	if (this->vals->GetCount() > maxDBItem)
 	{
@@ -235,7 +235,7 @@ Bool DB::QueryConditions::Int32InCondition::ToWhereClause(Text::StringBuilderUTF
 	}
 }
 
-Bool DB::QueryConditions::Int32InCondition::TestValid(Data::VariItem *item)
+Bool Data::QueryConditions::Int32InCondition::TestValid(Data::VariItem *item)
 {
 	if (item == 0) return false;
 	Int64 iVal;
@@ -293,32 +293,32 @@ Bool DB::QueryConditions::Int32InCondition::TestValid(Data::VariItem *item)
 	return false;
 }
 
-DB::QueryConditions::DoubleCondition::DoubleCondition(const UTF8Char *fieldName, Double val, CompareCondition cond) : FieldCondition(fieldName)
+Data::QueryConditions::DoubleCondition::DoubleCondition(const UTF8Char *fieldName, Double val, CompareCondition cond) : FieldCondition(fieldName)
 {
 	this->val = val;
 	this->cond = cond;
 }
 
-DB::QueryConditions::DoubleCondition::~DoubleCondition()
+Data::QueryConditions::DoubleCondition::~DoubleCondition()
 {
 }
 
-DB::QueryConditions::ConditionType DB::QueryConditions::DoubleCondition::GetType()
+Data::QueryConditions::ConditionType Data::QueryConditions::DoubleCondition::GetType()
 {
 	return ConditionType::DOUBLE;
 }
 
-Bool DB::QueryConditions::DoubleCondition::ToWhereClause(Text::StringBuilderUTF *sb, DB::DBUtil::ServerType svrType, Int8 tzQhr, UOSInt maxDBItem)
+Bool Data::QueryConditions::DoubleCondition::ToWhereClause(Text::StringBuilderUTF *sb, DB::DBUtil::ServerType svrType, Int8 tzQhr, UOSInt maxDBItem)
 {
 	UTF8Char sbuff[512];
-	DBUtil::SDBColUTF8(sbuff, this->fieldName, svrType);
+	DB::DBUtil::SDBColUTF8(sbuff, this->fieldName, svrType);
 	sb->Append(sbuff);
-	sb->Append(DB::QueryConditions::CompareConditionGetStr(cond));
+	sb->Append(Data::QueryConditions::CompareConditionGetStr(cond));
 	Text::SBAppendF64(sb, this->val);
 	return true;
 }
 
-Bool DB::QueryConditions::DoubleCondition::TestValid(Data::VariItem *item)
+Bool Data::QueryConditions::DoubleCondition::TestValid(Data::VariItem *item)
 {
 	if (item == 0) return false;
 	Double dVal;
@@ -383,7 +383,7 @@ Bool DB::QueryConditions::DoubleCondition::TestValid(Data::VariItem *item)
 	return false;
 }
 
-DB::QueryConditions::StringInCondition::StringInCondition(const UTF8Char *fieldName, Data::ArrayList<const UTF8Char*> *val) : FieldCondition(fieldName)
+Data::QueryConditions::StringInCondition::StringInCondition(const UTF8Char *fieldName, Data::ArrayList<const UTF8Char*> *val) : FieldCondition(fieldName)
 {
 	NEW_CLASS(this->vals, Data::ArrayList<const UTF8Char*>());
 	UOSInt i = 0;
@@ -395,18 +395,18 @@ DB::QueryConditions::StringInCondition::StringInCondition(const UTF8Char *fieldN
 	}
 }
 
-DB::QueryConditions::StringInCondition::~StringInCondition()
+Data::QueryConditions::StringInCondition::~StringInCondition()
 {
 	LIST_FREE_FUNC(this->vals, Text::StrDelNew);
 	DEL_CLASS(this->vals);
 }
 
-DB::QueryConditions::ConditionType DB::QueryConditions::StringInCondition::GetType()
+Data::QueryConditions::ConditionType Data::QueryConditions::StringInCondition::GetType()
 {
 	return ConditionType::StringIn;
 }
 
-Bool DB::QueryConditions::StringInCondition::ToWhereClause(Text::StringBuilderUTF *sb, DB::DBUtil::ServerType svrType, Int8 tzQhr, UOSInt maxDBItem)
+Bool Data::QueryConditions::StringInCondition::ToWhereClause(Text::StringBuilderUTF *sb, DB::DBUtil::ServerType svrType, Int8 tzQhr, UOSInt maxDBItem)
 {
 	if (this->vals->GetCount() > maxDBItem || this->vals->GetCount() == 0)
 	{
@@ -431,7 +431,7 @@ Bool DB::QueryConditions::StringInCondition::ToWhereClause(Text::StringBuilderUT
 			{
 				sb->Append((const UTF8Char*)", ");
 			}
-			thisSize = DBUtil::SDBStrUTF8Leng(this->vals->GetItem(i), svrType);
+			thisSize = DB::DBUtil::SDBStrUTF8Leng(this->vals->GetItem(i), svrType);
 			if (thisSize < 512)
 			{
 				DB::DBUtil::SDBStrUTF8(sbuff, this->vals->GetItem(i), svrType);
@@ -462,7 +462,7 @@ Bool DB::QueryConditions::StringInCondition::ToWhereClause(Text::StringBuilderUT
 	}
 }
 
-Bool DB::QueryConditions::StringInCondition::TestValid(Data::VariItem *item)
+Bool Data::QueryConditions::StringInCondition::TestValid(Data::VariItem *item)
 {
 	if (item == 0) return false;
 	const UTF8Char *csptr;
@@ -502,22 +502,22 @@ Bool DB::QueryConditions::StringInCondition::TestValid(Data::VariItem *item)
 	}
 }
 
-DB::QueryConditions::StringContainsCondition::StringContainsCondition(const UTF8Char *fieldName, const UTF8Char *val) : FieldCondition(fieldName)
+Data::QueryConditions::StringContainsCondition::StringContainsCondition(const UTF8Char *fieldName, const UTF8Char *val) : FieldCondition(fieldName)
 {
 	this->val = Text::StrCopyNew(val);
 }
 
-DB::QueryConditions::StringContainsCondition::~StringContainsCondition()
+Data::QueryConditions::StringContainsCondition::~StringContainsCondition()
 {
 	Text::StrDelNew(this->val);
 }
 
-DB::QueryConditions::ConditionType DB::QueryConditions::StringContainsCondition::GetType()
+Data::QueryConditions::ConditionType Data::QueryConditions::StringContainsCondition::GetType()
 {
 	return ConditionType::StringContains;
 }
 
-Bool DB::QueryConditions::StringContainsCondition::ToWhereClause(Text::StringBuilderUTF *sb, DB::DBUtil::ServerType svrType, Int8 tzQhr, UOSInt maxDBItem)
+Bool Data::QueryConditions::StringContainsCondition::ToWhereClause(Text::StringBuilderUTF *sb, DB::DBUtil::ServerType svrType, Int8 tzQhr, UOSInt maxDBItem)
 {
 	UTF8Char sbuff[512];
 	DB::DBUtil::SDBColUTF8(sbuff, this->fieldName, svrType);
@@ -543,7 +543,7 @@ Bool DB::QueryConditions::StringContainsCondition::ToWhereClause(Text::StringBui
 	return true;
 }
 
-Bool DB::QueryConditions::StringContainsCondition::TestValid(Data::VariItem *item)
+Bool Data::QueryConditions::StringContainsCondition::TestValid(Data::VariItem *item)
 {
 	if (item == 0) return false;
 	switch (item->GetItemType())
@@ -572,22 +572,22 @@ Bool DB::QueryConditions::StringContainsCondition::TestValid(Data::VariItem *ite
 	}
 }
 
-DB::QueryConditions::StringEqualsCondition::StringEqualsCondition(const UTF8Char *fieldName, const UTF8Char *val) : FieldCondition(fieldName)
+Data::QueryConditions::StringEqualsCondition::StringEqualsCondition(const UTF8Char *fieldName, const UTF8Char *val) : FieldCondition(fieldName)
 {
 	this->val = Text::StrCopyNew(val);
 }
 
-DB::QueryConditions::StringEqualsCondition::~StringEqualsCondition()
+Data::QueryConditions::StringEqualsCondition::~StringEqualsCondition()
 {
 	Text::StrDelNew(this->val);
 }
 
-DB::QueryConditions::ConditionType DB::QueryConditions::StringEqualsCondition::GetType()
+Data::QueryConditions::ConditionType Data::QueryConditions::StringEqualsCondition::GetType()
 {
 	return ConditionType::StringEquals;
 }
 
-Bool DB::QueryConditions::StringEqualsCondition::ToWhereClause(Text::StringBuilderUTF *sb, DB::DBUtil::ServerType svrType, Int8 tzQhr, UOSInt maxDBItem)
+Bool Data::QueryConditions::StringEqualsCondition::ToWhereClause(Text::StringBuilderUTF *sb, DB::DBUtil::ServerType svrType, Int8 tzQhr, UOSInt maxDBItem)
 {
 	UTF8Char sbuff[512];
 	DB::DBUtil::SDBColUTF8(sbuff, this->fieldName, svrType);
@@ -609,7 +609,7 @@ Bool DB::QueryConditions::StringEqualsCondition::ToWhereClause(Text::StringBuild
 	return true;
 }
 
-Bool DB::QueryConditions::StringEqualsCondition::TestValid(Data::VariItem *item)
+Bool Data::QueryConditions::StringEqualsCondition::TestValid(Data::VariItem *item)
 {
 	if (item == 0) return false;
 	switch (item->GetItemType())
@@ -638,21 +638,21 @@ Bool DB::QueryConditions::StringEqualsCondition::TestValid(Data::VariItem *item)
 	}
 }
 
-DB::QueryConditions::BooleanCondition::BooleanCondition(const UTF8Char *fieldName, Bool val) : FieldCondition(fieldName)
+Data::QueryConditions::BooleanCondition::BooleanCondition(const UTF8Char *fieldName, Bool val) : FieldCondition(fieldName)
 {
 	this->val = val;
 }
 
-DB::QueryConditions::BooleanCondition::~BooleanCondition()
+Data::QueryConditions::BooleanCondition::~BooleanCondition()
 {
 }
 
-DB::QueryConditions::ConditionType DB::QueryConditions::BooleanCondition::GetType()
+Data::QueryConditions::ConditionType Data::QueryConditions::BooleanCondition::GetType()
 {
 	return ConditionType::Boolean;
 }
 
-Bool DB::QueryConditions::BooleanCondition::ToWhereClause(Text::StringBuilderUTF *sb, DB::DBUtil::ServerType svrType, Int8 tzQhr, UOSInt maxDBItem)
+Bool Data::QueryConditions::BooleanCondition::ToWhereClause(Text::StringBuilderUTF *sb, DB::DBUtil::ServerType svrType, Int8 tzQhr, UOSInt maxDBItem)
 {
 	if (!this->val)
 	{
@@ -664,7 +664,7 @@ Bool DB::QueryConditions::BooleanCondition::ToWhereClause(Text::StringBuilderUTF
 	return true;
 }
 
-Bool DB::QueryConditions::BooleanCondition::TestValid(Data::VariItem *item)
+Bool Data::QueryConditions::BooleanCondition::TestValid(Data::VariItem *item)
 {
 	if (item == 0) return false;
 	Bool bVal;
@@ -716,20 +716,20 @@ Bool DB::QueryConditions::BooleanCondition::TestValid(Data::VariItem *item)
 	return bVal == this->val;
 }
 
-DB::QueryConditions::NotNullCondition::NotNullCondition(const UTF8Char *fieldName) : FieldCondition(fieldName)
+Data::QueryConditions::NotNullCondition::NotNullCondition(const UTF8Char *fieldName) : FieldCondition(fieldName)
 {
 }
 
-DB::QueryConditions::NotNullCondition::~NotNullCondition()
+Data::QueryConditions::NotNullCondition::~NotNullCondition()
 {
 }
 
-DB::QueryConditions::ConditionType DB::QueryConditions::NotNullCondition::GetType()
+Data::QueryConditions::ConditionType Data::QueryConditions::NotNullCondition::GetType()
 {
 	return ConditionType::NotNull;
 }
 
-Bool DB::QueryConditions::NotNullCondition::ToWhereClause(Text::StringBuilderUTF *sb, DB::DBUtil::ServerType svrType, Int8 tzQhr, UOSInt maxDBItem)
+Bool Data::QueryConditions::NotNullCondition::ToWhereClause(Text::StringBuilderUTF *sb, DB::DBUtil::ServerType svrType, Int8 tzQhr, UOSInt maxDBItem)
 {
 	UTF8Char sbuff[512];
 	DB::DBUtil::SDBColUTF8(sbuff, this->fieldName, svrType);
@@ -738,7 +738,7 @@ Bool DB::QueryConditions::NotNullCondition::ToWhereClause(Text::StringBuilderUTF
 	return true;
 }
 
-Bool DB::QueryConditions::NotNullCondition::TestValid(Data::VariItem *item)
+Bool Data::QueryConditions::NotNullCondition::TestValid(Data::VariItem *item)
 {
 	if (item == 0) return false;
 	switch (item->GetItemType())
@@ -767,22 +767,22 @@ Bool DB::QueryConditions::NotNullCondition::TestValid(Data::VariItem *item)
 	}
 }
 
-DB::QueryConditions::InnerCondition::InnerCondition(QueryConditions *innerCond)
+Data::QueryConditions::InnerCondition::InnerCondition(QueryConditions *innerCond)
 {
 	this->innerCond = innerCond;
 }
 
-DB::QueryConditions::InnerCondition::~InnerCondition()
+Data::QueryConditions::InnerCondition::~InnerCondition()
 {
 	DEL_CLASS(this->innerCond);
 }
 
-DB::QueryConditions::ConditionType DB::QueryConditions::InnerCondition::GetType()
+Data::QueryConditions::ConditionType Data::QueryConditions::InnerCondition::GetType()
 {
 	return ConditionType::Inner;
 }
 
-Bool DB::QueryConditions::InnerCondition::ToWhereClause(Text::StringBuilderUTF *sb, DB::DBUtil::ServerType svrType, Int8 tzQhr, UOSInt maxDBItem)
+Bool Data::QueryConditions::InnerCondition::ToWhereClause(Text::StringBuilderUTF *sb, DB::DBUtil::ServerType svrType, Int8 tzQhr, UOSInt maxDBItem)
 {
 	Data::ArrayList<Condition*> clientConditions;
 	Text::StringBuilderUTF8 sbTmp;
@@ -800,81 +800,81 @@ Bool DB::QueryConditions::InnerCondition::ToWhereClause(Text::StringBuilderUTF *
 	}
 }
 
-Bool DB::QueryConditions::InnerCondition::IsValid(Data::VariObject *obj)
+Bool Data::QueryConditions::InnerCondition::IsValid(Data::VariObject *obj)
 {
 	return this->innerCond->IsValid(obj);
 }
 
-Bool DB::QueryConditions::InnerCondition::IsValid(Data::ObjectGetter *getter)
+Bool Data::QueryConditions::InnerCondition::IsValid(Data::ObjectGetter *getter)
 {
 	return this->innerCond->IsValid(getter);
 }
 
-void DB::QueryConditions::InnerCondition::GetFieldList(Data::ArrayList<const UTF8Char*> *fieldList)
+void Data::QueryConditions::InnerCondition::GetFieldList(Data::ArrayList<const UTF8Char*> *fieldList)
 {
 	this->innerCond->GetFieldList(fieldList);	
 }
 
-DB::QueryConditions *DB::QueryConditions::InnerCondition::GetConditions()
+Data::QueryConditions *Data::QueryConditions::InnerCondition::GetConditions()
 {
 	return this->innerCond;
 }
 
-DB::QueryConditions::OrCondition::OrCondition()
+Data::QueryConditions::OrCondition::OrCondition()
 {
 }
 
-DB::QueryConditions::OrCondition::~OrCondition()
+Data::QueryConditions::OrCondition::~OrCondition()
 {
 }
 
-DB::QueryConditions::ConditionType DB::QueryConditions::OrCondition::GetType()
+Data::QueryConditions::ConditionType Data::QueryConditions::OrCondition::GetType()
 {
 	return ConditionType::Or;
 }
 
-Bool DB::QueryConditions::OrCondition::ToWhereClause(Text::StringBuilderUTF *sb, DB::DBUtil::ServerType svrType, Int8 tzQhr, UOSInt maxDBItem)
+Bool Data::QueryConditions::OrCondition::ToWhereClause(Text::StringBuilderUTF *sb, DB::DBUtil::ServerType svrType, Int8 tzQhr, UOSInt maxDBItem)
 {
 	sb->Append((const UTF8Char*)" or ");
 	return true;
 }
 
-Bool DB::QueryConditions::OrCondition::IsValid(Data::VariObject *obj)
+Bool Data::QueryConditions::OrCondition::IsValid(Data::VariObject *obj)
 {
 	return true;
 }
 
-Bool DB::QueryConditions::OrCondition::IsValid(Data::ObjectGetter *getter)
+Bool Data::QueryConditions::OrCondition::IsValid(Data::ObjectGetter *getter)
 {
 	return true;
 }
 
-void DB::QueryConditions::OrCondition::GetFieldList(Data::ArrayList<const UTF8Char*> *fieldList)
+void Data::QueryConditions::OrCondition::GetFieldList(Data::ArrayList<const UTF8Char*> *fieldList)
 {
 }
 
-DB::QueryConditions::QueryConditions()
+Data::QueryConditions::QueryConditions()
 {
 	NEW_CLASS(this->conditionList, Data::ArrayList<Condition*>());
 }
 
-DB::QueryConditions::~QueryConditions()
+Data::QueryConditions::~QueryConditions()
 {
 	LIST_FREE_FUNC(this->conditionList, DEL_CLASS);
 	DEL_CLASS(this->conditionList);
 }
 
-Bool DB::QueryConditions::IsValid(Data::VariObject *obj)
+Bool Data::QueryConditions::IsValid(Data::VariObject *obj)
 {
 	return ObjectValid(obj, this->conditionList);
 }
 
-Bool DB::QueryConditions::IsValid(Data::ObjectGetter *getter)
+Bool Data::QueryConditions::IsValid(Data::ObjectGetter *getter)
 {
 	return ObjectValid(getter, this->conditionList);
 }
 
-Bool DB::QueryConditions::ToWhereClause(Text::StringBuilderUTF *sb, DB::DBUtil::ServerType svrType, Int8 tzQhr, UOSInt maxDBItem, Data::ArrayList<Condition*> *clientConditions)
+Bool Data::QueryConditions::ToWhereClause(Text::StringBuilderUTF *sb, DB::DBUtil::ServerType svrType, Int8 tzQhr, UOSInt maxDBItem, Data::ArrayList<Condition*> *clientConditions)
 {
 	Text::StringBuilderUTF8 sbTmp;
 	Bool hasOr = false;
@@ -972,22 +972,22 @@ Bool DB::QueryConditions::ToWhereClause(Text::StringBuilderUTF *sb, DB::DBUtil::
 	return true;
 }
 
-UOSInt DB::QueryConditions::GetCount()
+UOSInt Data::QueryConditions::GetCount()
 {
 	return this->conditionList->GetCount();
 }
 
-DB::QueryConditions::Condition *DB::QueryConditions::GetItem(UOSInt index)
+Data::QueryConditions::Condition *Data::QueryConditions::GetItem(UOSInt index)
 {
 	return this->conditionList->GetItem(index);
 }
 
-Data::ArrayList<DB::QueryConditions::Condition*> *DB::QueryConditions::GetList()
+Data::ArrayList<Data::QueryConditions::Condition*> *Data::QueryConditions::GetList()
 {
 	return this->conditionList;
 }
 
-void DB::QueryConditions::GetFieldList(Data::ArrayList<const UTF8Char*> *fieldList)
+void Data::QueryConditions::GetFieldList(Data::ArrayList<const UTF8Char*> *fieldList)
 {
 	UOSInt i = 0;
 	UOSInt j = this->conditionList->GetCount();
@@ -998,79 +998,79 @@ void DB::QueryConditions::GetFieldList(Data::ArrayList<const UTF8Char*> *fieldLi
 	}
 }
 
-DB::QueryConditions *DB::QueryConditions::TimeBetween(const UTF8Char *fieldName, Int64 t1, Int64 t2)
+Data::QueryConditions *Data::QueryConditions::TimeBetween(const UTF8Char *fieldName, Int64 t1, Int64 t2)
 {
 	this->conditionList->Add(NEW_CLASS_D(TimeBetweenCondition(fieldName, t1, t2)));
 	return this;
 }
 
-DB::QueryConditions *DB::QueryConditions::Or()
+Data::QueryConditions *Data::QueryConditions::Or()
 {
 	this->conditionList->Add(NEW_CLASS_D(OrCondition()));
 	return this;
 }
 
-DB::QueryConditions *DB::QueryConditions::InnerCond(QueryConditions *cond)
+Data::QueryConditions *Data::QueryConditions::InnerCond(QueryConditions *cond)
 {
 	this->conditionList->Add(NEW_CLASS_D(InnerCondition(cond)));
 	return this;
 }
 
-DB::QueryConditions *DB::QueryConditions::Int32Equals(const UTF8Char *fieldName, Int32 val)
+Data::QueryConditions *Data::QueryConditions::Int32Equals(const UTF8Char *fieldName, Int32 val)
 {
 	this->conditionList->Add(NEW_CLASS_D(Int32Condition(fieldName, val, CompareCondition::Equal)));
 	return this;
 }
 
-DB::QueryConditions *DB::QueryConditions::Int32In(const UTF8Char *fieldName, Data::ArrayList<Int32> *vals)
+Data::QueryConditions *Data::QueryConditions::Int32In(const UTF8Char *fieldName, Data::ArrayList<Int32> *vals)
 {
 	this->conditionList->Add(NEW_CLASS_D(Int32InCondition(fieldName, vals)));
 	return this;
 }
 
-DB::QueryConditions *DB::QueryConditions::DoubleGE(const UTF8Char *fieldName, Double val)
+Data::QueryConditions *Data::QueryConditions::DoubleGE(const UTF8Char *fieldName, Double val)
 {
 	this->conditionList->Add(NEW_CLASS_D(DoubleCondition(fieldName, val, CompareCondition::GreaterOrEqual)));
 	return this;
 }
 
-DB::QueryConditions *DB::QueryConditions::DoubleLE(const UTF8Char *fieldName, Double val)
+Data::QueryConditions *Data::QueryConditions::DoubleLE(const UTF8Char *fieldName, Double val)
 {
 	this->conditionList->Add(NEW_CLASS_D(DoubleCondition(fieldName, val, CompareCondition::GreaterOrEqual)));
 	return this;
 }
 
-DB::QueryConditions *DB::QueryConditions::StrIn(const UTF8Char *fieldName, Data::ArrayList<const UTF8Char*> *vals)
+Data::QueryConditions *Data::QueryConditions::StrIn(const UTF8Char *fieldName, Data::ArrayList<const UTF8Char*> *vals)
 {
 	this->conditionList->Add(NEW_CLASS_D(StringInCondition(fieldName, vals)));
 	return this;
 }
 
-DB::QueryConditions *DB::QueryConditions::StrContains(const UTF8Char *fieldName, const UTF8Char *val)
+Data::QueryConditions *Data::QueryConditions::StrContains(const UTF8Char *fieldName, const UTF8Char *val)
 {
 	this->conditionList->Add(NEW_CLASS_D(StringContainsCondition(fieldName, val)));
 	return this;
 }
 
-DB::QueryConditions *DB::QueryConditions::StrEquals(const UTF8Char *fieldName, const UTF8Char *val)
+Data::QueryConditions *Data::QueryConditions::StrEquals(const UTF8Char *fieldName, const UTF8Char *val)
 {
 	this->conditionList->Add(NEW_CLASS_D(StringEqualsCondition(fieldName, val)));
 	return this;
 }
 
-DB::QueryConditions *DB::QueryConditions::BoolEquals(const UTF8Char *fieldName, Bool val)
+Data::QueryConditions *Data::QueryConditions::BoolEquals(const UTF8Char *fieldName, Bool val)
 {
 	this->conditionList->Add(NEW_CLASS_D(BooleanCondition(fieldName, val)));
 	return this;
 }
 
-DB::QueryConditions *DB::QueryConditions::NotNull(const UTF8Char* fieldName)
+Data::QueryConditions *Data::QueryConditions::NotNull(const UTF8Char* fieldName)
 {
 	this->conditionList->Add(NEW_CLASS_D(NotNullCondition(fieldName)));
 	return this;
 }
 
-const UTF8Char *DB::QueryConditions::CompareConditionGetStr(CompareCondition cond)
+const UTF8Char *Data::QueryConditions::CompareConditionGetStr(CompareCondition cond)
 {
 	switch (cond)
 	{
@@ -1090,7 +1090,7 @@ const UTF8Char *DB::QueryConditions::CompareConditionGetStr(CompareCondition con
 	return (const UTF8Char*)"";
 }
 
-Bool DB::QueryConditions::ObjectValid(Data::VariObject *obj, Data::ArrayList<Condition*> *conditionList)
+Bool Data::QueryConditions::ObjectValid(Data::VariObject *obj, Data::ArrayList<Condition*> *conditionList)
 {
 	Bool ret = true;
 	Condition *cond;
@@ -1114,7 +1114,7 @@ Bool DB::QueryConditions::ObjectValid(Data::VariObject *obj, Data::ArrayList<Con
 	return ret;
 }
 
-Bool DB::QueryConditions::ObjectValid(Data::ObjectGetter *getter, Data::ArrayList<Condition*> *conditionList)
+Bool Data::QueryConditions::ObjectValid(Data::ObjectGetter *getter, Data::ArrayList<Condition*> *conditionList)
 {
 	Bool ret = true;
 	Condition *cond;

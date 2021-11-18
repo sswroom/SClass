@@ -140,7 +140,7 @@ UOSInt Map::FileGDB::GetTableNames(Data::ArrayList<const UTF8Char*> *names)
 	return this->tables->GetCount() + this->features->GetCount();
 }
 
-DB::DBReader *Map::FileGDB::GetTableData(const UTF8Char *tableName, Data::ArrayList<const UTF8Char*> *columnNames, UOSInt ofst, UOSInt maxCnt, const UTF8Char *ordering, DB::QueryConditions *condition)
+DB::DBReader *Map::FileGDB::GetTableData(const UTF8Char *tableName, Data::ArrayList<const UTF8Char*> *columnNames, UOSInt ofst, UOSInt maxCnt, const UTF8Char *ordering, Data::QueryConditions *condition)
 {
 	WChar sbuff[256];
 	fgdbError hr;

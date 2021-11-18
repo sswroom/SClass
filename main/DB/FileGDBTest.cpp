@@ -19,7 +19,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		Data::ArrayList<const UTF8Char*> colNames;
 		colNames.Add((const UTF8Char*)"OBJECTID");
 		colNames.Add((const UTF8Char*)"Shape");
-		DB::QueryConditions cond;
+		Data::QueryConditions cond;
 		cond.Int32Equals((const UTF8Char*)"OBJECTID", 40);
 		DB::DBReader *r = fileGDB->GetTableData((const UTF8Char*)"LAMPPOST", &colNames, 0, 10, (const UTF8Char*)"OBJECTID desc", 0);//&cond);
 		if (r)

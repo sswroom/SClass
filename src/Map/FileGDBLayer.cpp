@@ -380,7 +380,7 @@ UOSInt Map::FileGDBLayer::GetTableNames(Data::ArrayList<const UTF8Char*> *names)
 	return 1;
 }
 
-DB::DBReader *Map::FileGDBLayer::GetTableData(const UTF8Char *tableName, Data::ArrayList<const UTF8Char*> *columnNames, UOSInt ofst, UOSInt maxCnt, const UTF8Char *ordering, DB::QueryConditions *condition)
+DB::DBReader *Map::FileGDBLayer::GetTableData(const UTF8Char *tableName, Data::ArrayList<const UTF8Char*> *columnNames, UOSInt ofst, UOSInt maxCnt, const UTF8Char *ordering, Data::QueryConditions *condition)
 {
 	Sync::MutexUsage *mutUsage;
 	NEW_CLASS(mutUsage, Sync::MutexUsage());

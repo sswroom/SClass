@@ -341,7 +341,7 @@ UOSInt DB::MySQLConn::GetTableNames(Data::ArrayList<const UTF8Char*> *names)
 	}
 }
 
-DB::DBReader *DB::MySQLConn::GetTableData(const UTF8Char *tableName, Data::ArrayList<const UTF8Char*> *columnNames, UOSInt ofst, UOSInt maxCnt, const UTF8Char *ordering, DB::QueryConditions *condition)
+DB::DBReader *DB::MySQLConn::GetTableData(const UTF8Char *tableName, Data::ArrayList<const UTF8Char*> *columnNames, UOSInt ofst, UOSInt maxCnt, const UTF8Char *ordering, Data::QueryConditions *condition)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;

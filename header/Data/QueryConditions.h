@@ -1,11 +1,11 @@
-#ifndef _SM_DB_QUERYCONDITIONS
-#define _SM_DB_QUERYCONDITIONS
+#ifndef _SM_DATA_QUERYCONDITIONS
+#define _SM_DATA_QUERYCONDITIONS
 #include "Data/ArrayList.h"
 #include "Data/ObjectGetter.h"
 #include "Data/VariObject.h"
 #include "DB/DBUtil.h"
 
-namespace DB
+namespace Data
 {
 	class QueryConditions
 	{

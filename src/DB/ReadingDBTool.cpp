@@ -552,7 +552,7 @@ UInt32 DB::ReadingDBTool::GetDataCnt()
 	return this->dataCnt;
 }
 
-DB::DBReader *DB::ReadingDBTool::GetTableData(const UTF8Char *tableName, Data::ArrayList<const UTF8Char*> *columnNames, UOSInt ofst, UOSInt maxCnt, const UTF8Char *ordering, DB::QueryConditions *condition)
+DB::DBReader *DB::ReadingDBTool::GetTableData(const UTF8Char *tableName, Data::ArrayList<const UTF8Char*> *columnNames, UOSInt ofst, UOSInt maxCnt, const UTF8Char *ordering, Data::QueryConditions *condition)
 {
 	{
 		Text::StringBuilderUTF8 logMsg;

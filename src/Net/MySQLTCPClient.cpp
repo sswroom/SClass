@@ -1283,7 +1283,7 @@ UOSInt Net::MySQLTCPClient::GetTableNames(Data::ArrayList<const UTF8Char*> *name
 	}
 }
 
-DB::DBReader *Net::MySQLTCPClient::GetTableData(const UTF8Char *tableName, Data::ArrayList<const UTF8Char*> *columnNames, UOSInt ofst, UOSInt maxCnt, const UTF8Char *ordering, DB::QueryConditions *condition)
+DB::DBReader *Net::MySQLTCPClient::GetTableData(const UTF8Char *tableName, Data::ArrayList<const UTF8Char*> *columnNames, UOSInt ofst, UOSInt maxCnt, const UTF8Char *ordering, Data::QueryConditions *condition)
 {
 	UTF8Char sbuff[512];
 	Text::StringBuilderUTF8 sb;

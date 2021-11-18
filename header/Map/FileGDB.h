@@ -21,7 +21,7 @@ namespace Map
 		Bool IsError();
 
 		virtual UOSInt GetTableNames(Data::ArrayList<const UTF8Char*> *names); // no need to release
-		virtual DB::DBReader *GetTableData(const UTF8Char *tableName, Data::ArrayList<const UTF8Char*> *columnNames, UOSInt ofst, UOSInt maxCnt, const UTF8Char *ordering, DB::QueryConditions *condition);
+		virtual DB::DBReader *GetTableData(const UTF8Char *tableName, Data::ArrayList<const UTF8Char*> *columnNames, UOSInt ofst, UOSInt maxCnt, const UTF8Char *ordering, Data::QueryConditions *condition);
 		virtual void CloseReader(DB::DBReader *r);
 		virtual void GetErrorMsg(Text::StringBuilderUTF *str);
 		virtual void Reconnect();

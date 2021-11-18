@@ -14,7 +14,7 @@ namespace DB
 
 		Data::VariItem *GetItem(UOSInt colIndex);
 	public:
-		SortableDBReader(DB::ReadingDB *db, const UTF8Char *tableName, Data::ArrayList<const UTF8Char*> *colNames, UOSInt dataOfst, UOSInt maxCnt, const UTF8Char *ordering, QueryConditions *condition);
+		SortableDBReader(DB::ReadingDB *db, const UTF8Char *tableName, Data::ArrayList<const UTF8Char*> *colNames, UOSInt dataOfst, UOSInt maxCnt, const UTF8Char *ordering, Data::QueryConditions *condition);
 		virtual ~SortableDBReader();
 
 		virtual Bool ReadNext();

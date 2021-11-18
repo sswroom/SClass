@@ -42,7 +42,7 @@ namespace DB
 		virtual void Rollback(void *tran);
 
 		virtual UOSInt GetTableNames(Data::ArrayList<const UTF8Char*> *names); // no need to release
-		virtual DBReader *GetTableData(const UTF8Char *tableName, Data::ArrayList<const UTF8Char*> *columnNames, UOSInt ofst, UOSInt maxCnt, const UTF8Char *ordering, DB::QueryConditions *condition);
+		virtual DBReader *GetTableData(const UTF8Char *tableName, Data::ArrayList<const UTF8Char*> *columnNames, UOSInt ofst, UOSInt maxCnt, const UTF8Char *ordering, Data::QueryConditions *condition);
 
 		void SetDeleteOnClose(Bool delOnClose);
 		Bool IsError();

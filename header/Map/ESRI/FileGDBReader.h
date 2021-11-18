@@ -1,7 +1,7 @@
 #ifndef _SM_MAP_ESRI_FILEGDBREADER
 #define _SM_MAP_ESRI_FILEGDBREADER
+#include "Data/QueryConditions.h"
 #include "DB/DBReader.h"
-#include "DB/QueryConditions.h"
 #include "IO/IStreamData.h"
 #include "Map/ESRI/FileGDBUtil.h"
 
@@ -23,11 +23,11 @@ namespace Map
 			Data::ArrayList<UOSInt> *columnIndices;
 			UOSInt dataOfst;
 			UOSInt maxCnt;
-			DB::QueryConditions *conditions;
+			Data::QueryConditions *conditions;
 
 			UOSInt GetFieldIndex(UOSInt colIndex);
 		public:
-			FileGDBReader(IO::IStreamData *fd, UInt64 ofst, FileGDBTableInfo *tableInfo, Data::ArrayList<const UTF8Char*> *columnNames, UOSInt dataOfst, UOSInt maxCnt, DB::QueryConditions *conditions);
+			FileGDBReader(IO::IStreamData *fd, UInt64 ofst, FileGDBTableInfo *tableInfo, Data::ArrayList<const UTF8Char*> *columnNames, UOSInt dataOfst, UOSInt maxCnt, Data::QueryConditions *conditions);
 			virtual ~FileGDBReader();
 
 			virtual Bool ReadNext();

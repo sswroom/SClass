@@ -1108,6 +1108,8 @@ Data/LineChart.h: ../../src/Data/LineChart.cpp
 @LineChart.o
 Data/List.h:
 Data/ObjectGetter.h:
+Data/QueryConditions.h: ../../src/Data/QueryConditions.cpp
+@QueryConditions.o
 Data/Random.h:
 Data/RandomBytesGenerator.h: ../../src/Data/RandomBytesGenerator.cpp
 @RandomBytesGenerator.o
@@ -1210,8 +1212,6 @@ DB/MySQLMaintance.h: ../../src/DB/MySQLMaintance.cpp
 @MySQLMaintance.o
 DB/PageRequest.h: ../../src/DB/PageRequest.cpp
 @PageRequest.o
-DB/QueryConditions.h: ../../src/DB/QueryConditions.cpp
-@QueryConditions.o
 DB/ReadingDB.h: ../../src/DB/ReadingDB.cpp
 @ReadingDB.o
 DB/ReadingDBTool.h: ../../src/DB/ReadingDBTool.cpp
@@ -3809,6 +3809,7 @@ DateTime.o: ../../src/Data/DateTime.cpp
 FieldComparator.o: ../../src/Data/FieldComparator.cpp
 IChart.o: ../../src/Data/IChart.cpp
 LineChart.o: ../../src/Data/LineChart.cpp
+QueryConditions.o: ../../src/Data/QueryConditions.cpp
 RandomBytesGenerator.o: ../../src/Data/RandomBytesGenerator.cpp
 RandomMT19937.o: ../../src/Data/RandomMT19937.cpp
 RandomOS.o: ../../src/Data/RandomOS.cpp
@@ -3853,7 +3854,6 @@ DBUtil.o: ../../src/DB/DBUtil.cpp
 MSSQLConn.o: ../../src/DB/MSSQLConn.cpp
 MySQLMaintance.o: ../../src/DB/MySQLMaintance.cpp
 PageRequest.o: ../../src/DB/PageRequest.cpp
-QueryConditions.o: ../../src/DB/QueryConditions.cpp
 ReadingDB.o: ../../src/DB/ReadingDB.cpp
 ReadingDBTool.o: ../../src/DB/ReadingDBTool.cpp
 SharedDBConn.o: ../../src/DB/SharedDBConn.cpp
