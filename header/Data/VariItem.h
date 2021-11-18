@@ -62,6 +62,23 @@ namespace Data
 
 		ItemType GetItemType();
 		const ItemValue GetItemValue();
+		Single GetAsF32();
+		Double GetAsF64();
+		Int8 GetAsI8();
+		UInt8 GetAsU8();
+		Int16 GetAsI16();
+		UInt16 GetAsU16();
+		Int32 GetAsI32();
+		UInt32 GetAsU32();
+		Int64 GetAsI64();
+		UInt64 GetAsU64();
+		Bool GetAsBool();
+		void GetAsString(Text::StringBuilderUTF *sb);
+		Data::DateTime *GetAsDate();
+		Data::ReadonlyArray<UInt8> *GetAsByteArr();
+		Math::Vector2D *GetAsVector();
+		Data::UUID *GetAsUUID();
+		void *GetAsUnk();
 
 		VariItem *Clone();
 		void ToString(Text::StringBuilderUTF *sb);
@@ -81,8 +98,11 @@ namespace Data
 		static VariItem *NewU64(UInt64 val);
 		static VariItem *NewBool(Bool val);
 		static VariItem *NewByteArr(const UInt8 *arr, UOSInt cnt);
+		static VariItem *NewByteArr(Data::ReadonlyArray<UInt8> *arr);
 		static VariItem *NewVector(Math::Vector2D *vec);
 		static VariItem *NewUUID(Data::UUID *uuid);
+		static VariItem *NewFromPtr(void *ptr, ItemType itemType);
+		static void SetPtr(void *ptr, ItemType itemType, VariItem *item);
 
 		static UOSInt GetItemSize(ItemType itemType);
 	};

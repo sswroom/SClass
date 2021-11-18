@@ -42,6 +42,11 @@ namespace Data
 		Bool AddField(const UTF8Char *name, Math::Vector2D **val);
 		Bool AddField(const UTF8Char *name, Data::UUID **val);
 
+		UOSInt GetFieldCount();
+		const UTF8Char *GetFieldName(UOSInt index);
+		Data::VariItem *GetNewValue(UOSInt index, void *obj);
+		Bool SetField(void *obj, UOSInt index, Data::VariItem *item);
+
 		void ToCppClassHeader(const UTF8Char *clsName, UOSInt tabLev, Text::StringBuilderUTF *sb);
 		void ToCppClassSource(const UTF8Char *clsPrefix, const UTF8Char *clsName, UOSInt tabLev, Text::StringBuilderUTF *sb);
 	};

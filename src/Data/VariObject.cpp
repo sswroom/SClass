@@ -140,9 +140,9 @@ void Data::VariObject::ToString(Text::StringBuilderUTF *sb)
 		{
 			sb->AppendChar(',', 1);
 		}
-		Text::JSText::ToJSText(sbuff, keys->GetItem(i));
+		Text::JSText::ToJSTextDQuote(sbuff, keys->GetItem(i));
 		sb->Append(sbuff);
-		sb->AppendChar('=', 1);
+		sb->AppendChar(':', 1);
 		values->GetItem(i)->ToString(sb);
 		i++;
 	}

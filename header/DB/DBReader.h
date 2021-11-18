@@ -1,6 +1,7 @@
 #ifndef _SM_DB_DBREADER
 #define _SM_DB_DBREADER
 #include "Data/Class.h"
+#include "Data/NamedClass.h"
 #include "Data/VariObject.h"
 #include "DB/DBUtil.h"
 #include "Math/Vector2D.h"
@@ -52,6 +53,65 @@ namespace DB
 		TableDef *GenTableDef(const UTF8Char *tableName);
 		Data::VariObject *CreateVariObject();
 		Data::Class *CreateClass();
+		template <class T> Bool ReadAll(Data::ArrayList<T*> *outList, Data::NamedClass<T> *cls);
 	};
+}
+
+template <class T> Bool DB::DBReader::ReadAll(Data::ArrayList<T*> *outList, Data::NamedClass<T> *cls)
+{
+	UTF8Char sbuff[256];
+	UTF8Char sbuff2[256];
+	Data::StringUTF8Map<const UTF8Char*> colMap;
+	const UTF8Char *csptr;
+	Bool clsValid = true;
+	UOSInt i = 0;
+	UOSInt j = this->ColCount();
+	while (i < j)
+	{
+		this->GetName(i, sbuff);
+		DB::DBUtil::DB2FieldName(sbuff2, sbuff);
+		csptr = colMap.Put(sbuff2, Text::StrCopyNew(sbuff));
+		SDEL_TEXT(csptr);
+
+		i++;
+	}
+
+	i = 0;
+	j = cls->GetFieldCount();
+	while (i < j)
+	{
+		if (colMap.Get(cls->GetFieldName(i)) == 0)
+		{
+			clsValid = false;
+		}
+		i++;
+	}
+
+	if (!clsValid)
+	{
+		Data::ArrayList<const UTF8Char*> *colList = colMap.GetValues();
+		LIST_FREE_FUNC(colList, Text::StrDelNew);
+		return false;
+	}
+
+	while (this->ReadNext())
+	{
+		T *listObj = cls->CreateObject();
+		Data::VariObject *obj = this->CreateVariObject();
+		Data::VariItem *item;
+		i = 0;
+		j = cls->GetFieldCount();
+		while (i < j)
+		{
+			item = obj->GetItem(colMap.Get(cls->GetFieldName(i)));
+			cls->SetField(listObj, i, item);
+			i++;
+		}
+		outList->Add(listObj);
+		DEL_CLASS(obj);
+	}
+	Data::ArrayList<const UTF8Char*> *colList = colMap.GetValues();
+	LIST_FREE_FUNC(colList, Text::StrDelNew);
+	return true;
 }
 #endif

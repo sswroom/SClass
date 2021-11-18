@@ -36,7 +36,7 @@ void Text::StringTool::BuildString(Text::StringBuilderUTF *sb, Data::StringUTF8M
 			sb->AppendChar(' ', 1);
 		}
 		BuildString(sb, keys->GetItem(i));
-		sb->AppendChar('=', 1);
+		sb->AppendChar(':', 1);
 		BuildString(sb, vals->GetItem(i));
 		i++;
 	}

@@ -6,6 +6,7 @@
 #include "IO/DirectoryPackage.h"
 #include "Map/ESRI/FileGDBDir.h"
 #include "Text/StringBuilderUTF8.h"
+#include "Text/StringTool.h"
 
 class Lamppost
 {
@@ -932,6 +933,26 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		}
 
 		Data::NamedClass<Lamppost> *cls = Lamppost().CreateClass();
+		Lamppost *lamppost;
+
+		r = fileGDB->GetTableData((const UTF8Char*)"LAMPPOST", 0, 0, 0, 0, 0);
+		if (r)
+		{
+			Data::ArrayList<Lamppost*> lamppostList;
+			r->ReadAll(&lamppostList, cls);
+			fileGDB->CloseReader(r);
+
+			sb.ClearStr();
+			Text::StringTool::BuildString(&sb, &lamppostList, cls, (const UTF8Char*)"Lamppost");
+			console.WriteLine(sb.ToString());
+
+			UOSInt i = lamppostList.GetCount();
+			while (i-- > 0)
+			{
+				lamppost = lamppostList.GetItem(i);
+				DEL_CLASS(lamppost);
+			}
+		}
 		DEL_CLASS(cls);
 
 		DEL_CLASS(fileGDB);

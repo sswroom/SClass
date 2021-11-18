@@ -120,6 +120,44 @@ Bool Data::Class::AddField(const UTF8Char *name, Data::UUID **val)
 	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::UUID);
 }
 
+UOSInt Data::Class::GetFieldCount()
+{
+	return this->fields->GetCount();
+}
+
+const UTF8Char *Data::Class::GetFieldName(UOSInt index)
+{
+	FieldInfo *field = this->fields->GetValues()->GetItem(index);
+	if (field)
+	{
+		return field->name;
+	}
+	return 0;
+}
+
+Data::VariItem *Data::Class::GetNewValue(UOSInt index, void *obj)
+{
+	FieldInfo *field = this->fields->GetValues()->GetItem(index);
+	if (field == 0)
+	{
+		return 0;
+	}
+	void *valPtr = (void*)(field->ofst + (UInt8*)obj);
+	return Data::VariItem::NewFromPtr(valPtr, field->itemType);
+}
+
+Bool Data::Class::SetField(void *obj, UOSInt index, Data::VariItem *item)
+{
+	FieldInfo *field = this->fields->GetValues()->GetItem(index);
+	if (field == 0 || item == 0)
+	{
+		return false;
+	}
+	void *valPtr = (void*)(field->ofst + (OSInt)obj);
+	Data::VariItem::SetPtr(valPtr, field->itemType, item);
+	return true;
+}
+
 void Data::Class::ToCppClassHeader(const UTF8Char *clsName, UOSInt tabLev, Text::StringBuilderUTF *sb)
 {
 	sb->AppendChar('\t', tabLev);
