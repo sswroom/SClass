@@ -296,3 +296,46 @@ Bool Text::CPPText::ParseEnum(Data::ArrayList<const UTF8Char*> *enumEntries, con
 		}
 	}
 }
+
+const UTF8Char *Text::CPPText::GetCppType(Data::VariItem::ItemType itemType)
+{
+	switch (itemType)
+	{
+	case Data::VariItem::ItemType::F32:
+		return (const UTF8Char*)"Single";
+	case Data::VariItem::ItemType::F64:
+		return (const UTF8Char*)"Double";
+	case Data::VariItem::ItemType::I8:
+		return (const UTF8Char*)"Int8";
+	case Data::VariItem::ItemType::U8:
+		return (const UTF8Char*)"UInt8";
+	case Data::VariItem::ItemType::I16:
+		return (const UTF8Char*)"Int16";
+	case Data::VariItem::ItemType::U16:
+		return (const UTF8Char*)"UInt16";
+	case Data::VariItem::ItemType::I32:
+		return (const UTF8Char*)"Int32";
+	case Data::VariItem::ItemType::U32:
+		return (const UTF8Char*)"UInt32";
+	case Data::VariItem::ItemType::I64:
+		return (const UTF8Char*)"Int64";
+	case Data::VariItem::ItemType::U64:
+		return (const UTF8Char*)"UInt64";
+	case Data::VariItem::ItemType::BOOL:
+		return (const UTF8Char*)"Bool";
+	case Data::VariItem::ItemType::Str:
+		return (const UTF8Char*)"const UTF8Char*";
+	case Data::VariItem::ItemType::Date:
+		return (const UTF8Char*)"Data::DateTime*";
+	case Data::VariItem::ItemType::ByteArr:
+		return (const UTF8Char*)"Data::ReadonlyArr<UInt8>*";
+	case Data::VariItem::ItemType::Vector:
+		return (const UTF8Char*)"Math::Vector2D*";
+	case Data::VariItem::ItemType::UUID:
+		return (const UTF8Char*)"Data::UUID*";
+	case Data::VariItem::ItemType::Unknown:
+	case Data::VariItem::ItemType::Null:
+	default:
+		return (const UTF8Char*)"void*";
+	}
+}

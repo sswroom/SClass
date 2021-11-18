@@ -77,6 +77,8 @@ namespace DB
 		static UOSInt SDBTrimLeng(const UTF8Char *val, ServerType svrType);
 		static DB::DBUtil::ColType ParseColType(ServerType svrType, const UTF8Char *typeName, UOSInt *colSize);
 		static UTF8Char *ColTypeGetString(UTF8Char *sbuff, DB::DBUtil::ColType colType, UOSInt colSize);
+
+		static UTF8Char *DB2FieldName(UTF8Char *fieldNameBuff, const UTF8Char *dbName);
 	};
 }
 #endif

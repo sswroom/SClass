@@ -1,5 +1,6 @@
 #ifndef _SM_WIN32_CLIPBOARD
 #define _SM_WIN32_CLIPBOARD
+#include "Handles.h"
 #include "Data/ArrayList.h"
 #include "Text/StringBuilderUTF.h"
 
@@ -28,8 +29,8 @@ namespace Win32
 
 	public:
 		static Bool GetDataTextH(void *hand, UInt32 fmtId, Text::StringBuilderUTF *sb, UInt32 tymed);
-		static Bool SetString(void *hWndOwner, const UTF8Char *s);
-		static Bool GetString(void *hWndOwner, Text::StringBuilderUTF *sb);
+		static Bool SetString(ControlHandle *hWndOwner, const UTF8Char *s);
+		static Bool GetString(ControlHandle *hWndOwner, Text::StringBuilderUTF *sb);
 		static UTF8Char *GetFormatName(UInt32 fmtId, UTF8Char *sbuff, UOSInt buffSize);
 	};
 }

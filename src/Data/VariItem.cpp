@@ -348,3 +348,37 @@ Data::VariItem *Data::VariItem::NewUUID(Data::UUID *uuid)
 	NEW_CLASS(item, Data::VariItem(ItemType::UUID, ival));
 	return item;
 }
+
+UOSInt Data::VariItem::GetItemSize(ItemType itemType)
+{
+	switch (itemType)
+	{
+	case ItemType::F32:
+		return sizeof(Single);
+	case ItemType::F64:
+		return sizeof(Double);
+	case ItemType::I8:
+	case ItemType::U8:
+		return sizeof(Int8);
+	case ItemType::I16:
+	case ItemType::U16:
+		return sizeof(Int16);
+	case ItemType::I32:
+	case ItemType::U32:
+		return sizeof(Int32);
+	case ItemType::I64:
+	case ItemType::U64:
+		return sizeof(Int64);
+	case ItemType::BOOL:
+		return sizeof(Bool);
+	case ItemType::Unknown:
+	case ItemType::Null:
+	case ItemType::Str:
+	case ItemType::Date:
+	case ItemType::ByteArr:
+	case ItemType::Vector:
+	case ItemType::UUID:
+	default:
+		return sizeof(void*);
+	}
+}

@@ -25,6 +25,8 @@ namespace Text
 		static Bool UTF8CharValid(const UTF8Char *sptr);
 		static const UnicodeBlock *GetUnicodeBlock(UTF32Char c);
 		static Bool IsDoubleSize(UTF32Char c);
+		static UTF8Char ToUpper(UTF8Char c);
+		static UTF8Char ToLower(UTF8Char c);
 	};
 }
 #endif

@@ -1,5 +1,6 @@
 #ifndef _SM_DATA_VARIOBJECT
 #define _SM_DATA_VARIOBJECT
+#include "Data/Class.h"
 #include "Data/StringUTF8Map.h"
 #include "Data/VariItem.h"
 
@@ -7,14 +8,22 @@ namespace Data
 {
 	class VariObject
 	{
+	public:
+		enum class NameType
+		{
+			Database,
+			Field
+		};
 	private:
 		Data::StringUTF8Map<Data::VariItem*> *items;
+		NameType nameType;
 
 		void SetItem(const UTF8Char *name, Data::VariItem *item);
 	public:
-		VariObject();
+		VariObject(NameType nameType);
 		~VariObject();
 
+		NameType GetNameType();
 		Bool HasItem(const UTF8Char *name);
 		Data::VariItem *GetItem(const UTF8Char *name);
 		void SetItemNull(const UTF8Char *name);
@@ -36,6 +45,7 @@ namespace Data
 		void SetItemUUID(const UTF8Char *name, Data::UUID *uuid);
 
 		void ToString(Text::StringBuilderUTF *sb);
+		Class *CreateClass();
 	};
 }
 #endif

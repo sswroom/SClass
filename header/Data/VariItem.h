@@ -83,6 +83,8 @@ namespace Data
 		static VariItem *NewByteArr(const UInt8 *arr, UOSInt cnt);
 		static VariItem *NewVector(Math::Vector2D *vec);
 		static VariItem *NewUUID(Data::UUID *uuid);
+
+		static UOSInt GetItemSize(ItemType itemType);
 	};
 }
 #endif

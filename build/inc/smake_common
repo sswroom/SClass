@@ -1089,6 +1089,8 @@ Data/BinTool.h: ../../src/Data/BinTool.cpp
 Data/BTreeUTF8Map.h:
 Data/ByteTool.h: ../../src/Data/ByteTool.cpp
 @ByteTool.o
+Data/Class.h: ../../src/Data/Class.cpp
+@Class.o
 Data/Comparator.h:
 Data/DataComparer.h: ../../src/Data/DataComparer.cpp
 @DataComparer.o
@@ -1107,6 +1109,7 @@ Data/Int64Map.h:
 Data/LineChart.h: ../../src/Data/LineChart.cpp
 @LineChart.o
 Data/List.h:
+Data/NamedClass.h:
 Data/ObjectGetter.h:
 Data/QueryConditions.h: ../../src/Data/QueryConditions.cpp
 @QueryConditions.o
@@ -1182,6 +1185,8 @@ DB/CSVFile.h: ../../src/DB/CSVFile.cpp
 @CSVFile.o
 DB/DBCache.h: ../../src/DB/DBCache.cpp
 @DBCache.o
+DB/DBClassBuilder.h: ../../src/DB/DBClassBuilder.cpp
+@DBClassBuilder.o
 DB/DBConn.h: ../../src/DB/DBConn.cpp
 @DBConn.o
 DB/DBFFile.h: ../../src/DB/DBFFile.cpp
@@ -3804,6 +3809,7 @@ ArrayListUInt32.o: ../../src/Data/ArrayListUInt32.cpp
 ArrayListUInt64.o: ../../src/Data/ArrayListUInt64.cpp
 BinTool.o: ../../src/Data/BinTool.cpp
 ByteTool.o: ../../src/Data/ByteTool.cpp
+Class.o: ../../src/Data/Class.cpp
 DataComparer.o: ../../src/Data/DataComparer.cpp
 DateTime.o: ../../src/Data/DateTime.cpp
 FieldComparator.o: ../../src/Data/FieldComparator.cpp
@@ -3840,6 +3846,7 @@ ColDef.o: ../../src/DB/ColDef.cpp
 CSVFile.o: ../../src/DB/CSVFile.cpp
 DBCache.o: ../../src/DB/DBCache.cpp
 DBConn.o: ../../src/DB/DBConn.cpp
+DBClassBuilder.o: ../../src/DB/DBClassBuilder.cpp
 DBFFile.o: ../../src/DB/DBFFile.cpp
 DBFFixWriter.o: ../../src/DB/DBFFixWriter.cpp
 DBList.o: ../../src/DB/DBList.cpp

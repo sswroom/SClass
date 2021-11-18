@@ -8,9 +8,10 @@ void Data::VariObject::SetItem(const UTF8Char *name, Data::VariItem *item)
 	SDEL_CLASS(item);
 }
 
-Data::VariObject::VariObject()
+Data::VariObject::VariObject(NameType nameType)
 {
 	NEW_CLASS(this->items, Data::StringUTF8Map<Data::VariItem*>());
+	this->nameType = nameType;
 }
 
 Data::VariObject::~VariObject()
@@ -23,6 +24,11 @@ Data::VariObject::~VariObject()
 		DEL_CLASS(item);
 	}
 	DEL_CLASS(this->items);
+}
+
+Data::VariObject::NameType Data::VariObject::GetNameType()
+{
+	return this->nameType;
 }
 
 Bool Data::VariObject::HasItem(const UTF8Char *name)
@@ -141,4 +147,21 @@ void Data::VariObject::ToString(Text::StringBuilderUTF *sb)
 		i++;
 	}
 	sb->AppendChar('}', 1);
+}
+
+Data::Class *Data::VariObject::CreateClass()
+{
+	Data::Class *cls;
+	OSInt currPos = 0;
+	NEW_CLASS(cls, Data::Class(0));
+	Data::ArrayList<const UTF8Char*> *keys = this->items->GetKeys();
+	Data::ArrayList<VariItem*> *values = this->items->GetValues();
+	UOSInt i = 0;
+	UOSInt j = keys->GetCount();
+	while (i < j)
+	{
+		currPos += (OSInt)cls->AddField(keys->GetItem(i), currPos, values->GetItem(i)->GetItemType());
+		i++;
+	}
+	return cls;
 }

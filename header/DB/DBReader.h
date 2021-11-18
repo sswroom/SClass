@@ -1,5 +1,6 @@
 #ifndef _SM_DB_DBREADER
 #define _SM_DB_DBREADER
+#include "Data/Class.h"
 #include "Data/VariObject.h"
 #include "DB/DBUtil.h"
 #include "Math/Vector2D.h"
@@ -50,6 +51,7 @@ namespace DB
 
 		TableDef *GenTableDef(const UTF8Char *tableName);
 		Data::VariObject *CreateVariObject();
+		Data::Class *CreateClass();
 	};
 }
 #endif

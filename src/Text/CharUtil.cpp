@@ -489,3 +489,27 @@ Bool Text::CharUtil::IsDoubleSize(UTF32Char c)
 	}
 	return blk->dblWidth;
 }
+
+UTF8Char Text::CharUtil::ToUpper(UTF8Char c)
+{
+	if (c >= 'a' && c <= 'z')
+	{
+		return (UTF8Char)(c - 0x20);
+	}
+	else
+	{
+		return c;
+	}
+}
+
+UTF8Char Text::CharUtil::ToLower(UTF8Char c)
+{
+	if (c >= 'A' && c <= 'Z')
+	{
+		return (UTF8Char)(c + 0x20);
+	}
+	else
+	{
+		return c;
+	}
+}

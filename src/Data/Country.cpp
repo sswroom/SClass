@@ -1,5 +1,5 @@
 ﻿
-#include "stdafx.h"
+#include "Stdafx.h"
 #include "Data/Country.h"
 
 Data::Country::CountryInfo Data::Country::countries[] = {

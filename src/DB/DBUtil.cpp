@@ -5,6 +5,7 @@
 #include "Math/Math.h"
 #include "Math/Point.h"
 #include "Math/WKTWriter.h"
+#include "Text/CharUtil.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 #include "Text/MyStringW.h"
@@ -1930,4 +1931,33 @@ UTF8Char *DB::DBUtil::ColTypeGetString(UTF8Char *sbuff, DB::DBUtil::ColType colT
 	default:
 		return Text::StrConcat(Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"UNKNOWN("), colSize), (const UTF8Char*)")");
 	}
+}
+
+UTF8Char *DB::DBUtil::DB2FieldName(UTF8Char *fieldNameBuff, const UTF8Char *dbName)
+{
+	Bool nextUpper = false;
+	UTF8Char c;
+	while (true)
+	{
+		c = *dbName++;
+		if (c == 0)
+		{
+			break;
+		}
+		else if (c == '_')
+		{
+			nextUpper = true;
+		}
+		else if (nextUpper)
+		{
+			nextUpper = false;
+			*fieldNameBuff++ = Text::CharUtil::ToUpper(c);
+		}
+		else
+		{
+			*fieldNameBuff++ = Text::CharUtil::ToLower(c);
+		}
+	}
+	*fieldNameBuff = 0;
+	return fieldNameBuff;
 }

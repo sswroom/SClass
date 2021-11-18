@@ -5,12 +5,16 @@
 #include "SSWR/AVIRead/AVIRChartForm.h"
 #include "SSWR/AVIRead/AVIRDBForm.h"
 #include "SSWR/AVIRead/AVIRLineChartForm.h"
+#include "Text/CharUtil.h"
+#include "Win32/Clipboard.h"
 
 #define MAX_ROW_CNT 1000
 
 typedef enum
 {
 	MNU_FILE_SAVE = 100,
+	MNU_TABLE_CPP_HEADER,
+	MNU_TABLE_CPP_SOURCE,
 	MNU_CHART_LINE,
 	MNU_DATABASE_START = 1000
 } MenuEvent;
@@ -185,6 +189,28 @@ void SSWR::AVIRead::AVIRDBForm::UpdateResult(DB::DBReader *r)
 	MemFree(colSize);
 }
 
+Data::Class *SSWR::AVIRead::AVIRDBForm::CreateTableClass(const UTF8Char *name)
+{
+	if (this->dbt)
+	{
+		DB::TableDef *tab = this->dbt->GetTableDef(name);
+		if (tab)
+		{
+			Data::Class *cls = tab->CreateTableClass();
+			DEL_CLASS(tab);
+			return cls;
+		}
+	}
+	DB::DBReader *r = this->db->GetTableData(name, 0, 0, 0, 0, 0);
+	if (r)
+	{
+		Data::Class *cls = r->CreateClass();
+		this->db->CloseReader(r);
+		return cls;
+	}
+	return 0;
+}
+
 SSWR::AVIRead::AVIRDBForm::AVIRDBForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, DB::ReadingDB *db, Bool needRelease) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	UTF8Char sbuff[512];
@@ -233,6 +259,9 @@ SSWR::AVIRead::AVIRDBForm::AVIRDBForm(UI::GUIClientControl *parent, UI::GUICore 
 	NEW_CLASS(this->mnuMain, UI::GUIMainMenu());
 	mnu = this->mnuMain->AddSubMenu((const UTF8Char*)"&File");
 	mnu->AddItem((const UTF8Char*)"&Save as", MNU_FILE_SAVE, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_S);
+	mnu = this->mnuMain->AddSubMenu((const UTF8Char*)"&Table");
+	mnu->AddItem((const UTF8Char*)"Copy as CPP Header", MNU_TABLE_CPP_HEADER, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu->AddItem((const UTF8Char*)"Copy as CPP Source", MNU_TABLE_CPP_SOURCE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu = this->mnuMain->AddSubMenu((const UTF8Char*)"&Chart");
 	mnu->AddItem((const UTF8Char*)"&Line Chart", MNU_CHART_LINE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	NEW_CLASS(this->dbNames, Data::ArrayList<const UTF8Char*>());
@@ -300,6 +329,8 @@ void SSWR::AVIRead::AVIRDBForm::UpdateTables()
 
 void SSWR::AVIRead::AVIRDBForm::EventMenuClicked(UInt16 cmdId)
 {
+	UTF8Char sbuff[512];
+	UTF8Char sbuff2[512];
 	if (cmdId >= MNU_DATABASE_START)
 	{
 		if (this->dbt->ChangeDatabase(this->dbNames->GetItem((UOSInt)cmdId - MNU_DATABASE_START)))
@@ -314,24 +345,51 @@ void SSWR::AVIRead::AVIRDBForm::EventMenuClicked(UInt16 cmdId)
 		this->core->SaveData(this, this->db, L"DBSave");
 		break;
 	case MNU_CHART_LINE:
+		if (this->lbTable->GetSelectedItemText(sbuff))
 		{
-			UTF8Char sbuff[512];
-			if (this->lbTable->GetSelectedItemText(sbuff))
+			SSWR::AVIRead::AVIRLineChartForm *frm;
+			Data::IChart *chart = 0;
+			NEW_CLASS(frm, SSWR::AVIRead::AVIRLineChartForm(0, this->ui, this->core, this->db, sbuff));
+			if (frm->ShowDialog(this) == DR_OK)
 			{
-				SSWR::AVIRead::AVIRLineChartForm *frm;
-				Data::IChart *chart = 0;
-				NEW_CLASS(frm, SSWR::AVIRead::AVIRLineChartForm(0, this->ui, this->core, this->db, sbuff));
-				if (frm->ShowDialog(this) == DR_OK)
-				{
-					chart = frm->GetChart();
-				}
-				DEL_CLASS(frm);
-				if (chart)
-				{
-					SSWR::AVIRead::AVIRChartForm *chartFrm;
-					NEW_CLASS(chartFrm, SSWR::AVIRead::AVIRChartForm(0, this->ui, this->core, chart));
-					this->core->ShowForm(chartFrm);
-				}
+				chart = frm->GetChart();
+			}
+			DEL_CLASS(frm);
+			if (chart)
+			{
+				SSWR::AVIRead::AVIRChartForm *chartFrm;
+				NEW_CLASS(chartFrm, SSWR::AVIRead::AVIRChartForm(0, this->ui, this->core, chart));
+				this->core->ShowForm(chartFrm);
+			}
+		}
+		break;
+	case MNU_TABLE_CPP_HEADER:
+		if (this->lbTable->GetSelectedItemText(sbuff))
+		{
+			Data::Class *cls = this->CreateTableClass(sbuff);
+			if (cls)
+			{
+				DB::DBUtil::DB2FieldName(sbuff2, sbuff);
+				sbuff2[0] = Text::CharUtil::ToUpper(sbuff2[0]);
+				Text::StringBuilderUTF8 sb;
+				cls->ToCppClassHeader(sbuff2, 0, &sb);
+				Win32::Clipboard::SetString(this->GetHandle(), sb.ToString());
+				DEL_CLASS(cls);
+			}
+		}
+		break;
+	case MNU_TABLE_CPP_SOURCE:
+		if (this->lbTable->GetSelectedItemText(sbuff))
+		{
+			Data::Class *cls = this->CreateTableClass(sbuff);
+			if (cls)
+			{
+				DB::DBUtil::DB2FieldName(sbuff2, sbuff);
+				sbuff2[0] = Text::CharUtil::ToUpper(sbuff2[0]);
+				Text::StringBuilderUTF8 sb;
+				cls->ToCppClassSource(0, sbuff2, 0, &sb);
+				Win32::Clipboard::SetString(this->GetHandle(), sb.ToString());
+				DEL_CLASS(cls);
 			}
 		}
 		break;

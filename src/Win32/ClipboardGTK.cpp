@@ -264,7 +264,7 @@ Bool Win32::Clipboard::GetDataTextH(void *hand, UInt32 fmtId, Text::StringBuilde
 	return false;
 }
 
-Bool Win32::Clipboard::SetString(void *hWndOwner, const UTF8Char *s)
+Bool Win32::Clipboard::SetString(ControlHandle *hWndOwner, const UTF8Char *s)
 {
 	GtkClipboard *clipboard = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
 	if (clipboard == 0)
@@ -275,7 +275,7 @@ Bool Win32::Clipboard::SetString(void *hWndOwner, const UTF8Char *s)
 	return true;
 }
 
-Bool Win32::Clipboard::GetString(void *hWndOwner, Text::StringBuilderUTF *sb)
+Bool Win32::Clipboard::GetString(ControlHandle *hWndOwner, Text::StringBuilderUTF *sb)
 {
 	GtkClipboard *clipboard = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
 	if (clipboard == 0)

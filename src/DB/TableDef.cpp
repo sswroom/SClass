@@ -1,7 +1,8 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Text/MyString.h"
+#include "DB/DBClassBuilder.h"
 #include "DB/TableDef.h"
+#include "Text/MyString.h"
 
 DB::TableDef::TableDef(const UTF8Char *tableName)
 {
@@ -172,4 +173,20 @@ DB::TableDef *DB::TableDef::Clone()
 		i++;
 	}
 	return newObj;
+}
+
+Data::Class *DB::TableDef::CreateTableClass()
+{
+	DB::DBClassBuilder builder;
+	UOSInt i;
+	UOSInt j;
+	i = 0;
+	j = this->cols->GetCount();
+	while (i < j)
+	{
+		DB::ColDef *col = this->cols->GetItem(i);
+		builder.AddItem(col->GetColName(), col->GetColType());
+		i++;
+	}
+	return builder.GetResultClass();
 }

@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "Data/DateTime.h"
+#include "DB/DBClassBuilder.h"
 #include "DB/DBReader.h"
 #include "DB/TableDef.h"
 #include "Text/MyString.h"
@@ -35,7 +36,7 @@ Data::VariObject *DB::DBReader::CreateVariObject()
 	const UTF8Char *csptr;
 	UInt8 *binBuff;
 	Math::Vector2D *vec;
-	NEW_CLASS(obj, Data::VariObject());
+	NEW_CLASS(obj, Data::VariObject(Data::VariObject::NameType::Database));
 	i = 0;
 	j = this->ColCount();
 	while (i < j)
@@ -120,4 +121,22 @@ Data::VariObject *DB::DBReader::CreateVariObject()
 		i++;
 	}
 	return obj;
+}
+
+Data::Class *DB::DBReader::CreateClass()
+{
+	UTF8Char sbuff[256];
+	UOSInt i;
+	UOSInt j;
+	UOSInt size;
+	DB::DBClassBuilder builder;
+	i = 0;
+	j = this->ColCount();
+	while (i < j)
+	{
+		this->GetName(i, sbuff);
+		builder.AddItem(sbuff, this->GetColType(i, &size));
+		i++;
+	}
+	return builder.GetResultClass();
 }

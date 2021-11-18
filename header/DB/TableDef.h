@@ -44,6 +44,7 @@ namespace DB
 		TableDef *SetSvrType(DB::DBUtil::ServerType svrType);
 		
 		TableDef *Clone();
+		Data::Class *CreateTableClass();
 	};
 }
 #endif
