@@ -18,6 +18,8 @@ namespace Data
 		static OSInt Compare(const UInt8 *val1, UOSInt cnt1, const UInt8 *val2, UOSInt cnt2);
 		static OSInt Compare(Math::Vector2D *val1, Math::Vector2D *val2);
 		static OSInt Compare(Data::UUID *val1, Data::UUID *val2);
+
+		static Bool NearlyEquals(Double val1, Double val2);
 	};
 }
 #endif

@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Data/VariItem.h"
+#include "Math/WKTReader.h"
 #include "Math/WKTWriter.h"
 #include "Text/JSText.h"
 #include "Text/MyString.h"
@@ -85,6 +86,7 @@ Single Data::VariItem::GetAsF32()
 	case ItemType::BOOL:
 		return this->val.boolean?1:0;
 	case ItemType::Str:
+		return (Single)Text::StrToDouble(this->val.str);
 	case ItemType::Date:
 	case ItemType::ByteArr:
 	case ItemType::Vector:
@@ -123,6 +125,7 @@ Double Data::VariItem::GetAsF64()
 	case ItemType::BOOL:
 		return this->val.boolean?1:0;
 	case ItemType::Str:
+		return Text::StrToDouble(this->val.str);
 	case ItemType::Date:
 	case ItemType::ByteArr:
 	case ItemType::Vector:
@@ -161,6 +164,7 @@ Int8 Data::VariItem::GetAsI8()
 	case ItemType::BOOL:
 		return this->val.boolean?1:0;
 	case ItemType::Str:
+		return (Int8)Text::StrToInt32(this->val.str);
 	case ItemType::Date:
 	case ItemType::ByteArr:
 	case ItemType::Vector:
@@ -199,6 +203,7 @@ UInt8 Data::VariItem::GetAsU8()
 	case ItemType::BOOL:
 		return this->val.boolean?1:0;
 	case ItemType::Str:
+		return (UInt8)Text::StrToUInt32(this->val.str);
 	case ItemType::Date:
 	case ItemType::ByteArr:
 	case ItemType::Vector:
@@ -237,6 +242,7 @@ Int16 Data::VariItem::GetAsI16()
 	case ItemType::BOOL:
 		return this->val.boolean?1:0;
 	case ItemType::Str:
+		return (Int16)Text::StrToInt32(this->val.str);
 	case ItemType::Date:
 	case ItemType::ByteArr:
 	case ItemType::Vector:
@@ -275,6 +281,7 @@ UInt16 Data::VariItem::GetAsU16()
 	case ItemType::BOOL:
 		return this->val.boolean?1:0;
 	case ItemType::Str:
+		return (UInt16)Text::StrToUInt32(this->val.str);
 	case ItemType::Date:
 	case ItemType::ByteArr:
 	case ItemType::Vector:
@@ -313,6 +320,7 @@ Int32 Data::VariItem::GetAsI32()
 	case ItemType::BOOL:
 		return this->val.boolean?1:0;
 	case ItemType::Str:
+		return Text::StrToInt32(this->val.str);
 	case ItemType::Date:
 	case ItemType::ByteArr:
 	case ItemType::Vector:
@@ -351,6 +359,7 @@ UInt32 Data::VariItem::GetAsU32()
 	case ItemType::BOOL:
 		return this->val.boolean?1:0;
 	case ItemType::Str:
+		return Text::StrToUInt32(this->val.str);
 	case ItemType::Date:
 	case ItemType::ByteArr:
 	case ItemType::Vector:
@@ -389,6 +398,7 @@ Int64 Data::VariItem::GetAsI64()
 	case ItemType::BOOL:
 		return this->val.boolean?1:0;
 	case ItemType::Str:
+		return Text::StrToInt64(this->val.str);
 	case ItemType::Date:
 	case ItemType::ByteArr:
 	case ItemType::Vector:
@@ -427,6 +437,7 @@ UInt64 Data::VariItem::GetAsU64()
 	case ItemType::BOOL:
 		return this->val.boolean?1:0;
 	case ItemType::Str:
+		return Text::StrToUInt64(this->val.str);
 	case ItemType::Date:
 	case ItemType::ByteArr:
 	case ItemType::Vector:
@@ -511,32 +522,50 @@ void Data::VariItem::GetAsString(Text::StringBuilderUTF *sb)
 	}
 }
 
-Data::DateTime *Data::VariItem::GetAsDate()
+Data::DateTime *Data::VariItem::GetAsNewDate()
 {
+	Data::DateTime *date;
+	if (this->itemType == ItemType::Str)
+	{
+		NEW_CLASS(date, Data::DateTime());
+		date->SetCurrTime();
+		if (date->SetValue(this->val.str))
+		{
+			return date;
+		}
+		DEL_CLASS(date);
+		return 0;
+	}
 	if (this->itemType != ItemType::Date)
 		return 0;
-	return this->val.date;
+	NEW_CLASS(date, Data::DateTime(this->val.date));
+	return date;
 }
 
-Data::ReadonlyArray<UInt8> *Data::VariItem::GetAsByteArr()
+Data::ReadonlyArray<UInt8> *Data::VariItem::GetAsNewByteArr()
 {
 	if (this->itemType != ItemType::ByteArr)
 		return 0;
-	return this->val.byteArr;
+	return this->val.byteArr->Clone();
 }
 
-Math::Vector2D *Data::VariItem::GetAsVector()
+Math::Vector2D *Data::VariItem::GetAsNewVector()
 {
+	if (this->itemType == ItemType::Str)
+	{
+		Math::WKTReader reader(0);
+		return reader.ParseWKT(this->val.str);
+	}
 	if (this->itemType != ItemType::Vector)
 		return 0;
-	return this->val.vector;
+	return this->val.vector->Clone();;
 }
 
-Data::UUID *Data::VariItem::GetAsUUID()
+Data::UUID *Data::VariItem::GetAsNewUUID()
 {
 	if (this->itemType != ItemType::UUID)
 		return 0;
-	return this->val.uuid;
+	return this->val.uuid->Clone();
 }
 
 void *Data::VariItem::GetAsUnk()
@@ -935,6 +964,11 @@ void Data::VariItem::SetPtr(void *ptr, ItemType itemType, VariItem *item)
 	case ItemType::Null:
 		*(void**)ptr = 0;
 	case ItemType::Str:
+		if (item->GetItemType() == ItemType::Null)
+		{
+			*(const UTF8Char**)ptr = 0;
+		}
+		else
 		{
 			Text::StringBuilderUTF8 sb;
 			item->GetAsString(&sb);
@@ -942,61 +976,126 @@ void Data::VariItem::SetPtr(void *ptr, ItemType itemType, VariItem *item)
 		}
 		break;
 	case ItemType::Date:
-		{
-			Data::DateTime *date = item->GetAsDate();
-			if (date)
-			{
-				*(Data::DateTime**)ptr = NEW_CLASS_D(Data::DateTime(date));
-			}
-			else
-			{
-				*(Data::DateTime**)ptr = 0;
-			}
-			break;
-		}
+		*(Data::DateTime**)ptr = item->GetAsNewDate();
+		break;
 	case ItemType::ByteArr:
-		{
-			Data::ReadonlyArray<UInt8> *byteArr = item->GetAsByteArr();
-			if (byteArr)
-			{
-				*(Data::ReadonlyArray<UInt8>**)ptr = byteArr->Clone();
-			}
-			else
-			{
-				*(Data::ReadonlyArray<UInt8>**)ptr = 0;
-			}
-			break;
-		}
+		*(Data::ReadonlyArray<UInt8>**)ptr = item->GetAsNewByteArr();
+		break;
 	case ItemType::Vector:
-		{
-			Math::Vector2D *vec = item->GetAsVector();
-			if (vec)
-			{
-				*(Math::Vector2D**)ptr = vec->Clone();
-			}
-			else
-			{
-				*(Math::Vector2D**)ptr = 0;
-			}
-			break;
-		}
+		*(Math::Vector2D**)ptr = item->GetAsNewVector();
+		break;
 	case ItemType::UUID:
-		{
-			Data::UUID *uuid = item->GetAsUUID();
-			if (uuid)
-			{
-				*(Data::UUID**)ptr = uuid->Clone();
-			}
-			else
-			{
-				*(Data::UUID**)ptr = 0;
-			}
-			break;
-		}
+		*(Data::UUID**)ptr = item->GetAsNewUUID();
+		break;
 	case ItemType::Unknown:
 	default:
 		*(void**)ptr = item->GetAsUnk();
 		break;
+	}
+}
+
+Bool Data::VariItem::PtrEquals(void *ptr1, void *ptr2, ItemType itemType)
+{
+	switch (itemType)
+	{
+	case ItemType::F32:
+		return *(Single*)ptr1 == *(Single*)ptr2;
+	case ItemType::F64:
+		return *(Double*)ptr1 == *(Double*)ptr2;
+	case ItemType::I8:
+		return *(Int8*)ptr1 == *(Int8*)ptr2;
+	case ItemType::U8:
+		return *(UInt8*)ptr1 == *(UInt8*)ptr2;
+	case ItemType::I16:
+		return *(Int16*)ptr1 == *(Int16*)ptr2;
+	case ItemType::U16:
+		return *(UInt16*)ptr1 == *(UInt16*)ptr2;
+	case ItemType::I32:
+		return *(Int32*)ptr1 == *(Int32*)ptr2;
+	case ItemType::U32:
+		return *(UInt32*)ptr1 == *(UInt32*)ptr2;
+	case ItemType::I64:
+		return *(Int64*)ptr1 == *(Int64*)ptr2;
+	case ItemType::U64:
+		return *(UInt64*)ptr1 == *(UInt64*)ptr2;
+	case ItemType::BOOL:
+		return *(Bool*)ptr1 == *(Bool*)ptr2;
+	case ItemType::Null:
+		return true;
+	case ItemType::Str:
+		{
+			const UTF8Char *val1 = *(const UTF8Char**)ptr1;
+			const UTF8Char *val2 = *(const UTF8Char**)ptr2;
+			if (val1 == val2)
+			{
+				return true;
+			}
+			if (val1 == 0 || val2 == 0)
+			{
+				return false;
+			}
+			return Text::StrEquals(val1, val2);
+		}
+		break;
+	case ItemType::Date:
+		{
+			Data::DateTime *val1 = *(Data::DateTime**)ptr1;
+			Data::DateTime *val2 = *(Data::DateTime**)ptr2;
+			if (val1 == val2)
+			{
+				return true;
+			}
+			if (val1 == 0 || val2 == 0)
+			{
+				return false;
+			}
+			return val1->CompareTo(val2) == 0;
+		}
+	case ItemType::ByteArr:
+		{
+			Data::ReadonlyArray<UInt8> *val1 = *(Data::ReadonlyArray<UInt8>**)ptr1;
+			Data::ReadonlyArray<UInt8> *val2 = *(Data::ReadonlyArray<UInt8>**)ptr2;
+			if (val1 == val2)
+			{
+				return true;
+			}
+			if (val1 == 0 || val2 == 0)
+			{
+				return false;
+			}
+			return val1->Equals(val2);
+		}
+	case ItemType::Vector:
+		{
+			Math::Vector2D *val1 = *(Math::Vector2D**)ptr1;
+			Math::Vector2D *val2 = *(Math::Vector2D**)ptr2;
+			if (val1 == val2)
+			{
+				return true;
+			}
+			if (val1 == 0 || val2 == 0)
+			{
+				return false;
+			}
+			return val1->Equals(val2);
+		}
+	case ItemType::UUID:
+		{
+			Data::UUID *val1 = *(Data::UUID**)ptr1;
+			Data::UUID *val2 = *(Data::UUID**)ptr2;
+			if (val1 == val2)
+			{
+				return true;
+			}
+			if (val1 == 0 || val2 == 0)
+			{
+				return false;
+			}
+			return val1->Equals(val2);
+		}
+	case ItemType::Unknown:
+	default:
+		return *(void**)ptr1 == *(void**)ptr2;
 	}
 }
 

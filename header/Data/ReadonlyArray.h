@@ -1,5 +1,7 @@
 #ifndef _SM_DATA_READONLYARRAY
 #define _SM_DATA_READONLYARRAY
+#include "Data/DataComparer.h"
+
 namespace Data
 {
 	template <class T> class ReadonlyArray
@@ -17,6 +19,7 @@ namespace Data
 		T GetItem(UOSInt index);
 		T operator [](UOSInt index);
 		ReadonlyArray<T> *Clone();
+		Bool Equals(ReadonlyArray<T> *arr2);
 	};
 
 	template <class T> ReadonlyArray<T>::ReadonlyArray(const T *arr, UOSInt cnt)
@@ -58,6 +61,27 @@ namespace Data
 	template <class T> ReadonlyArray<T> *ReadonlyArray<T>::Clone()
 	{
 		return NEW_CLASS_D(ReadonlyArray<T>(this->arr, this->cnt));
+	}
+
+	template <class T> Bool ReadonlyArray<T>::Equals(ReadonlyArray<T> *arr2)
+	{
+		if (arr2 == 0)
+		{
+			return false;
+		}
+		if (this->cnt != arr2->cnt)
+		{
+			return false;
+		}
+		UOSInt i = this->cnt;
+		while (i-- > 0)
+		{
+			if (Data::DataComparer::Compare(this->arr[i], arr2->arr[i])	!= 0)
+			{
+				return false;
+			}
+		}
+		return true;
 	}
 }
 #endif

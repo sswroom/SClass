@@ -8,11 +8,13 @@ namespace Math
 	{
 	private:
 		const UTF8Char *lastError;
-		Int32 srid;
+		UInt32 srid;
+
+		static const UTF8Char *NextDouble(const UTF8Char *wkt, Double *val);
 
 		void SetLastError(const UTF8Char* lastError);
 	public:
-		WKTReader(Int32 srid);
+		WKTReader(UInt32 srid);
 		~WKTReader();
 
 		Math::Vector2D *ParseWKT(const UTF8Char *wkt);

@@ -331,6 +331,49 @@ void Math::Polyline::ConvCSys(Math::CoordinateSystem *srcCSys, Math::CoordinateS
 	}
 }
 
+Bool Math::Polyline::Equals(Math::Vector2D *vec)
+{
+	if (vec == 0)
+		return false;
+	if (vec->GetSRID() != this->srid)
+	{
+		return false;
+	}
+	if (vec->GetVectorType() == VectorType::Polyline && !vec->Support3D())
+	{
+		Math::Polyline *pl = (Math::Polyline*)vec;
+		UOSInt nPtOfst;
+		UOSInt nPoint;
+		UInt32 *ptOfst = pl->GetPtOfstList(&nPtOfst);
+		Double *ptList = pl->GetPointList(&nPoint);
+		if (nPtOfst != this->nPtOfst || nPoint != this->nPoint)
+		{
+			return false;
+		}
+		UOSInt i = nPtOfst;
+		while (i-- > 0)
+		{
+			if (ptOfst[i] != this->ptOfstArr[i])
+			{
+				return false;
+			}
+		}
+		i = nPoint << 1;
+		while (i-- > 0)
+		{
+			if (ptList[i] != this->pointArr[i])
+			{
+				return false;
+			}
+		}
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
 Math::Polyline *Math::Polyline::SplitByPoint(Double x, Double y)
 {
 	UOSInt k;

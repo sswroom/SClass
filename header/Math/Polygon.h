@@ -24,6 +24,7 @@ namespace Math
 		virtual Double CalSqrDistance(Double x, Double y, Double *nearPtX, Double *nearPtY);
 		virtual Bool JoinVector(Math::Vector2D *vec);
 		virtual void ConvCSys(Math::CoordinateSystem *srcCSys, Math::CoordinateSystem *destCSys);
+		virtual Bool Equals(Vector2D *vec);
 		Bool InsideVector(Double x, Double y);
 		Bool HasJunction();
 		void SplitByJunction(Data::ArrayList<Math::Polygon*> *results);

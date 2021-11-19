@@ -158,6 +158,24 @@ Bool Data::Class::SetField(void *obj, UOSInt index, Data::VariItem *item)
 	return true;
 }
 
+Bool Data::Class::Equals(void *obj1, void *obj2)
+{
+	Data::ArrayList<FieldInfo*> *fieldList = this->fields->GetValues();
+	UOSInt i = fieldList->GetCount();
+	FieldInfo *field;
+	while (i-- > 0)
+	{
+		field = fieldList->GetItem(i);
+		void *valPtr1 = (void*)(field->ofst + (OSInt)obj1);
+		void *valPtr2 = (void*)(field->ofst + (OSInt)obj2);
+		if (!Data::VariItem::PtrEquals(valPtr1, valPtr2, field->itemType))
+		{
+			return false;
+		}
+	}
+	return true;
+}
+
 void Data::Class::ToCppClassHeader(const UTF8Char *clsName, UOSInt tabLev, Text::StringBuilderUTF *sb)
 {
 	sb->AppendChar('\t', tabLev);

@@ -28,6 +28,7 @@ namespace Math
 		virtual Double CalSqrDistance(Double x, Double y, Double *nearPtX, Double *nearPtY);
 		virtual Bool JoinVector(Math::Vector2D *vec);
 		virtual void ConvCSys(Math::CoordinateSystem *srcCSys, Math::CoordinateSystem *destCSys);
+		virtual Bool Equals(Vector2D *vec);
 
 		virtual Math::Polyline *SplitByPoint(Double x, Double y);
 		virtual void OptimizePolyline();

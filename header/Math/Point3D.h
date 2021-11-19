@@ -16,6 +16,7 @@ namespace Math
 		virtual void GetCenter3D(Double *x, Double *y, Double *z);
 		virtual Bool Support3D();
 		virtual void ConvCSys(Math::CoordinateSystem *srcCSys, Math::CoordinateSystem *destCSys);
+		virtual Bool Equals(Math::Vector2D *vec);
 	};
 }
 #endif

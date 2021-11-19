@@ -128,11 +128,18 @@ template <class T> Bool DB::DBUtil::SaveCSV(IO::Stream *stm, Data::ArrayList<T*>
 				sb.AppendChar(',', 1);
 			}
 			Data::VariItem *itm = cls->GetNewValue(i, o);
-			sb2.ClearStr();
-			itm->GetAsString(&sb2);
-			csptr = Text::StrToNewCSVRec(sb2.ToString());
-			sb.Append(csptr);
-			Text::StrDelNew(csptr);
+			if (itm->GetItemType() == Data::VariItem::ItemType::Null)
+			{
+				sb.Append((const UTF8Char*)"\"\"");
+			}
+			else
+			{
+				sb2.ClearStr();
+				itm->GetAsString(&sb2);
+				csptr = Text::StrToNewCSVRec(sb2.ToString());
+				sb.Append(csptr);
+				Text::StrDelNew(csptr);
+			}
 			DEL_CLASS(itm);
 			i++;
 		}

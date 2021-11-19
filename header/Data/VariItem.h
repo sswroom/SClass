@@ -74,10 +74,10 @@ namespace Data
 		UInt64 GetAsU64();
 		Bool GetAsBool();
 		void GetAsString(Text::StringBuilderUTF *sb);
-		Data::DateTime *GetAsDate();
-		Data::ReadonlyArray<UInt8> *GetAsByteArr();
-		Math::Vector2D *GetAsVector();
-		Data::UUID *GetAsUUID();
+		Data::DateTime *GetAsNewDate();
+		Data::ReadonlyArray<UInt8> *GetAsNewByteArr();
+		Math::Vector2D *GetAsNewVector();
+		Data::UUID *GetAsNewUUID();
 		void *GetAsUnk();
 
 		VariItem *Clone();
@@ -102,7 +102,9 @@ namespace Data
 		static VariItem *NewVector(Math::Vector2D *vec);
 		static VariItem *NewUUID(Data::UUID *uuid);
 		static VariItem *NewFromPtr(void *ptr, ItemType itemType);
+		
 		static void SetPtr(void *ptr, ItemType itemType, VariItem *item);
+		static Bool PtrEquals(void *ptr1, void *ptr2, ItemType itemType);
 
 		static UOSInt GetItemSize(ItemType itemType);
 	};

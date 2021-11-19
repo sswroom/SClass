@@ -114,3 +114,18 @@ Data::UUID *Data::UUID::Clone()
 {
 	return NEW_CLASS_D(Data::UUID(this->data));	
 }
+
+Bool Data::UUID::Equals(UUID *uuid)
+{
+	if (uuid == 0)
+		return false;
+	UOSInt i = 16;
+	while (i-- > 0)
+	{
+		if (uuid->data[i] != this->data[i])
+		{
+			return false;
+		}
+	}
+	return true;
+}

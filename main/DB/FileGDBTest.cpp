@@ -2,6 +2,7 @@
 #include "MyMemory.h"
 #include "Core/Core.h"
 #include "Data/NamedClass.h"
+#include "DB/CSVFile.h"
 #include "IO/ConsoleWriter.h"
 #include "IO/DirectoryPackage.h"
 #include "IO/FileStream.h"
@@ -937,11 +938,15 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 
 		Data::NamedClass<Lamppost> *cls = Lamppost().CreateClass();
 		Lamppost *lamppost;
+		Lamppost *lamppost2;
+		UOSInt i;
+		UOSInt j;
 
-		r = fileGDB->GetTableData((const UTF8Char*)"LAMPPOST", 0, 0, 0, 0, 0);
+		r = fileGDB->GetTableData((const UTF8Char*)"LAMPPOST", 0, 0, 10, 0, 0);
 		if (r)
 		{
 			Data::ArrayList<Lamppost*> lamppostList;
+			Data::ArrayList<Lamppost*> lamppostListCSV;
 			r->ReadAll(&lamppostList, cls);
 			fileGDB->CloseReader(r);
 
@@ -951,14 +956,60 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			DB::DBUtil::SaveCSV(fs, &lamppostList, cls);
 			DEL_CLASS(fs);
 			
+
+			DB::CSVFile *csv;
+			NEW_CLASS(csv, DB::CSVFile(sbuff, 65001));
+			r = csv->GetTableData((const UTF8Char*)"Lamppost", 0, 0, 0, 0, 0);
+			r->ReadAll(&lamppostListCSV, cls);
+			csv->CloseReader(r);
+			DEL_CLASS(csv);
+			
+			sb.ClearStr();
+			sb.Append((const UTF8Char*)"FileGDB count = ");
+			sb.AppendUOSInt(lamppostList.GetCount());
+			sb.Append((const UTF8Char*)", CSV count = ");
+			sb.AppendUOSInt(lamppostListCSV.GetCount());
+			console.WriteLine(sb.ToString());
+			
+			if (lamppostList.GetCount() == lamppostListCSV.GetCount())
+			{
+				i = 0;
+				j = lamppostList.GetCount();
+				while (i < j)
+				{
+					lamppost = lamppostList.GetItem(i);
+					lamppost2 = lamppostListCSV.GetItem(i);
+					if (!cls->Equals(lamppost, lamppost2))
+					{
+						console.WriteLine((const UTF8Char*)"Not equals:");
+						console.WriteLine((const UTF8Char*)"FileGDB:");
+						sb.ClearStr();
+						Text::StringTool::BuildString(&sb, lamppost, cls);
+						console.WriteLine(sb.ToString());
+						console.WriteLine((const UTF8Char*)"CSV:");
+						sb.ClearStr();
+						Text::StringTool::BuildString(&sb, lamppost2, cls);
+						console.WriteLine(sb.ToString());
+						break;
+					}
+					i++;
+				}
+			}
 /*			sb.ClearStr();
 			Text::StringTool::BuildString(&sb, &lamppostList, cls, (const UTF8Char*)"Lamppost");
 			console.WriteLine(sb.ToString());*/
 
-			UOSInt i = lamppostList.GetCount();
+			i = lamppostList.GetCount();
 			while (i-- > 0)
 			{
 				lamppost = lamppostList.GetItem(i);
+				DEL_CLASS(lamppost);
+			}
+
+			i = lamppostListCSV.GetCount();
+			while (i-- > 0)
+			{
+				lamppost = lamppostListCSV.GetItem(i);
 				DEL_CLASS(lamppost);
 			}
 		}

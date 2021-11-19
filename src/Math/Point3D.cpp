@@ -35,3 +35,22 @@ void Math::Point3D::ConvCSys(Math::CoordinateSystem *srcCSys, Math::CoordinateSy
 {
 	Math::CoordinateSystem::ConvertXYZ(srcCSys, destCSys, this->x, this->y, this->z, &this->x, &this->y, &this->z);
 }
+
+Bool Math::Point3D::Equals(Math::Vector2D *vec)
+{
+	if (vec == 0)
+		return false;
+	if (vec->GetSRID() != this->srid)
+	{
+		return false;
+	}
+	if (vec->GetVectorType() == VectorType::Point && vec->Support3D())
+	{
+		Math::Point3D *pt = (Math::Point3D*)vec;
+		return this->x == pt->x && this->y == pt->y && this->z == pt->z;
+	}
+	else
+	{
+		return false;
+	}
+}

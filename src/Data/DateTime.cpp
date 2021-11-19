@@ -1130,7 +1130,21 @@ void Data::DateTime::SetTicks(Int64 ticks)
 {
 	ticks = ticks + this->tzQhr * 900000;
 	Int32 totalDays = (Int32)(ticks / 86400000LL);
-	UInt32 minutes = (UInt32)(ticks % 86400000LL);
+	UInt32 minutes;
+	if (ticks < 0)
+	{
+		ticks -= totalDays * 86400000LL;
+		while (ticks < 0)
+		{
+			totalDays -= 1;
+			ticks += 86400000LL;
+		}
+		minutes = (UInt32)(ticks % 86400000LL);
+	}
+	else
+	{
+		minutes = (UInt32)(ticks % 86400000LL);
+	}
 
 	this->ms = (UInt16)(minutes % 1000);
 	minutes = minutes / 1000;

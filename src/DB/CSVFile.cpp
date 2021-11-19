@@ -504,7 +504,6 @@ const UTF8Char *DB::CSVReader::GetNewStr(UOSInt colIndex)
 		}
 
 		*buff = 0;
-		Text::StrDelNew(csptr);
 		return newStr;
 	}
 	else
@@ -528,7 +527,6 @@ const UTF8Char *DB::CSVReader::GetNewStr(UOSInt colIndex)
 		}
 
 		*buff = 0;
-		Text::StrDelNew(csptr);
 		return newStr;
 	}
 }

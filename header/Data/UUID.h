@@ -21,6 +21,7 @@ namespace Data
 		void ToString(Text::StringBuilderUTF *sb);
 		UTF8Char *ToString(UTF8Char *sbuff);
 		UUID *Clone();
+		Bool Equals(UUID *uuid);
 	};
 }
 #endif

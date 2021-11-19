@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Data/DataComparer.h"
 #include "Math/CoordinateSystem.h"
 #include "Math/Point.h"
 
@@ -59,4 +60,23 @@ Bool Math::Point::JoinVector(Math::Vector2D *vec)
 void Math::Point::ConvCSys(Math::CoordinateSystem *srcCSys, Math::CoordinateSystem *destCSys)
 {
 	Math::CoordinateSystem::ConvertXYZ(srcCSys, destCSys, this->x, this->y, 0, &this->x, &this->y, 0);
+}
+
+Bool Math::Point::Equals(Math::Vector2D *vec)
+{
+	if (vec == 0)
+		return false;
+	if (vec->GetSRID() != this->srid)
+	{
+		return false;
+	}
+	if (vec->GetVectorType() == VectorType::Point && !vec->Support3D())
+	{
+		Math::Point *pt = (Math::Point*)vec;
+		return Data::DataComparer::NearlyEquals(this->x, pt->x) && Data::DataComparer::NearlyEquals(this->y, pt->y);
+	}
+	else
+	{
+		return false;
+	}
 }

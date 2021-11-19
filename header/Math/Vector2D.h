@@ -34,6 +34,7 @@ namespace Math
 		virtual Bool JoinVector(Math::Vector2D *vec) = 0;
 		virtual Bool Support3D() { return false; };
 		virtual void ConvCSys(Math::CoordinateSystem *srcCSys, Math::CoordinateSystem *destCSys) = 0;
+		virtual Bool Equals(Vector2D *vec) = 0;
 
 		UInt32 GetSRID();
 		void SetSRID(UInt32 srid);

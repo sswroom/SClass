@@ -176,3 +176,13 @@ OSInt Data::DataComparer::Compare(Data::UUID *val1, Data::UUID *val2)
 {
 	return val1->CompareTo(val2);
 }
+
+Bool Data::DataComparer::NearlyEquals(Double val1, Double val2)
+{
+	val1 = val1 - val2;
+	if (val1 < -0.000000001 || val1 > 0.000000001)
+	{
+		return false;
+	}
+	return true;
+}

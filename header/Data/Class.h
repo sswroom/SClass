@@ -46,6 +46,7 @@ namespace Data
 		const UTF8Char *GetFieldName(UOSInt index);
 		Data::VariItem *GetNewValue(UOSInt index, void *obj);
 		Bool SetField(void *obj, UOSInt index, Data::VariItem *item);
+		Bool Equals(void *obj1, void *obj2);
 
 		void ToCppClassHeader(const UTF8Char *clsName, UOSInt tabLev, Text::StringBuilderUTF *sb);
 		void ToCppClassSource(const UTF8Char *clsPrefix, const UTF8Char *clsName, UOSInt tabLev, Text::StringBuilderUTF *sb);

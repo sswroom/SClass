@@ -251,6 +251,49 @@ void Math::Polygon::ConvCSys(Math::CoordinateSystem *srcCSys, Math::CoordinateSy
 	}
 }
 
+Bool Math::Polygon::Equals(Math::Vector2D *vec)
+{
+	if (vec == 0)
+		return false;
+	if (vec->GetSRID() != this->srid)
+	{
+		return false;
+	}
+	if (vec->GetVectorType() == VectorType::Polygon && !vec->Support3D())
+	{
+		Math::Polygon *pg = (Math::Polygon*)vec;
+		UOSInt nPtOfst;
+		UOSInt nPoint;
+		UInt32 *ptOfst = pg->GetPtOfstList(&nPtOfst);
+		Double *ptList = pg->GetPointList(&nPoint);
+		if (nPtOfst != this->nPtOfst || nPoint != this->nPoint)
+		{
+			return false;
+		}
+		UOSInt i = nPtOfst;
+		while (i-- > 0)
+		{
+			if (ptOfst[i] != this->ptOfstArr[i])
+			{
+				return false;
+			}
+		}
+		i = nPoint << 1;
+		while (i-- > 0)
+		{
+			if (ptList[i] != this->pointArr[i])
+			{
+				return false;
+			}
+		}
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
 Bool Math::Polygon::InsideVector(Double x, Double y)
 {
 	Double thisX;

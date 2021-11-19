@@ -16,6 +16,7 @@ namespace Math
 		virtual Bool Support3D();
 		virtual Bool JoinVector(Math::Vector2D *vec);
 		virtual void ConvCSys(Math::CoordinateSystem *srcCSys, Math::CoordinateSystem *destCSys);
+		virtual Bool Equals(Vector2D *vec);
 
 		virtual Math::Polyline *SplitByPoint(Double x, Double y);
 		Double *GetAltitudeList(UOSInt *nPoint);
