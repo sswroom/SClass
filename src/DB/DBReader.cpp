@@ -33,9 +33,7 @@ Data::VariObject *DB::DBReader::CreateVariObject()
 	DB::DBUtil::ColType ctype;
 	Data::VariObject *obj;
 	Data::DateTime dt;
-	const UTF8Char *csptr;
 	UInt8 *binBuff;
-	Math::Vector2D *vec;
 	NEW_CLASS(obj, Data::VariObject(Data::VariObject::NameType::Database));
 	i = 0;
 	j = this->ColCount();
@@ -55,9 +53,7 @@ Data::VariObject *DB::DBReader::CreateVariObject()
 			case DB::DBUtil::CT_Char:
 			case DB::DBUtil::CT_NVarChar:
 			case DB::DBUtil::CT_NChar:
-				csptr = this->GetNewStr(i);
-				obj->SetItemStr(sbuff, csptr);
-				this->DelNewStr(csptr);
+				obj->SetItemStrDirect(sbuff, this->GetNewStr(i));
 				break;
 			case DB::DBUtil::CT_DateTime:
 			case DB::DBUtil::CT_DateTime2:
@@ -102,9 +98,7 @@ Data::VariObject *DB::DBReader::CreateVariObject()
 				MemFree(binBuff);
 				break;
 			case DB::DBUtil::CT_Vector:
-				vec = this->GetVector(i);
-				obj->SetItemVector(sbuff, vec);
-				DEL_CLASS(vec);
+				obj->SetItemVectorDirect(sbuff, this->GetVector(i));
 				break;
 			case DB::DBUtil::CT_UUID:
 				{

@@ -1,8 +1,7 @@
 #ifndef _SM_DATA_BTREEUTF8MAP
 #define _SM_DATA_BTREEUTF8MAP
 #include "MyMemory.h"
-#include "Crypto/Hash/CRC32.h"
-#include "Crypto/Hash/CRC32R.h"
+#include "Crypto/Hash/CRC32RC.h"
 #include "Data/ByteTool.h"
 #include "Data/IMap.h"
 #include "Text/MyString.h"
@@ -24,7 +23,7 @@ namespace Data
 	template <class T> class BTreeUTF8Map : public IMap<const UTF8Char*, T>
 	{
 	protected:
-		Crypto::Hash::CRC32R *crc;
+		Crypto::Hash::CRC32RC *crc;
 		BTreeUTF8Node<T> *rootNode;
 
 	protected:
@@ -34,6 +33,7 @@ namespace Data
 		virtual T PutNode(BTreeUTF8Node<T> *node, const UTF8Char *key, UInt32 hash, T val);
 		BTreeUTF8Node<T> *RemoveNode(BTreeUTF8Node<T> *node);
 		void FillArr(T **arr, BTreeUTF8Node<T> *node);
+		void FillNameArr(const UTF8Char ***arr, BTreeUTF8Node<T> *node);
 		virtual UInt32 CalHash(const UTF8Char *key);
 	public:
 		BTreeUTF8Map();
@@ -44,6 +44,7 @@ namespace Data
 		virtual T Remove(const UTF8Char *key);
 		virtual Bool IsEmpty();
 		virtual T *ToArray(UOSInt *objCnt);
+		virtual const UTF8Char **ToNameArray(UOSInt *objCnt);
 		virtual void Clear();
 	};
 
@@ -361,10 +362,20 @@ namespace Data
 		FillArr(arr, node->rightNode);
 	}
 
+	template <class T> void BTreeUTF8Map<T>::FillNameArr(const UTF8Char ***arr, BTreeUTF8Node<T> *node)
+	{
+		if (node == 0)
+			return;
+		FillNameArr(arr, node->leftNode);
+		**arr = node->nodeStr;
+		++*arr;
+		FillNameArr(arr, node->rightNode);
+	}
+
 	template <class T> BTreeUTF8Map<T>::BTreeUTF8Map() : IMap<const UTF8Char*, T>()
 	{
 		rootNode = 0;
-		NEW_CLASS(crc, Crypto::Hash::CRC32R(Crypto::Hash::CRC32::GetPolynormialIEEE()));
+		NEW_CLASS(crc, Crypto::Hash::CRC32RC());
 	}
 
 	template <class T> BTreeUTF8Map<T>::~BTreeUTF8Map()
@@ -501,6 +512,20 @@ namespace Data
 		T *outArr = MemAlloc(T, cnt);
 		T *tmpArr = outArr;
 		FillArr(&tmpArr, this->rootNode);
+		*objCnt = cnt;
+		return outArr;
+	}
+
+	template <class T> const UTF8Char **BTreeUTF8Map<T>::ToNameArray(UOSInt *objCnt)
+	{
+		UOSInt cnt = 0;
+		if (this->rootNode)
+		{
+			cnt = this->rootNode->nodeCnt + 1;
+		}
+		const UTF8Char **outArr = MemAlloc(const UTF8Char*, cnt);
+		const UTF8Char **tmpArr = outArr;
+		FillNameArr(&tmpArr, this->rootNode);
 		*objCnt = cnt;
 		return outArr;
 	}

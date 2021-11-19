@@ -94,6 +94,13 @@ template <class T> Bool DB::DBReader::ReadAll(Data::ArrayList<T*> *outList, Data
 		return false;
 	}
 
+	const UTF8Char **colNames = MemAlloc(const UTF8Char*, j);
+	i = 0;
+	while (i < j)
+	{
+		colNames[i] = colMap.Get(cls->GetFieldName(i));
+		i++;
+	}
 	while (this->ReadNext())
 	{
 		T *listObj = cls->CreateObject();
@@ -103,13 +110,14 @@ template <class T> Bool DB::DBReader::ReadAll(Data::ArrayList<T*> *outList, Data
 		j = cls->GetFieldCount();
 		while (i < j)
 		{
-			item = obj->GetItem(colMap.Get(cls->GetFieldName(i)));
+			item = obj->GetItem(colNames[i]);
 			cls->SetField(listObj, i, item);
 			i++;
 		}
 		outList->Add(listObj);
 		DEL_CLASS(obj);
 	}
+	MemFree(colNames);
 	Data::ArrayList<const UTF8Char*> *colList = colMap.GetValues();
 	LIST_FREE_FUNC(colList, Text::StrDelNew);
 	return true;

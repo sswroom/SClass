@@ -1,5 +1,6 @@
 #ifndef _SM_DATA_VARIOBJECT
 #define _SM_DATA_VARIOBJECT
+//#include "Data/BTreeUTF8Map.h"
 #include "Data/Class.h"
 #include "Data/StringUTF8Map.h"
 #include "Data/VariItem.h"
@@ -43,6 +44,10 @@ namespace Data
 		void SetItemByteArray(const UTF8Char *name, const UInt8 *arr, UOSInt cnt);
 		void SetItemVector(const UTF8Char *name, Math::Vector2D *vec);
 		void SetItemUUID(const UTF8Char *name, Data::UUID *uuid);
+		void SetItemStrDirect(const UTF8Char *name, const UTF8Char *str);
+		void SetItemDateDirect(const UTF8Char *name, Data::DateTime *dt);
+		void SetItemVectorDirect(const UTF8Char *name, Math::Vector2D *vec);
+		void SetItemUUIDDirect(const UTF8Char *name, Data::UUID *uuid);
 
 		void ToString(Text::StringBuilderUTF *sb);
 		Class *CreateClass();

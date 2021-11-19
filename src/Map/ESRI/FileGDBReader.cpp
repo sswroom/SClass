@@ -382,10 +382,78 @@ Bool Map::ESRI::FileGDBReader::GetStr(UOSInt colIndex, Text::StringBuilderUTF *s
 
 const UTF8Char *Map::ESRI::FileGDBReader::GetNewStr(UOSInt colIndex)
 {
-	Text::StringBuilderUTF8 sb;
-	if (this->GetStr(colIndex, &sb))
+	UTF8Char sbuff[64];
+	UOSInt fieldIndex = this->GetFieldIndex(colIndex);
+	if (this->rowData == 0)
 	{
-		return Text::StrCopyNew(sb.ToString());
+		return 0;
+	}
+	Map::ESRI::FileGDBFieldInfo *field = this->tableInfo->fields->GetItem(fieldIndex);
+	if (field == 0 || this->fieldNull[fieldIndex])
+	{
+		return 0;
+	}
+	UInt64 v;
+	UOSInt ofst;
+	switch (field->fieldType)
+	{
+	case 0:
+		Text::StrInt16(sbuff, ReadInt16(&this->rowData[this->fieldOfst[fieldIndex]]));
+		return Text::StrCopyNew(sbuff);
+	case 1:
+		Text::StrInt32(sbuff, ReadInt32(&this->rowData[this->fieldOfst[fieldIndex]]));
+		return Text::StrCopyNew(sbuff);
+	case 2:
+		Text::StrDouble(sbuff, ReadFloat(&this->rowData[this->fieldOfst[fieldIndex]]));
+		return Text::StrCopyNew(sbuff);
+	case 3:
+		Text::StrDouble(sbuff, ReadDouble(&this->rowData[this->fieldOfst[fieldIndex]]));
+		return Text::StrCopyNew(sbuff);
+	case 12:
+	case 4:
+		ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, this->fieldOfst[fieldIndex], &v);
+		return Text::StrCopyNewC(&this->rowData[ofst], (UOSInt)v);
+	case 5:
+		{
+			Data::DateTime dt;
+			Map::ESRI::FileGDBUtil::ToDateTime(&dt, ReadDouble(&this->rowData[this->fieldOfst[fieldIndex]]));
+			dt.ToString(sbuff);
+			return Text::StrCopyNew(sbuff);
+		}
+	case 6:
+		Text::StrInt32(sbuff, this->objectId);
+		return Text::StrCopyNew(sbuff);
+	case 7:
+		{
+			Math::Vector2D *vec = this->GetVector(colIndex);
+			if (vec)
+			{
+				Text::StringBuilderUTF8 sb;
+				Math::WKTWriter writer;
+				writer.GenerateWKT(&sb, vec);
+				DEL_CLASS(vec);
+				return Text::StrCopyNew(sb.ToString());
+			}
+		}
+		return 0;
+	case 8:
+		{
+			Text::StringBuilderUTF8 sb;
+			UOSInt size = this->GetBinarySize(colIndex);
+			UInt8 *binBuff = MemAlloc(UInt8, size);
+			this->GetBinary(colIndex, binBuff);
+			sb.AppendHexBuff(binBuff, size, 0, Text::LineBreakType::None);
+			MemFree(binBuff);
+			return Text::StrCopyNew(sb.ToString());
+		}
+	case 10:
+	case 11:
+		{
+			Text::StringBuilderUTF8 sb;
+			Data::UUID uuid(&this->rowData[this->fieldOfst[fieldIndex]]);
+			uuid.ToString(&sb);
+			return Text::StrCopyNew(sb.ToString());
+		}
 	}
 	return 0;
 }

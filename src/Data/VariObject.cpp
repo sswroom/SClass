@@ -23,6 +23,13 @@ Data::VariObject::~VariObject()
 		VariItem *item = itemList->GetItem(i);
 		DEL_CLASS(item);
 	}
+/*	UOSInt i;
+	Data::VariItem **itemArr = this->items->ToArray(&i);
+	while (i-- > 0)
+	{
+		DEL_CLASS(itemArr[i]);
+	}
+	MemFree(itemArr);*/
 	DEL_CLASS(this->items);
 }
 
@@ -126,6 +133,26 @@ void Data::VariObject::SetItemUUID(const UTF8Char *name, Data::UUID *uuid)
 	this->SetItem(name, Data::VariItem::NewUUID(uuid));
 }
 
+void Data::VariObject::SetItemStrDirect(const UTF8Char *name, const UTF8Char *str)
+{
+	this->SetItem(name, Data::VariItem::NewStrDirect(str));
+}
+
+void Data::VariObject::SetItemDateDirect(const UTF8Char *name, Data::DateTime *dt)
+{
+	this->SetItem(name, Data::VariItem::NewDateDirect(dt));
+}
+
+void Data::VariObject::SetItemVectorDirect(const UTF8Char *name, Math::Vector2D *vec)
+{
+	this->SetItem(name, Data::VariItem::NewVectorDirect(vec));
+}
+
+void Data::VariObject::SetItemUUIDDirect(const UTF8Char *name, Data::UUID *uuid)
+{
+	this->SetItem(name, Data::VariItem::NewUUIDDirect(uuid));
+}
+
 void Data::VariObject::ToString(Text::StringBuilderUTF *sb)
 {
 	UTF8Char sbuff[512];
@@ -146,6 +173,24 @@ void Data::VariObject::ToString(Text::StringBuilderUTF *sb)
 		values->GetItem(i)->ToString(sb);
 		i++;
 	}
+/*	UOSInt i = 0;
+	UOSInt j;
+	const UTF8Char **keys = this->items->ToNameArray(&j);
+	VariItem **values = this->items->ToArray(&j);
+	while (i < j)
+	{
+		if (i > 0)
+		{
+			sb->AppendChar(',', 1);
+		}
+		Text::JSText::ToJSTextDQuote(sbuff, keys[i]);
+		sb->Append(sbuff);
+		sb->AppendChar(':', 1);
+		values[i]->ToString(sb);
+		i++;
+	}
+	MemFree(keys);
+	MemFree(values);*/
 	sb->AppendChar('}', 1);
 }
 
@@ -163,5 +208,16 @@ Data::Class *Data::VariObject::CreateClass()
 		currPos += (OSInt)cls->AddField(keys->GetItem(i), currPos, values->GetItem(i)->GetItemType());
 		i++;
 	}
+/*	UOSInt i = 0;
+	UOSInt j;
+	const UTF8Char **keys = this->items->ToNameArray(&j);
+	VariItem **values = this->items->ToArray(&j);
+	while (i < j)
+	{
+		currPos += (OSInt)cls->AddField(keys[i], currPos, values[i]->GetItemType());
+		i++;
+	}
+	MemFree(keys);
+	MemFree(values);*/
 	return cls;
 }

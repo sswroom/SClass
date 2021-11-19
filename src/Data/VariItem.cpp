@@ -880,6 +880,46 @@ Data::VariItem *Data::VariItem::NewUUID(Data::UUID *uuid)
 	return item;
 }
 
+Data::VariItem *Data::VariItem::NewStrDirect(const UTF8Char *str)
+{
+	if (str == 0) return NewNull();
+	ItemValue ival;
+	ival.str = str;
+	Data::VariItem *item;
+	NEW_CLASS(item, Data::VariItem(ItemType::Str, ival));
+	return item;
+}
+
+Data::VariItem *Data::VariItem::NewDateDirect(Data::DateTime *dt)
+{
+	if (dt == 0) return NewNull();
+	ItemValue ival;
+	ival.date = dt;
+	Data::VariItem *item;
+	NEW_CLASS(item, Data::VariItem(ItemType::Date, ival));
+	return item;
+}
+
+Data::VariItem *Data::VariItem::NewVectorDirect(Math::Vector2D *vec)
+{
+	if (vec == 0) return NewNull();
+	ItemValue ival;
+	ival.vector = vec;
+	Data::VariItem *item;
+	NEW_CLASS(item, Data::VariItem(ItemType::Vector, ival));
+	return item;
+}
+
+Data::VariItem *Data::VariItem::NewUUIDDirect(Data::UUID *uuid)
+{
+	if (uuid == 0) return NewNull();
+	ItemValue ival;
+	ival.uuid = uuid;
+	Data::VariItem *item;
+	NEW_CLASS(item, Data::VariItem(ItemType::UUID, ival));
+	return item;
+}
+
 Data::VariItem *Data::VariItem::NewFromPtr(void *ptr, ItemType itemType)
 {
 	switch (itemType)

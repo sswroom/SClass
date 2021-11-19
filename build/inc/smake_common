@@ -1001,6 +1001,12 @@ Crypto/Hash/CRC32.h: ../../src/Crypto/Hash/CRC32.cpp
 Crypto/Hash/CRC32R.h: ../../src/Crypto/Hash/CRC32R.cpp
 @CRC32R.o
 @CRC32R_CPP.o
+Crypto/Hash/CRC32RC.h: ../../src/Crypto/Hash/CRC32RC.cpp
+@CRC32RC.o
+@CRC32R_CPP.o
+Crypto/Hash/CRC32RIEEE.h: ../../src/Crypto/Hash/CRC32RIEEE.cpp
+@CRC32RIEEE.o
+@CRC32R_CPP.o
 Crypto/Hash/DJB2.h: ../../src/Crypto/Hash/DJB2.cpp
 @DJB2.o
 @DJB2_CPP.o
@@ -3764,6 +3770,8 @@ CRC16.o: ../../src/Crypto/Hash/CRC16.cpp
 CRC16R.o: ../../src/Crypto/Hash/CRC16R.cpp
 CRC32.o: ../../src/Crypto/Hash/CRC32.cpp
 CRC32R.o: ../../src/Crypto/Hash/CRC32R.cpp
+CRC32RC.o: ../../src/Crypto/Hash/CRC32RC.cpp
+CRC32RIEEE.o: ../../src/Crypto/Hash/CRC32RIEEE.cpp
 DJB2.o: ../../src/Crypto/Hash/DJB2.cpp
 DJB2_CPP.o: ../../src/Crypto/Hash/DJB2_CPP.cpp
 DJB2a.o: ../../src/Crypto/Hash/DJB2a.cpp

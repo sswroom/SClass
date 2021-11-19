@@ -7,7 +7,9 @@
 #include "IO/DirectoryPackage.h"
 #include "IO/FileStream.h"
 #include "IO/Path.h"
+#include "Manage/HiResClock.h"
 #include "Map/ESRI/FileGDBDir.h"
+#include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
 #include "Text/StringTool.h"
 
@@ -909,6 +911,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 {
 	UTF8Char sbuff[512];
 	IO::ConsoleWriter console;
+	Manage::HiResClock clk;
 	IO::DirectoryPackage *dir;
 	NEW_CLASS(dir, IO::DirectoryPackage((const UTF8Char*)"~/Progs/Temp/E20210522_PLIS.gdb"));
 	Map::ESRI::FileGDBDir *fileGDB;
@@ -942,25 +945,35 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		UOSInt i;
 		UOSInt j;
 
-		r = fileGDB->GetTableData((const UTF8Char*)"LAMPPOST", 0, 0, 10, 0, 0);
+		r = fileGDB->GetTableData((const UTF8Char*)"LAMPPOST", 0, 0, 0, 0, 0);
 		if (r)
 		{
+			Double t1;
+			Double t2;
+			Double t3;
+			Double t4 = 0;
 			Data::ArrayList<Lamppost*> lamppostList;
 			Data::ArrayList<Lamppost*> lamppostListCSV;
+			clk.Start();
 			r->ReadAll(&lamppostList, cls);
+			t1 = clk.GetTimeDiff();
 			fileGDB->CloseReader(r);
 
 			IO::Path::GetRealPath(sbuff, (const UTF8Char*)"~/Progs/Temp/Lamppost.csv");
 			IO::FileStream *fs;
 			NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+			clk.Start();
 			DB::DBUtil::SaveCSV(fs, &lamppostList, cls);
+			t2 = clk.GetTimeDiff();
 			DEL_CLASS(fs);
 			
 
 			DB::CSVFile *csv;
 			NEW_CLASS(csv, DB::CSVFile(sbuff, 65001));
 			r = csv->GetTableData((const UTF8Char*)"Lamppost", 0, 0, 0, 0, 0);
+			clk.Start();
 			r->ReadAll(&lamppostListCSV, cls);
+			t3 = clk.GetTimeDiff();
 			csv->CloseReader(r);
 			DEL_CLASS(csv);
 			
@@ -973,6 +986,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			
 			if (lamppostList.GetCount() == lamppostListCSV.GetCount())
 			{
+				clk.Start();	
 				i = 0;
 				j = lamppostList.GetCount();
 				while (i < j)
@@ -994,6 +1008,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 					}
 					i++;
 				}
+				t4 = clk.GetTimeDiff();
 			}
 /*			sb.ClearStr();
 			Text::StringTool::BuildString(&sb, &lamppostList, cls, (const UTF8Char*)"Lamppost");
@@ -1012,6 +1027,17 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				lamppost = lamppostListCSV.GetItem(i);
 				DEL_CLASS(lamppost);
 			}
+
+			sb.ClearStr();
+			sb.Append((const UTF8Char*)"t1 = ");
+			Text::SBAppendF64(&sb, t1);
+			sb.Append((const UTF8Char*)", t2 = ");
+			Text::SBAppendF64(&sb, t2);
+			sb.Append((const UTF8Char*)", t3 = ");
+			Text::SBAppendF64(&sb, t3);
+			sb.Append((const UTF8Char*)", t4 = ");
+			Text::SBAppendF64(&sb, t4);
+			console.WriteLine(sb.ToString());
 		}
 		DEL_CLASS(cls);
 

@@ -101,6 +101,10 @@ namespace Data
 		static VariItem *NewByteArr(Data::ReadonlyArray<UInt8> *arr);
 		static VariItem *NewVector(Math::Vector2D *vec);
 		static VariItem *NewUUID(Data::UUID *uuid);
+		static VariItem *NewStrDirect(const UTF8Char *str);
+		static VariItem *NewDateDirect(Data::DateTime *dt);
+		static VariItem *NewVectorDirect(Math::Vector2D *vec);
+		static VariItem *NewUUIDDirect(Data::UUID *uuid);
 		static VariItem *NewFromPtr(void *ptr, ItemType itemType);
 		
 		static void SetPtr(void *ptr, ItemType itemType, VariItem *item);
