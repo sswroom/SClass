@@ -1961,3 +1961,37 @@ UTF8Char *DB::DBUtil::DB2FieldName(UTF8Char *fieldNameBuff, const UTF8Char *dbNa
 	*fieldNameBuff = 0;
 	return fieldNameBuff;
 }
+
+UTF8Char *DB::DBUtil::Field2DBName(UTF8Char *dbNameBuff, const UTF8Char *fieldName)
+{
+	Bool isFirst = true;
+	UTF8Char c;
+	while (true)
+	{
+		c = *fieldName++;
+		if (c == 0)
+		{
+			break;
+		}
+		else if (c >= 'A' && c <= 'Z')
+		{
+			if (isFirst)
+			{
+				*dbNameBuff++ = (UTF8Char)(c + 0x20);
+				isFirst = false;
+			}
+			else
+			{
+				*dbNameBuff++ = '_';
+				*dbNameBuff++ = (UTF8Char)(c + 0x20);
+			}
+		}
+		else
+		{
+			*dbNameBuff++ = c;
+			isFirst = false;
+		}
+	}
+	*dbNameBuff = 0;
+	return dbNameBuff;
+}

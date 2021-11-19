@@ -417,3 +417,8 @@ Bool IO::Path::IsSearchPattern(const UTF8Char *path)
 	}
 	return isSrch;
 }
+
+UTF8Char *IO::Path::GetRealPath(UTF8Char *sbuff, const UTF8Char *path)
+{
+	return Text::StrConcat(sbuff, path);
+}

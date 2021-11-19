@@ -4,6 +4,8 @@
 #include "Data/NamedClass.h"
 #include "IO/ConsoleWriter.h"
 #include "IO/DirectoryPackage.h"
+#include "IO/FileStream.h"
+#include "IO/Path.h"
 #include "Map/ESRI/FileGDBDir.h"
 #include "Text/StringBuilderUTF8.h"
 #include "Text/StringTool.h"
@@ -904,6 +906,7 @@ Data::NamedClass<Lamppost> *Lamppost::CreateClass()
 
 Int32 MyMain(Core::IProgControl *progCtrl)
 {
+	UTF8Char sbuff[512];
 	IO::ConsoleWriter console;
 	IO::DirectoryPackage *dir;
 	NEW_CLASS(dir, IO::DirectoryPackage((const UTF8Char*)"~/Progs/Temp/E20210522_PLIS.gdb"));
@@ -942,9 +945,15 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			r->ReadAll(&lamppostList, cls);
 			fileGDB->CloseReader(r);
 
-			sb.ClearStr();
+			IO::Path::GetRealPath(sbuff, (const UTF8Char*)"~/Progs/Temp/Lamppost.csv");
+			IO::FileStream *fs;
+			NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+			DB::DBUtil::SaveCSV(fs, &lamppostList, cls);
+			DEL_CLASS(fs);
+			
+/*			sb.ClearStr();
 			Text::StringTool::BuildString(&sb, &lamppostList, cls, (const UTF8Char*)"Lamppost");
-			console.WriteLine(sb.ToString());
+			console.WriteLine(sb.ToString());*/
 
 			UOSInt i = lamppostList.GetCount();
 			while (i-- > 0)

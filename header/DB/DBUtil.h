@@ -1,8 +1,11 @@
 #ifndef _SM_DB_DBUTIL
 #define _SM_DB_DBUTIL
+#include "Data/ArrayList.h"
+#include "Data/Class.h"
 #include "Data/DateTime.h"
+#include "IO/Stream.h"
 #include "Math/Vector2D.h"
-
+#include "Text/StringBuilderUTF8.h"
 namespace DB
 {
 	class DBUtil
@@ -79,6 +82,70 @@ namespace DB
 		static UTF8Char *ColTypeGetString(UTF8Char *sbuff, DB::DBUtil::ColType colType, UOSInt colSize);
 
 		static UTF8Char *DB2FieldName(UTF8Char *fieldNameBuff, const UTF8Char *dbName);
+		static UTF8Char *Field2DBName(UTF8Char *dbNameBuff, const UTF8Char *fieldName);
+		template <class T> static Bool SaveCSV(IO::Stream *stm, Data::ArrayList<T*> *list, Data::Class *cls);
 	};
 }
+
+template <class T> Bool DB::DBUtil::SaveCSV(IO::Stream *stm, Data::ArrayList<T*> *list, Data::Class *cls)
+{
+	UTF8Char sbuff[512];
+	const UTF8Char *csptr;
+	Text::StringBuilderUTF8 sb;
+	Text::StringBuilderUTF8 sb2;
+	Bool succ = true;
+	UOSInt i = 0;
+	UOSInt j = cls->GetFieldCount();
+	UOSInt k;
+	UOSInt l;
+	while (i < j)
+	{
+		if (i > 0)
+		{
+			sb.AppendChar(',', 1);
+		}
+		DB::DBUtil::Field2DBName(sbuff, cls->GetFieldName(i));
+		csptr = Text::StrToNewCSVRec(sbuff);
+		sb.Append(csptr);
+		Text::StrDelNew(csptr);
+		i++;
+	}
+	sb.Append((const UTF8Char*)"\r\n");
+	if (stm->Write(sb.ToString(), sb.GetCharCnt()) != sb.GetCharCnt()) succ = false;
+
+	k = 0;
+	l = list->GetCount();
+	while (k < l)
+	{
+		T *o = list->GetItem(k);
+		sb.ClearStr();
+		i = 0;
+		j = cls->GetFieldCount();
+		while (i < j)
+		{
+			if (i > 0)
+			{
+				sb.AppendChar(',', 1);
+			}
+			Data::VariItem *itm = cls->GetNewValue(i, o);
+			sb2.ClearStr();
+			itm->GetAsString(&sb2);
+			csptr = Text::StrToNewCSVRec(sb2.ToString());
+			sb.Append(csptr);
+			Text::StrDelNew(csptr);
+			DEL_CLASS(itm);
+			i++;
+		}
+		sb.Append((const UTF8Char*)"\r\n");
+		if (stm->Write(sb.ToString(), sb.GetCharCnt()) != sb.GetCharCnt())
+		{
+			succ = false;
+			break;
+		}
+
+		k++;
+	}
+	return succ;
+}
+
 #endif
