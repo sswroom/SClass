@@ -1,4 +1,5 @@
 #include "Stdafx.h"
+#include "Crypto/Hash/CRC32.h"
 #include "Crypto/Hash/CRC32R.h"
 #if defined(WIN32) || defined(_WIN64) || (defined(_MSC_VER) && defined(_WIN32))
 #include "DB/OLEDBConn.h"

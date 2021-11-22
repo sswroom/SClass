@@ -1,5 +1,6 @@
 #ifndef _SM_SSWR_DOWNLOADMONITOR_DOWNMONCORE
 #define _SM_SSWR_DOWNLOADMONITOR_DOWNMONCORE
+#include "Handles.h"
 #include "Data/Int32Map.h"
 #include "Data/StringUTF8Map.h"
 #include "Media/VideoChecker.h"
@@ -91,7 +92,7 @@ namespace SSWR
 			FileInfo *FileGet(Int32 id, Int32 webType, Sync::MutexUsage *mutUsage);
 			Int32 FileGetByName(const UTF8Char *fileName, Int32 *webType);
 			Bool FileEnd(Int32 id, Int32 webType);
-			Bool FileStart(Int32 id, Int32 webType, void *formHand);
+			Bool FileStart(Int32 id, Int32 webType, ControlHandle *formHand);
 			Int32 FileGetMaxId(Int32 webType);
 		};
 	}

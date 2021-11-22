@@ -218,6 +218,16 @@ void Math::VectorImage::ConvCSys(Math::CoordinateSystem *srcCSys, Math::Coordina
 	}
 }
 
+Bool Math::VectorImage::Equals(Vector2D *vec)
+{
+	if (vec == 0 || vec->GetVectorType() != VectorType::Image)
+	{
+		return false;
+	}
+	Math::VectorImage *img = (Math::VectorImage*)vec;
+	return false;
+}
+
 const UTF8Char *Math::VectorImage::GetSourceAddr()
 {
 	return this->srcAddr;

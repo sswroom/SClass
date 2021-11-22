@@ -69,3 +69,17 @@ void Math::Ellipse::ConvCSys(Math::CoordinateSystem *srcCSys, Math::CoordinateSy
 	this->w = x2 - this->tlx;
 	this->h = y2 - this->tly;
 }
+
+Bool Math::Ellipse::Equals(Math::Vector2D *vec)
+{
+	if (vec == 0 || vec->GetVectorType() != VectorType::Ellipse)
+	{
+		return false;
+	}
+	Math::Ellipse *ellipse = (Math::Ellipse*)vec;
+	return this->srid == ellipse->srid &&
+		this->w == ellipse->w &&
+		this->h == ellipse->h &&
+		this->tlx == ellipse->tlx &&
+		this->tly == ellipse->tly;
+}

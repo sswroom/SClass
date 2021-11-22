@@ -661,7 +661,7 @@ Bool SSWR::DownloadMonitor::DownMonCore::FileEnd(Int32 id, Int32 webType)
 	return ret;
 }
 
-Bool SSWR::DownloadMonitor::DownMonCore::FileStart(Int32 id, Int32 webType, void *formHand)
+Bool SSWR::DownloadMonitor::DownMonCore::FileStart(Int32 id, Int32 webType, ControlHandle *formHand)
 {
 	Bool ret = false;
 	SSWR::DownloadMonitor::DownMonCore::FileInfo *file;
