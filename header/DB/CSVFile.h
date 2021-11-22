@@ -15,6 +15,7 @@ namespace DB
 		IO::SeekableStream *stm;
 		UInt32 codePage;
 		Bool noHeader;
+		Bool nullIfEmpty;
 
 	public:
 		CSVFile(const UTF8Char *fileName, UInt32 codePage);
@@ -27,6 +28,7 @@ namespace DB
 		virtual void GetErrorMsg(Text::StringBuilderUTF *str);
 		virtual void Reconnect();
 		void SetNoHeader(Bool noHeader);
+		void SetNullIfEmpty(Bool nullIfEmpty);
 	};
 
 	class CSVReader : public DB::DBReader
@@ -38,12 +40,14 @@ namespace DB
 		UOSInt nHdr;
 		UTF8Char *row;
 		UTF8Char **cols;
+		UOSInt *colSize;
 		UTF8Char *hdr;
 		UTF8Char **hdrs;
 		Bool noHeader;
+		Bool nullIfEmpty;
 
 	public:
-		CSVReader(IO::Stream *stm, IO::StreamReader *rdr, Bool noHeader);
+		CSVReader(IO::Stream *stm, IO::StreamReader *rdr, Bool noHeader, Bool nullIfEmpty);
 		virtual ~CSVReader();
 
 		virtual Bool ReadNext();
@@ -62,6 +66,7 @@ namespace DB
 		virtual UOSInt GetBinary(UOSInt colIndex, UInt8 *buff);
 		virtual Math::Vector2D *GetVector(UOSInt colIndex);
 		virtual Bool GetUUID(UOSInt colIndex, Data::UUID *uuid);
+		virtual Bool GetVariItem(UOSInt colIndex, Data::VariItem *item);
 
 		virtual UTF8Char *GetName(UOSInt colIndex, UTF8Char *buff);
 		virtual Bool IsNull(UOSInt colIndex);

@@ -43,6 +43,7 @@ namespace DB
 		virtual UOSInt GetBinary(UOSInt colIndex, UInt8 *buff) = 0;
 		virtual Math::Vector2D *GetVector(UOSInt colIndex) = 0;
 		virtual Bool GetUUID(UOSInt colIndex, Data::UUID *uuid) = 0;
+		virtual Bool GetVariItem(UOSInt colIndex, Data::VariItem *item);
 
 		virtual Bool IsNull(UOSInt colIndex) = 0;
 		virtual UTF8Char *GetName(UOSInt colIndex, UTF8Char *buff) = 0;
@@ -62,6 +63,7 @@ template <class T> Bool DB::DBReader::ReadAll(Data::ArrayList<T*> *outList, Data
 	UTF8Char sbuff[256];
 	UTF8Char sbuff2[256];
 	Data::StringUTF8Map<const UTF8Char*> colMap;
+	Data::StringUTF8Map<UOSInt> colMap2;
 	const UTF8Char *csptr;
 	Bool clsValid = true;
 	UOSInt i = 0;
@@ -72,6 +74,7 @@ template <class T> Bool DB::DBReader::ReadAll(Data::ArrayList<T*> *outList, Data
 		DB::DBUtil::DB2FieldName(sbuff2, sbuff);
 		csptr = colMap.Put(sbuff2, Text::StrCopyNew(sbuff));
 		SDEL_TEXT(csptr);
+		colMap2.Put(sbuff2, i);
 
 		i++;
 	}
@@ -94,30 +97,28 @@ template <class T> Bool DB::DBReader::ReadAll(Data::ArrayList<T*> *outList, Data
 		return false;
 	}
 
-	const UTF8Char **colNames = MemAlloc(const UTF8Char*, j);
+	UOSInt *colIndex = MemAlloc(UOSInt, j);
 	i = 0;
 	while (i < j)
 	{
-		colNames[i] = colMap.Get(cls->GetFieldName(i));
+		colIndex[i] = colMap2.Get(cls->GetFieldName(i));
 		i++;
 	}
 	while (this->ReadNext())
 	{
 		T *listObj = cls->CreateObject();
-		Data::VariObject *obj = this->CreateVariObject();
-		Data::VariItem *item;
+		Data::VariItem item;
 		i = 0;
 		j = cls->GetFieldCount();
 		while (i < j)
 		{
-			item = obj->GetItem(colNames[i]);
-			cls->SetField(listObj, i, item);
+			this->GetVariItem(colIndex[i], &item);
+			cls->SetField(listObj, i, &item);
 			i++;
 		}
 		outList->Add(listObj);
-		DEL_CLASS(obj);
 	}
-	MemFree(colNames);
+	MemFree(colIndex);
 	Data::ArrayList<const UTF8Char*> *colList = colMap.GetValues();
 	LIST_FREE_FUNC(colList, Text::StrDelNew);
 	return true;

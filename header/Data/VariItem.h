@@ -57,7 +57,9 @@ namespace Data
 		ItemValue val;
 		
 		VariItem(ItemType itemType, ItemValue val);
+		void FreeItem();
 	public:
+		VariItem();
 		~VariItem();
 
 		ItemType GetItemType();
@@ -79,6 +81,30 @@ namespace Data
 		Math::Vector2D *GetAsNewVector();
 		Data::UUID *GetAsNewUUID();
 		void *GetAsUnk();
+
+		void SetNull();
+		void SetStr(const UTF8Char *str);
+		void SetDate(Data::DateTime *dt);
+		void SetF32(Single val);
+		void SetF64(Double val);
+		void SetI8(Int8 val);
+		void SetU8(UInt8 val);
+		void SetI16(Int16 val);
+		void SetU16(UInt16 val);
+		void SetI32(Int32 val);
+		void SetU32(UInt32 val);
+		void SetI64(Int64 val);
+		void SetU64(UInt64 val);
+		void SetBool(Bool val);
+		void SetByteArr(const UInt8 *arr, UOSInt cnt);
+		void SetByteArr(Data::ReadonlyArray<UInt8> *arr);
+		void SetVector(Math::Vector2D *vec);
+		void SetUUID(Data::UUID *uuid);
+		void SetStrDirect(const UTF8Char *str);
+		void SetDateDirect(Data::DateTime *dt);
+		void SetVectorDirect(Math::Vector2D *vec);
+		void SetUUIDDirect(Data::UUID *uuid);
+		void Set(VariItem *item);
 
 		VariItem *Clone();
 		void ToString(Text::StringBuilderUTF *sb);

@@ -5,6 +5,91 @@
 #include "DB/TableDef.h"
 #include "Text/MyString.h"
 
+Bool DB::DBReader::GetVariItem(UOSInt colIndex, Data::VariItem *item)
+{
+	if (colIndex >= this->ColCount())
+	{
+		return false;
+	}
+	if (this->IsNull(colIndex))
+	{
+		item->SetNull();
+	}
+	UOSInt size;
+	switch (this->GetColType(colIndex, &size))
+	{
+	case DB::DBUtil::CT_VarChar:
+	case DB::DBUtil::CT_Char:
+	case DB::DBUtil::CT_NVarChar:
+	case DB::DBUtil::CT_NChar:
+		item->SetStrDirect(this->GetNewStr(colIndex));
+		return true;
+	case DB::DBUtil::CT_DateTime:
+	case DB::DBUtil::CT_DateTime2:
+	{
+		Data::DateTime *dt;
+		NEW_CLASS(dt, Data::DateTime());
+		this->GetDate(colIndex, dt);
+		item->SetDateDirect(dt);
+		return true;
+	}
+	case DB::DBUtil::CT_Double:
+		item->SetF64(this->GetDbl(colIndex));
+		return true;
+	case DB::DBUtil::CT_Float:
+		item->SetF32((Single)this->GetDbl(colIndex));
+		return true;
+	case DB::DBUtil::CT_Bool:
+		item->SetBool(this->GetBool(colIndex));
+		return true;
+	case DB::DBUtil::CT_Byte:
+		item->SetU8((UInt8)this->GetInt32(colIndex));
+		return true;
+	case DB::DBUtil::CT_Int16:
+		item->SetI16((Int16)this->GetInt32(colIndex));
+		return true;
+	case DB::DBUtil::CT_UInt16:
+		item->SetU16((UInt16)this->GetInt32(colIndex));
+		return true;
+	case DB::DBUtil::CT_Int32:
+		item->SetI32(this->GetInt32(colIndex));
+		return true;
+	case DB::DBUtil::CT_UInt32:
+		item->SetU32((UInt32)this->GetInt32(colIndex));
+		return true;
+	case DB::DBUtil::CT_Int64:
+		item->SetI64(this->GetInt64(colIndex));
+		return true;
+	case DB::DBUtil::CT_UInt64:
+		item->SetU64((UInt64)this->GetInt64(colIndex));
+		return true;
+	case DB::DBUtil::CT_Binary:
+		{
+			size = this->GetBinarySize(colIndex);
+			UInt8 *binBuff = MemAlloc(UInt8, size);
+			this->GetBinary(colIndex, binBuff);
+			item->SetByteArr(binBuff, size);
+			MemFree(binBuff);
+			return true;
+		}
+		break;
+	case DB::DBUtil::CT_Vector:
+		item->SetVectorDirect(this->GetVector(colIndex));
+		return true;
+	case DB::DBUtil::CT_UUID:
+		{
+			Data::UUID *uuid;
+			NEW_CLASS(uuid, Data::UUID());
+			this->GetUUID(colIndex, uuid);
+			item->SetUUIDDirect(uuid);
+			return true;
+		}
+	case DB::DBUtil::CT_Unknown:
+	default:
+		return false;
+	}
+}
+
 DB::TableDef *DB::DBReader::GenTableDef(const UTF8Char *tableName)
 {
 	DB::TableDef *table;

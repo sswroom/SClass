@@ -14,7 +14,7 @@ Data::VariItem::VariItem(ItemType itemType, ItemValue val)
 	this->val = val;
 }
 
-Data::VariItem::~VariItem()
+void Data::VariItem::FreeItem()
 {
 	switch (this->itemType)
 	{
@@ -47,6 +47,18 @@ Data::VariItem::~VariItem()
 	case ItemType::UUID:
 		DEL_CLASS(this->val.uuid);
 	}
+	this->itemType = ItemType::Unknown;
+}
+
+Data::VariItem::VariItem()
+{
+	this->itemType = ItemType::Unknown;
+	this->val.str = 0;
+}
+
+Data::VariItem::~VariItem()
+{
+	this->FreeItem();
 }
 
 Data::VariItem::ItemType Data::VariItem::GetItemType()
@@ -573,6 +585,237 @@ void *Data::VariItem::GetAsUnk()
 	return (void*)this->val.str;
 }
 
+void Data::VariItem::SetNull()
+{
+	this->FreeItem();
+	this->itemType = ItemType::Null;
+}
+
+void Data::VariItem::SetStr(const UTF8Char *str)
+{
+	this->FreeItem();
+	this->val.str = Text::StrCopyNew(str);
+	this->itemType = ItemType::Str;
+}
+
+void Data::VariItem::SetDate(Data::DateTime *dt)
+{
+	if (this->itemType == ItemType::Date)
+	{
+		this->val.date->SetValue(dt);
+	}
+	else
+	{
+		this->FreeItem();
+		this->val.date = NEW_CLASS_D(Data::DateTime(dt));
+		this->itemType = ItemType::Date;
+	}
+}
+
+void Data::VariItem::SetF32(Single val)
+{
+	this->FreeItem();
+	this->val.f32 = val;
+	this->itemType = ItemType::F32;
+}
+
+void Data::VariItem::SetF64(Double val)
+{
+	this->FreeItem();
+	this->val.f64 = val;
+	this->itemType = ItemType::F64;
+}
+
+void Data::VariItem::SetI8(Int8 val)
+{
+	this->FreeItem();
+	this->val.i8 = val;
+	this->itemType = ItemType::I8;
+}
+
+void Data::VariItem::SetU8(UInt8 val)
+{
+	this->FreeItem();
+	this->val.u8 = val;
+	this->itemType = ItemType::U8;
+}
+
+void Data::VariItem::SetI16(Int16 val)
+{
+	this->FreeItem();
+	this->val.i16 = val;
+	this->itemType = ItemType::I16;
+}
+
+void Data::VariItem::SetU16(UInt16 val)
+{
+	this->FreeItem();
+	this->val.u16 = val;
+	this->itemType = ItemType::U16;
+}
+
+void Data::VariItem::SetI32(Int32 val)
+{
+	this->FreeItem();
+	this->val.i32 = val;
+	this->itemType = ItemType::I32;
+}
+
+void Data::VariItem::SetU32(UInt32 val)
+{
+	this->FreeItem();
+	this->val.u32 = val;
+	this->itemType = ItemType::U32;
+}
+
+void Data::VariItem::SetI64(Int64 val)
+{
+	this->FreeItem();
+	this->val.i64 = val;
+	this->itemType = ItemType::I64;
+}
+
+void Data::VariItem::SetU64(UInt64 val)
+{
+	this->FreeItem();
+	this->val.u64 = val;
+	this->itemType = ItemType::U64;
+}
+
+void Data::VariItem::SetBool(Bool val)
+{
+	this->FreeItem();
+	this->val.boolean = val;
+	this->itemType = ItemType::BOOL;
+}
+
+void Data::VariItem::SetByteArr(const UInt8 *arr, UOSInt cnt)
+{
+	this->FreeItem();
+	this->val.byteArr = NEW_CLASS_D(Data::ReadonlyArray<UInt8>(arr, cnt));
+	this->itemType = ItemType::ByteArr;
+}
+
+void Data::VariItem::SetByteArr(Data::ReadonlyArray<UInt8> *arr)
+{
+	this->FreeItem();
+	this->val.byteArr = arr->Clone();
+	this->itemType = ItemType::ByteArr;
+}
+
+void Data::VariItem::SetVector(Math::Vector2D *vec)
+{
+	this->FreeItem();
+	this->val.vector = vec->Clone();
+	this->itemType = ItemType::Vector;
+}
+
+void Data::VariItem::SetUUID(Data::UUID *uuid)
+{
+	this->FreeItem();
+	this->val.uuid = uuid->Clone();
+	this->itemType = ItemType::UUID;
+}
+
+void Data::VariItem::SetStrDirect(const UTF8Char *str)
+{
+	this->FreeItem();
+	if (str == 0)
+	{
+		this->itemType = ItemType::Null;
+	}
+	else
+	{
+		this->val.str = str;
+		this->itemType = ItemType::Str;
+	}
+}
+
+void Data::VariItem::SetDateDirect(Data::DateTime *dt)
+{
+	this->FreeItem();
+	this->val.date = dt;
+	this->itemType = ItemType::Date;
+}
+
+void Data::VariItem::SetVectorDirect(Math::Vector2D *vec)
+{
+	this->FreeItem();
+	this->val.vector = vec;
+	this->itemType = ItemType::Vector;
+}
+
+void Data::VariItem::SetUUIDDirect(Data::UUID *uuid)
+{
+	this->FreeItem();
+	this->val.uuid = uuid;
+	this->itemType = ItemType::UUID;
+}
+
+void Data::VariItem::Set(VariItem *item)
+{
+	this->FreeItem();
+	this->itemType = item->itemType;
+	switch (this->itemType)
+	{
+	case ItemType::Null:
+		this->val.str = 0;
+		break;
+	default:
+	case ItemType::Unknown:
+		this->val.str = item->val.str;
+		break;
+	case ItemType::F32:
+		this->val.f32 = item->val.f32;
+		break;
+	case ItemType::F64:
+		this->val.f64 = item->val.f64;
+		break;
+	case ItemType::I8:
+		this->val.i8 = item->val.i8;
+		break;
+	case ItemType::U8:
+		this->val.u8 = item->val.u8;
+		break;
+	case ItemType::I16:
+		this->val.i16 = item->val.i16;
+		break;
+	case ItemType::U16:
+		this->val.u16 = item->val.u16;
+		break;
+	case ItemType::I32:
+		this->val.i32 = item->val.i32;
+		break;
+	case ItemType::U32:
+		this->val.u32 = item->val.u32;
+		break;
+	case ItemType::I64:
+		this->val.i64 = item->val.i64;
+		break;
+	case ItemType::U64:
+		this->val.u64 = item->val.u64;
+		break;
+	case ItemType::BOOL:
+		this->val.boolean = item->val.boolean;
+		break;
+	case ItemType::Str:
+		this->val.str = SCOPY_TEXT(item->val.str);
+		break;
+	case ItemType::Date:
+		NEW_CLASS(this->val.date, Data::DateTime(item->val.date));
+		break;
+	case ItemType::ByteArr:
+		this->val.byteArr = item->val.byteArr->Clone();
+		break;
+	case ItemType::Vector:
+		this->val.vector = item->val.vector->Clone();
+		break;
+	case ItemType::UUID:
+		this->val.uuid = item->val.uuid->Clone();
+		break;
+	}
+}
+
 Data::VariItem *Data::VariItem::Clone()
 {
 	ItemValue ival;
@@ -1007,6 +1250,10 @@ void Data::VariItem::SetPtr(void *ptr, ItemType itemType, VariItem *item)
 		if (item->GetItemType() == ItemType::Null)
 		{
 			*(const UTF8Char**)ptr = 0;
+		}
+		else if (item->GetItemType() == ItemType::Str)
+		{
+			*(const UTF8Char**)ptr = Text::StrCopyNew(item->GetItemValue().str);
 		}
 		else
 		{

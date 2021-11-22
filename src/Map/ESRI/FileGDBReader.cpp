@@ -1017,6 +1017,87 @@ Bool Map::ESRI::FileGDBReader::GetUUID(UOSInt colIndex, Data::UUID *uuid)
 	return false;
 }
 
+Bool Map::ESRI::FileGDBReader::GetVariItem(UOSInt colIndex, Data::VariItem *item)
+{
+	UOSInt fieldIndex = this->GetFieldIndex(colIndex);
+	if (this->rowData == 0)
+	{
+		return false;
+	}
+	Map::ESRI::FileGDBFieldInfo *field = this->tableInfo->fields->GetItem(fieldIndex);
+	if (field == 0)
+	{
+		return false;
+	}
+	if (this->fieldNull[fieldIndex])
+	{
+		item->SetNull();
+		return true;
+	}
+	UOSInt ofst;
+	UInt64 v;
+	switch (field->fieldType)
+	{
+	case 0:
+		item->SetI16(ReadInt16(&this->rowData[this->fieldOfst[fieldIndex]]));
+		return true;
+	case 1:
+		item->SetI32(ReadInt32(&this->rowData[this->fieldOfst[fieldIndex]]));
+		return true;
+	case 2:
+		item->SetF32(ReadFloat(&this->rowData[this->fieldOfst[fieldIndex]]));
+		return true;
+	case 3:
+		item->SetF64(ReadDouble(&this->rowData[this->fieldOfst[fieldIndex]]));
+		return true;
+	case 12:
+	case 4:
+		ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, this->fieldOfst[fieldIndex], &v);
+		{
+			item->SetStrDirect(Text::StrCopyNewC(&this->rowData[ofst], (UOSInt)v));
+			return true;
+		}
+	case 5:
+		{
+			Data::DateTime *dt;
+			NEW_CLASS(dt, Data::DateTime());
+			Map::ESRI::FileGDBUtil::ToDateTime(dt, ReadDouble(&this->rowData[this->fieldOfst[fieldIndex]]));
+			item->SetDateDirect(dt);
+			return true;
+		}
+	case 6:
+		item->SetI32(this->objectId);
+		return true;
+	case 7:
+		{
+			Math::Vector2D *vec = this->GetVector(colIndex);
+			if (vec)
+			{
+				item->SetVectorDirect(vec);
+				return true;
+			}
+			item->SetNull();
+			return true;
+		}
+	case 8:
+		{
+			ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, this->fieldOfst[fieldIndex], &v);
+			item->SetByteArr(&this->rowData[ofst], (UOSInt)v);
+			return true;
+		}
+	case 10:
+	case 11:
+		{
+			Data::UUID *uuid;
+			NEW_CLASS(uuid, Data::UUID(&this->rowData[this->fieldOfst[fieldIndex]]));
+			item->SetUUIDDirect(uuid);
+			return true;
+		}
+	}
+	item->SetNull();
+	return true;
+}
+
 Data::VariItem *Map::ESRI::FileGDBReader::GetNewItem(const UTF8Char *name)
 {
 	UOSInt colIndex = INVALID_INDEX;

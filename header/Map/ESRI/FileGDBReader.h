@@ -46,6 +46,7 @@ namespace Map
 			virtual UOSInt GetBinary(UOSInt colIndex, UInt8 *buff);
 			virtual Math::Vector2D *GetVector(UOSInt colIndex);
 			virtual Bool GetUUID(UOSInt colIndex, Data::UUID *uuid);
+			virtual Bool GetVariItem(UOSInt colIndex, Data::VariItem *item);
 
 			virtual Data::VariItem *GetNewItem(const UTF8Char *name);
 

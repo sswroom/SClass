@@ -480,6 +480,17 @@ Bool DB::SortableDBReader::GetUUID(UOSInt colIndex, Data::UUID *uuid)
 	return false;
 }
 
+Bool DB::SortableDBReader::GetVariItem(UOSInt colIndex, Data::VariItem *item)
+{
+	Data::VariItem *dataItem = this->GetItem(colIndex);
+	if (dataItem)
+	{
+		item->Set(item);
+		return true;
+	}
+	return false;
+}
+
 Bool DB::SortableDBReader::IsNull(UOSInt colIndex)
 {
 	Data::VariItem *item = this->GetItem(colIndex);

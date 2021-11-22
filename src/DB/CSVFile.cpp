@@ -16,6 +16,7 @@ DB::CSVFile::CSVFile(const UTF8Char *fileName, UInt32 codePage) : DB::ReadingDB(
 	this->stm = 0;
 	this->codePage = codePage;
 	this->noHeader = false;
+	this->nullIfEmpty = false;
 }
 
 DB::CSVFile::CSVFile(IO::SeekableStream *stm, UInt32 codePage) : DB::ReadingDB(stm->GetSourceNameObj())
@@ -24,6 +25,7 @@ DB::CSVFile::CSVFile(IO::SeekableStream *stm, UInt32 codePage) : DB::ReadingDB(s
 	this->stm = stm;
 	this->codePage = codePage;
 	this->noHeader = false;
+	this->nullIfEmpty = false;
 }
 
 DB::CSVFile::~CSVFile()
@@ -45,7 +47,7 @@ DB::DBReader *DB::CSVFile::GetTableData(const UTF8Char *tableName, Data::ArrayLi
 		DB::CSVReader *r;
 		this->stm->SeekFromBeginning(0);
 		NEW_CLASS(rdr, IO::StreamReader(this->stm, codePage));
-		NEW_CLASS(r, DB::CSVReader(0, rdr, this->noHeader));
+		NEW_CLASS(r, DB::CSVReader(0, rdr, this->noHeader, this->nullIfEmpty));
 		return r;
 	}
 	else if (this->fileName)
@@ -57,7 +59,7 @@ DB::DBReader *DB::CSVFile::GetTableData(const UTF8Char *tableName, Data::ArrayLi
 		if (!fs->IsError())
 		{
 			NEW_CLASS(rdr, IO::StreamReader(fs, codePage));
-			NEW_CLASS(r, DB::CSVReader(fs, rdr, this->noHeader));
+			NEW_CLASS(r, DB::CSVReader(fs, rdr, this->noHeader, this->nullIfEmpty));
 			return r;
 		}
 		else
@@ -91,14 +93,21 @@ void DB::CSVFile::SetNoHeader(Bool noHeader)
 	this->noHeader = noHeader;
 }
 
-DB::CSVReader::CSVReader(IO::Stream *stm, IO::StreamReader *rdr, Bool noHeader)
+void DB::CSVFile::SetNullIfEmpty(Bool nullIfEmpty)
+{
+	this->nullIfEmpty = nullIfEmpty;
+}
+
+DB::CSVReader::CSVReader(IO::Stream *stm, IO::StreamReader *rdr, Bool noHeader, Bool nullIfEmpty)
 {
 	this->stm = stm;
 	this->rdr = rdr;
 	this->noHeader = noHeader;
+	this->nullIfEmpty = nullIfEmpty;
 	this->nCol = 0;
 	this->row = MemAlloc(UTF8Char, 16384);
 	this->cols = MemAlloc(UTF8Char*, 128);
+	this->colSize = MemAlloc(UOSInt, 128);
 	this->hdrs = MemAlloc(UTF8Char*, 128);
 
 	UTF8Char *sptr;
@@ -163,6 +172,12 @@ DB::CSVReader::CSVReader(IO::Stream *stm, IO::StreamReader *rdr, Bool noHeader)
 	MemCopyNO(this->hdr, this->row, sizeof(UTF8Char) * (UOSInt)(currPtr - this->row + 1));
 	this->nHdr = Text::StrCSVSplit(this->hdrs, 128, this->hdr);
 	this->nCol = this->nHdr;
+	UOSInt i = this->nCol;
+	this->colSize[i - 1] = (UOSInt)(currPtr - this->hdrs[i - 1]);
+	while (i-- > 1)
+	{
+		this->colSize[i - 1] = (UOSInt)(this->hdrs[i] - this->hdrs[i - 1] - 1);
+	}
 }
 
 DB::CSVReader::~CSVReader()
@@ -171,6 +186,7 @@ DB::CSVReader::~CSVReader()
 	SDEL_CLASS(this->stm);
 	MemFree(this->row);
 	MemFree(this->cols);
+	MemFree(this->colSize);
 	MemFree(this->hdr);
 	MemFree(this->hdrs);
 }
@@ -228,6 +244,7 @@ Bool DB::CSVReader::ReadNext()
 			}
 			else
 			{
+				this->colSize[nCol - 1] = (UOSInt)(currPtr - cols[nCol - 1] - 1);
 				break;
 			}
 		}
@@ -255,8 +272,10 @@ Bool DB::CSVReader::ReadNext()
 		}
 		else if ((c == ',') && (quote == 0))
 		{
+			this->colSize[nCol - 1] = (UOSInt)(currPtr - cols[nCol - 1] - 1);
 			cols[nCol++] = currPtr;
 			colStart = true;
+			currPtr[-1] = 0;
 		}
 		else
 		{
@@ -300,6 +319,13 @@ WChar *DB::CSVReader::GetStr(UOSInt colIndex, WChar *buff)
 	if (colIndex >= nCol)
 		return 0;
 
+	if (nullIfEmpty)
+	{
+		if (cols[colIndex][0] == 0 || cols[colIndex][0] == ',' || Text::StrStartsWith(cols[colIndex], (const UTF8Char*)"\"\",") || Text::StrEquals(cols[colIndex], (const UTF8Char*)"\"\""))
+		{
+			return 0;
+		}
+	}
 	const WChar *csptr = Text::StrToWCharNew(cols[colIndex]);
 	const WChar *ptr = csptr;
 	WChar c;
@@ -363,6 +389,13 @@ Bool DB::CSVReader::GetStr(UOSInt colIndex, Text::StringBuilderUTF *sb)
 {
 	if (colIndex >= nCol)
 		return false;
+	if (nullIfEmpty)
+	{
+		if (cols[colIndex][0] == 0 || cols[colIndex][0] == ',' || Text::StrStartsWith(cols[colIndex], (const UTF8Char*)"\"\",") || Text::StrEquals(cols[colIndex], (const UTF8Char*)"\"\""))
+		{
+			return 0;
+		}
+	}
 	const WChar *csptr = Text::StrToWCharNew(cols[colIndex]);
 	const WChar *ptr = csptr;
 	WChar c;
@@ -424,6 +457,13 @@ const UTF8Char *DB::CSVReader::GetNewStr(UOSInt colIndex)
 {
 	if (colIndex >= nCol)
 		return 0;
+	if (nullIfEmpty)
+	{
+		if (cols[colIndex][0] == 0 || cols[colIndex][0] == ',' || Text::StrStartsWith(cols[colIndex], (const UTF8Char*)"\"\",") || Text::StrEquals(cols[colIndex], (const UTF8Char*)"\"\""))
+		{
+			return 0;
+		}
+	}
 	UOSInt len = 0;
 	const UTF8Char *csptr = cols[colIndex];
 	const UTF8Char *ptr = csptr;
@@ -535,6 +575,13 @@ UTF8Char *DB::CSVReader::GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSize
 {
 	if (colIndex >= nCol)
 		return 0;
+	if (nullIfEmpty)
+	{
+		if (cols[colIndex][0] == 0 || cols[colIndex][0] == ',' || Text::StrStartsWith(cols[colIndex], (const UTF8Char*)"\"\",") || Text::StrEquals(cols[colIndex], (const UTF8Char*)"\"\""))
+		{
+			return 0;
+		}
+	}
 	const UTF8Char *ptr = cols[colIndex];
 	UTF8Char c;
 	Int32 quote = 0;
@@ -645,6 +692,69 @@ Math::Vector2D *DB::CSVReader::GetVector(UOSInt colIndex)
 Bool DB::CSVReader::GetUUID(UOSInt colIndex, Data::UUID *uuid)
 {
 	return false;
+}
+
+Bool DB::CSVReader::GetVariItem(UOSInt colIndex, Data::VariItem *item)
+{
+	if (colIndex >= nCol)
+	{
+		item->SetNull();
+		return false;
+	}
+	if (nullIfEmpty)
+	{
+		if (cols[colIndex][0] == 0 || Text::StrEquals(cols[colIndex], (const UTF8Char*)"\"\""))
+		{
+			item->SetNull();
+			return true;
+		}
+	}
+	const UTF8Char *ptr = cols[colIndex];
+	UTF8Char *sbuff = MemAlloc(UTF8Char, this->colSize[colIndex] + 1);
+	UTF8Char *buff = sbuff;
+	UTF8Char c;
+	Int32 quote = 0;
+	c = *ptr;
+	if (c == '"')
+	{
+		while (true)
+		{
+			c = *ptr++;
+			if (c == 0)
+				break;
+			if (c == '"')
+			{
+				if (quote)
+				{
+					if (*ptr == '"')
+					{
+						*buff++ = c;
+						ptr++;
+					}
+					else
+					{
+						quote = 0;
+					}
+				}
+				else
+				{
+					quote = 1;
+				}
+			}
+			else
+			{
+				*buff++ = c;
+			}
+		}
+		*buff = 0;
+		item->SetStrDirect(sbuff);
+		return true;
+	}
+	else
+	{
+		item->SetStr(ptr);
+		return true;
+	}	
 }
 
 UTF8Char *DB::CSVReader::GetName(UOSInt colIndex, UTF8Char *buff)

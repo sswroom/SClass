@@ -970,6 +970,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 
 			DB::CSVFile *csv;
 			NEW_CLASS(csv, DB::CSVFile(sbuff, 65001));
+			csv->SetNullIfEmpty(true);
 			r = csv->GetTableData((const UTF8Char*)"Lamppost", 0, 0, 0, 0, 0);
 			clk.Start();
 			r->ReadAll(&lamppostListCSV, cls);
