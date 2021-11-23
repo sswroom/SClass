@@ -435,7 +435,7 @@ Bool Exporter::ExcelXMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8C
 			UOSInt lastColIndex = 0;
 			Bool needIndex = true;
 
-			k = 1;
+			k = 0;
 			l = ws->GetColWidthCount();
 			while (k < l)
 			{
@@ -500,7 +500,7 @@ Bool Exporter::ExcelXMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8C
 				writer->WriteLine(sb.ToString());
 			}
 
-			k = 1;
+			k = 0;
 			l = ws->GetCount();
 			while (k < l)
 			{

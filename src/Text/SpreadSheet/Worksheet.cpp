@@ -5,12 +5,12 @@
 #include "Text/SpreadSheet/IStyleCtrl.h"
 #include "Text/SpreadSheet/Worksheet.h"
 
-Text::SpreadSheet::Worksheet::RowData *Text::SpreadSheet::Worksheet::CreateRow(UInt32 row)
+Text::SpreadSheet::Worksheet::RowData *Text::SpreadSheet::Worksheet::CreateRow(UOSInt row)
 {
 	RowData *rowData;
 	if (row >= 65536)
 		return 0;
-	while (row >= (UInt32)this->rows->GetCount())
+	while (row >= this->rows->GetCount())
 	{
 		this->rows->Add(0);
 	}
@@ -26,7 +26,7 @@ Text::SpreadSheet::Worksheet::RowData *Text::SpreadSheet::Worksheet::CreateRow(U
 	return rowData;
 }
 
-Text::SpreadSheet::Worksheet::CellData *Text::SpreadSheet::Worksheet::GetCellData(UInt32 row, UInt32 col, Bool keepMerge)
+Text::SpreadSheet::Worksheet::CellData *Text::SpreadSheet::Worksheet::GetCellData(UOSInt row, UOSInt col, Bool keepMerge)
 {
 	RowData *rowData;
 	CellData *cell;
@@ -37,7 +37,7 @@ Text::SpreadSheet::Worksheet::CellData *Text::SpreadSheet::Worksheet::GetCellDat
 	while (true)
 	{
 		rowData = CreateRow(row);
-		while (col >= (UInt32)rowData->cells->GetCount())
+		while (col >= rowData->cells->GetCount())
 		{
 			rowData->cells->Add(0);
 		}
@@ -351,13 +351,9 @@ const UTF8Char *Text::SpreadSheet::Worksheet::GetName()
 	return this->name;
 }
 
-Bool Text::SpreadSheet::Worksheet::SetCellString(UInt32 row, UInt32 col, const UTF8Char *val)
+Bool Text::SpreadSheet::Worksheet::SetCellString(UOSInt row, UOSInt col, const UTF8Char *val)
 {
 	CellData *cell;
-	if (row == 0)
-		return false;
-	if (col == 0)
-		return false;
 	cell = GetCellData(row, col, false);
 	if (cell == 0)
 		return false;
@@ -374,14 +370,10 @@ Bool Text::SpreadSheet::Worksheet::SetCellString(UInt32 row, UInt32 col, const U
 	return true;
 }
 
-Bool Text::SpreadSheet::Worksheet::SetCellDate(UInt32 row, UInt32 col, Data::DateTime *val)
+Bool Text::SpreadSheet::Worksheet::SetCellDate(UOSInt row, UOSInt col, Data::DateTime *val)
 {
 	UTF8Char sbuff[32];
 	CellData *cell;
-	if (row == 0)
-		return false;
-	if (col == 0)
-		return false;
 	cell = GetCellData(row, col, false);
 	if (cell == 0)
 		return false;
@@ -395,14 +387,10 @@ Bool Text::SpreadSheet::Worksheet::SetCellDate(UInt32 row, UInt32 col, Data::Dat
 	return true;
 }
 
-Bool Text::SpreadSheet::Worksheet::SetCellDouble(UInt32 row, UInt32 col, Double val)
+Bool Text::SpreadSheet::Worksheet::SetCellDouble(UOSInt row, UOSInt col, Double val)
 {
 	UTF8Char sbuff[32];
 	CellData *cell;
-	if (row == 0)
-		return false;
-	if (col == 0)
-		return false;
 	cell = GetCellData(row, col, false);
 	if (cell == 0)
 		return false;
@@ -416,14 +404,10 @@ Bool Text::SpreadSheet::Worksheet::SetCellDouble(UInt32 row, UInt32 col, Double 
 	return true;
 }
 
-Bool Text::SpreadSheet::Worksheet::SetCellInt32(UInt32 row, UInt32 col, Int32 val)
+Bool Text::SpreadSheet::Worksheet::SetCellInt32(UOSInt row, UOSInt col, Int32 val)
 {
 	UTF8Char sbuff[32];
 	CellData *cell;
-	if (row == 0)
-		return false;
-	if (col == 0)
-		return false;
 	cell = GetCellData(row, col, false);
 	if (cell == 0)
 		return false;
@@ -437,13 +421,9 @@ Bool Text::SpreadSheet::Worksheet::SetCellInt32(UInt32 row, UInt32 col, Int32 va
 	return true;
 }
 
-Bool Text::SpreadSheet::Worksheet::SetCellStyle(UInt32 row, UInt32 col, Text::SpreadSheet::CellStyle *style)
+Bool Text::SpreadSheet::Worksheet::SetCellStyle(UOSInt row, UOSInt col, Text::SpreadSheet::CellStyle *style)
 {
 	CellData *cell;
-	if (row == 0)
-		return false;
-	if (col == 0)
-		return false;
 	cell = GetCellData(row, col, false);
 	if (cell == 0)
 		return false;
@@ -452,13 +432,9 @@ Bool Text::SpreadSheet::Worksheet::SetCellStyle(UInt32 row, UInt32 col, Text::Sp
 }
 
 
-Bool Text::SpreadSheet::Worksheet::SetCellURL(UInt32 row, UInt32 col, const UTF8Char *url)
+Bool Text::SpreadSheet::Worksheet::SetCellURL(UOSInt row, UOSInt col, const UTF8Char *url)
 {
 	CellData *cell;
-	if (row == 0)
-		return false;
-	if (col == 0)
-		return false;
 	cell = GetCellData(row, col, false);
 	if (cell == 0)
 		return false;
@@ -470,12 +446,8 @@ Bool Text::SpreadSheet::Worksheet::SetCellURL(UInt32 row, UInt32 col, const UTF8
 	return true;
 }
 
-Bool Text::SpreadSheet::Worksheet::MergeCells(UInt32 row, UInt32 col, UInt32 height, UInt32 width)
+Bool Text::SpreadSheet::Worksheet::MergeCells(UOSInt row, UOSInt col, UInt32 height, UInt32 width)
 {
-	if (row == 0)
-		return false;
-	if (col == 0)
-		return false;
 	if (width == 0)
 		return false;
 	if (height == 0)
@@ -530,10 +502,8 @@ Bool Text::SpreadSheet::Worksheet::MergeCells(UInt32 row, UInt32 col, UInt32 hei
 	return true;
 }
 
-Bool Text::SpreadSheet::Worksheet::SetRowHidden(UInt32 row, Bool hidden)
+Bool Text::SpreadSheet::Worksheet::SetRowHidden(UOSInt row, Bool hidden)
 {
-	if (row == 0)
-		return false;
 	if (row >= 65536)
 		return false;
 	CellData *cell;
@@ -542,7 +512,7 @@ Bool Text::SpreadSheet::Worksheet::SetRowHidden(UInt32 row, Bool hidden)
 	return true;
 }
 
-Bool Text::SpreadSheet::Worksheet::SetRowHeight(UInt32 row, Double height)
+Bool Text::SpreadSheet::Worksheet::SetRowHeight(UOSInt row, Double height)
 {
 	RowData *rowData = CreateRow(row);
 	if (rowData)
@@ -561,12 +531,12 @@ UOSInt Text::SpreadSheet::Worksheet::GetCount()
 	return this->rows->GetCount();
 }
 
-Text::SpreadSheet::Worksheet::RowData *Text::SpreadSheet::Worksheet::GetItem(UOSInt Index)
+Text::SpreadSheet::Worksheet::RowData *Text::SpreadSheet::Worksheet::GetItem(UOSInt row)
 {
-	return this->rows->GetItem(Index);
+	return this->rows->GetItem(row);
 }
 
-void Text::SpreadSheet::Worksheet::RemoveCol(UInt32 col)
+void Text::SpreadSheet::Worksheet::RemoveCol(UOSInt col)
 {
 	UOSInt i;
 	RowData *row;
@@ -588,7 +558,7 @@ void Text::SpreadSheet::Worksheet::RemoveCol(UInt32 col)
 	}
 }
 
-void Text::SpreadSheet::Worksheet::InsertCol(UInt32 col)
+void Text::SpreadSheet::Worksheet::InsertCol(UOSInt col)
 {
 	UOSInt i;
 	RowData *row;
@@ -611,13 +581,13 @@ void Text::SpreadSheet::Worksheet::InsertCol(UInt32 col)
 	}
 }
 
-void Text::SpreadSheet::Worksheet::SetColWidth(UOSInt Index, Double width)
+void Text::SpreadSheet::Worksheet::SetColWidth(UOSInt col, Double width)
 {
-	while (Index >= this->colWidths->GetCount())
+	while (col >= this->colWidths->GetCount())
 	{
 		this->colWidths->Add(-1);
 	}
-	this->colWidths->SetItem(Index, width);
+	this->colWidths->SetItem(col, width);
 }
 
 UOSInt Text::SpreadSheet::Worksheet::GetColWidthCount()
@@ -625,11 +595,11 @@ UOSInt Text::SpreadSheet::Worksheet::GetColWidthCount()
 	return this->colWidths->GetCount();
 }
 
-Double Text::SpreadSheet::Worksheet::GetColWidth(UOSInt Index)
+Double Text::SpreadSheet::Worksheet::GetColWidth(UOSInt col)
 {
-	if (Index >= this->colWidths->GetCount())
+	if (col >= this->colWidths->GetCount())
 		return -1;
-	return this->colWidths->GetItem(Index);
+	return this->colWidths->GetItem(col);
 }
 
 void Text::SpreadSheet::Worksheet::Number2Time(Data::DateTime *dt, Double number)

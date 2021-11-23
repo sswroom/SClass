@@ -27,6 +27,7 @@ namespace Math
 		virtual Bool JoinVector(Math::Vector2D *vec);
 		virtual Bool Support3D();
 		virtual void ConvCSys(Math::CoordinateSystem *srcCSys, Math::CoordinateSystem *destCSys);
+		virtual Bool Equals(Math::Vector2D *vec);
 
 		const UTF8Char *GetString();
 		Double GetAngleDegree();

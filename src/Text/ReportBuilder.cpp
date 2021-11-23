@@ -284,26 +284,26 @@ Text::SpreadSheet::Workbook *Text::ReportBuilder::CreateWorkbook()
 	wb->AddDefaultStyles();
 	ws = wb->AddWorksheet(this->name);
 
-	k = 1;
+	k = 0;
 	i = 0;
 	j = this->preheaders->GetCount();
 	while (i < j)
 	{
 		csarr = this->preheaders->GetItem(i);
-		ws->SetCellString(k, 1, csarr[0]);
-		ws->SetCellString(k, 2, csarr[1]);
+		ws->SetCellString(k, 0, csarr[0]);
+		ws->SetCellString(k, 1, csarr[1]);
 		k++;
 		i++;
 	}
 
-	ws->SetCellString(k, 1, this->name);
+	ws->SetCellString(k, 0, this->name);
 	i = 0;
 	j = this->colCount;
 	while (i < j)
 	{
 		if (this->colWidth[i] != 0)
 		{
-			ws->SetColWidth(i + 1, this->colWidth[i]);
+			ws->SetColWidth(i, this->colWidth[i]);
 		}
 		i++;
 	}
@@ -314,8 +314,8 @@ Text::SpreadSheet::Workbook *Text::ReportBuilder::CreateWorkbook()
 	while (i < j)
 	{
 		csarr = this->headers->GetItem(i);
-		ws->SetCellString(k, 1, csarr[0]);
-		ws->SetCellString(k, 2, csarr[1]);
+		ws->SetCellString(k, 0, csarr[0]);
+		ws->SetCellString(k, 1, csarr[1]);
 		k++;
 		i++;
 	}
@@ -339,10 +339,10 @@ Text::SpreadSheet::Workbook *Text::ReportBuilder::CreateWorkbook()
 				styleSummary = wb->NewCellStyle();
 				styleSummary->SetBorderTop(&bs);
 			}
-			l = 1;
-			while (l <= this->colCount)
+			l = 0;
+			while (l < this->colCount)
 			{
-				ws->SetCellStyle(k, (UInt32)l, styleSummary);
+				ws->SetCellStyle(k, l, styleSummary);
 				l++;
 			}
 		}
@@ -377,7 +377,7 @@ Text::SpreadSheet::Workbook *Text::ReportBuilder::CreateWorkbook()
 			{
 				if (sbList[l]->GetLength() > 0)
 				{
-					ws->SetCellString(k, (UInt32)(l + 1), sbList[l]->ToString());
+					ws->SetCellString(k, l, sbList[l]->ToString());
 				}
 				DEL_CLASS(sbList[l]);
 				l++;
@@ -391,7 +391,7 @@ Text::SpreadSheet::Workbook *Text::ReportBuilder::CreateWorkbook()
 			{
 				if (csarr[l])
 				{
-					ws->SetCellString(k, (UInt32)(l + 1), csarr[l]);
+					ws->SetCellString(k, l, csarr[l]);
 				}
 				l++;
 			}
@@ -405,15 +405,15 @@ Text::SpreadSheet::Workbook *Text::ReportBuilder::CreateWorkbook()
 				{
 					if (this->colTypes[l] == CT_DOUBLE)
 					{
-						ws->SetCellDouble(k, (UInt32)(l + 1), Text::StrToDouble(csarr[l]));
+						ws->SetCellDouble(k, l, Text::StrToDouble(csarr[l]));
 					}
 					else if (this->colTypes[l] == CT_INT32)
 					{
-						ws->SetCellInt32(k, (UInt32)(l + 1), Text::StrToInt32(csarr[l]));
+						ws->SetCellInt32(k, l, Text::StrToInt32(csarr[l]));
 					}
 					else
 					{
-						ws->SetCellString(k, (UInt32)(l + 1), csarr[l]);
+						ws->SetCellString(k, l, csarr[l]);
 					}
 				}
 				l++;
@@ -438,7 +438,7 @@ Text::SpreadSheet::Workbook *Text::ReportBuilder::CreateWorkbook()
 		sb.Append((const UTF8Char*)",");
 		Text::SBAppendF64(&sb, url->lon);
 		sb.Append((const UTF8Char*)",19z");
-		ws->SetCellURL((UInt32)(url->row + urlAdd), (UInt32)(url->col + 1), sb.ToString());
+		ws->SetCellURL(url->row + urlAdd, url->col, sb.ToString());
 		i++;
 	}
 	return wb;

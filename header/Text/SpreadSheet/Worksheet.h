@@ -55,9 +55,9 @@ namespace Text
 			UInt32 zoom;
 
 		public:
-			RowData *CreateRow(UInt32 row);
+			RowData *CreateRow(UOSInt row);
 		private:
-			CellData *GetCellData(UInt32 row, UInt32 col, Bool keepMerge);
+			CellData *GetCellData(UOSInt row, UOSInt col, Bool keepMerge);
 			void FreeRowData(RowData *data);
 			void FreeCellData(CellData *data);
 			RowData *CloneRow(RowData *row, IStyleCtrl *srcCtrl, IStyleCtrl *newCtrl);
@@ -91,24 +91,24 @@ namespace Text
 			Bool IsDefaultPageSetup();
 
 			const UTF8Char *GetName();
-			Bool SetCellString(UInt32 row, UInt32 col, const UTF8Char *val);
-			Bool SetCellDate(UInt32 row, UInt32 col, Data::DateTime *val);
-			Bool SetCellDouble(UInt32 row, UInt32 col, Double val);
-			Bool SetCellInt32(UInt32 row, UInt32 col, Int32 val);
-			Bool SetCellStyle(UInt32 row, UInt32 col, CellStyle *style);
-			Bool SetCellURL(UInt32 row, UInt32 col, const UTF8Char *url);
-			Bool MergeCells(UInt32 row, UInt32 col, UInt32 height, UInt32 width);
-			Bool SetRowHidden(UInt32 row, Bool hidden);
-			Bool SetRowHeight(UInt32 row, Double height);
+			Bool SetCellString(UOSInt row, UOSInt col, const UTF8Char *val);
+			Bool SetCellDate(UOSInt row, UOSInt col, Data::DateTime *val);
+			Bool SetCellDouble(UOSInt row, UOSInt col, Double val);
+			Bool SetCellInt32(UOSInt row, UOSInt col, Int32 val);
+			Bool SetCellStyle(UOSInt row, UOSInt col, CellStyle *style);
+			Bool SetCellURL(UOSInt row, UOSInt col, const UTF8Char *url);
+			Bool MergeCells(UOSInt row, UOSInt col, UInt32 height, UInt32 width);
+			Bool SetRowHidden(UOSInt row, Bool hidden);
+			Bool SetRowHeight(UOSInt row, Double height);
 
 			UOSInt GetCount();
-			RowData *GetItem(UOSInt Index);
-			void RemoveCol(UInt32 col);
-			void InsertCol(UInt32 col);
+			RowData *GetItem(UOSInt row);
+			void RemoveCol(UOSInt col);
+			void InsertCol(UOSInt col);
 
-			void SetColWidth(UOSInt Index, Double width);
+			void SetColWidth(UOSInt col, Double width);
 			UOSInt GetColWidthCount();
-			Double GetColWidth(UOSInt Index);
+			Double GetColWidth(UOSInt col);
 
 			static void Number2Time(Data::DateTime *dt, Double number);
 		};

@@ -69,6 +69,22 @@ void Math::VectorString::ConvCSys(Math::CoordinateSystem *srcCSys, Math::Coordin
 	Math::CoordinateSystem::ConvertXYZ(srcCSys, destCSys, this->x, this->y, 0, &this->x, &this->y, 0);
 }
 
+Bool Math::VectorString::Equals(Math::Vector2D *vec)
+{
+	if (vec == 0 || vec->GetVectorType() != VectorType::String)
+	{
+		return false;
+	}
+	VectorString *vstr = (VectorString*)vec;
+	return this->srid == vstr->srid &&
+		this->x == vstr->x &&
+		this->y == vstr->y &&
+		this->align == vstr->align &&
+		this->angleDegree == vstr->angleDegree &&
+		this->buffSize == vstr->buffSize &&
+		Text::StrEquals(this->s, vstr->s);
+}
+
 const UTF8Char *Math::VectorString::GetString()
 {
 	return this->s;
