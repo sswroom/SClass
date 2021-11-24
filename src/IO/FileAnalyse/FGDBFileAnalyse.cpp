@@ -6,6 +6,7 @@
 #include "Math/Math.h"
 #include "Sync/Thread.h"
 #include "Text/StringBuilderUTF8.h"
+#include "Text/XLSUtil.h"
 
 #define HAS_M_FLAG 4
 #define HAS_Z_FLAG 2
@@ -428,7 +429,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::FGDBFileAnalyse::GetFrameDetail(U
 						Text::StrConcat(Text::StrConcat(sbuff, (const UTF8Char*)"RAW "), field->name);
 						frame->AddFloat(ofst, 8, (const Char*)sbuff, t);
 						Data::DateTime dt;
-						Map::ESRI::FileGDBUtil::ToDateTime(&dt, t);
+						Text::XLSUtil::Number2Date(&dt, t);
 						dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
 						frame->AddField(ofst, 8, field->name, sbuff);
 						ofst += 8;

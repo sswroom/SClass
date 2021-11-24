@@ -3622,6 +3622,8 @@ Text/UTF8Writer.h: ../../src/Text/UTF8Writer.cpp
 @UTF8Writer.o
 Text/VSProject.h: ../../src/Text/VSProject.cpp
 @VSProject.o
+Text/XLSUtil.h: ../../src/Text/XLSUtil.cpp
+@XLSUtil.o
 Text/XML.h: ../../src/Text/XML.cpp
 @XML.o
 Text/XMLDOM.h: ../../src/Text/XMLDOM.cpp
@@ -5007,6 +5009,7 @@ UTF8Reader.o: ../../src/Text/UTF8Reader.cpp
 UTF8Util.o: ../../src/Text/UTF8Util.cpp
 UTF8Writer.o: ../../src/Text/UTF8Writer.cpp
 VSProject.o: ../../src/Text/VSProject.cpp
+XLSUtil.o: ../../src/Text/XLSUtil.cpp
 XML.o: ../../src/Text/XML.cpp
 XMLDOM.o: ../../src/Text/XMLDOM.cpp
 XMLReader.o: ../../src/Text/XMLReader.cpp

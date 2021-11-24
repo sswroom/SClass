@@ -16,8 +16,7 @@ namespace Exporter
 		virtual Bool GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8Char *fileNameBuff);
 		virtual Bool ExportFile(IO::SeekableStream *stm, const UTF8Char *fileName, IO::ParsedObject *pobj, void *param);
 
-		static Double Date2Number(Data::DateTime *dt);
-		static void Number2Date(Data::DateTime *dt, Double v);
+		static UTF8Char *ToFormatCode(UTF8Char *sbuff, const UTF8Char *dataFormat);
 	};
 }
 #endif

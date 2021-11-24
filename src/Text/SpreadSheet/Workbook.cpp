@@ -424,6 +424,19 @@ Text::SpreadSheet::WorkbookFont *Text::SpreadSheet::Workbook::GetFont(UOSInt ind
 	return this->fonts->GetItem(index);
 }
 
+UOSInt Text::SpreadSheet::Workbook::GetFontIndex(WorkbookFont *font)
+{
+	UOSInt i = this->fonts->GetCount();
+	while (i-- > 0)
+	{
+		if (this->fonts->GetItem(i) == font)
+		{
+			return i;
+		}
+	}
+	return INVALID_INDEX;
+}
+
 Text::SpreadSheet::WorkbookFont *Text::SpreadSheet::Workbook::NewFont(const UTF8Char *name, Double size, Bool bold)
 {
 	Text::SpreadSheet::WorkbookFont *font;

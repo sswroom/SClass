@@ -4,9 +4,11 @@
 #include "IO/BuildTime.h"
 #include "IO/ZIPBuilder.h"
 #include "Math/Math.h"
+#include "Text/CharUtil.h"
 #include "Text/Locale.h"
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
+#include "Text/XLSUtil.h"
 #include "Text/XML.h"
 #include "Text/SpreadSheet/Workbook.h"
 
@@ -65,6 +67,7 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char 
 	UOSInt l;
 	UOSInt m;
 	UOSInt n;
+	UOSInt drawingCnt = 0;
 	Data::ArrayList<const UTF8Char*> sharedStrings;
 	Data::StringUTF8Map<UOSInt> stringMap;
 	dt.SetCurrTimeUTC();
@@ -161,7 +164,7 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char 
 								Data::DateTime dt;
 								dt.ToLocalTime();
 								dt.SetValue(cell->cellValue);
-								Text::SBAppendF64(&sb, Date2Number(&dt));
+								Text::SBAppendF64(&sb, Text::XLSUtil::Date2Number(&dt));
 							}
 							break;
 						case Text::SpreadSheet::CellDataType::MergedLeft:
@@ -201,9 +204,138 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char 
 		sb.Append((const UTF8Char*)"<oddHeader>&amp;C&amp;&quot;Times New Roman,Regular&quot;&amp;12&amp;A</oddHeader>");
 		sb.Append((const UTF8Char*)"<oddFooter>&amp;C&amp;&quot;Times New Roman,Regular&quot;&amp;12Page &amp;P</oddFooter>");
 		sb.Append((const UTF8Char*)"</headerFooter>");
+		k = 0;
+		l = sheet->GetDrawingCount();
+		while (k < l)
+		{
+			sb.Append((const UTF8Char*)"<drawing r:id=\"rId");
+			sb.AppendUOSInt(k + 1);
+			sb.Append((const UTF8Char*)"\"/>");
+			k++;
+		}
 		sb.Append((const UTF8Char*)"</worksheet>");
 		Text::StrConcat(Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"xl/worksheets/sheet"), i + 1), (const UTF8Char*)".xml");
 		zip->AddFile(sbuff, sb.ToString(), sb.GetLength(), dt.ToTicks(), false);
+
+		if (sheet->GetDrawingCount() > 0)
+		{
+			sb.ClearStr();
+			sb.Append((const UTF8Char*)"<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>");
+			sb.Append((const UTF8Char*)"<Relationships xmlns=\"http://schemas.openxmlformats.org/package/2006/relationships\">");
+			k = 0;
+			l = sheet->GetDrawingCount();
+			while (k < l)
+			{
+				sb.Append((const UTF8Char*)"<Relationship Id=\"rId");
+				sb.AppendUOSInt(k + 1);
+				sb.Append((const UTF8Char*)"\" Target=\"../drawings/drawing");
+				sb.AppendUOSInt(k + 1 + drawingCnt);
+				sb.Append((const UTF8Char*)".xml\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/drawing\"/>");
+				k++;
+			}
+			sb.Append((const UTF8Char*)"</Relationships>");
+
+			Text::StrConcat(Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"xl/worksheets/_rels/sheet"), i + 1), (const UTF8Char*)".xml.rels");
+			zip->AddFile(sbuff, sb.ToString(), sb.GetLength(), dt.ToTicks(), false);
+
+			k = 0;
+			l = sheet->GetDrawingCount();
+			while (k < l)
+			{
+				Text::SpreadSheet::WorksheetDrawing *drawing = sheet->GetDrawing(k);
+				sb.ClearStr();
+				sb.Append((const UTF8Char*)"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n");
+				sb.Append((const UTF8Char*)"<xdr:wsDr xmlns:xdr=\"http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing\" xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:c=\"http://schemas.openxmlformats.org/drawingml/2006/chart\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\">");
+				switch (drawing->anchorType)
+				{
+				case Text::SpreadSheet::AnchorType::Absolute:
+					sb.Append((const UTF8Char*)"<xdr:absoluteAnchor>");
+					sb.Append((const UTF8Char*)"<xdr:pos x=\"");
+					sb.AppendOSInt(Math::Double2OSInt(Math::Unit::Distance::Convert(Math::Unit::Distance::DU_INCH, Math::Unit::Distance::DU_EMU, drawing->posXInch)));
+					sb.Append((const UTF8Char*)"\" y=\"");
+					sb.AppendOSInt(Math::Double2OSInt(Math::Unit::Distance::Convert(Math::Unit::Distance::DU_INCH, Math::Unit::Distance::DU_EMU, drawing->posYInch)));
+					sb.Append((const UTF8Char*)"\"/>");
+					sb.Append((const UTF8Char*)"<xdr:ext cx=\"");
+					sb.AppendOSInt(Math::Double2OSInt(Math::Unit::Distance::Convert(Math::Unit::Distance::DU_INCH, Math::Unit::Distance::DU_EMU, drawing->widthInch)));
+					sb.Append((const UTF8Char*)"\" cy=\"");
+					sb.AppendOSInt(Math::Double2OSInt(Math::Unit::Distance::Convert(Math::Unit::Distance::DU_INCH, Math::Unit::Distance::DU_EMU, drawing->heightInch)));
+					sb.Append((const UTF8Char*)"\"/>");
+					break;
+				case Text::SpreadSheet::AnchorType::OneCell:
+					sb.Append((const UTF8Char*)"<xdr:oneCellAnchor>");
+					sb.Append((const UTF8Char*)"<xdr:from>");
+					sb.Append((const UTF8Char*)"<xdr:col>");
+					sb.AppendUOSInt(drawing->col1 + 1);
+					sb.Append((const UTF8Char*)"</xdr:col>");
+					sb.Append((const UTF8Char*)"<xdr:colOff>");
+					sb.AppendOSInt(Math::Double2OSInt(Math::Unit::Distance::Convert(Math::Unit::Distance::DU_INCH, Math::Unit::Distance::DU_EMU, drawing->posXInch)));
+					sb.Append((const UTF8Char*)"</xdr:colOff>");
+					sb.Append((const UTF8Char*)"<xdr:row>");
+					sb.AppendUOSInt(drawing->row1 + 1);
+					sb.Append((const UTF8Char*)"</xdr:row>");
+					sb.Append((const UTF8Char*)"<xdr:rowOff>");
+					sb.AppendOSInt(Math::Double2OSInt(Math::Unit::Distance::Convert(Math::Unit::Distance::DU_INCH, Math::Unit::Distance::DU_EMU, drawing->posYInch)));
+					sb.Append((const UTF8Char*)"</xdr:rowOff>");
+					sb.Append((const UTF8Char*)"</xdr:from>");
+					sb.Append((const UTF8Char*)"<xdr:ext cx=\"");
+					sb.AppendOSInt(Math::Double2OSInt(Math::Unit::Distance::Convert(Math::Unit::Distance::DU_INCH, Math::Unit::Distance::DU_EMU, drawing->widthInch)));
+					sb.Append((const UTF8Char*)"\" cy=\"");
+					sb.AppendOSInt(Math::Double2OSInt(Math::Unit::Distance::Convert(Math::Unit::Distance::DU_INCH, Math::Unit::Distance::DU_EMU, drawing->heightInch)));
+					sb.Append((const UTF8Char*)"\"/>");
+					break;
+				case Text::SpreadSheet::AnchorType::TwoCell:
+					sb.Append((const UTF8Char*)"<xdr:twoCellAnchor editAs=\"twoCell\">");
+					sb.Append((const UTF8Char*)"<xdr:from>");
+					sb.Append((const UTF8Char*)"<xdr:col>");
+					sb.AppendUOSInt(drawing->col1 + 1);
+					sb.Append((const UTF8Char*)"</xdr:col>");
+					sb.Append((const UTF8Char*)"<xdr:colOff>");
+					sb.AppendOSInt(Math::Double2OSInt(Math::Unit::Distance::Convert(Math::Unit::Distance::DU_INCH, Math::Unit::Distance::DU_EMU, drawing->posXInch)));
+					sb.Append((const UTF8Char*)"</xdr:colOff>");
+					sb.Append((const UTF8Char*)"<xdr:row>");
+					sb.AppendUOSInt(drawing->row1 + 1);
+					sb.Append((const UTF8Char*)"</xdr:row>");
+					sb.Append((const UTF8Char*)"<xdr:rowOff>");
+					sb.AppendOSInt(Math::Double2OSInt(Math::Unit::Distance::Convert(Math::Unit::Distance::DU_INCH, Math::Unit::Distance::DU_EMU, drawing->posYInch)));
+					sb.Append((const UTF8Char*)"</xdr:rowOff>");
+					sb.Append((const UTF8Char*)"</xdr:from>");
+					sb.Append((const UTF8Char*)"<xdr:to>");
+					sb.Append((const UTF8Char*)"<xdr:col>");
+					sb.AppendUOSInt(drawing->col2 + 1);
+					sb.Append((const UTF8Char*)"</xdr:col>");
+					sb.Append((const UTF8Char*)"<xdr:colOff>");
+					sb.AppendOSInt(Math::Double2OSInt(Math::Unit::Distance::Convert(Math::Unit::Distance::DU_INCH, Math::Unit::Distance::DU_EMU, drawing->widthInch)));
+					sb.Append((const UTF8Char*)"</xdr:colOff>");
+					sb.Append((const UTF8Char*)"<xdr:row>");
+					sb.AppendUOSInt(drawing->row2 + 1);
+					sb.Append((const UTF8Char*)"</xdr:row>");
+					sb.Append((const UTF8Char*)"<xdr:rowOff>");
+					sb.AppendOSInt(Math::Double2OSInt(Math::Unit::Distance::Convert(Math::Unit::Distance::DU_INCH, Math::Unit::Distance::DU_EMU, drawing->heightInch)));
+					sb.Append((const UTF8Char*)"</xdr:rowOff>");
+					sb.Append((const UTF8Char*)"</xdr:to>");
+					break;
+				}
+				///////////////////////////////////////
+				sb.Append((const UTF8Char*)"<xdr:clientData/>");
+				switch (drawing->anchorType)
+				{
+				case Text::SpreadSheet::AnchorType::Absolute:
+					sb.Append((const UTF8Char*)"<xdr:absoluteAnchor>");
+					break;
+				case Text::SpreadSheet::AnchorType::OneCell:
+					sb.Append((const UTF8Char*)"<xdr:oneCellAnchor>");
+					break;
+				case Text::SpreadSheet::AnchorType::TwoCell:
+					sb.Append((const UTF8Char*)"</xdr:twoCellAnchor>");
+					break;
+				}
+				sb.Append((const UTF8Char*)"</xdr:wsDr>");
+				drawingCnt++;
+				Text::StrConcat(Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"xl/drawings/drawing"), drawingCnt), (const UTF8Char*)".xml");
+				zip->AddFile(sbuff, sb.ToString(), sb.GetLength(), dt.ToTicks(), false);
+				k++;
+			}
+		}
 		i++;
 	}
 
@@ -218,6 +350,7 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char 
 	sb.Append((const UTF8Char*)"</bookViews>");
 	sb.Append((const UTF8Char*)"<sheets>");
 	i = 0;
+	j = workbook->GetCount();
 	while (i < j)
 	{
 		Text::SpreadSheet::Worksheet *sheet = workbook->GetItem(i);
@@ -237,8 +370,6 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char 
 	sb.Append((const UTF8Char*)"<calcPr iterateCount=\"100\" refMode=\"A1\" iterate=\"false\" iterateDelta=\"0.001\"/>");
 	sb.Append((const UTF8Char*)"</workbook>");
 	zip->AddFile((const UTF8Char*)"xl/workbook.xml", sb.ToString(), sb.GetLength(), dt.ToTicks(), false);
-
-	//xl/styles.xml
 
 	sb.ClearStr();
 	sb.Append((const UTF8Char*)"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
@@ -360,6 +491,7 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char 
 	sb.Append((const UTF8Char*)"<Default Extension=\"jpeg\" ContentType=\"image/jpeg\"/>");
 	sb.Append((const UTF8Char*)"<Override PartName=\"/xl/_rels/workbook.xml.rels\" ContentType=\"application/vnd.openxmlformats-package.relationships+xml\"/>");
 	i = 0;
+	j = workbook->GetCount();
 	while (i < j)
 	{
 		sb.Append((const UTF8Char*)"<Override PartName=\"/xl/worksheets/sheet");
@@ -374,6 +506,202 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char 
 	sb.Append((const UTF8Char*)"<Override PartName=\"/docProps/core.xml\" ContentType=\"application/vnd.openxmlformats-package.core-properties+xml\"/>");
 	sb.Append((const UTF8Char*)"\n</Types>");
 	zip->AddFile((const UTF8Char*)"[Content_Types].xml", sb.ToString(), sb.GetLength(), dt.ToTicks(), false);
+
+	sb.ClearStr();
+	sb.Append((const UTF8Char*)"<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\r\n");
+	sb.Append((const UTF8Char*)"<styleSheet xmlns=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\">");
+	{
+		Data::StringUTF8Map<UOSInt> numFmtMap;
+		Data::ArrayList<const UTF8Char*> numFmts;
+		csptr = (const UTF8Char*)"General";
+		numFmtMap.Put(csptr, numFmts.GetCount());
+		numFmts.Add(csptr);
+
+		i = 0;
+		j = workbook->GetStyleCount();
+		while (i < j)
+		{
+			Text::SpreadSheet::CellStyle *style = workbook->GetStyle(i);
+			csptr = style->GetDataFormat();
+			if (csptr == 0)
+			{
+				csptr = (const UTF8Char*)"General";
+			}
+			if (!numFmtMap.ContainsKey(csptr))
+			{
+				numFmtMap.Put(csptr, numFmts.GetCount());
+				numFmts.Add(csptr);
+			}
+			i++;
+		}
+		if (numFmts.GetCount() > 0)
+		{
+			sb.Append((const UTF8Char*)"<numFmts count=\"");
+			sb.AppendUOSInt(numFmts.GetCount());
+			sb.Append((const UTF8Char*)"\">");
+			i = 0;
+			j = numFmts.GetCount();
+			while (i < j)
+			{
+				sb.Append((const UTF8Char*)"<numFmt numFmtId=\"");
+				sb.AppendUOSInt(i + 164);
+				sb.Append((const UTF8Char*)"\" formatCode=");
+				ToFormatCode(sbuff, numFmts.GetItem(i));
+				csptr = Text::XML::ToNewAttrText(sbuff);
+				sb.Append(csptr);
+				Text::XML::FreeNewText(csptr);
+				sb.Append((const UTF8Char*)"/>");
+				i++;
+			}
+			sb.Append((const UTF8Char*)"</numFmts>");
+		}
+		if (workbook->GetFontCount() > 0)
+		{
+			sb.Append((const UTF8Char*)"<fonts count=\"");
+			sb.AppendUOSInt(workbook->GetFontCount());
+			sb.Append((const UTF8Char*)"\">");
+			i = 0;
+			j = workbook->GetFontCount();
+			while (i < j)
+			{
+				Text::SpreadSheet::WorkbookFont *font = workbook->GetFont(i);
+				sb.Append((const UTF8Char*)"<font>");
+				if (font->GetSize() != 0)
+				{
+					sb.Append((const UTF8Char*)"<sz val=\"");
+					Text::SBAppendF64(&sb, font->GetSize());
+					sb.Append((const UTF8Char*)"\"/>");
+				}
+				if (font->GetName())
+				{
+					sb.Append((const UTF8Char*)"<name val=");
+					csptr = Text::XML::ToNewAttrText(font->GetName());
+					sb.Append(csptr);
+					Text::XML::FreeNewText(csptr);
+					sb.Append((const UTF8Char*)"/>");
+				}
+				sb.Append((const UTF8Char*)"<family val=\"0\"/>");
+				sb.Append((const UTF8Char*)"</font>");
+				i++;
+			}
+			sb.Append((const UTF8Char*)"</fonts>");
+		}
+
+		sb.Append((const UTF8Char*)"<fills count=\"1\">");
+		sb.Append((const UTF8Char*)"<fill>");
+		sb.Append((const UTF8Char*)"<patternFill patternType=\"none\"/>");
+		sb.Append((const UTF8Char*)"</fill>");
+		sb.Append((const UTF8Char*)"</fills>");
+
+		sb.Append((const UTF8Char*)"<borders count=\"1\">");
+		sb.Append((const UTF8Char*)"<border diagonalUp=\"false\" diagonalDown=\"false\">");
+		sb.Append((const UTF8Char*)"<left/>");
+		sb.Append((const UTF8Char*)"<right/>");
+		sb.Append((const UTF8Char*)"<top/>");
+		sb.Append((const UTF8Char*)"<bottom/>");
+		sb.Append((const UTF8Char*)"<diagonal/>");
+		sb.Append((const UTF8Char*)"</border>");
+		sb.Append((const UTF8Char*)"</borders>");
+
+		sb.Append((const UTF8Char*)"<cellStyleXfs count=\"1\">");
+		sb.Append((const UTF8Char*)"<xf numFmtId=\"164\" fontId=\"0\" fillId=\"0\" borderId=\"0\" applyFont=\"true\" applyBorder=\"true\" applyAlignment=\"true\" applyProtection=\"true\">");
+		sb.Append((const UTF8Char*)"<alignment horizontal=\"general\" vertical=\"bottom\" textRotation=\"0\" wrapText=\"false\" indent=\"0\" shrinkToFit=\"false\"/>");
+		sb.Append((const UTF8Char*)"<protection locked=\"true\" hidden=\"false\"/>");
+		sb.Append((const UTF8Char*)"</xf>");
+		sb.Append((const UTF8Char*)"</cellStyleXfs>");
+
+		if (workbook->GetStyleCount() > 0)
+		{
+			sb.Append((const UTF8Char*)"<cellXfs count=\"");
+			sb.AppendUOSInt(workbook->GetStyleCount());
+			sb.Append((const UTF8Char*)"\">");
+			i = 0;
+			j = workbook->GetStyleCount();
+			while (i < j)
+			{
+				Text::SpreadSheet::CellStyle *style = workbook->GetStyle(i);
+				Text::SpreadSheet::WorkbookFont *font = style->GetFont();
+				csptr = style->GetDataFormat();
+				if (csptr == 0)
+				{
+					csptr = (const UTF8Char*)"General";
+				}
+				sb.Append((const UTF8Char*)"<xf numFmtId=\"");
+				sb.AppendUOSInt(numFmtMap.Get(csptr) + 164);
+				sb.Append((const UTF8Char*)"\" fontId=\"");
+				if (font == 0)
+				{
+					sb.AppendChar('0', 1);
+				}
+				else
+				{
+					sb.AppendUOSInt(workbook->GetFontIndex(font));
+				}
+				sb.Append((const UTF8Char*)"\" fillId=\"0\" borderId=\"0\" xfId=\"0\" applyFont=\"");
+				if (font)
+				{
+					sb.Append((const UTF8Char*)"true");
+				}
+				else
+				{
+					sb.Append((const UTF8Char*)"false");
+				}
+				sb.Append((const UTF8Char*)"\" applyBorder=\"false\" applyAlignment=\"true\" applyProtection=\"false\">");
+				sb.Append((const UTF8Char*)"<alignment horizontal=\"");
+				switch (style->GetHAlign())
+				{
+				case Text::SpreadSheet::HAlignment::Left:
+					sb.Append((const UTF8Char*)"left");
+					break;
+				case Text::SpreadSheet::HAlignment::Center:
+					sb.Append((const UTF8Char*)"center");
+					break;
+				case Text::SpreadSheet::HAlignment::Right:
+					sb.Append((const UTF8Char*)"right");
+					break;
+				case Text::SpreadSheet::HAlignment::Fill:
+					sb.Append((const UTF8Char*)"fill");
+					break;
+				case Text::SpreadSheet::HAlignment::Justify:
+					sb.Append((const UTF8Char*)"justify");
+					break;
+				case Text::SpreadSheet::HAlignment::Unknown:
+				default:
+					sb.Append((const UTF8Char*)"general");
+					break;
+				}
+				sb.Append((const UTF8Char*)"\" vertical=\"");
+				switch (style->GetVAlign())
+				{
+				case Text::SpreadSheet::VAlignment::Top:
+					sb.Append((const UTF8Char*)"top");
+					break;
+				case Text::SpreadSheet::VAlignment::Center:
+					sb.Append((const UTF8Char*)"center");
+					break;
+				case Text::SpreadSheet::VAlignment::Bottom:
+					sb.Append((const UTF8Char*)"bottom");
+					break;
+				case Text::SpreadSheet::VAlignment::Justify:
+					sb.Append((const UTF8Char*)"justify");
+					break;
+				case Text::SpreadSheet::VAlignment::Unknown:
+				default:
+					sb.Append((const UTF8Char*)"general");
+					break;
+				}
+				sb.Append((const UTF8Char*)"\" textRotation=\"0\" wrapText=\"");
+				sb.Append(style->GetWordWrap()?(const UTF8Char*)"true":(const UTF8Char*)"false");
+				sb.Append((const UTF8Char*)"\" indent=\"0\" shrinkToFit=\"false\"/>");
+				sb.Append((const UTF8Char*)"<protection locked=\"true\" hidden=\"false\"/>");
+				sb.Append((const UTF8Char*)"</xf>");
+				i++;
+			}
+			sb.Append((const UTF8Char*)"</cellXfs>");
+		}
+	}
+	sb.Append((const UTF8Char*)"</styleSheet>");
+	zip->AddFile((const UTF8Char*)"xl/styles.xml", sb.ToString(), sb.GetLength(), dt.ToTicks(), false);
 
 	if (sharedStrings.GetCount() > 0)
 	{
@@ -427,27 +755,26 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char 
 	return true;
 }
 
-Double Exporter::XLSXExporter::Date2Number(Data::DateTime *dt)
+UTF8Char *Exporter::XLSXExporter::ToFormatCode(UTF8Char *sbuff, const UTF8Char *dataFormat)
 {
-	dt->ToLocalTime();
-	dt->SetTimeZoneQHR(0);
-	Int64 ticks = dt->ToTicks();
-	Int32 days = (Int32)(ticks / 86400000LL) + 25569;
-	ticks -= (days - 25569) * 86400000LL;
-	while (ticks < 0)
+	UTF8Char c;
+	while (true)
 	{
-		ticks += 86400000LL;
-		days -= 1;
+		c = *dataFormat++;
+		if (c == 0)
+		{
+			*sbuff = 0;
+			break;
+		}
+		else if (c == '-')
+		{
+			*sbuff++ = '\\';
+			*sbuff++ = c;
+		}
+		else
+		{
+			*sbuff++ = Text::CharUtil::ToLower(c);
+		}
 	}
-	return days + (Double)ticks / 86400000.0;
-}
-
-void Exporter::XLSXExporter::Number2Date(Data::DateTime *dt, Double v)
-{
-	Int32 days = (Int32)v;
-	Int8 tz;
-	dt->ToLocalTime();
-	tz = dt->GetTimeZoneQHR();
-	dt->SetTicks((days - 25569) * 86400000LL + Math::Double2OSInt((v - days) * 86400000));
-	dt->SetTimeZoneQHR(tz);
+	return sbuff;
 }

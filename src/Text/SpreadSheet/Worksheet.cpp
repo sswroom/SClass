@@ -161,6 +161,11 @@ Text::SpreadSheet::Worksheet::CellData *Text::SpreadSheet::Worksheet::CloneCell(
 	return newCell;
 }
 
+void Text::SpreadSheet::Worksheet::FreeDrawing(WorksheetDrawing *drawing)
+{
+	MemFree(drawing);
+}
+
 Text::SpreadSheet::Worksheet::Worksheet(const UTF8Char *name)
 {
 	this->name = Text::StrCopyNew(name);
@@ -176,6 +181,7 @@ Text::SpreadSheet::Worksheet::Worksheet(const UTF8Char *name)
 	this->options = 0x4b6;
 	NEW_CLASS(rows, Data::ArrayList<RowData*>());
 	NEW_CLASS(this->colWidths, Data::ArrayListDbl());
+	NEW_CLASS(drawings, Data::ArrayList<WorksheetDrawing*>());
 }
 
 Text::SpreadSheet::Worksheet::~Worksheet()
@@ -194,6 +200,9 @@ Text::SpreadSheet::Worksheet::~Worksheet()
 	}
 	DEL_CLASS(this->rows);
 	DEL_CLASS(this->colWidths);
+
+	LIST_FREE_FUNC(this->drawings, FreeDrawing);
+	DEL_CLASS(this->drawings);	
 }
 
 Text::SpreadSheet::Worksheet *Text::SpreadSheet::Worksheet::Clone(IStyleCtrl *srcCtrl, IStyleCtrl *newCtrl)
@@ -626,26 +635,44 @@ Double Text::SpreadSheet::Worksheet::GetColWidth(UOSInt col)
 	return this->colWidths->GetItem(col);
 }
 
-void Text::SpreadSheet::Worksheet::Number2Time(Data::DateTime *dt, Double number)
+UOSInt Text::SpreadSheet::Worksheet::GetDrawingCount()
 {
-	if (number < 61)
-	{
-		number += 1;
-	}
-	Int32 inum = (Int32)number;
-	Int32 ms;
-	Int32 s;
-	Int32 m;
-	dt->SetValue(1899, 12, 30, 0, 0, 0, 0);
-	dt->AddDay(inum);
-	number -= inum;
-	inum = Math::Double2Int32(number * 86400000.0);
-	ms = inum % 1000;
-	inum = inum / 1000;
-	s = inum % 60;
-	inum = inum / 60;
-	m = inum % 60;
-	inum = inum / 60;
-	dt->SetValue(dt->GetYear(), dt->GetMonth(), dt->GetDay(), inum, m, s, ms);
+	return this->drawings->GetCount();
 }
 
+Text::SpreadSheet::WorksheetDrawing *Text::SpreadSheet::Worksheet::GetDrawing(UOSInt index)
+{
+	return this->drawings->GetItem(index);
+}
+
+Text::SpreadSheet::WorksheetDrawing *Text::SpreadSheet::Worksheet::CreateDrawing(Math::Unit::Distance::DistanceUnit unit, Double x, Double y, Double w, Double h)
+{
+	Math::Unit::Distance::DistanceUnit inch = Math::Unit::Distance::DU_INCH;
+	WorksheetDrawing *drawing = MemAlloc(WorksheetDrawing, 1);
+	drawing->anchorType = AnchorType::Absolute;
+	drawing->posXInch = Math::Unit::Distance::Convert(unit, inch, x);
+	drawing->posYInch = Math::Unit::Distance::Convert(unit, inch, y);
+	drawing->widthInch = Math::Unit::Distance::Convert(unit, inch, w);
+	drawing->heightInch = Math::Unit::Distance::Convert(unit, inch, h);
+	drawing->col1 = 0;
+	drawing->row1 = 0;
+	drawing->col2 = 0;
+	drawing->row2 = 0;
+	this->drawings->Add(drawing);
+	return drawing;
+}
+
+void Text::SpreadSheet::Worksheet::CreateChart(Math::Unit::Distance::DistanceUnit du, Double x, Double y, Double w, Double h, const UTF8Char *title)
+{
+	WorksheetDrawing *drawing = this->CreateDrawing(du, x, y, w, h);
+	
+/*	XSSFChart chart = drawing.createChart(anchor);
+	if (title != null)
+	{
+		chart.setTitleText(title);
+	}
+	XDDFShapeProperties shPr = chart.getOrAddShapeProperties();
+	shPr.setFillProperties(new XDDFSolidFillProperties(XDDFColor.from(PresetColor.WHITE)));
+	shPr.setLineProperties(new XDDFLineProperties(new XDDFSolidFillProperties()));
+	return chart;*/
+}

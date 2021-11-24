@@ -8,6 +8,7 @@
 #include "Math/WKTWriter.h"
 #include "Text/MyStringFloat.h"
 #include "Text/MyStringW.h"
+#include "Text/XLSUtil.h"
 
 UOSInt Map::ESRI::FileGDBReader::GetFieldIndex(UOSInt colIndex)
 {
@@ -341,7 +342,7 @@ Bool Map::ESRI::FileGDBReader::GetStr(UOSInt colIndex, Text::StringBuilderUTF *s
 	case 5:
 		{
 			Data::DateTime dt;
-			Map::ESRI::FileGDBUtil::ToDateTime(&dt, ReadDouble(&this->rowData[this->fieldOfst[fieldIndex]]));
+			Text::XLSUtil::Number2Date(&dt, ReadDouble(&this->rowData[this->fieldOfst[fieldIndex]]));
 			sb->AppendDate(&dt);
 		}
 		return true;
@@ -416,7 +417,7 @@ const UTF8Char *Map::ESRI::FileGDBReader::GetNewStr(UOSInt colIndex)
 	case 5:
 		{
 			Data::DateTime dt;
-			Map::ESRI::FileGDBUtil::ToDateTime(&dt, ReadDouble(&this->rowData[this->fieldOfst[fieldIndex]]));
+			Text::XLSUtil::Number2Date(&dt, ReadDouble(&this->rowData[this->fieldOfst[fieldIndex]]));
 			dt.ToString(sbuff);
 			return Text::StrCopyNew(sbuff);
 		}
@@ -487,7 +488,7 @@ DB::DBReader::DateErrType Map::ESRI::FileGDBReader::GetDate(UOSInt colIndex, Dat
 	switch (field->fieldType)
 	{
 	case 5:
-		Map::ESRI::FileGDBUtil::ToDateTime(outVal, ReadDouble(&this->rowData[this->fieldOfst[fieldIndex]]));
+		Text::XLSUtil::Number2Date(outVal, ReadDouble(&this->rowData[this->fieldOfst[fieldIndex]]));
 		return DET_OK;
 	}
 	return DET_ERROR;
@@ -1061,7 +1062,7 @@ Bool Map::ESRI::FileGDBReader::GetVariItem(UOSInt colIndex, Data::VariItem *item
 		{
 			Data::DateTime *dt;
 			NEW_CLASS(dt, Data::DateTime());
-			Map::ESRI::FileGDBUtil::ToDateTime(dt, ReadDouble(&this->rowData[this->fieldOfst[fieldIndex]]));
+			Text::XLSUtil::Number2Date(dt, ReadDouble(&this->rowData[this->fieldOfst[fieldIndex]]));
 			item->SetDateDirect(dt);
 			return true;
 		}
@@ -1161,7 +1162,7 @@ Data::VariItem *Map::ESRI::FileGDBReader::GetNewItem(const UTF8Char *name)
 	case 5:
 		{
 			Data::DateTime dt;
-			Map::ESRI::FileGDBUtil::ToDateTime(&dt, ReadDouble(&this->rowData[this->fieldOfst[fieldIndex]]));
+			Text::XLSUtil::Number2Date(&dt, ReadDouble(&this->rowData[this->fieldOfst[fieldIndex]]));
 			return Data::VariItem::NewDate(&dt);
 		}
 	case 6:
@@ -1321,7 +1322,7 @@ Bool Map::ESRI::FileGDBReader::GetColDef(UOSInt colIndex, DB::ColDef *colDef)
 			if (field->defSize == 8)
 			{
 				Data::DateTime dt;
-				Map::ESRI::FileGDBUtil::ToDateTime(&dt, ReadDouble(field->defValue));
+				Text::XLSUtil::Number2Date(&dt, ReadDouble(field->defValue));
 				dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
 				colDef->SetDefVal(sbuff);
 			}

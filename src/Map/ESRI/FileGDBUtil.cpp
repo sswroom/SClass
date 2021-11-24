@@ -289,16 +289,6 @@ UOSInt Map::ESRI::FileGDBUtil::ReadVarInt(const UInt8 *buff, UOSInt ofst, Int64 
 	return ofst;
 }
 
-void Map::ESRI::FileGDBUtil::ToDateTime(Data::DateTime *dt, Double v)
-{
-	Int32 days = (Int32)v;
-	Int8 tz;
-	dt->ToLocalTime();
-	tz = dt->GetTimeZoneQHR();
-	dt->SetTicks((days - 25569) * 86400000LL + Math::Double2OSInt((v - days) * 86400000));
-	dt->SetTimeZoneQHR(tz);
-}
-
 const UTF8Char *Map::ESRI::FileGDBUtil::GeometryTypeGetName(UInt8 t)
 {
 	switch (t)

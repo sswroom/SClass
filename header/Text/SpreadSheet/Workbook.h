@@ -86,6 +86,7 @@ namespace Text
 
 			UOSInt GetFontCount();
 			WorkbookFont *GetFont(UOSInt index);
+			UOSInt GetFontIndex(WorkbookFont *font);
 			WorkbookFont *NewFont(const UTF8Char *name, Double size, Bool bold);
 
 			static void GetDefPalette(UInt32 *palette);

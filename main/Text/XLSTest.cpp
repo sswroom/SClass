@@ -1,8 +1,10 @@
 #include "Stdafx.h"
 #include "Core/Core.h"
 #include "Exporter/XLSXExporter.h"
+#include "IO/ConsoleWriter.h"
 #include "IO/Path.h"
 #include "Math/Math.h"
+#include "Math/Unit/Distance.h"
 #include "Text/SpreadSheet/Workbook.h"
 
 Int32 MyMain(Core::IProgControl *progCtrl)
@@ -18,6 +20,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	Text::SpreadSheet::CellStyle *numStyle = wb->NewCellStyle(font10, Text::SpreadSheet::HAlignment::Left, Text::SpreadSheet::VAlignment::Center, (const UTF8Char*)"0.###");
 	Text::SpreadSheet::Worksheet *graphSheet = wb->AddWorksheet();
 	Text::SpreadSheet::Worksheet *dataSheet = wb->AddWorksheet();
+	graphSheet->CreateChart(Math::Unit::Distance::DU_INCH, 0.64, 1.61, 13.10, 5.53, (const UTF8Char*)"SETTLEMENT VS CHAINAGE");
 /*	XSSFChart chart = XlsxUtil.createChart(graphSheet, DistanceUnit.Inch, 0.64, 1.61, 13.10, 5.53, "SETTLEMENT VS CHAINAGE");
 	XDDFLineChartData lineChartData = XlsxUtil.lineChart(chart, "ACCUMULATED SETTLEMENT", "CHAINAGE", AxisType.AT_CATEGORY);
 	if (testRowCnt > 1)
@@ -57,7 +60,11 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 //	chart.plot(lineChartData);
 
 	Exporter::XLSXExporter exporter;
-	exporter.ExportNewFile(sbuff, wb, 0);
+	if (!exporter.ExportNewFile(sbuff, wb, 0))
+	{
+		IO::ConsoleWriter console;
+		console.WriteLine((const UTF8Char*)"Error in writing to file");
+	}
 	DEL_CLASS(wb);
 	return 0;
 }

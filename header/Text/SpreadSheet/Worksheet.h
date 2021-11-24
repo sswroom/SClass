@@ -3,6 +3,7 @@
 #include "Data/ArrayList.h"
 #include "Data/ArrayListDbl.h"
 #include "Data/DateTime.h"
+#include "Math/Unit/Distance.h"
 #include "Text/SpreadSheet/CellStyle.h"
 #include "Text/SpreadSheet/IStyleCtrl.h"
 
@@ -17,6 +18,26 @@ namespace Text
 			DateTime,
 			MergedLeft,
 			MergedTop
+		};
+
+		enum class AnchorType
+		{
+			Absolute,
+			OneCell,
+			TwoCell
+		};
+
+		struct WorksheetDrawing
+		{
+			AnchorType anchorType;
+			Double posXInch;
+			Double posYInch;
+			Double widthInch;
+			Double heightInch;
+			UOSInt row1;
+			UOSInt col1;
+			UOSInt row2;
+			UOSInt col2;
 		};
 
 		class Worksheet
@@ -43,6 +64,7 @@ namespace Text
 			const UTF8Char *name;
 			Data::ArrayList<RowData*> *rows;
 			Data::ArrayListDbl *colWidths;
+			Data::ArrayList<WorksheetDrawing*> *drawings;
 			UInt32 freezeHori;
 			UInt32 freezeVert;
 			Double marginLeft;
@@ -62,6 +84,7 @@ namespace Text
 			void FreeCellData(CellData *data);
 			RowData *CloneRow(RowData *row, IStyleCtrl *srcCtrl, IStyleCtrl *newCtrl);
 			CellData *CloneCell(CellData *cell, IStyleCtrl *srcCtrl, IStyleCtrl *newCtrl);
+			void FreeDrawing(WorksheetDrawing *drawing);
 		public:
 			Worksheet(const UTF8Char *name);
 			~Worksheet();
@@ -114,7 +137,10 @@ namespace Text
 			UOSInt GetColWidthCount();
 			Double GetColWidth(UOSInt col);
 
-			static void Number2Time(Data::DateTime *dt, Double number);
+			UOSInt GetDrawingCount();
+			WorksheetDrawing *GetDrawing(UOSInt index);
+			WorksheetDrawing *CreateDrawing(Math::Unit::Distance::DistanceUnit unit, Double x, Double y, Double w, Double h);
+			void CreateChart(Math::Unit::Distance::DistanceUnit unit, Double x, Double y, Double w, Double h, const UTF8Char *title);
 		};
 	}
 }
