@@ -163,6 +163,7 @@ Text::SpreadSheet::Worksheet::CellData *Text::SpreadSheet::Worksheet::CloneCell(
 
 void Text::SpreadSheet::Worksheet::FreeDrawing(WorksheetDrawing *drawing)
 {
+	SDEL_CLASS(drawing->chart);
 	MemFree(drawing);
 }
 
@@ -658,21 +659,21 @@ Text::SpreadSheet::WorksheetDrawing *Text::SpreadSheet::Worksheet::CreateDrawing
 	drawing->row1 = 0;
 	drawing->col2 = 0;
 	drawing->row2 = 0;
+	drawing->chart = 0;
 	this->drawings->Add(drawing);
 	return drawing;
 }
 
-void Text::SpreadSheet::Worksheet::CreateChart(Math::Unit::Distance::DistanceUnit du, Double x, Double y, Double w, Double h, const UTF8Char *title)
+Text::SpreadSheet::OfficeChart *Text::SpreadSheet::Worksheet::CreateChart(Math::Unit::Distance::DistanceUnit du, Double x, Double y, Double w, Double h, const UTF8Char *title)
 {
 	WorksheetDrawing *drawing = this->CreateDrawing(du, x, y, w, h);
-	
-/*	XSSFChart chart = drawing.createChart(anchor);
-	if (title != null)
+	drawing->chart = NEW_CLASS_D(OfficeChart(du, x, y, w, h));
+	if (title)
 	{
-		chart.setTitleText(title);
+		drawing->chart->SetTitleText(title);
 	}
-	XDDFShapeProperties shPr = chart.getOrAddShapeProperties();
+/*	XDDFShapeProperties shPr = chart.getOrAddShapeProperties();
 	shPr.setFillProperties(new XDDFSolidFillProperties(XDDFColor.from(PresetColor.WHITE)));
-	shPr.setLineProperties(new XDDFLineProperties(new XDDFSolidFillProperties()));
-	return chart;*/
+	shPr.setLineProperties(new XDDFLineProperties(new XDDFSolidFillProperties()));*/
+	return drawing->chart;
 }

@@ -112,6 +112,7 @@ Bool UI::FileDialog::ShowDialog(ControlHandle *ownerHandle)
 {
 	WChar fname1[512];
 	WChar fname2[512];
+	WChar fname3[512];
 	WChar fname[MAXFILENAMESIZE];
 	WChar *sptr;
 //	WChar *dptr;
@@ -241,6 +242,26 @@ Bool UI::FileDialog::ShowDialog(ControlHandle *ownerHandle)
 				else if (c == 'n')
 				{
 					sptr = Text::StrConcat(sptr, initFileName);
+				}
+				else if (c == 'N')
+				{
+					i = Text::StrLastIndexOf(initFileName, '.');
+					if (i == INVALID_INDEX)
+					{
+						sptr = Text::StrConcat(sptr, initFileName);
+					}
+					else
+					{
+						sptr = Text::StrConcatC(sptr, initFileName, i);
+					}
+				}
+				else if (c == 'x')
+				{
+					i = Text::StrLastIndexOf(initFileName, '.');
+					if (i != INVALID_INDEX)
+					{
+						sptr = Text::StrConcat(sptr, &initFileName[i]);
+					}
 				}
 			}
 			else if (ptrStart == 0)
@@ -463,7 +484,38 @@ Bool UI::FileDialog::ShowDialog(ControlHandle *ownerHandle)
 				}
 				else
 				{
-					Text::StrConcat(sptr, currPtr);
+					i = Text::StrLastIndexOf(initFileName, '.');
+					if (i == INVALID_INDEX)
+					{
+						Text::StrConcat(sptr, currPtr);
+					}
+					else
+					{
+						Text::StrConcatC(fname3, initFileName, i);
+						UOSInt j = Text::StrIndexOf(currPtr, fname3);
+						if (j != INVALID_INDEX)
+						{
+							currPtr[j] = 0;
+							sptr = Text::StrConcat(sptr, currPtr);
+							sptr = Text::StrConcat(sptr, L"|N");
+							currPtr += i + j;
+						}
+						j = Text::StrIndexOf(currPtr, &initFileName[i]);
+						if (j != INVALID_INDEX)
+						{
+							sptr = Text::StrConcatC(sptr, currPtr, j);
+							sptr = Text::StrConcat(sptr, L"|x");
+							currPtr += j + Text::StrCharCnt(&initFileName[i]);
+							if (currPtr[0])
+							{
+								sptr = Text::StrConcat(sptr, currPtr);
+							}
+						}
+						else
+						{
+							sptr = Text::StrConcat(sptr, currPtr);
+						}
+					}
 				}
 			}
 			else

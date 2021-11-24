@@ -3665,6 +3665,8 @@ Text/MIMEObj/UnknownMIMEObj.h: ../../src/Text/MIMEObj/UnknownMIMEObj.cpp
 Text/SpreadSheet/CellStyle.h: ../../src/Text/SpreadSheet/CellStyle.cpp
 @CellStyle.o
 Text/SpreadSheet/IStyleCtrl.h:
+Text/SpreadSheet/OfficeChart.h: ../../src/Text/SpreadSheet/OfficeChart.cpp
+@OfficeChart.o
 Text/SpreadSheet/Workbook.h: ../../src/Text/SpreadSheet/Workbook.cpp
 @Workbook.o
 Text/SpreadSheet/WorkbookFont.h: ../../src/Text/SpreadSheet/WorkbookFont.cpp
@@ -5030,6 +5032,7 @@ MultipartMIMEObj.o: ../../src/Text/MIMEObj/MultipartMIMEObj.cpp
 TextMIMEObj.o: ../../src/Text/MIMEObj/TextMIMEObj.cpp
 UnknownMIMEObj.o: ../../src/Text/MIMEObj/UnknownMIMEObj.cpp
 CellStyle.o: ../../src/Text/SpreadSheet/CellStyle.cpp
+OfficeChart.o: ../../src/Text/SpreadSheet/OfficeChart.cpp
 Workbook.o: ../../src/Text/SpreadSheet/Workbook.cpp
 WorkbookFont.o: ../../src/Text/SpreadSheet/WorkbookFont.cpp
 Worksheet.o: ../../src/Text/SpreadSheet/Worksheet.cpp

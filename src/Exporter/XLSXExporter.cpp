@@ -68,6 +68,7 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char 
 	UOSInt m;
 	UOSInt n;
 	UOSInt drawingCnt = 0;
+	UOSInt chartCnt = 0;
 	Data::ArrayList<const UTF8Char*> sharedStrings;
 	Data::StringUTF8Map<UOSInt> stringMap;
 	dt.SetCurrTimeUTC();
@@ -315,15 +316,50 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char 
 					sb.Append((const UTF8Char*)"</xdr:to>");
 					break;
 				}
-				///////////////////////////////////////
+				if (drawing->chart)
+				{
+					sb.Append((const UTF8Char*)"<xdr:graphicFrame>");
+					sb.Append((const UTF8Char*)"<xdr:nvGraphicFramePr>");
+					sb.Append((const UTF8Char*)"<xdr:cNvPr id=\"");
+					sb.AppendUOSInt(chartCnt);
+					sb.Append((const UTF8Char*)"\" name=\"Diagramm");
+					sb.AppendUOSInt(chartCnt);
+					sb.Append((const UTF8Char*)"\"/>");
+					sb.Append((const UTF8Char*)"<xdr:cNvGraphicFramePr/>");
+					sb.Append((const UTF8Char*)"</xdr:nvGraphicFramePr>");
+					sb.Append((const UTF8Char*)"<xdr:xfrm>");
+					sb.Append((const UTF8Char*)"<a:off x=\"");
+					sb.AppendOSInt(Math::Double2OSInt(Math::Unit::Distance::Convert(Math::Unit::Distance::DU_INCH, Math::Unit::Distance::DU_EMU, drawing->chart->GetXInch())));
+					sb.Append((const UTF8Char*)"\" y=\"");
+					sb.AppendOSInt(Math::Double2OSInt(Math::Unit::Distance::Convert(Math::Unit::Distance::DU_INCH, Math::Unit::Distance::DU_EMU, drawing->chart->GetYInch())));
+					sb.Append((const UTF8Char*)"\"/>");
+					sb.Append((const UTF8Char*)"<a:ext cx=\"");
+					sb.AppendOSInt(Math::Double2OSInt(Math::Unit::Distance::Convert(Math::Unit::Distance::DU_INCH, Math::Unit::Distance::DU_EMU, drawing->chart->GetWInch())));
+					sb.Append((const UTF8Char*)"\" cy=\"");
+					sb.AppendOSInt(Math::Double2OSInt(Math::Unit::Distance::Convert(Math::Unit::Distance::DU_INCH, Math::Unit::Distance::DU_EMU, drawing->chart->GetHInch())));
+					sb.Append((const UTF8Char*)"\"/>");
+					sb.Append((const UTF8Char*)"</xdr:xfrm>");
+					sb.Append((const UTF8Char*)"<a:graphic>");
+					sb.Append((const UTF8Char*)"<a:graphicData uri=\"http://schemas.openxmlformats.org/drawingml/2006/chart\">");
+					sb.Append((const UTF8Char*)"<c:chart r:id=\"rId");
+					sb.AppendUOSInt(chartCnt + 1);
+					sb.Append((const UTF8Char*)"\"/>");
+					sb.Append((const UTF8Char*)"</a:graphicData>");
+					sb.Append((const UTF8Char*)"</a:graphic>");
+					sb.Append((const UTF8Char*)"</xdr:graphicFrame>");	
+				}
+				else
+				{
+					///////////////////////////////////////
+				}
 				sb.Append((const UTF8Char*)"<xdr:clientData/>");
 				switch (drawing->anchorType)
 				{
 				case Text::SpreadSheet::AnchorType::Absolute:
-					sb.Append((const UTF8Char*)"<xdr:absoluteAnchor>");
+					sb.Append((const UTF8Char*)"</xdr:absoluteAnchor>");
 					break;
 				case Text::SpreadSheet::AnchorType::OneCell:
-					sb.Append((const UTF8Char*)"<xdr:oneCellAnchor>");
+					sb.Append((const UTF8Char*)"</xdr:oneCellAnchor>");
 					break;
 				case Text::SpreadSheet::AnchorType::TwoCell:
 					sb.Append((const UTF8Char*)"</xdr:twoCellAnchor>");
@@ -333,6 +369,22 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char 
 				drawingCnt++;
 				Text::StrConcat(Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"xl/drawings/drawing"), drawingCnt), (const UTF8Char*)".xml");
 				zip->AddFile(sbuff, sb.ToString(), sb.GetLength(), dt.ToTicks(), false);
+
+				if (drawing->chart)
+				{
+					sb.ClearStr();
+					sb.Append((const UTF8Char*)"<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>");
+					sb.Append((const UTF8Char*)"<Relationships xmlns=\"http://schemas.openxmlformats.org/package/2006/relationships\">");
+					sb.Append((const UTF8Char*)"<Relationship Id=\"rId1\" Target=\"../charts/chart");
+					sb.AppendUOSInt(chartCnt + 1);
+					sb.Append((const UTF8Char*)".xml\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/chart\"/>");
+					sb.Append((const UTF8Char*)"</Relationships>");
+
+					Text::StrConcat(Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"xl/drawings/_rels/drawing"), drawingCnt), (const UTF8Char*)".xml.rels");
+					zip->AddFile(sbuff, sb.ToString(), sb.GetLength(), dt.ToTicks(), false);
+
+					//////////////////////////////////////
+				}
 				k++;
 			}
 		}

@@ -6,6 +6,7 @@
 #include "Math/Unit/Distance.h"
 #include "Text/SpreadSheet/CellStyle.h"
 #include "Text/SpreadSheet/IStyleCtrl.h"
+#include "Text/SpreadSheet/OfficeChart.h"
 
 namespace Text
 {
@@ -38,6 +39,7 @@ namespace Text
 			UOSInt col1;
 			UOSInt row2;
 			UOSInt col2;
+			OfficeChart *chart;
 		};
 
 		class Worksheet
@@ -140,7 +142,7 @@ namespace Text
 			UOSInt GetDrawingCount();
 			WorksheetDrawing *GetDrawing(UOSInt index);
 			WorksheetDrawing *CreateDrawing(Math::Unit::Distance::DistanceUnit unit, Double x, Double y, Double w, Double h);
-			void CreateChart(Math::Unit::Distance::DistanceUnit unit, Double x, Double y, Double w, Double h, const UTF8Char *title);
+			OfficeChart *CreateChart(Math::Unit::Distance::DistanceUnit unit, Double x, Double y, Double w, Double h, const UTF8Char *title);
 		};
 	}
 }
