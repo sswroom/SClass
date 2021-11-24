@@ -15,11 +15,12 @@ Bool Text::SpreadSheet::CellStyle::BorderStyle::operator!=(BorderStyle border)
 		return true;
 }
 
-Text::SpreadSheet::CellStyle::CellStyle()
+Text::SpreadSheet::CellStyle::CellStyle(UOSInt index)
 {
+	this->index = index;
 	this->id = 0;
-	this->halign = HALIGN_UNKNOWN;
-	this->valign = VALIGN_UNKNOWN;
+	this->halign = HAlignment::Unknown;
+	this->valign = VAlignment::Unknown;
 	this->wordWrap = false;
 	this->borderBottom.borderType = Text::SpreadSheet::CellStyle::BT_NONE;
 	this->borderLeft.borderType = Text::SpreadSheet::CellStyle::BT_NONE;
@@ -41,7 +42,7 @@ Text::SpreadSheet::CellStyle::~CellStyle()
 Text::SpreadSheet::CellStyle *Text::SpreadSheet::CellStyle::Clone()
 {
 	Text::SpreadSheet::CellStyle *style;
-	NEW_CLASS(style, Text::SpreadSheet::CellStyle());
+	NEW_CLASS(style, Text::SpreadSheet::CellStyle(this->index));
 	style->id = SCOPY_TEXT(this->id);
 	style->halign = this->halign;
 	style->valign = this->valign;
@@ -60,6 +61,7 @@ Text::SpreadSheet::CellStyle *Text::SpreadSheet::CellStyle::Clone()
 
 void Text::SpreadSheet::CellStyle::CopyFrom(CellStyle *style)
 {
+	this->index = style->index;
 	SDEL_TEXT(this->id);
 	this->id = SCOPY_TEXT(style->id);
 	this->halign = style->halign;
@@ -79,6 +81,8 @@ void Text::SpreadSheet::CellStyle::CopyFrom(CellStyle *style)
 
 Bool Text::SpreadSheet::CellStyle::Equals(CellStyle *style)
 {
+	if (style->index != this->index)
+		return false;
 	if (style->halign != this->halign)
 		return false;
 	if (style->valign != this->valign)
@@ -120,6 +124,12 @@ Bool Text::SpreadSheet::CellStyle::Equals(CellStyle *style)
 	return true;
 }
 
+Text::SpreadSheet::CellStyle *Text::SpreadSheet::CellStyle::SetIndex(UOSInt index)
+{
+	this->index = index;
+	return this;
+}
+
 Text::SpreadSheet::CellStyle *Text::SpreadSheet::CellStyle::SetID(const UTF8Char *id)
 {
 	if (id == 0)
@@ -129,13 +139,13 @@ Text::SpreadSheet::CellStyle *Text::SpreadSheet::CellStyle::SetID(const UTF8Char
 	return this;
 }
 
-Text::SpreadSheet::CellStyle *Text::SpreadSheet::CellStyle::SetHAlign(Text::SpreadSheet::CellStyle::HAlignment halign)
+Text::SpreadSheet::CellStyle *Text::SpreadSheet::CellStyle::SetHAlign(HAlignment halign)
 {
 	this->halign = halign;
 	return this;
 }
 
-Text::SpreadSheet::CellStyle *Text::SpreadSheet::CellStyle::SetVAlign(Text::SpreadSheet::CellStyle::VAlignment valign)
+Text::SpreadSheet::CellStyle *Text::SpreadSheet::CellStyle::SetVAlign(VAlignment valign)
 {
 	this->valign = valign;
 	return this;
@@ -191,17 +201,22 @@ Text::SpreadSheet::CellStyle *Text::SpreadSheet::CellStyle::SetDataFormat(const 
 	return this;
 }
 
+UOSInt Text::SpreadSheet::CellStyle::GetIndex()
+{
+	return this->index;
+}
+
 const UTF8Char *Text::SpreadSheet::CellStyle::GetID()
 {
 	return this->id;
 }
 
-Text::SpreadSheet::CellStyle::HAlignment Text::SpreadSheet::CellStyle::GetHAlign()
+Text::SpreadSheet::HAlignment Text::SpreadSheet::CellStyle::GetHAlign()
 {
 	return this->halign;
 }
 
-Text::SpreadSheet::CellStyle::VAlignment Text::SpreadSheet::CellStyle::GetVAlign()
+Text::SpreadSheet::VAlignment Text::SpreadSheet::CellStyle::GetVAlign()
 {
 	return this->valign;
 }

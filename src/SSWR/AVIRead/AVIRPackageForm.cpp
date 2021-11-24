@@ -14,6 +14,7 @@ typedef enum
 {
 	MNU_PASTE = 100,
 	MNU_COPYTO,
+	MNU_COPYALLTO,
 	MNU_SAVEAS
 } MenuItem;
 
@@ -529,6 +530,7 @@ SSWR::AVIRead::AVIRPackageForm::AVIRPackageForm(UI::GUIClientControl *parent, UI
 	mnu = mnuMain->AddSubMenu((const UTF8Char*)"&Edit");
 	ind = mnu->AddItem((const UTF8Char*)"&Paste", MNU_PASTE, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_V);
 	mnu->AddItem((const UTF8Char*)"Copy To...", MNU_COPYTO, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu->AddItem((const UTF8Char*)"Copy All To...", MNU_COPYALLTO, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 
 	NEW_CLASS(this->mnuPopup, UI::GUIPopupMenu());
 	this->mnuPopup->AddItem((const UTF8Char*)"Copy To...", MNU_COPYTO, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
@@ -695,6 +697,28 @@ void SSWR::AVIRead::AVIRPackageForm::EventMenuClicked(UInt16 cmdId)
 				}
 				DEL_CLASS(dlg);
 			}
+		}
+		break;
+	case MNU_COPYALLTO:
+		if (packFile->GetCount() > 0)
+		{
+			UI::FolderDialog *dlg;
+			NEW_CLASS(dlg, UI::FolderDialog(L"SSWR", L"AVIRead", L"PackageCopyAllTo"));
+			if (dlg->ShowDialog(this->GetHandle()) == UI::GUIForm::DR_OK)
+			{
+				UOSInt i = 0;
+				UOSInt j = packFile->GetCount();
+				while (i < j)
+				{
+					if (!packFile->CopyTo(i, dlg->GetFolder(), false))
+					{
+						UI::MessageDialog::ShowDialog((const UTF8Char *)"Error in copying", (const UTF8Char *)"Copy To", this);
+						break;
+					}
+					i++;
+				}
+			}
+			DEL_CLASS(dlg);
 		}
 		break;
 	case MNU_SAVEAS:

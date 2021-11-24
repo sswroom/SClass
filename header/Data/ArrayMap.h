@@ -21,6 +21,7 @@ namespace Data
 		T GetKey(UOSInt index);
 		void PutAll(ArrayMap<T,V> *map);
 		OSInt GetIndex(T key);
+		Bool ContainsKey(T key);
 
 		Data::ArrayList<V> *GetValues();
 		Data::SortableArrayList<T> *GetKeys();
@@ -111,6 +112,11 @@ namespace Data
 	template <class T, class V> OSInt ArrayMap<T, V>::GetIndex(T key)
 	{
 		return this->keys->SortedIndexOf(key);
+	}
+
+	template <class T, class V> Bool ArrayMap<T, V>::ContainsKey(T key)
+	{
+		return this->keys->SortedIndexOf(key) >= 0;
 	}
 
 	template <class T, class V> Data::ArrayList<V> *ArrayMap<T, V>::GetValues()

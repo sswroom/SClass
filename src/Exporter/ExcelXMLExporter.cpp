@@ -276,46 +276,46 @@ Bool Exporter::ExcelXMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8C
 				sb.Append((const UTF8Char*)">");
 				writer->WriteLine(sb.ToString());
 
-				if (style->GetHAlign() != Text::SpreadSheet::CellStyle::HALIGN_UNKNOWN || (style->GetVAlign() != Text::SpreadSheet::CellStyle::VALIGN_CENTER && style->GetVAlign() != Text::SpreadSheet::CellStyle::VALIGN_UNKNOWN) || style->GetWordWrap())
+				if (style->GetHAlign() != Text::SpreadSheet::HAlignment::Unknown || (style->GetVAlign() != Text::SpreadSheet::VAlignment::Center && style->GetVAlign() != Text::SpreadSheet::VAlignment::Unknown) || style->GetWordWrap())
 				{
 					sb.ClearStr();
 					sb.Append((const UTF8Char*)"   <Alignment");
 					switch (style->GetHAlign())
 					{
-					case Text::SpreadSheet::CellStyle::HALIGN_LEFT:
+					case Text::SpreadSheet::HAlignment::Left:
 						sb.Append((const UTF8Char*)" ss:Horizontal=\"Left\"");
 						break;
-					case Text::SpreadSheet::CellStyle::HALIGN_CENTER:
+					case Text::SpreadSheet::HAlignment::Center:
 						sb.Append((const UTF8Char*)" ss:Horizontal=\"Center\"");
 						break;
-					case Text::SpreadSheet::CellStyle::HALIGN_RIGHT:
+					case Text::SpreadSheet::HAlignment::Right:
 						sb.Append((const UTF8Char*)" ss:Horizontal=\"Right\"");
 						break;
-					case Text::SpreadSheet::CellStyle::HALIGN_FILL:
+					case Text::SpreadSheet::HAlignment::Fill:
 						sb.Append((const UTF8Char*)" ss:Horizontal=\"Fill\"");
 						break;
-					case Text::SpreadSheet::CellStyle::HALIGN_JUSTIFY:
+					case Text::SpreadSheet::HAlignment::Justify:
 						sb.Append((const UTF8Char*)" ss:Horizontal=\"Justify\"");
 						break;
-					case Text::SpreadSheet::CellStyle::HALIGN_UNKNOWN:
+					case Text::SpreadSheet::HAlignment::Unknown:
 					default:
 						break;
 					}
 					switch (style->GetVAlign())
 					{
-					case Text::SpreadSheet::CellStyle::VALIGN_TOP:
+					case Text::SpreadSheet::VAlignment::Top:
 						sb.Append((const UTF8Char*)" ss:Vertical=\"Top\"");
 						break;
-					case Text::SpreadSheet::CellStyle::VALIGN_CENTER:
+					case Text::SpreadSheet::VAlignment::Center:
 						//sb.Append((const UTF8Char*)" ss:Vertical=\"Center\"");
 						break;
-					case Text::SpreadSheet::CellStyle::VALIGN_BOTTOM:
+					case Text::SpreadSheet::VAlignment::Bottom:
 						sb.Append((const UTF8Char*)" ss:Vertical=\"Bottom\"");
 						break;
-					case Text::SpreadSheet::CellStyle::VALIGN_JUSTIFY:
+					case Text::SpreadSheet::VAlignment::Justify:
 						sb.Append((const UTF8Char*)" ss:Vertical=\"Justify\"");
 						break;
-					case Text::SpreadSheet::CellStyle::VALIGN_UNKNOWN:
+					case Text::SpreadSheet::VAlignment::Unknown:
 					default:
 						break;
 					}
@@ -561,10 +561,10 @@ Bool Exporter::ExcelXMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8C
 							if (cell == 0)
 							{
 							}
-							else if (cell->cdt == Text::SpreadSheet::Worksheet::CDT_MERGEDLEFT)
+							else if (cell->cdt == Text::SpreadSheet::CellDataType::MergedLeft)
 							{
 							}
-							else if (cell->cdt == Text::SpreadSheet::Worksheet::CDT_MERGEDTOP)
+							else if (cell->cdt == Text::SpreadSheet::CellDataType::MergedTop)
 							{
 							}
 							else
@@ -614,23 +614,23 @@ Bool Exporter::ExcelXMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8C
 								{
 									switch (cell->cdt)
 									{
-									case Text::SpreadSheet::Worksheet::CDT_NUMBER:
+									case Text::SpreadSheet::CellDataType::Number:
 										sb.Append((const UTF8Char*)"<Data ss:Type=\"Number\">");
 										text2 = Text::XML::ToNewXMLText(cell->cellValue);
 										sb.Append(text2);
 										Text::XML::FreeNewText(text2);
 										sb.Append((const UTF8Char*)"</Data>");
 										break;
-									case Text::SpreadSheet::Worksheet::CDT_DATETIME:
+									case Text::SpreadSheet::CellDataType::DateTime:
 										sb.Append((const UTF8Char*)"<Data ss:Type=\"DateTime\">");
 										text2 = Text::XML::ToNewXMLText(cell->cellValue);
 										sb.Append(text2);
 										Text::XML::FreeNewText(text2);
 										sb.Append((const UTF8Char*)"</Data>");
 										break;
-									case Text::SpreadSheet::Worksheet::CDT_MERGEDLEFT:
-									case Text::SpreadSheet::Worksheet::CDT_MERGEDTOP:
-									case Text::SpreadSheet::Worksheet::CDT_STRING:
+									case Text::SpreadSheet::CellDataType::MergedLeft:
+									case Text::SpreadSheet::CellDataType::MergedTop:
+									case Text::SpreadSheet::CellDataType::String:
 									default:
 										sb.Append((const UTF8Char*)"<Data ss:Type=\"String\">");
 										text2 = Text::XML::ToNewXMLText(cell->cellValue);

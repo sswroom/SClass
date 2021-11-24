@@ -10,18 +10,18 @@ namespace Text
 {
 	namespace SpreadSheet
 	{
+		enum class CellDataType
+		{
+			String,
+			Number,
+			DateTime,
+			MergedLeft,
+			MergedTop
+		};
+
 		class Worksheet
 		{
 		public:
-			typedef enum
-			{
-				CDT_STRING,
-				CDT_NUMBER,
-				CDT_DATETIME,
-				CDT_MERGEDLEFT,
-				CDT_MERGEDTOP
-			} CellDataType;
-
 			typedef struct
 			{
 				CellDataType cdt;
@@ -97,6 +97,10 @@ namespace Text
 			Bool SetCellInt32(UOSInt row, UOSInt col, Int32 val);
 			Bool SetCellStyle(UOSInt row, UOSInt col, CellStyle *style);
 			Bool SetCellURL(UOSInt row, UOSInt col, const UTF8Char *url);
+			Bool SetCellString(UOSInt row, UOSInt col, CellStyle *style, const UTF8Char *val);
+			Bool SetCellDate(UOSInt row, UOSInt col, CellStyle *style, Data::DateTime *val);
+			Bool SetCellDouble(UOSInt row, UOSInt col, CellStyle *style, Double val);
+			Bool SetCellInt32(UOSInt row, UOSInt col, CellStyle *style, Int32 val);
 			Bool MergeCells(UOSInt row, UOSInt col, UInt32 height, UInt32 width);
 			Bool SetRowHidden(UOSInt row, Bool hidden);
 			Bool SetRowHeight(UOSInt row, Double height);

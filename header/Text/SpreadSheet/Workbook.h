@@ -69,6 +69,7 @@ namespace Text
 
 			Bool HasCellStyle();
 			CellStyle *NewCellStyle();
+			CellStyle *NewCellStyle(WorkbookFont *font, HAlignment halign, VAlignment valign, const UTF8Char *dataFormat);
 			UOSInt GetStyleCount();
 			virtual OSInt GetStyleIndex(CellStyle *style);
 			virtual CellStyle *GetStyle(UOSInt Index);
@@ -76,6 +77,7 @@ namespace Text
 			void GetPalette(UInt32 *palette);
 			void SetPalette(UInt32 *palette);
 
+			Worksheet *AddWorksheet();
 			Worksheet *AddWorksheet(const UTF8Char *name);
 			Worksheet *InsertWorksheet(UOSInt index, const UTF8Char *name);
 			UOSInt GetCount();
@@ -87,6 +89,7 @@ namespace Text
 			WorkbookFont *NewFont(const UTF8Char *name, Double size, Bool bold);
 
 			static void GetDefPalette(UInt32 *palette);
+			static UTF8Char *ColCode(UTF8Char *sbuff, UOSInt col);
 		};
 	}
 }

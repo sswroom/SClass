@@ -57,6 +57,7 @@ Text::SpreadSheet::Workbook::~Workbook()
 		font = this->fonts->GetItem(i);
 		DEL_CLASS(font);
 	}
+	DEL_CLASS(this->fonts);
 
 	SDEL_TEXT(this->author);
 	SDEL_TEXT(this->lastAuthor);
@@ -124,7 +125,7 @@ void Text::SpreadSheet::Workbook::AddDefaultStyles()
 	Text::SpreadSheet::CellStyle *style;
 	while (this->styles->GetCount() < 21)
 	{
-		NEW_CLASS(style, Text::SpreadSheet::CellStyle());
+		NEW_CLASS(style, Text::SpreadSheet::CellStyle(this->styles->GetCount()));
 		this->styles->Add(style);
 	}
 }
@@ -314,7 +315,19 @@ Bool Text::SpreadSheet::Workbook::HasCellStyle()
 Text::SpreadSheet::CellStyle *Text::SpreadSheet::Workbook::NewCellStyle()
 {
 	CellStyle *style;
-	NEW_CLASS(style, CellStyle());
+	NEW_CLASS(style, CellStyle(this->styles->GetCount()));
+	this->styles->Add(style);
+	return style;
+}
+
+Text::SpreadSheet::CellStyle *Text::SpreadSheet::Workbook::NewCellStyle(WorkbookFont *font, HAlignment halign, VAlignment valign, const UTF8Char *dataFormat)
+{
+	CellStyle *style;
+	NEW_CLASS(style, CellStyle(this->styles->GetCount()));
+	style->SetFont(font);
+	style->SetHAlign(halign);
+	style->SetVAlign(valign);
+	style->SetDataFormat(dataFormat);
 	this->styles->Add(style);
 	return style;
 }
@@ -354,6 +367,16 @@ void Text::SpreadSheet::Workbook::GetPalette(UInt32 *palette)
 void Text::SpreadSheet::Workbook::SetPalette(UInt32 *palette)
 {
 	MemCopyNO(this->palette, palette, sizeof(UInt32) * 56);
+}
+
+Text::SpreadSheet::Worksheet *Text::SpreadSheet::Workbook::AddWorksheet()
+{
+	UTF8Char sbuff[32];
+	Text::SpreadSheet::Worksheet *ws;
+	Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"Sheet "), this->sheets->GetCount());
+	NEW_CLASS(ws, Text::SpreadSheet::Worksheet(sbuff));
+	this->sheets->Add(ws);
+	return ws;
 }
 
 Text::SpreadSheet::Worksheet *Text::SpreadSheet::Workbook::AddWorksheet(const UTF8Char *name)
@@ -405,10 +428,37 @@ Text::SpreadSheet::WorkbookFont *Text::SpreadSheet::Workbook::NewFont(const UTF8
 {
 	Text::SpreadSheet::WorkbookFont *font;
 	NEW_CLASS(font, Text::SpreadSheet::WorkbookFont());
+	this->fonts->Add(font);
 	return font->SetName(name)->SetSize(size)->SetBold(bold);
 }
 
 void Text::SpreadSheet::Workbook::GetDefPalette(UInt32 *palette)
 {
 	MemCopyNO(palette, Text::SpreadSheet::Workbook::defPalette, sizeof(Text::SpreadSheet::Workbook::defPalette));
+}
+
+UTF8Char *Text::SpreadSheet::Workbook::ColCode(UTF8Char *sbuff, UOSInt col)
+{
+	if (col < 26)
+	{
+		*sbuff++ = (UTF8Char)(65 + col);
+		*sbuff = 0;
+		return sbuff;
+	}
+	col -= 26;
+	if (col < 26 * 26)
+	{
+		*sbuff++ = (UTF8Char)(65 + (col / 26));
+		*sbuff++ = (UTF8Char)(65 + (col % 26));
+		*sbuff = 0;
+		return sbuff;
+	}
+	col -= 26 * 26;
+	sbuff[2] = (UTF8Char)(65 + (col % 26));
+	col = col / 26;
+	sbuff[1] = (UTF8Char)(65 + (col % 26));
+	sbuff[0] = (UTF8Char)(65 + (col / 26));
+	sbuff += 3;
+	*sbuff = 0;
+	return sbuff;
 }

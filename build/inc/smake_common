@@ -155,6 +155,7 @@ nodeps:
 @StrInt64WAcc
 @StrInt64WSpd
 @UTF8ReaderTest
+@XLSTest
 
 console:
 @nodeps
@@ -714,6 +715,9 @@ StrInt64WSpd:
 UTF8ReaderTest:
 @UTF8ReaderTest.o
 @ConsoleStartup.o
+XLSTest:
+@XLSTest.o
+@ConsoleStartup.o
 
 #UI
 GUITest1:
@@ -912,6 +916,7 @@ StrInt64CSpd.o: ../../main/Text/StrInt64CSpd.cpp
 StrInt64WAcc.o: ../../main/Text/StrInt64WAcc.cpp
 StrInt64WSpd.o: ../../main/Text/StrInt64WSpd.cpp
 UTF8ReaderTest.o: ../../main/Text/UTF8ReaderTest.cpp
+XLSTest.o: ../../main/Text/XLSTest.cpp
 GUITest1.o: ../../main/UI/GUITest1.cpp
 GUITest2.o: ../../main/UI/GUITest2.cpp
 GUITest3.o: ../../main/UI/GUITest3.cpp

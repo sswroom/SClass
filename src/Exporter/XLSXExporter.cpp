@@ -3,6 +3,7 @@
 #include "Exporter/XLSXExporter.h"
 #include "IO/BuildTime.h"
 #include "IO/ZIPBuilder.h"
+#include "Math/Math.h"
 #include "Text/Locale.h"
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
@@ -60,27 +61,17 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char 
 	IO::ZIPBuilder *zip;
 	UOSInt i;
 	UOSInt j = workbook->GetCount();
+	UOSInt k;
+	UOSInt l;
+	UOSInt m;
+	UOSInt n;
+	Data::ArrayList<const UTF8Char*> sharedStrings;
+	Data::StringUTF8Map<UOSInt> stringMap;
 	dt.SetCurrTimeUTC();
 	NEW_CLASS(zip, IO::ZIPBuilder(stm));
 
-	sb.ClearStr();
-	sb.Append((const UTF8Char*)"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
-	sb.Append((const UTF8Char*)"<Relationships xmlns=\"http://schemas.openxmlformats.org/package/2006/relationships\">");
-	sb.Append((const UTF8Char*)"<Relationship Id=\"rId1\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles\" Target=\"styles.xml\"/>");
 	i = 0;
-	while (i < j)
-	{
-		sb.Append((const UTF8Char*)"<Relationship Id=\"rId");
-		sb.AppendUOSInt(i + 2);
-		sb.Append((const UTF8Char*)"\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet\" Target=\"worksheets/sheet");
-		sb.AppendUOSInt(i + 1);
-		sb.Append((const UTF8Char*)".xml\"/>");
-		i++;
-	}
-	sb.Append((const UTF8Char*)"\n</Relationships>");
-	zip->AddFile((const UTF8Char*)"xl/_rels/workbook.xml.rels", sb.ToString(), sb.GetLength(), dt.ToTicks(), false);
-
-	i = 0;
+	j = workbook->GetCount();
 	while (i < j)
 	{
 		sheet = workbook->GetItem(i);
@@ -106,7 +97,91 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char 
 		sb.Append((const UTF8Char*)"<cols>");
 		sb.Append((const UTF8Char*)"<col collapsed=\"false\" customWidth=\"false\" hidden=\"false\" outlineLevel=\"0\" max=\"1025\" min=\"1\" style=\"0\" width=\"11.52\"/>");
 		sb.Append((const UTF8Char*)"</cols>");
-		sb.Append((const UTF8Char*)"<sheetData/>");
+		k = 0;
+		l = sheet->GetCount();
+		if (l > 0)
+		{
+			sb.Append((const UTF8Char*)"<sheetData>");
+			while (k < l)
+			{
+				Text::SpreadSheet::Worksheet::RowData *row = sheet->GetItem(k);
+				sb.Append((const UTF8Char*)"<row r=\"");
+				sb.AppendUOSInt(k + 1);
+				sb.Append((const UTF8Char*)"\" customFormat=\"false\" ht=\"12.8\" hidden=\"false\" customHeight=\"false\" outlineLevel=\"0\" collapsed=\"false\">");
+
+				m = 0;
+				n = row->cells->GetCount();
+				while (m < n)
+				{
+					Text::SpreadSheet::Worksheet::CellData *cell = row->cells->GetItem(m);
+					if (cell && cell->cdt != Text::SpreadSheet::CellDataType::MergedLeft && cell->cdt != Text::SpreadSheet::CellDataType::MergedTop)
+					{
+						sb.Append((const UTF8Char*)"<c r=\"");
+						Text::StrUOSInt(Text::SpreadSheet::Workbook::ColCode(sbuff, m), k + 1);
+						sb.Append(sbuff);
+						sb.AppendChar('"', 1);
+						if (cell->style)
+						{
+							sb.Append((const UTF8Char*)" s=\"");
+							sb.AppendUOSInt(cell->style->GetIndex());
+							sb.AppendChar('"', 1);
+						}
+						switch (cell->cdt)
+						{
+						case Text::SpreadSheet::CellDataType::String:
+							sb.Append((const UTF8Char*)" t=\"s\"");
+							break;
+						case Text::SpreadSheet::CellDataType::Number:
+						case Text::SpreadSheet::CellDataType::DateTime:
+							sb.Append((const UTF8Char*)" t=\"n\"");
+							break;
+						case Text::SpreadSheet::CellDataType::MergedLeft:
+						case Text::SpreadSheet::CellDataType::MergedTop:
+							break;
+						}
+						sb.Append((const UTF8Char*)"><v>");
+						switch (cell->cdt)
+						{
+						case Text::SpreadSheet::CellDataType::String:
+							{
+								UOSInt sIndex = stringMap.Get(cell->cellValue);
+								if (sIndex == 0 && !stringMap.ContainsKey(cell->cellValue))
+								{
+									sIndex = sharedStrings.Add(cell->cellValue);
+									stringMap.Put(cell->cellValue, sIndex);
+								}
+								sb.AppendUOSInt(sIndex);
+							}
+							break;
+						case Text::SpreadSheet::CellDataType::Number:
+							sb.Append(cell->cellValue);
+							break;
+						case Text::SpreadSheet::CellDataType::DateTime:
+							{
+								Data::DateTime dt;
+								dt.ToLocalTime();
+								dt.SetValue(cell->cellValue);
+								Text::SBAppendF64(&sb, Date2Number(&dt));
+							}
+							break;
+						case Text::SpreadSheet::CellDataType::MergedLeft:
+						case Text::SpreadSheet::CellDataType::MergedTop:
+							break;
+						}
+						
+						sb.Append((const UTF8Char*)"</v></c>");
+					}
+					m++;
+				}
+				sb.Append((const UTF8Char*)"</row>");
+				k++;
+			}
+			sb.Append((const UTF8Char*)"</sheetData>");
+		}
+		else
+		{
+			sb.Append((const UTF8Char*)"<sheetData/>");
+		}
 		//<sheetProtection sheet="true" password="cc1a" objects="true" scenarios="true"/><printOptions headings="false" gridLines="false" gridLinesSet="true" horizontalCentered="false" verticalCentered="false"/>
 		sb.Append((const UTF8Char*)"<pageMargins left=\"");
 		Text::SBAppendF64(&sb, sheet->GetMarginLeft());
@@ -300,6 +375,79 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char 
 	sb.Append((const UTF8Char*)"\n</Types>");
 	zip->AddFile((const UTF8Char*)"[Content_Types].xml", sb.ToString(), sb.GetLength(), dt.ToTicks(), false);
 
+	if (sharedStrings.GetCount() > 0)
+	{
+		sb.ClearStr();
+		sb.Append((const UTF8Char*)"<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\r\n");
+		sb.Append((const UTF8Char*)"<sst xmlns=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" count=\"");
+		sb.AppendUOSInt(sharedStrings.GetCount());
+		sb.Append((const UTF8Char*)"\" uniqueCount=\"");
+		sb.AppendUOSInt(sharedStrings.GetCount());
+		sb.Append((const UTF8Char*)"\">");
+		i = 0;
+		j = sharedStrings.GetCount();
+		while (i < j)
+		{
+			sb.Append((const UTF8Char*)"<si><t xml:space=\"preserve\">");
+			csptr = Text::XML::ToNewXMLText(sharedStrings.GetItem(i));
+			sb.Append(csptr);
+			Text::XML::FreeNewText(csptr);
+			sb.Append((const UTF8Char*)"</t></si>");
+			i++;
+		}
+		sb.Append((const UTF8Char*)"</sst>");
+		zip->AddFile((const UTF8Char*)"xl/sharedStrings.xml", sb.ToString(), sb.GetLength(), dt.ToTicks(), false);
+	}
+
+	sb.ClearStr();
+	sb.Append((const UTF8Char*)"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+	sb.Append((const UTF8Char*)"<Relationships xmlns=\"http://schemas.openxmlformats.org/package/2006/relationships\">");
+	sb.Append((const UTF8Char*)"<Relationship Id=\"rId1\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles\" Target=\"styles.xml\"/>");
+	i = 0;
+	j = workbook->GetCount();
+	while (i < j)
+	{
+		sb.Append((const UTF8Char*)"<Relationship Id=\"rId");
+		sb.AppendUOSInt(i + 2);
+		sb.Append((const UTF8Char*)"\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet\" Target=\"worksheets/sheet");
+		sb.AppendUOSInt(i + 1);
+		sb.Append((const UTF8Char*)".xml\"/>");
+		i++;
+	}
+	if (sharedStrings.GetCount() > 0)
+	{
+		sb.Append((const UTF8Char*)"<Relationship Id=\"rId");
+		sb.AppendUOSInt(workbook->GetCount() + 2);
+		sb.Append((const UTF8Char*)"\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/sharedStrings\" Target=\"sharedStrings.xml\"/>");
+	}
+	sb.Append((const UTF8Char*)"\n</Relationships>");
+	zip->AddFile((const UTF8Char*)"xl/_rels/workbook.xml.rels", sb.ToString(), sb.GetLength(), dt.ToTicks(), false);
+
 	DEL_CLASS(zip);
 	return true;
+}
+
+Double Exporter::XLSXExporter::Date2Number(Data::DateTime *dt)
+{
+	dt->ToLocalTime();
+	dt->SetTimeZoneQHR(0);
+	Int64 ticks = dt->ToTicks();
+	Int32 days = (Int32)(ticks / 86400000LL) + 25569;
+	ticks -= (days - 25569) * 86400000LL;
+	while (ticks < 0)
+	{
+		ticks += 86400000LL;
+		days -= 1;
+	}
+	return days + (Double)ticks / 86400000.0;
+}
+
+void Exporter::XLSXExporter::Number2Date(Data::DateTime *dt, Double v)
+{
+	Int32 days = (Int32)v;
+	Int8 tz;
+	dt->ToLocalTime();
+	tz = dt->GetTimeZoneQHR();
+	dt->SetTicks((days - 25569) * 86400000LL + Math::Double2OSInt((v - days) * 86400000));
+	dt->SetTimeZoneQHR(tz);
 }

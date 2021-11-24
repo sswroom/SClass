@@ -5,28 +5,28 @@ namespace Text
 {
 	namespace SpreadSheet
 	{
+		enum class HAlignment
+		{
+			Unknown,
+			Left,
+			Center,
+			Right,
+			Fill,
+			Justify
+		};
+
+		enum class VAlignment
+		{
+			Unknown,
+			Top,
+			Center,
+			Bottom,
+			Justify
+		};
+
 		class CellStyle
 		{
 		public:
-			typedef enum
-			{
-				HALIGN_UNKNOWN,
-				HALIGN_LEFT,
-				HALIGN_CENTER,
-				HALIGN_RIGHT,
-				HALIGN_FILL,
-				HALIGN_JUSTIFY
-			} HAlignment;
-
-			typedef enum
-			{
-				VALIGN_UNKNOWN,
-				VALIGN_TOP,
-				VALIGN_CENTER,
-				VALIGN_BOTTOM,
-				VALIGN_JUSTIFY
-			} VAlignment;
-
 			typedef enum
 			{
 				BT_NONE = 0,
@@ -76,6 +76,7 @@ namespace Text
 				Bool operator!=(BorderStyle style);
 			};
 		private:
+			UOSInt index;
 			const UTF8Char *id;
 
 			HAlignment halign;
@@ -94,13 +95,14 @@ namespace Text
 			Bool protection;
 
 		public:
-			CellStyle();
+			CellStyle(UOSInt index);
 			~CellStyle();
 
 			CellStyle *Clone();
 			void CopyFrom(CellStyle *style);
 			Bool Equals(CellStyle *style);
 
+			CellStyle *SetIndex(UOSInt index);
 			CellStyle *SetID(const UTF8Char *id);
 			CellStyle *SetHAlign(HAlignment halign);
 			CellStyle *SetVAlign(VAlignment valign);
@@ -113,6 +115,7 @@ namespace Text
 			CellStyle *SetBorderBottom(BorderStyle *border);
 			CellStyle *SetDataFormat(const UTF8Char *dataFormat);
 
+			UOSInt GetIndex();
 			const UTF8Char *GetID();
 			HAlignment GetHAlign();
 			VAlignment GetVAlign();

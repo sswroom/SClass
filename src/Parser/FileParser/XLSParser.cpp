@@ -447,43 +447,43 @@ Bool Parser::FileParser::XLSParser::ParseWorkbook(IO::IStreamData *fd, UInt64 of
 					switch (j & 7)
 					{
 					case 0:
-						style->SetHAlign(Text::SpreadSheet::CellStyle::HALIGN_UNKNOWN);
+						style->SetHAlign(Text::SpreadSheet::HAlignment::Unknown);
 						break;
 					case 1:
-						style->SetHAlign(Text::SpreadSheet::CellStyle::HALIGN_LEFT);
+						style->SetHAlign(Text::SpreadSheet::HAlignment::Left);
 						break;
 					case 2:
-						style->SetHAlign(Text::SpreadSheet::CellStyle::HALIGN_CENTER);
+						style->SetHAlign(Text::SpreadSheet::HAlignment::Center);
 						break;
 					case 3:
-						style->SetHAlign(Text::SpreadSheet::CellStyle::HALIGN_RIGHT);
+						style->SetHAlign(Text::SpreadSheet::HAlignment::Right);
 						break;
 					case 4:
-						style->SetHAlign(Text::SpreadSheet::CellStyle::HALIGN_FILL);
+						style->SetHAlign(Text::SpreadSheet::HAlignment::Fill);
 						break;
 					case 5:
-						style->SetHAlign(Text::SpreadSheet::CellStyle::HALIGN_JUSTIFY);
+						style->SetHAlign(Text::SpreadSheet::HAlignment::Justify);
 						break;
 					case 6:
-						style->SetHAlign(Text::SpreadSheet::CellStyle::HALIGN_UNKNOWN);
+						style->SetHAlign(Text::SpreadSheet::HAlignment::Unknown);
 						break;
 					}
 					switch ((j & 0x70) >> 4)
 					{
 					case 0:
-						style->SetVAlign(Text::SpreadSheet::CellStyle::VALIGN_TOP);
+						style->SetVAlign(Text::SpreadSheet::VAlignment::Top);
 						break;
 					case 1:
-						style->SetVAlign(Text::SpreadSheet::CellStyle::VALIGN_CENTER);
+						style->SetVAlign(Text::SpreadSheet::VAlignment::Center);
 						break;
 					case 2:
-						style->SetVAlign(Text::SpreadSheet::CellStyle::VALIGN_BOTTOM);
+						style->SetVAlign(Text::SpreadSheet::VAlignment::Bottom);
 						break;
 					case 3:
-						style->SetVAlign(Text::SpreadSheet::CellStyle::VALIGN_JUSTIFY);
+						style->SetVAlign(Text::SpreadSheet::VAlignment::Justify);
 						break;
 					default:
-						style->SetVAlign(Text::SpreadSheet::CellStyle::VALIGN_UNKNOWN);
+						style->SetVAlign(Text::SpreadSheet::VAlignment::Unknown);
 						break;
 					}
 					style->SetWordWrap((j & 0x8) != 0);

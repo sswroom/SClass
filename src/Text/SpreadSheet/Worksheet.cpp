@@ -45,7 +45,7 @@ Text::SpreadSheet::Worksheet::CellData *Text::SpreadSheet::Worksheet::GetCellDat
 		if (cell == 0)
 		{
 			cell = MemAlloc(CellData, 1);
-			cell->cdt = CDT_STRING;
+			cell->cdt = CellDataType::String;
 			cell->cellValue = 0;
 			cell->style = 0;
 			cell->mergeHori = 0;
@@ -57,11 +57,11 @@ Text::SpreadSheet::Worksheet::CellData *Text::SpreadSheet::Worksheet::GetCellDat
 
 		if (keepMerge)
 			break;
-		if (cell->cdt == CDT_MERGEDLEFT)
+		if (cell->cdt == CellDataType::MergedLeft)
 		{
 			col--;
 		}
-		else if (cell->cdt == CDT_MERGEDTOP)
+		else if (cell->cdt == CellDataType::MergedTop)
 		{
 			row--;
 		}
@@ -353,72 +353,22 @@ const UTF8Char *Text::SpreadSheet::Worksheet::GetName()
 
 Bool Text::SpreadSheet::Worksheet::SetCellString(UOSInt row, UOSInt col, const UTF8Char *val)
 {
-	CellData *cell;
-	cell = GetCellData(row, col, false);
-	if (cell == 0)
-		return false;
-	cell->cdt = CDT_STRING;
-	if (cell->cellValue)
-	{
-		Text::StrDelNew(cell->cellValue);
-		cell->cellValue = 0;
-	}
-	if (val)
-	{
-		cell->cellValue = Text::StrCopyNew(val);
-	}
-	return true;
+	return this->SetCellString(row, col, 0, val);
 }
 
 Bool Text::SpreadSheet::Worksheet::SetCellDate(UOSInt row, UOSInt col, Data::DateTime *val)
 {
-	UTF8Char sbuff[32];
-	CellData *cell;
-	cell = GetCellData(row, col, false);
-	if (cell == 0)
-		return false;
-	cell->cdt = CDT_DATETIME;
-	if (cell->cellValue)
-	{
-		Text::StrDelNew(cell->cellValue);
-	}
-	val->ToString(sbuff, "yyyy-MM-ddTHH:mm:ss.fff");
-	cell->cellValue = Text::StrCopyNew(sbuff);
-	return true;
+	return this->SetCellDate(row, col, 0, val);
 }
 
 Bool Text::SpreadSheet::Worksheet::SetCellDouble(UOSInt row, UOSInt col, Double val)
 {
-	UTF8Char sbuff[32];
-	CellData *cell;
-	cell = GetCellData(row, col, false);
-	if (cell == 0)
-		return false;
-	cell->cdt = CDT_NUMBER;
-	if (cell->cellValue)
-	{
-		Text::StrDelNew(cell->cellValue);
-	}
-	Text::StrDouble(sbuff, val);
-	cell->cellValue = Text::StrCopyNew(sbuff);
-	return true;
+	return this->SetCellDouble(row, col, 0, val);
 }
 
 Bool Text::SpreadSheet::Worksheet::SetCellInt32(UOSInt row, UOSInt col, Int32 val)
 {
-	UTF8Char sbuff[32];
-	CellData *cell;
-	cell = GetCellData(row, col, false);
-	if (cell == 0)
-		return false;
-	cell->cdt = CDT_NUMBER;
-	if (cell->cellValue)
-	{
-		Text::StrDelNew(cell->cellValue);
-	}
-	Text::StrInt32(sbuff, val);
-	cell->cellValue = Text::StrCopyNew(sbuff);
-	return true;
+	return this->SetCellInt32(row, col, 0, val);
 }
 
 Bool Text::SpreadSheet::Worksheet::SetCellStyle(UOSInt row, UOSInt col, Text::SpreadSheet::CellStyle *style)
@@ -446,6 +396,80 @@ Bool Text::SpreadSheet::Worksheet::SetCellURL(UOSInt row, UOSInt col, const UTF8
 	return true;
 }
 
+Bool Text::SpreadSheet::Worksheet::SetCellString(UOSInt row, UOSInt col, CellStyle *style, const UTF8Char *val)
+{
+	CellData *cell;
+	cell = GetCellData(row, col, false);
+	if (cell == 0)
+		return false;
+	cell->cdt = CellDataType::String;
+	if (cell->cellValue)
+	{
+		Text::StrDelNew(cell->cellValue);
+		cell->cellValue = 0;
+	}
+	if (val)
+	{
+		cell->cellValue = Text::StrCopyNew(val);
+	}
+	if (style) cell->style = style;
+	return true;
+}
+
+Bool Text::SpreadSheet::Worksheet::SetCellDate(UOSInt row, UOSInt col, CellStyle *style, Data::DateTime *val)
+{
+	UTF8Char sbuff[32];
+	CellData *cell;
+	cell = GetCellData(row, col, false);
+	if (cell == 0)
+		return false;
+	cell->cdt = CellDataType::DateTime;
+	if (cell->cellValue)
+	{
+		Text::StrDelNew(cell->cellValue);
+	}
+	val->ToString(sbuff, "yyyy-MM-ddTHH:mm:ss.fff");
+	cell->cellValue = Text::StrCopyNew(sbuff);
+	if (style) cell->style = style;
+	return true;
+}
+
+Bool Text::SpreadSheet::Worksheet::SetCellDouble(UOSInt row, UOSInt col, CellStyle *style, Double val)
+{
+	UTF8Char sbuff[32];
+	CellData *cell;
+	cell = GetCellData(row, col, false);
+	if (cell == 0)
+		return false;
+	cell->cdt = CellDataType::Number;
+	if (cell->cellValue)
+	{
+		Text::StrDelNew(cell->cellValue);
+	}
+	Text::StrDouble(sbuff, val);
+	cell->cellValue = Text::StrCopyNew(sbuff);
+	if (style) cell->style = style;
+	return true;
+}
+
+Bool Text::SpreadSheet::Worksheet::SetCellInt32(UOSInt row, UOSInt col, CellStyle *style, Int32 val)
+{
+	UTF8Char sbuff[32];
+	CellData *cell;
+	cell = GetCellData(row, col, false);
+	if (cell == 0)
+		return false;
+	cell->cdt = CellDataType::Number;
+	if (cell->cellValue)
+	{
+		Text::StrDelNew(cell->cellValue);
+	}
+	Text::StrInt32(sbuff, val);
+	cell->cellValue = Text::StrCopyNew(sbuff);
+	if (style) cell->style = style;
+	return true;
+}
+
 Bool Text::SpreadSheet::Worksheet::MergeCells(UOSInt row, UOSInt col, UInt32 height, UInt32 width)
 {
 	if (width == 0)
@@ -465,7 +489,7 @@ Bool Text::SpreadSheet::Worksheet::MergeCells(UOSInt row, UOSInt col, UInt32 hei
 		while (j < width)
 		{
 			cell = GetCellData(row + i, col + j, true);
-			if (cell->cdt == CDT_MERGEDLEFT || cell->cdt == CDT_MERGEDTOP)
+			if (cell->cdt == CellDataType::MergedLeft || cell->cdt == CellDataType::MergedTop)
 				return false;
 			j++;
 		}
@@ -488,12 +512,12 @@ Bool Text::SpreadSheet::Worksheet::MergeCells(UOSInt row, UOSInt col, UInt32 hei
 				}
 				else
 				{
-					cell->cdt = CDT_MERGEDTOP;
+					cell->cdt = CellDataType::MergedTop;
 				}
 			}
 			else
 			{
-				cell->cdt = CDT_MERGEDLEFT;
+				cell->cdt = CellDataType::MergedLeft;
 			}
 			j++;
 		}
