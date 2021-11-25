@@ -5,6 +5,8 @@
 #include "Text/SpreadSheet/IStyleCtrl.h"
 #include "Text/SpreadSheet/Worksheet.h"
 
+using namespace Text::SpreadSheet;
+
 Text::SpreadSheet::Worksheet::RowData *Text::SpreadSheet::Worksheet::CreateRow(UOSInt row)
 {
 	RowData *rowData;
@@ -672,8 +674,7 @@ Text::SpreadSheet::OfficeChart *Text::SpreadSheet::Worksheet::CreateChart(Math::
 	{
 		drawing->chart->SetTitleText(title);
 	}
-/*	XDDFShapeProperties shPr = chart.getOrAddShapeProperties();
-	shPr.setFillProperties(new XDDFSolidFillProperties(XDDFColor.from(PresetColor.WHITE)));
-	shPr.setLineProperties(new XDDFLineProperties(new XDDFSolidFillProperties()));*/
+	drawing->chart->SetShapeFillStyle(OfficeFill::NewSolidFill(OfficeColor::NewPreset(PresetColor::White)));
+	drawing->chart->SetShapeLineStyle(NEW_CLASS_D(OfficeLineStyle(OfficeFill::NewSolidFill())));
 	return drawing->chart;
 }

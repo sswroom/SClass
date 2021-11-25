@@ -12,6 +12,8 @@
 #include "Text/XML.h"
 #include "Text/SpreadSheet/Workbook.h"
 
+using namespace Text::SpreadSheet;
+
 Exporter::XLSXExporter::XLSXExporter()
 {
 }
@@ -383,7 +385,40 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char 
 					Text::StrConcat(Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"xl/drawings/_rels/drawing"), drawingCnt), (const UTF8Char*)".xml.rels");
 					zip->AddFile(sbuff, sb.ToString(), sb.GetLength(), dt.ToTicks(), false);
 
+					chartCnt++;
+					sb.ClearStr();
+					sb.Append((const UTF8Char*)"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n");
+					sb.Append((const UTF8Char*)"<c:chartSpace xmlns:c=\"http://schemas.openxmlformats.org/drawingml/2006/chart\" xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\">");
+					sb.Append((const UTF8Char*)"<c:chart>");
+					if (drawing->chart->GetTitleText())
+					{
+						AppendTitle(&sb, drawing->chart->GetTitleText());
+					}
+					sb.Append((const UTF8Char*)"<c:plotArea>");
+					sb.Append((const UTF8Char*)"<c:layout/>");
+
+					if (drawing->chart->HasShapeProp())
+					{
+						sb.Append((const UTF8Char*)"<c:spPr>");
+						if (drawing->chart->GetShapeFillStyle())
+						{
+							AppendFill(&sb, drawing->chart->GetShapeFillStyle());
+						}
+						if (drawing->chart->GetShapeLineStyle())
+						{
+							AppendLineStyle(&sb, drawing->chart->GetShapeLineStyle());
+						}
+						sb.Append((const UTF8Char*)"</c:spPr>");
+					}
+					sb.Append((const UTF8Char*)"</c:plotArea>");
+
+					sb.Append((const UTF8Char*)"<c:plotVisOnly val=\"true\"/>");
+					sb.Append((const UTF8Char*)"</c:chart>");
 					//////////////////////////////////////
+					sb.Append((const UTF8Char*)"</c:chartSpace>");
+
+					Text::StrConcat(Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"xl/charts/chart"), chartCnt), (const UTF8Char*)".xml");
+					zip->AddFile(sbuff, sb.ToString(), sb.GetLength(), dt.ToTicks(), false);
 				}
 				k++;
 			}
@@ -807,6 +842,217 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char 
 	return true;
 }
 
+void Exporter::XLSXExporter::AppendFill(Text::StringBuilderUTF *sb, OfficeFill *fill)
+{
+	if (fill == 0)
+		return;
+	switch (fill->GetFillType())
+	{
+	case FillType::SolidFill:
+		if (fill->GetColor() == 0)
+		{
+			sb->Append((const UTF8Char*)"<a:solidFill/>");
+		}
+		else
+		{
+			sb->Append((const UTF8Char*)"<a:solidFill>");
+			OfficeColor *color = fill->GetColor();
+			if (color->GetColorType() == ColorType::Preset)
+			{
+				sb->Append((const UTF8Char*)"<a:prstClr val=\"");
+				sb->Append((const UTF8Char*)PresetColorCode(color->GetPresetColor()));
+				sb->Append((const UTF8Char*)"\"/>");
+			}
+			sb->Append((const UTF8Char*)"</a:solidFill>");
+		}
+		break;
+	}
+}
+
+void Exporter::XLSXExporter::AppendLineStyle(Text::StringBuilderUTF *sb, Text::SpreadSheet::OfficeLineStyle *lineStyle)
+{
+	if (lineStyle == 0)
+		return;
+	sb->Append((const UTF8Char*)"<a:ln>");
+	AppendFill(sb, lineStyle->GetFillStyle());
+	sb->Append((const UTF8Char*)"</a:ln>");
+}
+
+void Exporter::XLSXExporter::AppendTitle(Text::StringBuilderUTF *sb, const UTF8Char *title)
+{
+	sb->Append((const UTF8Char*)"<c:title>");
+	sb->Append((const UTF8Char*)"<c:tx>");
+	sb->Append((const UTF8Char*)"<c:rich>");
+	sb->Append((const UTF8Char*)"<a:bodyPr anchor=\"t\" rtlCol=\"false\"/>");
+	sb->Append((const UTF8Char*)"<a:lstStyle/>");
+	sb->Append((const UTF8Char*)"<a:p>");
+	sb->Append((const UTF8Char*)"<a:pPr algn=\"l\">");
+	sb->Append((const UTF8Char*)"<a:defRPr/>");
+	sb->Append((const UTF8Char*)"</a:pPr>");
+	sb->Append((const UTF8Char*)"<a:r>");
+	sb->Append((const UTF8Char*)"<a:rPr lang=\"en-HK\"/>");
+	sb->Append((const UTF8Char*)"<a:t>");
+	const UTF8Char *csptr = Text::XML::ToNewXMLText(title);
+	sb->Append(csptr);
+	Text::XML::FreeNewText(csptr);
+	sb->Append((const UTF8Char*)"</a:t>");
+	sb->Append((const UTF8Char*)"</a:r>");
+	sb->Append((const UTF8Char*)"<a:endParaRPr lang=\"en-US\" sz=\"1100\"/>");
+	sb->Append((const UTF8Char*)"</a:p>");
+	sb->Append((const UTF8Char*)"</c:rich>");
+	sb->Append((const UTF8Char*)"</c:tx>");
+	sb->Append((const UTF8Char*)"<c:layout/>");
+	sb->Append((const UTF8Char*)"</c:title>");
+}
+
+const Char *Exporter::XLSXExporter::PresetColorCode(PresetColor color)
+{
+	switch (color)
+	{
+//	case PresetColor::AliceBlue:
+	case PresetColor::AntiqueWhite:
+	case PresetColor::Aqua:
+	case PresetColor::Aquamarine:
+	case PresetColor::Azure:
+	case PresetColor::Beige:
+	case PresetColor::Bisque:
+	case PresetColor::Black:
+	case PresetColor::BlanchedAlmond:
+	case PresetColor::Blue:
+	case PresetColor::BlueViolet:
+	case PresetColor::Brown:
+	case PresetColor::BurlyWood:
+	case PresetColor::CadetBlue:
+	case PresetColor::Chartreuse:
+	case PresetColor::Chocolate:
+	case PresetColor::Coral:
+	case PresetColor::CornflowerBlue:
+	case PresetColor::Cornsilk:
+	case PresetColor::Crimson:
+	case PresetColor::Cyan:
+	case PresetColor::DeepPink:
+	case PresetColor::DeepSkyBlue:
+	case PresetColor::DimGray:
+	case PresetColor::DarkBlue:
+	case PresetColor::DarkCyan:
+	case PresetColor::DarkGoldenrod:
+	case PresetColor::DarkGray:
+	case PresetColor::DarkGreen:
+	case PresetColor::DarkKhaki:
+	case PresetColor::DarkMagenta:
+	case PresetColor::DarkOliveGreen:
+	case PresetColor::DarkOrange:
+	case PresetColor::DarkOrchid:
+	case PresetColor::DarkRed:
+	case PresetColor::DarkSalmon:
+	case PresetColor::DarkSeaGreen:
+	case PresetColor::DarkSlateBlue:
+	case PresetColor::DarkSlateGray:
+	case PresetColor::DarkTurquoise:
+	case PresetColor::DarkViolet:
+	case PresetColor::DodgerBlue:
+	case PresetColor::Firebrick:
+	case PresetColor::FloralWhite:
+	case PresetColor::ForestGreen:
+	case PresetColor::Fuchsia:
+	case PresetColor::Gainsboro:
+	case PresetColor::GhostWhite:
+	case PresetColor::Gold:
+	case PresetColor::Goldenrod:
+	case PresetColor::Gray:
+	case PresetColor::Green:
+	case PresetColor::GreenYellow:
+	case PresetColor::Honeydew:
+	case PresetColor::HotPink:
+	case PresetColor::IndianRed:
+	case PresetColor::Indigo:
+	case PresetColor::Ivory:
+	case PresetColor::Khaki:
+	case PresetColor::Lavender:
+	case PresetColor::LavenderBlush:
+	case PresetColor::LawnGreen:
+	case PresetColor::LemonChiffon:
+	case PresetColor::Lime:
+	case PresetColor::LimeGreen:
+	case PresetColor::Linen:
+	case PresetColor::LightBlue:
+	case PresetColor::LightCoral:
+	case PresetColor::LightCyan:
+	case PresetColor::LightGoldenrodYellow:
+	case PresetColor::LightGray:
+	case PresetColor::LightGreen:
+	case PresetColor::LightPink:
+	case PresetColor::LightSalmon:
+	case PresetColor::LightSeaGreen:
+	case PresetColor::LightSkyBlue:
+	case PresetColor::LightSlateGray:
+	case PresetColor::LightSteelBlue:
+	case PresetColor::LightYellow:
+	case PresetColor::Magenta:
+	case PresetColor::Maroon:
+	case PresetColor::MediumAquamarine:
+	case PresetColor::MediumBlue:
+	case PresetColor::MediumOrchid:
+	case PresetColor::MediumPurple:
+	case PresetColor::MediumSeaGreen:
+	case PresetColor::MediumSlateBlue:
+	case PresetColor::MediumSpringGreen:
+	case PresetColor::MediumTurquoise:
+	case PresetColor::MediumVioletRed:
+	case PresetColor::MidnightBlue:
+	case PresetColor::MintCream:
+	case PresetColor::MistyRose:
+	case PresetColor::Moccasin:
+	case PresetColor::NavajoWhite:
+	case PresetColor::Navy:
+	case PresetColor::OldLace:
+	case PresetColor::Olive:
+	case PresetColor::OliveDrab:
+	case PresetColor::Orange:
+	case PresetColor::OrangeRed:
+	case PresetColor::Orchid:
+	case PresetColor::PaleGoldenrod:
+	case PresetColor::PaleGreen:
+	case PresetColor::PaleTurquoise:
+	case PresetColor::PaleVioletRed:
+	case PresetColor::PapayaWhip:
+	case PresetColor::PeachPuff:
+	case PresetColor::Peru:
+	case PresetColor::Pink:
+	case PresetColor::Plum:
+	case PresetColor::PowderBlue:
+	case PresetColor::Purple:
+	case PresetColor::Red:
+	case PresetColor::RosyBrown:
+	case PresetColor::RoyalBlue:
+	case PresetColor::SaddleBrown:
+	case PresetColor::Salmon:
+	case PresetColor::SandyBrown:
+	case PresetColor::SeaGreen:
+	case PresetColor::SeaShell:
+	case PresetColor::Sienna:
+	case PresetColor::Silver:
+	case PresetColor::SkyBlue:
+	case PresetColor::SlateBlue:
+	case PresetColor::SlateGray:
+	case PresetColor::Snow:
+	case PresetColor::SpringGreen:
+	case PresetColor::SteelBlue:
+	case PresetColor::Tan:
+	case PresetColor::Teal:
+	case PresetColor::Thistle:
+	case PresetColor::Tomato:
+	case PresetColor::Turquoise:
+	case PresetColor::Violet:
+	case PresetColor::Wheat:
+	case PresetColor::White:
+	case PresetColor::WhiteSmoke:
+	case PresetColor::Yellow:
+	case PresetColor::YellowGreen:
+	default:
+		return "Unknown";		
+	}
+}
 UTF8Char *Exporter::XLSXExporter::ToFormatCode(UTF8Char *sbuff, const UTF8Char *dataFormat)
 {
 	UTF8Char c;
