@@ -12,8 +12,9 @@ using namespace Text::SpreadSheet;
 Int32 MyMain(Core::IProgControl *progCtrl)
 {
 	UOSInt testRowCnt = 2;
-	UTF8Char sbuff[512];
-	IO::Path::GetRealPath(sbuff, (const UTF8Char*)"~/Progs/Temp/XLSXTest.xlsx");
+	UTF8Char fileName[512];
+	UTF8Char sbuff2[32];
+	IO::Path::GetRealPath(fileName, (const UTF8Char*)"~/Progs/Temp/XLSXTest.xlsx");
 
 	Workbook *wb;
 	NEW_CLASS(wb, Workbook());
@@ -42,9 +43,6 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	}
 	if (testRowCnt > 0)
 	{
-	//	XDDFCategoryDataSource chainageSource = XDDFDataSourcesFactory.fromStringCellRange((XSSFSheet)dataSheet, new CellRangeAddress(0, 0, 1, j));
-
-	//	SimpleDateFormat dateFmt = new SimpleDateFormat("yyyy-MM-dd");
 		rowNum = 0;
 		while (rowNum < testRowCnt)
 		{
@@ -61,14 +59,16 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				}
 				i++;
 			}
-	//		XDDFNumericalDataSource<Double> valSource = XDDFDataSourcesFactory.fromNumericCellRange((XSSFSheet)dataSheet, new CellRangeAddress(rowNum, rowNum, 1, j));
-	//		XlsxUtil.addLineChartSeries(lineChartData, chainageSource, valSource, dateFmt.format(ts), testRowCnt > 1);
+			WorkbookDataSource *chainageSource = NEW_CLASS_D(WorkbookDataSource(dataSheet, 0, 0, 1, j));
+			WorkbookDataSource *valSource = NEW_CLASS_D(WorkbookDataSource(dataSheet, rowNum, rowNum, 1, j));
+			dt.ToString(sbuff2, "yyyy-MM-dd");
+			chart->AddSeries(chainageSource, valSource, sbuff2, testRowCnt > 1);
 		}
 	//	chart.plot(lineChartData);
 	}
 
 	Exporter::XLSXExporter exporter;
-	if (!exporter.ExportNewFile(sbuff, wb, 0))
+	if (!exporter.ExportNewFile(fileName, wb, 0))
 	{
 		IO::ConsoleWriter console;
 		console.WriteLine((const UTF8Char*)"Error in writing to file");

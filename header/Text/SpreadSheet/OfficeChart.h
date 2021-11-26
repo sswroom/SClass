@@ -4,6 +4,7 @@
 #include "Math/Unit/Distance.h"
 #include "Text/SpreadSheet/OfficeChartAxis.h"
 #include "Text/SpreadSheet/OfficeShapeProp.h"
+#include "Text/SpreadSheet/WorkbookDataSource.h"
 
 namespace Text
 {
@@ -30,6 +31,8 @@ namespace Text
 		class OfficeChart
 		{
 		private:
+			static PresetColor seriesColor[];
+
 			Double xInch;
 			Double yInch;
 			Double wInch;
@@ -73,6 +76,8 @@ namespace Text
 			UOSInt GetAxisCount();
 			OfficeChartAxis *GetAxis(UOSInt index);
 			UOSInt GetAxisIndex(OfficeChartAxis *axis);
+
+			void AddSeries(WorkbookDataSource *categoryData, WorkbookDataSource *valueData, const UTF8Char *name, Bool showMarker);
 		};
 	}
 }

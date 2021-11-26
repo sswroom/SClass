@@ -5,6 +5,20 @@
 
 using namespace Text::SpreadSheet;
 
+PresetColor Text::SpreadSheet::OfficeChart::seriesColor[] = {
+	PresetColor::DarkBlue,
+	PresetColor::Aqua,
+	PresetColor::Fuchsia,
+	PresetColor::BlueViolet,
+	PresetColor::Lavender,
+	PresetColor::GreenYellow,
+	PresetColor::Khaki,
+	PresetColor::Honeydew,
+	PresetColor::Magenta,
+	PresetColor::Orchid,
+	PresetColor::Thistle
+};
+
 Text::SpreadSheet::OfficeChart::OfficeChart(Math::Unit::Distance::DistanceUnit du, Double x, Double y, Double w, Double h)
 {
 	this->xInch = Math::Unit::Distance::Convert(du, Math::Unit::Distance::DU_INCH, x);
@@ -157,4 +171,26 @@ OfficeChartAxis *Text::SpreadSheet::OfficeChart::GetAxis(UOSInt index)
 UOSInt Text::SpreadSheet::OfficeChart::GetAxisIndex(OfficeChartAxis *axis)
 {
 	return this->axes->IndexOf(axis);
+}
+
+void Text::SpreadSheet::OfficeChart::AddSeries(WorkbookDataSource *categoryData, WorkbookDataSource *valueData, const UTF8Char *name, Bool showMarker)
+{
+	SDEL_CLASS(categoryData);
+	SDEL_CLASS(valueData);
+	/////////////////////
+/*	UOSInt i = this->series->GetCount();
+	OfficeChartSeries *series = NEW_CLASS_D(OfficeChartSeries(categoryData, valueData));
+	if (name)
+		series->SetTitle(name, 0);
+	series->SetSmooth(false);
+	if (showMarker)
+	{
+		series->SetMarkerSize(3);
+		series->SetMarkerStyle(MarkerStyle::Circle);
+	}
+	else
+	{
+		series->SetMarkerStyle(MarkerStyle::None);
+	}
+	series->SetLineStyle(NEW_CLASS_D(OfficeLineStyle(OfficeFill::NewSolidFill(OfficeColor::NewPreset(seriesColor[i % (sizeof(seriesColor) / sizeof(seriesColor[0]))])))));*/
 }

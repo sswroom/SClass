@@ -3679,6 +3679,8 @@ Text/SpreadSheet/OfficeShapeProp.h: ../../src/Text/SpreadSheet/OfficeShapeProp.c
 @OfficeShapeProp.o
 Text/SpreadSheet/Workbook.h: ../../src/Text/SpreadSheet/Workbook.cpp
 @Workbook.o
+Text/SpreadSheet/WorkbookDataSource.h: ../../src/Text/SpreadSheet/WorkbookDataSource.cpp
+@WorkbookDataSource.o
 Text/SpreadSheet/WorkbookFont.h: ../../src/Text/SpreadSheet/WorkbookFont.cpp
 @WorkbookFont.o
 Text/SpreadSheet/Worksheet.h: ../../src/Text/SpreadSheet/Worksheet.cpp
@@ -5049,6 +5051,7 @@ OfficeFill.o: ../../src/Text/SpreadSheet/OfficeFill.cpp
 OfficeLineStyle.o: ../../src/Text/SpreadSheet/OfficeLineStyle.cpp
 OfficeShapeProp.o: ../../src/Text/SpreadSheet/OfficeShapeProp.cpp
 Workbook.o: ../../src/Text/SpreadSheet/Workbook.cpp
+WorkbookDataSource.o: ../../src/Text/SpreadSheet/WorkbookDataSource.cpp
 WorkbookFont.o: ../../src/Text/SpreadSheet/WorkbookFont.cpp
 Worksheet.o: ../../src/Text/SpreadSheet/Worksheet.cpp
 ANSITextBinEnc.o: ../../src/Text/TextBinEnc/ANSITextBinEnc.cpp
