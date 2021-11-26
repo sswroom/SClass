@@ -674,7 +674,8 @@ Text::SpreadSheet::OfficeChart *Text::SpreadSheet::Worksheet::CreateChart(Math::
 	{
 		drawing->chart->SetTitleText(title);
 	}
-	drawing->chart->SetShapeFillStyle(OfficeFill::NewSolidFill(OfficeColor::NewPreset(PresetColor::White)));
-	drawing->chart->SetShapeLineStyle(NEW_CLASS_D(OfficeLineStyle(OfficeFill::NewSolidFill())));
+	drawing->chart->SetShapeProp(NEW_CLASS_D(OfficeShapeProp(
+		OfficeFill::NewSolidFill(OfficeColor::NewPreset(PresetColor::White)),
+		NEW_CLASS_D(OfficeLineStyle(OfficeFill::NewSolidFill())))));
 	return drawing->chart;
 }

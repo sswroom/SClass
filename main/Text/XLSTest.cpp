@@ -7,26 +7,28 @@
 #include "Math/Unit/Distance.h"
 #include "Text/SpreadSheet/Workbook.h"
 
+using namespace Text::SpreadSheet;
+
 Int32 MyMain(Core::IProgControl *progCtrl)
 {
 	UOSInt testRowCnt = 2;
 	UTF8Char sbuff[512];
 	IO::Path::GetRealPath(sbuff, (const UTF8Char*)"~/Progs/Temp/XLSXTest.xlsx");
 
-	Text::SpreadSheet::Workbook *wb;
-	NEW_CLASS(wb, Text::SpreadSheet::Workbook());
-	Text::SpreadSheet::WorkbookFont *font10 = wb->NewFont((const UTF8Char*)"Arial", 10, false);
-	Text::SpreadSheet::CellStyle *dateStyle = wb->NewCellStyle(font10, Text::SpreadSheet::HAlignment::Left, Text::SpreadSheet::VAlignment::Center, (const UTF8Char*)"yyyy-MM-dd");
-	Text::SpreadSheet::CellStyle *numStyle = wb->NewCellStyle(font10, Text::SpreadSheet::HAlignment::Left, Text::SpreadSheet::VAlignment::Center, (const UTF8Char*)"0.###");
-	Text::SpreadSheet::Worksheet *graphSheet = wb->AddWorksheet();
-	Text::SpreadSheet::Worksheet *dataSheet = wb->AddWorksheet();
-	graphSheet->CreateChart(Math::Unit::Distance::DU_INCH, 0.64, 1.61, 13.10, 5.53, (const UTF8Char*)"SETTLEMENT VS CHAINAGE");
-/*	XSSFChart chart = XlsxUtil.createChart(graphSheet, DistanceUnit.Inch, 0.64, 1.61, 13.10, 5.53, "SETTLEMENT VS CHAINAGE");
-	XDDFLineChartData lineChartData = XlsxUtil.lineChart(chart, "ACCUMULATED SETTLEMENT", "CHAINAGE", AxisType.AT_CATEGORY);
+	Workbook *wb;
+	NEW_CLASS(wb, Workbook());
+	WorkbookFont *font10 = wb->NewFont((const UTF8Char*)"Arial", 10, false);
+	CellStyle *dateStyle = wb->NewCellStyle(font10, HAlignment::Left, VAlignment::Center, (const UTF8Char*)"yyyy-MM-dd");
+	CellStyle *numStyle = wb->NewCellStyle(font10, HAlignment::Left, VAlignment::Center, (const UTF8Char*)"0.###");
+	Worksheet *graphSheet = wb->AddWorksheet();
+	Worksheet *dataSheet = wb->AddWorksheet();
+	OfficeChart *chart = graphSheet->CreateChart(Math::Unit::Distance::DU_INCH, 0.64, 1.61, 13.10, 5.53, (const UTF8Char*)"SETTLEMENT VS CHAINAGE");
+
+//	XDDFLineChartData lineChartData = XlsxUtil.lineChart(chart, "ACCUMULATED SETTLEMENT", "CHAINAGE", AxisType.AT_CATEGORY);
 	if (testRowCnt > 1)
 	{
-		XlsxUtil.chartAddLegend(chart, LegendPosition.BOTTOM);
-	}*/
+		chart->AddLegend(LegendPos::Bottom);
+	}
 
 	UOSInt rowNum;
 	Data::DateTime dt;

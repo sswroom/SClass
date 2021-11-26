@@ -397,21 +397,31 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char 
 					sb.Append((const UTF8Char*)"<c:plotArea>");
 					sb.Append((const UTF8Char*)"<c:layout/>");
 
-					if (drawing->chart->HasShapeProp())
-					{
-						sb.Append((const UTF8Char*)"<c:spPr>");
-						if (drawing->chart->GetShapeFillStyle())
-						{
-							AppendFill(&sb, drawing->chart->GetShapeFillStyle());
-						}
-						if (drawing->chart->GetShapeLineStyle())
-						{
-							AppendLineStyle(&sb, drawing->chart->GetShapeLineStyle());
-						}
-						sb.Append((const UTF8Char*)"</c:spPr>");
-					}
+					AppendShapeProp(&sb, drawing->chart->GetShapeProp());
 					sb.Append((const UTF8Char*)"</c:plotArea>");
-
+					if (drawing->chart->HasLegend())
+					{
+						sb.Append((const UTF8Char*)"<c:legend>");
+						sb.Append((const UTF8Char*)"<c:legendPos val=\"");
+						switch (drawing->chart->GetLegendPos())
+						{
+						case LegendPos::Bottom:
+							sb.Append((const UTF8Char*)"b");
+							break;
+						}
+						sb.Append((const UTF8Char*)"\"/>");
+						sb.Append((const UTF8Char*)"<c:overlay val=\"");
+						if (drawing->chart->IsLegendOverlay())
+						{
+							sb.Append((const UTF8Char*)"true");
+						}
+						else
+						{
+							sb.Append((const UTF8Char*)"false");
+						}
+						sb.Append((const UTF8Char*)"\"/>");
+						sb.Append((const UTF8Char*)"</c:legend>");
+					}
 					sb.Append((const UTF8Char*)"<c:plotVisOnly val=\"true\"/>");
 					sb.Append((const UTF8Char*)"</c:chart>");
 					//////////////////////////////////////
@@ -905,150 +915,301 @@ void Exporter::XLSXExporter::AppendTitle(Text::StringBuilderUTF *sb, const UTF8C
 	sb->Append((const UTF8Char*)"</c:title>");
 }
 
+void Exporter::XLSXExporter::AppendShapeProp(Text::StringBuilderUTF *sb, Text::SpreadSheet::OfficeShapeProp *shapeProp)
+{
+	if (shapeProp == 0)
+		return;
+	sb->Append((const UTF8Char*)"<c:spPr>");
+	AppendFill(sb, shapeProp->GetFill());
+	AppendLineStyle(sb, shapeProp->GetLineStyle());
+	sb->Append((const UTF8Char*)"</c:spPr>");
+}
+
+
 const Char *Exporter::XLSXExporter::PresetColorCode(PresetColor color)
 {
 	switch (color)
 	{
-//	case PresetColor::AliceBlue:
+	case PresetColor::AliceBlue:
+		return "aliceBlue";		
 	case PresetColor::AntiqueWhite:
+		return "antiqueWhite";		
 	case PresetColor::Aqua:
+		return "aqua";		
 	case PresetColor::Aquamarine:
+		return "aquamarine";		
 	case PresetColor::Azure:
+		return "azure";		
 	case PresetColor::Beige:
+		return "beige";		
 	case PresetColor::Bisque:
+		return "bisque";		
 	case PresetColor::Black:
+		return "black";		
 	case PresetColor::BlanchedAlmond:
+		return "blanchedAlmond";		
 	case PresetColor::Blue:
+		return "blue";		
 	case PresetColor::BlueViolet:
+		return "blueViolet";		
 	case PresetColor::Brown:
+		return "brown";		
 	case PresetColor::BurlyWood:
+		return "burlyWood";		
 	case PresetColor::CadetBlue:
+		return "cadetBlue";		
 	case PresetColor::Chartreuse:
+		return "chartreuse";		
 	case PresetColor::Chocolate:
+		return "chocolate";		
 	case PresetColor::Coral:
+		return "coral";		
 	case PresetColor::CornflowerBlue:
+		return "cornflowerBlue";		
 	case PresetColor::Cornsilk:
+		return "cornsilk";		
 	case PresetColor::Crimson:
+		return "crimson";		
 	case PresetColor::Cyan:
+		return "cyan";		
 	case PresetColor::DeepPink:
+		return "deepPink";		
 	case PresetColor::DeepSkyBlue:
+		return "deepSkyBlue";		
 	case PresetColor::DimGray:
+		return "dimGray";		
 	case PresetColor::DarkBlue:
+		return "dkBlue";		
 	case PresetColor::DarkCyan:
+		return "dkCyan";		
 	case PresetColor::DarkGoldenrod:
+		return "dkGoldenrod";		
 	case PresetColor::DarkGray:
+		return "dkGray";		
 	case PresetColor::DarkGreen:
+		return "dkGreen";		
 	case PresetColor::DarkKhaki:
+		return "dkKhaki";		
 	case PresetColor::DarkMagenta:
+		return "dkMagenta";		
 	case PresetColor::DarkOliveGreen:
+		return "dkOliveGreen";		
 	case PresetColor::DarkOrange:
+		return "dkOrange";		
 	case PresetColor::DarkOrchid:
+		return "dkOrchid";		
 	case PresetColor::DarkRed:
+		return "dkRed";		
 	case PresetColor::DarkSalmon:
+		return "dkSalmon";		
 	case PresetColor::DarkSeaGreen:
+		return "dkSeaGreen";		
 	case PresetColor::DarkSlateBlue:
+		return "dkSlateBlue";		
 	case PresetColor::DarkSlateGray:
+		return "dkSlateGray";		
 	case PresetColor::DarkTurquoise:
+		return "dkTurquoise";		
 	case PresetColor::DarkViolet:
+		return "dkViolet";		
 	case PresetColor::DodgerBlue:
+		return "dodgerBlue";		
 	case PresetColor::Firebrick:
+		return "firebrick";		
 	case PresetColor::FloralWhite:
+		return "floralWhite";		
 	case PresetColor::ForestGreen:
+		return "forestGreen";		
 	case PresetColor::Fuchsia:
+		return "fuchsia";		
 	case PresetColor::Gainsboro:
+		return "gainsboro";		
 	case PresetColor::GhostWhite:
+		return "ghostWhite";		
 	case PresetColor::Gold:
+		return "gold";		
 	case PresetColor::Goldenrod:
+		return "goldenrod";		
 	case PresetColor::Gray:
+		return "gray";		
 	case PresetColor::Green:
+		return "green";		
 	case PresetColor::GreenYellow:
+		return "greenYellow";		
 	case PresetColor::Honeydew:
+		return "honeydew";		
 	case PresetColor::HotPink:
+		return "hotPink";		
 	case PresetColor::IndianRed:
+		return "indianRed";		
 	case PresetColor::Indigo:
+		return "indigo";		
 	case PresetColor::Ivory:
+		return "ivory";		
 	case PresetColor::Khaki:
+		return "khaki";		
 	case PresetColor::Lavender:
+		return "lavender";		
 	case PresetColor::LavenderBlush:
+		return "lavenderBlush";		
 	case PresetColor::LawnGreen:
+		return "lawnGreen";		
 	case PresetColor::LemonChiffon:
+		return "lemonChiffon";		
 	case PresetColor::Lime:
+		return "lime";		
 	case PresetColor::LimeGreen:
+		return "limeGreen";		
 	case PresetColor::Linen:
+		return "linen";		
 	case PresetColor::LightBlue:
+		return "ltBlue";		
 	case PresetColor::LightCoral:
+		return "ltCoral";		
 	case PresetColor::LightCyan:
+		return "ltCyan";		
 	case PresetColor::LightGoldenrodYellow:
+		return "ltGoldenrodYellow";		
 	case PresetColor::LightGray:
+		return "ltGray";		
 	case PresetColor::LightGreen:
+		return "ltGreen";		
 	case PresetColor::LightPink:
+		return "ltPink";		
 	case PresetColor::LightSalmon:
+		return "ltSalmon";		
 	case PresetColor::LightSeaGreen:
+		return "ltSeaGreen";		
 	case PresetColor::LightSkyBlue:
+		return "ltSkyBlue";		
 	case PresetColor::LightSlateGray:
+		return "ltSlateGray";		
 	case PresetColor::LightSteelBlue:
+		return "ltSteelBlue";		
 	case PresetColor::LightYellow:
+		return "ltYellow";		
 	case PresetColor::Magenta:
+		return "magenta";		
 	case PresetColor::Maroon:
+		return "maroon";		
 	case PresetColor::MediumAquamarine:
+		return "medAquamarine";		
 	case PresetColor::MediumBlue:
+		return "medBlue";		
 	case PresetColor::MediumOrchid:
+		return "medOrchid";		
 	case PresetColor::MediumPurple:
+		return "medPurple";		
 	case PresetColor::MediumSeaGreen:
+		return "medSeaGreen";		
 	case PresetColor::MediumSlateBlue:
+		return "medSlateBlue";		
 	case PresetColor::MediumSpringGreen:
+		return "medSpringGreen";		
 	case PresetColor::MediumTurquoise:
+		return "medTurquoise";		
 	case PresetColor::MediumVioletRed:
+		return "medVioletRed";		
 	case PresetColor::MidnightBlue:
+		return "midnightBlue";		
 	case PresetColor::MintCream:
+		return "mintCream";		
 	case PresetColor::MistyRose:
+		return "mistyRose";		
 	case PresetColor::Moccasin:
+		return "moccasin";		
 	case PresetColor::NavajoWhite:
+		return "navajoWhite";		
 	case PresetColor::Navy:
+		return "navy";		
 	case PresetColor::OldLace:
+		return "oldLace";		
 	case PresetColor::Olive:
+		return "olive";		
 	case PresetColor::OliveDrab:
+		return "oliveDrab";		
 	case PresetColor::Orange:
+		return "orange";		
 	case PresetColor::OrangeRed:
+		return "orangeRed";		
 	case PresetColor::Orchid:
+		return "orchid";		
 	case PresetColor::PaleGoldenrod:
+		return "paleGoldenrod";		
 	case PresetColor::PaleGreen:
+		return "paleGreen";		
 	case PresetColor::PaleTurquoise:
+		return "paleTurquoise";		
 	case PresetColor::PaleVioletRed:
+		return "paleVioletRed";		
 	case PresetColor::PapayaWhip:
+		return "papayaWhip";		
 	case PresetColor::PeachPuff:
+		return "peachPuff";		
 	case PresetColor::Peru:
+		return "peru";		
 	case PresetColor::Pink:
+		return "pink";		
 	case PresetColor::Plum:
+		return "plum";		
 	case PresetColor::PowderBlue:
+		return "powderBlue";		
 	case PresetColor::Purple:
+		return "purple";		
 	case PresetColor::Red:
+		return "red";		
 	case PresetColor::RosyBrown:
+		return "rosyBrown";		
 	case PresetColor::RoyalBlue:
+		return "royalBlue";		
 	case PresetColor::SaddleBrown:
+		return "saddleBrown";		
 	case PresetColor::Salmon:
+		return "salmon";		
 	case PresetColor::SandyBrown:
+		return "sandyBrown";		
 	case PresetColor::SeaGreen:
+		return "seaGreen";		
 	case PresetColor::SeaShell:
+		return "seaShell";		
 	case PresetColor::Sienna:
+		return "sienna";		
 	case PresetColor::Silver:
+		return "silver";		
 	case PresetColor::SkyBlue:
+		return "skyBlue";		
 	case PresetColor::SlateBlue:
+		return "slateBlue";		
 	case PresetColor::SlateGray:
+		return "slateGray";		
 	case PresetColor::Snow:
+		return "snow";		
 	case PresetColor::SpringGreen:
+		return "springGreen";		
 	case PresetColor::SteelBlue:
+		return "steelBlue";		
 	case PresetColor::Tan:
+		return "tan";		
 	case PresetColor::Teal:
+		return "teal";		
 	case PresetColor::Thistle:
+		return "thistle";		
 	case PresetColor::Tomato:
+		return "tomato";		
 	case PresetColor::Turquoise:
+		return "turquoise";		
 	case PresetColor::Violet:
+		return "violet";		
 	case PresetColor::Wheat:
+		return "wheat";		
 	case PresetColor::White:
+		return "white";		
 	case PresetColor::WhiteSmoke:
+		return "whiteSmoke";		
 	case PresetColor::Yellow:
+		return "yellow";		
 	case PresetColor::YellowGreen:
+		return "yellowGreen";		
 	default:
 		return "Unknown";		
 	}

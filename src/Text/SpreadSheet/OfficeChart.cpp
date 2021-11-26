@@ -10,15 +10,16 @@ Text::SpreadSheet::OfficeChart::OfficeChart(Math::Unit::Distance::DistanceUnit d
 	this->wInch = Math::Unit::Distance::Convert(du, Math::Unit::Distance::DU_INCH, w);
 	this->hInch = Math::Unit::Distance::Convert(du, Math::Unit::Distance::DU_INCH, h);
 	this->titleText = 0;
-	this->shapeLine = 0;
-	this->shapeFill = 0;
+	this->shapeProp = 0;
+	this->hasLegend = false;
+	this->legendPos = LegendPos::Bottom;
+	this->legendOverlay = false;
 }
 
 Text::SpreadSheet::OfficeChart::~OfficeChart()
 {
 	SDEL_TEXT(this->titleText);
-	SDEL_CLASS(this->shapeLine);
-	SDEL_CLASS(this->shapeFill);
+	SDEL_CLASS(this->shapeProp);
 }
 
 Double Text::SpreadSheet::OfficeChart::GetXInch()
@@ -52,29 +53,35 @@ const UTF8Char *Text::SpreadSheet::OfficeChart::GetTitleText()
 	return this->titleText;
 }
 
-Bool Text::SpreadSheet::OfficeChart::HasShapeProp()
+Text::SpreadSheet::OfficeShapeProp *Text::SpreadSheet::OfficeChart::GetShapeProp()
 {
-	return this->shapeLine != 0 || this->shapeFill != 0;
+	return this->shapeProp;
 }
 
-void Text::SpreadSheet::OfficeChart::SetShapeLineStyle(OfficeLineStyle *lineStyle)
+void Text::SpreadSheet::OfficeChart::SetShapeProp(OfficeShapeProp *shapeProp)
 {
-	SDEL_CLASS(this->shapeLine);
-	this->shapeLine = lineStyle;
+	SDEL_CLASS(this->shapeProp);
+	this->shapeProp = shapeProp;
 }
 
-Text::SpreadSheet::OfficeLineStyle *Text::SpreadSheet::OfficeChart::GetShapeLineStyle()
+void Text::SpreadSheet::OfficeChart::AddLegend(LegendPos pos)
 {
-	return this->shapeLine;
+	this->hasLegend = true;
+	this->legendPos = pos;
+	this->legendOverlay = false;
 }
 
-void Text::SpreadSheet::OfficeChart::SetShapeFillStyle(OfficeFill *fill)
+Bool Text::SpreadSheet::OfficeChart::HasLegend()
 {
-	SDEL_CLASS(this->shapeFill);
-	this->shapeFill = fill;
+	return this->hasLegend;
 }
 
-Text::SpreadSheet::OfficeFill *Text::SpreadSheet::OfficeChart::GetShapeFillStyle()
+Text::SpreadSheet::LegendPos Text::SpreadSheet::OfficeChart::GetLegendPos()
 {
-	return this->shapeFill;
+	return this->legendPos;
+}
+
+Bool Text::SpreadSheet::OfficeChart::IsLegendOverlay()
+{
+	return this->legendOverlay;
 }
