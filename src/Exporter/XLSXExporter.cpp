@@ -397,6 +397,13 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char 
 					sb.Append((const UTF8Char*)"<c:plotArea>");
 					sb.Append((const UTF8Char*)"<c:layout/>");
 
+					m = 0;
+					n = drawing->chart->GetAxisCount();
+					while (m < n)
+					{
+						AppendAxis(&sb, drawing->chart->GetAxis(m), m);
+						m++;
+					}
 					AppendShapeProp(&sb, drawing->chart->GetShapeProp());
 					sb.Append((const UTF8Char*)"</c:plotArea>");
 					if (drawing->chart->HasLegend())
@@ -423,6 +430,17 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char 
 						sb.Append((const UTF8Char*)"</c:legend>");
 					}
 					sb.Append((const UTF8Char*)"<c:plotVisOnly val=\"true\"/>");
+					switch (drawing->chart->GetDisplayBlankAs())
+					{
+					case BlankAs::Default:
+						break;
+					case BlankAs::Gap:
+						sb.Append((const UTF8Char*)"<c:dispBlanksAs val=\"gap\"/>");
+						break;
+					case BlankAs::Zero:
+						sb.Append((const UTF8Char*)"<c:dispBlanksAs val=\"zero\"/>");
+						break;
+					}
 					sb.Append((const UTF8Char*)"</c:chart>");
 					//////////////////////////////////////
 					sb.Append((const UTF8Char*)"</c:chartSpace>");
@@ -925,6 +943,95 @@ void Exporter::XLSXExporter::AppendShapeProp(Text::StringBuilderUTF *sb, Text::S
 	sb->Append((const UTF8Char*)"</c:spPr>");
 }
 
+void Exporter::XLSXExporter::AppendAxis(Text::StringBuilderUTF *sb, Text::SpreadSheet::OfficeChartAxis *axis, UOSInt index)
+{
+	if (axis == 0)
+		return;
+	
+	switch (axis->GetAxisType())
+	{
+	case AxisType::Category:
+		sb->Append((const UTF8Char*)"<c:catAx>");
+		break;
+	case AxisType::Date:
+		sb->Append((const UTF8Char*)"<c:dateAx>");
+		break;
+	case AxisType::Numeric:
+		sb->Append((const UTF8Char*)"<c:valAx>");
+		break;
+	case AxisType::Series:
+		sb->Append((const UTF8Char*)"<c:serAx>");
+		break;
+	}
+	sb->Append((const UTF8Char*)"<c:axId val=\"");
+	sb->AppendUOSInt(index);
+	sb->Append((const UTF8Char*)"\"/>");
+	sb->Append((const UTF8Char*)"<c:scaling>");
+	sb->Append((const UTF8Char*)"<c:orientation val=\"minMax\"/>");
+	sb->Append((const UTF8Char*)"</c:scaling>");
+	sb->Append((const UTF8Char*)"<c:delete val=\"false\"/>");
+	switch (axis->GetAxisPos())
+	{
+	case AxisPosition::Left:
+		sb->Append((const UTF8Char*)"<c:axPos val=\"l\"/>");
+		break;
+	case AxisPosition::Top:
+		sb->Append((const UTF8Char*)"<c:axPos val=\"t\"/>");
+		break;
+	case AxisPosition::Right:
+		sb->Append((const UTF8Char*)"<c:axPos val=\"r\"/>");
+		break;
+	case AxisPosition::Bottom:
+		sb->Append((const UTF8Char*)"<c:axPos val=\"b\"/>");
+		break;
+	}
+	if (axis->GetMajorGridProp())
+	{
+		sb->Append((const UTF8Char*)"<c:majorGridlines>");
+		AppendShapeProp(sb, axis->GetMajorGridProp());
+		sb->Append((const UTF8Char*)"</c:majorGridlines>");
+	}
+	if (axis->GetTitle())
+	{
+		AppendTitle(sb, axis->GetTitle());
+	}
+	sb->Append((const UTF8Char*)"<c:majorTickMark val=\"cross\"/>");
+	sb->Append((const UTF8Char*)"<c:minorTickMark val=\"none\"/>");
+	switch (axis->GetTickLblPos())
+	{
+	case TickLabelPosition::High:
+		sb->Append((const UTF8Char*)"<c:tickLblPos val=\"high\"/>");
+		break;
+	case TickLabelPosition::Low:
+		sb->Append((const UTF8Char*)"<c:tickLblPos val=\"low\"/>");
+		break;
+	case TickLabelPosition::NextTo:
+		sb->Append((const UTF8Char*)"<c:tickLblPos val=\"nextTo\"/>");
+		break;
+	case TickLabelPosition::None:
+		sb->Append((const UTF8Char*)"<c:tickLblPos val=\"none\"/>");
+		break;
+	}
+	AppendShapeProp(sb, axis->GetShapeProp());
+// 	sb->Append((const UTF8Char*)"<c:crossAx val=\"1\"/>");
+	sb->Append((const UTF8Char*)"<c:crosses val=\"autoZero\"/>");
+	sb->Append((const UTF8Char*)"<c:crossBetween val=\"midCat\"/>");
+	switch (axis->GetAxisType())
+	{
+	case AxisType::Category:
+		sb->Append((const UTF8Char*)"</c:catAx>");
+		break;
+	case AxisType::Date:
+		sb->Append((const UTF8Char*)"</c:dateAx>");
+		break;
+	case AxisType::Numeric:
+		sb->Append((const UTF8Char*)"</c:valAx>");
+		break;
+	case AxisType::Series:
+		sb->Append((const UTF8Char*)"</c:serAx>");
+		break;
+	}
+}
 
 const Char *Exporter::XLSXExporter::PresetColorCode(PresetColor color)
 {

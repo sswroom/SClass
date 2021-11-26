@@ -22,9 +22,9 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	CellStyle *numStyle = wb->NewCellStyle(font10, HAlignment::Left, VAlignment::Center, (const UTF8Char*)"0.###");
 	Worksheet *graphSheet = wb->AddWorksheet();
 	Worksheet *dataSheet = wb->AddWorksheet();
-	OfficeChart *chart = graphSheet->CreateChart(Math::Unit::Distance::DU_INCH, 0.64, 1.61, 13.10, 5.53, (const UTF8Char*)"SETTLEMENT VS CHAINAGE");
-
-//	XDDFLineChartData lineChartData = XlsxUtil.lineChart(chart, "ACCUMULATED SETTLEMENT", "CHAINAGE", AxisType.AT_CATEGORY);
+	OfficeChart *chart = graphSheet->CreateChart(Math::Unit::Distance::DU_INCH, 0.64, 1.61, 13.10, 5.53, (const UTF8Char*)"\nSETTLEMENT VS CHAINAGE");
+	chart->InitLineChart((const UTF8Char*)"ACCUMULATED SETTLEMENT", (const UTF8Char*)"CHAINAGE", AxisType::Category);
+	chart->SetDisplayBlankAs(BlankAs::Gap);
 	if (testRowCnt > 1)
 	{
 		chart->AddLegend(LegendPos::Bottom);
@@ -34,32 +34,38 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	Data::DateTime dt;
 	dataSheet->SetCellString(0, 0, dateStyle, (const UTF8Char*)"Date");
 	UOSInt i = 0;
-	UOSInt j = 10;
+	UOSInt j = 20;
 	while (i < j)
 	{
 		dataSheet->SetCellDouble(0, i + 1, numStyle, 112.0 + Math::UOSInt2Double(i) * 0.1);
 		i++;
 	}
-//	XDDFCategoryDataSource chainageSource = XDDFDataSourcesFactory.fromStringCellRange((XSSFSheet)dataSheet, new CellRangeAddress(0, 0, 1, j));
-
-//	SimpleDateFormat dateFmt = new SimpleDateFormat("yyyy-MM-dd");
-	rowNum = 0;
-	while (rowNum < testRowCnt)
+	if (testRowCnt > 0)
 	{
-		dt.SetCurrTime();
-		dt.AddDay((OSInt)(rowNum - testRowCnt));
-		rowNum++;
-		dataSheet->SetCellDate(rowNum, 0, dateStyle, &dt);
-		i = 0;
-		while (i < j)
+	//	XDDFCategoryDataSource chainageSource = XDDFDataSourcesFactory.fromStringCellRange((XSSFSheet)dataSheet, new CellRangeAddress(0, 0, 1, j));
+
+	//	SimpleDateFormat dateFmt = new SimpleDateFormat("yyyy-MM-dd");
+		rowNum = 0;
+		while (rowNum < testRowCnt)
 		{
-			dataSheet->SetCellDouble(rowNum, i + 1, numStyle, Math::UOSInt2Double(i) * 0.1);
-			i++;
+			dt.SetCurrTime();
+			dt.AddDay((OSInt)(rowNum - testRowCnt));
+			rowNum++;
+			dataSheet->SetCellDate(rowNum, 0, dateStyle, &dt);
+			i = 0;
+			while (i < j)
+			{
+				if (i != 5)
+				{
+					dataSheet->SetCellDouble(rowNum, i + 1, numStyle, Math::UOSInt2Double(i) * 0.1);
+				}
+				i++;
+			}
+	//		XDDFNumericalDataSource<Double> valSource = XDDFDataSourcesFactory.fromNumericCellRange((XSSFSheet)dataSheet, new CellRangeAddress(rowNum, rowNum, 1, j));
+	//		XlsxUtil.addLineChartSeries(lineChartData, chainageSource, valSource, dateFmt.format(ts), testRowCnt > 1);
 		}
-//		XDDFNumericalDataSource<Double> valSource = XDDFDataSourcesFactory.fromNumericCellRange((XSSFSheet)dataSheet, new CellRangeAddress(rowNum, rowNum, 1, j));
-//		XlsxUtil.addLineChartSeries(lineChartData, chainageSource, valSource, dateFmt.format(ts), testRowCnt > 1);
+	//	chart.plot(lineChartData);
 	}
-//	chart.plot(lineChartData);
 
 	Exporter::XLSXExporter exporter;
 	if (!exporter.ExportNewFile(sbuff, wb, 0))
