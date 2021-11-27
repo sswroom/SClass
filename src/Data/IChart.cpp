@@ -5,6 +5,118 @@
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 
+Data::IChart::IChart()
+{
+	this->title = 0;
+	this->xAxisName = 0;
+	this->yAxisName = 0;
+
+	this->timeFormat = Text::StrCopyNew("HH:mm");
+	this->dateFormat = Text::StrCopyNew("yyyy/MM/dd");
+	this->dblFormat = Text::StrCopyNew("0.00");
+	this->minDblVal = 0.01;
+}
+
+Data::IChart::~IChart()
+{
+	SDEL_TEXT(this->title);
+	SDEL_TEXT(this->xAxisName);
+	SDEL_TEXT(this->yAxisName);
+
+	SDEL_TEXT(this->dateFormat);
+	SDEL_TEXT(this->timeFormat);
+	SDEL_TEXT(this->dblFormat);
+}
+
+void Data::IChart::SetTitle(const UTF8Char *title)
+{
+	SDEL_TEXT(this->title);
+	this->title = SCOPY_TEXT(title);
+}
+
+const UTF8Char *Data::IChart::GetTitle()
+{
+	return this->title;
+}
+
+void Data::IChart::SetDateFormat(const Char *format)
+{
+	if (this->dateFormat)
+	{
+		Text::StrDelNew(this->dateFormat);
+	}
+	this->dateFormat = Text::StrCopyNew(format);
+}
+
+const Char *Data::IChart::GetDateFormat()
+{
+	return this->dateFormat;
+}
+
+void Data::IChart::SetTimeFormat(const Char *format)
+{
+	SDEL_TEXT(this->timeFormat);
+	if (format)
+	{
+		this->timeFormat = Text::StrCopyNew(format);
+	}
+}
+
+const Char *Data::IChart::GetTimeFormat()
+{
+	return this->timeFormat;
+}
+
+void Data::IChart::SetDblFormat(const Char *format)
+{
+	if (this->dblFormat)
+	{
+		Text::StrDelNew(this->dblFormat);
+	}
+	this->dblFormat = Text::StrCopyNew(format);
+	UOSInt i = Text::StrIndexOf(format, ".");
+	if (i == INVALID_INDEX)
+	{
+		this->minDblVal = 1.0;
+	}
+	else
+	{
+		i = Text::StrCharCnt(format) - i - 1;
+		this->minDblVal = 1.0;
+		while (i-- > 0)
+		{
+			this->minDblVal = this->minDblVal * 0.1;
+		}
+	}
+}
+
+const Char *Data::IChart::GetDblFormat()
+{
+	return this->dblFormat;
+}
+
+void Data::IChart::SetXAxisName(const UTF8Char *xAxisName)
+{
+	SDEL_TEXT(this->xAxisName);
+	this->xAxisName = SCOPY_TEXT(xAxisName);
+}
+
+const UTF8Char *Data::IChart::GetXAxisName()
+{
+	return this->xAxisName;
+}
+
+void Data::IChart::SetYAxisName(const UTF8Char *yAxisName)
+{
+	SDEL_TEXT(yAxisName);
+	this->yAxisName = SCOPY_TEXT(yAxisName);
+}
+
+const UTF8Char *Data::IChart::GetYAxisName()
+{
+	return this->yAxisName;
+}
+
 UOSInt Data::IChart::CalScaleMarkDbl(Data::ArrayListDbl *locations, Data::ArrayList<const UTF8Char*> *labels, Double min, Double max, Double leng, Double minLeng, const Char *dblFormat, Double minDblVal, const UTF8Char *unit)
 {
 	UOSInt retCnt = 2;

@@ -10,7 +10,53 @@ namespace Data
 	class IChart
 	{
 	public:
-		virtual ~IChart(){};
+		enum class DataType
+		{
+			None,
+			DateTicks,
+			DOUBLE,
+			Integer
+		};
+
+	protected:
+		const UTF8Char *title;
+		const UTF8Char *xAxisName;
+		const UTF8Char *yAxisName;
+
+		const Char *dateFormat;
+		const Char *timeFormat;
+		const Char *dblFormat;
+		Double minDblVal;
+
+	public:
+		IChart();
+		virtual ~IChart();
+
+		virtual void SetTitle(const UTF8Char *title);
+		const UTF8Char *GetTitle();
+		void SetDateFormat(const Char *format);
+		const Char *GetDateFormat();
+		void SetTimeFormat(const Char *format);
+		const Char *GetTimeFormat();
+		void SetDblFormat(const Char *format);
+		const Char *GetDblFormat();
+
+		void SetXAxisName(const UTF8Char *xAxisName);
+		const UTF8Char *GetXAxisName();
+		void SetYAxisName(const UTF8Char *yAxisName);
+		const UTF8Char *GetYAxisName();
+
+		virtual DataType GetXAxisType() = 0;
+		virtual UOSInt GetXDataCount() = 0;
+		virtual Int64 *GetXDateTicks(UOSInt index, UOSInt *cnt) = 0;
+		virtual Double *GetXDouble(UOSInt index, UOSInt *cnt) = 0;
+		virtual Int32 *GetXInt32(UOSInt index, UOSInt *cnt) = 0;
+		virtual UOSInt GetYDataCount() = 0;
+		virtual Int64 *GetYDateTicks(UOSInt index, UOSInt *cnt) = 0;
+		virtual Double *GetYDouble(UOSInt index, UOSInt *cnt) = 0;
+		virtual Int32 *GetYInt32(UOSInt index, UOSInt *cnt) = 0;
+		virtual const UTF8Char *GetYName(UOSInt index) = 0;
+		virtual DataType GetYType(UOSInt index) = 0;
 
 		virtual void Plot(Media::DrawImage *img, Double x, Double y, Double width, Double height) = 0;
 		virtual UOSInt GetLegendCount() = 0;

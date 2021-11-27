@@ -7,6 +7,21 @@
 #include "Text/ReportBuilder.h"
 #include "Text/StringBuilderUTF8.h"
 
+Text::SpreadSheet::AxisType Text::ReportBuilder::FromChartDataType(Data::IChart::DataType dataType)
+{
+	switch (dataType)
+	{
+	case Data::IChart::DataType::DateTicks:
+		return Text::SpreadSheet::AxisType::Date;
+	case Data::IChart::DataType::None:
+	case Data::IChart::DataType::DOUBLE:
+	case Data::IChart::DataType::Integer:
+		return Text::SpreadSheet::AxisType::Numeric;
+	default:
+		return Text::SpreadSheet::AxisType::Numeric;
+	}
+}
+
 Text::ReportBuilder::ReportBuilder(const UTF8Char *name, UOSInt colCount, const UTF8Char **columns)
 {
 	const UTF8Char **cols;
@@ -258,6 +273,11 @@ void Text::ReportBuilder::SetColURLLatLon(UOSInt index, Double lat, Double lon)
 	this->urlList->Add(url);
 }
 
+Bool Text::ReportBuilder::HasChart()
+{
+	return this->chart != 0;
+}
+
 Text::SpreadSheet::Workbook *Text::ReportBuilder::CreateWorkbook()
 {
 	UOSInt i;
@@ -268,6 +288,7 @@ Text::SpreadSheet::Workbook *Text::ReportBuilder::CreateWorkbook()
 	UOSInt urlAdd;
 	Text::SpreadSheet::Workbook *wb;
 	Text::SpreadSheet::Worksheet *ws;
+	Text::SpreadSheet::Worksheet *dataSheet;
 	const UTF8Char **csarr;
 	Text::StringBuilderUTF8 sb;
 	ColURLLatLon *url;
@@ -277,171 +298,385 @@ Text::SpreadSheet::Workbook *Text::ReportBuilder::CreateWorkbook()
 	RowType currRowType;
 	Text::SpreadSheet::CellStyle *styleSummary = 0;
 	
-	if (this->chart != 0)
+	if (this->chart == 0)
+	{
+		NEW_CLASS(wb, Text::SpreadSheet::Workbook());
+		wb->AddDefaultStyles();
+		ws = wb->AddWorksheet(this->name);
+
+		k = 0;
+		i = 0;
+		j = this->preheaders->GetCount();
+		while (i < j)
+		{
+			csarr = this->preheaders->GetItem(i);
+			ws->SetCellString(k, 0, csarr[0]);
+			ws->SetCellString(k, 1, csarr[1]);
+			k++;
+			i++;
+		}
+
+		ws->SetCellString(k, 0, this->name);
+		i = 0;
+		j = this->colCount;
+		while (i < j)
+		{
+			if (this->colWidth[i] != 0)
+			{
+				ws->SetColWidth(i, this->colWidth[i]);
+			}
+			i++;
+		}
+
+		i = 0;
+		k++;
+		j = this->headers->GetCount();
+		while (i < j)
+		{
+			csarr = this->headers->GetItem(i);
+			ws->SetCellString(k, 0, csarr[0]);
+			ws->SetCellString(k, 1, csarr[1]);
+			k++;
+			i++;
+		}
+		urlAdd = k;
+		k++;
+		lastRowType = RT_UNKNOWN;
+		i = 0;
+		j = this->tableContent->GetCount();
+		while (i < j)
+		{
+			iconList = this->icons->GetItem(i);
+			csarr = this->tableContent->GetItem(i);
+			currRowType = this->tableRowType->GetItem(i);
+			if ((lastRowType == RT_CONTENT && currRowType == RT_SUMMARY) || (lastRowType == RT_HEADER && currRowType != RT_HEADER))
+			{
+				if (styleSummary == 0)
+				{
+					Text::SpreadSheet::CellStyle::BorderStyle bs;
+					bs.borderType = Text::SpreadSheet::CellStyle::BT_MEDIUM;
+					bs.borderColor = 0xff000000;
+					styleSummary = wb->NewCellStyle();
+					styleSummary->SetBorderTop(&bs);
+				}
+				l = 0;
+				while (l < this->colCount)
+				{
+					ws->SetCellStyle(k, l, styleSummary);
+					l++;
+				}
+			}
+			if (iconList)
+			{
+				Text::StringBuilderUTF8 **sbList = MemAlloc(Text::StringBuilderUTF8*, this->colCount);
+				l = 0;
+				while (l < this->colCount)
+				{
+					NEW_CLASS(sbList[l], Text::StringBuilderUTF8());
+					if (csarr[l])
+					{
+						sbList[l]->Append(csarr[l]);
+					}
+					l++;
+				}
+				m = iconList->GetCount();
+				l = 0;
+				while (l < m)
+				{
+					icon = iconList->GetItem(l);
+					if (sbList[icon->col]->GetLength() > 0)
+					{
+						sbList[icon->col]->Append((const UTF8Char*)", ");
+					}
+					sbList[icon->col]->Append(icon->name);
+					l++;
+				}
+
+				l = 0;
+				while (l < this->colCount)
+				{
+					if (sbList[l]->GetLength() > 0)
+					{
+						ws->SetCellString(k, l, sbList[l]->ToString());
+					}
+					DEL_CLASS(sbList[l]);
+					l++;
+				}
+				MemFree(sbList);
+			}
+			else if (currRowType == RT_HEADER)
+			{
+				l = 0;
+				while (l < this->colCount)
+				{
+					if (csarr[l])
+					{
+						ws->SetCellString(k, l, csarr[l]);
+					}
+					l++;
+				}
+			}
+			else
+			{
+				l = 0;
+				while (l < this->colCount)
+				{
+					if (csarr[l])
+					{
+						if (this->colTypes[l] == CT_DOUBLE)
+						{
+							ws->SetCellDouble(k, l, Text::StrToDouble(csarr[l]));
+						}
+						else if (this->colTypes[l] == CT_INT32)
+						{
+							ws->SetCellInt32(k, l, Text::StrToInt32(csarr[l]));
+						}
+						else
+						{
+							ws->SetCellString(k, l, csarr[l]);
+						}
+					}
+					l++;
+				}
+			}
+			lastRowType = currRowType;
+			k++;
+			i++;
+		}
+		i = 0;
+		j = this->urlList->GetCount();
+		while (i < j)
+		{
+			url = this->urlList->GetItem(i);
+			sb.ClearStr();
+			sb.Append((const UTF8Char*)"https://www.google.com/maps/place/");
+			Text::SBAppendF64(&sb, url->lat);
+			sb.Append((const UTF8Char*)",");
+			Text::SBAppendF64(&sb, url->lon);
+			sb.Append((const UTF8Char*)"/@");
+			Text::SBAppendF64(&sb, url->lat);
+			sb.Append((const UTF8Char*)",");
+			Text::SBAppendF64(&sb, url->lon);
+			sb.Append((const UTF8Char*)",19z");
+			ws->SetCellURL(url->row + urlAdd, url->col, sb.ToString());
+			i++;
+		}
+		return wb;
+	}
+	else
+	{
 		return 0;
 
-	NEW_CLASS(wb, Text::SpreadSheet::Workbook());
-	wb->AddDefaultStyles();
-	ws = wb->AddWorksheet(this->name);
+		NEW_CLASS(wb, Text::SpreadSheet::Workbook());
+		Text::SpreadSheet::WorkbookFont *font10 = wb->NewFont((const UTF8Char*)"Arial", 10, false);
+		Text::SpreadSheet::CellStyle *strStyle = wb->NewCellStyle(font10, Text::SpreadSheet::HAlignment::Left, Text::SpreadSheet::VAlignment::Center, (const UTF8Char*)"General");
+		ws = wb->AddWorksheet(this->name);
+		dataSheet = wb->AddWorksheet((const UTF8Char*)"ChartData");
 
-	k = 0;
-	i = 0;
-	j = this->preheaders->GetCount();
-	while (i < j)
-	{
-		csarr = this->preheaders->GetItem(i);
-		ws->SetCellString(k, 0, csarr[0]);
-		ws->SetCellString(k, 1, csarr[1]);
+		k = 0;
+		i = 0;
+		j = this->preheaders->GetCount();
+		while (i < j)
+		{
+			csarr = this->preheaders->GetItem(i);
+			ws->SetCellString(k, 0, strStyle, csarr[0]);
+			ws->SetCellString(k, 1, strStyle, csarr[1]);
+			k++;
+			i++;
+		}
+
+		ws->SetCellString(k, 0, this->name);
+		i = 0;
+		j = this->colCount;
+		while (i < j)
+		{
+			if (this->colWidth[i] != 0)
+			{
+				ws->SetColWidth(i, this->colWidth[i]);
+			}
+			i++;
+		}
+
+		i = 0;
 		k++;
-		i++;
-	}
-
-	ws->SetCellString(k, 0, this->name);
-	i = 0;
-	j = this->colCount;
-	while (i < j)
-	{
-		if (this->colWidth[i] != 0)
+		j = this->headers->GetCount();
+		while (i < j)
 		{
-			ws->SetColWidth(i, this->colWidth[i]);
+			csarr = this->headers->GetItem(i);
+			ws->SetCellString(k, 0, strStyle, csarr[0]);
+			ws->SetCellString(k, 1, strStyle, csarr[1]);
+			k++;
+			i++;
 		}
-		i++;
-	}
 
-	i = 0;
-	k++;
-	j = this->headers->GetCount();
-	while (i < j)
-	{
-		csarr = this->headers->GetItem(i);
-		ws->SetCellString(k, 0, csarr[0]);
-		ws->SetCellString(k, 1, csarr[1]);
-		k++;
-		i++;
-	}
-	urlAdd = k;
-	k++;
-	lastRowType = RT_UNKNOWN;
-	i = 0;
-	j = this->tableContent->GetCount();
-	while (i < j)
-	{
-		iconList = this->icons->GetItem(i);
-		csarr = this->tableContent->GetItem(i);
-		currRowType = this->tableRowType->GetItem(i);
-		if ((lastRowType == RT_CONTENT && currRowType == RT_SUMMARY) || (lastRowType == RT_HEADER && currRowType != RT_HEADER))
-		{
-			if (styleSummary == 0)
-			{
-				Text::SpreadSheet::CellStyle::BorderStyle bs;
-				bs.borderType = Text::SpreadSheet::CellStyle::BT_MEDIUM;
-				bs.borderColor = 0xff000000;
-				styleSummary = wb->NewCellStyle();
-				styleSummary->SetBorderTop(&bs);
-			}
-			l = 0;
-			while (l < this->colCount)
-			{
-				ws->SetCellStyle(k, l, styleSummary);
-				l++;
-			}
-		}
-		if (iconList)
-		{
-			Text::StringBuilderUTF8 **sbList = MemAlloc(Text::StringBuilderUTF8*, this->colCount);
-			l = 0;
-			while (l < this->colCount)
-			{
-				NEW_CLASS(sbList[l], Text::StringBuilderUTF8());
-				if (csarr[l])
-				{
-					sbList[l]->Append(csarr[l]);
-				}
-				l++;
-			}
-			m = iconList->GetCount();
-			l = 0;
-			while (l < m)
-			{
-				icon = iconList->GetItem(l);
-				if (sbList[icon->col]->GetLength() > 0)
-				{
-					sbList[icon->col]->Append((const UTF8Char*)", ");
-				}
-				sbList[icon->col]->Append(icon->name);
-				l++;
-			}
+		Text::SpreadSheet::OfficeChart *shChart = ws->CreateChart(Math::Unit::Distance::DU_INCH, 0.64, 1.61, 13.10, 5.53, chart->GetTitle());
+		shChart->InitLineChart(chart->GetYAxisName(), chart->GetXAxisName(), FromChartDataType(chart->GetXAxisType()));
+		shChart->SetDisplayBlankAs(Text::SpreadSheet::BlankAs::Gap);
+		shChart->AddLegend(Text::SpreadSheet::LegendPos::Bottom);
 
-			l = 0;
-			while (l < this->colCount)
-			{
-				if (sbList[l]->GetLength() > 0)
-				{
-					ws->SetCellString(k, l, sbList[l]->ToString());
-				}
-				DEL_CLASS(sbList[l]);
-				l++;
-			}
-			MemFree(sbList);
-		}
-		else if (currRowType == RT_HEADER)
+		if (chart->GetXDataCount() == 1)
 		{
-			l = 0;
-			while (l < this->colCount)
+			Text::SpreadSheet::CellStyle *dateStyle = 0;
+			Text::SpreadSheet::CellStyle *intStyle = 0;
+			Text::SpreadSheet::CellStyle *dblStyle = wb->NewCellStyle(font10, Text::SpreadSheet::HAlignment::Left, Text::SpreadSheet::VAlignment::Center, (const UTF8Char*)"General");
+
+			UOSInt i;
+			UOSInt j;
+			UOSInt colCount;
+			switch (chart->GetXAxisType())
 			{
-				if (csarr[l])
+			case Data::IChart::DataType::DateTicks:
+			{
+				if (dateStyle == 0)
 				{
-					ws->SetCellString(k, l, csarr[l]);
+					if (chart->GetTimeFormat())
+					{
+						dateStyle = wb->NewCellStyle(font10, Text::SpreadSheet::HAlignment::Left, Text::SpreadSheet::VAlignment::Center, (const UTF8Char*)chart->GetTimeFormat());
+					}
+					else
+					{
+						dateStyle = wb->NewCellStyle(font10, Text::SpreadSheet::HAlignment::Left, Text::SpreadSheet::VAlignment::Center, (const UTF8Char*)"YYYY-MM-dd HH:mm");
+					}
 				}
-				l++;
+				Data::DateTime dt;
+				dt.ToLocalTime();
+				Int64 *dateTicks = chart->GetXDateTicks(0, &colCount);
+				i = 0;
+				while (i < colCount)
+				{
+					dt.SetTicks(dateTicks[i]);
+					dataSheet->SetCellDate(0, i + 1, dateStyle, &dt);
+					i++;
+				}
+				break;
+			}
+			case Data::IChart::DataType::DOUBLE:
+			{
+				if (dblStyle == 0)
+				{
+					if (chart->GetDblFormat())
+					{
+						dblStyle = wb->NewCellStyle(font10, Text::SpreadSheet::HAlignment::Left, Text::SpreadSheet::VAlignment::Center, (const UTF8Char*)chart->GetDblFormat());
+					}
+					else
+					{
+						dblStyle = wb->NewCellStyle(font10, Text::SpreadSheet::HAlignment::Left, Text::SpreadSheet::VAlignment::Center, (const UTF8Char*)"0.###");
+					}
+				}
+				Double *dblValues = chart->GetXDouble(0, &colCount);
+				i = 0;
+				while (i < colCount)
+				{
+					dataSheet->SetCellDouble(0, i + 1, dblStyle, dblValues[i]);
+					i++;
+				}
+				break;
+			}
+			case Data::IChart::DataType::Integer:
+			{
+				if (intStyle == 0)
+				{
+					intStyle = wb->NewCellStyle(font10, Text::SpreadSheet::HAlignment::Left, Text::SpreadSheet::VAlignment::Center, (const UTF8Char*)"0");
+				}
+				Int32 *intValues = chart->GetXInt32(0, &colCount);
+				i = 0;
+				while (i < colCount)
+				{
+					dataSheet->SetCellInt32(0, i + 1, intStyle, intValues[i]);
+					i++;
+				}
+				break;
+			}
+			case Data::IChart::DataType::None:
+				colCount = 0;
+				break;
+			}
+			i = 0;
+			j = chart->GetYDataCount();
+			while (i < j)
+			{
+				dataSheet->SetCellString(1 + i, 0, strStyle, chart->GetYName(i));
+				switch (chart->GetYType(i))
+				{
+				case Data::IChart::DataType::DateTicks:
+				{
+					if (dateStyle == 0)
+					{
+						if (chart->GetTimeFormat())
+						{
+							dateStyle = wb->NewCellStyle(font10, Text::SpreadSheet::HAlignment::Left, Text::SpreadSheet::VAlignment::Center, (const UTF8Char*)chart->GetTimeFormat());
+						}
+						else
+						{
+							dateStyle = wb->NewCellStyle(font10, Text::SpreadSheet::HAlignment::Left, Text::SpreadSheet::VAlignment::Center, (const UTF8Char*)"YYYY-MM-dd HH:mm");
+						}
+					}
+					Data::DateTime dt;
+					dt.ToLocalTime();
+					Int64 *dateTicks = chart->GetYDateTicks(i, &colCount);
+					k = 0;
+					while (k < colCount)
+					{
+						dt.SetTicks(dateTicks[k]);
+						dataSheet->SetCellDate(i + 1, k + 1, dateStyle, &dt);
+						k++;
+					}
+					break;
+				}
+				case Data::IChart::DataType::DOUBLE:
+				{
+					if (dblStyle == 0)
+					{
+						if (chart->GetDblFormat())
+						{
+							dblStyle = wb->NewCellStyle(font10, Text::SpreadSheet::HAlignment::Left, Text::SpreadSheet::VAlignment::Center, (const UTF8Char*)chart->GetDblFormat());
+						}
+						else
+						{
+							dblStyle = wb->NewCellStyle(font10, Text::SpreadSheet::HAlignment::Left, Text::SpreadSheet::VAlignment::Center, (const UTF8Char*)"0.###");
+						}
+					}
+					Double *dblValues = chart->GetYDouble(i, &colCount);
+					k = 0;
+					while (k < colCount)
+					{
+						dataSheet->SetCellDouble(i + 1, k + 1, dblStyle, dblValues[k]);
+						k++;
+					}
+					break;
+				}
+				case Data::IChart::DataType::Integer:
+				{
+					if (intStyle == 0)
+					{
+						intStyle = wb->NewCellStyle(font10, Text::SpreadSheet::HAlignment::Left, Text::SpreadSheet::VAlignment::Center, (const UTF8Char*)"0");
+					}
+					Int32 *intValues = chart->GetYInt32(i, &colCount);
+					k = 0;
+					while (k < colCount)
+					{
+						dataSheet->SetCellInt32(i + 1, k + 1, intStyle, intValues[k]);
+						k++;
+					}
+					break;
+				}
+				case Data::IChart::DataType::None:
+					colCount = 0;
+					break;				
+				}
+				Text::SpreadSheet::WorkbookDataSource *catSource = NEW_CLASS_D(Text::SpreadSheet::WorkbookDataSource(dataSheet, 0, 0, 1, colCount));
+				Text::SpreadSheet::WorkbookDataSource *valSource = NEW_CLASS_D(Text::SpreadSheet::WorkbookDataSource(dataSheet, i + 1, i + 1, 1, colCount));
+				shChart->AddSeries(catSource, valSource, chart->GetYName(i), false);
+				i++;
 			}
 		}
 		else
 		{
-			l = 0;
-			while (l < this->colCount)
-			{
-				if (csarr[l])
-				{
-					if (this->colTypes[l] == CT_DOUBLE)
-					{
-						ws->SetCellDouble(k, l, Text::StrToDouble(csarr[l]));
-					}
-					else if (this->colTypes[l] == CT_INT32)
-					{
-						ws->SetCellInt32(k, l, Text::StrToInt32(csarr[l]));
-					}
-					else
-					{
-						ws->SetCellString(k, l, csarr[l]);
-					}
-				}
-				l++;
-			}
+
 		}
-		lastRowType = currRowType;
-		k++;
-		i++;
+
+		return wb;
 	}
-	i = 0;
-	j = this->urlList->GetCount();
-	while (i < j)
-	{
-		url = this->urlList->GetItem(i);
-		sb.ClearStr();
-		sb.Append((const UTF8Char*)"https://www.google.com/maps/place/");
-		Text::SBAppendF64(&sb, url->lat);
-		sb.Append((const UTF8Char*)",");
-		Text::SBAppendF64(&sb, url->lon);
-		sb.Append((const UTF8Char*)"/@");
-		Text::SBAppendF64(&sb, url->lat);
-		sb.Append((const UTF8Char*)",");
-		Text::SBAppendF64(&sb, url->lon);
-		sb.Append((const UTF8Char*)",19z");
-		ws->SetCellURL(url->row + urlAdd, url->col, sb.ToString());
-		i++;
-	}
-	return wb;
 }
 
 Media::VectorDocument *Text::ReportBuilder::CreateVDoc(Int32 id, Media::DrawEngine *deng)

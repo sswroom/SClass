@@ -59,6 +59,7 @@ namespace Text
 		Data::IChart *chart;
 		Bool paperHori;
 
+		static Text::SpreadSheet::AxisType FromChartDataType(Data::IChart::DataType dataType);
 	public:
 		ReportBuilder(const UTF8Char *name, UOSInt colCount, const UTF8Char **columns);
 		~ReportBuilder();
@@ -74,6 +75,7 @@ namespace Text
 		void SetColumnWidth(UOSInt index, Double width);
 		void SetColumnType(UOSInt index, ColType colType);
 		void SetColURLLatLon(UOSInt index, Double lat, Double lon);
+		Bool HasChart();
 		Text::SpreadSheet::Workbook *CreateWorkbook();
 		Media::VectorDocument *CreateVDoc(Int32 id, Media::DrawEngine *deng);
 	};

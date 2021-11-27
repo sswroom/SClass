@@ -11,15 +11,6 @@ namespace Data
 	
 	class LineChart : public Data::IChart
 	{
-	private:
-		typedef enum
-		{
-			CT_NO = 0,
-			CT_DATETICK = 1,
-			CT_DOUBLE = 2,
-			CT_INTEGER = 3
-		} ChartType;
-
 	public:
 		typedef enum
 		{
@@ -44,13 +35,14 @@ namespace Data
 		class ChartData
 		{
 		public:
+			const UTF8Char *name;
 			void *data;
-			Data::LineChart::ChartType dataType;
+			Data::IChart::DataType dataType;
 			UInt32 lineColor;
 			UOSInt dataCnt;
 			Data::LineChart::LineStyle lineStyle;
 
-			ChartData(void *data, UOSInt dataCnt, Data::LineChart::ChartType dataType, UInt32 lineColor, Data::LineChart::LineStyle lineStyle);
+			ChartData(const UTF8Char *name, void *data, UOSInt dataCnt, Data::IChart::DataType dataType, UInt32 lineColor, Data::LineChart::LineStyle lineStyle);
 			~ChartData();
 		};
 
@@ -58,14 +50,11 @@ namespace Data
 		Data::RandomOS *rnd;
 		Data::ArrayList<void*> *xDatas;
 		Data::ArrayList<UOSInt> *xDataCnt;
-		ChartType xType;
-		const UTF8Char *xLabel;
+		DataType xType;
 
 		Data::ArrayList<ChartData*> *yCharts;
-		Data::ArrayList<const UTF8Char*> *dataNames;
 //		Data::ArrayList *dataPos;
-		const UTF8Char *yLabel;
-		const UTF8Char *title;
+		const UTF8Char *titleBuff;
 		UTF8Char *titleLine[3];
 		UOSInt titleLineCnt;
 		const UTF8Char *yUnit;
@@ -91,11 +80,6 @@ namespace Data
 		const UTF8Char *fntName;
 		Double fntSizePt;
 
-		const Char *dateFormat;
-		const Char *timeFormat;
-		const Char *dblFormat;
-		Double minDblVal;
-
 		Bool hasXRangeDate;
 		Int64 xRangeDateMin;
 		Int64 xRangeDateMax;
@@ -109,15 +93,11 @@ namespace Data
 	public:
 		LineChart(const UTF8Char *title);
 		virtual ~LineChart();
-		void SetTitle(const UTF8Char *title);
+
 		Bool AddXData(Data::DateTime **data, UOSInt dataCnt);
 		Bool AddXData(Double *data, UOSInt dataCnt);
 		Bool AddXData(Int32 *data, UOSInt dataCnt);
 		Bool AddXDataDate(Int64 *data, UOSInt dataCnt);
-		void SetXAxis(const UTF8Char *name);
-		void SetDateFormat(const Char *format);
-		void SetTimeFormat(const Char *format);
-		void SetDblFormat(const Char *format);
 		void SetFontHeightPt(Double ptSize);
 		void SetFontName(const UTF8Char *name);
 		void SetYRefVal(Int32 refVal, UInt32 col);
@@ -133,11 +113,23 @@ namespace Data
 		void AddYDataDate(const UTF8Char *name, Int64 *value, UOSInt valCnt, UInt32 lineColor, Data::LineChart::LineStyle style);
 		void AddYData(const UTF8Char *name, Int32 *value, UOSInt valCnt, UInt32 lineColor, Data::LineChart::LineStyle style);
 		void AddYData(const UTF8Char *name, Double *value, UOSInt valCnt, UInt32 lineColor, Data::LineChart::LineStyle style);
-		void SetYAxis(const UTF8Char *name);
 		void SetXRangeDate(Data::DateTime *xVal);
 		void SetYRangeInt(Int32 yVal);
 		void SetYRangeDbl(Double yVal);
 //		void SetStyle(Data::LineChart::LineStyle style);
+		virtual void SetTitle(const UTF8Char *title);
+		virtual DataType GetXAxisType();
+		virtual UOSInt GetXDataCount();
+		virtual Int64 *GetXDateTicks(UOSInt index, UOSInt *cnt);
+		virtual Double *GetXDouble(UOSInt index, UOSInt *cnt);
+		virtual Int32 *GetXInt32(UOSInt index, UOSInt *cnt);
+		virtual UOSInt GetYDataCount();
+		virtual Int64 *GetYDateTicks(UOSInt index, UOSInt *cnt);
+		virtual Double *GetYDouble(UOSInt index, UOSInt *cnt);
+		virtual Int32 *GetYInt32(UOSInt index, UOSInt *cnt);
+		virtual const UTF8Char *GetYName(UOSInt index);
+		virtual DataType GetYType(UOSInt index);
+
 		virtual void Plot(Media::DrawImage *img, Double x, Double y, Double width, Double height);
 		virtual UOSInt GetLegendCount();
 		virtual UTF8Char *GetLegend(UTF8Char *sbuff, UInt32 *color, UOSInt index);

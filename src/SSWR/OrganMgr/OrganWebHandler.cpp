@@ -6441,6 +6441,53 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoUpload(Net::WebServer::I
 	return true;
 }
 
+Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoUploadD(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *subReq, Net::WebServer::WebServiceHandler *parent)
+{
+	SSWR::OrganMgr::OrganWebHandler *me = (SSWR::OrganMgr::OrganWebHandler*)parent;
+	SSWR::OrganMgr::OrganWebHandler::RequestEnv env;
+	me->ParseRequestEnv(req, resp, &env, false);
+
+	if (env.user == 0)
+	{
+		resp->ResponseError(req, Net::WebStatus::SC_FORBIDDEN);
+		return true;
+	}
+
+	Text::StringBuilderUTF8 sb;
+	if (!req->GetHeader(&sb, (const UTF8Char*)"X-FileName"))
+	{
+		resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
+		return true;
+	}
+
+	UOSInt dataSize;
+	const UInt8 *imgData = req->GetReqData(&dataSize);
+	if (imgData == 0 || dataSize < 100 || dataSize > 104857600)
+	{
+		resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
+		return true;
+	}
+
+	me->dataMut->LockWrite();
+	Int32 ret = me->UserfileAdd(env.user->id, env.user->unorganSpId, sb.ToString(), imgData, dataSize);
+	me->dataMut->UnlockWrite();
+
+	if (ret == 0)
+	{
+		resp->ResponseError(req, Net::WebStatus::SC_NOT_ACCEPTABLE);
+		return true;
+	}
+	UTF8Char sbuff[32];
+	UTF8Char *sptr;
+	resp->SetStatusCode(Net::WebStatus::SC_OK);
+	resp->AddDefHeaders(req);
+	sptr = Text::StrInt32(sbuff, ret);
+	resp->AddContentLength((UOSInt)(sptr - sbuff));
+	resp->AddContentType((const UTF8Char*)"text/plain");
+	resp->Write(sbuff, (UOSInt)(sptr - sbuff));
+	return true;
+}
+
 Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSearchInside(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *subReq, Net::WebServer::WebServiceHandler *parent)
 {
 	SSWR::OrganMgr::OrganWebHandler *me = (SSWR::OrganMgr::OrganWebHandler*)parent;
@@ -9727,6 +9774,7 @@ SSWR::OrganMgr::OrganWebHandler::OrganWebHandler(Net::SocketFactory *sockf, IO::
 		this->AddService((const UTF8Char*)"/photoyear.html", Net::WebServer::IWebRequest::RequestMethod::HTTP_GET, SvcPhotoYear);
 		this->AddService((const UTF8Char*)"/photoday.html", Net::WebServer::IWebRequest::RequestMethod::HTTP_GET, SvcPhotoDay);
 		this->AddService((const UTF8Char*)"/photoupload.html", Net::WebServer::IWebRequest::RequestMethod::HTTP_POST, SvcPhotoUpload);
+		this->AddService((const UTF8Char*)"/photouploadd.html", Net::WebServer::IWebRequest::RequestMethod::HTTP_POST, SvcPhotoUploadD);
 		this->AddService((const UTF8Char*)"/searchinside.html", Net::WebServer::IWebRequest::RequestMethod::HTTP_POST, SvcSearchInside);
 		this->AddService((const UTF8Char*)"/searchinsidemores.html", Net::WebServer::IWebRequest::RequestMethod::HTTP_GET, SvcSearchInsideMoreS);
 		this->AddService((const UTF8Char*)"/searchinsidemoreg.html", Net::WebServer::IWebRequest::RequestMethod::HTTP_GET, SvcSearchInsideMoreG);
