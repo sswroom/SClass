@@ -465,8 +465,6 @@ Text::SpreadSheet::Workbook *Text::ReportBuilder::CreateWorkbook()
 	}
 	else
 	{
-		return 0;
-
 		NEW_CLASS(wb, Text::SpreadSheet::Workbook());
 		Text::SpreadSheet::WorkbookFont *font10 = wb->NewFont((const UTF8Char*)"Arial", 10, false);
 		Text::SpreadSheet::CellStyle *strStyle = wb->NewCellStyle(font10, Text::SpreadSheet::HAlignment::Left, Text::SpreadSheet::VAlignment::Center, (const UTF8Char*)"General");

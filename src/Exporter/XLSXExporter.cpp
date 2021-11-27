@@ -111,75 +111,79 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char 
 			while (k < l)
 			{
 				Text::SpreadSheet::Worksheet::RowData *row = sheet->GetItem(k);
-				sb.Append((const UTF8Char*)"<row r=\"");
-				sb.AppendUOSInt(k + 1);
-				sb.Append((const UTF8Char*)"\" customFormat=\"false\" ht=\"12.8\" hidden=\"false\" customHeight=\"false\" outlineLevel=\"0\" collapsed=\"false\">");
-
-				m = 0;
-				n = row->cells->GetCount();
-				while (m < n)
+				if (row)
 				{
-					Text::SpreadSheet::Worksheet::CellData *cell = row->cells->GetItem(m);
-					if (cell && cell->cdt != Text::SpreadSheet::CellDataType::MergedLeft && cell->cdt != Text::SpreadSheet::CellDataType::MergedTop)
+					sb.Append((const UTF8Char*)"<row r=\"");
+					sb.AppendUOSInt(k + 1);
+					sb.Append((const UTF8Char*)"\" customFormat=\"false\" ht=\"12.8\" hidden=\"false\" customHeight=\"false\" outlineLevel=\"0\" collapsed=\"false\">");
+
+					m = 0;
+					n = row->cells->GetCount();
+					while (m < n)
 					{
-						sb.Append((const UTF8Char*)"<c r=\"");
-						Text::StrUOSInt(Text::SpreadSheet::Workbook::ColCode(sbuff, m), k + 1);
-						sb.Append(sbuff);
-						sb.AppendChar('"', 1);
-						if (cell->style)
+						Text::SpreadSheet::Worksheet::CellData *cell = row->cells->GetItem(m);
+						if (cell && cell->cdt != Text::SpreadSheet::CellDataType::MergedLeft && cell->cdt != Text::SpreadSheet::CellDataType::MergedTop)
 						{
-							sb.Append((const UTF8Char*)" s=\"");
-							sb.AppendUOSInt(cell->style->GetIndex());
+							sb.Append((const UTF8Char*)"<c r=\"");
+							Text::StrUOSInt(Text::SpreadSheet::Workbook::ColCode(sbuff, m), k + 1);
+							sb.Append(sbuff);
 							sb.AppendChar('"', 1);
-						}
-						switch (cell->cdt)
-						{
-						case Text::SpreadSheet::CellDataType::String:
-							sb.Append((const UTF8Char*)" t=\"s\"");
-							break;
-						case Text::SpreadSheet::CellDataType::Number:
-						case Text::SpreadSheet::CellDataType::DateTime:
-							sb.Append((const UTF8Char*)" t=\"n\"");
-							break;
-						case Text::SpreadSheet::CellDataType::MergedLeft:
-						case Text::SpreadSheet::CellDataType::MergedTop:
-							break;
-						}
-						sb.Append((const UTF8Char*)"><v>");
-						switch (cell->cdt)
-						{
-						case Text::SpreadSheet::CellDataType::String:
+							if (cell->style)
 							{
-								UOSInt sIndex = stringMap.Get(cell->cellValue);
-								if (sIndex == 0 && !stringMap.ContainsKey(cell->cellValue))
+								sb.Append((const UTF8Char*)" s=\"");
+								sb.AppendUOSInt(cell->style->GetIndex());
+								sb.AppendChar('"', 1);
+							}
+							switch (cell->cdt)
+							{
+							case Text::SpreadSheet::CellDataType::String:
+								sb.Append((const UTF8Char*)" t=\"s\"");
+								break;
+							case Text::SpreadSheet::CellDataType::Number:
+							case Text::SpreadSheet::CellDataType::DateTime:
+								sb.Append((const UTF8Char*)" t=\"n\"");
+								break;
+							case Text::SpreadSheet::CellDataType::MergedLeft:
+							case Text::SpreadSheet::CellDataType::MergedTop:
+								break;
+							}
+							sb.Append((const UTF8Char*)"><v>");
+							switch (cell->cdt)
+							{
+							case Text::SpreadSheet::CellDataType::String:
 								{
-									sIndex = sharedStrings.Add(cell->cellValue);
-									stringMap.Put(cell->cellValue, sIndex);
+									UOSInt sIndex = stringMap.Get(cell->cellValue);
+									if (sIndex == 0 && !stringMap.ContainsKey(cell->cellValue))
+									{
+										sIndex = sharedStrings.Add(cell->cellValue);
+										stringMap.Put(cell->cellValue, sIndex);
+									}
+									sb.AppendUOSInt(sIndex);
 								}
-								sb.AppendUOSInt(sIndex);
+								break;
+							case Text::SpreadSheet::CellDataType::Number:
+								sb.Append(cell->cellValue);
+								break;
+							case Text::SpreadSheet::CellDataType::DateTime:
+								{
+									Data::DateTime dt;
+									dt.ToLocalTime();
+									dt.SetValue(cell->cellValue);
+									Text::SBAppendF64(&sb, Text::XLSUtil::Date2Number(&dt));
+								}
+								break;
+							case Text::SpreadSheet::CellDataType::MergedLeft:
+							case Text::SpreadSheet::CellDataType::MergedTop:
+								break;
 							}
-							break;
-						case Text::SpreadSheet::CellDataType::Number:
-							sb.Append(cell->cellValue);
-							break;
-						case Text::SpreadSheet::CellDataType::DateTime:
-							{
-								Data::DateTime dt;
-								dt.ToLocalTime();
-								dt.SetValue(cell->cellValue);
-								Text::SBAppendF64(&sb, Text::XLSUtil::Date2Number(&dt));
-							}
-							break;
-						case Text::SpreadSheet::CellDataType::MergedLeft:
-						case Text::SpreadSheet::CellDataType::MergedTop:
-							break;
+							
+							sb.Append((const UTF8Char*)"</v></c>");
 						}
-						
-						sb.Append((const UTF8Char*)"</v></c>");
+						m++;
 					}
-					m++;
+					sb.Append((const UTF8Char*)"</row>");
 				}
-				sb.Append((const UTF8Char*)"</row>");
+
 				k++;
 			}
 			sb.Append((const UTF8Char*)"</sheetData>");

@@ -423,7 +423,7 @@ Bool Exporter::ExcelXMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8C
 		Text::XML::FreeNewText(text2);
 		writer->WriteLine(sb.ToString());
 
-		if (ws->GetCount() > 1)
+		if (ws->GetCount() > 0)
 		{
 			Bool rowSkipped = false;
 			UOSInt lastDispCol;
@@ -432,7 +432,7 @@ Bool Exporter::ExcelXMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8C
 			writer->WriteLine((const UTF8Char*)"  <Table>");
 
 			Double lastColWidth = -1;
-			UOSInt lastColIndex = 0;
+			UOSInt lastColIndex = INVALID_INDEX;
 			Bool needIndex = true;
 
 			k = 0;
@@ -448,7 +448,7 @@ Bool Exporter::ExcelXMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8C
 						if (needIndex)
 						{
 							sb.Append((const UTF8Char*)" ss:Index=\"");
-							sb.AppendUOSInt(lastColIndex);
+							sb.AppendUOSInt(lastColIndex + 1);
 							sb.Append((const UTF8Char*)"\"");
 						}
 						sb.Append((const UTF8Char*)" ss:AutoFitWidth=\"0\" ss:Width=\"");
@@ -516,7 +516,7 @@ Bool Exporter::ExcelXMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8C
 					if (rowSkipped)
 					{
 						sb.Append((const UTF8Char*)" ss:Index=\"");
-						sb.AppendUOSInt(k);
+						sb.AppendUOSInt(k + 1);
 						sb.Append((const UTF8Char*)"\"");
 					}
 					rowSkipped = false;
@@ -552,8 +552,8 @@ Bool Exporter::ExcelXMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8C
 						sb.Append((const UTF8Char*)">");
 						writer->WriteLine(sb.ToString());
 
-						lastDispCol = 0;
-						m = 1;
+						lastDispCol = INVALID_INDEX;
+						m = 0;
 						n = row->cells->GetCount();
 						while (m < n)
 						{
@@ -574,7 +574,7 @@ Bool Exporter::ExcelXMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8C
 								if (m != lastDispCol + 1)
 								{
 									sb.Append((const UTF8Char*)" ss:Index=\"");
-									sb.AppendUOSInt(m);
+									sb.AppendUOSInt(m + 1);
 									sb.Append((const UTF8Char*)"\"");
 								}
 								lastDispCol = m;
