@@ -3,6 +3,7 @@
 #include "Data/ArrayList.h"
 #include "Math/Unit/Distance.h"
 #include "Text/SpreadSheet/OfficeChartAxis.h"
+#include "Text/SpreadSheet/OfficeChartSeries.h"
 #include "Text/SpreadSheet/OfficeShapeProp.h"
 #include "Text/SpreadSheet/WorkbookDataSource.h"
 
@@ -47,6 +48,7 @@ namespace Text
 			OfficeChartAxis *categoryAxis;
 			OfficeChartAxis *valueAxis;
 			Data::ArrayList<OfficeChartAxis *> *axes;
+			Data::ArrayList<OfficeChartSeries*> *series;
 
 		public:
 			OfficeChart(Math::Unit::Distance::DistanceUnit du, Double x, Double y, Double w, Double h);
@@ -76,8 +78,12 @@ namespace Text
 			UOSInt GetAxisCount();
 			OfficeChartAxis *GetAxis(UOSInt index);
 			UOSInt GetAxisIndex(OfficeChartAxis *axis);
+			OfficeChartAxis *GetCategoryAxis();
+			OfficeChartAxis *GetValueAxis();
 
 			void AddSeries(WorkbookDataSource *categoryData, WorkbookDataSource *valueData, const UTF8Char *name, Bool showMarker);
+			UOSInt GetSeriesCount();
+			OfficeChartSeries *GetSeries(UOSInt index);
 		};
 	}
 }

@@ -3669,6 +3669,8 @@ Text/SpreadSheet/OfficeChart.h: ../../src/Text/SpreadSheet/OfficeChart.cpp
 @OfficeChart.o
 Text/SpreadSheet/OfficeChartAxis.h: ../../src/Text/SpreadSheet/OfficeChartAxis.cpp
 @OfficeChartAxis.o
+Text/SpreadSheet/OfficeChartSeries.h: ../../src/Text/SpreadSheet/OfficeChartSeries.cpp
+@OfficeChartSeries.o
 Text/SpreadSheet/OfficeColor.h: ../../src/Text/SpreadSheet/OfficeColor.cpp
 @OfficeColor.o
 Text/SpreadSheet/OfficeFill.h: ../../src/Text/SpreadSheet/OfficeFill.cpp
@@ -5046,6 +5048,7 @@ UnknownMIMEObj.o: ../../src/Text/MIMEObj/UnknownMIMEObj.cpp
 CellStyle.o: ../../src/Text/SpreadSheet/CellStyle.cpp
 OfficeChart.o: ../../src/Text/SpreadSheet/OfficeChart.cpp
 OfficeChartAxis.o: ../../src/Text/SpreadSheet/OfficeChartAxis.cpp
+OfficeChartSeries.o: ../../src/Text/SpreadSheet/OfficeChartSeries.cpp
 OfficeColor.o: ../../src/Text/SpreadSheet/OfficeColor.cpp
 OfficeFill.o: ../../src/Text/SpreadSheet/OfficeFill.cpp
 OfficeLineStyle.o: ../../src/Text/SpreadSheet/OfficeLineStyle.cpp

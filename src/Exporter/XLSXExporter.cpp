@@ -396,7 +396,44 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char 
 					}
 					sb.Append((const UTF8Char*)"<c:plotArea>");
 					sb.Append((const UTF8Char*)"<c:layout/>");
-
+					if (drawing->chart->GetChartType() != ChartType::Unknown)
+					{
+						switch (drawing->chart->GetChartType())
+						{
+						case ChartType::LineChart:
+							sb.Append((const UTF8Char*)"<c:lineChart>");
+							break;
+						case ChartType::Unknown:
+							break;
+						}
+						m = 0;
+						n = drawing->chart->GetSeriesCount();
+						while (m < n)
+						{
+							AppendSeries(&sb, drawing->chart->GetSeries(m), m);
+							m++;
+						}
+						if (drawing->chart->GetCategoryAxis())
+						{
+							sb.Append((const UTF8Char*)"<c:axId val=\"");
+							sb.AppendUOSInt(drawing->chart->GetAxisIndex(drawing->chart->GetCategoryAxis()));
+							sb.Append((const UTF8Char*)"\"/>");
+						}
+						if (drawing->chart->GetValueAxis())
+						{
+							sb.Append((const UTF8Char*)"<c:axId val=\"");
+							sb.AppendUOSInt(drawing->chart->GetAxisIndex(drawing->chart->GetValueAxis()));
+							sb.Append((const UTF8Char*)"\"/>");
+						}
+						switch (drawing->chart->GetChartType())
+						{
+						case ChartType::LineChart:
+							sb.Append((const UTF8Char*)"</c:lineChart>");
+							break;
+						case ChartType::Unknown:
+							break;
+						}
+					}
 					m = 0;
 					n = drawing->chart->GetAxisCount();
 					while (m < n)
@@ -1031,6 +1068,105 @@ void Exporter::XLSXExporter::AppendAxis(Text::StringBuilderUTF *sb, Text::Spread
 		sb->Append((const UTF8Char*)"</c:serAx>");
 		break;
 	}
+}
+
+void Exporter::XLSXExporter::AppendSeries(Text::StringBuilderUTF *sb, Text::SpreadSheet::OfficeChartSeries *series, UOSInt index)
+{
+	const UTF8Char *csptr;
+	sb->Append((const UTF8Char*)"<c:ser>");
+	sb->Append((const UTF8Char*)"<c:idx val=\"");
+	sb->AppendUOSInt(index);
+	sb->Append((const UTF8Char*)"\"/>");
+	sb->Append((const UTF8Char*)"<c:order val=\"");
+	sb->AppendUOSInt(index);
+	sb->Append((const UTF8Char*)"\"/>");
+	if (series->GetTitle())
+	{
+		sb->Append((const UTF8Char*)"<c:tx>");
+		sb->Append((const UTF8Char*)"<c:v>");
+		csptr = Text::XML::ToNewXMLText(series->GetTitle());
+		sb->Append(csptr);
+		Text::XML::FreeNewText(csptr);
+		sb->Append((const UTF8Char*)"</c:v>");
+		sb->Append((const UTF8Char*)"</c:tx>");
+	}
+	AppendShapeProp(sb, series->GetShapeProp());
+	sb->Append((const UTF8Char*)"<c:marker>");
+	switch (series->GetMarkerStyle())
+	{
+	case MarkerStyle::Circle:
+		sb->Append((const UTF8Char*)"<c:symbol val=\"circle\"/>");
+		break;
+	case MarkerStyle::Dash:
+		sb->Append((const UTF8Char*)"<c:symbol val=\"dash\"/>");
+		break;
+	case MarkerStyle::Diamond:
+		sb->Append((const UTF8Char*)"<c:symbol val=\"diamond\"/>");
+		break;
+	case MarkerStyle::Dot:
+		sb->Append((const UTF8Char*)"<c:symbol val=\"dot\"/>");
+		break;
+	case MarkerStyle::None:
+		sb->Append((const UTF8Char*)"<c:symbol val=\"none\"/>");
+		break;
+	case MarkerStyle::Picture:
+		sb->Append((const UTF8Char*)"<c:symbol val=\"picture\"/>");
+		break;
+	case MarkerStyle::Plus:
+		sb->Append((const UTF8Char*)"<c:symbol val=\"plus\"/>");
+		break;
+	case MarkerStyle::Square:
+		sb->Append((const UTF8Char*)"<c:symbol val=\"square\"/>");
+		break;
+	case MarkerStyle::Star:
+		sb->Append((const UTF8Char*)"<c:symbol val=\"star\"/>");
+		break;
+	case MarkerStyle::Triangle:
+		sb->Append((const UTF8Char*)"<c:symbol val=\"triangle\"/>");
+		break;
+	case MarkerStyle::X:
+		sb->Append((const UTF8Char*)"<c:symbol val=\"x\"/>");
+		break;
+	}
+	if (series->GetMarkerSize() != 0)
+	{
+		sb->Append((const UTF8Char*)"<c:size val=\"");
+		sb->AppendU32(series->GetMarkerSize());
+		sb->Append((const UTF8Char*)"\"/>");
+	}
+	sb->Append((const UTF8Char*)"</c:marker>");
+
+	UTF8Char sbuff[128];
+	WorkbookDataSource *catData = series->GetCategoryData();
+	sb->Append((const UTF8Char*)"<c:cat>");
+	sb->Append((const UTF8Char*)"<c:strRef>");
+	sb->Append((const UTF8Char*)"<c:f>");
+	catData->ToCodeRange(sbuff);
+	csptr = Text::XML::ToNewXMLText(sbuff);
+	sb->Append(csptr);
+	Text::XML::FreeNewText(csptr);
+	sb->Append((const UTF8Char*)"</c:f>");
+	sb->Append((const UTF8Char*)"<c:strCache/>");
+	sb->Append((const UTF8Char*)"</c:strRef>");
+	sb->Append((const UTF8Char*)"</c:cat>");
+
+	WorkbookDataSource *valData = series->GetValueData();
+	sb->Append((const UTF8Char*)"<c:val>");
+	sb->Append((const UTF8Char*)"<c:numRef>");
+	sb->Append((const UTF8Char*)"<c:f>");
+	valData->ToCodeRange(sbuff);
+	csptr = Text::XML::ToNewXMLText(sbuff);
+	sb->Append(csptr);
+	Text::XML::FreeNewText(csptr);
+	sb->Append((const UTF8Char*)"</c:f>");
+	sb->Append((const UTF8Char*)"<c:numCache/>");
+	sb->Append((const UTF8Char*)"</c:numRef>");
+	sb->Append((const UTF8Char*)"</c:val>");
+
+	sb->Append((const UTF8Char*)"<c:smooth val=\"");
+	sb->Append((const UTF8Char*)(series->IsSmooth()?"true":"false"));
+	sb->Append((const UTF8Char*)"\"/>");
+	sb->Append((const UTF8Char*)"</c:ser>");
 }
 
 const Char *Exporter::XLSXExporter::PresetColorCode(PresetColor color)

@@ -18,6 +18,8 @@ namespace Text
 		public:
 			WorkbookDataSource(Worksheet *sheet, UOSInt firstRow, UOSInt lastRow, UOSInt firstCol, UOSInt lastCol);
 			~WorkbookDataSource();
+
+			UTF8Char *ToCodeRange(UTF8Char *sbuff);
 		};
 	}
 }

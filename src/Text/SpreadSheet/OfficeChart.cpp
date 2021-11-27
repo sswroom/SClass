@@ -35,6 +35,7 @@ Text::SpreadSheet::OfficeChart::OfficeChart(Math::Unit::Distance::DistanceUnit d
 	this->categoryAxis = 0;
 	this->valueAxis = 0;
 	NEW_CLASS(this->axes, Data::ArrayList<OfficeChartAxis*>());
+	NEW_CLASS(this->series, Data::ArrayList<OfficeChartSeries*>());
 }
 
 Text::SpreadSheet::OfficeChart::~OfficeChart()
@@ -48,6 +49,13 @@ Text::SpreadSheet::OfficeChart::~OfficeChart()
 		DEL_CLASS(axis);
 	}
 	DEL_CLASS(this->axes);
+	i = this->series->GetCount();
+	while (i-- > 0)
+	{
+		OfficeChartSeries *series = this->series->GetItem(i);
+		DEL_CLASS(series);
+	}
+	DEL_CLASS(this->series);
 }
 
 Double Text::SpreadSheet::OfficeChart::GetXInch()
@@ -173,12 +181,19 @@ UOSInt Text::SpreadSheet::OfficeChart::GetAxisIndex(OfficeChartAxis *axis)
 	return this->axes->IndexOf(axis);
 }
 
+OfficeChartAxis *Text::SpreadSheet::OfficeChart::GetCategoryAxis()
+{
+	return this->categoryAxis;
+}
+
+OfficeChartAxis *Text::SpreadSheet::OfficeChart::GetValueAxis()
+{
+	return this->valueAxis;
+}
+
 void Text::SpreadSheet::OfficeChart::AddSeries(WorkbookDataSource *categoryData, WorkbookDataSource *valueData, const UTF8Char *name, Bool showMarker)
 {
-	SDEL_CLASS(categoryData);
-	SDEL_CLASS(valueData);
-	/////////////////////
-/*	UOSInt i = this->series->GetCount();
+	UOSInt i = this->series->GetCount();
 	OfficeChartSeries *series = NEW_CLASS_D(OfficeChartSeries(categoryData, valueData));
 	if (name)
 		series->SetTitle(name, 0);
@@ -192,5 +207,16 @@ void Text::SpreadSheet::OfficeChart::AddSeries(WorkbookDataSource *categoryData,
 	{
 		series->SetMarkerStyle(MarkerStyle::None);
 	}
-	series->SetLineStyle(NEW_CLASS_D(OfficeLineStyle(OfficeFill::NewSolidFill(OfficeColor::NewPreset(seriesColor[i % (sizeof(seriesColor) / sizeof(seriesColor[0]))])))));*/
+	series->SetLineStyle(NEW_CLASS_D(OfficeLineStyle(OfficeFill::NewSolidFill(OfficeColor::NewPreset(seriesColor[i % (sizeof(seriesColor) / sizeof(seriesColor[0]))])))));
+	this->series->Add(series);
+}
+
+UOSInt Text::SpreadSheet::OfficeChart::GetSeriesCount()
+{
+	return this->series->GetCount();
+}
+
+OfficeChartSeries *Text::SpreadSheet::OfficeChart::GetSeries(UOSInt index)
+{
+	return this->series->GetItem(index);
 }

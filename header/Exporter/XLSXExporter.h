@@ -4,6 +4,7 @@
 #include "IO/FileExporter.h"
 #include "Text/StringBuilderUTF.h"
 #include "Text/SpreadSheet/OfficeChartAxis.h"
+#include "Text/SpreadSheet/OfficeChartSeries.h"
 #include "Text/SpreadSheet/OfficeShapeProp.h"
 
 namespace Exporter
@@ -24,6 +25,7 @@ namespace Exporter
 		static void AppendTitle(Text::StringBuilderUTF *sb, const UTF8Char *title);
 		static void AppendShapeProp(Text::StringBuilderUTF *sb, Text::SpreadSheet::OfficeShapeProp *shapeProp);
 		static void AppendAxis(Text::StringBuilderUTF *sb, Text::SpreadSheet::OfficeChartAxis *axis, UOSInt index);
+		static void AppendSeries(Text::StringBuilderUTF *sb, Text::SpreadSheet::OfficeChartSeries *series, UOSInt index);
 
 		static const Char *PresetColorCode(Text::SpreadSheet::PresetColor color);
 		static UTF8Char *ToFormatCode(UTF8Char *sbuff, const UTF8Char *dataFormat);
