@@ -56,6 +56,7 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char 
 	Text::SpreadSheet::Workbook *workbook = (Text::SpreadSheet::Workbook*)pobj;
 	Text::SpreadSheet::Worksheet *sheet;
 	Text::StringBuilderUTF8 sb;
+	Text::StringBuilderUTF8 sbContTypes;
 	UTF8Char sbuff[256];
 	Data::DateTime dt;
 	Data::DateTime dt2;
@@ -75,6 +76,13 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char 
 	Data::StringUTF8Map<UOSInt> stringMap;
 	dt.SetCurrTimeUTC();
 	NEW_CLASS(zip, IO::ZIPBuilder(stm));
+
+	sbContTypes.Append((const UTF8Char*)"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+	sbContTypes.Append((const UTF8Char*)"<Types xmlns=\"http://schemas.openxmlformats.org/package/2006/content-types\">");
+	sbContTypes.Append((const UTF8Char*)"<Default Extension=\"xml\" ContentType=\"application/xml\"/>");
+	sbContTypes.Append((const UTF8Char*)"<Default Extension=\"rels\" ContentType=\"application/vnd.openxmlformats-package.relationships+xml\"/>");
+	sbContTypes.Append((const UTF8Char*)"<Default Extension=\"png\" ContentType=\"image/png\"/>");
+	sbContTypes.Append((const UTF8Char*)"<Default Extension=\"jpeg\" ContentType=\"image/jpeg\"/>");
 
 	i = 0;
 	j = workbook->GetCount();
@@ -223,6 +231,9 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char 
 		sb.Append((const UTF8Char*)"</worksheet>");
 		Text::StrConcat(Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"xl/worksheets/sheet"), i + 1), (const UTF8Char*)".xml");
 		zip->AddFile(sbuff, sb.ToString(), sb.GetLength(), dt.ToTicks(), false);
+		sbContTypes.Append((const UTF8Char*)"<Override PartName=\"/");
+		sbContTypes.Append(sbuff);
+		sbContTypes.Append((const UTF8Char*)"\" ContentType=\"application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml\"/>");
 
 		if (sheet->GetDrawingCount() > 0)
 		{
@@ -244,6 +255,9 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char 
 
 			Text::StrConcat(Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"xl/worksheets/_rels/sheet"), i + 1), (const UTF8Char*)".xml.rels");
 			zip->AddFile(sbuff, sb.ToString(), sb.GetLength(), dt.ToTicks(), false);
+			sbContTypes.Append((const UTF8Char*)"<Override PartName=\"/");
+			sbContTypes.Append(sbuff);
+			sbContTypes.Append((const UTF8Char*)"\" ContentType=\"application/vnd.openxmlformats-package.relationships+xml\"/>");
 
 			k = 0;
 			l = sheet->GetDrawingCount();
@@ -375,6 +389,9 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char 
 				drawingCnt++;
 				Text::StrConcat(Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"xl/drawings/drawing"), drawingCnt), (const UTF8Char*)".xml");
 				zip->AddFile(sbuff, sb.ToString(), sb.GetLength(), dt.ToTicks(), false);
+				sbContTypes.Append((const UTF8Char*)"<Override PartName=\"/");
+				sbContTypes.Append(sbuff);
+				sbContTypes.Append((const UTF8Char*)"\" ContentType=\"application/vnd.openxmlformats-officedocument.drawing+xml\"/>");
 
 				if (drawing->chart)
 				{
@@ -388,6 +405,9 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char 
 
 					Text::StrConcat(Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"xl/drawings/_rels/drawing"), drawingCnt), (const UTF8Char*)".xml.rels");
 					zip->AddFile(sbuff, sb.ToString(), sb.GetLength(), dt.ToTicks(), false);
+					sbContTypes.Append((const UTF8Char*)"<Override PartName=\"/");
+					sbContTypes.Append(sbuff);
+					sbContTypes.Append((const UTF8Char*)"\" ContentType=\"application/vnd.openxmlformats-package.relationships+xml\"/>");
 
 					chartCnt++;
 					sb.ClearStr();
@@ -488,6 +508,9 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char 
 
 					Text::StrConcat(Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"xl/charts/chart"), chartCnt), (const UTF8Char*)".xml");
 					zip->AddFile(sbuff, sb.ToString(), sb.GetLength(), dt.ToTicks(), false);
+					sbContTypes.Append((const UTF8Char*)"<Override PartName=\"/");
+					sbContTypes.Append(sbuff);
+					sbContTypes.Append((const UTF8Char*)"\" ContentType=\"application/vnd.openxmlformats-officedocument.drawingml.chart+xml\"/>");
 				}
 				k++;
 			}
@@ -526,6 +549,7 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char 
 	sb.Append((const UTF8Char*)"<calcPr iterateCount=\"100\" refMode=\"A1\" iterate=\"false\" iterateDelta=\"0.001\"/>");
 	sb.Append((const UTF8Char*)"</workbook>");
 	zip->AddFile((const UTF8Char*)"xl/workbook.xml", sb.ToString(), sb.GetLength(), dt.ToTicks(), false);
+	sbContTypes.Append((const UTF8Char*)"<Override PartName=\"/xl/workbook.xml\" ContentType=\"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml\"/>");
 
 	sb.ClearStr();
 	sb.Append((const UTF8Char*)"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
@@ -535,20 +559,324 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char 
 	sb.Append((const UTF8Char*)"<Relationship Id=\"rId3\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/extended-properties\" Target=\"docProps/app.xml\"/>");
 	sb.Append((const UTF8Char*)"\n</Relationships>");
 	zip->AddFile((const UTF8Char*)"_rels/.rels", sb.ToString(), sb.GetLength(), dt.ToTicks(), false);
+	sbContTypes.Append((const UTF8Char*)"<Override PartName=\"/_rels/.rels\" ContentType=\"application/vnd.openxmlformats-package.relationships+xml\"/>");
 
 	sb.ClearStr();
-	sb.Append((const UTF8Char*)"<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n");
-	sb.Append((const UTF8Char*)"<Properties xmlns=\"http://schemas.openxmlformats.org/officeDocument/2006/extended-properties\" xmlns:vt=\"http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes\">");
-	sb.Append((const UTF8Char*)"<Template></Template>");
-	sb.Append((const UTF8Char*)"<TotalTime>1</TotalTime>");
-	sb.Append((const UTF8Char*)"<Application>");
-	sb.Append((const UTF8Char*)"AVIRead/");
-	IO::BuildTime::GetBuildTime(&dt2);
-	dt2.ToString(sbuff, "yyyyMMdd_HHmmss");
-	sb.Append(sbuff);
-	sb.Append((const UTF8Char*)"</Application>");
-	sb.Append((const UTF8Char*)"</Properties>");
-	zip->AddFile((const UTF8Char*)"docProps/app.xml", sb.ToString(), sb.GetLength(), dt.ToTicks(), false);
+	sb.Append((const UTF8Char*)"<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\r\n");
+	sb.Append((const UTF8Char*)"<styleSheet xmlns=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\">");
+	{
+		Data::StringUTF8Map<UOSInt> numFmtMap;
+		Data::ArrayList<const UTF8Char*> numFmts;
+		csptr = (const UTF8Char*)"general";
+		numFmtMap.Put(csptr, numFmts.GetCount());
+		numFmts.Add(csptr);
+
+		i = 0;
+		j = workbook->GetStyleCount();
+		while (i < j)
+		{
+			Text::SpreadSheet::CellStyle *style = workbook->GetStyle(i);
+			csptr = style->GetDataFormat();
+			if (csptr == 0)
+			{
+				csptr = (const UTF8Char*)"general";
+			}
+			if (!numFmtMap.ContainsKey(csptr))
+			{
+				numFmtMap.Put(csptr, numFmts.GetCount());
+				numFmts.Add(csptr);
+			}
+			i++;
+		}
+		if (numFmts.GetCount() > 0)
+		{
+			sb.Append((const UTF8Char*)"<numFmts count=\"");
+			sb.AppendUOSInt(numFmts.GetCount());
+			sb.Append((const UTF8Char*)"\">");
+			i = 0;
+			j = numFmts.GetCount();
+			while (i < j)
+			{
+				sb.Append((const UTF8Char*)"<numFmt numFmtId=\"");
+				sb.AppendUOSInt(i + 164);
+				sb.Append((const UTF8Char*)"\" formatCode=");
+				ToFormatCode(sbuff, numFmts.GetItem(i));
+				csptr = Text::XML::ToNewAttrText(sbuff);
+				sb.Append(csptr);
+				Text::XML::FreeNewText(csptr);
+				sb.Append((const UTF8Char*)"/>");
+				i++;
+			}
+			sb.Append((const UTF8Char*)"</numFmts>");
+		}
+		if (workbook->GetFontCount() > 0)
+		{
+			sb.Append((const UTF8Char*)"<fonts count=\"");
+			sb.AppendUOSInt(workbook->GetFontCount());
+			sb.Append((const UTF8Char*)"\">");
+			i = 0;
+			j = workbook->GetFontCount();
+			while (i < j)
+			{
+				Text::SpreadSheet::WorkbookFont *font = workbook->GetFont(i);
+				sb.Append((const UTF8Char*)"<font>");
+				if (font->GetSize() != 0)
+				{
+					sb.Append((const UTF8Char*)"<sz val=\"");
+					Text::SBAppendF64(&sb, font->GetSize());
+					sb.Append((const UTF8Char*)"\"/>");
+				}
+				if (font->GetName())
+				{
+					sb.Append((const UTF8Char*)"<name val=");
+					csptr = Text::XML::ToNewAttrText(font->GetName());
+					sb.Append(csptr);
+					Text::XML::FreeNewText(csptr);
+					sb.Append((const UTF8Char*)"/>");
+				}
+				switch (font->GetFamily())
+				{
+				case FontFamily::NA:
+					sb.Append((const UTF8Char*)"<family val=\"0\"/>");
+					break;
+				case FontFamily::Roman:
+					sb.Append((const UTF8Char*)"<family val=\"1\"/>");
+					break;
+				case FontFamily::Swiss:
+					sb.Append((const UTF8Char*)"<family val=\"2\"/>");
+					break;
+				case FontFamily::Modern:
+					sb.Append((const UTF8Char*)"<family val=\"3\"/>");
+					break;
+				case FontFamily::Script:
+					sb.Append((const UTF8Char*)"<family val=\"4\"/>");
+					break;
+				case FontFamily::Decorative:
+					sb.Append((const UTF8Char*)"<family val=\"5\"/>");
+					break;
+				}
+				sb.Append((const UTF8Char*)"</font>");
+				i++;
+			}
+			sb.Append((const UTF8Char*)"</fonts>");
+		}
+
+		sb.Append((const UTF8Char*)"<fills count=\"2\">");
+		sb.Append((const UTF8Char*)"<fill>");
+		sb.Append((const UTF8Char*)"<patternFill patternType=\"none\"/>");
+		sb.Append((const UTF8Char*)"</fill>");
+		sb.Append((const UTF8Char*)"<fill>");
+		sb.Append((const UTF8Char*)"<patternFill patternType=\"gray125\"/>");
+		sb.Append((const UTF8Char*)"</fill>");
+		sb.Append((const UTF8Char*)"</fills>");
+
+		sb.Append((const UTF8Char*)"<borders count=\"1\">");
+		sb.Append((const UTF8Char*)"<border diagonalUp=\"false\" diagonalDown=\"false\">");
+		sb.Append((const UTF8Char*)"<left/>");
+		sb.Append((const UTF8Char*)"<right/>");
+		sb.Append((const UTF8Char*)"<top/>");
+		sb.Append((const UTF8Char*)"<bottom/>");
+		sb.Append((const UTF8Char*)"<diagonal/>");
+		sb.Append((const UTF8Char*)"</border>");
+		sb.Append((const UTF8Char*)"</borders>");
+
+		sb.Append((const UTF8Char*)"<cellStyleXfs count=\"20\">");
+		sb.Append((const UTF8Char*)"<xf numFmtId=\"164\" fontId=\"0\" fillId=\"0\" borderId=\"0\" applyFont=\"true\" applyBorder=\"true\" applyAlignment=\"true\" applyProtection=\"true\">");
+		sb.Append((const UTF8Char*)"<alignment horizontal=\"general\" vertical=\"bottom\" textRotation=\"0\" wrapText=\"false\" indent=\"0\" shrinkToFit=\"false\"/>");
+		sb.Append((const UTF8Char*)"<protection locked=\"true\" hidden=\"false\"/>");
+		sb.Append((const UTF8Char*)"</xf>");
+		sb.Append((const UTF8Char*)"<xf numFmtId=\"1\" fontId=\"0\" fillId=\"0\" borderId=\"0\" applyFont=\"true\" applyBorder=\"false\" applyAlignment=\"false\" applyProtection=\"false\">");
+		sb.Append((const UTF8Char*)"</xf>");
+		sb.Append((const UTF8Char*)"<xf numFmtId=\"1\" fontId=\"0\" fillId=\"0\" borderId=\"0\" applyFont=\"true\" applyBorder=\"false\" applyAlignment=\"false\" applyProtection=\"false\">");
+		sb.Append((const UTF8Char*)"</xf>");
+		sb.Append((const UTF8Char*)"<xf numFmtId=\"2\" fontId=\"0\" fillId=\"0\" borderId=\"0\" applyFont=\"true\" applyBorder=\"false\" applyAlignment=\"false\" applyProtection=\"false\">");
+		sb.Append((const UTF8Char*)"</xf>");
+		sb.Append((const UTF8Char*)"<xf numFmtId=\"2\" fontId=\"0\" fillId=\"0\" borderId=\"0\" applyFont=\"true\" applyBorder=\"false\" applyAlignment=\"false\" applyProtection=\"false\">");
+		sb.Append((const UTF8Char*)"</xf>");
+		sb.Append((const UTF8Char*)"<xf numFmtId=\"0\" fontId=\"0\" fillId=\"0\" borderId=\"0\" applyFont=\"true\" applyBorder=\"false\" applyAlignment=\"false\" applyProtection=\"false\">");
+		sb.Append((const UTF8Char*)"</xf>");
+		sb.Append((const UTF8Char*)"<xf numFmtId=\"0\" fontId=\"0\" fillId=\"0\" borderId=\"0\" applyFont=\"true\" applyBorder=\"false\" applyAlignment=\"false\" applyProtection=\"false\">");
+		sb.Append((const UTF8Char*)"</xf>");
+		sb.Append((const UTF8Char*)"<xf numFmtId=\"0\" fontId=\"0\" fillId=\"0\" borderId=\"0\" applyFont=\"true\" applyBorder=\"false\" applyAlignment=\"false\" applyProtection=\"false\">");
+		sb.Append((const UTF8Char*)"</xf>");
+		sb.Append((const UTF8Char*)"<xf numFmtId=\"0\" fontId=\"0\" fillId=\"0\" borderId=\"0\" applyFont=\"true\" applyBorder=\"false\" applyAlignment=\"false\" applyProtection=\"false\">");
+		sb.Append((const UTF8Char*)"</xf>");
+		sb.Append((const UTF8Char*)"<xf numFmtId=\"0\" fontId=\"0\" fillId=\"0\" borderId=\"0\" applyFont=\"true\" applyBorder=\"false\" applyAlignment=\"false\" applyProtection=\"false\">");
+		sb.Append((const UTF8Char*)"</xf>");
+		sb.Append((const UTF8Char*)"<xf numFmtId=\"0\" fontId=\"0\" fillId=\"0\" borderId=\"0\" applyFont=\"true\" applyBorder=\"false\" applyAlignment=\"false\" applyProtection=\"false\">");
+		sb.Append((const UTF8Char*)"</xf>");
+		sb.Append((const UTF8Char*)"<xf numFmtId=\"0\" fontId=\"0\" fillId=\"0\" borderId=\"0\" applyFont=\"true\" applyBorder=\"false\" applyAlignment=\"false\" applyProtection=\"false\">");
+		sb.Append((const UTF8Char*)"</xf>");
+		sb.Append((const UTF8Char*)"<xf numFmtId=\"0\" fontId=\"0\" fillId=\"0\" borderId=\"0\" applyFont=\"true\" applyBorder=\"false\" applyAlignment=\"false\" applyProtection=\"false\">");
+		sb.Append((const UTF8Char*)"</xf>");
+		sb.Append((const UTF8Char*)"<xf numFmtId=\"0\" fontId=\"0\" fillId=\"0\" borderId=\"0\" applyFont=\"true\" applyBorder=\"false\" applyAlignment=\"false\" applyProtection=\"false\">");
+		sb.Append((const UTF8Char*)"</xf>");
+		sb.Append((const UTF8Char*)"<xf numFmtId=\"0\" fontId=\"0\" fillId=\"0\" borderId=\"0\" applyFont=\"true\" applyBorder=\"false\" applyAlignment=\"false\" applyProtection=\"false\">");
+		sb.Append((const UTF8Char*)"</xf>");
+		sb.Append((const UTF8Char*)"<xf numFmtId=\"43\" fontId=\"1\" fillId=\"0\" borderId=\"0\" applyFont=\"true\" applyBorder=\"false\" applyAlignment=\"false\" applyProtection=\"false\">");
+		sb.Append((const UTF8Char*)"</xf>");
+		sb.Append((const UTF8Char*)"<xf numFmtId=\"41\" fontId=\"1\" fillId=\"0\" borderId=\"0\" applyFont=\"true\" applyBorder=\"false\" applyAlignment=\"false\" applyProtection=\"false\">");
+		sb.Append((const UTF8Char*)"</xf>");
+		sb.Append((const UTF8Char*)"<xf numFmtId=\"44\" fontId=\"1\" fillId=\"0\" borderId=\"0\" applyFont=\"true\" applyBorder=\"false\" applyAlignment=\"false\" applyProtection=\"false\">");
+		sb.Append((const UTF8Char*)"</xf>");
+		sb.Append((const UTF8Char*)"<xf numFmtId=\"42\" fontId=\"1\" fillId=\"0\" borderId=\"0\" applyFont=\"true\" applyBorder=\"false\" applyAlignment=\"false\" applyProtection=\"false\">");
+		sb.Append((const UTF8Char*)"</xf>");
+		sb.Append((const UTF8Char*)"<xf numFmtId=\"9\" fontId=\"1\" fillId=\"0\" borderId=\"0\" applyFont=\"true\" applyBorder=\"false\" applyAlignment=\"false\" applyProtection=\"false\">");
+		sb.Append((const UTF8Char*)"</xf>");
+		sb.Append((const UTF8Char*)"</cellStyleXfs>");
+
+		if (workbook->GetStyleCount() > 0)
+		{
+			sb.Append((const UTF8Char*)"<cellXfs count=\"");
+			sb.AppendUOSInt(workbook->GetStyleCount());
+			sb.Append((const UTF8Char*)"\">");
+			i = 0;
+			j = workbook->GetStyleCount();
+			while (i < j)
+			{
+				Text::SpreadSheet::CellStyle *style = workbook->GetStyle(i);
+				Text::SpreadSheet::WorkbookFont *font = style->GetFont();
+				csptr = style->GetDataFormat();
+				if (csptr == 0)
+				{
+					csptr = (const UTF8Char*)"general";
+				}
+				sb.Append((const UTF8Char*)"<xf numFmtId=\"");
+				sb.AppendUOSInt(numFmtMap.Get(csptr) + 164);
+				sb.Append((const UTF8Char*)"\" fontId=\"");
+				if (font == 0)
+				{
+					sb.AppendChar('0', 1);
+				}
+				else
+				{
+					sb.AppendUOSInt(workbook->GetFontIndex(font));
+				}
+				sb.Append((const UTF8Char*)"\" fillId=\"0\" borderId=\"0\" xfId=\"0\" applyFont=\"");
+				if (font)
+				{
+					sb.Append((const UTF8Char*)"true");
+				}
+				else
+				{
+					sb.Append((const UTF8Char*)"false");
+				}
+				sb.Append((const UTF8Char*)"\" applyBorder=\"false\" applyAlignment=\"true\" applyProtection=\"false\">");
+				sb.Append((const UTF8Char*)"<alignment horizontal=\"");
+				switch (style->GetHAlign())
+				{
+				case Text::SpreadSheet::HAlignment::Left:
+					sb.Append((const UTF8Char*)"left");
+					break;
+				case Text::SpreadSheet::HAlignment::Center:
+					sb.Append((const UTF8Char*)"center");
+					break;
+				case Text::SpreadSheet::HAlignment::Right:
+					sb.Append((const UTF8Char*)"right");
+					break;
+				case Text::SpreadSheet::HAlignment::Fill:
+					sb.Append((const UTF8Char*)"fill");
+					break;
+				case Text::SpreadSheet::HAlignment::Justify:
+					sb.Append((const UTF8Char*)"justify");
+					break;
+				case Text::SpreadSheet::HAlignment::Unknown:
+				default:
+					sb.Append((const UTF8Char*)"general");
+					break;
+				}
+				sb.Append((const UTF8Char*)"\" vertical=\"");
+				switch (style->GetVAlign())
+				{
+				case Text::SpreadSheet::VAlignment::Top:
+					sb.Append((const UTF8Char*)"top");
+					break;
+				case Text::SpreadSheet::VAlignment::Center:
+					sb.Append((const UTF8Char*)"center");
+					break;
+				case Text::SpreadSheet::VAlignment::Bottom:
+					sb.Append((const UTF8Char*)"bottom");
+					break;
+				case Text::SpreadSheet::VAlignment::Justify:
+					sb.Append((const UTF8Char*)"justify");
+					break;
+				case Text::SpreadSheet::VAlignment::Unknown:
+				default:
+					sb.Append((const UTF8Char*)"general");
+					break;
+				}
+				sb.Append((const UTF8Char*)"\" textRotation=\"0\" wrapText=\"");
+				sb.Append(style->GetWordWrap()?(const UTF8Char*)"true":(const UTF8Char*)"false");
+				sb.Append((const UTF8Char*)"\" indent=\"0\" shrinkToFit=\"false\"/>");
+				sb.Append((const UTF8Char*)"<protection locked=\"true\" hidden=\"false\"/>");
+				sb.Append((const UTF8Char*)"</xf>");
+				i++;
+			}
+			sb.Append((const UTF8Char*)"</cellXfs>");
+		}
+
+		sb.Append((const UTF8Char*)"<cellStyles count=\"6\">");
+		sb.Append((const UTF8Char*)"<cellStyle name=\"Normal\" xfId=\"0\" builtinId=\"0\"/>");
+		sb.Append((const UTF8Char*)"<cellStyle name=\"Comma\" xfId=\"15\" builtinId=\"3\"/>");
+		sb.Append((const UTF8Char*)"<cellStyle name=\"Comma [0]\" xfId=\"16\" builtinId=\"6\"/>");
+		sb.Append((const UTF8Char*)"<cellStyle name=\"Currency\" xfId=\"17\" builtinId=\"4\"/>");
+		sb.Append((const UTF8Char*)"<cellStyle name=\"Currency [0]\" xfId=\"18\" builtinId=\"7\"/>");
+		sb.Append((const UTF8Char*)"<cellStyle name=\"Percent\" xfId=\"19\" builtinId=\"5\"/>");
+		sb.Append((const UTF8Char*)"</cellStyles>");
+	}
+	sb.Append((const UTF8Char*)"</styleSheet>");
+	zip->AddFile((const UTF8Char*)"xl/styles.xml", sb.ToString(), sb.GetLength(), dt.ToTicks(), false);
+	sbContTypes.Append((const UTF8Char*)"<Override PartName=\"/xl/styles.xml\" ContentType=\"application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml\"/>");
+
+	if (sharedStrings.GetCount() > 0)
+	{
+		sb.ClearStr();
+		sb.Append((const UTF8Char*)"<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\r\n");
+		sb.Append((const UTF8Char*)"<sst xmlns=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" count=\"");
+		sb.AppendUOSInt(sharedStrings.GetCount());
+		sb.Append((const UTF8Char*)"\" uniqueCount=\"");
+		sb.AppendUOSInt(sharedStrings.GetCount());
+		sb.Append((const UTF8Char*)"\">");
+		i = 0;
+		j = sharedStrings.GetCount();
+		while (i < j)
+		{
+			sb.Append((const UTF8Char*)"<si><t xml:space=\"preserve\">");
+			csptr = Text::XML::ToNewXMLText(sharedStrings.GetItem(i));
+			sb.Append(csptr);
+			Text::XML::FreeNewText(csptr);
+			sb.Append((const UTF8Char*)"</t></si>");
+			i++;
+		}
+		sb.Append((const UTF8Char*)"</sst>");
+		zip->AddFile((const UTF8Char*)"xl/sharedStrings.xml", sb.ToString(), sb.GetLength(), dt.ToTicks(), false);
+		sbContTypes.Append((const UTF8Char*)"<Override PartName=\"/xl/sharedStrings.xml\" ContentType=\"application/vnd.openxmlformats-officedocument.spreadsheetml.sharedStrings+xml\"/>");
+	}
+
+	sb.ClearStr();
+	sb.Append((const UTF8Char*)"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+	sb.Append((const UTF8Char*)"<Relationships xmlns=\"http://schemas.openxmlformats.org/package/2006/relationships\">");
+	sb.Append((const UTF8Char*)"<Relationship Id=\"rId1\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles\" Target=\"styles.xml\"/>");
+	i = 0;
+	j = workbook->GetCount();
+	while (i < j)
+	{
+		sb.Append((const UTF8Char*)"<Relationship Id=\"rId");
+		sb.AppendUOSInt(i + 2);
+		sb.Append((const UTF8Char*)"\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet\" Target=\"worksheets/sheet");
+		sb.AppendUOSInt(i + 1);
+		sb.Append((const UTF8Char*)".xml\"/>");
+		i++;
+	}
+	if (sharedStrings.GetCount() > 0)
+	{
+		sb.Append((const UTF8Char*)"<Relationship Id=\"rId");
+		sb.AppendUOSInt(workbook->GetCount() + 2);
+		sb.Append((const UTF8Char*)"\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/sharedStrings\" Target=\"sharedStrings.xml\"/>");
+	}
+	sb.Append((const UTF8Char*)"\n</Relationships>");
+	zip->AddFile((const UTF8Char*)"xl/_rels/workbook.xml.rels", sb.ToString(), sb.GetLength(), dt.ToTicks(), false);
+	sbContTypes.Append((const UTF8Char*)"<Override PartName=\"/xl/_rels/workbook.xml.rels\" ContentType=\"application/vnd.openxmlformats-package.relationships+xml\"/>");
 
 	sb.ClearStr();
 	sb.Append((const UTF8Char*)"<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n");
@@ -637,275 +965,25 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char 
 	sb.Append((const UTF8Char*)"</dc:title>");
 	sb.Append((const UTF8Char*)"</cp:coreProperties>");
 	zip->AddFile((const UTF8Char*)"docProps/core.xml", sb.ToString(), sb.GetLength(), dt.ToTicks(), false);
+	sbContTypes.Append((const UTF8Char*)"<Override PartName=\"/docProps/core.xml\" ContentType=\"application/vnd.openxmlformats-package.core-properties+xml\"/>");
 
 	sb.ClearStr();
-	sb.Append((const UTF8Char*)"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
-	sb.Append((const UTF8Char*)"<Types xmlns=\"http://schemas.openxmlformats.org/package/2006/content-types\">");
-	sb.Append((const UTF8Char*)"<Default Extension=\"xml\" ContentType=\"application/xml\"/>");
-	sb.Append((const UTF8Char*)"<Default Extension=\"rels\" ContentType=\"application/vnd.openxmlformats-package.relationships+xml\"/>");
-	sb.Append((const UTF8Char*)"<Default Extension=\"png\" ContentType=\"image/png\"/>");
-	sb.Append((const UTF8Char*)"<Default Extension=\"jpeg\" ContentType=\"image/jpeg\"/>");
-	sb.Append((const UTF8Char*)"<Override PartName=\"/xl/_rels/workbook.xml.rels\" ContentType=\"application/vnd.openxmlformats-package.relationships+xml\"/>");
-	i = 0;
-	j = workbook->GetCount();
-	while (i < j)
-	{
-		sb.Append((const UTF8Char*)"<Override PartName=\"/xl/worksheets/sheet");
-		sb.AppendUOSInt(i + 1);
-		sb.Append((const UTF8Char*)".xml\" ContentType=\"application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml\"/>");
-		i++;
-	}
-	sb.Append((const UTF8Char*)"<Override PartName=\"/xl/workbook.xml\" ContentType=\"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml\"/>");
-	sb.Append((const UTF8Char*)"<Override PartName=\"/xl/styles.xml\" ContentType=\"application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml\"/>");
-	sb.Append((const UTF8Char*)"<Override PartName=\"/_rels/.rels\" ContentType=\"application/vnd.openxmlformats-package.relationships+xml\"/>");
-	sb.Append((const UTF8Char*)"<Override PartName=\"/docProps/app.xml\" ContentType=\"application/vnd.openxmlformats-officedocument.extended-properties+xml\"/>");
-	sb.Append((const UTF8Char*)"<Override PartName=\"/docProps/core.xml\" ContentType=\"application/vnd.openxmlformats-package.core-properties+xml\"/>");
-	sb.Append((const UTF8Char*)"\n</Types>");
-	zip->AddFile((const UTF8Char*)"[Content_Types].xml", sb.ToString(), sb.GetLength(), dt.ToTicks(), false);
+	sb.Append((const UTF8Char*)"<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n");
+	sb.Append((const UTF8Char*)"<Properties xmlns=\"http://schemas.openxmlformats.org/officeDocument/2006/extended-properties\" xmlns:vt=\"http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes\">");
+	sb.Append((const UTF8Char*)"<Template></Template>");
+	sb.Append((const UTF8Char*)"<TotalTime>1</TotalTime>");
+	sb.Append((const UTF8Char*)"<Application>");
+	sb.Append((const UTF8Char*)"AVIRead/");
+	IO::BuildTime::GetBuildTime(&dt2);
+	dt2.ToString(sbuff, "yyyyMMdd_HHmmss");
+	sb.Append(sbuff);
+	sb.Append((const UTF8Char*)"</Application>");
+	sb.Append((const UTF8Char*)"</Properties>");
+	zip->AddFile((const UTF8Char*)"docProps/app.xml", sb.ToString(), sb.GetLength(), dt.ToTicks(), false);
+	sbContTypes.Append((const UTF8Char*)"<Override PartName=\"/docProps/app.xml\" ContentType=\"application/vnd.openxmlformats-officedocument.extended-properties+xml\"/>");
 
-	sb.ClearStr();
-	sb.Append((const UTF8Char*)"<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\r\n");
-	sb.Append((const UTF8Char*)"<styleSheet xmlns=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\">");
-	{
-		Data::StringUTF8Map<UOSInt> numFmtMap;
-		Data::ArrayList<const UTF8Char*> numFmts;
-		csptr = (const UTF8Char*)"General";
-		numFmtMap.Put(csptr, numFmts.GetCount());
-		numFmts.Add(csptr);
-
-		i = 0;
-		j = workbook->GetStyleCount();
-		while (i < j)
-		{
-			Text::SpreadSheet::CellStyle *style = workbook->GetStyle(i);
-			csptr = style->GetDataFormat();
-			if (csptr == 0)
-			{
-				csptr = (const UTF8Char*)"General";
-			}
-			if (!numFmtMap.ContainsKey(csptr))
-			{
-				numFmtMap.Put(csptr, numFmts.GetCount());
-				numFmts.Add(csptr);
-			}
-			i++;
-		}
-		if (numFmts.GetCount() > 0)
-		{
-			sb.Append((const UTF8Char*)"<numFmts count=\"");
-			sb.AppendUOSInt(numFmts.GetCount());
-			sb.Append((const UTF8Char*)"\">");
-			i = 0;
-			j = numFmts.GetCount();
-			while (i < j)
-			{
-				sb.Append((const UTF8Char*)"<numFmt numFmtId=\"");
-				sb.AppendUOSInt(i + 164);
-				sb.Append((const UTF8Char*)"\" formatCode=");
-				ToFormatCode(sbuff, numFmts.GetItem(i));
-				csptr = Text::XML::ToNewAttrText(sbuff);
-				sb.Append(csptr);
-				Text::XML::FreeNewText(csptr);
-				sb.Append((const UTF8Char*)"/>");
-				i++;
-			}
-			sb.Append((const UTF8Char*)"</numFmts>");
-		}
-		if (workbook->GetFontCount() > 0)
-		{
-			sb.Append((const UTF8Char*)"<fonts count=\"");
-			sb.AppendUOSInt(workbook->GetFontCount());
-			sb.Append((const UTF8Char*)"\">");
-			i = 0;
-			j = workbook->GetFontCount();
-			while (i < j)
-			{
-				Text::SpreadSheet::WorkbookFont *font = workbook->GetFont(i);
-				sb.Append((const UTF8Char*)"<font>");
-				if (font->GetSize() != 0)
-				{
-					sb.Append((const UTF8Char*)"<sz val=\"");
-					Text::SBAppendF64(&sb, font->GetSize());
-					sb.Append((const UTF8Char*)"\"/>");
-				}
-				if (font->GetName())
-				{
-					sb.Append((const UTF8Char*)"<name val=");
-					csptr = Text::XML::ToNewAttrText(font->GetName());
-					sb.Append(csptr);
-					Text::XML::FreeNewText(csptr);
-					sb.Append((const UTF8Char*)"/>");
-				}
-				sb.Append((const UTF8Char*)"<family val=\"0\"/>");
-				sb.Append((const UTF8Char*)"</font>");
-				i++;
-			}
-			sb.Append((const UTF8Char*)"</fonts>");
-		}
-
-		sb.Append((const UTF8Char*)"<fills count=\"1\">");
-		sb.Append((const UTF8Char*)"<fill>");
-		sb.Append((const UTF8Char*)"<patternFill patternType=\"none\"/>");
-		sb.Append((const UTF8Char*)"</fill>");
-		sb.Append((const UTF8Char*)"</fills>");
-
-		sb.Append((const UTF8Char*)"<borders count=\"1\">");
-		sb.Append((const UTF8Char*)"<border diagonalUp=\"false\" diagonalDown=\"false\">");
-		sb.Append((const UTF8Char*)"<left/>");
-		sb.Append((const UTF8Char*)"<right/>");
-		sb.Append((const UTF8Char*)"<top/>");
-		sb.Append((const UTF8Char*)"<bottom/>");
-		sb.Append((const UTF8Char*)"<diagonal/>");
-		sb.Append((const UTF8Char*)"</border>");
-		sb.Append((const UTF8Char*)"</borders>");
-
-		sb.Append((const UTF8Char*)"<cellStyleXfs count=\"1\">");
-		sb.Append((const UTF8Char*)"<xf numFmtId=\"164\" fontId=\"0\" fillId=\"0\" borderId=\"0\" applyFont=\"true\" applyBorder=\"true\" applyAlignment=\"true\" applyProtection=\"true\">");
-		sb.Append((const UTF8Char*)"<alignment horizontal=\"general\" vertical=\"bottom\" textRotation=\"0\" wrapText=\"false\" indent=\"0\" shrinkToFit=\"false\"/>");
-		sb.Append((const UTF8Char*)"<protection locked=\"true\" hidden=\"false\"/>");
-		sb.Append((const UTF8Char*)"</xf>");
-		sb.Append((const UTF8Char*)"</cellStyleXfs>");
-
-		if (workbook->GetStyleCount() > 0)
-		{
-			sb.Append((const UTF8Char*)"<cellXfs count=\"");
-			sb.AppendUOSInt(workbook->GetStyleCount());
-			sb.Append((const UTF8Char*)"\">");
-			i = 0;
-			j = workbook->GetStyleCount();
-			while (i < j)
-			{
-				Text::SpreadSheet::CellStyle *style = workbook->GetStyle(i);
-				Text::SpreadSheet::WorkbookFont *font = style->GetFont();
-				csptr = style->GetDataFormat();
-				if (csptr == 0)
-				{
-					csptr = (const UTF8Char*)"General";
-				}
-				sb.Append((const UTF8Char*)"<xf numFmtId=\"");
-				sb.AppendUOSInt(numFmtMap.Get(csptr) + 164);
-				sb.Append((const UTF8Char*)"\" fontId=\"");
-				if (font == 0)
-				{
-					sb.AppendChar('0', 1);
-				}
-				else
-				{
-					sb.AppendUOSInt(workbook->GetFontIndex(font));
-				}
-				sb.Append((const UTF8Char*)"\" fillId=\"0\" borderId=\"0\" xfId=\"0\" applyFont=\"");
-				if (font)
-				{
-					sb.Append((const UTF8Char*)"true");
-				}
-				else
-				{
-					sb.Append((const UTF8Char*)"false");
-				}
-				sb.Append((const UTF8Char*)"\" applyBorder=\"false\" applyAlignment=\"true\" applyProtection=\"false\">");
-				sb.Append((const UTF8Char*)"<alignment horizontal=\"");
-				switch (style->GetHAlign())
-				{
-				case Text::SpreadSheet::HAlignment::Left:
-					sb.Append((const UTF8Char*)"left");
-					break;
-				case Text::SpreadSheet::HAlignment::Center:
-					sb.Append((const UTF8Char*)"center");
-					break;
-				case Text::SpreadSheet::HAlignment::Right:
-					sb.Append((const UTF8Char*)"right");
-					break;
-				case Text::SpreadSheet::HAlignment::Fill:
-					sb.Append((const UTF8Char*)"fill");
-					break;
-				case Text::SpreadSheet::HAlignment::Justify:
-					sb.Append((const UTF8Char*)"justify");
-					break;
-				case Text::SpreadSheet::HAlignment::Unknown:
-				default:
-					sb.Append((const UTF8Char*)"general");
-					break;
-				}
-				sb.Append((const UTF8Char*)"\" vertical=\"");
-				switch (style->GetVAlign())
-				{
-				case Text::SpreadSheet::VAlignment::Top:
-					sb.Append((const UTF8Char*)"top");
-					break;
-				case Text::SpreadSheet::VAlignment::Center:
-					sb.Append((const UTF8Char*)"center");
-					break;
-				case Text::SpreadSheet::VAlignment::Bottom:
-					sb.Append((const UTF8Char*)"bottom");
-					break;
-				case Text::SpreadSheet::VAlignment::Justify:
-					sb.Append((const UTF8Char*)"justify");
-					break;
-				case Text::SpreadSheet::VAlignment::Unknown:
-				default:
-					sb.Append((const UTF8Char*)"general");
-					break;
-				}
-				sb.Append((const UTF8Char*)"\" textRotation=\"0\" wrapText=\"");
-				sb.Append(style->GetWordWrap()?(const UTF8Char*)"true":(const UTF8Char*)"false");
-				sb.Append((const UTF8Char*)"\" indent=\"0\" shrinkToFit=\"false\"/>");
-				sb.Append((const UTF8Char*)"<protection locked=\"true\" hidden=\"false\"/>");
-				sb.Append((const UTF8Char*)"</xf>");
-				i++;
-			}
-			sb.Append((const UTF8Char*)"</cellXfs>");
-		}
-	}
-	sb.Append((const UTF8Char*)"</styleSheet>");
-	zip->AddFile((const UTF8Char*)"xl/styles.xml", sb.ToString(), sb.GetLength(), dt.ToTicks(), false);
-
-	if (sharedStrings.GetCount() > 0)
-	{
-		sb.ClearStr();
-		sb.Append((const UTF8Char*)"<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\r\n");
-		sb.Append((const UTF8Char*)"<sst xmlns=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" count=\"");
-		sb.AppendUOSInt(sharedStrings.GetCount());
-		sb.Append((const UTF8Char*)"\" uniqueCount=\"");
-		sb.AppendUOSInt(sharedStrings.GetCount());
-		sb.Append((const UTF8Char*)"\">");
-		i = 0;
-		j = sharedStrings.GetCount();
-		while (i < j)
-		{
-			sb.Append((const UTF8Char*)"<si><t xml:space=\"preserve\">");
-			csptr = Text::XML::ToNewXMLText(sharedStrings.GetItem(i));
-			sb.Append(csptr);
-			Text::XML::FreeNewText(csptr);
-			sb.Append((const UTF8Char*)"</t></si>");
-			i++;
-		}
-		sb.Append((const UTF8Char*)"</sst>");
-		zip->AddFile((const UTF8Char*)"xl/sharedStrings.xml", sb.ToString(), sb.GetLength(), dt.ToTicks(), false);
-	}
-
-	sb.ClearStr();
-	sb.Append((const UTF8Char*)"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
-	sb.Append((const UTF8Char*)"<Relationships xmlns=\"http://schemas.openxmlformats.org/package/2006/relationships\">");
-	sb.Append((const UTF8Char*)"<Relationship Id=\"rId1\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles\" Target=\"styles.xml\"/>");
-	i = 0;
-	j = workbook->GetCount();
-	while (i < j)
-	{
-		sb.Append((const UTF8Char*)"<Relationship Id=\"rId");
-		sb.AppendUOSInt(i + 2);
-		sb.Append((const UTF8Char*)"\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet\" Target=\"worksheets/sheet");
-		sb.AppendUOSInt(i + 1);
-		sb.Append((const UTF8Char*)".xml\"/>");
-		i++;
-	}
-	if (sharedStrings.GetCount() > 0)
-	{
-		sb.Append((const UTF8Char*)"<Relationship Id=\"rId");
-		sb.AppendUOSInt(workbook->GetCount() + 2);
-		sb.Append((const UTF8Char*)"\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/sharedStrings\" Target=\"sharedStrings.xml\"/>");
-	}
-	sb.Append((const UTF8Char*)"\n</Relationships>");
-	zip->AddFile((const UTF8Char*)"xl/_rels/workbook.xml.rels", sb.ToString(), sb.GetLength(), dt.ToTicks(), false);
+	sbContTypes.Append((const UTF8Char*)"\n</Types>");
+	zip->AddFile((const UTF8Char*)"[Content_Types].xml", sbContTypes.ToString(), sbContTypes.GetLength(), dt.ToTicks(), false);
 
 	DEL_CLASS(zip);
 	return true;

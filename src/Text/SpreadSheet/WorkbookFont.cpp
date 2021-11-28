@@ -11,6 +11,7 @@ Text::SpreadSheet::WorkbookFont::WorkbookFont()
 	this->italic = false;
 	this->underline = false;
 	this->color = 0;
+	this->family = FontFamily::NA;
 }
 
 Text::SpreadSheet::WorkbookFont::~WorkbookFont()
@@ -55,6 +56,12 @@ Text::SpreadSheet::WorkbookFont *Text::SpreadSheet::WorkbookFont::SetColor(UInt3
 	return this;
 }
 
+Text::SpreadSheet::WorkbookFont *Text::SpreadSheet::WorkbookFont::SetFamily(FontFamily family)
+{
+	this->family = family;
+	return this;
+}
+
 const UTF8Char *Text::SpreadSheet::WorkbookFont::GetName()
 {
 	return this->name;
@@ -85,6 +92,11 @@ UInt32 Text::SpreadSheet::WorkbookFont::GetColor()
 	return this->color;
 }
 
+Text::SpreadSheet::FontFamily Text::SpreadSheet::WorkbookFont::GetFamily()
+{
+	return this->family;
+}
+
 Text::SpreadSheet::WorkbookFont *Text::SpreadSheet::WorkbookFont::Clone()
 {
 	Text::SpreadSheet::WorkbookFont *font;
@@ -95,6 +107,7 @@ Text::SpreadSheet::WorkbookFont *Text::SpreadSheet::WorkbookFont::Clone()
 	font->italic = this->italic;
 	font->underline = this->underline;
 	font->color = this->color;
+	font->family = this->family;
 	return font;
 }
 

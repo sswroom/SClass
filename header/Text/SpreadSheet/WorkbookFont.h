@@ -4,6 +4,15 @@ namespace Text
 {
 	namespace SpreadSheet
 	{
+		enum class FontFamily
+		{
+			NA,
+			Roman,
+			Swiss,
+			Modern,
+			Script,
+			Decorative
+		};
 		class WorkbookFont
 		{
 		private:
@@ -13,6 +22,7 @@ namespace Text
 			Bool italic;
 			Bool underline;
 			UInt32 color;
+			FontFamily family;
 		public:
 			WorkbookFont();
 			~WorkbookFont();
@@ -23,6 +33,7 @@ namespace Text
 			WorkbookFont *SetItalic(Bool italic);
 			WorkbookFont *SetUnderline(Bool underline);
 			WorkbookFont *SetColor(UInt32 color);
+			WorkbookFont *SetFamily(FontFamily family);
 
 			const UTF8Char *GetName();
 			Double GetSize();
@@ -30,6 +41,7 @@ namespace Text
 			Bool IsItalic();
 			Bool IsUnderline();
 			UInt32 GetColor();
+			FontFamily GetFamily();
 
 			WorkbookFont *Clone();
 			Bool Equals(WorkbookFont *font);

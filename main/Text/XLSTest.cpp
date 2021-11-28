@@ -9,7 +9,24 @@
 
 using namespace Text::SpreadSheet;
 
-Int32 MyMain(Core::IProgControl *progCtrl)
+void Test1()
+{
+	UTF8Char fileName[512];
+	IO::Path::GetRealPath(fileName, (const UTF8Char*)"~/Progs/Temp/EmptyMe.xlsx");
+	Workbook *wb;
+	NEW_CLASS(wb, Workbook());
+	wb->AddWorksheet((const UTF8Char*)"Sheet1");
+	wb->AddWorksheet((const UTF8Char*)"Sheet2");
+	Exporter::XLSXExporter exporter;
+	if (!exporter.ExportNewFile(fileName, wb, 0))
+	{
+		IO::ConsoleWriter console;
+		console.WriteLine((const UTF8Char*)"Error in writing to file");
+	}
+	DEL_CLASS(wb);
+}
+
+void Test2()
 {
 	UOSInt testRowCnt = 2;
 	UTF8Char fileName[512];
@@ -39,6 +56,10 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	while (i < j)
 	{
 		dataSheet->SetCellDouble(0, i + 1, numStyle, 112.0 + Math::UOSInt2Double(i) * 0.1);
+		
+		sbuff2[0] = (UTF8Char)('A' + i);
+		sbuff2[1] = 0;
+		graphSheet->SetCellString(0, i, wb->GetStyle(0), sbuff2);
 		i++;
 	}
 	if (testRowCnt > 0)
@@ -64,7 +85,6 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			dt.ToString(sbuff2, "yyyy-MM-dd");
 			chart->AddSeries(chainageSource, valSource, sbuff2, testRowCnt > 1);
 		}
-	//	chart.plot(lineChartData);
 	}
 
 	Exporter::XLSXExporter exporter;
@@ -74,5 +94,10 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		console.WriteLine((const UTF8Char*)"Error in writing to file");
 	}
 	DEL_CLASS(wb);
+}
+
+Int32 MyMain(Core::IProgControl *progCtrl)
+{
+	Test2();
 	return 0;
 }

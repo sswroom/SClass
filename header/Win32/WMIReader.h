@@ -41,6 +41,7 @@ namespace Win32
 		virtual UOSInt GetBinarySize(UOSInt colIndex);
 		virtual UOSInt GetBinary(UOSInt colIndex, UInt8 *buff);
 		virtual Math::Vector2D *GetVector(UOSInt colIndex);
+		virtual Bool GetUUID(UOSInt colIndex, Data::UUID *uuid);
 
 		virtual Bool IsNull(UOSInt colIndex);
 		virtual UTF8Char *GetName(UOSInt colIndex, UTF8Char *buff);

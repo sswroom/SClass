@@ -180,7 +180,7 @@ Text::SpreadSheet::Worksheet::Worksheet(const UTF8Char *name)
 	this->marginBottom = 2.5;
 	this->marginHeader = 1.3;
 	this->marginFooter = 1.3;
-	this->zoom = 0;
+	this->zoom = 100;
 	this->options = 0x4b6;
 	NEW_CLASS(rows, Data::ArrayList<RowData*>());
 	NEW_CLASS(this->colWidths, Data::ArrayListDbl());

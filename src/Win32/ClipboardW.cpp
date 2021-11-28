@@ -543,7 +543,7 @@ Bool Win32::Clipboard::GetDataTextH(void *hand, UInt32 fmtId, Text::StringBuilde
 	return false;
 }
 
-Bool Win32::Clipboard::SetString(void *hWndOwner, const UTF8Char *s)
+Bool Win32::Clipboard::SetString(ControlHandle *hWndOwner, const UTF8Char *s)
 {
 	if (OpenClipboard((HWND)hWndOwner) == 0)
 		return false;
@@ -573,7 +573,7 @@ Bool Win32::Clipboard::SetString(void *hWndOwner, const UTF8Char *s)
 	return true;
 }
 
-Bool Win32::Clipboard::GetString(void *hWndOwner, Text::StringBuilderUTF *sb)
+Bool Win32::Clipboard::GetString(ControlHandle *hWndOwner, Text::StringBuilderUTF *sb)
 {
 	if (OpenClipboard((HWND)hWndOwner) == 0)
 		return false;

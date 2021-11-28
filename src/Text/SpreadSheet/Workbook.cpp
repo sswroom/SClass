@@ -30,6 +30,12 @@ Text::SpreadSheet::Workbook::Workbook() : IO::ParsedObject((const UTF8Char*)"Unt
 	NEW_CLASS(this->styles, Data::ArrayList<Text::SpreadSheet::CellStyle*>());
 	NEW_CLASS(this->fonts, Data::ArrayList<Text::SpreadSheet::WorkbookFont*>());
 	MemCopyNO(this->palette, defPalette, sizeof(defPalette));
+
+	this->NewCellStyle(0, HAlignment::Unknown, VAlignment::Bottom, (const UTF8Char*)"general");
+	this->NewFont((const UTF8Char*)"Arial", 10.0, false)->SetFamily(FontFamily::Swiss);
+	this->NewFont((const UTF8Char*)"Arial", 10.0, false);
+	this->NewFont((const UTF8Char*)"Arial", 10.0, false);
+	this->NewFont((const UTF8Char*)"Arial", 10.0, false);
 }
 
 Text::SpreadSheet::Workbook::~Workbook()

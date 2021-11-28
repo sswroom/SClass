@@ -90,7 +90,7 @@ OSInt IO::USBInfo::GetUSBList(Data::ArrayList<USBInfo*> *usbList)
 	UTF8Char sbuff[512];
 	OSInt ret = 0;
 	Win32::WMIQuery qry(L"ROOT\\CIMV2");
-	DB::DBReader *r = qry.GetTableData((const UTF8Char*)"CIM_LogicalDevice", 0, 0, 0);
+	DB::DBReader *r = qry.GetTableData((const UTF8Char*)"CIM_LogicalDevice", 0, 0, 0, 0, 0);
 	if (r)
 	{
 		UOSInt descCol = INVALID_INDEX;

@@ -562,7 +562,7 @@ UOSInt DB::OLEDBConn::GetTableNames(Data::ArrayList<const UTF8Char*> *names)
 DB::DBReader *DB::OLEDBConn::GetTableData(const UTF8Char *tableName, Data::ArrayList<const UTF8Char*> *columnNames, UOSInt ofst, UOSInt maxCnt, const UTF8Char *ordering, Data::QueryConditions *condition)
 {
 	UTF8Char tmpBuff[256];
-	Text::StrConcat(Text::StrConcat(tmpBuff, (const UTF8Char*)"select * from "), name);
+	Text::StrConcat(Text::StrConcat(tmpBuff, (const UTF8Char*)"select * from "), tableName);
 	return ExecuteReader(tmpBuff);
 }
 
@@ -1650,6 +1650,11 @@ Math::Vector2D *DB::OLEDBReader::GetVector(UOSInt colIndex)
 //	ClassDataR *data = (ClassDataR*)this->clsData;
 	/////////////////////////////////////////
 	return 0;
+}
+
+Bool DB::OLEDBReader::GetUUID(UOSInt colIndex, Data::UUID *uuid)
+{
+	return false;
 }
 
 UTF8Char *DB::OLEDBReader::GetName(UOSInt colIndex, UTF8Char *buff)

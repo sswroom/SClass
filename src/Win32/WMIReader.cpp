@@ -817,6 +817,11 @@ Math::Vector2D *Win32::WMIReader::GetVector(UOSInt colIndex)
 	return 0;
 }
 
+Bool Win32::WMIReader::GetUUID(UOSInt colIndex, Data::UUID *uuid)
+{
+	return false;
+}
+
 Bool Win32::WMIReader::IsNull(UOSInt colIndex)
 {
 	WMIColumn *col = this->columns->GetItem(colIndex);

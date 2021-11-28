@@ -228,7 +228,7 @@ UOSInt Win32::WMIQuery::GetTableNames(Data::ArrayList<const UTF8Char*> *names)
 	return this->tabNames->GetCount();
 }
 
-DB::DBReader *Win32::WMIQuery::GetTableData(const UTF8Char *name, UOSInt maxCnt, void *ordering, void *condition)
+DB::DBReader *Win32::WMIQuery::GetTableData(const UTF8Char *tableName, Data::ArrayList<const UTF8Char*> *columnNames, UOSInt ofst, UOSInt maxCnt, const UTF8Char *ordering, Data::QueryConditions *condition)
 {
 	WChar sbuff[256];
 	if (this->tabNames == 0)
@@ -236,11 +236,11 @@ DB::DBReader *Win32::WMIQuery::GetTableData(const UTF8Char *name, UOSInt maxCnt,
 		Data::ArrayList<const UTF8Char*> names;
 		this->GetTableNames(&names);
 	}
-	if (this->tabNames->SortedIndexOf(name) < 0)
+	if (this->tabNames->SortedIndexOf(tableName) < 0)
 	{
 		return 0;
 	}
-	Text::StrUTF8_WChar(Text::StrConcat(sbuff, L"SELECT * FROM "), name, 0);
+	Text::StrUTF8_WChar(Text::StrConcat(sbuff, L"SELECT * FROM "), tableName, 0);
 	return this->ExecuteReader(sbuff);
 }
 
