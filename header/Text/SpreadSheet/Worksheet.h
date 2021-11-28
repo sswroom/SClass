@@ -66,8 +66,10 @@ namespace Text
 		private:
 			const UTF8Char *name;
 			Data::ArrayList<RowData*> *rows;
-			Data::ArrayListDbl *colWidths;
+			Data::ArrayListDbl *colWidthsPt;
 			Data::ArrayList<WorksheetDrawing*> *drawings;
+			Double defColWidthPt;
+			Double defRowHeightPt;
 			UInt32 freezeHori;
 			UInt32 freezeVert;
 			Double marginLeft;
@@ -78,6 +80,7 @@ namespace Text
 			Double marginFooter;
 			UInt16 options;
 			UInt32 zoom;
+			UOSInt maxCol;
 
 		public:
 			RowData *CreateRow(UOSInt row);
@@ -115,6 +118,10 @@ namespace Text
 			void SetZoom(UInt32 zoom);
 			UInt32 GetZoom();
 			Bool IsDefaultPageSetup();
+			void SetDefColWidthPt(Double defColWidthPt);
+			Double GetDefColWidthPt();
+			void SetDefRowHeightPt(Double defRowHeightPt);
+			Double GetDefRowHeightPt();
 
 			const UTF8Char *GetName();
 			Bool SetCellString(UOSInt row, UOSInt col, const UTF8Char *val);
@@ -135,10 +142,12 @@ namespace Text
 			RowData *GetItem(UOSInt row);
 			void RemoveCol(UOSInt col);
 			void InsertCol(UOSInt col);
+			UOSInt GetMaxCol();
 
-			void SetColWidth(UOSInt col, Double width);
+			void SetColWidth(UOSInt col, Double width, Math::Unit::Distance::DistanceUnit unit);
 			UOSInt GetColWidthCount();
-			Double GetColWidth(UOSInt col);
+			Double GetColWidthPt(UOSInt col);
+			Double GetColWidth(UOSInt col, Math::Unit::Distance::DistanceUnit unit);
 
 			UOSInt GetDrawingCount();
 			WorksheetDrawing *GetDrawing(UOSInt index);

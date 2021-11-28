@@ -20,6 +20,14 @@ namespace Exporter
 			Text::SpreadSheet::Worksheet::CellData *cell;
 		};
 
+		struct BorderInfo
+		{
+			Text::SpreadSheet::CellStyle::BorderStyle *left;
+			Text::SpreadSheet::CellStyle::BorderStyle *top;
+			Text::SpreadSheet::CellStyle::BorderStyle *right;
+			Text::SpreadSheet::CellStyle::BorderStyle *bottom;
+		};
+
 	public:
 		XLSXExporter();
 		virtual ~XLSXExporter();
@@ -35,6 +43,7 @@ namespace Exporter
 		static void AppendShapeProp(Text::StringBuilderUTF *sb, Text::SpreadSheet::OfficeShapeProp *shapeProp);
 		static void AppendAxis(Text::StringBuilderUTF *sb, Text::SpreadSheet::OfficeChartAxis *axis, UOSInt index);
 		static void AppendSeries(Text::StringBuilderUTF *sb, Text::SpreadSheet::OfficeChartSeries *series, UOSInt index);
+		static void AppendBorder(Text::StringBuilderUTF *sb, Text::SpreadSheet::CellStyle::BorderStyle *border, const UTF8Char *name);
 
 		static const Char *PresetColorCode(Text::SpreadSheet::PresetColor color);
 		static UTF8Char *ToFormatCode(UTF8Char *sbuff, const UTF8Char *dataFormat);

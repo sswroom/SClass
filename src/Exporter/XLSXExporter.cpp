@@ -111,9 +111,76 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char 
 		sb.Append((const UTF8Char*)"<selection pane=\"topLeft\" activeCell=\"A1\" activeCellId=\"0\" sqref=\"A1\"/>");
 		sb.Append((const UTF8Char*)"</sheetView>");
 		sb.Append((const UTF8Char*)"</sheetViews>");
-		sb.Append((const UTF8Char*)"<sheetFormatPr defaultRowHeight=\"12.8\" zeroHeight=\"false\" outlineLevelRow=\"0\" outlineLevelCol=\"0\"></sheetFormatPr>");
+		sb.Append((const UTF8Char*)"<sheetFormatPr defaultColWidth=\"");
+		Text::SBAppendF64(&sb, sheet->GetDefColWidthPt() / 5.25);
+		sb.Append((const UTF8Char*)"\" defaultRowHeight=\"");
+		Text::SBAppendF64(&sb, sheet->GetDefRowHeightPt());
+		sb.Append((const UTF8Char*)"\" zeroHeight=\"false\" outlineLevelRow=\"0\" outlineLevelCol=\"0\"></sheetFormatPr>");
 		sb.Append((const UTF8Char*)"<cols>");
-		sb.Append((const UTF8Char*)"<col collapsed=\"false\" customWidth=\"false\" hidden=\"false\" outlineLevel=\"0\" max=\"1025\" min=\"1\" style=\"0\" width=\"11.52\"/>");
+
+		Double lastColWidth = -1;
+		UOSInt lastColIndex = INVALID_INDEX;
+
+		k = 0;
+		l = sheet->GetColWidthCount();
+		while (k < l)
+		{
+			if (sheet->GetColWidthPt(k) != lastColWidth)
+			{
+				if (lastColIndex != INVALID_INDEX)
+				{
+					sb.Append((const UTF8Char*)"<col min=\"");
+					sb.AppendUOSInt(lastColIndex + 1);
+					sb.Append((const UTF8Char*)"\" max=\"");
+					sb.AppendUOSInt(k);
+					sb.Append((const UTF8Char*)"\" width=\"");
+					if (lastColWidth >= 0)
+					{
+						Text::SBAppendF64(&sb, lastColWidth / 5.25);
+						sb.Append((const UTF8Char*)"\" customWidth=\"1\"");
+					}
+					else
+					{
+						Text::SBAppendF64(&sb, sheet->GetDefColWidthPt() / 5.25);
+						sb.Append((const UTF8Char*)"\" customWidth=\"false\"");
+					}
+					sb.Append((const UTF8Char*)"/>");
+				}
+				lastColWidth = sheet->GetColWidthPt(k);
+				lastColIndex = k;
+			}
+			k++;
+		}
+		if (lastColWidth >= 0)
+		{
+			sb.Append((const UTF8Char*)"<col min=\"");
+			sb.AppendUOSInt(lastColIndex + 1);
+			sb.Append((const UTF8Char*)"\" max=\"");
+			sb.AppendUOSInt(l);
+			sb.Append((const UTF8Char*)"\" width=\"");
+			if (lastColWidth >= 0)
+			{
+				Text::SBAppendF64(&sb, lastColWidth / 5.25);
+				sb.Append((const UTF8Char*)"\" customWidth=\"1\"");
+			}
+			else
+			{
+				Text::SBAppendF64(&sb, sheet->GetDefColWidthPt() / 5.25);
+				sb.Append((const UTF8Char*)"\" customWidth=\"false\"");
+			}
+			sb.Append((const UTF8Char*)"/>");
+		}
+		if (l < sheet->GetMaxCol())
+		{
+			sb.Append((const UTF8Char*)"<col min=\"");
+			sb.AppendUOSInt(l + 1);
+			sb.Append((const UTF8Char*)"\" max=\"");
+			sb.AppendUOSInt(sheet->GetMaxCol());
+			sb.Append((const UTF8Char*)"\" width=\"");
+			Text::SBAppendF64(&sb, sheet->GetDefColWidthPt() / 5.25);
+			sb.Append((const UTF8Char*)"\" customWidth=\"false\" collapsed=\"false\" hidden=\"false\" outlineLevel=\"0\" style=\"0\"/>");
+		}
+
 		sb.Append((const UTF8Char*)"</cols>");
 		k = 0;
 		l = sheet->GetCount();
@@ -620,6 +687,17 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char 
 	{
 		Data::StringUTF8Map<UOSInt> numFmtMap;
 		Data::ArrayList<const UTF8Char*> numFmts;
+		Data::ArrayList<BorderInfo*> borders;
+		Text::SpreadSheet::CellStyle::BorderStyle borderNone;
+		borderNone.borderType = BorderType::None;
+		borderNone.borderColor = 0;
+		BorderInfo *border = MemAlloc(BorderInfo, 1);
+		border->left = &borderNone;
+		border->top = &borderNone;
+		border->right = &borderNone;
+		border->bottom = &borderNone;
+		borders.Add(border);
+
 		csptr = (const UTF8Char*)"general";
 		numFmtMap.Put(csptr, numFmts.GetCount());
 		numFmts.Add(csptr);
@@ -638,6 +716,29 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char 
 			{
 				numFmtMap.Put(csptr, numFmts.GetCount());
 				numFmts.Add(csptr);
+			}
+			Bool borderFound = false;
+			k = borders.GetCount();
+			while (k-- > 0)
+			{
+				border = borders.GetItem(k);
+				if (border->left->Equals(style->GetBorderLeft()) &&
+					border->top->Equals(style->GetBorderTop()) &&
+					border->right->Equals(style->GetBorderRight()) &&
+					border->bottom->Equals(style->GetBorderBottom()))
+				{
+					borderFound = true;
+					break;
+				}
+			}
+			if (!borderFound)
+			{
+				border = MemAlloc(BorderInfo, 1);
+				border->left = style->GetBorderLeft();
+				border->top = style->GetBorderTop();
+				border->right = style->GetBorderRight();
+				border->bottom = style->GetBorderBottom();
+				borders.Add(border);
 			}
 			i++;
 		}
@@ -723,14 +824,23 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char 
 		sb.Append((const UTF8Char*)"</fill>");
 		sb.Append((const UTF8Char*)"</fills>");
 
-		sb.Append((const UTF8Char*)"<borders count=\"1\">");
-		sb.Append((const UTF8Char*)"<border diagonalUp=\"false\" diagonalDown=\"false\">");
-		sb.Append((const UTF8Char*)"<left/>");
-		sb.Append((const UTF8Char*)"<right/>");
-		sb.Append((const UTF8Char*)"<top/>");
-		sb.Append((const UTF8Char*)"<bottom/>");
-		sb.Append((const UTF8Char*)"<diagonal/>");
-		sb.Append((const UTF8Char*)"</border>");
+		i = 0;
+		j = borders.GetCount();
+		sb.Append((const UTF8Char*)"<borders count=\"");
+		sb.AppendUOSInt(j);
+		sb.Append((const UTF8Char*)"\">");
+		while (i < j)
+		{
+			border = borders.GetItem(i);
+			sb.Append((const UTF8Char*)"<border diagonalUp=\"false\" diagonalDown=\"false\">");
+			AppendBorder(&sb, border->left, (const UTF8Char*)"left");
+			AppendBorder(&sb, border->right, (const UTF8Char*)"right");
+			AppendBorder(&sb, border->top, (const UTF8Char*)"top");
+			AppendBorder(&sb, border->bottom, (const UTF8Char*)"bottom");
+			sb.Append((const UTF8Char*)"<diagonal/>");
+			sb.Append((const UTF8Char*)"</border>");
+			i++;
+		}
 		sb.Append((const UTF8Char*)"</borders>");
 
 		sb.Append((const UTF8Char*)"<cellStyleXfs count=\"20\">");
@@ -805,7 +915,25 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char 
 				{
 					sb.AppendUOSInt(workbook->GetFontIndex(font));
 				}
-				sb.Append((const UTF8Char*)"\" fillId=\"0\" borderId=\"0\" xfId=\"0\" applyFont=\"");
+				sb.Append((const UTF8Char*)"\" fillId=\"0\" borderId=\"");
+				k = borders.GetCount();
+				while (k-- > 0)
+				{
+					border = borders.GetItem(k);
+					if (border->left->Equals(style->GetBorderLeft()) &&
+						border->top->Equals(style->GetBorderTop()) &&
+						border->right->Equals(style->GetBorderRight()) &&
+						border->bottom->Equals(style->GetBorderBottom()))
+					{
+						break;
+					}
+				}
+				if (k == INVALID_INDEX)
+				{
+					k = 0;
+				}
+				sb.AppendUOSInt(k);
+				sb.Append((const UTF8Char*)"\" xfId=\"0\" applyFont=\"");
 				if (font)
 				{
 					sb.Append((const UTF8Char*)"true");
@@ -876,6 +1004,14 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char 
 		sb.Append((const UTF8Char*)"<cellStyle name=\"Currency [0]\" xfId=\"18\" builtinId=\"7\"/>");
 		sb.Append((const UTF8Char*)"<cellStyle name=\"Percent\" xfId=\"19\" builtinId=\"5\"/>");
 		sb.Append((const UTF8Char*)"</cellStyles>");
+
+		i = 0;
+		j = borders.GetCount();
+		while (i < j)
+		{
+			MemFree(borders.GetItem(i));
+			i++;
+		}
 	}
 	sb.Append((const UTF8Char*)"</styleSheet>");
 	zip->AddFile((const UTF8Char*)"xl/styles.xml", sb.ToString(), sb.GetLength(), dt.ToTicks(), false);
@@ -1302,6 +1438,69 @@ void Exporter::XLSXExporter::AppendSeries(Text::StringBuilderUTF *sb, Text::Spre
 	sb->Append((const UTF8Char*)(series->IsSmooth()?"true":"false"));
 	sb->Append((const UTF8Char*)"\"/>");
 	sb->Append((const UTF8Char*)"</c:ser>");
+}
+
+void Exporter::XLSXExporter::AppendBorder(Text::StringBuilderUTF *sb, Text::SpreadSheet::CellStyle::BorderStyle *border, const UTF8Char *name)
+{
+	sb->AppendChar('<', 1);
+	sb->Append(name);
+	if (border->borderType == BorderType::None)
+	{
+		sb->Append((const UTF8Char*)"/>");
+	}
+	else
+	{
+		switch (border->borderType)
+		{
+			case BorderType::Thin:
+				sb->Append((const UTF8Char*)" style=\"thin\">");
+				break;
+			case BorderType::Medium:
+				sb->Append((const UTF8Char*)" style=\"medium\">");
+				break;
+			case BorderType::Dashed:
+				sb->Append((const UTF8Char*)" style=\"dashed\">");
+				break;
+			case BorderType::Dotted:
+				sb->Append((const UTF8Char*)" style=\"dotted\">");
+				break;
+			case BorderType::Thick:
+				sb->Append((const UTF8Char*)" style=\"thick\">");
+				break;
+			case BorderType::DOUBLE:
+				sb->Append((const UTF8Char*)" style=\"double\">");
+				break;
+			case BorderType::Hair:
+				sb->Append((const UTF8Char*)" style=\"hair\">");
+				break;
+			case BorderType::MediumDashed:
+				sb->Append((const UTF8Char*)" style=\"mediumDashed\">");
+				break;
+			case BorderType::DashDot:
+				sb->Append((const UTF8Char*)" style=\"dashDot\">");
+				break;
+			case BorderType::MediumDashDot:
+				sb->Append((const UTF8Char*)" style=\"mediumDashDot\">");
+				break;
+			case BorderType::DashDotDot:
+				sb->Append((const UTF8Char*)" style=\"dashDotDot\">");
+				break;
+			case BorderType::MediumDashDotDot:
+				sb->Append((const UTF8Char*)" style=\"mediumDashDotDot\">");
+				break;
+			case BorderType::SlantedDashDot:
+				sb->Append((const UTF8Char*)" style=\"slantDashDot\">");
+				break;
+			case BorderType::None:
+				break;
+		}
+		sb->Append((const UTF8Char*)"<color rgb=\"");
+		sb->AppendHex32(border->borderColor);
+		sb->Append((const UTF8Char*)"\"/>");
+		sb->Append((const UTF8Char*)"</");
+		sb->Append(name);
+		sb->AppendChar('>', 1);
+	}
 }
 
 const Char *Exporter::XLSXExporter::PresetColorCode(PresetColor color)

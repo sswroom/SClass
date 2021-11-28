@@ -326,27 +326,30 @@ Bool Exporter::ExcelXMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8C
 					sb.Append((const UTF8Char*)"/>");
 					writer->WriteLine(sb.ToString());
 				}
-				if (style->GetBorderLeft()->borderType != 0 || style->GetBorderTop()->borderType != 0 || style->GetBorderRight()->borderType != 0 || style->GetBorderBottom()->borderType != 0)
+				if (style->GetBorderLeft()->borderType != Text::SpreadSheet::BorderType::None ||
+					style->GetBorderTop()->borderType != Text::SpreadSheet::BorderType::None ||
+					style->GetBorderRight()->borderType != Text::SpreadSheet::BorderType::None ||
+					style->GetBorderBottom()->borderType != Text::SpreadSheet::BorderType::None)
 				{
 					Text::SpreadSheet::CellStyle::BorderStyle *border;
 					writer->WriteLine((const UTF8Char*)"   <Borders>");
 					border = style->GetBorderBottom();
-					if (border->borderType != 0)
+					if (border->borderType != Text::SpreadSheet::BorderType::None)
 					{
 						WriteBorderStyle(writer, (const UTF8Char*)"Bottom", border);
 					}
 					border = style->GetBorderLeft();
-					if (border->borderType != 0)
+					if (border->borderType != Text::SpreadSheet::BorderType::None)
 					{
 						WriteBorderStyle(writer, (const UTF8Char*)"Left", border);
 					}
 					border = style->GetBorderRight();
-					if (border->borderType != 0)
+					if (border->borderType != Text::SpreadSheet::BorderType::None)
 					{
 						WriteBorderStyle(writer, (const UTF8Char*)"Right", border);
 					}
 					border = style->GetBorderTop();
-					if (border->borderType != 0)
+					if (border->borderType != Text::SpreadSheet::BorderType::None)
 					{
 						WriteBorderStyle(writer, (const UTF8Char*)"Top", border);
 					}
@@ -439,7 +442,7 @@ Bool Exporter::ExcelXMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8C
 			l = ws->GetColWidthCount();
 			while (k < l)
 			{
-				if (ws->GetColWidth(k) != lastColWidth)
+				if (ws->GetColWidthPt(k) != lastColWidth)
 				{
 					if (lastColWidth >= 0)
 					{
@@ -472,7 +475,7 @@ Bool Exporter::ExcelXMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8C
 					{
 						needIndex = false;
 					}
-					lastColWidth = ws->GetColWidth(k);
+					lastColWidth = ws->GetColWidth(k, Math::Unit::Distance::DU_POINT);
 					lastColIndex = k;
 				}
 				k++;
@@ -818,55 +821,55 @@ void Exporter::ExcelXMLExporter::WriteBorderStyle(IO::Writer *writer, const UTF8
 	txt = Text::XML::ToNewAttrText(position);
 	sb.Append(txt);
 	Text::XML::FreeNewText(txt);
-	if (border->borderType == Text::SpreadSheet::CellStyle::BT_THIN)
+	if (border->borderType == Text::SpreadSheet::BorderType::Thin)
 	{
 		sb.Append((const UTF8Char*)" ss:LineStyle=\"Continuous\" ss:Weight=\"1\"");
 	}
-	else if (border->borderType == Text::SpreadSheet::CellStyle::BT_HAIR)
+	else if (border->borderType == Text::SpreadSheet::BorderType::Hair)
 	{
 		sb.Append((const UTF8Char*)" ss:LineStyle=\"Continuous\"");
 	}
-	else if (border->borderType == Text::SpreadSheet::CellStyle::BT_DOTTED)
+	else if (border->borderType == Text::SpreadSheet::BorderType::Dotted)
 	{
 		sb.Append((const UTF8Char*)" ss:LineStyle=\"Dot\" ss:Weight=\"1\"");
 	}
-	else if (border->borderType == Text::SpreadSheet::CellStyle::BT_DASHED)
+	else if (border->borderType == Text::SpreadSheet::BorderType::Dashed)
 	{
 		sb.Append((const UTF8Char*)" ss:LineStyle=\"Dash\" ss:Weight=\"1\"");
 	}
-	else if (border->borderType == Text::SpreadSheet::CellStyle::BT_DASH_DOT)
+	else if (border->borderType == Text::SpreadSheet::BorderType::DashDot)
 	{
 		sb.Append((const UTF8Char*)" ss:LineStyle=\"DashDot\" ss:Weight=\"1\"");
 	}
-	else if (border->borderType == Text::SpreadSheet::CellStyle::BT_DASH_DOT_DOT)
+	else if (border->borderType == Text::SpreadSheet::BorderType::DashDotDot)
 	{
 		sb.Append((const UTF8Char*)" ss:LineStyle=\"DashDotDot\" ss:Weight=\"1\"");
 	}
-	else if (border->borderType == Text::SpreadSheet::CellStyle::BT_DOUBLE)
+	else if (border->borderType == Text::SpreadSheet::BorderType::DOUBLE)
 	{
 		sb.Append((const UTF8Char*)" ss:LineStyle=\"Double\" ss:Weight=\"3\"");
 	}
-	else if (border->borderType == Text::SpreadSheet::CellStyle::BT_MEDIUM)
+	else if (border->borderType == Text::SpreadSheet::BorderType::Medium)
 	{
 		sb.Append((const UTF8Char*)" ss:LineStyle=\"Continuous\" ss:Weight=\"2\"");
 	}
-	else if (border->borderType == Text::SpreadSheet::CellStyle::BT_MEDIUM_DASHED)
+	else if (border->borderType == Text::SpreadSheet::BorderType::MediumDashed)
 	{
 		sb.Append((const UTF8Char*)" ss:LineStyle=\"Dash\" ss:Weight=\"2\"");
 	}
-	else if (border->borderType == Text::SpreadSheet::CellStyle::BT_MEDIUM_DASH_DOT)
+	else if (border->borderType == Text::SpreadSheet::BorderType::MediumDashDot)
 	{
 		sb.Append((const UTF8Char*)" ss:LineStyle=\"DashDot\" ss:Weight=\"2\"");
 	}
-	else if (border->borderType == Text::SpreadSheet::CellStyle::BT_MEDIUM_DASH_DOT_DOT)
+	else if (border->borderType == Text::SpreadSheet::BorderType::MediumDashDotDot)
 	{
 		sb.Append((const UTF8Char*)" ss:LineStyle=\"DashDotDot\" ss:Weight=\"2\"");
 	}
-	else if (border->borderType == Text::SpreadSheet::CellStyle::BT_SLANTED_DASH_DOT)
+	else if (border->borderType == Text::SpreadSheet::BorderType::SlantedDashDot)
 	{
 		sb.Append((const UTF8Char*)" ss:LineStyle=\"SlantDashDot\" ss:Weight=\"2\"");
 	}
-	else if (border->borderType == Text::SpreadSheet::CellStyle::BT_THICK)
+	else if (border->borderType == Text::SpreadSheet::BorderType::Thick)
 	{
 		sb.Append((const UTF8Char*)" ss:LineStyle=\"Continuous\" ss:Weight=\"3\"");
 	}

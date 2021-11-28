@@ -24,27 +24,27 @@ namespace Text
 			Justify
 		};
 
+		enum class BorderType
+		{
+			None,
+			Thin,
+			Medium,
+			Dashed,
+			Dotted,
+			Thick,
+			DOUBLE,
+			Hair,
+			MediumDashed,
+			DashDot,
+			MediumDashDot,
+			DashDotDot,
+			MediumDashDotDot,
+			SlantedDashDot
+		};
+
 		class CellStyle
 		{
 		public:
-			typedef enum
-			{
-				BT_NONE = 0,
-				BT_THIN,
-				BT_MEDIUM,
-				BT_DASHED,
-				BT_DOTTED,
-				BT_THICK,
-				BT_DOUBLE,
-				BT_HAIR,
-				BT_MEDIUM_DASHED,
-				BT_DASH_DOT,
-				BT_MEDIUM_DASH_DOT,
-				BT_DASH_DOT_DOT,
-				BT_MEDIUM_DASH_DOT_DOT,
-				BT_SLANTED_DASH_DOT
-			} BorderType;
-
 			typedef enum
 			{
 				FP_NO_FILL,
@@ -73,7 +73,7 @@ namespace Text
 				BorderType borderType;
 				UInt32 borderColor;
 
-				Bool operator!=(BorderStyle style);
+				Bool Equals(BorderStyle *style);
 			};
 		private:
 			UOSInt index;

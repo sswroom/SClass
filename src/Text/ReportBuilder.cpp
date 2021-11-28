@@ -29,7 +29,7 @@ Text::ReportBuilder::ReportBuilder(const UTF8Char *name, UOSInt colCount, const 
 	this->name = Text::StrCopyNew(name);
 	this->fontName = Text::StrCopyNew((const UTF8Char*)"Arial");
 	this->colCount = colCount;
-	this->colWidth = MemAlloc(Double, this->colCount);
+	this->colWidthPts = MemAlloc(Double, this->colCount);
 	this->chart = 0;
 	this->paperHori = false;
 	this->colTypes = MemAlloc(ColType, this->colCount);
@@ -37,7 +37,7 @@ Text::ReportBuilder::ReportBuilder(const UTF8Char *name, UOSInt colCount, const 
 	i = 0;
 	while (i < this->colCount)
 	{
-		colWidth[i] = 0;
+		colWidthPts[i] = 0;
 		if (columns[i])
 		{
 			cols[i] = Text::StrCopyNew(columns[i]);
@@ -124,7 +124,7 @@ Text::ReportBuilder::~ReportBuilder()
 	DEL_CLASS(this->urlList);
 	SDEL_CLASS(this->chart);
 	DEL_CLASS(this->icons);
-	MemFree(this->colWidth);
+	MemFree(this->colWidthPts);
 	MemFree(this->colTypes);
 	Text::StrDelNew(this->fontName);
 	Text::StrDelNew(this->name);
@@ -248,11 +248,11 @@ void Text::ReportBuilder::AddIcon(UOSInt index, const UTF8Char *fileName, const 
 	iconList->Add(icon);
 }
 
-void Text::ReportBuilder::SetColumnWidth(UOSInt index, Double width)
+void Text::ReportBuilder::SetColumnWidthPts(UOSInt index, Double width)
 {
 	if (index >= this->colCount)
 		return;
-	this->colWidth[index] = width;
+	this->colWidthPts[index] = width;
 }
 
 void Text::ReportBuilder::SetColumnType(UOSInt index, ColType colType)
@@ -321,9 +321,9 @@ Text::SpreadSheet::Workbook *Text::ReportBuilder::CreateWorkbook()
 		j = this->colCount;
 		while (i < j)
 		{
-			if (this->colWidth[i] != 0)
+			if (this->colWidthPts[i] != 0)
 			{
-				ws->SetColWidth(i, this->colWidth[i]);
+				ws->SetColWidth(i, this->colWidthPts[i], Math::Unit::Distance::DU_POINT);
 			}
 			i++;
 		}
@@ -354,7 +354,7 @@ Text::SpreadSheet::Workbook *Text::ReportBuilder::CreateWorkbook()
 				if (styleSummary == 0)
 				{
 					Text::SpreadSheet::CellStyle::BorderStyle bs;
-					bs.borderType = Text::SpreadSheet::CellStyle::BT_MEDIUM;
+					bs.borderType = Text::SpreadSheet::BorderType::Medium;
 					bs.borderColor = 0xff000000;
 					styleSummary = wb->NewCellStyle();
 					styleSummary->SetBorderTop(&bs);
@@ -488,9 +488,9 @@ Text::SpreadSheet::Workbook *Text::ReportBuilder::CreateWorkbook()
 		j = this->colCount;
 		while (i < j)
 		{
-			if (this->colWidth[i] != 0)
+			if (this->colWidthPts[i] != 0)
 			{
-				ws->SetColWidth(i, this->colWidth[i]);
+				ws->SetColWidth(i, this->colWidthPts[i], Math::Unit::Distance::DU_POINT);
 			}
 			i++;
 		}

@@ -32,10 +32,14 @@ Text::SpreadSheet::Worksheet::CellData *Text::SpreadSheet::Worksheet::GetCellDat
 {
 	RowData *rowData;
 	CellData *cell;
-	if (row >= 65536)
+	if (row >= this->rows->GetCount() + 65536)
 		return 0;
 	if (col >= 65536)
 		return 0;
+	if (col > this->maxCol)
+	{
+		this->maxCol = col;
+	}
 	while (true)
 	{
 		rowData = CreateRow(row);
@@ -182,8 +186,11 @@ Text::SpreadSheet::Worksheet::Worksheet(const UTF8Char *name)
 	this->marginFooter = 1.3;
 	this->zoom = 100;
 	this->options = 0x4b6;
+	this->maxCol = 0;
+	this->defColWidthPt = 48.0;
+	this->defRowHeightPt = 13.5;
 	NEW_CLASS(rows, Data::ArrayList<RowData*>());
-	NEW_CLASS(this->colWidths, Data::ArrayListDbl());
+	NEW_CLASS(this->colWidthsPt, Data::ArrayListDbl());
 	NEW_CLASS(drawings, Data::ArrayList<WorksheetDrawing*>());
 }
 
@@ -202,7 +209,7 @@ Text::SpreadSheet::Worksheet::~Worksheet()
 		}
 	}
 	DEL_CLASS(this->rows);
-	DEL_CLASS(this->colWidths);
+	DEL_CLASS(this->colWidthsPt);
 
 	LIST_FREE_FUNC(this->drawings, FreeDrawing);
 	DEL_CLASS(this->drawings);	
@@ -226,10 +233,10 @@ Text::SpreadSheet::Worksheet *Text::SpreadSheet::Worksheet::Clone(IStyleCtrl *sr
 	newWS->options = this->options;
 	newWS->zoom = this->zoom;
 	i = 0;
-	j = this->colWidths->GetCount();
+	j = this->colWidthsPt->GetCount();
 	while (i < j)
 	{
-		newWS->colWidths->Add(this->colWidths->GetItem(i));
+		newWS->colWidthsPt->Add(this->colWidthsPt->GetItem(i));
 		i++;
 	}
 	i = 0;
@@ -356,6 +363,26 @@ UInt32 Text::SpreadSheet::Worksheet::GetZoom()
 Bool Text::SpreadSheet::Worksheet::IsDefaultPageSetup()
 {
 	return this->marginHeader == 1.3 && this->marginFooter == 1.3 && this->marginLeft == 2.0 && this->marginRight == 2.0 && this->marginTop == 2.5 && this->marginBottom == 2.5;
+}
+
+void Text::SpreadSheet::Worksheet::SetDefColWidthPt(Double defColWidthPt)
+{
+	this->defColWidthPt = defColWidthPt;
+}
+
+Double Text::SpreadSheet::Worksheet::GetDefColWidthPt()
+{
+	return this->defColWidthPt;
+}
+
+void Text::SpreadSheet::Worksheet::SetDefRowHeightPt(Double defRowHeightPt)
+{
+	this->defRowHeightPt = defRowHeightPt;
+}
+
+Double Text::SpreadSheet::Worksheet::GetDefRowHeightPt()
+{
+	return this->defRowHeightPt;
 }
 
 const UTF8Char *Text::SpreadSheet::Worksheet::GetName()
@@ -578,7 +605,7 @@ void Text::SpreadSheet::Worksheet::RemoveCol(UOSInt col)
 	RowData *row;
 	CellData *cell;
 
-	this->colWidths->RemoveAt(col);
+	this->colWidthsPt->RemoveAt(col);
 	i = this->rows->GetCount();
 	while (i-- > 0)
 	{
@@ -599,9 +626,9 @@ void Text::SpreadSheet::Worksheet::InsertCol(UOSInt col)
 	UOSInt i;
 	RowData *row;
 
-	if (colWidths->GetCount() > col)
+	if (colWidthsPt->GetCount() > col)
 	{
-		this->colWidths->Insert(col, 0);
+		this->colWidthsPt->Insert(col, 0);
 	}
 	i = this->rows->GetCount();
 	while (i-- > 0)
@@ -617,25 +644,46 @@ void Text::SpreadSheet::Worksheet::InsertCol(UOSInt col)
 	}
 }
 
-void Text::SpreadSheet::Worksheet::SetColWidth(UOSInt col, Double width)
+UOSInt Text::SpreadSheet::Worksheet::GetMaxCol()
 {
-	while (col >= this->colWidths->GetCount())
+	return this->maxCol;
+}
+
+void Text::SpreadSheet::Worksheet::SetColWidth(UOSInt col, Double width, Math::Unit::Distance::DistanceUnit unit)
+{
+	while (col >= this->colWidthsPt->GetCount())
 	{
-		this->colWidths->Add(-1);
+		this->colWidthsPt->Add(-1);
 	}
-	this->colWidths->SetItem(col, width);
+	if (unit == Math::Unit::Distance::DU_POINT)
+	{
+		this->colWidthsPt->SetItem(col, width);
+	}
+	else
+	{
+		this->colWidthsPt->SetItem(col, Math::Unit::Distance::Convert(unit, Math::Unit::Distance::DU_POINT, width));
+	}
 }
 
 UOSInt Text::SpreadSheet::Worksheet::GetColWidthCount()
 {
-	return this->colWidths->GetCount();
+	return this->colWidthsPt->GetCount();
 }
 
-Double Text::SpreadSheet::Worksheet::GetColWidth(UOSInt col)
+Double Text::SpreadSheet::Worksheet::GetColWidthPt(UOSInt col)
 {
-	if (col >= this->colWidths->GetCount())
+	if (col >= this->colWidthsPt->GetCount())
 		return -1;
-	return this->colWidths->GetItem(col);
+	return this->colWidthsPt->GetItem(col);
+}
+
+Double Text::SpreadSheet::Worksheet::GetColWidth(UOSInt col, Math::Unit::Distance::DistanceUnit unit)
+{
+	if (col >= this->colWidthsPt->GetCount())
+		return -1;
+	if (unit == Math::Unit::Distance::DU_POINT)
+		return this->colWidthsPt->GetItem(col);
+	return Math::Unit::Distance::Convert(Math::Unit::Distance::DU_POINT, unit, this->colWidthsPt->GetItem(col));
 }
 
 UOSInt Text::SpreadSheet::Worksheet::GetDrawingCount()

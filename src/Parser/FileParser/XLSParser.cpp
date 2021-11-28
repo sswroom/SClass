@@ -367,19 +367,19 @@ Bool Parser::FileParser::XLSParser::ParseWorkbook(IO::IStreamData *fd, UInt64 of
 					Text::SpreadSheet::CellStyle::BorderStyle borderTop;
 					Text::SpreadSheet::CellStyle::BorderStyle borderBottom;
 					Int16 icv;
-					borderLeft.borderType = Text::SpreadSheet::CellStyle::BT_NONE;
-					borderTop.borderType = Text::SpreadSheet::CellStyle::BT_NONE;
-					borderRight.borderType = Text::SpreadSheet::CellStyle::BT_NONE;
-					borderBottom.borderType = Text::SpreadSheet::CellStyle::BT_NONE;
+					borderLeft.borderType = Text::SpreadSheet::BorderType::None;
+					borderTop.borderType = Text::SpreadSheet::BorderType::None;
+					borderRight.borderType = Text::SpreadSheet::BorderType::None;
+					borderBottom.borderType = Text::SpreadSheet::BorderType::None;
 					Int32 tmpV = ReadInt16(&readBuff[i + 14]);
 					if (tmpV != 0)
 					{
 						tmpV = ReadInt16(&readBuff[i + 14]);
 					}
-					borderLeft.borderType = (Text::SpreadSheet::CellStyle::BorderType)(tmpV & 0xf);
-					borderRight.borderType = (Text::SpreadSheet::CellStyle::BorderType)((tmpV & 0xf0) >> 4);
-					borderTop.borderType = (Text::SpreadSheet::CellStyle::BorderType)((tmpV & 0xf00) >> 8);
-					borderBottom.borderType = (Text::SpreadSheet::CellStyle::BorderType)((tmpV & 0xf000) >> 12);
+					borderLeft.borderType = (Text::SpreadSheet::BorderType)(tmpV & 0xf);
+					borderRight.borderType = (Text::SpreadSheet::BorderType)((tmpV & 0xf0) >> 4);
+					borderTop.borderType = (Text::SpreadSheet::BorderType)((tmpV & 0xf00) >> 8);
+					borderBottom.borderType = (Text::SpreadSheet::BorderType)((tmpV & 0xf000) >> 12);
 					tmpV = ReadInt16(&readBuff[i + 16]);
 					icv = (tmpV & 0x7f);
 					if (icv >= 64)
@@ -418,19 +418,19 @@ Bool Parser::FileParser::XLSParser::ParseWorkbook(IO::IStreamData *fd, UInt64 of
 					{
 						borderBottom.borderColor = status.palette[icv - 8];
 					}
-					if (borderLeft.borderType != Text::SpreadSheet::CellStyle::BT_NONE)
+					if (borderLeft.borderType != Text::SpreadSheet::BorderType::None)
 					{
 						style->SetBorderLeft(&borderLeft);
 					}
-					if (borderRight.borderType != Text::SpreadSheet::CellStyle::BT_NONE)
+					if (borderRight.borderType != Text::SpreadSheet::BorderType::None)
 					{
 						style->SetBorderRight(&borderRight);
 					}
-					if (borderTop.borderType != Text::SpreadSheet::CellStyle::BT_NONE)
+					if (borderTop.borderType != Text::SpreadSheet::BorderType::None)
 					{
 						style->SetBorderTop(&borderTop);
 					}
-					if (borderBottom.borderType != Text::SpreadSheet::CellStyle::BT_NONE)
+					if (borderBottom.borderType != Text::SpreadSheet::BorderType::None)
 					{
 						style->SetBorderBottom(&borderBottom);
 					}
@@ -871,7 +871,7 @@ Bool Parser::FileParser::XLSParser::ParseWorksheet(IO::IStreamData *fd, UInt64 o
 					Double w = ReadUInt16(&readBuff[i + 8]) / 256.0 * 5.25 + 0.05;
 					while (colStart <= colEnd)
 					{
-						ws->SetColWidth(colStart, w);
+						ws->SetColWidth(colStart, w, Math::Unit::Distance::DU_POINT);
 						colStart++;
 					}
 				}

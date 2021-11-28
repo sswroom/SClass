@@ -54,7 +54,7 @@ namespace Text
 		Data::ArrayList<RowType> *tableRowType;
 		Data::ArrayList<ColURLLatLon*> *urlList;
 		Data::ArrayList<Data::ArrayList<ColIcon*>*> *icons;
-		Double *colWidth;
+		Double *colWidthPts;
 		ColType *colTypes;
 		Data::IChart *chart;
 		Bool paperHori;
@@ -72,7 +72,7 @@ namespace Text
 		void AddTableContent(const UTF8Char **content);
 		void AddTableSummary(const UTF8Char **content);
 		void AddIcon(UOSInt index, const UTF8Char *fileName, const UTF8Char *name);
-		void SetColumnWidth(UOSInt index, Double width);
+		void SetColumnWidthPts(UOSInt index, Double width);
 		void SetColumnType(UOSInt index, ColType colType);
 		void SetColURLLatLon(UOSInt index, Double lat, Double lon);
 		Bool HasChart();

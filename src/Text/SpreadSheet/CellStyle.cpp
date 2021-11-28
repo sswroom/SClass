@@ -3,13 +3,13 @@
 #include "Text/MyString.h"
 #include "Text/SpreadSheet/CellStyle.h"
 
-Bool Text::SpreadSheet::CellStyle::BorderStyle::operator!=(BorderStyle border)
+Bool Text::SpreadSheet::CellStyle::BorderStyle::Equals(BorderStyle *border)
 {
-	if (border.borderType == BT_NONE && this->borderType == BT_NONE)
+	if (border->borderType == BorderType::None && this->borderType == BorderType::None)
 		return true;
-	else if (border.borderType != this->borderType)
+	else if (border->borderType != this->borderType)
 		return false;
-	else if (border.borderColor != this->borderColor)
+	else if (border->borderColor != this->borderColor)
 		return false;
 	else
 		return true;
@@ -22,10 +22,10 @@ Text::SpreadSheet::CellStyle::CellStyle(UOSInt index)
 	this->halign = HAlignment::Unknown;
 	this->valign = VAlignment::Unknown;
 	this->wordWrap = false;
-	this->borderBottom.borderType = Text::SpreadSheet::CellStyle::BT_NONE;
-	this->borderLeft.borderType = Text::SpreadSheet::CellStyle::BT_NONE;
-	this->borderRight.borderType = Text::SpreadSheet::CellStyle::BT_NONE;
-	this->borderTop.borderType = Text::SpreadSheet::CellStyle::BT_NONE;
+	this->borderBottom.borderType = Text::SpreadSheet::BorderType::None;
+	this->borderLeft.borderType = Text::SpreadSheet::BorderType::None;
+	this->borderRight.borderType = Text::SpreadSheet::BorderType::None;
+	this->borderTop.borderType = Text::SpreadSheet::BorderType::None;
 	this->font = 0;
 	this->fillColor = 0xffffff;
 	this->fillPattern = FP_NO_FILL;
@@ -90,13 +90,13 @@ Bool Text::SpreadSheet::CellStyle::Equals(CellStyle *style)
 	if (style->wordWrap != this->wordWrap)
 		return false;
 
-	if (style->borderBottom != this->borderBottom)
+	if (!style->borderBottom.Equals(&this->borderBottom))
 		return false;
-	if (style->borderLeft != this->borderLeft)
+	if (!style->borderLeft.Equals(&this->borderLeft))
 		return false;
-	if (style->borderRight != this->borderRight)
+	if (!style->borderRight.Equals(&this->borderRight))
 		return false;
-	if (style->borderTop != this->borderTop)
+	if (!style->borderTop.Equals(&this->borderTop))
 		return false;
 
 	if (this->font == 0)
