@@ -62,6 +62,7 @@ namespace Text
 				Data::ArrayList<CellData*> *cells;
 				Double height;
 			} RowData;
+
 		private:
 			const UTF8Char *name;
 			Data::ArrayList<RowData*> *rows;

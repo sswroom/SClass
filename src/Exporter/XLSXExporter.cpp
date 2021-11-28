@@ -89,6 +89,10 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char 
 	while (i < j)
 	{
 		sheet = workbook->GetItem(i);
+
+		Data::ArrayList<LinkInfo*> links;
+		LinkInfo *link;
+
 		sb.ClearStr();
 		sb.Append((const UTF8Char*)"<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n");
 		sb.Append((const UTF8Char*)"<worksheet xmlns=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\">");
@@ -185,6 +189,15 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char 
 								break;
 							}
 							
+							if (cell->cellURL)
+							{
+								link = MemAlloc(LinkInfo, 1);
+								link->row = k;
+								link->col = m;
+								link->cell = cell;
+								links.Add(link);
+							}
+							
 							sb.Append((const UTF8Char*)"</v></c>");
 						}
 						m++;
@@ -195,6 +208,31 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char 
 				k++;
 			}
 			sb.Append((const UTF8Char*)"</sheetData>");
+
+			if (links.GetCount() > 0)
+			{
+				UOSInt idBase = sheet->GetDrawingCount() + 1;
+				sb.Append((const UTF8Char*)"<hyperlinks>");
+				m = 0;
+				n = links.GetCount();
+				while (m < n)
+				{
+					link = links.GetItem(m);
+					sb.Append((const UTF8Char*)"<hyperlink ref=\"");
+					Text::SpreadSheet::Workbook::ColCode(sbuff, link->col);
+					sb.Append(sbuff);
+					sb.AppendUOSInt(link->row + 1);
+					sb.Append((const UTF8Char*)"\" r:id=\"rId");
+					sb.AppendUOSInt(idBase + m);
+					sb.Append((const UTF8Char*)"\" display=");
+					csptr = Text::XML::ToNewAttrText(link->cell->cellValue);
+					sb.Append(csptr);
+					Text::XML::FreeNewText(csptr);
+					sb.Append((const UTF8Char*)"/>");
+					m++;
+				}
+				sb.Append((const UTF8Char*)"</hyperlinks>");
+			}
 		}
 		else
 		{
@@ -235,7 +273,7 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char 
 		sbContTypes.Append(sbuff);
 		sbContTypes.Append((const UTF8Char*)"\" ContentType=\"application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml\"/>");
 
-		if (sheet->GetDrawingCount() > 0)
+		if (sheet->GetDrawingCount() > 0 || links.GetCount() > 0)
 		{
 			sb.ClearStr();
 			sb.Append((const UTF8Char*)"<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>");
@@ -250,6 +288,21 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char 
 				sb.AppendUOSInt(k + 1 + drawingCnt);
 				sb.Append((const UTF8Char*)".xml\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/drawing\"/>");
 				k++;
+			}
+			m = 0;
+			n = links.GetCount();
+			while (m < n)
+			{
+				link = links.GetItem(m);
+				sb.Append((const UTF8Char*)"<Relationship Id=\"rId");
+				sb.AppendUOSInt(l + m + 1);
+				sb.Append((const UTF8Char*)"\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink\" Target=");
+				csptr = Text::XML::ToNewAttrText(link->cell->cellURL);
+				sb.Append(csptr);
+				Text::XML::FreeNewText(csptr);
+				sb.Append((const UTF8Char*)" TargetMode=\"External\"/>");
+				MemFree(link);
+				m++;
 			}
 			sb.Append((const UTF8Char*)"</Relationships>");
 

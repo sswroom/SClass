@@ -6,11 +6,20 @@
 #include "Text/SpreadSheet/OfficeChartAxis.h"
 #include "Text/SpreadSheet/OfficeChartSeries.h"
 #include "Text/SpreadSheet/OfficeShapeProp.h"
+#include "Text/SpreadSheet/Worksheet.h"
 
 namespace Exporter
 {
 	class XLSXExporter : public IO::FileExporter
 	{
+	private:
+		struct LinkInfo
+		{
+			UOSInt row;
+			UOSInt col;
+			Text::SpreadSheet::Worksheet::CellData *cell;
+		};
+
 	public:
 		XLSXExporter();
 		virtual ~XLSXExporter();
