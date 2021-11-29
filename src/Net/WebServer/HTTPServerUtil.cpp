@@ -1,13 +1,15 @@
 #include "Stdafx.h"
 #include "Crypto/Hash/CRC32R.h"
 #include "Data/ByteTool.h"
+#include "Data/Compress/DeflateStream.h"
 #include "IO/FileStream.h"
 #include "IO/MemoryStream.h"
 #include "IO/Path.h"
 #include "Net/MIME.h"
 #include "Net/WebServer/HTTPServerUtil.h"
 #include "Text/StringBuilderUTF8.h"
-#include "miniz.h"
+
+#define BUFFSIZE 2048
 
 Bool Net::WebServer::HTTPServerUtil::MIMEToCompress(const UTF8Char *umime)
 {
@@ -55,8 +57,7 @@ void Net::WebServer::HTTPServerUtil::SendContent(Net::WebServer::IWebRequest *re
 {
 	UOSInt i;
 	UOSInt j;
-	UInt8 buff[2048];
-	UInt8 compBuff[2048];
+	UInt8 compBuff[BUFFSIZE];
 	Bool contSent = false;
 	if (contLeng > 1024)
 	{
@@ -74,7 +75,7 @@ void Net::WebServer::HTTPServerUtil::SendContent(Net::WebServer::IWebRequest *re
 			{
 				if (Text::StrEqualsICase(sarr[i], (const UTF8Char*)"gzip"))
 				{
-					if (browser != Net::BrowserInfo::BT_CHROME && browser != Net::BrowserInfo::BT_IE && browser != Net::BrowserInfo::BT_SAFARI && os != Manage::OSInfo::OT_IPHONE && os != Manage::OSInfo::OT_IPAD)
+					if (browser != Net::BrowserInfo::BT_IE && browser != Net::BrowserInfo::BT_SAFARI && os != Manage::OSInfo::OT_IPHONE && os != Manage::OSInfo::OT_IPAD)
 					{
 						resp->AddHeader((const UTF8Char*)"Content-Encoding", (const UTF8Char*)"gzip");
 
@@ -87,85 +88,20 @@ void Net::WebServer::HTTPServerUtil::SendContent(Net::WebServer::IWebRequest *re
 						compBuff[6] = 0;
 						compBuff[7] = 0;
 						compBuff[8] = 0;
-						resp->Write(compBuff, 8);
+						compBuff[9] = 0;
+						resp->Write(compBuff, 10);
 
-						mz_stream stm;
-						Bool err = false;
-						Int32 ret;
-						Int32 oriLeng = (Int32)contLeng;
 						Crypto::Hash::CRC32R crc;
-						MemClear(&stm, sizeof(stm));
-
-						stm.next_in = buff;
-						stm.avail_in = 2048;
-						stm.next_out = compBuff;
-						stm.avail_out = 2048;
-						mz_deflateInit2(&stm, MZ_BEST_COMPRESSION, MZ_DEFLATED, MZ_DEFAULT_WINDOW_BITS, 1, MZ_DEFAULT_STRATEGY);
-						
-						stm.avail_in = 0;
-						while (!err && contLeng > 0)
+						Data::Compress::DeflateStream dstm(fs, contLeng, &crc, true);
+						UOSInt readSize;
+						while ((readSize = dstm.Read(compBuff, BUFFSIZE)) != 0)
 						{
-							stm.next_in = buff;
-							if (contLeng > 2048)
-							{
-								stm.avail_in = (UInt32)fs->Read(buff, 2048);
-							}
-							else
-							{
-								stm.avail_in = (UInt32)fs->Read(buff, (UOSInt)contLeng);
-							}
-							if (stm.avail_in == 0)
-							{
-								break;
-							}
-							crc.Calc(buff, stm.avail_in);
-							contLeng -= stm.avail_in;
-							while (stm.avail_in > 0)
-							{
-								stm.next_out = compBuff;
-								stm.avail_out = 2048;
-								ret = mz_deflate(&stm, MZ_NO_FLUSH);
-								if (stm.avail_out == 2048)
-								{
-									if (ret != 0)
-									{
-										err = true;
-										break;
-									}
-								}
-								else
-								{
-									resp->Write(compBuff, 2048 - stm.avail_out);
-									stm.next_out = compBuff;
-									stm.avail_out = 2048;
-								}
-							}
+							resp->Write(compBuff, readSize);
 						}
-
-						while (!err)
-						{
-							ret = mz_deflate(&stm, MZ_FINISH);
-							if (stm.avail_out == 2048)
-							{
-								err = true;
-							}
-							else
-							{
-								resp->Write(compBuff, 2048 - stm.avail_out);
-								stm.next_out = compBuff;
-								stm.avail_out = 2048;
-
-								if (ret == MZ_STREAM_END)
-								{
-									break;
-								}
-							}
-						}
-						mz_deflateEnd(&stm);
 
 						crc.GetValue(&compBuff[8]);
 						WriteInt32(&compBuff[0], ReadMInt32(&compBuff[8]));
-						WriteInt32(&compBuff[4], (Int32)oriLeng);
+						WriteInt32(&compBuff[4], (Int32)contLeng);
 						resp->Write(compBuff, 8);
 						resp->ShutdownSend();
 
@@ -179,76 +115,13 @@ void Net::WebServer::HTTPServerUtil::SendContent(Net::WebServer::IWebRequest *re
 					{
 						resp->AddHeader((const UTF8Char*)"Content-Encoding", (const UTF8Char*)"deflate");
 
-						mz_stream stm;
-						Bool err = false;
-						Int32 ret;
-						MemClear(&stm, sizeof(stm));
-
-						stm.next_in = buff;
-						stm.avail_in = 2048;
-						stm.next_out = compBuff;
-						stm.avail_out = 2048;
-						mz_deflateInit2(&stm, MZ_BEST_COMPRESSION, MZ_DEFLATED, MZ_DEFAULT_WINDOW_BITS, 1, MZ_DEFAULT_STRATEGY);
-						
-						stm.avail_in = 0;
-						while (!err && contLeng > 0)
+						Data::Compress::DeflateStream dstm(fs, contLeng, 0, true);
+						UOSInt readSize;
+						while ((readSize = dstm.Read(compBuff, BUFFSIZE)) != 0)
 						{
-							stm.next_in = buff;
-							if (contLeng > 2048)
-							{
-								stm.avail_in = (UInt32)fs->Read(buff, 2048);
-							}
-							else
-							{
-								stm.avail_in = (UInt32)fs->Read(buff, (UOSInt)contLeng);
-							}
-							if (stm.avail_in == 0)
-							{
-								break;
-							}
-							contLeng -= stm.avail_in;
-							while (stm.avail_in > 0)
-							{
-								stm.next_out = compBuff;
-								stm.avail_out = 2048;
-								ret = mz_deflate(&stm, MZ_NO_FLUSH);
-								if (stm.avail_out == 2048)
-								{
-									if (ret != 0)
-									{
-										err = true;
-										break;
-									}
-								}
-								else
-								{
-									resp->Write(compBuff, 2048 - stm.avail_out);
-									stm.next_out = compBuff;
-									stm.avail_out = 2048;
-								}
-							}
+							resp->Write(compBuff, readSize);
 						}
 
-						while (!err)
-						{
-							ret = mz_deflate(&stm, MZ_FINISH);
-							if (stm.avail_out == 2048)
-							{
-								err = true;
-							}
-							else
-							{
-								resp->Write(compBuff, 2048 - stm.avail_out);
-								stm.next_out = compBuff;
-								stm.avail_out = 2048;
-
-								if (ret == MZ_STREAM_END)
-								{
-									break;
-								}
-							}
-						}
-						mz_deflateEnd(&stm);
 						resp->ShutdownSend();
 						contSent = true;
 						break;
@@ -264,12 +137,12 @@ void Net::WebServer::HTTPServerUtil::SendContent(Net::WebServer::IWebRequest *re
 		while (contLeng > 0)
 		{
 			UOSInt writeSize;
-			UOSInt readSize = fs->Read(buff, 2048);
+			UOSInt readSize = fs->Read(compBuff, BUFFSIZE);
 			if (readSize <= 0)
 			{
 				break;
 			}
-			writeSize = resp->Write(buff, readSize);
+			writeSize = resp->Write(compBuff, readSize);
 			if (writeSize != readSize)
 				break;
 			contLeng -= readSize;
@@ -281,7 +154,7 @@ void Net::WebServer::HTTPServerUtil::SendContent(Net::WebServer::IWebRequest *re
 {
 	UOSInt i;
 	UOSInt j;
-	UInt8 compBuff[2048];
+	UInt8 compBuff[BUFFSIZE];
 	Bool contSent = false;
 	if (contLeng > 1024)
 	{
@@ -298,62 +171,36 @@ void Net::WebServer::HTTPServerUtil::SendContent(Net::WebServer::IWebRequest *re
 			{
 				if (Text::StrEqualsICase(sarr[i], (const UTF8Char*)"gzip"))
 				{
-					if (browser != Net::BrowserInfo::BT_CHROME)
+					resp->AddHeader((const UTF8Char*)"Content-Encoding", (const UTF8Char*)"gzip");
+
+					compBuff[0] = 0x1F;
+					compBuff[1] = 0x8B;
+					compBuff[2] = 8;
+					compBuff[3] = 0;
+					compBuff[4] = 0;
+					compBuff[5] = 0;
+					compBuff[6] = 0;
+					compBuff[7] = 0;
+					compBuff[8] = 0;
+					resp->Write(compBuff, 8);
+
+					Crypto::Hash::CRC32R crc;
+					crc.Calc(buff, (UOSInt)contLeng);
+
+					IO::MemoryStream mstm((UInt8*)buff, (UOSInt)contLeng, (const UTF8Char*)"Net.HTTPServerUtil.SendContent");
+					Data::Compress::DeflateStream dstm(&mstm, contLeng, 0, true);
+					UOSInt readSize;
+					while ((readSize = dstm.Read(compBuff, BUFFSIZE)) != 0)
 					{
-						resp->AddHeader((const UTF8Char*)"Content-Encoding", (const UTF8Char*)"gzip");
-
-						compBuff[0] = 0x1F;
-						compBuff[1] = 0x8B;
-						compBuff[2] = 8;
-						compBuff[3] = 0;
-						compBuff[4] = 0;
-						compBuff[5] = 0;
-						compBuff[6] = 0;
-						compBuff[7] = 0;
-						compBuff[8] = 0;
-						resp->Write(compBuff, 8);
-
-						mz_stream stm;
-						Bool err = false;
-						Int32 ret;
-						Crypto::Hash::CRC32R crc;
-						crc.Calc(buff, (UOSInt)contLeng);
-						MemClear(&stm, sizeof(stm));
-
-						stm.next_in = buff;
-						stm.avail_in = (UInt32)contLeng;
-						stm.next_out = compBuff;
-						stm.avail_out = 2048;
-						mz_deflateInit2(&stm, MZ_BEST_COMPRESSION, MZ_DEFLATED, MZ_DEFAULT_WINDOW_BITS, 1, MZ_DEFAULT_STRATEGY);
-						
-						while (!err)
-						{
-							ret = mz_deflate(&stm, MZ_FINISH);
-							if (stm.avail_out == 2048)
-							{
-								err = true;
-							}
-							else
-							{
-								resp->Write(compBuff, 2048 - stm.avail_out);
-								stm.next_out = compBuff;
-								stm.avail_out = 2048;
-
-								if (ret == MZ_STREAM_END)
-								{
-									break;
-								}
-							}
-						}
-						mz_deflateEnd(&stm);
-						crc.GetValue(&compBuff[8]);
-						WriteInt32(&compBuff[0], ReadMInt32(&compBuff[8]));
-						WriteInt32(&compBuff[4], (Int32)contLeng);
-						resp->Write(compBuff, 8);
-						resp->ShutdownSend();
-						contSent = true;
-						break;
+						resp->Write(compBuff, readSize);
 					}
+					crc.GetValue(&compBuff[8]);
+					WriteInt32(&compBuff[0], ReadMInt32(&compBuff[8]));
+					WriteInt32(&compBuff[4], (Int32)contLeng);
+					resp->Write(compBuff, 8);
+					resp->ShutdownSend();
+					contSent = true;
+					break;
 				}
 				else if (Text::StrEqualsICase(sarr[i], (const UTF8Char*)"deflate"))
 				{
@@ -361,37 +208,13 @@ void Net::WebServer::HTTPServerUtil::SendContent(Net::WebServer::IWebRequest *re
 					{
 						resp->AddHeader((const UTF8Char*)"Content-Encoding", (const UTF8Char*)"deflate");
 
-						mz_stream stm;
-						Bool err = false;
-						Int32 ret;
-						MemClear(&stm, sizeof(stm));
-
-						stm.next_in = buff;
-						stm.avail_in = (UInt32)contLeng;
-						stm.next_out = compBuff;
-						stm.avail_out = 2048;
-						mz_deflateInit2(&stm, MZ_BEST_COMPRESSION, MZ_DEFLATED, MZ_DEFAULT_WINDOW_BITS, 1, MZ_DEFAULT_STRATEGY);
-						
-						while (!err)
+						IO::MemoryStream mstm((UInt8*)buff, (UOSInt)contLeng, (const UTF8Char*)"Net.HTTPServerUtil.SendContent");
+						Data::Compress::DeflateStream dstm(&mstm, contLeng, 0, true);
+						UOSInt readSize;
+						while ((readSize = dstm.Read(compBuff, BUFFSIZE)) != 0)
 						{
-							ret = mz_deflate(&stm, MZ_FINISH);
-							if (stm.avail_out == 2048)
-							{
-								err = true;
-							}
-							else
-							{
-								resp->Write(compBuff, 2048 - stm.avail_out);
-								stm.next_out = compBuff;
-								stm.avail_out = 2048;
-
-								if (ret == MZ_STREAM_END)
-								{
-									break;
-								}
-							}
+							resp->Write(compBuff, readSize);
 						}
-						mz_deflateEnd(&stm);
 						resp->ShutdownSend();
 						contSent = true;
 						break;
@@ -536,9 +359,9 @@ Bool Net::WebServer::HTTPServerUtil::ResponseFile(Net::WebServer::IWebRequest *r
 	resp->AddHeader((const UTF8Char*)"Accept-Ranges", (const UTF8Char*)"bytes");
 	if (sizeLeft <= 0)
 	{
-		UInt8 buff[2048];
+		UInt8 buff[BUFFSIZE];
 		UOSInt readSize;
-		readSize = fs->Read(buff, 2048);
+		readSize = fs->Read(buff, BUFFSIZE);
 		if (readSize == 0)
 		{
 			Net::WebServer::HTTPServerUtil::SendContent(req, resp, mime, sizeLeft, fs);
@@ -550,7 +373,7 @@ Bool Net::WebServer::HTTPServerUtil::ResponseFile(Net::WebServer::IWebRequest *r
 			while (readSize > 0)
 			{
 				sizeLeft += mstm->Write(buff, readSize);
-				readSize = fs->Read(buff, 2048);
+				readSize = fs->Read(buff, BUFFSIZE);
 			}
 			mstm->SeekFromBeginning(0);
 			Net::WebServer::HTTPServerUtil::SendContent(req, resp, mime, sizeLeft, mstm);

@@ -128,7 +128,6 @@ GUIExporter.o: ../../src/Exporter/GUIExporterW.cpp
 GUIGIFExporter.o: ../../src/Exporter/GUIGIFExporterW.cpp
 GUIJPGExporter.o: ../../src/Exporter/GUIJPGExporterW.cpp
 GUIPNGExporter.o: ../../src/Exporter/GUIPNGExporterW.cpp
-$-I ../../ThirdParty/miniz
 GUITIFExporter.o: ../../src/Exporter/GUITIFExporterW.cpp
 DDrawManager.o: ../../src/Media/DDrawManager.cpp
 !-lddraw

@@ -125,7 +125,6 @@ $`pkg-config --cflags gtk+-3.0`
 GUIJPGExporter.o: ../../src/Exporter/GUIJPGExporterGTK.cpp
 $`pkg-config --cflags gtk+-3.0`
 GUIPNGExporter.o: ../../src/Exporter/GUIPNGExporterGTK.cpp
-$-I ../../ThirdParty/miniz
 $`pkg-config --cflags gtk+-3.0`
 GUITIFExporter.o: ../../src/Exporter/GUITIFExporterGTK.cpp
 $`pkg-config --cflags gtk+-3.0`

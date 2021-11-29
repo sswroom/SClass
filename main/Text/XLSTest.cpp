@@ -184,6 +184,10 @@ void TestBorder()
 
 Int32 MyMain(Core::IProgControl *progCtrl)
 {
+	TestEmpty();
+	TestChart();
+	TestCols();
+	TestColWidth();
 	TestBorder();
 	return 0;
 }

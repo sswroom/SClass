@@ -255,7 +255,7 @@ int mz_deflateInit2(mz_streamp pStream, int level, int method, int window_bits, 
     return MZ_MEM_ERROR;
 
   pStream->state = (struct mz_internal_state *)pComp;
-
+  memset(pComp, 0, sizeof(tdefl_compressor));
   if (tdefl_init(pComp, NULL, NULL, comp_flags) != TDEFL_STATUS_OKAY)
   {
     mz_deflateEnd(pStream);

@@ -1152,6 +1152,8 @@ Data/VariObject.h: ../../src/Data/VariObject.cpp
 @VariObject.o
 Data/Compress/Decompressor.h: ../../src/Data/Compress/Decompressor.cpp
 @Decompressor.o
+Data/Compress/DeflateStream.h: ../../src/Data/Compress/DeflateStream.cpp
+@DeflateStream.o
 Data/Compress/Inflate.h: ../../src/Data/Compress/Inflate.cpp
 @Inflate.o
 Data/Compress/InflateStream.h: ../../src/Data/Compress/InflateStream.cpp
@@ -3856,6 +3858,8 @@ UUID.o: ../../src/Data/UUID.cpp
 VariItem.o: ../../src/Data/VariItem.cpp
 VariObject.o: ../../src/Data/VariObject.cpp
 Decompressor.o: ../../src/Data/Compress/Decompressor.cpp
+DeflateStream.o: ../../src/Data/Compress/DeflateStream.cpp
+$-I ../../ThirdParty/miniz
 Inflate.o: ../../src/Data/Compress/Inflate.cpp
 $-I ../../ThirdParty/miniz
 InflateStream.o: ../../src/Data/Compress/InflateStream.cpp

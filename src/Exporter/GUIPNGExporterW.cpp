@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "Crypto/Hash/CRC32R.h"
 #include "Data/ByteTool.h"
+#include "Data/Compress/Inflate.h"
 #include "Exporter/GUIPNGExporter.h"
 #include "IO/MemoryStream.h"
 #include "Media/ImageList.h"
@@ -15,7 +16,6 @@
 #ifndef _WIN32_WCE
 #include <gdiplus.h>
 #endif
-#include "miniz.h"
 
 Exporter::GUIPNGExporter::GUIPNGExporter() : Exporter::GUIExporter()
 {
@@ -143,27 +143,16 @@ Bool Exporter::GUIPNGExporter::ExportFile(IO::SeekableStream *stm, const UTF8Cha
 					WriteInt32(&chunkBuff[4], ReadInt32("iCCP"));
 					Text::StrConcat((Char*)&chunkBuff[8], "Photoshop ICC profile");
 					chunkBuff[30] = 0;
-
-					mz_stream dstm;
-					int status;
-					MemClear(&dstm, sizeof(mz_stream));
-					dstm.next_in = iccBuff;
-					dstm.avail_in = iccSize;
-					dstm.next_out = &chunkBuff[31];
-					dstm.avail_out = iccSize;
-					mz_deflateInit2(&dstm, MZ_BEST_COMPRESSION, MZ_DEFLATED, MZ_DEFAULT_WINDOW_BITS, 1, 0);
-					status = mz_deflate(&dstm, MZ_FINISH);
-					mz_deflateEnd(&dstm);
-
-					if (status == MZ_OK || status == MZ_STREAM_END)
+					UOSInt compSize = Data::Compress::Inflate::Compress(iccBuff, iccSize, &chunkBuff[31], true);
+					if (compSize > 0)
 					{
 						UInt8 crcBuff[4];
 						Crypto::Hash::CRC32R crc;
-						WriteMUInt32(chunkBuff, 23 + dstm.total_out);
-						crc.Calc(&chunkBuff[4], 27 + dstm.total_out);
+						WriteMUInt32(chunkBuff, 23 + compSize);
+						crc.Calc(&chunkBuff[4], 27 + compSize);
 						crc.GetValue(crcBuff);
-						WriteMUInt32(&chunkBuff[31 + dstm.total_out], ReadMUInt32(crcBuff));
-						stm->Write(chunkBuff, 35 + dstm.total_out);
+						WriteMUInt32(&chunkBuff[31 + compSize], ReadMUInt32(crcBuff));
+						stm->Write(chunkBuff, 35 + compSize);
 					}
 					MemFree(chunkBuff);
 
