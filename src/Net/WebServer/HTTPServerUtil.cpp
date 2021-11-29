@@ -89,7 +89,7 @@ void Net::WebServer::HTTPServerUtil::SendContent(Net::WebServer::IWebRequest *re
 						compBuff[7] = 0;
 						compBuff[8] = 0;
 						compBuff[9] = 0;
-						resp->Write(compBuff, 10);
+						resp->Write(compBuff, 8);
 
 						Crypto::Hash::CRC32R crc;
 						Data::Compress::DeflateStream dstm(fs, contLeng, &crc, true);
