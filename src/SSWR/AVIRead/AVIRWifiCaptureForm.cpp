@@ -811,7 +811,7 @@ SSWR::AVIRead::AVIRWifiCaptureForm::AVIRWifiCaptureForm(UI::GUIClientControl *pa
 	j = this->sensorMgr->GetSensorCnt();
 	while (i < j)
 	{
-		if (this->sensorMgr->GetSensorType(i) == IO::Sensor::ST_ACCELEROMETER)
+		if (this->sensorMgr->GetSensorType(i) == IO::Sensor::SensorType::Accelerometer)
 		{
 			IO::Sensor *sensor = this->sensorMgr->CreateSensor(0);
 			if (sensor)

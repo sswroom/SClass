@@ -9,6 +9,8 @@
 #include <X11/Xatom.h>
 
 #include <stdio.h>
+
+#undef None
 /*#include "Sync/Thread.h"
 
 Media::ScreenCapturer::ScreenCapturer(Media::MonitorMgr *monMgr, Media::ColorManager *colorMgr)
@@ -85,7 +87,7 @@ Media::StaticImage *Media::ScreenCapturer::CaptureScreen(MonitorHandle *hMon)
 		info.vdpi = info.hdpi;
 		const Media::IColorHandler::RGBPARAM2 *params = monColor->GetRGBParam();
 		info.color->Set(params->monProfile);
-		info.rotateType = Media::RT_NONE;
+		info.rotateType = Media::RotateType::None;
 		
 		if (valid)
 		{

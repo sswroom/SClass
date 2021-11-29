@@ -51,10 +51,10 @@ SSWR::AVIRead::AVIRConsoleMediaPlayerForm::AVIRConsoleMediaPlayerForm(UI::GUICli
 	this->lblRotate->SetRect(4, 52, 100, 23, false);
 	NEW_CLASS(this->cboRotate, UI::GUIComboBox(ui, this, false));
 	this->cboRotate->SetRect(104, 52, 100, 23, false);
-	this->cboRotate->AddItem((const UTF8Char*)"No Rotate", (void*)Media::RT_NONE);
-	this->cboRotate->AddItem((const UTF8Char*)"CW 90", (void*)Media::RT_CW_90);
-	this->cboRotate->AddItem((const UTF8Char*)"CW 180", (void*)Media::RT_CW_180);
-	this->cboRotate->AddItem((const UTF8Char*)"CW 270", (void*)Media::RT_CW_270);
+	this->cboRotate->AddItem((const UTF8Char*)"No Rotate", (void*)Media::RotateType::None);
+	this->cboRotate->AddItem((const UTF8Char*)"CW 90", (void*)Media::RotateType::CW_90);
+	this->cboRotate->AddItem((const UTF8Char*)"CW 180", (void*)Media::RotateType::CW_180);
+	this->cboRotate->AddItem((const UTF8Char*)"CW 270", (void*)Media::RotateType::CW_270);
 	this->cboRotate->SetSelectedIndex(0);
 	this->cboRotate->HandleSelectionChange(OnRotateChg, this);
 

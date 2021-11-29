@@ -62,7 +62,7 @@ Media::FBSurface::FBSurface(MonitorHandle *hMon, Media::ColorProfile *color, Dou
 	this->info->rotateType = rotateType;
 	this->info->color->Set(color);
 
-	if (this->info->rotateType == Media::RT_CW_90 || this->info->rotateType == Media::RT_CW_270)
+	if (this->info->rotateType == Media::RotateType::CW_90 || this->info->rotateType == Media::RotateType::CW_270)
 	{
 		UOSInt tmpV = this->info->dispWidth;
 		this->info->dispWidth = this->info->dispHeight;
@@ -151,7 +151,7 @@ Bool Media::FBSurface::DrawFromBuff()
 	if (this->clsData->buffSurface)
 	{
 		RotateType rt = Media::RotateTypeCalc(this->clsData->buffSurface->info->rotateType, this->info->rotateType);
-		if (rt == Media::RT_NONE)
+		if (rt == Media::RotateType::None)
 		{
 			this->clsData->buffSurface->GetImageData(this->clsData->dataPtr, 0, 0, this->info->dispWidth, this->info->dispHeight, this->clsData->finfo.line_length, false);
 		}
@@ -165,30 +165,30 @@ Bool Media::FBSurface::DrawFromBuff()
 			}
 			if (this->info->storeBPP == 32)
 			{
-				if (rt == Media::RT_CW_90)
+				if (rt == Media::RotateType::CW_90)
 				{
 					ImageUtil_Rotate32_CW90(buff, this->clsData->dataPtr, this->info->dispWidth, this->info->dispHeight, (UOSInt)lineAdd, this->clsData->finfo.line_length);
 				}
-				else if (rt == Media::RT_CW_180)
+				else if (rt == Media::RotateType::CW_180)
 				{
 					ImageUtil_Rotate32_CW180(buff, this->clsData->dataPtr, this->info->dispWidth, this->info->dispHeight, (UOSInt)lineAdd, this->clsData->finfo.line_length);
 				}
-				else if (rt == Media::RT_CW_270)
+				else if (rt == Media::RotateType::CW_270)
 				{
 					ImageUtil_Rotate32_CW270(buff, this->clsData->dataPtr, this->info->dispWidth, this->info->dispHeight, (UOSInt)lineAdd, this->clsData->finfo.line_length);
 				}
 			}
 			else if (this->info->storeBPP == 64)
 			{
-				if (rt == Media::RT_CW_90)
+				if (rt == Media::RotateType::CW_90)
 				{
 					ImageUtil_Rotate64_CW90(buff, this->clsData->dataPtr, this->info->dispWidth, this->info->dispHeight, (UOSInt)lineAdd, this->clsData->finfo.line_length);
 				}
-				else if (rt == Media::RT_CW_180)
+				else if (rt == Media::RotateType::CW_180)
 				{
 					ImageUtil_Rotate64_CW180(buff, this->clsData->dataPtr, this->info->dispWidth, this->info->dispHeight, (UOSInt)lineAdd, this->clsData->finfo.line_length);
 				}
-				else if (rt == Media::RT_CW_270)
+				else if (rt == Media::RotateType::CW_270)
 				{
 					ImageUtil_Rotate64_CW270(buff, this->clsData->dataPtr, this->info->dispWidth, this->info->dispHeight, (UOSInt)lineAdd, this->clsData->finfo.line_length);
 				}
@@ -241,7 +241,7 @@ Bool Media::FBSurface::DrawFromMem(UInt8 *buff, OSInt lineAdd, OSInt destX, OSIn
 	if (waitForVBlank) this->WaitForVBlank();
 	if ((OSInt)buffW > 0 && (OSInt)buffH > 0)
 	{
-		if (rt == Media::RT_NONE)
+		if (rt == Media::RotateType::None)
 		{
 			ImageCopy_ImgCopyR(buff + drawY * lineAdd + drawX * (OSInt)(this->info->storeBPP >> 3),
 				(UInt8*)this->clsData->dataPtr + destY * (Int32)this->clsData->finfo.line_length + destX * ((OSInt)this->info->storeBPP >> 3),
@@ -249,19 +249,19 @@ Bool Media::FBSurface::DrawFromMem(UInt8 *buff, OSInt lineAdd, OSInt destX, OSIn
 		}
 		else if (this->info->storeBPP == 32)
 		{
-			if (rt == Media::RT_CW_90)
+			if (rt == Media::RotateType::CW_90)
 			{
 				ImageUtil_Rotate32_CW90(buff + drawY * lineAdd + drawX * 4, 
 				this->clsData->dataPtr + destX * this->clsData->finfo.line_length + (OSInt)(this->info->dispHeight - (UOSInt)destY - buffH) * 4,
 				buffW, buffH, (UOSInt)lineAdd, this->clsData->finfo.line_length);
 			}
-			else if (rt == Media::RT_CW_180)
+			else if (rt == Media::RotateType::CW_180)
 			{
 				ImageUtil_Rotate32_CW180(buff + drawY * lineAdd + drawX * 4, 
 				this->clsData->dataPtr + (OSInt)(this->info->dispHeight - (UOSInt)destY - buffH) * this->clsData->finfo.line_length + (OSInt)(this->info->dispWidth - (UOSInt)destX - buffW) * 4,
 				buffW, buffH, (UOSInt)lineAdd, this->clsData->finfo.line_length);
 			}
-			else if (rt == Media::RT_CW_270)
+			else if (rt == Media::RotateType::CW_270)
 			{
 				ImageUtil_Rotate32_CW270(buff + drawY * lineAdd + drawX * 4, 
 				this->clsData->dataPtr + (OSInt)(this->info->dispWidth - (UOSInt)destX - buffW) * this->clsData->finfo.line_length + destY * 4,
@@ -270,19 +270,19 @@ Bool Media::FBSurface::DrawFromMem(UInt8 *buff, OSInt lineAdd, OSInt destX, OSIn
 		}
 		else if (this->info->storeBPP == 64)
 		{
-			if (rt == Media::RT_CW_90)
+			if (rt == Media::RotateType::CW_90)
 			{
 				ImageUtil_Rotate64_CW90(buff + drawY * lineAdd + drawX * 8, 
 				this->clsData->dataPtr + destX * (Int32)this->clsData->finfo.line_length + (OSInt)(this->info->dispHeight - (UOSInt)destY - buffH) * 8,
 				buffW, buffH, (UOSInt)lineAdd, this->clsData->finfo.line_length);
 			}
-			else if (rt == Media::RT_CW_180)
+			else if (rt == Media::RotateType::CW_180)
 			{
 				ImageUtil_Rotate64_CW180(buff + drawY * lineAdd + drawX * 8, 
 				this->clsData->dataPtr + (OSInt)(this->info->dispHeight - (UOSInt)destY - buffH) * this->clsData->finfo.line_length + (OSInt)(this->info->dispWidth - (UOSInt)destX - buffW) * 8,
 				buffW, buffH, (UOSInt)lineAdd, this->clsData->finfo.line_length);
 			}
-			else if (rt == Media::RT_CW_270)
+			else if (rt == Media::RotateType::CW_270)
 			{
 				ImageUtil_Rotate64_CW270(buff + drawY * lineAdd + drawX * 8, 
 				this->clsData->dataPtr + (OSInt)(this->info->dispWidth - (UOSInt)destX - buffW) * (Int32)this->clsData->finfo.line_length + destY * 8,
@@ -290,7 +290,7 @@ Bool Media::FBSurface::DrawFromMem(UInt8 *buff, OSInt lineAdd, OSInt destX, OSIn
 			}
 		}
 
-		if (rt == Media::RT_NONE)
+		if (rt == Media::RotateType::None)
 		{
 			
 		}
@@ -300,7 +300,7 @@ Bool Media::FBSurface::DrawFromMem(UInt8 *buff, OSInt lineAdd, OSInt destX, OSIn
 			OSInt oldY = destY;
 			UOSInt oldW = buffW;
 			UOSInt oldH = buffH;
-			if (rt == Media::RT_CW_90)
+			if (rt == Media::RotateType::CW_90)
 			{
 				OSInt tmpV = destWidth;
 				destWidth = destHeight;
@@ -310,12 +310,12 @@ Bool Media::FBSurface::DrawFromMem(UInt8 *buff, OSInt lineAdd, OSInt destX, OSIn
 				buffW = oldH;
 				buffH = oldW;
 			}
-			else if (rt == Media::RT_CW_180)
+			else if (rt == Media::RotateType::CW_180)
 			{
 				destX = destWidth - oldX - (OSInt)oldW;
 				destY = destHeight - oldY - (OSInt)oldH;
 			}
-			else if (rt == Media::RT_CW_270)
+			else if (rt == Media::RotateType::CW_270)
 			{
 				OSInt tmpV = destWidth;
 				destWidth = destHeight;
@@ -349,7 +349,7 @@ Bool Media::FBSurface::DrawFromMem(UInt8 *buff, OSInt lineAdd, OSInt destX, OSIn
 	}
 	else if (clearScn)
 	{
-		if (this->info->rotateType == Media::RT_CW_90 || this->info->rotateType == Media::RT_CW_270)
+		if (this->info->rotateType == Media::RotateType::CW_90 || this->info->rotateType == Media::RotateType::CW_270)
 		{
 			ImageUtil_ImageColorFill32((UInt8*)this->clsData->dataPtr, (UOSInt)destHeight, (UOSInt)destWidth, (UInt32)this->clsData->finfo.line_length, 0xff000000);
 		}

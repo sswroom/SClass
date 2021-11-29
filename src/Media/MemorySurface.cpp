@@ -22,7 +22,7 @@ Media::MemorySurface::MemorySurface(UOSInt width, UOSInt height, UOSInt bitPerPi
 	this->info->hdpi = dpi;
 	this->info->vdpi = dpi;
 	this->info->color->Set(color);
-	this->info->rotateType = Media::RT_NONE;
+	this->info->rotateType = Media::RotateType::None;
 }
 
 Media::MemorySurface::~MemorySurface()

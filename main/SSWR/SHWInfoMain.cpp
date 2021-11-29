@@ -1102,7 +1102,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 
 				switch (sensor->GetSensorType())
 				{
-				case IO::Sensor::ST_ACCELEROMETER:
+				case IO::Sensor::SensorType::Accelerometer:
 					if (sensor->EnableSensor())
 					{
 						Double x;
@@ -1128,7 +1128,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 						sensor->DisableSensor();
 					}
 					break;
-				case IO::Sensor::ST_PRESSURE:
+				case IO::Sensor::SensorType::Pressure:
 					if (sensor->EnableSensor())
 					{
 						Double pressure;
@@ -1144,7 +1144,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 						sensor->DisableSensor();
 					}
 					break;
-				case IO::Sensor::ST_MAGNETOMETER:
+				case IO::Sensor::SensorType::Magnetometer:
 					if (sensor->EnableSensor())
 					{
 						Double x;
@@ -1170,8 +1170,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 						sensor->DisableSensor();
 					}
 					break;
-				case IO::Sensor::ST_ORIENTATION:
-				case IO::Sensor::ST_UNKNOWN:
+				case IO::Sensor::SensorType::Orientation:
+				case IO::Sensor::SensorType::Unknown:
 				default:
 					break;
 				}

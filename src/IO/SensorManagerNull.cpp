@@ -17,7 +17,7 @@ UOSInt IO::SensorManager::GetSensorCnt()
 
 IO::Sensor::SensorType IO::SensorManager::GetSensorType(UOSInt index)
 {
-	return IO::Sensor::ST_UNKNOWN;
+	return IO::Sensor::SensorType::Unknown;
 }
 
 IO::Sensor *IO::SensorManager::CreateSensor(UOSInt index)
