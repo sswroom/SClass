@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "IO/MemoryStream.h"
 #include "Net/Email/SMTPClient.h"
+#include "Sync/Thread.h"
 
 Net::Email::SMTPClient::SMTPClient(Net::SocketFactory *sockf, Net::SSLEngine *ssl, const UTF8Char *host, UInt16 port, Net::Email::SMTPConn::ConnType connType, IO::Writer *logWriter)
 {
@@ -55,6 +56,7 @@ Bool Net::Email::SMTPClient::Send(Net::Email::EmailMessage *message)
 			return false;
 		}
 	}
+	Sync::Thread::Sleep(10);
 	if (this->authUser && this->authPassword)
 	{
 		if (!conn->SendAuth(this->authUser, this->authPassword))
