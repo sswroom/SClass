@@ -7,11 +7,11 @@ namespace Math
 		class Acceleration
 		{
 		public:
-			typedef enum
+			enum class AccelerationUnit
 			{
-				AU_METER_PER_SECOND_SQUARED,
-				AU_STANDARD_GRAVITY
-			} AccelerationUnit;
+				MeterPerSecondSquared,
+				StandardGravity
+			};
 		public:
 			static Double GetUnitRatio(AccelerationUnit unit);
 			static const UTF8Char *GetUnitShortName(AccelerationUnit unit);

@@ -446,7 +446,7 @@ Media::IMediaSource *Parser::FileParser::QTParser::ParseStblAtom(IO::IStreamData
 		frInfo.color->SetCommonProfile(Media::ColorProfile::CPT_VUNKNOWN);
 		frInfo.yuvType = Media::ColorProfile::YUVT_UNKNOWN;
 		frInfo.ycOfst = Media::YCOFST_C_CENTER_LEFT;
-		frInfo.rotateType = Media::RT_NONE;
+		frInfo.rotateType = Media::RotateType::None;
 	}
 
 	i = 8;
@@ -1491,7 +1491,7 @@ Media::IMediaSource *Parser::FileParser::QTParser::ParseStblAtom(IO::IStreamData
 					{
 						nSample = ReadMUInt16(&stszBuff[stszOfst]);
 						fsrc->SetProp(*(Int32*)"sps", &stszBuff[stszOfst + 2], nSample);
-						stszOfst += 2 + nSample;
+						stszOfst += 2 + (UInt64)nSample;
 					}
 					nsps = stszBuff[stszOfst];
 					stszOfst += 1;
@@ -1499,7 +1499,7 @@ Media::IMediaSource *Parser::FileParser::QTParser::ParseStblAtom(IO::IStreamData
 					{
 						nSample = ReadMUInt16(&stszBuff[stszOfst]);
 						fsrc->SetProp(*(Int32*)"pps", &stszBuff[stszOfst + 2], nSample);
-						stszOfst += 2 + nSample;
+						stszOfst += 2 + (UInt64)nSample;
 					}
 
 					nsps = stszBuff[13] & 0x1f;
@@ -1507,14 +1507,14 @@ Media::IMediaSource *Parser::FileParser::QTParser::ParseStblAtom(IO::IStreamData
 					if(nsps > 0)
 					{
 						nSample = ReadMUInt16(&stszBuff[stszOfst]);
-						UInt8 *tmpBuff = MemAlloc(UInt8, nSample + 4);
+						UInt8 *tmpBuff = MemAlloc(UInt8, (UOSInt)nSample + 4);
 						MemCopyNO(&tmpBuff[4], &stszBuff[stszOfst + 2], nSample);
 						WriteMInt32(tmpBuff, 1);
 						Media::H264Parser::H264Flags flags;
 						flags.frameRateNorm = 0;
 						flags.frameRateDenorm = 0;
 						Media::FrameInfo fInfo;
-						Media::H264Parser::GetFrameInfo(tmpBuff, nSample + 4, &fInfo, &flags);
+						Media::H264Parser::GetFrameInfo(tmpBuff, (UOSInt)nSample + 4, &fInfo, &flags);
 						MemFree(tmpBuff);
 						if (flags.frameRateDenorm != 0)
 						{
@@ -1590,7 +1590,7 @@ array_item:
 							{
 								fsrc->SetProp(propType, &stszBuff[stszOfst + 2], nSample);
 							}
-							stszOfst += 2 + nSample;
+							stszOfst += 2 + (UInt64)nSample;
 						}
 					}
 					MemFree(stszBuff);

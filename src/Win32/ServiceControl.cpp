@@ -12,7 +12,7 @@ void __stdcall ServiceControl_WaitForExit(Core::IProgControl *progCtrl)
 	}
 }
 
-UTF8Char **__stdcall ServiceControl_GetCommandLines(Core::IProgControl *progCtrl, OSInt *cmdCnt)
+UTF8Char **__stdcall ServiceControl_GetCommandLines(Core::IProgControl *progCtrl, UOSInt *cmdCnt)
 {
 	Win32::ServiceControl *me = (Win32::ServiceControl*)progCtrl;
 	*cmdCnt = 1;

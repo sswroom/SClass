@@ -10,14 +10,14 @@ namespace IO
 	class Sensor
 	{
 	public:
-		typedef enum
+		enum class SensorType
 		{
-			ST_UNKNOWN,
-			ST_ACCELEROMETER,
-			ST_PRESSURE,
-			ST_MAGNETOMETER,
-			ST_ORIENTATION
-		} SensorType;
+			Unknown,
+			Accelerometer,
+			Pressure,
+			Magnetometer,
+			Orientation
+		};
 	public:
 		virtual ~Sensor();
 

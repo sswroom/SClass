@@ -26,7 +26,7 @@ Media::Image::Image(UOSInt dispWidth, UOSInt dispHeight)
 	info->color->SetCommonProfile(Media::ColorProfile::CPT_PUNKNOWN);
 	info->atype = Media::AT_ALPHA;
 	info->yuvType = Media::ColorProfile::YUVT_UNKNOWN;
-	info->rotateType = Media::RT_NONE;
+	info->rotateType = Media::RotateType::None;
 	info->ycOfst = Media::YCOFST_C_CENTER_LEFT;
 	info->ftype = Media::FT_NON_INTERLACE;
 	this->pal = 0;
@@ -62,7 +62,7 @@ Media::Image::Image(UOSInt dispWidth, UOSInt dispHeight, UOSInt storeWidth, UOSI
 	info->yuvType = yuvType;
 	info->ycOfst = ycOfst;
 	info->ftype = Media::FT_NON_INTERLACE;
-	info->rotateType = Media::RT_NONE;
+	info->rotateType = Media::RotateType::None;
 
 	if (pf == Media::PF_PAL_1_A1)
 	{
@@ -150,7 +150,7 @@ Media::Image::Image(UOSInt dispWidth, UOSInt dispHeight, UOSInt storeWidth, UOSI
 		}
 		else if (bpp <= 8)
 		{
-			UOSInt palSize = (UOSInt)(4 << bpp);
+			UOSInt palSize = ((UOSInt)4 << bpp);
 			this->pal = MemAlloc(UInt8, palSize);
 		}
 	}
@@ -242,11 +242,11 @@ Media::StaticImage *Media::Image::CreateStaticImage()
 		UOSInt size;
 		if (this->info->pf == Media::PF_PAL_1_A1 || this->info->pf == Media::PF_PAL_2_A1 || this->info->pf == Media::PF_PAL_4_A1 || this->info->pf == Media::PF_PAL_8_A1)
 		{
-			size = (UOSInt)(4 << (this->info->storeBPP - 1));
+			size = ((UOSInt)4 << (this->info->storeBPP - 1));
 		}
 		else
 		{
-			size = (UOSInt)(4 << this->info->storeBPP);
+			size = ((UOSInt)4 << this->info->storeBPP);
 		}
 		MemCopyNO(outImg->pal, this->pal, size);
 	}

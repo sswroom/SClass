@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "IO/DebugWriter.h"
+#include "IO/OS.h"
 #include "Sync/Thread.h"
 #include "Text/StringBuilderUTF8.h"
 #include "Win32/WindowsBTScanner.h"
@@ -23,20 +24,34 @@ void Win32::WindowsBTScanner::ReceivedHandler(winrt::Windows::Devices::Bluetooth
 	IO::BTScanLog::AddressType addrType;
 	Int8 txPower;
 #if _MSC_VER >= 1920
-	if (args.BluetoothAddressType() == BluetoothAddressType::Public)
+	if (IO::OS::GetBuildNumber() >= 19041)
 	{
-		addrType = IO::BTScanLog::AT_PUBLIC;
-	}
-	else if (args.BluetoothAddressType() == BluetoothAddressType::Random)
-	{
-		addrType = IO::BTScanLog::AT_RANDOM;
+		if (args.BluetoothAddressType() == BluetoothAddressType::Public)
+		{
+			addrType = IO::BTScanLog::AT_PUBLIC;
+		}
+		else if (args.BluetoothAddressType() == BluetoothAddressType::Random)
+		{
+			addrType = IO::BTScanLog::AT_RANDOM;
+		}
+		else
+		{
+			addrType = IO::BTScanLog::AT_UNKNOWN;
+		}
 	}
 	else
 	{
 		addrType = IO::BTScanLog::AT_UNKNOWN;
 	}
 #if _MSC_VER >= 1929
-	txPower = (Int8)args.TransmitPowerLevelInDBm().Value();
+	if (IO::OS::GetBuildNumber() >= 19041 && args.TransmitPowerLevelInDBm())
+	{
+		txPower = (Int8)args.TransmitPowerLevelInDBm().Value();
+	}
+	else
+	{
+		txPower = 0;
+	}
 #else
 	txPower = (Int8)args.TransmitPowerLevelInDBm();
 #endif

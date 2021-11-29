@@ -10,6 +10,7 @@
 
 IO::SensorAccelerometerW::SensorAccelerometerW(void *sensor) : IO::SensorWin(sensor)
 {
+	this->clsData = 0;
 }
 
 IO::SensorAccelerometerW::~SensorAccelerometerW()
@@ -88,7 +89,7 @@ Bool IO::SensorAccelerometerW::ReadAcceleration(Double *x, Double *y, Double *z)
 
 Math::Unit::Acceleration::AccelerationUnit IO::SensorAccelerometerW::GetAccelerationUnit()
 {
-	return Math::Unit::Acceleration::AU_STANDARD_GRAVITY;
+	return Math::Unit::Acceleration::AccelerationUnit::StandardGravity;
 }
 
 IO::SensorAccelerometer *IO::SensorAccelerometerW::GetSensorAccelerator()
@@ -98,5 +99,5 @@ IO::SensorAccelerometer *IO::SensorAccelerometerW::GetSensorAccelerator()
 
 IO::Sensor::SensorType IO::SensorAccelerometerW::GetSensorType()
 {
-	return IO::Sensor::ST_ACCELEROMETER;
+	return IO::Sensor::SensorType::Accelerometer;
 }

@@ -135,7 +135,7 @@ void Media::CS::CSRGB8_RGB8::UpdateRGBTable()
 
 	if (this->srcPal)
 	{
-		CSRGB8_RGB8_UpdateRGBTablePal(this->srcPal, this->destPal, this->rgbTable, (UOSInt)(1 << this->srcNBits));
+		CSRGB8_RGB8_UpdateRGBTablePal(this->srcPal, this->destPal, this->rgbTable, ((UOSInt)1 << this->srcNBits));
 	}
 }
 

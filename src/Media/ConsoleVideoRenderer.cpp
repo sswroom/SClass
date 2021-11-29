@@ -7,7 +7,7 @@ Media::ConsoleVideoRenderer::ConsoleVideoRenderer(Media::MonitorSurfaceMgr *surf
 	NEW_CLASS(this->mut, Sync::Mutex());
 	if (this->surfaceMgr)
 	{
-		this->primarySurface = this->surfaceMgr->CreatePrimarySurface(this->surfaceMgr->GetMonitorHandle(0), 0, Media::RT_NONE);
+		this->primarySurface = this->surfaceMgr->CreatePrimarySurface(this->surfaceMgr->GetMonitorHandle(0), 0, Media::RotateType::None);
 		if (this->primarySurface)
 		{
 			this->UpdateDispInfo(this->primarySurface->info->dispWidth, this->primarySurface->info->dispHeight, this->primarySurface->info->storeBPP, this->primarySurface->info->pf);
@@ -38,7 +38,7 @@ void Media::ConsoleVideoRenderer::SetRotateType(Media::RotateType rotateType)
 		Media::RotateType rtChange = Media::RotateTypeCalc(this->primarySurface->info->rotateType, rotateType);
 		UOSInt tmpV;
 		this->primarySurface->info->rotateType = rotateType;
-		if (rtChange == Media::RT_CW_90 || rtChange == Media::RT_CW_270)
+		if (rtChange == Media::RotateType::CW_90 || rtChange == Media::RotateType::CW_270)
 		{
 			tmpV = this->primarySurface->info->dispWidth;
 			this->primarySurface->info->dispWidth = this->primarySurface->info->dispHeight;

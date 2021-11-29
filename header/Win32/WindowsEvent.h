@@ -6,15 +6,15 @@ namespace Win32
 	class WindowsEvent
 	{
 	public:
-		typedef enum
+		enum class EventType
 		{
-			ET_SUCCESS,
-			ET_AUDIT_FAILURE,
-			ET_AUDIT_SUCCESS,
-			ET_ERROR,
-			ET_INFORMATION,
-			ET_WARNING
-		} EventType;
+			Success,
+			AuditFailure,
+			AuditSuccess,
+			Error,
+			Information,
+			Warning
+		};
 	private:
 		void *hand;
 		const WChar *progName;
@@ -23,7 +23,7 @@ namespace Win32
 		WindowsEvent(const WChar *progName);
 		~WindowsEvent();
 
-		Bool WriteEvent(UInt32 eventCode, EventType evtType, const WChar *evtMessage, const UInt8 *buff, OSInt buffSize);
+		Bool WriteEvent(UInt32 eventCode, EventType evtType, const WChar *evtMessage, const UInt8 *buff, UOSInt buffSize);
 	};
-};
+}
 #endif

@@ -29,11 +29,11 @@ IO::SensorManager::SensorManager()
 	me->mgr = 0;
 	me->accessDenined = false;
 
-	CoInitialize(0);
+	HRESULT hr = CoInitialize(0);
 
 	ISensorManager *pSensorManager = 0;
 
-	HRESULT hr = CoCreateInstance(CLSID_SensorManager, 
+	hr = CoCreateInstance(CLSID_SensorManager, 
 							NULL, CLSCTX_INPROC_SERVER,
 							IID_PPV_ARGS(&pSensorManager));
 
@@ -90,9 +90,9 @@ IO::Sensor::SensorType IO::SensorManager::GetSensorType(UOSInt index)
 {
 	ClassData *me = (ClassData*)this->clsData;
 	if (me->mgr == 0)
-		return IO::Sensor::ST_UNKNOWN;
+		return IO::Sensor::SensorType::Unknown;
 
-	IO::Sensor::SensorType sensorType = IO::Sensor::ST_UNKNOWN;
+	IO::Sensor::SensorType sensorType = IO::Sensor::SensorType::Unknown;
 	ISensorCollection *pSensorColl;
 	HRESULT hr;
 	hr = me->mgr->GetSensorsByCategory(SENSOR_CATEGORY_ALL, &pSensorColl);
@@ -115,19 +115,19 @@ IO::Sensor::SensorType IO::SensorManager::GetSensorType(UOSInt index)
 					{
 						if (sType == SENSOR_TYPE_ACCELEROMETER_3D)
 						{
-							sensorType = IO::Sensor::ST_ACCELEROMETER;
+							sensorType = IO::Sensor::SensorType::Accelerometer;
 						}
 						else if (sType == SENSOR_TYPE_ENVIRONMENTAL_ATMOSPHERIC_PRESSURE)
 						{
-							sensorType = IO::Sensor::ST_PRESSURE;
+							sensorType = IO::Sensor::SensorType::Pressure;
 						}
 						else if (sType == SENSOR_TYPE_COMPASS_3D)
 						{
-							sensorType = IO::Sensor::ST_MAGNETOMETER;
+							sensorType = IO::Sensor::SensorType::Magnetometer;
 						}
 						else if (sType == SENSOR_TYPE_INCLINOMETER_3D)
 						{
-							sensorType = IO::Sensor::ST_ORIENTATION;
+							sensorType = IO::Sensor::SensorType::Orientation;
 						}
 					}
 					pSensor->Release();
@@ -245,7 +245,7 @@ IO::SensorAccelerometer *IO::SensorManager::CreateAccelerometer(UOSInt index)
 
 		if(SUCCEEDED(hr))
 		{
-			if ((OSInt)ulCount > index)
+			if (ulCount > index)
 			{
 				ISensor *pSensor;
 				if (SUCCEEDED(pSensorColl->GetAt((ULONG)index, &pSensor)))

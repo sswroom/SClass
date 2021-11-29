@@ -8,6 +8,7 @@ namespace IO
 	public:
 		static UTF8Char *GetDistro(UTF8Char *sbuff);
 		static UTF8Char *GetVersion(UTF8Char *sbuff);
+		static UOSInt GetBuildNumber();
 	};
 };
 #endif

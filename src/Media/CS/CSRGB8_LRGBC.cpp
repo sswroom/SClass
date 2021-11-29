@@ -122,11 +122,11 @@ void Media::CS::CSRGB8_LRGBC::UpdateRGBTable()
 	{
 		if (this->srcPF == Media::PF_PAL_1_A1 || this->srcPF == Media::PF_PAL_2_A1 || this->srcPF == Media::PF_PAL_4_A1 || this->srcPF == Media::PF_PAL_8_A1)
 		{
-			CSRGB8_LRGBC_UpdateRGBTablePal(this->srcPal, this->destPal, this->rgbTable, (UOSInt)(1 << (this->srcNBits - 1)));
+			CSRGB8_LRGBC_UpdateRGBTablePal(this->srcPal, this->destPal, this->rgbTable, ((UOSInt)1 << (this->srcNBits - 1)));
 		}
 		else
 		{
-			CSRGB8_LRGBC_UpdateRGBTablePal(this->srcPal, this->destPal, this->rgbTable, (UOSInt)(1 << this->srcNBits));
+			CSRGB8_LRGBC_UpdateRGBTablePal(this->srcPal, this->destPal, this->rgbTable, ((UOSInt)1 << this->srcNBits));
 		}
 	}
 }
@@ -152,13 +152,13 @@ Media::CS::CSRGB8_LRGBC::CSRGB8_LRGBC(UOSInt srcNBits, Media::PixelFormat srcPF,
 	}
 	if (this->srcPF == Media::PF_PAL_1 || this->srcPF == Media::PF_PAL_2 || this->srcPF == Media::PF_PAL_4 || this->srcPF == Media::PF_PAL_8 || this->srcPF == Media::PF_PAL_W1 || this->srcPF == Media::PF_PAL_W2 || this->srcPF == Media::PF_PAL_W4 || this->srcPF == Media::PF_PAL_W8)
 	{
-		UOSInt colorCnt = (UOSInt)(1 << this->srcNBits);
+		UOSInt colorCnt = ((UOSInt)1 << this->srcNBits);
 		this->srcPal = MemAlloc(UInt8, colorCnt * 4);
 		this->destPal = MemAlloc(UInt8, colorCnt * 8);
 	}
 	else if (this->srcPF == Media::PF_PAL_1_A1 || this->srcPF == Media::PF_PAL_2_A1 || this->srcPF == Media::PF_PAL_4_A1 || this->srcPF == Media::PF_PAL_8_A1)
 	{
-		UOSInt colorCnt = (UOSInt)(1 << (this->srcNBits - 1));
+		UOSInt colorCnt = ((UOSInt)1 << (this->srcNBits - 1));
 		this->srcPal = MemAlloc(UInt8, colorCnt * 4);
 		this->destPal = MemAlloc(UInt8, colorCnt * 8);
 	}

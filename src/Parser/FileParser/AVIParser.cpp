@@ -482,7 +482,7 @@ IO::ParsedObject *Parser::FileParser::AVIParser::ParseFile(IO::IStreamData *fd, 
 					break;
 				}
 				info.ycOfst = Media::YCOFST_C_CENTER_LEFT;
-				info.rotateType = Media::RT_NONE;
+				info.rotateType = Media::RotateType::None;
 
 				Media::FileVideoSource *vstm;
 				NEW_CLASS(vstm, Media::FileVideoSource(fd, &info, strl[i].strh.dwRate, strl[i].strh.dwScale, false));

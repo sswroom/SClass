@@ -14,5 +14,5 @@ IO::SensorUnknownWin::~SensorUnknownWin()
 
 IO::Sensor::SensorType IO::SensorUnknownWin::GetSensorType()
 {
-	return IO::Sensor::ST_UNKNOWN;
+	return IO::Sensor::SensorType::Unknown;
 }

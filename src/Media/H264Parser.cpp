@@ -297,7 +297,7 @@ Bool Media::H264Parser::ParseVUIParameters(IO::BitReaderMSB *reader, Media::Fram
 		flags->vcl_hrd_parameters_present_flag = vcl_hrd_parameters_present_flag != 0;
 	}
 	info->ycOfst = Media::YCOFST_C_CENTER_LEFT;
-	info->rotateType = Media::RT_NONE;
+	info->rotateType = Media::RotateType::None;
 	return true;
 }
 
@@ -458,12 +458,12 @@ Bool Media::H264Parser::GetFrameInfo(const UInt8 *frame, UOSInt frameSize, Media
 	reader->ReadBits(&temp, 1); //gaps_in_frame_num_value_allowed_flag
 	if (ParseVari(reader, &pic_width_in_mbs_minus1))
 	{
-		frameInfo->storeWidth = (pic_width_in_mbs_minus1 + 1) << 4;
+		frameInfo->storeWidth = ((UOSInt)pic_width_in_mbs_minus1 + 1) << 4;
 	}
 	ParseVari(reader, &pic_height_in_map_units_minus1);
 	if (reader->ReadBits(&frame_mbs_only_flag, 1))
 	{
-		frameInfo->storeHeight = (2 - frame_mbs_only_flag) * (pic_height_in_map_units_minus1 + 1) << 4;
+		frameInfo->storeHeight = (2 - frame_mbs_only_flag) * ((UOSInt)pic_height_in_map_units_minus1 + 1) << 4;
 	}
 	mb_adaptive_frame_field_flag = 0;
 	if (frame_mbs_only_flag == 0)

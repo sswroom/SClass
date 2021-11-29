@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Text/MyString.h"
+#include "Text/MyStringW.h"
 #include "Win32/WindowsEvent.h"
 #include <windows.h>
 
@@ -19,7 +20,7 @@ Win32::WindowsEvent::~WindowsEvent()
 	SDEL_TEXT(this->progName);
 }
 
-Bool Win32::WindowsEvent::WriteEvent(UInt32 eventCode, EventType evtType, const WChar *evtMessage, const UInt8 *buff, OSInt buffSize)
+Bool Win32::WindowsEvent::WriteEvent(UInt32 eventCode, EventType evtType, const WChar *evtMessage, const UInt8 *buff, UOSInt buffSize)
 {
 	if (this->hand == 0)
 		return false;
@@ -30,22 +31,22 @@ Bool Win32::WindowsEvent::WriteEvent(UInt32 eventCode, EventType evtType, const 
 	switch (evtType)
 	{
 	default:
-	case ET_SUCCESS:
+	case EventType::Success:
 		wType = EVENTLOG_SUCCESS;
 		break;
-	case ET_AUDIT_FAILURE:
+	case EventType::AuditFailure:
 		wType = EVENTLOG_AUDIT_FAILURE;
 		break;
-	case ET_AUDIT_SUCCESS:
+	case EventType::AuditSuccess:
 		wType = EVENTLOG_AUDIT_SUCCESS;
 		break;
-	case ET_ERROR:
+	case EventType::Error:
 		wType = EVENTLOG_ERROR_TYPE;
 		break;
-	case ET_INFORMATION:
+	case EventType::Information:
 		wType = EVENTLOG_INFORMATION_TYPE;
 		break;
-	case ET_WARNING:
+	case EventType::Warning:
 		wType = EVENTLOG_WARNING_TYPE;
 		break;
 	}

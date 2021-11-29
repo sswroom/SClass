@@ -267,7 +267,7 @@ Media::MonitorSurface *Media::DDrawManager::CreateSurface(UOSInt width, UOSInt h
 		return 0;
 	}
 	Media::DDrawSurface *retSurface;
-	NEW_CLASS(retSurface, Media::DDrawSurface(this, lpDD, surface, 0, true, Media::RT_NONE));
+	NEW_CLASS(retSurface, Media::DDrawSurface(this, lpDD, surface, 0, true, Media::RotateType::None));
 	return retSurface;
 }
 

@@ -17,7 +17,7 @@ Media::ScreenCapturer::~ScreenCapturer()
 
 Media::StaticImage *Media::ScreenCapturer::CaptureScreen(MonitorHandle *hMon)
 {
-	Media::MonitorSurface *surface = this->surfaceMgr->CreatePrimarySurface(hMon, 0, Media::RT_NONE);
+	Media::MonitorSurface *surface = this->surfaceMgr->CreatePrimarySurface(hMon, 0, Media::RotateType::None);
 	if (surface == 0) return 0;
 	Media::StaticImage *retImg = surface->CreateStaticImage();
 	DEL_CLASS(surface);

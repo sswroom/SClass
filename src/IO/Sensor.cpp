@@ -30,15 +30,15 @@ const UTF8Char *IO::Sensor::GetSensorTypeName(SensorType sensorType)
 {
 	switch (sensorType)
 	{
-	case ST_ACCELEROMETER:
+	case SensorType::Accelerometer:
 		return (const UTF8Char*)"Accelerometer";
-	case ST_PRESSURE:
+	case SensorType::Pressure:
 		return (const UTF8Char*)"Pressure";
-	case ST_MAGNETOMETER:
+	case SensorType::Magnetometer:
 		return (const UTF8Char*)"Magnetometer";
-	case ST_ORIENTATION:
+	case SensorType::Orientation:
 		return (const UTF8Char*)"Orientation";
-	case ST_UNKNOWN:
+	case SensorType::Unknown:
 	default:
 		return (const UTF8Char*)"Unknown";
 	}

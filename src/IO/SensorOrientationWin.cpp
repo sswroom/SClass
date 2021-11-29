@@ -98,5 +98,5 @@ IO::SensorOrientation *IO::SensorOrientationWin::GetSensorOrientation()
 
 IO::Sensor::SensorType IO::SensorOrientationWin::GetSensorType()
 {
-	return IO::Sensor::ST_ORIENTATION;
+	return IO::Sensor::SensorType::Orientation;
 }

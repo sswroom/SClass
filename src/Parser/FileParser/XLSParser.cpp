@@ -47,7 +47,7 @@ IO::ParsedObject *Parser::FileParser::XLSParser::ParseFile(IO::IStreamData *fd, 
 	UOSInt i;
 	UOSInt j;
 	UInt8 *fat;
-	UOSInt sectorSize = (UOSInt)(1 << (ReadUInt16(&buff[30])));
+	UOSInt sectorSize = ((UOSInt)1 << (ReadUInt16(&buff[30])));
 //	Int32 dirCnt = ReadInt32(&buff[40]);
 	UInt32 fatCnt = ReadUInt32(&buff[44]);
 	UInt32 dirSect = ReadUInt32(&buff[48]);

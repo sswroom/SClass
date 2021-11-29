@@ -96,7 +96,7 @@ Single Data::VariItem::GetAsF32()
 	case ItemType::U64:
 		return (Single)this->val.u64;
 	case ItemType::BOOL:
-		return this->val.boolean?1:0;
+		return (Single)(this->val.boolean?1:0);
 	case ItemType::Str:
 		return (Single)Text::StrToDouble(this->val.str);
 	case ItemType::Date:

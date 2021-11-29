@@ -40,7 +40,7 @@ void Media::FrameInfo::Clear()
 	this->atype = Media::AT_NO_ALPHA;
 	this->yuvType = Media::ColorProfile::YUVT_UNKNOWN;
 	this->ycOfst = Media::YCOFST_C_CENTER_LEFT;
-	this->rotateType = Media::RT_NONE;
+	this->rotateType = Media::RotateType::None;
 }
 
 void Media::FrameInfo::Set(const FrameInfo *info)
@@ -279,56 +279,56 @@ Media::RotateType Media::RotateTypeCalc(RotateType srcType, RotateType destType)
 {
 	if (srcType == destType)
 	{
-		return RT_NONE;
+		return RotateType::None;
 	}
 	switch (srcType)
 	{
-	case RT_NONE:
+	case RotateType::None:
 		return destType;
-	case RT_CW_90:
+	case RotateType::CW_90:
 		switch (destType)
 		{
-		case RT_NONE:
-			return RT_CW_270;
-		case RT_CW_90:
-			return RT_NONE;
-		case RT_CW_180:
-			return RT_CW_90;
-		case RT_CW_270:
-			return RT_CW_180;
+		case RotateType::None:
+			return RotateType::CW_270;
+		case RotateType::CW_90:
+			return RotateType::None;
+		case RotateType::CW_180:
+			return RotateType::CW_90;
+		case RotateType::CW_270:
+			return RotateType::CW_180;
 		default:
-			return RT_NONE;
+			return RotateType::None;
 		}
-	case RT_CW_180:
+	case RotateType::CW_180:
 		switch (destType)
 		{
-		case RT_NONE:
-			return RT_CW_180;
-		case RT_CW_90:
-			return RT_CW_270;
-		case RT_CW_180:
-			return RT_NONE;
-		case RT_CW_270:
-			return RT_CW_90;
+		case RotateType::None:
+			return RotateType::CW_180;
+		case RotateType::CW_90:
+			return RotateType::CW_270;
+		case RotateType::CW_180:
+			return RotateType::None;
+		case RotateType::CW_270:
+			return RotateType::CW_90;
 		default:
-			return RT_NONE;
+			return RotateType::None;
 		}
-	case RT_CW_270:
+	case RotateType::CW_270:
 		switch (destType)
 		{
-		case RT_NONE:
-			return RT_CW_90;
-		case RT_CW_90:
-			return RT_CW_180;
-		case RT_CW_180:
-			return RT_CW_270;
-		case RT_CW_270:
-			return RT_NONE;
+		case RotateType::None:
+			return RotateType::CW_90;
+		case RotateType::CW_90:
+			return RotateType::CW_180;
+		case RotateType::CW_180:
+			return RotateType::CW_270;
+		case RotateType::CW_270:
+			return RotateType::None;
 		default:
-			return RT_NONE;
+			return RotateType::None;
 		}
 	default:
-		return RT_NONE;
+		return RotateType::None;
 	}
 }
 
@@ -336,51 +336,51 @@ Media::RotateType Media::RotateTypeCombine(RotateType rtype1, RotateType rtype2)
 {
 	switch (rtype1)
 	{
-	case RT_NONE:
+	case RotateType::None:
 		return rtype2;
-	case RT_CW_90:
+	case RotateType::CW_90:
 		switch (rtype2)
 		{
-		case RT_NONE:
-			return RT_CW_90;
-		case RT_CW_90:
-			return RT_CW_180;
-		case RT_CW_180:
-			return RT_CW_270;
-		case RT_CW_270:
-			return RT_NONE;
+		case RotateType::None:
+			return RotateType::CW_90;
+		case RotateType::CW_90:
+			return RotateType::CW_180;
+		case RotateType::CW_180:
+			return RotateType::CW_270;
+		case RotateType::CW_270:
+			return RotateType::None;
 		default:
-			return RT_NONE;
+			return RotateType::None;
 		}
-	case RT_CW_180:
+	case RotateType::CW_180:
 		switch (rtype2)
 		{
-		case RT_NONE:
-			return RT_CW_180;
-		case RT_CW_90:
-			return RT_CW_270;
-		case RT_CW_180:
-			return RT_NONE;
-		case RT_CW_270:
-			return RT_CW_90;
+		case RotateType::None:
+			return RotateType::CW_180;
+		case RotateType::CW_90:
+			return RotateType::CW_270;
+		case RotateType::CW_180:
+			return RotateType::None;
+		case RotateType::CW_270:
+			return RotateType::CW_90;
 		default:
-			return RT_NONE;
+			return RotateType::None;
 		}
-	case RT_CW_270:
+	case RotateType::CW_270:
 		switch (rtype2)
 		{
-		case RT_NONE:
-			return RT_CW_270;
-		case RT_CW_90:
-			return RT_NONE;
-		case RT_CW_180:
-			return RT_CW_90;
-		case RT_CW_270:
-			return RT_CW_180;
+		case RotateType::None:
+			return RotateType::CW_270;
+		case RotateType::CW_90:
+			return RotateType::None;
+		case RotateType::CW_180:
+			return RotateType::CW_90;
+		case RotateType::CW_270:
+			return RotateType::CW_180;
 		default:
-			return RT_NONE;
+			return RotateType::None;
 		}
 	default:
-		return RT_NONE;
+		return RotateType::None;
 	}
 }

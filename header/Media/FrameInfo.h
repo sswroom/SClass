@@ -6,12 +6,12 @@
 
 namespace Media
 {
-	typedef enum
+	enum class FieldType
 	{
-		FIELD_TYPE_FRAME,
-		FIELD_TYPE_INTERLACED_TOP,
-		FIELD_TYPE_INTERLACED_BOTTOM
-	} FieldType;
+		Frame,
+		InterlacedTop,
+		InterlacedBottom
+	};
 
 	typedef enum
 	{
@@ -41,12 +41,12 @@ namespace Media
 		YCOFST_C_CENTER_CENTER = 3
 	} YCOffset;
 
-	enum RotateType
+	enum class RotateType
 	{
-		RT_NONE,
-		RT_CW_90,
-		RT_CW_180,
-		RT_CW_270
+		None,
+		CW_90,
+		CW_180,
+		CW_270
 	};
 
 	typedef enum

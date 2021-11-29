@@ -8,9 +8,9 @@
 
 void Data::Compress::LZWDecStream::ResetTable()
 {
-	this->currTableSize = (UOSInt)(1 << this->minCodeSize) + 2;
+	this->currTableSize = ((UOSInt)1 << this->minCodeSize) + 2;
 	this->currCodeSize = this->minCodeSize + 1;
-	this->nextTableSize = (UOSInt)(1 << (this->currCodeSize));
+	this->nextTableSize = ((UOSInt)1 << (this->currCodeSize));
 	*(Int32*)&this->lzwTable[this->resetCode * 4] = 0;
 	*(Int32*)&this->lzwTable[this->endCode * 4] = 0;
 
@@ -31,7 +31,7 @@ void Data::Compress::LZWDecStream::ResetTable()
 
 Data::Compress::LZWDecStream::LZWDecStream(IO::Stream *stm, Bool lsb, UOSInt minCodeSize, UOSInt maxCodeSize, UOSInt codeSizeAdj) : IO::Stream(stm->GetSourceNameObj())
 {
-	this->tableSize = (UOSInt)(1 << maxCodeSize);
+	this->tableSize = ((UOSInt)1 << maxCodeSize);
 	this->lzwTable = MemAlloc(UInt8, this->tableSize * 4);
 	this->minCodeSize = minCodeSize;
 	this->maxCodeSize = maxCodeSize;
@@ -54,7 +54,7 @@ Data::Compress::LZWDecStream::LZWDecStream(IO::Stream *stm, Bool lsb, UOSInt min
 
 Data::Compress::LZWDecStream::LZWDecStream(IO::BitReader *reader, Bool toRelease, UOSInt minCodeSize, UOSInt maxCodeSize, UOSInt codeSizeAdj) : IO::Stream((const UTF8Char*)"LZWStream")
 {
-	this->tableSize = (UOSInt)(1 << maxCodeSize);
+	this->tableSize = ((UOSInt)1 << maxCodeSize);
 	this->lzwTable = MemAlloc(UInt8, this->tableSize * 4);
 	this->minCodeSize = minCodeSize;
 	this->maxCodeSize = maxCodeSize;
@@ -161,7 +161,7 @@ UOSInt Data::Compress::LZWDecStream::Read(UInt8 *buff, UOSInt size)
 						if (this->currCodeSize < this->maxCodeSize)
 						{
 							this->currCodeSize = this->currCodeSize + 1;
-							this->nextTableSize = (UOSInt)(1 << this->currCodeSize);
+							this->nextTableSize = ((UOSInt)1 << this->currCodeSize);
 						}
 					}
 	

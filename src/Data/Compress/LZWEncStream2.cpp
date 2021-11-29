@@ -26,7 +26,7 @@ void Data::Compress::LZWEncStream2::ResetTable()
 
 Data::Compress::LZWEncStream2::LZWEncStream2(IO::Stream *stm, Bool lsb, UOSInt minCodeSize, UOSInt maxCodeSize, OSInt codeSizeAdj) : IO::Stream(stm->GetSourceNameObj())
 {
-	this->tableSize = (UOSInt)(1 << maxCodeSize);
+	this->tableSize = ((UOSInt)1 << maxCodeSize);
 	this->lzwTable = MemAllocA(UInt16, this->tableSize * 512);
 	this->minCodeSize = minCodeSize;
 	this->maxCodeSize = maxCodeSize;

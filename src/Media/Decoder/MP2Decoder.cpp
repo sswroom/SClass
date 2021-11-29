@@ -528,9 +528,15 @@ Media::Decoder::MP2Decoder::MP2Decoder(Media::IAudioSource *sourceAudio)
 	this->context = 0;
 	this->totalReadSize = 0;
 	sourceAudio->GetFormat(&fmt);
-	if (fmt.formatId != 0x50)
-		return;
-	this->nChannel = fmt.nChannels;
+    if (fmt.formatId != 0x50)
+    {
+        this->nChannel = 0;
+        this->sourceAudio = 0;
+        this->context = 0;
+        this->blkSize = 0;
+        return;
+    }
+    this->nChannel = fmt.nChannels;
 	this->sourceAudio = sourceAudio;
 	this->context = MemAlloc(kjmp2_context_t, 1);
 	this->blkSize = this->sourceAudio->GetMinBlockSize();

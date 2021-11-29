@@ -25,7 +25,7 @@ void SvcReportEvent(const WChar *svcName, const WChar *szFunction)
 	Win32::WindowsEvent evt(svcName);
 	WChar sbuff[256];
 	Text::StrHexVal32(Text::StrConcat(Text::StrConcat(sbuff, szFunction), L" failed with "), GetLastError());
-	evt.WriteEvent(0xC0020001L, Win32::WindowsEvent::ET_ERROR, sbuff, 0, 0);
+	evt.WriteEvent(0xC0020001L, Win32::WindowsEvent::EventType::Error, sbuff, 0, 0);
 }
 
 VOID ReportSvcStatus( DWORD dwCurrentState,
@@ -142,7 +142,8 @@ VOID WINAPI SvcMain( DWORD dwArgc, LPWSTR *lpszArgv )
 	MemFree(progCtrl);
 	Core::CoreEnd();
 }
-void main(int argc, char *argv[]) 
+
+int main(int argc, char *argv[]) 
 { 
 	WChar svcDesc[512];
 	UTF8Char tmpStr[512];
@@ -154,9 +155,9 @@ void main(int argc, char *argv[])
 		{
 			Int32 lang = ver->GetFirstLang();
 			ver->GetInternalName(lang, tmpStr);
-			Text::StrUTF8_WChar(svcName, tmpStr, -1, 0);
+			Text::StrUTF8_WChar(svcName, tmpStr, 0);
 			ver->GetFileDescription(lang, tmpStr);
-			Text::StrUTF8_WChar(svcDesc, tmpStr, -1, 0);
+			Text::StrUTF8_WChar(svcDesc, tmpStr, 0);
 			DEL_CLASS(ver);
 			found = true;
 		}
@@ -165,18 +166,18 @@ void main(int argc, char *argv[])
 	if (!found)
 	{
 		printf("Version Information not found\n");
-		return;
+		return 1;
 	}
 
 	if(argc == 2 && Text::StrCompare(argv[1], "install") == 0)
 	{
 		SvcInstall(svcName, svcDesc);
-		return;
+		return 0;
 	}
 	else if (argc == 2 && Text::StrCompare(argv[1], "uninstall") == 0)
 	{
 		SvcUninstall(svcName);
-		return;
+		return 0;
 	}
 
 	SERVICE_TABLE_ENTRYW DispatchTable[] = 
@@ -190,17 +191,11 @@ void main(int argc, char *argv[])
 		Core::CoreStart();
 		SvcReportEvent(svcName, L"StartServiceCtrlDispatcher");
 		Core::CoreEnd();
-	} 
+	}
+	return 0;
 } 
 
 UI::GUICore *Core::IProgControl::CreateGUICore(Core::IProgControl *progCtrl)
 {
 	return 0;
-}
-
-Media::DrawEngine *Core::IProgControl::CreateDrawEngine(Core::IProgControl *progCtrl)
-{
-	Media::GDIEngineC *deng;
-	NEW_CLASS(deng, Media::GDIEngineC());
-	return deng;
 }

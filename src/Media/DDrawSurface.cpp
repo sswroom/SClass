@@ -53,7 +53,7 @@ Media::DDrawSurface::DDrawSurface(DDrawManager *mgr, void *lpDD, void *surface, 
 	this->info->hdpi = mgr->GetMonitorDPI(hMon);;
 	this->info->vdpi = this->info->hdpi;
 	this->info->color->Set(mgr->GetMonProfile(hMon));
-	this->info->rotateType = Media::RT_NONE; //rotateType;
+	this->info->rotateType = Media::RotateType::None; //rotateType;
 }
 
 Media::DDrawSurface::~DDrawSurface()
@@ -94,7 +94,7 @@ void Media::DDrawSurface::GetImageData(UInt8 *destBuff, OSInt left, OSInt top, U
 	}
 	if (res == DD_OK)
 	{
-		if (left == 0 && top == 0 && width == ddsd.dwWidth && height == ddsd.dwHeight && ddsd.lPitch == (OSInt)destBpl && !upsideDown && ddsd.dwWidth * (ddsd.ddpfPixelFormat.dwRGBBitCount >> 3) == destBpl)
+		if (left == 0 && top == 0 && width == ddsd.dwWidth && height == ddsd.dwHeight && ddsd.lPitch == (OSInt)destBpl && !upsideDown && ddsd.dwWidth * ((UOSInt)ddsd.ddpfPixelFormat.dwRGBBitCount >> 3) == destBpl)
 		{
 			MemCopyANC(destBuff, ddsd.lpSurface, destBpl * height);
 		}
@@ -146,8 +146,8 @@ Bool Media::DDrawSurface::DrawFromSurface(Media::MonitorSurface *surface, Bool w
 		GetClientRect(hWnd, &rc);
 		ClientToScreen(hWnd, (POINT*)&rc.left);
 		ClientToScreen(hWnd, (POINT*)&rc.right);
-		drawWidth = (UInt32)(rc.right - rc.left);
-		drawHeight = (UInt32)(rc.bottom - rc.top);
+		drawWidth = ((OSInt)rc.right - rc.left);
+		drawHeight = ((OSInt)rc.bottom - rc.top);
 
 		MONITORINFOEXW info;
 		info.cbSize = sizeof(info);
@@ -202,11 +202,11 @@ Bool Media::DDrawSurface::DrawFromSurface(Media::MonitorSurface *surface, Bool w
 					drawY = -rc.top;
 					rc.top = 0;
 				}
-				drawWidth = rc.right - rc.left;
-				drawHeight = rc.bottom - rc.top;
+				drawWidth = (OSInt)rc.right - rc.left;
+				drawHeight = (OSInt)rc.bottom - rc.top;
 				if (drawWidth > 0 && drawHeight > 0)
 				{
-					surface->GetImageData((UInt8*)ddsd.lpSurface + rc.top * ddsd.lPitch + rc.left * ((OSInt)this->info->storeBPP >> 3), drawX, drawY, (UOSInt)drawWidth, (UOSInt)drawHeight, (UInt32)ddsd.lPitch, false);
+					surface->GetImageData((UInt8*)ddsd.lpSurface + (OSInt)rc.top * ddsd.lPitch + rc.left * ((OSInt)this->info->storeBPP >> 3), drawX, drawY, (UOSInt)drawWidth, (UOSInt)drawHeight, (UInt32)ddsd.lPitch, false);
 				}
 			}
 			else
@@ -233,8 +233,8 @@ Bool Media::DDrawSurface::DrawFromMem(UInt8 *buff, OSInt lineAdd, OSInt destX, O
 		GetClientRect(hWnd, &rc);
 		ClientToScreen(hWnd, (POINT*)&rc.left);
 		ClientToScreen(hWnd, (POINT*)&rc.right);
-		drawWidth = (UInt32)(rc.right - rc.left);
-		drawHeight = (UInt32)(rc.bottom - rc.top);
+		drawWidth = ((OSInt)rc.right - rc.left);
+		drawHeight = ((OSInt)rc.bottom - rc.top);
 
 		MONITORINFOEXW info;
 		info.cbSize = sizeof(info);
@@ -304,8 +304,8 @@ Bool Media::DDrawSurface::DrawFromMem(UInt8 *buff, OSInt lineAdd, OSInt destX, O
 			drawY += -rc.top;
 			rc.top = 0;
 		}
-		drawWidth = rc.right - rc.left;
-		drawHeight = rc.bottom - rc.top;
+		drawWidth = (OSInt)rc.right - rc.left;
+		drawHeight = (OSInt)rc.bottom - rc.top;
 		if (destX + (OSInt)buffW > (OSInt)drawWidth)
 		{
 			buffW = (UOSInt)(drawWidth - destX);
@@ -324,7 +324,7 @@ Bool Media::DDrawSurface::DrawFromMem(UInt8 *buff, OSInt lineAdd, OSInt destX, O
 			{
 				if (destY > 0)
 				{
-					ImageUtil_ImageColorFill32((UInt8*)ddsd.lpSurface + rc.top * ddsd.lPitch + rc.left * ((OSInt)this->info->storeBPP >> 3), (UOSInt)drawWidth, (UOSInt)destY, (UInt32)ddsd.lPitch, 0);
+					ImageUtil_ImageColorFill32((UInt8*)ddsd.lpSurface + (OSInt)rc.top * ddsd.lPitch + rc.left * ((OSInt)this->info->storeBPP >> 3), (UOSInt)drawWidth, (UOSInt)destY, (UInt32)ddsd.lPitch, 0);
 				}
 				if (destY + (OSInt)buffH < (OSInt)drawHeight)
 				{
@@ -342,7 +342,7 @@ Bool Media::DDrawSurface::DrawFromMem(UInt8 *buff, OSInt lineAdd, OSInt destX, O
 		}
 		else if (clearScn)
 		{
-			ImageUtil_ImageColorFill32((UInt8*)ddsd.lpSurface + rc.top * ddsd.lPitch + rc.left * ((OSInt)this->info->storeBPP >> 3), (UOSInt)drawWidth, (UOSInt)drawHeight, (UInt32)ddsd.lPitch, 0);
+			ImageUtil_ImageColorFill32((UInt8*)ddsd.lpSurface + (OSInt)rc.top * ddsd.lPitch + rc.left * ((OSInt)this->info->storeBPP >> 3), (UOSInt)drawWidth, (UOSInt)drawHeight, (UInt32)ddsd.lPitch, 0);
 		}
 
 		this->clsData->surface->Unlock(0);
