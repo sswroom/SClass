@@ -53,12 +53,13 @@ Bool Net::WebServer::HTTPServerUtil::MIMEToCompress(const UTF8Char *umime)
 	return false;
 }
 
-void Net::WebServer::HTTPServerUtil::SendContent(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *mime, UInt64 contLeng, IO::Stream *fs)
+Bool Net::WebServer::HTTPServerUtil::SendContent(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *mime, UInt64 contLeng, IO::Stream *fs)
 {
 	UOSInt i;
 	UOSInt j;
 	UInt8 compBuff[BUFFSIZE];
 	Bool contSent = false;
+	Bool succ = true;
 	if (contLeng > 1024)
 	{
 		Bool needComp = MIMEToCompress(mime);
@@ -89,20 +90,20 @@ void Net::WebServer::HTTPServerUtil::SendContent(Net::WebServer::IWebRequest *re
 						compBuff[7] = 0;
 						compBuff[8] = 0;
 						compBuff[9] = 0;
-						resp->Write(compBuff, 8);
+						succ = (resp->Write(compBuff, 8) == 8);
 
 						Crypto::Hash::CRC32R crc;
 						Data::Compress::DeflateStream dstm(fs, contLeng, &crc, true);
 						UOSInt readSize;
 						while ((readSize = dstm.Read(compBuff, BUFFSIZE)) != 0)
 						{
-							resp->Write(compBuff, readSize);
+							succ = succ && (resp->Write(compBuff, readSize) == readSize);
 						}
 
 						crc.GetValue(&compBuff[8]);
 						WriteInt32(&compBuff[0], ReadMInt32(&compBuff[8]));
 						WriteInt32(&compBuff[4], (Int32)contLeng);
-						resp->Write(compBuff, 8);
+						succ = succ && (resp->Write(compBuff, 8) == 8);
 						resp->ShutdownSend();
 
 						contSent = true;
@@ -119,7 +120,7 @@ void Net::WebServer::HTTPServerUtil::SendContent(Net::WebServer::IWebRequest *re
 						UOSInt readSize;
 						while ((readSize = dstm.Read(compBuff, BUFFSIZE)) != 0)
 						{
-							resp->Write(compBuff, readSize);
+							succ = succ && (resp->Write(compBuff, readSize) == readSize);
 						}
 
 						resp->ShutdownSend();
@@ -144,17 +145,26 @@ void Net::WebServer::HTTPServerUtil::SendContent(Net::WebServer::IWebRequest *re
 			}
 			writeSize = resp->Write(compBuff, readSize);
 			if (writeSize != readSize)
+			{
+				succ = false;
 				break;
+			}
 			contLeng -= readSize;
 		}
+		if (contLeng != 0)
+		{
+			succ = false;
+		}
 	}
+	return succ;
 }
 
-void Net::WebServer::HTTPServerUtil::SendContent(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *mime, UInt64 contLeng, const UInt8 *buff)
+Bool Net::WebServer::HTTPServerUtil::SendContent(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *mime, UInt64 contLeng, const UInt8 *buff)
 {
 	UOSInt i;
 	UOSInt j;
 	UInt8 compBuff[BUFFSIZE];
+	Bool succ = true;
 	Bool contSent = false;
 	if (contLeng > 1024)
 	{
@@ -182,7 +192,7 @@ void Net::WebServer::HTTPServerUtil::SendContent(Net::WebServer::IWebRequest *re
 					compBuff[6] = 0;
 					compBuff[7] = 0;
 					compBuff[8] = 0;
-					resp->Write(compBuff, 8);
+					succ = (resp->Write(compBuff, 8) == 8);
 
 					Crypto::Hash::CRC32R crc;
 					crc.Calc(buff, (UOSInt)contLeng);
@@ -192,12 +202,12 @@ void Net::WebServer::HTTPServerUtil::SendContent(Net::WebServer::IWebRequest *re
 					UOSInt readSize;
 					while ((readSize = dstm.Read(compBuff, BUFFSIZE)) != 0)
 					{
-						resp->Write(compBuff, readSize);
+						succ = succ && (resp->Write(compBuff, readSize) == readSize);
 					}
 					crc.GetValue(&compBuff[8]);
 					WriteInt32(&compBuff[0], ReadMInt32(&compBuff[8]));
 					WriteInt32(&compBuff[4], (Int32)contLeng);
-					resp->Write(compBuff, 8);
+					succ = succ && (resp->Write(compBuff, 8) == 8);
 					resp->ShutdownSend();
 					contSent = true;
 					break;
@@ -213,7 +223,7 @@ void Net::WebServer::HTTPServerUtil::SendContent(Net::WebServer::IWebRequest *re
 						UOSInt readSize;
 						while ((readSize = dstm.Read(compBuff, BUFFSIZE)) != 0)
 						{
-							resp->Write(compBuff, readSize);
+							succ = succ && (resp->Write(compBuff, readSize) == readSize);
 						}
 						resp->ShutdownSend();
 						contSent = true;
@@ -227,8 +237,9 @@ void Net::WebServer::HTTPServerUtil::SendContent(Net::WebServer::IWebRequest *re
 	if (!contSent)
 	{
 		resp->AddContentLength(contLeng);
-		resp->Write(buff, (UOSInt)contLeng);
+		succ = (resp->Write(buff, (UOSInt)contLeng) == contLeng);
 	}
+	return succ;
 }
 
 Bool Net::WebServer::HTTPServerUtil::ResponseFile(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *fileName, OSInt cacheAge)
