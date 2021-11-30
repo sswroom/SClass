@@ -10,9 +10,10 @@
 #include "Text/UTF8Writer.h"
 #include "Text/TextEnc/FormEncoding.h"
 
-Net::WebServiceClient::WebServiceClient(Net::SocketFactory *sockf, const UTF8Char *serviceAddr, const UTF8Char *serviceName, const UTF8Char *targetNS)
+Net::WebServiceClient::WebServiceClient(Net::SocketFactory *sockf, Net::SSLEngine *ssl, const UTF8Char *serviceAddr, const UTF8Char *serviceName, const UTF8Char *targetNS)
 {
 	this->sockf = sockf;
+	this->ssl = ssl;
 	this->serviceAddr = Text::StrCopyNew(serviceAddr);
 	this->serviceName = Text::StrCopyNew(serviceName);
 	this->targetNS = Text::StrCopyNew(targetNS);
@@ -123,7 +124,7 @@ Bool Net::WebServiceClient::Request(RequestType rt)
 		writer->Write((const UTF8Char*)"</soap:Envelope>");
 		DEL_CLASS(writer);
 
-		cli = Net::HTTPClient::CreateConnect(sockf, this->serviceAddr, "POST", false);
+		cli = Net::HTTPClient::CreateConnect(sockf, this->ssl, this->serviceAddr, "POST", false);
 		if (this->soapAction == 0)
 		{
 			cli->AddHeader((const UTF8Char*)"SOAPAction", (const UTF8Char*)"\"\"");
@@ -276,7 +277,7 @@ Bool Net::WebServiceClient::Request(RequestType rt)
 		writer->Write((const UTF8Char*)"</soap12:Envelope>");
 		DEL_CLASS(writer);
 
-		cli = Net::HTTPClient::CreateConnect(sockf, this->serviceAddr, "POST", false);
+		cli = Net::HTTPClient::CreateConnect(sockf, this->ssl, this->serviceAddr, "POST", false);
 		cli->AddHeader((const UTF8Char*)"Content-Type", (const UTF8Char*)"application/soap+xml; charset=utf-8");
 		buff = mstm->GetBuff(&i);
 		Text::StrOSInt(sbuff, i);

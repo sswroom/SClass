@@ -14,7 +14,7 @@ namespace Math
 		Double arcAngle2;
 		
 	public:
-		PieArea(Double cx, Double cy, Double r, Double arcAngle1, Double arcAngle2);
+		PieArea(UInt32 srid, Double cx, Double cy, Double r, Double arcAngle1, Double arcAngle2);
 		virtual ~PieArea();
 
 		virtual VectorType GetVectorType();
@@ -25,6 +25,7 @@ namespace Math
 		virtual Bool JoinVector(Math::Vector2D *vec);
 		virtual Bool Support3D();
 		virtual void ConvCSys(Math::CoordinateSystem *srcCSys, Math::CoordinateSystem *destCSys);
+		virtual Bool Equals(Vector2D *vec);
 
 		Double GetCX();
 		Double GetCY();

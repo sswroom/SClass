@@ -355,9 +355,9 @@ void Text::MailCreator::SetContentHTML(const WChar *content, const UTF8Char *htm
 {
 	Text::IMIMEObj *obj;
 	OSInt strLen = Text::StrCharCnt(content);
-	OSInt buffSize = Text::StrWChar_UTF8Cnt(content, strLen);
+	OSInt buffSize = Text::StrWChar_UTF8CntC(content, strLen);
 	UInt8 *buff = MemAlloc(UInt8, buffSize + 1);
-	Text::StrWChar_UTF8(buff, content, strLen);
+	Text::StrWChar_UTF8C(buff, content, strLen);
 	obj = ParseContentHTML(buff, buffSize, 65001, htmlPath);
 	MemFree(buff);
 	if (obj)
@@ -367,7 +367,7 @@ void Text::MailCreator::SetContentHTML(const WChar *content, const UTF8Char *htm
 	}
 }
 
-void Text::MailCreator::SetContentText(const WChar *content, Int32 codePage)
+void Text::MailCreator::SetContentText(const WChar *content, UInt32 codePage)
 {
 	Text::MIMEObj::TextMIMEObj *obj;
 	NEW_CLASS(obj, Text::MIMEObj::TextMIMEObj(content, codePage));

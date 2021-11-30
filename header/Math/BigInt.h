@@ -13,7 +13,7 @@ namespace Math
 
 	public:
 		BigInt(Int32 valSize);
-		BigInt(Int32 valSize, const WChar *val);
+		BigInt(Int32 valSize, const UTF8Char *val);
 		BigInt(Int32 valSize, UInt8 *val);
 		~BigInt();
 
@@ -27,7 +27,7 @@ namespace Math
 		Bool EqualsToUI32(UInt32 val);
 		Bool EqualsToI32(Int32 val);
 		void AssignI32(Int32 val);
-		void AssignStr(const WChar *val);
+		void AssignStr(const UTF8Char *val);
 		void AssignBI(const BigInt *val);
 		void Neg();
 		void AndBI(const BigInt *val);
@@ -38,7 +38,7 @@ namespace Math
 		UInt32 DivideBy(UInt32 val); //return remainder
 
 		Int32 operator =(Int32 val);
-		BigInt *operator =(const WChar *val);
+		BigInt *operator =(const UTF8Char *val);
 		BigInt *operator =(const BigInt *val);
 		BigInt *operator +=(BigInt *val);
 		BigInt *operator ^=(const BigInt *val);
@@ -48,9 +48,9 @@ namespace Math
 		BigInt *operator /=(UInt32 val);
 
 
-		WChar *ToString(WChar *buff);
-		WChar *ToHex(WChar *buff);
-		WChar *ToByteStr(WChar *buff);
+		UTF8Char *ToString(UTF8Char *buff);
+		UTF8Char *ToHex(UTF8Char *buff);
+		UTF8Char *ToByteStr(UTF8Char *buff);
 	};
 };
 #endif

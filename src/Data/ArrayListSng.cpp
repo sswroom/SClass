@@ -16,7 +16,7 @@ Data::ArrayList<Single> *Data::ArrayListSng::Clone()
 {
 	Data::ArrayListSng *newArr;
 	NEW_CLASS(newArr, Data::ArrayListSng(this->capacity));
-	newArr->AddRange(this);
+	newArr->AddAll(this);
 	return newArr;
 }
 

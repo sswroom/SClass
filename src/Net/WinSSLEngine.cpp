@@ -57,9 +57,15 @@ UInt32 WinSSLEngine_GetProtocols(Net::SSLEngine::Method method, Bool server)
 		case Net::SSLEngine::Method::DTLSV1:
 			return SP_PROT_DTLS1_0_SERVER;
 		case Net::SSLEngine::Method::DTLSV1_2:
+#if defined(SP_PROT_DTLS1_2_SERVER)
 			return SP_PROT_DTLS1_2_SERVER;
 		default:
 			return SP_PROT_TLS1_0_SERVER || SP_PROT_TLS1_1_SERVER || SP_PROT_TLS1_2_SERVER || SP_PROT_TLS1_3_SERVER;
+#else
+			return SP_PROT_TLS1_2_SERVER;
+		default:
+			return SP_PROT_TLS1_0_SERVER || SP_PROT_TLS1_1_SERVER || SP_PROT_TLS1_2_SERVER;
+#endif
 		#else
 		case Net::SSLEngine::Method::TLS:
 			return SP_PROT_TLS1;
@@ -99,12 +105,19 @@ UInt32 WinSSLEngine_GetProtocols(Net::SSLEngine::Method method, Bool server)
 			return SP_PROT_TLS1_1_CLIENT;
 		case Net::SSLEngine::Method::TLSV1_2:
 			return SP_PROT_TLS1_2_CLIENT;
-		case Net::SSLEngine::Method::DTLS:
-			return SP_PROT_DTLS1_2_CLIENT;
 		case Net::SSLEngine::Method::DTLSV1:
 			return SP_PROT_DTLS1_0_CLIENT;
+#if defined(SP_PROT_DTLS1_2_CLIENT)
+		case Net::SSLEngine::Method::DTLS:
+			return SP_PROT_DTLS1_2_CLIENT;
 		case Net::SSLEngine::Method::DTLSV1_2:
 			return SP_PROT_DTLS1_2_CLIENT;
+#else
+		case Net::SSLEngine::Method::DTLS:
+			return SP_PROT_TLS1_2_CLIENT;
+		case Net::SSLEngine::Method::DTLSV1_2:
+			return SP_PROT_TLS1_2_CLIENT;
+#endif
 		default:
 			return SP_PROT_TLS1_2_CLIENT;
 		#else
@@ -660,12 +673,12 @@ void WinSSLEngine_HCRYPTKEY_ToString(HCRYPTKEY hKey, Text::StringBuilderUTF *sb)
 		case ALG_TYPE_SECURECHANNEL:
 			sb->Append((const UTF8Char*)"Secure Channel");
 			break;
-#if (NTDDI_VERSION >= NTDDI_VISTA)
+#if (NTDDI_VERSION >= NTDDI_VISTA) && defined(ALG_TYPE_ECDH)
 		case ALG_TYPE_ECDH:
 			sb->Append((const UTF8Char*)"ECDH");
 			break;
 #endif
-#if defined(_MSC_VER) && (NTDDI_VERSION >= NTDDI_WIN10_RS1)
+#if defined(_MSC_VER) && (NTDDI_VERSION >= NTDDI_WIN10_RS1) && defined(ALG_TYPE_THIRDPARTY)
 		case ALG_TYPE_THIRDPARTY:
 			sb->Append((const UTF8Char*)"ThirdParty");
 			break;

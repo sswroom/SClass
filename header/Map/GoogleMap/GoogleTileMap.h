@@ -33,7 +33,7 @@ namespace Map
 			MapType mapType;
 
 		public:
-			GoogleTileMap(const UTF8Char *cacheDir, MapType mapType, Net::SocketFactory *sockf);
+			GoogleTileMap(const UTF8Char *cacheDir, MapType mapType, Net::SocketFactory *sockf, Net::SSLEngine *ssl);
 			virtual ~GoogleTileMap();
 
 			Bool HasSPackageFile();
@@ -47,7 +47,7 @@ namespace Map
 			virtual Double GetLevelScale(OSInt level);
 			virtual UOSInt GetNearestLevel(Double scale);
 			virtual UOSInt GetConcurrentCount();
-			virtual void GetBounds(Double *minX, Double *minY, Double *maxX, Double *maxY);
+			virtual Bool GetBounds(Double *minX, Double *minY, Double *maxX, Double *maxY);
 			virtual ProjectionType GetProjectionType();
 			virtual UOSInt GetTileSize();
 

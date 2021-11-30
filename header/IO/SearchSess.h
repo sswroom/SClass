@@ -12,7 +12,7 @@ namespace IO
 		UTF8Char *nameStart;
 		IO::Path::PathType pt;
 		IO::Path::FindFileSession *sess;
-		Int64 fileSize;
+		UInt64 fileSize;
 		Data::DateTime *modTime;
 
 	public:
