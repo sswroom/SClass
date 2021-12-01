@@ -392,7 +392,7 @@ namespace Math
 
 	FORCEINLINE Bool IsNeg(Double val)
 	{
-		return (Int64)0x8000000000000000LL & *(Int64*)&val;
+		return ((Int64)0x8000000000000000LL & *(Int64*)&val) != 0;
 	}
 
 	FORCEINLINE Double GetNAN()

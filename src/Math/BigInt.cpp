@@ -4,12 +4,6 @@
 #include "Text/MyString.h"
 #include "Data/ByteTool.h"
 
-#if _WCHAR_SIZE == 2
-#define BigInt_ToString BigInt_ToStringW16
-#else
-#define BigInt_ToString BigInt_ToStringW32
-#endif
-
 extern "C"
 {
 	void BigInt_ByteSwap(const UInt8 *srcBuff, UInt8 *destBuff, OSInt valSize);
@@ -19,13 +13,11 @@ extern "C"
 	void BigInt_Or(UInt8 *destBuff, UInt8 *srcBuff, OSInt destSize, OSInt srcSize);
 	void BigInt_Xor(UInt8 *destBuff, UInt8 *srcBuff, OSInt destSize, OSInt srcSize);
 	void BigInt_AssignI32(UInt8 *valBuff, OSInt valSize, Int32 val);
-	void BigInt_AssignStrW16(UInt8 *valBuff, OSInt valSize, const WChar *val);
-	void BigInt_AssignStrW32(UInt8 *valBuff, OSInt valSize, const WChar *val);
+	void BigInt_AssignStr(UInt8 *valBuff, OSInt valSize, const UTF8Char *val);
 	UInt32 BigInt_MulUI32(UInt8 *valBuff, OSInt valSize, UInt32 val); //return overflow value
 	UInt32 BigInt_DivUI32(UInt8 *valBuff, OSInt valSize, UInt32 val); //return remainder
 
-	WChar *BigInt_ToStringW16(WChar *buff, const UInt8 *valArr, UInt8 *tmpArr, OSInt valSize);
-	WChar *BigInt_ToStringW32(WChar *buff, const UInt8 *valArr, UInt8 *tmpArr, OSInt valSize);
+	UTF8Char *BigInt_ToString(UTF8Char *buff, const UInt8 *valArr, UInt8 *tmpArr, OSInt valSize);
 }
 
 Math::BigInt::BigInt(Int32 valSize)
@@ -41,7 +33,7 @@ Math::BigInt::BigInt(Int32 valSize)
 	*this = 0;
 }
 
-Math::BigInt::BigInt(Int32 valSize, const WChar *val)
+Math::BigInt::BigInt(Int32 valSize, const UTF8Char *val)
 {
 	if (valSize & 15)
 	{
@@ -143,9 +135,9 @@ void Math::BigInt::AssignI32(Int32 val)
 	BigInt_AssignI32(this->valArr, this->valSize, val);
 }
 
-void Math::BigInt::AssignStr(const WChar *val)
+void Math::BigInt::AssignStr(const UTF8Char *val)
 {
-	BigInt_AssignStrW16(this->valArr, this->valSize, val);
+	BigInt_AssignStr(this->valArr, this->valSize, val);
 }
 
 void Math::BigInt::AssignBI(const BigInt *val)
@@ -220,7 +212,7 @@ Int32 Math::BigInt::operator =(Int32 val)
 	return val;
 }
 
-Math::BigInt *Math::BigInt::operator =(const WChar *val)
+Math::BigInt *Math::BigInt::operator =(const UTF8Char *val)
 {
 	this->AssignStr(val);
 	return this;
@@ -268,14 +260,14 @@ Math::BigInt *Math::BigInt::operator /=(UInt32 val)
 	return this;
 }
 
-WChar *Math::BigInt::ToString(WChar *buff)
+UTF8Char *Math::BigInt::ToString(UTF8Char *buff)
 {
-	return BigInt_ToStringW16(buff, this->valArr, this->tmpArr, this->valSize);
+	return BigInt_ToString(buff, this->valArr, this->tmpArr, this->valSize);
 }
 
-WChar *Math::BigInt::ToHex(WChar *buff)
+UTF8Char *Math::BigInt::ToHex(UTF8Char *buff)
 {
-	WChar *currPtr = buff;
+	UTF8Char *currPtr = buff;
 	Int32 vSize = this->valSize;
 	UInt8 *ptr = this->valArr + vSize;
 	while (vSize--)
@@ -286,9 +278,9 @@ WChar *Math::BigInt::ToHex(WChar *buff)
 	return currPtr;
 }
 
-WChar *Math::BigInt::ToByteStr(WChar *buff)
+UTF8Char *Math::BigInt::ToByteStr(UTF8Char *buff)
 {
-	WChar *currPtr = buff;
+	UTF8Char *currPtr = buff;
 	Int32 vSize = this->valSize;
 	UInt8 *ptr = this->valArr;
 	while (vSize--)

@@ -11,16 +11,16 @@ namespace Map
 	{
 	private:
 		Data::ArrayList<Map::IReverseGeocoder *> *revGeos;
-		OSInt nextCoder;
+		UOSInt nextCoder;
 		IO::Writer *errWriter;
 		Sync::Mutex *mut;
 	public:
 		MultiReverseGeocoder(IO::Writer *errWriter);
 		virtual ~MultiReverseGeocoder();
 
-		virtual UTF8Char *SearchName(UTF8Char *buff, Double lat, Double lon, Int32 lcid);
-		virtual UTF8Char *CacheName(UTF8Char *buff, Double lat, Double lon, Int32 lcid);
+		virtual UTF8Char *SearchName(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, Int32 lcid);
+		virtual UTF8Char *CacheName(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, Int32 lcid);
 		void AddReverseGeocoder(Map::IReverseGeocoder *revGeo);
 	};
-};
+}
 #endif

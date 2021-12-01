@@ -27,8 +27,8 @@ Bool Map::ShortestPathFinder::SearchShortestPath(Data::ArrayList<Double> *pointL
 	UTF8Char sbuff2[256];
 	sbuff1[0] = 0;
 	sbuff2[0] = 0;
-	this->layer->GetString(sbuff1, this->nameArr, fromObjId, this->nameCol);
-	this->layer->GetString(sbuff2, this->nameArr, toObjId, this->nameCol);
+	this->layer->GetString(sbuff1, sizeof(sbuff1), this->nameArr, fromObjId, this->nameCol);
+	this->layer->GetString(sbuff2, sizeof(sbuff2), this->nameArr, toObjId, this->nameCol);
 	if (Text::StrEquals(sbuff1, sbuff2))
 	{
 		Double dist1;
@@ -51,7 +51,7 @@ Bool Map::ShortestPathFinder::SearchShortestPath(Data::ArrayList<Double> *pointL
 		Bool bothDir = true;
 		if (this->dirCol >= 0)
 		{
-			if (layer->GetString(sbuff2, nameArr, toObjId, dirCol))
+			if (layer->GetString(sbuff2, sizeof(sbuff2), nameArr, toObjId, dirCol))
 			{
 				if (Text::StrToInt32(sbuff2) == 3)
 				{
@@ -76,7 +76,7 @@ Bool Map::ShortestPathFinder::SearchShortestPath(Data::ArrayList<Double> *pointL
 		bothDir = false;
 		if (this->dirCol >= 0)
 		{
-			if (layer->GetString(sbuff2, nameArr, fromObjId, dirCol))
+			if (layer->GetString(sbuff2, sizeof(sbuff2), nameArr, fromObjId, dirCol))
 			{
 				if (Text::StrToInt32(sbuff2) == 3)
 				{
@@ -264,7 +264,7 @@ Map::ShortestPathFinder::ShortestPathFinder(Map::IMapDrawLayer *layer, Bool toRe
 		vec = layer->GetVectorById(sess, idList.GetItem(i));
 		if (vec)
 		{
-			if (vec->GetVectorType() == Math::Vector2D::VectorType::POLYLINE)
+			if (vec->GetVectorType() == Math::Vector2D::VectorType::Polyline)
 			{
 				pl = (Math::Polyline *)vec;
 				points = pl->GetPointList(&nPoints);
@@ -309,7 +309,7 @@ Map::ShortestPathFinder::ShortestPathFinder(Map::IMapDrawLayer *layer, Bool toRe
 				Bool bothDir = true;
 				if (this->dirCol >= 0)
 				{
-					if (layer->GetString(sbuff, nameArr, idList.GetItem(i), dirCol))
+					if (layer->GetString(sbuff, sizeof(sbuff), nameArr, idList.GetItem(i), dirCol))
 					{
 						if (Text::StrToInt32(sbuff) == 3)
 						{
@@ -329,7 +329,7 @@ Map::ShortestPathFinder::ShortestPathFinder(Map::IMapDrawLayer *layer, Bool toRe
 					toNeighbour->name = 0;
 				}
 
-				if (layer->GetString(sbuff, nameArr, idList.GetItem(i), nameCol))
+				if (layer->GetString(sbuff, sizeof(sbuff), nameArr, idList.GetItem(i), nameCol))
 				{
 					frNeighbour->name = Text::StrCopyNew(sbuff);
 					if (bothDir)
@@ -422,7 +422,7 @@ Math::Polyline *Map::ShortestPathFinder::GetPath(Double fromX, Double fromY, Dou
 			pointList.Clear();
 			if (this->SearchShortestPath(&pointList, sess, fromObj->objId, fromObj->objX, fromObj->objY, toObj->objId, toObj->objX, toObj->objY))
 			{
-				NEW_CLASS(retPl, Math::Polyline(pointList.GetArray(&nPoints), pointList.GetCount() >> 1));
+				NEW_CLASS(retPl, Math::Polyline(0, pointList.GetArray(&nPoints), pointList.GetCount() >> 1));
 				break;
 			}
 			j++;
@@ -444,7 +444,7 @@ Math::Polyline *Map::ShortestPathFinder::GetPath(Double fromX, Double fromY, Dou
 				pointList.Clear();
 				if (this->SearchShortestPath(&pointList, sess, fromObj->objId, fromObj->objX, fromObj->objY, toObj->objId, toObj->objX, toObj->objY))
 				{
-					NEW_CLASS(retPl, Math::Polyline(pointList.GetArray(&nPoints), pointList.GetCount() >> 1));
+					NEW_CLASS(retPl, Math::Polyline(0, pointList.GetArray(&nPoints), pointList.GetCount() >> 1));
 					break;
 				}
 				i++;

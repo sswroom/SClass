@@ -15,7 +15,7 @@ Data::ArrayList<const Char*> *Data::ArrayListStrC::Clone()
 {
 	Data::ArrayListStrC *newArr;
 	NEW_CLASS(newArr, Data::ArrayListStrC(this->capacity));
-	newArr->AddRange(this);
+	newArr->AddAll(this);
 	return newArr;
 }
 

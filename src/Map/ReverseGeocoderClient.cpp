@@ -181,7 +181,7 @@ void Map::ReverseGeocoderClient::DataParsed(IO::Stream *stm, void *stmObj, Int32
 		lon = *(Int32*)&cmd[4] / 200000.0;
 		lcid = *(Int32*)&cmd[8];
 		sbuff[0] = 0;
-		sptr = me->revGeo->SearchName(sbuff, lat, lon, lcid);
+		sptr = me->revGeo->SearchName(sbuff, sizeof(sbuff), lat, lon, lcid);
 		*(Int32*)&buff[0] = Math::Double2Int32(lat * 200000.0);
 		*(Int32*)&buff[4] = Math::Double2Int32(lon * 200000.0);
 		*(Int32*)&buff[8] = lcid;
@@ -207,7 +207,7 @@ void Map::ReverseGeocoderClient::DataParsed(IO::Stream *stm, void *stmObj, Int32
 		lon = *(Int32*)&cmd[4] / 200000.0;
 		lcid = *(Int32*)&cmd[8];
 		sbuff[0] = 0;
-		sptr = me->revGeo->CacheName(sbuff, lat, lon, lcid);
+		sptr = me->revGeo->CacheName(sbuff, sizeof(sbuff), lat, lon, lcid);
 		strSize = Text::StrCharCnt(sbuff);
 		if (strSize >= 128)
 		{

@@ -4,7 +4,7 @@
 #include "Math/Math.h"
 #include "Math/PieArea.h"
 
-Math::PieArea::PieArea(Double cx, Double cy, Double r, Double arcAngle1, Double arcAngle2)
+Math::PieArea::PieArea(UInt32 srid, Double cx, Double cy, Double r, Double arcAngle1, Double arcAngle2) : Math::Vector2D(srid)
 {
 	this->cx = cx;
 	this->cy = cy;
@@ -19,7 +19,7 @@ Math::PieArea::~PieArea()
 
 Math::Vector2D::VectorType Math::PieArea::GetVectorType()
 {
-	return Math::Vector2D::VectorType::PIEAREA;
+	return Math::Vector2D::VectorType::PieArea;
 }
 
 void Math::PieArea::GetCenter(Double *x, Double *y)
@@ -32,7 +32,7 @@ void Math::PieArea::GetCenter(Double *x, Double *y)
 Math::Vector2D *Math::PieArea::Clone()
 {
 	Math::PieArea *pie;
-	NEW_CLASS(pie, Math::PieArea(this->cx, this->cy, this->r, this->arcAngle1, this->arcAngle2));
+	NEW_CLASS(pie, Math::PieArea(this->srid, this->cx, this->cy, this->r, this->arcAngle1, this->arcAngle2));
 	return pie;
 }
 
@@ -66,6 +66,18 @@ Bool Math::PieArea::Support3D()
 void Math::PieArea::ConvCSys(Math::CoordinateSystem *srcCSys, Math::CoordinateSystem *destCSys)
 {
 	Math::CoordinateSystem::ConvertXYZ(srcCSys, destCSys, this->cx, this->cy, 0, &this->cx, &this->cy, 0);
+}
+
+Bool Math::PieArea::Equals(Vector2D *vec)
+{
+	if (vec == 0 || vec->GetVectorType() != Math::Vector2D::VectorType::PieArea)
+		return false;
+	Math::PieArea *pa = (Math::PieArea*)vec;
+	return this->cx == pa->cx &&
+		this->cy == pa->cy &&
+		this->r == pa->r &&
+		this->arcAngle1 == pa->arcAngle1 &&
+		this->arcAngle2 == pa->arcAngle2;
 }
 
 Double Math::PieArea::GetCX()

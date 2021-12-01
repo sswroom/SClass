@@ -23,9 +23,9 @@ Net::LoggedSocketFactory::~LoggedSocketFactory()
 	SDEL_TEXT(this->logPrefix);
 }
 
-UInt32 *Net::LoggedSocketFactory::CreateTCPSocketv4()
+Socket *Net::LoggedSocketFactory::CreateTCPSocketv4()
 {
-	UInt32 *ret = this->sockf->CreateTCPSocketv4();
+	Socket *ret = this->sockf->CreateTCPSocketv4();
 	Text::StringBuilderUTF8 sb;
 	if (this->logPrefix)
 	{
@@ -44,9 +44,9 @@ UInt32 *Net::LoggedSocketFactory::CreateTCPSocketv4()
 	return ret;
 }
 
-UInt32 *Net::LoggedSocketFactory::CreateTCPSocketv6()
+Socket *Net::LoggedSocketFactory::CreateTCPSocketv6()
 {
-	UInt32 *ret = this->sockf->CreateTCPSocketv6();
+	Socket *ret = this->sockf->CreateTCPSocketv6();
 	Text::StringBuilderUTF8 sb;
 	if (this->logPrefix)
 	{
@@ -65,9 +65,9 @@ UInt32 *Net::LoggedSocketFactory::CreateTCPSocketv6()
 	return ret;
 }
 
-UInt32 *Net::LoggedSocketFactory::CreateUDPSocketv4()
+Socket *Net::LoggedSocketFactory::CreateUDPSocketv4()
 {
-	UInt32 *ret = this->sockf->CreateUDPSocketv4();
+	Socket *ret = this->sockf->CreateUDPSocketv4();
 	Text::StringBuilderUTF8 sb;
 	if (this->logPrefix)
 	{
@@ -86,7 +86,7 @@ UInt32 *Net::LoggedSocketFactory::CreateUDPSocketv4()
 	return ret;
 }
 
-void Net::LoggedSocketFactory::DestroySocket(UInt32 *socket)
+void Net::LoggedSocketFactory::DestroySocket(Socket *socket)
 {
 	this->sockf->DestroySocket(socket);
 	Text::StringBuilderUTF8 sb;
@@ -98,12 +98,12 @@ void Net::LoggedSocketFactory::DestroySocket(UInt32 *socket)
 	this->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_ACTION);
 }
 
-Bool Net::LoggedSocketFactory::SocketIsInvalid(UInt32 *socket)
+Bool Net::LoggedSocketFactory::SocketIsInvalid(Socket *socket)
 {
 	return this->sockf->SocketIsInvalid(socket);
 }
 
-Bool Net::LoggedSocketFactory::SocketBindv4(UInt32 *socket, UInt32 ip, UInt16 port)
+Bool Net::LoggedSocketFactory::SocketBindv4(Socket *socket, UInt32 ip, UInt16 port)
 {
 	UTF8Char sbuff[64];
 	Bool ret = this->sockf->SocketBindv4(socket, ip, port);
@@ -128,7 +128,7 @@ Bool Net::LoggedSocketFactory::SocketBindv4(UInt32 *socket, UInt32 ip, UInt16 po
 	return ret;
 }
 
-Bool Net::LoggedSocketFactory::SocketListen(UInt32 *socket)
+Bool Net::LoggedSocketFactory::SocketListen(Socket *socket)
 {
 	Bool ret = this->sockf->SocketListen(socket);
 	Text::StringBuilderUTF8 sb;
@@ -149,7 +149,7 @@ Bool Net::LoggedSocketFactory::SocketListen(UInt32 *socket)
 	return ret;
 }
 
-UInt32 *Net::LoggedSocketFactory::SocketAccept(UInt32 *socket)
+Socket *Net::LoggedSocketFactory::SocketAccept(Socket *socket)
 {
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[64];
@@ -159,7 +159,7 @@ UInt32 *Net::LoggedSocketFactory::SocketAccept(UInt32 *socket)
 	}
 	sb.Append((const UTF8Char*)"Begin socket accept");
 	this->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_ACTION);
-	UInt32 *ret = this->sockf->SocketAccept(socket);
+	Socket *ret = this->sockf->SocketAccept(socket);
 	sb.ClearStr();
 	if (this->logPrefix)
 	{
@@ -180,9 +180,9 @@ UInt32 *Net::LoggedSocketFactory::SocketAccept(UInt32 *socket)
 	return ret;
 }
 
-OSInt Net::LoggedSocketFactory::SendData(UInt32 *socket, const UInt8 *buff, OSInt buffSize, ErrorType *et)
+UOSInt Net::LoggedSocketFactory::SendData(Socket *socket, const UInt8 *buff, UOSInt buffSize, ErrorType *et)
 {
-	OSInt ret = this->sockf->SendData(socket, buff, buffSize, et);
+	UOSInt ret = this->sockf->SendData(socket, buff, buffSize, et);
 	Text::StringBuilderUTF8 sb;
 	if (this->logPrefix)
 	{
@@ -195,9 +195,9 @@ OSInt Net::LoggedSocketFactory::SendData(UInt32 *socket, const UInt8 *buff, OSIn
 	return ret;
 }
 
-OSInt Net::LoggedSocketFactory::ReceiveData(UInt32 *socket, UInt8 *buff, OSInt buffSize, ErrorType *et)
+UOSInt Net::LoggedSocketFactory::ReceiveData(Socket *socket, UInt8 *buff, UOSInt buffSize, ErrorType *et)
 {
-	OSInt ret = this->sockf->ReceiveData(socket, buff, buffSize, et);
+	UOSInt ret = this->sockf->ReceiveData(socket, buff, buffSize, et);
 	Text::StringBuilderUTF8 sb;
 	if (this->logPrefix)
 	{
@@ -210,14 +210,14 @@ OSInt Net::LoggedSocketFactory::ReceiveData(UInt32 *socket, UInt8 *buff, OSInt b
 	return ret;
 }
 
-void *Net::LoggedSocketFactory::BeginReceiveData(UInt32 *socket, UInt8 *buff, OSInt buffSize, Sync::Event *evt, ErrorType *et)
+void *Net::LoggedSocketFactory::BeginReceiveData(Socket *socket, UInt8 *buff, UOSInt buffSize, Sync::Event *evt, ErrorType *et)
 {
 	return this->sockf->BeginReceiveData(socket, buff, buffSize, evt, et);
 }
 
-OSInt Net::LoggedSocketFactory::EndReceiveData(void *reqData, Bool toWait)
+UOSInt Net::LoggedSocketFactory::EndReceiveData(void *reqData, Bool toWait, Bool *incomplete)
 {
-	OSInt ret = this->sockf->EndReceiveData(reqData, toWait);
+	UOSInt ret = this->sockf->EndReceiveData(reqData, toWait, incomplete);
 	if (toWait || ret > 0)
 	{
 		Text::StringBuilderUTF8 sb;
@@ -238,9 +238,9 @@ void Net::LoggedSocketFactory::CancelReceiveData(void *reqData)
 	this->sockf->CancelReceiveData(reqData);
 }
 
-OSInt Net::LoggedSocketFactory::UDPReceive(UInt32 *socket, UInt8 *buff, OSInt buffSize, Net::SocketUtil::AddressInfo *addr, UInt16 *port, ErrorType *et)
+UOSInt Net::LoggedSocketFactory::UDPReceive(Socket *socket, UInt8 *buff, UOSInt buffSize, Net::SocketUtil::AddressInfo *addr, UInt16 *port, ErrorType *et)
 {
-	OSInt ret = this->sockf->UDPReceive(socket, buff, buffSize, addr, port, et);
+	UOSInt ret = this->sockf->UDPReceive(socket, buff, buffSize, addr, port, et);
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[64];
 	if (this->logPrefix)
@@ -268,9 +268,9 @@ OSInt Net::LoggedSocketFactory::UDPReceive(UInt32 *socket, UInt8 *buff, OSInt bu
 	return ret;
 }
 
-OSInt Net::LoggedSocketFactory::SendTo(UInt32 *socket, const UInt8 *buff, OSInt buffSize, const Net::SocketUtil::AddressInfo *addr, UInt16 port)
+UOSInt Net::LoggedSocketFactory::SendTo(Socket *socket, const UInt8 *buff, UOSInt buffSize, const Net::SocketUtil::AddressInfo *addr, UInt16 port)
 {
-	OSInt ret = this->sockf->SendTo(socket, buff, buffSize, addr, port);
+	UOSInt ret = this->sockf->SendTo(socket, buff, buffSize, addr, port);
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[64];
 	if (this->logPrefix)
@@ -287,14 +287,14 @@ OSInt Net::LoggedSocketFactory::SendTo(UInt32 *socket, const UInt8 *buff, OSInt 
 	}
 	else
 	{
-		sb.AppendOSInt(ret);
+		sb.AppendUOSInt(ret);
 		sb.Append((const UTF8Char*)" bytes");
 	}
 	this->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_ACTION);
 	return ret;
 }
 
-Bool Net::LoggedSocketFactory::Connect(UInt32 *socket, UInt32 ip, UInt16 port)
+Bool Net::LoggedSocketFactory::Connect(Socket *socket, UInt32 ip, UInt16 port)
 {
 	Bool ret = this->sockf->Connect(socket, ip, port);
 	UTF8Char sbuff[64];
@@ -317,7 +317,7 @@ Bool Net::LoggedSocketFactory::Connect(UInt32 *socket, UInt32 ip, UInt16 port)
 	return ret;
 }
 
-void Net::LoggedSocketFactory::ShutdownSend(UInt32 *socket)
+void Net::LoggedSocketFactory::ShutdownSend(Socket *socket)
 {
 	this->sockf->ShutdownSend(socket);
 	Text::StringBuilderUTF8 sb;

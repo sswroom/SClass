@@ -11,11 +11,12 @@
 
 #define GMAPURL ((const UTF8Char*)"http://mt1.google.com/vt/")
 
-Map::GoogleMap::GoogleTileMap::GoogleTileMap(const UTF8Char *cacheDir, MapType mapType, Net::SocketFactory *sockf)
+Map::GoogleMap::GoogleTileMap::GoogleTileMap(const UTF8Char *cacheDir, MapType mapType, Net::SocketFactory *sockf, Net::SSLEngine *ssl)
 {
 	this->cacheDir = Text::StrCopyNew(cacheDir);
 	this->spkg = 0;
 	this->sockf = sockf;
+	this->ssl = ssl;
 	this->tileWidth = 256;
 	this->tileHeight = 256;
 	this->maxLevel = 18;
@@ -285,7 +286,7 @@ Media::ImageList *Map::GoogleMap::GoogleTileMap::LoadTileImage(UOSInt level, Int
 	urlSb.Append((const UTF8Char*)"&z=");
 	urlSb.AppendUOSInt(level);
 
-	cli = Net::HTTPClient::CreateClient(this->sockf, (const UTF8Char*)"GoogleTileMap/1.0 SSWR/1.0", true, urlSb.StartsWith((const UTF8Char*)"https://"));
+	cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, (const UTF8Char*)"GoogleTileMap/1.0 SSWR/1.0", true, urlSb.StartsWith((const UTF8Char*)"https://"));
 	cli->Connect(urlSb.ToString(), "GET", 0, 0, true);
 	if (hasTime)
 	{
