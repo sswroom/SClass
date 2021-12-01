@@ -16,6 +16,8 @@ namespace Net
 			Sync::Mutex *mut;
 			Net::SocketFactory *sockf;
 			Net::SSLEngine *ssl;
+			Bool xForwardHeaders;
+			Bool locationRemap;
 
 			virtual const UTF8Char *GetNextURL(Net::WebServer::IWebRequest *req);
 		public:
@@ -25,6 +27,8 @@ namespace Net
 		public:
 			virtual Bool ProcessRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *subReq);
 
+			void SetXForwardHeaders(Bool xForwardHeaders);
+			void SetLocationRemap(Bool locationRemap);
 			void AddForwardURL(const UTF8Char *url);
 			void AddInjectHeader(const UTF8Char *header);
 		};

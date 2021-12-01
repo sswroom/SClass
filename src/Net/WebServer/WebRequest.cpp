@@ -634,6 +634,11 @@ UInt16 Net::WebServer::WebRequest::GetClientPort()
 	return this->cliPort;
 }
 
+Bool Net::WebServer::WebRequest::IsSecure()
+{
+	return this->secureConn;
+}
+
 const UInt8 *Net::WebServer::WebRequest::GetReqData(UOSInt *dataSize)
 {
 	if (this->reqData == 0)

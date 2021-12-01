@@ -49,7 +49,8 @@ void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnStartClick(void *userOb
 	}
 	if (port > 0 && port < 65535)
 	{
-		NEW_CLASS(me->fwdHdlr, Net::WebServer::HTTPForwardHandler(me->core->GetSocketFactory(), ssl, sb->ToString()));
+		NEW_CLASS(me->fwdHdlr, Net::WebServer::HTTPForwardHandler(me->core->GetSocketFactory(), me->ssl, sb->ToString()));
+		me->fwdHdlr->SetXForwardHeaders(me->chkFwdHeader->IsChecked());
 		NEW_CLASS(me->svr, Net::WebServer::WebListener(me->core->GetSocketFactory(), ssl, me->fwdHdlr, port, 120, Sync::Thread::GetThreadCnt(), (const UTF8Char*)"sswr", me->chkAllowProxy->IsChecked(), me->chkAllowKA->IsChecked()));
 		if (me->svr->IsError())
 		{
@@ -343,6 +344,10 @@ SSWR::AVIRead::AVIRHTTPLoadBalanceForm::AVIRHTTPLoadBalanceForm(UI::GUIClientCon
 	this->lblFwdURL->SetRect(8, 152, 100, 23, false);
 	NEW_CLASS(this->txtFwdURL, UI::GUITextBox(ui, this->grpParam, (const UTF8Char*)"http://sswroom.no-ip.org:5080/"));
 	this->txtFwdURL->SetRect(108, 152, 500, 23, false);
+	NEW_CLASS(this->lblFwdHeader, UI::GUILabel(ui, this->grpParam, (const UTF8Char*)"X-Forwarded-*"));
+	this->lblFwdHeader->SetRect(8, 176, 100, 23, false);
+	NEW_CLASS(this->chkFwdHeader, UI::GUICheckBox(ui, this->grpParam, (const UTF8Char*)"Enable", true));
+	this->chkFwdHeader->SetRect(108, 176, 100, 23, false);
 	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this->tpControl, (const UTF8Char*)"Start"));
 	this->btnStart->SetRect(200, 300, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClick, this);

@@ -60,6 +60,8 @@ namespace SSWR
 			UI::GUICheckBox *chkAllowKA;
 			UI::GUILabel *lblFwdURL;
 			UI::GUITextBox *txtFwdURL;
+			UI::GUILabel *lblFwdHeader;
+			UI::GUICheckBox *chkFwdHeader;
 			UI::GUIButton *btnStart;
 			UI::GUIButton *btnStop;
 

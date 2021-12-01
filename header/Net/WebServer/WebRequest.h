@@ -70,6 +70,7 @@ namespace Net
 
 			virtual const Net::SocketUtil::AddressInfo *GetClientAddr();
 			virtual UInt16 GetClientPort();
+			virtual Bool IsSecure();
 			virtual const UInt8 *GetReqData(UOSInt *dataSize);
 
 			Bool HasData();

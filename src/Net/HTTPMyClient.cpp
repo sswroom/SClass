@@ -265,6 +265,11 @@ UOSInt Net::HTTPMyClient::Read(UInt8 *buff, UOSInt size)
 #endif
 			this->buffSize += i;
 			this->dataBuff[this->buffSize] = 0;
+			if (this->dataBuff[0] == '\r' && this->dataBuff[1] == '\n')
+			{
+				MemCopyO(this->dataBuff, &this->dataBuff[2], this->buffSize - 2);
+				buffSize -= 2;
+			}
 		}
 		this->dataBuff[i] = 0;
 		j = Text::StrHex2UInt32C((Char*)this->dataBuff);
