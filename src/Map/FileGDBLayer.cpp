@@ -471,7 +471,7 @@ Bool Map::FileGDBLReader::GetStr(UOSInt colIndex, Text::StringBuilderUTF *sb)
 	return this->r->GetStr((colIndex > 0)?(colIndex + 1):colIndex, sb);
 }
 
-const UTF8Char *Map::FileGDBLReader::GetNewStr(UOSInt colIndex)
+Text::String *Map::FileGDBLReader::GetNewStr(UOSInt colIndex)
 {
 	return this->r->GetNewStr((colIndex > 0)?(colIndex + 1):colIndex);
 }
@@ -534,9 +534,4 @@ DB::DBUtil::ColType Map::FileGDBLReader::GetColType(UOSInt colIndex, UOSInt *col
 Bool Map::FileGDBLReader::GetColDef(UOSInt colIndex, DB::ColDef *colDef)
 {
 	return this->r->GetColDef((colIndex > 0)?(colIndex + 1):colIndex, colDef);
-}
-
-void Map::FileGDBLReader::DelNewStr(const UTF8Char *s)
-{
-	this->r->DelNewStr(s);
 }

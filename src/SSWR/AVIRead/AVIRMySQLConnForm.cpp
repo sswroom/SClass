@@ -53,11 +53,11 @@ SSWR::AVIRead::AVIRMySQLConnForm::AVIRMySQLConnForm(UI::GUIClientControl *parent
 {
 	this->SetFont(0, 8.25, false);
 	this->SetText((const UTF8Char*)"MySQL Connection");
-	this->SetNoResize(true);
 
 	this->core = core;
 	this->conn = 0;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
+	this->SetNoResize(true);
 
 	NEW_CLASS(this->lblServer, UI::GUILabel(ui, this, (const UTF8Char*)"Server"));
 	this->lblServer->SetRect(4, 4, 100, 23, false);

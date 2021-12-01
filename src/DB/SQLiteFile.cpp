@@ -495,13 +495,13 @@ WChar *DB::SQLiteReader::GetStr(UOSInt colIndex, WChar *buff)
 	}
 }
 
-const UTF8Char *DB::SQLiteReader::GetNewStr(UOSInt colIndex)
+Text::String *DB::SQLiteReader::GetNewStr(UOSInt colIndex)
 {
 	const void *outp = sqlite3_column_text16((sqlite3_stmt*)this->hStmt, (int)colIndex);
 	if (outp == 0)
 		return 0;
 	else
-		return Text::StrToUTF8New((const UTF16Char *)outp);
+		return Text::String::New((const UTF16Char *)outp);
 }
 
 Bool DB::SQLiteReader::GetStr(UOSInt colIndex, Text::StringBuilderUTF *sb)
@@ -652,12 +652,4 @@ Bool DB::SQLiteReader::GetColDef(UOSInt colIndex, DB::ColDef *colDef)
 	colDef->SetDefVal(0);
 	colDef->SetAttr(0);
 	return true;
-}
-
-void DB::SQLiteReader::DelNewStr(const UTF8Char *s)
-{
-	if (s)
-	{
-		Text::StrDelNew(s);
-	}
 }

@@ -494,7 +494,7 @@ Bool Map::ESRI::ESRIMDBReader::GetStr(UOSInt colIndex, Text::StringBuilderUTF *s
 	return this->r->GetStr((colIndex > 0)?(colIndex + 1):colIndex, sb);
 }
 
-const UTF8Char *Map::ESRI::ESRIMDBReader::GetNewStr(UOSInt colIndex)
+Text::String *Map::ESRI::ESRIMDBReader::GetNewStr(UOSInt colIndex)
 {
 	return this->r->GetNewStr((colIndex > 0)?(colIndex + 1):colIndex);
 }
@@ -557,9 +557,4 @@ DB::DBUtil::ColType Map::ESRI::ESRIMDBReader::GetColType(UOSInt colIndex, UOSInt
 Bool Map::ESRI::ESRIMDBReader::GetColDef(UOSInt colIndex, DB::ColDef *colDef)
 {
 	return this->r->GetColDef((colIndex > 0)?(colIndex + 1):colIndex, colDef);
-}
-
-void Map::ESRI::ESRIMDBReader::DelNewStr(const UTF8Char *s)
-{
-	this->r->DelNewStr(s);
 }

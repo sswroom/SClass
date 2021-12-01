@@ -324,7 +324,7 @@ const UTF8Char *Text::CPPText::GetCppType(Data::VariItem::ItemType itemType)
 	case Data::VariItem::ItemType::BOOL:
 		return (const UTF8Char*)"Bool";
 	case Data::VariItem::ItemType::Str:
-		return (const UTF8Char*)"const UTF8Char*";
+		return (const UTF8Char*)"Text::String*";
 	case Data::VariItem::ItemType::Date:
 		return (const UTF8Char*)"Data::DateTime*";
 	case Data::VariItem::ItemType::ByteArr:

@@ -1169,41 +1169,27 @@ void Data::DateTime::SetTicks(Int64 ticks)
 			}
 		}
 	}
-	else if (false && totalDays >= 10958)
-	{
-		this->year = 2000;
-		totalDays -= 10958;
-		while (true)
-		{
-			if (this->IsYearLeap())
-			{
-				if (totalDays < 366)
-				{
-					break;
-				}
-				else
-				{
-					this->year++;
-					totalDays -= 366;
-				}
-			}
-			else
-			{
-				if (totalDays < 365)
-				{
-					break;
-				}
-				else
-				{
-					this->year++;
-					totalDays -= 365;
-				}
-			}
-		}
-	}
 	else
 	{
-		this->year = 1970;
+		if (totalDays < 10957)
+		{
+			this->year = 1970;
+		}
+		else if (totalDays < 14610)
+		{
+			this->year = 2000;
+			totalDays -= 10957;
+		}
+		else if (totalDays < 18262)
+		{
+			this->year = 2010;
+			totalDays -= 14610;
+		}
+		else
+		{
+			this->year = 2020;
+			totalDays -= 18262;
+		}
 		while (true)
 		{
 			if (this->IsYearLeap())

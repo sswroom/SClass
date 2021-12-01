@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Data/ArrayListString.h"
-#include <memory.h>
+#include "Text/MyString.h"
 
 Data::ArrayListString::ArrayListString() : Data::SortableArrayList<Text::String*>()
 {
@@ -21,7 +21,7 @@ Data::ArrayList<Text::String*> *Data::ArrayListString::Clone()
 
 OSInt Data::ArrayListString::CompareItem(Text::String* obj1, Text::String* obj2)
 {
-	return obj1->CompareTo(obj2);
+	return Text::StrCompare(obj1->v, obj2->v);
 }
 
 Text::String *Data::ArrayListString::JoinString()
@@ -38,12 +38,12 @@ Text::String *Data::ArrayListString::JoinString()
 		i++;
 	}
 	UTF8Char *sptr;
-	NEW_CLASS(newStr, Text::String(newStrLeng));
-	sptr = (UTF8Char*)newStr->strVal;
+	newStr = Text::String::New(newStrLeng);
+	sptr = (UTF8Char*)newStr->v;
 	i = 0;
 	while (i < j)
 	{
-		MemCopyNO(sptr, this->arr[i]->strVal, sizeof(UTF8Char) * this->arr[i]->leng);
+		MemCopyNO(sptr, this->arr[i]->v, sizeof(UTF8Char) * this->arr[i]->leng);
 		sptr += this->arr[i]->leng;
 		i++;
 	}

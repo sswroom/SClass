@@ -14,6 +14,7 @@ Bool DB::DBReader::GetVariItem(UOSInt colIndex, Data::VariItem *item)
 	if (this->IsNull(colIndex))
 	{
 		item->SetNull();
+		return true;
 	}
 	UOSInt size;
 	switch (this->GetColType(colIndex, &size))
@@ -22,7 +23,11 @@ Bool DB::DBReader::GetVariItem(UOSInt colIndex, Data::VariItem *item)
 	case DB::DBUtil::CT_Char:
 	case DB::DBUtil::CT_NVarChar:
 	case DB::DBUtil::CT_NChar:
-		item->SetStrDirect(this->GetNewStr(colIndex));
+		{
+			Text::String *s;
+			item->SetStr(s = this->GetNewStr(colIndex));
+			s->Release();
+		}
 		return true;
 	case DB::DBUtil::CT_DateTime:
 	case DB::DBUtil::CT_DateTime2:
@@ -115,6 +120,7 @@ Data::VariObject *DB::DBReader::CreateVariObject()
 	UOSInt i;
 	UOSInt j;
 	UOSInt size;
+	Text::String *s;
 	DB::DBUtil::ColType ctype;
 	Data::VariObject *obj;
 	Data::DateTime dt;
@@ -138,7 +144,8 @@ Data::VariObject *DB::DBReader::CreateVariObject()
 			case DB::DBUtil::CT_Char:
 			case DB::DBUtil::CT_NVarChar:
 			case DB::DBUtil::CT_NChar:
-				obj->SetItemStrDirect(sbuff, this->GetNewStr(i));
+				obj->SetItemStr(sbuff, s = this->GetNewStr(i));
+				s->Release();
 				break;
 			case DB::DBUtil::CT_DateTime:
 			case DB::DBUtil::CT_DateTime2:

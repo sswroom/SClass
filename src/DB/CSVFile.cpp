@@ -453,7 +453,7 @@ Bool DB::CSVReader::GetStr(UOSInt colIndex, Text::StringBuilderUTF *sb)
 	}
 }
 
-const UTF8Char *DB::CSVReader::GetNewStr(UOSInt colIndex)
+Text::String *DB::CSVReader::GetNewStr(UOSInt colIndex)
 {
 	if (colIndex >= nCol)
 		return 0;
@@ -464,6 +464,7 @@ const UTF8Char *DB::CSVReader::GetNewStr(UOSInt colIndex)
 			return 0;
 		}
 	}
+	Text::String *s;
 	UOSInt len = 0;
 	const UTF8Char *csptr = cols[colIndex];
 	const UTF8Char *ptr = csptr;
@@ -505,8 +506,8 @@ const UTF8Char *DB::CSVReader::GetNewStr(UOSInt colIndex)
 				len++;
 			}
 		}
-		UTF8Char *newStr = MemAlloc(UTF8Char, len + 1);
-		UTF8Char *buff = newStr;
+		s = Text::String::New(len);
+		UTF8Char *buff = s->v;
 		ptr = csptr;
 		quote = 0;
 		while (true)
@@ -544,7 +545,7 @@ const UTF8Char *DB::CSVReader::GetNewStr(UOSInt colIndex)
 		}
 
 		*buff = 0;
-		return newStr;
+		return s;
 	}
 	else
 	{
@@ -555,8 +556,8 @@ const UTF8Char *DB::CSVReader::GetNewStr(UOSInt colIndex)
 				break;
 			len++;
 		}
-		UTF8Char *newStr = MemAlloc(UTF8Char, len + 1);
-		UTF8Char *buff = newStr;
+		s = Text::String::New(len);
+		UTF8Char *buff = s->v;
 		ptr = csptr;
 		while (true)
 		{
@@ -567,7 +568,7 @@ const UTF8Char *DB::CSVReader::GetNewStr(UOSInt colIndex)
 		}
 
 		*buff = 0;
-		return newStr;
+		return s;
 	}
 }
 
@@ -710,13 +711,13 @@ Bool DB::CSVReader::GetVariItem(UOSInt colIndex, Data::VariItem *item)
 		}
 	}
 	const UTF8Char *ptr = cols[colIndex];
-	UTF8Char *sbuff = MemAlloc(UTF8Char, this->colSize[colIndex] + 1);
-	UTF8Char *buff = sbuff;
 	UTF8Char c;
-	Int32 quote = 0;
 	c = *ptr;
 	if (c == '"')
 	{
+		Text::String *s = Text::String::New(this->colSize[colIndex]);
+		UTF8Char *buff = s->v;
+		Int32 quote = 0;
 		while (true)
 		{
 			c = *ptr++;
@@ -747,7 +748,9 @@ Bool DB::CSVReader::GetVariItem(UOSInt colIndex, Data::VariItem *item)
 			}
 		}
 		*buff = 0;
-		item->SetStrDirect(sbuff);
+		s->leng = (UOSInt)(buff - s->v);
+		item->SetStr(s);
+		s->Release();
 		return true;
 	}
 	else
@@ -792,9 +795,4 @@ Bool DB::CSVReader::GetColDef(UOSInt colIndex, DB::ColDef *colDef)
 	colDef->SetDefVal(0);
 	colDef->SetAttr(0);
 	return true;
-}
-
-void DB::CSVReader::DelNewStr(const UTF8Char *s)
-{
-	MemFree((void*)s);
 }

@@ -33,7 +33,7 @@ namespace Win32
 		virtual Int64 GetInt64(UOSInt colIndex);
 		virtual WChar *GetStr(UOSInt colIndex, WChar *buff);
 		virtual Bool GetStr(UOSInt colIndex, Text::StringBuilderUTF *sb);
-		virtual const UTF8Char *GetNewStr(UOSInt colIndex);
+		virtual Text::String *GetNewStr(UOSInt colIndex);
 		virtual UTF8Char *GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSize);
 		virtual DateErrType GetDate(UOSInt colIndex, Data::DateTime *outVal); //return 0 = ok, 1 = NULL, 2 = Error
 		virtual Double GetDbl(UOSInt colIndex);
@@ -47,7 +47,6 @@ namespace Win32
 		virtual UTF8Char *GetName(UOSInt colIndex, UTF8Char *buff);
 		virtual DB::DBUtil::ColType GetColType(UOSInt colIndex, UOSInt *colSize);
 		virtual Bool GetColDef(UOSInt colIndex, DB::ColDef *colDef);
-		virtual void DelNewStr(const UTF8Char *s);
 
 		Int32 GetInt32(const WChar *colName);
 		WChar *GetStr(const WChar *colName, WChar *buff);

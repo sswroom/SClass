@@ -29,6 +29,7 @@ namespace Data
 		Data::VariItem *GetItem(const UTF8Char *name);
 		void SetItemNull(const UTF8Char *name);
 		void SetItemStr(const UTF8Char *name, const UTF8Char *str);
+		void SetItemStr(const UTF8Char *name, Text::String *str);
 		void SetItemDate(const UTF8Char *name, Data::DateTime *dt);
 		void SetItemF32(const UTF8Char *name, Single val);
 		void SetItemF64(const UTF8Char *name, Double val);
@@ -44,7 +45,6 @@ namespace Data
 		void SetItemByteArray(const UTF8Char *name, const UInt8 *arr, UOSInt cnt);
 		void SetItemVector(const UTF8Char *name, Math::Vector2D *vec);
 		void SetItemUUID(const UTF8Char *name, Data::UUID *uuid);
-		void SetItemStrDirect(const UTF8Char *name, const UTF8Char *str);
 		void SetItemDateDirect(const UTF8Char *name, Data::DateTime *dt);
 		void SetItemVectorDirect(const UTF8Char *name, Math::Vector2D *vec);
 		void SetItemUUIDDirect(const UTF8Char *name, Data::UUID *uuid);

@@ -26,15 +26,15 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		j = 1000;
 		while (j-- > 0)
 		{
-			NEW_CLASS(s, Text::String(sbuff2, Text::StrInt32(sbuff2, (Int32)j)));
+			s = Text::String::New(sbuff2, (UOSInt)(Text::StrInt32(sbuff2, (Int32)j) - sbuff2));
 			strs->Add(s);
 		}
 		Text::String *str = strs->JoinString();
-		DEL_CLASS(str);
+		str->Release();
 		j = strs->GetCount();
 		while (j-- > 0)
 		{
-			DEL_CLASS(strs->GetItem(j));
+			strs->GetItem(j)->Release();
 		}
 		DEL_CLASS(strs);
 	}

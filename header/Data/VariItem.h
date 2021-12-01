@@ -4,6 +4,7 @@
 #include "Data/ReadonlyArray.h"
 #include "Data/UUID.h"
 #include "Math/Vector2D.h"
+#include "Text/String.h"
 #include "Text/StringBuilderUTF.h"
 
 namespace Data
@@ -35,7 +36,7 @@ namespace Data
 	
 		union ItemValue
 		{
-			const UTF8Char *str;
+			Text::String *str;
 			Data::DateTime *date;
 			Single f32;
 			Double f64;
@@ -84,6 +85,7 @@ namespace Data
 
 		void SetNull();
 		void SetStr(const UTF8Char *str);
+		void SetStr(Text::String *str);
 		void SetDate(Data::DateTime *dt);
 		void SetF32(Single val);
 		void SetF64(Double val);
@@ -100,7 +102,6 @@ namespace Data
 		void SetByteArr(Data::ReadonlyArray<UInt8> *arr);
 		void SetVector(Math::Vector2D *vec);
 		void SetUUID(Data::UUID *uuid);
-		void SetStrDirect(const UTF8Char *str);
 		void SetDateDirect(Data::DateTime *dt);
 		void SetVectorDirect(Math::Vector2D *vec);
 		void SetUUIDDirect(Data::UUID *uuid);
@@ -111,6 +112,7 @@ namespace Data
 
 		static VariItem *NewNull();
 		static VariItem *NewStr(const UTF8Char *str);
+		static VariItem *NewStr(Text::String *str);
 		static VariItem *NewDate(Data::DateTime *dt);
 		static VariItem *NewF32(Single val);
 		static VariItem *NewF64(Double val);
@@ -127,7 +129,6 @@ namespace Data
 		static VariItem *NewByteArr(Data::ReadonlyArray<UInt8> *arr);
 		static VariItem *NewVector(Math::Vector2D *vec);
 		static VariItem *NewUUID(Data::UUID *uuid);
-		static VariItem *NewStrDirect(const UTF8Char *str);
 		static VariItem *NewDateDirect(Data::DateTime *dt);
 		static VariItem *NewVectorDirect(Math::Vector2D *vec);
 		static VariItem *NewUUIDDirect(Data::UUID *uuid);

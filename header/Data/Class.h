@@ -35,7 +35,7 @@ namespace Data
 		Bool AddField(const UTF8Char *name, Int64 *val);
 		Bool AddField(const UTF8Char *name, Single *val);
 		Bool AddField(const UTF8Char *name, Double *val);
-		Bool AddField(const UTF8Char *name, const UTF8Char **val);
+		Bool AddField(const UTF8Char *name, Text::String **val);
 		Bool AddField(const UTF8Char *name, Data::DateTime **val);
 		Bool AddField(const UTF8Char *name, Bool *val);
 		Bool AddField(const UTF8Char *name, Data::ReadonlyArray<UInt8> **val);

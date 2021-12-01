@@ -82,7 +82,7 @@ namespace DB
 		virtual Int64 GetInt64(UOSInt colIndex);
 		virtual WChar *GetStr(UOSInt colIndex, WChar *buff);
 		virtual Bool GetStr(UOSInt colIndex, Text::StringBuilderUTF *sb);
-		virtual const UTF8Char *GetNewStr(UOSInt colIndex);
+		virtual Text::String *GetNewStr(UOSInt colIndex);
 		virtual UTF8Char *GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSize);
 		virtual DateErrType GetDate(UOSInt colIndex, Data::DateTime *outVal);
 		virtual Double GetDbl(UOSInt colIndex);
@@ -96,7 +96,6 @@ namespace DB
 		virtual Bool IsNull(UOSInt colIndex);
 		virtual DB::DBUtil::ColType GetColType(UOSInt colIndex, UOSInt *colSize);
 		virtual Bool GetColDef(UOSInt colIndex, DB::ColDef *colDef);
-		virtual void DelNewStr(const UTF8Char *s);
 	};
 }
 #endif

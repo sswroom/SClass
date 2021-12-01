@@ -33,7 +33,7 @@ void Data::VariItem::FreeItem()
 	case ItemType::BOOL:
 		break;
 	case ItemType::Str:
-		Text::StrDelNew(this->val.str);
+		this->val.str->Release();
 		break;
 	case ItemType::Date:
 		DEL_CLASS(this->val.date);
@@ -98,7 +98,7 @@ Single Data::VariItem::GetAsF32()
 	case ItemType::BOOL:
 		return (Single)(this->val.boolean?1:0);
 	case ItemType::Str:
-		return (Single)Text::StrToDouble(this->val.str);
+		return (Single)Text::StrToDouble(this->val.str->v);
 	case ItemType::Date:
 	case ItemType::ByteArr:
 	case ItemType::Vector:
@@ -137,7 +137,7 @@ Double Data::VariItem::GetAsF64()
 	case ItemType::BOOL:
 		return this->val.boolean?1:0;
 	case ItemType::Str:
-		return Text::StrToDouble(this->val.str);
+		return Text::StrToDouble(this->val.str->v);
 	case ItemType::Date:
 	case ItemType::ByteArr:
 	case ItemType::Vector:
@@ -176,7 +176,7 @@ Int8 Data::VariItem::GetAsI8()
 	case ItemType::BOOL:
 		return this->val.boolean?1:0;
 	case ItemType::Str:
-		return (Int8)Text::StrToInt32(this->val.str);
+		return (Int8)Text::StrToInt32(this->val.str->v);
 	case ItemType::Date:
 	case ItemType::ByteArr:
 	case ItemType::Vector:
@@ -215,7 +215,7 @@ UInt8 Data::VariItem::GetAsU8()
 	case ItemType::BOOL:
 		return this->val.boolean?1:0;
 	case ItemType::Str:
-		return (UInt8)Text::StrToUInt32(this->val.str);
+		return (UInt8)Text::StrToUInt32(this->val.str->v);
 	case ItemType::Date:
 	case ItemType::ByteArr:
 	case ItemType::Vector:
@@ -254,7 +254,7 @@ Int16 Data::VariItem::GetAsI16()
 	case ItemType::BOOL:
 		return this->val.boolean?1:0;
 	case ItemType::Str:
-		return (Int16)Text::StrToInt32(this->val.str);
+		return (Int16)Text::StrToInt32(this->val.str->v);
 	case ItemType::Date:
 	case ItemType::ByteArr:
 	case ItemType::Vector:
@@ -293,7 +293,7 @@ UInt16 Data::VariItem::GetAsU16()
 	case ItemType::BOOL:
 		return this->val.boolean?1:0;
 	case ItemType::Str:
-		return (UInt16)Text::StrToUInt32(this->val.str);
+		return (UInt16)Text::StrToUInt32(this->val.str->v);
 	case ItemType::Date:
 	case ItemType::ByteArr:
 	case ItemType::Vector:
@@ -332,7 +332,7 @@ Int32 Data::VariItem::GetAsI32()
 	case ItemType::BOOL:
 		return this->val.boolean?1:0;
 	case ItemType::Str:
-		return Text::StrToInt32(this->val.str);
+		return Text::StrToInt32(this->val.str->v);
 	case ItemType::Date:
 	case ItemType::ByteArr:
 	case ItemType::Vector:
@@ -371,7 +371,7 @@ UInt32 Data::VariItem::GetAsU32()
 	case ItemType::BOOL:
 		return this->val.boolean?1:0;
 	case ItemType::Str:
-		return Text::StrToUInt32(this->val.str);
+		return Text::StrToUInt32(this->val.str->v);
 	case ItemType::Date:
 	case ItemType::ByteArr:
 	case ItemType::Vector:
@@ -410,7 +410,7 @@ Int64 Data::VariItem::GetAsI64()
 	case ItemType::BOOL:
 		return this->val.boolean?1:0;
 	case ItemType::Str:
-		return Text::StrToInt64(this->val.str);
+		return Text::StrToInt64(this->val.str->v);
 	case ItemType::Date:
 	case ItemType::ByteArr:
 	case ItemType::Vector:
@@ -449,7 +449,7 @@ UInt64 Data::VariItem::GetAsU64()
 	case ItemType::BOOL:
 		return this->val.boolean?1:0;
 	case ItemType::Str:
-		return Text::StrToUInt64(this->val.str);
+		return Text::StrToUInt64(this->val.str->v);
 	case ItemType::Date:
 	case ItemType::ByteArr:
 	case ItemType::Vector:
@@ -509,7 +509,7 @@ void Data::VariItem::GetAsString(Text::StringBuilderUTF *sb)
 		sb->Append(this->val.boolean?(const UTF8Char*)"true":(const UTF8Char*)"false");
 		break;
 	case ItemType::Str:
-		sb->Append(this->val.str);
+		sb->Append(this->val.str->v);
 		return;
 	case ItemType::Date:
 		this->val.date->ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
@@ -541,7 +541,7 @@ Data::DateTime *Data::VariItem::GetAsNewDate()
 	{
 		NEW_CLASS(date, Data::DateTime());
 		date->SetCurrTime();
-		if (date->SetValue(this->val.str))
+		if (date->SetValue(this->val.str->v))
 		{
 			return date;
 		}
@@ -566,7 +566,7 @@ Math::Vector2D *Data::VariItem::GetAsNewVector()
 	if (this->itemType == ItemType::Str)
 	{
 		Math::WKTReader reader(0);
-		return reader.ParseWKT(this->val.str);
+		return reader.ParseWKT(this->val.str->v);
 	}
 	if (this->itemType != ItemType::Vector)
 		return 0;
@@ -594,7 +594,14 @@ void Data::VariItem::SetNull()
 void Data::VariItem::SetStr(const UTF8Char *str)
 {
 	this->FreeItem();
-	this->val.str = Text::StrCopyNew(str);
+	this->val.str = Text::String::New(str);
+	this->itemType = ItemType::Str;
+}
+
+void Data::VariItem::SetStr(Text::String *str)
+{
+	this->FreeItem();
+	this->val.str = str->Clone();
 	this->itemType = ItemType::Str;
 }
 
@@ -717,20 +724,6 @@ void Data::VariItem::SetUUID(Data::UUID *uuid)
 	this->itemType = ItemType::UUID;
 }
 
-void Data::VariItem::SetStrDirect(const UTF8Char *str)
-{
-	this->FreeItem();
-	if (str == 0)
-	{
-		this->itemType = ItemType::Null;
-	}
-	else
-	{
-		this->val.str = str;
-		this->itemType = ItemType::Str;
-	}
-}
-
 void Data::VariItem::SetDateDirect(Data::DateTime *dt)
 {
 	this->FreeItem();
@@ -799,7 +792,7 @@ void Data::VariItem::Set(VariItem *item)
 		this->val.boolean = item->val.boolean;
 		break;
 	case ItemType::Str:
-		this->val.str = SCOPY_TEXT(item->val.str);
+		this->val.str = item->val.str->Clone();
 		break;
 	case ItemType::Date:
 		NEW_CLASS(this->val.date, Data::DateTime(item->val.date));
@@ -862,7 +855,7 @@ Data::VariItem *Data::VariItem::Clone()
 		ival.boolean = this->val.boolean;
 		break;
 	case ItemType::Str:
-		ival.str = SCOPY_TEXT(this->val.str);
+		ival.str = this->val.str->Clone();
 		break;
 	case ItemType::Date:
 		NEW_CLASS(ival.date, Data::DateTime(this->val.date));
@@ -924,7 +917,7 @@ void Data::VariItem::ToString(Text::StringBuilderUTF *sb)
 		sb->Append(this->val.boolean?(const UTF8Char*)"true":(const UTF8Char*)"false");
 		break;
 	case ItemType::Str:
-		csptr = Text::JSText::ToNewJSTextDQuote(this->val.str);
+		csptr = Text::JSText::ToNewJSTextDQuote(this->val.str->v);
 		sb->Append(csptr);
 		Text::JSText::FreeNewText(csptr);
 		return;
@@ -968,7 +961,17 @@ Data::VariItem *Data::VariItem::NewStr(const UTF8Char *str)
 {
 	if (str == 0) return NewNull();
 	ItemValue ival;
-	ival.str = Text::StrCopyNew(str);
+	ival.str = Text::String::New(str);
+	Data::VariItem *item;
+	NEW_CLASS(item, Data::VariItem(ItemType::Str, ival));
+	return item;
+}
+
+Data::VariItem *Data::VariItem::NewStr(Text::String *str)
+{
+	if (str == 0) return NewNull();
+	ItemValue ival;
+	ival.str = str->Clone();
 	Data::VariItem *item;
 	NEW_CLASS(item, Data::VariItem(ItemType::Str, ival));
 	return item;
@@ -1123,16 +1126,6 @@ Data::VariItem *Data::VariItem::NewUUID(Data::UUID *uuid)
 	return item;
 }
 
-Data::VariItem *Data::VariItem::NewStrDirect(const UTF8Char *str)
-{
-	if (str == 0) return NewNull();
-	ItemValue ival;
-	ival.str = str;
-	Data::VariItem *item;
-	NEW_CLASS(item, Data::VariItem(ItemType::Str, ival));
-	return item;
-}
-
 Data::VariItem *Data::VariItem::NewDateDirect(Data::DateTime *dt)
 {
 	if (dt == 0) return NewNull();
@@ -1192,7 +1185,7 @@ Data::VariItem *Data::VariItem::NewFromPtr(void *ptr, ItemType itemType)
 	case ItemType::Null:
 		return NewNull();
 	case ItemType::Str:
-		return NewStr(*(const UTF8Char**)ptr);
+		return NewStr(*(Text::String**)ptr);
 	case ItemType::Date:
 		return NewDate(*(Data::DateTime**)ptr);
 	case ItemType::ByteArr:
@@ -1249,17 +1242,17 @@ void Data::VariItem::SetPtr(void *ptr, ItemType itemType, VariItem *item)
 	case ItemType::Str:
 		if (item->GetItemType() == ItemType::Null)
 		{
-			*(const UTF8Char**)ptr = 0;
+			*(Text::String**)ptr = 0;
 		}
 		else if (item->GetItemType() == ItemType::Str)
 		{
-			*(const UTF8Char**)ptr = Text::StrCopyNew(item->GetItemValue().str);
+			*(Text::String**)ptr = item->GetItemValue().str->Clone();
 		}
 		else
 		{
 			Text::StringBuilderUTF8 sb;
 			item->GetAsString(&sb);
-			*(const UTF8Char**)ptr = Text::StrCopyNew(sb.ToString());
+			*(Text::String**)ptr = Text::String::New(sb.ToString());
 		}
 		break;
 	case ItemType::Date:
@@ -1311,8 +1304,8 @@ Bool Data::VariItem::PtrEquals(void *ptr1, void *ptr2, ItemType itemType)
 		return true;
 	case ItemType::Str:
 		{
-			const UTF8Char *val1 = *(const UTF8Char**)ptr1;
-			const UTF8Char *val2 = *(const UTF8Char**)ptr2;
+			Text::String *val1 = *(Text::String**)ptr1;
+			Text::String *val2 = *(Text::String**)ptr2;
 			if (val1 == val2)
 			{
 				return true;
@@ -1321,7 +1314,7 @@ Bool Data::VariItem::PtrEquals(void *ptr1, void *ptr2, ItemType itemType)
 			{
 				return false;
 			}
-			return Text::StrEquals(val1, val2);
+			return Text::StrEquals(val1->v, val2->v);
 		}
 		break;
 	case ItemType::Date:

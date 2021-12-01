@@ -91,7 +91,7 @@ public:
 		return true;
 	}
 
-	virtual const UTF8Char *GetNewStr(UOSInt colIndex)
+	virtual Text::String *GetNewStr(UOSInt colIndex)
 	{
 		if (this->row == 0)
 			return 0;
@@ -99,7 +99,7 @@ public:
 			return 0;
 		if (this->row[colIndex] == 0)
 			return 0;
-		return Text::StrCopyNew(this->row[colIndex]);
+		return Text::String::New(this->row[colIndex]);
 	}
 
 	virtual UTF8Char *GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSize)
@@ -233,11 +233,6 @@ public:
 		colDef->SetNotNull(false);
 		colDef->SetPK(false);
 		return true;
-	}
-
-	virtual void DelNewStr(const UTF8Char *s)
-	{
-		Text::StrDelNew(s);
 	}
 };
 

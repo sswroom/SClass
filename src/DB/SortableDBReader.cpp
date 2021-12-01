@@ -350,12 +350,12 @@ Bool DB::SortableDBReader::GetStr(UOSInt colIndex, Text::StringBuilderUTF *sb)
 	return true;
 }
 
-const UTF8Char *DB::SortableDBReader::GetNewStr(UOSInt colIndex)
+Text::String *DB::SortableDBReader::GetNewStr(UOSInt colIndex)
 {
 	Text::StringBuilderUTF8 sb;
 	if (this->GetStr(colIndex, &sb))
 	{
-		return Text::StrCopyNew(sb.ToString());
+		return Text::String::New(sb.ToString());
 	}
 	return 0;
 }
@@ -530,9 +530,4 @@ Bool DB::SortableDBReader::GetColDef(UOSInt colIndex, DB::ColDef *colDef)
 	}
 	colDef->Set(c);
 	return true;
-}
-
-void DB::SortableDBReader::DelNewStr(const UTF8Char *s)
-{
-	Text::StrDelNew(s);
 }

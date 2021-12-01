@@ -115,7 +115,7 @@ OSInt Data::FieldComparator::Compare(VariItem *a, VariItem *b)
 		case Data::VariItem::ItemType::Null:
 			return 0;
 		case Data::VariItem::ItemType::Str:
-			return Text::StrCompare(a->GetItemValue().str, b->GetItemValue().str);
+			return Text::StrCompare(a->GetItemValue().str->v, b->GetItemValue().str->v);
 		case Data::VariItem::ItemType::Date:
 			return a->GetItemValue().date->CompareTo(b->GetItemValue().date);
 		case Data::VariItem::ItemType::F32:

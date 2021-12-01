@@ -90,7 +90,7 @@ Bool Data::Class::AddField(const UTF8Char *name, Double *val)
 	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::F64);
 }
 
-Bool Data::Class::AddField(const UTF8Char *name, const UTF8Char **val)
+Bool Data::Class::AddField(const UTF8Char *name, Text::String **val)
 {
 	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::Str);
 }
@@ -299,7 +299,7 @@ void Data::Class::ToCppClassSource(const UTF8Char *clsPrefix, const UTF8Char *cl
 		{
 		case Data::VariItem::ItemType::Str:
 			sb->AppendChar('\t', tabLev + 1);
-			sb->Append((const UTF8Char*)"SDEL_TEXT(this->");
+			sb->Append((const UTF8Char*)"SDEL_STRING(this->");
 			sb->Append(field->name);
 			sb->Append((const UTF8Char*)");\r\n");
 			break;
@@ -373,18 +373,31 @@ void Data::Class::ToCppClassSource(const UTF8Char *clsPrefix, const UTF8Char *cl
 		sb->Append((const UTF8Char*)")\r\n");
 		sb->AppendChar('\t', tabLev);
 		sb->Append((const UTF8Char*)"{\r\n");
-		sb->AppendChar('\t', tabLev + 1);
-		sb->Append((const UTF8Char*)"this->");
-		sb->Append(field->name);
-		sb->Append((const UTF8Char*)" = ");
 		switch (field->itemType)
 		{
 		case Data::VariItem::ItemType::Str:
-			sb->Append((const UTF8Char*)"SCOPY_TEXT(");
+			sb->AppendChar('\t', tabLev + 1);
+			sb->Append((const UTF8Char*)"SDEL_STRING(this->");
 			sb->Append(field->name);
-			sb->AppendChar(')', 1);
+			sb->Append((const UTF8Char*)");\r\n");
+			sb->AppendChar('\t', tabLev + 1);
+			sb->Append((const UTF8Char*)"this->");
+			sb->Append(field->name);
+			sb->Append((const UTF8Char*)" = ");
+			sb->Append(field->name);
+			sb->Append((const UTF8Char*)"?");
+			sb->Append(field->name);
+			sb->Append((const UTF8Char*)"->Clone():0");
 			break;
 		case Data::VariItem::ItemType::Date:
+			sb->AppendChar('\t', tabLev + 1);
+			sb->Append((const UTF8Char*)"SDEL_CLASS(this->");
+			sb->Append(field->name);
+			sb->Append((const UTF8Char*)");\r\n");
+			sb->AppendChar('\t', tabLev + 1);
+			sb->Append((const UTF8Char*)"this->");
+			sb->Append(field->name);
+			sb->Append((const UTF8Char*)" = ");
 			sb->Append(field->name);
 			sb->Append((const UTF8Char*)"?(NEW_CLASS_D(Data::DateTime(");
 			sb->Append(field->name);
@@ -393,6 +406,14 @@ void Data::Class::ToCppClassSource(const UTF8Char *clsPrefix, const UTF8Char *cl
 		case Data::VariItem::ItemType::ByteArr:
 		case Data::VariItem::ItemType::Vector:
 		case Data::VariItem::ItemType::UUID:
+			sb->AppendChar('\t', tabLev + 1);
+			sb->Append((const UTF8Char*)"SDEL_CLASS(this->");
+			sb->Append(field->name);
+			sb->Append((const UTF8Char*)");\r\n");
+			sb->AppendChar('\t', tabLev + 1);
+			sb->Append((const UTF8Char*)"this->");
+			sb->Append(field->name);
+			sb->Append((const UTF8Char*)" = ");
 			sb->Append(field->name);
 			sb->Append((const UTF8Char*)"?");
 			sb->Append(field->name);
@@ -412,6 +433,10 @@ void Data::Class::ToCppClassSource(const UTF8Char *clsPrefix, const UTF8Char *cl
 		case Data::VariItem::ItemType::Unknown:
 		case Data::VariItem::ItemType::Null:
 		default:
+			sb->AppendChar('\t', tabLev + 1);
+			sb->Append((const UTF8Char*)"this->");
+			sb->Append(field->name);
+			sb->Append((const UTF8Char*)" = ");
 			sb->Append(field->name);
 			break;
 		}

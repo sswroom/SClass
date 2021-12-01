@@ -1791,7 +1791,7 @@ Bool DB::ODBCReader::GetStr(UOSInt colIndex, Text::StringBuilderUTF *sb)
 	return 0;
 }
 
-const UTF8Char *DB::ODBCReader::GetNewStr(UOSInt colIndex)
+Text::String *DB::ODBCReader::GetNewStr(UOSInt colIndex)
 {
 	UTF8Char sbuff[32];
 	if (colIndex >= this->colCnt)
@@ -1805,31 +1805,31 @@ const UTF8Char *DB::ODBCReader::GetNewStr(UOSInt colIndex)
 	case DB::DBUtil::CT_NChar:
 	case DB::DBUtil::CT_NVarChar:
 	case DB::DBUtil::CT_UUID:
-		return Text::StrCopyNew(((Text::StringBuilderUTF8*)this->colDatas[colIndex].colData)->ToString());
+		return Text::String::New(((Text::StringBuilderUTF8*)this->colDatas[colIndex].colData)->ToString());
 	case DB::DBUtil::CT_Double:
 	case DB::DBUtil::CT_Float:
 		Text::StrDouble(sbuff, *(Double*)&this->colDatas[colIndex].dataVal);
-		return Text::StrCopyNew(sbuff);
+		return Text::String::New(sbuff);
 	case DB::DBUtil::CT_Int16:
 	case DB::DBUtil::CT_Int32:
 	case DB::DBUtil::CT_Byte:
 	case DB::DBUtil::CT_Int64:
 	case DB::DBUtil::CT_Bool:
 		Text::StrInt64(sbuff, this->colDatas[colIndex].dataVal);
-		return Text::StrCopyNew(sbuff);
+		return Text::String::New(sbuff);
 	case DB::DBUtil::CT_UInt64:
 		Text::StrUInt64(sbuff, (UInt64)this->colDatas[colIndex].dataVal);
-		return Text::StrCopyNew(sbuff);
+		return Text::String::New(sbuff);
 	case DB::DBUtil::CT_UInt32:
 		Text::StrUInt32(sbuff, (UInt32)this->colDatas[colIndex].dataVal);
-		return Text::StrCopyNew(sbuff);
+		return Text::String::New(sbuff);
 	case DB::DBUtil::CT_UInt16:
 		Text::StrUInt16(sbuff, (UInt16)this->colDatas[colIndex].dataVal);
-		return Text::StrCopyNew(sbuff);
+		return Text::String::New(sbuff);
 	case DB::DBUtil::CT_DateTime:
 	case DB::DBUtil::CT_DateTime2:
 		((Data::DateTime*)this->colDatas[colIndex].colData)->ToString(sbuff);
-		return Text::StrCopyNew(sbuff);
+		return Text::String::New(sbuff);
 	case DB::DBUtil::CT_Binary:
 		return 0;
 	case DB::DBUtil::CT_Vector:
@@ -1841,7 +1841,7 @@ const UTF8Char *DB::ODBCReader::GetNewStr(UOSInt colIndex)
 				Math::WKTWriter wkt;
 				wkt.GenerateWKT(&sb, vec);
 				DEL_CLASS(vec);
-				return Text::StrCopyNew(sb.ToString());
+				return Text::String::New(sb.ToString());
 			}
 		}
 		return 0;
@@ -2197,14 +2197,6 @@ Bool DB::ODBCReader::GetColDef(UOSInt colIndex, DB::ColDef *colDef)
 	colDef->SetDefVal(0);
 	colDef->SetAttr(0);
 	return true;
-}
-
-void DB::ODBCReader::DelNewStr(const UTF8Char *s)
-{
-	if (s)
-	{
-		Text::StrDelNew(s);
-	}
 }
 
 DB::DBUtil::ColType DB::ODBCReader::ODBCType2DBType(Int16 odbcType, UOSInt colSize)

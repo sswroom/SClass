@@ -213,14 +213,14 @@ namespace DB
 			return true;
 		}
 
-		virtual const UTF8Char *GetNewStr(UOSInt colIndex)
+		virtual Text::String *GetNewStr(UOSInt colIndex)
 		{
 			if (this->rows == 0 || colIndex >= this->colCount)
 				return 0;
 			const UTF8Char **row = this->rows->GetItem((UOSInt)this->rowIndex);
 			if (row == 0 || row[colIndex] == 0)
 				return 0;
-			return Text::StrCopyNew(row[colIndex]);
+			return Text::String::New(row[colIndex]);
 		}
 
 		virtual UTF8Char *GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSize)

@@ -263,7 +263,7 @@ public:
 		return true;
 	}
 
-	virtual const UTF8Char *GetNewStr(UOSInt colIndex)
+	virtual Text::String *GetNewStr(UOSInt colIndex)
 	{
 		if (this->currRow == 0)
 		{
@@ -277,7 +277,7 @@ public:
 		{
 			return 0;
 		}
-		return Text::StrCopyNew(this->currRow[colIndex]);
+		return Text::String::New(this->currRow[colIndex]);
 	}
 
 	virtual UTF8Char *GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSize)
@@ -429,11 +429,6 @@ public:
 			return true;
 		}
 		return false;
-	}
-
-	virtual void DelNewStr(const UTF8Char *s)
-	{
-		Text::StrDelNew(s);
 	}
 
 	void SetRowChanged(Int64 val)

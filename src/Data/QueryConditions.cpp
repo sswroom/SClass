@@ -470,7 +470,7 @@ Bool Data::QueryConditions::StringInCondition::TestValid(Data::VariItem *item)
 	switch (item->GetItemType())
 	{
 	case Data::VariItem::ItemType::Str:
-		csptr = item->GetItemValue().str;
+		csptr = item->GetItemValue().str->v;
 		i = this->vals->GetCount();
 		while (i-- > 0)
 		{
@@ -549,7 +549,7 @@ Bool Data::QueryConditions::StringContainsCondition::TestValid(Data::VariItem *i
 	switch (item->GetItemType())
 	{
 	case Data::VariItem::ItemType::Str:
-		return Text::StrIndexOf(item->GetItemValue().str, this->val) != INVALID_INDEX;
+		return Text::StrIndexOf(item->GetItemValue().str->v, this->val) != INVALID_INDEX;
 	case Data::VariItem::ItemType::F32:
 	case Data::VariItem::ItemType::F64:
 	case Data::VariItem::ItemType::I8:
@@ -615,7 +615,7 @@ Bool Data::QueryConditions::StringEqualsCondition::TestValid(Data::VariItem *ite
 	switch (item->GetItemType())
 	{
 	case Data::VariItem::ItemType::Str:
-		return Text::StrEquals(item->GetItemValue().str, this->val);
+		return Text::StrEquals(item->GetItemValue().str->v, this->val);
 	case Data::VariItem::ItemType::F32:
 	case Data::VariItem::ItemType::F64:
 	case Data::VariItem::ItemType::I8:

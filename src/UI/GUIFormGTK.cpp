@@ -323,7 +323,6 @@ void UI::GUIForm::SetExitOnClose(Bool exitOnClose)
 
 void UI::GUIForm::SetNoResize(Bool noResize)
 {
-	gtk_window_set_resizable((GtkWindow*)this->hwnd, noResize?FALSE:TRUE);
 	if (noResize)
 	{
 		if (this->lxPos2 < this->lxPos)
@@ -336,6 +335,7 @@ void UI::GUIForm::SetNoResize(Bool noResize)
 		}
 		gtk_widget_set_size_request((GtkWidget*)this->hwnd, Math::Double2Int32((this->lxPos2 - this->lxPos) * this->hdpi / 96.0), Math::Double2Int32((this->lyPos2 - this->lyPos) * this->hdpi / 96.0));
 	}
+	gtk_window_set_resizable((GtkWindow*)this->hwnd, noResize?FALSE:TRUE);
 }
 
 UI::GUITimer *UI::GUIForm::AddTimer(UInt32 interval, UI::UIEvent handler, void *userObj)

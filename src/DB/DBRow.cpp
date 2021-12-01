@@ -404,9 +404,9 @@ Bool DB::DBRow::SetByReader(DB::DBReader *r, Bool commit)
 				break;
 			case DT_STRING:
 				{
-					const UTF8Char *csptr = r->GetNewStr(i);
-					this->SetFieldStr(field, csptr);
-					r->DelNewStr(csptr);
+					Text::String *s = r->GetNewStr(i);
+					this->SetFieldStr(field, s->v);
+					s->Release();
 				}
 				break;
 			case DT_DOUBLE:

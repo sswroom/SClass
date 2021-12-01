@@ -1,21 +1,26 @@
 #ifndef _SM_TEXT_STRING
 #define _SM_TEXT_STRING
-#include "Data/IComparable.h"
 
 namespace Text
 {
-	class String : public Data::IComparable
+	struct String
 	{
-	public:
 		UOSInt leng;
-		const UTF8Char *strVal;
+		UOSInt cnt;
+		UTF8Char v[1];
 
-		String(const UTF8Char *str);
-		String(const UTF8Char *str, UTF8Char *strEnd);
-		String(UOSInt leng);
-		virtual ~String();
+		static String *New(const UTF8Char *str);
+		static String *New(const UTF8Char *str, UOSInt len);
+		static String *New(UOSInt len);
+		static String *New(const UTF16Char *str);
+		static String *New(const UTF32Char *str);
+		void Release();
+		String *Clone();
 
-		virtual OSInt CompareTo(Data::IComparable *obj);
+	private:
+		~String();
 	};
 }
+
+#define SDEL_STRING(s) if (s) { s->Release(); s = 0; }
 #endif

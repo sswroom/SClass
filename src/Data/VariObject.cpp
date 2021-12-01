@@ -58,6 +58,11 @@ void Data::VariObject::SetItemStr(const UTF8Char *name, const UTF8Char *str)
 	this->SetItem(name, Data::VariItem::NewStr(str));
 }
 
+void Data::VariObject::SetItemStr(const UTF8Char *name, Text::String *str)
+{
+	this->SetItem(name, Data::VariItem::NewStr(str));
+}
+
 void Data::VariObject::SetItemDate(const UTF8Char *name, Data::DateTime *dt)
 {
 	this->SetItem(name, Data::VariItem::NewDate(dt));
@@ -131,11 +136,6 @@ void Data::VariObject::SetItemVector(const UTF8Char *name, Math::Vector2D *vec)
 void Data::VariObject::SetItemUUID(const UTF8Char *name, Data::UUID *uuid)
 {
 	this->SetItem(name, Data::VariItem::NewUUID(uuid));
-}
-
-void Data::VariObject::SetItemStrDirect(const UTF8Char *name, const UTF8Char *str)
-{
-	this->SetItem(name, Data::VariItem::NewStrDirect(str));
 }
 
 void Data::VariObject::SetItemDateDirect(const UTF8Char *name, Data::DateTime *dt)

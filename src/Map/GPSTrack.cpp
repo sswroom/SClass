@@ -1327,12 +1327,12 @@ Bool Map::GPSDataReader::GetStr(UOSInt colIndex, Text::StringBuilderUTF *sb)
 	return false;
 }
 
-const UTF8Char *Map::GPSDataReader::GetNewStr(UOSInt colIndex)
+Text::String *Map::GPSDataReader::GetNewStr(UOSInt colIndex)
 {
 	UTF8Char sbuff[64];
 	if (this->GetStr(colIndex, sbuff, sizeof(sbuff)))
 	{
-		return Text::StrCopyNew(sbuff);
+		return Text::String::New(sbuff);
 	}
 	return 0;
 }
@@ -1584,11 +1584,6 @@ Bool Map::GPSDataReader::GetColDef(UOSInt colIndex, DB::ColDef *colDef)
 	default:
 		return false;
 	}
-}
-
-void Map::GPSDataReader::DelNewStr(const UTF8Char *s)
-{
-	Text::StrDelNew(s);
 }
 
 const UTF8Char *Map::GPSDataReader::GetName(UOSInt colIndex)

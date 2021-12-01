@@ -1,35 +1,70 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Text/String.h"
+#include "Sync/Interlocked.h"
 #include "Text/MyString.h"
-#include <memory.h>
+#include "Text/MyStringW.h"
+#include "Text/String.h"
 
-Text::String::String(const UTF8Char *str)
+Text::String *Text::String::New(const UTF8Char *str)
 {
-	this->leng = Text::StrCharCnt(str);
-	this->strVal = (const UTF8Char*)MemAlloc(UTF8Char, this->leng + 1);
-	MemCopyNO((void*)this->strVal, str, sizeof(UTF8Char) * (this->leng + 1));
+	UOSInt len = Text::StrCharCnt(str);
+	Text::String *s = (Text::String*)MAlloc(len + sizeof(String));
+	s->leng = len;
+	s->cnt = 1;
+	MemCopyNO(s->v, str, len + 1);
+	return s;
 }
 
-Text::String::String(const UTF8Char *str, UTF8Char *strEnd)
+Text::String *Text::String::New(const UTF8Char *str, UOSInt len)
 {
-	this->leng = (UOSInt)(strEnd - str);
-	this->strVal = (const UTF8Char*)MemAlloc(UTF8Char, this->leng + 1);
-	MemCopyNO((void*)this->strVal, str, sizeof(UTF8Char) * (this->leng + 1));
+	Text::String *s = (Text::String*)MAlloc(len + sizeof(String));
+	s->leng = len;
+	s->cnt = 1;
+	MemCopyNO(s->v, str, len);
+	s->v[len] = 0;
+	return s;
 }
 
-Text::String::String(UOSInt leng)
+Text::String *Text::String::New(UOSInt len)
 {
-	this->leng = leng;
-	this->strVal = (const UTF8Char*)MemAlloc(UTF8Char, this->leng + 1);
+	Text::String *s = (Text::String*)MAlloc(len + sizeof(String));
+	s->leng = len;
+	s->cnt = 1;
+	s->v[0] = 0;
+	return s;
+}
+
+Text::String *Text::String::New(const UTF16Char *str)
+{
+	UOSInt charCnt = Text::StrUTF16_UTF8Cnt(str);
+	Text::String *s = New(charCnt);
+	Text::StrUTF16_UTF8(s->v, str);
+	return s;
+}
+
+Text::String *Text::String::New(const UTF32Char *str)
+{
+	UOSInt charCnt = Text::StrUTF32_UTF8Cnt(str);
+	Text::String *s = New(charCnt);
+	Text::StrUTF32_UTF8(s->v, str);
+	return s;
+}
+
+void Text::String::Release()
+{
+	this->cnt--;
+	if (this->cnt == 0)
+	{
+		MemFree(this);
+	}
+}
+
+Text::String *Text::String::Clone()
+{
+	this->cnt++;
+	return this;
 }
 
 Text::String::~String()
 {
-	MemFree((void*)this->strVal);
-}
-
-OSInt Text::String::CompareTo(Data::IComparable *obj)
-{
-	return Text::StrCompare(this->strVal, ((Text::String*)obj)->strVal);
 }

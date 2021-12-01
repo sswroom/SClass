@@ -1351,7 +1351,7 @@ Bool DB::OLEDBReader::GetStr(UOSInt colIndex, Text::StringBuilderUTF *sb)
 	}
 }
 
-const UTF8Char *DB::OLEDBReader::GetNewStr(UOSInt colIndex)
+Text::String *DB::OLEDBReader::GetNewStr(UOSInt colIndex)
 {
 	ClassDataR *data = (ClassDataR*)this->clsData;
 	if (!data->rowValid || colIndex >= data->nCols)
@@ -1371,14 +1371,14 @@ const UTF8Char *DB::OLEDBReader::GetNewStr(UOSInt colIndex)
 			WChar *tmpBuff = MemAlloc(WChar, (*valLen / sizeof(WChar*)) + 1);
 			MemCopyNO(tmpBuff, val, *valLen);
 			tmpBuff[*valLen / sizeof(WChar*)] = 0;
-			const UTF8Char *ret = Text::StrToUTF8New(tmpBuff);
+			Text::String *ret = Text::String::New(tmpBuff);
 			MemFree(tmpBuff);
 			return ret;
 		}
 	default:
 		if (GetStr(colIndex, sbuff))
 		{
-			return Text::StrToUTF8New(sbuff);
+			return Text::String::New(sbuff);
 		}
 		return 0;
 	}
@@ -1717,11 +1717,6 @@ Bool DB::OLEDBReader::GetColDef(UOSInt colIndex, DB::ColDef *colDef)
 	colDef->SetAutoInc((data->dbColInfo[colIndex].dwFlags & DBCOLUMNFLAGS_ISROWVER) != 0);
 
 	return true;
-}
-
-void DB::OLEDBReader::DelNewStr(const UTF8Char *s)
-{
-	Text::StrDelNew(s);
 }
 
 DB::DBUtil::ColType DB::OLEDBReader::DBType2ColType(UInt16 dbType)

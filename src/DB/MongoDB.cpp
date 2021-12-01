@@ -270,14 +270,14 @@ Bool DB::MongoDBReader::GetStr(UOSInt colIndex, Text::StringBuilderUTF *sb)
 	}
 }
 
-const UTF8Char *DB::MongoDBReader::GetNewStr(UOSInt colIndex)
+Text::String *DB::MongoDBReader::GetNewStr(UOSInt colIndex)
 {
 	if (colIndex != 0)
 		return 0;
 	if (this->doc)
 	{
 		char *str = bson_as_canonical_extended_json((const bson_t*)this->doc, 0);
-		const UTF8Char *ret = Text::StrCopyNew((const UTF8Char*)str);
+		Text::String *ret = Text::String::New((const UTF8Char*)str);
 		bson_free(str);
 		return ret;
 	}
@@ -384,9 +384,4 @@ Bool DB::MongoDBReader::GetColDef(UOSInt colIndex, DB::ColDef *colDef)
 	colDef->SetNotNull(true);
 	colDef->SetPK(false);
 	return true;
-}
-
-void DB::MongoDBReader::DelNewStr(const UTF8Char *s)
-{
-	Text::StrDelNew(s);
 }

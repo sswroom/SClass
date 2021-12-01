@@ -562,7 +562,7 @@ Bool DB::MySQLReader::GetStr(UOSInt colIndex, Text::StringBuilderUTF *sb)
 	}
 }
 
-const UTF8Char *DB::MySQLReader::GetNewStr(UOSInt colIndex)
+Text::String *DB::MySQLReader::GetNewStr(UOSInt colIndex)
 {
 	if (this->row == 0)
 		return 0;
@@ -570,7 +570,7 @@ const UTF8Char *DB::MySQLReader::GetNewStr(UOSInt colIndex)
 		return 0;
 	if (((MYSQL_ROW)this->row)[colIndex])
 	{
-		return Text::StrCopyNew((const UTF8Char*)((MYSQL_ROW)this->row)[colIndex]);
+		return Text::String::New((const UTF8Char*)((MYSQL_ROW)this->row)[colIndex]);
 	}
 	else
 	{
@@ -743,11 +743,6 @@ Bool DB::MySQLReader::GetColDef(UOSInt colIndex, DB::ColDef *colDef)
 	colDef->SetNotNull((field->flags & NOT_NULL_FLAG) != 0);
 	colDef->SetPK((field->flags & PRI_KEY_FLAG) != 0);
 	return true;
-}
-
-void DB::MySQLReader::DelNewStr(const UTF8Char *s)
-{
-	MemFree((WChar*)s);
 }
 
 DB::DBUtil::ColType DB::MySQLReader::ToColType(Int32 dbType, UInt32 flags, UOSInt colSize)

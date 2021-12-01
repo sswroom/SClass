@@ -22,7 +22,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	i = 10000;
 	while (i-- > 0)
 	{
-		NEW_CLASS(strArr[i], Text::String((const UTF8Char*)"1234567890"));
+		strArr[i] = Text::String::New((const UTF8Char*)"1234567890");
 	}
 
 	clk->Start();
@@ -37,7 +37,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		}
 		str = a->JoinString();
 		DEL_CLASS(a);
-		DEL_CLASS(str);
+		str->Release();
 	}
 	t1 = clk->GetTimeDiff();
 	Text::StringBuilderUTF8 sb;
@@ -48,7 +48,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	i = 10000;
 	while (i-- > 0)
 	{
-		DEL_CLASS(strArr[i]);
+		strArr[i]->Release();
 	}
 	DEL_CLASS(clk);
 	return 0;
