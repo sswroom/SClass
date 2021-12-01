@@ -147,6 +147,7 @@ BTScanner.o: ../../src/IO/BTScannerNull.cpp
 HIDInfo.o: ../../src/IO/HIDInfoW.cpp
 I2CChannelOS.o: ../../src/IO/I2CChannelOSNull.cpp
 OS.o: ../../src/IO/OSW.cpp
+!-lversion
 SDCardMgr.o: ../../src/IO/SDCardMgrW.cpp
 SensorAccelerometerW.o: ../../src/IO/SensorAccelerometerW.cpp
 SensorManager.o: ../../src/IO/SensorManagerW.cpp

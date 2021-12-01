@@ -201,7 +201,7 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char 
 					while (m < n)
 					{
 						Text::SpreadSheet::Worksheet::CellData *cell = row->cells->GetItem(m);
-						if (cell && cell->cdt != Text::SpreadSheet::CellDataType::MergedLeft && cell->cdt != Text::SpreadSheet::CellDataType::MergedTop)
+						if (cell && cell->cellValue && cell->cdt != Text::SpreadSheet::CellDataType::MergedLeft && cell->cdt != Text::SpreadSheet::CellDataType::MergedTop)
 						{
 							sb.Append((const UTF8Char*)"<c r=\"");
 							Text::StrUOSInt(Text::SpreadSheet::Workbook::ColCode(sbuff, m), k + 1);

@@ -686,26 +686,54 @@ const WChar *Text::XML::ToNewHTMLText(const WChar *text)
 
 const UTF8Char *Text::XML::ToNewAttrText(const UTF8Char *text)
 {
-	UOSInt cnt = GetXMLTextLen(text) + 3;
-	UTF8Char *dptr = MemAlloc(UTF8Char, cnt);
-	UTF8Char *buff = dptr;
-	*buff++ = '"';
-	buff = ToXMLText(buff, text);
-	*buff++ = '"';
-	*buff = 0;
-	return dptr;
+	UTF8Char *dptr;
+	UTF8Char *buff;
+	if (text == 0)
+	{
+		dptr = MemAlloc(UTF8Char, 3);
+		buff = dptr;
+		*buff++ = '"';
+		*buff++ = '"';
+		*buff = 0;
+		return dptr;
+	}
+	else
+	{
+		UOSInt cnt = GetXMLTextLen(text) + 3;
+		dptr = MemAlloc(UTF8Char, cnt);
+		buff = dptr;
+		*buff++ = '"';
+		buff = ToXMLText(buff, text);
+		*buff++ = '"';
+		*buff = 0;
+		return dptr;
+	}
 }
 
 const WChar *Text::XML::ToNewAttrText(const WChar *text)
 {
-	UOSInt cnt = GetXMLTextLen(text) + 3;
-	WChar *dptr = MemAlloc(WChar, cnt);
-	WChar *buff = dptr;
-	*buff++ = '"';
-	buff = ToXMLText(buff, text);
-	*buff++ = '"';
-	*buff = 0;
-	return dptr;
+	WChar *dptr;
+	WChar *buff;
+	if (text == 0)
+	{
+		dptr = MemAlloc(WChar, 3);
+		buff = dptr;
+		*buff++ = '"';
+		*buff++ = '"';
+		*buff = 0;
+		return dptr;
+	}
+	else
+	{
+		UOSInt cnt = GetXMLTextLen(text) + 3;
+		dptr = MemAlloc(WChar, cnt);
+		buff = dptr;
+		*buff++ = '"';
+		buff = ToXMLText(buff, text);
+		*buff++ = '"';
+		*buff = 0;
+		return dptr;
+	}
 }
 
 void Text::XML::FreeNewText(const UTF8Char *text)
