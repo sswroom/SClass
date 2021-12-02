@@ -217,6 +217,7 @@ namespace SSWR
 			UInt32 scnSize;
 			const UTF8Char *reloadPwd;
 			Net::SocketFactory *sockf;
+			Net::SSLEngine *ssl;
 			IO::LogTool *log;
 			Net::WebServer::WebListener *listener;
 			Sync::Mutex *parserMut;
@@ -342,7 +343,7 @@ namespace SSWR
 			IO::ConfigFile *LangGet(Net::WebServer::IWebRequest *req);
 			static const UTF8Char *LangGetValue(IO::ConfigFile *lang, const UTF8Char *name);
 		public:
-			OrganWebHandler(Net::SocketFactory *sockf, IO::LogTool *log, DB::DBTool *db, const UTF8Char *imageDir, UInt16 port, const UTF8Char *cacheDir, const UTF8Char *dataDir, UInt32 scnSize, const UTF8Char *reloadPwd, Int32 unorganizedGroupId, Media::DrawEngine *eng);
+			OrganWebHandler(Net::SocketFactory *sockf, Net::SSLEngine *ssl, IO::LogTool *log, DB::DBTool *db, const UTF8Char *imageDir, UInt16 port, const UTF8Char *cacheDir, const UTF8Char *dataDir, UInt32 scnSize, const UTF8Char *reloadPwd, Int32 unorganizedGroupId, Media::DrawEngine *eng);
 			virtual ~OrganWebHandler();
 
 			Bool IsError();

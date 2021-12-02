@@ -9554,10 +9554,11 @@ const UTF8Char *SSWR::OrganMgr::OrganWebHandler::LangGetValue(IO::ConfigFile *la
 	return name;
 }
 
-SSWR::OrganMgr::OrganWebHandler::OrganWebHandler(Net::SocketFactory *sockf, IO::LogTool *log, DB::DBTool *db, const UTF8Char *imageDir, UInt16 port, const UTF8Char *cacheDir, const UTF8Char *dataDir, UInt32 scnSize, const UTF8Char *reloadPwd, Int32 unorganizedGroupId, Media::DrawEngine *eng)
+SSWR::OrganMgr::OrganWebHandler::OrganWebHandler(Net::SocketFactory *sockf, Net::SSLEngine *ssl, IO::LogTool *log, DB::DBTool *db, const UTF8Char *imageDir, UInt16 port, const UTF8Char *cacheDir, const UTF8Char *dataDir, UInt32 scnSize, const UTF8Char *reloadPwd, Int32 unorganizedGroupId, Media::DrawEngine *eng)
 {
 	this->imageDir = Text::StrCopyNew(imageDir);
 	this->sockf = sockf;
+	this->ssl = ssl;
 	this->log = log;
 	this->scnSize = scnSize;
 	this->dataDir = Text::StrCopyNew(dataDir);
@@ -9661,7 +9662,7 @@ SSWR::OrganMgr::OrganWebHandler::OrganWebHandler(Net::SocketFactory *sockf, IO::
 		this->AddService((const UTF8Char*)"/cate.html", Net::WebServer::IWebRequest::RequestMethod::HTTP_GET, SvcCate);
 		this->AddService((const UTF8Char*)"/favicon.ico", Net::WebServer::IWebRequest::RequestMethod::HTTP_GET, SvcFavicon);
 
-		NEW_CLASS(this->listener, Net::WebServer::WebListener(this->sockf, 0, this, port, 30, 10, (const UTF8Char*)"OrganWeb/1.0", false, true));
+		NEW_CLASS(this->listener, Net::WebServer::WebListener(this->sockf, this->ssl, this, port, 30, 10, (const UTF8Char*)"OrganWeb/1.0", false, true));
 		this->Reload();
 	}
 }
