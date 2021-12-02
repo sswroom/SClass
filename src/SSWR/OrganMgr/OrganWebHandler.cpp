@@ -2509,8 +2509,6 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroup(Net::WebServer::IWebReq
 		const UTF8Char *txt;
 		IO::MemoryStream *mstm;
 		IO::Writer *writer;
-		UOSInt buffSize;
-		UInt8 *buff;
 		UOSInt i;
 		UOSInt j;
 		Text::StringBuilderUTF8 sb;
@@ -2949,8 +2947,6 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroupMod(Net::WebServer::IWeb
 	Text::UTF8Writer *writer;
 	UOSInt i;
 	UOSInt j;
-	UInt8 *buff;
-	UOSInt buffSize;
 	me->ParseRequestEnv(req, resp, &env, false);
 
 	if (env.user == 0 || env.user->userType != 0)
@@ -3265,8 +3261,6 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpecies(Net::WebServer::IWebR
 		const UTF8Char *txt;
 		IO::MemoryStream *mstm;
 		IO::Writer *writer;
-		UOSInt buffSize;
-		UInt8 *buff;
 		UOSInt i;
 		UOSInt j;
 		UTF8Char sbuff[512];
@@ -3970,8 +3964,6 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpeciesMod(Net::WebServer::IW
 	SSWR::OrganMgr::OrganWebHandler::RequestEnv env;
 	IO::MemoryStream *mstm;
 	Text::UTF8Writer *writer;
-	UInt8 *buff;
-	UOSInt buffSize;
 	me->ParseRequestEnv(req, resp, &env, false);
 
 	if (env.user == 0 || env.user->userType != 0)
@@ -4238,8 +4230,6 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcList(Net::WebServer::IWebRequ
 		const UTF8Char *txt;
 		IO::MemoryStream *mstm;
 		IO::Writer *writer;
-		UOSInt buffSize;
-		UInt8 *buff;
 		UOSInt i;
 		UOSInt j;
 		Text::StringBuilderUTF8 sb;
@@ -4454,8 +4444,6 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 		const UTF8Char *txt;
 		IO::MemoryStream *mstm;
 		IO::Writer *writer;
-		UOSInt buffSize;
-		UInt8 *buff;
 		UOSInt i;
 		UOSInt j;
 		UTF8Char u8buff[512];
@@ -5526,8 +5514,6 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetailD(Net::WebServer::
 		const UTF8Char *txt;
 		IO::MemoryStream *mstm;
 		IO::Writer *writer;
-		UOSInt buffSize;
-		UInt8 *buff;
 
 		UTF8Char u8buff[512];
 		UTF8Char u8buff2[512];
@@ -5789,8 +5775,6 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoYear(Net::WebServer::IWe
 		IO::Writer *writer;
 		Data::DateTime dt;
 		Data::DateTime dt2;
-		UOSInt buffSize;
-		UInt8 *buff;
 		UTF8Char sbuff[32];
 
 		NEW_CLASS(mstm, IO::MemoryStream((const UTF8Char*)"SSWR::OrganMgr::OrganWebHandler.SvcPhotoYear"));
@@ -6091,8 +6075,6 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDay(Net::WebServer::IWeb
 		IO::MemoryStream *mstm;
 		IO::Writer *writer;
 		Data::DateTime dt;
-		UOSInt buffSize;
-		UInt8 *buff;
 		UTF8Char sbuff[32];
 		const UTF8Char *txt;
 
@@ -6316,8 +6298,6 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoUpload(Net::WebServer::I
 	const UInt8 *fileCont;
 	IO::MemoryStream *mstm;
 	Text::UTF8Writer *writer;
-	UInt8 *buff;
-	UOSInt buffSize;
 	const UTF8Char *csptr;
 	req->ParseHTTPForm();
 
@@ -6457,8 +6437,6 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSearchInside(Net::WebServer::
 		const UTF8Char *txt;
 		IO::MemoryStream *mstm;
 		IO::Writer *writer;
-		UOSInt buffSize;
-		UInt8 *buff;
 		UOSInt i;
 		UOSInt j;
 		Text::StringBuilderUTF8 sb;
@@ -6660,8 +6638,6 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSearchInsideMoreS(Net::WebSer
 		const UTF8Char *txt;
 		IO::MemoryStream *mstm;
 		IO::Writer *writer;
-		UOSInt buffSize;
-		UInt8 *buff;
 		UOSInt i;
 		UOSInt j;
 		Text::StringBuilderUTF8 sb;
@@ -6844,8 +6820,6 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSearchInsideMoreG(Net::WebSer
 		const UTF8Char *txt;
 		IO::MemoryStream *mstm;
 		IO::Writer *writer;
-		UOSInt buffSize;
-		UInt8 *buff;
 		UOSInt i;
 		UOSInt j;
 		Text::StringBuilderUTF8 sb;
@@ -7028,8 +7002,6 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcBookList(Net::WebServer::IWeb
 		SSWR::OrganMgr::OrganWebHandler::BookInfo *book;
 		SSWR::OrganMgr::OrganWebHandler::CategoryInfo *cate;
 		Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::BookInfo*> *bookList;
-		UOSInt buffSize;
-		UInt8 *buff;
 		UOSInt i;
 		UOSInt j;
 		Text::StringBuilderUTF8 sb;
@@ -7170,8 +7142,6 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcBook(Net::WebServer::IWebRequ
 		Data::StringUTF8Map<SSWR::OrganMgr::OrganWebHandler::SpeciesInfo*> speciesMap;
 		Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::SpeciesInfo*> *speciesList;
 		Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::SpeciesInfo*> tempList;
-		UOSInt buffSize;
-		UInt8 *buff;
 		UOSInt i;
 		UOSInt j;
 		IO::ConfigFile *lang = me->LangGet(req);
@@ -7428,8 +7398,6 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcLogin(Net::WebServer::IWebReq
 	IO::MemoryStream *mstm;
 	IO::Writer *writer;
 	Data::DateTime dt;
-	UOSInt buffSize;
-	UInt8 *buff;
 	UTF8Char sbuff[128];
 
 	if (env.user)
@@ -7532,8 +7500,6 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcReload(Net::WebServer::IWebRe
 		IO::MemoryStream *mstm;
 		IO::Writer *writer;
 		Data::DateTime dt;
-		UOSInt buffSize;
-		UInt8 *buff;
 
 		NEW_CLASS(mstm, IO::MemoryStream((const UTF8Char*)"SSWR::OrganMgr::OrganWebHandler.SvcReload"));
 		NEW_CLASS(writer, Text::UTF8Writer(mstm));
@@ -7596,8 +7562,6 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcRestart(Net::WebServer::IWebR
 		IO::MemoryStream *mstm;
 		IO::Writer *writer;
 		Data::DateTime dt;
-		UOSInt buffSize;
-		UInt8 *buff;
 
 		NEW_CLASS(mstm, IO::MemoryStream((const UTF8Char*)"SSWR.OrganMgr.OrganWebHandler.SvcRestart"));
 		NEW_CLASS(writer, Text::UTF8Writer(mstm));
@@ -7657,8 +7621,6 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcIndex(Net::WebServer::IWebReq
 	IO::MemoryStream *mstm;
 	IO::Writer *writer;
 	Data::DateTime dt;
-	UOSInt buffSize;
-	UInt8 *buff;
 	UTF8Char sbuff[32];
 
 	NEW_CLASS(mstm, IO::MemoryStream((const UTF8Char*)"SSWR::OrganMgr::OrganWebHandler.SvcIndex"));
@@ -7779,8 +7741,6 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcCate(Net::WebServer::IWebRequ
 		const UTF8Char *txt;
 		IO::MemoryStream *mstm;
 		IO::Writer *writer;
-		UOSInt buffSize;
-		UInt8 *buff;
 		UOSInt i;
 		UOSInt j;
 		Text::StringBuilderUTF8 sb;
@@ -8149,9 +8109,10 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhoto(Net::WebServer::IWebRequest 
 						exporter.DeleteParam(param);
 						ResponseMstm(req, resp, mstm, (const UTF8Char*)"image/jpeg");
 
-						if (this->cacheDir && imgWidth == PREVIEW_SIZE && imgHeight == PREVIEW_SIZE && buffSize > 0)
+						if (this->cacheDir && imgWidth == PREVIEW_SIZE && imgHeight == PREVIEW_SIZE && mstm->GetLength() > 0)
 						{
 							NEW_CLASS(fs, IO::FileStream(u8buff, IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+							buff = mstm->GetBuff(&buffSize);
 							fs->Write(buff, buffSize);
 							DEL_CLASS(fs);
 						}
@@ -8447,6 +8408,7 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhotoId(Net::WebServer::IWebReques
 					if (this->cacheDir && imgWidth == PREVIEW_SIZE && imgHeight == PREVIEW_SIZE)
 					{
 						NEW_CLASS(fs, IO::FileStream(u8buff2, IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+						buff = mstm->GetBuff(&buffSize);
 						fs->Write(buff, buffSize);
 						DEL_CLASS(fs);
 						if (userFile->prevUpdated)
@@ -8475,6 +8437,7 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhotoId(Net::WebServer::IWebReques
 					if (this->cacheDir && imgWidth == PREVIEW_SIZE && imgHeight == PREVIEW_SIZE)
 					{
 						NEW_CLASS(fs, IO::FileStream(u8buff2, IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+						buff = mstm->GetBuff(&buffSize);
 						fs->Write(buff, buffSize);
 						DEL_CLASS(fs);
 						if (userFile->prevUpdated)
@@ -8690,6 +8653,7 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhotoWId(Net::WebServer::IWebReque
 					if (this->cacheDir && imgWidth == PREVIEW_SIZE && imgHeight == PREVIEW_SIZE)
 					{
 						NEW_CLASS(fs, IO::FileStream(u8buff2, IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+						buff = mstm->GetBuff(&buffSize);
 						fs->Write(buff, buffSize);
 						DEL_CLASS(fs);
 						if (wfile->prevUpdated)
