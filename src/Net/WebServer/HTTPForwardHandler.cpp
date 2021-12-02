@@ -12,12 +12,11 @@ const UTF8Char *Net::WebServer::HTTPForwardHandler::GetNextURL(Net::WebServer::I
 	return this->forwardAddrs->GetItem(i);
 }
 
-Net::WebServer::HTTPForwardHandler::HTTPForwardHandler(Net::SocketFactory *sockf, Net::SSLEngine *ssl, const UTF8Char *forwardURL)
+Net::WebServer::HTTPForwardHandler::HTTPForwardHandler(Net::SocketFactory *sockf, Net::SSLEngine *ssl, const UTF8Char *forwardURL, ForwardType fwdType)
 {
 	this->sockf = sockf;
 	this->ssl = ssl;
-	this->xForwardHeaders = true;
-	this->locationRemap = true;
+	this->fwdType = fwdType;
 	NEW_CLASS(this->forwardAddrs, Data::ArrayList<const UTF8Char*>());
 	NEW_CLASS(this->injHeaders, Data::ArrayList<const UTF8Char*>());
 	this->forwardAddrs->Add(Text::StrCopyNew(forwardURL));
@@ -126,7 +125,7 @@ Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(Net::WebServer::IWebRequ
 		i++;
 	}
 
-	if (this->xForwardHeaders)
+	if (this->fwdType == ForwardType::Normal)
 	{
 		if (fwdProto == 0)
 		{
@@ -197,7 +196,6 @@ Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(Net::WebServer::IWebRequ
 		resp->ResponseError(req, Net::WebStatus::SC_NOT_FOUND);
 		return true;
 	}
-	UInt32 tranEnc = 0;
 	resp->SetStatusCode(scode);
 	i = 0;
 	j = cli->GetRespHeaderCnt();
@@ -209,7 +207,7 @@ Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(Net::WebServer::IWebRequ
 		if (Text::StrSplit(sarr, 2, sbHeader.ToString(), ':') == 2)
 		{
 			Text::StrTrim(sarr[1]);
-			if (this->locationRemap && Text::StrEqualsICase(sarr[0], (const UTF8Char*)"LOCATION"))
+			if (this->fwdType == ForwardType::Transparent && Text::StrEqualsICase(sarr[0], (const UTF8Char*)"LOCATION"))
 			{
 				if (Text::StrStartsWith(sarr[1], fwdBaseUrl))
 				{
@@ -243,13 +241,6 @@ Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(Net::WebServer::IWebRequ
 			{
 				resp->AddHeader(sarr[0], sarr[1]);
 			}
-			if (Text::StrEqualsICase(sarr[0], (const UTF8Char*)"Transfer-Encoding"))
-			{
-				if (Text::StrEquals(sarr[1], (const UTF8Char*)"chunked"))
-				{
-					tranEnc = 1;
-				}
-			}
 		}
 		i++;
 	}
@@ -268,58 +259,24 @@ Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(Net::WebServer::IWebRequ
 		i++;
 	}
 
-	if (tranEnc == 1)
+	while (true)
 	{
-		UTF8Char sbuff[16];
-		UTF8Char *sptr;
-		while (true)
+		i = cli->Read(buff, 2048);
+		if (i > 0)
 		{
-			i = cli->Read(buff, 2046);
-			if (i > 0)
+			j = resp->Write(buff, i);
+			if (j != i)
 			{
-				sptr = Text::StrConcat(Text::StrHexVal32V(sbuff, (UInt32)i), (const UTF8Char*)"\r\n");
-				j = resp->Write(sbuff, (UOSInt)(sptr - sbuff));
-				buff[i] = 13;
-				buff[i + 1] = 10;
-				j = resp->Write(buff, i + 2);
-				if (j != i + 2)
-				{
-					break;
-				}
-			}
-			else
-			{
-				resp->Write((const UInt8*)"0\r\n\r\n", 5);
 				break;
 			}
 		}
-	}
-	else
-	{
-		while (true)
+		else
 		{
-			i = cli->Read(buff, 2048);
-			if (i > 0)
-			{
-				j = resp->Write(buff, i);
-				if (j != i)
-				{
-					break;
-				}
-			}
-			else
-			{
-				break;
-			}
+			break;
 		}
 	}
 	DEL_CLASS(cli);
 	return true;
-}
-
-void Net::WebServer::HTTPForwardHandler::SetXForwardHeaders(Bool xForwardHeaders)
-{
-	this->xForwardHeaders = xForwardHeaders;
 }
 
 void Net::WebServer::HTTPForwardHandler::AddForwardURL(const UTF8Char *url)

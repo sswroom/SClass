@@ -8,6 +8,7 @@
 #include "UI/ListBoxLogger.h"
 #include "UI/GUIButton.h"
 #include "UI/GUICheckBox.h"
+#include "UI/GUIComboBox.h"
 #include "UI/GUIForm.h"
 #include "UI/GUIGroupBox.h"
 #include "UI/GUIHSplitter.h"
@@ -60,8 +61,8 @@ namespace SSWR
 			UI::GUICheckBox *chkAllowKA;
 			UI::GUILabel *lblFwdURL;
 			UI::GUITextBox *txtFwdURL;
-			UI::GUILabel *lblFwdHeader;
-			UI::GUICheckBox *chkFwdHeader;
+			UI::GUILabel *lblFwdType;
+			UI::GUIComboBox *cboFwdType;
 			UI::GUIButton *btnStart;
 			UI::GUIButton *btnStop;
 

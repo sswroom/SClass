@@ -152,6 +152,7 @@ void Net::WebServer::WebConnection::ReceivedData(const UInt8 *buff, UOSInt size)
 							}
 							this->respHeaders->ClearStr();
 							this->respHeaderSent = false;
+							this->respTranEnc = 0;
 							Net::SocketUtil::AddressInfo cliAddr;
 							this->cli->GetRemoteAddr(&cliAddr);
 							UInt16 cliPort = this->cli->GetRemotePort();
@@ -210,6 +211,7 @@ void Net::WebServer::WebConnection::ReceivedData(const UInt8 *buff, UOSInt size)
 							else
 							{
 								this->respHeaderSent = false;
+								this->respTranEnc = 0;
 								this->respStatus = Net::WebStatus::SC_METHOD_NOT_ALLOWED;
 								this->respDataEnd = false;
 								this->respHeaders->ClearStr();
@@ -242,6 +244,7 @@ void Net::WebServer::WebConnection::ReceivedData(const UInt8 *buff, UOSInt size)
 							else
 							{
 								this->respHeaderSent = false;
+								this->respTranEnc = 0;
 								this->respStatus = Net::WebStatus::SC_VERSION_NOT_SUPPORTED;
 								this->respDataEnd = false;
 								this->respHeaders->ClearStr();
@@ -266,6 +269,7 @@ void Net::WebServer::WebConnection::ReceivedData(const UInt8 *buff, UOSInt size)
 							}
 							this->respHeaders->ClearStr();
 							this->respHeaderSent = false;
+							this->respTranEnc = 0;
 							Net::SocketUtil::AddressInfo cliAddr;
 							this->cli->GetRemoteAddr(&cliAddr);
 							UInt16 cliPort = this->cli->GetRemotePort();
@@ -708,6 +712,11 @@ void Net::WebServer::WebConnection::ProcessResponse()
 		{
 			this->SendHeaders(this->currReq->GetProtocol());
 		}
+		if (!this->respDataEnd && this->respTranEnc == 1)
+		{
+			this->respLeng += this->cli->Write((const UInt8*)"0\r\n\r\n", 5);
+			this->respDataEnd = true;
+		}
 		t = clk.GetTimeDiff();
 		this->svr->LogAccess(this->currReq, this, t);
 		if (this->sseHdlr == 0)
@@ -757,6 +766,12 @@ Bool Net::WebServer::WebConnection::AddHeader(const UTF8Char *name, const UTF8Ch
 	this->respHeaders->Append((const UTF8Char*)": ");
 	this->respHeaders->Append(value);
 	this->respHeaders->Append((const UTF8Char*)"\r\n");
+
+	if (Text::StrEqualsICase(name, (const UTF8Char*)"Transfer-Encoding") && Text::StrEquals(value, (const UTF8Char*)"chunked"))
+	{
+		this->respTranEnc = 1;
+	}
+
 	return true;
 }
 
@@ -850,13 +865,31 @@ UOSInt Net::WebServer::WebConnection::Write(const UInt8 *buff, UOSInt size)
 	}
 	if (this->respDataEnd)
 		return 0;
-	this->respLeng += size;
 	if (this->logger)
 	{
 		this->logger(this->loggerObj, size);
 	}
 	this->svr->ExtendTimeout(cli);
-	return cli->Write(buff, size);
+	if (this->respTranEnc == 1)
+	{
+		UOSInt retSize;
+		UTF8Char sbuff[16];
+		UTF8Char *sptr;
+		sptr = Text::StrConcat(Text::StrHexVal32V(sbuff, (UInt32)size), (const UTF8Char*)"\r\n");
+		this->cli->Write(sbuff, (UOSInt)(sptr - sbuff));
+		this->respLeng += (UOSInt)(sptr - sbuff) + 2;
+		retSize = this->cli->Write(buff, size);
+		sbuff[0] = 13;
+		sbuff[1] = 10;
+		this->cli->Write(sbuff, 2);
+		this->respLeng += size;
+		return retSize;
+	}
+	else
+	{
+		this->respLeng += size;
+		return cli->Write(buff, size);
+	}
 }
 
 Int32 Net::WebServer::WebConnection::Flush()
@@ -876,6 +909,10 @@ void Net::WebServer::WebConnection::Close()
 		{
 			SendHeaders(Net::WebServer::IWebRequest::RequestProtocol::HTTP1_1);
 		}
+	}
+	if (!this->respDataEnd && this->respTranEnc == 1)
+	{
+
 	}
 	this->respDataEnd = true;
 }

@@ -36,6 +36,7 @@ namespace Net
 			Net::WebStatus::StatusCode respStatus;
 			Text::StringBuilderUTF8 *respHeaders;
 			UInt64 respLeng;
+			UInt32 respTranEnc;
 
 			SendLogger logger;
 			void *loggerObj;
