@@ -9,6 +9,7 @@
 #include "DB/DBTool.h"
 #include "IO/ConfigFile.h"
 #include "IO/LogTool.h"
+#include "IO/MemoryStream.h"
 #include "Media/CS/CSConverter.h"
 #include "Media/Resizer/LanczosResizerLR_C32.h"
 #include "Net/SocketFactory.h"
@@ -323,6 +324,7 @@ namespace SSWR
 			void ResponsePhoto(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, WebUserInfo *user, Bool isMobile, Int32 speciesId, Int32 cateId, UInt32 imgWidth, UInt32 imgHeight, const UTF8Char *fileName);
 			void ResponsePhotoId(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, WebUserInfo *user, Bool isMobile, Int32 speciesId, Int32 cateId, UInt32 imgWidth, UInt32 imgHeight, Int32 photoId);
 			void ResponsePhotoWId(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, WebUserInfo *user, Bool isMobile, Int32 speciesId, Int32 cateId, UInt32 imgWidth, UInt32 imgHeight, Int32 photoWId);
+			static void ResponseMstm(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, IO::MemoryStream *mstm, const UTF8Char *contType);
 
 			void WriteHeaderPart1(IO::Writer *writer, const UTF8Char *title, Bool isMobile);
 			void WriteHeaderPart2(IO::Writer *writer, WebUserInfo *user, const UTF8Char *onLoadFunc);
