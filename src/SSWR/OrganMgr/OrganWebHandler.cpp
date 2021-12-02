@@ -17,6 +17,7 @@
 #include "Math/Math.h"
 #include "Media/FrequencyGraph.h"
 #include "Media/IAudioSource.h"
+#include "Media/ICCProfile.h"
 #include "Media/ImageList.h"
 #include "Media/ImageUtil.h"
 #include "Media/LRGBLimiter.h"
@@ -8015,6 +8016,7 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhoto(Net::WebServer::IWebRequest 
 					IO::MemoryStream *mstm;
 					UInt8 *buff;
 					UOSInt buffSize;
+					dimg->info->color->SetRAWICC(Media::ICCProfile::GetSRGBICCData());
 					if (rotateType == 1)
 					{
 						dimg->RotateImage(Media::StaticImage::RT_CW90);
@@ -8332,6 +8334,7 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhotoId(Net::WebServer::IWebReques
 				IO::MemoryStream *mstm;
 				UInt8 *buff;
 				UOSInt buffSize;
+				dimg->info->color->SetRAWICC(Media::ICCProfile::GetSRGBICCData());
 
 				if (rotateType == 1)
 				{
@@ -8625,6 +8628,7 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhotoWId(Net::WebServer::IWebReque
 					IO::MemoryStream *mstm;
 					UInt8 *buff;
 					UOSInt buffSize;
+					dimg->info->color->SetRAWICC(Media::ICCProfile::GetSRGBICCData());
 
 					if (rotateType == 1)
 					{

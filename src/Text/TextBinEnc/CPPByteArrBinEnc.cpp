@@ -19,6 +19,10 @@ UOSInt Text::TextBinEnc::CPPByteArrBinEnc::EncodeBin(Text::StringBuilderUTF *sb,
 		if (i > 0)
 		{
 			sb->Append((const UTF8Char*)", ");
+			if ((i & 15) == 0)
+			{
+				sb->Append((const UTF8Char*)"\r\n");
+			}
 		}
 		sb->Append((const UTF8Char*)"0x");
 		sb->AppendHex8(dataBuff[i]);

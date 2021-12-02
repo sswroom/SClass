@@ -15,6 +15,8 @@ namespace Media
 		{
 		};
 	private:
+		static const UInt8 srgbICC[];
+
 		UInt8 *iccBuff;
 
 		ICCProfile(const UInt8 *iccBuff);
@@ -71,6 +73,9 @@ namespace Media
 
 		static Media::CS::TransferType FindTransferType(UOSInt colorCount, UInt16 *curveColors, Double *gamma);
 		static UTF8Char *GetProfilePath(UTF8Char *sbuff);
+
+		static ICCProfile *NewSRGBProfile();
+		static const UInt8 *GetSRGBICCData();
 	};
 }
 #endif
