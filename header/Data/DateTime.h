@@ -11,27 +11,45 @@ namespace Data
 	class DateTime : public Data::IComparable
 	{
 	public:
-		enum Weekday
+		enum class Weekday
 		{
-			W_SUNDAY,
-			W_MONDAY,
-			W_TUESDAY,
-			W_WEDNESDAY,
-			W_THURSDAY,
-			W_FRIDAY,
-			W_SATURDAY
+			Sunday,
+			Monday,
+			Tuesday,
+			Wednesday,
+			Thursday,
+			Friday,
+			Saturday
+		};
+
+		enum class TimeType
+		{
+			None,
+			Ticks,
+			Time
+		};
+		struct TimeValue
+		{
+			UInt16 year;
+			UInt8 month;
+			UInt8 day;
+			UInt8 hour;
+			UInt8 minute;
+			UInt8 second;
+			UInt16 ms;
 		};
 	private:
-		UInt16 year;
-		UInt8 month;
-		UInt8 day;
-		UInt8 hour;
-		UInt8 minute;
-		UInt8 second;
-		UInt16 ms;
+		TimeType timeType;
 		Int8 tzQhr; //* 15 minutes
+		union
+		{
+			Int64 ticks;
+			TimeValue t;
+		} val;
 
 	private:
+		TimeValue *GetTimeValue();
+
 		void SetDate(Char **dateStrs);
 		void SetTime(Char **timeStrs);
 		void FixValues();
@@ -118,6 +136,10 @@ namespace Data
 		Int8 GetTimeZoneQHR();
 		Weekday GetWeekday();
 
+		static Int64 TimeValue2Ticks(TimeValue *t, Int8 tzQr);
+		static void Ticks2TimeValue(Int64 ticks, TimeValue *t, Int8 tzQr);
+
+		static Bool IsYearLeap(UInt16 year);
 		static UInt8 ParseMonthStr(const Char *month);
 		static UInt8 ParseMonthStr(const UTF8Char *month);
 		static Double MS2Days(Int64 ms);

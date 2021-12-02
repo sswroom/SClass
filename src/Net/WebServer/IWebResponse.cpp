@@ -180,5 +180,5 @@ UTF8Char *Net::WebServer::IWebResponse::ToTimeString(UTF8Char *buff, Data::DateT
 {
 	static const Char *wdays[] = {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
 	dt->ToUTCTime();
-	return Text::StrConcat(dt->ToString(Text::StrConcat(buff, (const UTF8Char*)wdays[dt->GetWeekday()]), ", dd MMM yyyy HH:mm:ss"), (const UTF8Char*)" GMT");
+	return Text::StrConcat(dt->ToString(Text::StrConcat(buff, (const UTF8Char*)wdays[(OSInt)dt->GetWeekday()]), ", dd MMM yyyy HH:mm:ss"), (const UTF8Char*)" GMT");
 }

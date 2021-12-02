@@ -270,7 +270,7 @@ UTF8Char *Net::HTTPClient::Date2Str(UTF8Char *sbuff, Data::DateTime *dt)
 	Data::DateTime t;
 	t.SetValue(dt);
 	t.ToUTCTime();
-	Int32 wd = t.GetWeekday();
+	Int32 wd = (Int32)t.GetWeekday();
 	return Text::StrConcat(t.ToString(Text::StrConcat(sbuff, (const UTF8Char*)wds[wd]), "dd MMM yyyy HH:mm:ss"), (const UTF8Char*)" GMT");
 }
 
