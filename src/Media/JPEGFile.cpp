@@ -457,3 +457,102 @@ Bool Media::JPEGFile::ParseJPEGHeaders(IO::IStreamData *fd, Media::EXIFData **ex
 	}
 	return true;
 }
+
+void Media::JPEGFile::WriteJPGBuffer(IO::Stream *stm, const UInt8 *jpgBuff, UOSInt buffSize, Media::Image *oriImg)
+{
+	if (oriImg != 0 && (oriImg->exif != 0 || oriImg->info->color->GetRAWICC() != 0) && jpgBuff[0] == 0xff && jpgBuff[1] == 0xd8)
+	{
+		UOSInt i;
+		UOSInt j;
+		i = 2;
+		stm->Write(jpgBuff, 2);
+		while (true)
+		{
+			if (i >= buffSize)
+			{
+				break;
+			}
+			if (jpgBuff[i] != 0xff)
+			{
+				stm->Write(&jpgBuff[i], buffSize - i);
+				break;
+			}
+			if (jpgBuff[i + 1] == 0xdb)
+			{
+				const UInt8 *iccBuff = oriImg->info->color->GetRAWICC();
+				if (iccBuff)
+				{
+					UOSInt iccLeng = ReadMUInt32(iccBuff);
+					UInt8 iccHdr[18];
+					iccHdr[0] = 0xff;
+					iccHdr[1] = 0xe2;
+					WriteMInt16(&iccHdr[2], iccLeng + 16);
+					Text::StrConcat((Char*)&iccHdr[4], "ICC_PROFILE");
+					iccHdr[16] = 1;
+					iccHdr[17] = 1;
+					stm->Write(iccHdr, 18);
+					stm->Write(iccBuff, iccLeng);
+				}
+				if (oriImg->exif)
+				{
+					/////////////////////////////////////
+					Media::EXIFData *exif = oriImg->exif->Clone();
+					exif->Remove(254); //NewSubfileType
+					exif->Remove(256); //Width
+					exif->Remove(257); //Height
+					exif->Remove(258); //BitPerSample
+					exif->Remove(259); //Compression
+					exif->Remove(262); //PhotometricInterpretation
+					exif->Remove(273); //StripOffsets
+					exif->Remove(277); //SamplePerPixel
+					exif->Remove(278); //RowsPerStrip
+					exif->Remove(279); //StripByteCounts
+					exif->Remove(284); //PlanarConfiguration
+					exif->Remove(700); //Photoshop XMP
+					exif->Remove(33723); //IPTC/NAA
+					exif->Remove(34377); //PhotoshopImageResources
+					exif->Remove(34675); //ICC Profile
+					UInt32 exifSize;
+					UInt32 endOfst;
+					UInt32 k;
+					UInt32 l;
+
+					UInt8 *exifBuff;
+					exif->GetExifBuffSize(&exifSize, &endOfst);
+					exifBuff = MemAlloc(UInt8, exifSize + 18);
+					exifBuff[0] = 0xff;
+					exifBuff[1] = 0xe1;
+					WriteMInt16(&exifBuff[2], exifSize + 16);
+					WriteInt32(&exifBuff[4], ReadInt32("Exif"));
+					WriteInt16(&exifBuff[8], 0);
+					WriteInt16(&exifBuff[10], ReadInt16("II"));
+					WriteInt16(&exifBuff[12], 42);
+					WriteInt32(&exifBuff[14], 8);
+					k = 8;
+					l = endOfst + 8;
+					exif->ToExifBuff(&exifBuff[10], &k, &l);
+					stm->Write(exifBuff, exifSize + 18);
+					MemFree(exifBuff);
+					DEL_CLASS(exif);
+				}
+
+				stm->Write(&jpgBuff[i], buffSize - i);
+				break;
+			}
+			else if (jpgBuff[i + 1] == 0xe1)
+			{
+				i += (UOSInt)ReadMUInt16(&jpgBuff[i + 2]) + 2;
+			}
+			else
+			{
+				j = (UOSInt)ReadMUInt16(&jpgBuff[i + 2]) + 2;
+				stm->Write(&jpgBuff[i], j);
+				i += j;
+			}
+		}
+	}
+	else
+	{
+		stm->Write(jpgBuff, buffSize);
+	}
+}

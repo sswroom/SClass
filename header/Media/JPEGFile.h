@@ -15,6 +15,7 @@ namespace Media
 		static Bool ParseJPEGHeader(IO::IStreamData *fd, Media::Image *img, Media::ImageList *imgList, Parser::ParserList *parsers);
 		static Media::EXIFData *ParseJPEGExif(IO::IStreamData *fd);
 		static Bool ParseJPEGHeaders(IO::IStreamData *fd, Media::EXIFData **exif, Text::XMLDocument **xmf, Media::ICCProfile **icc, UInt32 *width, UInt32 *height);
+		static void WriteJPGBuffer(IO::Stream *stm, const UInt8 *jpgBuff, UOSInt buffSize, Media::Image *oriImg);
 	};
 }
 #endif

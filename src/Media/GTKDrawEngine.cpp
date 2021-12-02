@@ -7,6 +7,7 @@
 #include "Media/ImageCopyC.h"
 #include "Media/ImageList.h"
 #include "Media/ImageUtil.h"
+#include "Media/JPEGFile.h"
 #include "Media/StaticImage.h"
 #include "Parser/FileParser/GUIImgParser.h"
 #include "Text/MyStringW.h"
@@ -97,6 +98,7 @@ Media::DrawImage *Media::GTKDrawEngine::ConvImage(Media::Image *img)
 		return 0;
 	gimg->SetHDPI(img->info->hdpi);
 	gimg->SetVDPI(img->info->vdpi);
+	gimg->info->color->Set(img->info->color);
 	if (img->GetImageType() == Media::Image::IT_STATIC)
 	{
 		Media::StaticImage *simg = (Media::StaticImage*)img;
@@ -1120,7 +1122,7 @@ UOSInt Media::GTKDrawImage::SaveJPG(IO::SeekableStream *stm)
 	gdk_pixbuf_save_to_buffer(pixbuf, &buff, &buffSize, "jpeg", 0, (void*)0);
 	if (buff)
 	{
-		buffSize = stm->Write((UInt8*)buff, buffSize);
+		Media::JPEGFile::WriteJPGBuffer(stm, (const UInt8*)buff, buffSize, this);
 		g_free(buff);
 		g_object_unref(pixbuf);
 		return buffSize;
