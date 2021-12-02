@@ -21,7 +21,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	Int32 unorganizedGroupId = 0;
 	SSWR::OrganMgr::OrganWebHandler *dataHdlr;
 	Net::SocketFactory *sockf;
-	Net::SSLEngine *ssl;
+	Net::SSLEngine *ssl = 0;
 	IO::LogTool *log;
 	const UTF8Char *csptr;
 	
