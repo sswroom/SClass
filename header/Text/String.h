@@ -14,6 +14,7 @@ namespace Text
 		static String *New(UOSInt len);
 		static String *New(const UTF16Char *str);
 		static String *New(const UTF32Char *str);
+		static String *NewCSVRec(const UTF8Char *str);
 		void Release();
 		String *Clone();
 

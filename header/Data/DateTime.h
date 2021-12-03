@@ -39,6 +39,9 @@ namespace Data
 			UInt16 ms;
 		};
 	private:
+		static Int8 localTzQhr;
+		static Bool localTzValid;
+
 		TimeType timeType;
 		Int8 tzQhr; //* 15 minutes
 		union

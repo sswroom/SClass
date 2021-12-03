@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Text/MyString.h"
+#include "Text/String.h"
 #include "Text/StringBuilderUTF8.h"
 
 Text::StringBuilderUTF8::StringBuilderUTF8() : Text::StringBuilderUTFText<UTF8Char>()
@@ -21,7 +22,7 @@ Text::StringBuilderUTF *Text::StringBuilderUTF8::Append(const UTF8Char *s)
 	if (slen > 0)
 	{
 		this->AllocLeng(slen);
-		this->buffEnd = Text::StrConcat(this->buffEnd, s);
+		this->buffEnd = Text::StrConcatC(this->buffEnd, s, slen);
 	}
 	return this;
 }
@@ -145,16 +146,16 @@ Text::StringBuilderUTF *Text::StringBuilderUTF8::AppendChar(UTF32Char c, UOSInt 
 
 Text::StringBuilderUTF8 *Text::StringBuilderUTF8::AppendCSV(const UTF8Char **sarr, UOSInt nStr)
 {
-	const UTF8Char *csptr;
+	Text::String *s;
 	UOSInt i;
 	i = 0;
 	while (i < nStr)
 	{
-		csptr = StrToNewCSVRec(sarr[i]);
+		s = Text::String::NewCSVRec(sarr[i]);
 		if (i > 0)
 			this->Append((const UTF8Char*)",");
-		this->Append(csptr);
-		Text::StrDelNew(csptr);
+		this->AppendC(s->v, s->leng);
+		s->Release();
 		i++;
 	}
 	return this;

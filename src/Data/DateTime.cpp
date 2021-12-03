@@ -21,6 +21,9 @@ typedef struct
 #include <time.h>
 #include <stdio.h>
 
+Int8 Data::DateTime::localTzQhr = 0;
+Bool Data::DateTime::localTzValid = false;
+
 Data::DateTime::TimeValue *Data::DateTime::GetTimeValue()
 {
 	TimeValue *t = &this->val.t;
@@ -2300,6 +2303,8 @@ UInt8 Data::DateTime::DayInMonth(UInt16 year, UInt8 month)
 
 Int8 Data::DateTime::GetLocalTzQhr()
 {
+	if (localTzValid)
+		return localTzQhr;
 #if defined(WIN32) || defined(_WIN32_WCE)
 	TIME_ZONE_INFORMATION tz;
 	tz.Bias = 0;
@@ -2321,5 +2326,7 @@ Int8 Data::DateTime::GetLocalTzQhr()
 #else
 	Int32 newTZ = 0;
 #endif
+	localTzQhr = (Int8)newTZ;
+	localTzValid = true;
 	return (Int8)newTZ;
 }

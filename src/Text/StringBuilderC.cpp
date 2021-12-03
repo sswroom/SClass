@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Text/String.h"
 #include "Text/StringBuilderC.h"
 #include "Text/MyString.h"
 
@@ -31,7 +32,7 @@ Text::StringBuilderC *Text::StringBuilderC::Append(const Char *s)
 	return this;
 }
 
-Text::StringBuilderC *Text::StringBuilderC::Append(const Char *s, UOSInt charCnt)
+Text::StringBuilderC *Text::StringBuilderC::AppendC(const Char *s, UOSInt charCnt)
 {
 	AllocLeng(charCnt);
 	if (charCnt < 8)
@@ -65,16 +66,16 @@ Text::StringBuilderC *Text::StringBuilderC::AppendChar(Char c, UOSInt repeatCnt)
 
 Text::StringBuilderC *Text::StringBuilderC::AppendCSV(const Char **sarr, UOSInt nStr)
 {
-	const Char *csptr;
+	Text::String *s;
 	UOSInt i;
 	i = 0;
 	while (i < nStr)
 	{
-		csptr = StrToNewCSVRec(sarr[i]);
+		s = Text::String::NewCSVRec((const UTF8Char*)sarr[i]);
 		if (i > 0)
 			this->Append(",");
-		this->Append(csptr);
-		Text::StrDelNew(csptr);
+		this->AppendC((const Char*)s->v, s->leng);
+		s->Release();
 		i++;
 	}
 	return this;

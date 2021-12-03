@@ -469,11 +469,12 @@ Bool Data::VariItem::GetAsBool()
 void Data::VariItem::GetAsString(Text::StringBuilderUTF *sb)
 {
 	UTF8Char sbuff[64];
+	UTF8Char *sptr;
 	switch (this->itemType)
 	{
 	case ItemType::Unknown:
 	case ItemType::Null:
-		sb->Append((const UTF8Char*)"null");
+		sb->AppendC((const UTF8Char*)"null", 4);
 		return;
 	case ItemType::F32:
 		Text::SBAppendF32(sb, this->val.f32);
@@ -506,14 +507,21 @@ void Data::VariItem::GetAsString(Text::StringBuilderUTF *sb)
 		sb->AppendU64(this->val.u64);
 		return;
 	case ItemType::BOOL:
-		sb->Append(this->val.boolean?(const UTF8Char*)"true":(const UTF8Char*)"false");
+		if (this->val.boolean)
+		{
+			sb->AppendC((const UTF8Char*)"true", 4);
+		}
+		else
+		{
+			sb->AppendC((const UTF8Char*)"false", 5);
+		}
 		break;
 	case ItemType::Str:
-		sb->Append(this->val.str->v);
+		sb->AppendC(this->val.str->v, this->val.str->leng);
 		return;
 	case ItemType::Date:
-		this->val.date->ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
-		sb->Append(sbuff);
+		sptr = this->val.date->ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
+		sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
 		break;
 	case ItemType::ByteArr:
 		sb->AppendHexBuff(this->val.byteArr->GetArray(), this->val.byteArr->GetCount(), 0, Text::LineBreakType::None);
@@ -540,7 +548,7 @@ Data::DateTime *Data::VariItem::GetAsNewDate()
 	if (this->itemType == ItemType::Str)
 	{
 		NEW_CLASS(date, Data::DateTime());
-		date->SetCurrTime();
+		date->ToLocalTime();
 		if (date->SetValue(this->val.str->v))
 		{
 			return date;

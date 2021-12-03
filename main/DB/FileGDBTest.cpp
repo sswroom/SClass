@@ -967,7 +967,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		colNames.Add((const UTF8Char*)"Shape");
 		Data::QueryConditions cond;
 		cond.Int32Equals((const UTF8Char*)"OBJECTID", 40);
-		DB::DBReader *r = fileGDB->GetTableData((const UTF8Char*)"LAMPPOST", &colNames, 0, 10, (const UTF8Char*)"OBJECTID desc", 0);//&cond);
+		DB::DBReader *r;
+/*		r = fileGDB->GetTableData((const UTF8Char*)"LAMPPOST", &colNames, 0, 10, (const UTF8Char*)"OBJECTID desc", 0);//&cond);
 		if (r)
 		{
 			while (r->ReadNext())
@@ -979,23 +980,20 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				DEL_CLASS(obj);
 			}
 			fileGDB->CloseReader(r);
-		}
+		}*/
 
 		Data::NamedClass<Lamppost> *cls = Lamppost().CreateClass();
-		Lamppost *lamppost;
-		Lamppost *lamppost2;
-		UOSInt i;
-		UOSInt j;
 
 		r = fileGDB->GetTableData((const UTF8Char*)"LAMPPOST", 0, 0, 0, 0, 0);
 		if (r)
 		{
+			Lamppost *lamppost;
+			UOSInt i;
 			Double t1;
 			Double t2;
 			Double t3;
-			Double t4 = 0;
+//			Double t4 = 0;
 			Data::ArrayList<Lamppost*> lamppostList;
-			Data::ArrayList<Lamppost*> lamppostListCSV;
 			clk.Start();
 			r->ReadAll(&lamppostList, cls);
 			t1 = clk.GetTimeDiff();
@@ -1010,6 +1008,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			DEL_CLASS(fs);
 			
 
+			Data::ArrayList<Lamppost*> lamppostListCSV;
 			DB::CSVFile *csv;
 			NEW_CLASS(csv, DB::CSVFile(sbuff, 65001));
 			csv->SetNullIfEmpty(true);
@@ -1027,8 +1026,10 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			sb.AppendUOSInt(lamppostListCSV.GetCount());
 			console.WriteLine(sb.ToString());
 			
-			if (lamppostList.GetCount() == lamppostListCSV.GetCount())
+/*			if (lamppostList.GetCount() == lamppostListCSV.GetCount())
 			{
+				Lamppost *lamppost2;
+				UOSInt j;
 				clk.Start();	
 				i = 0;
 				j = lamppostList.GetCount();
@@ -1052,7 +1053,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 					i++;
 				}
 				t4 = clk.GetTimeDiff();
-			}
+			}*/
 /*			sb.ClearStr();
 			Text::StringTool::BuildString(&sb, &lamppostList, cls, (const UTF8Char*)"Lamppost");
 			console.WriteLine(sb.ToString());*/
@@ -1078,8 +1079,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			Text::SBAppendF64(&sb, t2);
 			sb.Append((const UTF8Char*)", t3 = ");
 			Text::SBAppendF64(&sb, t3);
-			sb.Append((const UTF8Char*)", t4 = ");
-			Text::SBAppendF64(&sb, t4);
+/*			sb.Append((const UTF8Char*)", t4 = ");
+			Text::SBAppendF64(&sb, t4);*/
 			console.WriteLine(sb.ToString());
 		}
 		DEL_CLASS(cls);

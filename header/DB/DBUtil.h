@@ -5,6 +5,7 @@
 #include "Data/DateTime.h"
 #include "IO/Stream.h"
 #include "Math/Vector2D.h"
+#include "Text/String.h"
 #include "Text/StringBuilderUTF8.h"
 namespace DB
 {
@@ -90,7 +91,7 @@ namespace DB
 template <class T> Bool DB::DBUtil::SaveCSV(IO::Stream *stm, Data::ArrayList<T*> *list, Data::Class *cls)
 {
 	UTF8Char sbuff[512];
-	const UTF8Char *csptr;
+	Text::String *s;
 	Text::StringBuilderUTF8 sb;
 	Text::StringBuilderUTF8 sb2;
 	Bool succ = true;
@@ -105,12 +106,12 @@ template <class T> Bool DB::DBUtil::SaveCSV(IO::Stream *stm, Data::ArrayList<T*>
 			sb.AppendChar(',', 1);
 		}
 		DB::DBUtil::Field2DBName(sbuff, cls->GetFieldName(i));
-		csptr = Text::StrToNewCSVRec(sbuff);
-		sb.Append(csptr);
-		Text::StrDelNew(csptr);
+		s = Text::String::NewCSVRec(sbuff);
+		sb.AppendC(s->v, s->leng);
+		s->Release();
 		i++;
 	}
-	sb.Append((const UTF8Char*)"\r\n");
+	sb.AppendC((const UTF8Char*)"\r\n", 2);
 	if (stm->Write(sb.ToString(), sb.GetCharCnt()) != sb.GetCharCnt()) succ = false;
 
 	k = 0;
@@ -130,20 +131,20 @@ template <class T> Bool DB::DBUtil::SaveCSV(IO::Stream *stm, Data::ArrayList<T*>
 			Data::VariItem *itm = cls->GetNewValue(i, o);
 			if (itm->GetItemType() == Data::VariItem::ItemType::Null)
 			{
-				sb.Append((const UTF8Char*)"\"\"");
+				sb.AppendC((const UTF8Char*)"\"\"", 2);
 			}
 			else
 			{
 				sb2.ClearStr();
 				itm->GetAsString(&sb2);
-				csptr = Text::StrToNewCSVRec(sb2.ToString());
-				sb.Append(csptr);
-				Text::StrDelNew(csptr);
+				s = Text::String::NewCSVRec(sb2.ToString());
+				sb.AppendC(s->v, s->leng);
+				s->Release();
 			}
 			DEL_CLASS(itm);
 			i++;
 		}
-		sb.Append((const UTF8Char*)"\r\n");
+		sb.AppendC((const UTF8Char*)"\r\n", 2);
 		if (stm->Write(sb.ToString(), sb.GetCharCnt()) != sb.GetCharCnt())
 		{
 			succ = false;

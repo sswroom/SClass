@@ -11,7 +11,7 @@ namespace Text
 		virtual ~StringBuilderC();
 
 		StringBuilderC *Append(const Char *s);
-		StringBuilderC *Append(const Char *s, UOSInt charCnt);
+		StringBuilderC *AppendC(const Char *s, UOSInt charCnt);
 		StringBuilderC *AppendChar(Char c, UOSInt repeatCnt);
 		StringBuilderC *AppendCSV(const Char **sarr, UOSInt nStr);
 		StringBuilderC *AppendToUpper(const Char *s);

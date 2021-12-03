@@ -50,6 +50,43 @@ Text::String *Text::String::New(const UTF32Char *str)
 	return s;
 }
 
+Text::String *Text::String::NewCSVRec(const UTF8Char *str)
+{
+	UOSInt len = 2;
+	UTF8Char c;
+	const UTF8Char *sptr = str;
+	UTF8Char *sptr2;
+	while ((c = *sptr++) != 0)
+	{
+		if (c == '"')
+		{
+			len += 2;
+		}
+		else
+		{
+			len += 1;
+		}
+	}
+	Text::String *s = New(len);
+	sptr2 = s->v;
+	*sptr2++ = '"';
+	while ((c = *str++) != 0)
+	{
+		if (c == '"')
+		{
+			*sptr2++ = '"';
+			*sptr2++ = '"';
+		}
+		else
+		{
+			*sptr2++ = c;
+		}
+	}
+	*sptr2++ = '"';
+	*sptr2 = 0;
+	return s;
+}
+
 void Text::String::Release()
 {
 	this->cnt--;
