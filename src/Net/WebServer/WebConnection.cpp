@@ -228,7 +228,7 @@ void Net::WebServer::WebConnection::ReceivedData(const UInt8 *buff, UOSInt size)
 						else
 						{
 							Net::WebServer::IWebRequest::RequestProtocol reqProto;
-							Bool secureConn = false;
+							Bool secureConn = this->cli->IsSSL();
 							if (Text::StrEquals(sarr[2], "HTTP/2"))
 							{
 								reqProto = Net::WebServer::IWebRequest::RequestProtocol::HTTP2_0;

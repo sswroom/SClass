@@ -43,7 +43,8 @@ namespace Net
 			NotRunning,
 			Starting,
 			Running,
-			Processing
+			Processing,
+			NewClient
 		};
 
 		typedef void (__stdcall *ClientReadyHandler)(Net::TCPClient *cli, void *userObj);

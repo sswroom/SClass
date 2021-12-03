@@ -7,6 +7,8 @@
 #include "Sync/Thread.h"
 #include "Text/MyString.h"
 
+#include <stdio.h>
+
 UInt32 __stdcall Net::SSLEngine::ServerThread(void *userObj)
 {
 	ThreadState *state = (ThreadState*)userObj;
@@ -22,7 +24,12 @@ UInt32 __stdcall Net::SSLEngine::ServerThread(void *userObj)
 			Net::TCPClient *cli = state->me->CreateServerConn(s);
 			if (cli)
 			{
+				printf("SSL ok\r\n");
 				state->clientReady(cli, state->clientReadyObj);
+			}
+			else
+			{
+				printf("SSL fail\r\n");
 			}
 			state->status = ThreadStatus::Running;
 		}
@@ -136,6 +143,8 @@ void Net::SSLEngine::ServerInit(Socket *s, ClientReadyHandler readyHdlr, void *u
 				this->threadSt[i].clientReadyObj = userObj;
 				this->threadSt[i].s = s;
 				this->threadSt[i].evt->Set();
+				this->threadSt[i].status = ThreadStatus::NewClient;
+				printf("Exist Thread %d\r\n", (UInt32)i);
 				break;
 			}
 			i++;
@@ -155,11 +164,13 @@ void Net::SSLEngine::ServerInit(Socket *s, ClientReadyHandler readyHdlr, void *u
 			this->threadSt[i].status = ThreadStatus::Starting;
 			this->threadSt[i].me = this;
 			Sync::Thread::Create(ServerThread, &this->threadSt[i]);
+			printf("New Thread %d\r\n", (UInt32)i);
 			break;
 		}
 		else
 		{
 			mutUsage.EndUse();
+			printf("Wait Thread\r\n");
 			Sync::Thread::Sleep(10);
 			mutUsage.BeginUse();
 		}
