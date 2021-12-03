@@ -532,11 +532,12 @@ UI::GUITextView::GUITextView(UI::GUICore *ui, UI::GUIClientControl *parent, Medi
 	this->drawBuff = 0;
 	this->pageLineCnt = 0;
 	this->pageLineHeight = 12;
-	this->bgColor = 0xffffffff;
+	this->bgColor = ui->GetColorBg();
 	this->scrColor = 0xffcccccc;
-	this->txtColor = 0xff000000;
-	this->lineNumColor = 0xff0000ff;
-	this->selColor = 0xffccccff;
+	this->txtColor = ui->GetColorText();
+	this->lineNumColor = ui->GetColorTextAlt();
+	this->selColor = ui->GetColorHightlight();
+	this->selTextColor = ui->GetColorHightlightText();
 
 	if (Sync::Interlocked::Increment(&useCnt) == 1)
 	{

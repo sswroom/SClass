@@ -1250,6 +1250,7 @@ void UI::GUITextFileView::DrawImage(Media::DrawImage *dimg)
 	Media::DrawBrush *textBrush = dimg->NewBrushARGB(this->txtColor);
 	Media::DrawBrush *lineNumBrush = dimg->NewBrushARGB(this->lineNumColor);
 	Media::DrawBrush *selBrush = dimg->NewBrushARGB(this->selColor);
+	Media::DrawBrush *selTextBrush = dimg->NewBrushARGB(this->selTextColor);
 	currOfst = startOfst;
 	i = 0;
 	while (i < this->pageLineCnt)
@@ -1312,7 +1313,7 @@ void UI::GUITextFileView::DrawImage(Media::DrawImage *dimg)
 				{
 					dimg->GetTextSize(fnt, csptr, szThis);
 					dimg->DrawRect(drawLeft, drawTop, szThis[0], szThis[1], 0, selBrush);
-					dimg->DrawString(drawLeft, drawTop, csptr, fnt, textBrush);
+					dimg->DrawString(drawLeft, drawTop, csptr, fnt, selTextBrush);
 				}
 				else if (i + yPos == selTopY && selTopY == selBottomY)
 				{
@@ -1336,7 +1337,7 @@ void UI::GUITextFileView::DrawImage(Media::DrawImage *dimg)
 						csptr2 = Text::StrToUTF8New(&line[selTopX]);
 						dimg->GetTextSize(fnt, csptr2, szThis);
 						dimg->DrawRect(drawLeft, drawTop, szThis[0], szThis[1], 0, selBrush);
-						dimg->DrawString(drawLeft, drawTop, csptr2, fnt, textBrush);
+						dimg->DrawString(drawLeft, drawTop, csptr2, fnt, selTextBrush);
 						Text::StrDelNew(csptr2);
 					}
 					else
@@ -1358,7 +1359,7 @@ void UI::GUITextFileView::DrawImage(Media::DrawImage *dimg)
 						line[selBottomX] = c;
 						dimg->GetTextSize(fnt, csptr2, szThis);
 						dimg->DrawRect(drawLeft, drawTop, szThis[0], szThis[1], 0, selBrush);
-						dimg->DrawString(drawLeft, drawTop, csptr2, fnt, textBrush);
+						dimg->DrawString(drawLeft, drawTop, csptr2, fnt, selTextBrush);
 						Text::StrDelNew(csptr2);
 						drawLeft += szThis[0];
 
@@ -1373,7 +1374,7 @@ void UI::GUITextFileView::DrawImage(Media::DrawImage *dimg)
 					{
 						dimg->GetTextSize(fnt, csptr, szThis);
 						dimg->DrawRect(drawLeft, drawTop, szThis[0], szThis[1], 0, selBrush);
-						dimg->DrawString(drawLeft, drawTop, csptr, fnt, textBrush);
+						dimg->DrawString(drawLeft, drawTop, csptr, fnt, selTextBrush);
 					}
 					else if (sptr - line <= selTopX)
 					{
@@ -1392,7 +1393,7 @@ void UI::GUITextFileView::DrawImage(Media::DrawImage *dimg)
 						csptr2 = Text::StrToUTF8New(&line[selTopX]);
 						dimg->GetTextSize(fnt, csptr2, szThis);
 						dimg->DrawRect(drawLeft, drawTop, szThis[0], szThis[1], 0, selBrush);
-						dimg->DrawString(drawLeft, drawTop, csptr2, fnt, textBrush);
+						dimg->DrawString(drawLeft, drawTop, csptr2, fnt, selTextBrush);
 						Text::StrDelNew(csptr2);
 					}
 				}
@@ -1406,7 +1407,7 @@ void UI::GUITextFileView::DrawImage(Media::DrawImage *dimg)
 					{
 						dimg->GetTextSize(fnt, csptr, szThis);
 						dimg->DrawRect(drawLeft, drawTop, szThis[0], szThis[1], 0, selBrush);
-						dimg->DrawString(drawLeft, drawTop, csptr, fnt, textBrush);
+						dimg->DrawString(drawLeft, drawTop, csptr, fnt, selTextBrush);
 					}
 					else
 					{
@@ -1416,7 +1417,7 @@ void UI::GUITextFileView::DrawImage(Media::DrawImage *dimg)
 						line[selBottomX] = c;
 						dimg->GetTextSize(fnt, csptr2, szThis);
 						dimg->DrawRect(drawLeft, drawTop, szThis[0], szThis[1], 0, selBrush);
-						dimg->DrawString(drawLeft, drawTop, csptr2, fnt, textBrush);
+						dimg->DrawString(drawLeft, drawTop, csptr2, fnt, selTextBrush);
 						Text::StrDelNew(csptr2);
 						drawLeft += szThis[0];
 
@@ -1440,6 +1441,7 @@ void UI::GUITextFileView::DrawImage(Media::DrawImage *dimg)
 	dimg->DelBrush(textBrush);
 	dimg->DelBrush(lineNumBrush);
 	dimg->DelBrush(selBrush);
+	dimg->DelBrush(selTextBrush);
 	dimg->DelFont(fnt);
 
 	DEL_CLASS(enc);

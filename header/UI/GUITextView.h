@@ -24,6 +24,7 @@ namespace UI
 		UInt32 txtColor;
 		UInt32 lineNumColor;
 		UInt32 selColor;
+		UInt32 selTextColor;
 
 	private:
 		static OSInt __stdcall TFVWndProc(void *hWnd, UInt32 msg, UInt32 wParam, OSInt lParam);

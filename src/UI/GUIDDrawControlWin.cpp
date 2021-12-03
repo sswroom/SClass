@@ -301,7 +301,7 @@ Bool UI::GUIDDrawControl::CreateSurface()
 	if (this->currScnMode == SM_FS)
 	{
 		this->surfaceMon = this->GetHMonitor();
-		Bool succ = this->surfaceMgr->CreatePrimarySurfaceWithBuffer(this->surfaceMon, &this->primarySurface, &this->buffSurface, Media::RotateType::NONE);
+		Bool succ = this->surfaceMgr->CreatePrimarySurfaceWithBuffer(this->surfaceMon, &this->primarySurface, &this->buffSurface, Media::RotateType::None);
 		if (succ)
 		{
 			this->bitDepth = this->primarySurface->info->storeBPP;
@@ -328,7 +328,7 @@ Bool UI::GUIDDrawControl::CreateSurface()
 			this->surfaceMon = 0;
 			hWnd = this->GetHandle();
 		}
-		this->primarySurface = this->surfaceMgr->CreatePrimarySurface(this->surfaceMon, hWnd, Media::RotateType::NONE);
+		this->primarySurface = this->surfaceMgr->CreatePrimarySurface(this->surfaceMon, hWnd, Media::RotateType::None);
 		if (this->primarySurface)
 		{
 			if (this->debugWriter)

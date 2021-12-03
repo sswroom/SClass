@@ -182,3 +182,28 @@ Bool UI::GUICoreGTK::IsForwarded()
 {
 	return getenv("SSH_CLIENT") != 0;
 }
+
+UInt32 UI::GUICoreGTK::GetColorBg()
+{
+	return 0xffffffff;
+}
+
+UInt32 UI::GUICoreGTK::GetColorText()
+{
+	return 0xff000000;
+}
+
+UInt32 UI::GUICoreGTK::GetColorTextAlt()
+{
+	return 0xff0000ff;
+}
+
+UInt32 UI::GUICoreGTK::GetColorHightlight()
+{
+	return 0xffccccff;
+}
+
+UInt32 UI::GUICoreGTK::GetColorHightlightText()
+{
+	return 0xff000000;
+}
