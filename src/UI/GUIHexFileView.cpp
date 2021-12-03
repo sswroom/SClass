@@ -176,6 +176,7 @@ void UI::GUIHexFileView::DrawImage(Media::DrawImage *dimg)
 		Media::DrawBrush *lineNumBrush = dimg->NewBrushARGB(this->lineNumColor);
 		Media::DrawBrush *textBrush = dimg->NewBrushARGB(this->txtColor);
 		Media::DrawBrush *selBrush = dimg->NewBrushARGB(this->selColor);
+		Media::DrawBrush *selTextBrush = dimg->NewBrushARGB(this->selTextColor);
 		Media::DrawBrush *frameBrush = dimg->NewBrushARGB(this->frameColor);
 		Media::DrawBrush *fieldBrush = dimg->NewBrushARGB(this->fieldColor);
 		Double currY = 0;
@@ -274,18 +275,20 @@ void UI::GUIHexFileView::DrawImage(Media::DrawImage *dimg)
 						}
 					}
 				}
+				Media::DrawBrush *tBrush = textBrush;
 				if (this->currOfst == drawOfst)
 				{
 					dimg->DrawRect(currX, currY, this->pageLineHeight, this->pageLineHeight, 0, selBrush);
+					tBrush = selTextBrush;
 				}
 				Text::StrHexByte(sbuff, *currPtr++);
 				sbuff2[0] = sbuff[0];
 				sbuff2[1] = 0;
-				dimg->DrawString(currX, currY, sbuff2, f, textBrush);
+				dimg->DrawString(currX, currY, sbuff2, f, tBrush);
 				currX += hHeight;
 				sbuff2[0] = sbuff[1];
 				sbuff2[1] = 0;
-				dimg->DrawString(currX, currY, sbuff2, f, textBrush);
+				dimg->DrawString(currX, currY, sbuff2, f, tBrush);
 				currX += hHeight * 2;
 				j++;
 			}
@@ -338,6 +341,7 @@ void UI::GUIHexFileView::DrawImage(Media::DrawImage *dimg)
 		dimg->DelBrush(fieldBrush);
 		dimg->DelBrush(frameBrush);
 		dimg->DelBrush(selBrush);
+		dimg->DelBrush(selTextBrush);
 		dimg->DelBrush(textBrush);
 		dimg->DelBrush(lineNumBrush);
 		dimg->DelFont(f);

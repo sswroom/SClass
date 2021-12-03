@@ -527,6 +527,7 @@ Media::Decoder::MP2Decoder::MP2Decoder(Media::IAudioSource *sourceAudio)
 	this->sourceAudio = 0;
 	this->context = 0;
 	this->totalReadSize = 0;
+    this->readEvt = 0;
 	sourceAudio->GetFormat(&fmt);
     if (fmt.formatId != 0x50)
     {
