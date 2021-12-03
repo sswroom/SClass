@@ -560,6 +560,11 @@ IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputDateTime(IO::ConsoleWri
 			currMin = 0;
 			console->SetCursorPos(state.currX + 17, state.currY);
 		}
+		else
+		{
+			currMin = 0;
+			currMax = 0;
+		}
 
 		i = IO::Console::GetKey();
 		if (i == 0x1b)
