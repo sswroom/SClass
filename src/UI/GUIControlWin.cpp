@@ -669,6 +669,38 @@ void UI::GUIControl::SetCursor(CursorType curType)
 	UI::GUICoreWin::MSSetClassObj(this->hwnd, GCL_HCURSOR, (OSInt)cur);
 }
 
+
+#define FromGDIColor(v) (0xff000000 | ((v >> 16) & 0xff) | (v & 0xff00) | ((v & 0xff) << 16))
+UInt32 UI::GUIControl::GetColorBg()
+{
+	UInt32 v = GetSysColor(COLOR_WINDOW);
+	return FromGDIColor(v);
+}
+
+UInt32 UI::GUIControl::GetColorText()
+{
+	UInt32 v = GetSysColor(COLOR_WINDOWTEXT);
+	return FromGDIColor(v);
+}
+
+UInt32 UI::GUIControl::GetColorTextAlt()
+{
+	UInt32 v = GetSysColor(COLOR_HOTLIGHT);
+	return FromGDIColor(v);
+}
+
+UInt32 UI::GUIControl::GetColorHightlight()
+{
+	UInt32 v = GetSysColor(COLOR_HIGHLIGHT);
+	return FromGDIColor(v);
+}
+
+UInt32 UI::GUIControl::GetColorHightlightText()
+{
+	UInt32 v = GetSysColor(COLOR_HIGHLIGHTTEXT);
+	return FromGDIColor(v);
+}
+
 UI::GUIClientControl *UI::GUIControl::GetParent()
 {
 	return this->parent;

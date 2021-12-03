@@ -532,12 +532,6 @@ UI::GUITextView::GUITextView(UI::GUICore *ui, UI::GUIClientControl *parent, Medi
 	this->drawBuff = 0;
 	this->pageLineCnt = 0;
 	this->pageLineHeight = 12;
-	this->bgColor = ui->GetColorBg();
-	this->scrColor = 0xffcccccc;
-	this->txtColor = ui->GetColorText();
-	this->lineNumColor = ui->GetColorTextAlt();
-	this->selColor = ui->GetColorHightlight();
-	this->selTextColor = ui->GetColorHightlightText();
 
 	if (Sync::Interlocked::Increment(&useCnt) == 1)
 	{
@@ -551,6 +545,13 @@ UI::GUITextView::GUITextView(UI::GUICore *ui, UI::GUIClientControl *parent, Medi
 	}
 	this->InitControl(((UI::GUICoreWin*)this->ui)->GetHInst(), parent, CLASSNAME, (const UTF8Char*)"", style, WS_EX_CONTROLPARENT, 0, 0, 200, 200);
 	SetTimer((HWND)this->hwnd, 1, 1000, 0);
+
+	this->bgColor = this->GetColorBg();
+	this->scrColor = 0xffcccccc;
+	this->txtColor = this->GetColorText();
+	this->lineNumColor = this->GetColorTextAlt();
+	this->selColor = this->GetColorHightlight();
+	this->selTextColor = this->GetColorHightlightText();
 }
 
 UI::GUITextView::~GUITextView()

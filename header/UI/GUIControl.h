@@ -294,6 +294,12 @@ namespace UI
 		void ReleaseCapture();
 		void SetCursor(CursorType curType);
 
+		UInt32 GetColorBg();
+		UInt32 GetColorText();
+		UInt32 GetColorTextAlt();
+		UInt32 GetColorHightlight();
+		UInt32 GetColorHightlightText();
+
 		virtual GUIClientControl *GetParent();
 		GUIForm *GetRootForm();
 		ControlHandle *GetHandle();

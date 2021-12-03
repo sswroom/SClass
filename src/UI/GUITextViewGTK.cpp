@@ -458,12 +458,6 @@ UI::GUITextView::GUITextView(UI::GUICore *ui, UI::GUIClientControl *parent, Medi
 	this->drawBuff = 0;
 	this->pageLineCnt = 0;
 	this->pageLineHeight = 12;
-	this->bgColor = ui->GetColorBg();
-	this->scrColor = 0xffcccccc;
-	this->txtColor = ui->GetColorText();
-	this->lineNumColor = ui->GetColorTextAlt();
-	this->selColor = ui->GetColorHightlight();
-	this->selTextColor = ui->GetColorHightlightText();
 
 
 	this->clsData = MemAlloc(ClassData, 1);
@@ -485,6 +479,13 @@ UI::GUITextView::GUITextView(UI::GUICore *ui, UI::GUIClientControl *parent, Medi
 	this->clsData->shiftDown = false;
 
 	this->hwnd = (ControlHandle*)gtk_drawing_area_new();
+	this->bgColor = this->GetColorBg();
+	this->scrColor = 0xffcccccc;
+	this->txtColor = this->GetColorText();
+	this->lineNumColor = this->GetColorTextAlt();
+	this->selColor = this->GetColorHightlight();
+	this->selTextColor = this->GetColorHightlightText();
+
 	g_signal_connect(G_OBJECT(this->hwnd), "draw", G_CALLBACK(GUITextView_OnDraw), this);
 	g_signal_connect(G_OBJECT(this->hwnd), "button-press-event", G_CALLBACK(GUITextView_OnMouseDown), this);
 	g_signal_connect(G_OBJECT(this->hwnd), "button-release-event", G_CALLBACK(GUITextView_OnMouseUp), this);

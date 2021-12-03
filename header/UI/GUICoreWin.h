@@ -36,11 +36,6 @@ namespace UI
 		virtual void SetMonitorMgr(Media::MonitorMgr *monMgr);
 		virtual Media::MonitorMgr *GetMonitorMgr();
 		virtual Bool IsForwarded();
-		virtual UInt32 GetColorBg();
-		virtual UInt32 GetColorText();
-		virtual UInt32 GetColorTextAlt();
-		virtual UInt32 GetColorHightlight();
-		virtual UInt32 GetColorHightlightText();
 
 		void SetFocusWnd(void *hWnd, void *hAcc);
 		void *GetHInst();

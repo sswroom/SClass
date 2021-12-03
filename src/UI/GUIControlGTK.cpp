@@ -652,6 +652,69 @@ void UI::GUIControl::SetCursor(CursorType curType)
 	//gtk_window_set_cursor();
 }
 
+UInt32 GdkRGBA2Color(GdkRGBA *rgba)
+{
+	UInt32 ia = Math::SDouble2UInt8(rgba->alpha * 255);
+	UInt32 ir = Math::SDouble2UInt8(rgba->red * 255);
+	UInt32 ig = Math::SDouble2UInt8(rgba->green * 255);
+	UInt32 ib = Math::SDouble2UInt8(rgba->blue * 255);
+	return (ia << 24) | (ir << 16) | (ig << 8) | ib;
+}
+
+UInt32 UI::GUIControl::GetColorBg()
+{
+	GdkRGBA color;
+	GtkStyleContext *style = gtk_widget_get_style_context((GtkWidget*)this->hwnd);
+	gtk_style_context_get_color(style, GTK_STATE_FLAG_NORMAL, &color);
+	if ((color.red + color.green + color.blue) > 1.5)
+	{
+		return 0xff000000;
+	}
+	else
+	{
+		return 0xffffffff;
+	}
+}
+
+UInt32 UI::GUIControl::GetColorText()
+{
+	GdkRGBA color;
+	GtkStyleContext *style = gtk_widget_get_style_context((GtkWidget*)this->hwnd);
+	gtk_style_context_get_color(style, GTK_STATE_FLAG_NORMAL, &color);
+	return GdkRGBA2Color(&color);
+}
+
+UInt32 UI::GUIControl::GetColorTextAlt()
+{
+	GdkRGBA color;
+	GtkStyleContext *style = gtk_widget_get_style_context((GtkWidget*)this->hwnd);
+	gtk_style_context_get_color(style, GTK_STATE_FLAG_LINK, &color);
+	return GdkRGBA2Color(&color);
+}
+
+UInt32 UI::GUIControl::GetColorHightlight()
+{
+	GdkRGBA color;
+	GtkStyleContext *style = gtk_widget_get_style_context((GtkWidget*)this->hwnd);
+	gtk_style_context_get_color(style, GTK_STATE_FLAG_SELECTED, &color);
+	if ((color.red + color.green + color.blue) > 1.5)
+	{
+		return 0xff3333ff;
+	}
+	else
+	{
+		return 0xffccccff;
+	}
+}
+
+UInt32 UI::GUIControl::GetColorHightlightText()
+{
+	GdkRGBA color;
+	GtkStyleContext *style = gtk_widget_get_style_context((GtkWidget*)this->hwnd);
+	gtk_style_context_get_color(style, GTK_STATE_FLAG_SELECTED, &color);
+	return GdkRGBA2Color(&color);
+}
+
 UI::GUIClientControl *UI::GUIControl::GetParent()
 {
 	return this->parent;

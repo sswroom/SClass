@@ -141,37 +141,6 @@ void UI::GUICoreWin::UseDevice(Bool useSystem, Bool useDisplay)
 #endif
 }
 
-#define FromGDIColor(v) (0xff000000 | ((v >> 16) & 0xff) | (v & 0xff00) | ((v & 0xff) << 16))
-UInt32 UI::GUICoreWin::GetColorBg()
-{
-	UInt32 v = GetSysColor(COLOR_WINDOW);
-	return FromGDIColor(v);
-}
-
-UInt32 UI::GUICoreWin::GetColorText()
-{
-	UInt32 v = GetSysColor(COLOR_WINDOWTEXT);
-	return FromGDIColor(v);
-}
-
-UInt32 UI::GUICoreWin::GetColorTextAlt()
-{
-	UInt32 v = GetSysColor(COLOR_HOTLIGHT);
-	return FromGDIColor(v);
-}
-
-UInt32 UI::GUICoreWin::GetColorHightlight()
-{
-	UInt32 v = GetSysColor(COLOR_HIGHLIGHT);
-	return FromGDIColor(v);
-}
-
-UInt32 UI::GUICoreWin::GetColorHightlightText()
-{
-	UInt32 v = GetSysColor(COLOR_HIGHLIGHTTEXT);
-	return FromGDIColor(v);
-}
-
 void UI::GUICoreWin::SetFocusWnd(void *hWnd, void *hAcc)
 {
 	this->focusWnd = hWnd;
