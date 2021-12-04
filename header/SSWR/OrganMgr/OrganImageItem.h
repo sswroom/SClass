@@ -27,15 +27,15 @@ namespace SSWR
 				FT_WEBFILE
 			} FileType;
 		private:
-			const UTF8Char *dispName;
+			Text::String *dispName;
 			Bool isCoverPhoto;
 			Int64 photoDate;
 		//	const WChar *photoLoc;
 			RotateType rotateType;
-			const UTF8Char *fullName;
+			Text::String *fullName;
 			FileType fileType;
-			const UTF8Char *srcURL;
-			const UTF8Char *imgURL;
+			Text::String *srcURL;
+			Text::String *imgURL;
 			UserFileInfo *userFile;
 			WebFileInfo *webFile;
 			Int32 userId;
@@ -45,8 +45,9 @@ namespace SSWR
 			~OrganImageItem();
 
 			Int32 GetUserId();
+			void SetDispName(Text::String *dispName);
 			void SetDispName(const UTF8Char *dispName);
-			const UTF8Char *GetDispName();
+			Text::String *GetDispName();
 			void SetIsCoverPhoto(Bool isCoverPhoto);
 			Bool GetIsCoverPhoto();
 			void SetPhotoDate(Int64 photoDate);
@@ -55,14 +56,17 @@ namespace SSWR
 		//	const WChar *GetPhotoLoc();
 			void SetRotateType(RotateType rotateType);
 			RotateType GetRotateType();
+			void SetFullName(Text::String *fullName);
 			void SetFullName(const UTF8Char *fullName);
-			const UTF8Char *GetFullName();
+			Text::String *GetFullName();
 			void SetFileType(FileType fileType);
 			FileType GetFileType();
+			void SetSrcURL(Text::String *srcURL);
 			void SetSrcURL(const UTF8Char *srcURL);
-			const UTF8Char *GetSrcURL();
+			Text::String *GetSrcURL();
+			void SetImgURL(Text::String *imgURL);
 			void SetImgURL(const UTF8Char *imgURL);
-			const UTF8Char *GetImgURL();
+			Text::String *GetImgURL();
 			void SetUserFile(UserFileInfo *userFile);
 			UserFileInfo *GetUserFile();
 			void SetWebFile(WebFileInfo *webFile);

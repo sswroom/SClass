@@ -129,7 +129,7 @@ Map::DrawObjectL *SSWR::OrganMgr::OrganTimeAdjLayer::GetObjectByIdD(void *sessio
 	dt.SetTicks(ufile->fileTimeTicks);
 	if (ufile->camera)
 	{
-		dt.AddSecond(this->cameraMap->Get(ufile->camera));
+		dt.AddSecond(this->cameraMap->Get(ufile->camera->v));
 	}
 	this->gpsTrk->GetLatLonByTime(&dt, &dobj->pointArr[1], &dobj->pointArr[0]);
 	dobj->flags = 0;
@@ -149,7 +149,7 @@ Math::Vector2D *SSWR::OrganMgr::OrganTimeAdjLayer::GetVectorById(void *session, 
 	dt.SetTicks(ufile->fileTimeTicks);
 	if (ufile->camera)
 	{
-		dt.AddSecond(this->cameraMap->Get(ufile->camera));
+		dt.AddSecond(this->cameraMap->Get(ufile->camera->v));
 	}
 	this->gpsTrk->GetLatLonByTime(&dt, &lat, &lon);
 	NEW_CLASS(pt, Math::Point(this->csys->GetSRID(), lon, lat));

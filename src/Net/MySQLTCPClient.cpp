@@ -34,8 +34,8 @@ class MySQLTCPReader : public DB::DBReader
 private:
 	typedef struct
 	{
-		const UTF8Char *name;
-		const UTF8Char *defValues;
+		Text::String *name;
+		Text::String *defValues;
 		UInt32 colLen;
 		UInt16 charSet;
 		UInt16 flags;
@@ -45,8 +45,8 @@ private:
 
 	Data::ArrayList<ColumnDef*> *cols;
 	OSInt rowChanged;
-	const UTF8Char **currRow;
-	const UTF8Char **nextRow;
+	Text::String **currRow;
+	Text::String **nextRow;
 	Bool nextRowReady;
 	Sync::Event *rowEvt;
 	Sync::Event *nextRowEvt;
@@ -75,8 +75,8 @@ public:
 		while (i-- > 0)
 		{
 			col = this->cols->GetItem(i);
-			Text::StrDelNew(col->name);
-			SDEL_TEXT(col->defValues);
+			col->name->Release();
+			SDEL_STRING(col->defValues);
 			MemFree(col); 
 		}
 		DEL_CLASS(this->cols);
@@ -162,7 +162,7 @@ public:
 			i = this->cols->GetCount();
 			while (i-- > 0)
 			{
-				SDEL_TEXT(this->currRow[i]);
+				SDEL_STRING(this->currRow[i]);
 			}
 			MemFree(this->currRow);
 			this->currRow = 0;
@@ -208,7 +208,7 @@ public:
 		{
 			return 0;
 		}
-		return Text::StrToInt32(this->currRow[colIndex]);
+		return Text::StrToInt32(this->currRow[colIndex]->v);
 	}
 
 	virtual Int64 GetInt64(UOSInt colIndex)
@@ -225,7 +225,7 @@ public:
 		{
 			return 0;
 		}
-		return Text::StrToInt64(this->currRow[colIndex]);
+		return Text::StrToInt64(this->currRow[colIndex]->v);
 	}
 
 	virtual WChar *GetStr(UOSInt colIndex, WChar *buff)
@@ -242,7 +242,7 @@ public:
 		{
 			return 0;
 		}
-		return Text::StrUTF8_WChar(buff, this->currRow[colIndex], 0);
+		return Text::StrUTF8_WChar(buff, this->currRow[colIndex]->v, 0);
 	}
 
 	virtual Bool GetStr(UOSInt colIndex, Text::StringBuilderUTF *sb)
@@ -259,7 +259,7 @@ public:
 		{
 			return false;
 		}
-		sb->Append(this->currRow[colIndex]);
+		sb->AppendC(this->currRow[colIndex]->v, this->currRow[colIndex]->leng);
 		return true;
 	}
 
@@ -277,7 +277,7 @@ public:
 		{
 			return 0;
 		}
-		return Text::String::New(this->currRow[colIndex]);
+		return this->currRow[colIndex]->Clone();
 	}
 
 	virtual UTF8Char *GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSize)
@@ -294,7 +294,7 @@ public:
 		{
 			return 0;
 		}
-		return Text::StrConcatS(buff, this->currRow[colIndex], buffSize);
+		return Text::StrConcatS(buff, this->currRow[colIndex]->v, buffSize);
 	}
 
 	virtual DateErrType GetDate(UOSInt colIndex, Data::DateTime *outVal)
@@ -311,7 +311,7 @@ public:
 		{
 			return DET_NULL;
 		}
-		if (outVal->SetValue(this->currRow[colIndex]))
+		if (outVal->SetValue(this->currRow[colIndex]->v))
 		{
 			return DET_OK;
 		}
@@ -335,7 +335,7 @@ public:
 		{
 			return 0;
 		}
-		return Text::StrToDouble(this->currRow[colIndex]);
+		return Text::StrToDouble(this->currRow[colIndex]->v);
 	}
 
 	virtual Bool GetBool(UOSInt colIndex)
@@ -352,7 +352,7 @@ public:
 		{
 			return false;
 		}
-		return Text::StrToInt32(this->currRow[colIndex]) != 0;
+		return Text::StrToInt32(this->currRow[colIndex]->v) != 0;
 	}
 
 	virtual UOSInt GetBinarySize(UOSInt colIndex)
@@ -401,7 +401,7 @@ public:
 		ColumnDef *col = this->cols->GetItem(colIndex);
 		if (col)
 		{
-			return Text::StrConcat(buff, col->name);
+			return Text::StrConcat(buff, col->name->v);
 		}
 		return 0;
 	}
@@ -451,13 +451,13 @@ public:
 		colDef = Net::MySQLUtil::ReadLenencInt(colDef, &v); //org_table
 		colDef += v;
 		colDef = Net::MySQLUtil::ReadLenencInt(colDef, &v); //name
-		col->name = Text::StrCopyNewC(colDef, (UOSInt)v);
+		col->name = Text::String::New(colDef, (UOSInt)v);
 		colDef += v;
 		colDef = Net::MySQLUtil::ReadLenencInt(colDef, &v); //org_name
 		colDef += v;
 		if (colDef[0] != 12)
 		{
-			Text::StrDelNew(col->name);
+			col->name->Release();
 			MemFree(col);
 			return;
 		}
@@ -473,7 +473,7 @@ public:
 			colDef = Net::MySQLUtil::ReadLenencInt(colDef, &v); //catalog
 			if ((colDef + v) <= colEnd)
 			{
-				col->defValues = Text::StrCopyNewC(colDef, (UOSInt)v);
+				col->defValues = Text::String::New(colDef, (UOSInt)v);
 			}
 		}
 		this->cols->Add(col);
@@ -485,7 +485,7 @@ public:
 		{
 			this->nextRowEvt->Wait(1000);
 		}
-		const UTF8Char **row = MemAlloc(const UTF8Char *, this->cols->GetCount());
+		Text::String **row = MemAlloc(Text::String *, this->cols->GetCount());
 		UOSInt i = 0;
 		UOSInt j = this->cols->GetCount();
 		UInt64 v;
@@ -499,7 +499,7 @@ public:
 			else
 			{
 				rowData = Net::MySQLUtil::ReadLenencInt(rowData, &v);
-				row[i] = Text::StrCopyNewC(rowData, (UOSInt)v);
+				row[i] = Text::String::New(rowData, (UOSInt)v);
 				rowData += v;
 			}
 			i++;

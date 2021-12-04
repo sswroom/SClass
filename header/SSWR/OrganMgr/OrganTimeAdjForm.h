@@ -37,7 +37,7 @@ namespace SSWR
 			Data::ArrayList<UserFileInfo*> *currFileList;
 			Media::ImageList *dispImg;
 			Data::StringUTF8Map<Int32> *cameraMap;
-			const UTF8Char *selImgCamera;
+			Text::String *selImgCamera;
 			Int64 selImgTimeTicks;
 
 			UI::GUIPanel *pnlLeft;

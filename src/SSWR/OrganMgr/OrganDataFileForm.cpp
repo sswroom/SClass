@@ -46,7 +46,7 @@ void __stdcall SSWR::OrganMgr::OrganDataFileForm::OnDeleteClicked(void *userObj)
 	if (dataFile == 0)
 		return;
 	sb.Append((const UTF8Char*)"Are you sure to delete ");
-	sb.Append(dataFile->fileName);
+	sb.AppendC(dataFile->fileName->v, dataFile->fileName->leng);
 	sb.Append((const UTF8Char*)"?");
 	if (UI::MessageDialog::ShowYesNoDialog(sb.ToString(), (const UTF8Char*)"Question", me))
 	{
@@ -88,7 +88,7 @@ void SSWR::OrganMgr::OrganDataFileForm::UpdateFileList()
 	while (i < j)
 	{
 		dataFile = dataFiles->GetItem(i);
-		k = this->lvFiles->AddItem(dataFile->oriFileName, dataFile);
+		k = this->lvFiles->AddItem(dataFile->oriFileName->v, dataFile);
 		dt.SetTicks(dataFile->startTimeTicks);
 		dt.ToLocalTime();
 		dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss");

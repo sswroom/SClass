@@ -226,9 +226,9 @@ public:
 		colDef->SetColName(this->data->colList->GetItem(colIndex));
 		colDef->SetColSize(256);
 		colDef->SetColType(DB::DBUtil::CT_VarChar);
-		colDef->SetAttr(0);
+		colDef->SetAttr((const UTF8Char*)0);
 		colDef->SetColDP(0);
-		colDef->SetDefVal(0);
+		colDef->SetDefVal((const UTF8Char*)0);
 		colDef->SetAutoInc(false);
 		colDef->SetNotNull(false);
 		colDef->SetPK(false);

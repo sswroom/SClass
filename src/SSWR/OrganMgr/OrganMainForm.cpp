@@ -188,7 +188,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnDirChanged(void *userObj)
 	OrganMainForm *me = (OrganMainForm*)userObj;
 	me->lastDirIndex = me->lbDir->GetSelectedIndex();
 	me->UpdateDir();
-	SDEL_TEXT(me->initSelImg);
+	SDEL_STRING(me->initSelImg);
 	me->UpdateImgDir();
 }
 
@@ -302,7 +302,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnObjSelChg(void *userObj)
 		me->UpdateSpBook();
 		if (me->tcMain->GetSelectedIndex() == 2 || me->tcMain->GetSelectedIndex() == 3)
 		{
-			SDEL_TEXT(me->initSelImg);
+			SDEL_STRING(me->initSelImg);
 			me->UpdateImgDir();
 		}
 	}
@@ -417,8 +417,8 @@ Bool __stdcall SSWR::OrganMgr::OrganMainForm::OnImgRClicked(void *userObj, OSInt
 				return false;
 			OrganGroup *go = (OrganGroup*)me->lbDir->GetSelectedItem();
 			me->env->SetGroupDefSp(go, imgItem);
-			SDEL_TEXT(me->initSelImg);
-			me->initSelImg = Text::StrCopyNew(imgItem->GetDispName());
+			SDEL_STRING(me->initSelImg);
+			me->initSelImg = imgItem->GetDispName()->Clone();
 			me->UpdateImgDir();
 		}
 		else
@@ -427,8 +427,8 @@ Bool __stdcall SSWR::OrganMgr::OrganMainForm::OnImgRClicked(void *userObj, OSInt
 			if (imgItem->GetIsCoverPhoto())
 				return false;
 			me->env->SetSpeciesImg(me->lastSpeciesObj, imgItem);
-			SDEL_TEXT(me->initSelImg);
-			me->initSelImg = Text::StrCopyNew(imgItem->GetDispName());
+			SDEL_STRING(me->initSelImg);
+			me->initSelImg = imgItem->GetDispName()->Clone();
 			me->UpdateImgDir();
 		}
 	}
@@ -649,12 +649,12 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImgDblClicked(void *userObj)
 					{
 						const UTF8Char *sURL = frm->GetSrcURL();
 						const UTF8Char *location = frm->GetLocation();
-						if (!Text::StrEquals(sURL, wfile->srcUrl) || !Text::StrEquals(location, wfile->location))
+						if (!wfile->srcUrl->Equals(sURL) || !wfile->location->Equals(location))
 						{
 							OrganGroupItem *item = ((OrganGroupItem*)me->lbObj->GetSelectedItem());
 							me->env->UpdateSpeciesWebFile((OrganSpecies*)item, wfile, sURL, location);
-							SDEL_TEXT(me->initSelImg);
-							me->initSelImg = Text::StrCopyNew(imgItem->GetDispName());
+							SDEL_STRING(me->initSelImg);
+							me->initSelImg = imgItem->GetDispName()->Clone();
 							me->UpdateImgDir();
 						}
 					}
@@ -751,7 +751,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImageSaveClicked(void *userObj)
 				UI::FileDialog *dlg;
 				NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"AVIRead", L"OrganMgrSave", true));
 				dlg->AddFilter((const UTF8Char*)"*.jpg", (const UTF8Char*)"JPEG File");
-				dlg->SetFileName(userFile->oriFileName);
+				dlg->SetFileName(userFile->oriFileName->v);
 				if (dlg->ShowDialog(me->GetHandle()))
 				{
 					IO::FileUtil::CopyFile(sb.ToString(), dlg->GetFileName(), IO::FileUtil::FEA_FAIL, 0, 0);
@@ -793,7 +793,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImageSaveAllClicked(void *userOb
 						{
 							sb2.AppendChar(IO::Path::PATH_SEPERATOR, 1);
 						}
-						sb2.Append(userFile->oriFileName);
+						sb2.AppendC(userFile->oriFileName->v, userFile->oriFileName->leng);
 						IO::FileUtil::CopyFile(sb.ToString(), sb2.ToString(), IO::FileUtil::FEA_FAIL, 0, 0);
 					}
 				}
@@ -865,8 +865,8 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImageClipboardClicked(void *user
 
 						if (succ)
 						{
-							SDEL_TEXT(me->initSelImg);
-							me->initSelImg = Text::StrCopyNew(sbuff);
+							SDEL_STRING(me->initSelImg);
+							me->initSelImg = Text::String::New(sbuff);
 							me->UpdateImgDir();
 						}
 					}
@@ -879,7 +879,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImageClipboardClicked(void *user
 					{
 						Bool chg = false;
 						Bool firstPhoto = me->lbImage->GetCount() == 0;
-						SDEL_TEXT(me->initSelImg);
+						SDEL_STRING(me->initSelImg);
 						UTF8Char *sarr[2];
 						sarr[1] = sb.ToString();
 						printf("HDROP: %s\r\n", sb.ToString());
@@ -899,7 +899,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImageClipboardClicked(void *user
 								if (!chg)
 								{
 									UOSInt tmp = Text::StrLastIndexOf(sarr[0], IO::Path::PATH_SEPERATOR);
-									me->initSelImg = Text::StrCopyNew(&sarr[0][tmp + 1]);
+									me->initSelImg = Text::String::New(&sarr[0][tmp + 1]);
 								}
 								chg = true;
 								firstPhoto = false;
@@ -1249,7 +1249,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnTabSelChg(void *userObj)
 		if (me->indexChanged)
 		{
 			me->indexChanged = false;
-			SDEL_TEXT(me->initSelImg);
+			SDEL_STRING(me->initSelImg);
 			me->UpdateImgDir();
 		}
 	}
@@ -1439,7 +1439,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnObjPlaceClicked(void *userObj)
 			UI::MessageDialog::ShowDialog(me->env->GetLang((const UTF8Char*)"MainFormObjPlaceErrorGroupNonSp"), me->env->GetLang((const UTF8Char*)"MainFormObjPlaceErrorTitle"), me);
 			return;
 		}
-		SDEL_TEXT(me->initSelImg);
+		SDEL_STRING(me->initSelImg);
 		UOSInt i;
 		UOSInt j;
 		i = 0;
@@ -1449,7 +1449,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnObjPlaceClicked(void *userObj)
 			UTF8Char sbuff[512];
 			sbuff[0] = 0;
 			((OrganImages*)me->pickObjs->GetItem(0))->GetItemName(sbuff);
-			me->initSelImg = Text::StrCopyNew(sbuff);
+			me->initSelImg = Text::String::New(sbuff);
 		}
 		while (i < j)
 		{
@@ -1986,8 +1986,8 @@ void SSWR::OrganMgr::OrganMainForm::UpdateImgDir()
 			while (i < j)
 			{
 				imgItem = this->imgItems->GetItem(i);
-				this->lbImage->AddItem(imgItem->GetDispName(), imgItem);
-				if (this->initSelImg && Text::StrEquals(imgItem->GetDispName(), this->initSelImg))
+				this->lbImage->AddItem(imgItem->GetDispName()->v, imgItem);
+				if (this->initSelImg && imgItem->GetDispName()->Equals(this->initSelImg))
 				{
 					initSel = i;
 				}
@@ -2012,7 +2012,7 @@ void SSWR::OrganMgr::OrganMainForm::UpdateImgDir()
 				{
 					sptr = sbuff;
 				}
-				sptr = Text::StrConcat(sptr, imgItem->GetDispName());
+				sptr = imgItem->GetDispName()->ConcatTo(sptr);
 				ts = imgItem->GetPhotoDate();
 				if (ts != 0)
 				{
@@ -2027,7 +2027,7 @@ void SSWR::OrganMgr::OrganMainForm::UpdateImgDir()
 					csptr = 0;
 					if (userFile)
 					{
-						csptr = userFile->location;
+						csptr = userFile->location->v;
 					}
 					if (csptr)
 					{
@@ -2036,17 +2036,17 @@ void SSWR::OrganMgr::OrganMainForm::UpdateImgDir()
 					}
 					else
 					{
-						csptr = this->env->GetLocName(imgItem->GetUserId(), &dt, this, this->ui);
-						if (csptr == 0)
+						Text::String *s = this->env->GetLocName(imgItem->GetUserId(), &dt, this, this->ui);
+						if (s == 0)
 						{
 						}
 						else
 						{
 							sptr = Text::StrConcat(sptr, (const UTF8Char*)", ");
-							sptr = Text::StrConcat(sptr, csptr);
+							sptr = s->ConcatTo(sptr);
 							if (userFile)
 							{
-								this->env->UpdateUserFileLoc(userFile, csptr);
+								this->env->UpdateUserFileLoc(userFile, s->v);
 							}
 						}
 					}
@@ -2054,11 +2054,11 @@ void SSWR::OrganMgr::OrganMainForm::UpdateImgDir()
 				}
 				else
 				{
-					const UTF8Char *sURL = imgItem->GetSrcURL();
+					Text::String *sURL = imgItem->GetSrcURL();
 					if (sURL)
 					{
 						sptr = Text::StrConcat(sptr, (const UTF8Char*)" (");
-						sptr = Text::StrConcat(sptr, sURL);
+						sptr = sURL->ConcatTo(sptr);
 						sptr = Text::StrConcat(sptr, (const UTF8Char*)")");
 					}
 				}
@@ -2068,7 +2068,7 @@ void SSWR::OrganMgr::OrganMainForm::UpdateImgDir()
 					if (userFile->descript)
 					{
 						sptr = Text::StrConcat(sptr, (const UTF8Char*)" ");
-						sptr = Text::StrConcat(sptr, userFile->descript);
+						sptr = userFile->descript->ConcatTo(sptr);
 					}
 				}
 				WebFileInfo *wfile = imgItem->GetWebFile();
@@ -2077,13 +2077,13 @@ void SSWR::OrganMgr::OrganMainForm::UpdateImgDir()
 					if (wfile->location)
 					{
 						sptr = Text::StrConcat(sptr, (const UTF8Char*)" ");
-						sptr = Text::StrConcat(sptr, wfile->location);
+						sptr = wfile->location->ConcatTo(sptr);
 					}
 				}
 
 				this->lbImage->AddItem(sbuff, imgItem);
 
-				if (this->initSelImg && Text::StrEquals(imgItem->GetDispName(), this->initSelImg))
+				if (this->initSelImg && imgItem->GetDispName()->Equals(this->initSelImg))
 				{
 					initSel = i;
 				}
@@ -2150,7 +2150,7 @@ void SSWR::OrganMgr::OrganMainForm::UpdateSpBook()
 	while (i < j)
 	{
 		spBook = spBooks.GetItem(i);
-		this->lvSpBook->AddItem(spBook->dispName, 0);
+		this->lvSpBook->AddItem(spBook->dispName->v, 0);
 		sb.ClearStr();
 		spBook->book->GetString(&sb);
 		this->lvSpBook->SetSubItem(i, 1, sb.ToString());
@@ -2886,7 +2886,7 @@ SSWR::OrganMgr::OrganMainForm::~OrganMainForm()
 	DEL_CLASS(this->mapEnv);
 	DEL_CLASS(this->mapImgLyrs);
 	SDEL_TEXT(this->initSelObj);
-	SDEL_TEXT(this->initSelImg);
+	SDEL_STRING(this->initSelImg);
 	this->ClearChildren();
 	this->colorMgr->DeleteSess(this->colorSess);
 }
@@ -3450,8 +3450,8 @@ void SSWR::OrganMgr::OrganMainForm::DropData(UI::GUIDropData *data, OSInt x, OSI
 
 							if (succ)
 							{
-								SDEL_TEXT(this->initSelImg);
-								this->initSelImg = Text::StrCopyNew(sbuff);
+								SDEL_STRING(this->initSelImg);
+								this->initSelImg = Text::String::New(sbuff);
 								this->UpdateImgDir();
 							}
 						}
@@ -3466,7 +3466,7 @@ void SSWR::OrganMgr::OrganMainForm::DropData(UI::GUIDropData *data, OSInt x, OSI
 				{
 					Bool firstPhoto = this->lbImage->GetCount() == 0;
 					Bool chg = false;
-					SDEL_TEXT(this->initSelImg);
+					SDEL_STRING(this->initSelImg);
 
 					sb.ClearStr();
 					if (data->GetDataText(fmtHDrop, &sb))
@@ -3490,7 +3490,7 @@ void SSWR::OrganMgr::OrganMainForm::DropData(UI::GUIDropData *data, OSInt x, OSI
 								if (!chg)
 								{
 									UOSInt tmp = Text::StrLastIndexOf(sarr[0], IO::Path::PATH_SEPERATOR);
-									this->initSelImg = Text::StrCopyNew(&sarr[0][tmp + 1]);
+									this->initSelImg = Text::String::New(&sarr[0][tmp + 1]);
 								}
 								chg = true;
 								firstPhoto = false;

@@ -15,7 +15,7 @@ namespace Map
 		DB::ReadingDB *currDB;
 		DB::ReadingDB *lastDB;
 		Map::DrawLayerType layerType;
-		Data::ArrayListStrUTF8 *colNames;
+		Data::ArrayList<Text::String*> *colNames;
 		Double minX;
 		Double minY;
 		Double maxX;

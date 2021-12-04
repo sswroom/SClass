@@ -28,20 +28,20 @@ SSWR::OrganMgr::Location::Location(Int32 id, Int32 parId, const UTF8Char *ename,
 {
 	this->id = id;
 	this->parId = parId;
-	this->ename = Text::StrCopyNew(ename);
-	this->cname = Text::StrCopyNew(cname);
+	this->ename = Text::String::New(ename);
+	this->cname = Text::String::New(cname);
 	this->locType = locType;
 }
 
 SSWR::OrganMgr::Location::~Location()
 {
-	Text::StrDelNew(this->ename);
-	Text::StrDelNew(this->cname);
+	this->ename->Release();
+	this->cname->Release();
 }
 
 UTF8Char *SSWR::OrganMgr::Location::ToString(UTF8Char *sbuff)
 {
-	return Text::StrConcat(sbuff, this->cname);
+	return this->cname->ConcatTo(sbuff);
 }
 
 SSWR::OrganMgr::LocationType::LocationType(Int32 id, const UTF8Char *engName, const UTF8Char *chiName)

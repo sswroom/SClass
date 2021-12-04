@@ -35,41 +35,28 @@ SSWR::OrganMgr::OrganImageWebForm::OrganImageWebForm(UI::GUIClientControl *paren
 
 	this->SetText(this->env->GetLang((const UTF8Char*)"ImageWebTitle"));
 
-	Text::StringBuilderUTF8 sb;
-	sb.Append(imgItem->GetDispName());
 	NEW_CLASS(this->lblId, UI::GUILabel(ui, this, this->env->GetLang((const UTF8Char*)"ImageWebId")));
 	this->lblId->SetRect(0, 0, 100, 23, false);
-	NEW_CLASS(this->txtId, UI::GUITextBox(ui, this, sb.ToString()));
+	NEW_CLASS(this->txtId, UI::GUITextBox(ui, this, imgItem->GetDispName()->v));
 	this->txtId->SetRect(100, 0, 200, 23, false);
 	this->txtId->SetReadOnly(true);
 	NEW_CLASS(this->lblFileName, UI::GUILabel(ui, this, this->env->GetLang((const UTF8Char*)"ImageWebFileName")));
 	this->lblFileName->SetRect(0, 24, 100, 23, false);
-	sb.ClearStr();
-	sb.Append(imgItem->GetFullName());
-	NEW_CLASS(this->txtFileName, UI::GUITextBox(ui, this, sb.ToString()));
+	NEW_CLASS(this->txtFileName, UI::GUITextBox(ui, this, imgItem->GetFullName()->v));
 	this->txtFileName->SetRect(100, 24, 680, 23, false);
 	this->txtFileName->SetReadOnly(true);
 	NEW_CLASS(this->lblImageURL, UI::GUILabel(ui, this, this->env->GetLang((const UTF8Char*)"ImageWebImageURL")));
 	this->lblImageURL->SetRect(0, 48, 100, 23, false);
-	sb.ClearStr();
-	if (imgItem->GetImgURL())
-		sb.Append(imgItem->GetImgURL());
-	NEW_CLASS(this->txtImageURL, UI::GUITextBox(ui, this, sb.ToString()));
+	NEW_CLASS(this->txtImageURL, UI::GUITextBox(ui, this, Text::String::OrEmpty(imgItem->GetImgURL())->v));
 	this->txtImageURL->SetRect(100, 48, 680, 23, false);
 	this->txtImageURL->SetReadOnly(true);
 	NEW_CLASS(this->lblSourceURL, UI::GUILabel(ui, this, this->env->GetLang((const UTF8Char*)"ImageWebSourceURL")));
 	this->lblSourceURL->SetRect(0, 72, 100, 23, false);
-	sb.ClearStr();
-	if (imgItem->GetSrcURL())
-		sb.Append(imgItem->GetSrcURL());
-	NEW_CLASS(this->txtSourceURL, UI::GUITextBox(ui, this, sb.ToString()));
+	NEW_CLASS(this->txtSourceURL, UI::GUITextBox(ui, this, Text::String::OrEmpty(imgItem->GetSrcURL())->v));
 	this->txtSourceURL->SetRect(100, 72, 680, 23, false);
 	NEW_CLASS(this->lblLocation, UI::GUILabel(ui, this, this->env->GetLang((const UTF8Char*)"ImageWebLocation")));
 	this->lblLocation->SetRect(0, 96, 100, 23, false);
-	sb.ClearStr();
-	if (wfile)
-		sb.Append(wfile->location);
-	NEW_CLASS(this->txtLocation, UI::GUITextBox(ui, this, sb.ToString()));
+	NEW_CLASS(this->txtLocation, UI::GUITextBox(ui, this, Text::String::OrEmpty(wfile->location)->v));
 	this->txtLocation->SetRect(100, 96, 680, 23, false);
 	if (wfile == 0)
 	{
@@ -82,7 +69,7 @@ SSWR::OrganMgr::OrganImageWebForm::OrganImageWebForm(UI::GUIClientControl *paren
 	this->btnCancel->SetRect(200, 120, 75, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClicked, this);
 
-	if (wfile == 0 || Text::StrEquals(wfile->srcUrl, wfile->imgUrl) || Text::StrEquals(wfile->srcUrl, (const UTF8Char*)"chrome://browser/content/browser.xhtml"))
+	if (wfile == 0 || wfile->srcUrl->Equals(wfile->imgUrl) || wfile->srcUrl->Equals((const UTF8Char*)"chrome://browser/content/browser.xhtml"))
 	{
 		this->txtSourceURL->Focus();
 		this->txtSourceURL->SelectAll();

@@ -185,7 +185,7 @@ Data::Class *DB::TableDef::CreateTableClass()
 	while (i < j)
 	{
 		DB::ColDef *col = this->cols->GetItem(i);
-		builder.AddItem(col->GetColName(), col->GetColType());
+		builder.AddItem(col->GetColName()->v, col->GetColType());
 		i++;
 	}
 	return builder.GetResultClass();

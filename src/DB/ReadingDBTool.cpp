@@ -823,14 +823,14 @@ DB::TableDef *DB::ReadingDBTool::GetTableDef(const UTF8Char *tableName)
 				}
 				else
 				{
-					col->SetDefVal(0);
+					col->SetDefVal((const UTF8Char*)0);
 				}
 				if (r->GetStr(5, buff, sizeof(buff)))
 				{
 					if (Text::StrEquals(buff, (const UTF8Char*)"auto_increment"))
 					{
 						col->SetAutoInc(true);
-						col->SetAttr(0);
+						col->SetAttr((const UTF8Char*)0);
 					}
 					else
 					{
@@ -839,7 +839,7 @@ DB::TableDef *DB::ReadingDBTool::GetTableDef(const UTF8Char *tableName)
 				}
 				else
 				{
-					col->SetAttr(0);
+					col->SetAttr((const UTF8Char*)0);
 				}
 				r->GetStr(1, buff, sizeof(buff));
 				UOSInt colSize;
@@ -954,7 +954,7 @@ DB::TableDef *DB::ReadingDBTool::GetTableDef(const UTF8Char *tableName)
 			while (j < k)
 			{
 				col = tab->GetCol(j);
-				if (Text::StrEquals(col->GetColName(), buff))
+				if (col->GetColName()->Equals(buff))
 				{
 					col->SetPK(true);
 					break;
@@ -1140,7 +1140,7 @@ UOSInt DB::ReadingDBTool::SplitSQL(UTF8Char **outStrs, UOSInt maxCnt, UTF8Char *
 
 void DB::ReadingDBTool::AppendColDef(DB::DBUtil::ServerType svrType, DB::SQLBuilder *sql, DB::ColDef *col)
 {
-	sql->AppendCol(col->GetColName());
+	sql->AppendCol(col->GetColName()->v);
 	sql->AppendCmd((const UTF8Char*)" ");
 	AppendColType(svrType, sql, col->GetColType(), col->GetColSize());
 	if (col->IsNotNull())

@@ -46,8 +46,8 @@ void SSWR::OrganMgr::OrganUserForm::UpdateUserList()
 		user = this->userList->GetItem(i);
 		Text::StrInt32(sbuff, user->id);
 		k = this->lvUser->AddItem(sbuff, user);
-		this->lvUser->SetSubItem(k, 1, user->userName);
-		this->lvUser->SetSubItem(k, 2, user->watermark);
+		this->lvUser->SetSubItem(k, 1, user->userName->v);
+		this->lvUser->SetSubItem(k, 2, user->watermark->v);
 		i++;
 	}
 }

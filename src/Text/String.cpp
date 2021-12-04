@@ -5,6 +5,8 @@
 #include "Text/MyStringW.h"
 #include "Text/String.h"
 
+Text::String Text::String::emptyStr = {0, 1, 0};
+
 Text::String *Text::String::New(const UTF8Char *str)
 {
 	UOSInt len = Text::StrCharCnt(str);
@@ -87,6 +89,17 @@ Text::String *Text::String::NewCSVRec(const UTF8Char *str)
 	return s;
 }
 
+Text::String *Text::String::NewEmpty()
+{
+	return emptyStr.Clone();
+}
+
+Text::String *Text::String::OrEmpty(Text::String *s)
+{
+	if (s) return s;
+	return emptyStr.Clone();
+}
+
 void Text::String::Release()
 {
 	this->cnt--;
@@ -100,6 +113,46 @@ Text::String *Text::String::Clone()
 {
 	this->cnt++;
 	return this;
+}
+
+UTF8Char *Text::String::ConcatTo(UTF8Char *sbuff)
+{
+	return Text::StrConcatC(sbuff, this->v, this->leng);
+}
+
+Bool Text::String::Equals(const UTF8Char *s)
+{
+	return Text::StrEquals(this->v, s);
+}
+
+Bool Text::String::Equals(Text::String *s)
+{
+	return this->leng == s->leng && Text::StrEquals(this->v, s->v);
+}
+
+Bool Text::String::EqualsICase(const UTF8Char *s)
+{
+	return Text::StrEqualsICase(this->v, s);
+}
+
+Bool Text::String::StartsWith(const UTF8Char *s)
+{
+	return Text::StrStartsWith(this->v, s);
+}
+
+Bool Text::String::EndsWith(const UTF8Char *s)
+{
+	UOSInt l = Text::StrCharCnt(s);
+	if (l > this->leng)
+	{
+		return false;
+	}
+	return Text::StrEquals(&this->v[this->leng - l], s);
+}
+
+UOSInt Text::String::IndexOf(const UTF8Char *s)
+{
+	return Text::StrIndexOf(this->v, s);
 }
 
 Text::String::~String()

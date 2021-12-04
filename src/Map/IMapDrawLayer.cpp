@@ -1113,7 +1113,7 @@ Bool Map::MapLayerReader::GetColDef(UOSInt colIndex, DB::ColDef *colDef)
 		colDef->SetColDP(0);
 		colDef->SetColSize(0x7fffffff);
 		colDef->SetAttr((const UTF8Char*)"");
-		colDef->SetDefVal(0);
+		colDef->SetDefVal((const UTF8Char*)0);
 		colDef->SetAutoInc(false);
 		colDef->SetNotNull(true);
 		colDef->SetPK(false);

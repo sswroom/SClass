@@ -17,7 +17,7 @@ void SSWR::OrganMgr::OrganLocationForm::DispId(Int32 id)
 	while (i-- > 0)
 	{
 		l = locList.GetItem(i);
-		this->lbLocation->AddItem(l->cname, l);
+		this->lbLocation->AddItem(l->cname->v, l);
 	}
 	i = locList.GetCount();
 	if (i > 0)
@@ -51,7 +51,7 @@ void SSWR::OrganMgr::OrganLocationForm::UpdateSubloc()
 		while (i < j)
 		{
 			l = locSubList->GetItem(i);
-			this->lbSublocations->AddItem(l->cname, l);
+			this->lbSublocations->AddItem(l->cname->v, l);
 			i++;
 		}
 		DEL_CLASS(locSubList);
@@ -79,10 +79,10 @@ Bool SSWR::OrganMgr::OrganLocationForm::ToSave()
 
 	if (this->env->LocationUpdate(currLoc->id, sbuff, sbuff2))
 	{
-		SDEL_TEXT(this->currLoc->ename);
-		SDEL_TEXT(this->currLoc->cname);
-		this->currLoc->ename = Text::StrCopyNew(sbuff);
-		this->currLoc->cname = Text::StrCopyNew(sbuff2);
+		SDEL_STRING(this->currLoc->ename);
+		SDEL_STRING(this->currLoc->cname);
+		this->currLoc->ename = Text::String::New(sbuff);
+		this->currLoc->cname = Text::String::New(sbuff2);
 		return false;
 	}
 	else
@@ -144,8 +144,8 @@ void __stdcall SSWR::OrganMgr::OrganLocationForm::OnSubLocSelChg(void *userObj)
 	{
 		UTF8Char sbuff[16];
 		Text::StrInt32(sbuff, me->currLoc->id);
-		me->txtCName->SetText(me->currLoc->cname);
-		me->txtEName->SetText(me->currLoc->ename);
+		me->txtCName->SetText(me->currLoc->cname->v);
+		me->txtEName->SetText(me->currLoc->ename->v);
 		me->txtID->SetText(sbuff);
 	}
 }
@@ -159,7 +159,7 @@ void __stdcall SSWR::OrganMgr::OrganLocationForm::OnSubLocDblClk(void *userObj)
 		if (me->ToSave())
 			return;
 		Location *loc = (Location*)me->lbSublocations->GetItem(i);
-		i = me->lbLocation->AddItem(loc->cname, loc);
+		i = me->lbLocation->AddItem(loc->cname->v, loc);
 		me->lbLocation->SetSelectedIndex(i);
 	}
 }

@@ -219,7 +219,7 @@ Bool DB::DBTool::GenCreateTableCmd(DB::SQLBuilder *sql, const UTF8Char *tableNam
 					{
 						sql->AppendCmd((const UTF8Char*)", ");
 					}
-					sql->AppendCol(col->GetColName());
+					sql->AppendCol(col->GetColName()->v);
 					k++;
 				}
 			}
@@ -252,7 +252,7 @@ Bool DB::DBTool::GenCreateTableCmd(DB::SQLBuilder *sql, const UTF8Char *tableNam
 				{
 					sql->AppendCmd((const UTF8Char*)", ");
 				}
-				sql->AppendCol(col->GetColName());
+				sql->AppendCol(col->GetColName()->v);
 				k++;
 			}
 		}
@@ -317,7 +317,7 @@ DB::DBTool::PageStatus DB::DBTool::GenSelectCmdPage(DB::SQLBuilder *sql, DB::Tab
 		{
 			sql->AppendCmd((const UTF8Char*)", ");
 		}
-		sql->AppendCol(col->GetColName());
+		sql->AppendCol(col->GetColName()->v);
 		i++;
 	}
 	sql->AppendCmd((const UTF8Char*)" from ");
@@ -376,7 +376,7 @@ DB::DBTool::PageStatus DB::DBTool::GenSelectCmdPage(DB::SQLBuilder *sql, DB::Tab
 							hasOrder = true;
 							sql->AppendCmd((const UTF8Char*)" order by ");
 						}
-						sql->AppendCol(col->GetColName());
+						sql->AppendCol(col->GetColName()->v);
 					}
 					i++;
 				}

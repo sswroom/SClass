@@ -2,6 +2,7 @@
 #define _SM_SSWR_ORGANMGR_ORGANENV
 
 #include "Data/ArrayListInt64.h"
+#include "Data/Comparator.h"
 #include "IO/ConfigFile.h"
 #include "IO/Writer.h"
 #include "DB/DBTool.h"
@@ -34,23 +35,23 @@ namespace SSWR
 		typedef struct
 		{
 			Int32 cateId;
-			const UTF8Char *chiName;
-			const UTF8Char *dirName;
-			const UTF8Char *srcDir;
+			Text::String *chiName;
+			Text::String *dirName;
+			Text::String *srcDir;
 		} Category;
 
 		typedef struct
 		{
 			Int32 id;
-			const UTF8Char *dispName;
+			Text::String *dispName;
 			OrganBook *book;
 		} SpeciesBook;
 
 		typedef struct
 		{
 			Int32 id;
-			const UTF8Char *userName;
-			const UTF8Char *watermark;
+			Text::String *userName;
+			Text::String *watermark;
 			UserType userType;
 		} OrganWebUser;
 
@@ -60,42 +61,42 @@ namespace SSWR
 			Int32 fileType;
 			Int64 startTimeTicks;
 			Int64 endTimeTicks;
-			const UTF8Char *oriFileName;
-			const UTF8Char *fileName;
+			Text::String *oriFileName;
+			Text::String *fileName;
 			Int32 webUserId;
 		} DataFileInfo;
 
-		typedef struct
+		struct UserFileInfo
 		{
 			Int32 id;
 			Int32 fileType;
-			const UTF8Char *oriFileName;
+			Text::String *oriFileName;
 			Int64 fileTimeTicks;
 			Double lat;
 			Double lon;
 			Int32 webuserId;
 			Int32 speciesId;
 			Int64 captureTimeTicks;
-			const UTF8Char *dataFileName;
+			Text::String *dataFileName;
 			UInt32 crcVal;
 			Int32 rotType;
-			const UTF8Char *camera;
-			const UTF8Char *descript;
+			Text::String *camera;
+			Text::String *descript;
 			Double cropLeft;
 			Double cropTop;
 			Double cropRight;
 			Double cropBottom;
-			const UTF8Char *location;
-		} UserFileInfo;
+			Text::String *location;
+		};
 
 		typedef struct
 		{
 			Int32 id;
 			Int32 speciesId;
 			UInt32 crcVal;
-			const UTF8Char *imgUrl;
-			const UTF8Char *srcUrl;
-			const UTF8Char *location;
+			Text::String *imgUrl;
+			Text::String *srcUrl;
+			Text::String *location;
 			Double cropLeft;
 			Double cropTop;
 			Double cropRight;
@@ -117,6 +118,38 @@ namespace SSWR
 			Data::ArrayListInt64 *userFileIndex;
 			Data::ArrayList<UserFileInfo*> *userFileObj;
 		} WebUserInfo;
+
+		class UserFileComparator : public Data::Comparator<UserFileInfo*>
+		{
+		public:
+			virtual ~UserFileComparator();
+
+			virtual OSInt Compare(UserFileInfo *a, UserFileInfo *b);
+		};
+
+		class UserFileTimeComparator : public Data::Comparator<UserFileInfo*>
+		{
+		public:
+			virtual ~UserFileTimeComparator();
+
+			virtual OSInt Compare(UserFileInfo *a, UserFileInfo *b);
+		};
+
+		class UserFileSpeciesComparator : public Data::Comparator<UserFileInfo*>
+		{
+		public:
+			virtual ~UserFileSpeciesComparator();
+
+			virtual OSInt Compare(UserFileInfo *a, UserFileInfo *b);
+		};
+
+		class WebFileSpeciesComparator : public Data::Comparator<WebFileInfo*>
+		{
+		public:
+			virtual ~WebFileSpeciesComparator();
+
+			virtual OSInt Compare(WebFileInfo *a, WebFileInfo *b);
+		};
 
 		class OrganEnv
 		{
@@ -273,7 +306,7 @@ namespace SSWR
 			virtual Media::ImageList *ParseSpImage(OrganSpecies *sp) = 0;
 			virtual Media::ImageList *ParseFileImage(UserFileInfo *userFile) = 0;
 			virtual Media::ImageList *ParseWebImage(WebFileInfo *webFile) = 0;
-			const UTF8Char *GetLocName(Int32 userId, Data::DateTime *dt, UI::GUIForm *ownerFrm, UI::GUICore *ui);
+			Text::String *GetLocName(Int32 userId, Data::DateTime *dt, UI::GUIForm *ownerFrm, UI::GUICore *ui);
 			virtual OrganGroup *SearchObject(const UTF8Char *searchStr, UTF8Char *resultStr, UOSInt resultStrBuffSize, Int32 *parentId) = 0;
 
 			void SetCurrCategory(Category *currCate);

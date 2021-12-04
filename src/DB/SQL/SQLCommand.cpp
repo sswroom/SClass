@@ -130,7 +130,7 @@ DB::SQL::SQLCommand *DB::SQL::SQLCommand::Parse(const UTF8Char *sql, DB::DBUtil:
 								while (i-- > 0)
 								{
 									col = tab->GetCol(i);
-									if (sb.Equals(col->GetColName()))
+									if (sb.Equals(col->GetColName()->v))
 									{
 										col->SetPK(true);
 										break;
@@ -319,7 +319,7 @@ DB::SQL::SQLCommand *DB::SQL::SQLCommand::Parse(const UTF8Char *sql, DB::DBUtil:
 							}
 							else
 							{
-								printf("Unknown word found: %s (Column %s)\r\n", sb.ToString(), col->GetColName());
+								printf("Unknown word found: %s (Column %s)\r\n", sb.ToString(), col->GetColName()->v);
 								DEL_CLASS(col);
 								break;
 							}

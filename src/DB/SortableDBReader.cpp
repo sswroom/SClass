@@ -9,7 +9,7 @@ Data::VariItem *DB::SortableDBReader::GetItem(UOSInt colIndex)
 	Data::VariObject *obj = this->objList->GetItem(this->currIndex);
 	if (obj == 0)
 		return 0;
-	return obj->GetItem(this->cols->GetItem(colIndex)->GetColName());
+	return obj->GetItem(this->cols->GetItem(colIndex)->GetColName()->v);
 }
 
 DB::SortableDBReader::SortableDBReader(DB::ReadingDB *db, const UTF8Char *tableName, Data::ArrayList<const UTF8Char*> *colNames, UOSInt dataOfst, UOSInt maxCnt, const UTF8Char *ordering, Data::QueryConditions *condition)
@@ -19,7 +19,7 @@ DB::SortableDBReader::SortableDBReader(DB::ReadingDB *db, const UTF8Char *tableN
 	this->cols = 0;
 	UOSInt i;
 	UOSInt j;
-	DB::ColDef colDef(0);
+	DB::ColDef colDef((const UTF8Char*)0);
 	Data::VariObject *obj;
 	if (colNames == 0 || colNames->GetCount() == 0)
 	{
@@ -101,7 +101,7 @@ DB::SortableDBReader::SortableDBReader(DB::ReadingDB *db, const UTF8Char *tableN
 		{
 			if (r->GetColDef(i, &colDef))
 			{
-				tmpCols.Put(colDef.GetColName(), colDef.Clone());
+				tmpCols.Put(colDef.GetColName()->v, colDef.Clone());
 			}
 			i++;
 		}
@@ -506,7 +506,8 @@ UTF8Char *DB::SortableDBReader::GetName(UOSInt colIndex, UTF8Char *buff)
 	DB::ColDef *col = this->cols->GetItem(colIndex);
 	if (col)
 	{
-		return Text::StrConcat(buff, col->GetColName());
+		Text::String *colName = col->GetColName();
+		return Text::StrConcatC(buff, colName->v, colName->leng);
 	}
 	return 0;
 }

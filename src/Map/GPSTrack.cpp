@@ -319,11 +319,11 @@ Bool Map::GPSTrack::GetColumnDef(UOSInt colIndex, DB::ColDef *colDef)
 		colDef->SetColSize(256);
 		colDef->SetColDP(0);
 		colDef->SetColType(DB::DBUtil::CT_VarChar);
-		colDef->SetDefVal(0);
+		colDef->SetDefVal((const UTF8Char*)0);
 		colDef->SetNotNull(false);
 		colDef->SetPK(false);
 		colDef->SetAutoInc(false);
-		colDef->SetAttr(0);
+		colDef->SetAttr((const UTF8Char*)0);
 		return true;
 	}
 	else if (colIndex == 1)
@@ -332,11 +332,11 @@ Bool Map::GPSTrack::GetColumnDef(UOSInt colIndex, DB::ColDef *colDef)
 		colDef->SetColSize(41);
 		colDef->SetColDP(0);
 		colDef->SetColType(DB::DBUtil::CT_VarChar);
-		colDef->SetDefVal(0);
+		colDef->SetDefVal((const UTF8Char*)0);
 		colDef->SetNotNull(false);
 		colDef->SetPK(false);
 		colDef->SetAutoInc(false);
-		colDef->SetAttr(0);
+		colDef->SetAttr((const UTF8Char*)0);
 		return true;
 	}
 	else if (colIndex == 2)
@@ -345,11 +345,11 @@ Bool Map::GPSTrack::GetColumnDef(UOSInt colIndex, DB::ColDef *colDef)
 		colDef->SetColSize(19);
 		colDef->SetColDP(0);
 		colDef->SetColType(DB::DBUtil::CT_DateTime);
-		colDef->SetDefVal(0);
+		colDef->SetDefVal((const UTF8Char*)0);
 		colDef->SetNotNull(false);
 		colDef->SetPK(false);
 		colDef->SetAutoInc(false);
-		colDef->SetAttr(0);
+		colDef->SetAttr((const UTF8Char*)0);
 		return true;
 	}
 	else if (colIndex == 3)
@@ -358,11 +358,11 @@ Bool Map::GPSTrack::GetColumnDef(UOSInt colIndex, DB::ColDef *colDef)
 		colDef->SetColSize(19);
 		colDef->SetColDP(0);
 		colDef->SetColType(DB::DBUtil::CT_DateTime);
-		colDef->SetDefVal(0);
+		colDef->SetDefVal((const UTF8Char*)0);
 		colDef->SetNotNull(false);
 		colDef->SetPK(false);
 		colDef->SetAutoInc(false);
-		colDef->SetAttr(0);
+		colDef->SetAttr((const UTF8Char*)0);
 		return true;
 	}
 	else
@@ -1508,8 +1508,8 @@ Bool Map::GPSDataReader::GetColDef(UOSInt colIndex, DB::ColDef *colDef)
 	colDef->SetNotNull(true);
 	colDef->SetPK(false);
 	colDef->SetAutoInc(false);
-	colDef->SetDefVal(0);
-	colDef->SetAttr(0);
+	colDef->SetDefVal((const UTF8Char*)0);
+	colDef->SetAttr((const UTF8Char*)0);
 	switch (colIndex)
 	{
 	case 0:

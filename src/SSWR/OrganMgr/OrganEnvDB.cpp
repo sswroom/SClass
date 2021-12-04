@@ -2,6 +2,7 @@
 #include "Crypto/Hash/CRC32R.h"
 #include "Crypto/Hash/MD5.h"
 #include "Data/ByteTool.h"
+#include "Data/Sort/ArtificialQuickSort.h"
 #include "DB/DBReader.h"
 #include "DB/ODBCConn.h"
 #include "Exporter/GUIJPGExporter.h"
@@ -38,7 +39,7 @@
 SSWR::OrganMgr::OrganEnvDB::OrganEnvDB() : OrganEnv()
 {
 	UOSInt i;
-	UTF8Char sbuff[256];
+	UOSInt j;
 	Category *cate;
 
 	this->cfg = IO::IniFile::ParseProgConfig(0);
@@ -104,12 +105,9 @@ SSWR::OrganMgr::OrganEnvDB::OrganEnvDB() : OrganEnv()
 		{
 			cate = MemAlloc(Category, 1);
 			cate->cateId = r->GetInt32(0);
-			r->GetStr(1, sbuff, sizeof(sbuff));
-			cate->chiName = Text::StrCopyNew(sbuff);
-			r->GetStr(2, sbuff, sizeof(sbuff));
-			cate->dirName = Text::StrCopyNew(sbuff);
-			r->GetStr(3, sbuff, sizeof(sbuff));
-			cate->srcDir = Text::StrCopyNew(sbuff);
+			cate->chiName = r->GetNewStr(1);
+			cate->dirName = r->GetNewStr(2);
+			cate->srcDir = r->GetNewStr(3);
 			this->categories->Add(cate);
 		}
 		this->db->CloseReader(r);
@@ -139,7 +137,6 @@ SSWR::OrganMgr::OrganEnvDB::OrganEnvDB() : OrganEnv()
 	r = this->db->ExecuteReader((const UTF8Char*)"select id, fileType, startTime, endTime, oriFileName, dataFileName, webuser_id from datafile order by id");
 	if (r)
 	{
-		Text::StringBuilderUTF8 sb;
 		Data::DateTime dt;
 		DataFileInfo *dataFile;
 		WebUserInfo *webUser;
@@ -153,12 +150,8 @@ SSWR::OrganMgr::OrganEnvDB::OrganEnvDB() : OrganEnv()
 			dataFile->startTimeTicks = dt.ToTicks();
 			r->GetDate(3, &dt);
 			dataFile->endTimeTicks = dt.ToTicks();
-			sb.ClearStr();
-			r->GetStr(4, &sb);
-			dataFile->oriFileName = Text::StrCopyNew(sb.ToString());
-			sb.ClearStr();
-			r->GetStr(5, &sb);
-			dataFile->fileName = Text::StrCopyNew(sb.ToString());
+			dataFile->oriFileName = r->GetNewStr(4);
+			dataFile->fileName = r->GetNewStr(5);
 			dataFile->webUserId = r->GetInt32(6);
 			this->dataFiles->Add(dataFile);
 
@@ -175,20 +168,20 @@ SSWR::OrganMgr::OrganEnvDB::OrganEnvDB() : OrganEnv()
 	r = this->db->ExecuteReader((const UTF8Char*)"select id, fileType, oriFileName, fileTime, lat, lon, webuser_id, species_id, captureTime, dataFileName, crcVal, rotType, camera, descript, cropLeft, cropTop, cropRight, cropBottom, location from userfile order by id");
 	if (r)
 	{
-		Text::StringBuilderUTF8 sb;
+		UOSInt k;
 		Data::DateTime dt;
 		SpeciesInfo *species;
 		UserFileInfo *userFile;
 		WebUserInfo *webUser;
+		Data::ArrayList<UserFileInfo*> userFileList;
+		userFileList.EnsureCapacity(102400);
 
 		while (r->ReadNext())
 		{
 			userFile = MemAlloc(UserFileInfo, 1);
 			userFile->id = r->GetInt32(0);
 			userFile->fileType = r->GetInt32(1);
-			sb.ClearStr();
-			r->GetStr(2, &sb);
-			userFile->oriFileName = Text::StrCopyNew(sb.ToString());
+			userFile->oriFileName = r->GetNewStr(2);
 			r->GetDate(3, &dt);
 			userFile->fileTimeTicks = dt.ToTicks();
 			userFile->lat = r->GetDbl(4);
@@ -197,60 +190,74 @@ SSWR::OrganMgr::OrganEnvDB::OrganEnvDB() : OrganEnv()
 			userFile->speciesId = r->GetInt32(7);
 			r->GetDate(8, &dt);
 			userFile->captureTimeTicks = dt.ToTicks();
-			sb.ClearStr();
-			r->GetStr(9, &sb);
-			userFile->dataFileName = Text::StrCopyNew(sb.ToString());
+			userFile->dataFileName = r->GetNewStr(9);
 			userFile->crcVal = (UInt32)r->GetInt32(10);
 			userFile->rotType = r->GetInt32(11);
-			sb.ClearStr();
-			if (r->GetStr(12, &sb))
-			{
-				userFile->camera = Text::StrCopyNew(sb.ToString());
-			}
-			else
-			{
-				userFile->camera = 0;
-			}
-			sb.ClearStr();
-			if (r->GetStr(13, &sb))
-			{
-				userFile->descript = Text::StrCopyNew(sb.ToString());
-			}
-			else
-			{
-				userFile->descript = 0;
-			}
+			userFile->camera = r->GetNewStr(12);
+			userFile->descript = r->GetNewStr(13);
 			userFile->cropLeft = r->GetDbl(14);
 			userFile->cropTop = r->GetDbl(15);
 			userFile->cropRight = r->GetDbl(16);
 			userFile->cropBottom = r->GetDbl(17);
-			sb.ClearStr();
-			if (r->GetStr(18, &sb))
-			{
-				userFile->location = Text::StrCopyNew(sb.ToString());
-			}
-			else
-			{
-				userFile->location = 0;
-			}
-			this->userFileMap->Put(userFile->id, userFile);
-
-			species = this->GetSpeciesInfo(userFile->speciesId, true);
-			species->files->Add(userFile);
-
-			webUser = this->GetWebUser(userFile->webuserId);
-			i = webUser->userFileIndex->SortedInsert(userFile->fileTimeTicks);
-			webUser->userFileObj->Insert(i, userFile);
+			userFile->location = r->GetNewStr(18);
+			userFileList.Add(userFile);
 		}
 		this->db->CloseReader(r);
+
+		UserFileComparator comparator;
+		Data::Sort::ArtificialQuickSort::Sort(&userFileList, &comparator);
+		this->userFileMap->AllocSize(userFileList.GetCount());
+		i = 0;
+		j = userFileList.GetCount();
+		while (i < j)
+		{
+			userFile = userFileList.GetItem(i);
+			this->userFileMap->Put(userFile->id, userFile);
+			i++;
+		}
+
+		UserFileTimeComparator tcomparator;
+		Data::Sort::ArtificialQuickSort::Sort(&userFileList, &tcomparator);
+		webUser = 0;
+		i = 0;
+		j = userFileList.GetCount();
+		while (i < j)
+		{
+			userFile = userFileList.GetItem(i);
+			if (webUser == 0 || webUser->id != userFile->webuserId)
+			{
+				webUser = this->GetWebUser(userFile->webuserId);
+			}
+			k = webUser->userFileIndex->SortedInsert(userFile->fileTimeTicks);
+			webUser->userFileObj->Insert(k, userFile);
+
+			i++;
+		}
+
+		UserFileSpeciesComparator scomparator;
+		Data::Sort::ArtificialQuickSort::Sort(&userFileList, &scomparator);
+		species = 0;
+		i = 0;
+		j = userFileList.GetCount();
+		while (i < j)
+		{
+			userFile = userFileList.GetItem(i);
+			if (species == 0 || species->id != userFile->speciesId)
+			{
+				species = this->GetSpeciesInfo(userFile->speciesId, true);
+				species->files->Add(userFile);
+			}
+
+			i++;
+		}
 	}
 
 	r = this->db->ExecuteReader((const UTF8Char*)"select id, species_id, crcVal, imgUrl, srcUrl, prevUpdated, cropLeft, cropTop, cropRight, cropBottom, location from webfile");
 	if (r)
 	{
-		Text::StringBuilderUTF8 sb;
 		SpeciesInfo *species;
 		WebFileInfo *wfile;
+		Data::ArrayList<WebFileInfo*> fileList;
 
 		while (r->ReadNext())
 		{
@@ -258,24 +265,32 @@ SSWR::OrganMgr::OrganEnvDB::OrganEnvDB() : OrganEnv()
 			wfile->id = r->GetInt32(0);
 			wfile->speciesId = r->GetInt32(1);
 			wfile->crcVal = (UInt32)r->GetInt32(2);
-			sb.ClearStr();
-			r->GetStr(3, &sb);
-			wfile->imgUrl = Text::StrCopyNew(sb.ToString());
-			sb.ClearStr();
-			r->GetStr(4, &sb);
-			wfile->srcUrl = Text::StrCopyNew(sb.ToString());
+			wfile->imgUrl = r->GetNewStr(3);
+			wfile->srcUrl = r->GetNewStr(4);
 			wfile->cropLeft = r->GetDbl(6);
 			wfile->cropTop = r->GetDbl(7);
 			wfile->cropRight = r->GetDbl(8);
 			wfile->cropBottom = r->GetDbl(9);
-			sb.ClearStr();
-			r->GetStr(10, &sb);
-			wfile->location = Text::StrCopyNew(sb.ToString());
-
-			species = this->GetSpeciesInfo(wfile->speciesId, true);
-			species->wfileMap->Put(wfile->id, wfile);
+			wfile->location = r->GetNewStr(10);
+			fileList.Add(wfile);
 		}
 		this->db->CloseReader(r);
+
+		WebFileSpeciesComparator comparator;
+		Data::Sort::ArtificialQuickSort::Sort(&fileList, &comparator);
+		species = 0;
+		i = 0;
+		j = fileList.GetCount();
+		while (i < j)
+		{
+			wfile = fileList.GetItem(i);
+			if (species == 0 || species->id != wfile->speciesId)
+			{
+				species = this->GetSpeciesInfo(wfile->speciesId, true);
+				species->wfileMap->Put(wfile->id, wfile);
+			}
+			i++;
+		}
 	}
 
 	BooksInit();
@@ -505,7 +520,7 @@ UOSInt SSWR::OrganMgr::OrganEnvDB::GetGroupImages(Data::ArrayList<OrganImageItem
 					sb.Append(this->cfgImgDirBase);
 					sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
 				}
-				sb.Append(this->currCate->srcDir);
+				sb.Append(this->currCate->srcDir->v);
 				sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
 				r->GetStr(5, &sb);
 				sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
@@ -695,7 +710,7 @@ UOSInt SSWR::OrganMgr::OrganEnvDB::GetSpeciesImages(Data::ArrayList<OrganImageIt
 		sptr = Text::StrConcat(sptr, this->cfgImgDirBase);
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 	}
-	sptr = Text::StrConcat(sptr, this->currCate->srcDir);
+	sptr = Text::StrConcatC(sptr, this->currCate->srcDir->v, this->currCate->srcDir->leng);
 	*sptr++ = IO::Path::PATH_SEPERATOR;
 	sptr = Text::StrConcat(sptr, sp->GetDirName());
 	*sptr++ = IO::Path::PATH_SEPERATOR;
@@ -1248,9 +1263,9 @@ SSWR::OrganMgr::OrganSpecies *SSWR::OrganMgr::OrganEnvDB::GetSpecies(Int32 speci
 UTF8Char *SSWR::OrganMgr::OrganEnvDB::GetSpeciesDir(OrganSpecies *sp, UTF8Char *sbuff)
 {
 	UTF8Char *sptr;
-	if (Text::StrIndexOf(this->currCate->srcDir, (const UTF8Char*)":\\") != INVALID_INDEX)
+	if (this->currCate->srcDir->IndexOf((const UTF8Char*)":\\") != INVALID_INDEX)
 	{
-		sptr = Text::StrConcat(sbuff, this->currCate->srcDir);
+		sptr = Text::StrConcatC(sbuff, this->currCate->srcDir->v, this->currCate->srcDir->leng);
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 		return Text::StrConcat(sptr, sp->GetDirName());
 	}
@@ -1258,7 +1273,7 @@ UTF8Char *SSWR::OrganMgr::OrganEnvDB::GetSpeciesDir(OrganSpecies *sp, UTF8Char *
 	{
 		sptr = Text::StrConcat(sbuff, this->cfgImgDirBase);
 		*sptr++ = IO::Path::PATH_SEPERATOR;
-		sptr = Text::StrConcat(sptr, this->currCate->srcDir);
+		sptr = Text::StrConcatC(sptr, this->currCate->srcDir->v, this->currCate->srcDir->leng);
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 		sptr = Text::StrConcat(sptr, sp->GetDirName());
 		return sptr;
@@ -1481,7 +1496,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 		Double lat = 0;
 		Double lon = 0;
 		UserFileInfo *userFile;
-		const UTF8Char *camera = 0;
+		Text::String *camera = 0;
 		UInt32 crcVal = 0;
 		fileTime.SetTicks(0);
 		fileTime.ToLocalTime();
@@ -1515,7 +1530,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 						{
 							if (Text::StrStartsWithICase(csptr2, csptr))
 							{
-								camera = Text::StrCopyNew(csptr2);
+								camera = Text::String::New(csptr2);
 							}
 							else
 							{
@@ -1523,16 +1538,16 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 								sb.Append(csptr);
 								sb.Append((const UTF8Char*)" ");
 								sb.Append(csptr2);
-								camera = Text::StrCopyNew(sb.ToString());
+								camera = Text::String::New(sb.ToString());
 							}
 						}
 						else if (csptr)
 						{
-							camera = Text::StrCopyNew(csptr);
+							camera = Text::String::New(csptr);
 						}
 						else if (csptr2)
 						{
-							camera = Text::StrCopyNew(csptr2);
+							camera = Text::String::New(csptr2);
 						}
 					}
 				}
@@ -1640,7 +1655,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 					sql.AppendCmd((const UTF8Char*)", ");
 					sql.AppendInt32((Int32)crcVal);
 					sql.AppendCmd((const UTF8Char*)", ");
-					sql.AppendStrUTF8(camera);
+					sql.AppendStrUTF8(camera->v);
 					sql.AppendCmd((const UTF8Char*)", ");
 					sql.AppendDbl(0);
 					sql.AppendCmd((const UTF8Char*)", ");
@@ -1655,14 +1670,14 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 						userFile = MemAlloc(UserFileInfo, 1);
 						userFile->id = this->db->GetLastIdentity32();
 						userFile->fileType = fileType;
-						userFile->oriFileName = Text::StrCopyNew(&fileName[i + 1]);
+						userFile->oriFileName = Text::String::New(&fileName[i + 1]);
 						userFile->fileTimeTicks = fileTime.ToTicks();
 						userFile->lat = lat;
 						userFile->lon = lon;
 						userFile->webuserId = this->userId;
 						userFile->speciesId = sp->GetSpeciesId();
 						userFile->captureTimeTicks = userFile->fileTimeTicks;
-						userFile->dataFileName = Text::StrCopyNew(dataFileName);
+						userFile->dataFileName = Text::String::New(dataFileName);
 						userFile->crcVal = crcVal;
 						userFile->rotType = 0;
 						userFile->camera = camera;
@@ -1694,25 +1709,25 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 					}
 					else
 					{
-						SDEL_TEXT(camera);
+						SDEL_STRING(camera);
 						return FS_ERROR;
 					}
 				}
 				else
 				{
-					SDEL_TEXT(camera);
+					SDEL_STRING(camera);
 					return FS_ERROR;
 				}
 			}
 			else
 			{
-				SDEL_TEXT(camera);
+				SDEL_STRING(camera);
 				return FS_ERROR;
 			}
 		}
 		else
 		{
-			SDEL_TEXT(camera);
+			SDEL_STRING(camera);
 			return FS_ERROR;
 		}
 	}
@@ -1872,14 +1887,14 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 						userFile = MemAlloc(UserFileInfo, 1);
 						userFile->id = this->db->GetLastIdentity32();
 						userFile->fileType = fileType;
-						userFile->oriFileName = Text::StrCopyNew(&fileName[i + 1]);
+						userFile->oriFileName = Text::String::New(&fileName[i + 1]);
 						userFile->fileTimeTicks = fileTime.ToTicks();
 						userFile->lat = 0;
 						userFile->lon = 0;
 						userFile->webuserId = this->userId;
 						userFile->speciesId = sp->GetSpeciesId();
 						userFile->captureTimeTicks = userFile->fileTimeTicks;
-						userFile->dataFileName = Text::StrCopyNew(dataFileName);
+						userFile->dataFileName = Text::String::New(dataFileName);
 						userFile->crcVal = crcVal;
 						userFile->rotType = 0;
 						userFile->camera = 0;
@@ -2010,7 +2025,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesWeb
 		imgItem = imgItems->GetItem(i);
 		if (imgItem->GetFileType() == OrganImageItem::FT_WEB_IMAGE || imgItem->GetFileType() == OrganImageItem::FT_WEBFILE)
 		{
-			if (Text::StrEquals(imgItem->GetImgURL(), imgURL))
+			if (imgItem->GetImgURL()->Equals(imgURL))
 			{
 				found = true;
 			}
@@ -2077,9 +2092,9 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesWeb
 		wfile = MemAlloc(WebFileInfo, 1);
 		wfile->id = id;
 		wfile->speciesId = sp->GetSpeciesId();
-		wfile->imgUrl = Text::StrCopyNew(imgURL);
-		wfile->srcUrl = Text::StrCopyNew(srcURL);
-		wfile->location = Text::StrCopyNew((const UTF8Char*)"");
+		wfile->imgUrl = Text::String::New(imgURL);
+		wfile->srcUrl = Text::String::New(srcURL);
+		wfile->location = Text::String::New((const UTF8Char*)"");
 		wfile->crcVal = crcVal;
 		wfile->cropLeft = 0;
 		wfile->cropTop = 0;
@@ -2155,7 +2170,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesWeb
 		imgItem = imgItems->GetItem(i);
 		if (imgItem->GetFileType() == OrganImageItem::FT_WEB_IMAGE || imgItem->GetFileType() == OrganImageItem::FT_WEBFILE)
 		{
-			if (Text::StrEquals(imgItem->GetImgURL(), imgURL))
+			if (imgItem->GetImgURL()->Equals(imgURL))
 			{
 				found = true;
 			}
@@ -2252,10 +2267,10 @@ Bool SSWR::OrganMgr::OrganEnvDB::UpdateSpeciesWebFile(OrganSpecies *sp, WebFileI
 	sql.AppendInt32(wfile->id);
 	if (this->db->ExecuteNonQuery(sql.ToString()) >= 0)
 	{
-		SDEL_TEXT(wfile->srcUrl);
-		SDEL_TEXT(wfile->location);
-		wfile->srcUrl = Text::StrCopyNew(srcURL);
-		wfile->location = Text::StrCopyNew(location);
+		SDEL_STRING(wfile->srcUrl);
+		SDEL_STRING(wfile->location);
+		wfile->srcUrl = Text::String::New(srcURL);
+		wfile->location = Text::String::New(location);
 		return true;
 	}
 	else
@@ -2653,19 +2668,19 @@ Bool SSWR::OrganMgr::OrganEnvDB::MoveImages(Data::ArrayList<OrganImages*> *imgLi
 				sptr2 = sptr;
 			}
 			*sptr2++ = IO::Path::PATH_SEPERATOR;
-			sptr2 = Text::StrConcat(sptr2, img->GetImgItem()->GetDispName());
-			if (Text::StrEquals(img->GetImgItem()->GetFullName(), sbuff))
+			sptr2 = img->GetImgItem()->GetDispName()->ConcatTo(sptr2);
+			if (img->GetImgItem()->GetFullName()->Equals(sbuff))
 			{
 				break;
 			}
-			if (!IO::FileUtil::MoveFile(img->GetImgItem()->GetFullName(), sbuff, IO::FileUtil::FEA_FAIL, 0, 0))
+			if (!IO::FileUtil::MoveFile(img->GetImgItem()->GetFullName()->v, sbuff, IO::FileUtil::FEA_FAIL, 0, 0))
 			{
 				Text::StringBuilderUTF8 sb;
 				const UTF8Char *csptr;
 				csptr = Text::StrToUTF8New(L"移動");
 				sb.Append(csptr);
 				Text::StrDelNew(csptr);
-				sb.Append(img->GetImgItem()->GetDispName());
+				sb.Append(img->GetImgItem()->GetDispName()->v);
 				csptr = Text::StrToUTF8New(L"時出錯, 要繼續?");
 				sb.Append(csptr);
 				Text::StrDelNew(csptr);
@@ -2700,14 +2715,14 @@ Bool SSWR::OrganMgr::OrganEnvDB::MoveImages(Data::ArrayList<OrganImages*> *imgLi
 			if (img->GetImgItem()->GetFileType() == OrganImageItem::FT_WEB_IMAGE)
 			{
 				srcDir = img->GetSrcImgDir();
-				name = img->GetImgItem()->GetDispName();
+				name = img->GetImgItem()->GetDispName()->v;
 				name = &name[Text::StrLastIndexOf(name, IO::Path::PATH_SEPERATOR) + 1];
 				sb.ClearStr();
 				sb.Append(name);
 				sb.Append((const UTF8Char*)"\t");
-				sb.Append(img->GetImgItem()->GetImgURL());
+				sb.Append(img->GetImgItem()->GetImgURL()->v);
 				sb.Append((const UTF8Char*)"\t");
-				sb.Append(img->GetImgItem()->GetSrcURL());
+				sb.Append(img->GetImgItem()->GetSrcURL()->v);
 				writer->WriteLine(sb.ToString());
 			}
 			i++;
@@ -2740,7 +2755,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::MoveImages(Data::ArrayList<OrganImages*> *imgLi
 						img = imgList->GetItem(i);
 						if (img->GetImgItem()->GetFileType() == OrganImageItem::FT_WEB_IMAGE)
 						{
-							if (Text::StrEndsWith(img->GetImgItem()->GetDispName(), sarr[0]))
+							if (img->GetImgItem()->GetDispName()->EndsWith(sarr[0]))
 							{
 								found = true;
 								break;
@@ -2826,7 +2841,6 @@ UOSInt SSWR::OrganMgr::OrganEnvDB::GetWebUsers(Data::ArrayList<OrganWebUser*> *u
 {
 	UOSInt initCnt = userList->GetCount();
 	OrganWebUser *user;
-	Text::StringBuilderUTF8 sb;
 	DB::DBReader *r = this->db->ExecuteReader((const UTF8Char*)"select id, userName, watermark, userType from webuser");
 	if (r)
 	{
@@ -2834,12 +2848,8 @@ UOSInt SSWR::OrganMgr::OrganEnvDB::GetWebUsers(Data::ArrayList<OrganWebUser*> *u
 		{
 			user = MemAlloc(OrganWebUser, 1);
 			user->id = r->GetInt32(0);
-			sb.ClearStr();
-			r->GetStr(1, &sb);
-			user->userName = Text::StrCopyNew(sb.ToString());
-			sb.ClearStr();
-			r->GetStr(2, &sb);
-			user->watermark = Text::StrCopyNew(sb.ToString());
+			user->userName = r->GetNewStr(1);
+			user->watermark = r->GetNewStr(2);
 			user->userType = (UserType)r->GetInt32(3);
 			userList->Add(user);
 		}
@@ -2930,8 +2940,8 @@ void SSWR::OrganMgr::OrganEnvDB::ReleaseWebUsers(Data::ArrayList<OrganWebUser*> 
 	while (i-- > 0)
 	{
 		user = userList->GetItem(i);
-		Text::StrDelNew(user->userName);
-		Text::StrDelNew(user->watermark);
+		user->userName->Release();
+		user->watermark->Release();
 		MemFree(user);
 	}
 	userList->Clear();
@@ -2986,7 +2996,6 @@ OSInt SSWR::OrganMgr::OrganEnvDB::GetSpeciesBooks(Data::ArrayList<SpeciesBook*> 
 	DB::DBReader *r;
 	OrganBook *book;
 	SpeciesBook *spBook;
-	Text::StringBuilderUTF8 sb;
 	OSInt i;
 	OSInt j;
 
@@ -3004,9 +3013,7 @@ OSInt SSWR::OrganMgr::OrganEnvDB::GetSpeciesBooks(Data::ArrayList<SpeciesBook*> 
 			book = this->bookObjs->GetItem((UOSInt)i);
 			spBook = MemAlloc(SpeciesBook, 1);
 			spBook->book = book;
-			sb.ClearStr();
-			r->GetStr(1, &sb);
-			spBook->dispName = Text::StrCopyNew(sb.ToString());
+			spBook->dispName = r->GetNewStr(1);
 			spBook->id = r->GetInt32(2);
 			items->Add(spBook);
 			j++;
@@ -3024,7 +3031,7 @@ void SSWR::OrganMgr::OrganEnvDB::ReleaseSpeciesBooks(Data::ArrayList<SpeciesBook
 	while (i-- > 0)
 	{
 		spBook = items->GetItem(i);
-		SDEL_TEXT(spBook->dispName);
+		SDEL_STRING(spBook->dispName);
 		MemFree(spBook);
 	}
 }
@@ -3214,8 +3221,8 @@ Bool SSWR::OrganMgr::OrganEnvDB::AddDataFile(const UTF8Char *fileName)
 				dataFile->startTimeTicks = startDT.ToTicks();
 				dataFile->endTimeTicks = endDT.ToTicks();
 				dataFile->webUserId = this->userId;
-				dataFile->oriFileName = Text::StrCopyNew(oriFileName);
-				dataFile->fileName = Text::StrCopyNew(dataFileName);
+				dataFile->oriFileName = Text::String::New(oriFileName);
+				dataFile->fileName = Text::String::New(dataFileName);
 				this->dataFiles->Add(dataFile);
 
 				if (fileType == 1)
@@ -3288,7 +3295,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::DelDataFile(DataFileInfo *dataFile)
 	}
 	sptr = Text::StrConcat(sptr, (const UTF8Char*)"DataFile");
 	*sptr++ = IO::Path::PATH_SEPERATOR;
-	sptr = Text::StrConcat(sptr, dataFile->fileName);
+	sptr = Text::StrConcatC(sptr, dataFile->fileName->v, dataFile->fileName->leng);
 	if (IO::Path::GetPathType(sbuff) != IO::Path::PathType::File)
 		return false;
 	IO::Path::DeleteFile(sbuff);
@@ -3342,7 +3349,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::GetGPSPos(Int32 userId, Data::DateTime *t, Doub
 			}
 			sptr = Text::StrConcat(sptr, (const UTF8Char*)"DataFile");
 			*sptr++ = IO::Path::PATH_SEPERATOR;
-			sptr = Text::StrConcat(sptr, dataFile->fileName);
+			sptr = Text::StrConcatC(sptr, dataFile->fileName->v, dataFile->fileName->leng);
 			NEW_CLASS(fd, IO::StmData::FileData(u8buff, false));
 			Map::IMapDrawLayer *lyr = (Map::IMapDrawLayer*)this->parsers->ParseFileType(fd, IO::ParserType::MapLayer);
 			DEL_CLASS(fd);
@@ -3386,7 +3393,7 @@ Map::GPSTrack *SSWR::OrganMgr::OrganEnvDB::OpenGPSTrack(DataFileInfo *dataFile)
 	}
 	sptr = Text::StrConcat(sptr, (const UTF8Char*)"DataFile");
 	*sptr++ = IO::Path::PATH_SEPERATOR;
-	sptr = Text::StrConcat(sptr, dataFile->fileName);
+	sptr = dataFile->fileName->ConcatTo(sptr);
 	NEW_CLASS(fd, IO::StmData::FileData(sbuff, false));
 	Map::GPSTrack *trk = 0;
 	Map::IMapDrawLayer *lyr = (Map::IMapDrawLayer*)this->parsers->ParseFileType(fd, IO::ParserType::MapLayer);
@@ -3481,7 +3488,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::GetUserFilePath(UserFileInfo *userFile, Text::S
 	dt.ToString(u8buff, "yyyyMM");
 	sb->Append(u8buff);
 	sb->AppendChar(IO::Path::PATH_SEPERATOR, 1);
-	sb->Append(userFile->dataFileName);
+	sb->AppendC(userFile->dataFileName->v, userFile->dataFileName->leng);
 	return true;
 }
 
@@ -3496,10 +3503,10 @@ Bool SSWR::OrganMgr::OrganEnvDB::UpdateUserFileDesc(UserFileInfo *userFile, cons
 	if (this->db->ExecuteNonQuery(sql.ToString()) >= 0)
 	{
 		succ = true;
-		SDEL_TEXT(userFile->descript);
+		SDEL_STRING(userFile->descript);
 		if (descript)
 		{
-			userFile->descript = Text::StrCopyNew(descript);
+			userFile->descript = Text::String::New(descript);
 		}
 	}
 	return succ;
@@ -3516,10 +3523,10 @@ Bool SSWR::OrganMgr::OrganEnvDB::UpdateUserFileLoc(UserFileInfo *userFile, const
 	if (this->db->ExecuteNonQuery(sql.ToString()) >= 0)
 	{
 		succ = true;
-		SDEL_TEXT(userFile->location);
+		SDEL_STRING(userFile->location);
 		if (location)
 		{
-			userFile->location = Text::StrCopyNew(location);
+			userFile->location = Text::String::New(location);
 		}
 	}
 	return succ;
@@ -3674,10 +3681,10 @@ Bool SSWR::OrganMgr::OrganEnvDB::LocationUpdate(Int32 locId, const UTF8Char *eng
 		return false;
 	else
 	{
-		SDEL_TEXT(loc->ename);
-		SDEL_TEXT(loc->cname);
-		loc->ename = Text::StrCopyNew(engName);
-		loc->cname = Text::StrCopyNew(chiName);
+		SDEL_STRING(loc->ename);
+		SDEL_STRING(loc->cname);
+		loc->ename = Text::String::New(engName);
+		loc->cname = Text::String::New(chiName);
 		return true;
 	}
 }
@@ -3826,7 +3833,7 @@ Media::ImageList *SSWR::OrganMgr::OrganEnvDB::ParseImage(OrganImageItem *img, Us
 			}
 			else
 			{
-				sptr = Text::StrConcat(sptr, userFile->dataFileName);
+				sptr = userFile->dataFileName->ConcatTo(sptr);
 			}
 			NEW_CLASS(fd, IO::StmData::FileData(sbuff, false));
 			IO::ParsedObject *pobj = parsers->ParseFile(fd, &pt);
@@ -3943,7 +3950,7 @@ Media::ImageList *SSWR::OrganMgr::OrganEnvDB::ParseImage(OrganImageItem *img, Us
 		{
 			*outWebFile = 0;
 		}
-		NEW_CLASS(fd, IO::StmData::FileData(img->GetFullName(), false));
+		NEW_CLASS(fd, IO::StmData::FileData(img->GetFullName()->v, false));
 		IO::ParsedObject *pobj = parsers->ParseFile(fd, &pt);
 		DEL_CLASS(fd);
 		if (pobj == 0)
@@ -4009,7 +4016,7 @@ Media::ImageList *SSWR::OrganMgr::OrganEnvDB::ParseSpImage(OrganSpecies *sp)
 		sptr = Text::StrConcat(sptr, this->cfgImgDirBase);
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 	}
-	sptr = Text::StrConcat(sptr, this->currCate->srcDir);
+	sptr = Text::StrConcatC(sptr, this->currCate->srcDir->v, this->currCate->srcDir->leng);
 	*sptr++ = IO::Path::PATH_SEPERATOR;
 	sptr = Text::StrConcat(sptr, sp->GetDirName());
 	*sptr++ = IO::Path::PATH_SEPERATOR;
@@ -4114,7 +4121,7 @@ Media::ImageList *SSWR::OrganMgr::OrganEnvDB::ParseFileImage(UserFileInfo *userF
 	*sptr++ = IO::Path::PATH_SEPERATOR;
 	sptr = dt.ToString(sptr, "yyyyMM");
 	*sptr++ = IO::Path::PATH_SEPERATOR;
-	sptr = Text::StrConcat(sptr, userFile->dataFileName);
+	sptr = userFile->dataFileName->ConcatTo(sptr);
 	NEW_CLASS(fd, IO::StmData::FileData(sbuff, false));
 	IO::ParsedObject *pobj = parsers->ParseFile(fd, &pt);
 	DEL_CLASS(fd);
@@ -4549,7 +4556,7 @@ void SSWR::OrganMgr::OrganEnvDB::Test()
 				tr = this->TripGet(userId, &dt);
 				if (tr)
 				{
-					this->UpdateUserFileLoc(userFile, this->LocationGet(tr->locId)->cname);
+					this->UpdateUserFileLoc(userFile, this->LocationGet(tr->locId)->cname->v);
 				}
 			}
 		}
@@ -4661,8 +4668,8 @@ typedef struct
 	Int32 id;
 	Int32 photoId;
 	Int32 photoWId;
-	const UTF8Char *dirName;
-	const UTF8Char *photoName;
+	Text::String *dirName;
+	Text::String *photoName;
 } UpgradeDBSpInfo;
 
 void SSWR::OrganMgr::OrganEnvDB::UpgradeDB2()
@@ -4696,12 +4703,8 @@ void SSWR::OrganMgr::OrganEnvDB::UpgradeDB2()
 		{
 			sp = MemAlloc(UpgradeDBSpInfo, 1);
 			sp->id = r->GetInt32(0);
-			sb.ClearStr();
-			r->GetStr(1, &sb);
-			sp->dirName = Text::StrCopyNew(sb.ToString());
-			sb.ClearStr();
-			r->GetStr(2, &sb);
-			sp->photoName = Text::StrCopyNew(sb.ToString());
+			sp->dirName = r->GetNewStr(1);
+			sp->photoName = r->GetNewStr(2);
 			sp->photoId = r->GetInt32(3);
 			sp->photoWId = r->GetInt32(4);
 			spList.Add(sp);
@@ -4722,9 +4725,9 @@ void SSWR::OrganMgr::OrganEnvDB::UpgradeDB2()
 			sptr = Text::StrConcat(sptr, this->cfgImgDirBase);
 			*sptr++ = IO::Path::PATH_SEPERATOR;
 		}
-		sptr = Text::StrConcat(sptr, this->currCate->srcDir);
+		sptr = Text::StrConcatC(sptr, this->currCate->srcDir->v, this->currCate->srcDir->leng);
 		*sptr++ = IO::Path::PATH_SEPERATOR;
-		sptr = Text::StrConcat(sptr, sp->dirName);
+		sptr = sp->dirName->ConcatTo(sptr);
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 		Text::StrConcat(sptr, (const UTF8Char *)"web.txt");
 		if (IO::Path::GetPathType(sbuff) == IO::Path::PathType::File)
@@ -4776,7 +4779,7 @@ void SSWR::OrganMgr::OrganEnvDB::UpgradeDB2()
 						{
 							id = this->db->GetLastIdentity32();
 							
-							if (sp->photoId == 0 && sp->photoWId == 0 && sp->photoName && Text::StrStartsWith(sp->photoName, (const UTF8Char*)"web\\") && Text::StrStartsWith(cols[0], &sp->photoName[4]))
+							if (sp->photoId == 0 && sp->photoWId == 0 && sp->photoName && sp->photoName->StartsWith((const UTF8Char*)"web\\") && Text::StrStartsWith(cols[0], &sp->photoName->v[4]))
 							{
 								isCover = true;
 							}
@@ -4788,9 +4791,9 @@ void SSWR::OrganMgr::OrganEnvDB::UpgradeDB2()
 							wfile = MemAlloc(WebFileInfo, 1);
 							wfile->id = id;
 							wfile->speciesId = sp->id;
-							wfile->imgUrl = Text::StrCopyNew(cols[1]);
-							wfile->srcUrl = Text::StrCopyNew(cols[2]);
-							wfile->location = Text::StrCopyNew((const UTF8Char*)"");
+							wfile->imgUrl = Text::String::New(cols[1]);
+							wfile->srcUrl = Text::String::New(cols[2]);
+							wfile->location = Text::String::New((const UTF8Char*)"");
 							wfile->crcVal = crcVal;
 							wfile->cropLeft = 0;
 							wfile->cropTop = 0;
@@ -4814,9 +4817,9 @@ void SSWR::OrganMgr::OrganEnvDB::UpgradeDB2()
 							{
 								allSucc = false;
 
-								Text::StrDelNew(wfile->imgUrl);
-								Text::StrDelNew(wfile->srcUrl);
-								Text::StrDelNew(wfile->location);
+								wfile->imgUrl->Release();
+								wfile->srcUrl->Release();
+								wfile->location->Release();
 								MemFree(wfile);
 							}
 							else
@@ -4856,7 +4859,7 @@ void SSWR::OrganMgr::OrganEnvDB::UpgradeDB2()
 			DEL_CLASS(reader);
 			DEL_CLASS(fs);
 
-			if (sp->photoId == 0 && sp->photoWId == 0 && sp->photoName && Text::StrStartsWith(sp->photoName, (const UTF8Char*)"web\\"))
+			if (sp->photoId == 0 && sp->photoWId == 0 && sp->photoName && sp->photoName->StartsWith((const UTF8Char*)"web\\"))
 			{
 				if (coverFound != 1)
 				{
@@ -4875,8 +4878,8 @@ void SSWR::OrganMgr::OrganEnvDB::UpgradeDB2()
 			}
 		}
 
-		Text::StrDelNew(sp->dirName);
-		Text::StrDelNew(sp->photoName);
+		sp->dirName->Release();
+		sp->photoName->Release();
 		MemFree(sp);
 		i++;
 	}
@@ -4906,7 +4909,7 @@ void SSWR::OrganMgr::OrganEnvDB::UpgradeFileStruct(OrganSpecies *sp)
 		sptr = Text::StrConcat(sptr, this->cfgImgDirBase);
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 	}
-	sptr = Text::StrConcat(sptr, this->currCate->srcDir);
+	sptr = Text::StrConcatC(sptr, this->currCate->srcDir->v, this->currCate->srcDir->leng);
 	*sptr++ = IO::Path::PATH_SEPERATOR;
 	sptr = Text::StrConcat(sptr, sp->GetDirName());
 	*sptr++ = IO::Path::PATH_SEPERATOR;

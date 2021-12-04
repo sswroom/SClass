@@ -7,7 +7,26 @@ DB::ColDef::ColDef(const UTF8Char *colName)
 {
 	if (colName)
 	{
-		this->colName = Text::StrCopyNew(colName);
+		this->colName = Text::String::New(colName);
+	}
+	else
+	{
+		this->colName = 0;
+	}
+	this->colType = DB::DBUtil::CT_Unknown;
+	this->colSize = 0;
+	this->notNull = false;
+	this->pk = false;
+	this->autoInc = false;
+	this->defVal = 0;
+	this->attr = 0;
+}
+
+DB::ColDef::ColDef(Text::String *colName)
+{
+	if (colName)
+	{
+		this->colName = colName->Clone();
 	}
 	else
 	{
@@ -24,24 +43,12 @@ DB::ColDef::ColDef(const UTF8Char *colName)
 
 DB::ColDef::~ColDef()
 {
-	if (this->colName)
-	{
-		Text::StrDelNew(this->colName);
-		this->colName = 0;
-	}
-	if (this->defVal)
-	{
-		Text::StrDelNew(this->defVal);
-		this->defVal = 0;
-	}
-	if (this->attr)
-	{
-		Text::StrDelNew(this->attr);
-		this->attr = 0;
-	}
+	SDEL_STRING(this->colName);
+	SDEL_STRING(this->defVal);
+	SDEL_STRING(this->attr);
 }
 
-const UTF8Char *DB::ColDef::GetColName()
+Text::String *DB::ColDef::GetColName()
 {
 	return this->colName;
 }
@@ -76,12 +83,12 @@ Bool DB::ColDef::IsAutoInc()
 	return this->autoInc;
 }
 
-const UTF8Char *DB::ColDef::GetDefVal()
+Text::String *DB::ColDef::GetDefVal()
 {
 	return this->defVal;
 }
 
-const UTF8Char *DB::ColDef::GetAttr()
+Text::String *DB::ColDef::GetAttr()
 {
 	return this->attr;
 }
@@ -90,13 +97,13 @@ Bool DB::ColDef::GetDefVal(DB::SQLBuilder *sql)
 {
 	if (this->defVal == 0)
 		return false;
-	if (Text::StrStartsWith(this->defVal, (const UTF8Char*)"b'"))
+	if (Text::StrStartsWith(this->defVal->v, (const UTF8Char*)"b'"))
 	{
-		sql->AppendBool(Text::StrEquals(this->defVal, (const UTF8Char*)"b'1'"));
+		sql->AppendBool(Text::StrEquals(this->defVal->v, (const UTF8Char*)"b'1'"));
 	}
 	else
 	{
-		sql->AppendStrUTF8(this->defVal);
+		sql->AppendStrUTF8(this->defVal->v);
 	}
 	return true;
 }
@@ -104,11 +111,14 @@ Bool DB::ColDef::GetDefVal(DB::SQLBuilder *sql)
 
 void DB::ColDef::SetColName(const UTF8Char *colName)
 {
-	if (this->colName)
-	{
-		Text::StrDelNew(this->colName);
-	}
-	this->colName = SCOPY_TEXT(colName);
+	SDEL_STRING(this->colName);
+	if (colName) this->colName = Text::String::New(colName);
+}
+
+void DB::ColDef::SetColName(Text::String *colName)
+{
+	SDEL_STRING(this->colName);
+	if (colName) this->colName = colName->Clone();
 }
 
 void DB::ColDef::SetColType(DB::DBUtil::ColType colType)
@@ -143,14 +153,26 @@ void DB::ColDef::SetAutoInc(Bool autoInc)
 
 void DB::ColDef::SetDefVal(const UTF8Char *defVal)
 {
-	SDEL_TEXT(this->defVal);
-	this->defVal = SCOPY_TEXT(defVal);
+	SDEL_STRING(this->defVal);
+	if (defVal) this->defVal = Text::String::New(defVal);
+}
+
+void DB::ColDef::SetDefVal(Text::String *defVal)
+{
+	SDEL_STRING(this->defVal);
+	if (defVal) this->defVal = defVal->Clone();
 }
 
 void DB::ColDef::SetAttr(const UTF8Char *attr)
 {
-	SDEL_TEXT(this->attr);
-	this->attr = SCOPY_TEXT(attr);
+	SDEL_STRING(this->attr);
+	if (attr) this->attr = Text::String::New(attr);
+}
+
+void DB::ColDef::SetAttr(Text::String *attr)
+{
+	SDEL_STRING(this->attr);
+	if (attr) this->attr = attr->Clone();
 }
 
 void DB::ColDef::Set(ColDef *colDef)

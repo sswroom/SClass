@@ -2,38 +2,41 @@
 #define _SM_DB_COLDEF
 #include "DB/ReadingDB.h"
 #include "DB/SQLBuilder.h"
+#include "Text/String.h"
 
 namespace DB
 {
 	class ColDef
 	{
 	private:
-		const UTF8Char *colName;
+		Text::String *colName;
 		DB::DBUtil::ColType colType;
 		UOSInt colSize;
 		UOSInt colDP;
 		Bool notNull;
 		Bool pk;
 		Bool autoInc;
-		const UTF8Char *defVal;
-		const UTF8Char *attr;
+		Text::String *defVal;
+		Text::String *attr;
 
 	public:
 		ColDef(const UTF8Char *colName);
+		ColDef(Text::String *colName);
 		~ColDef();
 
-		const UTF8Char *GetColName();
+		Text::String *GetColName();
 		DB::DBUtil::ColType GetColType();
 		UOSInt GetColSize();
 		UOSInt GetColDP();
 		Bool IsNotNull();
 		Bool IsPK();
 		Bool IsAutoInc();
-		const UTF8Char *GetDefVal();
-		const UTF8Char *GetAttr();
+		Text::String *GetDefVal();
+		Text::String *GetAttr();
 		Bool GetDefVal(DB::SQLBuilder *sql);
 
 		void SetColName(const UTF8Char *colName);
+		void SetColName(Text::String *colName);
 		void SetColType(DB::DBUtil::ColType colType);
 		void SetColSize(UOSInt colSize);
 		void SetColDP(UOSInt colDP);
@@ -41,7 +44,9 @@ namespace DB
 		void SetPK(Bool pk);
 		void SetAutoInc(Bool autoInc);
 		void SetDefVal(const UTF8Char *defVal);
+		void SetDefVal(Text::String *defVal);
 		void SetAttr(const UTF8Char *attr);
+		void SetAttr(Text::String *attr);
 
 		void Set(ColDef *colDef);
 

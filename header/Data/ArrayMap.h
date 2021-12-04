@@ -23,6 +23,7 @@ namespace Data
 		OSInt GetIndex(T key);
 		Bool ContainsKey(T key);
 
+		void AllocSize(UOSInt cnt);
 		Data::ArrayList<V> *GetValues();
 		Data::SortableArrayList<T> *GetKeys();
 		UOSInt GetCount();
@@ -117,6 +118,13 @@ namespace Data
 	template <class T, class V> Bool ArrayMap<T, V>::ContainsKey(T key)
 	{
 		return this->keys->SortedIndexOf(key) >= 0;
+	}
+
+	template <class T, class V> void ArrayMap<T, V>::AllocSize(UOSInt cnt)
+	{
+		UOSInt newSize = this->keys->GetCount() + cnt;
+		this->keys->EnsureCapacity(newSize);
+		this->vals->EnsureCapacity(newSize);
 	}
 
 	template <class T, class V> Data::ArrayList<V> *ArrayMap<T, V>::GetValues()

@@ -41,7 +41,7 @@ void __stdcall SSWR::OrganMgr::OrganTripForm::OnTripSelChg(void *userObj)
 		Location *loc = me->env->LocationGet(trip->locId);
 		if (loc)
 		{
-			me->txtLocation->SetText(loc->cname);
+			me->txtLocation->SetText(loc->cname->v);
 			me->locId = trip->locId;
 		}
 		else
@@ -88,7 +88,7 @@ void __stdcall SSWR::OrganMgr::OrganTripForm::OnAddClicked(void *userObj)
 		t = (Trip*)me->lbTrips->GetItem((UOSInt)k);
 		if (t->fromDate <= itoDate && t->toDate >= ifrDate)
 		{
-			Text::StrConcat(Text::StrConcat(Text::StrConcat(sbuff, me->env->GetLang((const UTF8Char*)"TripFormErrorExist")), (const UTF8Char*)": "), me->env->LocationGet(t->locId)->cname);
+			me->env->LocationGet(t->locId)->cname->ConcatTo(Text::StrConcat(Text::StrConcat(sbuff, me->env->GetLang((const UTF8Char*)"TripFormErrorExist")), (const UTF8Char*)": "));
 			UI::MessageDialog::ShowDialog(sbuff, me->env->GetLang((const UTF8Char*)"TripFormTitle"), me);
 			return;
 		}
@@ -126,7 +126,7 @@ void __stdcall SSWR::OrganMgr::OrganTripForm::OnLocationClicked(void *userObj)
 	{
 		Location *selVal = frm->GetSelVal();
 		me->locId = selVal->id;
-		me->txtLocation->SetText(selVal->cname);
+		me->txtLocation->SetText(selVal->cname->v);
 	}
 	DEL_CLASS(frm);
 }

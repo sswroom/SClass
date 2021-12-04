@@ -34,6 +34,110 @@
 #include "UI/MessageDialog.h"
 #include "UI/GUICore.h"
 
+SSWR::OrganMgr::UserFileComparator::~UserFileComparator()
+{
+}
+
+OSInt SSWR::OrganMgr::UserFileComparator::Compare(UserFileInfo *a, UserFileInfo *b)
+{
+	if (a->id > b->id)
+	{
+		return 1;
+	}
+	else if (a->id < b->id)
+	{
+		return -1;
+	}
+	else
+	{
+		return 0;
+	}
+}
+
+SSWR::OrganMgr::UserFileTimeComparator::~UserFileTimeComparator()
+{
+}
+
+OSInt SSWR::OrganMgr::UserFileTimeComparator::Compare(UserFileInfo *a, UserFileInfo *b)
+{
+	if (a->fileTimeTicks > b->fileTimeTicks)
+	{
+		return 1;
+	}
+	else if (a->fileTimeTicks < b->fileTimeTicks)
+	{
+		return -1;
+	}
+	else if (a->id > b->id)
+	{
+		return 1;
+	}
+	else if (a->id < b->id)
+	{
+		return -1;
+	}
+	else
+	{
+		return 0;
+	}
+}
+
+SSWR::OrganMgr::UserFileSpeciesComparator::~UserFileSpeciesComparator()
+{
+}
+
+OSInt SSWR::OrganMgr::UserFileSpeciesComparator::Compare(UserFileInfo *a, UserFileInfo *b)
+{
+	if (a->speciesId > b->speciesId)
+	{
+		return 1;
+	}
+	else if (a->speciesId < b->speciesId)
+	{
+		return -1;
+	}
+	else if (a->id > b->id)
+	{
+		return 1;
+	}
+	else if (a->id < b->id)
+	{
+		return -1;
+	}
+	else
+	{
+		return 0;
+	}
+}
+
+SSWR::OrganMgr::WebFileSpeciesComparator::~WebFileSpeciesComparator()
+{
+}
+
+OSInt SSWR::OrganMgr::WebFileSpeciesComparator::Compare(WebFileInfo *a, WebFileInfo *b)
+{
+	if (a->speciesId > b->speciesId)
+	{
+		return 1;
+	}
+	else if (a->speciesId < b->speciesId)
+	{
+		return -1;
+	}
+	else if (a->id > b->id)
+	{
+		return 1;
+	}
+	else if (a->id < b->id)
+	{
+		return -1;
+	}
+	else
+	{
+		return 0;
+	}
+}
+
 SSWR::OrganMgr::OrganEnv::OrganEnv()
 {
 	NEW_CLASS(this->parsers, Parser::FullParserList());
@@ -223,7 +327,7 @@ Bool SSWR::OrganMgr::OrganEnv::SetSpeciesImg(OrganSpecies *sp, OrganImageItem *i
 	}
 	else
 	{
-		Text::StrConcat(sbuff, img->GetDispName());
+		img->GetDispName()->ConcatTo(sbuff);
 		i = Text::StrLastIndexOf(sbuff, '.');
 		if (i != INVALID_INDEX)
 		{
@@ -295,8 +399,8 @@ Data::ArrayList<SSWR::OrganMgr::DataFileInfo*> *SSWR::OrganMgr::OrganEnv::GetDat
 
 void SSWR::OrganMgr::OrganEnv::ReleaseDataFile(DataFileInfo *dataFile)
 {
-	Text::StrDelNew(dataFile->oriFileName);
-	Text::StrDelNew(dataFile->fileName);
+	dataFile->oriFileName->Release();
+	dataFile->fileName->Release();
 	MemFree(dataFile);
 }
 
@@ -311,9 +415,9 @@ void SSWR::OrganMgr::OrganEnv::ReleaseSpecies(SpeciesInfo *species)
 	while (i < j)
 	{
 		webFile = webFiles->GetItem(i);
-		Text::StrDelNew(webFile->location);
-		Text::StrDelNew(webFile->imgUrl);
-		Text::StrDelNew(webFile->srcUrl);
+		webFile->location->Release();
+		webFile->imgUrl->Release();
+		webFile->srcUrl->Release();
 		MemFree(webFile);
 		i++;
 	}
@@ -324,11 +428,11 @@ void SSWR::OrganMgr::OrganEnv::ReleaseSpecies(SpeciesInfo *species)
 
 void SSWR::OrganMgr::OrganEnv::ReleaseUserFile(UserFileInfo *userFile)
 {
-	Text::StrDelNew(userFile->oriFileName);
-	Text::StrDelNew(userFile->dataFileName);
-	SDEL_TEXT(userFile->camera);
-	SDEL_TEXT(userFile->descript);
-	SDEL_TEXT(userFile->location);
+	userFile->oriFileName->Release();
+	userFile->dataFileName->Release();
+	SDEL_STRING(userFile->camera);
+	SDEL_STRING(userFile->descript);
+	SDEL_STRING(userFile->location);
 	MemFree(userFile);
 }
 
@@ -532,7 +636,7 @@ void SSWR::OrganMgr::OrganEnv::BooksDeinit()
 	}
 }
 
-const UTF8Char *SSWR::OrganMgr::OrganEnv::GetLocName(Int32 userId, Data::DateTime *dt, UI::GUIForm *ownerFrm, UI::GUICore *ui)
+Text::String *SSWR::OrganMgr::OrganEnv::GetLocName(Int32 userId, Data::DateTime *dt, UI::GUIForm *ownerFrm, UI::GUICore *ui)
 {
 	Trip *tr = this->TripGet(userId, dt);
 	if (tr)
@@ -576,7 +680,7 @@ void SSWR::OrganMgr::OrganEnv::SetCurrCategory(Category *currCate)
 	if (currCate)
 	{
 		this->currCate = currCate;
-		this->cateIsFullDir = Text::StrIndexOf(this->currCate->srcDir, (const UTF8Char*)":\\") != INVALID_INDEX;
+		this->cateIsFullDir = this->currCate->srcDir->IndexOf((const UTF8Char*)":\\") != INVALID_INDEX;
 		this->TripReload(this->currCate->cateId);
 		this->LoadGroupTypes();
 	}
@@ -585,9 +689,9 @@ void SSWR::OrganMgr::OrganEnv::SetCurrCategory(Category *currCate)
 
 void SSWR::OrganMgr::OrganEnv::FreeCategory(Category *cate)
 {
-	Text::StrDelNew(cate->chiName);
-	Text::StrDelNew(cate->dirName);
-	Text::StrDelNew(cate->srcDir);
+	SDEL_STRING(cate->chiName);
+	SDEL_STRING(cate->dirName);
+	SDEL_STRING(cate->srcDir);
 	MemFree(cate);
 }
 
@@ -631,7 +735,7 @@ void SSWR::OrganMgr::OrganEnv::ExportWeb(const UTF8Char *exportDir, Bool include
 	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	NEW_CLASS(writer, Text::UTF8Writer(fs));
 
-	ExportBeginPage(writer, this->currCate->chiName);
+	ExportBeginPage(writer, this->currCate->chiName->v);
 	
 	OrganGroup *grp;
 	UOSInt i;
@@ -821,7 +925,7 @@ void SSWR::OrganMgr::OrganEnv::ExportGroup(OrganGroup *grp, Data::Int32Map<Data:
 					NEW_CLASS(fs, IO::FileStream(fullPath, IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 					NEW_CLASS(writer, Text::UTF8Writer(fs));
 					NEW_CLASS(sb, Text::StringBuilderUTF8());
-					sb->Append(this->currCate->chiName);
+					sb->AppendC(this->currCate->chiName->v, this->currCate->chiName->leng);
 					sb->Append((const UTF8Char*)" - ");
 					sb->Append(grp->GetCName());
 					sb->Append((const UTF8Char*)" ");
@@ -876,7 +980,7 @@ void SSWR::OrganMgr::OrganEnv::ExportGroup(OrganGroup *grp, Data::Int32Map<Data:
 					NEW_CLASS(fs, IO::FileStream(fullPath, IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 					NEW_CLASS(writer, Text::UTF8Writer(fs));
 					NEW_CLASS(sb, Text::StringBuilderUTF8());
-					sb->Append(this->currCate->chiName);
+					sb->AppendC(this->currCate->chiName->v, this->currCate->chiName->leng);
 					sb->Append((const UTF8Char*)" - ");
 					sb->Append(grp->GetCName());
 					sb->Append((const UTF8Char*)" ");
@@ -1002,7 +1106,7 @@ Bool SSWR::OrganMgr::OrganEnv::ExportSpecies(OrganSpecies *sp, const UTF8Char *b
 	Text::StringBuilderUTF8 sb;
 	NEW_CLASS(fs, IO::FileStream(fullPath, IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	NEW_CLASS(writer, Text::UTF8Writer(fs));
-	sb.Append(this->currCate->chiName);
+	sb.AppendC(this->currCate->chiName->v, this->currCate->chiName->leng);
 	sb.Append((const UTF8Char*)" - ");
 	sb.Append(sp->GetSName());
 	sb.Append((const UTF8Char*)" ");

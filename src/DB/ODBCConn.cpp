@@ -2194,8 +2194,8 @@ Bool DB::ODBCReader::GetColDef(UOSInt colIndex, DB::ColDef *colDef)
 	colDef->SetNotNull(notNull == SQL_NO_NULLS);
 	colDef->SetPK(false);
 	colDef->SetAutoInc(false);
-	colDef->SetDefVal(0);
-	colDef->SetAttr(0);
+	colDef->SetDefVal((const UTF8Char*)0);
+	colDef->SetAttr((const UTF8Char*)0);
 	return true;
 }
 

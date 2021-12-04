@@ -109,8 +109,8 @@ SSWR::OrganMgr::OrganUserEditForm::OrganUserEditForm(UI::GUIClientControl *paren
 
 	if (this->user)
 	{
-		this->txtUserName->SetText(this->user->userName);
-		this->txtWatermark->SetText(this->user->watermark);
+		this->txtUserName->SetText(this->user->userName->v);
+		this->txtWatermark->SetText(this->user->watermark->v);
 	}
 	this->txtUserName->Focus();
 	this->SetDefaultButton(this->btnOK);

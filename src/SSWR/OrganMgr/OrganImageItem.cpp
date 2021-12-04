@@ -20,22 +20,10 @@ SSWR::OrganMgr::OrganImageItem::OrganImageItem(Int32 userId)
 
 SSWR::OrganMgr::OrganImageItem::~OrganImageItem()
 {
-	if (this->dispName)
-	{
-		Text::StrDelNew(this->dispName);
-	}
-	if (this->fullName)
-	{
-		Text::StrDelNew(this->fullName);
-	}
-	if (this->srcURL)
-	{
-		Text::StrDelNew(this->srcURL);
-	}
-	if (this->imgURL)
-	{
-		Text::StrDelNew(this->imgURL);
-	}
+	SDEL_STRING(this->dispName);
+	SDEL_STRING(this->fullName);
+	SDEL_STRING(this->srcURL);
+	SDEL_STRING(this->imgURL);
 }
 
 Int32 SSWR::OrganMgr::OrganImageItem::GetUserId()
@@ -43,23 +31,19 @@ Int32 SSWR::OrganMgr::OrganImageItem::GetUserId()
 	return this->userId;
 }
 
-void SSWR::OrganMgr::OrganImageItem::SetDispName(const UTF8Char *dispName)
+void SSWR::OrganMgr::OrganImageItem::SetDispName(Text::String *dispName)
 {
-	if (this->dispName)
-	{
-		Text::StrDelNew(this->dispName);
-	}
-	if (dispName)
-	{
-		this->dispName = Text::StrCopyNew(dispName);
-	}
-	else
-	{
-		this->dispName = 0;
-	}
+	SDEL_STRING(this->dispName);
+	if (dispName) this->dispName = dispName->Clone();
 }
 
-const UTF8Char *SSWR::OrganMgr::OrganImageItem::GetDispName()
+void SSWR::OrganMgr::OrganImageItem::SetDispName(const UTF8Char *dispName)
+{
+	SDEL_STRING(this->dispName);
+	if (dispName) this->dispName = Text::String::New(dispName);
+}
+
+Text::String *SSWR::OrganMgr::OrganImageItem::GetDispName()
 {
 	return this->dispName;
 }
@@ -94,23 +78,19 @@ SSWR::OrganMgr::OrganImageItem::RotateType SSWR::OrganMgr::OrganImageItem::GetRo
 	return this->rotateType;
 }
 
-void SSWR::OrganMgr::OrganImageItem::SetFullName(const UTF8Char *fullName)
+void SSWR::OrganMgr::OrganImageItem::SetFullName(Text::String *fullName)
 {
-	if (this->fullName)
-	{
-		Text::StrDelNew(this->fullName);
-	}
-	if (fullName)
-	{
-		this->fullName = Text::StrCopyNew(fullName);
-	}
-	else
-	{
-		this->fullName = 0;
-	}
+	SDEL_STRING(this->fullName);
+	if (fullName) this->fullName = fullName->Clone();
 }
 
-const UTF8Char *SSWR::OrganMgr::OrganImageItem::GetFullName()
+void SSWR::OrganMgr::OrganImageItem::SetFullName(const UTF8Char *fullName)
+{
+	SDEL_STRING(this->fullName);
+	if (fullName) this->fullName = Text::String::New(fullName);
+}
+
+Text::String *SSWR::OrganMgr::OrganImageItem::GetFullName()
 {
 	return this->fullName;
 }
@@ -125,41 +105,33 @@ SSWR::OrganMgr::OrganImageItem::FileType SSWR::OrganMgr::OrganImageItem::GetFile
 	return this->fileType;
 }
 
-void SSWR::OrganMgr::OrganImageItem::SetSrcURL(const UTF8Char *srcURL)
+void SSWR::OrganMgr::OrganImageItem::SetSrcURL(Text::String *srcURL)
 {
-	if (this->srcURL)
-	{
-		Text::StrDelNew(this->srcURL);
-	}
-	if (srcURL)
-	{
-		this->srcURL = Text::StrCopyNew(srcURL);
-	}
-	else
-	{
-		this->srcURL = 0;
-	}
+	SDEL_STRING(this->srcURL);
+	if (srcURL) this->srcURL = srcURL->Clone();
 }
 
-const UTF8Char *SSWR::OrganMgr::OrganImageItem::GetSrcURL()
+void SSWR::OrganMgr::OrganImageItem::SetSrcURL(const UTF8Char *srcURL)
+{
+	SDEL_STRING(this->srcURL);
+	if (srcURL) this->srcURL = Text::String::New(srcURL);
+}
+
+Text::String *SSWR::OrganMgr::OrganImageItem::GetSrcURL()
 {
 	return this->srcURL;
 }
 
+void SSWR::OrganMgr::OrganImageItem::SetImgURL(Text::String *imgURL)
+{
+	SDEL_STRING(this->imgURL);
+	if (imgURL) this->imgURL = imgURL->Clone();
+}
+
 void SSWR::OrganMgr::OrganImageItem::SetImgURL(const UTF8Char *imgURL)
 {
-	if (this->imgURL)
-	{
-		Text::StrDelNew(this->imgURL);
-	}
-	if (imgURL)
-	{
-		this->imgURL = Text::StrCopyNew(imgURL);
-	}
-	else
-	{
-		this->imgURL = 0;
-	}
+	SDEL_STRING(this->imgURL);
+	if (imgURL) this->imgURL = Text::String::New(imgURL);
 }
 
 void SSWR::OrganMgr::OrganImageItem::SetUserFile(UserFileInfo *userFile)
@@ -199,7 +171,7 @@ SSWR::OrganMgr::OrganImageItem *SSWR::OrganMgr::OrganImageItem::Clone()
 	return newItem;
 }
 
-const UTF8Char *SSWR::OrganMgr::OrganImageItem::GetImgURL()
+Text::String *SSWR::OrganMgr::OrganImageItem::GetImgURL()
 {
 	return this->imgURL;
 }

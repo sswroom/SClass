@@ -288,8 +288,8 @@ Bool DB::DBFFile::GetColumnDef(UOSInt colIndex, DB::ColDef *colDef)
 	colDef->SetNotNull(false);
 	colDef->SetPK(false);
 	colDef->SetAutoInc(false);
-	colDef->SetDefVal(0);
-	colDef->SetAttr(0);
+	colDef->SetDefVal((const UTF8Char*)0);
+	colDef->SetAttr((const UTF8Char*)0);
 	return true;
 }
 

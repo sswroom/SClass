@@ -27,8 +27,8 @@ namespace SSWR
 		public:
 			Int32 id;
 			Int32 parId;
-			const UTF8Char *ename;
-			const UTF8Char *cname;
+			Text::String *ename;
+			Text::String *cname;
 			Double lat;
 			Double lon;
 			Int32 locType;

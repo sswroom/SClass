@@ -32,12 +32,12 @@ SSWR::OrganMgr::OrganGroupItem::ItemType SSWR::OrganMgr::OrganImages::GetItemTyp
 
 UTF8Char *SSWR::OrganMgr::OrganImages::GetItemName(UTF8Char *buff)
 {
-	return Text::StrConcat(buff, this->imgItem->GetDispName());
+	return this->imgItem->GetDispName()->ConcatTo(buff);
 }
 
 UTF8Char *SSWR::OrganMgr::OrganImages::GetEngName(UTF8Char *buff)
 {
-	return Text::StrConcat(buff, this->imgItem->GetDispName());
+	return this->imgItem->GetDispName()->ConcatTo(buff);
 }
 
 SSWR::OrganMgr::OrganGroupItem *SSWR::OrganMgr::OrganImages::Clone()

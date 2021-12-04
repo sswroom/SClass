@@ -108,11 +108,11 @@ IO::ParsedObject *Parser::FileParser::MDBParser::ParseFile(IO::IStreamData *fd, 
 				while (j-- > 0)
 				{
 					rdr->GetColDef(j, colDef);
-					if (Text::StrEqualsICase(colDef->GetColName(), (const UTF8Char*)"OBJECTID") && colDef->GetColType() == DB::DBUtil::CT_Int32)
+					if (colDef->GetColName()->EqualsICase((const UTF8Char*)"OBJECTID") && colDef->GetColType() == DB::DBUtil::CT_Int32)
 					{
 						objCol = (OSInt)j;
 					}
-					else if (Text::StrEqualsICase(colDef->GetColName(), (const UTF8Char*)"SHAPE") && (colDef->GetColType() == DB::DBUtil::CT_Binary || colDef->GetColType() == DB::DBUtil::CT_VarChar))
+					else if (colDef->GetColName()->EqualsICase((const UTF8Char*)"SHAPE") && (colDef->GetColType() == DB::DBUtil::CT_Binary || colDef->GetColType() == DB::DBUtil::CT_VarChar))
 					{
 						shapeCol = (OSInt)j;
 					}

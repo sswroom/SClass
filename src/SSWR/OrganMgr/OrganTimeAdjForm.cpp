@@ -24,7 +24,7 @@ void __stdcall SSWR::OrganMgr::OrganTimeAdjForm::OnSpeciesChg(void *userObj)
 		if (spId == 0 || userFile->speciesId == spId)
 		{
 			me->currFileList->Add(userFile);
-			me->lbPictures->AddItem(userFile->oriFileName, userFile);
+			me->lbPictures->AddItem(userFile->oriFileName->v, userFile);
 		}
 		i++;
 	}
@@ -86,8 +86,8 @@ void __stdcall SSWR::OrganMgr::OrganTimeAdjForm::OnPictureChg(void *userObj)
 		}
 
 		Int32 timeAdj;
-		timeAdj = me->cameraMap->Get(userFile->camera);
-		me->UpdateSelTime(userFile->camera, timeAdj);
+		timeAdj = me->cameraMap->Get(userFile->camera->v);
+		me->UpdateSelTime(userFile->camera->v, timeAdj);
 	}
 }
 
@@ -185,7 +185,7 @@ void __stdcall SSWR::OrganMgr::OrganTimeAdjForm::OnTimeApplyClicked(void *userOb
 	while (i < j)
 	{
 		userFile = me->userFileList->GetItem(i);
-		if (userFile->camera && Text::StrEquals(userFile->camera, sb.ToString()))
+		if (userFile->camera && userFile->camera->Equals(sb.ToString()))
 		{
 			dt.SetTicks(userFile->fileTimeTicks);
 			dt.AddSecond(timeAdj);
@@ -212,7 +212,7 @@ void __stdcall SSWR::OrganMgr::OrganTimeAdjForm::OnTimeApplyClicked(void *userOb
 void SSWR::OrganMgr::OrganTimeAdjForm::UpdateSelTime(const UTF8Char *camera, Int32 timeAdj)
 {
 	Data::DateTime dt;
-	if (this->selImgCamera && Text::StrEquals(this->selImgCamera, camera))
+	if (this->selImgCamera && this->selImgCamera->Equals(camera))
 	{
 		Double lat;
 		Double lon;
@@ -360,7 +360,7 @@ SSWR::OrganMgr::OrganTimeAdjForm::OrganTimeAdjForm(UI::GUIClientControl *parent,
 		}
 		if (userFile->camera)
 		{
-			this->cameraMap->Put(userFile->camera, (Int32)((userFile->captureTimeTicks - userFile->fileTimeTicks) / 1000));
+			this->cameraMap->Put(userFile->camera->v, (Int32)((userFile->captureTimeTicks - userFile->fileTimeTicks) / 1000));
 		}
 		i++;
 	}

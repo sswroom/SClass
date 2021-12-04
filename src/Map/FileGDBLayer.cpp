@@ -63,7 +63,7 @@ Map::FileGDBLayer::FileGDBLayer(DB::SharedReadingDB *conn, const UTF8Char *sourc
 	conn->UseObject();
 	this->conn = conn;
 	NEW_CLASS(this->objects, Data::Int32Map<Math::Vector2D*>());
-	NEW_CLASS(this->colNames, Data::ArrayListStrUTF8());
+	NEW_CLASS(this->colNames, Data::ArrayList<Text::String*>());
 	this->tableName = Text::StrCopyNew(tableName);
 	this->currDB = 0;
 	this->lastDB = 0;
@@ -94,17 +94,17 @@ Map::FileGDBLayer::FileGDBLayer(DB::SharedReadingDB *conn, const UTF8Char *sourc
 			if (colDef->GetColType() == DB::DBUtil::CT_Vector)
 			{
 				this->shapeCol = i;
-				const UTF8Char *prj = colDef->GetAttr();
-				if (prj && prj[0])
+				Text::String *prj = colDef->GetAttr();
+				if (prj && prj->v[0])
 				{
 					Math::CoordinateSystem *csys2 = 0;
-					if (Text::StrStartsWith(prj, (const UTF8Char*)"EPSG:"))
+					if (Text::StrStartsWith(prj->v, (const UTF8Char*)"EPSG:"))
 					{
-						csys2 = Math::CoordinateSystemManager::SRCreateCSys(Text::StrToUInt32(&prj[5]));
+						csys2 = Math::CoordinateSystemManager::SRCreateCSys(Text::StrToUInt32(&prj->v[5]));
 					}
 					else
 					{
-						csys2 = Math::CoordinateSystemManager::ParsePRJFile(prj);
+						csys2 = Math::CoordinateSystemManager::ParsePRJFile(prj->v);
 					}
 					if (csys2)
 					{
@@ -117,13 +117,13 @@ Map::FileGDBLayer::FileGDBLayer(DB::SharedReadingDB *conn, const UTF8Char *sourc
 			{
 				this->objIdCol = i;
 			}
-			this->colNames->Add(Text::StrCopyNew(colDef->GetColName()));
+			this->colNames->Add(colDef->GetColName()->Clone());
 			i++;
 		}
 		j = this->colNames->GetCount();
 		while (j-- > 0)
 		{
-			if (Text::StrEndsWithICase(this->colNames->GetItem(j), (const UTF8Char*)"NAME"))
+			if (Text::StrEndsWithICase(this->colNames->GetItem(j)->v, (const UTF8Char*)"NAME"))
 			{
 				nameCol = j;
 			}
@@ -185,7 +185,7 @@ Map::FileGDBLayer::~FileGDBLayer()
 	i = this->colNames->GetCount();
 	while (i-- > 0)
 	{
-		Text::StrDelNew(this->colNames->RemoveAt(i));
+		this->colNames->RemoveAt(i)->Release();
 	}
 	DEL_CLASS(this->colNames);
 	Data::ArrayList<Math::Vector2D*> *vecList = this->objects->GetValues();
@@ -300,10 +300,10 @@ UOSInt Map::FileGDBLayer::GetColumnCnt()
 
 UTF8Char *Map::FileGDBLayer::GetColumnName(UTF8Char *buff, UOSInt colIndex)
 {
-	const UTF8Char *colName = this->colNames->GetItem(colIndex);
+	Text::String *colName = this->colNames->GetItem(colIndex);
 	if (colName)
 	{
-		return Text::StrConcat(buff, colName);
+		return Text::StrConcatC(buff, colName->v, colName->leng);
 	}
 	return 0;
 }

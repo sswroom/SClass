@@ -155,7 +155,7 @@ namespace SSWR
 			UOSInt imgFontStyle;
 
 			const UTF8Char *initSelObj;
-			const UTF8Char *initSelImg;
+			Text::String *initSelImg;
 
 			Data::ArrayList<UserFileInfo*> *mapUFiles;
 			UserFileInfo *mapCurrFile;
