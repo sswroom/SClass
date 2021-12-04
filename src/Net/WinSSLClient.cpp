@@ -149,7 +149,7 @@ UOSInt Net::WinSSLClient::Read(UInt8 *buff, UOSInt size)
 
 		if (status != SEC_E_OK && status != SEC_I_RENEGOTIATE)
 		{
-			this->flags |= 2;
+			this->flags |= 6;
 			this->sockf->DestroySocket(this->s);
 #if defined(DEBUG_PRINT)
 			printf("Return size2 = %d\r\n", (UInt32)ret);

@@ -13,8 +13,9 @@
 #include <sspi.h>
 #include <schnlsp.h>
 
-//#define VERBOSE
-#if defined(VERBOSE)
+//#define VERBOSE_SVR
+//#define VERBOSE_CLI
+#if defined(VERBOSE_SVR) || defined(VERBOSE_CLI)
 #include <stdio.h>
 #endif
 
@@ -38,7 +39,11 @@ UInt32 WinSSLEngine_GetProtocols(Net::SSLEngine::Method method, Bool server)
 		switch (method)
 		{
 		case Net::SSLEngine::Method::Default:
+		#if defined(SP_PROT_TLS1_2)
+			return SP_PROT_TLS1_2_SERVER;
+		#else
 			return 0;
+		#endif
 		case Net::SSLEngine::Method::SSLV3:
 			return SP_PROT_SSL3_SERVER;
 		case Net::SSLEngine::Method::SSLV23:
@@ -246,20 +251,20 @@ Net::SSLClient *Net::WinSSLEngine::CreateClientConn(void *sslObj, Socket *s, con
 	);
 	if (status != SEC_I_CONTINUE_NEEDED)
 	{
-#if defined(VERBOSE)
-		printf("SSL: Error in InitializeSecurityContext, ret = %x\r\n", (UInt32)status);
+#if defined(VERBOSE_CLI)
+		printf("SSL: Cli %s, Error in InitializeSecurityContext, ret = %x\r\n", (Int32)(OSInt)s, (UInt32)status);
 #endif
 		Text::StrDelNew(wptr);
 		return 0;
 	}
 	Net::SocketFactory::ErrorType et;
-#if defined(VERBOSE)
-	printf("SSL: SendData, size = %d\r\n", (Int32)outputBuff[0].cbBuffer);
+#if defined(VERBOSE_CLI)
+	printf("SSL: Cli %x, SendData, size = %d\r\n", (Int32)(OSInt)s, (Int32)outputBuff[0].cbBuffer);
 #endif
 	if (this->sockf->SendData(s, (UInt8*)outputBuff[0].pvBuffer, outputBuff[0].cbBuffer, &et) != outputBuff[0].cbBuffer)
 	{
-#if defined(VERBOSE)
-		printf("SSL: Error in sendData, ret = %x\r\n", (UInt32)status);
+#if defined(VERBOSE_CLI)
+		printf("SSL: Cli %x, Error in sendData, ret = %x\r\n", (Int32)(OSInt)s, (UInt32)status);
 #endif
 		DeleteSecurityContext(&ctxt);
 		FreeContextBuffer(outputBuff[0].pvBuffer);
@@ -279,8 +284,8 @@ Net::SSLClient *Net::WinSSLEngine::CreateClientConn(void *sslObj, Socket *s, con
 		if (recvOfst == 0 || status == SEC_E_INCOMPLETE_MESSAGE)
 		{
 			recvSize = this->sockf->ReceiveData(s, &recvBuff[recvOfst], 8192 - recvOfst, &et);
-#if defined(VERBOSE)
-			printf("SSL: recvData, size = %d\r\n", (UInt32)recvSize);
+#if defined(VERBOSE_CLI)
+			printf("SSL: Cli %x, recvData, size = %d\r\n", (Int32)(OSInt)s, (UInt32)recvSize);
 #endif
 			if (recvSize <= 0)
 			{
@@ -359,8 +364,8 @@ Net::SSLClient *Net::WinSSLEngine::CreateClientConn(void *sslObj, Socket *s, con
 		}
 		else
 		{
-#if defined(VERBOSE)
-			printf("SSL: Error in InitializeSecurityContext 2, ret = %x\r\n", (UInt32)status);
+#if defined(VERBOSE_CLI)
+			printf("SSL: Cli %x, Error in InitializeSecurityContext 2, ret = %x\r\n", (Int32)(OSInt)s, (UInt32)status);
 #endif
 			if (status == SEC_I_INCOMPLETE_CREDENTIALS)
 			{
@@ -383,10 +388,16 @@ Net::SSLClient *Net::WinSSLEngine::CreateServerConn(Socket *s)
 {
 	if (!this->clsData->svrInit)
 	{
+#if defined(VERBOSE_SVR)
+		printf("SSL: Server not init\r\n");
+#endif
 		this->sockf->DestroySocket(s);
 		return 0;
 	}
 
+#if defined(VERBOSE_SVR)
+	printf("SSL: Svr %x, Init begin, Tid = %d\r\n", (Int32)(OSInt)s, GetCurrentThreadId());
+#endif
 
 	this->sockf->SetRecvTimeout(s, 3000);
 	CtxtHandle ctxt;
@@ -403,6 +414,9 @@ Net::SSLClient *Net::WinSSLEngine::CreateServerConn(Socket *s)
 	recvSize = this->sockf->ReceiveData(s, recvBuff, 2048, &et);
 	if (recvSize == 0)
 	{
+#if defined(VERBOSE_SVR)
+		printf("SSL: Svr %x, Recv size 0\r\n", (Int32)(OSInt)s);
+#endif
 		this->sockf->DestroySocket(s);
 		return 0;
 	}
@@ -444,6 +458,9 @@ Net::SSLClient *Net::WinSSLEngine::CreateServerConn(Socket *s)
 	);
 	if (status != SEC_I_CONTINUE_NEEDED)
 	{
+#if defined(VERBOSE_SVR)
+		printf("SSL: Svr %x, AcceptSecurityContext error, status %x\r\n", (Int32)(OSInt)s, (UInt32)status);
+#endif
 		this->sockf->DestroySocket(s);
 		return 0;
 	}
@@ -455,6 +472,9 @@ Net::SSLClient *Net::WinSSLEngine::CreateServerConn(Socket *s)
 		{
 			if (this->sockf->SendData(s, (const UInt8*)outputBuff[i].pvBuffer, outputBuff[i].cbBuffer, &et) != outputBuff[i].cbBuffer)
 			{
+#if defined(VERBOSE_SVR)
+				printf("SSL: Svr %x, Send data error\r\n", (Int32)(OSInt)s);
+#endif
 				succ = false;
 			}
 		}
@@ -484,6 +504,9 @@ Net::SSLClient *Net::WinSSLEngine::CreateServerConn(Socket *s)
 			recvSize = this->sockf->ReceiveData(s, &recvBuff[recvOfst], 2048 - recvOfst, &et);
 			if (recvSize <= 0)
 			{
+#if defined(VERBOSE_SVR)
+				printf("SSL: Svr %x, Recv size2 0\r\n", (Int32)(OSInt)s);
+#endif
 				DeleteSecurityContext(&ctxt);
 				this->sockf->DestroySocket(s);
 				return 0;
@@ -536,11 +559,14 @@ Net::SSLClient *Net::WinSSLEngine::CreateServerConn(Socket *s)
 				{
 					if (this->sockf->SendData(s, (const UInt8*)outputBuff[i].pvBuffer, outputBuff[i].cbBuffer, &et) != outputBuff[i].cbBuffer)
 					{
+#if defined(VERBOSE_SVR)
+						printf("SSL: Svr %x, Send data error2\r\n", (Int32)(OSInt)s);
+#endif
 						succ = false;
 					}
 				}
 
-				if (inputBuff[1].BufferType == SECBUFFER_EXTRA)
+				if (inputBuff[1].BufferType == SECBUFFER_EXTRA && inputBuff[1].pvBuffer)
 				{
 					MemCopyNO(recvBuff, inputBuff[1].pvBuffer, inputBuff[1].cbBuffer);
 					recvOfst = inputBuff[1].cbBuffer;
@@ -568,12 +594,18 @@ Net::SSLClient *Net::WinSSLEngine::CreateServerConn(Socket *s)
 			{
 
 			}
+#if defined(VERBOSE_SVR)
+			printf("SSL: Svr %x, AcceptSecurityContext error2, status %x\r\n", (Int32)(OSInt)s, (UInt32)status);
+#endif
 			DeleteSecurityContext(&ctxt);
 			this->sockf->DestroySocket(s);
 			return 0;
 		}
 	}
 
+#if defined(VERBOSE_SVR)
+		printf("SSL: Svr %x, Success\r\n", (Int32)(OSInt)s);
+#endif
 	Net::SSLClient *cli;
 	NEW_CLASS(cli, Net::WinSSLClient(sockf, s, &ctxt));
 	return cli;
@@ -790,7 +822,7 @@ Bool WinSSLEngine_CryptImportPrivateKey(_Out_ HCRYPTKEY* phKey,
 			succ = CryptImportKey(hProv, (PUCHAR)ppks, cb, 0, CRYPT_EXPORTABLE, phKey);
 			if (!succ)
 			{
-#if defined(VERBOSE)
+#if defined(VERBOSE_SVR) || defined(VERBOSE_CLI)
 				printf("SSL: Import Key failed: CryptImportKey\r\n");
 #endif
 			}
@@ -798,7 +830,7 @@ Bool WinSSLEngine_CryptImportPrivateKey(_Out_ HCRYPTKEY* phKey,
 		}
 		else
 		{
-#if defined(VERBOSE)
+#if defined(VERBOSE_SVR) || defined(VERBOSE_CLI)
 			printf("SSL: Import Key failed: CryptDecodeObjectEx\r\n");
 #endif
 		}
@@ -815,12 +847,12 @@ Bool WinSSLEngine_CryptImportPrivateKey(_Out_ HCRYPTKEY* phKey,
 	}
 	else
 	{
-#if defined(VERBOSE)
+#if defined(VERBOSE_SVR) || defined(VERBOSE_CLI)
 		printf("SSL: Import Key failed: GetKeyDecodeSize\r\n");
 #endif
 	}
 
-	return succ;
+	return (succ != FALSE);
 }
 
 Bool Net::WinSSLEngine::SetServerCertsASN1(Crypto::Cert::X509Cert *certASN1, Crypto::Cert::X509File *keyASN1, Crypto::Cert::X509Cert *caCert)
@@ -1200,7 +1232,7 @@ Bool Net::WinSSLEngine::Signature(Crypto::Cert::X509Key *key, Crypto::Hash::Hash
 {
 	if (key == 0)
 	{
-#if defined(VERBOSE)
+#if defined(VERBOSE_SVR) || defined(VERBOSE_CLI)
 		printf("SSL: key is null\r\n");
 #endif
 		return false;
@@ -1220,7 +1252,7 @@ Bool Net::WinSSLEngine::Signature(Crypto::Cert::X509Key *key, Crypto::Hash::Hash
 	}
 	else
 	{
-#if defined(VERBOSE)
+#if defined(VERBOSE_SVR) || defined(VERBOSE_CLI)
 		printf("SSL: hashType not supported\r\n");
 #endif
 		return false;
@@ -1231,7 +1263,7 @@ Bool Net::WinSSLEngine::Signature(Crypto::Cert::X509Key *key, Crypto::Hash::Hash
 	{
 		if (!CryptAcquireContext(&hProv, 0, NULL, PROV_RSA_FULL, CRYPT_NEWKEYSET | CRYPT_MACHINE_KEYSET))
 		{
-#if defined(VERBOSE)
+#if defined(VERBOSE_SVR) || defined(VERBOSE_CLI)
 			printf("SSL: CryptAcquireContext failed\r\n");
 #endif
 			return false;
@@ -1240,7 +1272,7 @@ Bool Net::WinSSLEngine::Signature(Crypto::Cert::X509Key *key, Crypto::Hash::Hash
 	Crypto::Cert::X509PrivKey *privKey = Crypto::Cert::X509PrivKey::CreateFromKey(key);
 	if (!WinSSLEngine_CryptImportPrivateKey(&hKey, hProv, privKey->GetASN1Buff(), (ULONG)privKey->GetASN1BuffSize(), true))
 	{
-#if defined(VERBOSE)
+#if defined(VERBOSE_SVR) || defined(VERBOSE_CLI)
 		printf("SSL: Import Key failed\r\n");
 #endif
 		DEL_CLASS(privKey);
@@ -1251,7 +1283,7 @@ Bool Net::WinSSLEngine::Signature(Crypto::Cert::X509Key *key, Crypto::Hash::Hash
 	HCRYPTHASH hHash;
 	if (!CryptCreateHash(hProv, alg, 0, 0, &hHash))
 	{
-#if defined(VERBOSE)
+#if defined(VERBOSE_SVR) || defined(VERBOSE_CLI)
 		UInt32 errCode = GetLastError();
 		printf("SSL: CryptCreateHash failed, errCode = 0x%x\r\n", errCode);
 #endif
@@ -1264,7 +1296,7 @@ Bool Net::WinSSLEngine::Signature(Crypto::Cert::X509Key *key, Crypto::Hash::Hash
 		CryptReleaseContext(hProv, 0);
 		CryptDestroyHash(hHash);
 		CryptDestroyKey(hKey);
-#if defined(VERBOSE)
+#if defined(VERBOSE_SVR) || defined(VERBOSE_CLI)
 		printf("SSL: CryptHashData failed\r\n");
 #endif
 		return false;
@@ -1272,7 +1304,7 @@ Bool Net::WinSSLEngine::Signature(Crypto::Cert::X509Key *key, Crypto::Hash::Hash
 	DWORD len = 512;
 	if (!CryptSignHash(hHash, AT_SIGNATURE, 0, 0, signData, &len))
 	{
-#if defined(VERBOSE)
+#if defined(VERBOSE_SVR) || defined(VERBOSE_CLI)
 		UInt32 errCode = GetLastError();
 		printf("SSL: CryptSignHash failed, errCode = 0x%x\r\n", errCode);
 #endif
@@ -1296,7 +1328,7 @@ Bool Net::WinSSLEngine::Signature(Crypto::Cert::X509Key *key, Crypto::Hash::Hash
 		i++;
 		j--;
 	}
-#if defined(VERBOSE)
+#if defined(VERBOSE_SVR) || defined(VERBOSE_CLI)
 	printf("SSL: Signature success, len = %d\r\n", (UInt32)len);
 #endif
 	return true;

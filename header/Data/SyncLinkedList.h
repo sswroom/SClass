@@ -25,6 +25,7 @@ namespace Data
 		void Put(void *item);
 		void *Get();
 		void *GetNoRemove();
+		void *GetLastNoRemove();
 		UOSInt GetCount();
 		UOSInt IndexOf(void *item);
 	};

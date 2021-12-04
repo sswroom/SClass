@@ -10,7 +10,7 @@
 UInt32 __stdcall Net::SSLEngine::ServerThread(void *userObj)
 {
 	ThreadState *state = (ThreadState*)userObj;
-	state->status = ThreadStatus::Running;
+	state->status = ThreadStatus::NewClient;
 	while (!state->me->threadToStop)
 	{
 		if (state->s)
@@ -29,6 +29,10 @@ UInt32 __stdcall Net::SSLEngine::ServerThread(void *userObj)
 			}
 			state->status = ThreadStatus::Running;
 		}
+		else if (state->status == ThreadStatus::NewClient)
+		{
+			state->status = ThreadStatus::Running;
+		}
 		state->evt->Wait(10000);		
 	}
 	state->status = ThreadStatus::NotRunning;
@@ -41,6 +45,7 @@ Net::SSLEngine::SSLEngine(Net::SocketFactory *sockf)
 	this->maxThreadCnt = 10;
 	this->currThreadCnt = 0;
 	NEW_CLASS(this->threadMut, Sync::Mutex());
+	this->threadMut->SetDebName((const UTF8Char*)"SSLEngine");
 	this->threadSt = MemAlloc(ThreadState, this->maxThreadCnt);
 	this->threadToStop = false;
 	UOSInt i = this->maxThreadCnt;
@@ -126,6 +131,7 @@ Bool Net::SSLEngine::SetServerCerts(const UTF8Char *certFile, const UTF8Char *ke
 void Net::SSLEngine::ServerInit(Socket *s, ClientReadyHandler readyHdlr, void *userObj)
 {
 	UOSInt i = 0;
+	UOSInt j = INVALID_INDEX;
 	Bool found = false;
 	Sync::MutexUsage mutUsage(this->threadMut);
 	while (!found)
@@ -134,18 +140,28 @@ void Net::SSLEngine::ServerInit(Socket *s, ClientReadyHandler readyHdlr, void *u
 		{
 			if (this->threadSt[i].status == ThreadStatus::Running)
 			{
+				j = i;
+			}
+			else if (this->threadSt[i].s == s)
+			{
 				found = true;
-				this->threadSt[i].clientReady = readyHdlr;
-				this->threadSt[i].clientReadyObj = userObj;
-				this->threadSt[i].s = s;
-				this->threadSt[i].evt->Set();
-				this->threadSt[i].status = ThreadStatus::NewClient;
 				break;
 			}
 			i++;
 		}
 		if (found)
 		{
+			break;
+		}
+		if (j != INVALID_INDEX)
+		{
+			i = j;
+			found = true;
+			this->threadSt[i].clientReady = readyHdlr;
+			this->threadSt[i].clientReadyObj = userObj;
+			this->threadSt[i].s = s;
+			this->threadSt[i].evt->Set();
+			this->threadSt[i].status = ThreadStatus::NewClient;
 			break;
 		}
 		if (this->currThreadCnt < this->maxThreadCnt)

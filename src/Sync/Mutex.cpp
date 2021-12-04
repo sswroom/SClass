@@ -3,6 +3,7 @@
 #include "Sync/Mutex.h"
 #include "Sync/Thread.h"
 
+//#define MUTEX_DEBUG
 #if defined(_MSC_VER) || defined(__MINGW32__)
 #include <windows.h>
 #include <stdlib.h>

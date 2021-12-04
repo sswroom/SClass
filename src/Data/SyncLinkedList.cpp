@@ -76,6 +76,17 @@ void *Data::SyncLinkedList::GetNoRemove()
 	return obj;
 }
 
+void *Data::SyncLinkedList::GetLastNoRemove()
+{
+	void *obj = 0;
+	Sync::MutexUsage mutUsage(this->mut);
+	if (this->lastItem)
+	{
+		obj = this->lastItem->item;
+	}
+	return obj;
+}
+
 UOSInt Data::SyncLinkedList::GetCount()
 {
 	UOSInt cnt = 0;

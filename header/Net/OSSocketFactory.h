@@ -9,8 +9,11 @@ namespace Net
 	class OSSocketFactory : public Net::SocketFactory
 	{
 	private:
+		struct ClassData;
+	private:
 		void *icmpHand;
 		Bool toRelease;
+		ClassData *clsData;
 
 	public:
 		OSSocketFactory(Bool noV6DNS);

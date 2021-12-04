@@ -42,82 +42,82 @@ UOSInt Data::Class::AddField(const UTF8Char *name, OSInt ofst, Data::VariItem::I
 
 Bool Data::Class::AddField(const UTF8Char *name, UInt8 *val)
 {
-	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::U8);
+	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::U8) != 0;
 }
 
 Bool Data::Class::AddField(const UTF8Char *name, Int8 *val)
 {
-	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::I8);
+	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::I8) != 0;
 }
 
 Bool Data::Class::AddField(const UTF8Char *name, UInt16 *val)
 {
-	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::U16);
+	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::U16) != 0;
 }
 
 Bool Data::Class::AddField(const UTF8Char *name, Int16 *val)
 {
-	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::I16);
+	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::I16) != 0;
 }
 
 Bool Data::Class::AddField(const UTF8Char *name, UInt32 *val)
 {
-	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::U32);
+	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::U32) != 0;
 }
 
 Bool Data::Class::AddField(const UTF8Char *name, Int32 *val)
 {
-	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::I32);
+	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::I32) != 0;
 }
 
 Bool Data::Class::AddField(const UTF8Char *name, UInt64 *val)
 {
-	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::U64);
+	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::U64) != 0;
 }
 
 Bool Data::Class::AddField(const UTF8Char *name, Int64 *val)
 {
-	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::I64);
+	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::I64) != 0;
 }
 
 Bool Data::Class::AddField(const UTF8Char *name, Single *val)
 {
-	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::F32);
+	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::F32) != 0;
 }
 
 Bool Data::Class::AddField(const UTF8Char *name, Double *val)
 {
-	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::F64);
+	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::F64) != 0;
 }
 
 Bool Data::Class::AddField(const UTF8Char *name, Text::String **val)
 {
-	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::Str);
+	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::Str) != 0;
 }
 
 Bool Data::Class::AddField(const UTF8Char *name, Data::DateTime **val)
 {
-	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::Date);
+	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::Date) != 0;
 }
 
 Bool Data::Class::AddField(const UTF8Char *name, Bool *val)
 {
-	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::BOOL);
+	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::BOOL) != 0;
 }
 
 Bool Data::Class::AddField(const UTF8Char *name, Data::ReadonlyArray<UInt8> **val)
 {
-	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::ByteArr);
+	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::ByteArr) != 0;
 }
 
 Bool Data::Class::AddField(const UTF8Char *name, Math::Vector2D **val)
 {
-	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::Vector);
+	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::Vector) != 0;
 }
 
 Bool Data::Class::AddField(const UTF8Char *name, Data::UUID **val)
 {
-	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::UUID);
+	return this->AddField(name, ((UInt8*)val) - (UInt8*)this->refObj, Data::VariItem::ItemType::UUID) != 0;
 }
 
 UOSInt Data::Class::GetFieldCount()

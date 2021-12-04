@@ -1,10 +1,13 @@
 #include "Stdafx.h"
 #include "Crypto/Hash/CRC32R.h"
 #include "Data/ByteTool.h"
+#include "Data/Int32Map.h"
 #include "IO/Path.h"
 #include "Net/ConnectionInfo.h"
 #include "Net/DNSHandler.h"
 #include "Net/OSSocketFactory.h"
+#include "Sync/Mutex.h"
+#include "Sync/MutexUsage.h"
 #include "Text/Encoding.h"
 #include "Text/MyString.h"
 #include "Text/UTF8Reader.h"
@@ -20,6 +23,12 @@
 #include <icmpapi.h>
 #endif
 
+struct Net::OSSocketFactory::ClassData
+{
+	Sync::Mutex *socMut;
+	Data::Int32Map<UInt8> *acceptedSoc;
+};
+
 Net::OSSocketFactory::OSSocketFactory(Bool noV6DNS) : Net::SocketFactory(noV6DNS)
 {
 	WSADATA data;
@@ -27,11 +36,17 @@ Net::OSSocketFactory::OSSocketFactory(Bool noV6DNS) : Net::SocketFactory(noV6DNS
 	WSAStartup(MAKEWORD(2, 2), &data);
 	this->toRelease = true;
 	this->icmpHand = 0;
+	this->clsData = MemAlloc(ClassData, 1);
+	NEW_CLASS(this->clsData->socMut, Sync::Mutex());
+	NEW_CLASS(this->clsData->acceptedSoc, Data::Int32Map<UInt8>());
 }
 
 Net::OSSocketFactory::~OSSocketFactory()
 {
 	SDEL_CLASS(this->dnsHdlr);
+	DEL_CLASS(this->clsData->acceptedSoc);
+	DEL_CLASS(this->clsData->socMut);
+	MemFree(this->clsData);
 	if (this->toRelease)
 	{
 		WSACleanup();
@@ -48,6 +63,8 @@ Socket *Net::OSSocketFactory::CreateTCPSocketv4()
 	SOCKET s = WSASocket(AF_INET, SOCK_STREAM, IPPROTO_TCP, 0, 0, WSA_FLAG_OVERLAPPED);
 	if (s == INVALID_SOCKET)
 		return 0;
+	Sync::MutexUsage mutUsage(this->clsData->socMut);
+	this->clsData->acceptedSoc->Put((Int32)s, 1);
 	return (Socket*)s;
 }
 
@@ -56,6 +73,8 @@ Socket *Net::OSSocketFactory::CreateTCPSocketv6()
 	SOCKET s = WSASocket(AF_INET6, SOCK_STREAM, IPPROTO_TCP, 0, 0, WSA_FLAG_OVERLAPPED);
 	if (s == INVALID_SOCKET)
 		return 0;
+	Sync::MutexUsage mutUsage(this->clsData->socMut);
+	this->clsData->acceptedSoc->Put((Int32)s, 1);
 	return (Socket*)s;
 }
 
@@ -132,6 +151,9 @@ Socket *Net::OSSocketFactory::CreateRAWSocket()
 
 void Net::OSSocketFactory::DestroySocket(Socket *socket)
 {
+	Sync::MutexUsage mutUsage(this->clsData->socMut);
+	this->clsData->acceptedSoc->Put((Int32)(OSInt)socket, 0);
+	mutUsage.EndUse();
 	closesocket((SOCKET)socket);
 }
 
@@ -184,7 +206,7 @@ Bool Net::OSSocketFactory::SocketBind(Socket *socket, const Net::SocketUtil::Add
 
 Bool Net::OSSocketFactory::SocketListen(Socket *socket)
 {
-	return listen((SOCKET)socket, SOMAXCONN) != SOCKET_ERROR;
+	return listen((SOCKET)socket, 128) != SOCKET_ERROR;
 }
 
 Socket *Net::OSSocketFactory::SocketAccept(Socket *socket)
@@ -194,8 +216,21 @@ Socket *Net::OSSocketFactory::SocketAccept(Socket *socket)
 //	sockaddr_in saddr;
 //	Int32 addrlen = sizeof(saddr);
 	SOCKET s;
-	s = accept((SOCKET)socket, (sockaddr*)&saddr, &addrlen);
-	return (Socket*)s;
+	while (true)
+	{
+		s = accept((SOCKET)socket, (sockaddr*)&saddr, &addrlen);
+		if (s == INVALID_SOCKET)
+		{
+			return (Socket*)s;
+		}
+		Sync::MutexUsage mutUsage(this->clsData->socMut);
+		if (this->clsData->acceptedSoc->Get((Int32)s) == 0)
+		{
+			this->clsData->acceptedSoc->Put((Int32)s, 2);
+			return (Socket*)s;
+		}
+		mutUsage.EndUse();
+	}
 }
 
 Int32 Net::OSSocketFactory::SocketGetLastError()

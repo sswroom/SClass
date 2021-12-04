@@ -880,7 +880,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::NFDumpFileAnalyse::GetFrameDetail
 		}
 		else
 		{
-			frame->AddHexBuff(0, dispSize, "LZO Compressed", packBuff, dispSize);
+			frame->AddHexBuff(0, dispSize, "LZO Compressed", packBuff, true);
 		}
 
 		if (this->hasLZODecomp)
