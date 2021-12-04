@@ -522,6 +522,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 				{
 					cli->AddHeader((const UTF8Char*)"Connection", (const UTF8Char*)"close");
 				}
+				cli->AddHeader((const UTF8Char*)"Accept-Encoding", (const UTF8Char*)"gzip, deflate");
 				
 				cookiePtr = me->AppendCookie(sbuff, currURL);
 				if (cookiePtr)

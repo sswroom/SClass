@@ -10,8 +10,10 @@ IO::ConsoleWriter *console;
 
 Int32 MyMain(Core::IProgControl *progCtrl)
 {
-	const UTF8Char *sslCert = (const UTF8Char*)"C:\\Progs\\VCClass\\keystore\\localhost.crt";
-	const UTF8Char *sslKey = (const UTF8Char*)"C:\\Progs\\VCClass\\keystore\\localhost.key";
+//	const UTF8Char *sslCert = (const UTF8Char*)"C:\\Progs\\VCClass\\keystore\\localhost.crt";
+//	const UTF8Char *sslKey = (const UTF8Char*)"C:\\Progs\\VCClass\\keystore\\localhost.key";
+	const UTF8Char *sslCert = (const UTF8Char*)"/home/sswroom/Progs/VCClass/keystore/localhost.crt";
+	const UTF8Char *sslKey = (const UTF8Char*)"/home/sswroom/Progs/VCClass/keystore/localhost.key";
 	const UTF8Char *fwdUrl = (const UTF8Char*)"https://192.168.0.196:8448/";
 	UInt16 port = 12345;
 
@@ -43,7 +45,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		Net::WebServer::HTTPForwardHandler *hdlr;
 		Net::WebServer::WebListener *svr;
 		NEW_CLASS(hdlr, Net::WebServer::HTTPForwardHandler(sockf, ssl, fwdUrl, Net::WebServer::HTTPForwardHandler::ForwardType::Normal));
-		NEW_CLASS(svr, Net::WebServer::WebListener(sockf, ssl, hdlr, port, 120, 4, (const UTF8Char*)"sswr/1.0", false, false));
+		NEW_CLASS(svr, Net::WebServer::WebListener(sockf, ssl, hdlr, port, 120, 4, (const UTF8Char*)"sswr/1.0", false, true));
 		if (!svr->IsError())
 		{
 			console->WriteLine((const UTF8Char*)"HTTP Forwarding started");

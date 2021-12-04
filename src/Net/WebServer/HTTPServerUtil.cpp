@@ -79,6 +79,7 @@ Bool Net::WebServer::HTTPServerUtil::SendContent(Net::WebServer::IWebRequest *re
 					if (browser != Net::BrowserInfo::BT_IE && browser != Net::BrowserInfo::BT_SAFARI && os != Manage::OSInfo::OT_IPHONE && os != Manage::OSInfo::OT_IPAD)
 					{
 						resp->AddHeader((const UTF8Char*)"Content-Encoding", (const UTF8Char*)"gzip");
+						resp->AddHeader((const UTF8Char*)"Transfer-Encoding", (const UTF8Char*)"chunked");
 
 						compBuff[0] = 0x1F;
 						compBuff[1] = 0x8B;
@@ -104,7 +105,6 @@ Bool Net::WebServer::HTTPServerUtil::SendContent(Net::WebServer::IWebRequest *re
 						WriteInt32(&compBuff[0], ReadMInt32(&compBuff[8]));
 						WriteInt32(&compBuff[4], (Int32)contLeng);
 						succ = succ && (resp->Write(compBuff, 8) == 8);
-						resp->ShutdownSend();
 
 						contSent = true;
 						break;
@@ -115,6 +115,7 @@ Bool Net::WebServer::HTTPServerUtil::SendContent(Net::WebServer::IWebRequest *re
 					if (browser != Net::BrowserInfo::BT_IE)
 					{
 						resp->AddHeader((const UTF8Char*)"Content-Encoding", (const UTF8Char*)"deflate");
+						resp->AddHeader((const UTF8Char*)"Transfer-Encoding", (const UTF8Char*)"chunked");
 
 						Data::Compress::DeflateStream dstm(fs, contLeng, 0, true);
 						UOSInt readSize;
@@ -123,7 +124,6 @@ Bool Net::WebServer::HTTPServerUtil::SendContent(Net::WebServer::IWebRequest *re
 							succ = succ && (resp->Write(compBuff, readSize) == readSize);
 						}
 
-						resp->ShutdownSend();
 						contSent = true;
 						break;
 					}
@@ -182,6 +182,7 @@ Bool Net::WebServer::HTTPServerUtil::SendContent(Net::WebServer::IWebRequest *re
 				if (Text::StrEqualsICase(sarr[i], (const UTF8Char*)"gzip"))
 				{
 					resp->AddHeader((const UTF8Char*)"Content-Encoding", (const UTF8Char*)"gzip");
+					resp->AddHeader((const UTF8Char*)"Transfer-Encoding", (const UTF8Char*)"chunked");
 
 					compBuff[0] = 0x1F;
 					compBuff[1] = 0x8B;
@@ -208,7 +209,6 @@ Bool Net::WebServer::HTTPServerUtil::SendContent(Net::WebServer::IWebRequest *re
 					WriteInt32(&compBuff[0], ReadMInt32(&compBuff[8]));
 					WriteInt32(&compBuff[4], (Int32)contLeng);
 					succ = succ && (resp->Write(compBuff, 8) == 8);
-					resp->ShutdownSend();
 					contSent = true;
 					break;
 				}
@@ -217,6 +217,7 @@ Bool Net::WebServer::HTTPServerUtil::SendContent(Net::WebServer::IWebRequest *re
 					if (browser != Net::BrowserInfo::BT_IE)
 					{
 						resp->AddHeader((const UTF8Char*)"Content-Encoding", (const UTF8Char*)"deflate");
+						resp->AddHeader((const UTF8Char*)"Transfer-Encoding", (const UTF8Char*)"chunked");
 
 						IO::MemoryStream mstm((UInt8*)buff, (UOSInt)contLeng, (const UTF8Char*)"Net.HTTPServerUtil.SendContent");
 						Data::Compress::DeflateStream dstm(&mstm, contLeng, 0, true);
@@ -225,7 +226,6 @@ Bool Net::WebServer::HTTPServerUtil::SendContent(Net::WebServer::IWebRequest *re
 						{
 							succ = succ && (resp->Write(compBuff, readSize) == readSize);
 						}
-						resp->ShutdownSend();
 						contSent = true;
 						break;
 					}

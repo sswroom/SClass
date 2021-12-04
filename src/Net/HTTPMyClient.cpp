@@ -101,7 +101,7 @@ Bool Net::HTTPMyClient::IsError()
 	return this->cli == 0;
 }
 
-UOSInt Net::HTTPMyClient::Read(UInt8 *buff, UOSInt size)
+UOSInt Net::HTTPMyClient::ReadRAW(UInt8 *buff, UOSInt size)
 {
 	this->EndRequest(0, 0);
 	if (this->respStatus == 0)
@@ -160,7 +160,38 @@ UOSInt Net::HTTPMyClient::Read(UInt8 *buff, UOSInt size)
 #endif
 				this->buffSize += i;
 			}
-			if (size >= this->buffSize)
+			if (this->chunkSizeLeft <= 2)
+			{
+				while (this->chunkSizeLeft > this->buffSize)
+				{
+					i = cli->Read(&this->dataBuff[this->buffSize], BUFFSIZE - 1 - this->buffSize);
+					if (i == 0)
+					{
+#ifdef SHOWDEBUG
+						printf("Return Read size(1.2) = %d\r\n", 0);
+#endif
+						if (this->cli->IsClosed())
+						{
+							DEL_CLASS(this->cli);
+							this->cli = 0;
+						}
+						return 0;
+					}
+#ifdef SHOWDEBUG
+					printf("Read from remote(1.2) = %d\r\n", (Int32)i);
+#endif
+#ifdef LOGREPLY
+					if (i > 0)
+					{
+						this->clsData->fs->Write(&this->dataBuff[this->buffSize], i);
+					}
+#endif
+					this->buffSize += i;
+				}
+				MemCopyO(this->dataBuff, &this->dataBuff[this->chunkSizeLeft], this->buffSize - this->chunkSizeLeft);
+				this->buffSize -= this->chunkSizeLeft;
+			}
+			else if (size >= this->buffSize)
 			{
 				sizeOut = this->buffSize;
 				if (sizeOut > this->chunkSizeLeft)
@@ -175,6 +206,10 @@ UOSInt Net::HTTPMyClient::Read(UInt8 *buff, UOSInt size)
 				if (this->buffSize > 0)
 				{
 					MemCopyO(this->dataBuff, &this->dataBuff[sizeOut], this->buffSize);
+				}
+				if (this->chunkSizeLeft < 2)
+				{
+					sizeOut -= (2 - this->chunkSizeLeft);
 				}
 #ifdef SHOWDEBUG
 				printf("Return read size(2) = %d\r\n", (Int32)sizeOut);
@@ -196,6 +231,10 @@ UOSInt Net::HTTPMyClient::Read(UInt8 *buff, UOSInt size)
 				if (this->buffSize > 0)
 				{
 					MemCopyO(this->dataBuff, &this->dataBuff[sizeOut], this->buffSize);
+				}
+				if (this->chunkSizeLeft < 2)
+				{
+					sizeOut -= (2 - this->chunkSizeLeft);
 				}
 #ifdef SHOWDEBUG
 				printf("Return read size(3) = %d\r\n", (Int32)sizeOut);
@@ -294,7 +333,7 @@ UOSInt Net::HTTPMyClient::Read(UInt8 *buff, UOSInt size)
 #endif
 			return 0;
 		}
-		this->chunkSizeLeft = j;
+		this->chunkSizeLeft = j + 2;
 		if (this->dataBuff[i + 2] == 13 && this->dataBuff[i + 3] == 10)
 		{
 			i += 4;
@@ -302,6 +341,29 @@ UOSInt Net::HTTPMyClient::Read(UInt8 *buff, UOSInt size)
 		else
 		{
 			i += 2;
+		}
+		if (this->buffSize == i)
+		{
+			this->buffSize = 0;
+			i = cli->Read(this->dataBuff, BUFFSIZE - 1);
+			if (i == 0)
+			{
+#ifdef SHOWDEBUG
+				printf("Return read size(4.2) = %d\r\n", 0);
+#endif
+				return 0;
+			}
+#ifdef SHOWDEBUG
+			printf("Read from remote(2.2) = %d\r\n", (Int32)i);
+#endif
+#ifdef LOGREPLY
+			if (i > 0)
+			{
+				this->clsData->fs->Write(&this->dataBuff[this->buffSize], i);
+			}
+#endif
+			this->buffSize += i;
+			i = 0;
 		}
 		if (this->buffSize > i)
 		{
@@ -320,6 +382,10 @@ UOSInt Net::HTTPMyClient::Read(UInt8 *buff, UOSInt size)
 				if (this->buffSize > 0)
 				{
 					MemCopyO(this->dataBuff, &this->dataBuff[sizeOut + i], this->buffSize);
+				}
+				if (this->chunkSizeLeft < 2)
+				{
+					sizeOut -= (2 - this->chunkSizeLeft);
 				}
 #ifdef SHOWDEBUG
 				printf("Return read size(9) = %d\r\n", (Int32)sizeOut);
@@ -341,6 +407,10 @@ UOSInt Net::HTTPMyClient::Read(UInt8 *buff, UOSInt size)
 				if (this->buffSize > 0)
 				{
 					MemCopyO(this->dataBuff, &this->dataBuff[sizeOut + i], this->buffSize);
+				}
+				if (this->chunkSizeLeft < 2)
+				{
+					sizeOut -= (2 - this->chunkSizeLeft);
 				}
 #ifdef SHOWDEBUG
 				printf("Return read size(10) = %d\r\n", (Int32)sizeOut);
@@ -411,6 +481,15 @@ UOSInt Net::HTTPMyClient::Read(UInt8 *buff, UOSInt size)
 			return size;
 		}
 	}
+}
+
+UOSInt Net::HTTPMyClient::Read(UInt8 *buff, UOSInt size)
+{
+	this->EndRequest(0, 0);
+	if (this->respStatus == 0)
+		return 0;
+
+	return this->ReadRAW(buff, size);
 }
 
 UOSInt Net::HTTPMyClient::Write(const UInt8 *buff, UOSInt size)

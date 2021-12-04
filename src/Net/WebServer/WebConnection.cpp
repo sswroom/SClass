@@ -770,6 +770,7 @@ Bool Net::WebServer::WebConnection::AddHeader(const UTF8Char *name, const UTF8Ch
 	if (Text::StrEqualsICase(name, (const UTF8Char*)"Transfer-Encoding") && Text::StrEquals(value, (const UTF8Char*)"chunked"))
 	{
 		this->respTranEnc = 1;
+		this->cli->SetNoDelay(false);
 	}
 
 	return true;
@@ -802,6 +803,11 @@ UInt64 Net::WebServer::WebConnection::GetRespLength()
 
 void Net::WebServer::WebConnection::ShutdownSend()
 {
+	if (!this->respDataEnd && this->respTranEnc == 1)
+	{
+		this->respLeng += this->cli->Write((const UInt8*)"0\r\n\r\n", 5);
+		this->respDataEnd = true;
+	}
 	this->cli->ShutdownSend();
 }
 
@@ -872,17 +878,38 @@ UOSInt Net::WebServer::WebConnection::Write(const UInt8 *buff, UOSInt size)
 	this->svr->ExtendTimeout(cli);
 	if (this->respTranEnc == 1)
 	{
-		UOSInt retSize;
-		UTF8Char sbuff[16];
+		UOSInt retSize = 0;
+		UOSInt ohSize;
+		UOSInt writeSize;
+		UInt8 sbuff[2048 + 7];
 		UTF8Char *sptr;
-		sptr = Text::StrConcat(Text::StrHexVal32V(sbuff, (UInt32)size), (const UTF8Char*)"\r\n");
-		this->cli->Write(sbuff, (UOSInt)(sptr - sbuff));
-		this->respLeng += (UOSInt)(sptr - sbuff) + 2;
-		retSize = this->cli->Write(buff, size);
-		sbuff[0] = 13;
-		sbuff[1] = 10;
-		this->cli->Write(sbuff, 2);
-		this->respLeng += size;
+		while (size > 0)
+		{
+			writeSize = size;
+			if (writeSize > 2048)
+			{
+				writeSize = 2048;		
+			}
+			sptr = Text::StrConcat(Text::StrHexVal32V(sbuff, (UInt32)size), (const UTF8Char*)"\r\n");
+			ohSize = (UOSInt)(sptr - sbuff) + 2;
+			MemCopyNO(sptr, buff, writeSize);
+			buff += writeSize;
+			sptr += writeSize;
+			size -= writeSize;
+			sptr[0] = 13;
+			sptr[1] = 10;
+			sptr += 2;
+			writeSize = this->cli->Write(sbuff, (UOSInt)(sptr - sbuff));
+			this->respLeng += (UOSInt)(sptr - sbuff);
+			if (writeSize == 0)
+			{
+				break;
+			}
+			if (writeSize > ohSize)
+			{
+				retSize += writeSize - ohSize;
+			}
+		}
 		return retSize;
 	}
 	else

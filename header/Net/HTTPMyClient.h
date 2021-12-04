@@ -44,6 +44,7 @@ namespace Net
 
 		virtual Bool IsError();
 
+		UOSInt ReadRAW(UInt8 *buff, UOSInt size);
 		virtual UOSInt Read(UInt8 *buff, UOSInt size);
 		virtual UOSInt Write(const UInt8 *buff, UOSInt size);
 

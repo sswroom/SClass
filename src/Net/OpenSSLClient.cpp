@@ -8,6 +8,7 @@ struct Net::OpenSSLClient::ClassData
 {
 	SSL *ssl;
 	Crypto::Cert::OpenSSLCert *remoteCert;
+	Bool shutdown;
 };
 
 UInt32 Net::OpenSSLClient::GetLastErrorCode()
@@ -26,6 +27,7 @@ Net::OpenSSLClient::OpenSSLClient(Net::SocketFactory *sockf, void *ssl, Socket *
 	this->clsData = MemAlloc(ClassData, 1);
 	this->clsData->ssl = (SSL*)ssl;
 	this->clsData->remoteCert = 0;
+	this->clsData->shutdown = false;
 
 	X509 *cert = SSL_get_peer_certificate(this->clsData->ssl);
 	if (cert != 0)
@@ -132,10 +134,7 @@ Int32 Net::OpenSSLClient::Flush()
 
 void Net::OpenSSLClient::Close()
 {
-	if (this->s)
-	{
-		SSL_shutdown(this->clsData->ssl);
-	}
+	this->ShutdownSend();
 	this->Net::TCPClient::Close();
 }
 

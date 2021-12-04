@@ -56,7 +56,7 @@ namespace Net
 		UInt16 GetLocalPort();
 
 		void SetNoDelay(Bool val);
-		void ShutdownSend();
+		virtual void ShutdownSend();
 		void SetTimeout(Int32 ms);
 		Int32 GetTimeoutMS();
 

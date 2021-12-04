@@ -33,7 +33,7 @@ Net::MIME::MIMEEntry Net::MIME::mimeList[] = {
 	{"jp2",  "image/jpeg2000"},
 	{"jpeg", "image/jpeg"},
 	{"jpg",  "image/jpeg"},
-	{"js",   "text/javascript"},
+	{"js",   "application/javascript"},
 	{"json", "application/json"},
 	{"kml",  "application/vnd.google-earth.kml+xml"},
 	{"kmz",  "application/vnd.google-earth.kmz"},
