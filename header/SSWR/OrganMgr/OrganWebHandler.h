@@ -1,6 +1,7 @@
 #ifndef _SM_SSWR_ORGANMGR_ORGANWEBHANDLER
 #define _SM_SSWR_ORGANMGR_ORGANWEBHANDLER
 #include "Data/ArrayListDbl.h"
+#include "Data/Comparator.h"
 #include "Data/Int32Map.h"
 #include "Data/Int64Map.h"
 #include "Data/UInt32Map.h"
@@ -19,6 +20,7 @@
 #include "Parser/ParserList.h"
 #include "Sync/RWMutex.h"
 #include "Text/Locale.h"
+#include "Text/String.h"
 
 namespace SSWR
 {
@@ -52,17 +54,17 @@ namespace SSWR
 			{
 				Int32 bookId;
 				Int32 speciesId;
-				const UTF8Char *dispName;
+				Text::String *dispName;
 			} BookSpInfo;
 
 			typedef struct
 			{
 				Int32 id;
-				const UTF8Char *title;
-				const UTF8Char *author;
-				const UTF8Char *press;
+				Text::String *title;
+				Text::String *author;
+				Text::String *press;
 				Int64 publishDate;
-				const UTF8Char *url;
+				Text::String *url;
 
 				Data::ArrayList<BookSpInfo*> *species;
 			} BookInfo;
@@ -71,8 +73,8 @@ namespace SSWR
 			{
 				Int32 id;
 				Int32 parentId;
-				const UTF8Char *cname;
-				const UTF8Char *ename;
+				Text::String *cname;
+				Text::String *ename;
 				Double lat;
 				Double lon;
 				Int32 cateId;
@@ -91,14 +93,14 @@ namespace SSWR
 			{
 				Int32 id;
 				Int32 fileType;
-				const UTF8Char *oriFileName;
+				Text::String *oriFileName;
 				Int64 fileTimeTicks;
 				Double lat;
 				Double lon;
 				Int32 webuserId;
 				Int32 speciesId;
 				Int64 captureTimeTicks;
-				const UTF8Char *dataFileName;
+				Text::String *dataFileName;
 				UInt32 crcVal;
 				Int32 rotType;
 				Int32 prevUpdated;
@@ -106,17 +108,17 @@ namespace SSWR
 				Double cropTop;
 				Double cropRight;
 				Double cropBottom;
-				const UTF8Char *descript;
-				const UTF8Char *location;
+				Text::String *descript;
+				Text::String *location;
 			} UserFileInfo;
 
 			typedef struct
 			{
 				Int32 id;
 				Int32 crcVal;
-				const UTF8Char *imgUrl;
-				const UTF8Char *srcUrl;
-				const UTF8Char *location;
+				Text::String *imgUrl;
+				Text::String *srcUrl;
+				Text::String *location;
 				Int32 prevUpdated;
 				Double cropLeft;
 				Double cropTop;
@@ -127,9 +129,9 @@ namespace SSWR
 			typedef struct
 			{
 				Int32 id;
-				const UTF8Char *userName;
-				const UTF8Char *pwd;
-				const UTF8Char *watermark;
+				Text::String *userName;
+				Text::String *pwd;
+				Text::String *watermark;
 				Int32 userType;
 				Data::ArrayListInt64 *userFileIndex;
 				Data::ArrayList<UserFileInfo*> *userFileObj;
@@ -140,14 +142,14 @@ namespace SSWR
 			typedef struct
 			{
 				Int32 speciesId;
-				const UTF8Char *engName;
-				const UTF8Char *chiName;
-				const UTF8Char *sciName;
+				Text::String *engName;
+				Text::String *chiName;
+				Text::String *sciName;
 				Int32 groupId;
-				const UTF8Char *descript;
-				const UTF8Char *dirName;
-				const UTF8Char *photo;
-				const UTF8Char *idKey;
+				Text::String *descript;
+				Text::String *dirName;
+				Text::String *photo;
+				Text::String *idKey;
 				Int32 cateId;
 				SpeciesFlags flags;
 				Int32 photoId;
@@ -162,13 +164,13 @@ namespace SSWR
 			{
 				Int32 id;
 				Int32 groupType;
-				const UTF8Char *engName;
-				const UTF8Char *chiName;
-				const UTF8Char *descript;
+				Text::String *engName;
+				Text::String *chiName;
+				Text::String *descript;
 				Int32 parentId;
 				Int32 photoGroup;
 				Int32 photoSpecies;
-				const UTF8Char *idKey;
+				Text::String *idKey;
 				Int32 cateId;
 				GroupFlags flags;
 
@@ -207,6 +209,19 @@ namespace SSWR
 				PickObjType pickObjType;
 			} RequestEnv;
 
+			class SpeciesSciNameComparator : public Data::Comparator<SpeciesInfo*>
+			{
+			public:
+				virtual ~SpeciesSciNameComparator();
+				virtual OSInt Compare(SpeciesInfo *a, SpeciesInfo *b);
+			};
+
+			class UserFileTimeComparator : public Data::Comparator<UserFileInfo*>
+			{
+			public:
+				virtual ~UserFileTimeComparator();
+				virtual OSInt Compare(UserFileInfo *a, UserFileInfo *b);
+			};
 		private:
 			Data::RandomOS *random;
 			DB::DBTool *db;

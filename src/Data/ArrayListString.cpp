@@ -21,7 +21,36 @@ Data::ArrayList<Text::String*> *Data::ArrayListString::Clone()
 
 OSInt Data::ArrayListString::CompareItem(Text::String* obj1, Text::String* obj2)
 {
-	return Text::StrCompare(obj1->v, obj2->v);
+	return obj1->CompareTo(obj2);
+}
+
+OSInt Data::ArrayListString::SortedIndexOfPtr(const UTF8Char *val)
+{
+	OSInt i;
+	OSInt j;
+	OSInt k;
+	OSInt l;
+	i = 0;
+	j = (OSInt)this->objCnt - 1;
+	while (i <= j)
+	{
+		k = (i + j) >> 1;
+		l = this->arr[k]->CompareTo(val);
+		if (l > 0)
+		{
+			j = k - 1;
+		}
+		else if (l < 0)
+		{
+			i = k + 1;
+		}
+		else
+		{
+			return k;
+		}
+	}
+	return -i - 1;
+
 }
 
 Text::String *Data::ArrayListString::JoinString()

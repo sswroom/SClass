@@ -12,6 +12,20 @@ Text::StringBuilderUTF8::~StringBuilderUTF8()
 {
 }
 
+Text::StringBuilderUTF *Text::StringBuilderUTF8::Append(Text::String *s)
+{
+	if (s == 0)
+	{
+		return this;
+	}
+	if (s->leng > 0)
+	{
+		this->AllocLeng(s->leng);
+		this->buffEnd = Text::StrConcatC(this->buffEnd, s->v, s->leng);
+	}
+	return this;
+}
+
 Text::StringBuilderUTF *Text::StringBuilderUTF8::Append(const UTF8Char *s)
 {
 	if (s == 0)

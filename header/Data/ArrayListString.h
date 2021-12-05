@@ -13,6 +13,8 @@ namespace Data
 
 		virtual Data::ArrayList<Text::String*> *Clone();
 		virtual OSInt CompareItem(Text::String* obj1, Text::String* obj2);
+		OSInt SortedIndexOfPtr(const UTF8Char *val);
+
 		Text::String *JoinString();
 	};
 }

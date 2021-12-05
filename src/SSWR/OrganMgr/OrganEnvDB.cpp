@@ -287,8 +287,8 @@ SSWR::OrganMgr::OrganEnvDB::OrganEnvDB() : OrganEnv()
 			if (species == 0 || species->id != wfile->speciesId)
 			{
 				species = this->GetSpeciesInfo(wfile->speciesId, true);
-				species->wfileMap->Put(wfile->id, wfile);
 			}
+			species->wfileMap->Put(wfile->id, wfile);
 			i++;
 		}
 	}

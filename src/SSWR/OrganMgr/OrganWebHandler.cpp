@@ -2,8 +2,10 @@
 #include "Crypto/Hash/CRC32R.h"
 #include "Crypto/Hash/MD5.h"
 #include "Data/ArrayListICaseStrUTF8.h"
+#include "Data/ArrayListString.h"
 #include "Data/ByteTool.h"
 #include "Data/Int64Map.h"
+#include "Data/Sort/ArtificialQuickSort.h"
 #include "DB/DBReader.h"
 #include "Exporter/GUIJPGExporter.h"
 #include "IO/FileStream.h"
@@ -39,6 +41,44 @@
 #define SP_PER_PAGE_DESKTOP 100
 #define SP_PER_PAGE_MOBILE 90
 #define PREVIEW_SIZE 320
+
+SSWR::OrganMgr::OrganWebHandler::SpeciesSciNameComparator::~SpeciesSciNameComparator()
+{
+}
+
+OSInt SSWR::OrganMgr::OrganWebHandler::SpeciesSciNameComparator::Compare(SpeciesInfo *a, SpeciesInfo *b)
+{
+	return a->sciName->CompareTo(b->sciName);
+}
+
+SSWR::OrganMgr::OrganWebHandler::UserFileTimeComparator::~UserFileTimeComparator()
+{
+
+}
+
+OSInt SSWR::OrganMgr::OrganWebHandler::UserFileTimeComparator::Compare(UserFileInfo *a, UserFileInfo *b)
+{
+	if (a->webuserId > b->webuserId)
+	{
+		return 1;
+	}
+	else if (a->webuserId < b->webuserId)
+	{
+		return -1;
+	}
+	else if (a->captureTimeTicks > b->captureTimeTicks)
+	{
+		return 1;
+	}
+	else if (a->captureTimeTicks < b->captureTimeTicks)
+	{
+		return -1;
+	}
+	else
+	{
+		return 0;
+	}
+}
 
 void SSWR::OrganMgr::OrganWebHandler::LoadLangs()
 {
@@ -182,35 +222,18 @@ void SSWR::OrganMgr::OrganWebHandler::LoadSpecies()
 	DB::DBReader *r = this->db->ExecuteReader((const UTF8Char*)"select id, eng_name, chi_name, sci_name, group_id, description, dirName, photo, idKey, cate_id, flags, photoId, photoWId from species");
 	if (r != 0)
 	{
-		Text::StringBuilderUTF8 sb;
 		while (r->ReadNext())
 		{
 			sp = MemAlloc(SSWR::OrganMgr::OrganWebHandler::SpeciesInfo, 1);
 			sp->speciesId = r->GetInt32(0);
-			sb.ClearStr();
-			r->GetStr(1, &sb);
-			sp->engName = Text::StrCopyNew(sb.ToString());
-			sb.ClearStr();
-			r->GetStr(2, &sb);
-			sp->chiName = Text::StrCopyNew(sb.ToString());
-			sb.ClearStr();
-			r->GetStr(3, &sb);
-			sp->sciName = Text::StrCopyNew(sb.ToString());
+			sp->engName = Text::String::OrEmpty(r->GetNewStr(1));
+			sp->chiName = Text::String::OrEmpty(r->GetNewStr(2));
+			sp->sciName = r->GetNewStr(3);
 			sp->groupId = r->GetInt32(4);
-			sb.ClearStr();
-			r->GetStr(5, &sb);
-			sp->descript = Text::StrCopyNew(sb.ToString());
-			sb.ClearStr();
-			r->GetStr(6, &sb);
-			sp->dirName = Text::StrCopyNew(sb.ToString());
-			sb.ClearStr();
-			if (r->GetStr(7, &sb))
-				sp->photo = Text::StrCopyNew(sb.ToString());
-			else
-				sp->photo = 0;
-			sb.ClearStr();
-			r->GetStr(8, &sb);
-			sp->idKey = Text::StrCopyNew(sb.ToString());
+			sp->descript = Text::String::OrEmpty(r->GetNewStr(5));
+			sp->dirName = Text::String::OrEmpty(r->GetNewStr(6));
+			sp->photo = r->GetNewStr(7);
+			sp->idKey = Text::String::OrEmpty(r->GetNewStr(8));
 			sp->cateId = r->GetInt32(9);
 			sp->flags = (SpeciesFlags)r->GetInt32(10);
 			sp->photoId = r->GetInt32(11);
@@ -220,15 +243,26 @@ void SSWR::OrganMgr::OrganWebHandler::LoadSpecies()
 			NEW_CLASS(sp->files, Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::UserFileInfo*>());
 			NEW_CLASS(sp->wfiles, Data::Int32Map<SSWR::OrganMgr::OrganWebHandler::WebFileInfo*>());
 			this->spMap->Put(sp->speciesId, sp);
-			this->spNameMap->Put(sp->sciName, sp);
 		}
 		this->db->CloseReader(r);
+
+		SpeciesSciNameComparator comparator;
+		Data::ArrayList<SpeciesInfo*> speciesList(this->spMap->GetCount());
+		speciesList.AddAll(this->spMap->GetValues());
+		Data::Sort::ArtificialQuickSort::Sort(&speciesList, &comparator);
+		UOSInt i = 0;
+		UOSInt j = speciesList.GetCount();
+		while (i < j)
+		{
+			sp = speciesList.GetItem(i);
+			this->spNameMap->Put(sp->sciName->v, sp);
+			i++;
+		}
 	}
 
 	r = this->db->ExecuteReader((const UTF8Char*)"select id, species_id, crcVal, imgUrl, srcUrl, prevUpdated, cropLeft, cropTop, cropRight, cropBottom, location from webfile");
 	if (r != 0)
 	{
-		Text::StringBuilderUTF8 sb;
 		while (r->ReadNext())
 		{
 			sp = this->spMap->Get(r->GetInt32(1));
@@ -237,20 +271,14 @@ void SSWR::OrganMgr::OrganWebHandler::LoadSpecies()
 				wfile = MemAlloc(SSWR::OrganMgr::OrganWebHandler::WebFileInfo, 1);
 				wfile->id = r->GetInt32(0);
 				wfile->crcVal = r->GetInt32(2);
-				sb.ClearStr();
-				r->GetStr(3, &sb);
-				wfile->imgUrl = Text::StrCopyNew(sb.ToString());
-				sb.ClearStr();
-				r->GetStr(4, &sb);
-				wfile->srcUrl = Text::StrCopyNew(sb.ToString());
+				wfile->imgUrl = r->GetNewStr(3);
+				wfile->srcUrl = r->GetNewStr(4);
 				wfile->prevUpdated = r->GetBool(5);
 				wfile->cropLeft = r->GetDbl(6);
 				wfile->cropTop = r->GetDbl(7);
 				wfile->cropRight = r->GetDbl(8);
 				wfile->cropBottom = r->GetDbl(9);
-				sb.ClearStr();
-				r->GetStr(10, &sb);
-				wfile->location = Text::StrCopyNew(sb.ToString());
+				wfile->location = r->GetNewStr(10);
 				sp->wfiles->Put(wfile->id, wfile);
 			}
 		}
@@ -272,27 +300,18 @@ void SSWR::OrganMgr::OrganWebHandler::LoadGroups()
 	DB::DBReader *r = this->db->ExecuteReader((const UTF8Char*)"select id, group_type, eng_name, chi_name, description, parent_id, photo_group, photo_species, idKey, cate_id, flags from groups");
 	if (r != 0)
 	{
-		Text::StringBuilderUTF8 sb;
 		while (r->ReadNext())
 		{
 			group = MemAlloc(SSWR::OrganMgr::OrganWebHandler::GroupInfo, 1);
 			group->id = r->GetInt32(0);
 			group->groupType = r->GetInt32(1);
-			sb.ClearStr();
-			r->GetStr(2, &sb);
-			group->engName = Text::StrCopyNew(sb.ToString());
-			sb.ClearStr();
-			r->GetStr(3, &sb);
-			group->chiName = Text::StrCopyNew(sb.ToString());
-			sb.ClearStr();
-			r->GetStr(4, &sb);
-			group->descript = Text::StrCopyNew(sb.ToString());
+			group->engName = r->GetNewStr(2);
+			group->chiName = r->GetNewStr(3);
+			group->descript = Text::String::OrEmpty(r->GetNewStr(4));
 			group->parentId = r->GetInt32(5);
 			group->photoGroup = r->GetInt32(6);
 			group->photoSpecies = r->GetInt32(7);
-			sb.ClearStr();
-			r->GetStr(8, &sb);
-			group->idKey = Text::StrCopyNew(sb.ToString());
+			group->idKey = Text::String::OrEmpty(r->GetNewStr(8));
 			group->cateId = r->GetInt32(9);
 			group->flags = (GroupFlags)r->GetInt32(10);
 			NEW_CLASS(group->species, Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::SpeciesInfo*>());
@@ -355,32 +374,16 @@ void SSWR::OrganMgr::OrganWebHandler::LoadBooks()
 	DB::DBReader *r = this->db->ExecuteReader((const UTF8Char*)"select id, title, dispAuthor, press, publishDate, url from book");
 	if (r != 0)
 	{
-		Text::StringBuilderUTF8 sb;
 		while (r->ReadNext())
 		{
 			book = MemAlloc(SSWR::OrganMgr::OrganWebHandler::BookInfo, 1);
 			book->id = r->GetInt32(0);
-			sb.ClearStr();
-			r->GetStr(1, &sb);
-			book->title = Text::StrCopyNew(sb.ToString());
-			sb.ClearStr();
-			r->GetStr(2, &sb);
-			book->author = Text::StrCopyNew(sb.ToString());
-			sb.ClearStr();
-			r->GetStr(3, &sb);
-			book->press = Text::StrCopyNew(sb.ToString());
+			book->title = r->GetNewStr(1);
+			book->author = r->GetNewStr(2);
+			book->press = r->GetNewStr(3);
 			r->GetDate(4, &dt);
 			book->publishDate = dt.ToTicks();
-			sb.ClearStr();
-			r->GetStr(5, &sb);
-			if (sb.GetLength() > 0)
-			{
-				book->url = Text::StrCopyNew(sb.ToString());
-			}
-			else
-			{
-				book->url = 0;
-			}
+			book->url = r->GetNewStr(5);
 			NEW_CLASS(book->species, Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::BookSpInfo*>());
 
 			this->bookMap->Put(book->id, book);
@@ -391,20 +394,16 @@ void SSWR::OrganMgr::OrganWebHandler::LoadBooks()
 	r = this->db->ExecuteReader((const UTF8Char*)"select species_id, book_id, dispName from species_book");
 	if (r != 0)
 	{
-		Text::StringBuilderUTF8 sb;
 		while (r->ReadNext())
 		{
 			sp = this->spMap->Get(r->GetInt32(0));
 			book = this->bookMap->Get(r->GetInt32(1));
 			if (sp != 0 && book != 0)
 			{
-				sb.ClearStr();
-				r->GetStr(2, &sb);
-
 				bookSp = MemAlloc(SSWR::OrganMgr::OrganWebHandler::BookSpInfo, 1);
 				bookSp->bookId = book->id;
 				bookSp->speciesId = sp->speciesId;
-				bookSp->dispName = Text::StrCopyNew(sb.ToString());
+				bookSp->dispName = r->GetNewStr(2);
 				book->species->Add(bookSp);
 				sp->books->Add(bookSp);
 			}
@@ -419,7 +418,6 @@ void SSWR::OrganMgr::OrganWebHandler::LoadUsers()
 
 	Int32 userId;
 	SSWR::OrganMgr::OrganWebHandler::WebUserInfo *user;
-	Text::StringBuilderUTF8 sb;
 	DB::DBReader *r = this->db->ExecuteReader((const UTF8Char*)"select id, userName, pwd, watermark, userType from webuser");
 	if (r != 0)
 	{
@@ -429,56 +427,30 @@ void SSWR::OrganMgr::OrganWebHandler::LoadUsers()
 			user = this->userMap->Get(userId);
 			if (user)
 			{
-				this->userNameMap->Remove(user->userName);
-				SDEL_TEXT(user->userName);
-				sb.ClearStr();
-				r->GetStr(1, &sb);
-				user->userName = Text::StrCopyNew(sb.ToString());
-				SDEL_TEXT(user->pwd);
-				sb.ClearStr();
-				r->GetStr(2, &sb);
-				if (sb.GetLength() > 0)
-				{
-					user->pwd = Text::StrCopyNew(sb.ToString());
-				}
-				else
-				{
-					user->pwd = 0;
-				}
-				SDEL_TEXT(user->watermark);
-				sb.ClearStr();
-				r->GetStr(3, &sb);
-				user->watermark = Text::StrCopyNew(sb.ToString());
+				this->userNameMap->Remove(user->userName->v);
+				SDEL_STRING(user->userName);
+				user->userName = r->GetNewStr(1);
+				SDEL_STRING(user->pwd);
+				user->pwd = r->GetNewStr(2);
+				SDEL_STRING(user->watermark);
+				user->watermark = r->GetNewStr(3);
 				user->userType = r->GetInt32(4);
-				this->userNameMap->Put(user->userName, user);
+				this->userNameMap->Put(user->userName->v, user);
 			}
 			else
 			{
 				user = MemAlloc(SSWR::OrganMgr::OrganWebHandler::WebUserInfo, 1);
 				user->id = userId;
-				sb.ClearStr();
-				r->GetStr(1, &sb);
-				user->userName = Text::StrCopyNew(sb.ToString());
-				sb.ClearStr();
-				r->GetStr(2, &sb);
-				if (sb.GetLength() > 0)
-				{
-					user->pwd = Text::StrCopyNew(sb.ToString());
-				}
-				else
-				{
-					user->pwd = 0;
-				}
-				sb.ClearStr();
-				r->GetStr(3, &sb);
-				user->watermark = Text::StrCopyNew(sb.ToString());
+				user->userName = r->GetNewStr(1);
+				user->pwd = r->GetNewStr(2);
+				user->watermark = r->GetNewStr(3);
 				user->userType = r->GetInt32(4);
 				user->unorganSpId = 0;
 				NEW_CLASS(user->userFileIndex, Data::ArrayListInt64());
 				NEW_CLASS(user->userFileObj, Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::UserFileInfo*>());
 				NEW_CLASS(user->tripCates, Data::Int32Map<Data::Int64Map<SSWR::OrganMgr::OrganWebHandler::TripInfo*>*>());
 				this->userMap->Put(user->id, user);
-				this->userNameMap->Put(user->userName, user);
+				this->userNameMap->Put(user->userName->v, user);
 			}
 		}
 		this->db->CloseReader(r);
@@ -491,6 +463,8 @@ void SSWR::OrganMgr::OrganWebHandler::LoadUsers()
 		SSWR::OrganMgr::OrganWebHandler::SpeciesInfo *species;
 		Data::DateTime dt;
 		UOSInt i;
+		UOSInt j;
+		UOSInt k;
 		user = 0;
 		while (r->ReadNext())
 		{
@@ -504,9 +478,7 @@ void SSWR::OrganMgr::OrganWebHandler::LoadUsers()
 				userFile = MemAlloc(SSWR::OrganMgr::OrganWebHandler::UserFileInfo, 1);
 				userFile->id = r->GetInt32(0);
 				userFile->fileType = r->GetInt32(1);
-				sb.ClearStr();
-				r->GetStr(2, &sb);
-				userFile->oriFileName = Text::StrCopyNew(sb.ToString());
+				userFile->oriFileName = r->GetNewStr(2);
 				r->GetDate(3, &dt);
 				userFile->fileTimeTicks = dt.ToTicks();
 				userFile->lat = r->GetDbl(4);
@@ -515,9 +487,7 @@ void SSWR::OrganMgr::OrganWebHandler::LoadUsers()
 				userFile->speciesId = r->GetInt32(7);
 				r->GetDate(8, &dt);
 				userFile->captureTimeTicks = dt.ToTicks();
-				sb.ClearStr();
-				r->GetStr(9, &sb);
-				userFile->dataFileName = Text::StrCopyNew(sb.ToString());
+				userFile->dataFileName = r->GetNewStr(9);
 				userFile->crcVal = (UInt32)r->GetInt32(10);
 				userFile->rotType = r->GetInt32(11);
 				userFile->prevUpdated = r->GetInt32(12);
@@ -525,28 +495,8 @@ void SSWR::OrganMgr::OrganWebHandler::LoadUsers()
 				userFile->cropTop = r->GetDbl(14);
 				userFile->cropRight = r->GetDbl(15);
 				userFile->cropBottom = r->GetDbl(16);
-				sb.ClearStr();
-				if (r->GetStr(17, &sb))
-				{
-					userFile->descript = Text::StrCopyNew(sb.ToString());
-				}
-				else
-				{
-					userFile->descript = 0;
-				}
-				sb.ClearStr();
-				if (r->GetStr(18, &sb))
-				{
-					userFile->location = Text::StrCopyNew(sb.ToString());
-				}
-				else
-				{
-					userFile->location = 0;
-				}
-				
-				i = user->userFileIndex->SortedInsert(userFile->captureTimeTicks);
-				user->userFileObj->Insert(i, userFile);
-
+				userFile->descript = r->GetNewStr(17);
+				userFile->location = r->GetNewStr(18);
 				species = this->spMap->Get(userFile->speciesId);
 				if (species != 0)
 				{
@@ -556,6 +506,27 @@ void SSWR::OrganMgr::OrganWebHandler::LoadUsers()
 			}
 		}
 		this->db->CloseReader(r);
+
+		UserFileTimeComparator comparator;
+		Data::ArrayList<UserFileInfo*> userFileList(this->userFileMap->GetCount());
+		userFileList.AddAll(this->userFileMap->GetValues());
+		Data::Sort::ArtificialQuickSort::Sort(&userFileList, &comparator);
+		i = 0;
+		j = userFileList.GetCount();
+		while (i < j)
+		{
+			userFile = userFileList.GetItem(i);
+			if (user == 0 || user->id != userId)
+			{
+				user = this->userMap->Get(userId);
+			}
+			if (user != 0)
+			{
+				k = user->userFileIndex->SortedInsert(userFile->captureTimeTicks);
+				user->userFileObj->Insert(k, userFile);
+			}
+			i++;
+		}
 	}
 
 	r = this->db->ExecuteReader((const UTF8Char*)"select fromDate, toDate, locId, cate_id, webuser_id from trip");
@@ -623,7 +594,7 @@ void SSWR::OrganMgr::OrganWebHandler::LoadUsers()
 					while (j-- > 0)
 					{
 						species = group->species->GetItem(j);
-						if (Text::StrEquals(species->sciName, sbSName.ToString()))
+						if (species->sciName->Equals(sbSName.ToString()))
 						{
 							user->unorganSpId = species->speciesId;
 							break;
@@ -636,7 +607,7 @@ void SSWR::OrganMgr::OrganWebHandler::LoadUsers()
 						sb.ToLower();
 						sb.Replace((const UTF8Char*)" ", (const UTF8Char*)"_");
 						sb.Replace((const UTF8Char*)".", (const UTF8Char*)"");
-						user->unorganSpId = this->SpeciesAdd((const UTF8Char *)"", user->userName, sbSName.ToString(), group->id, (const UTF8Char*)"", sb.ToString(), (const UTF8Char*)"", group->cateId);
+						user->unorganSpId = this->SpeciesAdd((const UTF8Char *)"", user->userName->v, sbSName.ToString(), group->id, (const UTF8Char*)"", sb.ToString(), (const UTF8Char*)"", group->cateId);
 					}
 				}
 			}
@@ -651,7 +622,6 @@ void SSWR::OrganMgr::OrganWebHandler::LoadLocations()
 	Int32 id;
 	if (r != 0)
 	{
-		Text::StringBuilderUTF8 sb;
 		while (r->ReadNext())
 		{
 			id = r->GetInt32(0);
@@ -661,12 +631,8 @@ void SSWR::OrganMgr::OrganWebHandler::LoadLocations()
 				loc = MemAlloc(SSWR::OrganMgr::OrganWebHandler::LocationInfo, 1);
 				loc->id = id;
 				loc->parentId = r->GetInt32(1);
-				sb.ClearStr();
-				r->GetStr(2, &sb);
-				loc->cname = Text::StrCopyNew(sb.ToString());
-				sb.ClearStr();
-				r->GetStr(3, &sb);
-				loc->ename = Text::StrCopyNew(sb.ToString());
+				loc->cname = r->GetNewStr(2);
+				loc->ename = r->GetNewStr(3);
 				loc->lat = r->GetDbl(4);
 				loc->lon = r->GetDbl(5);
 				loc->cateId = r->GetInt32(6);
@@ -692,13 +658,13 @@ void SSWR::OrganMgr::OrganWebHandler::FreeSpecies()
 	while (i-- > 0)
 	{
 		sp = spList->GetItem(i);
-		Text::StrDelNew(sp->engName);
-		Text::StrDelNew(sp->chiName);
-		Text::StrDelNew(sp->sciName);
-		Text::StrDelNew(sp->descript);
-		Text::StrDelNew(sp->dirName);
-		SDEL_TEXT(sp->photo);
-		Text::StrDelNew(sp->idKey);
+		sp->engName->Release();
+		sp->chiName->Release();
+		sp->sciName->Release();
+		sp->descript->Release();
+		sp->dirName->Release();
+		SDEL_STRING(sp->photo);
+		sp->idKey->Release();
 
 		DEL_CLASS(sp->books);
 		DEL_CLASS(sp->files);
@@ -707,9 +673,9 @@ void SSWR::OrganMgr::OrganWebHandler::FreeSpecies()
 		while (j-- > 0)
 		{
 			wfile = wfiles->GetItem(j);
-			Text::StrDelNew(wfile->imgUrl);
-			Text::StrDelNew(wfile->srcUrl);
-			Text::StrDelNew(wfile->location);
+			wfile->imgUrl->Release();
+			wfile->srcUrl->Release();
+			wfile->location->Release();
 			MemFree(wfile);
 		}
 		DEL_CLASS(sp->wfiles);
@@ -746,10 +712,10 @@ void SSWR::OrganMgr::OrganWebHandler::FreeGroups()
 
 void SSWR::OrganMgr::OrganWebHandler::FreeGroup(GroupInfo *group)
 {
-	Text::StrDelNew(group->engName);
-	Text::StrDelNew(group->chiName);
-	Text::StrDelNew(group->descript);
-	SDEL_TEXT(group->idKey);
+	group->engName->Release();
+	group->chiName->Release();
+	group->descript->Release();
+	SDEL_STRING(group->idKey);
 	DEL_CLASS(group->species);
 	DEL_CLASS(group->groups);
 
@@ -769,15 +735,15 @@ void SSWR::OrganMgr::OrganWebHandler::FreeBooks()
 	while (i-- > 0)
 	{
 		book = bookList->GetItem(i);
-		Text::StrDelNew(book->title);
-		Text::StrDelNew(book->author);
-		Text::StrDelNew(book->press);
-		SDEL_TEXT(book->url);
+		book->title->Release();
+		book->author->Release();
+		book->press->Release();
+		SDEL_STRING(book->url);
 		j = book->species->GetCount();
 		while (j-- > 0)
 		{
 			bookSp = book->species->GetItem(j);
-			Text::StrDelNew(bookSp->dispName);
+			bookSp->dispName->Release();
 			MemFree(bookSp);
 		}
 		DEL_CLASS(book->species);
@@ -802,18 +768,18 @@ void SSWR::OrganMgr::OrganWebHandler::FreeUsers()
 	while (i-- > 0)
 	{
 		user = userList->GetItem(i);
-		Text::StrDelNew(user->userName);
-		Text::StrDelNew(user->watermark);
-		SDEL_TEXT(user->pwd);
+		user->userName->Release();
+		user->watermark->Release();
+		SDEL_STRING(user->pwd);
 
 		j = user->userFileObj->GetCount();
 		while (j-- > 0)
 		{
 			userFile = user->userFileObj->GetItem(j);
-			Text::StrDelNew(userFile->oriFileName);
-			Text::StrDelNew(userFile->dataFileName);
-			SDEL_TEXT(userFile->descript);
-			SDEL_TEXT(userFile->location);
+			userFile->oriFileName->Release();
+			userFile->dataFileName->Release();
+			SDEL_STRING(userFile->descript);
+			SDEL_STRING(userFile->location);
 			MemFree(userFile);
 		}
 		DEL_CLASS(user->userFileIndex);
@@ -857,9 +823,9 @@ void SSWR::OrganMgr::OrganWebHandler::ClearUsers()
 		while (j-- > 0)
 		{
 			userFile = user->userFileObj->GetItem(j);
-			Text::StrDelNew(userFile->oriFileName);
-			Text::StrDelNew(userFile->dataFileName);
-			SDEL_TEXT(userFile->descript);
+			userFile->oriFileName->Release();
+			userFile->dataFileName->Release();
+			SDEL_STRING(userFile->descript);
 			MemFree(userFile);
 		}
 		user->userFileIndex->Clear();
@@ -958,7 +924,7 @@ void SSWR::OrganMgr::OrganWebHandler::GetGroupSpecies(SSWR::OrganMgr::OrganWebHa
 	while (i < j)
 	{
 		sp = group->species->GetItem(i);
-		spMap->Put(sp->sciName, sp);
+		spMap->Put(sp->sciName->v, sp);
 		i++;
 	}
 	i = group->groups->GetCount();
@@ -980,7 +946,6 @@ void SSWR::OrganMgr::OrganWebHandler::SearchInGroup(SSWR::OrganMgr::OrganWebHand
 	Double rating;
 	Double currRating;
 	UOSInt strLen = Text::StrCharCnt(searchStr);
-	UOSInt strLen2;
 	UOSInt i;
 	UOSInt j;
 /*
@@ -994,55 +959,33 @@ e = c
 	{
 		rating = 0;
 		species = group->species->GetItem(i);
-		if (Text::StrEquals(species->sciName, searchStr) || Text::StrEquals(species->chiName, searchStr))
+		if (species->sciName->Equals(searchStr) || species->chiName->Equals(searchStr))
 		{
 			speciesIndice->Add(1.0);
 			speciesObjs->Add(species);
 		}
 		else
 		{
-			if (Text::StrIndexOf(species->sciName, searchStr) != INVALID_INDEX)
-			{
-				strLen2 = Text::StrCharCnt(species->sciName);
-				currRating = Math::UOSInt2Double(strLen) / Math::UOSInt2Double(strLen2);
-				if (rating < currRating)
-					rating = currRating;
-			}
-			if (Text::StrIndexOf(species->chiName, searchStr) != INVALID_INDEX)
-			{
-				strLen2 = Text::StrCharCnt(species->chiName);
-				currRating = Math::UOSInt2Double(strLen) / Math::UOSInt2Double(strLen2);
-				if (rating < currRating)
-					rating = currRating;
-			}
-			if (Text::StrIndexOf(species->engName, searchStr) != INVALID_INDEX)
-			{
-				strLen2 = Text::StrCharCnt(species->engName);
-				currRating = Math::UOSInt2Double(strLen) / Math::UOSInt2Double(strLen2);
-				if (rating < currRating)
-					rating = currRating;
-			}
-			if (Text::StrIndexOf(species->descript, searchStr) != INVALID_INDEX)
-			{
-				strLen2 = Text::StrCharCnt(species->descript);
-				currRating = Math::UOSInt2Double(strLen) / Math::UOSInt2Double(strLen2);
-				if (rating < currRating)
-					rating = currRating;
-			}
+			if (rating < (currRating = species->sciName->MatchRating(searchStr, strLen)))
+				rating = currRating;
+			if (rating < (currRating = species->chiName->MatchRating(searchStr, strLen)))
+				rating = currRating;
+			if (rating < (currRating = species->engName->MatchRating(searchStr, strLen)))
+				rating = currRating;
+			if (rating < (currRating = species->descript->MatchRating(searchStr, strLen)))
+				rating = currRating;
 			j = species->books->GetCount();
 			while (j-- > 0)
 			{
 				bookSp = species->books->GetItem(j);
-				if (Text::StrEquals(bookSp->dispName, searchStr))
+				if (bookSp->dispName->Equals(searchStr))
 				{
 					rating = 1.0;
 					break;
 				}
-				else if (Text::StrIndexOf(bookSp->dispName, searchStr) != INVALID_INDEX)
+				else
 				{
-					strLen2 = Text::StrCharCnt(bookSp->dispName);
-					currRating = Math::UOSInt2Double(strLen) / Math::UOSInt2Double(strLen2);
-					if (rating < currRating)
+					if (rating < (currRating = bookSp->dispName->MatchRating(searchStr, strLen)))
 						rating = currRating;
 				}
 			}
@@ -1064,27 +1007,17 @@ e = c
 		}
 		else
 		{
-			if (Text::StrEquals(subGroup->engName, searchStr) || Text::StrEquals(subGroup->chiName, searchStr))
+			if (subGroup->engName->Equals(searchStr) || subGroup->chiName->Equals(searchStr))
 			{
 				groupIndice->Add(1.0);
 				groupObjs->Add(subGroup);
 			}
 			else
 			{
-				if (Text::StrIndexOf(subGroup->engName, searchStr) != INVALID_INDEX)
-				{
-					strLen2 = Text::StrCharCnt(subGroup->engName);
-					currRating = Math::UOSInt2Double(strLen) / Math::UOSInt2Double(strLen2);
-					if (rating < currRating)
-						rating = currRating;
-				}
-				if (Text::StrIndexOf(subGroup->chiName, searchStr) != INVALID_INDEX)
-				{
-					strLen2 = Text::StrCharCnt(subGroup->chiName);
-					currRating = Math::UOSInt2Double(strLen) / Math::UOSInt2Double(strLen2);
-					if (rating < currRating)
-						rating = currRating;
-				}
+				if (rating < (currRating = subGroup->engName->MatchRating(searchStr, strLen)))
+					rating = currRating;
+				if (rating < (currRating = subGroup->chiName->MatchRating(searchStr, strLen)))
+					rating = currRating;
 				if (rating > 0)
 				{
 					j = groupIndice->SortedInsert(rating);
@@ -1223,14 +1156,14 @@ Int32 SSWR::OrganMgr::OrganWebHandler::SpeciesAdd(const UTF8Char *engName, const
 	{
 		SSWR::OrganMgr::OrganWebHandler::SpeciesInfo *species = MemAlloc(SSWR::OrganMgr::OrganWebHandler::SpeciesInfo, 1);
 		species->speciesId = this->db->GetLastIdentity32();
-		species->engName = SCOPY_TEXT(engName);
-		species->chiName = SCOPY_TEXT(chiName);
-		species->sciName = SCOPY_TEXT(sciName);
+		species->engName = Text::String::New(engName);
+		species->chiName = Text::String::New(chiName);
+		species->sciName = Text::String::New(sciName);
 		species->groupId = groupId;
-		species->descript = SCOPY_TEXT(description);
-		species->dirName = SCOPY_TEXT(dirName);
+		species->descript = Text::String::New(description);
+		species->dirName = Text::String::New(dirName);
 		species->photo = 0;
-		species->idKey = SCOPY_TEXT(idKey);
+		species->idKey = Text::String::New(idKey);
 		species->cateId = cateId;
 		species->flags = SF_NONE;
 		species->photoId = 0;
@@ -1240,7 +1173,7 @@ Int32 SSWR::OrganMgr::OrganWebHandler::SpeciesAdd(const UTF8Char *engName, const
 		NEW_CLASS(species->files, Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::UserFileInfo*>());
 		NEW_CLASS(species->wfiles, Data::Int32Map<SSWR::OrganMgr::OrganWebHandler::WebFileInfo*>());
 		this->spMap->Put(species->speciesId, species);
-		this->spNameMap->Put(species->sciName, species);
+		this->spNameMap->Put(species->sciName->v, species);
 
 		SSWR::OrganMgr::OrganWebHandler::GroupInfo *group = this->groupMap->Get(species->groupId);
 		if (group)
@@ -1387,16 +1320,16 @@ Bool SSWR::OrganMgr::OrganWebHandler::SpeciesModify(Int32 speciesId, const UTF8C
 	sql.AppendInt32(speciesId);
 	if (this->db->ExecuteNonQuery(sql.ToString()) >= 0)
 	{
-		SDEL_TEXT(species->engName);
-		species->engName = SCOPY_TEXT(engName);
-		SDEL_TEXT(species->chiName);
-		species->chiName = SCOPY_TEXT(chiName);
-		SDEL_TEXT(species->sciName);
-		species->sciName = SCOPY_TEXT(sciName);
-		SDEL_TEXT(species->descript);
-		species->descript = SCOPY_TEXT(description);
-		SDEL_TEXT(species->dirName);
-		species->dirName = SCOPY_TEXT(dirName);
+		SDEL_STRING(species->engName);
+		species->engName = Text::String::New(engName);
+		SDEL_STRING(species->chiName);
+		species->chiName = Text::String::New(chiName);
+		SDEL_STRING(species->sciName);
+		species->sciName = Text::String::New(sciName);
+		SDEL_STRING(species->descript);
+		species->descript = Text::String::New(description);
+		SDEL_STRING(species->dirName);
+		species->dirName = Text::String::New(dirName);
 		return true;
 	}
 	else
@@ -1632,14 +1565,14 @@ Int32 SSWR::OrganMgr::OrganWebHandler::UserfileAdd(Int32 userId, Int32 spId, con
 						userFile = MemAlloc(SSWR::OrganMgr::OrganWebHandler::UserFileInfo, 1);
 						userFile->id = this->db->GetLastIdentity32();
 						userFile->fileType = fileType;
-						userFile->oriFileName = Text::StrCopyNew(fileName);
+						userFile->oriFileName = Text::String::New(fileName);
 						userFile->fileTimeTicks = fileTime.ToTicks();
 						userFile->lat = lat;
 						userFile->lon = lon;
 						userFile->webuserId = userId;
 						userFile->speciesId = spId;
 						userFile->captureTimeTicks = userFile->fileTimeTicks;
-						userFile->dataFileName = Text::StrCopyNew(dataFileName);
+						userFile->dataFileName = Text::String::New(dataFileName);
 						userFile->crcVal = crcVal;
 						userFile->rotType = 0;
 						userFile->prevUpdated = 0;
@@ -1828,14 +1761,14 @@ Int32 SSWR::OrganMgr::OrganWebHandler::UserfileAdd(Int32 userId, Int32 spId, con
 						userFile = MemAlloc(SSWR::OrganMgr::OrganWebHandler::UserFileInfo, 1);
 						userFile->id = this->db->GetLastIdentity32();
 						userFile->fileType = fileType;
-						userFile->oriFileName = Text::StrCopyNew(fileName);
+						userFile->oriFileName = Text::String::New(fileName);
 						userFile->fileTimeTicks = fileTime.ToTicks();
 						userFile->lat = 0;
 						userFile->lon = 0;
 						userFile->webuserId = userId;
 						userFile->speciesId = spId;
 						userFile->captureTimeTicks = userFile->fileTimeTicks;
-						userFile->dataFileName = Text::StrCopyNew(dataFileName);
+						userFile->dataFileName = Text::String::New(dataFileName);
 						userFile->crcVal = crcVal;
 						userFile->rotType = 0;
 						//userFile->camera = 0;
@@ -2021,8 +1954,8 @@ Bool SSWR::OrganMgr::OrganWebHandler::UserfileUpdateDesc(Int32 userfileId, const
 	sql.AppendInt32(userfileId);
 	if (this->db->ExecuteNonQuery(sql.ToString()) > 0)
 	{
-		SDEL_TEXT(userFile->descript);
-		userFile->descript = SCOPY_TEXT(descr);
+		SDEL_STRING(userFile->descript);
+		userFile->descript = Text::String::New(descr);
 		return true;
 	}
 	return false;
@@ -2074,7 +2007,7 @@ Bool SSWR::OrganMgr::OrganWebHandler::SpeciesBookIsExist(const UTF8Char *species
 		while (k-- > 0)
 		{
 			bookSp = book->species->GetItem(k);
-			if (bookSp->dispName && Text::StrEquals(bookSp->dispName, speciesName))
+			if (bookSp->dispName && bookSp->dispName->Equals(speciesName))
 			{
 				bookNameOut->Append(book->title);
 				return true;
@@ -2113,9 +2046,9 @@ Int32 SSWR::OrganMgr::OrganWebHandler::GroupAdd(const UTF8Char* engName, const U
 		SSWR::OrganMgr::OrganWebHandler::GroupInfo *newGroup = MemAlloc(SSWR::OrganMgr::OrganWebHandler::GroupInfo, 1);
 		newGroup->id = this->db->GetLastIdentity32();
 		newGroup->groupType = groupTypeId;
-		newGroup->engName = Text::StrCopyNew(engName);
-		newGroup->chiName = Text::StrCopyNew(chiName);
-		newGroup->descript = Text::StrCopyNew(descr);
+		newGroup->engName = Text::String::New(engName);
+		newGroup->chiName = Text::String::New(chiName);
+		newGroup->descript = Text::String::New(descr);
 		newGroup->parentId = parentId;
 		newGroup->photoGroup = 0;
 		newGroup->photoSpecies = 0;
@@ -2158,12 +2091,12 @@ Bool SSWR::OrganMgr::OrganWebHandler::GroupModify(Int32 id, const UTF8Char *engN
 	if (this->db->ExecuteNonQuery(sql.ToString()) >= 0)
 	{
 		group->groupType = groupTypeId;
-		SDEL_TEXT(group->engName);
-		group->engName = Text::StrCopyNew(engName);
-		SDEL_TEXT(group->chiName);
-		group->chiName = Text::StrCopyNew(chiName);
-		SDEL_TEXT(group->descript);
-		group->descript = Text::StrCopyNew(descr);
+		SDEL_STRING(group->engName);
+		group->engName = Text::String::New(engName);
+		SDEL_STRING(group->chiName);
+		group->chiName = Text::String::New(chiName);
+		SDEL_STRING(group->descript);
+		group->descript = Text::String::New(descr);
 		group->flags = flags;
 		return true;
 	}
@@ -2456,7 +2389,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDown(Net::WebServer::IWe
 			}
 			else
 			{
-				u8ptr = Text::StrConcat(u8ptr, userFile->dataFileName);
+				u8ptr = userFile->dataFileName->ConcatTo(u8ptr);
 			}
 			me->dataMut->UnlockRead();
 
@@ -2759,7 +2692,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroup(Net::WebServer::IWebReq
 		writer->WriteLine((const UTF8Char*)"<br/>");
 		if (group->descript)
 		{
-			txt = Text::XML::ToNewHTMLText(group->descript);
+			txt = Text::XML::ToNewHTMLText(group->descript->v);
 			writer->Write(txt);
 			Text::XML::FreeNewText(txt);
 		}
@@ -2823,7 +2756,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroup(Net::WebServer::IWebReq
 				sgroup = group->groups->GetItem(i);
 				if ((sgroup->flags & 1) == 0 || !notAdmin)
 				{
-					groups.Put(sgroup->engName, sgroup);
+					groups.Put(sgroup->engName->v, sgroup);
 				}
 			}
 			if (groups.GetCount() > 0)
@@ -2841,7 +2774,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroup(Net::WebServer::IWebReq
 			while (i-- > 0)
 			{
 				sp = group->species->GetItem(i);
-				species.Put(sp->sciName, sp);
+				species.Put(sp->sciName->v, sp);
 			}
 			me->WriteSpeciesTable(writer, species.GetValues(), env.scnWidth, group->cateId, !notAdmin);
 			writer->WriteLine((const UTF8Char*)"<hr/>");
@@ -2996,9 +2929,9 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroupMod(Net::WebServer::IWeb
 			modGroup = me->groupMap->Get(groupId);
 			if (modGroup)
 			{
-				cname = modGroup->chiName;
-				ename = modGroup->engName;
-				descr = modGroup->descript;
+				cname = modGroup->chiName->v;
+				ename = modGroup->engName->v;
+				descr = modGroup->descript->v;
 				groupTypeId = modGroup->groupType;
 			}
 		}
@@ -3023,7 +2956,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroupMod(Net::WebServer::IWeb
 					i = group->groups->GetCount();
 					while (i-- > 0)
 					{
-						if (Text::StrEquals(group->groups->GetItem(i)->engName, ename))
+						if (group->groups->GetItem(i)->engName->Equals(ename))
 						{
 							found = true;
 							break;
@@ -3064,7 +2997,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroupMod(Net::WebServer::IWeb
 					i = group->groups->GetCount();
 					while (i-- > 0)
 					{
-						if (group->groups->GetItem(i) != modGroup && Text::StrEquals(group->groups->GetItem(i)->engName, ename))
+						if (group->groups->GetItem(i) != modGroup && group->groups->GetItem(i)->engName->Equals(ename))
 						{
 							found = true;
 							break;
@@ -3408,11 +3341,11 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpecies(Net::WebServer::IWebR
 		sb.ClearStr();
 		sb.Append(cate->chiName);
 		sb.Append((const UTF8Char*)" - ");
-		sb.Append(species->sciName);
+		sb.AppendC(species->sciName->v, species->sciName->leng);
 		sb.Append((const UTF8Char*)" ");
-		sb.Append(species->chiName);
+		sb.AppendC(species->chiName->v, species->chiName->leng);
 		sb.Append((const UTF8Char*)" ");
-		sb.Append(species->engName);
+		sb.AppendC(species->engName->v, species->engName->leng);
 		me->WriteHeader(writer, sb.ToString(), env.user, env.isMobile);
 		writer->Write((const UTF8Char*)"<center><h1>");
 		txt = Text::XML::ToNewHTMLText(sb.ToString());
@@ -3423,7 +3356,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpecies(Net::WebServer::IWebR
 		writer->WriteLine((const UTF8Char*)"<table border=\"0\"><tr><td>");
 		if (species->descript)
 		{
-			txt = Text::XML::ToNewHTMLText(species->descript);
+			txt = Text::XML::ToNewHTMLText(species->descript->v);
 			writer->Write(txt);
 			Text::XML::FreeNewText(txt);
 		}
@@ -3486,12 +3419,12 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpecies(Net::WebServer::IWebR
 					sb.Append((const UTF8Char*)"&cateId=");
 					sb.AppendI32(cate->cateId);
 					sb.Append((const UTF8Char*)"\" title=");
-					txt = Text::XML::ToNewAttrText(book->title);
+					txt = Text::XML::ToNewAttrText(book->title->v);
 					sb.Append(txt);
 					Text::XML::FreeNewText(txt);
 					sb.Append((const UTF8Char*)"><i>");
 					writer->Write(sb.ToString());
-					txt = Text::XML::ToNewHTMLText(bookSp->dispName);
+					txt = Text::XML::ToNewHTMLText(bookSp->dispName->v);
 					writer->Write(txt);
 					Text::XML::FreeNewText(txt);
 					writer->Write((const UTF8Char*)"</i></a></td><td>");
@@ -3516,15 +3449,15 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpecies(Net::WebServer::IWebR
 		writer->WriteLine((const UTF8Char*)"<hr/>");
 
 		Data::ArrayListICaseStrUTF8 *fileNameList;
-		Data::ArrayListStrUTF8 *refURLList;
+		Data::ArrayListString *refURLList;
 		NEW_CLASS(fileNameList, Data::ArrayListICaseStrUTF8());
-		NEW_CLASS(refURLList, Data::ArrayListStrUTF8());
+		NEW_CLASS(refURLList, Data::ArrayListString());
 		sptr = Text::StrConcat(sbuff, cate->srcDir);
 		if (IO::Path::PATH_SEPERATOR != '\\')
 		{
 			Text::StrReplace(sbuff, '\\', IO::Path::PATH_SEPERATOR);
 		}
-		sptr = Text::StrConcat(sptr, species->dirName);
+		sptr = species->dirName->ConcatTo(sptr);
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 		Text::StrConcat(sptr, IO::Path::ALL_FILES);
 		sess = IO::Path::FindFile(sbuff);
@@ -3556,9 +3489,9 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpecies(Net::WebServer::IWebR
 			{
 				if (Text::StrSplit(sarr, 4, sb.ToString(), '\t') == 3)
 				{
-					if (refURLList->SortedIndexOf(sarr[2]) < 0)
+					if (refURLList->SortedIndexOfPtr(sarr[2]) < 0)
 					{
-						refURLList->SortedInsert(Text::StrCopyNew(sarr[2]));
+						refURLList->SortedInsert(Text::String::New(sarr[2]));
 					}
 					sptr2 = Text::StrConcat(sptr, (const UTF8Char*)"web");
 					*sptr2++ = IO::Path::PATH_SEPERATOR;
@@ -3664,7 +3597,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpecies(Net::WebServer::IWebR
 						if (userFile->location)
 						{
 							writer->Write((const UTF8Char*)" ");
-							txt = Text::XML::ToNewHTMLText(userFile->location);
+							txt = Text::XML::ToNewHTMLText(userFile->location->v);
 							writer->Write(txt);
 							Text::XML::FreeNewText(txt);
 						}
@@ -3690,17 +3623,17 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpecies(Net::WebServer::IWebR
 							}
 						}*/
 					}
-					if (userFile->descript && userFile->descript[0])
+					if (userFile->descript && userFile->descript->leng > 0)
 					{
 						writer->Write((const UTF8Char*)"<br/>");
-						txt = Text::XML::ToNewHTMLText(userFile->descript);
+						txt = Text::XML::ToNewHTMLText(userFile->descript->v);
 						writer->Write(txt);
 						Text::XML::FreeNewText(txt);
 					}
 					if (userFile->webuserId == env.user->id)
 					{
 						writer->Write((const UTF8Char*)"<br/>");
-						txt = Text::XML::ToNewHTMLText(userFile->oriFileName);
+						txt = Text::XML::ToNewHTMLText(userFile->oriFileName->v);
 						writer->Write(txt);
 						Text::XML::FreeNewText(txt);
 					}
@@ -3790,10 +3723,10 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpecies(Net::WebServer::IWebR
 				writer->Write((const UTF8Char*)"</a>");
 				if (env.user && env.user->userType == 0)
 				{
-					if (wfile->location && wfile->location[0])
+					if (wfile->location && wfile->location->leng > 0)
 					{
 						writer->Write((const UTF8Char*)"<br/>");
-						txt = Text::XML::ToNewHTMLText(wfile->location);
+						txt = Text::XML::ToNewHTMLText(wfile->location->v);
 						writer->Write(txt);
 						Text::XML::FreeNewText(txt);
 					}
@@ -3809,7 +3742,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpecies(Net::WebServer::IWebR
 
 				if (refURLList->SortedIndexOf(wfile->srcUrl) < 0)
 				{
-					refURLList->SortedInsert(Text::StrCopyNew(wfile->srcUrl));
+					refURLList->SortedInsert(wfile->srcUrl->Clone());
 				}
 
 				i++;
@@ -3896,7 +3829,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpecies(Net::WebServer::IWebR
 		if (refURLList->GetCount() > 0)
 		{
 			writer->WriteLine((const UTF8Char*)"Reference URL:<br/>");
-			const UTF8Char *url;
+			Text::String *url;
 			i = 0;
 			j = refURLList->GetCount();
 			while (i < j)
@@ -3904,16 +3837,16 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpecies(Net::WebServer::IWebR
 				url = refURLList->GetItem(i);
 
 				writer->Write((const UTF8Char*)"<a href=");
-				txt = Text::XML::ToNewAttrText(url);
+				txt = Text::XML::ToNewAttrText(url->v);
 				writer->Write(txt);
 				Text::XML::FreeNewText(txt);
 				writer->Write((const UTF8Char*)">");
-				txt = Text::XML::ToNewHTMLText(url);
+				txt = Text::XML::ToNewHTMLText(url->v);
 				writer->Write(txt);
 				Text::XML::FreeNewText(txt);
 				writer->WriteLine((const UTF8Char*)"</a><br/>");
 
-				Text::StrDelNew(url);
+				url->Release();
 				i++;
 			}
 			writer->WriteLine((const UTF8Char*)"<hr/>");
@@ -4005,10 +3938,10 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpeciesMod(Net::WebServer::IW
 			species = me->spMap->Get(spId);
 			if (species)
 			{
-				cname = species->chiName;
-				sname = species->sciName;
-				ename = species->engName;
-				descr = species->descript;
+				cname = species->chiName->v;
+				sname = species->sciName->v;
+				ename = species->engName->v;
+				descr = species->descript->v;
 			}
 		}
 		if (req->GetReqMethod() == Net::WebServer::IWebRequest::RequestMethod::HTTP_POST)
@@ -4068,7 +4001,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpeciesMod(Net::WebServer::IW
 				}
 				else if (Text::StrEquals(task, (const UTF8Char*)"modify") && species != 0)
 				{
-					Bool nameChg = !Text::StrEquals(species->sciName, sname);
+					Bool nameChg = !species->sciName->Equals(sname);
 					sb.ClearStr();
 					if (nameChg && me->spNameMap->Get(sname) != 0)
 					{
@@ -4280,7 +4213,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcList(Net::WebServer::IWebRequ
 		writer->WriteLine((const UTF8Char*)"<br/>");
 		if (group->descript)
 		{
-			txt = Text::XML::ToNewHTMLText(group->descript);
+			txt = Text::XML::ToNewHTMLText(group->descript->v);
 			writer->Write(txt);
 			Text::XML::FreeNewText(txt);
 		}
@@ -4492,7 +4425,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 		{
 			Text::StrReplace(u8buff, '\\', IO::Path::PATH_SEPERATOR);
 		}
-		u8ptr = Text::StrConcat(u8ptr, species->dirName);
+		u8ptr = species->dirName->ConcatTo(u8ptr);
 		*u8ptr++ = IO::Path::PATH_SEPERATOR;
 
 		if (req->GetQueryValueI32((const UTF8Char*)"fileId", &fileId))
@@ -4715,7 +4648,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 					dt.SetTicks(userFile->fileTimeTicks);
 					u8ptr = dt.ToString(u8ptr, "yyyyMM");
 					*u8ptr++ = IO::Path::PATH_SEPERATOR;
-					u8ptr = Text::StrConcat(u8ptr, userFile->dataFileName);
+					u8ptr = userFile->dataFileName->ConcatTo(u8ptr);
 					Sync::MutexUsage mutUsage(me->parserMut);
 					NEW_CLASS(fd, IO::StmData::FileData(u8buff, false));
 					fileSize = fd->GetDataSize();
@@ -4791,7 +4724,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 					dt.SetTicks(userFile->fileTimeTicks);
 					u8ptr = dt.ToString(u8ptr, "yyyyMM");
 					*u8ptr++ = IO::Path::PATH_SEPERATOR;
-					u8ptr = Text::StrConcat(u8ptr, userFile->dataFileName);
+					u8ptr = userFile->dataFileName->ConcatTo(u8ptr);
 
 					IO::StmData::FileData *fd;
 					Media::PhotoInfo *info;
@@ -4859,7 +4792,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 					if (userFile->descript)
 					{
 						sb.Append((const UTF8Char*)" value=");
-						txt = Text::XML::ToNewAttrText(userFile->descript);
+						txt = Text::XML::ToNewAttrText(userFile->descript->v);
 						sb.Append(txt);
 						Text::XML::FreeNewText(txt);
 					}
@@ -5061,19 +4994,19 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 				writer->WriteLine((const UTF8Char*)"<tr><td align=\"center\">");
 
 				writer->Write((const UTF8Char*)"<b>Image URL:</b> <a href=");
-				txt = Text::XML::ToNewAttrText(wfile->imgUrl);
+				txt = Text::XML::ToNewAttrText(wfile->imgUrl->v);
 				writer->Write(txt);
 				Text::XML::FreeNewText(txt);
 				writer->Write((const UTF8Char*)">");
-				writer->Write(wfile->imgUrl);
+				writer->Write(wfile->imgUrl->v, wfile->imgUrl->leng);
 				writer->Write((const UTF8Char*)"</a><br/>");
 
 				writer->Write((const UTF8Char*)"<b>Source URL:</b> <a href=");
-				txt = Text::XML::ToNewAttrText(wfile->srcUrl);
+				txt = Text::XML::ToNewAttrText(wfile->srcUrl->v);
 				writer->Write(txt);
 				Text::XML::FreeNewText(txt);
 				writer->Write((const UTF8Char*)">");
-				writer->Write(wfile->srcUrl);
+				writer->Write(wfile->srcUrl->v, wfile->srcUrl->leng);
 				writer->Write((const UTF8Char*)"</a><br/>");
 
 				sb.ClearStr();
@@ -5621,7 +5554,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetailD(Net::WebServer::
 				dt.SetTicks(userFile->fileTimeTicks);
 				u8ptr = dt.ToString(u8ptr, "yyyyMM");
 				*u8ptr++ = IO::Path::PATH_SEPERATOR;
-				u8ptr = Text::StrConcat(u8ptr, userFile->dataFileName);
+				u8ptr = userFile->dataFileName->ConcatTo(u8ptr);
 				Sync::MutexUsage mutUsage(me->parserMut);
 				NEW_CLASS(fd, IO::StmData::FileData(u8buff, false));
 				fileSize = fd->GetDataSize();
@@ -5696,7 +5629,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetailD(Net::WebServer::
 				dt.SetTicks(userFile->fileTimeTicks);
 				u8ptr = dt.ToString(u8ptr, "yyyyMM");
 				*u8ptr++ = IO::Path::PATH_SEPERATOR;
-				u8ptr = Text::StrConcat(u8ptr, userFile->dataFileName);
+				u8ptr = userFile->dataFileName->ConcatTo(u8ptr);
 
 				IO::StmData::FileData *fd;
 				Media::PhotoInfo *info;
@@ -5940,7 +5873,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoYear(Net::WebServer::IWe
 			userFile = env.user->userFileObj->GetItem((UOSInt)startIndex);
 			if (userFile->location)
 			{
-				locName = userFile->location;
+				locName = userFile->location->v;
 			}
 			/*
 			sp = this->spMap->Get(userFile->speciesId);
@@ -6183,7 +6116,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDay(Net::WebServer::IWeb
 			if (userFile->location)
 			{
 				writer->Write((const UTF8Char*)" ");
-				txt = Text::XML::ToNewHTMLText(userFile->location);
+				txt = Text::XML::ToNewHTMLText(userFile->location->v);
 				writer->Write(txt);
 				Text::XML::FreeNewText(txt);
 			}
@@ -6213,7 +6146,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDay(Net::WebServer::IWeb
 			if (userFile->descript)
 			{
 				writer->Write((const UTF8Char*)"<br/>");
-				txt = Text::XML::ToNewHTMLText(userFile->descript);
+				txt = Text::XML::ToNewHTMLText(userFile->descript->v);
 				writer->Write(txt);
 				Text::XML::FreeNewText(txt);
 			}
@@ -6496,7 +6429,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSearchInside(Net::WebServer::
 		writer->WriteLine((const UTF8Char*)"<br/>");
 		if (group->descript)
 		{
-			txt = Text::XML::ToNewHTMLText(group->descript);
+			txt = Text::XML::ToNewHTMLText(group->descript->v);
 			writer->Write(txt);
 			Text::XML::FreeNewText(txt);
 		}
@@ -6697,7 +6630,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSearchInsideMoreS(Net::WebSer
 		writer->WriteLine((const UTF8Char*)"<br/>");
 		if (group->descript)
 		{
-			txt = Text::XML::ToNewHTMLText(group->descript);
+			txt = Text::XML::ToNewHTMLText(group->descript->v);
 			writer->Write(txt);
 			Text::XML::FreeNewText(txt);
 		}
@@ -6879,7 +6812,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSearchInsideMoreG(Net::WebSer
 		writer->WriteLine((const UTF8Char*)"<br/>");
 		if (group->descript)
 		{
-			txt = Text::XML::ToNewHTMLText(group->descript);
+			txt = Text::XML::ToNewHTMLText(group->descript->v);
 			writer->Write(txt);
 			Text::XML::FreeNewText(txt);
 		}
@@ -7064,7 +6997,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcBookList(Net::WebServer::IWeb
 			writer->Write(sbuff);
 			writer->Write((const UTF8Char*)"\">");
 			sb.ClearStr();
-			txt = Text::XML::ToNewHTMLText(book->title);
+			txt = Text::XML::ToNewHTMLText(book->title->v);
 			sb.Append(txt);
 			sb.Replace((const UTF8Char*)"[i]", (const UTF8Char*)"<i>");
 			sb.Replace((const UTF8Char*)"[/i]", (const UTF8Char*)"</i>");
@@ -7072,12 +7005,12 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcBookList(Net::WebServer::IWeb
 			Text::XML::FreeNewText(txt);
 			writer->WriteLine((const UTF8Char*)"</a></td>");
 			writer->Write((const UTF8Char*)"<td>");
-			txt = Text::XML::ToNewHTMLText(book->author);
+			txt = Text::XML::ToNewHTMLText(book->author->v);
 			writer->Write(txt);
 			Text::XML::FreeNewText(txt);
 			writer->WriteLine((const UTF8Char*)"</td>");
 			writer->Write((const UTF8Char*)"<td>");
-			txt = Text::XML::ToNewHTMLText(book->press);
+			txt = Text::XML::ToNewHTMLText(book->press->v);
 			writer->Write(txt);
 			Text::XML::FreeNewText(txt);
 			writer->WriteLine((const UTF8Char*)"</td>");
@@ -7176,7 +7109,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcBook(Net::WebServer::IWebRequ
 		writer->WriteLine((const UTF8Char*)"</h1></center>");
 
 		writer->Write((const UTF8Char*)"<b>Book Name:</b> ");
-		txt = Text::XML::ToNewHTMLText(book->title);
+		txt = Text::XML::ToNewHTMLText(book->title->v);
 		sb.ClearStr();
 		sb.Append(txt);
 		Text::XML::FreeNewText(txt);
@@ -7186,13 +7119,13 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcBook(Net::WebServer::IWebRequ
 		writer->WriteLine((const UTF8Char*)"<br/>");
 
 		writer->Write((const UTF8Char*)"<b>Author:</b> ");
-		txt = Text::XML::ToNewHTMLText(book->author);
+		txt = Text::XML::ToNewHTMLText(book->author->v);
 		writer->Write(txt);
 		Text::XML::FreeNewText(txt);
 		writer->WriteLine((const UTF8Char*)"<br/>");
 
 		writer->Write((const UTF8Char*)"<b>Press:</b> ");
-		txt = Text::XML::ToNewHTMLText(book->press);
+		txt = Text::XML::ToNewHTMLText(book->press->v);
 		writer->Write(txt);
 		Text::XML::FreeNewText(txt);
 		writer->WriteLine((const UTF8Char*)"<br/>");
@@ -7200,11 +7133,11 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcBook(Net::WebServer::IWebRequ
 		if (book->url)
 		{
 			writer->Write((const UTF8Char*)"<b>URL:</b> <a href=");
-			txt = Text::XML::ToNewAttrText(book->url);
+			txt = Text::XML::ToNewAttrText(book->url->v);
 			writer->Write(txt);
 			Text::XML::FreeNewText(txt);
 			writer->Write((const UTF8Char*)">");
-			txt = Text::XML::ToNewHTMLText(book->url);
+			txt = Text::XML::ToNewHTMLText(book->url->v);
 			writer->Write(txt);
 			Text::XML::FreeNewText(txt);
 			writer->WriteLine((const UTF8Char*)"</a><br/>");
@@ -7230,7 +7163,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcBook(Net::WebServer::IWebRequ
 			species = me->spMap->Get(bookSp->speciesId);
 			if (species)
 			{
-				speciesMap.Put(species->sciName, species);
+				speciesMap.Put(species->sciName->v, species);
 			}
 			i++;
 		}
@@ -7416,7 +7349,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcLogin(Net::WebServer::IWebReq
 			me->PasswordEnc(sbuff, pwd);
 			me->dataMut->LockRead();
 			env.user = me->userNameMap->Get(userName);
-			if (env.user && Text::StrEquals(env.user->pwd, sbuff))
+			if (env.user && env.user->pwd->Equals(sbuff))
 			{
 				me->dataMut->UnlockRead();
 				Net::WebServer::IWebSession *sess = me->sessMgr->CreateSession(req, resp);
@@ -7856,7 +7789,7 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhoto(Net::WebServer::IWebRequest 
 				Text::StrInt32(u8buff2, cate->cateId);
 				u8ptr = IO::Path::AppendPath(u8buff, u8buff2);
 				*u8ptr++ = IO::Path::PATH_SEPERATOR;
-				u8ptr = Text::StrConcat(u8ptr, sp->dirName);
+				u8ptr = sp->dirName->ConcatTo(u8ptr);
 				IO::Path::CreateDirectory(u8buff);
 				*u8ptr++ = IO::Path::PATH_SEPERATOR;
 				if (Text::StrStartsWith(fileName, (const UTF8Char*)"web") && (fileName[3] == IO::Path::PATH_SEPERATOR || fileName[3] == '\\'))
@@ -8177,7 +8110,7 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhotoId(Net::WebServer::IWebReques
 		u8ptr = dt.ToString(u8ptr, "yyyyMM");
 		IO::Path::CreateDirectory(u8buff2);
 		*u8ptr++ = IO::Path::PATH_SEPERATOR;
-		Text::StrConcat(u8ptr, userFile->dataFileName);
+		userFile->dataFileName->ConcatTo(u8ptr);
 
 		if (this->cacheDir && imgWidth == PREVIEW_SIZE && imgHeight == PREVIEW_SIZE && userFile->prevUpdated == 0)
 		{
@@ -8237,7 +8170,7 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhotoId(Net::WebServer::IWebReques
 		}
 		else
 		{
-			u8ptr = Text::StrConcat(u8ptr, userFile->dataFileName);
+			u8ptr = userFile->dataFileName->ConcatTo(u8ptr);
 		}
 		this->dataMut->UnlockRead();
 
@@ -8357,7 +8290,7 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhotoId(Net::WebServer::IWebReques
 						Int32 xRand;
 						Int32 yRand;
 						UInt32 fontSizePx = imgWidth / 12;
-						UOSInt leng = Text::StrCharCnt(user->watermark);
+						UOSInt leng = user->watermark->leng;
 						Double sz[2];
 						UInt32 iWidth;
 						UInt32 iHeight;
@@ -8367,7 +8300,7 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhotoId(Net::WebServer::IWebReques
 						while (true)
 						{
 							f = gimg->NewFontPx((const UTF8Char*)"Arial", fontSizePx, Media::DrawEngine::DFS_NORMAL, 0);
-							if (!gimg->GetTextSizeC(f, user->watermark, leng, sz))
+							if (!gimg->GetTextSizeC(f, user->watermark->v, leng, sz))
 							{
 								gimg->DelFont(f);
 								break;
@@ -8379,7 +8312,7 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhotoId(Net::WebServer::IWebReques
 								iWidth = (UInt32)Math::Double2Int32(sz[0]);
 								iHeight = (UInt32)Math::Double2Int32(sz[1]);
 								gimg2 = this->eng->CreateImage32(iWidth, iHeight, Media::AT_NO_ALPHA);
-								gimg2->DrawString(0, 0, user->watermark, f, b);
+								gimg2->DrawString(0, 0, user->watermark->v, f, b);
 								gimg2->SetAlphaType(Media::AT_ALPHA);
 								{
 									Bool revOrder;
@@ -8736,7 +8669,7 @@ void SSWR::OrganMgr::OrganWebHandler::WriteHeaderPart2(IO::Writer *writer, SSWR:
 	if (user)
 	{
 		writer->Write((const UTF8Char*)"<p align=\"right\">");
-		txt = Text::XML::ToNewHTMLText(user->userName);
+		txt = Text::XML::ToNewHTMLText(user->userName->v);
 		writer->Write(txt);
 		Text::XML::FreeNewText(txt);
 		writer->WriteLine((const UTF8Char*)"<a href=\"logout\">Logout</a></p>");
@@ -8934,7 +8867,7 @@ void SSWR::OrganMgr::OrganWebHandler::WriteGroupTable(IO::Writer *writer, Data::
 						writer->Write(txt);
 						Text::XML::FreeNewText(txt);
 						writer->Write((const UTF8Char*)" border=\"0\" ALT=");
-						txt = Text::XML::ToNewAttrText(group->engName);
+						txt = Text::XML::ToNewAttrText(group->engName->v);
 						writer->Write(txt);
 						Text::XML::FreeNewText(txt);
 						writer->WriteLine((const UTF8Char*)"><br/>");
@@ -8957,7 +8890,7 @@ void SSWR::OrganMgr::OrganWebHandler::WriteGroupTable(IO::Writer *writer, Data::
 						writer->Write(txt);
 						Text::XML::FreeNewText(txt);
 						writer->Write((const UTF8Char*)" border=\"0\" ALT=");
-						txt = Text::XML::ToNewAttrText(group->engName);
+						txt = Text::XML::ToNewAttrText(group->engName->v);
 						writer->Write(txt);
 						Text::XML::FreeNewText(txt);
 						writer->WriteLine((const UTF8Char*)"><br/>");
@@ -8975,13 +8908,13 @@ void SSWR::OrganMgr::OrganWebHandler::WriteGroupTable(IO::Writer *writer, Data::
 						sb.Append((const UTF8Char*)"&height=");
 						sb.AppendI32(PREVIEW_SIZE);
 						sb.Append((const UTF8Char*)"&file=");
-						Text::TextEnc::URIEncoding::URIEncode(sbuff, group->photoSpObj->photo);
+						Text::TextEnc::URIEncoding::URIEncode(sbuff, group->photoSpObj->photo->v);
 						sb.Append(sbuff);
 						txt = Text::XML::ToNewAttrText(sb.ToString());
 						writer->Write(txt);
 						Text::XML::FreeNewText(txt);
 						writer->Write((const UTF8Char*)" border=\"0\" ALT=");
-						txt = Text::XML::ToNewAttrText(group->engName);
+						txt = Text::XML::ToNewAttrText(group->engName->v);
 						writer->Write(txt);
 						Text::XML::FreeNewText(txt);
 						writer->WriteLine((const UTF8Char*)"><br/>");
@@ -8989,7 +8922,7 @@ void SSWR::OrganMgr::OrganWebHandler::WriteGroupTable(IO::Writer *writer, Data::
 				}
 				else
 				{
-					txt = Text::XML::ToNewHTMLText(group->engName);
+					txt = Text::XML::ToNewHTMLText(group->engName->v);
 					writer->Write(txt);
 					Text::XML::FreeNewText(txt);
 				}
@@ -9129,7 +9062,7 @@ void SSWR::OrganMgr::OrganWebHandler::WriteSpeciesTable(IO::Writer *writer, Data
 				writer->Write(txt);
 				Text::XML::FreeNewText(txt);
 				writer->Write((const UTF8Char*)" border=\"0\" ALT=");
-				txt = Text::XML::ToNewAttrText(sp->sciName);
+				txt = Text::XML::ToNewAttrText(sp->sciName->v);
 				writer->Write(txt);
 				Text::XML::FreeNewText(txt);
 				writer->WriteLine((const UTF8Char*)"><br/>");
@@ -9152,7 +9085,7 @@ void SSWR::OrganMgr::OrganWebHandler::WriteSpeciesTable(IO::Writer *writer, Data
 				writer->Write(txt);
 				Text::XML::FreeNewText(txt);
 				writer->Write((const UTF8Char*)" border=\"0\" ALT=");
-				txt = Text::XML::ToNewAttrText(sp->sciName);
+				txt = Text::XML::ToNewAttrText(sp->sciName->v);
 				writer->Write(txt);
 				Text::XML::FreeNewText(txt);
 				writer->WriteLine((const UTF8Char*)"><br/>");
@@ -9170,20 +9103,20 @@ void SSWR::OrganMgr::OrganWebHandler::WriteSpeciesTable(IO::Writer *writer, Data
 				sb.Append((const UTF8Char*)"&height=");
 				sb.AppendI32(PREVIEW_SIZE);
 				sb.Append((const UTF8Char*)"&file=");
-				Text::TextEnc::URIEncoding::URIEncode(sbuff, sp->photo);
+				Text::TextEnc::URIEncoding::URIEncode(sbuff, sp->photo->v);
 				sb.Append(sbuff);
 				txt = Text::XML::ToNewAttrText(sb.ToString());
 				writer->Write(txt);
 				Text::XML::FreeNewText(txt);
 				writer->Write((const UTF8Char*)" border=\"0\" ALT=");
-				txt = Text::XML::ToNewAttrText(sp->sciName);
+				txt = Text::XML::ToNewAttrText(sp->sciName->v);
 				writer->Write(txt);
 				Text::XML::FreeNewText(txt);
 				writer->WriteLine((const UTF8Char*)"><br/>");
 			}
 			else
 			{
-				txt = Text::XML::ToNewHTMLText(sp->sciName);
+				txt = Text::XML::ToNewHTMLText(sp->sciName->v);
 				writer->Write(txt);
 				Text::XML::FreeNewText(txt);
 				writer->WriteLine((const UTF8Char*)"<br/>");
@@ -9363,22 +9296,22 @@ void SSWR::OrganMgr::OrganWebHandler::WritePickObjs(IO::Writer *writer, SSWR::Or
 					if (userFile->location)
 					{
 						writer->Write((const UTF8Char*)" ");
-						txt = Text::XML::ToNewHTMLText(userFile->location);
+						txt = Text::XML::ToNewHTMLText(userFile->location->v);
 						writer->Write(txt);
 						Text::XML::FreeNewText(txt);
 					}
 				}
-				if (userFile->descript && userFile->descript[0])
+				if (userFile->descript && userFile->descript->leng > 0)
 				{
 					writer->Write((const UTF8Char*)"<br/>");
-					txt = Text::XML::ToNewHTMLText(userFile->descript);
+					txt = Text::XML::ToNewHTMLText(userFile->descript->v);
 					writer->Write(txt);
 					Text::XML::FreeNewText(txt);
 				}
 				if (userFile->webuserId == env->user->id)
 				{
 					writer->Write((const UTF8Char*)"<br/>");
-					txt = Text::XML::ToNewHTMLText(userFile->oriFileName);
+					txt = Text::XML::ToNewHTMLText(userFile->oriFileName->v);
 					writer->Write(txt);
 					Text::XML::FreeNewText(txt);
 				}
@@ -9737,8 +9670,8 @@ SSWR::OrganMgr::OrganWebHandler::~OrganWebHandler()
 	while (i-- > 0)
 	{
 		loc = locList->GetItem(i);
-		SDEL_TEXT(loc->cname);
-		SDEL_TEXT(loc->ename);
+		SDEL_STRING(loc->cname);
+		SDEL_STRING(loc->ename);
 		MemFree(loc);
 	}
 	DEL_CLASS(this->locMap);

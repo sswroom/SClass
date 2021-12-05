@@ -1,9 +1,12 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Math/Math.h"
 #include "Sync/Interlocked.h"
 #include "Text/MyString.h"
 #include "Text/MyStringW.h"
 #include "Text/String.h"
+
+//#define MEMDEBUG
 
 Text::String Text::String::emptyStr = {0, 1, 0};
 
@@ -112,8 +115,12 @@ void Text::String::Release()
 
 Text::String *Text::String::Clone()
 {
+#if defined(MEMDEBUG)
+	return New(this->v, this->leng);
+#else
 	this->cnt++;
 	return this;
+#endif
 }
 
 UTF8Char *Text::String::ConcatTo(UTF8Char *sbuff)
@@ -180,6 +187,16 @@ UOSInt Text::String::IndexOf(UTF8Char c)
 	return Text::StrIndexOf(this->v, c);
 }
 
+OSInt Text::String::CompareTo(String *s)
+{
+	return Text::StrCompare(this->v, s->v);
+}
+
+OSInt Text::String::CompareTo(const UTF8Char *s)
+{
+	return Text::StrCompare(this->v, s);
+}
+
 Int32 Text::String::ToInt32()
 {
 	return Text::StrToInt32(this->v);
@@ -193,6 +210,30 @@ Int64 Text::String::ToInt64()
 UInt64 Text::String::ToUInt64()
 {
 	return Text::StrToUInt64(this->v);
+}
+
+Double Text::String::MatchRating(Text::String *s)
+{
+	if (this->IndexOf(s->v) != INVALID_INDEX)
+	{
+		return Math::UOSInt2Double(s->leng) / Math::UOSInt2Double(this->leng);
+	}
+	else
+	{
+		return 0.0;
+	}
+}
+
+Double Text::String::MatchRating(const UTF8Char *targetStr, UOSInt strLen)
+{
+	if (this->IndexOf(targetStr) != INVALID_INDEX)
+	{
+		return Math::UOSInt2Double(strLen) / Math::UOSInt2Double(this->leng);
+	}
+	else
+	{
+		return 0.0;
+	}
 }
 
 Text::String::~String()
