@@ -1,6 +1,7 @@
 #ifndef _SM_UI_GUILISTVIEW
 #define _SM_UI_GUILISTVIEW
 #include "Media/DrawEngine.h"
+#include "Text/String.h"
 #include "UI/GUIClientControl.h"
 
 namespace UI
@@ -43,17 +44,21 @@ namespace UI
 
 		void ChangeColumnCnt(UOSInt newColCnt);
 		UOSInt GetColumnCnt();
+		Bool AddColumn(Text::String *columnName, Double colWidth);
 		Bool AddColumn(const UTF8Char *columnName, Double colWidth);
 		Bool AddColumn(const WChar *columnName, Double colWidth);
 		Bool SetColumnWidth(UOSInt index, Double colWidth);
 		Bool ClearAll();
 
+		UOSInt AddItem(Text::String *itemText, void *itemObj);
 		UOSInt AddItem(const UTF8Char *itemText, void *itemObj);
 		UOSInt AddItem(const WChar *itemText, void *itemObj);
 		UOSInt AddItem(const UTF8Char *itemText, void *itemObj, UOSInt imageIndex);
+		Bool SetSubItem(UOSInt index, UOSInt subIndex, Text::String *text);
 		Bool SetSubItem(UOSInt index, UOSInt subIndex, const UTF8Char *text);
 		Bool SetSubItem(UOSInt index, UOSInt subIndex, const WChar *text);
 		Bool GetSubItem(UOSInt index, UOSInt subIndex, Text::StringBuilderUTF *sb);
+		UOSInt InsertItem(UOSInt index, Text::String *itemText, void *itemObj);
 		UOSInt InsertItem(UOSInt index, const UTF8Char *itemText, void *itemObj);
 		UOSInt InsertItem(UOSInt index, const WChar *itemText, void *itemObj);
 		void *RemoveItem(UOSInt index);
@@ -65,10 +70,9 @@ namespace UI
 		UOSInt GetSelectedIndices(Data::ArrayList<UOSInt> *selIndices);
 		void *GetSelectedItem();
 		UTF8Char *GetSelectedItemText(UTF8Char *buff);
-		const UTF8Char *GetSelectedItemTextNew();
+		Text::String *GetSelectedItemTextNew();
 		UTF8Char *GetItemText(UTF8Char *buff, UOSInt index);
-		const UTF8Char *GetItemTextNew(UOSInt index);
-		void DelTextNew(const UTF8Char *text);
+		Text::String *GetItemTextNew(UOSInt index);
 		void SetFullRowSelect(Bool fullRowSelect);
 		void SetShowGrid(Bool showGrid);
 		UOSInt GetStringWidth(const UTF8Char *s);

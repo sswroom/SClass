@@ -29,6 +29,8 @@ namespace Text
 		Bool EqualsICase(const UTF8Char *s);
 		Bool StartsWith(const UTF8Char *s);
 		Bool EndsWith(const UTF8Char *s);
+		Bool HasUpperCase();
+		String *ToLower();
 		UOSInt IndexOf(const UTF8Char *s);
 
 	private:

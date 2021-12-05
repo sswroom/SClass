@@ -164,16 +164,16 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateTableData(const UTF8Char *tableName
 			while (i < j)
 			{
 				col = tabDef->GetCol(i);
-				k = this->lvTable->AddItem(col->GetColName(), 0);
+				k = this->lvTable->AddItem(col->GetColName()->v, 0);
 				col->ToColTypeStr(sbuff);
 				this->lvTable->SetSubItem(k, 1, sbuff);
 				this->lvTable->SetSubItem(k, 2, col->IsNotNull()?(const UTF8Char*)"NOT NULL":(const UTF8Char*)"NULL");
 				this->lvTable->SetSubItem(k, 3, col->IsPK()?(const UTF8Char*)"PK":(const UTF8Char*)"");
 				this->lvTable->SetSubItem(k, 4, col->IsAutoInc()?(const UTF8Char*)"AUTO_INCREMENT":(const UTF8Char*)"");
 				if (col->GetDefVal())
-					this->lvTable->SetSubItem(k, 5, col->GetDefVal());
+					this->lvTable->SetSubItem(k, 5, col->GetDefVal()->v);
 				if (col->GetAttr())
-					this->lvTable->SetSubItem(k, 6, col->GetAttr());
+					this->lvTable->SetSubItem(k, 6, col->GetAttr()->v);
 
 				i++;
 			}
@@ -188,16 +188,16 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateTableData(const UTF8Char *tableName
 			while (i < j)
 			{
 				r->GetColDef(i, col);
-				k = this->lvTable->AddItem(col->GetColName(), 0);
+				k = this->lvTable->AddItem(col->GetColName()->v, 0);
 				col->ToColTypeStr(sbuff);
 				this->lvTable->SetSubItem(k, 1, sbuff);
 				this->lvTable->SetSubItem(k, 2, col->IsNotNull()?(const UTF8Char*)"NOT NULL":(const UTF8Char*)"NULL");
 				this->lvTable->SetSubItem(k, 3, col->IsPK()?(const UTF8Char*)"PK":(const UTF8Char*)"");
 				this->lvTable->SetSubItem(k, 4, col->IsAutoInc()?(const UTF8Char*)"AUTO_INCREMENT":(const UTF8Char*)"");
 				if (col->GetDefVal())
-					this->lvTable->SetSubItem(k, 5, col->GetDefVal());
+					this->lvTable->SetSubItem(k, 5, col->GetDefVal()->v);
 				if (col->GetAttr())
-					this->lvTable->SetSubItem(k, 6, col->GetAttr());
+					this->lvTable->SetSubItem(k, 6, col->GetAttr()->v);
 
 				i++;
 			}
@@ -236,7 +236,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateResult(DB::DBReader *r)
 	{
 		if (r->GetColDef(i, col))
 		{
-			this->lvTableResult->AddColumn(col->GetColName(), 100);
+			this->lvTableResult->AddColumn(col->GetColName()->v, 100);
 		}
 		else
 		{
@@ -306,20 +306,19 @@ void SSWR::AVIRead::AVIRDBManagerForm::AppendJavaCol(Text::StringBuilderUTF *sb,
 			sb->Append((const UTF8Char*)"\t@GeneratedValue(strategy = GenerationType.IDENTITY)\r\n");
 		}
 	}
-	if (Text::StrHasUpperCase(colDef->GetColName()))
+	if (colDef->GetColName()->HasUpperCase())
 	{
 		sb->Append((const UTF8Char*)"\t@Column(name=");
-		const UTF8Char *csptr = Text::JSText::ToNewJSTextDQuote(colDef->GetColName());
+		const UTF8Char *csptr = Text::JSText::ToNewJSTextDQuote(colDef->GetColName()->v);
 		sb->Append(csptr);
 		Text::JSText::FreeNewText(csptr);
 		sb->Append((const UTF8Char*)")\r\n");
 		sb->Append((const UTF8Char*)"\tprivate ");
 		sb->Append(Text::JavaText::GetJavaTypeName(colDef->GetColType(), colDef->IsNotNull()));
 		sb->AppendChar(' ', 1);
-		csptr = Text::StrCopyNew(colDef->GetColName());
-		Text::StrToLower((UTF8Char*)csptr, csptr);
-		Text::JavaText::ToJavaName(sb, csptr, false);
-		Text::StrDelNew(csptr);
+		Text::String *s = colDef->GetColName()->ToLower();
+		Text::JavaText::ToJavaName(sb, s->v, false);
+		s->Release();
 		sb->Append((const UTF8Char*)";\r\n");
 	}
 	else
@@ -327,7 +326,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::AppendJavaCol(Text::StringBuilderUTF *sb,
 		sb->Append((const UTF8Char*)"\tprivate ");
 		sb->Append(Text::JavaText::GetJavaTypeName(colDef->GetColType(), colDef->IsNotNull()));
 		sb->AppendChar(' ', 1);
-		Text::JavaText::ToJavaName(sb, colDef->GetColName(), false);
+		Text::JavaText::ToJavaName(sb, colDef->GetColName()->v, false);
 		sb->Append((const UTF8Char*)";\r\n");
 	}
 }

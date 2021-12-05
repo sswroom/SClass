@@ -11,7 +11,7 @@ typedef struct
 {
 	GtkTreeIter iter;
 	void *data;
-	const UTF8Char *txt;
+	Text::String *txt;
 } MyRow;
 
 typedef struct
@@ -111,7 +111,7 @@ UI::GUIListView::~GUIListView()
 	while (i-- > 0)
 	{
 		row = data->rows->GetItem(i);
-		Text::StrDelNew(row->txt);
+		row->txt->Release();
 		MemFree(row);
 	}
 	MemFree(data->colSizes);
@@ -163,6 +163,11 @@ void UI::GUIListView::ChangeColumnCnt(UOSInt newColCnt)
 UOSInt UI::GUIListView::GetColumnCnt()
 {
 	return this->colCnt;
+}
+
+Bool UI::GUIListView::AddColumn(Text::String *columnName, Double colWidth)
+{
+	return this->AddColumn(columnName->v, colWidth);
 }
 
 Bool UI::GUIListView::AddColumn(const UTF8Char *columnName, Double colWidth)
@@ -226,12 +231,24 @@ Bool UI::GUIListView::ClearAll()
 	return true;
 }
 
+UOSInt UI::GUIListView::AddItem(Text::String *text, void *itemObj)
+{
+	GUIListViewData *data = (GUIListViewData*)this->clsData;
+	MyRow *row = MemAlloc(MyRow, 1);
+	row->data = itemObj;
+	row->txt = text->Clone();
+	gtk_list_store_append(data->listStore, &row->iter);
+	UOSInt ret = data->rows->Add(row);
+	gtk_list_store_set(data->listStore, &row->iter, 0, (const Char*)text, -1);
+	return ret;
+}
+
 UOSInt UI::GUIListView::AddItem(const UTF8Char *text, void *itemObj)
 {
 	GUIListViewData *data = (GUIListViewData*)this->clsData;
 	MyRow *row = MemAlloc(MyRow, 1);
 	row->data = itemObj;
-	row->txt = Text::StrCopyNew(text);
+	row->txt = Text::String::New(text);
 	gtk_list_store_append(data->listStore, &row->iter);
 	UOSInt ret = data->rows->Add(row);
 	gtk_list_store_set(data->listStore, &row->iter, 0, (const Char*)text, -1);
@@ -243,7 +260,7 @@ UOSInt UI::GUIListView::AddItem(const WChar *text, void *itemObj)
 	GUIListViewData *data = (GUIListViewData*)this->clsData;
 	MyRow *row = MemAlloc(MyRow, 1);
 	row->data = itemObj;
-	row->txt = Text::StrToUTF8New(text);
+	row->txt = Text::String::New(text);
 	gtk_list_store_append(data->listStore, &row->iter);
 	UOSInt ret = data->rows->Add(row);
 	gtk_list_store_set(data->listStore, &row->iter, 0, (const Char*)row->txt, -1);
@@ -255,11 +272,21 @@ UOSInt UI::GUIListView::AddItem(const UTF8Char *text, void *itemObj, UOSInt imag
 	GUIListViewData *data = (GUIListViewData*)this->clsData;
 	MyRow *row = MemAlloc(MyRow, 1);
 	row->data = itemObj;
-	row->txt = Text::StrCopyNew(text);
+	row->txt = Text::String::New(text);
 	gtk_list_store_append(data->listStore, &row->iter);
 	UOSInt ret = data->rows->Add(row);
 	gtk_list_store_set(data->listStore, &row->iter, 0, (const Char*)text, -1);
 	return ret;
+}
+
+Bool UI::GUIListView::SetSubItem(UOSInt row, UOSInt col, Text::String *text)
+{
+	GUIListViewData *data = (GUIListViewData*)this->clsData;
+	MyRow *r = data->rows->GetItem(row);
+	if (r == 0 || col < 0 || col >= data->colCnt)
+		return false;
+	gtk_list_store_set(data->listStore, &r->iter, col, (const Char*)text->v, -1);
+	return true;
 }
 
 Bool UI::GUIListView::SetSubItem(UOSInt row, UOSInt col, const UTF8Char *text)
@@ -304,12 +331,24 @@ Bool UI::GUIListView::GetSubItem(UOSInt index, UOSInt subIndex, Text::StringBuil
 	}
 }
 
+UOSInt UI::GUIListView::InsertItem(UOSInt index, Text::String *itemText, void *itemObj)
+{
+	GUIListViewData *data = (GUIListViewData*)this->clsData;
+	MyRow *row = MemAlloc(MyRow, 1);
+	row->data = itemObj;
+	row->txt = itemText->Clone();
+	gtk_list_store_insert(data->listStore, &row->iter, (gint)index);
+	data->rows->Insert(index, row);
+	gtk_list_store_set(data->listStore, &row->iter, 0, (const Char*)itemText, -1);
+	return index;
+}
+
 UOSInt UI::GUIListView::InsertItem(UOSInt index, const UTF8Char *itemText, void *itemObj)
 {
 	GUIListViewData *data = (GUIListViewData*)this->clsData;
 	MyRow *row = MemAlloc(MyRow, 1);
 	row->data = itemObj;
-	row->txt = Text::StrCopyNew(itemText);
+	row->txt = Text::String::New(itemText);
 	gtk_list_store_insert(data->listStore, &row->iter, (gint)index);
 	data->rows->Insert(index, row);
 	gtk_list_store_set(data->listStore, &row->iter, 0, (const Char*)itemText, -1);
@@ -321,7 +360,7 @@ UOSInt UI::GUIListView::InsertItem(UOSInt index, const WChar *itemText, void *it
 	GUIListViewData *data = (GUIListViewData*)this->clsData;
 	MyRow *row = MemAlloc(MyRow, 1);
 	row->data = itemObj;
-	row->txt = Text::StrToUTF8New(itemText);
+	row->txt = Text::String::New(itemText);
 	gtk_list_store_insert(data->listStore, &row->iter, (gint)index);
 	data->rows->Insert(index, row);
 	gtk_list_store_set(data->listStore, &row->iter, 0, (const Char*)row->txt, -1);
@@ -337,7 +376,7 @@ void *UI::GUIListView::RemoveItem(UOSInt index)
 
 	gtk_list_store_remove(data->listStore, &r->iter);
 	void *ret = r->data;
-	Text::StrDelNew(r->txt);
+	r->txt->Release();
 	MemFree(r);
 	return ret;
 }
@@ -362,7 +401,7 @@ void UI::GUIListView::ClearItems()
 	while (i-- > 0)
 	{
 		row = data->rows->GetItem(i);
-		Text::StrDelNew(row->txt);
+		row->txt->Release();
 		MemFree(row);
 	}
 	data->rows->Clear();
@@ -449,7 +488,7 @@ UTF8Char *UI::GUIListView::GetSelectedItemText(UTF8Char *buff)
 	return 0;
 }
 
-const UTF8Char *UI::GUIListView::GetSelectedItemTextNew()
+Text::String *UI::GUIListView::GetSelectedItemTextNew()
 {
 	UOSInt i = GetSelectedIndex();
 	if (i != INVALID_INDEX)
@@ -463,21 +502,16 @@ UTF8Char *UI::GUIListView::GetItemText(UTF8Char *buff, UOSInt index)
 	MyRow *r = data->rows->GetItem(index);
 	if (r == 0)
 		return 0;
-	return Text::StrConcat(buff, r->txt);
+	return Text::StrConcatC(buff, r->txt->v, r->txt->leng);
 }
 
-const UTF8Char *UI::GUIListView::GetItemTextNew(UOSInt index)
+Text::String *UI::GUIListView::GetItemTextNew(UOSInt index)
 {
 	GUIListViewData *data = (GUIListViewData*)this->clsData;
 	MyRow *r = data->rows->GetItem(index);
 	if (r == 0)
 		return 0;
-	return Text::StrCopyNew(r->txt);
-}
-
-void UI::GUIListView::DelTextNew(const UTF8Char *text)
-{
-	Text::StrDelNew(text);
+	return r->txt->Clone();
 }
 
 void UI::GUIListView::SetFullRowSelect(Bool fullRowSelect)

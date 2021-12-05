@@ -150,6 +150,25 @@ Bool Text::String::EndsWith(const UTF8Char *s)
 	return Text::StrEquals(&this->v[this->leng - l], s);
 }
 
+Bool Text::String::HasUpperCase()
+{
+	return Text::StrHasUpperCase(this->v);
+}
+
+Text::String *Text::String::ToLower()
+{
+	if (this->HasUpperCase())
+	{
+		Text::String *s = Text::String::New(this->leng);
+		Text::StrToLower(s->v, this->v);
+		return s;
+	}
+	else
+	{
+		return this->Clone();
+	}
+}
+
 UOSInt Text::String::IndexOf(const UTF8Char *s)
 {
 	return Text::StrIndexOf(this->v, s);
