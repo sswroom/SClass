@@ -130,11 +130,10 @@ void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnStopClick(void *userObj
 
 void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnLogSel(void *userObj)
 {
-	const UTF8Char *t;
 	SSWR::AVIRead::AVIRHTTPLoadBalanceForm *me = (SSWR::AVIRead::AVIRHTTPLoadBalanceForm*)userObj;
-	t = me->lbLog->GetSelectedItemTextNew();
-	me->txtLog->SetText(t);
-	me->lbLog->DelTextNew(t);
+	Text::String *s = me->lbLog->GetSelectedItemTextNew();
+	me->txtLog->SetText(s->v);
+	s->Release();
 }
 
 void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnTimerTick(void *userObj)

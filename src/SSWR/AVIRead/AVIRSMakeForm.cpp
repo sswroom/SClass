@@ -4,7 +4,7 @@
 void __stdcall SSWR::AVIRead::AVIRSMakeForm::OnProgSelChg(void *userObj)
 {
 	SSWR::AVIRead::AVIRSMakeForm *me = (SSWR::AVIRead::AVIRSMakeForm*)userObj;
-	const UTF8Char *progName = me->lbProg->GetSelectedItemTextNew();
+	Text::String *progName = me->lbProg->GetSelectedItemTextNew();
 	me->lbProgHeader->ClearItems();
 	me->lbProgObject->ClearItems();
 	me->lbProgSource->ClearItems();
@@ -61,18 +61,18 @@ void __stdcall SSWR::AVIRead::AVIRSMakeForm::OnProgSelChg(void *userObj)
 			i++;
 		}
 
-		me->lbProg->DelTextNew(progName);
+		progName->Release();
 	}
 }
 
 void __stdcall SSWR::AVIRead::AVIRSMakeForm::OnProgGroupSelChg(void *userObj)
 {
 	SSWR::AVIRead::AVIRSMakeForm *me = (SSWR::AVIRead::AVIRSMakeForm*)userObj;
-	const UTF8Char *progName = me->lbProgGroup->GetSelectedItemTextNew();
+	Text::String *progName = me->lbProgGroup->GetSelectedItemTextNew();
 	me->lbProgGroupItems->ClearItems();
 	if (progName)
 	{
-		const IO::SMake::ProgramItem *prog = me->smake->GetProgItem(progName);
+		const IO::SMake::ProgramItem *prog = me->smake->GetProgItem(progName->v);
 		if (prog)
 		{
 			UOSInt i = 0;
@@ -83,7 +83,7 @@ void __stdcall SSWR::AVIRead::AVIRSMakeForm::OnProgGroupSelChg(void *userObj)
 				i++;
 			}
 		}
-		me->lbProgGroup->DelTextNew(progName);
+		progName->Release();
 	}
 }
 

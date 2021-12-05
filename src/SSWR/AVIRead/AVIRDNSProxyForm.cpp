@@ -133,16 +133,14 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnV4ReqSelChg(void *userObj)
 	UOSInt j;
 
 	me->lbV4Answer->ClearItems();
-	const UTF8Char *req = me->lbV4Request->GetSelectedItemTextNew();
+	Text::String *req = me->lbV4Request->GetSelectedItemTextNew();
 	if (req)
 	{
 		UTF8Char sbuff[32];
 		Net::DNSClient::RequestAnswer *ans;
 		Data::DateTime reqTime;
 		UInt32 ttl;
-		Text::StringBuilderUTF8 sb;
-		sb.Append(req);
-		if (me->proxy->GetRequestInfov4(sb.ToString(), me->v4ansList, &reqTime, &ttl))
+		if (me->proxy->GetRequestInfov4(req->v, me->v4ansList, &reqTime, &ttl))
 		{
 			UOSInt bestInd = (UOSInt)-1;
 			i = 0;
@@ -152,9 +150,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnV4ReqSelChg(void *userObj)
 				ans = me->v4ansList->GetItem(i);
 				if (bestInd == (UOSInt)-1 && ans->recType == 1)
 					bestInd = i;
-				sb.ClearStr();
-				sb.Append(ans->name);
-				me->lbV4Answer->AddItem(sb.ToString(), ans);
+				me->lbV4Answer->AddItem(ans->name, ans);
 				i++;
 			}
 			if (bestInd == (UOSInt)-1)
@@ -172,7 +168,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnV4ReqSelChg(void *userObj)
 		else
 		{
 		}
-		Text::StrDelNew(req);
+		req->Release();
 	}
 }
 
@@ -218,16 +214,14 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnV6ReqSelChg(void *userObj)
 	UOSInt j;
 
 	me->lbV6Answer->ClearItems();
-	const UTF8Char *req = me->lbV6Request->GetSelectedItemTextNew();
+	Text::String *req = me->lbV6Request->GetSelectedItemTextNew();
 	if (req)
 	{
 		UTF8Char sbuff[32];
 		Net::DNSClient::RequestAnswer *ans;
 		Data::DateTime reqTime;
 		UInt32 ttl;
-		Text::StringBuilderUTF8 sb;
-		sb.Append(req);
-		if (me->proxy->GetRequestInfov6(sb.ToString(), me->v6ansList, &reqTime, &ttl))
+		if (me->proxy->GetRequestInfov6(req->v, me->v6ansList, &reqTime, &ttl))
 		{
 			UOSInt bestInd = (UOSInt)-1;
 			i = 0;
@@ -255,7 +249,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnV6ReqSelChg(void *userObj)
 		else
 		{
 		}
-		Text::StrDelNew(req);
+		req->Release();
 	}
 }
 
@@ -301,14 +295,14 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnOthReqSelChg(void *userObj)
 	UOSInt j;
 
 	me->lbOthAnswer->ClearItems();
-	const UTF8Char *req = me->lbOthRequest->GetSelectedItemTextNew();
+	Text::String *req = me->lbOthRequest->GetSelectedItemTextNew();
 	if (req)
 	{
 		UTF8Char sbuff[32];
 		Net::DNSClient::RequestAnswer *ans;
 		Data::DateTime reqTime;
 		UInt32 ttl;
-		if (me->proxy->GetRequestInfoOth(req, me->othansList, &reqTime, &ttl))
+		if (me->proxy->GetRequestInfoOth(req->v, me->othansList, &reqTime, &ttl))
 		{
 			UOSInt bestInd = (UOSInt)-1;
 			i = 0;
@@ -336,7 +330,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnOthReqSelChg(void *userObj)
 		else
 		{
 		}
-		Text::StrDelNew(req);
+		req->Release();
 	}
 }
 
@@ -542,17 +536,14 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnSReqSelChg(void *userObj)
 	UOSInt j;
 
 	me->lbSAnswer->ClearItems();
-	const UTF8Char *req = me->lbSearch->GetSelectedItemTextNew();
+	Text::String *req = me->lbSearch->GetSelectedItemTextNew();
 	if (req)
 	{
 		UTF8Char sbuff[32];
 		Net::DNSClient::RequestAnswer *ans;
 		Data::DateTime reqTime;
 		UInt32 ttl;
-		Text::StringBuilderUTF8 sb;
-		sb.ClearStr();
-		sb.Append(req);
-		if (me->proxy->GetRequestInfov4(sb.ToString(), me->v4sansList, &reqTime, &ttl))
+		if (me->proxy->GetRequestInfov4(req->v, me->v4sansList, &reqTime, &ttl))
 		{
 			UOSInt bestInd = (UOSInt)-1;
 			i = 0;
@@ -562,9 +553,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnSReqSelChg(void *userObj)
 				ans = me->v4sansList->GetItem(i);
 				if (bestInd == (UOSInt)-1 && ans->recType == 1)
 					bestInd = i;
-				sb.ClearStr();
-				sb.Append(ans->name);
-				me->lbSAnswer->AddItem(sb.ToString(), ans);
+				me->lbSAnswer->AddItem(ans->name, ans);
 				i++;
 			}
 			if (bestInd == (UOSInt)-1)
@@ -582,7 +571,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnSReqSelChg(void *userObj)
 		else
 		{
 		}
-		Text::StrDelNew(req);
+		req->Release();
 	}
 }
 

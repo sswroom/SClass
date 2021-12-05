@@ -545,11 +545,11 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnCaptureClicked(void *userOb
 void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnLogWifiDblClicked(void *userObj, UOSInt index)
 {
 	SSWR::AVIRead::AVIRWifiCaptureForm *me = (SSWR::AVIRead::AVIRWifiCaptureForm*)userObj;
-	const UTF8Char *csptr = me->lvLogWifi->GetItemTextNew(index);
-	if (csptr)
+	Text::String *s = me->lvLogWifi->GetItemTextNew(index);
+	if (s)
 	{
-		Win32::Clipboard::SetString(me->GetHandle(), csptr);
-		me->lvLogWifi->DelTextNew(csptr);
+		Win32::Clipboard::SetString(me->GetHandle(), s->v);
+		s->Release();
 	}
 }
 

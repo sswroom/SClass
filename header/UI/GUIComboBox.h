@@ -1,5 +1,6 @@
 #ifndef _SM_UI_GUICOMBOBOX
 #define _SM_UI_GUICOMBOBOX
+#include "Text/String.h"
 #include "UI/GUIClientControl.h"
 
 namespace UI
@@ -11,7 +12,7 @@ namespace UI
 		Data::ArrayList<void *> *selChgObjs;
 		UOSInt minVisible;
 		Data::ArrayList<void *> *items;
-		Data::ArrayList<const UTF8Char *> *itemTexts;
+		Data::ArrayList<Text::String *> *itemTexts;
 		Bool allowEdit;
 		Bool autoComplete;
 		UOSInt lastTextLeng;
@@ -28,7 +29,9 @@ namespace UI
 		virtual UTF8Char *GetText(UTF8Char *buff);
 		virtual Bool GetText(Text::StringBuilderUTF *sb);
 
+		UOSInt AddItem(Text::String *itemText, void *itemObj);
 		UOSInt AddItem(const UTF8Char *itemText, void *itemObj);
+		UOSInt InsertItem(UOSInt index, Text::String *itemText, void *itemObj);
 		UOSInt InsertItem(UOSInt index, const UTF8Char *itemText, void *itemObj);
 		void *RemoveItem(UOSInt index);
 		void ClearItems();

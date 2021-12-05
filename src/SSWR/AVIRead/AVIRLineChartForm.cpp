@@ -262,10 +262,10 @@ void __stdcall SSWR::AVIRead::AVIRLineChartForm::OnStrColsDblClicked(void *userO
 	{
 		UOSInt colInd = (UOSInt)me->lbStrCols->GetItem(selInd);
 		me->strTypes[colInd] = DB::DBUtil::CT_Double;
-		const UTF8Char *csptr = me->lbStrCols->GetItemTextNew(selInd);
-		me->cboXAxis->AddItem(csptr, (void*)colInd);
-		me->cboYAxis->AddItem(csptr, (void*)colInd);
-		me->lbStrCols->DelTextNew(csptr);
+		Text::String *s = me->lbStrCols->GetItemTextNew(selInd);
+		me->cboXAxis->AddItem(s, (void*)colInd);
+		me->cboYAxis->AddItem(s, (void*)colInd);
+		s->Release();
 		me->lbStrCols->RemoveItem(selInd);
 	}
 }
@@ -278,10 +278,10 @@ void __stdcall SSWR::AVIRead::AVIRLineChartForm::OnStrColsInt32Clicked(void *use
 	{
 		UOSInt colInd = (UOSInt)me->lbStrCols->GetItem(selInd);
 		me->strTypes[colInd] = DB::DBUtil::CT_Int32;
-		const UTF8Char *csptr = me->lbStrCols->GetItemTextNew(selInd);
-		me->cboXAxis->AddItem(csptr, (void*)colInd);
-		me->cboYAxis->AddItem(csptr, (void*)colInd);
-		me->lbStrCols->DelTextNew(csptr);
+		Text::String *s = me->lbStrCols->GetItemTextNew(selInd);
+		me->cboXAxis->AddItem(s, (void*)colInd);
+		me->cboYAxis->AddItem(s, (void*)colInd);
+		s->Release();
 		me->lbStrCols->RemoveItem(selInd);
 	}
 }

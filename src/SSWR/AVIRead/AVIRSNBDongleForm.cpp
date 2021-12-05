@@ -60,16 +60,9 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnAddDeviceClicked(void *userOb
 void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnLogClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRSNBDongleForm *me = (SSWR::AVIRead::AVIRSNBDongleForm*)userObj;
-	const UTF8Char *txt = me->lbLog->GetSelectedItemTextNew();
-	if (txt)
-	{
-		me->txtLog->SetText(txt);
-		me->lbLog->DelTextNew(txt);
-	}
-	else
-	{
-		me->txtLog->SetText(txt);
-	}
+	Text::String *s = Text::String::OrEmpty(me->lbLog->GetSelectedItemTextNew());
+	me->txtLog->SetText(s->v);
+	s->Release();
 }
 
 void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnTimerTick(void *userObj)
@@ -208,23 +201,22 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnTimerTick(void *userObj)
 void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnCopyDevIdClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRSNBDongleForm *me = (SSWR::AVIRead::AVIRSNBDongleForm*)userObj;
-	const UTF8Char *txt = me->lvDevice->GetSelectedItemTextNew();
-	if (txt)
+	Text::String *s = me->lvDevice->GetSelectedItemTextNew();
+	if (s)
 	{
-		Win32::Clipboard::SetString(me->GetHandle(), txt);
-		me->lvDevice->DelTextNew(txt);
+		Win32::Clipboard::SetString(me->GetHandle(), s->v);
+		s->Release();
 	}
 }
 
 void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnDevReportTimeClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRSNBDongleForm *me = (SSWR::AVIRead::AVIRSNBDongleForm*)userObj;
-	const UTF8Char *txt = me->lvDevice->GetSelectedItemTextNew();
-	if (txt)
+	Text::String *s = me->lvDevice->GetSelectedItemTextNew();
+	if (s)
 	{
-		UInt64 devId = Text::StrToUInt64(txt);
-		me->lvDevice->DelTextNew(txt);
-
+		UInt64 devId = s->ToUInt64();
+		s->Release();
 		me->snb->SendGetReportTime(devId);
 	}
 }
@@ -232,12 +224,11 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnDevReportTimeClicked(void *us
 void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnDevSetReportTimeClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRSNBDongleForm *me = (SSWR::AVIRead::AVIRSNBDongleForm*)userObj;
-	const UTF8Char *txt = me->lvDevice->GetSelectedItemTextNew();
-	if (txt)
+	Text::String *s = me->lvDevice->GetSelectedItemTextNew();
+	if (s)
 	{
-		UInt64 devId = Text::StrToUInt64(txt);
-		me->lvDevice->DelTextNew(txt);
-
+		UInt64 devId = s->ToUInt64();
+		s->Release();
 		me->snb->SendSetReportTime(devId, 30);
 	}
 }
@@ -245,12 +236,11 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnDevSetReportTimeClicked(void 
 void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnDevOnClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRSNBDongleForm *me = (SSWR::AVIRead::AVIRSNBDongleForm*)userObj;
-	const UTF8Char *txt = me->lvDevice->GetSelectedItemTextNew();
-	if (txt)
+	Text::String *s = me->lvDevice->GetSelectedItemTextNew();
+	if (s)
 	{
-		UInt64 devId = Text::StrToUInt64(txt);
-		me->lvDevice->DelTextNew(txt);
-
+		UInt64 devId = s->ToUInt64();
+		s->Release();
 		me->snb->SendDevTurnOn(devId);
 	}
 }
@@ -258,12 +248,11 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnDevOnClicked(void *userObj)
 void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnDevOffClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRSNBDongleForm *me = (SSWR::AVIRead::AVIRSNBDongleForm*)userObj;
-	const UTF8Char *txt = me->lvDevice->GetSelectedItemTextNew();
-	if (txt)
+	Text::String *s = me->lvDevice->GetSelectedItemTextNew();
+	if (s)
 	{
-		UInt64 devId = Text::StrToUInt64(txt);
-		me->lvDevice->DelTextNew(txt);
-
+		UInt64 devId = s->ToUInt64();
+		s->Release();
 		me->snb->SendDevTurnOff(devId);
 	}
 }
@@ -271,12 +260,11 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnDevOffClicked(void *userObj)
 void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnDevStatusClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRSNBDongleForm *me = (SSWR::AVIRead::AVIRSNBDongleForm*)userObj;
-	const UTF8Char *txt = me->lvDevice->GetSelectedItemTextNew();
-	if (txt)
+	Text::String *s = me->lvDevice->GetSelectedItemTextNew();
+	if (s)
 	{
-		UInt64 devId = Text::StrToUInt64(txt);
-		me->lvDevice->DelTextNew(txt);
-
+		UInt64 devId = s->ToUInt64();
+		s->Release();
 		me->snb->SendDevGetStatus(devId);
 	}
 }
@@ -284,11 +272,11 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnDevStatusClicked(void *userOb
 void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnDeviceDblClk(void *userObj, UOSInt index)
 {
 	SSWR::AVIRead::AVIRSNBDongleForm *me = (SSWR::AVIRead::AVIRSNBDongleForm*)userObj;
-	const UTF8Char *txt = me->lvDevice->GetItemTextNew(index);
-	if (txt)
+	Text::String *s = me->lvDevice->GetItemTextNew(index);
+	if (s)
 	{
-		UInt64 devId = Text::StrToUInt64(txt);
-		me->lvDevice->DelTextNew(txt);
+		UInt64 devId = s->ToUInt64();
+		s->Release();
 
 		DeviceInfo *dev;
 		me->devMut->LockRead();

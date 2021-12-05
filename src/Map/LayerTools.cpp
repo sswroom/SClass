@@ -40,7 +40,7 @@ Map::VectorLayer *Map::LayerTools::CombineLayers(Data::ArrayList<Map::IMapDrawLa
 	Data::ArrayList<DB::DBUtil::ColType> *colTypeArr;
 	Data::ArrayList<UOSInt> *nameSizes;
 	Data::ArrayList<UOSInt> *nameDPs;
-	DB::ColDef colDef(0);
+	DB::ColDef colDef((const UTF8Char*)0);
 	NEW_CLASS(names, Data::ArrayListStrUTF8());
 	NEW_CLASS(nameIndex, Data::ArrayListICaseStrUTF8());
 	NEW_CLASS(nameSizes, Data::ArrayList<UOSInt>());

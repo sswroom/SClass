@@ -127,11 +127,11 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnSTopicClicked(void *userO
 void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnLogSelChg(void *userObj)
 {
 	SSWR::AVIRead::AVIRMQTTSubscribeForm *me = (SSWR::AVIRead::AVIRMQTTSubscribeForm*)userObj;
-	const UTF8Char *csptr = me->lbLog->GetSelectedItemTextNew();
-	if (csptr)
+	Text::String *s = me->lbLog->GetSelectedItemTextNew();
+	if (s)
 	{
-		me->txtLog->SetText(csptr);
-		me->lbLog->DelTextNew(csptr);
+		me->txtLog->SetText(s->v);
+		s->Release();
 	}
 }
 

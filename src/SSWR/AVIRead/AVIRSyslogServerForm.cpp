@@ -56,17 +56,9 @@ void __stdcall SSWR::AVIRead::AVIRSyslogServerForm::OnClientSelChg(void *userObj
 void __stdcall SSWR::AVIRead::AVIRSyslogServerForm::OnLogSelChg(void *userObj)
 {
 	SSWR::AVIRead::AVIRSyslogServerForm *me = (SSWR::AVIRead::AVIRSyslogServerForm*)userObj;
-	const UTF8Char *txt = me->lbLog->GetSelectedItemTextNew();
-	if (txt)
-	{
-		me->txtLog->SetText(txt);
-		me->lbLog->DelTextNew(txt);
-	}
-	else
-	{
-		me->txtLog->SetText((const UTF8Char*)"");
-	}
-
+	Text::String *s = Text::String::OrEmpty(me->lbLog->GetSelectedItemTextNew());
+	me->txtLog->SetText(s->v);
+	s->Release();
 }
 
 void __stdcall SSWR::AVIRead::AVIRSyslogServerForm::OnClientLog(void *userObj, UInt32 ip, const UTF8Char *message)

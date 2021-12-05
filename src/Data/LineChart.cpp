@@ -280,6 +280,14 @@ UInt32 Data::LineChart::GetRndColor()
 	return 0xff000000 | (r << 16) | (g << 8) | b;
 }
 
+void Data::LineChart::AddYDataDate(Text::String *name, Int64 *value, UOSInt valCnt, UInt32 lineColor, Data::LineChart::LineStyle lineStyle)
+{
+	Int64 *newVals;
+	newVals = MemAlloc(Int64, valCnt);
+	MemCopyNO(newVals, value, sizeof(Int64) * valCnt);
+	yCharts->Add(new Data::LineChart::ChartData(name, newVals, valCnt, Data::IChart::DataType::DateTicks, lineColor, lineStyle));
+}
+
 void Data::LineChart::AddYDataDate(const UTF8Char *name, Int64 *value, UOSInt valCnt, UInt32 lineColor, Data::LineChart::LineStyle lineStyle)
 {
 	Int64 *newVals;
@@ -288,12 +296,28 @@ void Data::LineChart::AddYDataDate(const UTF8Char *name, Int64 *value, UOSInt va
 	yCharts->Add(new Data::LineChart::ChartData(name, newVals, valCnt, Data::IChart::DataType::DateTicks, lineColor, lineStyle));
 }
 
+void Data::LineChart::AddYData(Text::String *name, Int32 *value, UOSInt valCnt, UInt32 lineColor, Data::LineChart::LineStyle lineStyle)
+{
+	Int32 *newVals;
+	newVals = MemAlloc(Int32, valCnt);
+	MemCopyNO(newVals, value, sizeof(Int32) * valCnt);
+	yCharts->Add(new Data::LineChart::ChartData(name, newVals, valCnt, Data::IChart::DataType::Integer, lineColor, lineStyle));
+}
+
 void Data::LineChart::AddYData(const UTF8Char *name, Int32 *value, UOSInt valCnt, UInt32 lineColor, Data::LineChart::LineStyle lineStyle)
 {
 	Int32 *newVals;
 	newVals = MemAlloc(Int32, valCnt);
 	MemCopyNO(newVals, value, sizeof(Int32) * valCnt);
 	yCharts->Add(new Data::LineChart::ChartData(name, newVals, valCnt, Data::IChart::DataType::Integer, lineColor, lineStyle));
+}
+
+void Data::LineChart::AddYData(Text::String *name, Double *value, UOSInt valCnt, UInt32 lineColor, Data::LineChart::LineStyle lineStyle)
+{
+	Double *newVals;
+	newVals = MemAlloc(Double, valCnt);
+	MemCopyNO(newVals, value, sizeof(Double) * valCnt);
+	yCharts->Add(new Data::LineChart::ChartData(name, newVals, valCnt, Data::IChart::DataType::DOUBLE, lineColor, lineStyle));
 }
 
 void Data::LineChart::AddYData(const UTF8Char *name, Double *value, UOSInt valCnt, UInt32 lineColor, Data::LineChart::LineStyle lineStyle)
@@ -460,7 +484,7 @@ Int32 *Data::LineChart::GetYInt32(UOSInt index, UOSInt *cnt)
 	return (Int32*)data->data;
 }
 
-const UTF8Char *Data::LineChart::GetYName(UOSInt index)
+Text::String *Data::LineChart::GetYName(UOSInt index)
 {
 	ChartData *data = this->yCharts->GetItem(index);
 	if (data == 0)
@@ -1652,12 +1676,22 @@ UTF8Char *Data::LineChart::GetLegend(UTF8Char *sbuff, UInt32 *color, UOSInt inde
 		return 0;
 	Data::LineChart::ChartData *cdata = this->yCharts->GetItem(index);
 	*color = cdata->lineColor;
-	return Text::StrConcat(sbuff, cdata->name);
+	return Text::StrConcatC(sbuff, cdata->name->v, cdata->name->leng);
+}
+
+Data::LineChart::ChartData::ChartData(Text::String *name, void *data, UOSInt dataCnt, Data::IChart::DataType dataType, UInt32 lineColor, Data::LineChart::LineStyle lineStyle)
+{
+	this->name = name->Clone();
+	this->data = data;
+	this->dataCnt = dataCnt;
+	this->dataType = dataType;
+	this->lineColor = lineColor;
+	this->lineStyle = lineStyle;
 }
 
 Data::LineChart::ChartData::ChartData(const UTF8Char *name, void *data, UOSInt dataCnt, Data::IChart::DataType dataType, UInt32 lineColor, Data::LineChart::LineStyle lineStyle)
 {
-	this->name = Text::StrCopyNew(name);
+	this->name = Text::String::New(name);
 	this->data = data;
 	this->dataCnt = dataCnt;
 	this->dataType = dataType;
@@ -1667,6 +1701,6 @@ Data::LineChart::ChartData::ChartData(const UTF8Char *name, void *data, UOSInt d
 
 Data::LineChart::ChartData::~ChartData()
 {
-	Text::StrDelNew(this->name);
+	this->name->Release();
 	MemFree(this->data);
 }

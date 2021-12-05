@@ -48,11 +48,10 @@ void __stdcall SSWR::AVIRead::AVIRMySQLServerForm::OnUserAddClicked(void *userOb
 
 void __stdcall SSWR::AVIRead::AVIRMySQLServerForm::OnLogSel(void *userObj)
 {
-	const UTF8Char *t;
 	SSWR::AVIRead::AVIRMySQLServerForm *me = (SSWR::AVIRead::AVIRMySQLServerForm*)userObj;
-	t = me->lbLog->GetSelectedItemTextNew();
-	me->txtLog->SetText(t);
-	me->lbLog->DelTextNew(t);
+	Text::String *s = me->lbLog->GetSelectedItemTextNew();
+	me->txtLog->SetText(s->v);
+	s->Release();
 }
 
 void __stdcall SSWR::AVIRead::AVIRMySQLServerForm::OnTimerTick(void *userObj)

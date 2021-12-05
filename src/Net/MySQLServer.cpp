@@ -607,7 +607,7 @@ void __stdcall Net::MySQLServer::OnClientData(Net::TCPClient *cli, void *userObj
 									sptr = Net::MySQLUtil::AppendLenencStr(sptr, 0); //schema
 									sptr = Net::MySQLUtil::AppendLenencStr(sptr, 0); //table
 									sptr = Net::MySQLUtil::AppendLenencStr(sptr, 0); //org_table
-									sptr = Net::MySQLUtil::AppendLenencStr(sptr, col.GetColName()); //name
+									sptr = Net::MySQLUtil::AppendLenencStr(sptr, col.GetColName()->v); //name
 									sptr = Net::MySQLUtil::AppendLenencStr(sptr, 0); //org_name
 
 									sptr = Net::MySQLUtil::AppendLenencInt(sptr, 12);
@@ -655,7 +655,7 @@ void __stdcall Net::MySQLServer::OnClientData(Net::TCPClient *cli, void *userObj
 									WriteInt24(&sbuff[0], sptr - sbuff - 4);
 									cli->Write(sbuff, (UOSInt)(sptr - sbuff));
 									#if defined(VERBOSE)
-									printf("COM_QUERY column: %s\r\n", col.GetColName());
+									printf("COM_QUERY column: %s\r\n", col.GetColName()->v);
 									#endif
 
 									j++;

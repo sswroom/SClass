@@ -53,11 +53,11 @@ void __stdcall SSWR::AVIRead::AVIRJTT808ServerForm::OnStartClicked(void *userObj
 void __stdcall SSWR::AVIRead::AVIRJTT808ServerForm::OnLogSelChg(void *userObj)
 {
 	SSWR::AVIRead::AVIRJTT808ServerForm *me = (SSWR::AVIRead::AVIRJTT808ServerForm*)userObj;
-	const UTF8Char *csptr = me->lbLog->GetSelectedItemTextNew();
-	if (csptr)
+	Text::String *s = me->lbLog->GetSelectedItemTextNew();
+	if (s)
 	{
-		me->txtLog->SetText(csptr);
-		me->lbLog->DelTextNew(csptr);
+		me->txtLog->SetText(s->v);
+		s->Release();
 	}
 }
 

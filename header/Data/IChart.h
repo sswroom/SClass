@@ -4,6 +4,7 @@
 #include "Data/ArrayList.h"
 #include "Data/ArrayListDbl.h"
 #include "Data/DateTime.h"
+#include "Text/String.h"
 
 namespace Data
 {
@@ -55,7 +56,7 @@ namespace Data
 		virtual Int64 *GetYDateTicks(UOSInt index, UOSInt *cnt) = 0;
 		virtual Double *GetYDouble(UOSInt index, UOSInt *cnt) = 0;
 		virtual Int32 *GetYInt32(UOSInt index, UOSInt *cnt) = 0;
-		virtual const UTF8Char *GetYName(UOSInt index) = 0;
+		virtual Text::String *GetYName(UOSInt index) = 0;
 		virtual DataType GetYType(UOSInt index) = 0;
 
 		virtual void Plot(Media::DrawImage *img, Double x, Double y, Double width, Double height) = 0;

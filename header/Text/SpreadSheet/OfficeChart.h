@@ -2,6 +2,7 @@
 #define _SM_TEXT_SPREADSHEET_OFFICECHART
 #include "Data/ArrayList.h"
 #include "Math/Unit/Distance.h"
+#include "Text/String.h"
 #include "Text/SpreadSheet/OfficeChartAxis.h"
 #include "Text/SpreadSheet/OfficeChartSeries.h"
 #include "Text/SpreadSheet/OfficeShapeProp.h"
@@ -81,6 +82,7 @@ namespace Text
 			OfficeChartAxis *GetCategoryAxis();
 			OfficeChartAxis *GetValueAxis();
 
+			void AddSeries(WorkbookDataSource *categoryData, WorkbookDataSource *valueData, Text::String *name, Bool showMarker);
 			void AddSeries(WorkbookDataSource *categoryData, WorkbookDataSource *valueData, const UTF8Char *name, Bool showMarker);
 			UOSInt GetSeriesCount();
 			OfficeChartSeries *GetSeries(UOSInt index);

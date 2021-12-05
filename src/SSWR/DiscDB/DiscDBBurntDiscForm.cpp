@@ -1101,13 +1101,13 @@ void __stdcall SSWR::DiscDB::DiscDBBurntDiscForm::OnBrandSelChg(void *userObj)
 	SSWR::DiscDB::DiscDBBurntDiscForm *me = (SSWR::DiscDB::DiscDBBurntDiscForm*)userObj;
 	Data::ArrayList<const SSWR::DiscDB::DiscDBEnv::DiscTypeInfo*> discList;
 	const SSWR::DiscDB::DiscDBEnv::DiscTypeInfo *discType;
-	const UTF8Char *csptr = me->lbBrand->GetSelectedItemTextNew();
+	Text::String *s = me->lbBrand->GetSelectedItemTextNew();
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
 	UOSInt i;
 	UOSInt j;
-	me->env->GetDiscTypesByBrand(&discList, csptr);
-	me->lbBrand->DelTextNew(csptr);
+	me->env->GetDiscTypesByBrand(&discList, s->v);
+	s->Release();
 	me->lbDVDName->ClearItems();
 	i = 0;
 	j = discList.GetCount();

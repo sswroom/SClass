@@ -228,16 +228,9 @@ void __stdcall SSWR::ProcMonForm::OnProgAddClicked(void *userObj)
 void __stdcall SSWR::ProcMonForm::OnLogSelChg(void *userObj)
 {
 	SSWR::ProcMonForm *me = (SSWR::ProcMonForm *)userObj;
-	const UTF8Char *s = me->lbLog->GetSelectedItemTextNew();
-	if (s)
-	{
-		me->txtLog->SetText(s);
-		me->lbLog->DelTextNew(s);
-	}
-	else
-	{
-		me->txtLog->SetText((const UTF8Char*)"");
-	}
+	Text::String *s = Text::String::OrEmpty(me->lbLog->GetSelectedItemTextNew());
+	me->txtLog->SetText(s->v);
+	s->Release();
 }
 
 void __stdcall SSWR::ProcMonForm::OnTimerTick(void *userObj)

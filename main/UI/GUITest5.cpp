@@ -11,9 +11,9 @@ UI::GUIListBox *lb;
 void __stdcall OnLBDblClick(void *userObj)
 {
 	UI::GUIForm *me = (UI::GUIForm*)userObj;
-	const UTF8Char *csptr = lb->GetSelectedItemTextNew();
-	UI::MessageDialog::ShowDialog(csptr, (const UTF8Char*)"GUI Test 5 LB DblClick", me);
-	lb->DelTextNew(csptr);
+	Text::String *s = lb->GetSelectedItemTextNew();
+	UI::MessageDialog::ShowDialog(s->v, (const UTF8Char*)"GUI Test 5 LB DblClick", me);
+	s->Release();
 }
 
 Int32 MyMain(Core::IProgControl *progCtrl)

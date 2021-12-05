@@ -1342,14 +1342,14 @@ Bool IO::SMake::CompileProg(const UTF8Char *progName, Bool asmListing)
 	}
 }
 
-Bool IO::SMake::ParseProg(Data::ArrayListStrUTF8 *objList, Data::ArrayListStrUTF8 *libList, Data::ArrayListStrUTF8 *procList, Data::ArrayListStrUTF8 *headerList, Int64 *latestTime, Bool *progGroup, const UTF8Char *progName)
+Bool IO::SMake::ParseProg(Data::ArrayListStrUTF8 *objList, Data::ArrayListStrUTF8 *libList, Data::ArrayListStrUTF8 *procList, Data::ArrayListStrUTF8 *headerList, Int64 *latestTime, Bool *progGroup, Text::String *progName)
 {
-	IO::SMake::ProgramItem *prog = this->progMap->Get(progName);
+	IO::SMake::ProgramItem *prog = this->progMap->Get(progName->v);
 	if (prog == 0)
 	{
 		Text::StringBuilderUTF8 sb;
 		sb.Append((const UTF8Char*)"Program ");
-		sb.Append(progName);
+		sb.AppendC(progName->v, progName->leng);
 		sb.Append((const UTF8Char*)" not found");
 		this->SetErrorMsg(sb.ToString());
 		return false;

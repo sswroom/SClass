@@ -21,22 +21,22 @@ void Net::WebServer::RESTfulHandler::BuildJSON(Text::JSONBuilder *json, DB::DBRo
 	while (i < j)
 	{
 		col = table->GetCol(i);
-		dtype = row->GetFieldDataType(col->GetColName());
+		dtype = row->GetFieldDataType(col->GetColName()->v);
 		sb.ClearStr();
-		row->AppendVarNameForm(&sb, col->GetColName());
+		row->AppendVarNameForm(&sb, col->GetColName()->v);
 		switch (dtype)
 		{
 		case DB::DBRow::DT_STRING:
-			json->ObjectAddStrUTF8(sb.ToString(), row->GetValueStr(col->GetColName()));
+			json->ObjectAddStrUTF8(sb.ToString(), row->GetValueStr(col->GetColName()->v));
 			break;
 		case DB::DBRow::DT_DOUBLE:
-			json->ObjectAddFloat64(sb.ToString(), row->GetValueDouble(col->GetColName()));
+			json->ObjectAddFloat64(sb.ToString(), row->GetValueDouble(col->GetColName()->v));
 			break;
 		case DB::DBRow::DT_INT64:
-			json->ObjectAddInt64(sb.ToString(), row->GetValueInt64(col->GetColName()));
+			json->ObjectAddInt64(sb.ToString(), row->GetValueInt64(col->GetColName()->v));
 			break;
 		case DB::DBRow::DT_DATETIME:
-			dt = row->GetValueDate(col->GetColName());
+			dt = row->GetValueDate(col->GetColName()->v);
 			if (dt)
 			{
 				dt->ToString(sbuff, "yyyy-MM-ddTHH:mm:ss.fffzzzz");
@@ -48,7 +48,7 @@ void Net::WebServer::RESTfulHandler::BuildJSON(Text::JSONBuilder *json, DB::DBRo
 			}
 			break;
 		case DB::DBRow::DT_VECTOR:
-			this->AppendVector(json, sb.ToString(), row->GetValueVector(col->GetColName()));
+			this->AppendVector(json, sb.ToString(), row->GetValueVector(col->GetColName()->v));
 			break;
 		case DB::DBRow::DT_BINARY:
 		case DB::DBRow::DT_UNKNOWN:

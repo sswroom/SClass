@@ -24,7 +24,7 @@ UI::GUIComboBox::GUIComboBox(UI::GUICore *ui, UI::GUIClientControl *parent, Bool
 	NEW_CLASS(this->selChgHdlrs, Data::ArrayList<UI::UIEvent>());
 	NEW_CLASS(this->selChgObjs, Data::ArrayList<void*>());
 	NEW_CLASS(this->items, Data::ArrayList<void*>());
-	NEW_CLASS(this->itemTexts, Data::ArrayList<const UTF8Char *>());
+	NEW_CLASS(this->itemTexts, Data::ArrayList<Text::String *>());
 	if (allowEdit)
 	{
 		this->hwnd = (ControlHandle*)gtk_combo_box_text_new_with_entry();
@@ -51,7 +51,7 @@ UI::GUIComboBox::~GUIComboBox()
 	UOSInt i = this->itemTexts->GetCount();
 	while (i-- > 0)
 	{
-		Text::StrDelNew(this->itemTexts->GetItem(i));
+		this->itemTexts->GetItem(i)->Release();
 	}
 	DEL_CLASS(this->itemTexts);
 	DEL_CLASS(this->items);
@@ -81,11 +81,11 @@ void UI::GUIComboBox::EventTextChanged()
 			UOSInt j = this->itemTexts->GetCount();
 			while (i < j)
 			{
-				if (Text::StrStartsWith(this->itemTexts->GetItem(i), sb.ToString()))
+				if (this->itemTexts->GetItem(i)->StartsWith(sb.ToString()))
 				{
-					this->SetText(this->itemTexts->GetItem(i));
+					this->SetText(this->itemTexts->GetItem(i)->v);
 					//this->SetSelectedIndex(i);
-					this->SetTextSelection(sb.GetLength(), Text::StrCharCnt(this->itemTexts->GetItem(i)));
+					this->SetTextSelection(sb.GetLength(), this->itemTexts->GetItem(i)->leng);
 					break;
 				}
 				i++;
@@ -108,7 +108,7 @@ void UI::GUIComboBox::SetText(const UTF8Char *text)
 		UOSInt i = this->itemTexts->GetCount();
 		while (i-- > 0)
 		{
-			if (Text::StrEquals(text, this->itemTexts->GetItem(i)))
+			if (this->itemTexts->GetItem(i)->Equals(text))
 			{
 				this->SetSelectedIndex(i);
 				return;
@@ -130,10 +130,22 @@ Bool UI::GUIComboBox::GetText(Text::StringBuilderUTF *sb)
 	return true;
 }
 
+UOSInt UI::GUIComboBox::AddItem(Text::String *itemText, void *itemObj)
+{
+	UOSInt cnt = this->itemTexts->GetCount();
+	this->itemTexts->Add(itemText->Clone());
+	this->items->Add(itemObj);
+	if (!this->autoComplete)
+	{
+		gtk_combo_box_text_insert((GtkComboBoxText*)this->hwnd, -1, 0, (const Char*)itemText->v);
+	}
+	return cnt;
+}
+
 UOSInt UI::GUIComboBox::AddItem(const UTF8Char *itemText, void *itemObj)
 {
 	UOSInt cnt = this->itemTexts->GetCount();
-	this->itemTexts->Add(Text::StrCopyNew(itemText));
+	this->itemTexts->Add(Text::String::New(itemText));
 	this->items->Add(itemObj);
 	if (!this->autoComplete)
 	{
@@ -142,13 +154,23 @@ UOSInt UI::GUIComboBox::AddItem(const UTF8Char *itemText, void *itemObj)
 	return cnt;
 }
 
+UOSInt UI::GUIComboBox::InsertItem(UOSInt index, Text::String *itemText, void *itemObj)
+{
+	UOSInt cnt = this->itemTexts->GetCount();
+	if (index >= cnt)
+		index = cnt;
+	this->itemTexts->Insert(index, itemText->Clone());
+	this->items->Insert(index, itemObj);
+	gtk_combo_box_text_insert((GtkComboBoxText*)this->hwnd, (gint)index, 0, (const Char*)itemText->v);
+	return index;
+}
 
 UOSInt UI::GUIComboBox::InsertItem(UOSInt index, const UTF8Char *itemText, void *itemObj)
 {
 	UOSInt cnt = this->itemTexts->GetCount();
 	if (index >= cnt)
 		index = cnt;
-	this->itemTexts->Insert(index, Text::StrCopyNew(itemText));
+	this->itemTexts->Insert(index, Text::String::New(itemText));
 	this->items->Insert(index, itemObj);
 	gtk_combo_box_text_insert((GtkComboBoxText*)this->hwnd, (gint)index, 0, (const Char*)itemText);
 	return index;
@@ -159,9 +181,9 @@ void *UI::GUIComboBox::RemoveItem(UOSInt index)
 	UOSInt cnt = this->itemTexts->GetCount();
 	if (index >= cnt)
 		return 0;
-	const UTF8Char *txt = this->itemTexts->RemoveAt(index);
+	Text::String *txt = this->itemTexts->RemoveAt(index);
 	void *item = this->items->RemoveAt(index);
-	Text::StrDelNew(txt);
+	txt->Release();
 	gtk_combo_box_text_remove((GtkComboBoxText*)this->hwnd, (gint)index);
 	return item;
 }
@@ -171,7 +193,7 @@ void UI::GUIComboBox::ClearItems()
 	UOSInt i = this->itemTexts->GetCount();
 	while (i-- > 0)
 	{
-		Text::StrDelNew(this->itemTexts->GetItem(i));
+		this->itemTexts->GetItem(i)->Release();
 	}
 	this->itemTexts->Clear();
 	this->items->Clear();
@@ -198,7 +220,8 @@ UTF8Char *UI::GUIComboBox::GetSelectedItemText(UTF8Char *sbuff)
 	UOSInt i = this->GetSelectedIndex();
 	if (i == INVALID_INDEX)
 		return 0;
-	return Text::StrConcat(sbuff, this->itemTexts->GetItem(i));
+	Text::String *s = this->itemTexts->GetItem(i);
+	return Text::StrConcatC(sbuff, s->v, s->leng);
 }
 
 void *UI::GUIComboBox::GetSelectedItem()
@@ -208,10 +231,10 @@ void *UI::GUIComboBox::GetSelectedItem()
 
 UTF8Char *UI::GUIComboBox::GetItemText(UTF8Char *buff, UOSInt index)
 {
-	const UTF8Char *txt = this->itemTexts->GetItem(index);
+	Text::String *txt = this->itemTexts->GetItem(index);
 	if (txt == 0)
 		return 0;
-	return Text::StrConcat(buff, txt);
+	return Text::StrConcatC(buff, txt->v, txt->leng);
 }
 
 void *UI::GUIComboBox::GetItem(UOSInt index)

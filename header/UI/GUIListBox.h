@@ -1,11 +1,16 @@
 #ifndef _SM_UI_GUILISTBOX
 #define _SM_UI_GUILISTBOX
+#include "Text/String.h"
 #include "UI/GUIClientControl.h"
 
 namespace UI
 {
 	class GUIListBox : public GUIControl
 	{
+	public:
+		struct ClassData;
+		struct ItemData;
+
 	private:
 		Data::ArrayList<UI::UIEvent> *selChgHdlrs;
 		Data::ArrayList<void *> *selChgObjs;
@@ -13,8 +18,8 @@ namespace UI
 		Data::ArrayList<void *> *dblClickObjs;
 		Data::ArrayList<UI::GUIControl::MouseEventHandler> *rightClickHdlrs;
 		Data::ArrayList<void *> *rightClickObjs;
-		Data::ArrayList<void *> *items;
-		void *clsData;
+		Data::ArrayList<ItemData *> *items;
+		ClassData *clsData;
 		Bool mulSel;
 
 		static OSInt __stdcall LBWndProc(void *hWnd, UInt32 msg, UOSInt wParam, OSInt lParam);
@@ -26,8 +31,10 @@ namespace UI
 		void EventDoubleClick();
 		void EventRightClick(OSInt x, OSInt y);
 
+		UOSInt AddItem(Text::String *itemText, void *itemObj);
 		UOSInt AddItem(const UTF8Char *itemText, void *itemObj);
 		UOSInt AddItem(const WChar *itemText, void *itemObj);
+		UOSInt InsertItem(UOSInt index, Text::String *itemText, void *itemObj);
 		UOSInt InsertItem(UOSInt index, const UTF8Char *itemText, void *itemObj);
 		UOSInt InsertItem(UOSInt index, const WChar *itemText, void *itemObj);
 		void *RemoveItem(UOSInt index);
@@ -40,12 +47,11 @@ namespace UI
 		void *GetSelectedItem();
 		UTF8Char *GetSelectedItemText(UTF8Char *buff);
 		WChar *GetSelectedItemText(WChar *buff);
-		const UTF8Char *GetSelectedItemTextNew();
+		Text::String *GetSelectedItemTextNew();
 		UTF8Char *GetItemText(UTF8Char *buff, UOSInt index);
 		WChar *GetItemText(WChar *buff, UOSInt index);
 		void SetItemText(UOSInt index, const UTF8Char *text);
-		const UTF8Char *GetItemTextNew(UOSInt index);
-		void DelTextNew(const UTF8Char *text);
+		Text::String *GetItemTextNew(UOSInt index);
 		OSInt GetItemHeight();
 
 		virtual const UTF8Char *GetObjectClass();

@@ -6,20 +6,20 @@
 #include "UI/GUIListBox.h"
 #include <gtk/gtk.h>
 
-typedef struct
+struct UI::GUIListBox::ClassData
 {
 	GtkWidget *listbox;
 	Bool isShown;
 	Int64 showTime;
-} ListBoxData;
+};
 
-typedef struct
+struct UI::GUIListBox::ItemData
 {
 	GtkListBoxRow *row;
 	GtkWidget *lbl;
-	const UTF8Char *txt;
+	Text::String *txt;
 	void *userData;
-} ListBoxItem;
+};
 
 void GUIListBox_SelChange(GtkListBox *listBox, GtkListBoxRow *row, gpointer data)
 {
@@ -43,7 +43,7 @@ gboolean GUIListBox_ButtonPress(GtkWidget *widget, GdkEvent *event, gpointer dat
 
 void GUIListBox_Show(GtkWidget *widget, gpointer user_data)
 {
-	ListBoxData *data = (ListBoxData*)user_data;
+	UI::GUIListBox::ClassData *data = (UI::GUIListBox::ClassData*)user_data;
 	data->isShown = true;
 	Data::DateTime dt;
 	dt.SetCurrTimeUTC();
@@ -58,9 +58,9 @@ UI::GUIListBox::GUIListBox(UI::GUICore *ui, UI::GUIClientControl *parent, Bool m
 	NEW_CLASS(this->dblClickObjs, Data::ArrayList<void*>());
 	NEW_CLASS(this->rightClickHdlrs, Data::ArrayList<UI::GUIControl::MouseEventHandler>());
 	NEW_CLASS(this->rightClickObjs, Data::ArrayList<void*>());
-	NEW_CLASS(this->items, Data::ArrayList<void*>());
+	NEW_CLASS(this->items, Data::ArrayList<ItemData*>());
 	this->mulSel = multiSelect;
-	ListBoxData *data = MemAlloc(ListBoxData, 1);
+	ClassData *data = MemAlloc(ClassData, 1);
 	this->clsData = data;
 	data->listbox = gtk_list_box_new();
 	data->isShown = false;
@@ -81,8 +81,8 @@ UI::GUIListBox::GUIListBox(UI::GUICore *ui, UI::GUIClientControl *parent, Bool m
 
 UI::GUIListBox::~GUIListBox()
 {
-	ListBoxData *data = (ListBoxData*)this->clsData;
-	ListBoxItem *item;
+	ClassData *data = this->clsData;
+	ItemData *item;
 	UOSInt i;
 	DEL_CLASS(this->selChgHdlrs);
 	DEL_CLASS(this->selChgObjs);
@@ -93,8 +93,8 @@ UI::GUIListBox::~GUIListBox()
 	i = this->items->GetCount();
 	while (i-- > 0)
 	{
-		item = (ListBoxItem*)this->items->GetItem(i);
-		Text::StrDelNew(item->txt);
+		item = this->items->GetItem(i);
+		item->txt->Release();
 		MemFree(item);
 	}
 	DEL_CLASS(this->items);
@@ -103,7 +103,7 @@ UI::GUIListBox::~GUIListBox()
 
 void UI::GUIListBox::EventSelectionChange()
 {
-	ListBoxData *data = (ListBoxData*)this->clsData;
+	ClassData *data = this->clsData;
 	if (!data->isShown)
 	{
 		return;
@@ -138,7 +138,7 @@ void UI::GUIListBox::EventDoubleClick()
 
 void UI::GUIListBox::EventRightClick(OSInt x, OSInt y)
 {
-	ListBoxData *data = (ListBoxData*)this->clsData;
+	ClassData *data = this->clsData;
 	UOSInt i = this->rightClickHdlrs->GetCount();
 	GtkListBoxRow *row = gtk_list_box_get_row_at_y((GtkListBox*)data->listbox, (gint)y);
 	if (row)
@@ -156,13 +156,39 @@ void UI::GUIListBox::EventRightClick(OSInt x, OSInt y)
 	}
 }
 
-UOSInt UI::GUIListBox::AddItem(const UTF8Char *itemText, void *itemObj)
+UOSInt UI::GUIListBox::AddItem(Text::String *itemText, void *itemObj)
 {
-	ListBoxData *data = (ListBoxData*)this->clsData;
-	ListBoxItem *item = MemAlloc(ListBoxItem, 1);
+	ClassData *data = this->clsData;
+	ItemData *item = MemAlloc(ItemData, 1);
 	item->row = GTK_LIST_BOX_ROW(gtk_list_box_row_new());
 	item->userData = itemObj;
-	item->txt = Text::StrCopyNew(itemText);
+	item->txt = itemText->Clone();
+	item->lbl = gtk_label_new((const Char*)itemText->v);
+	gtk_label_set_ellipsize((GtkLabel*)item->lbl, PANGO_ELLIPSIZE_END);
+#if GTK_MAJOR_VERSION == 3
+#if GTK_MINOR_VERSION >= 16
+	gtk_label_set_xalign(GTK_LABEL((GtkWidget*)item->lbl), 0.0);
+#elif GTK_MINOR_VERSION < 14
+	gtk_misc_set_alignment(GTK_MISC((GtkWidget*)item->lbl), 0.0, 0.0);
+#else
+	gtk_widget_set_halign((GtkWidget*)item->lbl, GTK_ALIGN_START);
+#endif
+#endif
+	gtk_widget_show(item->lbl);
+	gtk_container_add(GTK_CONTAINER(item->row), item->lbl);
+	gtk_widget_show((GtkWidget*)item->row);
+	gtk_list_box_insert((GtkListBox*)data->listbox, (GtkWidget*)item->row, -1);
+	UOSInt ret = this->items->Add(item);
+	return ret;
+}
+
+UOSInt UI::GUIListBox::AddItem(const UTF8Char *itemText, void *itemObj)
+{
+	ClassData *data = this->clsData;
+	ItemData *item = MemAlloc(ItemData, 1);
+	item->row = GTK_LIST_BOX_ROW(gtk_list_box_row_new());
+	item->userData = itemObj;
+	item->txt = Text::String::New(itemText);
 	item->lbl = gtk_label_new((const Char*)itemText);
 	gtk_label_set_ellipsize((GtkLabel*)item->lbl, PANGO_ELLIPSIZE_END);
 #if GTK_MAJOR_VERSION == 3
@@ -184,12 +210,12 @@ UOSInt UI::GUIListBox::AddItem(const UTF8Char *itemText, void *itemObj)
 
 UOSInt UI::GUIListBox::AddItem(const WChar *itemText, void *itemObj)
 {
-	ListBoxData *data = (ListBoxData*)this->clsData;
-	ListBoxItem *item = MemAlloc(ListBoxItem, 1);
+	ClassData *data = this->clsData;
+	ItemData *item = MemAlloc(ItemData, 1);
 	item->row = GTK_LIST_BOX_ROW(gtk_list_box_row_new());
 	item->userData = itemObj;
-	item->txt = Text::StrToUTF8New(itemText);
-	item->lbl = gtk_label_new((const Char*)item->txt);
+	item->txt = Text::String::New(itemText);
+	item->lbl = gtk_label_new((const Char*)item->txt->v);
 	gtk_label_set_ellipsize((GtkLabel*)item->lbl, PANGO_ELLIPSIZE_END);
 #if GTK_MAJOR_VERSION == 3
 #if GTK_MINOR_VERSION >= 16
@@ -208,13 +234,47 @@ UOSInt UI::GUIListBox::AddItem(const WChar *itemText, void *itemObj)
 	return ret;
 }
 
-UOSInt UI::GUIListBox::InsertItem(UOSInt index, const UTF8Char *itemText, void *itemObj)
+UOSInt UI::GUIListBox::InsertItem(UOSInt index, Text::String *itemText, void *itemObj)
 {
-	ListBoxData *data = (ListBoxData*)this->clsData;
-	ListBoxItem *item = MemAlloc(ListBoxItem, 1);
+	ClassData *data = this->clsData;
+	ItemData *item = MemAlloc(ItemData, 1);
 	item->row = GTK_LIST_BOX_ROW(gtk_list_box_row_new());
 	item->userData = itemObj;
-	item->txt = Text::StrCopyNew(itemText);
+	item->txt = itemText->Clone();
+	item->lbl = gtk_label_new((const Char*)itemText->v);
+	gtk_label_set_ellipsize((GtkLabel*)item->lbl, PANGO_ELLIPSIZE_END);
+#if GTK_MAJOR_VERSION == 3
+#if GTK_MINOR_VERSION >= 16
+	gtk_label_set_xalign(GTK_LABEL((GtkWidget*)item->lbl), 0.0);
+#elif GTK_MINOR_VERSION < 14
+	gtk_misc_set_alignment(GTK_MISC((GtkWidget*)item->lbl), 0.0, 0.0);
+#else
+	gtk_widget_set_halign((GtkWidget*)item->lbl, GTK_ALIGN_START);
+#endif
+#endif
+	gtk_widget_show(item->lbl);
+	gtk_container_add(GTK_CONTAINER(item->row), item->lbl);
+	gtk_widget_show((GtkWidget*)item->row);
+	gtk_list_box_insert((GtkListBox*)data->listbox, (GtkWidget*)item->row, (gint)(OSInt)index);
+	OSInt i = gtk_list_box_row_get_index(item->row);
+	if (i == -1)
+	{
+		i = (OSInt)this->items->Add(item);
+	}
+	else
+	{
+		this->items->Insert((UOSInt)i, item);
+	}
+	return (UOSInt)i;
+}
+
+UOSInt UI::GUIListBox::InsertItem(UOSInt index, const UTF8Char *itemText, void *itemObj)
+{
+	ClassData *data = this->clsData;
+	ItemData *item = MemAlloc(ItemData, 1);
+	item->row = GTK_LIST_BOX_ROW(gtk_list_box_row_new());
+	item->userData = itemObj;
+	item->txt = Text::String::New(itemText);
 	item->lbl = gtk_label_new((const Char*)itemText);
 	gtk_label_set_ellipsize((GtkLabel*)item->lbl, PANGO_ELLIPSIZE_END);
 #if GTK_MAJOR_VERSION == 3
@@ -244,12 +304,12 @@ UOSInt UI::GUIListBox::InsertItem(UOSInt index, const UTF8Char *itemText, void *
 
 UOSInt UI::GUIListBox::InsertItem(UOSInt index, const WChar *itemText, void *itemObj)
 {
-	ListBoxData *data = (ListBoxData*)this->clsData;
-	ListBoxItem *item = MemAlloc(ListBoxItem, 1);
+	ClassData *data = this->clsData;
+	ItemData *item = MemAlloc(ItemData, 1);
 	item->row = GTK_LIST_BOX_ROW(gtk_list_box_row_new());
 	item->userData = itemObj;
-	item->txt = Text::StrToUTF8New(itemText);
-	item->lbl = gtk_label_new((const Char*)item->txt);
+	item->txt = Text::String::New(itemText);
+	item->lbl = gtk_label_new((const Char*)item->txt->v);
 	gtk_label_set_ellipsize((GtkLabel*)item->lbl, PANGO_ELLIPSIZE_END);
 #if GTK_MAJOR_VERSION == 3
 #if GTK_MINOR_VERSION >= 16
@@ -278,13 +338,13 @@ UOSInt UI::GUIListBox::InsertItem(UOSInt index, const WChar *itemText, void *ite
 
 void *UI::GUIListBox::RemoveItem(UOSInt index)
 {
-	ListBoxData *data = (ListBoxData*)this->clsData;
-	ListBoxItem *item = (ListBoxItem*)this->items->GetItem(index);
+	ClassData *data = this->clsData;
+	ItemData *item = this->items->GetItem(index);
 	if (item == 0)
 		return 0;
 	gtk_container_remove(GTK_CONTAINER(data->listbox), (GtkWidget*)item->row);
 	void *ret = item->userData;
-	Text::StrDelNew(item->txt);
+	item->txt->Release();
 	MemFree(item);
 	this->items->RemoveAt(index);
 	return ret;
@@ -292,7 +352,7 @@ void *UI::GUIListBox::RemoveItem(UOSInt index)
 
 void *UI::GUIListBox::GetItem(UOSInt index)
 {
-	ListBoxItem *item = (ListBoxItem*)this->items->GetItem(index);
+	ItemData *item = this->items->GetItem(index);
 	if (item == 0)
 		return 0;
 	return item->userData;
@@ -300,7 +360,7 @@ void *UI::GUIListBox::GetItem(UOSInt index)
 
 void UI::GUIListBox::ClearItems()
 {
-	ListBoxData *data = (ListBoxData*)this->clsData;
+	ClassData *data = this->clsData;
 	GList *list = gtk_container_get_children((GtkContainer*)data->listbox);
 	GList *curr = list;
 	while (curr)
@@ -310,12 +370,12 @@ void UI::GUIListBox::ClearItems()
 	}
 	g_list_free(list);
 	UOSInt i;
-	ListBoxItem *item;
+	ItemData *item;
 	i = this->items->GetCount();
 	while (i-- > 0)
 	{
-		item = (ListBoxItem*)this->items->GetItem(i);
-		Text::StrDelNew(item->txt);
+		item = this->items->GetItem(i);
+		item->txt->Release();
 		MemFree(item);
 	}
 	this->items->Clear();
@@ -328,8 +388,8 @@ UOSInt UI::GUIListBox::GetCount()
 
 void UI::GUIListBox::SetSelectedIndex(UOSInt index)
 {
-	ListBoxData *data = (ListBoxData*)this->clsData;
-	ListBoxItem *item = (ListBoxItem*)this->items->GetItem(index);
+	ClassData *data = this->clsData;
+	ItemData *item = this->items->GetItem(index);
 	if (item == 0)
 		return;
 	data->isShown = true;
@@ -359,7 +419,7 @@ void UI::GUIListBox::SetSelectedIndex(UOSInt index)
 
 UOSInt UI::GUIListBox::GetSelectedIndex()
 {
-	ListBoxData *data = (ListBoxData*)this->clsData;
+	ClassData *data = this->clsData;
 	GtkListBoxRow *row = gtk_list_box_get_selected_row((GtkListBox*)data->listbox);
 	if (row == 0)
 		return INVALID_INDEX;
@@ -368,7 +428,7 @@ UOSInt UI::GUIListBox::GetSelectedIndex()
 
 Bool UI::GUIListBox::GetSelectedIndices(Data::ArrayList<UInt32> *indices)
 {
-	ListBoxData *data = (ListBoxData*)this->clsData;
+	ClassData *data = this->clsData;
 	GList *list = gtk_list_box_get_selected_rows((GtkListBox*)data->listbox);
 	GList *curr = list;
 	while (curr)
@@ -404,7 +464,7 @@ WChar *UI::GUIListBox::GetSelectedItemText(WChar *buff)
 	return GetItemText(buff, currSel);
 }
 
-const UTF8Char *UI::GUIListBox::GetSelectedItemTextNew()
+Text::String *UI::GUIListBox::GetSelectedItemTextNew()
 {
 	UOSInt currSel = GetSelectedIndex();
 	if (currSel == INVALID_INDEX)
@@ -414,41 +474,36 @@ const UTF8Char *UI::GUIListBox::GetSelectedItemTextNew()
 
 UTF8Char *UI::GUIListBox::GetItemText(UTF8Char *buff, UOSInt index)
 {
-	ListBoxItem *item = (ListBoxItem*)this->items->GetItem(index);
+	ItemData *item = this->items->GetItem(index);
 	if (item == 0)
 		return 0;
-	return Text::StrConcat(buff, item->txt);
+	return Text::StrConcat(buff, item->txt->v);
 }
 
 WChar *UI::GUIListBox::GetItemText(WChar *buff, UOSInt index)
 {
-	ListBoxItem *item = (ListBoxItem*)this->items->GetItem(index);
+	ItemData *item = this->items->GetItem(index);
 	if (item == 0)
 		return 0;
-	return Text::StrUTF8_WChar(buff, item->txt, 0);
+	return Text::StrUTF8_WChar(buff, item->txt->v, 0);
 }
 
 void UI::GUIListBox::SetItemText(UOSInt index, const UTF8Char *text)
 {
-	ListBoxItem *item = (ListBoxItem*)this->items->GetItem(index);
+	ItemData *item = this->items->GetItem(index);
 	if (item == 0)
 		return;
 	gtk_label_set_text((GtkLabel*)item->lbl, (const Char*)text);
-	Text::StrDelNew(item->txt);
-	item->txt = Text::StrCopyNew(text);
+	item->txt->Release();
+	item->txt = Text::String::New(text);
 }
 
-const UTF8Char *UI::GUIListBox::GetItemTextNew(UOSInt index)
+Text::String *UI::GUIListBox::GetItemTextNew(UOSInt index)
 {
-	ListBoxItem *item = (ListBoxItem*)this->items->GetItem(index);
+	ItemData *item = this->items->GetItem(index);
 	if (item == 0)
 		return 0;
-	return Text::StrCopyNew(item->txt);
-}
-
-void UI::GUIListBox::DelTextNew(const UTF8Char *text)
-{
-	Text::StrDelNew(text);
+	return item->txt->Clone();
 }
 
 OSInt UI::GUIListBox::GetItemHeight()

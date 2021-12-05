@@ -3,6 +3,7 @@
 #include "DB/DBUtil.h"
 #include "IO/SeekableStream.h"
 #include "Text/Encoding.h"
+#include "Text/String.h"
 
 namespace DB
 {
@@ -28,7 +29,7 @@ namespace DB
 		UOSInt recSize;
 
 	public:
-		DBFFixWriter(IO::SeekableStream *stm, UOSInt nCol, const UTF8Char **colNames, const UOSInt *colSize, const UOSInt *dp, DB::DBUtil::ColType *colTypes, UInt32 codePage);
+		DBFFixWriter(IO::SeekableStream *stm, UOSInt nCol, Text::String **colNames, const UOSInt *colSize, const UOSInt *dp, DB::DBUtil::ColType *colTypes, UInt32 codePage);
 		~DBFFixWriter();
 		void AddRecord(const UTF8Char **rowValues);
 
@@ -39,7 +40,7 @@ namespace DB
 		Bool SetColumn(UOSInt index, Int64 val);
 		Bool SetColumn(UOSInt index, UInt32 val);
 		Bool SetColumn(UOSInt index, Bool val);
-		Bool SetColumn(UOSInt index, UTF8Char *val);
+		Bool SetColumn(UOSInt index, const UTF8Char *val);
 		void WriteRecord();
 	};
 }

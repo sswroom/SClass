@@ -35,13 +35,14 @@ namespace Data
 		class ChartData
 		{
 		public:
-			const UTF8Char *name;
+			Text::String *name;
 			void *data;
 			Data::IChart::DataType dataType;
 			UInt32 lineColor;
 			UOSInt dataCnt;
 			Data::LineChart::LineStyle lineStyle;
 
+			ChartData(Text::String *name, void *data, UOSInt dataCnt, Data::IChart::DataType dataType, UInt32 lineColor, Data::LineChart::LineStyle lineStyle);
 			ChartData(const UTF8Char *name, void *data, UOSInt dataCnt, Data::IChart::DataType dataType, UInt32 lineColor, Data::LineChart::LineStyle lineStyle);
 			~ChartData();
 		};
@@ -110,8 +111,11 @@ namespace Data
 		void SetBarLength(Double barLength);
 		void SetPointType(PointType pointType, Double pointSize);
 		UInt32 GetRndColor();
+		void AddYDataDate(Text::String *name, Int64 *value, UOSInt valCnt, UInt32 lineColor, Data::LineChart::LineStyle style);
 		void AddYDataDate(const UTF8Char *name, Int64 *value, UOSInt valCnt, UInt32 lineColor, Data::LineChart::LineStyle style);
+		void AddYData(Text::String *name, Int32 *value, UOSInt valCnt, UInt32 lineColor, Data::LineChart::LineStyle style);
 		void AddYData(const UTF8Char *name, Int32 *value, UOSInt valCnt, UInt32 lineColor, Data::LineChart::LineStyle style);
+		void AddYData(Text::String *name, Double *value, UOSInt valCnt, UInt32 lineColor, Data::LineChart::LineStyle style);
 		void AddYData(const UTF8Char *name, Double *value, UOSInt valCnt, UInt32 lineColor, Data::LineChart::LineStyle style);
 		void SetXRangeDate(Data::DateTime *xVal);
 		void SetYRangeInt(Int32 yVal);
@@ -127,7 +131,7 @@ namespace Data
 		virtual Int64 *GetYDateTicks(UOSInt index, UOSInt *cnt);
 		virtual Double *GetYDouble(UOSInt index, UOSInt *cnt);
 		virtual Int32 *GetYInt32(UOSInt index, UOSInt *cnt);
-		virtual const UTF8Char *GetYName(UOSInt index);
+		virtual Text::String *GetYName(UOSInt index);
 		virtual DataType GetYType(UOSInt index);
 
 		virtual void Plot(Media::DrawImage *img, Double x, Double y, Double width, Double height);

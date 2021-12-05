@@ -166,11 +166,10 @@ void __stdcall SSWR::AVIRead::AVIRRESTfulForm::OnStopClick(void *userObj)
 
 void __stdcall SSWR::AVIRead::AVIRRESTfulForm::OnLogSel(void *userObj)
 {
-	const UTF8Char *t;
 	SSWR::AVIRead::AVIRRESTfulForm *me = (SSWR::AVIRead::AVIRRESTfulForm*)userObj;
-	t = me->lbLog->GetSelectedItemTextNew();
-	me->txtLog->SetText(t);
-	me->lbLog->DelTextNew(t);
+	Text::String *s = me->lbLog->GetSelectedItemTextNew();
+	me->txtLog->SetText(s->v);
+	s->Release();
 }
 
 void SSWR::AVIRead::AVIRRESTfulForm::InitDB()

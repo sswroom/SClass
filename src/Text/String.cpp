@@ -9,6 +9,7 @@ Text::String Text::String::emptyStr = {0, 1, 0};
 
 Text::String *Text::String::New(const UTF8Char *str)
 {
+	if (str == 0) return 0;
 	UOSInt len = Text::StrCharCnt(str);
 	Text::String *s = (Text::String*)MAlloc(len + sizeof(String));
 	s->leng = len;
@@ -172,6 +173,26 @@ Text::String *Text::String::ToLower()
 UOSInt Text::String::IndexOf(const UTF8Char *s)
 {
 	return Text::StrIndexOf(this->v, s);
+}
+
+UOSInt Text::String::IndexOf(UTF8Char c)
+{
+	return Text::StrIndexOf(this->v, c);
+}
+
+Int32 Text::String::ToInt32()
+{
+	return Text::StrToInt32(this->v);
+}
+
+Int64 Text::String::ToInt64()
+{
+	return Text::StrToInt64(this->v);
+}
+
+UInt64 Text::String::ToUInt64()
+{
+	return Text::StrToUInt64(this->v);
 }
 
 Text::String::~String()

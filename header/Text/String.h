@@ -32,6 +32,11 @@ namespace Text
 		Bool HasUpperCase();
 		String *ToLower();
 		UOSInt IndexOf(const UTF8Char *s);
+		UOSInt IndexOf(UTF8Char c);
+
+		Int32 ToInt32();
+		Int64 ToInt64();
+		UInt64 ToUInt64();
 
 	private:
 		~String();

@@ -1,5 +1,6 @@
 #ifndef _SM_TEXT_SPREADSHEET_OFFICECHARTSERIES
 #define _SM_TEXT_SPREADSHEET_OFFICECHARTSERIES
+#include "Text/String.h"
 #include "Text/SpreadSheet/OfficeShapeProp.h"
 #include "Text/SpreadSheet/WorkbookDataSource.h"
 
@@ -27,7 +28,7 @@ namespace Text
 		private:
 			WorkbookDataSource *categoryData;
 			WorkbookDataSource *valueData;
-			const UTF8Char *title;
+			Text::String *title;
 			Bool smooth;
 			OfficeShapeProp *shapeProp;
 			UInt32 markerSize;
@@ -39,7 +40,8 @@ namespace Text
 
 			WorkbookDataSource *GetCategoryData();
 			WorkbookDataSource *GetValueData();
-			const UTF8Char *GetTitle();
+			Text::String *GetTitle();
+			void SetTitle(Text::String *title, Text::String *dataSource);
 			void SetTitle(const UTF8Char *title, const UTF8Char *dataSource);
 			Bool IsSmooth();
 			void SetSmooth(Bool smooth);

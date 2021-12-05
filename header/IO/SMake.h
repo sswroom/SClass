@@ -7,6 +7,7 @@
 #include "IO/Writer.h"
 #include "Sync/Mutex.h"
 #include "Sync/ParallelTask.h"
+#include "Text/String.h"
 #include "Text/StringBuilderUTF.h"
 
 namespace IO
@@ -80,7 +81,7 @@ namespace IO
 		Data::ArrayList<ConfigItem*> *GetConfigList();
 		Bool HasProg(const UTF8Char *progName);
 		Bool CompileProg(const UTF8Char *progName, Bool asmListing);
-		Bool ParseProg(Data::ArrayListStrUTF8 *objList, Data::ArrayListStrUTF8 *libList, Data::ArrayListStrUTF8 *procList, Data::ArrayListStrUTF8 *headerList, Int64 *latestTime, Bool *progGroup, const UTF8Char *progName);
+		Bool ParseProg(Data::ArrayListStrUTF8 *objList, Data::ArrayListStrUTF8 *libList, Data::ArrayListStrUTF8 *procList, Data::ArrayListStrUTF8 *headerList, Int64 *latestTime, Bool *progGroup, Text::String *progName);
 
 		void CleanFiles();
 

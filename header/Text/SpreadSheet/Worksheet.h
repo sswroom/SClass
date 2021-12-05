@@ -4,6 +4,7 @@
 #include "Data/ArrayListDbl.h"
 #include "Data/DateTime.h"
 #include "Math/Unit/Distance.h"
+#include "Text/String.h"
 #include "Text/SpreadSheet/CellStyle.h"
 #include "Text/SpreadSheet/IStyleCtrl.h"
 #include "Text/SpreadSheet/OfficeChart.h"
@@ -48,12 +49,12 @@ namespace Text
 			typedef struct
 			{
 				CellDataType cdt;
-				const UTF8Char *cellValue;
+				Text::String *cellValue;
 				CellStyle *style;
 				UInt32 mergeHori;
 				UInt32 mergeVert;
 				Bool hidden;
-				const UTF8Char *cellURL;
+				Text::String *cellURL;
 			} CellData;
 
 			typedef struct
@@ -124,12 +125,15 @@ namespace Text
 			Double GetDefRowHeightPt();
 
 			const UTF8Char *GetName();
+			Bool SetCellString(UOSInt row, UOSInt col, Text::String *val);
 			Bool SetCellString(UOSInt row, UOSInt col, const UTF8Char *val);
 			Bool SetCellDate(UOSInt row, UOSInt col, Data::DateTime *val);
 			Bool SetCellDouble(UOSInt row, UOSInt col, Double val);
 			Bool SetCellInt32(UOSInt row, UOSInt col, Int32 val);
 			Bool SetCellStyle(UOSInt row, UOSInt col, CellStyle *style);
+			Bool SetCellURL(UOSInt row, UOSInt col, Text::String *url);
 			Bool SetCellURL(UOSInt row, UOSInt col, const UTF8Char *url);
+			Bool SetCellString(UOSInt row, UOSInt col, CellStyle *style, Text::String *val);
 			Bool SetCellString(UOSInt row, UOSInt col, CellStyle *style, const UTF8Char *val);
 			Bool SetCellDate(UOSInt row, UOSInt col, CellStyle *style, Data::DateTime *val);
 			Bool SetCellDouble(UOSInt row, UOSInt col, CellStyle *style, Double val);

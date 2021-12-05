@@ -47,11 +47,11 @@ void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnStartClicked(void *userObj)
 void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnLogSelChg(void *userObj)
 {
 	SSWR::AVIRead::AVIRUDPCaptureForm *me = (SSWR::AVIRead::AVIRUDPCaptureForm*)userObj;
-	const UTF8Char *txt = me->lbLog->GetSelectedItemTextNew();
-	if (txt)
+	Text::String *s = me->lbLog->GetSelectedItemTextNew();
+	if (s)
 	{
-		me->txtLog->SetText(txt);
-		me->lbLog->DelTextNew(txt);
+		me->txtLog->SetText(s->v);
+		s->Release();
 	}
 }
 

@@ -132,11 +132,11 @@ void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnStartClicked(void *userObj)
 void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnLogSelChg(void *userObj)
 {
 	SSWR::AVIRead::AVIRPingMonitorForm *me = (SSWR::AVIRead::AVIRPingMonitorForm*)userObj;
-	const UTF8Char *csptr = me->lbLog->GetSelectedItemTextNew();
-	if (csptr)
+	Text::String *s = me->lbLog->GetSelectedItemTextNew();
+	if (s)
 	{
-		me->txtLog->SetText(csptr);
-		me->lbLog->DelTextNew(csptr);
+		me->txtLog->SetText(s->v);
+		s->Release();
 	}
 }
 

@@ -284,11 +284,11 @@ void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnStopClick(void *userObj)
 
 void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnLogSel(void *userObj)
 {
-	const UTF8Char *t;
+	Text::String *s;
 	SSWR::AVIRead::AVIRHTTPSvrForm *me = (SSWR::AVIRead::AVIRHTTPSvrForm*)userObj;
-	t = me->lbLog->GetSelectedItemTextNew();
-	me->txtLog->SetText(t);
-	me->lbLog->DelTextNew(t);
+	s = me->lbLog->GetSelectedItemTextNew();
+	me->txtLog->SetText(s->v);
+	s->Release();
 }
 
 void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnTimerTick(void *userObj)

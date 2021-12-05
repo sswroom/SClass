@@ -81,7 +81,7 @@ Bool Exporter::DBFExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 		return false;
 	UOSInt nCol;
 
-	const UTF8Char **colNames;
+	Text::String **colNames;
 	UOSInt *colSize;
 	UOSInt *colDP;
 	DB::DBUtil::ColType *colTypes;
@@ -91,7 +91,7 @@ Bool Exporter::DBFExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 	Data::DateTime dt;
 
 	nCol = r->ColCount();
-	colNames = MemAlloc(const UTF8Char *, nCol);
+	colNames = MemAlloc(Text::String *, nCol);
 	colSize = MemAlloc(UOSInt, nCol);
 	colDP = MemAlloc(UOSInt, nCol);
 	colTypes = MemAlloc(DB::DBUtil::ColType, nCol);
@@ -101,7 +101,7 @@ Bool Exporter::DBFExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 	while (i-- > 0)
 	{
 		r->GetColDef(i, colDef);
-		colNames[i] = Text::StrCopyNew(colDef->GetColName());
+		colNames[i] = colDef->GetColName()->Clone();
 		if (colDef->GetColType() == DB::DBUtil::CT_DateTime)
 		{
 			colSize[i] = 8;
@@ -170,7 +170,7 @@ Bool Exporter::DBFExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 	i = nCol;
 	while (i-- > 0)
 	{
-		Text::StrDelNew(colNames[i]);
+		colNames[i]->Release();
 	}
 	MemFree(colNames);
 	MemFree(colSize);

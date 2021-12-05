@@ -120,36 +120,33 @@ void __stdcall SSWR::AVIRead::AVIRGPSDevForm::OnAlertRClicked(void *userObj)
 void __stdcall SSWR::AVIRead::AVIRGPSDevForm::OnDeviceSelChg(void *userObj)
 {
 	SSWR::AVIRead::AVIRGPSDevForm *me = (SSWR::AVIRead::AVIRGPSDevForm*)userObj;
-	const UTF8Char *csptr = me->lbDevice->GetSelectedItemTextNew();
-	if (csptr)
+	Text::String *s = me->lbDevice->GetSelectedItemTextNew();
+	if (s)
 	{
-		Int64 devId = Text::StrToInt64(csptr);
-		me->SendGetDevice(devId);
-		me->lbDevice->DelTextNew(csptr);
+		me->SendGetDevice(s->ToInt64());
+		s->Release();
 	}
 }
 
 void __stdcall SSWR::AVIRead::AVIRGPSDevForm::OnAlertSelChg(void *userObj)
 {
 	SSWR::AVIRead::AVIRGPSDevForm *me = (SSWR::AVIRead::AVIRGPSDevForm*)userObj;
-	const UTF8Char *csptr = me->lbAlert->GetSelectedItemTextNew();
-	if (csptr)
+	Text::String *s = me->lbAlert->GetSelectedItemTextNew();
+	if (s)
 	{
-		Int32 alertId = Text::StrToInt32(csptr);
-		me->SendGetAlert(alertId);
-		me->lbAlert->DelTextNew(csptr);
+		me->SendGetAlert(s->ToInt32());
+		s->Release();
 	}
 }
 
 void __stdcall SSWR::AVIRead::AVIRGPSDevForm::OnUserSelChg(void *userObj)
 {
 	SSWR::AVIRead::AVIRGPSDevForm *me = (SSWR::AVIRead::AVIRGPSDevForm*)userObj;
-	const UTF8Char *csptr = me->lbUser->GetSelectedItemTextNew();
-	if (csptr)
+	Text::String *s = me->lbUser->GetSelectedItemTextNew();
+	if (s)
 	{
-		Int32 userId = Text::StrToInt32(csptr);
-		me->SendGetUser(userId);
-		me->lbUser->DelTextNew(csptr);
+		me->SendGetUser(s->ToInt32());
+		s->Release();
 	}
 }
 

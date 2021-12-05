@@ -347,7 +347,7 @@ DB::DBRow::DBRow(TableDef *table)
 		field->currentChanged = false;
 		field->committedNull = true;
 		field->committedData.iVal = 0;
-		this->dataMap->Put(field->def->GetColName(), field);
+		this->dataMap->Put(field->def->GetColName()->v, field);
 		i++;
 	}
 }
@@ -369,7 +369,7 @@ Bool DB::DBRow::SetByReader(DB::DBReader *r, Bool commit)
 	while (i < j)
 	{
 		col = this->table->GetCol(i);
-		field = this->dataMap->Get(col->GetColName());
+		field = this->dataMap->Get(col->GetColName()->v);
 		if (field == 0)
 		{
 			return false;
@@ -738,14 +738,14 @@ void DB::DBRow::ToString(Text::StringBuilderUTF *sb)
 	while (i < j)
 	{
 		col = this->table->GetCol(i);
-		field = this->dataMap->Get(col->GetColName());
+		field = this->dataMap->Get(col->GetColName()->v);
 		if (field)
 		{
 			if (i > 0)
 			{
 				sb->Append((const UTF8Char*)", ");
 			}
-			this->AppendVarNameForm(sb, col->GetColName());
+			this->AppendVarNameForm(sb, col->GetColName()->v);
 			sb->AppendChar('=', 1);
 			dtype = this->GetDataType(field);
 			if (this->IsFieldNull(field))

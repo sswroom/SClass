@@ -6,7 +6,7 @@
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
 
-DB::DBFFixWriter::DBFFixWriter(IO::SeekableStream *stm, UOSInt nCol, const UTF8Char **colNames, const UOSInt *colSize, const UOSInt *dp, DB::DBUtil::ColType *colTypes, UInt32 codePage)
+DB::DBFFixWriter::DBFFixWriter(IO::SeekableStream *stm, UOSInt nCol, Text::String **colNames, const UOSInt *colSize, const UOSInt *dp, DB::DBUtil::ColType *colTypes, UInt32 codePage)
 {
 	UInt8 buff[128];
 	UOSInt i;
@@ -68,7 +68,7 @@ DB::DBFFixWriter::DBFFixWriter(IO::SeekableStream *stm, UOSInt nCol, const UTF8C
 	k = nCol;
 	while (i < k)
 	{
-		j = enc->UTF8ToBytes((UInt8*)buff, colNames[i]);
+		j = enc->UTF8ToBytes((UInt8*)buff, colNames[i]->v);
 		while (j < 11)
 		{
 			buff[j++] = 0;
@@ -368,7 +368,7 @@ Bool DB::DBFFixWriter::SetColumn(UOSInt index, Bool val)
 	return true;
 }
 
-Bool DB::DBFFixWriter::SetColumn(UOSInt index, UTF8Char *val)
+Bool DB::DBFFixWriter::SetColumn(UOSInt index, const UTF8Char *val)
 {
 	UInt8 buff[512];
 	if (index >= this->colCnt)

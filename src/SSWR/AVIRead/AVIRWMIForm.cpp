@@ -8,14 +8,14 @@
 void __stdcall SSWR::AVIRead::AVIRWMIForm::OnOKClick(void *userObj)
 {
 	SSWR::AVIRead::AVIRWMIForm *me = (SSWR::AVIRead::AVIRWMIForm*)userObj;
-	const UTF8Char *ns = me->lbNS->GetSelectedItemTextNew();
+	Text::String *ns = me->lbNS->GetSelectedItemTextNew();
 	if (ns)
 	{
 		Win32::WMIQuery *db;
-		const WChar *wptr = Text::StrToWCharNew(ns);
+		const WChar *wptr = Text::StrToWCharNew(ns->v);
 		NEW_CLASS(db, Win32::WMIQuery(wptr));
 		Text::StrDelNew(wptr);
-		me->lbNS->DelTextNew(ns);
+		ns->Release();
 		if (db->IsError())
 		{
 			DEL_CLASS(db);
@@ -38,14 +38,14 @@ void __stdcall SSWR::AVIRead::AVIRWMIForm::OnCancelClick(void *userObj)
 void __stdcall SSWR::AVIRead::AVIRWMIForm::OnDblClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRWMIForm *me = (SSWR::AVIRead::AVIRWMIForm*)userObj;
-	const UTF8Char *ns = me->lbNS->GetSelectedItemTextNew();
+	Text::String *ns = me->lbNS->GetSelectedItemTextNew();
 	if (ns)
 	{
 		Win32::WMIQuery *db;
-		const WChar *wptr = Text::StrToWCharNew(ns);
+		const WChar *wptr = Text::StrToWCharNew(ns->v);
 		NEW_CLASS(db, Win32::WMIQuery(wptr));
 		Text::StrDelNew(wptr);
-		me->lbNS->DelTextNew(ns);
+		ns->Release();
 		if (db->IsError())
 		{
 			DEL_CLASS(db);

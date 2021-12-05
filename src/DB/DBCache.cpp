@@ -183,7 +183,7 @@ DB::DBRow *DB::DBCache::GetTableItem(const UTF8Char *tableName, Int64 pk)
 	DB::SQLBuilder sql(this->db);
 	this->db->GenSelectCmdPage(&sql, tableInfo->def, 0);
 	sql.AppendCmd((const UTF8Char*)" where ");
-	sql.AppendCol(col->GetColName());
+	sql.AppendCol(col->GetColName()->v);
 	sql.AppendCmd((const UTF8Char*)" = ");
 	sql.AppendInt64(pk);
 	DB::DBReader *r = this->db->ExecuteReader(sql.ToString());

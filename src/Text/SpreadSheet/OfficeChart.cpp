@@ -191,6 +191,26 @@ OfficeChartAxis *Text::SpreadSheet::OfficeChart::GetValueAxis()
 	return this->valueAxis;
 }
 
+void Text::SpreadSheet::OfficeChart::AddSeries(WorkbookDataSource *categoryData, WorkbookDataSource *valueData, Text::String *name, Bool showMarker)
+{
+	UOSInt i = this->series->GetCount();
+	OfficeChartSeries *series = NEW_CLASS_D(OfficeChartSeries(categoryData, valueData));
+	if (name)
+		series->SetTitle(name, 0);
+	series->SetSmooth(false);
+	if (showMarker)
+	{
+		series->SetMarkerSize(3);
+		series->SetMarkerStyle(MarkerStyle::Circle);
+	}
+	else
+	{
+		series->SetMarkerStyle(MarkerStyle::None);
+	}
+	series->SetLineStyle(NEW_CLASS_D(OfficeLineStyle(OfficeFill::NewSolidFill(OfficeColor::NewPreset(seriesColor[i % (sizeof(seriesColor) / sizeof(seriesColor[0]))])))));
+	this->series->Add(series);
+}
+
 void Text::SpreadSheet::OfficeChart::AddSeries(WorkbookDataSource *categoryData, WorkbookDataSource *valueData, const UTF8Char *name, Bool showMarker)
 {
 	UOSInt i = this->series->GetCount();

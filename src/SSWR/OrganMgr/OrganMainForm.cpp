@@ -1200,11 +1200,11 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnSpBookAddClicked(void *userObj)
 void __stdcall SSWR::OrganMgr::OrganMainForm::OnSpBookSelChg(void *userObj)
 {
 	OrganMainForm *me = (OrganMainForm*)userObj;
-	const UTF8Char *s = me->lvSpBook->GetSelectedItemTextNew();
+	Text::String *s = me->lvSpBook->GetSelectedItemTextNew();
 	if (s)
 	{
-		me->txtSpBook->SetText(s);
-		me->lvSpBook->DelTextNew(s);
+		me->txtSpBook->SetText(s->v);
+		s->Release();
 	}
 }
 

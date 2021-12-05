@@ -55,12 +55,9 @@ Bool __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnConnRClicked(void *userObj, O
 void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnTableSelChg(void *userObj)
 {
 	SSWR::AVIRead::AVIRDBManagerForm *me = (SSWR::AVIRead::AVIRDBManagerForm*)userObj;
-	const UTF8Char *tableName = me->lbTable->GetSelectedItemTextNew();
+	Text::String *tableName = me->lbTable->GetSelectedItemTextNew();
 	me->UpdateTableData(tableName);
-	if (tableName)
-	{
-		me->lbTable->DelTextNew(tableName);
-	}
+	SDEL_STRING(tableName);
 }
 
 Bool __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnTableRClicked(void *userObj, OSInt scnX, OSInt scnY, MouseButton btn)
@@ -79,15 +76,15 @@ void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnDatabaseClicked(void *userObj
 	SSWR::AVIRead::AVIRDBManagerForm *me = (SSWR::AVIRead::AVIRDBManagerForm*)userObj;
 	if (me->currDB)
 	{
-		const UTF8Char *dbName = me->lbDatabase->GetSelectedItemTextNew();
+		Text::String *dbName = me->lbDatabase->GetSelectedItemTextNew();
 		if (dbName)
 		{
-			if (me->currDB->ChangeDatabase(dbName))
+			if (me->currDB->ChangeDatabase(dbName->v))
 			{
 				me->UpdateTableData(0);
 				me->UpdateTableList();
 			}
-			me->lbDatabase->DelTextNew(dbName);
+			dbName->Release();
 		}
 	}
 }
@@ -134,7 +131,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateTableList()
 	this->currDB->ReleaseTableNames(&tableNames);
 }
 
-void SSWR::AVIRead::AVIRDBManagerForm::UpdateTableData(const UTF8Char *tableName)
+void SSWR::AVIRead::AVIRDBManagerForm::UpdateTableData(Text::String *tableName)
 {
 	this->lvTable->ClearItems();
 	this->lvTableResult->ClearItems();
@@ -146,9 +143,9 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateTableData(const UTF8Char *tableName
 	UTF8Char sbuff[256];
 	DB::TableDef *tabDef = 0;
 	DB::DBReader *r;
-	tabDef = this->currDB->GetTableDef(tableName);
+	tabDef = this->currDB->GetTableDef(tableName?tableName->v:0);
 
-	r = this->currDB->GetTableData(tableName, 0, 0, MAX_ROW_CNT, 0, 0);
+	r = this->currDB->GetTableData(tableName?tableName->v:0, 0, 0, MAX_ROW_CNT, 0, 0);
 	if (r)
 	{
 		this->UpdateResult(r);
@@ -164,16 +161,16 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateTableData(const UTF8Char *tableName
 			while (i < j)
 			{
 				col = tabDef->GetCol(i);
-				k = this->lvTable->AddItem(col->GetColName()->v, 0);
+				k = this->lvTable->AddItem(col->GetColName(), 0);
 				col->ToColTypeStr(sbuff);
 				this->lvTable->SetSubItem(k, 1, sbuff);
 				this->lvTable->SetSubItem(k, 2, col->IsNotNull()?(const UTF8Char*)"NOT NULL":(const UTF8Char*)"NULL");
 				this->lvTable->SetSubItem(k, 3, col->IsPK()?(const UTF8Char*)"PK":(const UTF8Char*)"");
 				this->lvTable->SetSubItem(k, 4, col->IsAutoInc()?(const UTF8Char*)"AUTO_INCREMENT":(const UTF8Char*)"");
 				if (col->GetDefVal())
-					this->lvTable->SetSubItem(k, 5, col->GetDefVal()->v);
+					this->lvTable->SetSubItem(k, 5, col->GetDefVal());
 				if (col->GetAttr())
-					this->lvTable->SetSubItem(k, 6, col->GetAttr()->v);
+					this->lvTable->SetSubItem(k, 6, col->GetAttr());
 
 				i++;
 			}
@@ -188,16 +185,16 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateTableData(const UTF8Char *tableName
 			while (i < j)
 			{
 				r->GetColDef(i, col);
-				k = this->lvTable->AddItem(col->GetColName()->v, 0);
+				k = this->lvTable->AddItem(col->GetColName(), 0);
 				col->ToColTypeStr(sbuff);
 				this->lvTable->SetSubItem(k, 1, sbuff);
 				this->lvTable->SetSubItem(k, 2, col->IsNotNull()?(const UTF8Char*)"NOT NULL":(const UTF8Char*)"NULL");
 				this->lvTable->SetSubItem(k, 3, col->IsPK()?(const UTF8Char*)"PK":(const UTF8Char*)"");
 				this->lvTable->SetSubItem(k, 4, col->IsAutoInc()?(const UTF8Char*)"AUTO_INCREMENT":(const UTF8Char*)"");
 				if (col->GetDefVal())
-					this->lvTable->SetSubItem(k, 5, col->GetDefVal()->v);
+					this->lvTable->SetSubItem(k, 5, col->GetDefVal());
 				if (col->GetAttr())
-					this->lvTable->SetSubItem(k, 6, col->GetAttr()->v);
+					this->lvTable->SetSubItem(k, 6, col->GetAttr());
 
 				i++;
 			}
@@ -236,7 +233,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateResult(DB::DBReader *r)
 	{
 		if (r->GetColDef(i, col))
 		{
-			this->lvTableResult->AddColumn(col->GetColName()->v, 100);
+			this->lvTableResult->AddColumn(col->GetColName(), 100);
 		}
 		else
 		{
@@ -539,32 +536,32 @@ void SSWR::AVIRead::AVIRDBManagerForm::EventMenuClicked(UInt16 cmdId)
 			const UTF8Char *csptr;
 			sb.Append((const UTF8Char*)"@Entity\r\n");
 			sb.Append((const UTF8Char*)"@Table(name=");
-			const UTF8Char *tableName = this->lbTable->GetSelectedItemTextNew();
-			i = Text::StrIndexOf(tableName, '.');
-			Text::JSText::ToJSTextDQuote(&sb, &tableName[i + 1]);
+			Text::String *tableName = this->lbTable->GetSelectedItemTextNew();
+			i = tableName->IndexOf('.');
+			Text::JSText::ToJSTextDQuote(&sb, &tableName->v[i + 1]);
 			if (i != INVALID_INDEX)
 			{
-				csptr = Text::StrCopyNewC(tableName, (UOSInt)i);
+				csptr = Text::StrCopyNewC(tableName->v, i);
 				sb.Append((const UTF8Char*)", schema=");
 				Text::JSText::ToJSTextDQuote(&sb, csptr);
 				Text::StrDelNew(csptr);
 			}
 			sb.Append((const UTF8Char*)")\r\n");
 			sb.Append((const UTF8Char*)"public class ");
-			if (Text::StrHasUpperCase(&tableName[i + 1]))
+			if (Text::StrHasUpperCase(&tableName->v[i + 1]))
 			{
-				csptr = Text::StrCopyNew(&tableName[i + 1]);
+				csptr = Text::StrCopyNew(&tableName->v[i + 1]);
 				Text::StrToLower((UTF8Char*)csptr, csptr);
 				Text::JavaText::ToJavaName(&sb, csptr, true);
 				Text::StrDelNew(csptr);
 			}
 			else
 			{
-				Text::JavaText::ToJavaName(&sb, &tableName[i + 1], true);
+				Text::JavaText::ToJavaName(&sb, &tableName->v[i + 1], true);
 			}
 			sb.Append((const UTF8Char*)"\r\n");
 			sb.Append((const UTF8Char*)"{\r\n");
-			DB::TableDef *tableDef = this->currDB->GetTableDef(tableName);
+			DB::TableDef *tableDef = this->currDB->GetTableDef(tableName->v);
 			if (tableDef)
 			{
 				UOSInt j;
@@ -581,7 +578,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::EventMenuClicked(UInt16 cmdId)
 			}
 			else
 			{
-				DB::DBReader *r = this->currDB->GetTableData(tableName, 0, 0, 0, 0, 0);
+				DB::DBReader *r = this->currDB->GetTableData(tableName->v, 0, 0, 0, 0, 0);
 				if (r)
 				{
 					DB::ColDef colDef((const UTF8Char*)"");
@@ -598,7 +595,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::EventMenuClicked(UInt16 cmdId)
 				}
 			}
 			sb.Append((const UTF8Char*)"}\r\n");
-			this->lbTable->DelTextNew(tableName);
+			tableName->Release();
 			Win32::Clipboard::SetString(this->GetHandle(), sb.ToString());
 		}
 		break;

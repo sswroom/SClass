@@ -72,7 +72,7 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char 
 	UOSInt n;
 	UOSInt drawingCnt = 0;
 	UOSInt chartCnt = 0;
-	Data::ArrayList<const UTF8Char*> sharedStrings;
+	Data::ArrayList<Text::String*> sharedStrings;
 	Data::StringUTF8Map<UOSInt> stringMap;
 	dt.SetCurrTimeUTC();
 	NEW_CLASS(zip, IO::ZIPBuilder(stm));
@@ -231,23 +231,23 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char 
 							{
 							case Text::SpreadSheet::CellDataType::String:
 								{
-									UOSInt sIndex = stringMap.Get(cell->cellValue);
-									if (sIndex == 0 && !stringMap.ContainsKey(cell->cellValue))
+									UOSInt sIndex = stringMap.Get(cell->cellValue->v);
+									if (sIndex == 0 && !stringMap.ContainsKey(cell->cellValue->v))
 									{
 										sIndex = sharedStrings.Add(cell->cellValue);
-										stringMap.Put(cell->cellValue, sIndex);
+										stringMap.Put(cell->cellValue->v, sIndex);
 									}
 									sb.AppendUOSInt(sIndex);
 								}
 								break;
 							case Text::SpreadSheet::CellDataType::Number:
-								sb.Append(cell->cellValue);
+								sb.AppendC(cell->cellValue->v, cell->cellValue->leng);
 								break;
 							case Text::SpreadSheet::CellDataType::DateTime:
 								{
 									Data::DateTime dt;
 									dt.ToLocalTime();
-									dt.SetValue(cell->cellValue);
+									dt.SetValue(cell->cellValue->v);
 									Text::SBAppendF64(&sb, Text::XLSUtil::Date2Number(&dt));
 								}
 								break;
@@ -292,7 +292,7 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char 
 					sb.Append((const UTF8Char*)"\" r:id=\"rId");
 					sb.AppendUOSInt(idBase + m);
 					sb.Append((const UTF8Char*)"\" display=");
-					csptr = Text::XML::ToNewAttrText(link->cell->cellValue);
+					csptr = Text::XML::ToNewAttrText(link->cell->cellValue->v);
 					sb.Append(csptr);
 					Text::XML::FreeNewText(csptr);
 					sb.Append((const UTF8Char*)"/>");
@@ -364,7 +364,7 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char 
 				sb.Append((const UTF8Char*)"<Relationship Id=\"rId");
 				sb.AppendUOSInt(l + m + 1);
 				sb.Append((const UTF8Char*)"\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink\" Target=");
-				csptr = Text::XML::ToNewAttrText(link->cell->cellURL);
+				csptr = Text::XML::ToNewAttrText(link->cell->cellURL->v);
 				sb.Append(csptr);
 				Text::XML::FreeNewText(csptr);
 				sb.Append((const UTF8Char*)" TargetMode=\"External\"/>");
@@ -1031,7 +1031,7 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char 
 		while (i < j)
 		{
 			sb.Append((const UTF8Char*)"<si><t xml:space=\"preserve\">");
-			csptr = Text::XML::ToNewXMLText(sharedStrings.GetItem(i));
+			csptr = Text::XML::ToNewXMLText(sharedStrings.GetItem(i)->v);
 			sb.Append(csptr);
 			Text::XML::FreeNewText(csptr);
 			sb.Append((const UTF8Char*)"</t></si>");
@@ -1355,7 +1355,7 @@ void Exporter::XLSXExporter::AppendSeries(Text::StringBuilderUTF *sb, Text::Spre
 	{
 		sb->Append((const UTF8Char*)"<c:tx>");
 		sb->Append((const UTF8Char*)"<c:v>");
-		csptr = Text::XML::ToNewXMLText(series->GetTitle());
+		csptr = Text::XML::ToNewXMLText(series->GetTitle()->v);
 		sb->Append(csptr);
 		Text::XML::FreeNewText(csptr);
 		sb->Append((const UTF8Char*)"</c:v>");

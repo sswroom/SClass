@@ -50,11 +50,10 @@ void __stdcall SSWR::AVIRead::AVIRNTPServerForm::OnStartClick(void *userObj)
 
 void __stdcall SSWR::AVIRead::AVIRNTPServerForm::OnLogSel(void *userObj)
 {
-	const UTF8Char *t;
 	SSWR::AVIRead::AVIRNTPServerForm *me = (SSWR::AVIRead::AVIRNTPServerForm*)userObj;
-	t = me->lbLog->GetSelectedItemTextNew();
-	me->txtLog->SetText(t);
-	me->lbLog->DelTextNew(t);
+	Text::String *s = me->lbLog->GetSelectedItemTextNew();
+	me->txtLog->SetText(s->v);
+	s->Release();
 }
 
 void __stdcall SSWR::AVIRead::AVIRNTPServerForm::OnTimerTick(void *userObj)

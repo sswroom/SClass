@@ -102,7 +102,7 @@ void __stdcall SSWR::SHPConv::SHPConvMainForm::OnGroupClicked(void *userObj)
 {
 	SSWR::SHPConv::SHPConvMainForm *me = (SSWR::SHPConv::SHPConvMainForm*)userObj;
 	SSWR::SHPConv::SHPConvGroupForm *frm;
-	const UTF8Char *csptr;
+	Text::String *s;
 	UOSInt i;
 	UOSInt j;
 	NEW_CLASS(frm, SSWR::SHPConv::SHPConvGroupForm(0, me->ui));
@@ -111,9 +111,9 @@ void __stdcall SSWR::SHPConv::SHPConvMainForm::OnGroupClicked(void *userObj)
 	j = me->lstRecords->GetCount();
 	while (i < j)
 	{
-		csptr = me->lstRecords->GetItemTextNew(i);
-		frm->AddGroup(csptr);
-		me->lstRecords->DelTextNew(csptr);
+		s = me->lstRecords->GetItemTextNew(i);
+		frm->AddGroup(s->v);
+		s->Release();
 		i++;
 	}
 	frm->SetCurrGroup(me->currGroup);

@@ -100,14 +100,8 @@ void Text::SpreadSheet::Worksheet::FreeRowData(Text::SpreadSheet::Worksheet::Row
 
 void Text::SpreadSheet::Worksheet::FreeCellData(Text::SpreadSheet::Worksheet::CellData *data)
 {
-	if (data->cellValue)
-	{
-		Text::StrDelNew(data->cellValue);
-	}
-	if (data->cellURL)
-	{
-		Text::StrDelNew(data->cellURL);
-	}
+	SDEL_STRING(data->cellValue);
+	SDEL_STRING(data->cellURL);
 	MemFree(data);
 }
 
@@ -146,7 +140,7 @@ Text::SpreadSheet::Worksheet::CellData *Text::SpreadSheet::Worksheet::CloneCell(
 	newCell->cdt = cell->cdt;
 	if (cell->cellValue)
 	{
-		newCell->cellValue = Text::StrCopyNew(cell->cellValue);
+		newCell->cellValue = cell->cellValue->Clone();
 	}
 	else
 	{
@@ -158,7 +152,7 @@ Text::SpreadSheet::Worksheet::CellData *Text::SpreadSheet::Worksheet::CloneCell(
 	newCell->hidden = cell->hidden;
 	if (cell->cellURL)
 	{
-		newCell->cellURL = Text::StrCopyNew(cell->cellURL);
+		newCell->cellURL = cell->cellURL->Clone();
 	}
 	else
 	{
@@ -390,6 +384,11 @@ const UTF8Char *Text::SpreadSheet::Worksheet::GetName()
 	return this->name;
 }
 
+Bool Text::SpreadSheet::Worksheet::SetCellString(UOSInt row, UOSInt col, Text::String *val)
+{
+	return this->SetCellString(row, col, 0, val);
+}
+
 Bool Text::SpreadSheet::Worksheet::SetCellString(UOSInt row, UOSInt col, const UTF8Char *val)
 {
 	return this->SetCellString(row, col, 0, val);
@@ -420,6 +419,19 @@ Bool Text::SpreadSheet::Worksheet::SetCellStyle(UOSInt row, UOSInt col, Text::Sp
 	return true;
 }
 
+Bool Text::SpreadSheet::Worksheet::SetCellURL(UOSInt row, UOSInt col, Text::String *url)
+{
+	CellData *cell;
+	cell = GetCellData(row, col, false);
+	if (cell == 0)
+		return false;
+	SDEL_STRING(cell->cellURL);
+	if (url)
+	{
+		cell->cellURL = url->Clone();
+	}
+	return true;
+}
 
 Bool Text::SpreadSheet::Worksheet::SetCellURL(UOSInt row, UOSInt col, const UTF8Char *url)
 {
@@ -427,11 +439,27 @@ Bool Text::SpreadSheet::Worksheet::SetCellURL(UOSInt row, UOSInt col, const UTF8
 	cell = GetCellData(row, col, false);
 	if (cell == 0)
 		return false;
-	SDEL_TEXT(cell->cellURL);
+	SDEL_STRING(cell->cellURL);
 	if (url)
 	{
-		cell->cellURL = Text::StrCopyNew(url);
+		cell->cellURL = Text::String::New(url);
 	}
+	return true;
+}
+
+Bool Text::SpreadSheet::Worksheet::SetCellString(UOSInt row, UOSInt col, CellStyle *style, Text::String *val)
+{
+	CellData *cell;
+	cell = GetCellData(row, col, false);
+	if (cell == 0)
+		return false;
+	cell->cdt = CellDataType::String;
+	SDEL_STRING(cell->cellValue);
+	if (val)
+	{
+		cell->cellValue = val->Clone();
+	}
+	if (style) cell->style = style;
 	return true;
 }
 
@@ -442,14 +470,10 @@ Bool Text::SpreadSheet::Worksheet::SetCellString(UOSInt row, UOSInt col, CellSty
 	if (cell == 0)
 		return false;
 	cell->cdt = CellDataType::String;
-	if (cell->cellValue)
-	{
-		Text::StrDelNew(cell->cellValue);
-		cell->cellValue = 0;
-	}
+	SDEL_STRING(cell->cellValue);
 	if (val)
 	{
-		cell->cellValue = Text::StrCopyNew(val);
+		cell->cellValue = Text::String::New(val);
 	}
 	if (style) cell->style = style;
 	return true;
@@ -463,12 +487,9 @@ Bool Text::SpreadSheet::Worksheet::SetCellDate(UOSInt row, UOSInt col, CellStyle
 	if (cell == 0)
 		return false;
 	cell->cdt = CellDataType::DateTime;
-	if (cell->cellValue)
-	{
-		Text::StrDelNew(cell->cellValue);
-	}
+	SDEL_STRING(cell->cellValue);
 	val->ToString(sbuff, "yyyy-MM-ddTHH:mm:ss.fff");
-	cell->cellValue = Text::StrCopyNew(sbuff);
+	cell->cellValue = Text::String::New(sbuff);
 	if (style) cell->style = style;
 	return true;
 }
@@ -481,12 +502,9 @@ Bool Text::SpreadSheet::Worksheet::SetCellDouble(UOSInt row, UOSInt col, CellSty
 	if (cell == 0)
 		return false;
 	cell->cdt = CellDataType::Number;
-	if (cell->cellValue)
-	{
-		Text::StrDelNew(cell->cellValue);
-	}
+	SDEL_STRING(cell->cellValue);
 	Text::StrDouble(sbuff, val);
-	cell->cellValue = Text::StrCopyNew(sbuff);
+	cell->cellValue = Text::String::New(sbuff);
 	if (style) cell->style = style;
 	return true;
 }
@@ -499,12 +517,9 @@ Bool Text::SpreadSheet::Worksheet::SetCellInt32(UOSInt row, UOSInt col, CellStyl
 	if (cell == 0)
 		return false;
 	cell->cdt = CellDataType::Number;
-	if (cell->cellValue)
-	{
-		Text::StrDelNew(cell->cellValue);
-	}
+	SDEL_STRING(cell->cellValue);
 	Text::StrInt32(sbuff, val);
-	cell->cellValue = Text::StrCopyNew(sbuff);
+	cell->cellValue = Text::String::New(sbuff);
 	if (style) cell->style = style;
 	return true;
 }

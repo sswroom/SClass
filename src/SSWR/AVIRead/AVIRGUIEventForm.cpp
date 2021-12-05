@@ -5,9 +5,9 @@
 void __stdcall SSWR::AVIRead::AVIRGUIEventForm::OnLogSelChg(void *userObj)
 {
 	SSWR::AVIRead::AVIRGUIEventForm *me = (SSWR::AVIRead::AVIRGUIEventForm*)userObj;
-	const UTF8Char *csptr = me->lbLog->GetSelectedItemTextNew();
-	me->txtLog->SetText(csptr);
-	me->lbLog->DelTextNew(csptr);
+	Text::String *s = me->lbLog->GetSelectedItemTextNew();
+	me->txtLog->SetText(s->v);
+	s->Release();
 }
 
 void __stdcall SSWR::AVIRead::AVIRGUIEventForm::OnDisplayOffClicked(void *userObj)

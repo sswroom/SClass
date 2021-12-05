@@ -55,7 +55,7 @@ namespace SSWR
 
 			void UpdateDatabaseList();
 			void UpdateTableList();
-			void UpdateTableData(const UTF8Char *tableName);
+			void UpdateTableData(Text::String *tableName);
 			void UpdateResult(DB::DBReader *r);
 
 			void AppendJavaCol(Text::StringBuilderUTF *sb, DB::ColDef *col);

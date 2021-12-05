@@ -608,7 +608,7 @@ Bool Exporter::ExcelXMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8C
 								if (cell->cellURL)
 								{
 									 sb.Append((const UTF8Char*)" ss:HRef=");
-									 text2 = Text::XML::ToNewAttrText(cell->cellURL);
+									 text2 = Text::XML::ToNewAttrText(cell->cellURL->v);
 									 sb.Append(text2);
 									 Text::XML::FreeNewText(text2);
 								}
@@ -619,14 +619,14 @@ Bool Exporter::ExcelXMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8C
 									{
 									case Text::SpreadSheet::CellDataType::Number:
 										sb.Append((const UTF8Char*)"<Data ss:Type=\"Number\">");
-										text2 = Text::XML::ToNewXMLText(cell->cellValue);
+										text2 = Text::XML::ToNewXMLText(cell->cellValue->v);
 										sb.Append(text2);
 										Text::XML::FreeNewText(text2);
 										sb.Append((const UTF8Char*)"</Data>");
 										break;
 									case Text::SpreadSheet::CellDataType::DateTime:
 										sb.Append((const UTF8Char*)"<Data ss:Type=\"DateTime\">");
-										text2 = Text::XML::ToNewXMLText(cell->cellValue);
+										text2 = Text::XML::ToNewXMLText(cell->cellValue->v);
 										sb.Append(text2);
 										Text::XML::FreeNewText(text2);
 										sb.Append((const UTF8Char*)"</Data>");
@@ -636,7 +636,7 @@ Bool Exporter::ExcelXMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8C
 									case Text::SpreadSheet::CellDataType::String:
 									default:
 										sb.Append((const UTF8Char*)"<Data ss:Type=\"String\">");
-										text2 = Text::XML::ToNewXMLText(cell->cellValue);
+										text2 = Text::XML::ToNewXMLText(cell->cellValue->v);
 										sb.Append(text2);
 										Text::XML::FreeNewText(text2);
 										sb.Append((const UTF8Char*)"</Data>");

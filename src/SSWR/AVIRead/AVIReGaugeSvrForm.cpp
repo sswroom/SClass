@@ -70,11 +70,10 @@ void __stdcall SSWR::AVIRead::AVIReGaugeSvrForm::OnStartClick(void *userObj)
 
 void __stdcall SSWR::AVIRead::AVIReGaugeSvrForm::OnLogSel(void *userObj)
 {
-	const UTF8Char *t;
 	SSWR::AVIRead::AVIReGaugeSvrForm *me = (SSWR::AVIRead::AVIReGaugeSvrForm*)userObj;
-	t = me->lbLog->GetSelectedItemTextNew();
-	me->txtLog->SetText(t);
-	me->lbLog->DelTextNew(t);
+	Text::String *s = me->lbLog->GetSelectedItemTextNew();
+	me->txtLog->SetText(s->v);
+	s->Release();
 }
 
 void __stdcall SSWR::AVIRead::AVIReGaugeSvrForm::OnTimerTick(void *userObj)

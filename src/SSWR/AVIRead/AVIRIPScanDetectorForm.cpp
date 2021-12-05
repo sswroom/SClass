@@ -21,16 +21,9 @@ void __stdcall SSWR::AVIRead::AVIRIPScanDetectorForm::OnIPScanEvent(const UInt8 
 void __stdcall SSWR::AVIRead::AVIRIPScanDetectorForm::OnLogSelChg(void *userObj)
 {
 	SSWR::AVIRead::AVIRIPScanDetectorForm *me = (SSWR::AVIRead::AVIRIPScanDetectorForm *)userObj;
-	const UTF8Char *csptr = me->lbLog->GetSelectedItemTextNew();
-	if (csptr)
-	{
-		me->txtLog->SetText(csptr);
-		me->lbLog->DelTextNew(csptr);
-	}
-	else
-	{
-		me->txtLog->SetText((const UTF8Char*)"");
-	}
+	Text::String *s = Text::String::OrEmpty(me->lbLog->GetSelectedItemTextNew());
+	me->txtLog->SetText(s->v);
+	s->Release();
 }
 
 SSWR::AVIRead::AVIRIPScanDetectorForm::AVIRIPScanDetectorForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
