@@ -516,9 +516,9 @@ void SSWR::OrganMgr::OrganWebHandler::LoadUsers()
 		while (i < j)
 		{
 			userFile = userFileList.GetItem(i);
-			if (user == 0 || user->id != userId)
+			if (user == 0 || user->id != userFile->webuserId)
 			{
-				user = this->userMap->Get(userId);
+				user = this->userMap->Get(userFile->webuserId);
 			}
 			if (user != 0)
 			{
