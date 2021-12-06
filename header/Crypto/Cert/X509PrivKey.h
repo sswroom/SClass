@@ -10,6 +10,7 @@ namespace Crypto
 		class X509PrivKey : public Crypto::Cert::X509File
 		{
 		public:
+			X509PrivKey(Text::String *sourceName, const UInt8 *buff, UOSInt buffSize);
 			X509PrivKey(const UTF8Char *sourceName, const UInt8 *buff, UOSInt buffSize);
 			virtual ~X509PrivKey();
 
@@ -21,7 +22,7 @@ namespace Crypto
 			
 			Crypto::Cert::X509Key *CreateKey();
 
-			static X509PrivKey *CreateFromKeyBuff(KeyType keyType, const UInt8 *buff, UOSInt buffSize, const UTF8Char *sourceName);
+			static X509PrivKey *CreateFromKeyBuff(KeyType keyType, const UInt8 *buff, UOSInt buffSize, Text::String *sourceName);
 			static X509PrivKey *CreateFromKey(Crypto::Cert::X509Key *key);
 		};
 	}

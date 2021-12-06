@@ -33,7 +33,7 @@ namespace IO
 			UInt8 checkBytes[32];
 		};
 
-		const UTF8Char *name;
+		Text::String *name;
 		IO::IStreamData *fd;
 		IO::ParsedObject *pobj;
 		PackItemType itemType;
@@ -73,6 +73,7 @@ namespace IO
 		Data::Int32Map<const UTF8Char *> *infoMap;
 
 	public:
+		PackageFile(Text::String *fileName);
 		PackageFile(const UTF8Char *fileName);
 		virtual ~PackageFile();
 

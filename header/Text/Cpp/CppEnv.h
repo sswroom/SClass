@@ -15,7 +15,7 @@ namespace Text
 			Data::ArrayListStrUTF8 *includePaths;
 			Text::VSProject::VisualStudioVersion vsv;
 			Text::CodeProject::ProjectType pt;
-			const UTF8Char *baseFile;
+			Text::String *baseFile;
 			
 			Bool InitVSEnv(Text::VSProject::VisualStudioVersion vsv);
 		public:
@@ -24,7 +24,7 @@ namespace Text
 			~CppEnv();
 
 			void AddIncludePath(const UTF8Char *includePath);
-			UTF8Char *GetIncludeFilePath(UTF8Char *buff, const UTF8Char *includeFile, const UTF8Char *sourceFile);
+			UTF8Char *GetIncludeFilePath(UTF8Char *buff, const UTF8Char *includeFile, Text::String *sourceFile);
 
 			void InitEnvStatus(Text::Cpp::CppParseStatus *status);
 

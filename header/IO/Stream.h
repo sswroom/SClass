@@ -8,6 +8,7 @@ namespace IO
 	class Stream : public IO::ParsedObject
 	{
 	public:
+		Stream(Text::String *sourceName);
 		Stream(const UTF8Char *sourceName);
 		virtual ~Stream(){};
 		virtual UOSInt Read(UInt8 *buff, UOSInt size) = 0;

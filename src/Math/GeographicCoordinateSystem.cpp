@@ -15,6 +15,30 @@ Earth�fs gravitational constant: GM=3.986004418 * 10^14 m^3/s^2
 Angular velocity of the Earth: ��=7.292115 * 10^-5 rad/s
 */
 
+Math::GeographicCoordinateSystem::GeographicCoordinateSystem(Text::String *sourceName, UInt32 srid, const UTF8Char *csysName, const DatumData1 *datum, PrimemType primem, UnitType unit) : Math::CoordinateSystem(sourceName, srid, csysName)
+{
+	this->csysName = Text::StrCopyNew(csysName);
+	this->datum.spheroid.srid = datum->spheroid.srid;
+	this->datum.spheroid.ellipsoid = datum->spheroid.ellipsoid->Clone();
+	this->datum.spheroid.name = Text::StrCopyNew(datum->spheroid.name);
+	this->datum.srid = datum->srid;
+	Double aRatio = Math::Unit::Angle::GetUnitRatio(datum->aunit);
+	this->datum.name = (const Char*)Text::StrCopyNew(datum->name);
+	this->datum.x0 = datum->x0;
+	this->datum.y0 = datum->y0;
+	this->datum.z0 = datum->z0;
+	this->datum.cX = datum->cX;
+	this->datum.cY = datum->cY;
+	this->datum.cZ = datum->cZ;
+	this->datum.xAngle = datum->xAngle * aRatio;
+	this->datum.yAngle = datum->yAngle * aRatio;
+	this->datum.zAngle = datum->zAngle * aRatio;
+	this->datum.scale = datum->scale;
+	this->datum.aunit = Math::Unit::Angle::AU_RADIAN;
+	this->primem = primem;
+	this->unit = unit;
+}
+
 Math::GeographicCoordinateSystem::GeographicCoordinateSystem(const UTF8Char *sourceName, UInt32 srid, const UTF8Char *csysName, const DatumData1 *datum, PrimemType primem, UnitType unit) : Math::CoordinateSystem(sourceName, srid, csysName)
 {
 	this->csysName = Text::StrCopyNew(csysName);
@@ -71,7 +95,7 @@ Math::CoordinateSystem *Math::GeographicCoordinateSystem::Clone()
 
 Math::CoordinateSystem::CoordinateSystemType Math::GeographicCoordinateSystem::GetCoordSysType()
 {
-	return Math::CoordinateSystem::CST_GEOGRAPHIC;
+	return Math::CoordinateSystem::CoordinateSystemType::Geographic;
 }
 
 Bool Math::GeographicCoordinateSystem::IsProjected()

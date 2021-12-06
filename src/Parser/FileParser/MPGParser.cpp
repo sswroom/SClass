@@ -65,7 +65,7 @@ IO::ParsedObject *Parser::FileParser::MPGParser::ParseFile(IO::IStreamData *fd, 
 		if (ReadMInt32(&buff[currOfst]) != 0x000001bb)
 			return 0;
 
-		if (Text::StrEndsWithICase(fd->GetFullName(), (const UTF8Char*)"_1.vob"))
+		if (fd->GetFullName()->EndsWithICase((const UTF8Char*)"_1.vob"))
 		{
 			UTF8Char sbuff[512];
 			UTF8Char *sptr;
@@ -77,7 +77,8 @@ IO::ParsedObject *Parser::FileParser::MPGParser::ParseFile(IO::IStreamData *fd, 
 				NEW_CLASS(data, IO::StmData::ConcatStreamData(fd->GetFullName()));
 				data->AddData(fd->GetPartialData(0, fd->GetDataSize()));
 				
-				sptr = Text::StrConcat(sbuff, fd->GetFullFileName()) - 5;
+				Text::String *s = fd->GetFullFileName();
+				sptr = Text::StrConcatC(sbuff, s->v, s->leng - 5);
 				while (true)
 				{
 					Text::StrConcat(Text::StrInt32(sptr, stmId), (const UTF8Char*)".vob");

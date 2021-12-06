@@ -435,28 +435,28 @@ void SSWR::AVIRead::AVIRHQMPForm::OnMediaOpened()
 #if defined(_WIN64)
 	if (this->qMode == SSWR::AVIRead::AVIRHQMPForm::QM_HQ)
 	{
-		Text::StrConcat(Text::StrConcat(sbuff, (const UTF8Char*)"HQMP3HQ64 - "), this->GetOpenedFile()->GetSourceNameObj());
+		this->GetOpenedFile()->GetSourceNameObj()->ConcatTo(Text::StrConcat(sbuff, (const UTF8Char*)"HQMP3HQ64 - "));
 	}
 	else if (this->qMode == SSWR::AVIRead::AVIRHQMPForm::QM_UQ)
 	{
-		Text::StrConcat(Text::StrConcat(sbuff, (const UTF8Char*)"HQMP3UQ64 - "), this->GetOpenedFile()->GetSourceNameObj());
+		this->GetOpenedFile()->GetSourceNameObj()->ConcatTo(Text::StrConcat(sbuff, (const UTF8Char*)"HQMP3UQ64 - "));
 	}
 	else
 	{
-		Text::StrConcat(Text::StrConcat(sbuff, (const UTF8Char*)"HQMP3_64 - "), this->GetOpenedFile()->GetSourceNameObj());
+		this->GetOpenedFile()->GetSourceNameObj()->ConcatTo(Text::StrConcat(sbuff, (const UTF8Char*)"HQMP3_64 - "));
 	}
 #else
 	if (this->qMode == SSWR::AVIRead::AVIRHQMPForm::QM_HQ)
 	{
-		Text::StrConcat(Text::StrConcat(sbuff, (const UTF8Char*)"HQMP3HQ - "), this->GetOpenedFile()->GetSourceNameObj());
+		this->GetOpenedFile()->GetSourceNameObj()->ConcatTo(Text::StrConcat(sbuff, (const UTF8Char*)"HQMP3HQ - "));
 	}
 	else if (this->qMode == SSWR::AVIRead::AVIRHQMPForm::QM_UQ)
 	{
-		Text::StrConcat(Text::StrConcat(sbuff, (const UTF8Char*)"HQMP3UQ - "), this->GetOpenedFile()->GetSourceNameObj());
+		this->GetOpenedFile()->GetSourceNameObj()->ConcatTo(Text::StrConcat(sbuff, (const UTF8Char*)"HQMP3UQ - "));
 	}
 	else
 	{
-		Text::StrConcat(Text::StrConcat(sbuff, (const UTF8Char*)"HQMP3 - "), this->GetOpenedFile()->GetSourceNameObj());
+		this->GetOpenedFile()->GetSourceNameObj()->ConcatTo(Text::StrConcat(sbuff, (const UTF8Char*)"HQMP3 - "));
 	}
 #endif
 	this->SetText(sbuff);

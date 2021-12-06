@@ -3,22 +3,13 @@
 #include "Text/MyString.h"
 #include "Media/AudioBlockSource.h"
 
-Media::AudioBlockSource::AudioBlockSource(IO::IStreamData *fd, Media::AudioFormat *format, const UTF8Char *name, UInt32 samplePerBlock)
+Media::AudioBlockSource::AudioBlockSource(IO::IStreamData *fd, Media::AudioFormat *format, Text::String *name, UInt32 samplePerBlock)
 {
 	this->format.FromAudioFormat(format);
 
 	this->data = fd->GetPartialData(0, fd->GetDataSize());
 	this->maxBlockSize = 0;
-
-	if (name)
-	{
-		this->name = Text::StrCopyNew(name);
-	}
-	else
-	{
-		this->name = 0;
-	}
-
+	this->name = SCOPY_STRING(name);
 	this->readEvt = 0;
 	this->readBlock = 0;
 
@@ -31,10 +22,7 @@ Media::AudioBlockSource::AudioBlockSource(IO::IStreamData *fd, Media::AudioForma
 Media::AudioBlockSource::~AudioBlockSource()
 {
 	DEL_CLASS(this->data);
-	if (this->name)
-	{
-		Text::StrDelNew(this->name);
-	}
+	SDEL_STRING(this->name);
 	MemFree(this->blocks);
 }
 
@@ -42,7 +30,7 @@ UTF8Char *Media::AudioBlockSource::GetSourceName(UTF8Char *buff)
 {
 	if (this->name == 0)
 		return 0;
-	return Text::StrConcat(buff, this->name);
+	return this->name->ConcatTo(buff);
 }
 
 Bool Media::AudioBlockSource::CanSeek()

@@ -9,10 +9,20 @@
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 #include "Text/MyStringW.h"
+#include "Text/UTF8Reader.h"
+
+DB::CSVFile::CSVFile(Text::String *fileName, UInt32 codePage) : DB::ReadingDB(fileName)
+{
+	this->fileName = fileName->Clone();
+	this->stm = 0;
+	this->codePage = codePage;
+	this->noHeader = false;
+	this->nullIfEmpty = false;
+}
 
 DB::CSVFile::CSVFile(const UTF8Char *fileName, UInt32 codePage) : DB::ReadingDB(fileName)
 {
-	this->fileName = Text::StrCopyNew(fileName);
+	this->fileName = Text::String::New(fileName);
 	this->stm = 0;
 	this->codePage = codePage;
 	this->noHeader = false;
@@ -21,7 +31,7 @@ DB::CSVFile::CSVFile(const UTF8Char *fileName, UInt32 codePage) : DB::ReadingDB(
 
 DB::CSVFile::CSVFile(IO::SeekableStream *stm, UInt32 codePage) : DB::ReadingDB(stm->GetSourceNameObj())
 {
-	this->fileName = Text::StrCopyNew(stm->GetSourceNameObj());
+	this->fileName = stm->GetSourceNameObj()->Clone();
 	this->stm = stm;
 	this->codePage = codePage;
 	this->noHeader = false;
@@ -30,7 +40,7 @@ DB::CSVFile::CSVFile(IO::SeekableStream *stm, UInt32 codePage) : DB::ReadingDB(s
 
 DB::CSVFile::~CSVFile()
 {
-	Text::StrDelNew(this->fileName);
+	this->fileName->Release();
 }
 
 UOSInt DB::CSVFile::GetTableNames(Data::ArrayList<const UTF8Char*> *names)
@@ -43,22 +53,36 @@ DB::DBReader *DB::CSVFile::GetTableData(const UTF8Char *tableName, Data::ArrayLi
 {
 	if (this->stm)
 	{
-		IO::StreamReader *rdr;
+		IO::Reader *rdr;
 		DB::CSVReader *r;
 		this->stm->SeekFromBeginning(0);
-		NEW_CLASS(rdr, IO::StreamReader(this->stm, codePage));
+		if (codePage == 65001)
+		{
+			NEW_CLASS(rdr, Text::UTF8Reader(this->stm));
+		}
+		else
+		{
+			NEW_CLASS(rdr, IO::StreamReader(this->stm, codePage));
+		}
 		NEW_CLASS(r, DB::CSVReader(0, rdr, this->noHeader, this->nullIfEmpty));
 		return r;
 	}
 	else if (this->fileName)
 	{
-		IO::StreamReader *rdr;
+		IO::Reader *rdr;
 		DB::CSVReader *r;
 		IO::FileStream *fs;
-		NEW_CLASS(fs, IO::FileStream(this->fileName, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
+		NEW_CLASS(fs, IO::FileStream(this->fileName->v, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
 		if (!fs->IsError())
 		{
-			NEW_CLASS(rdr, IO::StreamReader(fs, codePage));
+			if (codePage == 65001)
+			{
+				NEW_CLASS(rdr, Text::UTF8Reader(fs));
+			}
+			else
+			{
+				NEW_CLASS(rdr, IO::StreamReader(fs, codePage));
+			}
 			NEW_CLASS(r, DB::CSVReader(fs, rdr, this->noHeader, this->nullIfEmpty));
 			return r;
 		}
@@ -98,7 +122,7 @@ void DB::CSVFile::SetNullIfEmpty(Bool nullIfEmpty)
 	this->nullIfEmpty = nullIfEmpty;
 }
 
-DB::CSVReader::CSVReader(IO::Stream *stm, IO::StreamReader *rdr, Bool noHeader, Bool nullIfEmpty)
+DB::CSVReader::CSVReader(IO::Stream *stm, IO::Reader *rdr, Bool noHeader, Bool nullIfEmpty)
 {
 	this->stm = stm;
 	this->rdr = rdr;
@@ -217,11 +241,18 @@ Bool DB::CSVReader::ReadNext()
 		return true;
 	}
 
-	sptr = this->rdr->ReadLine(this->row, 16384);
-	if (sptr == 0)
+	while (true)
 	{
-		this->nCol = 0;
-		return false;
+		sptr = this->rdr->ReadLine(this->row, 16384);
+		if (sptr == 0)
+		{
+			this->nCol = 0;
+			return false;
+		}
+		else if (sptr != this->row)
+		{
+			break;
+		}
 	}
 
 	nCol = 1;

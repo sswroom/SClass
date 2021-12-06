@@ -557,7 +557,7 @@ void __stdcall SSWR::AVIRead::AVIRImageForm::OnInfoICCClicked(void *userObj)
 			{
 				SSWR::AVIRead::AVIRICCInfoForm *frm;
 				NEW_CLASS(frm, SSWR::AVIRead::AVIRICCInfoForm(0, me->ui, me->core));
-				frm->SetICCProfile(icc, me->imgList->GetSourceNameObj());
+				frm->SetICCProfile(icc, me->imgList->GetSourceNameObj()->v);
 				me->core->ShowForm(frm);
 			}
 		}
@@ -598,7 +598,7 @@ SSWR::AVIRead::AVIRImageForm::AVIRImageForm(UI::GUIClientControl *parent, UI::GU
 {
 	this->SetFont(0, 8.25, false);
 	UTF8Char sbuff[512];
-	Text::StrConcat(Text::StrConcat(sbuff, (const UTF8Char*)"Image Form - "), imgList->GetSourceNameObj());
+	imgList->GetSourceNameObj()->ConcatTo(Text::StrConcat(sbuff, (const UTF8Char*)"Image Form - "));
 	this->SetText(sbuff);
 	this->SetFormState(UI::GUIForm::FS_MAXIMIZED);
 

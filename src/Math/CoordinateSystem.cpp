@@ -5,6 +5,12 @@
 #include "Math/ProjectedCoordinateSystem.h"
 #include "Text/MyString.h"
 
+Math::CoordinateSystem::CoordinateSystem(Text::String *sourceName, UInt32 srid, const UTF8Char *csysName) : IO::ParsedObject(sourceName)
+{
+	this->csysName = Text::StrCopyNew(csysName);
+	this->srid = srid;
+}
+
 Math::CoordinateSystem::CoordinateSystem(const UTF8Char *sourceName, UInt32 srid, const UTF8Char *csysName) : IO::ParsedObject(sourceName)
 {
 	this->csysName = Text::StrCopyNew(csysName);
@@ -28,13 +34,13 @@ Bool Math::CoordinateSystem::Equals(Math::CoordinateSystem *csys)
 	Math::CoordinateSystem::CoordinateSystemType cst = this->GetCoordSysType();
 	if (cst != csys->GetCoordSysType())
 		return false;
-	if (cst == Math::CoordinateSystem::CST_GEOGRAPHIC)
+	if (cst == Math::CoordinateSystem::CoordinateSystemType::Geographic)
 	{
 		Math::GeographicCoordinateSystem *gcs1 = (Math::GeographicCoordinateSystem*)this;
 		Math::GeographicCoordinateSystem *gcs2 = (Math::GeographicCoordinateSystem*)csys;
 		return gcs1->GetEllipsoid()->Equals(gcs2->GetEllipsoid());
 	}
-	else if (cst == Math::CoordinateSystem::CST_POINTMAPPING)
+	else if (cst == Math::CoordinateSystem::CoordinateSystemType::PointMapping)
 	{
 		return false;
 	}

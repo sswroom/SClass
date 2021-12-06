@@ -44,17 +44,25 @@ OSInt __stdcall Map::IMapDrawLayer::ObjectCompare(void *obj1, void *obj2)
 	}
 }
 
+Map::IMapDrawLayer::IMapDrawLayer(Text::String *sourceName, UOSInt nameCol, Text::String *layerName) : DB::ReadingDB(sourceName)//IO::ParsedObject(sourceName)
+{
+	this->nameCol = nameCol;
+	this->layerName = SCOPY_STRING(layerName);
+	this->csys = 0;
+
+	this->pgColor = 0;
+	this->lineColor = 0;
+	this->lineWidth = 0;
+	this->iconImg = 0;
+	this->iconSpotX = 0;
+	this->iconSpotY = 0;
+	this->flags = 0;
+}
+
 Map::IMapDrawLayer::IMapDrawLayer(const UTF8Char *sourceName, UOSInt nameCol, const UTF8Char *layerName) : DB::ReadingDB(sourceName)//IO::ParsedObject(sourceName)
 {
 	this->nameCol = nameCol;
-	if (layerName)
-	{
-		this->layerName = Text::StrCopyNew(layerName);
-	}
-	else
-	{
-		this->layerName = 0;
-	}
+	this->layerName = Text::String::New(layerName);
 	this->csys = 0;
 
 	this->pgColor = 0;
@@ -70,7 +78,7 @@ Map::IMapDrawLayer::~IMapDrawLayer()
 {
 	SDEL_CLASS(this->csys);
 	SDEL_CLASS(this->iconImg);
-	SDEL_TEXT(this->layerName);
+	SDEL_STRING(this->layerName);
 }
 
 void Map::IMapDrawLayer::SetCurrScale(Double scale)
@@ -124,7 +132,7 @@ void Map::IMapDrawLayer::RemoveUpdatedHandler(UpdatedHandler hdlr, void *obj)
 
 UOSInt Map::IMapDrawLayer::GetTableNames(Data::ArrayList<const UTF8Char*> *names)
 {
-	names->Add(this->sourceName);
+	names->Add(this->sourceName->v);
 	return 1;
 }
 
@@ -159,7 +167,7 @@ void Map::IMapDrawLayer::SetNameCol(UOSInt nameCol)
 	this->nameCol = nameCol;
 }
 
-const UTF8Char *Map::IMapDrawLayer::GetName()
+Text::String *Map::IMapDrawLayer::GetName()
 {
 	if (this->layerName)
 	{

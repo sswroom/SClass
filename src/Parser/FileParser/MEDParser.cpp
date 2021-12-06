@@ -46,7 +46,7 @@ IO::ParsedObject *Parser::FileParser::MEDParser::ParseFile(IO::IStreamData *fd, 
 	UTF8Char fileName[256];
 	Text::Encoding enc(932);
 
-	if (!Text::StrEndsWithICase(fd->GetFullName(), (const UTF8Char*)".MED"))
+	if (!fd->GetFullName()->EndsWithICase((const UTF8Char*)".MED"))
 	{
 		return 0;
 	}

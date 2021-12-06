@@ -1,7 +1,8 @@
 #ifndef _SM_TEXT_CPP_CPPPARSESTATUS
 #define _SM_TEXT_CPP_CPPPARSESTATUS
+#include "Data/ArrayListICaseString.h"
 #include "Data/StringUTF8Map.h"
-#include "Data/ArrayListICaseStrUTF8.h"
+#include "Text/String.h"
 #include "Text/StringBuilderUTF8.h"
 
 namespace Text
@@ -18,7 +19,7 @@ namespace Text
 				const UTF8Char *defineName;
 				const UTF8Char *defineVal;
 				const UTF8Char *defineParam;
-				const UTF8Char *fileName;
+				Text::String *fileName;
 				Int32 lineNum;
 				Bool undefined;
 			} DefineInfo;
@@ -46,7 +47,7 @@ namespace Text
 
 			typedef struct
 			{
-				const UTF8Char *fileName;
+				Text::String *fileName;
 				Int32 lineNum;
 				Bool lineStart;
 				ParserMode currMode;
@@ -57,14 +58,15 @@ namespace Text
 				UTF8Char *lineBuffWS;
 			} FileParseStatus;
 		private:
-			const UTF8Char *fileName;
+			Text::String *fileName;
 			Data::StringUTF8Map<DefineInfo*> *defines;
 			Data::ArrayList<FileParseStatus*> *statuses;
-			Data::ArrayListICaseStrUTF8 *fileNames;
+			Data::ArrayListICaseString *fileNames;
 
 			void FreeDefineInfo(DefineInfo *definfo);
 			void FreeFileStatus(FileParseStatus *fileStatus);
 		public:
+			CppParseStatus(Text::String *rootFile);
 			CppParseStatus(const UTF8Char *rootFile);
 			~CppParseStatus();
 
@@ -82,8 +84,8 @@ namespace Text
 			Bool GetDefineInfo(UOSInt index, DefineInfo *defInfo);
 
 			UOSInt GetFileCount();
-			const UTF8Char *GetFileName(UOSInt index);
-			const UTF8Char *GetCurrCodeFile();
+			Text::String *GetFileName(UOSInt index);
+			Text::String *GetCurrCodeFile();
 		};
 	}
 }

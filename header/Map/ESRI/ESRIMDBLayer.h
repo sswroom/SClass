@@ -29,7 +29,10 @@ namespace Map
 
 		private:
 			Data::Int32Map<const UTF8Char **> *ReadNameArr();
+
+			void Init(DB::SharedDBConn *conn, UInt32 srid, const UTF8Char *tableName);
 		public:
+			ESRIMDBLayer(DB::SharedDBConn *conn, UInt32 srid, Text::String *sourceName, const UTF8Char *tableName);
 			ESRIMDBLayer(DB::SharedDBConn *conn, UInt32 srid, const UTF8Char *sourceName, const UTF8Char *tableName);
 			virtual ~ESRIMDBLayer();
 

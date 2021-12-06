@@ -9,6 +9,13 @@ void IO::BTScanLog::FreeDev(DevEntry* dev)
 	MemFree(dev);
 }
 
+IO::BTScanLog::BTScanLog(Text::String *sourceName) : IO::ParsedObject(sourceName)
+{
+	NEW_CLASS(this->pubDevs, Data::UInt64Map<DevEntry*>());
+	NEW_CLASS(this->randDevs, Data::UInt64Map<DevEntry*>());
+	NEW_CLASS(this->logs, Data::ArrayList<LogEntry*>());
+}
+
 IO::BTScanLog::BTScanLog(const UTF8Char *sourceName) : IO::ParsedObject(sourceName)
 {
 	NEW_CLASS(this->pubDevs, Data::UInt64Map<DevEntry*>());

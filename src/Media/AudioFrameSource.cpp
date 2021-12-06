@@ -3,6 +3,28 @@
 #include "Text/MyString.h"
 #include "Media/AudioFrameSource.h"
 
+Media::AudioFrameSource::AudioFrameSource(IO::IStreamData *fd, Media::AudioFormat *format, Text::String *name)
+{
+	this->format.FromAudioFormat(format);
+	if (this->format.frequency == 0)
+	{
+		this->format.frequency = 48000;
+	}
+
+	this->data = fd->GetPartialData(0, fd->GetDataSize());
+	this->maxBlockSize = 0;
+	this->name = SCOPY_STRING(name);
+	this->readEvt = 0;
+	this->readBlock = 0;
+	this->readBlockOfst = 0;
+
+	this->blockCnt = 0;
+	this->maxBlockCnt = 40;
+	this->totalSampleCnt = 0;
+	this->totalSize = 0;
+	this->blocks = MemAlloc(Media::AudioFrameSource::AudioFrame, this->maxBlockCnt);
+}
+
 Media::AudioFrameSource::AudioFrameSource(IO::IStreamData *fd, Media::AudioFormat *format, const UTF8Char *name)
 {
 	this->format.FromAudioFormat(format);
@@ -13,16 +35,7 @@ Media::AudioFrameSource::AudioFrameSource(IO::IStreamData *fd, Media::AudioForma
 
 	this->data = fd->GetPartialData(0, fd->GetDataSize());
 	this->maxBlockSize = 0;
-
-	if (name)
-	{
-		this->name = Text::StrCopyNew(name);
-	}
-	else
-	{
-		this->name = 0;
-	}
-
+	this->name = Text::String::New(name);
 	this->readEvt = 0;
 	this->readBlock = 0;
 	this->readBlockOfst = 0;
@@ -37,10 +50,7 @@ Media::AudioFrameSource::AudioFrameSource(IO::IStreamData *fd, Media::AudioForma
 Media::AudioFrameSource::~AudioFrameSource()
 {
 	DEL_CLASS(this->data);
-	if (this->name)
-	{
-		Text::StrDelNew(this->name);
-	}
+	SDEL_STRING(this->name);
 	MemFree(this->blocks);
 }
 
@@ -48,7 +58,7 @@ UTF8Char *Media::AudioFrameSource::GetSourceName(UTF8Char *buff)
 {
 	if (this->name == 0)
 		return 0;
-	return Text::StrConcat(buff, this->name);
+	return this->name->ConcatTo(buff);
 }
 
 Bool Media::AudioFrameSource::CanSeek()

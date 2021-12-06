@@ -60,7 +60,7 @@ UOSInt IO::StmData::BlockStreamData::GetRealData(UInt64 offset, UOSInt length, U
 	return totalLength;
 }
 
-const UTF8Char *IO::StmData::BlockStreamData::GetFullName()
+Text::String *IO::StmData::BlockStreamData::GetFullName()
 {
 	return this->sd->GetFullName();
 }

@@ -468,7 +468,7 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::OnTimerTick(void *userObj)
 void SSWR::AVIRead::AVIRGISForm::UpdateTitle()
 {
 	UTF8Char sbuff[512];
-	Text::StrConcat(Text::StrConcat(sbuff, (const UTF8Char*)"GISForm - "), this->env->GetSourceNameObj());
+	this->env->GetSourceNameObj()->ConcatTo(Text::StrConcat(sbuff, (const UTF8Char*)"GISForm - "));
 	this->SetText(sbuff);
 }
 

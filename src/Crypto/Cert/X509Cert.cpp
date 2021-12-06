@@ -3,6 +3,11 @@
 #include "Crypto/Cert/X509Key.h"
 #include "Net/ASN1Util.h"
 
+Crypto::Cert::X509Cert::X509Cert(Text::String *sourceName, const UInt8 *buff, UOSInt buffSize) : Crypto::Cert::X509File(sourceName, buff, buffSize)
+{
+
+}
+
 Crypto::Cert::X509Cert::X509Cert(const UTF8Char *sourceName, const UInt8 *buff, UOSInt buffSize) : Crypto::Cert::X509File(sourceName, buff, buffSize)
 {
 

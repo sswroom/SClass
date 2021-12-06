@@ -313,7 +313,7 @@ SSWR::AVIRead::AVIRMediaForm::AVIRMediaForm(UI::GUIClientControl *parent, UI::GU
 {
 	this->SetFont(0, 8.25, false);
 	UTF8Char sbuff[512];
-	Text::StrConcat(Text::StrConcat(sbuff, (const UTF8Char*)"Media Form - "), mediaFile->GetSourceNameObj());
+	mediaFile->GetSourceNameObj()->ConcatTo(Text::StrConcat(sbuff, (const UTF8Char*)"Media Form - "));
 	this->SetText(sbuff);
 
 	this->core = core;

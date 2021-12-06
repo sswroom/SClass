@@ -12,6 +12,26 @@
 #include "Text/MyStringFloat.h"
 #include "Text/MyStringW.h"
 
+Map::GPSTrack::GPSTrack(Text::String *sourceName, Bool hasAltitude, UInt32 codePage, Text::String *layerName) : Map::IMapDrawLayer(sourceName, 0, layerName)
+{
+	this->codePage = codePage;
+	this->currTrackName = 0;
+	this->extraParser = 0;
+	NEW_CLASS(this->recMut, Sync::Mutex());
+	NEW_CLASS(this->currTimes, Data::ArrayListInt64());
+	NEW_CLASS(this->currRecs, Data::ArrayList<Map::GPSTrack::GPSRecord*>());
+	NEW_CLASS(this->currTracks, Data::ArrayList<TrackRecord*>());
+	NEW_CLASS(this->currExtraData, Data::ArrayList<const UInt8*>());
+	NEW_CLASS(this->currExtraSize, Data::ArrayList<UOSInt>());
+	this->tmpRecord = 0;
+	NEW_CLASS(this->updMut, Sync::Mutex());
+	NEW_CLASS(this->updHdlrs, Data::ArrayList<UpdatedHandler>());
+	NEW_CLASS(this->updObjs, Data::ArrayList<void *>());
+	this->maxLat = this->minLat = this->maxLon = this->minLon = 0;
+	this->hasAltitude = hasAltitude;
+	this->csys = Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84);
+}
+
 Map::GPSTrack::GPSTrack(const UTF8Char *sourceName, Bool hasAltitude, UInt32 codePage, const UTF8Char *layerName) : Map::IMapDrawLayer(sourceName, 0, layerName)
 {
 	this->codePage = codePage;
@@ -684,7 +704,7 @@ void Map::GPSTrack::RemoveUpdatedHandler(UpdatedHandler hdlr, void *obj)
 
 UOSInt Map::GPSTrack::GetTableNames(Data::ArrayList<const UTF8Char*> *names)
 {
-	names->Add(this->sourceName);
+	names->Add(this->sourceName->v);
 	names->Add((const UTF8Char*)"GPSData");
 	return 2;
 }

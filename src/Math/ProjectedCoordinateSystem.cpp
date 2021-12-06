@@ -6,6 +6,17 @@
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 
+Math::ProjectedCoordinateSystem::ProjectedCoordinateSystem(Text::String *sourceName, UInt32 srid, const UTF8Char *projName, Double falseEasting, Double falseNorthing, Double centralMeridian, Double latitudeOfOrigin, Double scaleFactor, Math::GeographicCoordinateSystem *gcs, Math::CoordinateSystem::UnitType unit) : Math::CoordinateSystem(sourceName, srid, projName)
+{
+	this->falseEasting = falseEasting;
+	this->falseNorthing = falseNorthing;
+	this->centralMeridian = centralMeridian;
+	this->latitudeOfOrigin = latitudeOfOrigin;
+	this->scaleFactor = scaleFactor;
+	this->gcs = gcs;
+	this->unit = unit;
+}
+
 Math::ProjectedCoordinateSystem::ProjectedCoordinateSystem(const UTF8Char *sourceName, UInt32 srid, const UTF8Char *projName, Double falseEasting, Double falseNorthing, Double centralMeridian, Double latitudeOfOrigin, Double scaleFactor, Math::GeographicCoordinateSystem *gcs, Math::CoordinateSystem::UnitType unit) : Math::CoordinateSystem(sourceName, srid, projName)
 {
 	this->falseEasting = falseEasting;

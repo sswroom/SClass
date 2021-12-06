@@ -37,7 +37,7 @@ IO::ParsedObject *Parser::FileParser::SPDParser::ParseFile(IO::IStreamData *fd, 
 	UOSInt i;
 	if (!fd->IsFullFile())
 		return 0;
-	Text::StrConcat(sbuff, fd->GetFullFileName());
+	fd->GetFullFileName()->ConcatTo(sbuff);
 	i = Text::StrLastIndexOf(sbuff, '.');
 	if (i == INVALID_INDEX || !Text::StrEqualsICase(&sbuff[i], (const UTF8Char*)".SPD"))
 	{

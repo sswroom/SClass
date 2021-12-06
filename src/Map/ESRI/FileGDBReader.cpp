@@ -63,7 +63,7 @@ Map::ESRI::FileGDBReader::FileGDBReader(IO::IStreamData *fd, UInt64 ofst, FileGD
 			k = this->tableInfo->fields->GetCount();
 			while (k-- > 0)
 			{
-				if (Text::StrEqualsICase(name, this->tableInfo->fields->GetItem(k)->name))
+				if (this->tableInfo->fields->GetItem(k)->name->Equals(name))
 				{
 					found = true;
 					break;
@@ -1115,7 +1115,7 @@ Data::VariItem *Map::ESRI::FileGDBReader::GetNewItem(const UTF8Char *name)
 		{
 			j = this->columnIndices->GetItem(i);
 			field = this->tableInfo->fields->GetItem(j);
-			if (field && Text::StrEqualsICase(name, field->name))
+			if (field && field->name->EqualsICase(name))
 			{
 				fieldIndex = j;
 				colIndex = i;
@@ -1129,7 +1129,7 @@ Data::VariItem *Map::ESRI::FileGDBReader::GetNewItem(const UTF8Char *name)
 		while (i-- > 0)
 		{
 			field = this->tableInfo->fields->GetItem(i);
-			if (field && Text::StrEqualsICase(name, field->name))
+			if (field && field->name->EqualsICase(name))
 			{
 				fieldIndex = i;
 				colIndex = i;
@@ -1215,7 +1215,7 @@ UTF8Char *Map::ESRI::FileGDBReader::GetName(UOSInt colIndex, UTF8Char *buff)
 	Map::ESRI::FileGDBFieldInfo *field = this->tableInfo->fields->GetItem(fieldIndex);
 	if (field && field->name)
 	{
-		return Text::StrConcat(buff, field->name);
+		return field->name->ConcatTo(buff);
 	}
 	return 0;
 }

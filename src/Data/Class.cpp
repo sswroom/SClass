@@ -5,14 +5,14 @@
 
 void Data::Class::FreeFieldInfo(FieldInfo *field)
 {
-	Text::StrDelNew(field->name);
+	field->name->Release();
 	MemFree(field);
 }
 
 Data::Class::Class(void *refObj)
 {
 	this->refObj = refObj;
-	NEW_CLASS(this->fields, Data::StringUTF8Map<FieldInfo*>());
+	NEW_CLASS(this->fields, Data::StringMap<FieldInfo*>());
 }
 
 Data::Class::~Class()
@@ -28,7 +28,7 @@ UOSInt Data::Class::AddField(const UTF8Char *name, OSInt ofst, Data::VariItem::I
 	if (field == 0)
 	{
 		field = MemAlloc(FieldInfo, 1);
-		field->name = Text::StrCopyNew(name);
+		field->name = Text::String::New(name);
 		field->ofst = ofst;
 		field->itemType = itemType;
 		this->fields->Put(field->name, field);
@@ -125,7 +125,7 @@ UOSInt Data::Class::GetFieldCount()
 	return this->fields->GetCount();
 }
 
-const UTF8Char *Data::Class::GetFieldName(UOSInt index)
+Text::String *Data::Class::GetFieldName(UOSInt index)
 {
 	FieldInfo *field = this->fields->GetValues()->GetItem(index);
 	if (field)
@@ -144,6 +144,18 @@ Data::VariItem *Data::Class::GetNewValue(UOSInt index, void *obj)
 	}
 	void *valPtr = (void*)(field->ofst + (UInt8*)obj);
 	return Data::VariItem::NewFromPtr(valPtr, field->itemType);
+}
+
+Bool Data::Class::GetValue(Data::VariItem *itm, UOSInt index, void *obj)
+{
+	FieldInfo *field = this->fields->GetValues()->GetItem(index);
+	if (field == 0)
+	{
+		return false;
+	}
+	void *valPtr = (void*)(field->ofst + (UInt8*)obj);
+	Data::VariItem::SetFromPtr(itm, valPtr, field->itemType);
+	return true;
 }
 
 Bool Data::Class::SetField(void *obj, UOSInt index, Data::VariItem *item)
@@ -223,14 +235,14 @@ void Data::Class::ToCppClassHeader(const UTF8Char *clsName, UOSInt tabLev, Text:
 		sb->Append(cppType);
 		sb->AppendChar(' ', 1);
 		sb->Append((const UTF8Char*)"Get");
-		sb->AppendChar(Text::CharUtil::ToUpper(field->name[0]), 1);
-		sb->Append(field->name + 1);
+		sb->AppendChar(Text::CharUtil::ToUpper(field->name->v[0]), 1);
+		sb->Append(field->name->v + 1);
 		sb->Append((const UTF8Char*)"();\r\n");
 
 		sb->AppendChar('\t', tabLev + 1);
 		sb->Append((const UTF8Char*)"void Set");
-		sb->AppendChar(Text::CharUtil::ToUpper(field->name[0]), 1);
-		sb->Append(field->name + 1);
+		sb->AppendChar(Text::CharUtil::ToUpper(field->name->v[0]), 1);
+		sb->Append(field->name->v + 1);
 		sb->AppendChar('(', 1);
 		sb->Append(cppType);
 		sb->AppendChar(' ', 1);
@@ -346,8 +358,8 @@ void Data::Class::ToCppClassSource(const UTF8Char *clsPrefix, const UTF8Char *cl
 		sb->Append(clsPrefix);
 		sb->Append(clsName);
 		sb->Append((const UTF8Char*)"::Get");
-		sb->AppendChar(Text::CharUtil::ToUpper(field->name[0]), 1);
-		sb->Append(field->name + 1);
+		sb->AppendChar(Text::CharUtil::ToUpper(field->name->v[0]), 1);
+		sb->Append(field->name->v + 1);
 		sb->Append((const UTF8Char*)"()\r\n");
 		sb->AppendChar('\t', tabLev);
 		sb->Append((const UTF8Char*)"{\r\n");
@@ -364,8 +376,8 @@ void Data::Class::ToCppClassSource(const UTF8Char *clsPrefix, const UTF8Char *cl
 		sb->Append(clsPrefix);
 		sb->Append(clsName);
 		sb->Append((const UTF8Char*)"::Set");
-		sb->AppendChar(Text::CharUtil::ToUpper(field->name[0]), 1);
-		sb->Append(field->name + 1);
+		sb->AppendChar(Text::CharUtil::ToUpper(field->name->v[0]), 1);
+		sb->Append(field->name->v + 1);
 		sb->AppendChar('(', 1);
 		sb->Append(cppType);
 		sb->AppendChar(' ', 1);

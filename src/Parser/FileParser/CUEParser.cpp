@@ -57,10 +57,7 @@ IO::ParsedObject *Parser::FileParser::CUEParser::ParseFile(IO::IStreamData *fd, 
 	UInt32 lastTime;
 	UOSInt i;
 	Bool errorFound = false;
-	i = Text::StrLastIndexOf(fd->GetFullName(), '.');
-	if (i == INVALID_INDEX)
-		return 0;
-	if (Text::StrCompareICase(&(fd->GetFullName())[i + 1], (const UTF8Char*)"CUE") != 0)
+	if (!fd->GetFullName()->EndsWithICase((const UTF8Char*)".CUE"))
 		return 0;
 
 	i = 100;
@@ -146,7 +143,7 @@ IO::ParsedObject *Parser::FileParser::CUEParser::ParseFile(IO::IStreamData *fd, 
 		IO::ParserType pt;
 		IO::ParsedObject *pobj;
 
-		Text::StrConcat(sbuff, fd->GetFullName());
+		fd->GetFullName()->ConcatTo(sbuff);
 		IO::Path::AppendPath(sbuff, fileName);
 		NEW_CLASS(data, IO::StmData::FileData(sbuff, false));
 		pobj = this->parsers->ParseFile(data, &pt);

@@ -15,34 +15,18 @@
 
 typedef struct
 {
-	const UTF8Char *fileName;
+	Text::String *fileName;
 	Int32 hand;
 } ClassData;
 
-IO::FileStream::FileStream(const UTF8Char *fileName, FileMode mode, FileShare share, IO::FileStream::BufferType buffType) : IO::SeekableStream(fileName)
+void IO::FileStream::InitStream(const WChar *fileName, FileMode mode, FileShare share, BufferType buffType)
 {
-	this->handle = 0;
-	if (fileName == 0)
-	{
-		this->currPos = 0;
-		this->handle = 0;
-		return;
-	}
-	else if (*fileName == 0)
-	{
-		this->currPos = 0;
-		this->handle = 0;
-		return;
-	}
-
+	ClassData *clsData = (ClassData*)this->handle;
 	int flags = 0;
 #if defined(O_BINARY)
 	flags |= O_BINARY;
 #endif
 	mode_t opmode = S_IRUSR | S_IWUSR;
-	ClassData *clsData = MemAlloc(ClassData, 1);
-	this->handle = clsData;
-	clsData->fileName = Text::StrCopyNew(fileName);
 
 	if (mode == FileMode::Create)
 	{
@@ -87,9 +71,9 @@ IO::FileStream::FileStream(const UTF8Char *fileName, FileMode mode, FileShare sh
 	}
 
 #if defined(__USE_LARGEFILE64)
-	clsData->hand = open64((const Char*)fileName, flags, opmode);
+	clsData->hand = open64((const Char*)clsData->fileName->v, flags, opmode);
 #else
-	clsData->hand = open((const Char*)fileName, flags, opmode);
+	clsData->hand = open((const Char*)clsData->fileName->v, flags, opmode);
 #endif
 	if (clsData->hand == -1)
 	{
@@ -105,13 +89,41 @@ IO::FileStream::FileStream(const UTF8Char *fileName, FileMode mode, FileShare sh
 	}
 }
 
+IO::FileStream::FileStream(Text::String *fileName, FileMode mode, FileShare share, BufferType buffType) : IO::SeekableStream(fileName)
+{
+	if (fileName == 0 || fileName->v[0] == 0)
+	{
+		this->currPos = 0;
+		this->handle = 0;
+		return;
+	}
+	ClassData *clsData = MemAlloc(ClassData, 1);
+	this->handle = clsData;
+	clsData->fileName = fileName->Clone();
+	this->InitStream(0, mode, share, buffType);
+}
+
+IO::FileStream::FileStream(const UTF8Char *fileName, FileMode mode, FileShare share, IO::FileStream::BufferType buffType) : IO::SeekableStream(fileName)
+{
+	if (fileName == 0 || fileName[0] == 0)
+	{
+		this->currPos = 0;
+		this->handle = 0;
+		return;
+	}
+	ClassData *clsData = MemAlloc(ClassData, 1);
+	this->handle = clsData;
+	clsData->fileName = Text::String::New(fileName);
+	this->InitStream(0, mode, share, buffType);
+}
+
 IO::FileStream::~FileStream()
 {
 	Close();
 	ClassData *clsData = (ClassData*)this->handle;
 	if (clsData)
 	{
-		Text::StrDelNew(clsData->fileName);
+		clsData->fileName->Release();
 		MemFree(clsData);
 	}
 }

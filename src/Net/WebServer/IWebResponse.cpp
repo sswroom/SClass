@@ -7,6 +7,10 @@
 #include "Text/StringBuilderUTF8.h"
 #include "Text/TextEnc/URIEncoding.h"
 
+Net::WebServer::IWebResponse::IWebResponse(Text::String *sourceName) : IO::Stream(sourceName)
+{
+}
+
 Net::WebServer::IWebResponse::IWebResponse(const UTF8Char *sourceName) : IO::Stream(sourceName)
 {
 }

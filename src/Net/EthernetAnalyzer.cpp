@@ -81,6 +81,37 @@ void Net::EthernetAnalyzer::MDNSAdd(Net::DNSClient::RequestAnswer *ans)
 	this->mdnsList->Insert((UOSInt)i, ans);
 }
 
+Net::EthernetAnalyzer::EthernetAnalyzer(IO::Writer *errWriter, AnalyzeType aType, Text::String *name) : IO::ParsedObject(name)
+{
+	this->atype = aType;
+	this->packetCnt = 0;
+	this->packetTotalSize = 0;
+	this->errWriter = errWriter;
+	this->isFirst = true;
+	this->pingv4ReqHdlr = 0;
+	this->pingv4ReqObj = 0;
+	NEW_CLASS(this->ipTranMut, Sync::Mutex());
+	NEW_CLASS(this->ipTranMap, Data::Int64Map<IPTranStatus*>());
+	NEW_CLASS(this->macMut, Sync::Mutex());
+	NEW_CLASS(this->macMap, Data::UInt64Map<MACStatus*>());
+	NEW_CLASS(this->dnsCliInfoMut, Sync::Mutex());
+	NEW_CLASS(this->dnsCliInfos, Data::UInt32Map<DNSClientInfo*>());
+	NEW_CLASS(this->dnsReqv4Mut, Sync::Mutex());
+	NEW_CLASS(this->dnsReqv4Map, Data::ICaseStringUTF8Map<Net::EthernetAnalyzer::DNSRequestResult*>());
+	NEW_CLASS(this->dnsReqv6Mut, Sync::Mutex());
+	NEW_CLASS(this->dnsReqv6Map, Data::ICaseStringUTF8Map<Net::EthernetAnalyzer::DNSRequestResult*>());
+	NEW_CLASS(this->dnsReqOthMut, Sync::Mutex());
+	NEW_CLASS(this->dnsReqOthMap, Data::ICaseStringUTF8Map<Net::EthernetAnalyzer::DNSRequestResult*>());
+	NEW_CLASS(this->dnsTargetMut, Sync::Mutex());
+	NEW_CLASS(this->dnsTargetMap, Data::UInt32Map<Net::EthernetAnalyzer::DNSTargetInfo*>());
+	NEW_CLASS(this->ipLogMut, Sync::Mutex());
+	NEW_CLASS(this->ipLogMap, Data::UInt32Map<Net::EthernetAnalyzer::IPLogInfo*>());
+	NEW_CLASS(this->dhcpMut, Sync::Mutex());
+	NEW_CLASS(this->dhcpMap, Data::UInt64Map<DHCPInfo*>());
+	NEW_CLASS(this->mdnsMut, Sync::Mutex());
+	NEW_CLASS(this->mdnsList, Data::ArrayList<Net::DNSClient::RequestAnswer*>());
+}
+
 Net::EthernetAnalyzer::EthernetAnalyzer(IO::Writer *errWriter, AnalyzeType aType, const UTF8Char *name) : IO::ParsedObject(name)
 {
 	this->atype = aType;

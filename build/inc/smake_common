@@ -1083,6 +1083,8 @@ Data/ArrayListCmp.h: ../../src/Data/ArrayListCmp.cpp
 @ArrayListCmp.o
 Data/ArrayListDbl.h: ../../src/Data/ArrayListDbl.cpp
 @ArrayListDbl.o
+Data/ArrayListICaseString.h: ../../src/Data/ArrayListICaseString.cpp
+@ArrayListICaseString.o
 Data/ArrayListICaseStrUTF8.h: ../../src/Data/ArrayListICaseStrUTF8.cpp
 @ArrayListICaseStrUTF8.o
 Data/ArrayListInt32.h: ../../src/Data/ArrayListInt32.cpp
@@ -1140,6 +1142,7 @@ Data/ReadingList.h:
 Data/ReadonlyArray.h:
 Data/SortableArrayList.h:
 Data/StringCMap.h:
+Data/StringMap.h:
 Data/StringUTF8Map.h:
 Data/SyncArrayList.h:
 Data/SyncLinkedList.h: ../../src/Data/SyncLinkedList.cpp
@@ -3835,8 +3838,9 @@ JWTHandler.o: ../../src/Crypto/Token/JWTHandler.cpp
 JWTParam.o: ../../src/Crypto/Token/JWTParam.cpp
 ArrayListCmp.o: ../../src/Data/ArrayListCmp.cpp
 ArrayListDbl.o: ../../src/Data/ArrayListDbl.cpp
-ArrayListICaseStrW.o: ../../src/Data/ArrayListICaseStrW.cpp
+ArrayListICaseString.o: ../../src/Data/ArrayListICaseString.cpp
 ArrayListICaseStrUTF8.o: ../../src/Data/ArrayListICaseStrUTF8.cpp
+ArrayListICaseStrW.o: ../../src/Data/ArrayListICaseStrW.cpp
 ArrayListInt32.o: ../../src/Data/ArrayListInt32.cpp
 ArrayListInt64.o: ../../src/Data/ArrayListInt64.cpp
 ArrayListStrC.o: ../../src/Data/ArrayListStrC.cpp

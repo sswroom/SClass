@@ -38,6 +38,7 @@ namespace IO
 		static Bool CheckDir(UTF8Char *fullPath, UTF8Char *hashPath, Crypto::Hash::IHash *hash, IO::FileCheck *fchk, IO::IProgressHandler *progress, Bool skipError); //true = error
 
 	public:
+		FileCheck(Text::String *name, CheckType chkType);
 		FileCheck(const UTF8Char *name, CheckType chkType);
 		virtual ~FileCheck();
 

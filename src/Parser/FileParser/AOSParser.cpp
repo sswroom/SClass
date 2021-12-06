@@ -48,7 +48,7 @@ IO::ParsedObject *Parser::FileParser::AOSParser::ParseFile(IO::IStreamData *fd, 
 	UTF8Char fileName[256];
 	Text::Encoding enc(932);
 
-	if (!Text::StrEndsWithICase(fd->GetFullName(), (const UTF8Char*)".AOS"))
+	if (!fd->GetFullName()->EndsWith((const UTF8Char*)".AOS"))
 	{
 		return 0;
 	}
@@ -63,7 +63,7 @@ IO::ParsedObject *Parser::FileParser::AOSParser::ParseFile(IO::IStreamData *fd, 
 	if (dataOfst - recSize != 273)
 		return 0;
 	enc.UTF8FromBytes(fileName, &hdrBuff[12], 255, 0);
-	if (!Text::StrEndsWith(fd->GetFullName(), fileName))
+	if (!fd->GetFullName()->EndsWith(fileName))
 	{
 		return 0;
 	}

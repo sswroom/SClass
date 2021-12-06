@@ -9,6 +9,7 @@ namespace Media
 	class FontRenderer : public IO::ParsedObject
 	{
 	public:
+		FontRenderer(Text::String *sourceName);
 		FontRenderer(const UTF8Char *sourceName);
 		virtual ~FontRenderer();
 

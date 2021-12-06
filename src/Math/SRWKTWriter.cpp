@@ -26,19 +26,19 @@ Char *Math::SRWKTWriter::WriteCSys(Math::CoordinateSystem *csys, Char *buff, UOS
 		buff = Text::StrConcat(buff, "\",");
 		buff = WriteNextLine(buff, lev + 1, lbt);
 		buff = WriteCSys(pcsys->GetGeographicCoordinateSystem(), buff, lev + 1, lbt);
-		if (pcsys->GetCoordSysType() == Math::CoordinateSystem::CST_MERCATORPROJECTED)
+		if (pcsys->GetCoordSysType() == Math::CoordinateSystem::CoordinateSystemType::MercatorProjected)
 		{
 			*buff++ = ',';
 			buff = WriteNextLine(buff, lev + 1, lbt);
 			buff = Text::StrConcat(buff, "PROJECTION[\"Transverse_Mercator\"]");
 		}
-		else if (pcsys->GetCoordSysType() == Math::CoordinateSystem::CST_MERCATOR1SPPROJECTED)
+		else if (pcsys->GetCoordSysType() == Math::CoordinateSystem::CoordinateSystemType::Mercator1SPProjected)
 		{
 			*buff++ = ',';
 			buff = WriteNextLine(buff, lev + 1, lbt);
 			buff = Text::StrConcat(buff, "PROJECTION[\"Mercator_1SP\"]");
 		}
-		else if (pcsys->GetCoordSysType() == Math::CoordinateSystem::CST_GAUSSKRUGERPROJECTED)
+		else if (pcsys->GetCoordSysType() == Math::CoordinateSystem::CoordinateSystemType::GausskrugerProjected)
 		{
 			*buff++ = ',';
 			buff = WriteNextLine(buff, lev + 1, lbt);

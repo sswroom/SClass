@@ -70,7 +70,7 @@ IO::ParsedObject *Parser::FileParser::MDBParser::ParseFile(IO::IStreamData *fd, 
 	}
 #ifndef _WIN32_WCE
 	DB::MDBFile *mdb;
-	NEW_CLASS(mdb, DB::MDBFile(fd->GetFullFileName(), 0, this->codePage, 0, 0));
+	NEW_CLASS(mdb, DB::MDBFile(fd->GetFullFileName()->v, 0, this->codePage, 0, 0));
 	if (mdb->GetConnError() != DB::ODBCConn::CE_NONE)
 	{
 		DEL_CLASS(mdb);
@@ -147,7 +147,7 @@ IO::ParsedObject *Parser::FileParser::MDBParser::ParseFile(IO::IStreamData *fd, 
 						{
 							Text::StringBuilderUTF8 sb;
 							rdr->GetStr(1, &sb);
-							csys = Math::CoordinateSystemManager::ParsePRJBuff(fd->GetFullFileName(), (Char*)sb.ToString(), 0);
+							csys = Math::CoordinateSystemManager::ParsePRJBuff(fd->GetFullFileName()->v, (Char*)sb.ToString(), 0);
 							if (csys)
 							{
 								srid = csys->GetSRID();

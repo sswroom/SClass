@@ -2,6 +2,7 @@
 #define _SM_MAP_ESRI_FILEGDBUTIL
 #include "Data/ArrayList.h"
 #include "Math/CoordinateSystem.h"
+#include "Text/String.h"
 
 namespace Map
 {
@@ -9,8 +10,8 @@ namespace Map
 	{
 		struct FileGDBFieldInfo
 		{
-			const UTF8Char *name;
-			const UTF8Char *alias;
+			Text::String *name;
+			Text::String *alias;
 			UInt8 fieldType;
 			UInt32 fieldSize;
 			UInt8 flags;

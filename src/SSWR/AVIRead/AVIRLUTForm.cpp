@@ -167,7 +167,7 @@ SSWR::AVIRead::AVIRLUTForm::AVIRLUTForm(UI::GUIClientControl *parent, UI::GUICor
 	UOSInt i;
 	UOSInt j;
 	this->lut = lut;
-	Text::StrConcat(Text::StrConcat(sbuff, (const UTF8Char*)"LUT Viewer - "), lut->GetSourceNameObj());
+	lut->GetSourceNameObj()->ConcatTo(Text::StrConcat(sbuff, (const UTF8Char*)"LUT Viewer - "));
 	this->SetText(sbuff);
 	this->SetFont(0, 8.25, false);
 	this->core = core;
@@ -213,11 +213,11 @@ SSWR::AVIRead::AVIRLUTForm::AVIRLUTForm(UI::GUIClientControl *parent, UI::GUICor
 	this->cboChannels->AddItem((const UTF8Char*)"All Channels", (void*)-1);
 	this->cboChannels->SetSelectedIndex(0);
 	
-	this->txtFileName->SetText(this->lut->GetSourceNameObj());
-	const UTF8Char *csptr = this->lut->GetRemark();
-	if (csptr)
+	this->txtFileName->SetText(this->lut->GetSourceNameObj()->v);
+	Text::String *s = this->lut->GetRemark();
+	if (s)
 	{
-		this->txtRemark->SetText(csptr);
+		this->txtRemark->SetText(s->v);
 	}
 	this->UpdateValues();
 }

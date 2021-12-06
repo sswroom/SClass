@@ -1,6 +1,6 @@
 #ifndef _SM_DATA_CLASS
 #define _SM_DATA_CLASS
-#include "Data/StringUTF8Map.h"
+#include "Data/StringMap.h"
 #include "Data/VariItem.h"
 #include "Text/StringBuilderUTF.h"
 
@@ -11,13 +11,13 @@ namespace Data
 	public:
 		struct FieldInfo
 		{
-			const UTF8Char *name;
+			Text::String *name;
 			OSInt ofst;
 			Data::VariItem::ItemType itemType;
 		};
 	private:
 		void *refObj;
-		Data::StringUTF8Map<FieldInfo *> *fields;
+		Data::StringMap<FieldInfo *> *fields;
 
 		void FreeFieldInfo(FieldInfo *field);
 	public:
@@ -43,8 +43,9 @@ namespace Data
 		Bool AddField(const UTF8Char *name, Data::UUID **val);
 
 		UOSInt GetFieldCount();
-		const UTF8Char *GetFieldName(UOSInt index);
+		Text::String *GetFieldName(UOSInt index);
 		Data::VariItem *GetNewValue(UOSInt index, void *obj);
+		Bool GetValue(Data::VariItem *itm, UOSInt index, void *obj);
 		Bool SetField(void *obj, UOSInt index, Data::VariItem *item);
 		Bool Equals(void *obj1, void *obj2);
 

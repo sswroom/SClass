@@ -2360,7 +2360,7 @@ Map::IMapDrawLayer *Map::MapConfig2::GetDrawLayer(const UTF8Char *name, Data::Ar
 	{
 		Map::IMapDrawLayer *lyr;
 		lyr = layerList->GetItem(i);
-		if (IO::Path::FileNameCompare(name, lyr->GetName()) == 0)
+		if (IO::Path::FileNameCompare(name, lyr->GetName()->v) == 0)
 		{
 			return lyr;
 		}
@@ -4777,7 +4777,7 @@ UTF8Char *Map::MapConfig2::DrawMap(Media::DrawImage *img, Map::MapView *view, Bo
 			if (thisSpd > maxSpd)
 			{
 				maxSpd = thisSpd;
-				maxName = lyrs->lyr->GetName();
+				maxName = lyrs->lyr->GetName()->v;
 			}
 		}
 	}

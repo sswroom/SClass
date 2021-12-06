@@ -134,6 +134,7 @@ namespace Data
 		static VariItem *NewUUIDDirect(Data::UUID *uuid);
 		static VariItem *NewFromPtr(void *ptr, ItemType itemType);
 		
+		static void SetFromPtr(VariItem *item, void *ptr, ItemType itemType);
 		static void SetPtr(void *ptr, ItemType itemType, VariItem *item);
 		static Bool PtrEquals(void *ptr1, void *ptr2, ItemType itemType);
 

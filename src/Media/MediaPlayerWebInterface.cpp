@@ -41,7 +41,7 @@ void Media::MediaPlayerWebInterface::BrowseRequest(Net::WebServer::IWebRequest *
 	UTF8Char *sptr;
 	UOSInt i;
 	UOSInt j;
-	Text::StrConcat(sbuff, this->iface->GetOpenedFile()->GetSourceNameObj());
+	this->iface->GetOpenedFile()->GetSourceNameObj()->ConcatTo(sbuff);
 	i = Text::StrLastIndexOf(sbuff, IO::Path::PATH_SEPERATOR);
 	sptr = &sbuff[i + 1];
 
@@ -73,7 +73,7 @@ void Media::MediaPlayerWebInterface::BrowseRequest(Net::WebServer::IWebRequest *
 	writer->WriteLine((const UTF8Char*)"<body>");
 	writer->WriteLine((const UTF8Char*)"<a href=\"/\">Back</a><br/><br/>");
 	writer->Write((const UTF8Char*)"<b>Current File: </b>");
-	u8ptr = Text::XML::ToNewHTMLText(this->iface->GetOpenedFile()->GetSourceNameObj());
+	u8ptr = Text::XML::ToNewHTMLText(this->iface->GetOpenedFile()->GetSourceNameObj()->v);
 	writer->Write(u8ptr);
 	Text::XML::FreeNewText(u8ptr);
 	writer->WriteLine((const UTF8Char*)"<hr/>");
@@ -219,7 +219,7 @@ void Media::MediaPlayerWebInterface::WebRequest(Net::WebServer::IWebRequest *req
 	writer->Write((const UTF8Char*)"<b>Current File: </b>");
 	if (this->iface->GetOpenedFile())
 	{
-		u8ptr = Text::XML::ToNewHTMLText(this->iface->GetOpenedFile()->GetSourceNameObj());
+		u8ptr = Text::XML::ToNewHTMLText(this->iface->GetOpenedFile()->GetSourceNameObj()->v);
 		writer->Write(u8ptr);
 		Text::XML::FreeNewText(u8ptr);
 

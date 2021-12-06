@@ -732,7 +732,9 @@ Bool Net::ACMEConn::LoadKey(const UTF8Char *fileName)
 	{
 		return false;
 	}
-	Crypto::Cert::X509File *x509 = Parser::FileParser::X509Parser::ParseBuff(keyPEM, keyPEMSize, fileName);
+	Text::String *s = Text::String::New(fileName);
+	Crypto::Cert::X509File *x509 = Parser::FileParser::X509Parser::ParseBuff(keyPEM, keyPEMSize, s);
+	s->Release();
 	if (x509 == 0)
 	{
 		return false;

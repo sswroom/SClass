@@ -25,9 +25,9 @@ void Text::Cpp::CppCodeParser::LogError(Text::Cpp::CppParseStatus *status, const
 {
 	Text::StringBuilderUTF8 sb;
 	Text::Cpp::CppParseStatus::FileParseStatus *fileStatus = status->GetFileStatus();
-	const UTF8Char *fname = fileStatus->fileName;
-	UOSInt i = Text::StrLastIndexOf(fname, '\\');
-	sb.Append(&fname[i + 1]);
+	Text::String *fname = fileStatus->fileName;
+	UOSInt i = fname->LastIndexOf('\\');
+	sb.Append(&fname->v[i + 1]);
 	sb.Append((const UTF8Char*)" (");
 	sb.AppendI32(fileStatus->lineNum);
 	sb.Append((const UTF8Char*)"): ");
@@ -837,7 +837,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, Text::Cpp::CppParse
 	Text::Cpp::CppParseStatus::FileParseStatus *fileStatus = status->GetFileStatus();
 
 	fileStatus->lineNum++;
-	if (fileStatus->lineNum == 290 && Text::StrEndsWithICase(fileStatus->fileName, (const UTF8Char*)"winspool.h"))
+	if (fileStatus->lineNum == 290 && fileStatus->fileName->EndsWithICase((const UTF8Char*)"winspool.h"))
 	{
 		sptr = lineBuff;
 	}
@@ -2676,8 +2676,8 @@ Bool Text::Cpp::CppCodeParser::ParseFile(const UTF8Char *fileName, Data::ArrayLi
 		Text::Cpp::CppParseStatus::FileParseStatus *fileStatus = status->GetFileStatus();
 		if (fileStatus)
 		{
-			i = Text::StrLastIndexOf(fileStatus->fileName, IO::Path::PATH_SEPERATOR);
-			sptr = Text::StrConcat(lineBuff, &fileStatus->fileName[i + 1]);
+			i = fileStatus->fileName->LastIndexOf(IO::Path::PATH_SEPERATOR);
+			sptr = Text::StrConcat(lineBuff, &fileStatus->fileName->v[i + 1]);
 			sptr = Text::StrConcat(sptr, (const UTF8Char*)" (");
 			sptr = Text::StrOSInt(sptr, fileStatus->lineNum);
 			sptr = Text::StrConcat(sptr, (const UTF8Char*)"): ");

@@ -73,9 +73,7 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 	UOSInt j;
 	UOSInt k;
 	UOSInt l;
-	Text::StrConcat(u8buff, fd->GetFullName());
-	i = Text::StrLastIndexOf(u8buff, '.');
-	if (i == INVALID_INDEX || !Text::StrEqualsICase(&u8buff[i], (const UTF8Char*)".TXT"))
+	if (!fd->GetFullName()->EndsWithICase((const UTF8Char*)".TXT"))
 	{
 		return 0;
 	}
@@ -101,7 +99,7 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 		}
 
 		Math::CoordinateSystem *csys = Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84);
-		NEW_CLASS(env, Map::MapEnv(fd->GetFullName(), ToColor(Text::StrHex2UInt32C(sarr[1])), csys));
+		NEW_CLASS(env, Map::MapEnv(fd->GetFullName()->v, ToColor(Text::StrHex2UInt32C(sarr[1])), csys));
 		env->SetNString(Text::StrToUInt32(sarr[4]));
 		fileName = baseDir;
 
@@ -364,7 +362,7 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 	}
 	else if (fd->IsFullFile() && Text::StrStartsWith(sbuff, (const UTF8Char*)"OBJECTID,") && Text::StrEndsWith(sbuff, (const UTF8Char*)","))
 	{
-		fileName = Text::StrConcat(u8buff, fd->GetFullName());
+		fileName = fd->GetFullName()->ConcatTo(u8buff);
 		Text::StrConcat(&fileName[-4], (const UTF8Char*)"_Coord.txt");
 		if (IO::Path::GetPathType(u8buff) != IO::Path::PathType::File)
 		{

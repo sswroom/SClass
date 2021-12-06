@@ -255,6 +255,37 @@ Bool IO::FileCheck::CheckDir(UTF8Char *fullPath, UTF8Char *hashPath, Crypto::Has
 	return false;
 }
 
+IO::FileCheck::FileCheck(Text::String *name, CheckType chkType) : IO::ParsedObject(name)
+{
+	this->chkType = chkType;
+
+	if (chkType == IO::FileCheck::CheckType::MD5)
+	{
+		this->hashSize = 16;
+	}
+	else if (chkType == IO::FileCheck::CheckType::SHA1)
+	{
+		this->hashSize = 20;
+	}
+	else if (chkType == IO::FileCheck::CheckType::MD4)
+	{
+		this->hashSize = 16;
+	}
+	else if (chkType == IO::FileCheck::CheckType::CRC32)
+	{
+		this->hashSize = 4;
+	}
+	else
+	{
+		this->chkType = IO::FileCheck::CheckType::CRC32;
+		this->hashSize = 4;
+	}
+
+	NEW_CLASS(this->fileNames, Data::ArrayListStrUTF8());
+	this->chkCapacity = 40;
+	this->chkValues = MemAlloc(UInt8, this->hashSize * this->chkCapacity);
+}
+
 IO::FileCheck::FileCheck(const UTF8Char *name, CheckType chkType) : IO::ParsedObject(name)
 {
 	this->chkType = chkType;
@@ -362,7 +393,7 @@ Bool IO::FileCheck::CheckEntryHash(UOSInt index, UInt8 *hashVal)
 	const UTF8Char *fileName = this->fileNames->GetItem(index);
 	if (fileName == 0)
 		return false;
-	sptr = Text::StrConcat(sbuff, this->sourceName);
+	sptr = this->sourceName->ConcatTo(sbuff);
 	i = Text::StrLastIndexOf(sbuff, IO::Path::PATH_SEPERATOR);
 	if (i == INVALID_INDEX)
 		return false;

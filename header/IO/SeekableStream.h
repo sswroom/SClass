@@ -7,6 +7,9 @@ namespace IO
 	class SeekableStream : public Stream
 	{
 	public:
+		SeekableStream(Text::String *sourceName) : IO::Stream(sourceName)
+		{};
+
 		SeekableStream(const UTF8Char *sourceName) : IO::Stream(sourceName)
 		{};
 

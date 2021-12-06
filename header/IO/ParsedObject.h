@@ -1,5 +1,6 @@
 #ifndef _SM_IO_PARSEDOBJECT
 #define _SM_IO_PARSEDOBJECT
+#include "Text/String.h"
 
 namespace IO
 {
@@ -38,15 +39,17 @@ namespace IO
 	class ParsedObject
 	{
 	protected:
-		const UTF8Char *sourceName;
+		Text::String *sourceName;
 
+		ParsedObject(Text::String *sourceName);
 		ParsedObject(const UTF8Char *sourceName);
 	public:
 		virtual ~ParsedObject();
 
 		virtual IO::ParserType GetParserType() = 0;
 		UTF8Char *GetSourceName(UTF8Char *oriStr);
-		const UTF8Char *GetSourceNameObj();
+		Text::String *GetSourceNameObj();
+		void SetSourceName(Text::String *sourceName);
 		void SetSourceName(const UTF8Char *sourceName);
 	};
 }

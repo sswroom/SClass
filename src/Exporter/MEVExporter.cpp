@@ -341,7 +341,7 @@ void Exporter::MEVExporter::WriteGroupItems(Map::MapEnv *env, Map::MapEnv::Group
 		{
 			*(Int32*)&buff[0] = item->itemType;
 
-			u8ptr = env->GetGroupName((Map::MapEnv::GroupItem*)item);
+			u8ptr = env->GetGroupName((Map::MapEnv::GroupItem*)item)->v;
 			*(Int32*)&buff[4] = 0;
 			if (u8ptr)
 			{

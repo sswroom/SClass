@@ -233,7 +233,7 @@ IO::ParsedObject *Parser::FileParser::SMDLParser::ParseFile(IO::IStreamData *fd,
 	UInt64 fileSize;
 	Int32 t;
 	Int32 fileT;
-	sptr = fd->GetFullName();
+	sptr = fd->GetFullName()->v;
 	i = Text::StrLastIndexOf(sptr, '\\');
 	Text::StrConcat(sbuff, &sptr[i + 1]);
 	j = Text::StrIndexOf(sbuff, (const UTF8Char*)".loc");
@@ -255,7 +255,9 @@ IO::ParsedObject *Parser::FileParser::SMDLParser::ParseFile(IO::IStreamData *fd,
 	}
 
 	Map::GPSTrack *track;
-	NEW_CLASS(track, Map::GPSTrack(fd->GetFullName(), true, 0, sbuff));
+	Text::String *s = Text::String::New(sbuff);
+	NEW_CLASS(track, Map::GPSTrack(fd->GetFullName(), true, 0, s));
+	s->Release();
 	track->SetTrackName(sbuff);
 	SMDLExtraParser *parser;
 	NEW_CLASS(parser, SMDLExtraParser());

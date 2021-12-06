@@ -24,7 +24,9 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		return 0;
 	}
 	Parser::FileParser::X509Parser parser;
-	Crypto::Cert::X509File *x509 = parser.ParseBuff(buff, buffSize, sbuff);
+	Text::String *s = Text::String::New(sbuff);
+	Crypto::Cert::X509File *x509 = parser.ParseBuff(buff, buffSize, s);
+	s->Release();
 	if (x509 == 0)
 	{
 		console.WriteLine((const UTF8Char*)"Error in parsing ACMEKey.pem");

@@ -609,13 +609,25 @@ void Data::VariItem::SetStr(const UTF8Char *str)
 void Data::VariItem::SetStr(Text::String *str)
 {
 	this->FreeItem();
-	this->val.str = str->Clone();
-	this->itemType = ItemType::Str;
+	if (str)
+	{
+		this->val.str = str->Clone();
+		this->itemType = ItemType::Str;
+	}
+	else
+	{
+		this->itemType = ItemType::Null;
+	}
 }
 
 void Data::VariItem::SetDate(Data::DateTime *dt)
 {
-	if (this->itemType == ItemType::Date)
+	if (dt == 0)
+	{
+		this->FreeItem();
+		this->itemType = ItemType::Null;
+	}
+	else if (this->itemType == ItemType::Date)
 	{
 		this->val.date->SetValue(dt);
 	}
@@ -1205,6 +1217,67 @@ Data::VariItem *Data::VariItem::NewFromPtr(void *ptr, ItemType itemType)
 	case ItemType::Unknown:
 	default:
 		return 0;
+	}
+}
+
+void Data::VariItem::SetFromPtr(Data::VariItem *item, void *ptr, ItemType itemType)
+{
+	switch (itemType)
+	{
+	case ItemType::F32:
+		item->SetF32(*(Single*)ptr);
+		return;
+	case ItemType::F64:
+		item->SetF64(*(Double*)ptr);
+		return;
+	case ItemType::I8:
+		item->SetI8(*(Int8*)ptr);
+		return;
+	case ItemType::U8:
+		item->SetU8(*(UInt8*)ptr);
+		return;
+	case ItemType::I16:
+		item->SetI16(*(Int16*)ptr);
+		return;
+	case ItemType::U16:
+		item->SetU16(*(UInt16*)ptr);
+		return;
+	case ItemType::I32:
+		item->SetI32(*(Int32*)ptr);
+		return;
+	case ItemType::U32:
+		item->SetU32(*(UInt32*)ptr);
+		return;
+	case ItemType::I64:
+		item->SetI64(*(Int64*)ptr);
+		return;
+	case ItemType::U64:
+		item->SetU64(*(UInt64*)ptr);
+		return;
+	case ItemType::BOOL:
+		item->SetBool(*(Bool*)ptr);
+		return;
+	case ItemType::Null:
+		item->SetNull();
+		return;
+	case ItemType::Str:
+		item->SetStr(*(Text::String**)ptr);
+		return;
+	case ItemType::Date:
+		item->SetDate(*(Data::DateTime**)ptr);
+		return;
+	case ItemType::ByteArr:
+		item->SetByteArr(*(Data::ReadonlyArray<UInt8>**)ptr);
+		return;
+	case ItemType::Vector:
+		item->SetVector(*(Math::Vector2D**)ptr);
+		return;
+	case ItemType::UUID:
+		item->SetUUID(*(Data::UUID**)ptr);
+		return;
+	case ItemType::Unknown:
+	default:
+		return;
 	}
 }
 

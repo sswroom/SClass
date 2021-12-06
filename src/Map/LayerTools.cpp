@@ -6,7 +6,7 @@
 #include "DB/ColDef.h"
 #include "Map/LayerTools.h"
 
-Map::VectorLayer *Map::LayerTools::CombineLayers(Data::ArrayList<Map::IMapDrawLayer*> *layers, const UTF8Char *lyrName)
+Map::VectorLayer *Map::LayerTools::CombineLayers(Data::ArrayList<Map::IMapDrawLayer*> *layers, Text::String *lyrName)
 {
 	UOSInt layerCnt = layers->GetCount();
 	UOSInt i;
@@ -17,7 +17,7 @@ Map::VectorLayer *Map::LayerTools::CombineLayers(Data::ArrayList<Map::IMapDrawLa
 	Map::IMapDrawLayer *lyr;
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	const UTF8Char *sourceName;
+	Text::String *sourceName;
 
 	if (layerCnt <= 0)
 		return 0;

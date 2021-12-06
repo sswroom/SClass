@@ -41,6 +41,7 @@ namespace IO
 	private:
 		void InitStream(const WChar *fileName, FileMode mode, FileShare share, BufferType buffType);
 	public:
+		FileStream(Text::String *fileName, FileMode mode, FileShare share, BufferType buffType);
 		FileStream(const UTF8Char *fileName, FileMode mode, FileShare share, BufferType buffType);
 		virtual ~FileStream();
 

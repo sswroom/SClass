@@ -66,7 +66,7 @@ IO::ParsedObject *Parser::ObjParser::KMZParser::ParseObject(IO::ParsedObject *po
 				DEL_CLASS(fd);
 				if (pobj2)
 				{
-					if (Text::StrEndsWithICase(pobj->GetSourceNameObj(), (const UTF8Char*)".kmz"))
+					if (pobj->GetSourceNameObj()->EndsWithICase((const UTF8Char*)".kmz"))
 					{
 						pobj2->SetSourceName(pobj->GetSourceNameObj());
 					}

@@ -84,6 +84,38 @@ void Map::VectorLayer::UpdateMapRate()
 	}
 }
 
+Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, Text::String *sourceName, UOSInt strCnt, const UTF8Char **colNames, Math::CoordinateSystem *csys, UOSInt nameCol, Text::String *layerName) : Map::IMapDrawLayer(sourceName, nameCol, layerName)
+{
+	UOSInt i;
+	this->layerType = layerType;
+	this->strCnt = strCnt;
+	this->csys  = csys;
+	this->minX = 0;
+	this->minY = 0;
+	this->maxX = 0;
+	this->maxY = 0;
+	this->maxStrLen = MemAlloc(UOSInt, strCnt);
+	this->colNames = MemAlloc(const UTF8Char*, strCnt);
+	this->cols = 0;
+	this->mapRate = 10000000.0;
+	this->mixedType = Math::Vector2D::VectorType::Unknown;
+	i = strCnt;
+	while (i-- > 0)
+	{
+		maxStrLen[i] = 0;
+		if (colNames[i])
+		{
+			this->colNames[i] = Text::StrCopyNew(colNames[i]);
+		}
+		else
+		{
+			this->colNames[i] = 0;
+		}
+	}
+	NEW_CLASS(vectorList, Data::ArrayList<Math::Vector2D*>());
+	NEW_CLASS(strList, Data::ArrayList<const UTF8Char**>());
+}
+
 Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, const UTF8Char *sourceName, UOSInt strCnt, const UTF8Char **colNames, Math::CoordinateSystem *csys, UOSInt nameCol, const UTF8Char *layerName) : Map::IMapDrawLayer(sourceName, nameCol, layerName)
 {
 	UOSInt i;
@@ -111,6 +143,41 @@ Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, const UTF8Char *sour
 		{
 			this->colNames[i] = 0;
 		}
+	}
+	NEW_CLASS(vectorList, Data::ArrayList<Math::Vector2D*>());
+	NEW_CLASS(strList, Data::ArrayList<const UTF8Char**>());
+}
+
+Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, Text::String *sourceName, UOSInt strCnt, const UTF8Char **colNames, Math::CoordinateSystem *csys, DB::DBUtil::ColType *colTypes, UOSInt *colSize, UOSInt *colDP, UOSInt nameCol, Text::String *layerName) : Map::IMapDrawLayer(sourceName, nameCol, layerName)
+{
+	UOSInt i;
+	this->layerType = layerType;
+	this->strCnt = strCnt;
+	this->csys = csys;
+	this->minX = 0;
+	this->minY = 0;
+	this->maxX = 0;
+	this->maxY = 0;
+	this->maxStrLen = MemAlloc(UOSInt, strCnt);
+	this->colNames = MemAlloc(const UTF8Char*, strCnt);
+	this->cols = MemAlloc(Map::VectorLayer::ColInfo, strCnt);
+	this->mapRate = 10000000.0;
+	this->mixedType = Math::Vector2D::VectorType::Unknown;
+	i = strCnt;
+	while (i-- > 0)
+	{
+		maxStrLen[i] = 0;
+		if (colNames[i])
+		{
+			this->colNames[i] = Text::StrCopyNew(colNames[i]);
+		}
+		else
+		{
+			this->colNames[i] = 0;
+		}
+		cols[i].colType = colTypes[i];
+		cols[i].colSize = colSize[i];
+		cols[i].colDP = colDP[i];
 	}
 	NEW_CLASS(vectorList, Data::ArrayList<Math::Vector2D*>());
 	NEW_CLASS(strList, Data::ArrayList<const UTF8Char**>());

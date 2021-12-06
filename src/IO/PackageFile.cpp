@@ -15,6 +15,21 @@
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 
+IO::PackageFile::PackageFile(Text::String *fileName) : IO::ParsedObject(fileName)
+{
+	NEW_CLASS(this->items, Data::ArrayList<PackFileItem*>());
+	NEW_CLASS(this->pkgFiles, Data::StringUTF8Map<PackFileItem*>());
+	if (IO::Path::PATH_SEPERATOR == '\\')
+	{
+		NEW_CLASS(this->namedItems, Data::ICaseStringUTF8Map<PackFileItem*>());
+	}
+	else
+	{
+		NEW_CLASS(this->namedItems, Data::StringUTF8Map<PackFileItem*>());
+	}
+	NEW_CLASS(this->infoMap, Data::Int32Map<const UTF8Char *>());
+}
+
 IO::PackageFile::PackageFile(const UTF8Char *fileName) : IO::ParsedObject(fileName)
 {
 	NEW_CLASS(this->items, Data::ArrayList<PackFileItem*>());
@@ -39,18 +54,9 @@ IO::PackageFile::~PackageFile()
 		item = this->items->GetItem(i);
 		if (Sync::Interlocked::Decrement(&item->useCnt) == 0)
 		{
-			if (item->name)
-			{
-				Text::StrDelNew(item->name);
-			}
-			if (item->fd)
-			{
-				DEL_CLASS(item->fd);
-			}
-			if (item->pobj)
-			{
-				DEL_CLASS(item->pobj);
-			}
+			SDEL_STRING(item->name);
+			SDEL_CLASS(item->fd);
+			SDEL_CLASS(item->pobj);
 			if (item->compInfo)
 			{
 				if (item->compInfo->compExtras)
@@ -85,13 +91,13 @@ void IO::PackageFile::AddData(IO::IStreamData *fd, UInt64 ofst, UInt64 length, c
 	item = MemAlloc(PackFileItem, 1);
 	item->itemType = IO::PackFileItem::PIT_UNCOMPRESSED;
 	item->fd = fd->GetPartialData(ofst, length);
-	item->name = SCOPY_TEXT(name);
+	item->name = Text::String::New(name);
 	item->pobj = 0;
 	item->compInfo = 0;
 	item->modTimeTick = modTimeTick;
 	item->useCnt = 1;
 	this->items->Add(item);
-	this->namedItems->Put(item->name, item);
+	this->namedItems->Put(item->name->v, item);
 }
 
 void IO::PackageFile::AddObject(IO::ParsedObject *pobj, const UTF8Char *name, Int64 modTimeTick)
@@ -102,18 +108,18 @@ void IO::PackageFile::AddObject(IO::ParsedObject *pobj, const UTF8Char *name, In
 	item->fd = 0;
 	if (name)
 	{
-		item->name = Text::StrCopyNew(name);
+		item->name = Text::String::New(name);
 	}
 	else
 	{
-		item->name = Text::StrCopyNew(pobj->GetSourceNameObj());
+		item->name = pobj->GetSourceNameObj()->Clone();
 	}
 	item->pobj = pobj;
 	item->compInfo = 0;
 	item->modTimeTick = modTimeTick;
 	item->useCnt = 1;
 	this->items->Add(item);
-	this->namedItems->Put(item->name, item);
+	this->namedItems->Put(item->name->v, item);
 }
 
 void IO::PackageFile::AddCompData(IO::IStreamData *fd, UInt64 ofst, UInt64 length, IO::PackFileItem::CompressInfo *compInfo, const UTF8Char *name, Int64 modTimeTick)
@@ -122,7 +128,7 @@ void IO::PackageFile::AddCompData(IO::IStreamData *fd, UInt64 ofst, UInt64 lengt
 	item = MemAlloc(PackFileItem, 1);
 	item->itemType = IO::PackFileItem::PIT_COMPRESSED;
 	item->fd = fd->GetPartialData(ofst, length);
-	item->name = SCOPY_TEXT(name);
+	item->name = Text::String::New(name);
 	item->pobj = 0;
 	item->compInfo = MemAlloc(PackFileItem::CompressInfo, 1);
 	MemCopyNO(item->compInfo, compInfo, sizeof(PackFileItem::CompressInfo));
@@ -134,7 +140,7 @@ void IO::PackageFile::AddCompData(IO::IStreamData *fd, UInt64 ofst, UInt64 lengt
 	item->modTimeTick = modTimeTick;
 	item->useCnt = 1;
 	this->items->Add(item);
-	this->namedItems->Put(item->name, item);
+	this->namedItems->Put(item->name->v, item);
 }
 
 void IO::PackageFile::AddPack(IO::PackageFile *pkg, const UTF8Char *name, Int64 modTimeTick)
@@ -143,21 +149,14 @@ void IO::PackageFile::AddPack(IO::PackageFile *pkg, const UTF8Char *name, Int64 
 	item = MemAlloc(PackFileItem, 1);
 	item->itemType = IO::PackFileItem::PIT_PARSEDOBJECT;
 	item->fd = 0;
-	if (name)
-	{
-		item->name = Text::StrCopyNew(name);
-	}
-	else
-	{
-		item->name = 0;
-	}
+	item->name = Text::String::New(name);
 	item->pobj = pkg;
 	item->compInfo = 0;
 	item->modTimeTick = modTimeTick;
 	item->useCnt = 1;
 	this->items->Add(item);
-	this->pkgFiles->Put(item->name, item);
-	this->namedItems->Put(item->name, item);
+	this->pkgFiles->Put(item->name->v, item);
+	this->namedItems->Put(item->name->v, item);
 }
 
 IO::PackageFile *IO::PackageFile::GetPackFile(const UTF8Char *name)
@@ -176,7 +175,7 @@ Bool IO::PackageFile::UpdateCompInfo(const UTF8Char *name, IO::IStreamData *fd, 
 	while (i-- > 0)
 	{
 		item = this->items->GetItem(i);
-		if (Text::StrEquals(item->name, name))
+		if (item->name->Equals(name))
 		{
 			if (item->itemType == IO::PackFileItem::PIT_COMPRESSED)
 			{
@@ -305,7 +304,7 @@ IO::IStreamData *IO::PackageFile::GetPItemStmData(const PackFileItem *item)
 			*sptr++ = '_';
 			if (item->name)
 			{
-				sptr = Text::StrConcat(sptr, item->name);
+				sptr = item->name->ConcatTo(sptr);
 			}
 			else
 			{
@@ -407,7 +406,7 @@ UTF8Char *IO::PackageFile::GetItemName(UTF8Char *sbuff, UOSInt index)
 	}
 	if (item->name)
 	{
-		return Text::StrConcat(sbuff, item->name);
+		return item->name->ConcatTo(sbuff);
 	}
 	if (item->itemType == IO::PackFileItem::PIT_COMPRESSED || item->itemType == IO::PackFileItem::PIT_UNCOMPRESSED)
 	{
@@ -509,7 +508,7 @@ UOSInt IO::PackageFile::GetItemIndex(const UTF8Char *name)
 		{
 			if (item->name)
 			{
-				if (Text::StrEqualsICase(item->name, name))
+				if (item->name->EqualsICase(name))
 					return i;
 			}
 			if (item->itemType == IO::PackFileItem::PIT_COMPRESSED || item->itemType == IO::PackFileItem::PIT_UNCOMPRESSED)
@@ -519,7 +518,7 @@ UOSInt IO::PackageFile::GetItemIndex(const UTF8Char *name)
 			}
 			else if (item->itemType == IO::PackFileItem::PIT_PARSEDOBJECT)
 			{
-				if (Text::StrEqualsICase(item->pobj->GetSourceNameObj(), name))
+				if (item->pobj->GetSourceNameObj()->EqualsICase(name))
 					return i;
 			}
 		}
@@ -574,9 +573,9 @@ IO::PackageFile *IO::PackageFile::Clone()
 		pkg->items->Add(item);
 		if (item->itemType == IO::PackFileItem::PIT_PARSEDOBJECT && item->pobj->GetParserType() == IO::ParserType::PackageFile)
 		{
-			pkg->pkgFiles->Put(item->name, item);
+			pkg->pkgFiles->Put(item->name->v, item);
 		}
-		pkg->namedItems->Put(item->name, item);
+		pkg->namedItems->Put(item->name->v, item);
 		i++;
 	}
 	return pkg;

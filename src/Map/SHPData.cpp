@@ -31,7 +31,7 @@ Map::SHPData::SHPData(UInt8 *shpHdr, IO::IStreamData *data, UInt32 codePage) : M
 	this->layerType = Map::DRAW_LAYER_UNKNOWN;
 	this->mapRate = 10000000.0;
 
-	u8ptr = Text::StrConcat(u8buff, data->GetFullFileName());
+	u8ptr = data->GetFullFileName()->ConcatTo(u8buff);
 	if ((u8ptr - u8buff) < 4)
 	{
 		return;

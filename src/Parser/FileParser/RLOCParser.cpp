@@ -202,14 +202,13 @@ IO::ParsedObject *Parser::FileParser::RLOCParser::ParseFile(IO::IStreamData *fd,
 	Map::GPSTrack::GPSRecord rec;
 	UInt8 buff[384];
 	UTF8Char u8buff[256];
-	const UTF8Char *u8ptr;
 	UOSInt i;
 	UOSInt currPos;
 	UInt64 fileSize;
 	Int32 devId;
-	u8ptr = fd->GetFullName();
-	i = Text::StrLastIndexOf(u8ptr, IO::Path::PATH_SEPERATOR);
-	Text::StrConcat(u8buff, &u8ptr[i + 1]);
+	Text::String *s = fd->GetFullName();
+	i = s->LastIndexOf(IO::Path::PATH_SEPERATOR);
+	Text::StrConcat(u8buff, &s->v[i + 1]);
 	if (!Text::StrStartsWithICase(u8buff, (const UTF8Char*)"LOC"))
 	{
 		return 0;
@@ -240,7 +239,9 @@ IO::ParsedObject *Parser::FileParser::RLOCParser::ParseFile(IO::IStreamData *fd,
 
 	Map::GPSTrack *track;
 	Text::StrInt32(u8buff, devId);
-	NEW_CLASS(track, Map::GPSTrack(fd->GetFullName(), true, 0, u8buff));
+	s = Text::String::New(u8buff);
+	NEW_CLASS(track, Map::GPSTrack(fd->GetFullName(), true, 0, s));
+	s->Release();
 	track->SetTrackName(u8buff);
 	RLOCExtraParser *parser;
 	NEW_CLASS(parser, RLOCExtraParser());

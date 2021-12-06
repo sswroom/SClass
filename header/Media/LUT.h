@@ -14,21 +14,24 @@ namespace Media
 			DF_SINGLE
 		} DataFormat;
 	private:
-		const UTF8Char *remark;
+		Text::String *remark;
 		UOSInt inputCh;
 		UOSInt inputLev;
 		UOSInt outputCh;
 		UInt8 *luTable;
 		DataFormat fmt;
 
+		void Init();
 	public:
+		LUT(UOSInt inputCh, UOSInt inputLev, UOSInt outputCh, DataFormat fmt, Text::String *sourceName);
 		LUT(UOSInt inputCh, UOSInt inputLev, UOSInt outputCh, DataFormat fmt, const UTF8Char *sourceName);
 		virtual ~LUT();
 
 		virtual IO::ParserType GetParserType();
 
+		void SetRemark(Text::String *remark);
 		void SetRemark(const UTF8Char *remark);
-		const UTF8Char *GetRemark();
+		Text::String *GetRemark();
 		UOSInt GetInputCh();
 		DataFormat GetFormat();
 		UOSInt GetInputLevel();

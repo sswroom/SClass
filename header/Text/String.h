@@ -16,7 +16,9 @@ namespace Text
 		static String *New(const UTF8Char *str, UOSInt len);
 		static String *New(UOSInt len);
 		static String *New(const UTF16Char *str);
+		static String *New(const UTF16Char *str, UOSInt len);
 		static String *New(const UTF32Char *str);
+		static String *New(const UTF32Char *str, UOSInt len);
 		static String *NewCSVRec(const UTF8Char *str);
 		static String *NewEmpty();
 		static String *OrEmpty(Text::String *s);
@@ -29,12 +31,16 @@ namespace Text
 		Bool EqualsICase(const UTF8Char *s);
 		Bool StartsWith(const UTF8Char *s);
 		Bool EndsWith(const UTF8Char *s);
+		Bool EndsWithICase(const UTF8Char *s);
 		Bool HasUpperCase();
 		String *ToLower();
 		UOSInt IndexOf(const UTF8Char *s);
 		UOSInt IndexOf(UTF8Char c);
+		UOSInt LastIndexOf(UTF8Char c);
 		OSInt CompareTo(String *s);
 		OSInt CompareTo(const UTF8Char *s);
+		OSInt CompareToICase(Text::String *s);
+		OSInt CompareToICase(const UTF8Char *s);
 
 		Int32 ToInt32();
 		Int64 ToInt64();
@@ -51,5 +57,6 @@ namespace Text
 	};
 }
 
+#define SCOPY_STRING(s) ((s)?(s)->Clone():0)
 #define SDEL_STRING(s) if (s) { s->Release(); s = 0; }
 #endif

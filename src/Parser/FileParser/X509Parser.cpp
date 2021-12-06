@@ -59,7 +59,7 @@ IO::ParsedObject *Parser::FileParser::X509Parser::ParseFile(IO::IStreamData *fd,
 	return ParseBuff(buff, (UOSInt)len, fd->GetFullFileName());
 }
 
-Crypto::Cert::X509File *Parser::FileParser::X509Parser::ParseBuff(const UInt8 *buff, UOSInt buffSize, const UTF8Char *fileName)
+Crypto::Cert::X509File *Parser::FileParser::X509Parser::ParseBuff(const UInt8 *buff, UOSInt buffSize, Text::String *fileName)
 {
 	Crypto::Cert::X509File *ret = 0;
 	UInt8 dataBuff[6144];
@@ -141,23 +141,23 @@ Crypto::Cert::X509File *Parser::FileParser::X509Parser::ParseBuff(const UInt8 *b
 	}
 	else
 	{
-		if (Text::StrEndsWithICase(fileName, (const UTF8Char*)".P12"))
+		if (fileName->EndsWithICase((const UTF8Char*)".P12"))
 		{
 			NEW_CLASS(ret, Crypto::Cert::X509PKCS12(fileName, buff, buffSize));
 		}
-		else if (Text::StrEndsWithICase(fileName, (const UTF8Char*)".PFX"))
+		else if (fileName->EndsWithICase((const UTF8Char*)".PFX"))
 		{
 			NEW_CLASS(ret, Crypto::Cert::X509PKCS12(fileName, buff, buffSize));
 		}
-		else if (Text::StrEndsWithICase(fileName, (const UTF8Char*)".DER"))
+		else if (fileName->EndsWithICase((const UTF8Char*)".DER"))
 		{
 			NEW_CLASS(ret, Crypto::Cert::X509Cert(fileName, buff, buffSize));
 		}
-		else if (Text::StrEndsWithICase(fileName, (const UTF8Char*)".CER"))
+		else if (fileName->EndsWithICase((const UTF8Char*)".CER"))
 		{
 			NEW_CLASS(ret, Crypto::Cert::X509Cert(fileName, buff, buffSize));
 		}
-		else if (Text::StrEndsWithICase(fileName, (const UTF8Char*)".P7B"))
+		else if (fileName->EndsWithICase((const UTF8Char*)".P7B"))
 		{
 			NEW_CLASS(ret, Crypto::Cert::X509PKCS7(fileName, buff, buffSize));
 		}

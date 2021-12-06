@@ -9,6 +9,7 @@ namespace Crypto
 		class X509PKCS7 : public Crypto::Cert::X509File
 		{
 		public:
+			X509PKCS7(Text::String *sourceName, const UInt8 *buff, UOSInt buffSize);
 			X509PKCS7(const UTF8Char *sourceName, const UInt8 *buff, UOSInt buffSize);
 			virtual ~X509PKCS7();
 

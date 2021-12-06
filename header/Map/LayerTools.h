@@ -8,7 +8,7 @@ namespace Map
 	class LayerTools
 	{
 	public:
-		static Map::VectorLayer *CombineLayers(Data::ArrayList<Map::IMapDrawLayer*> *layers, const UTF8Char *name);
+		static Map::VectorLayer *CombineLayers(Data::ArrayList<Map::IMapDrawLayer*> *layers, Text::String *name);
 	};
-};
+}
 #endif

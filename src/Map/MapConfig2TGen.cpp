@@ -2497,7 +2497,7 @@ Map::IMapDrawLayer *Map::MapConfig2TGen::GetDrawLayer(const UTF8Char *name, Data
 	{
 		Map::IMapDrawLayer *lyr;
 		lyr = layerList->GetItem(i);
-		if (IO::Path::FileNameCompare(name, lyr->GetName()) == 0)
+		if (IO::Path::FileNameCompare(name, lyr->GetName()->v) == 0)
 		{
 			return lyr;
 		}

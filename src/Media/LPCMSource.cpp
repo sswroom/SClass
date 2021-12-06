@@ -7,20 +7,20 @@
 #include "Media/IAudioSource.h"
 #include "Media/LPCMSource.h"
 
+Media::LPCMSource::LPCMSource(Text::String *name)
+{
+	this->format.Clear();
+	this->data = 0;
+	this->name = SCOPY_STRING(name);
+	this->readEvt = 0;
+	this->readOfst = 0;
+}
+
 Media::LPCMSource::LPCMSource(const UTF8Char *name)
 {
 	this->format.Clear();
 	this->data = 0;
-
-	if (name)
-	{
-		this->name = Text::StrCopyNew(name);
-	}
-	else
-	{
-		this->name = 0;
-	}
-
+	this->name = Text::String::New(name);
 	this->readEvt = 0;
 	this->readOfst = 0;
 }
@@ -36,21 +36,20 @@ void Media::LPCMSource::SetData(IO::IStreamData *fd, UInt64 ofst, UInt64 length,
 	this->data = fd->GetPartialData(ofst, length);
 }
 
+Media::LPCMSource::LPCMSource(IO::IStreamData *fd, UInt64 ofst, UInt64 length, Media::AudioFormat *format, Text::String *name)
+{
+	this->format.FromAudioFormat(format);
+	this->data = fd->GetPartialData(ofst, length);
+	this->name = SCOPY_STRING(name);
+	this->readEvt = 0;
+	this->readOfst = 0;
+}
+
 Media::LPCMSource::LPCMSource(IO::IStreamData *fd, UInt64 ofst, UInt64 length, Media::AudioFormat *format, const UTF8Char *name)
 {
 	this->format.FromAudioFormat(format);
-
 	this->data = fd->GetPartialData(ofst, length);
-
-	if (name)
-	{
-		this->name = Text::StrCopyNew(name);
-	}
-	else
-	{
-		this->name = 0;
-	}
-
+	this->name = Text::String::New(name);
 	this->readEvt = 0;
 	this->readOfst = 0;
 }
@@ -58,17 +57,14 @@ Media::LPCMSource::LPCMSource(IO::IStreamData *fd, UInt64 ofst, UInt64 length, M
 Media::LPCMSource::~LPCMSource()
 {
 	DEL_CLASS(this->data);
-	if (this->name)
-	{
-		Text::StrDelNew(this->name);
-	}
+	SDEL_STRING(this->name);
 }
 
 UTF8Char *Media::LPCMSource::GetSourceName(UTF8Char *buff)
 {
 	if (this->name == 0)
 		return 0;
-	return Text::StrConcat(buff, this->name);
+	return this->name->ConcatTo(buff);
 }
 
 Bool Media::LPCMSource::CanSeek()

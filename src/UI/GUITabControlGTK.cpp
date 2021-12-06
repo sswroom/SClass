@@ -9,7 +9,7 @@
 typedef struct
 {
 	GtkWidget *lbl;
-	const UTF8Char *txt;
+	Text::String *txt;
 } PageInfo;
 
 void GUITabControl_SelChange(GtkNotebook *notebook, GtkWidget *page, guint page_num, gpointer user_data)
@@ -47,13 +47,35 @@ UI::GUITabControl::~GUITabControl()
 	{
 		tp = this->tabPages->GetItem(i);
 		page = (PageInfo*)tp->GetCustObj();
-		Text::StrDelNew(page->txt);
+		page->txt->Release();
 		MemFree(page);
 		DEL_CLASS(tp);
 	}
 	DEL_CLASS(this->tabPages);
 	DEL_CLASS(this->selChgHdlrs);
 	DEL_CLASS(this->selChgObjs);
+}
+
+UI::GUITabPage *UI::GUITabControl::AddTabPage(Text::String *tabName)
+{
+	UI::GUITabPage *tp;
+	PageInfo *page;
+	NEW_CLASS(tp, UI::GUITabPage(this->ui, 0, this, this->tabPages->GetCount()));
+	page = MemAlloc(PageInfo, 1);
+	page->lbl = gtk_label_new((const Char*)tabName);
+	page->txt = tabName->Clone();
+	tp->SetCustObj(page);
+	gtk_notebook_append_page((GtkNotebook*)this->hwnd, (GtkWidget*)tp->GetHandle(), page->lbl);
+	OSInt x;
+	OSInt y;
+	UOSInt w;
+	UOSInt h;
+	this->GetTabPageRect(&x, &y, &w, &h);
+	tp->SetRect(0, 0, Math::UOSInt2Double(w), Math::UOSInt2Double(h), false);
+	tp->SetDPI(this->hdpi, this->ddpi);
+	tp->Show();
+	this->tabPages->Add(tp);
+	return tp;
 }
 
 UI::GUITabPage *UI::GUITabControl::AddTabPage(const UTF8Char *tabName)
@@ -63,7 +85,7 @@ UI::GUITabPage *UI::GUITabControl::AddTabPage(const UTF8Char *tabName)
 	NEW_CLASS(tp, UI::GUITabPage(this->ui, 0, this, this->tabPages->GetCount()));
 	page = MemAlloc(PageInfo, 1);
 	page->lbl = gtk_label_new((const Char*)tabName);
-	page->txt = Text::StrCopyNew(tabName);
+	page->txt = Text::String::New(tabName);
 	tp->SetCustObj(page);
 	gtk_notebook_append_page((GtkNotebook*)this->hwnd, (GtkWidget*)tp->GetHandle(), page->lbl);
 	OSInt x;
@@ -113,8 +135,8 @@ void UI::GUITabControl::SetTabPageName(UOSInt index, const UTF8Char *name)
 		return;
 	PageInfo *page = (PageInfo*)tp->GetCustObj();
 	gtk_label_set_text((GtkLabel*)page->lbl, (const Char*)name);
-	Text::StrDelNew(page->txt);
-	page->txt = Text::StrCopyNew(name);
+	page->txt->Release();
+	page->txt = Text::String::New(name);
 }
 
 UTF8Char *UI::GUITabControl::GetTabPageName(UOSInt index, UTF8Char *buff)
@@ -123,7 +145,7 @@ UTF8Char *UI::GUITabControl::GetTabPageName(UOSInt index, UTF8Char *buff)
 	if (tp == 0)
 		return 0;
 	PageInfo *page = (PageInfo*)tp->GetCustObj();
-	return Text::StrConcat(buff, page->txt);
+	return page->txt->ConcatTo(buff);
 }
 
 void UI::GUITabControl::GetTabPageRect(OSInt *x, OSInt *y, UOSInt *w, UOSInt *h)

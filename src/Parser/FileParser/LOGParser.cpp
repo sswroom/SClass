@@ -51,7 +51,7 @@ IO::ParsedObject *Parser::FileParser::LOGParser::ParseFile(IO::IStreamData *fd, 
 	UOSInt i;
 //	OSInt j;
 //	OSInt k;
-	Text::StrConcat(sbuff, fd->GetFullName());
+	fd->GetFullName()->ConcatTo(sbuff);
 	i = Text::StrLastIndexOf(sbuff, '.');
 	if (i == INVALID_INDEX || !Text::StrEqualsICase(&sbuff[i], (const UTF8Char*)".LOG"))
 	{

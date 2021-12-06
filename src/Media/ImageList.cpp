@@ -6,6 +6,22 @@
 #include "Media/StaticImage.h"
 #include "Text/MyString.h"
 
+Media::ImageList::ImageList(Text::String *name) : IO::ParsedObject(name)
+{
+	NEW_CLASS(this->imgList, Data::ArrayList<Media::Image*>());
+	NEW_CLASS(this->imgTimes, Data::ArrayListUInt32());
+	NEW_CLASS(this->imgTypeList, Data::ArrayList<ImageType>());
+	NEW_CLASS(this->valTypeI32, Data::ArrayList<ValueType>());
+	NEW_CLASS(this->valI32, Data::ArrayList<Int32>());
+	NEW_CLASS(this->valTypeI64, Data::ArrayList<ValueType>());
+	NEW_CLASS(this->valI64, Data::ArrayList<Int64>());
+	NEW_CLASS(this->valTypeStr, Data::ArrayList<ValueType>());
+	NEW_CLASS(this->valStr, Data::ArrayList<const UTF8Char *>());
+	this->author = 0;
+	this->imgName = 0;
+	this->thermoPtr = 0;
+}
+
 Media::ImageList::ImageList(const UTF8Char *fileName) : IO::ParsedObject(fileName)
 {
 	NEW_CLASS(this->imgList, Data::ArrayList<Media::Image*>());

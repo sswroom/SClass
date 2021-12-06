@@ -66,7 +66,7 @@ namespace Map
 		struct GroupItem : public MapItem
 		{
 			Data::ArrayList<MapItem*> *subitems;
-			const UTF8Char *groupName;
+			Text::String *groupName;
 			Bool groupHide;
 		};
 
@@ -160,13 +160,14 @@ namespace Map
 
 		UOSInt AddLayer(GroupItem *group, Map::IMapDrawLayer *layer, Bool needRelease);
 		Bool ReplaceLayer(GroupItem *group, UOSInt index, Map::IMapDrawLayer *layer, Bool needRelease);
+		GroupItem *AddGroup(GroupItem *group, Text::String *subgroupName);
 		GroupItem *AddGroup(GroupItem *group, const UTF8Char *subgroupName);
 		void RemoveItem(GroupItem *group, UOSInt index);
 		void MoveItem(GroupItem *group, UOSInt fromIndex, UOSInt toIndex);
 		void MoveItem(GroupItem *fromGroup, UOSInt fromIndex, GroupItem *toGroup, UOSInt toIndex);
 		UOSInt GetItemCount(GroupItem *group);
 		MapItem *GetItem(GroupItem *group, UOSInt index);
-		const UTF8Char *GetGroupName(GroupItem *group);
+		Text::String *GetGroupName(GroupItem *group);
 		void SetGroupName(GroupItem *group, const UTF8Char *name);
 		void SetGroupHide(GroupItem *group, Bool isHide);
 		Bool GetGroupHide(GroupItem *group);

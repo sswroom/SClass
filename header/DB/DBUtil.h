@@ -105,7 +105,7 @@ template <class T> Bool DB::DBUtil::SaveCSV(IO::Stream *stm, Data::ArrayList<T*>
 		{
 			sb.AppendChar(',', 1);
 		}
-		DB::DBUtil::Field2DBName(sbuff, cls->GetFieldName(i));
+		DB::DBUtil::Field2DBName(sbuff, cls->GetFieldName(i)->v);
 		s = Text::String::NewCSVRec(sbuff);
 		sb.AppendC(s->v, s->leng);
 		s->Release();
@@ -114,6 +114,7 @@ template <class T> Bool DB::DBUtil::SaveCSV(IO::Stream *stm, Data::ArrayList<T*>
 	sb.AppendC((const UTF8Char*)"\r\n", 2);
 	if (stm->Write(sb.ToString(), sb.GetCharCnt()) != sb.GetCharCnt()) succ = false;
 
+	Data::VariItem itm;
 	k = 0;
 	l = list->GetCount();
 	while (k < l)
@@ -128,20 +129,26 @@ template <class T> Bool DB::DBUtil::SaveCSV(IO::Stream *stm, Data::ArrayList<T*>
 			{
 				sb.AppendChar(',', 1);
 			}
-			Data::VariItem *itm = cls->GetNewValue(i, o);
-			if (itm->GetItemType() == Data::VariItem::ItemType::Null)
+			cls->GetValue(&itm, i, o);
+			Data::VariItem::ItemType itmType = itm.GetItemType();
+			if (itmType == Data::VariItem::ItemType::Null)
 			{
 				sb.AppendC((const UTF8Char*)"\"\"", 2);
+			}
+			else if (itmType == Data::VariItem::ItemType::Str)
+			{
+				s = Text::String::NewCSVRec(itm.GetItemValue().str->v);
+				sb.AppendC(s->v, s->leng);
+				s->Release();
 			}
 			else
 			{
 				sb2.ClearStr();
-				itm->GetAsString(&sb2);
+				itm.GetAsString(&sb2);
 				s = Text::String::NewCSVRec(sb2.ToString());
 				sb.AppendC(s->v, s->leng);
 				s->Release();
 			}
-			DEL_CLASS(itm);
 			i++;
 		}
 		sb.AppendC((const UTF8Char*)"\r\n", 2);

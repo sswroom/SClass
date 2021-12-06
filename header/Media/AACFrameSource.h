@@ -9,6 +9,7 @@ namespace Media
 	class AACFrameSource : public AudioFrameSource
 	{
 	public:
+		AACFrameSource(IO::IStreamData *fd, Media::AudioFormat *format, Text::String *name);
 		AACFrameSource(IO::IStreamData *fd, Media::AudioFormat *format, const UTF8Char *name);
 		virtual ~AACFrameSource();
 

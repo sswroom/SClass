@@ -266,7 +266,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::FGDBFileAnalyse::GetFrameDetail(U
 					*sptr = 0;
 					frame->AddField(ofst + 2, srsLen, (const UTF8Char*)"SRS", sbuff);
 					UOSInt csysLen = (UOSInt)(sptr - sbuff);
-					Math::CoordinateSystem *csys = Math::CoordinateSystemManager::ParsePRJBuff(this->fd->GetFullName(), (Char*)sbuff, &csysLen);
+					Math::CoordinateSystem *csys = Math::CoordinateSystemManager::ParsePRJBuff(this->fd->GetFullName()->v, (Char*)sbuff, &csysLen);
 					if (csys)
 					{
 						Text::StringBuilderUTF8 sb;
@@ -389,7 +389,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::FGDBFileAnalyse::GetFrameDetail(U
 				if (field->flags & 1)
 				{
 					isNull = ((tagData[4 + (nullIndex >> 3)] & (1 << (nullIndex & 7))) != 0);
-					Text::StrConcat(Text::StrConcat(sbuff, field->name), (const UTF8Char*)" isNull");
+					Text::StrConcat(field->name->ConcatTo(sbuff), (const UTF8Char*)" isNull");
 					frame->AddUInt(4 + (nullIndex >> 3), 1, (const Char*)sbuff, isNull?1:0);
 					nullIndex++;
 				}
@@ -397,22 +397,22 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::FGDBFileAnalyse::GetFrameDetail(U
 				{
 					if (field->fieldType == 0) //int16
 					{
-						frame->AddInt(ofst, 2, (const Char*)field->name, ReadInt16(&tagData[ofst]));
+						frame->AddInt(ofst, 2, (const Char*)field->name->v, ReadInt16(&tagData[ofst]));
 						ofst += 2;
 					}
 					else if (field->fieldType == 1) //int32
 					{
-						frame->AddInt(ofst, 4, (const Char*)field->name, ReadInt32(&tagData[ofst]));
+						frame->AddInt(ofst, 4, (const Char*)field->name->v, ReadInt32(&tagData[ofst]));
 						ofst += 4;
 					}
 					else if (field->fieldType == 2) //float32
 					{
-						frame->AddFloat(ofst, 4, (const Char*)field->name, ReadFloat(&tagData[ofst]));
+						frame->AddFloat(ofst, 4, (const Char*)field->name->v, ReadFloat(&tagData[ofst]));
 						ofst += 4;
 					}
 					else if (field->fieldType == 3) //float64
 					{
-						frame->AddFloat(ofst, 8, (const Char*)field->name, ReadDouble(&tagData[ofst]));
+						frame->AddFloat(ofst, 8, (const Char*)field->name->v, ReadDouble(&tagData[ofst]));
 						ofst += 8;
 					}
 					else if (field->fieldType == 4) //String
@@ -420,23 +420,23 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::FGDBFileAnalyse::GetFrameDetail(U
 						ofst2 = Map::ESRI::FileGDBUtil::ReadVarUInt(tagData, ofst, &v);
 						frame->AddUInt(ofst, ofst2 - ofst, "String Length", v);
 						ofst = ofst2;
-						frame->AddStrC(ofst, v, (const Char*)field->name, &tagData[ofst]);
+						frame->AddStrC(ofst, v, (const Char*)field->name->v, &tagData[ofst]);
 						ofst += v;
 					}
 					else if (field->fieldType == 5) //datetime
 					{
 						Double t = ReadDouble(&tagData[ofst]);
-						Text::StrConcat(Text::StrConcat(sbuff, (const UTF8Char*)"RAW "), field->name);
+						field->name->ConcatTo(Text::StrConcat(sbuff, (const UTF8Char*)"RAW "));
 						frame->AddFloat(ofst, 8, (const Char*)sbuff, t);
 						Data::DateTime dt;
 						Text::XLSUtil::Number2Date(&dt, t);
 						dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
-						frame->AddField(ofst, 8, field->name, sbuff);
+						frame->AddField(ofst, 8, field->name->v, sbuff);
 						ofst += 8;
 					}
 					else if (field->fieldType == 6) //ObjectId
 					{
-						frame->AddUInt(ofst, 0, (const Char*)field->name, index - 1);
+						frame->AddUInt(ofst, 0, (const Char*)field->name->v, index - 1);
 					}
 					else if (field->fieldType == 7) //Geometry
 					{
@@ -681,14 +681,14 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::FGDBFileAnalyse::GetFrameDetail(U
 						ofst2 = Map::ESRI::FileGDBUtil::ReadVarUInt(tagData, ofst, &v);
 						frame->AddUInt(ofst, ofst2 - ofst, "Size", v);
 						ofst = ofst2;
-						frame->AddHexBuff(ofst, v, (const Char*)field->name, &tagData[ofst], true);
+						frame->AddHexBuff(ofst, v, (const Char*)field->name->v, &tagData[ofst], true);
 						ofst += v;						
 					}
 					else if (field->fieldType == 10 || field->fieldType == 11) //UUID
 					{
 						Data::UUID uuid(&tagData[ofst]);
 						uuid.ToString(sbuff);
-						frame->AddField(ofst, 16, field->name, sbuff);
+						frame->AddField(ofst, 16, field->name->v, sbuff);
 						ofst += 16;
 					}
 					else if (field->fieldType == 12) //XML
@@ -696,7 +696,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::FGDBFileAnalyse::GetFrameDetail(U
 						ofst2 = Map::ESRI::FileGDBUtil::ReadVarUInt(tagData, ofst, &v);
 						frame->AddUInt(ofst, ofst2 - ofst, "Size", v);
 						ofst = ofst2;
-						frame->AddStrC(ofst, v, (const Char*)field->name, &tagData[ofst]);
+						frame->AddStrC(ofst, v, (const Char*)field->name->v, &tagData[ofst]);
 						ofst += v;						
 					}
 					else

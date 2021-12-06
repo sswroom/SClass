@@ -20,6 +20,11 @@ Map::ESRI::FileGDBTable *Map::ESRI::FileGDBDir::GetTable(const UTF8Char *name)
 	return 0;
 }
 
+Map::ESRI::FileGDBDir::FileGDBDir(Text::String *sourceName) : DB::ReadingDB(sourceName)
+{
+	NEW_CLASS(this->tables, Data::ArrayList<FileGDBTable*>());
+}
+
 Map::ESRI::FileGDBDir::FileGDBDir(const UTF8Char *sourceName) : DB::ReadingDB(sourceName)
 {
 	NEW_CLASS(this->tables, Data::ArrayList<FileGDBTable*>());

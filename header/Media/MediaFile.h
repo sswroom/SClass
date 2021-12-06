@@ -18,6 +18,7 @@ namespace Media
 		Media::ChapterInfo *chapters;
 
 	public:
+		MediaFile(Text::String *name);
 		MediaFile(const UTF8Char *name);
 		virtual ~MediaFile();
 

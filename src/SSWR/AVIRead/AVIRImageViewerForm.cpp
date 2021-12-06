@@ -370,7 +370,7 @@ void SSWR::AVIRead::AVIRImageViewerForm::SetImage(Media::ImageList *imgList, Boo
 	{
 		UInt32 imgDurMS;
 		this->imgIndex = 0;
-		Text::StrConcat(Text::StrConcat(sbuff, (const UTF8Char*)"Image Viewer - "), this->imgList->GetSourceNameObj());
+		this->imgList->GetSourceNameObj()->ConcatTo(Text::StrConcat(sbuff, (const UTF8Char*)"Image Viewer - "));
 		this->SetText(sbuff);
 		this->pbImage->SetImage(this->imgList->GetImage(0, &imgDurMS), false);
 		if (imgDurMS != 0 && this->imgList->GetCount() > 1)

@@ -42,14 +42,14 @@ void UI::GUIMapTreeView::AddTreeNode(UI::GUITreeView::TreeItem *treeItem, Map::M
 		if (item->itemType == Map::MapEnv::IT_LAYER)
 		{
 			Map::MapEnv::LayerItem *layer = (Map::MapEnv::LayerItem*)item;
-			const UTF8Char *name = layer->layer->GetName();
-			UOSInt i = Text::StrLastIndexOf(name, IO::Path::PATH_SEPERATOR);
+			Text::String *name = layer->layer->GetName();
+			UOSInt i = name->LastIndexOf(IO::Path::PATH_SEPERATOR);
 			ind = MemAlloc(ItemIndex, 1);
 			ind->group = group;
 			ind->index = index;
 			ind->itemType = Map::MapEnv::IT_LAYER;
 			ind->item = item;
-			treeItem = this->InsertItem(treeItem, 0, &name[i + 1], ind);
+			treeItem = this->InsertItem(treeItem, 0, &name->v[i + 1], ind);
 		}
 		else if (item->itemType == Map::MapEnv::IT_GROUP)
 		{

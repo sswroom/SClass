@@ -40,10 +40,7 @@ IO::ParsedObject *Parser::FileParser::SEGPackParser::ParseFile(IO::IStreamData *
 	UInt32 fileOfst;
 	Text::Encoding enc(932);
 
-	UOSInt i = Text::StrLastIndexOf(fd->GetFullName(), '.');
-	if (i == INVALID_INDEX)
-		return 0;
-	if (Text::StrCompareICase(&(fd->GetFullName())[i + 1], (const UTF8Char*)"SEG") != 0)
+	if (!fd->GetFullName()->EndsWithICase((const UTF8Char*)"SEG"))
 		return 0;
 
 	fd->GetRealData(0, 4, (UInt8*)hdr);

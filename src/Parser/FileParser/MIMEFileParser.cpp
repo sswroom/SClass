@@ -34,9 +34,9 @@ IO::ParserType Parser::FileParser::MIMEFileParser::GetParserType()
 
 IO::ParsedObject *Parser::FileParser::MIMEFileParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
-	const UTF8Char *name = fd->GetFullName();
+	Text::String *name = fd->GetFullName();
 	Text::IMIMEObj *obj;
-	if (Text::StrEndsWithICase(name, (const UTF8Char*)".eml"))
+	if (name->EndsWithICase((const UTF8Char*)".eml"))
 	{
 		obj = Text::MIMEObj::MailMessage::ParseFile(fd);
 		return obj;

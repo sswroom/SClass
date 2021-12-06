@@ -3,6 +3,10 @@
 #include "DB/ReadingDB.h"
 #include "Text/MyString.h"
 
+DB::ReadingDB::ReadingDB(Text::String *sourceName) : IO::ParsedObject(sourceName)
+{
+}
+
 DB::ReadingDB::ReadingDB(const UTF8Char *sourceName) : IO::ParsedObject(sourceName)
 {
 }

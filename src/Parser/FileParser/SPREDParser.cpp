@@ -53,7 +53,7 @@ IO::ParsedObject *Parser::FileParser::SPREDParser::ParseFile(IO::IStreamData *fd
 	Int32 cmdType;
 	UInt32 cmdSize;
 
-	sptr = fd->GetFullName();
+	sptr = fd->GetFullName()->v;
 	i = Text::StrLastIndexOf(sptr, '\\');
 	Text::StrConcat(u8buff, &sptr[i + 1]);
 	if (!Text::StrStartsWithICase(u8buff, (const UTF8Char*)"RED"))

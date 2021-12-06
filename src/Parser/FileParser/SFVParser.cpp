@@ -35,18 +35,14 @@ IO::ParserType Parser::FileParser::SFVParser::GetParserType()
 
 IO::ParsedObject *Parser::FileParser::SFVParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
-	UTF8Char u8buff[512];
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	IO::FileCheck *fchk;
-	UOSInt i;
 	IO::FileCheck::CheckType ctype;
 	UInt8 chk[8];
 	UOSInt chkSize;
 
-	Text::StrConcat(u8buff, fd->GetFullName());
-	i = Text::StrLastIndexOf(u8buff, '.');
-	if (i != INVALID_INDEX && Text::StrEqualsICase(&u8buff[i], (const UTF8Char*)".SFV"))
+	if (fd->GetFullName()->EndsWithICase((const UTF8Char*)".SFV"))
 	{
 		ctype = IO::FileCheck::CheckType::CRC32;
 		chkSize = 4;

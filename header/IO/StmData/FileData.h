@@ -3,6 +3,7 @@
 #include "IO/IStreamData.h"
 #include "IO/FileStream.h"
 #include "Sync/Mutex.h"
+#include "Text/String.h"
 
 namespace IO
 {
@@ -16,9 +17,9 @@ namespace IO
 				IO::FileStream *file;
 				UInt64 fileLength;
 				UInt64 currentOffset;
-				UTF8Char *fileName;
-				UTF8Char *fullName;
-				const UTF8Char *filePath;
+				const UTF8Char *fileName;
+				Text::String *fullName;
+				Text::String *filePath;
 				Bool deleteOnClose;
 				UOSInt seekCnt;
 
@@ -29,7 +30,7 @@ namespace IO
 			typedef struct
 			{
 				const UTF8Char *fileName;
-				const UTF8Char *fullName;
+				Text::String *fullName;
 				UInt32 objectCnt;
 			} FILEDATANAME;
 
@@ -42,11 +43,12 @@ namespace IO
 			void ReopenFile();
 		public:
 			FileData(const FileData *fd, UInt64 offset, UInt64 length);
+			FileData(Text::String *fileName, Bool deleteOnClose);
 			FileData(const UTF8Char *fileName, Bool deleteOnClose);
 			virtual ~FileData();
 
 			virtual UOSInt GetRealData(UInt64 offset, UOSInt length, UInt8 *buffer);
-			virtual const UTF8Char *GetFullName();
+			virtual Text::String *GetFullName();
 			virtual const UTF8Char *GetShortName();
 			virtual void SetFullName(const UTF8Char *fullName);
 			virtual UInt64 GetDataSize();
@@ -54,7 +56,7 @@ namespace IO
 
 			virtual IO::IStreamData *GetPartialData(UInt64 offset, UInt64 length);
 			virtual Bool IsFullFile();
-			virtual const UTF8Char *GetFullFileName();
+			virtual Text::String *GetFullFileName();
 			virtual Bool IsLoading();
 			virtual UOSInt GetSeekCount();
 

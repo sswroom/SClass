@@ -4886,7 +4886,8 @@ const UTF8Char *IO::JavaClass::AppendCodeType2String(Text::StringBuilderUTF *sb,
 	}
 	return typeStr;
 }
-IO::JavaClass::JavaClass(const UTF8Char *sourceName, const UInt8 *buff, UOSInt buffSize) : IO::ParsedObject(sourceName)
+
+void IO::JavaClass::Init(const UInt8 *buff, UOSInt buffSize)
 {
 	this->fileBuff = 0;
 	this->fileBuffSize = 0;
@@ -5203,6 +5204,16 @@ IO::JavaClass::JavaClass(const UTF8Char *sourceName, const UInt8 *buff, UOSInt b
 			j++;
 		}
 	}
+}
+
+IO::JavaClass::JavaClass(Text::String *sourceName, const UInt8 *buff, UOSInt buffSize) : IO::ParsedObject(sourceName)
+{
+	this->Init(buff, buffSize);
+}
+
+IO::JavaClass::JavaClass(const UTF8Char *sourceName, const UInt8 *buff, UOSInt buffSize) : IO::ParsedObject(sourceName)
+{
+	this->Init(buff, buffSize);
 }
 
 IO::JavaClass::~JavaClass()
@@ -8844,6 +8855,21 @@ IO::JavaClass *IO::JavaClass::ParseFile(const UTF8Char *fileName)
 		MemFree(buff);
 	}
 	DEL_CLASS(fs);
+	return cls;
+}
+
+IO::JavaClass *IO::JavaClass::ParseBuff(Text::String *sourceName, const UInt8 *buff, UOSInt buffSize)
+{
+	if (buffSize < 26)
+	{
+		return 0;
+	}
+	if (ReadMUInt32(&buff[0]) != 0xCAFEBABE)
+	{
+		return 0;
+	}
+	IO::JavaClass *cls;
+	NEW_CLASS(cls, IO::JavaClass(sourceName, buff, buffSize));
 	return cls;
 }
 

@@ -276,7 +276,7 @@ void Media::FileVideoSource::SetFrameRate(UInt32 frameRateNorm, UInt32 frameRate
 
 UTF8Char *Media::FileVideoSource::GetSourceName(UTF8Char *buff)
 {
-	return Text::StrConcat(buff, this->data->GetFullName());
+	return this->data->GetFullName()->ConcatTo(buff);
 }
 
 const UTF8Char *Media::FileVideoSource::GetFilterName()

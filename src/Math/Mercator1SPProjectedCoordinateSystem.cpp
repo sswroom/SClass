@@ -3,6 +3,10 @@
 #include "Math/Math.h"
 #include "Math/Mercator1SPProjectedCoordinateSystem.h"
 
+Math::Mercator1SPProjectedCoordinateSystem::Mercator1SPProjectedCoordinateSystem(Text::String *sourceName, UInt32 srid, const UTF8Char *csysName, Double falseEasting, Double falseNorthing, Double centralMeridian, Double latitudeOfOrigin, Double scaleFactor, Math::GeographicCoordinateSystem *gcs, UnitType unit) : ProjectedCoordinateSystem(sourceName, srid, csysName, falseEasting, falseNorthing, centralMeridian, latitudeOfOrigin, scaleFactor, gcs, unit)
+{
+}
+
 Math::Mercator1SPProjectedCoordinateSystem::Mercator1SPProjectedCoordinateSystem(const UTF8Char *sourceName, UInt32 srid, const UTF8Char *csysName, Double falseEasting, Double falseNorthing, Double centralMeridian, Double latitudeOfOrigin, Double scaleFactor, Math::GeographicCoordinateSystem *gcs, UnitType unit) : ProjectedCoordinateSystem(sourceName, srid, csysName, falseEasting, falseNorthing, centralMeridian, latitudeOfOrigin, scaleFactor, gcs, unit)
 {
 }
@@ -20,7 +24,7 @@ Math::CoordinateSystem *Math::Mercator1SPProjectedCoordinateSystem::Clone()
 
 Math::CoordinateSystem::CoordinateSystemType Math::Mercator1SPProjectedCoordinateSystem::GetCoordSysType()
 {
-	return Math::CoordinateSystem::CST_MERCATOR1SPPROJECTED;
+	return Math::CoordinateSystem::CoordinateSystemType::Mercator1SPProjected;
 }
 
 void Math::Mercator1SPProjectedCoordinateSystem::ToGeographicCoordinate(Double projX, Double projY, Double *geoX, Double *geoY)

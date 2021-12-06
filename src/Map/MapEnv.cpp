@@ -564,7 +564,7 @@ UOSInt Map::MapEnv::AddLayer(Map::MapEnv::GroupItem *group, Map::IMapDrawLayer *
 		UTF8Char sbuff[512];
 		UTF8Char *sptr;
 		Map::MapLayerCollection *layerColl = (Map::MapLayerCollection*)layer;
-		Text::StrConcat(sbuff, layerColl->GetName());
+		layerColl->GetName()->ConcatTo(sbuff);
 		sptr = &sbuff[Text::StrLastIndexOf(sbuff, '\\') + 1];
 		Map::MapEnv::GroupItem *grp = this->AddGroup(group, sptr);
 
@@ -694,13 +694,34 @@ Bool Map::MapEnv::ReplaceLayer(Map::MapEnv::GroupItem *group, UOSInt index, Map:
 	}
 }
 
+Map::MapEnv::GroupItem *Map::MapEnv::AddGroup(Map::MapEnv::GroupItem *group, Text::String *subgroupName)
+{
+	Sync::MutexUsage mutUsage(this->mut);
+	Map::MapEnv::GroupItem *newG;
+	newG = MemAlloc(Map::MapEnv::GroupItem, 1);
+	newG->itemType = Map::MapEnv::IT_GROUP;
+	newG->groupName = subgroupName->Clone();
+	newG->groupHide = false;
+	NEW_CLASS(newG->subitems, Data::ArrayList<Map::MapEnv::MapItem*>());
+
+	if (group)
+	{
+		group->subitems->Add(newG);
+	}
+	else
+	{
+		this->mapLayers->Add(newG);
+	}
+	return newG;
+}
+
 Map::MapEnv::GroupItem *Map::MapEnv::AddGroup(Map::MapEnv::GroupItem *group, const UTF8Char *subgroupName)
 {
 	Sync::MutexUsage mutUsage(this->mut);
 	Map::MapEnv::GroupItem *newG;
 	newG = MemAlloc(Map::MapEnv::GroupItem, 1);
 	newG->itemType = Map::MapEnv::IT_GROUP;
-	newG->groupName = Text::StrCopyNew(subgroupName);
+	newG->groupName = Text::String::New(subgroupName);
 	newG->groupHide = false;
 	NEW_CLASS(newG->subitems, Data::ArrayList<Map::MapEnv::MapItem*>());
 
@@ -746,7 +767,7 @@ void Map::MapEnv::RemoveItem(Map::MapEnv::GroupItem *group, UOSInt index)
 		{
 			this->RemoveItem(g, i);
 		}
-		Text::StrDelNew(g->groupName);
+		g->groupName->Release();
 		DEL_CLASS(g->subitems);
 		MemFree(g);
 	}
@@ -847,7 +868,7 @@ Map::MapEnv::MapItem *Map::MapEnv::GetItem(Map::MapEnv::GroupItem *group, UOSInt
 	}
 }
 
-const UTF8Char *Map::MapEnv::GetGroupName(Map::MapEnv::GroupItem *group)
+Text::String *Map::MapEnv::GetGroupName(Map::MapEnv::GroupItem *group)
 {
 	return group->groupName;
 }
@@ -855,8 +876,8 @@ const UTF8Char *Map::MapEnv::GetGroupName(Map::MapEnv::GroupItem *group)
 void Map::MapEnv::SetGroupName(Map::MapEnv::GroupItem *group, const UTF8Char *name)
 {
 	Sync::MutexUsage mutUsage(this->mut);
-	Text::StrDelNew(group->groupName);
-	group->groupName = Text::StrCopyNew(name);
+	group->groupName->Release();
+	group->groupName = Text::String::New(name);
 }
 
 void Map::MapEnv::SetGroupHide(Map::MapEnv::GroupItem *group, Bool isHide)

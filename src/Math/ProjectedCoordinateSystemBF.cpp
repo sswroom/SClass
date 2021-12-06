@@ -129,7 +129,7 @@ Math::CoordinateSystem *Math::ProjectedCoordinateSystem::Clone()
 
 Math::CoordinateSystem::CoordinateSystemType Math::ProjectedCoordinateSystem::GetCoordSysType()
 {
-	return Math::CoordinateSystem::CST_PROJECTED;
+	return Math::CoordinateSystem::CoordinateSystemType::PROJECTED;
 }
 
 Math::GeographicCoordinateSystem *Math::ProjectedCoordinateSystem::GetGeographicCoordinateSystem()

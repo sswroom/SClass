@@ -1059,9 +1059,9 @@ UOSInt DB::ReadingDBTool::GetDatabaseNames(Data::ArrayList<const UTF8Char*> *arr
 	else if (this->svrType == DB::DBUtil::ServerType::SQLite)
 	{
 		Text::StringBuilderUTF8 sb;
-		const UTF8Char *name = this->db->GetSourceNameObj();
-		UOSInt i = Text::StrLastIndexOf(name, (UTF8Char)IO::Path::PATH_SEPERATOR);
-		sb.Append(&name[i + 1]);
+		Text::String *name = this->db->GetSourceNameObj();
+		UOSInt i = name->LastIndexOf((UTF8Char)IO::Path::PATH_SEPERATOR);
+		sb.Append(&name->v[i + 1]);
 		i = sb.IndexOf('.');
 		if (i != INVALID_INDEX)
 		{

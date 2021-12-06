@@ -3,6 +3,11 @@
 #include "Net/ASN1PDUBuilder.h"
 #include "Net/ASN1Util.h"
 
+Crypto::Cert::X509PrivKey::X509PrivKey(Text::String *sourceName, const UInt8 *buff, UOSInt buffSize) : Crypto::Cert::X509File(sourceName, buff, buffSize)
+{
+
+}
+
 Crypto::Cert::X509PrivKey::X509PrivKey(const UTF8Char *sourceName, const UInt8 *buff, UOSInt buffSize) : Crypto::Cert::X509File(sourceName, buff, buffSize)
 {
 
@@ -70,11 +75,11 @@ Crypto::Cert::X509Key *Crypto::Cert::X509PrivKey::CreateKey()
 	return 0;
 }
 
-Crypto::Cert::X509PrivKey *Crypto::Cert::X509PrivKey::CreateFromKeyBuff(KeyType keyType, const UInt8 *buff, UOSInt buffSize, const UTF8Char *sourceName)
+Crypto::Cert::X509PrivKey *Crypto::Cert::X509PrivKey::CreateFromKeyBuff(KeyType keyType, const UInt8 *buff, UOSInt buffSize, Text::String *sourceName)
 {
 	if (sourceName == 0)
 	{
-		sourceName = (const UTF8Char*)"PrivKey";
+		sourceName = Text::String::NewEmpty();
 	}
 	Net::ASN1PDUBuilder keyPDU;
 	keyPDU.BeginSequence();

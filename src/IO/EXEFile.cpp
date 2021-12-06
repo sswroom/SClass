@@ -9,6 +9,16 @@
 #include "Text/Locale.h"
 #include "Text/MyString.h"
 
+IO::EXEFile::EXEFile(Text::String *fileName) : IO::ParsedObject(fileName)
+{
+	NEW_CLASS(this->propNames, Data::ArrayList<const UTF8Char *>());
+	NEW_CLASS(this->propValues, Data::ArrayList<const UTF8Char *>());
+	NEW_CLASS(this->importList, Data::ArrayList<ImportInfo*>());
+	NEW_CLASS(this->exportList, Data::ArrayList<ExportInfo*>());
+	NEW_CLASS(this->resList, Data::ArrayList<ResourceInfo*>());
+	this->envDOS = 0;
+}
+
 IO::EXEFile::EXEFile(const UTF8Char *fileName) : IO::ParsedObject(fileName)
 {
 	NEW_CLASS(this->propNames, Data::ArrayList<const UTF8Char *>());

@@ -2,50 +2,41 @@
 #include "Text/MyString.h"
 #include "IO/ParsedObject.h"
 
+IO::ParsedObject::ParsedObject(Text::String *sourceName)
+{
+	this->sourceName = SCOPY_STRING(sourceName);
+}
+
 IO::ParsedObject::ParsedObject(const UTF8Char *sourceName)
 {
-	if (sourceName)
-	{
-		this->sourceName = Text::StrCopyNew(sourceName);
-	}
-	else
-	{
-		this->sourceName = 0;
-	}
+	this->sourceName = Text::String::New(sourceName);
 }
 
 IO::ParsedObject::~ParsedObject()
 {
-	if (this->sourceName)
-	{
-		Text::StrDelNew(this->sourceName);
-		this->sourceName = 0;
-	}
+	SDEL_STRING(this->sourceName);
 }
 
 UTF8Char *IO::ParsedObject::GetSourceName(UTF8Char *oriStr)
 {
 	if (this->sourceName)
-		return Text::StrConcat(oriStr, this->sourceName);
+		return this->sourceName->ConcatTo(oriStr);
 	return 0;
 }
 
-const UTF8Char *IO::ParsedObject::GetSourceNameObj()
+Text::String *IO::ParsedObject::GetSourceNameObj()
 {
 	return this->sourceName;
 }
 
+void IO::ParsedObject::SetSourceName(Text::String *sourceName)
+{
+	SDEL_STRING(this->sourceName);
+	this->sourceName = SCOPY_STRING(sourceName);
+}
+
 void IO::ParsedObject::SetSourceName(const UTF8Char *sourceName)
 {
-	if (this->sourceName)
-		Text::StrDelNew(this->sourceName);
-	if (sourceName)
-	{
-		this->sourceName = Text::StrCopyNew(sourceName);
-	}
-	else
-	{
-		this->sourceName = 0;
-	}
-
+	SDEL_STRING(this->sourceName);
+	this->sourceName = Text::String::New(sourceName);
 }

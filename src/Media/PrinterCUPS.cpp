@@ -25,7 +25,7 @@ namespace Media
 	private:
 		IPrintHandler *hdlr;
 		Media::GTKDrawEngine *eng;
-		const UTF8Char *docName;
+		Text::String *docName;
 		Bool started;
 		Bool running;
 		PageOrientation po;
@@ -40,6 +40,7 @@ namespace Media
 
 		Bool IsError();
 
+		virtual void SetDocName(Text::String *docName);
 		virtual void SetDocName(const UTF8Char *docName);
 		virtual void SetNextPagePaperSizeMM(Double width, Double height);
 		virtual void SetNextPageOrientation(PageOrientation po);
@@ -151,11 +152,7 @@ Media::CUPSPrintDocument::CUPSPrintDocument(const UTF8Char *printerName, Media::
 Media::CUPSPrintDocument::~CUPSPrintDocument()
 {
 	WaitForEnd();
-	if (this->docName)
-	{
-		Text::StrDelNew(this->docName);
-		this->docName = 0;
-	}
+	SDEL_STRING(this->docName);
 }
 
 Bool Media::CUPSPrintDocument::IsError()
@@ -163,17 +160,16 @@ Bool Media::CUPSPrintDocument::IsError()
 	return false;
 }
 
+void Media::CUPSPrintDocument::SetDocName(Text::String *docName)
+{
+	SDEL_STRING(this->docName);
+	this->docName = SCOPY_STRING(docName);
+}
+
 void Media::CUPSPrintDocument::SetDocName(const UTF8Char *docName)
 {
-	if (this->docName)
-	{
-		Text::StrDelNew(this->docName);
-		this->docName = 0;
-	}
-	if (docName)
-	{
-		this->docName = Text::StrCopyNew(docName);
-	}
+	SDEL_STRING(this->docName);
+	this->docName = Text::String::New(docName);
 }
 
 void Media::CUPSPrintDocument::SetNextPagePaperSizeMM(Double width, Double height)

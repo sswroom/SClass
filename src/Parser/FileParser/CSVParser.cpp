@@ -55,12 +55,10 @@ IO::ParsedObject *Parser::FileParser::CSVParser::ParseFile(IO::IStreamData *fd, 
 	UOSInt currCol;
 	Data::ArrayListStrUTF8 *colNames;
 
-	UOSInt i = Text::StrLastIndexOf(fd->GetFullName(), '.');
-	if (i == INVALID_INDEX)
-		return 0;
-	if (Text::StrCompareICase(&(fd->GetFullName())[i + 1], (const UTF8Char*)"CSV") != 0)
+	if (!fd->GetFullFileName()->EndsWithICase((const UTF8Char*)".CSV"))
 		return 0;
 
+	UOSInt i;
 	IO::StreamDataStream *stm;
 	IO::StreamReader *reader;
 	NEW_CLASS(stm, IO::StreamDataStream(fd));

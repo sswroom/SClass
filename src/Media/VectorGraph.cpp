@@ -455,7 +455,7 @@ Bool Media::VectorGraph::DrawImagePt(DrawImage *img, Double tlx, Double tly)
 	NEW_CLASS(imgList, Media::ImageList((const UTF8Char*)"VectorGraphImage"));
 	imgList->AddImage(stImg = img->ToStaticImage(), 0);
 	NEW_CLASS(simg, Media::SharedImage(imgList, false));
-	NEW_CLASS(vimg, Math::VectorImage(this->srid, simg, tlx, tly, tlx + Math::UOSInt2Double(stImg->info->dispWidth) * this->GetHDPI() / stImg->info->hdpi, tly + Math::UOSInt2Double(stImg->info->dispHeight) * stImg->info->par2 * this->GetVDPI() / stImg->info->vdpi, true, 0, 0, 0));
+	NEW_CLASS(vimg, Math::VectorImage(this->srid, simg, tlx, tly, tlx + Math::UOSInt2Double(stImg->info->dispWidth) * this->GetHDPI() / stImg->info->hdpi, tly + Math::UOSInt2Double(stImg->info->dispHeight) * stImg->info->par2 * this->GetVDPI() / stImg->info->vdpi, true, (const UTF8Char*)0, 0, 0));
 	style = MemAlloc(VectorStyles, 1);
 	style->pen = 0;
 	style->brush = 0;
@@ -475,7 +475,7 @@ Bool Media::VectorGraph::DrawImagePt2(Media::StaticImage *img, Double tlx, Doubl
 	NEW_CLASS(imgList, Media::ImageList((const UTF8Char*)"VectorGraphImage"));
 	imgList->AddImage(img->CreateStaticImage(), 0);
 	NEW_CLASS(simg, Media::SharedImage(imgList, false));
-	NEW_CLASS(vimg, Math::VectorImage(this->srid, simg, tlx, tly, tlx + Math::UOSInt2Double(img->info->dispWidth) * this->GetHDPI() / img->info->hdpi, tly + Math::UOSInt2Double(img->info->dispHeight) * img->info->par2 * this->GetVDPI() / img->info->vdpi, true, 0, 0, 0));
+	NEW_CLASS(vimg, Math::VectorImage(this->srid, simg, tlx, tly, tlx + Math::UOSInt2Double(img->info->dispWidth) * this->GetHDPI() / img->info->hdpi, tly + Math::UOSInt2Double(img->info->dispHeight) * img->info->par2 * this->GetVDPI() / img->info->vdpi, true, (const UTF8Char*)0, 0, 0));
 	style = MemAlloc(VectorStyles, 1);
 	style->pen = 0;
 	style->brush = 0;
@@ -496,7 +496,7 @@ Bool Media::VectorGraph::DrawImagePt3(DrawImage *img, Double destX, Double destY
 	NEW_CLASS(imgList, Media::ImageList((const UTF8Char*)"VectorGraphImage"));
 	imgList->AddImage(stImg = img->ToStaticImage(), 0);
 	NEW_CLASS(simg, Media::SharedImage(imgList, false));
-	NEW_CLASS(vimg, Math::VectorImage(this->srid, simg, destX, destY, destX + Math::UOSInt2Double(stImg->info->dispWidth) * this->GetHDPI() / stImg->info->hdpi, destY + Math::UOSInt2Double(stImg->info->dispHeight) * stImg->info->par2 * this->GetVDPI() / stImg->info->vdpi, true, 0, 0, 0));
+	NEW_CLASS(vimg, Math::VectorImage(this->srid, simg, destX, destY, destX + Math::UOSInt2Double(stImg->info->dispWidth) * this->GetHDPI() / stImg->info->hdpi, destY + Math::UOSInt2Double(stImg->info->dispHeight) * stImg->info->par2 * this->GetVDPI() / stImg->info->vdpi, true, (const UTF8Char*)0, 0, 0));
 	style = MemAlloc(VectorStyles, 1);
 	style->pen = 0;
 	style->brush = 0;

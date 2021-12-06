@@ -18,18 +18,26 @@ void Text::Cpp::CppParseStatus::FreeFileStatus(FileParseStatus *fileStatus)
 	MemFree(fileStatus);
 }
 
-Text::Cpp::CppParseStatus::CppParseStatus(const UTF8Char *rootFile)
+Text::Cpp::CppParseStatus::CppParseStatus(Text::String *rootFile)
 {
-	this->fileName = Text::StrCopyNew(rootFile);
+	this->fileName = rootFile->Clone();
 	NEW_CLASS(this->defines, Data::StringUTF8Map<DefineInfo*>());
 	NEW_CLASS(this->statuses, Data::ArrayList<FileParseStatus*>());
-	NEW_CLASS(this->fileNames, Data::ArrayListICaseStrUTF8());
+	NEW_CLASS(this->fileNames, Data::ArrayListICaseString());
+}
+
+Text::Cpp::CppParseStatus::CppParseStatus(const UTF8Char *rootFile)
+{
+	this->fileName = Text::String::New(rootFile);
+	NEW_CLASS(this->defines, Data::StringUTF8Map<DefineInfo*>());
+	NEW_CLASS(this->statuses, Data::ArrayList<FileParseStatus*>());
+	NEW_CLASS(this->fileNames, Data::ArrayListICaseString());
 }
 
 Text::Cpp::CppParseStatus::~CppParseStatus()
 {
 	UOSInt i;
-	Text::StrDelNew(this->fileName);
+	this->fileName->Release();
 	i = this->statuses->GetCount();
 	while (i-- > 0)
 	{
@@ -39,7 +47,7 @@ Text::Cpp::CppParseStatus::~CppParseStatus()
 	i = this->fileNames->GetCount();
 	while (i-- > 0)
 	{
-		Text::StrDelNew(this->fileNames->GetItem(i));
+		this->fileNames->GetItem(i)->Release();
 	}
 	DEL_CLASS(this->fileNames);
 	Data::ArrayList<DefineInfo*> *defs = this->defines->GetValues();
@@ -58,15 +66,15 @@ Text::Cpp::CppParseStatus::FileParseStatus *Text::Cpp::CppParseStatus::GetFileSt
 
 Bool Text::Cpp::CppParseStatus::BeginParseFile(const UTF8Char *fileName)
 {
-	const UTF8Char *fname;
-	OSInt i = this->fileNames->SortedIndexOf(fileName);
+	Text::String *fname;
+	OSInt i = this->fileNames->SortedIndexOfPtr(fileName);
 	if (i >= 0)
 	{
 		fname = this->fileNames->GetItem((UOSInt)i);
 	}
 	else
 	{
-		fname = Text::StrCopyNew(fileName);
+		fname = Text::String::New(fileName);
 		this->fileNames->Insert((UOSInt)~i, fname);
 	}
 
@@ -90,7 +98,7 @@ Bool Text::Cpp::CppParseStatus::EndParseFile(const UTF8Char *fileName)
 	status = this->statuses->GetItem(i);
 	if (status == 0)
 		return false;
-	if (Text::StrCompareICase(fileName, status->fileName) != 0)
+	if (!status->fileName->Equals(fileName))
 	{
 		return false;
 	}
@@ -344,12 +352,12 @@ UOSInt Text::Cpp::CppParseStatus::GetFileCount()
 	return this->fileNames->GetCount();
 }
 
-const UTF8Char *Text::Cpp::CppParseStatus::GetFileName(UOSInt index)
+Text::String *Text::Cpp::CppParseStatus::GetFileName(UOSInt index)
 {
 	return this->fileNames->GetItem(index);
 }
 
-const UTF8Char *Text::Cpp::CppParseStatus::GetCurrCodeFile()
+Text::String *Text::Cpp::CppParseStatus::GetCurrCodeFile()
 {
 	UOSInt i = this->statuses->GetCount();
 	if (i > 0)

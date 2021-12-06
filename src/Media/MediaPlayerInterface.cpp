@@ -87,7 +87,7 @@ Bool Media::MediaPlayerInterface::OpenVideo(Media::MediaFile *mf)
 	}
 	if (hasVideo && !hasAudio)
 	{
-		Text::StrConcat(sbuff, mf->GetSourceNameObj());
+		mf->GetSourceNameObj()->ConcatTo(sbuff);
 		i = Text::StrLastIndexOf(sbuff, IO::Path::PATH_SEPERATOR);
 		if (i != INVALID_INDEX)
 		{

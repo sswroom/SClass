@@ -265,7 +265,7 @@ IO::ParsedObject *Parser::FileParser::GLOCParser::ParseFile(IO::IStreamData *fd,
 	UInt64 fileSize;
 	Int64 devId;
 	UInt32 idevId;
-	sptr = fd->GetFullName();
+	sptr = fd->GetFullName()->v;
 	i = Text::StrLastIndexOf(sptr, '\\');
 	Text::StrConcat(u8buff, &sptr[i + 1]);
 	if (!Text::StrStartsWithICase(u8buff, (const UTF8Char*)"GLOC"))
@@ -299,7 +299,7 @@ IO::ParsedObject *Parser::FileParser::GLOCParser::ParseFile(IO::IStreamData *fd,
 
 	Map::GPSTrack *track;
 	Text::StrInt64(u8buff, devId);
-	NEW_CLASS(track, Map::GPSTrack(fd->GetFullName(), true, 0, u8buff));
+	NEW_CLASS(track, Map::GPSTrack(fd->GetFullName()->v, true, 0, u8buff));
 	track->SetTrackName(u8buff);
 	GLOCExtraParser *parser;
 	NEW_CLASS(parser, GLOCExtraParser());

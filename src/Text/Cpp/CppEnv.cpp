@@ -148,7 +148,7 @@ Text::Cpp::CppEnv::CppEnv(Text::VSProject::VisualStudioVersion vsv)
 Text::Cpp::CppEnv::CppEnv(Text::CodeProject *proj, IO::ConfigFile *cfg)
 {
 	this->pt = proj->GetProjectType();
-	this->baseFile = Text::StrCopyNew(proj->GetSourceNameObj());
+	this->baseFile = proj->GetSourceNameObj()->Clone();
 	NEW_CLASS(this->includePaths, Data::ArrayListStrUTF8());
 	if (this->pt == Text::CodeProject::PROJT_VSPROJECT)
 	{
@@ -184,7 +184,7 @@ Text::Cpp::CppEnv::~CppEnv()
 		Text::StrDelNew(this->includePaths->GetItem(i));
 	}
 	DEL_CLASS(this->includePaths);
-	SDEL_TEXT(this->baseFile);
+	SDEL_STRING(this->baseFile);
 }
 
 void Text::Cpp::CppEnv::AddIncludePath(const UTF8Char *includePath)
@@ -192,7 +192,7 @@ void Text::Cpp::CppEnv::AddIncludePath(const UTF8Char *includePath)
 	this->includePaths->Add(Text::StrCopyNew(includePath));
 }
 
-UTF8Char *Text::Cpp::CppEnv::GetIncludeFilePath(UTF8Char *buff, const UTF8Char *includeFile, const UTF8Char *sourceFile)
+UTF8Char *Text::Cpp::CppEnv::GetIncludeFilePath(UTF8Char *buff, const UTF8Char *includeFile, Text::String *sourceFile)
 {
 	UTF8Char *sptr;
 	UTF8Char *sptr2;
@@ -204,7 +204,7 @@ UTF8Char *Text::Cpp::CppEnv::GetIncludeFilePath(UTF8Char *buff, const UTF8Char *
 	}
 	if (sourceFile)
 	{
-		Text::StrConcat(buff, sourceFile);
+		sourceFile->ConcatTo(buff);
 		i = Text::StrLastIndexOf(buff, IO::Path::PATH_SEPERATOR);
 		sptr2 = Text::StrConcat(&buff[i + 1], includeFile);
 		if (IO::Path::GetPathType(buff) == IO::Path::PathType::File)
@@ -216,7 +216,7 @@ UTF8Char *Text::Cpp::CppEnv::GetIncludeFilePath(UTF8Char *buff, const UTF8Char *
 	{
 		if (this->baseFile)
 		{
-			Text::StrConcat(buff, this->baseFile);
+			this->baseFile->ConcatTo(buff);
 			sptr = IO::Path::AppendPath(buff, this->includePaths->GetItem(i));
 			*sptr++ = IO::Path::PATH_SEPERATOR;
 		}

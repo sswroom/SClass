@@ -925,6 +925,10 @@ Bool IO::UDPLog::ParseLog(UInt8 *dataBuff, UOSInt buffSize, Text::StringBuilderU
 	return true;
 }
 
+IO::UDPLog::UDPLog(Text::String *sourceName) : IO::LogFile(sourceName)
+{
+}
+
 IO::UDPLog::UDPLog(const UTF8Char *sourceName) : IO::LogFile(sourceName)
 {
 }

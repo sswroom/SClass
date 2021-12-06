@@ -13,10 +13,11 @@ namespace UI
 			Data::ArrayList<TreeItem *> *children;
 			void *hTreeItem;
 			void *itemObj;
-			const UTF8Char *txt;
+			Text::String *txt;
 			TreeItem *parent;
 
 		public:
+			TreeItem(void *itemObj, Text::String *txt);
 			TreeItem(void *itemObj, const UTF8Char *txt);
 			~TreeItem();
 
@@ -27,10 +28,13 @@ namespace UI
 			void SetHItem(void *hTreeItem);
 			void *GetHItem();
 			void SetText(const UTF8Char *txt);
-			const UTF8Char *GetText();
+			Text::String *GetText();
 			UOSInt GetChildCount();
 			TreeItem *GetChild(UOSInt index);
 		};
+
+		struct ClassData;
+
 	private:
 		Data::ArrayList<UI::UIEvent> *selChgHdlrs;
 		Data::ArrayList<void *> *selChgObjs;
@@ -43,7 +47,7 @@ namespace UI
 		Bool draging;
 		void *himgDrag;
 		TreeItem *dragItem;
-		void *clsData;
+		ClassData *clsData;
 
 		static OSInt __stdcall TVWndProc(void *hWnd, UInt32 msg, UOSInt wParam, OSInt lParam);
 		void FreeItems();
@@ -58,6 +62,7 @@ namespace UI
 		virtual OSInt EventEndLabelEdit(TreeItem *item, const UTF8Char *newLabel);
 		virtual void EventDragItem(TreeItem *dragItem, TreeItem *dropItem);
 
+		TreeItem *InsertItem(TreeItem *parent, TreeItem *insertAfter, Text::String *itemText, void *itemObj);
 		TreeItem *InsertItem(TreeItem *parent, TreeItem *insertAfter, const UTF8Char *itemText, void *itemObj);
 		void *RemoveItem(TreeItem *item);
 		void ClearItems();

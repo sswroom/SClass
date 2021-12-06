@@ -8,6 +8,7 @@ namespace IO
 	class ISectorData : public IO::ParsedObject
 	{
 	public:
+		ISectorData(Text::String *name) : IO::ParsedObject(name){};
 		ISectorData(const UTF8Char *name) : IO::ParsedObject(name){};
 		virtual ~ISectorData(){};
 

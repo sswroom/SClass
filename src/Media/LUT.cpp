@@ -5,7 +5,7 @@
 #include "Media/LUT.h"
 #include "Text/MyString.h"
 
-Media::LUT::LUT(UOSInt inputCh, UOSInt inputLev, UOSInt outputCh, DataFormat fmt, const UTF8Char *sourceName) : IO::ParsedObject(sourceName)
+void Media::LUT::Init()
 {
 	this->inputCh = inputCh;
 	this->inputLev = inputLev;
@@ -39,10 +39,20 @@ Media::LUT::LUT(UOSInt inputCh, UOSInt inputLev, UOSInt outputCh, DataFormat fmt
 	this->luTable = MemAlloc(UInt8, tableSize);
 }
 
+Media::LUT::LUT(UOSInt inputCh, UOSInt inputLev, UOSInt outputCh, DataFormat fmt, Text::String *sourceName) : IO::ParsedObject(sourceName)
+{
+	this->Init();
+}
+
+Media::LUT::LUT(UOSInt inputCh, UOSInt inputLev, UOSInt outputCh, DataFormat fmt, const UTF8Char *sourceName) : IO::ParsedObject(sourceName)
+{
+	this->Init();
+}
+
 Media::LUT::~LUT()
 {
 	MemFree(this->luTable);
-	SDEL_TEXT(this->remark);
+	SDEL_STRING(this->remark);
 }
 
 IO::ParserType Media::LUT::GetParserType()
@@ -50,16 +60,19 @@ IO::ParserType Media::LUT::GetParserType()
 	return IO::ParserType::LUT;
 }
 
-void Media::LUT::SetRemark(const UTF8Char *remark)
+void Media::LUT::SetRemark(Text::String *remark)
 {
-	SDEL_TEXT(this->remark);
-	if (remark)
-	{
-		this->remark = Text::StrCopyNew(remark);
-	}
+	SDEL_STRING(this->remark);
+	this->remark = remark->Clone();
 }
 
-const UTF8Char *Media::LUT::GetRemark()
+void Media::LUT::SetRemark(const UTF8Char *remark)
+{
+	SDEL_STRING(this->remark);
+	this->remark = Text::String::New(remark);
+}
+
+Text::String *Media::LUT::GetRemark()
 {
 	return this->remark;
 }

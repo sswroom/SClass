@@ -101,7 +101,7 @@ IO::ParsedObject *Parser::FileParser::PSSParser::ParseFile(IO::IStreamData *fd, 
 	if (*(Int32*)&buff[currOfst] != (Int32)0xbb010000)
 		return 0;
 
-	if (Text::StrEndsWithICase(fd->GetFullFileName(), (const UTF8Char*)"_1.vob"))
+	if (fd->GetFullFileName()->EndsWithICase((const UTF8Char*)"_1.vob"))
 	{
 		if (fd->IsFullFile())
 		{
@@ -110,7 +110,8 @@ IO::ParsedObject *Parser::FileParser::PSSParser::ParseFile(IO::IStreamData *fd, 
 			NEW_CLASS(data, IO::StmData::ConcatStreamData(fd->GetFullName()));
 			data->AddData(fd->GetPartialData(0, fd->GetDataSize()));
 			
-			sptr = Text::StrConcat(sbuff, fd->GetFullFileName()) - 5;
+			Text::String *s = fd->GetFullFileName();
+			sptr = Text::StrConcatC(sbuff, s->v, s->leng - 5);
 			while (true)
 			{
 				Text::StrConcat(Text::StrInt32(sptr, stmId), (const UTF8Char*)".vob");

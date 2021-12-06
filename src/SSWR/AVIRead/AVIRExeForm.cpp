@@ -301,7 +301,7 @@ SSWR::AVIRead::AVIRExeForm::AVIRExeForm(UI::GUIClientControl *parent, UI::GUICor
 	this->exeFile = exeFile;
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
-	Text::StrConcat(Text::StrConcat(sbuff, (const UTF8Char*)"EXE Form - "), exeFile->GetSourceNameObj());
+	exeFile->GetSourceNameObj()->ConcatTo(Text::StrConcat(sbuff, (const UTF8Char*)"EXE Form - "));
 	this->SetText(sbuff);
 
 	NEW_CLASS(this->tcEXE, UI::GUITabControl(ui, this));

@@ -61,6 +61,7 @@ namespace Media
 		Double thermoBKGTemp;
 		ThermoType thermoType;
 
+		ImageList(Text::String *name);
 		ImageList(const UTF8Char *name);
 		virtual ~ImageList();
 

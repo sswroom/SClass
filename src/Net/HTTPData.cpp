@@ -17,18 +17,18 @@ UInt32 __stdcall Net::HTTPData::LoadThread(void *userObj)
 	if (fdh->queue)
 	{
 		Sync::MutexUsage mutUsage(fdh->mut);
-		fdh->cli = fdh->queue->MakeRequest(fdh->url, "GET", true);
+		fdh->cli = fdh->queue->MakeRequest(fdh->url->v, "GET", true);
 		mutUsage.EndUse();
 	}
 	else
 	{
-		fdh->cli = Net::HTTPClient::CreateConnect(fdh->sockf, fdh->ssl, fdh->url, "GET", true);
+		fdh->cli = Net::HTTPClient::CreateConnect(fdh->sockf, fdh->ssl, fdh->url->v, "GET", true);
 	}
 	fdh->evtTmp->Set();
-	if (IO::Path::GetPathType(fdh->localFile) == IO::Path::PathType::File)
+	if (IO::Path::GetPathType(fdh->localFile->v) == IO::Path::PathType::File)
 	{
 		IO::FileStream *fs;
-		NEW_CLASS(fs, IO::FileStream(fdh->localFile, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+		NEW_CLASS(fs, IO::FileStream(fdh->localFile->v, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		if (!fs->IsError())
 		{
 			Data::DateTime dt;
@@ -65,7 +65,7 @@ UInt32 __stdcall Net::HTTPData::LoadThread(void *userObj)
 
 	if (fdh->cli->GetRespStatus() == 304)
 	{
-		NEW_CLASS(fdh->file, IO::FileStream(fdh->localFile, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+		NEW_CLASS(fdh->file, IO::FileStream(fdh->localFile->v, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		fdh->fileLength = fdh->file->GetLength();
 	}
 	else if (fdh->cli->GetRespStatus() == 200)
@@ -73,7 +73,7 @@ UInt32 __stdcall Net::HTTPData::LoadThread(void *userObj)
 		fdh->fileLength = fdh->cli->GetContentLength();
 		if (fdh->fileLength > 0)
 		{
-			NEW_CLASS(fdh->file, IO::FileStream(fdh->localFile, IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyWrite, IO::FileStream::BufferType::Normal));
+			NEW_CLASS(fdh->file, IO::FileStream(fdh->localFile->v, IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyWrite, IO::FileStream::BufferType::Normal));
 			while (fdh->loadSize < fdh->fileLength)
 			{
 				readSize = fdh->cli->Read(buff, 2048);
@@ -84,7 +84,7 @@ UInt32 __stdcall Net::HTTPData::LoadThread(void *userObj)
 					fdh->file = 0;
 					fdh->fileLength = 0;
 					mutUsage.EndUse();
-					IO::Path::DeleteFile(fdh->localFile);
+					IO::Path::DeleteFile(fdh->localFile->v);
 					break;
 				}
 				Sync::MutexUsage mutUsage(fdh->mut);
@@ -114,7 +114,7 @@ UInt32 __stdcall Net::HTTPData::LoadThread(void *userObj)
 				void *sess;
 
 				NEW_CLASS(readEvt, Sync::Event(false, (const UTF8Char*)"Net.HTTPData.LoadThread.readEvt"));
-				NEW_CLASS(fdh->file, IO::FileStream(fdh->localFile, IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyWrite, IO::FileStream::BufferType::Normal));
+				NEW_CLASS(fdh->file, IO::FileStream(fdh->localFile->v, IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyWrite, IO::FileStream::BufferType::Normal));
 				while (true)
 				{
 					readEvt->Clear();
@@ -225,19 +225,19 @@ Net::HTTPData::HTTPData(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Net::HTT
 			fdh->objectCnt = 1;
 			fdh->seekCnt = 0;
 			NEW_CLASS(fdh->mut, Sync::Mutex());
-			fdh->url = Text::StrCopyNew(url);
-			fdh->localFile = Text::StrCopyNew(localFile);
+			fdh->url = Text::String::New(url);
+			fdh->localFile = Text::String::New(localFile);
 			fdh->isLoading = false;
 			fdh->loadSize = 0;
 			fdh->cli = 0;
-			i = Text::StrLastIndexOf(fdh->url, '/');
+			i = fdh->url->LastIndexOf('/');
 			if (i != INVALID_INDEX)
 			{
-				fdh->fileName = &fdh->url[i + 1];
+				fdh->fileName = &fdh->url->v[i + 1];
 			}
 			else
 			{
-				fdh->fileName = fdh->url;
+				fdh->fileName = fdh->url->v;
 			}
 		}
 	}
@@ -252,21 +252,21 @@ Net::HTTPData::HTTPData(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Net::HTT
 		fdh->objectCnt = 1;
 		fdh->seekCnt = 0;
 		NEW_CLASS(fdh->mut, Sync::Mutex());
-		fdh->url = Text::StrCopyNew(url);
-		fdh->localFile = Text::StrCopyNew(localFile);
+		fdh->url = Text::String::New(url);
+		fdh->localFile = Text::String::New(localFile);
 		fdh->isLoading = true;
 		fdh->loadSize = 0;
 		fdh->sockf = sockf;
 		fdh->ssl = ssl;
 		fdh->queue = queue;
-		i = Text::StrLastIndexOf(fdh->url, '/');
+		i = fdh->url->LastIndexOf('/');
 		if (i != INVALID_INDEX)
 		{
-			fdh->fileName = &fdh->url[i + 1];
+			fdh->fileName = &fdh->url->v[i + 1];
 		}
 		else
 		{
-			fdh->fileName = fdh->url;
+			fdh->fileName = fdh->url->v;
 		}
 		fdh->cli = 0;
 		NEW_CLASS(fdh->evtTmp, Sync::Event(false, (const UTF8Char*)"Net.HTTPData.fdh.evtTmp"));
@@ -336,7 +336,7 @@ UInt64 Net::HTTPData::GetDataSize()
 	return dataLength;
 }
 
-const UTF8Char *Net::HTTPData::GetFullName()
+Text::String *Net::HTTPData::GetFullName()
 {
 	if (fdh == 0)
 		return 0;
@@ -356,16 +356,16 @@ void Net::HTTPData::SetFullName(const UTF8Char *fullName)
 		return;
 	UOSInt i;
 	Sync::MutexUsage mutUsage(fdh->mut);
-	SDEL_TEXT(fdh->url);
-	fdh->url = Text::StrCopyNew(fullName);
-	i = Text::StrLastIndexOf(fdh->url, '/');
+	SDEL_STRING(fdh->url);
+	fdh->url = Text::String::New(fullName);
+	i = fdh->url->LastIndexOf('/');
 	if (i != INVALID_INDEX)
 	{
-		fdh->fileName = &fdh->url[i + 1];
+		fdh->fileName = &fdh->url->v[i + 1];
 	}
 	else
 	{
-		fdh->fileName = fdh->url;
+		fdh->fileName = fdh->url->v;
 	}
 	mutUsage.EndUse();
 }
@@ -416,8 +416,8 @@ void Net::HTTPData::Close()
 				Sync::Thread::Sleep(10);
 			}
 			DEL_CLASS(fdh->file);
-			Text::StrDelNew(fdh->url);
-			Text::StrDelNew(fdh->localFile);
+			fdh->url->Release();
+			fdh->localFile->Release();
 			DEL_CLASS(fdh->mut);
 			MemFree(fdh);
 		}

@@ -461,7 +461,7 @@ SSWR::AVIRead::AVIRPackageForm::AVIRPackageForm(UI::GUIClientControl *parent, UI
 {
 	this->SetFont(0, 8.25, false);
 	UTF8Char sbuff[512];
-	Text::StrConcat(Text::StrConcat(sbuff, (const UTF8Char*)"Package Form - "), packFile->GetSourceNameObj());
+	packFile->GetSourceNameObj()->ConcatTo(Text::StrConcat(sbuff, (const UTF8Char*)"Package Form - "));
 	this->SetText(sbuff);
 
 	this->core = core;

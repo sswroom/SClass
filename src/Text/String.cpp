@@ -49,11 +49,29 @@ Text::String *Text::String::New(const UTF16Char *str)
 	return s;
 }
 
+Text::String *Text::String::New(const UTF16Char *str, UOSInt len)
+{
+	UOSInt charCnt = Text::StrUTF16_UTF8CntC(str, len);
+	Text::String *s = New(charCnt);
+	Text::StrUTF16_UTF8C(s->v, str, len);
+	s->v[charCnt] = 0;
+	return s;
+}
+
 Text::String *Text::String::New(const UTF32Char *str)
 {
 	UOSInt charCnt = Text::StrUTF32_UTF8Cnt(str);
 	Text::String *s = New(charCnt);
 	Text::StrUTF32_UTF8(s->v, str);
+	return s;
+}
+
+Text::String *Text::String::New(const UTF32Char *str, UOSInt len)
+{
+	UOSInt charCnt = Text::StrUTF32_UTF8CntC(str, len);
+	Text::String *s = New(charCnt);
+	Text::StrUTF32_UTF8C(s->v, str, len);
+	s->v[charCnt] = 0;
 	return s;
 }
 
@@ -159,6 +177,16 @@ Bool Text::String::EndsWith(const UTF8Char *s)
 	return Text::StrEquals(&this->v[this->leng - l], s);
 }
 
+Bool Text::String::EndsWithICase(const UTF8Char *s)
+{
+	UOSInt l = Text::StrCharCnt(s);
+	if (l > this->leng)
+	{
+		return false;
+	}
+	return Text::StrEqualsICase(&this->v[this->leng - l], s);
+}
+
 Bool Text::String::HasUpperCase()
 {
 	return Text::StrHasUpperCase(this->v);
@@ -188,6 +216,17 @@ UOSInt Text::String::IndexOf(UTF8Char c)
 	return Text::StrIndexOf(this->v, c);
 }
 
+UOSInt Text::String::LastIndexOf(UTF8Char c)
+{
+	UOSInt l = this->leng;
+	while (l-- > 0)
+	{
+		if (this->v[l] == c)
+			return l;
+	}
+	return INVALID_INDEX;
+}
+
 OSInt Text::String::CompareTo(String *s)
 {
 	return Text::StrCompare(this->v, s->v);
@@ -196,6 +235,16 @@ OSInt Text::String::CompareTo(String *s)
 OSInt Text::String::CompareTo(const UTF8Char *s)
 {
 	return Text::StrCompare(this->v, s);
+}
+
+OSInt Text::String::CompareToICase(Text::String *s)
+{
+	return Text::StrCompareICase(this->v, s->v);
+}
+
+OSInt Text::String::CompareToICase(const UTF8Char *s)
+{
+	return Text::StrCompareICase(this->v, s);
 }
 
 Int32 Text::String::ToInt32()

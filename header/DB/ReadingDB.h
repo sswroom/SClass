@@ -13,6 +13,7 @@ namespace DB
 	class ReadingDB : public IO::ParsedObject
 	{
 	public:
+		ReadingDB(Text::String *sourceName);
 		ReadingDB(const UTF8Char *sourceName);
 		virtual ~ReadingDB();
 

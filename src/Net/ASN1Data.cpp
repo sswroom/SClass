@@ -3,6 +3,13 @@
 #include "Net/ASN1Data.h"
 #include "Net/ASN1Util.h"
 
+Net::ASN1Data::ASN1Data(Text::String *sourceName, const UInt8 *buff, UOSInt buffSize) : IO::ParsedObject(sourceName)
+{
+	this->buff = MemAlloc(UInt8, buffSize);
+	this->buffSize = buffSize;
+	MemCopyNO(this->buff, buff, buffSize);
+}
+
 Net::ASN1Data::ASN1Data(const UTF8Char *sourceName, const UInt8 *buff, UOSInt buffSize) : IO::ParsedObject(sourceName)
 {
 	this->buff = MemAlloc(UInt8, buffSize);

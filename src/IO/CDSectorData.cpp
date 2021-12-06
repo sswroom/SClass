@@ -111,14 +111,14 @@ UOSInt IO::CDSectorStreamData::GetRealData(UInt64 offset, UOSInt length, UInt8 *
 	return retSize;
 }
 
-const UTF8Char *IO::CDSectorStreamData::GetFullName()
+Text::String *IO::CDSectorStreamData::GetFullName()
 {
 	return this->data->GetSourceNameObj();
 }
 
 const UTF8Char *IO::CDSectorStreamData::GetShortName()
 {
-	return this->data->GetSourceNameObj();
+	return this->data->GetSourceNameObj()->v;
 }
 
 UInt64 IO::CDSectorStreamData::GetDataSize()

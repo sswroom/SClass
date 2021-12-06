@@ -58,7 +58,7 @@ SSWR::AVIRead::AVIRLogFileForm::AVIRLogFileForm(UI::GUIClientControl *parent, UI
 	this->logLevel = IO::ILogHandler::LOG_LEVEL_RAW;
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
-	Text::StrConcat(Text::StrConcat(sbuff, (const UTF8Char*)"LogFile Viewer - "), logFile->GetSourceNameObj());
+	logFile->GetSourceNameObj()->ConcatTo(Text::StrConcat(sbuff, (const UTF8Char*)"LogFile Viewer - "));
 	this->SetText(sbuff);
 	this->SetFont(0, 8.25, false);
 

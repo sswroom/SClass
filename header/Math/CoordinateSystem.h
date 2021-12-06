@@ -12,14 +12,14 @@ namespace Math
 	class CoordinateSystem : public IO::ParsedObject
 	{
 	public:
-		typedef enum
+		enum class CoordinateSystemType
 		{
-			CST_GEOGRAPHIC,
-			CST_MERCATORPROJECTED,
-			CST_MERCATOR1SPPROJECTED,
-			CST_POINTMAPPING,
-			CST_GAUSSKRUGERPROJECTED
-		} CoordinateSystemType;
+			Geographic,
+			MercatorProjected,
+			Mercator1SPProjected,
+			PointMapping,
+			GausskrugerProjected
+		};
 
 		typedef enum
 		{
@@ -32,12 +32,12 @@ namespace Math
 			UT_DEGREE = 9122
 		} UnitType;
 
-		typedef struct
+		struct SpheroidData
 		{
 			UInt32 srid;
 			const Char *name;
 			Math::EarthEllipsoid *ellipsoid;
-		} SpheroidData;
+		};
 		
 		typedef struct
 		{
@@ -61,6 +61,7 @@ namespace Math
 		const UTF8Char *csysName;
 		UInt32 srid;
 
+		CoordinateSystem(Text::String *sourceName, UInt32 srid, const UTF8Char *csysName);
 		CoordinateSystem(const UTF8Char *sourceName, UInt32 srid, const UTF8Char *csysName);
 	public:
 		virtual ~CoordinateSystem();

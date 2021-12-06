@@ -61,9 +61,7 @@ template <class T> Bool DB::DBReader::ReadAll(Data::ArrayList<T*> *outList, Data
 {
 	UTF8Char sbuff[256];
 	UTF8Char sbuff2[256];
-	Data::StringUTF8Map<const UTF8Char*> colMap;
-	Data::StringUTF8Map<UOSInt> colMap2;
-	const UTF8Char *csptr;
+	Data::StringMap<UOSInt> colMap2;
 	Bool clsValid = true;
 	UOSInt i = 0;
 	UOSInt j = this->ColCount();
@@ -71,8 +69,6 @@ template <class T> Bool DB::DBReader::ReadAll(Data::ArrayList<T*> *outList, Data
 	{
 		this->GetName(i, sbuff);
 		DB::DBUtil::DB2FieldName(sbuff2, sbuff);
-		csptr = colMap.Put(sbuff2, Text::StrCopyNew(sbuff));
-		SDEL_TEXT(csptr);
 		colMap2.Put(sbuff2, i);
 
 		i++;
@@ -82,7 +78,7 @@ template <class T> Bool DB::DBReader::ReadAll(Data::ArrayList<T*> *outList, Data
 	j = cls->GetFieldCount();
 	while (i < j)
 	{
-		if (colMap.Get(cls->GetFieldName(i)) == 0)
+		if (!colMap2.ContainsKey(cls->GetFieldName(i)))
 		{
 			clsValid = false;
 		}
@@ -91,8 +87,6 @@ template <class T> Bool DB::DBReader::ReadAll(Data::ArrayList<T*> *outList, Data
 
 	if (!clsValid)
 	{
-		Data::ArrayList<const UTF8Char*> *colList = colMap.GetValues();
-		LIST_FREE_FUNC(colList, Text::StrDelNew);
 		return false;
 	}
 
@@ -118,8 +112,6 @@ template <class T> Bool DB::DBReader::ReadAll(Data::ArrayList<T*> *outList, Data
 		outList->Add(listObj);
 	}
 	MemFree(colIndex);
-	Data::ArrayList<const UTF8Char*> *colList = colMap.GetValues();
-	LIST_FREE_FUNC(colList, Text::StrDelNew);
 	return true;
 }
 #endif

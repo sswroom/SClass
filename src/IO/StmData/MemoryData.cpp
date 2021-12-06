@@ -29,9 +29,9 @@ UOSInt IO::StmData::MemoryData::GetRealData(UInt64 offset, UOSInt length, UInt8 
 	return length;
 }
 
-const UTF8Char *IO::StmData::MemoryData::GetFullName()
+Text::String *IO::StmData::MemoryData::GetFullName()
 {
-	return (const UTF8Char*)"Memory";
+	return Text::String::NewEmpty();
 }
 
 const UTF8Char *IO::StmData::MemoryData::GetShortName()

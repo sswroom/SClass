@@ -5,6 +5,54 @@
 #include "Math/VectorImage.h"
 #include "Media/StaticImage.h"
 
+Math::VectorImage::VectorImage(UInt32 srid, Media::SharedImage *img, Double x1, Double y1, Double x2, Double y2, Bool scnCoord, Text::String *srcAddr, Int64 timeStart, Int64 timeEnd) : Math::Vector2D(srid)
+{
+	this->img = img->Clone();
+	if (scnCoord)
+	{
+		this->x1 = x1;
+		this->y1 = y1;
+		this->x2 = 0;
+		this->y2 = 0;
+		this->sizeX = x2;
+		this->sizeY = y2;
+	}
+	else
+	{
+		this->sizeX = 0;
+		this->sizeY = 0;
+		if (x1 > x2)
+		{
+			this->x2 = x1;
+			this->x1 = x2;
+		}
+		else
+		{
+			this->x1 = x1;
+			this->x2 = x2;
+		}
+		if (y1 > y2)
+		{
+			this->y2 = y1;
+			this->y1 = y2;
+		}
+		else
+		{
+			this->y1 = y1;
+			this->y2 = y2;
+		}
+	}
+	this->scnCoord = scnCoord;
+	this->hasHeight = false;
+	this->height = 0;
+	this->srcAddr = SCOPY_STRING(srcAddr);
+	this->timeStart = timeStart;
+	this->timeEnd = timeEnd;
+	this->srcAlpha = -1;
+	this->hasZIndex = false;
+	this->zIndex = 0;
+}
+
 Math::VectorImage::VectorImage(UInt32 srid, Media::SharedImage *img, Double x1, Double y1, Double x2, Double y2, Bool scnCoord, const UTF8Char *srcAddr, Int64 timeStart, Int64 timeEnd) : Math::Vector2D(srid)
 {
 	this->img = img->Clone();
@@ -45,14 +93,55 @@ Math::VectorImage::VectorImage(UInt32 srid, Media::SharedImage *img, Double x1, 
 	this->scnCoord = scnCoord;
 	this->hasHeight = false;
 	this->height = 0;
-	if (srcAddr)
+	this->srcAddr = Text::String::New(srcAddr);
+	this->timeStart = timeStart;
+	this->timeEnd = timeEnd;
+	this->srcAlpha = -1;
+	this->hasZIndex = false;
+	this->zIndex = 0;
+}
+
+Math::VectorImage::VectorImage(UInt32 srid, Media::SharedImage *img, Double x1, Double y1, Double x2, Double y2, Double sizeX, Double sizeY, Bool scnCoord, Text::String *srcAddr, Int64 timeStart, Int64 timeEnd) : Math::Vector2D(srid)
+{
+	this->img = img->Clone();
+	if (scnCoord)
 	{
-		this->srcAddr = Text::StrCopyNew(srcAddr);
+		this->x1 = x1;
+		this->y1 = y1;
+		this->x2 = x2;
+		this->y2 = y2;
+		this->sizeX = sizeX;
+		this->sizeY = sizeY;
 	}
 	else
 	{
-		this->srcAddr = 0;
+		this->sizeX = 0;
+		this->sizeY = 0;
+		if (x1 > x2)
+		{
+			this->x2 = x1;
+			this->x1 = x2;
+		}
+		else
+		{
+			this->x1 = x1;
+			this->x2 = x2;
+		}
+		if (y1 > y2)
+		{
+			this->y2 = y1;
+			this->y1 = y2;
+		}
+		else
+		{
+			this->y1 = y1;
+			this->y2 = y2;
+		}
 	}
+	this->scnCoord = scnCoord;
+	this->hasHeight = false;
+	this->height = 0;
+	this->srcAddr = SCOPY_STRING(srcAddr);
 	this->timeStart = timeStart;
 	this->timeEnd = timeEnd;
 	this->srcAlpha = -1;
@@ -100,7 +189,7 @@ Math::VectorImage::VectorImage(UInt32 srid, Media::SharedImage *img, Double x1, 
 	this->scnCoord = scnCoord;
 	this->hasHeight = false;
 	this->height = 0;
-	this->srcAddr = Text::StrCopyNew(srcAddr);
+	this->srcAddr = Text::String::New(srcAddr);
 	this->timeStart = timeStart;
 	this->timeEnd = timeEnd;
 	this->srcAlpha = -1;
@@ -111,7 +200,7 @@ Math::VectorImage::VectorImage(UInt32 srid, Media::SharedImage *img, Double x1, 
 Math::VectorImage::~VectorImage()
 {
 	DEL_CLASS(this->img);
-	SDEL_TEXT(this->srcAddr);
+	SDEL_STRING(this->srcAddr);
 }
 
 Math::Vector2D::VectorType Math::VectorImage::GetVectorType()
@@ -228,7 +317,7 @@ Bool Math::VectorImage::Equals(Vector2D *vec)
 	return false;
 }
 
-const UTF8Char *Math::VectorImage::GetSourceAddr()
+Text::String *Math::VectorImage::GetSourceAddr()
 {
 	return this->srcAddr;
 }

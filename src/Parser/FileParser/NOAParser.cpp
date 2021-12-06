@@ -50,7 +50,7 @@ IO::ParsedObject *Parser::FileParser::NOAParser::ParseFile(IO::IStreamData *fd, 
 	UTF8Char fileName[256];
 	Text::Encoding enc(932);
 
-	if (!Text::StrEndsWithICase(fd->GetFullName(), (const UTF8Char*)".NOA"))
+	if (!fd->GetFullName()->EndsWithICase((const UTF8Char*)".NOA"))
 	{
 		return 0;
 	}

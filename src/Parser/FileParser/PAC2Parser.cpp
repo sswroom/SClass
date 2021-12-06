@@ -49,7 +49,7 @@ IO::ParsedObject *Parser::FileParser::PAC2Parser::ParseFile(IO::IStreamData *fd,
 	UInt32 fnameSize;
 	UInt32 nextOfst;
 
-	if (!Text::StrEndsWithICase(fd->GetFullName(), (const UTF8Char*)".PAC"))
+	if (!fd->GetFullName()->EndsWithICase((const UTF8Char*)".PAC"))
 	{
 		return 0;
 	}

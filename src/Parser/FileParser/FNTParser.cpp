@@ -71,6 +71,37 @@ IO::ParsedObject *Parser::FileParser::FNTParser::ParseFile(IO::IStreamData *fd, 
 	return font;
 }
 
+Media::FontRenderer *Parser::FileParser::FNTParser::ParseFontBuff(Text::String *sourceName, const UInt8 *fontBuff, UOSInt buffSize)
+{
+	UInt32 ver;
+	if (buffSize < 118)
+		return 0;
+
+	ver = ReadUInt16(&fontBuff[0]);
+//	fsize = ReadUInt32(&fontBuff[2]);
+	if (ver == 0x200)
+	{
+//		hdrSize = 118;
+	}
+	else if (ver == 0x300)
+	{
+//		hdrSize = 148;
+	}
+	else
+	{
+		return 0;
+	}
+
+	Media::MSFontRenderer *font;
+	NEW_CLASS(font, Media::MSFontRenderer(sourceName, fontBuff, buffSize));
+	if (font->IsError())
+	{
+		DEL_CLASS(font);
+		return 0;
+	}
+	return font;
+}
+
 Media::FontRenderer *Parser::FileParser::FNTParser::ParseFontBuff(const UTF8Char *sourceName, const UInt8 *fontBuff, UOSInt buffSize)
 {
 	UInt32 ver;

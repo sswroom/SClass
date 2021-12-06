@@ -5,11 +5,11 @@
 #include "UI/GUIClientControl.h"
 #include <gtk/gtk.h>
 
-typedef struct
+struct UI::GUITreeView::ClassData
 {
 	GtkTreeStore *treeStore;
 	GtkWidget *treeView;
-} GUITreeViewData;
+};
 
 void GUITreeView_SelChange(GtkTreeView *tree_view, gpointer user_data)
 {
@@ -34,6 +34,14 @@ gboolean GUITreeView_ButtonClick(GtkWidget *widget, GdkEventButton *event, gpoin
 	return false;
 }
 
+UI::GUITreeView::TreeItem::TreeItem(void *itemObj, Text::String *txt)
+{
+	NEW_CLASS(this->children, Data::ArrayList<UI::GUITreeView::TreeItem *>());
+	this->hTreeItem = 0;
+	this->itemObj = itemObj;
+	this->parent = 0;
+	this->txt = txt->Clone();
+}
 
 UI::GUITreeView::TreeItem::TreeItem(void *itemObj, const UTF8Char *txt)
 {
@@ -41,7 +49,7 @@ UI::GUITreeView::TreeItem::TreeItem(void *itemObj, const UTF8Char *txt)
 	this->hTreeItem = 0;
 	this->itemObj = itemObj;
 	this->parent = 0;
-	this->txt = Text::StrCopyNew(txt);
+	this->txt = Text::String::New(txt);
 }
 
 UI::GUITreeView::TreeItem::~TreeItem()
@@ -55,10 +63,7 @@ UI::GUITreeView::TreeItem::~TreeItem()
 		DEL_CLASS(item);
 	}
 	DEL_CLASS(this->children);
-	if (this->txt)
-	{
-		Text::StrDelNew(this->txt);
-	}
+	SDEL_STRING(this->txt);
 	if (this->hTreeItem)
 	{
 		MemFree(this->hTreeItem);
@@ -101,14 +106,11 @@ void UI::GUITreeView::TreeItem::SetText(const UTF8Char *txt)
 	{
 		return;
 	}
-	if (this->txt)
-	{
-		Text::StrDelNew(this->txt);
-	}
-	this->txt = Text::StrCopyNew(txt);
+	SDEL_STRING(this->txt);
+	this->txt = Text::String::New(txt);
 }
 
-const UTF8Char *UI::GUITreeView::TreeItem::GetText()
+Text::String *UI::GUITreeView::TreeItem::GetText()
 {
 	return this->txt;
 }
@@ -143,7 +145,7 @@ UI::GUITreeView::GUITreeView(GUICore *ui, UI::GUIClientControl *parent) : UI::GU
 	NEW_CLASS(this->rightClkObjs, Data::ArrayList<void *>());
 	NEW_CLASS(this->treeItems, Data::ArrayList<UI::GUITreeView::TreeItem*>());
 
-	GUITreeViewData *data = MemAlloc(GUITreeViewData, 1);
+	ClassData *data = MemAlloc(ClassData, 1);
 	this->autoFocus = false;
 	this->editing = false;
 	this->draging = false;
@@ -171,7 +173,7 @@ UI::GUITreeView::GUITreeView(GUICore *ui, UI::GUIClientControl *parent) : UI::GU
 
 UI::GUITreeView::~GUITreeView()
 {
-	GUITreeViewData *data = (GUITreeViewData*)this->clsData;
+	ClassData *data = this->clsData;
 	FreeItems();
 	MemFree(data);
 	DEL_CLASS(this->treeItems);
@@ -217,9 +219,43 @@ void UI::GUITreeView::EventDragItem(UI::GUITreeView::TreeItem *dragItem, TreeIte
 {
 }
 
+UI::GUITreeView::TreeItem *UI::GUITreeView::InsertItem(TreeItem *parent, TreeItem *insertAfter, Text::String *itemText, void *itemObj)
+{
+	ClassData *data = this->clsData;
+	TreeItem *item;
+	GtkTreeIter *parentIter = 0;
+	if (parent)
+	{
+		parentIter = (GtkTreeIter*)parent->GetHItem();
+	}
+	GtkTreeIter *iter = MemAlloc(GtkTreeIter, 1);
+	if (insertAfter)
+	{
+		GtkTreeIter *siblingIter = (GtkTreeIter*)insertAfter->GetHItem();
+		gtk_tree_store_insert_after(data->treeStore, iter, parentIter, siblingIter);
+	}
+	else
+	{
+		gtk_tree_store_append(data->treeStore, iter, parentIter);
+	}
+	gtk_tree_store_set(data->treeStore, iter, 0, itemText->v, -1);
+	NEW_CLASS(item, TreeItem(itemObj, itemText));
+	item->SetHItem(iter);
+
+	if (parent)
+	{
+		parent->AddChild(item);
+	}
+	else
+	{
+		this->treeItems->Add(item);
+	}
+	return item;
+}
+
 UI::GUITreeView::TreeItem *UI::GUITreeView::InsertItem(UI::GUITreeView::TreeItem *parent, TreeItem *insertAfter, const UTF8Char *itemText, void *itemObj)
 {
-	GUITreeViewData *data = (GUITreeViewData*)this->clsData;
+	ClassData *data = this->clsData;
 	TreeItem *item;
 	GtkTreeIter *parentIter = 0;
 	if (parent)
@@ -253,7 +289,7 @@ UI::GUITreeView::TreeItem *UI::GUITreeView::InsertItem(UI::GUITreeView::TreeItem
 
 void *UI::GUITreeView::RemoveItem(TreeItem *item)
 {
-	GUITreeViewData *data = (GUITreeViewData*)this->clsData;
+	ClassData *data = this->clsData;
 	UOSInt i = this->treeItems->IndexOf(item);
 	if (i != INVALID_INDEX)
 	{
@@ -271,7 +307,7 @@ void *UI::GUITreeView::RemoveItem(TreeItem *item)
 
 void UI::GUITreeView::ClearItems()
 {
-	GUITreeViewData *data = (GUITreeViewData*)this->clsData;
+	ClassData *data = this->clsData;
 	gtk_tree_store_clear(data->treeStore);
 	FreeItems();
 }
@@ -288,7 +324,7 @@ UI::GUITreeView::TreeItem *UI::GUITreeView::GetRootItem(UOSInt index)
 
 void UI::GUITreeView::ExpandItem(TreeItem *item)
 {
-	GUITreeViewData *data = (GUITreeViewData*)this->clsData;
+	ClassData *data = this->clsData;
 	GtkTreePath *path = gtk_tree_model_get_path((GtkTreeModel*)data->treeStore, (GtkTreeIter*)item->GetHItem());
 	gtk_tree_view_expand_row((GtkTreeView*)data->treeView, path, false);
 	gtk_tree_path_free(path);
@@ -296,7 +332,7 @@ void UI::GUITreeView::ExpandItem(TreeItem *item)
 
 Bool UI::GUITreeView::IsExpanded(TreeItem *item)
 {
-	GUITreeViewData *data = (GUITreeViewData*)this->clsData;
+	ClassData *data = this->clsData;
 	GtkTreePath *path = gtk_tree_model_get_path((GtkTreeModel*)data->treeStore, (GtkTreeIter*)item->GetHItem());
 	Bool ret = gtk_tree_view_row_expanded((GtkTreeView*)data->treeView, path);
 	gtk_tree_path_free(path);
@@ -305,7 +341,7 @@ Bool UI::GUITreeView::IsExpanded(TreeItem *item)
 
 void UI::GUITreeView::SetHasLines(Bool hasLines)
 {
-	GUITreeViewData *data = (GUITreeViewData*)this->clsData;
+	ClassData *data = this->clsData;
 	gtk_tree_view_set_enable_tree_lines((GtkTreeView*)data->treeView, hasLines);
 }
 
@@ -321,7 +357,7 @@ void UI::GUITreeView::SetAutoFocus(Bool autoFocus)
 {
 }
 
-UI::GUITreeView::TreeItem *GUITreeView_SearchChildSelected(GUITreeViewData *data, GtkTreePath *selPath, UI::GUITreeView::TreeItem *item)
+UI::GUITreeView::TreeItem *GUITreeView_SearchChildSelected(UI::GUITreeView::ClassData *data, GtkTreePath *selPath, UI::GUITreeView::TreeItem *item)
 {
 	UOSInt i = item->GetChildCount();
 	GtkTreePath *itemPath;
@@ -345,7 +381,7 @@ UI::GUITreeView::TreeItem *GUITreeView_SearchChildSelected(GUITreeViewData *data
 
 UI::GUITreeView::TreeItem *UI::GUITreeView::GetSelectedItem()
 {
-	GUITreeViewData *data = (GUITreeViewData*)this->clsData;
+	ClassData *data = this->clsData;
 	GtkTreeSelection *sel = gtk_tree_view_get_selection((GtkTreeView*)data->treeView);
 	GtkTreeIter iter;
 	if (gtk_tree_selection_get_selected(sel, 0, &iter))

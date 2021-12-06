@@ -34,8 +34,7 @@ Map::ESRI::FileGDBTableInfo *Map::ESRI::FileGDBUtil::ParseFieldDesc(const UInt8 
 		}
 		field = MemAlloc(FileGDBFieldInfo, 1);
 		MemClear(field, sizeof(FileGDBFieldInfo));
-		*Text::StrUTF16_UTF8C(sbuff, (const UTF16Char*)&fieldDesc[ofst + 1], fieldDesc[ofst]) = 0;
-		field->name = Text::StrCopyNew(sbuff);
+		field->name = Text::String::New((const UTF16Char*)&fieldDesc[ofst + 1], fieldDesc[ofst]);
 		ofst += 1 + (UOSInt)fieldDesc[ofst] * 2;
 		if (fieldDesc[ofst] == 0)
 		{
@@ -49,8 +48,7 @@ Map::ESRI::FileGDBTableInfo *Map::ESRI::FileGDBUtil::ParseFieldDesc(const UInt8 
 		}
 		else
 		{
-			*Text::StrUTF16_UTF8C(sbuff, (const UTF16Char*)&fieldDesc[ofst + 1], fieldDesc[ofst]) = 0;
-			field->alias = Text::StrCopyNew(sbuff);
+			field->alias = Text::String::New((const UTF16Char*)&fieldDesc[ofst + 1], fieldDesc[ofst]);
 			ofst += 1 + (UOSInt)fieldDesc[ofst] * 2;
 		}
 		field->fieldType = fieldDesc[ofst];
@@ -187,8 +185,8 @@ Map::ESRI::FileGDBTableInfo *Map::ESRI::FileGDBUtil::ParseFieldDesc(const UInt8 
 
 void Map::ESRI::FileGDBUtil::FreeFieldInfo(FileGDBFieldInfo *fieldInfo)
 {
-	SDEL_TEXT(fieldInfo->name);
-	SDEL_TEXT(fieldInfo->alias);
+	SDEL_STRING(fieldInfo->name);
+	SDEL_STRING(fieldInfo->alias);
 	if (fieldInfo->defValue)
 	{
 		MemFree(fieldInfo->defValue);
@@ -207,8 +205,8 @@ void Map::ESRI::FileGDBUtil::FreeTableInfo(FileGDBTableInfo *tableInfo)
 Map::ESRI::FileGDBFieldInfo *Map::ESRI::FileGDBUtil::FieldInfoClone(FileGDBFieldInfo *field)
 {
 	FileGDBFieldInfo *newField = MemAlloc(FileGDBFieldInfo, 1);
-	newField->name = SCOPY_TEXT(field->name);
-	newField->alias = SCOPY_TEXT(field->alias);
+	newField->name = SCOPY_STRING(field->name);
+	newField->alias = SCOPY_STRING(field->alias);
 	newField->fieldType = field->fieldType;
 	newField->fieldSize = field->fieldSize;
 	newField->flags = field->flags;

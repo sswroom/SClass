@@ -129,7 +129,9 @@ IO::ParsedObject *Parser::FileParser::JSONParser::ParseFile(IO::IStreamData *fd,
 						vec = ParseGeomJSON((Text::JSONObject*)featGeom, srid);
 						if (vec)
 						{
-							NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_MIXED, fd->GetFullName(), colCnt, tabHdrs, csys, 0, fd->GetShortName()));
+							Text::String *s = Text::String::New(fd->GetShortName());
+							NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_MIXED, fd->GetFullName(), colCnt, tabHdrs, csys, 0, s));
+							s->Release();
 							DEL_CLASS(vec);
 						}
 					}

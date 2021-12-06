@@ -101,18 +101,21 @@ SSWR::AVIRead::AVIRGISCombineForm::AVIRGISCombineForm(UI::GUIClientControl *pare
 	UOSInt cnt = this->layers->GetCount();
 	UOSInt j;
 	Map::IMapDrawLayer *lyr;
-	const UTF8Char *name;
+	Text::String *name;
 	this->lbLayers->ClearItems();
 	while (i < cnt)
 	{
 		lyr = this->layers->GetItem(i);
 		name = lyr->GetName();
-		j = ::Text::StrLastIndexOf(name, IO::Path::PATH_SEPERATOR);
+		j = name->LastIndexOf(IO::Path::PATH_SEPERATOR);
 		if (j != INVALID_INDEX)
 		{
-			name = &name[j + 1];
+			this->lbLayers->AddItem(&name->v[j + 1], 0);
 		}
-		this->lbLayers->AddItem(name, 0);
+		else
+		{
+			this->lbLayers->AddItem(name, 0);
+		}
 		i++;
 	}
 }
@@ -130,6 +133,8 @@ void SSWR::AVIRead::AVIRGISCombineForm::OnMonitorChanged()
 Map::IMapDrawLayer *SSWR::AVIRead::AVIRGISCombineForm::GetCombinedLayer()
 {
 	Map::VectorLayer *layer = 0;
-	layer = Map::LayerTools::CombineLayers(this->selLayers, (const UTF8Char*)"CombinedLayer");
+	Text::String *s = Text::String::New((const UTF8Char*)"CombinedLayer");
+	layer = Map::LayerTools::CombineLayers(this->selLayers, s);
+	s->Release();
 	return layer;
 }

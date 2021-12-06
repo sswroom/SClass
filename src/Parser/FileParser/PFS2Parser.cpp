@@ -42,8 +42,8 @@ typedef struct
 
 IO::ParsedObject *Parser::FileParser::PFS2Parser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
-	const UTF8Char *fileName = fd->GetFullName();
-	if (Text::StrIndexOf(fileName, (const UTF8Char*)".pfs") == INVALID_INDEX)
+	Text::String *fileName = fd->GetFullName();
+	if (!fileName->EndsWithICase((const UTF8Char*)".pfs"))
 		return 0;
 
 	UInt8 hdr[15];

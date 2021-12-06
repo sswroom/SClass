@@ -14,6 +14,14 @@ void __stdcall Map::MapLayerCollection::InnerUpdated(void *userObj)
 	me->mut->UnlockRead();
 }
 
+Map::MapLayerCollection::MapLayerCollection(Text::String *sourceName, Text::String *layerName) : Map::IMapDrawLayer(sourceName, 0, layerName)
+{
+	NEW_CLASS(this->layerList, Data::ArrayList<Map::IMapDrawLayer*>());
+	NEW_CLASS(this->mut, Sync::RWMutex());
+	NEW_CLASS(this->updHdlrs, Data::ArrayList<UpdatedHandler>());
+	NEW_CLASS(this->updObjs, Data::ArrayList<void *>());
+}
+
 Map::MapLayerCollection::MapLayerCollection(const UTF8Char *sourceName, const UTF8Char *layerName) : Map::IMapDrawLayer(sourceName, 0, layerName)
 {
 	NEW_CLASS(this->layerList, Data::ArrayList<Map::IMapDrawLayer*>());

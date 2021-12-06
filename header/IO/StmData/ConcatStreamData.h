@@ -17,7 +17,7 @@ namespace IO
 				Data::ArrayListUInt64 *ofstList;
 
 				UInt64 totalSize;
-				const UTF8Char *fileName;
+				Text::String *fileName;
 				Sync::Mutex *mut;
 				UInt32 objectCnt;
 			} CONCATDATABASE;
@@ -30,11 +30,12 @@ namespace IO
 
 			ConcatStreamData(CONCATDATABASE *cdb, UInt64 dataOffset, UInt64 dataLength);
 		public:
+			ConcatStreamData(Text::String *fileName);
 			ConcatStreamData(const UTF8Char *fileName);
 			virtual ~ConcatStreamData();
 
 			virtual UOSInt GetRealData(UInt64 offset, UOSInt length, UInt8 *buffer);
-			virtual const UTF8Char *GetFullName();
+			virtual Text::String *GetFullName();
 			virtual const UTF8Char *GetShortName();
 			virtual UInt64 GetDataSize();
 			virtual const UInt8 *GetPointer();

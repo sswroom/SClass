@@ -88,7 +88,7 @@ IO::ParsedObject *Parser::FileParser::MEVParser::ParseFile(IO::IStreamData *fd, 
 	fd->GetRealData(currPos, initSize, buff);
 	currPos += initSize;
 	Map::MapEnv *env;
-	NEW_CLASS(env, Map::MapEnv(fd->GetFullName(), ReadUInt32(&buff[0]), Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84)));
+	NEW_CLASS(env, Map::MapEnv(fd->GetFullName()->v, ReadUInt32(&buff[0]), Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84)));
 	env->SetNString(ReadUInt32(&buff[4]));
 	dirCnt = ReadUInt32(&buff[16]);
 	imgFileCnt = ReadUInt32(&buff[20]);
@@ -100,7 +100,7 @@ IO::ParsedObject *Parser::FileParser::MEVParser::ParseFile(IO::IStreamData *fd, 
 
 	fd->GetRealData(ReadUInt32(&buff[8]), ReadUInt32(&buff[12]), &buff[16]);
 	sptr = Text::StrUTF8_WCharC(sbuff, &buff[16], ReadUInt32(&buff[12]), 0);
-	sptr2 = Text::StrUTF8_WChar(sbuff2, fd->GetFullName(), 0);
+	sptr2 = Text::StrUTF8_WChar(sbuff2, fd->GetFullName()->v, 0);
 	while (sptr > sbuff && sptr2 > sbuff2)
 	{
 		if (sptr[-1] != sptr2[-1])

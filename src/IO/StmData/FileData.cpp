@@ -12,7 +12,7 @@ void IO::StmData::FileData::ReopenFile()
 		return;
 	Sync::MutexUsage mutUsage(fdh->mut);
 	IO::FileStream *fs;
-	NEW_CLASS(fs, IO::FileStream(fdh->filePath, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(fs, IO::FileStream(fdh->filePath->v, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (fs->IsError())
 	{
 		DEL_CLASS(fs);
@@ -25,44 +25,6 @@ void IO::StmData::FileData::ReopenFile()
 	}
 	mutUsage.EndUse();
 }
-
-IO::StmData::FileData::FileData(const UTF8Char* fname, Bool deleteOnClose)
-{
-	fdh = 0;
-	IO::FileStream *fs;
-	this->fdn = 0;
-	NEW_CLASS(fs, IO::FileStream(fname, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	if (fs->IsError())
-	{
-		DEL_CLASS(fs);
-		this->dataLength = 0;
-		this->dataOffset = 0;
-	}
-	else
-	{
-		fdh = MemAlloc(IO::StmData::FileData::FILEDATAHANDLE, 1);
-		fdh->file = fs;
-		fdh->filePath = Text::StrCopyNew(fname);
-		dataLength = fdh->fileLength = fs->GetLength();
-		fdh->currentOffset = fs->GetPosition();
-		fdh->objectCnt = 1;
-		fdh->seekCnt = 0;
-		NEW_CLASS(fdh->mut, Sync::Mutex());
-		dataOffset = 0;
-		const UTF8Char* name2;
-		UTF8Char *name;
-		name = (UTF8Char*)(name2 = fname);
-		while (*name++)
-			if (*name == IO::Path::PATH_SEPERATOR)
-				fname = name;
-		fdh->fileName = fdh->fullName = (name = MemAlloc(UTF8Char, (UOSInt)(name - name2)));
-		fdh->deleteOnClose = deleteOnClose;
-		while ((*name++ = *name2++) != 0)
-			if (name[-1] == IO::Path::PATH_SEPERATOR)
-				fdh->fileName = name;
-	}
-}
-
 
 IO::StmData::FileData::FileData(const IO::StmData::FileData *fd, UInt64 offset, UInt64 length)
 {
@@ -84,6 +46,64 @@ IO::StmData::FileData::FileData(const IO::StmData::FileData *fd, UInt64 offset, 
 	if (this->fdn)
 	{
 		Sync::Interlocked::Increment((Int32*)&this->fdn->objectCnt);
+	}
+}
+
+IO::StmData::FileData::FileData(Text::String* fname, Bool deleteOnClose)
+{
+	fdh = 0;
+	IO::FileStream *fs;
+	this->fdn = 0;
+	NEW_CLASS(fs, IO::FileStream(fname->v, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	if (fs->IsError())
+	{
+		DEL_CLASS(fs);
+		this->dataLength = 0;
+		this->dataOffset = 0;
+	}
+	else
+	{
+		fdh = MemAlloc(IO::StmData::FileData::FILEDATAHANDLE, 1);
+		fdh->file = fs;
+		fdh->filePath = fname->Clone();
+		dataLength = fdh->fileLength = fs->GetLength();
+		fdh->currentOffset = fs->GetPosition();
+		fdh->objectCnt = 1;
+		fdh->seekCnt = 0;
+		NEW_CLASS(fdh->mut, Sync::Mutex());
+		dataOffset = 0;
+		fdh->fullName = fdh->filePath->Clone();
+		fdh->fileName = &fdh->fullName->v[fdh->fullName->LastIndexOf(IO::Path::PATH_SEPERATOR) + 1];
+		fdh->deleteOnClose = deleteOnClose;
+	}
+}
+
+IO::StmData::FileData::FileData(const UTF8Char* fname, Bool deleteOnClose)
+{
+	fdh = 0;
+	IO::FileStream *fs;
+	this->fdn = 0;
+	NEW_CLASS(fs, IO::FileStream(fname, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	if (fs->IsError())
+	{
+		DEL_CLASS(fs);
+		this->dataLength = 0;
+		this->dataOffset = 0;
+	}
+	else
+	{
+		fdh = MemAlloc(IO::StmData::FileData::FILEDATAHANDLE, 1);
+		fdh->file = fs;
+		fdh->filePath = Text::String::New(fname);
+		dataLength = fdh->fileLength = fs->GetLength();
+		fdh->currentOffset = fs->GetPosition();
+		fdh->objectCnt = 1;
+		fdh->seekCnt = 0;
+		NEW_CLASS(fdh->mut, Sync::Mutex());
+		dataOffset = 0;
+		fdh->fullName = fdh->filePath->Clone();
+		fdh->fileName = &fdh->fullName->v[fdh->fullName->LastIndexOf(IO::Path::PATH_SEPERATOR) + 1];
+		fdh->deleteOnClose = deleteOnClose;
 	}
 }
 
@@ -140,7 +160,7 @@ const UTF8Char *IO::StmData::FileData::GetShortName()
 	return 0;
 }
 
-const UTF8Char *IO::StmData::FileData::GetFullName()
+Text::String *IO::StmData::FileData::GetFullName()
 {
 	if (this->fdn)
 		return this->fdn->fullName;
@@ -155,7 +175,7 @@ void IO::StmData::FileData::SetFullName(const UTF8Char *fullName)
 	{
 		if (Sync::Interlocked::Decrement((Int32*)&this->fdn->objectCnt) == 0)
 		{
-			Text::StrDelNew(this->fdn->fullName);
+			this->fdn->fullName->Release();
 			MemFree(this->fdn);
 		}
 		this->fdn = 0;
@@ -165,9 +185,9 @@ void IO::StmData::FileData::SetFullName(const UTF8Char *fullName)
 		UOSInt i;
 		this->fdn = MemAlloc(FILEDATANAME, 1);
 		this->fdn->objectCnt = 1;
-		this->fdn->fullName = Text::StrCopyNew(fullName);
-		i = Text::StrLastIndexOf(this->fdn->fullName, IO::Path::PATH_SEPERATOR);
-		this->fdn->fileName = &this->fdn->fullName[i + 1];
+		this->fdn->fullName = Text::String::New(fullName);
+		i = this->fdn->fullName->LastIndexOf(IO::Path::PATH_SEPERATOR);
+		this->fdn->fileName = &this->fdn->fullName->v[i + 1];
 	}
 }
 
@@ -188,7 +208,7 @@ Bool IO::StmData::FileData::IsFullFile()
 	return this->dataOffset == 0;
 }
 
-const UTF8Char *IO::StmData::FileData::GetFullFileName()
+Text::String *IO::StmData::FileData::GetFullFileName()
 {
 	if (this->fdh)
 		return this->fdh->fullName;
@@ -230,10 +250,10 @@ void IO::StmData::FileData::Close()
 			DEL_CLASS(fdh->file);
 			if (fdh->deleteOnClose)
 			{
-				IO::Path::DeleteFile(fdh->fullName);
+				IO::Path::DeleteFile(fdh->fullName->v);
 			}
-			MemFree(fdh->fullName);
-			Text::StrDelNew(fdh->filePath);
+			fdh->fullName->Release();
+			fdh->filePath->Release();
 			DEL_CLASS(fdh->mut);
 			MemFree(fdh);
 		}

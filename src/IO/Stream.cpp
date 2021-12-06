@@ -2,6 +2,10 @@
 #include "MyMemory.h"
 #include "IO/Stream.h"
 
+IO::Stream::Stream(Text::String *sourceName) : IO::ParsedObject(sourceName)
+{
+}
+
 IO::Stream::Stream(const UTF8Char *sourceName) : IO::ParsedObject(sourceName)
 {
 }

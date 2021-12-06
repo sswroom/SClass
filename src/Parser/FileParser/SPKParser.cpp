@@ -101,7 +101,7 @@ IO::ParsedObject *Parser::FileParser::SPKParser::ParseFile(IO::IStreamData *fd, 
 			MemCopyNO(srcPath, &customBuff[2], customBuff[1]);
 			srcPath[customBuff[1]] = 0;
 			j = 2 + (UOSInt)customBuff[1];
-			NEW_CLASS(spkg, IO::SPackageFile(fd->GetFullFileName()));
+			NEW_CLASS(spkg, IO::SPackageFile(fd->GetFullFileName()->v));
 			NEW_CLASS(tileMap, Map::OSM::OSMTileMap(srcPath, spkg, 18, this->sockf, this->ssl));
 			i = 1;
 			while (i < customBuff[0])
@@ -122,7 +122,7 @@ IO::ParsedObject *Parser::FileParser::SPKParser::ParseFile(IO::IStreamData *fd, 
 	IO::PackageFile *pf2;
 	IO::PackageFile *pf3;
 	NEW_CLASS(pf, IO::PackageFile(fd->GetFullName()));
-	srcPtr = Text::StrConcat(srcPath, fd->GetFullName());
+	srcPtr = fd->GetFullName()->ConcatTo(srcPath);
 	UOSInt k;
 	UOSInt l;
 	UTF8Char *sptr;

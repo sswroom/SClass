@@ -9,6 +9,18 @@
 #include "Text/MyString.h"
 #include "Sync/Event.h"
 
+Media::NWASource::NWASource(IO::IStreamData *fd, UInt32 sampleCount, UInt32 blockSize, UInt32 compLevel, UInt32 nBlocks, Media::AudioFormat *format, Text::String *name) : Media::LPCMSource(fd, 0, fd->GetDataSize(), format, name)
+{
+	this->sampleCount = sampleCount;
+	this->blockSize = blockSize;
+	this->compLevel = compLevel;
+	this->nBlocks = nBlocks;
+	this->blockOfsts = MemAlloc(UInt32, this->nBlocks);
+	this->blockBuff = MemAlloc(UInt8, blockSize * (this->format.bitpersample / 8) * 2);
+	this->currBlock = 0;
+	fd->GetRealData(0x2c, this->nBlocks * 4, (UInt8*)this->blockOfsts);
+}
+
 Media::NWASource::NWASource(IO::IStreamData *fd, UInt32 sampleCount, UInt32 blockSize, UInt32 compLevel, UInt32 nBlocks, Media::AudioFormat *format, const UTF8Char *name) : Media::LPCMSource(fd, 0, fd->GetDataSize(), format, name)
 {
 	this->sampleCount = sampleCount;

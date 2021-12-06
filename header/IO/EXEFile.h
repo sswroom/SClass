@@ -118,6 +118,7 @@ namespace IO
 		ProgramEnvDOS *envDOS;
 
 	public:
+		EXEFile(Text::String *fileName);
 		EXEFile(const UTF8Char *fileName);
 		virtual ~EXEFile();
 

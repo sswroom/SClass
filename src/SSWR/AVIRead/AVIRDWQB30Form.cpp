@@ -40,7 +40,7 @@ void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnPortClicked(void *userObj)
 
 		if (me->scanner)
 		{
-			me->txtPort->SetText(stm->GetSourceNameObj());
+			me->txtPort->SetText(stm->GetSourceNameObj()->v);
 			me->btnPort->SetText((const UTF8Char*)"Close");
 			me->txtMode->SetText((const UTF8Char*)"Idle");
 			me->tpSetting->SetEnabled(false);

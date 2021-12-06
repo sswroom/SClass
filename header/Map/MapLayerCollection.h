@@ -16,6 +16,7 @@ namespace Map
 
 		static void __stdcall InnerUpdated(void *userObj);
 	public:
+		MapLayerCollection(Text::String *sourceName, Text::String *layerName);
 		MapLayerCollection(const UTF8Char *sourceName, const UTF8Char *layerName);
 		virtual ~MapLayerCollection();
 

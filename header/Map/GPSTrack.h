@@ -72,6 +72,7 @@ namespace Map
 		Data::ArrayList<void *> *updObjs;
 
 	public:
+		GPSTrack(Text::String *sourceName, Bool hasAltitude, UInt32 codePage, Text::String *layerName);
 		GPSTrack(const UTF8Char *sourceName, Bool hasAltitude, UInt32 codePage, const UTF8Char *layerName);
 		virtual ~GPSTrack();
 

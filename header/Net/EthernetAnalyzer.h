@@ -161,6 +161,7 @@ namespace Net
 		MACStatus *MACGet(UInt64 macAddr);
 		void MDNSAdd(Net::DNSClient::RequestAnswer *ans);
 	public:
+		EthernetAnalyzer(IO::Writer *errWriter, AnalyzeType ctype, Text::String *name);
 		EthernetAnalyzer(IO::Writer *errWriter, AnalyzeType ctype, const UTF8Char *name);
 		virtual ~EthernetAnalyzer();
 

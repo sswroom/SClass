@@ -36,6 +36,6 @@ namespace SSWR
 			virtual void OnMonitorChanged();
 			void SetICCProfile(Media::ICCProfile *icc, const UTF8Char *fileName);
 		};
-	};
-};
+	}
+}
 #endif

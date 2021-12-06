@@ -946,6 +946,10 @@ Crypto::Cert::X509File::KeyType Crypto::Cert::X509File::KeyTypeFromOID(const UIn
 	return KeyType::Unknown;
 }
 
+Crypto::Cert::X509File::X509File(Text::String *sourceName, const UInt8 *buff, UOSInt buffSize) : Net::ASN1Data(sourceName, buff, buffSize)
+{
+}
+
 Crypto::Cert::X509File::X509File(const UTF8Char *sourceName, const UInt8 *buff, UOSInt buffSize) : Net::ASN1Data(sourceName, buff, buffSize)
 {
 }

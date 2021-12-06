@@ -5,6 +5,12 @@
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 
+Math::PointMappingCoordinateSystem::PointMappingCoordinateSystem(Text::String *sourceName, UInt32 srid, const UTF8Char *csysName, Math::CoordinateSystem *baseCSys) : Math::CoordinateSystem(sourceName, srid, csysName)
+{
+	this->baseCSys = baseCSys;
+	NEW_CLASS(this->mappingList, Data::ArrayList<Double*>());
+}
+
 Math::PointMappingCoordinateSystem::PointMappingCoordinateSystem(const UTF8Char *sourceName, UInt32 srid, const UTF8Char *csysName, Math::CoordinateSystem *baseCSys) : Math::CoordinateSystem(sourceName, srid, csysName)
 {
 	this->baseCSys = baseCSys;
@@ -158,7 +164,7 @@ Math::CoordinateSystem *Math::PointMappingCoordinateSystem::Clone()
 
 Math::CoordinateSystem::CoordinateSystemType Math::PointMappingCoordinateSystem::GetCoordSysType()
 {
-	return Math::CoordinateSystem::CST_POINTMAPPING;
+	return Math::CoordinateSystem::CoordinateSystemType::PointMapping;
 }
 
 Bool Math::PointMappingCoordinateSystem::IsProjected()
@@ -197,7 +203,7 @@ void Math::PointMappingCoordinateSystem::ToString(Text::StringBuilderUTF *sb)
 
 Bool Math::PointMappingCoordinateSystem::Equals(CoordinateSystem *csys)
 {
-	if (csys->GetCoordSysType() != Math::CoordinateSystem::CST_POINTMAPPING)
+	if (csys->GetCoordSysType() != Math::CoordinateSystem::CoordinateSystemType::PointMapping)
 	{
 		return false;
 	}

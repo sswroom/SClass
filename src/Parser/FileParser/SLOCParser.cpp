@@ -222,7 +222,7 @@ IO::ParsedObject *Parser::FileParser::SLOCParser::ParseFile(IO::IStreamData *fd,
 	UOSInt currPos;
 	UInt64 fileSize;
 	Int64 devId;
-	sptr = fd->GetFullName();
+	sptr = fd->GetFullName()->v;
 	i = Text::StrLastIndexOf(sptr, '\\');
 	Text::StrConcat(sbuff, &sptr[i + 1]);
 	if (!Text::StrStartsWithICase(sbuff, (const UTF8Char*)"LOC"))
@@ -247,7 +247,9 @@ IO::ParsedObject *Parser::FileParser::SLOCParser::ParseFile(IO::IStreamData *fd,
 
 	Map::GPSTrack *track;
 	Text::StrInt64(sbuff, devId);
-	NEW_CLASS(track, Map::GPSTrack(fd->GetFullName(), true, 0, sbuff));
+	Text::String *s = Text::String::New(sbuff);
+	NEW_CLASS(track, Map::GPSTrack(fd->GetFullName(), true, 0, s));
+	s->Release();
 	track->SetTrackName(sbuff);
 	SLOCExtraParser *parser;
 	NEW_CLASS(parser, SLOCExtraParser());

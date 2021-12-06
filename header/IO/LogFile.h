@@ -10,6 +10,7 @@ namespace IO
 	class LogFile : public IO::ParsedObject
 	{
 	public:
+		LogFile(Text::String *sourceName);
 		LogFile(const UTF8Char *sourceName);
 		virtual ~LogFile();
 

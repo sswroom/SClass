@@ -88,7 +88,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseFile(IO::IStreamData *fd, 
 	UOSInt j;
 	Bool valid = false;
 
-	Text::StrConcat(u8buff, fd->GetFullName());
+	fd->GetFullName()->ConcatTo(u8buff);
 	i = Text::StrLastIndexOf(u8buff, '.');
 	j = Text::StrIndexOf(&u8buff[i + 1], '?');
 	if (j != INVALID_INDEX)
@@ -131,7 +131,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseFile(IO::IStreamData *fd, 
 	IO::StreamDataStream *stm;
 	IO::ParsedObject *pobj;
 	NEW_CLASS(stm, IO::StreamDataStream(fd));
-	pobj = ParseStream(this->encFact, stm, fd->GetFullName(), this->parsers, this->browser, pkgFile);
+	pobj = ParseStream(this->encFact, stm, fd->GetFullName()->v, this->parsers, this->browser, pkgFile);
 	DEL_CLASS(stm);
 	return pobj;
 }

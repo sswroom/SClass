@@ -14,13 +14,26 @@ IO::StmData::ConcatStreamData::ConcatStreamData(IO::StmData::ConcatStreamData::C
 	mutUsage.EndUse();
 }
 
+IO::StmData::ConcatStreamData::ConcatStreamData(Text::String *fileName)
+{
+	this->cdb = MemAlloc(CONCATDATABASE, 1);
+	NEW_CLASS(this->cdb->mut, Sync::Mutex());
+	NEW_CLASS(this->cdb->dataList, Data::ArrayList<IO::IStreamData*>());
+	NEW_CLASS(this->cdb->ofstList, Data::ArrayListUInt64());
+	this->cdb->fileName = fileName->Clone();
+	this->cdb->objectCnt = 1;
+	this->cdb->totalSize = 0;
+	this->dataOffset = 0;
+	this->dataLength = (UOSInt)-1;
+}
+
 IO::StmData::ConcatStreamData::ConcatStreamData(const UTF8Char *fileName)
 {
 	this->cdb = MemAlloc(CONCATDATABASE, 1);
 	NEW_CLASS(this->cdb->mut, Sync::Mutex());
 	NEW_CLASS(this->cdb->dataList, Data::ArrayList<IO::IStreamData*>());
 	NEW_CLASS(this->cdb->ofstList, Data::ArrayListUInt64());
-	this->cdb->fileName = Text::StrCopyNew(fileName);
+	this->cdb->fileName = Text::String::New(fileName);
 	this->cdb->objectCnt = 1;
 	this->cdb->totalSize = 0;
 	this->dataOffset = 0;
@@ -46,7 +59,7 @@ IO::StmData::ConcatStreamData::~ConcatStreamData()
 			DEL_CLASS(data);
 		}
 		DEL_CLASS(this->cdb->dataList);
-		Text::StrDelNew(this->cdb->fileName);
+		this->cdb->fileName->Release();
 		MemFree(this->cdb);
 	}
 }
@@ -101,14 +114,14 @@ UOSInt IO::StmData::ConcatStreamData::GetRealData(UInt64 offset, UOSInt length, 
 	return readTotal;
 }
 
-const UTF8Char *IO::StmData::ConcatStreamData::GetFullName()
+Text::String *IO::StmData::ConcatStreamData::GetFullName()
 {
 	return this->cdb->fileName;
 }
 
 const UTF8Char *IO::StmData::ConcatStreamData::GetShortName()
 {
-	return this->cdb->fileName;
+	return this->cdb->fileName->v;
 }
 
 UInt64 IO::StmData::ConcatStreamData::GetDataSize()

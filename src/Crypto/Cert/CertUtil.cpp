@@ -511,7 +511,7 @@ Crypto::Cert::X509Cert *Crypto::Cert::CertUtil::FindIssuer(Crypto::Cert::X509Cer
 		Crypto::Cert::CertExtensions::FreeExtensions(&ext);
 		return 0;
 	}
-	Text::StrConcat(sbuff, cert->GetSourceNameObj());
+	cert->GetSourceNameObj()->ConcatTo(sbuff);
 	UOSInt i = Text::StrLastIndexOf(sbuff, IO::Path::PATH_SEPERATOR);
 	if (i == INVALID_INDEX)
 	{
@@ -543,7 +543,9 @@ Crypto::Cert::X509Cert *Crypto::Cert::CertUtil::FindIssuer(Crypto::Cert::X509Cer
 			{
 				if (IO::FileStream::LoadFile(sbuff, dataBuff, sizeof(dataBuff)) == fileSize)
 				{
-					x509 = parser.ParseBuff(dataBuff, (UOSInt)fileSize, sbuff);
+					Text::String *s = Text::String::New(sbuff);
+					x509 = parser.ParseBuff(dataBuff, (UOSInt)fileSize, s);
+					s->Release();
 					if (x509)
 					{
 						if (x509->GetFileType() != Crypto::Cert::X509File::FileType::Cert)

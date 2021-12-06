@@ -11,13 +11,14 @@ namespace DB
 	class CSVFile : public DB::ReadingDB
 	{
 	private:
-		const UTF8Char *fileName;
+		Text::String *fileName;
 		IO::SeekableStream *stm;
 		UInt32 codePage;
 		Bool noHeader;
 		Bool nullIfEmpty;
 
 	public:
+		CSVFile(Text::String *fileName, UInt32 codePage);
 		CSVFile(const UTF8Char *fileName, UInt32 codePage);
 		CSVFile(IO::SeekableStream *stm, UInt32 codePage);
 		virtual ~CSVFile();
@@ -35,7 +36,7 @@ namespace DB
 	{
 	private:
 		IO::Stream *stm;
-		IO::StreamReader *rdr;
+		IO::Reader *rdr;
 		UOSInt nCol;
 		UOSInt nHdr;
 		UTF8Char *row;
@@ -47,7 +48,7 @@ namespace DB
 		Bool nullIfEmpty;
 
 	public:
-		CSVReader(IO::Stream *stm, IO::StreamReader *rdr, Bool noHeader, Bool nullIfEmpty);
+		CSVReader(IO::Stream *stm, IO::Reader *rdr, Bool noHeader, Bool nullIfEmpty);
 		virtual ~CSVReader();
 
 		virtual Bool ReadNext();

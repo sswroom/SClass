@@ -8,6 +8,15 @@
 #include "Media/IMediaSource.h"
 #include "Media/MediaFile.h"
 
+Media::MediaFile::MediaFile(Text::String *name) : IO::ParsedObject(name)
+{
+	NEW_CLASS(this->sources, Data::ArrayList<Media::IMediaSource*>());
+	NEW_CLASS(this->syncTime, Data::ArrayListInt32());
+	NEW_CLASS(this->keepSources, Data::ArrayListInt32());
+	this->chapters = 0;
+	this->releaseChapter = false;
+}
+
 Media::MediaFile::MediaFile(const UTF8Char *name) : IO::ParsedObject(name)
 {
 	NEW_CLASS(this->sources, Data::ArrayList<Media::IMediaSource*>());

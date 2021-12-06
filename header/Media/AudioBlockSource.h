@@ -19,7 +19,7 @@ namespace Media
 	private:
 		Media::AudioFormat format;
 		IO::IStreamData *data;
-		const UTF8Char *name;
+		Text::String *name;
 
 		UInt32 readBlock;
 		Sync::Event *readEvt;
@@ -30,7 +30,7 @@ namespace Media
 		UInt32 samplePerBlock;
 		UOSInt maxBlockSize;
 	public:
-		AudioBlockSource(IO::IStreamData *fd, Media::AudioFormat *format, const UTF8Char *name, UInt32 samplePerBlock);
+		AudioBlockSource(IO::IStreamData *fd, Media::AudioFormat *format, Text::String *name, UInt32 samplePerBlock);
 		virtual ~AudioBlockSource();
 
 		virtual UTF8Char *GetSourceName(UTF8Char *buff);

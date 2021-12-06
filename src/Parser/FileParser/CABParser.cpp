@@ -70,7 +70,7 @@ IO::ParsedObject *Parser::FileParser::CABParser::ParseFile(IO::IStreamData *fd, 
 	if (dataOfst - recSize != 273)
 		return 0;
 	enc.UTF8FromBytes(fileName, &hdrBuff[12], 255, 0);
-	if (!Text::StrEndsWith(fd->GetFullName(), fileName))
+	if (!fd->GetFullName()->EndsWith(fileName))
 	{
 		return 0;
 	}

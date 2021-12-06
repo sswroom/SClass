@@ -3,19 +3,22 @@
 #include "Data/ArrayListInt64.h"
 #include "Data/ArrayListUInt64.h"
 #include "IO/PackageFile.h"
+#include "Text/String.h"
 
 namespace IO
 {
 	class DirectoryPackage : public IO::PackageFile
 	{
 	private:
-		Data::ArrayList<const UTF8Char *> *files;
+		Data::ArrayList<Text::String *> *files;
 		Data::ArrayListUInt64 *fileSizes;
 		Data::ArrayListInt64 *fileTimes;
-		const UTF8Char *dirName;
+		Text::String *dirName;
 
 		void AddFile(const UTF8Char *fileName);
+		void Init();
 	public:
+		DirectoryPackage(Text::String *dirName);
 		DirectoryPackage(const UTF8Char *dirName);
 		virtual ~DirectoryPackage();
 

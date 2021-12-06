@@ -9,7 +9,7 @@ namespace Math
 	{
 	private:
 		Media::SharedImage *img;
-		const UTF8Char *srcAddr;
+		Text::String *srcAddr;
 		Double x1;
 		Double y1;
 		Double x2;
@@ -26,7 +26,9 @@ namespace Math
 		Int32 zIndex;
 		
 	public:
+		VectorImage(UInt32 srid, Media::SharedImage *img, Double x1, Double y1, Double x2, Double y2, Bool scnCoord, Text::String *srcAddr, Int64 timeStart, Int64 timeEnd);
 		VectorImage(UInt32 srid, Media::SharedImage *img, Double x1, Double y1, Double x2, Double y2, Bool scnCoord, const UTF8Char *srcAddr, Int64 timeStart, Int64 timeEnd);
+		VectorImage(UInt32 srid, Media::SharedImage *img, Double x1, Double y1, Double x2, Double y2, Double sizeX, Double sizeY, Bool scnCoord, Text::String *srcAddr, Int64 timeStart, Int64 timeEnd);
 		VectorImage(UInt32 srid, Media::SharedImage *img, Double x1, Double y1, Double x2, Double y2, Double sizeX, Double sizeY, Bool scnCoord, const UTF8Char *srcAddr, Int64 timeStart, Int64 timeEnd);
 		virtual ~VectorImage();
 
@@ -40,7 +42,7 @@ namespace Math
 		virtual void ConvCSys(Math::CoordinateSystem *srcCSys, Math::CoordinateSystem *destCSys);
 		virtual Bool Equals(Vector2D *vec);
 
-		const UTF8Char *GetSourceAddr();
+		Text::String *GetSourceAddr();
 		void SetHeight(Double height);
 		Double GetHeight();
 		Int64 GetTimeStart();

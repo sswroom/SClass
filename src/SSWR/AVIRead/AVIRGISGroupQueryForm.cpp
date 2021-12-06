@@ -116,7 +116,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISGroupQueryForm::OnMouseUp(void *userObj, OS
 		{
 			Data::ArrayListInt64 arr;
 			void *nameArr;
-			me->txtLayer->SetText(lyr->GetName());
+			me->txtLayer->SetText(lyr->GetName()->v);
 			sess = lyr->BeginGetObject();
 			lyr->GetObjectIdsMapXY(&arr, &nameArr, mapX, mapY, mapX, mapY, true);
 			i = 0;
@@ -153,7 +153,7 @@ SSWR::AVIRead::AVIRGISGroupQueryForm::AVIRGISGroupQueryForm(UI::GUIClientControl
 	}
 	else
 	{
-		const UTF8Char *name = env->GetGroupName(group);
+		Text::String *name = env->GetGroupName(group);
 		if (name)
 		{
 			sb.Append(name);

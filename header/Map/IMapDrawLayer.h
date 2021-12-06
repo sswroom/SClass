@@ -62,7 +62,7 @@ namespace Map
 	protected:
 		UOSInt nameCol;
 		Math::CoordinateSystem *csys;
-		const UTF8Char *layerName;
+		Text::String *layerName;
 
 		UInt32 pgColor;
 		UInt32 lineColor;
@@ -93,6 +93,7 @@ namespace Map
 
 		typedef void (__stdcall *UpdatedHandler)(void *userObj);
 
+		IMapDrawLayer(Text::String *sourceName, UOSInt nameCol, Text::String *layerName);
 		IMapDrawLayer(const UTF8Char *sourceName, UOSInt nameCol, const UTF8Char *layerName);
 		virtual ~IMapDrawLayer();
 
@@ -135,7 +136,7 @@ namespace Map
 		virtual void SetNameCol(UOSInt nameCol);
 
 		virtual ObjectClass GetObjectClass() = 0;
-		const UTF8Char *GetName();
+		Text::String *GetName();
 		virtual IO::ParserType GetParserType();
 		virtual Math::CoordinateSystem *GetCoordinateSystem();
 		virtual void SetCoordinateSystem(Math::CoordinateSystem *csys);

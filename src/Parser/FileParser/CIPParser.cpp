@@ -37,7 +37,7 @@ IO::ParsedObject *Parser::FileParser::CIPParser::ParseFile(IO::IStreamData *fd, 
 	UOSInt i;
 	if (!fd->IsFullFile())
 		return 0;
-	Text::StrConcat(sbuff, fd->GetFullFileName());
+	fd->GetFullFileName()->ConcatTo(sbuff);
 	i = Text::StrLastIndexOf(sbuff, '.');
 	if (i == INVALID_INDEX || Text::StrCompareICase(&sbuff[i], (const UTF8Char*)".CIP") != 0)
 	{

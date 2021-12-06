@@ -57,7 +57,7 @@ Data::Int32Map<const UTF8Char **> *Map::ESRI::ESRIMDBLayer::ReadNameArr()
 	}
 }
 
-Map::ESRI::ESRIMDBLayer::ESRIMDBLayer(DB::SharedDBConn *conn, UInt32 srid, const UTF8Char *sourceName, const UTF8Char *tableName) : Map::IMapDrawLayer(sourceName, 0, tableName)
+void Map::ESRI::ESRIMDBLayer::Init(DB::SharedDBConn *conn, UInt32 srid, const UTF8Char *tableName)
 {
 	UTF8Char sbuff[256];
 	UInt8 *buff = 0; 
@@ -198,6 +198,17 @@ Map::ESRI::ESRIMDBLayer::ESRIMDBLayer(DB::SharedDBConn *conn, UInt32 srid, const
 	mutUsage.EndUse();
 	this->currDB = 0;
 	this->csys = Math::CoordinateSystemManager::SRCreateCSys(srid);
+}
+
+Map::ESRI::ESRIMDBLayer::ESRIMDBLayer(DB::SharedDBConn *conn, UInt32 srid, Text::String *sourceName, const UTF8Char *tableName) : Map::IMapDrawLayer(sourceName, 0, Text::String::New(tableName))
+{
+	SDEL_STRING(this->layerName);
+	this->Init(conn, srid, tableName);
+}
+
+Map::ESRI::ESRIMDBLayer::ESRIMDBLayer(DB::SharedDBConn *conn, UInt32 srid, const UTF8Char *sourceName, const UTF8Char *tableName) : Map::IMapDrawLayer(sourceName, 0, tableName)
+{
+	this->Init(conn, srid, tableName);
 }
 
 Map::ESRI::ESRIMDBLayer::~ESRIMDBLayer()
