@@ -15,10 +15,6 @@ Manage/ThreadContextX86_32.h: ../../src/Manage/ThreadContextX86_32L.cpp
 @ThreadContext.o
 Manage/ThreadContextX86_64.h:
 
-Map/FileGDB.h:
-Map/FileGDBLayer.h:
-
-
 MyMemory_CPP.o: ../../src/MyMemory_32.asm
 Base64_CPP.o: ../../src/Crypto/Encrypt/Base64_32.asm
 CRC16_CPP.o: ../../src/Crypto/Hash/CRC16_CPP.cpp

@@ -17,9 +17,6 @@ Manage/ThreadContextMIPS.h: ../../src/Manage/ThreadContextMIPSL.cpp
 Manage/ThreadContextX86_32.h:
 Manage/ThreadContextX86_64.h:
 
-Map/FileGDB.h:
-Map/FileGDBLayer.h:
-
 MyMemory_CPP.o: ../../src/MyMemory_CPP.cpp
 Base64_CPP.o: ../../src/Crypto/Encrypt/Base64_CPP.cpp
 CRC16_CPP.o: ../../src/Crypto/Hash/CRC16_CPP.cpp

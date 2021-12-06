@@ -17,12 +17,6 @@ Manage/ThreadContextX86_32.h:
 Manage/ThreadContextX86_64.h: ../../src/Manage/ThreadContextX86_64L.cpp
 @ThreadContext.o
 
-Map/FileGDB.h: ../../src/Map/FileGDBUnk.cpp
-@FileGDB.o
-Map/FileGDBLayer.h: ../../src/Map/FileGDBLayer.cpp
-@FileGDBLayer.o
-
-
 MyMemory_CPP.o: ../../src/MyMemory_SysV64.asm
 Base64_CPP.o: ../../src/Crypto/Encrypt/Base64_SysV64.asm
 CRC16_CPP.o: ../../src/Crypto/Hash/CRC16_SysV64.asm
@@ -38,11 +32,6 @@ CPUInfoDetail.o: ../../src/Manage/CPUInfoDetailx86.cpp
 Dasm.o: ../../src/Manage/DasmX86_64.cpp
 DasmX86_32.o: ../../src/Manage/DasmX86_32.cpp
 ThreadContext.o: ../../src/Manage/ThreadContextX86_64L.cpp
-FileGDB.o: ../../src/Map/FileGDBUnk.cpp
-#$-I ../../../FileGDB_API-64gcc51/include
-#!-L../../../FileGDB_API-64gcc51/lib
-#!-lFileGDBAPI
-FileGDBLayer.o: ../../src/Map/FileGDBLayer.cpp
 ScaledMapView_CPP.o: ../../src/Map/ScaledMapView_SysV64.asm
 FFTCalc_CPP.o: ../../src/Math/FFTCalc_CPP.cpp
 Math_CPP.o: ../../src/Math/Math_SysV64.asm

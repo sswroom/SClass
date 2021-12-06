@@ -7,6 +7,7 @@
 #include "Net/SocketFactory.h"
 #include "Net/SSLEngine.h"
 #include "Text/JSON.h"
+#include "Text/String.h"
 
 namespace Net
 {
@@ -65,9 +66,9 @@ namespace Net
 		const UTF8Char *nonce;
 		const UTF8Char *accountId;
 
-		static const UTF8Char *JWK(Crypto::Cert::X509Key *key, Crypto::Token::JWSignature::Algorithm *alg);
-		static const UTF8Char *ProtectedJWK(const UTF8Char *nonce, const UTF8Char *url, Crypto::Cert::X509Key *key, Crypto::Token::JWSignature::Algorithm *alg, const UTF8Char *accountId);
-		static const UTF8Char *EncodeJWS(Net::SSLEngine *ssl, const UTF8Char *protStr, const UTF8Char *data, Crypto::Cert::X509Key *key, Crypto::Token::JWSignature::Algorithm alg);
+		static Text::String *JWK(Crypto::Cert::X509Key *key, Crypto::Token::JWSignature::Algorithm *alg);
+		static Text::String *ProtectedJWK(const UTF8Char *nonce, const UTF8Char *url, Crypto::Cert::X509Key *key, Crypto::Token::JWSignature::Algorithm *alg, const UTF8Char *accountId);
+		static Text::String *EncodeJWS(Net::SSLEngine *ssl, const UTF8Char *protStr, const UTF8Char *data, Crypto::Cert::X509Key *key, Crypto::Token::JWSignature::Algorithm alg);
 		static Bool KeyHash(Crypto::Cert::X509Key *key, Text::StringBuilderUTF *sb);
 		Net::HTTPClient *ACMEPost(const UTF8Char *url, const Char *data);
 		Order *OrderParse(const UInt8 *buff, UOSInt buffSize);

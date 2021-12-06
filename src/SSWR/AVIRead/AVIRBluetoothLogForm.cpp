@@ -68,9 +68,9 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothLogForm::OnContentDblClicked(void *us
 	}
 	if (frm->ShowDialog(me) == UI::GUIForm::DR_OK)
 	{
-		const UTF8Char *name = frm->GetNameNew();
-		UOSInt i = me->macList->SetEntry(log->macInt, name);
-		Text::StrDelNew(name);
+		Text::String *name = frm->GetNameNew();
+		UOSInt i = me->macList->SetEntry(log->macInt, name->v);
+		name->Release();
 		entry = me->macList->GetItem(i);
 		me->UpdateStatus();
 

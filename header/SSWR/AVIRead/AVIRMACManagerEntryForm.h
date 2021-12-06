@@ -22,7 +22,7 @@ namespace SSWR
 			UI::GUIComboBox *cboName;
 			UI::GUIButton *btnCancel;
 			UI::GUIButton *btnOK;
-			const UTF8Char *name;
+			Text::String *name;
 
 			static void __stdcall OnOKClicked(void *userObj);
 			static void __stdcall OnCancelClicked(void *userObj);
@@ -32,8 +32,8 @@ namespace SSWR
 
 			virtual void OnMonitorChanged();
 
-			const UTF8Char *GetNameNew();
+			Text::String *GetNameNew();
 		};
-	};
-};
+	}
+}
 #endif

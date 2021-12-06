@@ -22,7 +22,7 @@ Production:
 https://acme-v02.api.letsencrypt.org/directory
 */
 
-const UTF8Char *Net::ACMEConn::JWK(Crypto::Cert::X509Key *key, Crypto::Token::JWSignature::Algorithm *alg)
+Text::String *Net::ACMEConn::JWK(Crypto::Cert::X509Key *key, Crypto::Token::JWSignature::Algorithm *alg)
 {
 	Text::TextBinEnc::Base64Enc b64(Text::TextBinEnc::Base64Enc::Charset::URL, true);
 	switch (key->GetKeyType())
@@ -45,7 +45,7 @@ const UTF8Char *Net::ACMEConn::JWK(Crypto::Cert::X509Key *key, Crypto::Token::JW
 			b64.EncodeBin(&sb, m, mSize);
 			sb.Append((const UTF8Char*)"\"}");
 			*alg = Crypto::Token::JWSignature::Algorithm::RS256;
-			return Text::StrCopyNew(sb.ToString());
+			return Text::String::New(sb.ToString());
 		}
 	case Crypto::Cert::X509Key::KeyType::ECDSA:
 		return 0;
@@ -57,9 +57,9 @@ const UTF8Char *Net::ACMEConn::JWK(Crypto::Cert::X509Key *key, Crypto::Token::JW
 	}
 }
 
-const UTF8Char *Net::ACMEConn::ProtectedJWK(const UTF8Char *nonce, const UTF8Char *url, Crypto::Cert::X509Key *key, Crypto::Token::JWSignature::Algorithm *alg, const UTF8Char *accountId)
+Text::String *Net::ACMEConn::ProtectedJWK(const UTF8Char *nonce, const UTF8Char *url, Crypto::Cert::X509Key *key, Crypto::Token::JWSignature::Algorithm *alg, const UTF8Char *accountId)
 {
-	const UTF8Char *jwk = JWK(key, alg);
+	Text::String *jwk = JWK(key, alg);
 	if (jwk == 0)
 	{
 		return 0;
@@ -82,12 +82,12 @@ const UTF8Char *Net::ACMEConn::ProtectedJWK(const UTF8Char *nonce, const UTF8Cha
 		sb.Append((const UTF8Char*)"\",\"jwk\":");
 		sb.Append(jwk);
 	}
-	Text::StrDelNew(jwk);
+	jwk->Release();
 	sb.Append((const UTF8Char*)"}");
-	return Text::StrCopyNew(sb.ToString());
+	return Text::String::New(sb.ToString());
 }
 
-const UTF8Char *Net::ACMEConn::EncodeJWS(Net::SSLEngine *ssl, const UTF8Char *protStr, const UTF8Char *data, Crypto::Cert::X509Key *key, Crypto::Token::JWSignature::Algorithm alg)
+Text::String *Net::ACMEConn::EncodeJWS(Net::SSLEngine *ssl, const UTF8Char *protStr, const UTF8Char *data, Crypto::Cert::X509Key *key, Crypto::Token::JWSignature::Algorithm alg)
 {
 	Text::StringBuilderUTF8 sb;
 	Text::TextBinEnc::Base64Enc b64(Text::TextBinEnc::Base64Enc::Charset::URL, true);
@@ -110,22 +110,22 @@ const UTF8Char *Net::ACMEConn::EncodeJWS(Net::SSLEngine *ssl, const UTF8Char *pr
 	printf("Protected: %s\r\n", protStr);
 	printf("Payload: %s\r\n", data);
 	printf("JWS: %s\r\n", sb.ToString());
-	return Text::StrCopyNew(sb.ToString());
+	return Text::String::New(sb.ToString());
 }
 
 Bool Net::ACMEConn::KeyHash(Crypto::Cert::X509Key *key, Text::StringBuilderUTF *sb)
 {
 	Crypto::Token::JWSignature::Algorithm alg;
-	const UTF8Char *jwk = JWK(key, &alg);
+	Text::String *jwk = JWK(key, &alg);
 	if (jwk == 0)
 	{
 		return false;
 	}
 	Crypto::Hash::SHA256 sha256;
 	UInt8 hashVal[32];
-	sha256.Calc(jwk, Text::StrCharCnt(jwk));
+	sha256.Calc(jwk->v, jwk->leng);
 	sha256.GetValue(hashVal);
-	Text::StrDelNew(jwk);
+	jwk->Release();
 	Text::TextBinEnc::Base64Enc b64(Text::TextBinEnc::Base64Enc::Charset::URL, true);
 	b64.EncodeBin(sb, hashVal, 32);
 	return true;
@@ -137,30 +137,30 @@ Net::HTTPClient *Net::ACMEConn::ACMEPost(const UTF8Char *url, const Char *data)
 	{
 		return 0;
 	}
-	const UTF8Char *protStr;
+	Text::String *protStr;
 	Crypto::Token::JWSignature::Algorithm alg;
 	protStr = ProtectedJWK(this->nonce, url, this->key, &alg, this->accountId);
 	if (protStr == 0)
 	{
 		return 0;
 	}
-	const UTF8Char *jws;
-	jws = EncodeJWS(ssl, protStr, (const UTF8Char*)data, this->key, alg);
-	Text::StrDelNew(protStr);
+	Text::String *jws;
+	jws = EncodeJWS(ssl, protStr->v, (const UTF8Char*)data, this->key, alg);
+	protStr->Release();
 	if (jws == 0)
 	{
 		return 0;
 	}
-	UOSInt jwsLen = Text::StrCharCnt(jws);
+	UOSInt jwsLen = jws->leng;
 	Net::HTTPClient *cli = 0;
 	cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, url, "POST", true);
 	if (cli)
 	{
 		cli->AddContentType((const UTF8Char*)"application/jose+json");
 		cli->AddContentLength(jwsLen);
-		cli->Write(jws, jwsLen);
+		cli->Write(jws->v, jwsLen);
 	}
-	Text::StrDelNew(jws);
+	jws->Release();
 
 	Text::StringBuilderUTF8 sb;
 	cli->GetRespStatus();

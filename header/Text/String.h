@@ -39,6 +39,9 @@ namespace Text
 		Int32 ToInt32();
 		Int64 ToInt64();
 		UInt64 ToUInt64();
+		Double ToDouble();
+		Bool ToInt32(Int32 *outVal);
+		Bool ToDouble(Double *outVal);
 
 		Double MatchRating(Text::String *s);
 		Double MatchRating(const UTF8Char *targetStr, UOSInt strLen);

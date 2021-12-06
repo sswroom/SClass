@@ -3,6 +3,7 @@
 #include "Math/Math.h"
 #include "Sync/Interlocked.h"
 #include "Text/MyString.h"
+#include "Text/MyStringFloat.h"
 #include "Text/MyStringW.h"
 #include "Text/String.h"
 
@@ -210,6 +211,21 @@ Int64 Text::String::ToInt64()
 UInt64 Text::String::ToUInt64()
 {
 	return Text::StrToUInt64(this->v);
+}
+
+Double Text::String::ToDouble()
+{
+	return Text::StrToDouble(this->v);
+}
+
+Bool Text::String::ToInt32(Int32 *outVal)
+{
+	return Text::StrToInt32(this->v, outVal);
+}
+
+Bool Text::String::ToDouble(Double *outVal)
+{
+	return Text::StrToDouble(this->v, outVal);
 }
 
 Double Text::String::MatchRating(Text::String *s)

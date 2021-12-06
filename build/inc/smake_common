@@ -1670,6 +1670,8 @@ Map/CIPLayer2.h: ../../src/Map/CIPLayer2.cpp
 @CIPLayer2.o
 Map/DrawMapRenderer.h: ../../src/Map/DrawMapRenderer.cpp
 @DrawMapRenderer.o
+Map/FileGDBLayer.h: ../../src/Map/FileGDBLayer.cpp
+@FileGDBLayer.o
 Map/GPSTrack.h: ../../src/Map/GPSTrack.cpp
 @GPSTrack.o
 Map/HKTDVehRestrict.h: ../../src/Map/HKTDVehRestrict.cpp
@@ -2889,8 +2891,6 @@ Parser/ObjParser/DBITParser.h: ../../src/Parser/ObjParser/DBITParser.cpp
 @DBITParser.o
 Parser/ObjParser/FileGDB2Parser.h: ../../src/Parser/ObjParser/FileGDB2Parser.cpp
 @FileGDB2Parser.o
-Parser/ObjParser/FileGDBParser.h: ../../src/Parser/ObjParser/FileGDBParser.cpp
-@FileGDBParser.o
 Parser/ObjParser/ISO9660Parser.h: ../../src/Parser/ObjParser/ISO9660Parser.cpp
 @ISO9660Parser.o
 Parser/ObjParser/ITMParser.h: ../../src/Parser/ObjParser/ITMParser.cpp
@@ -4104,11 +4104,12 @@ DasmX86_16.o: ../../src/Manage/DasmX86_16.cpp
 ExceptionLogger.o: ../../src/Manage/ExceptionLogger.cpp
 MonConn.o: ../../src/Manage/MonConn.cpp
 OSInfo.o: ../../src/Manage/OSInfo.cpp
+AssistedReverseGeocoder.o: ../../src/Map/AssistedReverseGeocoder.cpp
+AssistedReverseGeocoderPL.o: ../../src/Map/AssistedReverseGeocoderPL.cpp
 BaseMapLayer.o: ../../src/Map/BaseMapLayer.cpp
 CIPLayer2.o: ../../src/Map/CIPLayer2.cpp
 DrawMapRenderer.o: ../../src/Map/DrawMapRenderer.cpp
-AssistedReverseGeocoder.o: ../../src/Map/AssistedReverseGeocoder.cpp
-AssistedReverseGeocoderPL.o: ../../src/Map/AssistedReverseGeocoderPL.cpp
+FileGDBLayer.o: ../../src/Map/FileGDBLayer.cpp
 GPSTrack.o: ../../src/Map/GPSTrack.cpp
 HKTDVehRestrict.o: ../../src/Map/HKTDVehRestrict.cpp
 HKTrafficLayer.o: ../../src/Map/HKTrafficLayer.cpp
@@ -4672,7 +4673,6 @@ ZIPParser.o: ../../src/Parser/FileParser/ZIPParser.cpp
 ZWEIParser.o: ../../src/Parser/FileParser/ZWEIParser.cpp
 DBITParser.o: ../../src/Parser/ObjParser/DBITParser.cpp
 FileGDB2Parser.o: ../../src/Parser/ObjParser/FileGDB2Parser.cpp
-FileGDBParser.o: ../../src/Parser/ObjParser/FileGDBParser.cpp
 ISO9660Parser.o: ../../src/Parser/ObjParser/ISO9660Parser.cpp
 ITMParser.o: ../../src/Parser/ObjParser/ITMParser.cpp
 KMZParser.o: ../../src/Parser/ObjParser/KMZParser.cpp

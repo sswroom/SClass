@@ -20,7 +20,7 @@ void __stdcall SSWR::AVIRead::AVIRMACManagerEntryForm::OnOKClicked(void *userObj
 			return;
 		}
 	}
-	me->name = Text::StrCopyNew(sb.ToString());
+	me->name = Text::String::New(sb.ToString());
 	me->SetDialogResult(UI::GUIForm::DR_OK);
 }
 
@@ -100,7 +100,7 @@ SSWR::AVIRead::AVIRMACManagerEntryForm::AVIRMACManagerEntryForm(UI::GUIClientCon
 
 SSWR::AVIRead::AVIRMACManagerEntryForm::~AVIRMACManagerEntryForm()
 {
-	SDEL_TEXT(this->name);
+	SDEL_STRING(this->name);
 }
 
 void SSWR::AVIRead::AVIRMACManagerEntryForm::OnMonitorChanged()
@@ -108,7 +108,7 @@ void SSWR::AVIRead::AVIRMACManagerEntryForm::OnMonitorChanged()
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 }
 
-const UTF8Char *SSWR::AVIRead::AVIRMACManagerEntryForm::GetNameNew()
+Text::String *SSWR::AVIRead::AVIRMACManagerEntryForm::GetNameNew()
 {
-	return Text::StrCopyNew(this->name);
+	return this->name->Clone();
 }

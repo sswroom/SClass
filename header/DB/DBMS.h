@@ -7,6 +7,7 @@
 #include "IO/LogTool.h"
 #include "Net/SocketUtil.h"
 #include "Sync/Mutex.h"
+#include "Text/String.h"
 #include "Text/StringBuilderUTF.h"
 
 namespace DB
@@ -79,15 +80,15 @@ namespace DB
 			Int32 autoIncInc;
 			SQLMODE sqlModes;
 			SessionParam params;
-			const UTF8Char *database;
-			Data::StringUTF8Map<const UTF8Char*> *userVars;
+			Text::String *database;
+			Data::StringUTF8Map<Text::String*> *userVars;
 		} SessionInfo;
 
 		typedef struct
 		{
 			const UTF8Char *name;
 			const UTF8Char *sqlPtr;
-			const UTF8Char *asName;
+			Text::String *asName;
 		} SQLColumn;
 		
 		typedef enum
@@ -114,13 +115,13 @@ namespace DB
 		Bool SysVarExist(SessionInfo *sess, const UTF8Char *varName, AccessType atype);
 		const UTF8Char *SysVarGet(Text::StringBuilderUTF *sb, SessionInfo *sess, const UTF8Char *varName);
 		void SysVarColumn(DB::DBMSReader *reader, UOSInt colIndex, const UTF8Char *varName, const UTF8Char *colName);
-		Bool SysVarSet(SessionInfo *sess, Bool isGlobal, const UTF8Char *varName, const UTF8Char *val);
+		Bool SysVarSet(SessionInfo *sess, Bool isGlobal, const UTF8Char *varName, Text::String *val);
 
 		const UTF8Char *UserVarGet(Text::StringBuilderUTF *sb, SessionInfo *sess, const UTF8Char *varName);
 		void UserVarColumn(DB::DBMSReader *reader, UOSInt colIndex, const UTF8Char *varName, const UTF8Char *colName);
-		Bool UserVarSet(SessionInfo *sess, const UTF8Char *varName, const UTF8Char *val);
+		Bool UserVarSet(SessionInfo *sess, const UTF8Char *varName, Text::String *val);
 
-		const UTF8Char *Evals(const UTF8Char **valPtr, SessionInfo *sess, DB::DBMSReader *reader, UOSInt colIndex, const UTF8Char *colName, Bool *valid);
+		Text::String *Evals(const UTF8Char **valPtr, SessionInfo *sess, DB::DBMSReader *reader, UOSInt colIndex, const UTF8Char *colName, Bool *valid);
 	public:
 		DBMS(const UTF8Char *versionStr, IO::LogTool *log);
 		virtual ~DBMS();
