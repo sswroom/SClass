@@ -15,7 +15,7 @@ UI::GUIComboBox::GUIComboBox(GUICore *ui, UI::GUIClientControl *parent, Bool all
 {
 	NEW_CLASS(this->selChgHdlrs, Data::ArrayList<UI::UIEvent>());
 	NEW_CLASS(this->selChgObjs, Data::ArrayList<void*>());
-	NEW_CLASS(this->itemTexts, Data::ArrayList<const UTF8Char *>());
+	NEW_CLASS(this->itemTexts, Data::ArrayList<Text::String *>());
 	this->autoComplete = false;
 	this->minVisible = 5;
 	this->allowEdit = allowTyping;
@@ -68,10 +68,10 @@ void UI::GUIComboBox::EventTextChanged()
 			UOSInt j = this->itemTexts->GetCount();
 			while (i < j)
 			{
-				if (Text::StrStartsWith(this->itemTexts->GetItem(i), sb.ToString()))
+				if (this->itemTexts->GetItem(i)->StartsWith(sb.ToString()))
 				{
 					this->SetSelectedIndex(i);
-					this->SetTextSelection(sb.GetLength(), Text::StrCharCnt(this->itemTexts->GetItem(i)));
+					this->SetTextSelection(sb.GetLength(), this->itemTexts->GetItem(i)->leng);
 				}
 				i++;
 			}
@@ -127,6 +127,21 @@ Bool UI::GUIComboBox::GetText(Text::StringBuilderUTF *sb)
 	return true;
 }
 
+UOSInt UI::GUIComboBox::AddItem(Text::String *itemText, void *itemObj)
+{
+	const WChar *wptr = Text::StrToWCharNew(itemText->v);
+	OSInt i = SendMessage((HWND)hwnd, CB_ADDSTRING, 0, (LPARAM)wptr);
+	Text::StrDelNew(wptr);
+	if (i < 0)
+		return (UOSInt)i;
+	if (itemObj)
+	{
+		SendMessage((HWND)hwnd, CB_SETITEMDATA, (WPARAM)i, (LPARAM)itemObj);
+	}
+	this->itemTexts->Add(itemText->Clone());
+	return (UOSInt)i;
+}
+
 UOSInt UI::GUIComboBox::AddItem(const UTF8Char *itemText, void *itemObj)
 {
 	const WChar *wptr = Text::StrToWCharNew(itemText);
@@ -138,7 +153,22 @@ UOSInt UI::GUIComboBox::AddItem(const UTF8Char *itemText, void *itemObj)
 	{
 		SendMessage((HWND)hwnd, CB_SETITEMDATA, (WPARAM)i, (LPARAM)itemObj);
 	}
-	this->itemTexts->Add(Text::StrCopyNew(itemText));
+	this->itemTexts->Add(Text::String::New(itemText));
+	return (UOSInt)i;
+}
+
+UOSInt UI::GUIComboBox::InsertItem(UOSInt index, Text::String *itemText, void *itemObj)
+{
+	const WChar *wptr = Text::StrToWCharNew(itemText->v);
+	OSInt i = SendMessage((HWND)hwnd, CB_INSERTSTRING, index, (LPARAM)wptr);
+	Text::StrDelNew(wptr);
+	if (i < 0)
+		return (UOSInt)i;
+	if (itemObj)
+	{
+		SendMessage((HWND)hwnd, CB_SETITEMDATA, (WPARAM)i, (LPARAM)itemObj);
+	}
+	this->itemTexts->Insert(index, itemText->Clone());
 	return (UOSInt)i;
 }
 
@@ -153,7 +183,7 @@ UOSInt UI::GUIComboBox::InsertItem(UOSInt index, const UTF8Char *itemText, void 
 	{
 		SendMessage((HWND)hwnd, CB_SETITEMDATA, (WPARAM)i, (LPARAM)itemObj);
 	}
-	this->itemTexts->Insert(index, Text::StrCopyNew(itemText));
+	this->itemTexts->Insert(index, Text::String::New(itemText));
 	return (UOSInt)i;
 }
 
@@ -161,9 +191,9 @@ void *UI::GUIComboBox::RemoveItem(UOSInt index)
 {
 	void *obj = (void*)SendMessage((HWND)hwnd, CB_GETITEMDATA, index, 0);
 	SendMessage((HWND)hwnd, CB_DELETESTRING, index, 0);
-	const UTF8Char *s = this->itemTexts->RemoveAt(index);
+	Text::String *s = this->itemTexts->RemoveAt(index);
 	if (s)
-		Text::StrDelNew(s);
+		s->Release();
 	return obj;
 }
 
@@ -173,7 +203,7 @@ void UI::GUIComboBox::ClearItems()
 	UOSInt i = this->itemTexts->GetCount();
 	while (i-- > 0)
 	{
-		Text::StrDelNew(this->itemTexts->RemoveAt(i));
+		this->itemTexts->RemoveAt(i)->Release();
 	}
 }
 
@@ -203,7 +233,7 @@ UOSInt UI::GUIComboBox::GetSelectedIndex()
 		UOSInt i = this->itemTexts->GetCount();
 		while (i-- > 0)
 		{
-			if (Text::StrEquals(this->itemTexts->GetItem(i), sb.ToString()))
+			if (this->itemTexts->GetItem(i)->Equals(sb.ToString()))
 				return i;
 		}
 	}

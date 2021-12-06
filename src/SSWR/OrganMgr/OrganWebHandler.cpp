@@ -154,7 +154,7 @@ void SSWR::OrganMgr::OrganWebHandler::LoadCategory()
 				cate->dirName = Text::StrCopyNew(sb.ToString());
 				sb.ClearStr();
 				r->GetStr(3, &sb);
-				Text::StrConcat(sbuff, this->imageDir);
+				this->imageDir->ConcatTo(sbuff);
 				sptr = IO::Path::AppendPath(sbuff, sb.ToString());
 				if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 				{
@@ -1057,7 +1057,7 @@ Bool SSWR::OrganMgr::OrganWebHandler::BookFileExist(BookInfo *book)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	sptr = Text::StrConcat(sbuff, this->dataDir);
+	sptr = this->dataDir->ConcatTo(sbuff);
 	if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 	{
 		*sptr++ = IO::Path::PATH_SEPERATOR;
@@ -1499,7 +1499,7 @@ Int32 SSWR::OrganMgr::OrganWebHandler::UserfileAdd(Int32 userId, Int32 spId, con
 				UTF8Char sbuff[512];
 				UTF8Char *sptr;
 				UTF8Char *dataFileName;
-				sptr = Text::StrConcat(sbuff, this->dataDir);
+				sptr = this->dataDir->ConcatTo(sbuff);
 				if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 				{
 					*sptr++ = IO::Path::PATH_SEPERATOR;
@@ -1704,7 +1704,7 @@ Int32 SSWR::OrganMgr::OrganWebHandler::UserfileAdd(Int32 userId, Int32 spId, con
 				UTF8Char sbuff[512];
 				UTF8Char *sptr;
 				UTF8Char *dataFileName;
-				sptr = Text::StrConcat(sbuff, this->dataDir);
+				sptr = this->dataDir->ConcatTo(sbuff);
 				if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 				{
 					*sptr++ = IO::Path::PATH_SEPERATOR;
@@ -1793,7 +1793,7 @@ Int32 SSWR::OrganMgr::OrganWebHandler::UserfileAdd(Int32 userId, Int32 spId, con
 						j = webUser->userFileIndex->SortedInsert(userFile->fileTimeTicks);
 						webUser->userFileObj->Insert(j, userFile);
 						
-						sptr = Text::StrConcat(sbuff, this->dataDir);
+						sptr = this->dataDir->ConcatTo(sbuff);
 						if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 						{
 							*sptr++ = IO::Path::PATH_SEPERATOR;
@@ -2369,7 +2369,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDown(Net::WebServer::IWe
 			dt.SetTicks(userFile->fileTimeTicks);
 			dt.ToUTCTime();
 
-			u8ptr = Text::StrConcat(u8buff, me->dataDir);
+			u8ptr = me->dataDir->ConcatTo(u8buff);
 			if (u8ptr[-1] != IO::Path::PATH_SEPERATOR)
 			{
 				*u8ptr++ = IO::Path::PATH_SEPERATOR;
@@ -4636,7 +4636,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 					IO::StmData::FileData *fd;
 					UInt64 fileSize = 0;
 					Media::MediaFile *mediaFile;
-					u8ptr = Text::StrConcat(u8buff, me->dataDir);
+					u8ptr = me->dataDir->ConcatTo(u8buff);
 					if (u8ptr[-1] != IO::Path::PATH_SEPERATOR)
 					{
 						*u8ptr++ = IO::Path::PATH_SEPERATOR;
@@ -4712,7 +4712,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 				else
 				{
 					Data::DateTime dt;
-					u8ptr = Text::StrConcat(u8buff, me->dataDir);
+					u8ptr = me->dataDir->ConcatTo(u8buff);
 					if (u8ptr[-1] != IO::Path::PATH_SEPERATOR)
 					{
 						*u8ptr++ = IO::Path::PATH_SEPERATOR;
@@ -5542,7 +5542,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetailD(Net::WebServer::
 				IO::StmData::FileData *fd;
 				UInt64 fileSize = 0;
 				Media::MediaFile *mediaFile;
-				u8ptr = Text::StrConcat(u8buff, me->dataDir);
+				u8ptr = me->dataDir->ConcatTo(u8buff);
 				if (u8ptr[-1] != IO::Path::PATH_SEPERATOR)
 				{
 					*u8ptr++ = IO::Path::PATH_SEPERATOR;
@@ -5617,7 +5617,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetailD(Net::WebServer::
 			}
 			else
 			{
-				u8ptr = Text::StrConcat(u8buff, me->dataDir);
+				u8ptr = me->dataDir->ConcatTo(u8buff);
 				if (u8ptr[-1] != IO::Path::PATH_SEPERATOR)
 				{
 					*u8ptr++ = IO::Path::PATH_SEPERATOR;
@@ -7274,7 +7274,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcBookView(Net::WebServer::IWeb
 			return true;
 		}
 
-		sptr = Text::StrConcat(sbuff, me->dataDir);
+		sptr = me->dataDir->ConcatTo(sbuff);
 		if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 		{
 			*sptr++ = IO::Path::PATH_SEPERATOR;
@@ -7449,7 +7449,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcReload(Net::WebServer::IWebRe
 			pwd = req->GetHTTPFormStr((const UTF8Char*)"pwd");
 			if (pwd)
 			{
-				if (Text::StrEquals(pwd, me->reloadPwd))
+				if (me->reloadPwd->Equals(pwd))
 				{
 					writer->WriteLine((const UTF8Char*)"Reloaded<br/>");
 					showPwd = false;
@@ -7511,7 +7511,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcRestart(Net::WebServer::IWebR
 			pwd = req->GetHTTPFormStr((const UTF8Char*)"pwd");
 			if (pwd)
 			{
-				if (Text::StrEquals(pwd, me->reloadPwd))
+				if (me->reloadPwd->Equals(pwd))
 				{
 					writer->WriteLine((const UTF8Char*)"Restarting<br/>");
 					showPwd = false;
@@ -7785,7 +7785,7 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhoto(Net::WebServer::IWebRequest 
 			Text::StringBuilderUTF8 sb;
 			if (this->cacheDir && imgWidth == PREVIEW_SIZE && imgHeight == PREVIEW_SIZE)
 			{
-				Text::StrConcat(u8buff, this->cacheDir);
+				this->cacheDir->ConcatTo(u8buff);
 				Text::StrInt32(u8buff2, cate->cateId);
 				u8ptr = IO::Path::AppendPath(u8buff, u8buff2);
 				*u8ptr++ = IO::Path::PATH_SEPERATOR;
@@ -8102,7 +8102,7 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhotoId(Net::WebServer::IWebReques
 		dt.ToUTCTime();
 		rotateType = userFile->rotType;
 
-		Text::StrConcat(u8buff2, this->cacheDir);
+		this->cacheDir->ConcatTo(u8buff2);
 		u8ptr = IO::Path::AppendPath(u8buff2, (const UTF8Char*)"UserFile");
 		*u8ptr++ = IO::Path::PATH_SEPERATOR;
 		u8ptr = Text::StrInt32(u8ptr, userFile->webuserId);
@@ -8150,7 +8150,7 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhotoId(Net::WebServer::IWebReques
 			}
 		}
 
-		u8ptr = Text::StrConcat(u8buff, this->dataDir);
+		u8ptr = this->dataDir->ConcatTo(u8buff);
 		if (u8ptr[-1] != IO::Path::PATH_SEPERATOR)
 		{
 			*u8ptr++ = IO::Path::PATH_SEPERATOR;
@@ -8422,7 +8422,7 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhotoWId(Net::WebServer::IWebReque
 		{
 			Data::DateTime dt;
 
-			Text::StrConcat(u8buff2, this->cacheDir);
+			this->cacheDir->ConcatTo(u8buff2);
 			u8ptr = IO::Path::AppendPath(u8buff2, (const UTF8Char*)"WebFile");
 			*u8ptr++ = IO::Path::PATH_SEPERATOR;
 			u8ptr = Text::StrInt32(u8ptr, wfile->id >> 10);
@@ -8455,7 +8455,7 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhotoWId(Net::WebServer::IWebReque
 				}
 			}
 
-			u8ptr = Text::StrConcat(u8buff, this->dataDir);
+			u8ptr = this->dataDir->ConcatTo(u8buff);
 			if (u8ptr[-1] != IO::Path::PATH_SEPERATOR)
 			{
 				*u8ptr++ = IO::Path::PATH_SEPERATOR;
@@ -9489,30 +9489,16 @@ const UTF8Char *SSWR::OrganMgr::OrganWebHandler::LangGetValue(IO::ConfigFile *la
 
 SSWR::OrganMgr::OrganWebHandler::OrganWebHandler(Net::SocketFactory *sockf, Net::SSLEngine *ssl, IO::LogTool *log, DB::DBTool *db, const UTF8Char *imageDir, UInt16 port, const UTF8Char *cacheDir, const UTF8Char *dataDir, UInt32 scnSize, const UTF8Char *reloadPwd, Int32 unorganizedGroupId, Media::DrawEngine *eng)
 {
-	this->imageDir = Text::StrCopyNew(imageDir);
+	this->imageDir = Text::String::New(imageDir);
 	this->sockf = sockf;
 	this->ssl = ssl;
 	this->log = log;
 	this->scnSize = scnSize;
-	this->dataDir = Text::StrCopyNew(dataDir);
+	this->dataDir = Text::String::New(dataDir);
 	this->unorganizedGroupId = unorganizedGroupId;
 	NEW_CLASS(this->random, Data::RandomOS());
-	if (cacheDir)
-	{
-		this->cacheDir = Text::StrCopyNew(cacheDir);
-	}
-	else
-	{
-		this->cacheDir = 0;
-	}
-	if (reloadPwd)
-	{
-		this->reloadPwd = Text::StrCopyNew(reloadPwd);
-	}
-	else
-	{
-		this->reloadPwd = 0;
-	}
+	this->cacheDir = Text::String::New(cacheDir);
+	this->reloadPwd = Text::String::New(reloadPwd);
 
 	Media::ColorProfile destProfile(Media::ColorProfile::CPT_SRGB);
 	NEW_CLASS(this->parsers, Parser::FullParserList());
@@ -9687,11 +9673,11 @@ SSWR::OrganMgr::OrganWebHandler::~OrganWebHandler()
 	DEL_CLASS(this->eng);
 	DEL_CLASS(this->locale);
 
-	Text::StrDelNew(this->imageDir);
-	Text::StrDelNew(this->dataDir);
+	this->imageDir->Release();
+	this->dataDir->Release();
 	DEL_CLASS(this->random);
-	SDEL_TEXT(this->cacheDir);
-	SDEL_TEXT(this->reloadPwd);
+	SDEL_STRING(this->cacheDir);
+	SDEL_STRING(this->reloadPwd);
 }
 
 Bool SSWR::OrganMgr::OrganWebHandler::IsError()

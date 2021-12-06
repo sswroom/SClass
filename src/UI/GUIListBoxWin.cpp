@@ -56,7 +56,7 @@ UI::GUIListBox::GUIListBox(UI::GUICore *ui, UI::GUIClientControl *parent, Bool m
 		style = style | LBS_EXTENDEDSEL;
 	}
 	this->InitControl(((UI::GUICoreWin*)ui)->GetHInst(), parent, L"LISTBOX", (const UTF8Char*)"ListBox", style, WS_EX_CLIENTEDGE, 0, 0, w, h);
-	this->clsData = (void*)UI::GUICoreWin::MSSetWindowObj(this->hwnd, GWLP_WNDPROC, (OSInt)LBWndProc);
+	this->clsData = (ClassData*)UI::GUICoreWin::MSSetWindowObj(this->hwnd, GWLP_WNDPROC, (OSInt)LBWndProc);
 }
 
 UI::GUIListBox::~GUIListBox()
@@ -103,6 +103,22 @@ void UI::GUIListBox::EventRightClick(OSInt x, OSInt y)
 	}
 }
 
+UOSInt UI::GUIListBox::AddItem(Text::String *itemText, void *itemObj)
+{
+	UOSInt i = Text::StrUTF8_WCharCntC(itemText->v, itemText->leng);
+	WChar *s = MemAlloc(WChar, i + 1);
+	Text::StrUTF8_WCharC(s, itemText->v, itemText->leng, 0);
+	i = (UOSInt)SendMessage((HWND)hwnd, LB_ADDSTRING, 0, (LPARAM)s);
+	MemFree(s);
+	if (i == INVALID_INDEX)
+		return i;
+	if (itemObj)
+	{
+		SendMessage((HWND)hwnd, LB_SETITEMDATA, i, (LPARAM)itemObj);
+	}
+	return i;
+}
+
 UOSInt UI::GUIListBox::AddItem(const UTF8Char *itemText, void *itemObj)
 {
 	UOSInt i = Text::StrUTF8_WCharCnt(itemText);
@@ -124,6 +140,20 @@ UOSInt UI::GUIListBox::AddItem(const WChar *itemText, void *itemObj)
 	OSInt i = SendMessage((HWND)hwnd, LB_ADDSTRING, 0, (LPARAM)itemText);
 	if (i < 0)
 		return (UOSInt)i;
+	if (itemObj)
+	{
+		SendMessage((HWND)hwnd, LB_SETITEMDATA, (WPARAM)i, (LPARAM)itemObj);
+	}
+	return (UOSInt)i;
+}
+
+UOSInt UI::GUIListBox::InsertItem(UOSInt index, Text::String *itemText, void *itemObj)
+{
+	const WChar *wptr = Text::StrToWCharNew(itemText->v);
+	OSInt i = SendMessage((HWND)hwnd, LB_INSERTSTRING, index, (LPARAM)wptr);
+	Text::StrDelNew(wptr);
+	if (i < 0)
+		return INVALID_INDEX;
 	if (itemObj)
 	{
 		SendMessage((HWND)hwnd, LB_SETITEMDATA, (WPARAM)i, (LPARAM)itemObj);
@@ -241,7 +271,7 @@ WChar *UI::GUIListBox::GetSelectedItemText(WChar *buff)
 	return GetItemText(buff, currSel);
 }
 
-const UTF8Char *UI::GUIListBox::GetSelectedItemTextNew()
+Text::String *UI::GUIListBox::GetSelectedItemTextNew()
 {
 	UOSInt currSel = GetSelectedIndex();
 	if (currSel == INVALID_INDEX)
@@ -251,13 +281,13 @@ const UTF8Char *UI::GUIListBox::GetSelectedItemTextNew()
 
 UTF8Char *UI::GUIListBox::GetItemText(UTF8Char *buff, UOSInt index)
 {
-	const UTF8Char *u8ptr = this->GetItemTextNew(index);
-	if (u8ptr == 0)
+	Text::String *s = this->GetItemTextNew(index);
+	if (s == 0)
 	{
 		return 0;
 	}
-	buff = Text::StrConcat(buff, u8ptr);
-	this->DelTextNew(u8ptr);
+	buff = s->ConcatTo(buff);
+	s->Release();
 	return buff;
 }
 
@@ -281,7 +311,7 @@ void UI::GUIListBox::SetItemText(UOSInt index, const UTF8Char *text)
 	this->InsertItem(index, text, item);
 }
 
-const UTF8Char *UI::GUIListBox::GetItemTextNew(UOSInt index)
+Text::String *UI::GUIListBox::GetItemTextNew(UOSInt index)
 {
 	OSInt strLen = SendMessageW((HWND)hwnd, LB_GETTEXTLEN, index, 0);
 	if (strLen == LB_ERR)
@@ -295,15 +325,10 @@ const UTF8Char *UI::GUIListBox::GetItemTextNew(UOSInt index)
 	}
 	else
 	{
-		const UTF8Char *ret = Text::StrToUTF8New(sbuff);
+		Text::String *ret = Text::String::New(sbuff);
 		MemFree(sbuff);
 		return ret;
 	}
-}
-
-void UI::GUIListBox::DelTextNew(const UTF8Char *text)
-{
-	Text::StrDelNew(text);
 }
 
 OSInt UI::GUIListBox::GetItemHeight()

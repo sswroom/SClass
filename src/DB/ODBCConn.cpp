@@ -131,7 +131,7 @@ Bool DB::ODBCConn::Connect(const UTF8Char *dsn, const UTF8Char *uid, const UTF8C
 	this->connErr = CE_NONE;
 	this->envHand = 0;
 	this->connHand = 0;
-	SDEL_TEXT(this->lastErrorMsg);
+	SDEL_STRING(this->lastErrorMsg);
 	ret = SQLAllocHandle(SQL_HANDLE_ENV, SQL_NULL_HANDLE, &hand);
 	if (ret != SQL_SUCCESS && ret != SQL_SUCCESS_WITH_INFO)
 	{
@@ -182,27 +182,27 @@ Bool DB::ODBCConn::Connect(const UTF8Char *dsn, const UTF8Char *uid, const UTF8C
 		{
 			sb.Append((const UTF8Char*)"[");
 			state[5] = 0;
-			const UTF8Char *csptr = Text::StrToUTF8New((const UTF16Char*)state);
-			sb.Append(csptr);
-			Text::StrDelNew(csptr);
+			Text::String *s = Text::String::New((const UTF16Char*)state);
+			sb.AppendC(s->v, s->leng);
+			s->Release();
 			sb.Append((const UTF8Char*)"]");
 			if (msgSize > 255)
 			{
 				SQLWCHAR *tmpBuff = MemAlloc(SQLWCHAR, (UInt16)(msgSize + 1));
 				ret = SQLGetDiagRecW(SQL_HANDLE_DBC, hConn, 1, state, (SQLINTEGER*)&errCode, tmpBuff, (Int16)(msgSize + 1), &msgSize);
-				csptr = Text::StrToUTF8New(tmpBuff);
-				sb.Append(csptr);
-				Text::StrDelNew(csptr);
+				s = Text::String::New(tmpBuff);
+				sb.AppendC(s->v, s->leng);
+				s->Release();
 				MemFree(tmpBuff);				
 			}
 			else
 			{
-				csptr = Text::StrToUTF8New(msg);
-				sb.Append(csptr);
-				Text::StrDelNew(csptr);
+				s = Text::String::New(msg);
+				sb.AppendC(s->v, s->leng);
+				s->Release();
 			}
 		}
-		this->lastErrorMsg = Text::StrCopyNew(sb.ToString());
+		this->lastErrorMsg = Text::String::New(sb.ToString(), sb.GetLength());
 
 		SQLFreeHandle(SQL_HANDLE_DBC, hConn);
 		SQLFreeHandle(SQL_HANDLE_ENV, hand);
@@ -237,7 +237,7 @@ Bool DB::ODBCConn::Connect(const UTF8Char *connStr)
 		Text::StrDelNew(this->connStr);
 	}
 	this->connStr = Text::StrCopyNew(connStr);
-	SDEL_TEXT(this->lastErrorMsg);
+	SDEL_STRING(this->lastErrorMsg);
 
 	this->connErr = CE_NONE;
 	ret = SQLAllocHandle(SQL_HANDLE_ENV, SQL_NULL_HANDLE, &hand);
@@ -308,7 +308,7 @@ Bool DB::ODBCConn::Connect(const UTF8Char *connStr)
 				Text::StrDelNew(csptr);
 			}
 		}
-		this->lastErrorMsg = Text::StrCopyNew(sb.ToString());
+		this->lastErrorMsg = Text::String::New(sb.ToString(), sb.GetLength());
 //		printf("ODBC Connect error: %s\r\n", sb.ToString());
 
 		SQLFreeHandle(SQL_HANDLE_DBC, hConn);
@@ -407,10 +407,8 @@ DB::ODBCConn::~ODBCConn()
 	SDEL_TEXT(this->uid);
 	SDEL_TEXT(this->pwd);
 	SDEL_TEXT(this->schema);
-	SDEL_TEXT(this->lastErrorMsg);
-	if (this->connStr)
-		Text::StrDelNew(this->connStr);
-	this->connStr = 0;
+	SDEL_STRING(this->lastErrorMsg);
+	SDEL_TEXT(this->connStr);
 	if (this->tableNames)
 	{
 		UOSInt i = this->tableNames->GetCount();
@@ -493,7 +491,7 @@ OSInt DB::ODBCConn::ExecuteNonQuery(const UTF8Char *sql)
 		SQLFreeHandle(SQL_HANDLE_STMT, lastStmtHand);
 		lastStmtHand = 0;
 	}
-	SDEL_TEXT(this->lastErrorMsg);
+	SDEL_STRING(this->lastErrorMsg);
 
 	SQLHANDLE hStmt;
 	SQLRETURN ret;
@@ -604,7 +602,7 @@ DB::DBReader *DB::ODBCConn::ExecuteReader(const UTF8Char *sql)
 		SQLFreeHandle(SQL_HANDLE_STMT, lastStmtHand);
 		lastStmtHand = 0;
 	}
-	SDEL_TEXT(this->lastErrorMsg);
+	SDEL_STRING(this->lastErrorMsg);
 	SQLHANDLE hStmt;
 	SQLRETURN ret;
 //	Int32 rowCnt = -1;

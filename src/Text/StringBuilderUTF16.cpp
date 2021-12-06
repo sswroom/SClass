@@ -12,6 +12,18 @@ Text::StringBuilderUTF16::~StringBuilderUTF16()
 {
 }
 
+Text::StringBuilderUTF *Text::StringBuilderUTF16::Append(Text::String *s)
+{
+	UOSInt slen = Text::StrUTF8_UTF16CntC(s->v, s->leng);
+	if (slen > 0)
+	{
+		this->AllocLeng(slen);
+		this->buffEnd = Text::StrUTF8_UTF16C(this->buffEnd, s->v, s->leng, 0);
+	}
+	return this;
+
+}
+
 Text::StringBuilderUTF *Text::StringBuilderUTF16::Append(const UTF8Char *s)
 {
 	UOSInt slen = Text::StrUTF8_UTF16Cnt(s);

@@ -76,7 +76,6 @@ namespace DB
 		UTF8Char *DBBool(UTF8Char *sqlstr, Bool val);
 		UTF8Char *DBIsNull(UTF8Char *sqlstr, const UTF8Char *colName);
 
-		void DelNewStr(const UTF8Char *s);
 		UInt32 GetDataCnt();
 
 		DB::DBReader *GetTableData(const UTF8Char *tableName, Data::ArrayList<const UTF8Char*> *columnNames, UOSInt ofst, UOSInt maxCnt, const UTF8Char *ordering, Data::QueryConditions *condition);

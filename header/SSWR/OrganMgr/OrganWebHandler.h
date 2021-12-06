@@ -225,12 +225,12 @@ namespace SSWR
 		private:
 			Data::RandomOS *random;
 			DB::DBTool *db;
-			const UTF8Char *imageDir;
-			const UTF8Char *cacheDir;
-			const UTF8Char *dataDir;
+			Text::String *imageDir;
+			Text::String *cacheDir;
+			Text::String *dataDir;
 			Int32 unorganizedGroupId;
 			UInt32 scnSize;
-			const UTF8Char *reloadPwd;
+			Text::String *reloadPwd;
 			Net::SocketFactory *sockf;
 			Net::SSLEngine *ssl;
 			IO::LogTool *log;

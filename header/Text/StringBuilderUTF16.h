@@ -13,6 +13,7 @@ namespace Text
 		StringBuilderUTF16();
 		virtual ~StringBuilderUTF16();
 
+		virtual StringBuilderUTF *Append(Text::String *s);
 		virtual StringBuilderUTF *Append(const UTF8Char *s);
 		virtual StringBuilderUTF *AppendC(const UTF8Char *s, UOSInt charCnt);
 		virtual StringBuilderUTF *AppendS(const UTF8Char *s, UOSInt maxLen);

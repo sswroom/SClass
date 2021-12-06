@@ -29,7 +29,7 @@ namespace DB
 		void *connHand;
 		void *lastStmtHand;
 		Int32 lastStmtState;
-		const UTF8Char *lastErrorMsg;
+		Text::String *lastErrorMsg;
 		ConnError connErr;
 		Bool isTran;
 		const UTF8Char *dsn;
