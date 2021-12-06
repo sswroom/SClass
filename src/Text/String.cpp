@@ -167,6 +167,11 @@ Bool Text::String::StartsWith(const UTF8Char *s)
 	return Text::StrStartsWith(this->v, s);
 }
 
+Bool Text::String::StartsWithICase(const UTF8Char *s)
+{
+	return Text::StrStartsWithICase(this->v, s);
+}
+
 Bool Text::String::EndsWith(const UTF8Char *s)
 {
 	UOSInt l = Text::StrCharCnt(s);
@@ -267,14 +272,29 @@ Double Text::String::ToDouble()
 	return Text::StrToDouble(this->v);
 }
 
+Bool Text::String::ToUInt16(UInt16 *outVal)
+{
+	return Text::StrToUInt16(this->v, outVal);
+}
+
 Bool Text::String::ToInt32(Int32 *outVal)
 {
 	return Text::StrToInt32(this->v, outVal);
 }
 
+Bool Text::String::ToUInt32(UInt32 *outVal)
+{
+	return Text::StrToUInt32(this->v, outVal);
+}
+
 Bool Text::String::ToDouble(Double *outVal)
 {
 	return Text::StrToDouble(this->v, outVal);
+}
+
+Bool Text::String::ToUInt16S(UInt16 *outVal, UInt16 failVal)
+{
+	return Text::StrToUInt16S(this->v, outVal, failVal);
 }
 
 Double Text::String::MatchRating(Text::String *s)

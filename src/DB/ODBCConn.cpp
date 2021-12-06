@@ -1117,7 +1117,7 @@ void DB::ODBCConn::ForceTz(Int8 tzQhr)
 	this->tzQhr = tzQhr;
 }
 
-UOSInt DB::ODBCConn::GetDriverList(Data::ArrayList<const UTF8Char*> *driverList)
+UOSInt DB::ODBCConn::GetDriverList(Data::ArrayList<Text::String*> *driverList)
 {
 #if defined(WIN32) || defined(_WIN64) || defined(__CYGWIN__) || defined(__MINGW32__)
 	return 0;
@@ -1125,12 +1125,12 @@ UOSInt DB::ODBCConn::GetDriverList(Data::ArrayList<const UTF8Char*> *driverList)
 	IO::ConfigFile *cfg = IO::IniFile::Parse((const UTF8Char*)"/etc/odbcinst.ini", 65001);
 	if (cfg)
 	{
-		Data::ArrayList<const UTF8Char*> cateList;
+		Data::ArrayList<Text::String*> cateList;
 		UOSInt i = 0;
 		UOSInt j = cfg->GetCateList(&cateList);
 		while (i < j)
 		{
-			driverList->Add(Text::StrCopyNew(cateList.GetItem(i)));
+			driverList->Add(cateList.GetItem(i)->Clone());
 			i++;
 		}
 		DEL_CLASS(cfg);

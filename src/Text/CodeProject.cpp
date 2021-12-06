@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "Text/CodeProject.h"
+#include "Text/MyString.h"
 
 Text::CodeObject::~CodeObject()
 {

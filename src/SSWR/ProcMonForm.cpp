@@ -353,10 +353,10 @@ SSWR::ProcMonForm::ProcMonForm(UI::GUIClientControl *parent, UI::GUICore *ui) : 
 	IO::ConfigFile *cfg = IO::IniFile::ParseProgConfig(0);
 	if (cfg)
 	{
-		const UTF8Char *csptr = cfg->GetValue((const UTF8Char*)"NotifyCmd");
-		if (csptr)
+		Text::String *s = cfg->GetValue((const UTF8Char*)"NotifyCmd");
+		if (s)
 		{
-			this->notifyCmd = Text::StrCopyNew(csptr);
+			this->notifyCmd = s->Clone();
 		}
 		DEL_CLASS(cfg);
 	}
@@ -377,5 +377,5 @@ SSWR::ProcMonForm::~ProcMonForm()
 	DEL_CLASS(this->progList);
 	DEL_CLASS(this->log);
 	DEL_CLASS(this->logger);
-	SDEL_TEXT(this->notifyCmd);
+	SDEL_STRING(this->notifyCmd);
 }

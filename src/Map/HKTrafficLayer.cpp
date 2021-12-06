@@ -789,11 +789,11 @@ void Map::HKTrafficLayer::SetSpeedMap(Int32 fromId, Int32 toId, SaturationLevel 
 
 IO::Stream *Map::HKTrafficLayer::OpenURLStream()
 {
-	if (Text::StrStartsWithICase(this->url, (const UTF8Char*)"FILE:///"))
+	if (this->url->StartsWithICase((const UTF8Char*)"FILE:///"))
 	{
 		UTF8Char sbuff[512];
 		IO::FileStream *fs;
-		Text::URLString::GetURLFilePath(sbuff, this->url);
+		Text::URLString::GetURLFilePath(sbuff, this->url->v);
 		NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyAll, IO::FileStream::BufferType::Normal));
 		if (!fs->IsError())
 		{
@@ -806,7 +806,7 @@ IO::Stream *Map::HKTrafficLayer::OpenURLStream()
 	{
 		Int32 status;
 		Net::HTTPClient *cli;
-		cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, this->url, "GET", true);
+		cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, this->url->v, "GET", true);
 		while (true)
 		{
 			status = cli->GetRespStatus();
@@ -815,10 +815,10 @@ IO::Stream *Map::HKTrafficLayer::OpenURLStream()
 				Text::StringBuilderUTF8 sb;
 				cli->GetRespHeader((const UTF8Char*)"Location", &sb);
 				DEL_CLASS(cli);
-				if (!Text::StrEquals(this->url, sb.ToString()))
+				if (!this->url->Equals(sb.ToString()))
 				{
-					SDEL_TEXT(this->url);
-					this->url = Text::StrCopyNew(sb.ToString());
+					SDEL_STRING(this->url);
+					this->url = Text::String::New(sb.ToString());
 					return this->OpenURLStream();
 				}
 				else
@@ -853,7 +853,7 @@ Map::HKTrafficLayer::HKTrafficLayer(Net::SocketFactory *sockf, Net::SSLEngine *s
 	this->minY = 0;
 	this->maxX = 0;
 	this->maxY = 0;
-	this->url = Text::StrCopyNew((const UTF8Char*)"http://resource.data.one.gov.hk/td/speedmap.xml");
+	this->url = Text::String::New((const UTF8Char*)"http://resource.data.one.gov.hk/td/speedmap.xml");
 	
 	this->SetCoordinateSystem(Math::CoordinateSystemManager::CreateProjCoordinateSystemDefName(Math::CoordinateSystemManager::PCST_HK80));
 }
@@ -889,13 +889,13 @@ Map::HKTrafficLayer::~HKTrafficLayer()
 		MemFree(lineInfo);
 	}
 	DEL_CLASS(this->vecMap);
-	Text::StrDelNew(this->url);
+	this->url->Release();
 }
 
-void Map::HKTrafficLayer::SetURL(const UTF8Char *url)
+void Map::HKTrafficLayer::SetURL(Text::String *url)
 {
-	Text::StrDelNew(this->url);
-	this->url = Text::StrCopyNew(url);
+	this->url->Release();
+	this->url = url->Clone();
 }
 
 Bool Map::HKTrafficLayer::AddRoadLayer(Map::IMapDrawLayer *roadLayer)

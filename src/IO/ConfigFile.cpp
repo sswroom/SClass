@@ -3,15 +3,15 @@
 
 IO::ConfigFile::ConfigFile()
 {
-	NEW_CLASS(this->cfgVals, Data::StringUTF8Map<Data::StringUTF8Map<const UTF8Char *>*>());
+	NEW_CLASS(this->cfgVals, Data::StringMap<Data::StringMap<Text::String *>*>());
 }
 
 IO::ConfigFile::~ConfigFile()
 {
-	Data::StringUTF8Map<const UTF8Char *> *cate;
-	Data::ArrayList<Data::StringUTF8Map<const UTF8Char *>*> *cates;
-	Data::ArrayList<const UTF8Char *> *vals;
-	const UTF8Char *s;
+	Data::StringMap<Text::String *> *cate;
+	Data::ArrayList<Data::StringMap<Text::String *>*> *cates;
+	Data::ArrayList<Text::String *> *vals;
+	Text::String *s;
 	UOSInt i;
 	UOSInt j;
 	cates = this->cfgVals->GetValues();
@@ -24,28 +24,26 @@ IO::ConfigFile::~ConfigFile()
 		while (j-- > 0)
 		{
 			s = vals->GetItem(j);
-			if (s)
-			{
-				Text::StrDelNew(s);
-			}
+			SDEL_STRING(s);
 		}
 		DEL_CLASS(cate);
 	}
 	DEL_CLASS(this->cfgVals);
 }
 
-const UTF8Char *IO::ConfigFile::GetValue(const UTF8Char *name)
+Text::String *IO::ConfigFile::GetValue(Text::String *name)
+{
+	return GetValue(Text::String::NewEmpty(), name);
+}
+
+Text::String *IO::ConfigFile::GetValue(const UTF8Char *name)
 {
 	return GetValue((const UTF8Char*)"", name);
 }
 
-const UTF8Char *IO::ConfigFile::GetValue(const UTF8Char *category, const UTF8Char *name)
+Text::String *IO::ConfigFile::GetValue(Text::String *category, Text::String *name)
 {
-	if (category == 0)
-	{
-		category = (const UTF8Char*)"";
-	}
-	Data::StringUTF8Map<const UTF8Char *> *cate = this->cfgVals->Get(category);
+	Data::StringMap<Text::String *> *cate = this->cfgVals->Get(Text::String::OrEmpty(category));
 	if (cate == 0)
 	{
 		return 0;
@@ -53,10 +51,47 @@ const UTF8Char *IO::ConfigFile::GetValue(const UTF8Char *category, const UTF8Cha
 	return cate->Get(name);
 }
 
+Text::String *IO::ConfigFile::GetValue(const UTF8Char *category, const UTF8Char *name)
+{
+	if (category == 0)
+	{
+		category = (const UTF8Char*)"";
+	}
+	Data::StringMap<Text::String *> *cate = this->cfgVals->Get(category);
+	if (cate == 0)
+	{
+		return 0;
+	}
+	return cate->Get(name);
+}
+
+Bool IO::ConfigFile::SetValue(Text::String *category, Text::String *name, Text::String *value)
+{
+	Data::StringMap<Text::String *> *cate;
+	Text::String *s;
+
+	if (name == 0)
+		return false;
+	if (category == 0)
+	{
+		category = Text::String::NewEmpty();
+	}
+	cate = this->cfgVals->Get(category);
+	if (cate == 0)
+	{
+		NEW_CLASS(cate, Data::StringMap<Text::String *>());
+		this->cfgVals->Put(category, cate);
+	}
+	s = cate->Get(name);
+	SDEL_STRING(s);
+	cate->Put(name, SCOPY_STRING(value));
+	return true;
+}
+
 Bool IO::ConfigFile::SetValue(const UTF8Char *category, const UTF8Char *name, const UTF8Char *value)
 {
-	Data::StringUTF8Map<const UTF8Char *> *cate;
-	const UTF8Char *s;
+	Data::StringMap<Text::String *> *cate;
+	Text::String *s;
 
 	if (name == 0)
 		return false;
@@ -67,30 +102,20 @@ Bool IO::ConfigFile::SetValue(const UTF8Char *category, const UTF8Char *name, co
 	cate = this->cfgVals->Get(category);
 	if (cate == 0)
 	{
-		NEW_CLASS(cate, Data::StringUTF8Map<const UTF8Char *>());
+		NEW_CLASS(cate, Data::StringMap<Text::String *>());
 		this->cfgVals->Put(category, cate);
 	}
 	s = cate->Get(name);
-	if (s)
-	{
-		Text::StrDelNew(s);
-	}
-	if (value == 0)
-	{
-		cate->Put(name, 0);
-	}
-	else
-	{
-		cate->Put(name, Text::StrCopyNew(value));
-	}
+	SDEL_STRING(s);
+	cate->Put(name, Text::String::New(value));
 	return true;
 }
 
 
 Bool IO::ConfigFile::RemoveValue(const UTF8Char *category, const UTF8Char *name)
 {
-	Data::StringUTF8Map<const UTF8Char *> *cate;
-	const UTF8Char *s;
+	Data::StringMap<Text::String *> *cate;
+	Text::String *s;
 
 	if (name == 0)
 		return false;
@@ -101,14 +126,11 @@ Bool IO::ConfigFile::RemoveValue(const UTF8Char *category, const UTF8Char *name)
 	cate = this->cfgVals->Get(category);
 	if (cate == 0)
 	{
-		NEW_CLASS(cate, Data::StringUTF8Map<const UTF8Char *>());
+		NEW_CLASS(cate, Data::StringMap<Text::String *>());
 		this->cfgVals->Put(category, cate);
 	}
 	s = cate->Remove(name);
-	if (s)
-	{
-		Text::StrDelNew(s);
-	}
+	SDEL_STRING(s);
 	return true;
 }
 
@@ -117,7 +139,7 @@ UOSInt IO::ConfigFile::GetCateCount()
 	return this->cfgVals->GetCount();
 }
 
-UOSInt IO::ConfigFile::GetCateList(Data::ArrayList<const UTF8Char *> *cateList)
+UOSInt IO::ConfigFile::GetCateList(Data::ArrayList<Text::String *> *cateList)
 {
 	UOSInt retCnt;
 	UOSInt i = cateList->GetCount();
@@ -127,7 +149,7 @@ UOSInt IO::ConfigFile::GetCateList(Data::ArrayList<const UTF8Char *> *cateList)
 	retCnt = j - i;
 	while (j-- > i)
 	{
-		if (cateList->GetItem(j)[0] == 0)
+		if (cateList->GetItem(j)->leng == 0)
 		{
 			cateList->RemoveAt(j);
 			retCnt--;
@@ -136,9 +158,20 @@ UOSInt IO::ConfigFile::GetCateList(Data::ArrayList<const UTF8Char *> *cateList)
 	return retCnt;
 }
 
-UOSInt IO::ConfigFile::GetKeys(const UTF8Char *category, Data::ArrayList<const UTF8Char *> *keyList)
+UOSInt IO::ConfigFile::GetKeys(Text::String *category, Data::ArrayList<Text::String *> *keyList)
 {
-	Data::StringUTF8Map<const UTF8Char *> *cate;
+	Data::StringMap<Text::String *> *cate;
+	cate = this->cfgVals->Get(Text::String::OrEmpty(category));
+	if (cate == 0)
+		return 0;
+	UOSInt cnt = keyList->GetCount();
+	keyList->AddAll(cate->GetKeys());
+	return keyList->GetCount() - cnt;
+}
+
+UOSInt IO::ConfigFile::GetKeys(const UTF8Char *category, Data::ArrayList<Text::String *> *keyList)
+{
+	Data::StringMap<Text::String *> *cate;
 	if (category == 0)
 	{
 		category = (const UTF8Char*)"";
@@ -162,17 +195,17 @@ Bool IO::ConfigFile::HasCategory(const UTF8Char *category)
 
 IO::ConfigFile *IO::ConfigFile::CloneCate(const UTF8Char *category)
 {
-	Data::StringUTF8Map<const UTF8Char*> *cate = this->cfgVals->Get(category);
+	Data::StringMap<Text::String*> *cate = this->cfgVals->Get(category);
 	if (cate == 0)
 	{
 		return 0;
 	}
 	IO::ConfigFile *cfg;
 	NEW_CLASS(cfg, IO::ConfigFile());
-	Data::SortableArrayList<const UTF8Char*> *keys = cate->GetKeys();
+	Data::SortableArrayList<Text::String*> *keys = cate->GetKeys();
 	UOSInt i = 0;
 	UOSInt j = keys->GetCount();
-	const UTF8Char *key;
+	Text::String *key;
 	while (i < j)
 	{
 		key = keys->GetItem(i);

@@ -17,6 +17,7 @@ namespace Data
 		virtual T Get(Text::String *key);
 		T Get(const UTF8Char *key);
 		virtual T Remove(Text::String *key);
+		T Remove(const UTF8Char *key);
 		virtual Text::String *GetKey(UOSInt index);
 		virtual void Clear();
 	};
@@ -105,6 +106,21 @@ namespace Data
 	{
 		OSInt i;
 		i = this->keys->SortedIndexOf(key);
+		if (i >= 0)
+		{
+			this->keys->RemoveAt((UOSInt)i)->Release();
+			return this->vals->RemoveAt((UOSInt)i);
+		}
+		else
+		{
+			return 0;
+		}
+	}
+
+	template <class T> T StringMap<T>::Remove(const UTF8Char *key)
+	{
+		OSInt i;
+		i = ((Data::ArrayListString*)this->keys)->SortedIndexOfPtr(key);
 		if (i >= 0)
 		{
 			this->keys->RemoveAt((UOSInt)i)->Release();

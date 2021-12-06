@@ -150,11 +150,11 @@ SSWR::AVIRead::AVIRMSSQLConnForm::AVIRMSSQLConnForm(UI::GUIClientControl *parent
 	this->SetDefaultButton(this->btnOK);
 	this->SetCancelButton(this->btnCancel);
 
-	const UTF8Char *driverName = DB::MSSQLConn::GetDriverName();
+	Text::String *driverName = DB::MSSQLConn::GetDriverNameNew();
 	if (driverName)
 	{
-		this->txtDriver->SetText(driverName);
-		Text::StrDelNew(driverName);
+		this->txtDriver->SetText(driverName->v);
+		driverName->Release();
 	}
 	else
 	{

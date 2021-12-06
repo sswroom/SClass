@@ -31,20 +31,20 @@ void __stdcall SSWR::AVIRead::AVIRODBCStrForm::OnDriverInfoClicked(void *userObj
 		if (driver)
 		{
 			SSWR::AVIRead::AVIRTableMsgForm *frm;
-			Data::ArrayList<const UTF8Char*> keys;
+			Data::ArrayList<Text::String*> keys;
 			UOSInt i;
 			UOSInt j;
 			const UTF8Char *sarr[2];
 			sarr[0] = (const UTF8Char*)"Name";
 			sarr[1] = (const UTF8Char*)"Value";
 			NEW_CLASS(frm, SSWR::AVIRead::AVIRTableMsgForm(0, me->ui, me->core, sb.ToString(), 2, sarr));
-			driver->GetKeys(0, &keys);
+			driver->GetKeys((Text::String*)0, &keys);
 			i = 0;
 			j = keys.GetCount();
 			while (i < j)
 			{
-				sarr[0] = keys.GetItem(i);
-				sarr[1] = driver->GetValue(sarr[0]);
+				sarr[0] = keys.GetItem(i)->v;
+				sarr[1] = driver->GetValue(sarr[0])->v;
 				frm->AddRow(sarr);
 				i++;
 			}
@@ -114,13 +114,13 @@ SSWR::AVIRead::AVIRODBCStrForm::AVIRODBCStrForm(UI::GUIClientControl *parent, UI
 	this->SetDefaultButton(this->btnOK);
 	this->SetCancelButton(this->btnCancel);
 
-	Data::ArrayList<const UTF8Char *> driverList;
+	Data::ArrayList<Text::String *> driverList;
 	UOSInt i = 0;
 	UOSInt j = DB::ODBCConn::GetDriverList(&driverList);
 	while (i < j)
 	{
 		this->cboDriver->AddItem(driverList.GetItem(i), 0);
-		Text::StrDelNew(driverList.GetItem(i));
+		driverList.GetItem(i)->Release();
 		i++;
 	}
 	if (j > 0)

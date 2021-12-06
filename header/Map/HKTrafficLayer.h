@@ -53,7 +53,7 @@ namespace Map
 		Double maxX;
 		Double maxY;
 
-		const UTF8Char *url;
+		Text::String *url;
 		Net::SocketFactory *sockf;
 		Net::SSLEngine *ssl;
 		Text::EncodingFactory *encFact;
@@ -68,7 +68,7 @@ namespace Map
 		HKTrafficLayer(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact);
 		virtual ~HKTrafficLayer();
 
-		void SetURL(const UTF8Char *url);
+		void SetURL(Text::String *url);
 		Bool AddRoadLayer(Map::IMapDrawLayer *roadLayer);
 		void EndInit();
 		void ReloadData();

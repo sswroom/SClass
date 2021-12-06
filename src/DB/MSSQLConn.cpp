@@ -6,7 +6,7 @@
 DB::DBConn *DB::MSSQLConn::OpenConnTCP(const UTF8Char *serverHost, UInt16 port, const UTF8Char *database, const UTF8Char *userName, const UTF8Char *password, IO::LogTool *log, Text::StringBuilderUTF *errMsg)
 {
 	DB::ODBCConn *conn;
-	const UTF8Char *driverName = GetDriverName();
+	Text::String *driverName = GetDriverNameNew();
 	if (driverName == 0)
 	{
 		return 0;
@@ -19,7 +19,7 @@ DB::DBConn *DB::MSSQLConn::OpenConnTCP(const UTF8Char *serverHost, UInt16 port, 
 	connStr.Append((const UTF8Char *)"Driver={");
 	connStr.Append(driverName);
 	connStr.Append((const UTF8Char*)"}");
-	if (Text::StrEquals(driverName, (const UTF8Char*)"ODBC Driver 17 for SQL Server"))
+	if (driverName->Equals((const UTF8Char*)"ODBC Driver 17 for SQL Server"))
 	{
 		connStr.Append((const UTF8Char*)";server=tcp:");
 		connStr.Append(serverHost);
@@ -35,7 +35,7 @@ DB::DBConn *DB::MSSQLConn::OpenConnTCP(const UTF8Char *serverHost, UInt16 port, 
 	}
 	connStr.Append((const UTF8Char*)";database=");
 	connStr.Append(database);
-	if (Text::StrEquals(driverName, (const UTF8Char*)"ODBC Driver 17 for SQL Server"))
+	if (driverName->Equals((const UTF8Char*)"ODBC Driver 17 for SQL Server"))
 	{
 		if (userName)
 		{
@@ -61,8 +61,7 @@ DB::DBConn *DB::MSSQLConn::OpenConnTCP(const UTF8Char *serverHost, UInt16 port, 
 			connStr.Append(password);
 		}
 	}
-
-	Text::StrDelNew(driverName);
+	driverName->Release();
 	NEW_CLASS(conn, DB::ODBCConn(connStr.ToString(), (const UTF8Char*)"MSSQLConn", log));
 	if (conn->GetConnError() == DB::ODBCConn::CE_NONE)
 	{
@@ -95,39 +94,39 @@ DB::DBTool *DB::MSSQLConn::CreateDBToolTCP(const UTF8Char *serverHost, UInt16 po
 	}
 }
 
-const UTF8Char *DB::MSSQLConn::GetDriverName()
+Text::String *DB::MSSQLConn::GetDriverNameNew()
 {
-	const UTF8Char *driverName = 0;
-	const UTF8Char *driver;
-	Data::ArrayList<const UTF8Char *> driverList;
+	Text::String *driverName = 0;
+	Text::String *driver;
+	Data::ArrayList<Text::String *> driverList;
 	UOSInt i = 0;
 	UOSInt j = DB::ODBCConn::GetDriverList(&driverList);
 	while (i < j)
 	{
 		driver = driverList.GetItem(i);
-		if (Text::StrEquals(driver, (const UTF8Char*)"ODBC Driver 17 for SQL Server"))
+		if (driver->Equals((const UTF8Char*)"ODBC Driver 17 for SQL Server"))
 		{
-			SDEL_TEXT(driverName);
+			SDEL_STRING(driverName);
 			driverName = driver;
 		}
-		else if (Text::StrEquals(driver, (const UTF8Char*)"ODBC Driver 13 for SQL Server"))
+		else if (driver->Equals((const UTF8Char*)"ODBC Driver 13 for SQL Server"))
 		{
-			SDEL_TEXT(driverName);
+			SDEL_STRING(driverName);
 			driverName = driver;
 		}
-		else if (Text::StrEquals(driver, (const UTF8Char*)"ODBC Driver 11 for SQL Server"))
+		else if (driver->Equals((const UTF8Char*)"ODBC Driver 11 for SQL Server"))
 		{
-			SDEL_TEXT(driverName);
+			SDEL_STRING(driverName);
 			driverName = driver;
 		}
-		else if (Text::StrEquals(driver, (const UTF8Char*)"FreeTDS"))
+		else if (driver->Equals((const UTF8Char*)"FreeTDS"))
 		{
-			SDEL_TEXT(driverName);
+			SDEL_STRING(driverName);
 			driverName = driver;
 		}
 		else
 		{
-			Text::StrDelNew(driver);
+			driver->Release();
 		}
 		i++;
 	}

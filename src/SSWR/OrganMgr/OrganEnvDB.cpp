@@ -51,11 +51,11 @@ SSWR::OrganMgr::OrganEnvDB::OrganEnvDB() : OrganEnv()
 		this->errType = ERR_CONFIG;
 		return;
 	}
-	const UTF8Char *cfgMySQLHost;
-	const UTF8Char *cfgMySQLDB;
-	const UTF8Char *cfgDSN;
-	const UTF8Char *cfgUID;
-	const UTF8Char *cfgPassword;
+	Text::String *cfgMySQLHost;
+	Text::String *cfgMySQLDB;
+	Text::String *cfgDSN;
+	Text::String *cfgUID;
+	Text::String *cfgPassword;
 
 	cfgMySQLHost = cfg->GetValue((const UTF8Char*)"MySQLHost");
 	cfgMySQLDB = cfg->GetValue((const UTF8Char*)"MySQLDB");
@@ -65,32 +65,32 @@ SSWR::OrganMgr::OrganEnvDB::OrganEnvDB() : OrganEnv()
 	this->cfgImgDirBase = cfg->GetValue((const UTF8Char*)"ImageDir");
 	this->cfgDataPath = cfg->GetValue((const UTF8Char*)"DataDir");
 	this->cfgCacheDir = cfg->GetValue((const UTF8Char*)"CacheDir");
-	const UTF8Char *userId = cfg->GetValue((const UTF8Char*)"WebUser");
+	Text::String *userId = cfg->GetValue((const UTF8Char*)"WebUser");
 
-	if (this->cfgImgDirBase == 0 || *this->cfgImgDirBase == 0 || this->cfgDataPath == 0 || this->cfgDataPath[0] == 0 || this->cfgCacheDir == 0 || this->cfgCacheDir[0] == 0)
+	if (this->cfgImgDirBase == 0 || this->cfgImgDirBase->leng == 0 || this->cfgDataPath == 0 || this->cfgDataPath->leng == 0 || this->cfgCacheDir == 0 || this->cfgCacheDir->leng == 0)
 	{
 		this->errType = ERR_CONFIG;
 		return;
 	}
-	if (!Text::StrToInt32(userId, &this->userId))
+	if (!userId->ToInt32(&this->userId))
 	{
 		this->errType = ERR_CONFIG;
 		return;
 	}
 
-	i = Text::StrCharCnt(this->cfgImgDirBase);
-	if (this->cfgImgDirBase[i - 1] == IO::Path::PATH_SEPERATOR)
+	i = this->cfgImgDirBase->leng;
+	if (this->cfgImgDirBase->v[i - 1] == IO::Path::PATH_SEPERATOR)
 	{
-		((WChar*)this->cfgImgDirBase)[i - 1] = 0;
+		this->cfgImgDirBase->v[i - 1] = 0;
 	}
 	log->AddFileLog((const UTF8Char*)"OrganMgr.log", IO::ILogHandler::LOG_TYPE_SINGLE_FILE, IO::ILogHandler::LOG_GROUP_TYPE_NO_GROUP, IO::ILogHandler::LOG_LEVEL_RAW, 0, false);
 	if (cfgMySQLDB && cfgMySQLHost)
 	{
-		this->db = Net::MySQLTCPClient::CreateDBTool(this->sockf, cfgMySQLHost, cfgMySQLDB, cfgUID, cfgPassword, log, 0);
+		this->db = Net::MySQLTCPClient::CreateDBTool(this->sockf, cfgMySQLHost->v, cfgMySQLDB->v, Text::String::OrEmpty(cfgUID)->v, Text::String::OrEmpty(cfgPassword)->v, log, 0);
 	}
 	else if (cfgDSN)
 	{
-		this->db = DB::ODBCConn::CreateDBTool(cfgDSN, cfgUID, cfgPassword, 0, log, 0);
+		this->db = DB::ODBCConn::CreateDBTool(cfgDSN->v, Text::String::OrEmpty(cfgUID)->v, Text::String::OrEmpty(cfgPassword)->v, 0, log, 0);
 	}
 	if (db == 0)
 	{
@@ -308,12 +308,12 @@ SSWR::OrganMgr::OrganEnvDB::~OrganEnvDB()
 	DEL_CLASS(this->cfg);
 }
 
-const UTF8Char *SSWR::OrganMgr::OrganEnvDB::GetDataDir()
+Text::String *SSWR::OrganMgr::OrganEnvDB::GetDataDir()
 {
 	return this->cfgDataPath;
 }
 
-const UTF8Char *SSWR::OrganMgr::OrganEnvDB::GetCacheDir()
+Text::String *SSWR::OrganMgr::OrganEnvDB::GetCacheDir()
 {
 	return this->cfgCacheDir;
 }
@@ -678,7 +678,7 @@ UOSInt SSWR::OrganMgr::OrganEnvDB::GetSpeciesImages(Data::ArrayList<OrganImageIt
 			imgItem->SetDispName(sbuff);
 			imgItem->SetIsCoverPhoto(webFile->id == coverWId);
 
-			sptr = Text::StrConcat(sbuff2, this->cfgDataPath);
+			sptr = this->cfgDataPath->ConcatTo(sbuff2);
 			if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 			{
 				*sptr++ = IO::Path::PATH_SEPERATOR;
@@ -707,7 +707,7 @@ UOSInt SSWR::OrganMgr::OrganEnvDB::GetSpeciesImages(Data::ArrayList<OrganImageIt
 	sptr = sbuff;
 	if (!this->cateIsFullDir)
 	{
-		sptr = Text::StrConcat(sptr, this->cfgImgDirBase);
+		sptr = this->cfgImgDirBase->ConcatTo(sptr);
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 	}
 	sptr = Text::StrConcatC(sptr, this->currCate->srcDir->v, this->currCate->srcDir->leng);
@@ -1271,7 +1271,7 @@ UTF8Char *SSWR::OrganMgr::OrganEnvDB::GetSpeciesDir(OrganSpecies *sp, UTF8Char *
 	}
 	else
 	{
-		sptr = Text::StrConcat(sbuff, this->cfgImgDirBase);
+		sptr = this->cfgImgDirBase->ConcatTo(sbuff);
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 		sptr = Text::StrConcatC(sptr, this->currCate->srcDir->v, this->currCate->srcDir->leng);
 		*sptr++ = IO::Path::PATH_SEPERATOR;
@@ -1603,7 +1603,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 				UTF8Char sbuff[512];
 				UTF8Char *sptr;
 				UTF8Char *dataFileName;
-				sptr = Text::StrConcat(sbuff, this->cfgDataPath);
+				sptr = this->cfgDataPath->ConcatTo(sbuff);
 				if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 				{
 					*sptr++ = IO::Path::PATH_SEPERATOR;
@@ -1828,7 +1828,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 				UTF8Char sbuff[512];
 				UTF8Char *sptr;
 				UTF8Char *dataFileName;
-				sptr = Text::StrConcat(sbuff, this->cfgDataPath);
+				sptr = this->cfgDataPath->ConcatTo(sbuff);
 				if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 				{
 					*sptr++ = IO::Path::PATH_SEPERATOR;
@@ -1923,7 +1923,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 							*fileId = userFile->id;
 						}
 
-						sptr = Text::StrConcat(sbuff, this->cfgDataPath);
+						sptr = this->cfgDataPath->ConcatTo(sbuff);
 						if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 						{
 							*sptr++ = IO::Path::PATH_SEPERATOR;
@@ -2101,7 +2101,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesWeb
 		wfile->cropRight = 0;
 		wfile->cropBottom = 0;
 
-		sptr2 = Text::StrConcat(sbuff2, this->cfgDataPath);
+		sptr2 = this->cfgDataPath->ConcatTo(sbuff2);
 		if (sptr2[-1] != IO::Path::PATH_SEPERATOR)
 		{
 			*sptr2++ = IO::Path::PATH_SEPERATOR;
@@ -3179,7 +3179,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::AddDataFile(const UTF8Char *fileName)
 
 	if (fileType != 0)
 	{
-		UTF8Char *sptr = Text::StrConcat(sbuff, this->cfgDataPath);
+		UTF8Char *sptr = this->cfgDataPath->ConcatTo(sbuff);
 		if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 		{
 			*sptr++ = IO::Path::PATH_SEPERATOR;
@@ -3288,7 +3288,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::DelDataFile(DataFileInfo *dataFile)
 	if (!found)
 		return false;
 
-	UTF8Char *sptr = Text::StrConcat(sbuff, this->cfgDataPath);
+	UTF8Char *sptr = this->cfgDataPath->ConcatTo(sbuff);
 	if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 	{
 		*sptr++ = IO::Path::PATH_SEPERATOR;
@@ -3342,7 +3342,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::GetGPSPos(Int32 userId, Data::DateTime *t, Doub
 		{
 			this->gpsStartTime->SetTicks(dataFile->startTimeTicks);
 			this->gpsEndTime->SetTicks(dataFile->endTimeTicks);
-			sptr = Text::StrConcat(u8buff, this->cfgDataPath);
+			sptr = this->cfgDataPath->ConcatTo(u8buff);
 			if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 			{
 				*sptr++ = IO::Path::PATH_SEPERATOR;
@@ -3386,7 +3386,7 @@ Map::GPSTrack *SSWR::OrganMgr::OrganEnvDB::OpenGPSTrack(DataFileInfo *dataFile)
 	UTF8Char *sptr;
 	IO::StmData::FileData *fd;
 
-	sptr = Text::StrConcat(sbuff, this->cfgDataPath);
+	sptr = this->cfgDataPath->ConcatTo(sbuff);
 	if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 	{
 		*sptr++ = IO::Path::PATH_SEPERATOR;
@@ -3813,7 +3813,7 @@ Media::ImageList *SSWR::OrganMgr::OrganEnvDB::ParseImage(OrganImageItem *img, Us
 			Data::DateTime dt;
 			dt.SetTicks(userFile->fileTimeTicks);
 			dt.ToUTCTime();
-			sptr = Text::StrConcat(sbuff, this->cfgDataPath);
+			sptr = this->cfgDataPath->ConcatTo(sbuff);
 			if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 			{
 				*sptr++ = IO::Path::PATH_SEPERATOR;
@@ -3889,7 +3889,7 @@ Media::ImageList *SSWR::OrganMgr::OrganEnvDB::ParseImage(OrganImageItem *img, Us
 		{
 			UTF8Char sbuff[512];
 			UTF8Char *sptr;
-			sptr = Text::StrConcat(sbuff, this->cfgDataPath);
+			sptr = this->cfgDataPath->ConcatTo(sbuff);
 			if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 			{
 				*sptr++ = IO::Path::PATH_SEPERATOR;
@@ -4013,7 +4013,7 @@ Media::ImageList *SSWR::OrganMgr::OrganEnvDB::ParseSpImage(OrganSpecies *sp)
 	sptr = sbuff;
 	if (!this->cateIsFullDir)
 	{
-		sptr = Text::StrConcat(sptr, this->cfgImgDirBase);
+		sptr = this->cfgImgDirBase->ConcatTo(sptr);
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 	}
 	sptr = Text::StrConcatC(sptr, this->currCate->srcDir->v, this->currCate->srcDir->leng);
@@ -4110,7 +4110,7 @@ Media::ImageList *SSWR::OrganMgr::OrganEnvDB::ParseFileImage(UserFileInfo *userF
 	Data::DateTime dt;
 	dt.SetTicks(userFile->fileTimeTicks);
 	dt.ToUTCTime();
-	sptr = Text::StrConcat(sbuff, this->cfgDataPath);
+	sptr = this->cfgDataPath->ConcatTo(sbuff);
 	if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 	{
 		*sptr++ = IO::Path::PATH_SEPERATOR;
@@ -4166,7 +4166,7 @@ Media::ImageList *SSWR::OrganMgr::OrganEnvDB::ParseWebImage(WebFileInfo *wfile)
 	IO::ParserType pt;
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	sptr = Text::StrConcat(sbuff, this->cfgDataPath);
+	sptr = this->cfgDataPath->ConcatTo(sbuff);
 	if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 	{
 		*sptr++ = IO::Path::PATH_SEPERATOR;
@@ -4722,7 +4722,7 @@ void SSWR::OrganMgr::OrganEnvDB::UpgradeDB2()
 		sptr = sbuff;
 		if (!this->cateIsFullDir)
 		{
-			sptr = Text::StrConcat(sptr, this->cfgImgDirBase);
+			sptr = this->cfgImgDirBase->ConcatTo(sptr);
 			*sptr++ = IO::Path::PATH_SEPERATOR;
 		}
 		sptr = Text::StrConcatC(sptr, this->currCate->srcDir->v, this->currCate->srcDir->leng);
@@ -4800,7 +4800,7 @@ void SSWR::OrganMgr::OrganEnvDB::UpgradeDB2()
 							wfile->cropRight = 0;
 							wfile->cropBottom = 0;
 
-							sptr2 = Text::StrConcat(sbuff2, this->cfgDataPath);
+							sptr2 = this->cfgDataPath->ConcatTo(sbuff2);
 							if (sptr2[-1] != IO::Path::PATH_SEPERATOR)
 							{
 								*sptr2++ = IO::Path::PATH_SEPERATOR;
@@ -4906,7 +4906,7 @@ void SSWR::OrganMgr::OrganEnvDB::UpgradeFileStruct(OrganSpecies *sp)
 	sptr = sbuff;
 	if (!this->cateIsFullDir)
 	{
-		sptr = Text::StrConcat(sptr, this->cfgImgDirBase);
+		sptr = this->cfgImgDirBase->ConcatTo(sptr);
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 	}
 	sptr = Text::StrConcatC(sptr, this->currCate->srcDir->v, this->currCate->srcDir->leng);
@@ -4994,7 +4994,7 @@ void SSWR::OrganMgr::OrganEnvDB::ExportLite(const UTF8Char *folder)
 	sptr2 = Text::StrConcat(sptr, (const UTF8Char*)"Image");
 	IO::Path::CreateDirectory(sbuff);
 	*sptr2++ = IO::Path::PATH_SEPERATOR;
-	sptr3 = Text::StrConcat(sbuff2, this->cfgImgDirBase);
+	sptr3 = this->cfgImgDirBase->ConcatTo(sbuff2);
 	*sptr3++ = IO::Path::PATH_SEPERATOR;
 	DB::DBReader *r = this->db->ExecuteReader((const UTF8Char*)"select srcDir from category");
 	if (r)
@@ -5018,7 +5018,7 @@ void SSWR::OrganMgr::OrganEnvDB::ExportLite(const UTF8Char *folder)
 	*sptr2++ = IO::Path::PATH_SEPERATOR;
 	Text::StrConcat(sptr2, (const UTF8Char*)"DataFile");
 
-	sptr3 = Text::StrConcat(sbuff2, this->cfgDataPath);
+	sptr3 = this->cfgDataPath->ConcatTo(sbuff2);
 	*sptr3++ = IO::Path::PATH_SEPERATOR;
 	Text::StrConcat(sptr3, (const UTF8Char*)"DataFile");
 	IO::FileUtil::CopyDir(sbuff2, sbuff, IO::FileUtil::FileExistAction::Fail, 0, 0);
@@ -5036,7 +5036,7 @@ void SSWR::OrganMgr::OrganEnvDB::ExportLite(const UTF8Char *folder)
 		sptr2 = Text::StrConcat(sptr2, (const UTF8Char*)"UserFile");
 		*sptr2++ = IO::Path::PATH_SEPERATOR;
 
-		sptr3 = Text::StrConcat(sbuff2, this->cfgDataPath);
+		sptr3 = this->cfgDataPath->ConcatTo(sbuff2);
 		*sptr3++ = IO::Path::PATH_SEPERATOR;
 		sptr3 = Text::StrConcat(sptr3, (const UTF8Char*)"UserFile");
 		*sptr3++ = IO::Path::PATH_SEPERATOR;

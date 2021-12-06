@@ -210,7 +210,7 @@ namespace SSWR
 			Media::MonitorMgr *GetMonitorMgr();
 			ErrorType GetErrorType();
 			const UTF8Char *GetLang(const UTF8Char *name);
-			virtual const UTF8Char *GetCacheDir() = 0;
+			virtual Text::String *GetCacheDir() = 0;
 
 			UOSInt GetCategories(Data::ArrayList<Category*> *categories);
 			virtual UOSInt GetGroupItems(Data::ArrayList<OrganGroupItem*> *items, OrganGroup *grp) = 0;

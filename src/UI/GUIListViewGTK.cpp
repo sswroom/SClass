@@ -239,7 +239,7 @@ UOSInt UI::GUIListView::AddItem(Text::String *text, void *itemObj)
 	row->txt = text->Clone();
 	gtk_list_store_append(data->listStore, &row->iter);
 	UOSInt ret = data->rows->Add(row);
-	gtk_list_store_set(data->listStore, &row->iter, 0, (const Char*)text, -1);
+	gtk_list_store_set(data->listStore, &row->iter, 0, (const Char*)text->v, -1);
 	return ret;
 }
 

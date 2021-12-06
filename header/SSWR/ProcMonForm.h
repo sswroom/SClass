@@ -48,7 +48,7 @@ namespace SSWR
 		Data::ArrayList<ProgInfo*> *progList;
 		IO::LogTool *log;
 		UI::ListBoxLogger *logger;
-		const UTF8Char *notifyCmd;
+		Text::String *notifyCmd;
 
 		void AddProg(const UTF8Char *progName, const UTF8Char *progPath);
 		Bool SearchProcId(ProgInfo *prog);

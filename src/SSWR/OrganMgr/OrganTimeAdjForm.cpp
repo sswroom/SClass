@@ -255,7 +255,7 @@ SSWR::OrganMgr::OrganTimeAdjForm::OrganTimeAdjForm(UI::GUIClientControl *parent,
 	OSInt k;
 
 	this->mapUpdated = false;
-	NEW_CLASS(tileMap, Map::OSM::OSMTileMap((const UTF8Char*)"http://a.tile.opencyclemap.org/cycle/", this->env->GetCacheDir(), 18, this->env->GetSocketFactory(), this->env->GetSSLEngine()));
+	NEW_CLASS(tileMap, Map::OSM::OSMTileMap((const UTF8Char*)"http://a.tile.opencyclemap.org/cycle/", this->env->GetCacheDir()->v, 18, this->env->GetSocketFactory(), this->env->GetSSLEngine()));
 	tileMap->AddAlternateURL((const UTF8Char*)"http://b.tile.opencyclemap.org/cycle/");
 	tileMap->AddAlternateURL((const UTF8Char*)"http://c.tile.opencyclemap.org/cycle/");
 	this->mapTile = tileMap;

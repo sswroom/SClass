@@ -129,7 +129,7 @@ Bool SSWR::DownloadMonitor::DownMonCore::VideoValid(const UTF8Char *fileName)
 	return valid;
 }
 
-void SSWR::DownloadMonitor::DownMonCore::ProcessDir(const UTF8Char *downPath, const UTF8Char *succPath, const UTF8Char *errPath)
+void SSWR::DownloadMonitor::DownMonCore::ProcessDir(Text::String *downPath, Text::String *succPath, Text::String *errPath)
 {
 	Bool downFound = false;;
 	UTF8Char sbuff[512];
@@ -139,7 +139,7 @@ void SSWR::DownloadMonitor::DownMonCore::ProcessDir(const UTF8Char *downPath, co
 	UTF8Char *sptr2;
 	UTF8Char *sptr3;
 //	printf("ProcessDir\r\n");
-	sptr = Text::StrConcat(sbuff, downPath);
+	sptr = downPath->ConcatTo(sbuff);
 	if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 	{
 		*sptr++ = IO::Path::PATH_SEPERATOR;
@@ -176,7 +176,7 @@ void SSWR::DownloadMonitor::DownMonCore::ProcessDir(const UTF8Char *downPath, co
 						fileSize2 = IO::Path::GetFileSize(sbuff2);
 						if (fileSize >= 1024 && fileSize2 >= 1024)
 						{
-							sptr3 = Text::StrConcat(sbuff3, this->ytPath);
+							sptr3 = this->ytPath->ConcatTo(sbuff3);
 							if (sptr3[-1] != IO::Path::PATH_SEPERATOR)
 							{
 								*sptr3++ = IO::Path::PATH_SEPERATOR;
@@ -200,7 +200,7 @@ void SSWR::DownloadMonitor::DownMonCore::ProcessDir(const UTF8Char *downPath, co
 							}
 							else
 							{
-								sptr2 = Text::StrConcat(sbuff2, errPath);
+								sptr2 = errPath->ConcatTo(sbuff2);
 								if (sptr2[-1] != IO::Path::PATH_SEPERATOR)
 								{
 									*sptr2++ = IO::Path::PATH_SEPERATOR;
@@ -231,7 +231,7 @@ void SSWR::DownloadMonitor::DownMonCore::ProcessDir(const UTF8Char *downPath, co
 						fileSize2 = IO::Path::GetFileSize(sbuff2);
 						if (fileSize >= 1024 && fileSize2 >= 1024)
 						{
-							sptr3 = Text::StrConcat(sbuff3, this->ytPath);
+							sptr3 = this->ytPath->ConcatTo(sbuff3);
 							if (sptr3[-1] != IO::Path::PATH_SEPERATOR)
 							{
 								*sptr3++ = IO::Path::PATH_SEPERATOR;
@@ -251,7 +251,7 @@ void SSWR::DownloadMonitor::DownMonCore::ProcessDir(const UTF8Char *downPath, co
 								{
 									IO::Path::DeleteFile(sbuff3);
 
-									sptr2 = Text::StrConcat(sbuff2, errPath);
+									sptr2 = errPath->ConcatTo(sbuff2);
 									if (sptr2[-1] != IO::Path::PATH_SEPERATOR)
 									{
 										*sptr2++ = IO::Path::PATH_SEPERATOR;
@@ -264,7 +264,7 @@ void SSWR::DownloadMonitor::DownMonCore::ProcessDir(const UTF8Char *downPath, co
 							}
 							else
 							{
-								sptr2 = Text::StrConcat(sbuff2, errPath);
+								sptr2 = errPath->ConcatTo(sbuff2);
 								if (sptr2[-1] != IO::Path::PATH_SEPERATOR)
 								{
 									*sptr2++ = IO::Path::PATH_SEPERATOR;
@@ -292,7 +292,7 @@ void SSWR::DownloadMonitor::DownMonCore::ProcessDir(const UTF8Char *downPath, co
 					this->chkStatus = CS_VALIDATING;
 					if (VideoValid(sbuff))
 					{
-						sptr2 = Text::StrConcat(sbuff2, succPath);
+						sptr2 = succPath->ConcatTo(sbuff2);
 						Int32 webType = 0;
 						Int32 id = this->FileGetByName(sptr, &webType);
 						if (id != 0 && webType != 0)
@@ -306,7 +306,7 @@ void SSWR::DownloadMonitor::DownMonCore::ProcessDir(const UTF8Char *downPath, co
 					}
 					else
 					{
-						sptr2 = Text::StrConcat(sbuff2, errPath);
+						sptr2 = errPath->ConcatTo(sbuff2);
 					}
 					if (sptr2[-1] != IO::Path::PATH_SEPERATOR)
 					{
@@ -349,7 +349,7 @@ void SSWR::DownloadMonitor::DownMonCore::ProcessDir(const UTF8Char *downPath, co
 								}
 							}
 
-							sptr2 = Text::StrConcat(sbuff2, succPath);
+							sptr2 = succPath->ConcatTo(sbuff2);
 							if (sptr2[-1] != IO::Path::PATH_SEPERATOR)
 							{
 								*sptr2++ = IO::Path::PATH_SEPERATOR;
@@ -363,7 +363,7 @@ void SSWR::DownloadMonitor::DownMonCore::ProcessDir(const UTF8Char *downPath, co
 						{
 							IO::Path::DeleteFile(sbuff);
 
-							sptr2 = Text::StrConcat(sbuff2, errPath);
+							sptr2 = errPath->ConcatTo(sbuff2);
 							if (sptr2[-1] != IO::Path::PATH_SEPERATOR)
 							{
 								*sptr2++ = IO::Path::PATH_SEPERATOR;
@@ -413,7 +413,7 @@ void SSWR::DownloadMonitor::DownMonCore::ProcessDir(const UTF8Char *downPath, co
 									}
 								}
 
-								sptr2 = Text::StrConcat(sbuff2, succPath);
+								sptr2 = succPath->ConcatTo(sbuff2);
 								if (sptr2[-1] != IO::Path::PATH_SEPERATOR)
 								{
 									*sptr2++ = IO::Path::PATH_SEPERATOR;
@@ -427,7 +427,7 @@ void SSWR::DownloadMonitor::DownMonCore::ProcessDir(const UTF8Char *downPath, co
 							{
 								IO::Path::DeleteFile(sbuff);
 
-								sptr2 = Text::StrConcat(sbuff2, errPath);
+								sptr2 = errPath->ConcatTo(sbuff2);
 								if (sptr2[-1] != IO::Path::PATH_SEPERATOR)
 								{
 									*sptr2++ = IO::Path::PATH_SEPERATOR;
@@ -493,29 +493,29 @@ SSWR::DownloadMonitor::DownMonCore::DownMonCore()
 	IO::ConfigFile *cfg = IO::IniFile::ParseProgConfig(0);
 	if (cfg)
 	{
-		const UTF8Char *csptr;
-		csptr = cfg->GetValue((const UTF8Char*)"DownPath");
-		if (csptr) this->downPath = Text::StrCopyNew(csptr);
-		csptr = cfg->GetValue((const UTF8Char*)"SuccPath");
-		if (csptr) this->succPath = Text::StrCopyNew(csptr);
-		csptr = cfg->GetValue((const UTF8Char*)"ErrPath");
-		if (csptr) this->errPath = Text::StrCopyNew(csptr);
-		csptr = cfg->GetValue((const UTF8Char*)"YTPath");
-		if (csptr) this->ytPath = Text::StrCopyNew(csptr);
-		csptr = cfg->GetValue((const UTF8Char*)"FFMPEGPath");
-		if (csptr) this->ffmpegPath = Text::StrCopyNew(csptr);
-		csptr = cfg->GetValue((const UTF8Char*)"FirefoxPath");
-		if (csptr) this->firefoxPath = Text::StrCopyNew(csptr);
-		csptr = cfg->GetValue((const UTF8Char*)"ListFile");
-		if (csptr) this->listFile = Text::StrCopyNew(csptr);
+		Text::String *s;
+		s = cfg->GetValue((const UTF8Char*)"DownPath");
+		this->downPath = SCOPY_STRING(s);
+		s = cfg->GetValue((const UTF8Char*)"SuccPath");
+		this->succPath = SCOPY_STRING(s);
+		s = cfg->GetValue((const UTF8Char*)"ErrPath");
+		this->errPath = SCOPY_STRING(s);
+		s = cfg->GetValue((const UTF8Char*)"YTPath");
+		this->ytPath = SCOPY_STRING(s);
+		s = cfg->GetValue((const UTF8Char*)"FFMPEGPath");
+		this->ffmpegPath = SCOPY_STRING(s);
+		s = cfg->GetValue((const UTF8Char*)"FirefoxPath");
+		this->firefoxPath = SCOPY_STRING(s);
+		s = cfg->GetValue((const UTF8Char*)"ListFile");
+		this->listFile = SCOPY_STRING(s);
 	}
-	if (this->downPath == 0) this->downPath = Text::StrCopyNew((const UTF8Char*)"D:\\DownTemp");
-	if (this->succPath == 0) this->succPath = Text::StrCopyNew((const UTF8Char*)"\\\\192.168.0.21\\disk4\\DownVideo\\ToCheck");
-	if (this->errPath == 0) this->errPath = Text::StrCopyNew((const UTF8Char*)"D:\\DownTemp\\Err");
-	if (this->ytPath == 0) this->ytPath = Text::StrCopyNew((const UTF8Char*)"D:\\DownTemp\\Youtube");
-	if (this->ffmpegPath == 0) this->ffmpegPath = Text::StrCopyNew((const UTF8Char*)"C:\\BDTools\\ffmpeg.exe");
-	if (this->firefoxPath == 0) this->firefoxPath = Text::StrCopyNew((const UTF8Char*)"C:\\Program Files\\Firefox Developer Edition\\firefox.exe");
-	if (this->listFile == 0) this->listFile = Text::StrCopyNew((const UTF8Char*)"I:\\PROGS\\DownList2.txt");
+	if (this->downPath == 0) this->downPath = Text::String::New((const UTF8Char*)"D:\\DownTemp");
+	if (this->succPath == 0) this->succPath = Text::String::New((const UTF8Char*)"\\\\192.168.0.21\\disk4\\DownVideo\\ToCheck");
+	if (this->errPath == 0) this->errPath = Text::String::New((const UTF8Char*)"D:\\DownTemp\\Err");
+	if (this->ytPath == 0) this->ytPath = Text::String::New((const UTF8Char*)"D:\\DownTemp\\Youtube");
+	if (this->ffmpegPath == 0) this->ffmpegPath = Text::String::New((const UTF8Char*)"C:\\BDTools\\ffmpeg.exe");
+	if (this->firefoxPath == 0) this->firefoxPath = Text::String::New((const UTF8Char*)"C:\\Program Files\\Firefox Developer Edition\\firefox.exe");
+	if (this->listFile == 0) this->listFile = Text::String::New((const UTF8Char*)"I:\\PROGS\\DownList2.txt");
 
 	Sync::Thread::Create(CheckThread, this);
 	while (!this->chkRunning)
@@ -578,7 +578,7 @@ void SSWR::DownloadMonitor::DownMonCore::SetFileEndHandler(FileEndHandler hdlr, 
 	this->fileEndHdlr = hdlr;
 }
 
-const UTF8Char *SSWR::DownloadMonitor::DownMonCore::GetListFile()
+Text::String *SSWR::DownloadMonitor::DownMonCore::GetListFile()
 {
 	return this->listFile;
 }

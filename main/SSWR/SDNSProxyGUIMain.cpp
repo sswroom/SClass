@@ -28,17 +28,17 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	cfg = IO::IniFile::ParseProgConfig(0);
 	if (cfg)
 	{
-		const UTF8Char *csptr;
+		Text::String *s;
 		UOSInt i;
 		UInt32 ip;
 		Int32 v;
 		UTF8Char *sarr[2];
-		csptr = cfg->GetValue((const UTF8Char*)"DNS");
-		if (csptr)
+		s = cfg->GetValue((const UTF8Char*)"DNS");
+		if (s)
 		{
 			Data::ArrayList<UInt32> dnsList;
 			Text::StringBuilderUTF8 sb;
-			sb.Append(csptr);
+			sb.Append(s);
 			sarr[1] = sb.ToString();
 			while (true)
 			{
@@ -54,17 +54,17 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			frm->SetDNSList(&dnsList);
 		}
 
-		csptr = cfg->GetValue((const UTF8Char*)"DisableV6");
-		if (csptr && Text::StrToInt32(csptr, &v))
+		s = cfg->GetValue((const UTF8Char*)"DisableV6");
+		if (s && s->ToInt32(&v))
 		{
 			frm->SetDisableV6(v != 0);
 		}
 
-		csptr = cfg->GetValue((const UTF8Char*)"Blacklist");
-		if (csptr && csptr[0] != 0)
+		s = cfg->GetValue((const UTF8Char*)"Blacklist");
+		if (s && s->leng != 0)
 		{
 			Text::StringBuilderUTF8 sb;
-			sb.Append(csptr);
+			sb.Append(s);
 			sarr[1] = sb.ToString();
 			while (true)
 			{

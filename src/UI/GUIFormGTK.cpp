@@ -21,6 +21,13 @@ gboolean GUIForm_Draw(GtkWidget *widget, cairo_t *cr, gpointer data)
 	return me->OnPaint();
 }
 
+gboolean GUIForm_SetNoResize(gpointer user_data)
+{
+	gtk_window_set_resizable((GtkWindow*)user_data, false);
+	return false;
+}
+
+
 void GUIForm_OnFileDrop(GtkWidget *widget, GdkDragContext *context, gint x, gint y, GtkSelectionData *data, guint info, guint time, gpointer userData)
 {
 	UI::GUIForm *me = (UI::GUIForm *)userData;
@@ -325,7 +332,7 @@ void UI::GUIForm::SetNoResize(Bool noResize)
 {
 	if (noResize)
 	{
-		if (this->lxPos2 < this->lxPos)
+/*		if (this->lxPos2 < this->lxPos)
 		{
 			this->lxPos2 = this->lxPos;
 		}
@@ -333,9 +340,13 @@ void UI::GUIForm::SetNoResize(Bool noResize)
 		{
 			this->lyPos2 = this->lyPos;
 		}
-		gtk_widget_set_size_request((GtkWidget*)this->hwnd, Math::Double2Int32((this->lxPos2 - this->lxPos) * this->hdpi / 96.0), Math::Double2Int32((this->lyPos2 - this->lyPos) * this->hdpi / 96.0));
+		gtk_widget_set_size_request((GtkWidget*)this->hwnd, Math::Double2Int32((this->lxPos2 - this->lxPos) * this->hdpi / 96.0), Math::Double2Int32((this->lyPos2 - this->lyPos) * this->hdpi / 96.0));*/
+		g_idle_add(GUIForm_SetNoResize, this->hwnd);
 	}
-	gtk_window_set_resizable((GtkWindow*)this->hwnd, noResize?FALSE:TRUE);
+	else
+	{
+		gtk_window_set_resizable((GtkWindow*)this->hwnd, TRUE);
+	}
 }
 
 UI::GUITimer *UI::GUIForm::AddTimer(UInt32 interval, UI::UIEvent handler, void *userObj)

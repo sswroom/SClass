@@ -535,11 +535,11 @@ Media::ALSARenderer::ALSARenderer(const UTF8Char *devName)
 		IO::ConfigFile *cfg = IO::WSConfigFile::Parse((const UTF8Char*)"/etc/asound.conf");
 		if (cfg)
 		{
-			const UTF8Char *csptr = cfg->GetValue((const UTF8Char*)"defaults.pcm.card");
-			if (csptr)
+			Text::String *s = cfg->GetValue((const UTF8Char*)"defaults.pcm.card");
+			if (s)
 			{
 				UTF8Char sbuff[32];
-				Text::StrConcat(Text::StrConcat(sbuff, (const UTF8Char*)"hw:"), csptr);
+				s->ConcatTo(Text::StrConcat(sbuff, (const UTF8Char*)"hw:"));
 				this->devName = Text::StrCopyNew(sbuff);
 			}
 			DEL_CLASS(cfg);

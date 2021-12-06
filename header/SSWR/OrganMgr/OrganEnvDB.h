@@ -22,16 +22,16 @@ namespace SSWR
 			DB::DBTool *db;
 			IO::LogTool *log;
 			IO::ConfigFile *cfg;
-			const UTF8Char *cfgImgDirBase;
-			const UTF8Char *cfgDataPath;
-			const UTF8Char *cfgCacheDir;
+			Text::String *cfgImgDirBase;
+			Text::String *cfgDataPath;
+			Text::String *cfgCacheDir;
 
 		public:
 			OrganEnvDB();
 			virtual ~OrganEnvDB();
 
-			const UTF8Char *GetDataDir();
-			virtual const UTF8Char *GetCacheDir();
+			Text::String *GetDataDir();
+			virtual Text::String *GetCacheDir();
 
 			ErrorType GetErrorType();
 			virtual UOSInt GetGroupItems(Data::ArrayList<OrganGroupItem*> *items, OrganGroup *grp);

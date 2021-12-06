@@ -117,53 +117,51 @@ Bool IO::IniFile::SaveConfig(IO::Stream *stm, UInt32 codePage, IO::ConfigFile *c
 
 Bool IO::IniFile::SaveConfig(IO::Writer *writer, IO::ConfigFile *cfg)
 {
-	Data::ArrayList<const UTF8Char *> *cateList;
-	Data::ArrayList<const UTF8Char *> *keyList;
-	const UTF8Char *csptr;
-	const UTF8Char *csptr2;
+	Data::ArrayList<Text::String *> cateList;
+	Data::ArrayList<Text::String *> keyList;
+	Text::String *s;
+	Text::String *s2;
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
 	UOSInt l;
-	NEW_CLASS(keyList, Data::ArrayList<const UTF8Char *>());
-	cfg->GetKeys(0, keyList);
+	cfg->GetKeys((Text::String*)0, &keyList);
 	i = 0;
-	j = keyList->GetCount();
+	j = keyList.GetCount();
 	while (i < j)
 	{
-		csptr = keyList->GetItem(i);
-		writer->Write(csptr);
+		s = keyList.GetItem(i);
+		writer->Write(s->v, s->leng);
 		writer->Write((const UTF8Char*)"=");
-		writer->WriteLine(cfg->GetValue(csptr));
+		s = cfg->GetValue(s);
+		writer->WriteLine(s->v, s->leng);
 		i++;
 	}
-	NEW_CLASS(cateList, Data::ArrayList<const UTF8Char*>());
-	cfg->GetCateList(cateList);
+	cfg->GetCateList(&cateList);
 	i = 0;
-	j = cateList->GetCount();
+	j = cateList.GetCount();
 	while (i < j)
 	{
-		csptr2 = cateList->GetItem(i);
+		s2 = cateList.GetItem(i);
 		writer->WriteLine();
 		writer->Write((const UTF8Char*)"[");
-		writer->Write(csptr2);
+		writer->Write(s2->v, s2->leng);
 		writer->WriteLine((const UTF8Char*)"]");
 
-		keyList->Clear();
-		cfg->GetKeys(csptr2, keyList);
+		keyList.Clear();
+		cfg->GetKeys(s2, &keyList);
 		k = 0;
-		l = keyList->GetCount();
+		l = keyList.GetCount();
 		while (k < l)
 		{
-			csptr = keyList->GetItem(k);
-			writer->Write(csptr);
+			s = keyList.GetItem(k);
+			writer->Write(s->v, s->leng);
 			writer->Write((const UTF8Char*)"=");
-			writer->WriteLine(cfg->GetValue(csptr2, csptr));
+			s = cfg->GetValue(s2, s);
+			writer->WriteLine(s->v, s->leng);
 			k++;
 		}
 		i++;
 	}
-	DEL_CLASS(cateList);
-	DEL_CLASS(keyList);
 	return true;
 }

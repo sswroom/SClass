@@ -30,6 +30,7 @@ namespace Text
 		Bool Equals(Text::String *s);
 		Bool EqualsICase(const UTF8Char *s);
 		Bool StartsWith(const UTF8Char *s);
+		Bool StartsWithICase(const UTF8Char *s);
 		Bool EndsWith(const UTF8Char *s);
 		Bool EndsWithICase(const UTF8Char *s);
 		Bool HasUpperCase();
@@ -46,8 +47,11 @@ namespace Text
 		Int64 ToInt64();
 		UInt64 ToUInt64();
 		Double ToDouble();
+		Bool ToUInt16(UInt16 *outVal);
 		Bool ToInt32(Int32 *outVal);
+		Bool ToUInt32(UInt32 *outVal);
 		Bool ToDouble(Double *outVal);
+		Bool ToUInt16S(UInt16 *outVal, UInt16 failVal);
 
 		Double MatchRating(Text::String *s);
 		Double MatchRating(const UTF8Char *targetStr, UOSInt strLen);

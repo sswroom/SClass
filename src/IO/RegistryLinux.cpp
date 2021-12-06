@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Data/ArrayListStrUTF8.h"
 #include "IO/FileStream.h"
 #include "IO/IniFile.h"
 #include "IO/Path.h"
@@ -233,13 +234,13 @@ IO::Registry *IO::Registry::OpenSubReg(const WChar *name)
 WChar *IO::Registry::GetSubReg(WChar *buff, UOSInt index)
 {
 	Data::ArrayListStrUTF8 names;
-	Data::ArrayList<const UTF8Char*> cateList;
+	Data::ArrayList<Text::String*> cateList;
 	Sync::MutexUsage mutUsage(this->clsData->reg->mut);
 	if (this->clsData->reg->cfg == 0)
 	{
 		return 0;
 	}
-	const UTF8Char *cate;
+	Text::String *cate;
 	this->clsData->reg->cfg->GetCateList(&cateList);
 	WChar *ret = 0;
 	Text::StringBuilderUTF8 sbSubReg;
@@ -250,17 +251,17 @@ WChar *IO::Registry::GetSubReg(WChar *buff, UOSInt index)
 	while (i < j)
 	{
 		cate = cateList.GetItem(i);
-		if (Text::StrStartsWith(cate, this->clsData->cate) && cate[thisCateLen] == '\\')
+		if (cate->StartsWith(this->clsData->cate) && cate->v[thisCateLen] == '\\')
 		{
-			k = Text::StrIndexOf(&cate[thisCateLen + 1], '\\');
+			k = Text::StrIndexOf(&cate->v[thisCateLen + 1], '\\');
 			sbSubReg.ClearStr();
 			if (k != INVALID_INDEX)
 			{
-				sbSubReg.AppendC(&cate[thisCateLen + 1], k);
+				sbSubReg.AppendC(&cate->v[thisCateLen + 1], k);
 			}
 			else
 			{
-				sbSubReg.Append(&cate[thisCateLen + 1]);
+				sbSubReg.Append(&cate->v[thisCateLen + 1]);
 			}
 			if (names.SortedIndexOf(sbSubReg.ToString()) < 0)
 			{
@@ -337,11 +338,11 @@ Int32 IO::Registry::GetValueI32(const WChar *name)
 		return 0;
 	}
 	const UTF8Char *csptr = Text::StrToUTF8New(name);
-	const UTF8Char *csval = this->clsData->reg->cfg->GetValue(this->clsData->cate, csptr);
+	Text::String *csval = this->clsData->reg->cfg->GetValue(this->clsData->cate, csptr);
 	Text::StrDelNew(csptr);
-	if (csval && Text::StrStartsWith(csval, (const UTF8Char*)"dword:"))
+	if (csval && csval->StartsWith((const UTF8Char*)"dword:"))
 	{
-		return Text::StrHex2Int32C(csval + 6);
+		return Text::StrHex2Int32C(csval->v + 6);
 	}
 	return 0;
 }
@@ -354,11 +355,11 @@ WChar *IO::Registry::GetValueStr(const WChar *name, WChar *buff)
 		return 0;
 	}
 	const UTF8Char *csptr = Text::StrToUTF8New(name);
-	const UTF8Char *csval = this->clsData->reg->cfg->GetValue(this->clsData->cate, csptr);
+	Text::String *csval = this->clsData->reg->cfg->GetValue(this->clsData->cate, csptr);
 	Text::StrDelNew(csptr);
-	if (csval && Text::StrStartsWith(csval, (const UTF8Char*)"sz:"))
+	if (csval && csval->StartsWith((const UTF8Char*)"sz:"))
 	{
-		return Text::StrUTF8_WChar(buff, csval + 3, 0);
+		return Text::StrUTF8_WChar(buff, csval->v + 3, 0);
 	}
 	return 0;
 }
@@ -371,11 +372,11 @@ Bool IO::Registry::GetValueI32(const WChar *name, Int32 *value)
 		return false;
 	}
 	const UTF8Char *csptr = Text::StrToUTF8New(name);
-	const UTF8Char *csval = this->clsData->reg->cfg->GetValue(this->clsData->cate, csptr);
+	Text::String *csval = this->clsData->reg->cfg->GetValue(this->clsData->cate, csptr);
 	Text::StrDelNew(csptr);
-	if (csval && Text::StrStartsWith(csval, (const UTF8Char*)"dword:"))
+	if (csval && csval->StartsWith((const UTF8Char*)"dword:"))
 	{
-		*value = Text::StrHex2Int32C(csval + 6);
+		*value = Text::StrHex2Int32C(csval->v + 6);
 		return true;
 	}
 	return false;
@@ -388,12 +389,12 @@ WChar *IO::Registry::GetName(WChar *nameBuff, UOSInt index)
 	{
 		return 0;
 	}
-	Data::ArrayList<const UTF8Char*> keys;
+	Data::ArrayList<Text::String*> keys;
 	this->clsData->reg->cfg->GetKeys(this->clsData->cate, &keys);
-	const UTF8Char *key = keys.GetItem(index);
+	Text::String *key = keys.GetItem(index);
 	if (key)
 	{
-		return Text::StrUTF8_WChar(nameBuff, key, 0);
+		return Text::StrUTF8_WChar(nameBuff, key->v, 0);
 	}
 	return 0;
 }

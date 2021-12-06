@@ -13,8 +13,9 @@ namespace IO
 		LangFile(const UTF8Char *fileName, Int32 codePage);
 		virtual ~LangFile();
 
-		virtual const UTF8Char *GetValue(const UTF8Char *name);
-		virtual const UTF8Char *GetValue(const UTF8Char *category, const UTF8Char *name);
+		virtual Text::String *GetValue(const UTF8Char *name);
+		virtual Text::String *GetValue(Text::String *category, Text::String *name);
+		virtual Text::String *GetValue(const UTF8Char *category, const UTF8Char *name);
 	};
 }
 #endif

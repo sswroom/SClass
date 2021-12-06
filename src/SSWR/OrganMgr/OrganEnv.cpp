@@ -294,10 +294,10 @@ const UTF8Char *SSWR::OrganMgr::OrganEnv::GetLang(const UTF8Char *name)
 {
 	if (this->langFile == 0)
 		return name;
-	const UTF8Char *ret = this->langFile->GetValue(name);
+	Text::String *ret = this->langFile->GetValue(name);
 	if (ret == 0)
 		return name;
-	return ret;
+	return ret->v;
 }
 
 UOSInt SSWR::OrganMgr::OrganEnv::GetCategories(Data::ArrayList<Category*> *categories)

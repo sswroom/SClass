@@ -27,10 +27,10 @@ UTF8Char *IO::OS::GetDistro(UTF8Char *sbuff)
 		IO::ConfigFile *cfg = IO::UnixConfigFile::Parse((const UTF8Char*)"/etc/os-release");
 		if (cfg)
 		{
-			const UTF8Char *csptr = cfg->GetValue((const UTF8Char*)"NAME");
-			if (csptr)
+			Text::String *s = cfg->GetValue((const UTF8Char*)"NAME");
+			if (s)
 			{
-				sbuff = Text::StrConcat(sbuff, csptr);
+				sbuff = s->ConcatTo(sbuff);
 			}
 			DEL_CLASS(cfg);
 			return sbuff;
@@ -171,16 +171,16 @@ UTF8Char *IO::OS::GetVersion(UTF8Char *sbuff)
 		IO::ConfigFile *cfg = IO::UnixConfigFile::Parse((const UTF8Char*)"/etc/os-release");
 		if (cfg)
 		{
-			const UTF8Char *csptr = cfg->GetValue((const UTF8Char*)"VERSION");
-			if (csptr)
+			Text::String *s = cfg->GetValue((const UTF8Char*)"VERSION");
+			if (s)
 			{
-				sbuff = Text::StrConcat(sbuff, csptr);
+				sbuff = s->ConcatTo(sbuff);
 			}
-			csptr = cfg->GetValue((const UTF8Char*)"BUILD_ID");
-			if (csptr)
+			s = cfg->GetValue((const UTF8Char*)"BUILD_ID");
+			if (s)
 			{
 				*sbuff++ = ' ';
-				sbuff = Text::StrConcat(sbuff, csptr);
+				sbuff = s->ConcatTo(sbuff);
 			}
 			DEL_CLASS(cfg);
 			return sbuff;
@@ -217,18 +217,18 @@ UTF8Char *IO::OS::GetVersion(UTF8Char *sbuff)
 	if (IO::Path::GetPathType((const UTF8Char*)"/etc/VERSION") == IO::Path::PathType::File)
 	{
 		IO::ConfigFile *cfg = IO::UnixConfigFile::Parse((const UTF8Char*)"/etc/VERSION");
-		const UTF8Char *csptr;
+		Text::String *s;
 		if (cfg)
 		{
-			csptr = cfg->GetValue((const UTF8Char*)"productversion");
-			if (csptr)
+			s = cfg->GetValue((const UTF8Char*)"productversion");
+			if (s)
 			{
-				sbuff = Text::StrConcat(sbuff, csptr);
+				sbuff = s->ConcatTo(sbuff);
 			}
-			csptr = cfg->GetValue((const UTF8Char*)"buildnumber");
-			if (csptr)
+			s = cfg->GetValue((const UTF8Char*)"buildnumber");
+			if (s)
 			{
-				sbuff = Text::StrConcat(Text::StrConcat(sbuff, (const UTF8Char*)"-"), csptr);
+				sbuff = s->ConcatTo(Text::StrConcat(sbuff, (const UTF8Char*)"-"));
 			}
 			DEL_CLASS(cfg);
 			return sbuff;

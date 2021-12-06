@@ -1,0 +1,754 @@
+#include "Stdafx.h"
+#include "Core/Core.h"
+#include "Data/DateTime.h"
+#include "Data/NamedClass.h"
+#include "Text/String.h"
+
+class LamppostData
+{
+private:
+	Data::DateTime* dtData;
+	Data::DateTime* dtRecv;
+	Text::String* fault1Descr;
+	Int32 fault1Status;
+	Text::String* fault2Descr;
+	Int32 fault2Status;
+	Text::String* fault3Descr;
+	Int32 fault3Status;
+	Text::String* fault4Descr;
+	Int32 fault4Status;
+	Text::String* fault5Descr;
+	Int32 fault5Status;
+	Text::String* fault6Descr;
+	Int32 fault6Status;
+	Text::String* fault7Descr;
+	Int32 fault7Status;
+	Text::String* fault8Descr;
+	Int32 fault8Status;
+	Text::String* fault9Descr;
+	Int32 fault9Status;
+	Text::String* fault10Descr;
+	Int32 fault10Status;
+	Int32 faultStatus;
+	Int32 id;
+	Text::String* lampno;
+	Int32 light1Status;
+	Int32 light2Status;
+	Int32 light3Status;
+	Int32 light4Status;
+	Int32 light5Status;
+	Int32 light6Status;
+	Int32 light7Status;
+	Int32 light8Status;
+	Int32 light9Status;
+	Int32 light10Status;
+	Int32 lightStatus;
+	Double val1;
+	Double val2;
+	Double val3;
+	Double val4;
+	Double val5;
+	Double val6;
+	Double val7;
+	Double val8;
+	Double val9;
+	Double val10;
+
+public:
+	LamppostData();
+	~LamppostData();
+
+	Data::DateTime* GetDtData();
+	void SetDtData(Data::DateTime* dtData);
+	Data::DateTime* GetDtRecv();
+	void SetDtRecv(Data::DateTime* dtRecv);
+	Text::String* GetFault1Descr();
+	void SetFault1Descr(Text::String* fault1Descr);
+	Int32 GetFault1Status();
+	void SetFault1Status(Int32 fault1Status);
+	Text::String* GetFault2Descr();
+	void SetFault2Descr(Text::String* fault2Descr);
+	Int32 GetFault2Status();
+	void SetFault2Status(Int32 fault2Status);
+	Text::String* GetFault3Descr();
+	void SetFault3Descr(Text::String* fault3Descr);
+	Int32 GetFault3Status();
+	void SetFault3Status(Int32 fault3Status);
+	Text::String* GetFault4Descr();
+	void SetFault4Descr(Text::String* fault4Descr);
+	Int32 GetFault4Status();
+	void SetFault4Status(Int32 fault4Status);
+	Text::String* GetFault5Descr();
+	void SetFault5Descr(Text::String* fault5Descr);
+	Int32 GetFault5Status();
+	void SetFault5Status(Int32 fault5Status);
+	Text::String* GetFault6Descr();
+	void SetFault6Descr(Text::String* fault6Descr);
+	Int32 GetFault6Status();
+	void SetFault6Status(Int32 fault6Status);
+	Text::String* GetFault7Descr();
+	void SetFault7Descr(Text::String* fault7Descr);
+	Int32 GetFault7Status();
+	void SetFault7Status(Int32 fault7Status);
+	Text::String* GetFault8Descr();
+	void SetFault8Descr(Text::String* fault8Descr);
+	Int32 GetFault8Status();
+	void SetFault8Status(Int32 fault8Status);
+	Text::String* GetFault9Descr();
+	void SetFault9Descr(Text::String* fault9Descr);
+	Int32 GetFault9Status();
+	void SetFault9Status(Int32 fault9Status);
+	Text::String* GetFault10Descr();
+	void SetFault10Descr(Text::String* fault10Descr);
+	Int32 GetFault10Status();
+	void SetFault10Status(Int32 fault10Status);
+	Int32 GetFaultStatus();
+	void SetFaultStatus(Int32 faultStatus);
+	Int32 GetId();
+	void SetId(Int32 id);
+	Text::String* GetLampno();
+	void SetLampno(Text::String* lampno);
+	Int32 GetLight1Status();
+	void SetLight1Status(Int32 light1Status);
+	Int32 GetLight2Status();
+	void SetLight2Status(Int32 light2Status);
+	Int32 GetLight3Status();
+	void SetLight3Status(Int32 light3Status);
+	Int32 GetLight4Status();
+	void SetLight4Status(Int32 light4Status);
+	Int32 GetLight5Status();
+	void SetLight5Status(Int32 light5Status);
+	Int32 GetLight6Status();
+	void SetLight6Status(Int32 light6Status);
+	Int32 GetLight7Status();
+	void SetLight7Status(Int32 light7Status);
+	Int32 GetLight8Status();
+	void SetLight8Status(Int32 light8Status);
+	Int32 GetLight9Status();
+	void SetLight9Status(Int32 light9Status);
+	Int32 GetLight10Status();
+	void SetLight10Status(Int32 light10Status);
+	Int32 GetLightStatus();
+	void SetLightStatus(Int32 lightStatus);
+	Double GetVal1();
+	void SetVal1(Double val1);
+	Double GetVal2();
+	void SetVal2(Double val2);
+	Double GetVal3();
+	void SetVal3(Double val3);
+	Double GetVal4();
+	void SetVal4(Double val4);
+	Double GetVal5();
+	void SetVal5(Double val5);
+	Double GetVal6();
+	void SetVal6(Double val6);
+	Double GetVal7();
+	void SetVal7(Double val7);
+	Double GetVal8();
+	void SetVal8(Double val8);
+	Double GetVal9();
+	void SetVal9(Double val9);
+	Double GetVal10();
+	void SetVal10(Double val10);
+
+	Data::NamedClass<LamppostData> *CreateClass();
+};
+
+LamppostData::LamppostData()
+{
+	this->dtData = 0;
+	this->dtRecv = 0;
+	this->fault1Descr = 0;
+	this->fault1Status = 0;
+	this->fault2Descr = 0;
+	this->fault2Status = 0;
+	this->fault3Descr = 0;
+	this->fault3Status = 0;
+	this->fault4Descr = 0;
+	this->fault4Status = 0;
+	this->fault5Descr = 0;
+	this->fault5Status = 0;
+	this->fault6Descr = 0;
+	this->fault6Status = 0;
+	this->fault7Descr = 0;
+	this->fault7Status = 0;
+	this->fault8Descr = 0;
+	this->fault8Status = 0;
+	this->fault9Descr = 0;
+	this->fault9Status = 0;
+	this->fault10Descr = 0;
+	this->fault10Status = 0;
+	this->faultStatus = 0;
+	this->id = 0;
+	this->lampno = 0;
+	this->light1Status = 0;
+	this->light2Status = 0;
+	this->light3Status = 0;
+	this->light4Status = 0;
+	this->light5Status = 0;
+	this->light6Status = 0;
+	this->light7Status = 0;
+	this->light8Status = 0;
+	this->light9Status = 0;
+	this->light10Status = 0;
+	this->lightStatus = 0;
+	this->val1 = 0;
+	this->val2 = 0;
+	this->val3 = 0;
+	this->val4 = 0;
+	this->val5 = 0;
+	this->val6 = 0;
+	this->val7 = 0;
+	this->val8 = 0;
+	this->val9 = 0;
+	this->val10 = 0;
+}
+
+LamppostData::~LamppostData()
+{
+	SDEL_CLASS(this->dtData);
+	SDEL_CLASS(this->dtRecv);
+	SDEL_STRING(this->fault1Descr);
+	SDEL_STRING(this->fault2Descr);
+	SDEL_STRING(this->fault3Descr);
+	SDEL_STRING(this->fault4Descr);
+	SDEL_STRING(this->fault5Descr);
+	SDEL_STRING(this->fault6Descr);
+	SDEL_STRING(this->fault7Descr);
+	SDEL_STRING(this->fault8Descr);
+	SDEL_STRING(this->fault9Descr);
+	SDEL_STRING(this->fault10Descr);
+	SDEL_STRING(this->lampno);
+}
+
+Data::DateTime* LamppostData::GetDtData()
+{
+	return this->dtData;
+}
+
+void LamppostData::SetDtData(Data::DateTime* dtData)
+{
+	SDEL_CLASS(this->dtData);
+	this->dtData = dtData?(NEW_CLASS_D(Data::DateTime(dtData))):0;
+}
+
+Data::DateTime* LamppostData::GetDtRecv()
+{
+	return this->dtRecv;
+}
+
+void LamppostData::SetDtRecv(Data::DateTime* dtRecv)
+{
+	SDEL_CLASS(this->dtRecv);
+	this->dtRecv = dtRecv?(NEW_CLASS_D(Data::DateTime(dtRecv))):0;
+}
+
+Text::String* LamppostData::GetFault1Descr()
+{
+	return this->fault1Descr;
+}
+
+void LamppostData::SetFault1Descr(Text::String* fault1Descr)
+{
+	SDEL_STRING(this->fault1Descr);
+	this->fault1Descr = fault1Descr?fault1Descr->Clone():0;
+}
+
+Int32 LamppostData::GetFault1Status()
+{
+	return this->fault1Status;
+}
+
+void LamppostData::SetFault1Status(Int32 fault1Status)
+{
+	this->fault1Status = fault1Status;
+}
+
+Text::String* LamppostData::GetFault2Descr()
+{
+	return this->fault2Descr;
+}
+
+void LamppostData::SetFault2Descr(Text::String* fault2Descr)
+{
+	SDEL_STRING(this->fault2Descr);
+	this->fault2Descr = fault2Descr?fault2Descr->Clone():0;
+}
+
+Int32 LamppostData::GetFault2Status()
+{
+	return this->fault2Status;
+}
+
+void LamppostData::SetFault2Status(Int32 fault2Status)
+{
+	this->fault2Status = fault2Status;
+}
+
+Text::String* LamppostData::GetFault3Descr()
+{
+	return this->fault3Descr;
+}
+
+void LamppostData::SetFault3Descr(Text::String* fault3Descr)
+{
+	SDEL_STRING(this->fault3Descr);
+	this->fault3Descr = fault3Descr?fault3Descr->Clone():0;
+}
+
+Int32 LamppostData::GetFault3Status()
+{
+	return this->fault3Status;
+}
+
+void LamppostData::SetFault3Status(Int32 fault3Status)
+{
+	this->fault3Status = fault3Status;
+}
+
+Text::String* LamppostData::GetFault4Descr()
+{
+	return this->fault4Descr;
+}
+
+void LamppostData::SetFault4Descr(Text::String* fault4Descr)
+{
+	SDEL_STRING(this->fault4Descr);
+	this->fault4Descr = fault4Descr?fault4Descr->Clone():0;
+}
+
+Int32 LamppostData::GetFault4Status()
+{
+	return this->fault4Status;
+}
+
+void LamppostData::SetFault4Status(Int32 fault4Status)
+{
+	this->fault4Status = fault4Status;
+}
+
+Text::String* LamppostData::GetFault5Descr()
+{
+	return this->fault5Descr;
+}
+
+void LamppostData::SetFault5Descr(Text::String* fault5Descr)
+{
+	SDEL_STRING(this->fault5Descr);
+	this->fault5Descr = fault5Descr?fault5Descr->Clone():0;
+}
+
+Int32 LamppostData::GetFault5Status()
+{
+	return this->fault5Status;
+}
+
+void LamppostData::SetFault5Status(Int32 fault5Status)
+{
+	this->fault5Status = fault5Status;
+}
+
+Text::String* LamppostData::GetFault6Descr()
+{
+	return this->fault6Descr;
+}
+
+void LamppostData::SetFault6Descr(Text::String* fault6Descr)
+{
+	SDEL_STRING(this->fault6Descr);
+	this->fault6Descr = fault6Descr?fault6Descr->Clone():0;
+}
+
+Int32 LamppostData::GetFault6Status()
+{
+	return this->fault6Status;
+}
+
+void LamppostData::SetFault6Status(Int32 fault6Status)
+{
+	this->fault6Status = fault6Status;
+}
+
+Text::String* LamppostData::GetFault7Descr()
+{
+	return this->fault7Descr;
+}
+
+void LamppostData::SetFault7Descr(Text::String* fault7Descr)
+{
+	SDEL_STRING(this->fault7Descr);
+	this->fault7Descr = fault7Descr?fault7Descr->Clone():0;
+}
+
+Int32 LamppostData::GetFault7Status()
+{
+	return this->fault7Status;
+}
+
+void LamppostData::SetFault7Status(Int32 fault7Status)
+{
+	this->fault7Status = fault7Status;
+}
+
+Text::String* LamppostData::GetFault8Descr()
+{
+	return this->fault8Descr;
+}
+
+void LamppostData::SetFault8Descr(Text::String* fault8Descr)
+{
+	SDEL_STRING(this->fault8Descr);
+	this->fault8Descr = fault8Descr?fault8Descr->Clone():0;
+}
+
+Int32 LamppostData::GetFault8Status()
+{
+	return this->fault8Status;
+}
+
+void LamppostData::SetFault8Status(Int32 fault8Status)
+{
+	this->fault8Status = fault8Status;
+}
+
+Text::String* LamppostData::GetFault9Descr()
+{
+	return this->fault9Descr;
+}
+
+void LamppostData::SetFault9Descr(Text::String* fault9Descr)
+{
+	SDEL_STRING(this->fault9Descr);
+	this->fault9Descr = fault9Descr?fault9Descr->Clone():0;
+}
+
+Int32 LamppostData::GetFault9Status()
+{
+	return this->fault9Status;
+}
+
+void LamppostData::SetFault9Status(Int32 fault9Status)
+{
+	this->fault9Status = fault9Status;
+}
+
+Text::String* LamppostData::GetFault10Descr()
+{
+	return this->fault10Descr;
+}
+
+void LamppostData::SetFault10Descr(Text::String* fault10Descr)
+{
+	SDEL_STRING(this->fault10Descr);
+	this->fault10Descr = fault10Descr?fault10Descr->Clone():0;
+}
+
+Int32 LamppostData::GetFault10Status()
+{
+	return this->fault10Status;
+}
+
+void LamppostData::SetFault10Status(Int32 fault10Status)
+{
+	this->fault10Status = fault10Status;
+}
+
+Int32 LamppostData::GetFaultStatus()
+{
+	return this->faultStatus;
+}
+
+void LamppostData::SetFaultStatus(Int32 faultStatus)
+{
+	this->faultStatus = faultStatus;
+}
+
+Int32 LamppostData::GetId()
+{
+	return this->id;
+}
+
+void LamppostData::SetId(Int32 id)
+{
+	this->id = id;
+}
+
+Text::String* LamppostData::GetLampno()
+{
+	return this->lampno;
+}
+
+void LamppostData::SetLampno(Text::String* lampno)
+{
+	SDEL_STRING(this->lampno);
+	this->lampno = lampno?lampno->Clone():0;
+}
+
+Int32 LamppostData::GetLight1Status()
+{
+	return this->light1Status;
+}
+
+void LamppostData::SetLight1Status(Int32 light1Status)
+{
+	this->light1Status = light1Status;
+}
+
+Int32 LamppostData::GetLight2Status()
+{
+	return this->light2Status;
+}
+
+void LamppostData::SetLight2Status(Int32 light2Status)
+{
+	this->light2Status = light2Status;
+}
+
+Int32 LamppostData::GetLight3Status()
+{
+	return this->light3Status;
+}
+
+void LamppostData::SetLight3Status(Int32 light3Status)
+{
+	this->light3Status = light3Status;
+}
+
+Int32 LamppostData::GetLight4Status()
+{
+	return this->light4Status;
+}
+
+void LamppostData::SetLight4Status(Int32 light4Status)
+{
+	this->light4Status = light4Status;
+}
+
+Int32 LamppostData::GetLight5Status()
+{
+	return this->light5Status;
+}
+
+void LamppostData::SetLight5Status(Int32 light5Status)
+{
+	this->light5Status = light5Status;
+}
+
+Int32 LamppostData::GetLight6Status()
+{
+	return this->light6Status;
+}
+
+void LamppostData::SetLight6Status(Int32 light6Status)
+{
+	this->light6Status = light6Status;
+}
+
+Int32 LamppostData::GetLight7Status()
+{
+	return this->light7Status;
+}
+
+void LamppostData::SetLight7Status(Int32 light7Status)
+{
+	this->light7Status = light7Status;
+}
+
+Int32 LamppostData::GetLight8Status()
+{
+	return this->light8Status;
+}
+
+void LamppostData::SetLight8Status(Int32 light8Status)
+{
+	this->light8Status = light8Status;
+}
+
+Int32 LamppostData::GetLight9Status()
+{
+	return this->light9Status;
+}
+
+void LamppostData::SetLight9Status(Int32 light9Status)
+{
+	this->light9Status = light9Status;
+}
+
+Int32 LamppostData::GetLight10Status()
+{
+	return this->light10Status;
+}
+
+void LamppostData::SetLight10Status(Int32 light10Status)
+{
+	this->light10Status = light10Status;
+}
+
+Int32 LamppostData::GetLightStatus()
+{
+	return this->lightStatus;
+}
+
+void LamppostData::SetLightStatus(Int32 lightStatus)
+{
+	this->lightStatus = lightStatus;
+}
+
+Double LamppostData::GetVal1()
+{
+	return this->val1;
+}
+
+void LamppostData::SetVal1(Double val1)
+{
+	this->val1 = val1;
+}
+
+Double LamppostData::GetVal2()
+{
+	return this->val2;
+}
+
+void LamppostData::SetVal2(Double val2)
+{
+	this->val2 = val2;
+}
+
+Double LamppostData::GetVal3()
+{
+	return this->val3;
+}
+
+void LamppostData::SetVal3(Double val3)
+{
+	this->val3 = val3;
+}
+
+Double LamppostData::GetVal4()
+{
+	return this->val4;
+}
+
+void LamppostData::SetVal4(Double val4)
+{
+	this->val4 = val4;
+}
+
+Double LamppostData::GetVal5()
+{
+	return this->val5;
+}
+
+void LamppostData::SetVal5(Double val5)
+{
+	this->val5 = val5;
+}
+
+Double LamppostData::GetVal6()
+{
+	return this->val6;
+}
+
+void LamppostData::SetVal6(Double val6)
+{
+	this->val6 = val6;
+}
+
+Double LamppostData::GetVal7()
+{
+	return this->val7;
+}
+
+void LamppostData::SetVal7(Double val7)
+{
+	this->val7 = val7;
+}
+
+Double LamppostData::GetVal8()
+{
+	return this->val8;
+}
+
+void LamppostData::SetVal8(Double val8)
+{
+	this->val8 = val8;
+}
+
+Double LamppostData::GetVal9()
+{
+	return this->val9;
+}
+
+void LamppostData::SetVal9(Double val9)
+{
+	this->val9 = val9;
+}
+
+Double LamppostData::GetVal10()
+{
+	return this->val10;
+}
+
+void LamppostData::SetVal10(Double val10)
+{
+	this->val10 = val10;
+}
+
+Data::NamedClass<LamppostData> *LamppostData::CreateClass()
+{
+	Data::NamedClass<LamppostData> *cls;
+	NEW_CLASS(cls, Data::NamedClass<LamppostData>(this));
+	CLASS_ADD(cls, dtData);
+	CLASS_ADD(cls, dtRecv);
+	CLASS_ADD(cls, fault1Descr);
+	CLASS_ADD(cls, fault1Status);
+	CLASS_ADD(cls, fault2Descr);
+	CLASS_ADD(cls, fault2Status);
+	CLASS_ADD(cls, fault3Descr);
+	CLASS_ADD(cls, fault3Status);
+	CLASS_ADD(cls, fault4Descr);
+	CLASS_ADD(cls, fault4Status);
+	CLASS_ADD(cls, fault5Descr);
+	CLASS_ADD(cls, fault5Status);
+	CLASS_ADD(cls, fault6Descr);
+	CLASS_ADD(cls, fault6Status);
+	CLASS_ADD(cls, fault7Descr);
+	CLASS_ADD(cls, fault7Status);
+	CLASS_ADD(cls, fault8Descr);
+	CLASS_ADD(cls, fault8Status);
+	CLASS_ADD(cls, fault9Descr);
+	CLASS_ADD(cls, fault9Status);
+	CLASS_ADD(cls, fault10Descr);
+	CLASS_ADD(cls, fault10Status);
+	CLASS_ADD(cls, faultStatus);
+	CLASS_ADD(cls, id);
+	CLASS_ADD(cls, lampno);
+	CLASS_ADD(cls, light1Status);
+	CLASS_ADD(cls, light2Status);
+	CLASS_ADD(cls, light3Status);
+	CLASS_ADD(cls, light4Status);
+	CLASS_ADD(cls, light5Status);
+	CLASS_ADD(cls, light6Status);
+	CLASS_ADD(cls, light7Status);
+	CLASS_ADD(cls, light8Status);
+	CLASS_ADD(cls, light9Status);
+	CLASS_ADD(cls, light10Status);
+	CLASS_ADD(cls, lightStatus);
+	CLASS_ADD(cls, val1);
+	CLASS_ADD(cls, val2);
+	CLASS_ADD(cls, val3);
+	CLASS_ADD(cls, val4);
+	CLASS_ADD(cls, val5);
+	CLASS_ADD(cls, val6);
+	CLASS_ADD(cls, val7);
+	CLASS_ADD(cls, val8);
+	CLASS_ADD(cls, val9);
+	CLASS_ADD(cls, val10);
+	return cls;
+}
+
+Int32 MyMain(Core::IProgControl *progCtrl)
+{
+
+	return 0;
+}
