@@ -23,7 +23,7 @@ Crypto::HOTP::~HOTP()
 
 Crypto::OTP::OTPType Crypto::HOTP::GetType()
 {
-	return Crypto::OTP::OT_HOTP;
+	return Crypto::OTP::OTPType::HOTP;
 }
 
 UInt64 Crypto::HOTP::GetCounter()

@@ -7,11 +7,11 @@ namespace Media
 	class IPrintDocument
 	{
 	public:
-		typedef enum
+		enum class PageOrientation
 		{
-			PO_LANDSCAPE,
-			PO_PORTRAIT
-		} PageOrientation;
+			Landscape,
+			Portrait
+		};
 	public:
 		virtual ~IPrintDocument() {};
 

@@ -86,7 +86,7 @@ void __stdcall SSWR::AVIRead::AVIROTPForm::OnEntryDblClicked(void *userObj, UOSI
 	SSWR::AVIRead::AVIROTPForm *me = (SSWR::AVIRead::AVIROTPForm*)userObj;
 	UTF8Char sbuff[32];
 	EntryInfo *entry = me->entryList->GetItem(index);
-	if (entry->otp->GetType() == Crypto::OTP::OT_HOTP)
+	if (entry->otp->GetType() == Crypto::OTP::OTPType::HOTP)
 	{
 		entry->otp->CodeString(sbuff, entry->otp->NextCode());
 		entry->lastCounter = entry->otp->GetCounter();

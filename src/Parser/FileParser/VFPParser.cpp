@@ -36,7 +36,7 @@ IO::ParsedObject *Parser::FileParser::VFPParser::ParseFile(IO::IStreamData *fd, 
 	if (!fd->IsFullFile())
 		return 0;
 	Data::ArrayList<Media::IMediaSource *> mediaArr;
-	if (vfpMgr->LoadFile(fd->GetFullFileName(), &mediaArr) > 0)
+	if (vfpMgr->LoadFile(fd->GetFullFileName()->v, &mediaArr) > 0)
 	{
 		Media::MediaFile *file;
 		NEW_CLASS(file, Media::MediaFile(fd->GetFullName()));

@@ -8,12 +8,12 @@ namespace IO
 	class FileUtil
 	{
 	public:
-		typedef enum
+		enum class FileExistAction
 		{
-			FEA_FAIL,
-			FEA_OVERWRITE,
-			FEA_CONTINUE
-		} FileExistAction;
+			Fail,
+			Overwrite,
+			Continue
+		};
 	public:
 		static Bool DeleteFile(const UTF8Char *file, Bool deleteRdonlyFile);
 //		static Bool DeleteFile(const WChar *file, Bool deleteRdonlyFile);

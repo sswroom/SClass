@@ -121,6 +121,40 @@ UI::GUITabControl::~GUITabControl()
 	DEL_CLASS(this->selChgObjs);
 }
 
+UI::GUITabPage *UI::GUITabControl::AddTabPage(Text::String *tabName)
+{
+	UOSInt index;
+	TCITEMW item;
+	item.mask = TCIF_TEXT;
+	item.pszText = (LPWSTR)Text::StrToWCharNew(tabName->v);
+	item.cchTextMax = 0;
+	index = (UOSInt)SendMessageW((HWND)this->hwnd, TCM_INSERTITEMW, this->tabPages->GetCount(), (LPARAM)&item);
+	Text::StrDelNew((const WChar*)item.pszText);
+	if (index != INVALID_INDEX)
+	{
+		UI::GUITabPage *page;
+//		NEW_CLASS(page, UI::GUITabPage(this, index));
+		NEW_CLASS(page, UI::GUITabPage(this->ui, 0, this, index));
+		page->SetDPI(this->hdpi, this->ddpi);
+		this->tabPages->Add(page);
+		OSInt x;
+		OSInt y;
+		UOSInt w;
+		UOSInt h;
+		GetTabPageRect(&x, &y, &w, &h);
+		page->SetAreaP(x, y, x + (OSInt)w, y + (OSInt)h, false);
+		if (this->tabPages->GetCount() > 1)
+		{
+			page->SetVisible(false);
+		}
+		return page;
+	}
+	else
+	{
+		return 0;
+	}
+}
+
 UI::GUITabPage *UI::GUITabControl::AddTabPage(const UTF8Char *tabName)
 {
 	UOSInt index;

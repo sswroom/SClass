@@ -328,7 +328,7 @@ Bool IO::FileUtil::CopyFile(const UTF8Char *file1, const UTF8Char *file2, FileEx
 	IO::FileStream *fs1;
 	IO::FileStream *fs2;
 	IO::ActiveStreamReader *asr;
-	if (fea == IO::FileUtil::FEA_FAIL)
+	if (fea == IO::FileUtil::FileExistAction::Fail)
 	{
 		if (IO::Path::GetPathType(file2) != IO::Path::PathType::Unknown)
 			return false;
@@ -339,7 +339,7 @@ Bool IO::FileUtil::CopyFile(const UTF8Char *file1, const UTF8Char *file2, FileEx
 		DEL_CLASS(fs1);
 		return false;
 	}
-	if (fea == IO::FileUtil::FEA_CONTINUE)
+	if (fea == IO::FileUtil::FileExistAction::Continue)
 	{
 		NEW_CLASS(fs2, IO::FileStream(file2, IO::FileStream::FileMode::Append, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
 	}
@@ -359,7 +359,7 @@ Bool IO::FileUtil::CopyFile(const UTF8Char *file1, const UTF8Char *file2, FileEx
 	UInt64 writenSize;
 	Bool samePart = IO::FileUtil::IsSamePartition(file1, file2);
 	UInt8 *buff;
-	if (fea == IO::FileUtil::FEA_CONTINUE)
+	if (fea == IO::FileUtil::FileExistAction::Continue)
 	{
 		UInt64 destPos = fs2->GetPosition();
 		if (destPos > fileSize)

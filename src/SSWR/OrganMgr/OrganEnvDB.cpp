@@ -1625,11 +1625,11 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 				Bool succ;
 				if (moveFile)
 				{
-					succ = IO::FileUtil::MoveFile(fileName, sbuff, IO::FileUtil::FEA_FAIL, 0, 0);
+					succ = IO::FileUtil::MoveFile(fileName, sbuff, IO::FileUtil::FileExistAction::Fail, 0, 0);
 				}
 				else
 				{
-					succ = IO::FileUtil::CopyFile(fileName, sbuff, IO::FileUtil::FEA_FAIL, 0, 0);
+					succ = IO::FileUtil::CopyFile(fileName, sbuff, IO::FileUtil::FileExistAction::Fail, 0, 0);
 				}
 				if (succ)
 				{
@@ -1850,11 +1850,11 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 				Bool succ;
 				if (moveFile)
 				{
-					succ = IO::FileUtil::MoveFile(fileName, sbuff, IO::FileUtil::FEA_FAIL, 0, 0);
+					succ = IO::FileUtil::MoveFile(fileName, sbuff, IO::FileUtil::FileExistAction::Fail, 0, 0);
 				}
 				else
 				{
-					succ = IO::FileUtil::CopyFile(fileName, sbuff, IO::FileUtil::FEA_FAIL, 0, 0);
+					succ = IO::FileUtil::CopyFile(fileName, sbuff, IO::FileUtil::FileExistAction::Fail, 0, 0);
 				}
 				if (succ)
 				{
@@ -1986,7 +1986,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 		sptr = this->GetSpeciesDir(sp, sbuff);
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 		sptr = Text::StrConcat(sptr, &fileName[i + 1]);
-		if (IO::FileUtil::CopyFile(fileName, sbuff, IO::FileUtil::FEA_FAIL, 0, 0))
+		if (IO::FileUtil::CopyFile(fileName, sbuff, IO::FileUtil::FileExistAction::Fail, 0, 0))
 		{
 			if (firstPhoto)
 			{
@@ -2673,7 +2673,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::MoveImages(Data::ArrayList<OrganImages*> *imgLi
 			{
 				break;
 			}
-			if (!IO::FileUtil::MoveFile(img->GetImgItem()->GetFullName()->v, sbuff, IO::FileUtil::FEA_FAIL, 0, 0))
+			if (!IO::FileUtil::MoveFile(img->GetImgItem()->GetFullName()->v, sbuff, IO::FileUtil::FileExistAction::Fail, 0, 0))
 			{
 				Text::StringBuilderUTF8 sb;
 				const UTF8Char *csptr;
@@ -3196,7 +3196,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::AddDataFile(const UTF8Char *fileName)
 		{
 			Text::StrConcat(sptr, &fileName[i]);
 		}
-		if (IO::FileUtil::CopyFile(fileName, sbuff, IO::FileUtil::FEA_FAIL, 0, 0))
+		if (IO::FileUtil::CopyFile(fileName, sbuff, IO::FileUtil::FileExistAction::Fail, 0, 0))
 		{
 			DB::SQLBuilder sql(this->db);
 			sql.AppendCmd((const UTF8Char*)"insert into datafile (fileType, startTime, endTime, oriFileName, dataFileName, webuser_id) values (");
@@ -4813,7 +4813,7 @@ void SSWR::OrganMgr::OrganEnvDB::UpgradeDB2()
 							*sptr2++ = IO::Path::PATH_SEPERATOR;
 							sptr2 = Text::StrInt32(sptr2, id);
 							sptr2 = Text::StrConcat(sptr2, (const UTF8Char*)".jpg");
-							if (!IO::FileUtil::MoveFile(sbuff, sbuff2, IO::FileUtil::FEA_FAIL, 0, 0))
+							if (!IO::FileUtil::MoveFile(sbuff, sbuff2, IO::FileUtil::FileExistAction::Fail, 0, 0))
 							{
 								allSucc = false;
 
@@ -5007,7 +5007,7 @@ void SSWR::OrganMgr::OrganEnvDB::ExportLite(const UTF8Char *folder)
 			{
 				Text::StrConcat(sptr2, sb.ToString());
 				Text::StrConcat(sptr3, sb.ToString());
-				IO::FileUtil::CopyDir(sbuff2, sbuff, IO::FileUtil::FEA_FAIL, 0, 0);
+				IO::FileUtil::CopyDir(sbuff2, sbuff, IO::FileUtil::FileExistAction::Fail, 0, 0);
 			}
 		}
 		this->db->CloseReader(r);
@@ -5021,7 +5021,7 @@ void SSWR::OrganMgr::OrganEnvDB::ExportLite(const UTF8Char *folder)
 	sptr3 = Text::StrConcat(sbuff2, this->cfgDataPath);
 	*sptr3++ = IO::Path::PATH_SEPERATOR;
 	Text::StrConcat(sptr3, (const UTF8Char*)"DataFile");
-	IO::FileUtil::CopyDir(sbuff2, sbuff, IO::FileUtil::FEA_FAIL, 0, 0);
+	IO::FileUtil::CopyDir(sbuff2, sbuff, IO::FileUtil::FileExistAction::Fail, 0, 0);
 
 	r = this->db->ExecuteReader((const UTF8Char*)"select fileType, fileTime, webuser_id, dataFileName from userfile");
 	if (r)
@@ -5104,7 +5104,7 @@ void SSWR::OrganMgr::OrganEnvDB::ExportLite(const UTF8Char *folder)
 				}
 				else
 				{
-					IO::FileUtil::CopyFile(sbuff2, sbuff, IO::FileUtil::FEA_OVERWRITE, 0, 0);
+					IO::FileUtil::CopyFile(sbuff2, sbuff, IO::FileUtil::FileExistAction::Overwrite, 0, 0);
 				}
 			}
 		}

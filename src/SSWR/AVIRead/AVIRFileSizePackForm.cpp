@@ -82,7 +82,7 @@ void __stdcall SSWR::AVIRead::AVIRFileSizePackForm::OnMoveClicked(void *userObj)
 				file = me->packList->GetItem(i);
 				Text::StrConcat(sptr, file->GetName());
 				Text::StrConcat(sptr2, file->GetName());
-				IO::FileUtil::MoveFile(sbuff2, sbuff, IO::FileUtil::FEA_FAIL, 0, 0);
+				IO::FileUtil::MoveFile(sbuff2, sbuff, IO::FileUtil::FileExistAction::Fail, 0, 0);
 			}
 
 			sptr = me->txtDirName->GetText(sbuff);

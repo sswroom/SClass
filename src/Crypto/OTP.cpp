@@ -50,9 +50,9 @@ const UTF8Char *Crypto::OTP::OTPTypeGetName(OTPType type)
 {
 	switch (type)
 	{
-	case OT_HOTP:
+	case OTPType::HOTP:
 		return (const UTF8Char*)"HOTP";
-	case OT_TOTP:
+	case OTPType::TOTP:
 		return (const UTF8Char*)"TOTP";
 	default:
 		return (const UTF8Char*)"Unknown";

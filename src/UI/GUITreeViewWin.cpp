@@ -11,13 +11,22 @@
 #define GWL_USERDATA GWLP_USERDATA
 #endif
 
+UI::GUITreeView::TreeItem::TreeItem(void *itemObj, Text::String *txt)
+{
+	NEW_CLASS(this->children, Data::ArrayList<UI::GUITreeView::TreeItem *>());
+	this->hTreeItem = hTreeItem;
+	this->itemObj = itemObj;
+	this->parent = 0;
+	this->txt = txt->Clone();
+}
+
 UI::GUITreeView::TreeItem::TreeItem(void *itemObj, const UTF8Char *txt)
 {
 	NEW_CLASS(this->children, Data::ArrayList<UI::GUITreeView::TreeItem *>());
 	this->hTreeItem = hTreeItem;
 	this->itemObj = itemObj;
 	this->parent = 0;
-	this->txt = Text::StrCopyNew(txt);
+	this->txt = Text::String::New(txt);
 }
 
 UI::GUITreeView::TreeItem::~TreeItem()
@@ -31,10 +40,7 @@ UI::GUITreeView::TreeItem::~TreeItem()
 		DEL_CLASS(item);
 	}
 	DEL_CLASS(this->children);
-	if (this->txt)
-	{
-		Text::StrDelNew(this->txt);
-	}
+	SDEL_STRING(this->txt);
 }
 
 void UI::GUITreeView::TreeItem::AddChild(UI::GUITreeView::TreeItem *child)
@@ -73,14 +79,11 @@ void UI::GUITreeView::TreeItem::SetText(const UTF8Char *txt)
 	{
 		return;
 	}
-	if (this->txt)
-	{
-		Text::StrDelNew(this->txt);
-	}
-	this->txt = Text::StrCopyNew(txt);
+	SDEL_STRING(this->txt);
+	this->txt = Text::String::New(txt);
 }
 
-const UTF8Char *UI::GUITreeView::TreeItem::GetText()
+Text::String *UI::GUITreeView::TreeItem::GetText()
 {
 	return this->txt;
 }
@@ -233,6 +236,52 @@ OSInt UI::GUITreeView::EventEndLabelEdit(TreeItem *item, const UTF8Char *newLabe
 void UI::GUITreeView::EventDragItem(TreeItem *dragItem, TreeItem *dropItem)
 {
 
+}
+
+UI::GUITreeView::TreeItem *UI::GUITreeView::InsertItem(UI::GUITreeView::TreeItem *parent, UI::GUITreeView::TreeItem *insertAfter, Text::String *itemText, void *itemObj)
+{
+	TreeItem *item;
+	TVINSERTSTRUCTW is;
+	if (parent)
+	{
+		is.hParent = (HTREEITEM)parent->GetHItem();
+	}
+	else
+	{
+		is.hParent = TVI_ROOT;
+	}
+	if (insertAfter)
+	{
+		is.hInsertAfter = (HTREEITEM)insertAfter->GetHItem();
+	}
+	else
+	{
+		is.hInsertAfter = TVI_LAST;
+	}
+	const WChar *wptr = Text::StrToWCharNew(itemText->v);
+	NEW_CLASS(item, TreeItem(itemObj, itemText));
+	is.item.mask = TVIF_TEXT | TVIF_PARAM;
+	is.item.lParam = (LPARAM)item;
+	is.item.cchTextMax = (Int32)Text::StrCharCnt(wptr);
+	is.item.pszText = (LPWSTR)wptr;
+	HTREEITEM hItem = (HTREEITEM)SendMessage((HWND)hwnd, TVM_INSERTITEMW, 0, (LPARAM)&is);
+	Text::StrDelNew(wptr);
+	if(hItem == 0)
+	{
+		DEL_CLASS(item);
+		return 0;
+	}
+	item->SetHItem(hItem);
+
+	if (parent)
+	{
+		parent->AddChild(item);
+	}
+	else
+	{
+		this->treeItems->Add(item);
+	}
+	return item;
 }
 
 UI::GUITreeView::TreeItem *UI::GUITreeView::InsertItem(UI::GUITreeView::TreeItem *parent, UI::GUITreeView::TreeItem *insertAfter, const UTF8Char *itemText, void *itemObj)

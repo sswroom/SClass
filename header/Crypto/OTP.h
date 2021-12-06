@@ -7,11 +7,11 @@ namespace Crypto
 	class OTP
 	{
 	public:
-		typedef enum
+		enum class OTPType
 		{
-			OT_HOTP,
-			OT_TOTP
-		} OTPType;
+			HOTP,
+			TOTP
+		};
 
 	protected:
 		UInt32 nDigits;

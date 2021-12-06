@@ -185,12 +185,12 @@ Bool Media::VectorDocument::BeginPrint(IPrintDocument *doc)
 	if (width > height)
 	{
 		doc->SetNextPagePaperSizeMM(height, width);
-		doc->SetNextPageOrientation(Media::IPrintDocument::PO_LANDSCAPE);
+		doc->SetNextPageOrientation(Media::IPrintDocument::PageOrientation::Landscape);
 	}
 	else
 	{
 		doc->SetNextPagePaperSizeMM(width, height);
-		doc->SetNextPageOrientation(Media::IPrintDocument::PO_PORTRAIT);
+		doc->SetNextPageOrientation(Media::IPrintDocument::PageOrientation::Portrait);
 	}
 	return true;
 }
@@ -213,12 +213,12 @@ Bool Media::VectorDocument::PrintPage(Media::DrawImage *printPage)
 	if (width > height)
 	{
 		this->currDoc->SetNextPagePaperSizeMM(height, width);
-		this->currDoc->SetNextPageOrientation(Media::IPrintDocument::PO_LANDSCAPE);
+		this->currDoc->SetNextPageOrientation(Media::IPrintDocument::PageOrientation::Landscape);
 	}
 	else
 	{
 		this->currDoc->SetNextPagePaperSizeMM(width, height);
-		this->currDoc->SetNextPageOrientation(Media::IPrintDocument::PO_PORTRAIT);
+		this->currDoc->SetNextPageOrientation(Media::IPrintDocument::PageOrientation::Portrait);
 	}
 	return true;
 }

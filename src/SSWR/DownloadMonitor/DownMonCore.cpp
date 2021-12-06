@@ -207,7 +207,7 @@ void SSWR::DownloadMonitor::DownMonCore::ProcessDir(const UTF8Char *downPath, co
 								}
 								Text::StrConcat(sptr2, sptr);
 								this->chkStatus = CS_MOVING;
-								IO::FileUtil::MoveFile(sbuff, sbuff2, IO::FileUtil::FEA_OVERWRITE, 0, &bnt);
+								IO::FileUtil::MoveFile(sbuff, sbuff2, IO::FileUtil::FileExistAction::Overwrite, 0, &bnt);
 								this->chkStatus = CS_CHECKING;
 							}
 						}
@@ -258,7 +258,7 @@ void SSWR::DownloadMonitor::DownMonCore::ProcessDir(const UTF8Char *downPath, co
 									}
 									Text::StrConcat(sptr2, sptr);
 									this->chkStatus = CS_MOVING;
-									IO::FileUtil::MoveFile(sbuff, sbuff2, IO::FileUtil::FEA_OVERWRITE, 0, &bnt);
+									IO::FileUtil::MoveFile(sbuff, sbuff2, IO::FileUtil::FileExistAction::Overwrite, 0, &bnt);
 								}
 								this->chkStatus = CS_CHECKING;
 							}
@@ -271,7 +271,7 @@ void SSWR::DownloadMonitor::DownMonCore::ProcessDir(const UTF8Char *downPath, co
 								}
 								Text::StrConcat(sptr2, sptr);
 								this->chkStatus = CS_MOVING;
-								IO::FileUtil::MoveFile(sbuff, sbuff2, IO::FileUtil::FEA_OVERWRITE, 0, &bnt);
+								IO::FileUtil::MoveFile(sbuff, sbuff2, IO::FileUtil::FileExistAction::Overwrite, 0, &bnt);
 								this->chkStatus = CS_CHECKING;
 							}
 						}
@@ -314,7 +314,7 @@ void SSWR::DownloadMonitor::DownMonCore::ProcessDir(const UTF8Char *downPath, co
 					}
 					Text::StrConcat(sptr2, sptr);
 					this->chkStatus = CS_MOVING;
-					IO::FileUtil::MoveFile(sbuff, sbuff2, IO::FileUtil::FEA_OVERWRITE, 0, &bnt);
+					IO::FileUtil::MoveFile(sbuff, sbuff2, IO::FileUtil::FileExistAction::Overwrite, 0, &bnt);
 					this->chkStatus = CS_CHECKING;
 				}
 			}
@@ -357,7 +357,7 @@ void SSWR::DownloadMonitor::DownMonCore::ProcessDir(const UTF8Char *downPath, co
 							sptr2 = Text::StrConcat(sptr2, sptr) - 4;
 							Text::StrConcat(sptr2, (const UTF8Char*)".mp4");
 							this->chkStatus = CS_MOVING;
-							IO::FileUtil::MoveFile(sbuff, sbuff2, IO::FileUtil::FEA_OVERWRITE, 0, &bnt);
+							IO::FileUtil::MoveFile(sbuff, sbuff2, IO::FileUtil::FileExistAction::Overwrite, 0, &bnt);
 						}
 						else
 						{
@@ -370,7 +370,7 @@ void SSWR::DownloadMonitor::DownMonCore::ProcessDir(const UTF8Char *downPath, co
 							}
 							Text::StrConcat(sptr2, sptr);
 							this->chkStatus = CS_MOVING;
-							IO::FileUtil::MoveFile(sbuff, sbuff2, IO::FileUtil::FEA_FAIL, 0, &bnt);
+							IO::FileUtil::MoveFile(sbuff, sbuff2, IO::FileUtil::FileExistAction::Fail, 0, &bnt);
 						}
 					}
 					this->chkStatus = CS_CHECKING;
@@ -421,7 +421,7 @@ void SSWR::DownloadMonitor::DownMonCore::ProcessDir(const UTF8Char *downPath, co
 								sptr2 = Text::StrConcat(sptr2, sptr) - 4;
 								Text::StrConcat(sptr2, (const UTF8Char*)".mp4");
 								this->chkStatus = CS_MOVING;
-								IO::FileUtil::MoveFile(sbuff, sbuff2, IO::FileUtil::FEA_OVERWRITE, 0, &bnt);
+								IO::FileUtil::MoveFile(sbuff, sbuff2, IO::FileUtil::FileExistAction::Overwrite, 0, &bnt);
 							}
 							else
 							{
@@ -434,7 +434,7 @@ void SSWR::DownloadMonitor::DownMonCore::ProcessDir(const UTF8Char *downPath, co
 								}
 								Text::StrConcat(sptr2, sptr);
 								this->chkStatus = CS_MOVING;
-								IO::FileUtil::MoveFile(sbuff, sbuff2, IO::FileUtil::FEA_FAIL, 0, &bnt);
+								IO::FileUtil::MoveFile(sbuff, sbuff2, IO::FileUtil::FileExistAction::Fail, 0, &bnt);
 							}
 						}
 						this->chkStatus = CS_CHECKING;

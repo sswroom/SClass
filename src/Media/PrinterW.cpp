@@ -17,7 +17,7 @@ namespace Media
 		UInt8 *devMode;
 		IPrintHandler *hdlr;
 		Media::GDIEngine *eng;
-		const UTF8Char *docName;
+		Text::String *docName;
 		Bool started;
 		Bool running;
 		PageOrientation po;
@@ -31,6 +31,7 @@ namespace Media
 
 		Bool IsError();
 
+		virtual void SetDocName(Text::String *docName);
 		virtual void SetDocName(const UTF8Char *docName);
 		virtual void SetNextPagePaperSizeMM(Double width, Double height);
 		virtual void SetNextPageOrientation(PageOrientation po);
@@ -52,7 +53,7 @@ UInt32 __stdcall Media::GDIPrintDocument::PrintThread(void *userObj)
 		Int32 paperHeight;
 		devMode->dmPaperWidth = (Int16)Math::Double2Int32(me->paperWidth * 10.0);
 		devMode->dmPaperLength = (Int16)Math::Double2Int32(me->paperHeight * 10.0);
-		if (me->po == PO_LANDSCAPE)
+		if (me->po == PageOrientation::Landscape)
 		{
 			devMode->dmOrientation = DMORIENT_LANDSCAPE;
 			paperWidth = devMode->dmPaperLength;
@@ -98,11 +99,11 @@ Media::GDIPrintDocument::GDIPrintDocument(const UTF8Char *printerName, UInt8 *de
 	DEVMODEW *devM = (DEVMODEW*)devMode;
 	if (devM->dmOrientation == DMORIENT_LANDSCAPE)
 	{
-		this->po = PO_LANDSCAPE;
+		this->po = PageOrientation::Landscape;
 	}
 	else
 	{
-		this->po = PO_PORTRAIT;
+		this->po = PageOrientation::Portrait;
 	}
 	this->paperWidth = devM->dmPaperWidth * 0.1;
 	this->paperHeight = devM->dmPaperLength * 0.1;
@@ -116,11 +117,7 @@ Media::GDIPrintDocument::~GDIPrintDocument()
 		DeleteDC((HDC)this->hdcPrinter);
 		this->hdcPrinter = 0;
 	}
-	if (this->docName)
-	{
-		Text::StrDelNew(this->docName);
-		this->docName = 0;
-	}
+	SDEL_STRING(this->docName);
 }
 
 Bool Media::GDIPrintDocument::IsError()
@@ -128,17 +125,16 @@ Bool Media::GDIPrintDocument::IsError()
 	return this->hdcPrinter == 0;
 }
 
+void Media::GDIPrintDocument::SetDocName(Text::String *docName)
+{
+	SDEL_STRING(this->docName);
+	this->docName = SCOPY_STRING(docName);
+}
+
 void Media::GDIPrintDocument::SetDocName(const UTF8Char *docName)
 {
-	if (this->docName)
-	{
-		Text::StrDelNew(this->docName);
-		this->docName = 0;
-	}
-	if (docName)
-	{
-		this->docName = Text::StrCopyNew(docName);
-	}
+	SDEL_STRING(this->docName);
+	this->docName = Text::String::New(docName);
 }
 
 void Media::GDIPrintDocument::SetNextPagePaperSizeMM(Double width, Double height)
@@ -167,7 +163,7 @@ void Media::GDIPrintDocument::Start()
 		docInfo.cbSize = sizeof(DOCINFOW);
 		if (this->docName)
 		{
-			wptr = Text::StrToWCharNew(this->docName);
+			wptr = Text::StrToWCharNew(this->docName->v);
 			docInfo.lpszDocName = wptr;
 		}
 		else

@@ -59,7 +59,7 @@ public:
 		this->pageId = 0;
 		this->doc = doc;
 		doc->SetDocName((const UTF8Char*)"PrintTest");
-		doc->SetNextPageOrientation(Media::IPrintDocument::PO_PORTRAIT);
+		doc->SetNextPageOrientation(Media::IPrintDocument::PageOrientation::Portrait);
 		doc->SetNextPagePaperSizeMM(psize.GetWidthMM(), psize.GetHeightMM());
 		return true;
 	}
@@ -77,7 +77,7 @@ public:
 		if (this->pageId == 0)
 		{
 			this->pageId = 1;
-			this->doc->SetNextPageOrientation(Media::IPrintDocument::PO_LANDSCAPE);
+			this->doc->SetNextPageOrientation(Media::IPrintDocument::PageOrientation::Landscape);
 			return true;
 		}
 		else

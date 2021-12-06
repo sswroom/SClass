@@ -178,7 +178,7 @@ Bool Text::Doc::TextDocument::BeginPrint(Media::IPrintDocument *doc)
 	section = this->items->GetItem(0);
 	NEW_CLASS(paper, Media::PaperSize(section->GetPaperType()));
 	doc->SetNextPagePaperSizeMM(paper->GetWidthMM(), paper->GetHeightMM());
-	doc->SetNextPageOrientation(section->IsLandscape()?Media::IPrintDocument::PO_LANDSCAPE:Media::IPrintDocument::PO_PORTRAIT);
+	doc->SetNextPageOrientation(section->IsLandscape()?Media::IPrintDocument::PageOrientation::Landscape:Media::IPrintDocument::PageOrientation::Portrait);
 	DEL_CLASS(paper);
 	return true;
 }

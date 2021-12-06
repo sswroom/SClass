@@ -22,7 +22,7 @@ Crypto::TOTP::~TOTP()
 
 Crypto::OTP::OTPType Crypto::TOTP::GetType()
 {
-	return Crypto::OTP::OT_TOTP;
+	return Crypto::OTP::OTPType::TOTP;
 }
 
 UInt64 Crypto::TOTP::GetCounter()

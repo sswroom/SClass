@@ -69,7 +69,7 @@ UInt32 __stdcall Media::CUPSPrintDocument::PrintThread(void *userObj)
 	sptr = &fileName[i + 1];
 	Text::StrConcat(Text::StrInt64(Text::StrConcat(sptr, (const UTF8Char*)"CUPS_"), t), (const UTF8Char*)".tmp");
 
-	if (me->po == PO_LANDSCAPE)
+	if (me->po == PageOrientation::Landscape)
 	{
 		paperWidth = Math::Unit::Distance::Convert(Math::Unit::Distance::DU_MILLIMETER, Math::Unit::Distance::DU_INCH, me->paperHeight);
 		paperHeight = Math::Unit::Distance::Convert(Math::Unit::Distance::DU_MILLIMETER, Math::Unit::Distance::DU_INCH, me->paperWidth);
@@ -86,7 +86,7 @@ UInt32 __stdcall Media::CUPSPrintDocument::PrintThread(void *userObj)
 	i = 1;
 	while (true)
 	{
-		if (me->po == PO_LANDSCAPE)
+		if (me->po == PageOrientation::Landscape)
 		{
 			paperWidth = Math::Unit::Distance::Convert(Math::Unit::Distance::DU_MILLIMETER, Math::Unit::Distance::DU_INCH, me->paperHeight);
 			paperHeight = Math::Unit::Distance::Convert(Math::Unit::Distance::DU_MILLIMETER, Math::Unit::Distance::DU_INCH, me->paperWidth);
@@ -143,7 +143,7 @@ Media::CUPSPrintDocument::CUPSPrintDocument(const UTF8Char *printerName, Media::
 	this->started = false;
 	this->running = false;
 	this->printerName = printerName;
-	this->po = PO_PORTRAIT;
+	this->po = PageOrientation::Portrait;
 	Media::PaperSize psize(Media::PaperSize::PT_A4);
 	this->paperWidth = psize.GetWidthMM();
 	this->paperHeight = psize.GetHeightMM();

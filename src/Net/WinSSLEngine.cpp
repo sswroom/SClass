@@ -6,6 +6,7 @@
 #include "Net/WinSSLClient.h"
 #include "Net/WinSSLEngine.h"
 #include "Text/MyString.h"
+#include "Text/StringBuilderUTF8.h"
 #include "Text/StringBuilderW.h"
 #include <windows.h>
 #include <ntsecapi.h>
@@ -1177,8 +1178,17 @@ Bool Net::WinSSLEngine::GenerateCert(const UTF8Char *country, const UTF8Char *co
 		CryptReleaseContext(hProv, 0);
 		return false;
 	}
-	NEW_CLASS(*certASN1, Crypto::Cert::X509Cert((const UTF8Char *)"selfsign.crt", pCertContext->pbCertEncoded, pCertContext->cbCertEncoded));
-	*keyASN1 = Crypto::Cert::X509PrivKey::CreateFromKeyBuff(Crypto::Cert::X509File::KeyType::RSA, certBuff, certBuffSize, (const UTF8Char*)"RSAKey.key");
+	Text::StringBuilderUTF8 sb2;
+	sb2.ClearStr();
+	sb2.Append(commonName);
+	sb2.Append((const UTF8Char*)".crt");
+	NEW_CLASS(*certASN1, Crypto::Cert::X509Cert(sb2.ToString(), pCertContext->pbCertEncoded, pCertContext->cbCertEncoded));
+	sb2.ClearStr();
+	sb2.Append(commonName);
+	sb2.Append((const UTF8Char*)".key");
+	Text::String *s = Text::String::New(sb2.ToString(), sb2.GetLength());
+	*keyASN1 = Crypto::Cert::X509PrivKey::CreateFromKeyBuff(Crypto::Cert::X509File::KeyType::RSA, certBuff, certBuffSize, s);
+	s->Release();
 	CertFreeCertificateContext(pCertContext);
 	//CryptReleaseContext(hCryptProvOrNCryptKey, 0);
 	MemFree(pbEncoded);

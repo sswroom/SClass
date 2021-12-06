@@ -754,7 +754,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImageSaveClicked(void *userObj)
 				dlg->SetFileName(userFile->oriFileName->v);
 				if (dlg->ShowDialog(me->GetHandle()))
 				{
-					IO::FileUtil::CopyFile(sb.ToString(), dlg->GetFileName(), IO::FileUtil::FEA_FAIL, 0, 0);
+					IO::FileUtil::CopyFile(sb.ToString(), dlg->GetFileName(), IO::FileUtil::FileExistAction::Fail, 0, 0);
 				}
 				DEL_CLASS(dlg);
 			}
@@ -794,7 +794,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImageSaveAllClicked(void *userOb
 							sb2.AppendChar(IO::Path::PATH_SEPERATOR, 1);
 						}
 						sb2.AppendC(userFile->oriFileName->v, userFile->oriFileName->leng);
-						IO::FileUtil::CopyFile(sb.ToString(), sb2.ToString(), IO::FileUtil::FEA_FAIL, 0, 0);
+						IO::FileUtil::CopyFile(sb.ToString(), sb2.ToString(), IO::FileUtil::FileExistAction::Fail, 0, 0);
 					}
 				}
 				i++;
@@ -2269,7 +2269,7 @@ Bool SSWR::OrganMgr::OrganMainForm::ToSaveSpecies()
 				
 				if (IO::Path::GetPathType(u8buff) == IO::Path::PathType::Directory)
 				{
-					if (IO::FileUtil::MoveFile(u8buff, u8buff2, IO::FileUtil::FEA_FAIL, 0, 0))
+					if (IO::FileUtil::MoveFile(u8buff, u8buff2, IO::FileUtil::FileExistAction::Fail, 0, 0))
 					{
 						this->lastSpeciesObj->SetDirName(&u8buff2[i + 1]);
 					}
