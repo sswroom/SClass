@@ -721,7 +721,7 @@ Map::MapEnv::GroupItem *Map::MapEnv::AddGroup(Map::MapEnv::GroupItem *group, con
 	Map::MapEnv::GroupItem *newG;
 	newG = MemAlloc(Map::MapEnv::GroupItem, 1);
 	newG->itemType = Map::MapEnv::IT_GROUP;
-	newG->groupName = Text::String::New(subgroupName);
+	newG->groupName = Text::String::NewNotNull(subgroupName);
 	newG->groupHide = false;
 	NEW_CLASS(newG->subitems, Data::ArrayList<Map::MapEnv::MapItem*>());
 
@@ -877,7 +877,7 @@ void Map::MapEnv::SetGroupName(Map::MapEnv::GroupItem *group, const UTF8Char *na
 {
 	Sync::MutexUsage mutUsage(this->mut);
 	group->groupName->Release();
-	group->groupName = Text::String::New(name);
+	group->groupName = Text::String::NewNotNull(name);
 }
 
 void Map::MapEnv::SetGroupHide(Map::MapEnv::GroupItem *group, Bool isHide)

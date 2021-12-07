@@ -61,6 +61,7 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char 
 	Data::DateTime dt;
 	Data::DateTime dt2;
 	Data::DateTime *t;
+	Text::String *s;
 	const UTF8Char *csptr;
 	const UTF8Char *csptr2;
 	IO::ZIPBuilder *zip;
@@ -654,8 +655,8 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char 
 	{
 		Text::SpreadSheet::Worksheet *sheet = workbook->GetItem(i);
 		sb.Append((const UTF8Char*)"<sheet name=");
-		csptr = sheet->GetName();
-		csptr2 = Text::XML::ToNewAttrText(csptr);
+		s = sheet->GetName();
+		csptr2 = Text::XML::ToNewAttrText(s->v);
 		sb.Append(csptr2);
 		Text::XML::FreeNewText(csptr2);
 		sb.Append((const UTF8Char*)" sheetId=\"");

@@ -6,22 +6,22 @@
 #include "Text/StringBuilderUTF8.h"
 
 
-const UTF8Char *DB::MySQLConn::GetConnServer()
+Text::String *DB::MySQLConn::GetConnServer()
 {
 	return this->server;
 }
 
-const UTF8Char *DB::MySQLConn::GetConnDB()
+Text::String *DB::MySQLConn::GetConnDB()
 {
 	return this->databse;
 }
 
-const UTF8Char *DB::MySQLConn::GetConnUID()
+Text::String *DB::MySQLConn::GetConnUID()
 {
 	return this->uid;
 }
 
-const UTF8Char *DB::MySQLConn::GetConnPWD()
+Text::String *DB::MySQLConn::GetConnPWD()
 {
 	return this->pwd;
 }

@@ -22,7 +22,7 @@ void DB::MySQLConn::Connect()
 	MYSQL *mysql = mysql_init(0);
 	this->mysql = mysql;
 
-	if (mysql_real_connect((MYSQL*)this->mysql, (const Char*)this->server, (const Char*)this->uid, (const Char*)this->pwd, (const Char*)this->databse, 0, 0, 0) == 0)
+	if (mysql_real_connect((MYSQL*)this->mysql, (const Char*)STR_PTR(this->server), (const Char*)STR_PTR(this->uid), (const Char*)STR_PTR(this->pwd), (const Char*)STR_PTR(this->database), 0, 0, 0) == 0)
 	{
 		Text::StringBuilderUTF8 sb;
 		sb.Append((const UTF8Char*)"Error in connecting to database: ");
@@ -45,10 +45,10 @@ DB::MySQLConn::MySQLConn(const UTF8Char *server, const UTF8Char *uid, const UTF8
 	}
 
 	this->mysql = 0;
-	this->server = Text::StrCopyNew(server);
-	this->uid = Text::StrCopyNew(uid);
-	this->pwd = Text::StrCopyNew(pwd);
-	this->databse = Text::StrCopyNew(database);
+	this->server = Text::String::NewOrNull(server);
+	this->uid = Text::String::NewOrNull(uid);
+	this->pwd = Text::String::NewOrNull(pwd);
+	this->database = Text::String::NewOrNull(database);
 	this->log = log;
 	this->tableNames = 0;
 	Connect();
@@ -61,10 +61,10 @@ DB::MySQLConn::MySQLConn(const WChar *server, const WChar *uid, const WChar *pwd
 	}
 
 	this->mysql = 0;
-	this->server = Text::StrToUTF8New(server);
-	this->uid = Text::StrToUTF8New(uid);
-	this->pwd = Text::StrToUTF8New(pwd);
-	this->databse = Text::StrToUTF8New(database);
+	this->server = Text::String::NewOrNull(server);
+	this->uid = Text::String::NewOrNull(uid);
+	this->pwd = Text::String::NewOrNull(pwd);
+	this->database = Text::String::NewOrNull(database);
 	this->log = log;
 	this->tableNames = 0;
 	Connect();
@@ -73,26 +73,10 @@ DB::MySQLConn::MySQLConn(const WChar *server, const WChar *uid, const WChar *pwd
 DB::MySQLConn::~MySQLConn()
 {
 	Close();
-	if (this->server)
-	{
-		Text::StrDelNew(this->server);
-		this->server = 0;
-	}
-	if (this->databse)
-	{
-		Text::StrDelNew(this->databse);
-		this->databse = 0;
-	}
-	if (this->uid)
-	{
-		Text::StrDelNew(this->uid);
-		this->uid = 0;
-	}
-	if (this->pwd)
-	{
-		Text::StrDelNew(this->pwd);
-		this->pwd = 0;
-	}
+	SDEL_STRING(this->server);
+	SDEL_STRING(this->database);
+	SDEL_STRING(this->uid);
+	SDEL_STRING(this->pwd);
 	if (this->tableNames)
 	{
 		UOSInt i = this->tableNames->GetCount();
@@ -131,10 +115,10 @@ void DB::MySQLConn::GetConnName(Text::StringBuilderUTF *sb)
 {
 	sb->Append((const UTF8Char*)"MySQL:");
 	sb->Append(this->server);
-	if (this->databse)
+	if (this->database)
 	{
 		sb->AppendChar('/', 1);
-		sb->Append(this->databse);
+		sb->Append(this->database);
 	}
 }
 
@@ -377,22 +361,22 @@ Bool DB::MySQLConn::IsConnError()
 	return this->mysql == 0;
 }
 
-const UTF8Char *DB::MySQLConn::GetConnServer()
+Text::String *DB::MySQLConn::GetConnServer()
 {
 	return this->server;
 }
 
-const UTF8Char *DB::MySQLConn::GetConnDB()
+Text::String *DB::MySQLConn::GetConnDB()
 {
-	return this->databse;
+	return this->database;
 }
 
-const UTF8Char *DB::MySQLConn::GetConnUID()
+Text::String *DB::MySQLConn::GetConnUID()
 {
 	return this->uid;
 }
 
-const UTF8Char *DB::MySQLConn::GetConnPWD()
+Text::String *DB::MySQLConn::GetConnPWD()
 {
 	return this->pwd;
 }
@@ -570,7 +554,7 @@ Text::String *DB::MySQLReader::GetNewStr(UOSInt colIndex)
 		return 0;
 	if (((MYSQL_ROW)this->row)[colIndex])
 	{
-		return Text::String::New((const UTF8Char*)((MYSQL_ROW)this->row)[colIndex]);
+		return Text::String::NewOrNull((const UTF8Char*)((MYSQL_ROW)this->row)[colIndex]);
 	}
 	else
 	{

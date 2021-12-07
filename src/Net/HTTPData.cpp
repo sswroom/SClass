@@ -225,8 +225,8 @@ Net::HTTPData::HTTPData(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Net::HTT
 			fdh->objectCnt = 1;
 			fdh->seekCnt = 0;
 			NEW_CLASS(fdh->mut, Sync::Mutex());
-			fdh->url = Text::String::New(url);
-			fdh->localFile = Text::String::New(localFile);
+			fdh->url = Text::String::NewNotNull(url);
+			fdh->localFile = Text::String::NewNotNull(localFile);
 			fdh->isLoading = false;
 			fdh->loadSize = 0;
 			fdh->cli = 0;
@@ -252,8 +252,8 @@ Net::HTTPData::HTTPData(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Net::HTT
 		fdh->objectCnt = 1;
 		fdh->seekCnt = 0;
 		NEW_CLASS(fdh->mut, Sync::Mutex());
-		fdh->url = Text::String::New(url);
-		fdh->localFile = Text::String::New(localFile);
+		fdh->url = Text::String::NewNotNull(url);
+		fdh->localFile = Text::String::NewNotNull(localFile);
 		fdh->isLoading = true;
 		fdh->loadSize = 0;
 		fdh->sockf = sockf;
@@ -357,7 +357,7 @@ void Net::HTTPData::SetFullName(const UTF8Char *fullName)
 	UOSInt i;
 	Sync::MutexUsage mutUsage(fdh->mut);
 	SDEL_STRING(fdh->url);
-	fdh->url = Text::String::New(fullName);
+	fdh->url = Text::String::NewNotNull(fullName);
 	i = fdh->url->LastIndexOf('/');
 	if (i != INVALID_INDEX)
 	{

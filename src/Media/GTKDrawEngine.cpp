@@ -595,9 +595,13 @@ Bool Media::GTKDrawImage::DrawEllipse(Double tlx, Double tly, Double w, Double h
 	return true;
 }
 
+Bool Media::GTKDrawImage::DrawString(Double tlx, Double tly, Text::String *str, DrawFont *f, DrawBrush *b)
+{
+	return DrawString(tlx, tly, str->v, f, b);
+}
+
 Bool Media::GTKDrawImage::DrawString(Double tlx, Double tly, const UTF8Char *str, DrawFont *f, DrawBrush *b)
 {
-//	wprintf(L"GTK: DrawStringUTF8, txt = %s, pos: (%lf, %lf)\r\n", str, tlx, tly);
 	GTKDrawFont *font = (GTKDrawFont*)f;
 	GTKDrawBrush *brush = (GTKDrawBrush*)b;
 	font->Init(this->cr);
@@ -607,9 +611,13 @@ Bool Media::GTKDrawImage::DrawString(Double tlx, Double tly, const UTF8Char *str
 	return true;
 }
 
+Bool Media::GTKDrawImage::DrawStringRot(Double centX, Double centY, Text::String *str, DrawFont *f, DrawBrush *b, Double angleDegree)
+{
+	return DrawStringRot(centX, centY, str->v, f, b, angleDegree);
+}
+
 Bool Media::GTKDrawImage::DrawStringRot(Double centX, Double centY, const UTF8Char *str, DrawFont *f, DrawBrush *b, Double angleDegree)
 {
-//	wprintf(L"GTK: DrawStringRotUTF8, angle = %lf\r\n", angleDegree);
 	GTKDrawFont *font = (GTKDrawFont*)f;
 	GTKDrawBrush *brush = (GTKDrawBrush*)b;
 	Double angleR = angleDegree * Math::PI / 180;
@@ -625,6 +633,11 @@ Bool Media::GTKDrawImage::DrawStringRot(Double centX, Double centY, const UTF8Ch
 	cairo_show_text((cairo_t *)this->cr, (const Char*)str);
 	cairo_rotate((cairo_t *)this->cr, -angleR);
 	return true;
+}
+
+Bool Media::GTKDrawImage::DrawStringB(Double tlx, Double tly, Text::String *str, DrawFont *f, DrawBrush *b, UOSInt buffSize)
+{
+	return DrawStringB(tlx, tly, str, f, b, buffSize);
 }
 
 Bool Media::GTKDrawImage::DrawStringB(Double tlx, Double tly, const UTF8Char *str, DrawFont *f, DrawBrush *b, UOSInt buffSize)
@@ -761,7 +774,12 @@ Bool Media::GTKDrawImage::DrawStringB(Double tlx, Double tly, const UTF8Char *st
 	return true;
 }
 
-Bool Media::GTKDrawImage::DrawStringRotB(Double centX, Double centY, const UTF8Char *str, DrawFont *f, DrawBrush *p, Double angleDegree, UOSInt buffSize)
+Bool Media::GTKDrawImage::DrawStringRotB(Double centX, Double centY, Text::String *str, DrawFont *f, DrawBrush *b, Double angleDegree, UOSInt buffSize)
+{
+	return DrawStringRotB(centX, centY, str->v, f, b, angleDegree, buffSize);
+}
+
+Bool Media::GTKDrawImage::DrawStringRotB(Double centX, Double centY, const UTF8Char *str, DrawFont *f, DrawBrush *b, Double angleDegree, UOSInt buffSize)
 {
 	printf("GTK: Draw StringRotBUTF8 (Not support)\r\n");
 	return false;

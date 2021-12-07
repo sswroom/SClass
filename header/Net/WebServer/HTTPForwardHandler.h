@@ -2,6 +2,7 @@
 #define _SM_NET_WEBSERVER_HTTPFORWARDHANDLER
 #include "Net/SSLEngine.h"
 #include "Net/WebServer/WebStandardHandler.h"
+#include "Text/String.h"
 
 namespace Net
 {
@@ -17,7 +18,7 @@ namespace Net
 			};
 		private:
 			Data::ArrayList<const UTF8Char *> *forwardAddrs;
-			Data::ArrayList<const UTF8Char *> *injHeaders;
+			Data::ArrayList<Text::String *> *injHeaders;
 			UOSInt nextURL;
 			Sync::Mutex *mut;
 			Net::SocketFactory *sockf;
@@ -33,6 +34,7 @@ namespace Net
 			virtual Bool ProcessRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *subReq);
 
 			void AddForwardURL(const UTF8Char *url);
+			void AddInjectHeader(Text::String *header);
 			void AddInjectHeader(const UTF8Char *header);
 		};
 	}

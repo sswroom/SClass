@@ -200,39 +200,39 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	IO::ConfigFile *cfg = IO::IniFile::ParseProgConfig(0);
 	if (cfg)
 	{
-		const UTF8Char *csptr;
-		if ((csptr = cfg->GetValue((const UTF8Char*)"FrameSkip")) != 0)
+		Text::String *s;
+		if ((s = cfg->GetValue((const UTF8Char*)"FrameSkip")) != 0)
 		{
-			frameSkip = Text::StrToOSInt(csptr);
+			frameSkip = s->ToOSInt();
 		}
-		if ((csptr = cfg->GetValue((const UTF8Char*)"RangeLeft")) != 0)
+		if ((s = cfg->GetValue((const UTF8Char*)"RangeLeft")) != 0)
 		{
-			rangeLeft = Text::StrToOSInt(csptr);
+			rangeLeft = s->ToOSInt();
 		}
-		if ((csptr = cfg->GetValue((const UTF8Char*)"RangeTop")) != 0)
+		if ((s = cfg->GetValue((const UTF8Char*)"RangeTop")) != 0)
 		{
-			rangeTop = Text::StrToOSInt(csptr);
+			rangeTop = s->ToOSInt();
 		}
-		if ((csptr = cfg->GetValue((const UTF8Char*)"RangeRight")) != 0)
+		if ((s = cfg->GetValue((const UTF8Char*)"RangeRight")) != 0)
 		{
-			rangeRight = Text::StrToOSInt(csptr);
+			rangeRight = s->ToOSInt();
 		}
-		if ((csptr = cfg->GetValue((const UTF8Char*)"RangeBottom")) != 0)
+		if ((s = cfg->GetValue((const UTF8Char*)"RangeBottom")) != 0)
 		{
-			rangeBottom = Text::StrToOSInt(csptr);
+			rangeBottom = s->ToOSInt();
 		}
-		if ((csptr = cfg->GetValue((const UTF8Char*)"PreferedFormat")) != 0)
+		if ((s = cfg->GetValue((const UTF8Char*)"PreferedFormat")) != 0)
 		{
-			if (Text::StrCharCnt(csptr) == 4)
-			preferedFormat = *(UInt32*)csptr;
+			if (s->leng == 4)
+			preferedFormat = *(UInt32*)s->v;
 		}
-		if ((csptr = cfg->GetValue((const UTF8Char*)"PreferedWidth")) != 0)
+		if ((s = cfg->GetValue((const UTF8Char*)"PreferedWidth")) != 0)
 		{
-			preferedWidth = Text::StrToUOSInt(csptr);
+			preferedWidth = s->ToUOSInt();
 		}
-		if ((csptr = cfg->GetValue((const UTF8Char*)"PreferedHeight")) != 0)
+		if ((s = cfg->GetValue((const UTF8Char*)"PreferedHeight")) != 0)
 		{
-			preferedHeight = Text::StrToUOSInt(csptr);
+			preferedHeight = s->ToUOSInt();
 		}
 		DEL_CLASS(cfg);
 	}

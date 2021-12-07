@@ -33,7 +33,7 @@ IO::StmData::ConcatStreamData::ConcatStreamData(const UTF8Char *fileName)
 	NEW_CLASS(this->cdb->mut, Sync::Mutex());
 	NEW_CLASS(this->cdb->dataList, Data::ArrayList<IO::IStreamData*>());
 	NEW_CLASS(this->cdb->ofstList, Data::ArrayListUInt64());
-	this->cdb->fileName = Text::String::New(fileName);
+	this->cdb->fileName = Text::String::NewNotNull(fileName);
 	this->cdb->objectCnt = 1;
 	this->cdb->totalSize = 0;
 	this->dataOffset = 0;

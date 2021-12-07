@@ -105,18 +105,18 @@ SSWR::SDNSProxy::SDNSProxyCore::SDNSProxyCore(IO::ConfigFile *cfg, IO::Writer *c
 
 	if (cfg)
 	{
-		const UTF8Char *csptr;
+		Text::String *s;
 		UOSInt i;
 		UOSInt j;
 		UInt32 ip;
 		Int32 v;
 		UTF8Char *sarr[2];
-		csptr = cfg->GetValue((const UTF8Char*)"DNS");
-		if (csptr)
+		s = cfg->GetValue((const UTF8Char*)"DNS");
+		if (s)
 		{
 			Data::ArrayList<UInt32> dnsList;
 			Text::StringBuilderUTF8 sb;
-			sb.Append(csptr);
+			sb.Append(s);
 			sarr[1] = sb.ToString();
 			while (true)
 			{
@@ -142,23 +142,23 @@ SSWR::SDNSProxy::SDNSProxyCore::SDNSProxyCore(IO::ConfigFile *cfg, IO::Writer *c
 			}
 		}
 
-		csptr = cfg->GetValue((const UTF8Char*)"LogPath");
-		if (csptr)
+		s = cfg->GetValue((const UTF8Char*)"LogPath");
+		if (s)
 		{
-			this->log->AddFileLog(csptr, IO::ILogHandler::LOG_TYPE_PER_DAY, IO::ILogHandler::LOG_GROUP_TYPE_PER_MONTH, IO::ILogHandler::LOG_LEVEL_RAW, "yyyy-MM-dd HH:mm:ss.fff", false);
+			this->log->AddFileLog(s, IO::ILogHandler::LOG_TYPE_PER_DAY, IO::ILogHandler::LOG_GROUP_TYPE_PER_MONTH, IO::ILogHandler::LOG_LEVEL_RAW, "yyyy-MM-dd HH:mm:ss.fff", false);
 		}
 
-		csptr = cfg->GetValue((const UTF8Char*)"DisableV6");
-		if (csptr && Text::StrToInt32(csptr, &v))
+		s = cfg->GetValue((const UTF8Char*)"DisableV6");
+		if (s && s->ToInt32(&v))
 		{
 			this->proxy->SetDisableV6(v != 0);
 		}
 
-		csptr = cfg->GetValue((const UTF8Char*)"Blacklist");
-		if (csptr && csptr[0] != 0)
+		s = cfg->GetValue((const UTF8Char*)"Blacklist");
+		if (s && s->v[0] != 0)
 		{
 			Text::StringBuilderUTF8 sb;
-			sb.Append(csptr);
+			sb.Append(s);
 			sarr[1] = sb.ToString();
 			while (true)
 			{
@@ -173,8 +173,8 @@ SSWR::SDNSProxy::SDNSProxyCore::SDNSProxyCore(IO::ConfigFile *cfg, IO::Writer *c
 		}
 
 		UInt16 managePort;
-		csptr = cfg->GetValue((const UTF8Char*)"ManagePort");
-		if (csptr && csptr[0] != 0 && Text::StrToUInt16(csptr, &managePort))
+		s = cfg->GetValue((const UTF8Char*)"ManagePort");
+		if (s && s->v[0] != 0 && s->ToUInt16(&managePort))
 		{
 			NEW_CLASS(this->hdlr, SSWR::SDNSProxy::SDNSProxyWebHandler(this->proxy, this->log, this));
 			NEW_CLASS(this->listener, Net::WebServer::WebListener(this->sockf, 0, this->hdlr, managePort, 60, 4, (const UTF8Char*)"SDNSProxy/1.0", false, true));

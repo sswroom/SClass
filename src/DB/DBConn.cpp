@@ -3,6 +3,11 @@
 #include "Text/MyString.h"
 #include "DB/DBConn.h"
 
+DB::DBConn::DBConn(Text::String *sourceName) : DB::ReadingDB(sourceName)
+{
+	this->lastDataError = DE_NO_ERROR;
+}
+
 DB::DBConn::DBConn(const UTF8Char *sourceName) : DB::ReadingDB(sourceName)
 {
 	this->lastDataError = DE_NO_ERROR;

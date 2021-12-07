@@ -45,7 +45,7 @@ Text::String *Net::ACMEConn::JWK(Crypto::Cert::X509Key *key, Crypto::Token::JWSi
 			b64.EncodeBin(&sb, m, mSize);
 			sb.Append((const UTF8Char*)"\"}");
 			*alg = Crypto::Token::JWSignature::Algorithm::RS256;
-			return Text::String::New(sb.ToString());
+			return Text::String::NewNotNull(sb.ToString());
 		}
 	case Crypto::Cert::X509Key::KeyType::ECDSA:
 		return 0;
@@ -84,7 +84,7 @@ Text::String *Net::ACMEConn::ProtectedJWK(const UTF8Char *nonce, const UTF8Char 
 	}
 	jwk->Release();
 	sb.Append((const UTF8Char*)"}");
-	return Text::String::New(sb.ToString());
+	return Text::String::NewNotNull(sb.ToString());
 }
 
 Text::String *Net::ACMEConn::EncodeJWS(Net::SSLEngine *ssl, const UTF8Char *protStr, const UTF8Char *data, Crypto::Cert::X509Key *key, Crypto::Token::JWSignature::Algorithm alg)
@@ -110,7 +110,7 @@ Text::String *Net::ACMEConn::EncodeJWS(Net::SSLEngine *ssl, const UTF8Char *prot
 	printf("Protected: %s\r\n", protStr);
 	printf("Payload: %s\r\n", data);
 	printf("JWS: %s\r\n", sb.ToString());
-	return Text::String::New(sb.ToString());
+	return Text::String::NewNotNull(sb.ToString());
 }
 
 Bool Net::ACMEConn::KeyHash(Crypto::Cert::X509Key *key, Text::StringBuilderUTF *sb)
@@ -732,7 +732,7 @@ Bool Net::ACMEConn::LoadKey(const UTF8Char *fileName)
 	{
 		return false;
 	}
-	Text::String *s = Text::String::New(fileName);
+	Text::String *s = Text::String::NewNotNull(fileName);
 	Crypto::Cert::X509File *x509 = Parser::FileParser::X509Parser::ParseBuff(keyPEM, keyPEMSize, s);
 	s->Release();
 	if (x509 == 0)

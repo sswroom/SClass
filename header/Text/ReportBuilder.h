@@ -45,8 +45,8 @@ namespace Text
 			Media::DrawImage *dimg;
 		} IconStatus;
 	private:
-		const UTF8Char *name;
-		const UTF8Char *fontName;
+		Text::String *name;
+		Text::String *fontName;
 		UOSInt colCount;
 		Data::ArrayList<const UTF8Char **> *preheaders;
 		Data::ArrayList<const UTF8Char **> *headers;
@@ -64,6 +64,7 @@ namespace Text
 		ReportBuilder(const UTF8Char *name, UOSInt colCount, const UTF8Char **columns);
 		~ReportBuilder();
 
+		void SetFontName(Text::String *fontName);
 		void SetFontName(const UTF8Char *fontName);
 		void SetPaperHori(Bool paperHori);
 		void AddChart(Data::IChart *chart);

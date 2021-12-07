@@ -31,6 +31,7 @@ namespace DB
 
 	protected:
 		DataError lastDataError;
+		DBConn(Text::String *sourceName);
 		DBConn(const UTF8Char *sourceName);
 	public:
 		virtual ~DBConn();

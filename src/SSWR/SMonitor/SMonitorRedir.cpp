@@ -63,7 +63,7 @@ void SSWR::SMonitor::SMonitorRedir::CalcCRC(const UInt8 *buff, UOSInt size, UInt
 SSWR::SMonitor::SMonitorRedir::SMonitorRedir(Net::SocketFactory *sockf)
 {
 	this->sockf = sockf;
-	this->hostName = Text::StrCopyNew((const UTF8Char*)"sswroom.no-ip.org");
+	this->hostName = Text::String::NewNotNull((const UTF8Char*)"sswroom.no-ip.org");
 	this->port = 5100;
 	this->recReplyHdlr = 0;
 	this->recReplyObj = 0;
@@ -72,10 +72,10 @@ SSWR::SMonitor::SMonitorRedir::SMonitorRedir(Net::SocketFactory *sockf)
 	NEW_CLASS(this->svr, Net::UDPServer(this->sockf, 0, 0, 0, OnDataUDPPacket, this, 0, 0, 2, false));
 }
 
-SSWR::SMonitor::SMonitorRedir::SMonitorRedir(Net::SocketFactory *sockf, const UTF8Char *hostName, UInt16 port)
+SSWR::SMonitor::SMonitorRedir::SMonitorRedir(Net::SocketFactory *sockf, Text::String *hostName, UInt16 port)
 {
 	this->sockf = sockf;
-	this->hostName = Text::StrCopyNew(hostName);
+	this->hostName = hostName->Clone();
 	this->port = port;
 	this->recReplyHdlr = 0;
 	this->recReplyObj = 0;
@@ -89,7 +89,7 @@ SSWR::SMonitor::SMonitorRedir::~SMonitorRedir()
 	DEL_CLASS(this->svr);
 	DEL_CLASS(this->dataCRC);
 	DEL_CLASS(this->dataCRCMut);
-	Text::StrDelNew(this->hostName);
+	this->hostName->Release();
 }
 
 Bool SSWR::SMonitor::SMonitorRedir::IsError()
@@ -127,7 +127,7 @@ Bool SSWR::SMonitor::SMonitorRedir::SendDevReading(Int64 cliId, const SSWR::SMon
 	buff[i + 1] = calcVal[1] ^ 0x34;
 
 	Net::SocketUtil::AddressInfo addr;
-	if (this->sockf->DNSResolveIP(this->hostName, &addr))
+	if (this->sockf->DNSResolveIP(this->hostName->v, &addr))
 	{
 		this->svr->SendTo(&addr, this->port, buff, i + 2);
 	}
@@ -149,7 +149,7 @@ Bool SSWR::SMonitor::SMonitorRedir::SendDevName(Int64 cliId, const UTF8Char *nam
 	buff[size + 1] = calcVal[1] ^ 0x34;
 
 	Net::SocketUtil::AddressInfo addr;
-	if (this->sockf->DNSResolveIP(this->hostName, &addr))
+	if (this->sockf->DNSResolveIP(this->hostName->v, &addr))
 	{
 		this->svr->SendTo(&addr, this->port, buff, size + 2);
 	}
@@ -175,7 +175,7 @@ Bool SSWR::SMonitor::SMonitorRedir::SendDevPlatform(Int64 cliId, const UTF8Char 
 	buff[size + 1] = calcVal[1] ^ 0x34;
 
 	Net::SocketUtil::AddressInfo addr;
-	if (this->sockf->DNSResolveIP(this->hostName, &addr))
+	if (this->sockf->DNSResolveIP(this->hostName->v, &addr))
 	{
 		this->svr->SendTo(&addr, this->port, buff, size + 2);
 	}
@@ -197,7 +197,7 @@ Bool SSWR::SMonitor::SMonitorRedir::SendDevCPUName(Int64 cliId, const UTF8Char *
 	buff[size + 1] = calcVal[1] ^ 0x34;
 
 	Net::SocketUtil::AddressInfo addr;
-	if (this->sockf->DNSResolveIP(this->hostName, &addr))
+	if (this->sockf->DNSResolveIP(this->hostName->v, &addr))
 	{
 		this->svr->SendTo(&addr, this->port, buff, size + 2);
 	}
@@ -222,7 +222,7 @@ Bool SSWR::SMonitor::SMonitorRedir::SendDevReadingName(Int64 cliId, UOSInt index
 	buff[size + 1] = calcVal[1] ^ 0x34;
 
 	Net::SocketUtil::AddressInfo addr;
-	if (this->sockf->DNSResolveIP(this->hostName, &addr))
+	if (this->sockf->DNSResolveIP(this->hostName->v, &addr))
 	{
 		this->svr->SendTo(&addr, this->port, buff, size + 2);
 	}
@@ -245,7 +245,7 @@ Bool SSWR::SMonitor::SMonitorRedir::SendDevVersion(Int64 cliId, Int64 progVersio
 	buff[size + 1] = calcVal[1] ^ 0x34;
 
 	Net::SocketUtil::AddressInfo addr;
-	if (this->sockf->DNSResolveIP(this->hostName, &addr))
+	if (this->sockf->DNSResolveIP(this->hostName->v, &addr))
 	{
 		this->svr->SendTo(&addr, this->port, buff, size + 2);
 	}

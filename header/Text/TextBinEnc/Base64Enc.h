@@ -25,6 +25,7 @@ namespace Text
 			virtual ~Base64Enc();
 			virtual UOSInt EncodeBin(Text::StringBuilderUTF *sb, const UInt8 *dataBuff, UOSInt buffSize);
 			UOSInt EncodeBin(Text::StringBuilderUTF *sb, const UInt8 *dataBuff, UOSInt buffSize, Text::LineBreakType lbt, UOSInt charsPerLine);
+			UTF8Char *EncodeBin(UTF8Char *sbuff, const UInt8 *dataBuff, UOSInt buffSize);
 			virtual UOSInt CalcBinSize(const UTF8Char *b64Str);
 			virtual UOSInt CalcBinSize(const WChar *sbuff);
 			virtual UOSInt DecodeBin(const UTF8Char *b64Str, UInt8 *dataBuff);

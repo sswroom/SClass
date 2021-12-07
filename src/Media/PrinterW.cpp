@@ -26,7 +26,7 @@ namespace Media
 
 		static UInt32 __stdcall PrintThread(void *userObj);
 	public:
-		GDIPrintDocument(const UTF8Char *printerName, UInt8 *devMode, Media::GDIEngine *eng, IPrintHandler *hdlr);
+		GDIPrintDocument(Text::String *printerName, UInt8 *devMode, Media::GDIEngine *eng, IPrintHandler *hdlr);
 		virtual ~GDIPrintDocument();
 
 		Bool IsError();
@@ -85,7 +85,7 @@ UInt32 __stdcall Media::GDIPrintDocument::PrintThread(void *userObj)
 	return 0;
 }
 
-Media::GDIPrintDocument::GDIPrintDocument(const UTF8Char *printerName, UInt8 *devMode, Media::GDIEngine *eng, IPrintHandler *hdlr)
+Media::GDIPrintDocument::GDIPrintDocument(Text::String *printerName, UInt8 *devMode, Media::GDIEngine *eng, IPrintHandler *hdlr)
 {
 	this->devMode = devMode;
 	this->eng = eng;
@@ -93,7 +93,7 @@ Media::GDIPrintDocument::GDIPrintDocument(const UTF8Char *printerName, UInt8 *de
 	this->docName = 0;
 	this->started = false;
 	this->running = false;
-	const WChar *wptr = Text::StrToWCharNew(printerName);
+	const WChar *wptr = Text::StrToWCharNew(printerName->v);
 	this->hdcPrinter = CreateDCW(L"WINSPOOL", wptr, 0, (DEVMODEW*)this->devMode);
 	Text::StrDelNew(wptr);
 	DEVMODEW *devM = (DEVMODEW*)devMode;
@@ -289,7 +289,7 @@ Media::Printer::Printer(const WChar *printerName, UInt8 *devMode, UOSInt devMode
 {
 	this->devMode = 0;
 	this->hPrinter = 0;
-	this->printerName = Text::StrToUTF8New(printerName);
+	this->printerName = Text::String::New(printerName);
 	if (OpenPrinterW((LPWSTR)printerName, &hPrinter, 0) == 0)
 	{
 		return;
@@ -298,11 +298,36 @@ Media::Printer::Printer(const WChar *printerName, UInt8 *devMode, UOSInt devMode
 	MemCopyNO(this->devMode, devMode, devModeSize);
 }
 
+Media::Printer::Printer(Text::String *printerName)
+{
+	this->devMode = 0;
+	this->hPrinter = 0;
+	this->printerName = printerName->Clone();
+	const WChar *wptr = Text::StrToWCharNew(printerName->v);
+	if (OpenPrinterW((LPWSTR)wptr, &hPrinter, 0) == 0)
+	{
+		Text::StrDelNew(wptr);
+		return;
+	}
+
+	Int32 lReturn = DocumentPropertiesW(0, (HANDLE)this->hPrinter, (LPWSTR)wptr, (DEVMODEW*)this->devMode, 0, 0);
+	UOSInt size = (UOSInt)lReturn;
+	this->devMode = MemAlloc(UInt8, size);
+	lReturn = DocumentPropertiesW(0, (HANDLE)this->hPrinter, (LPWSTR)wptr, (DEVMODEW*)this->devMode, 0, DM_OUT_BUFFER);
+	Text::StrDelNew(wptr);
+	if (lReturn < 0)
+	{
+		MemFree(this->devMode);
+		this->devMode = 0;
+//		this->hdcPrinter = CreateDCW(L"WINSPOOL", ((DEVMODEW*)this->devMode)->dmDeviceName, 0, (DEVMODEW*)this->devMode);
+	}
+}
+
 Media::Printer::Printer(const UTF8Char *printerName)
 {
 	this->devMode = 0;
 	this->hPrinter = 0;
-	this->printerName = Text::StrCopyNew(printerName);
+	this->printerName = Text::String::New(printerName);
 	const WChar *wptr = Text::StrToWCharNew(printerName);
 	if (OpenPrinterW((LPWSTR)wptr, &hPrinter, 0) == 0)
 	{
@@ -325,10 +350,7 @@ Media::Printer::Printer(const UTF8Char *printerName)
 
 Media::Printer::~Printer()
 {
-	if (this->printerName)
-	{
-		Text::StrDelNew(this->printerName);
-	}
+	SDEL_STRING(this->printerName);
 	if (hPrinter)
 	{
 		ClosePrinter((HANDLE)hPrinter);

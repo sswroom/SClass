@@ -23,7 +23,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	Net::SocketFactory *sockf;
 	Net::SSLEngine *ssl = 0;
 	IO::LogTool *log;
-	const UTF8Char *csptr;
+	Text::String *s;
 	
 //	MemSetBreakPoint(0x4ab9e78);
 	NEW_CLASS(exHdlr, Manage::ExceptionRecorder((const UTF8Char*)"Error.txt", Manage::ExceptionRecorder::EA_RESTART));
@@ -39,9 +39,9 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	}
 	else
 	{
-		if ((csptr = cfg->GetValue((const UTF8Char*)"SSLEnable")) != 0)
+		if ((s = cfg->GetValue((const UTF8Char*)"SSLEnable")) != 0)
 		{
-			Int32 sslEnable = Text::StrToInt32(csptr);
+			Int32 sslEnable = s->ToInt32();
 			if (sslEnable)
 			{
 				ssl =  Net::DefaultSSLEngine::Create(sockf, false);
@@ -51,8 +51,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				}
 				else
 				{
-					const UTF8Char *certFile = cfg->GetValue((const UTF8Char*)"SSLCert");
-					const UTF8Char *keyFile = cfg->GetValue((const UTF8Char*)"SSLKey");
+					Text::String *certFile = cfg->GetValue((const UTF8Char*)"SSLCert");
+					Text::String *keyFile = cfg->GetValue((const UTF8Char*)"SSLKey");
 					if (certFile == 0)
 					{
 						console->WriteLine((const UTF8Char*)"SSLCert not found");
@@ -63,7 +63,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 						console->WriteLine((const UTF8Char*)"SSLKey not found");
 						SDEL_CLASS(ssl);
 					}
-					else if (!ssl->SetServerCerts(certFile, keyFile))
+					else if (!ssl->SetServerCerts(certFile->v, keyFile->v))
 					{
 						console->WriteLine((const UTF8Char*)"Error in loading SSL Cert/key");
 						SDEL_CLASS(ssl);
@@ -71,17 +71,17 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				}
 			}
 		}
-		if ((csptr = cfg->GetValue((const UTF8Char*)"ScreenSize")) != 0)
+		if ((s = cfg->GetValue((const UTF8Char*)"ScreenSize")) != 0)
 		{
-			scnSize = Text::StrToUInt32(csptr);
+			scnSize = s->ToUInt32();
 		}
 		if (scnSize <= 0)
 		{
 			scnSize = 1800;
 		}
-		if ((csptr = cfg->GetValue((const UTF8Char *)"Unorganized")) != 0)
+		if ((s = cfg->GetValue((const UTF8Char *)"Unorganized")) != 0)
 		{
-			Text::StrToInt32(csptr, &unorganizedGroupId);
+			s->ToInt32(&unorganizedGroupId);
 		}
 		if (cfg->GetValue((const UTF8Char*)"MDBFile"))
 		{
@@ -96,7 +96,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			db = DB::ODBCConn::CreateDBTool(cfg->GetValue((const UTF8Char*)"DBDSN"), cfg->GetValue((const UTF8Char*)"DBUID"), cfg->GetValue((const UTF8Char*)"DBPwd"), cfg->GetValue((const UTF8Char*)"DBSchema"), log, (const UTF8Char*)"DB: ");
 		}
 		UInt16 port;
-		Text::StrToUInt16S(cfg->GetValue((const UTF8Char*)"SvrPort"), &port, 0);
+		cfg->GetValue((const UTF8Char*)"SvrPort")->ToUInt16S(&port, 0);
 		NEW_CLASS(dataHdlr, SSWR::OrganMgr::OrganWebHandler(sockf, ssl, log, db, cfg->GetValue((const UTF8Char*)"ImageDir"), port, cfg->GetValue((const UTF8Char*)"CacheDir"), cfg->GetValue((const UTF8Char*)"DataDir"), scnSize, cfg->GetValue((const UTF8Char*)"ReloadPwd"), unorganizedGroupId, Core::DefaultDrawEngine::CreateDrawEngine()));
 		DEL_CLASS(cfg);
 

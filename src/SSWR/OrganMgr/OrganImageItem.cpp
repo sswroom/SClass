@@ -40,7 +40,7 @@ void SSWR::OrganMgr::OrganImageItem::SetDispName(Text::String *dispName)
 void SSWR::OrganMgr::OrganImageItem::SetDispName(const UTF8Char *dispName)
 {
 	SDEL_STRING(this->dispName);
-	if (dispName) this->dispName = Text::String::New(dispName);
+	if (dispName) this->dispName = Text::String::NewNotNull(dispName);
 }
 
 Text::String *SSWR::OrganMgr::OrganImageItem::GetDispName()
@@ -87,7 +87,7 @@ void SSWR::OrganMgr::OrganImageItem::SetFullName(Text::String *fullName)
 void SSWR::OrganMgr::OrganImageItem::SetFullName(const UTF8Char *fullName)
 {
 	SDEL_STRING(this->fullName);
-	if (fullName) this->fullName = Text::String::New(fullName);
+	if (fullName) this->fullName = Text::String::NewNotNull(fullName);
 }
 
 Text::String *SSWR::OrganMgr::OrganImageItem::GetFullName()
@@ -114,7 +114,7 @@ void SSWR::OrganMgr::OrganImageItem::SetSrcURL(Text::String *srcURL)
 void SSWR::OrganMgr::OrganImageItem::SetSrcURL(const UTF8Char *srcURL)
 {
 	SDEL_STRING(this->srcURL);
-	if (srcURL) this->srcURL = Text::String::New(srcURL);
+	if (srcURL) this->srcURL = Text::String::NewNotNull(srcURL);
 }
 
 Text::String *SSWR::OrganMgr::OrganImageItem::GetSrcURL()
@@ -131,7 +131,7 @@ void SSWR::OrganMgr::OrganImageItem::SetImgURL(Text::String *imgURL)
 void SSWR::OrganMgr::OrganImageItem::SetImgURL(const UTF8Char *imgURL)
 {
 	SDEL_STRING(this->imgURL);
-	if (imgURL) this->imgURL = Text::String::New(imgURL);
+	if (imgURL) this->imgURL = Text::String::NewNotNull(imgURL);
 }
 
 void SSWR::OrganMgr::OrganImageItem::SetUserFile(UserFileInfo *userFile)

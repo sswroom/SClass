@@ -6,6 +6,7 @@
 #include "IO/LogTool.h"
 #include "Sync/Mutex.h"
 #include "Sync/Event.h"
+#include "Text/String.h"
 #include "Text/UTF8Writer.h"
 
 namespace IO
@@ -24,7 +25,7 @@ namespace IO
 		Text::UTF8Writer *log;
 		IO::FileStream *fileStm;
 		const Char *dateFormat;
-		const UTF8Char *fileName;
+		Text::String *fileName;
 		const UTF8Char *extName;
 		Bool closed;
 		Bool running;
@@ -32,7 +33,9 @@ namespace IO
 		UTF8Char *GetNewName(UTF8Char *buff, Data::DateTime *logTime);
 		void WriteArr(const UTF8Char **msgArr, Int64 *dateArr, UOSInt arrCnt);
 		static UInt32 __stdcall FileThread(void *userObj);
+		void Init(LogType style, LogGroup groupStyle, const Char *dateFormat);
 	public:
+		MTFileLog(Text::String *fileName, LogType style, LogGroup groupStyle, const Char *dateFormat);
 		MTFileLog(const UTF8Char *fileName, LogType style, LogGroup groupStyle, const Char *dateFormat);
 		virtual ~MTFileLog();
 		virtual void LogClosed();

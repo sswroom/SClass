@@ -28,7 +28,7 @@ UOSInt Data::Class::AddField(const UTF8Char *name, OSInt ofst, Data::VariItem::I
 	if (field == 0)
 	{
 		field = MemAlloc(FieldInfo, 1);
-		field->name = Text::String::New(name);
+		field->name = Text::String::NewNotNull(name);
 		field->ofst = ofst;
 		field->itemType = itemType;
 		this->fields->Put(field->name, field);

@@ -68,7 +68,7 @@ namespace Data
 		}
 		else
 		{
-			this->keys->Insert((UOSInt)~i, Text::String::New(key));
+			this->keys->Insert((UOSInt)~i, Text::String::NewNotNull(key));
 			this->vals->Insert((UOSInt)~i, val);
 			return 0;
 		}

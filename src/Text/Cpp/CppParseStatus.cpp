@@ -28,7 +28,7 @@ Text::Cpp::CppParseStatus::CppParseStatus(Text::String *rootFile)
 
 Text::Cpp::CppParseStatus::CppParseStatus(const UTF8Char *rootFile)
 {
-	this->fileName = Text::String::New(rootFile);
+	this->fileName = Text::String::NewNotNull(rootFile);
 	NEW_CLASS(this->defines, Data::StringUTF8Map<DefineInfo*>());
 	NEW_CLASS(this->statuses, Data::ArrayList<FileParseStatus*>());
 	NEW_CLASS(this->fileNames, Data::ArrayListICaseString());
@@ -74,7 +74,7 @@ Bool Text::Cpp::CppParseStatus::BeginParseFile(const UTF8Char *fileName)
 	}
 	else
 	{
-		fname = Text::String::New(fileName);
+		fname = Text::String::NewNotNull(fileName);
 		this->fileNames->Insert((UOSInt)~i, fname);
 	}
 

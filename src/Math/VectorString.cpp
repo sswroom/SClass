@@ -4,9 +4,19 @@
 #include "Math/VectorString.h"
 #include "Text/MyString.h"
 
+Math::VectorString::VectorString(UInt32 srid, Text::String *s, Double x, Double y, Double angleDegree, Double buffSize, Media::DrawEngine::DrawPos align) : Vector2D(srid)
+{
+	this->s = s->Clone();
+	this->x = x;
+	this->y = y;
+	this->angleDegree = angleDegree;
+	this->buffSize = buffSize;
+	this->align = align;
+}
+
 Math::VectorString::VectorString(UInt32 srid, const UTF8Char *s, Double x, Double y, Double angleDegree, Double buffSize, Media::DrawEngine::DrawPos align) : Vector2D(srid)
 {
-	this->s = Text::StrCopyNew(s);
+	this->s = Text::String::NewNotNull(s);
 	this->x = x;
 	this->y = y;
 	this->angleDegree = angleDegree;
@@ -16,7 +26,7 @@ Math::VectorString::VectorString(UInt32 srid, const UTF8Char *s, Double x, Doubl
 
 Math::VectorString::~VectorString()
 {
-	Text::StrDelNew(this->s);
+	this->s->Release();
 }
 
 Math::Vector2D::VectorType Math::VectorString::GetVectorType()
@@ -82,10 +92,10 @@ Bool Math::VectorString::Equals(Math::Vector2D *vec)
 		this->align == vstr->align &&
 		this->angleDegree == vstr->angleDegree &&
 		this->buffSize == vstr->buffSize &&
-		Text::StrEquals(this->s, vstr->s);
+		this->s->Equals(vstr->s);
 }
 
-const UTF8Char *Math::VectorString::GetString()
+Text::String *Math::VectorString::GetString()
 {
 	return this->s;
 }

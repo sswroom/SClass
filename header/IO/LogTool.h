@@ -4,6 +4,7 @@
 #include "Data/ArrayListInt32.h"
 #include "Data/DateTime.h"
 #include "Sync/Mutex.h"
+#include "Text/String.h"
 
 namespace IO
 {
@@ -62,10 +63,11 @@ namespace IO
 		LogTool();
 		virtual ~LogTool();
 		void Close();
+		void AddFileLog(Text::String *fileName, ILogHandler::LogType style, ILogHandler::LogGroup groupStyle, ILogHandler::LogLevel logLev, const Char *dateFormat, Bool directWrite);
 		void AddFileLog(const UTF8Char *fileName, ILogHandler::LogType style, ILogHandler::LogGroup groupStyle, ILogHandler::LogLevel logLev, const Char *dateFormat, Bool directWrite);
 		void AddLogHandler(ILogHandler *hdlr, ILogHandler::LogLevel logLev);
 		void RemoveLogHandler(ILogHandler *hdlr);
 		virtual void LogMessage(const UTF8Char *logMsg, ILogHandler::LogLevel level);
 	};
-};
+}
 #endif

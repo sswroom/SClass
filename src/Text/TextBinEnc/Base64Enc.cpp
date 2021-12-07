@@ -188,6 +188,66 @@ UOSInt Text::TextBinEnc::Base64Enc::EncodeBin(Text::StringBuilderUTF *sb, const 
 	return outSize;
 }
 
+UTF8Char *Text::TextBinEnc::Base64Enc::EncodeBin(UTF8Char *sbuff, const UInt8 *dataBuff, UOSInt buffSize)
+{
+	const UTF8Char *encArr = GetEncArr(this->cs);
+	UOSInt outSize;
+	UOSInt tmp1 = buffSize % 3;
+	UOSInt tmp2 = buffSize / 3;
+	if (tmp1)
+	{
+		outSize = tmp2 * 4 + 4;
+	}
+	else
+	{
+		outSize = tmp2 * 4;
+	}
+	if (outSize == 0)
+		return 0;
+	while (tmp2-- > 0)
+	{
+		sbuff[0] = encArr[dataBuff[0] >> 2];
+		sbuff[1] = encArr[((dataBuff[0] << 4) | (dataBuff[1] >> 4)) & 0x3f];
+		sbuff[2] = encArr[((dataBuff[1] << 2) | (dataBuff[2] >> 6)) & 0x3f];
+		sbuff[3] = encArr[dataBuff[2] & 0x3f];
+		dataBuff += 3;
+		sbuff += 4;
+	}
+	if (tmp1 == 1)
+	{
+		sbuff[0] = encArr[dataBuff[0] >> 2];
+		sbuff[1] = encArr[(dataBuff[0] << 4) & 0x3f];
+		if (this->noPadding)
+		{
+			sbuff += 2;
+		}
+		else
+		{
+			sbuff[2] = '=';
+			sbuff[3] = '=';
+			sbuff += 4;
+		}
+	}
+	else if (tmp1 == 2)
+	{
+		sbuff[0] = encArr[dataBuff[0] >> 2];
+		sbuff[1] = encArr[((dataBuff[0] << 4) | (dataBuff[1] >> 4)) & 0x3f];
+		sbuff[2] = encArr[(dataBuff[1] << 2) & 0x3f];
+		if (this->noPadding)
+		{
+			sbuff += 3;
+		}
+		else
+		{
+			sbuff[3] = '=';
+			sbuff += 4;
+		}
+	}
+	*sbuff = 0;
+	return sbuff;
+
+}
+
 UOSInt Text::TextBinEnc::Base64Enc::CalcBinSize(const UTF8Char *sbuff)
 {
 	UOSInt cnt = 0;

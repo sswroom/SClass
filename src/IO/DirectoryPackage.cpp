@@ -19,7 +19,7 @@ void IO::DirectoryPackage::AddFile(const UTF8Char *fileName)
 		IO::Path::PathType pt;
 		if (IO::Path::FindNextFile(sbuff, sess, &dt, &pt, &fileSize))
 		{
-			this->files->Add(Text::String::New(fileName));
+			this->files->Add(Text::String::NewNotNull(fileName));
 			this->fileSizes->Add(fileSize);
 			this->fileTimes->Add(dt.ToTicks());
 		}
@@ -63,7 +63,7 @@ void IO::DirectoryPackage::Init()
 				{
 					sb.SetEndPtr(sptr);
 					sb.Append(sbuff);
-					this->files->Add(Text::String::New(sb.ToString()));
+					this->files->Add(Text::String::NewNotNull(sb.ToString()));
 					this->fileSizes->Add(fileSize);
 					this->fileTimes->Add(dt.ToTicks());
 				}
@@ -79,7 +79,7 @@ IO::DirectoryPackage::DirectoryPackage(Text::String *dirName) : IO::PackageFile(
 	if (dirName->StartsWith((const UTF8Char*)"~/"))
 	{
 		Text::StrConcat(IO::Path::GetUserHome(sbuff), dirName->v + 1);
-		this->dirName = Text::String::New(sbuff);
+		this->dirName = Text::String::NewNotNull(sbuff);
 	}
 	else
 	{
@@ -94,11 +94,11 @@ IO::DirectoryPackage::DirectoryPackage(const UTF8Char *dirName) : IO::PackageFil
 	if (Text::StrStartsWith(dirName, (const UTF8Char*)"~/"))
 	{
 		Text::StrConcat(IO::Path::GetUserHome(sbuff), dirName + 1);
-		this->dirName = Text::String::New(sbuff);
+		this->dirName = Text::String::NewNotNull(sbuff);
 	}
 	else
 	{
-		this->dirName = Text::String::New(dirName);
+		this->dirName = Text::String::NewNotNull(dirName);
 	}
 	this->Init();
 }

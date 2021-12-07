@@ -866,7 +866,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImageClipboardClicked(void *user
 						if (succ)
 						{
 							SDEL_STRING(me->initSelImg);
-							me->initSelImg = Text::String::New(sbuff);
+							me->initSelImg = Text::String::NewNotNull(sbuff);
 							me->UpdateImgDir();
 						}
 					}
@@ -899,7 +899,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImageClipboardClicked(void *user
 								if (!chg)
 								{
 									UOSInt tmp = Text::StrLastIndexOf(sarr[0], IO::Path::PATH_SEPERATOR);
-									me->initSelImg = Text::String::New(&sarr[0][tmp + 1]);
+									me->initSelImg = Text::String::NewNotNull(&sarr[0][tmp + 1]);
 								}
 								chg = true;
 								firstPhoto = false;
@@ -1449,7 +1449,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnObjPlaceClicked(void *userObj)
 			UTF8Char sbuff[512];
 			sbuff[0] = 0;
 			((OrganImages*)me->pickObjs->GetItem(0))->GetItemName(sbuff);
-			me->initSelImg = Text::String::New(sbuff);
+			me->initSelImg = Text::String::NewNotNull(sbuff);
 		}
 		while (i < j)
 		{
@@ -3451,7 +3451,7 @@ void SSWR::OrganMgr::OrganMainForm::DropData(UI::GUIDropData *data, OSInt x, OSI
 							if (succ)
 							{
 								SDEL_STRING(this->initSelImg);
-								this->initSelImg = Text::String::New(sbuff);
+								this->initSelImg = Text::String::NewNotNull(sbuff);
 								this->UpdateImgDir();
 							}
 						}
@@ -3490,7 +3490,7 @@ void SSWR::OrganMgr::OrganMainForm::DropData(UI::GUIDropData *data, OSInt x, OSI
 								if (!chg)
 								{
 									UOSInt tmp = Text::StrLastIndexOf(sarr[0], IO::Path::PATH_SEPERATOR);
-									this->initSelImg = Text::String::New(&sarr[0][tmp + 1]);
+									this->initSelImg = Text::String::NewNotNull(&sarr[0][tmp + 1]);
 								}
 								chg = true;
 								firstPhoto = false;

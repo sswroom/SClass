@@ -113,7 +113,7 @@ IO::FileStream::FileStream(const UTF8Char *fileName, FileMode mode, FileShare sh
 	}
 	ClassData *clsData = MemAlloc(ClassData, 1);
 	this->handle = clsData;
-	clsData->fileName = Text::String::New(fileName);
+	clsData->fileName = Text::String::NewNotNull(fileName);
 	this->InitStream(0, mode, share, buffType);
 }
 

@@ -35,7 +35,7 @@ Media::AudioFrameSource::AudioFrameSource(IO::IStreamData *fd, Media::AudioForma
 
 	this->data = fd->GetPartialData(0, fd->GetDataSize());
 	this->maxBlockSize = 0;
-	this->name = Text::String::New(name);
+	this->name = Text::String::NewOrNull(name);
 	this->readEvt = 0;
 	this->readBlock = 0;
 	this->readBlockOfst = 0;

@@ -17,10 +17,10 @@ namespace DB
 		void *mysql;
 
 		Bool isTran;
-		const UTF8Char *server;
-		const UTF8Char *databse;
-		const UTF8Char *uid;
-		const UTF8Char *pwd;
+		Text::String *server;
+		Text::String *database;
+		Text::String *uid;
+		Text::String *pwd;
 		IO::LogTool *log;
 
 		Data::ArrayList<const UTF8Char *> *tableNames;
@@ -55,10 +55,10 @@ namespace DB
 		virtual DBReader *GetTableData(const UTF8Char *tableName, Data::ArrayList<const UTF8Char*> *columnNames, UOSInt ofst, UOSInt maxCnt, const UTF8Char *ordering, Data::QueryConditions *condition);
 
 		Bool IsConnError();
-		const UTF8Char *GetConnServer();
-		const UTF8Char *GetConnDB();
-		const UTF8Char *GetConnUID();
-		const UTF8Char *GetConnPWD();
+		Text::String *GetConnServer();
+		Text::String *GetConnDB();
+		Text::String *GetConnUID();
+		Text::String *GetConnPWD();
 
 		static DBTool *CreateDBTool(const WChar *serverName, const WChar *dbName, const WChar *uid, const WChar *pwd, IO::LogTool *log);
 		static DBTool *CreateDBTool(Net::SocketFactory *sockf, const UTF8Char *serverName, const UTF8Char *dbName, const UTF8Char *uid, const UTF8Char *pwd, IO::LogTool *log, const UTF8Char *logPrefix);

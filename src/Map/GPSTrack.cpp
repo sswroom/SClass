@@ -1352,7 +1352,7 @@ Text::String *Map::GPSDataReader::GetNewStr(UOSInt colIndex)
 	UTF8Char sbuff[64];
 	if (this->GetStr(colIndex, sbuff, sizeof(sbuff)))
 	{
-		return Text::String::New(sbuff);
+		return Text::String::NewNotNull(sbuff);
 	}
 	return 0;
 }

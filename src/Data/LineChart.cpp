@@ -1691,7 +1691,7 @@ Data::LineChart::ChartData::ChartData(Text::String *name, void *data, UOSInt dat
 
 Data::LineChart::ChartData::ChartData(const UTF8Char *name, void *data, UOSInt dataCnt, Data::IChart::DataType dataType, UInt32 lineColor, Data::LineChart::LineStyle lineStyle)
 {
-	this->name = Text::String::New(name);
+	this->name = Text::String::NewNotNull(name);
 	this->data = data;
 	this->dataCnt = dataCnt;
 	this->dataType = dataType;

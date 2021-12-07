@@ -63,13 +63,13 @@ IO::ParserType Media::LUT::GetParserType()
 void Media::LUT::SetRemark(Text::String *remark)
 {
 	SDEL_STRING(this->remark);
-	this->remark = remark->Clone();
+	this->remark = SCOPY_STRING(remark);
 }
 
 void Media::LUT::SetRemark(const UTF8Char *remark)
 {
 	SDEL_STRING(this->remark);
-	this->remark = Text::String::New(remark);
+	this->remark = Text::String::NewOrNull(remark);
 }
 
 Text::String *Media::LUT::GetRemark()

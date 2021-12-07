@@ -11,7 +11,7 @@
 
 Text::String Text::String::emptyStr = {0, 1, 0};
 
-Text::String *Text::String::New(const UTF8Char *str)
+Text::String *Text::String::NewOrNull(const UTF8Char *str)
 {
 	if (str == 0) return 0;
 	UOSInt len = Text::StrCharCnt(str);
@@ -22,8 +22,19 @@ Text::String *Text::String::New(const UTF8Char *str)
 	return s;
 }
 
+Text::String *Text::String::NewNotNull(const UTF8Char *str)
+{
+	UOSInt len = Text::StrCharCnt(str);
+	Text::String *s = (Text::String*)MAlloc(len + sizeof(String));
+	s->leng = len;
+	s->cnt = 1;
+	MemCopyNO(s->v, str, len + 1);
+	return s;
+}
+
 Text::String *Text::String::New(const UTF8Char *str, UOSInt len)
 {
+	if (len == 0) return NewEmpty();
 	Text::String *s = (Text::String*)MAlloc(len + sizeof(String));
 	s->leng = len;
 	s->cnt = 1;
@@ -41,7 +52,16 @@ Text::String *Text::String::New(UOSInt len)
 	return s;
 }
 
-Text::String *Text::String::New(const UTF16Char *str)
+Text::String *Text::String::NewOrNull(const UTF16Char *str)
+{
+	if (str == 0) return 0;
+	UOSInt charCnt = Text::StrUTF16_UTF8Cnt(str);
+	Text::String *s = New(charCnt);
+	Text::StrUTF16_UTF8(s->v, str);
+	return s;
+}
+
+Text::String *Text::String::NewNotNull(const UTF16Char *str)
 {
 	UOSInt charCnt = Text::StrUTF16_UTF8Cnt(str);
 	Text::String *s = New(charCnt);
@@ -51,6 +71,7 @@ Text::String *Text::String::New(const UTF16Char *str)
 
 Text::String *Text::String::New(const UTF16Char *str, UOSInt len)
 {
+	if (len == 0) return NewEmpty();
 	UOSInt charCnt = Text::StrUTF16_UTF8CntC(str, len);
 	Text::String *s = New(charCnt);
 	Text::StrUTF16_UTF8C(s->v, str, len);
@@ -58,7 +79,16 @@ Text::String *Text::String::New(const UTF16Char *str, UOSInt len)
 	return s;
 }
 
-Text::String *Text::String::New(const UTF32Char *str)
+Text::String *Text::String::NewOrNull(const UTF32Char *str)
+{
+	if (str == 0) return 0;
+	UOSInt charCnt = Text::StrUTF32_UTF8Cnt(str);
+	Text::String *s = New(charCnt);
+	Text::StrUTF32_UTF8(s->v, str);
+	return s;
+}
+
+Text::String *Text::String::NewNotNull(const UTF32Char *str)
 {
 	UOSInt charCnt = Text::StrUTF32_UTF8Cnt(str);
 	Text::String *s = New(charCnt);
@@ -68,6 +98,7 @@ Text::String *Text::String::New(const UTF32Char *str)
 
 Text::String *Text::String::New(const UTF32Char *str, UOSInt len)
 {
+	if (len == 0) return NewEmpty();
 	UOSInt charCnt = Text::StrUTF32_UTF8CntC(str, len);
 	Text::String *s = New(charCnt);
 	Text::StrUTF32_UTF8C(s->v, str, len);
@@ -172,6 +203,11 @@ Bool Text::String::StartsWithICase(const UTF8Char *s)
 	return Text::StrStartsWithICase(this->v, s);
 }
 
+Bool Text::String::EndsWith(UTF8Char c)
+{
+	return this->leng > 0 && this->v[this->leng - 1] == c;
+}
+
 Bool Text::String::EndsWith(const UTF8Char *s)
 {
 	UOSInt l = Text::StrCharCnt(s);
@@ -221,6 +257,11 @@ UOSInt Text::String::IndexOf(UTF8Char c)
 	return Text::StrIndexOf(this->v, c);
 }
 
+UOSInt Text::String::IndexOfICase(const UTF8Char *s)
+{
+	return Text::StrIndexOfICase(this->v, s);
+}
+
 UOSInt Text::String::LastIndexOf(UTF8Char c)
 {
 	UOSInt l = this->leng;
@@ -257,6 +298,11 @@ Int32 Text::String::ToInt32()
 	return Text::StrToInt32(this->v);
 }
 
+UInt32 Text::String::ToUInt32()
+{
+	return Text::StrToUInt32(this->v);
+}
+
 Int64 Text::String::ToInt64()
 {
 	return Text::StrToInt64(this->v);
@@ -267,9 +313,29 @@ UInt64 Text::String::ToUInt64()
 	return Text::StrToUInt64(this->v);
 }
 
+OSInt Text::String::ToOSInt()
+{
+	return Text::StrToOSInt(this->v);
+}
+
+UOSInt Text::String::ToUOSInt()
+{
+	return Text::StrToUOSInt(this->v);
+}
+
 Double Text::String::ToDouble()
 {
 	return Text::StrToDouble(this->v);
+}
+
+Bool Text::String::ToUInt8(UInt8 *outVal)
+{
+	return Text::StrToUInt8(this->v, outVal);
+}
+
+Bool Text::String::ToInt16(Int16 *outVal)
+{
+	return Text::StrToInt16(this->v, outVal);
 }
 
 Bool Text::String::ToUInt16(UInt16 *outVal)
@@ -285,6 +351,16 @@ Bool Text::String::ToInt32(Int32 *outVal)
 Bool Text::String::ToUInt32(UInt32 *outVal)
 {
 	return Text::StrToUInt32(this->v, outVal);
+}
+
+Bool Text::String::ToInt64(Int64 *outVal)
+{
+	return Text::StrToInt64(this->v, outVal);
+}
+
+Bool Text::String::ToUInt64(UInt64 *outVal)
+{
+	return Text::StrToUInt64(this->v, outVal);
 }
 
 Bool Text::String::ToDouble(Double *outVal)

@@ -31,11 +31,11 @@ namespace Media
 		PageOrientation po;
 		Double paperWidth;
 		Double paperHeight;
-		const UTF8Char *printerName;
+		Text::String *printerName;
 
 		static UInt32 __stdcall PrintThread(void *userObj);
 	public:
-		CUPSPrintDocument(const UTF8Char *printerName, Media::GTKDrawEngine *eng, IPrintHandler *hdlr);
+		CUPSPrintDocument(Text::String *printerName, Media::GTKDrawEngine *eng, IPrintHandler *hdlr);
 		virtual ~CUPSPrintDocument();
 
 		Bool IsError();
@@ -135,7 +135,7 @@ UInt32 __stdcall Media::CUPSPrintDocument::PrintThread(void *userObj)
 	return 0;
 }
 
-Media::CUPSPrintDocument::CUPSPrintDocument(const UTF8Char *printerName, Media::GTKDrawEngine *eng, IPrintHandler *hdlr)
+Media::CUPSPrintDocument::CUPSPrintDocument(Text::String *printerName, Media::GTKDrawEngine *eng, IPrintHandler *hdlr)
 {
 	this->eng = eng;
 	this->hdlr = hdlr;
@@ -169,7 +169,7 @@ void Media::CUPSPrintDocument::SetDocName(Text::String *docName)
 void Media::CUPSPrintDocument::SetDocName(const UTF8Char *docName)
 {
 	SDEL_STRING(this->docName);
-	this->docName = Text::String::New(docName);
+	this->docName = Text::String::NewOrNull(docName);
 }
 
 void Media::CUPSPrintDocument::SetNextPagePaperSizeMM(Double width, Double height)
@@ -233,14 +233,19 @@ Media::Printer *Media::Printer::SelectPrinter(void *hWnd)
 	return 0;
 }
 
+Media::Printer::Printer(Text::String *printerName)
+{
+	this->printerName = printerName->Clone();
+}
+
 Media::Printer::Printer(const UTF8Char *printerName)
 {
-	this->printerName = Text::StrCopyNew(printerName);
+	this->printerName = Text::String::NewNotNull(printerName);
 }
 
 Media::Printer::~Printer()
 {
-	Text::StrDelNew(this->printerName);
+	this->printerName->Release();
 }
 
 Bool Media::Printer::IsError()

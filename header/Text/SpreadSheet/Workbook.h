@@ -78,6 +78,7 @@ namespace Text
 			void SetPalette(UInt32 *palette);
 
 			Worksheet *AddWorksheet();
+			Worksheet *AddWorksheet(Text::String *name);
 			Worksheet *AddWorksheet(const UTF8Char *name);
 			Worksheet *InsertWorksheet(UOSInt index, const UTF8Char *name);
 			UOSInt GetCount();

@@ -91,7 +91,7 @@ void IO::PackageFile::AddData(IO::IStreamData *fd, UInt64 ofst, UInt64 length, c
 	item = MemAlloc(PackFileItem, 1);
 	item->itemType = IO::PackFileItem::PIT_UNCOMPRESSED;
 	item->fd = fd->GetPartialData(ofst, length);
-	item->name = Text::String::New(name);
+	item->name = Text::String::NewNotNull(name);
 	item->pobj = 0;
 	item->compInfo = 0;
 	item->modTimeTick = modTimeTick;
@@ -108,7 +108,7 @@ void IO::PackageFile::AddObject(IO::ParsedObject *pobj, const UTF8Char *name, In
 	item->fd = 0;
 	if (name)
 	{
-		item->name = Text::String::New(name);
+		item->name = Text::String::NewNotNull(name);
 	}
 	else
 	{
@@ -128,7 +128,7 @@ void IO::PackageFile::AddCompData(IO::IStreamData *fd, UInt64 ofst, UInt64 lengt
 	item = MemAlloc(PackFileItem, 1);
 	item->itemType = IO::PackFileItem::PIT_COMPRESSED;
 	item->fd = fd->GetPartialData(ofst, length);
-	item->name = Text::String::New(name);
+	item->name = Text::String::NewNotNull(name);
 	item->pobj = 0;
 	item->compInfo = MemAlloc(PackFileItem::CompressInfo, 1);
 	MemCopyNO(item->compInfo, compInfo, sizeof(PackFileItem::CompressInfo));
@@ -149,7 +149,7 @@ void IO::PackageFile::AddPack(IO::PackageFile *pkg, const UTF8Char *name, Int64 
 	item = MemAlloc(PackFileItem, 1);
 	item->itemType = IO::PackFileItem::PIT_PARSEDOBJECT;
 	item->fd = 0;
-	item->name = Text::String::New(name);
+	item->name = Text::String::NewNotNull(name);
 	item->pobj = pkg;
 	item->compInfo = 0;
 	item->modTimeTick = modTimeTick;

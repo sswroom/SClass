@@ -818,7 +818,7 @@ IO::Stream *Map::HKTrafficLayer::OpenURLStream()
 				if (!this->url->Equals(sb.ToString()))
 				{
 					SDEL_STRING(this->url);
-					this->url = Text::String::New(sb.ToString());
+					this->url = Text::String::NewNotNull(sb.ToString());
 					return this->OpenURLStream();
 				}
 				else
@@ -853,7 +853,7 @@ Map::HKTrafficLayer::HKTrafficLayer(Net::SocketFactory *sockf, Net::SSLEngine *s
 	this->minY = 0;
 	this->maxX = 0;
 	this->maxY = 0;
-	this->url = Text::String::New((const UTF8Char*)"http://resource.data.one.gov.hk/td/speedmap.xml");
+	this->url = Text::String::NewNotNull((const UTF8Char*)"http://resource.data.one.gov.hk/td/speedmap.xml");
 	
 	this->SetCoordinateSystem(Math::CoordinateSystemManager::CreateProjCoordinateSystemDefName(Math::CoordinateSystemManager::PCST_HK80));
 }

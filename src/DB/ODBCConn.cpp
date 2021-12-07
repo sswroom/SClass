@@ -95,7 +95,7 @@ void DB::ODBCConn::UpdateConnInfo()
 	}
 	if (this->svrType == DB::DBUtil::ServerType::Unknown)
 	{
-		if (Text::StrIndexOfICase(this->connStr, (const UTF8Char*)"DRIVER=MDBTOOLS;") != INVALID_INDEX)
+		if (this->connStr->IndexOfICase((const UTF8Char*)"DRIVER=MDBTOOLS;") != INVALID_INDEX)
 		{
 			this->svrType = DB::DBUtil::ServerType::MDBTools;
 		}
@@ -122,7 +122,7 @@ void DB::ODBCConn::UpdateConnInfo()
 	}
 }
 
-Bool DB::ODBCConn::Connect(const UTF8Char *dsn, const UTF8Char *uid, const UTF8Char *pwd, const UTF8Char *schema)
+Bool DB::ODBCConn::Connect(Text::String *dsn, Text::String *uid, Text::String *pwd, Text::String *schema)
 {
 	SQLHANDLE hand;
 	SQLHANDLE hConn;
@@ -162,13 +162,15 @@ Bool DB::ODBCConn::Connect(const UTF8Char *dsn, const UTF8Char *uid, const UTF8C
 		return false;
 	}
 
-	if (uid || pwd)
+	SQLCHAR *uidPtr = (uid != 0 && uid->leng > 0)?uid->v:0;
+	SQLCHAR *pwdPtr = (pwd != 0 && pwd->leng > 0)?pwd->v:0;
+	if (uidPtr || pwdPtr)
 	{
-		ret = SQLConnectA(hConn, (SQLCHAR*)dsn, SQL_NTS, (SQLCHAR*)uid, SQL_NTS, (SQLCHAR*)pwd, SQL_NTS);
+		ret = SQLConnectA(hConn, (SQLCHAR*)dsn->v, SQL_NTS, (SQLCHAR*)uidPtr, SQL_NTS, (SQLCHAR*)pwdPtr, SQL_NTS);
 	}
 	else
 	{
-		ret = SQLConnectA(hConn, (SQLCHAR*)dsn, SQL_NTS, NULL, 0, NULL, 0);
+		ret = SQLConnectA(hConn, (SQLCHAR*)dsn->v, SQL_NTS, NULL, 0, NULL, 0);
 	}
 	if (ret != SQL_SUCCESS && ret != SQL_SUCCESS_WITH_INFO)
 	{
@@ -182,22 +184,22 @@ Bool DB::ODBCConn::Connect(const UTF8Char *dsn, const UTF8Char *uid, const UTF8C
 		{
 			sb.Append((const UTF8Char*)"[");
 			state[5] = 0;
-			Text::String *s = Text::String::New((const UTF16Char*)state);
-			sb.AppendC(s->v, s->leng);
+			Text::String *s = Text::String::NewNotNull((const UTF16Char*)state);
+			sb.Append(s);
 			s->Release();
 			sb.Append((const UTF8Char*)"]");
 			if (msgSize > 255)
 			{
 				SQLWCHAR *tmpBuff = MemAlloc(SQLWCHAR, (UInt16)(msgSize + 1));
 				ret = SQLGetDiagRecW(SQL_HANDLE_DBC, hConn, 1, state, (SQLINTEGER*)&errCode, tmpBuff, (Int16)(msgSize + 1), &msgSize);
-				s = Text::String::New(tmpBuff);
+				s = Text::String::NewNotNull(tmpBuff);
 				sb.AppendC(s->v, s->leng);
 				s->Release();
 				MemFree(tmpBuff);				
 			}
 			else
 			{
-				s = Text::String::New(msg);
+				s = Text::String::NewNotNull(msg);
 				sb.AppendC(s->v, s->leng);
 				s->Release();
 			}
@@ -216,7 +218,7 @@ Bool DB::ODBCConn::Connect(const UTF8Char *dsn, const UTF8Char *uid, const UTF8C
 
 	UpdateConnInfo();
 
-	if (schema)
+	if (schema && schema->leng > 0)
 	{
 		Text::StringBuilderUTF8 sb;
 		sb.Append((const UTF8Char*)"use ");
@@ -226,17 +228,14 @@ Bool DB::ODBCConn::Connect(const UTF8Char *dsn, const UTF8Char *uid, const UTF8C
 	return true;
 }
 
-Bool DB::ODBCConn::Connect(const UTF8Char *connStr)
+Bool DB::ODBCConn::Connect(Text::String *connStr)
 {
 	SQLHANDLE hand;
 	SQLHANDLE hConn;
 	SQLRETURN ret;
 	int timeOut = 5;
-	if (this->connStr)
-	{
-		Text::StrDelNew(this->connStr);
-	}
-	this->connStr = Text::StrCopyNew(connStr);
+	SDEL_STRING(this->connStr);
+	this->connStr = connStr->Clone();
 	SDEL_STRING(this->lastErrorMsg);
 
 	this->connErr = CE_NONE;
@@ -271,8 +270,8 @@ Bool DB::ODBCConn::Connect(const UTF8Char *connStr)
 	}
 //	printf("ODBC Connect: %s\r\n", connStr);
 	SQLSMALLINT outSize;
-	SQLWCHAR *connBuff = MemAlloc(SQLWCHAR, Text::StrUTF8_UTF16Cnt(connStr) + 1);
-	SQLWCHAR *connEnd = Text::StrUTF8_UTF16(connBuff, connStr, 0);
+	SQLWCHAR *connBuff = MemAlloc(SQLWCHAR, Text::StrUTF8_UTF16Cnt(connStr->v) + 1);
+	SQLWCHAR *connEnd = Text::StrUTF8_UTF16(connBuff, connStr->v, 0);
 	ret = SQLDriverConnectW(hConn, 0, connBuff, (SQLSMALLINT)(connEnd - connBuff), NULL, 0, &outSize, 0);
 	MemFree(connBuff);
 
@@ -288,24 +287,24 @@ Bool DB::ODBCConn::Connect(const UTF8Char *connStr)
 		{
 			sb.Append((const UTF8Char*)"[");
 			state[5] = 0;
-			const UTF8Char *csptr = Text::StrToUTF8New((const UTF16Char*)state);
-			sb.Append(csptr);
-			Text::StrDelNew(csptr);
+			Text::String *s = Text::String::NewNotNull((const UTF16Char*)state);
+			sb.Append(s);
+			s->Release();
 			sb.Append((const UTF8Char*)"]");
 			if (msgSize > 255)
 			{
 				SQLWCHAR *tmpBuff = MemAlloc(SQLWCHAR, (UInt16)(msgSize + 1));
 				ret = SQLGetDiagRecW(SQL_HANDLE_DBC, hConn, 1, state, (SQLINTEGER*)&errCode, tmpBuff, (Int16)(msgSize + 1), &msgSize);
-				csptr = Text::StrToUTF8New(tmpBuff);
-				sb.Append(csptr);
-				Text::StrDelNew(csptr);
+				s = Text::String::NewNotNull(tmpBuff);
+				sb.Append(s);
+				s->Release();
 				MemFree(tmpBuff);				
 			}
 			else
 			{
-				csptr = Text::StrToUTF8New(msg);
-				sb.Append(csptr);
-				Text::StrDelNew(csptr);
+				s = Text::String::NewNotNull(msg);
+				sb.Append(s);
+				s->Release();
 			}
 		}
 		this->lastErrorMsg = Text::String::New(sb.ToString(), sb.GetLength());
@@ -323,6 +322,14 @@ Bool DB::ODBCConn::Connect(const UTF8Char *connStr)
 
 	UpdateConnInfo();
 	return true;
+}
+
+Bool DB::ODBCConn::Connect(const UTF8Char *connStr)
+{
+	Text::String *s = Text::String::NewNotNull(connStr);
+	Bool ret = this->Connect(s);
+	s->Release();
+	return ret;
 }
 
 DB::ODBCConn::ODBCConn(const UTF8Char *sourceName, IO::LogTool *log) : DB::DBConn(sourceName)
@@ -365,7 +372,29 @@ DB::ODBCConn::ODBCConn(const UTF8Char *connStr, const UTF8Char *sourceName, IO::
 	this->enableDebug = false;
 	this->tzQhr = 0;
 	this->forceTz = false;
-	this->Connect(connStr);
+	Text::String *s = Text::String::NewNotNull(connStr);
+	this->Connect(s);
+	s->Release();
+}
+
+DB::ODBCConn::ODBCConn(Text::String *dsn, Text::String *uid, Text::String *pwd, Text::String *schema, IO::LogTool *log) : DB::DBConn(dsn)
+{
+	this->log = log;
+	this->tableNames = 0;
+	this->connStr = 0;
+	this->connHand = 0;
+	this->connErr = CE_NOT_CONNECT;
+	this->lastErrorMsg = 0;
+	this->envHand = 0;
+	this->enableDebug = false;
+	this->dsn = SCOPY_STRING(dsn);
+	this->uid = SCOPY_STRING(uid);
+	this->pwd = SCOPY_STRING(pwd);
+	this->schema = SCOPY_STRING(schema);
+	lastStmtHand = 0;
+	this->tzQhr = 0;
+	this->forceTz = false;
+	this->Connect(this->dsn, this->uid, this->pwd, this->schema);
 }
 
 DB::ODBCConn::ODBCConn(const UTF8Char *dsn, const UTF8Char *uid, const UTF8Char *pwd, const UTF8Char *schema, IO::LogTool *log) : DB::DBConn(dsn)
@@ -378,22 +407,10 @@ DB::ODBCConn::ODBCConn(const UTF8Char *dsn, const UTF8Char *uid, const UTF8Char 
 	this->lastErrorMsg = 0;
 	this->envHand = 0;
 	this->enableDebug = false;
-	if (dsn)
-		this->dsn = Text::StrCopyNew(dsn);
-	else
-		this->dsn = 0;
-	if (uid)
-		this->uid = Text::StrCopyNew(uid);
-	else
-		this->uid = 0;
-	if (pwd)
-		this->pwd = Text::StrCopyNew(pwd);
-	else
-		this->pwd = 0;
-	if (schema)
-		this->schema = Text::StrCopyNew(schema);
-	else
-		this->schema = 0;
+	this->dsn = Text::String::NewOrNull(dsn);
+	this->uid = Text::String::NewOrNull(uid);
+	this->pwd = Text::String::NewOrNull(pwd);
+	this->schema = Text::String::NewOrNull(schema);
 	lastStmtHand = 0;
 	this->tzQhr = 0;
 	this->forceTz = false;
@@ -403,12 +420,12 @@ DB::ODBCConn::ODBCConn(const UTF8Char *dsn, const UTF8Char *uid, const UTF8Char 
 DB::ODBCConn::~ODBCConn()
 {
 	Close();
-	SDEL_TEXT(this->dsn);
-	SDEL_TEXT(this->uid);
-	SDEL_TEXT(this->pwd);
-	SDEL_TEXT(this->schema);
+	SDEL_STRING(this->dsn);
+	SDEL_STRING(this->uid);
+	SDEL_STRING(this->pwd);
+	SDEL_STRING(this->schema);
 	SDEL_STRING(this->lastErrorMsg);
-	SDEL_TEXT(this->connStr);
+	SDEL_STRING(this->connStr);
 	if (this->tableNames)
 	{
 		UOSInt i = this->tableNames->GetCount();
@@ -825,9 +842,9 @@ void DB::ODBCConn::Reconnect()
 	Int8 oldTzQhr = this->tzQhr;
 	if (this->connStr)
 	{
-		const UTF8Char *connStr = Text::StrCopyNew(this->connStr);
+		Text::String *connStr = this->connStr->Clone();
 		Connect(connStr);
-		Text::StrDelNew(connStr);
+		connStr->Release();
 	}
 	else
 	{
@@ -1086,27 +1103,27 @@ void DB::ODBCConn::LogSQLError(void *hStmt)
 	this->ShowSQLError((const UTF16Char*)state, (const UTF16Char*)errorMsg);
 }
 
-const UTF8Char *DB::ODBCConn::GetConnStr()
+Text::String *DB::ODBCConn::GetConnStr()
 {
 	return this->connStr;
 }
 
-const UTF8Char *DB::ODBCConn::GetConnDSN()
+Text::String *DB::ODBCConn::GetConnDSN()
 {
 	return this->dsn;
 }
 
-const UTF8Char *DB::ODBCConn::GetConnUID()
+Text::String *DB::ODBCConn::GetConnUID()
 {
 	return this->uid;
 }
 
-const UTF8Char *DB::ODBCConn::GetConnPWD()
+Text::String *DB::ODBCConn::GetConnPWD()
 {
 	return this->pwd;
 }
 
-const UTF8Char *DB::ODBCConn::GetConnSchema()
+Text::String *DB::ODBCConn::GetConnSchema()
 {
 	return this->schema;
 }
@@ -1154,6 +1171,23 @@ IO::ConfigFile *DB::ODBCConn::GetDriverInfo(const UTF8Char *driverName)
 	}
 	return 0;
 #endif
+}
+
+DB::DBTool *DB::ODBCConn::CreateDBTool(Text::String *dsn, Text::String *uid, Text::String *pwd, Text::String *schema, IO::LogTool *log, const UTF8Char *logPrefix)
+{
+	DB::ODBCConn *conn;
+	DB::DBTool *db;
+	NEW_CLASS(conn, DB::ODBCConn(dsn, uid, pwd, schema, log));
+	if (conn->GetConnError() == CE_NONE)
+	{
+		NEW_CLASS(db, DB::DBTool(conn, true, log, logPrefix));
+		return db;
+	}
+	else
+	{
+		DEL_CLASS(conn);
+		return 0;
+	}
 }
 
 DB::DBTool *DB::ODBCConn::CreateDBTool(const UTF8Char *dsn, const UTF8Char *uid, const UTF8Char *pwd, const UTF8Char *schema, IO::LogTool *log, const UTF8Char *logPrefix)
@@ -1803,31 +1837,31 @@ Text::String *DB::ODBCReader::GetNewStr(UOSInt colIndex)
 	case DB::DBUtil::CT_NChar:
 	case DB::DBUtil::CT_NVarChar:
 	case DB::DBUtil::CT_UUID:
-		return Text::String::New(((Text::StringBuilderUTF8*)this->colDatas[colIndex].colData)->ToString());
+		return Text::String::NewNotNull(((Text::StringBuilderUTF8*)this->colDatas[colIndex].colData)->ToString());
 	case DB::DBUtil::CT_Double:
 	case DB::DBUtil::CT_Float:
 		Text::StrDouble(sbuff, *(Double*)&this->colDatas[colIndex].dataVal);
-		return Text::String::New(sbuff);
+		return Text::String::NewNotNull(sbuff);
 	case DB::DBUtil::CT_Int16:
 	case DB::DBUtil::CT_Int32:
 	case DB::DBUtil::CT_Byte:
 	case DB::DBUtil::CT_Int64:
 	case DB::DBUtil::CT_Bool:
 		Text::StrInt64(sbuff, this->colDatas[colIndex].dataVal);
-		return Text::String::New(sbuff);
+		return Text::String::NewNotNull(sbuff);
 	case DB::DBUtil::CT_UInt64:
 		Text::StrUInt64(sbuff, (UInt64)this->colDatas[colIndex].dataVal);
-		return Text::String::New(sbuff);
+		return Text::String::NewNotNull(sbuff);
 	case DB::DBUtil::CT_UInt32:
 		Text::StrUInt32(sbuff, (UInt32)this->colDatas[colIndex].dataVal);
-		return Text::String::New(sbuff);
+		return Text::String::NewNotNull(sbuff);
 	case DB::DBUtil::CT_UInt16:
 		Text::StrUInt16(sbuff, (UInt16)this->colDatas[colIndex].dataVal);
-		return Text::String::New(sbuff);
+		return Text::String::NewNotNull(sbuff);
 	case DB::DBUtil::CT_DateTime:
 	case DB::DBUtil::CT_DateTime2:
 		((Data::DateTime*)this->colDatas[colIndex].colData)->ToString(sbuff);
-		return Text::String::New(sbuff);
+		return Text::String::NewNotNull(sbuff);
 	case DB::DBUtil::CT_Binary:
 		return 0;
 	case DB::DBUtil::CT_Vector:
@@ -1839,7 +1873,7 @@ Text::String *DB::ODBCReader::GetNewStr(UOSInt colIndex)
 				Math::WKTWriter wkt;
 				wkt.GenerateWKT(&sb, vec);
 				DEL_CLASS(vec);
-				return Text::String::New(sb.ToString());
+				return Text::String::NewNotNull(sb.ToString());
 			}
 		}
 		return 0;

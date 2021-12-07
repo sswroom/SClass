@@ -1937,7 +1937,7 @@ Int32 DB::DBMS::UserLoginMySQL(Int32 sessId, const UTF8Char *userName, const UIn
 					sess->database = 0;
 					if (database && database[0])
 					{
-						sess->database = Text::String::New(database);
+						sess->database = Text::String::NewNotNull(database);
 					}
 					MemCopyNO(&sess->params, param, sizeof(DB::DBMS::SessionParam));
 					NEW_CLASS(sess->userVars, Data::StringUTF8Map<Text::String*>());
@@ -2052,7 +2052,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql)
 				{
 					col = MemAlloc(DB::DBMS::SQLColumn, 1);
 					col->name = Text::StrCopyNew(nameBuff);
-					col->asName = Text::String::New(nameBuff2);
+					col->asName = Text::String::NewNotNull(nameBuff2);
 					col->sqlPtr = sptr2;
 					cols.Add(col);
 					if (*sptr1 == 0)
@@ -2123,7 +2123,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql)
 				{
 					col = MemAlloc(DB::DBMS::SQLColumn, 1);
 					col->name = Text::StrCopyNew(nameBuff);
-					col->asName = Text::String::New(nameBuff2);
+					col->asName = Text::String::NewNotNull(nameBuff2);
 					col->sqlPtr = sptr2;
 					cols.Add(col);
 					if (*sptr1 == 0)
@@ -2896,7 +2896,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql)
 				j = sizeof(sysVarList) / sizeof(sysVarList[0]);
 				while (i < j)
 				{
-					row[0] = Text::String::New((const UTF8Char*)sysVarList[i]);
+					row[0] = Text::String::NewNotNull((const UTF8Char*)sysVarList[i]);
 					sb.ClearStr();
 					SysVarGet(&sb, sess, row[0]->v);
 					row[1] = Text::String::New(sb.ToString(), sb.GetLength());
@@ -2938,7 +2938,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql)
 							if (StrLike((const UTF8Char*)sysVarList[i], val->v))
 							{
 								sb.ClearStr();
-								row[0] = Text::String::New((const UTF8Char*)sysVarList[i]);
+								row[0] = Text::String::NewNotNull((const UTF8Char*)sysVarList[i]);
 								SysVarGet(&sb, sess, row[0]->v);
 								row[1] = Text::String::New(sb.ToString(), sb.GetLength());
 								reader->AddRow(row);

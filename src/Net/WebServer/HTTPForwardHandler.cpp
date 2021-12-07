@@ -18,7 +18,7 @@ Net::WebServer::HTTPForwardHandler::HTTPForwardHandler(Net::SocketFactory *sockf
 	this->ssl = ssl;
 	this->fwdType = fwdType;
 	NEW_CLASS(this->forwardAddrs, Data::ArrayList<const UTF8Char*>());
-	NEW_CLASS(this->injHeaders, Data::ArrayList<const UTF8Char*>());
+	NEW_CLASS(this->injHeaders, Data::ArrayList<Text::String*>());
 	this->forwardAddrs->Add(Text::StrCopyNew(forwardURL));
 	this->nextURL = 0;
 	NEW_CLASS(this->mut, Sync::Mutex());
@@ -28,7 +28,7 @@ Net::WebServer::HTTPForwardHandler::~HTTPForwardHandler()
 {
 	LIST_FREE_FUNC(this->forwardAddrs, Text::StrDelNew);
 	DEL_CLASS(this->forwardAddrs);
-	LIST_FREE_FUNC(this->injHeaders, Text::StrDelNew);
+	LIST_FREE_FUNC(this->injHeaders, STR_REL);
 	DEL_CLASS(this->injHeaders);
 	DEL_CLASS(this->mut);
 }
@@ -248,9 +248,8 @@ Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(Net::WebServer::IWebRequ
 	j = this->injHeaders->GetCount();
 	while (i < j)
 	{
-		hdr = this->injHeaders->GetItem(i);
 		sbHeader.ClearStr();
-		sbHeader.Append(hdr);
+		sbHeader.Append(this->injHeaders->GetItem(i));
 		if (Text::StrSplit(sarr, 2, sbHeader.ToString(), ':') == 2)
 		{
 			Text::StrTrim(sarr[1]);
@@ -285,7 +284,12 @@ void Net::WebServer::HTTPForwardHandler::AddForwardURL(const UTF8Char *url)
 	this->forwardAddrs->Add(Text::StrCopyNew(url));
 }
 
+void Net::WebServer::HTTPForwardHandler::AddInjectHeader(Text::String *header)
+{
+	this->injHeaders->Add(header->Clone());
+}
+
 void Net::WebServer::HTTPForwardHandler::AddInjectHeader(const UTF8Char *header)
 {
-	this->injHeaders->Add(Text::StrCopyNew(header));
+	this->injHeaders->Add(Text::String::NewNotNull(header));
 }

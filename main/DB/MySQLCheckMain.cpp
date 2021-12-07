@@ -53,18 +53,18 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		i++;
 	}
 
-	const UTF8Char *mysqlServer = cfg->GetValue((const UTF8Char*)"MySQLServer");
-	const UTF8Char *mysqlPort = cfg->GetValue((const UTF8Char*)"MySQLPort");
-	const UTF8Char *mysqlUser = cfg->GetValue((const UTF8Char*)"MySQLUser");
-	const UTF8Char *mysqlPassword = cfg->GetValue((const UTF8Char*)"MySQLPassword");
-	const UTF8Char *mysqlSchemas = cfg->GetValue((const UTF8Char*)"MySQLSchemas");
-	const UTF8Char *smtpHost = cfg->GetValue((const UTF8Char*)"SMTPHost");
-	const UTF8Char *smtpPort = cfg->GetValue((const UTF8Char*)"SMTPPort");
-	const UTF8Char *smtpType = cfg->GetValue((const UTF8Char*)"SMTPType");
-	const UTF8Char *smtpFrom = cfg->GetValue((const UTF8Char*)"SMTPFrom");
-	const UTF8Char *smtpTo = cfg->GetValue((const UTF8Char*)"SMTPTo");
-	const UTF8Char *smtpUser = cfg->GetValue((const UTF8Char*)"SMTPUser");
-	const UTF8Char *smtpPassword = cfg->GetValue((const UTF8Char*)"SMTPPassword");
+	Text::String *mysqlServer = cfg->GetValue((const UTF8Char*)"MySQLServer");
+	Text::String *mysqlPort = cfg->GetValue((const UTF8Char*)"MySQLPort");
+	Text::String *mysqlUser = cfg->GetValue((const UTF8Char*)"MySQLUser");
+	Text::String *mysqlPassword = cfg->GetValue((const UTF8Char*)"MySQLPassword");
+	Text::String *mysqlSchemas = cfg->GetValue((const UTF8Char*)"MySQLSchemas");
+	Text::String *smtpHost = cfg->GetValue((const UTF8Char*)"SMTPHost");
+	Text::String *smtpPort = cfg->GetValue((const UTF8Char*)"SMTPPort");
+	Text::String *smtpType = cfg->GetValue((const UTF8Char*)"SMTPType");
+	Text::String *smtpFrom = cfg->GetValue((const UTF8Char*)"SMTPFrom");
+	Text::String *smtpTo = cfg->GetValue((const UTF8Char*)"SMTPTo");
+	Text::String *smtpUser = cfg->GetValue((const UTF8Char*)"SMTPUser");
+	Text::String *smtpPassword = cfg->GetValue((const UTF8Char*)"SMTPPassword");
 	Net::SocketFactory *sockf;
 	Net::MySQLTCPClient *cli;
 	DB::MySQLMaintance *mysql;
@@ -73,15 +73,15 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	UInt16 smtpIPort;
 	Net::Email::SMTPConn::ConnType connType;
 	UTF8Char *sarr[2];
-	if (Text::StrEqualsICase(smtpType, (const UTF8Char*)"PLAIN"))
+	if (smtpType->EqualsICase((const UTF8Char*)"PLAIN"))
 	{
 		connType = Net::Email::SMTPConn::CT_PLAIN;
 	}
-	else if (Text::StrEqualsICase(smtpType, (const UTF8Char*)"SSL"))
+	else if (smtpType->EqualsICase((const UTF8Char*)"SSL"))
 	{
 		connType = Net::Email::SMTPConn::CT_SSL;
 	}
-	else if (Text::StrEqualsICase(smtpType, (const UTF8Char*)"STARTTLS"))
+	else if (smtpType->Equals((const UTF8Char*)"STARTTLS"))
 	{
 		connType = Net::Email::SMTPConn::CT_STARTTLS;
 	}
@@ -94,17 +94,17 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 
 	Int32 retNum = 0;
 	NEW_CLASS(sockf, Net::OSSocketFactory(false));
-	if (!sockf->DNSResolveIP(mysqlServer, &addr))
+	if (!sockf->DNSResolveIP(mysqlServer->v, &addr))
 	{
 		console.WriteLine((const UTF8Char*)"MySQLServer cannot be resolved");
 		return 4;
 	}
-	else if (!Text::StrToUInt16(mysqlPort, &port))
+	else if (!mysqlPort->ToUInt16(&port))
 	{
 		console.WriteLine((const UTF8Char*)"MySQLPort is not valid");
 		return 5;
 	}
-	else if (!Text::StrToUInt16(smtpPort, &smtpIPort))
+	else if (!smtpPort->ToUInt16(&smtpIPort))
 	{
 		console.WriteLine((const UTF8Char*)"SMTPPort is not valid");
 		return 6;
@@ -153,17 +153,17 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			Net::Email::EmailMessage *msg;
 			Data::DateTime currTime;
 			currTime.SetCurrTime();
-			NEW_CLASS(smtp, Net::Email::SMTPClient(sockf, ssl, smtpHost, smtpIPort, connType, writer));
-			if (smtpUser[0] && smtpPassword[0])
+			NEW_CLASS(smtp, Net::Email::SMTPClient(sockf, ssl, smtpHost->v, smtpIPort, connType, writer));
+			if (smtpUser->v[0] && smtpPassword->v[0])
 			{
-				smtp->SetPlainAuth(smtpUser, smtpPassword);
+				smtp->SetPlainAuth(smtpUser->v, smtpPassword->v);
 			}
 			NEW_CLASS(msg, Net::Email::EmailMessage());
 			sb.ClearStr();
-			Net::Email::EmailMessage::GenerateMessageID(&sb, smtpFrom);
+			Net::Email::EmailMessage::GenerateMessageID(&sb, smtpFrom->v);
 			msg->SetMessageId(sb.ToString());
-			msg->SetFrom(0, smtpFrom);
-			msg->AddTo(0, smtpTo);
+			msg->SetFrom(0, smtpFrom->v);
+			msg->AddTo(0, smtpTo->v);
 			msg->SetSentDate(&currTime);
 			msg->SetSubject((const UTF8Char*)"MySQL Check Report");
 			msg->SetContent(sbMsg.ToString(), "text/plain");

@@ -738,7 +738,7 @@ void SSWR::SMonitor::SMonitorSvrCore::SaveDatas()
 				currMonth = dt.GetMonth();
 				currDay = dt.GetDay();
 
-				sptr = Text::StrConcat(sbuff, this->dataDir);
+				sptr = this->dataDir->ConcatTo(sbuff);
 				sptr = dt.ToString(sptr, "yyyyMM");
 				*sptr++ = IO::Path::PATH_SEPERATOR;
 				sptr = Text::StrInt64(sptr, dev->cliId);
@@ -802,7 +802,7 @@ void SSWR::SMonitor::SMonitorSvrCore::SavePhoto(Int64 cliId, Int64 photoTime, In
 	dt.ToUTCTime();
 	dt.SetTicks(photoTime);
 
-	sptr = Text::StrConcat(sbuff, this->dataDir);
+	sptr = this->dataDir->ConcatTo(sbuff);
 	sptr = dt.ToString(sptr, "yyyyMM");
 	*sptr++ = IO::Path::PATH_SEPERATOR;
 	sptr = Text::StrInt64(sptr, cliId);
@@ -1139,9 +1139,9 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(IO::Writer *writer, Media::Draw
 	NEW_CLASS(this->refererLog, IO::StringLogger());
 
 	IO::ConfigFile *cfg = IO::IniFile::ParseProgConfig(0);
-	const UTF8Char *csptr1;
-	const UTF8Char *csptr2;
-	const UTF8Char *csptr3;
+	Text::String *s;
+	Text::String *s2;
+	Text::String *s3;
 	UInt16 port;
 	Text::StringBuilderUTF8 sb;
 	{
@@ -1170,11 +1170,11 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(IO::Writer *writer, Media::Draw
 	}
 	else
 	{
-		csptr1 = cfg->GetValue((const UTF8Char*)"LogDir");
-		if (csptr1)
+		s = cfg->GetValue((const UTF8Char*)"LogDir");
+		if (s)
 		{
 			sb.ClearStr();
-			sb.Append(csptr1);
+			sb.Append(s);
 			if (!sb.EndsWith((Char)IO::Path::PATH_SEPERATOR))
 			{
 				sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
@@ -1186,23 +1186,27 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(IO::Writer *writer, Media::Draw
 			this->log->AddFileLog(sb.ToString(), IO::ILogHandler::LOG_TYPE_PER_DAY, IO::ILogHandler::LOG_GROUP_TYPE_PER_MONTH, IO::ILogHandler::LOG_LEVEL_RAW, "yyyy-MM-dd HH:mm:ss.fff", false);
 		}
 
-		csptr1 = cfg->GetValue((const UTF8Char*)"DataDir");
-		if (csptr1)
+		s = cfg->GetValue((const UTF8Char*)"DataDir");
+		if (s)
 		{
-			sb.ClearStr();
-			sb.Append(csptr1);
-			if (!sb.EndsWith((Char)IO::Path::PATH_SEPERATOR))
+			if (!s->EndsWith(IO::Path::PATH_SEPERATOR))
 			{
+				sb.ClearStr();
+				sb.Append(s);
 				sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
+				this->dataDir = Text::String::NewNotNull(sb.ToString());
 			}
-			this->dataDir = Text::StrCopyNew(sb.ToString());
+			else
+			{
+				this->dataDir = s->Clone();
+			}
 		}
 
-		csptr1 = cfg->GetValue((const UTF8Char*)"MySQLServer");
-		csptr2 = cfg->GetValue((const UTF8Char*)"MySQLDB");
-		if (csptr1 && csptr2)
+		s = cfg->GetValue((const UTF8Char*)"MySQLServer");
+		s2 = cfg->GetValue((const UTF8Char*)"MySQLDB");
+		if (s && s2)
 		{
-			this->db = Net::MySQLTCPClient::CreateDBTool(this->sockf, csptr1, csptr2, cfg->GetValue((const UTF8Char*)"UID"), cfg->GetValue((const UTF8Char*)"PWD"), log, (const UTF8Char*)"DB: ");
+			this->db = Net::MySQLTCPClient::CreateDBTool(this->sockf, s, s2, cfg->GetValue((const UTF8Char*)"UID"), cfg->GetValue((const UTF8Char*)"PWD"), log, (const UTF8Char*)"DB: ");
 			NEW_CLASS(this->dbMut, Sync::Mutex());
 			if (this->db == 0)
 			{
@@ -1215,12 +1219,12 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(IO::Writer *writer, Media::Draw
 		}
 		else
 		{
-			csptr1 = cfg->GetValue((const UTF8Char*)"DSN");
-			csptr2 = cfg->GetValue((const UTF8Char*)"UID");
-			csptr3 = cfg->GetValue((const UTF8Char*)"PWD");
-			if (csptr1)
+			s = cfg->GetValue((const UTF8Char*)"DSN");
+			s2 = cfg->GetValue((const UTF8Char*)"UID");
+			s3 = cfg->GetValue((const UTF8Char*)"PWD");
+			if (s)
 			{
-				this->db = DB::ODBCConn::CreateDBTool(csptr1, csptr2, csptr3, cfg->GetValue((const UTF8Char*)"Schema"), log, (const UTF8Char*)"DB: ");
+				this->db = DB::ODBCConn::CreateDBTool(s, s2, s3, cfg->GetValue((const UTF8Char*)"Schema"), log, (const UTF8Char*)"DB: ");
 				NEW_CLASS(this->dbMut, Sync::Mutex());
 				if (this->db == 0)
 				{
@@ -1237,19 +1241,19 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(IO::Writer *writer, Media::Draw
 			}
 		}
 
-		csptr1 = cfg->GetValue((const UTF8Char*)"WebPort");
-		csptr2 = cfg->GetValue((const UTF8Char*)"HTTPFiles");
-		if (csptr1)
+		s = cfg->GetValue((const UTF8Char*)"WebPort");
+		s2 = cfg->GetValue((const UTF8Char*)"HTTPFiles");
+		if (s)
 		{
-			if (csptr2 && IO::Path::GetPathType(csptr2) == IO::Path::PathType::Directory)
+			if (s2 && IO::Path::GetPathType(s2->v) == IO::Path::PathType::Directory)
 			{
-				if (Text::StrToUInt16(csptr1, &port) && port > 0)
+				if (s->ToUInt16(&port) && port > 0)
 				{
 					Net::WebServer::HTTPDirectoryHandler *hdlr;
 					SSWR::SMonitor::SMonitorWebHandler *shdlr;
 					Net::WebServer::HTTPDirectoryHandler *fileshdlr;
 					SSWR::Benchmark::BenchmarkWebHandler *benchhdlr;
-					NEW_CLASS(hdlr, Net::WebServer::HTTPDirectoryHandler(csptr2, false, 0, false));
+					NEW_CLASS(hdlr, Net::WebServer::HTTPDirectoryHandler(s2, false, 0, false));
 					NEW_CLASS(shdlr, SSWR::SMonitor::SMonitorWebHandler(this));
 					NEW_CLASS(benchhdlr, SSWR::Benchmark::BenchmarkWebHandler());
 					sb.ClearStr();
@@ -1290,10 +1294,10 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(IO::Writer *writer, Media::Draw
 			writer->WriteLine((const UTF8Char*)"Config WebPort not found");
 		}
 
-		csptr1 = cfg->GetValue((const UTF8Char*)"ClientPort");
-		if (csptr1)
+		s = cfg->GetValue((const UTF8Char*)"ClientPort");
+		if (s)
 		{
-			if (Text::StrToUInt16(csptr1, &port) && port > 0)
+			if (s->ToUInt16(&port) && port > 0)
 			{
 				NEW_CLASS(this->cliMgr, Net::TCPClientMgr(300, OnClientEvent, OnClientData, this, 4, OnClientTimeout));
 				NEW_CLASS(this->cliSvr, Net::TCPServer(this->sockf, port, this->log, OnServerConn, this, (const UTF8Char*)"CLI: "));
@@ -1315,10 +1319,10 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(IO::Writer *writer, Media::Draw
 			writer->WriteLine((const UTF8Char*)"Config ClientPort not found");
 		}
 
-		csptr1 = cfg->GetValue((const UTF8Char*)"DataUDPPort");
-		if (csptr1)
+		s = cfg->GetValue((const UTF8Char*)"DataUDPPort");
+		if (s)
 		{
-			if (Text::StrToUInt16(csptr1, &port) && port > 0)
+			if (s->ToUInt16(&port) && port > 0)
 			{
 				Crypto::Hash::CRC16 *crc;
 				NEW_CLASS(crc, Crypto::Hash::CRC16(Crypto::Hash::CRC16::GetPolynomialCCITT()));
@@ -1471,7 +1475,7 @@ SSWR::SMonitor::SMonitorSvrCore::~SMonitorSvrCore()
 	DEL_CLASS(this->checkEvt);
 	DEL_CLASS(this->dateMut);
 	DEL_CLASS(this->deng);
-	SDEL_TEXT(this->dataDir);
+	SDEL_STRING(this->dataDir);
 }
 
 Bool SSWR::SMonitor::SMonitorSvrCore::IsError()
@@ -2087,7 +2091,7 @@ UOSInt SSWR::SMonitor::SMonitorSvrCore::DeviceQueryRec(Int64 cliId, Int64 startT
 	currTime = dt.ToTicks();
 	while (currTime < endTime)
 	{
-		sptr = Text::StrConcat(sbuff, this->dataDir);
+		sptr = this->dataDir->ConcatTo(sbuff);
 		sptr = dt.ToString(sptr, "yyyyMM");
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 		sptr = Text::StrInt64(sptr, cliId);

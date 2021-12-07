@@ -135,21 +135,14 @@ void __stdcall SSWR::AVIRead::AVIRMySQLClientForm::OnTimerTick(void *userObj)
 	UTF8Char sbuff[128];
 	UInt8 buff[48];
 	UOSInt i;
-	const UTF8Char *csptr;
+	Text::String *s;
 	if (me->cli)
 	{
 		if (!me->cliConnected && me->cli->ServerInfoRecv())
 		{
 			me->cliConnected = true;
-			csptr = me->cli->GetServerVer();
-			if (csptr)
-			{
-				me->txtServerVer->SetText(csptr);
-			}
-			else
-			{
-				me->txtServerVer->SetText((const UTF8Char*)"");
-			}
+			s = Text::String::OrEmpty(me->cli->GetServerVer());
+			me->txtServerVer->SetText(s->v);
 			Text::StrUInt32(sbuff, me->cli->GetConnId());
 			me->txtConnId->SetText(sbuff);
 			i = me->cli->GetAuthPluginData(buff);

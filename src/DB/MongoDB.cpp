@@ -277,7 +277,7 @@ Text::String *DB::MongoDBReader::GetNewStr(UOSInt colIndex)
 	if (this->doc)
 	{
 		char *str = bson_as_canonical_extended_json((const bson_t*)this->doc, 0);
-		Text::String *ret = Text::String::New((const UTF8Char*)str);
+		Text::String *ret = Text::String::NewNotNull((const UTF8Char*)str);
 		bson_free(str);
 		return ret;
 	}

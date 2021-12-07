@@ -14,11 +14,10 @@
 #include "Text/StringBuilderUTF8.h"
 #include "sqlite3.h"
 
-DB::SQLiteFile::SQLiteFile(const UTF8Char *fileName) : DB::DBConn(fileName)
+void DB::SQLiteFile::Init()
 {
 	sqlite3 *db;
 	Int32 ret;
-	this->fileName = Text::StrCopyNew(fileName);
 	this->delOnClose = false;
 	this->lastErrMsg = 0;
 	db = 0;
@@ -54,6 +53,18 @@ DB::SQLiteFile::SQLiteFile(const UTF8Char *fileName) : DB::DBConn(fileName)
 	}
 }
 
+DB::SQLiteFile::SQLiteFile(Text::String *fileName) : DB::DBConn(fileName)
+{
+	this->fileName = fileName->Clone();
+	this->Init();
+}
+
+DB::SQLiteFile::SQLiteFile(const UTF8Char *fileName) : DB::DBConn(fileName)
+{
+	this->fileName = Text::String::NewNotNull(fileName);
+	this->Init();
+}
+
 DB::SQLiteFile::~SQLiteFile()
 {
 	UOSInt i;
@@ -71,10 +82,10 @@ DB::SQLiteFile::~SQLiteFile()
 	DEL_CLASS(this->tableNames);
 	if (this->delOnClose)
 	{
-		IO::Path::DeleteFile(this->fileName);
+		IO::Path::DeleteFile(this->fileName->v);
 	}
-	Text::StrDelNew(this->fileName);
-	SDEL_TEXT(this->lastErrMsg);
+	this->fileName->Release();
+	SDEL_STRING(this->lastErrMsg);
 }
 
 DB::DBUtil::ServerType DB::SQLiteFile::GetSvrType()
@@ -129,8 +140,8 @@ OSInt DB::SQLiteFile::ExecuteNonQuery(const UTF8Char *sql)
 			else
 			{
 				this->lastDataError = DE_EXEC_SQL_ERROR;
-				SDEL_TEXT(this->lastErrMsg);
-				this->lastErrMsg = Text::StrCopyNew((const UTF8Char*)sqlite3_errmsg((sqlite3*)this->db));
+				SDEL_STRING(this->lastErrMsg);
+				this->lastErrMsg = Text::String::NewNotNull((const UTF8Char*)sqlite3_errmsg((sqlite3*)this->db));
 				chg = 0;
 			}
 			sqlite3_finalize(stmt);
@@ -357,7 +368,7 @@ Bool DB::SQLiteFile::IsError()
 	return this->db == 0;
 }
 
-const UTF8Char *DB::SQLiteFile::GetFileName()
+Text::String *DB::SQLiteFile::GetFileName()
 {
 	return this->fileName;
 }
@@ -397,6 +408,20 @@ void DB::SQLiteReader::UpdateColTypes()
 			}
 		}
 	}
+}
+
+DB::DBTool *DB::SQLiteFile::CreateDBTool(Text::String *fileName, IO::LogTool *log, const UTF8Char *logPrefix)
+{
+	DB::SQLiteFile *conn;
+	NEW_CLASS(conn, DB::SQLiteFile(fileName));
+	if (conn->IsError())
+	{
+		DEL_CLASS(conn);
+		return 0;
+	}
+	DB::DBTool *db;
+	NEW_CLASS(db, DBTool(conn, true, log, logPrefix));
+	return db;
 }
 
 DB::DBTool *DB::SQLiteFile::CreateDBTool(const UTF8Char *fileName, IO::LogTool *log, const UTF8Char *logPrefix)
@@ -501,7 +526,7 @@ Text::String *DB::SQLiteReader::GetNewStr(UOSInt colIndex)
 	if (outp == 0)
 		return 0;
 	else
-		return Text::String::New((const UTF16Char *)outp);
+		return Text::String::NewNotNull((const UTF16Char *)outp);
 }
 
 Bool DB::SQLiteReader::GetStr(UOSInt colIndex, Text::StringBuilderUTF *sb)

@@ -21,37 +21,37 @@
 Bool DB::DBManager::GetConnStr(DB::DBTool *db, Text::StringBuilderUTF *connStr)
 {
 	DB::DBConn *conn = db->GetConn();
-	const UTF8Char *csptr;
+	Text::String *s;
 	switch (conn->GetConnType())
 	{
 	case DB::DBConn::CT_ODBC:
 		{
 			DB::ODBCConn *odbc = (DB::ODBCConn*)conn;
-			if ((csptr = odbc->GetConnStr()) != 0)
+			if ((s = odbc->GetConnStr()) != 0)
 			{
 				connStr->Append((const UTF8Char*)"odbc:");
-				connStr->Append(csptr);
+				connStr->Append(s);
 				return true;
 			}
 			else
 			{
-				csptr = odbc->GetConnDSN();
+				s = odbc->GetConnDSN();
 				connStr->Append((const UTF8Char*)"odbc:DSN=");
-				connStr->Append(csptr);
-				if ((csptr = odbc->GetConnUID()) != 0)
+				connStr->Append(s);
+				if ((s = odbc->GetConnUID()) != 0)
 				{
 					connStr->Append((const UTF8Char*)";UID=");
-					connStr->Append(csptr);
+					connStr->Append(s);
 				}
-				if ((csptr = odbc->GetConnPWD()) != 0)
+				if ((s = odbc->GetConnPWD()) != 0)
 				{
 					connStr->Append((const UTF8Char*)";PWD=");
-					connStr->Append(csptr);
+					connStr->Append(s);
 				}
-				if ((csptr = odbc->GetConnSchema()) != 0)
+				if ((s = odbc->GetConnSchema()) != 0)
 				{
 					connStr->Append((const UTF8Char*)";Schema=");
-					connStr->Append(csptr);
+					connStr->Append(s);
 				}
 				return true;
 			}
@@ -61,22 +61,22 @@ Bool DB::DBManager::GetConnStr(DB::DBTool *db, Text::StringBuilderUTF *connStr)
 		{
 			DB::MySQLConn *mysql = (DB::MySQLConn*)conn;
 			connStr->Append((const UTF8Char*)"mysql:Server=");
-			csptr = mysql->GetConnServer();
-			connStr->Append(csptr);
-			if ((csptr = mysql->GetConnDB()) != 0)
+			s = mysql->GetConnServer();
+			connStr->Append(s);
+			if ((s = mysql->GetConnDB()) != 0)
 			{
 				connStr->Append((const UTF8Char*)";Database=");
-				connStr->Append(csptr);
+				connStr->Append(s);
 			}
-			if ((csptr = mysql->GetConnUID()) != 0)
+			if ((s = mysql->GetConnUID()) != 0)
 			{
 				connStr->Append((const UTF8Char*)";UID=");
-				connStr->Append(csptr);
+				connStr->Append(s);
 			}
-			if ((csptr = mysql->GetConnPWD()) != 0)
+			if ((s = mysql->GetConnPWD()) != 0)
 			{
 				connStr->Append((const UTF8Char*)";PWD=");
-				connStr->Append(csptr);
+				connStr->Append(s);
 			}
 			return true;
 		}
@@ -94,9 +94,9 @@ Bool DB::DBManager::GetConnStr(DB::DBTool *db, Text::StringBuilderUTF *connStr)
 			Win32::WMIQuery *wmi = (Win32::WMIQuery*)conn;
 			connStr->Append((const UTF8Char*)"wmi:ns=");
 			const WChar *ns = wmi->GetNS();
-			csptr = Text::StrToUTF8New(ns);
-			connStr->Append(csptr);
-			Text::StrDelNew(csptr);
+			s = Text::String::NewNotNull(ns);
+			connStr->Append(s);
+			s->Release();
 			return true;
 		}
 		break;
@@ -105,9 +105,9 @@ Bool DB::DBManager::GetConnStr(DB::DBTool *db, Text::StringBuilderUTF *connStr)
 			DB::OLEDBConn *oledb = (DB::OLEDBConn*)conn;
 			connStr->Append((const UTF8Char*)"oledb:");
 			const WChar *cStr = oledb->GetConnStr();
-			csptr = Text::StrToUTF8New(cStr);
-			connStr->Append(csptr);
-			Text::StrDelNew(csptr);
+			s = Text::String::NewNotNull(cStr);
+			connStr->Append(s);
+			s->Release();
 			return true;
 		}
 		break;
@@ -120,20 +120,20 @@ Bool DB::DBManager::GetConnStr(DB::DBTool *db, Text::StringBuilderUTF *connStr)
 			connStr->Append(sbuff);
 			connStr->Append((const UTF8Char*)";Port=");
 			connStr->AppendU16(mysql->GetConnPort());
-			if ((csptr = mysql->GetConnDB()) != 0)
+			if ((s = mysql->GetConnDB()) != 0)
 			{
 				connStr->Append((const UTF8Char*)";Database=");
-				connStr->Append(csptr);
+				connStr->Append(s);
 			}
-			if ((csptr = mysql->GetConnUID()) != 0)
+			if ((s = mysql->GetConnUID()) != 0)
 			{
 				connStr->Append((const UTF8Char*)";UID=");
-				connStr->Append(csptr);
+				connStr->Append(s);
 			}
-			if ((csptr = mysql->GetConnPWD()) != 0)
+			if ((s = mysql->GetConnPWD()) != 0)
 			{
 				connStr->Append((const UTF8Char*)";PWD=");
-				connStr->Append(csptr);
+				connStr->Append(s);
 			}
 			return true;
 		}
@@ -142,6 +142,11 @@ Bool DB::DBManager::GetConnStr(DB::DBTool *db, Text::StringBuilderUTF *connStr)
 		break;
 	}
 	return false;
+}
+
+DB::DBTool *DB::DBManager::OpenConn(Text::String *connStr, IO::LogTool *log, Net::SocketFactory *sockf)
+{
+	return OpenConn(connStr->v, log, sockf);
 }
 
 DB::DBTool *DB::DBManager::OpenConn(const UTF8Char *connStr, IO::LogTool *log, Net::SocketFactory *sockf)

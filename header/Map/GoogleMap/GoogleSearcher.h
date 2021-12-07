@@ -14,8 +14,8 @@ namespace Map
 		class GoogleSearcher : public Map::IReverseGeocoder
 		{
 		private:
-			const UTF8Char *gooKey;
-			const UTF8Char *gooCliId;
+			Text::String *gooKey;
+			Text::String *gooCliId;
 			UInt8 *gooPrivKey;
 			UOSInt gooPrivKeyLeng;
 			Net::SocketFactory *sockf;
@@ -27,6 +27,7 @@ namespace Map
 			UInt32 srchCnt;
 			
 		public:
+			GoogleSearcher(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::String *gooKey, Text::String *gooCliId, Text::String *gooPrivKey, IO::Writer *errWriter);
 			GoogleSearcher(Net::SocketFactory *sockf, Net::SSLEngine *ssl, const UTF8Char *gooKey, const UTF8Char *gooCliId, const UTF8Char *gooPrivKey, IO::Writer *errWriter);
 			virtual ~GoogleSearcher();
 

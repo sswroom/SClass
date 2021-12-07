@@ -145,7 +145,7 @@ UOSInt UI::GUIComboBox::AddItem(Text::String *itemText, void *itemObj)
 UOSInt UI::GUIComboBox::AddItem(const UTF8Char *itemText, void *itemObj)
 {
 	UOSInt cnt = this->itemTexts->GetCount();
-	this->itemTexts->Add(Text::String::New(itemText));
+	this->itemTexts->Add(Text::String::NewNotNull(itemText));
 	this->items->Add(itemObj);
 	if (!this->autoComplete)
 	{
@@ -170,7 +170,7 @@ UOSInt UI::GUIComboBox::InsertItem(UOSInt index, const UTF8Char *itemText, void 
 	UOSInt cnt = this->itemTexts->GetCount();
 	if (index >= cnt)
 		index = cnt;
-	this->itemTexts->Insert(index, Text::String::New(itemText));
+	this->itemTexts->Insert(index, Text::String::NewNotNull(itemText));
 	this->items->Insert(index, itemObj);
 	gtk_combo_box_text_insert((GtkComboBoxText*)this->hwnd, (gint)index, 0, (const Char*)itemText);
 	return index;

@@ -188,7 +188,7 @@ UOSInt UI::GUIListBox::AddItem(const UTF8Char *itemText, void *itemObj)
 	ItemData *item = MemAlloc(ItemData, 1);
 	item->row = GTK_LIST_BOX_ROW(gtk_list_box_row_new());
 	item->userData = itemObj;
-	item->txt = Text::String::New(itemText);
+	item->txt = Text::String::NewNotNull(itemText);
 	item->lbl = gtk_label_new((const Char*)itemText);
 	gtk_label_set_ellipsize((GtkLabel*)item->lbl, PANGO_ELLIPSIZE_END);
 #if GTK_MAJOR_VERSION == 3
@@ -214,7 +214,7 @@ UOSInt UI::GUIListBox::AddItem(const WChar *itemText, void *itemObj)
 	ItemData *item = MemAlloc(ItemData, 1);
 	item->row = GTK_LIST_BOX_ROW(gtk_list_box_row_new());
 	item->userData = itemObj;
-	item->txt = Text::String::New(itemText);
+	item->txt = Text::String::NewNotNull(itemText);
 	item->lbl = gtk_label_new((const Char*)item->txt->v);
 	gtk_label_set_ellipsize((GtkLabel*)item->lbl, PANGO_ELLIPSIZE_END);
 #if GTK_MAJOR_VERSION == 3
@@ -274,7 +274,7 @@ UOSInt UI::GUIListBox::InsertItem(UOSInt index, const UTF8Char *itemText, void *
 	ItemData *item = MemAlloc(ItemData, 1);
 	item->row = GTK_LIST_BOX_ROW(gtk_list_box_row_new());
 	item->userData = itemObj;
-	item->txt = Text::String::New(itemText);
+	item->txt = Text::String::NewNotNull(itemText);
 	item->lbl = gtk_label_new((const Char*)itemText);
 	gtk_label_set_ellipsize((GtkLabel*)item->lbl, PANGO_ELLIPSIZE_END);
 #if GTK_MAJOR_VERSION == 3
@@ -308,7 +308,7 @@ UOSInt UI::GUIListBox::InsertItem(UOSInt index, const WChar *itemText, void *ite
 	ItemData *item = MemAlloc(ItemData, 1);
 	item->row = GTK_LIST_BOX_ROW(gtk_list_box_row_new());
 	item->userData = itemObj;
-	item->txt = Text::String::New(itemText);
+	item->txt = Text::String::NewNotNull(itemText);
 	item->lbl = gtk_label_new((const Char*)item->txt->v);
 	gtk_label_set_ellipsize((GtkLabel*)item->lbl, PANGO_ELLIPSIZE_END);
 #if GTK_MAJOR_VERSION == 3
@@ -495,7 +495,7 @@ void UI::GUIListBox::SetItemText(UOSInt index, const UTF8Char *text)
 		return;
 	gtk_label_set_text((GtkLabel*)item->lbl, (const Char*)text);
 	item->txt->Release();
-	item->txt = Text::String::New(text);
+	item->txt = Text::String::NewNotNull(text);
 }
 
 Text::String *UI::GUIListBox::GetItemTextNew(UOSInt index)

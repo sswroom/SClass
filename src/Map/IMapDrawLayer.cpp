@@ -62,7 +62,7 @@ Map::IMapDrawLayer::IMapDrawLayer(Text::String *sourceName, UOSInt nameCol, Text
 Map::IMapDrawLayer::IMapDrawLayer(const UTF8Char *sourceName, UOSInt nameCol, const UTF8Char *layerName) : DB::ReadingDB(sourceName)//IO::ParsedObject(sourceName)
 {
 	this->nameCol = nameCol;
-	this->layerName = Text::String::New(layerName);
+	this->layerName = Text::String::NewOrNull(layerName);
 	this->csys = 0;
 
 	this->pgColor = 0;
@@ -1024,7 +1024,7 @@ Text::String *Map::MapLayerReader::GetNewStr(UOSInt colIndex)
 	if (colIndex <= 0)
 		return 0;
 	this->layer->GetString(sbuff, sizeof(sbuff), this->nameArr, this->GetCurrObjId(), colIndex - 1);
-	return Text::String::New(sbuff);
+	return Text::String::NewNotNull(sbuff);
 }
 
 UTF8Char *Map::MapLayerReader::GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSize)

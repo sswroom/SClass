@@ -1530,7 +1530,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 						{
 							if (Text::StrStartsWithICase(csptr2, csptr))
 							{
-								camera = Text::String::New(csptr2);
+								camera = Text::String::NewNotNull(csptr2);
 							}
 							else
 							{
@@ -1538,16 +1538,16 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 								sb.Append(csptr);
 								sb.Append((const UTF8Char*)" ");
 								sb.Append(csptr2);
-								camera = Text::String::New(sb.ToString());
+								camera = Text::String::NewNotNull(sb.ToString());
 							}
 						}
 						else if (csptr)
 						{
-							camera = Text::String::New(csptr);
+							camera = Text::String::NewNotNull(csptr);
 						}
 						else if (csptr2)
 						{
-							camera = Text::String::New(csptr2);
+							camera = Text::String::NewNotNull(csptr2);
 						}
 					}
 				}
@@ -1670,14 +1670,14 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 						userFile = MemAlloc(UserFileInfo, 1);
 						userFile->id = this->db->GetLastIdentity32();
 						userFile->fileType = fileType;
-						userFile->oriFileName = Text::String::New(&fileName[i + 1]);
+						userFile->oriFileName = Text::String::NewNotNull(&fileName[i + 1]);
 						userFile->fileTimeTicks = fileTime.ToTicks();
 						userFile->lat = lat;
 						userFile->lon = lon;
 						userFile->webuserId = this->userId;
 						userFile->speciesId = sp->GetSpeciesId();
 						userFile->captureTimeTicks = userFile->fileTimeTicks;
-						userFile->dataFileName = Text::String::New(dataFileName);
+						userFile->dataFileName = Text::String::NewNotNull(dataFileName);
 						userFile->crcVal = crcVal;
 						userFile->rotType = 0;
 						userFile->camera = camera;
@@ -1887,14 +1887,14 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 						userFile = MemAlloc(UserFileInfo, 1);
 						userFile->id = this->db->GetLastIdentity32();
 						userFile->fileType = fileType;
-						userFile->oriFileName = Text::String::New(&fileName[i + 1]);
+						userFile->oriFileName = Text::String::NewNotNull(&fileName[i + 1]);
 						userFile->fileTimeTicks = fileTime.ToTicks();
 						userFile->lat = 0;
 						userFile->lon = 0;
 						userFile->webuserId = this->userId;
 						userFile->speciesId = sp->GetSpeciesId();
 						userFile->captureTimeTicks = userFile->fileTimeTicks;
-						userFile->dataFileName = Text::String::New(dataFileName);
+						userFile->dataFileName = Text::String::NewNotNull(dataFileName);
 						userFile->crcVal = crcVal;
 						userFile->rotType = 0;
 						userFile->camera = 0;
@@ -2092,9 +2092,9 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesWeb
 		wfile = MemAlloc(WebFileInfo, 1);
 		wfile->id = id;
 		wfile->speciesId = sp->GetSpeciesId();
-		wfile->imgUrl = Text::String::New(imgURL);
-		wfile->srcUrl = Text::String::New(srcURL);
-		wfile->location = Text::String::New((const UTF8Char*)"");
+		wfile->imgUrl = Text::String::NewNotNull(imgURL);
+		wfile->srcUrl = Text::String::NewNotNull(srcURL);
+		wfile->location = Text::String::NewEmpty();
 		wfile->crcVal = crcVal;
 		wfile->cropLeft = 0;
 		wfile->cropTop = 0;
@@ -2269,8 +2269,8 @@ Bool SSWR::OrganMgr::OrganEnvDB::UpdateSpeciesWebFile(OrganSpecies *sp, WebFileI
 	{
 		SDEL_STRING(wfile->srcUrl);
 		SDEL_STRING(wfile->location);
-		wfile->srcUrl = Text::String::New(srcURL);
-		wfile->location = Text::String::New(location);
+		wfile->srcUrl = Text::String::NewNotNull(srcURL);
+		wfile->location = Text::String::NewNotNull(location);
 		return true;
 	}
 	else
@@ -3221,8 +3221,8 @@ Bool SSWR::OrganMgr::OrganEnvDB::AddDataFile(const UTF8Char *fileName)
 				dataFile->startTimeTicks = startDT.ToTicks();
 				dataFile->endTimeTicks = endDT.ToTicks();
 				dataFile->webUserId = this->userId;
-				dataFile->oriFileName = Text::String::New(oriFileName);
-				dataFile->fileName = Text::String::New(dataFileName);
+				dataFile->oriFileName = Text::String::NewNotNull(oriFileName);
+				dataFile->fileName = Text::String::NewNotNull(dataFileName);
 				this->dataFiles->Add(dataFile);
 
 				if (fileType == 1)
@@ -3506,7 +3506,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::UpdateUserFileDesc(UserFileInfo *userFile, cons
 		SDEL_STRING(userFile->descript);
 		if (descript)
 		{
-			userFile->descript = Text::String::New(descript);
+			userFile->descript = Text::String::NewNotNull(descript);
 		}
 	}
 	return succ;
@@ -3526,7 +3526,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::UpdateUserFileLoc(UserFileInfo *userFile, const
 		SDEL_STRING(userFile->location);
 		if (location)
 		{
-			userFile->location = Text::String::New(location);
+			userFile->location = Text::String::NewNotNull(location);
 		}
 	}
 	return succ;
@@ -3683,8 +3683,8 @@ Bool SSWR::OrganMgr::OrganEnvDB::LocationUpdate(Int32 locId, const UTF8Char *eng
 	{
 		SDEL_STRING(loc->ename);
 		SDEL_STRING(loc->cname);
-		loc->ename = Text::String::New(engName);
-		loc->cname = Text::String::New(chiName);
+		loc->ename = Text::String::NewOrNull(engName);
+		loc->cname = Text::String::NewOrNull(chiName);
 		return true;
 	}
 }
@@ -4791,9 +4791,9 @@ void SSWR::OrganMgr::OrganEnvDB::UpgradeDB2()
 							wfile = MemAlloc(WebFileInfo, 1);
 							wfile->id = id;
 							wfile->speciesId = sp->id;
-							wfile->imgUrl = Text::String::New(cols[1]);
-							wfile->srcUrl = Text::String::New(cols[2]);
-							wfile->location = Text::String::New((const UTF8Char*)"");
+							wfile->imgUrl = Text::String::NewNotNull(cols[1]);
+							wfile->srcUrl = Text::String::NewNotNull(cols[2]);
+							wfile->location = Text::String::NewEmpty();
 							wfile->crcVal = crcVal;
 							wfile->cropLeft = 0;
 							wfile->cropTop = 0;

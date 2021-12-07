@@ -200,7 +200,7 @@ void Map::ESRI::ESRIMDBLayer::Init(DB::SharedDBConn *conn, UInt32 srid, const UT
 	this->csys = Math::CoordinateSystemManager::SRCreateCSys(srid);
 }
 
-Map::ESRI::ESRIMDBLayer::ESRIMDBLayer(DB::SharedDBConn *conn, UInt32 srid, Text::String *sourceName, const UTF8Char *tableName) : Map::IMapDrawLayer(sourceName, 0, Text::String::New(tableName))
+Map::ESRI::ESRIMDBLayer::ESRIMDBLayer(DB::SharedDBConn *conn, UInt32 srid, Text::String *sourceName, const UTF8Char *tableName) : Map::IMapDrawLayer(sourceName, 0, Text::String::NewOrNull(tableName))
 {
 	SDEL_STRING(this->layerName);
 	this->Init(conn, srid, tableName);

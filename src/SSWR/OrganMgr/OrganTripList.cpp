@@ -28,8 +28,8 @@ SSWR::OrganMgr::Location::Location(Int32 id, Int32 parId, const UTF8Char *ename,
 {
 	this->id = id;
 	this->parId = parId;
-	this->ename = Text::String::New(ename);
-	this->cname = Text::String::New(cname);
+	this->ename = Text::String::NewNotNull(ename);
+	this->cname = Text::String::NewNotNull(cname);
 	this->locType = locType;
 }
 

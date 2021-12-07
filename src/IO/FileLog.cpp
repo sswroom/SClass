@@ -14,11 +14,11 @@ UTF8Char *IO::FileLog::GetNewName(UTF8Char *buff, Data::DateTime *time)
 
 	if (this->groupStyle == IO::ILogHandler::LOG_GROUP_TYPE_NO_GROUP)
 	{
-		currName = Text::StrConcat(buff, this->fileName);
+		currName = this->fileName->ConcatTo(buff);
 	}
 	else if (this->groupStyle == IO::ILogHandler::LOG_GROUP_TYPE_PER_YEAR)
 	{
-		currName = time->ToString(Text::StrConcat(buff, this->fileName), "yyyy");
+		currName = time->ToString(this->fileName->ConcatTo(buff), "yyyy");
 		if (!IO::Path::IsDirectoryExist(buff))
 		{
 			IO::Path::CreateDirectory(buff);
@@ -28,7 +28,7 @@ UTF8Char *IO::FileLog::GetNewName(UTF8Char *buff, Data::DateTime *time)
 	}
 	else if (this->groupStyle == IO::ILogHandler::LOG_GROUP_TYPE_PER_MONTH)
 	{
-		currName = time->ToString(Text::StrConcat(buff, this->fileName), "yyyyMM");
+		currName = time->ToString(this->fileName->ConcatTo(buff), "yyyyMM");
 		if (!IO::Path::IsDirectoryExist(buff))
 		{
 			IO::Path::CreateDirectory(buff);
@@ -38,7 +38,7 @@ UTF8Char *IO::FileLog::GetNewName(UTF8Char *buff, Data::DateTime *time)
 	}
 	else if (this->groupStyle == IO::ILogHandler::LOG_GROUP_TYPE_PER_DAY)
 	{
-		currName = time->ToString(Text::StrConcat(buff, this->fileName), "yyyyMMdd");
+		currName = time->ToString(this->fileName->ConcatTo(buff), "yyyyMMdd");
 		if (!IO::Path::IsDirectoryExist(buff))
 		{
 			IO::Path::CreateDirectory(buff);
@@ -48,7 +48,7 @@ UTF8Char *IO::FileLog::GetNewName(UTF8Char *buff, Data::DateTime *time)
 	}
 	else
 	{
-		currName = Text::StrConcat(buff, this->fileName);
+		currName = this->fileName->ConcatTo(buff);
 	}
 
 	if (this->logStyle == IO::ILogHandler::LOG_TYPE_SINGLE_FILE)
@@ -77,7 +77,7 @@ UTF8Char *IO::FileLog::GetNewName(UTF8Char *buff, Data::DateTime *time)
 	return currName;
 }
 
-IO::FileLog::FileLog(const UTF8Char *fileName, LogType style, LogGroup groupStyle, const Char *dateFormat)
+void IO::FileLog::Init(LogType style, LogGroup groupStyle, const Char *dateFormat)
 {
 	UTF8Char buff[256];
 	Char cbuff[256];
@@ -97,24 +97,23 @@ IO::FileLog::FileLog(const UTF8Char *fileName, LogType style, LogGroup groupStyl
 
 	UOSInt i;
 
-	this->fileName = Text::StrCopyNew(fileName);
 	if (this->groupStyle != IO::ILogHandler::LOG_GROUP_TYPE_NO_GROUP)
 	{
-		i = Text::StrLastIndexOf(this->fileName, IO::Path::PATH_SEPERATOR);
-		this->extName = Text::StrCopyNew(&this->fileName[i + 1]);
+		i = this->fileName->LastIndexOf(IO::Path::PATH_SEPERATOR);
+		this->extName = Text::StrCopyNew(&this->fileName->v[i + 1]);
 	}
 	else
 	{
 		this->extName = 0;
-		i = Text::StrLastIndexOf(this->fileName, IO::Path::PATH_SEPERATOR);
+		i = this->fileName->LastIndexOf(IO::Path::PATH_SEPERATOR);
 		if (i != INVALID_INDEX)
 		{
-			((UTF8Char*)this->fileName)[i] = 0;
-			if (!IO::Path::IsDirectoryExist(this->fileName))
+			this->fileName->v[i] = 0;
+			if (!IO::Path::IsDirectoryExist(this->fileName->v))
 			{
-				IO::Path::CreateDirectory(this->fileName);
+				IO::Path::CreateDirectory(this->fileName->v);
 			}
-			((UTF8Char*)this->fileName)[i] = IO::Path::PATH_SEPERATOR;
+			this->fileName->v[i] = IO::Path::PATH_SEPERATOR;
 		}
 	}
 
@@ -127,10 +126,22 @@ IO::FileLog::FileLog(const UTF8Char *fileName, LogType style, LogGroup groupStyl
 	log->WriteSignature();
 }
 
+IO::FileLog::FileLog(Text::String *fileName, LogType style, LogGroup groupStyle, const Char *dateFormat)
+{
+	this->fileName = fileName->Clone();
+	this->Init(style, groupStyle, dateFormat);
+}
+
+IO::FileLog::FileLog(const UTF8Char *fileName, LogType style, LogGroup groupStyle, const Char *dateFormat)
+{
+	this->fileName = Text::String::NewNotNull(fileName);
+	this->Init(style, groupStyle, dateFormat);
+}
+
 IO::FileLog::~FileLog()
 {
 	SDEL_TEXT(this->dateFormat);
-	Text::StrDelNew(fileName);
+	fileName->Release();
 	fileName = 0;
 	if (this->extName)
 	{

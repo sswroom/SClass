@@ -1,6 +1,5 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Crypto/Encrypt/Base64.h"
 #include "Crypto/Hash/HMAC.h"
 #include "Crypto/Hash/SHA1.h"
 #include "IO/FileStream.h"
@@ -13,6 +12,7 @@
 #include "Text/JSON.h"
 #include "Text/MyStringFloat.h"
 #include "Text/Locale.h"
+#include "Text/TextBinEnc/Base64Enc.h"
 
 Map::GoogleMap::GoogleWSSearcherJSON::GoogleWSSearcherJSON(Net::SocketFactory *sockf, Net::SSLEngine *ssl, IO::Writer *errWriter, Text::EncodingFactory *encFact)
 {
@@ -35,26 +35,18 @@ Map::GoogleMap::GoogleWSSearcherJSON::~GoogleWSSearcherJSON()
 {
 	DEL_CLASS(this->lastSrchDate);
 	DEL_CLASS(this->mut);
-	if (this->gooCliId)
-	{
-		Text::StrDelNew(this->gooCliId);
-		this->gooCliId = 0;
-	}
+	SDEL_STRING(this->gooCliId);
 	if (this->gooPrivKey)
 	{
 		MemFree(this->gooPrivKey);
 		this->gooPrivKey = 0;
 	}
-	SDEL_TEXT(this->gooAPIKey);
+	SDEL_STRING(this->gooAPIKey);
 }
 
-void Map::GoogleMap::GoogleWSSearcherJSON::SetGoogleClientId(const UTF8Char *gooCliId, const UTF8Char *gooPrivKey)
+void Map::GoogleMap::GoogleWSSearcherJSON::SetGoogleClientId(Text::String *gooCliId, Text::String *gooPrivKey)
 {
-	if (this->gooCliId)
-	{
-		Text::StrDelNew(this->gooCliId);
-		this->gooCliId = 0;
-	}
+	SDEL_STRING(this->gooCliId);
 	if (this->gooPrivKey)
 	{
 		MemFree(this->gooPrivKey);
@@ -63,28 +55,42 @@ void Map::GoogleMap::GoogleWSSearcherJSON::SetGoogleClientId(const UTF8Char *goo
 	this->gooPrivKeyLeng = 0;
 	if (gooCliId)
 	{
-		Crypto::Encrypt::Base64 b64;
-		const UTF8Char *tmpKeyStr;
-		UOSInt tmpKeyStrLeng;
-
-		this->gooCliId = Text::StrCopyNew(gooCliId);
-		tmpKeyStr = Text::StrCopyNew(gooPrivKey);
-		tmpKeyStrLeng = Text::StrCharCnt(tmpKeyStr);
-		this->gooPrivKey = MemAlloc(UInt8, tmpKeyStrLeng + 1);
-		Text::StrReplace((Char*)tmpKeyStr, '-', '+');
-		Text::StrReplace((Char*)tmpKeyStr, '_', '/');
-		this->gooPrivKeyLeng = b64.Decrypt(tmpKeyStr, tmpKeyStrLeng, this->gooPrivKey, 0);
-		Text::StrDelNew(tmpKeyStr);
+		Text::TextBinEnc::Base64Enc b64(Text::TextBinEnc::Base64Enc::Charset::URL, false);
+		this->gooCliId = gooCliId->Clone();
+		this->gooPrivKey = MemAlloc(UInt8, gooPrivKey->leng + 1);
+		this->gooPrivKeyLeng = b64.DecodeBin(gooPrivKey->v, gooPrivKey->leng, this->gooPrivKey);
 	}
+}
+
+void Map::GoogleMap::GoogleWSSearcherJSON::SetGoogleClientId(const UTF8Char *gooCliId, const UTF8Char *gooPrivKey)
+{
+	SDEL_STRING(this->gooCliId);
+	if (this->gooPrivKey)
+	{
+		MemFree(this->gooPrivKey);
+		this->gooPrivKey = 0;
+	}
+	this->gooPrivKeyLeng = 0;
+	if (gooCliId)
+	{
+		Text::TextBinEnc::Base64Enc b64(Text::TextBinEnc::Base64Enc::Charset::URL, false);
+		UOSInt len = Text::StrCharCnt(gooPrivKey);
+		this->gooCliId = Text::String::NewNotNull(gooCliId);
+		this->gooPrivKey = MemAlloc(UInt8, len + 1);
+		this->gooPrivKeyLeng = b64.DecodeBin(gooPrivKey, len, this->gooPrivKey);
+	}
+}
+
+void Map::GoogleMap::GoogleWSSearcherJSON::SetGoogleAPIKey(Text::String *gooAPIKey)
+{
+	SDEL_STRING(this->gooAPIKey);
+	this->gooAPIKey = SCOPY_STRING(gooAPIKey);
 }
 
 void Map::GoogleMap::GoogleWSSearcherJSON::SetGoogleAPIKey(const UTF8Char *gooAPIKey)
 {
-	SDEL_TEXT(this->gooAPIKey);
-	if (gooAPIKey)
-	{
-		this->gooAPIKey = Text::StrCopyNew(gooAPIKey);
-	}
+	SDEL_STRING(this->gooAPIKey);
+	this->gooAPIKey = Text::String::NewOrNull(gooAPIKey);
 }
 
 UTF8Char *Map::GoogleMap::GoogleWSSearcherJSON::SearchName(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, const UTF8Char *lang)
@@ -124,27 +130,21 @@ UTF8Char *Map::GoogleMap::GoogleWSSearcherJSON::SearchName(UTF8Char *buff, UOSIn
 	if (this->gooCliId)
 	{
 		sptr = Text::StrConcat(sptr, (const UTF8Char*)"&client=");
-		sptr = Text::StrConcat(sptr, this->gooCliId);
+		sptr = this->gooCliId->ConcatTo(sptr);
 
 		UInt8 result[20];
-		UInt8 result2[40];
-		UOSInt size;
 		Crypto::Hash::SHA1 sha;
 		Crypto::Hash::HMAC hmac(&sha, this->gooPrivKey, this->gooPrivKeyLeng);
 		hmac.Calc(urlStart, (UOSInt)(sptr - urlStart));
 		hmac.GetValue(result);
-		Crypto::Encrypt::Base64 b64;
-		size = b64.Encrypt(result, 20, result2, 0);
-		result2[size] = 0;
-		Text::StrReplace((Char*)result2, '+', '-');
-		Text::StrReplace((Char*)result2, '/', '_');
+		Text::TextBinEnc::Base64Enc b64(Text::TextBinEnc::Base64Enc::Charset::URL, false);
 		sptr = Text::StrConcat(sptr, (const UTF8Char*)"&signature=");
-		sptr = Text::StrConcatC(sptr, result2, size);
+		sptr = b64.EncodeBin(sptr, result, 20);
 	}
 	else if (this->gooAPIKey)
 	{
 		sptr = Text::StrConcat(sptr, (const UTF8Char*)"&key=");
-		sptr = Text::StrConcat(sptr, this->gooAPIKey);
+		sptr = this->gooAPIKey->ConcatTo(sptr);
 	}
 
 	cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, url, "GET", true);

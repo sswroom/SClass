@@ -196,7 +196,7 @@ IO::ParsedObject *Parser::FileParser::OziMapParser::ParseFile(IO::IStreamData *f
 				NEW_CLASS(shimg, Media::SharedImage(imgList, true));
 				NEW_CLASS(vimg, Math::VectorImage(csys->GetSRID(), shimg, 0, 0, imgW, imgH, false, sbuff, 0, 0));
 				UOSInt i = Text::StrLastIndexOf(sbuff, IO::Path::PATH_SEPERATOR);
-				Text::String *s = Text::String::New(&sbuff[i + 1]);
+				Text::String *s = Text::String::NewNotNull(&sbuff[i + 1]);
 				NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_IMAGE, fd->GetFullName(), 0, (const UTF8Char**)0, csys, 0, s));
 				s->Release();
 				lyr->AddVector(vimg, 0);

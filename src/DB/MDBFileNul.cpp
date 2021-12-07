@@ -15,6 +15,11 @@ Bool DB::MDBFile::CreateMDBFile(const UTF8Char *fileName)
 	return false;
 }
 
+DB::DBTool *DB::MDBFile::CreateDBTool(Text::String *fileName, IO::LogTool *log, const UTF8Char *logPrefix)
+{
+	return 0;
+}
+
 DB::DBTool *DB::MDBFile::CreateDBTool(const UTF8Char *fileName, IO::LogTool *log, const UTF8Char *logPrefix)
 {
 	return 0;

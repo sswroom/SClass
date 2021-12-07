@@ -167,9 +167,30 @@ void Text::SpreadSheet::Worksheet::FreeDrawing(WorksheetDrawing *drawing)
 	MemFree(drawing);
 }
 
+Text::SpreadSheet::Worksheet::Worksheet(Text::String *name)
+{
+	this->name = name->Clone();
+	this->freezeHori = 0;
+	this->freezeVert = 0;
+	this->marginLeft = 2.0;
+	this->marginRight = 2.0;
+	this->marginTop = 2.5;
+	this->marginBottom = 2.5;
+	this->marginHeader = 1.3;
+	this->marginFooter = 1.3;
+	this->zoom = 100;
+	this->options = 0x4b6;
+	this->maxCol = 0;
+	this->defColWidthPt = 48.0;
+	this->defRowHeightPt = 13.5;
+	NEW_CLASS(rows, Data::ArrayList<RowData*>());
+	NEW_CLASS(this->colWidthsPt, Data::ArrayListDbl());
+	NEW_CLASS(drawings, Data::ArrayList<WorksheetDrawing*>());
+}
+
 Text::SpreadSheet::Worksheet::Worksheet(const UTF8Char *name)
 {
-	this->name = Text::StrCopyNew(name);
+	this->name = Text::String::NewNotNull(name);
 	this->freezeHori = 0;
 	this->freezeVert = 0;
 	this->marginLeft = 2.0;
@@ -192,7 +213,7 @@ Text::SpreadSheet::Worksheet::~Worksheet()
 {
 	UOSInt i;
 	RowData *row;
-	Text::StrDelNew(this->name);
+	this->name->Release();
 	i = this->rows->GetCount();
 	while (i-- > 0)
 	{
@@ -379,7 +400,7 @@ Double Text::SpreadSheet::Worksheet::GetDefRowHeightPt()
 	return this->defRowHeightPt;
 }
 
-const UTF8Char *Text::SpreadSheet::Worksheet::GetName()
+Text::String *Text::SpreadSheet::Worksheet::GetName()
 {
 	return this->name;
 }
@@ -442,7 +463,7 @@ Bool Text::SpreadSheet::Worksheet::SetCellURL(UOSInt row, UOSInt col, const UTF8
 	SDEL_STRING(cell->cellURL);
 	if (url)
 	{
-		cell->cellURL = Text::String::New(url);
+		cell->cellURL = Text::String::NewNotNull(url);
 	}
 	return true;
 }
@@ -473,7 +494,7 @@ Bool Text::SpreadSheet::Worksheet::SetCellString(UOSInt row, UOSInt col, CellSty
 	SDEL_STRING(cell->cellValue);
 	if (val)
 	{
-		cell->cellValue = Text::String::New(val);
+		cell->cellValue = Text::String::NewNotNull(val);
 	}
 	if (style) cell->style = style;
 	return true;
@@ -489,7 +510,7 @@ Bool Text::SpreadSheet::Worksheet::SetCellDate(UOSInt row, UOSInt col, CellStyle
 	cell->cdt = CellDataType::DateTime;
 	SDEL_STRING(cell->cellValue);
 	val->ToString(sbuff, "yyyy-MM-ddTHH:mm:ss.fff");
-	cell->cellValue = Text::String::New(sbuff);
+	cell->cellValue = Text::String::NewNotNull(sbuff);
 	if (style) cell->style = style;
 	return true;
 }
@@ -504,7 +525,7 @@ Bool Text::SpreadSheet::Worksheet::SetCellDouble(UOSInt row, UOSInt col, CellSty
 	cell->cdt = CellDataType::Number;
 	SDEL_STRING(cell->cellValue);
 	Text::StrDouble(sbuff, val);
-	cell->cellValue = Text::String::New(sbuff);
+	cell->cellValue = Text::String::NewNotNull(sbuff);
 	if (style) cell->style = style;
 	return true;
 }
@@ -519,7 +540,7 @@ Bool Text::SpreadSheet::Worksheet::SetCellInt32(UOSInt row, UOSInt col, CellStyl
 	cell->cdt = CellDataType::Number;
 	SDEL_STRING(cell->cellValue);
 	Text::StrInt32(sbuff, val);
-	cell->cellValue = Text::String::New(sbuff);
+	cell->cellValue = Text::String::NewNotNull(sbuff);
 	if (style) cell->style = style;
 	return true;
 }

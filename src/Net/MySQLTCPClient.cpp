@@ -597,7 +597,7 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(void *userObj)
 							}
 							else
 							{
-								me->svrVer = Text::StrCopyNew(&buff[5]);
+								me->svrVer = Text::String::NewNotNull(&buff[5]);
 								me->connId = ReadUInt32(&buff[packetSize - 9]);
 								MemCopyNO(me->authPluginData, &buff[packetSize - 5], 8);
 								me->authPluginDataSize = 8;
@@ -618,7 +618,7 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(void *userObj)
 							ptrEnd = &buff[packetSize + 4];
 							sptr = Text::StrConcatS(sbuff, &buff[5], packetSize - 1);
 							ptrCurr = &buff[6] + (sptr - sbuff);
-							me->svrVer = Text::StrCopyNew(sbuff);
+							me->svrVer = Text::String::NewNotNull(sbuff);
 #if defined(VERBOSE)
 							printf("MySQLTCP Server ver = %s\r\n", me->svrVer);
 #endif
@@ -704,10 +704,10 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(void *userObj)
 									WriteInt32(&buff[8], 16777215);
 									buff[12] = 45;
 									MemClear(&buff[13], 23);
-									ptrCurr = Text::StrConcat(&buff[36], me->userName) + 1;
+									ptrCurr = me->userName->ConcatTo(&buff[36]) + 1;
 									ptrCurr[0] = 20;
 									Crypto::Hash::SHA1 sha1;
-									sha1.Calc(me->password, Text::StrCharCnt(me->password));
+									sha1.Calc(me->password->v, me->password->leng);
 									sha1.GetValue(sbuff);
 									sha1.Clear();
 									sha1.Calc(sbuff, 20);
@@ -725,7 +725,7 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(void *userObj)
 									ptrCurr += 21;
 									if (me->database)
 									{
-										ptrCurr = Text::StrConcat(ptrCurr, me->database) + 1;
+										ptrCurr = me->database->ConcatTo(ptrCurr) + 1;
 									}
 									if (cliCap & Net::MySQLUtil::CLIENT_PLUGIN_AUTH)
 									{
@@ -967,8 +967,8 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(void *userObj)
 
 void Net::MySQLTCPClient::SetLastError(const UTF8Char *errMsg, UOSInt msgLen)
 {
-	SDEL_TEXT(this->lastError);
-	this->lastError = Text::StrCopyNewC(errMsg, msgLen);
+	SDEL_STRING(this->lastError);
+	this->lastError = Text::String::New(errMsg, msgLen);
 #if defined(VERBOSE)
 	Text::StringBuilderUTF8 sb;
 	this->GetErrorMsg(&sb);
@@ -978,13 +978,40 @@ void Net::MySQLTCPClient::SetLastError(const UTF8Char *errMsg, UOSInt msgLen)
 
 void Net::MySQLTCPClient::SetLastError(const UTF8Char *errMsg)
 {
-	SDEL_TEXT(this->lastError);
-	this->lastError = Text::StrCopyNew(errMsg);
+	SDEL_STRING(this->lastError);
+	this->lastError = Text::String::NewOrNull(errMsg);
 #if defined(VERBOSE)
 	Text::StringBuilderUTF8 sb;
 	this->GetErrorMsg(&sb);
 	printf("MySQLTCP Error: %s\r\n", sb.ToString());
 #endif
+}
+
+Net::MySQLTCPClient::MySQLTCPClient(Net::SocketFactory *sockf, const Net::SocketUtil::AddressInfo *addr, UInt16 port, Text::String *userName, Text::String *password, Text::String *database) : DB::DBConn((const UTF8Char*)"MySQLTCPClient")
+{
+	this->sockf = sockf;
+	this->recvRunning = false;
+	this->recvStarted = false;
+	this->addr = *addr;
+	this->port = port;
+	this->mode = 0;
+	this->svrVer = 0;
+	this->connId = 0;
+	this->authPluginDataSize = 0;
+	this->svrCap = 0;
+	this->tableNames = 0;
+	this->lastError = 0;
+	this->userName = userName->Clone();
+	this->password = password->Clone();
+	this->database = SCOPY_STRING(database);
+	NEW_CLASS(this->cmdMut, Sync::Mutex());
+	NEW_CLASS(this->cmdEvt, Sync::Event(true, (const UTF8Char*)"Net.MySQLTCPCLient.cmdEvt"));
+	this->cmdSeqNum = 0;
+	this->cmdReader = 0;
+	this->cmdResultType = 0;
+	NEW_CLASS(this->cliMut, Sync::Mutex());
+	this->cli = 0;
+	this->Reconnect();
 }
 
 Net::MySQLTCPClient::MySQLTCPClient(Net::SocketFactory *sockf, const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UTF8Char *userName, const UTF8Char *password, const UTF8Char *database) : DB::DBConn((const UTF8Char*)"MySQLTCPClient")
@@ -1001,9 +1028,9 @@ Net::MySQLTCPClient::MySQLTCPClient(Net::SocketFactory *sockf, const Net::Socket
 	this->svrCap = 0;
 	this->tableNames = 0;
 	this->lastError = 0;
-	this->userName = Text::StrCopyNew(userName);
-	this->password = Text::StrCopyNew(password);
-	this->database = database?Text::StrCopyNew(database):0;
+	this->userName = Text::String::NewNotNull(userName);
+	this->password = Text::String::NewNotNull(password);
+	this->database = Text::String::NewOrNull(database);
 	NEW_CLASS(this->cmdMut, Sync::Mutex());
 	NEW_CLASS(this->cmdEvt, Sync::Event(true, (const UTF8Char*)"Net.MySQLTCPCLient.cmdEvt"));
 	this->cmdSeqNum = 0;
@@ -1032,11 +1059,11 @@ Net::MySQLTCPClient::~MySQLTCPClient()
 	DEL_CLASS(this->cliMut);
 	DEL_CLASS(this->cmdMut);
 	DEL_CLASS(this->cmdEvt);
-	Text::StrDelNew(this->userName);
-	Text::StrDelNew(this->password);
-	SDEL_TEXT(this->database);
-	SDEL_TEXT(this->svrVer);
-	SDEL_TEXT(this->lastError);
+	this->userName->Release();
+	this->password->Release();
+	SDEL_STRING(this->database);
+	SDEL_STRING(this->svrVer);
+	SDEL_STRING(this->lastError);
 	if (this->tableNames)
 	{
 		UOSInt i = this->tableNames->GetCount();
@@ -1181,13 +1208,13 @@ void Net::MySQLTCPClient::GetErrorMsg(Text::StringBuilderUTF *str)
 {
 	if (this->lastError)
 	{
-		if (this->lastError[0] == '#')
+		if (this->lastError->v[0] == '#')
 		{
 			str->AppendChar('[', 1);
-			str->AppendC(&this->lastError[1], 5);
+			str->AppendC(&this->lastError->v[1], 5);
 			str->AppendChar(']', 1);
 			str->AppendChar(' ', 1);
-			str->Append(&this->lastError[6]);
+			str->Append(&this->lastError->v[6]);
 		}
 		else
 		{
@@ -1215,7 +1242,7 @@ void Net::MySQLTCPClient::Reconnect()
 	this->recvRunning = false;
 	this->recvStarted = false;
 	this->mode = 0;
-	SDEL_TEXT(this->svrVer);
+	SDEL_STRING(this->svrVer);
 	NEW_CLASS(this->cli, Net::TCPClient(this->sockf, &this->addr, this->port));
 	if (this->cli->IsConnectError())
 	{
@@ -1359,7 +1386,7 @@ Bool Net::MySQLTCPClient::ServerInfoRecv()
 	return this->mode >= 1;
 }
 
-const UTF8Char *Net::MySQLTCPClient::GetServerVer()
+Text::String *Net::MySQLTCPClient::GetServerVer()
 {
 	return this->svrVer;
 }
@@ -1395,19 +1422,44 @@ UInt16 Net::MySQLTCPClient::GetConnPort()
 	return this->port;
 }
 
-const UTF8Char *Net::MySQLTCPClient::GetConnDB()
+Text::String *Net::MySQLTCPClient::GetConnDB()
 {
 	return this->database;
 }
 
-const UTF8Char *Net::MySQLTCPClient::GetConnUID()
+Text::String *Net::MySQLTCPClient::GetConnUID()
 {
 	return this->userName;
 }
 
-const UTF8Char *Net::MySQLTCPClient::GetConnPWD()
+Text::String *Net::MySQLTCPClient::GetConnPWD()
 {
 	return this->password;
+}
+
+DB::DBTool *Net::MySQLTCPClient::CreateDBTool(Net::SocketFactory *sockf, Text::String *serverName, Text::String *dbName, Text::String *uid, Text::String *pwd, IO::LogTool *log, const UTF8Char *logPrefix)
+{
+	Net::MySQLTCPClient *conn;
+	DB::DBTool *db;
+	Net::SocketUtil::AddressInfo addr;
+	if (sockf->DNSResolveIP(serverName->v, &addr))
+	{
+		NEW_CLASS(conn, Net::MySQLTCPClient(sockf, &addr, 3306, uid, pwd, dbName));
+		if (conn->IsError() == 0)
+		{
+			NEW_CLASS(db, DB::DBTool(conn, true, log, logPrefix));
+			return db;
+		}
+		else
+		{
+			DEL_CLASS(conn);
+			return 0;
+		}
+	}
+	else
+	{
+		return 0;
+	}
 }
 
 DB::DBTool *Net::MySQLTCPClient::CreateDBTool(Net::SocketFactory *sockf, const UTF8Char *serverName, const UTF8Char *dbName, const UTF8Char *uid, const UTF8Char *pwd, IO::LogTool *log, const UTF8Char *logPrefix)

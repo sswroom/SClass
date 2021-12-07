@@ -85,7 +85,7 @@ UI::GUITabPage *UI::GUITabControl::AddTabPage(const UTF8Char *tabName)
 	NEW_CLASS(tp, UI::GUITabPage(this->ui, 0, this, this->tabPages->GetCount()));
 	page = MemAlloc(PageInfo, 1);
 	page->lbl = gtk_label_new((const Char*)tabName);
-	page->txt = Text::String::New(tabName);
+	page->txt = Text::String::NewNotNull(tabName);
 	tp->SetCustObj(page);
 	gtk_notebook_append_page((GtkNotebook*)this->hwnd, (GtkWidget*)tp->GetHandle(), page->lbl);
 	OSInt x;
@@ -136,7 +136,7 @@ void UI::GUITabControl::SetTabPageName(UOSInt index, const UTF8Char *name)
 	PageInfo *page = (PageInfo*)tp->GetCustObj();
 	gtk_label_set_text((GtkLabel*)page->lbl, (const Char*)name);
 	page->txt->Release();
-	page->txt = Text::String::New(name);
+	page->txt = Text::String::NewNotNull(name);
 }
 
 UTF8Char *UI::GUITabControl::GetTabPageName(UOSInt index, UTF8Char *buff)

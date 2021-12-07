@@ -24,7 +24,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		return 0;
 	}
 	Parser::FileParser::X509Parser parser;
-	Text::String *s = Text::String::New(sbuff);
+	Text::String *s = Text::String::NewNotNull(sbuff);
 	Crypto::Cert::X509File *x509 = parser.ParseBuff(buff, buffSize, s);
 	s->Release();
 	if (x509 == 0)

@@ -255,7 +255,7 @@ IO::ParsedObject *Parser::FileParser::SMDLParser::ParseFile(IO::IStreamData *fd,
 	}
 
 	Map::GPSTrack *track;
-	Text::String *s = Text::String::New(sbuff);
+	Text::String *s = Text::String::NewNotNull(sbuff);
 	NEW_CLASS(track, Map::GPSTrack(fd->GetFullName(), true, 0, s));
 	s->Release();
 	track->SetTrackName(sbuff);

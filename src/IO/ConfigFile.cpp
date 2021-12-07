@@ -107,7 +107,7 @@ Bool IO::ConfigFile::SetValue(const UTF8Char *category, const UTF8Char *name, co
 	}
 	s = cate->Get(name);
 	SDEL_STRING(s);
-	cate->Put(name, Text::String::New(value));
+	cate->Put(name, Text::String::NewOrNull(value));
 	return true;
 }
 

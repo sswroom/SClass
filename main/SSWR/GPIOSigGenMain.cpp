@@ -35,13 +35,13 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	IO::GPIOControl *gpioCtrl;
 	IO::ConsoleWriter console;
 	IO::ConfigFile *cfg = IO::IniFile::ParseProgConfig(0);
-	const UTF8Char *csptr;
+	Text::String *s;
 	UInt16 pinNum;
 	if (cfg)
 	{
 		pinNum = 0;
-		csptr = cfg->GetValue((const UTF8Char*)"GPIOPin");
-		if (csptr && Text::StrToUInt16(csptr, &pinNum))
+		s = cfg->GetValue((const UTF8Char*)"GPIOPin");
+		if (s && s->ToUInt16(&pinNum))
 		{
 			if (pinNum > 0)
 			{

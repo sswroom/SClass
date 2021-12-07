@@ -389,11 +389,39 @@ Bool Media::VectorGraph::DrawEllipse(Double tlx, Double tly, Double w, Double h,
 	return true;
 }
 
+Bool Media::VectorGraph::DrawString(Double tlx, Double tly, Text::String *str, DrawFont *f, DrawBrush *b)
+{
+	VectorStyles *style;
+	Math::VectorString *vstr;
+	NEW_CLASS(vstr, Math::VectorString(this->srid, str, tlx, tly, 0, 0, this->align));
+	style = MemAlloc(VectorStyles, 1);
+	style->pen = 0;
+	style->brush = (VectorBrushStyle*)b;
+	style->font = (VectorFontStyle*)f;
+	this->items->Add(vstr);
+	this->itemStyle->Add(style);
+	return true;
+}
+
 Bool Media::VectorGraph::DrawString(Double tlx, Double tly, const UTF8Char *str, DrawFont *f, DrawBrush *b)
 {
 	VectorStyles *style;
 	Math::VectorString *vstr;
 	NEW_CLASS(vstr, Math::VectorString(this->srid, str, tlx, tly, 0, 0, this->align));
+	style = MemAlloc(VectorStyles, 1);
+	style->pen = 0;
+	style->brush = (VectorBrushStyle*)b;
+	style->font = (VectorFontStyle*)f;
+	this->items->Add(vstr);
+	this->itemStyle->Add(style);
+	return true;
+}
+
+Bool Media::VectorGraph::DrawStringRot(Double centX, Double centY, Text::String *str, DrawFont *f, DrawBrush *b, Double angleDegree)
+{
+	VectorStyles *style;
+	Math::VectorString *vstr;
+	NEW_CLASS(vstr, Math::VectorString(this->srid, str, centX, centY, angleDegree, 0, this->align));
 	style = MemAlloc(VectorStyles, 1);
 	style->pen = 0;
 	style->brush = (VectorBrushStyle*)b;
@@ -417,11 +445,39 @@ Bool Media::VectorGraph::DrawStringRot(Double centX, Double centY, const UTF8Cha
 	return true;
 }
 
+Bool Media::VectorGraph::DrawStringB(Double tlx, Double tly, Text::String *str, DrawFont *f, DrawBrush *b, UOSInt buffSize)
+{
+	VectorStyles *style;
+	Math::VectorString *vstr;
+	NEW_CLASS(vstr, Math::VectorString(this->srid, str, tlx, tly, 0, Math::UOSInt2Double(buffSize), this->align));
+	style = MemAlloc(VectorStyles, 1);
+	style->pen = 0;
+	style->brush = (VectorBrushStyle*)b;
+	style->font = (VectorFontStyle*)f;
+	this->items->Add(vstr);
+	this->itemStyle->Add(style);
+	return true;
+}
+
 Bool Media::VectorGraph::DrawStringB(Double tlx, Double tly, const UTF8Char *str, DrawFont *f, DrawBrush *b, UOSInt buffSize)
 {
 	VectorStyles *style;
 	Math::VectorString *vstr;
 	NEW_CLASS(vstr, Math::VectorString(this->srid, str, tlx, tly, 0, Math::UOSInt2Double(buffSize), this->align));
+	style = MemAlloc(VectorStyles, 1);
+	style->pen = 0;
+	style->brush = (VectorBrushStyle*)b;
+	style->font = (VectorFontStyle*)f;
+	this->items->Add(vstr);
+	this->itemStyle->Add(style);
+	return true;
+}
+
+Bool Media::VectorGraph::DrawStringRotB(Double centX, Double centY, Text::String *str, DrawFont *f, DrawBrush *b, Double angleDegree, UOSInt buffSize)
+{
+	VectorStyles *style;
+	Math::VectorString *vstr;
+	NEW_CLASS(vstr, Math::VectorString(this->srid, str, centX, centY, angleDegree, Math::UOSInt2Double(buffSize), this->align));
 	style = MemAlloc(VectorStyles, 1);
 	style->pen = 0;
 	style->brush = (VectorBrushStyle*)b;

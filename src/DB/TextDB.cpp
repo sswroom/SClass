@@ -99,7 +99,7 @@ public:
 			return 0;
 		if (this->row[colIndex] == 0)
 			return 0;
-		return Text::String::New(this->row[colIndex]);
+		return Text::String::NewNotNull(this->row[colIndex]);
 	}
 
 	virtual UTF8Char *GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSize)

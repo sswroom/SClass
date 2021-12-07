@@ -22,7 +22,7 @@ DB::CSVFile::CSVFile(Text::String *fileName, UInt32 codePage) : DB::ReadingDB(fi
 
 DB::CSVFile::CSVFile(const UTF8Char *fileName, UInt32 codePage) : DB::ReadingDB(fileName)
 {
-	this->fileName = Text::String::New(fileName);
+	this->fileName = Text::String::NewNotNull(fileName);
 	this->stm = 0;
 	this->codePage = codePage;
 	this->noHeader = false;

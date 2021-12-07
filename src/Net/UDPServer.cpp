@@ -160,14 +160,7 @@ Net::UDPServer::UDPServer(Net::SocketFactory *sockf, Net::SocketUtil::AddressInf
 	UOSInt i;
 
 	this->sockf = sockf;
-	if (logPrefix)
-	{
-		this->logPrefix = Text::StrCopyNew(logPrefix);
-	}
-	else
-	{
-		this->logPrefix = 0;
-	}
+	this->logPrefix = SCOPY_TEXT(logPrefix);
 	this->hdlr = hdlr;
 	this->userData = userData;
 	this->logFileR = 0;
@@ -175,14 +168,7 @@ Net::UDPServer::UDPServer(Net::SocketFactory *sockf, Net::SocketUtil::AddressInf
 	this->ctrlEvt = 0;
 	NEW_CLASS(this->logFileMut, Sync::Mutex());
 	this->msgLog = msgLog;
-	if (msgPrefix)
-	{
-		this->msgPrefix = Text::StrCopyNew(msgPrefix);
-	}
-	else
-	{
-		this->msgPrefix = 0;
-	}
+	this->msgPrefix - SCOPY_TEXT(msgPrefix);
 	this->port = port;
 	Bool succ = false;
 	if (bindAddr == 0)

@@ -2,6 +2,7 @@
 #define _SM_NET_HTTPSERVERMONITOR
 #include "Net/SSLEngine.h"
 #include "Sync/Event.h"
+#include "Text/String.h"
 
 namespace Net
 {
@@ -10,7 +11,7 @@ namespace Net
 	private:
 		Net::SocketFactory *sockf;
 		Net::SSLEngine *ssl;
-		const UTF8Char *url;
+		Text::String *url;
 		Bool currOnline;
 		Bool threadRunning;
 		Bool threadToStop;
@@ -19,6 +20,7 @@ namespace Net
 		static UInt32 __stdcall ThreadProc(void *userObj);
 		Bool CheckOnline();
 	public:
+		HTTPServerMonitor(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::String *url);
 		HTTPServerMonitor(Net::SocketFactory *sockf, Net::SSLEngine *ssl, const UTF8Char *url);
 		~HTTPServerMonitor();
 

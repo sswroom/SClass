@@ -162,7 +162,7 @@ Text::String *Media::HTRecFile::HTRecReader::GetNewStr(UOSInt colIndex)
 	UTF8Char sbuff[64];
 	if (GetStr(colIndex, sbuff, sizeof(sbuff)) == 0)
 		return 0;
-	return Text::String::New(sbuff);
+	return Text::String::NewNotNull(sbuff);
 }
 
 UTF8Char *Media::HTRecFile::HTRecReader::GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSize)

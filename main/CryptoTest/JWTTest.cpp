@@ -60,7 +60,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		else
 		{
 			Crypto::Cert::X509Key *key = 0;
-			Text::String *s = Text::String::New(sbuff);
+			Text::String *s = Text::String::NewNotNull(sbuff);
 			Crypto::Cert::X509File *x509 = Parser::FileParser::X509Parser::ParseBuff(keyBuff, keySize, s);
 			s->Release();
 			if (x509 == 0)

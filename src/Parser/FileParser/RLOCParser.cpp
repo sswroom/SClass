@@ -239,7 +239,7 @@ IO::ParsedObject *Parser::FileParser::RLOCParser::ParseFile(IO::IStreamData *fd,
 
 	Map::GPSTrack *track;
 	Text::StrInt32(u8buff, devId);
-	s = Text::String::New(u8buff);
+	s = Text::String::NewNotNull(u8buff);
 	NEW_CLASS(track, Map::GPSTrack(fd->GetFullName(), true, 0, s));
 	s->Release();
 	track->SetTrackName(u8buff);

@@ -280,7 +280,7 @@ Text::String *Math::TSPReader::GetNewStr(UOSInt colIndex)
 	UTF8Char sbuff[64];
 	if (GetStr(colIndex, sbuff, sizeof(sbuff)))
 	{
-		return Text::String::New(sbuff);
+		return Text::String::NewNotNull(sbuff);
 	}
 	return 0;
 }
@@ -639,7 +639,7 @@ Text::String *Math::TSPHReader::GetNewStr(UOSInt colIndex)
 	UTF8Char sbuff[64];
 	if (GetStr(colIndex, sbuff, sizeof(sbuff)))
 	{
-		return Text::String::New(sbuff);
+		return Text::String::NewNotNull(sbuff);
 	}
 	return 0;
 }

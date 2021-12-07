@@ -420,7 +420,7 @@ Bool Exporter::ExcelXMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8C
 		ws = wb->GetItem(i);
 		sb.ClearStr();
 		sb.Append((const UTF8Char*)" <Worksheet ss:Name=");
-		text2 = Text::XML::ToNewAttrText(ws->GetName());
+		text2 = Text::XML::ToNewAttrText(ws->GetName()->v);
 		sb.Append(text2);
 		sb.Append((const UTF8Char*)">");
 		Text::XML::FreeNewText(text2);

@@ -21,7 +21,7 @@ Text::SpreadSheet::WorkbookDataSource::~WorkbookDataSource()
 
 UTF8Char *Text::SpreadSheet::WorkbookDataSource::ToCodeRange(UTF8Char *sbuff)
 {
-	sbuff = Text::StrConcat(sbuff, this->sheet->GetName());
+	sbuff = this->sheet->GetName()->ConcatTo(sbuff);
 	*sbuff++ = '!';
 	*sbuff++ = '$';
 	sbuff = Workbook::ColCode(sbuff, this->firstCol);

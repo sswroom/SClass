@@ -18,17 +18,34 @@ UInt32 __stdcall Net::HTTPServerMonitor::ThreadProc(void *userObj)
 
 Bool Net::HTTPServerMonitor::CheckOnline()
 {
-	Net::HTTPClient *cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, this->url, "GET", false);
+	Net::HTTPClient *cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, this->url->v, "GET", false);
 	Net::WebStatus::StatusCode status = cli->GetRespStatus();
 	DEL_CLASS(cli);
 	return status == Net::WebStatus::SC_OK;
+}
+
+Net::HTTPServerMonitor::HTTPServerMonitor(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::String *url)
+{
+	this->sockf = sockf;
+	this->ssl = ssl;
+	this->url = url->Clone();
+	this->currOnline = false;
+	this->threadRunning = false;
+	this->threadToStop = false;
+	NEW_CLASS(this->threadEvt, Sync::Event(true, (const UTF8Char*)"Net.HTTPServerMonitor.threadEvt"));
+
+	Sync::Thread::Create(ThreadProc, this);
+	while (!this->threadRunning)
+	{
+		Sync::Thread::Sleep(1);
+	}
 }
 
 Net::HTTPServerMonitor::HTTPServerMonitor(Net::SocketFactory *sockf, Net::SSLEngine *ssl, const UTF8Char *url)
 {
 	this->sockf = sockf;
 	this->ssl = ssl;
-	this->url = Text::StrCopyNew(url);
+	this->url = Text::String::NewNotNull(url);
 	this->currOnline = false;
 	this->threadRunning = false;
 	this->threadToStop = false;
@@ -50,7 +67,7 @@ Net::HTTPServerMonitor::~HTTPServerMonitor()
 		Sync::Thread::Sleep(1);
 	}
 	DEL_CLASS(this->threadEvt);
-	Text::StrDelNew(this->url);
+	this->url->Release();
 }
 
 Bool Net::HTTPServerMonitor::IsOnline()

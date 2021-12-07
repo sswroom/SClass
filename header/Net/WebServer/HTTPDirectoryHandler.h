@@ -46,7 +46,7 @@ namespace Net
 			} StatInfo;
 			
 		private:
-			const UTF8Char *rootDir;
+			Text::String *rootDir;
 			Bool allowBrowsing;
 			Bool allowUpload;
 			CacheType ctype;
@@ -68,6 +68,7 @@ namespace Net
 			void StatLoad(StatInfo *stat);
 			void StatSave(StatInfo *stat);
 		public:
+			HTTPDirectoryHandler(Text::String *rootDir, Bool allowBrowsing, UInt64 fileCacheSize, Bool allowUpload);
 			HTTPDirectoryHandler(const UTF8Char *rootDir, Bool allowBrowsing, UInt64 fileCacheSize, Bool allowUpload);
 
 		protected:

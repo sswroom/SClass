@@ -17,6 +17,10 @@ Media::Printer *Media::Printer::SelectPrinter(void *hWnd)
 	return 0;
 }
 
+Media::Printer::Printer(Text::String *printerName)
+{
+}
+
 Media::Printer::Printer(const UTF8Char *printerName)
 {
 }

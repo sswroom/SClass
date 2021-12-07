@@ -12,13 +12,15 @@ namespace DB
 	class SQLiteFile : public DB::DBConn
 	{
 	private:
-		const UTF8Char *fileName;
+		Text::String *fileName;
 		void *db;
 		Data::ArrayListStrUTF8 *tableNames;
 		Bool delOnClose;
-		const UTF8Char *lastErrMsg;
+		Text::String *lastErrMsg;
 
+		void Init();
 	public:
+		SQLiteFile(Text::String *fileName);
 		SQLiteFile(const UTF8Char *fileName);
 		virtual ~SQLiteFile();
 
@@ -46,8 +48,9 @@ namespace DB
 
 		void SetDeleteOnClose(Bool delOnClose);
 		Bool IsError();
-		const UTF8Char *GetFileName();
+		Text::String *GetFileName();
 
+		static DBTool *CreateDBTool(Text::String *fileName, IO::LogTool *log, const UTF8Char *logPrefix);
 		static DBTool *CreateDBTool(const UTF8Char *fileName, IO::LogTool *log, const UTF8Char *logPrefix);
 	};
 

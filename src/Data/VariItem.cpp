@@ -602,8 +602,16 @@ void Data::VariItem::SetNull()
 void Data::VariItem::SetStr(const UTF8Char *str)
 {
 	this->FreeItem();
-	this->val.str = Text::String::New(str);
-	this->itemType = ItemType::Str;
+	if (str)
+	{
+		this->val.str = Text::String::NewNotNull(str);
+		this->itemType = ItemType::Str;
+	}
+	else
+	{
+		this->val.str = 0;
+		this->itemType = ItemType::Null;
+	}
 }
 
 void Data::VariItem::SetStr(Text::String *str)
@@ -981,7 +989,7 @@ Data::VariItem *Data::VariItem::NewStr(const UTF8Char *str)
 {
 	if (str == 0) return NewNull();
 	ItemValue ival;
-	ival.str = Text::String::New(str);
+	ival.str = Text::String::NewNotNull(str);
 	Data::VariItem *item;
 	NEW_CLASS(item, Data::VariItem(ItemType::Str, ival));
 	return item;
@@ -1333,7 +1341,7 @@ void Data::VariItem::SetPtr(void *ptr, ItemType itemType, VariItem *item)
 		{
 			Text::StringBuilderUTF8 sb;
 			item->GetAsString(&sb);
-			*(Text::String**)ptr = Text::String::New(sb.ToString());
+			*(Text::String**)ptr = Text::String::NewNotNull(sb.ToString());
 		}
 		break;
 	case ItemType::Date:

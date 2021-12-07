@@ -1156,14 +1156,14 @@ Int32 SSWR::OrganMgr::OrganWebHandler::SpeciesAdd(const UTF8Char *engName, const
 	{
 		SSWR::OrganMgr::OrganWebHandler::SpeciesInfo *species = MemAlloc(SSWR::OrganMgr::OrganWebHandler::SpeciesInfo, 1);
 		species->speciesId = this->db->GetLastIdentity32();
-		species->engName = Text::String::New(engName);
-		species->chiName = Text::String::New(chiName);
-		species->sciName = Text::String::New(sciName);
+		species->engName = Text::String::NewOrNull(engName);
+		species->chiName = Text::String::NewOrNull(chiName);
+		species->sciName = Text::String::NewOrNull(sciName);
 		species->groupId = groupId;
-		species->descript = Text::String::New(description);
-		species->dirName = Text::String::New(dirName);
+		species->descript = Text::String::NewOrNull(description);
+		species->dirName = Text::String::NewOrNull(dirName);
 		species->photo = 0;
-		species->idKey = Text::String::New(idKey);
+		species->idKey = Text::String::NewOrNull(idKey);
 		species->cateId = cateId;
 		species->flags = SF_NONE;
 		species->photoId = 0;
@@ -1321,15 +1321,15 @@ Bool SSWR::OrganMgr::OrganWebHandler::SpeciesModify(Int32 speciesId, const UTF8C
 	if (this->db->ExecuteNonQuery(sql.ToString()) >= 0)
 	{
 		SDEL_STRING(species->engName);
-		species->engName = Text::String::New(engName);
+		species->engName = Text::String::NewOrNull(engName);
 		SDEL_STRING(species->chiName);
-		species->chiName = Text::String::New(chiName);
+		species->chiName = Text::String::NewOrNull(chiName);
 		SDEL_STRING(species->sciName);
-		species->sciName = Text::String::New(sciName);
+		species->sciName = Text::String::NewOrNull(sciName);
 		SDEL_STRING(species->descript);
-		species->descript = Text::String::New(description);
+		species->descript = Text::String::NewOrNull(description);
 		SDEL_STRING(species->dirName);
-		species->dirName = Text::String::New(dirName);
+		species->dirName = Text::String::NewOrNull(dirName);
 		return true;
 	}
 	else
@@ -1565,14 +1565,14 @@ Int32 SSWR::OrganMgr::OrganWebHandler::UserfileAdd(Int32 userId, Int32 spId, con
 						userFile = MemAlloc(SSWR::OrganMgr::OrganWebHandler::UserFileInfo, 1);
 						userFile->id = this->db->GetLastIdentity32();
 						userFile->fileType = fileType;
-						userFile->oriFileName = Text::String::New(fileName);
+						userFile->oriFileName = Text::String::NewNotNull(fileName);
 						userFile->fileTimeTicks = fileTime.ToTicks();
 						userFile->lat = lat;
 						userFile->lon = lon;
 						userFile->webuserId = userId;
 						userFile->speciesId = spId;
 						userFile->captureTimeTicks = userFile->fileTimeTicks;
-						userFile->dataFileName = Text::String::New(dataFileName);
+						userFile->dataFileName = Text::String::NewNotNull(dataFileName);
 						userFile->crcVal = crcVal;
 						userFile->rotType = 0;
 						userFile->prevUpdated = 0;
@@ -1761,14 +1761,14 @@ Int32 SSWR::OrganMgr::OrganWebHandler::UserfileAdd(Int32 userId, Int32 spId, con
 						userFile = MemAlloc(SSWR::OrganMgr::OrganWebHandler::UserFileInfo, 1);
 						userFile->id = this->db->GetLastIdentity32();
 						userFile->fileType = fileType;
-						userFile->oriFileName = Text::String::New(fileName);
+						userFile->oriFileName = Text::String::NewNotNull(fileName);
 						userFile->fileTimeTicks = fileTime.ToTicks();
 						userFile->lat = 0;
 						userFile->lon = 0;
 						userFile->webuserId = userId;
 						userFile->speciesId = spId;
 						userFile->captureTimeTicks = userFile->fileTimeTicks;
-						userFile->dataFileName = Text::String::New(dataFileName);
+						userFile->dataFileName = Text::String::NewNotNull(dataFileName);
 						userFile->crcVal = crcVal;
 						userFile->rotType = 0;
 						//userFile->camera = 0;
@@ -1955,7 +1955,7 @@ Bool SSWR::OrganMgr::OrganWebHandler::UserfileUpdateDesc(Int32 userfileId, const
 	if (this->db->ExecuteNonQuery(sql.ToString()) > 0)
 	{
 		SDEL_STRING(userFile->descript);
-		userFile->descript = Text::String::New(descr);
+		userFile->descript = Text::String::NewOrNull(descr);
 		return true;
 	}
 	return false;
@@ -2046,9 +2046,9 @@ Int32 SSWR::OrganMgr::OrganWebHandler::GroupAdd(const UTF8Char* engName, const U
 		SSWR::OrganMgr::OrganWebHandler::GroupInfo *newGroup = MemAlloc(SSWR::OrganMgr::OrganWebHandler::GroupInfo, 1);
 		newGroup->id = this->db->GetLastIdentity32();
 		newGroup->groupType = groupTypeId;
-		newGroup->engName = Text::String::New(engName);
-		newGroup->chiName = Text::String::New(chiName);
-		newGroup->descript = Text::String::New(descr);
+		newGroup->engName = Text::String::NewOrNull(engName);
+		newGroup->chiName = Text::String::NewOrNull(chiName);
+		newGroup->descript = Text::String::NewOrNull(descr);
 		newGroup->parentId = parentId;
 		newGroup->photoGroup = 0;
 		newGroup->photoSpecies = 0;
@@ -2092,11 +2092,11 @@ Bool SSWR::OrganMgr::OrganWebHandler::GroupModify(Int32 id, const UTF8Char *engN
 	{
 		group->groupType = groupTypeId;
 		SDEL_STRING(group->engName);
-		group->engName = Text::String::New(engName);
+		group->engName = Text::String::NewOrNull(engName);
 		SDEL_STRING(group->chiName);
-		group->chiName = Text::String::New(chiName);
+		group->chiName = Text::String::NewOrNull(chiName);
 		SDEL_STRING(group->descript);
-		group->descript = Text::String::New(descr);
+		group->descript = Text::String::NewOrNull(descr);
 		group->flags = flags;
 		return true;
 	}
@@ -3491,7 +3491,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpecies(Net::WebServer::IWebR
 				{
 					if (refURLList->SortedIndexOfPtr(sarr[2]) < 0)
 					{
-						refURLList->SortedInsert(Text::String::New(sarr[2]));
+						refURLList->SortedInsert(Text::String::NewNotNull(sarr[2]));
 					}
 					sptr2 = Text::StrConcat(sptr, (const UTF8Char*)"web");
 					*sptr2++ = IO::Path::PATH_SEPERATOR;
@@ -9481,24 +9481,24 @@ const UTF8Char *SSWR::OrganMgr::OrganWebHandler::LangGetValue(IO::ConfigFile *la
 {
 	if (lang == 0)
 		return name;
-	const UTF8Char *csptr = lang->GetValue(name);
-	if (csptr)
-		return csptr;
+	Text::String *s = lang->GetValue(name);
+	if (s)
+		return s->v;
 	return name;
 }
 
-SSWR::OrganMgr::OrganWebHandler::OrganWebHandler(Net::SocketFactory *sockf, Net::SSLEngine *ssl, IO::LogTool *log, DB::DBTool *db, const UTF8Char *imageDir, UInt16 port, const UTF8Char *cacheDir, const UTF8Char *dataDir, UInt32 scnSize, const UTF8Char *reloadPwd, Int32 unorganizedGroupId, Media::DrawEngine *eng)
+SSWR::OrganMgr::OrganWebHandler::OrganWebHandler(Net::SocketFactory *sockf, Net::SSLEngine *ssl, IO::LogTool *log, DB::DBTool *db, Text::String *imageDir, UInt16 port, Text::String *cacheDir, Text::String *dataDir, UInt32 scnSize, Text::String *reloadPwd, Int32 unorganizedGroupId, Media::DrawEngine *eng)
 {
-	this->imageDir = Text::String::New(imageDir);
+	this->imageDir = SCOPY_STRING(imageDir);
 	this->sockf = sockf;
 	this->ssl = ssl;
 	this->log = log;
 	this->scnSize = scnSize;
-	this->dataDir = Text::String::New(dataDir);
+	this->dataDir = SCOPY_STRING(dataDir);
 	this->unorganizedGroupId = unorganizedGroupId;
 	NEW_CLASS(this->random, Data::RandomOS());
-	this->cacheDir = Text::String::New(cacheDir);
-	this->reloadPwd = Text::String::New(reloadPwd);
+	this->cacheDir = SCOPY_STRING(cacheDir);
+	this->reloadPwd = SCOPY_STRING(reloadPwd);
 
 	Media::ColorProfile destProfile(Media::ColorProfile::CPT_SRGB);
 	NEW_CLASS(this->parsers, Parser::FullParserList());

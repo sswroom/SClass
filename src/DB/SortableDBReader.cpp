@@ -355,7 +355,7 @@ Text::String *DB::SortableDBReader::GetNewStr(UOSInt colIndex)
 	Text::StringBuilderUTF8 sb;
 	if (this->GetStr(colIndex, &sb))
 	{
-		return Text::String::New(sb.ToString());
+		return Text::String::NewNotNull(sb.ToString());
 	}
 	return 0;
 }

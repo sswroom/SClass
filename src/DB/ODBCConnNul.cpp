@@ -17,7 +17,7 @@ void DB::ODBCConn::UpdateConnInfo()
 
 Bool DB::ODBCConn::Connect(const UTF8Char *dsn, const UTF8Char *uid, const UTF8Char *pwd, const UTF8Char *schema)
 {
-	this->svrType = DB::DBUtil::ServerType::UNKNOWN;
+	this->svrType = DB::DBUtil::ServerType::Unknown;
 	return false;
 }
 
@@ -282,7 +282,7 @@ UOSInt DB::ODBCConn::GetTableNames(Data::ArrayList<const UTF8Char*> *names)
 	return 0;
 }
 
-DB::DBReader *DB::ODBCConn::GetTableData(const UTF8Char *name, UOSInt maxCnt, void *ordering, void *condition)
+DB::DBReader *DB::ODBCConn::GetTableData(const UTF8Char *name, Data::ArrayList<const UTF8Char*> *columnNames, UOSInt ofst, UOSInt maxCnt, const UTF8Char *ordering, Data::QueryConditions *condition)
 {
 	return 0;
 }
@@ -328,6 +328,11 @@ const UTF8Char *DB::ODBCConn::GetConnPWD()
 const UTF8Char *DB::ODBCConn::GetConnSchema()
 {
 	return this->schema;
+}
+
+DB::DBTool *DB::ODBCConn::CreateDBTool(Text::String *dsn, Text::String *uid, Text::String *pwd, Text::String *schema, IO::LogTool *log, const UTF8Char *logPrefix)
+{
+	return 0;
 }
 
 DB::DBTool *DB::ODBCConn::CreateDBTool(const UTF8Char *dsn, const UTF8Char *uid, const UTF8Char *pwd, const UTF8Char *schema, IO::LogTool *log, const UTF8Char *logPrefix)

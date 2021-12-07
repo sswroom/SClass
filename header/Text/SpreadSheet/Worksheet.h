@@ -65,7 +65,7 @@ namespace Text
 			} RowData;
 
 		private:
-			const UTF8Char *name;
+			Text::String *name;
 			Data::ArrayList<RowData*> *rows;
 			Data::ArrayListDbl *colWidthsPt;
 			Data::ArrayList<WorksheetDrawing*> *drawings;
@@ -93,6 +93,7 @@ namespace Text
 			CellData *CloneCell(CellData *cell, IStyleCtrl *srcCtrl, IStyleCtrl *newCtrl);
 			void FreeDrawing(WorksheetDrawing *drawing);
 		public:
+			Worksheet(Text::String *name);
 			Worksheet(const UTF8Char *name);
 			~Worksheet();
 
@@ -124,7 +125,7 @@ namespace Text
 			void SetDefRowHeightPt(Double defRowHeightPt);
 			Double GetDefRowHeightPt();
 
-			const UTF8Char *GetName();
+			Text::String *GetName();
 			Bool SetCellString(UOSInt row, UOSInt col, Text::String *val);
 			Bool SetCellString(UOSInt row, UOSInt col, const UTF8Char *val);
 			Bool SetCellDate(UOSInt row, UOSInt col, Data::DateTime *val);

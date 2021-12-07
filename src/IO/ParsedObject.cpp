@@ -9,7 +9,7 @@ IO::ParsedObject::ParsedObject(Text::String *sourceName)
 
 IO::ParsedObject::ParsedObject(const UTF8Char *sourceName)
 {
-	this->sourceName = Text::String::New(sourceName);
+	this->sourceName = Text::String::NewOrNull(sourceName);
 }
 
 IO::ParsedObject::~ParsedObject()
@@ -38,5 +38,5 @@ void IO::ParsedObject::SetSourceName(Text::String *sourceName)
 void IO::ParsedObject::SetSourceName(const UTF8Char *sourceName)
 {
 	SDEL_STRING(this->sourceName);
-	this->sourceName = Text::String::New(sourceName);
+	this->sourceName = Text::String::NewOrNull(sourceName);
 }

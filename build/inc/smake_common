@@ -1117,6 +1117,7 @@ Data/DateTime.h: ../../src/Data/DateTime.cpp
 Data/FieldComparator.h: ../../src/Data/FieldComparator.cpp
 @FieldComparator.o
 Data/ICaseBTreeUTF8Map.h:
+Data/ICaseStringMap.h:
 Data/ICaseStringUTF8Map.h:
 Data/IChart.h: ../../src/Data/IChart.cpp
 @IChart.o

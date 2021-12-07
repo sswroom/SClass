@@ -19,18 +19,18 @@ namespace Net
 		Sync::Mutex *cliMut;
 		Bool recvRunning;
 		Bool recvStarted;
-		const UTF8Char *userName;
-		const UTF8Char *password;
-		const UTF8Char *database;
+		Text::String *userName;
+		Text::String *password;
+		Text::String *database;
 		Int32 mode;
-		const UTF8Char *svrVer;
+		Text::String *svrVer;
 		UInt32 connId;
 		UInt8 authPluginData[20];
 		UOSInt authPluginDataSize;
 		UInt32 svrCap;
 		UInt16 svrCS;
 		UInt16 connStatus;
-		const UTF8Char *lastError;
+		Text::String *lastError;
 		
 		Data::ArrayList<const UTF8Char *> *tableNames;
 
@@ -44,6 +44,7 @@ namespace Net
 		void SetLastError(const UTF8Char *errMsg, UOSInt msgLen);
 		void SetLastError(const UTF8Char *errMsg);
 	public:
+		MySQLTCPClient(Net::SocketFactory *sockf, const Net::SocketUtil::AddressInfo *addr, UInt16 port, Text::String *userName, Text::String *password, Text::String *database);
 		MySQLTCPClient(Net::SocketFactory *sockf, const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UTF8Char *userName, const UTF8Char *password, const UTF8Char *database);
 		virtual ~MySQLTCPClient();
 
@@ -72,7 +73,7 @@ namespace Net
 		Bool IsError();
 
 		Bool ServerInfoRecv();
-		const UTF8Char *GetServerVer();
+		Text::String *GetServerVer();
 		UInt32 GetConnId();
 		UOSInt GetAuthPluginData(UInt8 *buff);
 		UInt32 GetServerCap();
@@ -80,10 +81,11 @@ namespace Net
 
 		const Net::SocketUtil::AddressInfo *GetConnAddr();
 		UInt16 GetConnPort();
-		const UTF8Char *GetConnDB();
-		const UTF8Char *GetConnUID();
-		const UTF8Char *GetConnPWD();
+		Text::String *GetConnDB();
+		Text::String *GetConnUID();
+		Text::String *GetConnPWD();
 
+		static DB::DBTool *CreateDBTool(Net::SocketFactory *sockf, Text::String *serverName, Text::String *dbName, Text::String *uid, Text::String *pwd, IO::LogTool *log, const UTF8Char *logPrefix);
 		static DB::DBTool *CreateDBTool(Net::SocketFactory *sockf, const UTF8Char *serverName, const UTF8Char *dbName, const UTF8Char *uid, const UTF8Char *pwd, IO::LogTool *log, const UTF8Char *logPrefix);
 	};
 }

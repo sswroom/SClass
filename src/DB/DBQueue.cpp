@@ -133,13 +133,43 @@ DB::DBQueue::DBQueue(DBTool *db, IO::LogTool *log, const UTF8Char *name, UOSInt 
 	this->sqlCnt = 0;
 	this->lostCnt = 0;
 	this->log = log;
-	this->name = Text::StrCopyNew(name);
+	this->name = Text::String::NewNotNull(name);
 	this->nextDB = 0;
 	this->stopping = false;
 	NEW_CLASS(dbList, Data::ArrayList<DB::DBHandler *>());
 	DB::DBHandler *dbHdlr;
 	NEW_CLASS(dbHdlr, DB::DBHandler(this, db));
 	dbList->Add(dbHdlr);
+}
+
+DB::DBQueue::DBQueue(Data::ArrayList<DBTool*> *dbs, IO::LogTool *log, Text::String *name, UOSInt dbSize)
+{
+	this->db1 = dbs->GetItem(0);
+	NEW_CLASS(this->mut, Sync::Mutex());
+	this->dbSize = dbSize / 200;
+	sqlList = MemAlloc(Data::ArrayList<IDBCmd*>*, DB_DBQUEUE_PRIORITY_HIGHEST + 1);
+	sqlList2 = MemAlloc(Data::ArrayList<IDBCmd**>*, DB_DBQUEUE_PRIORITY_HIGHEST + 1);
+	UOSInt i = DB_DBQUEUE_PRIORITY_HIGHEST + 1;
+	while (i-- > 0)
+	{
+		NEW_CLASS(sqlList[i], Data::ArrayList<IDBCmd*>());
+		NEW_CLASS(sqlList2[i], Data::ArrayList<IDBCmd**>());
+	}
+	sqlCnt = 0;
+	lostCnt = 0;
+	this->log = log;
+	this->name = name->Clone();
+	this->nextDB = 0;
+	stopping = false;
+	NEW_CLASS(dbList, Data::ArrayList<DBHandler*>())
+	i = 0;
+	while (i < dbs->GetCount())
+	{
+		DB::DBHandler *dbHdlr;
+		NEW_CLASS(dbHdlr, DB::DBHandler(this, (DB::DBTool *)dbs->GetItem(i)));
+		dbList->Add(dbHdlr);
+		i += 1;
+	}
 }
 
 DB::DBQueue::DBQueue(Data::ArrayList<DBTool*> *dbs, IO::LogTool *log, const UTF8Char *name, UOSInt dbSize)
@@ -158,7 +188,7 @@ DB::DBQueue::DBQueue(Data::ArrayList<DBTool*> *dbs, IO::LogTool *log, const UTF8
 	sqlCnt = 0;
 	lostCnt = 0;
 	this->log = log;
-	this->name = Text::StrCopyNew(name);
+	this->name = Text::String::NewNotNull(name);
 	this->nextDB = 0;
 	stopping = false;
 	NEW_CLASS(dbList, Data::ArrayList<DBHandler*>())
@@ -243,7 +273,7 @@ DB::DBQueue::~DBQueue()
 	mutUsage.EndUse();
 	MemFree(sqlList);
 	MemFree(sqlList2);
-	Text::StrDelNew(this->name);
+	this->name->Release();
 	DEL_CLASS(dbList);
 	DEL_CLASS(this->mut);
 }
@@ -407,7 +437,7 @@ UOSInt DB::DBQueue::GetConnCnt()
 
 UTF8Char *DB::DBQueue::ToString(UTF8Char *buff)
 {
-	return Text::StrConcat(buff, this->name);
+	return this->name->ConcatTo(buff);
 }
 
 DB::DBUtil::ServerType DB::DBQueue::GetSvrType()

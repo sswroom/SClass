@@ -32,11 +32,11 @@ namespace DB
 		Text::String *lastErrorMsg;
 		ConnError connErr;
 		Bool isTran;
-		const UTF8Char *dsn;
-		const UTF8Char *uid;
-		const UTF8Char *pwd;
-		const UTF8Char *schema;
-		const UTF8Char *connStr;
+		Text::String *dsn;
+		Text::String *uid;
+		Text::String *pwd;
+		Text::String *schema;
+		Text::String *connStr;
 		IO::LogTool *log;
 		Bool enableDebug;
 		Bool forceTz;
@@ -46,12 +46,14 @@ namespace DB
 	private:
 		void PrintError();
 		void UpdateConnInfo();
-		Bool Connect(const UTF8Char *dsn, const UTF8Char *uid, const UTF8Char *pwd, const UTF8Char *schema);
+		Bool Connect(Text::String *dsn, Text::String *uid, Text::String *pwd, Text::String *schema);
 
 	protected:		
+		Bool Connect(Text::String *connStr);
 		Bool Connect(const UTF8Char *connStr);
 		ODBCConn(const UTF8Char *sourceName, IO::LogTool *log);
 	public:
+		ODBCConn(Text::String *dsn, Text::String *uid, Text::String *pwd, Text::String *schema, IO::LogTool *log);
 		ODBCConn(const UTF8Char *dsn, const UTF8Char *uid, const UTF8Char *pwd, const UTF8Char *schema, IO::LogTool *log);
 		ODBCConn(const UTF8Char *connStr, const UTF8Char *sourceName, IO::LogTool *log);
 		virtual ~ODBCConn();
@@ -89,14 +91,15 @@ namespace DB
 		void ShowSQLError(const UTF16Char *state, const UTF16Char *errMsg);
 		void LogSQLError(void *hStmt);
 
-		const UTF8Char *GetConnStr();
-		const UTF8Char *GetConnDSN();
-		const UTF8Char *GetConnUID();
-		const UTF8Char *GetConnPWD();
-		const UTF8Char *GetConnSchema();
+		Text::String *GetConnStr();
+		Text::String *GetConnDSN();
+		Text::String *GetConnUID();
+		Text::String *GetConnPWD();
+		Text::String *GetConnSchema();
 
 		static UOSInt GetDriverList(Data::ArrayList<Text::String*> *driverList);
 		static IO::ConfigFile *GetDriverInfo(const UTF8Char *driverName);
+		static DBTool *CreateDBTool(Text::String *dsn, Text::String *uid, Text::String *pwd, Text::String *schema, IO::LogTool *log, const UTF8Char *logPrefix);
 		static DBTool *CreateDBTool(const UTF8Char *dsn, const UTF8Char *uid, const UTF8Char *pwd, const UTF8Char *schema, IO::LogTool *log, const UTF8Char *logPrefix);
 	};
 

@@ -45,7 +45,7 @@ namespace SSWR
 			Crypto::Hash::HashCalc *dataCRC;
 			Net::WebServer::WebListener *listener;
 			Net::WebServer::HTTPDirectoryHandler *webHdlr;
-			const UTF8Char *dataDir;
+			Text::String *dataDir;
 			Media::DrawEngine *deng;
 			Parser::ParserList *parsers;
 			Bool initErr;

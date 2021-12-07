@@ -40,13 +40,13 @@ Text::String *Text::SpreadSheet::OfficeChartSeries::GetTitle()
 void Text::SpreadSheet::OfficeChartSeries::SetTitle(Text::String *title, Text::String *dataSource)
 {
 	SDEL_STRING(this->title);
-	this->title = title?title->Clone():0;
+	this->title = SCOPY_STRING(title);
 }
 
 void Text::SpreadSheet::OfficeChartSeries::SetTitle(const UTF8Char *title, const UTF8Char *dataSource)
 {
 	SDEL_STRING(this->title);
-	this->title = Text::String::New(title);
+	this->title = Text::String::NewOrNull(title);
 }
 
 Bool Text::SpreadSheet::OfficeChartSeries::IsSmooth()

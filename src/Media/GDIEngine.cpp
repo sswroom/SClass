@@ -1323,6 +1323,14 @@ Bool Media::GDIImage::DrawEllipse(Double tlx, Double tly, Double w, Double h, Dr
 	return true;
 }
 
+Bool Media::GDIImage::DrawString(Double tlx, Double tly, Text::String *str, DrawFont *f, DrawBrush *b)
+{
+	const WChar *wptr = Text::StrToWCharNew(str->v);
+	Bool ret = this->DrawStringW(tlx, tly, wptr, f, b);
+	Text::StrDelNew(wptr);
+	return ret;
+}
+
 Bool Media::GDIImage::DrawString(Double tlx, Double tly, const UTF8Char *str, DrawFont *f, DrawBrush *b)
 {
 	const WChar *wptr = Text::StrToWCharNew(str);
@@ -1401,6 +1409,14 @@ Bool Media::GDIImage::DrawStringW(Double tlx, Double tly, const WChar *str, Draw
 	return true;
 }
 
+Bool Media::GDIImage::DrawStringRot(Double centX, Double centY, Text::String *str, DrawFont *f, DrawBrush *b, Double angleDegree)
+{
+	const WChar *wptr = Text::StrToWCharNew(str->v);
+	Bool ret = this->DrawStringRotW(centX, centY, wptr, f, b, angleDegree);
+	Text::StrDelNew(wptr);
+	return ret;
+}
+
 Bool Media::GDIImage::DrawStringRot(Double centX, Double centY, const UTF8Char *str, DrawFont *f, DrawBrush *b, Double angleDegree)
 {
 	const WChar *wptr = Text::StrToWCharNew(str);
@@ -1452,6 +1468,14 @@ Bool Media::GDIImage::DrawStringRotW(Double centX, Double centY, const WChar *st
 	SelectObject((HDC)this->hdcBmp, ofont);
 	DeleteObject(hfont);
 	return true;
+}
+
+Bool Media::GDIImage::DrawStringB(Double dx, Double dy, Text::String *str1, DrawFont *f, DrawBrush *b, UOSInt buffSize)
+{
+	const WChar *wptr = Text::StrToWCharNew(str1->v);
+	Bool ret = DrawStringBW(dx, dy, wptr, f, b, buffSize);
+	Text::StrDelNew(wptr);
+	return ret;
 }
 
 Bool Media::GDIImage::DrawStringB(Double dx, Double dy, const UTF8Char *str1, DrawFont *f, DrawBrush *b, UOSInt buffSize)
@@ -1637,6 +1661,14 @@ Bool Media::GDIImage::DrawStringBW(Double dx, Double dy, const WChar *str1, Draw
 	}
 
 	return true;
+}
+
+Bool Media::GDIImage::DrawStringRotB(Double dx, Double dy, Text::String *str1, DrawFont *f, DrawBrush *b, Double angleDegree, UOSInt buffSize)
+{
+	const WChar *wptr = Text::StrToWCharNew(str1->v);
+	Bool ret = this->DrawStringRotBW(dx, dy, wptr, f, b, angleDegree, buffSize);
+	Text::StrDelNew(wptr);
+	return ret;
 }
 
 Bool Media::GDIImage::DrawStringRotB(Double dx, Double dy, const UTF8Char *str1, DrawFont *f, DrawBrush *b, Double angleDegree, UOSInt buffSize)

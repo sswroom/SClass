@@ -385,6 +385,14 @@ Text::SpreadSheet::Worksheet *Text::SpreadSheet::Workbook::AddWorksheet()
 	return ws;
 }
 
+Text::SpreadSheet::Worksheet *Text::SpreadSheet::Workbook::AddWorksheet(Text::String *name)
+{
+	Text::SpreadSheet::Worksheet *ws;
+	NEW_CLASS(ws, Text::SpreadSheet::Worksheet(name));
+	this->sheets->Add(ws);
+	return ws;
+}
+
 Text::SpreadSheet::Worksheet *Text::SpreadSheet::Workbook::AddWorksheet(const UTF8Char *name)
 {
 	Text::SpreadSheet::Worksheet *ws;

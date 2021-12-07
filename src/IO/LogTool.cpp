@@ -58,6 +58,26 @@ void IO::LogTool::Close()
 	mutUsage.EndUse();
 }
 
+void IO::LogTool::AddFileLog(Text::String *fileName, ILogHandler::LogType style, ILogHandler::LogGroup groupStyle, ILogHandler::LogLevel logLev, const Char *dateFormat, Bool directWrite)
+{
+	if (closed)
+		return;
+	if (directWrite)
+	{
+		IO::FileLog *logs;
+		NEW_CLASS(logs, IO::FileLog(fileName, style, groupStyle, dateFormat));
+		AddLogHandler(logs, logLev);
+		fileLogArr->Add(logs);
+	}
+	else
+	{
+		IO::MTFileLog *logs;
+		NEW_CLASS(logs, IO::MTFileLog(fileName, style, groupStyle, dateFormat));
+		AddLogHandler(logs, logLev);
+		fileLogArr->Add(logs);
+	}
+}
+
 void IO::LogTool::AddFileLog(const UTF8Char *fileName, ILogHandler::LogType style, ILogHandler::LogGroup groupStyle, ILogHandler::LogLevel logLev, const Char *dateFormat, Bool directWrite)
 {
 	if (closed)

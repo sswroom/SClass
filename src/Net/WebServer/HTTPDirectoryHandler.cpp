@@ -316,9 +316,27 @@ void Net::WebServer::HTTPDirectoryHandler::StatSave(Net::WebServer::HTTPDirector
 	}
 }
 
+Net::WebServer::HTTPDirectoryHandler::HTTPDirectoryHandler(Text::String *rootDir, Bool allowBrowsing, UInt64 fileCacheSize, Bool allowUpload)
+{
+	this->rootDir = rootDir->Clone();
+	this->allowBrowsing = allowBrowsing;
+	this->allowUpload = allowUpload;
+	this->ctype = CT_DEFAULT;
+	this->expirePeriod = 0;
+	this->fileCacheSize = fileCacheSize;
+	this->fileCacheUsing = 0;
+	this->allowOrigin = 0;
+	NEW_CLASS(this->fileCache, Data::BTreeUTF8Map<CacheInfo*>());
+	NEW_CLASS(this->fileCacheMut, Sync::Mutex());
+	this->packageMap = 0;
+	this->packageMut = 0;
+	this->statMap = 0;
+	this->statMut = 0;
+}
+
 Net::WebServer::HTTPDirectoryHandler::HTTPDirectoryHandler(const UTF8Char *rootDir, Bool allowBrowsing, UInt64 fileCacheSize, Bool allowUpload)
 {
-	this->rootDir = Text::StrCopyNew(rootDir);
+	this->rootDir = Text::String::NewNotNull(rootDir);
 	this->allowBrowsing = allowBrowsing;
 	this->allowUpload = allowUpload;
 	this->ctype = CT_DEFAULT;
@@ -336,7 +354,7 @@ Net::WebServer::HTTPDirectoryHandler::HTTPDirectoryHandler(const UTF8Char *rootD
 
 Net::WebServer::HTTPDirectoryHandler::~HTTPDirectoryHandler()
 {
-	Text::StrDelNew(this->rootDir);
+	this->rootDir->Release();
 	UOSInt cacheCnt;
 	CacheInfo **cacheList = this->fileCache->ToArray(&cacheCnt);
 	while (cacheCnt-- > 0)
@@ -1355,7 +1373,7 @@ void Net::WebServer::HTTPDirectoryHandler::ExpandPackageFiles(Parser::ParserList
 	NEW_CLASS(this->packageMut, Sync::RWMutex());
 	this->packageMut->LockWrite();
 	NEW_CLASS(this->packageMap, Data::StringUTF8Map<PackageInfo*>());
-	sptr = Text::StrConcat(sbuff, this->rootDir);
+	sptr = this->rootDir->ConcatTo(sbuff);
 	if (sptr[-1] == '/' || sptr[-1] == '\\')
 	{
 	}

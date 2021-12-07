@@ -105,7 +105,7 @@ namespace DB
 	public:
 		UInt64 sqlCnt;
 		UInt64 lostCnt;
-		const UTF8Char *name;
+		Text::String *name;
 
 	public:
 		IO::LogTool *log;
@@ -118,6 +118,7 @@ namespace DB
 
 	public:
 		DBQueue(DBTool *db, IO::LogTool *log, const UTF8Char *name, UOSInt dbSize);
+		DBQueue(Data::ArrayList<DBTool*> *dbs, IO::LogTool *log, Text::String *name, UOSInt dbSize);
 		DBQueue(Data::ArrayList<DBTool*> *dbs, IO::LogTool *log, const UTF8Char *name, UOSInt dbSize);
 		~DBQueue();
 

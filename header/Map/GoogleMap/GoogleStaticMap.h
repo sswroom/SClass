@@ -3,6 +3,7 @@
 #include "Net/SocketFactory.h"
 #include "Net/SSLEngine.h"
 #include "Sync/Mutex.h"
+#include "Text/String.h"
 
 namespace Map
 {
@@ -11,8 +12,8 @@ namespace Map
 		class GoogleStaticMap
 		{
 		private:
-			const UTF8Char *gooKey;
-			const UTF8Char *gooCliId;
+			Text::String *gooKey;
+			Text::String *gooCliId;
 			UInt8 *gooPrivKey;
 			UOSInt gooPrivKeyLeng;
 			Net::SocketFactory *sockf;
@@ -21,6 +22,7 @@ namespace Map
 			Sync::Mutex *mut;
 			
 		public:
+			GoogleStaticMap(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::String *gooKey, Text::String *gooCliId, Text::String *gooPrivKey);
 			GoogleStaticMap(Net::SocketFactory *sockf, Net::SSLEngine *ssl, const UTF8Char *gooKey, const UTF8Char *gooCliId, const UTF8Char *gooPrivKey);
 			~GoogleStaticMap();
 

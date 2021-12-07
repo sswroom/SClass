@@ -23,16 +23,18 @@ namespace Map
 			Text::EncodingFactory *encFact;
 			Int32 lastIsError;
 			UInt32 srchCnt;
-			const UTF8Char *gooCliId;
+			Text::String *gooCliId;
 			UInt8 *gooPrivKey;
 			UOSInt gooPrivKeyLeng;
-			const UTF8Char *gooAPIKey;
+			Text::String *gooAPIKey;
 
 		public:
 			GoogleWSSearcherJSON(Net::SocketFactory *sockf, Net::SSLEngine *ssl, IO::Writer *errWriter, Text::EncodingFactory *encFact);
 			virtual ~GoogleWSSearcherJSON();
 
+			void SetGoogleClientId(Text::String *gooCliId, Text::String *gooPrivKey);
 			void SetGoogleClientId(const UTF8Char *gooCliId, const UTF8Char *gooPrivKey);
+			void SetGoogleAPIKey(Text::String *gooAPIKey);
 			void SetGoogleAPIKey(const UTF8Char *gooAPIKey);
 
 			UTF8Char *SearchName(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, const UTF8Char *lang); //lang = en-us, zh-cn, zh-tw

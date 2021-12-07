@@ -94,7 +94,7 @@ IO::StmData::FileData::FileData(const UTF8Char* fname, Bool deleteOnClose)
 	{
 		fdh = MemAlloc(IO::StmData::FileData::FILEDATAHANDLE, 1);
 		fdh->file = fs;
-		fdh->filePath = Text::String::New(fname);
+		fdh->filePath = Text::String::NewNotNull(fname);
 		dataLength = fdh->fileLength = fs->GetLength();
 		fdh->currentOffset = fs->GetPosition();
 		fdh->objectCnt = 1;
@@ -185,7 +185,7 @@ void IO::StmData::FileData::SetFullName(const UTF8Char *fullName)
 		UOSInt i;
 		this->fdn = MemAlloc(FILEDATANAME, 1);
 		this->fdn->objectCnt = 1;
-		this->fdn->fullName = Text::String::New(fullName);
+		this->fdn->fullName = Text::String::NewNotNull(fullName);
 		i = this->fdn->fullName->LastIndexOf(IO::Path::PATH_SEPERATOR);
 		this->fdn->fileName = &this->fdn->fullName->v[i + 1];
 	}
