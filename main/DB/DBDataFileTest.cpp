@@ -1,7 +1,13 @@
 #include "Stdafx.h"
 #include "Core/Core.h"
+#include "Crypto/JasyptEncryptor.h"
 #include "Data/DateTime.h"
 #include "Data/NamedClass.h"
+#include "DB/DBReader.h"
+#include "DB/JDBCHandler.h"
+#include "IO/ConsoleWriter.h"
+#include "IO/UnixConfigFile.h"
+#include "Net/OSSocketFactory.h"
 #include "Text/String.h"
 
 class LamppostData
@@ -749,6 +755,47 @@ Data::NamedClass<LamppostData> *LamppostData::CreateClass()
 
 Int32 MyMain(Core::IProgControl *progCtrl)
 {
+	const UTF8Char *key = (const UTF8Char*)"WEBnAPI";
+	IO::ConsoleWriter console;
+	IO::LogTool log;
+	Net::OSSocketFactory sockf(false);
+	IO::ConfigFile *cfg = IO::UnixConfigFile::ParseAppProp();
+	if (cfg)
+	{
+		Crypto::JasyptEncryptor jasypt(Crypto::JasyptEncryptor::KA_PBEWITHHMACSHA512, Crypto::JasyptEncryptor::CA_AES256, key, Text::StrCharCnt(key));
+		jasypt.Decrypt(cfg);
+		DB::DBTool *db = DB::JDBCHandler::OpenConn(cfg->GetValue((const UTF8Char*)"spring.datasource.url"),
+			cfg->GetValue((const UTF8Char*)"spring.datasource.username"),
+			cfg->GetValue((const UTF8Char*)"spring.datasource.password"), &log, &sockf);
+//		console.WriteLine(Text::String::OrEmpty(cfg->GetValue((const UTF8Char*)"spring.datasource.url"))->v);
+//		console.WriteLine(Text::String::OrEmpty(cfg->GetValue((const UTF8Char*)"spring.datasource.username"))->v);
+//		console.WriteLine(Text::String::OrEmpty(cfg->GetValue((const UTF8Char*)"spring.datasource.password"))->v);
+		if (db)
+		{
+			Data::ArrayList<LamppostData*> dataList;
+			Data::NamedClass<LamppostData> *cls = LamppostData().CreateClass();
+			LamppostData *data;
+			DB::DBReader *r = db->GetTableData((const UTF8Char*)"dbo.lamppost_data", 0, 0, 0, 0, 0);
+			if (r)
+			{
+				r->ReadAll(&dataList, cls);
+				db->CloseReader(r);
+			}
+			UOSInt i = dataList.GetCount();
+			while (i-- > 0)
+			{
+				data = dataList.GetItem(i);
+				DEL_CLASS(data);
+			}
 
+			DEL_CLASS(cls);
+			DEL_CLASS(db);
+		}
+		else
+		{
+			console.WriteLine((const UTF8Char*)"Error in opening DB connection");
+		}
+		DEL_CLASS(cfg);
+	}
 	return 0;
 }

@@ -110,6 +110,7 @@ namespace DB
 		{
 			Int16 odbcType;
 			DB::DBUtil::ColType colType;
+			UOSInt colSize;
 			void *colData;
 			Int64 dataVal;
 			Bool isNull;

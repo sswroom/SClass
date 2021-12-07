@@ -1818,10 +1818,8 @@ UTF8Char *Data::DateTime::ToLocalStr(UTF8Char *buff)
 #endif
 }
 
-OSInt Data::DateTime::CompareTo(Data::IComparable *obj)
+OSInt Data::DateTime::CompareTo(Data::DateTime *dt)
 {
-	Data::DateTime *dt;
-	dt = (Data::DateTime*)obj;
 	Int64 ticks = this->ToTicks();
 	Int64 ticks2 = dt->ToTicks();
 	

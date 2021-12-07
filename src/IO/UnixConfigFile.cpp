@@ -2,9 +2,18 @@
 #include "MyMemory.h"
 #include "Data/ArrayList.h"
 #include "IO/FileStream.h"
+#include "IO/Path.h"
 #include "IO/UnixConfigFile.h"
 #include "Sync/Event.h"
 #include "Text/MyString.h"
+
+IO::ConfigFile *IO::UnixConfigFile::ParseAppProp()
+{
+	UTF8Char sbuff[512];
+	IO::Path::GetProcessFileName(sbuff);
+	IO::Path::AppendPath(sbuff, (const UTF8Char*)"application.properties");
+	return Parse(sbuff);
+}
 
 IO::ConfigFile *IO::UnixConfigFile::Parse(const UTF8Char *fileName)
 {
@@ -34,15 +43,32 @@ IO::ConfigFile *IO::UnixConfigFile::ParseReader(Text::UTF8Reader *reader)
 	UTF8Char *src;
 	UTF8Char c;
 	IO::ConfigFile *cfg;
+	UOSInt i;
 	NEW_CLASS(cfg, IO::ConfigFile());
 	while ((name = reader->ReadLine(buff, 1023)) != 0)
 	{
-		Text::StrTrim(buff);
-		if (buff[0] != 0 && buff[0] != '#')
+		while (name > buff)
 		{
-			name = buff;
+			if (name[-1] != ' ' && name[-1] != '\t')
+			{
+				break;
+			}
+			*--name = 0;
+		}
+		i = 0;
+		while (true)
+		{
+			if (buff[i] != ' ' && buff[i] != '\t')
+			{
+				break;
+			}
+			i++;
+		}
+		if (buff[i] != 0 && buff[i] != '#')
+		{
+			name = &buff[i];
 			value = 0;
-			src = buff;
+			src = &buff[i];
 			while (*src != '=')
 			{
 				if (*src == 0)

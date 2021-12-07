@@ -108,6 +108,44 @@ Crypto::JasyptEncryptor::~JasyptEncryptor()
 	SDEL_CLASS(this->random);
 }
 
+Bool Crypto::JasyptEncryptor::Decrypt(IO::ConfigFile *cfg)
+{
+	Data::ArrayList<Text::String*> cateList;
+	Data::ArrayList<Text::String*> keyList;
+	Text::String *cate;
+	Text::String *key;
+	Text::String *val;
+	UInt8 buff[256];
+	UOSInt buffSize;
+	UOSInt i = 0;
+	UOSInt j = cfg->GetCateList(&cateList, true);
+	while (i < j)
+	{
+		cate = cateList.GetItem(i);
+		keyList.Clear();
+		UOSInt k = 0;
+		UOSInt l = cfg->GetKeys(cate, &keyList);
+		while (k < l)
+		{
+			key = keyList.GetItem(k);
+			val = cfg->GetValue(cate, key);
+			if (val && val->StartsWith((const UTF8Char*)"ENC(") && val->EndsWith(')'))
+			{
+				buffSize = this->DecryptB64(&val->v[4], val->leng - 5, buff);
+				if (buffSize > 0)
+				{
+					val = Text::String::New(buff, buffSize);
+					cfg->SetValue(cate, key, val);
+					val->Release();
+				}
+			}
+			k++;
+		}
+		i++;
+	}
+	return true;
+}
+
 UOSInt Crypto::JasyptEncryptor::Decrypt(const UInt8 *srcBuff, UOSInt srcLen, UInt8 *outBuff)
 {
 	if (srcLen < this->ivSize + this->saltSize)

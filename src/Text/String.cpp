@@ -198,6 +198,15 @@ Bool Text::String::StartsWith(const UTF8Char *s)
 	return Text::StrStartsWith(this->v, s);
 }
 
+Bool Text::String::StartsWith(UOSInt startIndex, const UTF8Char *s)
+{
+	if (startIndex > this->leng)
+	{
+		return false;
+	}
+	return Text::StrStartsWith(&this->v[startIndex], s);
+}
+
 Bool Text::String::StartsWithICase(const UTF8Char *s)
 {
 	return Text::StrStartsWithICase(this->v, s);

@@ -3,6 +3,7 @@
 #include "Crypto/Encrypt/ICrypto.h"
 #include "Crypto/Hash/IHash.h"
 #include "Data/RandomBytesGenerator.h"
+#include "IO/ConfigFile.h"
 #include "Text/StringBuilderUTF.h"
 
 namespace Crypto
@@ -48,6 +49,7 @@ namespace Crypto
 		JasyptEncryptor(KeyAlgorithm keyAlg, CipherAlgorithm cipherAlg, const UInt8 *key, UOSInt keyLen);
 		~JasyptEncryptor();
 
+		Bool Decrypt(IO::ConfigFile *cfg);
 		UOSInt Decrypt(const UInt8 *srcBuff, UOSInt srcLen, UInt8 *outBuff);
 		UOSInt DecryptB64(const UTF8Char *b64Buff, UOSInt b64Len, UInt8 *outBuff);
 		UOSInt DecryptB64(const UTF8Char *b64Buff, UInt8 *outBuff);

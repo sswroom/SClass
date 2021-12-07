@@ -168,7 +168,7 @@ Net::UDPServer::UDPServer(Net::SocketFactory *sockf, Net::SocketUtil::AddressInf
 	this->ctrlEvt = 0;
 	NEW_CLASS(this->logFileMut, Sync::Mutex());
 	this->msgLog = msgLog;
-	this->msgPrefix - SCOPY_TEXT(msgPrefix);
+	this->msgPrefix = SCOPY_TEXT(msgPrefix);
 	this->port = port;
 	Bool succ = false;
 	if (bindAddr == 0)

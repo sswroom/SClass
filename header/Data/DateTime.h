@@ -8,7 +8,7 @@
 
 namespace Data
 {
-	class DateTime : public Data::IComparable
+	class DateTime// : public Data::IComparable
 	{
 	public:
 		enum class Weekday
@@ -63,7 +63,7 @@ namespace Data
 		DateTime(UInt16 year, UInt8 month, UInt8 day, UInt8 hour, UInt8 minute, UInt8 second, UInt16 ms);
 		DateTime(const UTF8Char *dateStr);
 		DateTime(Data::DateTime *dt);
-		virtual ~DateTime();
+		~DateTime();
 
 		Bool SetAsComputerTime();
 		Data::DateTime *SetCurrTime();
@@ -128,7 +128,7 @@ namespace Data
 		Bool operator<(DateTime dt);
 		
 		UTF8Char *ToLocalStr(UTF8Char *buff);
-		virtual OSInt CompareTo(Data::IComparable *obj);
+		OSInt CompareTo(Data::DateTime *obj);
 		Int32 DateCompare(Data::DateTime *dt);
 		Bool IsSameDay(Data::DateTime *dt);
 

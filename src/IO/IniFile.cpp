@@ -137,7 +137,7 @@ Bool IO::IniFile::SaveConfig(IO::Writer *writer, IO::ConfigFile *cfg)
 		writer->WriteLine(s->v, s->leng);
 		i++;
 	}
-	cfg->GetCateList(&cateList);
+	cfg->GetCateList(&cateList, false);
 	i = 0;
 	j = cateList.GetCount();
 	while (i < j)

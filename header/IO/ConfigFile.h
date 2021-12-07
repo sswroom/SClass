@@ -21,7 +21,7 @@ namespace IO
 		Bool SetValue(const UTF8Char *category, const UTF8Char *name, const UTF8Char *value);
 		Bool RemoveValue(const UTF8Char *category, const UTF8Char *name);
 		UOSInt GetCateCount();
-		UOSInt GetCateList(Data::ArrayList<Text::String *> *cateList);
+		UOSInt GetCateList(Data::ArrayList<Text::String *> *cateList, Bool withEmpty);
 		UOSInt GetKeys(Text::String *category, Data::ArrayList<Text::String *> *keyList);
 		UOSInt GetKeys(const UTF8Char *category, Data::ArrayList<Text::String *> *keyList);
 		Bool HasCategory(const UTF8Char *category);

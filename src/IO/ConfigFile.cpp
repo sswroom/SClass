@@ -139,7 +139,7 @@ UOSInt IO::ConfigFile::GetCateCount()
 	return this->cfgVals->GetCount();
 }
 
-UOSInt IO::ConfigFile::GetCateList(Data::ArrayList<Text::String *> *cateList)
+UOSInt IO::ConfigFile::GetCateList(Data::ArrayList<Text::String *> *cateList, Bool withEmpty)
 {
 	UOSInt retCnt;
 	UOSInt i = cateList->GetCount();
@@ -147,12 +147,15 @@ UOSInt IO::ConfigFile::GetCateList(Data::ArrayList<Text::String *> *cateList)
 	cateList->AddAll(this->cfgVals->GetKeys());
 	j = cateList->GetCount();
 	retCnt = j - i;
-	while (j-- > i)
+	if (!withEmpty)
 	{
-		if (cateList->GetItem(j)->leng == 0)
+		while (j-- > i)
 		{
-			cateList->RemoveAt(j);
-			retCnt--;
+			if (cateList->GetItem(j)->leng == 0)
+			{
+				cateList->RemoveAt(j);
+				retCnt--;
+			}
 		}
 	}
 	return retCnt;

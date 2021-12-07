@@ -39,6 +39,7 @@ nodeps:
 @DateTimeTest
 @Float16Test
 @SortSpeed
+@DBDataFileTest
 @FileGDBTest
 @MySQLCheck
 @XLSXExporterTest
@@ -272,6 +273,9 @@ SortSpeed:
 @ConsoleStartup.o
 
 #DB
+DBDataFileTest:
+@DBDataFileTest.o
+@ConsoleStartup.o
 FileGDBTest:
 @FileGDBTest.o
 @ConsoleStartup.o
@@ -778,6 +782,7 @@ X509Test.o: ../../main/CryptoTest/X509Test.cpp
 DateTimeTest.o: ../../main/Data/DateTimeTest.cpp
 Float16Test.o: ../../main/Data/Float16Test.cpp
 SortSpeed.o: ../../main/Data/SortSpeed.cpp
+DBDataFileTest.o: ../../main/DB/DBDataFileTest.cpp
 FileGDBTest.o: ../../main/DB/FileGDBTest.cpp
 MongoDBTest.o: ../../main/DB/MongoDBTest.cpp
 MySQLCheckMain.o: ../../main/DB/MySQLCheckMain.cpp
@@ -1233,6 +1238,8 @@ DB/DBTool.h: ../../src/DB/DBTool.cpp
 @DBTool.o
 DB/DBUtil.h: ../../src/DB/DBUtil.cpp
 @DBUtil.o
+DB/JDBCHandler.h: ../../src/DB/JDBCHandler.cpp
+@JDBCHandler.o
 DB/MSSQLConn.h: ../../src/DB/MSSQLConn.cpp
 @MSSQLConn.o
 DB/MySQLMaintance.h: ../../src/DB/MySQLMaintance.cpp
@@ -3903,6 +3910,7 @@ DBReader.o: ../../src/DB/DBReader.cpp
 DBRow.o: ../../src/DB/DBRow.cpp
 DBTool.o: ../../src/DB/DBTool.cpp
 DBUtil.o: ../../src/DB/DBUtil.cpp
+JDBCHandler.o: ../../src/DB/JDBCHandler.cpp
 MSSQLConn.o: ../../src/DB/MSSQLConn.cpp
 MySQLMaintance.o: ../../src/DB/MySQLMaintance.cpp
 PageRequest.o: ../../src/DB/PageRequest.cpp

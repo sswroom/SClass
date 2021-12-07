@@ -1144,7 +1144,7 @@ UOSInt DB::ODBCConn::GetDriverList(Data::ArrayList<Text::String*> *driverList)
 	{
 		Data::ArrayList<Text::String*> cateList;
 		UOSInt i = 0;
-		UOSInt j = cfg->GetCateList(&cateList);
+		UOSInt j = cfg->GetCateList(&cateList, false);
 		while (i < j)
 		{
 			driverList->Add(cateList.GetItem(i)->Clone());
@@ -1243,6 +1243,7 @@ DB::ODBCReader::ODBCReader(DB::ODBCConn *conn, void *hStmt, Bool enableDebug, In
 		SQLDescribeColW((SQLHANDLE)this->hStmt, (SQLUSMALLINT)(i + 1), buff, 10, &nameLen, &dataType, (SQLULEN*)&cSize, &decimalDigit, &notNull);
 		this->colDatas[i].odbcType = dataType;
 		this->colDatas[i].colType = ODBCType2DBType(dataType, cSize & 0xffff);
+		this->colDatas[i].colSize = (cSize & 0xffff);
 		this->colDatas[i].isNull = true;
 
 		switch (this->colDatas[i].colType)
@@ -1356,9 +1357,6 @@ Bool DB::ODBCReader::ReadNext()
 			Text::StringBuilderUTF8 *sb;
 			Data::DateTime *dt;
 			WChar sbuff[1];
-#if !defined(_WIN32) && !defined(_WIN64)
-			UTF8Char *u8ptr;
-#endif
 			UTF16Char *sptr;
 			SQLLEN len;
 			SQLRETURN ret;
@@ -1395,8 +1393,8 @@ Bool DB::ODBCReader::ReadNext()
 								{
 									len = 2048;
 								}
-								u8ptr = MemAlloc(UTF8Char, (UOSInt)len + 1);
-								ret = SQLGetData((SQLHANDLE)this->hStmt, (SQLUSMALLINT)(i + 1), SQL_C_CHAR, u8ptr, len + 1, &len);
+								sb->AllocLeng((UOSInt)len);
+								ret = SQLGetData((SQLHANDLE)this->hStmt, (SQLUSMALLINT)(i + 1), SQL_C_CHAR, sb->ToString(), len + 1, &len);
 								if (ret == SQL_SUCCESS_WITH_INFO || ret == SQL_ERROR)
 								{
 	//								wprintf(L"ODBCReader: Char Error, len = %d, v = %ls\r\n", len, sb->GetEndPtr());
@@ -1404,14 +1402,13 @@ Bool DB::ODBCReader::ReadNext()
 								}
 								if (ret == SQL_SUCCESS || ret == SQL_SUCCESS_WITH_INFO)
 								{
-									sb->AppendC(u8ptr, (UOSInt)len);
+									sb->ToString()[len] = 0;
 									this->colDatas[i].isNull = false;
 								}
 								else
 								{
 									this->colDatas[i].isNull = true;
 								}
-								MemFree(u8ptr);
 							}
 						}
 						else
@@ -1422,12 +1419,31 @@ Bool DB::ODBCReader::ReadNext()
 					else
 #endif					
 					{
-						ret = SQLGetData((SQLHANDLE)this->hStmt, (SQLUSMALLINT)(i + 1), SQL_C_WCHAR, sbuff, 0, &len);
+						UTF16Char wbuff[256];
+						ret = SQLGetData((SQLHANDLE)this->hStmt, (SQLUSMALLINT)(i + 1), SQL_C_WCHAR, wbuff, 512, &len);
 						if (ret == SQL_SUCCESS_WITH_INFO || ret == SQL_SUCCESS)
 						{
 							if (len == SQL_NULL_DATA)
 							{
 								this->colDatas[i].isNull = true;
+							}
+							else if (len == 0)
+							{
+								this->colDatas[i].isNull = false;
+							}
+							else if (len > 0 && len <= 510)
+							{
+								if (ret == SQL_SUCCESS_WITH_INFO)
+								{
+	//								wprintf(L"ODBCReader: Char Error, len = %d, v = %ls\r\n", len, sb->GetEndPtr());
+									this->conn->LogSQLError(this->hStmt);
+								}
+								UOSInt cnt = Text::StrUTF16_UTF8CntC(wbuff, (UOSInt)len >> 1);
+								sb->AllocLeng(cnt);
+								UTF8Char *endPtr = Text::StrUTF16_UTF8C(sb->ToString(), wbuff, (UOSInt)len >> 1);
+								*endPtr = 0;
+								sb->SetEndPtr(endPtr);
+								this->colDatas[i].isNull = false;
 							}
 							else
 							{
@@ -1444,11 +1460,11 @@ Bool DB::ODBCReader::ReadNext()
 								}
 								if (ret == SQL_SUCCESS || ret == SQL_SUCCESS_WITH_INFO)
 								{
-									const UTF16Char *wptr = Text::StrCopyNewC(sptr, (UOSInt)(len >> 1));
-									const UTF8Char *csptr = Text::StrToUTF8New(wptr);
-									sb->Append(csptr);
-									Text::StrDelNew(csptr);
-									Text::StrDelNew(wptr);
+									UOSInt cnt = Text::StrUTF16_UTF8CntC(sptr, (UOSInt)len >> 1);
+									sb->AllocLeng(cnt);
+									UTF8Char *endPtr = Text::StrUTF16_UTF8C(sb->ToString(), sptr, (UOSInt)len >> 1);
+									*endPtr = 0;
+									sb->SetEndPtr(endPtr);
 									this->colDatas[i].isNull = false;
 								}
 								else
@@ -1460,6 +1476,10 @@ Bool DB::ODBCReader::ReadNext()
 						}
 						else
 						{
+							if (ret == SQL_ERROR)
+							{
+								this->conn->LogSQLError(this->hStmt);
+							}
 							this->colDatas[i].isNull = true;
 						}
 					}
@@ -1826,6 +1846,7 @@ Bool DB::ODBCReader::GetStr(UOSInt colIndex, Text::StringBuilderUTF *sb)
 Text::String *DB::ODBCReader::GetNewStr(UOSInt colIndex)
 {
 	UTF8Char sbuff[32];
+	UTF8Char *sptr;
 	if (colIndex >= this->colCnt)
 		return 0;
 	if (this->colDatas[colIndex].isNull)
@@ -1837,31 +1858,34 @@ Text::String *DB::ODBCReader::GetNewStr(UOSInt colIndex)
 	case DB::DBUtil::CT_NChar:
 	case DB::DBUtil::CT_NVarChar:
 	case DB::DBUtil::CT_UUID:
-		return Text::String::NewNotNull(((Text::StringBuilderUTF8*)this->colDatas[colIndex].colData)->ToString());
+		{
+			Text::StringBuilderUTF8 *sb = (Text::StringBuilderUTF8*)this->colDatas[colIndex].colData;
+			return Text::String::New(sb->ToString(), sb->GetLength());
+		}
 	case DB::DBUtil::CT_Double:
 	case DB::DBUtil::CT_Float:
-		Text::StrDouble(sbuff, *(Double*)&this->colDatas[colIndex].dataVal);
-		return Text::String::NewNotNull(sbuff);
+		sptr = Text::StrDouble(sbuff, *(Double*)&this->colDatas[colIndex].dataVal);
+		return Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 	case DB::DBUtil::CT_Int16:
 	case DB::DBUtil::CT_Int32:
 	case DB::DBUtil::CT_Byte:
 	case DB::DBUtil::CT_Int64:
 	case DB::DBUtil::CT_Bool:
-		Text::StrInt64(sbuff, this->colDatas[colIndex].dataVal);
-		return Text::String::NewNotNull(sbuff);
+		sptr = Text::StrInt64(sbuff, this->colDatas[colIndex].dataVal);
+		return Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 	case DB::DBUtil::CT_UInt64:
-		Text::StrUInt64(sbuff, (UInt64)this->colDatas[colIndex].dataVal);
-		return Text::String::NewNotNull(sbuff);
+		sptr = Text::StrUInt64(sbuff, (UInt64)this->colDatas[colIndex].dataVal);
+		return Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 	case DB::DBUtil::CT_UInt32:
-		Text::StrUInt32(sbuff, (UInt32)this->colDatas[colIndex].dataVal);
-		return Text::String::NewNotNull(sbuff);
+		sptr = Text::StrUInt32(sbuff, (UInt32)this->colDatas[colIndex].dataVal);
+		return Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 	case DB::DBUtil::CT_UInt16:
-		Text::StrUInt16(sbuff, (UInt16)this->colDatas[colIndex].dataVal);
-		return Text::String::NewNotNull(sbuff);
+		sptr = Text::StrUInt16(sbuff, (UInt16)this->colDatas[colIndex].dataVal);
+		return Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 	case DB::DBUtil::CT_DateTime:
 	case DB::DBUtil::CT_DateTime2:
-		((Data::DateTime*)this->colDatas[colIndex].colData)->ToString(sbuff);
-		return Text::String::NewNotNull(sbuff);
+		sptr = ((Data::DateTime*)this->colDatas[colIndex].colData)->ToString(sbuff);
+		return Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 	case DB::DBUtil::CT_Binary:
 		return 0;
 	case DB::DBUtil::CT_Vector:
@@ -1873,7 +1897,7 @@ Text::String *DB::ODBCReader::GetNewStr(UOSInt colIndex)
 				Math::WKTWriter wkt;
 				wkt.GenerateWKT(&sb, vec);
 				DEL_CLASS(vec);
-				return Text::String::NewNotNull(sb.ToString());
+				return Text::String::New(sb.ToString(), sb.GetLength());
 			}
 		}
 		return 0;
@@ -2188,18 +2212,13 @@ Bool DB::ODBCReader::IsNull(UOSInt colIndex)
 
 DB::DBUtil::ColType DB::ODBCReader::GetColType(UOSInt colIndex, UOSInt *colSize)
 {
-	Int16 nameLen;
-	Int16 dataType;
-	UOSInt cSize;
-	Int16 decimalDigit;
-	Int16 notNull;
-	SQLWCHAR buff[10];
-	SQLDescribeColW((SQLHANDLE)this->hStmt, (SQLUSMALLINT)(colIndex + 1), buff, 10, &nameLen, &dataType, (SQLULEN*)&cSize, &decimalDigit, &notNull);
+	if (colIndex >= this->colCnt)
+		return DB::DBUtil::CT_Unknown;
 	if (colSize)
 	{
-		*colSize = cSize;
+		*colSize = this->colDatas[colIndex].colSize;
 	}
-	return ODBCType2DBType(dataType, cSize & 0xffff);
+	return this->colDatas[colIndex].colType;
 }
 
 Bool DB::ODBCReader::GetColDef(UOSInt colIndex, DB::ColDef *colDef)
