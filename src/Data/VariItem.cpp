@@ -545,7 +545,12 @@ void Data::VariItem::GetAsString(Text::StringBuilderUTF *sb)
 Data::DateTime *Data::VariItem::GetAsNewDate()
 {
 	Data::DateTime *date;
-	if (this->itemType == ItemType::Str)
+	if (this->itemType == ItemType::Date)
+	{
+		NEW_CLASS(date, Data::DateTime(this->val.date));
+		return date;
+	}
+	else if (this->itemType == ItemType::Str)
 	{
 		NEW_CLASS(date, Data::DateTime());
 		date->ToLocalTime();
@@ -556,10 +561,10 @@ Data::DateTime *Data::VariItem::GetAsNewDate()
 		DEL_CLASS(date);
 		return 0;
 	}
-	if (this->itemType != ItemType::Date)
+	else
+	{
 		return 0;
-	NEW_CLASS(date, Data::DateTime(this->val.date));
-	return date;
+	}
 }
 
 Data::ReadonlyArray<UInt8> *Data::VariItem::GetAsNewByteArr()

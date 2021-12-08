@@ -384,6 +384,19 @@ void Data::DateTime::SetValue(UInt16 year, OSInt month, OSInt day, OSInt hour, O
 	this->SetMS(ms);
 }
 
+void Data::DateTime::SetValueNoFix(UInt16 year, UInt8 month, UInt8 day, UInt8 hour, UInt8 minute, UInt8 second, UInt16 ms, Int8 tzQhr)
+{
+	TimeValue *tval = this->GetTimeValue();
+	tval->year = year;
+	tval->month = month;
+	tval->day = day;
+	tval->hour = hour;
+	tval->minute = minute;
+	tval->second = second;
+	tval->ms = ms;
+	this->tzQhr = tzQhr;	
+}
+
 Bool Data::DateTime::SetValue(const Char *dateStr)
 {
 	TimeValue *tval = this->GetTimeValue();
@@ -2172,7 +2185,7 @@ void Data::DateTime::Ticks2TimeValue(Int64 ticks, TimeValue *t, Int8 tzQhr)
 
 Bool Data::DateTime::IsYearLeap(UInt16 year)
 {
-	return (((year % 4) == 0 && (year % 100) != 0) || (year % 400) == 0);
+	return ((year & 3) == 0) && ((year % 100) != 0 || (year % 400) == 0);
 }
 
 UInt8 Data::DateTime::ParseMonthStr(const Char *month)

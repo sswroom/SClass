@@ -23,7 +23,7 @@ DB::DBTool *DB::JDBCHandler::OpenConn(Text::String *url, Text::String *username,
 		sarr[1] = sb.ToString();
 		scnt = Text::StrSplit(sarr, 2, sarr[1], ';');
 		scnt2 = Text::StrSplit(sarr2, 2, sarr[0], ':');
-		if (scnt == 2)
+		if (scnt2 == 2)
 		{
 			if (!Text::StrToUInt16(sarr2[1], &port))
 			{

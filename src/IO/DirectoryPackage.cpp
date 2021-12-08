@@ -29,41 +29,38 @@ void IO::DirectoryPackage::AddFile(const UTF8Char *fileName)
 
 void IO::DirectoryPackage::Init()
 {
-	Text::StringBuilderUTF8 sb;
 	Data::DateTime dt;
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
+	UTF8Char *sptr2;
 	IO::Path::PathType pt;
 	UInt64 fileSize;
 	IO::Path::FindFileSession *sess;
 	NEW_CLASS(this->files, Data::ArrayList<Text::String*>());
 	NEW_CLASS(this->fileSizes, Data::ArrayListUInt64());
 	NEW_CLASS(this->fileTimes, Data::ArrayListInt64());
-	sb.Append(this->dirName);
-	if (sb.GetLength() > 0)
+	if (this->dirName->leng > 0)
 	{
-		if (sb.GetEndPtr()[-1] != IO::Path::PATH_SEPERATOR)
+		sptr = this->dirName->ConcatTo(sbuff);
+		if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 		{
-			sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
+			*sptr++ = IO::Path::PATH_SEPERATOR;
 		}
-		sptr = sb.GetEndPtr();
-		sb.Append(IO::Path::ALL_FILES);
-		sess = IO::Path::FindFile(sb.ToString());
+		Text::StrConcat(sptr, IO::Path::ALL_FILES);
+		sess = IO::Path::FindFile(sbuff);
 		if (sess)
 		{
-			while (IO::Path::FindNextFile(sbuff, sess, &dt, &pt, &fileSize))
+			while ((sptr2 = IO::Path::FindNextFile(sptr, sess, &dt, &pt, &fileSize)) != 0)
 			{
-				if (sbuff[0] == '.' && sbuff[1] == 0)
+				if (sptr[0] == '.' && sptr[1] == 0)
 				{
 				}
-				else if (sbuff[0] == '.' && sbuff[1] == '.' && sbuff[2] == 0)
+				else if (sptr[0] == '.' && sptr[1] == '.' && sptr[2] == 0)
 				{
 				}
 				else
 				{
-					sb.SetEndPtr(sptr);
-					sb.Append(sbuff);
-					this->files->Add(Text::String::NewNotNull(sb.ToString()));
+					this->files->Add(Text::String::New(sbuff, (UOSInt)(sptr2 - sbuff)));
 					this->fileSizes->Add(fileSize);
 					this->fileTimes->Add(dt.ToTicks());
 				}

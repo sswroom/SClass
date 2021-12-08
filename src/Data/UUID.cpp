@@ -26,6 +26,12 @@ void Data::UUID::SetValue(UUID *uuid)
 	MemCopyNO(this->data, uuid->data, 16);
 }
 
+UOSInt Data::UUID::GetValue(UInt8 *buff)
+{
+	MemCopyNO(buff, this->data, 16);
+	return 16;
+}
+
 OSInt Data::UUID::CompareTo(UUID *uuid)
 {
 	UInt32 v1 = ReadUInt32(&this->data[0]);

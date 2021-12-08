@@ -1573,9 +1573,9 @@ Bool DB::ODBCReader::ReadNext()
 						else
 						{
 							this->colDatas[i].isNull = false;
-							OSInt ms;
-							ms = (OSInt)(ts.fraction / 1000000);
-							dt->SetValue((UInt16)ts.year, (UInt8)ts.month, (UInt8)ts.day, (UInt8)ts.hour, (UInt8)ts.minute, (UInt8)ts.second, ms, (Int8)this->tzQhr);
+							UInt16 ms;
+							ms = (UInt16)(ts.fraction / 1000000);
+							dt->SetValueNoFix((UInt16)ts.year, (UInt8)ts.month, (UInt8)ts.day, (UInt8)ts.hour, (UInt8)ts.minute, (UInt8)ts.second, ms, this->tzQhr);
 						}
 					}
 					else

@@ -135,6 +135,16 @@ Text::String *Data::Class::GetFieldName(UOSInt index)
 	return 0;
 }
 
+Data::VariItem::ItemType Data::Class::GetFieldType(UOSInt index)
+{
+	FieldInfo *field = this->fields->GetValues()->GetItem(index);
+	if (field)
+	{
+		return field->itemType;
+	}
+	return Data::VariItem::ItemType::Unknown;
+}
+
 Data::VariItem *Data::Class::GetNewValue(UOSInt index, void *obj)
 {
 	FieldInfo *field = this->fields->GetValues()->GetItem(index);

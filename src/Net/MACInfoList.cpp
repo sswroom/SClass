@@ -1,9 +1,9 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Data/ByteTool.h"
+#include "IO/BufferedOutputStream.h"
 #include "IO/FileStream.h"
 #include "IO/Path.h"
-#include "IO/WriteCacheStream.h"
 #include "Net/MACInfoList.h"
 #include "Text/CPPText.h"
 #include "Text/MyString.h"
@@ -202,7 +202,7 @@ Bool Net::MACInfoList::Store()
 	IO::Path::GetProcessFileName(sbuff);
 	IO::Path::AppendPath(sbuff, (const UTF8Char*)"MACList.txt");
 	IO::FileStream *fs;
-	IO::WriteCacheStream *cstm;
+	IO::BufferedOutputStream *cstm;
 	UOSInt i;
 	UOSInt j;
 	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
@@ -214,7 +214,7 @@ Bool Net::MACInfoList::Store()
 	Text::UTF8Writer *writer;
 	Text::StringBuilderUTF8 sb;
 	Net::MACInfo::MACEntry *entry;
-	NEW_CLASS(cstm, IO::WriteCacheStream(fs));
+	NEW_CLASS(cstm, IO::BufferedOutputStream(fs, 8192));
 	NEW_CLASS(writer, Text::UTF8Writer(cstm));
 	writer->WriteSignature();
 	i = 0;

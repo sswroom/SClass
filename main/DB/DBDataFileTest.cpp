@@ -3,9 +3,11 @@
 #include "Crypto/JasyptEncryptor.h"
 #include "Data/DateTime.h"
 #include "Data/NamedClass.h"
+#include "DB/DBDataFile.h"
 #include "DB/DBReader.h"
 #include "DB/JDBCHandler.h"
 #include "IO/ConsoleWriter.h"
+#include "IO/Path.h"
 #include "IO/UnixConfigFile.h"
 #include "Net/OSSocketFactory.h"
 #include "Text/String.h"
@@ -756,10 +758,12 @@ Data::NamedClass<LamppostData> *LamppostData::CreateClass()
 Int32 MyMain(Core::IProgControl *progCtrl)
 {
 	const UTF8Char *key = (const UTF8Char*)"WEBnAPI";
+	UTF8Char sbuff[512];
 	IO::ConsoleWriter console;
 	IO::LogTool log;
 	Net::OSSocketFactory sockf(false);
 	IO::ConfigFile *cfg = IO::UnixConfigFile::ParseAppProp();
+	Text::StringBuilderUTF8 sb;
 	if (cfg)
 	{
 		Crypto::JasyptEncryptor jasypt(Crypto::JasyptEncryptor::KA_PBEWITHHMACSHA512, Crypto::JasyptEncryptor::CA_AES256, key, Text::StrCharCnt(key));
@@ -772,7 +776,9 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 //		console.WriteLine(Text::String::OrEmpty(cfg->GetValue((const UTF8Char*)"spring.datasource.password"))->v);
 		if (db)
 		{
+			UOSInt i;
 			Data::ArrayList<LamppostData*> dataList;
+			Data::ArrayList<LamppostData*> dataList2;
 			Data::NamedClass<LamppostData> *cls = LamppostData().CreateClass();
 			LamppostData *data;
 			DB::DBReader *r = db->GetTableData((const UTF8Char*)"dbo.lamppost_data", 0, 0, 0, 0, 0);
@@ -780,11 +786,56 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			{
 				r->ReadAll(&dataList, cls);
 				db->CloseReader(r);
+
+				sb.ClearStr();
+				sb.AppendUOSInt(dataList.GetCount());
+				sb.Append((const UTF8Char*)" rows of records loaded");
+				console.WriteLine(sb.ToString());
+
+				IO::Path::GetRealPath(sbuff, (const UTF8Char*)"~/Progs/Temp/LamppostData.ddf");
+				if (DB::DBDataFile<LamppostData>::SaveFile(sbuff, &dataList, cls))
+				{
+					console.WriteLine((const UTF8Char*)"File saved");
+				}
+				if (DB::DBDataFile<LamppostData>::LoadFile(sbuff, cls, &dataList2))
+				{
+					sb.ClearStr();
+					sb.AppendUOSInt(dataList2.GetCount());
+					sb.Append((const UTF8Char*)" rows of records loaded from file");
+					console.WriteLine(sb.ToString());
+				}
+				if (dataList.GetCount() == dataList2.GetCount())
+				{
+					Bool succ = true;
+					console.WriteLine((const UTF8Char*)"Comparing two sets of data");
+					i = dataList.GetCount();
+					while (i-- > 0)
+					{
+						if (!cls->Equals(dataList.GetItem(i), dataList2.GetItem(i)))
+						{
+							console.WriteLine((const UTF8Char*)"Data not match");
+							succ = false;
+							break;
+						}
+					}
+					if (succ)
+					{
+						console.WriteLine((const UTF8Char*)"Data matched");
+					}
+				}
 			}
-			UOSInt i = dataList.GetCount();
+
+			i = dataList.GetCount();
 			while (i-- > 0)
 			{
 				data = dataList.GetItem(i);
+				DEL_CLASS(data);
+			}
+
+			i = dataList2.GetCount();
+			while (i-- > 0)
+			{
+				data = dataList2.GetItem(i);
 				DEL_CLASS(data);
 			}
 
@@ -796,6 +847,10 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			console.WriteLine((const UTF8Char*)"Error in opening DB connection");
 		}
 		DEL_CLASS(cfg);
+	}
+	else
+	{
+		console.WriteLine((const UTF8Char*)"Error in loading application.properties");
 	}
 	return 0;
 }

@@ -4,7 +4,6 @@
 #include "IO/FileStream.h"
 #include "IO/OS.h"
 #include "IO/SystemInfo.h"
-#include "IO/WriteCacheStream.h"
 #include "Net/RAWCapture.h"
 #include "Sync/MutexUsage.h"
 #include "Text/MyString.h"

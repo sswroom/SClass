@@ -735,7 +735,7 @@ Bool DB::CSVReader::GetVariItem(UOSInt colIndex, Data::VariItem *item)
 	}
 	if (nullIfEmpty)
 	{
-		if (cols[colIndex][0] == 0 || Text::StrEquals(cols[colIndex], (const UTF8Char*)"\"\""))
+		if (cols[colIndex][0] == 0 || (*(UInt16*)cols[colIndex] == 0x2222 && cols[colIndex][2] == 0))
 		{
 			item->SetNull();
 			return true;

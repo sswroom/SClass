@@ -44,6 +44,7 @@ namespace Data
 
 		UOSInt GetFieldCount();
 		Text::String *GetFieldName(UOSInt index);
+		Data::VariItem::ItemType GetFieldType(UOSInt index);
 		Data::VariItem *GetNewValue(UOSInt index, void *obj);
 		Bool GetValue(Data::VariItem *itm, UOSInt index, void *obj);
 		Bool SetField(void *obj, UOSInt index, Data::VariItem *item);

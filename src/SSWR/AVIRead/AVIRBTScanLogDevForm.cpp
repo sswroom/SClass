@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "Data/ByteTool.h"
+#include "IO/BufferedOutputStream.h"
 #include "IO/FileStream.h"
-#include "IO/WriteCacheStream.h"
 #include "SSWR/AVIRead/AVIRBTScanLogDevForm.h"
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
@@ -18,9 +18,9 @@ void __stdcall SSWR::AVIRead::AVIRBTScanLogDevForm::OnCSVClicked(void *userObj)
 		Text::StringBuilderUTF8 sb;
 		UTF8Char sbuff[256];
 		IO::FileStream *fs;
-		IO::WriteCacheStream *stm;
+		IO::BufferedOutputStream *stm;
 		NEW_CLASS(fs, IO::FileStream(dlg->GetFileName(), IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-		NEW_CLASS(stm, IO::WriteCacheStream(fs));
+		NEW_CLASS(stm, IO::BufferedOutputStream(fs, 8192));
 		Data::DateTime dt;
 		IO::BTScanLog::LogEntry *log;
 		Int64 lastTick;

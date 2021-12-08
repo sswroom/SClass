@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "Data/ByteTool.h"
+#include "IO/BufferedOutputStream.h"
 #include "IO/FileStream.h"
-#include "IO/WriteCacheStream.h"
 #include "Net/WiFiLogFile.h"
 #include "Net/WirelessLAN.h"
 #include "Text/MyStringFloat.h"
@@ -287,7 +287,7 @@ Bool Net::WiFiLogFile::StoreFile(const UTF8Char *fileName)
 {
 	IO::FileStream *fs;
 	Text::UTF8Writer *writer;
-	IO::WriteCacheStream *cstm;
+	IO::BufferedOutputStream *cstm;
 	Text::StringBuilderUTF8 sb;
 	UOSInt i;
 	UOSInt j;
@@ -295,7 +295,7 @@ Bool Net::WiFiLogFile::StoreFile(const UTF8Char *fileName)
 	Net::WiFiLogFile::LogFileEntry *log;
 	Bool succ = false;
 	NEW_CLASS(fs, IO::FileStream(fileName, IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	NEW_CLASS(cstm, IO::WriteCacheStream(fs));
+	NEW_CLASS(cstm, IO::BufferedOutputStream(fs, 8192));
 	NEW_CLASS(writer, Text::UTF8Writer(cstm));
 	succ = true;
 	i = 0;

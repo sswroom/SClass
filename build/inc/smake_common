@@ -1216,6 +1216,7 @@ DB/DBClassBuilder.h: ../../src/DB/DBClassBuilder.cpp
 @DBClassBuilder.o
 DB/DBConn.h: ../../src/DB/DBConn.cpp
 @DBConn.o
+DB/DBDataFile.h:
 DB/DBFFile.h: ../../src/DB/DBFFile.cpp
 @DBFFile.o
 DB/DBFFixWriter.h: ../../src/DB/DBFFixWriter.cpp

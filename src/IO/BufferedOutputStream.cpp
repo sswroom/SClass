@@ -103,11 +103,21 @@ UOSInt IO::BufferedOutputStream::Write(const UInt8 *buff, UOSInt size)
 
 Int32 IO::BufferedOutputStream::Flush()
 {
+	if (this->cacheSize > 0)
+	{
+		this->outStm->Write(this->cacheBuff, this->cacheSize);
+		this->cacheSize = 0;
+	}
 	return this->outStm->Flush();
 }
 
 void IO::BufferedOutputStream::Close()
 {
+	if (this->cacheSize > 0)
+	{
+		this->outStm->Write(this->cacheBuff, this->cacheSize);
+		this->cacheSize = 0;
+	}
 	this->outStm->Close();
 }
 

@@ -2,7 +2,6 @@
 #include "Data/ByteTool.h"
 #include "IO/FileStream.h"
 #include "IO/Path.h"
-#include "IO/WriteCacheStream.h"
 #include "Net/MACInfo.h"
 #include "Net/PacketAnalyzerBluetooth.h"
 #include "Net/WirelessLANIE.h"
