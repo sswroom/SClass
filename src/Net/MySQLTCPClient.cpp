@@ -40,10 +40,12 @@ private:
 		UInt16 charSet;
 		UInt16 flags;
 		Net::MySQLUtil::MySQLType colType;
+		DB::DBUtil::ColType dbColType;
 		UInt8 decimals;
 	} ColumnDef;
 
 	Data::ArrayList<ColumnDef*> *cols;
+	UOSInt colCount;
 	OSInt rowChanged;
 	Text::String **currRow;
 	Text::String **nextRow;
@@ -59,6 +61,7 @@ public:
 		this->rowChanged = -1;
 		this->currRow = 0;
 		this->nextRow = 0;
+		this->colCount = 0;
 		this->nextRowReady = false;
 		NEW_CLASS(this->nextRowEvt, Sync::Event(true, (const UTF8Char*)"MySQLTCPReader.nextRowEvt"));
 		NEW_CLASS(this->rowEvt, Sync::Event(true, (const UTF8Char*)"MySQLTCPReader.nextRowEvt"));
@@ -85,7 +88,7 @@ public:
 		DEL_CLASS(this->mutUsage);
 	}
 
-	DB::DBUtil::ColType DBType2ColType(Net::MySQLUtil::MySQLType colType)
+	static DB::DBUtil::ColType DBType2ColType(Net::MySQLUtil::MySQLType colType)
 	{
 		switch (colType)
 		{
@@ -159,7 +162,7 @@ public:
 		UOSInt i;
 		if (this->currRow)
 		{
-			i = this->cols->GetCount();
+			i = this->colCount;
 			while (i-- > 0)
 			{
 				SDEL_STRING(this->currRow[i]);
@@ -186,7 +189,7 @@ public:
 
 	virtual UOSInt ColCount()
 	{
-		return this->cols->GetCount();
+		return this->colCount;
 	}
 
 	virtual OSInt GetRowChanged()
@@ -200,7 +203,7 @@ public:
 		{
 			return 0;
 		}
-		if (colIndex >= this->cols->GetCount())
+		if (colIndex >= this->colCount)
 		{
 			return 0;
 		}
@@ -217,7 +220,7 @@ public:
 		{
 			return 0;
 		}
-		if (colIndex >= this->cols->GetCount())
+		if (colIndex >= this->colCount)
 		{
 			return 0;
 		}
@@ -234,7 +237,7 @@ public:
 		{
 			return 0;
 		}
-		if (colIndex >= this->cols->GetCount())
+		if (colIndex >= this->colCount)
 		{
 			return 0;
 		}
@@ -251,7 +254,7 @@ public:
 		{
 			return false;
 		}
-		if (colIndex >= this->cols->GetCount())
+		if (colIndex >= this->colCount)
 		{
 			return false;
 		}
@@ -269,7 +272,7 @@ public:
 		{
 			return 0;
 		}
-		if (colIndex >= this->cols->GetCount())
+		if (colIndex >= this->colCount)
 		{
 			return 0;
 		}
@@ -286,7 +289,7 @@ public:
 		{
 			return 0;
 		}
-		if (colIndex >= this->cols->GetCount())
+		if (colIndex >= this->colCount)
 		{
 			return 0;
 		}
@@ -303,7 +306,7 @@ public:
 		{
 			return DET_NULL;
 		}
-		if (colIndex >= this->cols->GetCount())
+		if (colIndex >= this->colCount)
 		{
 			return DET_NULL;
 		}
@@ -327,7 +330,7 @@ public:
 		{
 			return 0;
 		}
-		if (colIndex >= this->cols->GetCount())
+		if (colIndex >= this->colCount)
 		{
 			return 0;
 		}
@@ -344,7 +347,7 @@ public:
 		{
 			return false;
 		}
-		if (colIndex >= this->cols->GetCount())
+		if (colIndex >= this->colCount)
 		{
 			return false;
 		}
@@ -385,11 +388,7 @@ public:
 		{
 			return true;
 		}
-		if (colIndex >= this->cols->GetCount())
-		{
-			return true;
-		}
-		if (this->currRow[colIndex] == 0)
+		if (colIndex >= this->colCount)
 		{
 			return true;
 		}
@@ -412,7 +411,7 @@ public:
 		if (col)
 		{
 			*colSize = col->colLen;
-			return DBType2ColType(col->colType);
+			return col->dbColType;
 		}
 		return DB::DBUtil::CT_Unknown;
 	}
@@ -461,9 +460,11 @@ public:
 			MemFree(col);
 			return;
 		}
+		colDef += 1;
 		col->charSet = ReadUInt16(&colDef[0]);
 		col->colLen = ReadUInt32(&colDef[2]);
 		col->colType = (Net::MySQLUtil::MySQLType)colDef[6];
+		col->dbColType = DBType2ColType(col->colType);
 		col->flags = ReadUInt16(&colDef[7]);
 		col->decimals = colDef[9];
 		colDef += 12;
@@ -477,17 +478,14 @@ public:
 			}
 		}
 		this->cols->Add(col);
+		this->colCount++;
 	}
 
 	void AddRowData(const UInt8 *rowData, UOSInt dataSize)
 	{
-		while (this->nextRowReady)
-		{
-			this->nextRowEvt->Wait(1000);
-		}
-		Text::String **row = MemAlloc(Text::String *, this->cols->GetCount());
+		Text::String **row = MemAlloc(Text::String *, this->colCount);
 		UOSInt i = 0;
-		UOSInt j = this->cols->GetCount();
+		UOSInt j = this->colCount;
 		UInt64 v;
 		while (i < j)
 		{
@@ -503,6 +501,10 @@ public:
 				rowData += v;
 			}
 			i++;
+		}
+		while (this->nextRowReady)
+		{
+			this->nextRowEvt->Wait(1000);
 		}
 		this->nextRow = row;
 		this->nextRowReady = true;
@@ -1435,6 +1437,11 @@ Text::String *Net::MySQLTCPClient::GetConnUID()
 Text::String *Net::MySQLTCPClient::GetConnPWD()
 {
 	return this->password;
+}
+
+UInt16 Net::MySQLTCPClient::GetDefaultPort()
+{
+	return 3306;
 }
 
 DB::DBTool *Net::MySQLTCPClient::CreateDBTool(Net::SocketFactory *sockf, Text::String *serverName, Text::String *dbName, Text::String *uid, Text::String *pwd, IO::LogTool *log, const UTF8Char *logPrefix)

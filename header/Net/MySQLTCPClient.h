@@ -85,6 +85,7 @@ namespace Net
 		Text::String *GetConnUID();
 		Text::String *GetConnPWD();
 
+		static UInt16 GetDefaultPort();
 		static DB::DBTool *CreateDBTool(Net::SocketFactory *sockf, Text::String *serverName, Text::String *dbName, Text::String *uid, Text::String *pwd, IO::LogTool *log, const UTF8Char *logPrefix);
 		static DB::DBTool *CreateDBTool(Net::SocketFactory *sockf, const UTF8Char *serverName, const UTF8Char *dbName, const UTF8Char *uid, const UTF8Char *pwd, IO::LogTool *log, const UTF8Char *logPrefix);
 	};

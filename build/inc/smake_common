@@ -42,6 +42,7 @@ nodeps:
 @DBDataFileTest
 @FileGDBTest
 @MySQLCheck
+@MySQLClientTest
 @XLSXExporterTest
 @AM2315Test
 @BLEScanTest
@@ -284,6 +285,9 @@ MongoDBTest:
 @ConsoleStartup.o
 MySQLCheck:
 @MySQLCheckMain.o
+@ConsoleStartup.o
+MySQLClientTest:
+@MySQLClientTest.o
 @ConsoleStartup.o
 
 #Exporter
@@ -786,6 +790,7 @@ DBDataFileTest.o: ../../main/DB/DBDataFileTest.cpp
 FileGDBTest.o: ../../main/DB/FileGDBTest.cpp
 MongoDBTest.o: ../../main/DB/MongoDBTest.cpp
 MySQLCheckMain.o: ../../main/DB/MySQLCheckMain.cpp
+MySQLClientTest.o: ../../main/DB/MySQLClientTest.cpp
 XLSXExporterTest.o: ../../main/Exporter/XLSXExporterTest.cpp
 AM2315Test.o: ../../main/IO/AM2315Test.cpp
 BLEScanTest.o: ../../main/IO/BLEScanTest.cpp

@@ -107,7 +107,7 @@ template <class T> Bool DB::DBReader::ReadAll(Data::ArrayList<T*> *outList, Data
 		while (i < j)
 		{
 			this->GetVariItem(colIndex[i], &item);
-			cls->SetField(listObj, i, &item);
+			cls->SetFieldClearItem(listObj, i, &item);
 			i++;
 		}
 		outList->Add(listObj);

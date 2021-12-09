@@ -53,8 +53,8 @@ namespace Data
 	private:
 		TimeValue *GetTimeValue();
 
-		void SetDate(Char **dateStrs);
-		void SetTime(Char **timeStrs);
+		static void SetDate(TimeValue *t, Char **dateStrs);
+		static void SetTime(TimeValue *t, Char **timeStrs);
 		void FixValues();
 	public:
 		DateTime();

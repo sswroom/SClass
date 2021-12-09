@@ -49,9 +49,8 @@ Data::DateTime::TimeValue *Data::DateTime::GetTimeValue()
 	}
 }
 
-void Data::DateTime::SetDate(Char **dateStrs)
+void Data::DateTime::SetDate(TimeValue *t, Char **dateStrs)
 {
-	TimeValue *t = GetTimeValue();
 	UInt32 vals[3];
 	vals[0] = 0;
 	vals[1] = 0;
@@ -96,35 +95,34 @@ void Data::DateTime::SetDate(Char **dateStrs)
 	}
 }
 
-void Data::DateTime::SetTime(Char **timeStrs)
+void Data::DateTime::SetTime(TimeValue *t, Char **timeStrs)
 {
-	TimeValue *t = GetTimeValue();
 	Char *strs[2];
 	UOSInt valTmp;
 
-	t->hour = (UInt8)Text::StrToInt32(timeStrs[0]);
-	t->minute = (UInt8)Text::StrToInt32(timeStrs[1]);
+	t->hour = (UInt8)Text::StrToUInt32(timeStrs[0]);
+	t->minute = (UInt8)Text::StrToUInt32(timeStrs[1]);
 	valTmp = Text::StrSplit(strs, 2, timeStrs[2], '.');
 	if (valTmp == 1)
 	{
-		t->second = (UInt8)Text::StrToInt32(strs[0]);
+		t->second = (UInt8)Text::StrToUInt32(strs[0]);
 		t->ms = 0;
 	}
 	else
 	{
-		t->second = (UInt8)Text::StrToInt32(strs[0]);
+		t->second = (UInt8)Text::StrToUInt32(strs[0]);
 		valTmp = Text::StrCharCnt(strs[1]);
 		if (valTmp == 1)
 		{
-			t->ms = (UInt16)(Text::StrToInt32(strs[1]) * 100);
+			t->ms = (UInt16)(Text::StrToUInt32(strs[1]) * 100);
 		}
 		else if (valTmp == 2)
 		{
-			t->ms = (UInt16)(Text::StrToInt32(strs[1]) * 10);
+			t->ms = (UInt16)(Text::StrToUInt32(strs[1]) * 10);
 		}
 		else if (valTmp == 3)
 		{
-			t->ms = (UInt16)Text::StrToInt32(strs[1]);
+			t->ms = (UInt16)Text::StrToUInt32(strs[1]);
 		}
 		else
 		{
@@ -422,15 +420,15 @@ Bool Data::DateTime::SetValue(const Char *dateStr)
 		Bool dateSucc = true;
 		if (Text::StrSplit(strs, 3, strs2[0], '-') == 3)
 		{
-			SetDate(strs);
+			SetDate(tval, strs);
 		}
 		else if (Text::StrSplit(strs, 3, strs2[0], '/') == 3)
 		{
-			SetDate(strs);
+			SetDate(tval, strs);
 		}
 		else if (Text::StrSplit(strs, 3, strs2[0], ':') == 3)
 		{
-			SetDate(strs);
+			SetDate(tval, strs);
 		}
 		else
 		{
@@ -448,7 +446,7 @@ Bool Data::DateTime::SetValue(const Char *dateStr)
 			strs2[1][i] = 0;
 			if (Text::StrCharCnt(&strs2[1][i + 1]) == 5)
 			{
-				Int32 min = Text::StrToInt32(&strs2[1][i + 4]);
+				UInt32 min = Text::StrToUInt32(&strs2[1][i + 4]);
 				if (strs2[1][i + 3] == ':')
 				{
 					strs2[1][i + 3] = 0;
@@ -457,10 +455,10 @@ Bool Data::DateTime::SetValue(const Char *dateStr)
 				{
 					strs2[1][i + 4] = 0;
 				}
-				min = min + Text::StrToInt32(&strs2[1][i + 1]) * 60;
+				min = min + Text::StrToUInt32(&strs2[1][i + 1]) * 60;
 				if (c == '-')
 				{
-					this->tzQhr = (Int8)(-min / 15);
+					this->tzQhr = (Int8)(-(Int32)min / 15);
 				}
 				else
 				{
@@ -474,7 +472,7 @@ Bool Data::DateTime::SetValue(const Char *dateStr)
 			{
 				strs[2][Text::StrCharCnt(strs[2]) - 1] = 0;
 			}
-			SetTime(strs);
+			SetTime(tval, strs);
 		}
 		else
 		{
@@ -492,7 +490,7 @@ Bool Data::DateTime::SetValue(const Char *dateStr)
 	{
 		if (Text::StrSplit(strs, 3, strs2[0], '-') == 3)
 		{
-			SetDate(strs);
+			SetDate(tval, strs);
 			tval->hour = 0;
 			tval->minute = 0;
 			tval->second = 0;
@@ -500,7 +498,7 @@ Bool Data::DateTime::SetValue(const Char *dateStr)
 		}
 		else if (Text::StrSplit(strs, 3, strs2[0], '/') == 3)
 		{
-			SetDate(strs);
+			SetDate(tval, strs);
 			tval->hour = 0;
 			tval->minute = 0;
 			tval->second = 0;
@@ -509,7 +507,7 @@ Bool Data::DateTime::SetValue(const Char *dateStr)
 		else if (Text::StrSplit(strs, 3, strs2[0], ':') == 3)
 		{
 			SetCurrTime();
-			SetTime(strs);
+			SetTime(tval, strs);
 		}
 		else
 		{
@@ -548,7 +546,7 @@ Bool Data::DateTime::SetValue(const Char *dateStr)
 		}
 		if (Text::StrSplit(strs, 3, timeStr, ':') == 3)
 		{
-			SetTime(strs);
+			SetTime(tval, strs);
 		}
 		else
 		{
@@ -563,7 +561,7 @@ Bool Data::DateTime::SetValue(const Char *dateStr)
 			}
 			else if (Text::StrCharCnt(strs2[4]) == 5)
 			{
-				Int32 min = Text::StrToInt32(&strs2[4][3]);
+				Int32 min = (Int32)Text::StrToUInt32(&strs2[4][3]);
 				if (strs2[4][2] == ':')
 				{
 					strs2[4][2] = 0;
@@ -602,7 +600,7 @@ Bool Data::DateTime::SetValue(const Char *dateStr)
 		{
 			if ((splitCnt = Text::StrSplit(strs, 3, strs2[j], ':')) == 3)
 			{
-				SetTime(strs);
+				SetTime(tval, strs);
 			}
 			else
 			{
@@ -614,26 +612,26 @@ Bool Data::DateTime::SetValue(const Char *dateStr)
 				{
 					if (Text::StrSplit(strs, 3, strs2[j], ':') == 2)
 					{
-						this->tzQhr = (Int8)(-((Text::StrToInt32(&strs[0][1]) << 2) + (Text::StrToInt32(strs[1]) / 15)));
+						this->tzQhr = (Int8)(-((Text::StrToUInt32(&strs[0][1]) << 2) + (Text::StrToUInt32(strs[1]) / 15)));
 					}
 					else if (Text::StrCharCnt(strs2[j]) == 5)
 					{
-						this->tzQhr = (Int8)(Text::StrToInt32(&strs2[j][3]) / 15);
+						this->tzQhr = (Int8)(Text::StrToUInt32(&strs2[j][3]) / 15);
 						strs2[j][3] = 0;
-						this->tzQhr = (Int8)(-(this->tzQhr + (Text::StrToInt32(&strs2[j][1]) << 2)));
+						this->tzQhr = (Int8)(-(this->tzQhr + (Int32)(Text::StrToUInt32(&strs2[j][1]) << 2)));
 					}
 				}
 				else if (strs2[j][0] == '+')
 				{
 					if (Text::StrSplit(strs, 3, strs2[j], ':') == 2)
 					{
-						this->tzQhr = (Int8)((Text::StrToInt32(&strs[0][1]) << 2) + (Text::StrToInt32(strs[1]) / 15));
+						this->tzQhr = (Int8)((Text::StrToUInt32(&strs[0][1]) << 2) + (Text::StrToUInt32(strs[1]) / 15));
 					}
 					else if (Text::StrCharCnt(strs2[j]) == 5)
 					{
-						this->tzQhr = (Int8)(Text::StrToInt32(&strs2[j][3]) / 15);
+						this->tzQhr = (Int8)(Text::StrToUInt32(&strs2[j][3]) / 15);
 						strs2[j][3] = 0;
-						this->tzQhr = (Int8)(this->tzQhr + (Text::StrToInt32(&strs2[j][1]) << 2));
+						this->tzQhr = (Int8)(this->tzQhr + (Int32)(Text::StrToUInt32(&strs2[j][1]) << 2));
 					}
 				}
 				else
@@ -643,14 +641,14 @@ Bool Data::DateTime::SetValue(const Char *dateStr)
 					{
 						if (Text::StrSplit(strs, 3, strs2[0], '/') == 3)
 						{
-							SetDate(strs);
+							SetDate(tval, strs);
 						}
 					}
 					else
 					{
 						if (Text::StrSplit(strs, 3, strs2[0], '-') == 3)
 						{
-							SetDate(strs);
+							SetDate(tval, strs);
 						}
 						else
 						{
