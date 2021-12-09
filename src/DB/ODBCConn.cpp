@@ -1381,12 +1381,27 @@ Bool DB::ODBCReader::ReadNext()
 #if !defined(_WIN32) && !defined(_WIN64)
 					if (this->colDatas[i].odbcType == SQL_CHAR || this->colDatas[i].odbcType == SQL_VARCHAR || this->colDatas[i].odbcType == SQL_LONGVARCHAR)
 					{
-						ret = SQLGetData((SQLHANDLE)this->hStmt, (SQLUSMALLINT)(i + 1), SQL_C_CHAR, sbuff, 0, &len);
+						UTF8Char sbuff[256];
+						ret = SQLGetData((SQLHANDLE)this->hStmt, (SQLUSMALLINT)(i + 1), SQL_C_CHAR, sbuff, 256, &len);
 						if (ret == SQL_SUCCESS_WITH_INFO || ret == SQL_SUCCESS)
 						{
 							if (len == SQL_NULL_DATA)
 							{
 								this->colDatas[i].isNull = true;
+							}
+							else if (len == 0)
+							{
+								this->colDatas[i].isNull = false;
+							}
+							else if (len > 0 && len <= 510)
+							{
+								if (ret == SQL_SUCCESS_WITH_INFO)
+								{
+	//								wprintf(L"ODBCReader: Char Error, len = %d, v = %ls\r\n", len, sb->GetEndPtr());
+									this->conn->LogSQLError(this->hStmt);
+								}
+								sb->AppendC(sbuff, (UOSInt)len);
+								this->colDatas[i].isNull = false;
 							}
 							else
 							{
@@ -1395,7 +1410,8 @@ Bool DB::ODBCReader::ReadNext()
 									len = 2048;
 								}
 								sb->AllocLeng((UOSInt)len);
-								ret = SQLGetData((SQLHANDLE)this->hStmt, (SQLUSMALLINT)(i + 1), SQL_C_CHAR, sb->ToString(), len + 1, &len);
+								UTF8Char *endPtr = sb->GetEndPtr();
+								ret = SQLGetData((SQLHANDLE)this->hStmt, (SQLUSMALLINT)(i + 1), SQL_C_CHAR, endPtr, len + 1, &len);
 								if (ret == SQL_SUCCESS_WITH_INFO || ret == SQL_ERROR)
 								{
 	//								wprintf(L"ODBCReader: Char Error, len = %d, v = %ls\r\n", len, sb->GetEndPtr());
@@ -1403,11 +1419,14 @@ Bool DB::ODBCReader::ReadNext()
 								}
 								if (ret == SQL_SUCCESS || ret == SQL_SUCCESS_WITH_INFO)
 								{
-									sb->ToString()[len] = 0;
+									endPtr = &endPtr[len];
+									*endPtr = 0;
+									sb->SetEndPtr(endPtr);
 									this->colDatas[i].isNull = false;
 								}
 								else
 								{
+									sb->ClearStr();
 									this->colDatas[i].isNull = true;
 								}
 							}
