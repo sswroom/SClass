@@ -81,6 +81,10 @@ namespace Data
 		Data::ReadonlyArray<UInt8> *GetAsNewByteArr();
 		Math::Vector2D *GetAsNewVector();
 		Data::UUID *GetAsNewUUID();
+		Data::DateTime *GetAndRemoveDate();
+		Data::ReadonlyArray<UInt8> *GetAndRemoveByteArr();
+		Math::Vector2D *GetAndRemoveVector();
+		Data::UUID *GetAndRemoveUUID();
 		void *GetAsUnk();
 
 		void SetNull();
@@ -136,6 +140,7 @@ namespace Data
 		
 		static void SetFromPtr(VariItem *item, void *ptr, ItemType itemType);
 		static void SetPtr(void *ptr, ItemType itemType, VariItem *item);
+		static void SetPtrAndNotKeep(void *ptr, ItemType itemType, VariItem *item);
 		static Bool PtrEquals(void *ptr1, void *ptr2, ItemType itemType);
 
 		static UOSInt GetItemSize(ItemType itemType);

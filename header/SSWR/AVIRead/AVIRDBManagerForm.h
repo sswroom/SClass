@@ -58,7 +58,7 @@ namespace SSWR
 			void UpdateTableData(Text::String *tableName);
 			void UpdateResult(DB::DBReader *r);
 
-			void AppendJavaCol(Text::StringBuilderUTF *sb, DB::ColDef *col);
+			Data::Class *CreateTableClass(const UTF8Char *tableName);
 		public:
 			AVIRDBManagerForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRDBManagerForm();

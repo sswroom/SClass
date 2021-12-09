@@ -593,6 +593,38 @@ Data::UUID *Data::VariItem::GetAsNewUUID()
 	return this->val.uuid->Clone();
 }
 
+Data::DateTime *Data::VariItem::GetAndRemoveDate()
+{
+	if (this->itemType != ItemType::Date)
+		return 0;
+	this->itemType = ItemType::Null;
+	return this->val.date;
+}
+
+Data::ReadonlyArray<UInt8> *Data::VariItem::GetAndRemoveByteArr()
+{
+	if (this->itemType != ItemType::ByteArr)
+		return 0;
+	this->itemType = ItemType::Null;
+	return this->val.byteArr;
+}
+
+Math::Vector2D *Data::VariItem::GetAndRemoveVector()
+{
+	if (this->itemType != ItemType::Vector)
+		return 0;
+	this->itemType = ItemType::Null;
+	return this->val.vector;
+}
+
+Data::UUID *Data::VariItem::GetAndRemoveUUID()
+{
+	if (this->itemType != ItemType::UUID)
+		return 0;
+	this->itemType = ItemType::Null;
+	return this->val.uuid;
+}
+
 void *Data::VariItem::GetAsUnk()
 {
 	return (void*)this->val.str;
@@ -1360,6 +1392,109 @@ void Data::VariItem::SetPtr(void *ptr, ItemType itemType, VariItem *item)
 		break;
 	case ItemType::UUID:
 		*(Data::UUID**)ptr = item->GetAsNewUUID();
+		break;
+	case ItemType::Unknown:
+	default:
+		*(void**)ptr = item->GetAsUnk();
+		break;
+	}
+}
+
+
+void Data::VariItem::SetPtrAndNotKeep(void *ptr, ItemType itemType, VariItem *item)
+{
+	switch (itemType)
+	{
+	case ItemType::F32:
+		*(Single*)ptr = item->GetAsF32();
+		break;
+	case ItemType::F64:
+		*(Double*)ptr = item->GetAsF64();
+		break;
+	case ItemType::I8:
+		*(Int8*)ptr = item->GetAsI8();
+		break;
+	case ItemType::U8:
+		*(UInt8*)ptr = item->GetAsU8();
+		break;
+	case ItemType::I16:
+		*(Int16*)ptr = item->GetAsI16();
+		break;
+	case ItemType::U16:
+		*(UInt16*)ptr = item->GetAsU16();
+		break;
+	case ItemType::I32:
+		*(Int32*)ptr = item->GetAsI32();
+		break;
+	case ItemType::U32:
+		*(UInt32*)ptr = item->GetAsU32();
+		break;
+	case ItemType::I64:
+		*(Int64*)ptr = item->GetAsI64();
+		break;
+	case ItemType::U64:
+		*(UInt64*)ptr = item->GetAsU64();
+		break;
+	case ItemType::BOOL:
+		*(Bool*)ptr = item->GetAsBool();
+		break;
+	case ItemType::Null:
+		*(void**)ptr = 0;
+	case ItemType::Str:
+		if (item->GetItemType() == ItemType::Null)
+		{
+			*(Text::String**)ptr = 0;
+		}
+		else if (item->GetItemType() == ItemType::Str)
+		{
+			*(Text::String**)ptr = item->GetItemValue().str->Clone();
+		}
+		else
+		{
+			Text::StringBuilderUTF8 sb;
+			item->GetAsString(&sb);
+			*(Text::String**)ptr = Text::String::NewNotNull(sb.ToString());
+		}
+		break;
+	case ItemType::Date:
+		if (item->GetItemType() == ItemType::Date)
+		{
+			*(Data::DateTime**)ptr = item->GetAndRemoveDate();
+		}
+		else
+		{
+			*(Data::DateTime**)ptr = item->GetAsNewDate();
+		}
+		break;
+	case ItemType::ByteArr:
+		if (item->GetItemType() == ItemType::ByteArr)
+		{
+			*(Data::ReadonlyArray<UInt8>**)ptr = item->GetAndRemoveByteArr();
+		}
+		else
+		{
+			*(Data::ReadonlyArray<UInt8>**)ptr = item->GetAsNewByteArr();
+		}
+		break;
+	case ItemType::Vector:
+		if (item->GetItemType() == ItemType::Vector)
+		{
+			*(Math::Vector2D**)ptr = item->GetAndRemoveVector();
+		}
+		else
+		{
+			*(Math::Vector2D**)ptr = item->GetAsNewVector();
+		}
+		break;
+	case ItemType::UUID:
+		if (item->GetItemType() == ItemType::UUID)
+		{
+			*(Data::UUID**)ptr = item->GetAndRemoveUUID();
+		}
+		else
+		{
+			*(Data::UUID**)ptr = item->GetAsNewUUID();
+		}
 		break;
 	case ItemType::Unknown:
 	default:

@@ -12,32 +12,23 @@ void Data::Class::FreeFieldInfo(FieldInfo *field)
 Data::Class::Class(void *refObj)
 {
 	this->refObj = refObj;
-	NEW_CLASS(this->fields, Data::StringMap<FieldInfo*>());
+	NEW_CLASS(this->fields, Data::ArrayList<FieldInfo*>());
 }
 
 Data::Class::~Class()
 {
-	Data::ArrayList<FieldInfo*> *fieldList = this->fields->GetValues();
-	LIST_FREE_FUNC(fieldList, FreeFieldInfo);
+	LIST_FREE_FUNC(this->fields, FreeFieldInfo);
 	DEL_CLASS(this->fields);
 }
 
 UOSInt Data::Class::AddField(const UTF8Char *name, OSInt ofst, Data::VariItem::ItemType itemType)
 {
-	FieldInfo *field = this->fields->Get(name);
-	if (field == 0)
-	{
-		field = MemAlloc(FieldInfo, 1);
-		field->name = Text::String::NewNotNull(name);
-		field->ofst = ofst;
-		field->itemType = itemType;
-		this->fields->Put(field->name, field);
-		return Data::VariItem::GetItemSize(itemType);
-	}
-	else
-	{
-		return 0;
-	}
+	FieldInfo *field = MemAlloc(FieldInfo, 1);
+	field->name = Text::String::NewNotNull(name);
+	field->ofst = ofst;
+	field->itemType = itemType;
+	this->fields->Add(field);
+	return Data::VariItem::GetItemSize(itemType);
 }
 
 Bool Data::Class::AddField(const UTF8Char *name, UInt8 *val)
@@ -127,7 +118,7 @@ UOSInt Data::Class::GetFieldCount()
 
 Text::String *Data::Class::GetFieldName(UOSInt index)
 {
-	FieldInfo *field = this->fields->GetValues()->GetItem(index);
+	FieldInfo *field = this->fields->GetItem(index);
 	if (field)
 	{
 		return field->name;
@@ -137,7 +128,7 @@ Text::String *Data::Class::GetFieldName(UOSInt index)
 
 Data::VariItem::ItemType Data::Class::GetFieldType(UOSInt index)
 {
-	FieldInfo *field = this->fields->GetValues()->GetItem(index);
+	FieldInfo *field = this->fields->GetItem(index);
 	if (field)
 	{
 		return field->itemType;
@@ -147,7 +138,7 @@ Data::VariItem::ItemType Data::Class::GetFieldType(UOSInt index)
 
 Data::VariItem *Data::Class::GetNewValue(UOSInt index, void *obj)
 {
-	FieldInfo *field = this->fields->GetValues()->GetItem(index);
+	FieldInfo *field = this->fields->GetItem(index);
 	if (field == 0)
 	{
 		return 0;
@@ -158,7 +149,7 @@ Data::VariItem *Data::Class::GetNewValue(UOSInt index, void *obj)
 
 Bool Data::Class::GetValue(Data::VariItem *itm, UOSInt index, void *obj)
 {
-	FieldInfo *field = this->fields->GetValues()->GetItem(index);
+	FieldInfo *field = this->fields->GetItem(index);
 	if (field == 0)
 	{
 		return false;
@@ -170,7 +161,7 @@ Bool Data::Class::GetValue(Data::VariItem *itm, UOSInt index, void *obj)
 
 Bool Data::Class::SetField(void *obj, UOSInt index, Data::VariItem *item)
 {
-	FieldInfo *field = this->fields->GetValues()->GetItem(index);
+	FieldInfo *field = this->fields->GetItem(index);
 	if (field == 0 || item == 0)
 	{
 		return false;
@@ -180,14 +171,25 @@ Bool Data::Class::SetField(void *obj, UOSInt index, Data::VariItem *item)
 	return true;
 }
 
+Bool Data::Class::SetFieldClearItem(void *obj, UOSInt index, Data::VariItem *item)
+{
+	FieldInfo *field = this->fields->GetItem(index);
+	if (field == 0 || item == 0)
+	{
+		return false;
+	}
+	void *valPtr = (void*)(field->ofst + (OSInt)obj);
+	Data::VariItem::SetPtrAndNotKeep(valPtr, field->itemType, item);
+	return true;
+}
+
 Bool Data::Class::Equals(void *obj1, void *obj2)
 {
-	Data::ArrayList<FieldInfo*> *fieldList = this->fields->GetValues();
-	UOSInt i = fieldList->GetCount();
+	UOSInt i = this->fields->GetCount();
 	FieldInfo *field;
 	while (i-- > 0)
 	{
-		field = fieldList->GetItem(i);
+		field = this->fields->GetItem(i);
 		void *valPtr1 = (void*)(field->ofst + (OSInt)obj1);
 		void *valPtr2 = (void*)(field->ofst + (OSInt)obj2);
 		if (!Data::VariItem::PtrEquals(valPtr1, valPtr2, field->itemType))
@@ -208,7 +210,7 @@ void Data::Class::ToCppClassHeader(const UTF8Char *clsName, UOSInt tabLev, Text:
 	sb->Append((const UTF8Char*)"{\r\n");
 	sb->AppendChar('\t', tabLev);
 	sb->Append((const UTF8Char*)"private:\r\n");
-	Data::ArrayList<FieldInfo *> *fieldList = this->fields->GetValues();
+	Data::ArrayList<FieldInfo *> *fieldList = this->fields;
 	FieldInfo *field;
 	UOSInt i;
 	UOSInt j;
@@ -276,7 +278,7 @@ void Data::Class::ToCppClassSource(const UTF8Char *clsPrefix, const UTF8Char *cl
 	{
 		clsPrefix = (const UTF8Char*)"";
 	}
-	Data::ArrayList<FieldInfo *> *fieldList = this->fields->GetValues();
+	Data::ArrayList<FieldInfo *> *fieldList = this->fields;
 	FieldInfo *field;
 	UOSInt i;
 	UOSInt j;

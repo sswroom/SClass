@@ -126,16 +126,16 @@ template <class T> DB::DBDataFile<T>::DBDataFile(const UTF8Char *fileName, Data:
 	{
 		return;
 	}
+	UOSInt k = 0;
+	UOSInt l = cls->GetFieldCount();
+	this->recordBuff = MemAlloc(UInt8, 65536);
+	this->colTypes = MemAlloc(Data::VariItem::ItemType, l);
 	if (this->fs->GetPosition() == 0)
 	{
-		this->recordBuff = MemAlloc(UInt8, 65536);
 		this->recordBuff[0] = 'S';
 		this->recordBuff[1] = 'M';
 		this->recordBuff[2] = 'D';
 		this->recordBuff[3] = 'f';
-		UOSInt k = 0;
-		UOSInt l = cls->GetFieldCount();
-		this->colTypes = MemAlloc(Data::VariItem::ItemType, l);
 		while (k < l)
 		{
 			this->recordBuff[k + 4] = (UInt8)(this->colTypes[k] = cls->GetFieldType(k));
@@ -143,6 +143,14 @@ template <class T> DB::DBDataFile<T>::DBDataFile(const UTF8Char *fileName, Data:
 		}
 		this->recordBuff[l + 4] = 0xff;
 		this->fs->Write(this->recordBuff, l + 5);
+	}
+	else
+	{
+		while (k < l)
+		{
+			this->colTypes[k] = cls->GetFieldType(k);
+			k++;
+		}
 	}
 	NEW_CLASS(this->cstm, IO::BufferedOutputStream(this->fs, 32768));
 }
@@ -481,7 +489,6 @@ template <class T> Bool DB::DBDataFile<T>::LoadFile(const UTF8Char *fileName, Da
 						case Data::VariItem::ItemType::Str:
 							if (buff[m2] == 0xff)
 							{
-								item.SetNull();
 								m2 += 1;
 							}
 							else
@@ -490,16 +497,15 @@ template <class T> Bool DB::DBDataFile<T>::LoadFile(const UTF8Char *fileName, Da
 								Text::String *s = Text::String::New(&buff[m2], m3);
 								item.SetStr(s);
 								s->Release();
+								cls->SetField(obj, k, &item);
 								m2 += m3;
 							}
-							cls->SetField(obj, k, &item);
 							break;
 						case Data::VariItem::ItemType::Date:
 							{
 								Int64 ticks = ReadInt64(&buff[m2]);
 								if (ticks == -1)
 								{
-									item.SetNull();
 								}
 								else
 								{
@@ -507,24 +513,23 @@ template <class T> Bool DB::DBDataFile<T>::LoadFile(const UTF8Char *fileName, Da
 									NEW_CLASS(dt, Data::DateTime());
 									dt->SetTicks(ticks);
 									item.SetDateDirect(dt);
+									cls->SetFieldClearItem(obj, k, &item);
 								}
-								cls->SetField(obj, k, &item);
 								m2 += 8;
 							}
 							break;
 						case Data::VariItem::ItemType::ByteArr:
 							if (buff[m2] == 0xff)
 							{
-								item.SetNull();
 								m2 += 1;
 							}
 							else
 							{
 								m2 = ReadInt(buff, m2, &m3);
 								item.SetByteArr(&buff[m2], m3);
+								cls->SetFieldClearItem(obj, k, &item);
 								m2 += m3;
 							}
-							cls->SetField(obj, k, &item);
 							break;
 						case Data::VariItem::ItemType::Vector:
 							//////////////////////////////////
@@ -534,15 +539,13 @@ template <class T> Bool DB::DBDataFile<T>::LoadFile(const UTF8Char *fileName, Da
 								Data::UUID *uuid;
 								NEW_CLASS(uuid, Data::UUID(&buff[m2]));
 								item.SetUUIDDirect(uuid);
-								cls->SetField(obj, k, &item);
+								cls->SetFieldClearItem(obj, k, &item);
 								m2 += 16;
 							}
 							break;
 						case Data::VariItem::ItemType::Null:
 						case Data::VariItem::ItemType::Unknown:
 						default:
-							item.SetNull();
-							cls->SetField(obj, k, &item);
 							m2 += 1;
 							break;
 						}

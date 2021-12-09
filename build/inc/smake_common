@@ -1239,8 +1239,8 @@ DB/DBTool.h: ../../src/DB/DBTool.cpp
 @DBTool.o
 DB/DBUtil.h: ../../src/DB/DBUtil.cpp
 @DBUtil.o
-DB/JDBCHandler.h: ../../src/DB/JDBCHandler.cpp
-@JDBCHandler.o
+DB/JavaDBUtil.h: ../../src/DB/JavaDBUtil.cpp
+@JavaDBUtil.o
 DB/MSSQLConn.h: ../../src/DB/MSSQLConn.cpp
 @MSSQLConn.o
 DB/MySQLMaintance.h: ../../src/DB/MySQLMaintance.cpp
@@ -3911,7 +3911,7 @@ DBReader.o: ../../src/DB/DBReader.cpp
 DBRow.o: ../../src/DB/DBRow.cpp
 DBTool.o: ../../src/DB/DBTool.cpp
 DBUtil.o: ../../src/DB/DBUtil.cpp
-JDBCHandler.o: ../../src/DB/JDBCHandler.cpp
+JavaDBUtil.o: ../../src/DB/JavaDBUtil.cpp
 MSSQLConn.o: ../../src/DB/MSSQLConn.cpp
 MySQLMaintance.o: ../../src/DB/MySQLMaintance.cpp
 PageRequest.o: ../../src/DB/PageRequest.cpp

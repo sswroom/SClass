@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "Data/ArrayListStrUTF8.h"
 #include "DB/ColDef.h"
+#include "DB/JavaDBUtil.h"
 #include "Math/Math.h"
 #include "SSWR/AVIRead/AVIRChartForm.h"
 #include "SSWR/AVIRead/AVIRDBForm.h"
@@ -15,6 +16,7 @@ typedef enum
 	MNU_FILE_SAVE = 100,
 	MNU_TABLE_CPP_HEADER,
 	MNU_TABLE_CPP_SOURCE,
+	MNU_TABLE_JAVA,
 	MNU_CHART_LINE,
 	MNU_DATABASE_START = 1000
 } MenuEvent;
@@ -262,6 +264,7 @@ SSWR::AVIRead::AVIRDBForm::AVIRDBForm(UI::GUIClientControl *parent, UI::GUICore 
 	mnu = this->mnuMain->AddSubMenu((const UTF8Char*)"&Table");
 	mnu->AddItem((const UTF8Char*)"Copy as CPP Header", MNU_TABLE_CPP_HEADER, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem((const UTF8Char*)"Copy as CPP Source", MNU_TABLE_CPP_SOURCE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu->AddItem((const UTF8Char*)"Copy as Java Entity", MNU_TABLE_JAVA, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu = this->mnuMain->AddSubMenu((const UTF8Char*)"&Chart");
 	mnu->AddItem((const UTF8Char*)"&Line Chart", MNU_CHART_LINE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	NEW_CLASS(this->dbNames, Data::ArrayList<const UTF8Char*>());
@@ -393,6 +396,15 @@ void SSWR::AVIRead::AVIRDBForm::EventMenuClicked(UInt16 cmdId)
 				Win32::Clipboard::SetString(this->GetHandle(), sb.ToString());
 				DEL_CLASS(cls);
 			}
+		}
+		break;
+	case MNU_TABLE_JAVA:
+		{
+			Text::String *tableName = this->lbTable->GetSelectedItemTextNew();
+			Text::StringBuilderUTF8 sb;
+			DB::JavaDBUtil::ToJavaEntity(&sb, tableName, this->dbt);
+			tableName->Release();
+			Win32::Clipboard::SetString(this->GetHandle(), sb.ToString());
 		}
 		break;
 	}

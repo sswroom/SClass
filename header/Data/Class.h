@@ -1,6 +1,6 @@
 #ifndef _SM_DATA_CLASS
 #define _SM_DATA_CLASS
-#include "Data/StringMap.h"
+#include "Data/ArrayList.h"
 #include "Data/VariItem.h"
 #include "Text/StringBuilderUTF.h"
 
@@ -17,7 +17,7 @@ namespace Data
 		};
 	private:
 		void *refObj;
-		Data::StringMap<FieldInfo *> *fields;
+		Data::ArrayList<FieldInfo *> *fields;
 
 		void FreeFieldInfo(FieldInfo *field);
 	public:
@@ -48,6 +48,7 @@ namespace Data
 		Data::VariItem *GetNewValue(UOSInt index, void *obj);
 		Bool GetValue(Data::VariItem *itm, UOSInt index, void *obj);
 		Bool SetField(void *obj, UOSInt index, Data::VariItem *item);
+		Bool SetFieldClearItem(void *obj, UOSInt index, Data::VariItem *item);
 		Bool Equals(void *obj1, void *obj2);
 
 		void ToCppClassHeader(const UTF8Char *clsName, UOSInt tabLev, Text::StringBuilderUTF *sb);

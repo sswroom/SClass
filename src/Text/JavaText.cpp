@@ -37,11 +37,11 @@ const UTF8Char *Text::JavaText::GetJavaTypeName(DB::DBUtil::ColType colType, Boo
 	case DB::DBUtil::CT_Bool:
 		if (notNull)
 		{
-			return (const UTF8Char*)"int";
+			return (const UTF8Char*)"boolean";
 		}
 		else
 		{
-			return (const UTF8Char*)"Integer";
+			return (const UTF8Char*)"Boolean";
 		}
 	case DB::DBUtil::CT_Byte:
 		if (notNull)

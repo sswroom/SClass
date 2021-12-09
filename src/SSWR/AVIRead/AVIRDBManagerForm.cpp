@@ -3,6 +3,7 @@
 #include "Data/Sort/ArtificialQuickSortCmp.h"
 #include "DB/ColDef.h"
 #include "DB/DBManager.h"
+#include "DB/JavaDBUtil.h"
 #include "Math/Math.h"
 #include "SSWR/AVIRead/AVIRAccessConnForm.h"
 #include "SSWR/AVIRead/AVIRDBManagerForm.h"
@@ -10,8 +11,7 @@
 #include "SSWR/AVIRead/AVIRMSSQLConnForm.h"
 #include "SSWR/AVIRead/AVIRODBCDSNForm.h"
 #include "SSWR/AVIRead/AVIRODBCStrForm.h"
-#include "Text/JavaText.h"
-#include "Text/JSText.h"
+#include "Text/CharUtil.h"
 #include "Text/MyString.h"
 #include "UI/MessageDialog.h"
 #include "Win32/Clipboard.h"
@@ -30,7 +30,9 @@ typedef enum
 	MNU_CONN_REMOVE,
 	MNU_CONN_COPY_STR,
 
-	MNU_TABLE_JAVA
+	MNU_TABLE_JAVA,
+	MNU_TABLE_CPP_HEADER,
+	MNU_TABLE_CPP_SOURCE
 } MenuEvent;
 
 void __stdcall SSWR::AVIRead::AVIRDBManagerForm::OnConnSelChg(void *userObj)
@@ -293,41 +295,28 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateResult(DB::DBReader *r)
 	MemFree(colSize);
 }
 
-void SSWR::AVIRead::AVIRDBManagerForm::AppendJavaCol(Text::StringBuilderUTF *sb, DB::ColDef *colDef)
+Data::Class *SSWR::AVIRead::AVIRDBManagerForm::CreateTableClass(const UTF8Char *tableName)
 {
-	if (colDef->IsPK())
+	if (this->currDB)
 	{
-		sb->Append((const UTF8Char*)"\t@Id\r\n");
-		if (colDef->IsAutoInc())
+		DB::TableDef *tab = this->currDB->GetTableDef(tableName);
+		if (tab)
 		{
-			sb->Append((const UTF8Char*)"\t@GeneratedValue(strategy = GenerationType.IDENTITY)\r\n");
+			Data::Class *cls = tab->CreateTableClass();
+			DEL_CLASS(tab);
+			return cls;
+		}
+
+		DB::DBReader *r = this->currDB->GetTableData(tableName, 0, 0, 0, 0, 0);
+		if (r)
+		{
+			Data::Class *cls = r->CreateClass();
+			this->currDB->CloseReader(r);
+			return cls;
 		}
 	}
-	if (colDef->GetColName()->HasUpperCase())
-	{
-		sb->Append((const UTF8Char*)"\t@Column(name=");
-		const UTF8Char *csptr = Text::JSText::ToNewJSTextDQuote(colDef->GetColName()->v);
-		sb->Append(csptr);
-		Text::JSText::FreeNewText(csptr);
-		sb->Append((const UTF8Char*)")\r\n");
-		sb->Append((const UTF8Char*)"\tprivate ");
-		sb->Append(Text::JavaText::GetJavaTypeName(colDef->GetColType(), colDef->IsNotNull()));
-		sb->AppendChar(' ', 1);
-		Text::String *s = colDef->GetColName()->ToLower();
-		Text::JavaText::ToJavaName(sb, s->v, false);
-		s->Release();
-		sb->Append((const UTF8Char*)";\r\n");
-	}
-	else
-	{
-		sb->Append((const UTF8Char*)"\tprivate ");
-		sb->Append(Text::JavaText::GetJavaTypeName(colDef->GetColType(), colDef->IsNotNull()));
-		sb->AppendChar(' ', 1);
-		Text::JavaText::ToJavaName(sb, colDef->GetColName()->v, false);
-		sb->Append((const UTF8Char*)";\r\n");
-	}
+	return 0;
 }
-
 
 SSWR::AVIRead::AVIRDBManagerForm::AVIRDBManagerForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
@@ -403,6 +392,8 @@ SSWR::AVIRead::AVIRDBManagerForm::AVIRDBManagerForm(UI::GUIClientControl *parent
 
 	NEW_CLASS(this->mnuTable, UI::GUIPopupMenu());
 	this->mnuTable->AddItem((const UTF8Char *)"Copy as Java Entity", MNU_TABLE_JAVA, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	this->mnuTable->AddItem((const UTF8Char *)"Copy as C++ Header", MNU_TABLE_CPP_HEADER, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	this->mnuTable->AddItem((const UTF8Char *)"Copy as C++ Source", MNU_TABLE_CPP_SOURCE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	if (DB::DBManager::RestoreConn(DBCONNFILE, this->dbList, this->log, this->core->GetSocketFactory()))
 	{
 		Text::StringBuilderUTF8 sb;
@@ -443,6 +434,8 @@ SSWR::AVIRead::AVIRDBManagerForm::~AVIRDBManagerForm()
 
 void SSWR::AVIRead::AVIRDBManagerForm::EventMenuClicked(UInt16 cmdId)
 {
+	UTF8Char sbuff[512];
+	UTF8Char sbuff2[512];
 	switch (cmdId)
 	{
 	case MNU_CONN_ODBCDSN:
@@ -531,72 +524,43 @@ void SSWR::AVIRead::AVIRDBManagerForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_TABLE_JAVA:
 		{
-			Text::StringBuilderUTF8 sb;
-			UOSInt i;
-			const UTF8Char *csptr;
-			sb.Append((const UTF8Char*)"@Entity\r\n");
-			sb.Append((const UTF8Char*)"@Table(name=");
 			Text::String *tableName = this->lbTable->GetSelectedItemTextNew();
-			i = tableName->IndexOf('.');
-			Text::JSText::ToJSTextDQuote(&sb, &tableName->v[i + 1]);
-			if (i != INVALID_INDEX)
-			{
-				csptr = Text::StrCopyNewC(tableName->v, i);
-				sb.Append((const UTF8Char*)", schema=");
-				Text::JSText::ToJSTextDQuote(&sb, csptr);
-				Text::StrDelNew(csptr);
-			}
-			sb.Append((const UTF8Char*)")\r\n");
-			sb.Append((const UTF8Char*)"public class ");
-			if (Text::StrHasUpperCase(&tableName->v[i + 1]))
-			{
-				csptr = Text::StrCopyNew(&tableName->v[i + 1]);
-				Text::StrToLower((UTF8Char*)csptr, csptr);
-				Text::JavaText::ToJavaName(&sb, csptr, true);
-				Text::StrDelNew(csptr);
-			}
-			else
-			{
-				Text::JavaText::ToJavaName(&sb, &tableName->v[i + 1], true);
-			}
-			sb.Append((const UTF8Char*)"\r\n");
-			sb.Append((const UTF8Char*)"{\r\n");
-			DB::TableDef *tableDef = this->currDB->GetTableDef(tableName->v);
-			if (tableDef)
-			{
-				UOSInt j;
-				UOSInt k;
-				DB::ColDef *colDef;
-				j = 0;
-				k = tableDef->GetColCnt();
-				while (j < k)
-				{
-					colDef = tableDef->GetCol(j);
-					this->AppendJavaCol(&sb, colDef);
-					j++;
-				}
-			}
-			else
-			{
-				DB::DBReader *r = this->currDB->GetTableData(tableName->v, 0, 0, 0, 0, 0);
-				if (r)
-				{
-					DB::ColDef colDef((const UTF8Char*)"");
-					UOSInt j = 0;
-					UOSInt k = r->ColCount();
-					while (j < k)
-					{
-						if (r->GetColDef(j, &colDef))
-						{
-							this->AppendJavaCol(&sb, &colDef);
-						}
-						j++;
-					}
-				}
-			}
-			sb.Append((const UTF8Char*)"}\r\n");
+			Text::StringBuilderUTF8 sb;
+			DB::JavaDBUtil::ToJavaEntity(&sb, tableName, this->currDB);
 			tableName->Release();
 			Win32::Clipboard::SetString(this->GetHandle(), sb.ToString());
+		}
+		break;
+	case MNU_TABLE_CPP_HEADER:
+		if (this->lbTable->GetSelectedItemText(sbuff))
+		{
+			Data::Class *cls = this->CreateTableClass(sbuff);
+			if (cls)
+			{
+				UOSInt i = Text::StrLastIndexOf(sbuff, '.');
+				DB::DBUtil::DB2FieldName(sbuff2, &sbuff[i + 1]);
+				sbuff2[0] = Text::CharUtil::ToUpper(sbuff2[0]);
+				Text::StringBuilderUTF8 sb;
+				cls->ToCppClassHeader(sbuff2, 0, &sb);
+				Win32::Clipboard::SetString(this->GetHandle(), sb.ToString());
+				DEL_CLASS(cls);
+			}
+		}
+		break;
+	case MNU_TABLE_CPP_SOURCE:
+		if (this->lbTable->GetSelectedItemText(sbuff))
+		{
+			Data::Class *cls = this->CreateTableClass(sbuff);
+			if (cls)
+			{
+				UOSInt i = Text::StrLastIndexOf(sbuff, '.');
+				DB::DBUtil::DB2FieldName(sbuff2, &sbuff[i + 1]);
+				sbuff2[0] = Text::CharUtil::ToUpper(sbuff2[0]);
+				Text::StringBuilderUTF8 sb;
+				cls->ToCppClassSource(0, sbuff2, 0, &sb);
+				Win32::Clipboard::SetString(this->GetHandle(), sb.ToString());
+				DEL_CLASS(cls);
+			}
 		}
 		break;
 	}
