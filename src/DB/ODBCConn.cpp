@@ -270,8 +270,10 @@ Bool DB::ODBCConn::Connect(Text::String *connStr)
 	}
 //	printf("ODBC Connect: %s\r\n", connStr);
 	SQLSMALLINT outSize;
-	SQLWCHAR *connBuff = MemAlloc(SQLWCHAR, Text::StrUTF8_UTF16Cnt(connStr->v) + 1);
-	SQLWCHAR *connEnd = Text::StrUTF8_UTF16(connBuff, connStr->v, 0);
+	SQLWCHAR *connBuff = MemAlloc(SQLWCHAR, Text::StrUTF8_UTF16CntC(connStr->v, connStr->leng) + 2);
+	SQLWCHAR *connEnd = Text::StrUTF8_UTF16C(connBuff, connStr->v, connStr->leng, 0);
+	connEnd[0] = 0;
+	connEnd[1] = 0;
 	ret = SQLDriverConnectW(hConn, 0, connBuff, (SQLSMALLINT)(connEnd - connBuff), NULL, 0, &outSize, 0);
 	MemFree(connBuff);
 

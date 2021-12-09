@@ -134,7 +134,7 @@ void Media::GDIPrintDocument::SetDocName(Text::String *docName)
 void Media::GDIPrintDocument::SetDocName(const UTF8Char *docName)
 {
 	SDEL_STRING(this->docName);
-	this->docName = Text::String::New(docName);
+	this->docName = Text::String::NewOrNull(docName);
 }
 
 void Media::GDIPrintDocument::SetNextPagePaperSizeMM(Double width, Double height)
@@ -289,7 +289,7 @@ Media::Printer::Printer(const WChar *printerName, UInt8 *devMode, UOSInt devMode
 {
 	this->devMode = 0;
 	this->hPrinter = 0;
-	this->printerName = Text::String::New(printerName);
+	this->printerName = Text::String::NewNotNull(printerName);
 	if (OpenPrinterW((LPWSTR)printerName, &hPrinter, 0) == 0)
 	{
 		return;
@@ -327,7 +327,7 @@ Media::Printer::Printer(const UTF8Char *printerName)
 {
 	this->devMode = 0;
 	this->hPrinter = 0;
-	this->printerName = Text::String::New(printerName);
+	this->printerName = Text::String::NewNotNull(printerName);
 	const WChar *wptr = Text::StrToWCharNew(printerName);
 	if (OpenPrinterW((LPWSTR)wptr, &hPrinter, 0) == 0)
 	{
