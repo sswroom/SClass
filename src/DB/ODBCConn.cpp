@@ -1358,7 +1358,6 @@ Bool DB::ODBCReader::ReadNext()
 		{
 			Text::StringBuilderUTF8 *sb;
 			Data::DateTime *dt;
-			WChar sbuff[1];
 			UTF16Char *sptr;
 			SQLLEN len;
 			SQLRETURN ret;
@@ -1442,13 +1441,19 @@ Bool DB::ODBCReader::ReadNext()
 								}
 								UOSInt cnt = Text::StrUTF16_UTF8CntC(wbuff, (UOSInt)len >> 1);
 								sb->AllocLeng(cnt);
-								UTF8Char *endPtr = Text::StrUTF16_UTF8C(sb->ToString(), wbuff, (UOSInt)len >> 1);
+								UTF8Char *endPtr = Text::StrUTF16_UTF8C(sb->GetEndPtr(), wbuff, (UOSInt)len >> 1);
 								*endPtr = 0;
 								sb->SetEndPtr(endPtr);
 								this->colDatas[i].isNull = false;
 							}
 							else
 							{
+								UOSInt cnt = Text::StrUTF16_UTF8CntC(wbuff, 255);
+								sb->AllocLeng(cnt);
+								UTF8Char *endPtr = Text::StrUTF16_UTF8C(sb->GetEndPtr(), wbuff, 255);
+								*endPtr = 0;
+								sb->SetEndPtr(endPtr);
+
 								if (len == -4) //SQL_NO_TOTAL
 								{
 									len = 2048;
@@ -1462,9 +1467,9 @@ Bool DB::ODBCReader::ReadNext()
 								}
 								if (ret == SQL_SUCCESS || ret == SQL_SUCCESS_WITH_INFO)
 								{
-									UOSInt cnt = Text::StrUTF16_UTF8CntC(sptr, (UOSInt)len >> 1);
+									cnt = Text::StrUTF16_UTF8CntC(sptr, (UOSInt)len >> 1);
 									sb->AllocLeng(cnt);
-									UTF8Char *endPtr = Text::StrUTF16_UTF8C(sb->ToString(), sptr, (UOSInt)len >> 1);
+									endPtr = Text::StrUTF16_UTF8C(sb->GetEndPtr(), sptr, (UOSInt)len >> 1);
 									*endPtr = 0;
 									sb->SetEndPtr(endPtr);
 									this->colDatas[i].isNull = false;

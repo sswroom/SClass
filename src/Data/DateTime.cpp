@@ -612,7 +612,7 @@ Bool Data::DateTime::SetValue(const Char *dateStr)
 				{
 					if (Text::StrSplit(strs, 3, strs2[j], ':') == 2)
 					{
-						this->tzQhr = (Int8)(-((Text::StrToUInt32(&strs[0][1]) << 2) + (Text::StrToUInt32(strs[1]) / 15)));
+						this->tzQhr = (Int8)(-(Int32)((Text::StrToUInt32(&strs[0][1]) << 2) + (Text::StrToUInt32(strs[1]) / 15)));
 					}
 					else if (Text::StrCharCnt(strs2[j]) == 5)
 					{
