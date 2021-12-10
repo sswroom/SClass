@@ -388,8 +388,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	const UTF8Char *mysqlPWD;
 	mysqlServer = (const UTF8Char*)"192.168.0.15";
 	mysqlDB = (const UTF8Char*)"organism";
-	mysqlUID = (const UTF8Char*)"sswr";
-	mysqlPWD = (const UTF8Char*)"simon5";
+	mysqlUID = (const UTF8Char*)"";
+	mysqlPWD = (const UTF8Char*)"";
 
 	IO::LogTool log;
 	Net::SocketFactory *sockf;

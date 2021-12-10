@@ -21,7 +21,7 @@ namespace Media
 		UInt8 *luTable;
 		DataFormat fmt;
 
-		void Init();
+		void Init(UOSInt inputCh, UOSInt inputLev, UOSInt outputCh, DataFormat fmt);
 	public:
 		LUT(UOSInt inputCh, UOSInt inputLev, UOSInt outputCh, DataFormat fmt, Text::String *sourceName);
 		LUT(UOSInt inputCh, UOSInt inputLev, UOSInt outputCh, DataFormat fmt, const UTF8Char *sourceName);

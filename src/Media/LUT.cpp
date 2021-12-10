@@ -5,7 +5,7 @@
 #include "Media/LUT.h"
 #include "Text/MyString.h"
 
-void Media::LUT::Init()
+void Media::LUT::Init(UOSInt inputCh, UOSInt inputLev, UOSInt outputCh, DataFormat fmt)
 {
 	this->inputCh = inputCh;
 	this->inputLev = inputLev;
@@ -41,12 +41,12 @@ void Media::LUT::Init()
 
 Media::LUT::LUT(UOSInt inputCh, UOSInt inputLev, UOSInt outputCh, DataFormat fmt, Text::String *sourceName) : IO::ParsedObject(sourceName)
 {
-	this->Init();
+	this->Init(inputCh, inputLev, outputCh, fmt);
 }
 
 Media::LUT::LUT(UOSInt inputCh, UOSInt inputLev, UOSInt outputCh, DataFormat fmt, const UTF8Char *sourceName) : IO::ParsedObject(sourceName)
 {
-	this->Init();
+	this->Init(inputCh, inputLev, outputCh, fmt);
 }
 
 Media::LUT::~LUT()
