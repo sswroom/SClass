@@ -62,17 +62,17 @@ Bool Manage::Process::GetFilename(Text::StringBuilderUTF *sb)
 	return false;
 }
 
-OSInt Manage::Process::GetMemorySize()
+UOSInt Manage::Process::GetMemorySize()
 {
 	return 0;
 }
 
-Bool Manage::Process::SetMemorySize(OSInt minSize, OSInt maxSize)
+Bool Manage::Process::SetMemorySize(UOSInt minSize, UOSInt maxSize)
 {
 	return false;
 }
 
-OSInt Manage::Process::GetThreadIds(Data::ArrayList<UInt32> *threadList)
+UOSInt Manage::Process::GetThreadIds(Data::ArrayList<UInt32> *threadList)
 {
 	return 0;
 }
@@ -83,22 +83,22 @@ void *Manage::Process::GetHandle()
 }
 
 
-OSInt Manage::Process::GetModules(Data::ArrayList<Manage::ModuleInfo *> *modList)
+UOSInt Manage::Process::GetModules(Data::ArrayList<Manage::ModuleInfo *> *modList)
 {
 	return 0;
 }
 
-OSInt Manage::Process::GetThreads(Data::ArrayList<Manage::ThreadInfo *> *threadList)
+UOSInt Manage::Process::GetThreads(Data::ArrayList<Manage::ThreadInfo *> *threadList)
 {
 	return 0;
 }
 
-OSInt Manage::Process::GetHeapLists(Data::ArrayList<Int32> *heapList)
+UOSInt Manage::Process::GetHeapLists(Data::ArrayList<UInt32> *heapList)
 {
 	return 0;
 }
 
-OSInt Manage::Process::GetHeaps(Data::ArrayList<HeapInfo*> *heapList, Int32 heapListId, OSInt maxCount)
+UOSInt Manage::Process::GetHeaps(Data::ArrayList<HeapInfo*> *heapList, UInt32 heapListId, UOSInt maxCount)
 {
 	return 0;
 
@@ -113,7 +113,7 @@ Bool Manage::Process::GetWorkingSetSize(UOSInt *minSize, UOSInt *maxSize)
 	return false;
 }
 
-Bool Manage::Process::GetMemoryInfo(OSInt *pageFault, OSInt *workingSetSize, OSInt *pagedPoolUsage, OSInt *nonPagedPoolUsage, OSInt *pageFileUsage)
+Bool Manage::Process::GetMemoryInfo(UOSInt *pageFault, UOSInt *workingSetSize, UOSInt *pagedPoolUsage, UOSInt *nonPagedPoolUsage, UOSInt *pageFileUsage)
 {
 	return false;
 }
@@ -202,21 +202,41 @@ UOSInt Manage::Process::ReadMemory(UInt64 addr, UInt8 *buff, UOSInt reqSize)
 	return reqSize;
 }
 
-void *Manage::Process::FindProcess(const WChar *processName)
+Manage::Process::FindProcSess *Manage::Process::FindProcess(const UTF8Char *processName)
 {
 	return 0;
 }
 
-WChar *Manage::Process::FindProcessNext(WChar *processNameBuff, void *sess, Manage::Process::ProcessInfo *info)
+Manage::Process::FindProcSess *Manage::Process::FindProcessW(const WChar *processName)
 {
 	return 0;
 }
 
-void Manage::Process::FindProcessClose(void *sess)
+UTF8Char *Manage::Process::FindProcessNext(UTF8Char *processNameBuff, FindProcSess *sess, Manage::Process::ProcessInfo *info)
+{
+	return 0;
+}
+
+WChar *Manage::Process::FindProcessNextW(WChar *processNameBuff, FindProcSess *sess, Manage::Process::ProcessInfo *info)
+{
+	return 0;
+}
+
+void Manage::Process::FindProcessClose(FindProcSess *sess)
 {
 }
 
-Int32 Manage::Process::ExecuteProcess(const WChar *cmd, Text::StringBuilderUTF *result)
+Int32 Manage::Process::ExecuteProcess(Text::String *cmd, Text::StringBuilderUTF *result)
+{
+	return -1;
+}
+
+Int32 Manage::Process::ExecuteProcess(const UTF8Char *cmd, Text::StringBuilderUTF *result)
+{
+	return -1;
+}
+
+Int32 Manage::Process::ExecuteProcessW(const WChar *cmd, Text::StringBuilderUTF *result)
 {
 	return -1;
 }
@@ -226,7 +246,7 @@ Bool Manage::Process::IsAlreadyStarted()
 	return false;
 }
 
-Bool Manage::Process::OpenPath(const WChar *path)
+Bool Manage::Process::OpenPath(const UTF8Char *path)
 {
 	return false;
 }
