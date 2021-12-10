@@ -66,3 +66,13 @@ UOSInt Crypto::Hash::CRC32RC::GetResultSize()
 {
 	return 4;
 }
+
+UInt32 Crypto::Hash::CRC32RC::GetValueU32()
+{
+	return ~this->currVal;
+}
+
+UInt32 Crypto::Hash::CRC32RC::CalcDirect(const UInt8 *buff, UOSInt buffSize)
+{
+	return ~CRC32R_Calc(buff, buffSize, this->crctab, 0xffffffff);
+}

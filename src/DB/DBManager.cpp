@@ -404,7 +404,7 @@ Bool DB::DBManager::StoreConn(const UTF8Char *fileName, Data::ArrayList<DB::DBTo
 		md5.Calc(keyBuff, 16);
 		md5.GetValue(&keyBuff[16]);
 		Crypto::Encrypt::AES256 aes(keyBuff);
-		UInt8 *outBuff = MemAlloc(UInt8, sb.GetCharCnt());
+		UInt8 *outBuff = MemAlloc(UInt8, sb.GetCharCnt() + aes.GetEncBlockSize());
 		outSize = aes.Encrypt(sb.ToString(), sb.GetCharCnt(), outBuff, 0);
 		fs->Write(outBuff, outSize);
 		MemFree(outBuff);

@@ -39,6 +39,7 @@ nodeps:
 @DateTimeTest
 @Float16Test
 @SortSpeed
+@StringMapTest
 @DBDataFileTest
 @FileGDBTest
 @MySQLCheck
@@ -271,6 +272,9 @@ Float16Test:
 @ConsoleStartup.o
 SortSpeed:
 @SortSpeed.o
+@ConsoleStartup.o
+StringMapTest:
+@StringMapTest.o
 @ConsoleStartup.o
 
 #DB
@@ -786,6 +790,7 @@ X509Test.o: ../../main/CryptoTest/X509Test.cpp
 DateTimeTest.o: ../../main/Data/DateTimeTest.cpp
 Float16Test.o: ../../main/Data/Float16Test.cpp
 SortSpeed.o: ../../main/Data/SortSpeed.cpp
+StringMapTest.o: ../../main/Data/StringMapTest.cpp
 DBDataFileTest.o: ../../main/DB/DBDataFileTest.cpp
 FileGDBTest.o: ../../main/DB/FileGDBTest.cpp
 MongoDBTest.o: ../../main/DB/MongoDBTest.cpp
@@ -1114,6 +1119,7 @@ Data/ArrayListUInt64.h: ../../src/Data/ArrayListUInt64.cpp
 Data/ArrayMap.h:
 Data/BinTool.h: ../../src/Data/BinTool.cpp
 @BinTool.o
+Data/BTreeMap.h:
 Data/BTreeUTF8Map.h:
 Data/ByteTool.h: ../../src/Data/ByteTool.cpp
 @ByteTool.o
@@ -1153,6 +1159,7 @@ Data/ReadingList.h:
 Data/ReadonlyArray.h:
 Data/SortableArrayList.h:
 Data/StringCMap.h:
+Data/StringHashMap.h:
 Data/StringMap.h:
 Data/StringUTF8Map.h:
 Data/SyncArrayList.h:

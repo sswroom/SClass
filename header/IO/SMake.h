@@ -2,6 +2,7 @@
 #define _SM_IO_SMAKE
 #include "Data/ArrayList.h"
 #include "Data/ArrayListStrUTF8.h"
+#include "Data/BTreeMap.h"
 #include "Data/StringUTF8Map.h"
 #include "IO/ParsedObject.h"
 #include "IO/Writer.h"
