@@ -996,6 +996,14 @@ void Manage::Process::FindProcessClose(Manage::Process::FindProcSess *pfsess)
 	MemFree(pfsess);
 }
 
+Int32 Manage::Process::ExecuteProcess(Text::String *cmd, Text::StringBuilderUTF *result)
+{
+	const WChar *wptr = Text::StrToWCharNew(cmd->v);
+	Int32 ret = ExecuteProcessW(wptr, result);
+	Text::StrDelNew(wptr);
+	return ret;
+}
+
 Int32 Manage::Process::ExecuteProcess(const UTF8Char *cmd, Text::StringBuilderUTF *result)
 {
 	const WChar *wptr = Text::StrToWCharNew(cmd);

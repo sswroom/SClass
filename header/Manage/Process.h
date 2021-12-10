@@ -96,6 +96,7 @@ namespace Manage
 		static UTF8Char *FindProcessNext(UTF8Char *processNameBuff, FindProcSess *sess, ProcessInfo *info);
 		static WChar *FindProcessNextW(WChar *processNameBuff, FindProcSess *sess, ProcessInfo *info);
 		static void FindProcessClose(FindProcSess *sess);
+		static Int32 ExecuteProcess(Text::String *cmdLine, Text::StringBuilderUTF *result);
 		static Int32 ExecuteProcess(const UTF8Char *cmdLine, Text::StringBuilderUTF *result);
 		static Int32 ExecuteProcessW(const WChar *cmdLine, Text::StringBuilderUTF *result);
 		static Bool IsAlreadyStarted();

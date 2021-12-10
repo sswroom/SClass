@@ -187,18 +187,18 @@ Bool IO::SMake::LoadConfigFile(const UTF8Char *cfgFile)
 			cfg = cfgMap->Get(sptr1);
 			if (cfg)
 			{
-				Text::StrDelNew(cfg->value);
+				cfg->value->Release();
 				sb2.ClearStr();
 				AppendCfgItem(&sb2, sptr2);
-				cfg->value = Text::StrCopyNew(sb2.ToString());
+				cfg->value = Text::String::New(sb2.ToString(), sb2.GetLength());
 			}
 			else
 			{
 				cfg = MemAlloc(IO::SMake::ConfigItem, 1);
-				cfg->name = Text::StrCopyNew(sptr1);
+				cfg->name = Text::String::NewNotNull(sptr1);
 				sb2.ClearStr();
 				AppendCfgItem(&sb2, sptr2);
-				cfg->value = Text::StrCopyNew(sb2.ToString());
+				cfg->value = Text::String::New(sb2.ToString(), sb2.GetLength());
 				cfgMap->Put(cfg->name, cfg);
 			}
 		}
@@ -212,30 +212,30 @@ Bool IO::SMake::LoadConfigFile(const UTF8Char *cfgFile)
 			cfg = cfgMap->Get(sptr1);
 			if (cfg)
 			{
-				if (cfg->value[0])
+				if (cfg->value->leng > 0)
 				{
 					sb2.ClearStr();
 					sb2.Append(cfg->value);
 					sb2.AppendChar(' ', 1);
 					AppendCfgItem(&sb2, sptr2);
-					Text::StrDelNew(cfg->value);
-					cfg->value = Text::StrCopyNew(sb2.ToString());
+					cfg->value->Release();
+					cfg->value = Text::String::New(sb2.ToString(), sb2.GetLength());
 				}
 				else
 				{
-					Text::StrDelNew(cfg->value);
+					cfg->value->Release();
 					sb2.ClearStr();
 					AppendCfgItem(&sb2, sptr2);
-					cfg->value = Text::StrCopyNew(sb2.ToString());
+					cfg->value = Text::String::New(sb2.ToString(), sb2.GetLength());
 				}
 			}
 			else
 			{
 				cfg = MemAlloc(IO::SMake::ConfigItem, 1);
-				cfg->name = Text::StrCopyNew(sptr1);
+				cfg->name = Text::String::NewNotNull(sptr1);
 				sb2.ClearStr();
 				AppendCfgItem(&sb2, sptr2);
-				cfg->value = Text::StrCopyNew(sb2.ToString());
+				cfg->value = Text::String::New(sb2.ToString(), sb2.GetLength());
 				cfgMap->Put(cfg->name, cfg);
 			}
 		}
@@ -245,7 +245,7 @@ Bool IO::SMake::LoadConfigFile(const UTF8Char *cfgFile)
 			Text::StrTrim(sptr1);
 			if (prog)
 			{
-				prog->subItems->Add(Text::StrCopyNew(sptr1));
+				prog->subItems->Add(Text::String::NewNotNull(sptr1));
 			}
 		}
 		else if (sb.ToString()[0] == '!')
@@ -279,7 +279,7 @@ Bool IO::SMake::LoadConfigFile(const UTF8Char *cfgFile)
 							cfg = cfgMap->Get(sptr1);
 							if (cfg)
 							{
-								val1 = Text::StrToInt32(cfg->value);
+								val1 = cfg->value->ToInt32();
 							}
 						}
 						if (sptr1[i + 2] >= '0' && sptr1[i + 2] <= '9')
@@ -291,7 +291,7 @@ Bool IO::SMake::LoadConfigFile(const UTF8Char *cfgFile)
 							cfg = cfgMap->Get(&sptr1[i + 2]);
 							if (cfg)
 							{
-								val2 = Text::StrToInt32(cfg->value);
+								val2 = cfg->value->ToInt32();
 							}
 						}
 						if (val1 >= val2)
@@ -311,7 +311,7 @@ Bool IO::SMake::LoadConfigFile(const UTF8Char *cfgFile)
 				if (i != INVALID_INDEX && i > 1)
 				{
 					Text::StringBuilderUTF8 result;
-					const UTF8Char *cmd = Text::StrCopyNewC(sptr1 + 2, i - 2);
+					Text::String *cmd = Text::String::New(sptr1 + 2, i - 2);
 					Int32 ret;
 					if ((ret = Manage::Process::ExecuteProcess(cmd, &result)) != 0)
 					{
@@ -321,12 +321,12 @@ Bool IO::SMake::LoadConfigFile(const UTF8Char *cfgFile)
 					{
 						sptr1 += i + 1;
 					}
-					Text::StrDelNew(cmd);
+					cmd->Release();
 				}
 			}
 			if (valid && prog)
 			{
-				prog->libs->Add(Text::StrCopyNew(sptr1));
+				prog->libs->Add(Text::String::NewNotNull(sptr1));
 			}
 		}
 		else if (sb.ToString()[0] == '$')
@@ -340,7 +340,7 @@ Bool IO::SMake::LoadConfigFile(const UTF8Char *cfgFile)
 				if (i != INVALID_INDEX && i > 1)
 				{
 					Text::StringBuilderUTF8 result;
-					const UTF8Char *cmd = Text::StrCopyNewC(sptr1 + 2, (UOSInt)i - 2);
+					Text::String *cmd = Text::String::New(sptr1 + 2, (UOSInt)i - 2);
 					Int32 ret;
 					if ((ret = Manage::Process::ExecuteProcess(cmd, &result)) != 0)
 					{
@@ -350,7 +350,7 @@ Bool IO::SMake::LoadConfigFile(const UTF8Char *cfgFile)
 					{
 						sptr1 += i + 1;
 					}
-					Text::StrDelNew(cmd);
+					cmd->Release();
 				}
 			}
 			if (prog && valid)
@@ -359,7 +359,7 @@ Bool IO::SMake::LoadConfigFile(const UTF8Char *cfgFile)
 				IO::SMake::ConfigItem *cfg = cfgMap->Get(sptr1);
 				if (cfg)
 				{
-					ccfg = cfg->value;
+					ccfg = cfg->value->v;
 				}
 				if (prog->compileCfg)
 				{
@@ -367,12 +367,12 @@ Bool IO::SMake::LoadConfigFile(const UTF8Char *cfgFile)
 					sb2.Append(prog->compileCfg);
 					sb2.AppendChar(' ', 1);
 					sb2.Append(ccfg);
-					Text::StrDelNew(prog->compileCfg);
-					prog->compileCfg = Text::StrCopyNew(sb2.ToString());
+					prog->compileCfg->Release();
+					prog->compileCfg = Text::String::New(sb2.ToString(), sb2.GetLength());
 				}
 				else
 				{
-					prog->compileCfg = Text::StrCopyNew(ccfg);
+					prog->compileCfg = Text::String::NewNotNull(ccfg);
 				}
 			}
 		}
@@ -382,7 +382,7 @@ Bool IO::SMake::LoadConfigFile(const UTF8Char *cfgFile)
 			if (cfg)
 			{
 				Manage::EnvironmentVar env;
-				env.SetValue(cfg->name, cfg->value);
+				env.SetValue(cfg->name->v, cfg->value->v);
 			}
 		}
 		else if ((i = Text::StrIndexOf(sb.ToString(), (const UTF8Char*)":")) != INVALID_INDEX)
@@ -401,17 +401,17 @@ Bool IO::SMake::LoadConfigFile(const UTF8Char *cfgFile)
 				else
 				{
 					prog = MemAlloc(IO::SMake::ProgramItem, 1);
-					prog->name = Text::StrCopyNew(sptr1 + 1);
+					prog->name = Text::String::NewNotNull(sptr1 + 1);
 					if (sptr2[0])
 					{
-						prog->srcFile = Text::StrCopyNew(sptr2);
+						prog->srcFile = Text::String::NewNotNull(sptr2);
 					}
 					else
 					{
 						prog->srcFile = 0;
 					}
-					NEW_CLASS(prog->subItems, Data::ArrayList<const UTF8Char*>());
-					NEW_CLASS(prog->libs, Data::ArrayList<const UTF8Char*>());
+					NEW_CLASS(prog->subItems, Data::ArrayList<Text::String*>());
+					NEW_CLASS(prog->libs, Data::ArrayList<Text::String*>());
 					prog->compileCfg = 0;
 					progMap->Put(prog->name, prog);
 				}
@@ -431,17 +431,17 @@ Bool IO::SMake::LoadConfigFile(const UTF8Char *cfgFile)
 				else
 				{
 					prog = MemAlloc(IO::SMake::ProgramItem, 1);
-					prog->name = Text::StrCopyNew(sptr1);
+					prog->name = Text::String::NewNotNull(sptr1);
 					if (sptr2[0])
 					{
-						prog->srcFile = Text::StrCopyNew(sptr2);
+						prog->srcFile = Text::String::NewNotNull(sptr2);
 					}
 					else
 					{
 						prog->srcFile = 0;
 					}
-					NEW_CLASS(prog->subItems, Data::ArrayList<const UTF8Char*>());
-					NEW_CLASS(prog->libs, Data::ArrayList<const UTF8Char*>());
+					NEW_CLASS(prog->subItems, Data::ArrayList<Text::String*>());
+					NEW_CLASS(prog->libs, Data::ArrayList<Text::String*>());
 					prog->compileCfg = 0;
 					progMap->Put(sptr1, prog);
 				}
@@ -490,7 +490,7 @@ Bool IO::SMake::LoadConfigFile(const UTF8Char *cfgFile)
 }
 
 
-Bool IO::SMake::ParseSource(Data::ArrayListStrUTF8 *objList, Data::ArrayListStrUTF8 *libList, Data::ArrayListStrUTF8 *procList, Data::ArrayListStrUTF8 *headerList, Int64 *latestTime, const UTF8Char *sourceFile)
+Bool IO::SMake::ParseSource(Data::ArrayListString *objList, Data::ArrayListString *libList, Data::ArrayListString *procList, Data::ArrayListString *headerList, Int64 *latestTime, const UTF8Char *sourceFile)
 {
 	IO::FileStream *fs;
 	Text::StringBuilderUTF8 sb;
@@ -541,7 +541,7 @@ Bool IO::SMake::ParseSource(Data::ArrayListStrUTF8 *objList, Data::ArrayListStrU
 				if (i != INVALID_INDEX)
 				{
 					sptr1[i] = 0;
-					if (procList->SortedIndexOf(sptr1) >= 0)
+					if (procList->SortedIndexOfPtr(sptr1) >= 0)
 					{
 						thisTime = fileTimeMap->Get(sptr1);
 						if (thisTime && thisTime > lastTime)
@@ -574,7 +574,7 @@ Bool IO::SMake::ParseSource(Data::ArrayListStrUTF8 *objList, Data::ArrayListStrU
 							UOSInt i = prog->subItems->GetCount();
 							while (i-- > 0)
 							{
-								if (this->debugObj && this->messageWriter && Text::StrEquals(prog->subItems->GetItem(i), this->debugObj))
+								if (this->debugObj && this->messageWriter && prog->subItems->GetItem(i)->Equals(this->debugObj))
 								{
 									Text::StringBuilderUTF8 sb2;
 									sb2.Append(debugObj);
@@ -595,7 +595,7 @@ Bool IO::SMake::ParseSource(Data::ArrayListStrUTF8 *objList, Data::ArrayListStrU
 									libList->SortedInsert(prog->libs->GetItem(i));
 								}
 							}
-							if (this->debugObj && this->messageWriter && Text::StrEquals(prog->name, this->debugObj))
+							if (this->debugObj && this->messageWriter && prog->name->Equals(this->debugObj))
 							{
 								Text::StringBuilderUTF8 sb2;
 								sb2.Append(debugObj);
@@ -615,7 +615,7 @@ Bool IO::SMake::ParseSource(Data::ArrayListStrUTF8 *objList, Data::ArrayListStrU
 							}
 							if (prog->srcFile)
 							{
-								if (!this->ParseSource(objList, libList, procList, headerList, &thisTime, prog->srcFile))
+								if (!this->ParseSource(objList, libList, procList, headerList, &thisTime, prog->srcFile->v))
 								{
 									DEL_CLASS(reader);
 									DEL_CLASS(fs);
@@ -636,7 +636,7 @@ Bool IO::SMake::ParseSource(Data::ArrayListStrUTF8 *objList, Data::ArrayListStrU
 	return true;
 }
 
-Bool IO::SMake::ParseHeader(Data::ArrayListStrUTF8 *objList, Data::ArrayListStrUTF8 *libList, Data::ArrayListStrUTF8 *procList, Data::ArrayListStrUTF8 *headerList, Int64 *latestTime, const UTF8Char *headerFile, const UTF8Char *sourceFile)
+Bool IO::SMake::ParseHeader(Data::ArrayListString *objList, Data::ArrayListString *libList, Data::ArrayListString *procList, Data::ArrayListString *headerList, Int64 *latestTime, Text::String *headerFile, const UTF8Char *sourceFile)
 {
 	IO::SMake::ConfigItem *cfg = this->cfgMap->Get((const UTF8Char*)"INCLUDEPATH");
 	if (cfg == 0)
@@ -685,7 +685,7 @@ Bool IO::SMake::ParseHeader(Data::ArrayListStrUTF8 *objList, Data::ArrayListStrU
 	sb.Replace('\\', '/');
 	i = sb.LastIndexOf('/');
 	sb.TrimToLength(i);
-	const UTF8Char *currHeader = headerFile;
+	const UTF8Char *currHeader = headerFile->v;
 	while (Text::StrStartsWith(currHeader, (const UTF8Char*)"../"))
 	{
 		i = sb.LastIndexOf('/');
@@ -725,10 +725,10 @@ Bool IO::SMake::ParseHeader(Data::ArrayListStrUTF8 *objList, Data::ArrayListStrU
 	return false;
 }
 
-Bool IO::SMake::ParseProgInternal(Data::ArrayListStrUTF8 *objList, Data::ArrayListStrUTF8 *libList, Data::ArrayListStrUTF8 *procList, Data::ArrayListStrUTF8 *headerList, Int64 *latestTime, Bool *progGroup, const IO::SMake::ProgramItem *prog)
+Bool IO::SMake::ParseProgInternal(Data::ArrayListString *objList, Data::ArrayListString *libList, Data::ArrayListString *procList, Data::ArrayListString *headerList, Int64 *latestTime, Bool *progGroup, const IO::SMake::ProgramItem *prog)
 {
 	UOSInt i;
-	const UTF8Char *subItem;
+	Text::String *subItem;
 	IO::SMake::ProgramItem *subProg;
 	Int64 thisTime;
 	*latestTime = 0;
@@ -737,7 +737,7 @@ Bool IO::SMake::ParseProgInternal(Data::ArrayListStrUTF8 *objList, Data::ArrayLi
 	while (i-- > 0)
 	{
 		subItem = prog->subItems->GetItem(i);
-		if (Text::StrEndsWith(subItem, (const UTF8Char*)".o"))
+		if (subItem->EndsWith((const UTF8Char*)".o"))
 		{
 			*progGroup = false;
 		}
@@ -763,7 +763,7 @@ Bool IO::SMake::ParseProgInternal(Data::ArrayListStrUTF8 *objList, Data::ArrayLi
 			return false;
 		}
 		objList->SortedInsert(cfg->value);
-		if (!this->ParseSource(objList, libList, procList, headerList, &thisTime, subProg->srcFile))
+		if (!this->ParseSource(objList, libList, procList, headerList, &thisTime, subProg->srcFile->v))
 		{
 			return false;
 		}
@@ -785,7 +785,7 @@ Bool IO::SMake::ParseProgInternal(Data::ArrayListStrUTF8 *objList, Data::ArrayLi
 			this->SetErrorMsg(sb.ToString());
 			return false;
 		}
-		if (!this->ParseSource(objList, libList, procList, headerList, &thisTime, subProg->srcFile))
+		if (!this->ParseSource(objList, libList, procList, headerList, &thisTime, subProg->srcFile->v))
 		{
 			return false;
 		}
@@ -801,28 +801,28 @@ Bool IO::SMake::ParseProgInternal(Data::ArrayListStrUTF8 *objList, Data::ArrayLi
 void IO::SMake::CompileTask(void *userObj)
 {
 	CompileReq *req = (CompileReq *)userObj;
-	if (!req->me->ExecuteCmd(req->cmd))
+	if (!req->me->ExecuteCmd(req->cmd->v))
 	{
 		req->errorState[0] = true;
 	}
-	Text::StrDelNew(req->cmd);
+	req->cmd->Release();
 	MemFree(req);
 }
 
-void IO::SMake::CompileObject(Bool *errorState, const UTF8Char *cmd)
+void IO::SMake::CompileObject(Bool *errorState, const UTF8Char *cmd, UOSInt cmdLeng)
 {
 	CompileReq *req = MemAlloc(CompileReq, 1);
 	req->errorState = errorState;
-	req->cmd = Text::StrCopyNew(cmd);
+	req->cmd = Text::String::New(cmd, cmdLeng);
 	req->me = this;
 	this->tasks->AddTask(CompileTask, req);
 }
 
 Bool IO::SMake::CompileProgInternal(IO::SMake::ProgramItem *prog, Bool asmListing)
 {
-	Data::ArrayListStrUTF8 libList;
-	Data::ArrayListStrUTF8 objList;
-	Data::ArrayListStrUTF8 procList;
+	Data::ArrayListString libList;
+	Data::ArrayListString objList;
+	Data::ArrayListString procList;
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
@@ -938,11 +938,11 @@ Bool IO::SMake::CompileProgInternal(IO::SMake::ProgramItem *prog, Bool asmListin
 			return false;
 		}
 
-		if (subProg->srcFile[0] != '@')
+		if (subProg->srcFile->v[0] != '@')
 		{
 			sb.ClearStr();
 			sb.Append(this->basePath);
-			IO::Path::AppendPath(&sb, subProg->srcFile);
+			IO::Path::AppendPath(&sb, subProg->srcFile->v);
 			if (!IO::Path::GetFileTime(sb.ToString(), &dt1, 0, 0))
 			{
 				sb.ClearStr();
@@ -993,10 +993,10 @@ Bool IO::SMake::CompileProgInternal(IO::SMake::ProgramItem *prog, Bool asmListin
 		
 		if (!updateToDate)
 		{
-			if (Text::StrEndsWith(subProg->srcFile, (const UTF8Char*)".cpp"))
+			if (subProg->srcFile->EndsWith((const UTF8Char*)".cpp"))
 			{
 				sb.ClearStr();
-				AppendCfgPath(&sb, cppCfg->value);
+				AppendCfgPath(&sb, cppCfg->value->v);
 				sb.AppendChar(' ', 1);
 				if (cflagsCfg)
 				{
@@ -1005,7 +1005,7 @@ Bool IO::SMake::CompileProgInternal(IO::SMake::ProgramItem *prog, Bool asmListin
 				}
 				if (subProg->compileCfg)
 				{
-					this->AppendCfg(&sb, subProg->compileCfg);
+					this->AppendCfg(&sb, subProg->compileCfg->v);
 					sb.AppendChar(' ', 1);
 				}
 				if (asmListing)
@@ -1022,21 +1022,21 @@ Bool IO::SMake::CompileProgInternal(IO::SMake::ProgramItem *prog, Bool asmListin
 				sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
 				sb.Append(subProg->name);
 				sb.AppendChar(' ', 1);
-				if (subProg->srcFile[0] == '@')
+				if (subProg->srcFile->v[0] == '@')
 				{
-					sb.Append(&subProg->srcFile[1]);
+					sb.AppendC(&subProg->srcFile->v[1], subProg->srcFile->leng - 1);
 				}
 				else
 				{
 					sb.Append(subProg->srcFile);
 				}
 
-				this->CompileObject(&errorState, sb.ToString());
+				this->CompileObject(&errorState, sb.ToString(), sb.GetLength());
 			}
-			else if (Text::StrEndsWith(subProg->srcFile, (const UTF8Char*)".c"))
+			else if (subProg->srcFile->EndsWith((const UTF8Char*)".c"))
 			{
 				sb.ClearStr();
-				AppendCfgPath(&sb, ccCfg->value);
+				AppendCfgPath(&sb, ccCfg->value->v);
 				sb.AppendChar(' ', 1);
 				if (cflagsCfg)
 				{
@@ -1057,20 +1057,20 @@ Bool IO::SMake::CompileProgInternal(IO::SMake::ProgramItem *prog, Bool asmListin
 				sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
 				sb.Append(subProg->name);
 				sb.AppendChar(' ', 1);
-				if (subProg->srcFile[0] == '@')
+				if (subProg->srcFile->v[0] == '@')
 				{
-					sb.Append(&subProg->srcFile[1]);
+					sb.AppendC(&subProg->srcFile->v[1], subProg->srcFile->leng - 1);
 				}
 				else
 				{
 					sb.Append(subProg->srcFile);
 				}
-				this->CompileObject(&errorState, sb.ToString());
+				this->CompileObject(&errorState, sb.ToString(), sb.GetLength());
 			}
-			else if (Text::StrEndsWith(subProg->srcFile, (const UTF8Char*)".asm"))
+			else if (subProg->srcFile->EndsWith((const UTF8Char*)".asm"))
 			{
 				sb.ClearStr();
-				AppendCfgPath(&sb, asmCfg->value);
+				AppendCfgPath(&sb, asmCfg->value->v);
 				sb.AppendChar(' ', 1);
 				if (asmflagsCfg)
 				{
@@ -1082,17 +1082,17 @@ Bool IO::SMake::CompileProgInternal(IO::SMake::ProgramItem *prog, Bool asmListin
 				sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
 				sb.Append(subProg->name);
 				sb.AppendChar(' ', 1);
-				if (subProg->srcFile[0] == '@')
+				if (subProg->srcFile->v[0] == '@')
 				{
-					sb.Append(&subProg->srcFile[1]);
+					sb.AppendC(&subProg->srcFile->v[1], subProg->srcFile->leng - 1);
 				}
 				else
 				{
 					sb.Append(subProg->srcFile);
 				}
-				this->CompileObject(&errorState, sb.ToString());
+				this->CompileObject(&errorState, sb.ToString(), sb.GetLength());
 			}
-			else if (Text::StrEndsWith(subProg->srcFile, (const UTF8Char*)".s"))
+			else if (subProg->srcFile->EndsWith((const UTF8Char*)".s"))
 			{
 
 			}
@@ -1136,7 +1136,7 @@ Bool IO::SMake::CompileProgInternal(IO::SMake::ProgramItem *prog, Bool asmListin
 	}
 
 	sb.ClearStr();
-	AppendCfgPath(&sb, cppCfg->value);
+	AppendCfgPath(&sb, cppCfg->value->v);
 	sb.AppendChar(' ', 1);
 	sb.Append((const UTF8Char*)"-o bin/");
 	sb.Append(prog->name);
@@ -1165,7 +1165,7 @@ Bool IO::SMake::CompileProgInternal(IO::SMake::ProgramItem *prog, Bool asmListin
 	{
 //		printf("Libs: %s\r\n", libList.GetItem(i));
 		sb.AppendChar(' ', 1);
-		AppendCfg(&sb, libList.GetItem(i));
+		AppendCfg(&sb, libList.GetItem(i)->v);
 		i++;
 	}
 	if (!this->ExecuteCmd(sb.ToString()))
@@ -1184,9 +1184,9 @@ void IO::SMake::SetErrorMsg(const UTF8Char *msg)
 
 IO::SMake::SMake(const UTF8Char *cfgFile, UOSInt threadCnt, IO::Writer *messageWriter) : IO::ParsedObject(cfgFile)
 {
-	NEW_CLASS(this->cfgMap, Data::StringUTF8Map<IO::SMake::ConfigItem*>());
-	NEW_CLASS(this->progMap, Data::StringUTF8Map<IO::SMake::ProgramItem*>());
-	NEW_CLASS(this->fileTimeMap, Data::StringUTF8Map<Int64>());
+	NEW_CLASS(this->cfgMap, Data::StringMap<IO::SMake::ConfigItem*>());
+	NEW_CLASS(this->progMap, Data::StringMap<IO::SMake::ProgramItem*>());
+	NEW_CLASS(this->fileTimeMap, Data::StringMap<Int64>());
 	NEW_CLASS(this->tasks, Sync::ParallelTask(threadCnt, false));
 	NEW_CLASS(this->errorMsgMut, Sync::Mutex());
 	this->errorMsg = 0;
@@ -1222,8 +1222,8 @@ IO::SMake::~SMake()
 	while (i-- > 0)
 	{
 		cfg = cfgList->GetItem(i);
-		Text::StrDelNew(cfg->name);
-		Text::StrDelNew(cfg->value);
+		cfg->name->Release();
+		cfg->value->Release();
 		MemFree(cfg);
 	}
 	DEL_CLASS(cfgMap);
@@ -1234,19 +1234,19 @@ IO::SMake::~SMake()
 	while (i-- > 0)
 	{
 		prog = progList->GetItem(i);
-		Text::StrDelNew(prog->name);
-		SDEL_TEXT(prog->srcFile);
-		SDEL_TEXT(prog->compileCfg);
+		prog->name->Release();
+		SDEL_STRING(prog->srcFile);
+		SDEL_STRING(prog->compileCfg);
 		j = prog->subItems->GetCount();
 		while (j-- > 0)
 		{
-			Text::StrDelNew(prog->subItems->GetItem(j));
+			prog->subItems->GetItem(j)->Release();
 		}
 		DEL_CLASS(prog->subItems);
 		j = prog->libs->GetCount();
 		while (j-- > 0)
 		{
-			Text::StrDelNew(prog->libs->GetItem(j));
+			prog->libs->GetItem(j)->Release();
 		}
 		DEL_CLASS(prog->libs);
 		MemFree(prog);
@@ -1342,7 +1342,7 @@ Bool IO::SMake::CompileProg(const UTF8Char *progName, Bool asmListing)
 	}
 }
 
-Bool IO::SMake::ParseProg(Data::ArrayListStrUTF8 *objList, Data::ArrayListStrUTF8 *libList, Data::ArrayListStrUTF8 *procList, Data::ArrayListStrUTF8 *headerList, Int64 *latestTime, Bool *progGroup, Text::String *progName)
+Bool IO::SMake::ParseProg(Data::ArrayListString *objList, Data::ArrayListString *libList, Data::ArrayListString *procList, Data::ArrayListString *headerList, Int64 *latestTime, Bool *progGroup, Text::String *progName)
 {
 	IO::SMake::ProgramItem *prog = this->progMap->Get(progName->v);
 	if (prog == 0)
@@ -1382,21 +1382,21 @@ void IO::SMake::CleanFiles()
 	}
 }
 
-UOSInt IO::SMake::GetProgList(Data::ArrayList<const UTF8Char*> *progList)
+UOSInt IO::SMake::GetProgList(Data::ArrayList<Text::String*> *progList)
 {
-	Data::ArrayList<const UTF8Char *> *names = this->progMap->GetKeys();
-	const UTF8Char *prog;
+	Data::ArrayList<Text::String *> *names = this->progMap->GetKeys();
+	Text::String *prog;
 	UOSInt ret = 0;
 	UOSInt i = 0;
 	UOSInt j = names->GetCount();
 	while (i < j)
 	{
 		prog = names->GetItem(i);
-		if (Text::StrEndsWith(prog, (const UTF8Char*)".o"))
+		if (prog->EndsWith((const UTF8Char*)".o"))
 		{
 
 		}
-		else if (Text::StrEndsWith(prog, (const UTF8Char*)".h"))
+		else if (prog->EndsWith((const UTF8Char*)".h"))
 		{
 
 		}
@@ -1418,12 +1418,12 @@ Bool IO::SMake::IsProgGroup(const UTF8Char *progName)
 		return false;
 	}
 
-	const UTF8Char *subItem;
+	Text::String *subItem;
 	UOSInt i = prog->subItems->GetCount();
 	while (i-- > 0)
 	{
 		subItem = prog->subItems->GetItem(i);
-		if (Text::StrEndsWith(subItem, (const UTF8Char*)".o"))
+		if (subItem->EndsWith((const UTF8Char*)".o"))
 		{
 			return false;
 		}

@@ -2,7 +2,7 @@
 #define _SM_IO_SMAKE
 #include "Data/ArrayList.h"
 #include "Data/ArrayListStrUTF8.h"
-#include "Data/StringUTF8Map.h"
+#include "Data/StringMap.h"
 #include "IO/ParsedObject.h"
 #include "IO/Writer.h"
 #include "Sync/Mutex.h"
@@ -17,30 +17,30 @@ namespace IO
 	private:
 		typedef struct
 		{
-			const UTF8Char *cmd;
+			Text::String *cmd;
 			Bool *errorState;
 			SMake *me;
 		} CompileReq;
 	public:
 		typedef struct
 		{
-			const UTF8Char *name;
-			const UTF8Char *value;
+			Text::String *name;
+			Text::String *value;
 		} ConfigItem;
 
 		typedef struct
 		{
-			const UTF8Char *name;
-			const UTF8Char *srcFile;
-			const UTF8Char *compileCfg;
-			Data::ArrayList<const UTF8Char *> *subItems;
-			Data::ArrayList<const UTF8Char *> *libs;
+			Text::String *name;
+			Text::String *srcFile;
+			Text::String *compileCfg;
+			Data::ArrayList<Text::String *> *subItems;
+			Data::ArrayList<Text::String *> *libs;
 		} ProgramItem;
 
 	private:
-		Data::StringUTF8Map<ConfigItem*> *cfgMap;
-		Data::StringUTF8Map<ProgramItem*> *progMap;
-		Data::StringUTF8Map<Int64> *fileTimeMap;
+		Data::StringMap<ConfigItem*> *cfgMap;
+		Data::StringMap<ProgramItem*> *progMap;
+		Data::StringMap<Int64> *fileTimeMap;
 		Sync::Mutex *errorMsgMut;
 		const UTF8Char *errorMsg;
 		const UTF8Char *basePath;
@@ -56,12 +56,12 @@ namespace IO
 		Bool ExecuteCmd(const UTF8Char *cmd);
 		Bool LoadConfigFile(const UTF8Char *cfgFile);
 
-		Bool ParseSource(Data::ArrayListStrUTF8 *objList, Data::ArrayListStrUTF8 *libList, Data::ArrayListStrUTF8 *procList, Data::ArrayListStrUTF8 *headerList, Int64 *latestTime, const UTF8Char *sourceFile);
-		Bool ParseHeader(Data::ArrayListStrUTF8 *objList, Data::ArrayListStrUTF8 *libList, Data::ArrayListStrUTF8 *procList, Data::ArrayListStrUTF8 *headerList, Int64 *latestTime, const UTF8Char *headerFile, const UTF8Char *sourceFile);
-		Bool ParseProgInternal(Data::ArrayListStrUTF8 *objList, Data::ArrayListStrUTF8 *libList, Data::ArrayListStrUTF8 *procList, Data::ArrayListStrUTF8 *headerList, Int64 *latestTime, Bool *progGroup, const ProgramItem *prog);
+		Bool ParseSource(Data::ArrayListString *objList, Data::ArrayListString *libList, Data::ArrayListString *procList, Data::ArrayListString *headerList, Int64 *latestTime, const UTF8Char *sourceFile);
+		Bool ParseHeader(Data::ArrayListString *objList, Data::ArrayListString *libList, Data::ArrayListString *procList, Data::ArrayListString *headerList, Int64 *latestTime, Text::String *headerFile, const UTF8Char *sourceFile);
+		Bool ParseProgInternal(Data::ArrayListString *objList, Data::ArrayListString *libList, Data::ArrayListString *procList, Data::ArrayListString *headerList, Int64 *latestTime, Bool *progGroup, const ProgramItem *prog);
 
 		static void __stdcall CompileTask(void *userObj);
-		void CompileObject(Bool *errorState, const UTF8Char *cmd);
+		void CompileObject(Bool *errorState, const UTF8Char *cmd, UOSInt cmdLeng);
 		Bool CompileProgInternal(ProgramItem *prog, Bool asmListing);
 
 		void SetErrorMsg(const UTF8Char *msg);
@@ -81,11 +81,11 @@ namespace IO
 		Data::ArrayList<ConfigItem*> *GetConfigList();
 		Bool HasProg(const UTF8Char *progName);
 		Bool CompileProg(const UTF8Char *progName, Bool asmListing);
-		Bool ParseProg(Data::ArrayListStrUTF8 *objList, Data::ArrayListStrUTF8 *libList, Data::ArrayListStrUTF8 *procList, Data::ArrayListStrUTF8 *headerList, Int64 *latestTime, Bool *progGroup, Text::String *progName);
+		Bool ParseProg(Data::ArrayListString *objList, Data::ArrayListString *libList, Data::ArrayListString *procList, Data::ArrayListString *headerList, Int64 *latestTime, Bool *progGroup, Text::String *progName);
 
 		void CleanFiles();
 
-		UOSInt GetProgList(Data::ArrayList<const UTF8Char*> *progList); //No release
+		UOSInt GetProgList(Data::ArrayList<Text::String*> *progList); //No release
 		Bool IsProgGroup(const UTF8Char *progName);
 		const ProgramItem *GetProgItem(const UTF8Char *progName);
 	};
