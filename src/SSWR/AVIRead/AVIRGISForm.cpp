@@ -214,7 +214,7 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::FileHandler(void *userObj, const UTF8
 				NEW_CLASS(simg, Media::SharedImage((Media::ImageList*)pobj, true));
 				NEW_CLASS(vimg, Math::VectorImage(me->env->GetSRID(), simg, x1, y1, x2, y2, x2 - x1, y1 - y2, false, files[i], 0, 0));
 				DEL_CLASS(simg);
-				lyr->AddVector(vimg, 0);
+				lyr->AddVector(vimg, (const UTF8Char**)0);
 				layers->Add(lyr);
 			}
 			else
@@ -1287,7 +1287,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 			{
 				Map::VectorLayer *lyr;
 				NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_POLYLINE, (const UTF8Char*)"Google Polyline", 0, 0, Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84), 0, 0, 0, 0, 0));
-				lyr->AddVector(frm->GetPolyline(), 0);
+				lyr->AddVector(frm->GetPolyline(), (const UTF8Char**)0);
 				this->AddLayer(lyr);
 			}
 			DEL_CLASS(frm);

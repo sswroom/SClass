@@ -478,7 +478,7 @@ SSWR::DownloadMonitor::DownMonCore::DownMonCore()
 	this->chkStatus = CS_IDLE;
 	NEW_CLASS(this->fileMut, Sync::Mutex());
 	NEW_CLASS(this->fileTypeMap, Data::Int32Map<SSWR::DownloadMonitor::DownMonCore::FileInfo*>());
-	NEW_CLASS(this->fileNameMap, Data::StringUTF8Map<SSWR::DownloadMonitor::DownMonCore::FileInfo*>());
+	NEW_CLASS(this->fileNameMap, Data::FastStringMap<SSWR::DownloadMonitor::DownMonCore::FileInfo*>());
 
 	NEW_CLASS(this->parsers, Parser::FullParserList());
 	NEW_CLASS(this->checker, Media::VideoChecker(false));
@@ -585,13 +585,13 @@ Text::String *SSWR::DownloadMonitor::DownMonCore::GetListFile()
 
 void SSWR::DownloadMonitor::DownMonCore::FileFree(SSWR::DownloadMonitor::DownMonCore::FileInfo *file)
 {
-	Text::StrDelNew(file->dbName);
-	Text::StrDelNew(file->fileName);
+	file->dbName->Release();
+	file->fileName->Release();
 	DEL_CLASS(file->mut);
 	MemFree(file);
 }
 
-Bool SSWR::DownloadMonitor::DownMonCore::FileAdd(Int32 id, Int32 webType, const UTF8Char *dbName)
+Bool SSWR::DownloadMonitor::DownMonCore::FileAdd(Int32 id, Int32 webType, Text::String *dbName)
 {
 	SSWR::DownloadMonitor::DownMonCore::FileInfo *file;
 	Text::StringBuilderUTF8 sb;
@@ -605,10 +605,10 @@ Bool SSWR::DownloadMonitor::DownMonCore::FileAdd(Int32 id, Int32 webType, const 
 	file = MemAlloc(SSWR::DownloadMonitor::DownMonCore::FileInfo, 1);
 	file->id = id;
 	file->webType = webType;
-	file->dbName = Text::StrCopyNew(dbName);
+	file->dbName = dbName->Clone();
 	Net::WebSite::WebSite48IdolControl::Title2DisplayName(dbName, &sb);
 	sb.Append((const UTF8Char*)".mp4");
-	file->fileName = Text::StrCopyNew(sb.ToString());
+	file->fileName = Text::String::New(sb.ToString(), sb.GetLength());
 	file->status = FS_NORMAL;
 	NEW_CLASS(file->mut, Sync::Mutex());
 
@@ -669,7 +669,7 @@ Bool SSWR::DownloadMonitor::DownMonCore::FileStart(Int32 id, Int32 webType, Cont
 	file = this->fileTypeMap->Get((webType << 24) | id);
 	if (file)
 	{
-		Win32::Clipboard::SetString(formHand, file->fileName);
+		Win32::Clipboard::SetString(formHand, file->fileName->v);
 		Text::StringBuilderUTF8 sb;
 		sb.AppendChar('"', 1);
 		sb.Append(this->firefoxPath);

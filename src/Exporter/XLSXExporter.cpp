@@ -62,6 +62,7 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char 
 	Data::DateTime dt2;
 	Data::DateTime *t;
 	Text::String *s;
+	Text::String *s2;
 	const UTF8Char *csptr;
 	const UTF8Char *csptr2;
 	IO::ZIPBuilder *zip;
@@ -293,9 +294,9 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char 
 					sb.Append((const UTF8Char*)"\" r:id=\"rId");
 					sb.AppendUOSInt(idBase + m);
 					sb.Append((const UTF8Char*)"\" display=");
-					csptr = Text::XML::ToNewAttrText(link->cell->cellValue->v);
-					sb.Append(csptr);
-					Text::XML::FreeNewText(csptr);
+					s = Text::XML::ToNewAttrText(link->cell->cellValue->v);
+					sb.Append(s);
+					s->Release();
 					sb.Append((const UTF8Char*)"/>");
 					m++;
 				}
@@ -365,9 +366,9 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char 
 				sb.Append((const UTF8Char*)"<Relationship Id=\"rId");
 				sb.AppendUOSInt(l + m + 1);
 				sb.Append((const UTF8Char*)"\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink\" Target=");
-				csptr = Text::XML::ToNewAttrText(link->cell->cellURL->v);
-				sb.Append(csptr);
-				Text::XML::FreeNewText(csptr);
+				s = Text::XML::ToNewAttrText(link->cell->cellURL->v);
+				sb.Append(s);
+				s->Release();
 				sb.Append((const UTF8Char*)" TargetMode=\"External\"/>");
 				MemFree(link);
 				m++;
@@ -656,9 +657,9 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char 
 		Text::SpreadSheet::Worksheet *sheet = workbook->GetItem(i);
 		sb.Append((const UTF8Char*)"<sheet name=");
 		s = sheet->GetName();
-		csptr2 = Text::XML::ToNewAttrText(s->v);
-		sb.Append(csptr2);
-		Text::XML::FreeNewText(csptr2);
+		s2 = Text::XML::ToNewAttrText(s->v);
+		sb.Append(s2);
+		s2->Release();
 		sb.Append((const UTF8Char*)" sheetId=\"");
 		sb.AppendUOSInt(i + 1);
 		sb.Append((const UTF8Char*)"\" state=\"visible\" r:id=\"rId");
@@ -756,9 +757,9 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char 
 				sb.AppendUOSInt(i + 164);
 				sb.Append((const UTF8Char*)"\" formatCode=");
 				ToFormatCode(sbuff, numFmts.GetItem(i));
-				csptr = Text::XML::ToNewAttrText(sbuff);
-				sb.Append(csptr);
-				Text::XML::FreeNewText(csptr);
+				s = Text::XML::ToNewAttrText(sbuff);
+				sb.Append(s);
+				s->Release();
 				sb.Append((const UTF8Char*)"/>");
 				i++;
 			}
@@ -784,9 +785,9 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char 
 				if (font->GetName())
 				{
 					sb.Append((const UTF8Char*)"<name val=");
-					csptr = Text::XML::ToNewAttrText(font->GetName());
-					sb.Append(csptr);
-					Text::XML::FreeNewText(csptr);
+					s = Text::XML::ToNewAttrText(font->GetName());
+					sb.Append(s);
+					s->Release();
 					sb.Append((const UTF8Char*)"/>");
 				}
 				switch (font->GetFamily())

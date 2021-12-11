@@ -2,6 +2,7 @@
 #define _SM_IO_SMAKE
 #include "Data/ArrayList.h"
 #include "Data/ArrayListStrUTF8.h"
+#include "Data/FastStringMap.h"
 #include "Data/StringMap.h"
 #include "IO/ParsedObject.h"
 #include "IO/Writer.h"
@@ -39,7 +40,7 @@ namespace IO
 
 	private:
 		Data::StringMap<ConfigItem*> *cfgMap;
-		Data::StringMap<ProgramItem*> *progMap;
+		Data::FastStringMap<ProgramItem*> *progMap;
 		Data::StringMap<Int64> *fileTimeMap;
 		Sync::Mutex *errorMsgMut;
 		const UTF8Char *errorMsg;

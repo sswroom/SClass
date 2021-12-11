@@ -20,7 +20,7 @@ namespace Map
 		UOSInt strCnt;
 		UOSInt *maxStrLen;
 		Data::ArrayList<Math::Vector2D*> *vectorList;
-		Data::ArrayList<const UTF8Char**> *strList;
+		Data::ArrayList<const UTF8Char **> *strList;
 		Double minX;
 		Double minY;
 		Double maxX;
@@ -31,6 +31,7 @@ namespace Map
 
 	private:
 		const UTF8Char **CopyStrs(const UTF8Char **strs);
+		const UTF8Char **CopyStrs(Text::String **strs);
 		void UpdateMapRate();
 	public:
 		VectorLayer(Map::DrawLayerType layerType, Text::String *sourceName, UOSInt strCnt, const UTF8Char **colNames, Math::CoordinateSystem *csys, UOSInt nameCol, Text::String *layerName);
@@ -61,6 +62,7 @@ namespace Map
 		virtual void ReleaseObject(void *session, DrawObjectL *obj);
 
 		virtual ObjectClass GetObjectClass();
+		Bool AddVector(Math::Vector2D *vec, Text::String **strs);
 		Bool AddVector(Math::Vector2D *vec, const UTF8Char **strs);
 		Bool SplitPolyline(Double x, Double y);
 		void OptimizePolylinePath();

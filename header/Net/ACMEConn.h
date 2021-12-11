@@ -36,41 +36,41 @@ namespace Net
 		{
 			ACMEStatus status;
 			Int64 expires;
-			const UTF8Char *orderURL;
-			Data::ArrayList<const UTF8Char*> *authURLs;
-			const UTF8Char *finalizeURL;
-			const UTF8Char *certificateURL;
+			Text::String *orderURL;
+			Data::ArrayList<Text::String*> *authURLs;
+			Text::String *finalizeURL;
+			Text::String *certificateURL;
 		};
 
 		struct Challenge
 		{
 			ACMEStatus status;
 			AuthorizeType type;
-			const UTF8Char *url;
-			const UTF8Char *token;
+			Text::String *url;
+			Text::String *token;
 		};
 	private:
 		Net::SocketFactory *sockf;
 		Net::SSLEngine *ssl;
 		Crypto::Cert::X509Key *key;
-		const UTF8Char *serverHost;
+		Text::String *serverHost;
 		UInt16 port;
-		const UTF8Char *urlNewNonce;
-		const UTF8Char *urlNewAccount;
-		const UTF8Char *urlNewOrder;
-		const UTF8Char *urlNewAuthz;
-		const UTF8Char *urlRevokeCert;
-		const UTF8Char *urlKeyChange;
-		const UTF8Char *urlTermOfService;
-		const UTF8Char *urlWebsite;
-		const UTF8Char *nonce;
-		const UTF8Char *accountId;
+		Text::String *urlNewNonce;
+		Text::String *urlNewAccount;
+		Text::String *urlNewOrder;
+		Text::String *urlNewAuthz;
+		Text::String *urlRevokeCert;
+		Text::String *urlKeyChange;
+		Text::String *urlTermOfService;
+		Text::String *urlWebsite;
+		Text::String *nonce;
+		Text::String *accountId;
 
 		static Text::String *JWK(Crypto::Cert::X509Key *key, Crypto::Token::JWSignature::Algorithm *alg);
-		static Text::String *ProtectedJWK(const UTF8Char *nonce, const UTF8Char *url, Crypto::Cert::X509Key *key, Crypto::Token::JWSignature::Algorithm *alg, const UTF8Char *accountId);
+		static Text::String *ProtectedJWK(Text::String *nonce, Text::String *url, Crypto::Cert::X509Key *key, Crypto::Token::JWSignature::Algorithm *alg, Text::String *accountId);
 		static Text::String *EncodeJWS(Net::SSLEngine *ssl, const UTF8Char *protStr, const UTF8Char *data, Crypto::Cert::X509Key *key, Crypto::Token::JWSignature::Algorithm alg);
 		static Bool KeyHash(Crypto::Cert::X509Key *key, Text::StringBuilderUTF *sb);
-		Net::HTTPClient *ACMEPost(const UTF8Char *url, const Char *data);
+		Net::HTTPClient *ACMEPost(Text::String *url, const Char *data);
 		Order *OrderParse(const UInt8 *buff, UOSInt buffSize);
 		Challenge *ChallengeJSON(Text::JSONBase *json);
 		Challenge *ChallengeParse(const UInt8 *buff, UOSInt buffSize);
@@ -79,22 +79,22 @@ namespace Net
 		~ACMEConn();
 
 		Bool IsError();
-		const UTF8Char *GetTermOfService();
-		const UTF8Char *GetWebsite();
-		const UTF8Char *GetAccountId();
+		Text::String *GetTermOfService();
+		Text::String *GetWebsite();
+		Text::String *GetAccountId();
 
 		Bool NewNonce();
 		Bool AccountNew();
 		Bool AccountRetr();
 
 		Order *OrderNew(const UTF8Char *domainNames); //comma seperated
-		Challenge *OrderAuthorize(const UTF8Char *authorizeURL, AuthorizeType authType);
+		Challenge *OrderAuthorize(Text::String *authorizeURL, AuthorizeType authType);
 		Order *OrderGetStatus(const UTF8Char *orderURL);
 		Order *OrderFinalize(const UTF8Char *finalizeURL, Crypto::Cert::X509CertReq *csr);
 		void OrderFree(Order *order);
 
-		Challenge *ChallengeBegin(const UTF8Char *challURL);
-		Challenge *ChallengeGetStatus(const UTF8Char *challURL);
+		Challenge *ChallengeBegin(Text::String *challURL);
+		Challenge *ChallengeGetStatus(Text::String *challURL);
 		void ChallengeFree(Challenge *chall);
 
 		Bool NewKey();
@@ -102,9 +102,9 @@ namespace Net
 		Bool LoadKey(const UTF8Char *fileName);
 		Bool SaveKey(const UTF8Char *fileName);
 
-		static ACMEStatus ACMEStatusFromString(const UTF8Char* status);
+		static ACMEStatus ACMEStatusFromString(Text::String* status);
 		static const UTF8Char *AuthorizeTypeGetName(AuthorizeType authType);
-		static AuthorizeType AuthorizeTypeFromString(const UTF8Char *s);
+		static AuthorizeType AuthorizeTypeFromString(Text::String *s);
 	};
 }
 #endif

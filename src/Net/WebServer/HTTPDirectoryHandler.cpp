@@ -769,6 +769,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 
 				Bool isRoot = false;
 				const UTF8Char *csptr;
+				Text::String *s;
 				sbOut.AppendC((const UTF8Char*)"<html><head><title>Index of ", 28);
 				Text::TextEnc::URIEncoding::URIDecode(sbuff, sb2.ToString());
 				csptr = Text::XML::ToNewHTMLText(sbuff);
@@ -788,11 +789,11 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 				}
 				if (this->allowUpload)
 				{
-					csptr = Text::XML::ToNewAttrText(sb2.ToString());
+					s = Text::XML::ToNewAttrText(sb2.ToString());
 					sbOut.AppendC((const UTF8Char*)"<form name=\"upload\" method=\"POST\" action=", 41);
-					sbOut.Append(csptr);
+					sbOut.Append(s);
 					sbOut.AppendC((const UTF8Char*)" enctype=\"multipart/form-data\">", 31);
-					Text::XML::FreeNewText(csptr);
+					s->Release();
 					sbOut.AppendC((const UTF8Char*)"Upload: <input type=\"file\" name=\"uploadfile\" multiple/><br/><input type=\"submit\"/>", 82);
 					sbOut.AppendC((const UTF8Char*)"</form>", 7);
 				}
@@ -806,17 +807,17 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 				Text::StringBuilderUTF8 sb3;
 				sb3.Append(sb2.ToString());
 				sb3.AppendC((const UTF8Char*)"?sort=1", 7);
-				csptr = Text::XML::ToNewAttrText(sb3.ToString());
+				s = Text::XML::ToNewAttrText(sb3.ToString());
 				sbOut.AppendC((const UTF8Char*)"<table><tr><th><a href=", 23);
-				sbOut.Append(csptr);
-				Text::XML::FreeNewText(csptr);
+				sbOut.Append(s);
+				s->Release();
 				sbOut.AppendC((const UTF8Char*)">Name</a></th><th>MIME</th><th><a href=", 39);
 				sb3.ClearStr();
 				sb3.AppendC(sb2.ToString(), sb2.GetLength());
 				sb3.AppendC((const UTF8Char*)"?sort=2", 7);
-				csptr = Text::XML::ToNewAttrText(sb3.ToString());
-				sbOut.Append(csptr);
-				Text::XML::FreeNewText(csptr);
+				s = Text::XML::ToNewAttrText(sb3.ToString());
+				sbOut.Append(s);
+				s->Release();
 				sbOut.AppendC((const UTF8Char*)">File Size</a></th>", 19);
 				if (this->statMap)
 				{
@@ -824,9 +825,9 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 					sb3.ClearStr();
 					sb3.AppendC(sb2.ToString(), sb2.GetLength());
 					sb3.AppendC((const UTF8Char*)"?sort=3", 7);
-					csptr = Text::XML::ToNewAttrText(sb3.ToString());
-					sbOut.Append(csptr);
-					Text::XML::FreeNewText(csptr);
+					s = Text::XML::ToNewAttrText(sb3.ToString());
+					sbOut.Append(s);
+					s->Release();
 					sbOut.AppendC((const UTF8Char*)">Download Count</a></th>", 24);
 				}
 				sbOut.AppendC((const UTF8Char*)"<th>Modified Date</th></tr>\r\n", 29);

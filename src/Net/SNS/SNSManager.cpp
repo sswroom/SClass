@@ -1,4 +1,5 @@
 #include "Stdafx.h"
+#include "Data/ArrayListString.h"
 #include "Data/Int32Map.h"
 #include "IO/FileStream.h"
 #include "IO/Path.h"
@@ -48,7 +49,7 @@ Net::SNS::SNSManager::ChannelData *Net::SNS::SNSManager::ChannelInit(Net::SNS::S
 	dt.SetCurrTimeUTC();
 	channel->ctrl = ctrl;
 	channel->lastLoadTime = dt.ToTicks();
-	NEW_CLASS(channel->currItems, Data::ArrayListStrUTF8());
+	NEW_CLASS(channel->currItems, Data::ArrayListString());
 
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -70,7 +71,7 @@ Net::SNS::SNSManager::ChannelData *Net::SNS::SNSManager::ChannelInit(Net::SNS::S
 	{
 		if (sb.GetLength() > 0)
 		{
-			channel->currItems->SortedInsert(Text::StrCopyNew(sb.ToString()));
+			channel->currItems->SortedInsert(Text::String::New(sb.ToString(), sb.GetLength()));
 		}
 		sb.ClearStr();
 	}
@@ -102,10 +103,10 @@ void Net::SNS::SNSManager::ChannelAddMessage(Net::SNS::SNSManager::ChannelData *
 	Text::StringBuilderUTF8 sb2;
 	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FileMode::Append, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	NEW_CLASS(writer, Text::UTF8Writer(fs));
-	const UTF8Char *csptr;
-	csptr = Text::StrToNewCSVRec(item->id);
-	sb.Append(csptr);
-	Text::StrDelNew(csptr);
+	Text::String *s;
+	s = Text::String::NewCSVRec(item->id->v);
+	sb.Append(s);
+	s->Release();
 	sb.AppendChar(',', 1);
 	sb.AppendChar('"', 1);
 	sb.AppendI64(item->msgTime);
@@ -113,24 +114,24 @@ void Net::SNS::SNSManager::ChannelAddMessage(Net::SNS::SNSManager::ChannelData *
 	sb.AppendChar(',', 1);
 	if (item->title)
 	{
-		csptr = Text::StrToNewCSVRec(item->title);
-		sb.Append(csptr);
-		Text::StrDelNew(csptr);
+		s = Text::String::NewCSVRec(item->title->v);
+		sb.Append(s);
+		s->Release();
 	}
 	else
 	{
 		sb.AppendChar('"', 2);
 	}
 	sb.AppendChar(',', 1);
-	csptr = Text::StrToNewCSVRec(item->message);
-	sb.Append(csptr);
-	Text::StrDelNew(csptr);
+	s = Text::String::NewCSVRec(item->message->v);
+	sb.Append(s);
+	s->Release();
 	sb.AppendChar(',', 1);
 	if (item->msgLink)
 	{
-		csptr = Text::StrToNewCSVRec(item->msgLink);
-		sb.Append(csptr);
-		Text::StrDelNew(csptr);
+		s = Text::String::NewCSVRec(item->msgLink->v);
+		sb.Append(s);
+		s->Release();
 	}
 	else
 	{
@@ -139,9 +140,9 @@ void Net::SNS::SNSManager::ChannelAddMessage(Net::SNS::SNSManager::ChannelData *
 	sb.AppendChar(',', 1);
 	if (item->imgURL)
 	{
-		csptr = Text::StrToNewCSVRec(item->imgURL);
-		sb.Append(csptr);
-		Text::StrDelNew(csptr);
+		s = Text::String::NewCSVRec(item->imgURL->v);
+		sb.Append(s);
+		s->Release();
 	}
 	else
 	{
@@ -151,7 +152,7 @@ void Net::SNS::SNSManager::ChannelAddMessage(Net::SNS::SNSManager::ChannelData *
 	DEL_CLASS(writer);
 	DEL_CLASS(fs);
 
-	if (item->imgURL && item->imgURL[0])
+	if (item->imgURL && item->imgURL->v[0])
 	{
 		UOSInt i = 0;
 		UOSInt j;
@@ -244,7 +245,7 @@ void Net::SNS::SNSManager::ChannelAddMessage(Net::SNS::SNSManager::ChannelData *
 			}
 		}
 
-		if (item->videoURL && item->videoURL[0])
+		if (item->videoURL && item->videoURL->v[0])
 		{
 			sb.ClearStr();
 			sb.Append(item->videoURL);
@@ -318,7 +319,7 @@ void Net::SNS::SNSManager::ChannelStoreCurr(Net::SNS::SNSManager::ChannelData *c
 	UOSInt j = channel->currItems->GetCount();
 	while (i < j)
 	{
-		writer->WriteLine(channel->currItems->GetItem(i));
+		writer->WriteLine(channel->currItems->GetItem(i)->v);
 		i++;
 	}
 	DEL_CLASS(writer);
@@ -332,7 +333,7 @@ void Net::SNS::SNSManager::ChannelUpdate(Net::SNS::SNSManager::ChannelData *chan
 	Net::SNS::SNSControl::SNSItem *item;
 	Bool updated = false;
 	channel->ctrl->GetCurrItems(&itemList);
-	Data::ArrayListStrUTF8 oldItems;
+	Data::ArrayListString oldItems;
 	oldItems.AddAll(channel->currItems);
 	UOSInt i;
 	UOSInt j;
@@ -349,7 +350,7 @@ void Net::SNS::SNSManager::ChannelUpdate(Net::SNS::SNSManager::ChannelData *chan
 		}
 		else
 		{
-			channel->currItems->SortedInsert(Text::StrCopyNew(item->id));
+			channel->currItems->SortedInsert(item->id->Clone());
 			this->ChannelAddMessage(channel, item);
 			updated = true;
 		}
@@ -362,7 +363,7 @@ void Net::SNS::SNSManager::ChannelUpdate(Net::SNS::SNSManager::ChannelData *chan
 		si = channel->currItems->SortedIndexOf(oldItems.GetItem(i));
 		if (si >= 0)
 		{
-			Text::StrDelNew(channel->currItems->RemoveAt((UOSInt)si));
+			channel->currItems->RemoveAt((UOSInt)si)->Release();
 			updated = true;
 		}
 	}
@@ -527,7 +528,7 @@ Net::SNS::SNSManager::~SNSManager()
 		j = channel->currItems->GetCount();
 		while (j-- > 0)
 		{
-			Text::StrDelNew(channel->currItems->GetItem(j));
+			channel->currItems->GetItem(j)->Release();
 		}
 		DEL_CLASS(channel->currItems);
 		MemFree(channel);
@@ -546,7 +547,7 @@ Net::SNS::SNSControl *Net::SNS::SNSManager::AddChannel(Net::SNS::SNSControl::SNS
 	while (i < j)
 	{
 		ctrl = this->channelList->GetItem(i)->ctrl;
-		if (ctrl->GetSNSType() == type && Text::StrEquals(ctrl->GetChannelId(), channelId))
+		if (ctrl->GetSNSType() == type && ctrl->GetChannelId()->Equals(channelId))
 		{
 			return 0;
 		}
@@ -570,7 +571,7 @@ Net::SNS::SNSControl *Net::SNS::SNSManager::AddChannel(Net::SNS::SNSControl::SNS
 		NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		NEW_CLASS(writer, Text::UTF8Writer(fs));
 		writer->WriteLine(Net::SNS::SNSControl::SNSTypeGetName(ctrl->GetSNSType()));
-		writer->WriteLine(ctrl->GetChannelId());
+		writer->WriteLine(ctrl->GetChannelId()->v);
 		DEL_CLASS(writer);
 		DEL_CLASS(fs);
 		Net::SNS::SNSManager::ChannelData *channel = this->ChannelInit(ctrl);

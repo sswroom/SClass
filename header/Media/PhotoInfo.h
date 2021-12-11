@@ -10,19 +10,19 @@ namespace Media
 	{
 	private:
 		Bool succ;
-		const UTF8Char *make;
-		const UTF8Char *model;
+		Text::String *make;
+		Text::String *model;
 		UInt32 width;
 		UInt32 height;
 		Double fNumber;
 		Double expTime;
 		UInt32 isoRating;
-		const UTF8Char *lens;
+		Text::String *lens;
 		Double focalLength;
 		Data::DateTime *photoDate;
 
 		void ParseXMF(Text::XMLDocument *xmf);
-		Double ParseFraction(const UTF8Char *s);
+		Double ParseFraction(Text::String *s);
 	public:
 		PhotoInfo(IO::IStreamData *fd);
 		~PhotoInfo();

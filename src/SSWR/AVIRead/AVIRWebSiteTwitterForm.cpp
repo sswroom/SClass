@@ -17,7 +17,9 @@ void __stdcall SSWR::AVIRead::AVIRWebSiteTwitterForm::OnRequestPageClicked(void 
 		UOSInt j;
 		Data::ArrayList<Net::WebSite::WebSiteTwitterControl::ItemData*> itemList;
 		Net::WebSite::WebSiteTwitterControl::ItemData *item;
-		me->ctrl->GetChannelItems(sb.ToString(), 0, &itemList, 0);
+		Text::String *s = Text::String::New(sb.ToString(), sb.GetLength());
+		me->ctrl->GetChannelItems(s, 0, &itemList, 0);
+		s->Release();
 		i = 0;
 		j = itemList.GetCount();
 		while (i < j)

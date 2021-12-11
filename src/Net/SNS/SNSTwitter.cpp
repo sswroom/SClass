@@ -5,7 +5,7 @@
 Net::SNS::SNSTwitter::SNSTwitter(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, const UTF8Char *userAgent, const UTF8Char *channelId)
 {
 	NEW_CLASS(this->ctrl, Net::WebSite::WebSiteTwitterControl(sockf, ssl, encFact, userAgent));
-	this->channelId = Text::StrCopyNew(channelId);
+	this->channelId = Text::String::NewNotNull(channelId);
 	this->chName = 0;
 	this->chDesc = 0;
 	this->chError = false;
@@ -24,7 +24,7 @@ Net::SNS::SNSTwitter::SNSTwitter(Net::SocketFactory *sockf, Net::SSLEngine *ssl,
 	}
 	else
 	{
-		this->chName = Text::StrCopyNew(this->channelId);
+		this->chName = this->channelId->Clone();
 		this->chError = true;
 	}
 	if (chInfo.bio)
@@ -42,7 +42,11 @@ Net::SNS::SNSTwitter::SNSTwitter(Net::SocketFactory *sockf, Net::SSLEngine *ssl,
 		sb.Append(this->channelId);
 		sb.Append((const UTF8Char*)"/status/");
 		sb.AppendI64(item->id);
-		snsItem = CreateItem(sbuff, item->recTime, 0, item->message, sb.ToString(), item->imgURL, 0);
+		Text::String *s = Text::String::NewNotNull(sbuff);
+		Text::String *s2 = Text::String::New(sb.ToString(), sb.GetLength());
+		snsItem = CreateItem(s, item->recTime, 0, item->message, s2, item->imgURL, 0);
+		s->Release();
+		s2->Release();
 		this->itemMap->Put(item->id, snsItem);
 	}
 	this->ctrl->FreeItems(&itemList);
@@ -52,8 +56,8 @@ Net::SNS::SNSTwitter::~SNSTwitter()
 {
 	UOSInt i;
 	DEL_CLASS(this->ctrl);
-	SDEL_TEXT(this->chName);
-	SDEL_TEXT(this->chDesc);
+	SDEL_STRING(this->chName);
+	SDEL_STRING(this->chDesc);
 	Data::ArrayList<SNSItem*> *itemList = this->itemMap->GetValues();
 	i = itemList->GetCount();
 	while (i-- > 0)
@@ -73,12 +77,12 @@ Net::SNS::SNSControl::SNSType Net::SNS::SNSTwitter::GetSNSType()
 	return Net::SNS::SNSControl::ST_TWITTER;
 }
 
-const UTF8Char *Net::SNS::SNSTwitter::GetChannelId()
+Text::String *Net::SNS::SNSTwitter::GetChannelId()
 {
 	return this->channelId;
 }
 
-const UTF8Char *Net::SNS::SNSTwitter::GetName()
+Text::String *Net::SNS::SNSTwitter::GetName()
 {
 	return this->chName;
 }
@@ -86,7 +90,7 @@ const UTF8Char *Net::SNS::SNSTwitter::GetName()
 UTF8Char *Net::SNS::SNSTwitter::GetDirName(UTF8Char *dirName)
 {
 	dirName = Text::StrConcat(dirName, (const UTF8Char*)"Twitter_");
-	dirName = Text::StrConcat(dirName, this->channelId);
+	dirName = this->channelId->ConcatTo(dirName);
 	return dirName;
 }
 
@@ -99,7 +103,7 @@ UOSInt Net::SNS::SNSTwitter::GetCurrItems(Data::ArrayList<SNSItem*> *itemList)
 
 UTF8Char *Net::SNS::SNSTwitter::GetItemShortId(UTF8Char *buff, SNSItem *item)
 {
-	return Text::StrConcat(buff, item->id);
+	return item->id->ConcatTo(buff);
 }
 
 Int32 Net::SNS::SNSTwitter::GetMinIntevalMS()
@@ -139,7 +143,11 @@ Bool Net::SNS::SNSTwitter::Reload()
 				sb.Append(this->channelId);
 				sb.Append((const UTF8Char*)"/status/");
 				sb.AppendI64(item->id);
-				snsItem = CreateItem(sbuff, item->recTime, 0, item->message, sb.ToString(), item->imgURL, 0);
+				Text::String *s = Text::String::NewNotNull(sbuff);
+				Text::String *s2 = Text::String::New(sb.ToString(), sb.GetLength());
+				snsItem = CreateItem(s, item->recTime, 0, item->message, s2, item->imgURL, 0);
+				s->Release();
+				s2->Release();
 				this->itemMap->Put(item->id, snsItem);
 				changed = true;
 			}

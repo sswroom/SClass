@@ -1,15 +1,16 @@
 #include "Stdafx.h"
+#include "Data/ArrayListString.h"
 #include "Net/SNS/SNSInstagram.h"
 #include "Text/StringBuilderUTF8.h"
 
 Net::SNS::SNSInstagram::SNSInstagram(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, const UTF8Char *userAgent, const UTF8Char *channelId)
 {
 	NEW_CLASS(this->ctrl, Net::WebSite::WebSiteInstagramControl(sockf, ssl, encFact, userAgent));
-	this->channelId = Text::StrCopyNew(channelId);
+	this->channelId = Text::String::NewNotNull(channelId);
 	this->chName = 0;
 	this->chDesc = 0;
 	this->chError = false;
-	NEW_CLASS(this->itemMap, Data::StringUTF8Map<SNSItem*>());
+	NEW_CLASS(this->itemMap, Data::FastStringMap<SNSItem*>());
 
 	SNSItem *snsItem;
 	Net::WebSite::WebSiteInstagramControl::ItemData *item;
@@ -19,16 +20,16 @@ Net::SNS::SNSInstagram::SNSInstagram(Net::SocketFactory *sockf, Net::SSLEngine *
 	this->ctrl->GetChannelItems(this->channelId, 0, &itemList, &chInfo);
 	if (chInfo.full_name)
 	{
-		this->chName = Text::StrCopyNew(chInfo.full_name);
+		this->chName = chInfo.full_name->Clone();
 	}
 	else
 	{
-		this->chName = Text::StrCopyNew(this->channelId);
+		this->chName = this->channelId->Clone();
 		this->chError = true;
 	}
 	if (chInfo.biography)
 	{
-		this->chDesc = Text::StrCopyNew(chInfo.biography);
+		this->chDesc = chInfo.biography->Clone();
 	}
 	this->ctrl->FreeChannelInfo(&chInfo);
 	UOSInt i = itemList.GetCount();
@@ -38,15 +39,15 @@ Net::SNS::SNSInstagram::SNSInstagram(Net::SocketFactory *sockf, Net::SSLEngine *
 		item = itemList.GetItem(i);
 		if (item->moreImages)
 		{
-			Data::ArrayList<const UTF8Char *> imgList;
-			Data::ArrayList<const UTF8Char *> videoList;
+			Data::ArrayList<Text::String *> imgList;
+			Data::ArrayList<Text::String *> videoList;
 			UOSInt j;
 			UOSInt k;
-			const UTF8Char *csptr;
+			Text::String *s;
 			if (this->ctrl->GetPageImages(item->shortCode, &imgList, &videoList))
 			{
-				SDEL_TEXT(item->imgURL);
-				SDEL_TEXT(item->videoURL);
+				SDEL_STRING(item->imgURL);
+				SDEL_STRING(item->videoURL);
 				if (imgList.GetCount() > 0)
 				{
 					sb.ClearStr();
@@ -54,16 +55,16 @@ Net::SNS::SNSInstagram::SNSInstagram(Net::SocketFactory *sockf, Net::SSLEngine *
 					k = imgList.GetCount();
 					while (j < k)
 					{
-						csptr = imgList.GetItem(j);
+						s = imgList.GetItem(j);
 						if (j > 0)
 						{
 							sb.AppendChar(' ', 1);
 						}
-						sb.Append(csptr);
-						Text::StrDelNew(csptr);
+						sb.Append(s);
+						s->Release();
 						j++;
 					}
-					item->imgURL = Text::StrCopyNew(sb.ToString());
+					item->imgURL = Text::String::New(sb.ToString(), sb.GetLength());
 				}
 
 				if (videoList.GetCount() > 0)
@@ -73,16 +74,16 @@ Net::SNS::SNSInstagram::SNSInstagram(Net::SocketFactory *sockf, Net::SSLEngine *
 					k = videoList.GetCount();
 					while (j < k)
 					{
-						csptr = videoList.GetItem(j);
+						s = videoList.GetItem(j);
 						if (j > 0)
 						{
 							sb.AppendChar(' ', 1);
 						}
-						sb.Append(csptr);
-						Text::StrDelNew(csptr);
+						sb.Append(s);
+						s->Release();
 						j++;
 					}
-					item->videoURL = Text::StrCopyNew(sb.ToString());
+					item->videoURL = Text::String::New(sb.ToString(), sb.GetLength());
 				}
 			}
 		}
@@ -91,7 +92,9 @@ Net::SNS::SNSInstagram::SNSInstagram(Net::SocketFactory *sockf, Net::SSLEngine *
 		sb.Append((const UTF8Char*)"https://www.instagram.com/p/");
 		sb.Append(item->shortCode);
 		sb.Append((const UTF8Char*)"/");
-		snsItem = CreateItem(item->shortCode, item->recTime, 0, item->message, sb.ToString(), item->imgURL, item->videoURL);
+		Text::String *s = Text::String::New(sb.ToString(), sb.GetLength());
+		snsItem = CreateItem(item->shortCode, item->recTime, 0, item->message, s, item->imgURL, item->videoURL);
+		s->Release();
 		this->itemMap->Put(item->shortCode, snsItem);
 	}
 	this->ctrl->FreeItems(&itemList);
@@ -101,13 +104,12 @@ Net::SNS::SNSInstagram::~SNSInstagram()
 {
 	UOSInt i;
 	DEL_CLASS(this->ctrl);
-	SDEL_TEXT(this->chName);
-	SDEL_TEXT(this->chDesc);
-	Data::ArrayList<SNSItem*> *itemList = this->itemMap->GetValues();
-	i = itemList->GetCount();
+	SDEL_STRING(this->chName);
+	SDEL_STRING(this->chDesc);
+	i = this->itemMap->GetCount();
 	while (i-- > 0)
 	{
-		FreeItem(itemList->GetItem(i));
+		FreeItem(this->itemMap->GetItem(i));
 	}
 	DEL_CLASS(this->itemMap);
 }
@@ -122,12 +124,12 @@ Net::SNS::SNSControl::SNSType Net::SNS::SNSInstagram::GetSNSType()
 	return Net::SNS::SNSControl::ST_INSTAGRAM;
 }
 
-const UTF8Char *Net::SNS::SNSInstagram::GetChannelId()
+Text::String *Net::SNS::SNSInstagram::GetChannelId()
 {
 	return this->channelId;
 }
 
-const UTF8Char *Net::SNS::SNSInstagram::GetName()
+Text::String *Net::SNS::SNSInstagram::GetName()
 {
 	return this->chName;
 }
@@ -135,20 +137,20 @@ const UTF8Char *Net::SNS::SNSInstagram::GetName()
 UTF8Char *Net::SNS::SNSInstagram::GetDirName(UTF8Char *dirName)
 {
 	dirName = Text::StrConcat(dirName, (const UTF8Char*)"Instagram_");
-	dirName = Text::StrConcat(dirName, this->channelId);
+	dirName = this->channelId->ConcatTo(dirName);
 	return dirName;
 }
 
 UOSInt Net::SNS::SNSInstagram::GetCurrItems(Data::ArrayList<SNSItem*> *itemList)
 {
 	UOSInt initCnt = itemList->GetCount();
-	itemList->AddAll(this->itemMap->GetValues());
+	itemList->AddAll(this->itemMap);
 	return itemList->GetCount() - initCnt;
 }
 
 UTF8Char *Net::SNS::SNSInstagram::GetItemShortId(UTF8Char *buff, SNSItem *item)
 {
-	return Text::StrConcat(buff, item->id);
+	return item->id->ConcatTo(buff);
 }
 
 Int32 Net::SNS::SNSInstagram::GetMinIntevalMS()
@@ -162,12 +164,19 @@ Bool Net::SNS::SNSInstagram::Reload()
 	OSInt si;
 	Net::WebSite::WebSiteInstagramControl::ItemData *item;
 	Data::ArrayList<Net::WebSite::WebSiteInstagramControl::ItemData*> itemList;
-	Data::ArrayListStrUTF8 idList;
+	Data::ArrayListString idList;
 	Bool changed = false;
-	idList.AddAll(this->itemMap->GetKeys());
+	UOSInt i = 0;
+	UOSInt j = this->itemMap->GetCount();
+	idList.EnsureCapacity(j);
+	while (i < j)
+	{
+		idList.Add(this->itemMap->GetKey(i));
+		i++;
+	}
 
 	this->ctrl->GetChannelItems(this->channelId, 0, &itemList, 0);
-	UOSInt i = itemList.GetCount();
+	i = itemList.GetCount();
 	if (i > 0)
 	{
 		Text::StringBuilderUTF8 sb;
@@ -183,15 +192,15 @@ Bool Net::SNS::SNSInstagram::Reload()
 			{
 				if (item->moreImages)
 				{
-					Data::ArrayList<const UTF8Char *> imgList;
-					Data::ArrayList<const UTF8Char *> videoList;
+					Data::ArrayList<Text::String *> imgList;
+					Data::ArrayList<Text::String *> videoList;
 					UOSInt j;
 					UOSInt k;
-					const UTF8Char *csptr;
+					Text::String *s;
 					if (this->ctrl->GetPageImages(item->shortCode, &imgList, &videoList))
 					{
-						SDEL_TEXT(item->imgURL);
-						SDEL_TEXT(item->videoURL);
+						SDEL_STRING(item->imgURL);
+						SDEL_STRING(item->videoURL);
 						if (imgList.GetCount() > 0)
 						{
 							sb.ClearStr();
@@ -199,16 +208,16 @@ Bool Net::SNS::SNSInstagram::Reload()
 							k = imgList.GetCount();
 							while (j < k)
 							{
-								csptr = imgList.GetItem(j);
+								s = imgList.GetItem(j);
 								if (j > 0)
 								{
 									sb.AppendChar(' ', 1);
 								}
-								sb.Append(csptr);
-								Text::StrDelNew(csptr);
+								sb.Append(s);
+								s->Release();
 								j++;
 							}
-							item->imgURL = Text::StrCopyNew(sb.ToString());
+							item->imgURL = Text::String::New(sb.ToString(), sb.GetLength());
 						}
 
 						if (videoList.GetCount() > 0)
@@ -218,16 +227,16 @@ Bool Net::SNS::SNSInstagram::Reload()
 							k = videoList.GetCount();
 							while (j < k)
 							{
-								csptr = videoList.GetItem(j);
+								s = videoList.GetItem(j);
 								if (j > 0)
 								{
 									sb.AppendChar(' ', 1);
 								}
-								sb.Append(csptr);
-								Text::StrDelNew(csptr);
+								sb.Append(s);
+								s->Release();
 								j++;
 							}
-							item->videoURL = Text::StrCopyNew(sb.ToString());
+							item->videoURL = Text::String::New(sb.ToString(), sb.GetLength());
 						}
 					}
 				}
@@ -236,7 +245,9 @@ Bool Net::SNS::SNSInstagram::Reload()
 				sb.Append((const UTF8Char*)"https://www.instagram.com/p/");
 				sb.Append(item->shortCode);
 				sb.Append((const UTF8Char*)"/");
-				snsItem = CreateItem(item->shortCode, item->recTime, 0, item->message, sb.ToString(), item->imgURL, item->videoURL);
+				Text::String *s = Text::String::New(sb.ToString(), sb.GetLength());
+				snsItem = CreateItem(item->shortCode, item->recTime, 0, item->message, s, item->imgURL, item->videoURL);
+				s->Release();
 				this->itemMap->Put(item->shortCode, snsItem);
 				changed = true;
 			}

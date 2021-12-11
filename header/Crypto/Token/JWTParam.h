@@ -9,34 +9,34 @@ namespace Crypto
 		class JWTParam
 		{
 		private:
-			const UTF8Char *iss;
-			const UTF8Char *sub;
-			const UTF8Char *aud;
+			Text::String *iss;
+			Text::String *sub;
+			Text::String *aud;
 			Int64 exp;
 			Int64 nbf;
 			Int64 iat;
-			const UTF8Char *jti;
+			Text::String *jti;
 
 		public:
 			JWTParam();
 			~JWTParam();
 
 			void Clear();
-			void SetIssuer(const UTF8Char *issuer);
-			const UTF8Char *GetIssuer();
+			void SetIssuer(Text::String *issuer);
+			Text::String *GetIssuer();
 			Bool IsIssuerValid(const UTF8Char *issuer);
-			void SetSubject(const UTF8Char *subject);
-			const UTF8Char *GetSubject();
-			void SetAudience(const UTF8Char *audience);
-			const UTF8Char *GetAudience();
+			void SetSubject(Text::String *subject);
+			Text::String *GetSubject();
+			void SetAudience(Text::String *audience);
+			Text::String *GetAudience();
 			void SetExpirationTime(Int64 t);
 			Int64 GetExpirationTime();
 			void SetNotBefore(Int64 t);
 			Int64 GetNotBefore();
 			void SetIssuedAt(Int64 t);
 			Int64 GetIssuedAt();
-			void SetJWTId(const UTF8Char *id);
-			const UTF8Char *GetJWTId();
+			void SetJWTId(Text::String *id);
+			Text::String *GetJWTId();
 			void ToString(Text::StringBuilderUTF *sb);
 		};
 	}

@@ -10,7 +10,7 @@ namespace Text
 		Object,
 		Array,
 		Number,
-		StringUTF8,
+		String,
 		BOOL,
 		Null,
 		INT32,
@@ -35,10 +35,10 @@ namespace Text
 		virtual Bool Identical(JSONBase *obj) = 0;
 		void BeginUse();
 		void EndUse();
-		Bool IsStringUTF8();
+		Bool IsString();
 
 		JSONBase *GetValue(const Char *path);
-		const UTF8Char *GetString(const Char *path);
+		Text::String *GetString(const Char *path);
 
 		static JSONBase *ParseJSONStr(const UTF8Char *jsonStr);
 		static JSONBase *ParseJSONStrLen(const UTF8Char *jsonStr, UOSInt strLen);
@@ -104,22 +104,23 @@ namespace Text
 		Int64 GetValue();
 	};
 
-	class JSONStringUTF8 : public JSONBase
+	class JSONString : public JSONBase
 	{
 	private:
-		const UTF8Char *val;
+		Text::String *val;
 
 	public:
-		JSONStringUTF8(const UTF8Char *val);
+		JSONString(const UTF8Char *val, UOSInt leng);
+		JSONString(const UTF8Char *val);
 	private:
-		virtual ~JSONStringUTF8();
+		virtual ~JSONString();
 
 	public:
 		virtual JSONType GetType();
 		virtual void ToJSONString(Text::StringBuilderUTF *sb);
 		virtual Bool Equals(const UTF8Char *s);
 		virtual Bool Identical(JSONBase *obj);
-		const UTF8Char *GetValue();
+		Text::String *GetValue();
 	};
 
 	class JSONStringW : public JSONBase
@@ -175,7 +176,7 @@ namespace Text
 		void SetObjectValue(const UTF8Char *name, JSONBase *val);
 		JSONBase *GetObjectValue(const UTF8Char *name);
 		void GetObjectNames(Data::ArrayList<const UTF8Char *> *names);
-		const UTF8Char *GetObjectString(const UTF8Char *name);
+		Text::String *GetObjectString(const UTF8Char *name);
 	};
 
 	class JSONArray : public JSONBase

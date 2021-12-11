@@ -10,13 +10,13 @@ void __stdcall SSWR::AVIRead::AVIRSMakeForm::OnProgSelChg(void *userObj)
 	me->lbProgSource->ClearItems();
 	if (progName)
 	{
-		Data::ArrayListStrUTF8 objList;
-		Data::ArrayListStrUTF8 liblist;
-		Data::ArrayListStrUTF8 procList;
-		Data::ArrayListStrUTF8 headerList;
+		Data::ArrayListString objList;
+		Data::ArrayListString liblist;
+		Data::ArrayListString procList;
+		Data::ArrayListString headerList;
 		Int64 latestTime;
 		Bool progGroup;
-		const UTF8Char *csptr;
+		Text::String *s;
 		UOSInt i;
 		UOSInt j;
 		const IO::SMake::ProgramItem *prog;
@@ -26,19 +26,12 @@ void __stdcall SSWR::AVIRead::AVIRSMakeForm::OnProgSelChg(void *userObj)
 		j = objList.GetCount();
 		while (i < j)
 		{
-			csptr = objList.GetItem(i);
-			me->lbProgObject->AddItem(csptr, 0);
-			prog = me->smake->GetProgItem(csptr);
+			s = objList.GetItem(i);
+			me->lbProgObject->AddItem(s, 0);
+			prog = me->smake->GetProgItem(s->v);
 			if (prog && prog->srcFile)
 			{
-				if (prog->srcFile[0] == '@')
-				{
-					procList.SortedInsert(prog->srcFile + 1);
-				}
-				else
-				{
-					procList.SortedInsert(prog->srcFile);
-				}
+				procList.SortedInsert(prog->srcFile);
 			}
 			i++;
 		}
@@ -47,8 +40,15 @@ void __stdcall SSWR::AVIRead::AVIRSMakeForm::OnProgSelChg(void *userObj)
 		j = procList.GetCount();
 		while (i < j)
 		{
-			csptr = procList.GetItem(i);
-			me->lbProgSource->AddItem(csptr, 0);
+			s = procList.GetItem(i);
+			if (s->v[0] == '@')
+			{
+				me->lbProgSource->AddItem(s->v + 1, 0);
+			}
+			else
+			{
+				me->lbProgSource->AddItem(s, 0);
+			}
 			i++;
 		}
 
@@ -56,8 +56,8 @@ void __stdcall SSWR::AVIRead::AVIRSMakeForm::OnProgSelChg(void *userObj)
 		j = headerList.GetCount();
 		while (i < j)
 		{
-			csptr = headerList.GetItem(i);
-			me->lbProgHeader->AddItem(csptr, 0);
+			s = headerList.GetItem(i);
+			me->lbProgHeader->AddItem(s, 0);
 			i++;
 		}
 
@@ -150,14 +150,14 @@ SSWR::AVIRead::AVIRSMakeForm::AVIRSMakeForm(UI::GUIClientControl *parent, UI::GU
 	this->lvConfig->AddColumn((const UTF8Char*)"Name", 150);
 	this->lvConfig->AddColumn((const UTF8Char*)"Value", 450);
 
-	Data::ArrayList<const UTF8Char*> progList;
-	const UTF8Char *progName;
+	Data::ArrayList<Text::String*> progList;
+	Text::String *progName;
 	UOSInt i = 0;
 	UOSInt j = this->smake->GetProgList(&progList);
 	while (i < j)
 	{
 		progName = progList.GetItem(i);
-		if (this->smake->IsProgGroup(progName))
+		if (this->smake->IsProgGroup(progName->v))
 		{
 			this->lbProgGroup->AddItem(progName, (void*)progName);
 		}

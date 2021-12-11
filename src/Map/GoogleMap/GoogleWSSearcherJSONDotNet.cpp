@@ -213,7 +213,7 @@ UTF8Char *Map::GoogleMap::GoogleWSSearcherJSONDotNet::SearchName(UTF8Char *buff,
 							if (j > 0)
 							{
 								result = (Text::JSONObject*)arr->GetArrayValue(bestResult);
-								buff = Text::StrConcat(buff, ((Text::JSONStringUTF8*)result->GetObjectValue((const UTF8Char*)"formatted_address"))->GetValue());
+								buff = Text::StrConcat(buff, ((Text::JSONString*)result->GetObjectValue((const UTF8Char*)"formatted_address"))->GetValue());
 							}
 							else
 							{
@@ -227,7 +227,7 @@ UTF8Char *Map::GoogleMap::GoogleWSSearcherJSONDotNet::SearchName(UTF8Char *buff,
 					}
 					else
 					{
-						Text::JSONStringUTF8 *jstr = (Text::JSONStringUTF8*)jobj->GetObjectValue((const UTF8Char*)"status");
+						Text::JSONString *jstr = (Text::JSONString*)jobj->GetObjectValue((const UTF8Char*)"status");
 						if (Text::StrCompare(jstr->GetValue(), (const UTF8Char*)"ZERO_RESULTS") == 0)
 						{
 							buff = Text::StrConcat(buff, (const UTF8Char*)"-");

@@ -13,7 +13,6 @@ namespace Data
 		virtual V Get(T key) = 0;
 		virtual V Remove(T key) = 0;
 		virtual Bool IsEmpty() = 0;
-		virtual V *ToArray(UOSInt *objCnt) = 0;
 		virtual void Clear() = 0;
 	};
 

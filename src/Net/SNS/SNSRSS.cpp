@@ -1,4 +1,5 @@
 #include "Stdafx.h"
+#include "Data/ArrayListString.h"
 #include "Net/RSS.h"
 #include "Net/SNS/SNSRSS.h"
 #include "Sync/MutexUsage.h"
@@ -19,28 +20,28 @@ Net::SNS::SNSRSS::SNSRSS(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::E
 	this->ssl = ssl;
 	this->encFact = encFact;
 	this->userAgent = userAgent?Text::StrCopyNew(userAgent):0;
-	this->channelId = Text::StrCopyNew(channelId);
+	this->channelId = Text::String::NewNotNull(channelId);
 	this->chName = 0;
 	this->chDesc = 0;
-	NEW_CLASS(this->itemMap, Data::StringUTF8Map<SNSItem*>());
+	NEW_CLASS(this->itemMap, Data::FastStringMap<SNSItem*>());
 	NEW_CLASS(this->crc, Crypto::Hash::CRC32R());
 	NEW_CLASS(this->crcMut, Sync::Mutex());
 
 	Net::RSS *rss;
 	SNSItem *snsItem;
 	Net::RSSItem *item;
-	NEW_CLASS(rss, Net::RSS(this->channelId, this->userAgent, this->sockf, this->ssl));
+	NEW_CLASS(rss, Net::RSS(this->channelId->v, this->userAgent, this->sockf, this->ssl));
 	if (rss->GetTitle())
 	{
-		this->chName = Text::StrCopyNew(rss->GetTitle());
+		this->chName = rss->GetTitle()->Clone();
 	}
 	else
 	{
-		this->chName = Text::StrCopyNew(this->channelId);
+		this->chName = this->channelId->Clone();
 	}
 	if (rss->GetDescription())
 	{
-		this->chDesc = Text::StrCopyNew(rss->GetDescription());
+		this->chDesc = rss->GetDescription()->Clone();
 	}
 	UOSInt i = rss->GetCount();
 	Text::StringBuilderUTF8 sb;
@@ -50,9 +51,9 @@ Net::SNS::SNSRSS::SNSRSS(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::E
 		item = rss->GetItem(i);
 		if (item->descHTML)
 		{
-			Data::ArrayList<const UTF8Char *> imgList;
+			Data::ArrayList<Text::String *> imgList;
 			sb.ClearStr();
-			Text::HTMLUtil::HTMLGetText(this->encFact, item->description, Text::StrCharCnt(item->description), false, &sb, &imgList);
+			Text::HTMLUtil::HTMLGetText(this->encFact, item->description->v, item->description->leng, false, &sb, &imgList);
 			sb2.ClearStr();
 			if (item->imgURL)
 			{
@@ -60,19 +61,24 @@ Net::SNS::SNSRSS::SNSRSS(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::E
 			}
 			UOSInt j = 0;
 			UOSInt k = imgList.GetCount();
-			const UTF8Char *csptr;
+			Text::String *s;
 			while (j < k)
 			{
-				csptr = imgList.GetItem(j);
+				s = imgList.GetItem(j);
 				if (sb2.GetLength() > 0)
 				{
 					sb2.AppendChar(' ', 1);
 				}
-				sb2.Append(csptr);
-				Text::StrDelNew(csptr);
+				sb2.Append(s);
+				s->Release();
 				j++;
 			}
-			snsItem = CreateItem(item->guid, item->pubDate->ToTicks(), item->title, sb.ToString(), item->link, sb2.ToString(), 0);
+			Text::String *s2;
+			s = Text::String::New(sb.ToString(), sb.GetLength());
+			s2 = Text::String::New(sb2.ToString(), sb2.GetLength());
+			snsItem = CreateItem(item->guid, item->pubDate->ToTicks(), item->title, s, item->link, s2, 0);
+			s->Release();
+			s2->Release();
 		}
 		else
 		{
@@ -87,13 +93,12 @@ Net::SNS::SNSRSS::~SNSRSS()
 {
 	UOSInt i;
 	SDEL_TEXT(this->userAgent);
-	SDEL_TEXT(this->chName);
-	SDEL_TEXT(this->chDesc);
-	Data::ArrayList<SNSItem*> *itemList = this->itemMap->GetValues();
-	i = itemList->GetCount();
+	SDEL_STRING(this->chName);
+	SDEL_STRING(this->chDesc);
+	i = this->itemMap->GetCount();
 	while (i-- > 0)
 	{
-		FreeItem(itemList->GetItem(i));
+		FreeItem(this->itemMap->GetItem(i));
 	}
 	DEL_CLASS(this->itemMap);
 	DEL_CLASS(this->crc);
@@ -110,12 +115,12 @@ Net::SNS::SNSControl::SNSType Net::SNS::SNSRSS::GetSNSType()
 	return Net::SNS::SNSControl::ST_RSS;
 }
 
-const UTF8Char *Net::SNS::SNSRSS::GetChannelId()
+Text::String *Net::SNS::SNSRSS::GetChannelId()
 {
 	return this->channelId;
 }
 
-const UTF8Char *Net::SNS::SNSRSS::GetName()
+Text::String *Net::SNS::SNSRSS::GetName()
 {
 	return this->chName;
 }
@@ -124,7 +129,7 @@ UTF8Char *Net::SNS::SNSRSS::GetDirName(UTF8Char *dirName)
 {
 	UInt8 crcVal[4];
 	dirName = Text::StrConcat(dirName, (const UTF8Char*)"RSS_");
-	this->CalcCRC(this->channelId, Text::StrCharCnt(this->channelId), crcVal);
+	this->CalcCRC(this->channelId->v, this->channelId->leng, crcVal);
 	dirName = Text::StrHexBytes(dirName, crcVal, 4, 0);
 	return dirName;
 }
@@ -132,14 +137,14 @@ UTF8Char *Net::SNS::SNSRSS::GetDirName(UTF8Char *dirName)
 UOSInt Net::SNS::SNSRSS::GetCurrItems(Data::ArrayList<SNSItem*> *itemList)
 {
 	UOSInt initCnt = itemList->GetCount();
-	itemList->AddAll(this->itemMap->GetValues());
+	itemList->AddAll(this->itemMap);
 	return itemList->GetCount() - initCnt;
 }
 
 UTF8Char *Net::SNS::SNSRSS::GetItemShortId(UTF8Char *buff, SNSItem *item)
 {
 	UInt8 crcVal[4];
-	this->CalcCRC(item->id, Text::StrCharCnt(item->id), crcVal);
+	this->CalcCRC(item->id->v, item->id->leng, crcVal);
 	return Text::StrHexBytes(buff, crcVal, 4, 0);
 }
 
@@ -153,13 +158,21 @@ Bool Net::SNS::SNSRSS::Reload()
 	SNSItem *snsItem;
 	OSInt si;
 	Net::RSSItem *item;
-	Data::ArrayListStrUTF8 idList;
+	Data::ArrayListString idList;
 	Bool changed = false;
-	idList.AddAll(this->itemMap->GetKeys());
+	UOSInt i;
+	UOSInt j = this->itemMap->GetCount();
+	idList.EnsureCapacity(j);
+	i = 0;
+	while (i < j)
+	{
+		idList.Add(this->itemMap->GetKey(i));
+		i++;
+	}
 
 	Net::RSS *rss;
-	NEW_CLASS(rss, Net::RSS(this->channelId, this->userAgent, this->sockf, this->ssl));
-	UOSInt i = rss->GetCount();
+	NEW_CLASS(rss, Net::RSS(this->channelId->v, this->userAgent, this->sockf, this->ssl));
+	i = rss->GetCount();
 	Text::StringBuilderUTF8 sb;
 	Text::StringBuilderUTF8 sb2;
 	if (i > 0)
@@ -176,9 +189,9 @@ Bool Net::SNS::SNSRSS::Reload()
 			{
 				if (item->descHTML)
 				{
-					Data::ArrayList<const UTF8Char *> imgList;
+					Data::ArrayList<Text::String *> imgList;
 					sb.ClearStr();
-					Text::HTMLUtil::HTMLGetText(this->encFact, item->description, Text::StrCharCnt(item->description), false, &sb, &imgList);
+					Text::HTMLUtil::HTMLGetText(this->encFact, item->description->v, item->description->leng, false, &sb, &imgList);
 					sb2.ClearStr();
 					if (item->imgURL)
 					{
@@ -186,19 +199,24 @@ Bool Net::SNS::SNSRSS::Reload()
 					}
 					UOSInt j = 0;
 					UOSInt k = imgList.GetCount();
-					const UTF8Char *csptr;
+					Text::String *s;
 					while (j < k)
 					{
-						csptr = imgList.GetItem(j);
+						s = imgList.GetItem(j);
 						if (sb2.GetLength() > 0)
 						{
 							sb2.AppendChar(' ', 1);
 						}
-						sb2.Append(csptr);
-						Text::StrDelNew(csptr);
+						sb2.Append(s);
+						s->Release();
 						j++;
 					}
-					snsItem = CreateItem(item->guid, item->pubDate->ToTicks(), item->title, sb.ToString(), item->link, sb2.ToString(), 0);
+					Text::String *s2;
+					s = Text::String::New(sb.ToString(), sb.GetLength());
+					s2 = Text::String::New(sb2.ToString(), sb2.GetLength());
+					snsItem = CreateItem(item->guid, item->pubDate->ToTicks(), item->title, s, item->link, s2, 0);
+					s->Release();
+					s2->Release();
 				}
 				else
 				{

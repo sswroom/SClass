@@ -22,12 +22,8 @@ void Media::PhotoInfo::ParseXMF(Text::XMLDocument *xmf)
 	{
 		UOSInt sz;
 		UTF8Char *sbuff;
-		if (this->lens)
-			MemFree((void*)this->lens);
-		sz = Text::StrCharCnt(node->value);
-		sbuff = MemAlloc(UTF8Char, sz + 1);
-		MemCopyNO(sbuff, node->value, sizeof(UTF8Char) * (sz + 1));
-		this->lens = sbuff;
+		SDEL_STRING(this->lens);
+		this->lens = node->value->Clone();
 	}
 	if ((node = xmf->SearchFirstNode((const UTF8Char*)"//@exif:FocalLength")) != 0)
 	{
@@ -42,12 +38,12 @@ void Media::PhotoInfo::ParseXMF(Text::XMLDocument *xmf)
 	}
 }
 
-Double Media::PhotoInfo::ParseFraction(const UTF8Char *s)
+Double Media::PhotoInfo::ParseFraction(Text::String *s)
 {
 	UTF8Char sbuff[64];
 	UTF8Char *sarr[3];
 	UOSInt cnt;
-	Text::StrConcat(sbuff, s);
+	s->ConcatTo(sbuff);
 	cnt = Text::StrSplit(sarr, 3, sbuff, '/');
 	if (cnt == 1)
 	{
@@ -93,12 +89,12 @@ Media::PhotoInfo::PhotoInfo(IO::IStreamData *fd)
 			ctxt = exif->GetPhotoMake();
 			if (ctxt)
 			{
-				this->make = Text::StrCopyNew((const UTF8Char*)ctxt);
+				this->make = Text::String::NewNotNull((const UTF8Char*)ctxt);
 			}
 			ctxt = exif->GetPhotoModel();
 			if (ctxt)
 			{
-				this->model = Text::StrCopyNew((const UTF8Char*)ctxt);
+				this->model = Text::String::NewNotNull((const UTF8Char*)ctxt);
 			}
 			this->fNumber = exif->GetPhotoFNumber();
 			this->expTime = exif->GetPhotoExpTime();
@@ -137,7 +133,7 @@ Media::PhotoInfo::PhotoInfo(IO::IStreamData *fd)
 							ctxt = innerExif->GetPhotoLens();
 							if (ctxt)
 							{
-								this->lens = Text::StrCopyNew((const UTF8Char*)ctxt);
+								this->lens = Text::String::NewNotNull((const UTF8Char*)ctxt);
 							}
 							if (innerExif->GetPhotoFocalLength())
 								this->focalLength = innerExif->GetPhotoFocalLength();
@@ -177,12 +173,9 @@ Media::PhotoInfo::PhotoInfo(IO::IStreamData *fd)
 
 Media::PhotoInfo::~PhotoInfo()
 {
-	if (this->make)
-		MemFree((void*)this->make);
-	if (this->model)
-		MemFree((void*)this->model);
-	if (this->lens)
-		MemFree((void*)this->lens);
+	SDEL_STRING(this->make);
+	SDEL_STRING(this->model);
+	SDEL_STRING(this->lens);
 	if (this->photoDate)
 		DEL_CLASS(this->photoDate);
 }
@@ -222,7 +215,7 @@ void Media::PhotoInfo::ToString(Text::StringBuilderUTF *sb)
 		{
 			sb->Append(this->make);
 		}
-		else if (Text::StrStartsWith(this->model, this->make))
+		else if (this->model->StartsWith(this->make->v))
 		{
 			sb->Append(this->model);
 		}

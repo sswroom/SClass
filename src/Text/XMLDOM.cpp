@@ -15,36 +15,22 @@ Text::XMLAttrib::XMLAttrib(const UTF8Char *name, UOSInt nameLen, const UTF8Char 
 	this->valueOri = 0;
 	if (nameLen > 0)
 	{
-		this->name = MemAlloc(UTF8Char, nameLen + 1);
+		this->name = Text::String::New(nameLen);
 		Text::XML::ParseStr(this->name, name, name + nameLen);
 	}
 	if (valueLen > 0)
 	{
-		this->value = MemAlloc(UTF8Char, valueLen + 1);
+		this->value = Text::String::New(valueLen);
 		Text::XML::ParseStr(this->value, value, value + valueLen);
-		this->valueOri = MemAlloc(UTF8Char, valueLen + 1);
-		MemCopyNO(this->valueOri, value, valueLen);
-		this->valueOri[valueLen] = 0;
+		this->valueOri = Text::String::New(value, valueLen);
 	}
 }
 
 Text::XMLAttrib::~XMLAttrib()
 {
-	if (name)
-	{
-		MemFree(name);
-		name = 0;
-	}
-	if (value)
-	{
-		MemFree(value);
-		value = 0;
-	}
-	if (valueOri)
-	{
-		MemFree(valueOri);
-		valueOri = 0;
-	}
+	SDEL_STRING(this->name);
+	SDEL_STRING(this->value);
+	SDEL_STRING(this->valueOri);
 }
 
 Bool Text::XMLAttrib::ToString(Text::StringBuilderUTF *sb)
@@ -59,9 +45,9 @@ Bool Text::XMLAttrib::ToString(Text::StringBuilderUTF *sb)
 		}
 		else
 		{
-			const UTF8Char *csptr = Text::XML::ToNewAttrText(this->value);
-			sb->Append(csptr);
-			Text::XML::FreeNewText(csptr);
+			Text::String *s = Text::XML::ToNewAttrText(this->value->v);
+			sb->Append(s);
+			s->Release();
 		}
 	}
 	return true;
@@ -83,21 +69,9 @@ Text::XMLNode::~XMLNode()
 	XMLAttrib *attr;
 	XMLNode *node;
 
-	if (this->name)
-	{
-		MemFree(this->name);
-		this->name = 0;
-	}
-	if (this->value)
-	{
-		MemFree(this->value);
-		this->value = 0;
-	}
-	if (this->valueOri)
-	{
-		MemFree(this->valueOri);
-		this->valueOri = 0;
-	}
+	SDEL_STRING(this->name);
+	SDEL_STRING(this->value);
+	SDEL_STRING(this->valueOri);
 	if (this->attribArr)
 	{
 		i = attribArr->GetCount();
@@ -171,7 +145,7 @@ Text::XMLAttrib *Text::XMLNode::GetFirstAttrib(const UTF8Char *attrName)
 	while (i < cnt)
 	{
 		attr = this->attribArr->GetItem(i++);
-		if (Text::StrEquals(attr->name, attrName))
+		if (attr->name->Equals(attrName))
 			return attr;
 	}
 	return 0;
@@ -557,7 +531,7 @@ Bool Text::XMLNode::SearchEqual(UOSInt level, Data::ArrayList<UTF8Char*> *reqArr
 	*dest = 0;
 
 	n = (XMLNode*)currPathArr->GetItem(level);
-	src = n->name;
+	src = n->name->v;
 	dest = nameBuff;
 	if (*dest == '@')
 	{
@@ -626,10 +600,10 @@ Bool Text::XMLNode::SearchEqual(UOSInt level, Data::ArrayList<UTF8Char*> *reqArr
 	return true;
 }
 
-Bool Text::XMLNode::SearchEval(UOSInt level, Data::ArrayList<UTF8Char*> *reqArr, Data::ArrayList<XMLNode*> *currPathArr, Text::XMLNode *n, UTF8Char *nameStart, UTF8Char *nameEnd, Text::StringBuilderUTF *outSB)
+Bool Text::XMLNode::SearchEval(UOSInt level, Data::ArrayList<UTF8Char*> *reqArr, Data::ArrayList<XMLNode*> *currPathArr, Text::XMLNode *n, const UTF8Char *nameStart, const UTF8Char *nameEnd, Text::StringBuilderUTF *outSB)
 {
-	UTF8Char *src;
-	UTF8Char *dest;
+	const UTF8Char *src;
+	const UTF8Char *dest;
 	XMLAttrib *attr;
 	XMLNode *child;
 	UOSInt i;
@@ -642,7 +616,7 @@ Bool Text::XMLNode::SearchEval(UOSInt level, Data::ArrayList<UTF8Char*> *reqArr,
 		{
 			attr = n->attribArr->GetItem(i);
 			src = &nameStart[1];
-			dest = attr->name;
+			dest = attr->name->v;
 			eq = true;
 			while (src < nameEnd)
 			{
@@ -654,8 +628,7 @@ Bool Text::XMLNode::SearchEval(UOSInt level, Data::ArrayList<UTF8Char*> *reqArr,
 			}
 			if (eq)
 			{
-				src = attr->value;
-				outSB->Append(src);
+				outSB->Append(attr->value);
 				return true;
 			}
 		}
@@ -675,7 +648,7 @@ Bool Text::XMLNode::SearchEval(UOSInt level, Data::ArrayList<UTF8Char*> *reqArr,
 			if (child->nt == Text::XMLNode::NT_ELEMENT)
 			{
 				src = nameStart;
-				dest = child->name;
+				dest = child->name->v;
 				eq = true;
 				while (src < nameEnd)
 				{
@@ -726,7 +699,6 @@ const UTF8Char *Text::XMLNode::NodeTypeGetName(NodeType ntype)
 UTF8Char *Text::XMLDocument::ParseNode(XMLNode *parentNode, UTF8Char *xmlStart, UTF8Char *xmlEnd)
 {
 	UTF8Char *currPtr;
-	UTF8Char *currPtr2;
 	UTF8Char c;
 	XMLNode *node;
 	XMLAttrib *attr;
@@ -764,16 +736,14 @@ UTF8Char *Text::XMLDocument::ParseNode(XMLNode *parentNode, UTF8Char *xmlStart, 
 						xmlValEn = currPtr;
 						if (Text::StrEqualsICase((const UTF8Char*)"ENCODING", xmlNameSt, (UOSInt)(xmlNameEn - xmlNameSt)))
 						{
-							if (this->encoding)
-								MemFree(this->encoding);
-							this->encoding = MemAlloc(UTF8Char, (UOSInt)(xmlValEn - xmlValSt + 1));
+							SDEL_STRING(this->encoding);
+							this->encoding = Text::String::New((UOSInt)(xmlValEn - xmlValSt));
 							Text::XML::ParseStr(this->encoding, xmlValSt, xmlValEn);
 						}
 						else if (Text::StrEqualsICase((const UTF8Char*)"VERSION", xmlNameSt, (UOSInt)(xmlNameEn - xmlNameSt)))
 						{
-							if (this->version)
-								MemFree(this->version);
-							this->version = MemAlloc(UTF8Char, (UOSInt)(xmlValEn - xmlValSt + 1));
+							SDEL_STRING(this->version);
+							this->version = Text::String::New((UOSInt)(xmlValEn - xmlValSt));
 							Text::XML::ParseStr(this->version, xmlValSt, xmlValEn);
 						}
 
@@ -826,16 +796,14 @@ UTF8Char *Text::XMLDocument::ParseNode(XMLNode *parentNode, UTF8Char *xmlStart, 
 						xmlValEn = currPtr;
 						if (Text::StrEqualsICase((const UTF8Char*)"ENCODING", xmlNameSt, (UOSInt)(xmlNameEn - xmlNameSt)))
 						{
-							if (this->encoding)
-								MemFree(this->encoding);
-							this->encoding = MemAlloc(UTF8Char, (UOSInt)(xmlValEn - xmlValSt + 1));
+							SDEL_STRING(this->encoding);
+							this->encoding = Text::String::New((UOSInt)(xmlValEn - xmlValSt));
 							Text::XML::ParseStr(this->encoding, xmlValSt, xmlValEn);
 						}
 						else if (Text::StrEqualsICase((const UTF8Char*)"VERSION", xmlNameSt, (UOSInt)(xmlNameEn - xmlNameSt)))
 						{
-							if (this->version)
-								MemFree(this->version);
-							this->version = MemAlloc(UTF8Char, (UOSInt)(xmlValEn - xmlValSt + 1));
+							SDEL_STRING(this->version);
+							this->version = Text::String::New((UOSInt)(xmlValEn - xmlValSt));
 							Text::XML::ParseStr(this->version, xmlValSt, xmlValEn);
 						}
 
@@ -895,14 +863,7 @@ UTF8Char *Text::XMLDocument::ParseNode(XMLNode *parentNode, UTF8Char *xmlStart, 
 					if (currPtr[1] == '-' && currPtr[2] == '>')
 					{
 						NEW_CLASS(node, XMLNode(XMLNode::NT_COMMENT));
-						xmlEnd = currPtr;
-						currPtr2 = node->value = MemAlloc(UTF8Char, (UOSInt)(currPtr - xmlStart - 3));
-						currPtr = xmlStart + 4;
-						while (currPtr < xmlEnd)
-						{
-							*currPtr2++ = *currPtr++;
-						}
-						*currPtr2 = 0;
+						node->value = Text::String::New(xmlStart + 4, (UOSInt)(currPtr - xmlStart - 4));
 						parentNode->AddChild(node);
 						
 						return xmlEnd + 3;
@@ -913,7 +874,7 @@ UTF8Char *Text::XMLDocument::ParseNode(XMLNode *parentNode, UTF8Char *xmlStart, 
 
 			//////////////////////////////// File Error /////////////////////////////////////////////////
 			NEW_CLASS(node, XMLNode(XMLNode::NT_TEXT));
-			node->name = MemAlloc(UTF8Char, (UOSInt)(currPtr - xmlStart + 1));
+			node->name = Text::String::New((UOSInt)(currPtr - xmlStart));
 			Text::XML::ParseStr(node->name, xmlStart, currPtr);
 			this->AddChild(node);
 			
@@ -930,16 +891,8 @@ UTF8Char *Text::XMLDocument::ParseNode(XMLNode *parentNode, UTF8Char *xmlStart, 
 					if (currPtr[1] == ']' && currPtr[2] == '>')
 					{
 						NEW_CLASS(node, XMLNode(XMLNode::NT_CDATA));
-						xmlEnd = currPtr;
-						currPtr2 = node->value = MemAlloc(UTF8Char, (UOSInt)(currPtr - xmlStart - 8));
-						currPtr = xmlStart + 9;
-						while (currPtr < xmlEnd)
-						{
-							*currPtr2++ = *currPtr++;
-						}
-						*currPtr2 = 0;
+						node->value = Text::String::New(xmlStart + 9, (UOSInt)(currPtr - xmlStart - 9));
 						parentNode->AddChild(node);
-						
 						return xmlEnd + 3;
 					}
 				}
@@ -948,7 +901,7 @@ UTF8Char *Text::XMLDocument::ParseNode(XMLNode *parentNode, UTF8Char *xmlStart, 
 
 			//////////////////////////////// File Error /////////////////////////////////////////////////
 			NEW_CLASS(node, XMLNode(XMLNode::NT_TEXT));
-			node->name = MemAlloc(UTF8Char, (UOSInt)(currPtr - xmlStart + 1));
+			node->name = Text::String::New((UOSInt)(currPtr - xmlStart));
 			Text::XML::ParseStr(node->name, xmlStart, currPtr);
 			this->AddChild(node);
 			
@@ -977,7 +930,7 @@ UTF8Char *Text::XMLDocument::ParseNode(XMLNode *parentNode, UTF8Char *xmlStart, 
 					if (node == 0)
 					{
 						NEW_CLASS(node, XMLNode(XMLNode::NT_ELEMENT));
-						node->name = MemAlloc(UTF8Char, (UOSInt)(currPtr - xmlNameSt + 1));
+						node->name = Text::String::New((UOSInt)(currPtr - xmlNameSt));
 						Text::XML::ParseStr(node->name, xmlNameSt, currPtr);
 					}
 					else if (xmlNameSt != 0)
@@ -1071,7 +1024,7 @@ UTF8Char *Text::XMLDocument::ParseNode(XMLNode *parentNode, UTF8Char *xmlStart, 
 						if (node == 0)
 						{
 							NEW_CLASS(node, XMLNode(XMLNode::NT_ELEMENT));
-							node->name = MemAlloc(UTF8Char, (UOSInt)(xmlNameEn - xmlNameSt + 1));
+							node->name = Text::String::New((UOSInt)(xmlNameEn - xmlNameSt));
 							Text::XML::ParseStr(node->name, xmlNameSt, xmlNameEn);
 							xmlNameSt = 0;
 							xmlValSt = 0;
@@ -1194,7 +1147,7 @@ UTF8Char *Text::XMLDocument::ParseNode(XMLNode *parentNode, UTF8Char *xmlStart, 
 			currPtr++;
 		}
 		NEW_CLASS(node, XMLNode(XMLNode::NT_TEXT));
-		node->value = MemAlloc(UTF8Char, (UOSInt)(currPtr - xmlStart + 1));
+		node->value = Text::String::New((UOSInt)(currPtr - xmlStart));
 		Text::XML::ParseStr(node->value, xmlStart, currPtr);
 		parentNode->AddChild(node);
 		return currPtr;
@@ -1216,16 +1169,8 @@ Text::XMLDocument::~XMLDocument()
 		MemFree(this->doc);
 		this->doc = 0;
 	}
-	if (this->encoding)
-	{
-		MemFree(this->encoding);
-		this->encoding = 0;
-	}
-	if (this->version)
-	{
-		MemFree(this->version);
-		this->version = 0;
-	}
+	SDEL_STRING(this->encoding);
+	SDEL_STRING(this->version);
 }
 
 Bool Text::XMLDocument::ParseBuff(Text::EncodingFactory *encFact, const UInt8 *buff, UOSInt size)

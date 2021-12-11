@@ -199,7 +199,7 @@ IO::ParsedObject *Parser::FileParser::OziMapParser::ParseFile(IO::IStreamData *f
 				Text::String *s = Text::String::NewNotNull(&sbuff[i + 1]);
 				NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_IMAGE, fd->GetFullName(), 0, (const UTF8Char**)0, csys, 0, s));
 				s->Release();
-				lyr->AddVector(vimg, 0);
+				lyr->AddVector(vimg, (const UTF8Char**)0);
 			}
 		}
 		if (ptXY)

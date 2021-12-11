@@ -154,6 +154,7 @@ void Exporter::DocHTMLExporter::WriteItems(IO::Writer *writer, Data::ReadingList
 	UOSInt i = 0;
 	UOSInt j = items->GetCount();
 	const UTF8Char *text;
+	Text::String *s;
 	Text::Doc::DocItem::HorizontalAlign halign;
 	Text::Doc::DocHeading *heading;
 	while (i < j)
@@ -166,10 +167,10 @@ void Exporter::DocHTMLExporter::WriteItems(IO::Writer *writer, Data::ReadingList
 			{
 				writer->Write((const UTF8Char*)"<p>");
 			}
-			text = Text::XML::ToNewAttrText(((Text::Doc::DocLink*)item)->GetLink());
+			s = Text::XML::ToNewAttrText(((Text::Doc::DocLink*)item)->GetLink());
 			writer->Write((const UTF8Char*)"<a href=");
-			writer->Write(text);
-			Text::XML::FreeNewText(text);
+			writer->Write(s->v, s->leng);
+			s->Release();
 			writer->Write((const UTF8Char*)">");
 			WriteItems(writer, item, (const UTF8Char*)"a");
 			writer->Write((const UTF8Char*)"</a>");

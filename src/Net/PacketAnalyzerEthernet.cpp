@@ -2167,19 +2167,19 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 									{
 										jobj = (Text::JSONObject*)jbase;
 										jbase = jobj->GetObjectValue((const UTF8Char*)"data");
-										if (jbase && jbase->GetType() == Text::JSONType::StringUTF8)
+										if (jbase && jbase->GetType() == Text::JSONType::String)
 										{
-											Text::JSONStringUTF8 *jstr = (Text::JSONStringUTF8*)jbase;
+											Text::JSONString *jstr = (Text::JSONString*)jbase;
 											UOSInt dataLen;
 											UInt8 *dataBuff;
-											const UTF8Char *dataStr = jstr->GetValue();
+											Text::String *dataStr = jstr->GetValue();
 											sb.ClearStr();
 											sb.Append((const UTF8Char*)"\r\n");
 											sb.Append(dataStr);
 											sb.Append((const UTF8Char*)":");
-											dataLen = b64.CalcBinSize(dataStr);
+											dataLen = b64.CalcBinSize(dataStr->v);
 											dataBuff = MemAlloc(UInt8, dataLen);
-											if (b64.DecodeBin(dataStr, dataBuff) == dataLen)
+											if (b64.DecodeBin(dataStr->v, dataBuff) == dataLen)
 											{
 												PacketLoRaMACGetDetail(dataBuff, dataLen, &sb);
 											}

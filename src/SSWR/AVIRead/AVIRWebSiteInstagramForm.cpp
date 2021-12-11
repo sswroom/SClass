@@ -19,7 +19,9 @@ void __stdcall SSWR::AVIRead::AVIRWebSiteInstagramForm::OnRequestUserClicked(voi
 		MemClear(&chInfo, sizeof(chInfo));
 		Data::ArrayList<Net::WebSite::WebSiteInstagramControl::ItemData*> itemList;
 		Net::WebSite::WebSiteInstagramControl::ItemData *item;
-		me->ctrl->GetChannelItems(sb.ToString(), 0, &itemList, &chInfo);
+		Text::String *s = Text::String::New(sb.ToString(), sb.GetLength());
+		me->ctrl->GetChannelItems(s, 0, &itemList, &chInfo);
+		s->Release();
 		i = 0;
 		j = itemList.GetCount();
 		while (i < j)
@@ -59,17 +61,19 @@ void __stdcall SSWR::AVIRead::AVIRWebSiteInstagramForm::OnPageClicked(void *user
 	me->lbImageURL->ClearItems();
 	if (sb.GetLength() > 0)
 	{
-		Data::ArrayList<const UTF8Char*> imageList;
-		Data::ArrayList<const UTF8Char*> videoList;
+		Data::ArrayList<Text::String*> imageList;
+		Data::ArrayList<Text::String*> videoList;
 		UOSInt i;
 		UOSInt j;
-		me->ctrl->GetPageImages(sb.ToString(), &imageList, &videoList);
+		Text::String *s = Text::String::New(sb.ToString(), sb.GetLength());
+		me->ctrl->GetPageImages(s, &imageList, &videoList);
+		s->Release();
 		i = 0;
 		j = imageList.GetCount();
 		while (i < j)
 		{
 			me->lbImageURL->AddItem(imageList.GetItem(i), 0);
-			Text::StrDelNew(imageList.GetItem(i));
+			imageList.GetItem(i)->Release();
 
 			i++;
 		}
@@ -79,7 +83,7 @@ void __stdcall SSWR::AVIRead::AVIRWebSiteInstagramForm::OnPageClicked(void *user
 		while (i < j)
 		{
 			me->lbImageURL->AddItem(videoList.GetItem(i), 0);
-			Text::StrDelNew(videoList.GetItem(i));
+			videoList.GetItem(i)->Release();
 
 			i++;
 		}

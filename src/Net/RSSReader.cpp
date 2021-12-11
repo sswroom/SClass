@@ -6,12 +6,11 @@ UInt32 __stdcall Net::RSSReader::RSSThread(void *userObj)
 {
 	Net::RSSReader *me = (Net::RSSReader*)userObj;
 	Net::RSS *rss;
-	Data::ArrayList<RSSStatus *> *vals;
 	RSSStatus *status;
 	Data::DateTime *dt;
 	UOSInt i;
 	UOSInt cnt;
-	const UTF8Char *id;
+	Text::String *id;
 
 	me->threadRunning = true;
 	NEW_CLASS(dt, Data::DateTime());
@@ -32,11 +31,10 @@ UInt32 __stdcall Net::RSSReader::RSSThread(void *userObj)
 				me->nextDT->SetCurrTimeUTC();
 				me->nextDT->AddSecond(me->refreshSecond);
 
-				vals = me->currRSSMaps->GetValues();
-				i = vals->GetCount();
+				i = me->currRSSMaps->GetCount();
 				while (i-- > 0)
 				{
-					vals->GetItem(i)->exist = false;
+					me->currRSSMaps->GetItem(i)->exist = false;
 				}
 				i = 0;
 				cnt = rss->GetCount();
@@ -62,11 +60,10 @@ UInt32 __stdcall Net::RSSReader::RSSThread(void *userObj)
 					
 					i++;
 				}
-				vals = me->currRSSMaps->GetValues();
-				i = vals->GetCount();
+				i = me->currRSSMaps->GetCount();
 				while (i-- > 0)
 				{
-					status = vals->GetItem(i);
+					status = me->currRSSMaps->GetItem(i);
 					if (!status->exist)
 					{
 						me->currRSSMaps->Remove(status->item->GetId());
@@ -100,7 +97,7 @@ Net::RSSReader::RSSReader(const UTF8Char *url, Net::SocketFactory *sockf, Net::S
 	this->lastRSS = 0;
 	this->threadRunning = false;
 	this->threadToStop = false;
-	NEW_CLASS(this->currRSSMaps, Data::StringUTF8Map<RSSStatus*>());
+	NEW_CLASS(this->currRSSMaps, Data::FastStringMap<RSSStatus*>());
 	NEW_CLASS(this->nextDT, Data::DateTime());
 	NEW_CLASS(this->threadEvt, Sync::Event(true, (const UTF8Char*)"Net.RSSReader.threadEvt"));
 	this->nextDT->SetCurrTimeUTC();
@@ -128,14 +125,12 @@ Net::RSSReader::~RSSReader()
 	DEL_CLASS(this->nextDT);
 	Text::StrDelNew(this->url);
 
-	Data::ArrayList<RSSStatus*> *vals;
 	UOSInt i;
 	RSSStatus *status;
-	vals = this->currRSSMaps->GetValues();
-	i = vals->GetCount();
+	i = this->currRSSMaps->GetCount();
 	while (i-- > 0)
 	{
-		status = vals->GetItem(i);
+		status = this->currRSSMaps->GetItem(i);
 		MemFree(status);
 	}
 	DEL_CLASS(this->currRSSMaps);

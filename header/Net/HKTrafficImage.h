@@ -1,6 +1,6 @@
 #ifndef _SM_NET_HKTRAFFICIMAGE
 #define _SM_NET_HKTRAFFICIMAGE
-#include "Data/StringUTF8Map.h"
+#include "Data/FastStringMap.h"
 #include "Text/EncodingFactory.h"
 
 namespace Net
@@ -10,21 +10,21 @@ namespace Net
 	public:
 		typedef struct
 		{
-			const UTF8Char *key;
-			const UTF8Char *addr;
+			Text::String *key;
+			Text::String *addr;
 			Double lat;
 			Double lon;
-			const UTF8Char *url;
+			Text::String *url;
 		} ImageInfo;
 
 		typedef struct
 		{
-			const UTF8Char *groupName;
+			Text::String *groupName;
 			Data::ArrayList<ImageInfo*> *imageList;
 		} GroupInfo;
 
 	private:
-		Data::StringUTF8Map<GroupInfo*> *groupMap;
+		Data::FastStringMap<GroupInfo*> *groupMap;
 
 		void Init(Text::EncodingFactory *encFact, const UInt8 *buff, UOSInt buffSize);
 	public:
@@ -32,7 +32,7 @@ namespace Net
 		HKTrafficImage(Text::EncodingFactory *encFact, const UTF8Char *fileName);
 		~HKTrafficImage();
 
-		Data::ArrayList<GroupInfo*> *GetGroups();
+		UOSInt GetGroups(Data::ArrayList<GroupInfo*> *groups);
 	};
 }
 #endif

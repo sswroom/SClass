@@ -16,18 +16,18 @@ namespace Net
 			{
 				Int64 id;
 				Int64 recTime;
-				const UTF8Char *message;
-				const UTF8Char *imgURL;
+				Text::String *message;
+				Text::String *imgURL;
 			} ItemData;
 
 			typedef struct
 			{
-				const UTF8Char *talkCode;
-				const UTF8Char *name;
-				const UTF8Char *detail;
-				const UTF8Char *imagePath;
+				Text::String *talkCode;
+				Text::String *name;
+				Text::String *detail;
+				Text::String *imagePath;
 				Int64 editDate;
-				const UTF8Char *screenName;
+				Text::String *screenName;
 			} ChannelInfo;
 			
 		private:
@@ -41,7 +41,7 @@ namespace Net
 			WebSite7gogoControl(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, const UTF8Char *userAgent);
 			~WebSite7gogoControl();
 
-			OSInt GetChannelItems(const UTF8Char *channelId, OSInt pageNo, Data::ArrayList<ItemData*> *itemList, ChannelInfo *chInfo);
+			OSInt GetChannelItems(Text::String *channelId, OSInt pageNo, Data::ArrayList<ItemData*> *itemList, ChannelInfo *chInfo);
 			void FreeItems(Data::ArrayList<ItemData*> *itemList);
 			void FreeChannelInfo(ChannelInfo *chInfo);
 			const UTF8Char *GetUserAgent();

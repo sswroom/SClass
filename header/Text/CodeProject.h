@@ -25,7 +25,7 @@ namespace Text
 		virtual ~CodeFile();
 		virtual ObjectType GetObjectType();
 
-		virtual const UTF8Char *GetFileName() = 0;
+		virtual Text::String *GetFileName() = 0;
 	};
 
 	class CodeContainer : public CodeObject
@@ -35,7 +35,7 @@ namespace Text
 
 		virtual ObjectType GetObjectType();
 
-		virtual const UTF8Char *GetContainerName() = 0;
+		virtual Text::String *GetContainerName() = 0;
 		virtual UOSInt GetChildCount() = 0;
 		virtual CodeObject *GetChildObj(UOSInt index) = 0;
 	};

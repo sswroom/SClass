@@ -1,13 +1,14 @@
 #ifndef _SM_IO_CONFIGFILE
 #define _SM_IO_CONFIGFILE
-#include "Data/StringMap.h"
+#include "Data/ArrayList.h"
+#include "Data/FastStringMap.h"
 
 namespace IO
 {
 	class ConfigFile
 	{
 	private:
-		Data::StringMap<Data::StringMap<Text::String *>*> *cfgVals;
+		Data::FastStringMap<Data::FastStringMap<Text::String *>*> *cfgVals;
 
 	public:
 		ConfigFile();

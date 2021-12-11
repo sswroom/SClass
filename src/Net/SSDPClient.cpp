@@ -189,47 +189,47 @@ Net::SSDPClient::SSDPRoot *Net::SSDPClient::SSDPRootParse(Text::EncodingFactory 
 			reader.GetCurrPath(&sb);
 			if (sb.EqualsICase((const UTF8Char*)"/root/device"))
 			{
-				if (Text::StrEqualsICase(reader.GetNodeText(), (const UTF8Char*)"udn"))
+				if (reader.GetNodeText()->EqualsICase((const UTF8Char*)"udn"))
 				{
 					SET_VALUE(root->udn);
 				}
-				else if (Text::StrEqualsICase(reader.GetNodeText(), (const UTF8Char*)"friendlyName"))
+				else if (reader.GetNodeText()->EqualsICase((const UTF8Char*)"friendlyName"))
 				{
 					SET_VALUE(root->friendlyName);
 				}
-				else if (Text::StrEqualsICase(reader.GetNodeText(), (const UTF8Char*)"manufacturer"))
+				else if (reader.GetNodeText()->EqualsICase((const UTF8Char*)"manufacturer"))
 				{
 					SET_VALUE(root->manufacturer);
 				}
-				else if (Text::StrEqualsICase(reader.GetNodeText(), (const UTF8Char*)"manufacturerURL"))
+				else if (reader.GetNodeText()->EqualsICase((const UTF8Char*)"manufacturerURL"))
 				{
 					SET_VALUE(root->manufacturerURL);
 				}
-				else if (Text::StrEqualsICase(reader.GetNodeText(), (const UTF8Char*)"modelName"))
+				else if (reader.GetNodeText()->EqualsICase((const UTF8Char*)"modelName"))
 				{
 					SET_VALUE(root->modelName);
 				}
-				else if (Text::StrEqualsICase(reader.GetNodeText(), (const UTF8Char*)"modelNumber"))
+				else if (reader.GetNodeText()->EqualsICase((const UTF8Char*)"modelNumber"))
 				{
 					SET_VALUE(root->modelNumber);
 				}
-				else if (Text::StrEqualsICase(reader.GetNodeText(), (const UTF8Char*)"modelURL"))
+				else if (reader.GetNodeText()->EqualsICase((const UTF8Char*)"modelURL"))
 				{
 					SET_VALUE(root->modelURL);
 				}
-				else if (Text::StrEqualsICase(reader.GetNodeText(), (const UTF8Char*)"serialNumber"))
+				else if (reader.GetNodeText()->EqualsICase((const UTF8Char*)"serialNumber"))
 				{
 					SET_VALUE(root->serialNumber);
 				}
-				else if (Text::StrEqualsICase(reader.GetNodeText(), (const UTF8Char*)"presentationURL"))
+				else if (reader.GetNodeText()->EqualsICase((const UTF8Char*)"presentationURL"))
 				{
 					SET_VALUE(root->presentationURL);
 				}
-				else if (Text::StrEqualsICase(reader.GetNodeText(), (const UTF8Char*)"deviceType"))
+				else if (reader.GetNodeText()->EqualsICase((const UTF8Char*)"deviceType"))
 				{
 					SET_VALUE(root->deviceType);
 				}
-				else if (Text::StrEqualsICase(reader.GetNodeText(), (const UTF8Char*)"deviceURL"))
+				else if (reader.GetNodeText()->EqualsICase((const UTF8Char*)"deviceURL"))
 				{
 					SET_VALUE(root->deviceURL);
 				}

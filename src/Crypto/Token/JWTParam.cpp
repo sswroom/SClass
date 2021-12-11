@@ -16,57 +16,57 @@ Crypto::Token::JWTParam::JWTParam()
 
 Crypto::Token::JWTParam::~JWTParam()
 {
-	SDEL_TEXT(this->iss);
-	SDEL_TEXT(this->sub);
-	SDEL_TEXT(this->aud);
-	SDEL_TEXT(this->jti);
+	SDEL_STRING(this->iss);
+	SDEL_STRING(this->sub);
+	SDEL_STRING(this->aud);
+	SDEL_STRING(this->jti);
 }
 
 void Crypto::Token::JWTParam::Clear()
 {
-	SDEL_TEXT(this->iss);
-	SDEL_TEXT(this->sub);
-	SDEL_TEXT(this->aud);
+	SDEL_STRING(this->iss);
+	SDEL_STRING(this->sub);
+	SDEL_STRING(this->aud);
 	this->exp = 0;
 	this->nbf = 0;
 	this->iat = 0;
-	SDEL_TEXT(this->jti);
+	SDEL_STRING(this->jti);
 }
 
-void Crypto::Token::JWTParam::SetIssuer(const UTF8Char *issuer)
+void Crypto::Token::JWTParam::SetIssuer(Text::String *issuer)
 {
-	SDEL_TEXT(this->iss);
-	this->iss = SCOPY_TEXT(issuer);
+	SDEL_STRING(this->iss);
+	this->iss = SCOPY_STRING(issuer);
 }
 
-const UTF8Char *Crypto::Token::JWTParam::GetIssuer()
+Text::String *Crypto::Token::JWTParam::GetIssuer()
 {
 	return this->iss;
 }
 
 Bool Crypto::Token::JWTParam::IsIssuerValid(const UTF8Char *issuer)
 {
-	return this->iss == 0 || Text::StrEquals(this->iss, issuer);
+	return this->iss == 0 || this->iss->Equals(issuer);
 }
 
-void Crypto::Token::JWTParam::SetSubject(const UTF8Char *subject)
+void Crypto::Token::JWTParam::SetSubject(Text::String *subject)
 {
-	SDEL_TEXT(this->sub);
-	this->sub = SCOPY_TEXT(subject);
+	SDEL_STRING(this->sub);
+	this->sub = SCOPY_STRING(subject);
 }
 
-const UTF8Char *Crypto::Token::JWTParam::GetSubject()
+Text::String *Crypto::Token::JWTParam::GetSubject()
 {
 	return this->sub;
 }
 
-void Crypto::Token::JWTParam::SetAudience(const UTF8Char *audience)
+void Crypto::Token::JWTParam::SetAudience(Text::String *audience)
 {
-	SDEL_TEXT(this->aud);
-	this->aud = SCOPY_TEXT(audience);
+	SDEL_STRING(this->aud);
+	this->aud = SCOPY_STRING(audience);
 }
 
-const UTF8Char *Crypto::Token::JWTParam::GetAudience()
+Text::String *Crypto::Token::JWTParam::GetAudience()
 {
 	return this->aud;
 }
@@ -101,13 +101,13 @@ Int64 Crypto::Token::JWTParam::GetIssuedAt()
 	return this->iat;
 }
 
-void Crypto::Token::JWTParam::SetJWTId(const UTF8Char *id)
+void Crypto::Token::JWTParam::SetJWTId(Text::String *id)
 {
-	SDEL_TEXT(this->jti);
-	this->jti = SCOPY_TEXT(id);
+	SDEL_STRING(this->jti);
+	this->jti = SCOPY_STRING(id);
 }
 
-const UTF8Char *Crypto::Token::JWTParam::GetJWTId()
+Text::String *Crypto::Token::JWTParam::GetJWTId()
 {
 	return this->jti;
 }

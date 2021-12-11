@@ -684,29 +684,24 @@ const WChar *Text::XML::ToNewHTMLText(const WChar *text)
 	return dptr;
 }
 
-const UTF8Char *Text::XML::ToNewAttrText(const UTF8Char *text)
+Text::String *Text::XML::ToNewAttrText(const UTF8Char *text)
 {
-	UTF8Char *dptr;
+	Text::String *s;
 	UTF8Char *buff;
 	if (text == 0)
 	{
-		dptr = MemAlloc(UTF8Char, 3);
-		buff = dptr;
-		*buff++ = '"';
-		*buff++ = '"';
-		*buff = 0;
-		return dptr;
+		return Text::String::New((const UTF8Char*)"\"\"", 2);
 	}
 	else
 	{
-		UOSInt cnt = GetXMLTextLen(text) + 3;
-		dptr = MemAlloc(UTF8Char, cnt);
-		buff = dptr;
+		UOSInt cnt = GetXMLTextLen(text) + 2;
+		s = Text::String::New(cnt);
+		buff = s->v;
 		*buff++ = '"';
 		buff = ToXMLText(buff, text);
 		*buff++ = '"';
 		*buff = 0;
-		return dptr;
+		return s;
 	}
 }
 
@@ -744,6 +739,124 @@ void Text::XML::FreeNewText(const UTF8Char *text)
 void Text::XML::FreeNewText(const WChar *text)
 {
 	MemFree((void*)text);
+}
+
+void Text::XML::ParseStr(Text::String *out, const UTF8Char *xmlStart, const UTF8Char *xmlEnd)
+{
+	UTF8Char *currPtr = out->v;
+	UTF8Char c;
+	while (xmlStart < xmlEnd)
+	{
+		c = *xmlStart;
+		if (c == '&')
+		{
+			if (xmlStart[1] == 'a' && xmlStart[2] == 'm' && xmlStart[3] == 'p' && xmlStart[4] == ';')
+			{
+				*currPtr++ = '&';
+				xmlStart += 5;
+			}
+			else if (xmlStart[1] == 'l' && xmlStart[2] == 't' && xmlStart[3] == ';')
+			{
+				*currPtr++ = '<';
+				xmlStart += 4;
+			}
+			else if (xmlStart[1] == 'g' && xmlStart[2] == 't' && xmlStart[3] == ';')
+			{
+				*currPtr++ = '>';
+				xmlStart += 4;
+			}
+			else if (xmlStart[1] == 'a' && xmlStart[2] == 'p' && xmlStart[3] == 'o' && xmlStart[4] == 's' && xmlStart[5] == ';')
+			{
+				*currPtr++ = '\'';
+				xmlStart += 6;
+			}
+			else if (xmlStart[1] == 'a' && xmlStart[2] == 'p' && xmlStart[3] == 'o' && xmlStart[4] == 's' && xmlStart[5] == ';')
+			{
+				*currPtr++ = '"';
+				xmlStart += 6;
+			}
+			else if (xmlStart[1] == '#' && xmlStart[2] == 'x')
+			{
+				Bool valid = true;
+				UInt32 v = 0;
+				const UTF8Char *tmp = xmlStart + 3;
+				while (true)
+				{
+					c = *tmp++;
+					if (c >= '0' && c <= '9')
+					{
+						v = (v << 4) + (UInt32)(c - 48);
+					}
+					else if (c >= 'A' && c <= 'F')
+					{
+						v = (v << 4) + (UInt32)(c - 0x37);
+					}
+					else if (c >= 'a' && c <= 'f')
+					{
+						v = (v << 4) + (UInt32)(c - 0x57);
+					}
+					else if (c == ';')
+					{
+						currPtr = Text::StrWriteChar(currPtr, (UTF32Char)v);
+						xmlStart = tmp;
+						break;
+					}
+					else
+					{
+						valid = false;
+						break;
+					}
+				}
+				if (!valid)
+				{
+					*currPtr++ = '&';
+					xmlStart++;
+				}
+			}
+			else if (xmlStart[1] == '#')
+			{
+				Bool valid = true;
+				UInt32 v = 0;
+				const UTF8Char *tmp = xmlStart + 2;
+				while (true)
+				{
+					c = *tmp++;
+					if (c >= '0' && c <= '9')
+					{
+						v = v * 10 + (UInt32)(c - 48);
+					}
+					else if (c == ';')
+					{
+						currPtr = Text::StrWriteChar(currPtr, (UTF32Char)v);
+						xmlStart = tmp;
+						break;
+					}
+					else
+					{
+						valid = false;
+						break;
+					}
+				}
+				if (!valid)
+				{
+					*currPtr++ = '&';
+					xmlStart++;
+				}
+			}
+			else
+			{
+				*currPtr++ = '&';
+				xmlStart++;
+			}
+		}
+		else
+		{
+			*currPtr++ = c;
+			xmlStart++;
+		}
+	}
+	*currPtr = 0;
+	out->leng = (UOSInt)(currPtr - out->v);
 }
 
 void Text::XML::ParseStr(UTF8Char *out, const UTF8Char *xmlStart, const UTF8Char *xmlEnd)

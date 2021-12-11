@@ -3,24 +3,35 @@
 #include "Text/MyString.h"
 #include "Text/VSProject.h"
 
+Text::VSFile::VSFile(Text::String *fileName)
+{
+	this->fileName = fileName->Clone();
+}
+
 Text::VSFile::VSFile(const UTF8Char *fileName)
 {
-	this->fileName = Text::StrCopyNew(fileName);
+	this->fileName = Text::String::NewNotNull(fileName);
 }
 
 Text::VSFile::~VSFile()
 {
-	Text::StrDelNew(this->fileName);
+	this->fileName->Release();
 }
 
-const UTF8Char *Text::VSFile::GetFileName()
+Text::String *Text::VSFile::GetFileName()
 {
 	return this->fileName;
 }
 
+Text::VSContainer::VSContainer(Text::String *contName)
+{
+	this->contName = contName->Clone();
+	NEW_CLASS(this->childList, Data::ArrayList<Text::CodeObject*>());
+}
+
 Text::VSContainer::VSContainer(const UTF8Char *contName)
 {
-	this->contName = Text::StrCopyNew(contName);
+	this->contName = Text::String::NewNotNull(contName);
 	NEW_CLASS(this->childList, Data::ArrayList<Text::CodeObject*>());
 }
 
@@ -28,7 +39,7 @@ Text::VSContainer::~VSContainer()
 {
 	Text::CodeObject *child;
 	UOSInt i;
-	Text::StrDelNew(this->contName);
+	this->contName->Release();
 	i = this->childList->GetCount();
 	while (i-- > 0)
 	{
@@ -42,12 +53,12 @@ void Text::VSContainer::SetContainerName(const UTF8Char *contName)
 {
 	if (contName)
 	{
-		Text::StrDelNew(this->contName);
-		this->contName = Text::StrCopyNew(contName);
+		this->contName->Release();
+		this->contName = Text::String::NewNotNull(contName);
 	}
 }
 
-const UTF8Char *Text::VSContainer::GetContainerName()
+Text::String *Text::VSContainer::GetContainerName()
 {
 	return this->contName;
 }
@@ -79,7 +90,7 @@ Text::VSProject::VSProject(const UTF8Char *name, VisualStudioVersion ver) : Text
 		sbuff[i] = 0;
 	}
 	this->ver = ver;
-	this->projName = Text::StrCopyNew(sbuff);
+	this->projName = Text::String::NewNotNull(sbuff);
 	NEW_CLASS(this->childList, Data::ArrayList<Text::CodeObject*>());
 }
 
@@ -87,7 +98,7 @@ Text::VSProject::~VSProject()
 {
 	UOSInt i;
 	Text::CodeObject *child;
-	SDEL_TEXT(this->projName);
+	SDEL_STRING(this->projName);
 	i = this->childList->GetCount();
 	while (i-- > 0)
 	{
@@ -102,16 +113,25 @@ Text::CodeProject::ProjectType Text::VSProject::GetProjectType()
 	return Text::CodeProject::PROJT_VSPROJECT;
 }
 
-void Text::VSProject::SetProjectName(const UTF8Char *projName)
+void Text::VSProject::SetProjectName(Text::String *projName)
 {
-	if (this->projName)
+	if (projName)
 	{
-		SDEL_TEXT(this->projName);
-		this->projName = Text::StrCopyNew(projName);
+		SDEL_STRING(this->projName);
+		this->projName = projName->Clone();
 	}
 }
 
-const UTF8Char *Text::VSProject::GetContainerName()
+void Text::VSProject::SetProjectName(const UTF8Char *projName)
+{
+	if (projName)
+	{
+		SDEL_STRING(this->projName);
+		this->projName = Text::String::String::NewNotNull(projName);
+	}
+}
+
+Text::String *Text::VSProject::GetContainerName()
 {
 	return this->projName;
 }

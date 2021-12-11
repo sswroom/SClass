@@ -1130,6 +1130,7 @@ Data/DataComparer.h: ../../src/Data/DataComparer.cpp
 @DataComparer.o
 Data/DateTime.h: ../../src/Data/DateTime.cpp
 @DateTime.o
+Data/FastStringMap.h:
 Data/FieldComparator.h: ../../src/Data/FieldComparator.cpp
 @FieldComparator.o
 Data/ICaseBTreeUTF8Map.h:

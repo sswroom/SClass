@@ -177,68 +177,6 @@ Bool IO::SMake::LoadConfigFile(const UTF8Char *cfgFile)
 		{
 
 		}
-		else if ((i = Text::StrIndexOf(sb.ToString(), (const UTF8Char*)":=")) != INVALID_INDEX)
-		{
-			sptr1 = sb.ToString();
-			sptr2 = &sptr1[i + 2];
-			sptr1[i] = 0;
-			Text::StrTrim(sptr1);
-			Text::StrTrim(sptr2);
-			cfg = cfgMap->Get(sptr1);
-			if (cfg)
-			{
-				cfg->value->Release();
-				sb2.ClearStr();
-				AppendCfgItem(&sb2, sptr2);
-				cfg->value = Text::String::New(sb2.ToString(), sb2.GetLength());
-			}
-			else
-			{
-				cfg = MemAlloc(IO::SMake::ConfigItem, 1);
-				cfg->name = Text::String::NewNotNull(sptr1);
-				sb2.ClearStr();
-				AppendCfgItem(&sb2, sptr2);
-				cfg->value = Text::String::New(sb2.ToString(), sb2.GetLength());
-				cfgMap->Put(cfg->name, cfg);
-			}
-		}
-		else if ((i = Text::StrIndexOf(sb.ToString(), (const UTF8Char*)"+=")) != INVALID_INDEX)
-		{
-			sptr1 = sb.ToString();
-			sptr2 = &sptr1[i + 2];
-			sptr1[i] = 0;
-			Text::StrTrim(sptr1);
-			Text::StrTrim(sptr2);	
-			cfg = cfgMap->Get(sptr1);
-			if (cfg)
-			{
-				if (cfg->value->leng > 0)
-				{
-					sb2.ClearStr();
-					sb2.Append(cfg->value);
-					sb2.AppendChar(' ', 1);
-					AppendCfgItem(&sb2, sptr2);
-					cfg->value->Release();
-					cfg->value = Text::String::New(sb2.ToString(), sb2.GetLength());
-				}
-				else
-				{
-					cfg->value->Release();
-					sb2.ClearStr();
-					AppendCfgItem(&sb2, sptr2);
-					cfg->value = Text::String::New(sb2.ToString(), sb2.GetLength());
-				}
-			}
-			else
-			{
-				cfg = MemAlloc(IO::SMake::ConfigItem, 1);
-				cfg->name = Text::String::NewNotNull(sptr1);
-				sb2.ClearStr();
-				AppendCfgItem(&sb2, sptr2);
-				cfg->value = Text::String::New(sb2.ToString(), sb2.GetLength());
-				cfgMap->Put(cfg->name, cfg);
-			}
-		}
 		else if (sb.ToString()[0] == '@')
 		{
 			sptr1 = sb.ToString() + 1;
@@ -385,65 +323,130 @@ Bool IO::SMake::LoadConfigFile(const UTF8Char *cfgFile)
 				env.SetValue(cfg->name->v, cfg->value->v);
 			}
 		}
-		else if ((i = Text::StrIndexOf(sb.ToString(), (const UTF8Char*)":")) != INVALID_INDEX)
+		else if ((i = Text::StrIndexOf(sb.ToString(), (const UTF8Char*)"+=")) != INVALID_INDEX)
 		{
 			sptr1 = sb.ToString();
-			sptr2 = &sptr1[i + 1];
+			sptr2 = &sptr1[i + 2];
 			sptr1[i] = 0;
 			Text::StrTrim(sptr1);
-			Text::StrTrim(sptr2);
-			if (sptr1[0] == '+')
+			Text::StrTrim(sptr2);	
+			cfg = cfgMap->Get(sptr1);
+			if (cfg)
 			{
-				prog = progMap->Get(sptr1 + 1);
-				if (prog)
+				if (cfg->value->leng > 0)
 				{
+					sb2.ClearStr();
+					sb2.Append(cfg->value);
+					sb2.AppendChar(' ', 1);
+					AppendCfgItem(&sb2, sptr2);
+					cfg->value->Release();
+					cfg->value = Text::String::New(sb2.ToString(), sb2.GetLength());
 				}
 				else
 				{
-					prog = MemAlloc(IO::SMake::ProgramItem, 1);
-					prog->name = Text::String::NewNotNull(sptr1 + 1);
-					if (sptr2[0])
-					{
-						prog->srcFile = Text::String::NewNotNull(sptr2);
-					}
-					else
-					{
-						prog->srcFile = 0;
-					}
-					NEW_CLASS(prog->subItems, Data::ArrayList<Text::String*>());
-					NEW_CLASS(prog->libs, Data::ArrayList<Text::String*>());
-					prog->compileCfg = 0;
-					progMap->Put(prog->name, prog);
+					cfg->value->Release();
+					sb2.ClearStr();
+					AppendCfgItem(&sb2, sptr2);
+					cfg->value = Text::String::New(sb2.ToString(), sb2.GetLength());
 				}
 			}
 			else
 			{
-				prog = progMap->Get(sptr1);
-				if (prog)
+				cfg = MemAlloc(IO::SMake::ConfigItem, 1);
+				cfg->name = Text::String::NewNotNull(sptr1);
+				sb2.ClearStr();
+				AppendCfgItem(&sb2, sptr2);
+				cfg->value = Text::String::New(sb2.ToString(), sb2.GetLength());
+				cfgMap->Put(cfg->name, cfg);
+			}
+		}
+		else if ((i = Text::StrIndexOf(sb.ToString(), (const UTF8Char*)":")) != INVALID_INDEX)
+		{
+			if (sb.ToString()[i + 1] == '=')
+			{
+				sptr1 = sb.ToString();
+				sptr2 = &sptr1[i + 2];
+				sptr1[i] = 0;
+				Text::StrTrim(sptr1);
+				Text::StrTrim(sptr2);
+				cfg = cfgMap->Get(sptr1);
+				if (cfg)
 				{
-					ret = false;
+					cfg->value->Release();
 					sb2.ClearStr();
-					sb2.Append((const UTF8Char*)"Program Item ");
-					sb2.Append(sptr1);
-					sb2.Append((const UTF8Char*)" duplicated");
-					this->SetErrorMsg(sb2.ToString());
+					AppendCfgItem(&sb2, sptr2);
+					cfg->value = Text::String::New(sb2.ToString(), sb2.GetLength());
 				}
 				else
 				{
-					prog = MemAlloc(IO::SMake::ProgramItem, 1);
-					prog->name = Text::String::NewNotNull(sptr1);
-					if (sptr2[0])
+					cfg = MemAlloc(IO::SMake::ConfigItem, 1);
+					cfg->name = Text::String::NewNotNull(sptr1);
+					sb2.ClearStr();
+					AppendCfgItem(&sb2, sptr2);
+					cfg->value = Text::String::New(sb2.ToString(), sb2.GetLength());
+					cfgMap->Put(cfg->name, cfg);
+				}
+			}
+			else
+			{
+				sptr1 = sb.ToString();
+				sptr2 = &sptr1[i + 1];
+				sptr1[i] = 0;
+				Text::StrTrim(sptr1);
+				Text::StrTrim(sptr2);
+				if (sptr1[0] == '+')
+				{
+					prog = progMap->Get(sptr1 + 1);
+					if (prog)
 					{
-						prog->srcFile = Text::String::NewNotNull(sptr2);
 					}
 					else
 					{
-						prog->srcFile = 0;
+						prog = MemAlloc(IO::SMake::ProgramItem, 1);
+						prog->name = Text::String::NewNotNull(sptr1 + 1);
+						if (sptr2[0])
+						{
+							prog->srcFile = Text::String::NewNotNull(sptr2);
+						}
+						else
+						{
+							prog->srcFile = 0;
+						}
+						NEW_CLASS(prog->subItems, Data::ArrayList<Text::String*>());
+						NEW_CLASS(prog->libs, Data::ArrayList<Text::String*>());
+						prog->compileCfg = 0;
+						progMap->Put(prog->name, prog);
 					}
-					NEW_CLASS(prog->subItems, Data::ArrayList<Text::String*>());
-					NEW_CLASS(prog->libs, Data::ArrayList<Text::String*>());
-					prog->compileCfg = 0;
-					progMap->Put(sptr1, prog);
+				}
+				else
+				{
+					prog = progMap->Get(sptr1);
+					if (prog)
+					{
+						ret = false;
+						sb2.ClearStr();
+						sb2.Append((const UTF8Char*)"Program Item ");
+						sb2.Append(sptr1);
+						sb2.Append((const UTF8Char*)" duplicated");
+						this->SetErrorMsg(sb2.ToString());
+					}
+					else
+					{
+						prog = MemAlloc(IO::SMake::ProgramItem, 1);
+						prog->name = Text::String::NewNotNull(sptr1);
+						if (sptr2[0])
+						{
+							prog->srcFile = Text::String::NewNotNull(sptr2);
+						}
+						else
+						{
+							prog->srcFile = 0;
+						}
+						NEW_CLASS(prog->subItems, Data::ArrayList<Text::String*>());
+						NEW_CLASS(prog->libs, Data::ArrayList<Text::String*>());
+						prog->compileCfg = 0;
+						progMap->Put(sptr1, prog);
+					}
 				}
 			}
 		}
@@ -1185,7 +1188,7 @@ void IO::SMake::SetErrorMsg(const UTF8Char *msg)
 IO::SMake::SMake(const UTF8Char *cfgFile, UOSInt threadCnt, IO::Writer *messageWriter) : IO::ParsedObject(cfgFile)
 {
 	NEW_CLASS(this->cfgMap, Data::StringMap<IO::SMake::ConfigItem*>());
-	NEW_CLASS(this->progMap, Data::StringMap<IO::SMake::ProgramItem*>());
+	NEW_CLASS(this->progMap, Data::FastStringMap<IO::SMake::ProgramItem*>());
 	NEW_CLASS(this->fileTimeMap, Data::StringMap<Int64>());
 	NEW_CLASS(this->tasks, Sync::ParallelTask(threadCnt, false));
 	NEW_CLASS(this->errorMsgMut, Sync::Mutex());
@@ -1228,12 +1231,14 @@ IO::SMake::~SMake()
 	}
 	DEL_CLASS(cfgMap);
 
-	Data::ArrayList<IO::SMake::ProgramItem*> *progList = progMap->GetValues();
+//	Data::ArrayList<IO::SMake::ProgramItem*> *progList = progMap->GetValues();
 	IO::SMake::ProgramItem *prog;
-	i = progList->GetCount();
+//	i = progList->GetCount();
+	i = progMap->GetCount();
 	while (i-- > 0)
 	{
-		prog = progList->GetItem(i);
+//		prog = progList->GetItem(i);
+		prog = progMap->GetItem(i);
 		prog->name->Release();
 		SDEL_STRING(prog->srcFile);
 		SDEL_STRING(prog->compileCfg);
@@ -1384,14 +1389,14 @@ void IO::SMake::CleanFiles()
 
 UOSInt IO::SMake::GetProgList(Data::ArrayList<Text::String*> *progList)
 {
-	Data::ArrayList<Text::String *> *names = this->progMap->GetKeys();
+//	Data::ArrayList<Text::String *> *names = this->progMap->GetKeys();
 	Text::String *prog;
 	UOSInt ret = 0;
 	UOSInt i = 0;
-	UOSInt j = names->GetCount();
+	UOSInt j = this->progMap->GetCount();
 	while (i < j)
 	{
-		prog = names->GetItem(i);
+		prog = this->progMap->GetKey(i);
 		if (prog->EndsWith((const UTF8Char*)".o"))
 		{
 

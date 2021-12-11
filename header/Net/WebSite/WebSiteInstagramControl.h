@@ -15,20 +15,20 @@ namespace Net
 			typedef struct
 			{
 				Int64 id;
-				const UTF8Char *shortCode;
+				Text::String *shortCode;
 				Int64 recTime;
-				const UTF8Char *message;
-				const UTF8Char *imgURL;
-				const UTF8Char *videoURL;
+				Text::String *message;
+				Text::String *imgURL;
+				Text::String *videoURL;
 				Bool moreImages;
 			} ItemData;
 
 			typedef struct
 			{
-				const UTF8Char *full_name;
-				const UTF8Char *biography;
-				const UTF8Char *profile_pic_url_hd;
-				const UTF8Char *username;
+				Text::String *full_name;
+				Text::String *biography;
+				Text::String *profile_pic_url_hd;
+				Text::String *username;
 			} ChannelInfo;
 			
 		private:
@@ -42,10 +42,10 @@ namespace Net
 			WebSiteInstagramControl(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, const UTF8Char *userAgent);
 			~WebSiteInstagramControl();
 
-			OSInt GetChannelItems(const UTF8Char *channelId, OSInt pageNo, Data::ArrayList<ItemData*> *itemList, ChannelInfo *chInfo);
+			OSInt GetChannelItems(Text::String *channelId, OSInt pageNo, Data::ArrayList<ItemData*> *itemList, ChannelInfo *chInfo);
 			void FreeItems(Data::ArrayList<ItemData*> *itemList);
 			void FreeChannelInfo(ChannelInfo *chInfo);
-			OSInt GetPageImages(const UTF8Char *shortCode, Data::ArrayList<const UTF8Char*> *imageList, Data::ArrayList<const UTF8Char*> *videoList);
+			OSInt GetPageImages(Text::String *shortCode, Data::ArrayList<Text::String*> *imageList, Data::ArrayList<Text::String*> *videoList);
 			const UTF8Char *GetUserAgent();
 		};
 	}

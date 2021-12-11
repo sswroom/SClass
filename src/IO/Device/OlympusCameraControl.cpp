@@ -25,7 +25,7 @@ void IO::Device::OlympusCameraControl::GetCommandList()
 	{
 		if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT)
 		{
-			if (Text::StrEquals(reader->GetNodeText(), (const UTF8Char*)"oishare"))
+			if (reader->GetNodeText()->Equals((const UTF8Char*)"oishare"))
 			{
 				while (reader->ReadNext())
 				{
@@ -35,38 +35,38 @@ void IO::Device::OlympusCameraControl::GetCommandList()
 					}
 					else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT)
 					{
-						if (Text::StrEquals(reader->GetNodeText(), (const UTF8Char*)"version"))
+						if (reader->GetNodeText()->Equals((const UTF8Char*)"version"))
 						{
 							sb.ClearStr();
 							reader->ReadNodeText(&sb);
 							sb.TrimWSCRLF();
-							SDEL_TEXT(this->oiVersion);
-							this->oiVersion = Text::StrCopyNew(sb.ToString());
+							SDEL_STRING(this->oiVersion);
+							this->oiVersion = Text::String::New(sb.ToString(), sb.GetLength());
 						}
-						else if (Text::StrEquals(reader->GetNodeText(), (const UTF8Char*)"oitrackversion"))
+						else if (reader->GetNodeText()->Equals((const UTF8Char*)"oitrackversion"))
 						{
 							sb.ClearStr();
 							reader->ReadNodeText(&sb);
 							sb.TrimWSCRLF();
-							SDEL_TEXT(this->oiTrackVersion);
-							this->oiTrackVersion = Text::StrCopyNew(sb.ToString());
+							SDEL_STRING(this->oiTrackVersion);
+							this->oiTrackVersion = Text::String::New(sb.ToString(), sb.GetLength());
 						}
-						else if (Text::StrEquals(reader->GetNodeText(), (const UTF8Char*)"support"))
+						else if (reader->GetNodeText()->Equals((const UTF8Char*)"support"))
 						{
 							reader->SkipElement();
 						}
-						else if (Text::StrEquals(reader->GetNodeText(), (const UTF8Char*)"cgi"))
+						else if (reader->GetNodeText()->Equals((const UTF8Char*)"cgi"))
 						{
 							i = reader->GetAttribCount();
 							while (i-- > 0)
 							{
 								attr = reader->GetAttrib(i);
-								if (attr->value && Text::StrEquals(attr->name, (const UTF8Char*)"name"))
+								if (attr->value && attr->name->Equals((const UTF8Char*)"name"))
 								{
 									j = this->cmdList->SortedIndexOf(attr->value);
 									if (j < 0)
 									{
-										this->cmdList->SortedInsert(Text::StrCopyNew(attr->value));
+										this->cmdList->SortedInsert(attr->value->Clone());
 									}
 								}
 							}
@@ -145,7 +145,7 @@ void IO::Device::OlympusCameraControl::GetImageList()
 
 void IO::Device::OlympusCameraControl::GetGPSLogList()
 {
-	if (this->cmdList->SortedIndexOf((const UTF8Char*)"get_gpsloglist") < 0)
+	if (this->cmdList->SortedIndexOfPtr((const UTF8Char*)"get_gpsloglist") < 0)
 	{
 		return;
 	}
@@ -194,7 +194,7 @@ void IO::Device::OlympusCameraControl::GetGPSLogList()
 
 void IO::Device::OlympusCameraControl::GetSNSLogList()
 {
-	if (this->cmdList->SortedIndexOf((const UTF8Char*)"get_snsloglist") < 0)
+	if (this->cmdList->SortedIndexOfPtr((const UTF8Char*)"get_snsloglist") < 0)
 	{
 		return;
 	}
@@ -248,7 +248,7 @@ IO::Device::OlympusCameraControl::OlympusCameraControl(Net::SocketFactory *sockf
 	this->oiVersion = 0;
 	this->oiTrackVersion = 0;
 	this->fileList = 0;
-	NEW_CLASS(this->cmdList, Data::ArrayListStrUTF8());
+	NEW_CLASS(this->cmdList, Data::ArrayListString());
 	this->GetCommandList();
 }
 
@@ -257,7 +257,7 @@ IO::Device::OlympusCameraControl::~OlympusCameraControl()
 	UOSInt i = this->cmdList->GetCount();
 	while (i-- > 0)
 	{
-		Text::StrDelNew(this->cmdList->GetItem(i));
+		this->cmdList->GetItem(i)->Release();
 	}
 	DEL_CLASS(this->cmdList);
 	if (this->fileList)
@@ -271,46 +271,36 @@ IO::Device::OlympusCameraControl::~OlympusCameraControl()
 		}
 		DEL_CLASS(this->fileList);
 	}
-	SDEL_TEXT(this->oiVersion);
-	SDEL_TEXT(this->oiTrackVersion);
+	SDEL_STRING(this->oiVersion);
+	SDEL_STRING(this->oiTrackVersion);
 }
 
-UOSInt IO::Device::OlympusCameraControl::GetInfoList(Data::ArrayList<const UTF8Char*> *nameList, Data::ArrayList<const UTF8Char*> *valueList)
+UOSInt IO::Device::OlympusCameraControl::GetInfoList(Data::ArrayList<Text::String*> *nameList, Data::ArrayList<Text::String*> *valueList)
 {
 	Text::StringBuilderUTF8 sb;
 	UOSInt initCnt = nameList->GetCount();
 	if (this->GetModel(&sb))
 	{
-		nameList->Add(Text::StrCopyNew((const UTF8Char*)"Model"));
-		valueList->Add(Text::StrCopyNew(sb.ToString()));
+		nameList->Add(Text::String::NewNotNull((const UTF8Char*)"Model"));
+		valueList->Add(Text::String::New(sb.ToString(), sb.GetLength()));
 	}
 	if (this->oiVersion)
 	{
-		nameList->Add(Text::StrCopyNew((const UTF8Char*)"OI Version"));
-		valueList->Add(Text::StrCopyNew(this->oiVersion));
+		nameList->Add(Text::String::NewNotNull((const UTF8Char*)"OI Version"));
+		valueList->Add(this->oiVersion->Clone());
 	}
 	if (this->oiTrackVersion)
 	{
-		nameList->Add(Text::StrCopyNew((const UTF8Char*)"OI Track Version"));
-		valueList->Add(Text::StrCopyNew(this->oiTrackVersion));
+		nameList->Add(Text::String::NewNotNull((const UTF8Char*)"OI Track Version"));
+		valueList->Add(this->oiTrackVersion->Clone());
 	}
 	return nameList->GetCount() - initCnt;
 }
 
-void IO::Device::OlympusCameraControl::FreeInfoList(Data::ArrayList<const UTF8Char*> *nameList, Data::ArrayList<const UTF8Char*> *valueList)
+void IO::Device::OlympusCameraControl::FreeInfoList(Data::ArrayList<Text::String*> *nameList, Data::ArrayList<Text::String*> *valueList)
 {
-	UOSInt i = nameList->GetCount();
-	while (i-- > 0)
-	{
-		Text::StrDelNew(nameList->GetItem(i));
-	}
-	nameList->Clear();
-	i = valueList->GetCount();
-	while (i-- > 0)
-	{
-		Text::StrDelNew(valueList->GetItem(i));
-	}
-	valueList->Clear();
+	LIST_FREE_STRING(nameList);
+	LIST_FREE_STRING(valueList);
 }
 
 UOSInt IO::Device::OlympusCameraControl::GetFileList(Data::ArrayList<IO::Device::OlympusCameraControl::FileInfo*> *fileList)
@@ -387,12 +377,12 @@ Bool IO::Device::OlympusCameraControl::GetThumbnailFile(IO::Device::OlympusCamer
 	return totalSize > 512;
 }
 
-const UTF8Char *IO::Device::OlympusCameraControl::GetOIVersion()
+Text::String *IO::Device::OlympusCameraControl::GetOIVersion()
 {
 	return this->oiVersion;
 }
 
-const UTF8Char *IO::Device::OlympusCameraControl::GetOITrackVersion()
+Text::String *IO::Device::OlympusCameraControl::GetOITrackVersion()
 {
 	return this->oiTrackVersion;
 }
@@ -413,7 +403,7 @@ Bool IO::Device::OlympusCameraControl::GetModel(Text::StringBuilderUTF *sb)
 	{
 		if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT)
 		{
-			if (Text::StrEquals(reader->GetNodeText(), (const UTF8Char*)"caminfo"))
+			if (reader->GetNodeText()->Equals((const UTF8Char*)"caminfo"))
 			{
 				while (reader->ReadNext())
 				{
@@ -423,7 +413,7 @@ Bool IO::Device::OlympusCameraControl::GetModel(Text::StringBuilderUTF *sb)
 					}
 					else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT)
 					{
-						if (Text::StrEquals(reader->GetNodeText(), (const UTF8Char*)"model"))
+						if (reader->GetNodeText()->Equals((const UTF8Char*)"model"))
 						{
 							found = true;
 							reader->ReadNodeText(sb);

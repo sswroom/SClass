@@ -124,21 +124,21 @@ SSWR::AVIRead::AVIRRSSItemForm::AVIRRSSItemForm(UI::GUIClientControl *parent, UI
 
 	if (rssItem->description)
 	{
-		Data::ArrayList<const UTF8Char*> imgList;
-		const UTF8Char *url;
+		Data::ArrayList<Text::String*> imgList;
+		Text::String *url;
 		if (rssItem->descHTML)
 		{
 			Text::StringBuilderUTF8 sb;
-			Text::HTMLUtil::HTMLGetText(this->core->GetEncFactory(), rssItem->description, Text::StrCharCnt(rssItem->description), false, &sb, &imgList);
+			Text::HTMLUtil::HTMLGetText(this->core->GetEncFactory(), rssItem->description->v, rssItem->description->leng, false, &sb, &imgList);
 			this->txtText->SetText(sb.ToString());
 		}
 		else
 		{
 			if (rssItem->imgURL)
 			{
-				imgList.Add(Text::StrCopyNew(rssItem->imgURL));
+				imgList.Add(rssItem->imgURL->Clone());
 			}
-			this->txtText->SetText(rssItem->description);
+			this->txtText->SetText(rssItem->description->v);
 		}
 
 		i = 0;
@@ -151,7 +151,7 @@ SSWR::AVIRead::AVIRRSSItemForm::AVIRRSSItemForm(UI::GUIClientControl *parent, UI
 				this->cboImage->AddItem(url, 0);
 			}
 
-			Text::StrDelNew(url);
+			url->Release();
 			i++;
 		}
 		if (j > 0 && this->cboImage)

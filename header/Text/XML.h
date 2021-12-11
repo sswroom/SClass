@@ -1,6 +1,7 @@
 #ifndef _SM_TEXT_XML
 #define _SM_TEXT_XML
 #include "IO/Stream.h"
+#include "Text/String.h"
 
 namespace Text
 {
@@ -29,10 +30,11 @@ namespace Text
 		static const WChar *ToNewXMLTextLite(const WChar *text);
 		static const UTF8Char *ToNewHTMLText(const UTF8Char *text);
 		static const WChar *ToNewHTMLText(const WChar *text);
-		static const UTF8Char *ToNewAttrText(const UTF8Char *text);
+		static Text::String *ToNewAttrText(const UTF8Char *text);
 		static const WChar *ToNewAttrText(const WChar *text);
 		static void FreeNewText(const UTF8Char *text);
 		static void FreeNewText(const WChar *text);
+		static void ParseStr(Text::String *out, const UTF8Char *xmlStart, const UTF8Char *xmlEnd);
 		static void ParseStr(UTF8Char *out, const UTF8Char *xmlStart, const UTF8Char *xmlEnd);
 		static void ParseStr(WChar *out, const WChar *xmlStart, const WChar *xmlEnd);
 

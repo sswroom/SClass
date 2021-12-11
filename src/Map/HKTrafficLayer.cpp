@@ -1051,14 +1051,14 @@ void Map::HKTrafficLayer::ReloadData()
 			while (i < j)
 			{
 				node1 = doc->GetChild(i);
-				if (node1->GetNodeType() == Text::XMLNode::NT_ELEMENT && Text::StrEqualsICase(node1->name, (const UTF8Char*)"jtis_speedlist"))
+				if (node1->GetNodeType() == Text::XMLNode::NT_ELEMENT && node1->name->EqualsICase((const UTF8Char*)"jtis_speedlist"))
 				{
 					i = 0;
 					j = node1->GetChildCnt();
 					while (i < j)
 					{
 						node2 = node1->GetChild(i);
-						if (node2->GetNodeType() == Text::XMLNode::NT_ELEMENT && Text::StrEqualsICase(node2->name, (const UTF8Char*)"jtis_speedmap"))
+						if (node2->GetNodeType() == Text::XMLNode::NT_ELEMENT && node2->name->EqualsICase((const UTF8Char*)"jtis_speedmap"))
 						{
 							Int32 fromId = 0;
 							Int32 toId = 0;
@@ -1069,7 +1069,7 @@ void Map::HKTrafficLayer::ReloadData()
 							while (k-- > 0)
 							{
 								node3 = node2->GetChild(k);
-								if (node3->GetNodeType() == Text::XMLNode::NT_ELEMENT && Text::StrEqualsICase(node3->name, (const UTF8Char*)"LINK_ID"))
+								if (node3->GetNodeType() == Text::XMLNode::NT_ELEMENT && node3->name->EqualsICase((const UTF8Char*)"LINK_ID"))
 								{
 									sb.ClearStr();
 									node3->GetInnerText(&sb);
@@ -1079,7 +1079,7 @@ void Map::HKTrafficLayer::ReloadData()
 										toId = Text::StrToInt32(sarr[1]);
 									}
 								}
-								else if (node3->GetNodeType() == Text::XMLNode::NT_ELEMENT && Text::StrEqualsICase(node3->name, (const UTF8Char*)"ROAD_SATURATION_LEVEL"))
+								else if (node3->GetNodeType() == Text::XMLNode::NT_ELEMENT && node3->name->EqualsICase((const UTF8Char*)"ROAD_SATURATION_LEVEL"))
 								{
 									sb.ClearStr();
 									node3->GetInnerText(&sb);
@@ -1096,7 +1096,7 @@ void Map::HKTrafficLayer::ReloadData()
 										lev = SL_BAD;
 									}
 								}
-								else if (node3->GetNodeType() == Text::XMLNode::NT_ELEMENT && Text::StrEqualsICase(node3->name, (const UTF8Char*)"TRAFFIC_SPEED"))
+								else if (node3->GetNodeType() == Text::XMLNode::NT_ELEMENT && node3->name->EqualsICase((const UTF8Char*)"TRAFFIC_SPEED"))
 								{
 									sb.ClearStr();
 									node3->GetInnerText(&sb);

@@ -1,6 +1,6 @@
 #ifndef _SM_PARSER_FILEPARSER_XMLPARSER
 #define _SM_PARSER_FILEPARSER_XMLPARSER
-#include "Data/ICaseStringUTF8Map.h"
+#include "Data/ICaseStringMap.h"
 #include "IO/FileParser.h"
 #include "Map/VectorLayer.h"
 #include "Map/GPSTrack.h"
@@ -46,10 +46,10 @@ namespace Parser
 
 			static IO::ParsedObject *ParseStream(Text::EncodingFactory *encFact, IO::Stream *stm, const UTF8Char *fileName, Parser::ParserList *parsers, Net::WebBrowser *browser, IO::PackageFile *pkgFile);
 		private:
-			static Map::IMapDrawLayer *ParseKMLContainer(Text::XMLReader *reader, Data::ICaseStringUTF8Map<KMLStyle*> *styles, const UTF8Char *sourceName, Parser::ParserList *parsers, Net::WebBrowser *browser, IO::PackageFile *basePF);
-			static void ParseKMLPlacemarkTrack(Text::XMLReader *reader, Map::GPSTrack *lyr, Data::StringUTF8Map<KMLStyle*> *styles);
+			static Map::IMapDrawLayer *ParseKMLContainer(Text::XMLReader *reader, Data::ICaseStringMap<KMLStyle*> *styles, const UTF8Char *sourceName, Parser::ParserList *parsers, Net::WebBrowser *browser, IO::PackageFile *basePF);
+			static void ParseKMLPlacemarkTrack(Text::XMLReader *reader, Map::GPSTrack *lyr, Data::StringMap<KMLStyle*> *styles);
 			static void ParseCoordinates(Text::XMLReader *reader, Data::ArrayList<Double> *coordList, Data::ArrayList<Double> *altList);
-			static Map::IMapDrawLayer *ParseKMLPlacemarkLyr(Text::XMLReader *reader, Data::StringUTF8Map<KMLStyle*> *styles, const UTF8Char *sourceName, Parser::ParserList *parsers, Net::WebBrowser *browser, IO::PackageFile *basePF);
+			static Map::IMapDrawLayer *ParseKMLPlacemarkLyr(Text::XMLReader *reader, Data::StringMap<KMLStyle*> *styles, const UTF8Char *sourceName, Parser::ParserList *parsers, Net::WebBrowser *browser, IO::PackageFile *basePF);
 			static Bool ParseGPXPoint(Text::XMLReader *reader, Map::GPSTrack::GPSRecord *rec);
 			static Bool ParseVSProjFile(Text::XMLReader *reader, Text::VSProjContainer *container);
 			static Bool ParseVSConfFile(Text::XMLReader *reader, Text::CodeProject *proj);

@@ -24,7 +24,7 @@ void __stdcall SSWR::AVIRead::AVIRCodeProjectForm::OnItemSelected(void *userObj)
 			Text::CodeFile *file = (Text::CodeFile*)obj;
 			UTF8Char u8buff[512];
 			me->proj->GetSourceName(u8buff);
-			IO::Path::AppendPath(u8buff, file->GetFileName());
+			IO::Path::AppendPath(u8buff, file->GetFileName()->v);
 			if (Text::StrEndsWithICase(u8buff, (const UTF8Char*)".CPP"))
 			{
 				Text::StringBuilderUTF8 sb;
@@ -162,9 +162,9 @@ void SSWR::AVIRead::AVIRCodeProjectForm::AddTreeObj(UI::GUITreeView::TreeItem *p
 		if (obj->GetObjectType() == Text::CodeObject::OT_FILE)
 		{
 			Text::CodeFile *file = (Text::CodeFile*)obj;
-			const UTF8Char *fileName = file->GetFileName();
-			k = Text::StrLastIndexOf(fileName, IO::Path::PATH_SEPERATOR);
-			tviLast = this->tvMain->InsertItem(parent, tviLast, &fileName[k + 1], obj);
+			Text::String *fileName = file->GetFileName();
+			k = fileName->LastIndexOf(IO::Path::PATH_SEPERATOR);
+			tviLast = this->tvMain->InsertItem(parent, tviLast, &fileName->v[k + 1], obj);
 		}
 		else if (obj->GetObjectType() == Text::CodeObject::OT_CONTAINER)
 		{

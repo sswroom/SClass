@@ -1,7 +1,7 @@
 #ifndef _SM_NET_RSSREADER
 #define _SM_NET_RSSREADER
 #include "Data/DateTime.h"
-#include "Data/StringUTF8Map.h"
+#include "Data/FastStringMap.h"
 #include "Net/RSS.h"
 #include "Net/SSLEngine.h"
 
@@ -27,7 +27,7 @@ namespace Net
 		Net::SocketFactory *sockf;
 		Net::SSLEngine *ssl;
 		RSSHandler *hdlr;
-		Data::StringUTF8Map<RSSStatus *> *currRSSMaps;
+		Data::FastStringMap<RSSStatus *> *currRSSMaps;
 		Data::DateTime *nextDT;
 		Net::RSS *lastRSS;
 		UInt32 refreshSecond;

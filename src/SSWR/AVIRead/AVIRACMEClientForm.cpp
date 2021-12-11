@@ -50,28 +50,28 @@ void __stdcall SSWR::AVIRead::AVIRACMEClientForm::OnStartClicked(void *userObj)
 	}
 	me->txtHost->SetReadOnly(true);
 	me->txtKeyFile->SetReadOnly(true);
-	const UTF8Char *csptr = me->client->GetTermOfService();
-	if (csptr)
+	Text::String *s = me->client->GetTermOfService();
+	if (s)
 	{
-		me->txtTermOfService->SetText(csptr);
+		me->txtTermOfService->SetText(s->v);
 	}
 	else
 	{
 		me->txtTermOfService->SetText((const UTF8Char*)"");
 	}
-	csptr = me->client->GetWebsite();
-	if (csptr)
+	s = me->client->GetWebsite();
+	if (s)
 	{
-		me->txtWebsite->SetText(csptr);
+		me->txtWebsite->SetText(s->v);
 	}
 	else
 	{
 		me->txtWebsite->SetText((const UTF8Char*)"");
 	}
-	csptr = me->client->GetAccountId();
-	if (csptr)
+	s = me->client->GetAccountId();
+	if (s)
 	{
-		me->txtAccount->SetText(csptr);
+		me->txtAccount->SetText(s->v);
 	}
 	else
 	{

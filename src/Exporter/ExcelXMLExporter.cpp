@@ -74,6 +74,7 @@ Bool Exporter::ExcelXMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8C
 	UInt32 v;
 	const UTF8Char *text;
 	const UTF8Char *text2;
+	Text::String *s;
 	Data::DateTime *dt;
 	Double ver;
 	Text::StringBuilderUTF8 sb;
@@ -270,9 +271,9 @@ Bool Exporter::ExcelXMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8C
 				}
 				sb.ClearStr();
 				sb.Append((const UTF8Char*)"  <Style ss:ID=");
-				text2 = Text::XML::ToNewAttrText(style->GetID());
-				sb.Append(text2);
-				Text::XML::FreeNewText(text2);
+				s = Text::XML::ToNewAttrText(style->GetID());
+				sb.Append(s);
+				s->Release();
 				sb.Append((const UTF8Char*)">");
 				writer->WriteLine(sb.ToString());
 
@@ -371,9 +372,9 @@ Bool Exporter::ExcelXMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8C
 					Text::SpreadSheet::WorkbookFont *font = style->GetFont();
 					sb.ClearStr();
 					sb.Append((const UTF8Char*)"   <Font ss:FontName=");
-					text2 = Text::XML::ToNewAttrText(font->GetName());
-					sb.Append(text2);
-					Text::XML::FreeNewText(text2);
+					s = Text::XML::ToNewAttrText(font->GetName());
+					sb.Append(s);
+					s->Release();
 					if (font->GetSize() > 0)
 					{
 						sb.Append((const UTF8Char*)" ss:Size=\"");
@@ -399,9 +400,9 @@ Bool Exporter::ExcelXMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8C
 				{
 					sb.ClearStr();
 					sb.Append((const UTF8Char*)"   <NumberFormat ss:Format=");
-					text2 = Text::XML::ToNewAttrText(style->GetDataFormat());
-					sb.Append(text2);
-					Text::XML::FreeNewText(text2);
+					s = Text::XML::ToNewAttrText(style->GetDataFormat());
+					sb.Append(s);
+					s->Release();
 					sb.Append((const UTF8Char*)"/>");
 					writer->WriteLine(sb.ToString());
 				}
@@ -420,10 +421,10 @@ Bool Exporter::ExcelXMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8C
 		ws = wb->GetItem(i);
 		sb.ClearStr();
 		sb.Append((const UTF8Char*)" <Worksheet ss:Name=");
-		text2 = Text::XML::ToNewAttrText(ws->GetName()->v);
-		sb.Append(text2);
+		s = Text::XML::ToNewAttrText(ws->GetName()->v);
+		sb.Append(s);
 		sb.Append((const UTF8Char*)">");
-		Text::XML::FreeNewText(text2);
+		s->Release();
 		writer->WriteLine(sb.ToString());
 
 		if (ws->GetCount() > 0)
@@ -600,17 +601,17 @@ Bool Exporter::ExcelXMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8C
 									if (text)
 									{
 										sb.Append((const UTF8Char*)" ss:StyleID=");
-										text2 = Text::XML::ToNewAttrText(text);
-										sb.Append(text2);
-										Text::XML::FreeNewText(text2);
+										s = Text::XML::ToNewAttrText(text);
+										sb.Append(s);
+										s->Release();
 									}
 								}
 								if (cell->cellURL)
 								{
 									 sb.Append((const UTF8Char*)" ss:HRef=");
-									 text2 = Text::XML::ToNewAttrText(cell->cellURL->v);
-									 sb.Append(text2);
-									 Text::XML::FreeNewText(text2);
+									 s = Text::XML::ToNewAttrText(cell->cellURL->v);
+									 sb.Append(s);
+									 s->Release();
 								}
 								sb.Append((const UTF8Char*)">");
 								if (cell->cellValue)
@@ -816,11 +817,11 @@ void Exporter::ExcelXMLExporter::WriteBorderStyle(IO::Writer *writer, const UTF8
 {
 	UTF8Char sbuff[10];
 	Text::StringBuilderUTF8 sb;
-	const UTF8Char *txt;
+	Text::String *s;
 	sb.Append((const UTF8Char*)"    <Border ss:Position=");
-	txt = Text::XML::ToNewAttrText(position);
-	sb.Append(txt);
-	Text::XML::FreeNewText(txt);
+	s = Text::XML::ToNewAttrText(position);
+	sb.Append(s);
+	s->Release();
 	if (border->borderType == Text::SpreadSheet::BorderType::Thin)
 	{
 		sb.Append((const UTF8Char*)" ss:LineStyle=\"Continuous\" ss:Weight=\"1\"");

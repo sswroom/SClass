@@ -15,6 +15,7 @@ Bool Text::HTMLUtil::HTMLWellFormat(Text::EncodingFactory *encFact, IO::Stream *
 	Text::XMLNode::NodeType thisNT;
 	OSInt elementType = 0;
 	const UTF8Char *csptr;
+	Text::String *s;
 	UOSInt strLen;
 	NEW_CLASS(reader, Text::XMLReader(encFact, stm, Text::XMLReader::PM_HTML));
 	while (reader->ReadNext())
@@ -24,11 +25,12 @@ Bool Text::HTMLUtil::HTMLWellFormat(Text::EncodingFactory *encFact, IO::Stream *
 		if (thisNT == Text::XMLNode::NT_TEXT)
 		{
 			toWrite = false;
-			const UTF8Char *csptr = reader->GetNodeOriText();
-			if (csptr == 0)
+			s = reader->GetNodeOriText();
+			if (s == 0)
 			{
-				csptr = reader->GetNodeText();
+				s = reader->GetNodeText();
 			}
+			csptr = s->v;
 			UTF8Char c;
 			while (true)
 			{
@@ -50,31 +52,29 @@ Bool Text::HTMLUtil::HTMLWellFormat(Text::EncodingFactory *encFact, IO::Stream *
 		{
 			if (thisNT == Text::XMLNode::NT_TEXT && elementType == 1) //Style
 			{
-				csptr = reader->GetNodeText();
-				strLen = Text::StrCharCnt(csptr);
-				CSSWellFormat(csptr, strLen, reader->GetPathLev(), sb);
+				s = reader->GetNodeText();
+				CSSWellFormat(s->v, s->leng, reader->GetPathLev(), sb);
 			}
 			else if (thisNT == Text::XMLNode::NT_TEXT && elementType == 2) //JavaScript
 			{
-				csptr = reader->GetNodeText();
-				strLen = Text::StrCharCnt(csptr);
-				Text::JSText::JSWellFormat(csptr, strLen, reader->GetPathLev(), sb);
+				s = reader->GetNodeText();
+				Text::JSText::JSWellFormat(s->v, s->leng, reader->GetPathLev(), sb);
 				sb->Append((const UTF8Char*)"\r\n");
 			}
 			else if (thisNT == Text::XMLNode::NT_TEXT && elementType == 3) //JSON
 			{
-				csptr = reader->GetNodeText();
-				strLen = Text::StrCharCnt(csptr);
-				Text::JSText::JSONWellFormat(csptr, strLen, reader->GetPathLev(), sb);
+				s = reader->GetNodeText();
+				Text::JSText::JSONWellFormat(s->v, s->leng, reader->GetPathLev(), sb);
 				sb->Append((const UTF8Char*)"\r\n");
 			}
 			else if (thisNT == Text::XMLNode::NT_TEXT)
 			{
-				csptr = reader->GetNodeOriText();
-				if (csptr == 0)
+				s = reader->GetNodeOriText();
+				if (s == 0)
 				{
-					csptr = reader->GetNodeText();
+					s = reader->GetNodeText();
 				}
+				csptr = s->v;
 				UTF8Char c;
 				while (true)
 				{
@@ -120,12 +120,12 @@ Bool Text::HTMLUtil::HTMLWellFormat(Text::EncodingFactory *encFact, IO::Stream *
 			elementType = 0;
 			if (thisNT == Text::XMLNode::NT_ELEMENT)
 			{
-				csptr = reader->GetNodeText();
-				if (Text::StrEqualsICase(csptr, (const UTF8Char*)"STYLE"))
+				s = reader->GetNodeText();
+				if (s->EqualsICase((const UTF8Char*)"STYLE"))
 				{
 					elementType = 1;
 				}
-				else if (Text::StrEqualsICase(csptr, (const UTF8Char*)"SCRIPT"))
+				else if (s->EqualsICase((const UTF8Char*)"SCRIPT"))
 				{
 					elementType = 2;
 					i = 0;
@@ -133,9 +133,9 @@ Bool Text::HTMLUtil::HTMLWellFormat(Text::EncodingFactory *encFact, IO::Stream *
 					while (i < j)
 					{
 						attr = reader->GetAttrib(i);
-						if (Text::StrEquals(attr->name, (const UTF8Char*)"type") && attr->value != 0)
+						if (attr->name->Equals((const UTF8Char*)"type") && attr->value != 0)
 						{
-							if (Text::StrEquals(attr->value, (const UTF8Char*)"application/ld+json"))
+							if (attr->value->Equals((const UTF8Char*)"application/ld+json"))
 							{
 								elementType = 3;
 							}
@@ -228,7 +228,7 @@ Bool Text::HTMLUtil::CSSWellFormat(const UInt8 *buff, UOSInt buffSize, UOSInt le
 	return currLev == 0;
 }
 
-Bool Text::HTMLUtil::HTMLGetText(Text::EncodingFactory *encFact, const UInt8 *buff, UOSInt buffSize, Bool singleLine, Text::StringBuilderUTF *sb, Data::ArrayList<const UTF8Char *> *imgList)
+Bool Text::HTMLUtil::HTMLGetText(Text::EncodingFactory *encFact, const UInt8 *buff, UOSInt buffSize, Bool singleLine, Text::StringBuilderUTF *sb, Data::ArrayList<Text::String *> *imgList)
 {
 	Text::XMLReader *reader;
 	IO::MemoryStream *mstm;
@@ -238,6 +238,7 @@ Bool Text::HTMLUtil::HTMLGetText(Text::EncodingFactory *encFact, const UInt8 *bu
 	Int32 lastType = 0;
 	Bool lastIsSpace = true;
 	const UTF8Char *csptr;
+	Text::String *s;
 	UTF8Char c;
 	NEW_CLASS(wmstm, IO::MemoryStream((const UTF8Char*)"Text.HTMLUtil.HTMLGetText.wmstm"));
 	NEW_CLASS(mstm, IO::MemoryStream((UInt8*)buff, buffSize, (const UTF8Char*)"Text.HTMLUtil.HTMLGetText.mstm"));
@@ -249,7 +250,7 @@ Bool Text::HTMLUtil::HTMLGetText(Text::EncodingFactory *encFact, const UInt8 *bu
 		{
 			if (lastType == 0)
 			{
-				csptr = reader->GetNodeText();
+				csptr = reader->GetNodeText()->v;
 				while (true)
 				{
 					c = *csptr;
@@ -301,16 +302,16 @@ Bool Text::HTMLUtil::HTMLGetText(Text::EncodingFactory *encFact, const UInt8 *bu
 		}
 		else if (nt == Text::XMLNode::NT_ELEMENT)
 		{
-			csptr = reader->GetNodeText();
-			if (Text::StrEqualsICase(csptr, (const UTF8Char*)"SCRIPT"))
+			s = reader->GetNodeText();
+			if (s->EqualsICase((const UTF8Char*)"SCRIPT"))
 			{
 				lastType = 1;
 			}
-			else if (Text::StrEqualsICase(csptr, (const UTF8Char*)"STYLE"))
+			else if (s->EqualsICase((const UTF8Char*)"STYLE"))
 			{
 				lastType = 2;
 			}
-			else if (Text::StrEqualsICase(csptr, (const UTF8Char*)"BR") || Text::StrEqualsICase(csptr, (const UTF8Char*)"P"))
+			else if (s->EqualsICase((const UTF8Char*)"BR") || s->EqualsICase((const UTF8Char*)"P"))
 			{
 				if (singleLine)
 				{
@@ -326,7 +327,7 @@ Bool Text::HTMLUtil::HTMLGetText(Text::EncodingFactory *encFact, const UInt8 *bu
 				lastIsSpace = true;
 				lastType = 0;
 			}
-			else if (Text::StrEqualsICase(csptr, (const UTF8Char*)"IMG"))
+			else if (s->EqualsICase((const UTF8Char*)"IMG"))
 			{
 				if (imgList)
 				{
@@ -336,9 +337,9 @@ Bool Text::HTMLUtil::HTMLGetText(Text::EncodingFactory *encFact, const UInt8 *bu
 					while (i < j)
 					{
 						attr = reader->GetAttrib(i);
-						if (Text::StrEqualsICase(attr->name, (const UTF8Char*)"SRC") && attr->value)
+						if (attr->name->EqualsICase((const UTF8Char*)"SRC") && attr->value)
 						{
-							imgList->Add(Text::StrCopyNew(attr->value));
+							imgList->Add(attr->value->Clone());
 						}
 						i++;
 					}

@@ -1,6 +1,7 @@
 #ifndef _SM_NET_SNS_SNSCONTROL
 #define _SM_NET_SNS_SNSCONTROL
 #include "Data/ArrayList.h"
+#include "Text/String.h"
 #include "Text/StringBuilderUTF.h"
 
 namespace Net
@@ -24,13 +25,13 @@ namespace Net
 
 			typedef struct
 			{
-				const UTF8Char *id;
+				Text::String *id;
 				Int64 msgTime;
-				const UTF8Char *title;
-				const UTF8Char *message;
-				const UTF8Char *msgLink;
-				const UTF8Char *imgURL;
-				const UTF8Char *videoURL;
+				Text::String *title;
+				Text::String *message;
+				Text::String *msgLink;
+				Text::String *imgURL;
+				Text::String *videoURL;
 			} SNSItem;
 			
 		public:
@@ -38,8 +39,8 @@ namespace Net
 
 			virtual Bool IsError() = 0;
 			virtual SNSType GetSNSType() = 0;
-			virtual const UTF8Char *GetChannelId() = 0;
-			virtual const UTF8Char *GetName() = 0;
+			virtual Text::String *GetChannelId() = 0;
+			virtual Text::String *GetName() = 0;
 			virtual UTF8Char *GetDirName(UTF8Char *dirName) = 0;
 			virtual UOSInt GetCurrItems(Data::ArrayList<SNSItem*> *itemList) = 0;
 			virtual UTF8Char *GetItemShortId(UTF8Char *buff, SNSItem *item) = 0;
@@ -49,7 +50,7 @@ namespace Net
 			static const UTF8Char *SNSTypeGetName(SNSType snsType);
 			static SNSType SNSTypeFromName(const UTF8Char *name);
 
-			static SNSItem *CreateItem(const UTF8Char *id, Int64 msgTime, const UTF8Char *title, const UTF8Char *message, const UTF8Char *msgLink, const UTF8Char *imgURL, const UTF8Char *videoURL);
+			static SNSItem *CreateItem(Text::String *id, Int64 msgTime, Text::String *title, Text::String *message, Text::String *msgLink, Text::String *imgURL, Text::String *videoURL);
 			static void FreeItem(SNSItem *item);
 		};
 	}

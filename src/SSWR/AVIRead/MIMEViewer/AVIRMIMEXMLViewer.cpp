@@ -23,6 +23,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMIMEXMLViewer::AVIRMIMEXMLViewer(SSWR::AVIRead::A
 	Text::StringBuilderUTF8 sbPath;
 	Text::StringBuilderUTF8 sbCont;
 	Text::XMLAttrib *attr;
+	Text::String *s;
 	const UTF8Char *csptr;
 	UOSInt i;
 	UOSInt j;
@@ -57,9 +58,9 @@ SSWR::AVIRead::MIMEViewer::AVIRMIMEXMLViewer::AVIRMIMEXMLViewer(SSWR::AVIRead::A
 				{
 					sbCont.AppendChar('=', 1);
 					sbCont.AppendChar('"', 1);
-					csptr = Text::XML::ToNewAttrText(attr->value);
-					sbCont.Append(csptr);
-					Text::XML::FreeNewText(csptr);
+					s = Text::XML::ToNewAttrText(attr->value->v);
+					sbCont.Append(s);
+					s->Release();
 					sbCont.AppendChar('"', 1);
 				}
 				i++;
@@ -126,9 +127,9 @@ SSWR::AVIRead::MIMEViewer::AVIRMIMEXMLViewer::AVIRMIMEXMLViewer(SSWR::AVIRead::A
 				if (attr->value)
 				{
 					sbCont.AppendChar('=', 1);
-					csptr = Text::XML::ToNewAttrText(attr->value);
-					sbCont.Append(csptr);
-					Text::XML::FreeNewText(csptr);
+					s = Text::XML::ToNewAttrText(attr->value->v);
+					sbCont.Append(s);
+					s->Release();
 				}
 				i++;
 			}

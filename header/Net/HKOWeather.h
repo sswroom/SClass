@@ -50,7 +50,7 @@ namespace Net
 		Net::RSSReader *rss;
 		WeatherSignal currSignal;
 
-		static WeatherSignal String2Signal(const UTF8Char *textMessage);
+		static WeatherSignal String2Signal(Text::String *textMessage);
 	public:
 		static WeatherSignal GetSignalSummary(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact);
 

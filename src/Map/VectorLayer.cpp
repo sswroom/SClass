@@ -48,6 +48,47 @@ const UTF8Char **Map::VectorLayer::CopyStrs(const UTF8Char **strs)
 	return newStrs;
 }
 
+const UTF8Char **Map::VectorLayer::CopyStrs(Text::String **strs)
+{
+	UOSInt i = this->strCnt;
+	UOSInt j = 0;
+	UOSInt k;
+	UTF8Char *sptr = 0;
+	while (i-- > 0)
+	{
+		if (strs[i])
+		{
+			k = strs[i]->leng;
+			j += k + 1;
+			if (this->maxStrLen[i] < k)
+			{
+				this->maxStrLen[i] = k;
+			}
+		}
+	}
+	const UTF8Char **newStrs = MemAlloc(const UTF8Char*, this->strCnt);
+	if (j > 0)
+	{
+		sptr = MemAlloc(UTF8Char, j);
+	}
+	i = this->strCnt;
+	k = 0;
+	while (k < i)
+	{
+		if (strs[k])
+		{
+			newStrs[k] = sptr;
+			sptr = strs[k]->ConcatTo(sptr) + 1;
+		}
+		else
+		{
+			newStrs[k] = 0;
+		}
+		k++;
+	}
+	return newStrs;
+}
+
 void Map::VectorLayer::UpdateMapRate()
 {
 	if (this->maxX > 200000000 || this->minX < -200000000 || this->maxY > 200000000 || this->minY < -200000000)
@@ -580,6 +621,92 @@ void Map::VectorLayer::ReleaseObject(void *session, DrawObjectL *obj)
 Map::IMapDrawLayer::ObjectClass Map::VectorLayer::GetObjectClass()
 {
 	return Map::IMapDrawLayer::OC_VECTOR_LAYER;
+}
+
+Bool Map::VectorLayer::AddVector(Math::Vector2D *vec, Text::String **strs)
+{
+	if (this->layerType == Map::DRAW_LAYER_POINT)
+	{
+		if (vec->GetVectorType() != Math::Vector2D::VectorType::Point)
+			return false;
+	}
+	else if (this->layerType == Map::DRAW_LAYER_POINT3D)
+	{
+		if (vec->GetVectorType() != Math::Vector2D::VectorType::Point || !vec->Support3D())
+			return false;
+	}
+	else if (this->layerType == Map::DRAW_LAYER_POLYLINE)
+	{
+		if (vec->GetVectorType() != Math::Vector2D::VectorType::Polyline)
+			return false;
+	}
+	else if (this->layerType == Map::DRAW_LAYER_POLYLINE3D)
+	{
+		if (vec->GetVectorType() != Math::Vector2D::VectorType::Polyline || !vec->Support3D())
+			return false;
+	}
+	else if (this->layerType == Map::DRAW_LAYER_POLYGON)
+	{
+		if (vec->GetVectorType() != Math::Vector2D::VectorType::Polygon)
+			return false;
+	}
+	else if (this->layerType == Map::DRAW_LAYER_IMAGE)
+	{
+		if (vec->GetVectorType() != Math::Vector2D::VectorType::Image)
+			return false;
+	}
+	else if (this->layerType == Map::DRAW_LAYER_MIXED)
+	{
+	}
+	else
+	{
+		return false;
+	}
+	const UTF8Char **newStrs = CopyStrs(strs);
+
+	Double x1;
+	Double y1;
+	Double x2;
+	Double y2;
+	Bool updated = false;
+	vec->GetBounds(&x1, &y1, &x2, &y2);
+	if (this->vectorList->GetCount() == 0)
+	{
+		this->minX = x1;
+		this->minY = y1;
+		this->maxX = x2;
+		this->maxY = y2;
+		updated = true;
+	}
+	else
+	{
+		if (this->minX > x1)
+		{
+			this->minX = x1;
+			updated = true;
+		}
+		if (this->minY > y1)
+		{
+			this->minY = y1;
+			updated = true;
+		}
+		if (this->maxX < x2)
+		{
+			this->maxX = x2;
+			updated = true;
+		}
+		if (this->maxY < y2)
+		{
+			this->maxY = y2;
+			updated = true;
+		}
+	}
+
+	this->vectorList->Add(vec);
+	this->strList->Add(newStrs);
+	if (updated)
+		this->UpdateMapRate();
+	return true;
 }
 
 Bool Map::VectorLayer::AddVector(Math::Vector2D *vec, const UTF8Char **strs)

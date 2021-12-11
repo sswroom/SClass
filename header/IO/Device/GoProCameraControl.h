@@ -17,13 +17,13 @@ namespace IO
 			Data::ArrayList<IO::CameraControl::FileInfo*> *fileList;
 
 			void GetMediaList();
-			Bool GetInfo(Data::ArrayList<const UTF8Char*> *nameList, Data::ArrayList<const UTF8Char*> *valueList);			
+			Bool GetInfo(Data::ArrayList<Text::String*> *nameList, Data::ArrayList<Text::String*> *valueList);			
 		public:
 			GoProCameraControl(Net::SocketFactory *sockf, const Net::SocketUtil::AddressInfo *addr);
 			virtual ~GoProCameraControl();
 
-			virtual UOSInt GetInfoList(Data::ArrayList<const UTF8Char*> *nameList, Data::ArrayList<const UTF8Char*> *valueList);
-			virtual void FreeInfoList(Data::ArrayList<const UTF8Char*> *nameList, Data::ArrayList<const UTF8Char*> *valueList);
+			virtual UOSInt GetInfoList(Data::ArrayList<Text::String*> *nameList, Data::ArrayList<Text::String*> *valueList);
+			virtual void FreeInfoList(Data::ArrayList<Text::String*> *nameList, Data::ArrayList<Text::String*> *valueList);
 			virtual UOSInt GetFileList(Data::ArrayList<FileInfo*> *fileList);
 			virtual Bool GetFile(FileInfo *file, IO::Stream *outStm);
 			virtual Bool GetThumbnailFile(FileInfo *file, IO::Stream *outStm);

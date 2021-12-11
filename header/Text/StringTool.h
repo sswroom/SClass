@@ -10,9 +10,12 @@ namespace Text
 	class StringTool
 	{
 	public:
+		static void BuildString(Text::StringBuilderUTF *sb, Text::String *s);
 		static void BuildString(Text::StringBuilderUTF *sb, const UTF8Char *s);
+		static void BuildString(Text::StringBuilderUTF *sb, Data::StringUTF8Map<Text::String*> *map);
 		static void BuildString(Text::StringBuilderUTF *sb, Data::StringUTF8Map<const UTF8Char*> *map);
-		static void BuildString(Text::StringBuilderUTF *sb, Data::List<const UTF8Char*> *list);
+		static void BuildString(Text::StringBuilderUTF *sb, Data::ReadingList<const UTF8Char*> *list);
+		static void BuildString(Text::StringBuilderUTF *sb, Data::ReadingList<Text::String*> *list);
 		template <class T> static void BuildString(Text::StringBuilderUTF *sb, T *obj, Data::NamedClass<T> *cls);
 		template <class T> static void BuildString(Text::StringBuilderUTF *sb, Data::List<T*> *list, Data::NamedClass<T> *cls, const UTF8Char *clsName);
 		static void Int32Join(Text::StringBuilderUTF *sb, Data::List<Int32> *list, const UTF8Char *seperator);

@@ -8,12 +8,13 @@ namespace Text
 	class VSFile : public Text::CodeFile
 	{
 	private:
-		const UTF8Char *fileName;
+		Text::String *fileName;
 	public:
+		VSFile(Text::String *fileName);
 		VSFile(const UTF8Char *fileName);
 		virtual ~VSFile();
 
-		virtual const UTF8Char *GetFileName();
+		virtual Text::String *GetFileName();
 	};
 
 	class VSProjContainer
@@ -25,14 +26,15 @@ namespace Text
 	class VSContainer : public Text::CodeContainer, public VSProjContainer
 	{
 	private:
-		const UTF8Char *contName;
+		Text::String *contName;
 		Data::ArrayList<CodeObject*> *childList;
 	public:
+		VSContainer(Text::String *contName);
 		VSContainer(const UTF8Char *contName);
 		virtual ~VSContainer();
 
 		virtual void SetContainerName(const UTF8Char *contName);
-		virtual const UTF8Char *GetContainerName();
+		virtual Text::String *GetContainerName();
 
 		virtual UOSInt GetChildCount();
 		virtual CodeObject *GetChildObj(UOSInt index);
@@ -56,15 +58,16 @@ namespace Text
 		} VisualStudioVersion;
 	private:
 		VisualStudioVersion ver;
-		const UTF8Char *projName;
+		Text::String *projName;
 		Data::ArrayList<CodeObject*> *childList;
 	public:
 		VSProject(const UTF8Char *name, VisualStudioVersion ver);
 		virtual ~VSProject();
 
 		virtual ProjectType GetProjectType();
+		virtual void SetProjectName(Text::String *projName);
 		virtual void SetProjectName(const UTF8Char *projName);
-		virtual const UTF8Char *GetContainerName();
+		virtual Text::String *GetContainerName();
 
 		virtual UOSInt GetChildCount();
 		virtual CodeObject *GetChildObj(UOSInt index);

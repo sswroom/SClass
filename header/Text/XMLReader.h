@@ -32,9 +32,9 @@ namespace Text
 
 		Data::ArrayList<Text::XMLAttrib *> *attrList;
 		Text::XMLNode::NodeType nt;
-		Data::ArrayList<const UTF8Char*> *pathList;
-		const UTF8Char *nodeText;
-		const UTF8Char *nodeOriText;
+		Data::ArrayList<Text::String*> *pathList;
+		Text::String *nodeText;
+		Text::String *nodeOriText;
 		Bool emptyNode;
 
 		void FreeCurrent();
@@ -48,8 +48,8 @@ namespace Text
 		void GetCurrPath(Text::StringBuilderUTF *sb);
 		UOSInt GetPathLev();
 		Text::XMLNode::NodeType GetNodeType();
-		const UTF8Char *GetNodeText(); //TextNode = Value, ElementNode = Name
-		const UTF8Char *GetNodeOriText();
+		Text::String *GetNodeText(); //TextNode = Value, ElementNode = Name
+		Text::String *GetNodeOriText();
 		UOSInt GetAttribCount();
 		Text::XMLAttrib *GetAttrib(UOSInt index);
 		Text::XMLAttrib *GetAttrib(const UTF8Char *name);

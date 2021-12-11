@@ -5,7 +5,7 @@
 Net::SNS::SNS7gogo::SNS7gogo(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, const UTF8Char *userAgent, const UTF8Char *channelId)
 {
 	NEW_CLASS(this->ctrl, Net::WebSite::WebSite7gogoControl(sockf, ssl, encFact, userAgent));
-	this->channelId = Text::StrCopyNew(channelId);
+	this->channelId = Text::String::NewNotNull(channelId);
 	this->chName = 0;
 	this->chDesc = 0;
 	this->chError = false;
@@ -20,16 +20,16 @@ Net::SNS::SNS7gogo::SNS7gogo(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Tex
 	this->ctrl->GetChannelItems(this->channelId, 0, &itemList, &chInfo);
 	if (chInfo.name)
 	{
-		this->chName = Text::StrCopyNew(chInfo.name);
+		this->chName = chInfo.name->Clone();
 	}
 	else
 	{
-		this->chName = Text::StrCopyNew(this->channelId);
+		this->chName = this->channelId->Clone();
 		this->chError = true;
 	}
 	if (chInfo.detail)
 	{
-		this->chDesc = Text::StrCopyNew(chInfo.detail);
+		this->chDesc = chInfo.detail->Clone();
 	}
 	this->ctrl->FreeChannelInfo(&chInfo);
 	UOSInt i = itemList.GetCount();
@@ -43,7 +43,11 @@ Net::SNS::SNS7gogo::SNS7gogo(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Tex
 		sb.Append(this->channelId);
 		sb.Append((const UTF8Char*)"/");
 		sb.AppendI64(item->id);
-		snsItem = CreateItem(sbuff, item->recTime, 0, item->message, sb.ToString(), item->imgURL, 0);
+		Text::String *s = Text::String::NewNotNull(sbuff);
+		Text::String *s2 = Text::String::New(sb.ToString(), sb.GetLength());
+		snsItem = CreateItem(s, item->recTime, 0, item->message, s2, item->imgURL, 0);
+		s->Release();
+		s2->Release();
 		this->itemMap->Put(item->id, snsItem);
 	}
 	this->ctrl->FreeItems(&itemList);
@@ -53,8 +57,8 @@ Net::SNS::SNS7gogo::~SNS7gogo()
 {
 	UOSInt i;
 	DEL_CLASS(this->ctrl);
-	SDEL_TEXT(this->chName);
-	SDEL_TEXT(this->chDesc);
+	SDEL_STRING(this->chName);
+	SDEL_STRING(this->chDesc);
 	Data::ArrayList<SNSItem*> *itemList = this->itemMap->GetValues();
 	i = itemList->GetCount();
 	while (i-- > 0)
@@ -74,12 +78,12 @@ Net::SNS::SNSControl::SNSType Net::SNS::SNS7gogo::GetSNSType()
 	return Net::SNS::SNSControl::ST_7GOGO;
 }
 
-const UTF8Char *Net::SNS::SNS7gogo::GetChannelId()
+Text::String *Net::SNS::SNS7gogo::GetChannelId()
 {
 	return this->channelId;
 }
 
-const UTF8Char *Net::SNS::SNS7gogo::GetName()
+Text::String *Net::SNS::SNS7gogo::GetName()
 {
 	return this->chName;
 }
@@ -87,7 +91,7 @@ const UTF8Char *Net::SNS::SNS7gogo::GetName()
 UTF8Char *Net::SNS::SNS7gogo::GetDirName(UTF8Char *dirName)
 {
 	dirName = Text::StrConcat(dirName, (const UTF8Char*)"7gogo_");
-	dirName = Text::StrConcat(dirName, this->channelId);
+	dirName = this->channelId->ConcatTo(dirName);
 	return dirName;
 }
 
@@ -100,7 +104,7 @@ UOSInt Net::SNS::SNS7gogo::GetCurrItems(Data::ArrayList<SNSItem*> *itemList)
 
 UTF8Char *Net::SNS::SNS7gogo::GetItemShortId(UTF8Char *buff, SNSItem *item)
 {
-	return Text::StrConcat(buff, item->id);
+	return item->id->ConcatTo(buff);
 }
 
 Int32 Net::SNS::SNS7gogo::GetMinIntevalMS()
@@ -140,7 +144,11 @@ Bool Net::SNS::SNS7gogo::Reload()
 				sb.Append(this->channelId);
 				sb.Append((const UTF8Char*)"/");
 				sb.AppendI64(item->id);
-				snsItem = CreateItem(sbuff, item->recTime, 0, item->message, sb.ToString(), item->imgURL, 0);
+				Text::String *s = Text::String::NewNotNull(sbuff);
+				Text::String *s2 = Text::String::New(sb.ToString(), sb.GetLength());
+				snsItem = CreateItem(s, item->recTime, 0, item->message, s2, item->imgURL, 0);
+				s->Release();
+				s2->Release();
 				this->itemMap->Put(item->id, snsItem);
 				changed = true;
 			}

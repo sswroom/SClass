@@ -1,8 +1,8 @@
 #ifndef _SM_SSWR_DOWNLOADMONITOR_DOWNMONCORE
 #define _SM_SSWR_DOWNLOADMONITOR_DOWNMONCORE
 #include "Handles.h"
+#include "Data/FastStringMap.h"
 #include "Data/Int32Map.h"
-#include "Data/StringUTF8Map.h"
 #include "Media/VideoChecker.h"
 #include "Parser/ParserList.h"
 #include "Sync/Event.h"
@@ -38,8 +38,8 @@ namespace SSWR
 			{
 				Int32 id;
 				Int32 webType;
-				const UTF8Char *dbName;
-				const UTF8Char *fileName;
+				Text::String *dbName;
+				Text::String *fileName;
 				FileStatus status;
 				Sync::Mutex *mut;
 			} FileInfo;
@@ -67,7 +67,7 @@ namespace SSWR
 
 			Sync::Mutex *fileMut;
 			Data::Int32Map<FileInfo*> *fileTypeMap;
-			Data::StringUTF8Map<FileInfo*> *fileNameMap;
+			Data::FastStringMap<FileInfo*> *fileNameMap;
 
 			Bool FFMPEGMux(const UTF8Char *videoFile, const UTF8Char *audioFile, const UTF8Char *outFile);
 			Bool FFMPEGMuxAAC(const UTF8Char *videoFile, const UTF8Char *audioFile, const UTF8Char *outFile);
@@ -88,7 +88,7 @@ namespace SSWR
 			Text::String *GetListFile();
 
 			void FileFree(FileInfo *file);
-			Bool FileAdd(Int32 id, Int32 webType, const UTF8Char *dbName);
+			Bool FileAdd(Int32 id, Int32 webType, Text::String *dbName);
 			FileInfo *FileGet(Int32 id, Int32 webType, Sync::MutexUsage *mutUsage);
 			Int32 FileGetByName(const UTF8Char *fileName, Int32 *webType);
 			Bool FileEnd(Int32 id, Int32 webType);

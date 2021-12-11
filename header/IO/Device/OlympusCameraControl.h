@@ -1,6 +1,6 @@
 #ifndef _SM_IO_DEVICE_OLYMPUSCAMERACONTROL
 #define _SM_IO_DEVICE_OLYMPUSCAMERACONTROL
-#include "Data/ArrayListStrUTF8.h"
+#include "Data/ArrayListString.h"
 #include "IO/CameraControl.h"
 #include "IO/Stream.h"
 #include "Net/SocketFactory.h"
@@ -18,9 +18,9 @@ namespace IO
 			Net::SocketUtil::AddressInfo addr;
 			Net::SocketFactory *sockf;
 			Text::EncodingFactory *encFact;
-			const UTF8Char *oiVersion;
-			const UTF8Char *oiTrackVersion;
-			Data::ArrayListStrUTF8 *cmdList;
+			Text::String *oiVersion;
+			Text::String *oiTrackVersion;
+			Data::ArrayListString *cmdList;
 			Data::ArrayList<IO::CameraControl::FileInfo*> *fileList;
 
 			void GetCommandList();
@@ -31,14 +31,14 @@ namespace IO
 			OlympusCameraControl(Net::SocketFactory *sockf, Text::EncodingFactory *encFact, const Net::SocketUtil::AddressInfo *addr);
 			virtual ~OlympusCameraControl();
 
-			virtual UOSInt GetInfoList(Data::ArrayList<const UTF8Char*> *nameList, Data::ArrayList<const UTF8Char*> *valueList);
-			virtual void FreeInfoList(Data::ArrayList<const UTF8Char*> *nameList, Data::ArrayList<const UTF8Char*> *valueList);
+			virtual UOSInt GetInfoList(Data::ArrayList<Text::String*> *nameList, Data::ArrayList<Text::String*> *valueList);
+			virtual void FreeInfoList(Data::ArrayList<Text::String*> *nameList, Data::ArrayList<Text::String*> *valueList);
 			virtual UOSInt GetFileList(Data::ArrayList<FileInfo*> *fileList);
 			virtual Bool GetFile(FileInfo *file, IO::Stream *outStm);
 			virtual Bool GetThumbnailFile(FileInfo *file, IO::Stream *outStm);
 
-			const UTF8Char *GetOIVersion();
-			const UTF8Char *GetOITrackVersion();
+			Text::String *GetOIVersion();
+			Text::String *GetOITrackVersion();
 			Bool GetModel(Text::StringBuilderUTF *sb);
 			
 			static OlympusCameraControl *CreateControl(Net::SocketFactory *sockf, Text::EncodingFactory *encFact);

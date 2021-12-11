@@ -20,7 +20,7 @@ namespace Data
 		virtual ~ArrayList();
 
 		virtual UOSInt Add(T val);
-		UOSInt AddAll(ArrayList<T> *arr);
+		UOSInt AddAll(ReadingList<T> *arr);
 		virtual UOSInt AddRange(T *arr, UOSInt cnt);
 		virtual Bool Remove(T val);
 		virtual T RemoveAt(UOSInt index);
@@ -81,7 +81,7 @@ namespace Data
 		return ret;
 	}
 
-	template <class T> UOSInt ArrayList<T>::AddAll(ArrayList<T> *arr)
+	template <class T> UOSInt ArrayList<T>::AddAll(ReadingList<T> *arr)
 	{
 		UOSInt cnt = arr->GetCount();
 		if (objCnt + cnt >= this->capacity)
@@ -98,7 +98,12 @@ namespace Data
 			MemFree(this->arr);
 			this->arr = newArr;
 		}
-		MemCopyNO(&this->arr[objCnt], arr->arr, cnt * sizeof(T));
+		UOSInt i = 0;
+		while (i < cnt)
+		{
+			this->arr[this->objCnt + i] = arr->GetItem(i);
+			i++;
+		}
 		this->objCnt += cnt;
 		return cnt;
 	}
@@ -350,5 +355,5 @@ namespace Data
 
 #define LIST_CALL_FUNC(list, func) { UOSInt i = (list)->GetCount(); while (i-- > 0) func((list)->GetItem(i)); }
 #define LIST_FREE_FUNC(list, func) { LIST_CALL_FUNC(list, func); (list)->Clear(); }
-
+#define LIST_FREE_STRING(list) { UOSInt i = (list)->GetCount(); while (i-- > 0) (list)->GetItem(i)->Release(); (list)->Clear(); }
 #endif

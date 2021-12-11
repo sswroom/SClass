@@ -1,6 +1,6 @@
 #ifndef _SM_NET_SNS_SNSMANAGER
 #define _SM_NET_SNS_SNSMANAGER
-#include "Data/ArrayListStrUTF8.h"
+#include "Data/ArrayListString.h"
 #include "Data/List.h"
 #include "Data/Usable.h"
 #include "Net/SocketFactory.h"
@@ -19,7 +19,7 @@ namespace Net
 			typedef struct
 			{
 				Net::SNS::SNSControl *ctrl;
-				Data::ArrayListStrUTF8 *currItems;
+				Data::ArrayListString *currItems;
 				Int64 lastLoadTime;
 			} ChannelData;
 			

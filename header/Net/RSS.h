@@ -9,19 +9,19 @@ namespace Net
 	class RSSItem
 	{
 	public:
-		const UTF8Char *objectId;
-		const UTF8Char *title;
-		const UTF8Char *link;
-		const UTF8Char *description;
+		Text::String *objectId;
+		Text::String *title;
+		Text::String *link;
+		Text::String *description;
 		Bool descHTML;
-		const UTF8Char *author;
-		const UTF8Char *category;
-		const UTF8Char *comments;
-		const UTF8Char *enclosure;
+		Text::String *author;
+		Text::String *category;
+		Text::String *comments;
+		Text::String *enclosure;
 		Data::DateTime *pubDate;
-		const UTF8Char *source;
-		const UTF8Char *guid;
-		const UTF8Char *imgURL;
+		Text::String *source;
+		Text::String *guid;
+		Text::String *imgURL;
 		Double lat;
 		Double lon;
 
@@ -30,26 +30,26 @@ namespace Net
 		~RSSItem();
 
 		Bool IsError();
-		const UTF8Char *GetId();
+		Text::String *GetId();
 	};
 
 	class RSS : public Data::ReadingList<RSSItem*>
 	{
 	private:
 		Bool isError;
-		const UTF8Char *title;
-		const UTF8Char *link;
-		const UTF8Char *description;
-		const UTF8Char *language;
-		const UTF8Char *copyright;
-		const UTF8Char *managingEditor;
-		const UTF8Char *webMaster;
+		Text::String *title;
+		Text::String *link;
+		Text::String *description;
+		Text::String *language;
+		Text::String *copyright;
+		Text::String *managingEditor;
+		Text::String *webMaster;
 		Data::DateTime *pubDate;
 		Data::DateTime *lastBuildDate;
-//		const UTF8Char *category;
-		const UTF8Char *generator;
-		const UTF8Char *docs;
-//		const UTF8Char *cloud;
+//		Text::String *category;
+		Text::String *generator;
+		Text::String *docs;
+//		Text::String *cloud;
 		Int32 ttl;
 //		RSSImage *image;
 		Data::ArrayList<RSSItem*> *items;
@@ -63,17 +63,17 @@ namespace Net
 		virtual UOSInt GetCount();
 		virtual RSSItem *GetItem(UOSInt Index);
 
-		const UTF8Char *GetTitle();
-		const UTF8Char *GetLink();
-		const UTF8Char *GetDescription();
-		const UTF8Char *GetLanguage();
-		const UTF8Char *GetCopyright();
-		const UTF8Char *GetManagingEditor();
-		const UTF8Char *GetWebMaster();
+		Text::String *GetTitle();
+		Text::String *GetLink();
+		Text::String *GetDescription();
+		Text::String *GetLanguage();
+		Text::String *GetCopyright();
+		Text::String *GetManagingEditor();
+		Text::String *GetWebMaster();
 		Data::DateTime *GetPubDate();
 		Data::DateTime *GetLastBuildDate();
-		const UTF8Char *GetGenerator();
-		const UTF8Char *GetDocs();
+		Text::String *GetGenerator();
+		Text::String *GetDocs();
 
 		static void GetYoutubeURL(const UTF8Char *channelId, Text::StringBuilderUTF *outURL);
 	};

@@ -33,10 +33,10 @@ Net::RSSItem::RSSItem(Text::XMLNode *itemNode)
 	while (i < j)
 	{
 		attr = itemNode->GetAttrib(i);
-		if (Text::StrEqualsICase(attr->name, (const UTF8Char*)"rdf:about") && attr->value)
+		if (attr->name->EqualsICase((const UTF8Char*)"rdf:about") && attr->value)
 		{
-			SDEL_TEXT(this->guid);
-			this->guid = Text::StrCopyNew(attr->value);
+			SDEL_STRING(this->guid);
+			this->guid = attr->value->Clone();
 		}
 		i++;
 	}
@@ -48,14 +48,14 @@ Net::RSSItem::RSSItem(Text::XMLNode *itemNode)
 		Text::XMLNode *node = itemNode->GetChild(i);
 		if (node->GetNodeType() == Text::XMLNode::NT_ELEMENT)
 		{
-			if (Text::StrCompareICase(node->name, (const UTF8Char*)"title") == 0)
+			if (node->name->EqualsICase((const UTF8Char*)"title"))
 			{
 				sb->ClearStr();
 				node->GetInnerText(sb);
-				SDEL_TEXT(this->title);
-				this->title = Text::StrCopyNew(sb->ToString());
+				SDEL_STRING(this->title);
+				this->title = Text::String::New(sb->ToString(), sb->GetLength());
 			}
-			else if (Text::StrCompareICase(node->name, (const UTF8Char*)"link") == 0)
+			else if (node->name->EqualsICase((const UTF8Char*)"link"))
 			{
 				if (node->GetChildCnt() == 0)
 				{
@@ -63,10 +63,10 @@ Net::RSSItem::RSSItem(Text::XMLNode *itemNode)
 					while (k-- > 0)
 					{
 						attr = node->GetAttrib(k);
-						if (Text::StrEquals(attr->name, (const UTF8Char*)"href") && attr->value)
+						if (attr->name->Equals((const UTF8Char*)"href") && attr->value)
 						{
-							SDEL_TEXT(this->link);
-							this->link = Text::StrCopyNew(attr->value);
+							SDEL_STRING(this->link);
+							this->link = attr->value->Clone();
 							break;
 						}
 					}
@@ -75,108 +75,108 @@ Net::RSSItem::RSSItem(Text::XMLNode *itemNode)
 				{
 					sb->ClearStr();
 					node->GetInnerText(sb);
-					SDEL_TEXT(this->link);
-					this->link = Text::StrCopyNew(sb->ToString());
+					SDEL_STRING(this->link);
+					this->link = Text::String::New(sb->ToString(), sb->GetLength());
 				}
 			}
-			else if (Text::StrCompareICase(node->name, (const UTF8Char*)"guid") == 0)
+			else if (node->name->EqualsICase((const UTF8Char*)"guid"))
 			{
 				sb->ClearStr();
 				node->GetInnerText(sb);
-				SDEL_TEXT(this->guid);
-				this->guid = Text::StrCopyNew(sb->ToString());
+				SDEL_STRING(this->guid);
+				this->guid = Text::String::New(sb->ToString(), sb->GetLength());
 			}
-			else if (Text::StrCompareICase(node->name, (const UTF8Char*)"id") == 0)
+			else if (node->name->EqualsICase((const UTF8Char*)"id"))
 			{
 				sb->ClearStr();
 				node->GetInnerText(sb);
-				SDEL_TEXT(this->guid);
-				this->guid = Text::StrCopyNew(sb->ToString());
+				SDEL_STRING(this->guid);
+				this->guid = Text::String::New(sb->ToString(), sb->GetLength());
 			}
-			else if (Text::StrCompareICase(node->name, (const UTF8Char*)"description") == 0)
+			else if (node->name->EqualsICase((const UTF8Char*)"description"))
 			{
 				sb->ClearStr();
 				node->GetInnerText(sb);
-				SDEL_TEXT(this->description);
-				this->description = Text::StrCopyNew(sb->ToString());
-				this->descHTML = Text::StrEquals(itemNode->name, (const UTF8Char*)"item");
+				SDEL_STRING(this->description);
+				this->description = Text::String::New(sb->ToString(), sb->GetLength());
+				this->descHTML = itemNode->name->Equals((const UTF8Char*)"item");
 			}
-			else if (Text::StrCompareICase(node->name, (const UTF8Char*)"category") == 0)
+			else if (node->name->EqualsICase((const UTF8Char*)"category"))
 			{
 				sb->ClearStr();
 				node->GetInnerText(sb);
-				SDEL_TEXT(this->category);
-				this->category = Text::StrCopyNew(sb->ToString());
+				SDEL_STRING(this->category);
+				this->category = Text::String::New(sb->ToString(), sb->GetLength());
 			}
-			else if (Text::StrCompareICase(node->name, (const UTF8Char*)"author") == 0)
+			else if (node->name->EqualsICase((const UTF8Char*)"author"))
 			{
 				sb->ClearStr();
 				node->GetInnerText(sb);
-				SDEL_TEXT(this->author);
-				this->author = Text::StrCopyNew(sb->ToString());
+				SDEL_STRING(this->author);
+				this->author = Text::String::New(sb->ToString(), sb->GetLength());
 			}
-			else if (Text::StrCompareICase(node->name, (const UTF8Char*)"pubDate") == 0)
-			{
-				sb->ClearStr();
-				node->GetInnerText(sb);
-				SDEL_CLASS(this->pubDate);
-				NEW_CLASS(this->pubDate, Data::DateTime(sb->ToString()));
-			}
-			else if (Text::StrCompareICase(node->name, (const UTF8Char*)"dc:date") == 0)
+			else if (node->name->EqualsICase((const UTF8Char*)"pubDate"))
 			{
 				sb->ClearStr();
 				node->GetInnerText(sb);
 				SDEL_CLASS(this->pubDate);
 				NEW_CLASS(this->pubDate, Data::DateTime(sb->ToString()));
 			}
-			else if (Text::StrCompareICase(node->name, (const UTF8Char*)"published") == 0)
+			else if (node->name->EqualsICase((const UTF8Char*)"dc:date"))
 			{
 				sb->ClearStr();
 				node->GetInnerText(sb);
 				SDEL_CLASS(this->pubDate);
 				NEW_CLASS(this->pubDate, Data::DateTime(sb->ToString()));
 			}
-			else if (Text::StrCompareICase(node->name, (const UTF8Char*)"updated") == 0)
+			else if (node->name->EqualsICase((const UTF8Char*)"published"))
 			{
 				sb->ClearStr();
 				node->GetInnerText(sb);
 				SDEL_CLASS(this->pubDate);
 				NEW_CLASS(this->pubDate, Data::DateTime(sb->ToString()));
 			}
-			else if (Text::StrCompareICase(node->name, (const UTF8Char*)"objectId") == 0)
+			else if (node->name->EqualsICase((const UTF8Char*)"updated"))
 			{
 				sb->ClearStr();
 				node->GetInnerText(sb);
-				SDEL_TEXT(this->objectId);
-				this->objectId = Text::StrCopyNew(sb->ToString());
+				SDEL_CLASS(this->pubDate);
+				NEW_CLASS(this->pubDate, Data::DateTime(sb->ToString()));
 			}
-			else if (Text::StrCompareICase(node->name, (const UTF8Char*)"yt:videoId") == 0)
+			else if (node->name->EqualsICase((const UTF8Char*)"objectId"))
 			{
 				sb->ClearStr();
 				node->GetInnerText(sb);
-				SDEL_TEXT(this->objectId);
-				this->objectId = Text::StrCopyNew(sb->ToString());
+				SDEL_STRING(this->objectId);
+				this->objectId = Text::String::New(sb->ToString(), sb->GetLength());
 			}
-			else if (Text::StrCompareICase(node->name, (const UTF8Char*)"geo:lat") == 0)
+			else if (node->name->EqualsICase((const UTF8Char*)"yt:videoId"))
+			{
+				sb->ClearStr();
+				node->GetInnerText(sb);
+				SDEL_STRING(this->objectId);
+				this->objectId = Text::String::New(sb->ToString(), sb->GetLength());
+			}
+			else if (node->name->EqualsICase((const UTF8Char*)"geo:lat"))
 			{
 				sb->ClearStr();
 				node->GetInnerText(sb);
 				this->lat = Text::StrToDouble(sb->ToString());
 			}
-			else if (Text::StrCompareICase(node->name, (const UTF8Char*)"geo:long") == 0)
+			else if (node->name->EqualsICase((const UTF8Char*)"geo:long"))
 			{
 				sb->ClearStr();
 				node->GetInnerText(sb);
 				this->lon = Text::StrToDouble(sb->ToString());
 			}
-			else if (Text::StrCompareICase(node->name, (const UTF8Char*)"content") == 0)
+			else if (node->name->EqualsICase((const UTF8Char*)"content"))
 			{
 				sb->ClearStr();
 				node->GetInnerText(sb);
-				SDEL_TEXT(this->description);
-				this->description = Text::StrCopyNew(sb->ToString());
+				SDEL_STRING(this->description);
+				this->description = Text::String::New(sb->ToString(), sb->GetLength());
 			}
-			else if (Text::StrCompareICase(node->name, (const UTF8Char*)"media:group") == 0)
+			else if (node->name->EqualsICase((const UTF8Char*)"media:group"))
 			{
 				UOSInt k = node->GetChildCnt();
 				Text::XMLNode *node2;
@@ -185,19 +185,19 @@ Net::RSSItem::RSSItem(Text::XMLNode *itemNode)
 					node2 = node->GetChild(k);
 					if (node2->GetNodeType() == Text::XMLNode::NT_ELEMENT)
 					{
-						if (Text::StrEquals(node2->name, (const UTF8Char*)"media:description"))
+						if (node2->name->Equals((const UTF8Char*)"media:description"))
 						{
 							sb->ClearStr();
 							node->GetInnerText(sb);
-							SDEL_TEXT(this->description);
-							this->description = Text::StrCopyNew(sb->ToString());
+							SDEL_STRING(this->description);
+							this->description = Text::String::New(sb->ToString(), sb->GetLength());
 						}
-						else if (Text::StrEquals(node2->name, (const UTF8Char*)"media:imgURL"))
+						else if (node2->name->Equals((const UTF8Char*)"media:imgURL"))
 						{
 							sb->ClearStr();
 							node->GetInnerText(sb);
-							SDEL_TEXT(this->description);
-							this->description = Text::StrCopyNew(sb->ToString());
+							SDEL_STRING(this->description);
+							this->description = Text::String::New(sb->ToString(), sb->GetLength());
 						}
 					}
 				}
@@ -210,17 +210,17 @@ Net::RSSItem::RSSItem(Text::XMLNode *itemNode)
 
 Net::RSSItem::~RSSItem()
 {
-	SDEL_TEXT(this->objectId);
-	SDEL_TEXT(this->title);
-	SDEL_TEXT(this->link);
-	SDEL_TEXT(this->description);
-	SDEL_TEXT(this->author);
-	SDEL_TEXT(this->category);
-	SDEL_TEXT(this->comments);
-	SDEL_TEXT(this->enclosure);
+	SDEL_STRING(this->objectId);
+	SDEL_STRING(this->title);
+	SDEL_STRING(this->link);
+	SDEL_STRING(this->description);
+	SDEL_STRING(this->author);
+	SDEL_STRING(this->category);
+	SDEL_STRING(this->comments);
+	SDEL_STRING(this->enclosure);
 	SDEL_CLASS(this->pubDate);
-	SDEL_TEXT(this->source);
-	SDEL_TEXT(this->guid);
+	SDEL_STRING(this->source);
+	SDEL_STRING(this->guid);
 }
 
 Bool Net::RSSItem::IsError()
@@ -228,7 +228,7 @@ Bool Net::RSSItem::IsError()
 	return this->title == 0;
 }
 
-const UTF8Char *Net::RSSItem::GetId()
+Text::String *Net::RSSItem::GetId()
 {
 	if (this->guid)
 	{
@@ -288,13 +288,13 @@ Net::RSS::RSS(const UTF8Char *url, const UTF8Char *userAgent, Net::SocketFactory
 	while (i-- > 0)
 	{
 		Text::XMLNode *node = doc->GetChild(i);
-		if (node->GetNodeType() == Text::XMLNode::NT_ELEMENT && Text::StrCompareICase(node->name, (const UTF8Char*)"RSS") == 0)
+		if (node->GetNodeType() == Text::XMLNode::NT_ELEMENT && node->name->EqualsICase((const UTF8Char*)"RSS"))
 		{
 			UOSInt j = node->GetChildCnt();
 			while (j-- > 0)
 			{
 				Text::XMLNode *node2 = node->GetChild(j);
-				if (node2->GetNodeType() == Text::XMLNode::NT_ELEMENT && Text::StrCompareICase(node2->name, (const UTF8Char*)"Channel") == 0)
+				if (node2->GetNodeType() == Text::XMLNode::NT_ELEMENT && node2->name->EqualsICase((const UTF8Char*)"Channel"))
 				{
 					UOSInt k = 0;
 					UOSInt l = node2->GetChildCnt();
@@ -303,68 +303,62 @@ Net::RSS::RSS(const UTF8Char *url, const UTF8Char *userAgent, Net::SocketFactory
 						Text::XMLNode *node3 = node2->GetChild(k);
 						if (node3->GetNodeType() == Text::XMLNode::NT_ELEMENT)
 						{
-							if (Text::StrCompareICase(node3->name, (const UTF8Char*)"title") == 0)
+							if (node3->name->EqualsICase((const UTF8Char*)"title"))
 							{
 								sb->ClearStr();
 								node3->GetInnerText(sb);
-								if (this->title)
-									Text::StrDelNew(this->title);
-								this->title = Text::StrCopyNew(sb->ToString());
+								SDEL_STRING(this->title);
+								this->title = Text::String::New(sb->ToString(), sb->GetLength());
 							}
-							else if (Text::StrCompareICase(node3->name, (const UTF8Char*)"description") == 0)
+							else if (node3->name->EqualsICase((const UTF8Char*)"description"))
 							{
 								sb->ClearStr();
 								node3->GetInnerText(sb);
-								if (this->description)
-									Text::StrDelNew(this->description);
-								this->description = Text::StrCopyNew(sb->ToString());
+								SDEL_STRING(this->description);
+								this->description = Text::String::New(sb->ToString(), sb->GetLength());
 							}
-							else if (Text::StrCompareICase(node3->name, (const UTF8Char*)"link") == 0)
+							else if (node3->name->EqualsICase((const UTF8Char*)"link"))
 							{
 								sb->ClearStr();
 								node3->GetInnerText(sb);
-								if (this->link)
-									Text::StrDelNew(this->link);
-								this->link = Text::StrCopyNew(sb->ToString());
+								SDEL_STRING(this->link);
+								this->link = Text::String::New(sb->ToString(), sb->GetLength());
 							}
-							else if (Text::StrCompareICase(node3->name, (const UTF8Char*)"ttl") == 0)
+							else if (node3->name->EqualsICase((const UTF8Char*)"ttl"))
 							{
 								sb->ClearStr();
 								node3->GetInnerText(sb);
 								this->ttl = Text::StrToInt32(sb->ToString());
 							}
-							else if (Text::StrCompareICase(node3->name, (const UTF8Char*)"language") == 0)
+							else if (node3->name->EqualsICase((const UTF8Char*)"language"))
 							{
 								sb->ClearStr();
 								node3->GetInnerText(sb);
-								if (this->language)
-									Text::StrDelNew(this->language);
-								this->language = Text::StrCopyNew(sb->ToString());
+								SDEL_STRING(this->language);
+								this->language = Text::String::New(sb->ToString(), sb->GetLength());
 							}
-							else if (Text::StrCompareICase(node3->name, (const UTF8Char*)"webMaster") == 0)
+							else if (node3->name->EqualsICase((const UTF8Char*)"webMaster"))
 							{
 								sb->ClearStr();
 								node3->GetInnerText(sb);
-								if (this->webMaster)
-									Text::StrDelNew(this->webMaster);
-								this->webMaster = Text::StrCopyNew(sb->ToString());
+								SDEL_STRING(this->webMaster);
+								this->webMaster = Text::String::New(sb->ToString(), sb->GetLength());
 							}
-							else if (Text::StrCompareICase(node3->name, (const UTF8Char*)"copyright") == 0)
+							else if (node3->name->EqualsICase((const UTF8Char*)"copyright"))
 							{
 								sb->ClearStr();
 								node3->GetInnerText(sb);
-								if (this->copyright)
-									Text::StrDelNew(this->copyright);
-								this->copyright = Text::StrCopyNew(sb->ToString());
+								SDEL_STRING(this->copyright);
+								this->copyright = Text::String::New(sb->ToString(), sb->GetLength());
 							}
-							else if (Text::StrCompareICase(node3->name, (const UTF8Char*)"generator") == 0)
+							else if (node3->name->EqualsICase((const UTF8Char*)"generator"))
 							{
 								sb->ClearStr();
 								node3->GetInnerText(sb);
-								SDEL_TEXT(this->generator);
-								this->generator = Text::StrCopyNew(sb->ToString());
+								SDEL_STRING(this->generator);
+								this->generator = Text::String::New(sb->ToString(), sb->GetLength());
 							}
-							else if (Text::StrCompareICase(node3->name, (const UTF8Char*)"pubDate") == 0)
+							else if (node3->name->EqualsICase((const UTF8Char*)"pubDate"))
 							{
 								sb->ClearStr();
 								node3->GetInnerText(sb);
@@ -372,7 +366,7 @@ Net::RSS::RSS(const UTF8Char *url, const UTF8Char *userAgent, Net::SocketFactory
 								NEW_CLASS(this->pubDate, Data::DateTime());
 								this->pubDate->SetValue(sb->ToString());
 							}
-							else if (Text::StrCompareICase(node3->name, (const UTF8Char*)"lastBuildDate") == 0)
+							else if (node3->name->EqualsICase((const UTF8Char*)"lastBuildDate"))
 							{
 								sb->ClearStr();
 								node3->GetInnerText(sb);
@@ -380,7 +374,7 @@ Net::RSS::RSS(const UTF8Char *url, const UTF8Char *userAgent, Net::SocketFactory
 								NEW_CLASS(this->lastBuildDate, Data::DateTime());
 								this->lastBuildDate->SetValue(sb->ToString());
 							}
-							else if (Text::StrCompareICase(node3->name, (const UTF8Char*)"item") == 0)
+							else if (node3->name->EqualsICase((const UTF8Char*)"item"))
 							{
 								RSSItem *itm;
 								NEW_CLASS(itm, Net::RSSItem(node3));
@@ -399,14 +393,14 @@ Net::RSS::RSS(const UTF8Char *url, const UTF8Char *userAgent, Net::SocketFactory
 				}
 			}
 		}
-		else if (node->GetNodeType() == Text::XMLNode::NT_ELEMENT && Text::StrCompareICase(node->name, (const UTF8Char*)"rdf:RDF") == 0)
+		else if (node->GetNodeType() == Text::XMLNode::NT_ELEMENT && node->name->EqualsICase((const UTF8Char*)"rdf:RDF"))
 		{
 			UOSInt j = node->GetChildCnt();
 			UOSInt i2 = 0;
 			while (i2 < j)
 			{
 				Text::XMLNode *node2 = node->GetChild(i2);
-				if (node2->GetNodeType() == Text::XMLNode::NT_ELEMENT && Text::StrCompareICase(node2->name, (const UTF8Char*)"Channel") == 0)
+				if (node2->GetNodeType() == Text::XMLNode::NT_ELEMENT && node2->name->EqualsICase((const UTF8Char*)"Channel"))
 				{
 					UOSInt k = 0;
 					UOSInt l = node2->GetChildCnt();
@@ -415,68 +409,62 @@ Net::RSS::RSS(const UTF8Char *url, const UTF8Char *userAgent, Net::SocketFactory
 						Text::XMLNode *node3 = node2->GetChild(k);
 						if (node3->GetNodeType() == Text::XMLNode::NT_ELEMENT)
 						{
-							if (Text::StrCompareICase(node3->name, (const UTF8Char*)"title") == 0)
+							if (node3->name->EqualsICase((const UTF8Char*)"title"))
 							{
 								sb->ClearStr();
 								node3->GetInnerText(sb);
-								if (this->title)
-									Text::StrDelNew(this->title);
-								this->title = Text::StrCopyNew(sb->ToString());
+								SDEL_STRING(this->title);
+								this->title = Text::String::New(sb->ToString(), sb->GetLength());
 							}
-							else if (Text::StrCompareICase(node3->name, (const UTF8Char*)"description") == 0)
+							else if (node3->name->EqualsICase((const UTF8Char*)"description"))
 							{
 								sb->ClearStr();
 								node3->GetInnerText(sb);
-								if (this->description)
-									Text::StrDelNew(this->description);
-								this->description = Text::StrCopyNew(sb->ToString());
+								SDEL_STRING(this->description);
+								this->description = Text::String::New(sb->ToString(), sb->GetLength());
 							}
-							else if (Text::StrCompareICase(node3->name, (const UTF8Char*)"link") == 0)
+							else if (node3->name->EqualsICase((const UTF8Char*)"link"))
 							{
 								sb->ClearStr();
 								node3->GetInnerText(sb);
-								if (this->link)
-									Text::StrDelNew(this->link);
-								this->link = Text::StrCopyNew(sb->ToString());
+								SDEL_STRING(this->link);
+								this->link = Text::String::New(sb->ToString(), sb->GetLength());
 							}
-							else if (Text::StrCompareICase(node3->name, (const UTF8Char*)"ttl") == 0)
+							else if (node3->name->EqualsICase((const UTF8Char*)"ttl"))
 							{
 								sb->ClearStr();
 								node3->GetInnerText(sb);
 								this->ttl = Text::StrToInt32(sb->ToString());
 							}
-							else if (Text::StrCompareICase(node3->name, (const UTF8Char*)"dc:language") == 0)
+							else if (node3->name->EqualsICase((const UTF8Char*)"dc:language"))
 							{
 								sb->ClearStr();
 								node3->GetInnerText(sb);
-								if (this->language)
-									Text::StrDelNew(this->language);
-								this->language = Text::StrCopyNew(sb->ToString());
+								SDEL_STRING(this->language);
+								this->language = Text::String::New(sb->ToString(), sb->GetLength());
 							}
-							else if (Text::StrCompareICase(node3->name, (const UTF8Char*)"webMaster") == 0)
+							else if (node3->name->EqualsICase((const UTF8Char*)"webMaster"))
 							{
 								sb->ClearStr();
 								node3->GetInnerText(sb);
-								if (this->webMaster)
-									Text::StrDelNew(this->webMaster);
-								this->webMaster = Text::StrCopyNew(sb->ToString());
+								SDEL_STRING(this->webMaster);
+								this->webMaster = Text::String::New(sb->ToString(), sb->GetLength());
 							}
-							else if (Text::StrCompareICase(node3->name, (const UTF8Char*)"dc:rights") == 0)
+							else if (node3->name->EqualsICase((const UTF8Char*)"dc:rights"))
 							{
 								sb->ClearStr();
 								node3->GetInnerText(sb);
-								if (this->copyright)
-									Text::StrDelNew(this->copyright);
-								this->copyright = Text::StrCopyNew(sb->ToString());
+								SDEL_STRING(this->copyright);
+								this->copyright = Text::String::New(sb->ToString(), sb->GetLength());
 							}
-							else if (Text::StrCompareICase(node3->name, (const UTF8Char*)"generator") == 0)
+							else if (node3->name->EqualsICase((const UTF8Char*)"generator"))
 							{
 								sb->ClearStr();
 								node3->GetInnerText(sb);
-								SDEL_TEXT(this->generator);
-								this->generator = Text::StrCopyNew(sb->ToString());
+								SDEL_STRING(this->generator);
+								this->generator = Text::String::New(sb->ToString(), sb->GetLength());
 							}
-							else if (Text::StrCompareICase(node3->name, (const UTF8Char*)"dc:date") == 0)
+							else if (node3->name->EqualsICase((const UTF8Char*)"dc:date"))
 							{
 								sb->ClearStr();
 								node3->GetInnerText(sb);
@@ -484,7 +472,7 @@ Net::RSS::RSS(const UTF8Char *url, const UTF8Char *userAgent, Net::SocketFactory
 								NEW_CLASS(this->pubDate, Data::DateTime());
 								this->pubDate->SetValue(sb->ToString());
 							}
-							else if (Text::StrCompareICase(node3->name, (const UTF8Char*)"lastBuildDate") == 0)
+							else if (node3->name->EqualsICase((const UTF8Char*)"lastBuildDate"))
 							{
 								sb->ClearStr();
 								node3->GetInnerText(sb);
@@ -496,7 +484,7 @@ Net::RSS::RSS(const UTF8Char *url, const UTF8Char *userAgent, Net::SocketFactory
 						k++;
 					}
 				}
-				else if (node2->GetNodeType() == Text::XMLNode::NT_ELEMENT && Text::StrCompareICase(node2->name, (const UTF8Char*)"item") == 0)
+				else if (node2->GetNodeType() == Text::XMLNode::NT_ELEMENT && node2->name->EqualsICase((const UTF8Char*)"item"))
 				{
 					RSSItem *itm;
 					NEW_CLASS(itm, Net::RSSItem(node2));
@@ -512,7 +500,7 @@ Net::RSS::RSS(const UTF8Char *url, const UTF8Char *userAgent, Net::SocketFactory
 				i2++;
 			}
 		}
-		else if (node->GetNodeType() == Text::XMLNode::NT_ELEMENT && Text::StrCompareICase(node->name, (const UTF8Char*)"feed") == 0)
+		else if (node->GetNodeType() == Text::XMLNode::NT_ELEMENT && node->name->EqualsICase((const UTF8Char*)"feed"))
 		{
 			Text::XMLAttrib *attr;
 			UOSInt j = node->GetChildCnt();
@@ -522,21 +510,21 @@ Net::RSS::RSS(const UTF8Char *url, const UTF8Char *userAgent, Net::SocketFactory
 				Text::XMLNode *node2 = node->GetChild(i2);
 				if (node2->GetNodeType() == Text::XMLNode::NT_ELEMENT)
 				{
-					if (Text::StrCompareICase(node2->name, (const UTF8Char*)"title") == 0)
+					if (node2->name->EqualsICase((const UTF8Char*)"title"))
 					{
 						sb->ClearStr();
 						node2->GetInnerText(sb);
-						SDEL_TEXT(this->title);
-						this->title = Text::StrCopyNew(sb->ToString());
+						SDEL_STRING(this->title);
+						this->title = Text::String::New(sb->ToString(), sb->GetLength());
 					}
-					else if (Text::StrCompareICase(node2->name, (const UTF8Char*)"description") == 0)
+					else if (node2->name->EqualsICase((const UTF8Char*)"description"))
 					{
 						sb->ClearStr();
 						node2->GetInnerText(sb);
-						SDEL_TEXT(this->description);
-						this->description = Text::StrCopyNew(sb->ToString());
+						SDEL_STRING(this->description);
+						this->description = Text::String::New(sb->ToString(), sb->GetLength());
 					}
-					else if (Text::StrCompareICase(node2->name, (const UTF8Char*)"link") == 0)
+					else if (node2->name->EqualsICase((const UTF8Char*)"link"))
 					{
 						Int32 linkType = 0;
 						UOSInt k = 0;
@@ -544,42 +532,42 @@ Net::RSS::RSS(const UTF8Char *url, const UTF8Char *userAgent, Net::SocketFactory
 						while (k < l)
 						{
 							attr = node2->GetAttrib(k);
-							if (Text::StrEquals(attr->name, (const UTF8Char*)"rel") && attr->value)
+							if (attr->name->Equals((const UTF8Char*)"rel") && attr->value)
 							{
-								if (Text::StrEquals(attr->value, (const UTF8Char*)"self"))
+								if (attr->value->Equals((const UTF8Char*)"self"))
 								{
 									linkType = 1;
 								}
-								else if (Text::StrEquals(attr->value, (const UTF8Char*)"alternate"))
+								else if (attr->value->Equals((const UTF8Char*)"alternate"))
 								{
 									linkType = 2;
 								}
 							}
-							else if (Text::StrEquals(attr->name, (const UTF8Char*)"href") && attr->value)
+							else if (attr->name->Equals((const UTF8Char*)"href") && attr->value)
 							{
 								if (linkType == 2)
 								{
-									SDEL_TEXT(this->link);
-									this->link = Text::StrCopyNew(attr->value);
+									SDEL_STRING(this->link);
+									this->link = attr->value->Clone();
 								}
 							}
 							k++;
 						}
 					}
-					else if (Text::StrCompareICase(node2->name, (const UTF8Char*)"ttl") == 0)
+					else if (node2->name->EqualsICase((const UTF8Char*)"ttl"))
 					{
 						sb->ClearStr();
 						node2->GetInnerText(sb);
 						this->ttl = Text::StrToInt32(sb->ToString());
 					}
-					else if (Text::StrCompareICase(node2->name, (const UTF8Char*)"dc:language") == 0)
+					else if (node2->name->EqualsICase((const UTF8Char*)"dc:language"))
 					{
 						sb->ClearStr();
 						node2->GetInnerText(sb);
-						SDEL_TEXT(this->language);
-						this->language = Text::StrCopyNew(sb->ToString());
+						SDEL_STRING(this->language);
+						this->language = Text::String::New(sb->ToString(), sb->GetLength());
 					}
-					else if (Text::StrCompareICase(node2->name, (const UTF8Char*)"author") == 0)
+					else if (node2->name->EqualsICase((const UTF8Char*)"author"))
 					{
 						UOSInt k;
 						UOSInt l;
@@ -589,31 +577,31 @@ Net::RSS::RSS(const UTF8Char *url, const UTF8Char *userAgent, Net::SocketFactory
 						while (k < l)
 						{
 							node3 = node2->GetChild(k);
-							if (node3->GetNodeType() == Text::XMLNode::NT_ELEMENT && Text::StrEquals(node3->name, (const UTF8Char*)"name"))
+							if (node3->GetNodeType() == Text::XMLNode::NT_ELEMENT && node3->name->Equals((const UTF8Char*)"name"))
 							{
 								sb->ClearStr();
 								node3->GetInnerText(sb);
-								SDEL_TEXT(this->webMaster);
-								this->webMaster = Text::StrCopyNew(sb->ToString());
+								SDEL_STRING(this->webMaster);
+								this->webMaster = Text::String::New(sb->ToString(), sb->GetLength());
 							}
 							k++;
 						}
 					}
-					else if (Text::StrCompareICase(node2->name, (const UTF8Char*)"dc:rights") == 0)
+					else if (node2->name->EqualsICase((const UTF8Char*)"dc:rights"))
 					{
 						sb->ClearStr();
 						node2->GetInnerText(sb);
-						SDEL_TEXT(this->copyright);
-						this->copyright = Text::StrCopyNew(sb->ToString());
+						SDEL_STRING(this->copyright);
+						this->copyright = Text::String::New(sb->ToString(), sb->GetLength());
 					}
-					else if (Text::StrCompareICase(node2->name, (const UTF8Char*)"generator") == 0)
+					else if (node2->name->EqualsICase((const UTF8Char*)"generator"))
 					{
 						sb->ClearStr();
 						node2->GetInnerText(sb);
-						SDEL_TEXT(this->generator);
-						this->generator = Text::StrCopyNew(sb->ToString());
+						SDEL_STRING(this->generator);
+						this->generator = Text::String::New(sb->ToString(), sb->GetLength());
 					}
-					else if (Text::StrCompareICase(node2->name, (const UTF8Char*)"published") == 0)
+					else if (node2->name->EqualsICase((const UTF8Char*)"published"))
 					{
 						sb->ClearStr();
 						node2->GetInnerText(sb);
@@ -621,7 +609,7 @@ Net::RSS::RSS(const UTF8Char *url, const UTF8Char *userAgent, Net::SocketFactory
 						NEW_CLASS(this->pubDate, Data::DateTime());
 						this->pubDate->SetValue(sb->ToString());
 					}
-					else if (Text::StrCompareICase(node2->name, (const UTF8Char*)"lastBuildDate") == 0)
+					else if (node2->name->EqualsICase((const UTF8Char*)"lastBuildDate"))
 					{
 						sb->ClearStr();
 						node2->GetInnerText(sb);
@@ -629,7 +617,7 @@ Net::RSS::RSS(const UTF8Char *url, const UTF8Char *userAgent, Net::SocketFactory
 						NEW_CLASS(this->lastBuildDate, Data::DateTime());
 						this->lastBuildDate->SetValue(sb->ToString());
 					}
-					else if (Text::StrCompareICase(node2->name, (const UTF8Char*)"entry") == 0)
+					else if (node2->name->EqualsICase((const UTF8Char*)"entry"))
 					{
 						RSSItem *itm;
 						NEW_CLASS(itm, Net::RSSItem(node2));
@@ -653,17 +641,17 @@ Net::RSS::RSS(const UTF8Char *url, const UTF8Char *userAgent, Net::SocketFactory
 
 Net::RSS::~RSS()
 {
-	SDEL_TEXT(this->title);
-	SDEL_TEXT(this->link);
-	SDEL_TEXT(this->description);
-	SDEL_TEXT(this->language);
-	SDEL_TEXT(this->copyright);
-	SDEL_TEXT(this->managingEditor);
-	SDEL_TEXT(this->webMaster);
+	SDEL_STRING(this->title);
+	SDEL_STRING(this->link);
+	SDEL_STRING(this->description);
+	SDEL_STRING(this->language);
+	SDEL_STRING(this->copyright);
+	SDEL_STRING(this->managingEditor);
+	SDEL_STRING(this->webMaster);
 	SDEL_CLASS(this->pubDate);
 	SDEL_CLASS(this->lastBuildDate);
-	SDEL_TEXT(this->generator);
-	SDEL_TEXT(this->docs);
+	SDEL_STRING(this->generator);
+	SDEL_STRING(this->docs);
 	if (this->items)
 	{
 		UOSInt i = this->items->GetCount();
@@ -703,37 +691,37 @@ Net::RSSItem *Net::RSS::GetItem(UOSInt Index)
 	return this->items->GetItem(Index);
 }
 
-const UTF8Char *Net::RSS::GetTitle()
+Text::String *Net::RSS::GetTitle()
 {
 	return this->title;
 }
 
-const UTF8Char *Net::RSS::GetLink()
+Text::String *Net::RSS::GetLink()
 {
 	return this->link;
 }
 
-const UTF8Char *Net::RSS::GetDescription()
+Text::String *Net::RSS::GetDescription()
 {
 	return this->description;
 }
 
-const UTF8Char *Net::RSS::GetLanguage()
+Text::String *Net::RSS::GetLanguage()
 {
 	return this->language;
 }
 
-const UTF8Char *Net::RSS::GetCopyright()
+Text::String *Net::RSS::GetCopyright()
 {
 	return this->copyright;
 }
 
-const UTF8Char *Net::RSS::GetManagingEditor()
+Text::String *Net::RSS::GetManagingEditor()
 {
 	return this->managingEditor;
 }
 
-const UTF8Char *Net::RSS::GetWebMaster()
+Text::String *Net::RSS::GetWebMaster()
 {
 	return this->webMaster;
 }
@@ -748,12 +736,12 @@ Data::DateTime *Net::RSS::GetLastBuildDate()
 	return this->lastBuildDate;
 }
 
-const UTF8Char *Net::RSS::GetGenerator()
+Text::String *Net::RSS::GetGenerator()
 {
 	return this->generator;
 }
 
-const UTF8Char *Net::RSS::GetDocs()
+Text::String *Net::RSS::GetDocs()
 {
 	return this->docs;
 }

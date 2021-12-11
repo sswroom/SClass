@@ -15,14 +15,14 @@ namespace Net
 			{
 				Int64 id;
 				Int64 recTime;
-				const UTF8Char *message;
-				const UTF8Char *imgURL;
+				Text::String *message;
+				Text::String *imgURL;
 			} ItemData;
 
 			typedef struct
 			{
-				const UTF8Char *name;
-				const UTF8Char *bio;
+				Text::String *name;
+				Text::String *bio;
 			} ChannelInfo;
 			
 		private:
@@ -35,7 +35,7 @@ namespace Net
 			WebSiteTwitterControl(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, const UTF8Char *userAgent);
 			~WebSiteTwitterControl();
 
-			UOSInt GetChannelItems(const UTF8Char *channelId, UOSInt pageNo, Data::ArrayList<ItemData*> *itemList, ChannelInfo *chInfo);
+			UOSInt GetChannelItems(Text::String *channelId, UOSInt pageNo, Data::ArrayList<ItemData*> *itemList, ChannelInfo *chInfo);
 			void FreeItems(Data::ArrayList<ItemData*> *itemList);
 			const UTF8Char *GetUserAgent();
 		};

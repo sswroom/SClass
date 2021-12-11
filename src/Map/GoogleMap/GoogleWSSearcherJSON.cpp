@@ -211,7 +211,7 @@ UTF8Char *Map::GoogleMap::GoogleWSSearcherJSON::SearchName(UTF8Char *buff, UOSIn
 							if (j > 0)
 							{
 								result = (Text::JSONObject*)arr->GetArrayValue(bestResult);
-								buff = Text::StrConcatS(buff, ((Text::JSONStringUTF8*)result->GetObjectValue((const UTF8Char*)"formatted_address"))->GetValue(), buffSize);
+								buff = Text::StrConcatS(buff, ((Text::JSONString*)result->GetObjectValue((const UTF8Char*)"formatted_address"))->GetValue()->v, buffSize);
 							}
 							else
 							{
@@ -225,15 +225,15 @@ UTF8Char *Map::GoogleMap::GoogleWSSearcherJSON::SearchName(UTF8Char *buff, UOSIn
 					}
 					else
 					{
-						Text::JSONStringUTF8 *jstr = (Text::JSONStringUTF8*)jobj->GetObjectValue((const UTF8Char*)"status");
-						if (Text::StrCompare(jstr->GetValue(), (const UTF8Char*)"ZERO_RESULTS") == 0)
+						Text::JSONString *jstr = (Text::JSONString*)jobj->GetObjectValue((const UTF8Char*)"status");
+						if (jstr->GetValue()->Equals((const UTF8Char*)"ZERO_RESULTS"))
 						{
 							buff = Text::StrConcatS(buff, (const UTF8Char*)"-", buffSize);
 						}
 						else
 						{
 							sptr = Text::StrConcat(url, (const UTF8Char*)"Google JSON Status ");
-							sptr = Text::StrConcat(sptr, jstr->GetValue());
+							sptr = jstr->GetValue()->ConcatTo(sptr);
 							sptr = Text::StrConcat(sptr, (const UTF8Char*)" Error");
 							errWriter->WriteLine(url);
 							this->lastIsError = 1;

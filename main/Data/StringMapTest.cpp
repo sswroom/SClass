@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "Core/Core.h"
 #include "Data/BTreeMap.h"
+#include "Data/FastStringMap.h"
 #include "Data/StringHashMap.h"
 #include "Data/StringMap.h"
 #include "Text/MyString.h"
@@ -11,7 +12,8 @@
 Int32 MyMain(Core::IProgControl *progCtrl)
 {
 //	Data::StringMap<UInt32> map;
-	Data::BTreeMap<UInt32> map;
+	Data::FastStringMap<UInt32> map;
+//	Data::BTreeMap<UInt32> map;
 //	Data::StringHashMap<UInt32> map;
 	UTF8Char sbuff[16];
 	UTF8Char *sptr;

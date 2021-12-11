@@ -6,59 +6,59 @@
 #include "Text/MyString.h"
 #include "Text/XMLDOM.h"
 
-Net::HKOWeather::WeatherSignal Net::HKOWeather::String2Signal(const UTF8Char *textMessage)
+Net::HKOWeather::WeatherSignal Net::HKOWeather::String2Signal(Text::String *textMessage)
 {
 	WeatherSignal signal;
 	signal = Net::HKOWeather::WS_NONE;
-	if (Text::StrIndexOf(textMessage, (const UTF8Char*)"Standby Signal, No. 1 Tropical Cyclone Warning Signal") != INVALID_INDEX)
+	if (textMessage->IndexOf((const UTF8Char*)"Standby Signal, No. 1 Tropical Cyclone Warning Signal") != INVALID_INDEX)
 	{
 		signal = (Net::HKOWeather::WeatherSignal)(signal | Net::HKOWeather::WS_TYPHOON_1);
 	}
-	else if (Text::StrIndexOf(textMessage, (const UTF8Char*)"Strong Wind Signal, No. 3 Tropical Cyclone Warning Signal") != INVALID_INDEX)
+	else if (textMessage->IndexOf((const UTF8Char*)"Strong Wind Signal, No. 3 Tropical Cyclone Warning Signal") != INVALID_INDEX)
 	{
 		signal = (Net::HKOWeather::WeatherSignal)(signal | Net::HKOWeather::WS_TYPHOON_3);
 	}
-	else if (Text::StrIndexOf(textMessage, (const UTF8Char*)"No. 8 Southeast Gale or Storm Signal Tropical Cyclone Warning Signal") != INVALID_INDEX)
+	else if (textMessage->IndexOf((const UTF8Char*)"No. 8 Southeast Gale or Storm Signal Tropical Cyclone Warning Signal") != INVALID_INDEX)
 	{
 		signal = (Net::HKOWeather::WeatherSignal)(signal | Net::HKOWeather::WS_TYPHOON_8SE);
 	}
-	else if (Text::StrIndexOf(textMessage, (const UTF8Char*)"No. 8 Northeast Gale or Storm Signal Tropical Cyclone Warning Signal") != INVALID_INDEX)
+	else if (textMessage->IndexOf((const UTF8Char*)"No. 8 Northeast Gale or Storm Signal Tropical Cyclone Warning Signal") != INVALID_INDEX)
 	{
 		signal = (Net::HKOWeather::WeatherSignal)(signal | Net::HKOWeather::WS_TYPHOON_8NE);
 	}
-	else if (Text::StrIndexOf(textMessage, (const UTF8Char*)"No. 8 Northwest Gale or Storm Signal Tropical Cyclone Warning Signal") != INVALID_INDEX)
+	else if (textMessage->IndexOf((const UTF8Char*)"No. 8 Northwest Gale or Storm Signal Tropical Cyclone Warning Signal") != INVALID_INDEX)
 	{
 		signal = (Net::HKOWeather::WeatherSignal)(signal | Net::HKOWeather::WS_TYPHOON_8NW);
 	}
-	else if (Text::StrIndexOf(textMessage, (const UTF8Char*)"No. 8 Southwest Gale or Storm Signal Tropical Cyclone Warning Signal") != INVALID_INDEX)
+	else if (textMessage->IndexOf((const UTF8Char*)"No. 8 Southwest Gale or Storm Signal Tropical Cyclone Warning Signal") != INVALID_INDEX)
 	{
 		signal = (Net::HKOWeather::WeatherSignal)(signal | Net::HKOWeather::WS_TYPHOON_8SW);
 	}
-	else if (Text::StrIndexOf(textMessage, (const UTF8Char*)"Hurricane Signal, No. 10 Tropical Cyclone Warning Signal") != INVALID_INDEX)
+	else if (textMessage->IndexOf((const UTF8Char*)"Hurricane Signal, No. 10 Tropical Cyclone Warning Signal") != INVALID_INDEX)
 	{
 		signal = (Net::HKOWeather::WeatherSignal)(signal | Net::HKOWeather::WS_TYPHOON_10);
 	}
-	if (Text::StrIndexOf(textMessage, (const UTF8Char*)"Thunderstorm Warning") != INVALID_INDEX)
+	if (textMessage->IndexOf((const UTF8Char*)"Thunderstorm Warning") != INVALID_INDEX)
 	{
 		signal = (Net::HKOWeather::WeatherSignal)(signal | Net::HKOWeather::WS_THUNDERSTORM);
 	}
-	if (Text::StrIndexOf(textMessage, (const UTF8Char*)"Very Hot Weather Warning") != INVALID_INDEX)
+	if (textMessage->IndexOf((const UTF8Char*)"Very Hot Weather Warning") != INVALID_INDEX)
 	{
 		signal = (Net::HKOWeather::WeatherSignal)(signal | Net::HKOWeather::WS_VERYHOT);
 	}
-	if (Text::StrIndexOf(textMessage, (const UTF8Char*)"Strong Monsoon Signal") != INVALID_INDEX)
+	if (textMessage->IndexOf((const UTF8Char*)"Strong Monsoon Signal") != INVALID_INDEX)
 	{
 		signal = (Net::HKOWeather::WeatherSignal)(signal | Net::HKOWeather::WS_STRONGMONSOON);
 	}
-	if (Text::StrIndexOf(textMessage, (const UTF8Char*)"Cold Weather Warning") != INVALID_INDEX)
+	if (textMessage->IndexOf((const UTF8Char*)"Cold Weather Warning") != INVALID_INDEX)
 	{
 		signal = (Net::HKOWeather::WeatherSignal)(signal | Net::HKOWeather::WS_COLD);
 	}
-	if (Text::StrIndexOf(textMessage, (const UTF8Char*)"Red Fire Danger Warning") != INVALID_INDEX)
+	if (textMessage->IndexOf((const UTF8Char*)"Red Fire Danger Warning") != INVALID_INDEX)
 	{
 		signal = (Net::HKOWeather::WeatherSignal)(signal | Net::HKOWeather::WS_FIRE_RED);
 	}
-	if (Text::StrIndexOf(textMessage, (const UTF8Char*)"Landslip Warning") != INVALID_INDEX)
+	if (textMessage->IndexOf((const UTF8Char*)"Landslip Warning") != INVALID_INDEX)
 	{
 		signal = (Net::HKOWeather::WeatherSignal)(signal | Net::HKOWeather::WS_LANDSLIP);
 	}

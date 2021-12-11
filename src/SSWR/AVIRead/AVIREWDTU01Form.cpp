@@ -16,9 +16,9 @@ void __stdcall SSWR::AVIRead::AVIREWDTU01Form::OnMQTTMessage(void *userObj, cons
 	Text::JSONObject *obj;
 	Text::JSONBase *baseObj;
 	Text::JSONArray *arr;
-	const UTF8Char *name;
-	const UTF8Char *mac;
-	const UTF8Char *rssi;
+	Text::String *name;
+	Text::String *mac;
+	Text::String *rssi;
 	DeviceEntry *entry;
 	UInt8 macBuff[8];
 	Int32 irssi;
@@ -46,19 +46,19 @@ void __stdcall SSWR::AVIRead::AVIREWDTU01Form::OnMQTTMessage(void *userObj, cons
 				name = obj->GetObjectString((const UTF8Char*)"name");
 				mac = obj->GetObjectString((const UTF8Char*)"mac");
 				rssi = obj->GetObjectString((const UTF8Char*)"rssi");
-				if (mac != 0 && rssi != 0 && Text::StrCharCnt(mac) == 12)
+				if (mac != 0 && rssi != 0 && mac->leng == 12)
 				{
-					Text::StrHex2Bytes(mac, &macBuff[2]);
+					Text::StrHex2Bytes(mac->v, &macBuff[2]);
 					macBuff[0] = 0;
 					macBuff[1] = 0;
 					macInt = ReadMUInt64(macBuff);
-					irssi = Text::StrToInt32(rssi);
+					irssi = rssi->ToInt32();
 					entry = me->dataMap->Get(macInt);
 					if (entry)
 					{
 						if (entry->name == 0)
 						{
-							entry->name = SCOPY_TEXT(name);
+							entry->name = SCOPY_STRING(name);
 						}
 						if (entry->rssi == 127 || irssi > entry->rssi)
 						{
@@ -76,7 +76,7 @@ void __stdcall SSWR::AVIRead::AVIREWDTU01Form::OnMQTTMessage(void *userObj, cons
 						entry->mac[5] = macBuff[7];
 						entry->macInt = macInt;
 						entry->rssi = irssi;
-						entry->name = SCOPY_TEXT(name);
+						entry->name = SCOPY_STRING(name);
 						entry->remark = 0;
 						me->dataMap->Put(macInt, entry);
 					}
@@ -172,8 +172,8 @@ void SSWR::AVIRead::AVIREWDTU01Form::DataClear()
 	while (i-- > 0)
 	{
 		entry = dataList->GetItem(i);
-		SDEL_TEXT(entry->name);
-		SDEL_TEXT(entry->remark);
+		SDEL_STRING(entry->name);
+		SDEL_STRING(entry->remark);
 		MemFree(entry);
 	}
 	this->dataMap->Clear();

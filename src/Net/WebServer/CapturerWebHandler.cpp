@@ -358,19 +358,20 @@ void Net::WebServer::CapturerWebHandler::AppendWiFiTable(Text::StringBuilderUTF 
 	UInt32 sort = 0;
 	UOSInt i;
 	UOSInt j;
+	Text::String *s;
 	const UTF8Char *csptr;
 	Net::WiFiLogFile::LogFileEntry *entry;
 	sptr = req->GetRequestPath(sbuff, 512);
 	sb->Append((const UTF8Char*)"<table border=\"1\">\r\n");
 	sb->Append((const UTF8Char*)"<tr><td><a href=");
-	csptr = Text::XML::ToNewAttrText(sbuff);
-	sb->Append(csptr);
-	Text::XML::FreeNewText(csptr);
+	s = Text::XML::ToNewAttrText(sbuff);
+	sb->Append(s);
+	s->Release();
 	sb->Append((const UTF8Char*)">MAC</a></td><td>Vendor</td><td>SSID</td><td><a href=");
 	Text::StrConcat(sptr, (const UTF8Char*)"?sort=1");
-	csptr = Text::XML::ToNewAttrText(sbuff);
-	sb->Append(csptr);
-	Text::XML::FreeNewText(csptr);
+	s = Text::XML::ToNewAttrText(sbuff);
+	sb->Append(s);
+	s->Release();
 	sb->Append((const UTF8Char*)">RSSI</td><td>PHYType</td><td>Frequency</td><td>Manufacturer</td><td>Model</td><td>S/N</td></tr>\r\n");
 
 	Data::ArrayList<Net::WiFiLogFile::LogFileEntry*> sortList;
@@ -422,6 +423,7 @@ void Net::WebServer::CapturerWebHandler::AppendBTTable(Text::StringBuilderUTF *s
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	UInt32 sort = 0;
+	Text::String *s;
 	const UTF8Char *csptr;
 	Data::DateTime dt;
 	Int64 currTime;
@@ -433,14 +435,14 @@ void Net::WebServer::CapturerWebHandler::AppendBTTable(Text::StringBuilderUTF *s
 	sptr = req->GetRequestPath(sbuff, 512);
 	sb->Append((const UTF8Char*)"<table border=\"1\">\r\n");
 	sb->Append((const UTF8Char*)"<tr><td><a href=");
-	csptr = Text::XML::ToNewAttrText(sbuff);
-	sb->Append(csptr);
-	Text::XML::FreeNewText(csptr);
+	s = Text::XML::ToNewAttrText(sbuff);
+	sb->Append(s);
+	s->Release();
 	sb->Append((const UTF8Char*)">MAC</a></td><td>Type</td><td>AddrType</td><td>Vendor</td><td>Name</td><td><a href=");
 	Text::StrConcat(sptr, (const UTF8Char*)"?sort=1");
-	csptr = Text::XML::ToNewAttrText(sbuff);
-	sb->Append(csptr);
-	Text::XML::FreeNewText(csptr);
+	s = Text::XML::ToNewAttrText(sbuff);
+	sb->Append(s);
+	s->Release();
 	sb->Append((const UTF8Char*)">RSSI</a></td><td>Measure Power</td><td>TX Power</td><td>In Range</td><td>Connected</td><td>last seen</td><td>Company</td><td>AdvType</td></tr>\r\n");
 
 	Data::ArrayList<IO::BTScanLog::ScanRecord3*> sortList;

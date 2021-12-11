@@ -3,7 +3,7 @@
 #include "Data/ReadingList.h"
 namespace Data
 {
-	template <class T> class List : ReadingList<T>
+	template <class T> class List : public ReadingList<T>
 	{
 	public:
 		virtual ~List(){};

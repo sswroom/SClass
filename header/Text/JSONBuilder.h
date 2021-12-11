@@ -34,6 +34,7 @@ namespace Text
 		Bool ObjectAddInt32(const UTF8Char *name, Int32 val);
 		Bool ObjectAddInt64(const UTF8Char *name, Int64 val);
 		Bool ObjectAddUInt64(const UTF8Char *name, UInt64 val);
+		Bool ObjectAddStr(const UTF8Char *name, Text::String *val);
 		Bool ObjectAddStrUTF8(const UTF8Char *name, const UTF8Char *val);
 		Bool ObjectAddStrW(const UTF8Char *name, const WChar *val);
 		Bool ObjectBeginArray(const UTF8Char *name);

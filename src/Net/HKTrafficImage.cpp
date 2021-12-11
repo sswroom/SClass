@@ -34,14 +34,14 @@ void Net::HKTrafficImage::Init(Text::EncodingFactory *encFact, const UInt8 *buff
 		while (i-- > 0)
 		{
 			node1 = doc->GetChild(i);
-			if (node1->GetNodeType() == Text::XMLNode::NT_ELEMENT && Text::StrEqualsICase(node1->name, (const UTF8Char*)"image-list"))
+			if (node1->GetNodeType() == Text::XMLNode::NT_ELEMENT && node1->name->EqualsICase((const UTF8Char*)"image-list"))
 			{
 				j = 0;
 				k = node1->GetChildCnt();
 				while (j < k)
 				{
 					node2 = node1->GetChild(j);
-					if (node2->GetNodeType() == Text::XMLNode::NT_ELEMENT && Text::StrEqualsICase(node2->name, (const UTF8Char*)"image"))
+					if (node2->GetNodeType() == Text::XMLNode::NT_ELEMENT && node2->name->EqualsICase((const UTF8Char*)"image"))
 					{
 						sbKey.ClearStr();
 						sbRegion.ClearStr();
@@ -55,31 +55,31 @@ void Net::HKTrafficImage::Init(Text::EncodingFactory *encFact, const UInt8 *buff
 							node3 = node2->GetChild(l);
 							if (node3->GetNodeType() == Text::XMLNode::NT_ELEMENT)
 							{
-								if (Text::StrEqualsICase(node3->name, (const UTF8Char*)"key"))
+								if (node3->name->EqualsICase((const UTF8Char*)"key"))
 								{
 									node3->GetInnerText(&sbKey);
 								}
-								else if (Text::StrEqualsICase(node3->name, (const UTF8Char*)"region"))
+								else if (node3->name->EqualsICase((const UTF8Char*)"region"))
 								{
 									node3->GetInnerText(&sbRegion);
 								}
-								else if (Text::StrEqualsICase(node3->name, (const UTF8Char*)"description"))
+								else if (node3->name->EqualsICase((const UTF8Char*)"description"))
 								{
 									node3->GetInnerText(&sbDesc);
 								}
-								else if (Text::StrEqualsICase(node3->name, (const UTF8Char*)"latitude"))
+								else if (node3->name->EqualsICase((const UTF8Char*)"latitude"))
 								{
 									sb.ClearStr();
 									node3->GetInnerText(&sb);
 									lat = Text::StrToDouble(sb.ToString());
 								}
-								else if (Text::StrEqualsICase(node3->name, (const UTF8Char*)"longitude"))
+								else if (node3->name->EqualsICase((const UTF8Char*)"longitude"))
 								{
 									sb.ClearStr();
 									node3->GetInnerText(&sb);
 									lon = Text::StrToDouble(sb.ToString());
 								}
-								else if (Text::StrEqualsICase(node3->name, (const UTF8Char*)"url"))
+								else if (node3->name->EqualsICase((const UTF8Char*)"url"))
 								{
 									node3->GetInnerText(&sbURL);
 								}
@@ -92,17 +92,17 @@ void Net::HKTrafficImage::Init(Text::EncodingFactory *encFact, const UInt8 *buff
 							if (grp == 0)
 							{
 								grp = MemAlloc(GroupInfo, 1);
-								grp->groupName = Text::StrCopyNew(sbRegion.ToString());
+								grp->groupName = Text::String::New(sbRegion.ToString(), sbRegion.GetLength());
 								NEW_CLASS(grp->imageList, Data::ArrayList<ImageInfo*>());
 								this->groupMap->Put(grp->groupName, grp);
 							}
 
 							img = MemAlloc(ImageInfo, 1);
-							img->key = Text::StrCopyNew(sbKey.ToString());
-							img->addr = Text::StrCopyNew(sbDesc.ToString());
+							img->key = Text::String::New(sbKey.ToString(), sbKey.GetLength());
+							img->addr = Text::String::New(sbDesc.ToString(), sbDesc.GetLength());
 							img->lat = lat;
 							img->lon = lon;
-							img->url = Text::StrCopyNew(sbURL.ToString());
+							img->url = Text::String::New(sbURL.ToString(), sbURL.GetLength());
 							grp->imageList->Add(img);
 						}
 					}
@@ -116,13 +116,13 @@ void Net::HKTrafficImage::Init(Text::EncodingFactory *encFact, const UInt8 *buff
 
 Net::HKTrafficImage::HKTrafficImage(Text::EncodingFactory *encFact, const UInt8 *buff, UOSInt buffSize)
 {
-	NEW_CLASS(this->groupMap, Data::StringUTF8Map<GroupInfo*>());
+	NEW_CLASS(this->groupMap, Data::FastStringMap<GroupInfo*>());
 	this->Init(encFact, buff, buffSize);
 }
 
 Net::HKTrafficImage::HKTrafficImage(Text::EncodingFactory *encFact, const UTF8Char *fileName)
 {
-	NEW_CLASS(this->groupMap, Data::StringUTF8Map<GroupInfo*>());
+	NEW_CLASS(this->groupMap, Data::FastStringMap<GroupInfo*>());
 	IO::FileStream *fs;
 	UInt64 fileSize;
 	NEW_CLASS(fs, IO::FileStream(fileName, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
@@ -142,32 +142,31 @@ Net::HKTrafficImage::HKTrafficImage(Text::EncodingFactory *encFact, const UTF8Ch
 
 Net::HKTrafficImage::~HKTrafficImage()
 {
-	Data::ArrayList<GroupInfo *> *grpList = this->groupMap->GetValues();
 	GroupInfo *grp;
 	ImageInfo *img;
 	UOSInt i;
 	UOSInt j;
-	i = grpList->GetCount();
+	i = this->groupMap->GetCount();
 	while (i-- > 0)
 	{
-		grp = grpList->GetItem(i);
+		grp = this->groupMap->GetItem(i);
 		j = grp->imageList->GetCount();
 		while (j-- > 0)
 		{
 			img = grp->imageList->GetItem(j);
-			Text::StrDelNew(img->key);
-			Text::StrDelNew(img->addr);
-			Text::StrDelNew(img->url);
+			img->key->Release();
+			img->addr->Release();
+			img->url->Release();
 			MemFree(img);
 		}
 		DEL_CLASS(grp->imageList);
-		Text::StrDelNew(grp->groupName);
+		grp->groupName->Release();
 		MemFree(grp);
 	}
 	DEL_CLASS(this->groupMap);
 }
 
-Data::ArrayList<Net::HKTrafficImage::GroupInfo*> *Net::HKTrafficImage::GetGroups()
+UOSInt Net::HKTrafficImage::GetGroups(Data::ArrayList<Net::HKTrafficImage::GroupInfo*> *groups)
 {
-	return this->groupMap->GetValues();
+	return groups->AddAll(this->groupMap);
 }

@@ -121,7 +121,8 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnPasteTableClicked(void 
 
 			if (id != 0)
 			{
-				if (me->core->FileAdd(id, webType, sarr2[1]))
+				Text::String *s = Text::String::NewNotNull(sarr2[1]);
+				if (me->core->FileAdd(id, webType, s))
 				{
 					Sync::MutexUsage mutUsage;
 					SSWR::DownloadMonitor::DownMonCore::FileInfo *file = me->core->FileGet(id, webType, &mutUsage);
@@ -133,6 +134,7 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnPasteTableClicked(void 
 						changed = true;
 					}
 				}
+				s->Release();
 			}
 		}
 		if (i != 2)
@@ -240,7 +242,8 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnPasteHTMLClicked(void *
 
 					if (id != 0)
 					{
-						if (me->core->FileAdd(id, webType, desc))
+						Text::String *s = Text::String::NewNotNull(desc);
+						if (me->core->FileAdd(id, webType, s))
 						{
 							Sync::MutexUsage mutUsage;
 							SSWR::DownloadMonitor::DownMonCore::FileInfo *file = me->core->FileGet(id, 3, &mutUsage);
@@ -252,6 +255,7 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnPasteHTMLClicked(void *
 								changed = true;
 							}
 						}
+						s->Release();
 					}
 				}
 
@@ -500,7 +504,8 @@ void SSWR::DownloadMonitor::DownMonMainForm::LoadList()
 						updated = true;
 					}
 				}
-				if (this->core->FileAdd(id, webType, sarr[1]))
+				Text::String *s = Text::String::NewNotNull(sarr[1]);
+				if (this->core->FileAdd(id, webType, s))
 				{
 					Sync::MutexUsage mutUsage;
 					SSWR::DownloadMonitor::DownMonCore::FileInfo *file = this->core->FileGet(id, webType, &mutUsage);
@@ -511,6 +516,7 @@ void SSWR::DownloadMonitor::DownMonMainForm::LoadList()
 						this->lvFiles->SetSubItem(i, 1, file->fileName);
 					}
 				}
+				s->Release();
 			}
 		}
 
