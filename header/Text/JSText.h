@@ -12,6 +12,7 @@ namespace Text
 		static void ToJSTextDQuote(Text::StringBuilderUTF *sb, const UTF8Char *s);
 		static WChar *ToJSText(WChar *buff, const WChar *s);
 		static WChar *ToJSTextDQuote(WChar *buff, const WChar *s);
+		static const UTF8Char *ToNewJSText(Text::String *s);
 		static const UTF8Char *ToNewJSText(const UTF8Char *s);
 		static const UTF8Char *ToNewJSTextDQuote(const UTF8Char *s);
 		static const WChar *ToNewJSText(const WChar *s);

@@ -172,6 +172,11 @@ WChar *Text::JSText::ToJSTextDQuote(WChar *buff, const WChar *s)
 	return buff;
 }
 
+const UTF8Char *Text::JSText::ToNewJSText(Text::String *s)
+{
+	return ToNewJSText(STR_PTR(s));
+}
+
 const UTF8Char *Text::JSText::ToNewJSText(const UTF8Char *s)
 {
 	UTF8Char *destStr;

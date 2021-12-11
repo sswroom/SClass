@@ -66,3 +66,8 @@ UOSInt Crypto::Hash::CRC32RIEEE::GetResultSize()
 {
 	return 4;
 }
+
+UInt32 Crypto::Hash::CRC32RIEEE::GetValueU32()
+{
+	return ~this->currVal;
+}

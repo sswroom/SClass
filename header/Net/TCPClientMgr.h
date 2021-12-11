@@ -13,6 +13,7 @@ namespace Net
 	class TCPClientMgr
 	{
 	public:
+		struct ClassData;
 		typedef enum
 		{
 			TCP_EVENT_CONNECT,
@@ -57,7 +58,7 @@ namespace Net
 		void *userObj;
 		Int32 timeOutSeconds;
 
-		void *clsData;
+		ClassData *clsData;
 		Bool toStop;
 		Bool clientThreadRunning;
 

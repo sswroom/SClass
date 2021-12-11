@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "Crypto/Hash/CRC32R.h"
+#include "Crypto/Hash/CRC32RIEEE.h"
 #include "Data/ByteTool.h"
 #include "Data/Compress/DeflateStream.h"
 #include "IO/FileStream.h"
@@ -93,7 +93,7 @@ Bool Net::WebServer::HTTPServerUtil::SendContent(Net::WebServer::IWebRequest *re
 						compBuff[9] = 0;
 						succ = (resp->Write(compBuff, 8) == 8);
 
-						Crypto::Hash::CRC32R crc;
+						Crypto::Hash::CRC32RIEEE crc;
 						Data::Compress::DeflateStream dstm(fs, contLeng, &crc, true);
 						UOSInt readSize;
 						while ((readSize = dstm.Read(compBuff, BUFFSIZE)) != 0)
@@ -101,8 +101,7 @@ Bool Net::WebServer::HTTPServerUtil::SendContent(Net::WebServer::IWebRequest *re
 							succ = succ && (resp->Write(compBuff, readSize) == readSize);
 						}
 
-						crc.GetValue(&compBuff[8]);
-						WriteInt32(&compBuff[0], ReadMInt32(&compBuff[8]));
+						WriteUInt32(&compBuff[0], crc.GetValueU32());
 						WriteInt32(&compBuff[4], (Int32)contLeng);
 						succ = succ && (resp->Write(compBuff, 8) == 8);
 
@@ -195,7 +194,7 @@ Bool Net::WebServer::HTTPServerUtil::SendContent(Net::WebServer::IWebRequest *re
 					compBuff[8] = 0;
 					succ = (resp->Write(compBuff, 8) == 8);
 
-					Crypto::Hash::CRC32R crc;
+					Crypto::Hash::CRC32RIEEE crc;
 					crc.Calc(buff, (UOSInt)contLeng);
 
 					IO::MemoryStream mstm((UInt8*)buff, (UOSInt)contLeng, (const UTF8Char*)"Net.HTTPServerUtil.SendContent");
@@ -205,8 +204,7 @@ Bool Net::WebServer::HTTPServerUtil::SendContent(Net::WebServer::IWebRequest *re
 					{
 						succ = succ && (resp->Write(compBuff, readSize) == readSize);
 					}
-					crc.GetValue(&compBuff[8]);
-					WriteInt32(&compBuff[0], ReadMInt32(&compBuff[8]));
+					WriteUInt32(&compBuff[0], crc.GetValueU32());
 					WriteInt32(&compBuff[4], (Int32)contLeng);
 					succ = succ && (resp->Write(compBuff, 8) == 8);
 					contSent = true;

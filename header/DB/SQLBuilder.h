@@ -2,6 +2,7 @@
 #define _SM_DB_SQLBUILDER
 #include "Data/DateTime.h"
 #include "DB/DBUtil.h"
+#include "Text/String.h"
 #include "Text/StringBuilderUTF8.h"
 
 namespace DB
@@ -42,6 +43,7 @@ namespace DB
 
 		void Clear();
 		const UTF8Char *ToString();
+		Text::String *ToNewString();
 	};
 }
 #endif

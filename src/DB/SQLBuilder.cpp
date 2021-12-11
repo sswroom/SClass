@@ -149,3 +149,8 @@ const UTF8Char *DB::SQLBuilder::ToString()
 {
 	return sb->ToString();
 }
+
+Text::String *DB::SQLBuilder::ToNewString()
+{
+	return Text::String::New(sb->ToString(), sb->GetLength());
+}

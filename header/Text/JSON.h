@@ -110,6 +110,7 @@ namespace Text
 		Text::String *val;
 
 	public:
+		JSONString(Text::String *val);
 		JSONString(const UTF8Char *val, UOSInt leng);
 		JSONString(const UTF8Char *val);
 	private:

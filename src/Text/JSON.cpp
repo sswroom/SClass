@@ -815,6 +815,11 @@ Int64 Text::JSONInt64::GetValue()
 	return this->val;
 }
 
+Text::JSONString::JSONString(Text::String *val)
+{
+	this->val = SCOPY_STRING(val);
+}
+
 Text::JSONString::JSONString(const UTF8Char *val, UOSInt leng)
 {
 	this->val = Text::String::New(val, leng);

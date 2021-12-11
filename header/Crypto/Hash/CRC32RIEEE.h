@@ -29,6 +29,7 @@ namespace Crypto
 			virtual void GetValue(UInt8 *buff);
 			virtual UOSInt GetBlockSize();
 			virtual UOSInt GetResultSize();
+			UInt32 GetValueU32();
 		};
 	}
 }

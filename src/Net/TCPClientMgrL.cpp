@@ -24,12 +24,12 @@ http://man7.org/linux/man-pages/man2/poll.2.html
 
 #define TCP_BUFF_SIZE 2048
 
-typedef struct
+struct Net::TCPClientMgr::ClassData
 {
 	int piperdfd;
 	int pipewrfd;
 	Bool hasData;
-} ClassData;
+};
 
 void TCPClientMgr_RemoveCliStat(Data::ArrayList<Net::TCPClientMgr::TCPClientStatus*> *cliArr, Data::ArrayListUInt64 *cliIdArr, Net::TCPClientMgr::TCPClientStatus *cliStat)
 {
@@ -111,32 +111,36 @@ UInt32 __stdcall Net::TCPClientMgr::ClientThread(void *o)
 		while (i < pollCliCnt)
 		{
 			cliStat = me->cliArr->GetItem(i);
-			Socket *s = cliStat->cli->GetSocket();
-			if (s == 0)
+			if (cliStat->reading)
 			{
-				TCPClientMgr_RemoveCliStat(me->cliArr, me->cliIdArr, cliStat);
-
-				DEL_CLASS(cliStat->lastDataTime);
-				DEL_CLASS(cliStat->readMut);
-				MemFree(cliStat->buff);
-				me->evtHdlr(cliStat->cli, me->userObj, cliStat->cliData, Net::TCPClientMgr::TCP_EVENT_DISCONNECT);
-				MemFree(cliStat);
-				i--;
-				pollCliCnt--;
-			}
-			else if (cliStat->reading)
-			{
-				pollCli[pollReqCnt] = cliStat;
-				pollReqCnt++;
-				pollfds[pollReqCnt].fd = -1 + (int)(OSInt)s;
-				pollfds[pollReqCnt].events = POLLIN;
-				pollfds[pollReqCnt].revents = 0;
-				if (cliStat->recvDataExist)
+				Socket *s = cliStat->cli->GetSocket();
+				if (s == 0 || cliStat->cli->IsClosed())
 				{
-					pollfds[pollReqCnt].revents = POLLIN;
-					pollPreData = true;
+					TCPClientMgr_RemoveCliStat(me->cliArr, me->cliIdArr, cliStat);
+
+					DEL_CLASS(cliStat->lastDataTime);
+					DEL_CLASS(cliStat->readMut);
+					MemFree(cliStat->buff);
+					me->evtHdlr(cliStat->cli, me->userObj, cliStat->cliData, Net::TCPClientMgr::TCP_EVENT_DISCONNECT);
+					MemFree(cliStat);
+					i--;
+					pollCliCnt--;
+				}
+				else if (cliStat->reading)
+				{
+					pollCli[pollReqCnt] = cliStat;
+					pollReqCnt++;
+					pollfds[pollReqCnt].fd = -1 + (int)(OSInt)s;
+					pollfds[pollReqCnt].events = POLLIN;
+					pollfds[pollReqCnt].revents = 0;
+					if (cliStat->recvDataExist)
+					{
+						pollfds[pollReqCnt].revents = POLLIN;
+						pollPreData = true;
+					}
 				}
 			}
+
 			i++;
 		}
 		mutUsage.EndUse();
@@ -371,7 +375,7 @@ Net::TCPClientMgr::TCPClientMgr(Int32 timeOutSeconds, TCPClientEvent evtHdlr, TC
 
 Net::TCPClientMgr::~TCPClientMgr()
 {
-	ClassData *clsData = (ClassData*)this->clsData;
+	ClassData *clsData = this->clsData;
 	UOSInt i = cliArr->GetCount();
 	Net::TCPClientMgr::TCPClientStatus *cliStat;
 	if (i)
@@ -386,6 +390,11 @@ Net::TCPClientMgr::~TCPClientMgr()
 				cliStat->cli->Close();
 			}
 		}
+	}
+	if (clsData)
+	{
+		clsData->hasData = true;
+		i = (UOSInt)write(clsData->pipewrfd, "", 1);
 	}
 	while (cliArr->GetCount() > 0)
 	{
