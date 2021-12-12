@@ -2274,13 +2274,11 @@ Double Text::StrToDouble(const UTF32Char *str1)
 void Text::SBAppendF32(Text::StringBuilderUTF *sb, Single v)
 {
 	UTF8Char sbuff[33];
-	Text::StrDouble(sbuff, v);
-	sb->Append(sbuff);
+	sb->AppendC(sbuff, (UOSInt)(Text::StrDouble(sbuff, v) - sbuff));
 }
 
 void Text::SBAppendF64(Text::StringBuilderUTF *sb, Double v)
 {
 	UTF8Char sbuff[33];
-	Text::StrDouble(sbuff, v);
-	sb->Append(sbuff);
+	sb->AppendC(sbuff, (UOSInt)(Text::StrDouble(sbuff, v) - sbuff));
 }

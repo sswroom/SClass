@@ -940,7 +940,7 @@ Data::VariItem *Data::VariItem::Clone()
 
 void Data::VariItem::ToString(Text::StringBuilderUTF *sb)
 {
-	const UTF8Char *csptr;
+	Text::String *s;
 	UTF8Char sbuff[64];
 	switch (this->itemType)
 	{
@@ -982,9 +982,9 @@ void Data::VariItem::ToString(Text::StringBuilderUTF *sb)
 		sb->Append(this->val.boolean?(const UTF8Char*)"true":(const UTF8Char*)"false");
 		break;
 	case ItemType::Str:
-		csptr = Text::JSText::ToNewJSTextDQuote(this->val.str->v);
-		sb->Append(csptr);
-		Text::JSText::FreeNewText(csptr);
+		s = Text::JSText::ToNewJSTextDQuote(this->val.str->v);
+		sb->Append(s);
+		s->Release();
 		return;
 	case ItemType::Date:
 		this->val.date->ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");

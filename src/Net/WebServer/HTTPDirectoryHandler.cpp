@@ -185,16 +185,16 @@ void Net::WebServer::HTTPDirectoryHandler::ResponsePackageFile(Net::WebServer::I
 	AddCacheHeader(resp);
 
 	UTF8Char u8buff[512];
-	const UTF8Char *csptr;
+	Text::String *s;
 
 	sbOut.Append((const UTF8Char*)"<html><head><title>Index of ");
 	Text::TextEnc::URIEncoding::URIDecode(u8buff, sptr);
-	csptr = Text::XML::ToNewHTMLText(u8buff);
-	sbOut.Append(csptr);
+	s = Text::XML::ToNewHTMLText(u8buff);
+	sbOut.Append(s);
 	sbOut.Append((const UTF8Char*)"</title></head>\r\n<body>\r\n");
 	sbOut.Append((const UTF8Char*)"<h2>Index Of ");
-	sbOut.Append(csptr);
-	Text::XML::FreeNewText(csptr);
+	sbOut.Append(s);
+	s->Release();
 	sbOut.Append((const UTF8Char*)"</h2>\r\n");
 	sbOut.Append((const UTF8Char*)"<a href=\"..\">Up one level</a><br/>\r\n");
 /*	if (this->allowUpload)
@@ -772,12 +772,12 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 				Text::String *s;
 				sbOut.AppendC((const UTF8Char*)"<html><head><title>Index of ", 28);
 				Text::TextEnc::URIEncoding::URIDecode(sbuff, sb2.ToString());
-				csptr = Text::XML::ToNewHTMLText(sbuff);
-				sbOut.Append(csptr);
+				s = Text::XML::ToNewHTMLText(sbuff);
+				sbOut.Append(s);
 				sbOut.AppendC((const UTF8Char*)"</title></head>\r\n<body>\r\n",25);
 				sbOut.AppendC((const UTF8Char*)"<h2>Index Of ", 13);
-				sbOut.Append(csptr);
-				Text::XML::FreeNewText(csptr);
+				sbOut.Append(s);
+				s->Release();
 				sbOut.AppendC((const UTF8Char*)"</h2>\r\n", 7);
 				if (!sb2.Equals((const UTF8Char*)"/"))
 				{

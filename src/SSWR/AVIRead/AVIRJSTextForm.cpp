@@ -7,13 +7,13 @@ void __stdcall SSWR::AVIRead::AVIRJSTextForm::OnExtractClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRJSTextForm *me = (SSWR::AVIRead::AVIRJSTextForm*)userObj;
 	Text::StringBuilderUTF8 sb;
-	const UTF8Char *txt;
+	Text::String *s;
 	me->txtJSText->GetText(&sb);
-	txt = Text::JSText::FromNewJSText(sb.ToString());
-	if (txt)
+	s = Text::JSText::FromNewJSText(sb.ToString());
+	if (s)
 	{
-		me->txtOriText->SetText(txt);
-		Text::JSText::FreeNewText(txt);
+		me->txtOriText->SetText(s->v);
+		s->Release();
 	}
 }
 

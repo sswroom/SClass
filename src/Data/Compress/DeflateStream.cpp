@@ -14,7 +14,7 @@ struct Data::Compress::DeflateStream::ClassData
 	UInt8 buff[BUFFSIZE];
 };
 
-Data::Compress::DeflateStream::DeflateStream(IO::Stream *srcStm, UInt64 srcLeng, Crypto::Hash::IHash *hash, Bool hasHeader) : Stream(srcStm->GetSourceNameObj())
+Data::Compress::DeflateStream::DeflateStream(IO::Stream *srcStm, UInt64 srcLeng, Crypto::Hash::IHash *hash, CompLevel level, Bool hasHeader) : Stream(srcStm->GetSourceNameObj())
 {
 	this->clsData = MemAlloc(ClassData, 1);
 	this->clsData->srcStm = srcStm;
@@ -25,7 +25,21 @@ Data::Compress::DeflateStream::DeflateStream(IO::Stream *srcStm, UInt64 srcLeng,
 	this->clsData->stm.avail_in = 0;
 	this->clsData->stm.next_out = this->clsData->buff;
 	this->clsData->stm.avail_out = 0;
-	mz_deflateInit2(&this->clsData->stm, MZ_BEST_COMPRESSION, MZ_DEFLATED, hasHeader?MZ_DEFAULT_WINDOW_BITS:-MZ_DEFAULT_WINDOW_BITS, 1, MZ_DEFAULT_STRATEGY);
+	int ilevel;
+	switch (level)
+	{
+	case CompLevel::MaxQuality:
+		ilevel = MZ_BEST_COMPRESSION;
+		break;
+	case CompLevel::MaxSpeed:
+		ilevel = MZ_BEST_SPEED;
+		break;
+	case CompLevel::Default:
+	default:
+		ilevel = MZ_DEFAULT_LEVEL;
+		break;
+	}
+	mz_deflateInit2(&this->clsData->stm, ilevel, MZ_DEFLATED, hasHeader?MZ_DEFAULT_WINDOW_BITS:-MZ_DEFAULT_WINDOW_BITS, 1, MZ_DEFAULT_STRATEGY);
 }
 
 Data::Compress::DeflateStream::~DeflateStream()

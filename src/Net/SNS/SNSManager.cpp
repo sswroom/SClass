@@ -375,7 +375,7 @@ void Net::SNS::SNSManager::ChannelUpdate(Net::SNS::SNSManager::ChannelData *chan
 
 void Net::SNS::SNSManager::ChannelReload(Net::SNS::SNSManager::ChannelData *channel)
 {
-	printf("Reload %s\r\n", channel->ctrl->GetChannelId());
+	printf("Reload %s\r\n", channel->ctrl->GetChannelId()->v);
 	if (channel->ctrl->Reload())
 	{
 		this->ChannelUpdate(channel);

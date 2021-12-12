@@ -24,7 +24,6 @@ SSWR::AVIRead::MIMEViewer::AVIRMIMEXMLViewer::AVIRMIMEXMLViewer(SSWR::AVIRead::A
 	Text::StringBuilderUTF8 sbCont;
 	Text::XMLAttrib *attr;
 	Text::String *s;
-	const UTF8Char *csptr;
 	UOSInt i;
 	UOSInt j;
 	NEW_CLASS(mstm, IO::MemoryStream((UTF8Char*)buff, size, (const UTF8Char*)"SSWR.AVIRead.MIMEViewer.AVIRMIMEXMLViewer.mstm"));
@@ -92,9 +91,9 @@ SSWR::AVIRead::MIMEViewer::AVIRMIMEXMLViewer::AVIRMIMEXMLViewer(SSWR::AVIRead::A
 			sb.TrimWSCRLF();
 			if (sb.GetLength() > 0)
 			{
-				csptr = Text::XML::ToNewXMLText(sb.ToString());
-				sbCont.Append(csptr);
-				Text::XML::FreeNewText(csptr);
+				s = Text::XML::ToNewXMLText(sb.ToString());
+				sbCont.Append(s);
+				s->Release();
 				if (sbPath.GetLength() == 0)
 				{
 					reader->GetCurrPath(&sbPath);

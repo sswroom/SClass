@@ -1722,9 +1722,9 @@ Bool Text::XMLReader::ToString(Text::StringBuilderUTF *sb)
 		}
 		else if (this->mode == Text::XMLReader::PM_XML)
 		{
-			const UTF8Char *csptr = Text::XML::ToNewXMLText(this->nodeText->v);
-			sb->Append(csptr);
-			Text::XML::FreeNewText(csptr);
+			Text::String *s = Text::XML::ToNewXMLText(this->nodeText->v);
+			sb->Append(s);
+			s->Release();
 		}
 		else
 		{

@@ -1033,9 +1033,9 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char 
 		while (i < j)
 		{
 			sb.Append((const UTF8Char*)"<si><t xml:space=\"preserve\">");
-			csptr = Text::XML::ToNewXMLText(sharedStrings.GetItem(i)->v);
-			sb.Append(csptr);
-			Text::XML::FreeNewText(csptr);
+			s = Text::XML::ToNewXMLText(sharedStrings.GetItem(i)->v);
+			sb.Append(s);
+			s->Release();
 			sb.Append((const UTF8Char*)"</t></si>");
 			i++;
 		}
@@ -1088,18 +1088,18 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char 
 	csptr = workbook->GetAuthor();
 	if (csptr)
 	{
-		csptr2 = Text::XML::ToNewXMLText(csptr);
-		sb.Append(csptr2);
-		Text::XML::FreeNewText(csptr2);
+		s = Text::XML::ToNewXMLText(csptr);
+		sb.Append(s);
+		s->Release();
 	}
 	sb.Append((const UTF8Char*)"</dc:creator>");
 	sb.Append((const UTF8Char*)"<dc:description>");
 	csptr = 0;
 	if (csptr)
 	{
-		csptr2 = Text::XML::ToNewXMLText(csptr);
-		sb.Append(csptr2);
-		Text::XML::FreeNewText(csptr2);
+		s = Text::XML::ToNewXMLText(csptr);
+		sb.Append(s);
+		s->Release();
 	}
 	sb.Append((const UTF8Char*)"</dc:description>");
 	sb.Append((const UTF8Char*)"<dc:language>");
@@ -1107,18 +1107,18 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char 
 	Text::Locale::LocaleEntry *loc = Text::Locale::GetLocaleEntry(lcid);
 	if (loc)
 	{
-		csptr2 = Text::XML::ToNewXMLText(loc->shortName);
-		sb.Append(csptr2);
-		Text::XML::FreeNewText(csptr2);
+		s = Text::XML::ToNewXMLText(loc->shortName);
+		sb.Append(s);
+		s->Release();
 	}
 	sb.Append((const UTF8Char*)"</dc:language>");
 	sb.Append((const UTF8Char*)"<cp:lastModifiedBy>");
 	csptr = workbook->GetLastAuthor();
 	if (csptr)
 	{
-		csptr2 = Text::XML::ToNewXMLText(csptr);
-		sb.Append(csptr2);
-		Text::XML::FreeNewText(csptr2);
+		s = Text::XML::ToNewXMLText(csptr);
+		sb.Append(s);
+		s->Release();
 	}
 	sb.Append((const UTF8Char*)"</cp:lastModifiedBy>");
 	sb.Append((const UTF8Char*)"<dcterms:modified xsi:type=\"dcterms:W3CDTF\">");
@@ -1140,18 +1140,18 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char 
 	csptr = 0;
 	if (csptr)
 	{
-		csptr2 = Text::XML::ToNewXMLText(csptr);
-		sb.Append(csptr2);
-		Text::XML::FreeNewText(csptr2);
+		s = Text::XML::ToNewXMLText(csptr);
+		sb.Append(s);
+		s->Release();
 	}
 	sb.Append((const UTF8Char*)"</dc:subject>");
 	sb.Append((const UTF8Char*)"<dc:title>");
 	csptr = 0;
 	if (csptr)
 	{
-		csptr2 = Text::XML::ToNewXMLText(csptr);
-		sb.Append(csptr2);
-		Text::XML::FreeNewText(csptr2);
+		s = Text::XML::ToNewXMLText(csptr);
+		sb.Append(s);
+		s->Release();
 	}
 	sb.Append((const UTF8Char*)"</dc:title>");
 	sb.Append((const UTF8Char*)"</cp:coreProperties>");
@@ -1230,9 +1230,9 @@ void Exporter::XLSXExporter::AppendTitle(Text::StringBuilderUTF *sb, const UTF8C
 	sb->Append((const UTF8Char*)"<a:r>");
 	sb->Append((const UTF8Char*)"<a:rPr lang=\"en-HK\"/>");
 	sb->Append((const UTF8Char*)"<a:t>");
-	const UTF8Char *csptr = Text::XML::ToNewXMLText(title);
-	sb->Append(csptr);
-	Text::XML::FreeNewText(csptr);
+	Text::String *s = Text::XML::ToNewXMLText(title);
+	sb->Append(s);
+	s->Release();
 	sb->Append((const UTF8Char*)"</a:t>");
 	sb->Append((const UTF8Char*)"</a:r>");
 	sb->Append((const UTF8Char*)"<a:endParaRPr lang=\"en-US\" sz=\"1100\"/>");
@@ -1345,6 +1345,7 @@ void Exporter::XLSXExporter::AppendAxis(Text::StringBuilderUTF *sb, Text::Spread
 
 void Exporter::XLSXExporter::AppendSeries(Text::StringBuilderUTF *sb, Text::SpreadSheet::OfficeChartSeries *series, UOSInt index)
 {
+	Text::String *s;
 	const UTF8Char *csptr;
 	sb->Append((const UTF8Char*)"<c:ser>");
 	sb->Append((const UTF8Char*)"<c:idx val=\"");
@@ -1357,9 +1358,9 @@ void Exporter::XLSXExporter::AppendSeries(Text::StringBuilderUTF *sb, Text::Spre
 	{
 		sb->Append((const UTF8Char*)"<c:tx>");
 		sb->Append((const UTF8Char*)"<c:v>");
-		csptr = Text::XML::ToNewXMLText(series->GetTitle()->v);
-		sb->Append(csptr);
-		Text::XML::FreeNewText(csptr);
+		s = Text::XML::ToNewXMLText(series->GetTitle()->v);
+		sb->Append(s);
+		s->Release();
 		sb->Append((const UTF8Char*)"</c:v>");
 		sb->Append((const UTF8Char*)"</c:tx>");
 	}
@@ -1415,9 +1416,9 @@ void Exporter::XLSXExporter::AppendSeries(Text::StringBuilderUTF *sb, Text::Spre
 	sb->Append((const UTF8Char*)"<c:strRef>");
 	sb->Append((const UTF8Char*)"<c:f>");
 	catData->ToCodeRange(sbuff);
-	csptr = Text::XML::ToNewXMLText(sbuff);
-	sb->Append(csptr);
-	Text::XML::FreeNewText(csptr);
+	s = Text::XML::ToNewXMLText(sbuff);
+	sb->Append(s);
+	s->Release();
 	sb->Append((const UTF8Char*)"</c:f>");
 	sb->Append((const UTF8Char*)"<c:strCache/>");
 	sb->Append((const UTF8Char*)"</c:strRef>");
@@ -1428,9 +1429,9 @@ void Exporter::XLSXExporter::AppendSeries(Text::StringBuilderUTF *sb, Text::Spre
 	sb->Append((const UTF8Char*)"<c:numRef>");
 	sb->Append((const UTF8Char*)"<c:f>");
 	valData->ToCodeRange(sbuff);
-	csptr = Text::XML::ToNewXMLText(sbuff);
-	sb->Append(csptr);
-	Text::XML::FreeNewText(csptr);
+	s = Text::XML::ToNewXMLText(sbuff);
+	sb->Append(s);
+	s->Release();
 	sb->Append((const UTF8Char*)"</c:f>");
 	sb->Append((const UTF8Char*)"<c:numCache/>");
 	sb->Append((const UTF8Char*)"</c:numRef>");

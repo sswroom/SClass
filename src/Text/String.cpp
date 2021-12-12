@@ -193,6 +193,11 @@ Bool Text::String::EqualsICase(const UTF8Char *s)
 	return Text::StrEqualsICase(this->v, s);
 }
 
+Bool Text::String::StartsWith(Text::String *s)
+{
+	return Text::StrStartsWith(this->v, s->v);
+}
+
 Bool Text::String::StartsWith(const UTF8Char *s)
 {
 	return Text::StrStartsWith(this->v, s);
@@ -240,6 +245,11 @@ Bool Text::String::EndsWithICase(const UTF8Char *s)
 Bool Text::String::HasUpperCase()
 {
 	return Text::StrHasUpperCase(this->v);
+}
+
+Bool Text::String::ContainChars(const UTF8Char *chars)
+{
+	return Text::StrContainChars(this->v, chars);
 }
 
 Text::String *Text::String::ToLower()

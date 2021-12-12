@@ -9,11 +9,18 @@ namespace Data
 	{
 		class DeflateStream : public IO::Stream
 		{
+		public:
+			enum class CompLevel
+			{
+				Default,
+				MaxQuality,
+				MaxSpeed
+			};
 		private:
 			struct ClassData;
 			ClassData *clsData;
 		public:
-			DeflateStream(IO::Stream *srcStm, UInt64 srcLeng, Crypto::Hash::IHash *hash, Bool hasHeader);
+			DeflateStream(IO::Stream *srcStm, UInt64 srcLeng, Crypto::Hash::IHash *hash, CompLevel level, Bool hasHeader);
 			virtual ~DeflateStream();
 
 			virtual UOSInt Read(UInt8 *buff, UOSInt size);

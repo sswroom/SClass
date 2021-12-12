@@ -12,6 +12,10 @@ UTF8Char *Text::JSText::ToJSText(UTF8Char *buff, const UTF8Char *s)
 	{
 		switch (c)
 		{
+		case '\\':
+			*buff++ = '\\';
+			*buff++ = '\\';
+			break;
 		case '\'':
 			*buff++ = '\\';
 			*buff++ = '\'';
@@ -172,30 +176,28 @@ WChar *Text::JSText::ToJSTextDQuote(WChar *buff, const WChar *s)
 	return buff;
 }
 
-const UTF8Char *Text::JSText::ToNewJSText(Text::String *s)
+Text::String *Text::JSText::ToNewJSText(Text::String *s)
 {
 	return ToNewJSText(STR_PTR(s));
 }
 
-const UTF8Char *Text::JSText::ToNewJSText(const UTF8Char *s)
+Text::String *Text::JSText::ToNewJSText(const UTF8Char *s)
 {
-	UTF8Char *destStr;
 	if (s == 0)
 	{
-		destStr = MemAlloc(UTF8Char, 5);
-		Text::StrConcat(destStr, (const UTF8Char*)"null");
-		return destStr;
+		return Text::String::New((const UTF8Char*)"null", 4);
 	}
 	const UTF8Char *srcPtr;
 	UTF8Char c;
 	UOSInt chCnt;
 
 	srcPtr = s;
-	chCnt = 3;
+	chCnt = 2;
 	while ((c = *srcPtr++) != 0)
 	{
 		switch(c)
 		{
+		case '\\':
 		case '\'':
 		case '\n':
 		case '\r':
@@ -206,26 +208,23 @@ const UTF8Char *Text::JSText::ToNewJSText(const UTF8Char *s)
 			break;
 		}
 	}
-	destStr = MemAlloc(UTF8Char, chCnt);
-	ToJSText(destStr, s);
-	return destStr;
+	Text::String *retS = Text::String::New(chCnt);
+	ToJSText(retS->v, s);
+	return retS;
 }
 
-const UTF8Char *Text::JSText::ToNewJSTextDQuote(const UTF8Char *s)
+Text::String *Text::JSText::ToNewJSTextDQuote(const UTF8Char *s)
 {
-	UTF8Char *destStr;
 	if (s == 0)
 	{
-		destStr = MemAlloc(UTF8Char, 5);
-		Text::StrConcat(destStr, (const UTF8Char*)"null");
-		return destStr;
+		return Text::String::New((const UTF8Char*)"null", 4);
 	}
 	const UTF8Char *srcPtr;
 	UTF8Char c;
 	UOSInt chCnt;
 
 	srcPtr = s;
-	chCnt = 3;
+	chCnt = 2;
 	while ((c = *srcPtr++) != 0)
 	{
 		switch(c)
@@ -241,9 +240,9 @@ const UTF8Char *Text::JSText::ToNewJSTextDQuote(const UTF8Char *s)
 			break;
 		}
 	}
-	destStr = MemAlloc(UTF8Char, chCnt);
-	ToJSTextDQuote(destStr, s);
-	return destStr;
+	Text::String *retS = Text::String::New(chCnt);
+	ToJSTextDQuote(retS->v, s);
+	return retS;
 }
 
 const WChar *Text::JSText::ToNewJSText(const WChar *s)
@@ -315,11 +314,11 @@ const WChar *Text::JSText::ToNewJSTextDQuote(const WChar *s)
 }
 
 
-const UTF8Char *Text::JSText::FromNewJSText(const UTF8Char *s)
+Text::String *Text::JSText::FromNewJSText(const UTF8Char *s)
 {
 	const UTF8Char *srcPtr;
 	UTF8Char *destPtr;
-	UTF8Char *outStr;
+	Text::String *outS;
 	UOSInt chCnt;
 	UTF8Char c;
 	UTF8Char startC;
@@ -450,8 +449,8 @@ const UTF8Char *Text::JSText::FromNewJSText(const UTF8Char *s)
 	if (*srcPtr != 0)
 		return 0;
 
-	outStr = MemAlloc(UTF8Char, chCnt + 1);
-	destPtr = outStr;
+	outS = Text::String::New(chCnt);
+	destPtr = outS->v;
 	srcPtr = s;
 	srcPtr++;
 	while (true)
@@ -571,7 +570,7 @@ const UTF8Char *Text::JSText::FromNewJSText(const UTF8Char *s)
 		}
 	}
 	*destPtr = 0;
-	return outStr;
+	return outS;
 }
 
 const WChar *Text::JSText::FromNewJSText(const WChar *s)
@@ -791,11 +790,6 @@ const WChar *Text::JSText::FromNewJSText(const WChar *s)
 	}
 	*destPtr = 0;
 	return outStr;
-}
-
-void Text::JSText::FreeNewText(const UTF8Char *s)
-{
-	MemFree((void*)s);
 }
 
 void Text::JSText::FreeNewText(const WChar *s)

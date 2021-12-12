@@ -73,7 +73,6 @@ Bool Exporter::ExcelXMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8C
 	UOSInt n;
 	UInt32 v;
 	const UTF8Char *text;
-	const UTF8Char *text2;
 	Text::String *s;
 	Data::DateTime *dt;
 	Double ver;
@@ -106,10 +105,10 @@ Bool Exporter::ExcelXMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8C
 		{
 			sb.ClearStr();
 			sb.Append((const UTF8Char*)"  <Author>");
-			text2 = Text::XML::ToNewXMLText(text);
-			sb.Append(text2);
+			s = Text::XML::ToNewXMLText(text);
+			sb.Append(s);
 			sb.Append((const UTF8Char*)"</Author>");
-			Text::XML::FreeNewText(text2);
+			s->Release();
 			writer->WriteLine(sb.ToString());
 		}
 		text = wb->GetLastAuthor();
@@ -117,10 +116,10 @@ Bool Exporter::ExcelXMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8C
 		{
 			sb.ClearStr();
 			sb.Append((const UTF8Char*)"  <LastAuthor>");
-			text2 = Text::XML::ToNewXMLText(text);
-			sb.Append(text2);
+			s = Text::XML::ToNewXMLText(text);
+			sb.Append(s);
 			sb.Append((const UTF8Char*)"</LastAuthor>");
-			Text::XML::FreeNewText(text2);
+			s->Release();
 			writer->WriteLine(sb.ToString());
 		}
 		dt = wb->GetCreateTime();
@@ -148,10 +147,10 @@ Bool Exporter::ExcelXMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8C
 		{
 			sb.ClearStr();
 			sb.Append((const UTF8Char*)"  <Company>");
-			text2 = Text::XML::ToNewXMLText(text);
-			sb.Append(text2);
+			s = Text::XML::ToNewXMLText(text);
+			sb.Append(s);
 			sb.Append((const UTF8Char*)"</Company>");
-			Text::XML::FreeNewText(text2);
+			s->Release();
 			writer->WriteLine(sb.ToString());
 		}
 		ver = wb->GetVersion();
@@ -620,16 +619,16 @@ Bool Exporter::ExcelXMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8C
 									{
 									case Text::SpreadSheet::CellDataType::Number:
 										sb.Append((const UTF8Char*)"<Data ss:Type=\"Number\">");
-										text2 = Text::XML::ToNewXMLText(cell->cellValue->v);
-										sb.Append(text2);
-										Text::XML::FreeNewText(text2);
+										s = Text::XML::ToNewXMLText(cell->cellValue->v);
+										sb.Append(s);
+										s->Release();
 										sb.Append((const UTF8Char*)"</Data>");
 										break;
 									case Text::SpreadSheet::CellDataType::DateTime:
 										sb.Append((const UTF8Char*)"<Data ss:Type=\"DateTime\">");
-										text2 = Text::XML::ToNewXMLText(cell->cellValue->v);
-										sb.Append(text2);
-										Text::XML::FreeNewText(text2);
+										s = Text::XML::ToNewXMLText(cell->cellValue->v);
+										sb.Append(s);
+										s->Release();
 										sb.Append((const UTF8Char*)"</Data>");
 										break;
 									case Text::SpreadSheet::CellDataType::MergedLeft:
@@ -637,9 +636,9 @@ Bool Exporter::ExcelXMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8C
 									case Text::SpreadSheet::CellDataType::String:
 									default:
 										sb.Append((const UTF8Char*)"<Data ss:Type=\"String\">");
-										text2 = Text::XML::ToNewXMLText(cell->cellValue->v);
-										sb.Append(text2);
-										Text::XML::FreeNewText(text2);
+										s = Text::XML::ToNewXMLText(cell->cellValue->v);
+										sb.Append(s);
+										s->Release();
 										sb.Append((const UTF8Char*)"</Data>");
 										break;
 									}

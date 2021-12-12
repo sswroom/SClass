@@ -636,12 +636,12 @@ WChar *Text::XML::ToAttrText(WChar *buff, const WChar *text)
 	return buff;
 }
 
-const UTF8Char *Text::XML::ToNewXMLText(const UTF8Char *text)
+Text::String *Text::XML::ToNewXMLText(const UTF8Char *text)
 {
-	UOSInt cnt = GetXMLTextLen(text) + 1;
-	UTF8Char *dptr = MemAlloc(UTF8Char, cnt);
-	ToXMLText(dptr, text);
-	return dptr;
+	UOSInt cnt = GetXMLTextLen(text);
+	Text::String *s = Text::String::New(cnt);
+	ToXMLText(s->v, text);
+	return s;
 }
 
 const WChar *Text::XML::ToNewXMLText(const WChar *text)
@@ -652,12 +652,12 @@ const WChar *Text::XML::ToNewXMLText(const WChar *text)
 	return dptr;
 }
 
-const UTF8Char *Text::XML::ToNewXMLTextLite(const UTF8Char *text)
+Text::String *Text::XML::ToNewXMLTextLite(const UTF8Char *text)
 {
-	UOSInt cnt = GetXMLTextLiteLen(text) + 1;
-	UTF8Char *dptr = MemAlloc(UTF8Char, cnt);
-	ToXMLTextLite(dptr, text);
-	return dptr;
+	UOSInt cnt = GetXMLTextLiteLen(text);
+	Text::String *s = Text::String::New(cnt);
+	ToXMLTextLite(s->v, text);
+	return s;
 }
 
 const WChar *Text::XML::ToNewXMLTextLite(const WChar *text)
@@ -668,12 +668,12 @@ const WChar *Text::XML::ToNewXMLTextLite(const WChar *text)
 	return dptr;
 }
 
-const UTF8Char *Text::XML::ToNewHTMLText(const UTF8Char *text)
+Text::String *Text::XML::ToNewHTMLText(const UTF8Char *text)
 {
-	UOSInt cnt = GetHTMLTextLen(text) + 1;
-	UTF8Char *dptr = MemAlloc(UTF8Char, cnt);
-	ToHTMLText(dptr, text);
-	return dptr;
+	UOSInt cnt = GetHTMLTextLen(text);
+	Text::String *s = Text::String::New(cnt);
+	ToHTMLText(s->v, text);
+	return s;
 }
 
 const WChar *Text::XML::ToNewHTMLText(const WChar *text)
@@ -729,11 +729,6 @@ const WChar *Text::XML::ToNewAttrText(const WChar *text)
 		*buff = 0;
 		return dptr;
 	}
-}
-
-void Text::XML::FreeNewText(const UTF8Char *text)
-{
-	MemFree((void*)text);
 }
 
 void Text::XML::FreeNewText(const WChar *text)

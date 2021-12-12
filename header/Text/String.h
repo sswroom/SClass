@@ -32,6 +32,7 @@ namespace Text
 		Bool Equals(const UTF8Char *s);
 		Bool Equals(Text::String *s);
 		Bool EqualsICase(const UTF8Char *s);
+		Bool StartsWith(Text::String *s);
 		Bool StartsWith(const UTF8Char *s);
 		Bool StartsWith(UOSInt startIndex, const UTF8Char *s);
 		Bool StartsWithICase(const UTF8Char *s);
@@ -39,6 +40,7 @@ namespace Text
 		Bool EndsWith(const UTF8Char *s);
 		Bool EndsWithICase(const UTF8Char *s);
 		Bool HasUpperCase();
+		Bool ContainChars(const UTF8Char *chars);
 		String *ToLower();
 		UOSInt IndexOf(const UTF8Char *s);
 		UOSInt IndexOf(UTF8Char c);

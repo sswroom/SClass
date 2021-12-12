@@ -741,7 +741,6 @@ void SSWR::OrganMgr::OrganEnv::ExportWeb(const UTF8Char *exportDir, Bool include
 	UOSInt i;
 	UOSInt j;
 	Text::String *s;
-	const UTF8Char *csptr;
 	Data::Int32Map<Data::ArrayList<OrganGroup*>*> *grpTree;
 	Data::Int32Map<Data::ArrayList<OrganSpecies*>*> *spTree;
 	Data::ArrayList<OrganGroup*> *grps;
@@ -785,9 +784,9 @@ void SSWR::OrganMgr::OrganEnv::ExportWeb(const UTF8Char *exportDir, Bool include
 				sb->Append((const UTF8Char*)"/");
 				sb->AppendUOSInt(thisSpeciesCnt);
 				sb->Append((const UTF8Char*)")");
-				csptr = Text::XML::ToNewXMLText(sb->ToString());
-				writer->Write(csptr);
-				Text::XML::FreeNewText(csptr);
+				s = Text::XML::ToNewXMLText(sb->ToString());
+				writer->Write(s->v, s->leng);
+				s->Release();
 				writer->WriteLine((const UTF8Char*)"</a><br/>");
 			}
 
@@ -855,21 +854,21 @@ void SSWR::OrganMgr::OrganEnv::FreeSpeciesTree(Data::Int32Map<Data::ArrayList<Or
 
 void SSWR::OrganMgr::OrganEnv::ExportBeginPage(IO::Writer *writer, const UTF8Char *title)
 {
-	const UTF8Char *csptr;
+	Text::String *s;
 	writer->WriteLine((const UTF8Char*)"<HTML>");
 	writer->WriteLine((const UTF8Char*)"<HEAD>");
 	writer->WriteLine((const UTF8Char*)"<META HTTP-EQUIV=\"Content-Type\" CONTENT=\"text/html; charset=utf8\">");
 	writer->Write((const UTF8Char*)"<title>");
-	csptr = Text::XML::ToNewXMLText(title);
-	writer->Write(csptr);
+	s = Text::XML::ToNewXMLText(title);
+	writer->Write(s->v, s->leng);
 	writer->WriteLine((const UTF8Char*)"</title>");
 	writer->WriteLine((const UTF8Char*)"</HEAD>");
 	writer->WriteLine();
 	writer->WriteLine((const UTF8Char*)"<BODY TEXT=\"#c0e0ff\" LINK=\"#6080ff\" VLINK=\"#4060ff\" ALINK=\"#4040FF\" bgcolor=\"#000000\">");
 	writer->Write((const UTF8Char*)"<center><h1>");
-	writer->Write(csptr);
+	writer->Write(s->v, s->leng);
 	writer->WriteLine((const UTF8Char*)"</h1></center>");
-	Text::XML::FreeNewText(csptr);
+	s->Release();
 }
 
 void SSWR::OrganMgr::OrganEnv::ExportEndPage(IO::Writer *writer)
@@ -954,9 +953,9 @@ void SSWR::OrganMgr::OrganEnv::ExportGroup(OrganGroup *grp, Data::Int32Map<Data:
 				sb->Append((const UTF8Char*)"/");
 				sb->AppendUOSInt(thisSpecies);
 				sb->Append((const UTF8Char*)")");
-				u8ptr = Text::XML::ToNewXMLText(sb->ToString());
-				writer->Write(u8ptr);
-				Text::XML::FreeNewText(u8ptr);
+				s = Text::XML::ToNewXMLText(sb->ToString());
+				writer->Write(s->v, s->leng);
+				s->Release();
 				writer->WriteLine((const UTF8Char*)"</a><br/>");
 			}
 
@@ -1015,9 +1014,9 @@ void SSWR::OrganMgr::OrganEnv::ExportGroup(OrganGroup *grp, Data::Int32Map<Data:
 					sb->Append((const UTF8Char*)" ");
 					sb->Append(sp->GetEName());
 				}
-				u8ptr = Text::XML::ToNewXMLText(sb->ToString());
-				writer->Write(u8ptr);
-				Text::XML::FreeNewText(u8ptr);
+				s = Text::XML::ToNewXMLText(sb->ToString());
+				writer->Write(s->v, s->leng);
+				s->Release();
 				writer->WriteLine((const UTF8Char*)"</a><br/>");
 
 				totalPhoto += thisPhoto;

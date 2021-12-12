@@ -90,7 +90,8 @@ Bool Exporter::OruxMapExporter::ExportFile(IO::SeekableStream *stm, const UTF8Ch
 	UOSInt i;
 	UOSInt j;
 	UOSInt level;
-	const UTF8Char *csptr;
+	Text::String *s;
+//	const UTF8Char *csptr;
 	Int32 minX;
 	Int32 minY;
 	Int32 maxX;
@@ -118,7 +119,7 @@ Bool Exporter::OruxMapExporter::ExportFile(IO::SeekableStream *stm, const UTF8Ch
 	if (ttype == Map::TileMap::TT_OSMLOCAL)
 	{
 		DB::SQLiteFile *db;
-		csptr = Text::XML::ToNewXMLText(fileName2);
+		s = Text::XML::ToNewXMLText(fileName2);
 		succ = false;
 
 		Text::StrConcat(u8fileName, fileName);
@@ -151,7 +152,7 @@ Bool Exporter::OruxMapExporter::ExportFile(IO::SeekableStream *stm, const UTF8Ch
 			writer->Write((const UTF8Char*)" versionCode=\"3.0\">\n");
 			writer->Write((const UTF8Char*)"<MapCalibration layers=\"true\" layerLevel=\"0\">\n");
 			writer->Write((const UTF8Char*)"<MapName><![CDATA[");
-			writer->Write(csptr);
+			writer->Write(s->v, s->leng);
 			writer->Write((const UTF8Char*)"]]></MapName>\n");
 			level = 0;
 			while (level <= 18)
@@ -170,7 +171,7 @@ Bool Exporter::OruxMapExporter::ExportFile(IO::SeekableStream *stm, const UTF8Ch
 					writer->Write((const UTF8Char*)"\">\n");
 
 					writer->Write((const UTF8Char*)"<MapName><![CDATA[");
-					writer->Write(csptr);
+					writer->Write(s->v, s->leng);
 					writer->Write((const UTF8Char*)"]]></MapName>\n");
 
 					writer->Write((const UTF8Char*)"<MapChunks xMax=\"");
@@ -180,7 +181,7 @@ Bool Exporter::OruxMapExporter::ExportFile(IO::SeekableStream *stm, const UTF8Ch
 					Text::StrInt32(sbuff, maxY - minY + 1);
 					writer->Write(sbuff);
 					writer->Write((const UTF8Char*)"\" datum=\"WGS84\" projection=\"Mercator\" img_height=\"256\" img_width=\"256\" file_name=\"");
-					writer->Write(csptr);
+					writer->Write(s->v, s->leng);
 					writer->Write((const UTF8Char*)"\" />\n");
 
 					writer->Write((const UTF8Char*)"<MapDimensions height=\"");
@@ -280,7 +281,7 @@ Bool Exporter::OruxMapExporter::ExportFile(IO::SeekableStream *stm, const UTF8Ch
 
 				level++;
 			}
-			Text::XML::FreeNewText(csptr);
+			s->Release();
 			writer->Write((const UTF8Char*)"</MapCalibration>\n");
 			writer->Write((const UTF8Char*)"</OruxTracker>\n");
 			DEL_CLASS(writer);

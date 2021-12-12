@@ -60,6 +60,7 @@ void Media::MediaPlayerWebInterface::BrowseRequest(Net::WebServer::IWebRequest *
 	IO::Path::PathType pt;
 	IO::Path::FindFileSession *sess;
 	UInt8 *buff;
+	Text::String *s;
 	const UTF8Char *u8ptr;
 	UOSInt size;
 	UInt64 fileSize;
@@ -73,9 +74,9 @@ void Media::MediaPlayerWebInterface::BrowseRequest(Net::WebServer::IWebRequest *
 	writer->WriteLine((const UTF8Char*)"<body>");
 	writer->WriteLine((const UTF8Char*)"<a href=\"/\">Back</a><br/><br/>");
 	writer->Write((const UTF8Char*)"<b>Current File: </b>");
-	u8ptr = Text::XML::ToNewHTMLText(this->iface->GetOpenedFile()->GetSourceNameObj()->v);
-	writer->Write(u8ptr);
-	Text::XML::FreeNewText(u8ptr);
+	s = Text::XML::ToNewHTMLText(this->iface->GetOpenedFile()->GetSourceNameObj()->v);
+	writer->Write(s->v, s->leng);
+	s->Release();
 	writer->WriteLine((const UTF8Char*)"<hr/>");
 
 	writer->WriteLine((const UTF8Char*)"<table border=\"0\">");
@@ -112,14 +113,14 @@ void Media::MediaPlayerWebInterface::BrowseRequest(Net::WebServer::IWebRequest *
 			writer->Write((const UTF8Char*)"<tr><td>");
 			writer->Write((const UTF8Char*)"<a href=\"/browse?fname=");
 			Text::TextEnc::URIEncoding::URIEncode(sbuff2, vfile->fileName);
-			u8ptr = Text::XML::ToNewXMLText(sbuff2);
-			writer->Write(u8ptr);
-			Text::XML::FreeNewText(u8ptr);
+			s = Text::XML::ToNewXMLText(sbuff2);
+			writer->Write(s->v, s->leng);
+			s->Release();
 			writer->Write((const UTF8Char*)"\">");
 
-			u8ptr = Text::XML::ToNewHTMLText(vfile->fileName);
-			writer->Write(u8ptr);
-			Text::XML::FreeNewText(u8ptr);
+			s = Text::XML::ToNewHTMLText(vfile->fileName);
+			writer->Write(s->v, s->leng);
+			s->Release();
 			writer->Write((const UTF8Char*)"</a></td><td>");
 			Text::StrUInt64(sbuff2, vfile->fileSize);
 			writer->Write(sbuff2);
@@ -205,7 +206,7 @@ void Media::MediaPlayerWebInterface::WebRequest(Net::WebServer::IWebRequest *req
 	IO::MemoryStream *mstm;
 	IO::Writer *writer;
 	UInt8 *buff;
-	const UTF8Char *u8ptr;
+	Text::String *s;
 	UOSInt size;
 
 	NEW_CLASS(mstm, IO::MemoryStream((const UTF8Char*)"SP.GPSWeb.GPSWebHandler.LoginFunc"));
@@ -219,9 +220,9 @@ void Media::MediaPlayerWebInterface::WebRequest(Net::WebServer::IWebRequest *req
 	writer->Write((const UTF8Char*)"<b>Current File: </b>");
 	if (this->iface->GetOpenedFile())
 	{
-		u8ptr = Text::XML::ToNewHTMLText(this->iface->GetOpenedFile()->GetSourceNameObj()->v);
-		writer->Write(u8ptr);
-		Text::XML::FreeNewText(u8ptr);
+		s = Text::XML::ToNewHTMLText(this->iface->GetOpenedFile()->GetSourceNameObj()->v);
+		writer->Write(s->v, s->leng);
+		s->Release();
 
 		writer->Write((const UTF8Char*)" <a href=\"/browse\">Browse</a>");
 	}

@@ -3,6 +3,7 @@
 #include "Data/ArrayList.h"
 #include "Data/ArrayListStrUTF8.h"
 #include "IO/ParsedObject.h"
+#include "Text/String.h"
 #include "Text/StringBuilderUTF.h"
 
 namespace IO
@@ -79,13 +80,13 @@ namespace IO
 		
 		struct DecompileEnv
 		{
-			Data::ArrayList<const UTF8Char*> *stacks;
-			Data::ArrayList<const UTF8Char*> *stackTypes;
-			const UTF8Char **localTypes;
+			Data::ArrayList<Text::String*> *stacks;
+			Data::ArrayList<Text::String*> *stackTypes;
+			Text::String **localTypes;
 			const MethodInfo *method;
 			const UInt8 *codeStart;
 			const UInt8 *endPtr;
-			const UTF8Char *returnType;
+			Text::String *returnType;
 
 			Data::ArrayListStrUTF8 *importList;
 			const UTF8Char *packageName;

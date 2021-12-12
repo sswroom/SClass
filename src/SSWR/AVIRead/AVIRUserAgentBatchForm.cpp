@@ -66,9 +66,9 @@ void SSWR::AVIRead::AVIRUserAgentBatchForm::UserAgent2Output(const UTF8Char *use
 	sb.AppendChar(',', 1);
 	j = sb.GetLength();
 	if (j < 110) sb.AppendChar(' ', 110 - j);
-	const UTF8Char *csptr = Text::JSText::ToNewJSTextDQuote((const UTF8Char*)ent.userAgent);
-	sb.Append(csptr);
-	Text::JSText::FreeNewText(csptr);
+	Text::String *s = Text::JSText::ToNewJSTextDQuote((const UTF8Char*)ent.userAgent);
+	sb.Append(s);
+	s->Release();
 	sb.Append((const UTF8Char*)"},\r\n");
 	outSb->Append(sb.ToString());
 

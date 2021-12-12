@@ -20,8 +20,6 @@ void Media::PhotoInfo::ParseXMF(Text::XMLDocument *xmf)
 	}
 	if ((node = xmf->SearchFirstNode((const UTF8Char*)"//@aux:Lens")) != 0)
 	{
-		UOSInt sz;
-		UTF8Char *sbuff;
 		SDEL_STRING(this->lens);
 		this->lens = node->value->Clone();
 	}

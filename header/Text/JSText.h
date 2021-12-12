@@ -12,14 +12,13 @@ namespace Text
 		static void ToJSTextDQuote(Text::StringBuilderUTF *sb, const UTF8Char *s);
 		static WChar *ToJSText(WChar *buff, const WChar *s);
 		static WChar *ToJSTextDQuote(WChar *buff, const WChar *s);
-		static const UTF8Char *ToNewJSText(Text::String *s);
-		static const UTF8Char *ToNewJSText(const UTF8Char *s);
-		static const UTF8Char *ToNewJSTextDQuote(const UTF8Char *s);
+		static Text::String *ToNewJSText(Text::String *s);
+		static Text::String *ToNewJSText(const UTF8Char *s);
+		static Text::String *ToNewJSTextDQuote(const UTF8Char *s);
 		static const WChar *ToNewJSText(const WChar *s);
 		static const WChar *ToNewJSTextDQuote(const WChar *s);
-		static const UTF8Char *FromNewJSText(const UTF8Char *s);
+		static Text::String *FromNewJSText(const UTF8Char *s);
 		static const WChar *FromNewJSText(const WChar *s);
-		static void FreeNewText(const UTF8Char *s);
 		static void FreeNewText(const WChar *s);
 
 		static Bool JSONWellFormat(const UTF8Char *buff, UOSInt buffSize, UOSInt lev, Text::StringBuilderUTF *sb);

@@ -20,9 +20,9 @@ Text::String *DB::JavaDBUtil::AppendFieldAnno(Text::StringBuilderUTF *sb, DB::Co
 	if (colDef->GetColName()->HasUpperCase())
 	{
 		sb->Append((const UTF8Char*)"\t@Column(name=");
-		const UTF8Char *csptr = Text::JSText::ToNewJSTextDQuote(colDef->GetColName()->v);
-		sb->Append(csptr);
-		Text::JSText::FreeNewText(csptr);
+		Text::String *s = Text::JSText::ToNewJSTextDQuote(colDef->GetColName()->v);
+		sb->Append(s);
+		s->Release();
 		sb->Append((const UTF8Char*)")\r\n");
 		return colDef->GetColName()->ToLower();
 	}

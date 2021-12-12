@@ -94,7 +94,7 @@ Bool Net::WebServer::HTTPServerUtil::SendContent(Net::WebServer::IWebRequest *re
 						succ = (resp->Write(compBuff, 8) == 8);
 
 						Crypto::Hash::CRC32RIEEE crc;
-						Data::Compress::DeflateStream dstm(fs, contLeng, &crc, true);
+						Data::Compress::DeflateStream dstm(fs, contLeng, &crc, Data::Compress::DeflateStream::CompLevel::MaxSpeed, true);
 						UOSInt readSize;
 						while ((readSize = dstm.Read(compBuff, BUFFSIZE)) != 0)
 						{
@@ -116,7 +116,7 @@ Bool Net::WebServer::HTTPServerUtil::SendContent(Net::WebServer::IWebRequest *re
 						resp->AddHeader((const UTF8Char*)"Content-Encoding", (const UTF8Char*)"deflate");
 						resp->AddHeader((const UTF8Char*)"Transfer-Encoding", (const UTF8Char*)"chunked");
 
-						Data::Compress::DeflateStream dstm(fs, contLeng, 0, true);
+						Data::Compress::DeflateStream dstm(fs, contLeng, 0, Data::Compress::DeflateStream::CompLevel::MaxSpeed, true);
 						UOSInt readSize;
 						while ((readSize = dstm.Read(compBuff, BUFFSIZE)) != 0)
 						{
@@ -198,7 +198,7 @@ Bool Net::WebServer::HTTPServerUtil::SendContent(Net::WebServer::IWebRequest *re
 					crc.Calc(buff, (UOSInt)contLeng);
 
 					IO::MemoryStream mstm((UInt8*)buff, (UOSInt)contLeng, (const UTF8Char*)"Net.HTTPServerUtil.SendContent");
-					Data::Compress::DeflateStream dstm(&mstm, contLeng, 0, true);
+					Data::Compress::DeflateStream dstm(&mstm, contLeng, 0, Data::Compress::DeflateStream::CompLevel::MaxSpeed, true);
 					UOSInt readSize;
 					while ((readSize = dstm.Read(compBuff, BUFFSIZE)) != 0)
 					{
@@ -218,7 +218,7 @@ Bool Net::WebServer::HTTPServerUtil::SendContent(Net::WebServer::IWebRequest *re
 						resp->AddHeader((const UTF8Char*)"Transfer-Encoding", (const UTF8Char*)"chunked");
 
 						IO::MemoryStream mstm((UInt8*)buff, (UOSInt)contLeng, (const UTF8Char*)"Net.HTTPServerUtil.SendContent");
-						Data::Compress::DeflateStream dstm(&mstm, contLeng, 0, true);
+						Data::Compress::DeflateStream dstm(&mstm, contLeng, 0, Data::Compress::DeflateStream::CompLevel::MaxSpeed, true);
 						UOSInt readSize;
 						while ((readSize = dstm.Read(compBuff, BUFFSIZE)) != 0)
 						{

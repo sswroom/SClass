@@ -153,7 +153,6 @@ void Exporter::DocHTMLExporter::WriteItems(IO::Writer *writer, Data::ReadingList
 	Text::Doc::DocItem *item;
 	UOSInt i = 0;
 	UOSInt j = items->GetCount();
-	const UTF8Char *text;
 	Text::String *s;
 	Text::Doc::DocItem::HorizontalAlign halign;
 	Text::Doc::DocHeading *heading;
@@ -197,9 +196,9 @@ void Exporter::DocHTMLExporter::WriteItems(IO::Writer *writer, Data::ReadingList
 			writer->Write((const UTF8Char*)"</h1>");
 			break;
 		case Text::Doc::DocItem::DIT_TEXT:
-			text = Text::XML::ToNewXMLText(((Text::Doc::DocText*)item)->GetText());
-			writer->Write(text);
-			Text::XML::FreeNewText(text);
+			s = Text::XML::ToNewXMLText(((Text::Doc::DocText*)item)->GetText());
+			writer->Write(s->v, s->leng);
+			s->Release();
 			break;
 		case Text::Doc::DocItem::DIT_VALIDATOR:
 			writer->WriteLine((const UTF8Char*)"<p>");
@@ -209,9 +208,9 @@ void Exporter::DocHTMLExporter::WriteItems(IO::Writer *writer, Data::ReadingList
 			break;
 		case Text::Doc::DocItem::DIT_HORICENTER:
 			writer->Write((const UTF8Char*)"<center>");
-			text = Text::XML::ToNewXMLText(((Text::Doc::DocText*)item)->GetText());
-			writer->Write(text);
-			Text::XML::FreeNewText(text);
+			s = Text::XML::ToNewXMLText(((Text::Doc::DocText*)item)->GetText());
+			writer->Write(s->v, s->leng);
+			s->Release();
 			writer->Write((const UTF8Char*)"</center>");
 			break;
 		default:
