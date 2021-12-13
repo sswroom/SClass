@@ -14,6 +14,7 @@
 #include "Sync/Thread.h"
 
 #define TCP_BUFF_SIZE 2048
+#define PROCESS_TIMEOUT_DURATION 5000
 
 UInt32 __stdcall Net::TCPClientMgr::ClientThread(void *o)
 {
@@ -119,7 +120,7 @@ UInt32 __stdcall Net::TCPClientMgr::ClientThread(void *o)
 				}
 				else
 				{
-					if (cliStat->processing && !cliStat->timeAlerted && (intT - cliStat->timeStart) >= 2000)
+					if (cliStat->processing && !cliStat->timeAlerted && (intT - cliStat->timeStart) >= PROCESS_TIMEOUT_DURATION)
 					{
 						cliStat->timeAlerted = true;
 						if (me->toHdlr)
@@ -239,7 +240,7 @@ Net::TCPClientMgr::TCPClientMgr(Int32 timeOutSeconds, TCPClientEvent evtHdlr, TC
 	NEW_CLASS(cliIdArr, Data::ArrayListUInt64());
 	NEW_CLASS(cliMut, Sync::Mutex());
 	NEW_CLASS(this->workerTasks, Data::SyncLinkedList());
-	this->clsData = recvEvt;
+	this->clsData = (ClassData*)recvEvt;
 	Sync::Thread::Create(ClientThread, this);
 	this->workers = MemAlloc(WorkerStatus, workerCnt);
 	while (workerCnt-- > 0)

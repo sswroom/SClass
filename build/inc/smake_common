@@ -27,6 +27,7 @@ nodeps:
 @MD5Test
 @PBKDF2Test
 @RC2Test
+@RC4Test
 @SHA3_224Test
 @SHA3_256Test
 @SHA3_384Test
@@ -234,6 +235,9 @@ PBKDF2Test:
 @ConsoleStartup.o
 RC2Test:
 @RC2Test.o
+@ConsoleStartup.o
+RC4Test:
+@RC4Test.o
 @ConsoleStartup.o
 SHA3_224Test:
 @SHA3_224Test.o
@@ -778,6 +782,7 @@ JWTTest.o: ../../main/CryptoTest/JWTTest.cpp
 MD5TestMain.o: ../../main/CryptoTest/MD5.cpp
 PBKDF2Test.o: ../../main/CryptoTest/PBKDF2Test.cpp
 RC2Test.o: ../../main/CryptoTest/RC2Test.cpp
+RC4Test.o: ../../main/CryptoTest/RC4Test.cpp
 SHA3_224Test.o: ../../main/CryptoTest/SHA3_224Test.cpp
 SHA3_256Test.o: ../../main/CryptoTest/SHA3_256Test.cpp
 SHA3_384Test.o: ../../main/CryptoTest/SHA3_384Test.cpp
@@ -1005,6 +1010,8 @@ Crypto/Encrypt/Blowfish.h: ../../src/Crypto/Encrypt/Blowfish.cpp
 Crypto/Encrypt/ICrypto.h:
 Crypto/Encrypt/RC2Cipher.h: ../../src/Crypto/Encrypt/RC2Cipher.cpp
 @RC2Cipher.o
+Crypto/Encrypt/RC4Cipher.h: ../../src/Crypto/Encrypt/RC4Cipher.cpp
+@RC4Cipher.o
 Crypto/Encrypt/XOREnc.h: ../../src/Crypto/Encrypt/XOREnc.cpp
 @XOREnc.o
 Crypto/Hash/Adler32.h: ../../src/Crypto/Hash/Adler32.cpp
@@ -3816,6 +3823,7 @@ Base64.o: ../../src/Crypto/Encrypt/Base64.cpp
 BlockCipher.o: ../../src/Crypto/Encrypt/BlockCipher.cpp
 Blowfish.o: ../../src/Crypto/Encrypt/Blowfish.cpp
 RC2Cipher.o: ../../src/Crypto/Encrypt/RC2Cipher.cpp
+RC4Cipher.o: ../../src/Crypto/Encrypt/RC4Cipher.cpp
 XOREnc.o: ../../src/Crypto/Encrypt/XOREnc.cpp
 Adler32.o: ../../src/Crypto/Hash/Adler32.cpp
 Adler32_CPP.o: ../../src/Crypto/Hash/Adler32_CPP.cpp
