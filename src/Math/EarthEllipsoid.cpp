@@ -85,7 +85,9 @@ Double Math::EarthEllipsoid::CalSurfaceDistance(Double dLat1, Double dLon1, Doub
 	Double y = (rLat1 + rLat2) * 0.5;
 	Double tmpV = this->eccentricity * Math::Sin(y);
 	r = this->semiMajorAxis * (1 - this->eccentricity * this->eccentricity) / Math::Pow(1 - tmpV * tmpV, 1.5);
-	Double d = Math::ArcCos(Math::Cos(rLat1) * Math::Cos(rLon1) * Math::Cos(rLat2) * Math::Cos(rLon2) + Math::Cos(rLat1) * Math::Sin(rLon1) * Math::Cos(rLat2) * Math::Sin(rLon2) + Math::Sin(rLat1) * Math::Sin(rLat2)) * r;
+	Double cLat1 = Math::Cos(rLat1);
+	Double cLat2 = Math::Cos(rLat2);
+	Double d = Math::ArcCos(cLat1 * Math::Cos(rLon1) * cLat2 * Math::Cos(rLon2) + cLat1 * Math::Sin(rLon1) * cLat2 * Math::Sin(rLon2) + Math::Sin(rLat1) * Math::Sin(rLat2)) * r;
 	if (d > 0 || d < 0)
 	{
 		if (unit != Math::Unit::Distance::DU_METER)

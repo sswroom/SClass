@@ -261,7 +261,10 @@ namespace Text
 			this->AllocLeng((buffSize << 1) + lbCnt);
 			while (buffSize-- > 0)
 			{
-				this->buffEnd = Text::StrHexByte(this->buffEnd, *buff++);
+				this->buffEnd[0] = (T)MyString_STRHEXARR[*buff >> 4];
+				this->buffEnd[1] = (T)MyString_STRHEXARR[*buff & 15];
+				this->buffEnd += 2;
+				buff++;
 				i++;
 				if ((i & 15) == 0 && buffSize > 0)
 				{
@@ -280,14 +283,18 @@ namespace Text
 					}
 				}
 			}
+			this->buffEnd[0] = 0;
 		}
 		else
 		{
 			this->AllocLeng(buffSize * 3 + lbCnt - 1);
 			while (buffSize-- > 0)
 			{
-				this->buffEnd = Text::StrHexByte(this->buffEnd, *buff++);
-				*buffEnd++ = seperator;
+				this->buffEnd[0] = (T)MyString_STRHEXARR[*buff >> 4];
+				this->buffEnd[1] = (T)MyString_STRHEXARR[*buff & 15];
+				this->buffEnd[2] = seperator;
+				this->buffEnd += 3;
+				buff++;
 				i++;
 				if ((i & 15) == 0 && buffSize > 0)
 				{
