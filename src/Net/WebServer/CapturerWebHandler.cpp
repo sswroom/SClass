@@ -359,7 +359,6 @@ void Net::WebServer::CapturerWebHandler::AppendWiFiTable(Text::StringBuilderUTF 
 	UOSInt i;
 	UOSInt j;
 	Text::String *s;
-	const UTF8Char *csptr;
 	Net::WiFiLogFile::LogFileEntry *entry;
 	sptr = req->GetRequestPath(sbuff, 512);
 	sb->Append((const UTF8Char*)"<table border=\"1\">\r\n");
@@ -424,7 +423,6 @@ void Net::WebServer::CapturerWebHandler::AppendBTTable(Text::StringBuilderUTF *s
 	UTF8Char *sptr;
 	UInt32 sort = 0;
 	Text::String *s;
-	const UTF8Char *csptr;
 	Data::DateTime dt;
 	Int64 currTime;
 	dt.SetCurrTimeUTC();

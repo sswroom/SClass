@@ -2224,9 +2224,9 @@ void __stdcall SSWR::SMonitor::SMonitorWebHandler::WriteMenu(IO::Writer *writer,
 
 void __stdcall SSWR::SMonitor::SMonitorWebHandler::WriteHTMLText(IO::Writer *writer, const UTF8Char *txt)
 {
-	const UTF8Char *xmlTxt = Text::XML::ToNewHTMLText(txt);
-	writer->Write(xmlTxt);
-	Text::XML::FreeNewText(xmlTxt);
+	Text::String *xmlTxt = Text::XML::ToNewHTMLText(txt);
+	writer->Write(xmlTxt->v, xmlTxt->leng);
+	xmlTxt->Release();
 }
 
 void __stdcall SSWR::SMonitor::SMonitorWebHandler::WriteAttrText(IO::Writer *writer, const UTF8Char *txt)
@@ -2238,9 +2238,9 @@ void __stdcall SSWR::SMonitor::SMonitorWebHandler::WriteAttrText(IO::Writer *wri
 
 void __stdcall SSWR::SMonitor::SMonitorWebHandler::WriteJSText(IO::Writer *writer, const UTF8Char *txt)
 {
-	const UTF8Char *jsTxt = Text::JSText::ToNewJSText(txt);
-	writer->Write(jsTxt);
-	Text::JSText::FreeNewText(jsTxt);
+	Text::String *jsTxt = Text::JSText::ToNewJSText(txt);
+	writer->Write(jsTxt->v, jsTxt->leng);
+	jsTxt->Release();
 }
 
 Bool SSWR::SMonitor::SMonitorWebHandler::ProcessRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *subReq)

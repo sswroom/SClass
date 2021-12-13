@@ -2441,7 +2441,6 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroup(Net::WebServer::IWebReq
 		req->GetQueryValueI32((const UTF8Char*)"cateId", &cateId))
 	{
 		Text::String *s;
-		const UTF8Char *txt;
 		IO::MemoryStream *mstm;
 		IO::Writer *writer;
 		UOSInt i;
@@ -2670,9 +2669,9 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroup(Net::WebServer::IWebReq
 		sb.Append(group->engName);
 		me->WriteHeader(writer, sb.ToString(), env.user, env.isMobile);
 		writer->Write((const UTF8Char*)"<center><h1>");
-		txt = Text::XML::ToNewHTMLText(sb.ToString());
-		writer->Write(txt);
-		Text::XML::FreeNewText(txt);
+		s = Text::XML::ToNewHTMLText(sb.ToString());
+		writer->Write(s->v, s->leng);
+		s->Release();
 		writer->WriteLine((const UTF8Char*)"</h1></center>");
 
 		writer->WriteLine((const UTF8Char*)"<table border=\"0\" width=\"100%\">");
@@ -2693,9 +2692,9 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroup(Net::WebServer::IWebReq
 		writer->WriteLine((const UTF8Char*)"<br/>");
 		if (group->descript)
 		{
-			txt = Text::XML::ToNewHTMLText(group->descript->v);
-			writer->Write(txt);
-			Text::XML::FreeNewText(txt);
+			s = Text::XML::ToNewHTMLText(group->descript->v);
+			writer->Write(s->v, s->leng);
+			s->Release();
 		}
 		if (!notAdmin)
 		{
@@ -3071,9 +3070,9 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroupMod(Net::WebServer::IWeb
 		sb.Append(group->engName);
 		me->WriteHeader(writer, sb.ToString(), env.user, env.isMobile);
 		writer->Write((const UTF8Char*)"<center><h1>");
-		txt = Text::XML::ToNewHTMLText(sb.ToString());
-		writer->Write(txt);
-		Text::XML::FreeNewText(txt);
+		s = Text::XML::ToNewHTMLText(sb.ToString());
+		writer->Write(s->v, s->leng);
+		s->Release();
 		writer->WriteLine((const UTF8Char*)"</h1></center>");
 
 		writer->Write((const UTF8Char*)"<form name=\"newgroup\" method=\"POST\" action=\"groupmod.html?id=");
@@ -3107,9 +3106,9 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroupMod(Net::WebServer::IWeb
 				sb.Append((const UTF8Char*)" selected");
 			}
 			sb.Append((const UTF8Char*)">");
-			txt = Text::XML::ToNewHTMLText(groupType->chiName);
-			sb.Append(txt);
-			Text::XML::FreeNewText(txt);
+			s = Text::XML::ToNewHTMLText(groupType->chiName);
+			sb.Append(s);
+			s->Release();
 			sb.Append((const UTF8Char*)"</option>");
 			writer->WriteLine(sb.ToString());
 			i++;
@@ -3142,9 +3141,9 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroupMod(Net::WebServer::IWeb
 		writer->Write((const UTF8Char*)"<tr><td>Description</td><td><textarea name=\"descr\" rows=\"4\" cols=\"40\">");
 		if (descr)
 		{
-			txt = Text::XML::ToNewHTMLText(descr);
-			writer->Write(txt);
-			Text::XML::FreeNewText(txt);
+			s = Text::XML::ToNewHTMLText(descr);
+			writer->Write(s->v, s->leng);
+			s->Release();
 		}
 		writer->WriteLine((const UTF8Char*)"</textarea></td></tr>");
 		writer->Write((const UTF8Char*)"<tr><td></td><td>");
@@ -3195,7 +3194,6 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpecies(Net::WebServer::IWebR
 		req->GetQueryValueI32((const UTF8Char*)"cateId", &cateId))
 	{
 		Text::String *s;
-		const UTF8Char *txt;
 		IO::MemoryStream *mstm;
 		IO::Writer *writer;
 		UOSInt i;
@@ -3351,17 +3349,17 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpecies(Net::WebServer::IWebR
 		sb.AppendC(species->engName->v, species->engName->leng);
 		me->WriteHeader(writer, sb.ToString(), env.user, env.isMobile);
 		writer->Write((const UTF8Char*)"<center><h1>");
-		txt = Text::XML::ToNewHTMLText(sb.ToString());
-		writer->Write(txt);
-		Text::XML::FreeNewText(txt);
+		s = Text::XML::ToNewHTMLText(sb.ToString());
+		writer->Write(s->v, s->leng);
+		s->Release();
 		writer->WriteLine((const UTF8Char*)"</h1></center>");
 
 		writer->WriteLine((const UTF8Char*)"<table border=\"0\"><tr><td>");
 		if (species->descript)
 		{
-			txt = Text::XML::ToNewHTMLText(species->descript->v);
-			writer->Write(txt);
-			Text::XML::FreeNewText(txt);
+			s = Text::XML::ToNewHTMLText(species->descript->v);
+			writer->Write(s->v, s->leng);
+			s->Release();
 		}
 		if (species->files->GetCount() > 0)
 		{
@@ -3427,9 +3425,9 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpecies(Net::WebServer::IWebR
 					s->Release();
 					sb.Append((const UTF8Char*)"><i>");
 					writer->Write(sb.ToString());
-					txt = Text::XML::ToNewHTMLText(bookSp->dispName->v);
-					writer->Write(txt);
-					Text::XML::FreeNewText(txt);
+					s = Text::XML::ToNewHTMLText(bookSp->dispName->v);
+					writer->Write(s->v, s->leng);
+					s->Release();
 					writer->Write((const UTF8Char*)"</i></a></td><td>");
 					sb.ClearStr();
 					sb.Append(book->author);
@@ -3437,9 +3435,9 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpecies(Net::WebServer::IWebR
 					dt.SetTicks(book->publishDate);
 					sb.AppendU32(dt.GetYear());
 					sb.Append((const UTF8Char*)")");
-					txt = Text::XML::ToNewHTMLText(sb.ToString());
-					writer->Write(txt);
-					Text::XML::FreeNewText(txt);
+					s = Text::XML::ToNewHTMLText(sb.ToString());
+					writer->Write(s->v, s->leng);
+					s->Release();
 					writer->WriteLine((const UTF8Char*)"</td></tr>");
 				}
 				i++;
@@ -3600,9 +3598,9 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpecies(Net::WebServer::IWebR
 						if (userFile->location)
 						{
 							writer->Write((const UTF8Char*)" ");
-							txt = Text::XML::ToNewHTMLText(userFile->location->v);
-							writer->Write(txt);
-							Text::XML::FreeNewText(txt);
+							s = Text::XML::ToNewHTMLText(userFile->location->v);
+							writer->Write(s->v, s->leng);
+							s->Release();
 						}
 	/*					Data::Int64Map<SSWR::OrganMgr::OrganWebHandler::TripInfo*> *tripCate = user->tripCates->Get(species->cateId);
 						if (tripCate)
@@ -3629,16 +3627,16 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpecies(Net::WebServer::IWebR
 					if (userFile->descript && userFile->descript->leng > 0)
 					{
 						writer->Write((const UTF8Char*)"<br/>");
-						txt = Text::XML::ToNewHTMLText(userFile->descript->v);
-						writer->Write(txt);
-						Text::XML::FreeNewText(txt);
+						s = Text::XML::ToNewHTMLText(userFile->descript->v);
+						writer->Write(s->v, s->leng);
+						s->Release();
 					}
 					if (userFile->webuserId == env.user->id)
 					{
 						writer->Write((const UTF8Char*)"<br/>");
-						txt = Text::XML::ToNewHTMLText(userFile->oriFileName->v);
-						writer->Write(txt);
-						Text::XML::FreeNewText(txt);
+						s = Text::XML::ToNewHTMLText(userFile->oriFileName->v);
+						writer->Write(s->v, s->leng);
+						s->Release();
 					}
 					if (env.user->userType == 0)
 					{
@@ -3729,9 +3727,9 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpecies(Net::WebServer::IWebR
 					if (wfile->location && wfile->location->leng > 0)
 					{
 						writer->Write((const UTF8Char*)"<br/>");
-						txt = Text::XML::ToNewHTMLText(wfile->location->v);
-						writer->Write(txt);
-						Text::XML::FreeNewText(txt);
+						s = Text::XML::ToNewHTMLText(wfile->location->v);
+						writer->Write(s->v, s->leng);
+						s->Release();
 					}
 				}
 				writer->WriteLine((const UTF8Char*)"</center></td>");
@@ -3844,9 +3842,9 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpecies(Net::WebServer::IWebR
 				writer->Write(s->v, s->leng);
 				s->Release();
 				writer->Write((const UTF8Char*)">");
-				txt = Text::XML::ToNewHTMLText(url->v);
-				writer->Write(txt);
-				Text::XML::FreeNewText(txt);
+				s = Text::XML::ToNewHTMLText(url->v);
+				writer->Write(s->v, s->leng);
+				s->Release();
 				writer->WriteLine((const UTF8Char*)"</a><br/>");
 
 				url->Release();
@@ -3918,7 +3916,6 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpeciesMod(Net::WebServer::IW
 		SSWR::OrganMgr::OrganWebHandler::GroupInfo *group;
 		Text::StringBuilderUTF8 sb;
 		Text::String *s;
-		const UTF8Char *txt;
 		IO::ConfigFile *lang = me->LangGet(req);
 
 		me->dataMut->LockRead();
@@ -4060,9 +4057,9 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpeciesMod(Net::WebServer::IW
 		sb.Append(group->engName);
 		me->WriteHeader(writer, sb.ToString(), env.user, env.isMobile);
 		writer->Write((const UTF8Char*)"<center><h1>");
-		txt = Text::XML::ToNewHTMLText(sb.ToString());
-		writer->Write(txt);
-		Text::XML::FreeNewText(txt);
+		s = Text::XML::ToNewHTMLText(sb.ToString());
+		writer->Write(s->v, s->leng);
+		s->Release();
 		writer->WriteLine((const UTF8Char*)"</h1></center>");
 
 		writer->Write((const UTF8Char*)"<form name=\"newspecies\" method=\"POST\" action=\"speciesmod.html?id=");
@@ -4113,9 +4110,9 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpeciesMod(Net::WebServer::IW
 		writer->Write((const UTF8Char*)"<tr><td>Description</td><td><textarea name=\"descr\" rows=\"4\" cols=\"40\">");
 		if (descr)
 		{
-			txt = Text::XML::ToNewHTMLText(descr);
-			writer->Write(txt);
-			Text::XML::FreeNewText(txt);
+			s = Text::XML::ToNewHTMLText(descr);
+			writer->Write(s->v, s->leng);
+			s->Release();
 		}
 		writer->WriteLine((const UTF8Char*)"</textarea></td></tr>");
 		writer->Write((const UTF8Char*)"<tr><td></td><td>");
@@ -4165,7 +4162,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcList(Net::WebServer::IWebRequ
 		req->GetQueryValueI32((const UTF8Char*)"cateId", &cateId))
 	{
 		Bool imageOnly = Text::StrEquals(subReq, (const UTF8Char*)"/listimage.html");
-		const UTF8Char *txt;
+		Text::String *s;
 		IO::MemoryStream *mstm;
 		IO::Writer *writer;
 		UOSInt i;
@@ -4208,18 +4205,18 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcList(Net::WebServer::IWebRequ
 		sb.Append(group->engName);
 		me->WriteHeader(writer, sb.ToString(), env.user, env.isMobile);
 		writer->Write((const UTF8Char*)"<center><h1>");
-		txt = Text::XML::ToNewHTMLText(sb.ToString());
-		writer->Write(txt);
-		Text::XML::FreeNewText(txt);
+		s = Text::XML::ToNewHTMLText(sb.ToString());
+		writer->Write(s->v, s->leng);
+		s->Release();
 		writer->WriteLine((const UTF8Char*)"</h1></center>");
 
 		me->WriteLocator(writer, group, cate);
 		writer->WriteLine((const UTF8Char*)"<br/>");
 		if (group->descript)
 		{
-			txt = Text::XML::ToNewHTMLText(group->descript->v);
-			writer->Write(txt);
-			Text::XML::FreeNewText(txt);
+			s = Text::XML::ToNewHTMLText(group->descript->v);
+			writer->Write(s->v, s->leng);
+			s->Release();
 		}
 		writer->WriteLine((const UTF8Char*)"<br/>");
 		writer->WriteLine((const UTF8Char*)"<hr/>");
@@ -4380,7 +4377,6 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 		UTF8Char fileName[512];
 		Int32 fileId;
 		Text::String *s;
-		const UTF8Char *txt;
 		IO::MemoryStream *mstm;
 		IO::Writer *writer;
 		UOSInt i;
@@ -4487,9 +4483,9 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 				sb.Append(species->engName);
 				me->WriteHeader(writer, sb.ToString(), env.user, env.isMobile);
 				writer->Write((const UTF8Char*)"<center><h1>");
-				txt = Text::XML::ToNewHTMLText(sb.ToString());
-				writer->Write(txt);
-				Text::XML::FreeNewText(txt);
+				s = Text::XML::ToNewHTMLText(sb.ToString());
+				writer->Write(s->v, s->leng);
+				s->Release();
 				writer->WriteLine((const UTF8Char*)"</h1></center>");
 
 				writer->WriteLine((const UTF8Char*)"<center>");
@@ -4860,9 +4856,9 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 				sb.Append(species->engName);
 				me->WriteHeader(writer, sb.ToString(), env.user, env.isMobile);
 				writer->Write((const UTF8Char*)"<center><h1>");
-				txt = Text::XML::ToNewHTMLText(sb.ToString());
-				writer->Write(txt);
-				Text::XML::FreeNewText(txt);
+				s = Text::XML::ToNewHTMLText(sb.ToString());
+				writer->Write(s->v, s->leng);
+				s->Release();
 				writer->WriteLine((const UTF8Char*)"</h1></center>");
 
 				writer->WriteLine((const UTF8Char*)"<center>");
@@ -5106,9 +5102,9 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 					sb.Append(species->engName);
 					me->WriteHeader(writer, sb.ToString(), env.user, env.isMobile);
 					writer->Write((const UTF8Char*)"<center><h1>");
-					txt = Text::XML::ToNewHTMLText(sb.ToString());
-					writer->Write(txt);
-					Text::XML::FreeNewText(txt);
+					s = Text::XML::ToNewHTMLText(sb.ToString());
+					writer->Write(s->v, s->leng);
+					s->Release();
 					writer->WriteLine((const UTF8Char*)"</h1></center>");
 
 					writer->WriteLine((const UTF8Char*)"<center>");
@@ -5267,9 +5263,9 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 					sb.Append(species->engName);
 					me->WriteHeader(writer, sb.ToString(), env.user, env.isMobile);
 					writer->Write((const UTF8Char*)"<center><h1>");
-					txt = Text::XML::ToNewHTMLText(sb.ToString());
-					writer->Write(txt);
-					Text::XML::FreeNewText(txt);
+					s = Text::XML::ToNewHTMLText(sb.ToString());
+					writer->Write(s->v, s->leng);
+					s->Release();
 					writer->WriteLine((const UTF8Char*)"</h1></center>");
 
 					writer->WriteLine((const UTF8Char*)"<center>");
@@ -5451,7 +5447,6 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetailD(Net::WebServer::
 		req->GetQueryValueU32((const UTF8Char*)"index", &index))
 	{
 		Text::String *s;
-		const UTF8Char *txt;
 		IO::MemoryStream *mstm;
 		IO::Writer *writer;
 
@@ -5487,9 +5482,9 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetailD(Net::WebServer::
 
 			me->WriteHeader(writer, u8buff, env.user, env.isMobile);
 			writer->Write((const UTF8Char*)"<center><h1>");
-			txt = Text::XML::ToNewHTMLText(u8buff);
-			writer->Write(txt);
-			Text::XML::FreeNewText(txt);
+			s = Text::XML::ToNewHTMLText(u8buff);
+			writer->Write(s->v, s->leng);
+			s->Release();
 			writer->WriteLine((const UTF8Char*)"</h1></center>");
 
 			writer->WriteLine((const UTF8Char*)"<center>");
@@ -5829,10 +5824,10 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoYear(Net::WebServer::IWe
 					j = locList.GetCount();
 					while (i < j)
 					{
-						const UTF8Char *txt = Text::XML::ToNewHTMLText(locList.GetItem(i));
+						Text::String *s = Text::XML::ToNewHTMLText(locList.GetItem(i));
 						writer->Write((const UTF8Char*)" ");
-						writer->Write(txt);
-						Text::XML::FreeNewText(txt);
+						writer->Write(s->v, s->leng);
+						s->Release();
 						i++;
 					}
 
@@ -5955,10 +5950,10 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoYear(Net::WebServer::IWe
 			j = locList.GetCount();
 			while (i < j)
 			{
-				const UTF8Char *txt = Text::XML::ToNewHTMLText(locList.GetItem(i));
+				Text::String *s = Text::XML::ToNewHTMLText(locList.GetItem(i));
 				writer->Write((const UTF8Char*)" ");
-				writer->Write(txt);
-				Text::XML::FreeNewText(txt);
+				writer->Write(s->v, s->leng);
+				s->Release();
 				i++;
 			}
 
@@ -6017,7 +6012,6 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDay(Net::WebServer::IWeb
 		Data::DateTime dt;
 		UTF8Char sbuff[32];
 		Text::String *s;
-		const UTF8Char *txt;
 
 		NEW_CLASS(mstm, IO::MemoryStream((const UTF8Char*)"SSWR::OrganMgr::OrganWebHandler.SvcPhotoDay"));
 		NEW_CLASS(writer, Text::UTF8Writer(mstm));
@@ -6123,9 +6117,9 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDay(Net::WebServer::IWeb
 			if (userFile->location)
 			{
 				writer->Write((const UTF8Char*)" ");
-				txt = Text::XML::ToNewHTMLText(userFile->location->v);
-				writer->Write(txt);
-				Text::XML::FreeNewText(txt);
+				s = Text::XML::ToNewHTMLText(userFile->location->v);
+				writer->Write(s->v, s->leng);
+				s->Release();
 			}
 
 	/*		Data::Int64Map<SSWR::OrganMgr::OrganWebHandler::TripInfo*> *tripCate = user->tripCates->Get(sp->cateId);
@@ -6153,9 +6147,9 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDay(Net::WebServer::IWeb
 			if (userFile->descript)
 			{
 				writer->Write((const UTF8Char*)"<br/>");
-				txt = Text::XML::ToNewHTMLText(userFile->descript->v);
-				writer->Write(txt);
-				Text::XML::FreeNewText(txt);
+				s = Text::XML::ToNewHTMLText(userFile->descript->v);
+				writer->Write(s->v, s->leng);
+				s->Release();
 			}
 			if (userFile->lat != 0 || userFile->lon != 0)
 			{
@@ -6239,7 +6233,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoUpload(Net::WebServer::I
 	const UInt8 *fileCont;
 	IO::MemoryStream *mstm;
 	Text::UTF8Writer *writer;
-	const UTF8Char *csptr;
+	Text::String *s;
 	req->ParseHTTPForm();
 
 	NEW_CLASS(mstm, IO::MemoryStream((const UTF8Char*)"SSWR::OrganMgr::OrganWebHandler.SvcPhotoUpload"));
@@ -6256,9 +6250,9 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoUpload(Net::WebServer::I
 			break;
 		}
 		writer->Write((const UTF8Char*)"<tr><td>");
-		csptr = Text::XML::ToNewHTMLText(fileName);
-		writer->Write(csptr);
-		Text::XML::FreeNewText(csptr);
+		s = Text::XML::ToNewHTMLText(fileName);
+		writer->Write(s->v, s->leng);
+		s->Release();
 		writer->Write((const UTF8Char*)"</td><td>");
 		Text::StrUOSInt(sbuff, fileSize);
 		writer->Write(sbuff);
@@ -6376,7 +6370,6 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSearchInside(Net::WebServer::
 		(searchStr = req->GetHTTPFormStr((const UTF8Char *)"searchStr")) != 0)
 	{
 		Text::String *s;
-		const UTF8Char *txt;
 		IO::MemoryStream *mstm;
 		IO::Writer *writer;
 		UOSInt i;
@@ -6414,9 +6407,9 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSearchInside(Net::WebServer::
 		sb.Append(group->engName);
 		me->WriteHeader(writer, sb.ToString(), env.user, env.isMobile);
 		writer->Write((const UTF8Char*)"<center><h1>");
-		txt = Text::XML::ToNewHTMLText(sb.ToString());
-		writer->Write(txt);
-		Text::XML::FreeNewText(txt);
+		s = Text::XML::ToNewHTMLText(sb.ToString());
+		writer->Write(s->v, s->leng);
+		s->Release();
 		writer->WriteLine((const UTF8Char*)"</h1></center>");
 
 		writer->WriteLine((const UTF8Char*)"<table border=\"0\" width=\"100%\">");
@@ -6437,9 +6430,9 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSearchInside(Net::WebServer::
 		writer->WriteLine((const UTF8Char*)"<br/>");
 		if (group->descript)
 		{
-			txt = Text::XML::ToNewHTMLText(group->descript->v);
-			writer->Write(txt);
-			Text::XML::FreeNewText(txt);
+			s = Text::XML::ToNewHTMLText(group->descript->v);
+			writer->Write(s->v, s->leng);
+			s->Release();
 		}
 		writer->WriteLine((const UTF8Char*)"<br/>");
 		writer->WriteLine((const UTF8Char*)"<hr/>");
@@ -6452,9 +6445,9 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSearchInside(Net::WebServer::
 		sb.Append(searchStr);
 		sb.Trim();
 		writer->Write((const UTF8Char*)"Result for \"");
-		txt = Text::XML::ToNewHTMLText(sb.ToString());
-		writer->Write(txt);
-		Text::XML::FreeNewText(txt);
+		s = Text::XML::ToNewHTMLText(sb.ToString());
+		writer->Write(s->v, s->leng);
+		s->Release();
 		writer->WriteLine((const UTF8Char*)"\"<br/>");
 		me->SearchInGroup(group, sb.ToString(), &speciesIndice, &speciesObjs, &groupIndice, &groupObjs, env.user);
 
@@ -6578,7 +6571,6 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSearchInsideMoreS(Net::WebSer
 		(searchStr = req->GetQueryValue((const UTF8Char *)"searchStr")) != 0)
 	{
 		Text::String *s;
-		const UTF8Char *txt;
 		IO::MemoryStream *mstm;
 		IO::Writer *writer;
 		UOSInt i;
@@ -6616,9 +6608,9 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSearchInsideMoreS(Net::WebSer
 		sb.Append(group->engName);
 		me->WriteHeader(writer, sb.ToString(), env.user, env.isMobile);
 		writer->Write((const UTF8Char*)"<center><h1>");
-		txt = Text::XML::ToNewHTMLText(sb.ToString());
-		writer->Write(txt);
-		Text::XML::FreeNewText(txt);
+		s = Text::XML::ToNewHTMLText(sb.ToString());
+		writer->Write(s->v, s->leng);
+		s->Release();
 		writer->WriteLine((const UTF8Char*)"</h1></center>");
 
 		writer->WriteLine((const UTF8Char*)"<table border=\"0\" width=\"100%\">");
@@ -6639,9 +6631,9 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSearchInsideMoreS(Net::WebSer
 		writer->WriteLine((const UTF8Char*)"<br/>");
 		if (group->descript)
 		{
-			txt = Text::XML::ToNewHTMLText(group->descript->v);
-			writer->Write(txt);
-			Text::XML::FreeNewText(txt);
+			s = Text::XML::ToNewHTMLText(group->descript->v);
+			writer->Write(s->v, s->leng);
+			s->Release();
 		}
 		writer->WriteLine((const UTF8Char*)"<br/>");
 		writer->WriteLine((const UTF8Char*)"<hr/>");
@@ -6654,9 +6646,9 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSearchInsideMoreS(Net::WebSer
 		sb.Append(searchStr);
 		sb.Trim();
 		writer->Write((const UTF8Char*)"Result for \"");
-		txt = Text::XML::ToNewHTMLText(sb.ToString());
-		writer->Write(txt);
-		Text::XML::FreeNewText(txt);
+		s = Text::XML::ToNewHTMLText(sb.ToString());
+		writer->Write(s->v, s->leng);
+		s->Release();
 		writer->WriteLine((const UTF8Char*)"\"<br/>");
 		me->SearchInGroup(group, sb.ToString(), &speciesIndice, &speciesObjs, &groupIndice, &groupObjs, env.user);
 
@@ -6761,7 +6753,6 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSearchInsideMoreG(Net::WebSer
 		(searchStr = req->GetQueryValue((const UTF8Char *)"searchStr")) != 0)
 	{
 		Text::String *s;
-		const UTF8Char *txt;
 		IO::MemoryStream *mstm;
 		IO::Writer *writer;
 		UOSInt i;
@@ -6799,9 +6790,9 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSearchInsideMoreG(Net::WebSer
 		sb.Append(group->engName);
 		me->WriteHeader(writer, sb.ToString(), env.user, env.isMobile);
 		writer->Write((const UTF8Char*)"<center><h1>");
-		txt = Text::XML::ToNewHTMLText(sb.ToString());
-		writer->Write(txt);
-		Text::XML::FreeNewText(txt);
+		s = Text::XML::ToNewHTMLText(sb.ToString());
+		writer->Write(s->v, s->leng);
+		s->Release();
 		writer->WriteLine((const UTF8Char*)"</h1></center>");
 
 		writer->WriteLine((const UTF8Char*)"<table border=\"0\" width=\"100%\">");
@@ -6822,9 +6813,9 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSearchInsideMoreG(Net::WebSer
 		writer->WriteLine((const UTF8Char*)"<br/>");
 		if (group->descript)
 		{
-			txt = Text::XML::ToNewHTMLText(group->descript->v);
-			writer->Write(txt);
-			Text::XML::FreeNewText(txt);
+			s = Text::XML::ToNewHTMLText(group->descript->v);
+			writer->Write(s->v, s->leng);
+			s->Release();
 		}
 		writer->WriteLine((const UTF8Char*)"<br/>");
 		writer->WriteLine((const UTF8Char*)"<hr/>");
@@ -6837,9 +6828,9 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSearchInsideMoreG(Net::WebSer
 		sb.Append(searchStr);
 		sb.Trim();
 		writer->Write((const UTF8Char*)"Result for \"");
-		txt = Text::XML::ToNewHTMLText(sb.ToString());
-		writer->Write(txt);
-		Text::XML::FreeNewText(txt);
+		s = Text::XML::ToNewHTMLText(sb.ToString());
+		writer->Write(s->v, s->leng);
+		s->Release();
 		writer->WriteLine((const UTF8Char*)"\"<br/>");
 		me->SearchInGroup(group, sb.ToString(), &speciesIndice, &speciesObjs, &groupIndice, &groupObjs, env.user);
 
@@ -6938,7 +6929,6 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcBookList(Net::WebServer::IWeb
 	if (req->GetQueryValueI32((const UTF8Char*)"id", &id))
 	{
 		Text::String *s;
-		const UTF8Char *txt;
 		IO::MemoryStream *mstm;
 		IO::Writer *writer;
 		Data::Int64Map<BookInfo*> sortBookMap;
@@ -6969,9 +6959,9 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcBookList(Net::WebServer::IWeb
 		sb.Append((const UTF8Char*)"Book List");
 		me->WriteHeader(writer, sb.ToString(), env.user, env.isMobile);
 		writer->Write((const UTF8Char*)"<center><h1>");
-		txt = Text::XML::ToNewHTMLText(sb.ToString());
-		writer->Write(txt);
-		Text::XML::FreeNewText(txt);
+		s = Text::XML::ToNewHTMLText(sb.ToString());
+		writer->Write(s->v, s->leng);
+		s->Release();
 		writer->WriteLine((const UTF8Char*)"</h1></center>");
 
 		writer->WriteLine((const UTF8Char*)"<table border=\"0\" width=\"100%\">");
@@ -7008,22 +6998,22 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcBookList(Net::WebServer::IWeb
 			writer->Write(sbuff);
 			writer->Write((const UTF8Char*)"\">");
 			sb.ClearStr();
-			txt = Text::XML::ToNewHTMLText(book->title->v);
-			sb.Append(txt);
+			s = Text::XML::ToNewHTMLText(book->title->v);
+			sb.Append(s);
 			sb.Replace((const UTF8Char*)"[i]", (const UTF8Char*)"<i>");
 			sb.Replace((const UTF8Char*)"[/i]", (const UTF8Char*)"</i>");
 			writer->Write(sb.ToString());
-			Text::XML::FreeNewText(txt);
+			s->Release();
 			writer->WriteLine((const UTF8Char*)"</a></td>");
 			writer->Write((const UTF8Char*)"<td>");
-			txt = Text::XML::ToNewHTMLText(book->author->v);
-			writer->Write(txt);
-			Text::XML::FreeNewText(txt);
+			s = Text::XML::ToNewHTMLText(book->author->v);
+			writer->Write(s->v, s->leng);
+			s->Release();
 			writer->WriteLine((const UTF8Char*)"</td>");
 			writer->Write((const UTF8Char*)"<td>");
-			txt = Text::XML::ToNewHTMLText(book->press->v);
-			writer->Write(txt);
-			Text::XML::FreeNewText(txt);
+			s = Text::XML::ToNewHTMLText(book->press->v);
+			writer->Write(s->v, s->leng);
+			s->Release();
 			writer->WriteLine((const UTF8Char*)"</td>");
 			writer->Write((const UTF8Char*)"<td>");
 			dt.SetTicks(book->publishDate);
@@ -7075,7 +7065,6 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcBook(Net::WebServer::IWebRequ
 		req->GetQueryValueI32((const UTF8Char*)"cateId", &cateId))
 	{
 		Text::String *s;
-		const UTF8Char *txt;
 		IO::MemoryStream *mstm;
 		IO::Writer *writer;
 		Data::Int64Map<BookInfo*> sortBookMap;
@@ -7115,31 +7104,31 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcBook(Net::WebServer::IWebRequ
 		sb.Append(cate->chiName);
 		me->WriteHeader(writer, sb.ToString(), env.user, env.isMobile);
 		writer->Write((const UTF8Char*)"<center><h1>");
-		txt = Text::XML::ToNewHTMLText(sb.ToString());
-		writer->Write(txt);
-		Text::XML::FreeNewText(txt);
+		s = Text::XML::ToNewHTMLText(sb.ToString());
+		writer->Write(s->v, s->leng);
+		s->Release();
 		writer->WriteLine((const UTF8Char*)"</h1></center>");
 
 		writer->Write((const UTF8Char*)"<b>Book Name:</b> ");
-		txt = Text::XML::ToNewHTMLText(book->title->v);
+		s = Text::XML::ToNewHTMLText(book->title->v);
 		sb.ClearStr();
-		sb.Append(txt);
-		Text::XML::FreeNewText(txt);
+		sb.Append(s);
+		s->Release();
 		sb.Replace((const UTF8Char*)"[i]", (const UTF8Char*)"<i>");
 		sb.Replace((const UTF8Char*)"[/i]", (const UTF8Char*)"</i>");
 		writer->Write(sb.ToString());
 		writer->WriteLine((const UTF8Char*)"<br/>");
 
 		writer->Write((const UTF8Char*)"<b>Author:</b> ");
-		txt = Text::XML::ToNewHTMLText(book->author->v);
-		writer->Write(txt);
-		Text::XML::FreeNewText(txt);
+		s = Text::XML::ToNewHTMLText(book->author->v);
+		writer->Write(s->v, s->leng);
+		s->Release();
 		writer->WriteLine((const UTF8Char*)"<br/>");
 
 		writer->Write((const UTF8Char*)"<b>Press:</b> ");
-		txt = Text::XML::ToNewHTMLText(book->press->v);
-		writer->Write(txt);
-		Text::XML::FreeNewText(txt);
+		s = Text::XML::ToNewHTMLText(book->press->v);
+		writer->Write(s->v, s->leng);
+		s->Release();
 		writer->WriteLine((const UTF8Char*)"<br/>");
 
 		if (book->url)
@@ -7149,9 +7138,9 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcBook(Net::WebServer::IWebRequ
 			writer->Write(s->v, s->leng);
 			s->Release();
 			writer->Write((const UTF8Char*)">");
-			txt = Text::XML::ToNewHTMLText(book->url->v);
-			writer->Write(txt);
-			Text::XML::FreeNewText(txt);
+			s = Text::XML::ToNewHTMLText(book->url->v);
+			writer->Write(s->v, s->leng);
+			s->Release();
 			writer->WriteLine((const UTF8Char*)"</a><br/>");
 		}
 
@@ -7582,7 +7571,6 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcIndex(Net::WebServer::IWebReq
 	UOSInt i;
 	UOSInt j;
 	Text::String *s;
-	const UTF8Char *txt;
 	Text::StringBuilderUTF8 sb;
 	Bool notAdmin = (env.user == 0 || env.user->userType != 0);
 	i = 0;
@@ -7600,9 +7588,9 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcIndex(Net::WebServer::IWebReq
 			writer->Write(s->v, s->leng);
 			writer->Write((const UTF8Char*)">");
 			s->Release();
-			txt = Text::XML::ToNewHTMLText(cate->chiName);
-			writer->Write(txt);
-			Text::XML::FreeNewText(txt);
+			s = Text::XML::ToNewHTMLText(cate->chiName);
+			writer->Write(s->v, s->leng);
+			s->Release();
 			writer->WriteLine((const UTF8Char*)"</a><br/>");
 
 			if (firstCate == 0)
@@ -7685,7 +7673,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcCate(Net::WebServer::IWebRequ
 	const UTF8Char *cateName = req->GetQueryValue((const UTF8Char*)"cateName");
 	if (cateName != 0 && (cate = me->cateSMap->Get(cateName)) != 0)
 	{
-		const UTF8Char *txt;
+		Text::String *s;
 		IO::MemoryStream *mstm;
 		IO::Writer *writer;
 		UOSInt i;
@@ -7700,9 +7688,9 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcCate(Net::WebServer::IWebRequ
 
 		me->WriteHeader(writer, cate->chiName, env.user, env.isMobile);
 		writer->Write((const UTF8Char*)"<center><h1>");
-		txt = Text::XML::ToNewHTMLText(cate->chiName);
-		writer->Write(txt);
-		Text::XML::FreeNewText(txt);
+		s = Text::XML::ToNewHTMLText(cate->chiName);
+		writer->Write(s->v, s->leng);
+		s->Release();
 		writer->WriteLine((const UTF8Char*)"</h1></center>");
 
 		Bool notAdmin = (env.user == 0 || env.user->userType != 0);
@@ -8650,7 +8638,7 @@ void SSWR::OrganMgr::OrganWebHandler::ResponseMstm(Net::WebServer::IWebRequest *
 
 void SSWR::OrganMgr::OrganWebHandler::WriteHeaderPart1(IO::Writer *writer, const UTF8Char *title, Bool isMobile)
 {
-	const UTF8Char *txt;
+	Text::String *s;
 	writer->WriteLine((const UTF8Char*)"<HTML>");
 	writer->WriteLine((const UTF8Char*)"<HEAD>");
 	writer->WriteLine((const UTF8Char*)"<META HTTP-EQUIV=\"Content-Type\" CONTENT=\"text/html; charset=utf8\">");
@@ -8659,16 +8647,15 @@ void SSWR::OrganMgr::OrganWebHandler::WriteHeaderPart1(IO::Writer *writer, const
 		writer->WriteLine((const UTF8Char*)"<meta name=\"viewport\" content=\"width=1024\">");
 	}
 	writer->Write((const UTF8Char*)"<title>");
-	txt = Text::XML::ToNewHTMLText(title);
-	writer->Write(txt);
-	Text::XML::FreeNewText(txt);
+	s = Text::XML::ToNewHTMLText(title);
+	writer->Write(s->v, s->leng);
+	s->Release();
 	writer->WriteLine((const UTF8Char*)"</title>");
 }
 
 void SSWR::OrganMgr::OrganWebHandler::WriteHeaderPart2(IO::Writer *writer, SSWR::OrganMgr::OrganWebHandler::WebUserInfo *user, const UTF8Char *onLoadFunc)
 {
 	Text::String *s;
-	const UTF8Char *txt;
 	writer->WriteLine((const UTF8Char*)"</HEAD>");
 	writer->WriteLine();
 	writer->Write((const UTF8Char*)"<BODY TEXT=\"#c0e0ff\" LINK=\"#6080ff\" VLINK=\"#4060ff\" ALINK=\"#4040FF\" bgcolor=\"#000000\"");
@@ -8683,9 +8670,9 @@ void SSWR::OrganMgr::OrganWebHandler::WriteHeaderPart2(IO::Writer *writer, SSWR:
 	if (user)
 	{
 		writer->Write((const UTF8Char*)"<p align=\"right\">");
-		txt = Text::XML::ToNewHTMLText(user->userName->v);
-		writer->Write(txt);
-		Text::XML::FreeNewText(txt);
+		s = Text::XML::ToNewHTMLText(user->userName->v);
+		writer->Write(s->v);
+		s->Release();
 		writer->WriteLine((const UTF8Char*)"<a href=\"logout\">Logout</a></p>");
 	}
 }
@@ -8706,7 +8693,6 @@ void SSWR::OrganMgr::OrganWebHandler::WriteLocator(IO::Writer *writer, SSWR::Org
 {
 	SSWR::OrganMgr::OrganWebHandler::GroupTypeInfo *grpType;
 	Text::String *s;
-	const UTF8Char *txt;
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[12];
 	Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::GroupInfo *> groupList;
@@ -8731,9 +8717,9 @@ void SSWR::OrganMgr::OrganWebHandler::WriteLocator(IO::Writer *writer, SSWR::Org
 		writer->Write(s->v, s->leng);
 		s->Release();
 		writer->Write((const UTF8Char*)">");
-		txt = Text::XML::ToNewHTMLText(cate->chiName);
-		writer->Write(txt);
-		Text::XML::FreeNewText(txt);
+		s = Text::XML::ToNewHTMLText(cate->chiName);
+		writer->Write(s->v);
+		s->Release();
 		writer->Write((const UTF8Char*)"</a></td></tr>");
 	}
 
@@ -8746,14 +8732,14 @@ void SSWR::OrganMgr::OrganWebHandler::WriteLocator(IO::Writer *writer, SSWR::Org
 		if (grpType)
 		{
 			writer->Write((const UTF8Char*)"<td>");
-			txt = Text::XML::ToNewHTMLText(grpType->chiName);
-			writer->Write(txt);
-			Text::XML::FreeNewText(txt);
+			s = Text::XML::ToNewHTMLText(grpType->chiName);
+			writer->Write(s->v, s->leng);
+			s->Release();
 			writer->WriteLine((const UTF8Char*)"</td>");
 			writer->Write((const UTF8Char*)"<td>");
-			txt = Text::XML::ToNewHTMLText(grpType->engName);
-			writer->Write(txt);
-			Text::XML::FreeNewText(txt);
+			s = Text::XML::ToNewHTMLText(grpType->engName);
+			writer->Write(s->v, s->leng);
+			s->Release();
 			writer->WriteLine((const UTF8Char*)"</td>");
 		}
 		else
@@ -8772,9 +8758,9 @@ void SSWR::OrganMgr::OrganWebHandler::WriteLocator(IO::Writer *writer, SSWR::Org
 		sb.Append(group->engName);
 		sb.Append((const UTF8Char*)" ");
 		sb.Append(group->chiName);
-		txt = Text::XML::ToNewHTMLText(sb.ToString());
-		writer->Write(txt);
-		Text::XML::FreeNewText(txt);
+		s = Text::XML::ToNewHTMLText(sb.ToString());
+		writer->Write(s->v, s->leng);
+		s->Release();
 		writer->WriteLine((const UTF8Char*)"</a></td>");
 		writer->WriteLine((const UTF8Char*)"</tr>");
 
@@ -8826,7 +8812,6 @@ void SSWR::OrganMgr::OrganWebHandler::WriteGroupTable(IO::Writer *writer, Data::
 {
 	SSWR::OrganMgr::OrganWebHandler::GroupInfo *group;
 	Text::String *s;
-	const UTF8Char *txt;
 	UTF8Char sbuff[512];
 	Text::StringBuilderUTF8 sb;
 	UInt32 colCount = scnWidth / PREVIEW_SIZE;
@@ -8938,9 +8923,9 @@ void SSWR::OrganMgr::OrganWebHandler::WriteGroupTable(IO::Writer *writer, Data::
 				}
 				else
 				{
-					txt = Text::XML::ToNewHTMLText(group->engName->v);
-					writer->Write(txt);
-					Text::XML::FreeNewText(txt);
+					s = Text::XML::ToNewHTMLText(group->engName->v);
+					writer->Write(s->v, s->leng);
+					s->Release();
 				}
 				if (showSelect)
 				{
@@ -8966,10 +8951,10 @@ void SSWR::OrganMgr::OrganWebHandler::WriteGroupTable(IO::Writer *writer, Data::
 					sb.Append((const UTF8Char*)"/");
 					sb.AppendUOSInt(group->totalCount);
 					sb.Append((const UTF8Char*)")");
-					txt = Text::XML::ToNewHTMLText(sb.ToString());
-					writer->Write(txt);
+					s = Text::XML::ToNewHTMLText(sb.ToString());
+					writer->Write(s->v, s->leng);
 					writer->WriteLine((const UTF8Char*)"</label></center></td>");
-					Text::XML::FreeNewText(txt);
+					s->Release();
 				}
 				else
 				{
@@ -8984,10 +8969,10 @@ void SSWR::OrganMgr::OrganWebHandler::WriteGroupTable(IO::Writer *writer, Data::
 					sb.Append((const UTF8Char*)"/");
 					sb.AppendUOSInt(group->totalCount);
 					sb.Append((const UTF8Char*)")");
-					txt = Text::XML::ToNewHTMLText(sb.ToString());
-					writer->Write(txt);
+					s = Text::XML::ToNewHTMLText(sb.ToString());
+					writer->Write(s->v, s->leng);
 					writer->WriteLine((const UTF8Char*)"</a></center></td>");
-					Text::XML::FreeNewText(txt);
+					s->Release();
 				}
 
 				currColumn++;
@@ -9019,7 +9004,6 @@ void SSWR::OrganMgr::OrganWebHandler::WriteGroupTable(IO::Writer *writer, Data::
 void SSWR::OrganMgr::OrganWebHandler::WriteSpeciesTable(IO::Writer *writer, Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::SpeciesInfo *> *spList, UInt32 scnWidth, Int32 cateId, Bool showSelect)
 {
 	SSWR::OrganMgr::OrganWebHandler::SpeciesInfo *sp;
-	const UTF8Char *txt;
 	Text::String *s;
 	UTF8Char sbuff[512];
 	Text::StringBuilderUTF8 sb;
@@ -9133,9 +9117,9 @@ void SSWR::OrganMgr::OrganWebHandler::WriteSpeciesTable(IO::Writer *writer, Data
 			}
 			else
 			{
-				txt = Text::XML::ToNewHTMLText(sp->sciName->v);
-				writer->Write(txt);
-				Text::XML::FreeNewText(txt);
+				s = Text::XML::ToNewHTMLText(sp->sciName->v);
+				writer->Write(s->v, s->leng);
+				s->Release();
 				writer->WriteLine((const UTF8Char*)"<br/>");
 			}
 			if (showSelect)
@@ -9157,9 +9141,10 @@ void SSWR::OrganMgr::OrganWebHandler::WriteSpeciesTable(IO::Writer *writer, Data
 				sb.Append(sp->chiName);
 				sb.Append((const UTF8Char*)" ");
 				sb.Append(sp->engName);
-				txt = Text::XML::ToNewHTMLText(sb.ToString());
-				writer->Write(txt);
+				s = Text::XML::ToNewHTMLText(sb.ToString());
+				writer->Write(s->v, s->leng);
 				writer->WriteLine((const UTF8Char*)"</label>");
+				s->Release();
 				sb.ClearStr();
 				sb.Append((const UTF8Char*)"<br/><a href=\"speciesmod.html?id=");
 				sb.AppendI32(sp->groupId);
@@ -9179,8 +9164,9 @@ void SSWR::OrganMgr::OrganWebHandler::WriteSpeciesTable(IO::Writer *writer, Data
 				sb.Append(sp->chiName);
 				sb.Append((const UTF8Char*)" ");
 				sb.Append(sp->engName);
-				txt = Text::XML::ToNewHTMLText(sb.ToString());
-				writer->Write(txt);
+				s = Text::XML::ToNewHTMLText(sb.ToString());
+				writer->Write(s->v, s->leng);
+				s->Release();
 				if (sp->cateId == cateId)
 				{
 					writer->WriteLine((const UTF8Char*)"</a></center></td>");
@@ -9190,7 +9176,6 @@ void SSWR::OrganMgr::OrganWebHandler::WriteSpeciesTable(IO::Writer *writer, Data
 					writer->WriteLine((const UTF8Char*)"</center></td>");
 				}
 			}
-			Text::XML::FreeNewText(txt);
 
 			currColumn++;
 			if (currColumn >= colCount)
@@ -9223,7 +9208,6 @@ void SSWR::OrganMgr::OrganWebHandler::WritePickObjs(IO::Writer *writer, SSWR::Or
 	UOSInt i;
 	UOSInt j;
 	Text::String *s;
-	const UTF8Char *txt;
 	UInt32 colCount = env->scnWidth / PREVIEW_SIZE;
 	UInt32 colWidth = 100 / colCount;
 	UInt32 currColumn;
@@ -9314,24 +9298,24 @@ void SSWR::OrganMgr::OrganWebHandler::WritePickObjs(IO::Writer *writer, SSWR::Or
 					if (userFile->location)
 					{
 						writer->Write((const UTF8Char*)" ");
-						txt = Text::XML::ToNewHTMLText(userFile->location->v);
-						writer->Write(txt);
-						Text::XML::FreeNewText(txt);
+						s = Text::XML::ToNewHTMLText(userFile->location->v);
+						writer->Write(s->v, s->leng);
+						s->Release();
 					}
 				}
 				if (userFile->descript && userFile->descript->leng > 0)
 				{
 					writer->Write((const UTF8Char*)"<br/>");
-					txt = Text::XML::ToNewHTMLText(userFile->descript->v);
-					writer->Write(txt);
-					Text::XML::FreeNewText(txt);
+					s = Text::XML::ToNewHTMLText(userFile->descript->v);
+					writer->Write(s->v, s->leng);
+					s->Release();
 				}
 				if (userFile->webuserId == env->user->id)
 				{
 					writer->Write((const UTF8Char*)"<br/>");
-					txt = Text::XML::ToNewHTMLText(userFile->oriFileName->v);
-					writer->Write(txt);
-					Text::XML::FreeNewText(txt);
+					s = Text::XML::ToNewHTMLText(userFile->oriFileName->v);
+					writer->Write(s->v, s->leng);
+					s->Release();
 				}
 				writer->Write((const UTF8Char*)"</label>");
 				if (userFile->lat != 0 || userFile->lon != 0)

@@ -64,7 +64,6 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char 
 	Text::String *s;
 	Text::String *s2;
 	const UTF8Char *csptr;
-	const UTF8Char *csptr2;
 	IO::ZIPBuilder *zip;
 	UOSInt i;
 	UOSInt j = workbook->GetCount();
@@ -1346,7 +1345,6 @@ void Exporter::XLSXExporter::AppendAxis(Text::StringBuilderUTF *sb, Text::Spread
 void Exporter::XLSXExporter::AppendSeries(Text::StringBuilderUTF *sb, Text::SpreadSheet::OfficeChartSeries *series, UOSInt index)
 {
 	Text::String *s;
-	const UTF8Char *csptr;
 	sb->Append((const UTF8Char*)"<c:ser>");
 	sb->Append((const UTF8Char*)"<c:idx val=\"");
 	sb->AppendUOSInt(index);

@@ -202,7 +202,6 @@ UOSInt Map::GoogleMap::GoogleStaticMap::GetMap(UInt8 *buff, Double lat, Double l
 		sptr = this->gooCliId->ConcatTo(sptr);
 
 		UInt8 result[20];
-		UInt8 result2[40];
 		Crypto::Hash::SHA1 sha;
 		Crypto::Hash::HMAC hmac(&sha, this->gooPrivKey, this->gooPrivKeyLeng);
 		hmac.Calc(urlStart, (UOSInt)(sptr - urlStart));
