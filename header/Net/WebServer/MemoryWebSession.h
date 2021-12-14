@@ -1,7 +1,6 @@
 #ifndef _SM_NET_WEBSERVER_MEMORYWEBSESSION
 #define _SM_NET_WEBSERVER_MEMORYWEBSESSION
-#include "Data/ArrayListInt64.h"
-#include "Data/ArrayListStrUTF8.h"
+#include "Data/FastStringMap.h"
 #include "Net/WebServer/IWebSession.h"
 #include "Sync/Mutex.h"
 
@@ -14,8 +13,7 @@ namespace Net
 		private:
 			Net::BrowserInfo::BrowserType browser;
 			Manage::OSInfo::OSType os;
-			Data::ArrayListStrUTF8 *names;
-			Data::ArrayListInt64 *vals;
+			Data::FastStringMap<Int64> *items;
 			Sync::Mutex *mut;
 			Int64 sessId;
 

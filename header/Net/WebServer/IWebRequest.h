@@ -56,17 +56,18 @@ namespace Net
 			IWebRequest();
 			virtual ~IWebRequest();
 
+			virtual Text::String *GetSHeader(const UTF8Char *name) = 0;
 			virtual UTF8Char *GetHeader(UTF8Char *sbuff, const UTF8Char *name, UOSInt buffLen) = 0;
 			virtual Bool GetHeader(Text::StringBuilderUTF *sb, const UTF8Char *name) = 0;
-			virtual UOSInt GetHeaderNames(Data::ArrayList<const UTF8Char*> *names) = 0;
+			virtual UOSInt GetHeaderNames(Data::ArrayList<Text::String*> *names) = 0;
 			Bool GetRefererDomain(Text::StringBuilderUTF *sb);
 			Bool GetIfModifiedSince(Data::DateTime *dt);
 
-			virtual const UTF8Char *GetRequestURI() = 0;
+			virtual Text::String *GetRequestURI() = 0;
 			UTF8Char *GetRequestPath(UTF8Char *sbuff, UOSInt maxLeng);
 			UTF8Char *GetQueryString(UTF8Char *sbuff, UOSInt maxLeng);
 			virtual RequestProtocol GetProtocol() = 0;
-			virtual const UTF8Char *GetQueryValue(const UTF8Char *name) = 0;
+			virtual Text::String *GetQueryValue(const UTF8Char *name) = 0;
 			UTF8Char *GetQueryValueStr(const UTF8Char *name, UTF8Char *buff, UOSInt buffSize);
 			Bool GetQueryValueI16(const UTF8Char *name, Int16 *val);
 			Bool GetQueryValueU16(const UTF8Char *name, UInt16 *val);
@@ -77,7 +78,7 @@ namespace Net
 			virtual Bool HasQuery(const UTF8Char *name) = 0;
 			virtual RequestMethod GetReqMethod() = 0;
 			virtual void ParseHTTPForm() = 0;
-			virtual const UTF8Char *GetHTTPFormStr(const UTF8Char *name) = 0;
+			virtual Text::String *GetHTTPFormStr(const UTF8Char *name) = 0;
 			virtual const UInt8 *GetHTTPFormFile(const UTF8Char *formName, UOSInt index, UTF8Char *fileName, UOSInt fileNameBuffSize, UOSInt *fileSize) = 0;
 			Bool GetHTTPFormInt16(const UTF8Char *name, Int16 *valOut);
 			Bool GetHTTPFormUInt16(const UTF8Char *name, UInt16 *valOut);

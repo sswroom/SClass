@@ -68,17 +68,18 @@ UInt32 __stdcall Net::WebServer::MemoryWebSessionManager::CheckThread(void *user
 
 Int64 Net::WebServer::MemoryWebSessionManager::GetSessId(Net::WebServer::IWebRequest *req)
 {
-	Text::StringBuilderUTF8 *sb;
 	UTF8Char *sbuff;
 	UTF8Char *strs[2];
 	UOSInt strCnt = 2;
 	Int64 sessId = 0;
 
-	NEW_CLASS(sb, Text::StringBuilderUTF8());
-	req->GetHeader(sb, (const UTF8Char*)"Cookie");
-	sbuff = MemAlloc(UTF8Char, sb->GetLength() + 1);
-	Text::StrConcat(sbuff, sb->ToString());
-	DEL_CLASS(sb);
+	Text::String *cookie = req->GetSHeader((const UTF8Char*)"Cookie");
+	if (cookie == 0)
+	{
+		return 0;
+	}
+	sbuff = MemAlloc(UTF8Char, cookie->leng + 1);
+	cookie->ConcatTo(sbuff);
 
 	strs[1] = sbuff;
 	while (strCnt >= 2)

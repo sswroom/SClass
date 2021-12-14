@@ -12,15 +12,15 @@ void Net::WebServer::WebRequest::ParseQuery()
 {
 	UTF8Char *sbuff;
 	UTF8Char *sbuff2;
-	const UTF8Char *url = this->GetRequestURI();
-	UOSInt urlLen = Text::StrCharCnt(url);
+	Text::String *url = this->GetRequestURI();
+	UOSInt urlLen = url->leng;
 	UTF8Char *strs1[2];
 	UTF8Char *strs2[2];
-	const UTF8Char *sptr;
+	Text::String *s;
 
 	sbuff = MemAlloc(UTF8Char, urlLen);
 	sbuff2 = MemAlloc(UTF8Char, urlLen);
-	NEW_CLASS(this->queryMap, Data::StringUTF8Map<const UTF8Char *>());
+	NEW_CLASS(this->queryMap, Data::FastStringMap<Text::String *>());
 	if (this->GetQueryString(sbuff, urlLen))
 	{
 		UOSInt scnt;
@@ -40,22 +40,22 @@ void Net::WebServer::WebRequest::ParseQuery()
 			{
 				sbuff2[0] = 0;
 			}
-			sptr = this->queryMap->Get(strs2[0]);
-			if (sptr)
+			s = this->queryMap->Get(strs2[0]);
+			if (s)
 			{
 				Text::StringBuilderUTF8 sb;
-				sb.Append(sptr);
+				sb.Append(s);
 				sb.AppendChar(PARAM_SEPERATOR, 1);
 				sb.Append(sbuff2);
-				sptr = this->queryMap->Put(strs2[0], Text::StrCopyNew(sb.ToString()));
+				s = this->queryMap->Put(strs2[0], Text::String::New(sb.ToString(), sb.GetLength()));
 			}
 			else
 			{
-				sptr = this->queryMap->Put(strs2[0], Text::StrCopyNew(sbuff2));
+				s = this->queryMap->Put(strs2[0], Text::String::NewNotNull(sbuff2));
 			}
-			if (sptr)
+			if (s)
 			{
-				Text::StrDelNew(sptr);
+				s->Release();
 			}
 		}
 	}
@@ -63,14 +63,14 @@ void Net::WebServer::WebRequest::ParseQuery()
 	MemFree(sbuff);
 }
 
-void Net::WebServer::WebRequest::ParseFormStr(Data::StringUTF8Map<const UTF8Char *> *formMap, const UInt8 *buff, UOSInt buffSize)
+void Net::WebServer::WebRequest::ParseFormStr(Data::FastStringMap<Text::String *> *formMap, const UInt8 *buff, UOSInt buffSize)
 {
 	UInt8 *tmpBuff;
 	UInt8 b;
 	UInt8 b2;
-	UTF8Char *tmpStr;
+	Text::String *tmpStr;
 	UTF8Char *tmpName;
-	const UTF8Char *csptr;
+	Text::String *s;
 	UOSInt buffPos;
 	UOSInt charCnt;
 
@@ -85,22 +85,19 @@ void Net::WebServer::WebRequest::ParseFormStr(Data::StringUTF8Map<const UTF8Char
 			if (tmpName)
 			{
 				tmpBuff[buffPos] = 0;
-				csptr = formMap->Get(tmpBuff);
-				if (csptr)
+				s = formMap->Get(tmpBuff);
+				if (s)
 				{
-					charCnt = Text::StrCharCnt(csptr) + 1;
+					charCnt = s->leng + 1;
 					charCnt += Text::StrCharCnt(tmpName);
-					tmpStr = MemAlloc(UTF8Char, charCnt + 1);
-					Text::StrConcat(Text::StrConcat(Text::StrConcat(tmpStr, csptr), (const UTF8Char*)","), tmpName);
+					tmpStr = Text::String::New(charCnt);
+					Text::StrConcat(Text::StrConcat(s->ConcatTo(tmpStr->v), (const UTF8Char*)","), tmpName);
 					formMap->Put(tmpBuff, tmpStr);
-					MemFree((void*)csptr);
+					s->Release();
 				}
 				else
 				{
-					charCnt = Text::StrCharCnt(tmpName);
-					tmpStr = MemAlloc(UTF8Char, charCnt + 1);
-					Text::StrConcatC(tmpStr, tmpName, charCnt);
-					formMap->Put(tmpBuff, tmpStr);
+					formMap->Put(tmpBuff, Text::String::NewNotNull(tmpName));
 				}
 				tmpName = 0;
 				buffPos = 0;
@@ -151,22 +148,19 @@ void Net::WebServer::WebRequest::ParseFormStr(Data::StringUTF8Map<const UTF8Char
 	if (tmpName)
 	{
 		tmpBuff[buffPos] = 0;
-		csptr = formMap->Get(tmpBuff);
-		if (csptr)
+		s = formMap->Get(tmpBuff);
+		if (s)
 		{
-			charCnt = Text::StrCharCnt(csptr) + 1;
+			charCnt = s->leng + 1;
 			charCnt += Text::StrCharCnt(tmpName);
-			tmpStr = MemAlloc(UTF8Char, charCnt + 1);
-			Text::StrConcat(Text::StrConcat(Text::StrConcat(tmpStr, csptr), (const UTF8Char*)","), tmpName);
+			tmpStr = Text::String::New(charCnt);
+			Text::StrConcat(Text::StrConcat(s->ConcatTo(tmpStr->v), (const UTF8Char*)","), tmpName);
 			formMap->Put(tmpBuff, tmpStr);
-			MemFree((void*)csptr);
+			s->Release();
 		}
 		else
 		{
-			charCnt = Text::StrCharCnt(tmpName);
-			tmpStr = MemAlloc(UTF8Char, charCnt + 1);
-			Text::StrConcatC(tmpStr, tmpName, charCnt);
-			formMap->Put(tmpBuff, tmpStr);
+			formMap->Put(tmpBuff, Text::String::NewNotNull(tmpName));
 		}
 		tmpName = 0;
 		buffPos = 0;
@@ -244,23 +238,18 @@ void Net::WebServer::WebRequest::ParseFormPart(UInt8 *data, UOSInt dataSize, UOS
 
 	if (contType == 1)
 	{
-		UTF8Char *tmpStr;
-		const UTF8Char *csptr;
+		Text::String *s;
 		if (formName && dataSize > i)
 		{
-			csptr = this->formMap->Get(formName);
-			if (csptr)
+			s = this->formMap->Get(formName);
+			if (s)
 			{
-				MemFree((void*)csptr);
-				tmpStr = MemAlloc(UTF8Char, dataSize - i + 1);
-				Text::StrConcatC(tmpStr, &data[i], dataSize - i);
-				formMap->Put(formName, tmpStr);
+				s->Release();
+				formMap->Put(formName, Text::String::New(&data[i], dataSize - i));
 			}
 			else
 			{
-				tmpStr = MemAlloc(UTF8Char, dataSize - i + 1);
-				Text::StrConcatC(tmpStr, &data[i], dataSize - i);
-				formMap->Put(formName, tmpStr);
+				formMap->Put(formName, Text::String::New(&data[i], dataSize - i));
 			}
 		}
 	}
@@ -271,15 +260,8 @@ void Net::WebServer::WebRequest::ParseFormPart(UInt8 *data, UOSInt dataSize, UOS
 			FormFileInfo *info = MemAlloc(FormFileInfo, 1);
 			info->ofst = startOfst + i;
 			info->leng = dataSize - i;
-			info->formName = Text::StrCopyNew(formName);
-			if (fileName)
-			{
-				info->fileName = Text::StrCopyNew(fileName);
-			}
-			else
-			{
-				info->fileName = 0;
-			}
+			info->formName = Text::String::NewNotNull(formName);
+			info->fileName = Text::String::NewOrNull(fileName);
 			this->formFileList->Add(info);
 		}
 	}
@@ -306,30 +288,16 @@ const UTF8Char *Net::WebServer::WebRequest::ParseHeaderVal(Char *headerData)
 	return outStr;
 }
 
-const UTF8Char *Net::WebServer::WebRequest::GetSHeader(const UTF8Char *name)
-{
-	OSInt i = this->headerNames->SortedIndexOf(name);
-	if (i >= 0)
-	{
-		return this->headerVals->GetItem((UOSInt)i);
-	}
-	else
-	{
-		return 0;
-	}
-}
-
 Net::WebServer::WebRequest::WebRequest(const UTF8Char *requestURI, RequestMethod reqMeth, RequestProtocol reqProto, Bool secureConn, const Net::SocketUtil::AddressInfo *cliAddr, UInt16 cliPort, UInt16 svrPort)
 {
-	this->requestURI = Text::StrCopyNew(requestURI);
+	this->requestURI = Text::String::NewNotNull(requestURI);
 	this->reqMeth = reqMeth;
 	this->reqProto = reqProto;
 	this->secureConn = secureConn;
 	this->cliAddr = *cliAddr;
 	this->cliPort = cliPort;
 	this->svrPort = svrPort;
-	NEW_CLASS(this->headerNames, Data::ArrayListStrUTF8());
-	NEW_CLASS(this->headerVals, Data::ArrayListStrUTF8());
+	NEW_CLASS(this->headers, Data::FastStringMap<Text::String*>());
 	this->queryMap = 0;
 	this->formMap = 0;
 	this->formFileList = 0;
@@ -341,34 +309,17 @@ Net::WebServer::WebRequest::WebRequest(const UTF8Char *requestURI, RequestMethod
 Net::WebServer::WebRequest::~WebRequest()
 {
 	UOSInt i;
-	Text::StrDelNew(this->requestURI);
-
-	i = this->headerNames->GetCount();
-	while (i-- > 0)
-	{
-		Text::StrDelNew(this->headerNames->RemoveAt(i));
-		Text::StrDelNew(this->headerVals->RemoveAt(i));
-	}
-	DEL_CLASS(this->headerNames);
-	DEL_CLASS(this->headerVals);
+	this->requestURI->Release();
+	LIST_FREE_STRING(this->headers);
+	DEL_CLASS(this->headers);
 	if (this->queryMap)
 	{
-		Data::ArrayList<const UTF8Char *> *strs = this->queryMap->GetValues();
-		i = strs->GetCount();
-		while (i-- > 0)
-		{
-			Text::StrDelNew(strs->GetItem(i));
-		}
+		LIST_FREE_STRING(this->queryMap);
 		DEL_CLASS(this->queryMap);
 	}
 	if (this->formMap)
 	{
-		Data::ArrayList<const UTF8Char *> *strs = this->formMap->GetValues();
-		i = strs->GetCount();
-		while (i-- > 0)
-		{
-			Text::StrDelNew(strs->GetItem(i));
-		}
+		LIST_FREE_STRING(this->formMap);
 		DEL_CLASS(this->formMap);
 	}
 	if (this->formFileList)
@@ -378,7 +329,8 @@ Net::WebServer::WebRequest::~WebRequest()
 		while (i-- > 0)
 		{
 			fileInfo = this->formFileList->GetItem(i);
-			SDEL_TEXT(fileInfo->fileName);
+			fileInfo->formName->Release();
+			SDEL_STRING(fileInfo->fileName);
 			MemFree(fileInfo);
 		}
 		DEL_CLASS(this->formFileList);
@@ -393,16 +345,21 @@ Net::WebServer::WebRequest::~WebRequest()
 
 void Net::WebServer::WebRequest::AddHeader(const UTF8Char *name, const UTF8Char *value)
 {
-	UOSInt i = this->headerNames->SortedInsert(Text::StrCopyNew(name));
-	this->headerVals->Insert(i, Text::StrCopyNew(value));
+	Text::String *s = this->headers->Put(name, Text::String::NewNotNull(value));
+	SDEL_STRING(s);
+}
+
+Text::String *Net::WebServer::WebRequest::GetSHeader(const UTF8Char *name)
+{
+	return this->headers->Get(name);
 }
 
 UTF8Char *Net::WebServer::WebRequest::GetHeader(UTF8Char *sbuff, const UTF8Char *name, UOSInt buffLen)
 {
-	OSInt i = this->headerNames->SortedIndexOf(name);
-	if (i >= 0)
+	Text::String *s = this->headers->Get(name);
+	if (s)
 	{
-		return Text::StrConcatS(sbuff, this->headerVals->GetItem((UOSInt)i), buffLen);
+		return Text::StrConcatS(sbuff, s->v, buffLen);
 	}
 	else
 	{
@@ -412,35 +369,42 @@ UTF8Char *Net::WebServer::WebRequest::GetHeader(UTF8Char *sbuff, const UTF8Char 
 
 Bool Net::WebServer::WebRequest::GetHeader(Text::StringBuilderUTF *sb, const UTF8Char *name)
 {
-	const UTF8Char *hdr = this->GetSHeader(name);
+	Text::String *hdr = this->GetSHeader(name);
 	if (hdr == 0)
 		return false;
 	sb->Append(hdr);
 	return true;
 }
 
-UOSInt Net::WebServer::WebRequest::GetHeaderNames(Data::ArrayList<const UTF8Char*> *names)
+UOSInt Net::WebServer::WebRequest::GetHeaderNames(Data::ArrayList<Text::String*> *names)
 {
-	names->AddAll(this->headerNames);
-	return this->headerNames->GetCount();
+	UOSInt i = 0;
+	UOSInt j = this->headers->GetCount();
+	names->EnsureCapacity(j);
+	while (i < j)
+	{
+		names->Add(this->headers->GetKey(i));
+		i++;
+	}
+	return j;
 }
 
 UOSInt Net::WebServer::WebRequest::GetHeaderCnt()
 {
-	return this->headerNames->GetCount();
+	return this->headers->GetCount();
 }
 
-const UTF8Char *Net::WebServer::WebRequest::GetHeaderName(UOSInt index)
+Text::String *Net::WebServer::WebRequest::GetHeaderName(UOSInt index)
 {
-	return this->headerNames->GetItem(index);
+	return this->headers->GetKey(index);
 }
 
-const UTF8Char *Net::WebServer::WebRequest::GetHeaderValue(UOSInt index)
+Text::String *Net::WebServer::WebRequest::GetHeaderValue(UOSInt index)
 {
-	return this->headerVals->GetItem(index);
+	return this->headers->GetItem(index);
 }
 
-const UTF8Char *Net::WebServer::WebRequest::GetRequestURI()
+Text::String *Net::WebServer::WebRequest::GetRequestURI()
 {
 	return this->requestURI;
 }
@@ -450,7 +414,7 @@ Net::WebServer::IWebRequest::RequestProtocol Net::WebServer::WebRequest::GetProt
 	return this->reqProto;
 }
 
-const UTF8Char *Net::WebServer::WebRequest::GetQueryValue(const UTF8Char *name)
+Text::String *Net::WebServer::WebRequest::GetQueryValue(const UTF8Char *name)
 {
 	if (this->queryMap == 0)
 	{
@@ -465,7 +429,7 @@ Bool Net::WebServer::WebRequest::HasQuery(const UTF8Char *name)
 	{
 		this->ParseQuery();
 	}
-	const UTF8Char *sptr = this->queryMap->Get(name);
+	Text::String *sptr = this->queryMap->Get(name);
 	return sptr != 0;
 }
 
@@ -491,7 +455,7 @@ void Net::WebServer::WebRequest::ParseHTTPForm()
 	{
 		if (Text::StrEquals(sb->ToString(), (const UTF8Char*)"application/x-www-form-urlencoded"))
 		{
-			NEW_CLASS(this->formMap, Data::StringUTF8Map<const UTF8Char *>());
+			NEW_CLASS(this->formMap, Data::FastStringMap<Text::String *>());
 			ParseFormStr(this->formMap, this->reqData, this->reqDataSize);
 		}
 		else if (Text::StrStartsWith(sb->ToString(), (const UTF8Char*)"multipart/form-data"))
@@ -502,7 +466,7 @@ void Net::WebServer::WebRequest::ParseHTTPForm()
 			{
 				UInt8 *boundary = &sptr[i + 9];
 				UOSInt boundSize = Text::StrCharCnt(&sptr[i + 9]);
-				NEW_CLASS(this->formMap, Data::StringUTF8Map<const UTF8Char *>());
+				NEW_CLASS(this->formMap, Data::FastStringMap<Text::String *>());
 				NEW_CLASS(this->formFileList, Data::ArrayList<FormFileInfo *>());
 
 				UOSInt formStart;
@@ -550,7 +514,7 @@ void Net::WebServer::WebRequest::ParseHTTPForm()
 	DEL_CLASS(sb);
 }
 
-const UTF8Char *Net::WebServer::WebRequest::GetHTTPFormStr(const UTF8Char *name)
+Text::String *Net::WebServer::WebRequest::GetHTTPFormStr(const UTF8Char *name)
 {
 	if (this->formMap == 0)
 		return 0;
@@ -566,7 +530,7 @@ const UInt8 *Net::WebServer::WebRequest::GetHTTPFormFile(const UTF8Char *formNam
 	while (i < j)
 	{
 		FormFileInfo *info = this->formFileList->GetItem(i);
-		if (Text::StrEquals(info->formName, formName))
+		if (info->formName->Equals(formName))
 		{
 			if (index == 0)
 			{
@@ -576,7 +540,7 @@ const UInt8 *Net::WebServer::WebRequest::GetHTTPFormFile(const UTF8Char *formNam
 				}
 				if (fileName && info->fileName)
 				{
-					Text::StrConcatS(fileName, info->fileName, fileNameBuffSize);
+					Text::StrConcatS(fileName, info->fileName->v, fileNameBuffSize);
 				}
 				return &this->reqData[info->ofst];
 			}
@@ -590,7 +554,7 @@ const UInt8 *Net::WebServer::WebRequest::GetHTTPFormFile(const UTF8Char *formNam
 void Net::WebServer::WebRequest::GetRequestURLBase(Text::StringBuilderUTF *sb)
 {
 	UInt16 defPort;
-	const UTF8Char *csptr;
+	Text::String *s;
 	switch (this->reqProto)
 	{
 	case RequestProtocol::HTTP1_0:
@@ -606,10 +570,10 @@ void Net::WebServer::WebRequest::GetRequestURLBase(Text::StringBuilderUTF *sb)
 			sb->Append((const UTF8Char*)"http://");
 			defPort=80;
 		}
-		csptr = this->GetSHeader((const UTF8Char*)"Host");
-		if (csptr)
+		s = this->GetSHeader((const UTF8Char*)"Host");
+		if (s)
 		{
-			sb->Append(csptr);
+			sb->Append(s);
 		}
 		if (this->svrPort != defPort)
 		{
@@ -655,7 +619,7 @@ const UInt8 *Net::WebServer::WebRequest::GetReqData(UOSInt *dataSize)
 
 Bool Net::WebServer::WebRequest::HasData()
 {
-	const UTF8Char *contLeng;
+	Text::String *contLeng;
 	contLeng = this->GetSHeader((const UTF8Char*)"Content-Length");
 	if (contLeng == 0)
 	{
@@ -664,19 +628,19 @@ Bool Net::WebServer::WebRequest::HasData()
 			return false;
 		}
 		contLeng = this->GetSHeader((const UTF8Char*)"Connection");
-		if (contLeng == 0 || !Text::StrEquals(contLeng, (const UTF8Char*)"close"))
+		if (contLeng == 0 || !contLeng->Equals((const UTF8Char*)"close"))
 		{
 			return false;
 		}
 		contLeng = this->GetSHeader((const UTF8Char*)"Transfer-Encoding");
-		if (contLeng == 0 || !Text::StrEquals(contLeng, (const UTF8Char*)"chunked"))
+		if (contLeng == 0 || !contLeng->Equals((const UTF8Char*)"chunked"))
 		{
 			return false;
 		}
 		this->reqDataSize = (UOSInt)-1;
 		return true;
 	}
-	this->reqDataSize = (UOSInt)Text::StrToUInt64(contLeng);
+	this->reqDataSize = (UOSInt)contLeng->ToUInt64();
 	if (this->reqDataSize > 0 && this->reqDataSize <= MAX_DATA_SIZE)
 		return true;
 	return false;

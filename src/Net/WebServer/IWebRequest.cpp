@@ -11,15 +11,15 @@ UTF8Char Net::WebServer::IWebRequest::PARAM_SEPERATOR = '|';
 
 void Net::WebServer::IWebRequest::ParseUserAgent()
 {
-	UTF8Char sbuff[512];
 	this->uaParsed = true;
 	this->reqBrowser = Net::BrowserInfo::BT_UNKNOWN;
 
-	if (this->GetHeader(sbuff, (const UTF8Char*)"User-Agent", 512) == 0)
+	Text::String *uaHdr = this->GetSHeader((const UTF8Char*)"User-Agent");
+	if (uaHdr == 0)
 	{
 		return;
 	}
-	const Net::UserAgentDB::UAEntry *ent = Net::UserAgentDB::GetUserAgentInfo(sbuff);
+	const Net::UserAgentDB::UAEntry *ent = Net::UserAgentDB::GetUserAgentInfo(uaHdr->v);
 	if (ent)
 	{
 		this->reqBrowser = ent->browser;
@@ -43,7 +43,7 @@ void Net::WebServer::IWebRequest::ParseUserAgent()
 		return;
 	}
 	Net::UserAgentDB::UAEntry ua;
-	Net::UserAgentDB::ParseUserAgent(&ua, sbuff);
+	Net::UserAgentDB::ParseUserAgent(&ua, uaHdr->v);
 	this->reqBrowser = ua.browser;
 	this->reqBrowserVer = (const UTF8Char*)ua.browserVer;
 	this->reqOS = ua.os;
@@ -99,7 +99,7 @@ Bool Net::WebServer::IWebRequest::GetIfModifiedSince(Data::DateTime *dt)
 
 UTF8Char *Net::WebServer::IWebRequest::GetRequestPath(UTF8Char *sbuff, UOSInt maxLeng)
 {
-	const UTF8Char *uri = this->GetRequestURI();
+	const UTF8Char *uri = this->GetRequestURI()->v;
 	UTF8Char c;
 	while ((c = *uri++) != 0)
 	{
@@ -117,7 +117,7 @@ UTF8Char *Net::WebServer::IWebRequest::GetRequestPath(UTF8Char *sbuff, UOSInt ma
 
 UTF8Char *Net::WebServer::IWebRequest::GetQueryString(UTF8Char *sbuff, UOSInt maxLeng)
 {
-	const UTF8Char *uri = this->GetRequestURI();
+	const UTF8Char *uri = this->GetRequestURI()->v;
 	UOSInt i = Text::StrIndexOf(uri, '?');
 	if (i == INVALID_INDEX)
 		return 0;
@@ -141,118 +141,118 @@ UTF8Char *Net::WebServer::IWebRequest::GetQueryString(UTF8Char *sbuff, UOSInt ma
 
 UTF8Char *Net::WebServer::IWebRequest::GetQueryValueStr(const UTF8Char *name, UTF8Char *buff, UOSInt buffSize)
 {
-	const UTF8Char *csptr = this->GetQueryValue(name);
-	if (csptr == 0)
+	Text::String *s = this->GetQueryValue(name);
+	if (s == 0)
 		return 0;
-	return Text::StrConcatS(buff, csptr, buffSize);
+	return Text::StrConcatS(buff, s->v, buffSize);
 }
 
 Bool Net::WebServer::IWebRequest::GetQueryValueI16(const UTF8Char *name, Int16 *val)
 {
-	const UTF8Char *csptr = this->GetQueryValue(name);
-	if (csptr == 0)
+	Text::String *s = this->GetQueryValue(name);
+	if (s == 0)
 		return false;
-	return Text::StrToInt16(csptr, val);
+	return s->ToInt16(val);
 }
 
 Bool Net::WebServer::IWebRequest::GetQueryValueU16(const UTF8Char *name, UInt16 *val)
 {
-	const UTF8Char *csptr = this->GetQueryValue(name);
-	if (csptr == 0)
+	Text::String *s = this->GetQueryValue(name);
+	if (s == 0)
 		return false;
-	return Text::StrToUInt16(csptr, val);
+	return s->ToUInt16(val);
 }
 
 Bool Net::WebServer::IWebRequest::GetQueryValueI32(const UTF8Char *name, Int32 *val)
 {
-	const UTF8Char *csptr = this->GetQueryValue(name);
-	if (csptr == 0)
+	Text::String *s = this->GetQueryValue(name);
+	if (s == 0)
 		return false;
-	return Text::StrToInt32(csptr, val);
+	return s->ToInt32(val);
 }
 
 Bool Net::WebServer::IWebRequest::GetQueryValueU32(const UTF8Char *name, UInt32 *val)
 {
-	const UTF8Char *csptr = this->GetQueryValue(name);
-	if (csptr == 0)
+	Text::String *s = this->GetQueryValue(name);
+	if (s == 0)
 		return false;
-	return Text::StrToUInt32(csptr, val);
+	return s->ToUInt32(val);
 }
 
 Bool Net::WebServer::IWebRequest::GetQueryValueI64(const UTF8Char *name, Int64 *val)
 {
-	const UTF8Char *csptr = this->GetQueryValue(name);
-	if (csptr == 0)
+	Text::String *s = this->GetQueryValue(name);
+	if (s == 0)
 		return false;
-	return Text::StrToInt64(csptr, val);
+	return s->ToInt64(val);
 }
 
 Bool Net::WebServer::IWebRequest::GetQueryValueF64(const UTF8Char *name, Double *val)
 {
-	const UTF8Char *csptr = this->GetQueryValue(name);
-	if (csptr == 0)
+	Text::String *s = this->GetQueryValue(name);
+	if (s == 0)
 		return false;
-	return Text::StrToDouble(csptr, val);
+	return s->ToDouble(val);
 }
 
 Bool Net::WebServer::IWebRequest::GetHTTPFormInt16(const UTF8Char *name, Int16 *valOut)
 {
-	const UTF8Char *csptr = this->GetHTTPFormStr(name);
-	if (csptr == 0)
+	Text::String *s = this->GetHTTPFormStr(name);
+	if (s == 0)
 	{
 		return false;
 	}
-	return Text::StrToInt16(csptr, valOut);
+	return s->ToInt16(valOut);
 }
 
 Bool Net::WebServer::IWebRequest::GetHTTPFormUInt16(const UTF8Char *name, UInt16 *valOut)
 {
-	const UTF8Char *csptr = this->GetHTTPFormStr(name);
-	if (csptr == 0)
+	Text::String *s = this->GetHTTPFormStr(name);
+	if (s == 0)
 	{
 		return false;
 	}
-	return Text::StrToUInt16(csptr, valOut);
+	return s->ToUInt16(valOut);
 }
 
 Bool Net::WebServer::IWebRequest::GetHTTPFormInt32(const UTF8Char *name, Int32 *valOut)
 {
-	const UTF8Char *csptr = this->GetHTTPFormStr(name);
-	if (csptr == 0)
+	Text::String *s = this->GetHTTPFormStr(name);
+	if (s == 0)
 	{
 		return false;
 	}
-	return Text::StrToInt32(csptr, valOut);
+	return s->ToInt32(valOut);
 }
 
 Bool Net::WebServer::IWebRequest::GetHTTPFormUInt32(const UTF8Char *name, UInt32 *valOut)
 {
-	const UTF8Char *csptr = this->GetHTTPFormStr(name);
-	if (csptr == 0)
+	Text::String *s = this->GetHTTPFormStr(name);
+	if (s == 0)
 	{
 		return false;
 	}
-	return Text::StrToUInt32(csptr, valOut);
+	return s->ToUInt32(valOut);
 }
 
 Bool Net::WebServer::IWebRequest::GetHTTPFormInt64(const UTF8Char *name, Int64 *valOut)
 {
-	const UTF8Char *csptr = this->GetHTTPFormStr(name);
-	if (csptr == 0)
+	Text::String *s = this->GetHTTPFormStr(name);
+	if (s == 0)
 	{
 		return false;
 	}
-	return Text::StrToInt64(csptr, valOut);
+	return s->ToInt64(valOut);
 }
 
 Bool Net::WebServer::IWebRequest::GetHTTPFormUInt64(const UTF8Char *name, UInt64 *valOut)
 {
-	const UTF8Char *csptr = this->GetHTTPFormStr(name);
-	if (csptr == 0)
+	Text::String *s = this->GetHTTPFormStr(name);
+	if (s == 0)
 	{
 		return false;
 	}
-	return Text::StrToUInt64(csptr, valOut);
+	return s->ToUInt64(valOut);
 }
 
 const Char *Net::WebServer::IWebRequest::GetReqMethodStr()

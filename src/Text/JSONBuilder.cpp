@@ -137,6 +137,20 @@ Text::JSONBuilder::~JSONBuilder()
 	DEL_CLASS(this->objTypes);
 }
 
+Bool Text::JSONBuilder::ArrayAddInt32(Int32 val)
+{
+	if (this->currType != OT_ARRAY)
+		return false;
+	if (this->isFirst)
+		this->isFirst = false;
+	else
+	{
+		this->sb->AppendC((const UTF8Char*)",", 1);
+	}
+	this->sb->AppendI32(val);
+	return true;
+}
+
 Bool Text::JSONBuilder::ArrayAddFloat64(Double val)
 {
 	if (this->currType != OT_ARRAY)
@@ -148,6 +162,48 @@ Bool Text::JSONBuilder::ArrayAddFloat64(Double val)
 		this->sb->AppendC((const UTF8Char*)",", 1);
 	}
 	Text::SBAppendF64(this->sb, val);
+	return true;
+}
+
+Bool Text::JSONBuilder::ArrayAddStr(Text::String *val)
+{
+	if (this->currType != OT_ARRAY)
+		return false;
+	if (this->isFirst)
+		this->isFirst = false;
+	else
+	{
+		this->sb->AppendC((const UTF8Char*)",", 1);
+	}
+	if (val == 0)
+	{
+		this->sb->AppendC((const UTF8Char*)"null", 4);
+	}
+	else
+	{
+		this->AppendStrUTF8(val->v);
+	}
+	return true;
+}
+
+Bool Text::JSONBuilder::ArrayAddStrUTF8(const UTF8Char *val)
+{
+	if (this->currType != OT_ARRAY)
+		return false;
+	if (this->isFirst)
+		this->isFirst = false;
+	else
+	{
+		this->sb->AppendC((const UTF8Char*)",", 1);
+	}
+	if (val == 0)
+	{
+		this->sb->AppendC((const UTF8Char*)"null", 4);
+	}
+	else
+	{
+		this->AppendStrUTF8(val);
+	}
 	return true;
 }
 

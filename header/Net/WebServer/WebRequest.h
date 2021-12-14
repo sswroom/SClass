@@ -1,7 +1,7 @@
 #ifndef _SM_NET_WEBSERVER_WEBREQUEST
 #define _SM_NET_WEBSERVER_WEBREQUEST
 #include "Data/ArrayListStrUTF8.h"
-#include "Data/StringUTF8Map.h"
+#include "Data/FastStringMap.h"
 #include "IO/MemoryStream.h"
 #include "Net/SocketFactory.h"
 #include "Net/WebServer/IWebRequest.h"
@@ -17,22 +17,21 @@ namespace Net
 			{
 				UOSInt ofst;
 				UOSInt leng;
-				const UTF8Char *formName;
-				const UTF8Char *fileName;
+				Text::String *formName;
+				Text::String *fileName;
 			} FormFileInfo;
 
 		private:
-			const UTF8Char *requestURI;
+			Text::String *requestURI;
 			RequestMethod reqMeth;
-			Data::ArrayListStrUTF8 *headerNames;
-			Data::ArrayListStrUTF8 *headerVals;
-			Data::StringUTF8Map<const UTF8Char *> *queryMap;
+			Data::FastStringMap<Text::String*> *headers;
+			Data::FastStringMap<Text::String*> *queryMap;
 			Net::SocketUtil::AddressInfo cliAddr;
 			UInt16 cliPort;
 			UInt16 svrPort;
 			RequestProtocol reqProto;
 			Bool secureConn;
-			Data::StringUTF8Map<const UTF8Char *> *formMap;
+			Data::FastStringMap<Text::String *> *formMap;
 			Data::ArrayList<FormFileInfo*> *formFileList;
 
 			UInt8 *reqData;
@@ -42,29 +41,29 @@ namespace Net
 
 		private:
 			void ParseQuery();
-			void ParseFormStr(Data::StringUTF8Map<const UTF8Char *> *formMap, const UInt8 *buff, UOSInt buffSize);
+			void ParseFormStr(Data::FastStringMap<Text::String *> *formMap, const UInt8 *buff, UOSInt buffSize);
 			void ParseFormPart(UInt8 *data, UOSInt dataSize, UOSInt startOfst);
 			const UTF8Char *ParseHeaderVal(Char *headerData);
-			const UTF8Char *GetSHeader(const UTF8Char *name);
 		public:
 			WebRequest(const UTF8Char *requestURI, RequestMethod reqMeth, RequestProtocol reqProto, Bool secureConn, const Net::SocketUtil::AddressInfo *cliAddr, UInt16 cliPort, UInt16 svrPort);
 			virtual ~WebRequest();
 
 			void AddHeader(const UTF8Char *name, const UTF8Char *value);
+			virtual Text::String *GetSHeader(const UTF8Char *name);
 			virtual UTF8Char *GetHeader(UTF8Char *sbuff, const UTF8Char *name, UOSInt buffLen);
 			virtual Bool GetHeader(Text::StringBuilderUTF *sb, const UTF8Char *name);
-			virtual UOSInt GetHeaderNames(Data::ArrayList<const UTF8Char*> *names);
+			virtual UOSInt GetHeaderNames(Data::ArrayList<Text::String*> *names);
 			UOSInt GetHeaderCnt();
-			const UTF8Char *GetHeaderName(UOSInt index);
-			const UTF8Char *GetHeaderValue(UOSInt index);
+			Text::String *GetHeaderName(UOSInt index);
+			Text::String *GetHeaderValue(UOSInt index);
 
-			virtual const UTF8Char *GetRequestURI();
+			virtual Text::String *GetRequestURI();
 			virtual RequestProtocol GetProtocol();
-			virtual const UTF8Char *GetQueryValue(const UTF8Char *name);
+			virtual Text::String *GetQueryValue(const UTF8Char *name);
 			virtual Bool HasQuery(const UTF8Char *name);
 			virtual RequestMethod GetReqMethod();
 			virtual void ParseHTTPForm();
-			virtual const UTF8Char *GetHTTPFormStr(const UTF8Char *name);
+			virtual Text::String *GetHTTPFormStr(const UTF8Char *name);
 			virtual const UInt8 *GetHTTPFormFile(const UTF8Char *formName, UOSInt index, UTF8Char *fileName, UOSInt fileNameBuffSize, UOSInt *fileSize);
 			virtual void GetRequestURLBase(Text::StringBuilderUTF *sb);
 

@@ -5,6 +5,7 @@
 #include "Text/MyString.h"
 #include "Text/URLString.h"
 #include "Text/UTF8Writer.h"
+#include "Net/WebServer/HTTPServerUtil.h"
 #include "Net/WebServer/WebStandardHandler.h"
 
 Net::WebServer::WebStandardHandler::~WebStandardHandler()
@@ -29,6 +30,7 @@ Bool Net::WebServer::WebStandardHandler::DoRequest(Net::WebServer::IWebRequest *
 {
 	if (subReq[0] != '/')
 		return false;
+	UTF8Char tmpBuff[256];
 	UTF8Char *sbuff;
 	UTF8Char c;
 	UOSInt i = 1;
@@ -54,11 +56,19 @@ Bool Net::WebServer::WebStandardHandler::DoRequest(Net::WebServer::IWebRequest *
 		}
 		else if (c == '/' || c == '?')
 		{
-			sbuff = MemAlloc(UTF8Char, i);
-			MemCopyNO(sbuff, &subReq[1], (i - 1) * sizeof(UTF8Char));
-			sbuff[i - 1] = 0;
-			subHdlr = this->hdlrs->Get(sbuff);
-			MemFree(sbuff);
+			if (i > 256)
+			{
+				sbuff = MemAlloc(UTF8Char, i);
+				MemCopyNO(sbuff, &subReq[1], (i - 1) * sizeof(UTF8Char));
+				sbuff[i - 1] = 0;
+				subHdlr = this->hdlrs->Get(sbuff);
+				MemFree(sbuff);
+			}
+			else
+			{
+				Text::StrConcatC(tmpBuff, &subReq[1], (i - 1));
+				subHdlr = this->hdlrs->Get(tmpBuff);
+			}
 			subReq = &subReq[i];
 			break;
 		}
@@ -79,7 +89,7 @@ Net::WebServer::WebStandardHandler::WebStandardHandler()
 
 void Net::WebServer::WebStandardHandler::WebRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp)
 {
-	const UTF8Char *reqURL = req->GetRequestURI();
+	Text::String *reqURL = req->GetRequestURI();
 	Net::WebServer::IWebRequest::RequestMethod reqMeth = req->GetReqMethod();
 	if (reqMeth == Net::WebServer::IWebRequest::RequestMethod::RTSP_OPTIONS)
 	{
@@ -95,7 +105,7 @@ void Net::WebServer::WebStandardHandler::WebRequest(Net::WebServer::IWebRequest 
 	else
 	{
 		UTF8Char sbuff[512];
-		Text::URLString::GetURLPathSvr(sbuff, reqURL);
+		Text::URLString::GetURLPathSvr(sbuff, reqURL->v);
 		if (!this->ProcessRequest(req, resp, sbuff))
 		{
 			resp->SetStatusCode(Net::WebStatus::SC_NOT_FOUND);
@@ -113,16 +123,13 @@ void Net::WebServer::WebStandardHandler::WebRequest(Net::WebServer::IWebRequest 
 				writer->WriteLine((const UTF8Char*)"</head><body>");
 				writer->WriteLine((const UTF8Char*)"<h1>Not Found</h1>");
 				writer->Write((const UTF8Char*)"<p>The requested URL ");
-				writer->Write(req->GetRequestURI());
+				writer->Write(reqURL->v, reqURL->leng);
 				writer->WriteLine((const UTF8Char*)" was not found on this server.</p>");
 				writer->WriteLine((const UTF8Char*)"</body></html>");
 				DEL_CLASS(writer);
-
-				UOSInt size;
-				UInt8 *buff = mstm->GetBuff(&size);
-				resp->AddContentLength(size);
 				resp->AddContentType((const UTF8Char*)"text/html");
-				resp->Write(buff, size);
+				mstm->SeekFromBeginning(0);
+				Net::WebServer::HTTPServerUtil::SendContent(req, resp, (const UTF8Char*)"text/html", mstm->GetLength(), mstm);
 				DEL_CLASS(mstm);
 			}
 		}

@@ -7,7 +7,7 @@
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 
-IO::SeekableStream *Map::OSM::OSMCacheHandler::GetTileData(Int32 lev, Int32 xTile, Int32 yTile)
+IO::SeekableStream *Map::OSM::OSMCacheHandler::GetTileData(Int32 lev, Int32 xTile, Int32 yTile, Sync::MutexUsage *mutUsage)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -28,17 +28,22 @@ IO::SeekableStream *Map::OSM::OSMCacheHandler::GetTileData(Int32 lev, Int32 xTil
 	Data::DateTime dt;
 	Data::DateTime currTime;
 
+	if (this->ioMut)
+	{
+		mutUsage->ReplaceMutex(this->ioMut);
+	}
 	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (fs->IsError())
 	{
 		DEL_CLASS(fs);
 		fs = 0;
+		mutUsage->EndUse();
 
 		const UTF8Char *thisUrl;
-		Sync::MutexUsage mutUsage(this->urlMut);
+		Sync::MutexUsage urlMutUsage(this->urlMut);
 		thisUrl = this->urls->GetItem(this->urlNext);
 		this->urlNext = (this->urlNext + 1) % this->urls->GetCount();
-		mutUsage.EndUse();
+		urlMutUsage.EndUse();
 		Text::StringBuilderUTF8 urlSb;
 		urlSb.Append(thisUrl);
 		urlSb.AppendI32(lev);
@@ -79,6 +84,10 @@ IO::SeekableStream *Map::OSM::OSMCacheHandler::GetTileData(Int32 lev, Int32 xTil
 				}
 				if (currPos >= contLeng)
 				{
+					if (this->ioMut)
+					{
+						mutUsage->ReplaceMutex(this->ioMut);
+					}
 					NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyRead, IO::FileStream::BufferType::NoWriteBuffer));
 					fs->Write(imgBuff, (UOSInt)contLeng);
 					if (cli->GetLastModified(&dt))
@@ -130,6 +139,7 @@ Map::OSM::OSMCacheHandler::OSMCacheHandler(const UTF8Char *url, const UTF8Char *
 	this->urls->Add(Text::StrCopyNew(url));
 	NEW_CLASS(this->urlMut, Sync::Mutex());
 	this->urlNext = 0;
+	this->ioMut = 0;
 	this->cacheDir = Text::StrCopyNew(cacheDir);
 	this->maxLevel = maxLevel;
 	this->sockf = sockf;
@@ -163,6 +173,11 @@ void Map::OSM::OSMCacheHandler::GetStatus(CacheStatus *status)
 	MemCopyNO(status, &this->status, sizeof(CacheStatus));
 }
 
+void Map::OSM::OSMCacheHandler::SetIOMut(Sync::Mutex *ioMut)
+{
+	this->ioMut = ioMut;
+}
+
 Bool Map::OSM::OSMCacheHandler::ProcessRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *subReq)
 {
 	UTF8Char sbuff[256];
@@ -186,7 +201,8 @@ Bool Map::OSM::OSMCacheHandler::ProcessRequest(Net::WebServer::IWebRequest *req,
 	sarr[3][i] = 0;
 	yTile = Text::StrToInt32(sarr[3]);
 
-	IO::SeekableStream *stm = GetTileData(lev, xTile, yTile);
+	Sync::MutexUsage mutUsage;
+	IO::SeekableStream *stm = GetTileData(lev, xTile, yTile, &mutUsage);
 	if (stm == 0)
 	{
 		resp->ResponseError(req, Net::WebStatus::SC_NOT_FOUND);
@@ -217,6 +233,7 @@ Bool Map::OSM::OSMCacheHandler::ProcessRequest(Net::WebServer::IWebRequest *req,
 			}
 		}
 		DEL_CLASS(stm);
+		mutUsage.EndUse();
 	}
 	return true;
 }

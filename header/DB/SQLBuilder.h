@@ -28,6 +28,7 @@ namespace DB
 		void AppendInt64(Int64 val);
 		void AppendUInt32(UInt32 val);
 		void AppendUInt64(UInt64 val);
+		void AppendStr(Text::String *val);
 		void AppendStrUTF8(const UTF8Char *val);
 		void AppendStrW(const WChar *val);
 		void AppendDate(Data::DateTime *val);

@@ -52,6 +52,12 @@ void DB::SQLBuilder::AppendUInt64(UInt64 val)
 	sb->AllocLeng(DB::DBUtil::SDBUInt64Leng(val, this->svrType));
 	sb->SetEndPtr(DB::DBUtil::SDBUInt64(sb->GetEndPtr(), val, this->svrType));
 }
+void DB::SQLBuilder::AppendStr(Text::String *val)
+{
+	sb->AllocLeng(DB::DBUtil::SDBStrUTF8Leng(STR_PTR(val), this->svrType));
+	sb->SetEndPtr(DB::DBUtil::SDBStrUTF8(sb->GetEndPtr(), STR_PTR(val), this->svrType));
+}
+
 void DB::SQLBuilder::AppendStrUTF8(const UTF8Char *val)
 {
 	sb->AllocLeng(DB::DBUtil::SDBStrUTF8Leng(val, this->svrType));

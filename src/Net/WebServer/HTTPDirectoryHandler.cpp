@@ -662,16 +662,16 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 			sptr = sb.ToString();
 			IO::FileStream *fs;
 			UInt64 sizeLeft;
+			Text::String *hdrVal;
 
 			IO::Path::GetFileExt(sbuff, sptr);
 			NEW_CLASS(fs, IO::FileStream(sptr, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
 			fs->GetFileTimes(0, 0, &t);
 
-			sb2.ClearStr();
-			if (req->GetHeader(&sb2, (const UTF8Char*)"If-Modified-Since"))
+			if ((hdrVal = req->GetSHeader((const UTF8Char*)"If-Modified-Since")) != 0)
 			{
 				Data::DateTime t2;
-				t2.SetValue(sb2.ToString());
+				t2.SetValue(hdrVal->v);
 				t2.AddMS(t.GetMS());
 				if (t2.DiffMS(&t) == 0)
 				{
@@ -768,7 +768,6 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 				AddCacheHeader(resp);
 
 				Bool isRoot = false;
-				const UTF8Char *csptr;
 				Text::String *s;
 				sbOut.AppendC((const UTF8Char*)"<html><head><title>Index of ", 28);
 				Text::TextEnc::URIEncoding::URIDecode(sbuff, sb2.ToString());
@@ -798,10 +797,10 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 					sbOut.AppendC((const UTF8Char*)"</form>", 7);
 				}
 
-				csptr = req->GetQueryValue((const UTF8Char *)"sort");
-				if (csptr)
+				s = req->GetQueryValue((const UTF8Char *)"sort");
+				if (s)
 				{
-					sort = Text::StrToInt32(csptr);
+					sort = s->ToInt32();
 				}
 
 				Text::StringBuilderUTF8 sb3;
@@ -1095,14 +1094,15 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 		Text::StringBuilderUTF8 sb2;
 		IO::FileStream *fs;
 		UInt64 sizeLeft;
+		Text::String *hdrVal;
 
 		NEW_CLASS(fs, IO::FileStream(sptr, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
 		fs->GetFileTimes(0, 0, &t);
 
-		if (req->GetHeader(&sb2, (const UTF8Char*)"If-Modified-Since"))
+		if ((hdrVal = req->GetSHeader((const UTF8Char*)"If-Modified-Since")) != 0)
 		{
 			Data::DateTime t2;
-			t2.SetValue(sb2.ToString());
+			t2.SetValue(hdrVal->v);
 			t2.AddMS(t.GetMS());
 			if (t2.DiffMS(&t) == 0)
 			{

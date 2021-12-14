@@ -27,7 +27,7 @@ namespace Net
 				UInt32 reqCnt;
 			} SERVER_STATUS;
 
-			typedef void (__stdcall *TimeoutHandler)(void *userObj, const UTF8Char *url);
+			typedef void (__stdcall *TimeoutHandler)(void *userObj, Text::String *url);
 		private:
 			IWebHandler *hdlr;
 			Net::TCPServer *svr;

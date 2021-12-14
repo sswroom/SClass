@@ -416,7 +416,7 @@ void Net::WebServer::WebConnection::ProcessTimeout()
 	sb.Append((const UTF8Char*)" ");
 	if (this->currReq)
 	{
-		const UTF8Char *uri = this->currReq->GetRequestURI();
+		Text::String *uri = this->currReq->GetRequestURI();
 		if (uri)
 		{
 			sb.Append(uri);
@@ -427,7 +427,7 @@ void Net::WebServer::WebConnection::ProcessTimeout()
 	this->svr->LogMessage(0, sb.ToString());
 }
 
-const UTF8Char *Net::WebServer::WebConnection::GetRequestURL()
+Text::String *Net::WebServer::WebConnection::GetRequestURL()
 {
 	if (this->currReq)
 	{
@@ -479,14 +479,14 @@ void Net::WebServer::WebConnection::ProcessResponse()
 	this->respDataEnd = false;
 	this->respHeaders->ClearStr();
 
-	const UTF8Char *reqURI = this->currReq->GetRequestURI();
+	Text::String *reqURI = this->currReq->GetRequestURI();
 	Net::WebServer::IWebRequest::RequestMethod reqMeth = this->currReq->GetReqMethod();
 	if (reqMeth == Net::WebServer::IWebRequest::RequestMethod::HTTP_CONNECT && this->allowProxy)
 	{
 		Net::TCPClient *proxyCli;
 		UTF8Char sbuff[512];
 		UOSInt i;
-		Text::StrConcat(sbuff, reqURI);
+		reqURI->ConcatTo(sbuff);
 		i = Text::StrIndexOf(sbuff, ':');
 		if (i == INVALID_INDEX || i == 0)
 		{
@@ -525,7 +525,7 @@ void Net::WebServer::WebConnection::ProcessResponse()
 		this->proxyMode = true;
 		this->svr->AddProxyConn(this, this->proxyCli);
 	}
-	else if ((reqMeth == Net::WebServer::IWebRequest::RequestMethod::HTTP_GET || reqMeth == Net::WebServer::IWebRequest::RequestMethod::HTTP_POST) && Text::StrStartsWith(reqURI, (const UTF8Char*)"http://"))
+	else if ((reqMeth == Net::WebServer::IWebRequest::RequestMethod::HTTP_GET || reqMeth == Net::WebServer::IWebRequest::RequestMethod::HTTP_POST) && reqURI->StartsWith((const UTF8Char*)"http://"))
 	{
 		Manage::HiResClock clk;
 		Double t;
@@ -535,15 +535,15 @@ void Net::WebServer::WebConnection::ProcessResponse()
 		clk.Start();
 		if (this->allowProxy)
 		{
-			httpCli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, 0, true, Text::StrStartsWith(reqURI, (const UTF8Char*)"https://"));
+			httpCli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, 0, true, reqURI->StartsWith((const UTF8Char*)"https://"));
 			httpCli->SetTimeout(5000);
 			if (reqMeth == Net::WebServer::IWebRequest::RequestMethod::HTTP_GET)
 			{
-				httpCli->Connect(reqURI, "GET", 0, 0, false);
+				httpCli->Connect(reqURI->v, "GET", 0, 0, false);
 			}
 			else
 			{
-				httpCli->Connect(reqURI, "POST", 0, 0, false);
+				httpCli->Connect(reqURI->v, "POST", 0, 0, false);
 			}
 
 			if (httpCli->IsError())
@@ -567,27 +567,27 @@ void Net::WebServer::WebConnection::ProcessResponse()
 				UOSInt i;
 				UOSInt j;
 				UOSInt k;
-				const UTF8Char *csptr;
+				Text::String *s;
 				Bool lengFound = false;
 				
 				i = 0;
 				j = this->currReq->GetHeaderCnt();
 				while (i < j)
 				{
-					csptr = this->currReq->GetHeaderName(i);
-					if (Text::StrEquals(csptr, (const UTF8Char*)"Host"))
+					s = this->currReq->GetHeaderName(i);
+					if (s->Equals((const UTF8Char*)"Host"))
 					{
 					}
-					else if (Text::StrEquals(csptr, (const UTF8Char*)"Proxy-Connection"))
+					else if (s->Equals((const UTF8Char*)"Proxy-Connection"))
 					{
 					}
-					else if (Text::StrEquals(csptr, (const UTF8Char*)"Accept-Encoding"))
+					else if (s->Equals((const UTF8Char*)"Accept-Encoding"))
 					{
 					}
 					else
 					{
-						const UTF8Char *csptr2 = this->currReq->GetHeaderValue(i);
-						httpCli->AddHeader(csptr, csptr2);
+						Text::String *s2 = this->currReq->GetHeaderValue(i);
+						httpCli->AddHeader(s->v, STR_PTR(s2));
 					}
 					i++;
 				}
@@ -721,9 +721,8 @@ void Net::WebServer::WebConnection::ProcessResponse()
 		this->svr->LogAccess(this->currReq, this, t);
 		if (this->sseHdlr == 0)
 		{
-			Text::StringBuilderUTF8 sb;
-			this->currReq->GetHeader(&sb, (const UTF8Char*)"Connection");
-			if (sb.Equals((const UTF8Char*)"keep-alive") && this->allowKA)
+			Text::String *connHdr = this->currReq->GetSHeader((const UTF8Char*)"Connection");
+			if (this->allowKA && connHdr && connHdr->Equals((const UTF8Char*)"keep-alive"))
 			{
 			}
 			else
@@ -780,11 +779,10 @@ Bool Net::WebServer::WebConnection::AddDefHeaders(Net::WebServer::IWebRequest *r
 {
 	Data::DateTime dt;
 	dt.SetCurrTimeUTC();
-	Text::StringBuilderUTF8 sb;
 	AddTimeHeader((const UTF8Char*)"Date", &dt);
 	AddHeader((const UTF8Char*)"Server", this->svr->GetServerName());
-	req->GetHeader(&sb, (const UTF8Char*)"Connection");
-	if (this->allowKA && sb.Equals((const UTF8Char*)"keep-alive"))
+	Text::String *connHdr = req->GetSHeader((const UTF8Char*)"Connection");
+	if (this->allowKA && connHdr && connHdr->Equals((const UTF8Char*)"keep-alive"))
 	{
 		AddHeader((const UTF8Char*)"Connection", (const UTF8Char*)"keep-alive");
 		AddHeader((const UTF8Char*)"Keep-Alive", (const UTF8Char*)"timeout=10, max=1000");

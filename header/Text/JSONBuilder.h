@@ -25,7 +25,10 @@ namespace Text
 		JSONBuilder(Text::StringBuilderUTF *sb, ObjectType rootType);
 		~JSONBuilder();
 
+		Bool ArrayAddInt32(Int32 val);
 		Bool ArrayAddFloat64(Double val);
+		Bool ArrayAddStr(Text::String *val);
+		Bool ArrayAddStrUTF8(const UTF8Char *val);
 		Bool ArrayBeginObject();
 		Bool ArrayBeginArray();
 		Bool ArrayEnd();

@@ -52,7 +52,7 @@ namespace Net
 			void EndProxyConn();
 			void ProxyShutdown();
 			void ProcessTimeout();
-			const UTF8Char *GetRequestURL();
+			Text::String *GetRequestURL();
 
 		private:
 			void SendHeaders(IWebRequest::RequestProtocol protocol);
