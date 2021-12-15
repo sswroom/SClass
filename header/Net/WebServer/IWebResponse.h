@@ -18,6 +18,7 @@ namespace Net
 			IWebResponse(const UTF8Char *sourceName);
 			virtual ~IWebResponse();
 
+			virtual void EnableWriteBuffer() = 0;
 			virtual Bool SetStatusCode(Net::WebStatus::StatusCode code) = 0;
 			virtual Int32 GetStatusCode() = 0;
 			virtual Bool AddHeader(const UTF8Char *name, const UTF8Char *value) = 0;

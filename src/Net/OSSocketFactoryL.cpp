@@ -262,10 +262,15 @@ Bool Net::OSSocketFactory::GetRemoteAddr(Socket *socket, Net::SocketUtil::Addres
 			}
 			return true;
 		}
+		else
+		{
+			addr->addrType = Net::AddrType::Unknown;
+		}
 		return false;
 	}
 	else
 	{
+		addr->addrType = Net::AddrType::Unknown;
 		return false;
 	}
 }
@@ -303,10 +308,15 @@ Bool Net::OSSocketFactory::GetLocalAddr(Socket *socket, Net::SocketUtil::Address
 			}
 			return true;
 		}
+		else
+		{
+			addr->addrType = Net::AddrType::Unknown;
+		}
 		return false;
 	}
 	else
 	{
+		addr->addrType = Net::AddrType::Unknown;
 		return false;
 	}
 }

@@ -61,7 +61,7 @@ namespace Net
 			void ProcessResponse();
 
 		public:
-			void EnableCache();
+			virtual void EnableWriteBuffer();
 			virtual Bool SetStatusCode(Net::WebStatus::StatusCode code);
 			virtual Int32 GetStatusCode();
 			virtual Bool AddHeader(const UTF8Char *name, const UTF8Char *value);

@@ -13,6 +13,7 @@
 
 #define IP_HEADER_SIZE 20
 #define TCP_HEADER_SIZE 20
+#define WRITE_BUFFER_SIZE ((1500 - IP_HEADER_SIZE - TCP_HEADER_SIZE) * 4)
 
 Net::WebServer::WebConnection::WebConnection(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Net::TCPClient *cli, WebListener *svr, IWebHandler *hdlr, Bool allowProxy, Bool allowKA) : Net::WebServer::IWebResponse((const UTF8Char*)"WebConnection")
 {
@@ -762,11 +763,11 @@ void Net::WebServer::WebConnection::ProcessResponse()
 	}
 }
 
-void Net::WebServer::WebConnection::EnableCache()
+void Net::WebServer::WebConnection::EnableWriteBuffer()
 {
 	if (this->cstm == 0)
 	{
-		NEW_CLASS(this->cstm, IO::BufferedOutputStream(this->cli, 1500 - IP_HEADER_SIZE - TCP_HEADER_SIZE));
+		NEW_CLASS(this->cstm, IO::BufferedOutputStream(this->cli, WRITE_BUFFER_SIZE));
 	}
 }
 

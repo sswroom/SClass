@@ -477,6 +477,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 						IO::Path::GetFileExt(sbuff, sptr);
 						mime = Net::MIME::GetMIMEFromExt(sbuff);
 
+						resp->EnableWriteBuffer();
 						resp->AddDefHeaders(req);
 						t.SetTicks(pitem->modTimeTick);
 						t.ToLocalTime();
@@ -508,6 +509,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 								DEL_CLASS(stmData);
 								mime = Net::MIME::GetMIMEFromExt((const UTF8Char*)"html");
 
+								resp->EnableWriteBuffer();
 								resp->AddDefHeaders(req);
 								t.SetTicks(pitem2->modTimeTick);
 								t.ToLocalTime();
@@ -575,6 +577,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 			}
 			statMutUsage.EndUse();
 		}
+		resp->EnableWriteBuffer();
 		resp->AddDefHeaders(req);
 		AddCacheHeader(resp);
 		t.SetTicks(cache->t);
@@ -685,6 +688,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 				}
 			}
 
+			resp->EnableWriteBuffer();
 			resp->AddDefHeaders(req);
 			AddCacheHeader(resp);
 			resp->AddLastModified(&t);
@@ -763,6 +767,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 					}
 				}
 
+				resp->EnableWriteBuffer();
 				resp->AddDefHeaders(req);
 				resp->AddContentType((const UTF8Char*)"text/html; charset=UTF-8");
 				AddCacheHeader(resp);
@@ -1258,6 +1263,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 			resp->AddHeader((const UTF8Char*)"Content-Range", u8buff);
 			partial = true;
 		}
+		resp->EnableWriteBuffer();
 		resp->AddDefHeaders(req);
 		AddCacheHeader(resp);
 		resp->AddLastModified(&t);

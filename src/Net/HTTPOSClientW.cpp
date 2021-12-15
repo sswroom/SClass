@@ -574,7 +574,7 @@ void Net::HTTPOSClient::EndRequest(Double *timeReq, Double *timeResp)
 					if (succ)
 					{
 						WChar *wptr = buff;
-						const UTF8Char *sptr;
+						Text::String *s;
 						UOSInt i;
 						while ((i = Text::StrIndexOf(wptr, L"\r\n")) != INVALID_INDEX && i > 0)
 						{
@@ -584,12 +584,12 @@ void Net::HTTPOSClient::EndRequest(Double *timeReq, Double *timeResp)
 							else
 							{
 								wptr[i] = 0;
-								sptr = Text::StrToUTF8New(wptr);
-								this->headers->Add((UTF8Char*)sptr);
+								s = Text::String::NewNotNull(wptr);
+								this->headers->Add(s);
 
-								if (Text::StrStartsWith(sptr, (const UTF8Char*)"Content-Length: "))
+								if (s->StartsWith((const UTF8Char*)"Content-Length: "))
 								{
-									this->contLeng = Text::StrToUInt64(&sptr[16]);
+									this->contLeng = Text::StrToUInt64(&s->v[16]);
 								}
 							}
 							wptr = &wptr[i + 2];

@@ -14,6 +14,11 @@ Net::WebServer::PrintLogWebResponse::~PrintLogWebResponse()
 	SDEL_TEXT(this->prefix);
 }
 
+void Net::WebServer::PrintLogWebResponse::EnableWriteBuffer()
+{
+	this->resp->EnableWriteBuffer();
+}
+
 Bool Net::WebServer::PrintLogWebResponse::SetStatusCode(Net::WebStatus::StatusCode code)
 {
 	if (this->resp->SetStatusCode(code))
