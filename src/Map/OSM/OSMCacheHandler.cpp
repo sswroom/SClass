@@ -209,10 +209,10 @@ Bool Map::OSM::OSMCacheHandler::ProcessRequest(Net::WebServer::IWebRequest *req,
 	}
 	else
 	{
-		UInt8 buff[1024];
+		UInt64 stmLeng = stm->GetLength();
 		resp->AddDefHeaders(req);
 		resp->AddContentType((const UTF8Char*)"image/png");
-		resp->AddContentLength(stm->GetLength());
+		resp->AddContentLength(stmLeng);
 		resp->AddHeader((const UTF8Char*)"Cache-Control", (const UTF8Char*)"private");
 		resp->AddHeader((const UTF8Char*)"Access-Control-Allow-Origin", (const UTF8Char*)"*");
 		Data::DateTime dt;
@@ -220,20 +220,40 @@ Bool Map::OSM::OSMCacheHandler::ProcessRequest(Net::WebServer::IWebRequest *req,
 		dt.AddMinute(1440);
 		resp->AddExpireTime(&dt);
 
-		Manage::HiResClock clk;
-		while (true)
+		UInt8 *buff = MemAlloc(UInt8, (UOSInt)stmLeng);
+		UOSInt buffSize = 0;
+		UOSInt readSize;
+		while (buffSize < stmLeng)
 		{
-			i = stm->Read(buff, 1024);
-			if (i <= 0)
+			readSize = stm->Read(&buff[buffSize], stmLeng - buffSize);
+			if (readSize == 0)
+			{
 				break;
-			resp->Write(buff, i);
+			}
+			buffSize += readSize;
+		}
+		DEL_CLASS(stm);
+		mutUsage.EndUse();
+		if (buffSize < stmLeng)
+		{
+			MemClear(&buff[buffSize], (UOSInt)(stmLeng - buffSize));
+		}
+		buffSize = 0;
+		Manage::HiResClock clk;
+		while (buffSize < stmLeng)
+		{
+			readSize = resp->Write(&buff[buffSize], (UOSInt)(stmLeng - buffSize));
+			if (readSize == 0)
+			{
+				break;
+			}
+			buffSize += readSize;
 			if (clk.GetTimeDiff() >= 5.0)
 			{
 				break;
 			}
 		}
-		DEL_CLASS(stm);
-		mutUsage.EndUse();
+		MemFree(buff);
 	}
 	return true;
 }

@@ -11,12 +11,16 @@
 #include "Text/TextEnc/FormEncoding.h"
 #include "Text/TextEnc/URIEncoding.h"
 
+#define IP_HEADER_SIZE 20
+#define TCP_HEADER_SIZE 20
+
 Net::WebServer::WebConnection::WebConnection(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Net::TCPClient *cli, WebListener *svr, IWebHandler *hdlr, Bool allowProxy, Bool allowKA) : Net::WebServer::IWebResponse((const UTF8Char*)"WebConnection")
 {
 	this->sockf = sockf;
 	this->ssl = ssl;
 	this->cli = cli;
 	this->svr = svr;
+	this->cstm = 0;
 	this->hdlr = hdlr;
 	this->currReq = 0;
 	this->dataBuff = MemAlloc(UInt8, 4096);
@@ -49,6 +53,7 @@ Net::WebServer::WebConnection::~WebConnection()
 			Sync::Thread::Sleep(10);
 		}
 	}
+	SDEL_CLASS(this->cstm);
 	DEL_CLASS(this->cli);
 	MemFree(this->dataBuff);
 	SDEL_CLASS(this->currReq);
@@ -377,7 +382,14 @@ void Net::WebServer::WebConnection::ReceivedData(const UInt8 *buff, UOSInt size)
 
 void Net::WebServer::WebConnection::ProxyData(const UInt8 *buff, UOSInt size)
 {
-	this->cli->Write(buff, size);
+	if (this->cstm)
+	{
+		this->cstm->Write(buff, size);
+	}
+	else
+	{
+		this->cli->Write(buff, size);
+	}
 	if (this->logger)
 	{
 		this->logger(this->loggerObj, size);
@@ -462,7 +474,14 @@ void Net::WebServer::WebConnection::SendHeaders(Net::WebServer::IWebRequest::Req
 	sptr = Text::StrConcat(sptr, (Char*)this->respHeaders->ToString());
 	sptr = Text::StrConcat(sptr, "\r\n");
 
-	cli->Write(buff, (UOSInt)(sptr - (Char*)buff));
+	if (this->cstm)
+	{
+		this->cstm->Write(buff, (UOSInt)(sptr - (Char*)buff));
+	}
+	else
+	{
+		this->cli->Write(buff, (UOSInt)(sptr - (Char*)buff));
+	}
 	if (this->logger)
 	{
 		this->logger(this->loggerObj, (UOSInt)(sptr - (Char*)buff));
@@ -714,11 +733,19 @@ void Net::WebServer::WebConnection::ProcessResponse()
 		}
 		if (!this->respDataEnd && this->respTranEnc == 1)
 		{
-			this->respLeng += this->cli->Write((const UInt8*)"0\r\n\r\n", 5);
+			if (this->cstm)
+			{
+				this->respLeng += this->cstm->Write((const UInt8*)"0\r\n\r\n", 5);
+			}
+			else
+			{
+				this->respLeng += this->cli->Write((const UInt8*)"0\r\n\r\n", 5);
+			}
 			this->respDataEnd = true;
 		}
 		t = clk.GetTimeDiff();
 		this->svr->LogAccess(this->currReq, this, t);
+		SDEL_CLASS(this->cstm);
 		if (this->sseHdlr == 0)
 		{
 			Text::String *connHdr = this->currReq->GetSHeader((const UTF8Char*)"Connection");
@@ -732,6 +759,14 @@ void Net::WebServer::WebConnection::ProcessResponse()
 			DEL_CLASS(this->currReq);
 			this->currReq = 0;
 		}
+	}
+}
+
+void Net::WebServer::WebConnection::EnableCache()
+{
+	if (this->cstm == 0)
+	{
+		NEW_CLASS(this->cstm, IO::BufferedOutputStream(this->cli, 1500 - IP_HEADER_SIZE - TCP_HEADER_SIZE));
 	}
 }
 
@@ -803,7 +838,15 @@ void Net::WebServer::WebConnection::ShutdownSend()
 {
 	if (!this->respDataEnd && this->respTranEnc == 1)
 	{
-		this->respLeng += this->cli->Write((const UInt8*)"0\r\n\r\n", 5);
+		if (this->cstm)
+		{
+			this->respLeng += this->cstm->Write((const UInt8*)"0\r\n\r\n", 5);
+			this->cstm->Flush();
+		}
+		else
+		{
+			this->respLeng += this->cli->Write((const UInt8*)"0\r\n\r\n", 5);
+		}
 		this->respDataEnd = true;
 	}
 	this->cli->ShutdownSend();
@@ -897,7 +940,14 @@ UOSInt Net::WebServer::WebConnection::Write(const UInt8 *buff, UOSInt size)
 			sptr[0] = 13;
 			sptr[1] = 10;
 			sptr += 2;
-			writeSize = this->cli->Write(sbuff, (UOSInt)(sptr - sbuff));
+			if (this->cstm)
+			{
+				writeSize = this->cstm->Write(sbuff, (UOSInt)(sptr - sbuff));
+			}
+			else
+			{
+				writeSize = this->cli->Write(sbuff, (UOSInt)(sptr - sbuff));
+			}
 			this->respLeng += (UOSInt)(sptr - sbuff);
 			if (writeSize == 0)
 			{
@@ -913,7 +963,14 @@ UOSInt Net::WebServer::WebConnection::Write(const UInt8 *buff, UOSInt size)
 	else
 	{
 		this->respLeng += size;
-		return cli->Write(buff, size);
+		if (this->cstm)
+		{
+			return this->cstm->Write(buff, size);
+		}
+		else
+		{
+			return this->cli->Write(buff, size);
+		}
 	}
 }
 

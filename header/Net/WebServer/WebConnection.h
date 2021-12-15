@@ -1,5 +1,6 @@
 #ifndef _SM_NET_WEBSERVER_WEBCONNECTION
 #define _SM_NET_WEBSERVER_WEBCONNECTION
+#include "IO/BufferedOutputStream.h"
 #include "IO/FileStream.h"
 #include "Net/SSLEngine.h"
 #include "Net/WebServer/IWebHandler.h"
@@ -19,6 +20,7 @@ namespace Net
 			Net::SocketFactory *sockf;
 			Net::SSLEngine *ssl;
 			Net::TCPClient *cli;
+			IO::BufferedOutputStream *cstm;
 			Net::WebServer::WebListener *svr;
 			Net::WebServer::IWebHandler *hdlr;
 			UInt8 *dataBuff;
@@ -59,6 +61,7 @@ namespace Net
 			void ProcessResponse();
 
 		public:
+			void EnableCache();
 			virtual Bool SetStatusCode(Net::WebStatus::StatusCode code);
 			virtual Int32 GetStatusCode();
 			virtual Bool AddHeader(const UTF8Char *name, const UTF8Char *value);
