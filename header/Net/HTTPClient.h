@@ -28,7 +28,7 @@ namespace Net
 
 		UInt64 contLeng;
 		Net::WebStatus::StatusCode respStatus;
-		Data::ArrayList<UTF8Char*> *headers;
+		Data::ArrayList<Text::String*> *headers;
 
 		Bool kaConn;
 		const UTF8Char *url;
@@ -57,7 +57,7 @@ namespace Net
 		UTF8Char *GetRespHeader(UOSInt index, UTF8Char *buff);
 		UTF8Char *GetRespHeader(const UTF8Char *name, UTF8Char *valueBuff);
 		Bool GetRespHeader(const UTF8Char *name, Text::StringBuilderUTF *sb);
-		const UTF8Char *GetRespHeader(UOSInt index);
+		Text::String *GetRespHeader(UOSInt index);
 		UInt64 GetContentLength();
 		UInt32 GetContentCodePage();
 		Bool GetLastModified(Data::DateTime *dt);

@@ -30,7 +30,7 @@ Media::MediaPlayerWebInterface::~MediaPlayerWebInterface()
 
 void Media::MediaPlayerWebInterface::BrowseRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp)
 {
-	const UTF8Char *fname = req->GetQueryValue((const UTF8Char*)"fname");
+	Text::String *fname = req->GetQueryValue((const UTF8Char*)"fname");
 	if (this->iface->GetOpenedFile() == 0)
 	{
 		resp->RedirectURL(req, (const UTF8Char*)"/", 0);
@@ -47,7 +47,7 @@ void Media::MediaPlayerWebInterface::BrowseRequest(Net::WebServer::IWebRequest *
 
 	if (fname)
 	{
-		Text::StrConcat(sptr, fname);
+		fname->ConcatTo(sptr);
 		if (this->iface->OpenFile(sbuff))
 		{
 			this->iface->PBStart();
@@ -153,53 +153,53 @@ void Media::MediaPlayerWebInterface::BrowseRequest(Net::WebServer::IWebRequest *
 
 void Media::MediaPlayerWebInterface::WebRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp)
 {
-	const UTF8Char *reqURI = req->GetRequestURI();
-	if (Text::StrEquals(reqURI, (const UTF8Char*)"/browse") || Text::StrStartsWith(reqURI, (const UTF8Char*)"/browse?"))
+	Text::String *reqURI = req->GetRequestURI();
+	if (reqURI->Equals((const UTF8Char*)"/browse") || reqURI->StartsWith((const UTF8Char*)"/browse?"))
 	{
 		this->BrowseRequest(req, resp);
 		return;
 	}
-	if (Text::StrEquals(reqURI, (const UTF8Char*)"/start"))
+	if (reqURI->Equals((const UTF8Char*)"/start"))
 	{
 		this->iface->PBStart();
 	}
-	else if (Text::StrEquals(reqURI, (const UTF8Char*)"/stop"))
+	else if (reqURI->Equals((const UTF8Char*)"/stop"))
 	{
 		this->iface->PBStop();
 	}
-	else if (Text::StrEquals(reqURI, (const UTF8Char*)"/pause"))
+	else if (reqURI->Equals((const UTF8Char*)"/pause"))
 	{
 		this->iface->PBPause();
 	}
-	else if (Text::StrEquals(reqURI, (const UTF8Char*)"/backward60"))
+	else if (reqURI->Equals((const UTF8Char*)"/backward60"))
 	{
 		this->iface->PBJumpOfst(-60000);
 	}
-	else if (Text::StrEquals(reqURI, (const UTF8Char*)"/backward10"))
+	else if (reqURI->Equals((const UTF8Char*)"/backward10"))
 	{
 		this->iface->PBJumpOfst(-10000);
 	}
-	else if (Text::StrEquals(reqURI, (const UTF8Char*)"/forward10"))
+	else if (reqURI->Equals((const UTF8Char*)"/forward10"))
 	{
 		this->iface->PBJumpOfst(10000);
 	}
-	else if (Text::StrEquals(reqURI, (const UTF8Char*)"/forward60"))
+	else if (reqURI->Equals((const UTF8Char*)"/forward60"))
 	{
 		this->iface->PBJumpOfst(60000);
 	}
-	else if (Text::StrEquals(reqURI, (const UTF8Char*)"/prevchap"))
+	else if (reqURI->Equals((const UTF8Char*)"/prevchap"))
 	{
 		this->iface->PBPrevChapter();
 	}
-	else if (Text::StrEquals(reqURI, (const UTF8Char*)"/nextchap"))
+	else if (reqURI->Equals((const UTF8Char*)"/nextchap"))
 	{
 		this->iface->PBNextChapter();
 	}
-	else if (Text::StrEquals(reqURI, (const UTF8Char*)"/avofstdec"))
+	else if (reqURI->Equals((const UTF8Char*)"/avofstdec"))
 	{
 		this->iface->PBDecAVOfst();
 	}
-	else if (Text::StrEquals(reqURI, (const UTF8Char*)"/avofstinc"))
+	else if (reqURI->Equals((const UTF8Char*)"/avofstinc"))
 	{
 		this->iface->PBIncAVOfst();
 	}

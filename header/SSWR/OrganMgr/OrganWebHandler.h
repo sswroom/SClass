@@ -251,16 +251,16 @@ namespace SSWR
 			Media::DrawEngine *eng;
 			Net::WebServer::MemoryWebSessionManager *sessMgr;
 
-			Data::StringUTF8Map<CategoryInfo*> *cateSMap;
+			Data::FastStringMap<CategoryInfo*> *cateSMap;
 			Data::Int32Map<CategoryInfo*> *cateMap;
 
 			Sync::RWMutex *dataMut;
 			Data::Int32Map<SpeciesInfo*> *spMap;
-			Data::StringUTF8Map<SpeciesInfo*> *spNameMap;
+			Data::FastStringMap<SpeciesInfo*> *spNameMap;
 			Data::Int32Map<GroupInfo*> *groupMap;
 			Data::Int32Map<BookInfo*> *bookMap;
 			Data::Int32Map<WebUserInfo*> *userMap;
-			Data::StringUTF8Map<WebUserInfo*> *userNameMap;
+			Data::FastStringMap<WebUserInfo*> *userNameMap;
 			Data::Int32Map<UserFileInfo*> *userFileMap;
 			Data::UInt32Map<IO::ConfigFile*> *langMap;
 			Data::Int32Map<LocationInfo*> *locMap;

@@ -22,7 +22,7 @@ SSWR::AVIRead::AVIRHTTPLog::AVIRHTTPLog(UOSInt logCnt)
 	while (i-- > 0)
 	{
 		this->entries[i].reqTime = 0;
-		NEW_CLASS(this->entries[i].headerName, Data::ArrayListStrUTF8());
+		NEW_CLASS(this->entries[i].headerName, Data::ArrayListString());
 		NEW_CLASS(this->entries[i].headerVal, Data::ArrayList<const UTF8Char *>());
 		this->entries[i].reqURI = 0;
 		this->entries[i].cliAddr.addrType = Net::AddrType::Unknown;
@@ -36,11 +36,11 @@ SSWR::AVIRead::AVIRHTTPLog::~AVIRHTTPLog()
 	UOSInt i = this->logCnt;
 	while (i-- > 0)
 	{
-		SDEL_TEXT(this->entries[i].reqURI);
+		SDEL_STRING(this->entries[i].reqURI);
 		j = this->entries[i].headerName->GetCount();
 		while (j-- > 0)
 		{
-			Text::StrDelNew(this->entries[i].headerName->GetItem(j));
+			this->entries[i].headerName->GetItem(j)->Release();
 			Text::StrDelNew(this->entries[i].headerVal->GetItem(j));
 		}
 		DEL_CLASS(this->entries[i].headerName);
@@ -64,29 +64,29 @@ void SSWR::AVIRead::AVIRHTTPLog::LogRequest(Net::WebServer::IWebRequest *req)
 	{
 		this->currEnt = 0;
 	}
-	SDEL_TEXT(this->entries[i].reqURI);
-	this->entries[i].reqURI = Text::StrCopyNew(req->GetRequestURI());
+	SDEL_STRING(this->entries[i].reqURI);
+	this->entries[i].reqURI = req->GetRequestURI()->Clone();
 	this->entries[i].cliAddr = *req->GetClientAddr();
 	this->entries[i].cliPort = req->GetClientPort();
 	this->entries[i].reqTime = dt.ToTicks();
 	j = this->entries[i].headerName->GetCount();
 	while (j-- > 0)
 	{
-		Text::StrDelNew(this->entries[i].headerName->GetItem(j));
+		this->entries[i].headerName->GetItem(j)->Release();
 		Text::StrDelNew(this->entries[i].headerVal->GetItem(j));
 	}
 	this->entries[i].headerName->Clear();
 	this->entries[i].headerVal->Clear();
-	Data::ArrayList<const UTF8Char *> names;
+	Data::ArrayList<Text::String *> names;
 	Text::StringBuilderUTF8 sb;
 	req->GetHeaderNames(&names);
 	j = names.GetCount();
 	k = 0;
 	while (k < j)
 	{
-		this->entries[i].headerName->Add(Text::StrCopyNew(names.GetItem(k)));
+		this->entries[i].headerName->Add(names.GetItem(k)->Clone());
 		sb.ClearStr();
-		req->GetHeader(&sb, names.GetItem(k));
+		req->GetHeader(&sb, names.GetItem(k)->v);
 		this->entries[i].headerVal->Add(Text::StrCopyNew(sb.ToString()));
 		k++;
 	}

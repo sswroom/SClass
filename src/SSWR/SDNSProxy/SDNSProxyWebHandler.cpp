@@ -447,8 +447,8 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::BlacklistReq(SSWR::SDNSProx
 	if (req->GetReqMethod() == Net::WebServer::IWebRequest::RequestMethod::HTTP_POST)
 	{
 		req->ParseHTTPForm();
-		const UTF8Char *blackList = req->GetHTTPFormStr((const UTF8Char*)"blacklist");
-		if (blackList && blackList[0] != 0)
+		Text::String *blackList = req->GetHTTPFormStr((const UTF8Char*)"blacklist");
+		if (blackList && blackList->v[0] != 0)
 		{
 			me->proxy->AddBlackList(blackList);
 		}
@@ -646,7 +646,7 @@ SSWR::SDNSProxy::SDNSProxyWebHandler::SDNSProxyWebHandler(Net::DNSProxy *proxy, 
 {
 	this->proxy = proxy;
 	this->core = core;
-	NEW_CLASS(this->reqMap, Data::StringUTF8Map<RequestHandler>());
+	NEW_CLASS(this->reqMap, Data::FastStringMap<RequestHandler>());
 	this->log = log;
 	NEW_CLASS(this->logBuff, IO::CyclicLogBuffer(LOGSIZE));
 

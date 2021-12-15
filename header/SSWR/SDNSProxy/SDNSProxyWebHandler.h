@@ -20,7 +20,7 @@ namespace SSWR
 		private:
 			Net::DNSProxy *proxy;
 			IO::LogTool *log;
-			Data::StringUTF8Map<RequestHandler> *reqMap;
+			Data::FastStringMap<RequestHandler> *reqMap;
 			IO::CyclicLogBuffer *logBuff;
 			SDNSProxyCore *core;
 

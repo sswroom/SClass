@@ -1000,6 +1000,10 @@ UOSInt Net::DNSProxy::GetBlackList(Data::ArrayList<const UTF8Char*> *blackList)
 	return ret;
 }
 
+Bool Net::DNSProxy::AddBlackList(Text::String *blackList)
+{
+	return this->AddBlackList(blackList->v);
+}
 Bool Net::DNSProxy::AddBlackList(const UTF8Char *blackList)
 {
 	Sync::MutexUsage blackListMutUsage(this->blackListMut);

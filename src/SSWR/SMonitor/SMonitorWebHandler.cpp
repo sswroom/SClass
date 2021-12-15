@@ -53,13 +53,13 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::IndexReq(SSWR::SMonitor::SMon
 		if (req->GetReqMethod() == Net::WebServer::IWebRequest::RequestMethod::HTTP_POST)
 		{
 			req->ParseHTTPForm();
-			const UTF8Char *pwd = req->GetHTTPFormStr((const UTF8Char*)"password");
-			const UTF8Char *retype = req->GetHTTPFormStr((const UTF8Char*)"password");
+			Text::String *pwd = req->GetHTTPFormStr((const UTF8Char*)"password");
+			Text::String *retype = req->GetHTTPFormStr((const UTF8Char*)"password");
 			if (pwd && retype)
 			{
-				if (Text::StrCharCnt(pwd) >= 3 && Text::StrEquals(pwd, retype))
+				if (pwd->leng >= 3 && pwd->Equals(retype))
 				{
-					me->core->UserAdd((const UTF8Char*)"admin", pwd, 1);
+					me->core->UserAdd((const UTF8Char*)"admin", pwd->v, 1);
 					return resp->RedirectURL(req, (const UTF8Char*)"index", 0);
 				}
 			}
@@ -104,11 +104,11 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::IndexReq(SSWR::SMonitor::SMon
 			userType = 0;
 		}
 
-		const UTF8Char *reqDevId = req->GetQueryValue((const UTF8Char*)"devid");
-		const UTF8Char *reqOutput = req->GetQueryValue((const UTF8Char*)"output");
+		Text::String *reqDevId = req->GetQueryValue((const UTF8Char*)"devid");
+		Text::String *reqOutput = req->GetQueryValue((const UTF8Char*)"output");
 		if (reqDevId && reqOutput)
 		{
-			Int64 idevId = Text::StrToInt64(reqDevId);
+			Int64 idevId = reqDevId->ToInt64();
 			if (me->core->UserHasDevice(userId, userType, idevId))
 			{
 				Text::StringBuilderUTF8 sb;
@@ -298,14 +298,14 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::LoginReq(SSWR::SMonitor::SMon
 	if (req->GetReqMethod() == Net::WebServer::IWebRequest::RequestMethod::HTTP_POST)
 	{
 		req->ParseHTTPForm();
-		const UTF8Char *csptr = req->GetHTTPFormStr((const UTF8Char*)"action");
-		const UTF8Char *csptr2 = req->GetHTTPFormStr((const UTF8Char*)"user");
-		const UTF8Char *csptr3 = req->GetHTTPFormStr((const UTF8Char*)"pwd");
-		if (csptr && csptr2 && csptr3 && Text::StrEquals(csptr, (const UTF8Char*)"login"))
+		Text::String *s = req->GetHTTPFormStr((const UTF8Char*)"action");
+		Text::String *s2 = req->GetHTTPFormStr((const UTF8Char*)"user");
+		Text::String *s3 = req->GetHTTPFormStr((const UTF8Char*)"pwd");
+		if (s && s2 && s3 && s->Equals((const UTF8Char*)"login"))
 		{
-			if (csptr2[0])
+			if (s2->v[0])
 			{
-				SSWR::SMonitor::ISMonitorCore::LoginInfo *login = me->core->UserLogin(csptr2, csptr3);
+				SSWR::SMonitor::ISMonitorCore::LoginInfo *login = me->core->UserLogin(s2->v, s3->v);
 				if (login != 0)
 				{
 					sess = me->sessMgr->CreateSession(req, resp);
@@ -551,11 +551,11 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceEditReq(SSWR::SMonitor:
 	{
 		return resp->RedirectURL(req, (const UTF8Char*)"index", 0);
 	}
-	const UTF8Char *cid = req->GetQueryValue((const UTF8Char*)"id");
+	Text::String *cid = req->GetQueryValue((const UTF8Char*)"id");
 	Int64 cliId = 0;
 	if (cid)
 	{
-		cliId = Text::StrToInt64(cid);
+		cliId = cid->ToInt64();
 	}
 	if (cliId == 0)
 	{
@@ -571,25 +571,25 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceEditReq(SSWR::SMonitor:
 	if (req->GetReqMethod() == Net::WebServer::IWebRequest::RequestMethod::HTTP_POST)
 	{
 		req->ParseHTTPForm();
-		const UTF8Char *action = req->GetHTTPFormStr((const UTF8Char*)"action");
-		if (action && Text::StrEquals(action, (const UTF8Char*)"modify"))
+		Text::String *action = req->GetHTTPFormStr((const UTF8Char*)"action");
+		if (action && action->Equals((const UTF8Char*)"modify"))
 		{
-			const UTF8Char *devName = req->GetHTTPFormStr((const UTF8Char*)"devName");
+			Text::String *devName = req->GetHTTPFormStr((const UTF8Char*)"devName");
 			Int32 flags = 0;
-			const UTF8Char *csptr;
-			csptr = req->GetHTTPFormStr((const UTF8Char*)"anonymous");
-			if (csptr && csptr[0] == '1')
+			Text::String *s;
+			s = req->GetHTTPFormStr((const UTF8Char*)"anonymous");
+			if (s && s->v[0] == '1')
 			{
 				flags |= 1;
 			}
-			csptr = req->GetHTTPFormStr((const UTF8Char*)"removed");
-			if (csptr && csptr[0] == '1')
+			s = req->GetHTTPFormStr((const UTF8Char*)"removed");
+			if (s && s->v[0] == '1')
 			{
 				flags |= 2;
 			}
 			if (devName)
 			{
-				if (me->core->DeviceModify(cliId, devName, flags))
+				if (me->core->DeviceModify(cliId, devName->v, flags))
 				{
 					sess->EndUse();
 					return resp->RedirectURL(req, (const UTF8Char*)"device", 0);
@@ -675,11 +675,11 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingReq(SSWR::SMonit
 	{
 		return resp->RedirectURL(req, (const UTF8Char*)"index", 0);
 	}
-	const UTF8Char *cid = req->GetQueryValue((const UTF8Char*)"id");
+	Text::String *cid = req->GetQueryValue((const UTF8Char*)"id");
 	Int64 cliId = 0;
 	if (cid)
 	{
-		cliId = Text::StrToInt64(cid);
+		cliId = cid->ToInt64();
 	}
 	if (cliId == 0)
 	{
@@ -696,11 +696,11 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingReq(SSWR::SMonit
 	if (req->GetReqMethod() == Net::WebServer::IWebRequest::RequestMethod::HTTP_POST)
 	{
 		req->ParseHTTPForm();
-		const UTF8Char *action = req->GetHTTPFormStr((const UTF8Char *)"action");
-		if (action && Text::StrEquals(action, (const UTF8Char *)"reading"))
+		Text::String *action = req->GetHTTPFormStr((const UTF8Char *)"action");
+		if (action && action->Equals((const UTF8Char *)"reading"))
 		{
 			Text::StringBuilderUTF8 sb;
-			const UTF8Char *csptr;
+			Text::String *s;
 			i = 0;
 			j = dev->nReading;
 			while (i < j)
@@ -710,10 +710,10 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingReq(SSWR::SMonit
 					sb.Append((const UTF8Char*)"|");
 				}
 				Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char *)"readingName"), i);
-				csptr = req->GetHTTPFormStr(sbuff);
-				if (csptr)
+				s = req->GetHTTPFormStr(sbuff);
+				if (s)
 				{
-					sb.Append(csptr);
+					sb.Append(s);
 				}
 				i++;
 			}
@@ -818,11 +818,11 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceDigitalsReq(SSWR::SMoni
 	{
 		return resp->RedirectURL(req, (const UTF8Char*)"index", 0);
 	}
-	const UTF8Char *cid = req->GetQueryValue((const UTF8Char*)"id");
+	Text::String *cid = req->GetQueryValue((const UTF8Char*)"id");
 	Int64 cliId = 0;
 	if (cid)
 	{
-		cliId = Text::StrToInt64(cid);
+		cliId = cid->ToInt64();
 	}
 	if (cliId == 0)
 	{
@@ -839,11 +839,11 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceDigitalsReq(SSWR::SMoni
 	if (req->GetReqMethod() == Net::WebServer::IWebRequest::RequestMethod::HTTP_POST)
 	{
 		req->ParseHTTPForm();
-		const UTF8Char *action = req->GetHTTPFormStr((const UTF8Char *)"action");
-		if (action && Text::StrEquals(action, (const UTF8Char *)"digitals"))
+		Text::String *action = req->GetHTTPFormStr((const UTF8Char *)"action");
+		if (action && action->Equals((const UTF8Char *)"digitals"))
 		{
 			Text::StringBuilderUTF8 sb;
-			const UTF8Char *csptr;
+			Text::String *s;
 			i = 0;
 			j = dev->ndigital;
 			while (i < j)
@@ -853,10 +853,10 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceDigitalsReq(SSWR::SMoni
 					sb.Append((const UTF8Char*)"|");
 				}
 				Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char *)"digitalName"), i);
-				csptr = req->GetHTTPFormStr(sbuff);
-				if (csptr)
+				s = req->GetHTTPFormStr(sbuff);
+				if (s)
 				{
-					sb.Append(csptr);
+					sb.Append(s);
 				}
 				i++;
 			}
@@ -931,7 +931,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceDigitalsReq(SSWR::SMoni
 
 Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(SSWR::SMonitor::SMonitorWebHandler *me, Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp)
 {
-	const UTF8Char *csptr;
+	Text::String *s;
 	Int64 cliId = 0;
 	Int32 userId = 0;
 	Int32 userType = 0;
@@ -939,42 +939,42 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(SSWR::SMo
 	Int32 readingId = 0;
 	Int32 readingType = 0;
 	Bool valid = true;
-	csptr = req->GetQueryValue((const UTF8Char*)"id");
-	if (csptr == 0)
+	s = req->GetQueryValue((const UTF8Char*)"id");
+	if (s == 0)
 	{
 		valid = false;
 	}
-	else if (!Text::StrToInt64(csptr, &cliId))
-	{
-		valid = false;
-	}
-
-	csptr = req->GetQueryValue((const UTF8Char*)"sensor");
-	if (csptr == 0)
-	{
-		valid = false;
-	}
-	else if (!Text::StrToInt32(csptr, &sensorId))
+	else if (!s->ToInt64(&cliId))
 	{
 		valid = false;
 	}
 
-	csptr = req->GetQueryValue((const UTF8Char*)"reading");
-	if (csptr == 0)
+	s = req->GetQueryValue((const UTF8Char*)"sensor");
+	if (s == 0)
 	{
 		valid = false;
 	}
-	else if (!Text::StrToInt32(csptr, &readingId))
+	else if (!s->ToInt32(&sensorId))
 	{
 		valid = false;
 	}
 
-	csptr = req->GetQueryValue((const UTF8Char*)"readingType");
-	if (csptr == 0)
+	s = req->GetQueryValue((const UTF8Char*)"reading");
+	if (s == 0)
 	{
 		valid = false;
 	}
-	else if (!Text::StrToInt32(csptr, &readingType))
+	else if (!s->ToInt32(&readingId))
+	{
+		valid = false;
+	}
+
+	s = req->GetQueryValue((const UTF8Char*)"readingType");
+	if (s == 0)
+	{
+		valid = false;
+	}
+	else if (!s->ToInt32(&readingType))
 	{
 		valid = false;
 	}
@@ -1590,7 +1590,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataReq(SSWR::SMoni
 
 Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataImgReq(SSWR::SMonitor::SMonitorWebHandler *me, Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp)
 {
-	const UTF8Char *csptr;
+	Text::String *s;
 	Int64 cliId = 0;
 	Int64 startTime = 0;
 	Int32 userId = 0;
@@ -1598,42 +1598,42 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataImgReq(SSWR::SM
 	Int32 sensorId = 0;
 	Int32 readingId = 0;
 	Bool valid = true;
-	csptr = req->GetQueryValue((const UTF8Char*)"id");
-	if (csptr == 0)
+	s = req->GetQueryValue((const UTF8Char*)"id");
+	if (s == 0)
 	{
 		valid = false;
 	}
-	else if (!Text::StrToInt64(csptr, &cliId))
-	{
-		valid = false;
-	}
-
-	csptr = req->GetQueryValue((const UTF8Char*)"sensor");
-	if (csptr == 0)
-	{
-		valid = false;
-	}
-	else if (!Text::StrToInt32(csptr, &sensorId))
+	else if (!s->ToInt64(&cliId))
 	{
 		valid = false;
 	}
 
-	csptr = req->GetQueryValue((const UTF8Char*)"reading");
-	if (csptr == 0)
+	s = req->GetQueryValue((const UTF8Char*)"sensor");
+	if (s == 0)
 	{
 		valid = false;
 	}
-	else if (!Text::StrToInt32(csptr, &readingId))
+	else if (!s->ToInt32(&sensorId))
 	{
 		valid = false;
 	}
 
-	csptr = req->GetQueryValue((const UTF8Char*)"starttime");
-	if (csptr == 0)
+	s = req->GetQueryValue((const UTF8Char*)"reading");
+	if (s == 0)
 	{
 		valid = false;
 	}
-	else if (!Text::StrToInt64(csptr, &startTime))
+	else if (!s->ToInt32(&readingId))
+	{
+		valid = false;
+	}
+
+	s = req->GetQueryValue((const UTF8Char*)"starttime");
+	if (s == 0)
+	{
+		valid = false;
+	}
+	else if (!s->ToInt64(&startTime))
 	{
 		valid = false;
 	}
@@ -1828,30 +1828,30 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserPasswordReq(SSWR::SMonito
 	if (req->GetReqMethod() == Net::WebServer::IWebRequest::RequestMethod::HTTP_POST)
 	{
 		req->ParseHTTPForm();
-		const UTF8Char *pwd = req->GetHTTPFormStr((const UTF8Char*)"password");
-		const UTF8Char *retype = req->GetHTTPFormStr((const UTF8Char*)"retype");
-		if (pwd == 0 || pwd[0] == 0)
+		Text::String *pwd = req->GetHTTPFormStr((const UTF8Char*)"password");
+		Text::String *retype = req->GetHTTPFormStr((const UTF8Char*)"retype");
+		if (pwd == 0 || pwd->v[0] == 0)
 		{
 			msg = (const UTF8Char*)"Password is empty";
 		}
-		else if (retype == 0 || retype[0] == 0)
+		else if (retype == 0 || retype->v[0] == 0)
 		{
 			msg = (const UTF8Char*)"Retype is empty";
 		}
-		else if (!Text::StrEquals(pwd, retype))
+		else if (!pwd->Equals(retype))
 		{
 			msg = (const UTF8Char*)"Password and retype do not match";
 		}
 		else
 		{
-			UOSInt len = Text::StrCharCnt(pwd);
+			UOSInt len = pwd->leng;
 			if (len < 3)
 			{
 				msg = (const UTF8Char*)"Password is too short";
 			}
 			else
 			{
-				if (me->core->UserSetPassword(sess->GetValueInt32("UserId"), pwd))
+				if (me->core->UserSetPassword(sess->GetValueInt32("UserId"), pwd->v))
 				{
 					msg = (const UTF8Char*)"Password is changed successfully";
 				}
@@ -1988,16 +1988,16 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserAddReq(SSWR::SMonitor::SM
 	if (req->GetReqMethod() == Net::WebServer::IWebRequest::RequestMethod::HTTP_POST)
 	{
 		req->ParseHTTPForm();
-		const UTF8Char *action;
-		const UTF8Char *userName;
+		Text::String *action;
+		Text::String *userName;
 		action = req->GetHTTPFormStr((const UTF8Char*)"action");
 		userName = req->GetHTTPFormStr((const UTF8Char*)"username");
-		if (action && userName && Text::StrEquals(action, (const UTF8Char*)"adduser"))
+		if (action && userName && action->Equals((const UTF8Char*)"adduser"))
 		{
-			UOSInt len = Text::StrCharCnt(userName);
+			UOSInt len = userName->leng;
 			if (len >= 3 && len < 128)
 			{
-				if (me->core->UserAdd(userName, userName, 2))
+				if (me->core->UserAdd(userName->v, userName->v, 2))
 				{
 					sess->EndUse();
 					return resp->RedirectURL(req, (const UTF8Char*)"users", 0);
@@ -2070,11 +2070,11 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserAssignReq(SSWR::SMonitor:
 	if (req->GetReqMethod() == Net::WebServer::IWebRequest::RequestMethod::HTTP_POST)
 	{
 		req->ParseHTTPForm();
-		const UTF8Char *action;
-		const UTF8Char *devicestr;
+		Text::String *action;
+		Text::String *devicestr;
 		action = req->GetHTTPFormStr((const UTF8Char*)"action");
 		devicestr = req->GetHTTPFormStr((const UTF8Char*)"device");
-		if (action && devicestr && Text::StrEquals(action, (const UTF8Char*)"userassign"))
+		if (action && devicestr && action->Equals((const UTF8Char*)"userassign"))
 		{
 			Data::ArrayListInt64 devIds;
 			UTF8Char *sarr[2];

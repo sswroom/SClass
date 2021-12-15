@@ -28,8 +28,8 @@ namespace SSWR
 				Int64 reqTime;
 				Net::SocketUtil::AddressInfo cliAddr;
 				UInt16 cliPort;
-				const UTF8Char *reqURI;
-				Data::ArrayListStrUTF8 *headerName;
+				Text::String *reqURI;
+				Data::ArrayListString *headerName;
 				Data::ArrayList<const UTF8Char *> *headerVal;
 			} LogEntry;
 		private:

@@ -1015,7 +1015,7 @@ void Net::HTTPMyClient::EndRequest(Double *timeReq, Double *timeResp)
 			Char buff[256];
 			Char *ptrs[3];
 			Char *ptr;
-			UTF8Char *sptr;
+			Text::String *s;
 			UOSInt i;
 			i = Text::StrIndexOf((Char*)this->dataBuff, "\r\n");
 			MemCopyNO(buff, this->dataBuff, i);
@@ -1049,39 +1049,37 @@ void Net::HTTPMyClient::EndRequest(Double *timeReq, Double *timeResp)
 					}
 					if (ptr[i - 1] == '\r')
 					{
-						MemCopyNO(sptr = MemAlloc(UTF8Char, i), ptr, i - 1);
-						sptr[i - 1] = 0;
+						s = Text::String::New((const UTF8Char*)ptr, i - 1);
 					}
 					else
 					{
-						MemCopyNO(sptr = MemAlloc(UTF8Char, i + 1), ptr, i);
-						sptr[i] = 0;
+						s = Text::String::New((const UTF8Char*)ptr, i);
 					}
 #ifdef SHOWDEBUG
-					printf("Read Header: %s\r\n", sptr);
+					printf("Read Header: %s\r\n", s->V#pragma endregion);
 #endif
-					this->headers->Add(sptr);
+					this->headers->Add(s);
 
-					if (Text::StrStartsWithICase(sptr, (const UTF8Char*)"Content-Length: "))
+					if (s->StartsWithICase((const UTF8Char*)"Content-Length: "))
 					{
-						Text::StrTrim(&sptr[16]);
-						this->contLeng = Text::StrToUInt64(&sptr[16]);
+						s->leng = (UOSInt)(Text::StrTrim(&s->v[16]) - s->v);
+						this->contLeng = Text::StrToUInt64(&s->v[16]);
 					}
-					else if (Text::StrStartsWithICase(sptr, (const UTF8Char*)"Transfer-Encoding: "))
+					else if (s->StartsWithICase((const UTF8Char*)"Transfer-Encoding: "))
 					{
-						if (Text::StrStartsWith(&sptr[19], (const UTF8Char*)"chunked"))
+						if (Text::StrStartsWith(&s->v[19], (const UTF8Char*)"chunked"))
 						{
 							this->contEnc = 1;
 							this->chunkSizeLeft = 0;
 						}
 					}
-					else if (Text::StrStartsWithICase(sptr, (const UTF8Char*)"Content-Type: text/event-stream"))
+					else if (s->StartsWithICase((const UTF8Char*)"Content-Type: text/event-stream"))
 					{
 						eventStream = true;
 					}
-					else if (Text::StrStartsWithICase(sptr, (const UTF8Char*)"Keep-Alive: timeout="))
+					else if (s->StartsWithICase((const UTF8Char*)"Keep-Alive: timeout="))
 					{
-						keepAliveTO = Text::StrToUInt32(&sptr[20]);
+						keepAliveTO = Text::StrToUInt32(&s->v[20]);
 					}
 
 					ptr = &ptr[i + 1];

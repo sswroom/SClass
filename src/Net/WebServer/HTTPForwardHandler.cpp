@@ -48,8 +48,8 @@ Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(Net::WebServer::IWebRequ
 		sb.RemoveChars(1);
 	}
 	sb.Append(subReq);
-	const UTF8Char *uri = req->GetRequestURI();
-	UOSInt i = Text::StrIndexOf(uri, '?');
+	Text::String *uri = req->GetRequestURI();
+	UOSInt i = uri->IndexOf('?');
 	UOSInt j;
 	if (i >= 0)
 	{
@@ -76,8 +76,8 @@ Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(Net::WebServer::IWebRequ
 		resp->ResponseError(req, Net::WebStatus::SC_NOT_FOUND);
 		return true;
 	}
-	const UTF8Char *hdr;
-	Data::ArrayList<const UTF8Char*> hdrNames;
+	Text::String *hdr;
+	Data::ArrayList<Text::String*> hdrNames;
 	req->GetHeaderNames(&hdrNames);
 
 	const UTF8Char *svrHost = 0;
@@ -93,10 +93,10 @@ Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(Net::WebServer::IWebRequ
 	while (i < j)
 	{
 		hdr = hdrNames.GetItem(i);
-		if (Text::StrEqualsICase(hdr, (const UTF8Char*)"Host"))
+		if (hdr->EqualsICase((const UTF8Char*)"Host"))
 		{
 			sbHeader.ClearStr();
-			if (req->GetHeader(&sbHeader, hdr))
+			if (req->GetHeader(&sbHeader, hdr->v))
 			{
 				UOSInt k = sbHeader.IndexOf(':');
 				svrHost = Text::StrCopyNew(sbHeader.ToString());
@@ -106,10 +106,10 @@ Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(Net::WebServer::IWebRequ
 				}
 			}
 		}
-		else if (Text::StrEqualsICase(hdr, (const UTF8Char*)"X-Forwarded-For"))
+		else if (hdr->EqualsICase((const UTF8Char*)"X-Forwarded-For"))
 		{
 			sbHeader.ClearStr();
-			if (req->GetHeader(&sbHeader, hdr))
+			if (req->GetHeader(&sbHeader, hdr->v))
 			{
 				fwdFor = Text::StrCopyNew(sbHeader.ToString());
 			}
@@ -117,9 +117,9 @@ Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(Net::WebServer::IWebRequ
 		else
 		{
 			sbHeader.ClearStr();
-			if (req->GetHeader(&sbHeader, hdr))
+			if (req->GetHeader(&sbHeader, hdr->v))
 			{
-				cli->AddHeader(hdr, sbHeader.ToString());
+				cli->AddHeader(hdr->v, sbHeader.ToString());
 			}
 		}
 		i++;

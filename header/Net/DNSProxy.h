@@ -120,6 +120,7 @@ namespace Net
 		Bool IsDisableV6();
 		void SetDisableV6(Bool disableV6);
 		UOSInt GetBlackList(Data::ArrayList<const UTF8Char*> *blackList);
+		Bool AddBlackList(Text::String *blackList);
 		Bool AddBlackList(const UTF8Char *blackList);
 		void HandleDNSRequest(DNSProxyRequest hdlr, void *userObj);
 		void SetCustomAnswer(const UTF8Char *name, const Net::SocketUtil::AddressInfo *addr);

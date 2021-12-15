@@ -27,7 +27,7 @@ Net::HTTPClient::HTTPClient(Net::SocketFactory *sockf, Bool kaConn) : IO::Stream
 	this->formSb = 0;
 	this->kaConn = kaConn;
 	this->svrAddr.addrType = Net::AddrType::Unknown;
-	NEW_CLASS(this->headers, Data::ArrayList<UTF8Char*>());
+	NEW_CLASS(this->headers, Data::ArrayList<Text::String*>());
 	NEW_CLASS(this->clk, Manage::HiResClock());
 }
 
@@ -35,11 +35,7 @@ Net::HTTPClient::~HTTPClient()
 {
 	if (this->headers)
 	{
-		UOSInt i = this->headers->GetCount();
-		while (i-- > 0)
-		{
-			MemFree(this->headers->RemoveAt(i));
-		}
+		LIST_FREE_STRING(this->headers);
 		DEL_CLASS(this->headers);
 	}
 	SDEL_CLASS(this->formSb);
@@ -104,23 +100,23 @@ UOSInt Net::HTTPClient::GetRespHeaderCnt()
 
 UTF8Char *Net::HTTPClient::GetRespHeader(UOSInt index, UTF8Char *buff)
 {
-	return Text::StrConcat(buff, this->headers->GetItem(index));
+	return this->headers->GetItem(index)->ConcatTo(buff);
 }
 
 UTF8Char *Net::HTTPClient::GetRespHeader(const UTF8Char *name, UTF8Char *valueBuff)
 {
 	UTF8Char buff[256];
 	UTF8Char *s2;
-	UTF8Char *s;
+	Text::String *s;
 	UOSInt i;
 	s2 = Text::StrConcat(Text::StrConcat(buff, name), (const UTF8Char*)": ");
 	i = this->headers->GetCount();
 	while (i-- > 0)
 	{
-		s = (UTF8Char*)this->headers->GetItem(i);
-		if (Text::StrStartsWith(s, buff))
+		s = this->headers->GetItem(i);
+		if (s->StartsWith(buff))
 		{
-			return Text::StrConcat(valueBuff, &s[s2 - buff]);
+			return Text::StrConcat(valueBuff, &s->v[s2 - buff]);
 		}
 	}
 	return 0;
@@ -130,23 +126,23 @@ Bool Net::HTTPClient::GetRespHeader(const UTF8Char *name, Text::StringBuilderUTF
 {
 	UTF8Char buff[256];
 	UTF8Char *s2;
-	UTF8Char *s;
+	Text::String *s;
 	UOSInt i;
 	s2 = Text::StrConcat(Text::StrConcat(buff, name), (const UTF8Char*)": ");
 	i = this->headers->GetCount();
 	while (i-- > 0)
 	{
-		s = (UTF8Char*)this->headers->GetItem(i);
-		if (Text::StrStartsWithICase(s, buff))
+		s = this->headers->GetItem(i);
+		if (s->StartsWithICase(buff))
 		{
-			sb->Append(&s[s2-buff]);
+			sb->Append(&s->v[s2-buff]);
 			return true;
 		}
 	}
 	return false;
 }
 
-const UTF8Char *Net::HTTPClient::GetRespHeader(UOSInt index)
+Text::String *Net::HTTPClient::GetRespHeader(UOSInt index)
 {
 	return this->headers->GetItem(index);
 }

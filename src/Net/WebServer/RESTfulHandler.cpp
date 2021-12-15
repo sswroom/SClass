@@ -372,7 +372,7 @@ DB::PageRequest *Net::WebServer::RESTfulHandler::ParsePageReq(Net::WebServer::IW
 	}
 	DB::PageRequest *page;
 	NEW_CLASS(page, DB::PageRequest(pageNum, pageSize));
-	const UTF8Char *sort = req->GetQueryValue((const UTF8Char *)"sort");
+	Text::String *sort = req->GetQueryValue((const UTF8Char *)"sort");
 	if (sort)
 	{
 		Text::StringBuilderUTF8 sb;

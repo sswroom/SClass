@@ -19,7 +19,7 @@ struct Net::HTTPOSClient::ClassData
 {
 	CURL *curl;
 	struct curl_slist *headers;
-	Data::ArrayList<UTF8Char*> *respHeaders;
+	Data::ArrayList<Text::String*> *respHeaders;
 	const UTF8Char *userAgent;
 	IO::MemoryStream *respData;
 	UInt64 contLen;
@@ -32,25 +32,26 @@ size_t HTTPOSClient_HeaderFunc(char *buffer, size_t size, size_t nitems, void *u
 	{
 		return size * nitems;
 	}
-	UTF8Char *hdr = MemAlloc(UTF8Char, size * nitems + 1);
-	MemCopyNO(hdr, buffer, size * nitems);
-	hdr[size * nitems] = 0;
+	Text::String *hdr = Text::String::New(size * nitems);
+	MemCopyNO(hdr->v, buffer, size * nitems);
+	hdr->v[size * nitems] = 0;
 	UOSInt i = size * nitems;
 	while (i > 0)
 	{
-		if (hdr[i - 1] == 13 || hdr[i - 1] == 10)
+		if (hdr->v[i - 1] == 13 || hdr->v[i - 1] == 10)
 		{
 			i--;
-			hdr[i] = 0;
+			hdr->v[i] = 0;
+			hdr->leng = i;
 		}
 		else
 		{
 			break;
 		}
 	}
-	if (Text::StrStartsWithICase(hdr, (const UTF8Char*)"Content-Length: "))
+	if (hdr->StartsWithICase((const UTF8Char*)"Content-Length: "))
 	{
-		data->contLen = Text::StrToUInt64(&hdr[16]);
+		data->contLen = Text::StrToUInt64(&hdr->v[16]);
 	}
 	data->respHeaders->Add(hdr);
 	return size * nitems;
@@ -345,7 +346,7 @@ Bool Net::HTTPOSClient::Connect(const UTF8Char *url, const Char *method, Double 
 		i = this->headers->GetCount();
 		while (i-- > 0)
 		{
-			MemFree(this->headers->RemoveAt(i));
+			this->headers->RemoveAt(i)->Release();
 		}
 		this->headers->Clear();
 	}

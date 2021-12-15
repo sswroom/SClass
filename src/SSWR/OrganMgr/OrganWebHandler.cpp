@@ -2475,10 +2475,10 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroup(Net::WebServer::IWebReq
 		if (req->GetReqMethod() == Net::WebServer::IWebRequest::RequestMethod::HTTP_POST && env.user != 0 && env.user->userType == 0)
 		{
 			req->ParseHTTPForm();
-			const UTF8Char *action = req->GetHTTPFormStr((const UTF8Char*)"action");
-			const UTF8Char *csptr;
+			Text::String *action = req->GetHTTPFormStr((const UTF8Char*)"action");
+			Text::String *s;
 			Int32 itemId;
-			if (action && Text::StrEquals(action, (const UTF8Char*)"pickall"))
+			if (action && action->Equals((const UTF8Char*)"pickall"))
 			{
 				if (group->groups->GetCount() > 0)
 				{
@@ -2507,7 +2507,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroup(Net::WebServer::IWebReq
 					}
 				}
 			}
-			else if (action && Text::StrEquals(action, (const UTF8Char*)"picksel"))
+			else if (action && action->Equals((const UTF8Char*)"picksel"))
 			{
 				if (group->groups->GetCount() > 0)
 				{
@@ -2522,8 +2522,8 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroup(Net::WebServer::IWebReq
 						sb.ClearStr();
 						sb.Append((const UTF8Char*)"group");
 						sb.AppendI32(itemId);
-						csptr = req->GetHTTPFormStr(sb.ToString());
-						if (csptr && csptr[0] == '1')
+						s = req->GetHTTPFormStr(sb.ToString());
+						if (s && s->v[0] == '1')
 						{
 							env.pickObjs->SortedInsert(itemId);
 						}
@@ -2543,8 +2543,8 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroup(Net::WebServer::IWebReq
 						sb.ClearStr();
 						sb.Append((const UTF8Char*)"species");
 						sb.AppendI32(itemId);
-						csptr = req->GetHTTPFormStr(sb.ToString());
-						if (csptr && csptr[0] == '1')
+						s = req->GetHTTPFormStr(sb.ToString());
+						if (s && s->v[0] == '1')
 						{
 							env.pickObjs->SortedInsert(itemId);
 						}
@@ -2552,7 +2552,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroup(Net::WebServer::IWebReq
 					}
 				}
 			}
-			else if (action && Text::StrEquals(action, (const UTF8Char*)"place"))
+			else if (action && action->Equals((const UTF8Char*)"place"))
 			{
 				if (env.pickObjType == POT_GROUP && group->species->GetCount() == 0)
 				{
@@ -2564,8 +2564,8 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroup(Net::WebServer::IWebReq
 						sb.ClearStr();
 						sb.Append((const UTF8Char*)"group");
 						sb.AppendI32(itemId);
-						csptr = req->GetHTTPFormStr(sb.ToString());
-						if (csptr && csptr[0] == '1')
+						s = req->GetHTTPFormStr(sb.ToString());
+						if (s && s->v[0] == '1')
 						{
 							if (me->GroupMove(itemId, id, cateId))
 							{
@@ -2591,8 +2591,8 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroup(Net::WebServer::IWebReq
 						sb.ClearStr();
 						sb.Append((const UTF8Char*)"species");
 						sb.AppendI32(itemId);
-						csptr = req->GetHTTPFormStr(sb.ToString());
-						if (csptr && csptr[0] == '1')
+						s = req->GetHTTPFormStr(sb.ToString());
+						if (s && s->v[0] == '1')
 						{
 							if (me->SpeciesMove(itemId, id, cateId))
 							{
@@ -2609,7 +2609,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroup(Net::WebServer::IWebReq
 					}
 				}
 			}
-			else if (action && Text::StrEquals(action, (const UTF8Char*)"placeall"))
+			else if (action && action->Equals((const UTF8Char*)"placeall"))
 			{
 				if (env.pickObjType == POT_GROUP && group->species->GetCount() == 0)
 				{
@@ -2652,7 +2652,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroup(Net::WebServer::IWebReq
 					}
 				}
 			}
-			else if (action && Text::StrEquals(action, (const UTF8Char*)"setphoto"))
+			else if (action && action->Equals((const UTF8Char*)"setphoto"))
 			{
 				me->GroupSetPhotoGroup(group->parentId, group->id);
 			}
@@ -2899,7 +2899,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroupMod(Net::WebServer::IWeb
 		SSWR::OrganMgr::OrganWebHandler::CategoryInfo *cate;
 		Text::StringBuilderUTF8 sb;
 		Text::String *s;
-		const UTF8Char *txt;
+		Text::String *txt;
 		IO::ConfigFile *lang = me->LangGet(req);
 
 		me->dataMut->LockRead();
@@ -2919,9 +2919,9 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroupMod(Net::WebServer::IWeb
 		}
 
 		Text::StringBuilderUTF8 msg;
-		const UTF8Char *ename = 0;
-		const UTF8Char *cname = 0;
-		const UTF8Char *descr = 0;
+		Text::String *ename = 0;
+		Text::String *cname = 0;
+		Text::String *descr = 0;
 		GroupFlags groupFlags = GF_NONE;
 		Int32 groupTypeId = 0;
 		SSWR::OrganMgr::OrganWebHandler::GroupInfo *modGroup = 0;
@@ -2930,27 +2930,27 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroupMod(Net::WebServer::IWeb
 			modGroup = me->groupMap->Get(groupId);
 			if (modGroup)
 			{
-				cname = modGroup->chiName->v;
-				ename = modGroup->engName->v;
-				descr = modGroup->descript->v;
+				cname = modGroup->chiName;
+				ename = modGroup->engName;
+				descr = modGroup->descript;
 				groupTypeId = modGroup->groupType;
 			}
 		}
 		if (req->GetReqMethod() == Net::WebServer::IWebRequest::RequestMethod::HTTP_POST)
 		{
 			req->ParseHTTPForm();
-			const UTF8Char *task = req->GetHTTPFormStr((const UTF8Char*)"task");
+			Text::String *task = req->GetHTTPFormStr((const UTF8Char*)"task");
 			cname = req->GetHTTPFormStr((const UTF8Char*)"cname");
 			ename = req->GetHTTPFormStr((const UTF8Char*)"ename");
 			descr = req->GetHTTPFormStr((const UTF8Char*)"descr");
 			txt = req->GetHTTPFormStr((const UTF8Char*)"adminOnly");
-			if (txt && txt[0] == '1')
+			if (txt && txt->v[0] == '1')
 			{
 				groupFlags = (GroupFlags)(groupFlags | GF_ADMIN_ONLY);
 			}
-			if (task != 0 && cname != 0 && req->GetHTTPFormInt32((const UTF8Char*)"groupType", &groupTypeId) && ename != 0 && descr != 0 && ename[0] != 0 && cname[0] != 0)
+			if (task != 0 && cname != 0 && req->GetHTTPFormInt32((const UTF8Char*)"groupType", &groupTypeId) && ename != 0 && descr != 0 && ename->v[0] != 0 && cname->v[0] != 0)
 			{
-				if (Text::StrEquals(task, (const UTF8Char*)"new"))
+				if (task->Equals((const UTF8Char*)"new"))
 				{
 					sb.ClearStr();
 					Bool found = false;
@@ -2971,7 +2971,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroupMod(Net::WebServer::IWeb
 					{
 						me->dataMut->UnlockRead();
 						me->dataMut->LockWrite();
-						Int32 newGroupId = me->GroupAdd(ename, cname, id, descr, groupTypeId, cateId, groupFlags);
+						Int32 newGroupId = me->GroupAdd(ename->v, cname->v, id, descr->v, groupTypeId, cateId, groupFlags);
 						if (newGroupId)
 						{
 							me->dataMut->UnlockWrite();
@@ -2992,7 +2992,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroupMod(Net::WebServer::IWeb
 						me->dataMut->LockRead();
 					}
 				}
-				else if (Text::StrEquals(task, (const UTF8Char*)"modify") && modGroup != 0 && modGroup->cateId == cateId)
+				else if (task->Equals((const UTF8Char*)"modify") && modGroup != 0 && modGroup->cateId == cateId)
 				{
 					Bool found = false;
 					i = group->groups->GetCount();
@@ -3012,7 +3012,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroupMod(Net::WebServer::IWeb
 					{
 						me->dataMut->UnlockRead();
 						me->dataMut->LockWrite();
-						if (me->GroupModify(modGroup->id, ename, cname, descr, groupTypeId, groupFlags))
+						if (me->GroupModify(modGroup->id, STR_PTR(ename), STR_PTR(cname), STR_PTR(descr), groupTypeId, groupFlags))
 						{
 							me->dataMut->UnlockWrite();
 							sb.ClearStr();
@@ -3032,7 +3032,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroupMod(Net::WebServer::IWeb
 						me->dataMut->LockRead();
 					}
 				}
-				else if (Text::StrEquals(task, (const UTF8Char*)"delete") && modGroup != 0 && modGroup->groups->GetCount() == 0 && modGroup->species->GetCount() == 0)
+				else if (task->Equals((const UTF8Char*)"delete") && modGroup != 0 && modGroup->groups->GetCount() == 0 && modGroup->species->GetCount() == 0)
 				{
 					Int32 id = modGroup->id;
 					Int32 cateId = modGroup->cateId;
@@ -3118,7 +3118,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroupMod(Net::WebServer::IWeb
 		if (ename)
 		{
 			writer->Write((const UTF8Char*)" value=");
-			s = Text::XML::ToNewAttrText(ename);
+			s = Text::XML::ToNewAttrText(ename->v);
 			writer->Write(s->v, s->leng);
 			s->Release();
 		}
@@ -3127,7 +3127,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroupMod(Net::WebServer::IWeb
 		if (cname)
 		{
 			writer->Write((const UTF8Char*)" value=");
-			s = Text::XML::ToNewAttrText(cname);
+			s = Text::XML::ToNewAttrText(cname->v);
 			writer->Write(s->v, s->leng);
 			s->Release();
 		}
@@ -3141,7 +3141,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroupMod(Net::WebServer::IWeb
 		writer->Write((const UTF8Char*)"<tr><td>Description</td><td><textarea name=\"descr\" rows=\"4\" cols=\"40\">");
 		if (descr)
 		{
-			s = Text::XML::ToNewHTMLText(descr);
+			s = Text::XML::ToNewHTMLText(descr->v);
 			writer->Write(s->v, s->leng);
 			s->Release();
 		}
@@ -3244,10 +3244,10 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpecies(Net::WebServer::IWebR
 		if (req->GetReqMethod() == Net::WebServer::IWebRequest::RequestMethod::HTTP_POST && env.user != 0 && env.user->userType == 0)
 		{
 			req->ParseHTTPForm();
-			const UTF8Char *action = req->GetHTTPFormStr((const UTF8Char*)"action");
-			const UTF8Char *csptr;
+			Text::String *action = req->GetHTTPFormStr((const UTF8Char*)"action");
+			Text::String *s;
 			Int32 userfileId;
-			if (action && Text::StrEquals(action, (const UTF8Char*)"pickall"))
+			if (action && action->Equals((const UTF8Char*)"pickall"))
 			{
 				env.pickObjType = POT_USERFILE;
 				webSess.GetSess()->SetValueInt32("PickObjType", env.pickObjType);
@@ -3260,7 +3260,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpecies(Net::WebServer::IWebR
 					i++;
 				}
 			}
-			else if (action && Text::StrEquals(action, (const UTF8Char*)"picksel"))
+			else if (action && action->Equals((const UTF8Char*)"picksel"))
 			{
 				env.pickObjType = POT_USERFILE;
 				webSess.GetSess()->SetValueInt32("PickObjType", env.pickObjType);
@@ -3273,15 +3273,15 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpecies(Net::WebServer::IWebR
 					sb.ClearStr();
 					sb.Append((const UTF8Char*)"userfile");
 					sb.AppendI32(userfileId);
-					csptr = req->GetHTTPFormStr(sb.ToString());
-					if (csptr && csptr[0] == '1')
+					s = req->GetHTTPFormStr(sb.ToString());
+					if (s && s->v[0] == '1')
 					{
 						env.pickObjs->SortedInsert(userfileId);
 					}
 					i++;
 				}
 			}
-			else if (action && Text::StrEquals(action, (const UTF8Char*)"place"))
+			else if (action && action->Equals((const UTF8Char*)"place"))
 			{
 				if (env.pickObjType == POT_USERFILE)
 				{
@@ -3293,8 +3293,8 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpecies(Net::WebServer::IWebR
 						sb.ClearStr();
 						sb.Append((const UTF8Char*)"userfile");
 						sb.AppendI32(userfileId);
-						csptr = req->GetHTTPFormStr(sb.ToString());
-						if (csptr && csptr[0] == '1')
+						s = req->GetHTTPFormStr(sb.ToString());
+						if (s && s->v[0] == '1')
 						{
 							if (me->UserfileMove(userfileId, id, cateId))
 							{
@@ -3311,7 +3311,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpecies(Net::WebServer::IWebR
 					}
 				}
 			}
-			else if (action && Text::StrEquals(action, (const UTF8Char*)"placeall"))
+			else if (action && action->Equals((const UTF8Char*)"placeall"))
 			{
 				if (env.pickObjType == POT_USERFILE)
 				{
@@ -3928,10 +3928,10 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpeciesMod(Net::WebServer::IW
 		}
 
 		Text::StringBuilderUTF8 msg;
-		const UTF8Char *cname = 0;
-		const UTF8Char *sname = 0;
-		const UTF8Char *ename = 0;
-		const UTF8Char *descr = 0;
+		Text::String *cname = 0;
+		Text::String *sname = 0;
+		Text::String *ename = 0;
+		Text::String *descr = 0;
 		const UTF8Char *bookIgn = 0;
 		SSWR::OrganMgr::OrganWebHandler::SpeciesInfo *species = 0;
 		if (req->GetQueryValueI32((const UTF8Char*)"spId", &spId))
@@ -3939,31 +3939,31 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpeciesMod(Net::WebServer::IW
 			species = me->spMap->Get(spId);
 			if (species)
 			{
-				cname = species->chiName->v;
-				sname = species->sciName->v;
-				ename = species->engName->v;
-				descr = species->descript->v;
+				cname = species->chiName;
+				sname = species->sciName;
+				ename = species->engName;
+				descr = species->descript;
 			}
 		}
 		if (req->GetReqMethod() == Net::WebServer::IWebRequest::RequestMethod::HTTP_POST)
 		{
 			req->ParseHTTPForm();
-			const UTF8Char *task = req->GetHTTPFormStr((const UTF8Char*)"task");
+			Text::String *task = req->GetHTTPFormStr((const UTF8Char*)"task");
 			cname = req->GetHTTPFormStr((const UTF8Char*)"cname");
 			sname = req->GetHTTPFormStr((const UTF8Char*)"sname");
 			ename = req->GetHTTPFormStr((const UTF8Char*)"ename");
 			descr = req->GetHTTPFormStr((const UTF8Char*)"descr");
-			bookIgn = req->GetHTTPFormStr((const UTF8Char*)"bookIgn");
-			if (task != 0 && cname != 0 && sname != 0 && ename != 0 && descr != 0 && cname[0] != 0 && sname[0] != 0)
+			bookIgn = STR_PTR(req->GetHTTPFormStr((const UTF8Char*)"bookIgn"));
+			if (task != 0 && cname != 0 && sname != 0 && ename != 0 && descr != 0 && cname->v[0] != 0 && sname->v[0] != 0)
 			{
-				if (Text::StrEquals(task, (const UTF8Char*)"new"))
+				if (task->Equals((const UTF8Char*)"new"))
 				{
 					sb.ClearStr();
 					if (me->spNameMap->Get(sname) != 0)
 					{
 						msg.Append((const UTF8Char*)"Species already exist");
 					}
-					else if ((bookIgn == 0 || bookIgn[0] != '1') && me->SpeciesBookIsExist(sname, &sb))
+					else if ((bookIgn == 0 || bookIgn[0] != '1') && me->SpeciesBookIsExist(sname->v, &sb))
 					{
 						msg.Append((const UTF8Char *)"Species already exist in book: ");
 						msg.Append(sb.ToString());
@@ -3979,7 +3979,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpeciesMod(Net::WebServer::IW
 						sb.ToLower();
 						sb.Replace((const UTF8Char*)" ", (const UTF8Char*)"_");
 						sb.Replace((const UTF8Char*)".", (const UTF8Char*)"");
-						Int32 spId = me->SpeciesAdd(ename, cname, sname, id, descr, sb.ToString(), (const UTF8Char*)"", cateId);
+						Int32 spId = me->SpeciesAdd(STR_PTR(ename), STR_PTR(cname), STR_PTR(sname), id, STR_PTR(descr), sb.ToString(), (const UTF8Char*)"", cateId);
 						if (spId)
 						{
 							me->dataMut->UnlockWrite();
@@ -4000,7 +4000,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpeciesMod(Net::WebServer::IW
 						me->dataMut->LockRead();
 					}
 				}
-				else if (Text::StrEquals(task, (const UTF8Char*)"modify") && species != 0)
+				else if (task->Equals((const UTF8Char*)"modify") && species != 0)
 				{
 					Bool nameChg = !species->sciName->Equals(sname);
 					sb.ClearStr();
@@ -4008,7 +4008,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpeciesMod(Net::WebServer::IW
 					{
 						msg.Append((const UTF8Char*)"Species already exist");
 					}
-					else if (nameChg && (bookIgn == 0 || bookIgn[0] != '1') && me->SpeciesBookIsExist(sname, &sb))
+					else if (nameChg && (bookIgn == 0 || bookIgn[0] != '1') && me->SpeciesBookIsExist(STR_PTR(sname), &sb))
 					{
 						msg.Append((const UTF8Char *)"Species already exist in book: ");
 						msg.Append(sb.ToString());
@@ -4024,7 +4024,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpeciesMod(Net::WebServer::IW
 						sb.ToLower();
 						sb.Replace((const UTF8Char*)" ", (const UTF8Char*)"_");
 						sb.Replace((const UTF8Char*)".", (const UTF8Char*)"");
-						if (me->SpeciesModify(spId, ename, cname, sname, descr, sb.ToString()))
+						if (me->SpeciesModify(spId, STR_PTR(ename), STR_PTR(cname), STR_PTR(sname), STR_PTR(descr), sb.ToString()))
 						{
 							me->dataMut->UnlockWrite();
 							sb.ClearStr();
@@ -4084,7 +4084,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpeciesMod(Net::WebServer::IW
 		if (cname)
 		{
 			writer->Write((const UTF8Char*)" value=");
-			s = Text::XML::ToNewAttrText(cname);
+			s = Text::XML::ToNewAttrText(cname->v);
 			writer->Write(s->v, s->leng);
 			s->Release();
 		}
@@ -4093,7 +4093,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpeciesMod(Net::WebServer::IW
 		if (sname)
 		{
 			writer->Write((const UTF8Char*)" value=");
-			s = Text::XML::ToNewAttrText(sname);
+			s = Text::XML::ToNewAttrText(sname->v);
 			writer->Write(s->v, s->leng);
 			s->Release();
 		}
@@ -4102,7 +4102,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpeciesMod(Net::WebServer::IW
 		if (ename)
 		{
 			writer->Write((const UTF8Char*)" value=");
-			s = Text::XML::ToNewAttrText(ename);
+			s = Text::XML::ToNewAttrText(ename->v);
 			writer->Write(s->v, s->leng);
 			s->Release();
 		}
@@ -4110,7 +4110,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpeciesMod(Net::WebServer::IW
 		writer->Write((const UTF8Char*)"<tr><td>Description</td><td><textarea name=\"descr\" rows=\"4\" cols=\"40\">");
 		if (descr)
 		{
-			s = Text::XML::ToNewHTMLText(descr);
+			s = Text::XML::ToNewHTMLText(descr->v);
 			writer->Write(s->v, s->leng);
 			s->Release();
 		}
@@ -4451,20 +4451,20 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 				if (req->GetReqMethod() == Net::WebServer::IWebRequest::RequestMethod::HTTP_POST && env.user && (env.user->userType == 0 || env.user->id == userFile->webuserId))
 				{
 					req->ParseHTTPForm();
-					const UTF8Char *action = req->GetHTTPFormStr((const UTF8Char*)"action");
-					if (action && Text::StrEquals(action, (const UTF8Char*)"setdefault") && env.user->userType == 0)
+					Text::String *action = req->GetHTTPFormStr((const UTF8Char*)"action");
+					if (action && action->Equals((const UTF8Char*)"setdefault") && env.user->userType == 0)
 					{
 						me->SpeciesSetPhotoId(id, fileId);
 					}
-					else if (action && Text::StrEquals(action, (const UTF8Char*)"setname"))
+					else if (action && action->Equals((const UTF8Char*)"setname"))
 					{
-						const UTF8Char *desc = req->GetHTTPFormStr((const UTF8Char*)"descr");
+						Text::String *desc = req->GetHTTPFormStr((const UTF8Char*)"descr");
 						if (desc)
 						{
-							me->UserfileUpdateDesc(fileId, desc);
+							me->UserfileUpdateDesc(fileId, desc->v);
 						}
 					}
-					else if (action && Text::StrEquals(action, (const UTF8Char*)"rotate"))
+					else if (action && action->Equals((const UTF8Char*)"rotate"))
 					{
 						me->UserfileUpdateRotType(fileId, (userFile->rotType + 1) & 3);
 					}
@@ -6363,7 +6363,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSearchInside(Net::WebServer::
 
 	Int32 id;
 	Int32 cateId;
-	const UTF8Char *searchStr;
+	Text::String *searchStr;
 	req->ParseHTTPForm();
 	if (req->GetQueryValueI32((const UTF8Char*)"id", &id) &&
 		req->GetQueryValueI32((const UTF8Char*)"cateId", &cateId) &&
@@ -6472,7 +6472,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSearchInside(Net::WebServer::
 			me->WriteSpeciesTable(writer, &speciesList, env.scnWidth, group->cateId, false);
 			if (j > 0)
 			{
-				Text::TextEnc::URIEncoding::URIEncode(sbuff, searchStr);
+				Text::TextEnc::URIEncoding::URIEncode(sbuff, searchStr->v);
 				writer->Write((const UTF8Char*)"<a href=");
 				sb.ClearStr();
 				sb.Append((const UTF8Char*)"searchinsidemores.html?id=");
@@ -6508,7 +6508,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSearchInside(Net::WebServer::
 			me->WriteGroupTable(writer, &groupList, env.scnWidth, false);
 			if (j > 0)
 			{
-				Text::TextEnc::URIEncoding::URIEncode(sbuff, searchStr);
+				Text::TextEnc::URIEncoding::URIEncode(sbuff, searchStr->v);
 				writer->Write((const UTF8Char*)"<a href=");
 				sb.ClearStr();
 				sb.Append((const UTF8Char*)"searchinsidemoreg.html?id=");
@@ -6564,7 +6564,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSearchInsideMoreS(Net::WebSer
 	Int32 id;
 	UInt32 pageNo;
 	Int32 cateId;
-	const UTF8Char *searchStr;
+	Text::String *searchStr;
 	if (req->GetQueryValueI32((const UTF8Char*)"id", &id) &&
 		req->GetQueryValueI32((const UTF8Char*)"cateId", &cateId) &&
 		req->GetQueryValueU32((const UTF8Char*)"pageNo", &pageNo) &&
@@ -6670,7 +6670,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSearchInsideMoreS(Net::WebSer
 			me->WriteSpeciesTable(writer, &speciesList, env.scnWidth, group->cateId, false);
 			if (pageNo > 0)
 			{
-				Text::TextEnc::URIEncoding::URIEncode(sbuff, searchStr);
+				Text::TextEnc::URIEncoding::URIEncode(sbuff, searchStr->v);
 				writer->Write((const UTF8Char*)"<a href=");
 				sb.ClearStr();
 				sb.Append((const UTF8Char*)"searchinsidemores.html?id=");
@@ -6688,7 +6688,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSearchInsideMoreS(Net::WebSer
 			}
 			if (i > 0)
 			{
-				Text::TextEnc::URIEncoding::URIEncode(sbuff, searchStr);
+				Text::TextEnc::URIEncoding::URIEncode(sbuff, searchStr->v);
 				writer->Write((const UTF8Char*)" <a href=");
 				sb.ClearStr();
 				sb.Append((const UTF8Char*)"searchinsidemores.html?id=");
@@ -6746,7 +6746,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSearchInsideMoreG(Net::WebSer
 	Int32 id;
 	UInt32 pageNo;
 	Int32 cateId;
-	const UTF8Char *searchStr;
+	Text::String *searchStr;
 	if (req->GetQueryValueI32((const UTF8Char*)"id", &id) &&
 		req->GetQueryValueI32((const UTF8Char*)"cateId", &cateId) &&
 		req->GetQueryValueU32((const UTF8Char*)"pageNo", &pageNo) &&
@@ -6852,7 +6852,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSearchInsideMoreG(Net::WebSer
 			me->WriteGroupTable(writer, &groupList, env.scnWidth, false);
 			if (pageNo > 0)
 			{
-				Text::TextEnc::URIEncoding::URIEncode(sbuff, searchStr);
+				Text::TextEnc::URIEncoding::URIEncode(sbuff, STR_PTR(searchStr));
 				writer->Write((const UTF8Char*)"<a href=");
 				sb.ClearStr();
 				sb.Append((const UTF8Char*)"searchinsidemoreg.html?id=");
@@ -6870,7 +6870,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSearchInsideMoreG(Net::WebSer
 			}
 			if (i > 0)
 			{
-				Text::TextEnc::URIEncoding::URIEncode(sbuff, searchStr);
+				Text::TextEnc::URIEncoding::URIEncode(sbuff, STR_PTR(searchStr));
 				writer->Write((const UTF8Char*)" <a href=");
 				sb.ClearStr();
 				sb.Append((const UTF8Char*)"searchinsidemoreg.html?id=");
@@ -7343,11 +7343,11 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcLogin(Net::WebServer::IWebReq
 	if (req->GetReqMethod() == Net::WebServer::IWebRequest::RequestMethod::HTTP_POST)
 	{
 		req->ParseHTTPForm();
-		const UTF8Char *userName = req->GetHTTPFormStr((const UTF8Char*)"userName");
-		const UTF8Char *pwd = req->GetHTTPFormStr((const UTF8Char*)"password");
+		Text::String *userName = req->GetHTTPFormStr((const UTF8Char*)"userName");
+		Text::String *pwd = req->GetHTTPFormStr((const UTF8Char*)"password");
 		if (userName && pwd)
 		{
-			me->PasswordEnc(sbuff, pwd);
+			me->PasswordEnc(sbuff, pwd->v);
 			me->dataMut->LockRead();
 			env.user = me->userNameMap->Get(userName);
 			if (env.user && env.user->pwd->Equals(sbuff))
@@ -7445,7 +7445,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcReload(Net::WebServer::IWebRe
 		Bool showPwd = true;;
 		if (req->GetReqMethod() == Net::WebServer::IWebRequest::RequestMethod::HTTP_POST)
 		{
-			const UTF8Char *pwd;
+			Text::String *pwd;
 			req->ParseHTTPForm();
 			pwd = req->GetHTTPFormStr((const UTF8Char*)"pwd");
 			if (pwd)
@@ -7507,7 +7507,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcRestart(Net::WebServer::IWebR
 		Bool showPwd = true;;
 		if (req->GetReqMethod() == Net::WebServer::IWebRequest::RequestMethod::HTTP_POST)
 		{
-			const UTF8Char *pwd;
+			Text::String *pwd;
 			req->ParseHTTPForm();
 			pwd = req->GetHTTPFormStr((const UTF8Char*)"pwd");
 			if (pwd)
@@ -7670,7 +7670,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcCate(Net::WebServer::IWebRequ
 	me->ParseRequestEnv(req, resp, &env, false);
 
 	SSWR::OrganMgr::OrganWebHandler::CategoryInfo *cate;
-	const UTF8Char *cateName = req->GetQueryValue((const UTF8Char*)"cateName");
+	Text::String *cateName = req->GetQueryValue((const UTF8Char*)"cateName");
 	if (cateName != 0 && (cate = me->cateSMap->Get(cateName)) != 0)
 	{
 		Text::String *s;
@@ -9518,14 +9518,14 @@ SSWR::OrganMgr::OrganWebHandler::OrganWebHandler(Net::SocketFactory *sockf, Net:
 	this->eng = eng;
 
 	NEW_CLASS(this->cateMap, Data::Int32Map<SSWR::OrganMgr::OrganWebHandler::CategoryInfo*>());
-	NEW_CLASS(this->cateSMap, Data::StringUTF8Map<SSWR::OrganMgr::OrganWebHandler::CategoryInfo*>());
+	NEW_CLASS(this->cateSMap, Data::FastStringMap<SSWR::OrganMgr::OrganWebHandler::CategoryInfo*>());
 	NEW_CLASS(this->dataMut, Sync::RWMutex());
 	NEW_CLASS(this->spMap, Data::Int32Map<SSWR::OrganMgr::OrganWebHandler::SpeciesInfo*>());
-	NEW_CLASS(this->spNameMap, Data::StringUTF8Map<SSWR::OrganMgr::OrganWebHandler::SpeciesInfo*>());
+	NEW_CLASS(this->spNameMap, Data::FastStringMap<SSWR::OrganMgr::OrganWebHandler::SpeciesInfo*>());
 	NEW_CLASS(this->groupMap, Data::Int32Map<SSWR::OrganMgr::OrganWebHandler::GroupInfo*>());
 	NEW_CLASS(this->bookMap, Data::Int32Map<SSWR::OrganMgr::OrganWebHandler::BookInfo*>());
 	NEW_CLASS(this->userMap, Data::Int32Map<SSWR::OrganMgr::OrganWebHandler::WebUserInfo*>());
-	NEW_CLASS(this->userNameMap, Data::StringUTF8Map<SSWR::OrganMgr::OrganWebHandler::WebUserInfo*>());
+	NEW_CLASS(this->userNameMap, Data::FastStringMap<SSWR::OrganMgr::OrganWebHandler::WebUserInfo*>());
 	NEW_CLASS(this->userFileMap, Data::Int32Map<SSWR::OrganMgr::OrganWebHandler::UserFileInfo*>());
 	NEW_CLASS(this->langMap, Data::UInt32Map<IO::ConfigFile*>());
 	NEW_CLASS(this->locMap, Data::Int32Map<SSWR::OrganMgr::OrganWebHandler::LocationInfo*>());
