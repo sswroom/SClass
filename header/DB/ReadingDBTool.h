@@ -5,6 +5,7 @@
 #include "DB/TableDef.h"
 #include "IO/LogTool.h"
 #include "Sync/Mutex.h"
+#include "Text/String.h"
 #include "Text/StringBuilderUTF8.h"
 
 namespace DB
@@ -30,7 +31,7 @@ namespace DB
 		UInt32 openFail;
 		Bool needRelease;
 
-		const UTF8Char *logPrefix;
+		Text::String *logPrefix;
 
 		Bool isWorking;
 		Int32 workId;
@@ -46,6 +47,7 @@ namespace DB
 
 	protected:
 		void AddLogMsg(const UTF8Char *msg, IO::ILogHandler::LogLevel logLev);
+		void AddLogMsgC(const UTF8Char *msg, UOSInt msgLen, IO::ILogHandler::LogLevel logLev);
 
 		UOSInt SplitMySQL(UTF8Char **outStrs, UOSInt maxCnt, UTF8Char *oriStr);
 		UOSInt SplitMSSQL(UTF8Char **outStrs, UOSInt maxCnt, UTF8Char *oriStr);

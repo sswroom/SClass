@@ -115,7 +115,7 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 					DEL_CLASS(stm);
 					return 0;
 				}
-				Text::StrConcat(baseDir, u8buff);
+				fd->GetFullFileName()->ConcatTo(baseDir);
 				fileName = IO::Path::AppendPath(baseDir, sarr[1]);
 			}
 			else if (Text::StrStartsWith(sbuff, (const UTF8Char*)"3,"))

@@ -39,7 +39,7 @@ namespace IO
 		};
 		virtual ~ILogHandler(){};
 
-		virtual void LogAdded(Data::DateTime *logTime, const UTF8Char *logMsg, LogLevel logLev) = 0;
+		virtual void LogAdded(Data::DateTime *logTime, const UTF8Char *logMsg, UOSInt msgLen, LogLevel logLev) = 0;
 		virtual void LogClosed() = 0;
 	};
 
@@ -48,6 +48,7 @@ namespace IO
 	public:
 		virtual ~ILogger() {};
 		virtual void LogMessage(const UTF8Char *logMsg, ILogHandler::LogLevel level) = 0;
+		virtual void LogMessageC(const UTF8Char *logMsg, UOSInt msgLen, ILogHandler::LogLevel level) = 0;
 	};
 
 	class LogTool : public ILogger
@@ -68,6 +69,7 @@ namespace IO
 		void AddLogHandler(ILogHandler *hdlr, ILogHandler::LogLevel logLev);
 		void RemoveLogHandler(ILogHandler *hdlr);
 		virtual void LogMessage(const UTF8Char *logMsg, ILogHandler::LogLevel level);
+		virtual void LogMessageC(const UTF8Char *logMsg, UOSInt msgLen, ILogHandler::LogLevel level);
 	};
 }
 #endif

@@ -1,7 +1,7 @@
 #ifndef _SM_IO_MTFILELOG
 #define _SM_IO_MTFILELOG
 #include "Data/ArrayListInt64.h"
-#include "Data/ArrayListStrUTF8.h"
+#include "Data/ArrayListString.h"
 #include "IO/FileStream.h"
 #include "IO/LogTool.h"
 #include "Sync/Mutex.h"
@@ -16,7 +16,7 @@ namespace IO
 	private:
 		Sync::Mutex *mut;
 		Data::ArrayListInt64 *dateList;
-		Data::ArrayListStrUTF8 *msgList;
+		Data::ArrayListString *msgList;
 		Sync::Event *evt;
 
 		IO::ILogHandler::LogType logStyle;
@@ -31,7 +31,7 @@ namespace IO
 		Bool running;
 
 		UTF8Char *GetNewName(UTF8Char *buff, Data::DateTime *logTime);
-		void WriteArr(const UTF8Char **msgArr, Int64 *dateArr, UOSInt arrCnt);
+		void WriteArr(Text::String **msgArr, Int64 *dateArr, UOSInt arrCnt);
 		static UInt32 __stdcall FileThread(void *userObj);
 		void Init(LogType style, LogGroup groupStyle, const Char *dateFormat);
 	public:
@@ -39,7 +39,7 @@ namespace IO
 		MTFileLog(const UTF8Char *fileName, LogType style, LogGroup groupStyle, const Char *dateFormat);
 		virtual ~MTFileLog();
 		virtual void LogClosed();
-		virtual void LogAdded(Data::DateTime *logTime, const UTF8Char *logMsg, LogLevel logLev);
+		virtual void LogAdded(Data::DateTime *logTime, const UTF8Char *logMsg, UOSInt msgLen, LogLevel logLev);
 	};
 }
 #endif

@@ -31,11 +31,29 @@ void DB::ReadingDBTool::AddLogMsg(const UTF8Char *msg, IO::ILogHandler::LogLevel
 			Text::StringBuilderUTF8 str;
 			str.Append(logPrefix);
 			str.Append(msg);
-			log->LogMessage(str.ToString(), logLev);
+			log->LogMessageC(str.ToString(), str.GetLength(), logLev);
 		}
 		else
 		{
 			log->LogMessage(msg, logLev);
+		}
+	}
+}
+
+void DB::ReadingDBTool::AddLogMsgC(const UTF8Char *msg, UOSInt msgLen, IO::ILogHandler::LogLevel logLev)
+{
+	if (log)
+	{
+		if (logPrefix)
+		{
+			Text::StringBuilderUTF8 str;
+			str.Append(logPrefix);
+			str.AppendC(msg, msgLen);
+			log->LogMessageC(str.ToString(), str.GetLength(), logLev);
+		}
+		else
+		{
+			log->LogMessageC(msg, msgLen, logLev);
 		}
 	}
 }
@@ -50,15 +68,7 @@ DB::ReadingDBTool::ReadingDBTool(DB::DBConn *db, Bool needRelease, IO::LogTool *
 	this->readerFail = 0;
 	this->openFail = 0;
 	NEW_CLASS(this->lastErrMsg, Text::StringBuilderUTF8());
-
-	if (logPrefix)
-	{
-		this->logPrefix = Text::StrCopyNew(logPrefix);
-	}
-	else
-	{
-		this->logPrefix = 0;
-	}
+	this->logPrefix = Text::String::NewOrNull(logPrefix);
 	this->isWorking = false;
 	this->workId = 0;
 	this->trig = 0;
@@ -340,11 +350,7 @@ UOSInt DB::ReadingDBTool::SplitUnkSQL(UTF8Char **outStrs, UOSInt maxCnt, UTF8Cha
 
 DB::ReadingDBTool::~ReadingDBTool()
 {
-	if (this->logPrefix)
-	{
-		Text::StrDelNew(this->logPrefix);
-		this->logPrefix = 0;
-	}
+	SDEL_STRING(this->logPrefix);
 	if (this->db && this->needRelease)
 	{
 		DEL_CLASS(db);
@@ -368,7 +374,7 @@ DB::DBReader *DB::ReadingDBTool::ExecuteReader(const UTF8Char *sqlCmd)
 		Text::StringBuilderUTF8 logMsg;
 		logMsg.Append((const UTF8Char*)"ExecuteReader: ");
 		logMsg.Append(sqlCmd);
-		AddLogMsg(logMsg.ToString(), IO::ILogHandler::LOG_LEVEL_RAW);
+		AddLogMsgC(logMsg.ToString(), logMsg.GetLength(), IO::ILogHandler::LOG_LEVEL_RAW);
 	}
 	if (this->db == 0)
 	{
@@ -392,7 +398,7 @@ DB::DBReader *DB::ReadingDBTool::ExecuteReader(const UTF8Char *sqlCmd)
 			ptr = Text::StrInt32(ptr, (Int32)t2.DiffMS(&t1));
 			ptr = Text::StrConcat(ptr, (const UTF8Char*)", t2 = ");
 			ptr = Text::StrInt32(ptr, (Int32)t3.DiffMS(&t2));
-			AddLogMsg(buff, IO::ILogHandler::LOG_LEVEL_COMMAND);
+			AddLogMsgC(buff, (UOSInt)(ptr - buff), IO::ILogHandler::LOG_LEVEL_COMMAND);
 		}
 		readerCnt += 1;
 		readerFail = 0;
@@ -406,7 +412,7 @@ DB::DBReader *DB::ReadingDBTool::ExecuteReader(const UTF8Char *sqlCmd)
 			Text::StringBuilderUTF8 logMsg;
 			logMsg.Append((const UTF8Char*)"Cannot execute the sql command: ");
 			logMsg.Append(sqlCmd);
-			AddLogMsg(logMsg.ToString(), IO::ILogHandler::LOG_LEVEL_ERROR);
+			AddLogMsgC(logMsg.ToString(), logMsg.GetLength(), IO::ILogHandler::LOG_LEVEL_ERROR);
 		}
 
 		{
@@ -415,7 +421,7 @@ DB::DBReader *DB::ReadingDBTool::ExecuteReader(const UTF8Char *sqlCmd)
 			this->lastErrMsg->ClearStr();
 			this->db->GetErrorMsg(this->lastErrMsg);
 			logMsg.AppendSB(this->lastErrMsg);
-			AddLogMsg(logMsg.ToString(), IO::ILogHandler::LOG_LEVEL_ERR_DETAIL);
+			AddLogMsgC(logMsg.ToString(), logMsg.GetLength(), IO::ILogHandler::LOG_LEVEL_ERR_DETAIL);
 		}
 
 		readerFail += 1;
@@ -558,7 +564,7 @@ DB::DBReader *DB::ReadingDBTool::GetTableData(const UTF8Char *tableName, Data::A
 		Text::StringBuilderUTF8 logMsg;
 		logMsg.Append((const UTF8Char*)"GetTableData: ");
 		logMsg.Append(tableName);
-		AddLogMsg(logMsg.ToString(), IO::ILogHandler::LOG_LEVEL_RAW);
+		AddLogMsgC(logMsg.ToString(), logMsg.GetLength(), IO::ILogHandler::LOG_LEVEL_RAW);
 	}
 	if (this->db == 0)
 	{
@@ -582,7 +588,7 @@ DB::DBReader *DB::ReadingDBTool::GetTableData(const UTF8Char *tableName, Data::A
 			ptr = Text::StrInt32(ptr, (Int32)t2.DiffMS(&t1));
 			ptr = Text::StrConcat(ptr, (const UTF8Char*)", t2 = ");
 			ptr = Text::StrInt32(ptr, (Int32)t3.DiffMS(&t2));
-			AddLogMsg(buff, IO::ILogHandler::LOG_LEVEL_COMMAND);
+			AddLogMsgC(buff, (UOSInt)(ptr - buff), IO::ILogHandler::LOG_LEVEL_COMMAND);
 		}
 		readerCnt += 1;
 		readerFail = 0;
@@ -596,7 +602,7 @@ DB::DBReader *DB::ReadingDBTool::GetTableData(const UTF8Char *tableName, Data::A
 			Text::StringBuilderUTF8 logMsg;
 			logMsg.Append((const UTF8Char*)"Cannot get table data: ");
 			logMsg.Append(tableName);
-			AddLogMsg(logMsg.ToString(), IO::ILogHandler::LOG_LEVEL_ERROR);
+			AddLogMsgC(logMsg.ToString(), logMsg.GetLength(), IO::ILogHandler::LOG_LEVEL_ERROR);
 		}
 
 		{
@@ -605,7 +611,7 @@ DB::DBReader *DB::ReadingDBTool::GetTableData(const UTF8Char *tableName, Data::A
 			this->lastErrMsg->ClearStr();
 			this->db->GetErrorMsg(this->lastErrMsg);
 			logMsg.AppendSB(this->lastErrMsg);
-			AddLogMsg(logMsg.ToString(), IO::ILogHandler::LOG_LEVEL_ERR_DETAIL);
+			AddLogMsgC(logMsg.ToString(), logMsg.GetLength(), IO::ILogHandler::LOG_LEVEL_ERR_DETAIL);
 		}
 
 		readerFail += 1;

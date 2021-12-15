@@ -77,10 +77,11 @@ UTF8Char *IO::MTFileLog::GetNewName(UTF8Char *buff, Data::DateTime *time)
 	return currName;
 }
 
-void IO::MTFileLog::WriteArr(const UTF8Char **msgArr, Int64 *dateArr, UOSInt arrCnt)
+void IO::MTFileLog::WriteArr(Text::String **msgArr, Int64 *dateArr, UOSInt arrCnt)
 {
 	Bool newFile = false;
 	UTF8Char buff[256];
+	UTF8Char *sptr;
 	Data::DateTime time;
 	Text::StringBuilderUTF8 sb;
 
@@ -133,18 +134,18 @@ void IO::MTFileLog::WriteArr(const UTF8Char **msgArr, Int64 *dateArr, UOSInt arr
 			NEW_CLASS(log, Text::UTF8Writer(fileStm));
 			log->WriteSignature();
 
-			Text::StrConcat(time.ToString(buff, this->dateFormat), (const UTF8Char*)"Program running");
-			log->WriteLine(buff);
+			sptr = Text::StrConcat(time.ToString(buff, this->dateFormat), (const UTF8Char*)"Program running");
+			log->WriteLine(buff, (UOSInt)(sptr - buff));
 			newFile = false;
 		}
 
-		time.ToString(buff, this->dateFormat);
+		sptr = time.ToString(buff, this->dateFormat);
 		sb.ClearStr();
-		sb.Append(buff);
+		sb.AppendC(buff, (UOSInt)(sptr - buff));
 		sb.Append(msgArr[i]);
 		log->WriteLine(sb.ToString());
 
-		Text::StrDelNew(msgArr[i]);
+		msgArr[i]->Release();
 		i++;
 	}
 	if (fileStm)
@@ -157,7 +158,7 @@ UInt32 __stdcall IO::MTFileLog::FileThread(void *userObj)
 {
 	IO::MTFileLog *me = (IO::MTFileLog*)userObj;
 	UOSInt arrCnt;
-	const UTF8Char **msgArr = 0;
+	Text::String **msgArr = 0;
 	Int64 *dateArr = 0;
 	me->running = true;
 	while (!me->closed)
@@ -165,7 +166,7 @@ UInt32 __stdcall IO::MTFileLog::FileThread(void *userObj)
 		Sync::MutexUsage mutUsage(me->mut);
 		if ((arrCnt = me->msgList->GetCount()) > 0)
 		{
-			msgArr = MemAlloc(const UTF8Char *, arrCnt);
+			msgArr = MemAlloc(Text::String *, arrCnt);
 			dateArr = MemAlloc(Int64, arrCnt);
 			me->msgList->GetRange(msgArr, 0, arrCnt);
 			me->dateList->GetRange(dateArr, 0, arrCnt);
@@ -185,7 +186,7 @@ UInt32 __stdcall IO::MTFileLog::FileThread(void *userObj)
 
 	if ((arrCnt = me->msgList->GetCount()) > 0)
 	{
-		msgArr = MemAlloc(const UTF8Char *, arrCnt);
+		msgArr = MemAlloc(Text::String *, arrCnt);
 		dateArr = MemAlloc(Int64, arrCnt);
 		me->msgList->GetRange(msgArr, 0, arrCnt);
 		me->dateList->GetRange(dateArr, 0, arrCnt);
@@ -208,7 +209,7 @@ void IO::MTFileLog::Init(LogType style, LogGroup groupStyle, const Char *dateFor
 	NEW_CLASS(mut, Sync::Mutex());
 	NEW_CLASS(evt, Sync::Event(true, (const UTF8Char*)"IO.MTFileLog.evt"));
 	NEW_CLASS(dateList, Data::ArrayListInt64());
-	NEW_CLASS(msgList, Data::ArrayListStrUTF8());
+	NEW_CLASS(msgList, Data::ArrayListString());
 	if (dateFormat == 0)
 	{
 		this->dateFormat = Text::StrCopyNew("yyyy-MM-dd HH:mm:ss\t");
@@ -308,13 +309,13 @@ void IO::MTFileLog::LogClosed()
 		evt->Set();
 	}
 }
-void IO::MTFileLog::LogAdded(Data::DateTime *time, const UTF8Char *logMsg, LogLevel logLev)
+void IO::MTFileLog::LogAdded(Data::DateTime *time, const UTF8Char *logMsg, UOSInt msgLen, LogLevel logLev)
 {
 	if (closed)
 		return;
 
 	Sync::MutexUsage mutUsage(mut);
-	this->msgList->Add(Text::StrCopyNew(logMsg));
+	this->msgList->Add(Text::String::New(logMsg, msgLen));
 	this->dateList->Add(time->ToTicks());
 	mutUsage.EndUse();
 	evt->Set();

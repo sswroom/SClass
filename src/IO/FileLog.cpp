@@ -169,11 +169,12 @@ void IO::FileLog::LogClosed()
 		closed = true;
 	}
 }
-void IO::FileLog::LogAdded(Data::DateTime *time, const UTF8Char *logMsg, LogLevel logLev)
+void IO::FileLog::LogAdded(Data::DateTime *time, const UTF8Char *logMsg, UOSInt msgLen, LogLevel logLev)
 {
 	Sync::MutexUsage mutUsage(mut);
 	Bool newFile = false;
 	UTF8Char buff[256];
+	UTF8Char *sptr;
 
 	if (logStyle == ILogHandler::LOG_TYPE_PER_DAY)
 	{
@@ -218,18 +219,18 @@ void IO::FileLog::LogAdded(Data::DateTime *time, const UTF8Char *logMsg, LogLeve
 		NEW_CLASS(log, Text::UTF8Writer(fileStm));
 		log->WriteSignature();
 
-		Text::StrConcat(time->ToString(buff, this->dateFormat), (const UTF8Char*)"Program running");
-		log->WriteLine(buff);
+		sptr = Text::StrConcat(time->ToString(buff, this->dateFormat), (const UTF8Char*)"Program running");
+		log->WriteLine(buff, (UOSInt)(sptr - buff));
 		fileStm->Flush();
 	}
 
 	if (!this->closed)
 	{
-		time->ToString(buff, this->dateFormat);
+		sptr = time->ToString(buff, this->dateFormat);
 		Text::StringBuilderUTF8 sb;
-		sb.Append(buff);
-		sb.Append(logMsg);
-		log->WriteLine(sb.ToString());
+		sb.AppendC(buff, (UOSInt)(sptr - buff));
+		sb.AppendC(logMsg, msgLen);
+		log->WriteLine(sb.ToString(), sb.GetLength());
 	}
 	mutUsage.EndUse();
 }
