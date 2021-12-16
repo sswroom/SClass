@@ -34,12 +34,14 @@ namespace Data
 		void FillArr(T **arr, BTreeNode<T> *node);
 		void FillNameArr(Text::String ***arr, BTreeNode<T> *node);
 		virtual UInt32 CalHash(Text::String *key);
+		UInt32 CalHash(const UTF8Char *key);
 	public:
 		BTreeMap();
 		virtual ~BTreeMap();
 
 		virtual T Put(Text::String *key, T val);
 		virtual T Get(Text::String *key);
+		T Get(const UTF8Char *key);
 		virtual T Remove(Text::String *key);
 		virtual Bool IsEmpty();
 		virtual T *ToArray(UOSInt *objCnt);
@@ -351,6 +353,12 @@ namespace Data
 		return this->crc->CalcDirect(key->v, key->leng);
 	}
 
+	template <class T> UInt32 BTreeMap<T>::CalHash(const UTF8Char *key)
+	{
+		UOSInt len = Text::StrCharCnt(key);
+		return this->crc->CalcDirect(key, len);
+	}
+
 	template <class T> void BTreeMap<T>::FillArr(T **arr, BTreeNode<T> *node)
 	{
 		if (node == 0)
@@ -404,6 +412,41 @@ namespace Data
 	}
 
 	template <class T> T BTreeMap<T>::Get(Text::String *key)
+	{
+		UInt32 hash = CalHash(key);
+		BTreeNode<T> *node = this->rootNode;
+		while (node)
+		{
+			OSInt i;
+			if (node->nodeHash == hash)
+			{
+				i = node->nodeStr->CompareTo(key);
+			}
+			else if (node->nodeHash > hash)
+			{
+				i = 1;
+			}
+			else
+			{
+				i = -1;
+			}
+			if (i > 0)
+			{
+				node = node->leftNode;
+			}
+			else if (i < 0)
+			{
+				node = node->rightNode;
+			}
+			else
+			{
+				return node->nodeVal;
+			}
+		}
+		return 0;
+	}
+
+	template <class T> T BTreeMap<T>::Get(const UTF8Char *key)
 	{
 		UInt32 hash = CalHash(key);
 		BTreeNode<T> *node = this->rootNode;

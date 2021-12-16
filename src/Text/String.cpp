@@ -9,7 +9,7 @@
 
 //#define MEMDEBUG
 
-Text::String Text::String::emptyStr = {0, 1, 0};
+Text::String Text::String::emptyStr = {0, 1048576, 0};
 
 Text::String *Text::String::NewOrNull(const UTF8Char *str)
 {

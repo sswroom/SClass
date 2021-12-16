@@ -167,6 +167,7 @@ UTF8Char *Net::SocketUtil::GetAddrName(UTF8Char *buff, const AddressInfo *addr, 
 	}
 	else
 	{
+		*buff = 0;
 		return 0;
 	}
 }

@@ -128,10 +128,12 @@ void IO::MTFileLog::WriteArr(Text::String **msgArr, Int64 *dateArr, UOSInt arrCn
 		{
 			log->Close();
 			DEL_CLASS(log);
+			DEL_CLASS(cstm);
 			DEL_CLASS(fileStm);
 
 			NEW_CLASS(fileStm, FileStream(buff, FileStream::FileMode::Append, FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-			NEW_CLASS(log, Text::UTF8Writer(fileStm));
+			NEW_CLASS(cstm, IO::BufferedOutputStream(fileStm, 4096));
+			NEW_CLASS(log, Text::UTF8Writer(cstm));
 			log->WriteSignature();
 
 			sptr = Text::StrConcat(time.ToString(buff, this->dateFormat), (const UTF8Char*)"Program running");
@@ -148,9 +150,9 @@ void IO::MTFileLog::WriteArr(Text::String **msgArr, Int64 *dateArr, UOSInt arrCn
 		msgArr[i]->Release();
 		i++;
 	}
-	if (fileStm)
+	if (cstm)
 	{
-		fileStm->Flush();
+		cstm->Flush();
 	}
 }
 
@@ -249,7 +251,8 @@ void IO::MTFileLog::Init(LogType style, LogGroup groupStyle, const Char *dateFor
 	GetNewName(buff, &dt);
 
 	NEW_CLASS(fileStm, FileStream(buff, FileStream::FileMode::Append, FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	NEW_CLASS(log, Text::UTF8Writer(fileStm));
+	NEW_CLASS(cstm, IO::BufferedOutputStream(fileStm, 4096));
+	NEW_CLASS(log, Text::UTF8Writer(cstm));
 	log->WriteSignature();
 	Sync::Thread::Create(FileThread, this, 0x20000);
 }
@@ -286,11 +289,9 @@ IO::MTFileLog::~MTFileLog()
 	fileName = 0;
 	SDEL_TEXT(this->extName);
 
-	DEL_CLASS(log);
-	log = 0;
-
-	DEL_CLASS(fileStm);
-	fileStm = 0;
+	SDEL_CLASS(log);
+	SDEL_CLASS(cstm);
+	SDEL_CLASS(fileStm);
 
 	DEL_CLASS(dateList);
 	DEL_CLASS(msgList);

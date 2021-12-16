@@ -2,6 +2,7 @@
 #define _SM_IO_MTFILELOG
 #include "Data/ArrayListInt64.h"
 #include "Data/ArrayListString.h"
+#include "IO/BufferedOutputStream.h"
 #include "IO/FileStream.h"
 #include "IO/LogTool.h"
 #include "Sync/Mutex.h"
@@ -23,6 +24,7 @@ namespace IO
 		IO::ILogHandler::LogGroup groupStyle;
 		Int32 lastVal;
 		Text::UTF8Writer *log;
+		IO::BufferedOutputStream *cstm;
 		IO::FileStream *fileStm;
 		const Char *dateFormat;
 		Text::String *fileName;

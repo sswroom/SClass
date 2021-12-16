@@ -1,7 +1,8 @@
 #ifndef _SM_MAP_ASSISTEDREVERSEGEOCODERPL
 #define _SM_MAP_ASSISTEDREVERSEGEOCODERPL
 #include "Data/ArrayList.h"
-#include "Data/BTreeUTF8Map.h"
+#include "Data/BTreeMap.h"
+#include "Data/Comparator.h"
 #include "Data/Int32Map.h"
 #include "Data/UInt32Map.h"
 #include "DB/DBTool.h"
@@ -15,22 +16,32 @@ namespace Map
 	class AssistedReverseGeocoderPL : public Map::IAssistedReverseGeocoder
 	{
 	private:
-		typedef struct
+		struct AddressEntry
 		{
-			Data::Int32Map<Data::Int32Map<const UTF8Char *>*> *addrMap;
-		} IndexInfo;
-
+			Int32 keyx;
+			Int32 keyy;
+			Text::String *address;
+			Int64 addrTime;
+		};
 		typedef struct
 		{
 			UInt32 lcid;
-			Data::Int32Map<IndexInfo *> *indexMap;
+			Data::ArrayList<AddressEntry *> *mainList;
 		} LCIDInfo;
+
+		class AddressComparator : public Data::Comparator<AddressEntry*>
+		{
+		public:
+			virtual ~AddressComparator();
+
+			virtual OSInt Compare(AddressEntry *a, AddressEntry *b);
+		};
 	private:
 		Data::ArrayList<Map::IReverseGeocoder *> *revGeos;
 		UOSInt nextCoder;
 		DB::DBTool *conn;
 		IO::Writer *errWriter;
-		Data::BTreeUTF8Map<const UTF8Char *> *strMap;
+		Data::BTreeMap<Text::String *> *strMap;
 		Data::UInt32Map<LCIDInfo *> *lcidMap;
 		Sync::Mutex *mut;
 	public:
@@ -40,6 +51,8 @@ namespace Map
 		virtual UTF8Char *SearchName(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, UInt32 lcid);
 		virtual UTF8Char *CacheName(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, UInt32 lcid);
 		virtual void AddReverseGeocoder(Map::IReverseGeocoder *revGeo);
+	private:
+		OSInt AddressIndexOf(Data::ArrayList<AddressEntry *> *list, Int32 keyx, Int32 keyy);
 	};
-};
+}
 #endif

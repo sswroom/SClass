@@ -133,9 +133,10 @@ UInt64 Net::SocketFactory::GenSocketId(Socket *socket)
 	UInt16 rPort;
 	Net::SocketUtil::AddressInfo lAddr;
 	UInt16 lPort;
-	this->GetLocalAddr(socket, &lAddr, &lPort);
-	this->GetRemoteAddr(socket, &rAddr, &rPort);
-	return Net::SocketUtil::CalcCliId(&rAddr) | (((UInt64)rPort) << 32) | (((UInt64)lPort) << 48);
+	if (this->GetLocalAddr(socket, &lAddr, &lPort) && this->GetRemoteAddr(socket, &rAddr, &rPort))
+		return Net::SocketUtil::CalcCliId(&rAddr) | (((UInt64)rPort) << 32) | (((UInt64)lPort) << 48);
+	else
+		return 0;
 }
 
 void Net::SocketFactory::FromSocketId(UInt64 socketId, UInt32 *ip, UInt16 *port)
