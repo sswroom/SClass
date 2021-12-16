@@ -117,7 +117,8 @@ UInt32 __stdcall Net::TCPClientMgr::ClientThread(void *o)
 				if (s == 0 || cliStat->cli->IsClosed())
 				{
 					TCPClientMgr_RemoveCliStat(me->cliArr, me->cliIdArr, cliStat);
-
+					Sync::MutexUsage readMutUsage(cliStat->readMut);
+					readMutUsage.EndUse();
 					DEL_CLASS(cliStat->lastDataTime);
 					DEL_CLASS(cliStat->readMut);
 					MemFree(cliStat->buff);
@@ -283,8 +284,8 @@ UInt32 __stdcall Net::TCPClientMgr::WorkerThread(void *o)
 			me->dataHdlr(cliStat->cli, me->userObj, cliStat->cliData, cliStat->buff, cliStat->buffSize);
 			cliStat->processing = false;
 			Sync::MutexUsage mutUsage(cliStat->readMut);
-			cliStat->reading = true;
 			cliStat->recvDataExist = cliStat->cli->GetRecvBuffSize() > 0;
+			cliStat->reading = true;
 			mutUsage.EndUse();
 			clsData->hasData = true;
 			if (write(clsData->pipewrfd, "", 1) == -1)
@@ -460,6 +461,12 @@ void Net::TCPClientMgr::AddClient(TCPClient *cli, void *cliData)
 //	printf("Client added and set timeout to %d\r\n", this->timeOutSeconds);
 	cli->SetNoDelay(true);
 	cli->SetTimeout(this->timeOutSeconds * 1000);
+	UInt64 cliId = cli->GetCliId();
+	if (cliId == 0)
+	{
+		this->evtHdlr(cli, this->userObj, cliData, Net::TCPClientMgr::TCP_EVENT_DISCONNECT);
+		return;
+	}
 	Sync::MutexUsage mutUsage(this->cliMut);
 	Net::TCPClientMgr::TCPClientStatus *cliStat = MemAlloc(Net::TCPClientMgr::TCPClientStatus, 1);
 	cliStat->cli = cli;
@@ -475,12 +482,12 @@ void Net::TCPClientMgr::AddClient(TCPClient *cli, void *cliData)
 	Sync::MutexUsage readMutUsage(cliStat->readMut);
 	cliStat->reading = true;
 	cliStat->recvDataExist = false;
-	OSInt i = this->cliIdArr->SortedIndexOf(cli->GetCliId());
+	OSInt i = this->cliIdArr->SortedIndexOf(cliId);
 	if (i >= 0)
 	{
-		printf("TCPClientMgr: Duplicate Client Id %llx\r\n", cli->GetCliId());
+		printf("TCPClientMgr: Duplicate Client Id %llx\r\n", cliId);
 	}
-	this->cliArr->Insert(this->cliIdArr->SortedInsert(cli->GetCliId()), cliStat);
+	this->cliArr->Insert(this->cliIdArr->SortedInsert(cliId), cliStat);
 	readMutUsage.EndUse();
 	mutUsage.EndUse();
 	if (write(((ClassData*)this->clsData)->pipewrfd, "", 1) == -1)
