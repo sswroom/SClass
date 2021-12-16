@@ -108,7 +108,7 @@ const UTF8Char *Data::IChart::GetXAxisName()
 
 void Data::IChart::SetYAxisName(const UTF8Char *yAxisName)
 {
-	SDEL_TEXT(yAxisName);
+	SDEL_TEXT(this->yAxisName);
 	this->yAxisName = SCOPY_TEXT(yAxisName);
 }
 
