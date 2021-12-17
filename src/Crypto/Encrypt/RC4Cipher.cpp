@@ -19,7 +19,7 @@ void Crypto::Encrypt::RC4Cipher::SetKey(const UInt8 *key, UOSInt keyLen)
 		i++;
 	}
 	UInt8 tmp;
-	UInt8 j;
+	UInt8 j = 0;
 	if (keyLen == 4)
 	{
 		i = 0;
