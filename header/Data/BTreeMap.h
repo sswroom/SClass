@@ -3,6 +3,7 @@
 #include "MyMemory.h"
 #include "Crypto/Hash/CRC32RC.h"
 #include "Data/IMap.h"
+#include "Text/MyString.h"
 #include "Text/String.h"
 
 namespace Data

@@ -19,9 +19,9 @@ public:
 	{
 	}
 
-	void LogAdded(Data::DateTime *logTime, const UTF8Char *logMsg, LogLevel logLev)
+	void LogAdded(Data::DateTime *logTime, const UTF8Char *logMsg, UOSInt msgLen, LogLevel logLev)
 	{
-		console->WriteLine(logMsg);
+		console->WriteLine(logMsg, msgLen);
 	}
 
 	void LogClosed()

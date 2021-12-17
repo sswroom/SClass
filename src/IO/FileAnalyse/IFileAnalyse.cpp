@@ -6,6 +6,7 @@
 #include "IO/FileAnalyse/FLVFileAnalyse.h"
 #include "IO/FileAnalyse/IFileAnalyse.h"
 #include "IO/FileAnalyse/JPGFileAnalyse.h"
+#include "IO/FileAnalyse/MDBFileAnalyse.h"
 #include "IO/FileAnalyse/MPEGFileAnalyse.h"
 #include "IO/FileAnalyse/NFDumpFileAnalyse.h"
 #include "IO/FileAnalyse/PCapFileAnalyse.h"
@@ -102,6 +103,10 @@ IO::FileAnalyse::IFileAnalyse *IO::FileAnalyse::IFileAnalyse::AnalyseFile(IO::IS
 	else if (ReadUInt32(buff) == 3 && ReadUInt64(&buff[24]) == fd->GetDataSize())
 	{
 		NEW_CLASS(analyse, IO::FileAnalyse::FGDBFileAnalyse(fd));
+	}
+	else if (ReadUInt32(buff) == 0x100 && (Text::StrEquals((const UTF8Char*)"Standard Jet DB", &buff[4]) || Text::StrEquals((const UTF8Char*)"Standard ACE DB", &buff[4])))
+	{
+		NEW_CLASS(analyse, IO::FileAnalyse::MDBFileAnalyse(fd));
 	}
 
 	if (analyse && analyse->IsError())

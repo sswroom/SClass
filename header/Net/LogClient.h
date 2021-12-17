@@ -1,7 +1,7 @@
 #ifndef _SM_NET_LOGCLIENT
 #define _SM_NET_LOGCLIENT
 #include "Data/ArrayListInt64.h"
-#include "Data/ArrayListStrUTF8.h"
+#include "Data/ArrayListString.h"
 #include "IO/LogTool.h"
 #include "IO/ProtoHdlr/ProtoLogCliHandler.h"
 #include "Net/SocketFactory.h"
@@ -22,7 +22,7 @@ namespace Net
 
 		Sync::Mutex *mut;
 		Data::ArrayListInt64 *dateList;
-		Data::ArrayListStrUTF8 *msgList;
+		Data::ArrayListString *msgList;
 
 		Int64 lastSendTime;
 		Sync::Mutex *cliMut;
@@ -41,7 +41,7 @@ namespace Net
 		LogClient(Net::SocketFactory *sockf, const Net::SocketUtil::AddressInfo *addr, UInt16 port);
 		virtual ~LogClient();
 		virtual void LogClosed();
-		virtual void LogAdded(Data::DateTime *logTime, const UTF8Char *logMsg, LogLevel logLev);
+		virtual void LogAdded(Data::DateTime *logTime, const UTF8Char *logMsg, UOSInt msgLen, LogLevel logLev);
 
 		virtual void DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize);
 		virtual void DataSkipped(IO::Stream *stm, void *stmObj, const UInt8 *buff, UOSInt buffSize);

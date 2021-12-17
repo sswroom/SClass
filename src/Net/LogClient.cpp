@@ -73,7 +73,7 @@ UInt32 __stdcall Net::LogClient::SendThread(void *userObj)
 	Data::DateTime *currTime;
 	Int64 t;
 	Int64 msgTime;
-	const UTF8Char *msg;
+	Text::String *msg;
 	UOSInt msgLen;
 	Int64 nextKATime = 0;
 	UInt8 kaBuff[10];
@@ -121,11 +121,11 @@ UInt32 __stdcall Net::LogClient::SendThread(void *userObj)
 					UInt8 *buff2;
 					msgTime = me->dateList->GetItem(0);
 					msg = me->msgList->GetItem(0);
-					msgLen = Text::StrCharCnt(msg);
+					msgLen = msg->leng;
 					buff1 = MemAlloc(UInt8, 8 + msgLen);
 					buff2 = MemAlloc(UInt8, 18 + msgLen);
 					WriteInt64(buff1, msgTime);
-					MemCopyNO(&buff1[8], msg, msgLen);
+					MemCopyNO(&buff1[8], msg->v, msgLen);
 					buffSize = me->protoHdlr->BuildPacket(buff2, 2, 0, buff1, msgLen + 8, 0);
 					me->cli->Write(buff2, buffSize);
 					MemFree(buff1);
@@ -156,7 +156,7 @@ Net::LogClient::LogClient(Net::SocketFactory *sockf, const Net::SocketUtil::Addr
 
 	NEW_CLASS(this->mut, Sync::Mutex());
 	NEW_CLASS(this->dateList, Data::ArrayListInt64());
-	NEW_CLASS(this->msgList, Data::ArrayListStrUTF8());
+	NEW_CLASS(this->msgList, Data::ArrayListString());
 	this->lastSendTime = 0;
 	this->sendRunning = false;
 	this->sendToStop = false;
@@ -191,11 +191,7 @@ Net::LogClient::~LogClient()
 	}
 	DEL_CLASS(this->recvEvt);
 	DEL_CLASS(this->sendEvt);
-	i = this->msgList->GetCount();
-	while (i-- > 0)
-	{
-		Text::StrDelNew(this->msgList->GetItem(i));
-	}
+	LIST_FREE_STRING(this->msgList);
 	DEL_CLASS(this->msgList);
 	DEL_CLASS(this->dateList);
 	DEL_CLASS(this->mut);
@@ -208,10 +204,10 @@ void Net::LogClient::LogClosed()
 	DEL_CLASS(this);
 }
 
-void Net::LogClient::LogAdded(Data::DateTime *time, const UTF8Char *logMsg, LogLevel logLev)
+void Net::LogClient::LogAdded(Data::DateTime *time, const UTF8Char *logMsg, UOSInt msgLen, LogLevel logLev)
 {
 	Sync::MutexUsage mutUsage(this->mut);
-	this->msgList->Add(Text::StrCopyNew(logMsg));
+	this->msgList->Add(Text::String::New(logMsg, msgLen));
 	this->dateList->Add(time->ToTicks());
 	mutUsage.EndUse();
 	this->sendEvt->Set();
@@ -230,7 +226,7 @@ void Net::LogClient::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, In
 			if (msgTime == this->dateList->GetItem(0))
 			{
 				this->dateList->RemoveAt(0);
-				Text::StrDelNew(this->msgList->RemoveAt(0));
+				this->msgList->RemoveAt(0)->Release();
 				this->lastSendTime = 0;
 				this->sendEvt->Set();
 			}

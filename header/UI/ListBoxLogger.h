@@ -16,8 +16,8 @@ namespace UI
 		UI::GUIForm *frm;
 		UOSInt maxLog;
 		Bool reverse;
-		const UTF8Char **logArr;
-		const UTF8Char **tmpLogArr;
+		Text::String **logArr;
+		Text::String **tmpLogArr;
 		const Char *timeFormat;
 		UOSInt logIndex;
 		UInt32 logCnt;
@@ -27,7 +27,7 @@ namespace UI
 		ListBoxLogger(UI::GUIForm *frm, UI::GUIListBox *lb, UOSInt maxLog, Bool reverse);
 		virtual ~ListBoxLogger();
 		virtual void LogClosed();
-		virtual void LogAdded(Data::DateTime *logTime, const UTF8Char *logMsg, IO::ILogHandler::LogLevel logLev);
+		virtual void LogAdded(Data::DateTime *logTime, const UTF8Char *logMsg, UOSInt msgLen, IO::ILogHandler::LogLevel logLev);
 
 		void SetTimeFormat(const Char *timeFormat);
 	};

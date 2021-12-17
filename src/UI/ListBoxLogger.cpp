@@ -53,7 +53,7 @@ void __stdcall UI::ListBoxLogger::TimerTick(void *userObj)
 			while (cnt-- > 0)
 			{
 				me->lb->InsertItem(i, me->tmpLogArr[cnt], 0);
-				Text::StrDelNew(me->tmpLogArr[cnt]);
+				me->tmpLogArr[cnt]->Release();
 				i++;
 			}
 		}
@@ -76,7 +76,7 @@ void __stdcall UI::ListBoxLogger::TimerTick(void *userObj)
 			while (i < cnt)
 			{
 				me->lb->AddItem(me->tmpLogArr[i], 0);
-				Text::StrDelNew(me->tmpLogArr[i]);
+				me->tmpLogArr[i]->Release();
 				i++;
 			}
 		}
@@ -91,8 +91,8 @@ UI::ListBoxLogger::ListBoxLogger(UI::GUIForm *frm, UI::GUIListBox *lb, UOSInt ma
 	this->maxLog = maxLog;
 	this->reverse = reverse;
 	this->frm = frm;
-	this->logArr = MemAlloc(const UTF8Char *, this->maxLog);
-	this->tmpLogArr = MemAlloc(const UTF8Char *, this->maxLog);
+	this->logArr = MemAlloc(Text::String *, this->maxLog);
+	this->tmpLogArr = MemAlloc(Text::String *, this->maxLog);
 	this->logIndex = 0;
 	this->logCnt = 0;
 	this->timeFormat = 0;
@@ -114,7 +114,7 @@ UI::ListBoxLogger::~ListBoxLogger()
 	{
 		if (this->logArr[i])
 		{
-			Text::StrDelNew(this->logArr[i]);
+			this->logArr[i]->Release();
 		}
 	}
 	MemFree(this->logArr);
@@ -128,7 +128,7 @@ void UI::ListBoxLogger::LogClosed()
 {
 }
 
-void UI::ListBoxLogger::LogAdded(Data::DateTime *logTime, const UTF8Char *logMsg, IO::ILogHandler::LogLevel logLev)
+void UI::ListBoxLogger::LogAdded(Data::DateTime *logTime, const UTF8Char *logMsg, UOSInt msgLen, IO::ILogHandler::LogLevel logLev)
 {
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[64];
@@ -143,16 +143,16 @@ void UI::ListBoxLogger::LogAdded(Data::DateTime *logTime, const UTF8Char *logMsg
 		sb.AppendDate(logTime);
 	}
 	sb.AppendChar('\t', 1);
-	sb.Append(logMsg);
+	sb.AppendC(logMsg, msgLen);
 	if (this->logCnt < this->maxLog)
 	{
 		this->logCnt++;
 	}
 	if (this->logArr[this->logIndex])
 	{
-		Text::StrDelNew(this->logArr[this->logIndex]);
+		this->logArr[this->logIndex]->Release();
 	}
-	this->logArr[this->logIndex] = Text::StrCopyNew(sb.ToString());
+	this->logArr[this->logIndex] = Text::String::New(sb.ToString(), sb.GetLength());
 	this->logIndex = (this->logIndex + 1) % this->maxLog;
 	mutUsage.EndUse();
 }

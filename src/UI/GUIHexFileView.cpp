@@ -11,8 +11,16 @@ UI::GUIHexFileView::GUIHexFileView(UI::GUICore *ui, UI::GUIClientControl *parent
 	this->frame = 0;
 	this->fileSize = 0;
 	this->currOfst = 0;
-	this->frameColor = 0xffdedf9a;
-	this->fieldColor = 0xffdf9abd;
+	if ((this->txtColor & 0x808080) == 0x808080)
+	{
+		this->frameColor = 0xff808060;
+		this->fieldColor = 0xff652b2b;
+	}
+	else
+	{
+		this->frameColor = 0xffdedf9a;
+		this->fieldColor = 0xffdf9abd;
+	}
 	NEW_CLASS(this->hdlrList, Data::ArrayList<OffsetChgHandler>());
 	NEW_CLASS(this->hdlrObjList, Data::ArrayList<void *>());
 	this->SetScrollHRange(0, 0);

@@ -26,9 +26,8 @@ IO::CyclicLogBuffer::~CyclicLogBuffer()
 	DEL_CLASS(this->logMut);
 }
 
-void IO::CyclicLogBuffer::LogAdded(Data::DateTime *logTime, const UTF8Char *logMsg, LogLevel logLev)
+void IO::CyclicLogBuffer::LogAdded(Data::DateTime *logTime, const UTF8Char *logMsg, UOSInt msgLen, LogLevel logLev)
 {
-	UOSInt msgLen = Text::StrCharCnt(logMsg);
 	UTF8Char *strBuff = MemAlloc(UTF8Char, 25 + msgLen);
 	UTF8Char *sptr = logTime->ToString(strBuff, "yyyy-MM-dd HH:mm:ss.fff");
 	*sptr++ = '\t';

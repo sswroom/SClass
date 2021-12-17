@@ -98,7 +98,7 @@ void IO::LoopFileLog::LogClosed()
 		closed = true;
 	}
 }
-void IO::LoopFileLog::LogAdded(Data::DateTime *time, const UTF8Char *logMsg, LogLevel logLev)
+void IO::LoopFileLog::LogAdded(Data::DateTime *time, const UTF8Char *logMsg, UOSInt msgLen, LogLevel logLev)
 {
 	Bool newFile = false;
 	UTF8Char buff[256];
@@ -161,7 +161,7 @@ void IO::LoopFileLog::LogAdded(Data::DateTime *time, const UTF8Char *logMsg, Log
 		time->ToString(buff, "yyyy-MM-dd HH:mm:ss.fff\t");
 		Text::StringBuilderUTF8 sb;
 		sb.Append(buff);
-		sb.Append(logMsg);
+		sb.AppendC(logMsg, msgLen);
 		log->WriteLine(sb.ToString());
 	}
 	mutUsage.EndUse();
