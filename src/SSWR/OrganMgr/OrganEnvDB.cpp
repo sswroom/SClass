@@ -245,6 +245,9 @@ SSWR::OrganMgr::OrganEnvDB::OrganEnvDB() : OrganEnv()
 			if (species == 0 || species->id != userFile->speciesId)
 			{
 				species = this->GetSpeciesInfo(userFile->speciesId, true);
+			}
+			if (species)
+			{
 				species->files->Add(userFile);
 			}
 

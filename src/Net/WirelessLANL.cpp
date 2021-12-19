@@ -290,6 +290,7 @@ Bool Net::WirelessLAN::Interface::Scan()
 		return ret >= 0;
 	}
 
+	MemClear(&wrq, sizeof(wrq));
 	Text::StrConcat((UTF8Char*)wrq.ifr_ifrn.ifrn_name, this->name);
 	wrq.u.data.pointer = NULL;
 	wrq.u.data.flags = 0;
@@ -297,7 +298,7 @@ Bool Net::WirelessLAN::Interface::Scan()
 	ret = ioctl(-1 + (int)(OSInt)this->id, SIOCSIWSCAN, &wrq);
 	if (ret < 0)
 	{
-		printf("SIOCSIWSCAN ret = %d, errno = %d\r\n", ret, errno);
+		printf("SIOCSIWSCAN name = %s, ret = %d, errno = %d\r\n", this->name, ret, errno);
 		if (errno == 14)
 		{
 			this->Reopen();

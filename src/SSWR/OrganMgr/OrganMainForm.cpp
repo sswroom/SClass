@@ -2027,7 +2027,7 @@ void SSWR::OrganMgr::OrganMainForm::UpdateImgDir()
 					csptr = 0;
 					if (userFile)
 					{
-						csptr = userFile->location->v;
+						csptr = STR_PTR(userFile->location);
 					}
 					if (csptr)
 					{
@@ -2846,6 +2846,7 @@ SSWR::OrganMgr::OrganMainForm::~OrganMainForm()
 	OrganGroupItem *item;
 	OrganGroup *grp;
 	OrganImageItem *img;
+	this->ClearChildren();
 
 	SDEL_CLASS(this->lastBmp);
 	SDEL_CLASS(this->dispImage);
@@ -2873,7 +2874,6 @@ SSWR::OrganMgr::OrganMainForm::~OrganMainForm()
 	DEL_CLASS(this->imgItems);
 	this->ClearPicks();
 	DEL_CLASS(this->pickObjs);
-	this->mcMap->SetRenderer(0);
 
 	DEL_CLASS(this->mapUFiles);
 	DEL_CLASS(this->mapResizer);
@@ -2887,7 +2887,6 @@ SSWR::OrganMgr::OrganMainForm::~OrganMainForm()
 	DEL_CLASS(this->mapImgLyrs);
 	SDEL_TEXT(this->initSelObj);
 	SDEL_STRING(this->initSelImg);
-	this->ClearChildren();
 	this->colorMgr->DeleteSess(this->colorSess);
 }
 
