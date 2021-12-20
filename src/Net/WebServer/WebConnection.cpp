@@ -893,6 +893,11 @@ Bool Net::WebServer::WebConnection::SSESend(const UTF8Char *eventName, const UTF
 	return this->cli->Write(sb.ToString(), sb.GetLength()) == sb.GetLength();
 }
 
+const UTF8Char *Net::WebServer::WebConnection::GetRespHeaders()
+{
+	return this->respHeaders->ToString();
+}
+
 UOSInt Net::WebServer::WebConnection::Read(UInt8 *buff, UOSInt size)
 {
 	return 0;

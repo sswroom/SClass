@@ -2,7 +2,7 @@
 
 if [ -f "bin/$1" ]
 then
-	SDK_DIR=~/ROS-SDK-r3000-3.0.1
+	SDK_DIR=~/ROS-SDK-r5020-3.1.0
 	PKG_DIR=$SDK_DIR/package
 	mkdir -p $PKG_DIR/$1
 	mkdir -p $PKG_DIR/$1/files
@@ -113,6 +113,6 @@ then
 	echo "\$(eval \$(call BuildPackage))" >> $PKG_DIR/$1/Makefile
 
 	cd $SDK_DIR
-	rm -r build_dir/target-r3000/$1-1.0.0/
+	rm -r build_dir/target-r5020/$1-1.0.0/
 	make package/$1/install
 fi

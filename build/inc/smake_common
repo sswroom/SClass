@@ -94,6 +94,7 @@ nodeps:
 @ADFSTest
 @ARPScan
 @ARPTest
+@HTTPForwardLog
 @HTTPForwardTest
 @HTTPServerTest
 @HTTPSTest
@@ -487,6 +488,9 @@ ARPScan:
 ARPTest:
 @ARPTest.o
 @ConsoleStartup.o
+HTTPForwardLog:
+@HTTPForwardLog.o
+@ConsoleStartup.o
 HTTPForwardTest:
 @HTTPForwardTest.o
 @ConsoleStartup.o
@@ -860,6 +864,7 @@ ACMETest.o: ../../main/NetTest/ACMETest.cpp
 ADFSTest.o: ../../main/NetTest/ADFSTest.cpp
 ARPScanMain.o: ../../main/NetTest/ARPScanMain.cpp
 ARPTest.o: ../../main/NetTest/ARPTest.cpp
+HTTPForwardLog.o: ../../main/NetTest/HTTPForwardLog.cpp
 HTTPForwardTest.o: ../../main/NetTest/HTTPForwardTest.cpp
 HTTPServerTest.o: ../../main/NetTest/HTTPServerTest.cpp
 HTTPSTest.o: ../../main/NetTest/HTTPSTest.cpp

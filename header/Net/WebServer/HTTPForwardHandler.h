@@ -16,6 +16,8 @@ namespace Net
 				Normal,
 				Transparent
 			};
+
+			typedef void (__stdcall *ReqHandler)(void *userObj, Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp);
 		private:
 			Data::ArrayList<const UTF8Char *> *forwardAddrs;
 			Data::ArrayList<Text::String *> *injHeaders;
@@ -24,6 +26,8 @@ namespace Net
 			Net::SocketFactory *sockf;
 			Net::SSLEngine *ssl;
 			ForwardType fwdType;
+			ReqHandler reqHdlr;
+			void *reqHdlrObj;
 
 			virtual const UTF8Char *GetNextURL(Net::WebServer::IWebRequest *req);
 		public:
@@ -36,6 +40,8 @@ namespace Net
 			void AddForwardURL(const UTF8Char *url);
 			void AddInjectHeader(Text::String *header);
 			void AddInjectHeader(const UTF8Char *header);
+
+			void HandleForwardRequest(ReqHandler reqHdlr, void *userObj);
 		};
 	}
 }

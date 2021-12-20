@@ -27,6 +27,7 @@ namespace Net
 			virtual void ShutdownSend() = 0;
 			virtual Bool ResponseSSE(Int32 timeoutMS, SSEDisconnectHandler hdlr, void *userObj) = 0;
 			virtual Bool SSESend(const UTF8Char *eventName, const UTF8Char *data) = 0;
+			virtual const UTF8Char *GetRespHeaders() = 0;
 
 			Bool ResponseError(Net::WebServer::IWebRequest *req, Net::WebStatus::StatusCode code);
 			Bool RedirectURL(Net::WebServer::IWebRequest *req, const UTF8Char *url, OSInt cacheAge);

@@ -17,6 +17,8 @@ Net::WebServer::HTTPForwardHandler::HTTPForwardHandler(Net::SocketFactory *sockf
 	this->sockf = sockf;
 	this->ssl = ssl;
 	this->fwdType = fwdType;
+	this->reqHdlr = 0;
+	this->reqHdlrObj = 0;
 	NEW_CLASS(this->forwardAddrs, Data::ArrayList<const UTF8Char*>());
 	NEW_CLASS(this->injHeaders, Data::ArrayList<Text::String*>());
 	this->forwardAddrs->Add(Text::StrCopyNew(forwardURL));
@@ -53,7 +55,7 @@ Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(Net::WebServer::IWebRequ
 	UOSInt j;
 	if (i >= 0)
 	{
-		sb.Append(&uri[i]);
+		sb.Append(&uri->v[i]);
 	}
 	Bool kaConn = true;
 	Text::StringBuilderUTF8 sbHeader;
@@ -68,12 +70,14 @@ Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(Net::WebServer::IWebRequ
 	if (cli == 0)
 	{
 		resp->ResponseError(req, Net::WebStatus::SC_NOT_FOUND);
+		if (this->reqHdlr) this->reqHdlr(this->reqHdlrObj, req, resp);
 		return true;
 	}
 	if (!cli->Connect(sb.ToString(), req->GetReqMethodStr(), 0, 0, false))
 	{
 		DEL_CLASS(cli);
 		resp->ResponseError(req, Net::WebStatus::SC_NOT_FOUND);
+		if (this->reqHdlr) this->reqHdlr(this->reqHdlrObj, req, resp);
 		return true;
 	}
 	Text::String *hdr;
@@ -194,6 +198,7 @@ Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(Net::WebServer::IWebRequ
 	{
 		DEL_CLASS(cli);
 		resp->ResponseError(req, Net::WebStatus::SC_NOT_FOUND);
+		if (this->reqHdlr) this->reqHdlr(this->reqHdlrObj, req, resp);
 		return true;
 	}
 	resp->SetStatusCode(scode);
@@ -275,6 +280,7 @@ Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(Net::WebServer::IWebRequ
 		}
 	}
 	DEL_CLASS(cli);
+	if (this->reqHdlr) this->reqHdlr(this->reqHdlrObj, req, resp);
 	return true;
 }
 
@@ -292,4 +298,10 @@ void Net::WebServer::HTTPForwardHandler::AddInjectHeader(Text::String *header)
 void Net::WebServer::HTTPForwardHandler::AddInjectHeader(const UTF8Char *header)
 {
 	this->injHeaders->Add(Text::String::NewNotNull(header));
+}
+
+void Net::WebServer::HTTPForwardHandler::HandleForwardRequest(ReqHandler reqHdlr, void *userObj)
+{
+	this->reqHdlrObj = userObj;
+	this->reqHdlr = reqHdlr;
 }
