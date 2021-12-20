@@ -2168,7 +2168,7 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 				dataBuff = PNGParser_ParsePixelsBits(dataBuff, tmpData + imgY * storeWidth + imgX, storeWidth, 0, 0, imgW, imgH, 1, 1, pxMask, pxAMask, pxShift);
 			}
 
-			info->atype = Media::AT_NO_ALPHA;
+			info->atype = Media::AT_ALPHA;
 			info->storeWidth = storeWidth;
 			UOSInt byteCnt;
 			if (bitDepth == 1)
@@ -2233,7 +2233,7 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 		}
 		else if (bitDepth == 8)
 		{
-			info->atype = Media::AT_NO_ALPHA;
+			info->atype = Media::AT_ALPHA;
 			info->storeWidth = info->dispWidth;
 			info->storeBPP = 8;
 			info->pf = Media::PF_PAL_8;
@@ -2581,14 +2581,18 @@ IO::ParsedObject *Parser::FileParser::PNGParser::ParseFile(IO::IStreamData *fd, 
 					}
 					else if (chunkData[8] == 0)
 					{
-						info.par2 = ReadMInt32(&chunkData[0]) / (Double)ReadMInt32(&chunkData[4]);
+						Int32 hdpi = ReadMInt32(&chunkData[0]);
+						Int32 vdpi = ReadMInt32(&chunkData[4]);
+						info.par2 = hdpi / (Double)vdpi;
 						if (info.par2 > 1)
 						{
-							info.vdpi = 72.0 / info.par2;
+							info.vdpi = 300.0 / info.par2;
+							info.hdpi = 300.0;
 						}
 						else
 						{
-							info.hdpi = 72.0 * info.par2;
+							info.hdpi = 300.0 * info.par2;
+							info.vdpi = 300.0;
 						}
 					}
 				}
@@ -2618,6 +2622,23 @@ IO::ParsedObject *Parser::FileParser::PNGParser::ParseFile(IO::IStreamData *fd, 
 						palPtr += 4;
 						dataBuff += 3;
 						sizeLeft -= 3;
+					}
+				}
+				MemFree(chunkData);
+			}
+		}
+		else if (*(Int32*)&buff[4] == *(Int32*)"tRNS")
+		{
+			if (palette != 0 && size <= 256)
+			{
+				chunkData = MemAlloc(UInt8, size);
+				if (fd->GetRealData(ofst + 8, size, chunkData) == size)
+				{
+					UOSInt i = 0;
+					while (i < size)
+					{
+						palette[i * 4 + 3] = chunkData[i];
+						i++;
 					}
 				}
 				MemFree(chunkData);
