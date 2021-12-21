@@ -17,7 +17,7 @@ namespace IO
 				UInt64 fileLength;
 				UInt64 currentOffset;
 				UTF8Char *fileName;
-				UTF8Char *fullName;
+				Text::String *fullName;
 				UInt8 *fptr;
 
 				Sync::Mutex *mut;
@@ -35,7 +35,7 @@ namespace IO
 			virtual ~FileViewData();
 
 			virtual UOSInt GetRealData(UInt64 offset, UOSInt length, UInt8 *buffer);
-			virtual const UTF8Char *GetFullName();
+			virtual Text::String *GetFullName();
 			virtual const UTF8Char *GetShortName();
 			virtual UInt64 GetDataSize();
 			virtual const UInt8 *GetPointer();

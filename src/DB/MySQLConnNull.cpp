@@ -13,7 +13,7 @@ Text::String *DB::MySQLConn::GetConnServer()
 
 Text::String *DB::MySQLConn::GetConnDB()
 {
-	return this->databse;
+	return this->database;
 }
 
 Text::String *DB::MySQLConn::GetConnUID()

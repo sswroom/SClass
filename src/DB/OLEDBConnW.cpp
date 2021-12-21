@@ -1371,14 +1371,14 @@ Text::String *DB::OLEDBReader::GetNewStr(UOSInt colIndex)
 			WChar *tmpBuff = MemAlloc(WChar, (*valLen / sizeof(WChar*)) + 1);
 			MemCopyNO(tmpBuff, val, *valLen);
 			tmpBuff[*valLen / sizeof(WChar*)] = 0;
-			Text::String *ret = Text::String::New(tmpBuff);
+			Text::String *ret = Text::String::New(tmpBuff, *valLen / sizeof(WChar*));
 			MemFree(tmpBuff);
 			return ret;
 		}
 	default:
 		if (GetStr(colIndex, sbuff))
 		{
-			return Text::String::New(sbuff);
+			return Text::String::NewNotNull(sbuff);
 		}
 		return 0;
 	}

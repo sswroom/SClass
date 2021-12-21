@@ -31,7 +31,8 @@ IO::StmData::FileViewData::FileViewData(const UTF8Char* fname)
 		while (*name++)
 			if (*name == IO::Path::PATH_SEPERATOR)
 				fname = name;
-		fdh->fileName = fdh->fullName = (dname = MemAlloc(UTF8Char, name - name2));
+		fdh->fullName = Text::String::New((UOSInt)(name - name2 - 1));
+		fdh->fileName = dname = fdh->fullName->v;
 		while ((*dname++ = *name2++) != 0)
 			if (dname[-1] == IO::Path::PATH_SEPERATOR)
 				fdh->fileName = dname;
@@ -97,7 +98,7 @@ const UTF8Char *IO::StmData::FileViewData::GetShortName()
 	return fdh->fileName;
 }
 
-const UTF8Char *IO::StmData::FileViewData::GetFullName()
+Text::String *IO::StmData::FileViewData::GetFullName()
 {
 	if (fdh == 0)
 		return 0;
