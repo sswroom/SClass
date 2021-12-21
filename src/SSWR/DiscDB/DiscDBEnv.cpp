@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "DB/DBReader.h"
-#include "DB/MDBFile.h"
+#include "DB/MDBFileConn.h"
 #include "DB/ODBCConn.h"
 #include "DB/SQLBuilder.h"
 #include "IO/FileCheck.h"
@@ -192,7 +192,7 @@ SSWR::DiscDB::DiscDBEnv::DiscDBEnv()
 		}
 		else if ((s = cfg->GetValue((const UTF8Char*)"MDBFile")) != 0)
 		{
-			this->db = DB::MDBFile::CreateDBTool(s->v, this->log, (const UTF8Char*)"DB: ");
+			this->db = DB::MDBFileConn::CreateDBTool(s->v, this->log, (const UTF8Char*)"DB: ");
 		}
 		DEL_CLASS(cfg);
 

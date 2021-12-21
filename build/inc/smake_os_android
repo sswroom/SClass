@@ -1,6 +1,6 @@
 
-DB/MDBFile.h: ../../src/DB/MDBFileNul.cpp
-@MDBFile.o
+DB/MDBFileConn.h: ../../src/DB/MDBFileConnNul.cpp
+@MDBFileConn.o
 DB/MongoDB.h: ../../src/DB/MongoDBNull.cpp
 @MongoDB.o
 DB/MySQLConn.h: ../../src/DB/MySQLConnNull.cpp
@@ -82,7 +82,7 @@ Sync/Thread.h: ../../src/Sync/ThreadU.cpp
 
 
 ConsoleStartup.o: ../../startup/LinuxConStartup.cpp
-MDBFile.o: ../../src/DB/MDBFileNul.cpp
+MDBFileConn.o: ../../src/DB/MDBFileConnNul.cpp
 MongoDB.o: ../../src/DB/MongoDBNull.cpp
 MySQLConn.o: ../../src/DB/MySQLConnNull.cpp
 ODBCConn.o: ../../src/DB/ODBCConnNul.cpp

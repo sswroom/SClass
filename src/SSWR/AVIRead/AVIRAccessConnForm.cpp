@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "DB/MDBFile.h"
+#include "DB/MDBFileConn.h"
 #include "SSWR/AVIRead/AVIRAccessConnForm.h"
 #include "Text/MyString.h"
 #include "UI/FileDialog.h"
@@ -32,8 +32,8 @@ void __stdcall SSWR::AVIRead::AVIRAccessConnForm::OnOKClicked(void *userObj)
 		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter file name", (const UTF8Char *)"Access Conn", me);
 		return;
 	}
-	NEW_CLASS(me->conn, DB::MDBFile(sbFileName.ToString(), me->core->GetLog(), 0, 0, 0));
-	if (((DB::MDBFile*)me->conn)->GetConnError() == DB::ODBCConn::CE_NONE)
+	NEW_CLASS(me->conn, DB::MDBFileConn(sbFileName.ToString(), me->core->GetLog(), 0, 0, 0));
+	if (((DB::MDBFileConn*)me->conn)->GetConnError() == DB::ODBCConn::CE_NONE)
 	{
 		me->SetDialogResult(UI::GUIForm::DR_OK);
 	}

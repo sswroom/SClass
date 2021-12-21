@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "DB/DBTool.h"
-#include "DB/MDBFile.h"
+#include "DB/MDBFileConn.h"
 #include "Text/Encoding.h"
 #include "Text/EncodingFactory.h"
 #include "Text/Locale.h"
@@ -16,7 +16,7 @@
 #endif
 #include <odbcinst.h>
 
-DB::MDBFile::MDBFile(const UTF8Char *fileName, IO::LogTool *log, UInt32 codePage, const WChar *uid, const WChar *pwd) : DB::ODBCConn(fileName, log)
+DB::MDBFileConn::MDBFileConn(const UTF8Char *fileName, IO::LogTool *log, UInt32 codePage, const WChar *uid, const WChar *pwd) : DB::ODBCConn(fileName, log)
 {
 	Text::StringBuilderUTF8 sb;
 	sb.Append((const UTF8Char*)"Driver={Microsoft Access Driver (*.mdb)};Dbq=");
@@ -136,7 +136,7 @@ DB::MDBFile::MDBFile(const UTF8Char *fileName, IO::LogTool *log, UInt32 codePage
 	}
 }
 
-Bool DB::MDBFile::CreateMDBFile(const UTF8Char *fileName)
+Bool DB::MDBFileConn::CreateMDBFile(const UTF8Char *fileName)
 {
 #if _WCHAR_SIZE == 4
 	BOOL fCreated;
@@ -185,11 +185,11 @@ Bool DB::MDBFile::CreateMDBFile(const UTF8Char *fileName)
 #endif
 }
 
-DB::DBTool *DB::MDBFile::CreateDBTool(Text::String *fileName, IO::LogTool *log, const UTF8Char *logPrefix)
+DB::DBTool *DB::MDBFileConn::CreateDBTool(Text::String *fileName, IO::LogTool *log, const UTF8Char *logPrefix)
 {
-	DB::MDBFile *conn;
+	DB::MDBFileConn *conn;
 	DB::DBTool *db;
-	NEW_CLASS(conn, DB::MDBFile(fileName->v, log, 0, 0, 0));
+	NEW_CLASS(conn, DB::MDBFileConn(fileName->v, log, 0, 0, 0));
 	if (conn->GetConnError() == DB::ODBCConn::CE_NONE)
 	{
 		NEW_CLASS(db, DB::DBTool(conn, true, log, logPrefix));
@@ -202,11 +202,11 @@ DB::DBTool *DB::MDBFile::CreateDBTool(Text::String *fileName, IO::LogTool *log, 
 	}
 }
 
-DB::DBTool *DB::MDBFile::CreateDBTool(const UTF8Char *fileName, IO::LogTool *log, const UTF8Char *logPrefix)
+DB::DBTool *DB::MDBFileConn::CreateDBTool(const UTF8Char *fileName, IO::LogTool *log, const UTF8Char *logPrefix)
 {
-	DB::MDBFile *conn;
+	DB::MDBFileConn *conn;
 	DB::DBTool *db;
-	NEW_CLASS(conn, DB::MDBFile(fileName, log, 0, 0, 0));
+	NEW_CLASS(conn, DB::MDBFileConn(fileName, log, 0, 0, 0));
 	if (conn->GetConnError() == DB::ODBCConn::CE_NONE)
 	{
 		NEW_CLASS(db, DB::DBTool(conn, true, log, logPrefix));

@@ -2,7 +2,7 @@
 #include "Core/Core.h"
 #include "Core/DefaultDrawEngine.h"
 #include "DB/DBTool.h"
-#include "DB/MDBFile.h"
+#include "DB/MDBFileConn.h"
 #include "DB/ODBCConn.h"
 #include "IO/ConsoleWriter.h"
 #include "IO/IniFile.h"
@@ -85,7 +85,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		}
 		if (cfg->GetValue((const UTF8Char*)"MDBFile"))
 		{
-			db = DB::MDBFile::CreateDBTool(cfg->GetValue((const UTF8Char*)"MDBFile"), log, (const UTF8Char*)"DB: ");
+			db = DB::MDBFileConn::CreateDBTool(cfg->GetValue((const UTF8Char*)"MDBFile"), log, (const UTF8Char*)"DB: ");
 		}
 		else if (cfg->GetValue((const UTF8Char*)"MySQLServer"))
 		{

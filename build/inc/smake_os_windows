@@ -4,8 +4,8 @@ INCLUDEPATH+=:../../ThirdParty/KSSample
 Crypto/Cert/WinHttpCert.h: ../../src/Crypto/Cert/WinHttpCert.cpp
 @WinHttpCert.o
 
-DB/MDBFile.h: ../../src/DB/MDBFile.cpp
-@MDBFile.o
+DB/MDBFileConn.h: ../../src/DB/MDBFileConn.cpp
+@MDBFileConn.o
 DB/MongoDB.h: ../../src/DB/MongoDBNull.cpp
 @MongoDB.o
 DB/MySQLConn.h: ../../src/DB/MySQLConnNull.cpp
@@ -130,7 +130,7 @@ Win32/WinRTCore.h: ../../src/Win32/WinRTCore.cpp
 ConsoleStartup.o: ../../startup/ConStartup.cpp
 WinHttpCert.o: ../../src/Crypto/Cert/WinHttpCert.cpp
 !-lwinhttp
-MDBFile.o: ../../src/DB/MDBFile.cpp
+MDBFileConn.o: ../../src/DB/MDBFileConn.cpp
 !-lodbc32
 MongoDB.o: ../../src/DB/MongoDBNull.cpp
 MySQLConn.o: ../../src/DB/MySQLConnNull.cpp

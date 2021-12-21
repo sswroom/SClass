@@ -4,7 +4,7 @@
 #include "DB/ColDef.h"
 #include "DB/DBReader.h"
 #include "DB/SharedDBConn.h"
-#include "DB/MDBFile.h"
+#include "DB/MDBFileConn.h"
 #include "Map/ESRI/ESRIMDBLayer.h"
 #include "Map/MapLayerCollection.h"
 #include "Math/CoordinateSystemManager.h"
@@ -69,8 +69,8 @@ IO::ParsedObject *Parser::FileParser::MDBParser::ParseFile(IO::IStreamData *fd, 
 		return 0;
 	}
 #ifndef _WIN32_WCE
-	DB::MDBFile *mdb;
-	NEW_CLASS(mdb, DB::MDBFile(fd->GetFullFileName()->v, 0, this->codePage, 0, 0));
+	DB::MDBFileConn *mdb;
+	NEW_CLASS(mdb, DB::MDBFileConn(fd->GetFullFileName()->v, 0, this->codePage, 0, 0));
 	if (mdb->GetConnError() != DB::ODBCConn::CE_NONE)
 	{
 		DEL_CLASS(mdb);

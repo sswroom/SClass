@@ -2,8 +2,8 @@
 Crypto/Cert/CurlCert.h: ../../src/Crypto/Cert/CurlCert.cpp
 @CurlCert.o
 
-DB/MDBFile.h: ../../src/DB/MDBFile.cpp
-@MDBFile.o
+DB/MDBFileConn.h: ../../src/DB/MDBFileConn.cpp
+@MDBFileConn.o
 DB/MongoDB.h: ../../src/DB/MongoDB.cpp
 @MongoDB.o
 DB/MySQLConn.h: ../../src/DB/MySQLConn.cpp
@@ -81,7 +81,7 @@ $-I/usr/lib/jvm/java-11-openjdk-amd64/include
 $-I/usr/lib/jvm/java-11-openjdk-amd64/include/linux
 CurlCert.o: ../../src/Crypto/Cert/CurlCert.cpp
 !-lcurl
-MDBFile.o: ../../src/DB/MDBFile.cpp
+MDBFileConn.o: ../../src/DB/MDBFileConn.cpp
 !-lodbc
 !-lodbcinst
 MongoDB.o: ../../src/DB/MongoDB.cpp

@@ -43,6 +43,7 @@ nodeps:
 @StringMapTest
 @DBDataFileTest
 @FileGDBTest
+@MDBFileTest
 @MySQLCheck
 @MySQLClientTest
 @XLSXExporterTest
@@ -288,6 +289,9 @@ DBDataFileTest:
 @ConsoleStartup.o
 FileGDBTest:
 @FileGDBTest.o
+@ConsoleStartup.o
+MDBFileTest:
+@MDBFileTest.o
 @ConsoleStartup.o
 MongoDBTest:
 @MongoDBTest.o
@@ -802,6 +806,7 @@ SortSpeed.o: ../../main/Data/SortSpeed.cpp
 StringMapTest.o: ../../main/Data/StringMapTest.cpp
 DBDataFileTest.o: ../../main/DB/DBDataFileTest.cpp
 FileGDBTest.o: ../../main/DB/FileGDBTest.cpp
+MDBFileTest.o: ../../main/DB/MDBFileTest.cpp
 MongoDBTest.o: ../../main/DB/MongoDBTest.cpp
 MySQLCheckMain.o: ../../main/DB/MySQLCheckMain.cpp
 MySQLClientTest.o: ../../main/DB/MySQLClientTest.cpp

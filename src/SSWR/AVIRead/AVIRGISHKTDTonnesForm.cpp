@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "DB/DBTool.h"
-#include "DB/MDBFile.h"
+#include "DB/MDBFileConn.h"
 #include "IO/StmData/FileData.h"
 #include "Map/HKTDVehRestrict.h"
 #include "SSWR/AVIRead/AVIRGISHKTDTonnesForm.h"
@@ -69,7 +69,7 @@ void __stdcall SSWR::AVIRead::AVIRGISHKTDTonnesForm::OnOKClicked(void *userObj)
 		NEW_CLASS(fd, IO::StmData::FileData(sb.ToString(), false));
 		Map::IMapDrawLayer *lyr = (Map::IMapDrawLayer*)me->core->GetParserList()->ParseFileType(fd, IO::ParserType::MapLayer);
 		DEL_CLASS(fd);
-		DB::DBTool *db = DB::MDBFile::CreateDBTool(sb2.ToString(), 0, 0);
+		DB::DBTool *db = DB::MDBFileConn::CreateDBTool(sb2.ToString(), 0, 0);
 		if (lyr && db)
 		{
 			Map::DrawLayerType lyrType = lyr->GetLayerType();

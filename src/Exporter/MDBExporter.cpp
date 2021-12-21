@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "DB/ColDef.h"
 #include "DB/DBTool.h"
-#include "DB/MDBFile.h"
+#include "DB/MDBFileConn.h"
 #include "DB/ReadingDB.h"
 #include "Exporter/MDBExporter.h"
 #include "IO/FileStream.h"
@@ -57,7 +57,7 @@ Bool Exporter::MDBExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 		return false;
 	}
 	IO::Path::DeleteFile(fileName);
-	if (!DB::MDBFile::CreateMDBFile(fileName))
+	if (!DB::MDBFileConn::CreateMDBFile(fileName))
 	{
 		return false;
 	}
@@ -72,7 +72,7 @@ Bool Exporter::MDBExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 	UOSInt j;
 	UOSInt k;
 	UOSInt l;
-	mdb = DB::MDBFile::CreateDBTool(fileName, &log, (const UTF8Char*)"DB: ");
+	mdb = DB::MDBFileConn::CreateDBTool(fileName, &log, (const UTF8Char*)"DB: ");
 	if (mdb == 0)
 		return false;
 	Bool succ = true;
