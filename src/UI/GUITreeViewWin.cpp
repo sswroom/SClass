@@ -26,7 +26,7 @@ UI::GUITreeView::TreeItem::TreeItem(void *itemObj, const UTF8Char *txt)
 	this->hTreeItem = hTreeItem;
 	this->itemObj = itemObj;
 	this->parent = 0;
-	this->txt = Text::String::New(txt);
+	this->txt = Text::String::NewNotNull(txt);
 }
 
 UI::GUITreeView::TreeItem::~TreeItem()
@@ -80,7 +80,7 @@ void UI::GUITreeView::TreeItem::SetText(const UTF8Char *txt)
 		return;
 	}
 	SDEL_STRING(this->txt);
-	this->txt = Text::String::New(txt);
+	this->txt = Text::String::NewNotNull(txt);
 }
 
 Text::String *UI::GUITreeView::TreeItem::GetText()

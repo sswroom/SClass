@@ -889,9 +889,9 @@ Math::Vector2D *Map::ESRI::FileGDBReader::GetVector(UOSInt colIndex)
 		}
 		else
 		{
-			UOSInt nPoints;
-			UOSInt nParts;
-			UOSInt nCurves = 0;
+			UInt64 nPoints;
+			UInt64 nParts;
+			UInt64 nCurves = 0;
 			ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, &nPoints);
 			ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, &nParts);
 			if (geometryType & 0x20000000)
@@ -939,7 +939,7 @@ Math::Vector2D *Map::ESRI::FileGDBReader::GetVector(UOSInt colIndex)
 			i = 0;
 			while (i < nParts)
 			{
-				OSInt iv;
+				Int64 iv;
 				OSInt dx = 0;
 				OSInt dy = 0;
 				j = parts[i];

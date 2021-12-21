@@ -325,7 +325,7 @@ Text::String *UI::GUIListBox::GetItemTextNew(UOSInt index)
 	}
 	else
 	{
-		Text::String *ret = Text::String::New(sbuff);
+		Text::String *ret = Text::String::NewNotNull(sbuff);
 		MemFree(sbuff);
 		return ret;
 	}

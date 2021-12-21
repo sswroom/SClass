@@ -372,7 +372,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::FGDBFileAnalyse::GetFrameDetail(U
 			UOSInt nullIndex = 0;
 			UOSInt i;
 			UOSInt j;
-			UOSInt v;
+			UInt64 v;
 			OSInt diffMul = 1;
 			Map::ESRI::FileGDBFieldInfo *field;
 			if (this->tableInfo->nullableCnt > 0)
@@ -440,12 +440,12 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::FGDBFileAnalyse::GetFrameDetail(U
 					}
 					else if (field->fieldType == 7) //Geometry
 					{
-						UOSInt geometryLen;
+						UInt64 geometryLen;
 						ofst2 = Map::ESRI::FileGDBUtil::ReadVarUInt(tagData, ofst, &geometryLen);
 						UOSInt endOfst = ofst2 + geometryLen;
 						frame->AddUInt(ofst, ofst2 - ofst, "Len", geometryLen);
 						ofst = ofst2;
-						UOSInt geometryType;
+						UInt64 geometryType;
 						ofst2 = Map::ESRI::FileGDBUtil::ReadVarUInt(tagData, ofst, &geometryType);
 						frame->AddHex64V(ofst, ofst2 - ofst, "GeometryType", geometryType);
 						ofst = ofst2;
@@ -493,8 +493,8 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::FGDBFileAnalyse::GetFrameDetail(U
 							}
 							else
 							{
-								UOSInt nPoints;
-								UOSInt nParts;
+								UInt64 nPoints;
+								UInt64 nParts;
 								ofst2 = Map::ESRI::FileGDBUtil::ReadVarUInt(tagData, ofst, &nPoints);
 								frame->AddUInt(ofst, ofst2 - ofst, "Number of Points", nPoints);
 								ofst = ofst2;
@@ -527,7 +527,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::FGDBFileAnalyse::GetFrameDetail(U
 									ofst = ofst2;
 									tmpI++;
 								}
-								OSInt iv;
+								Int64 iv;
 								OSInt dx = 0;
 								OSInt dy = 0;
 								tmpI = 0;
@@ -579,9 +579,9 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::FGDBFileAnalyse::GetFrameDetail(U
 							}
 							else
 							{
-								UOSInt nPoints;
-								UOSInt nParts;
-								UOSInt nCurves = 0;
+								UInt64 nPoints;
+								UInt64 nParts;
+								UInt64 nCurves = 0;
 								ofst2 = Map::ESRI::FileGDBUtil::ReadVarUInt(tagData, ofst, &nPoints);
 								frame->AddUInt(ofst, ofst2 - ofst, "Number of Points", nPoints);
 								ofst = ofst2;
@@ -612,7 +612,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::FGDBFileAnalyse::GetFrameDetail(U
 								frame->AddUInt(ofst, ofst2 - ofst, "YMax_RAW", v);
 								frame->AddFloat(ofst, ofst2 - ofst, "YMax", Math::UOSInt2Double(v) / this->tableInfo->xyScale + yMin);
 								ofst = ofst2;
-								UOSInt *parts = MemAlloc(UOSInt, nParts);
+								UInt64 *parts = MemAlloc(UInt64, nParts);
 								parts[nParts - 1] = nPoints;
 								UOSInt tmpI = 0;
 								while (tmpI < nParts - 1)
@@ -627,7 +627,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::FGDBFileAnalyse::GetFrameDetail(U
 								tmpI = 0;
 								while (tmpI < nParts)
 								{
-									OSInt iv;
+									Int64 iv;
 									OSInt dx = 0;
 									OSInt dy = 0;
 									tmpJ = parts[tmpI];

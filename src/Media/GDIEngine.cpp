@@ -2034,12 +2034,12 @@ Bool Media::GDIImage::DrawImagePt2(Media::StaticImage *img, Double tlx, Double t
 		}
 		else
 		{
-			OSInt w = simg->info->dispWidth;
-			OSInt h = simg->info->dispHeight;
+			OSInt w = (OSInt)simg->info->dispWidth;
+			OSInt h = (OSInt)simg->info->dispHeight;
 			UInt8 *dbits = (UInt8*)this->bmpBits;
 			UInt8 *sbits = simg->data;
-			OSInt dbpl = this->width << 2;
-			OSInt sbpl = simg->info->storeWidth << 2;
+			UOSInt dbpl = this->width << 2;
+			UOSInt sbpl = simg->info->storeWidth << 2;
 
 			if (tlx < 0)
 			{
@@ -2371,7 +2371,7 @@ Bool Media::GDIImage::GetTextSize(DrawFont *fnt, const WChar *txt, OSInt txtLen,
 {
 	Bool isCJK = true;
 	if (txtLen == -1)
-		txtLen = Text::StrCharCnt(txt);
+		txtLen = (OSInt)Text::StrCharCnt(txt);
 
 	OSInt i = txtLen;
 	while (i-- > 0)
@@ -2438,7 +2438,7 @@ void Media::GDIImage::GetStringBound(Int32 *pos, OSInt centX, OSInt centY, const
 void Media::GDIImage::GetStringBoundW(Int32 *pos, OSInt centX, OSInt centY, const WChar *str, DrawFont *f, OSInt *drawX, OSInt *drawY)
 {
 	Double sz[2];
-	GetTextSize(f, str, Text::StrCharCnt(str), sz);
+	GetTextSize(f, str, (OSInt)Text::StrCharCnt(str), sz);
 	Bool isCenter = false;
 	if (strAlign == Media::DrawEngine::DRAW_POS_TOPLEFT)
 	{
@@ -2516,7 +2516,7 @@ void Media::GDIImage::GetStringBoundRot(Int32 *pos, Double centX, Double centY, 
 void Media::GDIImage::GetStringBoundRotW(Int32 *pos, Double centX, Double centY, const WChar *str, DrawFont *f, Double angleDegree, OSInt *drawX, OSInt *drawY)
 {
 	Double sz[2];
-	GetTextSize(f, str, Text::StrCharCnt(str), sz);
+	GetTextSize(f, str, (OSInt)Text::StrCharCnt(str), sz);
 	Double pts[10];
 	Bool isCenter = false;
 	if (strAlign == Media::DrawEngine::DRAW_POS_TOPLEFT)

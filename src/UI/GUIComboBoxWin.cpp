@@ -153,7 +153,7 @@ UOSInt UI::GUIComboBox::AddItem(const UTF8Char *itemText, void *itemObj)
 	{
 		SendMessage((HWND)hwnd, CB_SETITEMDATA, (WPARAM)i, (LPARAM)itemObj);
 	}
-	this->itemTexts->Add(Text::String::New(itemText));
+	this->itemTexts->Add(Text::String::NewNotNull(itemText));
 	return (UOSInt)i;
 }
 
@@ -183,7 +183,7 @@ UOSInt UI::GUIComboBox::InsertItem(UOSInt index, const UTF8Char *itemText, void 
 	{
 		SendMessage((HWND)hwnd, CB_SETITEMDATA, (WPARAM)i, (LPARAM)itemObj);
 	}
-	this->itemTexts->Insert(index, Text::String::New(itemText));
+	this->itemTexts->Insert(index, Text::String::NewNotNull(itemText));
 	return (UOSInt)i;
 }
 

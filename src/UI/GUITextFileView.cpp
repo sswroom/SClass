@@ -1113,7 +1113,7 @@ void UI::GUITextFileView::EventMouseMove(OSInt scnX, OSInt scnY)
 			this->SetScrollVPos((UOSInt)(this->GetScrollVPos() + lineOfst), false);
 			needRedraw = true;
 		}
-		else if (lineOfst > this->pageLineCnt)
+		else if (lineOfst > (OSInt)this->pageLineCnt)
 		{
 			this->SetScrollVPos((UOSInt)(this->GetScrollVPos() + lineOfst) - this->pageLineCnt, false);
 			needRedraw = true;
@@ -1317,11 +1317,11 @@ void UI::GUITextFileView::DrawImage(Media::DrawImage *dimg)
 				}
 				else if (i + yPos == selTopY && selTopY == selBottomY)
 				{
-					if (sptr - line <= selTopX || selTopX == selBottomX)
+					if ((UOSInt)(sptr - line) <= selTopX || selTopX == selBottomX)
 					{
 						dimg->DrawString(drawLeft, drawTop, csptr, fnt, textBrush);
 					}
-					else if (sptr - line <= selBottomX)
+					else if ((UOSInt)(sptr - line) <= selBottomX)
 					{
 						if (selTopX > 0)
 						{
@@ -1376,7 +1376,7 @@ void UI::GUITextFileView::DrawImage(Media::DrawImage *dimg)
 						dimg->DrawRect(drawLeft, drawTop, szThis[0], szThis[1], 0, selBrush);
 						dimg->DrawString(drawLeft, drawTop, csptr, fnt, selTextBrush);
 					}
-					else if (sptr - line <= selTopX)
+					else if ((UOSInt)(sptr - line) <= selTopX)
 					{
 						dimg->DrawString(drawLeft, drawTop, csptr, fnt, textBrush);
 					}
@@ -1403,7 +1403,7 @@ void UI::GUITextFileView::DrawImage(Media::DrawImage *dimg)
 					{
 						dimg->DrawString(drawLeft, drawTop, csptr, fnt, textBrush);
 					}
-					else if (sptr - line <= selBottomX)
+					else if ((UOSInt)(sptr - line) <= selBottomX)
 					{
 						dimg->GetTextSize(fnt, csptr, szThis);
 						dimg->DrawRect(drawLeft, drawTop, szThis[0], szThis[1], 0, selBrush);

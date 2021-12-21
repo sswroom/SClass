@@ -500,7 +500,7 @@ void UI::GUITextView::GetDrawSize(WChar *str, UOSInt strLen, UOSInt *width, UOSI
 	{
 		Double sz[2];
 		Media::DrawFont *fnt = this->CreateDrawFont(this->drawBuff);
-		((Media::GDIImage*)this->drawBuff)->GetTextSize(fnt, str, strLen, sz);
+		((Media::GDIImage*)this->drawBuff)->GetTextSize(fnt, str, (OSInt)strLen, sz);
 		*width = (UOSInt)Math::Double2OSInt(sz[0]);
 		*height = (UOSInt)Math::Double2OSInt(sz[1]);
 		this->drawBuff->DelFont(fnt);

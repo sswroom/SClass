@@ -174,7 +174,6 @@ Net::LogClient::LogClient(Net::SocketFactory *sockf, const Net::SocketUtil::Addr
 
 Net::LogClient::~LogClient()
 {
-	UOSInt i;
 	this->recvToStop = true;
 	this->sendToStop = true;
 	this->recvEvt->Set();

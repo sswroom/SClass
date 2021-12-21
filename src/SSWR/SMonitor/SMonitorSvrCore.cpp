@@ -1838,7 +1838,7 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceSetReading(Int64 cliId, UInt32 index
 	if (readingName == 0 || readingName[0] == 0)
 		return false;
 	dev->mut->LockRead();
-	if (index < 0 || index >= (OSInt)dev->nReading)
+	if (index >= dev->nReading)
 	{
 		dev->mut->UnlockRead();
 		return false;

@@ -115,6 +115,101 @@ IO::FileStream::FileStream() : IO::SeekableStream((const UTF8Char*)"FileStream")
 	this->currPos = 0;
 }
 
+IO::FileStream::FileStream(Text::String *fileName, FileMode mode, FileShare share, BufferType buffType) : IO::SeekableStream(fileName)
+{
+	handle = (void*)-1;
+	if (fileName == 0)
+	{
+		this->currPos = 0;
+		handle = INVALID_HANDLE_VALUE;
+		return;
+	}
+	else if (fileName->leng == 0)
+	{
+		this->currPos = 0;
+		handle = INVALID_HANDLE_VALUE;
+		return;
+	}
+
+	SECURITY_ATTRIBUTES secAttr;
+	UInt32 shflag;
+	secAttr.nLength = sizeof(secAttr);
+	secAttr.lpSecurityDescriptor = 0;
+	secAttr.bInheritHandle = FALSE;////////////////////////////
+	if (share == IO::FileStream::FileShare::DenyNone)
+	{
+		shflag = FILE_SHARE_READ | FILE_SHARE_WRITE;
+	}
+	else if (share == IO::FileStream::FileShare::DenyRead)
+	{
+		shflag = FILE_SHARE_WRITE;
+	}
+	else if (share == IO::FileStream::FileShare::DenyWrite)
+	{
+		shflag = FILE_SHARE_READ;
+	}
+	else
+	{
+		shflag = 0;
+	}
+
+	UInt32 fileFlag;
+	switch (buffType)
+	{
+	case BufferType::RandomAccess:
+		fileFlag = FILE_FLAG_RANDOM_ACCESS;
+		break;
+	case BufferType::Normal:
+		fileFlag = 0;
+		break;
+	case BufferType::Sequential:
+		fileFlag = FILE_FLAG_SEQUENTIAL_SCAN;
+		break;
+	case BufferType::NoBuffer:
+		fileFlag = FILE_FLAG_NO_BUFFERING;
+		break;
+	case BufferType::NoWriteBuffer:
+		fileFlag = FILE_FLAG_WRITE_THROUGH;
+		break;
+	default:
+		fileFlag = 0;
+		break;
+	}
+
+
+	const WChar *wptr = Text::StrToWCharNew(fileName->v);
+	if (mode == FileStream::FileMode::Create)
+	{
+		handle = CreateFileW(wptr, GENERIC_READ | GENERIC_WRITE, shflag, &secAttr, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL | fileFlag, 0);
+		currPos = 0;
+	}
+	else if (mode == FileStream::FileMode::CreateWrite)
+	{
+		handle = CreateFileW(wptr, GENERIC_WRITE, shflag, &secAttr, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL | fileFlag, 0);
+		currPos = 0;
+	}
+	else if (mode == FileStream::FileMode::Append)
+	{
+		handle = CreateFileW(wptr, GENERIC_READ | GENERIC_WRITE, shflag, &secAttr, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL | fileFlag, 0);
+		if (handle == INVALID_HANDLE_VALUE)
+		{
+			this->currPos = 0;
+		}
+		else
+		{
+			Int32 fleng = 0;
+			this->currPos = SetFilePointer(handle, 0, (PLONG)&fleng, FILE_END);
+			((Int32*)&this->currPos)[1] = fleng;
+		}
+	}
+	else if (mode == FileStream::FileMode::ReadOnly)
+	{
+		handle = CreateFileW(wptr, GENERIC_READ, shflag, &secAttr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL | fileFlag, 0);
+		currPos = 0;
+	}
+	Text::StrDelNew(wptr);
+}
+
 IO::FileStream::FileStream(const UTF8Char *fileName, IO::FileStream::FileMode mode, FileShare share, BufferType buffType) : IO::SeekableStream(fileName)
 {
 	handle = (void*)-1;
