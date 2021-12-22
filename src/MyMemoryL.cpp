@@ -1,10 +1,8 @@
 #include "Stdafx.h"
+#include "MemTool.h"
 #include "MyMemory.h"
 #include "IO/ConsoleWriter.h"
 #include "IO/SimpleFileWriter.h"
-#if defined(CPU_X86_32) || defined(CPU_X86_64)
-#include "Manage/CPUInfo.h"
-#endif
 #include "Sync/Mutex.h"
 #include "Sync/Interlocked.h"
 #include "Text/MyString.h"
@@ -13,7 +11,6 @@
 #if !defined(__FreeBSD__) && !defined(__APPLE__)
 #include <malloc.h>
 #endif
-#include <wchar.h>
 #include <signal.h>
 
 Int32 mcMemoryCnt = 0;
@@ -25,65 +22,11 @@ Sync::MutexData mcMut;
 
 Int32 mcBlockId = 0;
 
-#if defined(CPU_X86_64)
-extern "C"
-{
-	void MemClearANC_SSE(void *buff, UOSInt buffSize); //buff 16-byte align, buffSize 16 bytes
-	void MemClearAC_SSE(void *buff, UOSInt buffSize); //buff 16-byte align, buffSize 16 bytes
-	void MemCopyAC_SSE(void *destPtr, const void *srcPtr, UOSInt leng);
-	void MemCopyANC_SSE(void *destPtr, const void *srcPtr, UOSInt leng);
-	void MemCopyNAC_SSE(void *destPtr, const void *srcPtr, UOSInt leng);
-	void MemCopyNANC_SSE(void *destPtr, const void *srcPtr, UOSInt leng);
-
-	void MemClearANC_AVX(void *buff, UOSInt buffSize); //buff 16-byte align, buffSize 16 bytes
-	void MemClearAC_AVX(void *buff, UOSInt buffSize); //buff 16-byte align, buffSize 16 bytes
-	void MemCopyAC_AVX(void *destPtr, const void *srcPtr, UOSInt leng);
-	void MemCopyANC_AVX(void *destPtr, const void *srcPtr, UOSInt leng);
-	void MemCopyNAC_AVX(void *destPtr, const void *srcPtr, UOSInt leng);
-	void MemCopyNANC_AVX(void *destPtr, const void *srcPtr, UOSInt leng);
-
-	void MemClearANC_AMDSSE(void *buff, UOSInt buffSize); //buff 16-byte align, buffSize 16 bytes
-	void MemClearAC_AMDSSE(void *buff, UOSInt buffSize); //buff 16-byte align, buffSize 16 bytes
-	void MemCopyAC_AMDSSE(void *destPtr, const void *srcPtr, UOSInt leng);
-	void MemCopyANC_AMDSSE(void *destPtr, const void *srcPtr, UOSInt leng);
-	void MemCopyNAC_AMDSSE(void *destPtr, const void *srcPtr, UOSInt leng);
-	void MemCopyNANC_AMDSSE(void *destPtr, const void *srcPtr, UOSInt leng);
-
-	void MemClearANC_AMDAVX(void *buff, UOSInt buffSize); //buff 16-byte align, buffSize 16 bytes
-	void MemClearAC_AMDAVX(void *buff, UOSInt buffSize); //buff 16-byte align, buffSize 16 bytes
-	void MemCopyAC_AMDAVX(void *destPtr, const void *srcPtr, UOSInt leng);
-	void MemCopyANC_AMDAVX(void *destPtr, const void *srcPtr, UOSInt leng);
-	void MemCopyNAC_AMDAVX(void *destPtr, const void *srcPtr, UOSInt leng);
-	void MemCopyNANC_AMDAVX(void *destPtr, const void *srcPtr, UOSInt leng);
-}
-
-MemClearFunc MemClearANC = MemClearANC_SSE;
-MemClearFunc MemClearAC = MemClearAC_SSE;
-MemCopyFunc MemCopyAC = MemCopyAC_SSE;
-MemCopyFunc MemCopyANC = MemCopyANC_SSE;
-MemCopyFunc MemCopyNAC = MemCopyNAC_SSE;
-MemCopyFunc MemCopyNANC = MemCopyNANC_SSE;
-
-extern "C"
-{
-	Int32 UseAVX = 0;
-	Int32 UseSSE42 = 0;
-	Int32 CPUBrand = 0;
-}
-#elif defined(CPU_X86_32)
-extern "C"
-{
-	Int32 UseAVX = 0;
-	Int32 UseSSE42 = 0;
-	Int32 CPUBrand = 0;
-}
-#endif
-
 void MemPtrChk(void *ptr)
 {
 	if ((OSInt)ptr == mcBreakPt)
 	{
-		wprintf(L"Out of Memory\n");
+		printf("Out of Memory\n");
 	}
 } 
 
@@ -94,57 +37,7 @@ void MemInit()
 		mcBusy = 0;
 		mcBreakPt = 0;
 		Sync::Mutex_Create(&mcMut);
-
-#if defined(CPU_X86_64)
-		Manage::CPUInfo cpuInfo;
-		CPUBrand = (Int32)cpuInfo.GetBrand();
-		if (CPUBrand == 2)
-		{
-			if (cpuInfo.HasInstruction(Manage::CPUInfo::IT_AVX2))
-			{
-				UseAVX = 1;
-				MemClearANC = MemClearANC_AMDAVX;
-				MemClearAC = MemClearAC_AMDAVX;
-				MemCopyAC = MemCopyAC_AMDAVX;
-				MemCopyANC = MemCopyANC_AMDAVX;
-				MemCopyNAC = MemCopyNAC_AMDAVX;
-				MemCopyNANC = MemCopyNANC_AMDAVX;
-			}
-			else
-			{
-				MemClearANC = MemClearANC_AMDSSE;
-				MemClearAC = MemClearAC_AMDSSE;
-				MemCopyAC = MemCopyAC_AMDSSE;
-				MemCopyANC = MemCopyANC_AMDSSE;
-				MemCopyNAC = MemCopyNAC_AMDSSE;
-				MemCopyNANC = MemCopyNANC_AMDSSE;
-			}
-		}
-		else
-		{
-			if (cpuInfo.HasInstruction(Manage::CPUInfo::IT_AVX) && cpuInfo.HasInstruction(Manage::CPUInfo::IT_AVX2))
-			{
-				UseAVX = 1;
-				MemClearANC = MemClearANC_AVX;
-				MemClearAC = MemClearAC_AVX;
-				MemCopyAC = MemCopyAC_AVX;
-				MemCopyANC = MemCopyANC_AVX;
-				MemCopyNAC = MemCopyNAC_AVX;
-				MemCopyNANC = MemCopyNANC_AVX;
-			}
-		}
-		if (cpuInfo.HasInstruction(Manage::CPUInfo::IT_SSE42))
-		{
-			UseSSE42 = 1;
-		}
-#elif defined(CPU_X86_32)
-	Manage::CPUInfo cpuInfo;
-	CPUBrand = (Int32)cpuInfo.GetBrand();
-	if (cpuInfo.HasInstruction(Manage::CPUInfo::IT_AVX2))
-	{
-		UseAVX = 1;
-	}
-#endif
+		MemTool_Init();
 	}
 }
 
@@ -186,7 +79,7 @@ void *MAlloc(UOSInt size)
 	void *ptr = malloc(size + 4);
 	if ((OSInt)ptr == 0)
 	{
-		wprintf(L"Out of Memory: size = %d\n", size);
+		printf("Out of Memory: size = %d\n", (UInt32)size);
 	}
 	else
 	{
@@ -215,7 +108,7 @@ void *MAllocA(UOSInt size)
 //	wprintf(L"MAllocA %x\r\n", mptr);
 	if ((OSInt)mptr == 0)
 	{
-		wprintf(L"Out of Memory: Asize = %d\n", size);
+		printf("Out of Memory: Asize = %d\n", (UInt32)size);
 		Sync::Mutex_Unlock(&mcMut);
 		return 0;
 	}
@@ -237,7 +130,7 @@ void *MAllocA64(UOSInt size)
 //	wprintf(L"MAllocA64 %lx\r\n", mptr);
 	if ((OSInt)mptr == 0)
 	{
-		wprintf(L"Out of Memory: A64size = %d\n", size);
+		printf("Out of Memory: A64size = %d\n", (UInt32)size);
 		Sync::Mutex_Unlock(&mcMut);
 		return 0;
 	}
@@ -289,7 +182,7 @@ IO::Writer *MemOpenWriter()
 {
 	if (mcLogFile)
 	{
-		return new IO::SimpleFileWriter(mcLogFile, IO::FileStream::FileMode::Append, IO::FileStream::FileShare::DenyNone);
+		return new IO::SimpleFileWriter(mcLogFile, IO::FileMode::Append, IO::FileShare::DenyNone);
 	}
 	else
 	{

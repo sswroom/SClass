@@ -138,7 +138,7 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnSMSSaveClick(void *userObj)
 		{
 			IO::FileStream *fs;
 			Text::UTF8Writer *writer;
-			NEW_CLASS(fs, IO::FileStream(dlg->GetFileName(), IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+			NEW_CLASS(fs, IO::FileStream(dlg->GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 			NEW_CLASS(writer, Text::UTF8Writer(fs));
 			writer->WriteSignature();
 			writer->Write((const UTF8Char*)"From: ");
@@ -215,7 +215,7 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnSMSSaveAllClick(void *userObj)
 				Text::StrDelNew(csptr);
 				sb.Append((const UTF8Char*)".sms");
 
-				NEW_CLASS(fs, IO::FileStream(sb.ToString(), IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+				NEW_CLASS(fs, IO::FileStream(sb.ToString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 				NEW_CLASS(writer, Text::UTF8Writer(fs));
 				writer->WriteSignature();
 				writer->Write((const UTF8Char*)"From: ");

@@ -51,7 +51,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			sptr = &sbuff[Text::StrLastIndexOf(sbuff, IO::Path::PATH_SEPERATOR) + 1];
 			Text::StrConcat(Text::StrConcat(Text::StrConcat(sbuff2, destPath), sptr), (const UTF8Char*)".shp");
 
-			NEW_CLASS(fs, IO::FileStream(sbuff2, IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+			NEW_CLASS(fs, IO::FileStream(sbuff2, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 			shpExp->ExportFile(fs, sbuff2, lyr, 0);
 			DEL_CLASS(fs);
 			i++;

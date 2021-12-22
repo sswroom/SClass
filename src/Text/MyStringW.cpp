@@ -1,4 +1,5 @@
 #include "Stdafx.h"
+#include "MemTool.h"
 #include "MyMemory.h"
 #include "Data/ByteTool.h"
 #include "Text/MyString.h"

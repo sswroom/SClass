@@ -20,7 +20,7 @@ IO::ConfigFile *IO::UnixConfigFile::Parse(const UTF8Char *fileName)
 	IO::ConfigFile *cfg;
 	IO::FileStream *fstm;
 	Text::UTF8Reader *reader;
-	NEW_CLASS(fstm, IO::FileStream(fileName, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
+	NEW_CLASS(fstm, IO::FileStream(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
 	if (fstm->IsError())
 	{
 		cfg = 0;

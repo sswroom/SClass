@@ -32,7 +32,7 @@ IO::SeekableStream *Map::OSM::OSMCacheHandler::GetTileData(Int32 lev, Int32 xTil
 	{
 		mutUsage->ReplaceMutex(this->ioMut);
 	}
-	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (fs->IsError())
 	{
 		DEL_CLASS(fs);
@@ -59,7 +59,7 @@ IO::SeekableStream *Map::OSM::OSMCacheHandler::GetTileData(Int32 lev, Int32 xTil
 
 		if (cli->GetRespStatus() == 304)
 		{
-			NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FileMode::Append, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+			NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 			dt.SetCurrTimeUTC();
 			fs->SetFileTimes(&dt, 0, 0);
 			DEL_CLASS(fs);
@@ -88,7 +88,7 @@ IO::SeekableStream *Map::OSM::OSMCacheHandler::GetTileData(Int32 lev, Int32 xTil
 					{
 						mutUsage->ReplaceMutex(this->ioMut);
 					}
-					NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyRead, IO::FileStream::BufferType::NoWriteBuffer));
+					NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::Create, IO::FileShare::DenyRead, IO::FileStream::BufferType::NoWriteBuffer));
 					fs->Write(imgBuff, (UOSInt)contLeng);
 					if (cli->GetLastModified(&dt))
 					{

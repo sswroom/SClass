@@ -9,7 +9,7 @@ Bool Power_ReadIntFile(const UTF8Char *filePath, Int32 *val)
 	UInt8 buff[128];
 	UOSInt readSize;
 	Bool succ = false;
-	NEW_CLASS(fs, IO::FileStream(filePath, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(fs, IO::FileStream(filePath, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (!fs->IsError())
 	{
 		readSize = fs->Read(buff, 127);
@@ -43,7 +43,7 @@ Bool Power_ReadStrFile(const UTF8Char *filePath, UTF8Char *val, UOSInt maxCharCn
 	IO::FileStream *fs;
 	UOSInt readSize;
 	Bool succ = false;
-	NEW_CLASS(fs, IO::FileStream(filePath, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(fs, IO::FileStream(filePath, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (!fs->IsError())
 	{
 		readSize = fs->Read(val, maxCharCnt);

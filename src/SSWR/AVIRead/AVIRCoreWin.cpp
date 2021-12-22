@@ -327,7 +327,7 @@ void SSWR::AVIRead::AVIRCoreWin::SaveData(UI::GUIForm *ownerForm, IO::ParsedObje
 						}
 						else
 						{
-							NEW_CLASS(fs, IO::FileStream(sfd->GetFileName(), IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+							NEW_CLASS(fs, IO::FileStream(sfd->GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 							if (!fileExp->ExportFile(fs, sfd->GetFileName(), pobj, param))
 							{
 								UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in saving file", (const UTF8Char*)"Save Data", ownerForm);
@@ -350,7 +350,7 @@ void SSWR::AVIRead::AVIRCoreWin::SaveData(UI::GUIForm *ownerForm, IO::ParsedObje
 				}
 				else
 				{
-					NEW_CLASS(fs, IO::FileStream(sfd->GetFileName(), IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+					NEW_CLASS(fs, IO::FileStream(sfd->GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 					if (!fileExp->ExportFile(fs, sfd->GetFileName(), pobj, 0))
 					{
 						UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in saving file", (const UTF8Char*)"Save Data", ownerForm);

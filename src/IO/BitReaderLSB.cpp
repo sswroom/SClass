@@ -1,4 +1,5 @@
 #include "Stdafx.h"
+#include "MemTool.h"
 #include "MyMemory.h"
 #include "IO/BitReaderLSB.h"
 #include "Data/ByteTool.h"

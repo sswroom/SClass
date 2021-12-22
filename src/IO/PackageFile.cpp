@@ -310,7 +310,7 @@ IO::IStreamData *IO::PackageFile::GetPItemStmData(const PackFileItem *item)
 			{
 				sptr = Text::StrConcat(sptr, item->fd->GetShortName());
 			}
-			NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+			NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 			NEW_CLASS(hashStm, Crypto::Hash::HashStream(fs, hash));
 
 			hash->Clear();
@@ -648,7 +648,7 @@ Bool IO::PackageFile::CopyTo(UOSInt index, const UTF8Char *destPath, Bool fullFi
 			UOSInt resSize;
 			UOSInt i;
 			Bool diff = false;
-			NEW_CLASS(fs, IO::FileStream(sb.ToString(), IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
+			NEW_CLASS(fs, IO::FileStream(sb.ToString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
 			NEW_CLASS(hashStm, Crypto::Hash::HashStream(fs, hash));
 
 			hash->Clear();
@@ -693,7 +693,7 @@ Bool IO::PackageFile::CopyTo(UOSInt index, const UTF8Char *destPath, Bool fullFi
 				if (succ)
 				{
 					IO::FileStream *fs;
-					NEW_CLASS(fs, IO::FileStream(sb.ToString(), IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
+					NEW_CLASS(fs, IO::FileStream(sb.ToString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
 					succ = (fs->Write(tmpBuff, (UOSInt)fileSize) == fileSize);
 					DEL_CLASS(fs);
 				}
@@ -704,7 +704,7 @@ Bool IO::PackageFile::CopyTo(UOSInt index, const UTF8Char *destPath, Bool fullFi
 				UInt8 *tmpBuff = MemAlloc(UInt8, 1048576);
 				UInt64 currOfst = 0;
 				IO::FileStream *fs;
-				NEW_CLASS(fs, IO::FileStream(sb.ToString(), IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
+				NEW_CLASS(fs, IO::FileStream(sb.ToString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
 				while (currOfst < fileSize)
 				{
 					if ((fileSize - currOfst) >= 1048576)

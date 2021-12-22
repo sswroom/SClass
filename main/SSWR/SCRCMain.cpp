@@ -196,7 +196,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 					Exporter::SFVExporter exporter;
 					sb.Append(cmdLines[1]);
 					sb.Append((const UTF8Char*)".sfv");
-					NEW_CLASS(fs, IO::FileStream(sb.ToString(), IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+					NEW_CLASS(fs, IO::FileStream(sb.ToString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 					exporter.ExportFile(fs, sb.ToString(), fileChk, 0);
 					DEL_CLASS(fs);
 					DEL_CLASS(fileChk);

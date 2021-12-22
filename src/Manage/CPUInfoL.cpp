@@ -1,40 +1,11 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Core/X86Util.h"
 #include "IO/FileStream.h"
 #include "Manage/CPUInfo.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 #include "Text/UTF8Reader.h"
-
-#if defined(CPU_X86_32) || defined(CPU_X86_64)
-#if defined(HAS_GCCASM32) || defined(HAS_GCCASM64)
-static inline void native_cpuid(Int32 *eax, Int32 *ebx, Int32 *ecx, Int32 *edx)
-{
-	asm volatile("cpuid": "=a" (*eax), "=b" (*ebx), "=c" (*ecx), "=d" (*edx) : "0" (*eax), "2" (*ecx));
-}
-
-static inline void __cpuid(Int32 *cpuInfo, Int32 func)
-{
-	cpuInfo[0] = func;
-	cpuInfo[2] = 0;
-	native_cpuid(&cpuInfo[0], &cpuInfo[1], &cpuInfo[2], &cpuInfo[3]);
-}
-
-static inline void __cpuidex(Int32 *cpuInfo, Int32 func, Int32 subfunc)
-{
-	cpuInfo[0] = func;
-	cpuInfo[2] = subfunc;
-	native_cpuid(&cpuInfo[0], &cpuInfo[1], &cpuInfo[2], &cpuInfo[3]);
-}
-#else
-extern "C"
-{
-	void CPUInfo_cpuid(Int32 *cpuInfo, Int32 func, Int32 subfunc);
-}
-#define __cpuid(cpuInfo, func) CPUInfo_cpuid(cpuInfo, func, 0)
-#define __cpuidex(cpuInfo, func, subfunc) CPUInfo_cpuid(cpuInfo, func, subfunc)
-#endif
-#endif
 
 Manage::CPUInfo::CPUInfo()
 {
@@ -50,7 +21,7 @@ Manage::CPUInfo::CPUInfo()
 	this->steppingId = 0;
 	this->clsData = 0;
 
-	NEW_CLASS(fs, IO::FileStream((const UTF8Char*)"/proc/cpuinfo", IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(fs, IO::FileStream((const UTF8Char*)"/proc/cpuinfo", IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (!fs->IsError())
 	{
 		Int32 cpuPart = 0;
@@ -156,35 +127,6 @@ Manage::CPUInfo::CPUInfo()
 		DEL_CLASS(reader);
 	}
 	DEL_CLASS(fs);
-}
-
-
-Bool Manage::CPUInfo::HasInstruction(InstructionType instType)
-{
-#if defined(CPU_X86_32) || defined(CPU_X86_64)
-	Int32 cpuInfo[4];
-#endif
-	switch (instType)
-	{
-#if defined(CPU_X86_32) || defined(CPU_X86_64)
-	case IT_X86:
-		return true;
-	case IT_SSE41:
-		__cpuid(cpuInfo, 1);
-		return (cpuInfo[2] & 0x80000) != 0;
-	case IT_SSE42:
-		__cpuid(cpuInfo, 1);
-		return (cpuInfo[2] & 0x100000) != 0;
-	case IT_AVX:
-		__cpuid(cpuInfo, 1);
-		return (cpuInfo[2] & 0x10000000) != 0;
-	case IT_AVX2:
-		__cpuidex(cpuInfo, 7, 0);
-		return (cpuInfo[1] & 0x20) != 0;
-#endif
-	default:
-		return false;
-	}
 }
 
 Manage::CPUVendor::CPU_BRAND Manage::CPUInfo::GetBrand()

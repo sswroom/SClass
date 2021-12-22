@@ -24,7 +24,7 @@ IO::ConfigFile *IO::IniFile::Parse(const UTF8Char *fileName, UInt32 codePage)
 	IO::ConfigFile *cfg;
 	IO::FileStream *fstm;
 	IO::StreamReader *reader;
-	NEW_CLASS(fstm, IO::FileStream(fileName, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
+	NEW_CLASS(fstm, IO::FileStream(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
 	NEW_CLASS(reader, IO::StreamReader(fstm, codePage));
 	cfg = ParseReader(reader);
 	DEL_CLASS(reader);

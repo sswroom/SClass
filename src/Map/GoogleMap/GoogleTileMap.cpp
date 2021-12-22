@@ -295,7 +295,7 @@ Media::ImageList *Map::GoogleMap::GoogleTileMap::LoadTileImage(UOSInt level, Int
 	}
 	if (cli->GetRespStatus() == 304)
 	{
-		NEW_CLASS(fs, IO::FileStream(filePathU, IO::FileStream::FileMode::Append, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+		NEW_CLASS(fs, IO::FileStream(filePathU, IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		dt.SetCurrTimeUTC();
 		fs->SetFileTimes(&dt, 0, 0);
 		DEL_CLASS(fs);
@@ -320,7 +320,7 @@ Media::ImageList *Map::GoogleMap::GoogleTileMap::LoadTileImage(UOSInt level, Int
 			{
 				if (this->cacheDir)
 				{
-					NEW_CLASS(fs, IO::FileStream(filePathU, IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
+					NEW_CLASS(fs, IO::FileStream(filePathU, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
 					fs->Write(imgBuff, (OSInt)contLeng);
 					if (cli->GetLastModified(&dt))
 					{
@@ -501,7 +501,7 @@ IO::IStreamData *Map::GoogleMap::GoogleTileMap::LoadTileImageData(UOSInt level, 
 	}
 	if (cli->GetRespStatus() == 304)
 	{
-		NEW_CLASS(fs, IO::FileStream(filePathU, IO::FileStream::FileMode::Append, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+		NEW_CLASS(fs, IO::FileStream(filePathU, IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		dt.SetCurrTimeUTC();
 		fs->SetFileTimes(&dt, 0, 0);
 		DEL_CLASS(fs);
@@ -526,7 +526,7 @@ IO::IStreamData *Map::GoogleMap::GoogleTileMap::LoadTileImageData(UOSInt level, 
 			{
 				if (this->cacheDir)
 				{
-					NEW_CLASS(fs, IO::FileStream(filePathU, IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
+					NEW_CLASS(fs, IO::FileStream(filePathU, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
 					fs->Write(imgBuff, (OSInt)contLeng);
 					if (cli->GetLastModified(&dt))
 					{

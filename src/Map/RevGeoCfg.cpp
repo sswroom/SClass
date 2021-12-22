@@ -26,7 +26,7 @@ Map::RevGeoCfg::RevGeoCfg(const UTF8Char *fileName, Map::MapSearchManager *mapSr
 		NEW_CLASS(layers[i], Data::ArrayList<Map::RevGeoCfg::SearchLayer*>());
 	}
 
-	NEW_CLASS(fs, IO::FileStream(fileName, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(fs, IO::FileStream(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (!fs->IsError())
 	{
 		NEW_CLASS(reader, IO::StreamReader(fs));

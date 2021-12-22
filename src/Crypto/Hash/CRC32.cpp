@@ -1,4 +1,5 @@
 #include "Stdafx.h"
+#include "MemTool.h"
 #include "MyMemory.h"
 #include "Crypto/Hash/CRC32.h"
 #include "Data/ByteTool.h"

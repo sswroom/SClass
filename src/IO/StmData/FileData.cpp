@@ -12,7 +12,7 @@ void IO::StmData::FileData::ReopenFile()
 		return;
 	Sync::MutexUsage mutUsage(fdh->mut);
 	IO::FileStream *fs;
-	NEW_CLASS(fs, IO::FileStream(fdh->filePath->v, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(fs, IO::FileStream(fdh->filePath->v, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (fs->IsError())
 	{
 		DEL_CLASS(fs);
@@ -54,7 +54,7 @@ IO::StmData::FileData::FileData(Text::String* fname, Bool deleteOnClose)
 	fdh = 0;
 	IO::FileStream *fs;
 	this->fdn = 0;
-	NEW_CLASS(fs, IO::FileStream(fname->v, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(fs, IO::FileStream(fname->v, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (fs->IsError())
 	{
 		DEL_CLASS(fs);
@@ -83,7 +83,7 @@ IO::StmData::FileData::FileData(const UTF8Char* fname, Bool deleteOnClose)
 	fdh = 0;
 	IO::FileStream *fs;
 	this->fdn = 0;
-	NEW_CLASS(fs, IO::FileStream(fname, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(fs, IO::FileStream(fname, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (fs->IsError())
 	{
 		DEL_CLASS(fs);

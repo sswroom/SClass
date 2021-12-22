@@ -1,12 +1,15 @@
-#include "stdafx.h"
+#include "Stdafx.h"
+#include "MemTool.h"
 #include "MyMemory.h"
-#include "Manage/CPUInfo.h"
 #include "Sync/Interlocked.h"
 #include "Sync/Mutex.h"
 #include <stdlib.h>
 #include <memory.h>
+#if defined(WIN32) || defined(WIN64)
 #include <windows.h>
-//#include "php.h"
+#else
+#define DebugBreak()
+#endif
 #define emalloc(a) malloc(a)
 #define efree(a) free(a)
 
@@ -15,49 +18,6 @@
 #ifdef HAS_INTRIN
 #include <intrin.h>
 #pragma intrinsic(_ReturnAddress)
-#endif
-
-#if !defined(HAS_ASM32)
-extern "C"
-{
-	void MemClearANC_SSE(void *buff, OSInt buffSize); //buff 16-byte align, buffSize 16 bytes
-	void MemClearAC_SSE(void *buff, OSInt buffSize); //buff 16-byte align, buffSize 16 bytes
-	void MemCopyAC_SSE(void *destPtr, const void *srcPtr, OSInt leng);
-	void MemCopyANC_SSE(void *destPtr, const void *srcPtr, OSInt leng);
-	void MemCopyNAC_SSE(void *destPtr, const void *srcPtr, OSInt leng);
-	void MemCopyNANC_SSE(void *destPtr, const void *srcPtr, OSInt leng);
-
-	void MemClearANC_AVX(void *buff, OSInt buffSize); //buff 16-byte align, buffSize 16 bytes
-	void MemClearAC_AVX(void *buff, OSInt buffSize); //buff 16-byte align, buffSize 16 bytes
-	void MemCopyAC_AVX(void *destPtr, const void *srcPtr, OSInt leng);
-	void MemCopyANC_AVX(void *destPtr, const void *srcPtr, OSInt leng);
-	void MemCopyNAC_AVX(void *destPtr, const void *srcPtr, OSInt leng);
-	void MemCopyNANC_AVX(void *destPtr, const void *srcPtr, OSInt leng);
-
-	void MemClearANC_AMDSSE(void *buff, OSInt buffSize); //buff 16-byte align, buffSize 16 bytes
-	void MemClearAC_AMDSSE(void *buff, OSInt buffSize); //buff 16-byte align, buffSize 16 bytes
-	void MemCopyAC_AMDSSE(void *destPtr, const void *srcPtr, OSInt leng);
-	void MemCopyANC_AMDSSE(void *destPtr, const void *srcPtr, OSInt leng);
-	void MemCopyNAC_AMDSSE(void *destPtr, const void *srcPtr, OSInt leng);
-	void MemCopyNANC_AMDSSE(void *destPtr, const void *srcPtr, OSInt leng);
-
-	void MemClearANC_AMDAVX(void *buff, OSInt buffSize); //buff 16-byte align, buffSize 16 bytes
-	void MemClearAC_AMDAVX(void *buff, OSInt buffSize); //buff 16-byte align, buffSize 16 bytes
-	void MemCopyAC_AMDAVX(void *destPtr, const void *srcPtr, OSInt leng);
-	void MemCopyANC_AMDAVX(void *destPtr, const void *srcPtr, OSInt leng);
-	void MemCopyNAC_AMDAVX(void *destPtr, const void *srcPtr, OSInt leng);
-	void MemCopyNANC_AMDAVX(void *destPtr, const void *srcPtr, OSInt leng);
-}
-
-MemClearFunc MemClearANC = MemClearANC_SSE;
-MemClearFunc MemClearAC = MemClearAC_SSE;
-MemCopyFunc MemCopyAC = MemCopyAC_SSE;
-MemCopyFunc MemCopyANC = MemCopyANC_SSE;
-MemCopyFunc MemCopyNAC = MemCopyNAC_SSE;
-MemCopyFunc MemCopyNANC = MemCopyNANC_SSE;
-
-extern "C" Int32 UseAVX = 0;
-extern "C" Int32 CPUBrand = 0;
 #endif
 
 UInt8 *MemMain;
@@ -89,45 +49,6 @@ void MemInit()
 {
 	if (Sync::Interlocked::Increment(&mcInitCnt) == 1)
 	{
-#if !defined(HAS_ASM32)
-		Manage::CPUInfo cpuInfo;
-		CPUBrand = (Int32)cpuInfo.GetBrand();
-		if (CPUBrand == 2)
-		{
-			if (cpuInfo.HasInstruction(Manage::CPUInfo::IT_AVX2))
-			{
-				UseAVX = 1;
-				MemClearANC = MemClearANC_AMDAVX;
-				MemClearAC = MemClearAC_AMDAVX;
-				MemCopyAC = MemCopyAC_AMDAVX;
-				MemCopyANC = MemCopyANC_AMDAVX;
-				MemCopyNAC = MemCopyNAC_AMDAVX;
-				MemCopyNANC = MemCopyNANC_AMDAVX;
-			}
-			else
-			{
-				MemClearANC = MemClearANC_AMDSSE;
-				MemClearAC = MemClearAC_AMDSSE;
-				MemCopyAC = MemCopyAC_AMDSSE;
-				MemCopyANC = MemCopyANC_AMDSSE;
-				MemCopyNAC = MemCopyNAC_AMDSSE;
-				MemCopyNANC = MemCopyNANC_AMDSSE;
-			}
-		}
-		else
-		{
-			if (cpuInfo.HasInstruction(Manage::CPUInfo::IT_AVX))
-			{
-				UseAVX = 1;
-				MemClearANC = MemClearANC_AVX;
-				MemClearAC = MemClearAC_AVX;
-				MemCopyAC = MemCopyAC_AVX;
-				MemCopyANC = MemCopyANC_AVX;
-				MemCopyNAC = MemCopyNAC_AVX;
-				MemCopyNANC = MemCopyNANC_AVX;
-			}
-		}
-#endif
 		MemMain = (UInt8*)emalloc(MYMEMSIZE);
 		MemBlock *blk = (MemBlock*)&MemMain[0];
 		blk->prevBlock = -1;
@@ -139,6 +60,7 @@ void MemInit()
 		MemAllocCnt = 0;
 		MemFreeCnt = 0;
 		mcMut = new Sync::Mutex();
+		MemTool_Init();
 	}
 }
 

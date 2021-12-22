@@ -1,9 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "IO/FileStream.h"
 #include "Sync/Thread.h"
-#include "Text/MyString.h"
-#include "Text/UTF8Reader.h"
 #include <pthread.h>
 #include <unistd.h>
 #include <sys/time.h>
@@ -139,29 +136,37 @@ UOSInt Sync::Thread::GetThreadCnt()
 	}
 	return 1;
 #else
-	IO::FileStream *fs;
-	Text::UTF8Reader *reader;
-	UOSInt procCnt;
-	OSInt procSys;
-	UTF8Char u8buff[128];
-	NEW_CLASS(fs, IO::FileStream((const UTF8Char*)"/proc/cpuinfo", IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	NEW_CLASS(reader, Text::UTF8Reader(fs));
-	procCnt = 0;
-	while (reader->ReadLine(u8buff, 127))
-	{
-		if (Text::StrStartsWith(u8buff, (const UTF8Char*)"processor\t"))
+	cpu_set_t set;
+	if (pthread_getaffinity_np (pthread_self (), sizeof (set), &set) == 0)
+    {
+		UInt32 count;
+# ifdef CPU_COUNT
+        /* glibc >= 2.6 has the CPU_COUNT macro.  */
+        count = (UInt32)CPU_COUNT (&set);
+# else
+		size_t i;
+
+		count = 0;
+		i = 0;
+		while (i < CPU_SETSIZE)
 		{
-			procCnt++;
+			if (CPU_ISSET (i, &set))
+				count++;
+			i++;
 		}
+# endif
+        if (count == 0)
+			count = 1;
+		return count;
 	}
-	DEL_CLASS(reader);
-	DEL_CLASS(fs);
-	procSys = sysconf(_SC_NPROCESSORS_CONF);
-	if (procSys > 0 && (UOSInt)procSys >= procCnt)
-		return (UOSInt)procSys;
-	if (procCnt == 0)
+	else
+	{
+		OSInt procSys;
+		procSys = sysconf(_SC_NPROCESSORS_CONF);
+		if (procSys > 0)
+			return (UOSInt)procSys;
 		return 1;
-	return procCnt;
+	}
 #endif
 }
 

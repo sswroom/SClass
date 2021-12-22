@@ -54,7 +54,7 @@ void Net::WiFiLogFile::LoadFile(const UTF8Char *fileName)
 {
 	IO::FileStream *fs;
 	Text::UTF8Reader *reader;
-	NEW_CLASS(fs, IO::FileStream(fileName, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(fs, IO::FileStream(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (!fs->IsError())
 	{
 		UTF8Char *sarr[12];
@@ -294,7 +294,7 @@ Bool Net::WiFiLogFile::StoreFile(const UTF8Char *fileName)
 	UOSInt k;
 	Net::WiFiLogFile::LogFileEntry *log;
 	Bool succ = false;
-	NEW_CLASS(fs, IO::FileStream(fileName, IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(fs, IO::FileStream(fileName, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	NEW_CLASS(cstm, IO::BufferedOutputStream(fs, 8192));
 	NEW_CLASS(writer, Text::UTF8Writer(cstm));
 	succ = true;

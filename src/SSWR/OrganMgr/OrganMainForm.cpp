@@ -859,7 +859,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImageClipboardClicked(void *user
 
 					if (IO::Path::GetFileSize(fileNameSb.ToString()) > 0)
 					{
-						NEW_CLASS(fs, IO::FileStream(fileNameSb.ToString(), IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+						NEW_CLASS(fs, IO::FileStream(fileNameSb.ToString(), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 						succ = (me->env->AddSpeciesWebFile((OrganSpecies*)gi, urlSb.ToString(), urlSb.ToString(), fs, sbuff) == OrganEnv::FS_SUCCESS);
 						DEL_CLASS(fs);
 

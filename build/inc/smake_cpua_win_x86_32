@@ -1,7 +1,13 @@
 
+MemTool.h: ../../src/MemToolX86.cpp
+@MemTool.o
+@MemTool_CPP.o
+
+Core/X86Util.h:
+@X86Util.o
+
 Manage/CPUInfo.h: ../../src/Manage/CPUInfox86.cpp
 @CPUInfo.o
-@CPUInfo_CPP.o
 Manage/CPUInfoDetail.h: ../../src/Manage/CPUInfoDetailx86.cpp
 @CPUInfoDetail.o
 Manage/Dasm.h:
@@ -16,7 +22,9 @@ Manage/ThreadContextX86_32.h: ../../src/Manage/ThreadContextX86_32L.cpp
 @ThreadContext.o
 Manage/ThreadContextX86_64.h:
 
-MyMemory_CPP.o: ../../src/MyMemory_32.asm
+MemTool.o: ../../src/MemToolX86.cpp
+MemTool_CPP.o: ../../src/MemTool_32.asm
+X86Util.o: ../../src/Core/X86Util_32.asm
 Base64_CPP.o: ../../src/Crypto/Encrypt/Base64_32.asm
 CRC16_CPP.o: ../../src/Crypto/Hash/CRC16_CPP.cpp
 CRC16R_CPP.o: ../../src/Crypto/Hash/CRC16R_CPP.cpp
@@ -27,7 +35,6 @@ SHA1_CPP.o: ../../src/Crypto/Hash/SHA1_32.asm
 LZODecompressor_CPP.o: ../../src/Data/Compress/LZODecompressor_cpp.cpp
 Benchmark_CPP.o: ../../src/Manage/Benchmark_32.asm
 CPUInfo.o: ../../src/Manage/CPUInfox86.cpp
-CPUInfo_CPP.o: ../../src/Manage/CPUInfox86_32.asm
 CPUInfoDetail.o: ../../src/Manage/CPUInfoDetailx86.cpp
 Dasm.o: ../../src/Manage/DasmX86_32.cpp
 ThreadContext.o: ../../src/Manage/ThreadContextX86_32W.cpp

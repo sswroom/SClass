@@ -24,7 +24,7 @@ namespace IO
 		Bool DeleteDirectory(const WChar *ceDir);
 		Bool IsDirectoryExist(const WChar *ceDir);
 		Bool CreateDirectory(const WChar *ceDir);
-		IO::FileStream *OpenFile(const WChar *fileName, IO::FileStream::FileMode mode, IO::FileStream::FileShare share);
+		IO::FileStream *OpenFile(const WChar *fileName, IO::FileMode mode, IO::FileShare share);
 	};
 
 	class CEFileStream : public IO::FileStream

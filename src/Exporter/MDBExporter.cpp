@@ -103,7 +103,7 @@ Bool Exporter::MDBExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 			{
 /*				IO::FileStream *debugFS;
 				Text::UTF8Writer *debugWriter;
-				NEW_CLASS(debugFS, IO::FileStream((const UTF8Char*)"I:\\ProgTest\\Debug.txt", IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+				NEW_CLASS(debugFS, IO::FileStream((const UTF8Char*)"I:\\ProgTest\\Debug.txt", IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 				NEW_CLASS(debugWriter, Text::UTF8Writer(debugFS));
 				debugWriter->WriteLineW(sql.ToString());
 				DEL_CLASS(debugWriter);

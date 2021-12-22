@@ -1,7 +1,6 @@
 
 MyMemory.h: ../../src/MyMemoryW.cpp
 @MyMemory.o
-@MyMemory_CPP.o
 
 DB/OLEDBConn.h: ../../src/DB/OLEDBConnW.cpp
 @OLEDBConn.o

@@ -2384,7 +2384,7 @@ Map::MapConfig::MapConfig(const WChar *fileName, Media::DrawEngine *eng, Data::A
 	this->inited = false;
 	NEW_CLASS(drawMut, Sync::Mutex());
 
-	NEW_CLASS(fstm, IO::FileStream(fileName, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone));
+	NEW_CLASS(fstm, IO::FileStream(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone));
 	if (fstm->IsError())
 	{
 		this->bgColor = 0;

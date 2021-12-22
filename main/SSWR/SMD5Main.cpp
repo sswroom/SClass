@@ -190,7 +190,7 @@ Bool ParseFile(const UTF8Char *fileName)
 			Exporter::MD5Exporter exporter;
 			sb.Append(fileName);
 			sb.Append((const UTF8Char*)".md5");
-			NEW_CLASS(fs, IO::FileStream(sb.ToString(), IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+			NEW_CLASS(fs, IO::FileStream(sb.ToString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 			exporter.ExportFile(fs, sb.ToString(), fileChk, 0);
 			DEL_CLASS(fs);
 			DEL_CLASS(fileChk);

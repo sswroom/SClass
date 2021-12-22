@@ -158,7 +158,7 @@ void Net::MACInfoList::Load()
 	Text::StringBuilderUTF8 sbName;
 	UInt64 rangeStart;
 	UInt64 rangeEnd;
-	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (!fs->IsError())
 	{
 		NEW_CLASS(reader, Text::UTF8Reader(fs));
@@ -205,7 +205,7 @@ Bool Net::MACInfoList::Store()
 	IO::BufferedOutputStream *cstm;
 	UOSInt i;
 	UOSInt j;
-	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (fs->IsError())
 	{
 		DEL_CLASS(fs);

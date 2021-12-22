@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "MyMemory.h"
+#include "MemTool.h"
 #include "SIMD.h"
 
 extern "C" void MemFillB(UInt8 *buff, UOSInt byteCnt, UInt8 val)

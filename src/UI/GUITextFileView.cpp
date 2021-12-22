@@ -35,7 +35,7 @@ UInt32 __stdcall UI::GUITextFileView::ProcThread(void *userObj)
 			{
 				DEL_CLASS(me->fs);
 			}
-			NEW_CLASS(me->fs, IO::FileStream(me->fileName, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
+			NEW_CLASS(me->fs, IO::FileStream(me->fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
 			me->lineOfsts->Clear();
 			me->readingFile = true;
 			me->readBuffOfst = 0;

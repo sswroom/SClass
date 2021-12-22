@@ -8842,7 +8842,7 @@ IO::JavaClass *IO::JavaClass::ParseFile(const UTF8Char *fileName)
 	IO::FileStream *fs;
 	IO::JavaClass *cls = 0;
 	UInt64 fileLen;
-	NEW_CLASS(fs, IO::FileStream(fileName, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(fs, IO::FileStream(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	fileLen = fs->GetLength();
 	if (fileLen >= 26 && fileLen <= 1048576)
 	{

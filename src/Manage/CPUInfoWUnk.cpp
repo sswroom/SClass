@@ -25,12 +25,6 @@ Manage::CPUInfo::CPUInfo()
 	this->clsData = 0;
 }
 
-
-Bool Manage::CPUInfo::HasInstruction(InstructionType instType)
-{
-	return false;
-}
-
 Manage::CPUVendor::CPU_BRAND Manage::CPUInfo::GetBrand()
 {
 	return this->brand;

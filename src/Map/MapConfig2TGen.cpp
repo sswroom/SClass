@@ -52,7 +52,7 @@ public:
 	{
 		if (fileName)
 		{
-			NEW_CLASS(fs, IO::FileStream(fileName, IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+			NEW_CLASS(fs, IO::FileStream(fileName, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 			NEW_CLASS(writer, Text::UTF8Writer(fs));
 			writer->WriteSignature();
 		}
@@ -4212,7 +4212,7 @@ void Map::MapConfig2TGen::LoadLabels(Media::DrawImage *img, Map::MapConfig2TGen:
 		sptr = Text::StrInt32(sptr, yId);
 		sptr = Text::StrConcat(sptr, (const UTF8Char*)".db");
 
-		NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyAll, IO::FileStream::BufferType::Normal));
+		NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::ReadOnly, IO::FileShare::DenyAll, IO::FileStream::BufferType::Normal));
 		if (fs->IsError())
 		{
 			DEL_CLASS(fs);
@@ -4459,7 +4459,7 @@ Map::MapConfig2TGen::MapConfig2TGen(const UTF8Char *fileName, Media::DrawEngine 
 	this->drawEng = eng;
 	this->inited = false;
 
-	NEW_CLASS(fstm, IO::FileStream(fileName, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(fstm, IO::FileStream(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (fstm->IsError())
 	{
 		this->bgColor = 0;

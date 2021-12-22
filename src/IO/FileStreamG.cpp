@@ -10,7 +10,7 @@
 #include <share.h>
 #endif
 
-IO::FileStream::FileStream(const WChar *fileName, IO::FileStream::FileMode mode, FileShare share, IO::FileStream::BufferType buffType) : IO::SeekableStream(fileName)
+IO::FileStream::FileStream(const WChar *fileName, IO::FileMode mode, FileShare share, IO::FileStream::BufferType buffType) : IO::SeekableStream(fileName)
 {
 	handle = 0;
 	if (fileName == 0)
@@ -89,15 +89,15 @@ IO::FileStream::FileStream(const WChar *fileName, IO::FileStream::FileMode mode,
 #endif
 #else
 	Int32 shflag;
-	if (share == IO::FileStream::FileShare::DenyNone)
+	if (share == IO::FileShare::DenyNone)
 	{
 		shflag = _SH_DENYNO;
 	}
-	else if (share == IO::FileStream::FileShare::DenyRead)
+	else if (share == IO::FileShare::DenyRead)
 	{
 		shflag = _SH_DENYRD;
 	}
-	else if (share == IO::FileStream::FileShare::DenyWrite)
+	else if (share == IO::FileShare::DenyWrite)
 	{
 		shflag = _SH_DENYWR;
 	}
@@ -169,15 +169,15 @@ IO::FileStream::FileStream(const Char *fileName, FileMode mode, FileShare share,
 	}
 #else
 	Int32 shflag;
-	if (share == IO::FileStream::FileShare::DenyNone)
+	if (share == IO::FileShare::DenyNone)
 	{
 		shflag = _SH_DENYNO;
 	}
-	else if (share == IO::FileStream::FileShare::DenyRead)
+	else if (share == IO::FileShare::DenyRead)
 	{
 		shflag = _SH_DENYRD;
 	}
-	else if (share == IO::FileStream::FileShare::DenyWrite)
+	else if (share == IO::FileShare::DenyWrite)
 	{
 		shflag = _SH_DENYWR;
 	}

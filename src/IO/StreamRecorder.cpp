@@ -12,7 +12,7 @@ void __stdcall IO::StreamRecorder::DataHdlr(const UInt8 *buff, UOSInt buffSize, 
 IO::StreamRecorder::StreamRecorder(const UTF8Char *destFile)
 {
 	this->recordedLength = 0;
-	NEW_CLASS(destStm, IO::FileStream(destFile, IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(destStm, IO::FileStream(destFile, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 }
 
 IO::StreamRecorder::~StreamRecorder()

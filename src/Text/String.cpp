@@ -1,4 +1,5 @@
 #include "Stdafx.h"
+#include "MemTool.h"
 #include "MyMemory.h"
 #include "Math/Math.h"
 #include "Sync/Interlocked.h"

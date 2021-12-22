@@ -187,7 +187,17 @@ Int32 Sync::Interlocked::Increment(Int32 *val)
 	return __sync_add_and_fetch(val, 1);
 }
 
+UInt32 Sync::Interlocked::Increment(UInt32 *val)
+{
+	return __sync_add_and_fetch(val, 1);
+}
+
 Int64 Sync::Interlocked::Increment(Int64 *val)
+{
+	return ++*val;
+}
+
+UInt64 Sync::Interlocked::Increment(UInt64 *val)
 {
 	return ++*val;
 }
@@ -197,7 +207,17 @@ Int32 Sync::Interlocked::Decrement(Int32 *val)
 	return __sync_sub_and_fetch(val, 1);
 }
 
+UInt32 Sync::Interlocked::Decrement(UInt32 *val)
+{
+	return __sync_sub_and_fetch(val, 1);
+}
+
 Int64 Sync::Interlocked::Decrement(Int64 *val)
+{
+	return --*val;
+}
+
+UInt64 Sync::Interlocked::Decrement(UInt64 *val)
 {
 	return --*val;
 }
@@ -208,6 +228,17 @@ Int32 Sync::Interlocked::Add(Int32 *val, Int32 aval)
 }
 
 Int64 Sync::Interlocked::Add(Int64 *val, Int64 aval)
+{
+	*val += aval;
+	return *val;
+}
+
+UInt32 Sync::Interlocked::Add(UInt32 *val, UInt32 aval)
+{
+	return __sync_add_and_fetch(val, aval);
+}
+
+UInt64 Sync::Interlocked::Add(UInt64 *val, UInt64 aval)
 {
 	*val += aval;
 	return *val;

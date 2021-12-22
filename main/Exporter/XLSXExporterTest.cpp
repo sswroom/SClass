@@ -15,12 +15,12 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	NEW_CLASS(workbook, Text::SpreadSheet::Workbook());
 
 	fileName = (const UTF8Char*)"Workbook.xml";
-	NEW_CLASS(fs, IO::FileStream(fileName, IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(fs, IO::FileStream(fileName, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	exporterXML.ExportFile(fs, fileName, workbook, 0);
 	DEL_CLASS(fs);
 
 	fileName = (const UTF8Char*)"Workbook.xlsx";
-	NEW_CLASS(fs, IO::FileStream(fileName, IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(fs, IO::FileStream(fileName, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	exporterXLSX.ExportFile(fs, fileName, workbook, 0);
 	DEL_CLASS(fs);
 

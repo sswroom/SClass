@@ -111,7 +111,7 @@ void __stdcall SSWR::AVIRead::AVIREDIDViewerForm::OnSaveClicked(void *userObj)
 		if (dlg->ShowDialog(me->GetHandle()))
 		{
 			IO::FileStream *fs;
-			NEW_CLASS(fs, IO::FileStream(dlg->GetFileName(), IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
+			NEW_CLASS(fs, IO::FileStream(dlg->GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
 			fs->Write(me->edid, me->edidSize);
 			DEL_CLASS(fs);
 		}
@@ -130,7 +130,7 @@ void __stdcall SSWR::AVIRead::AVIREDIDViewerForm::OnFileDrop(void *userObj, cons
 	i = 0;
 	while (i < fileCnt)
 	{
-		NEW_CLASS(fs, IO::FileStream(fileNames[i], IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+		NEW_CLASS(fs, IO::FileStream(fileNames[i], IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		fileSize = (UOSInt)fs->GetLength();
 		if (fileSize >= 128 && fileSize <= 1024 && (fileSize & 127) == 0)
 		{

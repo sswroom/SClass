@@ -1425,6 +1425,7 @@ IO/FileFindRecur.h: ../../src/IO/FileFindRecur.cpp
 @FileFindRecur.o
 IO/FileLog.h: ../../src/IO/FileLog.cpp
 @FileLog.o
+IO/FileMode.h:
 IO/FileSectorData.h: ../../src/IO/FileSectorData.cpp
 @FileSectorData.o
 IO/GPIOPin.h: ../../src/IO/GPIOPin.cpp
@@ -1689,6 +1690,8 @@ Manage/Benchmark.h:
 @Benchmark_CPP.o
 Manage/CPUDB.h: ../../src/Manage/CPUDB.cpp
 @CPUDB.o
+Manage/CPUInst.h: ../../src/Manage/CPUInst.cpp
+@CPUInst.o
 Manage/CPUVendor.h: ../../src/Manage/CPUVendor.cpp
 @CPUVendor.o
 Manage/DasmBase.h: ../../src/Manage/DasmBase.cpp
@@ -4146,6 +4149,7 @@ MDT701STVControl.o: ../../src/IO/TVCtrl/MDT701STVControl.cpp
 NECTVControl.o: ../../src/IO/TVCtrl/NECTVControl.cpp
 AddressResolver.o: ../../src/Manage/AddressResolver.cpp
 CPUDB.o: ../../src/Manage/CPUDB.cpp
+CPUInst.o: ../../src/Manage/CPUInst.cpp
 CPUVendor.o: ../../src/Manage/CPUVendor.cpp
 DasmBase.o: ../../src/Manage/DasmBase.cpp
 DasmX86_16.o: ../../src/Manage/DasmX86_16.cpp

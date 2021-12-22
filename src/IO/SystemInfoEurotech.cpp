@@ -24,7 +24,7 @@ IO::SystemInfo::SystemInfo()
 	data->platformSN = 0;
 	this->clsData = data;
 
-	NEW_CLASS(fs, IO::FileStream((const UTF8Char*)"/etc/hostname", IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(fs, IO::FileStream((const UTF8Char*)"/etc/hostname", IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (!fs->IsError())
 	{
 		NEW_CLASS(reader, Text::UTF8Reader(fs));

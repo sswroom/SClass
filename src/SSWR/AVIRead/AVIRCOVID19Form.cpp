@@ -23,7 +23,7 @@ void __stdcall SSWR::AVIRead::AVIRCOVID19Form::OnFileClicked(void *userObj)
 	if (dlg->ShowDialog(me->GetHandle()))
 	{
 		IO::FileStream *fs;
-		NEW_CLASS(fs, IO::FileStream(dlg->GetFileName(), IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+		NEW_CLASS(fs, IO::FileStream(dlg->GetFileName(), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		me->LoadCSV(fs);
 		DEL_CLASS(fs);
 	}

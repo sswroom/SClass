@@ -1,4 +1,9 @@
 
+MemTool.h: ../../src/MemToolX86.cpp
+@MemTool.o
+@MemTool_CPP.o
+
+Core/X86Util.h:
 
 Manage/CPUInfo.h: ../../src/Manage/CPUInfoL.cpp
 @CPUInfo.o
@@ -29,7 +34,8 @@ Manage/ThreadContextX86_64.h: ../../src/Manage/ThreadContextUnk.cpp
 @ThreadContext.o
 @Dasm.o
 
-MyMemory_CPP.o: ../../src/MyMemory_CPP.cpp
+MemTool.o: ../../src/MemToolX86.cpp
+MemTool_CPP.o: ../../src/MemTool_CPP.cpp
 Base64_CPP.o: ../../src/Crypto/Encrypt/Base64_CPP.cpp
 CRC16_CPP.o: ../../src/Crypto/Hash/CRC16_CPP.cpp
 CRC16R_CPP.o: ../../src/Crypto/Hash/CRC16R_CPP.cpp

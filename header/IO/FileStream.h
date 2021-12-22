@@ -1,6 +1,7 @@
 #ifndef _SM_IO_FILESTREAM
 #define _SM_IO_FILESTREAM
 #include "Data/DateTime.h"
+#include "IO/FileMode.h"
 #include "IO/SeekableStream.h"
 
 namespace IO
@@ -20,22 +21,6 @@ namespace IO
 			Sequential,
 			NoBuffer,
 			NoWriteBuffer
-		};
-		enum class FileMode
-		{
-			Create,
-			Append,
-			ReadOnly,
-			ReadWriteExisting,
-			Device,
-			CreateWrite
-		};
-		enum class FileShare
-		{
-			DenyNone,
-			DenyRead,
-			DenyWrite,
-			DenyAll
 		};
 
 	private:

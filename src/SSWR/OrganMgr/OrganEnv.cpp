@@ -732,7 +732,7 @@ void SSWR::OrganMgr::OrganEnv::ExportWeb(const UTF8Char *exportDir, Bool include
 	UOSInt thisPhSpeciesCnt;
 	Text::StringBuilderUTF8 *sb;
 
-	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	NEW_CLASS(writer, Text::UTF8Writer(fs));
 
 	ExportBeginPage(writer, this->currCate->chiName->v);
@@ -923,7 +923,7 @@ void SSWR::OrganMgr::OrganEnv::ExportGroup(OrganGroup *grp, Data::Int32Map<Data:
 					IO::Path::CreateDirectory(fullPath);
 					Text::StrConcat(sptr, (const UTF8Char*)"\\index.html");
 
-					NEW_CLASS(fs, IO::FileStream(fullPath, IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+					NEW_CLASS(fs, IO::FileStream(fullPath, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 					NEW_CLASS(writer, Text::UTF8Writer(fs));
 					NEW_CLASS(sb, Text::StringBuilderUTF8());
 					sb->AppendC(this->currCate->chiName->v, this->currCate->chiName->leng);
@@ -978,7 +978,7 @@ void SSWR::OrganMgr::OrganEnv::ExportGroup(OrganGroup *grp, Data::Int32Map<Data:
 					IO::Path::CreateDirectory(fullPath);
 					Text::StrConcat(sptr, (const UTF8Char*)"\\index.html");
 
-					NEW_CLASS(fs, IO::FileStream(fullPath, IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+					NEW_CLASS(fs, IO::FileStream(fullPath, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 					NEW_CLASS(writer, Text::UTF8Writer(fs));
 					NEW_CLASS(sb, Text::StringBuilderUTF8());
 					sb->AppendC(this->currCate->chiName->v, this->currCate->chiName->leng);
@@ -1106,7 +1106,7 @@ Bool SSWR::OrganMgr::OrganEnv::ExportSpecies(OrganSpecies *sp, const UTF8Char *b
 	IO::FileStream *fs;
 	Text::UTF8Writer *writer;
 	Text::StringBuilderUTF8 sb;
-	NEW_CLASS(fs, IO::FileStream(fullPath, IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(fs, IO::FileStream(fullPath, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	NEW_CLASS(writer, Text::UTF8Writer(fs));
 	sb.AppendC(this->currCate->chiName->v, this->currCate->chiName->leng);
 	sb.Append((const UTF8Char*)" - ");

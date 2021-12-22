@@ -125,7 +125,7 @@ Net::HKTrafficImage::HKTrafficImage(Text::EncodingFactory *encFact, const UTF8Ch
 	NEW_CLASS(this->groupMap, Data::FastStringMap<GroupInfo*>());
 	IO::FileStream *fs;
 	UInt64 fileSize;
-	NEW_CLASS(fs, IO::FileStream(fileName, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(fs, IO::FileStream(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	fileSize = fs->GetLength();
 	if (fileSize > 0)
 	{

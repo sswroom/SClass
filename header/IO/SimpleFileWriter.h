@@ -1,6 +1,6 @@
 #ifndef _SM_IO_SIMPLEFILEWRITER
 #define _SM_IO_SIMPLEFILEWRITER
-#include "IO/FileStream.h"
+#include "IO/FileMode.h"
 #include "IO/Writer.h"
 
 namespace IO
@@ -12,7 +12,7 @@ namespace IO
 
 		UOSInt WriteBuff(const UInt8 *buff, UOSInt size);
 	public:
-		SimpleFileWriter(const UTF8Char *fileName, IO::FileStream::FileMode mode, IO::FileStream::FileShare share);
+		SimpleFileWriter(const UTF8Char *fileName, IO::FileMode mode, IO::FileShare share);
 		virtual ~SimpleFileWriter();
 
 		virtual Bool Write(const UTF8Char *str, UOSInt nChar);

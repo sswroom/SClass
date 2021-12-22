@@ -794,7 +794,7 @@ IO::Stream *Map::HKTrafficLayer::OpenURLStream()
 		UTF8Char sbuff[512];
 		IO::FileStream *fs;
 		Text::URLString::GetURLFilePath(sbuff, this->url->v);
-		NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyAll, IO::FileStream::BufferType::Normal));
+		NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::ReadOnly, IO::FileShare::DenyAll, IO::FileStream::BufferType::Normal));
 		if (!fs->IsError())
 		{
 			return fs;

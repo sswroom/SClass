@@ -227,11 +227,11 @@ Bool Media::ProfiledResizer::SaveProfile(const UTF8Char *fileName)
 	{
 		IO::Path::GetProcessFileName(sbuff);
 		IO::Path::ReplaceExt(sbuff, (const UTF8Char*)"prof");
-		NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+		NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	}
 	else
 	{
-		NEW_CLASS(fs, IO::FileStream(fileName, IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+		NEW_CLASS(fs, IO::FileStream(fileName, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	}
 	if (fs->IsError())
 	{

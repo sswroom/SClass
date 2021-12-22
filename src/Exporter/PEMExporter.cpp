@@ -143,7 +143,7 @@ Bool Exporter::PEMExporter::ExportStream(IO::SeekableStream *stm, Crypto::Cert::
 Bool Exporter::PEMExporter::ExportFile(const UTF8Char *fileName, Crypto::Cert::X509File *x509)
 {
 	IO::FileStream *fs;
-	NEW_CLASS(fs, IO::FileStream(fileName, IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(fs, IO::FileStream(fileName, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (fs->IsError())
 	{
 		DEL_CLASS(fs);

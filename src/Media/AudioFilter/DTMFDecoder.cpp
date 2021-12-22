@@ -24,7 +24,7 @@ UInt32 __stdcall Media::AudioFilter::DTMFDecoder::CalcThread(void *userObj)
 	IO::StreamWriter *debugWriter;
 	Text::StringBuilderW *sb;
 	NEW_CLASS(clk, Manage::HiResClock());
-	NEW_CLASS(debugFS, IO::FileStream(L"DTMFDecoder.log", IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone));
+	NEW_CLASS(debugFS, IO::FileStream(L"DTMFDecoder.log", IO::FileMode::Create, IO::FileShare::DenyNone));
 	NEW_CLASS(debugWriter, IO::StreamWriter(debugFS, 65001));
 	NEW_CLASS(sb, Text::StringBuilderW());
 #endif

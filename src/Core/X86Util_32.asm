@@ -1,15 +1,15 @@
 section .text
 
-global _CPUInfo_cpuid
+global _X86Util_ncpuid
 
-;void CPUInfo_cpuid(Int32 *cpuInfo, Int32 func);
+;void X86Util_ncpuid(Int32 *cpuInfo, Int32 func);
 ;0 esi
 ;4 ebx
 ;8 retAddr
 ;12 cpuInfo
 ;16 func
 	align 16
-_CPUInfo_cpuid:
+_X86Util_ncpuid:
 	push ebx
 	push esi
 	mov eax,dword [esp+16]

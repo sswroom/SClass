@@ -91,7 +91,7 @@ IO::RadioSignalLogger::RadioSignalLogger()
 	sptr = Text::StrConcat(sptr, (const UTF8Char*)"radio");
 	sptr = dt.ToString(sptr, "yyyyMMddHHmmss");
 	sptr = Text::StrConcat(sptr, (const UTF8Char*)".txt");
-	NEW_CLASS(this->fs, IO::FileStream(sbuff, IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(this->fs, IO::FileStream(sbuff, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (this->fs->IsError())
 	{
 		DEL_CLASS(this->fs);

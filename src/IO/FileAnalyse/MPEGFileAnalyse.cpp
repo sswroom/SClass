@@ -1238,7 +1238,7 @@ Bool IO::FileAnalyse::MPEGFileAnalyse::TrimPadding(const UTF8Char *outputFile)
 	UInt64 readOfst;
 	Bool valid = true;
 	IO::FileStream *dfs;
-	NEW_CLASS(dfs, IO::FileStream(outputFile, IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(dfs, IO::FileStream(outputFile, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (dfs->IsError())
 	{
 		DEL_CLASS(dfs);

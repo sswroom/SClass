@@ -26,7 +26,7 @@ IO::SystemInfo::SystemInfo()
 
 	Int64 flen;
 	IO::FileStream *fs;
-	NEW_CLASS(fs, IO::FileStream((const UTF8Char*)"/sys/class/i2c-dev/i2c-0/device/0-0056/eeprom", IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(fs, IO::FileStream((const UTF8Char*)"/sys/class/i2c-dev/i2c-0/device/0-0056/eeprom", IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (!fs->IsError())
 	{
 		flen = fs->GetLength();

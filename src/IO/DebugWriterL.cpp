@@ -19,7 +19,7 @@ IO::DebugWriter::~DebugWriter()
 void IO::DebugWriter::Flush()
 {
 	Text::StringBuilderUTF8 *sb = (Text::StringBuilderUTF8*)this->clsData;
-	OSInt i;
+	UOSInt i;
 	UTF8Char *sarr[2];
 	i = Text::StrSplitLine(sarr, 2, sb->ToString());
 	if (i == 2)

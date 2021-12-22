@@ -151,7 +151,7 @@ Bool IO::SMake::LoadConfigFile(const UTF8Char *cfgFile)
 		sb.Append(cfgFile);
 		this->messageWriter->WriteLine(sb.ToString());
 	}
-	NEW_CLASS(fs, IO::FileStream(cfgFile, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(fs, IO::FileStream(cfgFile, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (fs->IsError())
 	{
 		DEL_CLASS(fs);
@@ -501,12 +501,12 @@ Bool IO::SMake::ParseSource(Data::ArrayListString *objList, Data::ArrayListStrin
 	{
 		sb.Append(sourceFile);
 		sb.Replace('/', '\\');
-		NEW_CLASS(fs, IO::FileStream(sb.ToString(), IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+		NEW_CLASS(fs, IO::FileStream(sb.ToString(), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 //		printf("Opening %s\r\n", sb.ToString());
 	}
 	else
 	{
-		NEW_CLASS(fs, IO::FileStream(sourceFile, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+		NEW_CLASS(fs, IO::FileStream(sourceFile, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 //		printf("Opening %s\r\n", sourceFile);
 	}
 	if (fs->IsError())

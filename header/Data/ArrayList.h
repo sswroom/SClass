@@ -1,5 +1,6 @@
 #ifndef _SM_DATA_ARRAYLIST
 #define _SM_DATA_ARRAYLIST
+#include "MemTool.h"
 #include "MyMemory.h"
 #include "Data/ArrayCollection.h"
 #include "Data/List.h"

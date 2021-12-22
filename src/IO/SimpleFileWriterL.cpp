@@ -12,23 +12,23 @@ UOSInt IO::SimpleFileWriter::WriteBuff(const UInt8 *buff, UOSInt size)
 	return writeSize;
 }
 
-IO::SimpleFileWriter::SimpleFileWriter(const UTF8Char *fileName, IO::FileStream::FileMode mode, IO::FileStream::FileShare share)
+IO::SimpleFileWriter::SimpleFileWriter(const UTF8Char *fileName, IO::FileMode mode, IO::FileShare share)
 {
 	handle = 0;
 	const Char *cfileName = (const Char*)fileName;
-	if (mode == FileStream::FileMode::Create)
+	if (mode == IO::FileMode::Create)
 	{
 		handle = fopen(cfileName, "wb+");
 	}
-	else if (mode == FileStream::FileMode::CreateWrite)
+	else if (mode == IO::FileMode::CreateWrite)
 	{
 		handle = fopen(cfileName, "wb");
 	}
-	else if (mode == FileStream::FileMode::Append)
+	else if (mode == IO::FileMode::Append)
 	{
 		handle = fopen(cfileName, "ab+");
 	}
-	else if (mode == FileStream::FileMode::ReadOnly)
+	else if (mode == IO::FileMode::ReadOnly)
 	{
 		handle = fopen(cfileName, "rb");
 	}

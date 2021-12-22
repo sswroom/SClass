@@ -104,7 +104,7 @@ void __stdcall SSWR::AVIRead::AVIRLineCounterForm::OnResultSaveClicked(void *use
 		IO::StreamWriter *writer;
 		UOSInt i;
 		UOSInt j;
-		NEW_CLASS(fs, IO::FileStream(dlg->GetFileName(), IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+		NEW_CLASS(fs, IO::FileStream(dlg->GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		NEW_CLASS(writer, IO::StreamWriter(fs, (UInt32)0));
 		i = 0;
 		j = me->resList->GetCount();
@@ -168,7 +168,7 @@ void SSWR::AVIRead::AVIRLineCounterForm::CalcDir(UTF8Char *pathBuff, UTF8Char *p
 				if (found)
 				{
 					lineCnt = 0;
-					NEW_CLASS(fs, IO::FileStream(pathBuff, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+					NEW_CLASS(fs, IO::FileStream(pathBuff, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 					NEW_CLASS(reader, IO::StreamReader(fs, 65001));
 					while (true)
 					{

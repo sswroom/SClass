@@ -8,15 +8,6 @@ namespace Manage
 {
 	class CPUInfo
 	{
-	public:
-		typedef enum
-		{
-			IT_X86,
-			IT_SSE41,
-			IT_SSE42,
-			IT_AVX,
-			IT_AVX2
-		} InstructionType;
 	protected:
 		Manage::CPUVendor::CPU_BRAND brand;
 		Int32 familyId;
@@ -29,7 +20,6 @@ namespace Manage
 		CPUInfo();
 		virtual ~CPUInfo();
 
-		Bool HasInstruction(InstructionType instType);
 		Manage::CPUVendor::CPU_BRAND GetBrand();
 		Int32 GetFamilyId();
 		Int32 GetModelId();

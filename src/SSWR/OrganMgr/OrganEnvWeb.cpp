@@ -811,7 +811,7 @@ UOSInt SSWR::OrganMgr::OrganEnvWeb::GetSpeciesImages(Data::ArrayList<OrganImageI
 		{
 			Text::UTF8Reader *reader;
 			IO::FileStream *fs;
-			NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
+			NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
 			NEW_CLASS(reader, Text::UTF8Reader(fs));
 
 			while (reader->ReadLine(sbuff2, 511))
@@ -1432,7 +1432,7 @@ SSWR::OrganMgr::OrganEnvWeb::FileStatus SSWR::OrganMgr::OrganEnvWeb::AddSpeciesF
 		IO::FileStream *fs;
 		UInt8 *readBuff;
 		UOSInt readSize;
-		NEW_CLASS(fs, IO::FileStream(fileName, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::NoBuffer));
+		NEW_CLASS(fs, IO::FileStream(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoBuffer));
 		if (fs->IsError())
 		{
 			DEL_CLASS(fs);
@@ -1705,7 +1705,7 @@ SSWR::OrganMgr::OrganEnvWeb::FileStatus SSWR::OrganMgr::OrganEnvWeb::AddSpeciesF
 		Bool valid = false;
 		Media::DrawImage *graphImg = 0;
 		fileTime.SetTicks(0);
-		NEW_CLASS(fs, IO::FileStream(fileName, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::NoBuffer));
+		NEW_CLASS(fs, IO::FileStream(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoBuffer));
 		if (fs->IsError())
 		{
 			DEL_CLASS(fs);
@@ -1895,7 +1895,7 @@ SSWR::OrganMgr::OrganEnvWeb::FileStatus SSWR::OrganMgr::OrganEnvWeb::AddSpeciesF
 						sptr = Text::StrConcat(sptr, (const UTF8Char*)"_");
 						sptr = Text::StrHexVal32(sptr, crcVal);
 						sptr = Text::StrConcat(sptr, (const UTF8Char*)".png");
-						NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
+						NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
 						graphImg->SavePng(fs);
 						DEL_CLASS(fs);
 						this->drawEng->DeleteImage(graphImg);
@@ -2174,7 +2174,7 @@ SSWR::OrganMgr::OrganEnvWeb::FileStatus SSWR::OrganMgr::OrganEnvWeb::AddSpeciesW
 	Text::UTF8Writer *writer;
 	Text::StringBuilderUTF8 sb;
 	Text::StrConcat(sptr, (const UTF8Char*)".txt");
-	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FileMode::Append, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	NEW_CLASS(writer, Text::UTF8Writer(fs));
 	writer->WriteSignature();
 	sb.Append(fileName);
@@ -2258,7 +2258,7 @@ Bool SSWR::OrganMgr::OrganEnvWeb::UpdateSpeciesWebFileOld(OrganSpecies *sp, cons
 	NEW_CLASS(writer, Text::UTF8Writer(mstm));
 	writer->WriteSignature();
 
-	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	NEW_CLASS(reader, IO::StreamReader(fs, 65001));
 	sb.ClearStr();
 	while (reader->ReadLine(&sb, 4095))
@@ -2287,7 +2287,7 @@ Bool SSWR::OrganMgr::OrganEnvWeb::UpdateSpeciesWebFileOld(OrganSpecies *sp, cons
 	DEL_CLASS(writer);
 	if (found)
 	{
-		NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+		NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		UOSInt size;
 		UInt8 *buff = mstm->GetBuff(&size);
 		fs->Write(buff, size);
@@ -2658,7 +2658,7 @@ Bool SSWR::OrganMgr::OrganEnvWeb::MoveImages(Data::ArrayList<OrganImages*> *imgL
 		Text::StrConcat(sptr + 1, (const UTF8Char*)"web.txt");
 		j = i;
 		i = 0;
-		NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FileMode::Append, IO::FileStream::FileShare::DenyAll, IO::FileStream::BufferType::Normal));
+		NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::Append, IO::FileShare::DenyAll, IO::FileStream::BufferType::Normal));
 		NEW_CLASS(writer, Text::UTF8Writer(fs));
 		while (i < j)
 		{
@@ -2691,7 +2691,7 @@ Bool SSWR::OrganMgr::OrganEnvWeb::MoveImages(Data::ArrayList<OrganImages*> *imgL
 			Data::ArrayList<const UTF8Char *> webLines;
 			UTF8Char *sarr[4];
 			Bool found;
-			NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
+			NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
 			NEW_CLASS(reader, IO::StreamReader(fs, 65001));
 			sb.ClearStr();
 			while (reader->ReadLine(&sb, 512))
@@ -2729,7 +2729,7 @@ Bool SSWR::OrganMgr::OrganEnvWeb::MoveImages(Data::ArrayList<OrganImages*> *imgL
 			sptr = Text::StrConcat(sptr, (const UTF8Char*)"web.txt");
 			if (webLines.GetCount() > 0)
 			{
-				NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+				NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 				NEW_CLASS(writer, Text::UTF8Writer(fs));
 				i = 0;
 				j = webLines.GetCount();
@@ -4034,7 +4034,7 @@ Media::ImageList *SSWR::OrganMgr::OrganEnvWeb::ParseSpImage(OrganSpecies *sp)
 			{
 				Text::UTF8Reader *reader;
 				IO::FileStream *fs;
-				NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
+				NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
 				NEW_CLASS(reader, Text::UTF8Reader(fs));
 
 				while (reader->ReadLine(sbuff2, 511))
@@ -4648,7 +4648,7 @@ void SSWR::OrganMgr::OrganEnvWeb::UpgradeDB2()
 			allSucc = true;
 			Text::UTF8Reader *reader;
 			IO::FileStream *fs;
-			NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
+			NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
 			NEW_CLASS(reader, Text::UTF8Reader(fs));
 
 			while (reader->ReadLine(sbuff2, 511))
@@ -4815,7 +4815,7 @@ void SSWR::OrganMgr::OrganEnvWeb::ExportLite(const UTF8Char *folder)
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 	}
 	Text::StrConcat(sptr, (const UTF8Char*)"OrganWeb64.cfg");
-	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (fs->IsError())
 	{
 		valid = false;
@@ -4942,7 +4942,7 @@ void SSWR::OrganMgr::OrganEnvWeb::ExportLite(const UTF8Char *folder)
 						}
 						param = exporter->CreateParam(imgList);
 						exporter->SetParamInt32(param, 0, 95);
-						NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+						NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 						exporter->ExportFile(fs, sbuff, imgList, param);
 						DEL_CLASS(fs);
 						DEL_CLASS(imgList);

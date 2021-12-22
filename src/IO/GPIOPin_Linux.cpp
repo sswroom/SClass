@@ -9,7 +9,7 @@
 Bool GPIOPin_EchoFile(const UTF8Char *fileName, const Char *msg)
 {
 	IO::FileStream *fs;
-	NEW_CLASS(fs, IO::FileStream(fileName, IO::FileStream::FileMode::CreateWRITE, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(fs, IO::FileStream(fileName, IO::FileMode::CreateWRITE, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (fs->IsError())
 	{
 		DEL_CLASS(fs);
@@ -57,7 +57,7 @@ Bool IO::GPIOPin::IsPinHigh()
 
 	Bool isHigh = false;
 	IO::FileStream *fs;
-	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (!fs->IsError())
 	{
 		IO::StreamReader *reader;
@@ -82,7 +82,7 @@ Bool IO::GPIOPin::IsPinOutput()
 
 	Bool isOutput = false;
 	IO::FileStream *fs;
-	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (!fs->IsError())
 	{
 		IO::StreamReader *reader;

@@ -31,7 +31,7 @@ void __stdcall SSWR::AVIRead::AVIRCameraControlForm::OnDownloadClicked(void *use
 			Data::DateTime dt;
 			IO::FileStream *fs;
 			Bool succ;
-			NEW_CLASS(fs, IO::FileStream(dlg->GetFileName(), IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+			NEW_CLASS(fs, IO::FileStream(dlg->GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 			succ = me->camera->GetFile(file, fs);
 			if (file->fileTimeTicks)
 			{
@@ -70,7 +70,7 @@ void __stdcall SSWR::AVIRead::AVIRCameraControlForm::OnDownloadClicked(void *use
 				}
 				sb.Append(file->fileName);
 				
-				NEW_CLASS(fs, IO::FileStream(sb.ToString(), IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+				NEW_CLASS(fs, IO::FileStream(sb.ToString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 				succ = me->camera->GetFile(file, fs);
 				if (file->fileTimeTicks)
 				{

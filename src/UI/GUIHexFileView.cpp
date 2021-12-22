@@ -381,7 +381,7 @@ Bool UI::GUIHexFileView::LoadFile(const UTF8Char *fileName, Bool dynamicSize)
 	if (dynamicSize)
 	{
 		IO::FileStream *fs;
-		NEW_CLASS(fs, IO::FileStream(fileName, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+		NEW_CLASS(fs, IO::FileStream(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		if (fs->IsError())
 		{
 			DEL_CLASS(fs);

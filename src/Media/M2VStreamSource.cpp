@@ -437,7 +437,7 @@ Media::M2VStreamSource::M2VStreamSource(Media::IStreamControl *pbc)
 
 #ifdef _DEBUG
 	NEW_CLASS(this->debugMut, Sync::Mutex());
-	NEW_CLASS(this->debugFS, IO::FileStream((const UTF8Char*)"M2VDebug.txt", IO::FileStream::FileMode::Append, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(this->debugFS, IO::FileStream((const UTF8Char*)"M2VDebug.txt", IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	NEW_CLASS(this->debugLog, Text::UTF8Writer(this->debugFS));
 #endif
 

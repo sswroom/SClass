@@ -373,7 +373,7 @@ System::Boolean DotNet::MyGrp::SaveJPGQuality(System::Drawing::Bitmap *bmp, Syst
 	Win32::COMStream *cstm;
 	System::IntPtr strPtr = System::Runtime::InteropServices::Marshal::StringToHGlobalUni(fileName);
 
-	NEW_CLASS(fs, ::IO::FileStream((WChar*)strPtr.ToPointer(), ::IO::FileStream::FileMode::Create, ::IO::FileStream::FileShare::DenyNone));
+	NEW_CLASS(fs, ::IO::FileStream((WChar*)strPtr.ToPointer(), ::IO::FileMode::Create, ::IO::FileShare::DenyNone));
 	if (fs->IsError())
 	{
 		DEL_CLASS(fs);
@@ -467,7 +467,7 @@ System::Boolean DotNet::MyGrp::SaveJPGSize(System::Drawing::Bitmap *bmp, System:
 	params.Parameter[0].Value = &quality;
 
 	quality = 0;
-	NEW_CLASS(fs, ::IO::FileStream((WChar*)strPtr.ToPointer(), ::IO::FileStream::FileMode::Create, ::IO::FileStream::FileShare::DenyNone));
+	NEW_CLASS(fs, ::IO::FileStream((WChar*)strPtr.ToPointer(), ::IO::FileMode::Create, ::IO::FileShare::DenyNone));
 	NEW_CLASS(cstm, Win32::COMStream(fs));
 	stat = image->Save(cstm, &encoderClsid, &params);
 	DEL_CLASS(fs);
@@ -483,7 +483,7 @@ System::Boolean DotNet::MyGrp::SaveJPGSize(System::Drawing::Bitmap *bmp, System:
 	}
 
 	quality = 100;
-	NEW_CLASS(fs, ::IO::FileStream((WChar*)strPtr.ToPointer(), ::IO::FileStream::FileMode::Create, ::IO::FileStream::FileShare::DenyNone));
+	NEW_CLASS(fs, ::IO::FileStream((WChar*)strPtr.ToPointer(), ::IO::FileMode::Create, ::IO::FileShare::DenyNone));
 	NEW_CLASS(cstm, Win32::COMStream(fs));
 	stat = image->Save(cstm, &encoderClsid, &params);
 	DEL_CLASS(fs);
@@ -504,7 +504,7 @@ System::Boolean DotNet::MyGrp::SaveJPGSize(System::Drawing::Bitmap *bmp, System:
 	{
 		l = (j + k) >> 1;
 		quality = l;
-		NEW_CLASS(fs, ::IO::FileStream((WChar*)strPtr.ToPointer(), ::IO::FileStream::FileMode::Create, ::IO::FileStream::FileShare::DenyNone));
+		NEW_CLASS(fs, ::IO::FileStream((WChar*)strPtr.ToPointer(), ::IO::FileMode::Create, ::IO::FileShare::DenyNone));
 		NEW_CLASS(cstm, Win32::COMStream(fs));
 		stat = image->Save(cstm, &encoderClsid, &params);
 		DEL_CLASS(fs);
@@ -621,7 +621,7 @@ System::Boolean DotNet::MyGrp::SaveTIFF(System::Drawing::Bitmap *bmp, System::St
 	Win32::COMStream *cstm;
 	System::IntPtr strPtr = System::Runtime::InteropServices::Marshal::StringToHGlobalUni(fileName);
 
-	NEW_CLASS(fs, ::IO::FileStream((WChar*)strPtr.ToPointer(), ::IO::FileStream::FileMode::Create, ::IO::FileStream::FileShare::DenyNone));
+	NEW_CLASS(fs, ::IO::FileStream((WChar*)strPtr.ToPointer(), ::IO::FileMode::Create, ::IO::FileShare::DenyNone));
 	if (fs->IsError())
 	{
 		DEL_CLASS(fs);

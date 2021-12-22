@@ -246,7 +246,7 @@ void __stdcall SSWR::AVIRead::AVIRBenchmarkForm::OnSaveClicked(void *userObj)
 		IO::SystemInfo sysInfo;
 		IO::FileStream *fs;
 		Text::UTF8Writer *writer;
-		NEW_CLASS(fs, IO::FileStream(dlg->GetFileName(), IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+		NEW_CLASS(fs, IO::FileStream(dlg->GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		NEW_CLASS(writer, Text::UTF8Writer(fs));
 		sb.ClearStr();
 		sb.Append((const UTF8Char*)"Platform: ");

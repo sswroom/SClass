@@ -1481,7 +1481,7 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFile(IO::IStreamData *fd,
 				Double yPxSize;
 				Double xCoord;
 				Double yCoord;
-				NEW_CLASS(fs, IO::FileStream(fileNameBuff, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
+				NEW_CLASS(fs, IO::FileStream(fileNameBuff, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
 				NEW_CLASS(reader, IO::StreamReader(fs, 0));
 				sb.ClearStr();
 				if (!reader->ReadLine(&sb, 1024) || !Text::StrToDouble(sb.ToString(), &xPxSize))

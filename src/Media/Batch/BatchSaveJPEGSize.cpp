@@ -108,7 +108,7 @@ void Media::Batch::BatchSaveJPEGSize::ImageOutput(Media::ImageList *imgList, con
 		}
 	}
 
-	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
+	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
 	exporter->SetParamInt32(param, 0, currIndex);
 	exporter->ExportFile(fs, sbuff, imgList, param);
 	DEL_CLASS(fs);

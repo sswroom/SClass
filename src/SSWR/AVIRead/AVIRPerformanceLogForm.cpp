@@ -51,7 +51,7 @@ Bool SSWR::AVIRead::AVIRPerformanceLogForm::Start()
 	if (this->testBuff)
 		return false;
 
-	NEW_CLASS(this->logStream, IO::FileStream((const UTF8Char*)"Performance.log", IO::FileStream::FileMode::Append, IO::FileStream::FileShare::DenyWrite, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(this->logStream, IO::FileStream((const UTF8Char*)"Performance.log", IO::FileMode::Append, IO::FileShare::DenyWrite, IO::FileStream::BufferType::Normal));
 	if (this->logStream->IsError())
 	{
 		DEL_CLASS(this->logStream);

@@ -103,7 +103,7 @@ void SSWR::AVIRead::AVIRLogFileForm::EventMenuClicked(UInt16 cmdId)
 				UOSInt i;
 				UOSInt j;
 				NEW_CLASS(sb, Text::StringBuilderUTF8());
-				NEW_CLASS(fs, IO::FileStream(dlg->GetFileName(), IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+				NEW_CLASS(fs, IO::FileStream(dlg->GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 				NEW_CLASS(writer, Text::UTF8Writer(fs));
 				i = 0;
 				j = this->logFile->GetCount(this->logLevel);

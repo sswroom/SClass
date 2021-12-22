@@ -5,7 +5,7 @@
 Bool IO::FileExporter::ExportNewFile(const UTF8Char *fileName, IO::ParsedObject *pobj, void *param)
 {
 	IO::FileStream *fs;
-	NEW_CLASS(fs, IO::FileStream(fileName, IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(fs, IO::FileStream(fileName, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (fs->IsError())
 	{
 		DEL_CLASS(fs);

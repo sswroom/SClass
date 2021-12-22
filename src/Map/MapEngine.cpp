@@ -3186,7 +3186,7 @@ Bool Map::MapEngine::SaveImg(void *m, WChar *fileName, Int32 imgFormat)
 	map = (MapVars*)m;
 	MapAfterDraw(map);
 
-	NEW_CLASS(stm, IO::FileStream(fileName, IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyRead));
+	NEW_CLASS(stm, IO::FileStream(fileName, IO::FileMode::Create, IO::FileShare::DenyRead));
 	if (imgFormat == 1)
 	{
 		ret = map->img->SaveGIF(stm);

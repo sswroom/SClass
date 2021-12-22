@@ -14,7 +14,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	IO::FileStream *fs;
 	Text::UTF8Reader *reader;
 	Text::StringBuilderUTF8 sb;
-	NEW_CLASS(fs, IO::FileStream((const UTF8Char*)"/mnt/raid2_3/Progs/DownList2.txt", IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(fs, IO::FileStream((const UTF8Char*)"/mnt/raid2_3/Progs/DownList2.txt", IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	NEW_CLASS(reader, Text::UTF8Reader(fs));
 	while (reader->ReadLine(&sb, 4096))
 	{

@@ -1078,7 +1078,7 @@ UOSInt Net::WirelessLAN::GetInterfaces(Data::ArrayList<Net::WirelessLAN::Interfa
 	IO::FileStream *fs;
 	UOSInt ret = 0;
 	Net::WirelessLAN::Interface *interf;
-/*	NEW_CLASS(fs, IO::FileStream((const UTF8Char*)"/proc/net/wireless", IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+/*	NEW_CLASS(fs, IO::FileStream((const UTF8Char*)"/proc/net/wireless", IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (!fs->IsError())
 	{
 		Text::StringBuilderUTF8 sb;
@@ -1107,7 +1107,7 @@ UOSInt Net::WirelessLAN::GetInterfaces(Data::ArrayList<Net::WirelessLAN::Interfa
 	}
 	DEL_CLASS(fs);*/
 
-	NEW_CLASS(fs, IO::FileStream((const UTF8Char*)"/proc/net/dev", IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(fs, IO::FileStream((const UTF8Char*)"/proc/net/dev", IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (!fs->IsError())
 	{
 		Text::StringBuilderUTF8 sb;

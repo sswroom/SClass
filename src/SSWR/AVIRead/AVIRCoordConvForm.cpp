@@ -191,7 +191,7 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnConvFileClicked(void *userObj
 	}
 	IO::FileStream *fs;
 	IO::StreamWriter *writer;
-	NEW_CLASS(fs, IO::FileStream(dlg->GetFileName(), IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(fs, IO::FileStream(dlg->GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (fs->IsError())
 	{
 		DEL_CLASS(fs);

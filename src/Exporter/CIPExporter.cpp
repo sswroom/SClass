@@ -89,11 +89,11 @@ Bool Exporter::CIPExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 	IO::FileStream *blk;
 	Text::StrConcat(u8buff, fileName);
 	IO::Path::ReplaceExt(u8buff, (const UTF8Char*)"cix");
-	NEW_CLASS(cix, IO::FileStream(u8buff, IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(cix, IO::FileStream(u8buff, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	IO::Path::ReplaceExt(u8buff, (const UTF8Char*)"ciu");
-	NEW_CLASS(cib, IO::FileStream(u8buff, IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(cib, IO::FileStream(u8buff, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	IO::Path::ReplaceExt(u8buff, (const UTF8Char*)"blk");
-	NEW_CLASS(blk, IO::FileStream(u8buff, IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(blk, IO::FileStream(u8buff, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 
 
 	Data::ArrayListInt64 *objIds;

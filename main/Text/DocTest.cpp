@@ -51,7 +51,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	NEW_CLASS(validator, Text::Doc::DocValidator());
 	section->Add(validator);
 
-	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
+	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
 	exporter->ExportFile(fs, sbuff, doc, 0);
 	DEL_CLASS(fs);
 

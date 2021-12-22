@@ -120,8 +120,8 @@ template <class T> DB::DBDataFile<T>::DBDataFile(const UTF8Char *fileName, Data:
 	this->recordBuff = 0;
 	this->colTypes = 0;
 	this->cstm = 0;
-	IO::FileStream::FileMode fileMode = append?IO::FileStream::FileMode::Append:IO::FileStream::FileMode::Create;
-	NEW_CLASS(this->fs, IO::FileStream(fileName, fileMode, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	IO::FileMode fileMode = append?IO::FileMode::Append:IO::FileMode::Create;
+	NEW_CLASS(this->fs, IO::FileStream(fileName, fileMode, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (this->fs->IsError())
 	{
 		return;
@@ -331,7 +331,7 @@ template <class T> Bool DB::DBDataFile<T>::LoadFile(const UTF8Char *fileName, Da
 {
 	UOSInt maxBuffSize = 65536;
 	IO::FileStream *fs;
-	NEW_CLASS(fs, IO::FileStream(fileName, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(fs, IO::FileStream(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (fs->IsError())
 	{
 		DEL_CLASS(fs);

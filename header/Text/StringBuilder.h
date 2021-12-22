@@ -1,5 +1,6 @@
 #ifndef _SM_TEXT_STRINGBUILDER
 #define _SM_TEXT_STRINGBUILDER
+#include "MemTool.h"
 #include "MyMemory.h"
 #include "Data/DateTime.h"
 #include "Text/LineBreakType.h"

@@ -418,7 +418,7 @@ void SSWR::AVIRead::AVIRSNBDongleForm::LoadFile()
 	IO::Path::GetProcessFileName(sbuff);
 	IO::Path::AppendPath(sbuff, (const UTF8Char *)"snb.dat");
 	IO::FileStream *fs;
-	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (!fs->IsError())
 	{
 		UInt64 flen = fs->GetLength();
@@ -470,7 +470,7 @@ void SSWR::AVIRead::AVIRSNBDongleForm::SaveFile()
 	IO::Path::GetProcessFileName(sbuff);
 	IO::Path::AppendPath(sbuff, (const UTF8Char *)"snb.dat");
 	IO::FileStream *fs;
-	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	fs->Write(dataBuff, k);
 	DEL_CLASS(fs);
 	MemFree(dataBuff);

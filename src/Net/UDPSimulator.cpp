@@ -37,9 +37,9 @@ void Net::UDPSimulator::Run()
 	IO::StreamReader *reader;
 
 	NEW_CLASS(dt, Data::DateTime());
-	NEW_CLASS(logFS, IO::FileStream(this->logFileName, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(logFS, IO::FileStream(this->logFileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	NEW_CLASS(reader, IO::StreamReader(logFS, 65001));
-	NEW_CLASS(rawFS, IO::FileStream(this->rawFileName, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(rawFS, IO::FileStream(this->rawFileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	while ((sptr = reader->ReadLine(sbuff, 2048)) != 0)
 	{
 		if (Text::StrSplit(sarr, 3, sbuff, '\t') == 2)

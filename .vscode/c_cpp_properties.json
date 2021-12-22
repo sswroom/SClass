@@ -165,6 +165,22 @@
             "cStandard": "c11",
             "cppStandard": "c++17",
             "intelliSenseMode": "gcc-x64"
+        },
+        {
+            "name": "Robustel",
+            "includePath": [
+                "${workspaceFolder}/../SClass/header",
+                "${workspaceFolder}/../SClass/ThirdParty/miniz",
+                "${workspaceFolder}/../SClass/ThirdParty/sqlite3",
+                "${workspaceFolder}/../SClass/ThirdParty/KSSample",
+                "${workspaceFolder}/../SClass/ThirdParty/adl",
+                "~/ROS-SDK-r5020-3.1.0/staging_dir/target-r5020/usr/include/**"
+            ],
+            "defines": [],
+            "compilerPath": "/usr/bin/gcc",
+            "cStandard": "c11",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "clang-x64"
         }
     ],
     "version": 4

@@ -68,7 +68,7 @@ IO::FileCheck *IO::FileCheck::CreateCheck(const UTF8Char *path, IO::FileCheck::C
 	{
 		NEW_CLASS(fchk, IO::FileCheck(path, chkType));
 
-		NEW_CLASS(fs, IO::FileStream(path, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyWrite, IO::FileStream::BufferType::NoBuffer));
+		NEW_CLASS(fs, IO::FileStream(path, IO::FileMode::ReadOnly, IO::FileShare::DenyWrite, IO::FileStream::BufferType::NoBuffer));
 		if (fs->IsError())
 		{
 			DEL_CLASS(fchk);
@@ -203,7 +203,7 @@ Bool IO::FileCheck::CheckDir(UTF8Char *fullPath, UTF8Char *hashPath, Crypto::Has
 			}
 			else if (pt == IO::Path::PathType::File)
 			{
-				NEW_CLASS(fs, IO::FileStream(fullPath, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyWrite, IO::FileStream::BufferType::NoBuffer));
+				NEW_CLASS(fs, IO::FileStream(fullPath, IO::FileMode::ReadOnly, IO::FileShare::DenyWrite, IO::FileStream::BufferType::NoBuffer));
 				if (fs->IsError())
 				{
 					DEL_CLASS(fs);
@@ -418,7 +418,7 @@ Bool IO::FileCheck::CheckEntryHash(UOSInt index, UInt8 *hashVal)
 	if (hash == 0)
 		return false;
 
-	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyWrite, IO::FileStream::BufferType::NoBuffer));
+	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::ReadOnly, IO::FileShare::DenyWrite, IO::FileStream::BufferType::NoBuffer));
 	if (fs->IsError())
 	{
 		DEL_CLASS(fs);

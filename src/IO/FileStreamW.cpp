@@ -28,15 +28,15 @@ void IO::FileStream::InitStream(const WChar *fileName, FileMode mode, FileShare 
 	secAttr.nLength = sizeof(secAttr);
 	secAttr.lpSecurityDescriptor = 0;
 	secAttr.bInheritHandle = FALSE; ////////////////////////////////////
-	if (share == IO::FileStream::FileShare::DenyNone)
+	if (share == IO::FileShare::DenyNone)
 	{
 		shflag = FILE_SHARE_READ | FILE_SHARE_WRITE;
 	}
-	else if (share == IO::FileStream::FileShare::DenyRead)
+	else if (share == IO::FileShare::DenyRead)
 	{
 		shflag = FILE_SHARE_WRITE;
 	}
-	else if (share == IO::FileStream::FileShare::DenyWrite)
+	else if (share == IO::FileShare::DenyWrite)
 	{
 		shflag = FILE_SHARE_READ;
 	}
@@ -136,15 +136,15 @@ IO::FileStream::FileStream(Text::String *fileName, FileMode mode, FileShare shar
 	secAttr.nLength = sizeof(secAttr);
 	secAttr.lpSecurityDescriptor = 0;
 	secAttr.bInheritHandle = FALSE;////////////////////////////
-	if (share == IO::FileStream::FileShare::DenyNone)
+	if (share == IO::FileShare::DenyNone)
 	{
 		shflag = FILE_SHARE_READ | FILE_SHARE_WRITE;
 	}
-	else if (share == IO::FileStream::FileShare::DenyRead)
+	else if (share == IO::FileShare::DenyRead)
 	{
 		shflag = FILE_SHARE_WRITE;
 	}
-	else if (share == IO::FileStream::FileShare::DenyWrite)
+	else if (share == IO::FileShare::DenyWrite)
 	{
 		shflag = FILE_SHARE_READ;
 	}
@@ -210,7 +210,7 @@ IO::FileStream::FileStream(Text::String *fileName, FileMode mode, FileShare shar
 	Text::StrDelNew(wptr);
 }
 
-IO::FileStream::FileStream(const UTF8Char *fileName, IO::FileStream::FileMode mode, FileShare share, BufferType buffType) : IO::SeekableStream(fileName)
+IO::FileStream::FileStream(const UTF8Char *fileName, IO::FileMode mode, FileShare share, BufferType buffType) : IO::SeekableStream(fileName)
 {
 	handle = (void*)-1;
 	if (fileName == 0)
@@ -231,15 +231,15 @@ IO::FileStream::FileStream(const UTF8Char *fileName, IO::FileStream::FileMode mo
 	secAttr.nLength = sizeof(secAttr);
 	secAttr.lpSecurityDescriptor = 0;
 	secAttr.bInheritHandle = FALSE;////////////////////////////
-	if (share == IO::FileStream::FileShare::DenyNone)
+	if (share == IO::FileShare::DenyNone)
 	{
 		shflag = FILE_SHARE_READ | FILE_SHARE_WRITE;
 	}
-	else if (share == IO::FileStream::FileShare::DenyRead)
+	else if (share == IO::FileShare::DenyRead)
 	{
 		shflag = FILE_SHARE_WRITE;
 	}
-	else if (share == IO::FileStream::FileShare::DenyWrite)
+	else if (share == IO::FileShare::DenyWrite)
 	{
 		shflag = FILE_SHARE_READ;
 	}
@@ -547,7 +547,7 @@ IO::FileStream *IO::FileStream::OpenNamedPipe(const UTF8Char *server, const UTF8
 	sptr = Text::StrConcat(sptr, (const UTF8Char*)"\\pipe\\");
 	sptr = Text::StrConcat(sptr, pipeName);
 	IO::FileStream *outStm;
-	NEW_CLASS(outStm, IO::FileStream(sbuff, IO::FileStream::FileMode::Device, IO::FileStream::FileShare::DenyAll, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(outStm, IO::FileStream(sbuff, IO::FileMode::Device, IO::FileShare::DenyAll, IO::FileStream::BufferType::Normal));
 	if (outStm->IsError())
 	{
 		DEL_CLASS(outStm);

@@ -76,7 +76,7 @@ void __stdcall Net::TFTPServer::OnCommandPacket(const Net::SocketUtil::AddressIn
 	{
 		if (pt == IO::Path::PathType::File)
 		{
-			NEW_CLASS(fs, IO::FileStream(sb.ToString(), IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+			NEW_CLASS(fs, IO::FileStream(sb.ToString(), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 			if (fs->IsError())
 			{
 				DEL_CLASS(fs);
@@ -151,7 +151,7 @@ void __stdcall Net::TFTPServer::OnCommandPacket(const Net::SocketUtil::AddressIn
 		}
 		else
 		{
-			NEW_CLASS(fs, IO::FileStream(sb.ToString(), IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+			NEW_CLASS(fs, IO::FileStream(sb.ToString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 			if (fs->IsError())
 			{
 				DEL_CLASS(fs);

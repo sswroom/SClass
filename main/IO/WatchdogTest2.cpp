@@ -116,7 +116,7 @@ UInt32 __stdcall HTTPThread(void *userObj)
 Bool EchoFile(const UTF8Char *fileName, const Char *msg)
 {
 	IO::FileStream *fs;
-	NEW_CLASS(fs, IO::FileStream(fileName, IO::FileStream::FileMode::CreateWrite, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(fs, IO::FileStream(fileName, IO::FileMode::CreateWrite, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (fs->IsError())
 	{
 		DEL_CLASS(fs);

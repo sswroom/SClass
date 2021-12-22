@@ -142,7 +142,7 @@ Bool IO::BTDevLog::LoadFile(const UTF8Char *fileName)
 	UInt8 macBuff[8];
 	UInt64 macInt;
 	UInt32 advType;
-	NEW_CLASS(fs, IO::FileStream(fileName, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(fs, IO::FileStream(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (fs->IsError())
 	{
 		DEL_CLASS(fs);
@@ -225,7 +225,7 @@ Bool IO::BTDevLog::StoreFile(const UTF8Char *fileName)
 	Text::StringBuilderUTF8 sb;
 	IO::FileStream *fs;
 	Text::UTF8Writer *writer;
-	NEW_CLASS(fs, IO::FileStream(fileName, IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(fs, IO::FileStream(fileName, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (fs->IsError())
 	{
 		DEL_CLASS(fs);

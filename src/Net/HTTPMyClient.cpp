@@ -50,7 +50,7 @@ Net::HTTPMyClient::HTTPMyClient(Net::SocketFactory *sockf, Net::SSLEngine *ssl, 
 	dt.SetCurrTimeUTC();
 	sptr = Text::StrInt64(sptr, dt.ToTicks());
 	sptr = Text::StrConcat(sptr, (const UTF8Char*)".dat");
-	NEW_CLASS(this->clsData->fs, IO::FileStream(sbuff, IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(this->clsData->fs, IO::FileStream(sbuff, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 #endif
 	this->ssl = ssl;
 	this->cli = 0;

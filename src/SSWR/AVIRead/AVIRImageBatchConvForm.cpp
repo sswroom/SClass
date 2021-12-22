@@ -99,7 +99,7 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchConvForm::OnConvertClicked(void *use
 					{
 						exporter.SetParamInt32(param, 0, quality);
 					}
-					NEW_CLASS(fs, IO::FileStream(sbuff2, IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+					NEW_CLASS(fs, IO::FileStream(sbuff2, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 					if (!exporter.ExportFile(fs, sbuff2, imgList, param))
 					{
 						sb.ClearStr();

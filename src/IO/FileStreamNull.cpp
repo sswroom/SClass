@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "IO/FileStream.h"
 
-IO::FileStream::FileStream(const WChar *fileName, IO::FileStream::FileMode mode, FileShare share, IO::FileStream::BufferType buffType) : IO::SeekableStream((const UTF8Char*)"FileStream")
+IO::FileStream::FileStream(const WChar *fileName, IO::FileMode mode, FileShare share, IO::FileStream::BufferType buffType) : IO::SeekableStream((const UTF8Char*)"FileStream")
 {
 	this->handle = 0;
 	this->currPos = -1;

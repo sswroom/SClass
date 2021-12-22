@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Manage/CPUInfo.h"
+#include "Manage/CPUInst.h"
 #include "Math/Math.h"
 #include "Media/RGBColorFilter.h"
 #include "Media/CS/TransferFunc.h"
@@ -76,8 +76,7 @@ Media::RGBColorFilter::RGBColorFilter(Media::ColorManager *colorMgr)
 	this->gammaCnt = 0;
 	this->pf = Media::PF_UNKNOWN;
 #if defined(CPU_X86_64) || defined(CPU_X86_32)
-	Manage::CPUInfo cpuInfo;
-	this->hasSSE41 = cpuInfo.HasInstruction(Manage::CPUInfo::IT_SSE41);
+	this->hasSSE41 = Manage::CPUInst::HasInstruction(Manage::CPUInst::IT_SSE41);
 #else
 	this->hasSSE41 = true;
 #endif

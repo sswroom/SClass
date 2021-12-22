@@ -253,7 +253,7 @@ UTF8Char *Map::GoogleMap::GoogleWSSearcherJSON::SearchName(UTF8Char *buff, UOSIn
 				IO::FileStream *fs;
 				UInt8 *buff;
 				UOSInt buffSize;
-				NEW_CLASS(fs, IO::FileStream((const UTF8Char*)"nonjsonerr.txt", IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+				NEW_CLASS(fs, IO::FileStream((const UTF8Char*)"nonjsonerr.txt", IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 				buff = mstm->GetBuff(&buffSize);
 				fs->Write(buff, buffSize);
 				DEL_CLASS(fs);

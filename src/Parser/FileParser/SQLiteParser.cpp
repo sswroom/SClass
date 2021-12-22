@@ -66,7 +66,7 @@ IO::ParsedObject *Parser::FileParser::SQLiteParser::ParseFile(IO::IStreamData *f
 		UOSInt readSize;
 		UInt8 *buff;
 		buff = MemAlloc(UInt8, 1048576);
-		NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+		NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		while (true)
 		{
 			readSize = fd->GetRealData(currOfst, 1048576, buff);

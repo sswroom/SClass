@@ -422,7 +422,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	IO::MemoryStream *mstm;
 	NEW_CLASS(mstm, IO::MemoryStream(L"mstm"));
 	clk->Start();
-	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
+	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
 	if (fs->IsError())
 	{
 		console.WriteLine(L"Error in writing SortResult.txt");

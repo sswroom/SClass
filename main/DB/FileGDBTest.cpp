@@ -1001,7 +1001,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 
 			IO::Path::GetRealPath(sbuff, (const UTF8Char*)"~/Progs/Temp/Lamppost.csv");
 			IO::FileStream *fs;
-			NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+			NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 			clk.Start();
 			DB::DBUtil::SaveCSV(fs, &lamppostList, cls);
 			t2 = clk.GetTimeDiff();

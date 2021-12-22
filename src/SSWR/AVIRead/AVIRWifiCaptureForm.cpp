@@ -520,7 +520,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnCaptureClicked(void *userOb
 		sptr = dt.ToString(sptr, "yyyyMMddHHmmss");
 		sptr = Text::StrConcat(sptr, (const UTF8Char*)".txt");
 		Sync::MutexUsage mutUsage(me->captureMut);
-		NEW_CLASS(me->captureFS, IO::FileStream(sbuff, IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+		NEW_CLASS(me->captureFS, IO::FileStream(sbuff, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		if (me->captureFS->IsError())
 		{
 			DEL_CLASS(me->captureFS);
@@ -572,7 +572,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnLogWifiSaveClicked(void *us
 	IO::FileStream *fs;
 	Text::UTF8Writer *writer;
 	Bool succ = false;
-	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (!fs->IsError())
 	{
 		succ = true;
@@ -677,7 +677,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnLogWifiSaveFClicked(void *u
 	IO::FileStream *fs;
 	Text::UTF8Writer *writer;
 	Bool succ = false;
-	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (!fs->IsError())
 	{
 		succ = true;

@@ -28,7 +28,7 @@ UInt32 __stdcall Net::HTTPData::LoadThread(void *userObj)
 	if (IO::Path::GetPathType(fdh->localFile->v) == IO::Path::PathType::File)
 	{
 		IO::FileStream *fs;
-		NEW_CLASS(fs, IO::FileStream(fdh->localFile->v, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+		NEW_CLASS(fs, IO::FileStream(fdh->localFile->v, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		if (!fs->IsError())
 		{
 			Data::DateTime dt;
@@ -65,7 +65,7 @@ UInt32 __stdcall Net::HTTPData::LoadThread(void *userObj)
 
 	if (fdh->cli->GetRespStatus() == 304)
 	{
-		NEW_CLASS(fdh->file, IO::FileStream(fdh->localFile->v, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+		NEW_CLASS(fdh->file, IO::FileStream(fdh->localFile->v, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		fdh->fileLength = fdh->file->GetLength();
 	}
 	else if (fdh->cli->GetRespStatus() == 200)
@@ -73,7 +73,7 @@ UInt32 __stdcall Net::HTTPData::LoadThread(void *userObj)
 		fdh->fileLength = fdh->cli->GetContentLength();
 		if (fdh->fileLength > 0)
 		{
-			NEW_CLASS(fdh->file, IO::FileStream(fdh->localFile->v, IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyWrite, IO::FileStream::BufferType::Normal));
+			NEW_CLASS(fdh->file, IO::FileStream(fdh->localFile->v, IO::FileMode::Create, IO::FileShare::DenyWrite, IO::FileStream::BufferType::Normal));
 			while (fdh->loadSize < fdh->fileLength)
 			{
 				readSize = fdh->cli->Read(buff, 2048);
@@ -114,7 +114,7 @@ UInt32 __stdcall Net::HTTPData::LoadThread(void *userObj)
 				void *sess;
 
 				NEW_CLASS(readEvt, Sync::Event(false, (const UTF8Char*)"Net.HTTPData.LoadThread.readEvt"));
-				NEW_CLASS(fdh->file, IO::FileStream(fdh->localFile->v, IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyWrite, IO::FileStream::BufferType::Normal));
+				NEW_CLASS(fdh->file, IO::FileStream(fdh->localFile->v, IO::FileMode::Create, IO::FileShare::DenyWrite, IO::FileStream::BufferType::Normal));
 				while (true)
 				{
 					readEvt->Clear();
@@ -208,7 +208,7 @@ Net::HTTPData::HTTPData(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Net::HTT
 	if (!needReload)
 	{
 		IO::FileStream *fs;
-		NEW_CLASS(fs, IO::FileStream(localFile, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyWrite, IO::FileStream::BufferType::Normal));
+		NEW_CLASS(fs, IO::FileStream(localFile, IO::FileMode::ReadOnly, IO::FileShare::DenyWrite, IO::FileStream::BufferType::Normal));
 		if (fs->IsError())
 		{
 			DEL_CLASS(fs);

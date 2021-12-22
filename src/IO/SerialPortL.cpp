@@ -270,7 +270,7 @@ Bool SerialPort_WriteInt32(const UTF8Char *path, Int32 num)
 	IO::FileStream *fs;
 	Bool ret = false;
 	UTF8Char *sptr;
-	NEW_CLASS(fs, IO::FileStream(path, IO::FileStream::FileMode::CreateWrite, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(fs, IO::FileStream(path, IO::FileMode::CreateWrite, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (!fs->IsError())
 	{
 		sptr = Text::StrInt32(sbuff, num);

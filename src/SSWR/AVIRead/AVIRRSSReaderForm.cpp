@@ -157,7 +157,7 @@ void SSWR::AVIRead::AVIRRSSReaderForm::RSSListLoad()
 	IO::FileStream *fs;
 	Text::UTF8Reader *reader;
 	UOSInt i;
-	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (!fs->IsError())
 	{
 		Text::StringBuilderUTF8 sb;
@@ -182,7 +182,7 @@ void SSWR::AVIRead::AVIRRSSReaderForm::RSSListStore()
 	Text::UTF8Writer *writer;
 	UOSInt i;
 	UOSInt j;
-	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (!fs->IsError())
 	{
 		NEW_CLASS(writer, Text::UTF8Writer(fs));

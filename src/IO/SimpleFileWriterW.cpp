@@ -20,7 +20,7 @@ UOSInt IO::SimpleFileWriter::WriteBuff(const UInt8 *buff, UOSInt size)
 	}
 }
 
-IO::SimpleFileWriter::SimpleFileWriter(const UTF8Char *fileName, IO::FileStream::FileMode mode, IO::FileStream::FileShare share)
+IO::SimpleFileWriter::SimpleFileWriter(const UTF8Char *fileName, IO::FileMode mode, IO::FileShare share)
 {
 	WChar wfileName[512];
 	Text::StrUTF8_WChar(wfileName, fileName, 0);
@@ -30,15 +30,15 @@ IO::SimpleFileWriter::SimpleFileWriter(const UTF8Char *fileName, IO::FileStream:
 	secAttr.nLength = sizeof(secAttr);
 	secAttr.lpSecurityDescriptor = 0;
 	secAttr.bInheritHandle = TRUE;
-	if (share == IO::FileStream::FileShare::DenyNone)
+	if (share == IO::FileShare::DenyNone)
 	{
 		shflag = FILE_SHARE_READ | FILE_SHARE_WRITE;
 	}
-	else if (share == IO::FileStream::FileShare::DenyRead)
+	else if (share == IO::FileShare::DenyRead)
 	{
 		shflag = FILE_SHARE_WRITE;
 	}
-	else if (share == IO::FileStream::FileShare::DenyWrite)
+	else if (share == IO::FileShare::DenyWrite)
 	{
 		shflag = FILE_SHARE_READ;
 	}

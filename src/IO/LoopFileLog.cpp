@@ -40,7 +40,7 @@ IO::LoopFileLog::LoopFileLog(const UTF8Char *fileName, Int32 nFiles, LogType sty
 	SwapFiles();
 
 	Text::StrConcat(Text::StrConcat(buff, fileName), (const UTF8Char*)"0.log");
-	NEW_CLASS(fileStm, IO::FileStream(buff, IO::FileStream::FileMode::Create, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(fileStm, IO::FileStream(buff, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	NEW_CLASS(log, Text::UTF8Writer(fileStm));
 	log->WriteSignature();
 
@@ -147,7 +147,7 @@ void IO::LoopFileLog::LogAdded(Data::DateTime *time, const UTF8Char *logMsg, UOS
 		SwapFiles();
 		Text::StrConcat(Text::StrConcat(buff, fileName), (const UTF8Char*)"0.log");
 
-		NEW_CLASS(fileStm, IO::FileStream(buff, FileStream::FileMode::Append, FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+		NEW_CLASS(fileStm, IO::FileStream(buff, IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		NEW_CLASS(log, Text::UTF8Writer(fileStm));
 		log->WriteSignature();
 

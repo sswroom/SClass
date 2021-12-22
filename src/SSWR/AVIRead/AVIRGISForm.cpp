@@ -1210,7 +1210,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 			{
 				IO::FileStream *fs;
 				UInt64 fileSize;
-				NEW_CLASS(fs, IO::FileStream(dlg->GetFileName(), IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+				NEW_CLASS(fs, IO::FileStream(dlg->GetFileName(), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 				fileSize = fs->GetLength();
 				if (fileSize > 0 && fileSize <= 8388608 && (fileSize & 0xffff) == 0)
 				{

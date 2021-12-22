@@ -1100,7 +1100,7 @@ Int32 __stdcall DasmX86_64_GetFuncStack(Manage::DasmX86_64::DasmX86_64_Sess* ses
 #ifdef _CONSOLE
 			IO::ConsoleWriter console;
 #else
-			IO::FileStream fs((const UTF8Char*)"ErrorMsg.txt", IO::FileStream::FileMode::Append, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+			IO::FileStream fs((const UTF8Char*)"ErrorMsg.txt", IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
 			Text::UTF8Writer console(&fs);
 #endif
 			UInt8 *buff;

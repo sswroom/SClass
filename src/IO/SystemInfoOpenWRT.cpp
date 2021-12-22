@@ -27,7 +27,7 @@ IO::SystemInfo::SystemInfo()
 	data->platformSN = 0;
 	this->clsData = data;
 
-	NEW_CLASS(fs, IO::FileStream((const UTF8Char*)"/proc/cpuinfo", IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(fs, IO::FileStream((const UTF8Char*)"/proc/cpuinfo", IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (!fs->IsError())
 	{
 		NEW_CLASS(reader, Text::UTF8Reader(fs));
@@ -66,7 +66,7 @@ IO::SystemInfo::SystemInfo()
 
 	if (data->platformName == 0) //Bivocom
 	{
-		NEW_CLASS(fs, IO::FileStream((const UTF8Char*)"/etc/fw_model", IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+		NEW_CLASS(fs, IO::FileStream((const UTF8Char*)"/etc/fw_model", IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		if (!fs->IsError())
 		{
 			NEW_CLASS(reader, Text::UTF8Reader(fs));

@@ -1,4 +1,5 @@
-#include "stdafx.h"
+#include "Stdafx.h"
+#include "MemTool.h"
 #include "MyMemory.h"
 #include "Sync/Mutex.h"
 #include "Sync/Interlocked.h"
@@ -39,6 +40,7 @@ void MemStart()
 		mcBusy = 0;
 		mcBreakPt = 0;
 		mcMut = new Sync::Mutex();
+		MemTool_Init();
 	}
 }
 

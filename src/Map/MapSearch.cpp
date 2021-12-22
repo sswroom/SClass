@@ -35,7 +35,7 @@ Map::MapSearch::MapSearch(const UTF8Char *fileName, Map::MapSearchManager *manag
 		NEW_CLASS(this->layersArr[i], Data::ArrayList<Map::MapSearchLayer*>());
 	}
 
-	NEW_CLASS(fs, IO::FileStream(fileName, IO::FileStream::FileMode::ReadOnly, IO::FileStream::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(fs, IO::FileStream(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	NEW_CLASS(reader, IO::StreamReader(fs));
 	sptr = reader->ReadLine(sbuff, 256);
 	while (sptr)

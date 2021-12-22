@@ -1,14 +1,14 @@
 section .text
 
-global CPUInfo_cpuid
+global X86Util_ncpuid
 
-;void CPUInfo_cpuid(Int32 *cpuInfo, Int32 func, Int32 subfunc);
+;void X86Util_ncpuid(Int32 *cpuInfo, Int32 func, Int32 subfunc);
 ;0 retAddr
 ;rcx cpuInfo
 ;rdx func
 ;r8 subfunc
 	align 16
-CPUInfo_cpuid:
+X86Util_ncpuid:
 	mov r9,rbx
 	mov r10,rcx
 	mov eax,edx

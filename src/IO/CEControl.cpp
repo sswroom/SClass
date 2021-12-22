@@ -177,21 +177,21 @@ Bool IO::CEControl::CreateDirectory(const WChar *ceDir)
 	return CeCreateDirectory(sbuff, 0) != 0;
 }
 
-IO::FileStream *IO::CEControl::OpenFile(const WChar *fileName, IO::FileStream::FileMode mode, IO::FileStream::FileShare share)
+IO::FileStream *IO::CEControl::OpenFile(const WChar *fileName, IO::FileMode mode, IO::FileShare share)
 {
 	Int32 shflag;
 	Int64 currPos;
 	void *handle;
 
-	if (share == IO::FileStream::FileShare::DenyNone)
+	if (share == IO::FileShare::DenyNone)
 	{
 		shflag = FILE_SHARE_READ | FILE_SHARE_WRITE;
 	}
-	else if (share == IO::FileStream::FileShare::DenyRead)
+	else if (share == IO::FileShare::DenyRead)
 	{
 		shflag = FILE_SHARE_WRITE;
 	}
-	else if (share == IO::FileStream::FileShare::DenyWrite)
+	else if (share == IO::FileShare::DenyWrite)
 	{
 		shflag = FILE_SHARE_READ;
 	}
