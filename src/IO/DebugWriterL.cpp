@@ -36,7 +36,7 @@ void IO::DebugWriter::Flush()
 Bool IO::DebugWriter::Write(const UTF8Char *str, UOSInt nChar)
 {
 	Text::StringBuilderUTF8 *sb = (Text::StringBuilderUTF8*)this->clsData;
-	sb->Append(str, nChar);
+	sb->AppendC(str, nChar);
 	this->Flush();
 	return true;
 }
@@ -52,7 +52,7 @@ Bool IO::DebugWriter::Write(const UTF8Char *str)
 Bool IO::DebugWriter::WriteLine(const UTF8Char *str, UOSInt nChar)
 {
 	Text::StringBuilderUTF8 *sb = (Text::StringBuilderUTF8*)this->clsData;
-	sb->Append(str, nChar);
+	sb->AppendC(str, nChar);
 	this->Flush();
 	syslog(LOG_DEBUG, (const Char*)sb->ToString());
 	sb->ClearStr();
@@ -63,42 +63,6 @@ Bool IO::DebugWriter::WriteLine(const UTF8Char *str)
 {
 	Text::StringBuilderUTF8 *sb = (Text::StringBuilderUTF8*)this->clsData;
 	sb->Append(str);
-	this->Flush();
-	syslog(LOG_DEBUG, (const Char*)sb->ToString());
-	sb->ClearStr();
-	return true;
-}
-
-Bool IO::DebugWriter::WriteW(const WChar *str, UOSInt nChar)
-{
-	Text::StringBuilderUTF8 *sb = (Text::StringBuilderUTF8*)this->clsData;
-	sb->AppendW(str, nChar);
-	this->Flush();
-	return true;
-}
-
-Bool IO::DebugWriter::WriteW(const WChar *str)
-{
-	Text::StringBuilderUTF8 *sb = (Text::StringBuilderUTF8*)this->clsData;
-	sb->AppendW(str);
-	this->Flush();
-	return true;
-}
-
-Bool IO::DebugWriter::WriteLineW(const WChar *str, UOSInt nChar)
-{
-	Text::StringBuilderUTF8 *sb = (Text::StringBuilderUTF8*)this->clsData;
-	sb->AppendW(str, nChar);
-	this->Flush();
-	syslog(LOG_DEBUG, (const Char*)sb->ToString());
-	sb->ClearStr();
-	return true;
-}
-
-Bool IO::DebugWriter::WriteLineW(const WChar *str)
-{
-	Text::StringBuilderUTF8 *sb = (Text::StringBuilderUTF8*)this->clsData;
-	sb->AppendW(str);
 	this->Flush();
 	syslog(LOG_DEBUG, (const Char*)sb->ToString());
 	sb->ClearStr();

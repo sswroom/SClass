@@ -671,24 +671,24 @@ void *IO::DBusManager::Introspect(IO::DBusManager *dbusManager, Message *message
 
 void IO::DBusManager::PrintArguments(Text::StringBuilderC *sb, const ArgInfo *args, const Char *direction)
 {
-	const UTF8Char *csptr;
+	Text::String *s;
 	while (args && args->name)
 	{
 		sb->Append("<arg name=");
-		csptr = Text::XML::ToNewAttrText((const UTF8Char*)args->name);
-		sb->Append((const Char*)csptr);
-		Text::XML::FreeNewText(csptr);
+		s = Text::XML::ToNewAttrText((const UTF8Char*)args->name);
+		sb->Append((const Char*)s->v);
+		s->Release();
 		sb->Append(" type=");
-		csptr = Text::XML::ToNewAttrText((const UTF8Char*)args->signature);
-		sb->Append((const Char*)csptr);
-		Text::XML::FreeNewText(csptr);
+		s = Text::XML::ToNewAttrText((const UTF8Char*)args->signature);
+		sb->Append((const Char*)s->v);
+		s->Release();
 
 		if (direction)
 		{
 			sb->Append(" direction=");
-			csptr = Text::XML::ToNewAttrText((const UTF8Char*)direction);
-			sb->Append((const Char*)csptr);
-			Text::XML::FreeNewText(csptr);
+			s = Text::XML::ToNewAttrText((const UTF8Char*)direction);
+			sb->Append((const Char*)s->v);
+			s->Release();
 			sb->Append("/>\n");
 		}
 		else
@@ -701,7 +701,7 @@ void IO::DBusManager::PrintArguments(Text::StringBuilderC *sb, const ArgInfo *ar
 
 void IO::DBusManager::GenerateInterfaceXml(Text::StringBuilderC *sb, InterfaceData *iface)
 {
-	const UTF8Char *csptr;
+	Text::String *s;
 	const MethodTable *method;
 	const SignalTable *signal;
 	const PropertyTable *property;
@@ -712,9 +712,9 @@ void IO::DBusManager::GenerateInterfaceXml(Text::StringBuilderC *sb, InterfaceDa
 		if (!this->CheckExperimental(method->flags, MF_EXPERIMENTAL))
 		{
 			sb->Append("<method name=");
-			csptr = Text::XML::ToNewAttrText((const UTF8Char*)method->name);
-			sb->Append((const Char*)csptr);
-			Text::XML::FreeNewText(csptr);
+			s = Text::XML::ToNewAttrText((const UTF8Char*)method->name);
+			sb->Append((const Char*)s->v);
+			s->Release();
 			sb->Append(">");
 			this->PrintArguments(sb, method->inArgs, "in");
 			this->PrintArguments(sb, method->outArgs, "out");
@@ -736,9 +736,9 @@ void IO::DBusManager::GenerateInterfaceXml(Text::StringBuilderC *sb, InterfaceDa
 		if (!this->CheckExperimental(signal->flags, SF_EXPERIMENTAL))
 		{
 			sb->Append("<signal name=");
-			csptr = Text::XML::ToNewAttrText((const UTF8Char*)signal->name);
-			sb->Append((const Char*)csptr);
-			Text::XML::FreeNewText(csptr);
+			s = Text::XML::ToNewAttrText((const UTF8Char*)signal->name);
+			sb->Append((const Char*)s->v);
+			s->Release();
 			sb->Append(">");
 			this->PrintArguments(sb, signal->args, NULL);
 
@@ -756,13 +756,13 @@ void IO::DBusManager::GenerateInterfaceXml(Text::StringBuilderC *sb, InterfaceDa
 		if (!this->CheckExperimental(property->flags, PF_EXPERIMENTAL))
 		{
 			sb->Append("<property name=");
-			csptr = Text::XML::ToNewAttrText((const UTF8Char*)property->name);
-			sb->Append((const Char*)csptr);
-			Text::XML::FreeNewText(csptr);
+			s = Text::XML::ToNewAttrText((const UTF8Char*)property->name);
+			sb->Append((const Char*)s->v);
+			s->Release();
 			sb->Append(" type=");
-			csptr = Text::XML::ToNewAttrText((const UTF8Char*)property->type);
-			sb->Append((const Char*)csptr);
-			Text::XML::FreeNewText(csptr);
+			s = Text::XML::ToNewAttrText((const UTF8Char*)property->type);
+			sb->Append((const Char*)s->v);
+			s->Release();
 			sb->Append(" access=\"");
 			if (property->get) sb->Append("read");
 			if (property->set) sb->Append("write");
@@ -780,7 +780,7 @@ void IO::DBusManager::GenerateInterfaceXml(Text::StringBuilderC *sb, InterfaceDa
 void IO::DBusManager::GenerateIntrospectionXml(GenericData *data, const Char *path)
 {
 	ClassData *clsData = (ClassData*)this->clsData;
-	const UTF8Char *csptr;
+	Text::String *s;
 	Text::StringBuilderC sb;
 	Char **children;
 
@@ -796,9 +796,9 @@ void IO::DBusManager::GenerateIntrospectionXml(GenericData *data, const Char *pa
 		InterfaceData *iface = data->interfaces->GetItem(i);
 
 		sb.Append("<interface name=");
-		csptr = Text::XML::ToNewAttrText((const UTF8Char*)iface->name);
-		sb.Append((const Char*)csptr);
-		Text::XML::FreeNewText(csptr);
+		s = Text::XML::ToNewAttrText((const UTF8Char*)iface->name);
+		sb.Append((const Char*)s->v);
+		s->Release();
 		sb.Append(">");
 
 		this->GenerateInterfaceXml(&sb, iface);
@@ -813,9 +813,9 @@ void IO::DBusManager::GenerateIntrospectionXml(GenericData *data, const Char *pa
 		while (children[i])
 		{
 			sb.Append("<node name=");
-			csptr = Text::XML::ToNewAttrText((const UTF8Char*)children[i]);
-			sb.Append((const Char*)csptr);
-			Text::XML::FreeNewText(csptr);
+			s = Text::XML::ToNewAttrText((const UTF8Char*)children[i]);
+			sb.Append((const Char*)s->v);
+			s->Release();
 			sb.Append("/>");
 			i++;
 		}
@@ -2267,7 +2267,7 @@ IO::DBusManager::HandlerResult IO::DBusManager::WatchMessageFilter(Message *mess
 			listener->handleFunc(clsData->conn, (DBusMessage*)message->GetHandle(), listener);
 
 			listener->callbacks->Clear();
-			listener->callbacks->AddRange(listener->processed);
+			listener->callbacks->AddAll(listener->processed);
 			listener->processed->Clear();
 			listener->lock = false;
 		}

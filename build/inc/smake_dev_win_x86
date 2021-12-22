@@ -1,7 +1,4 @@
 
-IO/DebugWriter.h: ../../src/IO/DebugWriterW.cpp
-@DebugWriter.o
-
 IO/GPUManager.h: ../../src/IO/GPUManagerW.cpp
 @GPUManager.o
 
@@ -20,7 +17,6 @@ Media/VideoCaptureMgr.h: ../../src/Media/VideoCaptureMgrW.cpp
 Win32/SMBIOSUtil.h: ../../src/Win32/SMBIOSUtilW.cpp
 @SMBIOSUtil.o
 
-DebugWriter.o: ../../src/IO/DebugWriterW.cpp
 GPUManager.o: ../../src/IO/GPUManagerW.cpp
 SystemInfo.o: ../../src/IO/SystemInfoW.cpp
 CameraManager.o: ../../src/Media/CameraManagerNul.cpp

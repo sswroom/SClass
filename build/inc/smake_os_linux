@@ -23,6 +23,8 @@ IO/DBusClient.h: ../../src/IO/DBusClient.cpp
 @DBusClient.o
 IO/DBusManager.h: ../../src/IO/DBusManager.cpp
 @DBusManager.o
+IO/DebugWriter.h: ../../src/IO/DebugWriterL.cpp
+@DebugWriter.o
 IO/HIDInfo.h: ../../src/IO/HIDInfoL.cpp
 @HIDInfo.o
 IO/I2CChannelOS.h: ../../src/IO/I2CChannelOSL.cpp
@@ -120,6 +122,7 @@ $`pkg-config --cflags glib-2.0`
 DBusClient.o: ../../src/IO/DBusClient.cpp
 $`pkg-config --cflags dbus-1`
 !`pkg-config --libs dbus-1`
+DebugWriter.o: ../../src/IO/DebugWriterL.cpp
 HIDInfo.o: ../../src/IO/HIDInfoL.cpp
 I2CChannelOS.o: ../../src/IO/I2CChannelOSL.cpp
 OS.o: ../../src/IO/OSL.cpp

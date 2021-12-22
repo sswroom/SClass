@@ -17,6 +17,8 @@ IO/BTManager.h: ../../src/IO/BTManagerNull.cpp
 @BTManager.o
 IO/BTScanner.h: ../../src/IO/BTScannerNull.cpp
 @BTScanner.o
+IO/DebugWriter.h: ../../src/IO/DebugWriter_Null.cpp
+@DebugWriter.o
 IO/HIDInfo.h: ../../src/IO/HIDInfoNull.cpp
 @HIDInfo.o
 IO/I2CChannelOS.h: ../../src/IO/I2CChannelOSNull.cpp
@@ -92,6 +94,7 @@ ODBCConn.o: ../../src/DB/ODBCConn.cpp
 BTController.o: ../../src/IO/BTControllerNull.cpp
 BTManager.o: ../../src/IO/BTManagerNull.cpp
 BTScanner.o: ../../src/IO/BTScannerNull.cpp
+DebugWriter.o: ../../src/IO/DebugWriter_Null.cpp
 HIDInfo.o: ../../src/IO/HIDInfoNull.cpp
 I2CChannelOS.o: ../../src/IO/I2CChannelOSNull.cpp
 OS.o: ../../src/IO/OSFreeBSD.cpp

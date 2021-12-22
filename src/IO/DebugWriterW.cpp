@@ -59,7 +59,7 @@ Bool IO::DebugWriter::WriteLine(const UTF8Char *str)
 	return true;
 }
 
-Bool IO::DebugWriter::WriteW(const WChar *str, UOSInt nChar)
+/*Bool IO::DebugWriter::WriteW(const WChar *str, UOSInt nChar)
 {
 	WChar sbuff[257];
 	while (nChar >= 256)
@@ -116,7 +116,7 @@ Bool IO::DebugWriter::WriteLineW(const WChar *str)
 	OutputDebugStringW(str);
 	OutputDebugStringW(L"\r\n");
 	return true;
-}
+}*/
 
 Bool IO::DebugWriter::WriteLine()
 {

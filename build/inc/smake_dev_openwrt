@@ -1,9 +1,6 @@
 
 DEPS := DeviceBase.o
 
-IO/DebugWriter.h: ../../src/IO/DebugWriter_Null.cpp
-@DebugWriter.o
-
 IO/GPUManager.h: ../../src/IO/GPUManagerNull.cpp
 @GPUManager.o
 
@@ -23,7 +20,6 @@ Win32/SMBIOSUtil.h: ../../src/Win32/SMBIOSUtilNull.cpp
 @SMBIOSUtil.o
 
 DeviceBase.o: ../../src/DeviceBase_SUP.cpp
-DebugWriter.o: ../../src/IO/DebugWriter_Null.cpp
 GPUManager.o: ../../src/IO/GPUManagerNull.cpp
 SystemInfo.o: ../../src/IO/SystemInfoOpenWRT.cpp
 CameraManager.o: ../../src/Media/CameraManagerNul.cpp

@@ -34,26 +34,6 @@ Bool IO::DebugWriter::WriteLine(const UTF8Char *str)
 	return true;
 }
 
-Bool IO::DebugWriter::WriteW(const WChar *str, UOSInt nChar)
-{
-	return true;
-}
-
-Bool IO::DebugWriter::WriteW(const WChar *str)
-{
-	return true;
-}
-
-Bool IO::DebugWriter::WriteLineW(const WChar *str, UOSInt nChar)
-{
-	return true;
-}
-
-Bool IO::DebugWriter::WriteLineW(const WChar *str)
-{
-	return true;
-}
-
 Bool IO::DebugWriter::WriteLine()
 {
 	return true;
