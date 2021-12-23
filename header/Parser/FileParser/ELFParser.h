@@ -30,7 +30,6 @@ namespace Parser
 
 			static Bool ParseType(ParseEnv *env);
 			static UTF8Char *ToFuncName(UTF8Char *sbuff, const UTF8Char *funcName);
-			static UTF8Char *ToFuncNameO(UTF8Char *sbuff, const UTF8Char *funcName);
 		public:
 			ELFParser();
 			virtual ~ELFParser();
