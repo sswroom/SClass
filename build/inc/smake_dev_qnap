@@ -1,16 +1,15 @@
 
 IO/GPUManager.h: ../../src/IO/GPUManagerNull.cpp
 @GPUManager.o
-
+IO/RobustelInfo.h: ../../src/IO/RobustelInfo_Null.cpp
+@RobustelInfo.o
 IO/SystemInfo.h: ../../src/IO/SystemInfoQNAP.cpp
 @SystemInfo.o
 
 Media/CameraManager.h: ../../src/Media/CameraManagerNul.cpp
 @CameraManager.o
-
 Media/DDCReader.h: ../../src/Media/DDCReaderNul.cpp
 @DDCReader.o
-
 Media/VideoCaptureMgr.h: ../../src/Media/VideoCaptureMgrL.cpp
 @VideoCaptureMgr.o
 
@@ -18,6 +17,7 @@ Win32/SMBIOSUtil.h: ../../src/Win32/SMBIOSUtilNull.cpp
 @SMBIOSUtil.o
 
 GPUManager.o: ../../src/IO/GPUManagerNull.cpp
+RobustelInfo.o: ../../src/IO/RobustelInfo_Null.cpp
 SystemInfo.o: ../../src/IO/SystemInfoQNAP.cpp
 CameraManager.o: ../../src/Media/CameraManagerNul.cpp
 DDCReader.o: ../../src/Media/DDCReaderL.cpp

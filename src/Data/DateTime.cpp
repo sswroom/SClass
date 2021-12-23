@@ -17,6 +17,9 @@ typedef struct
 	UInt16 wSecond;
 	UInt16 wMilliseconds;
 } SYSTEMTIME;
+#if !defined(CPU_AVR)
+#include <sys/time.h>
+#endif
 #endif
 #include <time.h>
 #include <stdio.h>
@@ -297,16 +300,26 @@ Data::DateTime *Data::DateTime::SetCurrTime()
 	tval->ms = ts.tv_nsec / 1000000;
 	return this;
 #elif !defined(CPU_AVR)
-	time_t now = time(0);
-	tm *t = localtime(&now);
-	Int32 newTZ = (Int32)(t->tm_gmtoff / 900);
-	this->tzQhr = (Int8)newTZ;
+	struct timeval tv;
+	struct timezone tz;
+	if (gettimeofday(&tv, &tz) == 0)
+	{
+		this->SetTicks(1000 * (Int64)tv.tv_sec + tv.tv_usec / 1000);
+		this->tzQhr = (Int8)(-tz.tz_minuteswest / 15);
+	}
+	else
+	{
+		time_t now = time(0);
+		tm *t = localtime(&now);
+		Int32 newTZ = (Int32)(t->tm_gmtoff / 900);
+		this->tzQhr = (Int8)newTZ;
 
-	struct timespec ts;
-	clock_gettime(CLOCK_REALTIME, &ts);
-	this->SetUnixTimestamp(ts.tv_sec);
-	TimeValue *tval = GetTimeValue();
-	tval->ms = (UInt16)(ts.tv_nsec / 1000000);
+		struct timespec ts;
+		clock_gettime(CLOCK_REALTIME, &ts);
+		this->SetUnixTimestamp(ts.tv_sec);
+		TimeValue *tval = GetTimeValue();
+		tval->ms = (UInt16)(ts.tv_nsec / 1000000);
+	}
 	return this;
 #else
 	return this;
@@ -332,11 +345,17 @@ Data::DateTime *Data::DateTime::SetCurrTimeUTC()
 	return this;
 #elif !defined(CPU_AVR)
 	this->tzQhr = 0;
-	struct timespec ts;
-	clock_gettime(CLOCK_REALTIME, &ts);
-	this->SetUnixTimestamp(ts.tv_sec);
-	TimeValue *tval = GetTimeValue();
-	tval->ms = (UInt16)(ts.tv_nsec / 1000000);
+	struct timeval tv;
+	if (gettimeofday(&tv, 0) == 0)
+	{
+		this->SetTicks(1000 * (Int64)tv.tv_sec + tv.tv_usec / 1000);
+	}
+	else
+	{
+		struct timespec ts;
+		clock_gettime(CLOCK_REALTIME, &ts);
+		this->SetTicks(1000 * (Int64)ts.tv_sec + (ts.tv_nsec / 1000000));
+	}
 	return this;
 #else
 	return this;
