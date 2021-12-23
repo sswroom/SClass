@@ -4,6 +4,7 @@
 
 IO::DebugWriter::DebugWriter()
 {
+	this->clsData = 0;
 }
 
 IO::DebugWriter::~DebugWriter()

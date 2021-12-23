@@ -10,6 +10,13 @@ namespace Parser
 		class ELFParser : public IO::FileParser
 		{
 		private:
+			struct ParseEnv
+			{
+				UTF8Char *sbuff;
+				const UTF8Char *funcName;
+				Bool valid;
+			};
+		private:
 			static Int64 __stdcall TReadInt64(UInt8 *pVal);
 			static Int64 __stdcall TReadMInt64(UInt8 *pVal);
 			static Int32 __stdcall TReadInt32(UInt8 *pVal);
@@ -21,7 +28,9 @@ namespace Parser
 			typedef Int32 (__stdcall *RInt32Func)(UInt8* pVal);
 			typedef Int16 (__stdcall *RInt16Func)(UInt8* pVal);
 
+			static Bool ParseType(ParseEnv *env);
 			static UTF8Char *ToFuncName(UTF8Char *sbuff, const UTF8Char *funcName);
+			static UTF8Char *ToFuncNameO(UTF8Char *sbuff, const UTF8Char *funcName);
 		public:
 			ELFParser();
 			virtual ~ELFParser();
@@ -31,6 +40,6 @@ namespace Parser
 			virtual IO::ParserType GetParserType();
 			virtual IO::ParsedObject *ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType);
 		};
-	};
-};
+	}
+}
 #endif

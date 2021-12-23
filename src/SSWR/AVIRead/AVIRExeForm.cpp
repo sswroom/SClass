@@ -299,6 +299,8 @@ SSWR::AVIRead::AVIRExeForm::AVIRExeForm(UI::GUIClientControl *parent, UI::GUICor
 	UTF8Char sbuff[512];
 	this->SetFont(0, 8.25, false);
 	this->exeFile = exeFile;
+	this->parts = 0;
+	this->codesList = 0;
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	exeFile->GetSourceNameObj()->ConcatTo(Text::StrConcat(sbuff, (const UTF8Char*)"EXE Form - "));

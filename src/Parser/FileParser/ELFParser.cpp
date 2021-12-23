@@ -38,9 +38,11 @@ Int16 __stdcall Parser::FileParser::ELFParser::TReadMInt16(UInt8 *pVal)
 
 /*
 CPP Syntax:
-c = char
 v = void
 w = wchar_t
+b = bool
+c = char
+s = short
 i = int
 x = __int64
 h = unsigned char
@@ -52,12 +54,484 @@ P = *
 K = const
 l = start of template
 N = Start of namespace
+I = Start of template
+F = Start of Function
 E = End of namespace/template
 CnE = Constructor
 DnE = Destructor
 */
 
+Bool Parser::FileParser::ELFParser::ParseType(ParseEnv *env)
+{
+	UOSInt ptrCnt = 0;
+	Bool constVal = false;
+	UOSInt i;
+	UTF8Char c;
+	Bool foundName;
+	UTF8Char *clsName;
+	while (true)
+	{
+		c = env->funcName[0];
+		if (c == 'P')
+		{
+			ptrCnt++;
+			env->funcName++;
+		}
+		else if (c == 'K')
+		{
+			constVal = true;
+			env->funcName++;
+		}
+		else
+		{
+			break;
+		}
+	}
+	switch (env->funcName[0])
+	{
+	case '1':
+	case '2':
+	case '3':
+	case '4':
+	case '5':
+	case '6':
+	case '7':
+	case '8':
+	case '9':
+		if (constVal)
+		{
+			env->sbuff = Text::StrConcat(env->sbuff, (const UTF8Char*)"const ");
+		}
+		while (env->funcName[0] >= '1' && env->funcName[0] <= '9')
+		{
+			c = *env->funcName++;
+			i = c - '0';
+			c = *env->funcName++;
+			if (c >= '0' && c <= '9')
+			{
+				i = i * 10 + c - '0';
+			}
+			else
+			{
+				*env->sbuff++ = c;
+				i--;
+			}
+			while (i-- > 0)
+			{
+				c = *env->funcName++;
+				if (c == 0)
+				{
+					env->valid = false;
+					return false;
+				}
+				*env->sbuff++ = c;
+			}
+		}
+		while (ptrCnt-- > 0)
+		{
+			*env->sbuff++ = '*';
+		}
+		return true;
+	case 'N':
+		env->funcName++;
+		if (constVal)
+		{
+			env->sbuff = Text::StrConcat(env->sbuff, (const UTF8Char*)"const ");
+		}
+		foundName = false;
+		while (true)
+		{
+			c = *env->funcName++;
+			if (c >= '1' && c <= '9')
+			{
+				i = c - '0';
+				if (foundName)
+				{
+					*env->sbuff++ = '.';
+				}
+				else
+				{
+					foundName = true;
+				}
+				clsName = env->sbuff;
+				c = *env->funcName++;
+				if (c >= '0' && c <= '9')
+				{
+					i = i * 10 + c - '0';
+				}
+				else
+				{
+					*env->sbuff++ = c;
+					i--;
+				}
+				while (i-- > 0)
+				{
+					c = *env->funcName++;
+					if (c == 0)
+					{
+						env->valid = false;
+						return false;
+					}
+					*env->sbuff++ = c;
+				}
+			}
+			else if (c == 'C')
+			{
+				c = *env->funcName++;
+				if (c == '0' || c == '1' || c == '2')
+				{
+					*env->sbuff = 0;
+					clsName = Text::StrConcat(env->sbuff + 1, clsName);
+					*env->sbuff = '.';
+					i = Text::StrIndexOf(env->sbuff, '<');
+					if (i != INVALID_INDEX)
+					{
+						env->sbuff[i] = 0;
+						env->sbuff += i;
+					}
+					else
+					{
+						env->sbuff = clsName;
+					}
+					c = *env->funcName++;
+					if (c != 'E')
+					{
+						env->valid = false;
+						return false;
+					}
+					return true;
+				}
+				else
+				{
+					env->valid = false;
+					return false;
+				}
+			}
+			else if (c == 'D')
+			{
+				c = *env->funcName++;
+				if (c == '0' || c == '1' || c == '2')
+				{
+					*env->sbuff = 0;
+					clsName = Text::StrConcat(env->sbuff + 2, clsName);
+					env->sbuff[0] = '.';
+					env->sbuff[1] = '~';
+					i = Text::StrIndexOf(env->sbuff, '<');
+					if (i != INVALID_INDEX)
+					{
+						env->sbuff[i] = 0;
+						env->sbuff += i;
+					}
+					else
+					{
+						env->sbuff = clsName;
+					}
+					c = *env->funcName++;
+					if (c != 'E')
+					{
+						env->valid = false;
+						return false;
+					}
+					return true;
+				}
+				else
+				{
+					env->valid = false;
+					return false;
+				}
+			}
+			else if (c == 'E')
+			{
+				while (ptrCnt-- > 0)
+				{
+					*env->sbuff++ = '*';
+				}
+				return true;
+			}
+			else if (c == 'I')
+			{
+				*env->sbuff++ = '<';
+				if (!ParseType(env))
+				{
+					return false;
+				}
+				while (true)
+				{
+					c = env->funcName[0];
+					if (c == 'E')
+					{
+						env->funcName++;
+						*env->sbuff++ = '>';
+						break;
+					}
+					else if (c == 0)
+					{
+						env->valid = false;
+						return false;
+					}
+					else
+					{
+						*env->sbuff++ = ',';
+						*env->sbuff++ = ' ';
+						if (!ParseType(env))
+						{
+							return false;
+						}
+					}
+				}
+			}
+			else
+			{
+				env->valid = false;
+				return false;
+			}
+		}
+		return false;
+	case 'F':
+		env->funcName++;
+		if (!ParseType(env))
+		{
+			return false;
+		}
+		*env->sbuff++ = ' ';
+		*env->sbuff++ = '(';
+		while (ptrCnt-- > 0)
+		{
+			*env->sbuff++ = '*';
+		}
+		*env->sbuff++ = ')';
+		*env->sbuff++ = '(';
+		if (!ParseType(env))
+		{
+			return false;
+		}
+		while (true)
+		{
+			c = env->funcName[0];
+			if (c == 'E')
+			{
+				env->funcName++;
+				*env->sbuff++ = ')';
+				return true;
+			}
+			else if (c == 0)
+			{
+				env->valid = false;
+				return false;
+			}
+			else
+			{
+				*env->sbuff++ = ',';
+				*env->sbuff++ = ' ';
+				if (!ParseType(env))
+				{
+					return false;
+				}
+			}
+		}
+	case 'v':
+		env->funcName++;
+		if (constVal)
+		{
+			env->sbuff = Text::StrConcat(env->sbuff, (const UTF8Char*)"const ");
+		}
+		env->sbuff = Text::StrConcat(env->sbuff, (const UTF8Char*)"void");
+		while (ptrCnt-- > 0)
+		{
+			*env->sbuff++ = '*';
+		}
+		return true;
+	case 'w':
+		env->funcName++;
+		if (constVal)
+		{
+			env->sbuff = Text::StrConcat(env->sbuff, (const UTF8Char*)"const ");
+		}
+		env->sbuff = Text::StrConcat(env->sbuff, (const UTF8Char*)"wchar_t");
+		while (ptrCnt-- > 0)
+		{
+			*env->sbuff++ = '*';
+		}
+		return true;
+	case 'b':
+		env->funcName++;
+		if (constVal)
+		{
+			env->sbuff = Text::StrConcat(env->sbuff, (const UTF8Char*)"const ");
+		}
+		env->sbuff = Text::StrConcat(env->sbuff, (const UTF8Char*)"bool");
+		while (ptrCnt-- > 0)
+		{
+			*env->sbuff++ = '*';
+		}
+		return true;
+	case 'c':
+		env->funcName++;
+		if (constVal)
+		{
+			env->sbuff = Text::StrConcat(env->sbuff, (const UTF8Char*)"const ");
+		}
+		env->sbuff = Text::StrConcat(env->sbuff, (const UTF8Char*)"char");
+		while (ptrCnt-- > 0)
+		{
+			*env->sbuff++ = '*';
+		}
+		return true;
+	case 's':
+		env->funcName++;
+		if (constVal)
+		{
+			env->sbuff = Text::StrConcat(env->sbuff, (const UTF8Char*)"const ");
+		}
+		env->sbuff = Text::StrConcat(env->sbuff, (const UTF8Char*)"short");
+		while (ptrCnt-- > 0)
+		{
+			*env->sbuff++ = '*';
+		}
+		return true;
+	case 'i':
+		env->funcName++;
+		if (constVal)
+		{
+			env->sbuff = Text::StrConcat(env->sbuff, (const UTF8Char*)"const ");
+		}
+		env->sbuff = Text::StrConcat(env->sbuff, (const UTF8Char*)"int");
+		while (ptrCnt-- > 0)
+		{
+			*env->sbuff++ = '*';
+		}
+		return true;
+	case 'x':
+		env->funcName++;
+		if (constVal)
+		{
+			env->sbuff = Text::StrConcat(env->sbuff, (const UTF8Char*)"const ");
+		}
+		env->sbuff = Text::StrConcat(env->sbuff, (const UTF8Char*)"__int64");
+		while (ptrCnt-- > 0)
+		{
+			*env->sbuff++ = '*';
+		}
+		return true;
+	case 'h':
+		env->funcName++;
+		if (constVal)
+		{
+			env->sbuff = Text::StrConcat(env->sbuff, (const UTF8Char*)"const ");
+		}
+		env->sbuff = Text::StrConcat(env->sbuff, (const UTF8Char*)"unsigned char");
+		while (ptrCnt-- > 0)
+		{
+			*env->sbuff++ = '*';
+		}
+		return true;
+	case 't':
+		env->funcName++;
+		if (constVal)
+		{
+			env->sbuff = Text::StrConcat(env->sbuff, (const UTF8Char*)"const ");
+		}
+		env->sbuff = Text::StrConcat(env->sbuff, (const UTF8Char*)"unsigned short");
+		while (ptrCnt-- > 0)
+		{
+			*env->sbuff++ = '*';
+		}
+		return true;
+	case 'j':
+		env->funcName++;
+		if (constVal)
+		{
+			env->sbuff = Text::StrConcat(env->sbuff, (const UTF8Char*)"const ");
+		}
+		env->sbuff = Text::StrConcat(env->sbuff, (const UTF8Char*)"unsigned int");
+		while (ptrCnt-- > 0)
+		{
+			*env->sbuff++ = '*';
+		}
+		return true;
+	case 'y':
+		env->funcName++;
+		if (constVal)
+		{
+			env->sbuff = Text::StrConcat(env->sbuff, (const UTF8Char*)"const ");
+		}
+		env->sbuff = Text::StrConcat(env->sbuff, (const UTF8Char*)"unsigned __int64");
+		while (ptrCnt-- > 0)
+		{
+			*env->sbuff++ = '*';
+		}
+		return true;
+	case 'd':
+		env->funcName++;
+		if (constVal)
+		{
+			env->sbuff = Text::StrConcat(env->sbuff, (const UTF8Char*)"const ");
+		}
+		env->sbuff = Text::StrConcat(env->sbuff, (const UTF8Char*)"double");
+		while (ptrCnt-- > 0)
+		{
+			*env->sbuff++ = '*';
+		}
+		return true;
+	case 'S':
+		env->valid = false;
+		return false;
+	default:
+		env->valid = false;
+		return false;
+	}
+}
+
 UTF8Char *Parser::FileParser::ELFParser::ToFuncName(UTF8Char *sbuff, const UTF8Char *funcName)
+{
+	if (funcName[0] == '_' && funcName[1] == 'Z')
+	{
+		ParseEnv env;
+		env.funcName = funcName + 2;
+		env.sbuff = sbuff;
+		env.valid = true;
+		if (env.funcName[0] >= '1' && env.funcName[0] <= '9')
+		{
+			ParseType(&env);
+			*env.sbuff++ = '(';
+		}
+		else if (env.funcName[0] == 'N')
+		{
+			ParseType(&env);
+			*env.sbuff++ = '(';
+		}
+		else
+		{
+			env.valid = false;
+		}
+		if (env.valid && ParseType(&env))
+		{
+			while (*env.funcName && env.valid)
+			{
+				*env.sbuff++ = ',';
+				*env.sbuff++ = ' ';
+				ParseType(&env);
+			}
+		}
+
+		if (env.valid)
+		{
+			*env.sbuff++ = ')';
+			*env.sbuff = 0;
+			return env.sbuff;
+		}
+		else
+		{
+			return Text::StrConcat(sbuff, funcName);
+		}
+	}
+	else
+	{
+		return Text::StrConcat(sbuff, funcName);
+	}
+}
+
+UTF8Char *Parser::FileParser::ELFParser::ToFuncNameO(UTF8Char *sbuff, const UTF8Char *funcName)
 {
 	if (funcName[0] == '_' && funcName[1] == 'Z')
 	{
@@ -456,6 +930,26 @@ UTF8Char *Parser::FileParser::ELFParser::ToFuncName(UTF8Char *sbuff, const UTF8C
 				ptCnt = 0;
 				hasParam = true;
 			}
+			else if (c == 's')
+			{
+				if (hasParam)
+				{
+					*sbuff2++ = ',';
+					*sbuff2++ = ' ';
+				}
+				if (isConst)
+				{
+					sbuff2 = Text::StrConcat(sbuff2, (const UTF8Char*)"const ");
+					isConst = false;
+				}
+				sbuff2 = Text::StrConcat(sbuff2, (const UTF8Char*)"short");
+				while (ptCnt-- > 0)
+				{
+					*sbuff2++ = '*';
+				}
+				ptCnt = 0;
+				hasParam = true;
+			}
 			else if (c == 't')
 			{
 				if (hasParam)
@@ -555,6 +1049,31 @@ UTF8Char *Parser::FileParser::ELFParser::ToFuncName(UTF8Char *sbuff, const UTF8C
 				}
 				ptCnt = 0;
 				hasParam = true;
+			}
+			else if (c == 'b')
+			{
+				if (hasParam)
+				{
+					*sbuff2++ = ',';
+					*sbuff2++ = ' ';
+				}
+				if (isConst)
+				{
+					sbuff2 = Text::StrConcat(sbuff2, (const UTF8Char*)"const ");
+					isConst = false;
+				}
+				sbuff2 = Text::StrConcat(sbuff2, (const UTF8Char*)"bool");
+				while (ptCnt-- > 0)
+				{
+					*sbuff2++ = '*';
+				}
+				ptCnt = 0;
+				hasParam = true;
+			}
+			else
+			{
+				valid = false;
+				break;
 			}
 		}
 		if (!valid || !foundName || !hasParam)

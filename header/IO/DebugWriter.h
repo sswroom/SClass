@@ -7,7 +7,8 @@ namespace IO
 	class DebugWriter : public IO::Writer
 	{
 	private:
-		void *clsData;
+		struct ClassData;
+		ClassData *clsData;
 	public:
 		DebugWriter();
 		virtual ~DebugWriter();
