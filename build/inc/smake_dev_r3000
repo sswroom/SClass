@@ -1,8 +1,20 @@
+INCLUDEPATH+=:$(TOOLCHAIN_DIR)/../../usr/include
+CFLAGS += -I $(TOOLCHAIN_DIR)/../../usr/include
+
+librouter.h:
+rlib_env.h:
+rlib_event.h:
+rlib_log.h:
+rlib_msg.h:
+rlib_types.h:
+rlib_uci.h:
 
 IO/GPUManager.h: ../../src/IO/GPUManagerNull.cpp
 @GPUManager.o
 IO/RobustelInfo.h: ../../src/IO/RobustelInfo.cpp
 @RobustelInfo.o
+IO/RobustelStatus.h: ../../src/IO/RobustelStatus.cpp
+@RobustelStatus.o
 IO/SystemInfo.h: ../../src/IO/SystemInfoEurotech.cpp
 @SystemInfo.o
 
@@ -18,6 +30,7 @@ Win32/SMBIOSUtil.h: ../../src/Win32/SMBIOSUtilNull.cpp
 
 GPUManager.o: ../../src/IO/GPUManagerNull.cpp
 RobustelInfo.o: ../../src/IO/RobustelInfo.cpp
+RobustelStatus.o: ../../src/IO/RobustelStatus.cpp
 SystemInfo.o: ../../src/IO/SystemInfoEurotech.cpp
 CameraManager.o: ../../src/Media/CameraManagerNul.cpp
 DDCReader.o: ../../src/Media/DDCReaderNul.cpp

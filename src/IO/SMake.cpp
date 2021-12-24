@@ -650,6 +650,7 @@ Bool IO::SMake::ParseHeader(Data::ArrayListString *objList, Data::ArrayListStrin
 	Text::StringBuilderUTF8 sb;
 	Text::StringBuilderUTF8 sb2;
 	UTF8Char *sarr[2];
+	UTF8Char sbuff[512];
 	UOSInt i;
 	sb.Append(cfg->value);
 	sarr[1] = sb.ToString();
@@ -661,18 +662,15 @@ Bool IO::SMake::ParseHeader(Data::ArrayListString *objList, Data::ArrayListStrin
 		sb2.Append(sarr[0]);
 		sb2.AppendChar(IO::Path::PATH_SEPERATOR, 1);
 		sb2.Append(headerFile);
-		if (IO::Path::PATH_SEPERATOR == '\\')
-		{
-			sb2.Replace('/', '\\');
-		}
+		IO::Path::GetRealPath(sbuff, sb2.ToString());
 
-		if (IO::Path::GetPathType(sb2.ToString()) == IO::Path::PathType::File)
+		if (IO::Path::GetPathType(sbuff) == IO::Path::PathType::File)
 		{
 			if (headerList && headerList->SortedIndexOf(headerFile) < 0)
 			{
 				headerList->SortedInsert(headerFile);
 			}
-			if (this->ParseSource(objList, libList, procList, headerList, latestTime, sb2.ToString()))
+			if (this->ParseSource(objList, libList, procList, headerList, latestTime, sbuff))
 			{
 				fileTimeMap->Put(headerFile, *latestTime);
 				return true;
@@ -697,17 +695,14 @@ Bool IO::SMake::ParseHeader(Data::ArrayListString *objList, Data::ArrayListStrin
 	}
 	sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
 	sb.Append(currHeader);
-	if (IO::Path::PATH_SEPERATOR == '\\')
-	{
-		sb.Replace('/', '\\');
-	}
-	if (IO::Path::GetPathType(sb.ToString()) == IO::Path::PathType::File)
+	IO::Path::GetRealPath(sbuff, sb.ToString());
+	if (IO::Path::GetPathType(sbuff) == IO::Path::PathType::File)
 	{
 		if (headerList && headerList->SortedIndexOf(headerFile) < 0)
 		{
 			headerList->SortedInsert(headerFile);
 		}
-		if (this->ParseSource(objList, libList, procList, headerList, latestTime, sb.ToString()))
+		if (this->ParseSource(objList, libList, procList, headerList, latestTime, sbuff))
 		{
 			fileTimeMap->Put(headerFile, *latestTime);
 			return true;

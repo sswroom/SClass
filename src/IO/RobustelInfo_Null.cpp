@@ -11,6 +11,16 @@ Bool IO::RobustelInfo::GetRSSI(Int8 *val)
 	return false;
 }
 
+Bool IO::RobustelInfo::GetRSRP(Int8 *val)
+{
+	return false;
+}
+
+Bool IO::RobustelInfo::GetRSRQ(Int8 *val)
+{
+	return false;
+}
+
 Bool IO::RobustelInfo::GetPosition(Double *lat, Double *lon)
 {
 	return false;

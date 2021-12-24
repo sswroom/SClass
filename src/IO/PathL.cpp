@@ -965,12 +965,68 @@ Bool IO::Path::IsSearchPattern(const UTF8Char *path)
 
 UTF8Char *IO::Path::GetRealPath(UTF8Char *sbuff, const UTF8Char *path)
 {
+	UTF8Char *sptr;
 	if (Text::StrStartsWith(path, (const UTF8Char*)"~/"))
 	{
-		return Text::StrConcat(IO::Path::GetUserHome(sbuff), path + 1);
+		sptr = Text::StrConcat(IO::Path::GetUserHome(sbuff), path + 1);
 	}
 	else
 	{
-		return Text::StrConcat(sbuff, path);
+		sptr = Text::StrConcat(sbuff, path);
 	}
+	UTF8Char *sptr2 = sbuff;
+	UOSInt i;
+	while (true)
+	{
+		i = Text::StrIndexOf(sptr2, IO::Path::PATH_SEPERATOR);
+		if (i == INVALID_INDEX)
+		{
+			break;
+		}
+		sptr2 = &sptr2[i + 1];
+		if (sptr2[0] == '.' && sptr2[1] == '.' && sptr2[2] == 0)
+		{
+			sptr2[-1] = 0;
+			i = Text::StrLastIndexOf(sbuff, IO::Path::PATH_SEPERATOR);
+			if (i != INVALID_INDEX)
+			{
+				if (sbuff[i + 1] == '.' && sbuff[i + 2] == '.')
+				{
+					sptr2[-1] = IO::Path::PATH_SEPERATOR;
+				}
+				else
+				{
+					sptr = &sbuff[i];
+					*sptr = 0;
+				}
+			}
+			else
+			{
+				sptr2[-1] = IO::Path::PATH_SEPERATOR;
+			}
+			return sptr;
+		}
+		else if (sptr2[0] == '.' && sptr2[1] == '.' && sptr2[2] == IO::Path::PATH_SEPERATOR)
+		{
+			sptr2[-1] = 0;
+			i = Text::StrLastIndexOf(sbuff, IO::Path::PATH_SEPERATOR);
+			if (i != INVALID_INDEX)
+			{
+				if (sbuff[i + 1] == '.' && sbuff[i + 2] == '.')
+				{
+					sptr2[-1] = IO::Path::PATH_SEPERATOR;
+				}
+				else
+				{
+					sptr = Text::StrConcat(&sbuff[i + 1], &sptr2[3]);
+					sptr2 = &sbuff[i + 1];
+				}
+			}
+			else
+			{
+				sptr2[-1] = IO::Path::PATH_SEPERATOR;
+			}
+		}
+	}
+	return sptr;
 }
