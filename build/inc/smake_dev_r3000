@@ -1,5 +1,6 @@
 INCLUDEPATH+=:$(TOOLCHAIN_DIR)/../../usr/include
 CFLAGS += -I $(TOOLCHAIN_DIR)/../../usr/include
+LIBS += -L$(TOOLCHAIN_DIR)/../../usr/lib
 
 librouter.h:
 rlib_env.h:
@@ -31,6 +32,7 @@ Win32/SMBIOSUtil.h: ../../src/Win32/SMBIOSUtilNull.cpp
 GPUManager.o: ../../src/IO/GPUManagerNull.cpp
 RobustelInfo.o: ../../src/IO/RobustelInfo.cpp
 RobustelStatus.o: ../../src/IO/RobustelStatus.cpp
+!-lrouter
 SystemInfo.o: ../../src/IO/SystemInfoEurotech.cpp
 CameraManager.o: ../../src/Media/CameraManagerNul.cpp
 DDCReader.o: ../../src/Media/DDCReaderNul.cpp

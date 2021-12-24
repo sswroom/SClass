@@ -1,7 +1,9 @@
 #include "Stdafx.h"
 #include "IO/RobustelStatus.h"
 
+extern "C" {
 #include "librouter.h"
+}
 
 Text::String *IO::RobustelStatus::GetStatus(const Char *name)
 {

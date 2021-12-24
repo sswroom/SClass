@@ -7,6 +7,7 @@ namespace IO
 	class RobustelInfo
 	{
 	public:
+		static Text::String *GetIMEI();
 		static Text::String *GetCellID();
 		static Bool GetRSSI(Int8 *val);
 		static Bool GetRSRP(Int8 *val);

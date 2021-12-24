@@ -5,6 +5,7 @@
 #include <signal.h>
 #include <stdio.h>
 #include <unistd.h>
+#include <syslog.h>
 
 Int32 MyMain(Core::IProgControl *progCtrl);
 
@@ -16,6 +17,11 @@ struct LinuxProgControl : public Core::IProgControl
 
 void LinuxProgControl_OnSignal(Int32 sigNum)
 {
+#if defined(DDEBUGCON)
+	Char sbuff[32];
+	Text::StrInt32(Text::StrConcat(sbuff, "Received signal "), sigNum);
+	syslog(LOG_DEBUG, sbuff);
+#endif
 }
 
 void __stdcall LinuxProgControl_WaitForExit(Core::IProgControl *progCtrl)
