@@ -371,6 +371,7 @@ SSWR::OrganMgr::OrganTimeAdjForm::OrganTimeAdjForm(UI::GUIClientControl *parent,
 	while (i < j)
 	{
 		this->cboCamera->AddItem(cameraList->GetItem(i), 0);
+		this->adjLyr->SetTimeAdj(cameraList->GetItem(i), this->cameraMap->Get(cameraList->GetItem(i)));
 		i++;
 	}
 	if (cameraList->GetCount() > 0)

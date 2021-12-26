@@ -537,9 +537,10 @@ im2ab32lop1:
 	ret
 	
 ;void ImageUtil_ImageColorBuffer32(UInt8 *pixelPtr, OSInt w, OSInt h, OSInt bpl, OSInt buffSize)
-;0 rbx
-;8 rbp
-;16 retAddr
+;0 bpl
+;8 rbx
+;16 rbp
+;24 retAddr
 ;rdi pixelPtr
 ;rsi w r11
 ;rdx h
@@ -550,6 +551,7 @@ ImageUtil_ImageColorBuffer32:
 _ImageUtil_ImageColorBuffer32:
 	push rbp
 	push rbx
+	push rcx
 	mov r11,rsi
 	mov rbx,rcx ;bpl
 	mov r10,rcx ;bpl
@@ -589,9 +591,9 @@ icb32lop6c:
 	jnz icb32lop6b
 	mov dword [rbp+rdx*4],0x7f7f7f
 icb32lop6b:
-	cmp dword [rdi+rdx*4],0
+	cmp dword [rsi+rdx*4],0
 	jnz icb32lop6d
-	mov dword [rdi+rdx*4],0x7f7f7f
+	mov dword [rsi+rdx*4],0x7f7f7f
 icb32lop6d:
 	neg rdx
 	jnb icb32lop5
@@ -601,8 +603,8 @@ icb32lop6d:
 	align 16
 icb32lop5:
 	inc rax
-	add rbp,r9 ;bpl
-	sub rsi,r9 ;bpl
+	add rbp,qword [rsp] ;bpl
+	sub rsi,qword [rsp] ;bpl
 	cmp rax,rbx ;buffSize
 	jbe icb32lop4
 
@@ -615,6 +617,7 @@ icb32lop3:
 	dec r9 ;h
 	jnz icb32lop
 	
+	pop rcx
 	pop rbx
 	pop rbp
 	ret

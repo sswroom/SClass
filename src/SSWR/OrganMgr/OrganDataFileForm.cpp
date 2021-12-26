@@ -68,7 +68,7 @@ void __stdcall SSWR::OrganMgr::OrganDataFileForm::OnStartTimeClicked(void *userO
 	Data::DateTime dt;
 	dt.SetTicks(dataFile->startTimeTicks);
 	dt.ToLocalTime();
-	dt.ToString(sbuff, "yyyy/MM/dd HH:mm:ss");
+	dt.ToString(sbuff, "dd/MM/yyyy HH:mm:ss");
 	Win32::Clipboard::SetString(me->GetHandle(), sbuff);
 }
 

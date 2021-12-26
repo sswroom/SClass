@@ -637,7 +637,7 @@ Bool Media::GTKDrawImage::DrawStringRot(Double centX, Double centY, const UTF8Ch
 
 Bool Media::GTKDrawImage::DrawStringB(Double tlx, Double tly, Text::String *str, DrawFont *f, DrawBrush *b, UOSInt buffSize)
 {
-	return DrawStringB(tlx, tly, str, f, b, buffSize);
+	return DrawStringB(tlx, tly, str->v, f, b, buffSize);
 }
 
 Bool Media::GTKDrawImage::DrawStringB(Double tlx, Double tly, const UTF8Char *str, DrawFont *f, DrawBrush *b, UOSInt buffSize)
@@ -659,8 +659,8 @@ Bool Media::GTKDrawImage::DrawStringB(Double tlx, Double tly, const UTF8Char *st
 	cairo_text_extents_t extents;
 	font->Init(this->cr);
 	cairo_text_extents((cairo_t *)this->cr, (const Char*)str, &extents);
-	sz[0] = (UInt32)Math::Double2Int32(extents.width);
-	sz[1] = (UInt32)Math::Double2Int32(extents.height);
+	sz[0] = (UInt32)Math::Double2Int32(extents.width + 2);
+	sz[1] = (UInt32)Math::Double2Int32(extents.height + 2);
 	dwidth = (OSInt)this->info->dispWidth - px;
 	dheight = (OSInt)this->info->dispHeight - py;
 
@@ -724,11 +724,13 @@ Bool Media::GTKDrawImage::DrawStringB(Double tlx, Double tly, const UTF8Char *st
 		{
 			Media::DrawBrush *whiteB = gimg->NewBrushARGB(0xffffffff);
 			//gimg->SetTextAlign(this->strAlign);
-			gimg->DrawString(Math::OSInt2Double(sx) + Math::UOSInt2Double(buffSize), Math::OSInt2Double(sy) + Math::UOSInt2Double(buffSize), str, f, whiteB);
+			gimg->DrawString(Math::OSInt2Double(sx) + tlx - Math::OSInt2Double(px),
+				Math::OSInt2Double(sy) + tly - Math::OSInt2Double(py), str, f, whiteB);
 
 			UOSInt bpl = (sz[0] + (buffSize << 1)) << 2;
 			UOSInt dbpl = this->info->dispWidth << 2;
 			UInt32 color = brush->GetOriColor();
+			cairo_surface_flush((cairo_surface_t*)gimg->surface);
 			UInt8 *pbits = cairo_image_surface_get_data((cairo_surface_t*)gimg->surface);
 			UInt8 *dbits = cairo_image_surface_get_data((cairo_surface_t*)this->surface);
 			ImageUtil_ImageColorBuffer32(pbits + bpl * buffSize + buffSize * 4, sz[0], sz[1], bpl, buffSize);
@@ -755,11 +757,11 @@ Bool Media::GTKDrawImage::DrawStringB(Double tlx, Double tly, const UTF8Char *st
 					{
 						ImageUtil_ImageMaskABlend32((UInt8*)pbits, (UInt8*)dbits, swidth, sheight, (OSInt)bpl, (OSInt)dbpl, color);
 					}
+					cairo_surface_mark_dirty((cairo_surface_t*)this->surface);
 				}
 				else
 				{
 					pbits = ((UInt8*)pbits) + (sy * (OSInt)bpl) + (sx << 2);
-					dbits = ((UInt8*)dbits) + (py * (OSInt)dbpl) + (px << 2);
 
 					ImageUtil_ImageColorReplace32((UInt8*)pbits, (UInt8*)pbits, swidth, sheight, (OSInt)bpl, (OSInt)bpl, color);
 					gimg->SetHDPI(this->GetHDPI());
