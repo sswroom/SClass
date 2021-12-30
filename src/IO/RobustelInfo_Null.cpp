@@ -1,6 +1,11 @@
 #include "Stdafx.h"
 #include "IO/RobustelInfo.h"
 
+Text::String *IO::RobustelInfo::GetIMEI()
+{
+	return Text::String::NewNotNull((const UTF8Char*)"1234567890123456");
+}
+
 Text::String *IO::RobustelInfo::GetCellID()
 {
 	return 0;
