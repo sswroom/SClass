@@ -9,7 +9,10 @@ namespace Data
 	{
 	public:
 		ICaseStringMap();
+		ICaseStringMap(ICaseStringMap<T> *map);
 		virtual ~ICaseStringMap();
+
+		virtual StringMap<T> *Clone();
 	};
 
 
@@ -19,8 +22,27 @@ namespace Data
 		NEW_CLASS(this->keys, Data::ArrayListICaseString());
 	}
 
+	template <class T> ICaseStringMap<T>::ICaseStringMap(ICaseStringMap<T> *map) : StringMap<T>()
+	{
+		DEL_CLASS(this->keys);
+		NEW_CLASS(this->keys, Data::ArrayListICaseString());
+		UOSInt i = 0;
+		UOSInt j = map->keys->GetCount();
+		while (i < j)
+		{
+			this->keys->Add(map->keys->GetItem(i)->Clone());
+			this->vals->Add(map->vals->GetItem(i));
+			i++;
+		}
+	}
+
 	template <class T> ICaseStringMap<T>::~ICaseStringMap()
 	{
+	}
+
+	template <class T> StringMap<T> *ICaseStringMap<T>::Clone()
+	{
+		return NEW_CLASS_D(ICaseStringMap<T>(this));
 	}
 }
 

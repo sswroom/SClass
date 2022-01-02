@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Data/ByteTool.h"
+#include "IO/Path.h"
 #include "Map/GPSTrack.h"
 #include "Net/SocketUtil.h"
 #include "Parser/FileParser/SLOCParser.h"
@@ -223,7 +224,7 @@ IO::ParsedObject *Parser::FileParser::SLOCParser::ParseFile(IO::IStreamData *fd,
 	UInt64 fileSize;
 	Int64 devId;
 	sptr = fd->GetFullName()->v;
-	i = Text::StrLastIndexOf(sptr, '\\');
+	i = Text::StrLastIndexOf(sptr, IO::Path::PATH_SEPERATOR);
 	Text::StrConcat(sbuff, &sptr[i + 1]);
 	if (!Text::StrStartsWithICase(sbuff, (const UTF8Char*)"LOC"))
 	{

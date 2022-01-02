@@ -10,6 +10,7 @@ namespace Data
 	{
 	public:
 		StringMap();
+		StringMap(StringMap<T> *map);
 		virtual ~StringMap();
 
 		virtual T Put(Text::String *key, T val);
@@ -20,12 +21,26 @@ namespace Data
 		T Remove(const UTF8Char *key);
 		virtual Text::String *GetKey(UOSInt index);
 		virtual void Clear();
+		virtual StringMap<T> *Clone();
 	};
 
 
 	template <class T> StringMap<T>::StringMap() : ArrayMap<Text::String*, T>()
 	{
 		NEW_CLASS(this->keys, Data::ArrayListString());
+	}
+
+	template <class T> StringMap<T>::StringMap(StringMap<T> *map) : ArrayMap<Text::String*, T>()
+	{
+		NEW_CLASS(this->keys, Data::ArrayListString());
+		UOSInt i = 0;
+		UOSInt j = map->keys->GetCount();
+		while (i < j)
+		{
+			this->keys->Add(map->keys->GetItem(i)->Clone());
+			this->vals->Add(map->vals->GetItem(i));
+			i++;
+		}
 	}
 
 	template <class T> StringMap<T>::~StringMap()
@@ -146,6 +161,11 @@ namespace Data
 			this->keys->RemoveAt(i)->Release();
 		}
 		this->vals->Clear();
+	}
+
+	template <class T> StringMap<T> *StringMap<T>::Clone()
+	{
+		return NEW_CLASS_D(StringMap<T>(this));
 	}
 }
 

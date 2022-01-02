@@ -43,9 +43,9 @@ namespace DB
 		virtual void GetConnName(Text::StringBuilderUTF *sb) = 0;
 		virtual void Close() = 0;
 		virtual OSInt ExecuteNonQuery(const UTF8Char *sql) = 0;
-//		virtual OSInt ExecuteNonQuery(const WChar *sql) = 0;
+		virtual OSInt ExecuteNonQuery(const UTF8Char *sql, UOSInt sqlLen);
 		virtual DBReader *ExecuteReader(const UTF8Char *sql) = 0;
-//		virtual DBReader *ExecuteReader(const WChar *sql) = 0;
+		virtual DBReader *ExecuteReader(const UTF8Char *sql, UOSInt sqlLen);
 		virtual Bool IsLastDataError() = 0;
 		DataError GetLastDataError();
 

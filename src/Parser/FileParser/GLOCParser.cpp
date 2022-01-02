@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Data/ByteTool.h"
+#include "IO/Path.h"
 #include "Map/GPSTrack.h"
 #include "Net/SocketUtil.h"
 #include "Parser/FileParser/GLOCParser.h"
@@ -266,7 +267,7 @@ IO::ParsedObject *Parser::FileParser::GLOCParser::ParseFile(IO::IStreamData *fd,
 	Int64 devId;
 	UInt32 idevId;
 	sptr = fd->GetFullName()->v;
-	i = Text::StrLastIndexOf(sptr, '\\');
+	i = Text::StrLastIndexOf(sptr, IO::Path::PATH_SEPERATOR);
 	Text::StrConcat(u8buff, &sptr[i + 1]);
 	if (!Text::StrStartsWithICase(u8buff, (const UTF8Char*)"GLOC"))
 	{

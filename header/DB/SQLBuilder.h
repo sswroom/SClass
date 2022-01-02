@@ -44,6 +44,7 @@ namespace DB
 
 		void Clear();
 		const UTF8Char *ToString();
+		UOSInt GetLength();
 		Text::String *ToNewString();
 	};
 }

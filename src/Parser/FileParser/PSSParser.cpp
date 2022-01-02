@@ -45,6 +45,24 @@ IO::ParsedObject *Parser::FileParser::PSSParser::ParseFile(IO::IStreamData *fd, 
 {
 	UInt8 buff[256];
 	UTF8Char sbuff[512];
+	Bool v1;
+
+	if (fd->GetRealData(0, 128, buff) != 128)
+		return 0;
+	if (*(Int32*)&buff[0] != (Int32)0xba010000)
+		return 0;
+	if ((buff[4] & 0xc0) == 0x40)
+	{
+		v1 = false;
+	}
+	else if ((buff[4] & 0xf0) == 0x20)
+	{
+		v1 = true;
+	}
+	else
+	{
+		return 0;
+	}
 	UTF8Char *sptr;
 	Bool valid = true;
 	Media::AudioFormat *formats[4];
@@ -63,32 +81,13 @@ IO::ParsedObject *Parser::FileParser::PSSParser::ParseFile(IO::IStreamData *fd, 
 
 	Media::FrameInfo frameInfo;
 	IO::IStreamData *concatFile = 0;
-	Bool v1;
+	UInt32 i;
+	UInt64 currOfst;
 
 	stmData[0] = 0;
 	stmData[1] = 0;
 	stmData[2] = 0;
 	stmData[3] = 0;
-	
-
-	if (fd->GetRealData(0, 128, buff) != 128)
-		return 0;
-	if (*(Int32*)&buff[0] != (Int32)0xba010000)
-		return 0;
-	if ((buff[4] & 0xc0) == 0x40)
-	{
-		v1 = false;
-	}
-	else if ((buff[4] & 0xf0) == 0x20)
-	{
-		v1 = true;
-	}
-	else
-	{
-		return 0;
-	}
-	UInt32 i;
-	UInt64 currOfst;
 	if (v1)
 	{
 		currOfst = 12;

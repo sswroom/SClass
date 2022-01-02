@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Data/ByteTool.h"
+#include "IO/Path.h"
 #include "Map/GPSTrack.h"
 #include "Net/SocketUtil.h"
 #include "Parser/FileParser/SMDLParser.h"
@@ -225,23 +226,23 @@ IO::ParsedObject *Parser::FileParser::SMDLParser::ParseFile(IO::IStreamData *fd,
 	Map::GPSTrack::GPSRecord rec;
 	UInt8 buff[384];
 	UTF8Char sbuff[256];
-	const UTF8Char *sptr;
+	UTF8Char *sptr;
+	Text::String *s;
 	UOSInt i;
-	UOSInt j;
 	UOSInt ui;
 	UOSInt currPos;
 	UInt64 fileSize;
 	Int32 t;
 	Int32 fileT;
-	sptr = fd->GetFullName()->v;
-	i = Text::StrLastIndexOf(sptr, '\\');
-	Text::StrConcat(sbuff, &sptr[i + 1]);
-	j = Text::StrIndexOf(sbuff, (const UTF8Char*)".loc");
-	if (j != 8)
+	s = fd->GetFullName();
+	if (!s->EndsWith((const UTF8Char*)".loc"))
 	{
 		return 0;
 	}
-	sbuff[j] = 0;
+	sptr = fd->GetFullName()->v;
+	i = s->LastIndexOf(IO::Path::PATH_SEPERATOR);
+	sptr = Text::StrConcat(sbuff, &s->v[i + 1]);
+	sptr[-4] = 0;
 	t = Text::StrToInt32(sbuff);
 	fileSize = fd->GetDataSize();
 	if (fd->GetRealData(0, 252, buff) != 252)
@@ -255,7 +256,7 @@ IO::ParsedObject *Parser::FileParser::SMDLParser::ParseFile(IO::IStreamData *fd,
 	}
 
 	Map::GPSTrack *track;
-	Text::String *s = Text::String::NewNotNull(sbuff);
+	s = Text::String::NewNotNull(sbuff);
 	NEW_CLASS(track, Map::GPSTrack(fd->GetFullName(), true, 0, s));
 	s->Release();
 	track->SetTrackName(sbuff);

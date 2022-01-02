@@ -23,7 +23,7 @@ void DB::SQLiteFile::Init()
 	db = 0;
 	NEW_CLASS(this->tableNames, Data::ArrayListStrUTF8());
 	sqlite3_initialize();
-	ret = sqlite3_open_v2((const Char*)fileName, &db, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE | SQLITE_OPEN_SHAREDCACHE, 0);
+	ret = sqlite3_open_v2((const Char*)fileName->v, &db, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE | SQLITE_OPEN_SHAREDCACHE, 0);
 	
 	if (SQLITE_OK == ret)
 	{
@@ -125,12 +125,25 @@ void DB::SQLiteFile::Close()
 
 OSInt DB::SQLiteFile::ExecuteNonQuery(const UTF8Char *sql)
 {
+	if (this->db)
+	{
+		return ExecuteNonQuery(sql, Text::StrCharCnt(sql));
+	}
+	else
+	{
+		this->lastDataError = DE_CONN_ERROR;
+		return -2;
+	}
+}
+
+OSInt DB::SQLiteFile::ExecuteNonQuery(const UTF8Char *sql, UOSInt sqlLen)
+{
 	OSInt chg = -2;
 	if (this->db)
 	{
 		sqlite3_stmt *stmt;
 		const char *tmp;
-		if (sqlite3_prepare_v2((sqlite3*)this->db, (const Char*)sql, (Int32)Text::StrCharCnt(sql) + 1, &stmt, &tmp) == SQLITE_OK)
+		if (sqlite3_prepare_v2((sqlite3*)this->db, (const Char*)sql, (Int32)sqlLen + 1, &stmt, &tmp) == SQLITE_OK)
 		{
 			if (sqlite3_step(stmt) == SQLITE_DONE)
 			{
@@ -160,74 +173,26 @@ OSInt DB::SQLiteFile::ExecuteNonQuery(const UTF8Char *sql)
 	}
 }
 
-/*OSInt DB::SQLiteFile::ExecuteNonQuery(const WChar *sql)
+DB::DBReader *DB::SQLiteFile::ExecuteReader(const UTF8Char *sql)
 {
-	OSInt chg = -2;
 	if (this->db)
 	{
-		sqlite3_stmt *stmt;
-#if _WCHAR_SIZE == 2
-		const void *tmp;
-		if (sqlite3_prepare16_v2((sqlite3*)this->db, sql, (Int32)Text::StrCharCnt(sql) * 2 + 2, &stmt, &tmp) == SQLITE_OK)
-		{
-			if (sqlite3_step(stmt) == SQLITE_DONE)
-			{
-				chg = sqlite3_changes((sqlite3*)this->db);
-			}
-			else
-			{
-				SDEL_TEXT(this->lastErrMsg);
-				this->lastErrMsg = Text::StrCopyNew((const UTF8Char*)sqlite3_errmsg((sqlite3*)this->db));
-				chg = 0;
-			}
-			sqlite3_finalize(stmt);
-			return chg;
-		}
-		else
-		{
-			SDEL_TEXT(this->lastErrMsg);
-			this->lastErrMsg = Text::StrCopyNew((const UTF8Char*)sqlite3_errmsg((sqlite3*)this->db));
-			return -2;
-		}
-#else
-		const Char *tmp;
-		const UTF8Char *s = Text::StrToUTF8New(sql);
-		if (sqlite3_prepare_v2((sqlite3*)this->db, (const Char*)s, (Int32)Text::StrCharCnt(s), &stmt, &tmp) == SQLITE_OK)
-		{
-			Text::StrDelNew(s);
-			if (sqlite3_step(stmt) == SQLITE_DONE)
-			{
-				chg = sqlite3_changes((sqlite3*)this->db);
-			}
-			else
-			{
-				SDEL_TEXT(this->lastErrMsg);
-				this->lastErrMsg = Text::StrCopyNew((const UTF8Char*)sqlite3_errmsg((sqlite3*)this->db));
-				chg = 0;
-			}
-			sqlite3_finalize(stmt);
-			return chg;
-		}
-		else
-		{
-			Text::StrDelNew(s);
-			return -2;
-		}
-#endif
+		return ExecuteReader(sql, Text::StrCharCnt(sql));
 	}
 	else
 	{
-		return -2;
+		this->lastDataError = DE_CONN_ERROR;
+		return 0;
 	}
-}*/
+}
 
-DB::DBReader *DB::SQLiteFile::ExecuteReader(const UTF8Char *sql)
+DB::DBReader *DB::SQLiteFile::ExecuteReader(const UTF8Char *sql, UOSInt sqlLen)
 {
 	if (this->db)
 	{
 		sqlite3_stmt *stmt;
 		const char *tmp;
-		if (sqlite3_prepare_v2((sqlite3*)this->db, (const Char*)sql, (Int32)Text::StrCharCnt(sql) + 1, &stmt, &tmp) == SQLITE_OK)
+		if (sqlite3_prepare_v2((sqlite3*)this->db, (const Char*)sql, (Int32)sqlLen + 1, &stmt, &tmp) == SQLITE_OK)
 		{
 			this->lastDataError = DE_NO_ERROR;
 			DB::SQLiteReader *r;
@@ -246,46 +211,6 @@ DB::DBReader *DB::SQLiteFile::ExecuteReader(const UTF8Char *sql)
 		return 0;
 	}
 }
-
-/*DB::DBReader *DB::SQLiteFile::ExecuteReader(const WChar *sql)
-{
-	if (this->db)
-	{
-		sqlite3_stmt *stmt;
-#if _WCHAR_SIZE == 2
-		const void *tmp;
-		if (sqlite3_prepare16_v2((sqlite3*)this->db, sql, (Int32)Text::StrCharCnt(sql) * 2 + 2, &stmt, &tmp) == SQLITE_OK)
-		{
-			DB::SQLiteReader *r;
-			NEW_CLASS(r, DB::SQLiteReader(this, stmt));
-			return r;
-		}
-		else
-		{
-			return 0;
-		}
-#else
-		const Char *tmp;
-		const UTF8Char *s = Text::StrToUTF8New(sql);
-		if (sqlite3_prepare_v2((sqlite3*)this->db, (const Char*)s, (Int32)Text::StrCharCnt(s), &stmt, &tmp) == SQLITE_OK)
-		{
-			Text::StrDelNew(s);
-			DB::SQLiteReader *r;
-			NEW_CLASS(r, DB::SQLiteReader(this, stmt));
-			return r;
-		}
-		else
-		{
-			Text::StrDelNew(s);
-			return 0;
-		}
-#endif
-	}
-	else
-	{
-		return 0;
-	}
-}*/
 
 void DB::SQLiteFile::CloseReader(DBReader *r)
 {

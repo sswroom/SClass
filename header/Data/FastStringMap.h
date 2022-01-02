@@ -27,6 +27,7 @@ namespace Data
 		void Insert(UOSInt index, UInt32 hash, Text::String *s, T val);
 	public:
 		FastStringMap();
+		FastStringMap(FastStringMap<T> *map);
 		virtual ~FastStringMap();
 
 		virtual UOSInt GetCount();
@@ -89,6 +90,23 @@ namespace Data
 		this->cnt = 0;
 		NEW_CLASS(this->crc, Crypto::Hash::CRC32RC());
 		this->items = MemAlloc(StringItem, this->capacity);
+	}
+
+	template <class T> FastStringMap<T>::FastStringMap(FastStringMap<T> *map)
+	{
+		this->capacity = map->capacity;
+		this->cnt = map->cnt;
+		NEW_CLASS(this->crc, Crypto::Hash::CRC32RC());
+		this->items = MemAlloc(StringItem, this->capacity);
+		UOSInt i = 0;
+		UOSInt j = this->cnt;
+		while (i < j)
+		{
+			this->items[i].hash = map->items[i].hash;
+			this->items[i].s = map->items[i].s->Clone();
+			this->items[i].val = map->items[i].val;
+			i++;
+		}
 	}
 
 	template <class T> FastStringMap<T>::~FastStringMap()

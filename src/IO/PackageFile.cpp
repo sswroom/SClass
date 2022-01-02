@@ -3,7 +3,7 @@
 #include "Crypto/Hash/HashCreator.h"
 #include "Crypto/Hash/HashStream.h"
 #include "Data/ByteTool.h"
-#include "Data/ICaseStringUTF8Map.h"
+#include "Data/ICaseStringMap.h"
 #include "IO/FileStream.h"
 #include "IO/IStreamData.h"
 #include "IO/PackageFile.h"
@@ -15,17 +15,36 @@
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 
+IO::PackageFile::PackageFile(PackageFile *pkg) : IO::ParsedObject(pkg->GetSourceNameObj())
+{
+	this->items = pkg->items->Clone();
+	this->pkgFiles = NEW_CLASS_D(Data::FastStringMap<IO::PackFileItem*>(pkg->pkgFiles));
+	this->namedItems = pkg->namedItems->Clone();
+	IO::PackFileItem *item;
+	UOSInt i;
+	UOSInt j;
+	i = 0;
+	j = this->items->GetCount();
+	while (i < j)
+	{
+		item = this->items->GetItem(i);
+		Sync::Interlocked::Increment(&item->useCnt);
+		i++;
+	}
+	NEW_CLASS(this->infoMap, Data::Int32Map<const UTF8Char *>());
+}
+
 IO::PackageFile::PackageFile(Text::String *fileName) : IO::ParsedObject(fileName)
 {
 	NEW_CLASS(this->items, Data::ArrayList<PackFileItem*>());
-	NEW_CLASS(this->pkgFiles, Data::StringUTF8Map<PackFileItem*>());
+	NEW_CLASS(this->pkgFiles, Data::FastStringMap<PackFileItem*>());
 	if (IO::Path::PATH_SEPERATOR == '\\')
 	{
-		NEW_CLASS(this->namedItems, Data::ICaseStringUTF8Map<PackFileItem*>());
+		NEW_CLASS(this->namedItems, Data::ICaseStringMap<PackFileItem*>());
 	}
 	else
 	{
-		NEW_CLASS(this->namedItems, Data::StringUTF8Map<PackFileItem*>());
+		NEW_CLASS(this->namedItems, Data::StringMap<PackFileItem*>());
 	}
 	NEW_CLASS(this->infoMap, Data::Int32Map<const UTF8Char *>());
 }
@@ -33,14 +52,14 @@ IO::PackageFile::PackageFile(Text::String *fileName) : IO::ParsedObject(fileName
 IO::PackageFile::PackageFile(const UTF8Char *fileName) : IO::ParsedObject(fileName)
 {
 	NEW_CLASS(this->items, Data::ArrayList<PackFileItem*>());
-	NEW_CLASS(this->pkgFiles, Data::StringUTF8Map<PackFileItem*>());
+	NEW_CLASS(this->pkgFiles, Data::FastStringMap<PackFileItem*>());
 	if (IO::Path::PATH_SEPERATOR == '\\')
 	{
-		NEW_CLASS(this->namedItems, Data::ICaseStringUTF8Map<PackFileItem*>());
+		NEW_CLASS(this->namedItems, Data::ICaseStringMap<PackFileItem*>());
 	}
 	else
 	{
-		NEW_CLASS(this->namedItems, Data::StringUTF8Map<PackFileItem*>());
+		NEW_CLASS(this->namedItems, Data::StringMap<PackFileItem*>());
 	}
 	NEW_CLASS(this->infoMap, Data::Int32Map<const UTF8Char *>());
 }
@@ -97,7 +116,7 @@ void IO::PackageFile::AddData(IO::IStreamData *fd, UInt64 ofst, UInt64 length, c
 	item->modTimeTick = modTimeTick;
 	item->useCnt = 1;
 	this->items->Add(item);
-	this->namedItems->Put(item->name->v, item);
+	this->namedItems->Put(item->name, item);
 }
 
 void IO::PackageFile::AddObject(IO::ParsedObject *pobj, const UTF8Char *name, Int64 modTimeTick)
@@ -119,7 +138,7 @@ void IO::PackageFile::AddObject(IO::ParsedObject *pobj, const UTF8Char *name, In
 	item->modTimeTick = modTimeTick;
 	item->useCnt = 1;
 	this->items->Add(item);
-	this->namedItems->Put(item->name->v, item);
+	this->namedItems->Put(item->name, item);
 }
 
 void IO::PackageFile::AddCompData(IO::IStreamData *fd, UInt64 ofst, UInt64 length, IO::PackFileItem::CompressInfo *compInfo, const UTF8Char *name, Int64 modTimeTick)
@@ -140,7 +159,7 @@ void IO::PackageFile::AddCompData(IO::IStreamData *fd, UInt64 ofst, UInt64 lengt
 	item->modTimeTick = modTimeTick;
 	item->useCnt = 1;
 	this->items->Add(item);
-	this->namedItems->Put(item->name->v, item);
+	this->namedItems->Put(item->name, item);
 }
 
 void IO::PackageFile::AddPack(IO::PackageFile *pkg, const UTF8Char *name, Int64 modTimeTick)
@@ -155,8 +174,8 @@ void IO::PackageFile::AddPack(IO::PackageFile *pkg, const UTF8Char *name, Int64 
 	item->modTimeTick = modTimeTick;
 	item->useCnt = 1;
 	this->items->Add(item);
-	this->pkgFiles->Put(item->name->v, item);
-	this->namedItems->Put(item->name->v, item);
+	this->pkgFiles->Put(item->name, item);
+	this->namedItems->Put(item->name, item);
 }
 
 IO::PackageFile *IO::PackageFile::GetPackFile(const UTF8Char *name)
@@ -559,26 +578,7 @@ Data::Compress::Decompressor::CompressMethod IO::PackageFile::GetItemComp(UOSInt
 
 IO::PackageFile *IO::PackageFile::Clone()
 {
-	IO::PackageFile *pkg;
-	IO::PackFileItem *item;
-	UOSInt i;
-	UOSInt j;
-	NEW_CLASS(pkg, IO::PackageFile(this->GetSourceNameObj()));
-	i = 0;
-	j = this->items->GetCount();
-	while (i < j)
-	{
-		item = this->items->GetItem(i);
-		Sync::Interlocked::Increment(&item->useCnt);
-		pkg->items->Add(item);
-		if (item->itemType == IO::PackFileItem::PIT_PARSEDOBJECT && item->pobj->GetParserType() == IO::ParserType::PackageFile)
-		{
-			pkg->pkgFiles->Put(item->name->v, item);
-		}
-		pkg->namedItems->Put(item->name->v, item);
-		i++;
-	}
-	return pkg;
+	return NEW_CLASS_D(PackageFile(this));
 }
 
 Bool IO::PackageFile::AllowWrite()

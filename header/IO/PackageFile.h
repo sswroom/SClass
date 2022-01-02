@@ -3,7 +3,8 @@
 #include "Crypto/Hash/IHash.h"
 #include "Data/ArrayList.h"
 #include "Data/Int32Map.h"
-#include "Data/StringUTF8Map.h"
+#include "Data/FastStringMap.h"
+#include "Data/StringMap.h"
 #include "Data/Compress/Decompressor.h"
 #include "IO/ActiveStreamReader.h"
 #include "IO/IProgressHandler.h"
@@ -68,10 +69,11 @@ namespace IO
 
 	private:
 		Data::ArrayList<PackFileItem *> *items;
-		Data::StringUTF8Map<PackFileItem *> *namedItems;
-		Data::StringUTF8Map<PackFileItem *> *pkgFiles;
+		Data::StringMap<PackFileItem *> *namedItems;
+		Data::FastStringMap<PackFileItem *> *pkgFiles;
 		Data::Int32Map<const UTF8Char *> *infoMap;
 
+		PackageFile(PackageFile *pkg);
 	public:
 		PackageFile(Text::String *fileName);
 		PackageFile(const UTF8Char *fileName);

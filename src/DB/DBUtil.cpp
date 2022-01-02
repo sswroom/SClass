@@ -1848,6 +1848,11 @@ DB::DBUtil::ColType DB::DBUtil::ParseColType(DB::DBUtil::ServerType svrType, con
 			*colSize = 4;
 			return DB::DBUtil::CT_Int32;
 		}
+		else if (Text::StrEqualsICase(typeName, (const UTF8Char*)"INT"))
+		{
+			*colSize = 4;
+			return DB::DBUtil::CT_Int32;
+		}
 		else if (Text::StrEqualsICase(typeName, (const UTF8Char*)"REAL"))
 		{
 			*colSize = 8;

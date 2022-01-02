@@ -2,6 +2,7 @@
 #include "MyMemory.h"
 #include "Data/ArrayList.h"
 #include "Data/Int32Map.h"
+#include "IO/Path.h"
 #include "Text/MyString.h"
 #include "Map/GPSTrack.h"
 #include "Parser/FileParser/SPREDParser.h"
@@ -54,7 +55,7 @@ IO::ParsedObject *Parser::FileParser::SPREDParser::ParseFile(IO::IStreamData *fd
 	UInt32 cmdSize;
 
 	sptr = fd->GetFullName()->v;
-	i = Text::StrLastIndexOf(sptr, '\\');
+	i = Text::StrLastIndexOf(sptr, IO::Path::PATH_SEPERATOR);
 	Text::StrConcat(u8buff, &sptr[i + 1]);
 	if (!Text::StrStartsWithICase(u8buff, (const UTF8Char*)"RED"))
 	{

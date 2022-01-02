@@ -182,6 +182,24 @@ Map::TileMapLayer::TileMapLayer(Map::TileMap *tileMap, Parser::ParserList *parse
 		NEW_CLASS(this->threads[i].evt, Sync::Event(true, (const UTF8Char*)"Map.ResizableTileMapRenderer.threads.evt"));
 		Sync::Thread::Create(TaskThread, &this->threads[i]);
 	}
+	Bool running = false;
+	while (!running)
+	{
+		running = true;
+		i = this->threadCnt;
+		while (i-- > 0)
+		{
+			if (!this->threads[i].running)
+			{
+				running = false;
+				break;
+			}
+		}
+		if (!running)
+		{
+			Sync::Thread::Sleep(1);
+		}
+	}
 }
 
 Map::TileMapLayer::~TileMapLayer()
@@ -215,6 +233,7 @@ Map::TileMapLayer::~TileMapLayer()
 		}
 		if (!running)
 			break;
+		Sync::Thread::Sleep(1);
 	}
 
 	i = this->threadCnt;

@@ -1035,19 +1035,27 @@ Char *Text::StrHexByte(Char *oriStr, UInt8 val)
 
 Char *Text::StrHexBytes(Char *oriStr, const UInt8 *buff, UOSInt buffSize, Char seperator)
 {
+	UInt8 val;
 	if (seperator == 0)
 	{
 		while (buffSize-- > 0)
 		{
-			oriStr = Text::StrHexByte(oriStr, *buff++);
+			val = *buff++;
+			oriStr[0] = MyString_STRHEXARR[val >> 4];
+			oriStr[1] = MyString_STRHEXARR[val & 15];
+			oriStr += 2;
 		}
+		oriStr[0] = 0;
 	}
 	else
 	{
 		while (buffSize-- > 0)
 		{
-			oriStr = Text::StrHexByte(oriStr, *buff++);
-			*oriStr++ = seperator;
+			val = *buff++;
+			oriStr[0] = MyString_STRHEXARR[val >> 4];
+			oriStr[1] = MyString_STRHEXARR[val & 15];
+			oriStr[3] = seperator;
+			oriStr += 3;
 		}
 		*--oriStr = 0;
 	}
