@@ -24,7 +24,7 @@ DB::DBCache::TableInfo *DB::DBCache::GetTableInfo(const UTF8Char *tableName)
 	DB::SQLBuilder sql(this->db);
 	sql.AppendCmd((const UTF8Char*)"select count(*) from ");
 	sql.AppendTableName(def);
-	DB::DBReader *r = this->db->ExecuteReader(sql.ToString());
+	DB::DBReader *r = this->db->ExecuteReaderC(sql.ToString(), sql.GetLength());
 	if (r)
 	{
 		if (r->ReadNext())
@@ -109,7 +109,7 @@ UOSInt DB::DBCache::GetTableData(Data::ArrayList<DB::DBRow*> *outRows, const UTF
 	UOSInt ret = 0;
 	DB::SQLBuilder sql(this->db);
 	DB::DBTool::PageStatus status = this->db->GenSelectCmdPage(&sql, tableInfo->def, page);
-	DB::DBReader *r = this->db->ExecuteReader(sql.ToString());
+	DB::DBReader *r = this->db->ExecuteReaderC(sql.ToString(), sql.GetLength());
 	if (r)
 	{
 		DB::DBRow *row;
@@ -186,7 +186,7 @@ DB::DBRow *DB::DBCache::GetTableItem(const UTF8Char *tableName, Int64 pk)
 	sql.AppendCol(col->GetColName()->v);
 	sql.AppendCmd((const UTF8Char*)" = ");
 	sql.AppendInt64(pk);
-	DB::DBReader *r = this->db->ExecuteReader(sql.ToString());
+	DB::DBReader *r = this->db->ExecuteReaderC(sql.ToString(), sql.GetLength());
 	if (r)
 	{
 		if (r->ReadNext())

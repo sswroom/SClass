@@ -127,7 +127,7 @@ OSInt DB::SQLiteFile::ExecuteNonQuery(const UTF8Char *sql)
 {
 	if (this->db)
 	{
-		return ExecuteNonQuery(sql, Text::StrCharCnt(sql));
+		return ExecuteNonQueryC(sql, Text::StrCharCnt(sql));
 	}
 	else
 	{
@@ -136,7 +136,7 @@ OSInt DB::SQLiteFile::ExecuteNonQuery(const UTF8Char *sql)
 	}
 }
 
-OSInt DB::SQLiteFile::ExecuteNonQuery(const UTF8Char *sql, UOSInt sqlLen)
+OSInt DB::SQLiteFile::ExecuteNonQueryC(const UTF8Char *sql, UOSInt sqlLen)
 {
 	OSInt chg = -2;
 	if (this->db)
@@ -177,7 +177,7 @@ DB::DBReader *DB::SQLiteFile::ExecuteReader(const UTF8Char *sql)
 {
 	if (this->db)
 	{
-		return ExecuteReader(sql, Text::StrCharCnt(sql));
+		return ExecuteReaderC(sql, Text::StrCharCnt(sql));
 	}
 	else
 	{
@@ -186,7 +186,7 @@ DB::DBReader *DB::SQLiteFile::ExecuteReader(const UTF8Char *sql)
 	}
 }
 
-DB::DBReader *DB::SQLiteFile::ExecuteReader(const UTF8Char *sql, UOSInt sqlLen)
+DB::DBReader *DB::SQLiteFile::ExecuteReaderC(const UTF8Char *sql, UOSInt sqlLen)
 {
 	if (this->db)
 	{
@@ -280,7 +280,7 @@ DB::DBReader *DB::SQLiteFile::GetTableData(const UTF8Char *tableName, Data::Arra
 		sb.Append((const UTF8Char*)" LIMIT ");
 		sb.AppendOSInt((OSInt)maxCnt);
 	}
-	return ExecuteReader(sb.ToString());
+	return ExecuteReaderC(sb.ToString(), sb.GetLength());
 }
 
 void DB::SQLiteFile::SetDeleteOnClose(Bool delOnClose)

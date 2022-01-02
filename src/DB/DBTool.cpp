@@ -31,10 +31,15 @@ DB::DBTool::~DBTool()
 
 OSInt DB::DBTool::ExecuteNonQuery(const UTF8Char *sqlCmd)
 {
+	return ExecuteNonQuery(sqlCmd, Text::StrCharCnt(sqlCmd));
+}
+
+OSInt DB::DBTool::ExecuteNonQuery(const UTF8Char *sqlCmd, UOSInt len)
+{
 	{
 		Text::StringBuilderUTF8 logMsg;
 		logMsg.Append((const UTF8Char*)"ExecuteNonQuery: ");
-		logMsg.Append(sqlCmd);
+		logMsg.AppendC(sqlCmd, len);
 		AddLogMsg(logMsg.ToString(), IO::ILogHandler::LOG_LEVEL_RAW);
 	}
 	if (this->db == 0)
@@ -45,7 +50,7 @@ OSInt DB::DBTool::ExecuteNonQuery(const UTF8Char *sqlCmd)
 
 	Data::DateTime t1;
 	Data::DateTime t2;
-	OSInt i = ((DB::DBConn*)this->db)->ExecuteNonQuery(sqlCmd);
+	OSInt i = ((DB::DBConn*)this->db)->ExecuteNonQuery(sqlCmd, len);
 	if (i >= -1)
 	{
 		Data::DateTime t3;
@@ -69,7 +74,7 @@ OSInt DB::DBTool::ExecuteNonQuery(const UTF8Char *sqlCmd)
 		{
 			Text::StringBuilderUTF8 logMsg;
 			logMsg.Append((const UTF8Char*)"Cannot execute the sql command: ");
-			logMsg.Append(sqlCmd);
+			logMsg.AppendC(sqlCmd, len);
 			AddLogMsg(logMsg.ToString(), IO::ILogHandler::LOG_LEVEL_ERROR);
 		}
 

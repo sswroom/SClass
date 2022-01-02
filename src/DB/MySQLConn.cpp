@@ -353,7 +353,7 @@ DB::DBReader *DB::MySQLConn::GetTableData(const UTF8Char *tableName, Data::Array
 		sb.Append((const UTF8Char*)" LIMIT ");
 		sb.AppendUOSInt(maxCnt);
 	}
-	return this->ExecuteReader(sb.ToString());
+	return this->ExecuteReaderC(sb.ToString(), sb.GetLength());
 }
 
 Bool DB::MySQLConn::IsConnError()

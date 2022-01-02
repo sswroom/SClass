@@ -322,7 +322,7 @@ Math::Vector2D *Map::OruxDBLayer::GetVectorById(void *session, Int64 id)
 	sql.AppendInt32(y);
 	sql.AppendCmd((const UTF8Char*)" and z = ");
 	sql.AppendInt32((Int32)this->currLayer);
-	DB::DBReader *r = this->db->ExecuteReader(sql.ToString());
+	DB::DBReader *r = this->db->ExecuteReaderC(sql.ToString(), sql.GetLength());
 	if (r == 0)
 		return 0;
 	Media::ImageList *imgList = 0;

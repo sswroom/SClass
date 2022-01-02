@@ -56,7 +56,9 @@ namespace Net
 		virtual void Close();
 		virtual void Dispose();
 		virtual OSInt ExecuteNonQuery(const UTF8Char *sql);
+		virtual OSInt ExecuteNonQueryC(const UTF8Char *sql, UOSInt sqlLen);
 		virtual DB::DBReader *ExecuteReader(const UTF8Char *sql);
+		virtual DB::DBReader *ExecuteReaderC(const UTF8Char *sql, UOSInt sqlLen);
 		virtual void CloseReader(DB::DBReader *r);
 		virtual void GetErrorMsg(Text::StringBuilderUTF *str);
 		virtual Bool IsLastDataError();

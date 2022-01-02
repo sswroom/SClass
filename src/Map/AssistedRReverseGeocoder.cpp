@@ -1,5 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "DB/DBReader.h"
+#include "DB/ODBCConn.h"
 #include "Map/AssistedRReverseGeocoder.h"
 #include "Math/Math.h"
 
@@ -35,7 +37,7 @@ Map::AssistedRReverseGeocoder::AssistedRReverseGeocoder(const WChar *dsn, const 
 	NEW_CLASS(mut, Sync::Mutex());
 	NEW_CLASS(langMaps, Data::ArrayList<LangMap*>());
 	this->conn = 0;
-	this->conn = DB::DBTool::ODBCSource(dsn, uid, pwd, log, false, L"MAPDB: ");
+	this->conn = DB::ODBCConn::CreateDBTool(dsn, uid, pwd, log, false, L"MAPDB: ");
 	this->errWriter = errWriter;
 	this->nextCoder = 0;
 }
@@ -63,7 +65,7 @@ Map::AssistedRReverseGeocoder::~AssistedRReverseGeocoder()
 	DEL_CLASS(mut);
 }
 
-WChar *Map::AssistedRReverseGeocoder::SearchName(WChar *buff, Double lat, Double lon, Int32 lcid)
+WChar *Map::AssistedRReverseGeocoder::SearchName(UTF8Char *buff, Double lat, Double lon, Int32 lcid)
 {
 	DB::SQLBuilder *sql;
 	DB::DBReader *r;
@@ -88,7 +90,7 @@ WChar *Map::AssistedRReverseGeocoder::SearchName(WChar *buff, Double lat, Double
 	sql->AppendInt32(xind);
 	sql->AppendCmd((const UTF8Char*)" and yind = ");
 	sql->AppendInt32(yind);
-	r = this->conn->ExecuteReader(sql->ToString());
+	r = this->conn->ExecuteReaderC(sql->ToString(), sql->GetLength());
 	if (r)
 	{
 		if (r->ReadNext())

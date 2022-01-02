@@ -58,6 +58,7 @@ namespace DB
 
 		void SetFailTrigger(SQLFailedFunc trig);
 		DB::DBReader *ExecuteReader(const UTF8Char *sqlCmd);
+		DB::DBReader *ExecuteReaderC(const UTF8Char *sqlCmd, UOSInt len);
 		void CloseReader(DB::DBReader *r);
 		DB::DBUtil::ServerType GetSvrType();
 		Bool IsDataError(UTF8Char *errCode);

@@ -1122,7 +1122,12 @@ void Net::MySQLTCPClient::Dispose()
 
 OSInt Net::MySQLTCPClient::ExecuteNonQuery(const UTF8Char *sql)
 {
-	DB::DBReader *reader = ExecuteReader(sql);
+	return ExecuteNonQueryC(sql, Text::StrCharCnt(sql));
+}
+
+OSInt Net::MySQLTCPClient::ExecuteNonQueryC(const UTF8Char *sql, UOSInt sqlLen)
+{
+	DB::DBReader *reader = ExecuteReaderC(sql, sqlLen);
 	if (reader == 0)
 	{
 		return -2;
@@ -1136,6 +1141,11 @@ OSInt Net::MySQLTCPClient::ExecuteNonQuery(const UTF8Char *sql)
 }
 
 DB::DBReader *Net::MySQLTCPClient::ExecuteReader(const UTF8Char *sql)
+{
+	return ExecuteReaderC(sql, Text::StrCharCnt(sql));
+}
+
+DB::DBReader *Net::MySQLTCPClient::ExecuteReaderC(const UTF8Char *sql, UOSInt sqlLen)
 {
 	if (this->cli == 0 || !this->recvRunning)
 	{
@@ -1157,12 +1167,11 @@ DB::DBReader *Net::MySQLTCPClient::ExecuteReader(const UTF8Char *sql)
 	this->cmdSeqNum = 1;
 	NEW_CLASS(reader, MySQLTCPReader(mutUsage));
 	this->cmdReader = reader;
-	UOSInt len = Text::StrCharCnt(sql);
-	UInt8 *buff = MemAlloc(UInt8, len + 5);
-	WriteInt32(buff, (Int32)(len + 1));
+	UInt8 *buff = MemAlloc(UInt8, sqlLen + 5);
+	WriteInt32(buff, (Int32)(sqlLen + 1));
 	buff[4] = 3;
-	MemCopyNO(&buff[5], sql, len);
-	if (this->cli->Write(buff, 5 + len) != 5 + len)
+	MemCopyNO(&buff[5], sql, sqlLen);
+	if (this->cli->Write(buff, 5 + sqlLen) != 5 + sqlLen)
 	{
 		this->cmdReader = 0;
 		DEL_CLASS(reader);
@@ -1341,7 +1350,7 @@ DB::DBReader *Net::MySQLTCPClient::GetTableData(const UTF8Char *tableName, Data:
 		sb.Append((const UTF8Char*)" LIMIT ");
 		sb.AppendUOSInt(maxCnt);
 	}
-	return this->ExecuteReader(sb.ToString());
+	return this->ExecuteReaderC(sb.ToString(), sb.GetLength());
 }
 
 Bool Net::MySQLTCPClient::ChangeSchema(const UTF8Char *schemaName)
@@ -1362,7 +1371,7 @@ Bool Net::MySQLTCPClient::ChangeSchema(const UTF8Char *schemaName)
 		DB::DBUtil::SDBColUTF8(sbuff, schemaName, DB::DBUtil::ServerType::MySQL);
 		sb.Append(sbuff);
 	}
-	if (this->ExecuteNonQuery(sb.ToString()) >= 0)
+	if (this->ExecuteNonQueryC(sb.ToString(), sb.GetLength()) >= 0)
 	{
 		if (this->tableNames)
 		{

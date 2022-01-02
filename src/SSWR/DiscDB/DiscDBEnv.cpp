@@ -378,7 +378,7 @@ UOSInt SSWR::DiscDB::DiscDBEnv::GetBurntFiles(const UTF8Char *discId, Data::Arra
 	sql.AppendCmd((const UTF8Char*)"select FileID, Name, FileSize, Category, VIDEOID from BurntFile where DiscID = ");
 	sql.AppendStrUTF8(discId);
 	sql.AppendCmd((const UTF8Char*)" order by FileID");
-	DB::DBReader *r = this->db->ExecuteReader(sql.ToString());
+	DB::DBReader *r = this->db->ExecuteReaderC(sql.ToString(), sql.GetLength());
 	if (r)
 	{
 		Text::StringBuilderUTF8 sb;
@@ -651,7 +651,7 @@ Bool SSWR::DiscDB::DiscDBEnv::AddMD5(IO::IStreamData *fd)
 	sql.Clear();
 	sql.AppendCmd((const UTF8Char*)"select Name, FileID from BurntFile where DiscID = ");
 	sql.AppendStrUTF8(sbDiscId.ToString());
-	r = db->ExecuteReader(sql.ToString());
+	r = db->ExecuteReaderC(sql.ToString(), sql.GetLength());
 	if (r)
 	{
 		while (r->ReadNext())

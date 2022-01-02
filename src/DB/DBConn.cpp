@@ -17,12 +17,12 @@ DB::DBConn::~DBConn()
 {
 }
 
-OSInt DB::DBConn::ExecuteNonQuery(const UTF8Char *sql, UOSInt sqlLen)
+OSInt DB::DBConn::ExecuteNonQueryC(const UTF8Char *sql, UOSInt sqlLen)
 {
 	return ExecuteNonQuery(sql);
 }
 
-DB::DBReader *DB::DBConn::ExecuteReader(const UTF8Char *sql, UOSInt sqlLen)
+DB::DBReader *DB::DBConn::ExecuteReaderC(const UTF8Char *sql, UOSInt sqlLen)
 {
 	return ExecuteReader(sql);
 }

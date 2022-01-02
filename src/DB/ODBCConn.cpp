@@ -1076,7 +1076,7 @@ DB::DBReader *DB::ODBCConn::GetTableData(const UTF8Char *name, Data::ArrayList<c
 			sb.AppendUOSInt(maxCnt);
 		}
 	}
-	return this->ExecuteReader(sb.ToString());
+	return this->ExecuteReaderC(sb.ToString(), sb.GetLength());
 }
 
 void DB::ODBCConn::ShowSQLError(const UTF16Char *state, const UTF16Char *errMsg)

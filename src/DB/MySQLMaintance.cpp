@@ -41,7 +41,7 @@ void DB::MySQLMaintance::RepairTable(const UTF8Char *tableName, Text::StringBuil
 	DB::SQLBuilder sql(this->cli->GetSvrType(), this->cli->GetTzQhr());
 	sql.AppendCmd((const UTF8Char*)"check table ");
 	sql.AppendCol(tableName);
-	DB::DBReader *r = this->cli->ExecuteReader(sql.ToString());
+	DB::DBReader *r = this->cli->ExecuteReaderC(sql.ToString(), sql.GetLength());
 	if (r)
 	{
 		UOSInt i;

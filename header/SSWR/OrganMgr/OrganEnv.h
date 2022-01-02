@@ -256,7 +256,7 @@ namespace SSWR
 			UOSInt GetBooksOfYear(Data::ArrayList<OrganBook*> *items, Int32 year);
 			virtual Bool IsSpeciesBookExist(Int32 speciesId, Int32 bookId) = 0;
 			virtual Bool NewSpeciesBook(Int32 speciesId, Int32 bookId, const UTF8Char *dispName) = 0;
-			virtual OSInt GetSpeciesBooks(Data::ArrayList<SpeciesBook*> *items, Int32 speciesId) = 0;
+			virtual UOSInt GetSpeciesBooks(Data::ArrayList<SpeciesBook*> *items, Int32 speciesId) = 0;
 			virtual void ReleaseSpeciesBooks(Data::ArrayList<SpeciesBook*> *items) = 0;
 			virtual Int32 NewBook(const UTF8Char *title, const UTF8Char *author, const UTF8Char *press, Data::DateTime *publishDate, const UTF8Char *url) = 0;
 

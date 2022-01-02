@@ -52,7 +52,7 @@ UTF8Char *Map::AssistedReverseGeocoder::SearchName(UTF8Char *buff, UOSInt buffSi
 	sql->AppendInt32(keyx);
 	sql->AppendCmd((const UTF8Char*)" and keyy = ");
 	sql->AppendInt32(keyy);
-	r = this->conn->ExecuteReader(sql->ToString());
+	r = this->conn->ExecuteReaderC(sql->ToString(), sql->GetLength());
 	if (r)
 	{
 		if (r->ReadNext())
@@ -129,7 +129,7 @@ UTF8Char *Map::AssistedReverseGeocoder::CacheName(UTF8Char *buff, UOSInt buffSiz
 	sql->AppendInt32(keyx);
 	sql->AppendCmd((const UTF8Char*)" and keyy = ");
 	sql->AppendInt32(keyy);
-	r = this->conn->ExecuteReader(sql->ToString());
+	r = this->conn->ExecuteReaderC(sql->ToString(), sql->GetLength());
 	if (r)
 	{
 		if (r->ReadNext())
