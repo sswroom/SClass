@@ -142,7 +142,7 @@ Bool Exporter::OruxMapExporter::ExportFile(IO::SeekableStream *stm, const UTF8Ch
 				sql.AppendCmd((const UTF8Char*)"insert into android_metadata (locale) values (");
 				sql.AppendStrUTF8((const UTF8Char*)"zh_TW");//loc->shortName);
 				sql.AppendCmd((const UTF8Char*)")");
-				db->ExecuteNonQuery(sql.ToString(), sql.GetLength());
+				db->ExecuteNonQueryC(sql.ToString(), sql.GetLength());
 			}
 			succ = true;
 			Map::OSM::OSMLocalTileMap *osm = (Map::OSM::OSMLocalTileMap*)tileMap;
@@ -266,7 +266,7 @@ Bool Exporter::OruxMapExporter::ExportFile(IO::SeekableStream *stm, const UTF8Ch
 							sql.AppendCmd((const UTF8Char*)", ");
 							sql.AppendBinary(imgBuff, imgSize);
 							sql.AppendCmd((const UTF8Char*)")");
-							db->ExecuteNonQuery(sql.ToString(), sql.GetLength());
+							db->ExecuteNonQueryC(sql.ToString(), sql.GetLength());
 							MemFree(imgBuff);
 							DEL_CLASS(fd);
 							if (j != 0 && (j & 0x3fff) == 0)

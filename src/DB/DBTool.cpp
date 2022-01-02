@@ -50,7 +50,7 @@ OSInt DB::DBTool::ExecuteNonQuery(const UTF8Char *sqlCmd, UOSInt len)
 
 	Data::DateTime t1;
 	Data::DateTime t2;
-	OSInt i = ((DB::DBConn*)this->db)->ExecuteNonQuery(sqlCmd, len);
+	OSInt i = ((DB::DBConn*)this->db)->ExecuteNonQueryC(sqlCmd, len);
 	if (i >= -1)
 	{
 		Data::DateTime t3;
