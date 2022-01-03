@@ -70,11 +70,11 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	}
 	DEL_CLASS(simg);
 	DEL_CLASS(resizer);
-	sb.Append((const UTF8Char*)"t0 = ");
+	sb.AppendC(UTF8STRC("t0 = "));
 	Text::SBAppendF64(&sb, t0);
-	sb.Append((const UTF8Char*)", t1 = ");
+	sb.AppendC(UTF8STRC(", t1 = "));
 	Text::SBAppendF64(&sb, t1);
-	sb.Append((const UTF8Char*)", t2 = ");
+	sb.AppendC(UTF8STRC(", t2 = "));
 	Text::SBAppendF64(&sb, t2);
 	console.WriteLine(sb.ToString());
 	return 0;

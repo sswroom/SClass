@@ -13,9 +13,9 @@ void __stdcall SSWR::AVIRead::AVIRCodeImageGenForm::OnCodeTypeChanged(void *user
 	if (me->codeImgGen)
 	{
 		Text::StringBuilderUTF8 sb;
-		sb.Append((const UTF8Char*)"Length: ");
+		sb.AppendC(UTF8STRC("Length: "));
 		sb.AppendUOSInt(me->codeImgGen->GetMinLength());
-		sb.Append((const UTF8Char*)" - ");
+		sb.AppendC(UTF8STRC(" - "));
 		sb.AppendUOSInt(me->codeImgGen->GetMaxLength());
 		me->lblCodeInfo->SetText(sb.ToString());
 	}

@@ -85,7 +85,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnSSLCertClicked(void *userObj
 		me->sslKey = frm->GetKey();
 		Text::StringBuilderUTF8 sb;
 		me->sslCert->ToShortString(&sb);
-		sb.Append((const UTF8Char*)", ");
+		sb.AppendC(UTF8STRC(", "));
 		me->sslKey->ToShortString(&sb);
 		me->lblSSLCert->SetText(sb.ToString());
 	}

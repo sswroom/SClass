@@ -25,7 +25,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		j = 1000001000;
 		while (j-- > 1000000000)
 		{
-			sb->Append((const UTF8Char*)"1234567890");
+			sb->AppendC(UTF8STRC("1234567890"));
 		}
 		DEL_CLASS(sb);
 	}

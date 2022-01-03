@@ -25,7 +25,7 @@ void DB::MySQLConn::Connect()
 	if (mysql_real_connect((MYSQL*)this->mysql, (const Char*)STR_PTR(this->server), (const Char*)STR_PTR(this->uid), (const Char*)STR_PTR(this->pwd), (const Char*)STR_PTR(this->database), 0, 0, 0) == 0)
 	{
 		Text::StringBuilderUTF8 sb;
-		sb.Append((const UTF8Char*)"Error in connecting to database: ");
+		sb.AppendC(UTF8STRC("Error in connecting to database: "));
 		this->GetErrorMsg(&sb);
 		log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_ERROR);
 		mysql_close(mysql);
@@ -113,7 +113,7 @@ void DB::MySQLConn::ForceTz(Int8 tzQhr)
 
 void DB::MySQLConn::GetConnName(Text::StringBuilderUTF *sb)
 {
-	sb->Append((const UTF8Char*)"MySQL:");
+	sb->AppendC(UTF8STRC("MySQL:"));
 	sb->Append(this->server);
 	if (this->database)
 	{
@@ -298,7 +298,7 @@ DB::DBReader *DB::MySQLConn::GetTableData(const UTF8Char *tableName, Data::Array
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	Text::StringBuilderUTF8 sb;
-	sb.Append((const UTF8Char*)"select * from ");
+	sb.AppendC(UTF8STRC("select * from "));
 	UOSInt i = 0;
 	UOSInt j;
 	while (true)
@@ -318,7 +318,7 @@ DB::DBReader *DB::MySQLConn::GetTableData(const UTF8Char *tableName, Data::Array
 	}
 	if (maxCnt > 0)
 	{
-		sb.Append((const UTF8Char*)" LIMIT ");
+		sb.AppendC(UTF8STRC(" LIMIT "));
 		sb.AppendUOSInt(maxCnt);
 	}
 	return this->ExecuteReaderC(sb.ToString(), sb.GetLength());

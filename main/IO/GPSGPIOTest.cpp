@@ -17,19 +17,19 @@ IO::ConsoleWriter *console;
 void __stdcall OnGPSPos(void *userObj, Map::GPSTrack::GPSRecord *record)
 {
 	Text::StringBuilderUTF8 sb;
-	sb.Append((const UTF8Char*)"Lat = ");
+	sb.AppendC(UTF8STRC("Lat = "));
 	Text::SBAppendF64(&sb, record->lat);
-	sb.Append((const UTF8Char*)", Lon = ");
+	sb.AppendC(UTF8STRC(", Lon = "));
 	Text::SBAppendF64(&sb, record->lon);
-	sb.Append((const UTF8Char*)", Altitude = ");
+	sb.AppendC(UTF8STRC(", Altitude = "));
 	Text::SBAppendF64(&sb, record->altitude);
-	sb.Append((const UTF8Char*)", Speed = ");
+	sb.AppendC(UTF8STRC(", Speed = "));
 	Text::SBAppendF64(&sb, record->speed);
-	sb.Append((const UTF8Char*)", Heading = ");
+	sb.AppendC(UTF8STRC(", Heading = "));
 	Text::SBAppendF64(&sb, record->heading);
-	sb.Append((const UTF8Char*)", nSateUsed = ");
+	sb.AppendC(UTF8STRC(", nSateUsed = "));
 	sb.AppendI32(record->nSateUsed);
-	sb.Append((const UTF8Char*)", nSateView = ");
+	sb.AppendC(UTF8STRC(", nSateView = "));
 	sb.AppendI32(record->nSateView);
 	console->WriteLine(sb.ToString());
 }
@@ -49,7 +49,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		Text::StrToUInt16(argv[1], &pinNum);
 	}
 	Sync::Thread::SetPriority(Sync::Thread::TP_REALTIME);
-	sb.Append((const UTF8Char*)"Run using GPIO pin ");
+	sb.AppendC(UTF8STRC("Run using GPIO pin "));
 	sb.AppendI32(pinNum);
 	console->WriteLine(sb.ToString());
 

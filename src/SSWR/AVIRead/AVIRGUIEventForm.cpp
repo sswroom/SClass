@@ -21,7 +21,7 @@ void __stdcall SSWR::AVIRead::AVIRGUIEventForm::OnKeyDown(void *userObj, UOSInt 
 {
 	SSWR::AVIRead::AVIRGUIEventForm *me = (SSWR::AVIRead::AVIRGUIEventForm*)userObj;
 	Text::StringBuilderUTF8 sb;
-	sb.Append((const UTF8Char*)"Key Down - ");
+	sb.AppendC(UTF8STRC("Key Down - "));
 	sb.Append(GUIKeyGetName(OSKey2GUIKey((UInt32)keyCode)));
 	me->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_ACTION);
 }

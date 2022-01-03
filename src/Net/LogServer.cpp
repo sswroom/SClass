@@ -188,7 +188,7 @@ void Net::LogServer::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, In
 			{
 				((Net::TCPClient *)stm)->GetRemoteName(sbuff);
 				sb.Append(sbuff);
-				sb.Append((const UTF8Char*)"> ");
+				sb.AppendC(UTF8STRC("> "));
 				sb.AppendC(&cmd[8], cmdSize - 8);
 				this->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_COMMAND);
 			}

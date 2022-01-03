@@ -45,7 +45,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		{
 			interface = interfaces.GetItem(i);
 			sb.ClearStr();
-			sb.Append((const UTF8Char*)"Using interface ");
+			sb.AppendC(UTF8STRC("Using interface "));
 			sb.Append(interface->GetName());
 			console.WriteLine(sb.ToString());
 

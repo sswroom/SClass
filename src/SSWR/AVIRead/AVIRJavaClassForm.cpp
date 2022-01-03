@@ -16,7 +16,7 @@ SSWR::AVIRead::AVIRJavaClassForm::AVIRJavaClassForm(UI::GUIClientControl *parent
 	this->clsFile = clsFile;
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
-	sb.Append((const UTF8Char*)"Java Class - ");
+	sb.AppendC(UTF8STRC("Java Class - "));
 	sb.Append(clsFile->GetSourceNameObj());
 	this->SetText(sb.ToString());
 

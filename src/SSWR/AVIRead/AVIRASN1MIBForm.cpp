@@ -52,7 +52,7 @@ void SSWR::AVIRead::AVIRASN1MIBForm::LoadFile(const UTF8Char *fileName)
 	this->txtFile->SetText(fileName);
 	this->mib->UnloadAll();
 	sb.ClearStr();
-	sb.Append((const UTF8Char*)"Error in loading MIB file: ");
+	sb.AppendC(UTF8STRC("Error in loading MIB file: "));
 	if (this->mib->LoadFile(fileName, &sb))
 	{
 

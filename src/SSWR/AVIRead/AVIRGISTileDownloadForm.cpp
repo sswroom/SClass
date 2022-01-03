@@ -229,11 +229,11 @@ void SSWR::AVIRead::AVIRGISTileDownloadForm::SaveTiles(const WChar *folderName)
 					sb.Append(blockY);
 					if (it == Map::TileMap::IT_PNG)
 					{
-						sb.Append((const UTF8Char*)".png");
+						sb.AppendC(UTF8STRC(".png"));
 					}
 					else
 					{
-						sb.Append((const UTF8Char*)".jpg");
+						sb.AppendC(UTF8STRC(".jpg"));
 					}
 					NEW_CLASS(fs, IO::FileStream(sb.ToString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
 					fs->Write(fileBuff, (OSInt)fileSize);
@@ -490,11 +490,11 @@ UInt32 __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::ProcThread(void *userOb
 						sb->AppendI32(blockY);
 						if (it == Map::TileMap::IT_PNG)
 						{
-							sb->Append((const UTF8Char*)".png");
+							sb->AppendC(UTF8STRC(".png"));
 						}
 						else
 						{
-							sb->Append((const UTF8Char*)".jpg");
+							sb->AppendC(UTF8STRC(".jpg"));
 						}
 						dt->SetCurrTimeUTC();
 
@@ -515,11 +515,11 @@ UInt32 __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::ProcThread(void *userOb
 						sb->AppendI32(blockY);
 						if (it == Map::TileMap::IT_PNG)
 						{
-							sb->Append((const UTF8Char*)".png");
+							sb->AppendC(UTF8STRC(".png"));
 						}
 						else
 						{
-							sb->Append((const UTF8Char*)".jpg");
+							sb->AppendC(UTF8STRC(".jpg"));
 						}
 						NEW_CLASS(fs, IO::FileStream(sb->ToString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
 						fs->Write(fileBuff, (UOSInt)fileSize);
@@ -559,7 +559,7 @@ SSWR::AVIRead::AVIRGISTileDownloadForm::AVIRGISTileDownloadForm(UI::GUIClientCon
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->lyr = lyr;
 	this->navi = navi;
-	sb.Append((const UTF8Char*)"Tile Downloader - ");
+	sb.AppendC(UTF8STRC("Tile Downloader - "));
 	sb.Append(lyr->GetSourceNameObj());
 	this->SetText(sb.ToString());
 	this->SetFont(0, 8.25, false);

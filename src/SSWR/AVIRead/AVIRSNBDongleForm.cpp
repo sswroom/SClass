@@ -17,9 +17,9 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnProtocolReceived(void *userOb
 {
 	SSWR::AVIRead::AVIRSNBDongleForm *me = (SSWR::AVIRead::AVIRSNBDongleForm*)userObj;
 	Text::StringBuilderUTF8 sb;
-	sb.Append((const UTF8Char*)"Received cmd 0x");
+	sb.AppendC(UTF8STRC("Received cmd 0x"));
 	sb.AppendHex8(cmdType);
-	sb.Append((const UTF8Char*)": ");
+	sb.AppendC(UTF8STRC(": "));
 	if (cmdSize > 0)
 	{
 		sb.AppendHex(cmd, cmdSize, ' ', Text::LineBreakType::None);
@@ -107,17 +107,17 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnTimerTick(void *userObj)
 				me->lvDevice->SetSubItem(k, 3, sbuff);
 
 				sb.ClearStr();
-				sb.Append((const UTF8Char*)"Sensor Type = ");
+				sb.AppendC(UTF8STRC("Sensor Type = "));
 				sb.Append(IO::SNBDongle::SensorTypeGetName(dev->sensorType));
 				l = 0;
 				while (l < dev->nReading)
 				{
 					if (sb.GetLength() > 0)
 					{
-						sb.Append((const UTF8Char*)", ");
+						sb.AppendC(UTF8STRC(", "));
 					}
 					sb.Append(IO::SNBDongle::GetReadingName(dev->readingTypes[l]));
-					sb.Append((const UTF8Char*)" = ");
+					sb.AppendC(UTF8STRC(" = "));
 					Text::SBAppendF64(&sb, dev->readings[l]);
 					l++;
 				}
@@ -125,8 +125,8 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnTimerTick(void *userObj)
 			}
 			else
 			{
-				me->lvDevice->SetSubItem(k, 3, L"-");
-				me->lvDevice->SetSubItem(k, 4, L"-");
+				me->lvDevice->SetSubItem(k, 3, (const UTF8Char*)"-");
+				me->lvDevice->SetSubItem(k, 4, (const UTF8Char*)"-");
 			}
 			dev->mut->UnlockRead();
 			i++;
@@ -160,17 +160,17 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnTimerTick(void *userObj)
 				me->lvDevice->SetSubItem(i, 3, sbuff);
 
 				sb.ClearStr();
-				sb.Append((const UTF8Char*)"Sensor Type = ");
+				sb.AppendC(UTF8STRC("Sensor Type = "));
 				sb.Append(IO::SNBDongle::SensorTypeGetName(dev->sensorType));
 				l = 0;
 				while (l < dev->nReading)
 				{
 					if (sb.GetLength() > 0)
 					{
-						sb.Append((const UTF8Char*)", ");
+						sb.AppendC(UTF8STRC(", "));
 					}
 					sb.Append(IO::SNBDongle::GetReadingName(dev->readingTypes[l]));
-					sb.Append((const UTF8Char*)" = ");
+					sb.AppendC(UTF8STRC(" = "));
 					Text::SBAppendF64(&sb, dev->readings[l]);
 					l++;
 				}
@@ -328,16 +328,16 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnUploadClicked(void *userObj)
 		return;
 	}
 	Text::StringBuilderUTF8 sb;
-	sb.Append((const UTF8Char *)"dongle_id=");
+	sb.AppendC(UTF8STRC("dongle_id="));
 	sb.AppendU64(dongleId);
-	sb.Append((const UTF8Char *)"\r\n");
-	sb.Append((const UTF8Char *)"baud_rate=");
+	sb.AppendC(UTF8STRC("\r\n"));
+	sb.AppendC(UTF8STRC("baud_rate="));
 	sb.AppendU32(baudRate);
-	sb.Append((const UTF8Char *)"\r\n");
-	sb.Append((const UTF8Char *)"remarks=");
+	sb.AppendC(UTF8STRC("\r\n"));
+	sb.AppendC(UTF8STRC("remarks="));
 	sb.Append(remarks.ToString());
-	sb.Append((const UTF8Char *)"\r\n");
-	sb.Append((const UTF8Char *)"sensor_list=");
+	sb.AppendC(UTF8STRC("\r\n"));
+	sb.AppendC(UTF8STRC("sensor_list="));
 	me->devMut->LockRead();
 	Data::ArrayList<DeviceInfo*> *sensors = me->devMap->GetValues();
 	DeviceInfo *dev;
@@ -362,18 +362,18 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnUploadClicked(void *userObj)
 		}
 		if (i > 0)
 		{
-			sb.Append((const UTF8Char *)"|");
+			sb.AppendC(UTF8STRC("|"));
 		}
 		sb.AppendU64(dev->devId);
-		sb.Append((const UTF8Char *)",");
+		sb.AppendC(UTF8STRC(","));
 		sb.AppendI32((Int32)dev->handType);
-		sb.Append((const UTF8Char *)",");
+		sb.AppendC(UTF8STRC(","));
 		sb.AppendUOSInt(dev->nReading);
-		sb.Append((const UTF8Char *)",");
+		sb.AppendC(UTF8STRC(","));
 		sb.AppendU16(dev->shortAddr);
 		i++;
 	}
-	sb.Append((const UTF8Char *)"\r\n");
+	sb.AppendC(UTF8STRC("\r\n"));
 	me->devMut->UnlockRead();
 
 
@@ -406,7 +406,7 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnUploadClicked(void *userObj)
 	else
 	{
 		sb.ClearStr();
-		sb.Append((const UTF8Char *)"Error, server response ");
+		sb.AppendC(UTF8STRC("Error, server response "));
 		sb.AppendI32(status);
 		UI::MessageDialog::ShowDialog(sb.ToString(), (const UTF8Char *)"Upload", me);
 	}

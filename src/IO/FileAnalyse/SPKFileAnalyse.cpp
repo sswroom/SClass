@@ -186,24 +186,24 @@ Bool IO::FileAnalyse::SPKFileAnalyse::GetFrameName(UOSInt index, Text::StringBui
 	if (pack == 0)
 		return false;
 	sb->AppendU64(pack->fileOfst);
-	sb->Append((const UTF8Char *)": Type=");
+	sb->Append((const UTF8Char*)": Type=");
 	if (pack->packType == PT_HEADER)
 	{
-		sb->Append((const UTF8Char *)"File header");
+		sb->Append((const UTF8Char*)"File header");
 	}
 	else if (pack->packType == PT_V1DIRECTORY)
 	{
-		sb->Append((const UTF8Char *)"V1 Directory");
+		sb->Append((const UTF8Char*)"V1 Directory");
 	}
 	else if (pack->packType == PT_V2DIRECTORY)
 	{
-		sb->Append((const UTF8Char *)"V2 Directory");
+		sb->Append((const UTF8Char*)"V2 Directory");
 	}
 	else if (pack->packType == PT_FILE)
 	{
-		sb->Append((const UTF8Char *)"Data Block");
+		sb->Append((const UTF8Char*)"Data Block");
 	}
-	sb->Append((const UTF8Char *)", size=");
+	sb->Append((const UTF8Char*)", size=");
 	sb->AppendI32((Int32)pack->packSize);
 	if (pack->fileName)
 	{
@@ -272,7 +272,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::SPKFileAnalyse::GetFrameDetail(UO
 	if (pack->fileName)
 	{
 		Text::StringBuilderUTF8 sb;
-		sb.Append((const UTF8Char *)"File Name=");
+		sb.Append((const UTF8Char*)"File Name=");
 		sb.Append(pack->fileName);
 		frame->AddText(0, sb.ToString());
 	}
@@ -355,7 +355,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::SPKFileAnalyse::GetFrameDetail(UO
 			Text::StringBuilderUTF8 sb;
 			this->fd->GetRealData(pack->fileOfst, 32, buff);
 			sb.AppendHexBuff(buff, 32, ' ', Text::LineBreakType::CRLF);
-			sb.Append((const UTF8Char *)"\r\n...\r\n");
+			sb.Append((const UTF8Char*)"\r\n...\r\n");
 			this->fd->GetRealData(pack->fileOfst + pack->packSize - 32, 32, buff);
 			sb.AppendHexBuff(buff, 32, ' ', Text::LineBreakType::CRLF);
 			frame->AddField(0, pack->packSize, (const UTF8Char *)"FileData", sb.ToString());

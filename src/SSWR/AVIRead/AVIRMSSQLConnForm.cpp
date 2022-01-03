@@ -88,7 +88,7 @@ void __stdcall SSWR::AVIRead::AVIRMSSQLConnForm::OnOKClicked(void *userObj)
 	else
 	{
 		sbUser.ClearStr();
-		sbUser.Append((const UTF8Char *)"Error in opening ODBC connection\r\n");
+		sbUser.AppendC(UTF8STRC("Error in opening ODBC connection\r\n"));
 		sbUser.Append(sbPort.ToString());
 		UI::MessageDialog::ShowDialog(sbUser.ToString(), (const UTF8Char *)"MSSQL Conn", me);
 	}

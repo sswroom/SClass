@@ -33,7 +33,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	if (!Text::StrToUInt32(argv[3], &pxSize))
 	{
 		sb.ClearStr();
-		sb.Append((const UTF8Char*)"Error in parsing size: ");
+		sb.AppendC(UTF8STRC("Error in parsing size: "));
 		sb.Append(argv[3]);
 		console.WriteLine(sb.ToString());
 		return 1;
@@ -51,14 +51,14 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	if (fd->GetDataSize() == 0)
 	{
 		sb.ClearStr();
-		sb.Append((const UTF8Char*)"Error in opening srcFile: ");
+		sb.AppendC(UTF8STRC("Error in opening srcFile: "));
 		sb.Append(srcFile);
 		console.WriteLine(sb.ToString());
 	}
 	else if ((imgList = (Media::ImageList*)parser.ParseFile(fd, 0, IO::ParserType::ImageList)) == 0)
 	{
 		sb.ClearStr();
-		sb.Append((const UTF8Char*)"Error in parsing srcFile: ");
+		sb.AppendC(UTF8STRC("Error in parsing srcFile: "));
 		sb.Append(srcFile);
 		console.WriteLine(sb.ToString());
 	}
@@ -88,7 +88,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			else
 			{
 				sb.ClearStr();
-				sb.Append((const UTF8Char*)"Error in saving destFile: ");
+				sb.AppendC(UTF8STRC("Error in saving destFile: "));
 				sb.Append(destFile);
 				console.WriteLine(sb.ToString());
 			}
@@ -98,7 +98,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		else
 		{
 			sb.ClearStr();
-			sb.Append((const UTF8Char*)"Error in resizing image: ");
+			sb.AppendC(UTF8STRC("Error in resizing image: "));
 			sb.Append(srcFile);
 			console.WriteLine(sb.ToString());
 		}
@@ -106,9 +106,9 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	DEL_CLASS(fd);
 	Double t = clk.GetTimeDiff();
 	sb.ClearStr();
-	sb.Append((const UTF8Char*)"Time used = ");
+	sb.AppendC(UTF8STRC("Time used = "));
 	Text::SBAppendF64(&sb, t);
-	sb.Append((const UTF8Char*)"s");
+	sb.AppendC(UTF8STRC("s"));
 	console.WriteLine(sb.ToString());
 
 	return ret;

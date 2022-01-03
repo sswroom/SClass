@@ -48,18 +48,18 @@ UInt32 __stdcall WatchdogThread(void *userObj)
 			if (am2315->ReadRH(&rhVal))
 			{
 				sb->ClearStr();
-				sb->Append((const UTF8Char*)"AM2315: Temp = ");
+				sb->AppendC(UTF8STRC("AM2315: Temp = "));
 				Text::SBAppendF64(sb, tempVal);
-				sb->Append((const UTF8Char*)", RH = ");
+				sb->AppendC(UTF8STRC(", RH = "));
 				Text::SBAppendF64(sb, rhVal);
 				consoleWriter->WriteLine(sb->ToString());
 			}
 			else
 			{
 				sb->ClearStr();
-				sb->Append((const UTF8Char*)"AM2315: Temp = ");
+				sb->AppendC(UTF8STRC("AM2315: Temp = "));
 				Text::SBAppendF64(sb, tempVal);
-				sb->Append((const UTF8Char*)", RH = error");
+				sb->AppendC(UTF8STRC(", RH = error"));
 				consoleWriter->WriteLine(sb->ToString());
 			}
 		}
@@ -101,7 +101,7 @@ UInt32 __stdcall HTTPThread(void *userObj)
 			cli->EndRequest(0, 0);
 			Int32 respCode = cli->GetRespStatus();
 			sb->ClearStr();
-			sb->Append((const UTF8Char*)"Resp Code = ");
+			sb->AppendC(UTF8STRC("Resp Code = "));
 			sb->AppendI32(respCode);
 			consoleWriter->WriteLine(sb->ToString());
 		}
@@ -179,7 +179,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		if (wd->GetTimeoutSec(&timeoutSec))
 		{
 			sb.ClearStr();
-			sb.Append((const UTF8Char*)"Timeout = ");
+			sb.AppendC(UTF8STRC("Timeout = "));
 			sb.AppendI32(timeoutSec);
 			console.WriteLine(sb.ToString());
 		}

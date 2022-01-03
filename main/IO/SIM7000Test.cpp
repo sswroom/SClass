@@ -46,7 +46,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	}
 	console->WriteLine();
 	sb.ClearStr();
-	sb.Append((const UTF8Char*)"Trying Port ");
+	sb.AppendC(UTF8STRC("Trying Port "));
 	sb.AppendUOSInt(portNum);
 	console->WriteLine(sb.ToString());
 
@@ -87,9 +87,9 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		if (plmn != 0)
 		{
 			sb.ClearStr();
-			sb.Append((const UTF8Char*)"Connecting to ");
+			sb.AppendC(UTF8STRC("Connecting to "));
 			sb.AppendI32(plmn);
-			sb.Append((const UTF8Char*)"...");
+			sb.AppendC(UTF8STRC("..."));
 			console->Write(sb.ToString());
 			if (modem->GSMConnectPLMN(plmn))
 			{
@@ -103,7 +103,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			if (modem->SIMCOMGetUESysInfo(sbuff))
 			{
 				sb.ClearStr();
-				sb.Append((const UTF8Char*)"UE Sys Info: ");
+				sb.AppendC(UTF8STRC("UE Sys Info: "));
 				sb.Append(sbuff);
 				console->WriteLine(sb.ToString());
 			}
@@ -123,7 +123,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				if (modem->NetGetIFAddr(sbuff))
 				{
 					sb.ClearStr();
-					sb.Append((const UTF8Char*)"IF Addr: ");
+					sb.AppendC(UTF8STRC("IF Addr: "));
 					sb.Append(sbuff);
 					console->WriteLine(sb.ToString());
 				}
@@ -155,14 +155,14 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 					if (sockf->GetDNSList(&dnsList))
 					{
 						sb.ClearStr();
-						sb.Append((const UTF8Char*)"DNS List: ");
+						sb.AppendC(UTF8STRC("DNS List: "));
 						i = 0;
 						j = dnsList.GetCount();
 						while (i < j)
 						{
 							if (i > 0)
 							{
-								sb.Append((const UTF8Char*)", ");
+								sb.AppendC(UTF8STRC(", "));
 							}
 							Net::SocketUtil::GetIPv4Name(sbuff, dnsList.GetItem(i));
 							sb.Append(sbuff);
@@ -189,9 +189,9 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 						if (sockf->IcmpSendEcho2(&addr, &respTime, &ttl))
 						{
 							sb.ClearStr();
-							sb.Append((const UTF8Char*)"Resp time = ");
+							sb.AppendC(UTF8STRC("Resp time = "));
 							Text::SBAppendF64(&sb, respTime / 1000000.0);
-							sb.Append((const UTF8Char*)"s, TTL = ");
+							sb.AppendC(UTF8STRC("s, TTL = "));
 							sb.AppendU32(ttl);
 							console->WriteLine(sb.ToString());
 							Sync::Thread::Sleep(1000);

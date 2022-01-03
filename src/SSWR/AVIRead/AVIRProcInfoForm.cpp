@@ -266,7 +266,7 @@ void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnDetHeapItemSelChg(void *userOb
 		sb.ClearStr();
 		size2 = proc.ReadMemory(addr, buff, 256);
 		sb.AppendHex(buff, size2, ' ', Text::LineBreakType::CRLF);
-		sb.Append((const UTF8Char*)"..");
+		sb.AppendC(UTF8STRC(".."));
 		size2 = proc.ReadMemory(addr + size - 256, buff, 256);
 		sb.AppendHex(buff, size2, ' ', Text::LineBreakType::CRLF);
 		me->txtDetHeap->SetText(sb.ToString());

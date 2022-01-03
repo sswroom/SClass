@@ -527,7 +527,7 @@ Bool IO::FileAnalyse::JPGFileAnalyse::GetFrameDetail(UOSInt index, Text::StringB
 				Media::EXIFData *exif = Media::EXIFData::ParseIFD(fd, tag->ofst + 18, readInt32, readInt16, &nextOfst, tag->ofst + 10);
 				if (exif)
 				{
-					sb->Append((const UTF8Char *)"\r\n");
+					sb->Append((const UTF8Char*)"\r\n");
 					exif->ToString(sb, 0);
 					DEL_CLASS(exif);
 				}
@@ -535,7 +535,7 @@ Bool IO::FileAnalyse::JPGFileAnalyse::GetFrameDetail(UOSInt index, Text::StringB
 		}
 		else if (Text::StrEquals((Char*)&tagData[4], "http://ns.adobe.com/xap/1.0/"))
 		{
-			sb->Append((const UTF8Char *)"\r\n");
+			sb->Append((const UTF8Char*)"\r\n");
 			sb->AppendC((const UTF8Char *)&tagData[33], tag->size - 33);
 		}
 		MemFree(tagData);

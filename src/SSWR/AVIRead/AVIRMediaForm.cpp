@@ -633,7 +633,7 @@ void SSWR::AVIRead::AVIRMediaForm::EventMenuClicked(UInt16 cmdId)
 			if (img)
 			{
 				Text::StringBuilderUTF8 sb;
-				sb.Append((const UTF8Char *)"t=");
+				sb.AppendC(UTF8STRC("t="));
 				Text::SBAppendF64(&sb, t);
 				UI::MessageDialog::ShowDialog(sb.ToString(), (const UTF8Char *)"Test", this);
 

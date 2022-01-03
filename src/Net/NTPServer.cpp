@@ -44,7 +44,7 @@ void __stdcall Net::NTPServer::PacketHdlr(const Net::SocketUtil::AddressInfo *ad
 				sb.Append(sbuff);
 				dt.AddMS((OSInt)me->timeDiff);
 				dt.ToLocalTime();
-				sb.Append((const UTF8Char *)" reply time as ");
+				sb.Append((const UTF8Char*)" reply time as ");
 				dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
 				sb.Append(sbuff);
 				me->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_COMMAND);

@@ -30,9 +30,9 @@ void __stdcall SSWR::AVIRead::AVIRARPScanForm::OnARPHandler(const UInt8 *hwAddr,
 /*	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[64];
 	sb.ClearStr();
-	sb.Append((const UTF8Char*)"ARP Reply: HW Addr = ");
+	sb.AppendC(UTF8STRC("ARP Reply: HW Addr = "));
 	sb.AppendHexBuff(hwAddr, 6, ':', Text::LineBreakType::None);
-	sb.Append((const UTF8Char*)", IP = ");
+	sb.AppendC(UTF8STRC(", IP = "));
 	Net::SocketUtil::GetIPv4Name(sbuff, ipAddr);
 	sb.Append(sbuff);
 	printf("%s\r\n", sb.ToString());*/

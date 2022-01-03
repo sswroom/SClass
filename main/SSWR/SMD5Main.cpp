@@ -54,10 +54,10 @@ private:
 			currTime = clk->GetTimeDiff();
 
 			sb->ClearStr();
-			sb->Append((const UTF8Char*)"\rSpeed: ");
+			sb->AppendC(UTF8STRC("\rSpeed: "));
 			if (currCount == lastDispCount || currTime == lastDispTime)
 			{
-				sb->Append((const UTF8Char*)"0");
+				sb->AppendC(UTF8STRC("0"));
 			}
 			else
 			{
@@ -65,13 +65,13 @@ private:
 				lastDispCount = currCount;
 				lastDispTime = currTime;
 			}
-			sb->Append((const UTF8Char*)"Bytes/s");
+			sb->AppendC(UTF8STRC("Bytes/s"));
 			Sync::MutexUsage mutUsage(me->mut);
 			if (me->fileName)
 			{
-				sb->Append((const UTF8Char*)" (");
+				sb->AppendC(UTF8STRC(" ("));
 				sb->Append(me->fileName);
-				sb->Append((const UTF8Char*)")");
+				sb->AppendC(UTF8STRC(")"));
 			}
 			mutUsage.EndUse();
 			console->Write(sb->ToString());
@@ -189,7 +189,7 @@ Bool ParseFile(const UTF8Char *fileName)
 			IO::FileStream *fs;
 			Exporter::MD5Exporter exporter;
 			sb.Append(fileName);
-			sb.Append((const UTF8Char*)".md5");
+			sb.AppendC(UTF8STRC(".md5"));
 			NEW_CLASS(fs, IO::FileStream(sb.ToString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 			exporter.ExportFile(fs, sb.ToString(), fileChk, 0);
 			DEL_CLASS(fs);
@@ -241,7 +241,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				while (IO::Path::FindNextFile(&sbuff[i + 1], sess, 0, &pt, 0))
 				{
 					sb.ClearStr();
-					sb.Append((const UTF8Char*)"Checking ");
+					sb.AppendC(UTF8STRC("Checking "));
 					sb.Append(&sbuff[i + 1]);
 					console->WriteLine(sb.ToString());
 					ParseFile(sbuff);

@@ -76,9 +76,9 @@ void Crypto::Cert::X509File::AppendSigned(const UInt8 *pdu, const UInt8 *pduEnd,
 	{
 		if (itemType == Net::ASN1Util::IT_BIT_STRING)
 		{
-			sb->Append((const UTF8Char*)"signature = ");
+			sb->AppendC(UTF8STRC("signature = "));
 			sb->AppendHexBuff(itemPDU, itemLen, ':', Text::LineBreakType::None);
-			sb->Append((const UTF8Char*)"\r\n");
+			sb->AppendC(UTF8STRC("\r\n"));
 		}
 	}
 }
@@ -145,9 +145,9 @@ void Crypto::Cert::X509File::AppendTBSCertificate(const UInt8 *pdu, const UInt8 
 	{
 		if (itemType == Net::ASN1Util::IT_CONTEXT_SPECIFIC_0)
 		{
-			sb->Append((const UTF8Char*)"version = ");
+			sb->AppendC(UTF8STRC("version = "));
 			AppendVersion(itemPDU, itemPDU + itemLen, "1", sb);
-			sb->Append((const UTF8Char*)"\r\n");
+			sb->AppendC(UTF8STRC("\r\n"));
 			Text::StrUOSInt(sptr, i++);
 		}
 	}
@@ -155,9 +155,9 @@ void Crypto::Cert::X509File::AppendTBSCertificate(const UInt8 *pdu, const UInt8 
 	{
 		if (itemType == Net::ASN1Util::IT_INTEGER)
 		{
-			sb->Append((const UTF8Char*)"serialNumber = ");
+			sb->AppendC(UTF8STRC("serialNumber = "));
 			sb->AppendHexBuff(itemPDU, itemLen, ':', Text::LineBreakType::None);
-			sb->Append((const UTF8Char*)"\r\n");
+			sb->AppendC(UTF8STRC("\r\n"));
 		}
 	}
 	Text::StrUOSInt(sptr, i++);
@@ -278,9 +278,9 @@ void Crypto::Cert::X509File::AppendPrivateKeyInfo(const UInt8 *pdu, const UInt8 
 	{
 		if (itemType == Net::ASN1Util::IT_INTEGER)
 		{
-			sb->Append((const UTF8Char*)"version = ");
+			sb->AppendC(UTF8STRC("version = "));
 			AppendVersion(pdu, pduEnd, sbuff, sb);
-			sb->Append((const UTF8Char*)"\r\n");
+			sb->AppendC(UTF8STRC("\r\n"));
 		}
 	}
 	Text::StrConcat(sptr, ".2");
@@ -296,8 +296,8 @@ void Crypto::Cert::X509File::AppendPrivateKeyInfo(const UInt8 *pdu, const UInt8 
 	{
 		if (itemType == Net::ASN1Util::IT_OCTET_STRING)
 		{
-			sb->Append((const UTF8Char*)"privateKey = ");
-			sb->Append((const UTF8Char*)"\r\n");
+			sb->AppendC(UTF8STRC("privateKey = "));
+			sb->AppendC(UTF8STRC("\r\n"));
 		}
 	}
 }
@@ -350,9 +350,9 @@ void Crypto::Cert::X509File::AppendCertificateRequestInfo(const UInt8 *pdu, cons
 	{
 		if (itemType == Net::ASN1Util::IT_INTEGER)
 		{
-			sb->Append((const UTF8Char*)"serialNumber = ");
+			sb->AppendC(UTF8STRC("serialNumber = "));
 			AppendVersion(pdu, pduEnd, sbuff, sb);
-			sb->Append((const UTF8Char*)"\r\n");
+			sb->AppendC(UTF8STRC("\r\n"));
 		}
 	}
 	Text::StrUOSInt(sptr, i++);
@@ -456,13 +456,13 @@ void Crypto::Cert::X509File::AppendVersion(const UInt8 *pdu, const UInt8 *pduEnd
 			switch (itemPDU[0])
 			{
 			case 0:
-				sb->Append((const UTF8Char*)"v1");
+				sb->AppendC(UTF8STRC("v1"));
 				break;
 			case 1:
-				sb->Append((const UTF8Char*)"v2");
+				sb->AppendC(UTF8STRC("v2"));
 				break;
 			case 2:
-				sb->Append((const UTF8Char*)"v3");
+				sb->AppendC(UTF8STRC("v3"));
 				break;
 			}
 		}
@@ -481,27 +481,27 @@ void Crypto::Cert::X509File::AppendAlgorithmIdentifier(const UInt8 *pdu, const U
 	{
 		sb->Append(varName);
 		sb->AppendChar('.', 1);
-		sb->Append((const UTF8Char*)"algorithm = ");
+		sb->AppendC(UTF8STRC("algorithm = "));
 		Net::ASN1Util::OIDToString(algorithm, algorithmLen, sb);
 		const Net::ASN1OIDDB::OIDInfo *oid = Net::ASN1OIDDB::OIDGetEntry(algorithm, algorithmLen);
 		if (oid)
 		{
-			sb->Append((const UTF8Char*)" (");
+			sb->AppendC(UTF8STRC(" ("));
 			sb->Append((const UTF8Char*)oid->name);
 			sb->AppendChar(')', 1);
 		}
-		sb->Append((const UTF8Char*)"\r\n");
+		sb->AppendC(UTF8STRC("\r\n"));
 	}
 	if (parameters)
 	{
 		sb->Append(varName);
 		sb->AppendChar('.', 1);
-		sb->Append((const UTF8Char*)"parameters = ");
+		sb->AppendC(UTF8STRC("parameters = "));
 		if (parametersType == Net::ASN1Util::IT_NULL)
 		{
-			sb->Append((const UTF8Char*)"NULL");
+			sb->AppendC(UTF8STRC("NULL"));
 		}
-		sb->Append((const UTF8Char*)"\r\n");
+		sb->AppendC(UTF8STRC("\r\n"));
 	}
 }
 
@@ -517,9 +517,9 @@ void Crypto::Cert::X509File::AppendValidity(const UInt8 *pdu, const UInt8 *pduEn
 		{
 			sb->Append(varName);
 			sb->AppendChar('.', 1);
-			sb->Append((const UTF8Char*)"notBefore = ");
+			sb->AppendC(UTF8STRC("notBefore = "));
 			sb->AppendDate(&dt);
-			sb->Append((const UTF8Char*)"\r\n");
+			sb->AppendC(UTF8STRC("\r\n"));
 		}
 	}
 	if ((itemPDU = Net::ASN1Util::PDUGetItem(pdu, pduEnd, "2", &itemLen, &itemType)) != 0)
@@ -528,9 +528,9 @@ void Crypto::Cert::X509File::AppendValidity(const UInt8 *pdu, const UInt8 *pduEn
 		{
 			sb->Append(varName);
 			sb->AppendChar('.', 1);
-			sb->Append((const UTF8Char*)"notBefore = ");
+			sb->AppendC(UTF8STRC("notBefore = "));
 			sb->AppendDate(&dt);
-			sb->Append((const UTF8Char*)"\r\n");
+			sb->AppendC(UTF8STRC("\r\n"));
 		}
 	}
 }
@@ -554,9 +554,9 @@ void Crypto::Cert::X509File::AppendSubjectPublicKeyInfo(const UInt8 *pdu, const 
 		if (itemType == Net::ASN1Util::IT_BIT_STRING)
 		{
 			sb->Append(varName);
-			sb->Append((const UTF8Char*)".subjectPublicKey = ");
+			sb->AppendC(UTF8STRC(".subjectPublicKey = "));
 			sb->AppendHexBuff(itemPDU, itemLen, ':', Text::LineBreakType::None);
-			sb->Append((const UTF8Char*)"\r\n");
+			sb->AppendC(UTF8STRC("\r\n"));
 		}
 	}
 }
@@ -623,39 +623,39 @@ void Crypto::Cert::X509File::AppendAttributeTypeAndDistinguishedValue(const UInt
 		sb->AppendChar('.', 1);
 		if (Net::ASN1Util::OIDEqualsText(typePDU, typeLen, "2.5.4.3"))
 		{
-			sb->Append((const UTF8Char*)"commonName");
+			sb->AppendC(UTF8STRC("commonName"));
 		}
 		else if (Net::ASN1Util::OIDEqualsText(typePDU, typeLen, "2.5.4.6"))
 		{
-			sb->Append((const UTF8Char*)"countryName");
+			sb->AppendC(UTF8STRC("countryName"));
 		}
 		else if (Net::ASN1Util::OIDEqualsText(typePDU, typeLen, "2.5.4.7"))
 		{
-			sb->Append((const UTF8Char*)"localityName");
+			sb->AppendC(UTF8STRC("localityName"));
 		}
 		else if (Net::ASN1Util::OIDEqualsText(typePDU, typeLen, "2.5.4.8"))
 		{
-			sb->Append((const UTF8Char*)"stateOrProvinceName");
+			sb->AppendC(UTF8STRC("stateOrProvinceName"));
 		}
 		else if (Net::ASN1Util::OIDEqualsText(typePDU, typeLen, "2.5.4.10"))
 		{
-			sb->Append((const UTF8Char*)"organizationName");
+			sb->AppendC(UTF8STRC("organizationName"));
 		}
 		else if (Net::ASN1Util::OIDEqualsText(typePDU, typeLen, "2.5.4.11"))
 		{
-			sb->Append((const UTF8Char*)"organizationalUnitName");
+			sb->AppendC(UTF8STRC("organizationalUnitName"));
 		}
 		else if (Net::ASN1Util::OIDEqualsText(typePDU, typeLen, "1.2.840.113549.1.9.1"))
 		{
-			sb->Append((const UTF8Char*)"emailAddress");
+			sb->AppendC(UTF8STRC("emailAddress"));
 		}
 		else
 		{
 			Net::ASN1Util::OIDToString(typePDU, typeLen, sb);
 		}
-		sb->Append((const UTF8Char*)" = ");
+		sb->AppendC(UTF8STRC(" = "));
 		sb->AppendC(valuePDU, valueLen);
-		sb->Append((const UTF8Char*)"\r\n");
+		sb->AppendC(UTF8STRC("\r\n"));
 	}
 }
 
@@ -981,7 +981,7 @@ Crypto::Cert::X509Cert *Crypto::Cert::X509File::NewCert(UOSInt index)
 void Crypto::Cert::X509File::ToShortString(Text::StringBuilderUTF *sb)
 {
 	sb->Append(FileTypeGetName(this->GetFileType()));
-	sb->Append((const UTF8Char*)": ");
+	sb->AppendC(UTF8STRC(": "));
 	this->ToShortName(sb);
 }
 

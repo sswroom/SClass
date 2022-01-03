@@ -44,7 +44,7 @@ void __stdcall OnFileDrop(void *userObj, const UTF8Char **files, UOSInt nFiles)
 	while (i < nFiles)
 	{
 		if (i > 0)
-			sb.Append((const UTF8Char*)"\r\n");
+			sb.AppendC(UTF8STRC("\r\n"));
 		sb.Append(files[i]);
 		i++;
 	}

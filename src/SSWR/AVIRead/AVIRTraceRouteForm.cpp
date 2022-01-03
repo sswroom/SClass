@@ -69,7 +69,7 @@ void __stdcall SSWR::AVIRead::AVIRTraceRouteForm::OnIPSelChg(void *userObj)
 			while (i < j)
 			{
 				sb.Append(rec->GetItem(i));
-				sb.Append((const UTF8Char*)"\r\n");
+				sb.AppendC(UTF8STRC("\r\n"));
 				i++;
 			}
 		}

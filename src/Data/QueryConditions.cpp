@@ -53,11 +53,11 @@ Bool Data::QueryConditions::TimeBetweenCondition::ToWhereClause(Text::StringBuil
 	Data::DateTime dt;
 	DB::DBUtil::SDBColUTF8(sbuff, this->fieldName, svrType);
 	sb->Append(sbuff);
-	sb->Append((const UTF8Char*)" between ");
+	sb->AppendC(UTF8STRC(" between "));
 	dt.SetTicks(this->t1);
 	DB::DBUtil::SDBDate(sbuff, &dt, svrType, tzQhr);
 	sb->Append(sbuff);
-	sb->Append((const UTF8Char*)" and ");
+	sb->AppendC(UTF8STRC(" and "));
 	dt.SetTicks(this->t2);
 	DB::DBUtil::SDBDate(sbuff, &dt, svrType, tzQhr);
 	sb->Append(sbuff);
@@ -228,9 +228,9 @@ Bool Data::QueryConditions::Int32InCondition::ToWhereClause(Text::StringBuilderU
 		UTF8Char sbuff[512];
 		DB::DBUtil::SDBColUTF8(sbuff, this->fieldName, svrType);
 		sb->Append(sbuff);
-		sb->Append((const UTF8Char*)" in (");
+		sb->AppendC(UTF8STRC(" in ("));
 		Text::StringTool::Int32Join(sb, this->vals, (const UTF8Char*)", ");
-		sb->Append((const UTF8Char*)")");
+		sb->AppendC(UTF8STRC(")"));
 		return true;
 	}
 }
@@ -422,14 +422,14 @@ Bool Data::QueryConditions::StringInCondition::ToWhereClause(Text::StringBuilder
 		UOSInt j;
 		DB::DBUtil::SDBColUTF8(sbuff, this->fieldName, svrType);
 		sb->Append(sbuff);
-		sb->Append((const UTF8Char*)" in (");
+		sb->AppendC(UTF8STRC(" in ("));
 		i = 0;
 		j = this->vals->GetCount();
 		while (i < j)
 		{
 			if (i > 0)
 			{
-				sb->Append((const UTF8Char*)", ");
+				sb->AppendC(UTF8STRC(", "));
 			}
 			thisSize = DB::DBUtil::SDBStrUTF8Leng(this->vals->GetItem(i), svrType);
 			if (thisSize < 512)
@@ -522,7 +522,7 @@ Bool Data::QueryConditions::StringContainsCondition::ToWhereClause(Text::StringB
 	UTF8Char sbuff[512];
 	DB::DBUtil::SDBColUTF8(sbuff, this->fieldName, svrType);
 	sb->Append(sbuff);
-	sb->Append((const UTF8Char*)" like ");
+	sb->AppendC(UTF8STRC(" like "));
 	Text::StringBuilderUTF8 sb2;
 	sb2.AppendChar('%', 1);
 	sb2.Append(this->val);
@@ -592,7 +592,7 @@ Bool Data::QueryConditions::StringEqualsCondition::ToWhereClause(Text::StringBui
 	UTF8Char sbuff[512];
 	DB::DBUtil::SDBColUTF8(sbuff, this->fieldName, svrType);
 	sb->Append(sbuff);
-	sb->Append((const UTF8Char*)" = ");
+	sb->AppendC(UTF8STRC(" = "));
 	UOSInt size = DB::DBUtil::SDBStrUTF8Leng(this->val, svrType);
 	if (size < 512)
 	{
@@ -656,7 +656,7 @@ Bool Data::QueryConditions::BooleanCondition::ToWhereClause(Text::StringBuilderU
 {
 	if (!this->val)
 	{
-		sb->Append((const UTF8Char*)"NOT ");
+		sb->AppendC(UTF8STRC("NOT "));
 	}
 	UTF8Char sbuff[512];
 	DB::DBUtil::SDBColUTF8(sbuff, this->fieldName, svrType);
@@ -734,7 +734,7 @@ Bool Data::QueryConditions::NotNullCondition::ToWhereClause(Text::StringBuilderU
 	UTF8Char sbuff[512];
 	DB::DBUtil::SDBColUTF8(sbuff, this->fieldName, svrType);
 	sb->Append(sbuff);
-	sb->Append((const UTF8Char*)" is not null");
+	sb->AppendC(UTF8STRC(" is not null"));
 	return true;
 }
 
@@ -835,7 +835,7 @@ Data::QueryConditions::ConditionType Data::QueryConditions::OrCondition::GetType
 
 Bool Data::QueryConditions::OrCondition::ToWhereClause(Text::StringBuilderUTF *sb, DB::DBUtil::ServerType svrType, Int8 tzQhr, UOSInt maxDBItem)
 {
-	sb->Append((const UTF8Char*)" or ");
+	sb->AppendC(UTF8STRC(" or "));
 	return true;
 }
 
@@ -922,7 +922,7 @@ Bool Data::QueryConditions::ToWhereClause(Text::StringBuilderUTF *sb, DB::DBUtil
 				{
 					if (splitType == 2)
 					{
-						sb->Append((const UTF8Char*)" or (");
+						sb->AppendC(UTF8STRC(" or ("));
 						splitType = 0;
 					}
 					else if (splitType != 0)
@@ -932,7 +932,7 @@ Bool Data::QueryConditions::ToWhereClause(Text::StringBuilderUTF *sb, DB::DBUtil
 					}
 					else
 					{
-						sb->Append((const UTF8Char*)" and ");
+						sb->AppendC(UTF8STRC(" and "));
 					}
 					sb->Append(sbTmp.ToString());
 				}
@@ -961,7 +961,7 @@ Bool Data::QueryConditions::ToWhereClause(Text::StringBuilderUTF *sb, DB::DBUtil
 			{
 				if (hasCond)
 				{
-					sb->Append((const UTF8Char*)" and ");
+					sb->AppendC(UTF8STRC(" and "));
 				}
 				sb->Append(sbTmp.ToString());
 				hasCond = true;

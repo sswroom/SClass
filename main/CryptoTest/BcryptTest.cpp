@@ -16,13 +16,13 @@ void BCryptTest(IO::ConsoleWriter *console, Crypto::Hash::Bcrypt *bcrypt, const 
 	Text::StringBuilderUTF8 sb;
 	if (result)
 	{
-		sb.Append((const UTF8Char*)"Match");
+		sb.AppendC(UTF8STRC("Match"));
 	}
 	else
 	{
-		sb.Append((const UTF8Char*)"Not Match");
+		sb.AppendC(UTF8STRC("Not Match"));
 	}
-	sb.Append((const UTF8Char*)", t = ");
+	sb.AppendC(UTF8STRC(", t = "));
 	Text::SBAppendF64(&sb, t);
 	console->WriteLine(sb.ToString());
 	console->WriteLine();
@@ -45,7 +45,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	console.WriteLine((const UTF8Char*)"Exp: hSCvnwM9s4wIX9JeLapehKK5YdLxKcmk");
 	decSize = radix64->DecodeBin(sb.ToString(), sb.GetCharCnt(), decTest);
 	sb.ClearStr();
-	sb.Append((const UTF8Char*)"Dec: ");
+	sb.AppendC(UTF8STRC("Dec: ");
 	sb.AppendHexBuff(decTest, decSize, ' ', Text::LineBreakType::None);
 	console.WriteLine(sb.ToString());
 	console.WriteLine();
@@ -58,7 +58,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	BCryptTest(&console, &bcrypt, (const UTF8Char*)"$2a$12$kQtGrSy5/39p96XsfTnpmuG1RiTw0KPKTSTsLuaooVr476.Ti9zcW", (const UTF8Char*)"admin");
 
 	sb.ClearStr();
-	sb.Append((const UTF8Char*)"Generating hash: ");
+	sb.AppendC(UTF8STRC("Generating hash: ");
 	bcrypt.GenHash(&sb, 12, (const UTF8Char*)"admin");
 	console.WriteLine(sb.ToString());
 	return 0;

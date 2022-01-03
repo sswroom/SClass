@@ -115,55 +115,55 @@ Text::String *Crypto::Token::JWTParam::GetJWTId()
 void Crypto::Token::JWTParam::ToString(Text::StringBuilderUTF *sb)
 {
 	Bool found = false;
-	sb->Append((const UTF8Char*)"Params [");
+	sb->AppendC(UTF8STRC("Params ["));
 	if (this->iss != 0)
 	{
-		if (found) sb->Append((const UTF8Char*)", ");
-		sb->Append((const UTF8Char*)"iss=");
+		if (found) sb->AppendC(UTF8STRC(", "));
+		sb->AppendC(UTF8STRC("iss="));
 		sb->Append(this->iss);
 		found = true;
 	}
 	if (this->sub != 0)
 	{
-		if (found) sb->Append((const UTF8Char*)", ");
-		sb->Append((const UTF8Char*)"sub=");
+		if (found) sb->AppendC(UTF8STRC(", "));
+		sb->AppendC(UTF8STRC("sub="));
 		sb->Append(this->sub);
 		found = true;
 	}
 	if (this->aud != 0)
 	{
-		if (found) sb->Append((const UTF8Char*)", ");
-		sb->Append((const UTF8Char*)"aud=");
+		if (found) sb->AppendC(UTF8STRC(", "));
+		sb->AppendC(UTF8STRC("aud="));
 		sb->Append(this->aud);
 		found = true;
 	}
 	if (this->exp != 0)
 	{
-		if (found) sb->Append((const UTF8Char*)", ");
-		sb->Append((const UTF8Char*)"exp=");
+		if (found) sb->AppendC(UTF8STRC(", "));
+		sb->AppendC(UTF8STRC("exp="));
 		sb->AppendI64(this->exp);
 		found = true;
 	}
 	if (this->nbf != 0)
 	{
-		if (found) sb->Append((const UTF8Char*)", ");
-		sb->Append((const UTF8Char*)"nbf=");
+		if (found) sb->AppendC(UTF8STRC(", "));
+		sb->AppendC(UTF8STRC("nbf="));
 		sb->AppendI64(this->nbf);
 		found = true;
 	}
 	if (this->iat != 0)
 	{
-		if (found) sb->Append((const UTF8Char*)", ");
-		sb->Append((const UTF8Char*)"iat=");
+		if (found) sb->AppendC(UTF8STRC(", "));
+		sb->AppendC(UTF8STRC("iat="));
 		sb->AppendI64(this->iat);
 		found = true;
 	}
 	if (this->jti != 0)
 	{
-		if (found) sb->Append((const UTF8Char*)", ");
-		sb->Append((const UTF8Char*)"jti=");
+		if (found) sb->AppendC(UTF8STRC(", "));
+		sb->AppendC(UTF8STRC("jti="));
 		sb->Append(this->jti);
 		found = true;
 	}
-	sb->Append((const UTF8Char*)"]");
+	sb->AppendC(UTF8STRC("]"));
 }

@@ -1243,15 +1243,15 @@ const UTF8Char *IO::BTUtil::GetManufacturerName(UInt16 manuf)
 void IO::BTUtil::GetAddrText(Text::StringBuilderUTF *sb, UInt8 *addr)
 {
 	sb->AppendHex8(addr[5]);
-	sb->Append((const UTF8Char*)":");
+	sb->AppendC(UTF8STRC(":"));
 	sb->AppendHex8(addr[4]);
-	sb->Append((const UTF8Char*)":");
+	sb->AppendC(UTF8STRC(":"));
 	sb->AppendHex8(addr[3]);
-	sb->Append((const UTF8Char*)":");
+	sb->AppendC(UTF8STRC(":"));
 	sb->AppendHex8(addr[2]);
-	sb->Append((const UTF8Char*)":");
+	sb->AppendC(UTF8STRC(":"));
 	sb->AppendHex8(addr[1]);
-	sb->Append((const UTF8Char*)":");
+	sb->AppendC(UTF8STRC(":"));
 	sb->AppendHex8(addr[0]);
 }
 
@@ -1297,16 +1297,16 @@ void IO::BTUtil::GetServiceName(Text::StringBuilderUTF *sb, void *serviceUUID)
 {
 	UInt8 *uuid = (UInt8*)serviceUUID;
 	sb->Append(GetUUIDName(ReadUInt16(uuid)));
-	sb->Append((const UTF8Char*)" (");
+	sb->AppendC(UTF8STRC(" ("));
 	sb->AppendHexBuff(uuid, 4, 0, Text::LineBreakType::None);
-	sb->Append((const UTF8Char*)"-");
+	sb->AppendC(UTF8STRC("-"));
 	sb->AppendHexBuff(&uuid[4], 2, 0, Text::LineBreakType::None);
-	sb->Append((const UTF8Char*)"-");
+	sb->AppendC(UTF8STRC("-"));
 	sb->AppendHexBuff(&uuid[6], 2, 0, Text::LineBreakType::None);
-	sb->Append((const UTF8Char*)"-");
+	sb->AppendC(UTF8STRC("-"));
 	sb->AppendHexBuff(&uuid[8], 2, 0, Text::LineBreakType::None);
-	sb->Append((const UTF8Char*)"-");
+	sb->AppendC(UTF8STRC("-"));
 	sb->AppendHexBuff(&uuid[10], 6, 0, Text::LineBreakType::None);
-	sb->Append((const UTF8Char*)")");
+	sb->AppendC(UTF8STRC(")"));
 }
 

@@ -31,7 +31,7 @@ void __stdcall SSWR::AVIRead::AVIRHexViewerForm::OnFilesDrop(void *userObj, cons
 			}
 
 			Text::StringBuilderUTF8 sb;
-			sb.Append((const UTF8Char*)"Hex Viewer - ");
+			sb.AppendC(UTF8STRC("Hex Viewer - "));
 			sb.Append(files[i]);
 			me->SetText(sb.ToString());
 			break;
@@ -173,7 +173,7 @@ void __stdcall SSWR::AVIRead::AVIRHexViewerForm::OnOffsetChg(void *userObj, UInt
 			{
 				if (i > 0)
 				{
-					sb.Append((const UTF8Char*)"\r\n");
+					sb.AppendC(UTF8STRC("\r\n"));
 				}
 				field = fieldList.GetItem(i);
 				sb.Append(field->name);

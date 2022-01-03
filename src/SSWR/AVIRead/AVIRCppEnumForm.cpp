@@ -45,10 +45,10 @@ void SSWR::AVIRead::AVIRCppEnumForm::ConvEnum()
 		UOSInt j = enumList.GetCount();
 		while (i < j)
 		{
-			destSb.Append((const UTF8Char*)"case ");
+			destSb.AppendC(UTF8STRC("case "));
 			destSb.Append(sbPrefix.ToString());
 			destSb.Append(enumList.GetItem(i));
-			destSb.Append((const UTF8Char*)":\r\n");
+			destSb.AppendC(UTF8STRC(":\r\n"));
 			i++;
 		}
 		this->txtDest->SetText(destSb.ToString());

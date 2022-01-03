@@ -40,7 +40,7 @@ void Crypto::Cert::X509PrivKey::ToShortName(Text::StringBuilderUTF *sb)
 		sb->Append(KeyTypeGetName(keyType));
 		sb->AppendChar(' ', 1);
 		sb->AppendUOSInt(KeyGetLeng(keyPDU, keyPDU + keyLen, keyType));
-		sb->Append((const UTF8Char*)" bits");
+		sb->AppendC(UTF8STRC(" bits"));
 	}
 }
 

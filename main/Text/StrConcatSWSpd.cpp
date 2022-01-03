@@ -26,7 +26,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	t = clk.GetTimeDiff();
 
 	Text::StringBuilderUTF8 sb;
-	sb.Append((const UTF8Char*)"t = ");
+	sb.AppendC(UTF8STRC("t = "));
 	Text::SBAppendF64(&sb, t);
 	console->WriteLine(sb.ToString());
 	DEL_CLASS(console);

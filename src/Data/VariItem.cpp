@@ -946,7 +946,7 @@ void Data::VariItem::ToString(Text::StringBuilderUTF *sb)
 	{
 	case ItemType::Unknown:
 	case ItemType::Null:
-		sb->Append((const UTF8Char*)"null");
+		sb->AppendC(UTF8STRC("null"));
 		return;
 	case ItemType::F32:
 		Text::SBAppendF32(sb, this->val.f32);

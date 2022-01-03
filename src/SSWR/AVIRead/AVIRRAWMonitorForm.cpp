@@ -51,15 +51,15 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnPingPacket(void *userData, U
 	}
 	mutUsage.EndUse();
 
-	sb.Append((const UTF8Char *)"Received from ");
+	sb.AppendC(UTF8STRC("Received from "));
 	Net::SocketUtil::GetIPv4Name(sbuff, srcIP);
 	sb.Append(sbuff);
-	sb.Append((const UTF8Char *)" to ");
+	sb.AppendC(UTF8STRC(" to "));
 	Net::SocketUtil::GetIPv4Name(sbuff, destIP);
 	sb.Append(sbuff);
-	sb.Append((const UTF8Char *)", size = ");
+	sb.AppendC(UTF8STRC(", size = "));
 	sb.AppendUOSInt(packetSize);
-	sb.Append((const UTF8Char *)", ttl = ");
+	sb.AppendC(UTF8STRC(", ttl = "));
 	sb.AppendU16(ttl);
 	me->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_COMMAND);
 }
@@ -170,7 +170,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnIPTranSelChg(void *userObj)
 			while (i < j)
 			{
 				sb.Append(rec->GetItem(i));
-				sb.Append((const UTF8Char*)"\r\n");
+				sb.AppendC(UTF8STRC("\r\n"));
 				i++;
 			}
 		}
@@ -216,7 +216,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnPingIPSelChg(void *userObj)
 			while (i < j)
 			{
 				sb.Append(rec->GetItem(i));
-				sb.Append((const UTF8Char*)"\r\n");
+				sb.AppendC(UTF8STRC("\r\n"));
 				i++;
 			}
 		}
@@ -381,7 +381,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnDNSTargetSelChg(void *userOb
 			while (i < j)
 			{
 				sb.Append(rec->GetItem(i));
-				sb.Append((const UTF8Char*)"\r\n");
+				sb.AppendC(UTF8STRC("\r\n"));
 				i++;
 			}
 			me->txtDNSTargetWhois->SetText(sb.ToString());
@@ -1034,12 +1034,12 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnDeviceSelChg(void *userObj)
 				dt.ToLocalTime();
 				dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
 				sb.Append(sbuff);
-				sb.Append((const UTF8Char*)"\r\n");
-				sb.Append((const UTF8Char*)"Dest MAC: ");
+				sb.AppendC(UTF8STRC("\r\n"));
+				sb.AppendC(UTF8STRC("Dest MAC: "));
 				WriteMUInt64(sbuff, mac->packetDestMAC[i]);
 				Net::PacketAnalyzerEthernet::PacketEthernetDataGetDetail(mac->packetEtherType[i], mac->packetData[i], mac->packetSize[i], &sb);
-				sb.Append((const UTF8Char*)"\r\n");
-				sb.Append((const UTF8Char*)"\r\n");
+				sb.AppendC(UTF8STRC("\r\n"));
+				sb.AppendC(UTF8STRC("\r\n"));
 				i++;
 			}
 		}
@@ -1052,13 +1052,13 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnDeviceSelChg(void *userObj)
 				dt.ToLocalTime();
 				dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
 				sb.Append(sbuff);
-				sb.Append((const UTF8Char*)"\r\n");
-				sb.Append((const UTF8Char*)"Dest MAC: ");
+				sb.AppendC(UTF8STRC("\r\n"));
+				sb.AppendC(UTF8STRC("Dest MAC: "));
 				WriteMUInt64(sbuff, mac->packetDestMAC[(cnt + i) & 15]);
 				sb.AppendHexBuff(&sbuff[2], 6, ':', Text::LineBreakType::None);
 				Net::PacketAnalyzerEthernet::PacketEthernetDataGetDetail(mac->packetEtherType[(cnt + i) & 15], mac->packetData[(cnt + i) & 15], mac->packetSize[(cnt + i) & 15], &sb);
-				sb.Append((const UTF8Char*)"\r\n");
-				sb.Append((const UTF8Char*)"\r\n");
+				sb.AppendC(UTF8STRC("\r\n"));
+				sb.AppendC(UTF8STRC("\r\n"));
 				i++;
 			}
 		}

@@ -1357,7 +1357,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::IsBookSpeciesExist(const UTF8Char *sName, Text:
 			{
 				if (found)
 				{
-					sb->Append((const UTF8Char *)"\r\n");
+					sb->Append((const UTF8Char*)"\r\n");
 				}
 				r->GetStr(0, sb);
 

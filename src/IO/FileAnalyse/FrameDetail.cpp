@@ -101,13 +101,13 @@ void IO::FileAnalyse::FrameDetail::AddSubframe(UOSInt ofst, UOSInt size)
 
 void IO::FileAnalyse::FrameDetail::ToString(Text::StringBuilderUTF *sb)
 {
-	sb->Append((const UTF8Char*)"Offset=");
+	sb->AppendC(UTF8STRC("Offset="));
 	sb->AppendU64(this->ofst);
 	UOSInt i = 0;
 	UOSInt j = this->headers->GetCount();
 	while (i < j)
 	{
-		sb->Append((const UTF8Char*)"\r\n");
+		sb->AppendC(UTF8STRC("\r\n"));
 		sb->Append(this->headers->GetItem(i));
 		i++;
 	}
@@ -117,7 +117,7 @@ void IO::FileAnalyse::FrameDetail::ToString(Text::StringBuilderUTF *sb)
 	j = this->fields->GetCount();
 	if (j > 0)
 	{
-		sb->Append((const UTF8Char*)"\r\n");
+		sb->AppendC(UTF8STRC("\r\n"));
 		while (i < j)
 		{
 			field = this->fields->GetItem(i);
@@ -125,16 +125,16 @@ void IO::FileAnalyse::FrameDetail::ToString(Text::StringBuilderUTF *sb)
 			{
 			case FT_TEXT:
 			case FT_FIELD:
-				sb->Append((const UTF8Char *)"\r\n");
+				sb->AppendC(UTF8STRC("\r\n"));
 				break;
 			case FT_SUBFIELD:
-				sb->Append((const UTF8Char *)"\r\n-");
+				sb->AppendC(UTF8STRC("\r\n-"));
 				break;
 			case FT_SEPERATOR:
-				sb->Append((const UTF8Char *)"\r\n\r\n");
+				sb->AppendC(UTF8STRC("\r\n\r\n"));
 				break;
 			case FT_SUBFRAME:
-				sb->Append((const UTF8Char*)"\r\n");
+				sb->AppendC(UTF8STRC("\r\n"));
 			}
 			sb->Append(field->name);
 			if (field->value)

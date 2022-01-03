@@ -15,9 +15,9 @@ void __stdcall ARPHandler(const UInt8 *hwAddr, UInt32 ipv4, void *userData)
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[64];
 	sb.ClearStr();
-	sb.Append((const UTF8Char*)"ARP Reply: HW Addr = ");
+	sb.AppendC(UTF8STRC("ARP Reply: HW Addr = "));
 	sb.AppendHexBuff(hwAddr, 6, ':', Text::LineBreakType::None);
-	sb.Append((const UTF8Char*)", IP = ");
+	sb.AppendC(UTF8STRC(", IP = "));
 	Net::SocketUtil::GetIPv4Name(sbuff, ipv4);
 	sb.Append(sbuff);
 	console->WriteLine(sb.ToString());
@@ -57,12 +57,12 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				if (connInfo->GetPhysicalAddress(hwAddr, 32) == 6)
 				{
 					sb.ClearStr();
-					sb.Append((const UTF8Char*)"Detected adapter: HW Addr = ");
+					sb.AppendC(UTF8STRC("Detected adapter: HW Addr = "));
 					sb.AppendHexBuff(hwAddr, 6, ':', Text::LineBreakType::None);
-					sb.Append((const UTF8Char*)", IP = ");
+					sb.AppendC(UTF8STRC(", IP = "));
 					Net::SocketUtil::GetIPv4Name(sbuff, ip);
 					sb.Append(sbuff);
-					sb.Append((const UTF8Char*)", Index = ");
+					sb.AppendC(UTF8STRC(", Index = "));
 					sb.AppendUOSInt(connInfo->GetIndex());
 					console->WriteLine(sb.ToString());
 					connInfo->GetName(sbuff);

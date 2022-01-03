@@ -51,7 +51,7 @@ template <class T> void Text::StringTool::BuildString(Text::StringBuilderUTF *sb
 		}
 		else
 		{
-			sb->Append((const UTF8Char*)"null");
+			sb->AppendC(UTF8STRC("null"));
 		}
 		i++;
 	}
@@ -62,7 +62,7 @@ template <class T> void Text::StringTool::BuildString(Text::StringBuilderUTF *sb
 {
 	if (list == 0)
 	{
-		sb->Append((const UTF8Char*)"null");
+		sb->AppendC(UTF8STRC("null"));
 		return;
 	}
 	UOSInt i;

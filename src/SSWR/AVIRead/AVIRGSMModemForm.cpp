@@ -205,15 +205,15 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnSMSSaveAllClick(void *userObj)
 				sb.ClearStr();
 				sb.Append(dlg->GetFolder());
 				sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
-				sb.Append((const UTF8Char*)"SMS");
+				sb.AppendC(UTF8STRC("SMS"));
 				sb.AppendI64(dt.ToDotNetTicks());
-				sb.Append((const UTF8Char*)"_");
+				sb.AppendC(UTF8STRC("_"));
 				sb.AppendI32(sms->index);
-				sb.Append((const UTF8Char*)"_");
+				sb.AppendC(UTF8STRC("_"));
 				const UTF8Char *csptr = Text::StrToUTF8New(smsMsg->GetAddress());
 				sb.Append(csptr);
 				Text::StrDelNew(csptr);
-				sb.Append((const UTF8Char*)".sms");
+				sb.AppendC(UTF8STRC(".sms"));
 
 				NEW_CLASS(fs, IO::FileStream(sb.ToString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 				NEW_CLASS(writer, Text::UTF8Writer(fs));

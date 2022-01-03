@@ -789,7 +789,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 
 				sb.ClearStr();
 				sb.AppendUOSInt(dataList.GetCount());
-				sb.Append((const UTF8Char*)" rows of records loaded");
+				sb.AppendC(UTF8STRC(" rows of records loaded"));
 				console.WriteLine(sb.ToString());
 
 				IO::Path::GetRealPath(sbuff, (const UTF8Char*)"~/Progs/Temp/LamppostData.ddf");
@@ -801,7 +801,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				{
 					sb.ClearStr();
 					sb.AppendUOSInt(dataList2.GetCount());
-					sb.Append((const UTF8Char*)" rows of records loaded from file");
+					sb.AppendC(UTF8STRC(" rows of records loaded from file"));
 					console.WriteLine(sb.ToString());
 				}
 				if (dataList.GetCount() == dataList2.GetCount())

@@ -78,7 +78,7 @@ void __stdcall SSWR::AVIRead::AVIRRESTfulForm::OnStartClick(void *userObj)
 			{
 				sb->AppendChar(IO::Path::PATH_SEPERATOR, 1);
 			}
-			sb->Append((const UTF8Char*)"Acccess");
+			sb->AppendC(UTF8STRC("Acccess"));
 
 			if (!me->chkSkipLog->IsChecked())
 			{

@@ -330,7 +330,7 @@ Crypto::Cert::X509CertReq *Crypto::Cert::CertUtil::CertReqCreate(Net::SSLEngine 
 
 	Text::StringBuilderUTF8 sb;
 	sb.Append(names->commonName);
-	sb.Append((const UTF8Char*)".csr");
+	sb.AppendC(UTF8STRC(".csr"));
 	Crypto::Cert::X509CertReq *csr;
 	NEW_CLASS(csr, Crypto::Cert::X509CertReq(sb.ToString(), builder.GetBuff(0), builder.GetBuffSize()));
 	return csr;
@@ -385,7 +385,7 @@ Crypto::Cert::X509Cert *Crypto::Cert::CertUtil::SelfSignedCertCreate(Net::SSLEng
 	builder.EndLevel();
 	Text::StringBuilderUTF8 sb;
 	sb.Append(names->commonName);
-	sb.Append((const UTF8Char*)".crt");
+	sb.AppendC(UTF8STRC(".crt"));
 	Crypto::Cert::X509Cert *cert;
 	NEW_CLASS(cert, Crypto::Cert::X509Cert(sb.ToString(), builder.GetBuff(0), builder.GetBuffSize()));
 	return cert;
@@ -487,7 +487,7 @@ Crypto::Cert::X509Cert *Crypto::Cert::CertUtil::IssueCert(Net::SSLEngine *ssl, C
 
 	if (!AppendSign(&builder, ssl, caKey, Crypto::Hash::HT_SHA256)) return 0;
 	builder.EndLevel();
-	sbFileName.Append((const UTF8Char*)".crt");
+	sbFileName.AppendC(UTF8STRC(".crt"));
 	Crypto::Cert::X509Cert *cert;
 	NEW_CLASS(cert, Crypto::Cert::X509Cert(sbFileName.ToString(), builder.GetBuff(0), builder.GetBuffSize()));
 	return cert;

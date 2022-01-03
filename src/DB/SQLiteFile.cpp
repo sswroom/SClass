@@ -110,7 +110,7 @@ void DB::SQLiteFile::ForceTz(Int8 tzQhr)
 
 void DB::SQLiteFile::GetConnName(Text::StringBuilderUTF *sb)
 {
-	sb->Append((const UTF8Char*)"SQLite:");
+	sb->AppendC(UTF8STRC("SQLite:"));
 	sb->Append(this->fileName);
 }
 
@@ -273,11 +273,11 @@ UOSInt DB::SQLiteFile::GetTableNames(Data::ArrayList<const UTF8Char*> *names)
 DB::DBReader *DB::SQLiteFile::GetTableData(const UTF8Char *tableName, Data::ArrayList<const UTF8Char*> *columnNames, UOSInt ofst, UOSInt maxCnt, const UTF8Char *ordering, Data::QueryConditions *condition)
 {
 	Text::StringBuilderUTF8 sb;
-	sb.Append((const UTF8Char*)"select * from ");
+	sb.AppendC(UTF8STRC("select * from "));
 	sb.Append(tableName);
 	if (maxCnt > 0)
 	{
-		sb.Append((const UTF8Char*)" LIMIT ");
+		sb.AppendC(UTF8STRC(" LIMIT "));
 		sb.AppendOSInt((OSInt)maxCnt);
 	}
 	return ExecuteReaderC(sb.ToString(), sb.GetLength());

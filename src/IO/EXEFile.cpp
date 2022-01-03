@@ -379,143 +379,143 @@ void IO::EXEFile::GetResourceDesc(const ResourceInfo *res, Text::StringBuilderUT
 			UInt32 v2;
 			if (verSize <= res->dataSize)
 			{
-				sb->Append((const UTF8Char*)"Length = ");
+				sb->AppendC(UTF8STRC("Length = "));
 				sb->AppendU32(verSize);
-				sb->Append((const UTF8Char*)"\r\nValue Length = ");
+				sb->AppendC(UTF8STRC("\r\nValue Length = "));
 				sb->AppendU16(ReadUInt16(&res->data[2]));
-				sb->Append((const UTF8Char*)"\r\nKey = ");
+				sb->AppendC(UTF8STRC("\r\nKey = "));
 				sb->Append((UTF8Char*)&res->data[4]);
-				sb->Append((const UTF8Char*)"\r\nSignature = 0x");
+				sb->AppendC(UTF8STRC("\r\nSignature = 0x"));
 				sb->AppendHex32(ReadUInt32(&res->data[20]));
-				sb->Append((const UTF8Char*)"\r\nStruct Version = ");
+				sb->AppendC(UTF8STRC("\r\nStruct Version = "));
 				sb->AppendU16(ReadUInt16(&res->data[26]));
-				sb->Append((const UTF8Char*)".");
+				sb->AppendC(UTF8STRC("."));
 				sb->AppendU16(ReadUInt16(&res->data[24]));
-				sb->Append((const UTF8Char*)"\r\nFile Version = ");
+				sb->AppendC(UTF8STRC("\r\nFile Version = "));
 				sb->AppendU16(ReadUInt16(&res->data[30]));
-				sb->Append((const UTF8Char*)".");
+				sb->AppendC(UTF8STRC("."));
 				sb->AppendU16(ReadUInt16(&res->data[28]));
-				sb->Append((const UTF8Char*)".");
+				sb->AppendC(UTF8STRC("."));
 				sb->AppendU16(ReadUInt16(&res->data[34]));
-				sb->Append((const UTF8Char*)".");
+				sb->AppendC(UTF8STRC("."));
 				sb->AppendU16(ReadUInt16(&res->data[32]));
-				sb->Append((const UTF8Char*)"\r\nProduct Version = ");
+				sb->AppendC(UTF8STRC("\r\nProduct Version = "));
 				sb->AppendU16(ReadUInt16(&res->data[38]));
-				sb->Append((const UTF8Char*)".");
+				sb->AppendC(UTF8STRC("."));
 				sb->AppendU16(ReadUInt16(&res->data[36]));
-				sb->Append((const UTF8Char*)".");
+				sb->AppendC(UTF8STRC("."));
 				sb->AppendU16(ReadUInt16(&res->data[42]));
-				sb->Append((const UTF8Char*)".");
+				sb->AppendC(UTF8STRC("."));
 				sb->AppendU16(ReadUInt16(&res->data[40]));
-				sb->Append((const UTF8Char*)"\r\nFile Flags Mask = 0x");
+				sb->AppendC(UTF8STRC("\r\nFile Flags Mask = 0x"));
 				sb->AppendHex32(ReadUInt32(&res->data[44]));
-				sb->Append((const UTF8Char*)"\r\nFile Flags = 0x");
+				sb->AppendC(UTF8STRC("\r\nFile Flags = 0x"));
 				sb->AppendHex32(ReadUInt32(&res->data[48]));
-				sb->Append((const UTF8Char*)"\r\nFile OS = 0x");
+				sb->AppendC(UTF8STRC("\r\nFile OS = 0x"));
 				sb->AppendHex32(v = ReadUInt32(&res->data[52]));
 				switch (v)
 				{
 				case 0x00010001:
-					sb->Append((const UTF8Char*)" (16-bit Windows running on MS-DOS)");
+					sb->AppendC(UTF8STRC(" (16-bit Windows running on MS-DOS)"));
 					break;
 				case 0x00010004:
-					sb->Append((const UTF8Char*)" (32-bit Windows running on MS-DOS)");
+					sb->AppendC(UTF8STRC(" (32-bit Windows running on MS-DOS)"));
 					break;
 				case 0x00040004:
-					sb->Append((const UTF8Char*)" (Windows NT)");
+					sb->AppendC(UTF8STRC(" (Windows NT)"));
 					break;
 				case 0x00020002:
-					sb->Append((const UTF8Char*)" (16-bit Presentation Manager running on 16-bit OS/2)");
+					sb->AppendC(UTF8STRC(" (16-bit Presentation Manager running on 16-bit OS/2)"));
 					break;
 				case 0x00030003:
-					sb->Append((const UTF8Char*)" (32-bit Presentation Manager running on 32-bit OS/2)");
+					sb->AppendC(UTF8STRC(" (32-bit Presentation Manager running on 32-bit OS/2)"));
 					break;
 				case 0x00010000:
-					sb->Append((const UTF8Char*)" (MS-DOS)");
+					sb->AppendC(UTF8STRC(" (MS-DOS)"));
 					break;
 				case 0x00040000:
-					sb->Append((const UTF8Char*)" (Windows NT)");
+					sb->AppendC(UTF8STRC(" (Windows NT)"));
 					break;
 				case 0x00000001:
-					sb->Append((const UTF8Char*)" (16-bit Windows)");
+					sb->AppendC(UTF8STRC(" (16-bit Windows)"));
 					break;
 				case 0x00000004:
-					sb->Append((const UTF8Char*)" (32-bit Windows)");
+					sb->AppendC(UTF8STRC(" (32-bit Windows)"));
 					break;
 				case 0x00020000:
-					sb->Append((const UTF8Char*)" (16-bit OS/2)");
+					sb->AppendC(UTF8STRC(" (16-bit OS/2)"));
 					break;
 				case 0x00030000:
-					sb->Append((const UTF8Char*)" (32-bit OS/2)");
+					sb->AppendC(UTF8STRC(" (32-bit OS/2)"));
 					break;
 				case 0x00000002:
-					sb->Append((const UTF8Char*)" (16-bit Presentation Manager)");
+					sb->AppendC(UTF8STRC(" (16-bit Presentation Manager)"));
 					break;
 				case 0x00000003:
-					sb->Append((const UTF8Char*)" (32-bit Presentation Manager)");
+					sb->AppendC(UTF8STRC(" (32-bit Presentation Manager)"));
 					break;
 				}
-				sb->Append((const UTF8Char*)"\r\nFile Type = 0x");
+				sb->AppendC(UTF8STRC("\r\nFile Type = 0x"));
 				sb->AppendHex32(v = ReadUInt32(&res->data[56]));
 				switch (v)
 				{
 				case 0x00000001:
-					sb->Append((const UTF8Char*)" (application)");
+					sb->AppendC(UTF8STRC(" (application)"));
 					break;
 				case 0x00000002:
-					sb->Append((const UTF8Char*)" (DLL)");
+					sb->AppendC(UTF8STRC(" (DLL)"));
 					break;
 				case 0x00000003:
-					sb->Append((const UTF8Char*)" (device driver)");
+					sb->AppendC(UTF8STRC(" (device driver)"));
 					break;
 				case 0x00000004:
-					sb->Append((const UTF8Char*)" (font)");
+					sb->AppendC(UTF8STRC(" (font)"));
 					break;
 				case 0x00000007:
-					sb->Append((const UTF8Char*)" (static-link library)");
+					sb->AppendC(UTF8STRC(" (static-link library)"));
 					break;
 				case 0x00000005:
-					sb->Append((const UTF8Char*)" (virtual device)");
+					sb->AppendC(UTF8STRC(" (virtual device)"));
 					break;
 				}
-				sb->Append((const UTF8Char*)"\r\nFile Sub-Type = 0x");
+				sb->AppendC(UTF8STRC("\r\nFile Sub-Type = 0x"));
 				sb->AppendHex32(v2 = ReadUInt32(&res->data[60]));
 				if (v == 0x00000003) //VFT_DRV
 				{
 					switch (v2)
 					{
 					case 0x0000000A:
-						sb->Append((const UTF8Char*)" (communications driver)");
+						sb->AppendC(UTF8STRC(" (communications driver)"));
 						break;
 					case 0x00000004:
-						sb->Append((const UTF8Char*)" (display driver)");
+						sb->AppendC(UTF8STRC(" (display driver)"));
 						break;
 					case 0x00000008:
-						sb->Append((const UTF8Char*)" (installable driver)");
+						sb->AppendC(UTF8STRC(" (installable driver)"));
 						break;
 					case 0x00000002:
-						sb->Append((const UTF8Char*)" (keyboard driver)");
+						sb->AppendC(UTF8STRC(" (keyboard driver)"));
 						break;
 					case 0x00000003:
-						sb->Append((const UTF8Char*)" (language driver)");
+						sb->AppendC(UTF8STRC(" (language driver)"));
 						break;
 					case 0x00000005:
-						sb->Append((const UTF8Char*)" (mouse driver)");
+						sb->AppendC(UTF8STRC(" (mouse driver)"));
 						break;
 					case 0x00000006:
-						sb->Append((const UTF8Char*)" (network driver)");
+						sb->AppendC(UTF8STRC(" (network driver)"));
 						break;
 					case 0x00000001:
-						sb->Append((const UTF8Char*)" (printer driver)");
+						sb->AppendC(UTF8STRC(" (printer driver)"));
 						break;
 					case 0x00000009:
-						sb->Append((const UTF8Char*)" (sound driver)");
+						sb->AppendC(UTF8STRC(" (sound driver)"));
 						break;
 					case 0x00000007:
-						sb->Append((const UTF8Char*)" (system driver)");
+						sb->AppendC(UTF8STRC(" (system driver)"));
 						break;
 					case 0x0000000C:
-						sb->Append((const UTF8Char*)" (versioned printer driver)");
+						sb->AppendC(UTF8STRC(" (versioned printer driver)"));
 						break;
 					}
 				}
@@ -524,50 +524,50 @@ void IO::EXEFile::GetResourceDesc(const ResourceInfo *res, Text::StringBuilderUT
 					switch (v2)
 					{
 					case 0x00000001:
-						sb->Append((const UTF8Char*)" (raster font)");
+						sb->AppendC(UTF8STRC(" (raster font)"));
 						break;
 					case 0x00000003:
-						sb->Append((const UTF8Char*)" (TrueType font)");
+						sb->AppendC(UTF8STRC(" (TrueType font)"));
 						break;
 					case 0x00000002:
-						sb->Append((const UTF8Char*)" (vector font.)");
+						sb->AppendC(UTF8STRC(" (vector font.)"));
 						break;
 					}
 				}
-				sb->Append((const UTF8Char*)"\r\nFile Date = 0x");
+				sb->AppendC(UTF8STRC("\r\nFile Date = 0x"));
 				sb->AppendHex32(ReadUInt32(&res->data[64]));
 				sb->AppendHex32(ReadUInt32(&res->data[68]));
-				sb->Append((const UTF8Char*)"\r\nString File Length = ");
+				sb->AppendC(UTF8STRC("\r\nString File Length = "));
 				sb->AppendU16(ReadUInt16(&res->data[72]));
-				sb->Append((const UTF8Char*)"\r\nString File Value Length = ");
+				sb->AppendC(UTF8STRC("\r\nString File Value Length = "));
 				sb->AppendU16(ReadUInt16(&res->data[74]));
-				sb->Append((const UTF8Char*)"\r\nString File Key = ");
+				sb->AppendC(UTF8STRC("\r\nString File Key = "));
 				sb->Append((UTF8Char*)&res->data[76]);
 				UOSInt strLen = ReadUInt16(&res->data[92]);
 				UOSInt i;
-				sb->Append((const UTF8Char*)"\r\nString Table Length = ");
+				sb->AppendC(UTF8STRC("\r\nString Table Length = "));
 				sb->AppendUOSInt(strLen);
-				sb->Append((const UTF8Char*)"\r\nString Table Value Length = ");
+				sb->AppendC(UTF8STRC("\r\nString Table Value Length = "));
 				sb->AppendU16(ReadUInt16(&res->data[94]));
-				sb->Append((const UTF8Char*)"\r\nString Table Key = ");
+				sb->AppendC(UTF8STRC("\r\nString Table Key = "));
 				sb->Append((UTF8Char*)&res->data[96]);
 				v = (UInt32)Text::StrHex2Int32C((Char*)&res->data[96]);
-				sb->Append((const UTF8Char*)"\r\nLanguage = ");
+				sb->AppendC(UTF8STRC("\r\nLanguage = "));
 				sb->AppendU32((v >> 16) & 0xffff);
 				Text::Locale::LocaleEntry *locale = Text::Locale::GetLocaleEntry((v >> 16) & 0xffff);
 				if (locale)
 				{
-					sb->Append((const UTF8Char*)" (");
+					sb->AppendC(UTF8STRC(" ("));
 					sb->Append(locale->desc);
-					sb->Append((const UTF8Char*)")");
+					sb->AppendC(UTF8STRC(")"));
 				}
-				sb->Append((const UTF8Char*)"\r\nCodePage = ");
+				sb->AppendC(UTF8STRC("\r\nCodePage = "));
 				sb->AppendU32(v & 0xffff);
 				if (Text::EncodingFactory::GetName(u8buff, v & 0xffff))
 				{
-					sb->Append((const UTF8Char*)" (");
+					sb->AppendC(UTF8STRC(" ("));
 					sb->Append(u8buff);
-					sb->Append((const UTF8Char*)")");
+					sb->AppendC(UTF8STRC(")"));
 				}
 				Text::Encoding enc(v & 0xffff);
 				i = 108;
@@ -578,10 +578,10 @@ void IO::EXEFile::GetResourceDesc(const ResourceInfo *res, Text::StringBuilderUT
 					v2 = ReadUInt16(&res->data[i + 2]);
 					if (strLen < v || v <= 4)
 						break;
-					sb->Append((const UTF8Char*)"\r\n");
+					sb->AppendC(UTF8STRC("\r\n"));
 					sb->Append((UTF8Char*)&res->data[i + 4]);
 					enc.UTF8FromBytes(u8buff, &res->data[i + v - v2], v2, 0);
-					sb->Append((const UTF8Char*)" = ");
+					sb->AppendC(UTF8STRC(" = "));
 					sb->Append(u8buff);
 					v2 = (v + 3) & (UInt32)~3;
 					i += v2;

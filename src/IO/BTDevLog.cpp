@@ -256,28 +256,28 @@ Bool IO::BTDevLog::StoreFile(const UTF8Char *fileName)
 		switch (log->radioType)
 		{
 		case IO::BTScanLog::RT_HCI:
-			sb.Append((const UTF8Char*)"HCI");
+			sb.AppendC(UTF8STRC("HCI"));
 			break;
 		case IO::BTScanLog::RT_LE:
-			sb.Append((const UTF8Char*)"LE");
+			sb.AppendC(UTF8STRC("LE"));
 			break;
 		case IO::BTScanLog::RT_UNKNOWN:
 		default:
-			sb.Append((const UTF8Char*)"UNK");
+			sb.AppendC(UTF8STRC("UNK"));
 			break;
 		}
 		sb.AppendChar('\t', 1);
 		switch (log->addrType)
 		{
 		case IO::BTScanLog::AT_PUBLIC:
-			sb.Append((const UTF8Char*)"Public");
+			sb.AppendC(UTF8STRC("Public"));
 			break;
 		case IO::BTScanLog::AT_RANDOM:
-			sb.Append((const UTF8Char*)"Random");
+			sb.AppendC(UTF8STRC("Random"));
 			break;
 		case IO::BTScanLog::RT_UNKNOWN:
 		default:
-			sb.Append((const UTF8Char*)"Unknown");
+			sb.AppendC(UTF8STRC("Unknown"));
 			break;
 		}
 		sb.AppendChar('\t', 1);

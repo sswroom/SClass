@@ -18,56 +18,56 @@ void SSWR::AVIRead::AVIREDIDViewerForm::UpdateEDIDDisp()
 		if (Media::EDID::Parse(this->edid, &info))
 		{
 			Text::StringBuilderUTF8 sb;
-			sb.Append((const UTF8Char*)"Vendor Name: ");
+			sb.AppendC(UTF8STRC("Vendor Name: "));
 			sb.Append(info.vendorName);
-			sb.Append((const UTF8Char*)"\r\nProduct Code: ");
+			sb.AppendC(UTF8STRC("\r\nProduct Code: "));
 			sb.AppendHex16(info.productCode);
-			sb.Append((const UTF8Char*)"\r\nSN: ");
+			sb.AppendC(UTF8STRC("\r\nSN: "));
 			sb.AppendHex32(info.sn);
 
-			sb.Append((const UTF8Char*)"\r\nDate of Manufacture: Year ");
+			sb.AppendC(UTF8STRC("\r\nDate of Manufacture: Year "));
 			sb.AppendI32(info.yearOfManu);
-			sb.Append((const UTF8Char*)", week ");
+			sb.AppendC(UTF8STRC(", week "));
 			sb.AppendU32(info.weekOfManu);
-			sb.Append((const UTF8Char*)"\r\nEDID Ver: ");
+			sb.AppendC(UTF8STRC("\r\nEDID Ver: "));
 			sb.AppendU32(info.edidVer);
-			sb.Append((const UTF8Char*)", Rev ");
+			sb.AppendC(UTF8STRC(", Rev "));
 			sb.AppendU32(info.edidRev);
-			sb.Append((const UTF8Char*)"\r\nPhysical Size (cm): ");
+			sb.AppendC(UTF8STRC("\r\nPhysical Size (cm): "));
 			sb.AppendU32(info.dispPhysicalW);
-			sb.Append((const UTF8Char*)" x ");
+			sb.AppendC(UTF8STRC(" x "));
 			sb.AppendU32(info.dispPhysicalH);
-			sb.Append((const UTF8Char*)" (");
+			sb.AppendC(UTF8STRC(" ("));
 			Text::SBAppendF64(&sb, Math::Unit::Distance::Convert(Math::Unit::Distance::DU_CENTIMETER, Math::Unit::Distance::DU_INCH, Math::Sqrt(info.dispPhysicalW * info.dispPhysicalW + info.dispPhysicalH * info.dispPhysicalH)));
-			sb.Append((const UTF8Char*)"\")");
+			sb.AppendC(UTF8STRC("\")"));
 			if (info.monitorName[0])
 			{
-				sb.Append((const UTF8Char*)"\r\nMonitor Name: ");
+				sb.AppendC(UTF8STRC("\r\nMonitor Name: "));
 				sb.Append(info.monitorName);
 			}
 			if (info.monitorSN[0])
 			{
-				sb.Append((const UTF8Char*)"\r\nMonitor SN: ");
+				sb.AppendC(UTF8STRC("\r\nMonitor SN: "));
 				sb.Append(info.monitorSN);
 			}
-			sb.Append((const UTF8Char*)"\r\n\r\nColor Primaries:");
-			sb.Append((const UTF8Char*)"\r\nGamma: ");
+			sb.AppendC(UTF8STRC("\r\n\r\nColor Primaries:"));
+			sb.AppendC(UTF8STRC("\r\nGamma: "));
 			Text::SBAppendF64(&sb, info.gamma);
-			sb.Append((const UTF8Char*)"\r\nRed: ");
+			sb.AppendC(UTF8STRC("\r\nRed: "));
 			Text::SBAppendF64(&sb, info.rx);
-			sb.Append((const UTF8Char*)", ");
+			sb.AppendC(UTF8STRC(", "));
 			Text::SBAppendF64(&sb, info.ry);
-			sb.Append((const UTF8Char*)"\r\nGreen: ");
+			sb.AppendC(UTF8STRC("\r\nGreen: "));
 			Text::SBAppendF64(&sb, info.gx);
-			sb.Append((const UTF8Char*)", ");
+			sb.AppendC(UTF8STRC(", "));
 			Text::SBAppendF64(&sb, info.gy);
-			sb.Append((const UTF8Char*)"\r\nBlue: ");
+			sb.AppendC(UTF8STRC("\r\nBlue: "));
 			Text::SBAppendF64(&sb, info.bx);
-			sb.Append((const UTF8Char*)", ");
+			sb.AppendC(UTF8STRC(", "));
 			Text::SBAppendF64(&sb, info.by);
-			sb.Append((const UTF8Char*)"\r\nWhite: ");
+			sb.AppendC(UTF8STRC("\r\nWhite: "));
 			Text::SBAppendF64(&sb, info.wx);
-			sb.Append((const UTF8Char*)", ");
+			sb.AppendC(UTF8STRC(", "));
 			Text::SBAppendF64(&sb, info.wy);
 			this->txtEDID->SetText(sb.ToString());
 		}

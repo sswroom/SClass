@@ -73,13 +73,13 @@ void IO::FileAnalyse::FrameDetailHandler::AddUIntName(UOSInt frameOfst, UOSInt s
 	sb.AppendUOSInt(v);
 	if (vName)
 	{
-		sb.Append((const UTF8Char*)" (");
+		sb.AppendC(UTF8STRC(" ("));
 		sb.Append(vName);
 		sb.AppendChar(')', 1);
 	}
 	else
 	{
-		sb.Append((const UTF8Char*)" (Unkonwn)");
+		sb.AppendC(UTF8STRC(" (Unkonwn)"));
 	}
 	this->AddField(frameOfst, size, (const UTF8Char*)name, sb.ToString());
 }
@@ -90,13 +90,13 @@ void IO::FileAnalyse::FrameDetailHandler::AddUInt64Name(UOSInt frameOfst, UOSInt
 	sb.AppendU64(v);
 	if (vName)
 	{
-		sb.Append((const UTF8Char*)" (");
+		sb.AppendC(UTF8STRC(" ("));
 		sb.Append(vName);
 		sb.AppendChar(')', 1);
 	}
 	else
 	{
-		sb.Append((const UTF8Char*)" (Unkonwn)");
+		sb.AppendC(UTF8STRC(" (Unkonwn)"));
 	}
 	this->AddField(frameOfst, size, (const UTF8Char*)name, sb.ToString());
 }
@@ -153,17 +153,17 @@ void IO::FileAnalyse::FrameDetailHandler::AddHex64V(UOSInt frameOfst, UOSInt siz
 void IO::FileAnalyse::FrameDetailHandler::AddHex8Name(UOSInt frameOfst, const Char *name, UInt8 v, const UTF8Char *vName)
 {
 	Text::StringBuilderUTF8 sb;
-	sb.Append((const UTF8Char*)"0x");
+	sb.AppendC(UTF8STRC("0x"));
 	sb.AppendHex8(v);
 	if (vName)
 	{
-		sb.Append((const UTF8Char*)" (");
+		sb.AppendC(UTF8STRC(" ("));
 		sb.Append(vName);
 		sb.AppendChar(')', 1);
 	}
 	else
 	{
-		sb.Append((const UTF8Char*)" (Unkonwn)");
+		sb.AppendC(UTF8STRC(" (Unkonwn)"));
 	}
 	this->AddField(frameOfst, 1, (const UTF8Char*)name, sb.ToString());
 }
@@ -171,17 +171,17 @@ void IO::FileAnalyse::FrameDetailHandler::AddHex8Name(UOSInt frameOfst, const Ch
 void IO::FileAnalyse::FrameDetailHandler::AddHex16Name(UOSInt frameOfst, const Char *name, UInt16 v, const UTF8Char *vName)
 {
 	Text::StringBuilderUTF8 sb;
-	sb.Append((const UTF8Char*)"0x");
+	sb.AppendC(UTF8STRC("0x"));
 	sb.AppendHex16(v);
 	if (vName)
 	{
-		sb.Append((const UTF8Char*)" (");
+		sb.AppendC(UTF8STRC(" ("));
 		sb.Append(vName);
 		sb.AppendChar(')', 1);
 	}
 	else
 	{
-		sb.Append((const UTF8Char*)" (Unkonwn)");
+		sb.AppendC(UTF8STRC(" (Unkonwn)"));
 	}
 	this->AddField(frameOfst, 2, (const UTF8Char*)name, sb.ToString());
 }
@@ -236,7 +236,7 @@ void IO::FileAnalyse::FrameDetailHandler::AddMACAddr(UOSInt frameOfst, const Cha
 	if (showVendor)
 	{
 		const Net::MACInfo::MACEntry *entry;
-		sb.Append((const UTF8Char*)" (");
+		sb.AppendC(UTF8STRC(" ("));
 		entry = Net::MACInfo::GetMACInfoBuff(macBuff);
 		if (entry && entry->name[0])
 		{
@@ -244,7 +244,7 @@ void IO::FileAnalyse::FrameDetailHandler::AddMACAddr(UOSInt frameOfst, const Cha
 		}
 		else
 		{
-			sb.Append((const UTF8Char*)"Unknown");
+			sb.AppendC(UTF8STRC("Unknown"));
 		}
 		sb.AppendChar(')', 1);
 	}
@@ -261,9 +261,9 @@ void IO::FileAnalyse::FrameDetailHandler::AddNetBIOSName(UOSInt frameOfst, UOSIn
 	{
 		sptr[-1] = 0;
 		Text::StrRTrim(sbuff2);
-		sb.Append((const UTF8Char*)" (");
+		sb.AppendC(UTF8STRC(" ("));
 		sb.Append(sbuff2);
-		sb.Append((const UTF8Char*)")");
+		sb.AppendC(UTF8STRC(")"));
 	}
 	this->AddField(frameOfst, size, (const UTF8Char*)name, sb.ToString());
 }

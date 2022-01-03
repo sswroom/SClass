@@ -128,23 +128,23 @@ void SSWR::AVIRead::AVIRICCInfoForm::SetICCProfile(Media::ICCProfile *icc, const
 		icc->ToString(&sb);
 		if (icc->GetColorPrimaries(&color.primaries))
 		{
-			sb.Append((const UTF8Char*)"\r\n");
-			sb.Append((const UTF8Char*)"Primaries:\r\n");
-			sb.Append((const UTF8Char*)"Red: x = ");
+			sb.AppendC(UTF8STRC("\r\n"));
+			sb.AppendC(UTF8STRC("Primaries:\r\n"));
+			sb.AppendC(UTF8STRC("Red: x = "));
 			Text::SBAppendF64(&sb, color.primaries.rx);
-			sb.Append((const UTF8Char*)", y = ");
+			sb.AppendC(UTF8STRC(", y = "));
 			Text::SBAppendF64(&sb, color.primaries.ry);
-			sb.Append((const UTF8Char*)"\r\nGreen: x = ");
+			sb.AppendC(UTF8STRC("\r\nGreen: x = "));
 			Text::SBAppendF64(&sb, color.primaries.gx);
-			sb.Append((const UTF8Char*)", y = ");
+			sb.AppendC(UTF8STRC(", y = "));
 			Text::SBAppendF64(&sb, color.primaries.gy);
-			sb.Append((const UTF8Char*)"\r\nBlue: x = ");
+			sb.AppendC(UTF8STRC("\r\nBlue: x = "));
 			Text::SBAppendF64(&sb, color.primaries.bx);
-			sb.Append((const UTF8Char*)", y = ");
+			sb.AppendC(UTF8STRC(", y = "));
 			Text::SBAppendF64(&sb, color.primaries.by);
-			sb.Append((const UTF8Char*)"\r\nWhite: x = ");
+			sb.AppendC(UTF8STRC("\r\nWhite: x = "));
 			Text::SBAppendF64(&sb, color.primaries.wx);
-			sb.Append((const UTF8Char*)", y = ");
+			sb.AppendC(UTF8STRC(", y = "));
 			Text::SBAppendF64(&sb, color.primaries.wy);
 		}
 		this->icc = icc;

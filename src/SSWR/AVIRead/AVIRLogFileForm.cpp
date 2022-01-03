@@ -110,7 +110,7 @@ void SSWR::AVIRead::AVIRLogFileForm::EventMenuClicked(UInt16 cmdId)
 				while (i < j)
 				{
 					sb->ClearStr();
-					sb->Append((const UTF8Char*)"\t");
+					sb->AppendC(UTF8STRC("\t"));
 					this->logFile->GetLogMessage(this->logLevel, i, &dt, sb, Text::LineBreakType::CRLF);
 					dt.ToLocalTime();
 					dt.ToString(sbuff);

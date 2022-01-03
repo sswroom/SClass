@@ -223,13 +223,13 @@ Bool Net::MACInfoList::Store()
 	{
 		entry = this->dataList->GetItem(i);
 		sb.ClearStr();
-		sb.Append((const UTF8Char*)"\t{0x");
+		sb.AppendC(UTF8STRC("\t{0x"));
 		sb.AppendHex64(entry->rangeStart);
-		sb.Append((const UTF8Char*)"LL, 0x");
+		sb.AppendC(UTF8STRC("LL, 0x"));
 		sb.AppendHex64(entry->rangeEnd);
-		sb.Append((const UTF8Char*)"LL, ");
+		sb.AppendC(UTF8STRC("LL, "));
 		Text::CPPText::ToCPPString(&sb, (const UTF8Char*)entry->name);
-		sb.Append((const UTF8Char*)"},");
+		sb.AppendC(UTF8STRC("},"));
 		writer->WriteLine(sb.ToString());
 		i++;
 	}

@@ -83,10 +83,10 @@ UInt32 Crypto::HOTP::CalcCode(const UInt8 *key, UOSInt keySize, UInt64 counter, 
 void Crypto::HOTP::GenURI(Text::StringBuilderUTF *sb, const UTF8Char *name)
 {
 	UTF8Char sbuff[512];
-	sb->Append((const UTF8Char*)"otpauth://hotp/");
+	sb->AppendC(UTF8STRC("otpauth://hotp/"));
 	Text::TextEnc::URIEncoding::URIEncode(sbuff, name);
 	sb->Append(sbuff);
-	sb->Append((const UTF8Char*)"?secret=");
+	sb->AppendC(UTF8STRC("?secret="));
 	Text::TextBinEnc::Base32Enc b32;
 	b32.EncodeBin(sb, this->key, this->keySize);
 

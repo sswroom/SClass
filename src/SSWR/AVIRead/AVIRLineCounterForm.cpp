@@ -113,7 +113,7 @@ void __stdcall SSWR::AVIRead::AVIRLineCounterForm::OnResultSaveClicked(void *use
 			fi = me->resList->GetItem(i);
 			sb.ClearStr();
 			sb.AppendUOSInt(fi->lineCnt);
-			sb.Append((const UTF8Char*)"\t");
+			sb.AppendC(UTF8STRC("\t"));
 			sb.Append(fi->fileName);
 			writer->WriteLine(sb.ToString());
 			i++;

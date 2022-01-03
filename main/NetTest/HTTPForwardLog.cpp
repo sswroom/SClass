@@ -21,7 +21,7 @@ void __stdcall OnForwardRequest(void *userObj, Net::WebServer::IWebRequest *req,
 
 	sb.ClearStr();
 	sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
-	sb.Append((const UTF8Char*)" Req ");
+	sb.AppendC(UTF8STRC(" Req "));
 	sb.Append((const UTF8Char*)req->GetReqMethodStr());
 	sb.AppendChar(' ', 1);
 	sb.Append(req->GetRequestURI());
@@ -36,22 +36,22 @@ void __stdcall OnForwardRequest(void *userObj, Net::WebServer::IWebRequest *req,
 		headerName = headerNames.GetItem(i);
 		sb.ClearStr();
 		sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
-		sb.Append((const UTF8Char*)" Req ");
+		sb.AppendC(UTF8STRC(" Req "));
 		sb.Append(headerName);
-		sb.Append((const UTF8Char*)": ");
+		sb.AppendC(UTF8STRC(": "));
 		sb.Append(req->GetSHeader(headerName->v));
 		logger->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_RAW);
 		i++;
 	}
 	sb.ClearStr();
 	sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
-	sb.Append((const UTF8Char*)" Resp ");
+	sb.AppendC(UTF8STRC(" Resp "));
 	sb.AppendI32(resp->GetStatusCode());
 	logger->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_ACTION);
 	
 	sb.ClearStr();
 	sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
-	sb.Append((const UTF8Char*)" Resp ");
+	sb.AppendC(UTF8STRC(" Resp "));
 	sb.Append(resp->GetRespHeaders());
 	logger->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_RAW);
 }

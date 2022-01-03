@@ -94,7 +94,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnStartClicked(void *userObj
 			password = Text::StrCopyNew(sb.ToString());
 		}
 		sb.ClearStr();
-		sb.Append((const UTF8Char*)"sswrMQTT/");
+		sb.AppendC(UTF8STRC("sswrMQTT/"));
 		sb.AppendI64(dt.ToTicks());
 		Bool succ = me->client->SendConnect(4, 30, sb.ToString(), username, password);
 		SDEL_TEXT(username);
@@ -364,9 +364,9 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnPublishMessage(void *userO
 {
 	SSWR::AVIRead::AVIRMQTTExplorerForm *me = (SSWR::AVIRead::AVIRMQTTExplorerForm*)userObj;
 	Text::StringBuilderUTF8 sb;
-	sb.Append((const UTF8Char*)"Received message, topic = ");
+	sb.AppendC(UTF8STRC("Received message, topic = "));
 	sb.Append(topic);
-	sb.Append((const UTF8Char*)", message = ");
+	sb.AppendC(UTF8STRC(", message = "));
 	sb.AppendC((const UTF8Char*)message, msgSize);
 	me->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_COMMAND);
 

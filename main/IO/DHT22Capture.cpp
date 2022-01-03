@@ -30,7 +30,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		Text::StrToUInt16(argv[1], &pinNum);
 	}
 	Sync::Thread::SetPriority(Sync::Thread::TP_REALTIME);
-	sb.Append((const UTF8Char*)"Run using GPIO pin ");
+	sb.AppendC(UTF8STRC("Run using GPIO pin "));
 	sb.AppendI32(pinNum);
 	console.WriteLine(sb.ToString());
 	NEW_CLASS(gpioCtrl, IO::GPIOControl());
@@ -46,11 +46,11 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		if (dht22->ReadData(&temp, &rh))
 		{
 			sb.ClearStr();
-			sb.Append((const UTF8Char*)"Temp = ");
+			sb.AppendC(UTF8STRC("Temp = "));
 			Text::SBAppendF64(&sb, temp);
-			sb.Append((const UTF8Char*)", RH = ");
+			sb.AppendC(UTF8STRC(", RH = "));
 			Text::SBAppendF64(&sb, rh);
-			sb.Append((const UTF8Char*)"%");
+			sb.AppendC(UTF8STRC("%"));
 			console.WriteLine(sb.ToString());
 		}
 		else
@@ -75,7 +75,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			{
 				sb.ClearStr();
 				Text::SBAppendF64(&sb, times.GetItem(i));
-				sb.Append((const UTF8Char*)", ");
+				sb.AppendC(UTF8STRC(", "));
 				sb.AppendI32(isHighs.GetItem(i));
 				writer->WriteLine(sb.ToString());
 				i++;

@@ -29,28 +29,28 @@ Bool DB::DBManager::GetConnStr(DB::DBTool *db, Text::StringBuilderUTF *connStr)
 			DB::ODBCConn *odbc = (DB::ODBCConn*)conn;
 			if ((s = odbc->GetConnStr()) != 0)
 			{
-				connStr->Append((const UTF8Char*)"odbc:");
+				connStr->AppendC(UTF8STRC("odbc:"));
 				connStr->Append(s);
 				return true;
 			}
 			else
 			{
 				s = odbc->GetConnDSN();
-				connStr->Append((const UTF8Char*)"odbc:DSN=");
+				connStr->AppendC(UTF8STRC("odbc:DSN="));
 				connStr->Append(s);
 				if ((s = odbc->GetConnUID()) != 0)
 				{
-					connStr->Append((const UTF8Char*)";UID=");
+					connStr->AppendC(UTF8STRC(";UID="));
 					connStr->Append(s);
 				}
 				if ((s = odbc->GetConnPWD()) != 0)
 				{
-					connStr->Append((const UTF8Char*)";PWD=");
+					connStr->AppendC(UTF8STRC(";PWD="));
 					connStr->Append(s);
 				}
 				if ((s = odbc->GetConnSchema()) != 0)
 				{
-					connStr->Append((const UTF8Char*)";Schema=");
+					connStr->AppendC(UTF8STRC(";Schema="));
 					connStr->Append(s);
 				}
 				return true;
@@ -60,22 +60,22 @@ Bool DB::DBManager::GetConnStr(DB::DBTool *db, Text::StringBuilderUTF *connStr)
 	case DB::DBConn::CT_MYSQL:
 		{
 			DB::MySQLConn *mysql = (DB::MySQLConn*)conn;
-			connStr->Append((const UTF8Char*)"mysql:Server=");
+			connStr->AppendC(UTF8STRC("mysql:Server="));
 			s = mysql->GetConnServer();
 			connStr->Append(s);
 			if ((s = mysql->GetConnDB()) != 0)
 			{
-				connStr->Append((const UTF8Char*)";Database=");
+				connStr->AppendC(UTF8STRC(";Database="));
 				connStr->Append(s);
 			}
 			if ((s = mysql->GetConnUID()) != 0)
 			{
-				connStr->Append((const UTF8Char*)";UID=");
+				connStr->AppendC(UTF8STRC(";UID="));
 				connStr->Append(s);
 			}
 			if ((s = mysql->GetConnPWD()) != 0)
 			{
-				connStr->Append((const UTF8Char*)";PWD=");
+				connStr->AppendC(UTF8STRC(";PWD="));
 				connStr->Append(s);
 			}
 			return true;
@@ -84,7 +84,7 @@ Bool DB::DBManager::GetConnStr(DB::DBTool *db, Text::StringBuilderUTF *connStr)
 	case DB::DBConn::CT_SQLITE:
 		{
 			DB::SQLiteFile *sqlite = (DB::SQLiteFile*)conn;
-			connStr->Append((const UTF8Char*)"sqlite:File=");
+			connStr->AppendC(UTF8STRC("sqlite:File="));
 			connStr->Append(sqlite->GetFileName());
 			return true;
 		}
@@ -92,7 +92,7 @@ Bool DB::DBManager::GetConnStr(DB::DBTool *db, Text::StringBuilderUTF *connStr)
 	case DB::DBConn::CT_WMIQUERY:
 		{
 			Win32::WMIQuery *wmi = (Win32::WMIQuery*)conn;
-			connStr->Append((const UTF8Char*)"wmi:ns=");
+			connStr->AppendC(UTF8STRC("wmi:ns="));
 			const WChar *ns = wmi->GetNS();
 			s = Text::String::NewNotNull(ns);
 			connStr->Append(s);
@@ -103,7 +103,7 @@ Bool DB::DBManager::GetConnStr(DB::DBTool *db, Text::StringBuilderUTF *connStr)
 	case DB::DBConn::CT_OLEDB:
 		{
 			DB::OLEDBConn *oledb = (DB::OLEDBConn*)conn;
-			connStr->Append((const UTF8Char*)"oledb:");
+			connStr->AppendC(UTF8STRC("oledb:"));
 			const WChar *cStr = oledb->GetConnStr();
 			s = Text::String::NewNotNull(cStr);
 			connStr->Append(s);
@@ -115,24 +115,24 @@ Bool DB::DBManager::GetConnStr(DB::DBTool *db, Text::StringBuilderUTF *connStr)
 		{
 			UTF8Char sbuff[128];
 			Net::MySQLTCPClient *mysql = (Net::MySQLTCPClient*)conn;
-			connStr->Append((const UTF8Char*)"mysqltcp:Server=");
+			connStr->AppendC(UTF8STRC("mysqltcp:Server="));
 			Net::SocketUtil::GetAddrName(sbuff, mysql->GetConnAddr());
 			connStr->Append(sbuff);
-			connStr->Append((const UTF8Char*)";Port=");
+			connStr->AppendC(UTF8STRC(";Port="));
 			connStr->AppendU16(mysql->GetConnPort());
 			if ((s = mysql->GetConnDB()) != 0)
 			{
-				connStr->Append((const UTF8Char*)";Database=");
+				connStr->AppendC(UTF8STRC(";Database="));
 				connStr->Append(s);
 			}
 			if ((s = mysql->GetConnUID()) != 0)
 			{
-				connStr->Append((const UTF8Char*)";UID=");
+				connStr->AppendC(UTF8STRC(";UID="));
 				connStr->Append(s);
 			}
 			if ((s = mysql->GetConnPWD()) != 0)
 			{
-				connStr->Append((const UTF8Char*)";PWD=");
+				connStr->AppendC(UTF8STRC(";PWD="));
 				connStr->Append(s);
 			}
 			return true;
@@ -390,7 +390,7 @@ Bool DB::DBManager::StoreConn(const UTF8Char *fileName, Data::ArrayList<DB::DBTo
 			db = dbList->GetItem(i);
 			if (GetConnStr(db, &sb))
 			{
-				sb.Append((const UTF8Char*)"\r\n");
+				sb.AppendC(UTF8STRC("\r\n"));
 			}
 			i++;
 		}

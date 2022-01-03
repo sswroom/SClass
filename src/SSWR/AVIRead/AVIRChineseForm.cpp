@@ -118,10 +118,10 @@ void __stdcall SSWR::AVIRead::AVIRChineseForm::OnRelatedAddChg(void *userObj)
 				me->chinese->GetRelatedChars(me->currChar, &relatedList);
 
 				Text::StringBuilderUTF8 sb;
-				sb.Append((const UTF8Char *)"Are you sure that \"");
+				sb.AppendC(UTF8STRC("Are you sure that \""));
 				Text::StrWriteChar(sbuff, (UTF32Char)me->currChar)[0] = 0;
 				sb.Append(sbuff);
-				sb.Append((const UTF8Char *)"\" is related to \"");
+				sb.AppendC(UTF8STRC("\" is related to \""));
 				i = 0;
 				j = relatedList.GetCount();
 				sptr = sbuff;
@@ -132,7 +132,7 @@ void __stdcall SSWR::AVIRead::AVIRChineseForm::OnRelatedAddChg(void *userObj)
 				}
 				*sptr = 0;
 				sb.Append(sbuff);
-				sb.Append((const UTF8Char *)"\"?");
+				sb.AppendC(UTF8STRC("\"?"));
 				if (UI::MessageDialog::ShowYesNoDialog(sb.ToString(), (const UTF8Char *)"Add Relation", me))
 				{
 					me->chinese->AddRelation(me->currChar, (UInt32)v);

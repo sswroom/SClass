@@ -86,7 +86,7 @@ void __stdcall SSWR::AVIRead::AVIRMySQLClientForm::OnStartClicked(void *userObj)
 	if (me->cli->IsError())
 	{
 		sbUser.ClearStr();
-		sbUser.Append((const UTF8Char*)"Error in connecting to server: ");
+		sbUser.AppendC(UTF8STRC("Error in connecting to server: "));
 		me->cli->GetErrorMsg(&sbUser);
 		DEL_CLASS(me->cli);
 		me->cli = 0;
@@ -157,7 +157,7 @@ void __stdcall SSWR::AVIRead::AVIRMySQLClientForm::OnTimerTick(void *userObj)
 		if (me->cli->IsError())
 		{
 			Text::StringBuilderUTF8 sb;
-			sb.Append((const UTF8Char*)"Disconnected: ");
+			sb.AppendC(UTF8STRC("Disconnected: "));
 			me->cli->GetErrorMsg(&sb);
 			DEL_CLASS(me->cli);
 			me->cli = 0;
@@ -261,7 +261,7 @@ void SSWR::AVIRead::AVIRMySQLClientForm::UpdateResult(DB::DBReader *r)
 	{
 		this->lvQueryResult->ClearItems();
 		NEW_CLASS(sb, Text::StringBuilderUTF8());
-		sb->Append((const UTF8Char*)"Record changed = ");
+		sb->AppendC(UTF8STRC("Record changed = "));
 		sb->AppendOSInt(rowChg);
 		this->txtQueryStatus->SetText(sb->ToString());
 		DEL_CLASS(sb);

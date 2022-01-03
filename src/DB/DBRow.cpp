@@ -743,14 +743,14 @@ void DB::DBRow::ToString(Text::StringBuilderUTF *sb)
 		{
 			if (i > 0)
 			{
-				sb->Append((const UTF8Char*)", ");
+				sb->AppendC(UTF8STRC(", "));
 			}
 			this->AppendVarNameForm(sb, col->GetColName()->v);
 			sb->AppendChar('=', 1);
 			dtype = this->GetDataType(field);
 			if (this->IsFieldNull(field))
 			{
-				sb->Append((const UTF8Char*)"null");
+				sb->AppendC(UTF8STRC("null"));
 			}
 			else
 			{
@@ -807,7 +807,7 @@ void DB::DBRow::ToString(Text::StringBuilderUTF *sb)
 					wkt.GenerateWKT(sb, vec);
 					break;
 				case DT_UNKNOWN:
-					sb->Append((const UTF8Char*)"?");
+					sb->AppendC(UTF8STRC("?"));
 					break;
 				}
 			}

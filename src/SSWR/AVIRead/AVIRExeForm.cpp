@@ -242,13 +242,13 @@ void __stdcall SSWR::AVIRead::AVIRExeForm::OnResourceSelChg(void *userObj)
 	if (res)
 	{
 		Text::StringBuilderUTF8 sb;
-		sb.Append((const UTF8Char*)"Size = ");
+		sb.AppendC(UTF8STRC("Size = "));
 		sb.AppendUOSInt(res->dataSize);
-		sb.Append((const UTF8Char*)"\r\nCodePage = ");
+		sb.AppendC(UTF8STRC("\r\nCodePage = "));
 		sb.AppendU32(res->codePage);
-		sb.Append((const UTF8Char*)"\r\nType = ");
+		sb.AppendC(UTF8STRC("\r\nType = "));
 		sb.Append(IO::EXEFile::GetResourceTypeName(res->rt));
-		sb.Append((const UTF8Char*)"\r\n");
+		sb.AppendC(UTF8STRC("\r\n"));
 		IO::EXEFile::GetResourceDesc(res, &sb);
 		me->txtResource->SetText(sb.ToString());
 	}

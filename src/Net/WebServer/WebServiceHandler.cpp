@@ -49,7 +49,7 @@ Bool Net::WebServer::WebServiceHandler::ProcessRequest(Net::WebServer::IWebReque
 			{
 				if (i > 0)
 				{
-					sb.Append((const UTF8Char *)", ");
+					sb.Append((const UTF8Char*)", ");
 				}
 				sb.Append((const UTF8Char*)Net::WebServer::IWebRequest::RequestMethodGetName((Net::WebServer::IWebRequest::RequestMethod)methods->GetItem(i)));
 				i++;

@@ -22,7 +22,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		{
 			Text::StringBuilderUTF8 sb;
 			sb.AppendI64(i);
-			sb.Append((const UTF8Char*)" != ");
+			sb.AppendC(UTF8STRC(" != "));
 			sb.AppendI64(j);
 			console->WriteLine(sb.ToString());
 			succ = false;
@@ -40,7 +40,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			{
 				Text::StringBuilderUTF8 sb;
 				sb.AppendI64(i);
-				sb.Append((const UTF8Char*)" != ");
+				sb.AppendC(UTF8STRC(" != "));
 				sb.AppendI64(j);
 				console->WriteLine(sb.ToString());
 				succ = false;
@@ -59,7 +59,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			{
 				Text::StringBuilderUTF8 sb;
 				sb.AppendI64(i);
-				sb.Append((const UTF8Char*)" != ");
+				sb.AppendC(UTF8STRC(" != "));
 				sb.AppendI64(j);
 				console->WriteLine(sb.ToString());
 				succ = false;
@@ -78,7 +78,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			{
 				Text::StringBuilderUTF8 sb;
 				sb.AppendI64(i);
-				sb.Append((const UTF8Char*)" != ");
+				sb.AppendC(UTF8STRC(" != "));
 				sb.AppendI64(j);
 				console->WriteLine(sb.ToString());
 				succ = false;
@@ -97,7 +97,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			{
 				Text::StringBuilderUTF8 sb;
 				sb.AppendI64(i);
-				sb.Append((const UTF8Char*)" != ");
+				sb.AppendC(UTF8STRC(" != "));
 				sb.AppendI64(j);
 				console->WriteLine(sb.ToString());
 				succ = false;

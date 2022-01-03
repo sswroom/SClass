@@ -170,7 +170,7 @@ void DB::MongoDB::FreeDatabaseNames(Data::ArrayList<const UTF8Char*> *names)
 void DB::MongoDB::BuildURL(Text::StringBuilderUTF *out, const UTF8Char *userName, const UTF8Char *password, const UTF8Char *host, UInt16 port)
 {
 	UTF8Char sbuff[256];
-	out->Append((const UTF8Char*)"mongodb://");
+	out->AppendC(UTF8STRC("mongodb://"));
 	if (userName)
 	{
 		Text::TextEnc::URIEncoding::URIEncode(sbuff, userName);

@@ -83,11 +83,11 @@ Bool Exporter::ExcelXMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8C
 	wb = (Text::SpreadSheet::Workbook*)pobj;
 	writer->WriteSignature();
 
-	sb.Append((const UTF8Char*)"<?xml version=\"1.0\" encoding=");
+	sb.AppendC(UTF8STRC("<?xml version=\"1.0\" encoding="));
 	Text::EncodingFactory::GetInternetName(sbuff, enc.GetEncCodePage());
 	Text::XML::ToAttrText(sbuff2, sbuff);
 	sb.Append(sbuff2);
-	sb.Append((const UTF8Char*)"?>");
+	sb.AppendC(UTF8STRC("?>"));
 	writer->WriteLine(sb.ToString());
 
 	writer->WriteLine((const UTF8Char*)"<?mso-application progid=\"Excel.Sheet\"?>");
@@ -104,10 +104,10 @@ Bool Exporter::ExcelXMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8C
 		if (text)
 		{
 			sb.ClearStr();
-			sb.Append((const UTF8Char*)"  <Author>");
+			sb.AppendC(UTF8STRC("  <Author>"));
 			s = Text::XML::ToNewXMLText(text);
 			sb.Append(s);
-			sb.Append((const UTF8Char*)"</Author>");
+			sb.AppendC(UTF8STRC("</Author>"));
 			s->Release();
 			writer->WriteLine(sb.ToString());
 		}
@@ -115,10 +115,10 @@ Bool Exporter::ExcelXMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8C
 		if (text)
 		{
 			sb.ClearStr();
-			sb.Append((const UTF8Char*)"  <LastAuthor>");
+			sb.AppendC(UTF8STRC("  <LastAuthor>"));
 			s = Text::XML::ToNewXMLText(text);
 			sb.Append(s);
-			sb.Append((const UTF8Char*)"</LastAuthor>");
+			sb.AppendC(UTF8STRC("</LastAuthor>"));
 			s->Release();
 			writer->WriteLine(sb.ToString());
 		}
@@ -127,9 +127,9 @@ Bool Exporter::ExcelXMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8C
 		{
 			dt->ToString(sbuff, "yyyy-MM-ddTHH:mm:ssZ");
 			sb.ClearStr();
-			sb.Append((const UTF8Char*)"  <Created>");
+			sb.AppendC(UTF8STRC("  <Created>"));
 			sb.Append(sbuff);
-			sb.Append((const UTF8Char*)"</Created>");
+			sb.AppendC(UTF8STRC("</Created>"));
 			writer->WriteLine(sb.ToString());
 		}
 		dt = wb->GetModifyTime();
@@ -137,19 +137,19 @@ Bool Exporter::ExcelXMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8C
 		{
 			dt->ToString(sbuff, "yyyy-MM-ddTHH:mm:ssZ");
 			sb.ClearStr();
-			sb.Append((const UTF8Char*)"  <LastSaved>");
+			sb.AppendC(UTF8STRC("  <LastSaved>"));
 			sb.Append(sbuff);
-			sb.Append((const UTF8Char*)"</LastSaved>");
+			sb.AppendC(UTF8STRC("</LastSaved>"));
 			writer->WriteLine(sb.ToString());
 		}
 		text = wb->GetCompany();
 		if (text)
 		{
 			sb.ClearStr();
-			sb.Append((const UTF8Char*)"  <Company>");
+			sb.AppendC(UTF8STRC("  <Company>"));
 			s = Text::XML::ToNewXMLText(text);
 			sb.Append(s);
-			sb.Append((const UTF8Char*)"</Company>");
+			sb.AppendC(UTF8STRC("</Company>"));
 			s->Release();
 			writer->WriteLine(sb.ToString());
 		}
@@ -157,9 +157,9 @@ Bool Exporter::ExcelXMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8C
 		if (ver)
 		{
 			sb.ClearStr();
-			sb.Append((const UTF8Char*)"  <Version>");
+			sb.AppendC(UTF8STRC("  <Version>"));
 			Text::SBAppendF64(&sb, ver);
-			sb.Append((const UTF8Char*)"</Version>");
+			sb.AppendC(UTF8STRC("</Version>"));
 			writer->WriteLine(sb.ToString());
 		}
 		writer->WriteLine((const UTF8Char*)" </DocumentProperties>");
@@ -171,41 +171,41 @@ Bool Exporter::ExcelXMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8C
 		if (wb->GetWindowHeight() != 0)
 		{
 			sb.ClearStr();
-			sb.Append((const UTF8Char*)"  <WindowHeight>");
+			sb.AppendC(UTF8STRC("  <WindowHeight>"));
 			sb.AppendI32(wb->GetWindowHeight());
-			sb.Append((const UTF8Char*)"</WindowHeight>");
+			sb.AppendC(UTF8STRC("</WindowHeight>"));
 			writer->WriteLine(sb.ToString());
 		}
 		if (wb->GetWindowWidth() != 0)
 		{
 			sb.ClearStr();
-			sb.Append((const UTF8Char*)"  <WindowWidth>");
+			sb.AppendC(UTF8STRC("  <WindowWidth>"));
 			sb.AppendI32(wb->GetWindowWidth());
-			sb.Append((const UTF8Char*)"</WindowWidth>");
+			sb.AppendC(UTF8STRC("</WindowWidth>"));
 			writer->WriteLine(sb.ToString());
 		}
 		if (wb->GetWindowTopX() != 0)
 		{
 			sb.ClearStr();
-			sb.Append((const UTF8Char*)"  <WindowTopX>");
+			sb.AppendC(UTF8STRC("  <WindowTopX>"));
 			sb.AppendI32(wb->GetWindowTopX());
-			sb.Append((const UTF8Char*)"</WindowTopX>");
+			sb.AppendC(UTF8STRC("</WindowTopX>"));
 			writer->WriteLine(sb.ToString());
 		}
 		if (wb->GetWindowTopY() != 0)
 		{
 			sb.ClearStr();
-			sb.Append((const UTF8Char*)"  <WindowTopY>");
+			sb.AppendC(UTF8STRC("  <WindowTopY>"));
 			sb.AppendI32(wb->GetWindowTopY());
-			sb.Append((const UTF8Char*)"</WindowTopY>");
+			sb.AppendC(UTF8STRC("</WindowTopY>"));
 			writer->WriteLine(sb.ToString());
 		}
 		if (wb->GetActiveSheet() != 0)
 		{
 			sb.ClearStr();
-			sb.Append((const UTF8Char*)"  <ActiveSheet>");
+			sb.AppendC(UTF8STRC("  <ActiveSheet>"));
 			sb.AppendUOSInt(wb->GetActiveSheet());
-			sb.Append((const UTF8Char*)"</ActiveSheet>");
+			sb.AppendC(UTF8STRC("</ActiveSheet>"));
 			writer->WriteLine(sb.ToString());
 		}
 		writer->WriteLine((const UTF8Char*)" </ExcelWorkbook>");
@@ -228,14 +228,14 @@ Bool Exporter::ExcelXMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8C
 			}
 			writer->WriteLine((const UTF8Char*)"   <Color>");
 			sb.ClearStr();
-			sb.Append((const UTF8Char*)"    <Index>");
+			sb.AppendC(UTF8STRC("    <Index>"));
 			sb.AppendUOSInt(i);
-			sb.Append((const UTF8Char*)"</Index>");
+			sb.AppendC(UTF8STRC("</Index>"));
 			writer->WriteLine(sb.ToString());
 			sb.ClearStr();
-			sb.Append((const UTF8Char*)"    <RGB>#");
+			sb.AppendC(UTF8STRC("    <RGB>#"));
 			sb.AppendHex24(pal[i]);
-			sb.Append((const UTF8Char*)"</RGB>");
+			sb.AppendC(UTF8STRC("</RGB>"));
 			writer->WriteLine(sb.ToString());
 			writer->WriteLine((const UTF8Char*)"   </Color>");
 		}
@@ -264,38 +264,38 @@ Bool Exporter::ExcelXMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8C
 				else
 				{
 					sb.ClearStr();
-					sb.Append((const UTF8Char*)"s");
+					sb.AppendC(UTF8STRC("s"));
 					sb.AppendUOSInt((20 + i));
 					style->SetID(sb.ToString());
 				}
 				sb.ClearStr();
-				sb.Append((const UTF8Char*)"  <Style ss:ID=");
+				sb.AppendC(UTF8STRC("  <Style ss:ID="));
 				s = Text::XML::ToNewAttrText(style->GetID());
 				sb.Append(s);
 				s->Release();
-				sb.Append((const UTF8Char*)">");
+				sb.AppendC(UTF8STRC(">"));
 				writer->WriteLine(sb.ToString());
 
 				if (style->GetHAlign() != Text::SpreadSheet::HAlignment::Unknown || (style->GetVAlign() != Text::SpreadSheet::VAlignment::Center && style->GetVAlign() != Text::SpreadSheet::VAlignment::Unknown) || style->GetWordWrap())
 				{
 					sb.ClearStr();
-					sb.Append((const UTF8Char*)"   <Alignment");
+					sb.AppendC(UTF8STRC("   <Alignment"));
 					switch (style->GetHAlign())
 					{
 					case Text::SpreadSheet::HAlignment::Left:
-						sb.Append((const UTF8Char*)" ss:Horizontal=\"Left\"");
+						sb.AppendC(UTF8STRC(" ss:Horizontal=\"Left\""));
 						break;
 					case Text::SpreadSheet::HAlignment::Center:
-						sb.Append((const UTF8Char*)" ss:Horizontal=\"Center\"");
+						sb.AppendC(UTF8STRC(" ss:Horizontal=\"Center\""));
 						break;
 					case Text::SpreadSheet::HAlignment::Right:
-						sb.Append((const UTF8Char*)" ss:Horizontal=\"Right\"");
+						sb.AppendC(UTF8STRC(" ss:Horizontal=\"Right\""));
 						break;
 					case Text::SpreadSheet::HAlignment::Fill:
-						sb.Append((const UTF8Char*)" ss:Horizontal=\"Fill\"");
+						sb.AppendC(UTF8STRC(" ss:Horizontal=\"Fill\""));
 						break;
 					case Text::SpreadSheet::HAlignment::Justify:
-						sb.Append((const UTF8Char*)" ss:Horizontal=\"Justify\"");
+						sb.AppendC(UTF8STRC(" ss:Horizontal=\"Justify\""));
 						break;
 					case Text::SpreadSheet::HAlignment::Unknown:
 					default:
@@ -304,16 +304,16 @@ Bool Exporter::ExcelXMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8C
 					switch (style->GetVAlign())
 					{
 					case Text::SpreadSheet::VAlignment::Top:
-						sb.Append((const UTF8Char*)" ss:Vertical=\"Top\"");
+						sb.AppendC(UTF8STRC(" ss:Vertical=\"Top\""));
 						break;
 					case Text::SpreadSheet::VAlignment::Center:
-						//sb.Append((const UTF8Char*)" ss:Vertical=\"Center\"");
+						//sb.AppendC(UTF8STRC(" ss:Vertical=\"Center\""));
 						break;
 					case Text::SpreadSheet::VAlignment::Bottom:
-						sb.Append((const UTF8Char*)" ss:Vertical=\"Bottom\"");
+						sb.AppendC(UTF8STRC(" ss:Vertical=\"Bottom\""));
 						break;
 					case Text::SpreadSheet::VAlignment::Justify:
-						sb.Append((const UTF8Char*)" ss:Vertical=\"Justify\"");
+						sb.AppendC(UTF8STRC(" ss:Vertical=\"Justify\""));
 						break;
 					case Text::SpreadSheet::VAlignment::Unknown:
 					default:
@@ -321,9 +321,9 @@ Bool Exporter::ExcelXMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8C
 					}
 					if (style->GetWordWrap())
 					{
-						sb.Append((const UTF8Char*)" ss:WrapText=\"1\"");
+						sb.AppendC(UTF8STRC(" ss:WrapText=\"1\""));
 					}
-					sb.Append((const UTF8Char*)"/>");
+					sb.AppendC(UTF8STRC("/>"));
 					writer->WriteLine(sb.ToString());
 				}
 				if (style->GetBorderLeft()->borderType != Text::SpreadSheet::BorderType::None ||
@@ -359,10 +359,10 @@ Bool Exporter::ExcelXMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8C
 				if ((style->GetFillColor() & 0xffffff) != 0xffffff)
 				{
 					sb.ClearStr();
-					sb.Append((const UTF8Char*)"   <Interior ss:Color=\"#");
+					sb.AppendC(UTF8STRC("   <Interior ss:Color=\"#"));
 					Text::StrHexVal32(sbuff, style->GetFillColor());
 					sb.Append(&sbuff[2]);
-					sb.Append((const UTF8Char*)"\" ss:Pattern=\"Solid\"/>");
+					sb.AppendC(UTF8STRC("\" ss:Pattern=\"Solid\"/>"));
 					writer->WriteLine(sb.ToString());
 				}
 
@@ -370,39 +370,39 @@ Bool Exporter::ExcelXMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8C
 				{
 					Text::SpreadSheet::WorkbookFont *font = style->GetFont();
 					sb.ClearStr();
-					sb.Append((const UTF8Char*)"   <Font ss:FontName=");
+					sb.AppendC(UTF8STRC("   <Font ss:FontName="));
 					s = Text::XML::ToNewAttrText(font->GetName());
 					sb.Append(s);
 					s->Release();
 					if (font->GetSize() > 0)
 					{
-						sb.Append((const UTF8Char*)" ss:Size=\"");
+						sb.AppendC(UTF8STRC(" ss:Size=\""));
 						Text::SBAppendF64(&sb, font->GetSize());
-						sb.Append((const UTF8Char*)"\"");
+						sb.AppendC(UTF8STRC("\""));
 					}
 					if ((font->GetColor() & 0xffffff) != 0)
 					{
 						Text::StrHexVal32(sbuff, font->GetColor());
-						sb.Append((const UTF8Char*)" ss:Color=\"#");
+						sb.AppendC(UTF8STRC(" ss:Color=\"#"));
 						sb.Append(&sbuff[2]);
-						sb.Append((const UTF8Char*)"\"");
+						sb.AppendC(UTF8STRC("\""));
 					}
 					if (font->IsBold())
 					{
-						sb.Append((const UTF8Char*)" ss:Bold=\"1\"");
+						sb.AppendC(UTF8STRC(" ss:Bold=\"1\""));
 					}
-					sb.Append((const UTF8Char*)"/>");
+					sb.AppendC(UTF8STRC("/>"));
 					writer->WriteLine(sb.ToString());
 				}
 
 				if (style->GetDataFormat() != 0)
 				{
 					sb.ClearStr();
-					sb.Append((const UTF8Char*)"   <NumberFormat ss:Format=");
+					sb.AppendC(UTF8STRC("   <NumberFormat ss:Format="));
 					s = Text::XML::ToNewAttrText(style->GetDataFormat());
 					sb.Append(s);
 					s->Release();
-					sb.Append((const UTF8Char*)"/>");
+					sb.AppendC(UTF8STRC("/>"));
 					writer->WriteLine(sb.ToString());
 				}
 
@@ -419,10 +419,10 @@ Bool Exporter::ExcelXMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8C
 	{
 		ws = wb->GetItem(i);
 		sb.ClearStr();
-		sb.Append((const UTF8Char*)" <Worksheet ss:Name=");
+		sb.AppendC(UTF8STRC(" <Worksheet ss:Name="));
 		s = Text::XML::ToNewAttrText(ws->GetName()->v);
 		sb.Append(s);
-		sb.Append((const UTF8Char*)">");
+		sb.AppendC(UTF8STRC(">"));
 		s->Release();
 		writer->WriteLine(sb.ToString());
 
@@ -447,28 +447,28 @@ Bool Exporter::ExcelXMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8C
 					if (lastColWidth >= 0)
 					{
 						sb.ClearStr();
-						sb.Append((const UTF8Char*)"   <Column");
+						sb.AppendC(UTF8STRC("   <Column"));
 						if (needIndex)
 						{
-							sb.Append((const UTF8Char*)" ss:Index=\"");
+							sb.AppendC(UTF8STRC(" ss:Index=\""));
 							sb.AppendUOSInt(lastColIndex + 1);
-							sb.Append((const UTF8Char*)"\"");
+							sb.AppendC(UTF8STRC("\""));
 						}
-						sb.Append((const UTF8Char*)" ss:AutoFitWidth=\"0\" ss:Width=\"");
+						sb.AppendC(UTF8STRC(" ss:AutoFitWidth=\"0\" ss:Width=\""));
 						Text::SBAppendF64(&sb, Math::Double2Int32(lastColWidth * 4) * 0.25);
-						sb.Append((const UTF8Char*)"\"");
+						sb.AppendC(UTF8STRC("\""));
 						if (lastColIndex + 1 != k)
 						{
-							sb.Append((const UTF8Char*)" ss:Span=\"");
+							sb.AppendC(UTF8STRC(" ss:Span=\""));
 							sb.AppendUOSInt((k - lastColIndex - 1));
-							sb.Append((const UTF8Char*)"\"");
+							sb.AppendC(UTF8STRC("\""));
 							needIndex = true;
 						}
 						else
 						{
 							needIndex = false;
 						}
-						sb.Append((const UTF8Char*)"/>");
+						sb.AppendC(UTF8STRC("/>"));
 						writer->WriteLine(sb.ToString());
 					}
 					else if (k == 1)
@@ -483,23 +483,23 @@ Bool Exporter::ExcelXMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8C
 			if (lastColWidth >= 0)
 			{
 				sb.ClearStr();
-				sb.Append((const UTF8Char*)"   <Column");
+				sb.AppendC(UTF8STRC("   <Column"));
 				if (needIndex)
 				{
-					sb.Append((const UTF8Char*)" ss:Index=\"");
+					sb.AppendC(UTF8STRC(" ss:Index=\""));
 					sb.AppendUOSInt(lastColIndex);
-					sb.Append((const UTF8Char*)"\"");
+					sb.AppendC(UTF8STRC("\""));
 				}
-				sb.Append((const UTF8Char*)" ss:AutoFitWidth=\"0\" ss:Width=\"");
+				sb.AppendC(UTF8STRC(" ss:AutoFitWidth=\"0\" ss:Width=\""));
 				Text::SBAppendF64(&sb, Math::Double2Int32(lastColWidth * 4) * 0.25);
-				sb.Append((const UTF8Char*)"\"");
+				sb.AppendC(UTF8STRC("\""));
 				if (lastColIndex + 1 != l)
 				{
-					sb.Append((const UTF8Char*)" ss:Span=\"");
+					sb.AppendC(UTF8STRC(" ss:Span=\""));
 					sb.AppendUOSInt((l - lastColIndex - 1));
-					sb.Append((const UTF8Char*)"\"");
+					sb.AppendC(UTF8STRC("\""));
 				}
-				sb.Append((const UTF8Char*)"/>");
+				sb.AppendC(UTF8STRC("/>"));
 				writer->WriteLine(sb.ToString());
 			}
 
@@ -515,12 +515,12 @@ Bool Exporter::ExcelXMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8C
 				else
 				{
 					sb.ClearStr();
-					sb.Append((const UTF8Char*)"   <Row");
+					sb.AppendC(UTF8STRC("   <Row"));
 					if (rowSkipped)
 					{
-						sb.Append((const UTF8Char*)" ss:Index=\"");
+						sb.AppendC(UTF8STRC(" ss:Index=\""));
 						sb.AppendUOSInt(k + 1);
-						sb.Append((const UTF8Char*)"\"");
+						sb.AppendC(UTF8STRC("\""));
 					}
 					rowSkipped = false;
 
@@ -529,12 +529,12 @@ Bool Exporter::ExcelXMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8C
 					{
 						if (cell->hidden)
 						{
-							sb.Append((const UTF8Char*)" ss:Hidden=\"1\"");
+							sb.AppendC(UTF8STRC(" ss:Hidden=\"1\""));
 						}
 					}
 					if (row->height >= 0)
 					{
-						sb.Append((const UTF8Char*)" ss:AutoFitHeight=\"0\" ss:Height=\"");
+						sb.AppendC(UTF8STRC(" ss:AutoFitHeight=\"0\" ss:Height=\""));
 						if (row->height == 0)
 						{
 							Text::SBAppendF64(&sb, row->height);
@@ -543,16 +543,16 @@ Bool Exporter::ExcelXMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8C
 						{
 							Text::SBAppendF64(&sb, row->height + 0.05);
 						}
-						sb.Append((const UTF8Char*)"\"");
+						sb.AppendC(UTF8STRC("\""));
 					}
 					if (row->cells->GetCount() == 0)
 					{
-						sb.Append((const UTF8Char*)"/>");
+						sb.AppendC(UTF8STRC("/>"));
 						writer->WriteLine(sb.ToString());
 					}
 					else
 					{
-						sb.Append((const UTF8Char*)">");
+						sb.AppendC(UTF8STRC(">"));
 						writer->WriteLine(sb.ToString());
 
 						lastDispCol = INVALID_INDEX;
@@ -573,25 +573,25 @@ Bool Exporter::ExcelXMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8C
 							else
 							{
 								sb.ClearStr();
-								sb.Append((const UTF8Char*)"    <Cell");
+								sb.AppendC(UTF8STRC("    <Cell"));
 								if (m != lastDispCol + 1)
 								{
-									sb.Append((const UTF8Char*)" ss:Index=\"");
+									sb.AppendC(UTF8STRC(" ss:Index=\""));
 									sb.AppendUOSInt(m + 1);
-									sb.Append((const UTF8Char*)"\"");
+									sb.AppendC(UTF8STRC("\""));
 								}
 								lastDispCol = m;
 								if (cell->mergeVert > 1)
 								{
-									sb.Append((const UTF8Char*)" ss:MergeDown=\"");
+									sb.AppendC(UTF8STRC(" ss:MergeDown=\""));
 									sb.AppendU32((cell->mergeVert - 1));
-									sb.Append((const UTF8Char*)"\"");
+									sb.AppendC(UTF8STRC("\""));
 								}
 								if (cell->mergeHori > 1)
 								{
-									sb.Append((const UTF8Char*)" ss:MergeAcross=\"");
+									sb.AppendC(UTF8STRC(" ss:MergeAcross=\""));
 									sb.AppendU32((cell->mergeHori - 1));
-									sb.Append((const UTF8Char*)"\"");
+									sb.AppendC(UTF8STRC("\""));
 									lastDispCol += cell->mergeHori - 1;
 								}
 								if (cell->style)
@@ -599,7 +599,7 @@ Bool Exporter::ExcelXMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8C
 									text = cell->style->GetID();
 									if (text)
 									{
-										sb.Append((const UTF8Char*)" ss:StyleID=");
+										sb.AppendC(UTF8STRC(" ss:StyleID="));
 										s = Text::XML::ToNewAttrText(text);
 										sb.Append(s);
 										s->Release();
@@ -607,43 +607,43 @@ Bool Exporter::ExcelXMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8C
 								}
 								if (cell->cellURL)
 								{
-									 sb.Append((const UTF8Char*)" ss:HRef=");
+									 sb.AppendC(UTF8STRC(" ss:HRef="));
 									 s = Text::XML::ToNewAttrText(cell->cellURL->v);
 									 sb.Append(s);
 									 s->Release();
 								}
-								sb.Append((const UTF8Char*)">");
+								sb.AppendC(UTF8STRC(">"));
 								if (cell->cellValue)
 								{
 									switch (cell->cdt)
 									{
 									case Text::SpreadSheet::CellDataType::Number:
-										sb.Append((const UTF8Char*)"<Data ss:Type=\"Number\">");
+										sb.AppendC(UTF8STRC("<Data ss:Type=\"Number\">"));
 										s = Text::XML::ToNewXMLText(cell->cellValue->v);
 										sb.Append(s);
 										s->Release();
-										sb.Append((const UTF8Char*)"</Data>");
+										sb.AppendC(UTF8STRC("</Data>"));
 										break;
 									case Text::SpreadSheet::CellDataType::DateTime:
-										sb.Append((const UTF8Char*)"<Data ss:Type=\"DateTime\">");
+										sb.AppendC(UTF8STRC("<Data ss:Type=\"DateTime\">"));
 										s = Text::XML::ToNewXMLText(cell->cellValue->v);
 										sb.Append(s);
 										s->Release();
-										sb.Append((const UTF8Char*)"</Data>");
+										sb.AppendC(UTF8STRC("</Data>"));
 										break;
 									case Text::SpreadSheet::CellDataType::MergedLeft:
 									case Text::SpreadSheet::CellDataType::MergedTop:
 									case Text::SpreadSheet::CellDataType::String:
 									default:
-										sb.Append((const UTF8Char*)"<Data ss:Type=\"String\">");
+										sb.AppendC(UTF8STRC("<Data ss:Type=\"String\">"));
 										s = Text::XML::ToNewXMLText(cell->cellValue->v);
 										sb.Append(s);
 										s->Release();
-										sb.Append((const UTF8Char*)"</Data>");
+										sb.AppendC(UTF8STRC("</Data>"));
 										break;
 									}
 								}
-								sb.Append((const UTF8Char*)"</Cell>");
+								sb.AppendC(UTF8STRC("</Cell>"));
 								writer->WriteLine(sb.ToString());
 							}
 							m++;
@@ -673,31 +673,31 @@ Bool Exporter::ExcelXMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8C
 			if (ws->GetMarginHeader() != 1.3)
 			{
 				sb.ClearStr();
-				sb.Append((const UTF8Char*)"    <Header x:Margin=\"");
+				sb.AppendC(UTF8STRC("    <Header x:Margin=\""));
 				Text::SBAppendF64(&sb, ws->GetMarginHeader());
-				sb.Append((const UTF8Char*)"\"/>");
+				sb.AppendC(UTF8STRC("\"/>"));
 				writer->WriteLine(sb.ToString());
 			}
 			if (ws->GetMarginFooter() != 1.3)
 			{
 				sb.ClearStr();
-				sb.Append((const UTF8Char*)"    <Footer x:Margin=\"");
+				sb.AppendC(UTF8STRC("    <Footer x:Margin=\""));
 				Text::SBAppendF64(&sb, ws->GetMarginFooter());
-				sb.Append((const UTF8Char*)"\"/>");
+				sb.AppendC(UTF8STRC("\"/>"));
 				writer->WriteLine(sb.ToString());
 			}
 			if (ws->GetMarginTop() != 2.5 || ws->GetMarginBottom() != 2.5 || ws->GetMarginLeft() != 2.0 || ws->GetMarginBottom() != 2.0)
 			{
 				sb.ClearStr();
-				sb.Append((const UTF8Char*)"    <PageMargins x:Bottom=\"");
+				sb.AppendC(UTF8STRC("    <PageMargins x:Bottom=\""));
 				Text::SBAppendF64(&sb, ws->GetMarginBottom());
-				sb.Append((const UTF8Char*)"\" x:Left=\"");
+				sb.AppendC(UTF8STRC("\" x:Left=\""));
 				Text::SBAppendF64(&sb, ws->GetMarginLeft());
-				sb.Append((const UTF8Char*)"\" x:Right=\"");
+				sb.AppendC(UTF8STRC("\" x:Right=\""));
 				Text::SBAppendF64(&sb, ws->GetMarginRight());
-				sb.Append((const UTF8Char*)"\" x:Top=\"");
+				sb.AppendC(UTF8STRC("\" x:Top=\""));
 				Text::SBAppendF64(&sb, ws->GetMarginTop());
-				sb.Append((const UTF8Char*)"\"/>");
+				sb.AppendC(UTF8STRC("\"/>"));
 				writer->WriteLine(sb.ToString());
 
 			}
@@ -711,9 +711,9 @@ Bool Exporter::ExcelXMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8C
 				found = true;
 			}
 			sb.ClearStr();
-			sb.Append((const UTF8Char*)"   <Zoom>");
+			sb.AppendC(UTF8STRC("   <Zoom>"));
 			sb.AppendUOSInt(v);
-			sb.Append((const UTF8Char*)"</Zoom>");
+			sb.AppendC(UTF8STRC("</Zoom>"));
 			writer->WriteLine(sb.ToString());
 		}
 		if ((v = ws->GetFreezeHori()) != 0)
@@ -724,15 +724,15 @@ Bool Exporter::ExcelXMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8C
 				found = true;
 			}
 			sb.ClearStr();
-			sb.Append((const UTF8Char*)"   <SplitVertical>");
+			sb.AppendC(UTF8STRC("   <SplitVertical>"));
 			sb.AppendU32(v);
-			sb.Append((const UTF8Char*)"</SplitVertical>");
+			sb.AppendC(UTF8STRC("</SplitVertical>"));
 			writer->WriteLine(sb.ToString());
 
 			sb.ClearStr();
-			sb.Append((const UTF8Char*)"   <LeftColumnRightPane>");
+			sb.AppendC(UTF8STRC("   <LeftColumnRightPane>"));
 			sb.AppendU32(v);
-			sb.Append((const UTF8Char*)"</LeftColumnRightPane>");
+			sb.AppendC(UTF8STRC("</LeftColumnRightPane>"));
 			writer->WriteLine(sb.ToString());
 		}
 		if ((v = ws->GetFreezeVert()) != 0)
@@ -743,15 +743,15 @@ Bool Exporter::ExcelXMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8C
 				found = true;
 			}
 			sb.ClearStr();
-			sb.Append((const UTF8Char*)"   <SplitHorizontal>");
+			sb.AppendC(UTF8STRC("   <SplitHorizontal>"));
 			sb.AppendU32(v);
-			sb.Append((const UTF8Char*)"</SplitHorizontal>");
+			sb.AppendC(UTF8STRC("</SplitHorizontal>"));
 			writer->WriteLine(sb.ToString());
 
 			sb.ClearStr();
-			sb.Append((const UTF8Char*)"   <TopRowBottomPane>");
+			sb.AppendC(UTF8STRC("   <TopRowBottomPane>"));
 			sb.AppendU32(v);
-			sb.Append((const UTF8Char*)"</TopRowBottomPane>");
+			sb.AppendC(UTF8STRC("</TopRowBottomPane>"));
 			writer->WriteLine(sb.ToString());
 		}
 		v = ws->GetOptions();
@@ -817,78 +817,78 @@ void Exporter::ExcelXMLExporter::WriteBorderStyle(IO::Writer *writer, const UTF8
 	UTF8Char sbuff[10];
 	Text::StringBuilderUTF8 sb;
 	Text::String *s;
-	sb.Append((const UTF8Char*)"    <Border ss:Position=");
+	sb.AppendC(UTF8STRC("    <Border ss:Position="));
 	s = Text::XML::ToNewAttrText(position);
 	sb.Append(s);
 	s->Release();
 	if (border->borderType == Text::SpreadSheet::BorderType::Thin)
 	{
-		sb.Append((const UTF8Char*)" ss:LineStyle=\"Continuous\" ss:Weight=\"1\"");
+		sb.AppendC(UTF8STRC(" ss:LineStyle=\"Continuous\" ss:Weight=\"1\""));
 	}
 	else if (border->borderType == Text::SpreadSheet::BorderType::Hair)
 	{
-		sb.Append((const UTF8Char*)" ss:LineStyle=\"Continuous\"");
+		sb.AppendC(UTF8STRC(" ss:LineStyle=\"Continuous\""));
 	}
 	else if (border->borderType == Text::SpreadSheet::BorderType::Dotted)
 	{
-		sb.Append((const UTF8Char*)" ss:LineStyle=\"Dot\" ss:Weight=\"1\"");
+		sb.AppendC(UTF8STRC(" ss:LineStyle=\"Dot\" ss:Weight=\"1\""));
 	}
 	else if (border->borderType == Text::SpreadSheet::BorderType::Dashed)
 	{
-		sb.Append((const UTF8Char*)" ss:LineStyle=\"Dash\" ss:Weight=\"1\"");
+		sb.AppendC(UTF8STRC(" ss:LineStyle=\"Dash\" ss:Weight=\"1\""));
 	}
 	else if (border->borderType == Text::SpreadSheet::BorderType::DashDot)
 	{
-		sb.Append((const UTF8Char*)" ss:LineStyle=\"DashDot\" ss:Weight=\"1\"");
+		sb.AppendC(UTF8STRC(" ss:LineStyle=\"DashDot\" ss:Weight=\"1\""));
 	}
 	else if (border->borderType == Text::SpreadSheet::BorderType::DashDotDot)
 	{
-		sb.Append((const UTF8Char*)" ss:LineStyle=\"DashDotDot\" ss:Weight=\"1\"");
+		sb.AppendC(UTF8STRC(" ss:LineStyle=\"DashDotDot\" ss:Weight=\"1\""));
 	}
 	else if (border->borderType == Text::SpreadSheet::BorderType::DOUBLE)
 	{
-		sb.Append((const UTF8Char*)" ss:LineStyle=\"Double\" ss:Weight=\"3\"");
+		sb.AppendC(UTF8STRC(" ss:LineStyle=\"Double\" ss:Weight=\"3\""));
 	}
 	else if (border->borderType == Text::SpreadSheet::BorderType::Medium)
 	{
-		sb.Append((const UTF8Char*)" ss:LineStyle=\"Continuous\" ss:Weight=\"2\"");
+		sb.AppendC(UTF8STRC(" ss:LineStyle=\"Continuous\" ss:Weight=\"2\""));
 	}
 	else if (border->borderType == Text::SpreadSheet::BorderType::MediumDashed)
 	{
-		sb.Append((const UTF8Char*)" ss:LineStyle=\"Dash\" ss:Weight=\"2\"");
+		sb.AppendC(UTF8STRC(" ss:LineStyle=\"Dash\" ss:Weight=\"2\""));
 	}
 	else if (border->borderType == Text::SpreadSheet::BorderType::MediumDashDot)
 	{
-		sb.Append((const UTF8Char*)" ss:LineStyle=\"DashDot\" ss:Weight=\"2\"");
+		sb.AppendC(UTF8STRC(" ss:LineStyle=\"DashDot\" ss:Weight=\"2\""));
 	}
 	else if (border->borderType == Text::SpreadSheet::BorderType::MediumDashDotDot)
 	{
-		sb.Append((const UTF8Char*)" ss:LineStyle=\"DashDotDot\" ss:Weight=\"2\"");
+		sb.AppendC(UTF8STRC(" ss:LineStyle=\"DashDotDot\" ss:Weight=\"2\""));
 	}
 	else if (border->borderType == Text::SpreadSheet::BorderType::SlantedDashDot)
 	{
-		sb.Append((const UTF8Char*)" ss:LineStyle=\"SlantDashDot\" ss:Weight=\"2\"");
+		sb.AppendC(UTF8STRC(" ss:LineStyle=\"SlantDashDot\" ss:Weight=\"2\""));
 	}
 	else if (border->borderType == Text::SpreadSheet::BorderType::Thick)
 	{
-		sb.Append((const UTF8Char*)" ss:LineStyle=\"Continuous\" ss:Weight=\"3\"");
+		sb.AppendC(UTF8STRC(" ss:LineStyle=\"Continuous\" ss:Weight=\"3\""));
 	}
 	else
 	{
-		sb.Append((const UTF8Char*)" ss:LineStyle=\"Continuous\" ss:Weight=\"");
+		sb.AppendC(UTF8STRC(" ss:LineStyle=\"Continuous\" ss:Weight=\""));
 		sb.AppendI32((Int32)border->borderType);
-		sb.Append((const UTF8Char*)"\"");
+		sb.AppendC(UTF8STRC("\""));
 	}
 
 	if (border->borderColor & 0xffffff)
 	{
 		writer->WriteLine(sb.ToString());
 		sb.ClearStr();
-		sb.Append((const UTF8Char*)"     ss:Color=\"#");
+		sb.AppendC(UTF8STRC("     ss:Color=\"#"));
 		Text::StrHexVal32(sbuff, border->borderColor);
 		sb.Append(&sbuff[2]);
-		sb.Append((const UTF8Char*)"\"");
+		sb.AppendC(UTF8STRC("\""));
 	}
-	sb.Append((const UTF8Char*)"/>");
+	sb.AppendC(UTF8STRC("/>"));
 	writer->WriteLine(sb.ToString());
 }

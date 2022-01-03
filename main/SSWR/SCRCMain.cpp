@@ -53,10 +53,10 @@ private:
 			currTime = clk->GetTimeDiff();
 
 			sb->ClearStr();
-			sb->Append((const UTF8Char*)"\rSpeed: ");
+			sb->AppendC(UTF8STRC("\rSpeed: "));
 			if (currCount == lastDispCount || currTime == lastDispTime)
 			{
-				sb->Append((const UTF8Char*)"0");
+				sb->AppendC(UTF8STRC("0"));
 			}
 			else
 			{
@@ -64,13 +64,13 @@ private:
 				lastDispCount = currCount;
 				lastDispTime = currTime;
 			}
-			sb->Append((const UTF8Char*)"Bytes/s");
+			sb->AppendC(UTF8STRC("Bytes/s"));
 			Sync::MutexUsage mutUsage(me->mut);
 			if (me->fileName)
 			{
-				sb->Append((const UTF8Char*)" (");
+				sb->AppendC(UTF8STRC(" ("));
 				sb->Append(me->fileName);
-				sb->Append((const UTF8Char*)")");
+				sb->AppendC(UTF8STRC(")"));
 			}
 			mutUsage.EndUse();
 			console->Write(sb->ToString());
@@ -195,7 +195,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 					IO::FileStream *fs;
 					Exporter::SFVExporter exporter;
 					sb.Append(cmdLines[1]);
-					sb.Append((const UTF8Char*)".sfv");
+					sb.AppendC(UTF8STRC(".sfv"));
 					NEW_CLASS(fs, IO::FileStream(sb.ToString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 					exporter.ExportFile(fs, sb.ToString(), fileChk, 0);
 					DEL_CLASS(fs);

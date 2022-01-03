@@ -23,13 +23,13 @@ void __stdcall ARPHandler(const UInt8 *hwAddr, UInt32 ipv4, void *userData)
 		UTF8Char sbuff[64];
 		Text::StringBuilderUTF8 sb;
 		sb.ClearStr();
-		sb.Append((const UTF8Char*)"IP = ");
+		sb.AppendC(UTF8STRC("IP = "));
 		Net::SocketUtil::GetIPv4Name(sbuff, ipv4);
 		sb.Append(sbuff);
 		sb.AppendChar(' ', 18 - sb.GetLength());
-		sb.Append((const UTF8Char *)", HW Addr = ");
+		sb.Append((const UTF8Char*)", HW Addr = ");
 		sb.AppendHexBuff(hwAddr, 6, ':', Text::LineBreakType::None);
-		sb.Append((const UTF8Char *)", Vendor = ");
+		sb.Append((const UTF8Char*)", Vendor = ");
 		macEntry = Net::MACInfo::GetMACInfoBuff(hwAddr);
 		if (macEntry)
 		{
@@ -67,14 +67,14 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		if (arpType == Net::ARPInfo::ARPT_STATIC || arpType == Net::ARPInfo::ARPT_DYNAMIC)
 		{
 			sb.ClearStr();
-			sb.Append((const UTF8Char*)"IP = ");
+			sb.AppendC(UTF8STRC("IP = ");
 			Net::SocketUtil::GetIPv4Name(sbuff, arp->GetIPAddress());
 			sb.Append(sbuff);
 			sb.AppendChar(' ', 18 - sb.GetLength());
-			sb.Append((const UTF8Char *)", HW Addr = ");
+			sb.Append((const UTF8Char*)", HW Addr = ");
 			arp->GetPhysicalAddr(hwAddr);
 			sb.AppendHexBuff(hwAddr, 6, ':', Text::LineBreakType::None);
-			sb.Append((const UTF8Char *)", Vendor = ");
+			sb.Append((const UTF8Char*)", Vendor = ");
 			macEntry = Net::MACInfo::GetMACInfoBuff(hwAddr);
 			if (macEntry)
 			{
@@ -115,13 +115,13 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 					Net::ARPHandler *arpHdlr;
 					console->WriteLine();
 					sb.ClearStr();
-					sb.Append((const UTF8Char*)"Adapter: HW Addr = ");
+					sb.AppendC(UTF8STRC("Adapter: HW Addr = ");
 					sb.AppendHexBuff(hwAddr, 6, ':', Text::LineBreakType::None);
-					sb.Append((const UTF8Char*)", IP = ");
+					sb.AppendC(UTF8STRC(", IP = ");
 					Net::SocketUtil::GetIPv4Name(sbuff, ip);
 					sb.Append(sbuff);
 					connInfo->GetName(sbuff);
-					sb.Append((const UTF8Char*)", Name = ");
+					sb.AppendC(UTF8STRC(", Name = ");
 					sb.Append(sbuff);
 					console->WriteLine(sb.ToString());
 					connInfo->GetName(sbuff);

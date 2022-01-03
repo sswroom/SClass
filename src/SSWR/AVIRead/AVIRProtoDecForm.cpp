@@ -17,7 +17,7 @@ void __stdcall SSWR::AVIRead::AVIRProtoDecForm::OnLogSelChg(void *userObj)
 		me->currFile->SeekFromBeginning(item->fileOfst);
 		me->currFile->Read(buff, item->size);
 		sb.AppendHex(buff, item->size, ' ', Text::LineBreakType::CRLF);
-		sb.Append((const UTF8Char*)"\r\n\r\n");
+		sb.AppendC(UTF8STRC("\r\n\r\n"));
 		me->currDec->GetProtocolDetail(buff, item->size, &sb);
 		me->txtLogs->SetText(sb.ToString());
 		MemFree(buff);

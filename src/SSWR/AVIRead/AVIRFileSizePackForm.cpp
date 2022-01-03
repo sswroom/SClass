@@ -19,7 +19,7 @@ SSWR::AVIRead::AVIRFileSizePackForm::MyFile::~MyFile()
 Bool SSWR::AVIRead::AVIRFileSizePackForm::MyFile::ToString(Text::StringBuilderUTF *sb)
 {
 	sb->Append(this->fileName);
-	sb->Append((const UTF8Char*)" size=");
+	sb->AppendC(UTF8STRC(" size="));
 	sb->AppendU64(this->fileSize);
 	return true;
 }

@@ -1020,9 +1020,9 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			DEL_CLASS(csv);
 			
 			sb.ClearStr();
-			sb.Append((const UTF8Char*)"FileGDB count = ");
+			sb.AppendC(UTF8STRC("FileGDB count = "));
 			sb.AppendUOSInt(lamppostList.GetCount());
-			sb.Append((const UTF8Char*)", CSV count = ");
+			sb.AppendC(UTF8STRC(", CSV count = "));
 			sb.AppendUOSInt(lamppostListCSV.GetCount());
 			console.WriteLine(sb.ToString());
 			
@@ -1073,13 +1073,13 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			}
 
 			sb.ClearStr();
-			sb.Append((const UTF8Char*)"t1 = ");
+			sb.AppendC(UTF8STRC("t1 = "));
 			Text::SBAppendF64(&sb, t1);
-			sb.Append((const UTF8Char*)", t2 = ");
+			sb.AppendC(UTF8STRC(", t2 = "));
 			Text::SBAppendF64(&sb, t2);
-			sb.Append((const UTF8Char*)", t3 = ");
+			sb.AppendC(UTF8STRC(", t3 = "));
 			Text::SBAppendF64(&sb, t3);
-/*			sb.Append((const UTF8Char*)", t4 = ");
+/*			sb.AppendC(UTF8STRC(", t4 = "));
 			Text::SBAppendF64(&sb, t4);*/
 			console.WriteLine(sb.ToString());
 		}

@@ -48,9 +48,9 @@ Bool SearchProcId(ProgInfo *prog)
 					Text::StringBuilderUTF8 sb;
 					prog->procId = info.processId;
 					ret = true;
-					sb.Append((const UTF8Char*)"Prog ");
+					sb.AppendC(UTF8STRC("Prog "));
 					sb.Append(prog->progName);
-					sb.Append((const UTF8Char*)": Updated procId as ");
+					sb.AppendC(UTF8STRC(": Updated procId as "));
 					sb.AppendUOSInt(prog->procId);
 					myLog->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_COMMAND);
 					break;
@@ -138,9 +138,9 @@ void __stdcall OnTimerTick(void *userObj)
 				{
 					prog->procId = 0;
 					Text::StringBuilderUTF8 sb;
-					sb.Append((const UTF8Char*)"Prog ");
+					sb.AppendC(UTF8STRC("Prog "));
 					sb.Append(prog->progName);
-					sb.Append((const UTF8Char*)" stopped");
+					sb.AppendC(UTF8STRC(" stopped"));
 					myLog->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_COMMAND);
 				}
 			}
@@ -153,9 +153,9 @@ void __stdcall OnTimerTick(void *userObj)
 					{
 						prog->procId = proc.GetProcId();
 						Text::StringBuilderUTF8 sb;
-						sb.Append((const UTF8Char*)"Prog ");
+						sb.AppendC(UTF8STRC("Prog "));
 						sb.Append(prog->progName);
-						sb.Append((const UTF8Char*)" restarted, procId = ");
+						sb.AppendC(UTF8STRC(" restarted, procId = "));
 						sb.AppendUOSInt(prog->procId);
 						myLog->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_COMMAND);
 					}
@@ -180,9 +180,9 @@ static UInt32 __stdcall CheckThread(void *userObj)
 Int32 MyMain(Core::IProgControl *progCtrl)
 {
 	Text::StringBuilderUTF8 sb;
-	sb.Append((const UTF8Char*)"Log");
+	sb.AppendC(UTF8STRC("Log"));
 	sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
-	sb.Append((const UTF8Char*)"ProgLog");
+	sb.AppendC(UTF8STRC("ProgLog"));
 	NEW_CLASS(myLog, IO::LogTool());
 	myLog->AddFileLog(sb.ToString(), IO::ILogHandler::LOG_TYPE_PER_DAY, IO::ILogHandler::LOG_GROUP_TYPE_PER_MONTH, IO::ILogHandler::LOG_LEVEL_RAW, "yyyy-MM-dd HH:mm:ss.fff", false);
 	NEW_CLASS(progList, Data::ArrayList<ProgInfo*>());

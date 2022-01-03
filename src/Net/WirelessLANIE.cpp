@@ -61,7 +61,7 @@ void Net::WirelessLANIE::ToString(const UInt8 *ieBuff, Text::StringBuilderUTF *s
 		i = 0;
 		while (i < size)
 		{
-			sb->Append((const UTF8Char *)"\r\n\t");
+			sb->Append((const UTF8Char*)"\r\n\t");
 			if (ieBuff[2 + i] & 0x80)
 			{
 				sb->AppendChar('*', 1);
@@ -535,7 +535,7 @@ void Net::WirelessLANIE::ToString(const UInt8 *ieBuff, Text::StringBuilderUTF *s
 		i = 0;
 		while (i < size)
 		{
-			sb->Append((const UTF8Char *)"\r\n\t");
+			sb->Append((const UTF8Char*)"\r\n\t");
 			if (ieBuff[2 + i] & 0x80)
 			{
 				sb->AppendChar('*', 1);

@@ -65,7 +65,7 @@ namespace Text
 		virtual StringBuilderUTF *AppendDate(Data::DateTime *dt) { return (StringBuilderUTF*)::Text::StringBuilder<T>::AppendDate(dt); }
 		virtual StringBuilderUTF *AppendOSInt(OSInt iVal) { return (StringBuilderUTF*)::Text::StringBuilder<T>::AppendOSInt(iVal); }
 		virtual StringBuilderUTF *AppendUOSInt(UOSInt iVal) { return (StringBuilderUTF*)::Text::StringBuilder<T>::AppendUOSInt(iVal); }
-		virtual StringBuilderUTF *AppendLB(Text::LineBreakType lbt) {if (lbt == Text::LineBreakType::CRLF) return Append((const UTF8Char*)"\r\n"); else if (lbt == Text::LineBreakType::CR) return AppendChar('\r', 1); else if (lbt == Text::LineBreakType::LF) return AppendChar('\n', 1); else return this; }
+		virtual StringBuilderUTF *AppendLB(Text::LineBreakType lbt) {if (lbt == Text::LineBreakType::CRLF) return AppendC(UTF8STRC("\r\n")); else if (lbt == Text::LineBreakType::CR) return AppendChar('\r', 1); else if (lbt == Text::LineBreakType::LF) return AppendChar('\n', 1); else return this; }
 
 		virtual StringBuilderUTF *AppendHex8(UInt8 iVal) { return (StringBuilderUTF*)::Text::StringBuilder<T>::AppendHex8(iVal); }
 		virtual StringBuilderUTF *AppendHex16(UInt16 iVal) { return (StringBuilderUTF*)::Text::StringBuilder<T>::AppendHex16(iVal); }

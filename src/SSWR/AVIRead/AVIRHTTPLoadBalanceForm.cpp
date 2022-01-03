@@ -64,7 +64,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnStartClick(void *userOb
 			{
 				sb->AppendChar(IO::Path::PATH_SEPERATOR, 1);
 			}
-			sb->Append((const UTF8Char*)"Acccess");
+			sb->AppendC(UTF8STRC("Acccess"));
 
 			if (!me->chkSkipLog->IsChecked())
 			{
@@ -209,7 +209,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnTimerTick(void *userObj
 			dt.SetTicks(log->reqTime);
 			dt.ToLocalTime();
 			sb.AppendDate(&dt);
-			sb.Append((const UTF8Char*)" ");
+			sb.AppendC(UTF8STRC(" "));
 			Net::SocketUtil::GetAddrName(sbuff, &log->cliAddr, log->cliPort);
 			sb.Append(sbuff);
 
@@ -234,19 +234,19 @@ void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnAccessSelChg(void *user
 	dt.SetTicks(log->reqTime);
 	dt.ToLocalTime();
 	sb.AppendDate(&dt);
-	sb.Append((const UTF8Char*)" ");
+	sb.AppendC(UTF8STRC(" "));
 	Net::SocketUtil::GetAddrName(sbuff, &log->cliAddr, log->cliPort);
 	sb.Append(sbuff);
-	sb.Append((const UTF8Char*)"\r\n");
+	sb.AppendC(UTF8STRC("\r\n"));
 	sb.Append(log->reqURI);
-	sb.Append((const UTF8Char*)"\r\n\r\nHeaders:");
+	sb.AppendC(UTF8STRC("\r\n\r\nHeaders:"));
 	i = 0;
 	j = log->headerName->GetCount();
 	while (i < j)
 	{
-		sb.Append((const UTF8Char*)"\r\n");
+		sb.AppendC(UTF8STRC("\r\n"));
 		sb.Append(log->headerName->GetItem(i));
-		sb.Append((const UTF8Char*)"\t");
+		sb.AppendC(UTF8STRC("\t"));
 		sb.Append(log->headerVal->GetItem(i));
 		i++;
 	}
@@ -266,7 +266,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnSSLCertClicked(void *us
 		me->sslKey = frm->GetKey();
 		Text::StringBuilderUTF8 sb;
 		me->sslCert->ToShortString(&sb);
-		sb.Append((const UTF8Char*)", ");
+		sb.AppendC(UTF8STRC(", "));
 		me->sslKey->ToShortString(&sb);
 		me->lblSSLCert->SetText(sb.ToString());
 	}

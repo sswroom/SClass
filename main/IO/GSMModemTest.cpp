@@ -26,7 +26,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	}
 	console.WriteLine();
 	sb.ClearStr();
-	sb.Append((const UTF8Char*)"Trying Port ");
+	sb.AppendC(UTF8STRC("Trying Port "));
 	sb.AppendUOSInt(portNum);
 	console.WriteLine(sb.ToString());
 

@@ -824,7 +824,7 @@ void Net::LDAPClient::SearchResDisplay(const UTF8Char *type, const UTF8Char *val
 	}
 	else if (Text::StrEquals(type, (const UTF8Char*)"objectSid"))
 	{
-		sb->Append((const UTF8Char*)"S-");
+		sb->AppendC(UTF8STRC("S-"));
 		sb->AppendU16(value[0]);
 		sb->AppendChar('-', 1);
 		sb->AppendU16(value[7]);

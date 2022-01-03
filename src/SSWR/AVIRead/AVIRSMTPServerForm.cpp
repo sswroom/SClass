@@ -139,11 +139,11 @@ UTF8Char *__stdcall SSWR::AVIRead::AVIRSMTPServerForm::OnMailReceived(UTF8Char *
 	SSWR::AVIRead::AVIRSMTPServerForm *me = (SSWR::AVIRead::AVIRSMTPServerForm*)userObj;
 	UTF8Char sbuff[32];
 	Text::StringBuilderUTF8 sb;
-	sb.Append((const UTF8Char*)"Received email from ");
+	sb.AppendC(UTF8STRC("Received email from "));
 	cli->GetRemoteName(sbuff);
 	sb.Append(sbuff);
 	Int64 id = me->NextEmailId();
-	sb.Append((const UTF8Char*)", id = ");
+	sb.AppendC(UTF8STRC(", id = "));
 	sb.AppendI64(id);
 	me->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_COMMAND);
 
@@ -159,7 +159,7 @@ UTF8Char *__stdcall SSWR::AVIRead::AVIRSMTPServerForm::OnMailReceived(UTF8Char *
 	IO::Path::AppendPath(&sb, (const UTF8Char*)"SMTP");
 	sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
 	sb.AppendI64(id);
-	sb.Append((const UTF8Char*)".eml");
+	sb.AppendC(UTF8STRC(".eml"));
 	email = MemAlloc(EmailInfo, 1);
 	email->id = id;
 	cli->GetRemoteAddr(&email->remoteAddr);
@@ -202,9 +202,9 @@ Bool __stdcall SSWR::AVIRead::AVIRSMTPServerForm::OnMailLogin(void *userObj, con
 {
 	Text::StringBuilderUTF8 sb;
 	SSWR::AVIRead::AVIRSMTPServerForm *me = (SSWR::AVIRead::AVIRSMTPServerForm *)userObj;
-	sb.Append((const UTF8Char*)"User: ");
+	sb.AppendC(UTF8STRC("User: "));
 	sb.Append(userName);
-	sb.Append((const UTF8Char*)", Pwd: ");
+	sb.AppendC(UTF8STRC(", Pwd: "));
 	sb.Append(pwd);
 	me->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_COMMAND);
 	return true;
@@ -249,7 +249,7 @@ void __stdcall SSWR::AVIRead::AVIRSMTPServerForm::OnTimerTick(void *userObj)
 			{
 				if (l != 0)
 				{
-					sb.Append((const UTF8Char*)", ");
+					sb.AppendC(UTF8STRC(", "));
 				}
 				sb.Append(email->rcptList->GetItem(l));
 				l++;
@@ -279,7 +279,7 @@ void __stdcall SSWR::AVIRead::AVIRSMTPServerForm::OnCertKeyClicked(void *userObj
 		me->sslKey = frm->GetKey();
 		Text::StringBuilderUTF8 sb;
 		me->sslCert->ToShortString(&sb);
-		sb.Append((const UTF8Char*)", ");
+		sb.AppendC(UTF8STRC(", "));
 		me->sslKey->ToShortString(&sb);
 		me->lblCertKey->SetText(sb.ToString());
 	}

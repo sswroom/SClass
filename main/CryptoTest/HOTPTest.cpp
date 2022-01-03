@@ -22,7 +22,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	console.WriteLine(sb.ToString());
 	Text::TextBinEnc::Base32Enc b32;
 	sb.ClearStr();
-	sb.Append((const UTF8Char*)"B32: ");
+	sb.AppendC(UTF8STRC("B32: "));
 	b32.EncodeBin(&sb, key, 10);
 	console.WriteLine(sb.ToString());
 	UOSInt decLen = b32.DecodeBin(sb.ToString() + 5, decKey);
@@ -36,9 +36,9 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	while (i < 10)
 	{
 		sb.ClearStr();
-		sb.Append((const UTF8Char*)"Code ");
+		sb.AppendC(UTF8STRC("Code "));
 		sb.AppendUOSInt(i);
-		sb.Append((const UTF8Char*)": ");
+		sb.AppendC(UTF8STRC(": "));
 		hotp.CodeString(sbuff, hotp.NextCode());
 		sb.Append(sbuff);
 		console.WriteLine(sb.ToString());

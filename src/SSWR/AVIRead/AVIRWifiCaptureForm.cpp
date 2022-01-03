@@ -68,7 +68,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(void *userObj)
 				me->lastMotion = 1;
 				sb.ClearStr();
 				sb.AppendDate(&dt);
-				sb.Append((const UTF8Char*)"\tMotion:Moving");
+				sb.AppendC(UTF8STRC("\tMotion:Moving"));
 				me->captureWriter->WriteLine(sb.ToString());
 			}
 			mutUsage.EndUse();
@@ -82,7 +82,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(void *userObj)
 				me->lastMotion = 0;
 				sb.ClearStr();
 				sb.AppendDate(&dt);
-				sb.Append((const UTF8Char*)"\tMotion:Stopped");
+				sb.AppendC(UTF8STRC("\tMotion:Stopped"));
 				me->captureWriter->WriteLine(sb.ToString());
 			}
 			mutUsage.EndUse();
@@ -132,7 +132,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(void *userObj)
 				{
 					sb.ClearStr();
 					sb.AppendDate(&dt);
-					sb.Append((const UTF8Char*)"\tWLAN:");
+					sb.AppendC(UTF8STRC("\tWLAN:"));
 					i = 0;
 					j = bssList.GetCount();
 					while (i < j)
@@ -587,39 +587,39 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnLogWifiSaveClicked(void *us
 			wifiLog = wifiLogList->GetItem(i);
 			sb.ClearStr();
 			sb.AppendHexBuff(wifiLog->mac, 6, ':', Text::LineBreakType::None);
-			sb.Append((const UTF8Char*)"\t");
+			sb.AppendC(UTF8STRC("\t"));
 			sb.Append(wifiLog->ssid);
-			sb.Append((const UTF8Char*)"\t");
+			sb.AppendC(UTF8STRC("\t"));
 			sb.AppendI32(wifiLog->phyType);
-			sb.Append((const UTF8Char*)"\t");
+			sb.AppendC(UTF8STRC("\t"));
 			Text::SBAppendF64(&sb, wifiLog->freq);
-			sb.Append((const UTF8Char*)"\t");
+			sb.AppendC(UTF8STRC("\t"));
 			if (wifiLog->manuf)
 			{
 				sb.Append(wifiLog->manuf);
 			}
-			sb.Append((const UTF8Char*)"\t");
+			sb.AppendC(UTF8STRC("\t"));
 			if (wifiLog->model)
 			{
 				sb.Append(wifiLog->model);
 			}
-			sb.Append((const UTF8Char*)"\t");
+			sb.AppendC(UTF8STRC("\t"));
 			if (wifiLog->serialNum)
 			{
 				sb.Append(wifiLog->serialNum);
 			}
-			sb.Append((const UTF8Char*)"\t");
+			sb.AppendC(UTF8STRC("\t"));
 			sb.AppendHexBuff(wifiLog->ouis[0], 3, 0, Text::LineBreakType::None);
 			sb.AppendChar(',', 1);
 			sb.AppendHexBuff(wifiLog->ouis[1], 3, 0, Text::LineBreakType::None);
 			sb.AppendChar(',', 1);
 			sb.AppendHexBuff(wifiLog->ouis[2], 3, 0, Text::LineBreakType::None);
-			sb.Append((const UTF8Char*)"\t");
+			sb.AppendC(UTF8STRC("\t"));
 			if (wifiLog->country)
 			{
 				sb.Append(wifiLog->country);
 			}
-			sb.Append((const UTF8Char*)"\t");
+			sb.AppendC(UTF8STRC("\t"));
 			k = 0;
 			while (k < 20)
 			{
@@ -645,14 +645,14 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnLogWifiSaveClicked(void *us
 	if (succ)
 	{
 		sb.ClearStr();
-		sb.Append((const UTF8Char*)"File saved to ");
+		sb.AppendC(UTF8STRC("File saved to "));
 		sb.Append(sbuff);
 		UI::MessageDialog::ShowDialog(sb.ToString(), (const UTF8Char*)"Save", me);
 	}
 	else
 	{
 		sb.ClearStr();
-		sb.Append((const UTF8Char*)"Error in saving to ");
+		sb.AppendC(UTF8STRC("Error in saving to "));
 		sb.Append(sbuff);
 		UI::MessageDialog::ShowDialog(sb.ToString(), (const UTF8Char*)"Save", me);
 	}
@@ -697,11 +697,11 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnLogWifiSaveFClicked(void *u
 			{
 				sb.ClearStr();
 				sb.AppendHexBuff(wifiLog->mac, 6, ':', Text::LineBreakType::None);
-				sb.Append((const UTF8Char*)"\t");
+				sb.AppendC(UTF8STRC("\t"));
 				sb.Append(wifiLog->ssid);
-				sb.Append((const UTF8Char*)"\t");
+				sb.AppendC(UTF8STRC("\t"));
 				sb.AppendI32(wifiLog->phyType);
-				sb.Append((const UTF8Char*)"\t");
+				sb.AppendC(UTF8STRC("\t"));
 				Text::SBAppendF64(&sb, wifiLog->freq);
 				if (!writer->WriteLine(sb.ToString()))
 				{
@@ -717,14 +717,14 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnLogWifiSaveFClicked(void *u
 	if (succ)
 	{
 		sb.ClearStr();
-		sb.Append((const UTF8Char*)"File saved to ");
+		sb.AppendC(UTF8STRC("File saved to "));
 		sb.Append(sbuff);
 		UI::MessageDialog::ShowDialog(sb.ToString(), (const UTF8Char*)"Save Unk", me);
 	}
 	else
 	{
 		sb.ClearStr();
-		sb.Append((const UTF8Char*)"Error in saving to ");
+		sb.AppendC(UTF8STRC("Error in saving to "));
 		sb.Append(sbuff);
 		UI::MessageDialog::ShowDialog(sb.ToString(), (const UTF8Char*)"Save Unk", me);
 	}
@@ -757,18 +757,18 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnGPSData(void *userObj, Map:
 			dt.SetCurrTimeUTC();
 
 			sb.AppendDate(&dt);
-			sb.Append((const UTF8Char*)"\tGPS:");
+			sb.AppendC(UTF8STRC("\tGPS:"));
 			if (record->valid == 0)
 			{
-				sb.Append((const UTF8Char*)"Void");
+				sb.AppendC(UTF8STRC("Void"));
 			}
 			else
 			{
-				sb.Append((const UTF8Char*)"Active,");
+				sb.AppendC(UTF8STRC("Active,"));
 				Text::SBAppendF64(&sb, record->lat);
-				sb.Append((const UTF8Char*)",");
+				sb.AppendC(UTF8STRC(","));
 				Text::SBAppendF64(&sb, record->lon);
-				sb.Append((const UTF8Char*)",");
+				sb.AppendC(UTF8STRC(","));
 				Text::SBAppendF64(&sb, record->altitude);
 			}
 			me->captureWriter->WriteLine(sb.ToString());

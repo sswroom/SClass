@@ -137,7 +137,7 @@ void SSWR::AVIRead::AVIRAsmConvForm::ConvAsm()
 		{
 			if (endC == 0)
 				break;
-			destSb.Append((const UTF8Char*)"\r\n");
+			destSb.AppendC(UTF8STRC("\r\n"));
 			lineStart += i + 1;
 			if (endC == '\r')
 			{
@@ -171,9 +171,9 @@ void SSWR::AVIRead::AVIRAsmConvForm::ConvAsm()
 		{
 			lineStart[j] = 0;
 			destSb.AppendChar('\t', allTabCnt);
-			destSb.Append((const UTF8Char*)"\"");
+			destSb.AppendC(UTF8STRC("\""));
 			destSb.Append(lineStart);
-			destSb.Append((const UTF8Char*)"\\n\"\r\n");
+			destSb.AppendC(UTF8STRC("\\n\"\r\n"));
 		}
 		else
 		{
@@ -183,8 +183,8 @@ void SSWR::AVIRead::AVIRAsmConvForm::ConvAsm()
 			if (Text::StrEquals(lineStart, (const UTF8Char*)"align") && c != 0)
 			{
 				destSb.AppendChar('\t', allTabCnt);
-				destSb.Append((const UTF8Char*)"\"\t");
-				destSb.Append((const UTF8Char*)".balign ");
+				destSb.AppendC(UTF8STRC("\"\t"));
+				destSb.AppendC(UTF8STRC(".balign "));
 				destSb.Append(&lineStart[j + 1]);
 			}
 			else if (c == 0)
@@ -193,13 +193,13 @@ void SSWR::AVIRead::AVIRAsmConvForm::ConvAsm()
 				{
 					allTabCnt = thisTabCnt;
 					destSb.AppendChar('\t', allTabCnt);
-					destSb.Append((const UTF8Char*)"asm(");
+					destSb.AppendC(UTF8STRC("asm("));
 				}
 				else if (Text::StrCompareICase(lineStart, (const UTF8Char*)"stosd") == 0)
 				{
 					destSb.AppendChar('\t', allTabCnt);
-					destSb.Append((const UTF8Char*)"\"\t");
-					destSb.Append((const UTF8Char*)"stosl");
+					destSb.AppendC(UTF8STRC("\"\t"));
+					destSb.AppendC(UTF8STRC("stosl"));
 				}
 				else if (Text::StrEquals(lineStart, (const UTF8Char*)"{") == 0)
 				{
@@ -208,20 +208,20 @@ void SSWR::AVIRead::AVIRAsmConvForm::ConvAsm()
 				else if (Text::StrEquals(lineStart, (const UTF8Char*)"}") == 0)
 				{
 					destSb.AppendChar('\t', allTabCnt);
-					destSb.Append((const UTF8Char*)");\r\n");
+					destSb.AppendC(UTF8STRC(");\r\n"));
 					skipLine = true;
 				}
 				else
 				{
 					destSb.AppendChar('\t', allTabCnt);
-					destSb.Append((const UTF8Char*)"\"\t");
+					destSb.AppendC(UTF8STRC("\"\t"));
 					destSb.Append(lineStart);
 				}
 			}
 			else
 			{
 				destSb.AppendChar('\t', allTabCnt);
-				destSb.Append((const UTF8Char*)"\"\t");
+				destSb.AppendC(UTF8STRC("\"\t"));
 				destSb.Append(lineStart);
 				sarrCnt = Text::StrSplitTrim(sarr, 5, &lineStart[j + 1], ',');
 				if (sarrCnt == 1 && sarr[0][0] == 0)
@@ -238,31 +238,31 @@ void SSWR::AVIRead::AVIRAsmConvForm::ConvAsm()
 							sarr[j][i2] = 0;
 							if (Text::StrStartsWithICase(sarr[j], (const UTF8Char*)"BYTE"))
 							{
-								destSb.Append((const UTF8Char*)"b");
+								destSb.AppendC(UTF8STRC("b"));
 							}
 							else if (Text::StrStartsWithICase(sarr[j], (const UTF8Char*)"WORD"))
 							{
-								destSb.Append((const UTF8Char*)"w");
+								destSb.AppendC(UTF8STRC("w"));
 							}
 							else if (Text::StrStartsWithICase(sarr[j], (const UTF8Char*)"DWORD"))
 							{
-								destSb.Append((const UTF8Char*)"l");
+								destSb.AppendC(UTF8STRC("l"));
 							}
 							else if (Text::StrStartsWithICase(sarr[j], (const UTF8Char*)"QWORD") && lineStart[0] != 'f' && lineStart[0] != 'F')
 							{
-								destSb.Append((const UTF8Char*)"q");
+								destSb.AppendC(UTF8STRC("q"));
 							}
 							sarr[j] = &sarr[j][i2 + 5];
 							Text::StrTrim(sarr[j]);
 						}
 					}
-					destSb.Append((const UTF8Char*)" ");
+					destSb.AppendC(UTF8STRC(" "));
 					j = sarrCnt;
 					while (j-- > 0)
 					{
 						if (sarr[j][0] >= 0x30 && sarr[j][0] <= 0x39)
 						{
-							destSb.Append((const UTF8Char*)"$");
+							destSb.AppendC(UTF8STRC("$"));
 							destSb.Append(sarr[j]);
 						}
 						else if (sarr[j][0] == '\'')
@@ -271,7 +271,7 @@ void SSWR::AVIRead::AVIRAsmConvForm::ConvAsm()
 						}
 						else if (regKey.SortedIndexOf(sarr[j]) >= 0)
 						{
-							destSb.Append((const UTF8Char*)"%");
+							destSb.AppendC(UTF8STRC("%"));
 							destSb.Append(sarr[j]);
 						}
 						else
@@ -301,10 +301,10 @@ void SSWR::AVIRead::AVIRAsmConvForm::ConvAsm()
 									{
 										sarr[j][i2] = 0;
 										destSb.Append(sarr[i2]);
-										destSb.Append((const UTF8Char*)"(");
+										destSb.AppendC(UTF8STRC("("));
 										if (found)
 										{
-											destSb.Append((const UTF8Char*)"-");
+											destSb.AppendC(UTF8STRC("-"));
 										}
 										found = false;
 										k = Text::StrSplitTrim(sarr2, 4, &sarr[j][i2 + 1], '+');
@@ -315,7 +315,7 @@ void SSWR::AVIRead::AVIRAsmConvForm::ConvAsm()
 											{
 												if (found)
 												{
-													destSb.Append((const UTF8Char*)",");
+													destSb.AppendC(UTF8STRC(","));
 												}
 												destSb.Append(sarr2[l]);
 												found = true;
@@ -327,7 +327,7 @@ void SSWR::AVIRead::AVIRAsmConvForm::ConvAsm()
 									{
 										if (found)
 										{
-											destSb.Append((const UTF8Char*)"-");
+											destSb.AppendC(UTF8STRC("-"));
 										}
 										k = Text::StrSplitTrim(sarr2, 4, &sarr[j][i2 + 1], '+');
 										l = k;
@@ -339,7 +339,7 @@ void SSWR::AVIRead::AVIRAsmConvForm::ConvAsm()
 												sarr2[l] = 0;
 											}
 										}
-										destSb.Append((const UTF8Char*)"(");
+										destSb.AppendC(UTF8STRC("("));
 										found = false;
 									}
 
@@ -350,9 +350,9 @@ void SSWR::AVIRead::AVIRAsmConvForm::ConvAsm()
 										{
 											if (found)
 											{
-												destSb.Append((const UTF8Char*)",");
+												destSb.AppendC(UTF8STRC(","));
 											}
-											destSb.Append((const UTF8Char*)"%");
+											destSb.AppendC(UTF8STRC("%"));
 											destSb.Append(sarr2[l]);
 											found = true;
 											sarr2[l] = 0;
@@ -364,20 +364,20 @@ void SSWR::AVIRead::AVIRAsmConvForm::ConvAsm()
 									{
 										if (sarr2[l])
 										{
-											destSb.Append((const UTF8Char*)",");
+											destSb.AppendC(UTF8STRC(","));
 											i2 = Text::StrIndexOf(sarr2[l], '*');
 											sarr2[l][i2] = 0;
 											Text::StrTrim(sarr2[l]);
-											destSb.Append((const UTF8Char*)"%");
+											destSb.AppendC(UTF8STRC("%"));
 											destSb.Append(sarr2[l]);
 											Text::StrTrim(&sarr2[l][k+1]);
-											destSb.Append((const UTF8Char*)",");
+											destSb.AppendC(UTF8STRC(","));
 											destSb.Append(&sarr2[l][k+1]);
 											found = true;
 											sarr2[l] = 0;
 										}
 									}
-									destSb.Append((const UTF8Char*)")");
+									destSb.AppendC(UTF8STRC(")"));
 								}
 								else
 								{
@@ -392,14 +392,14 @@ void SSWR::AVIRead::AVIRAsmConvForm::ConvAsm()
 						}
 						if (j != 0)
 						{
-							destSb.Append((const UTF8Char*)",");
+							destSb.AppendC(UTF8STRC(","));
 						}
 					}
 				}
 			}
 			if (!skipLine)
 			{
-				destSb.Append((const UTF8Char*)"\\n\"\r\n");
+				destSb.AppendC(UTF8STRC("\\n\"\r\n"));
 			}
 		}
 		lineStart += i + 1;

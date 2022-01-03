@@ -40,11 +40,11 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				else
 				{
 					Text::StringBuilderUTF8 sb;
-					sb.Append((const UTF8Char*)"Temp = ");
+					sb.AppendC(UTF8STRC("Temp = "));
 					Text::SBAppendF64(&sb, temp);
-					sb.Append((const UTF8Char*)", RH = ");
+					sb.AppendC(UTF8STRC(", RH = "));
 					Text::SBAppendF64(&sb, rh);
-					sb.Append((const UTF8Char*)", Pressure = ");
+					sb.AppendC(UTF8STRC(", Pressure = "));
 					Text::SBAppendF64(&sb, pressure);
 					console.WriteLine(sb.ToString());
 				}

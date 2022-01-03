@@ -42,7 +42,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		NEW_CLASS(listener, Net::WebServer::WebListener(sockf, 0, webHdlr, webPort, 120, 4, (const UTF8Char*)"WiFiCapture/1.0", false, true));
 		if (listener->IsError())
 		{
-			sb.Append((const UTF8Char*)"Error in starting web server at port ");
+			sb.AppendC(UTF8STRC("Error in starting web server at port "));
 			sb.AppendI32(webPort);
 			console.WriteLine(sb.ToString());
 		}

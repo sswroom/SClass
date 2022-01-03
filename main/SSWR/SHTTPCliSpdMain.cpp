@@ -70,43 +70,43 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 					respTimeTotal = cli->GetTotalTime();
 
 					sb.ClearStr();
-					sb.Append((const UTF8Char*)"Server response ");
+					sb.AppendC(UTF8STRC("Server response "));
 					sb.AppendI32(httpStatus);
 					console->WriteLine(sb.ToString());
 
 					sb.ClearStr();
-					sb.Append((const UTF8Char*)"Received ");
+					sb.AppendC(UTF8STRC("Received "));
 					sb.AppendU64(totalReadSize);
-					sb.Append((const UTF8Char*)" bytes from server");
+					sb.AppendC(UTF8STRC(" bytes from server"));
 					console->WriteLine(sb.ToString());
 
 					sb.ClearStr();
-					sb.Append((const UTF8Char*)"DNS Time = ");
+					sb.AppendC(UTF8STRC("DNS Time = "));
 					Text::SBAppendF64(&sb, respTimeDNS);
 					console->WriteLine(sb.ToString());
 
 					sb.ClearStr();
-					sb.Append((const UTF8Char*)"Conn Time = ");
+					sb.AppendC(UTF8STRC("Conn Time = "));
 					Text::SBAppendF64(&sb, respTimeConn - respTimeDNS);
 					console->WriteLine(sb.ToString());
 
 					sb.ClearStr();
-					sb.Append((const UTF8Char*)"Request Time = ");
+					sb.AppendC(UTF8STRC("Request Time = "));
 					Text::SBAppendF64(&sb, respTimeReq - respTimeConn);
 					console->WriteLine(sb.ToString());
 
 					sb.ClearStr();
-					sb.Append((const UTF8Char*)"Response Time = ");
+					sb.AppendC(UTF8STRC("Response Time = "));
 					Text::SBAppendF64(&sb, respTimeResp - respTimeReq);
 					console->WriteLine(sb.ToString());
 
 					sb.ClearStr();
-					sb.Append((const UTF8Char*)"Download Time = ");
+					sb.AppendC(UTF8STRC("Download Time = "));
 					Text::SBAppendF64(&sb, respTimeTotal - respTimeResp);
 					console->WriteLine(sb.ToString());
 
 					sb.ClearStr();
-					sb.Append((const UTF8Char*)"Total Time = ");
+					sb.AppendC(UTF8STRC("Total Time = "));
 					Text::SBAppendF64(&sb, respTimeTotal);
 					console->WriteLine(sb.ToString());
 				}

@@ -305,7 +305,7 @@ Bool IO::Device::SIM7000::NetIPSend(UOSInt index, const UInt8 *buff, UOSInt buff
 	const Char *cmdRes;
 	if (!this->channel->UseCmd(&mutUsage))
 		return false;
-	sb.Append((const UTF8Char*)"AT+CIPSEND=");
+	sb.AppendC(UTF8STRC("AT+CIPSEND="));
 	sb.AppendUOSInt(index);
 	sb.AppendChar(',', 1);
 	sb.AppendUOSInt(buffSize);

@@ -5,7 +5,7 @@ SSWR::AVIRead::MIMEViewer::AVIRUnknownViewer::AVIRUnknownViewer(SSWR::AVIRead::A
 {
 	this->obj = obj;
 	Text::StringBuilderUTF8 sb;
-	sb.Append((const UTF8Char*)"Unsupported MIME type: ");
+	sb.AppendC(UTF8STRC("Unsupported MIME type: "));
 	sb.Append(obj->GetContentType());
 
 	NEW_CLASS(this->lblMessage, UI::GUILabel(ui, ctrl, sb.ToString()));

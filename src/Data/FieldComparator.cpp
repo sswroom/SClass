@@ -80,13 +80,13 @@ Bool Data::FieldComparator::ToOrderClause(Text::StringBuilderUTF *sb, DB::DBUtil
 	{
 		if (i > 0)
 		{
-			sb->Append((const UTF8Char*)", ");
+			sb->AppendC(UTF8STRC(", "));
 		}
 		DB::DBUtil::SDBColUTF8(sbuff, this->fieldNames->GetItem(i), svrType);
 		sb->Append(sbuff);
 		if (this->dirs->GetItem(i) == -1)
 		{
-			sb->Append((const UTF8Char*)" desc");
+			sb->AppendC(UTF8STRC(" desc"));
 		}
 		i++;
 	}

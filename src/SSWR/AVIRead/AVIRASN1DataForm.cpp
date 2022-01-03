@@ -43,7 +43,7 @@ SSWR::AVIRead::AVIRASN1DataForm::AVIRASN1DataForm(UI::GUIClientControl *parent, 
 				if (!x509->GetCertName(i, &sb))
 				{
 					sb.ClearStr();
-					sb.Append((const UTF8Char*)"Cert ");
+					sb.AppendC(UTF8STRC("Cert "));
 					sb.AppendUOSInt(i);
 				}
 				mnu2->AddItem(sb.ToString(), (UInt16)(MNU_CERT_0 + i), UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);

@@ -28,11 +28,11 @@ void __stdcall SSWR::AVIRead::AVIRCPUInfoForm::OnUploadClick(void *userObj)
 			Text::StringBuilderUTF8 sbData;
 			Net::SocketFactory *sockf = me->core->GetSocketFactory();
 			Text::StringBuilderUTF8 sbURL;
-			sbURL.Append((const UTF8Char*)"http://sswroom.no-ip.org:5080/benchmark/cpuinfo?family=");
+			sbURL.AppendC(UTF8STRC("http://sswroom.no-ip.org:5080/benchmark/cpuinfo?family="));
 			sbURL.AppendI32(cpu.GetFamilyId());
-			sbURL.Append((const UTF8Char*)"&modelId=");
+			sbURL.AppendC(UTF8STRC("&modelId="));
 			sbURL.AppendI32(cpu.GetModelId());
-			sbURL.Append((const UTF8Char*)"&stepping=");
+			sbURL.AppendC(UTF8STRC("&stepping="));
 			sbURL.AppendI32(cpu.GetStepping());
 
 			sbData.Append(u8buff);

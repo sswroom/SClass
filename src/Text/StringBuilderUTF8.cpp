@@ -20,7 +20,7 @@ Text::StringBuilderUTF *Text::StringBuilderUTF8::Append(Text::String *s)
 	}
 	if (s->leng > 0)
 	{
-		this->AllocLeng(s->leng);
+		this->Text::StringBuilder<UTF8Char>::AllocLeng(s->leng);
 		this->buffEnd = Text::StrConcatC(this->buffEnd, s->v, s->leng);
 	}
 	return this;
@@ -35,7 +35,7 @@ Text::StringBuilderUTF *Text::StringBuilderUTF8::Append(const UTF8Char *s)
 	UOSInt slen = Text::StrCharCnt(s);
 	if (slen > 0)
 	{
-		this->AllocLeng(slen);
+		this->Text::StringBuilder<UTF8Char>::AllocLeng(slen);
 		this->buffEnd = Text::StrConcatC(this->buffEnd, s, slen);
 	}
 	return this;
@@ -45,7 +45,7 @@ Text::StringBuilderUTF *Text::StringBuilderUTF8::AppendC(const UTF8Char *s, UOSI
 {
 	if (charCnt > 0)
 	{
-		this->AllocLeng(charCnt);
+		this->Text::StringBuilder<UTF8Char>::AllocLeng(charCnt);
 		this->buffEnd = Text::StrConcatC(this->buffEnd, s, charCnt);
 	}
 	return this;
@@ -55,7 +55,7 @@ Text::StringBuilderUTF *Text::StringBuilderUTF8::AppendS(const UTF8Char *s, UOSI
 {
 	if (maxLen > 0)
 	{
-		this->AllocLeng(maxLen);
+		this->Text::StringBuilder<UTF8Char>::AllocLeng(maxLen);
 		this->buffEnd = Text::StrConcatS(this->buffEnd, s, maxLen);
 	}
 	return this;
@@ -66,7 +66,7 @@ Text::StringBuilderUTF *Text::StringBuilderUTF8::AppendChar(UTF32Char c, UOSInt 
 	UTF8Char oc[6];
 	if (c < 0x80)
 	{
-		this->AllocLeng(repCnt);
+		this->Text::StringBuilder<UTF8Char>::AllocLeng(repCnt);
 		oc[0] = (UInt8)c;
 		while (repCnt-- > 0)
 		{
@@ -76,7 +76,7 @@ Text::StringBuilderUTF *Text::StringBuilderUTF8::AppendChar(UTF32Char c, UOSInt 
 	}
 	else if (c < 0x800)
 	{
-		this->AllocLeng(2 * repCnt);
+		this->Text::StringBuilder<UTF8Char>::AllocLeng(2 * repCnt);
 		oc[0] = (UTF8Char)(0xc0 | (c >> 6));
 		oc[1] = (UTF8Char)(0x80 | (c & 0x3f));
 		while (repCnt-- > 0)
@@ -88,7 +88,7 @@ Text::StringBuilderUTF *Text::StringBuilderUTF8::AppendChar(UTF32Char c, UOSInt 
 	}
 	else if (c < 0x10000)
 	{
-		this->AllocLeng(3 * repCnt);
+		this->Text::StringBuilder<UTF8Char>::AllocLeng(3 * repCnt);
 		oc[0] = (UTF8Char)(0xe0 | (c >> 12));
 		oc[1] = (UTF8Char)(0x80 | ((c >> 6) & 0x3f));
 		oc[2] = (UTF8Char)(0x80 | (c & 0x3f));
@@ -102,7 +102,7 @@ Text::StringBuilderUTF *Text::StringBuilderUTF8::AppendChar(UTF32Char c, UOSInt 
 	}
 	else if (c < 0x200000)
 	{
-		this->AllocLeng(4 * repCnt);
+		this->Text::StringBuilder<UTF8Char>::AllocLeng(4 * repCnt);
 		oc[0] = (UTF8Char)(0xf0 | (c >> 18));
 		oc[1] = (UTF8Char)(0x80 | ((c >> 12) & 0x3f));
 		oc[2] = (UTF8Char)(0x80 | ((c >> 6) & 0x3f));
@@ -118,7 +118,7 @@ Text::StringBuilderUTF *Text::StringBuilderUTF8::AppendChar(UTF32Char c, UOSInt 
 	}
 	else if (c < 0x4000000)
 	{
-		this->AllocLeng(5 * repCnt);
+		this->Text::StringBuilder<UTF8Char>::AllocLeng(5 * repCnt);
 		oc[0] = (UTF8Char)(0xf8 | (c >> 24));
 		oc[1] = (UTF8Char)(0x80 | ((c >> 18) & 0x3f));
 		oc[2] = (UTF8Char)(0x80 | ((c >> 12) & 0x3f));
@@ -136,7 +136,7 @@ Text::StringBuilderUTF *Text::StringBuilderUTF8::AppendChar(UTF32Char c, UOSInt 
 	}
 	else
 	{
-		this->AllocLeng(6 * repCnt);
+		this->Text::StringBuilder<UTF8Char>::AllocLeng(6 * repCnt);
 		oc[0] = (UTF8Char)(0xfc | (c >> 30));
 		oc[1] = (UTF8Char)(0x80 | ((c >> 24) & 0x3f));
 		oc[2] = (UTF8Char)(0x80 | ((c >> 18) & 0x3f));
@@ -167,7 +167,7 @@ Text::StringBuilderUTF8 *Text::StringBuilderUTF8::AppendCSV(const UTF8Char **sar
 	{
 		s = Text::String::NewCSVRec(sarr[i]);
 		if (i > 0)
-			this->Append((const UTF8Char*)",");
+			this->AppendChar(',', 1);
 		this->AppendC(s->v, s->leng);
 		s->Release();
 		i++;
@@ -178,7 +178,7 @@ Text::StringBuilderUTF8 *Text::StringBuilderUTF8::AppendCSV(const UTF8Char **sar
 Text::StringBuilderUTF8 *Text::StringBuilderUTF8::AppendToUpper(const UTF8Char *s)
 {
 	UOSInt slen = Text::StrCharCnt(s);
-	this->AllocLeng(slen);
+	this->Text::StringBuilder<UTF8Char>::AllocLeng(slen);
 	this->buffEnd = Text::StrToUpper(this->buffEnd, s);
 	return this;
 }
@@ -186,7 +186,7 @@ Text::StringBuilderUTF8 *Text::StringBuilderUTF8::AppendToUpper(const UTF8Char *
 Text::StringBuilderUTF8 *Text::StringBuilderUTF8::AppendToLower(const UTF8Char *s)
 {
 	UOSInt slen = Text::StrCharCnt(s);
-	this->AllocLeng(slen);
+	this->Text::StringBuilder<UTF8Char>::AllocLeng(slen);
 	this->buffEnd = Text::StrToLower(this->buffEnd, s);
 	return this;
 }

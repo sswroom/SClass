@@ -789,7 +789,7 @@ SSWR::AVIRead::AVIRGISEditImageForm::AVIRGISEditImageForm(UI::GUIClientControl *
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->lyr = lyr;
 	this->navi = navi;
-	sb.Append((const UTF8Char*)"Edit Image - ");
+	sb.AppendC(UTF8STRC("Edit Image - "));
 	sb.Append(lyr->GetSourceNameObj());
 	SetText(sb.ToString());
 	SetFont(0, 8.25, false);

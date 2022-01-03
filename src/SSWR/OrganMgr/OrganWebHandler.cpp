@@ -588,7 +588,7 @@ void SSWR::OrganMgr::OrganWebHandler::LoadUsers()
 				if (user->unorganSpId == 0)
 				{
 					Text::StringBuilderUTF8 sbSName;
-					sbSName.Append((const UTF8Char *)"Unorganized ");
+					sbSName.Append((const UTF8Char*)"Unorganized ");
 					sbSName.Append(user->userName);
 					j = group->species->GetCount();
 					while (j-- > 0)
@@ -3965,7 +3965,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpeciesMod(Net::WebServer::IW
 					}
 					else if ((bookIgn == 0 || bookIgn[0] != '1') && me->SpeciesBookIsExist(sname->v, &sb))
 					{
-						msg.Append((const UTF8Char *)"Species already exist in book: ");
+						msg.Append((const UTF8Char*)"Species already exist in book: ");
 						msg.Append(sb.ToString());
 						msg.Append((const UTF8Char*)", continue?");
 						bookIgn = (const UTF8Char*)"1";
@@ -4010,7 +4010,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpeciesMod(Net::WebServer::IW
 					}
 					else if (nameChg && (bookIgn == 0 || bookIgn[0] != '1') && me->SpeciesBookIsExist(STR_PTR(sname), &sb))
 					{
-						msg.Append((const UTF8Char *)"Species already exist in book: ");
+						msg.Append((const UTF8Char*)"Species already exist in book: ");
 						msg.Append(sb.ToString());
 						msg.Append((const UTF8Char*)", continue?");
 						bookIgn = (const UTF8Char*)"1";

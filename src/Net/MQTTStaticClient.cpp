@@ -131,7 +131,7 @@ Net::MQTTStaticClient::MQTTStaticClient(Net::MQTTConn::PublishMessageHdlr hdlr, 
 	Data::DateTime dt;
 	dt.SetCurrTimeUTC();
 	Text::StringBuilderUTF8 sb;
-	sb.Append((const UTF8Char*)"sswrMQTT/");
+	sb.AppendC(UTF8STRC("sswrMQTT/"));
 	sb.AppendI64(dt.ToTicks());
 	this->clientId = Text::StrCopyNew(sb.ToString());
 	this->packetId = 1;

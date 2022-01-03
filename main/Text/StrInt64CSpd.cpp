@@ -52,13 +52,13 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	IO::ConsoleWriter *console;
 	NEW_CLASS(console, IO::ConsoleWriter());
 	Text::StringBuilderUTF8 sb;
-	sb.Append((const UTF8Char*)"t1 = ");
+	sb.AppendC(UTF8STRC("t1 = "));
 	Text::SBAppendF64(&sb, t1);
-	sb.Append((const UTF8Char*)", t2 = ");
+	sb.AppendC(UTF8STRC(", t2 = "));
 	Text::SBAppendF64(&sb, t2);
-	sb.Append((const UTF8Char*)"\r\nt1b = ");
+	sb.AppendC(UTF8STRC("\r\nt1b = "));
 	Text::SBAppendF64(&sb, t1b);
-	sb.Append((const UTF8Char*)", t2b = ");
+	sb.AppendC(UTF8STRC(", t2b = "));
 	Text::SBAppendF64(&sb, t2b);
 	console->WriteLine(sb.ToString());
 	DEL_CLASS(console);

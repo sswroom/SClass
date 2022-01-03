@@ -13,7 +13,7 @@ void SSWR::AVIRead::AVIRUserAgentBatchForm::UserAgent2Output(const UTF8Char *use
 	UOSInt j;
 	Net::UserAgentDB::ParseUserAgent(&ent, userAgent);
 	sb.ClearStr();
-	sb.Append((const UTF8Char*)"\t{Net::BrowserInfo::");
+	sb.AppendC(UTF8STRC("\t{Net::BrowserInfo::"));
 	sb.Append(Net::BrowserInfo::GetDefName(ent.browser));
 	sb.AppendChar(',', 1);
 	j = sb.GetLength();
@@ -33,7 +33,7 @@ void SSWR::AVIRead::AVIRUserAgentBatchForm::UserAgent2Output(const UTF8Char *use
 	j = sb.GetLength();
 	if (j < 52) sb.AppendChar(' ', 52 - j);
 
-	sb.Append((const UTF8Char*)"Manage::OSInfo::");
+	sb.AppendC(UTF8STRC("Manage::OSInfo::"));
 	sb.Append(Manage::OSInfo::GetDefName(ent.os));
 	sb.AppendChar(',', 1);
 	j = sb.GetLength();
@@ -69,7 +69,7 @@ void SSWR::AVIRead::AVIRUserAgentBatchForm::UserAgent2Output(const UTF8Char *use
 	Text::String *s = Text::JSText::ToNewJSTextDQuote((const UTF8Char*)ent.userAgent);
 	sb.Append(s);
 	s->Release();
-	sb.Append((const UTF8Char*)"},\r\n");
+	sb.AppendC(UTF8STRC("},\r\n"));
 	outSb->Append(sb.ToString());
 
 	SDEL_TEXT(ent.browserVer);

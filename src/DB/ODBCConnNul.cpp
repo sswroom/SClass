@@ -15,7 +15,7 @@ void DB::ODBCConn::UpdateConnInfo()
 {
 }
 
-Bool DB::ODBCConn::Connect(const UTF8Char *dsn, const UTF8Char *uid, const UTF8Char *pwd, const UTF8Char *schema)
+Bool DB::ODBCConn::Connect(Text::String *dsn, Text::String *uid, Text::String *pwd, Text::String *schema)
 {
 	this->svrType = DB::DBUtil::ServerType::Unknown;
 	return false;
@@ -25,9 +25,9 @@ Bool DB::ODBCConn::Connect(const UTF8Char *connStr)
 {
 	if (this->connStr)
 	{
-		Text::StrDelNew(this->connStr);
+		this->connStr->Release();
 	}
-	this->connStr = Text::StrCopyNew(connStr);
+	this->connStr = Text::String::NewNotNull(connStr);
 	this->connErr = CE_NOT_CONNECT;
 	return false;
 }
@@ -76,23 +76,11 @@ DB::ODBCConn::ODBCConn(const UTF8Char *dsn, const UTF8Char *uid, const UTF8Char 
 	this->tzQhr = 0;
 	this->lastStmtHand = 0;
 	this->connErr = DB::ODBCConn::CE_NOT_CONNECT;
-	if (dsn)
-		this->dsn = Text::StrCopyNew(dsn);
-	else
-		this->dsn = 0;
-	if (uid)
-		this->uid = Text::StrCopyNew(uid);
-	else
-		this->uid = 0;
-	if (pwd)
-		this->pwd = Text::StrCopyNew(pwd);
-	else
-		this->pwd = 0;
-	if (schema)
-		this->schema = Text::StrCopyNew(schema);
-	else
-		this->schema = 0;
-	this->Connect(dsn, uid, pwd, schema);
+	this->dsn = Text::String::NewOrNull(dsn);
+	this->uid = Text::String::NewOrNull(uid);
+	this->pwd = Text::String::NewOrNull(pwd);
+	this->schema = Text::String::NewOrNull(schema);
+	this->Connect(this->dsn, this->uid, this->pwd, this->schema);
 }
 
 /*DB::ODBCConn::ODBCConn(const WChar *dsn, const WChar *uid, const WChar *pwd, const WChar *schema, IO::LogTool *log) : DB::DBConn(0)
@@ -125,24 +113,16 @@ DB::ODBCConn::ODBCConn(const UTF8Char *dsn, const UTF8Char *uid, const UTF8Char 
 DB::ODBCConn::~ODBCConn()
 {
 	Close();
-	if (this->dsn)
-		Text::StrDelNew(this->dsn);
-	this->dsn = 0;
-	if (this->uid)
-		Text::StrDelNew(this->uid);
-	this->uid = 0;
-	if (this->pwd)
-		Text::StrDelNew(this->pwd);
-	this->pwd = 0;
-	if (this->connStr)
-		Text::StrDelNew(this->connStr);
-	this->connStr = 0;
+	SDEL_STRING(this->dsn);
+	SDEL_STRING(this->uid);
+	SDEL_STRING(this->pwd);
+	SDEL_STRING(this->connStr);
 	if (this->tableNames)
 	{
 		OSInt i = this->tableNames->GetCount();
 		while (i-- > 0)
 		{
-			Text::StrDelNew((WChar*)this->tableNames->GetItem(i));
+			Text::StrDelNew(this->tableNames->GetItem(i));
 		}
 		DEL_CLASS(this->tableNames);
 		this->tableNames = 0;
@@ -173,7 +153,7 @@ void DB::ODBCConn::ForceTz(Int8 tzQhr)
 
 void DB::ODBCConn::GetConnName(Text::StringBuilderUTF *sb)
 {
-	sb->Append((const UTF8Char *)"ODBC:");
+	sb->Append((const UTF8Char*)"ODBC:");
 	if (this->connStr)
 	{
 		sb->Append(this->connStr);
@@ -290,11 +270,11 @@ DB::DBReader *DB::ODBCConn::GetTableData(const UTF8Char *name, Data::ArrayList<c
 void DB::ODBCConn::ShowSQLError(const UInt16 *state, const UInt16 *errMsg)
 {
 	Text::StringBuilderUTF8 sb;
-	sb.Append((const UTF8Char*)"ODBC Error: [");
+	sb.AppendC(UTF8STRC("ODBC Error: ["));
 	const UTF8Char *csptr = Text::StrToUTF8New(state);
 	sb.Append(csptr);
 	Text::StrDelNew(csptr);
-	sb.Append((const UTF8Char*)"] ");
+	sb.AppendC(UTF8STRC("] "));
 	csptr = Text::StrToUTF8New(errMsg);
 	sb.Append(csptr);
 	Text::StrDelNew(csptr);
@@ -305,27 +285,27 @@ void DB::ODBCConn::LogSQLError(void *hStmt)
 {
 }
 
-const UTF8Char *DB::ODBCConn::GetConnStr()
+Text::String *DB::ODBCConn::GetConnStr()
 {
 	return this->connStr;
 }
 
-const UTF8Char *DB::ODBCConn::GetConnDSN()
+Text::String *DB::ODBCConn::GetConnDSN()
 {
 	return this->dsn;
 }
 
-const UTF8Char *DB::ODBCConn::GetConnUID()
+Text::String *DB::ODBCConn::GetConnUID()
 {
 	return this->uid;
 }
 
-const UTF8Char *DB::ODBCConn::GetConnPWD()
+Text::String *DB::ODBCConn::GetConnPWD()
 {
 	return this->pwd;
 }
 
-const UTF8Char *DB::ODBCConn::GetConnSchema()
+Text::String *DB::ODBCConn::GetConnSchema()
 {
 	return this->schema;
 }

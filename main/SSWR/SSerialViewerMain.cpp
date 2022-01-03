@@ -75,9 +75,9 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			readError = false;
 			toStop = false;
 			sb.ClearStr();
-			sb.Append((const UTF8Char*)"Opening Serial Port ");
+			sb.AppendC(UTF8STRC("Opening Serial Port "));
 			sb.AppendU32(portNo);
-			sb.Append((const UTF8Char*)" with baudrate = ");
+			sb.AppendC(UTF8STRC(" with baudrate = "));
 			sb.AppendU32(baudRate);
 			NEW_CLASS(port, IO::SerialPort(portNo, baudRate, IO::SerialPort::PARITY_NONE, false));
 			if (port->IsError())

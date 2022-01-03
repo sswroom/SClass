@@ -1,10 +1,10 @@
-#include "stdafx.h"
+#include "Stdafx.h"
 #include "Text/StringBuilder.h"
 #include "Crypto/Hash/CRC32R.h"
 #include "IO/DirectoryPackage.h"
-#include "IO/MTKGPSNMEA.h"
 #include "IO/Path.h"
 #include "IO/SerialPort.h"
+#include "IO/Device/MTKGPSNMEA.h"
 #include "IO/StmData/FileData.h"
 #include "Map/TileMapLayer.h"
 #include "Map/OSM/OSMTileMap.h"
@@ -59,7 +59,6 @@
 #include "UI/MessageDialog.h"
 #include "UI/GUITextBox.h"
 #include "UtilUI/TextViewerForm.h"
-#include <windows.h>
 
 typedef enum
 {
@@ -77,7 +76,7 @@ void __stdcall SSWR::AVIReadCE::AVIRCEBaseForm::FileHandler(void *userObj, const
 	IO::StmData::FileData *fd;
 	IO::DirectoryPackage *pkg;
 	Text::StringBuilderUTF8 sb;
-	sb.Append((const UTF8Char*)"Cannot parse:");
+	sb.AppendC(UTF8STRC("Cannot parse:"));
 	Bool found = false;
 	me->core->BeginLoad();
 	OSInt i = 0;
@@ -94,7 +93,7 @@ void __stdcall SSWR::AVIReadCE::AVIRCEBaseForm::FileHandler(void *userObj, const
 			NEW_CLASS(fd, IO::StmData::FileData(files[i], false));
 			if (!me->core->LoadData(fd, 0))
 			{
-				sb.Append((const UTF8Char*)"\n");
+				sb.AppendC(UTF8STRC("\n"));
 				sb.Append(files[i]);
 				found = true;
 			}
@@ -160,9 +159,9 @@ SSWR::AVIReadCE::AVIRCEBaseForm::AVIRCEBaseForm(UI::GUIClientControl *parent, UI
 	Data::ArrayList<MenuInfo*> *menu;
 	NEW_CLASS(this->menuItems, Data::Int32Map<Data::ArrayList<MenuInfo*>*>());
 
-	OSInt w;
-	OSInt h;
-	this->GetSize(&w, &h);
+	UOSInt w;
+	UOSInt h;
+	this->GetSizeP(&w, &h);
 	NEW_CLASS(this->lbCategory, UI::GUIListBox(ui, this, true));
 	this->lbCategory->SetRect(0, 0, (w >> 1) - 3, 23, false);
 	this->lbCategory->SetDockType(UI::GUIControl::DOCK_LEFT);

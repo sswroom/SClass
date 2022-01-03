@@ -70,7 +70,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	NEW_CLASS(writer, IO::StreamWriter(fs, 65001));
 
 	sb.ClearStr();
-	sb.Append((const UTF8Char*)"Total Memory Size: ");
+	sb.AppendC(UTF8STRC("Total Memory Size: "));
 	memSize = sysInfo.GetTotalMemSize();
 	ByteDisp(sbuff, memSize);
 	sb.Append(sbuff);
@@ -78,27 +78,27 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 
 
 	sb.ClearStr();
-	sb.Append((const UTF8Char*)"Platform: ");
+	sb.AppendC(UTF8STRC("Platform: "));
 	if (sysInfo.GetPlatformName(sbuff))
 	{
 		sb.Append(sbuff);
 	}
 	else
 	{
-		sb.Append((const UTF8Char*)"-");
+		sb.AppendC(UTF8STRC("-"));
 	}
 	writer->WriteLine(sb.ToString());
 	console->WriteLine(sb.ToString());
 
 	sb.ClearStr();
-	sb.Append((const UTF8Char*)"CPU: ");
+	sb.AppendC(UTF8STRC("CPU: "));
 	if (cpuInfo.GetCPUName(sbuff))
 	{
 		sb.Append(sbuff);
 	}
 	else
 	{
-		sb.Append((const UTF8Char*)"-");
+		sb.AppendC(UTF8STRC("-"));
 	}
 	writer->WriteLine(sb.ToString());
 	console->WriteLine(sb.ToString());
@@ -112,35 +112,35 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	{
 		ram = ramList.GetItem(i);
 		sb.ClearStr();
-		sb.Append((const UTF8Char*)"RAM: ");
+		sb.AppendC(UTF8STRC("RAM: "));
 		if (ram->deviceLocator)
 		{
 			sb.Append(ram->deviceLocator);
 		}
-		sb.Append((const UTF8Char*)"\t");
+		sb.AppendC(UTF8STRC("\t"));
 		if (ram->manufacturer)
 		{
 			sb.Append(ram->manufacturer);
 		}
-		sb.Append((const UTF8Char*)"\t");
+		sb.AppendC(UTF8STRC("\t"));
 		if (ram->partNo)
 		{
 			sb.Append(ram->partNo);
 		}
-		sb.Append((const UTF8Char*)"\t");
+		sb.AppendC(UTF8STRC("\t"));
 		if (ram->sn)
 		{
 			sb.Append(ram->sn);
 		}
-		sb.Append((const UTF8Char*)"\t");
+		sb.AppendC(UTF8STRC("\t"));
 		sb.AppendUOSInt(ram->defSpdMHz);
-		sb.Append((const UTF8Char*)"\t");
+		sb.AppendC(UTF8STRC("\t"));
 		sb.AppendUOSInt(ram->confSpdMHz);
-		sb.Append((const UTF8Char*)"\t");
+		sb.AppendC(UTF8STRC("\t"));
 		sb.AppendU32(ram->dataWidth);
-		sb.Append((const UTF8Char*)"\t");
+		sb.AppendC(UTF8STRC("\t"));
 		sb.AppendU32(ram->totalWidth);
-		sb.Append((const UTF8Char*)"\t");
+		sb.AppendC(UTF8STRC("\t"));
 		sb.AppendU64(ram->memorySize);
 		writer->WriteLine(sb.ToString());
 		console->WriteLine(sb.ToString());
@@ -189,22 +189,22 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				Double rate = (Double)(currSize * (UInt64)loopCnt) / t * 2.0;
 
 				sb.ClearStr();
-				sb.Append((const UTF8Char*)"Copy\t");
+				sb.AppendC(UTF8STRC("Copy\t"));
 				sb.AppendUOSInt(currSize);
-				sb.Append((const UTF8Char*)"\t");
+				sb.AppendC(UTF8STRC("\t"));
 				Text::SBAppendF64(&sb, rate);
 				writer->WriteLine(sb.ToString());
 
 				sb.ClearStr();
-				sb.Append((const UTF8Char*)"Copy\t");
+				sb.AppendC(UTF8STRC("Copy\t"));
 				ByteDisp(sbuff, currSize);
 				sb.Append(sbuff);
-				sb.Append((const UTF8Char*)"\t");
+				sb.AppendC(UTF8STRC("\t"));
 				Text::StrDoubleFmt(sbuff, rate, "0.0");
 				sb.Append(sbuff);
-				sb.Append((const UTF8Char*)"\t");
+				sb.AppendC(UTF8STRC("\t"));
 				sb.AppendUOSInt(loopCnt);
-				sb.Append((const UTF8Char*)"\t");
+				sb.AppendC(UTF8STRC("\t"));
 				Text::SBAppendF64(&sb, t);
 				console->WriteLine(sb.ToString());
 				break;
@@ -235,22 +235,22 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				Double rate = (Double)(currSize * (UInt64)loopCnt) / t;
 
 				sb.ClearStr();
-				sb.Append((const UTF8Char*)"Write\t");
+				sb.AppendC(UTF8STRC("Write\t"));
 				sb.AppendUOSInt(currSize);
-				sb.Append((const UTF8Char*)"\t");
+				sb.AppendC(UTF8STRC("\t"));
 				Text::SBAppendF64(&sb, rate);
 				writer->WriteLine(sb.ToString());
 
 				sb.ClearStr();
-				sb.Append((const UTF8Char*)"Write\t");
+				sb.AppendC(UTF8STRC("Write\t"));
 				ByteDisp(sbuff, currSize);
 				sb.Append(sbuff);
-				sb.Append((const UTF8Char*)"\t");
+				sb.AppendC(UTF8STRC("\t"));
 				Text::StrDoubleFmt(sbuff, rate, "0.0");
 				sb.Append(sbuff);
-				sb.Append((const UTF8Char*)"\t");
+				sb.AppendC(UTF8STRC("\t"));
 				sb.AppendUOSInt(loopCnt);
-				sb.Append((const UTF8Char*)"\t");
+				sb.AppendC(UTF8STRC("\t"));
 				Text::SBAppendF64(&sb, t);
 				console->WriteLine(sb.ToString());
 				break;
@@ -281,22 +281,22 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				Double rate = (Double)(currSize * (UInt64)loopCnt) / t;
 
 				sb.ClearStr();
-				sb.Append((const UTF8Char*)"Read\t");
+				sb.AppendC(UTF8STRC("Read\t"));
 				sb.AppendUOSInt(currSize);
-				sb.Append((const UTF8Char*)"\t");
+				sb.AppendC(UTF8STRC("\t"));
 				Text::SBAppendF64(&sb, rate);
 				writer->WriteLine(sb.ToString());
 
 				sb.ClearStr();
-				sb.Append((const UTF8Char*)"Read\t");
+				sb.AppendC(UTF8STRC("Read\t"));
 				ByteDisp(sbuff, currSize);
 				sb.Append(sbuff);
-				sb.Append((const UTF8Char*)"\t");
+				sb.AppendC(UTF8STRC("\t"));
 				Text::StrDoubleFmt(sbuff, rate, "0.0");
 				sb.Append(sbuff);
-				sb.Append((const UTF8Char*)"\t");
+				sb.AppendC(UTF8STRC("\t"));
 				sb.AppendUOSInt(loopCnt);
-				sb.Append((const UTF8Char*)"\t");
+				sb.AppendC(UTF8STRC("\t"));
 				Text::SBAppendF64(&sb, t);
 				console->WriteLine(sb.ToString());
 				break;

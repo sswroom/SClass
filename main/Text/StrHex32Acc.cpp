@@ -21,7 +21,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		{
 			Text::StringBuilderUTF8 sb;
 			sb.AppendU32(i);
-			sb.Append((const UTF8Char*)" != ");
+			sb.AppendC(UTF8STRC(" != "));
 			sb.AppendU32(j);
 			console->WriteLine(sb.ToString());
 			succ = false;

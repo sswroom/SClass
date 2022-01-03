@@ -108,7 +108,7 @@ void __stdcall SSWR::AVIRead::AVIRWiFiLogManagerForm::OnContentSelChg(void *user
 	while (i < log->ieLen)
 	{
 		Net::WirelessLANIE::ToString(&log->ieBuff[i], &sb);
-		sb.Append((const UTF8Char*)"\r\n");
+		sb.AppendC(UTF8STRC("\r\n"));
 		i += (UOSInt)log->ieBuff[i + 1] + 2;
 	}
 	me->txtFileIE->SetText(sb.ToString());
@@ -300,7 +300,7 @@ void SSWR::AVIRead::AVIRWiFiLogManagerForm::UpdateStatus()
 {
 	Text::StringBuilderUTF8 sb;
 	sb.AppendUOSInt(this->macList->GetCount());
-	sb.Append((const UTF8Char*)" Records");
+	sb.AppendC(UTF8STRC(" Records"));
 	this->lblInfo->SetText(sb.ToString());
 }
 

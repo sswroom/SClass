@@ -430,7 +430,7 @@ void Net::HTTPOSClient::AddHeader(const UTF8Char *name, const UTF8Char *value)
 		{*/
 			Text::StringBuilderUTF8 sb;
 			sb.Append(name);
-			sb.Append((const UTF8Char*)": ");
+			sb.AppendC(UTF8STRC(": "));
 			sb.Append(value);
 			data->headers = curl_slist_append(data->headers, (const Char*)sb.ToString());
 //		}

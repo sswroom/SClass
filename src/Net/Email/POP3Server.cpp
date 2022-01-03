@@ -138,18 +138,18 @@ UOSInt Net::Email::POP3Server::WriteMessage(Net::TCPClient *cli, Bool success, c
 	Text::StringBuilderUTF8 sb;
 	if (success)
 	{
-		sb.Append((const UTF8Char *)"+OK");
+		sb.Append((const UTF8Char*)"+OK");
 	}
 	else
 	{
-		sb.Append((const UTF8Char *)"-ERR");
+		sb.Append((const UTF8Char*)"-ERR");
 	}
 	if (msg)
 	{
-		sb.Append((const UTF8Char *)" ");
+		sb.Append((const UTF8Char*)" ");
 		sb.Append(msg);
 	}
-	sb.Append((const UTF8Char *)"\r\n");
+	sb.Append((const UTF8Char*)"\r\n");
 
 
 	UOSInt buffSize;
@@ -207,7 +207,7 @@ void Net::Email::POP3Server::ParseCmd(Net::TCPClient *cli, MailStatus *cliStatus
 			mailCnt = this->mailCtrl->GetMessageStat(cliStatus->userId, &mailSize);
 			Text::StringBuilderUTF8 sb;
 			sb.AppendUOSInt(mailCnt);
-			sb.Append((const UTF8Char *)" ");
+			sb.Append((const UTF8Char*)" ");
 			sb.AppendUOSInt(mailSize);
 			WriteMessage(cli, true, sb.ToString());
 		}
@@ -237,13 +237,13 @@ void Net::Email::POP3Server::ParseCmd(Net::TCPClient *cli, MailStatus *cliStatus
 					if (this->mailCtrl->GetMessageInfo(cliStatus->userId, id, &info))
 					{
 						sb.AppendU32(id + 1);
-						sb.Append((const UTF8Char *)" ");
+						sb.Append((const UTF8Char*)" ");
 						sb.AppendUOSInt(info.size);
-						sb.Append((const UTF8Char *)"\r\n");
+						sb.Append((const UTF8Char*)"\r\n");
 					}
 					i++;
 				}
-				sb.Append((const UTF8Char *)".\r\n");
+				sb.Append((const UTF8Char*)".\r\n");
 				WriteRAW(cli, sb.ToString());
 			}
 			else
@@ -273,7 +273,7 @@ void Net::Email::POP3Server::ParseCmd(Net::TCPClient *cli, MailStatus *cliStatus
 				{
 					Text::StringBuilderUTF8 sb;
 					sb.AppendU32(msgIndex);
-					sb.Append((const UTF8Char *)" ");
+					sb.Append((const UTF8Char*)" ");
 					sb.AppendUOSInt(info.size);
 					WriteMessage(cli, true, sb.ToString());
 				}
@@ -379,13 +379,13 @@ void Net::Email::POP3Server::ParseCmd(Net::TCPClient *cli, MailStatus *cliStatus
 					if (this->mailCtrl->GetMessageInfo(cliStatus->userId, id, &info))
 					{
 						sb.AppendU32(id + 1);
-						sb.Append((const UTF8Char *)" ");
+						sb.Append((const UTF8Char*)" ");
 						sb.Append(info.uid);
-						sb.Append((const UTF8Char *)"\r\n");
+						sb.Append((const UTF8Char*)"\r\n");
 					}
 					i++;
 				}
-				sb.Append((const UTF8Char *)".\r\n");
+				sb.Append((const UTF8Char*)".\r\n");
 				WriteRAW(cli, sb.ToString());
 			}
 			else
@@ -415,7 +415,7 @@ void Net::Email::POP3Server::ParseCmd(Net::TCPClient *cli, MailStatus *cliStatus
 				{
 					Text::StringBuilderUTF8 sb;
 					sb.AppendU32(msgIndex);
-					sb.Append((const UTF8Char *)" ");
+					sb.Append((const UTF8Char*)" ");
 					sb.Append(info.uid);
 					WriteMessage(cli, true, sb.ToString());
 				}

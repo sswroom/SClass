@@ -44,7 +44,7 @@ void DB::ODBCConn::UpdateConnInfo()
 		if (log)
 		{
 			Text::StringBuilderUTF8 sb;
-			sb.Append((const UTF8Char*)"Driver is ");
+			sb.AppendC(UTF8STRC("Driver is "));
 			sb.Append((const UTF8Char*)buff);
 			log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_ACTION);
 		}
@@ -115,7 +115,7 @@ void DB::ODBCConn::UpdateConnInfo()
 
 			Text::StringBuilderUTF8 sb;
 			sb.AppendDate(&dt1);
-			sb.Append((const UTF8Char*)", ");
+			sb.AppendC(UTF8STRC(", "));
 			sb.AppendDate(&dt2);
 			this->tzQhr = (Int8)(dt1.DiffMS(&dt2) / 900000);
 		}
@@ -182,12 +182,12 @@ Bool DB::ODBCConn::Connect(Text::String *dsn, Text::String *uid, Text::String *p
 		ret = SQLGetDiagRecW(SQL_HANDLE_DBC, hConn, 1, (SQLWCHAR*)state, (SQLINTEGER*)&errCode, msg, 256, &msgSize);
 		if (ret == SQL_SUCCESS || ret == SQL_SUCCESS_WITH_INFO)
 		{
-			sb.Append((const UTF8Char*)"[");
+			sb.AppendC(UTF8STRC("["));
 			state[5] = 0;
 			Text::String *s = Text::String::NewNotNull((const UTF16Char*)state);
 			sb.Append(s);
 			s->Release();
-			sb.Append((const UTF8Char*)"]");
+			sb.AppendC(UTF8STRC("]"));
 			if (msgSize > 255)
 			{
 				SQLWCHAR *tmpBuff = MemAlloc(SQLWCHAR, (UInt16)(msgSize + 1));
@@ -221,7 +221,7 @@ Bool DB::ODBCConn::Connect(Text::String *dsn, Text::String *uid, Text::String *p
 	if (schema && schema->leng > 0)
 	{
 		Text::StringBuilderUTF8 sb;
-		sb.Append((const UTF8Char*)"use ");
+		sb.AppendC(UTF8STRC("use "));
 		sb.Append(schema);
 		this->ExecuteNonQueryC(sb.ToString(), sb.GetLength());
 	}
@@ -287,12 +287,12 @@ Bool DB::ODBCConn::Connect(Text::String *connStr)
 		ret = SQLGetDiagRecW(SQL_HANDLE_DBC, hConn, 1, (SQLWCHAR*)state, (SQLINTEGER*)&errCode, msg, 256, &msgSize);
 		if (ret == SQL_SUCCESS || ret == SQL_SUCCESS_WITH_INFO)
 		{
-			sb.Append((const UTF8Char*)"[");
+			sb.AppendC(UTF8STRC("["));
 			state[5] = 0;
 			Text::String *s = Text::String::NewNotNull((const UTF16Char*)state);
 			sb.Append(s);
 			s->Release();
-			sb.Append((const UTF8Char*)"]");
+			sb.AppendC(UTF8STRC("]"));
 			if (msgSize > 255)
 			{
 				SQLWCHAR *tmpBuff = MemAlloc(SQLWCHAR, (UInt16)(msgSize + 1));
@@ -457,7 +457,7 @@ Int8 DB::ODBCConn::GetTzQhr()
 
 void DB::ODBCConn::GetConnName(Text::StringBuilderUTF *sb)
 {
-	sb->Append((const UTF8Char *)"ODBC:");
+	sb->Append((const UTF8Char*)"ODBC:");
 	if (this->connStr)
 	{
 		sb->Append(this->connStr);
@@ -743,12 +743,12 @@ void DB::ODBCConn::GetErrorMsg(Text::StringBuilderUTF *str)
 		SQLRETURN ret = SQLGetDiagRecW(SQL_HANDLE_STMT, this->lastStmtHand, (Int16)recNumber, state, (SQLINTEGER*)&errCode, msg, 256, &msgSize);
 		if (ret == SQL_SUCCESS || ret == SQL_SUCCESS_WITH_INFO)
 		{
-			str->Append((const UTF8Char*)"[");
+			str->AppendC(UTF8STRC("["));
 			state[5] = 0;
 			const UTF8Char *csptr = Text::StrToUTF8New((const UTF16Char*)state);
 			str->Append(csptr);
 			Text::StrDelNew(csptr);
-			str->Append((const UTF8Char*)"]");
+			str->AppendC(UTF8STRC("]"));
 
 #if _WCHAR_SIZE == 4
 			const UTF8Char *sptr = Text::StrToUTF8New(state);
@@ -1022,19 +1022,19 @@ DB::DBReader *DB::ODBCConn::GetTableData(const UTF8Char *name, Data::ArrayList<c
 	UOSInt i;
 	UOSInt j;
 	Text::StringBuilderUTF8 sb;
-	sb.Append((const UTF8Char*)"select ");
+	sb.AppendC(UTF8STRC("select "));
 	if (this->svrType == DB::DBUtil::ServerType::MSSQL || this->svrType == DB::DBUtil::ServerType::Access)
 	{
 		if (maxCnt > 0)
 		{
-			sb.Append((const UTF8Char*)"TOP ");
+			sb.AppendC(UTF8STRC("TOP "));
 			sb.AppendUOSInt(maxCnt);
 			sb.AppendChar(' ', 1);
 		}
 	}
 	if (columnNames == 0 || columnNames->GetCount() == 0)
 	{
-		sb.Append((const UTF8Char*)"*");
+		sb.AppendC(UTF8STRC("*"));
 	}
 	else
 	{
@@ -1044,14 +1044,14 @@ DB::DBReader *DB::ODBCConn::GetTableData(const UTF8Char *name, Data::ArrayList<c
 		{
 			if (i > 0)
 			{
-				sb.Append((const UTF8Char*)",");
+				sb.AppendC(UTF8STRC(","));
 			}
 			DB::DBUtil::SDBColUTF8(sbuff, columnNames->GetItem(i), this->svrType);
 			sb.Append(sbuff);
 			i++;
 		}
 	}
-	sb.Append((const UTF8Char*)" from ");
+	sb.AppendC(UTF8STRC(" from "));
 	i = 0;
 	while (true)
 	{
@@ -1072,7 +1072,7 @@ DB::DBReader *DB::ODBCConn::GetTableData(const UTF8Char *name, Data::ArrayList<c
 	{
 		if (maxCnt > 0)
 		{
-			sb.Append((const UTF8Char*)" LIMIT ");
+			sb.AppendC(UTF8STRC(" LIMIT "));
 			sb.AppendUOSInt(maxCnt);
 		}
 	}
@@ -1082,15 +1082,15 @@ DB::DBReader *DB::ODBCConn::GetTableData(const UTF8Char *name, Data::ArrayList<c
 void DB::ODBCConn::ShowSQLError(const UTF16Char *state, const UTF16Char *errMsg)
 {
 	Text::StringBuilderUTF8 sb;
-	sb.Append((const UTF8Char*)"ODBC Error: [");
+	sb.AppendC(UTF8STRC("ODBC Error: ["));
 	const UTF8Char *csptr = Text::StrToUTF8New(state);
 	sb.Append(csptr);
 	Text::StrDelNew(csptr);
-	sb.Append((const UTF8Char*)"] ");
+	sb.AppendC(UTF8STRC("] "));
 	csptr = Text::StrToUTF8New(errMsg);
 	sb.Append(csptr);
 	Text::StrDelNew(csptr);
-	this->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_ERR_DETAIL);
+	this->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_ERR_DETAIL);
 }
 
 void DB::ODBCConn::LogSQLError(void *hStmt)

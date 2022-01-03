@@ -48,15 +48,15 @@ void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnPingPacket(void *userData, 
 	}
 	mutUsage.EndUse();
 
-	sb.Append((const UTF8Char *)"Received from ");
+	sb.AppendC(UTF8STRC("Received from "));
 	Net::SocketUtil::GetIPv4Name(sbuff, srcIP);
 	sb.Append(sbuff);
-	sb.Append((const UTF8Char *)" to ");
+	sb.AppendC(UTF8STRC(" to "));
 	Net::SocketUtil::GetIPv4Name(sbuff, destIP);
 	sb.Append(sbuff);
-	sb.Append((const UTF8Char *)", size = ");
+	sb.AppendC(UTF8STRC(", size = "));
 	sb.AppendUOSInt(packetSize);
-	sb.Append((const UTF8Char *)", ttl = ");
+	sb.AppendC(UTF8STRC(", ttl = "));
 	sb.AppendU16(ttl);
 	me->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_COMMAND);
 }
@@ -162,7 +162,7 @@ void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnIPSelChg(void *userObj)
 			while (i < j)
 			{
 				sb.Append(rec->GetItem(i));
-				sb.Append((const UTF8Char*)"\r\n");
+				sb.AppendC(UTF8STRC("\r\n"));
 				i++;
 			}
 		}

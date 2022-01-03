@@ -95,7 +95,7 @@ void Crypto::Cert::CurlCert::ToString(Text::StringBuilderUTF *sb)
 	while (slist)
 	{
 		sb->Append((const UTF8Char*)slist->data);
-		sb->Append((const UTF8Char*)"\r\n");
+		sb->AppendC(UTF8STRC("\r\n"));
 		slist = slist->next;
 	}
 }

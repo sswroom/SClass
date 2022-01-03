@@ -113,7 +113,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	if (succ)
 	{
 		sb.ClearStr();
-		sb.Append((const UTF8Char*)"Listening to port ");
+		sb.AppendC(UTF8STRC("Listening to port "));
 		sb.AppendU16(port);
 		console->WriteLine(sb.ToString());
 		MyHandler *myHdlr;

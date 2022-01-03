@@ -34,7 +34,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiScanForm::OnWifiSelChg(void *userObj)
 			ie = bss->GetIE(i);
 			if (i > 0)
 			{
-				sb.Append((const UTF8Char*)"\r\n");
+				sb.AppendC(UTF8STRC("\r\n"));
 			}
 			Net::WirelessLANIE::ToString(ie->GetIEBuff(), &sb);
 			i++;

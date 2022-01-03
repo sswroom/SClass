@@ -60,9 +60,9 @@ void SSWR::AVIRead::AVIRGISFontForm::UpdateFontText()
 {
 	Text::StringBuilderUTF8 sb;
 	sb.Append(this->fontName);
-	sb.Append((const UTF8Char*)", ");
+	sb.AppendC(UTF8STRC(", "));
 	Text::SBAppendF64(&sb, this->fontSizePt);
-	sb.Append((const UTF8Char*)"pt");
+	sb.AppendC(UTF8STRC("pt"));
 	this->txtFont->SetText(sb.ToString());
 }
 

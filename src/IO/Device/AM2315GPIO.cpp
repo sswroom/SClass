@@ -117,9 +117,9 @@ OSInt IO::Device::AM2315GPIO::DirectRead(UInt8 *buff, OSInt readSize)
 		i++;
 	}
 	this->I2CEnd();
-	sb.Append((const UTF8Char*)"Read size = ");
+	sb.AppendC(UTF8STRC("Read size = "));
 	sb.AppendOSInt(i);
-	sb.Append((const UTF8Char*)": ");
+	sb.AppendC(UTF8STRC(": "));
 	if (i > 0)
 	{
 		sb.AppendHex(buff, (UOSInt)i, ' ', Text::LineBreakType::None);

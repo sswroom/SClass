@@ -103,7 +103,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	if (cnt > 0)
 	{
 		sb.ClearStr();
-		sb.Append((const UTF8Char*)"Device Count = ");
+		sb.AppendC(UTF8STRC("Device Count = "));
 		sb.AppendUOSInt(cnt);
 		console->WriteLine(sb.ToString());
 		i = 0;
@@ -111,11 +111,11 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		{
 			devInfo = devList.GetItem(i);
 			sb.ClearStr();
-			sb.Append((const UTF8Char*)"Type = ");
+			sb.AppendC(UTF8STRC("Type = "));
 			sb.AppendI32(devInfo->devType);
-			sb.Append((const UTF8Char*)", Index ");
+			sb.AppendC(UTF8STRC(", Index "));
 			sb.AppendUOSInt(devInfo->devId);
-			sb.Append((const UTF8Char*)", Name = ");
+			sb.AppendC(UTF8STRC(", Name = "));
 			sb.Append(devInfo->devName);
 			console->WriteLine(sb.ToString());
 
@@ -148,7 +148,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 
 				console->WriteLine();
 				sb.ClearStr();
-				sb.Append((const UTF8Char*)"Capture using ");
+				sb.AppendC(UTF8STRC("Capture using "));
 				capture->GetSourceName(sbuff);
 				sb.Append(sbuff);
 				console->WriteLine(sb.ToString());
@@ -170,28 +170,28 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				while (i < j)
 				{
 					sb.ClearStr();
-					sb.Append((const UTF8Char*)"Format: ");
+					sb.AppendC(UTF8STRC("Format: "));
 					if (formats[i].info.fourcc == 0)
 					{
-						sb.Append((const UTF8Char*)"RGB ");
+						sb.AppendC(UTF8STRC("RGB "));
 					}
 					else
 					{
 						sb.AppendC((const UTF8Char*)&formats[i].info.fourcc, 4);
 					}
-					sb.Append((const UTF8Char*)", Size = ");
+					sb.AppendC(UTF8STRC(", Size = "));
 					sb.AppendUOSInt(formats[i].info.dispWidth);
-					sb.Append((const UTF8Char*)" x ");
+					sb.AppendC(UTF8STRC(" x "));
 					sb.AppendUOSInt(formats[i].info.dispHeight);
-					sb.Append((const UTF8Char*)", bpp = ");
+					sb.AppendC(UTF8STRC(", bpp = "));
 					sb.AppendU32(formats[i].info.storeBPP);
-					sb.Append((const UTF8Char*)", rate = ");
+					sb.AppendC(UTF8STRC(", rate = "));
 					sb.AppendU32(formats[i].frameRateNorm);
-					sb.Append((const UTF8Char*)" / ");
+					sb.AppendC(UTF8STRC(" / "));
 					sb.AppendU32(formats[i].frameRateDenorm);
-					sb.Append((const UTF8Char*)" (");
+					sb.AppendC(UTF8STRC(" ("));
 					Text::SBAppendF64(&sb, formats[i].frameRateNorm / (Double)formats[i].frameRateDenorm);
-					sb.Append((const UTF8Char*)")");
+					sb.AppendC(UTF8STRC(")"));
 					console->WriteLine(sb.ToString());
 					thisSize = formats[i].info.dispWidth * formats[i].info.dispHeight;
 					if (formats[i].info.fourcc == *(UInt32*)"MJPG")
@@ -228,20 +228,20 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				if (maxSize > 0)
 				{
 					sb.ClearStr();
-					sb.Append((const UTF8Char*)"Setting Format: ");
+					sb.AppendC(UTF8STRC("Setting Format: "));
 					if (maxFmt == 0)
 					{
-						sb.Append((const UTF8Char*)"RGB ");
+						sb.AppendC(UTF8STRC("RGB "));
 					}
 					else
 					{
 						sb.AppendC((const UTF8Char*)&maxFmt, 4);
 					}
-					sb.Append((const UTF8Char*)", Size = ");
+					sb.AppendC(UTF8STRC(", Size = "));
 					sb.AppendUOSInt(maxWidth);
-					sb.Append((const UTF8Char*)" x ");
+					sb.AppendC(UTF8STRC(" x "));
 					sb.AppendUOSInt(maxHeight);
-					sb.Append((const UTF8Char*)", bpp = ");
+					sb.AppendC(UTF8STRC(", bpp = "));
 					sb.AppendU32(maxBpp);
 					console->WriteLine(sb.ToString());
 					capture->SetPreferSize(maxWidth, maxHeight, maxFmt, maxBpp, maxRateNumer, maxRateDenom);
@@ -262,28 +262,28 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				if (capture->GetVideoInfo(&info, &frameRateNorm, &frameRateDenorm, &frameMaxSize))
 				{
 					sb.ClearStr();
-					sb.Append((const UTF8Char*)"Using Format: ");
+					sb.AppendC(UTF8STRC("Using Format: "));
 					if (info.fourcc == 0)
 					{
-						sb.Append((const UTF8Char*)"RGB ");
+						sb.AppendC(UTF8STRC("RGB "));
 					}
 					else
 					{
 						sb.AppendC((const UTF8Char*)&info.fourcc, 4);
 					}
-					sb.Append((const UTF8Char*)", Size = ");
+					sb.AppendC(UTF8STRC(", Size = "));
 					sb.AppendUOSInt(info.dispWidth);
-					sb.Append((const UTF8Char*)" x ");
+					sb.AppendC(UTF8STRC(" x "));
 					sb.AppendUOSInt(info.dispHeight);
-					sb.Append((const UTF8Char*)", bpp = ");
+					sb.AppendC(UTF8STRC(", bpp = "));
 					sb.AppendU32(info.storeBPP);
-					sb.Append((const UTF8Char*)", rate = ");
+					sb.AppendC(UTF8STRC(", rate = "));
 					sb.AppendU32(frameRateNorm);
-					sb.Append((const UTF8Char*)" / ");
+					sb.AppendC(UTF8STRC(" / "));
 					sb.AppendU32(frameRateDenorm);
-					sb.Append((const UTF8Char*)" (");
+					sb.AppendC(UTF8STRC(" ("));
 					Text::SBAppendF64(&sb, frameRateNorm / (Double)frameRateDenorm);
-					sb.Append((const UTF8Char*)")");
+					sb.AppendC(UTF8STRC(")"));
 					console->WriteLine(sb.ToString());
 				}
 				else
@@ -291,7 +291,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 					console->WriteLine((const UTF8Char*)"Error in getting format");
 				}
 				sb.ClearStr();
-				sb.Append((const UTF8Char*)"Frame Delay = ");
+				sb.AppendC(UTF8STRC("Frame Delay = "));
 				sb.AppendI32(frameCnt);
 				console->WriteLine(sb.ToString());
 				if (colorSess)
@@ -326,7 +326,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 					if (frameCnt > 0)
 					{
 						sb.ClearStr();
-						sb.Append((const UTF8Char*)"Capture device stopped, count = ");
+						sb.AppendC(UTF8STRC("Capture device stopped, count = "));
 						sb.AppendI32(frameCnt);
 						console->WriteLine(sb.ToString());
 					}

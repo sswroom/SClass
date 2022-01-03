@@ -38,7 +38,7 @@ OSInt DB::DBTool::ExecuteNonQueryC(const UTF8Char *sqlCmd, UOSInt len)
 {
 	{
 		Text::StringBuilderUTF8 logMsg;
-		logMsg.Append((const UTF8Char*)"ExecuteNonQuery: ");
+		logMsg.AppendC(UTF8STRC("ExecuteNonQuery: "));
 		logMsg.AppendC(sqlCmd, len);
 		AddLogMsg(logMsg.ToString(), IO::ILogHandler::LOG_LEVEL_RAW);
 	}
@@ -73,14 +73,14 @@ OSInt DB::DBTool::ExecuteNonQueryC(const UTF8Char *sqlCmd, UOSInt len)
 	{
 		{
 			Text::StringBuilderUTF8 logMsg;
-			logMsg.Append((const UTF8Char*)"Cannot execute the sql command: ");
+			logMsg.AppendC(UTF8STRC("Cannot execute the sql command: "));
 			logMsg.AppendC(sqlCmd, len);
 			AddLogMsg(logMsg.ToString(), IO::ILogHandler::LOG_LEVEL_ERROR);
 		}
 
 		{
 			Text::StringBuilderUTF8 logMsg;
-			logMsg.Append((const UTF8Char*)"Exception detail: ");
+			logMsg.AppendC(UTF8STRC("Exception detail: "));
 			this->lastErrMsg->ClearStr();
 			this->db->GetErrorMsg(this->lastErrMsg);
 			logMsg.AppendSB(this->lastErrMsg);

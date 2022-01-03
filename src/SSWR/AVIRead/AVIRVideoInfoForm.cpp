@@ -67,12 +67,12 @@ void __stdcall SSWR::AVIRead::AVIRVideoInfoForm::OnStreamChg(void *userObj)
 		return;
 	}
 	Text::StringBuilderUTF8 sb;
-	sb.Append((const UTF8Char*)"Sync Time = ");
+	sb.AppendC(UTF8STRC("Sync Time = "));
 	sb.AppendI32(syncTime);
-	sb.Append((const UTF8Char*)"ms\r\n");
-	sb.Append((const UTF8Char*)"Can Seek = ");
+	sb.AppendC(UTF8STRC("ms\r\n"));
+	sb.AppendC(UTF8STRC("Can Seek = "));
 	sb.Append((const UTF8Char*)(mediaSrc->CanSeek()?"true":"false"));
-	sb.Append((const UTF8Char*)"\r\n");
+	sb.AppendC(UTF8STRC("\r\n"));
 	if (mediaSrc->GetMediaType() == Media::MEDIA_TYPE_VIDEO)
 	{
 		Media::IVideoSource *videoSrc = (Media::IVideoSource*)mediaSrc;
@@ -80,33 +80,33 @@ void __stdcall SSWR::AVIRead::AVIRVideoInfoForm::OnStreamChg(void *userObj)
 		UInt32 rateNorm;
 		UInt32 rateDenorm;
 		UOSInt maxFrameSize;
-		sb.Append((const UTF8Char*)"Media Type = Video\r\n");
-		sb.Append((const UTF8Char*)"Frame Count = ");
+		sb.AppendC(UTF8STRC("Media Type = Video\r\n"));
+		sb.AppendC(UTF8STRC("Frame Count = "));
 		sb.AppendUOSInt(videoSrc->GetFrameCount());
-		sb.Append((const UTF8Char*)"\r\n");
-		sb.Append((const UTF8Char*)"Stream Time = ");
+		sb.AppendC(UTF8STRC("\r\n"));
+		sb.AppendC(UTF8STRC("Stream Time = "));
 		me->AppendTime(&sb, (UInt32)videoSrc->GetStreamTime());
-		sb.Append((const UTF8Char*)"\r\n");
+		sb.AppendC(UTF8STRC("\r\n"));
 		if (videoSrc->GetVideoInfo(&frameInfo, &rateNorm, &rateDenorm, &maxFrameSize))
 		{
-			sb.Append((const UTF8Char*)"Frame Rate = ");
+			sb.AppendC(UTF8STRC("Frame Rate = "));
 			sb.AppendU32(rateNorm);
-			sb.Append((const UTF8Char*)"/");
+			sb.AppendC(UTF8STRC("/"));
 			sb.AppendU32(rateDenorm);
-			sb.Append((const UTF8Char*)" (");
+			sb.AppendC(UTF8STRC(" ("));
 			Text::SBAppendF64(&sb, rateNorm / (Double)rateDenorm);
-			sb.Append((const UTF8Char*)")\r\n");
-			sb.Append((const UTF8Char*)"Max Frame Size = ");
+			sb.AppendC(UTF8STRC(")\r\n"));
+			sb.AppendC(UTF8STRC("Max Frame Size = "));
 			sb.AppendUOSInt(maxFrameSize);
-			sb.Append((const UTF8Char*)"\r\n");
+			sb.AppendC(UTF8STRC("\r\n"));
 			frameInfo.ToString(&sb);
 		}
 		decStatus = me->decStatus->GetItem(i);
 		if (decStatus)
 		{
-			sb.Append((const UTF8Char*)"\r\nDecoded Frame Count = ");
+			sb.AppendC(UTF8STRC("\r\nDecoded Frame Count = "));
 			sb.AppendU64(decStatus->sampleCnt);
-			sb.Append((const UTF8Char*)"\r\nDecoded Frame Time = ");
+			sb.AppendC(UTF8STRC("\r\nDecoded Frame Time = "));
 			me->AppendTime(&sb, decStatus->lastSampleTime);
 		}
 	}
@@ -114,24 +114,24 @@ void __stdcall SSWR::AVIRead::AVIRVideoInfoForm::OnStreamChg(void *userObj)
 	{
 		Media::AudioFormat fmt;
 		Media::IAudioSource *audioSrc = (Media::IAudioSource*)mediaSrc;
-		sb.Append((const UTF8Char*)"Media Type = Audio\r\n");
-		sb.Append((const UTF8Char*)"Sample Count = ");
+		sb.AppendC(UTF8STRC("Media Type = Audio\r\n"));
+		sb.AppendC(UTF8STRC("Sample Count = "));
 		sb.AppendI64(audioSrc->GetSampleCount());
-		sb.Append((const UTF8Char*)"\r\n");
-		sb.Append((const UTF8Char*)"Stream Time = ");
+		sb.AppendC(UTF8STRC("\r\n"));
+		sb.AppendC(UTF8STRC("Stream Time = "));
 		me->AppendTime(&sb, (UInt32)audioSrc->GetStreamTime());
-		sb.Append((const UTF8Char*)"\r\n");
-		sb.Append((const UTF8Char*)"Min Block Size = ");
+		sb.AppendC(UTF8STRC("\r\n"));
+		sb.AppendC(UTF8STRC("Min Block Size = "));
 		sb.AppendUOSInt(audioSrc->GetMinBlockSize());
-		sb.Append((const UTF8Char*)"\r\n");
+		sb.AppendC(UTF8STRC("\r\n"));
 		audioSrc->GetFormat(&fmt);
 		fmt.ToString(&sb);
 		decStatus = me->decStatus->GetItem(i);
 		if (decStatus)
 		{
-			sb.Append((const UTF8Char*)"\r\nDecoded sample Count = ");
+			sb.AppendC(UTF8STRC("\r\nDecoded sample Count = "));
 			sb.AppendU64(decStatus->sampleCnt);
-			sb.Append((const UTF8Char*)"\r\nDecoded Stream Time = ");
+			sb.AppendC(UTF8STRC("\r\nDecoded Stream Time = "));
 			me->AppendTime(&sb, (UInt32)(decStatus->sampleCnt * 1000 / fmt.frequency));
 		}
 	}
@@ -282,19 +282,19 @@ Bool SSWR::AVIRead::AVIRVideoInfoForm::OpenFile(const UTF8Char *fileName)
 			break;
 		
 		sb.ClearStr();
-		sb.Append((const UTF8Char*)"Stream ");
+		sb.AppendC(UTF8STRC("Stream "));
 		sb.AppendUOSInt(i);
 		if (mediaSrc->GetMediaType() == Media::MEDIA_TYPE_VIDEO)
 		{
-			sb.Append((const UTF8Char*)" (Video)");
+			sb.AppendC(UTF8STRC(" (Video)"));
 		}
 		else if (mediaSrc->GetMediaType() == Media::MEDIA_TYPE_AUDIO)
 		{
-			sb.Append((const UTF8Char*)" (Audio)");
+			sb.AppendC(UTF8STRC(" (Audio)"));
 		}
 		else if (mediaSrc->GetMediaType() == Media::MEDIA_TYPE_SUBTITLE)
 		{
-			sb.Append((const UTF8Char*)" (Subtitle)");
+			sb.AppendC(UTF8STRC(" (Subtitle)"));
 		}
 		this->lbStream->AddItem(sb.ToString(), (void*)i);
 		i++;

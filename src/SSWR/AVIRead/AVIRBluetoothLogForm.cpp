@@ -197,7 +197,7 @@ void SSWR::AVIRead::AVIRBluetoothLogForm::UpdateStatus()
 {
 	Text::StringBuilderUTF8 sb;
 	sb.AppendUOSInt(this->macList->GetCount());
-	sb.Append((const UTF8Char*)" Records");
+	sb.AppendC(UTF8STRC(" Records"));
 	this->lblInfo->SetText(sb.ToString());
 }
 

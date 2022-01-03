@@ -57,11 +57,11 @@ Bool __stdcall SSWR::AVIRead::AVIRImageForm::OnImageMouseMove(void *userObj, OSI
 		else if ((UOSInt)yPos >= me->currImg->info->dispHeight)
 			yPos = (OSInt)me->currImg->info->dispHeight - 1;
 		me->currImg->GetImageData(pixel, xPos, yPos, 1, 1, 16, false);
-		sb.Append((const UTF8Char*)"(x, y) = (");
+		sb.AppendC(UTF8STRC("(x, y) = ("));
 		sb.AppendOSInt(xPos);
-		sb.Append((const UTF8Char*)", ");
+		sb.AppendC(UTF8STRC(", "));
 		sb.AppendOSInt(yPos);
-		sb.Append((const UTF8Char*)")");
+		sb.AppendC(UTF8STRC(")"));
 		if (me->currImg->info->pf == Media::PF_PAL_1 || me->currImg->info->pf == Media::PF_PAL_W1)
 		{
 			UInt8 i = 0;
@@ -93,18 +93,18 @@ Bool __stdcall SSWR::AVIRead::AVIRImageForm::OnImageMouseMove(void *userObj, OSI
 				i = (UInt8)(pixel[0] & 1);
 				break;
 			}
-			sb.Append((const UTF8Char*)", I");
+			sb.AppendC(UTF8STRC(", I"));
 			sb.AppendU32(i);
 			p = &me->currImg->pal[i * 4];
-			sb.Append((const UTF8Char*)" (A");
+			sb.AppendC(UTF8STRC(" (A"));
 			sb.AppendU32(p[3]);
-			sb.Append((const UTF8Char*)"R");
+			sb.AppendC(UTF8STRC("R"));
 			sb.AppendU32(p[2]);
-			sb.Append((const UTF8Char*)"G");
+			sb.AppendC(UTF8STRC("G"));
 			sb.AppendU32(p[1]);
-			sb.Append((const UTF8Char*)"B");
+			sb.AppendC(UTF8STRC("B"));
 			sb.AppendU32(p[0]);
-			sb.Append((const UTF8Char*)")");
+			sb.AppendC(UTF8STRC(")"));
 			dR = p[2] / 255.0;
 			dG = p[1] / 255.0;
 			dB = p[0] / 255.0;
@@ -128,18 +128,18 @@ Bool __stdcall SSWR::AVIRead::AVIRImageForm::OnImageMouseMove(void *userObj, OSI
 				i = (UInt8)(pixel[0] & 3);
 				break;
 			}
-			sb.Append((const UTF8Char*)", I");
+			sb.AppendC(UTF8STRC(", I"));
 			sb.AppendU32(i);
 			p = &me->currImg->pal[i * 4];
-			sb.Append((const UTF8Char*)" (A");
+			sb.AppendC(UTF8STRC(" (A"));
 			sb.AppendU32(p[3]);
-			sb.Append((const UTF8Char*)"R");
+			sb.AppendC(UTF8STRC("R"));
 			sb.AppendU32(p[2]);
-			sb.Append((const UTF8Char*)"G");
+			sb.AppendC(UTF8STRC("G"));
 			sb.AppendU32(p[1]);
-			sb.Append((const UTF8Char*)"B");
+			sb.AppendC(UTF8STRC("B"));
 			sb.AppendU32(p[0]);
-			sb.Append((const UTF8Char*)")");
+			sb.AppendC(UTF8STRC(")"));
 			dR = p[2] / 255.0;
 			dG = p[1] / 255.0;
 			dB = p[0] / 255.0;
@@ -157,18 +157,18 @@ Bool __stdcall SSWR::AVIRead::AVIRImageForm::OnImageMouseMove(void *userObj, OSI
 				i = (UInt8)(pixel[0] & 15);
 				break;
 			}
-			sb.Append((const UTF8Char*)", I");
+			sb.AppendC(UTF8STRC(", I"));
 			sb.AppendU32(i);
 			p = &me->currImg->pal[i * 4];
-			sb.Append((const UTF8Char*)" (A");
+			sb.AppendC(UTF8STRC(" (A"));
 			sb.AppendU32(p[3]);
-			sb.Append((const UTF8Char*)"R");
+			sb.AppendC(UTF8STRC("R"));
 			sb.AppendU32(p[2]);
-			sb.Append((const UTF8Char*)"G");
+			sb.AppendC(UTF8STRC("G"));
 			sb.AppendU32(p[1]);
-			sb.Append((const UTF8Char*)"B");
+			sb.AppendC(UTF8STRC("B"));
 			sb.AppendU32(p[0]);
-			sb.Append((const UTF8Char*)")");
+			sb.AppendC(UTF8STRC(")"));
 			dR = p[2] / 255.0;
 			dG = p[1] / 255.0;
 			dB = p[0] / 255.0;
@@ -176,18 +176,18 @@ Bool __stdcall SSWR::AVIRead::AVIRImageForm::OnImageMouseMove(void *userObj, OSI
 		else if (me->currImg->info->pf == Media::PF_PAL_8 || me->currImg->info->pf == Media::PF_PAL_W8)
 		{
 			UInt8 *p;
-			sb.Append((const UTF8Char*)", I");
+			sb.AppendC(UTF8STRC(", I"));
 			sb.AppendU32(pixel[0]);
 			p = &me->currImg->pal[pixel[0] * 4];
-			sb.Append((const UTF8Char*)" (A");
+			sb.AppendC(UTF8STRC(" (A"));
 			sb.AppendU32(p[3]);
-			sb.Append((const UTF8Char*)"R");
+			sb.AppendC(UTF8STRC("R"));
 			sb.AppendU32(p[2]);
-			sb.Append((const UTF8Char*)"G");
+			sb.AppendC(UTF8STRC("G"));
 			sb.AppendU32(p[1]);
-			sb.Append((const UTF8Char*)"B");
+			sb.AppendC(UTF8STRC("B"));
 			sb.AppendU32(p[0]);
-			sb.Append((const UTF8Char*)")");
+			sb.AppendC(UTF8STRC(")"));
 			dR = p[2] / 255.0;
 			dG = p[1] / 255.0;
 			dB = p[0] / 255.0;
@@ -232,16 +232,16 @@ Bool __stdcall SSWR::AVIRead::AVIRImageForm::OnImageMouseMove(void *userObj, OSI
 				a = (UInt8)(pixel[1] & 1);
 				break;
 			}
-			sb.Append((const UTF8Char*)", I");
+			sb.AppendC(UTF8STRC(", I"));
 			sb.AppendU32(i);
 			p = &me->currImg->pal[i * 4];
-			sb.Append((const UTF8Char*)" (R");
+			sb.AppendC(UTF8STRC(" (R"));
 			sb.AppendU32(p[2]);
-			sb.Append((const UTF8Char*)"G");
+			sb.AppendC(UTF8STRC("G"));
 			sb.AppendU32(p[1]);
-			sb.Append((const UTF8Char*)"B");
+			sb.AppendC(UTF8STRC("B"));
 			sb.AppendU32(p[0]);
-			sb.Append((const UTF8Char*)"), A");
+			sb.AppendC(UTF8STRC("), A"));
 			sb.AppendU32(a);
 			dR = p[2] / 255.0;
 			dG = p[1] / 255.0;
@@ -294,16 +294,16 @@ Bool __stdcall SSWR::AVIRead::AVIRImageForm::OnImageMouseMove(void *userObj, OSI
 				a = (UInt8)(pixel[1] & 1);
 				break;
 			}
-			sb.Append((const UTF8Char*)", I");
+			sb.AppendC(UTF8STRC(", I"));
 			sb.AppendU32(i);
 			p = &me->currImg->pal[i * 4];
-			sb.Append((const UTF8Char*)" (R");
+			sb.AppendC(UTF8STRC(" (R"));
 			sb.AppendU32(p[2]);
-			sb.Append((const UTF8Char*)"G");
+			sb.AppendC(UTF8STRC("G"));
 			sb.AppendU32(p[1]);
-			sb.Append((const UTF8Char*)"B");
+			sb.AppendC(UTF8STRC("B"));
 			sb.AppendU32(p[0]);
-			sb.Append((const UTF8Char*)"), A");
+			sb.AppendC(UTF8STRC("), A"));
 			sb.AppendU32(a);
 			dR = p[2] / 255.0;
 			dG = p[1] / 255.0;
@@ -350,16 +350,16 @@ Bool __stdcall SSWR::AVIRead::AVIRImageForm::OnImageMouseMove(void *userObj, OSI
 				a = (UInt8)(pixel[1] & 1);
 				break;
 			}
-			sb.Append((const UTF8Char*)", I");
+			sb.AppendC(UTF8STRC(", I"));
 			sb.AppendU32(i);
 			p = &me->currImg->pal[i * 4];
-			sb.Append((const UTF8Char*)" (R");
+			sb.AppendC(UTF8STRC(" (R"));
 			sb.AppendU32(p[2]);
-			sb.Append((const UTF8Char*)"G");
+			sb.AppendC(UTF8STRC("G"));
 			sb.AppendU32(p[1]);
-			sb.Append((const UTF8Char*)"B");
+			sb.AppendC(UTF8STRC("B"));
 			sb.AppendU32(p[0]);
-			sb.Append((const UTF8Char*)"), A");
+			sb.AppendC(UTF8STRC("), A"));
 			sb.AppendU32(a);
 			dR = p[2] / 255.0;
 			dG = p[1] / 255.0;
@@ -369,16 +369,16 @@ Bool __stdcall SSWR::AVIRead::AVIRImageForm::OnImageMouseMove(void *userObj, OSI
 		{
 			UInt8 *p;
 			UInt8 a = 0;
-			sb.Append((const UTF8Char*)", I");
+			sb.AppendC(UTF8STRC(", I"));
 			sb.AppendU32(pixel[0]);
 			p = &me->currImg->pal[pixel[0] * 4];
-			sb.Append((const UTF8Char*)" (R");
+			sb.AppendC(UTF8STRC(" (R"));
 			sb.AppendU32(p[2]);
-			sb.Append((const UTF8Char*)"G");
+			sb.AppendC(UTF8STRC("G"));
 			sb.AppendU32(p[1]);
-			sb.Append((const UTF8Char*)"B");
+			sb.AppendC(UTF8STRC("B"));
 			sb.AppendU32(p[0]);
-			sb.Append((const UTF8Char*)"), A");
+			sb.AppendC(UTF8STRC("), A"));
 			sb.AppendU32(a);
 			dR = p[2] / 255.0;
 			dG = p[1] / 255.0;
@@ -386,12 +386,12 @@ Bool __stdcall SSWR::AVIRead::AVIRImageForm::OnImageMouseMove(void *userObj, OSI
 		}
 		else if (me->currImg->info->pf == Media::PF_LE_R5G5B5)
 		{
-			sb.Append((const UTF8Char*)", R");
+			sb.AppendC(UTF8STRC(", R"));
 			UInt16 p = ReadUInt16(pixel);
 			sb.AppendU32((p >> 10) & 0x1f);
-			sb.Append((const UTF8Char*)"G");
+			sb.AppendC(UTF8STRC("G"));
 			sb.AppendU32((p >> 5) & 0x1f);
-			sb.Append((const UTF8Char*)"B");
+			sb.AppendC(UTF8STRC("B"));
 			sb.AppendU32(p & 0x1f);
 			dR = ((p >> 10) & 0x1f) / 31.0;
 			dG = ((p >> 5) & 0x1f) / 31.0;
@@ -399,12 +399,12 @@ Bool __stdcall SSWR::AVIRead::AVIRImageForm::OnImageMouseMove(void *userObj, OSI
 		}
 		else if (me->currImg->info->pf == Media::PF_LE_R5G6B5)
 		{
-			sb.Append((const UTF8Char*)", R");
+			sb.AppendC(UTF8STRC(", R"));
 			UInt16 p = ReadUInt16(pixel);
 			sb.AppendU32((p >> 11) & 0x1f);
-			sb.Append((const UTF8Char*)"G");
+			sb.AppendC(UTF8STRC("G"));
 			sb.AppendU32((p >> 5) & 0x3f);
-			sb.Append((const UTF8Char*)"B");
+			sb.AppendC(UTF8STRC("B"));
 			sb.AppendU32(p & 0x1f);
 			dR = ((p >> 11) & 0x1f) / 31.0;
 			dG = ((p >> 5) & 0x3f) / 63.0;
@@ -412,11 +412,11 @@ Bool __stdcall SSWR::AVIRead::AVIRImageForm::OnImageMouseMove(void *userObj, OSI
 		}
 		else if (me->currImg->info->pf == Media::PF_B8G8R8)
 		{
-			sb.Append((const UTF8Char*)", R");
+			sb.AppendC(UTF8STRC(", R"));
 			sb.AppendU32(pixel[2]);
-			sb.Append((const UTF8Char*)"G");
+			sb.AppendC(UTF8STRC("G"));
 			sb.AppendU32(pixel[1]);
-			sb.Append((const UTF8Char*)"B");
+			sb.AppendC(UTF8STRC("B"));
 			sb.AppendU32(pixel[0]);
 			dR = pixel[2] / 255.0;
 			dG = pixel[1] / 255.0;
@@ -424,13 +424,13 @@ Bool __stdcall SSWR::AVIRead::AVIRImageForm::OnImageMouseMove(void *userObj, OSI
 		}
 		else if (me->currImg->info->pf == Media::PF_B8G8R8A8)
 		{
-			sb.Append((const UTF8Char*)", A");
+			sb.AppendC(UTF8STRC(", A"));
 			sb.AppendU32(pixel[3]);
-			sb.Append((const UTF8Char*)"R");
+			sb.AppendC(UTF8STRC("R"));
 			sb.AppendU32(pixel[2]);
-			sb.Append((const UTF8Char*)"B");
+			sb.AppendC(UTF8STRC("B"));
 			sb.AppendU32(pixel[1]);
-			sb.Append((const UTF8Char*)"B");
+			sb.AppendC(UTF8STRC("B"));
 			sb.AppendU32(pixel[0]);
 			dR = pixel[2] / 255.0;
 			dG = pixel[1] / 255.0;
@@ -438,11 +438,11 @@ Bool __stdcall SSWR::AVIRead::AVIRImageForm::OnImageMouseMove(void *userObj, OSI
 		}
 		else if (me->currImg->info->pf == Media::PF_LE_B16G16R16)
 		{
-			sb.Append((const UTF8Char*)", R");
+			sb.AppendC(UTF8STRC(", R"));
 			sb.AppendU32(ReadUInt16(&pixel[4]));
-			sb.Append((const UTF8Char*)"G");
+			sb.AppendC(UTF8STRC("G"));
 			sb.AppendU32(ReadUInt16(&pixel[2]));
-			sb.Append((const UTF8Char*)"B");
+			sb.AppendC(UTF8STRC("B"));
 			sb.AppendU32(ReadUInt16(&pixel[0]));
 			dR = ReadUInt16(&pixel[4]) / 65535.0;
 			dG = ReadUInt16(&pixel[2]) / 65535.0;
@@ -450,13 +450,13 @@ Bool __stdcall SSWR::AVIRead::AVIRImageForm::OnImageMouseMove(void *userObj, OSI
 		}
 		else if (me->currImg->info->pf == Media::PF_LE_B16G16R16A16)
 		{
-			sb.Append((const UTF8Char*)", A");
+			sb.AppendC(UTF8STRC(", A"));
 			sb.AppendU32(ReadUInt16(&pixel[6]));
-			sb.Append((const UTF8Char*)"R");
+			sb.AppendC(UTF8STRC("R"));
 			sb.AppendU32(ReadUInt16(&pixel[4]));
-			sb.Append((const UTF8Char*)"G");
+			sb.AppendC(UTF8STRC("G"));
 			sb.AppendU32(ReadUInt16(&pixel[2]));
-			sb.Append((const UTF8Char*)"B");
+			sb.AppendC(UTF8STRC("B"));
 			sb.AppendU32(ReadUInt16(&pixel[0]));
 			dR = ReadUInt16(&pixel[4]) / 65535.0;
 			dG = ReadUInt16(&pixel[2]) / 65535.0;
@@ -465,13 +465,13 @@ Bool __stdcall SSWR::AVIRead::AVIRImageForm::OnImageMouseMove(void *userObj, OSI
 		else if (me->currImg->info->pf == Media::PF_LE_A2B10G10R10)
 		{
 			UInt32 p = ReadUInt32(&pixel[0]);
-			sb.Append((const UTF8Char*)", A");
+			sb.AppendC(UTF8STRC(", A"));
 			sb.AppendU32((p >> 30) & 3);
-			sb.Append((const UTF8Char*)"R");
+			sb.AppendC(UTF8STRC("R"));
 			sb.AppendU32(p & 0x3ff);
-			sb.Append((const UTF8Char*)"G");
+			sb.AppendC(UTF8STRC("G"));
 			sb.AppendU32((p >> 10) & 0x3ff);
-			sb.Append((const UTF8Char*)"B");
+			sb.AppendC(UTF8STRC("B"));
 			sb.AppendU32((p >> 20) & 0x3ff);
 			dR = (p & 0x3ff) / 1023.0;
 			dG = ((p >> 10) & 0x3ff) / 1023.0;
@@ -479,7 +479,7 @@ Bool __stdcall SSWR::AVIRead::AVIRImageForm::OnImageMouseMove(void *userObj, OSI
 		}
 		else if (me->currImg->info->pf == Media::PF_W8A8)
 		{
-			sb.Append((const UTF8Char*)", A");
+			sb.AppendC(UTF8STRC(", A"));
 			sb.AppendU32(pixel[1]);
 			dR = pixel[0] / 255.0;
 			dG = dR;
@@ -487,7 +487,7 @@ Bool __stdcall SSWR::AVIRead::AVIRImageForm::OnImageMouseMove(void *userObj, OSI
 		}
 		else if (me->currImg->info->pf == Media::PF_LE_W16)
 		{
-			sb.Append((const UTF8Char*)", W");
+			sb.AppendC(UTF8STRC(", W"));
 			sb.AppendU32(ReadUInt16(&pixel[0]));
 			dR = ReadUInt16(&pixel[0]) / 65535.0;
 			dG = dR;
@@ -495,9 +495,9 @@ Bool __stdcall SSWR::AVIRead::AVIRImageForm::OnImageMouseMove(void *userObj, OSI
 		}
 		else if (me->currImg->info->pf == Media::PF_LE_W16A16)
 		{
-			sb.Append((const UTF8Char*)", A");
+			sb.AppendC(UTF8STRC(", A"));
 			sb.AppendU32(ReadUInt16(&pixel[2]));
-			sb.Append((const UTF8Char*)", W");
+			sb.AppendC(UTF8STRC(", W"));
 			sb.AppendU32(ReadUInt16(&pixel[0]));
 			dR = ReadUInt16(&pixel[0]) / 65535.0;
 			dG = dR;
@@ -505,13 +505,13 @@ Bool __stdcall SSWR::AVIRead::AVIRImageForm::OnImageMouseMove(void *userObj, OSI
 		}
 		else if (me->currImg->info->pf == Media::PF_LE_FB32G32R32A32)
 		{
-			sb.Append((const UTF8Char*)", A");
+			sb.AppendC(UTF8STRC(", A"));
 			Text::SBAppendF32(&sb, ReadFloat(&pixel[12]));
-			sb.Append((const UTF8Char*)" R");
+			sb.AppendC(UTF8STRC(" R"));
 			Text::SBAppendF32(&sb, ReadFloat(&pixel[8]));
-			sb.Append((const UTF8Char*)" G");
+			sb.AppendC(UTF8STRC(" G"));
 			Text::SBAppendF32(&sb, ReadFloat(&pixel[4]));
-			sb.Append((const UTF8Char*)" B");
+			sb.AppendC(UTF8STRC(" B"));
 			Text::SBAppendF32(&sb, ReadFloat(&pixel[0]));
 			dR = ReadFloat(&pixel[8]);
 			dG = ReadFloat(&pixel[4]);
@@ -525,10 +525,10 @@ Bool __stdcall SSWR::AVIRead::AVIRImageForm::OnImageMouseMove(void *userObj, OSI
 		}
 		if (me->imgList && me->imgList->HasThermoImage())
 		{
-			sb.Append((const UTF8Char*)", T = ");
+			sb.AppendC(UTF8STRC(", T = "));
 			Text::SBAppendF64(&sb, me->imgList->GetThermoValue(imgX / Math::UOSInt2Double(me->currImg->info->dispWidth), imgY / Math::UOSInt2Double(me->currImg->info->dispHeight)));
 		}
-		sb.Append((const UTF8Char*)", RGB(");
+		sb.AppendC(UTF8STRC(", RGB("));
 		Text::SBAppendF64(&sb, dR);
 		sb.AppendChar(',', 1);
 		Text::SBAppendF64(&sb, dG);
@@ -570,11 +570,11 @@ void SSWR::AVIRead::AVIRImageForm::UpdateInfo()
 	{
 		Text::StringBuilderUTF8 sb;
 		this->currImg->ToString(&sb);
-		sb.Append((const UTF8Char*)"\r\nDelay: ");
+		sb.AppendC(UTF8STRC("\r\nDelay: "));
 		sb.AppendU32(this->currImgDelay);
 		if (this->imgList)
 		{
-			sb.Append((const UTF8Char*)"\r\n");
+			sb.AppendC(UTF8STRC("\r\n"));
 			this->imgList->ToValueString(&sb);
 		}
 		this->txtInfo->SetText(sb.ToString());

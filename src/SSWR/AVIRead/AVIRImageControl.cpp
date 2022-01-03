@@ -430,7 +430,7 @@ Bool SSWR::AVIRead::AVIRImageControl::GetCameraName(Text::StringBuilderUTF *sb, 
 		else
 		{
 			sb->Append((const UTF8Char*)make);
-			sb->Append((const UTF8Char*)" ");
+			sb->AppendC(UTF8STRC(" "));
 			sb->Append((const UTF8Char*)model);
 		}
 	}
@@ -961,13 +961,13 @@ Bool SSWR::AVIRead::AVIRImageControl::SaveSetting()
 		status = imgList->GetItem(i);
 		sb.ClearStr();
 		sb.Append(status->fileName);
-		sb.Append((const UTF8Char*)"\t");
+		sb.AppendC(UTF8STRC("\t"));
 		sb.AppendI32(status->setting.flags);
-		sb.Append((const UTF8Char*)"\t");
+		sb.AppendC(UTF8STRC("\t"));
 		Text::SBAppendF64(&sb, status->setting.brightness);
-		sb.Append((const UTF8Char*)"\t");
+		sb.AppendC(UTF8STRC("\t"));
 		Text::SBAppendF64(&sb, status->setting.contrast);
-		sb.Append((const UTF8Char*)"\t");
+		sb.AppendC(UTF8STRC("\t"));
 		Text::SBAppendF64(&sb, status->setting.gamma);
 		writer->WriteLine(sb.ToString());
 		i++;

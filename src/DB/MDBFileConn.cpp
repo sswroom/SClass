@@ -19,34 +19,34 @@
 DB::MDBFileConn::MDBFileConn(const UTF8Char *fileName, IO::LogTool *log, UInt32 codePage, const WChar *uid, const WChar *pwd) : DB::ODBCConn(fileName, log)
 {
 	Text::StringBuilderUTF8 sb;
-	sb.Append((const UTF8Char*)"Driver={Microsoft Access Driver (*.mdb)};Dbq=");
+	sb.AppendC(UTF8STRC("Driver={Microsoft Access Driver (*.mdb)};Dbq="));
 	sb.Append(fileName);
 	if (codePage != 0)
 	{
 		UTF8Char sbuff[16];
 		if (Text::EncodingFactory::GetInternetName(sbuff, codePage))
 		{
-			sb.Append((const UTF8Char*)";CharSet=");
+			sb.AppendC(UTF8STRC(";CharSet="));
 			sb.Append(sbuff);
 		}
 
 /*		Text::Locale::LocaleEntry *loc = Text::Locale::GetLocaleEntryByCodePage(codePage);
 		if (loc)
 		{
-//			sb.Append((const UTF8Char*)";Locale Identifier=");
+//			sb.AppendC(UTF8STRC(";Locale Identifier="));
 //			sb.Append(loc->lcid);
 		}*/
 	}
 	if (uid != 0 || pwd != 0)
 	{
-		sb.Append((const UTF8Char*)";Uid=");
+		sb.AppendC(UTF8STRC(";Uid="));
 		if (uid)
 		{
 			const UTF8Char *csptr = Text::StrToUTF8New(uid);
 			sb.Append(csptr);
 			Text::StrDelNew(csptr);
 		}
-		sb.Append((const UTF8Char*)";Pwd=");
+		sb.AppendC(UTF8STRC(";Pwd="));
 		if (pwd)
 		{
 			const UTF8Char *csptr = Text::StrToUTF8New(pwd);
@@ -57,34 +57,34 @@ DB::MDBFileConn::MDBFileConn(const UTF8Char *fileName, IO::LogTool *log, UInt32 
 	if (!Connect(sb.ToString()))
 	{
 		sb.ClearStr();
-		sb.Append((const UTF8Char*)"Driver={Microsoft Access Driver (*.mdb, *.accdb)};Dbq=");
+		sb.AppendC(UTF8STRC("Driver={Microsoft Access Driver (*.mdb, *.accdb)};Dbq="));
 		sb.Append(fileName);
 		if (codePage != 0)
 		{
 			UTF8Char sbuff[16];
 			if (Text::EncodingFactory::GetInternetName(sbuff, codePage))
 			{
-				sb.Append((const UTF8Char*)";CharSet=");
+				sb.AppendC(UTF8STRC(";CharSet="));
 				sb.Append(sbuff);
 			}
 
 	/*		Text::Locale::LocaleEntry *loc = Text::Locale::GetLocaleEntryByCodePage(codePage);
 			if (loc)
 			{
-	//			sb.Append((const UTF8Char*)";Locale Identifier=");
+	//			sb.AppendC(UTF8STRC(";Locale Identifier="));
 	//			sb.Append(loc->lcid);
 			}*/
 		}
 		if (uid != 0 || pwd != 0)
 		{
-			sb.Append((const UTF8Char*)";Uid=");
+			sb.AppendC(UTF8STRC(";Uid="));
 			if (uid)
 			{
 				const UTF8Char *csptr = Text::StrToUTF8New(uid);
 				sb.Append(csptr);
 				Text::StrDelNew(csptr);
 			}
-			sb.Append((const UTF8Char*)";Pwd=");
+			sb.AppendC(UTF8STRC(";Pwd="));
 			if (pwd)
 			{
 				const UTF8Char *csptr = Text::StrToUTF8New(pwd);
@@ -95,35 +95,35 @@ DB::MDBFileConn::MDBFileConn(const UTF8Char *fileName, IO::LogTool *log, UInt32 
 		if (!Connect(sb.ToString()))
 		{
 			sb.ClearStr();
-			sb.Append((const UTF8Char*)"Driver=MDBTools;DBQ=\"");
+			sb.AppendC(UTF8STRC("Driver=MDBTools;DBQ=\""));
 			sb.Append(fileName);
-			sb.Append((const UTF8Char*)"\"");
+			sb.AppendC(UTF8STRC("\""));
 			if (codePage != 0)
 			{
 				UTF8Char sbuff[16];
 				if (Text::EncodingFactory::GetInternetName(sbuff, codePage))
 				{
-					sb.Append((const UTF8Char*)";CharSet=");
+					sb.AppendC(UTF8STRC(";CharSet="));
 					sb.Append(sbuff);
 				}
 
 		/*		Text::Locale::LocaleEntry *loc = Text::Locale::GetLocaleEntryByCodePage(codePage);
 				if (loc)
 				{
-		//			sb.Append((const UTF8Char*)";Locale Identifier=");
+		//			sb.AppendC(UTF8STRC(";Locale Identifier="));
 		//			sb.Append(loc->lcid);
 				}*/
 			}
 			if (uid != 0 || pwd != 0)
 			{
-				sb.Append((const UTF8Char*)";Uid=");
+				sb.AppendC(UTF8STRC(";Uid="));
 				if (uid)
 				{
 					const UTF8Char *csptr = Text::StrToUTF8New(uid);
 					sb.Append(csptr);
 					Text::StrDelNew(csptr);
 				}
-				sb.Append((const UTF8Char*)";Pwd=");
+				sb.AppendC(UTF8STRC(";Pwd="));
 				if (pwd)
 				{
 					const UTF8Char *csptr = Text::StrToUTF8New(pwd);

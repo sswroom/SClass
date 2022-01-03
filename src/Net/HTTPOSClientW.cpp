@@ -477,7 +477,7 @@ void Net::HTTPOSClient::AddHeader(const UTF8Char *name, const UTF8Char *value)
 		{
 			Text::StringBuilderUTF16 sb;
 			sb.Append(name);
-			sb.Append((const UTF8Char*)": ");
+			sb.AppendC(UTF8STRC(": "));
 			sb.Append(value);
 			WinHttpAddRequestHeaders(data->hRequest, sb.ToString(), (DWORD)sb.GetLength(), WINHTTP_ADDREQ_FLAG_ADD);
 		}

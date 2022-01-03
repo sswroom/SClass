@@ -20,16 +20,16 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	while ((t = clk.GetTimeDiff()) == 0);
 	Text::StringBuilderUTF8 sb;
 	sb.ClearStr();
-	sb.Append((const UTF8Char*)"__cplusplus = ");
+	sb.AppendC(UTF8STRC("__cplusplus = "));
 #if defined(__cplusplus)
 	sb.AppendI32((Int32)__cplusplus);
 #else
-	sb.Append((const UTF8Char*)"Not defined");
+	sb.AppendC(UTF8STRC("Not defined"));
 #endif
 	console.WriteLine(sb.ToString());
 
 	sb.ClearStr();
-	sb.Append((const UTF8Char*)"Finest time in HiResClock = ");
+	sb.AppendC(UTF8STRC("Finest time in HiResClock = "));
 	Text::SBAppendF64(&sb, t);
 	console.WriteLine(sb.ToString());
 
@@ -40,7 +40,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		t = clk.GetTimeDiff();
 	}
 	sb.ClearStr();
-	sb.Append((const UTF8Char*)"Time per request in HiResClock = ");
+	sb.AppendC(UTF8STRC("Time per request in HiResClock = "));
 	Text::SBAppendF64(&sb, t / 10000.0);
 	console.WriteLine(sb.ToString());
 
@@ -55,7 +55,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	}
 	t = clk.GetTimeDiff();
 	sb.ClearStr();
-	sb.Append((const UTF8Char*)"Time per request in gettimeofday = ");
+	sb.AppendC(UTF8STRC("Time per request in gettimeofday = "));
 	Text::SBAppendF64(&sb, t / 10000.0);
 	console.WriteLine(sb.ToString());
 
@@ -69,7 +69,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	}
 	t = clk.GetTimeDiff();
 	sb.ClearStr();
-	sb.Append((const UTF8Char*)"Time per request in timespec_get = ");
+	sb.AppendC(UTF8STRC("Time per request in timespec_get = "));
 	Text::SBAppendF64(&sb, t / 10000.0);
 	console.WriteLine(sb.ToString());
 #endif
@@ -82,7 +82,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	}
 	t = clk.GetTimeDiff();
 	sb.ClearStr();
-	sb.Append((const UTF8Char*)"Time per request in clock = ");
+	sb.AppendC(UTF8STRC("Time per request in clock = "));
 	Text::SBAppendF64(&sb, t / 10000.0);
 	console.WriteLine(sb.ToString());
 
@@ -94,7 +94,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	}
 	t = clk.GetTimeDiff();
 	sb.ClearStr();
-	sb.Append((const UTF8Char*)"Time per request in clock_gettime(CLOCK_REALTIME) = ");
+	sb.AppendC(UTF8STRC("Time per request in clock_gettime(CLOCK_REALTIME) = "));
 	Text::SBAppendF64(&sb, t / 10000.0);
 	console.WriteLine(sb.ToString());
 
@@ -106,7 +106,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	}
 	t = clk.GetTimeDiff();
 	sb.ClearStr();
-	sb.Append((const UTF8Char*)"Time per request in clock_gettime(CLOCK_MONOTONIC) = ");
+	sb.AppendC(UTF8STRC("Time per request in clock_gettime(CLOCK_MONOTONIC) = "));
 	Text::SBAppendF64(&sb, t / 10000.0);
 	console.WriteLine(sb.ToString());
 #endif

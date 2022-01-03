@@ -18,12 +18,12 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	NEW_CLASS(enc, Crypto::JasyptEncryptor(Crypto::JasyptEncryptor::KA_PBEWITHHMACSHA512, Crypto::JasyptEncryptor::CA_AES256, encPwd, Text::StrCharCnt(encPwd)));
 	decSize = enc->DecryptB64(userName, decBuff);
 	sb.ClearStr();
-	sb.Append((const UTF8Char*)"Username = ");
+	sb.AppendC(UTF8STRC("Username = "));
 	sb.AppendC(decBuff, decSize);
 	console.WriteLine(sb.ToString());
 	decSize = enc->DecryptB64(password, decBuff);
 	sb.ClearStr();
-	sb.Append((const UTF8Char*)"Password = ");
+	sb.AppendC(UTF8STRC("Password = "));
 	sb.AppendC(decBuff, decSize);
 	console.WriteLine(sb.ToString());
 	DEL_CLASS(enc);

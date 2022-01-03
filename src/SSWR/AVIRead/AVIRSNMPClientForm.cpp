@@ -53,7 +53,7 @@ void __stdcall SSWR::AVIRead::AVIRSNMPClientForm::OnRequestClicked(void *userObj
 	if (err != Net::SNMPUtil::ES_NOERROR)
 	{
 		sb.ClearStr();
-		sb.Append((const UTF8Char*)"Error in requesting to the server, error code = ");
+		sb.AppendC(UTF8STRC("Error in requesting to the server, error code = "));
 		sb.Append(Net::SNMPUtil::ErrorStatusToString(err));
 		UI::MessageDialog::ShowDialog(sb.ToString(), (const UTF8Char*)"SNMP Client", me);
 	}

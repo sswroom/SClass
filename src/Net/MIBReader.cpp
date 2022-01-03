@@ -149,7 +149,7 @@ Bool Net::MIBReader::ReadWord(Text::StringBuilderUTF *sb, Bool move)
 	}
 	else if (sptr[this->currOfst] == ':' && sptr[this->currOfst + 1] == ':' && sptr[this->currOfst + 2] == '=')
 	{
-		sb->Append((const UTF8Char*)"::=");
+		sb->AppendC(UTF8STRC("::="));
 		if (move)
 		{
 			this->currOfst += 3;

@@ -419,7 +419,7 @@ void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(void *userObj, const UTF
 	IO::StmData::FileData *fd;
 	IO::DirectoryPackage *pkg;
 	Text::StringBuilderUTF8 sb;
-	sb.Append((const UTF8Char *)"Cannot parse:");
+	sb.AppendC(UTF8STRC("Cannot parse:"));
 	Bool found = false;
 	me->core->BeginLoad();
 	UOSInt i = 0;
@@ -434,10 +434,10 @@ void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(void *userObj, const UTF
 			{
 				DB::OLEDBConn *conn;
 				Text::StringBuilderUTF8 sb;
-				sb.Append((const UTF8Char*)"Provider=ESRI.GeoDB.OleDB.1;Data Source=");
+				sb.AppendC(UTF8STRC("Provider=ESRI.GeoDB.OleDB.1;Data Source="));
 				sb.Append(files[i]);
-				sb.Append((const UTF8Char*)";Extended Properties=workspacetype=esriDataSourcesGDB.FileGDBWorkspaceFactory.1");
-				sb.Append((const UTF8Char*)";Geometry=OBJECT");
+				sb.AppendC(UTF8STRC(";Extended Properties=workspacetype=esriDataSourcesGDB.FileGDBWorkspaceFactory.1"));
+				sb.AppendC(UTF8STRC(";Geometry=OBJECT"));
 				const WChar *wptr = Text::StrToWCharNew(sb.ToString());
 				NEW_CLASS(conn, DB::OLEDBConn(wptr, 0));
 				Text::StrDelNew(wptr);
@@ -474,7 +474,7 @@ void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(void *userObj, const UTF
 			NEW_CLASS(fd, IO::StmData::FileData(files[i], false));
 			if (!me->core->LoadData(fd, 0))
 			{
-				sb.Append((const UTF8Char *)"\n");
+				sb.AppendC(UTF8STRC("\n"));
 				sb.Append(files[i]);
 				found = true;
 			}

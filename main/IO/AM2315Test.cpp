@@ -29,11 +29,11 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		Text::StrToUInt16(argv[1], &pinNum2);
 	}
 	Sync::Thread::SetPriority(Sync::Thread::TP_REALTIME);
-	sb.Append((const UTF8Char*)"Run using GPIO pin ");
+	sb.AppendC(UTF8STRC("Run using GPIO pin "));
 	sb.AppendI32(pinNum1);
-	sb.Append((const UTF8Char*)" (SDA) and ");
+	sb.AppendC(UTF8STRC(" (SDA) and "));
 	sb.AppendI32(pinNum2);
-	sb.Append((const UTF8Char*)" (SCL)");
+	sb.AppendC(UTF8STRC(" (SCL)"));
 	console.WriteLine(sb.ToString());
 	NEW_CLASS(gpioCtrl, IO::GPIOControl())
 	NEW_CLASS(sdaPin, IO::GPIOPin(gpioCtrl, pinNum1));
@@ -50,16 +50,16 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			if (am2315->ReadTemperature(&temp))
 			{
 				sb.ClearStr();
-				sb.Append((const UTF8Char*)"Temp = ");
+				sb.AppendC(UTF8STRC("Temp = "));
 				Text::SBAppendF64(&sb, temp);
 				console.WriteLine(sb.ToString());
 
 				if (am2315->ReadRH(&rh))
 				{
 					sb.ClearStr();
-					sb.Append((const UTF8Char*)"RH = ");
+					sb.AppendC(UTF8STRC("RH = "));
 					Text::SBAppendF64(&sb, rh);
-					sb.Append((const UTF8Char*)"%");
+					sb.AppendC(UTF8STRC("%"));
 					console.WriteLine(sb.ToString());
 				}
 				else

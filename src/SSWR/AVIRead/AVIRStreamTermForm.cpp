@@ -51,13 +51,13 @@ void __stdcall SSWR::AVIRead::AVIRStreamTermForm::OnSendClicked(void *userObj)
 			switch (me->cboSendLBreak->GetSelectedIndex())
 			{
 			case 0:
-				sb.Append((const UTF8Char*)"\r\n");
+				sb.AppendC(UTF8STRC("\r\n"));
 				break;
 			case 1:
-				sb.Append((const UTF8Char*)"\r");
+				sb.AppendC(UTF8STRC("\r"));
 				break;
 			case 2:
-				sb.Append((const UTF8Char*)"\n");
+				sb.AppendC(UTF8STRC("\n"));
 				break;
 			case 3:
 				break;

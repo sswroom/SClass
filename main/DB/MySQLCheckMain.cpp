@@ -43,9 +43,9 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		if (cfg->GetValue((const UTF8Char*)cptr) == 0)
 		{
 			sb.ClearStr();
-			sb.Append((const UTF8Char*)"Config ");
+			sb.AppendC(UTF8STRC("Config "));
 			sb.Append((const UTF8Char*)cptr);
-			sb.Append((const UTF8Char*)" not found");
+			sb.AppendC(UTF8STRC(" not found"));
 			console.WriteLine(sb.ToString());
 			DEL_CLASS(cfg);
 			return 2;
@@ -121,10 +121,10 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		else
 		{
 			Text::StringBuilderUTF8 sbMsg;
-			sbMsg.Append((const UTF8Char*)"ServerName = ");
+			sbMsg.AppendC(UTF8STRC("ServerName = "));
 			sbMsg.Append(cfg->GetValue((const UTF8Char*)"ServerName"));
-			sbMsg.Append((const UTF8Char*)"\r\n");
-			sbMsg.Append((const UTF8Char*)"MySQL Check detail:\r\n");
+			sbMsg.AppendC(UTF8STRC("\r\n"));
+			sbMsg.AppendC(UTF8STRC("MySQL Check detail:\r\n"));
 			NEW_CLASS(mysql, DB::MySQLMaintance(cli, true));
 			sb.ClearStr();
 			sb.Append(mysqlSchemas);
@@ -142,7 +142,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 
 			sb.ClearStr();
 			IO::Path::GetProcessFileName(&sb);
-			sb.Append((const UTF8Char*)".log");
+			sb.AppendC(UTF8STRC(".log"));
 			IO::FileStream *fs;
 			Text::UTF8Writer *writer;
 			NEW_CLASS(fs, IO::FileStream(sb.ToString(), IO::FileMode::Append, IO::FileShare::DenyWrite, IO::FileStream::BufferType::Normal));

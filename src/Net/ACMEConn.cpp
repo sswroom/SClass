@@ -269,7 +269,7 @@ Net::ACMEConn::ACMEConn(Net::SocketFactory *sockf, const UTF8Char *serverHost, U
 	this->nonce = 0;
 	this->accountId = 0;
 	Text::StringBuilderUTF8 sb;
-	sb.Append((const UTF8Char *)"https://");
+	sb.Append((const UTF8Char*)"https://");
 	sb.Append(serverHost);
 	if (port != 0 && port != 443)
 	{

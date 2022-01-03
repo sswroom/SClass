@@ -280,31 +280,31 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(UI::GUIClientControl *pare
 					break;
 				sb.ClearStr();
 				sb.AppendHex32(eip);
-				sb.Append((const UTF8Char*)" ");
+				sb.AppendC(UTF8STRC(" "));
 				symbol->ResolveName(sbuff, eip);
 				i  = Text::StrLastIndexOf(sbuff, '\\');
 				sb.Append(&sbuff[i + 1]);
 				i = this->lbMyStack->AddItem(sb.ToString(), 0);
 				sb.ClearStr();
-				sb.Append((const UTF8Char*)"EIP = 0x");
+				sb.AppendC(UTF8STRC("EIP = 0x"));
 				sb.AppendHex32(eip);
-				sb.Append((const UTF8Char*)"\r\n");
+				sb.AppendC(UTF8STRC("\r\n"));
 				buffSize = proc->ReadMemory(eip, buff, 256);
 				if (buffSize > 0)
 				{
 					sb.AppendHex(buff, buffSize, ' ', Text::LineBreakType::CRLF);
-					sb.Append((const UTF8Char*)"\r\n");
+					sb.AppendC(UTF8STRC("\r\n"));
 				}
 
-				sb.Append((const UTF8Char*)"\r\n");
-				sb.Append((const UTF8Char*)"ESP = 0x");
+				sb.AppendC(UTF8STRC("\r\n"));
+				sb.AppendC(UTF8STRC("ESP = 0x"));
 				sb.AppendHex32(esp);
-				sb.Append((const UTF8Char*)"\r\n");
+				sb.AppendC(UTF8STRC("\r\n"));
 				buffSize = proc->ReadMemory(esp, buff, 256);
 				if (buffSize > 0)
 				{
 					sb.AppendHex(buff, buffSize, ' ', Text::LineBreakType::CRLF);
-					sb.Append((const UTF8Char*)"\r\n");
+					sb.AppendC(UTF8STRC("\r\n"));
 				}
 				this->stacksMem->Add(Text::StrCopyNew(sb.ToString()));
 
@@ -377,31 +377,31 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(UI::GUIClientControl *pare
 					break;
 				sb.ClearStr();
 				sb.AppendHex64(rip);
-				sb.Append((const UTF8Char*)" ");
+				sb.AppendC(UTF8STRC(" "));
 				symbol->ResolveName(sbuff, rip);
 				i  = Text::StrLastIndexOf(sbuff, '\\');
 				sb.Append(&sbuff[i + 1]);
 				i = this->lbMyStack->AddItem(sb.ToString(), 0);
 				sb.ClearStr();
-				sb.Append((const UTF8Char*)"RIP = 0x");
+				sb.AppendC(UTF8STRC("RIP = 0x"));
 				sb.AppendHex64(rip);
-				sb.Append((const UTF8Char*)"\r\n");
+				sb.AppendC(UTF8STRC("\r\n"));
 				buffSize = proc->ReadMemory(rip, buff, 256);
 				if (buffSize > 0)
 				{
 					sb.AppendHex(buff, buffSize, ' ', Text::LineBreakType::CRLF);
-					sb.Append((const UTF8Char*)"\r\n");
+					sb.AppendC(UTF8STRC("\r\n"));
 				}
 
-				sb.Append((const UTF8Char*)"\r\n");
-				sb.Append((const UTF8Char*)"RSP = 0x");
+				sb.AppendC(UTF8STRC("\r\n"));
+				sb.AppendC(UTF8STRC("RSP = 0x"));
 				sb.AppendHex64(rsp);
-				sb.Append((const UTF8Char*)"\r\n");
+				sb.AppendC(UTF8STRC("\r\n"));
 				buffSize = proc->ReadMemory(rsp, buff, 256);
 				if (buffSize > 0)
 				{
 					sb.AppendHex(buff, buffSize, ' ', Text::LineBreakType::CRLF);
-					sb.Append((const UTF8Char*)"\r\n");
+					sb.AppendC(UTF8STRC("\r\n"));
 				}
 				this->stacksMem->Add(Text::StrCopyNew(sb.ToString()));
 

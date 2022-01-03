@@ -377,7 +377,7 @@ DB::DBReader *DB::ReadingDBTool::ExecuteReaderC(const UTF8Char *sqlCmd, UOSInt l
 {
 	{
 		Text::StringBuilderUTF8 logMsg;
-		logMsg.Append((const UTF8Char*)"ExecuteReader: ");
+		logMsg.AppendC(UTF8STRC("ExecuteReader: "));
 		logMsg.AppendC(sqlCmd, len);
 		AddLogMsgC(logMsg.ToString(), logMsg.GetLength(), IO::ILogHandler::LOG_LEVEL_RAW);
 	}
@@ -415,14 +415,14 @@ DB::DBReader *DB::ReadingDBTool::ExecuteReaderC(const UTF8Char *sqlCmd, UOSInt l
 	{
 		{
 			Text::StringBuilderUTF8 logMsg;
-			logMsg.Append((const UTF8Char*)"Cannot execute the sql command: ");
+			logMsg.AppendC(UTF8STRC("Cannot execute the sql command: "));
 			logMsg.AppendC(sqlCmd, len);
 			AddLogMsgC(logMsg.ToString(), logMsg.GetLength(), IO::ILogHandler::LOG_LEVEL_ERROR);
 		}
 
 		{
 			Text::StringBuilderUTF8 logMsg;
-			logMsg.Append((const UTF8Char*)"Exception detail: ");
+			logMsg.AppendC(UTF8STRC("Exception detail: "));
 			this->lastErrMsg->ClearStr();
 			this->db->GetErrorMsg(this->lastErrMsg);
 			logMsg.AppendSB(this->lastErrMsg);
@@ -567,7 +567,7 @@ DB::DBReader *DB::ReadingDBTool::GetTableData(const UTF8Char *tableName, Data::A
 {
 	{
 		Text::StringBuilderUTF8 logMsg;
-		logMsg.Append((const UTF8Char*)"GetTableData: ");
+		logMsg.AppendC(UTF8STRC("GetTableData: "));
 		logMsg.Append(tableName);
 		AddLogMsgC(logMsg.ToString(), logMsg.GetLength(), IO::ILogHandler::LOG_LEVEL_RAW);
 	}
@@ -605,14 +605,14 @@ DB::DBReader *DB::ReadingDBTool::GetTableData(const UTF8Char *tableName, Data::A
 	{
 		{
 			Text::StringBuilderUTF8 logMsg;
-			logMsg.Append((const UTF8Char*)"Cannot get table data: ");
+			logMsg.AppendC(UTF8STRC("Cannot get table data: "));
 			logMsg.Append(tableName);
 			AddLogMsgC(logMsg.ToString(), logMsg.GetLength(), IO::ILogHandler::LOG_LEVEL_ERROR);
 		}
 
 		{
 			Text::StringBuilderUTF8 logMsg;
-			logMsg.Append((const UTF8Char*)"Exception detail: ");
+			logMsg.AppendC(UTF8STRC("Exception detail: "));
 			this->lastErrMsg->ClearStr();
 			this->db->GetErrorMsg(this->lastErrMsg);
 			logMsg.AppendSB(this->lastErrMsg);
@@ -939,13 +939,13 @@ DB::TableDef *DB::ReadingDBTool::GetTableDef(const UTF8Char *tableName)
 		this->CloseReader(r);
 
 		Text::StringBuilderUTF8 sb;
-		sb.Append((const UTF8Char*)"SELECT c.name AS column_name, i.name AS index_name, c.is_identity FROM sys.indexes i");
-		sb.Append((const UTF8Char*)" inner join sys.index_columns ic  ON i.object_id = ic.object_id AND i.index_id = ic.index_id");
-		sb.Append((const UTF8Char*)" inner join sys.columns c ON ic.object_id = c.object_id AND c.column_id = ic.column_id");
-		sb.Append((const UTF8Char*)" WHERE i.is_primary_key = 1");
-		sb.Append((const UTF8Char*)" and i.object_ID = OBJECT_ID('");
+		sb.AppendC(UTF8STRC("SELECT c.name AS column_name, i.name AS index_name, c.is_identity FROM sys.indexes i"));
+		sb.AppendC(UTF8STRC(" inner join sys.index_columns ic  ON i.object_id = ic.object_id AND i.index_id = ic.index_id"));
+		sb.AppendC(UTF8STRC(" inner join sys.columns c ON ic.object_id = c.object_id AND c.column_id = ic.column_id"));
+		sb.AppendC(UTF8STRC(" WHERE i.is_primary_key = 1"));
+		sb.AppendC(UTF8STRC(" and i.object_ID = OBJECT_ID('"));
 		sb.Append(tableName);
-		sb.Append((const UTF8Char*)"')");
+		sb.AppendC(UTF8STRC("')"));
 		r = 0;
 		i = 4;
 		while (i-- > 0 && r == 0)

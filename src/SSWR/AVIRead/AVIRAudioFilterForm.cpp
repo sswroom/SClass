@@ -497,7 +497,7 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnDTMFVolChg(void *userObj, U
 	SSWR::AVIRead::AVIRAudioFilterForm *me = (SSWR::AVIRead::AVIRAudioFilterForm *)userObj;
 	Text::StringBuilderUTF8 sb;
 	Text::SBAppendF64(&sb, Math::OSInt2Double((OSInt)scrollPos - 960) * 0.1);
-	sb.Append((const UTF8Char*)"dB");
+	sb.AppendC(UTF8STRC("dB"));
 	me->lblDTMFVolV->SetText(sb.ToString());
 	if (me->dtmfGen)
 	{
@@ -874,7 +874,7 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnSweepVolChg(void *userObj, 
 	SSWR::AVIRead::AVIRAudioFilterForm *me = (SSWR::AVIRead::AVIRAudioFilterForm *)userObj;
 	Text::StringBuilderUTF8 sb;
 	Text::SBAppendF64(&sb, Math::OSInt2Double((OSInt)scrollPos - 960) * 0.1);
-	sb.Append((const UTF8Char*)"dB");
+	sb.AppendC(UTF8STRC("dB"));
 	me->lblSweepVolV->SetText(sb.ToString());
 	if (me->sweepFilter)
 	{
@@ -918,7 +918,7 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnAmplifierVolChg(void *userO
 	SSWR::AVIRead::AVIRAudioFilterForm *me = (SSWR::AVIRead::AVIRAudioFilterForm *)userObj;
 	Text::StringBuilderUTF8 sb;
 	sb.AppendUOSInt(scrollPos);
-	sb.Append((const UTF8Char*)"%");
+	sb.AppendC(UTF8STRC("%"));
 	me->lblAmplifierVolV->SetText(sb.ToString());
 	if (me->audioAmp)
 	{

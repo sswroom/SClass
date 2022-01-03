@@ -25,9 +25,9 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		while (i < j)
 		{
 			sb.ClearStr();
-			sb.Append((const UTF8Char*)"Pin ");
+			sb.AppendC(UTF8STRC("Pin "));
 			sb.AppendUOSInt(i);
-			sb.Append((const UTF8Char*)" = ");
+			sb.AppendC(UTF8STRC(" = "));
 			if (ctrl->IsPinHigh(i))
 			{
 				sb.AppendChar('1', 1);

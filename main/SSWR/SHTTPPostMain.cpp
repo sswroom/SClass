@@ -98,7 +98,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			else
 			{
 				sb.ClearStr();
-				sb.Append((const UTF8Char*)"Server response ");
+				sb.AppendC(UTF8STRC("Server response "));
 				sb.AppendI32(httpStatus);
 				console->WriteLine(sb.ToString());
 
@@ -138,9 +138,9 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 						fileName = Text::StrCopyNew((const UTF8Char*)"index.html");
 					}
 					sb.ClearStr();
-					sb.Append((const UTF8Char*)"Received ");
+					sb.AppendC(UTF8STRC("Received "));
 					sb.AppendU64(mstm->GetLength());
-					sb.Append((const UTF8Char*)" bytes from server");
+					sb.AppendC(UTF8STRC(" bytes from server"));
 					console->WriteLine(sb.ToString());
 
 /*					IO::FileStream *fs;

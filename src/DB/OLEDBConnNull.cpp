@@ -67,7 +67,7 @@ void DB::OLEDBConn::ForceTz(Int8 tzQhr)
 void DB::OLEDBConn::GetConnName(Text::StringBuilderUTF *sb)
 {
 	ClassData *data = (ClassData *)this->clsData;
-	sb->Append((const UTF8Char*)"OLEDB:");
+	sb->AppendC(UTF8STRC("OLEDB:"));
 	if (data->connStr)
 	{
 		const UTF8Char *csptr = Text::StrToUTF8New(data->connStr);
@@ -143,7 +143,7 @@ OSInt DB::OLEDBConn::ExecuteNonQuery(const UTF8Char *sql)
 					if (bstr)
 					{
 						Text::StringBuilderUTF8 sb;
-						sb.Append((const UTF8Char*)"ExecuteNonQuery: ");
+						sb.AppendC(UTF8STRC("ExecuteNonQuery: "));
 						sb.AppendW(bstr);
 						data->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_ERR_DETAIL);
 						SysFreeString(bstr);
@@ -251,7 +251,7 @@ DB::DBReader *DB::OLEDBConn::ExecuteReader(const UTF8Char *sql)
 					if (bstr)
 					{
 						Text::StringBuilderUTF8 sb;
-						sb.Append((const UTF8Char*)"ExecuteReader: ");
+						sb.AppendC(UTF8STRC("ExecuteReader: "));
 						sb.AppendW(bstr);
 						data->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_ERR_DETAIL);
 						SysFreeString(bstr);

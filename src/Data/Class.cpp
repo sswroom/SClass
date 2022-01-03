@@ -203,13 +203,13 @@ Bool Data::Class::Equals(void *obj1, void *obj2)
 void Data::Class::ToCppClassHeader(const UTF8Char *clsName, UOSInt tabLev, Text::StringBuilderUTF *sb)
 {
 	sb->AppendChar('\t', tabLev);
-	sb->Append((const UTF8Char*)"class ");
+	sb->AppendC(UTF8STRC("class "));
 	sb->Append(clsName);
-	sb->Append((const UTF8Char*)"\r\n");
+	sb->AppendC(UTF8STRC("\r\n"));
 	sb->AppendChar('\t', tabLev);
-	sb->Append((const UTF8Char*)"{\r\n");
+	sb->AppendC(UTF8STRC("{\r\n"));
 	sb->AppendChar('\t', tabLev);
-	sb->Append((const UTF8Char*)"private:\r\n");
+	sb->AppendC(UTF8STRC("private:\r\n"));
 	Data::ArrayList<FieldInfo *> *fieldList = this->fields;
 	FieldInfo *field;
 	UOSInt i;
@@ -223,20 +223,20 @@ void Data::Class::ToCppClassHeader(const UTF8Char *clsName, UOSInt tabLev, Text:
 		sb->Append(Text::CPPText::GetCppType(field->itemType));
 		sb->AppendChar(' ', 1);
 		sb->Append(field->name);
-		sb->Append((const UTF8Char*)";\r\n");
+		sb->AppendC(UTF8STRC(";\r\n"));
 		i++;
 	}
-	sb->Append((const UTF8Char*)"\r\n");
+	sb->AppendC(UTF8STRC("\r\n"));
 	sb->AppendChar('\t', tabLev);
-	sb->Append((const UTF8Char*)"public:\r\n");
+	sb->AppendC(UTF8STRC("public:\r\n"));
 	sb->AppendChar('\t', tabLev + 1);
 	sb->Append(clsName);
-	sb->Append((const UTF8Char*)"();\r\n");
+	sb->AppendC(UTF8STRC("();\r\n"));
 	sb->AppendChar('\t', tabLev + 1);
 	sb->AppendChar('~', 1);
 	sb->Append(clsName);
-	sb->Append((const UTF8Char*)"();\r\n");
-	sb->Append((const UTF8Char*)"\r\n");
+	sb->AppendC(UTF8STRC("();\r\n"));
+	sb->AppendC(UTF8STRC("\r\n"));
 	i = 0;
 	j = fieldList->GetCount();
 	while (i < j)
@@ -246,30 +246,30 @@ void Data::Class::ToCppClassHeader(const UTF8Char *clsName, UOSInt tabLev, Text:
 		sb->AppendChar('\t', tabLev + 1);
 		sb->Append(cppType);
 		sb->AppendChar(' ', 1);
-		sb->Append((const UTF8Char*)"Get");
+		sb->AppendC(UTF8STRC("Get"));
 		sb->AppendChar(Text::CharUtil::ToUpper(field->name->v[0]), 1);
 		sb->Append(field->name->v + 1);
-		sb->Append((const UTF8Char*)"();\r\n");
+		sb->AppendC(UTF8STRC("();\r\n"));
 
 		sb->AppendChar('\t', tabLev + 1);
-		sb->Append((const UTF8Char*)"void Set");
+		sb->AppendC(UTF8STRC("void Set"));
 		sb->AppendChar(Text::CharUtil::ToUpper(field->name->v[0]), 1);
 		sb->Append(field->name->v + 1);
 		sb->AppendChar('(', 1);
 		sb->Append(cppType);
 		sb->AppendChar(' ', 1);
 		sb->Append(field->name);
-		sb->Append((const UTF8Char*)");\r\n");
+		sb->AppendC(UTF8STRC(");\r\n"));
 		i++;
 	}
 
-	sb->Append((const UTF8Char*)"\r\n");
+	sb->AppendC(UTF8STRC("\r\n"));
 	sb->AppendChar('\t', tabLev + 1);
-	sb->Append((const UTF8Char*)"Data::NamedClass<");
+	sb->AppendC(UTF8STRC("Data::NamedClass<"));
 	sb->Append(clsName);
-	sb->Append((const UTF8Char*)"> *CreateClass();\r\n");
+	sb->AppendC(UTF8STRC("> *CreateClass();\r\n"));
 	sb->AppendChar('\t', tabLev);
-	sb->Append((const UTF8Char*)"};\r\n");
+	sb->AppendC(UTF8STRC("};\r\n"));
 }
 
 void Data::Class::ToCppClassSource(const UTF8Char *clsPrefix, const UTF8Char *clsName, UOSInt tabLev, Text::StringBuilderUTF *sb)
@@ -286,34 +286,34 @@ void Data::Class::ToCppClassSource(const UTF8Char *clsPrefix, const UTF8Char *cl
 	sb->AppendChar('\t', tabLev);
 	sb->Append(clsPrefix);
 	sb->Append(clsName);
-	sb->Append((const UTF8Char*)"::");
+	sb->AppendC(UTF8STRC("::"));
 	sb->Append(clsName);
-	sb->Append((const UTF8Char*)"()\r\n");
+	sb->AppendC(UTF8STRC("()\r\n"));
 	sb->AppendChar('\t', tabLev);
-	sb->Append((const UTF8Char*)"{\r\n");
+	sb->AppendC(UTF8STRC("{\r\n"));
 	i = 0;
 	j = fieldList->GetCount();
 	while (i < j)
 	{
 		field = fieldList->GetItem(i);
 		sb->AppendChar('\t', tabLev + 1);
-		sb->Append((const UTF8Char*)"this->");
+		sb->AppendC(UTF8STRC("this->"));
 		sb->Append(field->name);
-		sb->Append((const UTF8Char*)" = 0;\r\n");
+		sb->AppendC(UTF8STRC(" = 0;\r\n"));
 		i++;
 	}
 	sb->AppendChar('\t', tabLev);
-	sb->Append((const UTF8Char*)"}\r\n");
-	sb->Append((const UTF8Char*)"\r\n");
+	sb->AppendC(UTF8STRC("}\r\n"));
+	sb->AppendC(UTF8STRC("\r\n"));
 
 	sb->AppendChar('\t', tabLev);
 	sb->Append(clsPrefix);
 	sb->Append(clsName);
-	sb->Append((const UTF8Char*)"::~");
+	sb->AppendC(UTF8STRC("::~"));
 	sb->Append(clsName);
-	sb->Append((const UTF8Char*)"()\r\n");
+	sb->AppendC(UTF8STRC("()\r\n"));
 	sb->AppendChar('\t', tabLev);
-	sb->Append((const UTF8Char*)"{\r\n");
+	sb->AppendC(UTF8STRC("{\r\n"));
 	i = 0;
 	j = fieldList->GetCount();
 	while (i < j)
@@ -323,18 +323,18 @@ void Data::Class::ToCppClassSource(const UTF8Char *clsPrefix, const UTF8Char *cl
 		{
 		case Data::VariItem::ItemType::Str:
 			sb->AppendChar('\t', tabLev + 1);
-			sb->Append((const UTF8Char*)"SDEL_STRING(this->");
+			sb->AppendC(UTF8STRC("SDEL_STRING(this->"));
 			sb->Append(field->name);
-			sb->Append((const UTF8Char*)");\r\n");
+			sb->AppendC(UTF8STRC(");\r\n"));
 			break;
 		case Data::VariItem::ItemType::Date:
 		case Data::VariItem::ItemType::ByteArr:
 		case Data::VariItem::ItemType::Vector:
 		case Data::VariItem::ItemType::UUID:
 			sb->AppendChar('\t', tabLev + 1);
-			sb->Append((const UTF8Char*)"SDEL_CLASS(this->");
+			sb->AppendC(UTF8STRC("SDEL_CLASS(this->"));
 			sb->Append(field->name);
-			sb->Append((const UTF8Char*)");\r\n");
+			sb->AppendC(UTF8STRC(");\r\n"));
 			break;
 		case Data::VariItem::ItemType::F32:
 		case Data::VariItem::ItemType::F64:
@@ -355,8 +355,8 @@ void Data::Class::ToCppClassSource(const UTF8Char *clsPrefix, const UTF8Char *cl
 		i++;
 	}
 	sb->AppendChar('\t', tabLev);
-	sb->Append((const UTF8Char*)"}\r\n");
-	sb->Append((const UTF8Char*)"\r\n");
+	sb->AppendC(UTF8STRC("}\r\n"));
+	sb->AppendC(UTF8STRC("\r\n"));
 
 	i = 0;
 	j = fieldList->GetCount();
@@ -369,79 +369,79 @@ void Data::Class::ToCppClassSource(const UTF8Char *clsPrefix, const UTF8Char *cl
 		sb->AppendChar(' ', 1);
 		sb->Append(clsPrefix);
 		sb->Append(clsName);
-		sb->Append((const UTF8Char*)"::Get");
+		sb->AppendC(UTF8STRC("::Get"));
 		sb->AppendChar(Text::CharUtil::ToUpper(field->name->v[0]), 1);
 		sb->Append(field->name->v + 1);
-		sb->Append((const UTF8Char*)"()\r\n");
+		sb->AppendC(UTF8STRC("()\r\n"));
 		sb->AppendChar('\t', tabLev);
-		sb->Append((const UTF8Char*)"{\r\n");
+		sb->AppendC(UTF8STRC("{\r\n"));
 		sb->AppendChar('\t', tabLev + 1);
-		sb->Append((const UTF8Char*)"return this->");
+		sb->AppendC(UTF8STRC("return this->"));
 		sb->Append(field->name);
-		sb->Append((const UTF8Char*)";\r\n");
+		sb->AppendC(UTF8STRC(";\r\n"));
 		sb->AppendChar('\t', tabLev);
-		sb->Append((const UTF8Char*)"}\r\n");
-		sb->Append((const UTF8Char*)"\r\n");
+		sb->AppendC(UTF8STRC("}\r\n"));
+		sb->AppendC(UTF8STRC("\r\n"));
 
 		sb->AppendChar('\t', tabLev);
-		sb->Append((const UTF8Char*)"void ");
+		sb->AppendC(UTF8STRC("void "));
 		sb->Append(clsPrefix);
 		sb->Append(clsName);
-		sb->Append((const UTF8Char*)"::Set");
+		sb->AppendC(UTF8STRC("::Set"));
 		sb->AppendChar(Text::CharUtil::ToUpper(field->name->v[0]), 1);
 		sb->Append(field->name->v + 1);
 		sb->AppendChar('(', 1);
 		sb->Append(cppType);
 		sb->AppendChar(' ', 1);
 		sb->Append(field->name);
-		sb->Append((const UTF8Char*)")\r\n");
+		sb->AppendC(UTF8STRC(")\r\n"));
 		sb->AppendChar('\t', tabLev);
-		sb->Append((const UTF8Char*)"{\r\n");
+		sb->AppendC(UTF8STRC("{\r\n"));
 		switch (field->itemType)
 		{
 		case Data::VariItem::ItemType::Str:
 			sb->AppendChar('\t', tabLev + 1);
-			sb->Append((const UTF8Char*)"SDEL_STRING(this->");
+			sb->AppendC(UTF8STRC("SDEL_STRING(this->"));
 			sb->Append(field->name);
-			sb->Append((const UTF8Char*)");\r\n");
+			sb->AppendC(UTF8STRC(");\r\n"));
 			sb->AppendChar('\t', tabLev + 1);
-			sb->Append((const UTF8Char*)"this->");
+			sb->AppendC(UTF8STRC("this->"));
 			sb->Append(field->name);
-			sb->Append((const UTF8Char*)" = ");
+			sb->AppendC(UTF8STRC(" = "));
 			sb->Append(field->name);
-			sb->Append((const UTF8Char*)"?");
+			sb->AppendC(UTF8STRC("?"));
 			sb->Append(field->name);
-			sb->Append((const UTF8Char*)"->Clone():0");
+			sb->AppendC(UTF8STRC("->Clone():0"));
 			break;
 		case Data::VariItem::ItemType::Date:
 			sb->AppendChar('\t', tabLev + 1);
-			sb->Append((const UTF8Char*)"SDEL_CLASS(this->");
+			sb->AppendC(UTF8STRC("SDEL_CLASS(this->"));
 			sb->Append(field->name);
-			sb->Append((const UTF8Char*)");\r\n");
+			sb->AppendC(UTF8STRC(");\r\n"));
 			sb->AppendChar('\t', tabLev + 1);
-			sb->Append((const UTF8Char*)"this->");
+			sb->AppendC(UTF8STRC("this->"));
 			sb->Append(field->name);
-			sb->Append((const UTF8Char*)" = ");
+			sb->AppendC(UTF8STRC(" = "));
 			sb->Append(field->name);
-			sb->Append((const UTF8Char*)"?(NEW_CLASS_D(Data::DateTime(");
+			sb->AppendC(UTF8STRC("?(NEW_CLASS_D(Data::DateTime("));
 			sb->Append(field->name);
-			sb->Append((const UTF8Char*)"))):0");
+			sb->AppendC(UTF8STRC("))):0"));
 			break;
 		case Data::VariItem::ItemType::ByteArr:
 		case Data::VariItem::ItemType::Vector:
 		case Data::VariItem::ItemType::UUID:
 			sb->AppendChar('\t', tabLev + 1);
-			sb->Append((const UTF8Char*)"SDEL_CLASS(this->");
+			sb->AppendC(UTF8STRC("SDEL_CLASS(this->"));
 			sb->Append(field->name);
-			sb->Append((const UTF8Char*)");\r\n");
+			sb->AppendC(UTF8STRC(");\r\n"));
 			sb->AppendChar('\t', tabLev + 1);
-			sb->Append((const UTF8Char*)"this->");
+			sb->AppendC(UTF8STRC("this->"));
 			sb->Append(field->name);
-			sb->Append((const UTF8Char*)" = ");
+			sb->AppendC(UTF8STRC(" = "));
 			sb->Append(field->name);
-			sb->Append((const UTF8Char*)"?");
+			sb->AppendC(UTF8STRC("?"));
 			sb->Append(field->name);
-			sb->Append((const UTF8Char*)"->Clone():0");
+			sb->AppendC(UTF8STRC("->Clone():0"));
 			break;
 		case Data::VariItem::ItemType::F32:
 		case Data::VariItem::ItemType::F64:
@@ -458,52 +458,52 @@ void Data::Class::ToCppClassSource(const UTF8Char *clsPrefix, const UTF8Char *cl
 		case Data::VariItem::ItemType::Null:
 		default:
 			sb->AppendChar('\t', tabLev + 1);
-			sb->Append((const UTF8Char*)"this->");
+			sb->AppendC(UTF8STRC("this->"));
 			sb->Append(field->name);
-			sb->Append((const UTF8Char*)" = ");
+			sb->AppendC(UTF8STRC(" = "));
 			sb->Append(field->name);
 			break;
 		}
-		sb->Append((const UTF8Char*)";\r\n");
+		sb->AppendC(UTF8STRC(";\r\n"));
 		sb->AppendChar('\t', tabLev);
-		sb->Append((const UTF8Char*)"}\r\n");
-		sb->Append((const UTF8Char*)"\r\n");
+		sb->AppendC(UTF8STRC("}\r\n"));
+		sb->AppendC(UTF8STRC("\r\n"));
 		i++;
 	}
 
 	sb->AppendChar('\t', tabLev);
-	sb->Append((const UTF8Char*)"Data::NamedClass<");
+	sb->AppendC(UTF8STRC("Data::NamedClass<"));
 	sb->Append(clsPrefix);
 	sb->Append(clsName);
-	sb->Append((const UTF8Char*)"> *");
+	sb->AppendC(UTF8STRC("> *"));
 	sb->Append(clsPrefix);
 	sb->Append(clsName);
-	sb->Append((const UTF8Char*)"::CreateClass()\r\n");
+	sb->AppendC(UTF8STRC("::CreateClass()\r\n"));
 	sb->AppendChar('\t', tabLev);
-	sb->Append((const UTF8Char*)"{\r\n");
+	sb->AppendC(UTF8STRC("{\r\n"));
 	sb->AppendChar('\t', tabLev + 1);
-	sb->Append((const UTF8Char*)"Data::NamedClass<");
+	sb->AppendC(UTF8STRC("Data::NamedClass<"));
 	sb->Append(clsPrefix);
 	sb->Append(clsName);
-	sb->Append((const UTF8Char*)"> *cls;\r\n");
+	sb->AppendC(UTF8STRC("> *cls;\r\n"));
 	sb->AppendChar('\t', tabLev + 1);
-	sb->Append((const UTF8Char*)"NEW_CLASS(cls, Data::NamedClass<");
+	sb->AppendC(UTF8STRC("NEW_CLASS(cls, Data::NamedClass<"));
 	sb->Append(clsPrefix);
 	sb->Append(clsName);
-	sb->Append((const UTF8Char*)">(this));\r\n");
+	sb->AppendC(UTF8STRC(">(this));\r\n"));
 	i = 0;
 	j = fieldList->GetCount();
 	while (i < j)
 	{
 		field = fieldList->GetItem(i);
 		sb->AppendChar('\t', tabLev + 1);
-		sb->Append((const UTF8Char*)"CLASS_ADD(cls, ");
+		sb->AppendC(UTF8STRC("CLASS_ADD(cls, "));
 		sb->Append(field->name);
-		sb->Append((const UTF8Char*)");\r\n");
+		sb->AppendC(UTF8STRC(");\r\n"));
 		i++;
 	}
 	sb->AppendChar('\t', tabLev + 1);
-	sb->Append((const UTF8Char*)"return cls;\r\n");
+	sb->AppendC(UTF8STRC("return cls;\r\n"));
 	sb->AppendChar('\t', tabLev);
-	sb->Append((const UTF8Char*)"}\r\n");
+	sb->AppendC(UTF8STRC("}\r\n"));
 }

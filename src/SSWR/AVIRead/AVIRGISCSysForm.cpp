@@ -119,10 +119,10 @@ SSWR::AVIRead::AVIRGISCSysForm::AVIRGISCSysForm(UI::GUIClientControl *parent, UI
 	}
 
 	sb.ClearStr();
-	sb.Append((const UTF8Char*)"Current Coordinate System:\r\n");
+	sb.AppendC(UTF8STRC("Current Coordinate System:\r\n"));
 	if (this->oriCSys == 0)
 	{
-		sb.Append((const UTF8Char*)"Unknown");
+		sb.AppendC(UTF8STRC("Unknown"));
 	}
 	else
 	{

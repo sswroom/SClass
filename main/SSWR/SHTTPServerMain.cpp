@@ -47,7 +47,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	}
 
 	sb.ClearStr();
-	sb.Append((const UTF8Char*)"Listening to port ");
+	sb.AppendC(UTF8STRC("Listening to port "));
 	sb.AppendI32(port);
 	console->WriteLine(sb.ToString());
 	NEW_CLASS(sockf, Net::OSSocketFactory(true));

@@ -96,7 +96,7 @@ Bool Crypto::Hash::Bcrypt::GenHash(Text::StringBuilderUTF *sb, UInt32 cost, cons
 	{
 		return false;
 	}
-	sb->Append((const UTF8Char*)"$2a$");
+	sb->AppendC(UTF8STRC("$2a$"));
 	if (cost < 10)
 	{
 		sb->AppendChar('0', 1);

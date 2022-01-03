@@ -43,11 +43,11 @@ void __stdcall SSWR::AVIRead::AVIRTimedCaptureForm::OnDevChg(void *userObj)
 		Media::CS::CSConverter::GetSupportedCS(&supportedCS);
 
 		UTF8Char u8buff[128];
-		devInfo.Append((const UTF8Char*)"Name: ");
+		devInfo.AppendC(UTF8STRC("Name: "));
 		me->currCapture->GetSourceName(u8buff);
 		devInfo.Append(u8buff);
-		devInfo.Append((const UTF8Char*)"\r\n");
-		devInfo.Append((const UTF8Char*)"Supported Formats:\r\n");
+		devInfo.AppendC(UTF8STRC("\r\n"));
+		devInfo.AppendC(UTF8STRC("Supported Formats:\r\n"));
 		fmtCnt = me->currCapture->GetSupportedFormats(fmts, 80);
 		i = 0;
 		while (i < fmtCnt)
@@ -84,9 +84,9 @@ void __stdcall SSWR::AVIRead::AVIRTimedCaptureForm::OnDevChg(void *userObj)
 			
 			sb.ClearStr();
 			sb.AppendUOSInt(cfmt->width);
-			sb.Append((const UTF8Char*)" x ");
+			sb.AppendC(UTF8STRC(" x "));
 			sb.AppendUOSInt(cfmt->height);
-			sb.Append((const UTF8Char*)" (");
+			sb.AppendC(UTF8STRC(" ("));
 			if (cfmt->fourcc)
 			{
 				UInt8 fcc[4];
@@ -96,17 +96,17 @@ void __stdcall SSWR::AVIRead::AVIRTimedCaptureForm::OnDevChg(void *userObj)
 			else
 			{
 				sb.AppendU32(cfmt->bpp);
-				sb.Append((const UTF8Char*)" bits RGB");
+				sb.AppendC(UTF8STRC(" bits RGB"));
 			}
-			sb.Append((const UTF8Char*)")");
+			sb.AppendC(UTF8STRC(")"));
 
 			me->cboFormat->AddItem(sb.ToString(), cfmt);
 			me->currFormats->Add(cfmt);
 
 			devInfo.AppendUOSInt(cfmt->width);
-			devInfo.Append((const UTF8Char*)" x ");
+			devInfo.AppendC(UTF8STRC(" x "));
 			devInfo.AppendUOSInt(cfmt->height);
-			devInfo.Append((const UTF8Char*)" (");
+			devInfo.AppendC(UTF8STRC(" ("));
 			if (cfmt->fourcc)
 			{
 				UInt8 fcc[4];
@@ -116,12 +116,12 @@ void __stdcall SSWR::AVIRead::AVIRTimedCaptureForm::OnDevChg(void *userObj)
 			else
 			{
 				devInfo.AppendU32(cfmt->bpp);
-				devInfo.Append((const UTF8Char*)" bits RGB");
+				devInfo.AppendC(UTF8STRC(" bits RGB"));
 			}
-			devInfo.Append((const UTF8Char*)")");
-			devInfo.Append((const UTF8Char*)" ");
+			devInfo.AppendC(UTF8STRC(")"));
+			devInfo.AppendC(UTF8STRC(" "));
 			Text::SBAppendF64(&devInfo, cfmt->frameRateNumer / (Double)cfmt->frameRateDenom);
-			devInfo.Append((const UTF8Char*)" fps\r\n");
+			devInfo.AppendC(UTF8STRC(" fps\r\n"));
 
 			i++;
 		}

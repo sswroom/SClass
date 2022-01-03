@@ -383,11 +383,11 @@ SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(UI::GUIClientControl *parent
 		{
 			sb.ClearStr();
 			sb.AppendU32(ver1);
-			sb.Append((const UTF8Char*)".");
+			sb.AppendC(UTF8STRC("."));
 			sb.AppendU32(ver2);
-			sb.Append((const UTF8Char*)".");
+			sb.AppendC(UTF8STRC("."));
 			sb.AppendU32(ver3);
-			sb.Append((const UTF8Char*)".");
+			sb.AppendC(UTF8STRC("."));
 			sb.AppendU32(ver4);
 			this->txtDLLVer->SetText(sb.ToString());
 		}
@@ -395,11 +395,11 @@ SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(UI::GUIClientControl *parent
 		{
 			sb.ClearStr();
 			sb.AppendU32(ver1);
-			sb.Append((const UTF8Char*)".");
+			sb.AppendC(UTF8STRC("."));
 			sb.AppendU32(ver2);
-			sb.Append((const UTF8Char*)".");
+			sb.AppendC(UTF8STRC("."));
 			sb.AppendU32(ver3);
-			sb.Append((const UTF8Char*)".");
+			sb.AppendC(UTF8STRC("."));
 			sb.AppendU32(ver4);
 			this->txtDriverVer->SetText(sb.ToString());
 		}

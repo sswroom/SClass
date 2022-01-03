@@ -68,8 +68,8 @@ Bool Exporter::PDFExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 	objPos.Add(0);
 	objPos.Add(currPos);
 	sb.ClearStr();
-	sb.Append((const UTF8Char*)"1 0 obj\r");
-	sb.Append((const UTF8Char*)"<< /Type /Catalog /Pages 2 0 R\r>>\rendobj\r");
+	sb.AppendC(UTF8STRC("1 0 obj\r"));
+	sb.AppendC(UTF8STRC("<< /Type /Catalog /Pages 2 0 R\r>>\rendobj\r"));
 	stm->Write((UInt8*)sb.ToString(), sb.GetLength());
 	currPos += sb.GetLength();
 	objPos.Add(0);
@@ -87,14 +87,14 @@ Bool Exporter::PDFExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 
 		sb2.ClearStr();
 		sb2.AppendOSInt(pageContentId);
-		sb2.Append((const UTF8Char*)" 0 obj\r");
-		sb2.Append((const UTF8Char*)"<</Length ");
+		sb2.AppendC(UTF8STRC(" 0 obj\r"));
+		sb2.AppendC(UTF8STRC("<</Length "));
 		sb2.AppendOSInt(sb.GetLength());
-		sb2.Append((const UTF8Char*)">>\r");
-		sb2.Append((const UTF8Char*)"stream\r");
+		sb2.AppendC(UTF8STRC(">>\r"));
+		sb2.AppendC(UTF8STRC("stream\r"));
 		sb2.AppendSB(&sb);
-		sb2.Append((const UTF8Char*)"endstream\r");
-		sb2.Append((const UTF8Char*)"endobj\r");
+		sb2.AppendC(UTF8STRC("endstream\r"));
+		sb2.AppendC(UTF8STRC("endobj\r"));
 
 		objPos.SetItem(pageContentId, currPos);
 		stm->Write((UInt8*)sb2.ToString(), sb2.GetLength());
@@ -103,18 +103,18 @@ Bool Exporter::PDFExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 		pageList.Add((Int32)objPos.GetCount());
 		sb.ClearStr();
 		sb.AppendOSInt(objPos.GetCount());
-		sb.Append((const UTF8Char*)" 0 obj\r");
-		sb.Append((const UTF8Char*)"<</Type/Page/MediaBox [0 0 ");
+		sb.AppendC(UTF8STRC(" 0 obj\r"));
+		sb.AppendC(UTF8STRC("<</Type/Page/MediaBox [0 0 "));
 		sb.AppendI32(Math::Double2Int32(Math::Unit::Distance::Convert(Math::Unit::Distance::DU_MILLIMETER, Math::Unit::Distance::DU_INCH, g->GetVisibleWidthMM()) * 72.0));
-		sb.Append((const UTF8Char*)" ");
+		sb.AppendC(UTF8STRC(" "));
 		sb.AppendI32(Math::Double2Int32(Math::Unit::Distance::Convert(Math::Unit::Distance::DU_MILLIMETER, Math::Unit::Distance::DU_INCH, g->GetVisibleHeightMM()) * 72.0));
-		sb.Append((const UTF8Char*)"]\r");
-		sb.Append((const UTF8Char*)"/Parent 2 0 R\r");
-		sb.Append((const UTF8Char*)"/Contents ");
+		sb.AppendC(UTF8STRC("]\r"));
+		sb.AppendC(UTF8STRC("/Parent 2 0 R\r"));
+		sb.AppendC(UTF8STRC("/Contents "));
 		sb.AppendOSInt(pageContentId);
-		sb.Append((const UTF8Char*)" 0 R\r");
-		sb.Append((const UTF8Char*)">>\r");
-		sb.Append((const UTF8Char*)"endobj\r");
+		sb.AppendC(UTF8STRC(" 0 R\r"));
+		sb.AppendC(UTF8STRC(">>\r"));
+		sb.AppendC(UTF8STRC("endobj\r"));
 
 		objPos.Add(currPos);
 		stm->Write((UInt8*)sb.ToString(), sb.GetLength());
@@ -125,21 +125,21 @@ Bool Exporter::PDFExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 
 	objPos.SetItem(2, currPos);
 	sb.ClearStr();
-	sb.Append((const UTF8Char*)"2 0 obj\r");
-	sb.Append((const UTF8Char*)"<< /Type /Pages /Kids [\r");
+	sb.AppendC(UTF8STRC("2 0 obj\r"));
+	sb.AppendC(UTF8STRC("<< /Type /Pages /Kids [\r"));
 	i = 0;
 	j = pageList.GetCount();
 	while (i < j)
 	{
 		sb.AppendI32(pageList.GetItem(i));
-		sb.Append((const UTF8Char*)" 0 R\r");
+		sb.AppendC(UTF8STRC(" 0 R\r"));
 		i++;
 	}
-	sb.Append((const UTF8Char*)"] /Count ");
+	sb.AppendC(UTF8STRC("] /Count "));
 	sb.AppendOSInt(pageList.GetCount());
-	sb.Append((const UTF8Char*)"\r");
-	sb.Append((const UTF8Char*)">>\r");
-	sb.Append((const UTF8Char*)"endobj\r");
+	sb.AppendC(UTF8STRC("\r"));
+	sb.AppendC(UTF8STRC(">>\r"));
+	sb.AppendC(UTF8STRC("endobj\r"));
 	stm->Write((UInt8*)sb.ToString(), sb.GetLength());
 	currPos += sb.GetLength();
 
@@ -147,73 +147,73 @@ Bool Exporter::PDFExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 	objPos.Add(currPos);
 	sb.ClearStr();
 	sb.AppendOSInt(infoId);
-	sb.Append((const UTF8Char*)" 0 obj\r");
-	sb.Append((const UTF8Char*)"<<\r");
+	sb.AppendC(UTF8STRC(" 0 obj\r"));
+	sb.AppendC(UTF8STRC("<<\r"));
 	if (vdoc->GetDocName())
 	{
-		sb.Append((const UTF8Char*)"/Title (");
+		sb.AppendC(UTF8STRC("/Title ("));
 		sb.Append(vdoc->GetDocName());
-		sb.Append((const UTF8Char*)")\r");
+		sb.AppendC(UTF8STRC(")\r"));
 	}
 	if (vdoc->GetAuthor())
 	{
-		sb.Append((const UTF8Char*)"/Author (");
+		sb.AppendC(UTF8STRC("/Author ("));
 		sb.Append(vdoc->GetAuthor());
-		sb.Append((const UTF8Char*)")\r");
+		sb.AppendC(UTF8STRC(")\r"));
 	}
 	if (vdoc->GetSubject())
 	{
-		sb.Append((const UTF8Char*)"/Subject (");
+		sb.AppendC(UTF8STRC("/Subject ("));
 		sb.Append(vdoc->GetSubject());
-		sb.Append((const UTF8Char*)")\r");
+		sb.AppendC(UTF8STRC(")\r"));
 	}
 	if (vdoc->GetKeywords())
 	{
-		sb.Append((const UTF8Char*)"/Keywords (");
+		sb.AppendC(UTF8STRC("/Keywords ("));
 		sb.Append(vdoc->GetKeywords());
-		sb.Append((const UTF8Char*)")\r");
+		sb.AppendC(UTF8STRC(")\r"));
 	}
 	if (vdoc->GetCreator())
 	{
-		sb.Append((const UTF8Char*)"/Creator (");
+		sb.AppendC(UTF8STRC("/Creator ("));
 		sb.Append(vdoc->GetCreator());
-		sb.Append((const UTF8Char*)")\r");
+		sb.AppendC(UTF8STRC(")\r"));
 	}
 	if (vdoc->GetProducer())
 	{
-		sb.Append((const UTF8Char*)"/Producer (");
+		sb.AppendC(UTF8STRC("/Producer ("));
 		sb.Append(vdoc->GetProducer());
-		sb.Append((const UTF8Char*)")\r");
+		sb.AppendC(UTF8STRC(")\r"));
 	}
 	if (vdoc->GetCreateTime())
 	{
-		sb.Append((const UTF8Char*)"/CreationDate (D:");
+		sb.AppendC(UTF8STRC("/CreationDate (D:"));
 		dt.SetTicks(vdoc->GetCreateTime());
 		dt.ToString(sbuff, "yyyyMMddHHmmss");
 		sb.Append(sbuff);
-		sb.Append((const UTF8Char*)"Z)\r");
+		sb.AppendC(UTF8STRC("Z)\r"));
 	}
 	if (vdoc->GetModifyTime())
 	{
-		sb.Append((const UTF8Char*)"/ModDate (D:");
+		sb.AppendC(UTF8STRC("/ModDate (D:"));
 		dt.SetTicks(vdoc->GetModifyTime());
 		dt.ToString(sbuff, "yyyyMMddHHmmss");
 		sb.Append(sbuff);
-		sb.Append((const UTF8Char*)"Z)\r");
+		sb.AppendC(UTF8STRC("Z)\r"));
 	}
-	sb.Append((const UTF8Char*)">>\r");
-	sb.Append((const UTF8Char*)"endobj\r");
+	sb.AppendC(UTF8STRC(">>\r"));
+	sb.AppendC(UTF8STRC("endobj\r"));
 	stm->Write((UInt8*)sb.ToString(), sb.GetLength());
 	currPos += sb.GetLength();
 
 	refPos = currPos;
 	j = objPos.GetCount();
 	sb.ClearStr();
-	sb.Append((const UTF8Char*)"xref\r");
-	sb.Append((const UTF8Char*)"0 ");
+	sb.AppendC(UTF8STRC("xref\r"));
+	sb.AppendC(UTF8STRC("0 "));
 	sb.AppendOSInt(objPos.GetCount());
-	sb.Append((const UTF8Char*)"\r");
-	sb.Append((const UTF8Char*)"0000000000 65535 f \r");
+	sb.AppendC(UTF8STRC("\r"));
+	sb.AppendC(UTF8STRC("0000000000 65535 f \r"));
 	i = 1;
 	while (i < j)
 	{
@@ -225,23 +225,23 @@ Bool Exporter::PDFExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 		{
 			sb.AppendChar('0', 10 - (sptr - sbuff));
 			sb.Append(sbuff);
-			sb.Append((const UTF8Char*)" 00000 n \r");
+			sb.AppendC(UTF8STRC(" 00000 n \r"));
 		}
 		i++;
 	}
-	sb.Append((const UTF8Char*)"trailer\r");
-	sb.Append((const UTF8Char*)"<< /Size ");
+	sb.AppendC(UTF8STRC("trailer\r"));
+	sb.AppendC(UTF8STRC("<< /Size "));
 	sb.AppendOSInt(j);
-	sb.Append((const UTF8Char*)"\r");
-	sb.Append((const UTF8Char*)"/Info ");
+	sb.AppendC(UTF8STRC("\r"));
+	sb.AppendC(UTF8STRC("/Info "));
 	sb.AppendOSInt(infoId);
-	sb.Append((const UTF8Char*)" 0 R\r");
-	sb.Append((const UTF8Char*)"/Root 1 0 R\r");
-	sb.Append((const UTF8Char*)">>\r");
-	sb.Append((const UTF8Char*)"startxref\r");
+	sb.AppendC(UTF8STRC(" 0 R\r"));
+	sb.AppendC(UTF8STRC("/Root 1 0 R\r"));
+	sb.AppendC(UTF8STRC(">>\r"));
+	sb.AppendC(UTF8STRC("startxref\r"));
 	sb.AppendI64(refPos);
-	sb.Append((const UTF8Char*)"\r");
-	sb.Append((const UTF8Char*)"%%EOF\r");
+	sb.AppendC(UTF8STRC("\r"));
+	sb.AppendC(UTF8STRC("%%EOF\r"));
 	stm->Write((UInt8*)sb.ToString(), sb.GetLength());
 	currPos += sb.GetLength();
 

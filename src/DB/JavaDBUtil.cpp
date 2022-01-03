@@ -11,19 +11,19 @@ Text::String *DB::JavaDBUtil::AppendFieldAnno(Text::StringBuilderUTF *sb, DB::Co
 {
 	if (colDef->IsPK())
 	{
-		sb->Append((const UTF8Char*)"\t@Id\r\n");
+		sb->AppendC(UTF8STRC("\t@Id\r\n"));
 		if (colDef->IsAutoInc())
 		{
-			sb->Append((const UTF8Char*)"\t@GeneratedValue(strategy = GenerationType.IDENTITY)\r\n");
+			sb->AppendC(UTF8STRC("\t@GeneratedValue(strategy = GenerationType.IDENTITY)\r\n"));
 		}
 	}
 	if (colDef->GetColName()->HasUpperCase())
 	{
-		sb->Append((const UTF8Char*)"\t@Column(name=");
+		sb->AppendC(UTF8STRC("\t@Column(name="));
 		Text::String *s = Text::JSText::ToNewJSTextDQuote(colDef->GetColName()->v);
 		sb->Append(s);
 		s->Release();
-		sb->Append((const UTF8Char*)")\r\n");
+		sb->AppendC(UTF8STRC(")\r\n"));
 		return colDef->GetColName()->ToLower();
 	}
 	else
@@ -34,11 +34,11 @@ Text::String *DB::JavaDBUtil::AppendFieldAnno(Text::StringBuilderUTF *sb, DB::Co
 
 void DB::JavaDBUtil::AppendFieldDef(Text::StringBuilderUTF *sb, DB::ColDef *col, Text::String *colName)
 {
-	sb->Append((const UTF8Char*)"\tprivate ");
+	sb->AppendC(UTF8STRC("\tprivate "));
 	sb->Append(Text::JavaText::GetJavaTypeName(col->GetColType(), col->IsNotNull()));
 	sb->AppendChar(' ', 1);
 	Text::JavaText::ToJavaName(sb, colName->v, false);
-	sb->Append((const UTF8Char*)";\r\n");
+	sb->AppendC(UTF8STRC(";\r\n"));
 }
 
 void DB::JavaDBUtil::AppendConstrHdr(Text::StringBuilderUTF *sb, DB::ColDef *col, Text::String *colName, Bool isLast)
@@ -48,52 +48,52 @@ void DB::JavaDBUtil::AppendConstrHdr(Text::StringBuilderUTF *sb, DB::ColDef *col
 	Text::JavaText::ToJavaName(sb, colName->v, false);
 	if (!isLast)
 	{
-		sb->Append((const UTF8Char*)", ");
+		sb->AppendC(UTF8STRC(", "));
 	}
 }
 
 void DB::JavaDBUtil::AppendConstrItem(Text::StringBuilderUTF *sb, Text::String *colName)
 {
-	sb->Append((const UTF8Char*)"\t\tthis.");
+	sb->AppendC(UTF8STRC("\t\tthis."));
 	Text::JavaText::ToJavaName(sb, colName->v, false);
-	sb->Append((const UTF8Char*)" = ");
+	sb->AppendC(UTF8STRC(" = "));
 	Text::JavaText::ToJavaName(sb, colName->v, false);
-	sb->Append((const UTF8Char*)";\r\n");
+	sb->AppendC(UTF8STRC(";\r\n"));
 }
 
 void DB::JavaDBUtil::AppendGetterSetter(Text::StringBuilderUTF *sb, DB::ColDef *col, Text::String *colName)
 {
-	sb->Append((const UTF8Char*)"\r\n");
-	sb->Append((const UTF8Char*)"\tpublic ");
+	sb->AppendC(UTF8STRC("\r\n"));
+	sb->AppendC(UTF8STRC("\tpublic "));
 	sb->Append(Text::JavaText::GetJavaTypeName(col->GetColType(), col->IsNotNull()));
 	if (col->GetColType() == DB::DBUtil::CT_Bool)
 	{
-		sb->Append((const UTF8Char*)" is");
+		sb->AppendC(UTF8STRC(" is"));
 	}
 	else
 	{
-		sb->Append((const UTF8Char*)" get");
+		sb->AppendC(UTF8STRC(" get"));
 	}
 	Text::JavaText::ToJavaName(sb, colName->v, true);
-	sb->Append((const UTF8Char*)"() {\r\n");
-	sb->Append((const UTF8Char*)"\t\treturn this.");
+	sb->AppendC(UTF8STRC("() {\r\n"));
+	sb->AppendC(UTF8STRC("\t\treturn this."));
 	Text::JavaText::ToJavaName(sb, colName->v, false);
-	sb->Append((const UTF8Char*)";\r\n");
-	sb->Append((const UTF8Char*)"\t}\r\n");
-	sb->Append((const UTF8Char*)"\r\n");
-	sb->Append((const UTF8Char*)"\tpublic void set");
+	sb->AppendC(UTF8STRC(";\r\n"));
+	sb->AppendC(UTF8STRC("\t}\r\n"));
+	sb->AppendC(UTF8STRC("\r\n"));
+	sb->AppendC(UTF8STRC("\tpublic void set"));
 	Text::JavaText::ToJavaName(sb, colName->v, true);
 	sb->AppendChar('(', 1);
 	sb->Append(Text::JavaText::GetJavaTypeName(col->GetColType(), col->IsNotNull()));
 	sb->AppendChar(' ', 1);
 	Text::JavaText::ToJavaName(sb, colName->v, false);
-	sb->Append((const UTF8Char*)") {\r\n");
-	sb->Append((const UTF8Char*)"\t\tthis.");
+	sb->AppendC(UTF8STRC(") {\r\n"));
+	sb->AppendC(UTF8STRC("\t\tthis."));
 	Text::JavaText::ToJavaName(sb, colName->v, false);
-	sb->Append((const UTF8Char*)" = ");
+	sb->AppendC(UTF8STRC(" = "));
 	Text::JavaText::ToJavaName(sb, colName->v, false);
-	sb->Append((const UTF8Char*)";\r\n");
-	sb->Append((const UTF8Char*)"\t}\r\n");
+	sb->AppendC(UTF8STRC(";\r\n"));
+	sb->AppendC(UTF8STRC("\t}\r\n"));
 }
 
 void DB::JavaDBUtil::AppendEqualsItem(Text::StringBuilderUTF *sb, DB::ColDef *col, Text::String *colName, Text::String *clsName, Bool isLast)
@@ -131,9 +131,9 @@ void DB::JavaDBUtil::AppendEqualsItem(Text::StringBuilderUTF *sb, DB::ColDef *co
 	}
 	if (isObj)
 	{
-		sb->Append((const UTF8Char*)"Objects.equals(");
+		sb->AppendC(UTF8STRC("Objects.equals("));
 		Text::JavaText::ToJavaName(sb, colName->v, false);
-		sb->Append((const UTF8Char*)", ");
+		sb->AppendC(UTF8STRC(", "));
 		Text::JavaText::ToJavaName(sb, clsName->v, false);
 		sb->AppendChar('.', 1);
 		Text::JavaText::ToJavaName(sb, colName->v, false);
@@ -142,14 +142,14 @@ void DB::JavaDBUtil::AppendEqualsItem(Text::StringBuilderUTF *sb, DB::ColDef *co
 	else
 	{
 		Text::JavaText::ToJavaName(sb, colName->v, false);
-		sb->Append((const UTF8Char*)" == ");
+		sb->AppendC(UTF8STRC(" == "));
 		Text::JavaText::ToJavaName(sb, clsName->v, false);
 		sb->AppendChar('.', 1);
 		Text::JavaText::ToJavaName(sb, colName->v, false);
 	}
 	if (!isLast)
 	{
-		sb->Append((const UTF8Char*)" && ");
+		sb->AppendC(UTF8STRC(" && "));
 	}
 }
 
@@ -158,21 +158,21 @@ void DB::JavaDBUtil::AppendHashCodeItem(Text::StringBuilderUTF *sb, Text::String
 	Text::JavaText::ToJavaName(sb, colName->v, false);
 	if (!isLast)
 	{
-		sb->Append((const UTF8Char*)", ");
+		sb->AppendC(UTF8STRC(", "));
 	}
 }
 
 void DB::JavaDBUtil::AppendFieldOrderItem(Text::StringBuilderUTF *sb, Text::String *colName, Bool isLast)
 {
-	sb->Append((const UTF8Char*)"\t\t\"");
+	sb->AppendC(UTF8STRC("\t\t\""));
 	Text::JavaText::ToJavaName(sb, colName->v, false);
 	if (isLast)
 	{
-		sb->Append((const UTF8Char*)"\"\r\n");
+		sb->AppendC(UTF8STRC("\"\r\n"));
 	}
 	else
 	{
-		sb->Append((const UTF8Char*)"\",\r\n");
+		sb->AppendC(UTF8STRC("\",\r\n"));
 	}
 }
 
@@ -225,19 +225,19 @@ Bool DB::JavaDBUtil::ToJavaEntity(Text::StringBuilderUTF *sb, Text::String *tabl
 	Text::StringBuilderUTF8 sbFieldOrder;
 	UOSInt i;
 	const UTF8Char *csptr;
-	sb->Append((const UTF8Char*)"@Entity\r\n");
-	sb->Append((const UTF8Char*)"@Table(name=");
+	sb->AppendC(UTF8STRC("@Entity\r\n"));
+	sb->AppendC(UTF8STRC("@Table(name="));
 	i = tableName->IndexOf('.');
 	Text::JSText::ToJSTextDQuote(sb, &tableName->v[i + 1]);
 	if (i != INVALID_INDEX)
 	{
 		csptr = Text::StrCopyNewC(tableName->v, i);
-		sb->Append((const UTF8Char*)", schema=");
+		sb->AppendC(UTF8STRC(", schema="));
 		Text::JSText::ToJSTextDQuote(sb, csptr);
 		Text::StrDelNew(csptr);
 	}
-	sb->Append((const UTF8Char*)")\r\n");
-	sb->Append((const UTF8Char*)"public class ");
+	sb->AppendC(UTF8STRC(")\r\n"));
+	sb->AppendC(UTF8STRC("public class "));
 	Text::String *clsName;
 	if (Text::StrHasUpperCase(&tableName->v[i + 1]))
 	{
@@ -258,52 +258,52 @@ Bool DB::JavaDBUtil::ToJavaEntity(Text::StringBuilderUTF *sb, Text::String *tabl
 		}
 	}
 	Text::JavaText::ToJavaName(sb, clsName->v, true);
-	sb->Append((const UTF8Char*)"\r\n");
+	sb->AppendC(UTF8STRC("\r\n"));
 
-	sbConstrHdr.Append((const UTF8Char*)"\r\n");
-	sbConstrHdr.Append((const UTF8Char*)"\tpublic ");
+	sbConstrHdr.AppendC(UTF8STRC("\r\n"));
+	sbConstrHdr.AppendC(UTF8STRC("\tpublic "));
 	Text::JavaText::ToJavaName(&sbConstrHdr, clsName->v, true);
-	sbConstrHdr.Append((const UTF8Char*)"() {\r\n");
-	sbConstrHdr.Append((const UTF8Char*)"\t}\r\n");
-	sbConstrHdr.Append((const UTF8Char*)"\r\n");
-	sbConstrHdr.Append((const UTF8Char*)"\tpublic ");
+	sbConstrHdr.AppendC(UTF8STRC("() {\r\n"));
+	sbConstrHdr.AppendC(UTF8STRC("\t}\r\n"));
+	sbConstrHdr.AppendC(UTF8STRC("\r\n"));
+	sbConstrHdr.AppendC(UTF8STRC("\tpublic "));
 	Text::JavaText::ToJavaName(&sbConstrHdr, clsName->v, true);
 	sbConstrHdr.AppendChar('(', 1);
 
-	sbEquals.Append((const UTF8Char*)"\r\n");
-	sbEquals.Append((const UTF8Char*)"\t@Override\r\n");
-	sbEquals.Append((const UTF8Char*)"\tpublic boolean equals(Object o) {\r\n");
-	sbEquals.Append((const UTF8Char*)"\t\tif (o == this)\r\n");
-	sbEquals.Append((const UTF8Char*)"\t\t\treturn true;\r\n");
-	sbEquals.Append((const UTF8Char*)"\t\tif (!(o instanceof ");
+	sbEquals.AppendC(UTF8STRC("\r\n"));
+	sbEquals.AppendC(UTF8STRC("\t@Override\r\n"));
+	sbEquals.AppendC(UTF8STRC("\tpublic boolean equals(Object o) {\r\n"));
+	sbEquals.AppendC(UTF8STRC("\t\tif (o == this)\r\n"));
+	sbEquals.AppendC(UTF8STRC("\t\t\treturn true;\r\n"));
+	sbEquals.AppendC(UTF8STRC("\t\tif (!(o instanceof "));
 	Text::JavaText::ToJavaName(&sbEquals, clsName->v, true);
-	sbEquals.Append((const UTF8Char*)")) {\r\n");
-	sbEquals.Append((const UTF8Char*)"\t\t\treturn false;\r\n");
-	sbEquals.Append((const UTF8Char*)"\t\t}\r\n");
-	sbEquals.Append((const UTF8Char*)"\t\t");
+	sbEquals.AppendC(UTF8STRC(")) {\r\n"));
+	sbEquals.AppendC(UTF8STRC("\t\t\treturn false;\r\n"));
+	sbEquals.AppendC(UTF8STRC("\t\t}\r\n"));
+	sbEquals.AppendC(UTF8STRC("\t\t"));
 	Text::JavaText::ToJavaName(&sbEquals, clsName->v, true);
 	sbEquals.AppendChar(' ', 1);
 	Text::JavaText::ToJavaName(&sbEquals, clsName->v, false);
-	sbEquals.Append((const UTF8Char*)" = (");
+	sbEquals.AppendC(UTF8STRC(" = ("));
 	Text::JavaText::ToJavaName(&sbEquals, clsName->v, true);
-	sbEquals.Append((const UTF8Char*)") o;\r\n");
-	sbEquals.Append((const UTF8Char*)"\t\treturn ");
+	sbEquals.AppendC(UTF8STRC(") o;\r\n"));
+	sbEquals.AppendC(UTF8STRC("\t\treturn "));
 
-	sbHashCode.Append((const UTF8Char*)"\r\n");
-	sbHashCode.Append((const UTF8Char*)"\t@Override\r\n");
-	sbHashCode.Append((const UTF8Char*)"\tpublic int hashCode() {\r\n");
-	sbHashCode.Append((const UTF8Char*)"\t\treturn Objects.hash(");
+	sbHashCode.AppendC(UTF8STRC("\r\n"));
+	sbHashCode.AppendC(UTF8STRC("\t@Override\r\n"));
+	sbHashCode.AppendC(UTF8STRC("\tpublic int hashCode() {\r\n"));
+	sbHashCode.AppendC(UTF8STRC("\t\treturn Objects.hash("));
 
-	sbFieldOrder.Append((const UTF8Char*)"\r\n");
-	sbFieldOrder.Append((const UTF8Char*)"\t@Override\r\n");
-	sbFieldOrder.Append((const UTF8Char*)"\tpublic String toString() {\r\n");
-	sbFieldOrder.Append((const UTF8Char*)"\t\treturn DataTools.toObjectString(this);\r\n");
-	sbFieldOrder.Append((const UTF8Char*)"\t}\r\n");
-	sbFieldOrder.Append((const UTF8Char*)"\r\n");
-	sbFieldOrder.Append((const UTF8Char*)"\tpublic static String[] getFieldOrder() {\r\n");
-	sbFieldOrder.Append((const UTF8Char*)"\t\treturn new String[] {\r\n");
+	sbFieldOrder.AppendC(UTF8STRC("\r\n"));
+	sbFieldOrder.AppendC(UTF8STRC("\t@Override\r\n"));
+	sbFieldOrder.AppendC(UTF8STRC("\tpublic String toString() {\r\n"));
+	sbFieldOrder.AppendC(UTF8STRC("\t\treturn DataTools.toObjectString(this);\r\n"));
+	sbFieldOrder.AppendC(UTF8STRC("\t}\r\n"));
+	sbFieldOrder.AppendC(UTF8STRC("\r\n"));
+	sbFieldOrder.AppendC(UTF8STRC("\tpublic static String[] getFieldOrder() {\r\n"));
+	sbFieldOrder.AppendC(UTF8STRC("\t\treturn new String[] {\r\n"));
 
-	sb->Append((const UTF8Char*)"{\r\n");
+	sb->AppendC(UTF8STRC("{\r\n"));
 	DB::TableDef *tableDef = db->GetTableDef(tableName->v);
 	Text::String *colName;
 	if (tableDef)
@@ -356,14 +356,14 @@ Bool DB::JavaDBUtil::ToJavaEntity(Text::StringBuilderUTF *sb, Text::String *tabl
 	}
 	DEL_CLASS(tableDef);
 
-	sbConstrHdr.Append((const UTF8Char*)") {\r\n");
-	sbConstrItem.Append((const UTF8Char*)"\t}\r\n");
-	sbEquals.Append((const UTF8Char*)";\r\n");
-	sbEquals.Append((const UTF8Char*)"\t}\r\n");
-	sbHashCode.Append((const UTF8Char*)");\r\n");
-	sbHashCode.Append((const UTF8Char*)"\t}\r\n");
-	sbFieldOrder.Append((const UTF8Char*)"\t\t};\r\n");
-	sbFieldOrder.Append((const UTF8Char*)"\t}\r\n");
+	sbConstrHdr.AppendC(UTF8STRC(") {\r\n"));
+	sbConstrItem.AppendC(UTF8STRC("\t}\r\n"));
+	sbEquals.AppendC(UTF8STRC(";\r\n"));
+	sbEquals.AppendC(UTF8STRC("\t}\r\n"));
+	sbHashCode.AppendC(UTF8STRC(");\r\n"));
+	sbHashCode.AppendC(UTF8STRC("\t}\r\n"));
+	sbFieldOrder.AppendC(UTF8STRC("\t\t};\r\n"));
+	sbFieldOrder.AppendC(UTF8STRC("\t}\r\n"));
 
 	sb->AllocLeng(sbConstrHdr.GetLength() + sbConstrItem.GetLength() + sbGetterSetter.GetLength() + sbEquals.GetLength() + sbHashCode.GetLength() + sbFieldOrder.GetLength());
 	sb->AppendC(sbConstrHdr.ToString(), sbConstrHdr.GetLength());
@@ -372,7 +372,7 @@ Bool DB::JavaDBUtil::ToJavaEntity(Text::StringBuilderUTF *sb, Text::String *tabl
 	sb->AppendC(sbEquals.ToString(), sbEquals.GetLength());
 	sb->AppendC(sbHashCode.ToString(), sbHashCode.GetLength());
 	sb->AppendC(sbFieldOrder.ToString(), sbFieldOrder.GetLength());
-	sb->Append((const UTF8Char*)"}\r\n");
+	sb->AppendC(UTF8STRC("}\r\n"));
 	clsName->Release();
 	return true;
 }

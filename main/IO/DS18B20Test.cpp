@@ -28,7 +28,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		Text::StrToUInt16(argv[1], &pinNum);
 	}
 	Sync::Thread::SetPriority(Sync::Thread::TP_REALTIME);
-	sb.Append((const UTF8Char*)"Run using GPIO pin ");
+	sb.AppendC(UTF8STRC("Run using GPIO pin "));
 	sb.AppendI32(pinNum);
 	console.WriteLine(sb.ToString());
 	NEW_CLASS(gpioCtrl, IO::GPIOControl());
@@ -46,9 +46,9 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	else
 	{
 		sb.ClearStr();
-		sb.Append((const UTF8Char*)"Sensor Id = ");
+		sb.AppendC(UTF8STRC("Sensor Id = "));
 		sb.AppendHex8(sensorId[0]);
-		sb.Append((const UTF8Char*)"-");
+		sb.AppendC(UTF8STRC("-"));
 		sb.AppendHex(&sensorId[1], 6, 0, Text::LineBreakType::None);
 		console.WriteLine(sb.ToString());
 
@@ -65,7 +65,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			else
 			{
 				sb.ClearStr();
-				sb.Append((const UTF8Char*)"Temperature = ");
+				sb.AppendC(UTF8STRC("Temperature = "));
 				Text::SBAppendF64(&sb, temp);
 				console.WriteLine(sb.ToString());
 			}

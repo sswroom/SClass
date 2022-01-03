@@ -18,10 +18,10 @@ Net::GoogleQRCode::~GoogleQRCode()
 
 void Net::GoogleQRCode::GetImageURL(Text::StringBuilderUTF *sb)
 {
-	sb->Append((const UTF8Char*)"https://chart.googleapis.com/chart?cht=qr&chs=");
+	sb->AppendC(UTF8STRC("https://chart.googleapis.com/chart?cht=qr&chs="));
 	sb->AppendUOSInt(this->width);
 	sb->AppendChar('x', 1);
 	sb->AppendUOSInt(this->height);
-	sb->Append((const UTF8Char*)"&chl=");
+	sb->AppendC(UTF8STRC("&chl="));
 	Text::TextEnc::FormEncoding::FormEncode(sb, dataStr);
 }

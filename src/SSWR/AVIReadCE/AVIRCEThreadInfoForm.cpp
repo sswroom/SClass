@@ -1,9 +1,10 @@
-#include "stdafx.h"
+#include "Stdafx.h"
 #include "Data/ByteTool.h"
 #include "Manage/DasmX86_32.h"
 #include "Manage/StackTracer.h"
 //#include "SSWR/AVIReadCE/AVIRCEFunctionInfoForm.h"
 #include "SSWR/AVIReadCE/AVIRCEThreadInfoForm.h"
+#include "Text/StringBuilderUTF8.h"
 
 void __stdcall SSWR::AVIReadCE::AVIRCEThreadInfoForm::OnMyStackChg(void *userObj)
 {
@@ -216,8 +217,8 @@ SSWR::AVIReadCE::AVIRCEThreadInfoForm::AVIRCEThreadInfoForm(UI::GUIClientControl
 			UInt32 blockEnd;
 			Text::StringBuilderUTF8 sb;
 
-			NEW_CLASS(callAddrs, Data::ArrayListInt32());
-			NEW_CLASS(jmpAddrs, Data::ArrayListInt32());
+			NEW_CLASS(callAddrs, Data::ArrayListUInt32());
+			NEW_CLASS(jmpAddrs, Data::ArrayListUInt32());
 			eip = (UInt32)context->GetInstAddr();
 			esp = (UInt32)context->GetStackAddr();
 			ebp = (UInt32)context->GetFrameAddr();
@@ -230,31 +231,31 @@ SSWR::AVIReadCE::AVIRCEThreadInfoForm::AVIRCEThreadInfoForm(UI::GUIClientControl
 					break;
 				sb.ClearStr();
 				sb.AppendHex32(eip);
-				sb.Append((const UTF8Char*)" ");
+				sb.AppendC(UTF8STRC(" "));
 				symbol->ResolveName(sbuff, eip);
 				i  = Text::StrLastIndexOf(sbuff, '\\');
 				sb.Append(&sbuff[i + 1]);
 				i = this->lbMyStack->AddItem(sb.ToString(), 0);
 				sb.ClearStr();
-				sb.Append((const UTF8Char*)"EIP = 0x");
+				sb.AppendC(UTF8STRC("EIP = 0x"));
 				sb.AppendHex32(eip);
-				sb.Append((const UTF8Char*)"\r\n");
+				sb.AppendC(UTF8STRC("\r\n"));
 				buffSize = proc->ReadMemory(eip, buff, 256);
 				if (buffSize > 0)
 				{
 					sb.AppendHexBuff(buff, buffSize, ' ', Text::LineBreakType::CRLF);
-					sb.Append((const UTF8Char*)"\r\n");
+					sb.AppendC(UTF8STRC("\r\n"));
 				}
 
-				sb.Append((const UTF8Char*)"\r\n");
-				sb.Append((const UTF8Char*)"ESP = 0x");
+				sb.AppendC(UTF8STRC("\r\n"));
+				sb.AppendC(UTF8STRC("ESP = 0x"));
 				sb.AppendHex32(esp);
-				sb.Append((const UTF8Char*)"\r\n");
+				sb.AppendC(UTF8STRC("\r\n"));
 				buffSize = proc->ReadMemory(esp, buff, 256);
 				if (buffSize > 0)
 				{
 					sb.AppendHex(buff, buffSize, ' ', Text::LineBreakType::CRLF);
-					sb.Append((const UTF8Char*)"\r\n");
+					sb.AppendC(UTF8STRC("\r\n"));
 				}
 				this->stacksMem->Add(Text::StrCopyNew(sb.ToString()));
 
@@ -278,7 +279,7 @@ SSWR::AVIReadCE::AVIRCEThreadInfoForm::AVIRCEThreadInfoForm(UI::GUIClientControl
 		{
 			UInt8 buff[16];
 			UTF8Char sbuff[64];
-			Int32 bitCnt;
+			UInt32 bitCnt;
 			OSInt i;
 			OSInt j;
 			OSInt k;

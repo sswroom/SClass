@@ -146,10 +146,10 @@ SSWR::AVIRead::AVIRGISGroupQueryForm::AVIRGISGroupQueryForm(UI::GUIClientControl
 	this->navi = navi;
 	this->env = env;
 	this->group = group;
-	sb.Append((const UTF8Char*)"Group Query - ");
+	sb.AppendC(UTF8STRC("Group Query - "));
 	if (group == 0)
 	{
-		sb.Append((const UTF8Char*)"ROOT");
+		sb.AppendC(UTF8STRC("ROOT"));
 	}
 	else
 	{
@@ -160,7 +160,7 @@ SSWR::AVIRead::AVIRGISGroupQueryForm::AVIRGISGroupQueryForm(UI::GUIClientControl
 		}
 		else
 		{
-			sb.Append((const UTF8Char*)"Unknown");
+			sb.AppendC(UTF8STRC("Unknown"));
 		}
 	}
 	SetText(sb.ToString());

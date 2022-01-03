@@ -17,14 +17,14 @@ void __stdcall OnScanResult(void *userObj, UInt64 mac, Int32 rssi, const Char *n
 	WriteMUInt64(buff, mac);
 	Text::StringBuilderUTF8 sb;
 	sb.AppendHexBuff(&buff[2], 6, ':', Text::LineBreakType::None);
-	sb.Append((const UTF8Char*)" RSSI=");
+	sb.AppendC(UTF8STRC(" RSSI="));
 	sb.AppendI32(rssi);
-	sb.Append((const UTF8Char*)", name=");
+	sb.AppendC(UTF8STRC(", name="));
 	if (name)
 	{
 		sb.Append((const UTF8Char*)name);
 	}
-	sb.Append((const UTF8Char*)", vendor=");
+	sb.AppendC(UTF8STRC(", vendor="));
 	sb.Append((const UTF8Char*)Net::MACInfo::GetMACInfo(mac)->name);
 	console->WriteLine(sb.ToString());
 }
@@ -43,11 +43,11 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	{
 		ctrl = ctrlList.GetItem(i);
 		sb.ClearStr();
-		sb.Append((const UTF8Char*)"Using ");
+		sb.AppendC(UTF8STRC("Using "));
 		sb.Append(ctrl->GetName());
-		sb.Append((const UTF8Char*)" (");
+		sb.AppendC(UTF8STRC(" ("));
 		sb.Append(IO::BTUtil::GetManufacturerName(ctrl->GetManufacturer()));
-		sb.Append((const UTF8Char*)")");
+		sb.AppendC(UTF8STRC(")"));
 		console->WriteLine(sb.ToString());
 
 		ctrl->LEScanHandleResult(OnScanResult, 0);
@@ -96,7 +96,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		NEW_CLASS(listener, Net::WebServer::WebListener(sockf, 0, webHdlr, webPort, 120, 4, (const UTF8Char*)"BLEScanTest/1.0", false, true));
 		if (listener->IsError())
 		{
-			sb.Append((const UTF8Char*)"Error in starting web server at port ");
+			sb.AppendC(UTF8STRC("Error in starting web server at port "));
 			sb.AppendI32(webPort);
 			console.WriteLine(sb.ToString());
 		}

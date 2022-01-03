@@ -48,7 +48,7 @@ void __stdcall OnDetectResult(void *userObj, UOSInt objCnt, const Media::OpenCV:
 	if ((lastCnt < thisCnt))
 	{
 		Text::StringBuilderUTF8 sb;
-		sb.Append((const UTF8Char*)"People detected, cnt = ");
+		sb.AppendC(UTF8STRC("People detected, cnt = "));
 		sb.AppendUOSInt(thisCnt);
 		console->WriteLine(sb.ToString());
 

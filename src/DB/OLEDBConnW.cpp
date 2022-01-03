@@ -129,7 +129,7 @@ void DB::OLEDBConn::Init(const WChar *connStr)
 						if (bstr)
 						{
 							sb.ClearStr();
-							sb.Append((const UTF8Char*)"Source: ");
+							sb.AppendC(UTF8STRC("Source: "));
 							const UTF8Char *csptr = Text::StrToUTF8New(bstr);
 							sb.Append(csptr);
 							Text::StrDelNew(csptr);
@@ -141,7 +141,7 @@ void DB::OLEDBConn::Init(const WChar *connStr)
 						if (bstr)
 						{
 							sb.ClearStr();
-							sb.Append((const UTF8Char*)"Description: ");
+							sb.AppendC(UTF8STRC("Description: "));
 							const UTF8Char *csptr = Text::StrToUTF8New(bstr);
 							sb.Append(csptr);
 							Text::StrDelNew(csptr);
@@ -290,7 +290,7 @@ void DB::OLEDBConn::ForceTz(Int8 tzQhr)
 void DB::OLEDBConn::GetConnName(Text::StringBuilderUTF *sb)
 {
 	ClassData *data = (ClassData *)this->clsData;
-	sb->Append((const UTF8Char*)"OLEDB:");
+	sb->AppendC(UTF8STRC("OLEDB:"));
 	if (data->connStr)
 	{
 		const UTF8Char *csptr = Text::StrToUTF8New(data->connStr);
@@ -363,7 +363,7 @@ OSInt DB::OLEDBConn::ExecuteNonQuery(const UTF8Char *sql)
 					if (bstr)
 					{
 						Text::StringBuilderUTF8 sb;
-						sb.Append((const UTF8Char*)"ExecuteNonQuery: ");
+						sb.AppendC(UTF8STRC("ExecuteNonQuery: "));
 						const UTF8Char *csptr = Text::StrToUTF8New(bstr);
 						sb.Append(csptr);
 						Text::StrDelNew(csptr);
@@ -443,7 +443,7 @@ OSInt DB::OLEDBConn::ExecuteNonQuery(const UTF8Char *sql)
 					if (bstr)
 					{
 						Text::StringBuilderUTF8 sb;
-						sb.Append((const UTF8Char*)"ExecuteNonQuery: ");
+						sb.AppendC(UTF8STRC("ExecuteNonQuery: ");
 						sb.AppendW(bstr);
 						data->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_ERR_DETAIL);
 						SysFreeString(bstr);
@@ -474,7 +474,7 @@ void DB::OLEDBConn::GetErrorMsg(Text::StringBuilderUTF *str)
 		pIErrorInfoAll->GetDescription(&bstr);
 		if (bstr)
 		{
-			str->Append((const UTF8Char*)"Description: ");
+			str->AppendC(UTF8STRC("Description: "));
 			const UTF8Char *csptr = Text::StrToUTF8New(bstr);
 			str->Append(csptr);
 			Text::StrDelNew(csptr);
@@ -627,7 +627,7 @@ DB::DBReader *DB::OLEDBConn::ExecuteReader(const UTF8Char *sql)
 					if (bstr)
 					{
 						Text::StringBuilderUTF8 sb;
-						sb.Append((const UTF8Char*)"ExecuteReader: ");
+						sb.AppendC(UTF8STRC("ExecuteReader: "));
 						const UTF8Char *csptr = Text::StrToUTF8New(bstr);
 						sb.Append(csptr);
 						Text::StrDelNew(csptr);
@@ -710,7 +710,7 @@ DB::DBReader *DB::OLEDBConn::ExecuteReader(const UTF8Char *sql)
 					if (bstr)
 					{
 						Text::StringBuilderUTF8 sb;
-						sb.Append((const UTF8Char*)"ExecuteReader: ");
+						sb.AppendC(UTF8STRC("ExecuteReader: ");
 						sb.AppendW(bstr);
 						data->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_ERR_DETAIL);
 						SysFreeString(bstr);

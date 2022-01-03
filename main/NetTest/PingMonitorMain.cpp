@@ -76,10 +76,10 @@ UInt32 __stdcall RecvThread(void *userObj)
 						if (ipData[0] == 8) //Echo Request
 						{
 							sb->ClearStr();
-							sb->Append((const UTF8Char*)"Received ping from ");
+							sb->AppendC(UTF8STRC("Received ping from "));
 							Net::SocketUtil::GetIPv4Name(sbuff, ReadNUInt32(&buff[12]));
 							sb->Append(sbuff);
-							sb->Append((const UTF8Char*)", Size = ");
+							sb->AppendC(UTF8STRC(", Size = "));
 							sb->AppendUOSInt(ipDataSize);
 							logTool->LogMessage(sb->ToString(), IO::ILogHandler::LOG_LEVEL_COMMAND);
 //							console->WriteLine(sb->ToString());

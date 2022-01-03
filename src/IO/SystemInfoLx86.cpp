@@ -48,7 +48,7 @@ IO::SystemInfo::SystemInfo()
 	Text::StringBuilderUTF8 sb;
 	if (SystemInfo_ReadFile((const UTF8Char*)"/sys/class/dmi/id/board_vendor", &sb))
 	{
-		sb.Append((const UTF8Char*)" ");
+		sb.AppendC(UTF8STRC(" "));
 		if (!SystemInfo_ReadFile((const UTF8Char*)"/sys/class/dmi/id/board_name", &sb))
 		{
 			sb.RemoveChars(1);
@@ -57,7 +57,7 @@ IO::SystemInfo::SystemInfo()
 	}
 	else if (SystemInfo_ReadFile((const UTF8Char*)"/sys/class/dmi/id/sys_vendor", &sb))
 	{
-		sb.Append((const UTF8Char*)" ");
+		sb.AppendC(UTF8STRC(" "));
 		if (!SystemInfo_ReadFile((const UTF8Char*)"/sys/class/dmi/id/product_name", &sb))
 		{
 			sb.RemoveChars(1);

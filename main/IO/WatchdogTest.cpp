@@ -63,7 +63,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		if (wd->GetTimeoutSec(&timeoutSec))
 		{
 			sb.ClearStr();
-			sb.Append((const UTF8Char*)"Timeout = ");
+			sb.AppendC(UTF8STRC("Timeout = "));
 			sb.AppendI64(timeoutSec);
 			console.WriteLine(sb.ToString());
 		}
@@ -75,7 +75,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		if (wd->GetTemperature(&temp))
 		{
 			sb.ClearStr();
-			sb.Append((const UTF8Char*)"Temperature = ");
+			sb.AppendC(UTF8STRC("Temperature = "));
 			Text::SBAppendF64(&sb, temp);
 			console.WriteLine(sb.ToString());
 		}

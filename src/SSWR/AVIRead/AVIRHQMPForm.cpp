@@ -191,163 +191,163 @@ void __stdcall SSWR::AVIRead::AVIRHQMPForm::OnTimerTick(void *userObj)
 		UInt32 v;
 		NEW_CLASS(dbg.color, Media::ColorProfile());
 		me->vbox->GetStatus(&dbg);
-		sb.Append((const UTF8Char*)"Curr Time: ");
+		sb.AppendC(UTF8STRC("Curr Time: "));
 		sb.AppendU32(dbg.currTime);
 		currTime = dbg.currTime;
 		v = currTime / 3600000;
-		sb.Append((const UTF8Char*)" (");
+		sb.AppendC(UTF8STRC(" ("));
 		sb.AppendU32(v);
-		sb.Append((const UTF8Char*)":");
+		sb.AppendC(UTF8STRC(":"));
 		currTime -= v * 3600000;
 		v = currTime / 60000;
 		if (v < 10)
 		{
-			sb.Append((const UTF8Char*)"0");
+			sb.AppendC(UTF8STRC("0"));
 		}
 		sb.AppendU32(v);
-		sb.Append((const UTF8Char*)":");
+		sb.AppendC(UTF8STRC(":"));
 		currTime -= v * 60000;
 		v = currTime / 1000;
 		if (v < 10)
 		{
-			sb.Append((const UTF8Char*)"0");
+			sb.AppendC(UTF8STRC("0"));
 		}
 		sb.AppendU32(v);
-		sb.Append((const UTF8Char*)".");
+		sb.AppendC(UTF8STRC("."));
 		currTime -= v * 1000;
 		if (currTime < 10)
 		{
-			sb.Append((const UTF8Char*)"00");
+			sb.AppendC(UTF8STRC("00"));
 			sb.AppendU32(currTime);
 		}
 		else if (currTime < 100)
 		{
-			sb.Append((const UTF8Char*)"0");
+			sb.AppendC(UTF8STRC("0"));
 			sb.AppendU32(currTime);
 		}
 		else
 		{
 			sb.AppendU32(currTime);
 		}
-		sb.Append((const UTF8Char*)")\r\n");
-		sb.Append((const UTF8Char*)"Disp Frame Time: ");
+		sb.AppendC(UTF8STRC(")\r\n"));
+		sb.AppendC(UTF8STRC("Disp Frame Time: "));
 		sb.AppendU32(dbg.dispFrameTime);
-		sb.Append((const UTF8Char*)"\r\n");
-		sb.Append((const UTF8Char*)"Disp Frame Num: ");
+		sb.AppendC(UTF8STRC("\r\n"));
+		sb.AppendC(UTF8STRC("Disp Frame Num: "));
 		sb.AppendU32(dbg.dispFrameNum);
-		sb.Append((const UTF8Char*)"\r\n");
-		sb.Append((const UTF8Char*)"Proc Delay: ");
+		sb.AppendC(UTF8STRC("\r\n"));
+		sb.AppendC(UTF8STRC("Proc Delay: "));
 		sb.AppendI32(dbg.procDelay);
-		sb.Append((const UTF8Char*)"\r\n");
-		sb.Append((const UTF8Char*)"Disp Delay: ");
+		sb.AppendC(UTF8STRC("\r\n"));
+		sb.AppendC(UTF8STRC("Disp Delay: "));
 		sb.AppendI32(dbg.dispDelay);
-		sb.Append((const UTF8Char*)"\r\n");
-		sb.Append((const UTF8Char*)"Disp Jitter: ");
+		sb.AppendC(UTF8STRC("\r\n"));
+		sb.AppendC(UTF8STRC("Disp Jitter: "));
 		sb.AppendI32(dbg.dispJitter);
-		sb.Append((const UTF8Char*)"\r\n");
-		sb.Append((const UTF8Char*)"Video Delay: ");
+		sb.AppendC(UTF8STRC("\r\n"));
+		sb.AppendC(UTF8STRC("Video Delay: "));
 		sb.AppendI32(dbg.videoDelay);
-		sb.Append((const UTF8Char*)"\r\n");
-		sb.Append((const UTF8Char*)"Source Delay: ");
+		sb.AppendC(UTF8STRC("\r\n"));
+		sb.AppendC(UTF8STRC("Source Delay: "));
 		sb.AppendI32(dbg.srcDelay);
-		sb.Append((const UTF8Char*)"\r\n");
-		sb.Append((const UTF8Char*)"A/V Offset: ");
+		sb.AppendC(UTF8STRC("\r\n"));
+		sb.AppendC(UTF8STRC("A/V Offset: "));
 		sb.AppendI32(dbg.avOfst);
-		sb.Append((const UTF8Char*)"\r\n");
-		sb.Append((const UTF8Char*)"Seek Count: ");
+		sb.AppendC(UTF8STRC("\r\n"));
+		sb.AppendC(UTF8STRC("Seek Count: "));
 		sb.AppendUOSInt(dbg.seekCnt);
-		sb.Append((const UTF8Char*)"\r\n");
-		sb.Append((const UTF8Char*)"Frame Displayed: ");
+		sb.AppendC(UTF8STRC("\r\n"));
+		sb.AppendC(UTF8STRC("Frame Displayed: "));
 		sb.AppendU32(dbg.frameDispCnt);
-		sb.Append((const UTF8Char*)"\r\n");
-		sb.Append((const UTF8Char*)"Frame Skip before process: ");
+		sb.AppendC(UTF8STRC("\r\n"));
+		sb.AppendC(UTF8STRC("Frame Skip before process: "));
 		sb.AppendU32(dbg.frameSkipBefore);
-		sb.Append((const UTF8Char*)"\r\n");
-		sb.Append((const UTF8Char*)"Frame Skip after process: ");
+		sb.AppendC(UTF8STRC("\r\n"));
+		sb.AppendC(UTF8STRC("Frame Skip after process: "));
 		sb.AppendU32(dbg.frameSkipAfter);
-		sb.Append((const UTF8Char*)"\r\n");
-		sb.Append((const UTF8Char*)"ProcTimes H: ");
+		sb.AppendC(UTF8STRC("\r\n"));
+		sb.AppendC(UTF8STRC("ProcTimes H: "));
 		Text::SBAppendF64(&sb, dbg.hTime);
-		sb.Append((const UTF8Char*)"\r\n");
-		sb.Append((const UTF8Char*)"ProcTimes V: ");
+		sb.AppendC(UTF8STRC("\r\n"));
+		sb.AppendC(UTF8STRC("ProcTimes V: "));
 		Text::SBAppendF64(&sb, dbg.vTime);
-		sb.Append((const UTF8Char*)"\r\n");
-		sb.Append((const UTF8Char*)"ProcTimes C: ");
+		sb.AppendC(UTF8STRC("\r\n"));
+		sb.AppendC(UTF8STRC("ProcTimes C: "));
 		Text::SBAppendF64(&sb, dbg.csTime);
-		sb.Append((const UTF8Char*)"\r\n");
-		sb.Append((const UTF8Char*)"Buff: ");
+		sb.AppendC(UTF8STRC("\r\n"));
+		sb.AppendC(UTF8STRC("Buff: "));
 		sb.AppendI32(dbg.buffProc);
-		sb.Append((const UTF8Char*)",");
+		sb.AppendC(UTF8STRC(","));
 		sb.AppendI32(dbg.buffReady);
-		sb.Append((const UTF8Char*)"\r\n");
-		sb.Append((const UTF8Char*)"Src Size: ");
+		sb.AppendC(UTF8STRC("\r\n"));
+		sb.AppendC(UTF8STRC("Src Size: "));
 		sb.AppendUOSInt(dbg.srcWidth);
-		sb.Append((const UTF8Char*)" x ");
+		sb.AppendC(UTF8STRC(" x "));
 		sb.AppendUOSInt(dbg.srcHeight);
-		sb.Append((const UTF8Char*)"\r\n");
-		sb.Append((const UTF8Char*)"Disp Size: ");
+		sb.AppendC(UTF8STRC("\r\n"));
+		sb.AppendC(UTF8STRC("Disp Size: "));
 		sb.AppendUOSInt(dbg.dispWidth);
-		sb.Append((const UTF8Char*)" x ");
+		sb.AppendC(UTF8STRC(" x "));
 		sb.AppendUOSInt(dbg.dispHeight);
-		sb.Append((const UTF8Char*)"\r\n");
-		sb.Append((const UTF8Char*)"PAR: ");
+		sb.AppendC(UTF8STRC("\r\n"));
+		sb.AppendC(UTF8STRC("PAR: "));
 		Text::SBAppendF64(&sb, dbg.par);
-		sb.Append((const UTF8Char*)"\r\n");
-		sb.Append((const UTF8Char*)"Decoder: ");
+		sb.AppendC(UTF8STRC("\r\n"));
+		sb.AppendC(UTF8STRC("Decoder: "));
 		if (dbg.decoderName)
 		{
 			sb.Append(dbg.decoderName);
 		}
 		else
 		{
-			sb.Append((const UTF8Char*)"-");
+			sb.AppendC(UTF8STRC("-"));
 		}
-		sb.Append((const UTF8Char*)"\r\n");
-		sb.Append((const UTF8Char*)"Format: ");
+		sb.AppendC(UTF8STRC("\r\n"));
+		sb.AppendC(UTF8STRC("Format: "));
 		sb.Append(Media::CS::CSConverter::GetFormatName(dbg.format));
-		sb.Append((const UTF8Char*)"\r\n");
-		sb.Append((const UTF8Char*)"Output Bitdepth: ");
+		sb.AppendC(UTF8STRC("\r\n"));
+		sb.AppendC(UTF8STRC("Output Bitdepth: "));
 		sb.AppendU32(dbg.dispBitDepth);
-		sb.Append((const UTF8Char*)"\r\n");
-		sb.Append((const UTF8Char*)"Src YUV Type: ");
+		sb.AppendC(UTF8STRC("\r\n"));
+		sb.AppendC(UTF8STRC("Src YUV Type: "));
 		sb.Append(Media::ColorProfile::YUVTypeGetName(dbg.srcYUVType));
-		sb.Append((const UTF8Char*)"\r\n");
-		sb.Append((const UTF8Char*)"Src R Transfer: ");
+		sb.AppendC(UTF8STRC("\r\n"));
+		sb.AppendC(UTF8STRC("Src R Transfer: "));
 		sb.Append(Media::CS::TransferFunc::GetTransferFuncName(dbg.color->GetRTranParam()->GetTranType()));
-		sb.Append((const UTF8Char*)"\r\n");
-		sb.Append((const UTF8Char*)"Src G Transfer: ");
+		sb.AppendC(UTF8STRC("\r\n"));
+		sb.AppendC(UTF8STRC("Src G Transfer: "));
 		sb.Append(Media::CS::TransferFunc::GetTransferFuncName(dbg.color->GetGTranParam()->GetTranType()));
-		sb.Append((const UTF8Char*)"\r\n");
-		sb.Append((const UTF8Char*)"Src B Transfer: ");
+		sb.AppendC(UTF8STRC("\r\n"));
+		sb.AppendC(UTF8STRC("Src B Transfer: "));
 		sb.Append(Media::CS::TransferFunc::GetTransferFuncName(dbg.color->GetBTranParam()->GetTranType()));
-		sb.Append((const UTF8Char*)"\r\n");
-		sb.Append((const UTF8Char*)"Src Gamma: ");
+		sb.AppendC(UTF8STRC("\r\n"));
+		sb.AppendC(UTF8STRC("Src Gamma: "));
 		Text::SBAppendF64(&sb, dbg.color->GetRTranParam()->GetGamma());
-		sb.Append((const UTF8Char*)"\r\n");
+		sb.AppendC(UTF8STRC("\r\n"));
 		Media::ColorProfile::ColorPrimaries *primaries = dbg.color->GetPrimaries(); 
-		sb.Append((const UTF8Char*)"Src RGB Primary: ");
+		sb.AppendC(UTF8STRC("Src RGB Primary: "));
 		sb.Append(Media::ColorProfile::ColorTypeGetName(primaries->colorType));
-		sb.Append((const UTF8Char*)"\r\n");
-		sb.Append((const UTF8Char*)"-Red:   ");
+		sb.AppendC(UTF8STRC("\r\n"));
+		sb.AppendC(UTF8STRC("-Red:   "));
 		Text::SBAppendF64(&sb, primaries->rx);
-		sb.Append((const UTF8Char*)", ");
+		sb.AppendC(UTF8STRC(", "));
 		Text::SBAppendF64(&sb, primaries->ry);
-		sb.Append((const UTF8Char*)"\r\n");
-		sb.Append((const UTF8Char*)"-Green: ");
+		sb.AppendC(UTF8STRC("\r\n"));
+		sb.AppendC(UTF8STRC("-Green: "));
 		Text::SBAppendF64(&sb, primaries->gx);
-		sb.Append((const UTF8Char*)", ");
+		sb.AppendC(UTF8STRC(", "));
 		Text::SBAppendF64(&sb, primaries->gy);
-		sb.Append((const UTF8Char*)"\r\n");
-		sb.Append((const UTF8Char*)"-Blue:  ");
+		sb.AppendC(UTF8STRC("\r\n"));
+		sb.AppendC(UTF8STRC("-Blue:  "));
 		Text::SBAppendF64(&sb, primaries->bx);
-		sb.Append((const UTF8Char*)", ");
+		sb.AppendC(UTF8STRC(", "));
 		Text::SBAppendF64(&sb, primaries->by);
-		sb.Append((const UTF8Char*)"\r\n");
-		sb.Append((const UTF8Char*)"-White: ");
+		sb.AppendC(UTF8STRC("\r\n"));
+		sb.AppendC(UTF8STRC("-White: "));
 		Text::SBAppendF64(&sb, primaries->wx);
-		sb.Append((const UTF8Char*)", ");
+		sb.AppendC(UTF8STRC(", "));
 		Text::SBAppendF64(&sb, primaries->wy);
-		sb.Append((const UTF8Char*)"\r\n");
+		sb.AppendC(UTF8STRC("\r\n"));
 		me->txtDebug->SetText(sb.ToString());
 		DEL_CLASS(dbg.color);
 	}
@@ -974,7 +974,7 @@ void SSWR::AVIRead::AVIRHQMPForm::EventMenuClicked(UInt16 cmdId)
 			Data::DateTime dt;
 			dt.SetCurrTimeUTC();
 			sb.AppendDate(&dt);
-			sb.Append((const UTF8Char*)" a");
+			sb.AppendC(UTF8STRC(" a"));
 			debug.WriteLine(sb.ToString());
 			if (this->vbox->IsFullScreen())
 			{
@@ -983,7 +983,7 @@ void SSWR::AVIRead::AVIRHQMPForm::EventMenuClicked(UInt16 cmdId)
 			dt.SetCurrTimeUTC();
 			sb.ClearStr();
 			sb.AppendDate(&dt);
-			sb.Append((const UTF8Char*)" b");
+			sb.AppendC(UTF8STRC(" b"));
 			debug.WriteLine(sb.ToString());
 			if (this->player->GetVideoSize(&vw, &vh))
 			{
@@ -995,20 +995,20 @@ void SSWR::AVIRead::AVIRHQMPForm::EventMenuClicked(UInt16 cmdId)
 				dt.SetCurrTimeUTC();
 				sb.ClearStr();
 				sb.AppendDate(&dt);
-				sb.Append((const UTF8Char*)" c");
+				sb.AppendC(UTF8STRC(" c"));
 				debug.WriteLine(sb.ToString());
 				this->vbox->GetSizeP(&w1, &h1);
 				dt.SetCurrTimeUTC();
 				sb.ClearStr();
 				sb.AppendDate(&dt);
-				sb.Append((const UTF8Char*)" d");
+				sb.AppendC(UTF8STRC(" d"));
 				debug.WriteLine(sb.ToString());
 				this->GetSizeP(&w2, &h2);
 
 				dt.SetCurrTimeUTC();
 				sb.ClearStr();
 				sb.AppendDate(&dt);
-				sb.Append((const UTF8Char*)" e");
+				sb.AppendC(UTF8STRC(" e"));
 				debug.WriteLine(sb.ToString());
 				this->SetFormState(UI::GUIForm::FS_NORMAL);
 				if (w1 == vw && h1 == vh)
@@ -1016,7 +1016,7 @@ void SSWR::AVIRead::AVIRHQMPForm::EventMenuClicked(UInt16 cmdId)
 					dt.SetCurrTimeUTC();
 					sb.ClearStr();
 					sb.AppendDate(&dt);
-					sb.Append((const UTF8Char*)" f");
+					sb.AppendC(UTF8STRC(" f"));
 					debug.WriteLine(sb.ToString());
 					this->vbox->OnSizeChanged(false);
 				}
@@ -1025,14 +1025,14 @@ void SSWR::AVIRead::AVIRHQMPForm::EventMenuClicked(UInt16 cmdId)
 					dt.SetCurrTimeUTC();
 					sb.ClearStr();
 					sb.AppendDate(&dt);
-					sb.Append((const UTF8Char*)" g");
+					sb.AppendC(UTF8STRC(" g"));
 					debug.WriteLine(sb.ToString());
 					this->SetSizeP(w2 - w1 + vw, h2 - h1 + vh);
 				}
 				dt.SetCurrTimeUTC();
 				sb.ClearStr();
 				sb.AppendDate(&dt);
-				sb.Append((const UTF8Char*)" h");
+				sb.AppendC(UTF8STRC(" h"));
 				debug.WriteLine(sb.ToString());
 			}
 		}

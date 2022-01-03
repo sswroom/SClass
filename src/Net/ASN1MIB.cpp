@@ -983,7 +983,7 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 							{
 								errMessage->Append((const UTF8Char*)"IMPORTS module ");
 								errMessage->Append(sb.ToString());
-								errMessage->Append((const UTF8Char *)" not found");
+								errMessage->Append((const UTF8Char*)" not found");
 								return false;
 							}
 							impSarr[1] = impObjNames.ToString();
@@ -1056,7 +1056,7 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 									errMessage->Append(impSarr[0]);
 									errMessage->Append((const UTF8Char*)" in module ");
 									errMessage->Append(sb.ToString());
-									errMessage->Append((const UTF8Char *)" not found");
+									errMessage->Append((const UTF8Char*)" not found");
 									return false;
 								}*/
 								if (impCnt != 2)
@@ -1651,7 +1651,7 @@ Bool Net::ASN1MIB::ApplyOIDs(Text::StringBuilderUTF *errMessage)
 				errMessage->Append(obj->objectName);
 				errMessage->Append((const UTF8Char*)" in module ");
 				errMessage->Append(obj->typeName);
-				errMessage->Append((const UTF8Char *)" not found");
+				errMessage->Append((const UTF8Char*)" not found");
 				return false;
 			}
 		}

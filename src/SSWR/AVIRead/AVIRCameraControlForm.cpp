@@ -82,9 +82,9 @@ void __stdcall SSWR::AVIRead::AVIRCameraControlForm::OnDownloadClicked(void *use
 				{
 					IO::Path::DeleteFile(sb.ToString());
 					sb.ClearStr();
-					sb.Append((const UTF8Char*)"Error in downloading ");
+					sb.AppendC(UTF8STRC("Error in downloading "));
 					sb.Append(file->fileName);
-					sb.Append((const UTF8Char*)", continue?");
+					sb.AppendC(UTF8STRC(", continue?"));
 					if (!UI::MessageDialog::ShowYesNoDialog(sb.ToString(), (const UTF8Char*)"Camera Control", me))
 					{
 						break;

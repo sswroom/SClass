@@ -80,22 +80,22 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	}
 	t1 = clk->GetTimeDiff();
 	sb.ClearStr();
-	sb.Append((const UTF8Char*)"Gen Random N = ");
+	sb.AppendC(UTF8STRC("Gen Random N = "));
 	sb.AppendUOSInt(recordCnt);
-	sb.Append((const UTF8Char*)", seed = ");
+	sb.AppendC(UTF8STRC(", seed = "));
 	sb.AppendU32(seed);
-	sb.Append((const UTF8Char*)", time = ");
+	sb.AppendC(UTF8STRC(", time = "));
 	Text::SBAppendF64(&sb, t1);
-	sb.Append((const UTF8Char*)"s");
+	sb.AppendC(UTF8STRC("s"));
 	console.WriteLine(sb.ToString());
 
 /*	clk->Start();
 	MemCopyANC(array2, array1, recordCnt * sizeof(Int32));
 	t1 = clk->GetTimeDiff();
 	sb.ClearStr();
-	sb.Append((const UTF8Char*)"Memory copy time = ");
+	sb.AppendC(UTF8STRC("Memory copy time = "));
 	sb.Append(t1);
-	sb.Append((const UTF8Char*)"s");
+	sb.AppendC(UTF8STRC("s"));
 	console.WriteLine(sb.ToString());
 
 	NumberOfRec = 128;
@@ -106,11 +106,11 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		ArtificialQuickSort_SortUInt32(array2, 0, NumberOfRec - 1);
 		t1 = clk->GetTimeDiff();
 		sb.ClearStr();
-		sb.Append((const UTF8Char*)"AQuickSort 1 Thread N = ");
+		sb.AppendC(UTF8STRC("AQuickSort 1 Thread N = "));
 		sb.Append(NumberOfRec);
-		sb.Append((const UTF8Char*)", Sort time = ");
+		sb.AppendC(UTF8STRC(", Sort time = "));
 		sb.Append(t1);
-		sb.Append((const UTF8Char*)"s");
+		sb.AppendC(UTF8STRC("s"));
 		console.Write(sb.ToString());
 		valid = true;
 		i = 0;
@@ -146,13 +146,13 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		sort->SortUInt32(array2, 0, (OSInt)NumberOfRec - 1);
 		t1 = clk->GetTimeDiff();
 		sb.ClearStr();
-		sb.Append((const UTF8Char*)"AQuickSort ");
+		sb.AppendC(UTF8STRC("AQuickSort "));
 		sb.AppendUOSInt(Sync::Thread::GetThreadCnt());
-		sb.Append((const UTF8Char*)" Thread N = ");
+		sb.AppendC(UTF8STRC(" Thread N = "));
 		sb.AppendUOSInt(NumberOfRec);
-		sb.Append((const UTF8Char*)", Sort time = ");
+		sb.AppendC(UTF8STRC(", Sort time = "));
 		Text::SBAppendF64(&sb, t1);
-		sb.Append((const UTF8Char*)"s");
+		sb.AppendC(UTF8STRC("s"));
 		console.Write(sb.ToString());
 		valid = true;
 		i = 0;
@@ -188,11 +188,11 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		BubbleSort_SortUInt32(array2, 0, NumberOfRec - 1);
 		t1 = clk->GetTimeDiff();
 		sb.ClearStr();
-		sb.Append((const UTF8Char*)"BubbleSortv1 1 Thread N = ");
+		sb.AppendC(UTF8STRC("BubbleSortv1 1 Thread N = ");
 		sb.Append(NumberOfRec);
-		sb.Append((const UTF8Char*)", Sort time = ");
+		sb.AppendC(UTF8STRC(", Sort time = ");
 		sb.Append(t1);
-		sb.Append((const UTF8Char*)"s");
+		sb.AppendC(UTF8STRC("s");
 		console.Write(sb.ToString());
 		valid = true;
 		i = 0;
@@ -228,11 +228,11 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		InsertionSort_SortUInt32(array2, 0, NumberOfRec - 1);
 		t1 = clk->GetTimeDiff();
 		sb.ClearStr();
-		sb.Append((const UTF8Char*)"InsertionSort 1 Thread N = ");
+		sb.AppendC(UTF8STRC("InsertionSort 1 Thread N = ");
 		sb.Append(NumberOfRec);
-		sb.Append((const UTF8Char*)", Sort time = ");
+		sb.AppendC(UTF8STRC(", Sort time = ");
 		sb.Append(t1);
-		sb.Append((const UTF8Char*)"s");
+		sb.AppendC(UTF8STRC("s");
 		console.Write(sb.ToString());
 		valid = true;
 		i = 0;
@@ -268,11 +268,11 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		BitonicSort_SortUInt32(array2, 0, (OSInt)NumberOfRec - 1);
 		t1 = clk->GetTimeDiff();
 		sb.ClearStr();
-		sb.Append((const UTF8Char*)"BitonicSort 1 Thread N = ");
+		sb.AppendC(UTF8STRC("BitonicSort 1 Thread N = "));
 		sb.AppendUOSInt(NumberOfRec);
-		sb.Append((const UTF8Char*)", Sort time = ");
+		sb.AppendC(UTF8STRC(", Sort time = "));
 		Text::SBAppendF64(&sb, t1);
-		sb.Append((const UTF8Char*)"s");
+		sb.AppendC(UTF8STRC("s"));
 		console.Write(sb.ToString());
 		valid = true;
 		i = 0;
@@ -308,13 +308,13 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		sort3->SortUInt32(array2, 0, (OSInt)NumberOfRec - 1);
 		t1 = clk->GetTimeDiff();
 		sb.ClearStr();
-		sb.Append((const UTF8Char*)"BitonicSort ");
+		sb.AppendC(UTF8STRC("BitonicSort "));
 		sb.AppendUOSInt(Sync::Thread::GetThreadCnt());
-		sb.Append((const UTF8Char*)" Thread N = ");
+		sb.AppendC(UTF8STRC(" Thread N = "));
 		sb.AppendUOSInt(NumberOfRec);
-		sb.Append((const UTF8Char*)", Sort time = ");
+		sb.AppendC(UTF8STRC(", Sort time = "));
 		Text::SBAppendF64(&sb, t1);
-		sb.Append((const UTF8Char*)"s");
+		sb.AppendC(UTF8STRC("s"));
 		console.Write(sb.ToString());
 		valid = true;
 		i = 0;
@@ -350,11 +350,11 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		ByteCountingSort_SortUInt32(array2, 0, (OSInt)NumberOfRec - 1);
 		t1 = clk->GetTimeDiff();
 		sb.ClearStr();
-		sb.Append((const UTF8Char*)"BCountSort 1 Thread N = ");
+		sb.AppendC(UTF8STRC("BCountSort 1 Thread N = "));
 		sb.AppendUOSInt(NumberOfRec);
-		sb.Append((const UTF8Char*)", Sort time = ");
+		sb.AppendC(UTF8STRC(", Sort time = "));
 		Text::SBAppendF64(&sb, t1);
-		sb.Append((const UTF8Char*)"s");
+		sb.AppendC(UTF8STRC("s"));
 		console.Write(sb.ToString());
 		valid = true;
 		i = 0;
@@ -388,9 +388,9 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	sort2->SortInt32(array2, 0, NumberOfRec - 1);
 	t1 = clk->GetTimeDiff();
 	sb.ClearStr();
-	sb.Append((const UTF8Char*)"Pigeonhole Sort Single Thread Sort time = ");
+	sb.AppendC(UTF8STRC("Pigeonhole Sort Single Thread Sort time = ");
 	sb.Append(t1);
-	sb.Append((const UTF8Char*)"s");
+	sb.AppendC(UTF8STRC("s");
 	console.WriteLine(sb.ToString());
 
 	valid = true;
@@ -451,9 +451,9 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	DEL_CLASS(fs);
 	t1 = clk->GetTimeDiff();
 	sb.ClearStr();
-	sb.Append((const UTF8Char*)"SortResult.txt writen successfully, time = ");
+	sb.AppendC(UTF8STRC("SortResult.txt writen successfully, time = ");
 	sb.Append(t1);
-	sb.Append((const UTF8Char*)"s");
+	sb.AppendC(UTF8STRC("s");
 	console.WriteLine(sb.ToString());
 	DEL_CLASS(mstm);*/
 	

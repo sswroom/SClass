@@ -69,7 +69,7 @@ IO::SystemInfo::SystemInfo()
 			else
 			{
 				sb.Append(brand);
-				sb.Append((const UTF8Char*)" ");
+				sb.AppendC(UTF8STRC(" "));
 				sb.Append(model);
 			}
 		}

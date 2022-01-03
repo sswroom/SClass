@@ -21,26 +21,26 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	NEW_CLASS(sysInfo, IO::SystemInfo());
 	NEW_CLASS(cpuInfo, Manage::CPUInfoDetail());
 	sb.ClearStr();
-	sb.Append((const UTF8Char*)"CPU Name = ");
+	sb.AppendC(UTF8STRC("CPU Name = "));
 	if (cpuInfo->GetCPUName(sbuff))
 	{
 		sb.Append(sbuff);
 	}
 	else
 	{
-		sb.Append((const UTF8Char*)"Unknown");
+		sb.AppendC(UTF8STRC("Unknown"));
 	}
 	console.WriteLine(sb.ToString());
 
 	sb.ClearStr();
-	sb.Append((const UTF8Char*)"Platform Name = ");
+	sb.AppendC(UTF8STRC("Platform Name = "));
 	if (sysInfo->GetPlatformName(sbuff))
 	{
 		sb.Append(sbuff);
 	}
 	else
 	{
-		sb.Append((const UTF8Char*)"Unknown");
+		sb.AppendC(UTF8STRC("Unknown"));
 	}
 	console.WriteLine(sb.ToString());
 
@@ -48,9 +48,9 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	while (cpuInfo->GetCPUTemp(i, &temp))
 	{
 		sb.ClearStr();
-		sb.Append((const UTF8Char*)"CPU Temp ");
+		sb.AppendC(UTF8STRC("CPU Temp "));
 		sb.AppendUOSInt(i);
-		sb.Append((const UTF8Char*)" = ");
+		sb.AppendC(UTF8STRC(" = "));
 		Text::SBAppendF64(&sb, temp);
 		console.WriteLine(sb.ToString());
 		i++;

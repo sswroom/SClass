@@ -32,7 +32,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	}
 	Double t = clk.GetTimeDiff();
 	sb.ClearStr();
-	sb.Append((const UTF8Char*)"t = ");
+	sb.AppendC(UTF8STRC("t = "));
 	Text::SBAppendF64(&sb, t);
 	console->WriteLine(sb.ToString());
 	MemFreeA(imgBuff1);

@@ -103,9 +103,9 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchConvForm::OnConvertClicked(void *use
 					if (!exporter.ExportFile(fs, sbuff2, imgList, param))
 					{
 						sb.ClearStr();
-						sb.Append((const UTF8Char*)"Error in converting to ");
+						sb.AppendC(UTF8STRC("Error in converting to "));
 						sb.Append(sptr2);
-						sb.Append((const UTF8Char*)", do you want to continue?");
+						sb.AppendC(UTF8STRC(", do you want to continue?"));
 						if (!UI::MessageDialog::ShowYesNoDialog(sb.ToString(), (const UTF8Char*)"Image Batch Convert", me))
 						{
 							succ = false;
@@ -122,9 +122,9 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchConvForm::OnConvertClicked(void *use
 				else
 				{
 					sb.ClearStr();
-					sb.Append((const UTF8Char*)"Error in loading ");
+					sb.AppendC(UTF8STRC("Error in loading "));
 					sb.Append(sptr);
-					sb.Append((const UTF8Char*)", do you want to continue?");
+					sb.AppendC(UTF8STRC(", do you want to continue?"));
 					if (!UI::MessageDialog::ShowYesNoDialog(sb.ToString(), (const UTF8Char*)"Image Batch Convert", me))
 					{
 						succ = false;

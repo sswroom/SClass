@@ -66,7 +66,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 						cfg = cfgList->GetItem(j);
 						sb.ClearStr();
 						sb.Append(cfg->name);
-						sb.Append((const UTF8Char*)" = ");
+						sb.AppendC(UTF8STRC(" = "));
 						sb.Append(cfg->value);
 						console->WriteLine(sb.ToString());
 						j++;
@@ -115,9 +115,9 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 					else
 					{
 						Text::StringBuilderUTF8 sb;
-						sb.Append((const UTF8Char*)"Program ");
+						sb.AppendC(UTF8STRC("Program "));
 						sb.Append(cmdLines[i]);
-						sb.Append((const UTF8Char*)" not found");
+						sb.AppendC(UTF8STRC(" not found"));
 						console->SetTextColor(IO::ConsoleWriter::CC_RED, IO::ConsoleWriter::CC_BLACK);
 						console->WriteLine(sb.ToString());
 						console->ResetTextColor();

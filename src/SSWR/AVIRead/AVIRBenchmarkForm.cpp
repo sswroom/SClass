@@ -235,9 +235,9 @@ void __stdcall SSWR::AVIRead::AVIRBenchmarkForm::OnSaveClicked(void *userObj)
 	dlg->AddFilter((const UTF8Char*)"*.txt", (const UTF8Char*)"Result File");
 	{
 		Text::StringBuilderUTF8 sb;
-		sb.Append((const UTF8Char*)"Benchmark_");
+		sb.AppendC(UTF8STRC("Benchmark_"));
 		me->txtPlatform->GetText(&sb);
-		sb.Append((const UTF8Char*)".txt");
+		sb.AppendC(UTF8STRC(".txt"));
 		dlg->SetFileName(sb.ToString());
 	}
 	if (dlg->ShowDialog(me->GetHandle()))
@@ -249,27 +249,27 @@ void __stdcall SSWR::AVIRead::AVIRBenchmarkForm::OnSaveClicked(void *userObj)
 		NEW_CLASS(fs, IO::FileStream(dlg->GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		NEW_CLASS(writer, Text::UTF8Writer(fs));
 		sb.ClearStr();
-		sb.Append((const UTF8Char*)"Platform: ");
+		sb.AppendC(UTF8STRC("Platform: "));
 		if (sysInfo.GetPlatformName(u8buff))
 		{
 			sb.Append(u8buff);
 		}
 		else
 		{
-			sb.Append((const UTF8Char*)"-");
+			sb.AppendC(UTF8STRC("-"));
 		}
 		writer->WriteLine(sb.ToString());
 
 		Manage::CPUInfo cpu;
 		sb.ClearStr();
-		sb.Append((const UTF8Char*)"CPU: ");
+		sb.AppendC(UTF8STRC("CPU: "));
 		if (cpu.GetCPUName(u8buff))
 		{
 			sb.Append(u8buff);
 		}
 		else
 		{
-			sb.Append((const UTF8Char*)"-");
+			sb.AppendC(UTF8STRC("-"));
 		}
 		writer->WriteLine(sb.ToString());
 
@@ -282,35 +282,35 @@ void __stdcall SSWR::AVIRead::AVIRBenchmarkForm::OnSaveClicked(void *userObj)
 		{
 			ram = ramList.GetItem(i);
 			sb.ClearStr();
-			sb.Append((const UTF8Char*)"RAM: ");
+			sb.AppendC(UTF8STRC("RAM: "));
 			if (ram->deviceLocator)
 			{
 				sb.Append(ram->deviceLocator);
 			}
-			sb.Append((const UTF8Char*)"\t");
+			sb.AppendC(UTF8STRC("\t"));
 			if (ram->manufacturer)
 			{
 				sb.Append(ram->manufacturer);
 			}
-			sb.Append((const UTF8Char*)"\t");
+			sb.AppendC(UTF8STRC("\t"));
 			if (ram->partNo)
 			{
 				sb.Append(ram->partNo);
 			}
-			sb.Append((const UTF8Char*)"\t");
+			sb.AppendC(UTF8STRC("\t"));
 			if (ram->sn)
 			{
 				sb.Append(ram->sn);
 			}
-			sb.Append((const UTF8Char*)"\t");
+			sb.AppendC(UTF8STRC("\t"));
 			sb.AppendUOSInt(ram->defSpdMHz);
-			sb.Append((const UTF8Char*)"\t");
+			sb.AppendC(UTF8STRC("\t"));
 			sb.AppendUOSInt(ram->confSpdMHz);
-			sb.Append((const UTF8Char*)"\t");
+			sb.AppendC(UTF8STRC("\t"));
 			sb.AppendU32(ram->dataWidth);
-			sb.Append((const UTF8Char*)"\t");
+			sb.AppendC(UTF8STRC("\t"));
 			sb.AppendU32(ram->totalWidth);
-			sb.Append((const UTF8Char*)"\t");
+			sb.AppendC(UTF8STRC("\t"));
 			sb.AppendU64(ram->memorySize);
 			writer->WriteLine(sb.ToString());
 			i++;
@@ -327,21 +327,21 @@ void __stdcall SSWR::AVIRead::AVIRBenchmarkForm::OnSaveClicked(void *userObj)
 			switch (result->tt)
 			{
 			case TT_COPY:
-				sb.Append((const UTF8Char*)"Copy");
+				sb.AppendC(UTF8STRC("Copy"));
 				break;
 			case TT_WRITE:
-				sb.Append((const UTF8Char*)"Write");
+				sb.AppendC(UTF8STRC("Write"));
 				break;
 			case TT_READ:
-				sb.Append((const UTF8Char*)"Read");
+				sb.AppendC(UTF8STRC("Read"));
 				break;
 			default:
-				sb.Append((const UTF8Char*)"Unknown");
+				sb.AppendC(UTF8STRC("Unknown"));
 				break;
 			}
-			sb.Append((const UTF8Char*)"\t");
+			sb.AppendC(UTF8STRC("\t"));
 			sb.AppendUOSInt(result->testSize);
-			sb.Append((const UTF8Char*)"\t");
+			sb.AppendC(UTF8STRC("\t"));
 			Text::SBAppendF64(&sb, result->resultRate);
 			writer->WriteLine(sb.ToString());
 			i++;

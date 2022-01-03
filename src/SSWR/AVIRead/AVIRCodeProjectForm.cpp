@@ -40,15 +40,15 @@ void __stdcall SSWR::AVIRead::AVIRCodeProjectForm::OnItemSelected(void *userObj)
 				j = errMsgs.GetCount();
 				if (j > 0)
 				{
-					sb.Append((const UTF8Char*)"Parse Error:\r\n");
+					sb.AppendC(UTF8STRC("Parse Error:\r\n"));
 					while (i < j)
 					{
 						sb.Append(errMsgs.GetItem(i));
-						sb.Append((const UTF8Char*)"\r\n");
+						sb.AppendC(UTF8STRC("\r\n"));
 						i++;
 					}
-					sb.Append((const UTF8Char*)"\r\n");
-					sb.Append((const UTF8Char*)"\r\n");
+					sb.AppendC(UTF8STRC("\r\n"));
+					sb.AppendC(UTF8STRC("\r\n"));
 				}
 				me->DisplayStatus(&sb, status);
 				me->txtMessage->SetText(sb.ToString());
@@ -78,7 +78,7 @@ void __stdcall SSWR::AVIRead::AVIRCodeProjectForm::OnItemSelected(void *userObj)
 					while (i < j)
 					{
 						sb.Append(errMsgs.GetItem(i));
-						sb.Append((const UTF8Char*)"\r\n");
+						sb.AppendC(UTF8STRC("\r\n");
 						i++;
 					}
 				}
@@ -108,42 +108,42 @@ void SSWR::AVIRead::AVIRCodeProjectForm::DisplayStatus(Text::StringBuilderUTF *s
 	if (j > 0)
 	{
 		i = 0;
-		sb->Append((const UTF8Char*)"Files:\r\n");
+		sb->AppendC(UTF8STRC("Files:\r\n");
 		while (i < j)
 		{
 			sb->Append(status->GetFileName(i));
-			sb->Append((const UTF8Char*)"\r\n");
+			sb->AppendC(UTF8STRC("\r\n");
 
 			i++;
 		}
-		sb->Append((const UTF8Char*)"\r\n");
+		sb->AppendC(UTF8STRC("\r\n");
 	}
 	j = status->GetDefineCount();
 	if (j > 0)
 	{
 		Text::Cpp::CppParseStatus::DefineInfo defInfo;
 		i = 0;
-		sb->Append((const UTF8Char*)"Defines:\r\n");
+		sb->AppendC(UTF8STRC("Defines:\r\n");
 		while (i < j)
 		{
 			status->GetDefineInfo(i, &defInfo);
 			sb->Append(defInfo.defineName);
-			sb->Append((const UTF8Char*)"\t");
+			sb->AppendC(UTF8STRC("\t");
 			if (defInfo.fileName == 0)
 			{
-				sb->Append((const UTF8Char*)"By compiler\r\n");
+				sb->AppendC(UTF8STRC("By compiler\r\n");
 			}
 			else
 			{
 				sb->Append(defInfo.fileName);
-				sb->Append((const UTF8Char*)" (");
+				sb->AppendC(UTF8STRC(" (");
 				sb->AppendI32(defInfo.lineNum);
-				sb->Append((const UTF8Char*)")\r\n");
+				sb->AppendC(UTF8STRC(")\r\n");
 			}
 
 			i++;
 		}
-		sb->Append((const UTF8Char*)"\r\n");
+		sb->AppendC(UTF8STRC("\r\n");
 	}
 }
 

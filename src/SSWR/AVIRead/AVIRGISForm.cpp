@@ -552,9 +552,9 @@ void SSWR::AVIRead::AVIRGISForm::HKOPortal(const UTF8Char *listFile, const UTF8C
 	Net::HTTPClient *cli;
 	Text::UTF8Reader *reader;
 	dt.SetCurrTimeUTC();
-	sb.Append((const UTF8Char*)"https://maps.weather.gov.hk/gis-portal/web/data/dirList/");
+	sb.AppendC(UTF8STRC("https://maps.weather.gov.hk/gis-portal/web/data/dirList/"));
 	sb.Append(listFile);
-	sb.Append((const UTF8Char*)"?t=");
+	sb.AppendC(UTF8STRC("?t="));
 	sb.AppendI64(dt.ToTicks());
 	cli = Net::HTTPClient::CreateConnect(this->core->GetSocketFactory(), this->ssl, sb.ToString(), "GET", false);
 	NEW_CLASS(reader, Text::UTF8Reader(cli));
@@ -577,11 +577,11 @@ void SSWR::AVIRead::AVIRGISForm::HKOPortal(const UTF8Char *listFile, const UTF8C
 	if (dateStr && timeStr)
 	{
 		sb.ClearStr();
-		sb.Append((const UTF8Char*)"https://maps.weather.gov.hk/gis-portal/web/data/");
+		sb.AppendC(UTF8STRC("https://maps.weather.gov.hk/gis-portal/web/data/"));
 		sb.Append(dateStr);
 		sb.Append(filePath);
 		sb.Append(timeStr);
-		sb.Append((const UTF8Char*)"/index.kml?t=");
+		sb.AppendC(UTF8STRC("/index.kml?t="));
 		sb.AppendI64(dt.ToTicks());
 		this->OpenURL(sb.ToString(), (const UTF8Char*)"https://maps.weather.gov.hk/gis-portal/web/index.kml");
 	}
@@ -1361,15 +1361,15 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 						Text::StrConcat(sbuff, sptr);
 						dt.SetCurrTimeUTC();
 						sb.ClearStr();
-						sb.Append((const UTF8Char*)"https://www.weather.gov.hk/wxinfo/currwx/tc_gis_cone_15a_");
+						sb.AppendC(UTF8STRC("https://www.weather.gov.hk/wxinfo/currwx/tc_gis_cone_15a_"));
 						sb.Append(sbuff);
-						sb.Append((const UTF8Char*)".kml?rand=");
+						sb.AppendC(UTF8STRC(".kml?rand="));
 						sb.AppendI64(dt.ToTicks());
 						this->OpenURL(sb.ToString(), 0);
 						sb.ClearStr();
-						sb.Append((const UTF8Char*)"https://www.weather.gov.hk/wxinfo/currwx/tc_gis_track_15a_e_");
+						sb.AppendC(UTF8STRC("https://www.weather.gov.hk/wxinfo/currwx/tc_gis_track_15a_e_"));
 						sb.Append(sbuff);
-						sb.Append((const UTF8Char*)".xml?rand=");
+						sb.AppendC(UTF8STRC(".xml?rand="));
 						sb.AppendI64(dt.ToTicks());
 						this->OpenURL(sb.ToString(), 0);
 					}

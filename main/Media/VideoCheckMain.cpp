@@ -82,7 +82,7 @@ int sample_decode(const Char *fileName)
 			{
 				Text::StringBuilderUTF8 sb;
 				sb.AppendHexBuff(packet.data, 32, ' ', Text::LineBreakType::CRLF);
-				sb.Append((const UTF8Char*)"\r\n...\r\n");
+				sb.AppendC(UTF8STRC("\r\n...\r\n"));
 				sb.AppendHexBuff(packet.data + packet.size - 16, 32, ' ', Text::LineBreakType::CRLF);
 				printf("%s\r\n", sb.ToString());
 			}
@@ -120,7 +120,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	Media::Decoder::FFMPEGDecoder::Enable();
 	const UTF8Char *fileName = (const UTF8Char*)"test.mp4";
 //	return sample_decode((const Char*)fileName);
-	OSInt argc;
+	UOSInt argc;
 	UTF8Char **argv = progCtrl->GetCommandLines(progCtrl, &argc);
 	if (argc >= 2)
 	{
@@ -135,7 +135,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 
 	NEW_CLASS(console, IO::ConsoleWriter());
 	NEW_CLASS(parsers, Parser::FullParserList());
-	NEW_CLASS(checker, Media::VideoChecker());
+	NEW_CLASS(checker, Media::VideoChecker(false));
 	NEW_CLASS(fd, IO::StmData::FileData(fileName, false));
 	mediaFile = (Media::MediaFile*)parsers->ParseFileType(fd, IO::ParserType::MediaFile);
 	DEL_CLASS(fd);

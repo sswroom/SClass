@@ -202,9 +202,9 @@ Bool Exporter::KMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 				}
 
 				sb.ClearStr();
-				sb.Append((const UTF8Char*)"<Placemark><name>");
+				sb.AppendC(UTF8STRC("<Placemark><name>"));
 				sb.Append(sbuff);
-				sb.Append((const UTF8Char*)"</name><LineString><coordinates>");
+				sb.AppendC(UTF8STRC("</name><LineString><coordinates>"));
 
 				Double *points = pl->GetPointList(&nPoints);
 				if (needConv)
@@ -294,7 +294,7 @@ Bool Exporter::KMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 					}
 				}
 
-				sb.Append((const UTF8Char*)"</coordinates></LineString></Placemark>");
+				sb.AppendC(UTF8STRC("</coordinates></LineString></Placemark>"));
 				writer->WriteLine(sb.ToString(), sb.GetLength());
 			}
 			else if (vec->GetVectorType() == Math::Vector2D::VectorType::Polygon)
@@ -308,13 +308,13 @@ Bool Exporter::KMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 				}
 
 				sb.ClearStr();
-				sb.Append((const UTF8Char*)"<Placemark>");
-				sb.Append((const UTF8Char*)"<name>");
+				sb.AppendC(UTF8STRC("<Placemark>"));
+				sb.AppendC(UTF8STRC("<name>"));
 				sb.Append(sbuff);
-				sb.Append((const UTF8Char*)"</name>");
-				sb.Append((const UTF8Char*)"<Polygon>");
-				sb.Append((const UTF8Char*)"<tessellate>1</tessellate>");
-				sb.Append((const UTF8Char*)"<altitudeMode>relativeToGround</altitudeMode>");
+				sb.AppendC(UTF8STRC("</name>"));
+				sb.AppendC(UTF8STRC("<Polygon>"));
+				sb.AppendC(UTF8STRC("<tessellate>1</tessellate>"));
+				sb.AppendC(UTF8STRC("<altitudeMode>relativeToGround</altitudeMode>"));
 
 				Double *points = pg->GetPointList(&nPoints);
 				UInt32 *ptOfsts = pg->GetPtOfstList(&nParts);
@@ -328,7 +328,7 @@ Bool Exporter::KMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 					l = nParts;
 					while (l-- > 0)
 					{
-						sb.Append((const UTF8Char*)"<outerBoundaryIs><LinearRing><coordinates>");
+						sb.AppendC(UTF8STRC("<outerBoundaryIs><LinearRing><coordinates>"));
 						while (k-- > ptOfsts[l])
 						{
 							Math::CoordinateSystem::ConvertXYZ(srcCsys, destCsys, points[k << 1], points[(k << 1) + 1], defHeight, &x, &y, &z);
@@ -341,7 +341,7 @@ Bool Exporter::KMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 							sb.AppendC(sbuff2, (UOSInt)(sptr - sbuff2));
 						}
 						k++;
-						sb.Append((const UTF8Char*)"</coordinates></LinearRing></outerBoundaryIs>");
+						sb.AppendC(UTF8STRC("</coordinates></LinearRing></outerBoundaryIs>"));
 					}
 				}
 				else
@@ -350,7 +350,7 @@ Bool Exporter::KMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 					l = nParts;
 					while (l-- > 0)
 					{
-						sb.Append((const UTF8Char*)"<outerBoundaryIs><LinearRing><coordinates>");
+						sb.AppendC(UTF8STRC("<outerBoundaryIs><LinearRing><coordinates>"));
 						while (k-- > ptOfsts[l])
 						{
 							sptr = Text::StrDouble(sbuff2, points[k << 1]);
@@ -362,12 +362,12 @@ Bool Exporter::KMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 							sb.AppendC(sbuff2, (UOSInt)(sptr - sbuff2));
 						}
 						k++;
-						sb.Append((const UTF8Char*)"</coordinates></LinearRing></outerBoundaryIs>");
+						sb.AppendC(UTF8STRC("</coordinates></LinearRing></outerBoundaryIs>"));
 					}
 				}
 
-				sb.Append((const UTF8Char*)"</Polygon>");
-				sb.Append((const UTF8Char*)"</Placemark>");
+				sb.AppendC(UTF8STRC("</Polygon>"));
+				sb.AppendC(UTF8STRC("</Placemark>"));
 				writer->WriteLine(sb.ToString());
 			}
 			else if (vec->GetVectorType() == Math::Vector2D::VectorType::Image)
@@ -387,10 +387,10 @@ Bool Exporter::KMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 				if (img->IsScnCoord())
 				{
 					sb.ClearStr();
-					sb.Append((const UTF8Char*)"<ScreenOverlay>");
-					sb.Append((const UTF8Char*)"<name>");
+					sb.AppendC(UTF8STRC("<ScreenOverlay>"));
+					sb.AppendC(UTF8STRC("<name>"));
 					sb.Append(sbuff);
-					sb.Append((const UTF8Char*)"</name>");
+					sb.AppendC(UTF8STRC("</name>"));
 					timeStart = img->GetTimeStart();
 					timeEnd = img->GetTimeEnd();
 					if (timeStart != 0 && timeEnd != 0)
@@ -398,77 +398,77 @@ Bool Exporter::KMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 						Data::DateTime dt;
 						dt.ToUTCTime();
 						dt.SetUnixTimestamp(timeStart);
-						sb.Append((const UTF8Char*)"<TimeStamp><when>");
+						sb.AppendC(UTF8STRC("<TimeStamp><when>"));
 						dt.ToString(sbuff, "yyyy-MM-dd");
 						sb.Append(sbuff);
-						sb.Append((const UTF8Char*)"T");
+						sb.AppendC(UTF8STRC("T"));
 						dt.ToString(sbuff, "HH:mm");
 						sb.Append(sbuff);
-						sb.Append((const UTF8Char*)"Z</when></TimeStamp>");
+						sb.AppendC(UTF8STRC("Z</when></TimeStamp>"));
 
-						sb.Append((const UTF8Char*)"<TimeSpan><begin>");
+						sb.AppendC(UTF8STRC("<TimeSpan><begin>"));
 						dt.ToString(sbuff, "yyyy-MM-dd");
 						sb.Append(sbuff);
-						sb.Append((const UTF8Char*)"T");
+						sb.AppendC(UTF8STRC("T"));
 						dt.ToString(sbuff, "HH:mm:ss");
 						sb.Append(sbuff);
-						sb.Append((const UTF8Char*)"Z</begin>");
+						sb.AppendC(UTF8STRC("Z</begin>"));
 						dt.SetUnixTimestamp(timeEnd);
-						sb.Append((const UTF8Char*)"<end>");
+						sb.AppendC(UTF8STRC("<end>"));
 						dt.ToString(sbuff, "yyyy-MM-dd");
 						sb.Append(sbuff);
-						sb.Append((const UTF8Char*)"T");
+						sb.AppendC(UTF8STRC("T"));
 						dt.ToString(sbuff, "HH:mm:ss");
 						sb.Append(sbuff);
-						sb.Append((const UTF8Char*)"Z</end></TimeSpan>");
+						sb.AppendC(UTF8STRC("Z</end></TimeSpan>"));
 					}
 					if (img->HasSrcAlpha())
 					{
-						sb.Append((const UTF8Char*)"<color>");
+						sb.AppendC(UTF8STRC("<color>"));
 						sb.AppendHex32(((UInt32)Math::Double2Int32(img->GetSrcAlpha() * 255.0) << 24) | 0xffffff);
-						sb.Append((const UTF8Char*)"</color>");
+						sb.AppendC(UTF8STRC("</color>"));
 					}
 					if (img->HasZIndex())
 					{
-						sb.Append((const UTF8Char*)"<drawOrder>");
+						sb.AppendC(UTF8STRC("<drawOrder>"));
 						sb.AppendI32(img->GetZIndex());
-						sb.Append((const UTF8Char*)"</drawOrder>");
+						sb.AppendC(UTF8STRC("</drawOrder>"));
 					}
-					sb.Append((const UTF8Char*)"<Icon><href>");
+					sb.AppendC(UTF8STRC("<Icon><href>"));
 					//////////////////////////////////////////////////////
 					sb.Append(img->GetSourceAddr());
-					sb.Append((const UTF8Char*)"</href></Icon>");
+					sb.AppendC(UTF8STRC("</href></Icon>"));
 
 					img->GetBounds(&minX, &minY, &maxX, &maxY);
-					sb.Append((const UTF8Char*)"<overlayXY x=\"");
+					sb.AppendC(UTF8STRC("<overlayXY x=\""));
 					Text::SBAppendF64(&sb, maxX);
-					sb.Append((const UTF8Char*)"\" y=\"");
+					sb.AppendC(UTF8STRC("\" y=\""));
 					Text::SBAppendF64(&sb, maxY);
-					sb.Append((const UTF8Char*)"\" xunits=\"fraction\" yunits=\"fraction\"/>");
+					sb.AppendC(UTF8STRC("\" xunits=\"fraction\" yunits=\"fraction\"/>"));
 
-					sb.Append((const UTF8Char*)"<screenXY x=\"");
+					sb.AppendC(UTF8STRC("<screenXY x=\""));
 					Text::SBAppendF64(&sb, minX);
-					sb.Append((const UTF8Char*)"\" y=\"");
+					sb.AppendC(UTF8STRC("\" y=\""));
 					Text::SBAppendF64(&sb, minY);
-					sb.Append((const UTF8Char*)"\" xunits=\"fraction\" yunits=\"fraction\"/>");
+					sb.AppendC(UTF8STRC("\" xunits=\"fraction\" yunits=\"fraction\"/>"));
 
 					img->GetVectorSize(&maxX, &maxY);
-					sb.Append((const UTF8Char*)"<size x=\"");
+					sb.AppendC(UTF8STRC("<size x=\""));
 					Text::SBAppendF64(&sb, maxX);
-					sb.Append((const UTF8Char*)"\" y=\"");
+					sb.AppendC(UTF8STRC("\" y=\""));
 					Text::SBAppendF64(&sb, maxY);
-					sb.Append((const UTF8Char*)"\" xunits=\"fraction\" yunits=\"fraction\"/>");
+					sb.AppendC(UTF8STRC("\" xunits=\"fraction\" yunits=\"fraction\"/>"));
 
-					sb.Append((const UTF8Char*)"</ScreenOverlay>");
+					sb.AppendC(UTF8STRC("</ScreenOverlay>"));
 					writer->WriteLine(sb.ToString());
 				}
 				else
 				{
 					sb.ClearStr();
-					sb.Append((const UTF8Char*)"<GroundOverlay>");
-					sb.Append((const UTF8Char*)"<name>");
+					sb.AppendC(UTF8STRC("<GroundOverlay>"));
+					sb.AppendC(UTF8STRC("<name>"));
 					sb.Append(sbuff);
-					sb.Append((const UTF8Char*)"</name>");
+					sb.AppendC(UTF8STRC("</name>"));
 					timeStart = img->GetTimeStart();
 					timeEnd = img->GetTimeEnd();
 					if (timeStart != 0 && timeEnd != 0)
@@ -476,47 +476,47 @@ Bool Exporter::KMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 						Data::DateTime dt;
 						dt.ToUTCTime();
 						dt.SetUnixTimestamp(timeStart);
-						sb.Append((const UTF8Char*)"<TimeStamp><when>");
+						sb.AppendC(UTF8STRC("<TimeStamp><when>"));
 						dt.ToString(sbuff, "yyyy-MM-dd");
 						sb.Append(sbuff);
-						sb.Append((const UTF8Char*)"T");
+						sb.AppendC(UTF8STRC("T"));
 						dt.ToString(sbuff, "HH:mm");
 						sb.Append(sbuff);
-						sb.Append((const UTF8Char*)"Z</when></TimeStamp>");
+						sb.AppendC(UTF8STRC("Z</when></TimeStamp>"));
 
-						sb.Append((const UTF8Char*)"<TimeSpan><begin>");
+						sb.AppendC(UTF8STRC("<TimeSpan><begin>"));
 						dt.ToString(sbuff, "yyyy-MM-dd");
 						sb.Append(sbuff);
-						sb.Append((const UTF8Char*)"T");
+						sb.AppendC(UTF8STRC("T"));
 						dt.ToString(sbuff, "HH:mm:ss");
 						sb.Append(sbuff);
-						sb.Append((const UTF8Char*)"Z</begin>");
+						sb.AppendC(UTF8STRC("Z</begin>"));
 						dt.SetUnixTimestamp(timeEnd);
-						sb.Append((const UTF8Char*)"<end>");
+						sb.AppendC(UTF8STRC("<end>"));
 						dt.ToString(sbuff, "yyyy-MM-dd");
 						sb.Append(sbuff);
-						sb.Append((const UTF8Char*)"T");
+						sb.AppendC(UTF8STRC("T"));
 						dt.ToString(sbuff, "HH:mm:ss");
 						sb.Append(sbuff);
-						sb.Append((const UTF8Char*)"Z</end></TimeSpan>");
+						sb.AppendC(UTF8STRC("Z</end></TimeSpan>"));
 					}
 					if (img->HasSrcAlpha())
 					{
-						sb.Append((const UTF8Char*)"<color>");
+						sb.AppendC(UTF8STRC("<color>"));
 						sb.AppendHex32(((UInt32)Math::Double2Int32(img->GetSrcAlpha() * 255.0) << 24) | 0xffffff);
-						sb.Append((const UTF8Char*)"</color>");
+						sb.AppendC(UTF8STRC("</color>"));
 					}
 					if (img->HasZIndex())
 					{
-						sb.Append((const UTF8Char*)"<drawOrder>");
+						sb.AppendC(UTF8STRC("<drawOrder>"));
 						sb.AppendI32(img->GetZIndex());
-						sb.Append((const UTF8Char*)"</drawOrder>");
+						sb.AppendC(UTF8STRC("</drawOrder>"));
 					}
-					sb.Append((const UTF8Char*)"<Icon><href>");
+					sb.AppendC(UTF8STRC("<Icon><href>"));
 					///////////////////////////////////////////////////////
 					sb.Append(img->GetSourceAddr());
-					sb.Append((const UTF8Char*)"</href></Icon>");
-					sb.Append((const UTF8Char*)"<LatLonBox>");
+					sb.AppendC(UTF8STRC("</href></Icon>"));
+					sb.AppendC(UTF8STRC("<LatLonBox>"));
 
 					img->GetBounds(&minX, &minY, &maxX, &maxY);
 					if (needConv)
@@ -525,26 +525,26 @@ Bool Exporter::KMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 						Math::CoordinateSystem::ConvertXYZ(srcCsys, destCsys, minX, minY, defHeight, &minX, &minY, &z);
 						Math::CoordinateSystem::ConvertXYZ(srcCsys, destCsys, maxX, maxY, defHeight, &maxX, &maxY, &z);
 					}
-					sb.Append((const UTF8Char*)"<north>");
+					sb.AppendC(UTF8STRC("<north>"));
 					Text::SBAppendF64(&sb, maxY);
-					sb.Append((const UTF8Char*)"</north><south>");
+					sb.AppendC(UTF8STRC("</north><south>"));
 					Text::SBAppendF64(&sb, minY);
-					sb.Append((const UTF8Char*)"</south>");
-					sb.Append((const UTF8Char*)"<east>");
+					sb.AppendC(UTF8STRC("</south>"));
+					sb.AppendC(UTF8STRC("<east>"));
 					Text::SBAppendF64(&sb, maxX);
-					sb.Append((const UTF8Char*)"</east><west>");
+					sb.AppendC(UTF8STRC("</east><west>"));
 					Text::SBAppendF64(&sb, minX);
-					sb.Append((const UTF8Char*)"</west>");
-					sb.Append((const UTF8Char*)"</LatLonBox>");
+					sb.AppendC(UTF8STRC("</west>"));
+					sb.AppendC(UTF8STRC("</LatLonBox>"));
 					if (img->Support3D())
 					{
-						sb.Append((const UTF8Char*)"<altitude>");
+						sb.AppendC(UTF8STRC("<altitude>"));
 						Text::SBAppendF64(&sb, img->GetHeight());
-						sb.Append((const UTF8Char*)"</altitude>");
-						sb.Append((const UTF8Char*)"<altitudeMode>clampToGround</altitudeMode>");
+						sb.AppendC(UTF8STRC("</altitude>"));
+						sb.AppendC(UTF8STRC("<altitudeMode>clampToGround</altitudeMode>"));
 					}
 
-					sb.Append((const UTF8Char*)"</GroundOverlay>");
+					sb.AppendC(UTF8STRC("</GroundOverlay>"));
 					writer->WriteLine(sb.ToString());
 				}
 			}

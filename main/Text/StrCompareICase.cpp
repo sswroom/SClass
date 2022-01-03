@@ -27,9 +27,9 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	}
 	spd1 = clk->GetTimeDiff();
 	sb.ClearStr();
-	sb.Append((const UTF8Char*)"Compare value1 = ");
+	sb.AppendC(UTF8STRC("Compare value1 = "));
 	sb.AppendOSInt(val);
-	sb.Append((const UTF8Char*)", t = ");
+	sb.AppendC(UTF8STRC(", t = "));
 	Text::SBAppendF64(&sb, spd1);
 	console.WriteLine(sb.ToString());
 
@@ -41,9 +41,9 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	}
 	spd2 = clk->GetTimeDiff();
 	sb.ClearStr();
-	sb.Append((const UTF8Char*)"Compare value2 = ");
+	sb.AppendC(UTF8STRC("Compare value2 = "));
 	sb.AppendOSInt(val2);
-	sb.Append((const UTF8Char*)", t = ");
+	sb.AppendC(UTF8STRC(", t = "));
 	Text::SBAppendF64(&sb, spd2);
 	console.WriteLine(sb.ToString());
 

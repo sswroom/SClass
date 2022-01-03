@@ -43,7 +43,7 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothCtlForm::OnStoreListClicked(void *use
 	if (btLog.StoreFile(sbuff))
 	{
 		Text::StringBuilderUTF8 sb;
-		sb.Append((const UTF8Char*)"Stored as ");
+		sb.AppendC(UTF8STRC("Stored as "));
 		sb.Append(sbuff);
 		UI::MessageDialog::ShowDialog(sb.ToString(), (const UTF8Char*)"Bluetooth Ctrl", me);
 	}

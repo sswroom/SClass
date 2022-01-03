@@ -14,21 +14,21 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	if (info->GetName())
 	{
 		sb.ClearStr();
-		sb.Append((const UTF8Char*)"Name = ");
+		sb.AppendC(UTF8STRC("Name = "));
 		sb.Append(info->GetName());
 		console.WriteLine(sb.ToString());
 	}
 	if (info->GetDesc())
 	{
 		sb.ClearStr();
-		sb.Append((const UTF8Char*)"Desc = ");
+		sb.AppendC(UTF8STRC("Desc = "));
 		sb.Append(info->GetDesc());
 		console.WriteLine(sb.ToString());
 	}
 	if (info->GetMonitorID())
 	{
 		sb.ClearStr();
-		sb.Append((const UTF8Char*)"MonitorID = ");
+		sb.AppendC(UTF8STRC("MonitorID = "));
 		sb.Append(info->GetMonitorID());
 		console.WriteLine(sb.ToString());
 	}

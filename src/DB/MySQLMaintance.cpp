@@ -22,7 +22,7 @@ void DB::MySQLMaintance::RepairSchema(const UTF8Char *schema, Text::StringBuilde
 	if (!this->cli->ChangeSchema(schema))
 	{
 		this->cli->GetErrorMsg(sb);
-		sb->Append((const UTF8Char*)"\r\n");
+		sb->AppendC(UTF8STRC("\r\n"));
 		return;
 	}
 	this->cli->GetTableNames(&tableNames);
@@ -56,16 +56,16 @@ void DB::MySQLMaintance::RepairTable(const UTF8Char *tableName, Text::StringBuil
 				r->GetStr(i, sb);
 				i++;
 			}
-			sb->Append((const UTF8Char*)"\r\n");
+			sb->AppendC(UTF8STRC("\r\n"));
 		}
 		this->cli->CloseReader(r);
 	}
 	else
 	{
-		sb->Append((const UTF8Char*)"Error in executing SQL: ");
-		sb->Append(sql.ToString());
-		sb->Append((const UTF8Char*)"\r\n");
+		sb->AppendC(UTF8STRC("Error in executing SQL: "));
+		sb->AppendC(sql.ToString(), sql.GetLength());
+		sb->AppendC(UTF8STRC("\r\n"));
 		this->cli->GetErrorMsg(sb);
-		sb->Append((const UTF8Char*)"\r\n");
+		sb->AppendC(UTF8STRC("\r\n"));
 	}
 }

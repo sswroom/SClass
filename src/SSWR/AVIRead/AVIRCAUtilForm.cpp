@@ -231,9 +231,9 @@ void SSWR::AVIRead::AVIRCAUtilForm::UpdateKeyDetail()
 	{
 		Text::StringBuilderUTF8 sb;
 		sb.Append(Crypto::Cert::X509File::KeyTypeGetName(this->key->GetKeyType()));
-		sb.Append((const UTF8Char*)", ");
+		sb.AppendC(UTF8STRC(", "));
 		sb.AppendUOSInt(key->GetKeySizeBits());
-		sb.Append((const UTF8Char*)" bits");
+		sb.AppendC(UTF8STRC(" bits"));
 		this->txtKey->SetText(sb.ToString());
 	}
 }

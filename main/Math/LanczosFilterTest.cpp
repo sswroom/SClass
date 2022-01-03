@@ -135,21 +135,21 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	clk.Start();
 	LanczosResampler(inpVal, 5, outVal, 20, 6, 0);
 	t = clk.GetTimeDiff();
-	sb.Append((const UTF8Char*)"{");
+	sb.AppendC(UTF8STRC("{"));
 	i = 0;
 	while (i < 20)
 	{
 		if (i > 0)
 		{
-			sb.Append((const UTF8Char*)", ");
+			sb.AppendC(UTF8STRC(", "));
 		}
 		Text::SBAppendF64(&sb, outVal[i]);
 		i++;
 	}
-	sb.Append((const UTF8Char*)"}");
+	sb.AppendC(UTF8STRC("}"));
 	console.WriteLine(sb.ToString());
 	sb.ClearStr();
-	sb.Append((const UTF8Char*)"t = ");
+	sb.AppendC(UTF8STRC("t = "));
 	Text::SBAppendF64(&sb, t);
 	console.WriteLine(sb.ToString());
 	return 0;

@@ -19,7 +19,7 @@ void TestEncode(UInt32 val, UOSInt bitCnt, IO::Writer *writer)
 	WriteUInt32(&dataBuff[12], val);
 	outSize = rc4.Encrypt(dataBuff, 16, outBuff, 0);
 	Text::StringBuilderUTF8 sb;
-	sb.Append((const UTF8Char*)"DEC ");
+	sb.AppendC(UTF8STRC("DEC "));
 	sb.AppendU32(val);
 	sb.AppendChar(' ', 9 - sb.GetLength());
 	sb.AppendHexBuff(outBuff, outSize, ' ', Text::LineBreakType::None);
@@ -30,9 +30,9 @@ void TestEncode(UInt32 val, UOSInt bitCnt, IO::Writer *writer)
 void TestAllForBit(UOSInt bitCnt, IO::Writer *writer)
 {
 	Text::StringBuilderUTF8 sb;
-	sb.Append((const UTF8Char*)"Key Length: ");
+	sb.AppendC(UTF8STRC("Key Length: "));
 	sb.AppendUOSInt(bitCnt);
-	sb.Append((const UTF8Char*)" bits");
+	sb.AppendC(UTF8STRC(" bits"));
 	writer->WriteLine(sb.ToString());
 	TestEncode(0, bitCnt, writer);
 	TestEncode(16, bitCnt, writer);

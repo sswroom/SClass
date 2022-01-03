@@ -44,7 +44,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMIMEXMLViewer::AVIRMIMEXMLViewer(SSWR::AVIRead::A
 			{
 				sbCont.AppendChar(' ', reader->GetPathLev() << 1);
 			}
-			sbCont.Append((const UTF8Char*)"<?");
+			sbCont.AppendC(UTF8STRC("<?"));
 			sbCont.Append(reader->GetNodeText());
 			i = 0;
 			j = reader->GetAttribCount();
@@ -64,7 +64,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMIMEXMLViewer::AVIRMIMEXMLViewer(SSWR::AVIRead::A
 				}
 				i++;
 			}
-			sbCont.Append((const UTF8Char*)"?>");
+			sbCont.AppendC(UTF8STRC("?>"));
 			i = this->lvXML->AddItem(sbPath.ToString(), 0);
 			this->lvXML->SetSubItem(i, 1, sbCont.ToString());
 			sbCont.ClearStr();
@@ -75,9 +75,9 @@ SSWR::AVIRead::MIMEViewer::AVIRMIMEXMLViewer::AVIRMIMEXMLViewer(SSWR::AVIRead::A
 			{
 				sbCont.AppendChar(' ', reader->GetPathLev() << 1);
 			}
-			sbCont.Append((const UTF8Char*)"</");
+			sbCont.AppendC(UTF8STRC("</"));
 			sbCont.Append(reader->GetNodeText());
-			sbCont.Append((const UTF8Char*)">");
+			sbCont.AppendC(UTF8STRC(">"));
 			sb.ClearStr();
 			reader->GetCurrPath(&sb);
 			i = this->lvXML->AddItem(sb.ToString(), 0);
@@ -114,7 +114,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMIMEXMLViewer::AVIRMIMEXMLViewer(SSWR::AVIRead::A
 			{
 				sbCont.AppendChar(' ', reader->GetPathLev() << 1);
 			}
-			sbCont.Append((const UTF8Char*)"<");
+			sbCont.AppendC(UTF8STRC("<"));
 			sbCont.Append(reader->GetNodeText());
 			i = 0;
 			j = reader->GetAttribCount();
@@ -134,14 +134,14 @@ SSWR::AVIRead::MIMEViewer::AVIRMIMEXMLViewer::AVIRMIMEXMLViewer(SSWR::AVIRead::A
 			}
 			if (reader->IsElementEmpty())
 			{
-				sbCont.Append((const UTF8Char*)"/>");
+				sbCont.AppendC(UTF8STRC("/>"));
 				i = this->lvXML->AddItem(sbPath.ToString(), 0);
 				this->lvXML->SetSubItem(i, 1, sbCont.ToString());
 				sbCont.ClearStr();
 			}
 			else
 			{
-				sbCont.Append((const UTF8Char*)">");
+				sbCont.AppendC(UTF8STRC(">"));
 			}
 		}
 	}

@@ -154,6 +154,7 @@ nodeps:
 @StrConcatWSpd
 @StrHex32Acc
 @StrHex64Acc
+@StringBuilderTest
 @StrInt32CAcc
 @StrInt32CSpd
 @StrInt32WAcc
@@ -722,6 +723,9 @@ StrHex32Acc:
 StrHex64Acc:
 @StrHex64Acc.o
 @ConsoleStartup.o
+StringBuilderTest:
+@StringBuilderTest.o
+@ConsoleStartup.o
 StrInt32CAcc:
 @StrInt32CAcc.o
 @ConsoleStartup.o
@@ -949,6 +953,7 @@ StrConcatWAcc.o: ../../main/Text/StrConcatWAcc.cpp
 StrConcatWSpd.o: ../../main/Text/StrConcatWSpd.cpp
 StrHex32Acc.o: ../../main/Text/StrHex32Acc.cpp
 StrHex64Acc.o: ../../main/Text/StrHex64Acc.cpp
+StringBuilderTest.o: ../../main/Text/StringBuilderTest.cpp
 StrInt32CAcc.o: ../../main/Text/StrInt32CAcc.cpp
 StrInt32CSpd.o: ../../main/Text/StrInt32CSpd.cpp
 StrInt32WAcc.o: ../../main/Text/StrInt32WAcc.cpp

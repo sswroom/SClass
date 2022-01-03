@@ -130,9 +130,9 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnRequestClicked(void *userObj
 		Text::StringBuilderUTF8 sb2;
 		Data::DateTime dt;
 		dt.SetCurrTimeUTC();
-		sbBoundary.Append((const UTF8Char*)"---------------------------Boundary");
+		sbBoundary.AppendC(UTF8STRC("---------------------------Boundary"));
 		sbBoundary.AppendI64(dt.ToTicks());
-		sb2.Append((const UTF8Char*)"multipart/form-data; boundary=");
+		sb2.AppendC(UTF8STRC("multipart/form-data; boundary="));
 		sb2.Append(sbBoundary.ToString());
 		me->reqBodyType = Text::StrCopyNew(sb2.ToString());
 		IO::MemoryStream mstm((const UTF8Char*)"SSWR.AVIRead.AVIRHTTPClientForm.OnRequestClicked.mstm");
@@ -445,11 +445,11 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnFileSelectClicked(void *user
 		sb.AppendUOSInt(j);
 		if (j > 1)
 		{
-			sb.Append((const UTF8Char*)" files selected");
+			sb.AppendC(UTF8STRC(" files selected"));
 		}
 		else
 		{
-			sb.Append((const UTF8Char*)" files selected");
+			sb.AppendC(UTF8STRC(" files selected"));
 		}
 		me->lblFileStatus->SetText(sb.ToString());
 	}
@@ -582,7 +582,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 						cli->AddHeader((const UTF8Char*)"Accept-Charset", (const UTF8Char*)"*");
 						i = (UOSInt)(Text::StrConcat(Text::StrConcat(Text::StrConcat(buff, currUserName), (const UTF8Char*)":"), currPassword) - buff);
 						Text::StringBuilderUTF8 sbAuth;
-						sbAuth.Append((const UTF8Char*)"Basic ");
+						sbAuth.AppendC(UTF8STRC("Basic "));
 						Text::TextBinEnc::Base64Enc b64Enc;
 						b64Enc.EncodeBin(&sbAuth, buff, i);
 						cli->AddHeader((const UTF8Char*)"Authorization", sbAuth.ToString());

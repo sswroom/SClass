@@ -16,11 +16,11 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothForm::OnCtrlChanged(void *userObj)
 		me->txtAddr->SetText(sb.ToString());
 		me->txtManu->SetText(IO::BTUtil::GetManufacturerName(btStatus->bt->GetManufacturer()));
 		sb.ClearStr();
-		sb.Append((const UTF8Char*)"0x");
+		sb.AppendC(UTF8STRC("0x"));
 		sb.AppendHex16(btStatus->bt->GetSubversion());
 		me->txtSubver->SetText(sb.ToString());
 		sb.ClearStr();
-		sb.Append((const UTF8Char*)"0x");
+		sb.AppendC(UTF8STRC("0x"));
 		sb.AppendHex32(btStatus->bt->GetDevClass());
 		me->txtClass->SetText(sb.ToString());
 
@@ -272,9 +272,9 @@ SSWR::AVIRead::AVIRBluetoothForm::AVIRBluetoothForm(UI::GUIClientControl *parent
 		csptr = IO::BTUtil::GetManufacturerName(btStatus->bt->GetManufacturer());
 		if (csptr)
 		{
-			sb.Append((const UTF8Char*)" (");
+			sb.AppendC(UTF8STRC(" ("));
 			sb.Append(csptr);
-			sb.Append((const UTF8Char*)")");
+			sb.AppendC(UTF8STRC(")"));
 		}
 		this->lbCtrl->AddItem(sb.ToString(), btStatus);
 		i++;

@@ -36,7 +36,7 @@ void Text::MailCreator::AppendStr(Text::StringBuilderUTF8 *sbc, const UTF8Char *
 		b64Buff = MemAlloc(UInt8, b64Size + 1);
 		b64Size = b64.Encrypt(s, strLen, b64Buff, 0);
 		b64Buff[b64Size] = 0;
-		sbc->Append((const UTF8Char *)b64Buff);
+		sbc->Append((const UTF8Char*)b64Buff);
 		MemFree(b64Buff);
 	}
 	else
@@ -75,7 +75,7 @@ void Text::MailCreator::AppendStr(Text::StringBuilderUTF8 *sbc, const WChar *s)
 		b64Buff = MemAlloc(UInt8, b64Size + 1);
 		b64Size = b64.Encrypt(u8ptr, buffSize, b64Buff, 0);
 		b64Buff[b64Size] = 0;
-		sbc->Append((const UTF8Char *)b64Buff);
+		sbc->Append((const UTF8Char*)b64Buff);
 		MemFree(b64Buff);
 		Text::StrDelNew(u8ptr);
 	}

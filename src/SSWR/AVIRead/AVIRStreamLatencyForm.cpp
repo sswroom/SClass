@@ -124,7 +124,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRStreamLatencyForm::RecvThread(void *userObj)
 						diff = (Double)(currTime - ReadInt64(&buff[recvSize + 2]));
 						me->rlcLatency->AddSample(&diff);
 						sb->ClearStr();
-						sb->Append((const UTF8Char*)"Received packet: diff = ");
+						sb->AppendC(UTF8STRC("Received packet: diff = "));
 						sb->AppendI64(currTime - ReadInt64(&buff[recvSize + 2]));
 						me->log->LogMessage(sb->ToString(), IO::ILogHandler::LOG_LEVEL_COMMAND);
 						me->recvCnt++;

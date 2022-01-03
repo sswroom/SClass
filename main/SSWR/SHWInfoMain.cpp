@@ -142,18 +142,18 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	console->WriteLine((const UTF8Char*)"Computer Info:");
 	writer->WriteLine((const UTF8Char*)"Computer Info:");
 	sb.ClearStr();
-	sb.Append((const UTF8Char*)"OS: ");
+	sb.AppendC(UTF8STRC("OS: "));
 	if (IO::OS::GetDistro(sbuff))
 	{
 		sb.Append(sbuff);
 	}
 	else
 	{
-		sb.Append((const UTF8Char*)"Unknown");
+		sb.AppendC(UTF8STRC("Unknown"));
 	}
 	if (IO::OS::GetVersion(sbuff))
 	{
-		sb.Append((const UTF8Char*)" ");
+		sb.AppendC(UTF8STRC(" "));
 		sb.Append(sbuff);
 	}
 	console->WriteLine(sb.ToString());
@@ -161,7 +161,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	{
 		Data::DateTime dt;
 		sb.ClearStr();
-		sb.Append((const UTF8Char*)"Build Time: ");
+		sb.AppendC(UTF8STRC("Build Time: "));
 		IO::BuildTime::GetBuildTime(&dt);
 		dt.ToUTCTime();
 		sb.AppendDate(&dt);
@@ -170,27 +170,27 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	}
 
 	sb.ClearStr();
-	sb.Append((const UTF8Char*)"Platform: ");
+	sb.AppendC(UTF8STRC("Platform: "));
 	if (sysInfo.GetPlatformName(sbuff))
 	{
 		sb.Append(sbuff);
 	}
 	else
 	{
-		sb.Append((const UTF8Char*)"-");
+		sb.AppendC(UTF8STRC("-"));
 	}
 	console->WriteLine(sb.ToString());
 	writer->WriteLine(sb.ToString());
 
 	sb.ClearStr();
-	sb.Append((const UTF8Char*)"Platform SN: ");
+	sb.AppendC(UTF8STRC("Platform SN: "));
 	if (sysInfo.GetPlatformSN(sbuff))
 	{
 		sb.Append(sbuff);
 	}
 	else
 	{
-		sb.Append((const UTF8Char*)"-");
+		sb.AppendC(UTF8STRC("-"));
 	}
 	console->WriteLine(sb.ToString());
 	writer->WriteLine(sb.ToString());
@@ -198,21 +198,21 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	{
 		Manage::CPUInfoDetail cpuInfo;
 		sb.ClearStr();
-		sb.Append((const UTF8Char*)"CPU Name: ");
+		sb.AppendC(UTF8STRC("CPU Name: "));
 		if (cpuInfo.GetCPUName(u8buff))
 		{
 			sb.Append(u8buff);
 		}
 		else
 		{
-			sb.Append((const UTF8Char*)"-");
+			sb.AppendC(UTF8STRC("-"));
 		}
 		console->WriteLine(sb.ToString());
 		writer->WriteLine(sb.ToString());
 
 		const Manage::CPUDB::CPUSpec *cpuSpec = 0;
 		sb.ClearStr();
-		sb.Append((const UTF8Char*)"CPU Model: ");
+		sb.AppendC(UTF8STRC("CPU Model: "));
 		if (cpuInfo.GetCPUModel())
 		{
 			sb.Append(cpuInfo.GetCPUModel());
@@ -220,40 +220,40 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		}
 		else
 		{
-			sb.Append((const UTF8Char*)"-");
+			sb.AppendC(UTF8STRC("-"));
 		}
 		console->WriteLine(sb.ToString());
 		writer->WriteLine(sb.ToString());
 
 		sb.ClearStr();
-		sb.Append((const UTF8Char*)"CPU Brand Name: ");
+		sb.AppendC(UTF8STRC("CPU Brand Name: "));
 		if (cpuSpec)
 		{
 			sb.Append(Manage::CPUVendor::GetBrandName(cpuSpec->brand));
-			sb.Append((const UTF8Char*)" ");
+			sb.AppendC(UTF8STRC(" "));
 			sb.Append((const UTF8Char*)cpuSpec->name);
 		}
 		else
 		{
-			sb.Append((const UTF8Char*)"-");
+			sb.AppendC(UTF8STRC("-"));
 		}
 		console->WriteLine(sb.ToString());
 		writer->WriteLine(sb.ToString());
 
 #if defined(CPU_X86_32) || defined(CPU_X86_64)
 		sb.ClearStr();
-		sb.Append((const UTF8Char*)"CPU FamilyId = ");
+		sb.AppendC(UTF8STRC("CPU FamilyId = "));
 		sb.AppendI32(cpuInfo.GetFamilyId());
-		sb.Append((const UTF8Char*)", ModelId = ");
+		sb.AppendC(UTF8STRC(", ModelId = "));
 		sb.AppendI32(cpuInfo.GetModelId());
-		sb.Append((const UTF8Char*)", Stepping = ");
+		sb.AppendC(UTF8STRC(", Stepping = "));
 		sb.AppendI32(cpuInfo.GetStepping());
 		console->WriteLine(sb.ToString());
 		writer->WriteLine(sb.ToString());
 #endif
 
 		sb.ClearStr();
-		sb.Append((const UTF8Char*)"CPU Thread Count: ");
+		sb.AppendC(UTF8STRC("CPU Thread Count: "));
 		sb.AppendUOSInt(threadCnt);
 		console->WriteLine(sb.ToString());
 		writer->WriteLine(sb.ToString());
@@ -267,9 +267,9 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				break;
 
 			sb.ClearStr();
-			sb.Append((const UTF8Char*)"CPU Temp ");
+			sb.AppendC(UTF8STRC("CPU Temp "));
 			sb.AppendUOSInt(i);
-			sb.Append((const UTF8Char*)": ");
+			sb.AppendC(UTF8STRC(": "));
 			Text::SBAppendF64(&sb, temp);
 			console->WriteLine(sb.ToString());
 			writer->WriteLine(sb.ToString());
@@ -279,7 +279,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	}
 
 	sb.ClearStr();
-	sb.Append((const UTF8Char*)"Total Memory Size: ");
+	sb.AppendC(UTF8STRC("Total Memory Size: "));
 	memSize = sysInfo.GetTotalMemSize();
 	ByteDisp(sbuff, memSize);
 	sb.Append(sbuff);
@@ -287,7 +287,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	writer->WriteLine(sb.ToString());
 
 	sb.ClearStr();
-	sb.Append((const UTF8Char*)"Total Usable Memory Size: ");
+	sb.AppendC(UTF8STRC("Total Usable Memory Size: "));
 	memSize = sysInfo.GetTotalUsableMemSize();
 	ByteDisp(sbuff, memSize);
 	sb.Append(sbuff);
@@ -304,35 +304,35 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		{
 			ram = ramList.GetItem(i);
 			sb.ClearStr();
-			sb.Append((const UTF8Char*)"RAM: ");
+			sb.AppendC(UTF8STRC("RAM: "));
 			if (ram->deviceLocator)
 			{
 				sb.Append(ram->deviceLocator);
 			}
-			sb.Append((const UTF8Char*)"\t");
+			sb.AppendC(UTF8STRC("\t"));
 			if (ram->manufacturer)
 			{
 				sb.Append(ram->manufacturer);
 			}
-			sb.Append((const UTF8Char*)"\t");
+			sb.AppendC(UTF8STRC("\t"));
 			if (ram->partNo)
 			{
 				sb.Append(ram->partNo);
 			}
-			sb.Append((const UTF8Char*)"\t");
+			sb.AppendC(UTF8STRC("\t"));
 			if (ram->sn)
 			{
 				sb.Append(ram->sn);
 			}
-			sb.Append((const UTF8Char*)"\t");
+			sb.AppendC(UTF8STRC("\t"));
 			sb.AppendU64(ram->defSpdMHz);
-			sb.Append((const UTF8Char*)"\t");
+			sb.AppendC(UTF8STRC("\t"));
 			sb.AppendU64(ram->confSpdMHz);
-			sb.Append((const UTF8Char*)"\t");
+			sb.AppendC(UTF8STRC("\t"));
 			sb.AppendU32(ram->dataWidth);
-			sb.Append((const UTF8Char*)"\t");
+			sb.AppendC(UTF8STRC("\t"));
 			sb.AppendU32(ram->totalWidth);
-			sb.Append((const UTF8Char*)"\t");
+			sb.AppendC(UTF8STRC("\t"));
 			sb.AppendU64(ram->memorySize);
 			console->WriteLine(sb.ToString());
 			writer->WriteLine(sb.ToString());
@@ -359,65 +359,65 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				if (Media::EDID::Parse(edid, &edidInfo))
 				{
 					sb.ClearStr();
-					sb.Append((const UTF8Char*)"Monitor ");
+					sb.AppendC(UTF8STRC("Monitor "));
 					sb.AppendUOSInt(i);
-					sb.Append((const UTF8Char*)" - ");
+					sb.AppendC(UTF8STRC(" - "));
 					sb.Append(edidInfo.monitorName);
-					sb.Append((const UTF8Char*)" (");
+					sb.AppendC(UTF8STRC(" ("));
 					sb.Append(edidInfo.vendorName);
-					sb.Append((const UTF8Char*)" ");
+					sb.AppendC(UTF8STRC(" "));
 					sb.AppendHex16(edidInfo.productCode);
-					sb.Append((const UTF8Char*)")");
+					sb.AppendC(UTF8STRC(")"));
 					console->WriteLine(sb.ToString());
 					writer->WriteLine(sb.ToString());
 
 					sb.ClearStr();
-					sb.Append((const UTF8Char*)"Monitor Manufacture: Year ");
+					sb.AppendC(UTF8STRC("Monitor Manufacture: Year "));
 					sb.AppendI32(edidInfo.yearOfManu);
-					sb.Append((const UTF8Char*)" Week ");
+					sb.AppendC(UTF8STRC(" Week "));
 					sb.AppendU32(edidInfo.weekOfManu);
 					console->WriteLine(sb.ToString());
 					writer->WriteLine(sb.ToString());
 
 					sb.ClearStr();
-					sb.Append((const UTF8Char*)"Monitor Size: ");
+					sb.AppendC(UTF8STRC("Monitor Size: "));
 					Text::SBAppendF64(&sb, Math::Unit::Distance::Convert(Math::Unit::Distance::DU_CENTIMETER, Math::Unit::Distance::DU_INCH, Math::Sqrt(edidInfo.dispPhysicalW * edidInfo.dispPhysicalW + edidInfo.dispPhysicalH * edidInfo.dispPhysicalH)));
-					sb.Append((const UTF8Char*)"\" (");
+					sb.AppendC(UTF8STRC("\" ("));
 					sb.AppendU32(edidInfo.dispPhysicalW);
-					sb.Append((const UTF8Char*)" x ");
+					sb.AppendC(UTF8STRC(" x "));
 					sb.AppendU32(edidInfo.dispPhysicalH);
-					sb.Append((const UTF8Char*)"cm)");
+					sb.AppendC(UTF8STRC("cm)"));
 					console->WriteLine(sb.ToString());
 					writer->WriteLine(sb.ToString());
 
 					sb.ClearStr();
-					sb.Append((const UTF8Char*)"Monitor White: x = ");
+					sb.AppendC(UTF8STRC("Monitor White: x = "));
 					Text::SBAppendF64(&sb, edidInfo.wx);
-					sb.Append((const UTF8Char*)", y = ");
+					sb.AppendC(UTF8STRC(", y = "));
 					Text::SBAppendF64(&sb, edidInfo.wy);
 					console->WriteLine(sb.ToString());
 					writer->WriteLine(sb.ToString());
 
 					sb.ClearStr();
-					sb.Append((const UTF8Char*)"Monitor Red x = ");
+					sb.AppendC(UTF8STRC("Monitor Red x = "));
 					Text::SBAppendF64(&sb, edidInfo.rx);
-					sb.Append((const UTF8Char*)", y = ");
+					sb.AppendC(UTF8STRC(", y = "));
 					Text::SBAppendF64(&sb, edidInfo.ry);
 					console->WriteLine(sb.ToString());
 					writer->WriteLine(sb.ToString());
 
 					sb.ClearStr();
-					sb.Append((const UTF8Char*)"Monitor Green: x = ");
+					sb.AppendC(UTF8STRC("Monitor Green: x = "));
 					Text::SBAppendF64(&sb, edidInfo.gx);
-					sb.Append((const UTF8Char*)", y = ");
+					sb.AppendC(UTF8STRC(", y = "));
 					Text::SBAppendF64(&sb, edidInfo.gy);
 					console->WriteLine(sb.ToString());
 					writer->WriteLine(sb.ToString());
 
 					sb.ClearStr();
-					sb.Append((const UTF8Char*)"Monitor Blue: x = ");
+					sb.AppendC(UTF8STRC("Monitor Blue: x = "));
 					Text::SBAppendF64(&sb, edidInfo.bx);
-					sb.Append((const UTF8Char*)", y = ");
+					sb.AppendC(UTF8STRC(", y = "));
 					Text::SBAppendF64(&sb, edidInfo.by);
 					console->WriteLine(sb.ToString());
 					writer->WriteLine(sb.ToString());
@@ -453,60 +453,60 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		writer->WriteLine((const UTF8Char*)"Power Info:");
 
 		sb.ClearStr();
-		sb.Append((const UTF8Char*)"AC Status = ");
+		sb.AppendC(UTF8STRC("AC Status = "));
 		if (pstatus.acStatus == IO::PowerInfo::ACS_ON)
 		{
-			sb.Append((const UTF8Char*)"On");
+			sb.AppendC(UTF8STRC("On"));
 		}
 		else if (pstatus.acStatus == IO::PowerInfo::ACS_OFF)
 		{
-			sb.Append((const UTF8Char*)"Off");
+			sb.AppendC(UTF8STRC("Off"));
 		}
 		else
 		{
-			sb.Append((const UTF8Char*)"Unknown");
+			sb.AppendC(UTF8STRC("Unknown"));
 		}
 		console->WriteLine(sb.ToString());
 		writer->WriteLine(sb.ToString());
 
 		sb.ClearStr();
-		sb.Append((const UTF8Char*)"Has Battery = ");
+		sb.AppendC(UTF8STRC("Has Battery = "));
 		sb.Append(pstatus.hasBattery?(const UTF8Char*)"Yes":(const UTF8Char*)"No");
 		console->WriteLine(sb.ToString());
 		writer->WriteLine(sb.ToString());
 
 		sb.ClearStr();
-		sb.Append((const UTF8Char*)"Battery Charging = ");
+		sb.AppendC(UTF8STRC("Battery Charging = "));
 		sb.Append(pstatus.batteryCharging?(const UTF8Char*)"Yes":(const UTF8Char*)"No");
 		console->WriteLine(sb.ToString());
 		writer->WriteLine(sb.ToString());
 
 		sb.ClearStr();
-		sb.Append((const UTF8Char*)"Battery Percent = ");
+		sb.AppendC(UTF8STRC("Battery Percent = "));
 		sb.AppendU32(pstatus.batteryPercent);
 		console->WriteLine(sb.ToString());
 		writer->WriteLine(sb.ToString());
 
 		sb.ClearStr();
-		sb.Append((const UTF8Char*)"Time Left (sec.) = ");
+		sb.AppendC(UTF8STRC("Time Left (sec.) = "));
 		sb.AppendU32(pstatus.timeLeftSec);
 		console->WriteLine(sb.ToString());
 		writer->WriteLine(sb.ToString());
 
 		sb.ClearStr();
-		sb.Append((const UTF8Char*)"Battery Voltage = ");
+		sb.AppendC(UTF8STRC("Battery Voltage = "));
 		Text::SBAppendF64(&sb, pstatus.batteryVoltage);
 		console->WriteLine(sb.ToString());
 		writer->WriteLine(sb.ToString());
 
 		sb.ClearStr();
-		sb.Append((const UTF8Char*)"Battery Charge Current = ");
+		sb.AppendC(UTF8STRC("Battery Charge Current = "));
 		Text::SBAppendF64(&sb, pstatus.batteryChargeCurrent);
 		console->WriteLine(sb.ToString());
 		writer->WriteLine(sb.ToString());
 
 		sb.ClearStr();
-		sb.Append((const UTF8Char*)"Battery Temperature = ");
+		sb.AppendC(UTF8STRC("Battery Temperature = "));
 		Text::SBAppendF64(&sb, pstatus.batteryTemp);
 		console->WriteLine(sb.ToString());
 		writer->WriteLine(sb.ToString());
@@ -526,9 +526,9 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			if (Media::Printer::GetPrinterName(sbuff, i))
 			{
 				sb.ClearStr();
-				sb.Append((const UTF8Char*)"Printer ");
+				sb.AppendC(UTF8STRC("Printer "));
 				sb.AppendUOSInt(i);
-				sb.Append((const UTF8Char*)" = ");
+				sb.AppendC(UTF8STRC(" = "));
 				sb.Append(sbuff);
 				console->WriteLine(sb.ToString());
 				writer->WriteLine(sb.ToString());
@@ -554,7 +554,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				if (deng)
 				{
 					sb.ClearStr();
-					sb.Append((const UTF8Char*)"Test Printing with ");
+					sb.AppendC(UTF8STRC("Test Printing with "));
 					sb.Append(csptr);
 					console->WriteLine(sb.ToString());
 					writer->WriteLine(sb.ToString());
@@ -615,11 +615,11 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			{
 				dev = devList.GetItem(i);
 				sb.ClearStr();
-				sb.Append((const UTF8Char*)"Device ");
+				sb.AppendC(UTF8STRC("Device "));
 				sb.AppendUOSInt(i);
-				sb.Append((const UTF8Char*)": ");
+				sb.AppendC(UTF8STRC(": "));
 				sb.Append(videoMgr->GetDevTypeName(dev->devType));
-				sb.Append((const UTF8Char*)", ");
+				sb.AppendC(UTF8STRC(", "));
 				sb.Append(dev->devName);
 				console->WriteLine(sb.ToString());
 				writer->WriteLine(sb.ToString());
@@ -638,23 +638,23 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 					while (k < l)
 					{
 						sb.ClearStr();
-						sb.Append((const UTF8Char*)"Format ");
+						sb.AppendC(UTF8STRC("Format "));
 						if (fmts[k].info.fourcc == 0)
 						{
-							sb.Append((const UTF8Char*)"RGB");
+							sb.AppendC(UTF8STRC("RGB"));
 						}
 						else
 						{
 							*(UInt32*)fmtName = fmts[k].info.fourcc;
 							sb.Append((const UTF8Char*)fmtName);
 						}
-						sb.Append((const UTF8Char*)", bpp = ");
+						sb.AppendC(UTF8STRC(", bpp = "));
 						sb.AppendU32(fmts[k].info.storeBPP);
-						sb.Append((const UTF8Char*)", size = ");
+						sb.AppendC(UTF8STRC(", size = "));
 						sb.AppendUOSInt(fmts[k].info.dispWidth);
-						sb.Append((const UTF8Char*)" x ");
+						sb.AppendC(UTF8STRC(" x "));
 						sb.AppendUOSInt(fmts[k].info.dispHeight);
-						sb.Append((const UTF8Char*)", rate = ");
+						sb.AppendC(UTF8STRC(", rate = "));
 						Text::SBAppendF64(&sb, fmts[k].frameRateNorm / (Double)fmts[k].frameRateDenorm);
 						console->WriteLine(sb.ToString());
 						writer->WriteLine(sb.ToString());
@@ -690,16 +690,16 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		{
 			connInfo = connInfoList.GetItem(i);
 			sb.ClearStr();
-			sb.Append((const UTF8Char*)"Connection ");
+			sb.AppendC(UTF8STRC("Connection "));
 			sb.AppendUOSInt(i);
-			sb.Append((const UTF8Char*)":");
+			sb.AppendC(UTF8STRC(":"));
 			console->WriteLine(sb.ToString());
 			writer->WriteLine(sb.ToString());
 
 			if (connInfo->GetName(sbuff))
 			{
 				sb.ClearStr();
-				sb.Append((const UTF8Char*)"Name: ");
+				sb.AppendC(UTF8STRC("Name: "));
 				sb.Append(sbuff);
 				console->WriteLine(sb.ToString());
 				writer->WriteLine(sb.ToString());
@@ -707,7 +707,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			if (connInfo->GetDescription(sbuff))
 			{
 				sb.ClearStr();
-				sb.Append((const UTF8Char*)"Description: ");
+				sb.AppendC(UTF8STRC("Description: "));
 				sb.Append(sbuff);
 				console->WriteLine(sb.ToString());
 				writer->WriteLine(sb.ToString());
@@ -715,7 +715,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			if (connInfo->GetDNSSuffix(sbuff))
 			{
 				sb.ClearStr();
-				sb.Append((const UTF8Char*)"DNS Suffix: ");
+				sb.AppendC(UTF8STRC("DNS Suffix: "));
 				sb.Append(sbuff);
 				console->WriteLine(sb.ToString());
 				writer->WriteLine(sb.ToString());
@@ -729,7 +729,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				}
 				Net::SocketUtil::GetIPv4Name(sbuff, ipv4);
 				sb.ClearStr();
-				sb.Append((const UTF8Char*)"IPv4 Address: ");
+				sb.AppendC(UTF8STRC("IPv4 Address: "));
 				sb.Append(sbuff);
 				console->WriteLine(sb.ToString());
 				writer->WriteLine(sb.ToString());
@@ -744,7 +744,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				}
 				Net::SocketUtil::GetIPv4Name(sbuff, ipv4);
 				sb.ClearStr();
-				sb.Append((const UTF8Char*)"DNS Address: ");
+				sb.AppendC(UTF8STRC("DNS Address: "));
 				sb.Append(sbuff);
 				console->WriteLine(sb.ToString());
 				writer->WriteLine(sb.ToString());
@@ -754,7 +754,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			{
 				Net::SocketUtil::GetIPv4Name(sbuff, ipv4);
 				sb.ClearStr();
-				sb.Append((const UTF8Char*)"Default Gateway: ");
+				sb.AppendC(UTF8STRC("Default Gateway: "));
 				sb.Append(sbuff);
 				console->WriteLine(sb.ToString());
 				writer->WriteLine(sb.ToString());
@@ -763,19 +763,19 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			{
 				Text::StrHexBytes(sbuff, mac, k, '-');
 				sb.ClearStr();
-				sb.Append((const UTF8Char*)"Physical Address: ");
+				sb.AppendC(UTF8STRC("Physical Address: "));
 				sb.Append(sbuff);
 				console->WriteLine(sb.ToString());
 				writer->WriteLine(sb.ToString());
 			}
 			sb.ClearStr();
-			sb.Append((const UTF8Char*)"MTU: ");
+			sb.AppendC(UTF8STRC("MTU: "));
 			sb.AppendU32(connInfo->GetMTU());
 			console->WriteLine(sb.ToString());
 			writer->WriteLine(sb.ToString());
 
 			sb.ClearStr();
-			sb.Append((const UTF8Char*)"DHCP Enabled: ");
+			sb.AppendC(UTF8STRC("DHCP Enabled: "));
 			sb.Append(connInfo->IsDhcpEnabled()?(const UTF8Char*)"True":(const UTF8Char*)"False");
 			console->WriteLine(sb.ToString());
 			writer->WriteLine(sb.ToString());
@@ -784,7 +784,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			{
 				Net::SocketUtil::GetIPv4Name(sbuff, connInfo->GetDhcpServer());
 				sb.ClearStr();
-				sb.Append((const UTF8Char*)"DHCP Server: ");
+				sb.AppendC(UTF8STRC("DHCP Server: "));
 				sb.Append(sbuff);
 				console->WriteLine(sb.ToString());
 				writer->WriteLine(sb.ToString());
@@ -794,7 +794,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				{
 					dt->ToString(sbuff);
 					sb.ClearStr();
-					sb.Append((const UTF8Char*)"DHCP Lease Time: ");
+					sb.AppendC(UTF8STRC("DHCP Lease Time: "));
 					sb.Append(sbuff);
 					console->WriteLine(sb.ToString());
 					writer->WriteLine(sb.ToString());
@@ -805,7 +805,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				{
 					dt->ToString(sbuff);
 					sb.ClearStr();
-					sb.Append((const UTF8Char*)"DHCP Lease Time: ");
+					sb.AppendC(UTF8STRC("DHCP Lease Time: "));
 					sb.Append(sbuff);
 					console->WriteLine(sb.ToString());
 					writer->WriteLine(sb.ToString());
@@ -813,13 +813,13 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			}
 
 			sb.ClearStr();
-			sb.Append((const UTF8Char*)"Connection Type: ");
+			sb.AppendC(UTF8STRC("Connection Type: "));
 			sb.Append(Net::ConnectionInfo::GetConnectionTypeName(connInfo->GetConnectionType()));
 			console->WriteLine(sb.ToString());
 			writer->WriteLine(sb.ToString());
 
 			sb.ClearStr();
-			sb.Append((const UTF8Char*)"Connection Status: ");
+			sb.AppendC(UTF8STRC("Connection Status: "));
 			sb.Append(Net::ConnectionInfo::GetConnectionStatusName(connInfo->GetConnectionStatus()));
 			console->WriteLine(sb.ToString());
 			writer->WriteLine(sb.ToString());
@@ -848,25 +848,25 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			usb = usbList.GetItem(i);
 			dev = IO::DeviceDB::GetUSBInfo(usb->GetVendorId(), usb->GetProductId(), usb->GetRevision());
 			sb.ClearStr();
-			sb.Append((const UTF8Char*)"USB ");
+			sb.AppendC(UTF8STRC("USB "));
 			sb.AppendHex16(usb->GetVendorId());
-			sb.Append((const UTF8Char*)":");
+			sb.AppendC(UTF8STRC(":"));
 			sb.AppendHex16(usb->GetProductId());
-			sb.Append((const UTF8Char*)" ");
+			sb.AppendC(UTF8STRC(" "));
 			sb.AppendHex16(usb->GetRevision());
-			sb.Append((const UTF8Char*)" Dev:");
+			sb.AppendC(UTF8STRC(" Dev:"));
 			sb.Append(usb->GetDispName());
 			console->WriteLine(sb.ToString());
 			writer->WriteLine(sb.ToString());
 
 			sb.ClearStr();
-			sb.Append((const UTF8Char*)"USB ");
+			sb.AppendC(UTF8STRC("USB "));
 			sb.AppendHex16(usb->GetVendorId());
-			sb.Append((const UTF8Char*)":");
+			sb.AppendC(UTF8STRC(":"));
 			sb.AppendHex16(usb->GetProductId());
-			sb.Append((const UTF8Char*)" ");
+			sb.AppendC(UTF8STRC(" "));
 			sb.AppendHex16(usb->GetRevision());
-			sb.Append((const UTF8Char*)" DB: ");
+			sb.AppendC(UTF8STRC(" DB: "));
 			if (dev)
 			{
 				if (dev->dispName)
@@ -875,21 +875,21 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				}
 				else
 				{
-					sb.Append((const UTF8Char*)"?");
+					sb.AppendC(UTF8STRC("?"));
 				}
 
 				if (dev->productName)
 				{
-					sb.Append((const UTF8Char*)" (");
+					sb.AppendC(UTF8STRC(" ("));
 					sb.Append((const UTF8Char*)dev->productName);
-					sb.Append((const UTF8Char*)")");
+					sb.AppendC(UTF8STRC(")"));
 				}
 			}
 			else
 			{
-					sb.Append((const UTF8Char*)"?");
+				sb.AppendC(UTF8STRC("?"));
 			}
-			sb.Append((const UTF8Char*)" Vendor = ");
+			sb.AppendC(UTF8STRC(" Vendor = "));
 			sb.Append(IO::DeviceDB::GetUSBVendorName(usb->GetVendorId()));
 			console->WriteLine(sb.ToString());
 			writer->WriteLine(sb.ToString());
@@ -915,21 +915,21 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			pci = pciList.GetItem(i);
 			dev = IO::DeviceDB::GetPCIInfo(pci->GetVendorId(), pci->GetProductId());
 			sb.ClearStr();
-			sb.Append((const UTF8Char*)"PCI ");
+			sb.AppendC(UTF8STRC("PCI "));
 			sb.AppendHex16(pci->GetVendorId());
-			sb.Append((const UTF8Char*)":");
+			sb.AppendC(UTF8STRC(":"));
 			sb.AppendHex16(pci->GetProductId());
-			sb.Append((const UTF8Char*)" Dev:");
+			sb.AppendC(UTF8STRC(" Dev:"));
 			sb.Append(pci->GetDispName());
 			console->WriteLine(sb.ToString());
 			writer->WriteLine(sb.ToString());
 
 			sb.ClearStr();
-			sb.Append((const UTF8Char*)"PCI ");
+			sb.AppendC(UTF8STRC("PCI "));
 			sb.AppendHex16(pci->GetVendorId());
-			sb.Append((const UTF8Char*)":");
+			sb.AppendC(UTF8STRC(":"));
 			sb.AppendHex16(pci->GetProductId());
-			sb.Append((const UTF8Char*)" DB: ");
+			sb.AppendC(UTF8STRC(" DB: "));
 			if (dev)
 			{
 				if (dev->dispName)
@@ -938,21 +938,21 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				}
 				else
 				{
-					sb.Append((const UTF8Char*)"?");
+					sb.AppendC(UTF8STRC("?"));
 				}
 
 				if (dev->productName)
 				{
-					sb.Append((const UTF8Char*)" (");
+					sb.AppendC(UTF8STRC(" ("));
 					sb.Append((const UTF8Char*)dev->productName);
-					sb.Append((const UTF8Char*)")");
+					sb.AppendC(UTF8STRC(")"));
 				}
 			}
 			else
 			{
-				sb.Append((const UTF8Char*)"?");
+				sb.AppendC(UTF8STRC("?"));
 			}
-			sb.Append((const UTF8Char*)" Vendor = ");
+			sb.AppendC(UTF8STRC(" Vendor = "));
 			sb.Append(IO::DeviceDB::GetPCIVendorName(pci->GetVendorId()));
 			console->WriteLine(sb.ToString());
 			writer->WriteLine(sb.ToString());
@@ -978,24 +978,24 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 
 			sdcard = sdList.GetItem(i);
 			sb.ClearStr();
-			sb.Append((const UTF8Char*)"SD Card ");
+			sb.AppendC(UTF8STRC("SD Card "));
 			sb.AppendUOSInt(i);
-			sb.Append((const UTF8Char*)" - ");
+			sb.AppendC(UTF8STRC(" - "));
 			sb.Append(sdcard->GetName());
 			console->WriteLine(sb.ToString());
 			writer->WriteLine(sb.ToString());
 
 			sb.ClearStr();
-			sb.Append((const UTF8Char*)"Manufacturer ID (MID): ");
+			sb.AppendC(UTF8STRC("Manufacturer ID (MID): "));
 			sb.AppendI32(sdcard->GetManufacturerID());
-			sb.Append((const UTF8Char*)" (");
+			sb.AppendC(UTF8STRC(" ("));
 			sb.Append(IO::SDCardInfo::GetManufacturerName(sdcard->GetManufacturerID()));
-			sb.Append((const UTF8Char*)")");
+			sb.AppendC(UTF8STRC(")"));
 			console->WriteLine(sb.ToString());
 			writer->WriteLine(sb.ToString());
 
 			sb.ClearStr();
-			sb.Append((const UTF8Char*)"OEM ID (OID): ");
+			sb.AppendC(UTF8STRC("OEM ID (OID): "));
 			WriteMInt16(oemId, sdcard->GetOEMID());
 			if (oemId[0] >= 'A' && oemId[0] <= 'z' && oemId[1] >= 'A' && oemId[1] <= 'z')
 			{
@@ -1004,21 +1004,21 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			}
 			else
 			{
-				sb.Append((const UTF8Char*)"0x");
+				sb.AppendC(UTF8STRC("0x"));
 				sb.AppendHex16(sdcard->GetOEMID());
 			}
 			console->WriteLine(sb.ToString());
 			writer->WriteLine(sb.ToString());
 
 			sb.ClearStr();
-			sb.Append((const UTF8Char*)"Product Name (PMN): ");
+			sb.AppendC(UTF8STRC("Product Name (PMN): "));
 			sdcard->GetProductName((Char*)oemId);
 			sb.Append(oemId);
 			console->WriteLine(sb.ToString());
 			writer->WriteLine(sb.ToString());
 
 			sb.ClearStr();
-			sb.Append((const UTF8Char*)"Product Revision (PRV): ");
+			sb.AppendC(UTF8STRC("Product Revision (PRV): "));
 			oemId[0] = sdcard->GetProductRevision();
 			sb.AppendI32(oemId[0] >> 4);
 			sb.AppendChar('.', 1);
@@ -1027,13 +1027,13 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			writer->WriteLine(sb.ToString());
 
 			sb.ClearStr();
-			sb.Append((const UTF8Char*)"Product Serial Number (PSN): 0x");
+			sb.AppendC(UTF8STRC("Product Serial Number (PSN): 0x"));
 			sb.AppendHex32(sdcard->GetSerialNo());
 			console->WriteLine(sb.ToString());
 			writer->WriteLine(sb.ToString());
 
 			sb.ClearStr();
-			sb.Append((const UTF8Char*)"Manufacturing Date (MDT): ");
+			sb.AppendC(UTF8STRC("Manufacturing Date (MDT): "));
 			sb.AppendU32(sdcard->GetManufacturingYear());
 			sb.AppendChar('/', 1);
 			sb.AppendU32(sdcard->GetManufacturingMonth());
@@ -1041,16 +1041,16 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			writer->WriteLine(sb.ToString());
 
 			sb.ClearStr();
-			sb.Append((const UTF8Char*)"Card Capacity: ");
+			sb.AppendC(UTF8STRC("Card Capacity: "));
 			sb.AppendI64(sdcard->GetCardCapacity());
-			sb.Append((const UTF8Char*)" Bytes");
+			sb.AppendC(UTF8STRC(" Bytes"));
 			console->WriteLine(sb.ToString());
 			writer->WriteLine(sb.ToString());
 
 			sb.ClearStr();
-			sb.Append((const UTF8Char*)"Card Speed: ");
+			sb.AppendC(UTF8STRC("Card Speed: "));
 			sb.AppendI64(sdcard->GetMaxTranRate());
-			sb.Append((const UTF8Char*)" bit/s");
+			sb.AppendC(UTF8STRC(" bit/s"));
 			console->WriteLine(sb.ToString());
 			writer->WriteLine(sb.ToString());
 
@@ -1070,7 +1070,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		console->WriteLine((const UTF8Char*)"Sensors:");
 		writer->WriteLine((const UTF8Char*)"Sensors:");
 		sb.ClearStr();
-		sb.Append((const UTF8Char*)"Count = ");
+		sb.AppendC(UTF8STRC("Count = "));
 		sb.AppendUOSInt(j = sensorMgr.GetSensorCnt());
 		console->WriteLine(sb.ToString());
 		writer->WriteLine(sb.ToString());
@@ -1081,21 +1081,21 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			if (sensor)
 			{
 				sb.ClearStr();
-				sb.Append((const UTF8Char*)"Sensor ");
+				sb.AppendC(UTF8STRC("Sensor "));
 				sb.AppendUOSInt(i);
-				sb.Append((const UTF8Char*)", Name = ");
+				sb.AppendC(UTF8STRC(", Name = "));
 				csptr = sensor->GetName();
 				if (csptr)
 				{
 					sb.Append(csptr);
 				}
-				sb.Append((const UTF8Char*)", Vendor = ");
+				sb.AppendC(UTF8STRC(", Vendor = "));
 				csptr = sensor->GetVendor();
 				if (csptr)
 				{
 					sb.Append(csptr);
 				}
-				sb.Append((const UTF8Char*)", Type = ");
+				sb.AppendC(UTF8STRC(", Type = "));
 				sb.Append(IO::Sensor::GetSensorTypeName(sensor->GetSensorType()));
 				console->WriteLine(sb.ToString());
 				writer->WriteLine(sb.ToString());
@@ -1113,13 +1113,13 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 							Math::Unit::Acceleration::AccelerationUnit aunit = sensor->GetSensorAccelerator()->GetAccelerationUnit();
 
 							sb.ClearStr();
-							sb.Append((const UTF8Char*)"Accelerometer x = ");
+							sb.AppendC(UTF8STRC("Accelerometer x = "));
 							Text::SBAppendF64(&sb, x);
 							sb.Append(Math::Unit::Acceleration::GetUnitShortName(aunit));
-							sb.Append((const UTF8Char*)", y = ");
+							sb.AppendC(UTF8STRC(", y = "));
 							Text::SBAppendF64(&sb, y);
 							sb.Append(Math::Unit::Acceleration::GetUnitShortName(aunit));
-							sb.Append((const UTF8Char*)", z = ");
+							sb.AppendC(UTF8STRC(", z = "));
 							Text::SBAppendF64(&sb, z);
 							sb.Append(Math::Unit::Acceleration::GetUnitShortName(aunit));
 							console->WriteLine(sb.ToString());
@@ -1135,7 +1135,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 						if (sensor->GetSensorPressure()->ReadPressure(&pressure))
 						{
 							sb.ClearStr();
-							sb.Append((const UTF8Char*)"Pressure = ");
+							sb.AppendC(UTF8STRC("Pressure = "));
 							Text::SBAppendF64(&sb, pressure);
 							sb.Append(Math::Unit::Pressure::GetUnitShortName(sensor->GetSensorPressure()->GetPressureUnit()));
 							console->WriteLine(sb.ToString());
@@ -1155,13 +1155,13 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 							Math::Unit::MagneticField::MagneticFieldUnit mfunit = sensor->GetSensorMagnetometer()->GetMagneticFieldUnit();
 
 							sb.ClearStr();
-							sb.Append((const UTF8Char*)"Magnetometer x = ");
+							sb.AppendC(UTF8STRC("Magnetometer x = "));
 							Text::SBAppendF64(&sb, x);
 							sb.Append(Math::Unit::MagneticField::GetUnitShortName(mfunit));
-							sb.Append((const UTF8Char*)", y = ");
+							sb.AppendC(UTF8STRC(", y = "));
 							Text::SBAppendF64(&sb, y);
 							sb.Append(Math::Unit::MagneticField::GetUnitShortName(mfunit));
-							sb.Append((const UTF8Char*)", z = ");
+							sb.AppendC(UTF8STRC(", z = "));
 							Text::SBAppendF64(&sb, z);
 							sb.Append(Math::Unit::MagneticField::GetUnitShortName(mfunit));
 							console->WriteLine(sb.ToString());

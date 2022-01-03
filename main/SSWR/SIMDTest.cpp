@@ -19,13 +19,13 @@ void UInt8x4Cmp(UInt8x4 u8x4, const Char *funcName, UInt8 val1, UInt8 val2, UInt
 	if (buff[0] == val1 && buff[1] == val2 && buff[2] == val3 && buff[3] == val4)
 	{
 		sb.Append((const UTF8Char*)funcName);
-		sb.Append((const UTF8Char*)" success");
+		sb.AppendC(UTF8STRC(" success"));
 		succ = true;
 	}
 	else
 	{
 		sb.Append((const UTF8Char*)funcName);
-		sb.Append((const UTF8Char*)" failed");
+		sb.AppendC(UTF8STRC(" failed"));
 		succ = false;
 	}
 	if (!failOnly || !succ)
@@ -43,13 +43,13 @@ void UInt8x8Cmp(UInt8x8 u8x8, const Char *funcName, UInt8 val1, UInt8 val2, UInt
 	if (buff[0] == val1 && buff[1] == val2 && buff[2] == val3 && buff[3] == val4 && buff[4] == val5 && buff[5] == val6 && buff[6] == val7 && buff[7] == val8)
 	{
 		sb.Append((const UTF8Char*)funcName);
-		sb.Append((const UTF8Char*)" success");
+		sb.AppendC(UTF8STRC(" success"));
 		succ = true;
 	}
 	else
 	{
 		sb.Append((const UTF8Char*)funcName);
-		sb.Append((const UTF8Char*)" failed");
+		sb.AppendC(UTF8STRC(" failed"));
 		succ = false;
 	}
 	if (!failOnly || !succ)
@@ -69,13 +69,13 @@ void UInt8x16Cmp(UInt8x16 u8x16, const Char *funcName, UInt8 val1, UInt8 val2, U
 		buff[8] == val9 && buff[9] == val10 && buff[10] == val11 && buff[11] == val12 && buff[12] == val13 && buff[13] == val14 && buff[14] == val15 && buff[15] == val16)
 	{
 		sb.Append((const UTF8Char*)funcName);
-		sb.Append((const UTF8Char*)" success");
+		sb.AppendC(UTF8STRC(" success"));
 		succ = true;
 	}
 	else
 	{
 		sb.Append((const UTF8Char*)funcName);
-		sb.Append((const UTF8Char*)" failed");
+		sb.AppendC(UTF8STRC(" failed"));
 		succ = false;
 	}
 	if (!failOnly || !succ)
@@ -93,13 +93,13 @@ void Int16x4Cmp(Int16x4 i16x4, const Char *funcName, Int16 val1, Int16 val2, Int
 	if (buff[0] == val1 && buff[1] == val2 && buff[2] == val3 && buff[3] == val4)
 	{
 		sb.Append((const UTF8Char*)funcName);
-		sb.Append((const UTF8Char*)" success");
+		sb.AppendC(UTF8STRC(" success"));
 		succ = true;
 	}
 	else
 	{
 		sb.Append((const UTF8Char*)funcName);
-		sb.Append((const UTF8Char*)" failed");
+		sb.AppendC(UTF8STRC(" failed"));
 		succ = false;
 	}
 	if (!failOnly || !succ)
@@ -117,13 +117,13 @@ void UInt16x4Cmp(UInt16x4 u16x4, const Char *funcName, UInt16 val1, UInt16 val2,
 	if (buff[0] == val1 && buff[1] == val2 && buff[2] == val3 && buff[3] == val4)
 	{
 		sb.Append((const UTF8Char*)funcName);
-		sb.Append((const UTF8Char*)" success");
+		sb.AppendC(UTF8STRC(" success"));
 		succ = true;
 	}
 	else
 	{
 		sb.Append((const UTF8Char*)funcName);
-		sb.Append((const UTF8Char*)" failed");
+		sb.AppendC(UTF8STRC(" failed"));
 		succ = false;
 	}
 	if (!failOnly || !succ)
@@ -141,13 +141,13 @@ void Int16x8Cmp(Int16x8 i16x8, const Char *funcName, Int16 val1, Int16 val2, Int
 	if (buff[0] == val1 && buff[1] == val2 && buff[2] == val3 && buff[3] == val4 && buff[4] == val5 && buff[5] == val6 && buff[6] == val7 && buff[7] == val8)
 	{
 		sb.Append((const UTF8Char*)funcName);
-		sb.Append((const UTF8Char*)" success");
+		sb.AppendC(UTF8STRC(" success"));
 		succ = true;
 	}
 	else
 	{
 		sb.Append((const UTF8Char*)funcName);
-		sb.Append((const UTF8Char*)" failed");
+		sb.AppendC(UTF8STRC(" failed"));
 		succ = false;
 	}
 	if (!failOnly || !succ)
@@ -165,13 +165,13 @@ void UInt16x8Cmp(UInt16x8 u16x8, const Char *funcName, UInt16 val1, UInt16 val2,
 	if (buff[0] == val1 && buff[1] == val2 && buff[2] == val3 && buff[3] == val4 && buff[4] == val5 && buff[5] == val6 && buff[6] == val7 && buff[7] == val8)
 	{
 		sb.Append((const UTF8Char*)funcName);
-		sb.Append((const UTF8Char*)" success");
+		sb.AppendC(UTF8STRC(" success"));
 		succ = true;
 	}
 	else
 	{
 		sb.Append((const UTF8Char*)funcName);
-		sb.Append((const UTF8Char*)" failed");
+		sb.AppendC(UTF8STRC(" failed"));
 		succ = false;
 	}
 	if (!failOnly || !succ)
@@ -189,13 +189,13 @@ void Int32x4Cmp(Int32x4 i32x4, const Char *funcName, Int32 val1, Int32 val2, Int
 	if (buff[0] == val1 && buff[1] == val2 && buff[2] == val3 && buff[3] == val4)
 	{
 		sb.Append((const UTF8Char*)funcName);
-		sb.Append((const UTF8Char*)" success");
+		sb.AppendC(UTF8STRC(" success"));
 		succ = true;
 	}
 	else
 	{
 		sb.Append((const UTF8Char*)funcName);
-		sb.Append((const UTF8Char*)" failed");
+		sb.AppendC(UTF8STRC(" failed"));
 		succ = false;
 	}
 	if (!failOnly || !succ)
@@ -212,12 +212,12 @@ void CmpResult(Bool result, const Char *funcName)
 		if (result)
 		{
 			sb.Append((const UTF8Char*)funcName);
-			sb.Append((const UTF8Char*)" success");
+			sb.AppendC(UTF8STRC(" success"));
 		}
 		else
 		{
 			sb.Append((const UTF8Char*)funcName);
-			sb.Append((const UTF8Char*)" failed");
+			sb.AppendC(UTF8STRC(" failed"));
 		}
 		console->WriteLine(sb.ToString());
 	}

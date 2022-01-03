@@ -47,48 +47,48 @@ void Crypto::Cert::WinHttpCert::ToString(Text::StringBuilderUTF *sb)
 {
 	const UTF8Char *csptr;
 	Data::DateTime dt;
-	sb->Append((const UTF8Char*)"Not Before: ");
+	sb->AppendC(UTF8STRC("Not Before: "));
 	this->GetNotBefore(&dt);
 	sb->AppendDate(&dt);
 	this->GetNotAfter(&dt);
-	sb->Append((const UTF8Char*)"\r\nNot After: ");
+	sb->AppendC(UTF8STRC("\r\nNot After: "));
 	sb->AppendDate(&dt);
 	if (this->clsData->certInfo->lpszSubjectInfo)
 	{
 		csptr = Text::StrToUTF8New(this->clsData->certInfo->lpszSubjectInfo);
-		sb->Append((const UTF8Char*)"\r\nSubject: ");
+		sb->AppendC(UTF8STRC("\r\nSubject: "));
 		sb->Append(csptr);
 		Text::StrDelNew(csptr);
 	}
 	if (this->clsData->certInfo->lpszIssuerInfo)
 	{
 		csptr = Text::StrToUTF8New(this->clsData->certInfo->lpszIssuerInfo);
-		sb->Append((const UTF8Char*)"\r\nIssuer: ");
+		sb->AppendC(UTF8STRC("\r\nIssuer: "));
 		sb->Append(csptr);
 		Text::StrDelNew(csptr);
 	}
 	if (this->clsData->certInfo->lpszProtocolName)
 	{
 		csptr = Text::StrToUTF8New(this->clsData->certInfo->lpszProtocolName);
-		sb->Append((const UTF8Char*)"\r\nProtocol Name: ");
+		sb->AppendC(UTF8STRC("\r\nProtocol Name: "));
 		sb->Append(csptr);
 		Text::StrDelNew(csptr);
 	}
 	if (this->clsData->certInfo->lpszSignatureAlgName)
 	{
 		csptr = Text::StrToUTF8New(this->clsData->certInfo->lpszSignatureAlgName);
-		sb->Append((const UTF8Char*)"\r\nSignature Alg: ");
+		sb->AppendC(UTF8STRC("\r\nSignature Alg: "));
 		sb->Append(csptr);
 		Text::StrDelNew(csptr);
 	}
 	if (this->clsData->certInfo->lpszEncryptionAlgName)
 	{
 		csptr = Text::StrToUTF8New(this->clsData->certInfo->lpszEncryptionAlgName);
-		sb->Append((const UTF8Char*)"\r\nEncryption Alg: ");
+		sb->AppendC(UTF8STRC("\r\nEncryption Alg: "));
 		sb->Append(csptr);
 		Text::StrDelNew(csptr);
 	}
-	sb->Append((const UTF8Char*)"\r\nKey Size: ");
+	sb->AppendC(UTF8STRC("\r\nKey Size: "));
 	sb->AppendU32(this->clsData->certInfo->dwKeySize);
-	sb->Append((const UTF8Char*)"\r\n");
+	sb->AppendC(UTF8STRC("\r\n"));
 }

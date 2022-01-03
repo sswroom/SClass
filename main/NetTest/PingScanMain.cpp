@@ -18,7 +18,7 @@ void PingScan(UInt32 ip)
 {
 	UTF8Char sbuff[32];
 	Text::StringBuilderUTF8 sb;
-	sb.Append((const UTF8Char*)"Scanning with interface ip ");
+	sb.AppendC(UTF8STRC("Scanning with interface ip "));
 	Net::SocketUtil::GetIPv4Name(sbuff, ip);
 	sb.Append(sbuff);
 	console->WriteLine(sb.ToString());

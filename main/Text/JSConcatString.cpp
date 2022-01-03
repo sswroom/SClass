@@ -41,7 +41,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	}
 	t1 = clk->GetTimeDiff();
 	Text::StringBuilderUTF8 sb;
-	sb.Append((const UTF8Char*)"Time = ");
+	sb.AppendC(UTF8STRC("Time = "));
 	Text::SBAppendF64(&sb, t1);
 	console.WriteLine(sb.ToString());
 	
