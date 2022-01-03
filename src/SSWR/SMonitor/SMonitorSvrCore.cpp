@@ -1516,17 +1516,17 @@ SSWR::SMonitor::SMonitorSvrCore::DeviceInfo *SSWR::SMonitor::SMonitorSvrCore::De
 	Sync::MutexUsage dbMutUsage;
 	DB::DBTool *db = this->UseDB(&dbMutUsage);
 	DB::SQLBuilder sql(this->db);
-	sql.AppendCmd((const UTF8Char*)"insert into device (id, cpuName, platformName, lastKATime, flags) values (");
+	sql.AppendCmdC(UTF8STRC("insert into device (id, cpuName, platformName, lastKATime, flags) values ("));
 	sql.AppendInt64(cliId);
-	sql.AppendCmd((const UTF8Char*)", ");
+	sql.AppendCmdC(UTF8STRC(", "));
 	sql.AppendStrUTF8(cpuName);
-	sql.AppendCmd((const UTF8Char*)", ");
+	sql.AppendCmdC(UTF8STRC(", "));
 	sql.AppendStrUTF8(platformName);
-	sql.AppendCmd((const UTF8Char*)", ");
+	sql.AppendCmdC(UTF8STRC(", "));
 	sql.AppendDate(&dt);
-	sql.AppendCmd((const UTF8Char*)", ");
+	sql.AppendCmdC(UTF8STRC(", "));
 	sql.AppendInt32(0);
-	sql.AppendCmd((const UTF8Char*)")");
+	sql.AppendCmdC(UTF8STRC(")"));
 	if (db->ExecuteNonQueryC(sql.ToString(), sql.GetLength()) > 0)
 	{
 		OSInt i;
@@ -1595,16 +1595,16 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceRecvReading(DeviceInfo *dev, Int64 c
 		{
 			nReading = SMONITORCORE_DEVREADINGCNT;
 		}
-		sql.AppendCmd((const UTF8Char*)"update device set readingTime = ");
+		sql.AppendCmdC(UTF8STRC("update device set readingTime = "));
 		dt.SetTicks(cliTime);
 		sql.AppendDate(&dt);
-		sql.AppendCmd((const UTF8Char*)", nreading = ");
+		sql.AppendCmdC(UTF8STRC(", nreading = "));
 		sql.AppendInt32((Int32)nReading);
-		sql.AppendCmd((const UTF8Char*)", ndigital = ");
+		sql.AppendCmdC(UTF8STRC(", ndigital = "));
 		sql.AppendInt32((Int32)nDigitals);
-		sql.AppendCmd((const UTF8Char*)", nOutput = ");
+		sql.AppendCmdC(UTF8STRC(", nOutput = "));
 		sql.AppendInt32((Int32)nOutput);
-		sql.AppendCmd((const UTF8Char*)", dsensors = ");
+		sql.AppendCmdC(UTF8STRC(", dsensors = "));
 		sql.AppendInt32((Int32)digitalVals);
 		i = 0;
 		while (i < nReading)
@@ -1612,21 +1612,21 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceRecvReading(DeviceInfo *dev, Int64 c
 			if (ReadInt16(&readings[i].status[6]) != 0)
 			{
 				sptr = Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"reading"), i + 1);
-				sql.AppendCmd((const UTF8Char*)", ");
+				sql.AppendCmdC(UTF8STRC(", "));
 				sql.AppendCol(sbuff);
-				sql.AppendCmd((const UTF8Char*)" = ");
+				sql.AppendCmdC(UTF8STRC(" = "));
 				sql.AppendDbl(readings[i].reading);
 
 				sptr = Text::StrConcat(sptr, (const UTF8Char*)"Status");
-				sql.AppendCmd((const UTF8Char*)", ");
+				sql.AppendCmdC(UTF8STRC(", "));
 				sql.AppendCol(sbuff);
-				sql.AppendCmd((const UTF8Char*)" = ");
+				sql.AppendCmdC(UTF8STRC(" = "));
 				sql.AppendInt64(ReadInt64(readings[i].status));
 			}
 
 			i++;
 		}
-		sql.AppendCmd((const UTF8Char*)" where id = ");
+		sql.AppendCmdC(UTF8STRC(" where id = "));
 		sql.AppendInt64(dev->cliId);
 		if (db->ExecuteNonQueryC(sql.ToString(), sql.GetLength()) > 0)
 		{
@@ -1704,9 +1704,9 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceKARecv(DeviceInfo *dev, Int64 kaTime
 	Sync::MutexUsage dbMutUsage;
 	DB::DBTool *db = this->UseDB(&dbMutUsage);
 	DB::SQLBuilder sql(this->db);
-	sql.AppendCmd((const UTF8Char*)"update device set lastKATime = ");
+	sql.AppendCmdC(UTF8STRC("update device set lastKATime = "));
 	sql.AppendDate(&dt);
-	sql.AppendCmd((const UTF8Char*)" where id = ");
+	sql.AppendCmdC(UTF8STRC(" where id = "));
 	sql.AppendInt64(dev->cliId);
 	if (db->ExecuteNonQueryC(sql.ToString(), sql.GetLength()) >= 0)
 	{
@@ -1735,9 +1735,9 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceSetName(Int64 cliId, const UTF8Char 
 	Sync::MutexUsage dbMutUsage;
 	DB::DBTool *db = this->UseDB(&dbMutUsage);
 	DB::SQLBuilder sql(this->db);
-	sql.AppendCmd((const UTF8Char*)"update device set devName = ");
+	sql.AppendCmdC(UTF8STRC("update device set devName = "));
 	sql.AppendStrUTF8(devName);
-	sql.AppendCmd((const UTF8Char*)" where id = ");
+	sql.AppendCmdC(UTF8STRC(" where id = "));
 	sql.AppendInt64(dev->cliId);
 	if (db->ExecuteNonQueryC(sql.ToString(), sql.GetLength()) >= 0)
 	{
@@ -1773,9 +1773,9 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceSetPlatform(Int64 cliId, const UTF8C
 	Sync::MutexUsage dbMutUsage;
 	DB::DBTool *db = this->UseDB(&dbMutUsage);
 	DB::SQLBuilder sql(this->db);
-	sql.AppendCmd((const UTF8Char*)"update device set platformName = ");
+	sql.AppendCmdC(UTF8STRC("update device set platformName = "));
 	sql.AppendStrUTF8(platformName);
-	sql.AppendCmd((const UTF8Char*)" where id = ");
+	sql.AppendCmdC(UTF8STRC(" where id = "));
 	sql.AppendInt64(dev->cliId);
 	if (db->ExecuteNonQueryC(sql.ToString(), sql.GetLength()) >= 0)
 	{
@@ -1811,9 +1811,9 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceSetCPUName(Int64 cliId, const UTF8Ch
 	Sync::MutexUsage dbMutUsage;
 	DB::DBTool *db = this->UseDB(&dbMutUsage);
 	DB::SQLBuilder sql(this->db);
-	sql.AppendCmd((const UTF8Char*)"update device set cpuName = ");
+	sql.AppendCmdC(UTF8STRC("update device set cpuName = "));
 	sql.AppendStrUTF8(cpuName);
-	sql.AppendCmd((const UTF8Char*)" where id = ");
+	sql.AppendCmdC(UTF8STRC(" where id = "));
 	sql.AppendInt64(dev->cliId);
 	if (db->ExecuteNonQueryC(sql.ToString(), sql.GetLength()) >= 0)
 	{
@@ -1878,9 +1878,9 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceSetReading(Int64 cliId, UInt32 index
 	Sync::MutexUsage dbMutUsage;
 	DB::DBTool *db = this->UseDB(&dbMutUsage);
 	DB::SQLBuilder sql(this->db);
-	sql.AppendCmd((const UTF8Char*)"update device set readingNames = ");
+	sql.AppendCmdC(UTF8STRC("update device set readingNames = "));
 	sql.AppendStrUTF8(sb.ToString());
-	sql.AppendCmd((const UTF8Char*)" where id = ");
+	sql.AppendCmdC(UTF8STRC(" where id = "));
 	sql.AppendInt64(dev->cliId);
 	if (db->ExecuteNonQueryC(sql.ToString(), sql.GetLength()) >= 0)
 	{
@@ -1907,9 +1907,9 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceSetVersion(Int64 cliId, Int64 versio
 	Sync::MutexUsage dbMutUsage;
 	DB::DBTool *db = this->UseDB(&dbMutUsage);
 	DB::SQLBuilder sql(this->db);
-	sql.AppendCmd((const UTF8Char*)"update device set version = ");
+	sql.AppendCmdC(UTF8STRC("update device set version = "));
 	sql.AppendInt64(version);
-	sql.AppendCmd((const UTF8Char*)" where id = ");
+	sql.AppendCmdC(UTF8STRC(" where id = "));
 	sql.AppendInt64(dev->cliId);
 	if (db->ExecuteNonQueryC(sql.ToString(), sql.GetLength()) >= 0)
 	{
@@ -1944,11 +1944,11 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceModify(Int64 cliId, const UTF8Char *
 	Sync::MutexUsage dbMutUsage;
 	DB::DBTool *db = this->UseDB(&dbMutUsage);
 	DB::SQLBuilder sql(this->db);
-	sql.AppendCmd((const UTF8Char*)"update device set devName = ");
+	sql.AppendCmdC(UTF8STRC("update device set devName = "));
 	sql.AppendStrUTF8(devName);
-	sql.AppendCmd((const UTF8Char*)", flags = ");
+	sql.AppendCmdC(UTF8STRC(", flags = "));
 	sql.AppendInt32(flags);
-	sql.AppendCmd((const UTF8Char*)" where id = ");
+	sql.AppendCmdC(UTF8STRC(" where id = "));
 	sql.AppendInt64(dev->cliId);
 	if (db->ExecuteNonQueryC(sql.ToString(), sql.GetLength()) >= 0)
 	{
@@ -1978,9 +1978,9 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceSetReadings(DeviceInfo *dev, const U
 	Sync::MutexUsage dbMutUsage;
 	DB::DBTool *db = this->UseDB(&dbMutUsage);
 	DB::SQLBuilder sql(this->db);
-	sql.AppendCmd((const UTF8Char*)"update device set readingNames = ");
+	sql.AppendCmdC(UTF8STRC("update device set readingNames = "));
 	sql.AppendStrUTF8(readings);
-	sql.AppendCmd((const UTF8Char*)" where id = ");
+	sql.AppendCmdC(UTF8STRC(" where id = "));
 	sql.AppendInt64(dev->cliId);
 	if (db->ExecuteNonQueryC(sql.ToString(), sql.GetLength()) >= 0)
 	{
@@ -2031,9 +2031,9 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceSetDigitals(DeviceInfo *dev, const U
 	Sync::MutexUsage dbMutUsage;
 	DB::DBTool *db = this->UseDB(&dbMutUsage);
 	DB::SQLBuilder sql(this->db);
-	sql.AppendCmd((const UTF8Char*)"update device set digitalNames = ");
+	sql.AppendCmdC(UTF8STRC("update device set digitalNames = "));
 	sql.AppendStrUTF8(digitals);
-	sql.AppendCmd((const UTF8Char*)" where id = ");
+	sql.AppendCmdC(UTF8STRC(" where id = "));
 	sql.AppendInt64(dev->cliId);
 	if (db->ExecuteNonQueryC(sql.ToString(), sql.GetLength()) >= 0)
 	{
@@ -2222,13 +2222,13 @@ Bool SSWR::SMonitor::SMonitorSvrCore::UserAdd(const UTF8Char *userName, const UT
 	Sync::MutexUsage dbMutUsage;
 	DB::DBTool *db = this->UseDB(&dbMutUsage);
 	DB::SQLBuilder sql(this->db);
-	sql.AppendCmd((const UTF8Char*)"insert into webuser (userName, pwd, userType) values (");
+	sql.AppendCmdC(UTF8STRC("insert into webuser (userName, pwd, userType) values ("));
 	sql.AppendStrUTF8(userName);
-	sql.AppendCmd((const UTF8Char*)", ");
+	sql.AppendCmdC(UTF8STRC(", "));
 	sql.AppendStrUTF8(sbuff);
-	sql.AppendCmd((const UTF8Char*)", ");
+	sql.AppendCmdC(UTF8STRC(", "));
 	sql.AppendInt32(userType);
-	sql.AppendCmd((const UTF8Char*)")");
+	sql.AppendCmdC(UTF8STRC(")"));
 	if (db->ExecuteNonQueryC(sql.ToString(), sql.GetLength()) > 0)
 	{
 		user = MemAlloc(WebUser, 1);
@@ -2270,9 +2270,9 @@ Bool SSWR::SMonitor::SMonitorSvrCore::UserSetPassword(Int32 userId, const UTF8Ch
 	Sync::MutexUsage dbMutUsage;
 	DB::DBTool *db = this->UseDB(&dbMutUsage);
 	DB::SQLBuilder sql(this->db);
-	sql.AppendCmd((const UTF8Char*)"update webuser set pwd = ");
+	sql.AppendCmdC(UTF8STRC("update webuser set pwd = "));
 	sql.AppendStrUTF8(sbuff);
-	sql.AppendCmd((const UTF8Char*)" where id = ");
+	sql.AppendCmdC(UTF8STRC(" where id = "));
 	sql.AppendInt32(userId);
 	if (db->ExecuteNonQueryC(sql.ToString(), sql.GetLength()) >= 0)
 	{
@@ -2495,7 +2495,7 @@ Bool SSWR::SMonitor::SMonitorSvrCore::UserAssign(Int32 userId, Data::ArrayList<I
 	Sync::MutexUsage dbMutUsage;
 	DB::DBTool *db = this->UseDB(&dbMutUsage);
 	DB::SQLBuilder sql(this->db);
-	sql.AppendCmd((const UTF8Char*)"delete from webuser_device where webuser_id = ");
+	sql.AppendCmdC(UTF8STRC("delete from webuser_device where webuser_id = "));
 	sql.AppendInt32(user->userId);
 	if (db->ExecuteNonQueryC(sql.ToString(), sql.GetLength()) < 0)
 	{
@@ -2510,11 +2510,11 @@ Bool SSWR::SMonitor::SMonitorSvrCore::UserAssign(Int32 userId, Data::ArrayList<I
 	{
 		sql.Clear();
 		cliId = devIdList->GetItem(i);
-		sql.AppendCmd((const UTF8Char*)"insert into webuser_device (webuser_id, device_id) values (");
+		sql.AppendCmdC(UTF8STRC("insert into webuser_device (webuser_id, device_id) values ("));
 		sql.AppendInt32(user->userId);
-		sql.AppendCmd((const UTF8Char*)", ");
+		sql.AppendCmdC(UTF8STRC(", "));
 		sql.AppendInt64(cliId);
-		sql.AppendCmd((const UTF8Char*)")");
+		sql.AppendCmdC(UTF8STRC(")"));
 		if (db->ExecuteNonQueryC(sql.ToString(), sql.GetLength()) < 0)
 		{
 			succ = false;
