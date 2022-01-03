@@ -24,6 +24,7 @@ namespace DB
 		~SQLBuilder();
 
 		void AppendCmd(const UTF8Char *val);
+		void AppendCmdC(const UTF8Char *val, UOSInt len);
 		void AppendInt32(Int32 val);
 		void AppendInt64(Int64 val);
 		void AppendUInt32(UInt32 val);

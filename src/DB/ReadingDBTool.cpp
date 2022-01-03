@@ -984,7 +984,7 @@ DB::TableDef *DB::ReadingDBTool::GetTableDef(const UTF8Char *tableName)
 	else if (this->svrType == DB::DBUtil::ServerType::SQLite)
 	{
 		DB::SQLBuilder sql(this->svrType, this->GetTzQhr());
-		sql.AppendCmd((const UTF8Char*)"select sql from sqlite_master where type='table' and name=");
+		sql.AppendCmdC(UTF8STRC("select sql from sqlite_master where type='table' and name="));
 		sql.AppendStrUTF8(tableName);
 		DB::DBReader *r = this->db->ExecuteReaderC(sql.ToString(), sql.GetLength());
 		if (r == 0)
@@ -1152,48 +1152,48 @@ UOSInt DB::ReadingDBTool::SplitSQL(UTF8Char **outStrs, UOSInt maxCnt, UTF8Char *
 void DB::ReadingDBTool::AppendColDef(DB::DBUtil::ServerType svrType, DB::SQLBuilder *sql, DB::ColDef *col)
 {
 	sql->AppendCol(col->GetColName()->v);
-	sql->AppendCmd((const UTF8Char*)" ");
+	sql->AppendCmdC(UTF8STRC(" "));
 	AppendColType(svrType, sql, col->GetColType(), col->GetColSize());
 	if (col->IsNotNull())
 	{
-		sql->AppendCmd((const UTF8Char*)" NOT NULL");
+		sql->AppendCmdC(UTF8STRC(" NOT NULL"));
 	}
 	if (svrType == DB::DBUtil::ServerType::MSSQL)
 	{
 		if (col->IsAutoInc())
 		{
-			sql->AppendCmd((const UTF8Char*)" IDENTITY(1,1)");
+			sql->AppendCmdC(UTF8STRC(" IDENTITY(1,1)"));
 		}
 	}
 	else if (svrType == DB::DBUtil::ServerType::MySQL)
 	{
 		if (col->IsAutoInc())
 		{
-			sql->AppendCmd((const UTF8Char*)" AUTO_INCREMENT");
+			sql->AppendCmdC(UTF8STRC(" AUTO_INCREMENT"));
 		}
 	}
 	else if (svrType == DB::DBUtil::ServerType::SQLite)
 	{
 		if (col->IsAutoInc() && col->IsPK())
 		{
-			sql->AppendCmd((const UTF8Char*)" PRIMARY KEY");
+			sql->AppendCmdC(UTF8STRC(" PRIMARY KEY"));
 		}
 		if (col->IsAutoInc() && (col->GetColType() == DB::DBUtil::CT_Int32 || col->GetColType() == DB::DBUtil::CT_UInt32))
 		{
-			sql->AppendCmd((const UTF8Char*)" AUTOINCREMENT");
+			sql->AppendCmdC(UTF8STRC(" AUTOINCREMENT"));
 		}
 	}
 	else if (svrType == DB::DBUtil::ServerType::Access)
 	{
 		if (col->IsPK())
 		{
-			sql->AppendCmd((const UTF8Char*)" PRIMARY KEY");
+			sql->AppendCmdC(UTF8STRC(" PRIMARY KEY"));
 		}
 	}
 
 	if (col->GetDefVal())
 	{
-		sql->AppendCmd((const UTF8Char*)" DEFAULT ");
+		sql->AppendCmdC(UTF8STRC(" DEFAULT "));
 		col->GetDefVal(sql);
 		//sql->AppendStr(col->GetDefVal());
 	}
@@ -1205,61 +1205,61 @@ void DB::ReadingDBTool::AppendColType(DB::DBUtil::ServerType svrType, DB::SQLBui
 	{
 		if (colType == DB::DBUtil::CT_Bool)
 		{
-			sql->AppendCmd((const UTF8Char*)"TINYINT(1)");
+			sql->AppendCmdC(UTF8STRC("TINYINT(1)"));
 		}
 		else if (colType == DB::DBUtil::CT_Byte)
 		{
-			sql->AppendCmd((const UTF8Char*)"TINYINT(3)");
+			sql->AppendCmdC(UTF8STRC("TINYINT(3)"));
 		}
 		else if (colType == DB::DBUtil::CT_Char)
 		{
-			sql->AppendCmd((const UTF8Char*)"CHAR(");
+			sql->AppendCmdC(UTF8STRC("CHAR("));
 			sql->AppendInt32((Int32)colSize);
-			sql->AppendCmd((const UTF8Char*)")");
+			sql->AppendCmdC(UTF8STRC(")"));
 		}
 		else if (colType == DB::DBUtil::CT_DateTime)
 		{
-			sql->AppendCmd((const UTF8Char*)"DATETIME");
+			sql->AppendCmdC(UTF8STRC("DATETIME"));
 		}
 		else if (colType == DB::DBUtil::CT_Double)
 		{
-			sql->AppendCmd((const UTF8Char*)"DOUBLE");
+			sql->AppendCmdC(UTF8STRC("DOUBLE"));
 		}
 		else if (colType == DB::DBUtil::CT_Float)
 		{
-			sql->AppendCmd((const UTF8Char*)"FLOAT");
+			sql->AppendCmdC(UTF8STRC("FLOAT"));
 		}
 		else if (colType == DB::DBUtil::CT_Int16)
 		{
-			sql->AppendCmd((const UTF8Char*)"SMALLINT");
+			sql->AppendCmdC(UTF8STRC("SMALLINT"));
 		}
 		else if (colType == DB::DBUtil::CT_Int32)
 		{
-			sql->AppendCmd((const UTF8Char*)"INTEGER");
+			sql->AppendCmdC(UTF8STRC("INTEGER"));
 		}
 		else if (colType == DB::DBUtil::CT_Int64)
 		{
-			sql->AppendCmd((const UTF8Char*)"BIGINT");
+			sql->AppendCmdC(UTF8STRC("BIGINT"));
 		}
 		else if (colType == DB::DBUtil::CT_UInt32)
 		{
-			sql->AppendCmd((const UTF8Char*)"INTEGER UNSIGNED");
+			sql->AppendCmdC(UTF8STRC("INTEGER UNSIGNED"));
 		}
 		else if (colType == DB::DBUtil::CT_VarChar)
 		{
 			if (colSize == (UOSInt)-1)
 			{
-				sql->AppendCmd((const UTF8Char*)"LONGTEXT");
+				sql->AppendCmdC(UTF8STRC("LONGTEXT"));
 			}
 			else if (colSize == 65535)
 			{
-				sql->AppendCmd((const UTF8Char*)"TEXT");
+				sql->AppendCmdC(UTF8STRC("TEXT"));
 			}
 			else
 			{
-				sql->AppendCmd((const UTF8Char*)"VARCHAR(");
+				sql->AppendCmdC(UTF8STRC("VARCHAR("));
 				sql->AppendInt32((Int32)colSize);
-				sql->AppendCmd((const UTF8Char*)")");
+				sql->AppendCmdC(UTF8STRC(")"));
 			}
 		}
 		else
@@ -1271,61 +1271,61 @@ void DB::ReadingDBTool::AppendColType(DB::DBUtil::ServerType svrType, DB::SQLBui
 	{
 		if (colType == DB::DBUtil::CT_Bool)
 		{
-			sql->AppendCmd((const UTF8Char*)"BOOL");
+			sql->AppendCmdC(UTF8STRC("BOOL"));
 		}
 		else if (colType == DB::DBUtil::CT_Byte)
 		{
-			sql->AppendCmd((const UTF8Char*)"BYTE");
+			sql->AppendCmdC(UTF8STRC("BYTE"));
 		}
 		else if (colType == DB::DBUtil::CT_Char)
 		{
-			sql->AppendCmd((const UTF8Char*)"NCHAR(");
+			sql->AppendCmdC(UTF8STRC("NCHAR("));
 			sql->AppendInt32((Int32)colSize);
-			sql->AppendCmd((const UTF8Char*)")");
+			sql->AppendCmdC(UTF8STRC(")"));
 		}
 		else if (colType == DB::DBUtil::CT_DateTime)
 		{
-			sql->AppendCmd((const UTF8Char*)"DATETIME");
+			sql->AppendCmdC(UTF8STRC("DATETIME"));
 		}
 		else if (colType == DB::DBUtil::CT_Double)
 		{
-			sql->AppendCmd((const UTF8Char*)"BINARY_DOUBLE");
+			sql->AppendCmdC(UTF8STRC("BINARY_DOUBLE"));
 		}
 		else if (colType == DB::DBUtil::CT_Float)
 		{
-			sql->AppendCmd((const UTF8Char*)"BINARY_FLOAT");
+			sql->AppendCmdC(UTF8STRC("BINARY_FLOAT"));
 		}
 		else if (colType == DB::DBUtil::CT_Int16)
 		{
-			sql->AppendCmd((const UTF8Char*)"SMALLINT");
+			sql->AppendCmdC(UTF8STRC("SMALLINT"));
 		}
 		else if (colType == DB::DBUtil::CT_Int32)
 		{
-			sql->AppendCmd((const UTF8Char*)"INT");
+			sql->AppendCmdC(UTF8STRC("INT"));
 		}
 		else if (colType == DB::DBUtil::CT_Int64)
 		{
-			sql->AppendCmd((const UTF8Char*)"BIGINT");
+			sql->AppendCmdC(UTF8STRC("BIGINT"));
 		}
 		else if (colType == DB::DBUtil::CT_UInt32)
 		{
-			sql->AppendCmd((const UTF8Char*)"INT");
+			sql->AppendCmdC(UTF8STRC("INT"));
 		}
 		else if (colType == DB::DBUtil::CT_VarChar)
 		{
 			if (colSize == (UOSInt)-1)
 			{
-				sql->AppendCmd((const UTF8Char*)"NVARCHAR(MAX)");
+				sql->AppendCmdC(UTF8STRC("NVARCHAR(MAX)"));
 			}
 			else if (colSize > 4000)
 			{
-				sql->AppendCmd((const UTF8Char*)"NVARCHAR(MAX)");
+				sql->AppendCmdC(UTF8STRC("NVARCHAR(MAX)"));
 			}
 			else
 			{
-				sql->AppendCmd((const UTF8Char*)"NVARCHAR(");
+				sql->AppendCmdC(UTF8STRC("NVARCHAR("));
 				sql->AppendInt32((Int32)colSize);
-				sql->AppendCmd((const UTF8Char*)")");
+				sql->AppendCmdC(UTF8STRC(")"));
 			}
 		}
 		else
@@ -1337,61 +1337,61 @@ void DB::ReadingDBTool::AppendColType(DB::DBUtil::ServerType svrType, DB::SQLBui
 	{
 		if (colType == DB::DBUtil::CT_Bool)
 		{
-			sql->AppendCmd((const UTF8Char*)"BOOL");
+			sql->AppendCmdC(UTF8STRC("BOOL"));
 		}
 		else if (colType == DB::DBUtil::CT_Byte)
 		{
-			sql->AppendCmd((const UTF8Char*)"BYTE");
+			sql->AppendCmdC(UTF8STRC("BYTE"));
 		}
 		else if (colType == DB::DBUtil::CT_Char)
 		{
-			sql->AppendCmd((const UTF8Char*)"CHAR(");
+			sql->AppendCmdC(UTF8STRC("CHAR("));
 			sql->AppendInt32((Int32)colSize);
-			sql->AppendCmd((const UTF8Char*)")");
+			sql->AppendCmdC(UTF8STRC(")"));
 		}
 		else if (colType == DB::DBUtil::CT_DateTime)
 		{
-			sql->AppendCmd((const UTF8Char*)"DATETIME");
+			sql->AppendCmdC(UTF8STRC("DATETIME"));
 		}
 		else if (colType == DB::DBUtil::CT_Double)
 		{
-			sql->AppendCmd((const UTF8Char*)"DOUBLE");
+			sql->AppendCmdC(UTF8STRC("DOUBLE"));
 		}
 		else if (colType == DB::DBUtil::CT_Float)
 		{
-			sql->AppendCmd((const UTF8Char*)"SINGLE");
+			sql->AppendCmdC(UTF8STRC("SINGLE"));
 		}
 		else if (colType == DB::DBUtil::CT_Int16)
 		{
-			sql->AppendCmd((const UTF8Char*)"SMALLINT");
+			sql->AppendCmdC(UTF8STRC("SMALLINT"));
 		}
 		else if (colType == DB::DBUtil::CT_Int32)
 		{
-			sql->AppendCmd((const UTF8Char*)"INT");
+			sql->AppendCmdC(UTF8STRC("INT"));
 		}
 		else if (colType == DB::DBUtil::CT_Int64)
 		{
-			sql->AppendCmd((const UTF8Char*)"BIGINT");
+			sql->AppendCmdC(UTF8STRC("BIGINT"));
 		}
 		else if (colType == DB::DBUtil::CT_UInt32)
 		{
-			sql->AppendCmd((const UTF8Char*)"INT");
+			sql->AppendCmdC(UTF8STRC("INT"));
 		}
 		else if (colType == DB::DBUtil::CT_VarChar)
 		{
 			if (colSize == (UOSInt)-1)
 			{
-				sql->AppendCmd((const UTF8Char*)"TEXT");
+				sql->AppendCmdC(UTF8STRC("TEXT"));
 			}
 			else if (colSize > 255)
 			{
-				sql->AppendCmd((const UTF8Char*)"TEXT");
+				sql->AppendCmdC(UTF8STRC("TEXT"));
 			}
 			else
 			{
-				sql->AppendCmd((const UTF8Char*)"VARCHAR(");
+				sql->AppendCmdC(UTF8STRC("VARCHAR("));
 				sql->AppendInt32((Int32)colSize);
-				sql->AppendCmd((const UTF8Char*)")");
+				sql->AppendCmdC(UTF8STRC(")"));
 			}
 		}
 		else
@@ -1403,61 +1403,61 @@ void DB::ReadingDBTool::AppendColType(DB::DBUtil::ServerType svrType, DB::SQLBui
 	{
 		if (colType == DB::DBUtil::CT_Bool)
 		{
-			sql->AppendCmd((const UTF8Char*)"BOOLEAN");
+			sql->AppendCmdC(UTF8STRC("BOOLEAN"));
 		}
 		else if (colType == DB::DBUtil::CT_Byte)
 		{
-			sql->AppendCmd((const UTF8Char*)"TINYINT");
+			sql->AppendCmdC(UTF8STRC("TINYINT"));
 		}
 		else if (colType == DB::DBUtil::CT_Char)
 		{
-			sql->AppendCmd((const UTF8Char*)"CHAR(");
+			sql->AppendCmdC(UTF8STRC("CHAR("));
 			sql->AppendInt32((Int32)colSize);
-			sql->AppendCmd((const UTF8Char*)")");
+			sql->AppendCmdC(UTF8STRC(")"));
 		}
 		else if (colType == DB::DBUtil::CT_DateTime)
 		{
-			sql->AppendCmd((const UTF8Char*)"DATETIME");
+			sql->AppendCmdC(UTF8STRC("DATETIME"));
 		}
 		else if (colType == DB::DBUtil::CT_Double)
 		{
-			sql->AppendCmd((const UTF8Char*)"DOUBLE");
+			sql->AppendCmdC(UTF8STRC("DOUBLE"));
 		}
 		else if (colType == DB::DBUtil::CT_Float)
 		{
-			sql->AppendCmd((const UTF8Char*)"FLOAT");
+			sql->AppendCmdC(UTF8STRC("FLOAT"));
 		}
 		else if (colType == DB::DBUtil::CT_Int16)
 		{
-			sql->AppendCmd((const UTF8Char*)"SMALLINT");
+			sql->AppendCmdC(UTF8STRC("SMALLINT"));
 		}
 		else if (colType == DB::DBUtil::CT_Int32)
 		{
-			sql->AppendCmd((const UTF8Char*)"INTEGER");
+			sql->AppendCmdC(UTF8STRC("INTEGER"));
 		}
 		else if (colType == DB::DBUtil::CT_Int64)
 		{
-			sql->AppendCmd((const UTF8Char*)"BIGINT");
+			sql->AppendCmdC(UTF8STRC("BIGINT"));
 		}
 		else if (colType == DB::DBUtil::CT_UInt32)
 		{
-			sql->AppendCmd((const UTF8Char*)"INTEGER");
+			sql->AppendCmdC(UTF8STRC("INTEGER"));
 		}
 		else if (colType == DB::DBUtil::CT_VarChar)
 		{
 			if (colSize == (UOSInt)-1)
 			{
-				sql->AppendCmd((const UTF8Char*)"TEXT");
+				sql->AppendCmdC(UTF8STRC("TEXT"));
 			}
 			else if (colSize >= 65535)
 			{
-				sql->AppendCmd((const UTF8Char*)"TEXT");
+				sql->AppendCmdC(UTF8STRC("TEXT"));
 			}
 			else
 			{
-				sql->AppendCmd((const UTF8Char*)"VARCHAR(");
+				sql->AppendCmdC(UTF8STRC("VARCHAR("));
 				sql->AppendInt32((Int32)colSize);
-				sql->AppendCmd((const UTF8Char*)")");
+				sql->AppendCmdC(UTF8STRC(")"));
 			}
 		}
 		else

@@ -29,6 +29,11 @@ void DB::SQLBuilder::AppendCmd(const UTF8Char *val)
 	sb->Append(val);
 }
 
+void DB::SQLBuilder::AppendCmdC(const UTF8Char *val, UOSInt len)
+{
+	sb->AppendC(val, len);
+}
+
 void DB::SQLBuilder::AppendInt32(Int32 val)
 {
 	sb->AllocLeng(DB::DBUtil::SDBInt32Leng(val, this->svrType));

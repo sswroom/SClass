@@ -46,11 +46,11 @@ UTF8Char *Map::AssistedReverseGeocoder::SearchName(UTF8Char *buff, UOSInt buffSi
 
 	Sync::MutexUsage mutUsage(mut);
 	NEW_CLASS(sql, DB::SQLBuilder(this->conn));
-	sql->AppendCmd((const UTF8Char*)"select address from addrdb where lcid = ");
+	sql->AppendCmdC(UTF8STRC("select address from addrdb where lcid = "));
 	sql->AppendInt32((Int32)lcid);
-	sql->AppendCmd((const UTF8Char*)" and keyx = ");
+	sql->AppendCmdC(UTF8STRC(" and keyx = "));
 	sql->AppendInt32(keyx);
-	sql->AppendCmd((const UTF8Char*)" and keyy = ");
+	sql->AppendCmdC(UTF8STRC(" and keyy = "));
 	sql->AppendInt32(keyy);
 	r = this->conn->ExecuteReaderC(sql->ToString(), sql->GetLength());
 	if (r)
@@ -85,17 +85,17 @@ UTF8Char *Map::AssistedReverseGeocoder::SearchName(UTF8Char *buff, UOSInt buffSi
 		Data::DateTime dt;
 		dt.SetCurrTimeUTC();
 		sql->Clear();
-		sql->AppendCmd((const UTF8Char*)"insert into addrdb (lcid, keyx, keyy, address, addrTime) values (");
+		sql->AppendCmdC(UTF8STRC("insert into addrdb (lcid, keyx, keyy, address, addrTime) values ("));
 		sql->AppendInt32((Int32)lcid);
-		sql->AppendCmd((const UTF8Char*)", ");
+		sql->AppendCmdC(UTF8STRC(", "));
 		sql->AppendInt32(keyx);
-		sql->AppendCmd((const UTF8Char*)", ");
+		sql->AppendCmdC(UTF8STRC(", "));
 		sql->AppendInt32(keyy);
-		sql->AppendCmd((const UTF8Char*)", ");
+		sql->AppendCmdC(UTF8STRC(", "));
 		sql->AppendStrUTF8(buff);
-		sql->AppendCmd((const UTF8Char*)", ");
+		sql->AppendCmdC(UTF8STRC(", "));
 		sql->AppendDate(&dt);
-		sql->AppendCmd((const UTF8Char*)")");
+		sql->AppendCmdC(UTF8STRC(")"));
 		this->conn->ExecuteNonQueryC(sql->ToString(), sql->GetLength());
 
 		DEL_CLASS(sql);
@@ -123,11 +123,11 @@ UTF8Char *Map::AssistedReverseGeocoder::CacheName(UTF8Char *buff, UOSInt buffSiz
 
 	Sync::MutexUsage mutUsage(mut);
 	NEW_CLASS(sql, DB::SQLBuilder(this->conn));
-	sql->AppendCmd((const UTF8Char*)"select address from addrdb where lcid = ");
+	sql->AppendCmdC(UTF8STRC("select address from addrdb where lcid = "));
 	sql->AppendInt32((Int32)lcid);
-	sql->AppendCmd((const UTF8Char*)" and keyx = ");
+	sql->AppendCmdC(UTF8STRC(" and keyx = "));
 	sql->AppendInt32(keyx);
-	sql->AppendCmd((const UTF8Char*)" and keyy = ");
+	sql->AppendCmdC(UTF8STRC(" and keyy = "));
 	sql->AppendInt32(keyy);
 	r = this->conn->ExecuteReaderC(sql->ToString(), sql->GetLength());
 	if (r)
@@ -162,17 +162,17 @@ UTF8Char *Map::AssistedReverseGeocoder::CacheName(UTF8Char *buff, UOSInt buffSiz
 		Data::DateTime dt;
 		dt.SetCurrTimeUTC();
 		sql->Clear();
-		sql->AppendCmd((const UTF8Char*)"insert into addrdb (lcid, keyx, keyy, address, addrTime) values (");
+		sql->AppendCmdC(UTF8STRC("insert into addrdb (lcid, keyx, keyy, address, addrTime) values ("));
 		sql->AppendInt32((Int32)lcid);
-		sql->AppendCmd((const UTF8Char*)", ");
+		sql->AppendCmdC(UTF8STRC(", "));
 		sql->AppendInt32(keyx);
-		sql->AppendCmd((const UTF8Char*)", ");
+		sql->AppendCmdC(UTF8STRC(", "));
 		sql->AppendInt32(keyy);
-		sql->AppendCmd((const UTF8Char*)", ");
+		sql->AppendCmdC(UTF8STRC(", "));
 		sql->AppendStrUTF8(buff);
-		sql->AppendCmd((const UTF8Char*)", ");
+		sql->AppendCmdC(UTF8STRC(", "));
 		sql->AppendDate(&dt);
-		sql->AppendCmd((const UTF8Char*)")");
+		sql->AppendCmdC(UTF8STRC(")"));
 		this->conn->ExecuteNonQueryC(sql->ToString(), sql->GetLength());
 
 		DEL_CLASS(sql);

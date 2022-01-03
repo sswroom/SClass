@@ -28,15 +28,15 @@ namespace Map
 	private:
 		OSInt GetLangIndex(Int32 lcid);
 	public:
-		AssistedRReverseGeocoder(const WChar *dsn, const WChar *uid, const WChar *pwd, IO::LogTool *log, IO::Writer *errWriter);
+		AssistedRReverseGeocoder(const UTF8Char *dsn, const UTF8Char *uid, const UTF8Char *pwd, IO::LogTool *log, IO::Writer *errWriter);
 		virtual ~AssistedRReverseGeocoder();
 
-		virtual WChar *SearchName(WChar *buff, Double lat, Double lon, Int32 lcid);
-		virtual WChar *CacheName(WChar *buff, Double lat, Double lon, Int32 lcid);
+		virtual UTF8Char *SearchName(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, Int32 lcid);
+		virtual UTF8Char *CacheName(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, Int32 lcid);
 		void AddReverseGeocoder(Map::IReverseGeocoder *revGeo);
 
 		void AddLangMap(Int32 lcid, Int32 lang);
-		Int32 ToLang(const WChar *name);
+		Int32 ToLang(const UTF8Char *name);
 	};
 };
 #endif

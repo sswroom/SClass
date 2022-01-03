@@ -139,9 +139,9 @@ Bool Exporter::OruxMapExporter::ExportFile(IO::SeekableStream *stm, const UTF8Ch
 			if (loc)
 			{
 				sql.Clear();
-				sql.AppendCmd((const UTF8Char*)"insert into android_metadata (locale) values (");
+				sql.AppendCmdC(UTF8STRC("insert into android_metadata (locale) values ("));
 				sql.AppendStrUTF8((const UTF8Char*)"zh_TW");//loc->shortName);
-				sql.AppendCmd((const UTF8Char*)")");
+				sql.AppendCmdC(UTF8STRC(")"));
 				db->ExecuteNonQueryC(sql.ToString(), sql.GetLength());
 			}
 			succ = true;
@@ -257,15 +257,15 @@ Bool Exporter::OruxMapExporter::ExportFile(IO::SeekableStream *stm, const UTF8Ch
 							UInt8 *imgBuff = MemAlloc(UInt8, imgSize);
 							fd->GetRealData(0, imgSize, imgBuff);
 							sql.Clear();
-							sql.AppendCmd((const UTF8Char*)"insert into tiles (x, y, z, image) values (");
+							sql.AppendCmdC(UTF8STRC("insert into tiles (x, y, z, image) values ("));
 							sql.AppendInt32(x - minX);
-							sql.AppendCmd((const UTF8Char*)", ");
+							sql.AppendCmdC(UTF8STRC(", "));
 							sql.AppendInt32(y - minY);
-							sql.AppendCmd((const UTF8Char*)", ");
+							sql.AppendCmdC(UTF8STRC(", "));
 							sql.AppendInt32((Int32)(UInt32)level);
-							sql.AppendCmd((const UTF8Char*)", ");
+							sql.AppendCmdC(UTF8STRC(", "));
 							sql.AppendBinary(imgBuff, imgSize);
-							sql.AppendCmd((const UTF8Char*)")");
+							sql.AppendCmdC(UTF8STRC(")"));
 							db->ExecuteNonQueryC(sql.ToString(), sql.GetLength());
 							MemFree(imgBuff);
 							DEL_CLASS(fd);

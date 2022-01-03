@@ -316,11 +316,11 @@ Math::Vector2D *Map::OruxDBLayer::GetVectorById(void *session, Int64 id)
 	Int32 y;
 	x = (Int32)((id >> 32) & 0xffffffff);
 	y = (Int32)(id & 0xffffffff);
-	sql.AppendCmd((const UTF8Char*)"select image from tiles where x = ");
+	sql.AppendCmdC(UTF8STRC("select image from tiles where x = "));
 	sql.AppendInt32(x);
-	sql.AppendCmd((const UTF8Char*)" and y = ");
+	sql.AppendCmdC(UTF8STRC(" and y = "));
 	sql.AppendInt32(y);
-	sql.AppendCmd((const UTF8Char*)" and z = ");
+	sql.AppendCmdC(UTF8STRC(" and z = "));
 	sql.AppendInt32((Int32)this->currLayer);
 	DB::DBReader *r = this->db->ExecuteReaderC(sql.ToString(), sql.GetLength());
 	if (r == 0)
@@ -410,11 +410,11 @@ Bool Map::OruxDBLayer::GetObjectData(Int64 objectId, IO::Stream *stm, Int32 *til
 	Int32 y;
 	x = (Int32)((objectId >> 32) & 0xffffffff);
 	y = (Int32)(objectId & 0xffffffff);
-	sql.AppendCmd((const UTF8Char*)"select image from tiles where x = ");
+	sql.AppendCmdC(UTF8STRC("select image from tiles where x = "));
 	sql.AppendInt32(x);
-	sql.AppendCmd((const UTF8Char*)" and y = ");
+	sql.AppendCmdC(UTF8STRC(" and y = "));
 	sql.AppendInt32(y);
-	sql.AppendCmd((const UTF8Char*)" and z = ");
+	sql.AppendCmdC(UTF8STRC(" and z = "));
 	sql.AppendInt32((Int32)this->currLayer);
 	DB::DBReader *r = this->db->ExecuteReaderC(sql.ToString(), sql.GetLength());
 	if (r == 0)

@@ -195,17 +195,17 @@ UTF8Char *Map::AssistedReverseGeocoderPL::SearchName(UTF8Char *buff, UOSInt buff
 		DB::SQLBuilder *sql;
 		dt.SetCurrTimeUTC();
 		NEW_CLASS(sql, DB::SQLBuilder(this->conn));
-		sql->AppendCmd((const UTF8Char*)"insert into addrdb (lcid, keyx, keyy, address, addrTime) values (");
+		sql->AppendCmdC(UTF8STRC("insert into addrdb (lcid, keyx, keyy, address, addrTime) values ("));
 		sql->AppendInt32((Int32)lcid);
-		sql->AppendCmd((const UTF8Char*)", ");
+		sql->AppendCmdC(UTF8STRC(", "));
 		sql->AppendInt32(keyx);
-		sql->AppendCmd((const UTF8Char*)", ");
+		sql->AppendCmdC(UTF8STRC(", "));
 		sql->AppendInt32(keyy);
-		sql->AppendCmd((const UTF8Char*)", ");
+		sql->AppendCmdC(UTF8STRC(", "));
 		sql->AppendStrUTF8(buff);
-		sql->AppendCmd((const UTF8Char*)", ");
+		sql->AppendCmdC(UTF8STRC(", "));
 		sql->AppendDate(&dt);
-		sql->AppendCmd((const UTF8Char*)")");
+		sql->AppendCmdC(UTF8STRC(")"));
 		if (this->conn->ExecuteNonQueryC(sql->ToString(), sql->GetLength()) <= 0)
 		{
 			this->conn->ExecuteNonQueryC(sql->ToString(), sql->GetLength());

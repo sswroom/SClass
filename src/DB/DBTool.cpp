@@ -174,9 +174,9 @@ Bool DB::DBTool::GenCreateTableCmd(DB::SQLBuilder *sql, const UTF8Char *tableNam
 	UOSInt j;
 	UOSInt k;
 	DB::ColDef *col;
-	sql->AppendCmd((const UTF8Char*)"create table ");
+	sql->AppendCmdC(UTF8STRC("create table "));
 	sql->AppendCol(tableName);
-	sql->AppendCmd((const UTF8Char*)" (");
+	sql->AppendCmdC(UTF8STRC(" ("));
 	if (this->svrType == DB::DBUtil::ServerType::Access || this->svrType == DB::DBUtil::ServerType::MDBTools)
 	{
 		j = tabDef->GetColCnt();
@@ -185,7 +185,7 @@ Bool DB::DBTool::GenCreateTableCmd(DB::SQLBuilder *sql, const UTF8Char *tableNam
 		{
 			if (i > 0)
 			{
-				sql->AppendCmd((const UTF8Char*)", ");
+				sql->AppendCmdC(UTF8STRC(", "));
 			}
 			col = tabDef->GetCol(i++);
 			this->AppendColDef(this->svrType, sql, col);
@@ -206,15 +206,15 @@ Bool DB::DBTool::GenCreateTableCmd(DB::SQLBuilder *sql, const UTF8Char *tableNam
 			}
 			if (i < j)
 			{
-				sql->AppendCmd((const UTF8Char*)", ");
+				sql->AppendCmdC(UTF8STRC(", "));
 			}
 		}
 		if (!hasAutoInc)
 		{
 			i = 0;
 			k = 0;
-			sql->AppendCmd((const UTF8Char*)", ");
-			sql->AppendCmd((const UTF8Char*)"PRIMARY KEY (");
+			sql->AppendCmdC(UTF8STRC(", "));
+			sql->AppendCmdC(UTF8STRC("PRIMARY KEY ("));
 			while (i < j)
 			{
 				col = tabDef->GetCol(i++);
@@ -222,13 +222,13 @@ Bool DB::DBTool::GenCreateTableCmd(DB::SQLBuilder *sql, const UTF8Char *tableNam
 				{
 					if (k > 0)
 					{
-						sql->AppendCmd((const UTF8Char*)", ");
+						sql->AppendCmdC(UTF8STRC(", "));
 					}
 					sql->AppendCol(col->GetColName()->v);
 					k++;
 				}
 			}
-			sql->AppendCmd((const UTF8Char*)")");
+			sql->AppendCmdC(UTF8STRC(")"));
 		}
 	}
 	else
@@ -241,13 +241,13 @@ Bool DB::DBTool::GenCreateTableCmd(DB::SQLBuilder *sql, const UTF8Char *tableNam
 			this->AppendColDef(this->svrType, sql, col);
 			if (i < j)
 			{
-				sql->AppendCmd((const UTF8Char*)", ");
+				sql->AppendCmdC(UTF8STRC(", "));
 			}
 		}
 		i = 0;
 		k = 0;
-		sql->AppendCmd((const UTF8Char*)", ");
-		sql->AppendCmd((const UTF8Char*)"PRIMARY KEY (");
+		sql->AppendCmdC(UTF8STRC(", "));
+		sql->AppendCmdC(UTF8STRC("PRIMARY KEY ("));
 		while (i < j)
 		{
 			col = tabDef->GetCol(i++);
@@ -255,25 +255,25 @@ Bool DB::DBTool::GenCreateTableCmd(DB::SQLBuilder *sql, const UTF8Char *tableNam
 			{
 				if (k > 0)
 				{
-					sql->AppendCmd((const UTF8Char*)", ");
+					sql->AppendCmdC(UTF8STRC(", "));
 				}
 				sql->AppendCol(col->GetColName()->v);
 				k++;
 			}
 		}
-		sql->AppendCmd((const UTF8Char*)")");
+		sql->AppendCmdC(UTF8STRC(")"));
 	}
-	sql->AppendCmd((const UTF8Char*)")");
+	sql->AppendCmdC(UTF8STRC(")"));
 	if (this->svrType == DB::DBUtil::ServerType::MySQL)
 	{
 		if (tabDef->GetEngine())
 		{
-			sql->AppendCmd((const UTF8Char*)" ENGINE=");
+			sql->AppendCmdC(UTF8STRC(" ENGINE="));
 			sql->AppendCmd(tabDef->GetEngine());
 		}
 		if (tabDef->GetCharset())
 		{
-			sql->AppendCmd((const UTF8Char*)" DEFAULT CHARSET=");
+			sql->AppendCmdC(UTF8STRC(" DEFAULT CHARSET="));
 			sql->AppendCmd(tabDef->GetCharset());
 		}
 	}
@@ -282,14 +282,14 @@ Bool DB::DBTool::GenCreateTableCmd(DB::SQLBuilder *sql, const UTF8Char *tableNam
 
 Bool DB::DBTool::GenDropTableCmd(DB::SQLBuilder *sql, const UTF8Char *tableName)
 {
-	sql->AppendCmd((const UTF8Char*)"drop table ");
+	sql->AppendCmdC(UTF8STRC("drop table "));
 	sql->AppendCol(tableName);
 	return true;
 }
 
 Bool DB::DBTool::GenDeleteTableCmd(DB::SQLBuilder *sql, const UTF8Char *tableName)
 {
-	sql->AppendCmd((const UTF8Char*)"delete from ");
+	sql->AppendCmdC(UTF8STRC("delete from "));
 	sql->AppendCol(tableName);
 	return true;
 }
@@ -308,10 +308,10 @@ DB::DBTool::PageStatus DB::DBTool::GenSelectCmdPage(DB::SQLBuilder *sql, DB::Tab
 	DB::ColDef *col;
 	UOSInt i = 0;
 	UOSInt j = tabDef->GetColCnt();
-	sql->AppendCmd((const UTF8Char*)"select ");
+	sql->AppendCmdC(UTF8STRC("select "));
 	if (page && (this->svrType == DB::DBUtil::ServerType::Access))
 	{
-		sql->AppendCmd((const UTF8Char*)"TOP ");
+		sql->AppendCmdC(UTF8STRC("TOP "));
 		sql->AppendInt32((Int32)((page->GetPageNum() + 1) * page->GetPageSize()));
 		status = PS_NO_OFFSET;
 	}
@@ -320,12 +320,12 @@ DB::DBTool::PageStatus DB::DBTool::GenSelectCmdPage(DB::SQLBuilder *sql, DB::Tab
 		col = tabDef->GetCol(i);
 		if (i > 0)
 		{
-			sql->AppendCmd((const UTF8Char*)", ");
+			sql->AppendCmdC(UTF8STRC(", "));
 		}
 		sql->AppendCol(col->GetColName()->v);
 		i++;
 	}
-	sql->AppendCmd((const UTF8Char*)" from ");
+	sql->AppendCmdC(UTF8STRC(" from "));
 	sql->AppendTableName(tabDef);
 	if (page)
 	{
@@ -335,19 +335,19 @@ DB::DBTool::PageStatus DB::DBTool::GenSelectCmdPage(DB::SQLBuilder *sql, DB::Tab
 		if (j > 0)
 		{
 			hasOrder = true;
-			sql->AppendCmd((const UTF8Char*)" order by ");
+			sql->AppendCmdC(UTF8STRC(" order by "));
 			sql->AppendCol(page->GetSortColumn(0));
 			if (page->IsSortDesc(0))
 			{
-				sql->AppendCmd((const UTF8Char*)" desc");
+				sql->AppendCmdC(UTF8STRC(" desc"));
 			}
 			while (i < j)
 			{
-				sql->AppendCmd((const UTF8Char*)", ");
+				sql->AppendCmdC(UTF8STRC(", "));
 				sql->AppendCol(page->GetSortColumn(i));
 				if (page->IsSortDesc(i))
 				{
-					sql->AppendCmd((const UTF8Char*)" desc");
+					sql->AppendCmdC(UTF8STRC(" desc"));
 				}
 				i++;
 			}
@@ -355,9 +355,9 @@ DB::DBTool::PageStatus DB::DBTool::GenSelectCmdPage(DB::SQLBuilder *sql, DB::Tab
 
 		if (this->svrType == DB::DBUtil::ServerType::MySQL)
 		{
-			sql->AppendCmd((const UTF8Char*)" LIMIT ");
+			sql->AppendCmdC(UTF8STRC(" LIMIT "));
 			sql->AppendInt32((Int32)(page->GetPageNum() * page->GetPageSize()));
-			sql->AppendCmd((const UTF8Char*)", ");
+			sql->AppendCmdC(UTF8STRC(", "));
 			sql->AppendInt32((Int32)page->GetPageSize());
 			status = PS_SUCC;
 		}
@@ -374,12 +374,12 @@ DB::DBTool::PageStatus DB::DBTool::GenSelectCmdPage(DB::SQLBuilder *sql, DB::Tab
 					{
 						if (hasOrder)
 						{
-							sql->AppendCmd((const UTF8Char*)", ");
+							sql->AppendCmdC(UTF8STRC(", "));
 						}
 						else
 						{
 							hasOrder = true;
-							sql->AppendCmd((const UTF8Char*)" order by ");
+							sql->AppendCmdC(UTF8STRC(" order by "));
 						}
 						sql->AppendCol(col->GetColName()->v);
 					}
@@ -389,11 +389,11 @@ DB::DBTool::PageStatus DB::DBTool::GenSelectCmdPage(DB::SQLBuilder *sql, DB::Tab
 			if (hasOrder)
 			{
 				status = PS_SUCC;
-				sql->AppendCmd((const UTF8Char*)" offset ");
+				sql->AppendCmdC(UTF8STRC(" offset "));
 				sql->AppendInt32((Int32)(page->GetPageNum() * page->GetPageSize()));
-				sql->AppendCmd((const UTF8Char*)" row fetch next ");
+				sql->AppendCmdC(UTF8STRC(" row fetch next "));
 				sql->AppendInt32((Int32)page->GetPageSize());
-				sql->AppendCmd((const UTF8Char*)" row only");
+				sql->AppendCmdC(UTF8STRC(" row only"));
 			}
 			else
 			{
@@ -416,9 +416,9 @@ Bool DB::DBTool::GenInsertCmd(DB::SQLBuilder *sql, const UTF8Char *tableName, DB
 	NEW_CLASS(sb, Text::StringBuilderUTF8());
 	NEW_CLASS(dt, Data::DateTime());
 
-	sql->AppendCmd((const UTF8Char*)"insert into ");
+	sql->AppendCmdC(UTF8STRC("insert into "));
 	sql->AppendCol(tableName);
-	sql->AppendCmd((const UTF8Char*)" (");
+	sql->AppendCmdC(UTF8STRC(" ("));
 	j = r->ColCount();
 	i = 1;
 	r->GetName(0, tmpBuff);
@@ -426,21 +426,21 @@ Bool DB::DBTool::GenInsertCmd(DB::SQLBuilder *sql, const UTF8Char *tableName, DB
 	while (i < j)
 	{
 		r->GetName(i, tmpBuff);
-		sql->AppendCmd((const UTF8Char*)", ");
+		sql->AppendCmdC(UTF8STRC(", "));
 		sql->AppendCol(tmpBuff);
 		i++;
 	}
-	sql->AppendCmd((const UTF8Char*)") values (");
+	sql->AppendCmdC(UTF8STRC(") values ("));
 	i = 0;
 	while (i < j)
 	{
 		if (i > 0)
 		{
-			sql->AppendCmd((const UTF8Char*)", ");
+			sql->AppendCmdC(UTF8STRC(", "));
 		}
 		if (r->IsNull(i))
 		{
-			sql->AppendCmd((const UTF8Char*)"NULL");
+			sql->AppendCmdC(UTF8STRC("NULL"));
 		}
 		else
 		{
@@ -511,7 +511,7 @@ Bool DB::DBTool::GenInsertCmd(DB::SQLBuilder *sql, const UTF8Char *tableName, DB
 		}
 		i++;
 	}
-	sql->AppendCmd((const UTF8Char*)")");
+	sql->AppendCmdC(UTF8STRC(")"));
 	DEL_CLASS(dt);
 	DEL_CLASS(sb);
 	return true;
