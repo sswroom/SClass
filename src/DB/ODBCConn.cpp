@@ -103,7 +103,7 @@ void DB::ODBCConn::UpdateConnInfo()
 
 	if (this->svrType == DB::DBUtil::ServerType::MSSQL)
 	{
-		DB::DBReader *r = this->ExecuteReader((const UTF8Char*)"select getdate(), GETUTCDATE()");
+		DB::DBReader *r = this->ExecuteReaderC(UTF8STRC("select getdate(), GETUTCDATE()"));
 		if (r)
 		{
 			Data::DateTime dt1;
@@ -223,7 +223,7 @@ Bool DB::ODBCConn::Connect(Text::String *dsn, Text::String *uid, Text::String *p
 		Text::StringBuilderUTF8 sb;
 		sb.Append((const UTF8Char*)"use ");
 		sb.Append(schema);
-		this->ExecuteNonQuery(sb.ToString());
+		this->ExecuteNonQueryC(sb.ToString(), sb.GetLength());
 	}
 	return true;
 }

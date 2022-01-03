@@ -131,10 +131,10 @@ Bool Exporter::OruxMapExporter::ExportFile(IO::SeekableStream *stm, const UTF8Ch
 			Map::TileMap::ImageType it;
 			IO::IStreamData *fd;
 			DB::SQLBuilder sql(db->GetSvrType(), db->GetTzQhr());
-			db->ExecuteNonQuery((const UTF8Char*)"CREATE TABLE android_metadata (locale TEXT)");
-			db->ExecuteNonQuery((const UTF8Char*)"CREATE TABLE tiles (x int, y int, z int, image blob, PRIMARY KEY (x,y,z))");
-			db->ExecuteNonQuery((const UTF8Char*)"delete from android_metadata");
-			db->ExecuteNonQuery((const UTF8Char*)"delete from tiles");
+			db->ExecuteNonQueryC(UTF8STRC("CREATE TABLE android_metadata (locale TEXT)"));
+			db->ExecuteNonQueryC(UTF8STRC("CREATE TABLE tiles (x int, y int, z int, image blob, PRIMARY KEY (x,y,z))"));
+			db->ExecuteNonQueryC(UTF8STRC("delete from android_metadata"));
+			db->ExecuteNonQueryC(UTF8STRC("delete from tiles"));
 			Text::Locale::LocaleEntry *loc = Text::Locale::GetLocaleEntry(Text::EncodingFactory::GetSystemLCID());
 			if (loc)
 			{

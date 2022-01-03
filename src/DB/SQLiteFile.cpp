@@ -30,7 +30,7 @@ void DB::SQLiteFile::Init()
 		Text::StringBuilderUTF8 *sb;
 		NEW_CLASS(sb, Text::StringBuilderUTF8());
 		this->db = db;
-		DB::DBReader *r = ExecuteReader((const UTF8Char*)"SELECT name FROM sqlite_master WHERE type='table'");
+		DB::DBReader *r = ExecuteReaderC(UTF8STRC("SELECT name FROM sqlite_master WHERE type='table'"));
 		if (r)
 		{
 			while (r->ReadNext())
@@ -250,18 +250,18 @@ void DB::SQLiteFile::Reconnect()
 
 void *DB::SQLiteFile::BeginTransaction()
 {
-	ExecuteNonQuery((const UTF8Char*)"begin");
+	ExecuteNonQueryC(UTF8STRC("begin"));
 	return (void*)-1;
 }
 
 void DB::SQLiteFile::Commit(void *tran)
 {
-	ExecuteNonQuery((const UTF8Char*)"end");
+	ExecuteNonQueryC(UTF8STRC("end"));
 }
 
 void DB::SQLiteFile::Rollback(void *tran)
 {
-	ExecuteNonQuery((const UTF8Char*)"end");
+	ExecuteNonQueryC(UTF8STRC("end"));
 }
 
 UOSInt DB::SQLiteFile::GetTableNames(Data::ArrayList<const UTF8Char*> *names)

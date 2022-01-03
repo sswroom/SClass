@@ -31,10 +31,10 @@ DB::DBTool::~DBTool()
 
 OSInt DB::DBTool::ExecuteNonQuery(const UTF8Char *sqlCmd)
 {
-	return ExecuteNonQuery(sqlCmd, Text::StrCharCnt(sqlCmd));
+	return ExecuteNonQueryC(sqlCmd, Text::StrCharCnt(sqlCmd));
 }
 
-OSInt DB::DBTool::ExecuteNonQuery(const UTF8Char *sqlCmd, UOSInt len)
+OSInt DB::DBTool::ExecuteNonQueryC(const UTF8Char *sqlCmd, UOSInt len)
 {
 	{
 		Text::StringBuilderUTF8 logMsg;
@@ -123,7 +123,7 @@ Int32 DB::DBTool::GetLastIdentity32()
 {
 	if (this->svrType == DB::DBUtil::ServerType::MySQL || this->svrType == DB::DBUtil::ServerType::MSSQL || this->svrType == DB::DBUtil::ServerType::Access || this->svrType == DB::DBUtil::ServerType::MDBTools)
 	{
-		DB::DBReader *reader = this->ExecuteReader((const UTF8Char*)"select @@identity");
+		DB::DBReader *reader = this->ExecuteReaderC(UTF8STRC("select @@identity"));
 		Int32 id = 0;
 		if (reader)
 		{
@@ -145,7 +145,7 @@ Int64 DB::DBTool::GetLastIdentity64()
 {
 	if (this->svrType == DB::DBUtil::ServerType::MySQL || this->svrType == DB::DBUtil::ServerType::MSSQL || this->svrType == DB::DBUtil::ServerType::Access || this->svrType == DB::DBUtil::ServerType::MDBTools)
 	{
-		DB::DBReader *reader = this->ExecuteReader((const UTF8Char*)"select @@identity");
+		DB::DBReader *reader = this->ExecuteReaderC(UTF8STRC("select @@identity"));
 		Int64 id = 0;
 		if (reader)
 		{

@@ -644,7 +644,7 @@ UOSInt DB::ReadingDBTool::GetTableNames(Data::ArrayList<const UTF8Char*> *arr)
 	if (this->svrType == DB::DBUtil::ServerType::MSSQL)
 	{
 		UOSInt ret = 0;
-		DB::DBReader *r = this->ExecuteReader((const UTF8Char*)"select TABLE_SCHEMA, TABLE_NAME from INFORMATION_SCHEMA.TABLES where TABLE_TYPE='BASE TABLE'");
+		DB::DBReader *r = this->ExecuteReaderC(UTF8STRC("select TABLE_SCHEMA, TABLE_NAME from INFORMATION_SCHEMA.TABLES where TABLE_TYPE='BASE TABLE'"));
 		if (r)
 		{
 			Text::StringBuilderUTF8 sb;
@@ -667,7 +667,7 @@ UOSInt DB::ReadingDBTool::GetTableNames(Data::ArrayList<const UTF8Char*> *arr)
 	}
 	else if (this->svrType == DB::DBUtil::ServerType::MySQL)
 	{
-		DB::DBReader *r = this->ExecuteReader((const UTF8Char*)"show tables");
+		DB::DBReader *r = this->ExecuteReaderC(UTF8STRC("show tables"));
 		if (r)
 		{
 			UOSInt ret = 0;
@@ -691,7 +691,7 @@ UOSInt DB::ReadingDBTool::GetTableNames(Data::ArrayList<const UTF8Char*> *arr)
 	}
 	else if (this->svrType == DB::DBUtil::ServerType::SQLite)
 	{
-		DB::DBReader *r = this->ExecuteReader((const UTF8Char*)"select name from sqlite_master where type = 'table'");
+		DB::DBReader *r = this->ExecuteReaderC(UTF8STRC("select name from sqlite_master where type = 'table'"));
 		if (r)
 		{
 			UOSInt ret = 0;
@@ -715,7 +715,7 @@ UOSInt DB::ReadingDBTool::GetTableNames(Data::ArrayList<const UTF8Char*> *arr)
 	}
 	else if (this->svrType == DB::DBUtil::ServerType::Access || this->svrType == DB::DBUtil::ServerType::MDBTools)
 	{
-		DB::DBReader *r = this->ExecuteReader((const UTF8Char*)"select name, type from MSysObjects where type = 1");
+		DB::DBReader *r = this->ExecuteReaderC(UTF8STRC("select name, type from MSysObjects where type = 1"));
 		if (r)
 		{
 			UOSInt ret = 0;
@@ -1020,7 +1020,7 @@ UOSInt DB::ReadingDBTool::GetDatabaseNames(Data::ArrayList<const UTF8Char*> *arr
 {
 	if (this->svrType == DB::DBUtil::ServerType::MSSQL)
 	{
-		DB::DBReader *r = this->ExecuteReader((const UTF8Char*)"select name from master.dbo.sysdatabases");
+		DB::DBReader *r = this->ExecuteReaderC(UTF8STRC("select name from master.dbo.sysdatabases"));
 		if (r)
 		{
 			UOSInt ret = 0;
@@ -1044,7 +1044,7 @@ UOSInt DB::ReadingDBTool::GetDatabaseNames(Data::ArrayList<const UTF8Char*> *arr
 	}
 	else if (this->svrType == DB::DBUtil::ServerType::MySQL)
 	{
-		DB::DBReader *r = this->ExecuteReader((const UTF8Char*)"show databases");
+		DB::DBReader *r = this->ExecuteReaderC(UTF8STRC("show databases"));
 		if (r)
 		{
 			UOSInt ret = 0;

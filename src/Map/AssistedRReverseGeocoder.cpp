@@ -134,7 +134,7 @@ WChar *Map::AssistedRReverseGeocoder::SearchName(UTF8Char *buff, Double lat, Dou
 		sql->AppendCmd(L", ");
 		sql->AppendDate(&dt);
 		sql->AppendCmd(L")");
-		this->conn->ExecuteNonQuery(sql->ToString());
+		this->conn->ExecuteNonQueryC(sql->ToString(), sql->GetLength());
 
 		DEL_CLASS(sql);
 		mut->Unlock();
@@ -217,7 +217,7 @@ WChar *Map::AssistedRReverseGeocoder::CacheName(WChar *buff, Double lat, Double 
 		sql->AppendCmd(L", ");
 		sql->AppendDate(&dt);
 		sql->AppendCmd(L")");
-		this->conn->ExecuteNonQuery(sql->ToString());
+		this->conn->ExecuteNonQueryC(sql->ToString(), sql->GetLength());
 
 		DEL_CLASS(sql);
 		mut->Unlock();

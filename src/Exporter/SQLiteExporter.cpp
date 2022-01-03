@@ -116,7 +116,7 @@ Bool Exporter::SQLiteExporter::ExportFile(IO::SeekableStream *stm, const UTF8Cha
 		{
 			sql.Clear();
 			destDB->GenCreateTableCmd(&sql, tables.GetItem(i), tabDef);
-			if (destDB->ExecuteNonQuery(sql.ToString()) <= -2)
+			if (destDB->ExecuteNonQueryC(sql.ToString(), sql.GetLength()) <= -2)
 			{
 				IO::FileStream *debugFS;
 				Text::UTF8Writer *debugWriter;
@@ -145,7 +145,7 @@ Bool Exporter::SQLiteExporter::ExportFile(IO::SeekableStream *stm, const UTF8Cha
 				}
 				sql.Clear();
 				destDB->GenInsertCmd(&sql, tables.GetItem(i), r);
-				if (destDB->ExecuteNonQuery(sql.ToString()) <= 0)
+				if (destDB->ExecuteNonQueryC(sql.ToString(), sql.GetLength()) <= 0)
 				{
 					sb.ClearStr();
 					destDB->GetLastErrorMsg(&sb);

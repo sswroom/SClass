@@ -96,7 +96,7 @@ UTF8Char *Map::AssistedReverseGeocoder::SearchName(UTF8Char *buff, UOSInt buffSi
 		sql->AppendCmd((const UTF8Char*)", ");
 		sql->AppendDate(&dt);
 		sql->AppendCmd((const UTF8Char*)")");
-		this->conn->ExecuteNonQuery(sql->ToString());
+		this->conn->ExecuteNonQueryC(sql->ToString(), sql->GetLength());
 
 		DEL_CLASS(sql);
 		mutUsage.EndUse();
@@ -173,7 +173,7 @@ UTF8Char *Map::AssistedReverseGeocoder::CacheName(UTF8Char *buff, UOSInt buffSiz
 		sql->AppendCmd((const UTF8Char*)", ");
 		sql->AppendDate(&dt);
 		sql->AppendCmd((const UTF8Char*)")");
-		this->conn->ExecuteNonQuery(sql->ToString());
+		this->conn->ExecuteNonQueryC(sql->ToString(), sql->GetLength());
 
 		DEL_CLASS(sql);
 		mutUsage.EndUse();

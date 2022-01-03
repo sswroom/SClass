@@ -231,38 +231,6 @@ DB::DBReader *DB::MySQLConn::ExecuteReader(const UTF8Char *sql)
 	}
 }
 
-/*DB::DBReader *DB::MySQLConn::ExecuteReader(const WChar *sql)
-{
-	if (this->mysql == 0)
-		return 0;
-
-	OSInt sqlLen;
-	const UTF8Char *sqlBuff = Text::StrToUTF8New(sql);
-	sqlLen = Text::StrCharCnt(sqlBuff);
-	if (mysql_real_query((MYSQL*)this->mysql, (const Char*)sqlBuff, (Int32)sqlLen) == 0)
-	{
-		MYSQL_RES *result;
-		result = mysql_use_result((MYSQL*)this->mysql);
-		if (result)
-		{
-			DB::DBReader *r;
-			NEW_CLASS(r, DB::MySQLReader(this, result));
-			Text::StrDelNew(sqlBuff);
-			return r;
-		}
-		else
-		{
-			Text::StrDelNew(sqlBuff);
-			return 0;
-		}
-	}
-	else
-	{
-		Text::StrDelNew(sqlBuff);
-		return 0;
-	}
-}*/
-
 void DB::MySQLConn::CloseReader(DB::DBReader *r)
 {
 	DB::MySQLReader *rdr = (DB::MySQLReader*)r;
@@ -309,7 +277,7 @@ UOSInt DB::MySQLConn::GetTableNames(Data::ArrayList<const UTF8Char*> *names)
 	else
 	{
 		UTF8Char sbuff[256];
-		DB::DBReader *rdr = this->ExecuteReader((const UTF8Char*)"show tables");
+		DB::DBReader *rdr = this->ExecuteReaderC(UTF8STRC("show tables"));
 		NEW_CLASS(this->tableNames, Data::ArrayList<const UTF8Char*>());
 		if (rdr)
 		{

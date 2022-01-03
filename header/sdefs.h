@@ -333,4 +333,5 @@ typedef UInt32 UTF32Char;
 #define ROR32(x, n) ((x >> n) | (x << (32 - n)))
 #define ROR64(x, n) ((x >> n) | (x << (64 - n)))
 #define INVALID_INDEX ((UOSInt)-1)
+#define UTF8STRC(s) (const UTF8Char*)s, (sizeof(s) - 1)
 #endif

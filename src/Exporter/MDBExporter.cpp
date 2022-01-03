@@ -99,7 +99,7 @@ Bool Exporter::MDBExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 			}
 			sql.Clear();
 			mdb->GenCreateTableCmd(&sql, tables.GetItem(i), tabDef);
-			if (mdb->ExecuteNonQuery(sql.ToString()) <= -2)
+			if (mdb->ExecuteNonQueryC(sql.ToString(), sql.GetLength()) <= -2)
 			{
 /*				IO::FileStream *debugFS;
 				Text::UTF8Writer *debugWriter;
@@ -118,7 +118,7 @@ Bool Exporter::MDBExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 			{
 				sql.Clear();
 				mdb->GenInsertCmd(&sql, tables.GetItem(i), r);
-				if (mdb->ExecuteNonQuery(sql.ToString()) <= 0)
+				if (mdb->ExecuteNonQueryC(sql.ToString(), sql.GetLength()) <= 0)
 				{
 					sb.ClearStr();
 					mdb->GetLastErrorMsg(&sb);

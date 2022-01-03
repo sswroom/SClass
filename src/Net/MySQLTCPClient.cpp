@@ -1274,7 +1274,7 @@ void Net::MySQLTCPClient::Reconnect()
 
 void *Net::MySQLTCPClient::BeginTransaction()
 {
-	if (this->ExecuteNonQuery((const UTF8Char*)"START TRANSACTION") != -2)
+	if (this->ExecuteNonQueryC(UTF8STRC("START TRANSACTION")) != -2)
 	{
 		return (void*)-1;
 	}
@@ -1282,12 +1282,12 @@ void *Net::MySQLTCPClient::BeginTransaction()
 }
 void Net::MySQLTCPClient::Commit(void *tran)
 {
-	this->ExecuteNonQuery((const UTF8Char*)"COMMIT");
+	this->ExecuteNonQueryC(UTF8STRC("COMMIT"));
 }
 
 void Net::MySQLTCPClient::Rollback(void *tran)
 {
-	this->ExecuteNonQuery((const UTF8Char*)"ROLLBACK");
+	this->ExecuteNonQueryC(UTF8STRC("ROLLBACK"));
 }
 
 UOSInt Net::MySQLTCPClient::GetTableNames(Data::ArrayList<const UTF8Char*> *names)
@@ -1300,7 +1300,7 @@ UOSInt Net::MySQLTCPClient::GetTableNames(Data::ArrayList<const UTF8Char*> *name
 	else
 	{
 		UTF8Char sbuff[256];
-		DB::DBReader *rdr = this->ExecuteReader((const UTF8Char*)"show tables");
+		DB::DBReader *rdr = this->ExecuteReaderC(UTF8STRC("show tables"));
 		NEW_CLASS(this->tableNames, Data::ArrayList<const UTF8Char*>());
 		if (rdr)
 		{

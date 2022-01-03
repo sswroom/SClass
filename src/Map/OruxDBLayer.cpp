@@ -416,7 +416,7 @@ Bool Map::OruxDBLayer::GetObjectData(Int64 objectId, IO::Stream *stm, Int32 *til
 	sql.AppendInt32(y);
 	sql.AppendCmd((const UTF8Char*)" and z = ");
 	sql.AppendInt32((Int32)this->currLayer);
-	DB::DBReader *r = this->db->ExecuteReader(sql.ToString());
+	DB::DBReader *r = this->db->ExecuteReaderC(sql.ToString(), sql.GetLength());
 	if (r == 0)
 		return false;
 	Bool succ = false;
