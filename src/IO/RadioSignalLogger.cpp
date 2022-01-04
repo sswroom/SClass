@@ -17,12 +17,12 @@ void __stdcall IO::RadioSignalLogger::OnWiFiUpdate(Net::WirelessLAN::BSSInfo *bs
 		dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
 		sb.Append(sbuff);
 		sb.AppendChar('\t', 1);
-		sb.Append((const UTF8Char*)"wifi");
+		sb.AppendC(UTF8STRC("wifi"));
 		sb.AppendChar('\t', 1);
 		sb.AppendHexBuff(bss->GetMAC(), 6, ':', Text::LineBreakType::None);
 		sb.AppendChar('\t', 1);
 		Text::SBAppendF64(&sb, bss->GetRSSI());
-		sb.Append((const UTF8Char*)"\r\n");
+		sb.AppendC(UTF8STRC("\r\n"));
 		me->fs->Write(sb.ToString(), sb.GetLength());
 		me->wifiCnt++;
 	}
@@ -44,28 +44,28 @@ void __stdcall IO::RadioSignalLogger::OnBTUpdate(IO::BTScanLog::ScanRecord3 *dev
 		sb.AppendChar('\t', 1);
 		if (dev->radioType == IO::BTScanLog::RT_HCI)
 		{
-			sb.Append((const UTF8Char*)"hci");
+			sb.AppendC(UTF8STRC("hci"));
 		}
 		else if (dev->radioType == IO::BTScanLog::RT_LE)
 		{
 			if (dev->addrType == IO::BTScanLog::AT_RANDOM)
 			{
-				sb.Append((const UTF8Char*)"ler");
+				sb.AppendC(UTF8STRC("ler"));
 			}
 			else
 			{
-				sb.Append((const UTF8Char*)"le");
+				sb.AppendC(UTF8STRC("le"));
 			}
 		}
 		else
 		{
-			sb.Append((const UTF8Char*)"bt");
+			sb.AppendC(UTF8STRC("bt"));
 		}
 		sb.AppendChar('\t', 1);
 		sb.AppendHexBuff(dev->mac, 6, ':', Text::LineBreakType::None);
 		sb.AppendChar('\t', 1);
 		sb.AppendI32(dev->rssi);
-		sb.Append((const UTF8Char*)"\r\n");
+		sb.AppendC(UTF8STRC("\r\n"));
 		me->fs->Write(sb.ToString(), sb.GetLength());
 		me->btCnt++;
 	}

@@ -118,7 +118,7 @@ Bool IO::FileAnalyse::PCapFileAnalyse::GetFrameName(UOSInt index, Text::StringBu
 {
 	if (index == 0)
 	{
-		sb->Append((const UTF8Char*)"PCAP Header");
+		sb->AppendC(UTF8STRC("PCAP Header"));
 		return true;
 	}
 	UInt64 ofst;
@@ -134,7 +134,7 @@ Bool IO::FileAnalyse::PCapFileAnalyse::GetFrameName(UOSInt index, Text::StringBu
 	mutUsage.EndUse();
 	fd->GetRealData(ofst, (UOSInt)size, this->packetBuff);
 	sb->AppendU64(ofst);
-	sb->Append((const UTF8Char*)", psize=");
+	sb->AppendC(UTF8STRC(", psize="));
 	if (this->isBE)
 	{
 		psize = ReadMUInt32(&this->packetBuff[12]);
@@ -144,10 +144,10 @@ Bool IO::FileAnalyse::PCapFileAnalyse::GetFrameName(UOSInt index, Text::StringBu
 		psize = ReadUInt32(&this->packetBuff[12]);
 	}
 	sb->AppendU32(psize);
-	sb->Append((const UTF8Char*)", ");
+	sb->AppendC(UTF8STRC(", "));
 	if (!Net::PacketAnalyzer::PacketDataGetName(this->linkType, &this->packetBuff[16], psize, sb))
 	{
-		sb->Append((const UTF8Char*)"Unknown");
+		sb->AppendC(UTF8STRC("Unknown"));
 	}
 	return true;
 }
@@ -163,7 +163,7 @@ Bool IO::FileAnalyse::PCapFileAnalyse::GetFrameDetail(UOSInt index, Text::String
 		UInt32 snaplen;
 		UInt32 network;
 		const UTF8Char *csptr;
-		sb->Append((const UTF8Char*)"PCAP Header");
+		sb->AppendC(UTF8STRC("PCAP Header"));
 		fd->GetRealData(0, 24, this->packetBuff);
 		if (this->isBE)
 		{
@@ -183,24 +183,24 @@ Bool IO::FileAnalyse::PCapFileAnalyse::GetFrameDetail(UOSInt index, Text::String
 			snaplen = ReadUInt32(&this->packetBuff[16]);
 			network = ReadUInt32(&this->packetBuff[20]);
 		}
-		sb->Append((const UTF8Char*)"\r\nVersionMajor=");
+		sb->AppendC(UTF8STRC("\r\nVersionMajor="));
 		sb->AppendU16(version_major);
-		sb->Append((const UTF8Char*)"\r\nVersionMinor=");
+		sb->AppendC(UTF8STRC("\r\nVersionMinor="));
 		sb->AppendU16(version_minor);
-		sb->Append((const UTF8Char*)"\r\nThisZone=");
+		sb->AppendC(UTF8STRC("\r\nThisZone="));
 		sb->AppendI32(thiszone);
-		sb->Append((const UTF8Char*)"\r\nSigfigs=");
+		sb->AppendC(UTF8STRC("\r\nSigfigs="));
 		sb->AppendU32(sigfigs);
-		sb->Append((const UTF8Char*)"\r\nSnapLen=");
+		sb->AppendC(UTF8STRC("\r\nSnapLen="));
 		sb->AppendU32(snaplen);
-		sb->Append((const UTF8Char*)"\r\nNetwork=");
+		sb->AppendC(UTF8STRC("\r\nNetwork="));
 		sb->AppendU32(network);
 		csptr = IO::RAWMonitor::LinkTypeGetName(network);
 		if (csptr)
 		{
-			sb->Append((const UTF8Char*)" (");
+			sb->AppendC(UTF8STRC(" ("));
 			sb->Append(csptr);
-			sb->Append((const UTF8Char*)")");
+			sb->AppendC(UTF8STRC(")"));
 		}
 		return true;
 	}
@@ -216,9 +216,9 @@ Bool IO::FileAnalyse::PCapFileAnalyse::GetFrameDetail(UOSInt index, Text::String
 	size = this->sizeList->GetItem(index - 1);
 	mutUsage.EndUse();
 	fd->GetRealData(ofst, (UOSInt)size, this->packetBuff);
-	sb->Append((const UTF8Char*)"Offset=");
+	sb->AppendC(UTF8STRC("Offset="));
 	sb->AppendU64(ofst);
-	sb->Append((const UTF8Char*)"\r\nTotalSize=");
+	sb->AppendC(UTF8STRC("\r\nTotalSize="));
 	sb->AppendU64(size);
 	Data::DateTime dt;
 	if (this->isBE)
@@ -236,9 +236,9 @@ Bool IO::FileAnalyse::PCapFileAnalyse::GetFrameDetail(UOSInt index, Text::String
 	UTF8Char sbuff[64];
 	dt.ToLocalTime();
 	dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
-	sb->Append((const UTF8Char*)"\r\nTime=");
+	sb->AppendC(UTF8STRC("\r\nTime="));
 	sb->Append(sbuff);
-	sb->Append((const UTF8Char*)"\r\nPacketSize=");
+	sb->AppendC(UTF8STRC("\r\nPacketSize="));
 	sb->AppendU32(psize);
 	Net::PacketAnalyzer::PacketDataGetDetail(linkType, &this->packetBuff[16], psize, sb);
 	return true;

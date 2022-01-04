@@ -11,6 +11,7 @@
 #include "IO/FileViewStream.h"
 #include "Manage/HiResClock.h"
 #include "Map/CIPLayer.h"
+#include "Math/CoordinateSystemManager.h"
 #include "Math/Math.h"
 #include "Sync/Event.h"
 #include "Sync/Mutex.h"
@@ -41,7 +42,7 @@ Map::CIPLayer::CIPLayer(const UTF8Char *layerName) : Map::IMapDrawLayer(layerNam
 	this->currObjs = 0;
 	this->lyrType = (Map::DrawLayerType)0;
 	this->layerName = Text::StrCopyNew(layerName);
-	this->csys = Math::GeographicCoordinateSystem::CreateCoordinateSystemDefName(Math::GeographicCoordinateSystem::GCST_WGS84);
+	this->csys = Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84);
 	NEW_CLASS(mut, Sync::Mutex());
 
 	Text::StrConcat(sptr, (const UTF8Char*)".blk");
@@ -253,7 +254,7 @@ UOSInt Map::CIPLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, void **nameA
 						cis->Read((UInt8*)strTmp, buff[4]);
 						strTmp[buff[4] >> 1] = 0;
 						tmpArr->Put(*(Int32*)buff, strTmp);
-						textSize = Text::StrWChar_UTF8Cnt(strTmp, -1);
+						textSize = Text::StrWChar_UTF8Cnt(strTmp);
 						if (textSize > this->maxTextSize)
 							maxTextSize = (Int32)textSize;
 					}
@@ -268,7 +269,7 @@ UOSInt Map::CIPLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, void **nameA
 				{
 					if (buff[4])
 					{
-						cis->Seek(IO::SeekableStream::ST_CURRENT, buff[4]);
+						cis->SeekFromCurrent(buff[4]);
 					}
 				}
 			}
@@ -423,7 +424,7 @@ UOSInt Map::CIPLayer::GetObjectIds(Data::ArrayListInt64 *outArr, void **nameArr,
 							cis->Read((UInt8*)strTmp, buff[4]);
 							strTmp[buff[4] >> 1] = 0;
 							tmpArr->Put(*(Int32*)buff, strTmp);
-							textSize = Text::StrWChar_UTF8Cnt(strTmp, -1);
+							textSize = Text::StrWChar_UTF8Cnt(strTmp);
 							if (textSize > this->maxTextSize)
 							{
 								this->maxTextSize = (Int32)textSize;
@@ -440,7 +441,7 @@ UOSInt Map::CIPLayer::GetObjectIds(Data::ArrayListInt64 *outArr, void **nameArr,
 					{
 						if (buff[4])
 						{
-							cis->Seek(IO::SeekableStream::ST_CURRENT, buff[4]);
+							cis->SeekFromCurrent(buff[4]);
 						}
 					}
 				}
@@ -498,15 +499,15 @@ UOSInt Map::CIPLayer::GetObjectIds(Data::ArrayListInt64 *outArr, void **nameArr,
 	if (t > .1)
 	{
 		Text::StringBuilderUTF8 sb;
-		sb.Append((const UTF8Char*)"GetObjectIds too slow: time = ");
+		sb.AppendC(UTF8STRC("GetObjectIds too slow: time = "));
 		sb.AppendI32(Math::Double2Int32(t * 1000));
-		sb.Append((const UTF8Char*)"ms, layer = ");
+		sb.AppendC(UTF8STRC("ms, layer = "));
 		sb.Append(this->layerName);
 		if (nameArr)
 		{
-			sb.Append((const UTF8Char*)" (has nameArr)");
+			sb.AppendC(UTF8STRC(" (has nameArr)"));
 		}
-		sb.Append((const UTF8Char*)"\r\n");
+		sb.AppendC(UTF8STRC("\r\n"));
 		IO::Console::PrintStrO(sb.ToString());
 	}
 	return l;
@@ -600,11 +601,11 @@ Bool Map::CIPLayer::GetColumnDef(UOSInt colIndex, DB::ColDef *colDef)
 	colDef->SetColSize(this->maxTextSize);
 	colDef->SetColDP(0);
 	colDef->SetColType(DB::DBUtil::CT_VarChar);
-	colDef->SetDefVal(0);
-	colDef->SetIsNotNull(false);
-	colDef->SetIsPK(false);
-	colDef->SetIsAutoInc(false);
-	colDef->SetAttr(0);
+	colDef->SetDefVal((Text::String*)0);
+	colDef->SetNotNull(false);
+	colDef->SetPK(false);
+	colDef->SetAutoInc(false);
+	colDef->SetAttr((Text::String*)0);
 	return true;
 }
 
@@ -613,7 +614,7 @@ Int32 Map::CIPLayer::GetBlockSize()
 	return this->blkScale;
 }
 
-Int32 Map::CIPLayer::GetCodePage()
+UInt32 Map::CIPLayer::GetCodePage()
 {
 	return 0;
 }
@@ -773,19 +774,19 @@ Map::DrawObjectL *Map::CIPLayer::GetObjectByIdN(void *session, Int64 id)
 	Map::DrawObjectL *obj;
 	obj = MemAlloc(Map::DrawObjectL, 1);
 	obj->objId = fobj->id;
-	obj->nParts = fobj->nParts;
-	obj->nPoints = fobj->nPoints;
+	obj->nPtOfst = fobj->nParts;
+	obj->nPoint = fobj->nPoints;
 	if (fobj->parts)
 	{
-		obj->parts = MemAlloc(UInt32, fobj->nParts);
-		MemCopyNO(obj->parts, fobj->parts, sizeof(UInt32) * fobj->nParts);
+		obj->ptOfstArr = MemAlloc(UInt32, fobj->nParts);
+		MemCopyNO(obj->ptOfstArr, fobj->parts, sizeof(UInt32) * fobj->nParts);
 	}
-	obj->points = MemAlloc(Double, fobj->nPoints << 1);
+	obj->pointArr = MemAlloc(Double, fobj->nPoints << 1);
 	OSInt i = fobj->nPoints << 1;
 	Double r = 1 / 200000.0;
 	while (i-- > 0)
 	{
-		obj->points[i] = fobj->points[i] * r;
+		obj->pointArr[i] = fobj->points[i] * r;
 	}
 	return obj;
 }
@@ -797,10 +798,10 @@ Math::Vector2D *Map::CIPLayer::GetVectorById(void *session, Int64 id)
 
 void Map::CIPLayer::ReleaseObject(void *session, Map::DrawObjectL *obj)
 {
-	if (obj->parts)
-		MemFree(obj->parts);
-	if (obj->points)
-		MemFree(obj->points);
+	if (obj->ptOfstArr)
+		MemFree(obj->ptOfstArr);
+	if (obj->pointArr)
+		MemFree(obj->pointArr);
 	MemFree(obj);
 }
 

@@ -1113,7 +1113,7 @@ Bool Manage::Process::IsAlreadyStarted()
 Bool Manage::Process::OpenPath(const UTF8Char *path)
 {
 	Text::StringBuilderUTF8 sb;
-	sb.Append((const UTF8Char*)"xdg-open ");
+	sb.AppendC(UTF8STRC("xdg-open "));
 	sb.Append(path);
 	Int32 ret = ExecuteProcess(sb.ToString(), &sb);
 	return ret == 0;
@@ -1122,7 +1122,7 @@ Bool Manage::Process::OpenPath(const UTF8Char *path)
 Bool Manage::Process::OpenPathW(const WChar *path)
 {
 	Text::StringBuilderUTF8 sb;
-	sb.Append((const UTF8Char*)"xdg-open ");
+	sb.AppendC(UTF8STRC("xdg-open "));
 	const UTF8Char *csptr = Text::StrToUTF8New(path);
 	sb.Append(csptr);
 	Text::StrDelNew(csptr);

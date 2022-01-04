@@ -34,7 +34,7 @@ OSInt Net::WebSite::WebSite48IdolControl::GetTVPageItems(OSInt pageNo, Data::Arr
 	else
 	{
 		sb.Append((const UTF8Char*)TVBASEURL);
-		sb.Append((const UTF8Char*)"/page/");
+		sb.AppendC(UTF8STRC("/page/"));
 		sb.AppendOSInt(pageNo);
 	}
 	ItemData *item;
@@ -107,7 +107,7 @@ OSInt Net::WebSite::WebSite48IdolControl::GetArcPageItems(OSInt pageNo, Data::Ar
 	else
 	{
 		sb.Append((const UTF8Char*)BASEURL);
-		sb.Append((const UTF8Char*)"videos?page=");
+		sb.AppendC(UTF8STRC("videos?page="));
 		sb.AppendOSInt(pageNo);
 	}
 	ItemData *item;
@@ -341,7 +341,7 @@ void Net::WebSite::WebSite48IdolControl::Title2DisplayName(Text::String *title, 
 	if (sb.ToString()[0] >= '0' && sb.ToString()[0] <= '9' && sb.ToString()[6] == ' ')
 	{
 		dispName->Append(&sb.ToString()[7]);
-		dispName->Append((const UTF8Char*)" 20");
+		dispName->AppendC(UTF8STRC(" 20"));
 		dispName->AppendC(sb.ToString(), 6);
 	}
 	else if (sb.StartsWith((const UTF8Char*)"[BD/DVD] "))

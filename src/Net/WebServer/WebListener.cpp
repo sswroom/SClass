@@ -195,16 +195,16 @@ void Net::WebServer::WebListener::LogAccess(Net::WebServer::IWebRequest *req, Ne
 		Text::StringBuilderUTF8 sb;
 		Net::SocketUtil::GetAddrName(sbuff, req->GetClientAddr(), req->GetClientPort());
 		sb.Append(sbuff);
-		sb.Append((const UTF8Char*)" ");
+		sb.AppendC(UTF8STRC(" "));
 		sb.Append((const UTF8Char*)req->GetReqMethodStr());
-		sb.Append((const UTF8Char*)" ");
+		sb.AppendC(UTF8STRC(" "));
 		sb.Append(req->GetRequestURI());
-		sb.Append((const UTF8Char*)" \"");
+		sb.AppendC(UTF8STRC(" \""));
 		if (req->GetBrowser() == Net::BrowserInfo::BT_UNKNOWN)
 		{
 			if (!req->GetHeader(&sb, (const UTF8Char*)"User-Agent"))
 			{
-				sb.Append((const UTF8Char*)"Unk Browser");
+				sb.AppendC(UTF8STRC("Unk Browser"));
 			}
 		}
 		else
@@ -214,20 +214,20 @@ void Net::WebServer::WebListener::LogAccess(Net::WebServer::IWebRequest *req, Ne
 		csptr = req->GetBrowserVer();
 		if (csptr)
 		{
-			sb.Append((const UTF8Char*)" ");
+			sb.AppendC(UTF8STRC(" "));
 			sb.Append(csptr);
 		}
-		sb.Append((const UTF8Char*)"\"");
+		sb.AppendC(UTF8STRC("\""));
 
-		sb.Append((const UTF8Char*)" \"");
+		sb.AppendC(UTF8STRC(" \""));
 		Manage::OSInfo::GetCommonName(&sb, req->GetOS(), req->GetOSVer());
-		sb.Append((const UTF8Char*)"\"");
+		sb.AppendC(UTF8STRC("\""));
 
-		sb.Append((const UTF8Char*)" ");
+		sb.AppendC(UTF8STRC(" "));
 		sb.AppendI32(resp->GetStatusCode());
-		sb.Append((const UTF8Char*)" ");
+		sb.AppendC(UTF8STRC(" "));
 		sb.AppendU64(resp->GetRespLength());
-		sb.Append((const UTF8Char*)" ");
+		sb.AppendC(UTF8STRC(" "));
 		Text::SBAppendF64(&sb, time);
 
 		this->accLog->LogMessage(sb.ToString(), this->accLogLev);
@@ -246,7 +246,7 @@ void Net::WebServer::WebListener::LogMessage(Net::WebServer::IWebRequest *req, c
 			Text::StringBuilderUTF8 sb;
 			Net::SocketUtil::GetAddrName(sbuff, req->GetClientAddr(), req->GetClientPort());
 			sb.Append(sbuff);
-			sb.Append((const UTF8Char*)" ");
+			sb.AppendC(UTF8STRC(" "));
 			sb.Append(msg);
 			this->accLog->LogMessage(sb.ToString(), this->accLogLev);
 		}

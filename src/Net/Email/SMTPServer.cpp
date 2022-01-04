@@ -27,7 +27,7 @@ void __stdcall Net::Email::SMTPServer::ClientReady(Net::TCPClient *cli, void *us
 	{
 		Text::StringBuilderUTF8 sb;
 		sb.Append(me->domain);
-		sb.Append((const UTF8Char*)" ESMTP");
+		sb.AppendC(UTF8STRC(" ESMTP"));
 	//	sb.Append(me->serverName);
 		me->WriteMessage(cli, 220, sb.ToString());
 	}
@@ -163,17 +163,17 @@ UOSInt Net::Email::SMTPServer::WriteMessage(Net::TCPClient *cli, Int32 statusCod
 		if (j != INVALID_INDEX)
 		{
 			sb.AppendI32(statusCode);
-			sb.Append((const UTF8Char*)"-");
+			sb.AppendC(UTF8STRC("-"));
 			sb.AppendC(&msg[i], (UOSInt)j);
-			sb.Append((const UTF8Char*)"\r\n");
+			sb.AppendC(UTF8STRC("\r\n"));
 			i += j + 2;
 		}
 		else
 		{
 			sb.AppendI32(statusCode);
-			sb.Append((const UTF8Char*)" ");
+			sb.AppendC(UTF8STRC(" "));
 			sb.Append(&msg[i]);
-			sb.Append((const UTF8Char*)"\r\n");
+			sb.AppendC(UTF8STRC("\r\n"));
 			break;
 		}
 	}
@@ -303,7 +303,7 @@ void Net::Email::SMTPServer::ParseCmd(Net::TCPClient *cli, Net::Email::SMTPServe
 			if (this->mailHdlr(sbuff, this->mailObj, cli, cliStatus))
 			{
 				Text::StringBuilderUTF8 sb;
-				sb.Append((const UTF8Char*)"Ok: queued as ");
+				sb.AppendC(UTF8STRC("Ok: queued as "));
 				sb.Append(sbuff);
 				WriteMessage(cli, 250, sb.ToString());
 			}
@@ -367,7 +367,7 @@ void Net::Email::SMTPServer::ParseCmd(Net::TCPClient *cli, Net::Email::SMTPServe
 		cliStatus->cliName = Text::StrCopyNew(&cmd[5]);
 		Text::StringBuilderUTF8 sb;
 		sb.Append(this->domain);
-		sb.Append((const UTF8Char*)" Hello ");
+		sb.AppendC(UTF8STRC(" Hello "));
 		sb.Append((UTF8Char*)cliStatus->cliName);
 		WriteMessage(cli, 250, sb.ToString());
 	}
@@ -380,19 +380,19 @@ void Net::Email::SMTPServer::ParseCmd(Net::TCPClient *cli, Net::Email::SMTPServe
 		cliStatus->cliName = Text::StrCopyNew(&cmd[5]);
 		Text::StringBuilderUTF8 sb;
 		sb.Append(this->domain);
-		sb.Append((const UTF8Char*)" Hello ");
+		sb.AppendC(UTF8STRC(" Hello "));
 		sb.Append((UTF8Char*)cliStatus->cliName);
-		sb.Append((const UTF8Char*)"\r\nHELP");
-		sb.Append((const UTF8Char*)"\r\n8BITMIME");
+		sb.AppendC(UTF8STRC("\r\nHELP"));
+		sb.AppendC(UTF8STRC("\r\n8BITMIME"));
 		if (this->connType == Net::Email::SMTPConn::CT_STARTTLS && !cli->IsSSL())
 		{
-			sb.Append((const UTF8Char*)"\r\nSTARTTLS");
+			sb.AppendC(UTF8STRC("\r\nSTARTTLS"));
 		}
-		sb.Append((const UTF8Char*)"\r\nPIPELINING");
-		sb.Append((const UTF8Char*)"\r\nAUTH LOGIN PLAIN");
-		sb.Append((const UTF8Char*)"\r\nSIZE ");
+		sb.AppendC(UTF8STRC("\r\nPIPELINING"));
+		sb.AppendC(UTF8STRC("\r\nAUTH LOGIN PLAIN"));
+		sb.AppendC(UTF8STRC("\r\nSIZE "));
 		sb.AppendU32(this->maxMailSize);
-		sb.Append((const UTF8Char*)"\r\nOK");
+		sb.AppendC(UTF8STRC("\r\nOK"));
 		WriteMessage(cli, 250, sb.ToString());
 	}
 	else if (Text::StrStartsWith(cmd, "MAIL FROM:"))

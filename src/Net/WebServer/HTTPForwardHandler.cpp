@@ -219,11 +219,11 @@ Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(Net::WebServer::IWebRequ
 					sb.ClearStr();
 					if (req->IsSecure())
 					{
-						sb.Append((const UTF8Char*)"https://");
+						sb.AppendC(UTF8STRC("https://"));
 					}
 					else
 					{
-						sb.Append((const UTF8Char*)"http://");
+						sb.AppendC(UTF8STRC("http://"));
 					}
 					req->GetHeader(&sb, (const UTF8Char*)"Host");
 					UOSInt urlLen = Text::StrCharCnt(fwdBaseUrl);

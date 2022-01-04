@@ -23,7 +23,9 @@ namespace IO
 		virtual Int32 Flush();
 		virtual void Close();
 		virtual Bool Recover();
-		virtual UInt64 Seek(SeekType origin, Int64 position);
+		virtual UInt64 SeekFromBeginning(UInt64 position);
+		virtual UInt64 SeekFromCurrent(Int64 position);
+		virtual UInt64 SeekFromEnd(Int64 position);
 		virtual UInt64 GetPosition();
 		virtual UInt64 GetLength();
 

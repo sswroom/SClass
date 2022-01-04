@@ -59,67 +59,67 @@ const UInt8 *IO::JavaClass::CondType2IString(CondType ct)
 
 void IO::JavaClass::DetailAccessFlags(UInt16 accessFlags, Text::StringBuilderUTF *sb)
 {
-	sb->Append((const UTF8Char*)"0x");
+	sb->AppendC(UTF8STRC("0x"));
 	sb->AppendHex16(accessFlags);
 	if (accessFlags & 1) //ACC_PUBLIC
 	{
-		sb->Append((const UTF8Char*)" Public");
+		sb->AppendC(UTF8STRC(" Public"));
 	}
 	if (accessFlags & 2) //ACC_PRIVATE
 	{
-		sb->Append((const UTF8Char*)" Private");
+		sb->AppendC(UTF8STRC(" Private"));
 	}
 	if (accessFlags & 4) //ACC_PROTECTED
 	{
-		sb->Append((const UTF8Char*)" Protected");
+		sb->AppendC(UTF8STRC(" Protected"));
 	}
 	if (accessFlags & 8) //ACC_STATIC
 	{
-		sb->Append((const UTF8Char*)" Static");
+		sb->AppendC(UTF8STRC(" Static"));
 	}
 	if (accessFlags & 0x10) //ACC_FINAL
 	{
-		sb->Append((const UTF8Char*)" Final");
+		sb->AppendC(UTF8STRC(" Final"));
 	}
 	if (accessFlags & 0x20) //ACC_SUPER
 	{
-		sb->Append((const UTF8Char*)" Super");
+		sb->AppendC(UTF8STRC(" Super"));
 	}
 	if (accessFlags & 0x40) //ACC_VOLATILE
 	{
-		sb->Append((const UTF8Char*)" Volatile");
+		sb->AppendC(UTF8STRC(" Volatile"));
 	}
 	if (accessFlags & 0x80) //ACC_TRANSIENT
 	{
-		sb->Append((const UTF8Char*)" Transient");
+		sb->AppendC(UTF8STRC(" Transient"));
 	}
 	if (accessFlags & 0x0100) //ACC_NATIVE
 	{
-		sb->Append((const UTF8Char*)" Interface");
+		sb->AppendC(UTF8STRC(" Interface"));
 	}
 	if (accessFlags & 0x0200) //ACC_INTERFACE
 	{
-		sb->Append((const UTF8Char*)" Interface");
+		sb->AppendC(UTF8STRC(" Interface"));
 	}
 	if (accessFlags & 0x0400) //ACC_ABSTRACT
 	{
-		sb->Append((const UTF8Char*)" Abstract");
+		sb->AppendC(UTF8STRC(" Abstract"));
 	}
 	if (accessFlags & 0x0800) //ACC_STRICT
 	{
-		sb->Append((const UTF8Char*)" Strict");
+		sb->AppendC(UTF8STRC(" Strict"));
 	}
 	if (accessFlags & 0x1000) //ACC_SYNTHETIC
 	{
-		sb->Append((const UTF8Char*)" Synthetic");
+		sb->AppendC(UTF8STRC(" Synthetic"));
 	}
 	if (accessFlags & 0x2000) //ACC_ANNOTATION
 	{
-		sb->Append((const UTF8Char*)" Annotation");
+		sb->AppendC(UTF8STRC(" Annotation"));
 	}
 	if (accessFlags & 0x4000) //ACC_ENUM
 	{
-		sb->Append((const UTF8Char*)" Enum");
+		sb->AppendC(UTF8STRC(" Enum"));
 	}
 }
 
@@ -164,7 +164,7 @@ void IO::JavaClass::AppendCond(Text::StringBuilderUTF *sb, DecompileEnv *env, UO
 				sb->Append(s);
 			}
 			sb->Append(env->stacks->GetItem(index));
-			sb->Append((const UTF8Char*)" != true");
+			sb->AppendC(UTF8STRC(" != true"));
 			return;	
 		}
 		else if ((ct == CondType::EQ && !inv && env->stacks->GetItem(index + 1)->Equals((const UTF8Char*)"1")) ||
@@ -180,7 +180,7 @@ void IO::JavaClass::AppendCond(Text::StringBuilderUTF *sb, DecompileEnv *env, UO
 			{
 				sb->Append(s);
 			}
-			sb->Append((const UTF8Char*)" == true");
+			sb->AppendC(UTF8STRC(" == true"));
 			return;	
 		}
 	}
@@ -247,7 +247,7 @@ void IO::JavaClass::AppendLineNum(Text::StringBuilderUTF *sb, DecompileEnv *env,
 	if (k != INVALID_INDEX)
 	{
 		lineNum = env->method->lineNumList->GetItem(k);
-		sb->Append((const UTF8Char*)" // LineNum ");
+		sb->AppendC(UTF8STRC(" // LineNum "));
 		sb->AppendU16(lineNum->lineNumber);
 	}
 }
@@ -258,45 +258,45 @@ const UInt8 *IO::JavaClass::DetailAttribute(const UInt8 *attr, UOSInt lev, Text:
 	UInt32 len = ReadMUInt32(&attr[2]);
 	UInt16 nameIndex = ReadMUInt16(&attr[0]);
 	this->AppendIndent(sb, lev);
-	sb->Append((const UTF8Char*)"Attr Name Index = ");
+	sb->AppendC(UTF8STRC("Attr Name Index = "));
 	sb->AppendU16(nameIndex);
 	sbuff[0] = 0;
 	if (this->GetConstName(sbuff, nameIndex))
 	{
-		sb->Append((const UTF8Char*)" (");
+		sb->AppendC(UTF8STRC(" ("));
 		sb->Append(sbuff);
 		sb->AppendChar(')', 1);
 	}
-	sb->Append((const UTF8Char*)"\r\n");
+	sb->AppendC(UTF8STRC("\r\n"));
 	this->AppendIndent(sb, lev);
-	sb->Append((const UTF8Char*)"Attr Length = ");
+	sb->AppendC(UTF8STRC("Attr Length = "));
 	sb->AppendU32(len);
-	sb->Append((const UTF8Char*)"\r\n");
+	sb->AppendC(UTF8STRC("\r\n"));
 	if (Text::StrEquals(sbuff, (const UTF8Char*)"ConstantValue"))
 	{
 		UInt16 i = ReadMUInt16(&attr[6]);
 		this->AppendIndent(sb, lev);
-		sb->Append((const UTF8Char*)"Attr ConstantValue index = ");
+		sb->AppendC(UTF8STRC("Attr ConstantValue index = "));
 		sb->AppendU16(i);
 		this->DetailConstVal(i, sb, true);
-		sb->Append((const UTF8Char*)"\r\n");
+		sb->AppendC(UTF8STRC("\r\n"));
 	}
 	else if (Text::StrEquals(sbuff, (const UTF8Char*)"Code"))
 	{
 		const UInt8 *ptr;
 		UInt32 codeLen = ReadMUInt32(&attr[10]);
 		this->AppendIndent(sb, lev);
-		sb->Append((const UTF8Char*)"Attr Max Stack = ");
+		sb->AppendC(UTF8STRC("Attr Max Stack = "));
 		sb->AppendU16(ReadMUInt16(&attr[6]));
-		sb->Append((const UTF8Char*)"\r\n");
+		sb->AppendC(UTF8STRC("\r\n"));
 		this->AppendIndent(sb, lev);
-		sb->Append((const UTF8Char*)"Attr Max Locals = ");
+		sb->AppendC(UTF8STRC("Attr Max Locals = "));
 		sb->AppendU16(ReadMUInt16(&attr[8]));
-		sb->Append((const UTF8Char*)"\r\n");
+		sb->AppendC(UTF8STRC("\r\n"));
 		this->AppendIndent(sb, lev);
-		sb->Append((const UTF8Char*)"Attr Code Length = ");
+		sb->AppendC(UTF8STRC("Attr Code Length = "));
 		sb->AppendU32(codeLen);
-		sb->Append((const UTF8Char*)"\r\n");
+		sb->AppendC(UTF8STRC("\r\n"));
 		this->DetailCode(&attr[14], codeLen, lev + 1, sb);
 		ptr = &attr[14 + codeLen];
 		UInt16 exceptLen = ReadMUInt16(&ptr[0]);
@@ -307,42 +307,42 @@ const UInt8 *IO::JavaClass::DetailAttribute(const UInt8 *attr, UOSInt lev, Text:
 		{
 			UInt16 type;
 			this->AppendIndent(sb, lev);
-			sb->Append((const UTF8Char*)"Attr Ex ");
+			sb->AppendC(UTF8STRC("Attr Ex "));
 			sb->AppendU16(i);
-			sb->Append((const UTF8Char*)" start_pc = ");
+			sb->AppendC(UTF8STRC(" start_pc = "));
 			sb->AppendU16(ReadMUInt16(&ptr[0]));
-			sb->Append((const UTF8Char*)"\r\n");
+			sb->AppendC(UTF8STRC("\r\n"));
 			this->AppendIndent(sb, lev);
-			sb->Append((const UTF8Char*)"Attr Ex ");
+			sb->AppendC(UTF8STRC("Attr Ex "));
 			sb->AppendU16(i);
-			sb->Append((const UTF8Char*)" end_pc = ");
+			sb->AppendC(UTF8STRC(" end_pc = "));
 			sb->AppendU16(ReadMUInt16(&ptr[2]));
-			sb->Append((const UTF8Char*)"\r\n");
+			sb->AppendC(UTF8STRC("\r\n"));
 			this->AppendIndent(sb, lev);
-			sb->Append((const UTF8Char*)"Attr Ex ");
+			sb->AppendC(UTF8STRC("Attr Ex "));
 			sb->AppendU16(i);
-			sb->Append((const UTF8Char*)" handler_pc = ");
+			sb->AppendC(UTF8STRC(" handler_pc = "));
 			sb->AppendU16(ReadMUInt16(&ptr[4]));
-			sb->Append((const UTF8Char*)"\r\n");
+			sb->AppendC(UTF8STRC("\r\n"));
 			this->AppendIndent(sb, lev);
-			sb->Append((const UTF8Char*)"Attr Ex ");
+			sb->AppendC(UTF8STRC("Attr Ex "));
 			sb->AppendU16(i);
-			sb->Append((const UTF8Char*)" catch_type = ");
+			sb->AppendC(UTF8STRC(" catch_type = "));
 			type = ReadMUInt16(&ptr[6]);
 			sb->AppendU16(type);
 			if (type != 0)
 			{
 				this->DetailClassName(type, sb);
 			}
-			sb->Append((const UTF8Char*)"\r\n");
+			sb->AppendC(UTF8STRC("\r\n"));
 			i++;
 			ptr += 8;
 		}
 		UInt16 attrCount = ReadMUInt16(&ptr[0]);
 		this->AppendIndent(sb, lev);
-		sb->Append((const UTF8Char*)"Attr attributes_count = ");
+		sb->AppendC(UTF8STRC("Attr attributes_count = "));
 		sb->AppendU16(attrCount);
-		sb->Append((const UTF8Char*)"\r\n");
+		sb->AppendC(UTF8STRC("\r\n"));
 		ptr += 2;
 		i = 0;
 		while (i < attrCount)
@@ -357,17 +357,17 @@ const UInt8 *IO::JavaClass::DetailAttribute(const UInt8 *attr, UOSInt lev, Text:
 		UInt16 i = 0;
 		const UInt8 *ptr = &attr[8];
 		this->AppendIndent(sb, lev);
-		sb->Append((const UTF8Char*)"Attr number_of_exceptions = ");
+		sb->AppendC(UTF8STRC("Attr number_of_exceptions = "));
 		sb->AppendU16(number_of_exceptions);
-		sb->Append((const UTF8Char*)"\r\n");
+		sb->AppendC(UTF8STRC("\r\n"));
 		while (i < number_of_exceptions)
 		{
 			UInt16 clsIndex = ReadMUInt16(&ptr[0]);
 			this->AppendIndent(sb, lev);
-			sb->Append((const UTF8Char*)"Attr exception index = ");
+			sb->AppendC(UTF8STRC("Attr exception index = "));
 			sb->AppendU16(clsIndex);
 			this->DetailClassName(clsIndex, sb);
-			sb->Append((const UTF8Char*)"\r\n");
+			sb->AppendC(UTF8STRC("\r\n"));
 			i++;
 			ptr += 2;
 		}
@@ -378,43 +378,43 @@ const UInt8 *IO::JavaClass::DetailAttribute(const UInt8 *attr, UOSInt lev, Text:
 		UInt16 i = 0;
 		const UInt8 *ptr = &attr[8];
 		this->AppendIndent(sb, lev);
-		sb->Append((const UTF8Char*)"Attr number_of_classes = ");
+		sb->AppendC(UTF8STRC("Attr number_of_classes = "));
 		sb->AppendU16(number_of_classes);
-		sb->Append((const UTF8Char*)"\r\n");
+		sb->AppendC(UTF8STRC("\r\n"));
 		while (i < number_of_classes)
 		{
 			UInt16 clsIndex;
 			clsIndex = ReadMUInt16(&ptr[0]);
 			this->AppendIndent(sb, lev);
-			sb->Append((const UTF8Char*)"Attr inner class info index = ");
+			sb->AppendC(UTF8STRC("Attr inner class info index = "));
 			sb->AppendU16(clsIndex);
 			this->DetailClassName(clsIndex, sb);
-			sb->Append((const UTF8Char*)"\r\n");
+			sb->AppendC(UTF8STRC("\r\n"));
 
 			clsIndex = ReadMUInt16(&ptr[2]);
 			this->AppendIndent(sb, lev);
-			sb->Append((const UTF8Char*)"Attr outer class info index = ");
+			sb->AppendC(UTF8STRC("Attr outer class info index = "));
 			sb->AppendU16(clsIndex);
 			this->DetailClassName(clsIndex, sb);
-			sb->Append((const UTF8Char*)"\r\n");
+			sb->AppendC(UTF8STRC("\r\n"));
 
 			clsIndex = ReadMUInt16(&ptr[4]);
 			this->AppendIndent(sb, lev);
-			sb->Append((const UTF8Char*)"Attr inner name index = ");
+			sb->AppendC(UTF8STRC("Attr inner name index = "));
 			sb->AppendU16(clsIndex);
 			if (this->GetConstName(sbuff, clsIndex))
 			{
-				sb->Append((const UTF8Char*)" (");
+				sb->AppendC(UTF8STRC(" ("));
 				sb->Append(sbuff);
 				sb->AppendChar(')', 1);
 			}
-			sb->Append((const UTF8Char*)"\r\n");
+			sb->AppendC(UTF8STRC("\r\n"));
 
 			clsIndex = ReadMUInt16(&ptr[6]);
 			this->AppendIndent(sb, lev);
-			sb->Append((const UTF8Char*)"Attr inner class access flags = ");
+			sb->AppendC(UTF8STRC("Attr inner class access flags = "));
 			this->DetailAccessFlags(clsIndex, sb);
-			sb->Append((const UTF8Char*)"\r\n");
+			sb->AppendC(UTF8STRC("\r\n"));
 
 			i++;
 			ptr += 8;
@@ -426,20 +426,20 @@ const UInt8 *IO::JavaClass::DetailAttribute(const UInt8 *attr, UOSInt lev, Text:
 		const UInt8 *ptr = &attr[6];
 		clsIndex = ReadMUInt16(&ptr[0]);
 		this->AppendIndent(sb, lev);
-		sb->Append((const UTF8Char*)"Attr class index = ");
+		sb->AppendC(UTF8STRC("Attr class index = "));
 		sb->AppendU16(clsIndex);
 		this->DetailClassName(clsIndex, sb);
-		sb->Append((const UTF8Char*)"\r\n");
+		sb->AppendC(UTF8STRC("\r\n"));
 
 		clsIndex = ReadMUInt16(&ptr[2]);
 		this->AppendIndent(sb, lev);
-		sb->Append((const UTF8Char*)"Attr method index = ");
+		sb->AppendC(UTF8STRC("Attr method index = "));
 		sb->AppendU16(clsIndex);
 		if (clsIndex != 0)
 		{
 			this->DetailNameAndType(clsIndex, ReadMUInt16(&ptr[0]), sb);
 		}
-		sb->Append((const UTF8Char*)"\r\n");
+		sb->AppendC(UTF8STRC("\r\n"));
 	}
 	else if (Text::StrEquals(sbuff, (const UTF8Char*)"LineNumberTable"))
 	{
@@ -447,17 +447,17 @@ const UInt8 *IO::JavaClass::DetailAttribute(const UInt8 *attr, UOSInt lev, Text:
 		UInt16 i = 0;
 		const UInt8 *ptr = &attr[8];
 		this->AppendIndent(sb, lev);
-		sb->Append((const UTF8Char*)"Attr line_number_table_length = ");
+		sb->AppendC(UTF8STRC("Attr line_number_table_length = "));
 		sb->AppendU16(line_number_table_length);
-		sb->Append((const UTF8Char*)"\r\n");
+		sb->AppendC(UTF8STRC("\r\n"));
 		while (i < line_number_table_length)
 		{
 			this->AppendIndent(sb, lev);
-			sb->Append((const UTF8Char*)"Attr start_pc = ");
+			sb->AppendC(UTF8STRC("Attr start_pc = "));
 			sb->AppendU16(ReadMUInt16(&ptr[0]));
-			sb->Append((const UTF8Char*)", line_number = ");
+			sb->AppendC(UTF8STRC(", line_number = "));
 			sb->AppendU16(ReadMUInt16(&ptr[2]));
-			sb->Append((const UTF8Char*)"\r\n");
+			sb->AppendC(UTF8STRC("\r\n"));
 			i++;
 			ptr += 4;
 		}
@@ -468,30 +468,30 @@ const UInt8 *IO::JavaClass::DetailAttribute(const UInt8 *attr, UOSInt lev, Text:
 		UInt16 i = 0;
 		const UInt8 *ptr = &attr[8];
 		this->AppendIndent(sb, lev);
-		sb->Append((const UTF8Char*)"Attr local_variable_table_length = ");
+		sb->AppendC(UTF8STRC("Attr local_variable_table_length = "));
 		sb->AppendU16(local_variable_table_length);
-		sb->Append((const UTF8Char*)"\r\n");
+		sb->AppendC(UTF8STRC("\r\n"));
 		while (i < local_variable_table_length)
 		{
 			this->AppendIndent(sb, lev);
-			sb->Append((const UTF8Char*)"Attr start_pc = ");
+			sb->AppendC(UTF8STRC("Attr start_pc = "));
 			sb->AppendU16(ReadMUInt16(&ptr[0]));
-			sb->Append((const UTF8Char*)", length = ");
+			sb->AppendC(UTF8STRC(", length = "));
 			sb->AppendU16(ReadMUInt16(&ptr[2]));
-			sb->Append((const UTF8Char*)", name_index = ");
+			sb->AppendC(UTF8STRC(", name_index = "));
 			sb->AppendU16(ReadMUInt16(&ptr[4]));
-			sb->Append((const UTF8Char*)", descriptor_index = ");
+			sb->AppendC(UTF8STRC(", descriptor_index = "));
 			sb->AppendU16(ReadMUInt16(&ptr[6]));
-			sb->Append((const UTF8Char*)", index = ");
+			sb->AppendC(UTF8STRC(", index = "));
 			sb->AppendU16(ReadMUInt16(&ptr[8]));
 
 			if (this->GetConstName(sbuff, ReadMUInt16(&ptr[4])))
 			{
-				sb->Append((const UTF8Char*)" (");
+				sb->AppendC(UTF8STRC(" ("));
 				sb->Append(sbuff);
-				sb->Append((const UTF8Char*)")");
+				sb->AppendC(UTF8STRC(")"));
 			}
-			sb->Append((const UTF8Char*)"\r\n");
+			sb->AppendC(UTF8STRC("\r\n"));
 			i++;
 			ptr += 10;
 		}
@@ -502,30 +502,30 @@ const UInt8 *IO::JavaClass::DetailAttribute(const UInt8 *attr, UOSInt lev, Text:
 		UInt16 i = 0;
 		const UInt8 *ptr = &attr[8];
 		this->AppendIndent(sb, lev);
-		sb->Append((const UTF8Char*)"Attr local_variable_type_table_length = ");
+		sb->AppendC(UTF8STRC("Attr local_variable_type_table_length = "));
 		sb->AppendU16(local_variable_type_table_length);
-		sb->Append((const UTF8Char*)"\r\n");
+		sb->AppendC(UTF8STRC("\r\n"));
 		while (i < local_variable_type_table_length)
 		{
 			this->AppendIndent(sb, lev);
-			sb->Append((const UTF8Char*)"Attr start_pc = ");
+			sb->AppendC(UTF8STRC("Attr start_pc = "));
 			sb->AppendU16(ReadMUInt16(&ptr[0]));
-			sb->Append((const UTF8Char*)", length = ");
+			sb->AppendC(UTF8STRC(", length = "));
 			sb->AppendU16(ReadMUInt16(&ptr[2]));
-			sb->Append((const UTF8Char*)", name_index = ");
+			sb->AppendC(UTF8STRC(", name_index = "));
 			sb->AppendU16(ReadMUInt16(&ptr[4]));
-			sb->Append((const UTF8Char*)", signature_index = ");
+			sb->AppendC(UTF8STRC(", signature_index = "));
 			sb->AppendU16(ReadMUInt16(&ptr[6]));
-			sb->Append((const UTF8Char*)", index = ");
+			sb->AppendC(UTF8STRC(", index = "));
 			sb->AppendU16(ReadMUInt16(&ptr[8]));
 
 			if (this->GetConstName(sbuff, ReadMUInt16(&ptr[4])))
 			{
-				sb->Append((const UTF8Char*)" (");
+				sb->AppendC(UTF8STRC(" ("));
 				sb->Append(sbuff);
-				sb->Append((const UTF8Char*)")");
+				sb->AppendC(UTF8STRC(")"));
 			}
-			sb->Append((const UTF8Char*)"\r\n");
+			sb->AppendC(UTF8STRC("\r\n"));
 			i++;
 			ptr += 10;
 		}
@@ -534,19 +534,19 @@ const UInt8 *IO::JavaClass::DetailAttribute(const UInt8 *attr, UOSInt lev, Text:
 	{
 		UInt16 snameIndex = ReadMUInt16(&attr[6]);
 		this->AppendIndent(sb, lev);
-		sb->Append((const UTF8Char*)"Attr Signature Index = ");
+		sb->AppendC(UTF8STRC("Attr Signature Index = "));
 		sb->AppendU16(snameIndex);
 		this->DetailName(snameIndex, sb, true);
-		sb->Append((const UTF8Char*)"\r\n");
+		sb->AppendC(UTF8STRC("\r\n"));
 	}
 	else if (Text::StrEquals(sbuff, (const UTF8Char*)"SourceFile"))
 	{
 		UInt16 snameIndex = ReadMUInt16(&attr[6]);
 		this->AppendIndent(sb, lev);
-		sb->Append((const UTF8Char*)"Attr SourceFile Index = ");
+		sb->AppendC(UTF8STRC("Attr SourceFile Index = "));
 		sb->AppendU16(snameIndex);
 		this->DetailName(snameIndex, sb, true);
-		sb->Append((const UTF8Char*)"\r\n");
+		sb->AppendC(UTF8STRC("\r\n"));
 	}
 	else if (Text::StrEquals(sbuff, (const UTF8Char*)"RuntimeVisibleAnnotations"))
 	{
@@ -554,17 +554,17 @@ const UInt8 *IO::JavaClass::DetailAttribute(const UInt8 *attr, UOSInt lev, Text:
 		UInt16 i = 0;
 		const UInt8 *ptr = &attr[8];
 		this->AppendIndent(sb, lev);
-		sb->Append((const UTF8Char*)"Attr RuntimeVisibleAnnotations num_annotations = ");
+		sb->AppendC(UTF8STRC("Attr RuntimeVisibleAnnotations num_annotations = "));
 		sb->AppendU16(num_annotations);
-		sb->Append((const UTF8Char*)"\r\n");
+		sb->AppendC(UTF8STRC("\r\n"));
 		sb->AppendHexBuff(&attr[6], len, ' ', Text::LineBreakType::CRLF);
-		sb->Append((const UTF8Char*)"\r\n");
+		sb->AppendC(UTF8STRC("\r\n"));
 
 		while (i < num_annotations)
 		{
 			this->AppendIndent(sb, lev + 1);
 			ptr = this->DetailAnnotation(ptr, &attr[6 + len], sb, 0, 0);
-			sb->Append((const UTF8Char*)"\r\n");
+			sb->AppendC(UTF8STRC("\r\n"));
 
 			i++;
 		}
@@ -575,9 +575,9 @@ const UInt8 *IO::JavaClass::DetailAttribute(const UInt8 *attr, UOSInt lev, Text:
 		UInt16 i = 0;
 		const UInt8 *ptr = &attr[8];
 		this->AppendIndent(sb, lev);
-		sb->Append((const UTF8Char*)"Attr StackMapTable number_of_entries = ");
+		sb->AppendC(UTF8STRC("Attr StackMapTable number_of_entries = "));
 		sb->AppendU16(number_of_entries);
-		sb->Append((const UTF8Char*)"\r\n");
+		sb->AppendC(UTF8STRC("\r\n"));
 
 		while (i < number_of_entries)
 		{
@@ -589,9 +589,9 @@ const UInt8 *IO::JavaClass::DetailAttribute(const UInt8 *attr, UOSInt lev, Text:
 	else
 	{
 		this->AppendIndent(sb, lev);
-		sb->Append((const UTF8Char*)"Attr ");
+		sb->AppendC(UTF8STRC("Attr "));
 		sb->Append(sbuff);
-		sb->Append((const UTF8Char*)" (not supported)\r\n");
+		sb->AppendC(UTF8STRC(" (not supported)\r\n"));
 	}
 
 	attr += 6 + len;
@@ -1099,7 +1099,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"nop\r\n");
+			sb->AppendC(UTF8STRC("nop\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -1109,7 +1109,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"aconst_null\r\n");
+			sb->AppendC(UTF8STRC("aconst_null\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -1119,7 +1119,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"iconst_m1\r\n");
+			sb->AppendC(UTF8STRC("iconst_m1\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -1129,7 +1129,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"iconst_0\r\n");
+			sb->AppendC(UTF8STRC("iconst_0\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -1139,7 +1139,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"iconst_1\r\n");
+			sb->AppendC(UTF8STRC("iconst_1\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -1149,7 +1149,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"iconst_2\r\n");
+			sb->AppendC(UTF8STRC("iconst_2\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -1159,7 +1159,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"iconst_3\r\n");
+			sb->AppendC(UTF8STRC("iconst_3\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -1169,7 +1169,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"iconst_4\r\n");
+			sb->AppendC(UTF8STRC("iconst_4\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -1179,7 +1179,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"iconst_5\r\n");
+			sb->AppendC(UTF8STRC("iconst_5\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -1189,7 +1189,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"lconst_0\r\n");
+			sb->AppendC(UTF8STRC("lconst_0\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -1199,7 +1199,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"lconst_1\r\n");
+			sb->AppendC(UTF8STRC("lconst_1\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -1209,7 +1209,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"fconst_0\r\n");
+			sb->AppendC(UTF8STRC("fconst_0\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -1219,7 +1219,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"fconst_1\r\n");
+			sb->AppendC(UTF8STRC("fconst_1\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -1229,7 +1229,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"fconst_2\r\n");
+			sb->AppendC(UTF8STRC("fconst_2\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -1239,7 +1239,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"dconst_0\r\n");
+			sb->AppendC(UTF8STRC("dconst_0\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -1249,7 +1249,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"dconst_1\r\n");
+			sb->AppendC(UTF8STRC("dconst_1\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -1259,10 +1259,10 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHexBuff(&codePtr[codeOfst], 2, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 10);
-			sb->Append((const UTF8Char*)"bipush ");
+			sb->AppendC(UTF8STRC("bipush "));
 			val = codePtr[codeOfst + 1];
 			sb->AppendU16(val);
-			sb->Append((const UTF8Char*)"\r\n");
+			sb->AppendC(UTF8STRC("\r\n"));
 			codeOfst += 2;
 			codeLen -= 2;
 			break;
@@ -1272,10 +1272,10 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHexBuff(&codePtr[codeOfst], 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
-			sb->Append((const UTF8Char*)"sipush ");
+			sb->AppendC(UTF8STRC("sipush "));
 			val = ReadMUInt16(&codePtr[codeOfst + 1]);
 			sb->AppendU16(val);
-			sb->Append((const UTF8Char*)"\r\n");
+			sb->AppendC(UTF8STRC("\r\n"));
 			codeOfst += 3;
 			codeLen -= 3;
 			break;
@@ -1285,11 +1285,11 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHexBuff(&codePtr[codeOfst], 2, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 10);
-			sb->Append((const UTF8Char*)"ldc ");
+			sb->AppendC(UTF8STRC("ldc "));
 			val = codePtr[codeOfst + 1];
 			sb->AppendU16(val);
 			this->DetailConstVal(val, sb, true);
-			sb->Append((const UTF8Char*)"\r\n");
+			sb->AppendC(UTF8STRC("\r\n"));
 			codeOfst += 2;
 			codeLen -= 2;
 			break;
@@ -1299,11 +1299,11 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHexBuff(&codePtr[codeOfst], 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
-			sb->Append((const UTF8Char*)"ldc_w ");
+			sb->AppendC(UTF8STRC("ldc_w "));
 			val = ReadMUInt16(&codePtr[codeOfst + 1]);
 			sb->AppendU16(val);
 			this->DetailConstVal(val, sb, true);
-			sb->Append((const UTF8Char*)"\r\n");
+			sb->AppendC(UTF8STRC("\r\n"));
 			codeOfst += 3;
 			codeLen -= 3;
 			break;
@@ -1313,11 +1313,11 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHexBuff(&codePtr[codeOfst], 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
-			sb->Append((const UTF8Char*)"ldc2_w ");
+			sb->AppendC(UTF8STRC("ldc2_w "));
 			val = ReadMUInt16(&codePtr[codeOfst + 1]);
 			sb->AppendU16(val);
 			this->DetailConstVal(val, sb, true);
-			sb->Append((const UTF8Char*)"\r\n");
+			sb->AppendC(UTF8STRC("\r\n"));
 			codeOfst += 3;
 			codeLen -= 3;
 			break;
@@ -1327,9 +1327,9 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHexBuff(&codePtr[codeOfst], 2, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 10);
-			sb->Append((const UTF8Char*)"iload ");
+			sb->AppendC(UTF8STRC("iload "));
 			sb->AppendU16(codePtr[codeOfst + 1]);
-			sb->Append((const UTF8Char*)"\r\n");
+			sb->AppendC(UTF8STRC("\r\n"));
 			codeOfst += 2;
 			codeLen -= 2;
 			break;
@@ -1339,9 +1339,9 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHexBuff(&codePtr[codeOfst], 2, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 10);
-			sb->Append((const UTF8Char*)"lload ");
+			sb->AppendC(UTF8STRC("lload "));
 			sb->AppendU16(codePtr[codeOfst + 1]);
-			sb->Append((const UTF8Char*)"\r\n");
+			sb->AppendC(UTF8STRC("\r\n"));
 			codeOfst += 2;
 			codeLen -= 2;
 			break;
@@ -1351,9 +1351,9 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHexBuff(&codePtr[codeOfst], 2, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 10);
-			sb->Append((const UTF8Char*)"fload ");
+			sb->AppendC(UTF8STRC("fload "));
 			sb->AppendU16(codePtr[codeOfst + 1]);
-			sb->Append((const UTF8Char*)"\r\n");
+			sb->AppendC(UTF8STRC("\r\n"));
 			codeOfst += 2;
 			codeLen -= 2;
 			break;
@@ -1363,9 +1363,9 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHexBuff(&codePtr[codeOfst], 2, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 10);
-			sb->Append((const UTF8Char*)"dload ");
+			sb->AppendC(UTF8STRC("dload "));
 			sb->AppendU16(codePtr[codeOfst + 1]);
-			sb->Append((const UTF8Char*)"\r\n");
+			sb->AppendC(UTF8STRC("\r\n"));
 			codeOfst += 2;
 			codeLen -= 2;
 			break;
@@ -1375,9 +1375,9 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHexBuff(&codePtr[codeOfst], 2, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 10);
-			sb->Append((const UTF8Char*)"aload ");
+			sb->AppendC(UTF8STRC("aload "));
 			sb->AppendU16(codePtr[codeOfst + 1]);
-			sb->Append((const UTF8Char*)"\r\n");
+			sb->AppendC(UTF8STRC("\r\n"));
 			codeOfst += 2;
 			codeLen -= 2;
 			break;
@@ -1387,7 +1387,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"iload_0\r\n");
+			sb->AppendC(UTF8STRC("iload_0\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -1397,7 +1397,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"iload_1\r\n");
+			sb->AppendC(UTF8STRC("iload_1\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -1407,7 +1407,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"iload_2\r\n");
+			sb->AppendC(UTF8STRC("iload_2\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -1417,7 +1417,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"iload_3\r\n");
+			sb->AppendC(UTF8STRC("iload_3\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -1427,7 +1427,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"lload_0\r\n");
+			sb->AppendC(UTF8STRC("lload_0\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -1437,7 +1437,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"lload_1\r\n");
+			sb->AppendC(UTF8STRC("lload_1\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -1447,7 +1447,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"lload_2\r\n");
+			sb->AppendC(UTF8STRC("lload_2\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -1457,7 +1457,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"lload_3\r\n");
+			sb->AppendC(UTF8STRC("lload_3\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -1467,7 +1467,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"fload_0\r\n");
+			sb->AppendC(UTF8STRC("fload_0\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -1477,7 +1477,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"fload_1\r\n");
+			sb->AppendC(UTF8STRC("fload_1\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -1487,7 +1487,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"fload_2\r\n");
+			sb->AppendC(UTF8STRC("fload_2\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -1497,7 +1497,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"fload_3\r\n");
+			sb->AppendC(UTF8STRC("fload_3\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -1507,7 +1507,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"dload_0\r\n");
+			sb->AppendC(UTF8STRC("dload_0\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -1517,7 +1517,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"dload_1\r\n");
+			sb->AppendC(UTF8STRC("dload_1\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -1527,7 +1527,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"dload_2\r\n");
+			sb->AppendC(UTF8STRC("dload_2\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -1537,7 +1537,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"dload_3\r\n");
+			sb->AppendC(UTF8STRC("dload_3\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -1547,7 +1547,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"aload_0\r\n");
+			sb->AppendC(UTF8STRC("aload_0\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -1557,7 +1557,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"aload_1\r\n");
+			sb->AppendC(UTF8STRC("aload_1\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -1567,7 +1567,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"aload_2\r\n");
+			sb->AppendC(UTF8STRC("aload_2\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -1577,7 +1577,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"aload_3\r\n");
+			sb->AppendC(UTF8STRC("aload_3\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -1587,7 +1587,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"iaload\r\n");
+			sb->AppendC(UTF8STRC("iaload\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -1597,7 +1597,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"laload\r\n");
+			sb->AppendC(UTF8STRC("laload\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -1607,7 +1607,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"faload\r\n");
+			sb->AppendC(UTF8STRC("faload\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -1617,7 +1617,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"daload\r\n");
+			sb->AppendC(UTF8STRC("daload\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -1627,7 +1627,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"aaload\r\n");
+			sb->AppendC(UTF8STRC("aaload\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -1637,7 +1637,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"baload\r\n");
+			sb->AppendC(UTF8STRC("baload\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -1647,7 +1647,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"caload\r\n");
+			sb->AppendC(UTF8STRC("caload\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -1657,7 +1657,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"saload\r\n");
+			sb->AppendC(UTF8STRC("saload\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -1667,9 +1667,9 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHexBuff(&codePtr[codeOfst], 2, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 10);
-			sb->Append((const UTF8Char*)"istore ");
+			sb->AppendC(UTF8STRC("istore "));
 			sb->AppendU16(codePtr[codeOfst + 1]);
-			sb->Append((const UTF8Char*)"\r\n");
+			sb->AppendC(UTF8STRC("\r\n"));
 			codeOfst += 2;
 			codeLen -= 2;
 			break;
@@ -1679,9 +1679,9 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHexBuff(&codePtr[codeOfst], 2, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 10);
-			sb->Append((const UTF8Char*)"lstore ");
+			sb->AppendC(UTF8STRC("lstore "));
 			sb->AppendU16(codePtr[codeOfst + 1]);
-			sb->Append((const UTF8Char*)"\r\n");
+			sb->AppendC(UTF8STRC("\r\n"));
 			codeOfst += 2;
 			codeLen -= 2;
 			break;
@@ -1691,9 +1691,9 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHexBuff(&codePtr[codeOfst], 2, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 10);
-			sb->Append((const UTF8Char*)"fstore ");
+			sb->AppendC(UTF8STRC("fstore "));
 			sb->AppendU16(codePtr[codeOfst + 1]);
-			sb->Append((const UTF8Char*)"\r\n");
+			sb->AppendC(UTF8STRC("\r\n"));
 			codeOfst += 2;
 			codeLen -= 2;
 			break;
@@ -1703,9 +1703,9 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHexBuff(&codePtr[codeOfst], 2, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 10);
-			sb->Append((const UTF8Char*)"dstore ");
+			sb->AppendC(UTF8STRC("dstore "));
 			sb->AppendU16(codePtr[codeOfst + 1]);
-			sb->Append((const UTF8Char*)"\r\n");
+			sb->AppendC(UTF8STRC("\r\n"));
 			codeOfst += 2;
 			codeLen -= 2;
 			break;
@@ -1715,9 +1715,9 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHexBuff(&codePtr[codeOfst], 2, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 10);
-			sb->Append((const UTF8Char*)"astore ");
+			sb->AppendC(UTF8STRC("astore "));
 			sb->AppendU16(codePtr[codeOfst + 1]);
-			sb->Append((const UTF8Char*)"\r\n");
+			sb->AppendC(UTF8STRC("\r\n"));
 			codeOfst += 2;
 			codeLen -= 2;
 			break;
@@ -1727,7 +1727,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"istore_0\r\n");
+			sb->AppendC(UTF8STRC("istore_0\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -1737,7 +1737,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"istore_1\r\n");
+			sb->AppendC(UTF8STRC("istore_1\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -1747,7 +1747,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"istore_2\r\n");
+			sb->AppendC(UTF8STRC("istore_2\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -1757,7 +1757,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"istore_3\r\n");
+			sb->AppendC(UTF8STRC("istore_3\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -1767,7 +1767,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"lstore_0\r\n");
+			sb->AppendC(UTF8STRC("lstore_0\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -1777,7 +1777,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"lstore_1\r\n");
+			sb->AppendC(UTF8STRC("lstore_1\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -1787,7 +1787,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"lstore_2\r\n");
+			sb->AppendC(UTF8STRC("lstore_2\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -1797,7 +1797,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"lstore_3\r\n");
+			sb->AppendC(UTF8STRC("lstore_3\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -1807,7 +1807,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"fstore_0\r\n");
+			sb->AppendC(UTF8STRC("fstore_0\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -1817,7 +1817,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"fstore_1\r\n");
+			sb->AppendC(UTF8STRC("fstore_1\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -1827,7 +1827,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"fstore_2\r\n");
+			sb->AppendC(UTF8STRC("fstore_2\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -1837,7 +1837,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"fstore_3\r\n");
+			sb->AppendC(UTF8STRC("fstore_3\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -1847,7 +1847,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"dstore_0\r\n");
+			sb->AppendC(UTF8STRC("dstore_0\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -1857,7 +1857,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"dstore_1\r\n");
+			sb->AppendC(UTF8STRC("dstore_1\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -1867,7 +1867,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"dstore_2\r\n");
+			sb->AppendC(UTF8STRC("dstore_2\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -1877,7 +1877,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"dstore_3\r\n");
+			sb->AppendC(UTF8STRC("dstore_3\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -1887,7 +1887,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"astore_0\r\n");
+			sb->AppendC(UTF8STRC("astore_0\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -1897,7 +1897,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"astore_1\r\n");
+			sb->AppendC(UTF8STRC("astore_1\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -1907,7 +1907,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"astore_2\r\n");
+			sb->AppendC(UTF8STRC("astore_2\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -1917,7 +1917,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"astore_3\r\n");
+			sb->AppendC(UTF8STRC("astore_3\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -1927,7 +1927,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"iastore\r\n");
+			sb->AppendC(UTF8STRC("iastore\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -1937,7 +1937,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"lastore\r\n");
+			sb->AppendC(UTF8STRC("lastore\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -1947,7 +1947,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"fastore\r\n");
+			sb->AppendC(UTF8STRC("fastore\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -1957,7 +1957,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"dastore\r\n");
+			sb->AppendC(UTF8STRC("dastore\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -1967,7 +1967,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"aastore\r\n");
+			sb->AppendC(UTF8STRC("aastore\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -1977,7 +1977,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"bastore\r\n");
+			sb->AppendC(UTF8STRC("bastore\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -1987,7 +1987,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"castore\r\n");
+			sb->AppendC(UTF8STRC("castore\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -1997,7 +1997,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"sastore\r\n");
+			sb->AppendC(UTF8STRC("sastore\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -2007,7 +2007,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"pop\r\n");
+			sb->AppendC(UTF8STRC("pop\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -2017,7 +2017,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"pop2\r\n");
+			sb->AppendC(UTF8STRC("pop2\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -2027,7 +2027,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"dup\r\n");
+			sb->AppendC(UTF8STRC("dup\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -2037,7 +2037,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"dup_x1\r\n");
+			sb->AppendC(UTF8STRC("dup_x1\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -2047,7 +2047,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"dup_x2\r\n");
+			sb->AppendC(UTF8STRC("dup_x2\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -2057,7 +2057,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"dup2\r\n");
+			sb->AppendC(UTF8STRC("dup2\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -2067,7 +2067,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"dup2_x1\r\n");
+			sb->AppendC(UTF8STRC("dup2_x1\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -2077,7 +2077,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"dup2_x2\r\n");
+			sb->AppendC(UTF8STRC("dup2_x2\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -2087,7 +2087,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"swap\r\n");
+			sb->AppendC(UTF8STRC("swap\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -2097,7 +2097,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"iadd\r\n");
+			sb->AppendC(UTF8STRC("iadd\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -2107,7 +2107,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"ladd\r\n");
+			sb->AppendC(UTF8STRC("ladd\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -2117,7 +2117,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"fadd\r\n");
+			sb->AppendC(UTF8STRC("fadd\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -2127,7 +2127,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"dadd\r\n");
+			sb->AppendC(UTF8STRC("dadd\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -2137,7 +2137,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"isub\r\n");
+			sb->AppendC(UTF8STRC("isub\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -2147,7 +2147,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"lsub\r\n");
+			sb->AppendC(UTF8STRC("lsub\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -2157,7 +2157,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"fsub\r\n");
+			sb->AppendC(UTF8STRC("fsub\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -2167,7 +2167,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"dsub\r\n");
+			sb->AppendC(UTF8STRC("dsub\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -2177,7 +2177,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"imul\r\n");
+			sb->AppendC(UTF8STRC("imul\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -2187,7 +2187,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"lmul\r\n");
+			sb->AppendC(UTF8STRC("lmul\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -2197,7 +2197,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"fmul\r\n");
+			sb->AppendC(UTF8STRC("fmul\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -2207,7 +2207,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"dmul\r\n");
+			sb->AppendC(UTF8STRC("dmul\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -2217,7 +2217,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"idiv\r\n");
+			sb->AppendC(UTF8STRC("idiv\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -2227,7 +2227,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"ldiv\r\n");
+			sb->AppendC(UTF8STRC("ldiv\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -2237,7 +2237,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"fdiv\r\n");
+			sb->AppendC(UTF8STRC("fdiv\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -2247,7 +2247,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"ddiv\r\n");
+			sb->AppendC(UTF8STRC("ddiv\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -2257,7 +2257,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"irem\r\n");
+			sb->AppendC(UTF8STRC("irem\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -2267,7 +2267,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"lrem\r\n");
+			sb->AppendC(UTF8STRC("lrem\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -2277,7 +2277,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"frem\r\n");
+			sb->AppendC(UTF8STRC("frem\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -2287,7 +2287,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"drem\r\n");
+			sb->AppendC(UTF8STRC("drem\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -2297,7 +2297,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"ineg\r\n");
+			sb->AppendC(UTF8STRC("ineg\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -2307,7 +2307,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"lneg\r\n");
+			sb->AppendC(UTF8STRC("lneg\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -2317,7 +2317,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"fneg\r\n");
+			sb->AppendC(UTF8STRC("fneg\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -2327,7 +2327,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"dneg\r\n");
+			sb->AppendC(UTF8STRC("dneg\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -2337,7 +2337,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"ishl\r\n");
+			sb->AppendC(UTF8STRC("ishl\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -2347,7 +2347,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"lshl\r\n");
+			sb->AppendC(UTF8STRC("lshl\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -2357,7 +2357,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"ishr\r\n");
+			sb->AppendC(UTF8STRC("ishr\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -2367,7 +2367,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"lshr\r\n");
+			sb->AppendC(UTF8STRC("lshr\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -2377,7 +2377,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"iushr\r\n");
+			sb->AppendC(UTF8STRC("iushr\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -2387,7 +2387,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"lushr\r\n");
+			sb->AppendC(UTF8STRC("lushr\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -2397,7 +2397,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"iand\r\n");
+			sb->AppendC(UTF8STRC("iand\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -2407,7 +2407,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"land\r\n");
+			sb->AppendC(UTF8STRC("land\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -2417,7 +2417,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"ior\r\n");
+			sb->AppendC(UTF8STRC("ior\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -2427,7 +2427,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"lor\r\n");
+			sb->AppendC(UTF8STRC("lor\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -2437,7 +2437,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"ixor\r\n");
+			sb->AppendC(UTF8STRC("ixor\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -2447,7 +2447,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"lxor\r\n");
+			sb->AppendC(UTF8STRC("lxor\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -2457,11 +2457,11 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHexBuff(&codePtr[codeOfst], 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
-			sb->Append((const UTF8Char*)"iinc ");
+			sb->AppendC(UTF8STRC("iinc "));
 			sb->AppendU16(codePtr[codeOfst + 1]);
-			sb->Append((const UTF8Char*)", ");
+			sb->AppendC(UTF8STRC(", "));
 			sb->AppendI16((Int8)codePtr[codeOfst + 2]);
-			sb->Append((const UTF8Char*)"\r\n");
+			sb->AppendC(UTF8STRC("\r\n"));
 			codeOfst += 3;
 			codeLen -= 3;
 			break;
@@ -2471,7 +2471,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"i2l\r\n");
+			sb->AppendC(UTF8STRC("i2l\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -2481,7 +2481,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"i2f\r\n");
+			sb->AppendC(UTF8STRC("i2f\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -2491,7 +2491,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"i2d\r\n");
+			sb->AppendC(UTF8STRC("i2d\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -2501,7 +2501,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"l2i\r\n");
+			sb->AppendC(UTF8STRC("l2i\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -2511,7 +2511,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"l2f\r\n");
+			sb->AppendC(UTF8STRC("l2f\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -2521,7 +2521,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"l2d\r\n");
+			sb->AppendC(UTF8STRC("l2d\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -2531,7 +2531,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"f2i\r\n");
+			sb->AppendC(UTF8STRC("f2i\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -2541,7 +2541,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"f2l\r\n");
+			sb->AppendC(UTF8STRC("f2l\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -2551,7 +2551,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"f2d\r\n");
+			sb->AppendC(UTF8STRC("f2d\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -2561,7 +2561,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"d2i\r\n");
+			sb->AppendC(UTF8STRC("d2i\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -2571,7 +2571,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"d2l\r\n");
+			sb->AppendC(UTF8STRC("d2l\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -2581,7 +2581,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"d2f\r\n");
+			sb->AppendC(UTF8STRC("d2f\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -2591,7 +2591,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"i2b\r\n");
+			sb->AppendC(UTF8STRC("i2b\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -2601,7 +2601,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"i2c\r\n");
+			sb->AppendC(UTF8STRC("i2c\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -2611,7 +2611,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"i2s\r\n");
+			sb->AppendC(UTF8STRC("i2s\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -2621,7 +2621,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"lcmp\r\n");
+			sb->AppendC(UTF8STRC("lcmp\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -2631,7 +2631,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"fcmpl\r\n");
+			sb->AppendC(UTF8STRC("fcmpl\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -2641,7 +2641,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"fcmpg\r\n");
+			sb->AppendC(UTF8STRC("fcmpg\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -2651,7 +2651,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"dcmpl\r\n");
+			sb->AppendC(UTF8STRC("dcmpl\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -2661,7 +2661,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"dcmpg\r\n");
+			sb->AppendC(UTF8STRC("dcmpg\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -2671,9 +2671,9 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHexBuff(&codePtr[codeOfst], 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
-			sb->Append((const UTF8Char*)"ifeq ");
+			sb->AppendC(UTF8STRC("ifeq "));
 			sb->AppendI16(ReadMInt16(&codePtr[codeOfst + 1]));
-			sb->Append((const UTF8Char*)"\r\n");
+			sb->AppendC(UTF8STRC("\r\n"));
 			codeOfst += 3;
 			codeLen -= 3;
 			break;
@@ -2683,9 +2683,9 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHexBuff(&codePtr[codeOfst], 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
-			sb->Append((const UTF8Char*)"ifne ");
+			sb->AppendC(UTF8STRC("ifne "));
 			sb->AppendI16(ReadMInt16(&codePtr[codeOfst + 1]));
-			sb->Append((const UTF8Char*)"\r\n");
+			sb->AppendC(UTF8STRC("\r\n"));
 			codeOfst += 3;
 			codeLen -= 3;
 			break;
@@ -2695,9 +2695,9 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHexBuff(&codePtr[codeOfst], 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
-			sb->Append((const UTF8Char*)"iflt ");
+			sb->AppendC(UTF8STRC("iflt "));
 			sb->AppendI16(ReadMInt16(&codePtr[codeOfst + 1]));
-			sb->Append((const UTF8Char*)"\r\n");
+			sb->AppendC(UTF8STRC("\r\n"));
 			codeOfst += 3;
 			codeLen -= 3;
 			break;
@@ -2707,9 +2707,9 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHexBuff(&codePtr[codeOfst], 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
-			sb->Append((const UTF8Char*)"ifge ");
+			sb->AppendC(UTF8STRC("ifge "));
 			sb->AppendI16(ReadMInt16(&codePtr[codeOfst + 1]));
-			sb->Append((const UTF8Char*)"\r\n");
+			sb->AppendC(UTF8STRC("\r\n"));
 			codeOfst += 3;
 			codeLen -= 3;
 			break;
@@ -2719,9 +2719,9 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHexBuff(&codePtr[codeOfst], 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
-			sb->Append((const UTF8Char*)"ifgt ");
+			sb->AppendC(UTF8STRC("ifgt "));
 			sb->AppendI16(ReadMInt16(&codePtr[codeOfst + 1]));
-			sb->Append((const UTF8Char*)"\r\n");
+			sb->AppendC(UTF8STRC("\r\n"));
 			codeOfst += 3;
 			codeLen -= 3;
 			break;
@@ -2731,9 +2731,9 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHexBuff(&codePtr[codeOfst], 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
-			sb->Append((const UTF8Char*)"ifle ");
+			sb->AppendC(UTF8STRC("ifle "));
 			sb->AppendI16(ReadMInt16(&codePtr[codeOfst + 1]));
-			sb->Append((const UTF8Char*)"\r\n");
+			sb->AppendC(UTF8STRC("\r\n"));
 			codeOfst += 3;
 			codeLen -= 3;
 			break;
@@ -2743,9 +2743,9 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHexBuff(&codePtr[codeOfst], 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
-			sb->Append((const UTF8Char*)"if_icmpeq ");
+			sb->AppendC(UTF8STRC("if_icmpeq "));
 			sb->AppendI16(ReadMInt16(&codePtr[codeOfst + 1]));
-			sb->Append((const UTF8Char*)"\r\n");
+			sb->AppendC(UTF8STRC("\r\n"));
 			codeOfst += 3;
 			codeLen -= 3;
 			break;
@@ -2755,9 +2755,9 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHexBuff(&codePtr[codeOfst], 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
-			sb->Append((const UTF8Char*)"if_icmpne ");
+			sb->AppendC(UTF8STRC("if_icmpne "));
 			sb->AppendI16(ReadMInt16(&codePtr[codeOfst + 1]));
-			sb->Append((const UTF8Char*)"\r\n");
+			sb->AppendC(UTF8STRC("\r\n"));
 			codeOfst += 3;
 			codeLen -= 3;
 			break;
@@ -2767,9 +2767,9 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHexBuff(&codePtr[codeOfst], 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
-			sb->Append((const UTF8Char*)"if_icmplt ");
+			sb->AppendC(UTF8STRC("if_icmplt "));
 			sb->AppendI16(ReadMInt16(&codePtr[codeOfst + 1]));
-			sb->Append((const UTF8Char*)"\r\n");
+			sb->AppendC(UTF8STRC("\r\n"));
 			codeOfst += 3;
 			codeLen -= 3;
 			break;
@@ -2779,9 +2779,9 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHexBuff(&codePtr[codeOfst], 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
-			sb->Append((const UTF8Char*)"if_icmpge ");
+			sb->AppendC(UTF8STRC("if_icmpge "));
 			sb->AppendI16(ReadMInt16(&codePtr[codeOfst + 1]));
-			sb->Append((const UTF8Char*)"\r\n");
+			sb->AppendC(UTF8STRC("\r\n"));
 			codeOfst += 3;
 			codeLen -= 3;
 			break;
@@ -2791,9 +2791,9 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHexBuff(&codePtr[codeOfst], 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
-			sb->Append((const UTF8Char*)"if_icmpgt ");
+			sb->AppendC(UTF8STRC("if_icmpgt "));
 			sb->AppendI16(ReadMInt16(&codePtr[codeOfst + 1]));
-			sb->Append((const UTF8Char*)"\r\n");
+			sb->AppendC(UTF8STRC("\r\n"));
 			codeOfst += 3;
 			codeLen -= 3;
 			break;
@@ -2803,9 +2803,9 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHexBuff(&codePtr[codeOfst], 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
-			sb->Append((const UTF8Char*)"if_icmple ");
+			sb->AppendC(UTF8STRC("if_icmple "));
 			sb->AppendI16(ReadMInt16(&codePtr[codeOfst + 1]));
-			sb->Append((const UTF8Char*)"\r\n");
+			sb->AppendC(UTF8STRC("\r\n"));
 			codeOfst += 3;
 			codeLen -= 3;
 			break;
@@ -2815,9 +2815,9 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHexBuff(&codePtr[codeOfst], 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
-			sb->Append((const UTF8Char*)"if_acmpeq ");
+			sb->AppendC(UTF8STRC("if_acmpeq "));
 			sb->AppendI16(ReadMInt16(&codePtr[codeOfst + 1]));
-			sb->Append((const UTF8Char*)"\r\n");
+			sb->AppendC(UTF8STRC("\r\n"));
 			codeOfst += 3;
 			codeLen -= 3;
 			break;
@@ -2827,9 +2827,9 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHexBuff(&codePtr[codeOfst], 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
-			sb->Append((const UTF8Char*)"if_acmpne ");
+			sb->AppendC(UTF8STRC("if_acmpne "));
 			sb->AppendI16(ReadMInt16(&codePtr[codeOfst + 1]));
-			sb->Append((const UTF8Char*)"\r\n");
+			sb->AppendC(UTF8STRC("\r\n"));
 			codeOfst += 3;
 			codeLen -= 3;
 			break;
@@ -2839,9 +2839,9 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHexBuff(&codePtr[codeOfst], 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
-			sb->Append((const UTF8Char*)"goto ");
+			sb->AppendC(UTF8STRC("goto "));
 			sb->AppendI16(ReadMInt16(&codePtr[codeOfst + 1]));
-			sb->Append((const UTF8Char*)"\r\n");
+			sb->AppendC(UTF8STRC("\r\n"));
 			codeOfst += 3;
 			codeLen -= 3;
 			break;
@@ -2851,9 +2851,9 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHexBuff(&codePtr[codeOfst], 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
-			sb->Append((const UTF8Char*)"jsr ");
+			sb->AppendC(UTF8STRC("jsr "));
 			sb->AppendI16(ReadMInt16(&codePtr[codeOfst + 1]));
-			sb->Append((const UTF8Char*)"\r\n");
+			sb->AppendC(UTF8STRC("\r\n"));
 			codeOfst += 3;
 			codeLen -= 3;
 			break;
@@ -2863,9 +2863,9 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHexBuff(&codePtr[codeOfst], 2, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 10);
-			sb->Append((const UTF8Char*)"ret ");
+			sb->AppendC(UTF8STRC("ret "));
 			sb->AppendU16(codePtr[codeOfst + 1]);
-			sb->Append((const UTF8Char*)"\r\n");
+			sb->AppendC(UTF8STRC("\r\n"));
 			codeOfst += 2;
 			codeLen -= 2;
 			break;
@@ -2883,11 +2883,11 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 				UInt32 npairs = ReadMUInt32(&codePtr[currOfst + 4]);
 				sb->AppendHexBuff(&codePtr[codeOfst], (currOfst + 8 - codeOfst), ' ', Text::LineBreakType::None);
 				sb->AppendChar(' ', 1);
-				sb->Append((const UTF8Char*)"tableswitch default = ");
+				sb->AppendC(UTF8STRC("tableswitch default = "));
 				sb->AppendI32(defaultPC);
-				sb->Append((const UTF8Char*)", npairs = ");
+				sb->AppendC(UTF8STRC(", npairs = "));
 				sb->AppendU32(npairs);
-				sb->Append((const UTF8Char*)"\r\n");
+				sb->AppendC(UTF8STRC("\r\n"));
 				codeLen -= (currOfst + 8 - codeOfst);
 				codeOfst = currOfst + 8;
 				UInt32 currIndex = 0;
@@ -2899,14 +2899,14 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 					sb->AppendHexBuff(&codePtr[codeOfst], 8, ' ', Text::LineBreakType::None);
 					sb->AppendChar(' ', 1);
 					sb->AppendI32(ReadMInt32(&codePtr[codeOfst]));
-					sb->Append((const UTF8Char*)": ");
+					sb->AppendC(UTF8STRC(": "));
 					sb->AppendI32(ReadMInt32(&codePtr[codeOfst + 4]));
-					sb->Append((const UTF8Char*)"\r\n");
+					sb->AppendC(UTF8STRC("\r\n"));
 					currIndex++;
 					codeOfst += 8;
 					codeLen -= 8;
 				}
-				sb->Append((const UTF8Char*)"\r\n");
+				sb->AppendC(UTF8STRC("\r\n"));
 			}
 			break;
 		case 0xAB:
@@ -2923,11 +2923,11 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 				UInt32 npairs = ReadMUInt32(&codePtr[currOfst + 4]);
 				sb->AppendHexBuff(&codePtr[codeOfst], (currOfst + 8 - codeOfst), ' ', Text::LineBreakType::None);
 				sb->AppendChar(' ', 1);
-				sb->Append((const UTF8Char*)"lookupswitch default = ");
+				sb->AppendC(UTF8STRC("lookupswitch default = "));
 				sb->AppendI32(defaultPC);
-				sb->Append((const UTF8Char*)", npairs = ");
+				sb->AppendC(UTF8STRC(", npairs = "));
 				sb->AppendU32(npairs);
-				sb->Append((const UTF8Char*)"\r\n");
+				sb->AppendC(UTF8STRC("\r\n"));
 				codeLen -= (currOfst + 8 - codeOfst);
 				codeOfst = currOfst + 8;
 				UInt32 currIndex = 0;
@@ -2939,14 +2939,14 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 					sb->AppendHexBuff(&codePtr[codeOfst], 8, ' ', Text::LineBreakType::None);
 					sb->AppendChar(' ', 1);
 					sb->AppendI32(ReadMInt32(&codePtr[codeOfst]));
-					sb->Append((const UTF8Char*)": ");
+					sb->AppendC(UTF8STRC(": "));
 					sb->AppendI32(ReadMInt32(&codePtr[codeOfst + 4]));
-					sb->Append((const UTF8Char*)"\r\n");
+					sb->AppendC(UTF8STRC("\r\n"));
 					currIndex++;
 					codeOfst += 8;
 					codeLen -= 8;
 				}
-				sb->Append((const UTF8Char*)"\r\n");
+				sb->AppendC(UTF8STRC("\r\n"));
 			}
 			break;
 		case 0xAC:
@@ -2955,7 +2955,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"ireturn\r\n");
+			sb->AppendC(UTF8STRC("ireturn\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -2965,7 +2965,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"lreturn\r\n");
+			sb->AppendC(UTF8STRC("lreturn\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -2975,7 +2975,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"freturn\r\n");
+			sb->AppendC(UTF8STRC("freturn\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -2985,7 +2985,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"dreturn\r\n");
+			sb->AppendC(UTF8STRC("dreturn\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -2995,7 +2995,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"areturn\r\n");
+			sb->AppendC(UTF8STRC("areturn\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -3005,7 +3005,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"return\r\n");
+			sb->AppendC(UTF8STRC("return\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -3016,10 +3016,10 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendHexBuff(&codePtr[codeOfst], 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
 			val = ReadMUInt16(&codePtr[codeOfst + 1]);
-			sb->Append((const UTF8Char*)"getstatic ");
+			sb->AppendC(UTF8STRC("getstatic "));
 			sb->AppendU16(val);
 			this->DetailFieldRef(val, sb);
-			sb->Append((const UTF8Char*)"\r\n");
+			sb->AppendC(UTF8STRC("\r\n"));
 			codeOfst += 3;
 			codeLen -= 3;
 			break;
@@ -3030,10 +3030,10 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendHexBuff(&codePtr[codeOfst], 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
 			val = ReadMUInt16(&codePtr[codeOfst + 1]);
-			sb->Append((const UTF8Char*)"putstatic ");
+			sb->AppendC(UTF8STRC("putstatic "));
 			sb->AppendU16(val);
 			this->DetailFieldRef(val, sb);
-			sb->Append((const UTF8Char*)"\r\n");
+			sb->AppendC(UTF8STRC("\r\n"));
 			codeOfst += 3;
 			codeLen -= 3;
 			break;
@@ -3044,10 +3044,10 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendHexBuff(&codePtr[codeOfst], 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
 			val = ReadMUInt16(&codePtr[codeOfst + 1]);
-			sb->Append((const UTF8Char*)"getfield ");
+			sb->AppendC(UTF8STRC("getfield "));
 			sb->AppendU16(val);
 			this->DetailFieldRef(val, sb);
-			sb->Append((const UTF8Char*)"\r\n");
+			sb->AppendC(UTF8STRC("\r\n"));
 			codeOfst += 3;
 			codeLen -= 3;
 			break;
@@ -3058,10 +3058,10 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendHexBuff(&codePtr[codeOfst], 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
 			val = ReadMUInt16(&codePtr[codeOfst + 1]);
-			sb->Append((const UTF8Char*)"putfield ");
+			sb->AppendC(UTF8STRC("putfield "));
 			sb->AppendU16(val);
 			this->DetailFieldRef(val, sb);
-			sb->Append((const UTF8Char*)"\r\n");
+			sb->AppendC(UTF8STRC("\r\n"));
 			codeOfst += 3;
 			codeLen -= 3;
 			break;
@@ -3072,10 +3072,10 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendHexBuff(&codePtr[codeOfst], 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
 			val = ReadMUInt16(&codePtr[codeOfst + 1]);
-			sb->Append((const UTF8Char*)"invokevirtual ");
+			sb->AppendC(UTF8STRC("invokevirtual "));
 			sb->AppendU16(val);
 			this->DetailMethodRef(val, sb);
-			sb->Append((const UTF8Char*)"\r\n");
+			sb->AppendC(UTF8STRC("\r\n"));
 			codeOfst += 3;
 			codeLen -= 3;
 			break;
@@ -3086,10 +3086,10 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendHexBuff(&codePtr[codeOfst], 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
 			val = ReadMUInt16(&codePtr[codeOfst + 1]);
-			sb->Append((const UTF8Char*)"invokespecial ");
+			sb->AppendC(UTF8STRC("invokespecial "));
 			sb->AppendU16(val);
 			this->DetailMethodRef(val, sb);
-			sb->Append((const UTF8Char*)"\r\n");
+			sb->AppendC(UTF8STRC("\r\n"));
 			codeOfst += 3;
 			codeLen -= 3;
 			break;
@@ -3100,10 +3100,10 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendHexBuff(&codePtr[codeOfst], 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
 			val = ReadMUInt16(&codePtr[codeOfst + 1]);
-			sb->Append((const UTF8Char*)"invokestatic ");
+			sb->AppendC(UTF8STRC("invokestatic "));
 			sb->AppendU16(val);
 			this->DetailMethodRef(val, sb);
-			sb->Append((const UTF8Char*)"\r\n");
+			sb->AppendC(UTF8STRC("\r\n"));
 			codeOfst += 3;
 			codeLen -= 3;
 			break;
@@ -3114,13 +3114,13 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendHexBuff(&codePtr[codeOfst], 5, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 1);
 			val = ReadMUInt16(&codePtr[codeOfst + 1]);
-			sb->Append((const UTF8Char*)"invokeinterface ");
+			sb->AppendC(UTF8STRC("invokeinterface "));
 			sb->AppendU16(val);
 			sb->AppendChar(',', 1);
 			sb->AppendChar(' ', 1);
 			sb->AppendU16(codePtr[codeOfst + 3]);
 			this->DetailMethodRef(val, sb);
-			sb->Append((const UTF8Char*)"\r\n");
+			sb->AppendC(UTF8STRC("\r\n"));
 			codeOfst += 5;
 			codeLen -= 5;
 			break;
@@ -3131,10 +3131,10 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendHexBuff(&codePtr[codeOfst], 5, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 1);
 			val = ReadMUInt16(&codePtr[codeOfst + 1]);
-			sb->Append((const UTF8Char*)"invokedynamic ");
+			sb->AppendC(UTF8STRC("invokedynamic "));
 			sb->AppendU16(val);
 			this->DetailMethodRef(val, sb);
-			sb->Append((const UTF8Char*)"\r\n");
+			sb->AppendC(UTF8STRC("\r\n"));
 			codeOfst += 5;
 			codeLen -= 5;
 			break;
@@ -3145,10 +3145,10 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendHexBuff(&codePtr[codeOfst], 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
 			val = ReadMUInt16(&codePtr[codeOfst + 1]);
-			sb->Append((const UTF8Char*)"new ");
+			sb->AppendC(UTF8STRC("new "));
 			sb->AppendU16(val);
 			this->DetailClassName(val, sb);
-			sb->Append((const UTF8Char*)"\r\n");
+			sb->AppendC(UTF8STRC("\r\n"));
 			codeOfst += 3;
 			codeLen -= 3;
 			break;
@@ -3159,36 +3159,36 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendHexBuff(&codePtr[codeOfst], 2, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 10);
 			val = codePtr[codeOfst + 1];
-			sb->Append((const UTF8Char*)"newarray ");
+			sb->AppendC(UTF8STRC("newarray "));
 			sb->AppendU16(val);
 			switch (val)
 			{
 			case 4: //T_BOOLEAN
-				sb->Append((const UTF8Char*)" (T_BOOLEAN)");
+				sb->AppendC(UTF8STRC(" (T_BOOLEAN)"));
 				break;
 			case 5: //T_CHAR
-				sb->Append((const UTF8Char*)" (T_CHAR)");
+				sb->AppendC(UTF8STRC(" (T_CHAR)"));
 				break;
 			case 6: //T_FLOAT
-				sb->Append((const UTF8Char*)" (T_FLOAT)");
+				sb->AppendC(UTF8STRC(" (T_FLOAT)"));
 				break;
 			case 7: //T_DOUBLE
-				sb->Append((const UTF8Char*)" (T_DOUBLE)");
+				sb->AppendC(UTF8STRC(" (T_DOUBLE)"));
 				break;
 			case 8: //T_BYTE
-				sb->Append((const UTF8Char*)" (T_BYTE)");
+				sb->AppendC(UTF8STRC(" (T_BYTE)"));
 				break;
 			case 9: //T_SHORT
-				sb->Append((const UTF8Char*)" (T_SHORT)");
+				sb->AppendC(UTF8STRC(" (T_SHORT)"));
 				break;
 			case 10: //T_INT
-				sb->Append((const UTF8Char*)" (T_INT)");
+				sb->AppendC(UTF8STRC(" (T_INT)"));
 				break;
 			case 11: //T_LONG
-				sb->Append((const UTF8Char*)" (T_LONG)");
+				sb->AppendC(UTF8STRC(" (T_LONG)"));
 				break;
 			}
-			sb->Append((const UTF8Char*)"\r\n");
+			sb->AppendC(UTF8STRC("\r\n"));
 			codeOfst += 2;
 			codeLen -= 2;
 			break;
@@ -3199,10 +3199,10 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendHexBuff(&codePtr[codeOfst], 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
 			val = ReadMUInt16(&codePtr[codeOfst + 1]);
-			sb->Append((const UTF8Char*)"anewarray ");
+			sb->AppendC(UTF8STRC("anewarray "));
 			sb->AppendU16(val);
 			this->DetailClassName(val, sb);
-			sb->Append((const UTF8Char*)"\r\n");
+			sb->AppendC(UTF8STRC("\r\n"));
 			codeOfst += 3;
 			codeLen -= 3;
 			break;
@@ -3212,7 +3212,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"arraylength\r\n");
+			sb->AppendC(UTF8STRC("arraylength\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -3222,7 +3222,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"athrow\r\n");
+			sb->AppendC(UTF8STRC("athrow\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -3233,10 +3233,10 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendHexBuff(&codePtr[codeOfst], 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
 			val = ReadMUInt16(&codePtr[codeOfst + 1]);
-			sb->Append((const UTF8Char*)"checkcast ");
+			sb->AppendC(UTF8STRC("checkcast "));
 			sb->AppendU16(val);
 			this->DetailClassName(val, sb);
-			sb->Append((const UTF8Char*)"\r\n");
+			sb->AppendC(UTF8STRC("\r\n"));
 			codeOfst += 3;
 			codeLen -= 3;
 			break;
@@ -3247,10 +3247,10 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendHexBuff(&codePtr[codeOfst], 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
 			val = ReadMUInt16(&codePtr[codeOfst + 1]);
-			sb->Append((const UTF8Char*)"instanceof ");
+			sb->AppendC(UTF8STRC("instanceof "));
 			sb->AppendU16(val);
 			this->DetailClassName(val, sb);
-			sb->Append((const UTF8Char*)"\r\n");
+			sb->AppendC(UTF8STRC("\r\n"));
 			codeOfst += 3;
 			codeLen -= 3;
 			break;
@@ -3260,7 +3260,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"monitorenter\r\n");
+			sb->AppendC(UTF8STRC("monitorenter\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -3270,7 +3270,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"monitorexit\r\n");
+			sb->AppendC(UTF8STRC("monitorexit\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -3281,7 +3281,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			//////////////////////////////////////////
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"wide\r\n");
+			sb->AppendC(UTF8STRC("wide\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -3292,13 +3292,13 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendHexBuff(&codePtr[codeOfst], 4, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 4);
 			val = ReadMUInt16(&codePtr[codeOfst + 1]);
-			sb->Append((const UTF8Char*)"multianewarray ");
+			sb->AppendC(UTF8STRC("multianewarray "));
 			sb->AppendU16(val);
 			sb->AppendChar(',', 1);
 			sb->AppendChar(' ', 1);
 			sb->AppendU16(codePtr[codeOfst + 3]);
 			this->DetailClassName(val, sb);
-			sb->Append((const UTF8Char*)"\r\n");
+			sb->AppendC(UTF8STRC("\r\n"));
 			codeOfst += 4;
 			codeLen -= 4;
 			break;
@@ -3308,9 +3308,9 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHexBuff(&codePtr[codeOfst], 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
-			sb->Append((const UTF8Char*)"ifnull ");
+			sb->AppendC(UTF8STRC("ifnull "));
 			sb->AppendI16(ReadMInt16(&codePtr[codeOfst + 1]));
-			sb->Append((const UTF8Char*)"\r\n");
+			sb->AppendC(UTF8STRC("\r\n"));
 			codeOfst += 3;
 			codeLen -= 3;
 			break;
@@ -3320,9 +3320,9 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHexBuff(&codePtr[codeOfst], 3, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 7);
-			sb->Append((const UTF8Char*)"ifnonnull ");
+			sb->AppendC(UTF8STRC("ifnonnull "));
 			sb->AppendI16(ReadMInt16(&codePtr[codeOfst + 1]));
-			sb->Append((const UTF8Char*)"\r\n");
+			sb->AppendC(UTF8STRC("\r\n"));
 			codeOfst += 3;
 			codeLen -= 3;
 			break;
@@ -3332,9 +3332,9 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHexBuff(&codePtr[codeOfst], 5, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 1);
-			sb->Append((const UTF8Char*)"goto_w ");
+			sb->AppendC(UTF8STRC("goto_w "));
 			sb->AppendI32(ReadMInt32(&codePtr[codeOfst + 1]));
-			sb->Append((const UTF8Char*)"\r\n");
+			sb->AppendC(UTF8STRC("\r\n"));
 			codeOfst += 5;
 			codeLen -= 5;
 			break;
@@ -3344,9 +3344,9 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHexBuff(&codePtr[codeOfst], 5, ' ', Text::LineBreakType::None);
 			sb->AppendChar(' ', 1);
-			sb->Append((const UTF8Char*)"jsr_w ");
+			sb->AppendC(UTF8STRC("jsr_w "));
 			sb->AppendI32(ReadMInt32(&codePtr[codeOfst + 1]));
-			sb->Append((const UTF8Char*)"\r\n");
+			sb->AppendC(UTF8STRC("\r\n"));
 			codeOfst += 5;
 			codeLen -= 5;
 			break;
@@ -3356,7 +3356,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"breakpoint\r\n");
+			sb->AppendC(UTF8STRC("breakpoint\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -3366,7 +3366,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"impdep1\r\n");
+			sb->AppendC(UTF8STRC("impdep1\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -3376,7 +3376,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"impdep2\r\n");
+			sb->AppendC(UTF8STRC("impdep2\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -3386,7 +3386,7 @@ void IO::JavaClass::DetailCode(const UInt8 *codePtr, UOSInt codeLen, UOSInt lev,
 			sb->AppendChar('\t', 1);
 			sb->AppendHex8(codePtr[codeOfst + 0]);
 			sb->AppendChar(' ', 13);
-			sb->Append((const UTF8Char*)"Unknown opcode\r\n");
+			sb->AppendC(UTF8STRC("Unknown opcode\r\n"));
 			codeOfst++;
 			codeLen--;
 			break;
@@ -3511,61 +3511,61 @@ const UInt8 *IO::JavaClass::DetailStackMapFrame(const UInt8 *currPtr, const UInt
 	if (currPtr[0] >= 0 && currPtr[0] < 64)
 	{
 		this->AppendIndent(sb, lev);
-		sb->Append((const UTF8Char*)"Frame Type = SAME (");
+		sb->AppendC(UTF8STRC("Frame Type = SAME ("));
 		sb->AppendU16(currPtr[0]);
-		sb->Append((const UTF8Char*)")\r\n");
+		sb->AppendC(UTF8STRC(")\r\n"));
 		return currPtr + 1;
 	}
 	else if (currPtr[0] >= 64 && currPtr[0] < 128)
 	{
 		this->AppendIndent(sb, lev);
-		sb->Append((const UTF8Char*)"Frame Type = SAME_LOCALS_1_STACK_ITEM (");
+		sb->AppendC(UTF8STRC("Frame Type = SAME_LOCALS_1_STACK_ITEM ("));
 		sb->AppendU16(currPtr[0]);
-		sb->Append((const UTF8Char*)")\r\n");
+		sb->AppendC(UTF8STRC(")\r\n"));
 		return this->DetailVerificationTypeInfo(currPtr + 1, ptrEnd, lev + 1, sb);
 	}
 	else if (currPtr[0] == 247)
 	{
 		this->AppendIndent(sb, lev);
-		sb->Append((const UTF8Char*)"Frame Type = SAME_LOCALS_1_STACK_ITEM_EXTENDED\r\n");
+		sb->AppendC(UTF8STRC("Frame Type = SAME_LOCALS_1_STACK_ITEM_EXTENDED\r\n"));
 		this->AppendIndent(sb, lev);
-		sb->Append((const UTF8Char*)"Frame offset_delta = ");
+		sb->AppendC(UTF8STRC("Frame offset_delta = "));
 		sb->AppendU16(ReadMUInt16(&currPtr[1]));
-		sb->Append((const UTF8Char*)"\r\n");
+		sb->AppendC(UTF8STRC("\r\n"));
 		return this->DetailVerificationTypeInfo(currPtr + 3, ptrEnd, lev + 1, sb);
 	}
 	else if (currPtr[0] >= 248 && currPtr[0] <= 250)
 	{
 		this->AppendIndent(sb, lev);
-		sb->Append((const UTF8Char*)"Frame Type = CHOP (");
+		sb->AppendC(UTF8STRC("Frame Type = CHOP ("));
 		sb->AppendU16(currPtr[0]);
-		sb->Append((const UTF8Char*)")\r\n");
+		sb->AppendC(UTF8STRC(")\r\n"));
 		this->AppendIndent(sb, lev);
-		sb->Append((const UTF8Char*)"Frame offset_delta = ");
+		sb->AppendC(UTF8STRC("Frame offset_delta = "));
 		sb->AppendU16(ReadMUInt16(&currPtr[1]));
-		sb->Append((const UTF8Char*)"\r\n");
+		sb->AppendC(UTF8STRC("\r\n"));
 		return currPtr + 3;
 	}
 	else if (currPtr[0] == 251)
 	{
 		this->AppendIndent(sb, lev);
-		sb->Append((const UTF8Char*)"Frame Type = SAME_FRAME_EXTENDED\r\n");
+		sb->AppendC(UTF8STRC("Frame Type = SAME_FRAME_EXTENDED\r\n"));
 		this->AppendIndent(sb, lev);
-		sb->Append((const UTF8Char*)"Frame offset_delta = ");
+		sb->AppendC(UTF8STRC("Frame offset_delta = "));
 		sb->AppendU16(ReadMUInt16(&currPtr[1]));
-		sb->Append((const UTF8Char*)"\r\n");
+		sb->AppendC(UTF8STRC("\r\n"));
 		return currPtr + 3;
 	}
 	else if (currPtr[0] >= 252 && currPtr[0] <= 254)
 	{
 		this->AppendIndent(sb, lev);
-		sb->Append((const UTF8Char*)"Frame Type = APPEND (");
+		sb->AppendC(UTF8STRC("Frame Type = APPEND ("));
 		sb->AppendU16(currPtr[0]);
-		sb->Append((const UTF8Char*)")\r\n");
+		sb->AppendC(UTF8STRC(")\r\n"));
 		this->AppendIndent(sb, lev);
-		sb->Append((const UTF8Char*)"Frame offset_delta = ");
+		sb->AppendC(UTF8STRC("Frame offset_delta = "));
 		sb->AppendU16(ReadMUInt16(&currPtr[1]));
-		sb->Append((const UTF8Char*)"\r\n");
+		sb->AppendC(UTF8STRC("\r\n"));
 		UOSInt i = (UOSInt)currPtr[0];
 		i -= 251;
 		currPtr += 3;
@@ -3579,19 +3579,19 @@ const UInt8 *IO::JavaClass::DetailStackMapFrame(const UInt8 *currPtr, const UInt
 	{
 		UOSInt i;
 		this->AppendIndent(sb, lev);
-		sb->Append((const UTF8Char*)"Frame Type = FULL_FRAME\r\n");
+		sb->AppendC(UTF8STRC("Frame Type = FULL_FRAME\r\n"));
 		this->AppendIndent(sb, lev);
-		sb->Append((const UTF8Char*)"Frame offset_delta = ");
+		sb->AppendC(UTF8STRC("Frame offset_delta = "));
 		sb->AppendU16(ReadMUInt16(&currPtr[1]));
-		sb->Append((const UTF8Char*)"\r\n");
+		sb->AppendC(UTF8STRC("\r\n"));
 		currPtr += 3;
 		if (currPtr + 2 <= ptrEnd)
 		{
 			i = ReadMUInt16(currPtr);
 			this->AppendIndent(sb, lev);
-			sb->Append((const UTF8Char*)"Frame number_of_locals = ");
+			sb->AppendC(UTF8STRC("Frame number_of_locals = "));
 			sb->AppendUOSInt(i);
-			sb->Append((const UTF8Char*)"\r\n");
+			sb->AppendC(UTF8STRC("\r\n"));
 			while (i-- > 0)
 			{
 				currPtr = this->DetailVerificationTypeInfo(currPtr, ptrEnd, lev + 1, sb);
@@ -3601,9 +3601,9 @@ const UInt8 *IO::JavaClass::DetailStackMapFrame(const UInt8 *currPtr, const UInt
 		{
 			i = ReadMUInt16(currPtr);
 			this->AppendIndent(sb, lev);
-			sb->Append((const UTF8Char*)"Frame number_of_stack_items = ");
+			sb->AppendC(UTF8STRC("Frame number_of_stack_items = "));
 			sb->AppendUOSInt(i);
-			sb->Append((const UTF8Char*)"\r\n");
+			sb->AppendC(UTF8STRC("\r\n"));
 			while (i-- > 0)
 			{
 				currPtr = this->DetailVerificationTypeInfo(currPtr, ptrEnd, lev + 1, sb);
@@ -3613,7 +3613,7 @@ const UInt8 *IO::JavaClass::DetailStackMapFrame(const UInt8 *currPtr, const UInt
 	}
 	else
 	{
-		sb->Append((const UTF8Char*)"Frame Type = UNKNOWN (");
+		sb->AppendC(UTF8STRC("Frame Type = UNKNOWN ("));
 		sb->AppendU16(currPtr[0]);
 		sb->AppendChar(')', 1);
 		return currPtr + 1;
@@ -3628,35 +3628,35 @@ const UInt8 *IO::JavaClass::DetailVerificationTypeInfo(const UInt8 *currPtr, con
 	}
 	UInt16 sindex;
 	this->AppendIndent(sb, lev);
-	sb->Append((const UTF8Char*)"VerificationType = ");
+	sb->AppendC(UTF8STRC("VerificationType = "));
 	switch (currPtr[0])
 	{
 	case 0:
-		sb->Append((const UTF8Char*)"Top\r\n");
+		sb->AppendC(UTF8STRC("Top\r\n"));
 		return currPtr + 1;
 	case 1:
-		sb->Append((const UTF8Char*)"Integer\r\n");
+		sb->AppendC(UTF8STRC("Integer\r\n"));
 		return currPtr + 1;
 	case 2:
-		sb->Append((const UTF8Char*)"Float\r\n");
+		sb->AppendC(UTF8STRC("Float\r\n"));
 		return currPtr + 1;
 	case 3:
-		sb->Append((const UTF8Char*)"Double\r\n");
+		sb->AppendC(UTF8STRC("Double\r\n"));
 		return currPtr + 1;
 	case 4:
-		sb->Append((const UTF8Char*)"Long\r\n");
+		sb->AppendC(UTF8STRC("Long\r\n"));
 		return currPtr + 1;
 	case 5:
-		sb->Append((const UTF8Char*)"Null\r\n");
+		sb->AppendC(UTF8STRC("Null\r\n"));
 		return currPtr + 1;
 	case 6:
-		sb->Append((const UTF8Char*)"UninitializedThis\r\n");
+		sb->AppendC(UTF8STRC("UninitializedThis\r\n"));
 		return currPtr + 1;
 	case 7:
 		{
-			sb->Append((const UTF8Char*)"Object\r\n");
+			sb->AppendC(UTF8STRC("Object\r\n"));
 			this->AppendIndent(sb, lev);
-			sb->Append((const UTF8Char*)"Verification cinfo_index = ");
+			sb->AppendC(UTF8STRC("Verification cinfo_index = "));
 			sindex = ReadMUInt16(&currPtr[1]);
 			sb->AppendU16(sindex);
 	/*		UInt16 strLen;
@@ -3668,25 +3668,25 @@ const UInt8 *IO::JavaClass::DetailVerificationTypeInfo(const UInt8 *currPtr, con
 				Text::StringBuilderUTF8 sbTmp;
 				sbTmp.AppendC(ptr + 3, strLen);
 				sbTmp.Replace('/', '.');
-				sb->Append((const UTF8Char*)" (");
+				sb->AppendC(UTF8STRC(" ("));
 				sb->Append(sbTmp.ToString());
-				sb->Append((const UTF8Char*)")");
+				sb->AppendC(UTF8STRC(")"));
 			}*/
-			sb->Append((const UTF8Char*)"\r\n");
+			sb->AppendC(UTF8STRC("\r\n"));
 			return currPtr + 3;
 		}
 	case 8:
-		sb->Append((const UTF8Char*)"Uninitialized\r\n");
+		sb->AppendC(UTF8STRC("Uninitialized\r\n"));
 		this->AppendIndent(sb, lev);
-		sb->Append((const UTF8Char*)"Verification offset = ");
+		sb->AppendC(UTF8STRC("Verification offset = "));
 		sindex = ReadMUInt16(&currPtr[1]);
 		sb->AppendU16(sindex);
-		sb->Append((const UTF8Char*)"\r\n");
+		sb->AppendC(UTF8STRC("\r\n"));
 		return currPtr + 3;
 	default:
-		sb->Append((const UTF8Char*)"Unknown (");
+		sb->AppendC(UTF8STRC("Unknown ("));
 		sb->AppendU16(currPtr[0]);
-		sb->Append((const UTF8Char*)"\r\n");
+		sb->AppendC(UTF8STRC("\r\n"));
 		return currPtr + 1;
 	}
 }
@@ -4036,65 +4036,65 @@ void IO::JavaClass::AppendCodeClassContent(Text::StringBuilderUTF *sb, UOSInt le
 	this->AppendIndent(sb, lev);
 	if (this->accessFlags & 1) //ACC_PUBLIC
 	{
-		sb->Append((const UTF8Char*)"public ");
+		sb->AppendC(UTF8STRC("public "));
 	}
 	else if (accessFlags & 2) //ACC_PRIVATE
 	{
-		sb->Append((const UTF8Char*)"private ");
+		sb->AppendC(UTF8STRC("private "));
 	}
 	else if (accessFlags & 4) //ACC_PROTECTED
 	{
-		sb->Append((const UTF8Char*)"protected ");
+		sb->AppendC(UTF8STRC("protected "));
 	}
 
 	if (accessFlags & 8) //ACC_STATIC
 	{
-		sb->Append((const UTF8Char*)"static ");
+		sb->AppendC(UTF8STRC("static "));
 	}
 	if (accessFlags & 0x10) //ACC_FINAL
 	{
-		sb->Append((const UTF8Char*)"final ");
+		sb->AppendC(UTF8STRC("final "));
 	}
 	if (accessFlags & 0x40) //ACC_VOLATILE
 	{
-		sb->Append((const UTF8Char*)"volatile ");
+		sb->AppendC(UTF8STRC("volatile "));
 	}
 	if (accessFlags & 0x80) //ACC_TRANSIENT
 	{
-		sb->Append((const UTF8Char*)"transient ");
+		sb->AppendC(UTF8STRC("transient "));
 	}
 	if (accessFlags & 0x0100) //ACC_NATIVE
 	{
-		sb->Append((const UTF8Char*)"native ");
+		sb->AppendC(UTF8STRC("native "));
 	}
 
 	if (accessFlags & 0x0200) //ACC_INTERFACE
 	{
-		sb->Append((const UTF8Char*)"interface ");
+		sb->AppendC(UTF8STRC("interface "));
 	}
 	else if (accessFlags & 0x0400) //ACC_ABSTRACT
 	{
-		sb->Append((const UTF8Char*)"abstract class ");
+		sb->AppendC(UTF8STRC("abstract class "));
 	}
 	else if (accessFlags & 0x0800) //ACC_STRICT
 	{
-		sb->Append((const UTF8Char*)"strict class");
+		sb->AppendC(UTF8STRC("strict class"));
 	}
 	else if (accessFlags & 0x1000) //ACC_SYNTHETIC
 	{
-		sb->Append((const UTF8Char*)"synthetic class");
+		sb->AppendC(UTF8STRC("synthetic class"));
 	}
 	else if (accessFlags & 0x2000) //ACC_ANNOTATION
 	{
-		sb->Append((const UTF8Char*)"annotation class");
+		sb->AppendC(UTF8STRC("annotation class"));
 	}
 	else if (accessFlags & 0x4000) //ACC_ENUM
 	{
-		sb->Append((const UTF8Char*)"enum ");
+		sb->AppendC(UTF8STRC("enum "));
 	}
 	else
 	{
-		sb->Append((const UTF8Char*)"class ");
+		sb->AppendC(UTF8STRC("class "));
 	}
 	sb->Append(className);
 	Text::StringBuilderUTF8 sbTmp;
@@ -4137,7 +4137,7 @@ void IO::JavaClass::AppendCodeClassContent(Text::StringBuilderUTF *sb, UOSInt le
 				{
 					if (isComma)
 					{
-						sb->Append((const UTF8Char*)", ");
+						sb->AppendC(UTF8STRC(", "));
 						isComma = false;
 					}
 					sb->AppendChar(c, 1);
@@ -4148,7 +4148,7 @@ void IO::JavaClass::AppendCodeClassContent(Text::StringBuilderUTF *sb, UOSInt le
 		ptr = AppendCodeType2String(&sbTmp, ptr, importList, packageName);
 		if (!sbTmp.Equals((const UTF8Char*)"Object"))
 		{
-			sb->Append((const UTF8Char*)" extends ");
+			sb->AppendC(UTF8STRC(" extends "));
 			sb->Append(sbTmp.ToString());
 		}
 		if (this->interfaces && this->interfaceCnt > 0)
@@ -4158,11 +4158,11 @@ void IO::JavaClass::AppendCodeClassContent(Text::StringBuilderUTF *sb, UOSInt le
 			{
 				if (i == 0)
 				{
-					sb->Append((const UTF8Char*)" implements ");
+					sb->AppendC(UTF8STRC(" implements "));
 				}
 				else
 				{
-					sb->Append((const UTF8Char*)", ");
+					sb->AppendC(UTF8STRC(", "));
 				}
 				ptr = AppendCodeType2String(sb, ptr, importList, packageName);
 				i++;
@@ -4176,7 +4176,7 @@ void IO::JavaClass::AppendCodeClassContent(Text::StringBuilderUTF *sb, UOSInt le
 		{
 			if (!sbTmp.Equals((const UTF8Char*)"java.lang.Object"))
 			{
-				sb->Append((const UTF8Char*)" extends ");
+				sb->AppendC(UTF8STRC(" extends "));
 				this->AppendCodeClassName(sb, sbTmp.ToString(), importList, packageName);
 			}
 		}
@@ -4187,11 +4187,11 @@ void IO::JavaClass::AppendCodeClassContent(Text::StringBuilderUTF *sb, UOSInt le
 			{
 				if (i == 0)
 				{
-					sb->Append((const UTF8Char*)" implements ");
+					sb->AppendC(UTF8STRC(" implements "));
 				}
 				else
 				{
-					sb->Append((const UTF8Char*)", ");
+					sb->AppendC(UTF8STRC(", "));
 				}
 				sbTmp.ClearStr();
 				this->ClassNameString(ReadMUInt16(&this->interfaces[i * 2]), &sbTmp);
@@ -4200,14 +4200,14 @@ void IO::JavaClass::AppendCodeClassContent(Text::StringBuilderUTF *sb, UOSInt le
 			}
 		}
 	}
-	sb->Append((const UTF8Char*)" {\r\n");
+	sb->AppendC(UTF8STRC(" {\r\n"));
 	i = 0;
 	j = this->FieldsGetCount();
 	while (i < j)
 	{
 		this->AppendIndent(sb, lev + 1);
 		this->AppendCodeField(sb, i, importList, packageName);
-		sb->Append((const UTF8Char*)";\r\n");
+		sb->AppendC(UTF8STRC(";\r\n"));
 		i++;
 	}
 
@@ -4215,12 +4215,12 @@ void IO::JavaClass::AppendCodeClassContent(Text::StringBuilderUTF *sb, UOSInt le
 	j = this->MethodsGetCount();
 	while (i < j)
 	{
-		sb->Append((const UTF8Char*)"\r\n");
+		sb->AppendC(UTF8STRC("\r\n"));
 		this->AppendCodeMethod(sb, i, lev + 1, false, true, importList, packageName);
 		i++;
 	}
 	this->AppendIndent(sb, lev);
-	sb->Append((const UTF8Char*)"}\r\n");
+	sb->AppendC(UTF8STRC("}\r\n"));
 }
 
 void IO::JavaClass::AppendCodeField(Text::StringBuilderUTF *sb, UOSInt index, Data::ArrayListStrUTF8 *importList, const UTF8Char *packageName)
@@ -4252,16 +4252,16 @@ void IO::JavaClass::AppendCodeField(Text::StringBuilderUTF *sb, UOSInt index, Da
 				{
 					if (this->constPool[nameIndex][0] == 3)
 					{
-						sbValue.Append((const UTF8Char*)" = ");
+						sbValue.AppendC(UTF8STRC(" = "));
 						if (sbTypeName.Equals((const UTF8Char*)"boolean"))
 						{
 							if (ReadMInt32(&this->constPool[nameIndex][1]) != 0)
 							{
-								sbValue.Append((const UTF8Char*)"true");
+								sbValue.AppendC(UTF8STRC("true"));
 							}
 							else
 							{
-								sbValue.Append((const UTF8Char*)"false");
+								sbValue.AppendC(UTF8STRC("false"));
 							}
 						}
 						else
@@ -4271,19 +4271,19 @@ void IO::JavaClass::AppendCodeField(Text::StringBuilderUTF *sb, UOSInt index, Da
 					}
 					else if (this->constPool[nameIndex][0] == 4)
 					{
-						sbValue.Append((const UTF8Char*)" = ");
+						sbValue.AppendC(UTF8STRC(" = "));
 						Text::SBAppendF32(&sbValue, ReadMFloat(&this->constPool[nameIndex][1]));
 						sbValue.AppendChar('f', 1);
 					}
 					else if (this->constPool[nameIndex][0] == 5)
 					{
-						sbValue.Append((const UTF8Char*)" = ");
+						sbValue.AppendC(UTF8STRC(" = "));
 						sbValue.AppendI64(ReadMInt64(&this->constPool[nameIndex][1]));
 						sbValue.AppendChar('L', 1);
 					}
 					else if (this->constPool[nameIndex][0] == 6)
 					{
-						sbValue.Append((const UTF8Char*)" = ");
+						sbValue.AppendC(UTF8STRC(" = "));
 						Text::SBAppendF64(&sbValue, ReadMDouble(&this->constPool[nameIndex][1]));
 					}
 					else if (this->constPool[nameIndex][0] == 8)
@@ -4293,7 +4293,7 @@ void IO::JavaClass::AppendCodeField(Text::StringBuilderUTF *sb, UOSInt index, Da
 						ptr = this->constPool[sindex];
 						if (ptr[0] == 1)
 						{
-							sbValue.Append((const UTF8Char*)" = ");
+							sbValue.AppendC(UTF8STRC(" = "));
 							strLen = ReadMUInt16(&ptr[1]);
 							const UTF8Char *s = Text::StrCopyNewC(ptr + 3, strLen);
 							Text::JSText::ToJSTextDQuote(&sbValue, s);
@@ -4321,27 +4321,27 @@ void IO::JavaClass::AppendCodeField(Text::StringBuilderUTF *sb, UOSInt index, Da
 
 	if (accessFlags & 1)
 	{
-		sb->Append((const UTF8Char*)"public ");
+		sb->AppendC(UTF8STRC("public "));
 	}
 	if (accessFlags & 2)
 	{
-		sb->Append((const UTF8Char*)"private ");
+		sb->AppendC(UTF8STRC("private "));
 	}
 	if (accessFlags & 4)
 	{
-		sb->Append((const UTF8Char*)"protected ");
+		sb->AppendC(UTF8STRC("protected "));
 	}
 	if (accessFlags & 8)
 	{
-		sb->Append((const UTF8Char*)"static ");
+		sb->AppendC(UTF8STRC("static "));
 	}
 	if (accessFlags & 0x10)
 	{
-		sb->Append((const UTF8Char*)"final ");
+		sb->AppendC(UTF8STRC("final "));
 	}
 	if (accessFlags & 0x40)
 	{
-		sb->Append((const UTF8Char*)"volatile ");
+		sb->AppendC(UTF8STRC("volatile "));
 	}
 	if (signatureIndex != 0)
 	{
@@ -4394,7 +4394,7 @@ void IO::JavaClass::AppendCodeMethod(Text::StringBuilderUTF *sb, UOSInt index, U
 				{
 					this->AppendIndent(sb, lev);
 					annptr = this->DetailAnnotation(annptr, &ptr[6 + len], sb, importList, packageName);
-					sb->Append((const UTF8Char*)"\r\n");
+					sb->AppendC(UTF8STRC("\r\n"));
 
 					j++;
 				}
@@ -4409,35 +4409,35 @@ void IO::JavaClass::AppendCodeMethod(Text::StringBuilderUTF *sb, UOSInt index, U
 	this->AppendIndent(sb, lev);
 	if (method.accessFlags & 1)
 	{
-		sb->Append((const UTF8Char*)"public ");
+		sb->AppendC(UTF8STRC("public "));
 	}
 	if (method.accessFlags & 2)
 	{
-		sb->Append((const UTF8Char*)"private ");
+		sb->AppendC(UTF8STRC("private "));
 	}
 	if (method.accessFlags & 4)
 	{
-		sb->Append((const UTF8Char*)"protected ");
+		sb->AppendC(UTF8STRC("protected "));
 	}
 	if (method.accessFlags & 8)
 	{
-		sb->Append((const UTF8Char*)"static ");
+		sb->AppendC(UTF8STRC("static "));
 	}
 	if (method.accessFlags & 0x10)
 	{
-		sb->Append((const UTF8Char*)"final ");
+		sb->AppendC(UTF8STRC("final "));
 	}
 	if (method.accessFlags & 0x20)
 	{
-		sb->Append((const UTF8Char*)"synchronized ");
+		sb->AppendC(UTF8STRC("synchronized "));
 	}
 	if (method.accessFlags & 0x100)
 	{
-		sb->Append((const UTF8Char*)"native ");
+		sb->AppendC(UTF8STRC("native "));
 	}
 	if (method.accessFlags & 0x400)
 	{
-		sb->Append((const UTF8Char*)"abstract ");
+		sb->AppendC(UTF8STRC("abstract "));
 	}
 	if (method.signatureIndex != 0)
 	{
@@ -4454,11 +4454,11 @@ void IO::JavaClass::AppendCodeMethod(Text::StringBuilderUTF *sb, UOSInt index, U
 	{
 		if (i == 0)
 		{
-			sb->Append((const UTF8Char*)" throws ");
+			sb->AppendC(UTF8STRC(" throws "));
 		}
 		else
 		{
-			sb->Append((const UTF8Char*)", ");
+			sb->AppendC(UTF8STRC(", "));
 		}
 		sbTmp.ClearStr();
 		this->ClassNameString(method.exList->GetItem(i), &sbTmp);
@@ -4466,13 +4466,13 @@ void IO::JavaClass::AppendCodeMethod(Text::StringBuilderUTF *sb, UOSInt index, U
 		i++;
 	}
 
-	sb->Append((const UTF8Char*)"\r\n");
+	sb->AppendC(UTF8STRC("\r\n"));
 	this->AppendIndent(sb, lev);
-	sb->Append((const UTF8Char*)"{\r\n");
+	sb->AppendC(UTF8STRC("{\r\n"));
 	if (disasm)
 	{
 		this->AppendIndent(sb, (lev + 1));
-		sb->Append((const UTF8Char*)"/*\r\n");
+		sb->AppendC(UTF8STRC("/*\r\n"));
 
 		ptr = &this->methods[index][8];
 		i = 0;
@@ -4494,7 +4494,7 @@ void IO::JavaClass::AppendCodeMethod(Text::StringBuilderUTF *sb, UOSInt index, U
 			i++;
 		}
 		this->AppendIndent(sb, (lev + 1));
-		sb->Append((const UTF8Char*)"*/\r\n");
+		sb->AppendC(UTF8STRC("*/\r\n"));
 	}
 	if (decompile)
 	{
@@ -4518,7 +4518,7 @@ void IO::JavaClass::AppendCodeMethod(Text::StringBuilderUTF *sb, UOSInt index, U
 		}
 	}
 	this->AppendIndent(sb, lev);
-	sb->Append((const UTF8Char*)"}\r\n");
+	sb->AppendC(UTF8STRC("}\r\n"));
 	MethodFree(&method);
 }
 
@@ -4594,18 +4594,18 @@ void IO::JavaClass::AppendCodeMethodCodes(Text::StringBuilderUTF *sb, UOSInt lev
 		while (i-- > 0)
 		{
 			this->AppendIndent(sb, lev);
-			sb->Append((const UTF8Char*)"// Unprocessed stack: ");
+			sb->AppendC(UTF8STRC("// Unprocessed stack: "));
 			sb->Append(stackVal.GetItem(i));
-			sb->Append((const UTF8Char*)"\r\n");
+			sb->AppendC(UTF8STRC("\r\n"));
 			stackVal.GetItem(i)->Release();
 		}
 		i = stackTypes.GetCount();
 		while (i-- > 0)
 		{
 			this->AppendIndent(sb, lev);
-			sb->Append((const UTF8Char*)"// Unprocessed stack type: ");
+			sb->AppendC(UTF8STRC("// Unprocessed stack type: "));
 			sb->Append(stackTypes.GetItem(i));
-			sb->Append((const UTF8Char*)"\r\n");
+			sb->AppendC(UTF8STRC("\r\n"));
 			stackTypes.GetItem(i)->Release();
 		}
 	}
@@ -4615,11 +4615,11 @@ void IO::JavaClass::AppendCodeMethodCodes(Text::StringBuilderUTF *sb, UOSInt lev
 		while (i-- > 0)
 		{
 			this->AppendIndent(sb, lev);
-			sb->Append((const UTF8Char*)"// Unprocessed stack: ");
+			sb->AppendC(UTF8STRC("// Unprocessed stack: "));
 			sb->Append(stackTypes.GetItem(i));
-			sb->Append((const UTF8Char*)" ");
+			sb->AppendC(UTF8STRC(" "));
 			sb->Append(stackVal.GetItem(i));
-			sb->Append((const UTF8Char*)"\r\n");
+			sb->AppendC(UTF8STRC("\r\n"));
 			stackTypes.GetItem(i)->Release();
 			stackVal.GetItem(i)->Release();
 		}
@@ -4649,28 +4649,28 @@ const UTF8Char *IO::JavaClass::AppendCodeType2String(Text::StringBuilderUTF *sb,
 	}
 	if (c == '+')
 	{
-		sb->Append((const UTF8Char*)"? extends ");
+		sb->AppendC(UTF8STRC("? extends "));
 		c = *typeStr++;
 	}
 	switch (c)
 	{
 	case 'B':
-		sb->Append((const UTF8Char*)"byte");
+		sb->AppendC(UTF8STRC("byte"));
 		break;
 	case 'C':
-		sb->Append((const UTF8Char*)"char");
+		sb->AppendC(UTF8STRC("char"));
 		break;
 	case 'D':
-		sb->Append((const UTF8Char*)"double");
+		sb->AppendC(UTF8STRC("double"));
 		break;
 	case 'F':
-		sb->Append((const UTF8Char*)"float");
+		sb->AppendC(UTF8STRC("float"));
 		break;
 	case 'I':
-		sb->Append((const UTF8Char*)"int");
+		sb->AppendC(UTF8STRC("int"));
 		break;
 	case 'J':
-		sb->Append((const UTF8Char*)"long");
+		sb->AppendC(UTF8STRC("long"));
 		break;
 	case 'L':
 		if (importList || packageName)
@@ -4718,7 +4718,7 @@ const UTF8Char *IO::JavaClass::AppendCodeType2String(Text::StringBuilderUTF *sb,
 						}
 						else
 						{
-							if (found) sbTmp.Append((const UTF8Char*)", ");
+							if (found) sbTmp.AppendC(UTF8STRC(", "));
 							typeStr = AppendCodeType2String(&sbTmp, typeStr, importList, packageName);
 							found = true;
 						}
@@ -4833,7 +4833,7 @@ const UTF8Char *IO::JavaClass::AppendCodeType2String(Text::StringBuilderUTF *sb,
 						}
 						else
 						{
-							if (found) sb->Append((const UTF8Char*)", ");
+							if (found) sb->AppendC(UTF8STRC(", "));
 							typeStr = AppendCodeType2String(sb, typeStr, importList, packageName);
 							found = true;
 						}
@@ -4847,7 +4847,7 @@ const UTF8Char *IO::JavaClass::AppendCodeType2String(Text::StringBuilderUTF *sb,
 		}
 		break;
 	case 'S':
-		sb->Append((const UTF8Char*)"short");
+		sb->AppendC(UTF8STRC("short"));
 		break;
 	case 'T':
 		while (true)
@@ -4869,13 +4869,13 @@ const UTF8Char *IO::JavaClass::AppendCodeType2String(Text::StringBuilderUTF *sb,
 		}
 		break;
 	case 'V':
-		sb->Append((const UTF8Char*)"void");
+		sb->AppendC(UTF8STRC("void"));
 		break;
 	case 'Z':
-		sb->Append((const UTF8Char*)"boolean");
+		sb->AppendC(UTF8STRC("boolean"));
 		break;
 	default:
-		sb->Append((const UTF8Char*)"?");
+		sb->AppendC(UTF8STRC("?"));
 		break;
 	}
 
@@ -5262,26 +5262,26 @@ Bool IO::JavaClass::GetSuperClass(Text::StringBuilderUTF *sb)
 
 Bool IO::JavaClass::FileStructDetail(Text::StringBuilderUTF *sb)
 {
-	sb->Append((const UTF8Char*)"Version = ");
+	sb->AppendC(UTF8STRC("Version = "));
 	sb->AppendU16(ReadMUInt16(&this->fileBuff[6]));
 	sb->AppendChar('.', 1);
 	sb->AppendU16(ReadMUInt16(&this->fileBuff[4]));
-	sb->Append((const UTF8Char*)"\r\n");
-	sb->Append((const UTF8Char*)"constant_pool_count = ");
+	sb->AppendC(UTF8STRC("\r\n"));
+	sb->AppendC(UTF8STRC("constant_pool_count = "));
 	sb->AppendUOSInt(this->constPoolCnt);
-	sb->Append((const UTF8Char*)"\r\n");
+	sb->AppendC(UTF8STRC("\r\n"));
 	UOSInt i;
 	UInt16 j;
 	i = 1;
 	while (i < this->constPoolCnt)
 	{
 		UInt16 strLen;
-		sb->Append((const UTF8Char*)"Const ");
+		sb->AppendC(UTF8STRC("Const "));
 		sb->AppendUOSInt(i);
-		sb->Append((const UTF8Char*)": ");
+		sb->AppendC(UTF8STRC(": "));
 		if (this->constPool[i] == 0)
 		{
-			sb->Append((const UTF8Char*)"unusable");
+			sb->AppendC(UTF8STRC("unusable"));
 		}
 		else
 		{
@@ -5289,130 +5289,130 @@ Bool IO::JavaClass::FileStructDetail(Text::StringBuilderUTF *sb)
 			{
 			case 1: //CONSTANT_Utf8
 				strLen = ReadMUInt16(&this->constPool[i][1]);
-				sb->Append((const UTF8Char*)"UTF8 = ");
+				sb->AppendC(UTF8STRC("UTF8 = "));
 				sb->AppendC(&this->constPool[i][3], strLen);
 				break;
 			case 3: //CONSTANT_Integer
-				sb->Append((const UTF8Char*)"Integer, value = ");
+				sb->AppendC(UTF8STRC("Integer, value = "));
 				sb->AppendI32(ReadMInt32(&this->constPool[i][1]));
 				break;
 			case 4: //CONSTANT_Float
-				sb->Append((const UTF8Char*)"Float, value = ");
+				sb->AppendC(UTF8STRC("Float, value = "));
 				Text::SBAppendF32(sb, ReadMFloat(&this->constPool[i][1]));
 				break;
 			case 5: //CONSTANT_Long
-				sb->Append((const UTF8Char*)"Long, value = ");
+				sb->AppendC(UTF8STRC("Long, value = "));
 				sb->AppendI64(ReadMInt64(&this->constPool[i][1]));
 				break;
 			case 6: //CONSTANT_Float
-				sb->Append((const UTF8Char*)"Double, value = ");
+				sb->AppendC(UTF8STRC("Double, value = "));
 				Text::SBAppendF64(sb, ReadMDouble(&this->constPool[i][1]));
 				break;
 			case 7: //CONSTANT_Class
-				sb->Append((const UTF8Char*)"Class, Name index = ");
+				sb->AppendC(UTF8STRC("Class, Name index = "));
 				sb->AppendU16(ReadMUInt16(&this->constPool[i][1]));
 				break;
 			case 8: //CONSTANT_String
-				sb->Append((const UTF8Char*)"String, String index = ");
+				sb->AppendC(UTF8STRC("String, String index = "));
 				sb->AppendU16(ReadMUInt16(&this->constPool[i][1]));
 				break;
 			case 9: //CONSTANT_Fieldref
-				sb->Append((const UTF8Char*)"Fieldref, Class index = ");
+				sb->AppendC(UTF8STRC("Fieldref, Class index = "));
 				sb->AppendU16(ReadMUInt16(&this->constPool[i][1]));
-				sb->Append((const UTF8Char*)", Name and type index = ");
+				sb->AppendC(UTF8STRC(", Name and type index = "));
 				sb->AppendU16(ReadMUInt16(&this->constPool[i][3]));
 				break;
 			case 10: //CONSTANT_Methodref
-				sb->Append((const UTF8Char*)"Methodref, Class index = ");
+				sb->AppendC(UTF8STRC("Methodref, Class index = "));
 				sb->AppendU16(ReadMUInt16(&this->constPool[i][1]));
-				sb->Append((const UTF8Char*)", Name and type index = ");
+				sb->AppendC(UTF8STRC(", Name and type index = "));
 				sb->AppendU16(ReadMUInt16(&this->constPool[i][3]));
 				break;
 			case 11: //CONSTANT_InterfaceMethodref
-				sb->Append((const UTF8Char*)"InterfaceMethodref, Class index = ");
+				sb->AppendC(UTF8STRC("InterfaceMethodref, Class index = "));
 				sb->AppendU16(ReadMUInt16(&this->constPool[i][1]));
-				sb->Append((const UTF8Char*)", Name and type index = ");
+				sb->AppendC(UTF8STRC(", Name and type index = "));
 				sb->AppendU16(ReadMUInt16(&this->constPool[i][3]));
 				break;
 			case 12: //CONSTANT_NameAndType
-				sb->Append((const UTF8Char*)"NameAndType, Name index = ");
+				sb->AppendC(UTF8STRC("NameAndType, Name index = "));
 				sb->AppendU16(ReadMUInt16(&this->constPool[i][1]));
-				sb->Append((const UTF8Char*)", Descriptor index = ");
+				sb->AppendC(UTF8STRC(", Descriptor index = "));
 				sb->AppendU16(ReadMUInt16(&this->constPool[i][3]));
 				break;
 			case 15: //CONSTANT_MethodHandle
-				sb->Append((const UTF8Char*)"MethodHandle, Ref Kind = ");
+				sb->AppendC(UTF8STRC("MethodHandle, Ref Kind = "));
 				sb->AppendU16(this->constPool[i][1]);
-				sb->Append((const UTF8Char*)", Ref index = ");
+				sb->AppendC(UTF8STRC(", Ref index = "));
 				sb->AppendU16(ReadMUInt16(&this->constPool[i][2]));
 				break;
 			case 16: //CONSTANT_MethodType
-				sb->Append((const UTF8Char*)"MethodType, Descriptor index = ");
+				sb->AppendC(UTF8STRC("MethodType, Descriptor index = "));
 				sb->AppendU16(ReadMUInt16(&this->constPool[i][1]));
 				break;
 			case 18: //CONSTANT_InvokeDynamic
-				sb->Append((const UTF8Char*)"InvokeDynamic, bootstrap method attr index = ");
+				sb->AppendC(UTF8STRC("InvokeDynamic, bootstrap method attr index = "));
 				sb->AppendU16(ReadMUInt16(&this->constPool[i][1]));
-				sb->Append((const UTF8Char*)", Name and Type index = ");
+				sb->AppendC(UTF8STRC(", Name and Type index = "));
 				sb->AppendU16(ReadMUInt16(&this->constPool[i][3]));
 				break;
 			}
 		}
-		sb->Append((const UTF8Char*)"\r\n");
+		sb->AppendC(UTF8STRC("\r\n"));
 		i++;
 	}
 
-	sb->Append((const UTF8Char*)"Access Flags = ");
+	sb->AppendC(UTF8STRC("Access Flags = "));
 	DetailAccessFlags(this->accessFlags, sb);
-	sb->Append((const UTF8Char*)"\r\n");
-	sb->Append((const UTF8Char*)"this_class = ");
+	sb->AppendC(UTF8STRC("\r\n"));
+	sb->AppendC(UTF8STRC("this_class = "));
 	sb->AppendU16(this->thisClass);
 	this->DetailClassName(this->thisClass, sb);
-	sb->Append((const UTF8Char*)"\r\n");
-	sb->Append((const UTF8Char*)"super_class = ");
+	sb->AppendC(UTF8STRC("\r\n"));
+	sb->AppendC(UTF8STRC("super_class = "));
 	sb->AppendU16(this->superClass);
 	this->DetailClassName(this->superClass, sb);
-	sb->Append((const UTF8Char*)"\r\n");
-	sb->Append((const UTF8Char*)"interfaces_count = ");
+	sb->AppendC(UTF8STRC("\r\n"));
+	sb->AppendC(UTF8STRC("interfaces_count = "));
 	sb->AppendUOSInt(this->interfaceCnt);
-	sb->Append((const UTF8Char*)"\r\n");
+	sb->AppendC(UTF8STRC("\r\n"));
 	i = 0;
 	while (i < this->interfaceCnt)
 	{
-		sb->Append((const UTF8Char*)"interfaces[");
+		sb->AppendC(UTF8STRC("interfaces["));
 		sb->AppendUOSInt(i);
-		sb->Append((const UTF8Char*)"] = ");
+		sb->AppendC(UTF8STRC("] = "));
 		sb->AppendU16(ReadMUInt16(&this->interfaces[i * 2]));
-		sb->Append((const UTF8Char*)"\r\n");
+		sb->AppendC(UTF8STRC("\r\n"));
 		i++;
 	}
-	sb->Append((const UTF8Char*)"fields_count = ");
+	sb->AppendC(UTF8STRC("fields_count = "));
 	sb->AppendUOSInt(this->fieldsCnt);
-	sb->Append((const UTF8Char*)"\r\n");
+	sb->AppendC(UTF8STRC("\r\n"));
 	i = 0;
 	while (i < this->fieldsCnt)
 	{
-		sb->Append((const UTF8Char*)"Field ");
+		sb->AppendC(UTF8STRC("Field "));
 		sb->AppendUOSInt(i);
-		sb->Append((const UTF8Char*)" Access Flags = ");
+		sb->AppendC(UTF8STRC(" Access Flags = "));
 		DetailAccessFlags(ReadMUInt16(&this->fields[i][0]), sb);
-		sb->Append((const UTF8Char*)"\r\n");
-		sb->Append((const UTF8Char*)"Field ");
+		sb->AppendC(UTF8STRC("\r\n"));
+		sb->AppendC(UTF8STRC("Field "));
 		sb->AppendUOSInt(i);
-		sb->Append((const UTF8Char*)" name index = ");
+		sb->AppendC(UTF8STRC(" name index = "));
 		sb->AppendU16(ReadMUInt16(&this->fields[i][2]));
-		sb->Append((const UTF8Char*)"\r\n");
-		sb->Append((const UTF8Char*)"Field ");
+		sb->AppendC(UTF8STRC("\r\n"));
+		sb->AppendC(UTF8STRC("Field "));
 		sb->AppendUOSInt(i);
-		sb->Append((const UTF8Char*)" descriptor index = ");
+		sb->AppendC(UTF8STRC(" descriptor index = "));
 		sb->AppendU16(ReadMUInt16(&this->fields[i][4]));
-		sb->Append((const UTF8Char*)"\r\n");
+		sb->AppendC(UTF8STRC("\r\n"));
 		UInt16 attributes_count = ReadMUInt16(&this->fields[i][6]);
-		sb->Append((const UTF8Char*)"Field ");
+		sb->AppendC(UTF8STRC("Field "));
 		sb->AppendUOSInt(i);
-		sb->Append((const UTF8Char*)" attributes count = ");
+		sb->AppendC(UTF8STRC(" attributes count = "));
 		sb->AppendU16(attributes_count);
-		sb->Append((const UTF8Char*)"\r\n");
+		sb->AppendC(UTF8STRC("\r\n"));
 		const UInt8 *attr = &this->fields[i][8];
 		j = 0;
 		while (j < attributes_count)
@@ -5422,36 +5422,36 @@ Bool IO::JavaClass::FileStructDetail(Text::StringBuilderUTF *sb)
 		}
 		i++;
 	}
-	sb->Append((const UTF8Char*)"methods_count = ");
+	sb->AppendC(UTF8STRC("methods_count = "));
 	sb->AppendUOSInt(this->methodCnt);
-	sb->Append((const UTF8Char*)"\r\n");
+	sb->AppendC(UTF8STRC("\r\n"));
 	i = 0;
 	while (i < this->methodCnt)
 	{
 		MethodInfo method;
 		this->MethodParse(&method, this->methods[i]);
-		sb->Append((const UTF8Char*)"Method ");
+		sb->AppendC(UTF8STRC("Method "));
 		sb->AppendUOSInt(i);
-		sb->Append((const UTF8Char*)" Access Flags = ");
+		sb->AppendC(UTF8STRC(" Access Flags = "));
 		DetailAccessFlags(accessFlags, sb);
-		sb->Append((const UTF8Char*)"\r\n");
-		sb->Append((const UTF8Char*)"Method ");
+		sb->AppendC(UTF8STRC("\r\n"));
+		sb->AppendC(UTF8STRC("Method "));
 		sb->AppendUOSInt(i);
-		sb->Append((const UTF8Char*)" name index = ");
+		sb->AppendC(UTF8STRC(" name index = "));
 		sb->AppendU16(ReadMUInt16(&this->methods[i][2]));
-		sb->Append((const UTF8Char*)"\r\n");
-		sb->Append((const UTF8Char*)"Method ");
+		sb->AppendC(UTF8STRC("\r\n"));
+		sb->AppendC(UTF8STRC("Method "));
 		sb->AppendUOSInt(i);
-		sb->Append((const UTF8Char*)" descriptor index = ");
+		sb->AppendC(UTF8STRC(" descriptor index = "));
 		sb->AppendU16(ReadMUInt16(&this->methods[i][4]));
 		this->DetailNameType(ReadMUInt16(&this->methods[i][2]), ReadMUInt16(&this->methods[i][4]), this->thisClass, (const UTF8Char*)" ", sb, 0, &method, 0, 0);
-		sb->Append((const UTF8Char*)"\r\n");
+		sb->AppendC(UTF8STRC("\r\n"));
 		UInt16 attributes_count = ReadMUInt16(&this->methods[i][6]);
-		sb->Append((const UTF8Char*)"Method ");
+		sb->AppendC(UTF8STRC("Method "));
 		sb->AppendUOSInt(i);
-		sb->Append((const UTF8Char*)" attributes count = ");
+		sb->AppendC(UTF8STRC(" attributes count = "));
 		sb->AppendU16(attributes_count);
-		sb->Append((const UTF8Char*)"\r\n");
+		sb->AppendC(UTF8STRC("\r\n"));
 		const UInt8 *attr = &this->methods[i][8];
 		j = 0;
 		while (j < attributes_count)
@@ -5463,9 +5463,9 @@ Bool IO::JavaClass::FileStructDetail(Text::StringBuilderUTF *sb)
 		i++;
 	}
 
-	sb->Append((const UTF8Char*)"attributes_count = ");
+	sb->AppendC(UTF8STRC("attributes_count = "));
 	sb->AppendUOSInt(this->attrCnt);
-	sb->Append((const UTF8Char*)"\r\n");
+	sb->AppendC(UTF8STRC("\r\n"));
 	i = 0;
 	while (i < this->attrCnt)
 	{
@@ -5506,35 +5506,35 @@ Bool IO::JavaClass::MethodsGetDecl(UOSInt index, Text::StringBuilderUTF *sb)
 	this->MethodParse(&method, this->methods[index]);
 	if (method.accessFlags & 1)
 	{
-		sb->Append((const UTF8Char*)"public ");
+		sb->AppendC(UTF8STRC("public "));
 	}
 	if (method.accessFlags & 2)
 	{
-		sb->Append((const UTF8Char*)"private ");
+		sb->AppendC(UTF8STRC("private "));
 	}
 	if (method.accessFlags & 4)
 	{
-		sb->Append((const UTF8Char*)"protected ");
+		sb->AppendC(UTF8STRC("protected "));
 	}
 	if (method.accessFlags & 8)
 	{
-		sb->Append((const UTF8Char*)"static ");
+		sb->AppendC(UTF8STRC("static "));
 	}
 	if (method.accessFlags & 0x10)
 	{
-		sb->Append((const UTF8Char*)"final ");
+		sb->AppendC(UTF8STRC("final "));
 	}
 	if (method.accessFlags & 0x20)
 	{
-		sb->Append((const UTF8Char*)"synchronized ");
+		sb->AppendC(UTF8STRC("synchronized "));
 	}
 	if (method.accessFlags & 0x100)
 	{
-		sb->Append((const UTF8Char*)"native ");
+		sb->AppendC(UTF8STRC("native "));
 	}
 	if (method.accessFlags & 0x400)
 	{
-		sb->Append((const UTF8Char*)"abstract ");
+		sb->AppendC(UTF8STRC("abstract "));
 	}
 	if (method.signatureIndex != 0)
 	{
@@ -5571,12 +5571,12 @@ void IO::JavaClass::DecompileFile(Text::StringBuilderUTF *sb)
 	UOSInt j;
 	if (i != INVALID_INDEX)
 	{
-		sb->Append((const UTF8Char*)"package ");
+		sb->AppendC(UTF8STRC("package "));
 		sb->AppendC(sbTmp.ToString(), i);
-		sb->Append((const UTF8Char*)";\r\n");
+		sb->AppendC(UTF8STRC(";\r\n"));
 		packageName = Text::StrCopyNewC(sbTmp.ToString(), i);
 	}
-	sb->Append((const UTF8Char*)"\r\n");
+	sb->AppendC(UTF8STRC("\r\n"));
 
 	Text::StringBuilderUTF8 sbClass;
 	this->AppendCodeClassContent(&sbClass, 0, sbTmp.ToString() + i + 1, &importList, packageName);
@@ -5587,12 +5587,12 @@ void IO::JavaClass::DecompileFile(Text::StringBuilderUTF *sb)
 		j = importList.GetCount();
 		while (i < j)
 		{
-			sb->Append((const UTF8Char*)"import ");
+			sb->AppendC(UTF8STRC("import "));
 			sb->Append(importList.GetItem(i));
-			sb->Append((const UTF8Char*)";\r\n");
+			sb->AppendC(UTF8STRC(";\r\n"));
 			i++;
 		}
-		sb->Append((const UTF8Char*)"\r\n");
+		sb->AppendC(UTF8STRC("\r\n"));
 	}
 	sb->Append(sbClass.ToString());
 
@@ -5614,13 +5614,13 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 		if (env->stacks->GetCount() != env->stackTypes->GetCount())
 		{
 			this->AppendIndent(sb, lev);
-			sb->Append((const UTF8Char*)"// stack and type count mismatch: ");
+			sb->AppendC(UTF8STRC("// stack and type count mismatch: "));
 			sb->AppendUOSInt(env->stacks->GetCount());
-			sb->Append((const UTF8Char*)" vs ");
+			sb->AppendC(UTF8STRC(" vs "));
 			sb->AppendUOSInt(env->stackTypes->GetCount());
-			sb->Append((const UTF8Char*)", next code = ");
+			sb->AppendC(UTF8STRC(", next code = "));
 			sb->AppendHex8(codePtr[0]);
-			sb->Append((const UTF8Char*)"\r\n");
+			sb->AppendC(UTF8STRC("\r\n"));
 			return EndType::Error;
 		}
 		switch (codePtr[0])
@@ -5938,9 +5938,9 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			if (env->stacks->GetCount() < 2)
 			{
 				this->AppendIndent(sb, lev);
-				sb->Append((const UTF8Char*)"// iaload stack invalid: count = ");
+				sb->AppendC(UTF8STRC("// iaload stack invalid: count = "));
 				sb->AppendUOSInt(env->stacks->GetCount());
-				sb->Append((const UTF8Char*)"\r\n");
+				sb->AppendC(UTF8STRC("\r\n"));
 				return EndType::Error;
 			}
 			sbTmp.ClearStr();
@@ -5960,9 +5960,9 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			if (env->stacks->GetCount() < 2)
 			{
 				this->AppendIndent(sb, lev);
-				sb->Append((const UTF8Char*)"// laload stack invalid: count = ");
+				sb->AppendC(UTF8STRC("// laload stack invalid: count = "));
 				sb->AppendUOSInt(env->stacks->GetCount());
-				sb->Append((const UTF8Char*)"\r\n");
+				sb->AppendC(UTF8STRC("\r\n"));
 				return EndType::Error;
 			}
 			sbTmp.ClearStr();
@@ -5982,9 +5982,9 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			if (env->stacks->GetCount() < 2)
 			{
 				this->AppendIndent(sb, lev);
-				sb->Append((const UTF8Char*)"// faload stack invalid: count = ");
+				sb->AppendC(UTF8STRC("// faload stack invalid: count = "));
 				sb->AppendUOSInt(env->stacks->GetCount());
-				sb->Append((const UTF8Char*)"\r\n");
+				sb->AppendC(UTF8STRC("\r\n"));
 				return EndType::Error;
 			}
 			sbTmp.ClearStr();
@@ -6004,9 +6004,9 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			if (env->stacks->GetCount() < 2)
 			{
 				this->AppendIndent(sb, lev);
-				sb->Append((const UTF8Char*)"// daload stack invalid: count = ");
+				sb->AppendC(UTF8STRC("// daload stack invalid: count = "));
 				sb->AppendUOSInt(env->stacks->GetCount());
-				sb->Append((const UTF8Char*)"\r\n");
+				sb->AppendC(UTF8STRC("\r\n"));
 				return EndType::Error;
 			}
 			sbTmp.ClearStr();
@@ -6026,9 +6026,9 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			if (env->stacks->GetCount() < 2)
 			{
 				this->AppendIndent(sb, lev);
-				sb->Append((const UTF8Char*)"// aaload stack invalid: count = ");
+				sb->AppendC(UTF8STRC("// aaload stack invalid: count = "));
 				sb->AppendUOSInt(env->stacks->GetCount());
-				sb->Append((const UTF8Char*)"\r\n");
+				sb->AppendC(UTF8STRC("\r\n"));
 				return EndType::Error;
 			}
 			sbTmp2.ClearStr();
@@ -6036,9 +6036,9 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			if (!sbTmp2.EndsWith((const UTF8Char*)"[]"))
 			{
 				this->AppendIndent(sb, lev);
-				sb->Append((const UTF8Char*)"// aaload stack not array type: ");
+				sb->AppendC(UTF8STRC("// aaload stack not array type: "));
 				sb->Append(env->stackTypes->GetItem(env->stackTypes->GetCount() - 2));
-				sb->Append((const UTF8Char*)"\r\n");
+				sb->AppendC(UTF8STRC("\r\n"));
 				return EndType::Error;
 			}
 			sbTmp2.RemoveChars(2);
@@ -6059,9 +6059,9 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			if (env->stacks->GetCount() < 2)
 			{
 				this->AppendIndent(sb, lev);
-				sb->Append((const UTF8Char*)"// baload stack invalid: count = ");
+				sb->AppendC(UTF8STRC("// baload stack invalid: count = "));
 				sb->AppendUOSInt(env->stacks->GetCount());
-				sb->Append((const UTF8Char*)"\r\n");
+				sb->AppendC(UTF8STRC("\r\n"));
 				return EndType::Error;
 			}
 			sbTmp.ClearStr();
@@ -6081,9 +6081,9 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			if (env->stacks->GetCount() < 2)
 			{
 				this->AppendIndent(sb, lev);
-				sb->Append((const UTF8Char*)"// caload stack invalid: count = ");
+				sb->AppendC(UTF8STRC("// caload stack invalid: count = "));
 				sb->AppendUOSInt(env->stacks->GetCount());
-				sb->Append((const UTF8Char*)"\r\n");
+				sb->AppendC(UTF8STRC("\r\n"));
 				return EndType::Error;
 			}
 			sbTmp.ClearStr();
@@ -6103,9 +6103,9 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			if (env->stacks->GetCount() < 2)
 			{
 				this->AppendIndent(sb, lev);
-				sb->Append((const UTF8Char*)"// saload stack invalid: count = ");
+				sb->AppendC(UTF8STRC("// saload stack invalid: count = "));
 				sb->AppendUOSInt(env->stacks->GetCount());
-				sb->Append((const UTF8Char*)"\r\n");
+				sb->AppendC(UTF8STRC("\r\n"));
 				return EndType::Error;
 			}
 			sbTmp.ClearStr();
@@ -6225,8 +6225,8 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			if (env->stacks->GetCount() < 3)
 			{
 				this->AppendIndent(sb, lev);
-				sb->Append((const UTF8Char*)"// iastore stack invalid");
-				sb->Append((const UTF8Char*)"\r\n");
+				sb->AppendC(UTF8STRC("// iastore stack invalid"));
+				sb->AppendC(UTF8STRC("\r\n"));
 				return EndType::Error;
 			}
 			else
@@ -6245,11 +6245,11 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				sb->Append(nameStr);
 				sb->AppendChar('[', 1);
 				sb->Append(indexStr);
-				sb->Append((const UTF8Char*)"] = ");
+				sb->AppendC(UTF8STRC("] = "));
 				sb->Append(valueStr);
-				sb->Append((const UTF8Char*)";");
+				sb->AppendC(UTF8STRC(";"));
 				this->AppendLineNum(sb, env, codePtr);
-				sb->Append((const UTF8Char*)"\r\n");
+				sb->AppendC(UTF8STRC("\r\n"));
 				nameStr->Release();
 				indexStr->Release();
 				valueStr->Release();
@@ -6261,8 +6261,8 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			if (env->stacks->GetCount() < 3)
 			{
 				this->AppendIndent(sb, lev);
-				sb->Append((const UTF8Char*)"// dastore stack invalid");
-				sb->Append((const UTF8Char*)"\r\n");
+				sb->AppendC(UTF8STRC("// dastore stack invalid"));
+				sb->AppendC(UTF8STRC("\r\n"));
 				return EndType::Error;
 			}
 			else
@@ -6281,11 +6281,11 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				sb->Append(nameStr);
 				sb->AppendChar('[', 1);
 				sb->Append(indexStr);
-				sb->Append((const UTF8Char*)"] = ");
+				sb->AppendC(UTF8STRC("] = "));
 				sb->Append(valueStr);
-				sb->Append((const UTF8Char*)";");
+				sb->AppendC(UTF8STRC(";"));
 				this->AppendLineNum(sb, env, codePtr);
-				sb->Append((const UTF8Char*)"\r\n");
+				sb->AppendC(UTF8STRC("\r\n"));
 				nameStr->Release();
 				indexStr->Release();
 				valueStr->Release();
@@ -6297,8 +6297,8 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			if (env->stacks->GetCount() < 3)
 			{
 				this->AppendIndent(sb, lev);
-				sb->Append((const UTF8Char*)"// aastore stack invalid");
-				sb->Append((const UTF8Char*)"\r\n");
+				sb->AppendC(UTF8STRC("// aastore stack invalid"));
+				sb->AppendC(UTF8STRC("\r\n"));
 				return EndType::Error;
 			}
 			else
@@ -6321,7 +6321,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 					if (sbTmp.ToString()[sbTmp.GetLength() - 1] == '}')
 					{
 						sbTmp.RemoveChars(1);
-						sbTmp.Append((const UTF8Char*)", ");
+						sbTmp.AppendC(UTF8STRC(", "));
 						sbTmp.Append(valueStr);
 						sbTmp.AppendChar('}', 1);
 					}
@@ -6336,7 +6336,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 								sbTmp.AppendChar(']', 1);
 							}
 						}
-						sbTmp.Append((const UTF8Char*)" {");
+						sbTmp.AppendC(UTF8STRC(" {"));
 						sbTmp.Append(valueStr);
 						sbTmp.AppendChar('}', 1);
 					}
@@ -6349,11 +6349,11 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 					sb->Append(nameStr);
 					sb->AppendChar('[', 1);
 					sb->Append(indexStr);
-					sb->Append((const UTF8Char*)"] = ");
+					sb->AppendC(UTF8STRC("] = "));
 					sb->Append(valueStr);
-					sb->Append((const UTF8Char*)";");
+					sb->AppendC(UTF8STRC(";"));
 					this->AppendLineNum(sb, env, codePtr);
-					sb->Append((const UTF8Char*)"\r\n");
+					sb->AppendC(UTF8STRC("\r\n"));
 				}
 				nameStr->Release();
 				indexStr->Release();
@@ -6366,8 +6366,8 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			if (env->stacks->GetCount() < 3)
 			{
 				this->AppendIndent(sb, lev);
-				sb->Append((const UTF8Char*)"// bastore stack invalid");
-				sb->Append((const UTF8Char*)"\r\n");
+				sb->AppendC(UTF8STRC("// bastore stack invalid"));
+				sb->AppendC(UTF8STRC("\r\n"));
 				return EndType::Error;
 			}
 			else
@@ -6390,13 +6390,13 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 					if (sbTmp.ToString()[sbTmp.GetLength() - 1] == '}')
 					{
 						sbTmp.RemoveChars(1);
-						sbTmp.Append((const UTF8Char*)", ");
+						sbTmp.AppendC(UTF8STRC(", "));
 						sbTmp.Append(valueStr);
 						sbTmp.AppendChar('}', 1);
 					}
 					else
 					{
-						sbTmp.Append((const UTF8Char*)" {");
+						sbTmp.AppendC(UTF8STRC(" {"));
 						sbTmp.Append(valueStr);
 						sbTmp.AppendChar('}', 1);
 					}
@@ -6409,11 +6409,11 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 					sb->Append(nameStr);
 					sb->AppendChar('[', 1);
 					sb->Append(indexStr);
-					sb->Append((const UTF8Char*)"] = ");
+					sb->AppendC(UTF8STRC("] = "));
 					sb->Append(valueStr);
-					sb->Append((const UTF8Char*)";");
+					sb->AppendC(UTF8STRC(";"));
 					this->AppendLineNum(sb, env, codePtr);
-					sb->Append((const UTF8Char*)"\r\n");
+					sb->AppendC(UTF8STRC("\r\n"));
 				}
 				nameStr->Release();
 				indexStr->Release();
@@ -6426,15 +6426,15 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			if (env->stacks->GetCount() <= 0)
 			{
 				this->AppendIndent(sb, lev);
-				sb->Append((const UTF8Char*)"// pop stack invalid");
-				sb->Append((const UTF8Char*)"\r\n");
+				sb->AppendC(UTF8STRC("// pop stack invalid"));
+				sb->AppendC(UTF8STRC("\r\n"));
 				return EndType::Error;
 			}
 			this->AppendIndent(sb, lev);
 			sb->Append(env->stacks->GetItem(env->stacks->GetCount() - 1));
-			sb->Append((const UTF8Char*)";");
+			sb->AppendC(UTF8STRC(";"));
 			this->AppendLineNum(sb, env, codePtr);
-			sb->Append((const UTF8Char*)"\r\n");
+			sb->AppendC(UTF8STRC("\r\n"));
 			env->stacks->Pop()->Release();
 			env->stackTypes->Pop()->Release();
 			codePtr++;
@@ -6443,8 +6443,8 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			if (env->stacks->GetCount() <= 0)
 			{
 				this->AppendIndent(sb, lev);
-				sb->Append((const UTF8Char*)"// dup stack invalid");
-				sb->Append((const UTF8Char*)"\r\n");
+				sb->AppendC(UTF8STRC("// dup stack invalid"));
+				sb->AppendC(UTF8STRC("\r\n"));
 				return EndType::Error;
 			}
 			env->stacks->Add(env->stacks->GetItem(env->stacks->GetCount() - 1)->Clone());
@@ -6456,8 +6456,8 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				if (env->stacks->GetCount() <= 1)
 				{
 					this->AppendIndent(sb, lev);
-					sb->Append((const UTF8Char*)"// dup_x1 stack invalid");
-					sb->Append((const UTF8Char*)"\r\n");
+					sb->AppendC(UTF8STRC("// dup_x1 stack invalid"));
+					sb->AppendC(UTF8STRC("\r\n"));
 					return EndType::Error;
 				}
 				UOSInt cnt = env->stacks->GetCount();
@@ -6471,8 +6471,8 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				if (env->stacks->GetCount() <= 1)
 				{
 					this->AppendIndent(sb, lev);
-					sb->Append((const UTF8Char*)"// iadd stack invalid");
-					sb->Append((const UTF8Char*)"\r\n");
+					sb->AppendC(UTF8STRC("// iadd stack invalid"));
+					sb->AppendC(UTF8STRC("\r\n"));
 					return EndType::Error;
 				}
 				Text::String *s = env->stacks->RemoveAt(env->stacks->GetCount() - 2);
@@ -6488,7 +6488,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 					sbTmp.Append(s);
 				}
 				s->Release();
-				sbTmp.Append((const UTF8Char*)" + ");
+				sbTmp.AppendC(UTF8STRC(" + "));
 				s = env->stacks->Pop();
 				if (s->ContainChars((const UTF8Char*)"<>?"))
 				{
@@ -6511,15 +6511,15 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				if (env->stacks->GetCount() <= 1)
 				{
 					this->AppendIndent(sb, lev);
-					sb->Append((const UTF8Char*)"// ladd stack invalid");
-					sb->Append((const UTF8Char*)"\r\n");
+					sb->AppendC(UTF8STRC("// ladd stack invalid"));
+					sb->AppendC(UTF8STRC("\r\n"));
 					return EndType::Error;
 				}
 				Text::String *s = env->stacks->RemoveAt(env->stacks->GetCount() - 2);
 				sbTmp.ClearStr();
 				sbTmp.Append(s);
 				s->Release();
-				sbTmp.Append((const UTF8Char*)" + ");
+				sbTmp.AppendC(UTF8STRC(" + "));
 				s = env->stacks->Pop();
 				sbTmp.Append(s);
 				s->Release();
@@ -6533,15 +6533,15 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				if (env->stacks->GetCount() <= 1)
 				{
 					this->AppendIndent(sb, lev);
-					sb->Append((const UTF8Char*)"// fadd stack invalid");
-					sb->Append((const UTF8Char*)"\r\n");
+					sb->AppendC(UTF8STRC("// fadd stack invalid"));
+					sb->AppendC(UTF8STRC("\r\n"));
 					return EndType::Error;
 				}
 				Text::String *s = env->stacks->RemoveAt(env->stacks->GetCount() - 2);
 				sbTmp.ClearStr();
 				sbTmp.Append(s);
 				s->Release();
-				sbTmp.Append((const UTF8Char*)" + ");
+				sbTmp.AppendC(UTF8STRC(" + "));
 				s = env->stacks->Pop();
 				sbTmp.Append(s);
 				s->Release();
@@ -6555,15 +6555,15 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				if (env->stacks->GetCount() <= 1)
 				{
 					this->AppendIndent(sb, lev);
-					sb->Append((const UTF8Char*)"// dadd stack invalid");
-					sb->Append((const UTF8Char*)"\r\n");
+					sb->AppendC(UTF8STRC("// dadd stack invalid"));
+					sb->AppendC(UTF8STRC("\r\n"));
 					return EndType::Error;
 				}
 				Text::String *s = env->stacks->RemoveAt(env->stacks->GetCount() - 2);
 				sbTmp.ClearStr();
 				sbTmp.Append(s);
 				s->Release();
-				sbTmp.Append((const UTF8Char*)" + ");
+				sbTmp.AppendC(UTF8STRC(" + "));
 				s = env->stacks->Pop();
 				sbTmp.Append(s);
 				s->Release();
@@ -6577,15 +6577,15 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				if (env->stacks->GetCount() <= 1)
 				{
 					this->AppendIndent(sb, lev);
-					sb->Append((const UTF8Char*)"// isub stack invalid");
-					sb->Append((const UTF8Char*)"\r\n");
+					sb->AppendC(UTF8STRC("// isub stack invalid"));
+					sb->AppendC(UTF8STRC("\r\n"));
 					return EndType::Error;
 				}
 				Text::String *s = env->stacks->RemoveAt(env->stacks->GetCount() - 2);
 				sbTmp.ClearStr();
 				sbTmp.Append(s);
 				s->Release();
-				sbTmp.Append((const UTF8Char*)" - ");
+				sbTmp.AppendC(UTF8STRC(" - "));
 				s = env->stacks->Pop();
 				sbTmp.Append(s);
 				s->Release();
@@ -6599,15 +6599,15 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				if (env->stacks->GetCount() <= 1)
 				{
 					this->AppendIndent(sb, lev);
-					sb->Append((const UTF8Char*)"// lsub stack invalid");
-					sb->Append((const UTF8Char*)"\r\n");
+					sb->AppendC(UTF8STRC("// lsub stack invalid"));
+					sb->AppendC(UTF8STRC("\r\n"));
 					return EndType::Error;
 				}
 				Text::String *s = env->stacks->RemoveAt(env->stacks->GetCount() - 2);
 				sbTmp.ClearStr();
 				sbTmp.Append(s);
 				s->Release();
-				sbTmp.Append((const UTF8Char*)" - ");
+				sbTmp.AppendC(UTF8STRC(" - "));
 				s = env->stacks->Pop();
 				sbTmp.Append(s);
 				s->Release();
@@ -6621,15 +6621,15 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				if (env->stacks->GetCount() <= 1)
 				{
 					this->AppendIndent(sb, lev);
-					sb->Append((const UTF8Char*)"// fsub stack invalid");
-					sb->Append((const UTF8Char*)"\r\n");
+					sb->AppendC(UTF8STRC("// fsub stack invalid"));
+					sb->AppendC(UTF8STRC("\r\n"));
 					return EndType::Error;
 				}
 				Text::String *s = env->stacks->RemoveAt(env->stacks->GetCount() - 2);
 				sbTmp.ClearStr();
 				sbTmp.Append(s);
 				s->Release();
-				sbTmp.Append((const UTF8Char*)" - ");
+				sbTmp.AppendC(UTF8STRC(" - "));
 				s = env->stacks->Pop();
 				sbTmp.Append(s);
 				s->Release();
@@ -6643,15 +6643,15 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				if (env->stacks->GetCount() <= 1)
 				{
 					this->AppendIndent(sb, lev);
-					sb->Append((const UTF8Char*)"// dsub stack invalid");
-					sb->Append((const UTF8Char*)"\r\n");
+					sb->AppendC(UTF8STRC("// dsub stack invalid"));
+					sb->AppendC(UTF8STRC("\r\n"));
 					return EndType::Error;
 				}
 				Text::String *s = env->stacks->RemoveAt(env->stacks->GetCount() - 2);
 				sbTmp.ClearStr();
 				sbTmp.Append(s);
 				s->Release();
-				sbTmp.Append((const UTF8Char*)" - ");
+				sbTmp.AppendC(UTF8STRC(" - "));
 				s = env->stacks->Pop();
 				sbTmp.Append(s);
 				s->Release();
@@ -6668,8 +6668,8 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				if (env->stacks->GetCount() <= 1)
 				{
 					this->AppendIndent(sb, lev);
-					sb->Append((const UTF8Char*)"// mul stack invalid");
-					sb->Append((const UTF8Char*)"\r\n");
+					sb->AppendC(UTF8STRC("// mul stack invalid"));
+					sb->AppendC(UTF8STRC("\r\n"));
 					return EndType::Error;
 				}
 				Text::String *s = env->stacks->RemoveAt(env->stacks->GetCount() - 2);
@@ -6685,7 +6685,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 					sbTmp.Append(s);
 				}
 				s->Release();
-				sbTmp.Append((const UTF8Char*)" * ");
+				sbTmp.AppendC(UTF8STRC(" * "));
 				s = env->stacks->Pop();
 				if (s->ContainChars((const UTF8Char*)"+-"))
 				{
@@ -6711,8 +6711,8 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				if (env->stacks->GetCount() <= 1)
 				{
 					this->AppendIndent(sb, lev);
-					sb->Append((const UTF8Char*)"// div stack invalid");
-					sb->Append((const UTF8Char*)"\r\n");
+					sb->AppendC(UTF8STRC("// div stack invalid"));
+					sb->AppendC(UTF8STRC("\r\n"));
 					return EndType::Error;
 				}
 				Text::String *s = env->stacks->RemoveAt(env->stacks->GetCount() - 2);
@@ -6728,7 +6728,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 					sbTmp.Append(s);
 				}
 				s->Release();
-				sbTmp.Append((const UTF8Char*)" * ");
+				sbTmp.AppendC(UTF8STRC(" * "));
 				s = env->stacks->Pop();
 				if (s->ContainChars((const UTF8Char*)"+-"))
 				{
@@ -6751,15 +6751,15 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				if (env->stacks->GetCount() <= 1)
 				{
 					this->AppendIndent(sb, lev);
-					sb->Append((const UTF8Char*)"// irem stack invalid");
-					sb->Append((const UTF8Char*)"\r\n");
+					sb->AppendC(UTF8STRC("// irem stack invalid"));
+					sb->AppendC(UTF8STRC("\r\n"));
 					return EndType::Error;
 				}
 				Text::String *s = env->stacks->RemoveAt(env->stacks->GetCount() - 2);
 				sbTmp.ClearStr();
 				sbTmp.Append(s);
 				s->Release();
-				sbTmp.Append((const UTF8Char*)" % ");
+				sbTmp.AppendC(UTF8STRC(" % "));
 				s = env->stacks->Pop();
 				sbTmp.Append(s);
 				s->Release();
@@ -6773,8 +6773,8 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				if (env->stacks->GetCount() <= 0)
 				{
 					this->AppendIndent(sb, lev);
-					sb->Append((const UTF8Char*)"// dneg stack invalid");
-					sb->Append((const UTF8Char*)"\r\n");
+					sb->AppendC(UTF8STRC("// dneg stack invalid"));
+					sb->AppendC(UTF8STRC("\r\n"));
 					return EndType::Error;
 				}
 				Text::String *s = env->stacks->Pop();
@@ -6801,8 +6801,8 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				if (env->stacks->GetCount() <= 1)
 				{
 					this->AppendIndent(sb, lev);
-					sb->Append((const UTF8Char*)"// ishl stack invalid");
-					sb->Append((const UTF8Char*)"\r\n");
+					sb->AppendC(UTF8STRC("// ishl stack invalid"));
+					sb->AppendC(UTF8STRC("\r\n"));
 					return EndType::Error;
 				}
 				Text::String *s = env->stacks->Pop();
@@ -6820,7 +6820,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 					sbTmp.Append(s2);
 					s2->Release();
 				}
-				sbTmp.Append((const UTF8Char*)" << ");
+				sbTmp.AppendC(UTF8STRC(" << "));
 				sbTmp.Append(s);
 				s->Release();
 				env->stacks->Add(Text::String::New(sbTmp.ToString(), sbTmp.GetLength()));
@@ -6835,8 +6835,8 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				if (env->stacks->GetCount() <= 1)
 				{
 					this->AppendIndent(sb, lev);
-					sb->Append((const UTF8Char*)"// iushr stack invalid");
-					sb->Append((const UTF8Char*)"\r\n");
+					sb->AppendC(UTF8STRC("// iushr stack invalid"));
+					sb->AppendC(UTF8STRC("\r\n"));
 					return EndType::Error;
 				}
 				Text::String *s = env->stacks->Pop();
@@ -6854,7 +6854,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 					sbTmp.Append(s2);
 					s2->Release();
 				}
-				sbTmp.Append((const UTF8Char*)" >> ");
+				sbTmp.AppendC(UTF8STRC(" >> "));
 				sbTmp.Append(s);
 				s->Release();
 				env->stacks->Add(Text::String::New(sbTmp.ToString(), sbTmp.GetLength()));
@@ -6869,8 +6869,8 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				if (env->stacks->GetCount() <= 1)
 				{
 					this->AppendIndent(sb, lev);
-					sb->Append((const UTF8Char*)"// iand stack invalid");
-					sb->Append((const UTF8Char*)"\r\n");
+					sb->AppendC(UTF8STRC("// iand stack invalid"));
+					sb->AppendC(UTF8STRC("\r\n"));
 					return EndType::Error;
 				}
 				Text::String *s = env->stacks->Pop();
@@ -6888,7 +6888,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 					sbTmp.Append(s2);
 					s2->Release();
 				}
-				sbTmp.Append((const UTF8Char*)" & ");
+				sbTmp.AppendC(UTF8STRC(" & "));
 				if (s->ContainChars((const UTF8Char*)"+-*/><"))
 				{
 					sbTmp.AppendChar('(', 1);
@@ -6913,8 +6913,8 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				if (env->stacks->GetCount() <= 1)
 				{
 					this->AppendIndent(sb, lev);
-					sb->Append((const UTF8Char*)"// ior stack invalid");
-					sb->Append((const UTF8Char*)"\r\n");
+					sb->AppendC(UTF8STRC("// ior stack invalid"));
+					sb->AppendC(UTF8STRC("\r\n"));
 					return EndType::Error;
 				}
 				Text::String *s = env->stacks->Pop();
@@ -6932,7 +6932,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 					sbTmp.Append(s2);
 					s2->Release();
 				}
-				sbTmp.Append((const UTF8Char*)" | ");
+				sbTmp.AppendC(UTF8STRC(" | "));
 				if (s->ContainChars((const UTF8Char*)"+-*/><"))
 				{
 					sbTmp.AppendChar('(', 1);
@@ -6957,8 +6957,8 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				if (env->stacks->GetCount() <= 1)
 				{
 					this->AppendIndent(sb, lev);
-					sb->Append((const UTF8Char*)"// ixor stack invalid");
-					sb->Append((const UTF8Char*)"\r\n");
+					sb->AppendC(UTF8STRC("// ixor stack invalid"));
+					sb->AppendC(UTF8STRC("\r\n"));
 					return EndType::Error;
 				}
 				Text::String *s = env->stacks->RemoveAt(env->stacks->GetCount() - 2);
@@ -6974,7 +6974,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				{
 					sbTmp.Append(s);
 					s->Release();
-					sbTmp.Append((const UTF8Char*)" % ");
+					sbTmp.AppendC(UTF8STRC(" % "));
 					s = env->stacks->Pop();
 					sbTmp.Append(s);
 					s->Release();
@@ -6988,11 +6988,11 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			this->AppendIndent(sb, lev);
 			this->GetLVName(sbuff, codePtr[1], env->method, (UOSInt)(codePtr - env->codeStart));
 			sb->Append(sbuff);
-			sb->Append((const UTF8Char*)" += ");
+			sb->AppendC(UTF8STRC(" += "));
 			sb->AppendI16((Int16)codePtr[2]);
-			sb->Append((const UTF8Char*)";");
+			sb->AppendC(UTF8STRC(";"));
 			this->AppendLineNum(sb, env, codePtr);
-			sb->Append((const UTF8Char*)"\r\n");
+			sb->AppendC(UTF8STRC("\r\n"));
 			codePtr += 3;
 			break;
 		case 0x85: //i2l
@@ -7005,7 +7005,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				env->stackTypes->Pop()->Release();
 				env->stackTypes->Add(Text::String::NewNotNull((const UTF8Char*)"byte"));
 				sbTmp.ClearStr();
-				sbTmp.Append((const UTF8Char*)"(byte)");
+				sbTmp.AppendC(UTF8STRC("(byte)"));
 				Text::String *s = env->stacks->Pop();
 				if (s->ContainChars((const UTF8Char*)"+-*/<>?|&"))
 				{
@@ -7026,9 +7026,9 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			if (env->stacks->GetCount() <= 1)
 			{
 				this->AppendIndent(sb, lev);
-				sb->Append((const UTF8Char*)"// lcmp stack invalid: ");
+				sb->AppendC(UTF8STRC("// lcmp stack invalid: "));
 				sb->AppendUOSInt(env->stacks->GetCount());
-				sb->Append((const UTF8Char*)"\r\n");
+				sb->AppendC(UTF8STRC("\r\n"));
 				return EndType::Error;
 			}
 			else
@@ -7056,9 +7056,9 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 					break;
 				default:
 					this->AppendIndent(sb, lev);
-					sb->Append((const UTF8Char*)"// lcmp next opcode invalid: ");
+					sb->AppendC(UTF8STRC("// lcmp next opcode invalid: "));
 					sb->AppendHex8(codePtr[1]);
-					sb->Append((const UTF8Char*)"\r\n");
+					sb->AppendC(UTF8STRC("\r\n"));
 					return EndType::Error;
 				}
 				EndType et = this->DecompileCondBranch(codePtr + 4, codePtr + ReadMInt16(&codePtr[2]) + 1, ct, env, lev, sb);
@@ -7074,9 +7074,9 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			if (env->stacks->GetCount() <= 1)
 			{
 				this->AppendIndent(sb, lev);
-				sb->Append((const UTF8Char*)"// lcmpl stack invalid: ");
+				sb->AppendC(UTF8STRC("// lcmpl stack invalid: "));
 				sb->AppendUOSInt(env->stacks->GetCount());
-				sb->Append((const UTF8Char*)"\r\n");
+				sb->AppendC(UTF8STRC("\r\n"));
 				return EndType::Error;
 			}
 			else
@@ -7104,9 +7104,9 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 					break;
 				default:
 					this->AppendIndent(sb, lev);
-					sb->Append((const UTF8Char*)"// lcmpl next opcode invalid: ");
+					sb->AppendC(UTF8STRC("// lcmpl next opcode invalid: "));
 					sb->AppendHex8(codePtr[1]);
-					sb->Append((const UTF8Char*)"\r\n");
+					sb->AppendC(UTF8STRC("\r\n"));
 					return EndType::Error;
 				}
 				EndType et = this->DecompileCondBranch(codePtr + 4, codePtr + ReadMInt16(&codePtr[2]) + 1, ct, env, lev, sb);
@@ -7121,8 +7121,8 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			if (env->stacks->GetCount() <= 0)
 			{
 				this->AppendIndent(sb, lev);
-				sb->Append((const UTF8Char*)"// ifeq stack invalid");
-				sb->Append((const UTF8Char*)"\r\n");
+				sb->AppendC(UTF8STRC("// ifeq stack invalid"));
+				sb->AppendC(UTF8STRC("\r\n"));
 				return EndType::Error;
 			}
 			else
@@ -7133,11 +7133,11 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				if (codeOfst == 5 && codePtr + 7 <= codeEnd && codePtr[3] == 0x04 && codePtr[4] == 0xAC && codePtr[5] == 0x03 && codePtr[6] == 0xAC)
 				{
 					this->AppendIndent(sb, lev);
-					sb->Append((const UTF8Char*)"return ");
+					sb->AppendC(UTF8STRC("return "));
 					AppendCond(sb, env, env->stacks->GetCount() - 2, CondType::EQ, true);
-					sb->Append((const UTF8Char*)";");
+					sb->AppendC(UTF8STRC(";"));
 					this->AppendLineNum(sb, env, codePtr);
-					sb->Append((const UTF8Char*)"\r\n");
+					sb->AppendC(UTF8STRC("\r\n"));
 					env->stacks->Pop()->Release();
 					env->stacks->Pop()->Release();
 					env->stackTypes->Pop()->Release();
@@ -7157,8 +7157,8 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			if (env->stacks->GetCount() <= 0)
 			{
 				this->AppendIndent(sb, lev);
-				sb->Append((const UTF8Char*)"// ifne stack invalid");
-				sb->Append((const UTF8Char*)"\r\n");
+				sb->AppendC(UTF8STRC("// ifne stack invalid"));
+				sb->AppendC(UTF8STRC("\r\n"));
 				return EndType::Error;
 			}
 			else
@@ -7169,11 +7169,11 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				if (codeOfst == 5 && codePtr + 7 <= codeEnd && codePtr[3] == 0x04 && codePtr[4] == 0xAC && codePtr[5] == 0x03 && codePtr[6] == 0xAC)
 				{
 					this->AppendIndent(sb, lev);
-					sb->Append((const UTF8Char*)"return ");
+					sb->AppendC(UTF8STRC("return "));
 					AppendCond(sb, env, env->stacks->GetCount() - 2, CondType::NE, true);
-					sb->Append((const UTF8Char*)";");
+					sb->AppendC(UTF8STRC(";"));
 					AppendLineNum(sb, env, codePtr);
-					sb->Append((const UTF8Char*)"\r\n");
+					sb->AppendC(UTF8STRC("\r\n"));
 					env->stacks->Pop()->Release();
 					env->stacks->Pop()->Release();
 					env->stackTypes->Pop()->Release();
@@ -7193,8 +7193,8 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			if (env->stacks->GetCount() <= 0)
 			{
 				this->AppendIndent(sb, lev);
-				sb->Append((const UTF8Char*)"// iflt stack invalid");
-				sb->Append((const UTF8Char*)"\r\n");
+				sb->AppendC(UTF8STRC("// iflt stack invalid"));
+				sb->AppendC(UTF8STRC("\r\n"));
 				return EndType::Error;
 			}
 			else
@@ -7205,11 +7205,11 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				if (codeOfst == 5 && codePtr + 7 <= codeEnd && codePtr[3] == 0x04 && codePtr[4] == 0xAC && codePtr[5] == 0x03 && codePtr[6] == 0xAC)
 				{
 					this->AppendIndent(sb, lev);
-					sb->Append((const UTF8Char*)"return ");
+					sb->AppendC(UTF8STRC("return "));
 					AppendCond(sb, env, env->stacks->GetCount() - 2, CondType::LT, true);
-					sb->Append((const UTF8Char*)";");
+					sb->AppendC(UTF8STRC(";"));
 					this->AppendLineNum(sb, env, codePtr);
-					sb->Append((const UTF8Char*)"\r\n");
+					sb->AppendC(UTF8STRC("\r\n"));
 					env->stacks->Pop()->Release();
 					env->stacks->Pop()->Release();
 					env->stackTypes->Pop()->Release();
@@ -7229,8 +7229,8 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			if (env->stacks->GetCount() <= 0)
 			{
 				this->AppendIndent(sb, lev);
-				sb->Append((const UTF8Char*)"// ifge stack invalid");
-				sb->Append((const UTF8Char*)"\r\n");
+				sb->AppendC(UTF8STRC("// ifge stack invalid"));
+				sb->AppendC(UTF8STRC("\r\n"));
 				return EndType::Error;
 			}
 			else
@@ -7241,11 +7241,11 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				if (codeOfst == 5 && codePtr + 7 <= codeEnd && codePtr[3] == 0x04 && codePtr[4] == 0xAC && codePtr[5] == 0x03 && codePtr[6] == 0xAC)
 				{
 					this->AppendIndent(sb, lev);
-					sb->Append((const UTF8Char*)"return ");
+					sb->AppendC(UTF8STRC("return "));
 					AppendCond(sb, env, env->stacks->GetCount() - 2, CondType::GE, true);
-					sb->Append((const UTF8Char*)";");
+					sb->AppendC(UTF8STRC(";"));
 					this->AppendLineNum(sb, env, codePtr);
-					sb->Append((const UTF8Char*)"\r\n");
+					sb->AppendC(UTF8STRC("\r\n"));
 					env->stacks->Pop()->Release();
 					env->stacks->Pop()->Release();
 					env->stackTypes->Pop()->Release();
@@ -7265,8 +7265,8 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			if (env->stacks->GetCount() <= 0)
 			{
 				this->AppendIndent(sb, lev);
-				sb->Append((const UTF8Char*)"// ifgt stack invalid");
-				sb->Append((const UTF8Char*)"\r\n");
+				sb->AppendC(UTF8STRC("// ifgt stack invalid"));
+				sb->AppendC(UTF8STRC("\r\n"));
 				return EndType::Error;
 			}
 			else
@@ -7277,11 +7277,11 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				if (codeOfst == 5 && codePtr + 7 <= codeEnd && codePtr[3] == 0x04 && codePtr[4] == 0xAC && codePtr[5] == 0x03 && codePtr[6] == 0xAC)
 				{
 					this->AppendIndent(sb, lev);
-					sb->Append((const UTF8Char*)"return ");
+					sb->AppendC(UTF8STRC("return "));
 					AppendCond(sb, env, env->stacks->GetCount() - 2, CondType::GT, true);
-					sb->Append((const UTF8Char*)";");
+					sb->AppendC(UTF8STRC(";"));
 					this->AppendLineNum(sb, env, codePtr);
-					sb->Append((const UTF8Char*)"\r\n");
+					sb->AppendC(UTF8STRC("\r\n"));
 					env->stacks->Pop()->Release();
 					env->stacks->Pop()->Release();
 					env->stackTypes->Pop()->Release();
@@ -7301,8 +7301,8 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			if (env->stacks->GetCount() <= 0)
 			{
 				this->AppendIndent(sb, lev);
-				sb->Append((const UTF8Char*)"// ifle stack invalid");
-				sb->Append((const UTF8Char*)"\r\n");
+				sb->AppendC(UTF8STRC("// ifle stack invalid"));
+				sb->AppendC(UTF8STRC("\r\n"));
 				return EndType::Error;
 			}
 			else
@@ -7313,11 +7313,11 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				if (codeOfst == 5 && codePtr + 7 <= codeEnd && codePtr[3] == 0x04 && codePtr[4] == 0xAC && codePtr[5] == 0x03 && codePtr[6] == 0xAC)
 				{
 					this->AppendIndent(sb, lev);
-					sb->Append((const UTF8Char*)"return ");
+					sb->AppendC(UTF8STRC("return "));
 					AppendCond(sb, env, env->stacks->GetCount() - 2, CondType::LE, true);
-					sb->Append((const UTF8Char*)";");
+					sb->AppendC(UTF8STRC(";"));
 					this->AppendLineNum(sb, env, codePtr);
-					sb->Append((const UTF8Char*)"\r\n");
+					sb->AppendC(UTF8STRC("\r\n"));
 					env->stacks->Pop()->Release();
 					env->stacks->Pop()->Release();
 					env->stackTypes->Pop()->Release();
@@ -7337,8 +7337,8 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			if (env->stacks->GetCount() <= 1)
 			{
 				this->AppendIndent(sb, lev);
-				sb->Append((const UTF8Char*)"// if_icmpge stack invalid");
-				sb->Append((const UTF8Char*)"\r\n");
+				sb->AppendC(UTF8STRC("// if_icmpge stack invalid"));
+				sb->AppendC(UTF8STRC("\r\n"));
 				return EndType::Error;
 			}
 			else
@@ -7355,8 +7355,8 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			if (env->stacks->GetCount() <= 1)
 			{
 				this->AppendIndent(sb, lev);
-				sb->Append((const UTF8Char*)"// if_icmpge stack invalid");
-				sb->Append((const UTF8Char*)"\r\n");
+				sb->AppendC(UTF8STRC("// if_icmpge stack invalid"));
+				sb->AppendC(UTF8STRC("\r\n"));
 				return EndType::Error;
 			}
 			else
@@ -7373,8 +7373,8 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			if (env->stacks->GetCount() <= 1)
 			{
 				this->AppendIndent(sb, lev);
-				sb->Append((const UTF8Char*)"// if_icmpge stack invalid");
-				sb->Append((const UTF8Char*)"\r\n");
+				sb->AppendC(UTF8STRC("// if_icmpge stack invalid"));
+				sb->AppendC(UTF8STRC("\r\n"));
 				return EndType::Error;
 			}
 			else
@@ -7391,8 +7391,8 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			if (env->stacks->GetCount() <= 1)
 			{
 				this->AppendIndent(sb, lev);
-				sb->Append((const UTF8Char*)"// if_icmpge stack invalid");
-				sb->Append((const UTF8Char*)"\r\n");
+				sb->AppendC(UTF8STRC("// if_icmpge stack invalid"));
+				sb->AppendC(UTF8STRC("\r\n"));
 				return EndType::Error;
 			}
 			else
@@ -7409,8 +7409,8 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			if (env->stacks->GetCount() <= 1)
 			{
 				this->AppendIndent(sb, lev);
-				sb->Append((const UTF8Char*)"// if_icmpgt stack invalid");
-				sb->Append((const UTF8Char*)"\r\n");
+				sb->AppendC(UTF8STRC("// if_icmpgt stack invalid"));
+				sb->AppendC(UTF8STRC("\r\n"));
 				return EndType::Error;
 			}
 			else
@@ -7427,8 +7427,8 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			if (env->stacks->GetCount() <= 1)
 			{
 				this->AppendIndent(sb, lev);
-				sb->Append((const UTF8Char*)"// if_icmple stack invalid");
-				sb->Append((const UTF8Char*)"\r\n");
+				sb->AppendC(UTF8STRC("// if_icmple stack invalid"));
+				sb->AppendC(UTF8STRC("\r\n"));
 				return EndType::Error;
 			}
 			else
@@ -7445,8 +7445,8 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			if (env->stacks->GetCount() <= 1)
 			{
 				this->AppendIndent(sb, lev);
-				sb->Append((const UTF8Char*)"// if_acmpeq stack invalid");
-				sb->Append((const UTF8Char*)"\r\n");
+				sb->AppendC(UTF8STRC("// if_acmpeq stack invalid"));
+				sb->AppendC(UTF8STRC("\r\n"));
 				return EndType::Error;
 			}
 			else
@@ -7463,8 +7463,8 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			if (env->stacks->GetCount() <= 1)
 			{
 				this->AppendIndent(sb, lev);
-				sb->Append((const UTF8Char*)"// if_acmpne stack invalid");
-				sb->Append((const UTF8Char*)"\r\n");
+				sb->AppendC(UTF8STRC("// if_acmpne stack invalid"));
+				sb->AppendC(UTF8STRC("\r\n"));
 				return EndType::Error;
 			}
 			else
@@ -7501,12 +7501,12 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				if (stackCnt == env->stacks->GetCount() && (et == EndType::CodeEnd || et == EndType::Throw || et == EndType::Return))
 				{
 					this->AppendIndent(sb, lev);
-					sb->Append((const UTF8Char*)"if (false)\r\n");
+					sb->AppendC(UTF8STRC("if (false)\r\n"));
 					this->AppendIndent(sb, lev);
-					sb->Append((const UTF8Char*)"{\r\n");
+					sb->AppendC(UTF8STRC("{\r\n"));
 					sb->Append(sbTmp.ToString());
 					this->AppendIndent(sb, lev);
-					sb->Append((const UTF8Char*)"}\r\n");
+					sb->AppendC(UTF8STRC("}\r\n"));
 					codePtr = codePtr + i;
 				}
 				else
@@ -7521,22 +7521,22 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				if (env->stacks->GetCount() <= 0)
 				{
 					this->AppendIndent(sb, lev);
-					sb->Append((const UTF8Char*)"// ireturn stack invalid");
-					sb->Append((const UTF8Char*)"\r\n");
+					sb->AppendC(UTF8STRC("// ireturn stack invalid"));
+					sb->AppendC(UTF8STRC("\r\n"));
 					return EndType::Error;
 				}
 				this->AppendIndent(sb, lev);
-				sb->Append((const UTF8Char*)"return ");
+				sb->AppendC(UTF8STRC("return "));
 				Text::String *s = env->stacks->GetItem(env->stacks->GetCount() - 1);
 				if (env->returnType && env->returnType->Equals((const UTF8Char*)"boolean"))
 				{
 					if (s->Equals((const UTF8Char*)"0"))
 					{
-						sb->Append((const UTF8Char*)"false");
+						sb->AppendC(UTF8STRC("false"));
 					}
 					else if (s->Equals((const UTF8Char*)"1"))
 					{
-						sb->Append((const UTF8Char*)"true");
+						sb->AppendC(UTF8STRC("true"));
 					}
 					else if (s->EndsWith((const UTF8Char*)"?1:0"))
 					{
@@ -7551,9 +7551,9 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				{
 					sb->Append(s);
 				}
-				sb->Append((const UTF8Char*)";");
+				sb->AppendC(UTF8STRC(";"));
 				this->AppendLineNum(sb, env, codePtr);
-				sb->Append((const UTF8Char*)"\r\n");
+				sb->AppendC(UTF8STRC("\r\n"));
 				env->stacks->Pop()->Release();
 				env->stackTypes->Pop()->Release();
 				codePtr++;
@@ -7564,16 +7564,16 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			if (env->stacks->GetCount() <= 0)
 			{
 				this->AppendIndent(sb, lev);
-				sb->Append((const UTF8Char*)"// lreturn stack invalid");
-				sb->Append((const UTF8Char*)"\r\n");
+				sb->AppendC(UTF8STRC("// lreturn stack invalid"));
+				sb->AppendC(UTF8STRC("\r\n"));
 				return EndType::Error;
 			}
 			this->AppendIndent(sb, lev);
-			sb->Append((const UTF8Char*)"return ");
+			sb->AppendC(UTF8STRC("return "));
 			sb->Append(env->stacks->GetItem(env->stacks->GetCount() - 1));
-			sb->Append((const UTF8Char*)";");
+			sb->AppendC(UTF8STRC(";"));
 			this->AppendLineNum(sb, env, codePtr);
-			sb->Append((const UTF8Char*)"\r\n");
+			sb->AppendC(UTF8STRC("\r\n"));
 			env->stacks->Pop()->Release();
 			env->stackTypes->Pop()->Release();
 			codePtr++;
@@ -7583,16 +7583,16 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			if (env->stacks->GetCount() <= 0)
 			{
 				this->AppendIndent(sb, lev);
-				sb->Append((const UTF8Char*)"// freturn stack invalid");
-				sb->Append((const UTF8Char*)"\r\n");
+				sb->AppendC(UTF8STRC("// freturn stack invalid"));
+				sb->AppendC(UTF8STRC("\r\n"));
 				return EndType::Error;
 			}
 			this->AppendIndent(sb, lev);
-			sb->Append((const UTF8Char*)"return ");
+			sb->AppendC(UTF8STRC("return "));
 			sb->Append(env->stacks->GetItem(env->stacks->GetCount() - 1));
-			sb->Append((const UTF8Char*)";");
+			sb->AppendC(UTF8STRC(";"));
 			this->AppendLineNum(sb, env, codePtr);
-			sb->Append((const UTF8Char*)"\r\n");
+			sb->AppendC(UTF8STRC("\r\n"));
 			env->stacks->Pop()->Release();
 			env->stackTypes->Pop()->Release();
 			codePtr++;
@@ -7602,16 +7602,16 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			if (env->stacks->GetCount() <= 0)
 			{
 				this->AppendIndent(sb, lev);
-				sb->Append((const UTF8Char*)"// dreturn stack invalid");
-				sb->Append((const UTF8Char*)"\r\n");
+				sb->AppendC(UTF8STRC("// dreturn stack invalid"));
+				sb->AppendC(UTF8STRC("\r\n"));
 				return EndType::Error;
 			}
 			this->AppendIndent(sb, lev);
-			sb->Append((const UTF8Char*)"return ");
+			sb->AppendC(UTF8STRC("return "));
 			sb->Append(env->stacks->GetItem(env->stacks->GetCount() - 1));
-			sb->Append((const UTF8Char*)";");
+			sb->AppendC(UTF8STRC(";"));
 			this->AppendLineNum(sb, env, codePtr);
-			sb->Append((const UTF8Char*)"\r\n");
+			sb->AppendC(UTF8STRC("\r\n"));
 			env->stacks->Pop()->Release();
 			env->stackTypes->Pop()->Release();
 			codePtr++;
@@ -7621,16 +7621,16 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			if (env->stacks->GetCount() <= 0)
 			{
 				this->AppendIndent(sb, lev);
-				sb->Append((const UTF8Char*)"// areturn stack invalid");
-				sb->Append((const UTF8Char*)"\r\n");
+				sb->AppendC(UTF8STRC("// areturn stack invalid"));
+				sb->AppendC(UTF8STRC("\r\n"));
 				return EndType::Error;
 			}
 			this->AppendIndent(sb, lev);
-			sb->Append((const UTF8Char*)"return ");
+			sb->AppendC(UTF8STRC("return "));
 			sb->Append(env->stacks->GetItem(env->stacks->GetCount() - 1));
-			sb->Append((const UTF8Char*)";");
+			sb->AppendC(UTF8STRC(";"));
 			this->AppendLineNum(sb, env, codePtr);
-			sb->Append((const UTF8Char*)"\r\n");
+			sb->AppendC(UTF8STRC("\r\n"));
 			env->stacks->Pop()->Release();
 			env->stackTypes->Pop()->Release();
 			codePtr++;
@@ -7638,9 +7638,9 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			return EndType::Return;
 		case 0xB1: //return
 			this->AppendIndent(sb, lev);
-			sb->Append((const UTF8Char*)"return;");
+			sb->AppendC(UTF8STRC("return;"));
 			this->AppendLineNum(sb, env, codePtr);
-			sb->Append((const UTF8Char*)"\r\n");
+			sb->AppendC(UTF8STRC("\r\n"));
 			codePtr++;
 			env->endPtr = codePtr;
 			return EndType::Return;
@@ -7649,17 +7649,17 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			if (val == 0 || val >= this->constPoolCnt)
 			{
 				this->AppendIndent(sb, lev);
-				sb->Append((const UTF8Char*)"// getstatic index invalid:");
+				sb->AppendC(UTF8STRC("// getstatic index invalid:"));
 				sb->AppendU16(val);
-				sb->Append((const UTF8Char*)"\r\n");
+				sb->AppendC(UTF8STRC("\r\n"));
 				return EndType::Error;
 			}
 			if (this->constPool[val] == 0 || this->constPool[val][0] != 9)
 			{
 				this->AppendIndent(sb, lev);
-				sb->Append((const UTF8Char*)"// getstatic const pool not fieldref:");
+				sb->AppendC(UTF8STRC("// getstatic const pool not fieldref:"));
 				sb->AppendU16(val);
-				sb->Append((const UTF8Char*)"\r\n");
+				sb->AppendC(UTF8STRC("\r\n"));
 				return EndType::Error;
 			}
 			else
@@ -7672,9 +7672,9 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				if (ptr == 0 || ptr[0] != 12)
 				{
 					this->AppendIndent(sb, lev);
-					sb->Append((const UTF8Char*)"// getstatic const pool not nameAndType:");
+					sb->AppendC(UTF8STRC("// getstatic const pool not nameAndType:"));
 					sb->AppendU16(nameTypeIndex);
-					sb->Append((const UTF8Char*)"\r\n");
+					sb->AppendC(UTF8STRC("\r\n"));
 					return EndType::Error;
 				}
 				classIndex = ReadMUInt16(&ptr[1]);
@@ -7697,24 +7697,24 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			if (env->stacks->GetCount() <= 0)
 			{
 				this->AppendIndent(sb, lev);
-				sb->Append((const UTF8Char*)"// putstatic stack invalid");
-				sb->Append((const UTF8Char*)"\r\n");
+				sb->AppendC(UTF8STRC("// putstatic stack invalid"));
+				sb->AppendC(UTF8STRC("\r\n"));
 				return EndType::Error;
 			}
 			if (val == 0 || val >= this->constPoolCnt)
 			{
 				this->AppendIndent(sb, lev);
-				sb->Append((const UTF8Char*)"// putstatic index invalid:");
+				sb->AppendC(UTF8STRC("// putstatic index invalid:"));
 				sb->AppendU16(val);
-				sb->Append((const UTF8Char*)"\r\n");
+				sb->AppendC(UTF8STRC("\r\n"));
 				return EndType::Error;
 			}
 			if (this->constPool[val] == 0 || this->constPool[val][0] != 9)
 			{
 				this->AppendIndent(sb, lev);
-				sb->Append((const UTF8Char*)"// putstatic const pool not fieldref:");
+				sb->AppendC(UTF8STRC("// putstatic const pool not fieldref:"));
 				sb->AppendU16(val);
-				sb->Append((const UTF8Char*)"\r\n");
+				sb->AppendC(UTF8STRC("\r\n"));
 				return EndType::Error;
 			}
 			else
@@ -7727,9 +7727,9 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				if (ptr == 0 || ptr[0] != 12)
 				{
 					this->AppendIndent(sb, lev);
-					sb->Append((const UTF8Char*)"// putstatic const pool not nameAndType:");
+					sb->AppendC(UTF8STRC("// putstatic const pool not nameAndType:"));
 					sb->AppendU16(nameTypeIndex);
-					sb->Append((const UTF8Char*)"\r\n");
+					sb->AppendC(UTF8STRC("\r\n"));
 					return EndType::Error;
 				}
 				classIndex = ReadMUInt16(&ptr[1]);
@@ -7739,11 +7739,11 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				sb->AppendChar('.', 1);
 				this->GetConstName(sbuff, classIndex);
 				sb->Append(sbuff);
-				sb->Append((const UTF8Char*)" = ");
+				sb->AppendC(UTF8STRC(" = "));
 				sb->Append(env->stacks->GetItem(env->stacks->GetCount() - 1));
-				sb->Append((const UTF8Char*)";");
+				sb->AppendC(UTF8STRC(";"));
 				this->AppendLineNum(sb, env, codePtr);
-				sb->Append((const UTF8Char*)"\r\n");
+				sb->AppendC(UTF8STRC("\r\n"));
 				env->stacks->Pop()->Release();
 				env->stackTypes->Pop()->Release();
 			}
@@ -7754,24 +7754,24 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			if (env->stacks->GetCount() <= 0)
 			{
 				this->AppendIndent(sb, lev);
-				sb->Append((const UTF8Char*)"// getfield stack invalid");
-				sb->Append((const UTF8Char*)"\r\n");
+				sb->AppendC(UTF8STRC("// getfield stack invalid"));
+				sb->AppendC(UTF8STRC("\r\n"));
 				return EndType::Error;
 			}
 			if (val == 0 || val >= this->constPoolCnt)
 			{
 				this->AppendIndent(sb, lev);
-				sb->Append((const UTF8Char*)"// getfield index invalid:");
+				sb->AppendC(UTF8STRC("// getfield index invalid:"));
 				sb->AppendU16(val);
-				sb->Append((const UTF8Char*)"\r\n");
+				sb->AppendC(UTF8STRC("\r\n"));
 				return EndType::Error;
 			}
 			if (this->constPool[val] == 0 || this->constPool[val][0] != 9)
 			{
 				this->AppendIndent(sb, lev);
-				sb->Append((const UTF8Char*)"// getfield const pool not fieldref:");
+				sb->AppendC(UTF8STRC("// getfield const pool not fieldref:"));
 				sb->AppendU16(val);
-				sb->Append((const UTF8Char*)"\r\n");
+				sb->AppendC(UTF8STRC("\r\n"));
 				return EndType::Error;
 			}
 			else
@@ -7782,9 +7782,9 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				if (ptr == 0 || ptr[0] != 12)
 				{
 					this->AppendIndent(sb, lev);
-					sb->Append((const UTF8Char*)"// getfield const pool not nameAndType:");
+					sb->AppendC(UTF8STRC("// getfield const pool not nameAndType:"));
 					sb->AppendU16(nameTypeIndex);
-					sb->Append((const UTF8Char*)"\r\n");
+					sb->AppendC(UTF8STRC("\r\n"));
 					return EndType::Error;
 				}
 				classIndex = ReadMUInt16(&ptr[1]);
@@ -7809,25 +7809,25 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			if (env->stacks->GetCount() <= 1)
 			{
 				this->AppendIndent(sb, lev);
-				sb->Append((const UTF8Char*)"// putfield stack invalid: ");
+				sb->AppendC(UTF8STRC("// putfield stack invalid: "));
 				sb->AppendUOSInt(env->stacks->GetCount());
-				sb->Append((const UTF8Char*)"\r\n");
+				sb->AppendC(UTF8STRC("\r\n"));
 				return EndType::Error;
 			}
 			if (val == 0 || val >= this->constPoolCnt)
 			{
 				this->AppendIndent(sb, lev);
-				sb->Append((const UTF8Char*)"// putfield index invalid:");
+				sb->AppendC(UTF8STRC("// putfield index invalid:"));
 				sb->AppendU16(val);
-				sb->Append((const UTF8Char*)"\r\n");
+				sb->AppendC(UTF8STRC("\r\n"));
 				return EndType::Error;
 			}
 			if (this->constPool[val] == 0 || this->constPool[val][0] != 9)
 			{
 				this->AppendIndent(sb, lev);
-				sb->Append((const UTF8Char*)"// putfield const pool not fieldref:");
+				sb->AppendC(UTF8STRC("// putfield const pool not fieldref:"));
 				sb->AppendU16(val);
-				sb->Append((const UTF8Char*)"\r\n");
+				sb->AppendC(UTF8STRC("\r\n"));
 				return EndType::Error;
 			}
 			else
@@ -7838,9 +7838,9 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				if (ptr == 0 || ptr[0] != 12)
 				{
 					this->AppendIndent(sb, lev);
-					sb->Append((const UTF8Char*)"// putfield const pool not nameAndType:");
+					sb->AppendC(UTF8STRC("// putfield const pool not nameAndType:"));
 					sb->AppendU16(nameTypeIndex);
-					sb->Append((const UTF8Char*)"\r\n");
+					sb->AppendC(UTF8STRC("\r\n"));
 					return EndType::Error;
 				}
 				classIndex = ReadMUInt16(&ptr[1]);
@@ -7850,18 +7850,18 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				sb->AppendChar('.', 1);
 				this->GetConstName(sbuff, classIndex);
 				sb->Append(sbuff);
-				sb->Append((const UTF8Char*)" = ");
+				sb->AppendC(UTF8STRC(" = "));
 				Text::String *s = env->stacks->GetItem(env->stacks->GetCount() - 1);
 				this->GetConstName(sbuff, nameTypeIndex);
 				if (sbuff[0] == 'Z') //boolean
 				{
 					if (s->Equals((const UTF8Char*)"0"))
 					{
-						sb->Append((const UTF8Char*)"false");
+						sb->AppendC(UTF8STRC("false"));
 					}
 					else if (s->Equals((const UTF8Char*)"1"))
 					{
-						sb->Append((const UTF8Char*)"true");
+						sb->AppendC(UTF8STRC("true"));
 					}
 					else
 					{
@@ -7872,9 +7872,9 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				{
 					sb->Append(s);
 				}
-				sb->Append((const UTF8Char*)";");
+				sb->AppendC(UTF8STRC(";"));
 				this->AppendLineNum(sb, env, codePtr);
-				sb->Append((const UTF8Char*)"\r\n");
+				sb->AppendC(UTF8STRC("\r\n"));
 				env->stacks->Pop()->Release();
 				env->stacks->Pop()->Release();
 				env->stackTypes->Pop()->Release();
@@ -7895,9 +7895,9 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			if (env->stacks->GetCount() == 0)
 			{
 				this->AppendIndent(sb, lev);
-				sb->Append((const UTF8Char*)"// invokevirtual Stack error: stack count = ");
+				sb->AppendC(UTF8STRC("// invokevirtual Stack error: stack count = "));
 				sb->AppendUOSInt(env->stacks->GetCount());
-				sb->Append((const UTF8Char*)"\r\n");
+				sb->AppendC(UTF8STRC("\r\n"));
 				return EndType::Error;
 			}
 			else
@@ -7918,9 +7918,9 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				{
 					this->AppendIndent(sb, lev);
 					sb->Append(sbTmp2.ToString());
-					sb->Append((const UTF8Char*)";");
+					sb->AppendC(UTF8STRC(";"));
 					this->AppendLineNum(sb, env, codePtr);
-					sb->Append((const UTF8Char*)"\r\n");
+					sb->AppendC(UTF8STRC("\r\n"));
 				}
 			}
 			codePtr += 3;
@@ -7938,9 +7938,9 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			if (env->stacks->GetCount() == 0)
 			{
 				this->AppendIndent(sb, lev);
-				sb->Append((const UTF8Char*)"// invokespecial Stack error: stack count = ");
+				sb->AppendC(UTF8STRC("// invokespecial Stack error: stack count = "));
 				sb->AppendUOSInt(env->stacks->GetCount());
-				sb->Append((const UTF8Char*)"\r\n");
+				sb->AppendC(UTF8STRC("\r\n"));
 				return EndType::Error;
 			}
 			else
@@ -7954,11 +7954,11 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 					{
 						if (classIndex == this->thisClass)
 						{
-							sbTmp2.Append((const UTF8Char*)"this");
+							sbTmp2.AppendC(UTF8STRC("this"));
 						}
 						else
 						{
-							sbTmp2.Append((const UTF8Char*)"super");
+							sbTmp2.AppendC(UTF8STRC("super"));
 						}
 					}
 					else
@@ -7972,11 +7972,11 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 					{
 						if (classIndex == this->thisClass)
 						{
-							sbTmp2.Append((const UTF8Char*)"this.");
+							sbTmp2.AppendC(UTF8STRC("this."));
 						}
 						else
 						{
-							sbTmp2.Append((const UTF8Char*)"super.");
+							sbTmp2.AppendC(UTF8STRC("super."));
 						}
 					}
 					else
@@ -8003,9 +8003,9 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				{
 					this->AppendIndent(sb, lev);
 					sb->Append(sbTmp2.ToString());
-					sb->Append((const UTF8Char*)";");
+					sb->AppendC(UTF8STRC(";"));
 					this->AppendLineNum(sb, env, codePtr);
-					sb->Append((const UTF8Char*)"\r\n");
+					sb->AppendC(UTF8STRC("\r\n"));
 				}
 			}
 			codePtr += 3;
@@ -8036,9 +8036,9 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			{
 				this->AppendIndent(sb, lev);
 				sb->Append(sbTmp2.ToString());
-				sb->Append((const UTF8Char*)";");
+				sb->AppendC(UTF8STRC(";"));
 				this->AppendLineNum(sb, env, codePtr);
-				sb->Append((const UTF8Char*)"\r\n");
+				sb->AppendC(UTF8STRC("\r\n"));
 			}
 			codePtr += 3;
 			break;
@@ -8055,9 +8055,9 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			if (env->stacks->GetCount() == 0)
 			{
 				this->AppendIndent(sb, lev);
-				sb->Append((const UTF8Char*)"// invokeinterface Stack error: stack count = ");
+				sb->AppendC(UTF8STRC("// invokeinterface Stack error: stack count = "));
 				sb->AppendUOSInt(env->stacks->GetCount());
-				sb->Append((const UTF8Char*)"\r\n");
+				sb->AppendC(UTF8STRC("\r\n"));
 				return EndType::Error;
 			}
 			else
@@ -8078,9 +8078,9 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				{
 					this->AppendIndent(sb, lev);
 					sb->Append(sbTmp2.ToString());
-					sb->Append((const UTF8Char*)";");
+					sb->AppendC(UTF8STRC(";"));
 					this->AppendLineNum(sb, env, codePtr);
-					sb->Append((const UTF8Char*)"\r\n");
+					sb->AppendC(UTF8STRC("\r\n"));
 				}
 			}
 			codePtr += 5;
@@ -8090,7 +8090,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			sbTmp.ClearStr();
 			this->ClassNameString(val, &sbTmp);
 			sbTmp2.ClearStr();
-			sbTmp2.Append((const UTF8Char*)"new ");
+			sbTmp2.AppendC(UTF8STRC("new "));
 			this->AppendCodeClassName(&sbTmp2, sbTmp.ToString(), env->importList, env->packageName);
 			env->stacks->Add(Text::String::New(sbTmp2.ToString(), sbTmp2.GetLength()));
 			env->stackTypes->Add(Text::String::New(sbTmp.ToString(), sbTmp.GetLength()));
@@ -8100,52 +8100,52 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			if (env->stacks->GetCount() <= 0)
 			{
 				this->AppendIndent(sb, lev);
-				sb->Append((const UTF8Char*)"// newarray stack invalid");
-				sb->Append((const UTF8Char*)"\r\n");
+				sb->AppendC(UTF8STRC("// newarray stack invalid"));
+				sb->AppendC(UTF8STRC("\r\n"));
 				return EndType::Error;
 			}
 			sbTmp2.ClearStr();
 			sbTmp.ClearStr();
-			sbTmp.Append((const UTF8Char*)"new ");
+			sbTmp.AppendC(UTF8STRC("new "));
 			switch (codePtr[1])
 			{
 			case 4: //T_BOOLEAN
-				sbTmp.Append((const UTF8Char*)"boolean[");
-				sbTmp2.Append((const UTF8Char*)"boolean[]");
+				sbTmp.AppendC(UTF8STRC("boolean["));
+				sbTmp2.AppendC(UTF8STRC("boolean[]"));
 				break;
 			case 5: //T_CHAR
-				sbTmp.Append((const UTF8Char*)"char[");
-				sbTmp2.Append((const UTF8Char*)"char[]");
+				sbTmp.AppendC(UTF8STRC("char["));
+				sbTmp2.AppendC(UTF8STRC("char[]"));
 				break;
 			case 6: //T_FLOAT
-				sbTmp.Append((const UTF8Char*)"float[");
-				sbTmp2.Append((const UTF8Char*)"float[]");
+				sbTmp.AppendC(UTF8STRC("float["));
+				sbTmp2.AppendC(UTF8STRC("float[]"));
 				break;
 			case 7: //T_DOUBLE
-				sbTmp.Append((const UTF8Char*)"double[");
-				sbTmp2.Append((const UTF8Char*)"double[]");
+				sbTmp.AppendC(UTF8STRC("double["));
+				sbTmp2.AppendC(UTF8STRC("double[]"));
 				break;
 			case 8: //T_BYTE
-				sbTmp.Append((const UTF8Char*)"byte[");
-				sbTmp2.Append((const UTF8Char*)"byte[]");
+				sbTmp.AppendC(UTF8STRC("byte["));
+				sbTmp2.AppendC(UTF8STRC("byte[]"));
 				break;
 			case 9: //T_SHORT
-				sbTmp.Append((const UTF8Char*)"short[");
-				sbTmp2.Append((const UTF8Char*)"short[]");
+				sbTmp.AppendC(UTF8STRC("short["));
+				sbTmp2.AppendC(UTF8STRC("short[]"));
 				break;
 			case 10: //T_INT
-				sbTmp.Append((const UTF8Char*)"int[");
-				sbTmp2.Append((const UTF8Char*)"int[]");
+				sbTmp.AppendC(UTF8STRC("int["));
+				sbTmp2.AppendC(UTF8STRC("int[]"));
 				break;
 			case 11: //T_LONG
-				sbTmp.Append((const UTF8Char*)"long[");
-				sbTmp2.Append((const UTF8Char*)"long[]");
+				sbTmp.AppendC(UTF8STRC("long["));
+				sbTmp2.AppendC(UTF8STRC("long[]"));
 				break;
 			default:
 				this->AppendIndent(sb, lev);
-				sb->Append((const UTF8Char*)"// newarray invalid type: ");
+				sb->AppendC(UTF8STRC("// newarray invalid type: "));
 				sb->AppendU16(codePtr[1]);
-				sb->Append((const UTF8Char*)"\r\n");
+				sb->AppendC(UTF8STRC("\r\n"));
 				return EndType::Error;
 			}
 			sbTmp.Append(env->stacks->GetItem(env->stacks->GetCount() - 1));
@@ -8160,17 +8160,17 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			if (env->stacks->GetCount() <= 0)
 			{
 				this->AppendIndent(sb, lev);
-				sb->Append((const UTF8Char*)"// anewarray stack invalid");
-				sb->Append((const UTF8Char*)"\r\n");
+				sb->AppendC(UTF8STRC("// anewarray stack invalid"));
+				sb->AppendC(UTF8STRC("\r\n"));
 				return EndType::Error;
 			}
 			val = ReadMUInt16(&codePtr[1]);
 			sbTmp.ClearStr();
 			this->ClassNameString(val, &sbTmp);
 			sbTmp2.ClearStr();
-			sbTmp2.Append((const UTF8Char*)"new ");
+			sbTmp2.AppendC(UTF8STRC("new "));
 			this->AppendCodeClassName(&sbTmp2, sbTmp.ToString(), env->importList, env->packageName);
-			sbTmp.Append((const UTF8Char*)"[]");
+			sbTmp.AppendC(UTF8STRC("[]"));
 			sbTmp2.AppendChar('[', 1);
 			sbTmp2.Append(env->stacks->GetItem(env->stacks->GetCount() - 1));
 			sbTmp2.AppendChar(']', 1);
@@ -8184,14 +8184,14 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			if (env->stacks->GetCount() == 0)
 			{
 				this->AppendIndent(sb, lev);
-				sb->Append((const UTF8Char*)"// arraylength Stack error: stack count = ");
+				sb->AppendC(UTF8STRC("// arraylength Stack error: stack count = "));
 				sb->AppendUOSInt(env->stacks->GetCount());
-				sb->Append((const UTF8Char*)"\r\n");
+				sb->AppendC(UTF8STRC("\r\n"));
 				return EndType::Error;
 			}
 			sbTmp2.ClearStr();
 			sbTmp2.Append(env->stacks->GetItem(env->stacks->GetCount() - 1));
-			sbTmp2.Append((const UTF8Char*)".length");
+			sbTmp2.AppendC(UTF8STRC(".length"));
 			env->stacks->Pop()->Release();
 			env->stackTypes->Pop()->Release();
 			env->stacks->Add(Text::String::New(sbTmp2.ToString(), sbTmp2.GetLength()));
@@ -8202,17 +8202,17 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			if (env->stacks->GetCount() == 0)
 			{
 				this->AppendIndent(sb, lev);
-				sb->Append((const UTF8Char*)"// athrow Stack error: stack count = ");
+				sb->AppendC(UTF8STRC("// athrow Stack error: stack count = "));
 				sb->AppendUOSInt(env->stacks->GetCount());
-				sb->Append((const UTF8Char*)"\r\n");
+				sb->AppendC(UTF8STRC("\r\n"));
 				return EndType::Error;
 			}
 			this->AppendIndent(sb, lev);
-			sb->Append((const UTF8Char*)"throw ");
+			sb->AppendC(UTF8STRC("throw "));
 			sb->Append(env->stacks->GetItem(env->stacks->GetCount() - 1));
-			sb->Append((const UTF8Char*)";");
+			sb->AppendC(UTF8STRC(";"));
 			this->AppendLineNum(sb, env, codePtr);
-			sb->Append((const UTF8Char*)"\r\n");
+			sb->AppendC(UTF8STRC("\r\n"));
 			env->stacks->Pop()->Release();
 			env->stackTypes->Pop()->Release();
 			env->endPtr = codePtr + 1;
@@ -8221,9 +8221,9 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			if (env->stacks->GetCount() == 0)
 			{
 				this->AppendIndent(sb, lev);
-				sb->Append((const UTF8Char*)"// checkcast Stack error: stack count = ");
+				sb->AppendC(UTF8STRC("// checkcast Stack error: stack count = "));
 				sb->AppendUOSInt(env->stacks->GetCount());
-				sb->Append((const UTF8Char*)"\r\n");
+				sb->AppendC(UTF8STRC("\r\n"));
 				return EndType::Error;
 			}
 			val = ReadMUInt16(&codePtr[1]);
@@ -8246,7 +8246,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			this->ClassNameString(val, &sbTmp);
 			sbTmp2.ClearStr();
 			sbTmp2.Append(env->stacks->GetItem(env->stacks->GetCount() - 1));
-			sbTmp2.Append((const UTF8Char*)" instanceof ");
+			sbTmp2.AppendC(UTF8STRC(" instanceof "));
 			this->AppendCodeClassName(&sbTmp2, sbTmp.ToString(), env->importList, env->packageName);
 			env->stacks->Pop()->Release();
 			env->stackTypes->Pop()->Release();
@@ -8258,17 +8258,17 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			if (env->stacks->GetCount() == 0)
 			{
 				this->AppendIndent(sb, lev);
-				sb->Append((const UTF8Char*)"// monitorenter Stack error: stack count = ");
+				sb->AppendC(UTF8STRC("// monitorenter Stack error: stack count = "));
 				sb->AppendUOSInt(env->stacks->GetCount());
-				sb->Append((const UTF8Char*)"\r\n");
+				sb->AppendC(UTF8STRC("\r\n"));
 				return EndType::Error;
 			}
 			this->AppendIndent(sb, lev);
-			sb->Append((const UTF8Char*)"synchronized (");
+			sb->AppendC(UTF8STRC("synchronized ("));
 			sb->Append(env->stacks->GetItem(env->stacks->GetCount() - 1));
-			sb->Append((const UTF8Char*)")\r\n");
+			sb->AppendC(UTF8STRC(")\r\n"));
 			this->AppendIndent(sb, lev);
-			sb->Append((const UTF8Char*)"{\r\n");
+			sb->AppendC(UTF8STRC("{\r\n"));
 			env->stacks->Pop()->Release();
 			env->stackTypes->Pop()->Release();
 			lev++;
@@ -8278,14 +8278,14 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			if (env->stacks->GetCount() == 0)
 			{
 				this->AppendIndent(sb, lev);
-				sb->Append((const UTF8Char*)"// monitorexit Stack error: stack count = ");
+				sb->AppendC(UTF8STRC("// monitorexit Stack error: stack count = "));
 				sb->AppendUOSInt(env->stacks->GetCount());
-				sb->Append((const UTF8Char*)"\r\n");
+				sb->AppendC(UTF8STRC("\r\n"));
 				return EndType::Error;
 			}
 			lev--;
 			this->AppendIndent(sb, lev);
-			sb->Append((const UTF8Char*)"}\r\n");
+			sb->AppendC(UTF8STRC("}\r\n"));
 			env->stacks->Pop()->Release();
 			env->stackTypes->Pop()->Release();
 			codePtr++;
@@ -8294,8 +8294,8 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			if (env->stacks->GetCount() <= 0)
 			{
 				this->AppendIndent(sb, lev);
-				sb->Append((const UTF8Char*)"// ifnull stack invalid");
-				sb->Append((const UTF8Char*)"\r\n");
+				sb->AppendC(UTF8STRC("// ifnull stack invalid"));
+				sb->AppendC(UTF8STRC("\r\n"));
 				return EndType::Error;
 			}
 			else
@@ -8314,8 +8314,8 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			if (env->stacks->GetCount() <= 0)
 			{
 				this->AppendIndent(sb, lev);
-				sb->Append((const UTF8Char*)"// ifnonnull stack invalid");
-				sb->Append((const UTF8Char*)"\r\n");
+				sb->AppendC(UTF8STRC("// ifnonnull stack invalid"));
+				sb->AppendC(UTF8STRC("\r\n"));
 				return EndType::Error;
 			}
 			else
@@ -8335,9 +8335,9 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			return EndType::Goto;
 		default:
 			this->AppendIndent(sb, lev);
-			sb->Append((const UTF8Char*)"// Unsupported opcode ");
+			sb->AppendC(UTF8STRC("// Unsupported opcode "));
 			sb->AppendHex8(codePtr[0]);
-			sb->Append((const UTF8Char*)"\r\n");
+			sb->AppendC(UTF8STRC("\r\n"));
 			return EndType::Error;
 		}
 	}
@@ -8389,7 +8389,7 @@ void IO::JavaClass::DecompileLDC(UInt16 index, IO::JavaClass::DecompileEnv *env)
 			sbTmp.AppendC(ptr + 3, strLen);
 			sbTmp.Replace('/', '.');
 			this->AppendCodeClassName(&sb, sbTmp.ToString(), env->importList, env->packageName);
-			sb.Append((const UTF8Char*)".class");
+			sb.AppendC(UTF8STRC(".class"));
 			env->stacks->Add(Text::String::New(sb.ToString(), sb.GetLength()));
 			env->stackTypes->Add(Text::String::NewNotNull((const UTF8Char*)"java.lang.Class"));
 		}
@@ -8415,7 +8415,7 @@ void IO::JavaClass::DecompileStore(UInt16 index, IO::JavaClass::DecompileEnv *en
 	this->AppendIndent(sb, lev);
 	if (env->stacks->GetCount() <= 0)
 	{
-		sb->Append((const UTF8Char*)"// Store stack is empty\r\n");
+		sb->AppendC(UTF8STRC("// Store stack is empty\r\n"));
 		return;
 	}
 	if (env->localTypes[index] == 0)
@@ -8427,17 +8427,17 @@ void IO::JavaClass::DecompileStore(UInt16 index, IO::JavaClass::DecompileEnv *en
 	}
 	this->GetLVName(sbuff, index, env->method, codeOfst);
 	sb->Append(sbuff);
-	sb->Append((const UTF8Char*)" = ");
+	sb->AppendC(UTF8STRC(" = "));
 	Text::String *s = env->stacks->GetItem(env->stacks->GetCount() - 1);
 	if (env->localTypes[index]->Equals((const UTF8Char*)"boolean"))
 	{
 		if (s->Equals((const UTF8Char*)"0"))
 		{
-			sb->Append((const UTF8Char*)"false");
+			sb->AppendC(UTF8STRC("false"));
 		}
 		else if (s->Equals((const UTF8Char*)"1"))
 		{
-			sb->Append((const UTF8Char*)"true");
+			sb->AppendC(UTF8STRC("true"));
 		}
 		else
 		{
@@ -8448,9 +8448,9 @@ void IO::JavaClass::DecompileStore(UInt16 index, IO::JavaClass::DecompileEnv *en
 	{
 		sb->Append(s);
 	}
-	sb->Append((const UTF8Char*)";");
+	sb->AppendC(UTF8STRC(";"));
 	this->AppendLineNum(sb, env, env->codeStart + codeOfst - 1);
-	sb->Append((const UTF8Char*)"\r\n");
+	sb->AppendC(UTF8STRC("\r\n"));
 	env->stackTypes->Pop()->Release();
 	env->stacks->Pop()->Release();
 }
@@ -8463,7 +8463,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCondBranch(const UInt8 *codePtr, 
 		UOSInt initStackCnt = env->stacks->GetCount();
 		if (env->method && initStackCnt > env->method->maxStacks)
 		{
-			sb->Append((const UTF8Char*)"//Stack overflow\r\n");
+			sb->AppendC(UTF8STRC("//Stack overflow\r\n"));
 			return EndType::Error;
 		}
 		EndType et = DecompileCode(codeEnd, codePtr - 3, env, lev + 1, &sbTmp);
@@ -8477,14 +8477,14 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCondBranch(const UInt8 *codePtr, 
 			env->stacks->Pop()->Release();
 			env->stackTypes->Pop()->Release();
 			this->AppendIndent(sb, lev);
-			sb->Append((const UTF8Char*)"while (");
+			sb->AppendC(UTF8STRC("while ("));
 			AppendCond(sb, env, env->stacks->GetCount() - 2, ct, false);
-			sb->Append((const UTF8Char*)")\r\n");
+			sb->AppendC(UTF8STRC(")\r\n"));
 			this->AppendIndent(sb, lev);
-			sb->Append((const UTF8Char*)"{\r\n");
+			sb->AppendC(UTF8STRC("{\r\n"));
 			sb->Append(sbTmp.ToString());
 			this->AppendIndent(sb, lev);
-			sb->Append((const UTF8Char*)"}\r\n");
+			sb->AppendC(UTF8STRC("}\r\n"));
 			env->stacks->Pop()->Release();
 			env->stacks->Pop()->Release();
 			env->stackTypes->Pop()->Release();
@@ -8499,14 +8499,14 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCondBranch(const UInt8 *codePtr, 
 			env->stackTypes->Pop()->Release();
 			env->stackTypes->Pop()->Release();
 			this->AppendIndent(sb, lev);
-			sb->Append((const UTF8Char*)"while (");
+			sb->AppendC(UTF8STRC("while ("));
 			AppendCond(sb, env, env->stacks->GetCount() - 2, ct, false);
-			sb->Append((const UTF8Char*)")\r\n");
+			sb->AppendC(UTF8STRC(")\r\n"));
 			this->AppendIndent(sb, lev);
-			sb->Append((const UTF8Char*)"{\r\n");
+			sb->AppendC(UTF8STRC("{\r\n"));
 			sb->Append(sbTmp.ToString());
 			this->AppendIndent(sb, lev);
-			sb->Append((const UTF8Char*)"}\r\n");
+			sb->AppendC(UTF8STRC("}\r\n"));
 			env->stacks->Pop()->Release();
 			env->stacks->Pop()->Release();
 			env->stackTypes->Pop()->Release();
@@ -8515,26 +8515,26 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCondBranch(const UInt8 *codePtr, 
 			return et;
 		}
 		this->AppendIndent(sb, lev);
-		sb->Append((const UTF8Char*)"// CondBranch: unknown type2: Stacks = ");
+		sb->AppendC(UTF8STRC("// CondBranch: unknown type2: Stacks = "));
 		sb->AppendUOSInt(initStackCnt);
-		sb->Append((const UTF8Char*)", ");
+		sb->AppendC(UTF8STRC(", "));
 		sb->AppendUOSInt(env->stacks->GetCount());
-		sb->Append((const UTF8Char*)", et = ");
+		sb->AppendC(UTF8STRC(", et = "));
 		sb->Append(EndTypeGetName(et));
-		sb->Append((const UTF8Char*)"\r\n");
+		sb->AppendC(UTF8STRC("\r\n"));
 		sb->Append(sbTmp.ToString());
 		return EndType::Error;
 	}
 	else if (codePtr == codeEnd)
 	{
 		this->AppendIndent(sb, lev);
-		sb->Append((const UTF8Char*)"if (");
+		sb->AppendC(UTF8STRC("if ("));
 		AppendCond(sb, env, env->stacks->GetCount() - 2, ct, true);
-		sb->Append((const UTF8Char*)")\r\n");
+		sb->AppendC(UTF8STRC(")\r\n"));
 		this->AppendIndent(sb, lev);
-		sb->Append((const UTF8Char*)"{\r\n");
+		sb->AppendC(UTF8STRC("{\r\n"));
 		this->AppendIndent(sb, lev);
-		sb->Append((const UTF8Char*)"}\r\n");
+		sb->AppendC(UTF8STRC("}\r\n"));
 		env->stacks->Pop()->Release();
 		env->stacks->Pop()->Release();
 		env->stackTypes->Pop()->Release();
@@ -8584,14 +8584,14 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCondBranch(const UInt8 *codePtr, 
 		if (env->endPtr < codePtr)
 		{
 			this->AppendIndent(sb, lev);
-			sb->Append((const UTF8Char*)"while (");
+			sb->AppendC(UTF8STRC("while ("));
 			AppendCond(sb, env, env->stacks->GetCount() - 2, ct, true);
-			sb->Append((const UTF8Char*)")\r\n");
+			sb->AppendC(UTF8STRC(")\r\n"));
 			this->AppendIndent(sb, lev);
-			sb->Append((const UTF8Char*)"{\r\n");
+			sb->AppendC(UTF8STRC("{\r\n"));
 			sb->Append(sbTmp.ToString());
 			this->AppendIndent(sb, lev);
-			sb->Append((const UTF8Char*)"}\r\n");
+			sb->AppendC(UTF8STRC("}\r\n"));
 			env->stacks->RemoveAt(initStackCnt - 1)->Release();
 			env->stacks->RemoveAt(initStackCnt - 2)->Release();
 			env->stackTypes->RemoveAt(initStackCnt - 1)->Release();
@@ -8611,21 +8611,21 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCondBranch(const UInt8 *codePtr, 
 			else if (et == EndType::CodeEnd && initStackCnt == env->stacks->GetCount())
 			{
 				this->AppendIndent(sb, lev);
-				sb->Append((const UTF8Char*)"if (");
+				sb->AppendC(UTF8STRC("if ("));
 				AppendCond(sb, env, env->stacks->GetCount() - 2, ct, true);
-				sb->Append((const UTF8Char*)")\r\n");
+				sb->AppendC(UTF8STRC(")\r\n"));
 				this->AppendIndent(sb, lev);
-				sb->Append((const UTF8Char*)"{\r\n");
+				sb->AppendC(UTF8STRC("{\r\n"));
 				sb->Append(sbTmp.ToString());
 				this->AppendIndent(sb, lev);
-				sb->Append((const UTF8Char*)"}\r\n");
+				sb->AppendC(UTF8STRC("}\r\n"));
 				this->AppendIndent(sb, lev);
-				sb->Append((const UTF8Char*)"else\r\n");
+				sb->AppendC(UTF8STRC("else\r\n"));
 				this->AppendIndent(sb, lev);
-				sb->Append((const UTF8Char*)"{\r\n");
+				sb->AppendC(UTF8STRC("{\r\n"));
 				sb->Append(sbTmp2.ToString());
 				this->AppendIndent(sb, lev);
-				sb->Append((const UTF8Char*)"}\r\n");
+				sb->AppendC(UTF8STRC("}\r\n"));
 				env->stacks->RemoveAt(initStackCnt - 1)->Release();
 				env->stacks->RemoveAt(initStackCnt - 2)->Release();
 				env->stackTypes->RemoveAt(initStackCnt - 1)->Release();
@@ -8637,14 +8637,14 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCondBranch(const UInt8 *codePtr, 
 	else if (initStackCnt == env->stacks->GetCount() && (et == EndType::Return || et == EndType::Throw || et == EndType::CodeEnd))
 	{
 		this->AppendIndent(sb, lev);
-		sb->Append((const UTF8Char*)"if (");
+		sb->AppendC(UTF8STRC("if ("));
 		AppendCond(sb, env, env->stacks->GetCount() - 2, ct, true);
-		sb->Append((const UTF8Char*)")\r\n");
+		sb->AppendC(UTF8STRC(")\r\n"));
 		this->AppendIndent(sb, lev);
-		sb->Append((const UTF8Char*)"{\r\n");
+		sb->AppendC(UTF8STRC("{\r\n"));
 		sb->Append(sbTmp.ToString());
 		this->AppendIndent(sb, lev);
-		sb->Append((const UTF8Char*)"}\r\n");
+		sb->AppendC(UTF8STRC("}\r\n"));
 		env->stacks->Pop()->Release();
 		env->stacks->Pop()->Release();
 		env->stackTypes->Pop()->Release();
@@ -8654,13 +8654,13 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCondBranch(const UInt8 *codePtr, 
 	}
 
 	this->AppendIndent(sb, lev);
-	sb->Append((const UTF8Char*)"// CondBranch: unknown type: Stacks = ");
+	sb->AppendC(UTF8STRC("// CondBranch: unknown type: Stacks = "));
 	sb->AppendUOSInt(initStackCnt);
-	sb->Append((const UTF8Char*)", ");
+	sb->AppendC(UTF8STRC(", "));
 	sb->AppendUOSInt(env->stacks->GetCount());
-	sb->Append((const UTF8Char*)", et = ");
+	sb->AppendC(UTF8STRC(", et = "));
 	sb->Append(EndTypeGetName(et));
-	sb->Append((const UTF8Char*)"\r\n");
+	sb->AppendC(UTF8STRC("\r\n"));
 	return EndType::Error;
 }
 
@@ -8668,17 +8668,17 @@ UTF8Char *IO::JavaClass::DecompileMethod(UInt16 methodIndex, UTF8Char *nameBuff,
 {
 	if (methodIndex == 0 || methodIndex >= this->constPoolCnt)
 	{
-		sb->Append((const UTF8Char*)"// method index out of range: ");
+		sb->AppendC(UTF8STRC("// method index out of range: "));
 		sb->AppendU16(methodIndex);
-		sb->Append((const UTF8Char*)"\r\n");
+		sb->AppendC(UTF8STRC("\r\n"));
 		return 0;
 	}
 	const UInt8 *constPtr = this->constPool[methodIndex];
 	if (constPtr == 0)
 	{
-		sb->Append((const UTF8Char*)"// method constPool is not used: ");
+		sb->AppendC(UTF8STRC("// method constPool is not used: "));
 		sb->AppendU16(methodIndex);
-		sb->Append((const UTF8Char*)"\r\n");
+		sb->AppendC(UTF8STRC("\r\n"));
 		return 0;
 	}
 	else if (constPtr[0] == 10) //methodRef
@@ -8689,9 +8689,9 @@ UTF8Char *IO::JavaClass::DecompileMethod(UInt16 methodIndex, UTF8Char *nameBuff,
 	}
 	else
 	{
-		sb->Append((const UTF8Char*)"// method constPool is not supported: ");
+		sb->AppendC(UTF8STRC("// method constPool is not supported: "));
 		sb->AppendU16(methodIndex);
-		sb->Append((const UTF8Char*)"\r\n");
+		sb->AppendC(UTF8STRC("\r\n"));
 		return 0;
 	}
 
@@ -8700,9 +8700,9 @@ UTF8Char *IO::JavaClass::DecompileMethod(UInt16 methodIndex, UTF8Char *nameBuff,
 	constPtr = this->constPool[nameTypeIndex];
 	if (constPtr == 0 || constPtr[0] != 12)
 	{
-		sb->Append((const UTF8Char*)"// method constPool is not nameAndType: ");
+		sb->AppendC(UTF8STRC("// method constPool is not nameAndType: "));
 		sb->AppendU16(constPtr[0]);
-		sb->Append((const UTF8Char*)"\r\n");
+		sb->AppendC(UTF8STRC("\r\n"));
 		return 0;
 	}
 
@@ -8715,9 +8715,9 @@ UTF8Char *IO::JavaClass::DecompileMethod(UInt16 methodIndex, UTF8Char *nameBuff,
 	sptr = nameBuff;
 	if (sptr[0] != '(')
 	{
-		sb->Append((const UTF8Char*)"// method type is not valid: ");
+		sb->AppendC(UTF8STRC("// method type is not valid: "));
 		sb->AppendU16(ReadMUInt16(&constPtr[3]));
-		sb->Append((const UTF8Char*)"\r\n");
+		sb->AppendC(UTF8STRC("\r\n"));
 		return 0;
 	}
 
@@ -8771,11 +8771,11 @@ UTF8Char *IO::JavaClass::DecompileMethod(UInt16 methodIndex, UTF8Char *nameBuff,
 	
 	if (paramCnt > env->stacks->GetCount())
 	{
-		sb->Append((const UTF8Char*)"// invokespecial Stack error: paramCnt = ");
+		sb->AppendC(UTF8STRC("// invokespecial Stack error: paramCnt = "));
 		sb->AppendUOSInt(paramCnt);
-		sb->Append((const UTF8Char*)", stack count = ");
+		sb->AppendC(UTF8STRC(", stack count = "));
 		sb->AppendUOSInt(env->stacks->GetCount());
-		sb->Append((const UTF8Char*)"\r\n");
+		sb->AppendC(UTF8STRC("\r\n"));
 		return 0;
 	}
 
@@ -8787,18 +8787,18 @@ UTF8Char *IO::JavaClass::DecompileMethod(UInt16 methodIndex, UTF8Char *nameBuff,
 	{
 		if (i > 0)
 		{
-			sb->Append((const UTF8Char*)", ");
+			sb->AppendC(UTF8STRC(", "));
 		}
 		paramStr = env->stacks->GetItem(env->stacks->GetCount() - paramCnt + i);
 		if (params[i] == 'Z') //boolean
 		{
 			if (paramStr->Equals((const UTF8Char*)"1"))
 			{
-				sb->Append((const UTF8Char*)"true");
+				sb->AppendC(UTF8STRC("true"));
 			}
 			else if (paramStr->Equals((const UTF8Char*)"0"))
 			{
-				sb->Append((const UTF8Char*)"false");
+				sb->AppendC(UTF8STRC("false"));
 			}
 			else
 			{

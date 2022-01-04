@@ -329,11 +329,11 @@ Media::ImageList *Map::OSM::OSMTileMap::LoadTileImage(UOSInt level, Int64 imgId,
 	urlSb.ClearStr();
 	urlSb.Append(thisUrl);
 	urlSb.AppendUOSInt(level);
-	urlSb.Append((const UTF8Char*)"/");
+	urlSb.AppendC(UTF8STRC("/"));
 	urlSb.AppendI32(imgX);
-	urlSb.Append((const UTF8Char*)"/");
+	urlSb.AppendC(UTF8STRC("/"));
 	urlSb.AppendI32(imgY);
-	urlSb.Append((const UTF8Char*)".png");
+	urlSb.AppendC(UTF8STRC(".png"));
 
 //	printf("Request URL: %s\r\n", urlSb.ToString());
 	cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, (const UTF8Char*)"OSMTileMap/1.0 SSWR/1.0", true, urlSb.StartsWith((const UTF8Char*)"https://"));
@@ -537,11 +537,11 @@ IO::IStreamData *Map::OSM::OSMTileMap::LoadTileImageData(UOSInt level, Int64 img
 	urlSb.ClearStr();
 	urlSb.Append(thisUrl);
 	urlSb.AppendUOSInt(level);
-	urlSb.Append((const UTF8Char*)"/");
+	urlSb.AppendC(UTF8STRC("/"));
 	urlSb.AppendI32(imgX);
-	urlSb.Append((const UTF8Char*)"/");
+	urlSb.AppendC(UTF8STRC("/"));
 	urlSb.AppendI32(imgY);
-	urlSb.Append((const UTF8Char*)".png");
+	urlSb.AppendC(UTF8STRC(".png"));
 
 	cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, (const UTF8Char*)"OSMTileMap/1.0 SSWR/1.0", true, urlSb.StartsWith((const UTF8Char*)"https://"));
 	cli->Connect(urlSb.ToString(), "GET", 0, 0, true);

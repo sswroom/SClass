@@ -129,7 +129,7 @@ OSInt Net::WebSite::WebSite7gogoControl::GetChannelItems(Text::String *channelId
 {
 	Text::StringBuilderUTF8 sb;
 	OSInt retCnt = 0;
-	sb.Append((const UTF8Char*)"https://7gogo.jp/");
+	sb.AppendC(UTF8STRC("https://7gogo.jp/"));
 	sb.Append(channelId);
 	Net::WebSite::WebSite7gogoControl::ItemData *item;
 	Data::ArrayListInt64 idList;

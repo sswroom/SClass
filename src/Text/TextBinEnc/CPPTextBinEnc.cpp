@@ -21,29 +21,29 @@ UOSInt Text::TextBinEnc::CPPTextBinEnc::EncodeBin(Text::StringBuilderUTF *sb, co
 		b = *dataBuff++;
 		if (lineStart)
 		{
-			sb->Append((const UTF8Char*)"\"");
+			sb->AppendC(UTF8STRC("\""));
 			lineStart = false;
 			ret += 1;
 		}
 		if (b == 0)
 		{
-			sb->Append((const UTF8Char*)"\\0");
+			sb->AppendC(UTF8STRC("\\0"));
 			ret += 2;
 		}
 		else if (b == '\r')
 		{
-			sb->Append((const UTF8Char*)"\\r");
+			sb->AppendC(UTF8STRC("\\r"));
 			ret += 2;
 		}
 		else if (b == '\n')
 		{
-			sb->Append((const UTF8Char*)"\\n\"\r\n");
+			sb->AppendC(UTF8STRC("\\n\"\r\n"));
 			ret += 5;
 			lineStart = true;
 		}
 		else if (b == '\\')
 		{
-			sb->Append((const UTF8Char*)"\\\\");
+			sb->AppendC(UTF8STRC("\\\\"));
 			ret += 2;
 		}
 		else if (b < 0x80)

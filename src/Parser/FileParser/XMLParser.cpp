@@ -2884,7 +2884,7 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLPlacemarkLyr(Text::XM
 {
 	Text::StringBuilderUTF8 lyrNameSb;
 	Text::StringBuilderUTF8 sb;
-	lyrNameSb.Append((const UTF8Char*)"Layer");
+	lyrNameSb.AppendC(UTF8STRC("Layer"));
 	KMLStyle *style = 0;
 	Data::ArrayList<Map::IMapDrawLayer*> layers;
 	while (reader->ReadNext())

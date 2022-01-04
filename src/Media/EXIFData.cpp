@@ -2180,19 +2180,19 @@ Bool Media::EXIFData::ToString(Text::StringBuilderUTF *sb, const UTF8Char *lineP
 	UOSInt k;
 	Int32 v;
 
-	sb->Append((const UTF8Char*)"EXIF Content:");
+	sb->AppendC(UTF8STRC("EXIF Content:"));
 	this->GetExifIds(&exifIds);
 	i = 0;
 	j = exifIds.GetCount();
 	while (i < j)
 	{
 		v = exifIds.GetItem(i);
-		sb->Append((const UTF8Char*)"\r\n");
+		sb->AppendC(UTF8STRC("\r\n"));
 		if (linePrefix)
 			sb->Append(linePrefix);
-		sb->Append((const UTF8Char*)"Id = ");
+		sb->AppendC(UTF8STRC("Id = "));
 		sb->AppendI32(v);
-		sb->Append((const UTF8Char*)", name = ");
+		sb->AppendC(UTF8STRC(", name = "));
 		sb->Append(Media::EXIFData::GetEXIFName(this->exifMaker, v));
 		exItem = this->GetExifItem(v);
 		if (exItem->type == Media::EXIFData::ET_SUBEXIF)
@@ -2208,18 +2208,18 @@ Bool Media::EXIFData::ToString(Text::StringBuilderUTF *sb, const UTF8Char *lineP
 			while (i2 < j2)
 			{
 				v2 = subExIds.GetItem(i2);
-				sb->Append((const UTF8Char*)"\r\n");
+				sb->AppendC(UTF8STRC("\r\n"));
 				if (linePrefix)
 					sb->Append(linePrefix);
-				sb->Append((const UTF8Char*)" Subid = ");
+				sb->AppendC(UTF8STRC(" Subid = "));
 				sb->AppendI32(v2);
-				sb->Append((const UTF8Char*)", name = ");
+				sb->AppendC(UTF8STRC(", name = "));
 				sb->Append(Media::EXIFData::GetEXIFName(this->exifMaker, v, v2));
 
 				subExItem = subExif->GetExifItem(v2);
 				if (subExItem->type == Media::EXIFData::ET_STRING)
 				{
-					sb->Append((const UTF8Char*)", value = ");
+					sb->AppendC(UTF8STRC(", value = "));
 					if (((Char*)subExItem->dataBuff)[subExItem->size - 1])
 					{
 						sb->AppendC((UTF8Char*)subExItem->dataBuff, subExItem->size);
@@ -2237,11 +2237,11 @@ Bool Media::EXIFData::ToString(Text::StringBuilderUTF *sb, const UTF8Char *lineP
 					{
 						if (k == 0)
 						{
-							sb->Append((const UTF8Char*)", value = ");
+							sb->AppendC(UTF8STRC(", value = "));
 						}
 						else
 						{
-							sb->Append((const UTF8Char*)", ");
+							sb->AppendC(UTF8STRC(", "));
 						}
 						Text::SBAppendF64(sb, valBuff[k]);
 						k++;
@@ -2258,13 +2258,13 @@ Bool Media::EXIFData::ToString(Text::StringBuilderUTF *sb, const UTF8Char *lineP
 					{
 						valBuff = (UInt8*)subExItem->dataBuff;
 					}
-					sb->Append((const UTF8Char*)", value = ");
+					sb->AppendC(UTF8STRC(", value = "));
 					if (subExItem->size > 1024)
 					{
 						sb->AppendU32(subExItem->size);
-						sb->Append((const UTF8Char*)" bytes: ");
+						sb->AppendC(UTF8STRC(" bytes: "));
 						sb->AppendHexBuff(valBuff, 256, ' ', Text::LineBreakType::CRLF);
-						sb->Append((const UTF8Char*)"\r\n...\r\n");
+						sb->AppendC(UTF8STRC("\r\n...\r\n"));
 						sb->AppendHexBuff(&valBuff[((Int32)subExItem->size & ~15) - 256], 256 + (subExItem->size & 15), ' ', Text::LineBreakType::CRLF);
 					}
 					else
@@ -2288,11 +2288,11 @@ Bool Media::EXIFData::ToString(Text::StringBuilderUTF *sb, const UTF8Char *lineP
 					{
 						if (k == 0)
 						{
-							sb->Append((const UTF8Char*)", value = ");
+							sb->AppendC(UTF8STRC(", value = "));
 						}
 						else
 						{
-							sb->Append((const UTF8Char*)", ");
+							sb->AppendC(UTF8STRC(", "));
 						}
 						sb->AppendU16(valBuff[k]);
 						k++;
@@ -2314,11 +2314,11 @@ Bool Media::EXIFData::ToString(Text::StringBuilderUTF *sb, const UTF8Char *lineP
 					{
 						if (k == 0)
 						{
-							sb->Append((const UTF8Char*)", value = ");
+							sb->AppendC(UTF8STRC(", value = "));
 						}
 						else
 						{
-							sb->Append((const UTF8Char*)", ");
+							sb->AppendC(UTF8STRC(", "));
 						}
 						sb->AppendU32(valBuff[k]);
 						k++;
@@ -2333,20 +2333,20 @@ Bool Media::EXIFData::ToString(Text::StringBuilderUTF *sb, const UTF8Char *lineP
 					{
 						if (k == 0)
 						{
-							sb->Append((const UTF8Char*)", value = ");
+							sb->AppendC(UTF8STRC(", value = "));
 						}
 						else
 						{
-							sb->Append((const UTF8Char*)", ");
+							sb->AppendC(UTF8STRC(", "));
 						}
 						sb->AppendU32(valBuff[k * 2]);
-						sb->Append((const UTF8Char*)" / ");
+						sb->AppendC(UTF8STRC(" / "));
 						sb->AppendU32(valBuff[k * 2 + 1]);
 						if (valBuff[k * 2 + 1] != 0)
 						{
-							sb->Append((const UTF8Char*)" (");
+							sb->AppendC(UTF8STRC(" ("));
 							Text::SBAppendF64(sb, valBuff[k * 2] / (Double)valBuff[k * 2 + 1]);
-							sb->Append((const UTF8Char*)")");
+							sb->AppendC(UTF8STRC(")"));
 						}
 						k++;
 					}
@@ -2367,11 +2367,11 @@ Bool Media::EXIFData::ToString(Text::StringBuilderUTF *sb, const UTF8Char *lineP
 					{
 						if (k == 0)
 						{
-							sb->Append((const UTF8Char*)", value = ");
+							sb->AppendC(UTF8STRC(", value = "));
 						}
 						else
 						{
-							sb->Append((const UTF8Char*)", ");
+							sb->AppendC(UTF8STRC(", "));
 						}
 						sb->AppendI16(valBuff[k]);
 						k++;
@@ -2392,9 +2392,9 @@ Bool Media::EXIFData::ToString(Text::StringBuilderUTF *sb, const UTF8Char *lineP
 					if (innerExif)
 					{
 						UTF8Char sbuff[32];
-						sb->Append((const UTF8Char*)", Format = ");
+						sb->AppendC(UTF8STRC(", Format = "));
 						sb->Append(GetEXIFMakerName(innerExif->GetEXIFMaker()));
-						sb->Append((const UTF8Char*)", Inner ");
+						sb->AppendC(UTF8STRC(", Inner "));
 						if (linePrefix)
 						{
 							Text::StrConcat(Text::StrConcat(sbuff, (const UTF8Char*)"  "), linePrefix);
@@ -2408,7 +2408,7 @@ Bool Media::EXIFData::ToString(Text::StringBuilderUTF *sb, const UTF8Char *lineP
 					}
 					else
 					{
-						sb->Append((const UTF8Char*)", value (Other) = ");
+						sb->AppendC(UTF8STRC(", value (Other) = "));
 						sb->AppendHexBuff(valBuff, subExItem->size, ' ', Text::LineBreakType::CRLF);
 					}
 				}
@@ -2418,12 +2418,12 @@ Bool Media::EXIFData::ToString(Text::StringBuilderUTF *sb, const UTF8Char *lineP
 					valBuff = (UInt8*)subExItem->dataBuff;
 					if (this->exifMaker == Media::EXIFData::EM_OLYMPUS && subExItem->id == 0)
 					{
-						sb->Append((const UTF8Char*)", value = ");
+						sb->AppendC(UTF8STRC(", value = "));
 						sb->AppendC((const UTF8Char*)valBuff, subExItem->size);
 					}
 					else
 					{
-						sb->Append((const UTF8Char*)", value (Other) = ");
+						sb->AppendC(UTF8STRC(", value (Other) = "));
 						sb->AppendHexBuff(valBuff, subExItem->size, ' ', Text::LineBreakType::CRLF);
 					}
 				}
@@ -2438,7 +2438,7 @@ Bool Media::EXIFData::ToString(Text::StringBuilderUTF *sb, const UTF8Char *lineP
 					{
 						valBuff = (UInt8*)subExItem->dataBuff;
 					}
-					sb->Append((const UTF8Char*)", value (Unk) = ");
+					sb->AppendC(UTF8STRC(", value (Unk) = "));
 					sb->AppendHexBuff(valBuff, subExItem->size, ' ', Text::LineBreakType::CRLF);
 				}
 				
@@ -2447,7 +2447,7 @@ Bool Media::EXIFData::ToString(Text::StringBuilderUTF *sb, const UTF8Char *lineP
 		}
 		else if (exItem->type == Media::EXIFData::ET_STRING)
 		{
-			sb->Append((const UTF8Char*)", value = ");
+			sb->AppendC(UTF8STRC(", value = "));
 			if (((Char*)exItem->dataBuff)[exItem->size - 1])
 			{
 				sb->AppendC((UTF8Char*)exItem->dataBuff, exItem->size);
@@ -2465,11 +2465,11 @@ Bool Media::EXIFData::ToString(Text::StringBuilderUTF *sb, const UTF8Char *lineP
 			{
 				if (k == 0)
 				{
-					sb->Append((const UTF8Char*)", value = ");
+					sb->AppendC(UTF8STRC(", value = "));
 				}
 				else
 				{
-					sb->Append((const UTF8Char*)", ");
+					sb->AppendC(UTF8STRC(", "));
 				}
 				Text::SBAppendF64(sb, valBuff[k]);
 				k++;
@@ -2486,7 +2486,7 @@ Bool Media::EXIFData::ToString(Text::StringBuilderUTF *sb, const UTF8Char *lineP
 			{
 				valBuff = (UInt8*)exItem->dataBuff;
 			}
-			sb->Append((const UTF8Char*)", value = ");
+			sb->AppendC(UTF8STRC(", value = "));
 			if (exItem->id >= 40091 && exItem->id <= 40095)
 			{
 				if (valBuff[exItem->size - 2] == 0)
@@ -2509,9 +2509,9 @@ Bool Media::EXIFData::ToString(Text::StringBuilderUTF *sb, const UTF8Char *lineP
 				if (exItem->size > 1024)
 				{
 					sb->AppendU32(exItem->size);
-					sb->Append((const UTF8Char*)" bytes: ");
+					sb->AppendC(UTF8STRC(" bytes: "));
 					sb->AppendHexBuff(valBuff, 256, ' ', Text::LineBreakType::CRLF);
-					sb->Append((const UTF8Char*)"\r\n...\r\n");
+					sb->AppendC(UTF8STRC("\r\n...\r\n"));
 					sb->AppendHexBuff(&valBuff[((Int32)exItem->size & ~15) - 256], 256 + (exItem->size & 15), ' ', Text::LineBreakType::CRLF);
 				}
 				else
@@ -2550,11 +2550,11 @@ Bool Media::EXIFData::ToString(Text::StringBuilderUTF *sb, const UTF8Char *lineP
 				{
 					if (k == 0)
 					{
-						sb->Append((const UTF8Char*)", value = ");
+						sb->AppendC(UTF8STRC(", value = "));
 					}
 					else
 					{
-						sb->Append((const UTF8Char*)", ");
+						sb->AppendC(UTF8STRC(", "));
 					}
 					sb->AppendU16(valBuff[k]);
 					k++;
@@ -2577,11 +2577,11 @@ Bool Media::EXIFData::ToString(Text::StringBuilderUTF *sb, const UTF8Char *lineP
 			{
 				if (k == 0)
 				{
-					sb->Append((const UTF8Char*)", value = ");
+					sb->AppendC(UTF8STRC(", value = "));
 				}
 				else
 				{
-					sb->Append((const UTF8Char*)", ");
+					sb->AppendC(UTF8STRC(", "));
 				}
 				sb->AppendU32(valBuff[k]);
 				k++;
@@ -2596,20 +2596,20 @@ Bool Media::EXIFData::ToString(Text::StringBuilderUTF *sb, const UTF8Char *lineP
 			{
 				if (k == 0)
 				{
-					sb->Append((const UTF8Char*)", value = ");
+					sb->AppendC(UTF8STRC(", value = "));
 				}
 				else
 				{
-					sb->Append((const UTF8Char*)", ");
+					sb->AppendC(UTF8STRC(", "));
 				}
 				sb->AppendU32(valBuff[k * 2]);
-				sb->Append((const UTF8Char*)" / ");
+				sb->AppendC(UTF8STRC(" / "));
 				sb->AppendU32(valBuff[k * 2 + 1]);
 				if (valBuff[k * 2 + 1] != 0)
 				{
-					sb->Append((const UTF8Char*)" (");
+					sb->AppendC(UTF8STRC(" ("));
 					Text::SBAppendF64(sb, valBuff[k * 2] / (Double)valBuff[k * 2 + 1]);
-					sb->Append((const UTF8Char*)")");
+					sb->AppendC(UTF8STRC(")"));
 				}
 				k++;
 			}
@@ -2630,11 +2630,11 @@ Bool Media::EXIFData::ToString(Text::StringBuilderUTF *sb, const UTF8Char *lineP
 			{
 				if (k == 0)
 				{
-					sb->Append((const UTF8Char*)", value = ");
+					sb->AppendC(UTF8STRC(", value = "));
 				}
 				else
 				{
-					sb->Append((const UTF8Char*)", ");
+					sb->AppendC(UTF8STRC(", "));
 				}
 				sb->AppendI16(valBuff[k]);
 				k++;
@@ -2644,7 +2644,7 @@ Bool Media::EXIFData::ToString(Text::StringBuilderUTF *sb, const UTF8Char *lineP
 		{
 			if (this->exifMaker == EM_OLYMPUS && exItem->id == 521)
 			{
-				sb->Append((const UTF8Char*)", value = ");
+				sb->AppendC(UTF8STRC(", value = "));
 				if (((Char*)exItem->dataBuff)[exItem->size - 1])
 				{
 					sb->AppendC((UTF8Char*)exItem->dataBuff, exItem->size);
@@ -2658,7 +2658,7 @@ Bool Media::EXIFData::ToString(Text::StringBuilderUTF *sb, const UTF8Char *lineP
 			{
 	//			UInt8 *valBuff;
 	//			valBuff = (UInt8*)exItem->dataBuff;
-				sb->Append((const UTF8Char*)", Other: size = ");
+				sb->AppendC(UTF8STRC(", Other: size = "));
 				sb->AppendU32(exItem->size);
 	//			sb->AppendHex(valBuff, subExItem->size, ' ', Text::StringBuilder::LBT_CRLF);
 			}
@@ -2674,7 +2674,7 @@ Bool Media::EXIFData::ToString(Text::StringBuilderUTF *sb, const UTF8Char *lineP
 			{
 				valBuff = (UInt8*)exItem->dataBuff;
 			}*/
-			sb->Append((const UTF8Char*)", Unknown: size = ");
+			sb->AppendC(UTF8STRC(", Unknown: size = "));
 			sb->AppendU32(exItem->size);
 //			sb->AppendHex(valBuff, subExItem->size, ' ', Text::StringBuilder::LBT_CRLF);
 		}
@@ -2692,23 +2692,23 @@ Bool Media::EXIFData::ToStringCanonCameraSettings(Text::StringBuilderUTF *sb, co
 	k = 0;
 	while (k < valCnt)
 	{
-		sb->Append((const UTF8Char*)"\r\n");
+		sb->AppendC(UTF8STRC("\r\n"));
 		if (linePrefix)
 			sb->Append(linePrefix);
-		sb->Append((const UTF8Char*)" ");
+		sb->AppendC(UTF8STRC(" "));
 		isInt16 = false;
 		isUInt16 = false;
 		switch (k)
 		{
 		case 1:
-			sb->Append((const UTF8Char*)"MacroMode = ");
+			sb->AppendC(UTF8STRC("MacroMode = "));
 			switch ((Int16)valBuff[k])
 			{
 			case 1:
-				sb->Append((const UTF8Char*)"1-Macro");
+				sb->AppendC(UTF8STRC("1-Macro"));
 				break;
 			case 2:
-				sb->Append((const UTF8Char*)"2-Normal");
+				sb->AppendC(UTF8STRC("2-Normal"));
 				break;
 			default:
 				sb->AppendI16((Int16)valBuff[k]);
@@ -2716,39 +2716,39 @@ Bool Media::EXIFData::ToStringCanonCameraSettings(Text::StringBuilderUTF *sb, co
 			}
 			break;
 		case 2:
-			sb->Append((const UTF8Char*)"SelfTimer = ");
+			sb->AppendC(UTF8STRC("SelfTimer = "));
 			isInt16 = true;
 			break;
 		case 3:
-			sb->Append((const UTF8Char*)"Quality = ");
+			sb->AppendC(UTF8STRC("Quality = "));
 			switch ((Int16)valBuff[k])
 			{
 			case -1:
-				sb->Append((const UTF8Char*)"-1-n/a");
+				sb->AppendC(UTF8STRC("-1-n/a"));
 				break;
 			case 1:
-				sb->Append((const UTF8Char*)"1-Economy");
+				sb->AppendC(UTF8STRC("1-Economy"));
 				break;
 			case 2:
-				sb->Append((const UTF8Char*)"2-Normal");
+				sb->AppendC(UTF8STRC("2-Normal"));
 				break;
 			case 3:
-				sb->Append((const UTF8Char*)"3-Fine");
+				sb->AppendC(UTF8STRC("3-Fine"));
 				break;
 			case 4:
-				sb->Append((const UTF8Char*)"4-RAW");
+				sb->AppendC(UTF8STRC("4-RAW"));
 				break;
 			case 5:
-				sb->Append((const UTF8Char*)"5-Superfine");
+				sb->AppendC(UTF8STRC("5-Superfine"));
 				break;
 			case 7:
-				sb->Append((const UTF8Char*)"7-CRAW");
+				sb->AppendC(UTF8STRC("7-CRAW"));
 				break;
 			case 130:
-				sb->Append((const UTF8Char*)"130-Normal Movie");
+				sb->AppendC(UTF8STRC("130-Normal Movie"));
 				break;
 			case 131:
-				sb->Append((const UTF8Char*)"131-Movie (2)");
+				sb->AppendC(UTF8STRC("131-Movie (2)"));
 				break;
 			default:
 				sb->AppendI16((Int16)valBuff[k]);
@@ -2756,35 +2756,35 @@ Bool Media::EXIFData::ToStringCanonCameraSettings(Text::StringBuilderUTF *sb, co
 			}
 			break;
 		case 4:
-			sb->Append((const UTF8Char*)"CanonFlashMode = ");
+			sb->AppendC(UTF8STRC("CanonFlashMode = "));
 			switch ((Int16)valBuff[k])
 			{
 			case -1:
-				sb->Append((const UTF8Char*)"-1-n/a");
+				sb->AppendC(UTF8STRC("-1-n/a"));
 				break;
 			case 0:
-				sb->Append((const UTF8Char*)"0-Off");
+				sb->AppendC(UTF8STRC("0-Off"));
 				break;
 			case 1:
-				sb->Append((const UTF8Char*)"1-Auto");
+				sb->AppendC(UTF8STRC("1-Auto"));
 				break;
 			case 2:
-				sb->Append((const UTF8Char*)"2-On");
+				sb->AppendC(UTF8STRC("2-On"));
 				break;
 			case 3:
-				sb->Append((const UTF8Char*)"3-Red-eye Reduction");
+				sb->AppendC(UTF8STRC("3-Red-eye Reduction"));
 				break;
 			case 4:
-				sb->Append((const UTF8Char*)"4-Slow Sync");
+				sb->AppendC(UTF8STRC("4-Slow Sync"));
 				break;
 			case 5:
-				sb->Append((const UTF8Char*)"5-Red-eye Reduction (Auto)");
+				sb->AppendC(UTF8STRC("5-Red-eye Reduction (Auto)"));
 				break;
 			case 6:
-				sb->Append((const UTF8Char*)"6-Red-eye Reduction (On)");
+				sb->AppendC(UTF8STRC("6-Red-eye Reduction (On)"));
 				break;
 			case 16:
-				sb->Append((const UTF8Char*)"16-External Flash");
+				sb->AppendC(UTF8STRC("16-External Flash"));
 				break;
 			default:
 				sb->AppendI16((Int16)valBuff[k]);
@@ -2792,35 +2792,35 @@ Bool Media::EXIFData::ToStringCanonCameraSettings(Text::StringBuilderUTF *sb, co
 			}
 			break;
 		case 5:
-			sb->Append((const UTF8Char*)"ContinuousDrive = ");
+			sb->AppendC(UTF8STRC("ContinuousDrive = "));
 			switch ((Int16)valBuff[k])
 			{
 			case 0:
-				sb->Append((const UTF8Char*)"0-Single");
+				sb->AppendC(UTF8STRC("0-Single"));
 				break;
 			case 1:
-				sb->Append((const UTF8Char*)"1-Continuous");
+				sb->AppendC(UTF8STRC("1-Continuous"));
 				break;
 			case 2:
-				sb->Append((const UTF8Char*)"2-Movie");
+				sb->AppendC(UTF8STRC("2-Movie"));
 				break;
 			case 3:
-				sb->Append((const UTF8Char*)"3-Continuous, Speed Priority");
+				sb->AppendC(UTF8STRC("3-Continuous, Speed Priority"));
 				break;
 			case 4:
-				sb->Append((const UTF8Char*)"4-Continuous, Low");
+				sb->AppendC(UTF8STRC("4-Continuous, Low"));
 				break;
 			case 5:
-				sb->Append((const UTF8Char*)"5-Continuous, High");
+				sb->AppendC(UTF8STRC("5-Continuous, High"));
 				break;
 			case 6:
-				sb->Append((const UTF8Char*)"6-Silent Single");
+				sb->AppendC(UTF8STRC("6-Silent Single"));
 				break;
 			case 9:
-				sb->Append((const UTF8Char*)"9-Single, Silent");
+				sb->AppendC(UTF8STRC("9-Single, Silent"));
 				break;
 			case 10:
-				sb->Append((const UTF8Char*)"10-Continuous, Silent");
+				sb->AppendC(UTF8STRC("10-Continuous, Silent"));
 				break;
 			default:
 				sb->AppendI16((Int16)valBuff[k]);
@@ -2828,41 +2828,41 @@ Bool Media::EXIFData::ToStringCanonCameraSettings(Text::StringBuilderUTF *sb, co
 			}
 			break;
 		case 7:
-			sb->Append((const UTF8Char*)"FocusMode = ");
+			sb->AppendC(UTF8STRC("FocusMode = "));
 			switch ((Int16)valBuff[k])
 			{
 			case 0:
-				sb->Append((const UTF8Char*)"0-One-shot AF");
+				sb->AppendC(UTF8STRC("0-One-shot AF"));
 				break;
 			case 1:
-				sb->Append((const UTF8Char*)"1-AI Servo AF");
+				sb->AppendC(UTF8STRC("1-AI Servo AF"));
 				break;
 			case 2:
-				sb->Append((const UTF8Char*)"2-AI Focus AF");
+				sb->AppendC(UTF8STRC("2-AI Focus AF"));
 				break;
 			case 3:
-				sb->Append((const UTF8Char*)"3-Manual Focus");
+				sb->AppendC(UTF8STRC("3-Manual Focus"));
 				break;
 			case 4:
-				sb->Append((const UTF8Char*)"4-Single");
+				sb->AppendC(UTF8STRC("4-Single"));
 				break;
 			case 5:
-				sb->Append((const UTF8Char*)"5-Continuous");
+				sb->AppendC(UTF8STRC("5-Continuous"));
 				break;
 			case 6:
-				sb->Append((const UTF8Char*)"6-Manual Focus");
+				sb->AppendC(UTF8STRC("6-Manual Focus"));
 				break;
 			case 16:
-				sb->Append((const UTF8Char*)"16-Pan Focus");
+				sb->AppendC(UTF8STRC("16-Pan Focus"));
 				break;
 			case 256:
-				sb->Append((const UTF8Char*)"256-AF+MF");
+				sb->AppendC(UTF8STRC("256-AF+MF"));
 				break;
 			case 512:
-				sb->Append((const UTF8Char*)"512-Movie Snap Focus");
+				sb->AppendC(UTF8STRC("512-Movie Snap Focus"));
 				break;
 			case 519:
-				sb->Append((const UTF8Char*)"519-Movie Servo AF");
+				sb->AppendC(UTF8STRC("519-Movie Servo AF"));
 				break;
 			default:
 				sb->AppendI16((Int16)valBuff[k]);
@@ -2870,44 +2870,44 @@ Bool Media::EXIFData::ToStringCanonCameraSettings(Text::StringBuilderUTF *sb, co
 			}
 			break;
 		case 9:
-			sb->Append((const UTF8Char*)"RecordMode = ");
+			sb->AppendC(UTF8STRC("RecordMode = "));
 			switch ((Int16)valBuff[k])
 			{
 			case 1:
-				sb->Append((const UTF8Char*)"1-JPEG");
+				sb->AppendC(UTF8STRC("1-JPEG"));
 				break;
 			case 2:
-				sb->Append((const UTF8Char*)"2-CRW+THM");
+				sb->AppendC(UTF8STRC("2-CRW+THM"));
 				break;
 			case 3:
-				sb->Append((const UTF8Char*)"3-AVI+THM");
+				sb->AppendC(UTF8STRC("3-AVI+THM"));
 				break;
 			case 4:
-				sb->Append((const UTF8Char*)"4-TIF");
+				sb->AppendC(UTF8STRC("4-TIF"));
 				break;
 			case 5:
-				sb->Append((const UTF8Char*)"5-TIF+JPEG");
+				sb->AppendC(UTF8STRC("5-TIF+JPEG"));
 				break;
 			case 6:
-				sb->Append((const UTF8Char*)"6-CR2");
+				sb->AppendC(UTF8STRC("6-CR2"));
 				break;
 			case 7:
-				sb->Append((const UTF8Char*)"7-CR2+JPEG");
+				sb->AppendC(UTF8STRC("7-CR2+JPEG"));
 				break;
 			case 9:
-				sb->Append((const UTF8Char*)"9-MOV");
+				sb->AppendC(UTF8STRC("9-MOV"));
 				break;
 			case 10:
-				sb->Append((const UTF8Char*)"10-MP4");
+				sb->AppendC(UTF8STRC("10-MP4"));
 				break;
 			case 11:
-				sb->Append((const UTF8Char*)"11-CRM");
+				sb->AppendC(UTF8STRC("11-CRM"));
 				break;
 			case 12:
-				sb->Append((const UTF8Char*)"12-CR3");
+				sb->AppendC(UTF8STRC("12-CR3"));
 				break;
 			case 13:
-				sb->Append((const UTF8Char*)"13-CR3+JPEG");
+				sb->AppendC(UTF8STRC("13-CR3+JPEG"));
 				break;
 			default:
 				sb->AppendI16((Int16)valBuff[k]);
@@ -2915,65 +2915,65 @@ Bool Media::EXIFData::ToStringCanonCameraSettings(Text::StringBuilderUTF *sb, co
 			}
 			break;
 		case 10:
-			sb->Append((const UTF8Char*)"CanonImageSize = ");
+			sb->AppendC(UTF8STRC("CanonImageSize = "));
 			switch ((Int16)valBuff[k])
 			{
 			case -1:
-				sb->Append((const UTF8Char*)"-1-n/a");
+				sb->AppendC(UTF8STRC("-1-n/a"));
 				break;
 			case 0:
-				sb->Append((const UTF8Char*)"0-Large");
+				sb->AppendC(UTF8STRC("0-Large"));
 				break;
 			case 1:
-				sb->Append((const UTF8Char*)"1-Medium");
+				sb->AppendC(UTF8STRC("1-Medium"));
 				break;
 			case 2:
-				sb->Append((const UTF8Char*)"2-Small");
+				sb->AppendC(UTF8STRC("2-Small"));
 				break;
 			case 5:
-				sb->Append((const UTF8Char*)"5-Medium 1");
+				sb->AppendC(UTF8STRC("5-Medium 1"));
 				break;
 			case 6:
-				sb->Append((const UTF8Char*)"6-Medium 2");
+				sb->AppendC(UTF8STRC("6-Medium 2"));
 				break;
 			case 7:
-				sb->Append((const UTF8Char*)"7-Medium 3");
+				sb->AppendC(UTF8STRC("7-Medium 3"));
 				break;
 			case 8:
-				sb->Append((const UTF8Char*)"8-Postcard");
+				sb->AppendC(UTF8STRC("8-Postcard"));
 				break;
 			case 9:
-				sb->Append((const UTF8Char*)"9-Widescreen");
+				sb->AppendC(UTF8STRC("9-Widescreen"));
 				break;
 			case 10:
-				sb->Append((const UTF8Char*)"10-Medium Widescreen");
+				sb->AppendC(UTF8STRC("10-Medium Widescreen"));
 				break;
 			case 14:
-				sb->Append((const UTF8Char*)"14-Small 1");
+				sb->AppendC(UTF8STRC("14-Small 1"));
 				break;
 			case 15:
-				sb->Append((const UTF8Char*)"15-Small 2");
+				sb->AppendC(UTF8STRC("15-Small 2"));
 				break;
 			case 16:
-				sb->Append((const UTF8Char*)"16-Small 3");
+				sb->AppendC(UTF8STRC("16-Small 3"));
 				break;
 			case 128:
-				sb->Append((const UTF8Char*)"128-640x480 Movie");
+				sb->AppendC(UTF8STRC("128-640x480 Movie"));
 				break;
 			case 129:
-				sb->Append((const UTF8Char*)"129-Medium Movie");
+				sb->AppendC(UTF8STRC("129-Medium Movie"));
 				break;
 			case 130:
-				sb->Append((const UTF8Char*)"130-Small Movie");
+				sb->AppendC(UTF8STRC("130-Small Movie"));
 				break;
 			case 137:
-				sb->Append((const UTF8Char*)"137-1280x720 Movie");
+				sb->AppendC(UTF8STRC("137-1280x720 Movie"));
 				break;
 			case 142:
-				sb->Append((const UTF8Char*)"142-1920x1080 Movie");
+				sb->AppendC(UTF8STRC("142-1920x1080 Movie"));
 				break;
 			case 143:
-				sb->Append((const UTF8Char*)"143-4096x2160 Movie");
+				sb->AppendC(UTF8STRC("143-4096x2160 Movie"));
 				break;
 			default:
 				sb->AppendI16((Int16)valBuff[k]);
@@ -2981,221 +2981,221 @@ Bool Media::EXIFData::ToStringCanonCameraSettings(Text::StringBuilderUTF *sb, co
 			}
 			break;
 		case 11:
-			sb->Append((const UTF8Char*)"EasyMode = ");
+			sb->AppendC(UTF8STRC("EasyMode = "));
 			switch ((Int16)valBuff[k])
 			{
 			case 0:
-				sb->Append((const UTF8Char*)"0-Full auto");
+				sb->AppendC(UTF8STRC("0-Full auto"));
 				break;
 			case 1:
-				sb->Append((const UTF8Char*)"1-Manual");
+				sb->AppendC(UTF8STRC("1-Manual"));
 				break;
 			case 2:
-				sb->Append((const UTF8Char*)"2-Landscape");
+				sb->AppendC(UTF8STRC("2-Landscape"));
 				break;
 			case 3:
-				sb->Append((const UTF8Char*)"3-Fast shutter");
+				sb->AppendC(UTF8STRC("3-Fast shutter"));
 				break;
 			case 4:
-				sb->Append((const UTF8Char*)"4-Slow shutter");
+				sb->AppendC(UTF8STRC("4-Slow shutter"));
 				break;
 			case 5:
-				sb->Append((const UTF8Char*)"5-Night");
+				sb->AppendC(UTF8STRC("5-Night"));
 				break;
 			case 6:
-				sb->Append((const UTF8Char*)"6-Grey Scale");
+				sb->AppendC(UTF8STRC("6-Grey Scale"));
 				break;
 			case 7:
-				sb->Append((const UTF8Char*)"7-Sepia");
+				sb->AppendC(UTF8STRC("7-Sepia"));
 				break;
 			case 8:
-				sb->Append((const UTF8Char*)"8-Portrait");
+				sb->AppendC(UTF8STRC("8-Portrait"));
 				break;
 			case 9:
-				sb->Append((const UTF8Char*)"9-Sports");
+				sb->AppendC(UTF8STRC("9-Sports"));
 				break;
 			case 10:
-				sb->Append((const UTF8Char*)"10-Macro");
+				sb->AppendC(UTF8STRC("10-Macro"));
 				break;
 			case 11:
-				sb->Append((const UTF8Char*)"11-Black & White");
+				sb->AppendC(UTF8STRC("11-Black & White"));
 				break;
 			case 12:
-				sb->Append((const UTF8Char*)"12-Pan focus");
+				sb->AppendC(UTF8STRC("12-Pan focus"));
 				break;
 			case 13:
-				sb->Append((const UTF8Char*)"13-Vivid");
+				sb->AppendC(UTF8STRC("13-Vivid"));
 				break;
 			case 14:
-				sb->Append((const UTF8Char*)"14-Neutral");
+				sb->AppendC(UTF8STRC("14-Neutral"));
 				break;
 			case 15:
-				sb->Append((const UTF8Char*)"15-Flash Off");
+				sb->AppendC(UTF8STRC("15-Flash Off"));
 				break;
 			case 16:
-				sb->Append((const UTF8Char*)"16-Long Shutter");
+				sb->AppendC(UTF8STRC("16-Long Shutter"));
 				break;
 			case 17:
-				sb->Append((const UTF8Char*)"17-Super Macro");
+				sb->AppendC(UTF8STRC("17-Super Macro"));
 				break;
 			case 18:
-				sb->Append((const UTF8Char*)"18-Foliage");
+				sb->AppendC(UTF8STRC("18-Foliage"));
 				break;
 			case 19:
-				sb->Append((const UTF8Char*)"19-Indoor");
+				sb->AppendC(UTF8STRC("19-Indoor"));
 				break;
 			case 20:
-				sb->Append((const UTF8Char*)"20-Fireworks");
+				sb->AppendC(UTF8STRC("20-Fireworks"));
 				break;
 			case 21:
-				sb->Append((const UTF8Char*)"21-Beach");
+				sb->AppendC(UTF8STRC("21-Beach"));
 				break;
 			case 22:
-				sb->Append((const UTF8Char*)"22-Underwater");
+				sb->AppendC(UTF8STRC("22-Underwater"));
 				break;
 			case 23:
-				sb->Append((const UTF8Char*)"23-Snow");
+				sb->AppendC(UTF8STRC("23-Snow"));
 				break;
 			case 24:
-				sb->Append((const UTF8Char*)"24-Kids & Pets");
+				sb->AppendC(UTF8STRC("24-Kids & Pets"));
 				break;
 			case 25:
-				sb->Append((const UTF8Char*)"25-Night Snapshot");
+				sb->AppendC(UTF8STRC("25-Night Snapshot"));
 				break;
 			case 26:
-				sb->Append((const UTF8Char*)"26-Digital Macro");
+				sb->AppendC(UTF8STRC("26-Digital Macro"));
 				break;
 			case 27:
-				sb->Append((const UTF8Char*)"27-My Colors");
+				sb->AppendC(UTF8STRC("27-My Colors"));
 				break;
 			case 28:
-				sb->Append((const UTF8Char*)"28-Movie Snap");
+				sb->AppendC(UTF8STRC("28-Movie Snap"));
 				break;
 			case 29:
-				sb->Append((const UTF8Char*)"29-Super Macro 2");
+				sb->AppendC(UTF8STRC("29-Super Macro 2"));
 				break;
 			case 30:
-				sb->Append((const UTF8Char*)"30-Color Accent");
+				sb->AppendC(UTF8STRC("30-Color Accent"));
 				break;
 			case 31:
-				sb->Append((const UTF8Char*)"31-Color Swap");
+				sb->AppendC(UTF8STRC("31-Color Swap"));
 				break;
 			case 32:
-				sb->Append((const UTF8Char*)"32-Aquarium");
+				sb->AppendC(UTF8STRC("32-Aquarium"));
 				break;
 			case 33:
-				sb->Append((const UTF8Char*)"33-ISO 3200");
+				sb->AppendC(UTF8STRC("33-ISO 3200"));
 				break;
 			case 34:
-				sb->Append((const UTF8Char*)"34-ISO 6400");
+				sb->AppendC(UTF8STRC("34-ISO 6400"));
 				break;
 			case 35:
-				sb->Append((const UTF8Char*)"35-Creative Light Effect");
+				sb->AppendC(UTF8STRC("35-Creative Light Effect"));
 				break;
 			case 36:
-				sb->Append((const UTF8Char*)"36-Easy");
+				sb->AppendC(UTF8STRC("36-Easy"));
 				break;
 			case 37:
-				sb->Append((const UTF8Char*)"37-Quick Shot");
+				sb->AppendC(UTF8STRC("37-Quick Shot"));
 				break;
 			case 38:
-				sb->Append((const UTF8Char*)"38-Creative Auto");
+				sb->AppendC(UTF8STRC("38-Creative Auto"));
 				break;
 			case 39:
-				sb->Append((const UTF8Char*)"39-Zoom Blur");
+				sb->AppendC(UTF8STRC("39-Zoom Blur"));
 				break;
 			case 40:
-				sb->Append((const UTF8Char*)"40-Low Light");
+				sb->AppendC(UTF8STRC("40-Low Light"));
 				break;
 			case 41:
-				sb->Append((const UTF8Char*)"41-Nostalgic");
+				sb->AppendC(UTF8STRC("41-Nostalgic"));
 				break;
 			case 42:
-				sb->Append((const UTF8Char*)"42-Super Vivid");
+				sb->AppendC(UTF8STRC("42-Super Vivid"));
 				break;
 			case 43:
-				sb->Append((const UTF8Char*)"43-Poster Effect");
+				sb->AppendC(UTF8STRC("43-Poster Effect"));
 				break;
 			case 44:
-				sb->Append((const UTF8Char*)"44-Face Self-Time");
+				sb->AppendC(UTF8STRC("44-Face Self-Time"));
 				break;
 			case 45:
-				sb->Append((const UTF8Char*)"45-Smile");
+				sb->AppendC(UTF8STRC("45-Smile"));
 				break;
 			case 46:
-				sb->Append((const UTF8Char*)"46-Wink Self-Timer");
+				sb->AppendC(UTF8STRC("46-Wink Self-Timer"));
 				break;
 			case 47:
-				sb->Append((const UTF8Char*)"47-Fisheye Effect");
+				sb->AppendC(UTF8STRC("47-Fisheye Effect"));
 				break;
 			case 48:
-				sb->Append((const UTF8Char*)"48-Miniature Effect");
+				sb->AppendC(UTF8STRC("48-Miniature Effect"));
 				break;
 			case 49:
-				sb->Append((const UTF8Char*)"49-High-speed Burst");
+				sb->AppendC(UTF8STRC("49-High-speed Burst"));
 				break;
 			case 50:
-				sb->Append((const UTF8Char*)"50-Best Image Selection");
+				sb->AppendC(UTF8STRC("50-Best Image Selection"));
 				break;
 			case 51:
-				sb->Append((const UTF8Char*)"51-High Dynamic Range");
+				sb->AppendC(UTF8STRC("51-High Dynamic Range"));
 				break;
 			case 52:
-				sb->Append((const UTF8Char*)"52-Handheld Night Scene");
+				sb->AppendC(UTF8STRC("52-Handheld Night Scene"));
 				break;
 			case 53:
-				sb->Append((const UTF8Char*)"53-Movie Digest");
+				sb->AppendC(UTF8STRC("53-Movie Digest"));
 				break;
 			case 54:
-				sb->Append((const UTF8Char*)"54-Live View Control");
+				sb->AppendC(UTF8STRC("54-Live View Control"));
 				break;
 			case 55:
-				sb->Append((const UTF8Char*)"55-Discreet");
+				sb->AppendC(UTF8STRC("55-Discreet"));
 				break;
 			case 56:
-				sb->Append((const UTF8Char*)"56-Blur Reduction");
+				sb->AppendC(UTF8STRC("56-Blur Reduction"));
 				break;
 			case 57:
-				sb->Append((const UTF8Char*)"57-Monochrome");
+				sb->AppendC(UTF8STRC("57-Monochrome"));
 				break;
 			case 58:
-				sb->Append((const UTF8Char*)"58-Toy Camera Effect");
+				sb->AppendC(UTF8STRC("58-Toy Camera Effect"));
 				break;
 			case 59:
-				sb->Append((const UTF8Char*)"59-Scene Intelligent Auto");
+				sb->AppendC(UTF8STRC("59-Scene Intelligent Auto"));
 				break;
 			case 60:
-				sb->Append((const UTF8Char*)"60-High-speed Burst HQ");
+				sb->AppendC(UTF8STRC("60-High-speed Burst HQ"));
 				break;
 			case 61:
-				sb->Append((const UTF8Char*)"61-Smooth Skin");
+				sb->AppendC(UTF8STRC("61-Smooth Skin"));
 				break;
 			case 62:
-				sb->Append((const UTF8Char*)"62-Soft Focus");
+				sb->AppendC(UTF8STRC("62-Soft Focus"));
 				break;
 			case 257:
-				sb->Append((const UTF8Char*)"257-Spotlight");
+				sb->AppendC(UTF8STRC("257-Spotlight"));
 				break;
 			case 258:
-				sb->Append((const UTF8Char*)"258-Night 2");
+				sb->AppendC(UTF8STRC("258-Night 2"));
 				break;
 			case 259:
-				sb->Append((const UTF8Char*)"259-Night+");
+				sb->AppendC(UTF8STRC("259-Night+"));
 				break;
 			case 260:
-				sb->Append((const UTF8Char*)"260-Super Night");
+				sb->AppendC(UTF8STRC("260-Super Night"));
 				break;
 			case 261:
-				sb->Append((const UTF8Char*)"261-Sunset");
+				sb->AppendC(UTF8STRC("261-Sunset"));
 				break;
 			case 263:
-				sb->Append((const UTF8Char*)"263-Night Scene");
+				sb->AppendC(UTF8STRC("263-Night Scene"));
 				break;
 			case 264:
-				sb->Append((const UTF8Char*)"264-Surface");
+				sb->AppendC(UTF8STRC("264-Surface"));
 				break;
 			case 265:
-				sb->Append((const UTF8Char*)"265-Low Light 2");
+				sb->AppendC(UTF8STRC("265-Low Light 2"));
 				break;
 			default:
 				sb->AppendI16((Int16)valBuff[k]);
@@ -3203,20 +3203,20 @@ Bool Media::EXIFData::ToStringCanonCameraSettings(Text::StringBuilderUTF *sb, co
 			}
 			break;
 		case 12:
-			sb->Append((const UTF8Char*)"DigitalZoom = ");
+			sb->AppendC(UTF8STRC("DigitalZoom = "));
 			switch ((Int16)valBuff[k])
 			{
 			case 0:
-				sb->Append((const UTF8Char*)"0-None");
+				sb->AppendC(UTF8STRC("0-None"));
 				break;
 			case 1:
-				sb->Append((const UTF8Char*)"1-2x");
+				sb->AppendC(UTF8STRC("1-2x"));
 				break;
 			case 2:
-				sb->Append((const UTF8Char*)"2-4x");
+				sb->AppendC(UTF8STRC("2-4x"));
 				break;
 			case 3:
-				sb->Append((const UTF8Char*)"3-Other");
+				sb->AppendC(UTF8STRC("3-Other"));
 				break;
 			default:
 				sb->AppendI16((Int16)valBuff[k]);
@@ -3224,42 +3224,42 @@ Bool Media::EXIFData::ToStringCanonCameraSettings(Text::StringBuilderUTF *sb, co
 			}
 			break;
 		case 13:
-			sb->Append((const UTF8Char*)"Contrast = ");
+			sb->AppendC(UTF8STRC("Contrast = "));
 			isInt16 = true;
 			break;
 		case 14:
-			sb->Append((const UTF8Char*)"Saturation = ");
+			sb->AppendC(UTF8STRC("Saturation = "));
 			isInt16 = true;
 			break;
 		case 15:
-			sb->Append((const UTF8Char*)"Sharpness = ");
+			sb->AppendC(UTF8STRC("Sharpness = "));
 			isInt16 = true;
 			break;
 		case 16:
-			sb->Append((const UTF8Char*)"CameraISO = ");
+			sb->AppendC(UTF8STRC("CameraISO = "));
 			isInt16 = true;
 			break;
 		case 17:
-			sb->Append((const UTF8Char*)"MeteringMode = ");
+			sb->AppendC(UTF8STRC("MeteringMode = "));
 			switch ((Int16)valBuff[k])
 			{
 			case 0:
-				sb->Append((const UTF8Char*)"0-Default");
+				sb->AppendC(UTF8STRC("0-Default"));
 				break;
 			case 1:
-				sb->Append((const UTF8Char*)"1-Spot");
+				sb->AppendC(UTF8STRC("1-Spot"));
 				break;
 			case 2:
-				sb->Append((const UTF8Char*)"2-Average");
+				sb->AppendC(UTF8STRC("2-Average"));
 				break;
 			case 3:
-				sb->Append((const UTF8Char*)"3-Evaluative");
+				sb->AppendC(UTF8STRC("3-Evaluative"));
 				break;
 			case 4:
-				sb->Append((const UTF8Char*)"4-Partial");
+				sb->AppendC(UTF8STRC("4-Partial"));
 				break;
 			case 5:
-				sb->Append((const UTF8Char*)"5-Center-weighted average");
+				sb->AppendC(UTF8STRC("5-Center-weighted average"));
 				break;
 			default:
 				sb->AppendI16((Int16)valBuff[k]);
@@ -3267,41 +3267,41 @@ Bool Media::EXIFData::ToStringCanonCameraSettings(Text::StringBuilderUTF *sb, co
 			}
 			break;
 		case 18:
-			sb->Append((const UTF8Char*)"FocusRange = ");
+			sb->AppendC(UTF8STRC("FocusRange = "));
 			switch ((Int16)valBuff[k])
 			{
 			case 0:
-				sb->Append((const UTF8Char*)"0-Manual");
+				sb->AppendC(UTF8STRC("0-Manual"));
 				break;
 			case 1:
-				sb->Append((const UTF8Char*)"1-Auto");
+				sb->AppendC(UTF8STRC("1-Auto"));
 				break;
 			case 2:
-				sb->Append((const UTF8Char*)"2-Not Known");
+				sb->AppendC(UTF8STRC("2-Not Known"));
 				break;
 			case 3:
-				sb->Append((const UTF8Char*)"3-Macro");
+				sb->AppendC(UTF8STRC("3-Macro"));
 				break;
 			case 4:
-				sb->Append((const UTF8Char*)"4-Very Close");
+				sb->AppendC(UTF8STRC("4-Very Close"));
 				break;
 			case 5:
-				sb->Append((const UTF8Char*)"5-Close");
+				sb->AppendC(UTF8STRC("5-Close"));
 				break;
 			case 6:
-				sb->Append((const UTF8Char*)"6-Middle Range");
+				sb->AppendC(UTF8STRC("6-Middle Range"));
 				break;
 			case 7:
-				sb->Append((const UTF8Char*)"7-Far Range");
+				sb->AppendC(UTF8STRC("7-Far Range"));
 				break;
 			case 8:
-				sb->Append((const UTF8Char*)"8-Pan Focus");
+				sb->AppendC(UTF8STRC("8-Pan Focus"));
 				break;
 			case 9:
-				sb->Append((const UTF8Char*)"9-Super Macro");
+				sb->AppendC(UTF8STRC("9-Super Macro"));
 				break;
 			case 10:
-				sb->Append((const UTF8Char*)"10-Infinity");
+				sb->AppendC(UTF8STRC("10-Infinity"));
 				break;
 			default:
 				sb->AppendI16((Int16)valBuff[k]);
@@ -3309,32 +3309,32 @@ Bool Media::EXIFData::ToStringCanonCameraSettings(Text::StringBuilderUTF *sb, co
 			}
 			break;
 		case 19:
-			sb->Append((const UTF8Char*)"AFPoint = ");
+			sb->AppendC(UTF8STRC("AFPoint = "));
 			switch ((Int16)valBuff[k])
 			{
 			case 0x2005:
-				sb->Append((const UTF8Char*)"0x2005-Manual AF point selection ");
+				sb->AppendC(UTF8STRC("0x2005-Manual AF point selection "));
 				break;
 			case 0x3000:
-				sb->Append((const UTF8Char*)"0x3000-None (MF)");
+				sb->AppendC(UTF8STRC("0x3000-None (MF)"));
 				break;
 			case 0x3001:
-				sb->Append((const UTF8Char*)"0x3001-Auto AF point selection");
+				sb->AppendC(UTF8STRC("0x3001-Auto AF point selection"));
 				break;
 			case 0x3002:
-				sb->Append((const UTF8Char*)"0x3002-Right");
+				sb->AppendC(UTF8STRC("0x3002-Right"));
 				break;
 			case 0x3003:
-				sb->Append((const UTF8Char*)"0x3003-Center");
+				sb->AppendC(UTF8STRC("0x3003-Center"));
 				break;
 			case 0x3004:
-				sb->Append((const UTF8Char*)"0x3004-Left");
+				sb->AppendC(UTF8STRC("0x3004-Left"));
 				break;
 			case 0x4001:
-				sb->Append((const UTF8Char*)"0x4001-Auto AF point selection");
+				sb->AppendC(UTF8STRC("0x4001-Auto AF point selection"));
 				break;
 			case 0x4006:
-				sb->Append((const UTF8Char*)"0x4006-Face Detect");
+				sb->AppendC(UTF8STRC("0x4006-Face Detect"));
 				break;
 			default:
 				sb->AppendI16((Int16)valBuff[k]);
@@ -3342,32 +3342,32 @@ Bool Media::EXIFData::ToStringCanonCameraSettings(Text::StringBuilderUTF *sb, co
 			}
 			break;
 		case 20:
-			sb->Append((const UTF8Char*)"CanonExposureMode = ");
+			sb->AppendC(UTF8STRC("CanonExposureMode = "));
 			switch ((Int16)valBuff[k])
 			{
 			case 0:
-				sb->Append((const UTF8Char*)"0-Easy");
+				sb->AppendC(UTF8STRC("0-Easy"));
 				break;
 			case 1:
-				sb->Append((const UTF8Char*)"1-Program AE");
+				sb->AppendC(UTF8STRC("1-Program AE"));
 				break;
 			case 2:
-				sb->Append((const UTF8Char*)"2-Shutter speed priority AE");
+				sb->AppendC(UTF8STRC("2-Shutter speed priority AE"));
 				break;
 			case 3:
-				sb->Append((const UTF8Char*)"3-Aperture-priority AE");
+				sb->AppendC(UTF8STRC("3-Aperture-priority AE"));
 				break;
 			case 4:
-				sb->Append((const UTF8Char*)"4-Manual");
+				sb->AppendC(UTF8STRC("4-Manual"));
 				break;
 			case 5:
-				sb->Append((const UTF8Char*)"5-Depth-of-field AE");
+				sb->AppendC(UTF8STRC("5-Depth-of-field AE"));
 				break;
 			case 6:
-				sb->Append((const UTF8Char*)"6-M-Dep");
+				sb->AppendC(UTF8STRC("6-M-Dep"));
 				break;
 			case 7:
-				sb->Append((const UTF8Char*)"7-Bulb");
+				sb->AppendC(UTF8STRC("7-Bulb"));
 				break;
 			default:
 				sb->AppendI16((Int16)valBuff[k]);
@@ -3375,49 +3375,49 @@ Bool Media::EXIFData::ToStringCanonCameraSettings(Text::StringBuilderUTF *sb, co
 			}
 			break;
 		case 22:
-			sb->Append((const UTF8Char*)"LensType = ");
+			sb->AppendC(UTF8STRC("LensType = "));
 			this->ToStringCanonLensType(sb, valBuff[k]);
 			break;
 		case 23:
-			sb->Append((const UTF8Char*)"MaxFocalLength = ");
+			sb->AppendC(UTF8STRC("MaxFocalLength = "));
 			isUInt16 = true;
 			break;
 		case 24:
-			sb->Append((const UTF8Char*)"MinFocalLength = ");
+			sb->AppendC(UTF8STRC("MinFocalLength = "));
 			isUInt16 = true;
 			break;
 		case 25:
-			sb->Append((const UTF8Char*)"FocalUnits = ");
+			sb->AppendC(UTF8STRC("FocalUnits = "));
 			isInt16 = true;
 			break;
 		case 26:
-			sb->Append((const UTF8Char*)"MaxAperture = ");
+			sb->AppendC(UTF8STRC("MaxAperture = "));
 			isInt16 = true;
 			break;
 		case 27:
-			sb->Append((const UTF8Char*)"MinAperture = ");
+			sb->AppendC(UTF8STRC("MinAperture = "));
 			isInt16 = true;
 			break;
 		case 28:
-			sb->Append((const UTF8Char*)"FlashActivity = ");
+			sb->AppendC(UTF8STRC("FlashActivity = "));
 			isInt16 = true;
 			break;
 		case 29:
-			sb->Append((const UTF8Char*)"FlashBits = 0x");
+			sb->AppendC(UTF8STRC("FlashBits = 0x"));
 			sb->AppendHex16(valBuff[k]);
 			break;
 		case 32:
-			sb->Append((const UTF8Char*)"FocusContinuous = ");
+			sb->AppendC(UTF8STRC("FocusContinuous = "));
 			switch ((Int16)valBuff[k])
 			{
 			case 0:
-				sb->Append((const UTF8Char*)"0-Single");
+				sb->AppendC(UTF8STRC("0-Single"));
 				break;
 			case 1:
-				sb->Append((const UTF8Char*)"1-Continuous");
+				sb->AppendC(UTF8STRC("1-Continuous"));
 				break;
 			case 8:
-				sb->Append((const UTF8Char*)"8-Manual");
+				sb->AppendC(UTF8STRC("8-Manual"));
 				break;
 			default:
 				sb->AppendI16((Int16)valBuff[k]);
@@ -3425,23 +3425,23 @@ Bool Media::EXIFData::ToStringCanonCameraSettings(Text::StringBuilderUTF *sb, co
 			}
 			break;
 		case 33:
-			sb->Append((const UTF8Char*)"AESetting = ");
+			sb->AppendC(UTF8STRC("AESetting = "));
 			switch ((Int16)valBuff[k])
 			{
 			case 0:
-				sb->Append((const UTF8Char*)"0-Normal AE");
+				sb->AppendC(UTF8STRC("0-Normal AE"));
 				break;
 			case 1:
-				sb->Append((const UTF8Char*)"1-Exposure Compensation");
+				sb->AppendC(UTF8STRC("1-Exposure Compensation"));
 				break;
 			case 2:
-				sb->Append((const UTF8Char*)"2-AE Lock");
+				sb->AppendC(UTF8STRC("2-AE Lock"));
 				break;
 			case 3:
-				sb->Append((const UTF8Char*)"3-AE Lock + Exposure Comp.");
+				sb->AppendC(UTF8STRC("3-AE Lock + Exposure Comp."));
 				break;
 			case 4:
-				sb->Append((const UTF8Char*)"4-No AE");
+				sb->AppendC(UTF8STRC("4-No AE"));
 				break;
 			default:
 				sb->AppendI16((Int16)valBuff[k]);
@@ -3449,38 +3449,38 @@ Bool Media::EXIFData::ToStringCanonCameraSettings(Text::StringBuilderUTF *sb, co
 			}
 			break;
 		case 34:
-			sb->Append((const UTF8Char*)"ImageStabilization = ");
+			sb->AppendC(UTF8STRC("ImageStabilization = "));
 			switch ((Int16)valBuff[k])
 			{
 			case 0:
-				sb->Append((const UTF8Char*)"0-Off");
+				sb->AppendC(UTF8STRC("0-Off"));
 				break;
 			case 1:
-				sb->Append((const UTF8Char*)"1-On");
+				sb->AppendC(UTF8STRC("1-On"));
 				break;
 			case 2:
-				sb->Append((const UTF8Char*)"2-Shoot Only");
+				sb->AppendC(UTF8STRC("2-Shoot Only"));
 				break;
 			case 3:
-				sb->Append((const UTF8Char*)"3-Panning");
+				sb->AppendC(UTF8STRC("3-Panning"));
 				break;
 			case 4:
-				sb->Append((const UTF8Char*)"4-Dynamic");
+				sb->AppendC(UTF8STRC("4-Dynamic"));
 				break;
 			case 256:
-				sb->Append((const UTF8Char*)"256-Off");
+				sb->AppendC(UTF8STRC("256-Off"));
 				break;
 			case 257:
-				sb->Append((const UTF8Char*)"257-On");
+				sb->AppendC(UTF8STRC("257-On"));
 				break;
 			case 258:
-				sb->Append((const UTF8Char*)"258-Shoot Only");
+				sb->AppendC(UTF8STRC("258-Shoot Only"));
 				break;
 			case 259:
-				sb->Append((const UTF8Char*)"259-Panning");
+				sb->AppendC(UTF8STRC("259-Panning"));
 				break;
 			case 260:
-				sb->Append((const UTF8Char*)"260-Dynamic");
+				sb->AppendC(UTF8STRC("260-Dynamic"));
 				break;
 			default:
 				sb->AppendI16((Int16)valBuff[k]);
@@ -3488,26 +3488,26 @@ Bool Media::EXIFData::ToStringCanonCameraSettings(Text::StringBuilderUTF *sb, co
 			}
 			break;
 		case 35:
-			sb->Append((const UTF8Char*)"DisplayAperture = ");
+			sb->AppendC(UTF8STRC("DisplayAperture = "));
 			isInt16 = true;
 			break;
 		case 36:
-			sb->Append((const UTF8Char*)"ZoomSourceWidth = ");
+			sb->AppendC(UTF8STRC("ZoomSourceWidth = "));
 			isInt16 = true;
 			break;
 		case 37:
-			sb->Append((const UTF8Char*)"ZoomTargetWidth = ");
+			sb->AppendC(UTF8STRC("ZoomTargetWidth = "));
 			isInt16 = true;
 			break;
 		case 39:
-			sb->Append((const UTF8Char*)"AESetting = ");
+			sb->AppendC(UTF8STRC("AESetting = "));
 			switch ((Int16)valBuff[k])
 			{
 			case 0:
-				sb->Append((const UTF8Char*)"0-Center");
+				sb->AppendC(UTF8STRC("0-Center"));
 				break;
 			case 1:
-				sb->Append((const UTF8Char*)"1-AF Point");
+				sb->AppendC(UTF8STRC("1-AF Point"));
 				break;
 			default:
 				sb->AppendI16((Int16)valBuff[k]);
@@ -3515,32 +3515,32 @@ Bool Media::EXIFData::ToStringCanonCameraSettings(Text::StringBuilderUTF *sb, co
 			}
 			break;
 		case 40:
-			sb->Append((const UTF8Char*)"PhotoEffect = ");
+			sb->AppendC(UTF8STRC("PhotoEffect = "));
 			switch ((Int16)valBuff[k])
 			{
 			case 0:
-				sb->Append((const UTF8Char*)"0-Off");
+				sb->AppendC(UTF8STRC("0-Off"));
 				break;
 			case 1:
-				sb->Append((const UTF8Char*)"1-Vivid");
+				sb->AppendC(UTF8STRC("1-Vivid"));
 				break;
 			case 2:
-				sb->Append((const UTF8Char*)"2-Neutral");
+				sb->AppendC(UTF8STRC("2-Neutral"));
 				break;
 			case 3:
-				sb->Append((const UTF8Char*)"3-Smooth");
+				sb->AppendC(UTF8STRC("3-Smooth"));
 				break;
 			case 4:
-				sb->Append((const UTF8Char*)"4-Sepia");
+				sb->AppendC(UTF8STRC("4-Sepia"));
 				break;
 			case 5:
-				sb->Append((const UTF8Char*)"5-B&W");
+				sb->AppendC(UTF8STRC("5-B&W"));
 				break;
 			case 6:
-				sb->Append((const UTF8Char*)"6-Custom");
+				sb->AppendC(UTF8STRC("6-Custom"));
 				break;
 			case 100:
-				sb->Append((const UTF8Char*)"100-My Color Data");
+				sb->AppendC(UTF8STRC("100-My Color Data"));
 				break;
 			default:
 				sb->AppendI16((Int16)valBuff[k]);
@@ -3548,57 +3548,57 @@ Bool Media::EXIFData::ToStringCanonCameraSettings(Text::StringBuilderUTF *sb, co
 			}
 			break;
 		case 41:
-			sb->Append((const UTF8Char*)"ManualFlashOutput = ");
+			sb->AppendC(UTF8STRC("ManualFlashOutput = "));
 			switch ((Int16)valBuff[k])
 			{
 			case 0:
-				sb->Append((const UTF8Char*)"0-n/a");
+				sb->AppendC(UTF8STRC("0-n/a"));
 				break;
 			case 0x500:
-				sb->Append((const UTF8Char*)"0x500-Full");
+				sb->AppendC(UTF8STRC("0x500-Full"));
 				break;
 			case 0x502:
-				sb->Append((const UTF8Char*)"0x500-Medium");
+				sb->AppendC(UTF8STRC("0x500-Medium"));
 				break;
 			case 0x504:
-				sb->Append((const UTF8Char*)"0x500-Low");
+				sb->AppendC(UTF8STRC("0x500-Low"));
 				break;
 			case 0x7fff:
-				sb->Append((const UTF8Char*)"0x7fff-n/a");
+				sb->AppendC(UTF8STRC("0x7fff-n/a"));
 				break;
 			default:
-				sb->Append((const UTF8Char*)"0x");
+				sb->AppendC(UTF8STRC("0x"));
 				sb->AppendHex16(valBuff[k]);
 				break;
 			}
 			break;
 		case 42:
-			sb->Append((const UTF8Char*)"ColorTone = ");
+			sb->AppendC(UTF8STRC("ColorTone = "));
 			isInt16 = true;
 			break;
 		case 46:
-			sb->Append((const UTF8Char*)"SRAWQuality = ");
+			sb->AppendC(UTF8STRC("SRAWQuality = "));
 			switch ((Int16)valBuff[k])
 			{
 			case 0:
-				sb->Append((const UTF8Char*)"0-n/a");
+				sb->AppendC(UTF8STRC("0-n/a"));
 				break;
 			case 1:
-				sb->Append((const UTF8Char*)"1-sRAW1(mRAW)");
+				sb->AppendC(UTF8STRC("1-sRAW1(mRAW)"));
 				break;
 			case 2:
-				sb->Append((const UTF8Char*)"2-sRAW2(sRAW)");
+				sb->AppendC(UTF8STRC("2-sRAW2(sRAW)"));
 				break;
 			default:
-				sb->Append((const UTF8Char*)"0x");
+				sb->AppendC(UTF8STRC("0x"));
 				sb->AppendHex16(valBuff[k]);
 				break;
 			}
 			break;
 		default:
-			sb->Append((const UTF8Char*)"Unknown(");
+			sb->AppendC(UTF8STRC("Unknown("));
 			sb->AppendUOSInt(k);
-			sb->Append((const UTF8Char*)") = ");
+			sb->AppendC(UTF8STRC(") = "));
 			isInt16 = true;
 			break;
 		}
@@ -3623,23 +3623,23 @@ Bool Media::EXIFData::ToStringCanonFocalLength(Text::StringBuilderUTF *sb, const
 	k = 0;
 	while (k < valCnt)
 	{
-		sb->Append((const UTF8Char*)"\r\n");
+		sb->AppendC(UTF8STRC("\r\n"));
 		if (linePrefix)
 			sb->Append(linePrefix);
-		sb->Append((const UTF8Char*)" ");
+		sb->AppendC(UTF8STRC(" "));
 		isInt16 = false;
 		isUInt16 = false;
 		switch (k)
 		{
 		case 0:
-			sb->Append((const UTF8Char*)"FocalType = ");
+			sb->AppendC(UTF8STRC("FocalType = "));
 			switch ((Int16)valBuff[k])
 			{
 			case 1:
-				sb->Append((const UTF8Char*)"1-Fixed");
+				sb->AppendC(UTF8STRC("1-Fixed"));
 				break;
 			case 2:
-				sb->Append((const UTF8Char*)"2-Zoom");
+				sb->AppendC(UTF8STRC("2-Zoom"));
 				break;
 			default:
 				sb->AppendI16((Int16)valBuff[k]);
@@ -3647,21 +3647,21 @@ Bool Media::EXIFData::ToStringCanonFocalLength(Text::StringBuilderUTF *sb, const
 			}
 			break;
 		case 1:
-			sb->Append((const UTF8Char*)"FocalLength = ");
+			sb->AppendC(UTF8STRC("FocalLength = "));
 			isUInt16 = true;
 			break;
 		case 2:
-			sb->Append((const UTF8Char*)"FocalPlaneXSize = ");
+			sb->AppendC(UTF8STRC("FocalPlaneXSize = "));
 			isUInt16 = true;
 			break;
 		case 3:
-			sb->Append((const UTF8Char*)"FocalPlaneYSize = ");
+			sb->AppendC(UTF8STRC("FocalPlaneYSize = "));
 			isUInt16 = true;
 			break;
 		default:
-			sb->Append((const UTF8Char*)"Unknown(");
+			sb->AppendC(UTF8STRC("Unknown("));
 			sb->AppendUOSInt(k);
-			sb->Append((const UTF8Char*)") = ");
+			sb->AppendC(UTF8STRC(") = "));
 			isInt16 = true;
 			break;
 		}
@@ -3686,60 +3686,60 @@ Bool Media::EXIFData::ToStringCanonShotInfo(Text::StringBuilderUTF *sb, const UT
 	k = 0;
 	while (k < valCnt)
 	{
-		sb->Append((const UTF8Char*)"\r\n");
+		sb->AppendC(UTF8STRC("\r\n"));
 		if (linePrefix)
 			sb->Append(linePrefix);
-		sb->Append((const UTF8Char*)" ");
+		sb->AppendC(UTF8STRC(" "));
 		isInt16 = false;
 		isUInt16 = false;
 		switch (k)
 		{
 		case 1:
-			sb->Append((const UTF8Char*)"AutoISO = ");
+			sb->AppendC(UTF8STRC("AutoISO = "));
 			isInt16 = true;
 			break;
 		case 2:
-			sb->Append((const UTF8Char*)"BaseISO = ");
+			sb->AppendC(UTF8STRC("BaseISO = "));
 			isInt16 = true;
 			break;
 		case 3:
-			sb->Append((const UTF8Char*)"MeasuredEV = ");
+			sb->AppendC(UTF8STRC("MeasuredEV = "));
 			isInt16 = true;
 			break;
 		case 4:
-			sb->Append((const UTF8Char*)"TargetAperture = ");
+			sb->AppendC(UTF8STRC("TargetAperture = "));
 			isInt16 = true;
 			break;
 		case 5:
-			sb->Append((const UTF8Char*)"TargetExposureTime = ");
+			sb->AppendC(UTF8STRC("TargetExposureTime = "));
 			isInt16 = true;
 			break;
 		case 6:
-			sb->Append((const UTF8Char*)"ExposureCompensation = ");
+			sb->AppendC(UTF8STRC("ExposureCompensation = "));
 			isInt16 = true;
 			break;
 		case 7:
-			sb->Append((const UTF8Char*)"WhiteBalance = ");
+			sb->AppendC(UTF8STRC("WhiteBalance = "));
 			isInt16 = true;
 			break;
 		case 8:
-			sb->Append((const UTF8Char*)"SlowShutter = ");
+			sb->AppendC(UTF8STRC("SlowShutter = "));
 			switch ((Int16)valBuff[k])
 			{
 			case -1:
-				sb->Append((const UTF8Char*)"-1-n/a");
+				sb->AppendC(UTF8STRC("-1-n/a"));
 				break;
 			case 0:
-				sb->Append((const UTF8Char*)"0-Off");
+				sb->AppendC(UTF8STRC("0-Off"));
 				break;
 			case 1:
-				sb->Append((const UTF8Char*)"1-Night Scene");
+				sb->AppendC(UTF8STRC("1-Night Scene"));
 				break;
 			case 2:
-				sb->Append((const UTF8Char*)"2-On");
+				sb->AppendC(UTF8STRC("2-On"));
 				break;
 			case 3:
-				sb->Append((const UTF8Char*)"3-None");
+				sb->AppendC(UTF8STRC("3-None"));
 				break;
 			default:
 				sb->AppendI16((Int16)valBuff[k]);
@@ -3747,77 +3747,77 @@ Bool Media::EXIFData::ToStringCanonShotInfo(Text::StringBuilderUTF *sb, const UT
 			}
 			break;
 		case 9:
-			sb->Append((const UTF8Char*)"SequenceNumber = ");
+			sb->AppendC(UTF8STRC("SequenceNumber = "));
 			isInt16 = true;
 			break;
 		case 10:
-			sb->Append((const UTF8Char*)"OpticalZoomCode = ");
+			sb->AppendC(UTF8STRC("OpticalZoomCode = "));
 			isInt16 = true;
 			break;
 		case 12:
-			sb->Append((const UTF8Char*)"CameraTemperature = ");
+			sb->AppendC(UTF8STRC("CameraTemperature = "));
 			isInt16 = true;
 			break;
 		case 13:
-			sb->Append((const UTF8Char*)"FlashGuideNumber = ");
+			sb->AppendC(UTF8STRC("FlashGuideNumber = "));
 			isInt16 = true;
 			break;
 		case 14:
-			sb->Append((const UTF8Char*)"AFPointsInFocus = ");
+			sb->AppendC(UTF8STRC("AFPointsInFocus = "));
 			switch ((Int16)valBuff[k])
 			{
 			case 0x3000:
-				sb->Append((const UTF8Char*)"0x3000-None (MF)");
+				sb->AppendC(UTF8STRC("0x3000-None (MF)"));
 				break;
 			case 0x3001:
-				sb->Append((const UTF8Char*)"0x3001-Right");
+				sb->AppendC(UTF8STRC("0x3001-Right"));
 				break;
 			case 0x3002:
-				sb->Append((const UTF8Char*)"0x3002-Center");
+				sb->AppendC(UTF8STRC("0x3002-Center"));
 				break;
 			case 0x3003:
-				sb->Append((const UTF8Char*)"0x3003-Center+Right");
+				sb->AppendC(UTF8STRC("0x3003-Center+Right"));
 				break;
 			case 0x3004:
-				sb->Append((const UTF8Char*)"0x3004-Left");
+				sb->AppendC(UTF8STRC("0x3004-Left"));
 				break;
 			case 0x3005:
-				sb->Append((const UTF8Char*)"0x3005-Left+Right");
+				sb->AppendC(UTF8STRC("0x3005-Left+Right"));
 				break;
 			case 0x3006:
-				sb->Append((const UTF8Char*)"0x3006-Left+Center");
+				sb->AppendC(UTF8STRC("0x3006-Left+Center"));
 				break;
 			case 0x3007:
-				sb->Append((const UTF8Char*)"0x3007-All");
+				sb->AppendC(UTF8STRC("0x3007-All"));
 				break;
 			default:
-				sb->Append((const UTF8Char*)"0x");
+				sb->AppendC(UTF8STRC("0x"));
 				sb->AppendHex16(valBuff[k]);
 				break;
 			}
 			break;
 		case 15:
-			sb->Append((const UTF8Char*)"FlashExposureComp = ");
+			sb->AppendC(UTF8STRC("FlashExposureComp = "));
 			isInt16 = true;
 			break;
 		case 16:
-			sb->Append((const UTF8Char*)"AutoExposureBracketing = ");
+			sb->AppendC(UTF8STRC("AutoExposureBracketing = "));
 			switch ((Int16)valBuff[k])
 			{
 			case -1:
-				sb->Append((const UTF8Char*)"-1-On");
+				sb->AppendC(UTF8STRC("-1-On"));
 				break;
 			case 0:
-				sb->Append((const UTF8Char*)"0-Off");
+				sb->AppendC(UTF8STRC("0-Off"));
 				break;
 			case 1:
-				sb->Append((const UTF8Char*)"1-On (shot 1)");
+				sb->AppendC(UTF8STRC("1-On (shot 1)"));
 				break;
 			case 2:
-				sb->Append((const UTF8Char*)"2-On (shot 2)");
+				sb->AppendC(UTF8STRC("2-On (shot 2)"));
 				break;
 			case 3:
-				sb->Append((const UTF8Char*)"3-On (shot 3)");
+				sb->AppendC(UTF8STRC("3-On (shot 3)"));
 				break;
 			default:
 				sb->AppendI16((Int16)valBuff[k]);
@@ -3825,21 +3825,21 @@ Bool Media::EXIFData::ToStringCanonShotInfo(Text::StringBuilderUTF *sb, const UT
 			}
 			break;
 		case 17:
-			sb->Append((const UTF8Char*)"AEBBracketValue = ");
+			sb->AppendC(UTF8STRC("AEBBracketValue = "));
 			isInt16 = true;
 			break;
 		case 18:
-			sb->Append((const UTF8Char*)"ControlMode = ");
+			sb->AppendC(UTF8STRC("ControlMode = "));
 			switch ((Int16)valBuff[k])
 			{
 			case 0:
-				sb->Append((const UTF8Char*)"0-n/a");
+				sb->AppendC(UTF8STRC("0-n/a"));
 				break;
 			case 1:
-				sb->Append((const UTF8Char*)"1-Camera Local Control");
+				sb->AppendC(UTF8STRC("1-Camera Local Control"));
 				break;
 			case 3:
-				sb->Append((const UTF8Char*)"3-Computer Remote Control");
+				sb->AppendC(UTF8STRC("3-Computer Remote Control"));
 				break;
 			default:
 				sb->AppendI16((Int16)valBuff[k]);
@@ -3847,47 +3847,47 @@ Bool Media::EXIFData::ToStringCanonShotInfo(Text::StringBuilderUTF *sb, const UT
 			}
 			break;
 		case 19:
-			sb->Append((const UTF8Char*)"FocusDistanceUpper = ");
+			sb->AppendC(UTF8STRC("FocusDistanceUpper = "));
 			isUInt16 = true;
 			break;
 		case 20:
-			sb->Append((const UTF8Char*)"FocusDistanceLower = ");
+			sb->AppendC(UTF8STRC("FocusDistanceLower = "));
 			isUInt16 = true;
 			break;
 		case 21:
-			sb->Append((const UTF8Char*)"FNumber = ");
+			sb->AppendC(UTF8STRC("FNumber = "));
 			isInt16 = true;
 			break;
 		case 22:
-			sb->Append((const UTF8Char*)"ExposureTime = ");
+			sb->AppendC(UTF8STRC("ExposureTime = "));
 			isInt16 = true;
 			break;
 		case 23:
-			sb->Append((const UTF8Char*)"MeasuredEV2 = ");
+			sb->AppendC(UTF8STRC("MeasuredEV2 = "));
 			isInt16 = true;
 			break;
 		case 24:
-			sb->Append((const UTF8Char*)"BulbDuration = ");
+			sb->AppendC(UTF8STRC("BulbDuration = "));
 			isInt16 = true;
 			break;
 		case 26:
-			sb->Append((const UTF8Char*)"CameraType = ");
+			sb->AppendC(UTF8STRC("CameraType = "));
 			switch ((Int16)valBuff[k])
 			{
 			case 0:
-				sb->Append((const UTF8Char*)"0-n/a");
+				sb->AppendC(UTF8STRC("0-n/a"));
 				break;
 			case 248:
-				sb->Append((const UTF8Char*)"248-EOS High-end");
+				sb->AppendC(UTF8STRC("248-EOS High-end"));
 				break;
 			case 250:
-				sb->Append((const UTF8Char*)"250-Compact");
+				sb->AppendC(UTF8STRC("250-Compact"));
 				break;
 			case 252:
-				sb->Append((const UTF8Char*)"252-EOS Mid-range");
+				sb->AppendC(UTF8STRC("252-EOS Mid-range"));
 				break;
 			case 255:
-				sb->Append((const UTF8Char*)"255-DV Camera");
+				sb->AppendC(UTF8STRC("255-DV Camera"));
 				break;
 			default:
 				sb->AppendI16((Int16)valBuff[k]);
@@ -3895,23 +3895,23 @@ Bool Media::EXIFData::ToStringCanonShotInfo(Text::StringBuilderUTF *sb, const UT
 			}
 			break;
 		case 27:
-			sb->Append((const UTF8Char*)"AutoRotate = ");
+			sb->AppendC(UTF8STRC("AutoRotate = "));
 			switch ((Int16)valBuff[k])
 			{
 			case -1:
-				sb->Append((const UTF8Char*)"-1-n/a");
+				sb->AppendC(UTF8STRC("-1-n/a"));
 				break;
 			case 0:
-				sb->Append((const UTF8Char*)"0-None");
+				sb->AppendC(UTF8STRC("0-None"));
 				break;
 			case 1:
-				sb->Append((const UTF8Char*)"1-Rotate 90 CW");
+				sb->AppendC(UTF8STRC("1-Rotate 90 CW"));
 				break;
 			case 2:
-				sb->Append((const UTF8Char*)"1-Rotate 180");
+				sb->AppendC(UTF8STRC("1-Rotate 180"));
 				break;
 			case 3:
-				sb->Append((const UTF8Char*)"3-Rotate 270 CW");
+				sb->AppendC(UTF8STRC("3-Rotate 270 CW"));
 				break;
 			default:
 				sb->AppendI16((Int16)valBuff[k]);
@@ -3919,17 +3919,17 @@ Bool Media::EXIFData::ToStringCanonShotInfo(Text::StringBuilderUTF *sb, const UT
 			}
 			break;
 		case 28:
-			sb->Append((const UTF8Char*)"NDFilter = ");
+			sb->AppendC(UTF8STRC("NDFilter = "));
 			switch ((Int16)valBuff[k])
 			{
 			case -1:
-				sb->Append((const UTF8Char*)"-1-n/a");
+				sb->AppendC(UTF8STRC("-1-n/a"));
 				break;
 			case 0:
-				sb->Append((const UTF8Char*)"0-Off");
+				sb->AppendC(UTF8STRC("0-Off"));
 				break;
 			case 1:
-				sb->Append((const UTF8Char*)"1-On");
+				sb->AppendC(UTF8STRC("1-On"));
 				break;
 			default:
 				sb->AppendI16((Int16)valBuff[k]);
@@ -3937,17 +3937,17 @@ Bool Media::EXIFData::ToStringCanonShotInfo(Text::StringBuilderUTF *sb, const UT
 			}
 			break;
 		case 29:
-			sb->Append((const UTF8Char*)"SelfTimer2 = ");
+			sb->AppendC(UTF8STRC("SelfTimer2 = "));
 			isInt16 = true;
 			break;
 		case 33:
-			sb->Append((const UTF8Char*)"FlashOutput = ");
+			sb->AppendC(UTF8STRC("FlashOutput = "));
 			isInt16 = true;
 			break;
 		default:
-			sb->Append((const UTF8Char*)"Unknown(");
+			sb->AppendC(UTF8STRC("Unknown("));
 			sb->AppendUOSInt(k);
-			sb->Append((const UTF8Char*)") = ");
+			sb->AppendC(UTF8STRC(") = "));
 			isInt16 = true;
 			break;
 		}
@@ -3966,7 +3966,7 @@ Bool Media::EXIFData::ToStringCanonShotInfo(Text::StringBuilderUTF *sb, const UT
 
 Bool Media::EXIFData::ToStringCanonLensType(Text::StringBuilderUTF *sb, UInt16 lensType)
 {
-	sb->Append((const UTF8Char*)"0x");
+	sb->AppendC(UTF8STRC("0x"));
 	sb->AppendHex16(lensType);
 	return true;
 }

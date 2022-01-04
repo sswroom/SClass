@@ -100,9 +100,9 @@ Bool Net::ASN1MIB::ParseObjectOID(ModuleInfo *module, ObjectInfo *obj, const UTF
 		else
 		{
 			errMessage->Append(obj->objectName);
-			errMessage->Append((const UTF8Char*)": OID Format error 1: \"");
+			errMessage->AppendC(UTF8STRC(": OID Format error 1: \""));
 			errMessage->Append(oriS);
-			errMessage->Append((const UTF8Char*)"\"");
+			errMessage->AppendC(UTF8STRC("\""));
 			return false;
 		}
 	}
@@ -116,9 +116,9 @@ Bool Net::ASN1MIB::ParseObjectOID(ModuleInfo *module, ObjectInfo *obj, const UTF
 		else if (c == '}' || c == 0)
 		{
 			errMessage->Append(obj->objectName);
-			errMessage->Append((const UTF8Char*)": OID Format error 2: \"");
+			errMessage->AppendC(UTF8STRC(": OID Format error 2: \""));
 			errMessage->Append(oriS);
-			errMessage->Append((const UTF8Char*)"\"");
+			errMessage->AppendC(UTF8STRC("\""));
 			return false;
 		}
 		else
@@ -138,9 +138,9 @@ Bool Net::ASN1MIB::ParseObjectOID(ModuleInfo *module, ObjectInfo *obj, const UTF
 		else if (c == '}' || c == 0)
 		{
 			errMessage->Append(obj->objectName);
-			errMessage->Append((const UTF8Char*)": OID Format error 3: \"");
+			errMessage->AppendC(UTF8STRC(": OID Format error 3: \""));
 			errMessage->Append(oriS);
-			errMessage->Append((const UTF8Char*)"\"");
+			errMessage->AppendC(UTF8STRC("\""));
 			return false;
 		}
 	}
@@ -180,9 +180,9 @@ Bool Net::ASN1MIB::ParseObjectOID(ModuleInfo *module, ObjectInfo *obj, const UTF
 //			if (i < 0)
 //			{
 				errMessage->Append(obj->objectName);
-				errMessage->Append((const UTF8Char*)": OID Name \"");
+				errMessage->AppendC(UTF8STRC(": OID Name \""));
 				errMessage->Append(sb.ToString());
-				errMessage->Append((const UTF8Char*)"\" not found");
+				errMessage->AppendC(UTF8STRC("\" not found"));
 				return false;
 //			}
 //			else
@@ -214,9 +214,9 @@ Bool Net::ASN1MIB::ParseObjectOID(ModuleInfo *module, ObjectInfo *obj, const UTF
 		if (obj2->oidLen == 0)
 		{
 			errMessage->Append(obj->objectName);
-			errMessage->Append((const UTF8Char*)": OID Name \"");
+			errMessage->AppendC(UTF8STRC(": OID Name \""));
 			errMessage->Append(sb.ToString());
-			errMessage->Append((const UTF8Char*)"\" is not OID");
+			errMessage->AppendC(UTF8STRC("\" is not OID"));
 			return false;
 		}
 		MemCopyNO(obj->oid, obj2->oid, obj2->oidLen);
@@ -247,9 +247,9 @@ Bool Net::ASN1MIB::ParseObjectOID(ModuleInfo *module, ObjectInfo *obj, const UTF
 					else
 					{
 						errMessage->Append(obj->objectName);
-						errMessage->Append((const UTF8Char*)": OID Format error 4: \"");
+						errMessage->AppendC(UTF8STRC(": OID Format error 4: \""));
 						errMessage->Append(oriS);
-						errMessage->Append((const UTF8Char*)"\"");
+						errMessage->AppendC(UTF8STRC("\""));
 						return false;
 					}
 				}
@@ -296,9 +296,9 @@ Bool Net::ASN1MIB::ParseObjectOID(ModuleInfo *module, ObjectInfo *obj, const UTF
 			if (!sb.ToUInt32(&v))
 			{
 				errMessage->Append(obj->objectName);
-				errMessage->Append((const UTF8Char*)": OID Format error 5: \"");
+				errMessage->AppendC(UTF8STRC(": OID Format error 5: \""));
 				errMessage->Append(oriS);
-				errMessage->Append((const UTF8Char*)"\"");
+				errMessage->AppendC(UTF8STRC("\""));
 				return false;
 			}
 		}
@@ -311,9 +311,9 @@ Bool Net::ASN1MIB::ParseObjectOID(ModuleInfo *module, ObjectInfo *obj, const UTF
 			if (!sb.ToUInt32(&v))
 			{
 				errMessage->Append(obj->objectName);
-				errMessage->Append((const UTF8Char*)": OID Format error 6: \"");
+				errMessage->AppendC(UTF8STRC(": OID Format error 6: \""));
 				errMessage->Append(oriS);
-				errMessage->Append((const UTF8Char*)"\"");
+				errMessage->AppendC(UTF8STRC("\""));
 				return false;
 			}
 		}
@@ -375,14 +375,14 @@ Bool Net::ASN1MIB::ParseObjectBegin(Net::MIBReader *reader, ObjectInfo *obj, Tex
 		sb.ClearStr();
 		if (!reader->ReadLine(&sb))
 		{
-			errMessage->Append((const UTF8Char*)"Object end not found");
+			errMessage->AppendC(UTF8STRC("Object end not found"));
 			return false;
 		}
 		if (sb.GetLength() > 0)
 		{
 			if (sb.EndsWith((const UTF8Char*)"BEGIN"))
 			{
-				errMessage->Append((const UTF8Char*)"Nested begin found");
+				errMessage->AppendC(UTF8STRC("Nested begin found"));
 				return false;
 			}
 			else if (sb.EndsWith((const UTF8Char*)"END"))
@@ -414,7 +414,7 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 		sb.ClearStr();
 		if (!reader->ReadLine(&sb))
 		{
-			errMessage->Append((const UTF8Char*)"Module end not found");
+			errMessage->AppendC(UTF8STRC("Module end not found"));
 			return false;
 		}
 
@@ -525,7 +525,7 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 											sb.AppendChar(' ', 1);
 											if (!reader->ReadLine(&sb))
 											{
-												errMessage->Append((const UTF8Char*)"Unexpected end of file: ");
+												errMessage->AppendC(UTF8STRC("Unexpected end of file: "));
 												errMessage->Append(sb.ToString());
 												return false;
 											}
@@ -547,7 +547,7 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 												sb.AppendChar(' ', 1);
 												if (!reader->ReadLine(&sb))
 												{
-													errMessage->Append((const UTF8Char*)"Unexpected end of file: ");
+													errMessage->AppendC(UTF8STRC("Unexpected end of file: "));
 													errMessage->Append(sb.ToString());
 													return false;
 												}
@@ -564,7 +564,7 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 											sb.AppendChar(' ', 1);
 											if (!reader->ReadLine(&sb))
 											{
-												errMessage->Append((const UTF8Char*)"Unexpected end of file: ");
+												errMessage->AppendC(UTF8STRC("Unexpected end of file: "));
 												errMessage->Append(sb.ToString());
 												return false;
 											}
@@ -591,7 +591,7 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 													sb.AppendChar(' ', 1);
 													if (!reader->NextWord(&sb))
 													{
-														errMessage->Append((const UTF8Char*)"WITH SYNTAX error: ");
+														errMessage->AppendC(UTF8STRC("WITH SYNTAX error: "));
 														errMessage->Append(sb.ToString());
 														return false;
 													}
@@ -605,7 +605,7 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 												}
 												else
 												{
-													errMessage->Append((const UTF8Char*)"Unexpected word after WITH: ");
+													errMessage->AppendC(UTF8STRC("Unexpected word after WITH: "));
 													errMessage->Append(sb.ToString());
 													return false;
 												}
@@ -672,7 +672,7 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 							}
 							else
 							{
-								errMessage->Append((const UTF8Char*)"Unexpected words: ");
+								errMessage->AppendC(UTF8STRC("Unexpected words: "));
 								errMessage->Append(sb.ToString());
 								return false;
 							}
@@ -700,7 +700,7 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 								sb.AppendChar(' ', 1);
 								if (!reader->NextWord(&sb))
 								{
-									errMessage->Append((const UTF8Char*)"Unexpected end of file after OF");
+									errMessage->AppendC(UTF8STRC("Unexpected end of file after OF"));
 									return false;
 								}
 
@@ -938,7 +938,7 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 									}
 									if (!reader->ReadLine(&sb))
 									{
-										errMessage->Append((const UTF8Char*)"Import module error: ");
+										errMessage->AppendC(UTF8STRC("Import module error: "));
 										errMessage->Append(sb.ToString());
 										return false;
 									}
@@ -981,9 +981,9 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 							
 							if (impModule == 0)
 							{
-								errMessage->Append((const UTF8Char*)"IMPORTS module ");
+								errMessage->AppendC(UTF8STRC("IMPORTS module "));
 								errMessage->Append(sb.ToString());
-								errMessage->Append((const UTF8Char*)" not found");
+								errMessage->AppendC(UTF8STRC(" not found"));
 								return false;
 							}
 							impSarr[1] = impObjNames.ToString();
@@ -1052,11 +1052,11 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 								}
 								else
 								{
-									errMessage->Append((const UTF8Char*)"IMPORTS object ");
+									errMessage->AppendC(UTF8STRC("IMPORTS object ");
 									errMessage->Append(impSarr[0]);
-									errMessage->Append((const UTF8Char*)" in module ");
+									errMessage->AppendC(UTF8STRC(" in module ");
 									errMessage->Append(sb.ToString());
-									errMessage->Append((const UTF8Char*)" not found");
+									errMessage->AppendC(UTF8STRC(" not found");
 									return false;
 								}*/
 								if (impCnt != 2)
@@ -1077,7 +1077,7 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 						sb.ClearStr();
 						if (!reader->ReadLine(&sb))
 						{
-							errMessage->Append((const UTF8Char*)"IMPORTS end not found");
+							errMessage->AppendC(UTF8STRC("IMPORTS end not found"));
 							return false;
 						}
 						sb.Trim();
@@ -1095,7 +1095,7 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 						sb.ClearStr();
 						if (!reader->ReadLine(&sb))
 						{
-							errMessage->Append((const UTF8Char*)"EXPORTS end not found");
+							errMessage->AppendC(UTF8STRC("EXPORTS end not found"));
 							return false;
 						}
 						sb.Trim();
@@ -1117,7 +1117,7 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 					i = sb.IndexOf((const UTF8Char*)"::=");
 					if (i == 0)
 					{
-						errMessage->Append((const UTF8Char*)"::= found at non object location");
+						errMessage->AppendC(UTF8STRC("::= found at non object location"));
 						return false;
 					}
 					if (i == INVALID_INDEX)
@@ -1141,7 +1141,7 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 							i = sb.GetLength();
 							if (!reader->ReadLine(&sb))
 							{
-								errMessage->Append((const UTF8Char*)"Unknown format 1: ");
+								errMessage->AppendC(UTF8STRC("Unknown format 1: "));
 								errMessage->Append(sb.ToString());
 								return false;
 							}
@@ -1151,7 +1151,7 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 							}
 							else
 							{
-								errMessage->Append((const UTF8Char*)"Unknown format 2: ");
+								errMessage->AppendC(UTF8STRC("Unknown format 2: "));
 								errMessage->Append(sb.ToString());
 								return false;
 							}
@@ -1269,7 +1269,7 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 									reader->NextWord(&sbObjValCont);
 									if (sbObjValCont.ToString()[0] != '(')
 									{
-										errMessage->Append((const UTF8Char*)"Unexpected SIZE format: ");
+										errMessage->AppendC(UTF8STRC("Unexpected SIZE format: "));
 										errMessage->Append(sbObjValCont.ToString());
 										return false;
 									}
@@ -1389,7 +1389,7 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 							i = sb.GetLength();
 							if (!reader->ReadLine(&sb))
 							{
-								errMessage->Append((const UTF8Char*)"Unknown format 3: ");
+								errMessage->AppendC(UTF8STRC("Unknown format 3: "));
 								errMessage->Append(sb.ToString());
 								return false;
 							}
@@ -1398,7 +1398,7 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 							}
 							else
 							{
-								errMessage->Append((const UTF8Char*)"Unknown format 4: ");
+								errMessage->AppendC(UTF8STRC("Unknown format 4: "));
 								errMessage->Append(sb.ToString());
 								return false;
 							}
@@ -1485,11 +1485,11 @@ Bool Net::ASN1MIB::ApplyModuleOID(ModuleInfo *module, ObjectInfo *obj, Text::Str
 		OSInt i = obj->impModule->objKeys->SortedIndexOf(obj->objectName);
 		if (i < 0)
 		{
-			errMessage->Append((const UTF8Char*)"IMPORTS object ");
+			errMessage->AppendC(UTF8STRC("IMPORTS object "));
 			errMessage->Append(obj->objectName);
-			errMessage->Append((const UTF8Char*)" in module ");
+			errMessage->AppendC(UTF8STRC(" in module "));
 			errMessage->Append(obj->typeName);
-			errMessage->Append((const UTF8Char*)" not found");
+			errMessage->AppendC(UTF8STRC(" not found"));
 			return false;
 		}
 		ObjectInfo *impObj = obj->impModule->objValues->GetItem((UOSInt)i);
@@ -1647,11 +1647,11 @@ Bool Net::ASN1MIB::ApplyOIDs(Text::StringBuilderUTF *errMessage)
 			}
 			else
 			{
-				errMessage->Append((const UTF8Char*)"IMPORTS object ");
+				errMessage->AppendC(UTF8STRC("IMPORTS object ");
 				errMessage->Append(obj->objectName);
-				errMessage->Append((const UTF8Char*)" in module ");
+				errMessage->AppendC(UTF8STRC(" in module ");
 				errMessage->Append(obj->typeName);
-				errMessage->Append((const UTF8Char*)" not found");
+				errMessage->AppendC(UTF8STRC(" not found");
 				return false;
 			}
 		}
@@ -1685,7 +1685,7 @@ Bool Net::ASN1MIB::LoadFileInner(const UTF8Char *fileName, Text::StringBuilderUT
 	{
 		sbFileName.ClearStr();
 		sbFileName.Append(fileName);
-		sbFileName.Append((const UTF8Char*)".asn");
+		sbFileName.AppendC(UTF8STRC(".asn"));
 		if (IO::Path::GetPathType(sbFileName.ToString()) == IO::Path::PathType::File)
 		{
 			fileName = sbFileName.ToString();
@@ -1694,7 +1694,7 @@ Bool Net::ASN1MIB::LoadFileInner(const UTF8Char *fileName, Text::StringBuilderUT
 		{
 			sbFileName.ClearStr();
 			sbFileName.Append(fileName);
-			sbFileName.Append((const UTF8Char*)".mib");
+			sbFileName.AppendC(UTF8STRC(".mib"));
 			fileName = sbFileName.ToString();
 		}
 	}
@@ -1702,7 +1702,7 @@ Bool Net::ASN1MIB::LoadFileInner(const UTF8Char *fileName, Text::StringBuilderUT
 	if (fs->IsError())
 	{
 		DEL_CLASS(fs);
-		errMessage->Append((const UTF8Char*)"Error in opening file ");
+		errMessage->AppendC(UTF8STRC("Error in opening file "));
 		errMessage->Append(fileName);
 		return false;
 	}
@@ -1714,15 +1714,15 @@ Bool Net::ASN1MIB::LoadFileInner(const UTF8Char *fileName, Text::StringBuilderUT
 	sb.ClearStr();
 	if (!reader->NextWord(&sbModuleName))
 	{
-		errMessage->Append((const UTF8Char*)"Module definition not found");
+		errMessage->AppendC(UTF8STRC("Module definition not found"));
 	}
 	else if (!Text::CharUtil::IsAlphaNumeric(sbModuleName.ToString()[0]))
 	{
-		errMessage->Append((const UTF8Char*)"Module name not found");
+		errMessage->AppendC(UTF8STRC("Module name not found"));
 	}
 	else if (!reader->NextWord(&sbOID))
 	{
-		errMessage->Append((const UTF8Char*)"Invalid file format: Unexpected end of file 1");
+		errMessage->AppendC(UTF8STRC("Invalid file format: Unexpected end of file 1"));
 	}
 	else
 	{
@@ -1731,7 +1731,7 @@ Bool Net::ASN1MIB::LoadFileInner(const UTF8Char *fileName, Text::StringBuilderUT
 		{
 			if (!reader->NextWord(&sb))
 			{
-				errMessage->Append((const UTF8Char*)"Invalid file format: Unexpected end of file 2");
+				errMessage->AppendC(UTF8STRC("Invalid file format: Unexpected end of file 2"));
 				succ = false;
 			}
 		}
@@ -1742,14 +1742,14 @@ Bool Net::ASN1MIB::LoadFileInner(const UTF8Char *fileName, Text::StringBuilderUT
 		}
 		if (succ && !sb.Equals((const UTF8Char*)"DEFINITIONS"))
 		{
-			errMessage->Append((const UTF8Char*)"Invalid file format: Expected DEFINITIONS: ");
+			errMessage->AppendC(UTF8STRC("Invalid file format: Expected DEFINITIONS: "));
 			errMessage->Append(sb.ToString());
 			succ = false;
 		}
 		sb.ClearStr();
 		if (succ && !reader->NextWord(&sb))
 		{
-			errMessage->Append((const UTF8Char*)"Invalid file format: Unexpected end of file 3");
+			errMessage->AppendC(UTF8STRC("Invalid file format: Unexpected end of file 3"));
 			succ = false;
 		}
 		if (succ && (sb.Equals((const UTF8Char*)"IMPLICIT") || sb.Equals((const UTF8Char*)"EXPLICIT")))
@@ -1757,12 +1757,12 @@ Bool Net::ASN1MIB::LoadFileInner(const UTF8Char *fileName, Text::StringBuilderUT
 			sb.ClearStr();
 			if (!reader->NextWord(&sb))
 			{
-				errMessage->Append((const UTF8Char*)"Invalid file format: Unexpected end of file 4");
+				errMessage->AppendC(UTF8STRC("Invalid file format: Unexpected end of file 4"));
 				succ = false;
 			}
 			else if (!sb.Equals((const UTF8Char*)"TAGS"))
 			{
-				errMessage->Append((const UTF8Char*)"Invalid file format: Expected TAGS: ");
+				errMessage->AppendC(UTF8STRC("Invalid file format: Expected TAGS: "));
 				errMessage->Append(sb.ToString());
 				succ = false;
 			}
@@ -1771,14 +1771,14 @@ Bool Net::ASN1MIB::LoadFileInner(const UTF8Char *fileName, Text::StringBuilderUT
 				sb.ClearStr();
 				if (!reader->NextWord(&sb))
 				{
-					errMessage->Append((const UTF8Char*)"Invalid file format: Unexpected end of file 5");
+					errMessage->AppendC(UTF8STRC("Invalid file format: Unexpected end of file 5"));
 					succ = false;
 				}
 			}
 		}
 		if (succ && !sb.Equals((const UTF8Char*)"::="))
 		{
-			errMessage->Append((const UTF8Char*)"Invalid file format: Expected ::= : ");
+			errMessage->AppendC(UTF8STRC("Invalid file format: Expected ::= : "));
 			errMessage->Append(sb.ToString());
 			succ = false;
 		}
@@ -1787,12 +1787,12 @@ Bool Net::ASN1MIB::LoadFileInner(const UTF8Char *fileName, Text::StringBuilderUT
 			sb.ClearStr();
 			if (!reader->NextWord(&sb))
 			{
-				errMessage->Append((const UTF8Char*)"Invalid file format: Unexpected end of file 6");
+				errMessage->AppendC(UTF8STRC("Invalid file format: Unexpected end of file 6"));
 				succ = false;
 			}
 			else if (!sb.Equals((const UTF8Char*)"BEGIN"))
 			{
-				errMessage->Append((const UTF8Char*)"Invalid file format: Expected BEGIN: ");
+				errMessage->AppendC(UTF8STRC("Invalid file format: Expected BEGIN: "));
 				errMessage->Append(sb.ToString());
 				succ = false;
 			}
@@ -1827,7 +1827,7 @@ Bool Net::ASN1MIB::LoadFileInner(const UTF8Char *fileName, Text::StringBuilderUT
 		{
 			if (!moduleFound)
 			{
-				errMessage->Append((const UTF8Char*)"Module definition not found");
+				errMessage->AppendC(UTF8STRC("Module definition not found"));
 			}
 			break;
 		}
@@ -1836,7 +1836,7 @@ Bool Net::ASN1MIB::LoadFileInner(const UTF8Char *fileName, Text::StringBuilderUT
 		{
 			if (moduleFound)
 			{
-				errMessage->Append((const UTF8Char*)"Object found after Module definition");
+				errMessage->AppendC(UTF8STRC("Object found after Module definition"));
 				succ = false;
 				break;
 			}
@@ -1844,15 +1844,15 @@ Bool Net::ASN1MIB::LoadFileInner(const UTF8Char *fileName, Text::StringBuilderUT
 			if (i == INVALID_INDEX)
 			{
 				succ = false;
-				errMessage->Append((const UTF8Char*)"Wrong Module definition format");
+				errMessage->AppendC(UTF8STRC("Wrong Module definition format"));
 				break;
 			}
 			sb.ToString()[i] = 0;
 			if (this->moduleMap->Get(sb.ToString()))
 			{
-				errMessage->Append((const UTF8Char*)"Module ");
+				errMessage->AppendC(UTF8STRC("Module "));
 				errMessage->Append(sb.ToString());
-				errMessage->Append((const UTF8Char*)" already loaded");
+				errMessage->AppendC(UTF8STRC(" already loaded"));
 				break;
 			}
 			module = MemAlloc(ModuleInfo, 1);

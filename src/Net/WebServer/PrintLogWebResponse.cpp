@@ -28,7 +28,7 @@ Bool Net::WebServer::PrintLogWebResponse::SetStatusCode(Net::WebStatus::StatusCo
 		{
 			sb.Append(this->prefix);
 		}
-		sb.Append((const UTF8Char*)"Status Code = ");
+		sb.AppendC(UTF8STRC("Status Code = "));
 		sb.AppendI32(code);
 		this->writer->WriteLine(sb.ToString());
 		return true;
@@ -51,7 +51,7 @@ Bool Net::WebServer::PrintLogWebResponse::AddHeader(const UTF8Char *name, const 
 			sb.Append(this->prefix);
 		}
 		sb.Append(name);
-		sb.Append((const UTF8Char*)": ");
+		sb.AppendC(UTF8STRC(": "));
 		sb.Append(value);
 		this->writer->WriteLine(sb.ToString());
 		return true;

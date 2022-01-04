@@ -123,7 +123,7 @@ UInt32 __stdcall Media::CUPSPrintDocument::PrintThread(void *userObj)
 	}
 	else
 	{
-		sb2.Append((const UTF8Char*)"Untitled");
+		sb2.AppendC(UTF8STRC("Untitled"));
 	}
 	sptr = fileName;
 	cupsPrintFiles((Char*)sb1.ToString(), 1, (const Char**)&sptr, (Char*)sb2.ToString(), 0, 0);

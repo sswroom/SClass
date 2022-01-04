@@ -100,13 +100,13 @@ void SSWR::OrganMgr::OrganBook::SetURL(const UTF8Char *url)
 void SSWR::OrganMgr::OrganBook::GetString(Text::StringBuilderUTF *sb)
 {
 	sb->AppendI32(this->id);;
-	sb->Append((const UTF8Char*)": ");
+	sb->AppendC(UTF8STRC(": "));
 	sb->Append(this->dispAuthor);
-	sb->Append((const UTF8Char*)" ");
+	sb->AppendC(UTF8STRC(" "));
 	sb->AppendU16(this->publishDate->GetYear());
-	sb->Append((const UTF8Char*)". ");
+	sb->AppendC(UTF8STRC(". "));
 	sb->Append(this->title);
-	sb->Append((const UTF8Char*)". ");
+	sb->AppendC(UTF8STRC(". "));
 	sb->Append(this->press);
-	sb->Append((const UTF8Char*)".");
+	sb->AppendC(UTF8STRC("."));
 }

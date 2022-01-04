@@ -26,15 +26,15 @@ Bool SSWR::DownloadMonitor::DownMonCore::FFMPEGMux(const UTF8Char *videoFile, co
 		return false;
 	fileSize1 += fileSize2;
 	Text::StringBuilderUTF8 sb;
-	sb.Append((const UTF8Char*)"\"");
+	sb.AppendC(UTF8STRC("\""));
 	sb.Append(this->ffmpegPath);
-	sb.Append((const UTF8Char*)"\" -i \"");
+	sb.AppendC(UTF8STRC("\" -i \""));
 	sb.Append(videoFile);
-	sb.Append((const UTF8Char*)"\" -i \"");
+	sb.AppendC(UTF8STRC("\" -i \""));
 	sb.Append(audioFile);
-	sb.Append((const UTF8Char*)"\" -map 0:0 -map 1:0 -c:a:0 copy -vcodec copy \"");
+	sb.AppendC(UTF8STRC("\" -map 0:0 -map 1:0 -c:a:0 copy -vcodec copy \""));
 	sb.Append(outFile);
-	sb.Append((const UTF8Char*)"\"");
+	sb.AppendC(UTF8STRC("\""));
 	Manage::Process proc(sb.ToString());
 	while (proc.IsRunning())
 	{
@@ -61,15 +61,15 @@ Bool SSWR::DownloadMonitor::DownMonCore::FFMPEGMuxAAC(const UTF8Char *videoFile,
 		return false;
 	fileSize1 += fileSize2;
 	Text::StringBuilderUTF8 sb;
-	sb.Append((const UTF8Char*)"\"");
+	sb.AppendC(UTF8STRC("\""));
 	sb.Append(this->ffmpegPath);
-	sb.Append((const UTF8Char*)"\" -i \"");
+	sb.AppendC(UTF8STRC("\" -i \""));
 	sb.Append(videoFile);
-	sb.Append((const UTF8Char*)"\" -i \"");
+	sb.AppendC(UTF8STRC("\" -i \""));
 	sb.Append(audioFile);
-	sb.Append((const UTF8Char*)"\" -map 0:0 -map 1:0 -c:a:0 aac -vcodec copy \"");
+	sb.AppendC(UTF8STRC("\" -map 0:0 -map 1:0 -c:a:0 aac -vcodec copy \""));
 	sb.Append(outFile);
-	sb.Append((const UTF8Char*)"\"");
+	sb.AppendC(UTF8STRC("\""));
 	Manage::Process proc(sb.ToString());
 	while (proc.IsRunning())
 	{
@@ -607,7 +607,7 @@ Bool SSWR::DownloadMonitor::DownMonCore::FileAdd(Int32 id, Int32 webType, Text::
 	file->webType = webType;
 	file->dbName = dbName->Clone();
 	Net::WebSite::WebSite48IdolControl::Title2DisplayName(dbName, &sb);
-	sb.Append((const UTF8Char*)".mp4");
+	sb.AppendC(UTF8STRC(".mp4"));
 	file->fileName = Text::String::New(sb.ToString(), sb.GetLength());
 	file->status = FS_NORMAL;
 	NEW_CLASS(file->mut, Sync::Mutex());
@@ -673,15 +673,15 @@ Bool SSWR::DownloadMonitor::DownMonCore::FileStart(Int32 id, Int32 webType, Cont
 		Text::StringBuilderUTF8 sb;
 		sb.AppendChar('"', 1);
 		sb.Append(this->firefoxPath);
-		sb.Append((const UTF8Char*)"\" ");
-//		sb.Append((const UTF8Char*)"-private-window ");
+		sb.AppendC(UTF8STRC("\" "));
+//		sb.AppendC(UTF8STRC("-private-window "));
 		if (file->webType == 1 || file->webType == 2 || file->webType == 3)
 		{
-			sb.Append((const UTF8Char*)"https://48idol.tv/archive/video/");
+			sb.AppendC(UTF8STRC("https://48idol.tv/archive/video/"));
 		}
 		else
 		{
-			sb.Append((const UTF8Char*)"https://48idol.tv/video/");
+			sb.AppendC(UTF8STRC("https://48idol.tv/video/"));
 		}
 		sb.AppendI32(file->id);
 		Manage::Process proc(sb.ToString());

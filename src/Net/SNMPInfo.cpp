@@ -23,22 +23,22 @@ void Net::SNMPInfo::PDUSeqGetDetail(const UInt8 *pdu, UOSInt pduSize, UOSInt lev
 	{
 		sb->AppendChar('\t', level);
 	}
-	sb->Append((const UTF8Char*)"{\r\n");
+	sb->AppendC(UTF8STRC("{\r\n"));
 	UOSInt i = 0;
 	while (i < pduSize)
 	{
 		i += this->PDUGetDetail(0, &pdu[i], pduSize - i, level + 1, sb);
 		if (i < pduSize)
 		{
-			sb->Append((const UTF8Char*)",\r\n");
+			sb->AppendC(UTF8STRC(",\r\n"));
 		}
 	}
-	sb->Append((const UTF8Char*)"\r\n");
+	sb->AppendC(UTF8STRC("\r\n"));
 	if (level > 0)
 	{
 		sb->AppendChar('\t', level);
 	}
-	sb->Append((const UTF8Char*)"}");
+	sb->AppendC(UTF8STRC("}"));
 }
 
 UOSInt Net::SNMPInfo::PDUGetDetail(const UTF8Char *name, const UInt8 *pdu, UOSInt pduSize, UOSInt level, Text::StringBuilderUTF *sb)
@@ -90,7 +90,7 @@ UOSInt Net::SNMPInfo::PDUGetDetail(const UTF8Char *name, const UInt8 *pdu, UOSIn
 	switch (t)
 	{
 	case 2:
-		sb->Append((const UTF8Char*)"INTEGER ");
+		sb->AppendC(UTF8STRC("INTEGER "));
 		if (len == 1)
 		{
 			sb->AppendI16((Int8)pdu[hdrSize]);
@@ -113,7 +113,7 @@ UOSInt Net::SNMPInfo::PDUGetDetail(const UTF8Char *name, const UInt8 *pdu, UOSIn
 		}
 		return len + hdrSize;
 	case 4:
-		sb->Append((const UTF8Char*)"OCTET STRING ");
+		sb->AppendC(UTF8STRC("OCTET STRING "));
 		{
 			Bool isBin = false;
 			UOSInt i = 0;
@@ -132,14 +132,14 @@ UOSInt Net::SNMPInfo::PDUGetDetail(const UTF8Char *name, const UInt8 *pdu, UOSIn
 			}
 			else
 			{
-				sb->Append((const UTF8Char*)"\"");
+				sb->AppendC(UTF8STRC("\""));
 				sb->AppendC(&pdu[hdrSize], len);
-				sb->Append((const UTF8Char*)"\"");
+				sb->AppendC(UTF8STRC("\""));
 			}
 		}
 		return len + hdrSize;
 	case 5:
-		sb->Append((const UTF8Char*)"NULL");
+		sb->AppendC(UTF8STRC("NULL"));
 		if (len > 0)
 		{
 			sb->AppendChar(' ', 1);
@@ -147,18 +147,18 @@ UOSInt Net::SNMPInfo::PDUGetDetail(const UTF8Char *name, const UInt8 *pdu, UOSIn
 		}
 		return len + hdrSize;
 	case 6:
-		sb->Append((const UTF8Char*)"OBJECT IDENTIFIER ");
+		sb->AppendC(UTF8STRC("OBJECT IDENTIFIER "));
 		Net::ASN1Util::OIDToString(&pdu[hdrSize], len, sb);
-		sb->Append((const UTF8Char*)" (");
+		sb->AppendC(UTF8STRC(" ("));
 		Net::ASN1OIDDB::OIDToNameString(&pdu[hdrSize], len, sb);
-		sb->Append((const UTF8Char*)")");
+		sb->AppendC(UTF8STRC(")"));
 		return len + hdrSize;
 	case 0x30:
-		sb->Append((const UTF8Char*)"SEQUENCE\r\n");
+		sb->AppendC(UTF8STRC("SEQUENCE\r\n"));
 		this->PDUSeqGetDetail(&pdu[hdrSize], len, level, sb);
 		return len + hdrSize;
 	case 0x40:
-		sb->Append((const UTF8Char*)"IpAddress ");
+		sb->AppendC(UTF8STRC("IpAddress "));
 		if (len == 4)
 		{
 			UTF8Char sbuff[16];
@@ -171,7 +171,7 @@ UOSInt Net::SNMPInfo::PDUGetDetail(const UTF8Char *name, const UInt8 *pdu, UOSIn
 		}
 		return len + hdrSize;
 	case 0x41:
-		sb->Append((const UTF8Char*)"Counter32 ");
+		sb->AppendC(UTF8STRC("Counter32 "));
 		if (len == 1)
 		{
 			sb->AppendU16(pdu[hdrSize]);
@@ -194,7 +194,7 @@ UOSInt Net::SNMPInfo::PDUGetDetail(const UTF8Char *name, const UInt8 *pdu, UOSIn
 		}
 		return len + hdrSize;
 	case 0x42:
-		sb->Append((const UTF8Char*)"Gauge32 ");
+		sb->AppendC(UTF8STRC("Gauge32 "));
 		if (len == 1)
 		{
 			sb->AppendU16(pdu[hdrSize]);
@@ -217,7 +217,7 @@ UOSInt Net::SNMPInfo::PDUGetDetail(const UTF8Char *name, const UInt8 *pdu, UOSIn
 		}
 		return len + hdrSize;
 	case 0x43:
-		sb->Append((const UTF8Char*)"Timeticks ");
+		sb->AppendC(UTF8STRC("Timeticks "));
 		if (len == 1)
 		{
 			sb->AppendU16(pdu[hdrSize]);
@@ -240,29 +240,29 @@ UOSInt Net::SNMPInfo::PDUGetDetail(const UTF8Char *name, const UInt8 *pdu, UOSIn
 		}
 		return len + hdrSize;
 	case 0xA0:
-		sb->Append((const UTF8Char*)"GetRequest-PDU\r\n");
+		sb->AppendC(UTF8STRC("GetRequest-PDU\r\n"));
 		this->PDUSeqGetDetail(&pdu[hdrSize], len, level, sb);
 		return len + hdrSize;
 	case 0xA1:
-		sb->Append((const UTF8Char*)"GetNextRequest-PDU\r\n");
+		sb->AppendC(UTF8STRC("GetNextRequest-PDU\r\n"));
 		this->PDUSeqGetDetail(&pdu[hdrSize], len, level, sb);
 		return len + hdrSize;
 	case 0xA2:
-		sb->Append((const UTF8Char*)"GetResponse-PDU\r\n");
+		sb->AppendC(UTF8STRC("GetResponse-PDU\r\n"));
 		this->PDUSeqGetDetail(&pdu[hdrSize], len, level, sb);
 		return len + hdrSize;
 	case 0xA3:
-		sb->Append((const UTF8Char*)"SetRequest-PDU\r\n");
+		sb->AppendC(UTF8STRC("SetRequest-PDU\r\n"));
 		this->PDUSeqGetDetail(&pdu[hdrSize], len, level, sb);
 		return len + hdrSize;
 	case 0xA4:
-		sb->Append((const UTF8Char*)"Trap-PDU\r\n");
+		sb->AppendC(UTF8STRC("Trap-PDU\r\n"));
 		this->PDUSeqGetDetail(&pdu[hdrSize], len, level, sb);
 		return len + hdrSize;
 	default:
-		sb->Append((const UTF8Char*)"UNKNOWN(");
+		sb->AppendC(UTF8STRC("UNKNOWN("));
 		sb->AppendU16(t);
-		sb->Append((const UTF8Char*)") ");
+		sb->AppendC(UTF8STRC(") "));
 		sb->AppendHexBuff(&pdu[hdrSize], len, ' ', Text::LineBreakType::None);
 		return len + hdrSize;
 	}
@@ -313,9 +313,9 @@ void Net::SNMPInfo::ValueToString(UInt8 type, const UInt8 *pduBuff, UOSInt valLe
 			}
 			else
 			{
-				sb->Append((const UTF8Char*)"\"");
+				sb->AppendC(UTF8STRC("\""));
 				sb->AppendC(pduBuff, valLen);
-				sb->Append((const UTF8Char*)"\"");
+				sb->AppendC(UTF8STRC("\""));
 			}
 		}
 		break;
@@ -328,9 +328,9 @@ void Net::SNMPInfo::ValueToString(UInt8 type, const UInt8 *pduBuff, UOSInt valLe
 		break;
 	case 6:
 		Net::ASN1Util::OIDToString(pduBuff, valLen, sb);
-		sb->Append((const UTF8Char*)" (");
+		sb->AppendC(UTF8STRC(" ("));
 		Net::ASN1OIDDB::OIDToNameString(pduBuff, valLen, sb);
-		sb->Append((const UTF8Char*)")");
+		sb->AppendC(UTF8STRC(")"));
 		break;
 	case 0x30:
 		{

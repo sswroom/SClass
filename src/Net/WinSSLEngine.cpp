@@ -438,9 +438,9 @@ Net::SSLClient *Net::WinSSLEngine::CreateServerConn(Socket *s)
 /*	IO::DebugWriter debug;
 	Text::StringBuilderW sb;
 	sb.ClearStr();
-	sb.Append((const UTF8Char*)"Received ");
+	sb.AppendC(UTF8STRC("Received "));
 	sb.AppendUOSInt(recvSize);
-	sb.Append((const UTF8Char*)" bytes");
+	sb.AppendC(UTF8STRC(" bytes"));
 	debug.WriteLineW(sb.ToString());*/
 
 	Bool succ = true;
@@ -515,9 +515,9 @@ Net::SSLClient *Net::WinSSLEngine::CreateServerConn(Socket *s)
 			recvOfst += recvSize;
 
 /*			sb.ClearStr();
-			sb.Append((const UTF8Char*)"Received ");
+			sb.AppendC(UTF8STRC("Received "));
 			sb.AppendUOSInt(recvSize);
-			sb.Append((const UTF8Char*)" bytes");
+			sb.AppendC(UTF8STRC(" bytes"));
 			debug.WriteLineW(sb.ToString());*/
 		}
 		SecBuffer_Set(&inputBuff[0], SECBUFFER_TOKEN, recvBuff, (UInt32)recvOfst);
@@ -588,7 +588,7 @@ Net::SSLClient *Net::WinSSLEngine::CreateServerConn(Socket *s)
 		else
 		{
 /*			sb.ClearStr();
-			sb.Append((const UTF8Char*)"Error in initializing SSL Server connection: 0x");
+			sb.AppendC(UTF8STRC("Error in initializing SSL Server connection: 0x"));
 			sb.AppendHex32(status);
 			debug.WriteLineW(sb.ToString());*/
 			if (status == SEC_I_INCOMPLETE_CREDENTIALS)
@@ -652,113 +652,113 @@ void WinSSLEngine_HCRYPTKEY_ToString(HCRYPTKEY hKey, Text::StringBuilderUTF *sb)
 	dataLen = sizeof(algId);
 	if (CryptGetKeyParam(hKey, KP_ALGID, (BYTE*)&algId, &dataLen, 0))
 	{
-		sb->Append((const UTF8Char*)"Key ALG ID = 0x");
+		sb->AppendC(UTF8STRC("Key ALG ID = 0x"));
 		sb->AppendHex32(algId);
-		sb->Append((const UTF8Char*)", Class=");
+		sb->AppendC(UTF8STRC(", Class="));
 		switch (GET_ALG_CLASS(algId))
 		{
 		case ALG_CLASS_ANY:
-			sb->Append((const UTF8Char*)"Any");
+			sb->AppendC(UTF8STRC("Any"));
 			break;
 		case ALG_CLASS_SIGNATURE:
-			sb->Append((const UTF8Char*)"Signature");
+			sb->AppendC(UTF8STRC("Signature"));
 			break;
 		case ALG_CLASS_MSG_ENCRYPT:
-			sb->Append((const UTF8Char*)"Message Encrypt");
+			sb->AppendC(UTF8STRC("Message Encrypt"));
 			break;
 		case ALG_CLASS_DATA_ENCRYPT:
-			sb->Append((const UTF8Char*)"Data Encrypt");
+			sb->AppendC(UTF8STRC("Data Encrypt"));
 			break;
 		case ALG_CLASS_HASH:
-			sb->Append((const UTF8Char*)"Hash");
+			sb->AppendC(UTF8STRC("Hash"));
 			break;
 		case ALG_CLASS_KEY_EXCHANGE:
-			sb->Append((const UTF8Char*)"Key Exchange");
+			sb->AppendC(UTF8STRC("Key Exchange"));
 			break;
 		case ALG_CLASS_ALL:
-			sb->Append((const UTF8Char*)"All");
+			sb->AppendC(UTF8STRC("All"));
 			break;
 		default:
-			sb->Append((const UTF8Char*)"Unknown");
+			sb->AppendC(UTF8STRC("Unknown"));
 			break;
 		}
-		sb->Append((const UTF8Char*)", Type=");
+		sb->AppendC(UTF8STRC(", Type="));
 		switch (GET_ALG_TYPE(algId))
 		{
 		case ALG_TYPE_ANY:
-			sb->Append((const UTF8Char*)"Any");
+			sb->AppendC(UTF8STRC("Any"));
 			break;
 		case ALG_TYPE_DSS:
-			sb->Append((const UTF8Char*)"DSS");
+			sb->AppendC(UTF8STRC("DSS"));
 			break;
 		case ALG_TYPE_RSA:
-			sb->Append((const UTF8Char*)"RSA");
+			sb->AppendC(UTF8STRC("RSA"));
 			break;
 		case ALG_TYPE_BLOCK:
-			sb->Append((const UTF8Char*)"Block");
+			sb->AppendC(UTF8STRC("Block"));
 			break;
 		case ALG_TYPE_STREAM:
-			sb->Append((const UTF8Char*)"Stream");
+			sb->AppendC(UTF8STRC("Stream"));
 			break;
 		case ALG_TYPE_DH:
-			sb->Append((const UTF8Char*)"DH");
+			sb->AppendC(UTF8STRC("DH"));
 			break;
 		case ALG_TYPE_SECURECHANNEL:
-			sb->Append((const UTF8Char*)"Secure Channel");
+			sb->AppendC(UTF8STRC("Secure Channel"));
 			break;
 #if (NTDDI_VERSION >= NTDDI_VISTA) && defined(ALG_TYPE_ECDH)
 		case ALG_TYPE_ECDH:
-			sb->Append((const UTF8Char*)"ECDH");
+			sb->AppendC(UTF8STRC("ECDH");
 			break;
 #endif
 #if defined(_MSC_VER) && (NTDDI_VERSION >= NTDDI_WIN10_RS1) && defined(ALG_TYPE_THIRDPARTY)
 		case ALG_TYPE_THIRDPARTY:
-			sb->Append((const UTF8Char*)"ThirdParty");
+			sb->AppendC(UTF8STRC("ThirdParty");
 			break;
 #endif
 		default:
-			sb->Append((const UTF8Char*)"Unknown");
+			sb->AppendC(UTF8STRC("Unknown"));
 			break;
 		}
-		sb->Append((const UTF8Char*)", SID=");
+		sb->AppendC(UTF8STRC(", SID="));
 		sb->AppendU32(GET_ALG_SID(algId));
-		sb->Append((const UTF8Char*)"\r\n");
+		sb->AppendC(UTF8STRC("\r\n"));
 	}
 	DWORD blockLen;
 	dataLen = sizeof(blockLen);
 	if (CryptGetKeyParam(hKey, KP_BLOCKLEN, (BYTE*)&blockLen, &dataLen, 0))
 	{
-		sb->Append((const UTF8Char*)"Key BlockLen=");
+		sb->AppendC(UTF8STRC("Key BlockLen="));
 		sb->AppendU32(blockLen);
-		sb->Append((const UTF8Char*)"\r\n");
+		sb->AppendC(UTF8STRC("\r\n"));
 	}
 	dataLen = sizeof(buff);
 	if (CryptGetKeyParam(hKey, KP_CERTIFICATE, buff, &dataLen, 0))
 	{
-		sb->Append((const UTF8Char*)"Key Certificate=\r\n");
+		sb->AppendC(UTF8STRC("Key Certificate=\r\n"));
 		sb->AppendHexBuff(buff, dataLen, ' ', Text::LineBreakType::CRLF);
-		sb->Append((const UTF8Char*)"\r\n");
+		sb->AppendC(UTF8STRC("\r\n"));
 	}
 	dataLen = sizeof(blockLen);
 	if (CryptGetKeyParam(hKey, KP_KEYLEN, (BYTE*)&blockLen, &dataLen, 0))
 	{
-		sb->Append((const UTF8Char*)"Key Len=");
+		sb->AppendC(UTF8STRC("Key Len="));
 		sb->AppendU32(blockLen);
-		sb->Append((const UTF8Char*)"\r\n");
+		sb->AppendC(UTF8STRC("\r\n"));
 	}
 	dataLen = sizeof(buff);
 	if (CryptGetKeyParam(hKey, KP_SALT, buff, &dataLen, 0))
 	{
-		sb->Append((const UTF8Char*)"Key Salt=");
+		sb->AppendC(UTF8STRC("Key Salt="));
 		sb->AppendHexBuff(buff, dataLen, ' ', Text::LineBreakType::None);
-		sb->Append((const UTF8Char*)"\r\n");
+		sb->AppendC(UTF8STRC("\r\n"));
 	}
 	dataLen = sizeof(blockLen);
 	if (CryptGetKeyParam(hKey, KP_PERMISSIONS, (BYTE*)&blockLen, &dataLen, 0))
 	{
-		sb->Append((const UTF8Char*)"Key Permissions=0x");
+		sb->AppendC(UTF8STRC("Key Permissions=0x"));
 		sb->AppendHex32(blockLen);
-		sb->Append((const UTF8Char*)"\r\n");
+		sb->AppendC(UTF8STRC("\r\n"));
 	}
 }
 
@@ -767,28 +767,28 @@ void WinSSLEngine_HCRYPTPROV_ToString(HCRYPTPROV hProv, Text::StringBuilderUTF *
 	HCRYPTKEY hKey;
 	if (CryptGetUserKey(hProv, AT_KEYEXCHANGE, &hKey))
 	{
-		sb->Append((const UTF8Char*)"KEYEXCHANGE: Success,\r\n");
+		sb->AppendC(UTF8STRC("KEYEXCHANGE: Success,\r\n"));
 		WinSSLEngine_HCRYPTKEY_ToString(hKey, sb);
 		CryptDestroyKey(hKey);
 	}
 	else
 	{
-		sb->Append((const UTF8Char*)"KEYEXCHANGE: Failed, code = 0x");
+		sb->AppendC(UTF8STRC("KEYEXCHANGE: Failed, code = 0x"));
 		sb->AppendHex32(GetLastError());
-		sb->Append((const UTF8Char*)"\r\n");
+		sb->AppendC(UTF8STRC("\r\n"));
 	}
 
 	if (CryptGetUserKey(hProv, AT_SIGNATURE, &hKey))
 	{
-		sb->Append((const UTF8Char*)"SIGNATURE: Success,\r\n");
+		sb->AppendC(UTF8STRC("SIGNATURE: Success,\r\n"));
 		WinSSLEngine_HCRYPTKEY_ToString(hKey, sb);
 		CryptDestroyKey(hKey);
 	}
 	else
 	{
-		sb->Append((const UTF8Char*)"SIGNATURE: Failed, code = 0x");
+		sb->AppendC(UTF8STRC("SIGNATURE: Failed, code = 0x"));
 		sb->AppendHex32(GetLastError());
-		sb->Append((const UTF8Char*)"\r\n");
+		sb->AppendC(UTF8STRC("\r\n"));
 	}
 }
 
@@ -1100,11 +1100,11 @@ Bool Net::WinSSLEngine::GenerateCert(const UTF8Char *country, const UTF8Char *co
 	}
 
 	Text::StringBuilderW sb;
-	sb.Append((const UTF8Char*)"C=");
+	sb.AppendC(UTF8STRC("C="));
 	sb.Append(country);
-	sb.Append((const UTF8Char*)", O=");
+	sb.AppendC(UTF8STRC(", O="));
 	sb.Append(company);
-	sb.Append((const UTF8Char*)", CN=");
+	sb.AppendC(UTF8STRC(", CN="));
 	sb.Append(commonName);
 
 	PCCERT_CONTEXT pCertContext = NULL;
@@ -1181,11 +1181,11 @@ Bool Net::WinSSLEngine::GenerateCert(const UTF8Char *country, const UTF8Char *co
 	Text::StringBuilderUTF8 sb2;
 	sb2.ClearStr();
 	sb2.Append(commonName);
-	sb2.Append((const UTF8Char*)".crt");
+	sb2.AppendC(UTF8STRC(".crt"));
 	NEW_CLASS(*certASN1, Crypto::Cert::X509Cert(sb2.ToString(), pCertContext->pbCertEncoded, pCertContext->cbCertEncoded));
 	sb2.ClearStr();
 	sb2.Append(commonName);
-	sb2.Append((const UTF8Char*)".key");
+	sb2.AppendC(UTF8STRC(".key"));
 	Text::String *s = Text::String::New(sb2.ToString(), sb2.GetLength());
 	*keyASN1 = Crypto::Cert::X509PrivKey::CreateFromKeyBuff(Crypto::Cert::X509File::KeyType::RSA, certBuff, certBuffSize, s);
 	s->Release();

@@ -80,15 +80,15 @@ void Manage::OSInfo::GetCommonName(Text::StringBuilderUTF *sb, OSType osType, co
 	{
 		if (osVer == 0)
 		{
-			sb->Append((const UTF8Char*)"Mac OS");
+			sb->AppendC(UTF8STRC("Mac OS"));
 		}
 		else if (Text::StrEquals(osVer, (const UTF8Char*)"18.7.0"))
 		{
-			sb->Append((const UTF8Char*)"Mac OS 10.14.6");
+			sb->AppendC(UTF8STRC("Mac OS 10.14.6"));
 		}
 		else
 		{
-			sb->Append((const UTF8Char*)"Mac OS (Darwin ");
+			sb->AppendC(UTF8STRC("Mac OS (Darwin "));
 			sb->Append(osVer);
 			sb->AppendChar(')', 1);
 		}
@@ -97,11 +97,11 @@ void Manage::OSInfo::GetCommonName(Text::StringBuilderUTF *sb, OSType osType, co
 	{
 		if (osVer == 0)
 		{
-			sb->Append((const UTF8Char*)"Mac OS");
+			sb->AppendC(UTF8STRC("Mac OS"));
 		}
 		else
 		{
-			sb->Append((const UTF8Char*)"Mac OS ");
+			sb->AppendC(UTF8STRC("Mac OS "));
 			sb->Append(osVer);
 		}
 	}
@@ -109,52 +109,52 @@ void Manage::OSInfo::GetCommonName(Text::StringBuilderUTF *sb, OSType osType, co
 	{
 		if (osVer == 0)
 		{
-			sb->Append((const UTF8Char*)"Windows NT (32-bit)");
+			sb->AppendC(UTF8STRC("Windows NT (32-bit)"));
 		}
 		else if (Text::StrEquals(osVer, (const UTF8Char*)"5.0"))
 		{
-			sb->Append((const UTF8Char*)"Windows 2000");
+			sb->AppendC(UTF8STRC("Windows 2000"));
 		}
 		else if (Text::StrEquals(osVer, (const UTF8Char*)"5.1"))
 		{
-			sb->Append((const UTF8Char*)"Windows XP");
+			sb->AppendC(UTF8STRC("Windows XP"));
 		}
 		else if (Text::StrEquals(osVer, (const UTF8Char*)"6.0"))
 		{
-			sb->Append((const UTF8Char*)"Windows Vista");
+			sb->AppendC(UTF8STRC("Windows Vista"));
 		}
 		else if (Text::StrEquals(osVer, (const UTF8Char*)"6.1"))
 		{
-			sb->Append((const UTF8Char*)"Windows 7 (32-bit)");
+			sb->AppendC(UTF8STRC("Windows 7 (32-bit)"));
 		}
 		else if (Text::StrEquals(osVer, (const UTF8Char*)"6.2"))
 		{
-			sb->Append((const UTF8Char*)"Windows 8 (32-bit)");
+			sb->AppendC(UTF8STRC("Windows 8 (32-bit)"));
 		}
 		else if (Text::StrEquals(osVer, (const UTF8Char*)"6.3"))
 		{
-			sb->Append((const UTF8Char*)"Windows 8.1 (32-bit)");
+			sb->AppendC(UTF8STRC("Windows 8.1 (32-bit)"));
 		}
 		else if (Text::StrEquals(osVer, (const UTF8Char*)"10.0"))
 		{
-			sb->Append((const UTF8Char*)"Windows 10 (32-bit)");
+			sb->AppendC(UTF8STRC("Windows 10 (32-bit)"));
 		}
 		else
 		{
-			sb->Append((const UTF8Char*)"Windows NT ");
+			sb->AppendC(UTF8STRC("Windows NT "));
 			sb->Append(osVer);
-			sb->Append((const UTF8Char*)" (32-bit)");
+			sb->AppendC(UTF8STRC(" (32-bit)"));
 		}
 	}
 	else if (osType == OT_WINDOWS_CE)
 	{
 		if (osVer == 0)
 		{
-			sb->Append((const UTF8Char*)"Windows CE");
+			sb->AppendC(UTF8STRC("Windows CE"));
 		}
 		else
 		{
-			sb->Append((const UTF8Char*)"Windows CE ");
+			sb->AppendC(UTF8STRC("Windows CE "));
 			sb->Append(osVer);
 		}
 	}
@@ -162,24 +162,24 @@ void Manage::OSInfo::GetCommonName(Text::StringBuilderUTF *sb, OSType osType, co
 	{
 		if (osVer == 0)
 		{
-			sb->Append((const UTF8Char*)"Windows Server");
+			sb->AppendC(UTF8STRC("Windows Server"));
 		}
 		else
 		{
-			sb->Append((const UTF8Char*)"Windows ");
+			sb->AppendC(UTF8STRC("Windows "));
 			sb->Append(osVer);
-			sb->Append((const UTF8Char*)" Server");
+			sb->AppendC(UTF8STRC(" Server"));
 		}
 	}
 	else if (osType == OT_LINUX_X86_64)
 	{
 		if (osVer == 0)
 		{
-			sb->Append((const UTF8Char*)"Linux x86_64");
+			sb->AppendC(UTF8STRC("Linux x86_64"));
 		}
 		else
 		{
-			sb->Append((const UTF8Char*)"Linux x86_64 ");
+			sb->AppendC(UTF8STRC("Linux x86_64 "));
 			sb->Append(osVer);
 		}
 	}
@@ -187,11 +187,11 @@ void Manage::OSInfo::GetCommonName(Text::StringBuilderUTF *sb, OSType osType, co
 	{
 		if (osVer == 0)
 		{
-			sb->Append((const UTF8Char*)"Linux i686");
+			sb->AppendC(UTF8STRC("Linux i686"));
 		}
 		else
 		{
-			sb->Append((const UTF8Char*)"Linux i686 ");
+			sb->AppendC(UTF8STRC("Linux i686 "));
 			sb->Append(osVer);
 		}
 	}
@@ -199,11 +199,11 @@ void Manage::OSInfo::GetCommonName(Text::StringBuilderUTF *sb, OSType osType, co
 	{
 		if (osVer == 0)
 		{
-			sb->Append((const UTF8Char*)"Android");
+			sb->AppendC(UTF8STRC("Android"));
 		}
 		else
 		{
-			sb->Append((const UTF8Char*)"Android ");
+			sb->AppendC(UTF8STRC("Android "));
 			sb->Append(osVer);
 		}
 	}
@@ -211,11 +211,11 @@ void Manage::OSInfo::GetCommonName(Text::StringBuilderUTF *sb, OSType osType, co
 	{
 		if (osVer == 0)
 		{
-			sb->Append((const UTF8Char*)"iPad");
+			sb->AppendC(UTF8STRC("iPad"));
 		}
 		else
 		{
-			sb->Append((const UTF8Char*)"iPad ");
+			sb->AppendC(UTF8STRC("iPad "));
 			sb->Append(osVer);
 		}
 	}
@@ -223,11 +223,11 @@ void Manage::OSInfo::GetCommonName(Text::StringBuilderUTF *sb, OSType osType, co
 	{
 		if (osVer == 0)
 		{
-			sb->Append((const UTF8Char*)"iPhone");
+			sb->AppendC(UTF8STRC("iPhone"));
 		}
 		else
 		{
-			sb->Append((const UTF8Char*)"iPhone ");
+			sb->AppendC(UTF8STRC("iPhone "));
 			sb->Append(osVer);
 		}
 	}
@@ -235,38 +235,38 @@ void Manage::OSInfo::GetCommonName(Text::StringBuilderUTF *sb, OSType osType, co
 	{
 		if (osVer == 0)
 		{
-			sb->Append((const UTF8Char*)"Windows NT (64-bit)");
+			sb->AppendC(UTF8STRC("Windows NT (64-bit)"));
 		}
 		else if (Text::StrEquals(osVer, (const UTF8Char*)"5.2"))
 		{
-			sb->Append((const UTF8Char*)"Windows XP x64 Edition");
+			sb->AppendC(UTF8STRC("Windows XP x64 Edition"));
 		}
 		else if (Text::StrEquals(osVer, (const UTF8Char*)"6.1"))
 		{
-			sb->Append((const UTF8Char*)"Windows 7 (64-bit)");
+			sb->AppendC(UTF8STRC("Windows 7 (64-bit)"));
 		}
 		else if (Text::StrEquals(osVer, (const UTF8Char*)"6.2"))
 		{
-			sb->Append((const UTF8Char*)"Windows 8 (64-bit)");
+			sb->AppendC(UTF8STRC("Windows 8 (64-bit)"));
 		}
 		else if (Text::StrEquals(osVer, (const UTF8Char*)"6.3"))
 		{
-			sb->Append((const UTF8Char*)"Windows 8.1 (64-bit)");
+			sb->AppendC(UTF8STRC("Windows 8.1 (64-bit)"));
 		}
 		else if (Text::StrEquals(osVer, (const UTF8Char*)"10.0"))
 		{
-			sb->Append((const UTF8Char*)"Windows 10 (64-bit)");
+			sb->AppendC(UTF8STRC("Windows 10 (64-bit)"));
 		}
 		else
 		{
-			sb->Append((const UTF8Char*)"Windows NT ");
+			sb->AppendC(UTF8STRC("Windows NT "));
 			sb->Append(osVer);
-			sb->Append((const UTF8Char*)" (64-bit)");
+			sb->AppendC(UTF8STRC(" (64-bit)"));
 		}
 	}
 	else if (osType == OT_CHROMEOS)
 	{
-		sb->Append((const UTF8Char*)"Chrome OS");
+		sb->AppendC(UTF8STRC("Chrome OS"));
 		if (osVer)
 		{
 			sb->AppendChar(' ', 1);
@@ -275,7 +275,7 @@ void Manage::OSInfo::GetCommonName(Text::StringBuilderUTF *sb, OSType osType, co
 	}
 	else if (osType == OT_NETCAST)
 	{
-		sb->Append((const UTF8Char*)"webOS");
+		sb->AppendC(UTF8STRC("webOS"));
 		if (osVer)
 		{
 			sb->AppendChar(' ', 1);
@@ -284,7 +284,7 @@ void Manage::OSInfo::GetCommonName(Text::StringBuilderUTF *sb, OSType osType, co
 	}
 	else
 	{
-		sb->Append((const UTF8Char*)"Unknown OS");
+		sb->AppendC(UTF8STRC("Unknown OS"));
 		if (osVer)
 		{
 			sb->AppendChar(' ', 1);

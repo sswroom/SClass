@@ -39,9 +39,9 @@ Net::SNS::SNS7gogo::SNS7gogo(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Tex
 		item = itemList.GetItem(i);
 		Text::StrInt64(sbuff, item->id);
 		sb.ClearStr();
-		sb.Append((const UTF8Char*)"https://7gogo.jp/");
+		sb.AppendC(UTF8STRC("https://7gogo.jp/"));
 		sb.Append(this->channelId);
-		sb.Append((const UTF8Char*)"/");
+		sb.AppendC(UTF8STRC("/"));
 		sb.AppendI64(item->id);
 		Text::String *s = Text::String::NewNotNull(sbuff);
 		Text::String *s2 = Text::String::New(sb.ToString(), sb.GetLength());
@@ -140,9 +140,9 @@ Bool Net::SNS::SNS7gogo::Reload()
 			{
 				Text::StrInt64(sbuff, item->id);
 				sb.ClearStr();
-				sb.Append((const UTF8Char*)"https://7gogo.jp/");
+				sb.AppendC(UTF8STRC("https://7gogo.jp/"));
 				sb.Append(this->channelId);
-				sb.Append((const UTF8Char*)"/");
+				sb.AppendC(UTF8STRC("/"));
 				sb.AppendI64(item->id);
 				Text::String *s = Text::String::NewNotNull(sbuff);
 				Text::String *s2 = Text::String::New(sb.ToString(), sb.GetLength());

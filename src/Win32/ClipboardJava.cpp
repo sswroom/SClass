@@ -46,7 +46,7 @@ Win32::Clipboard::~Clipboard()
 }
 
 
-OSInt Win32::Clipboard::GetDataFormats(Data::ArrayList<Int32> *dataTypes)
+UOSInt Win32::Clipboard::GetDataFormats(Data::ArrayList<UInt32> *dataTypes)
 {
 	ClassData *data = (ClassData*)this->clsData;
 	if (data->clipboard == 0)
@@ -284,7 +284,7 @@ Bool Win32::Clipboard::GetDataTextH(void *hand, UInt32 fmtId, Text::StringBuilde
 					break;
 				if (i > 0)
 				{
-					sb->Append((const UTF8Char*)"\r\n");
+					sb->AppendC(UTF8STRC("\r\n"));
 				}
 				sb->Append((const UTF8Char*)s[i]);
 				i++;
@@ -300,7 +300,7 @@ Bool Win32::Clipboard::GetDataTextH(void *hand, UInt32 fmtId, Text::StringBuilde
 	return false;
 }
 
-Bool Win32::Clipboard::SetString(void *hWndOwner, const UTF8Char *s)
+Bool Win32::Clipboard::SetString(ControlHandle *hWndOwner, const UTF8Char *s)
 {
 /*	GtkClipboard *clipboard = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
 	if (clipboard == 0)
@@ -312,7 +312,7 @@ Bool Win32::Clipboard::SetString(void *hWndOwner, const UTF8Char *s)
 	return false;
 }
 
-Bool Win32::Clipboard::GetString(void *hWndOwner, Text::StringBuilderUTF *sb)
+Bool Win32::Clipboard::GetString(ControlHandle *hWndOwner, Text::StringBuilderUTF *sb)
 {
 /*	GtkClipboard *clipboard = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
 	if (clipboard == 0)
@@ -331,7 +331,7 @@ Bool Win32::Clipboard::GetString(void *hWndOwner, Text::StringBuilderUTF *sb)
 	return false;
 }
 
-UTF8Char *Win32::Clipboard::GetFormatName(UInt32 fmtId, UTF8Char *sbuff, OSInt buffSize)
+UTF8Char *Win32::Clipboard::GetFormatName(UInt32 fmtId, UTF8Char *sbuff, UOSInt buffSize)
 {
 /*	if (fmtId >= 128)
 	{

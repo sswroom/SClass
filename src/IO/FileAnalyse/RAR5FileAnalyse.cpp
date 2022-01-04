@@ -159,11 +159,11 @@ Bool IO::FileAnalyse::RAR5FileAnalyse::GetFrameName(UOSInt index, Text::StringBu
 	if (pack == 0)
 		return false;
 	sb->AppendU64(pack->fileOfst);
-	sb->Append((const UTF8Char*)": Type=");
+	sb->AppendC(UTF8STRC(": Type="));
 	sb->AppendU32(pack->headerType);
-	sb->Append((const UTF8Char*)", HeaderSize=");
+	sb->AppendC(UTF8STRC(", HeaderSize="));
 	sb->AppendU32(pack->headerSize);
-	sb->Append((const UTF8Char*)", DataSize=");
+	sb->AppendC(UTF8STRC(", DataSize="));
 	sb->AppendU64(pack->dataSize);
 	return true;
 }
@@ -184,85 +184,85 @@ Bool IO::FileAnalyse::RAR5FileAnalyse::GetFrameDetail(UOSInt index, Text::String
 		return false;
 
 	sb->AppendU64(pack->fileOfst);
-	sb->Append((const UTF8Char*)":");
+	sb->AppendC(UTF8STRC(":"));
 	packBuff = MemAlloc(UInt8, pack->headerSize);
 	this->fd->GetRealData(pack->fileOfst, pack->headerSize, packBuff);
 
-	sb->Append((const UTF8Char*)"\r\nBlock CRC = 0x");
+	sb->AppendC(UTF8STRC("\r\nBlock CRC = 0x"));
 	sb->AppendHex32(ReadUInt32(&packBuff[0]));
 	packPtr = packBuff + 4;
 	packEnd = packBuff + pack->headerSize;
 	packPtr = ReadVInt(packPtr, &iVal);
-	sb->Append((const UTF8Char*)"\r\nHeader Size = ");
+	sb->AppendC(UTF8STRC("\r\nHeader Size = "));
 	sb->AppendU64(iVal);
 	packPtr = ReadVInt(packPtr, &iVal);
-	sb->Append((const UTF8Char*)"\r\nHeader Type = ");
+	sb->AppendC(UTF8STRC("\r\nHeader Type = "));
 	sb->AppendU64(iVal);
 	switch (iVal)
 	{
 	case 1:
-		sb->Append((const UTF8Char*)" (Main archive header)");
+		sb->AppendC(UTF8STRC(" (Main archive header)"));
 		break;
 	case 2:
-		sb->Append((const UTF8Char*)" (File header)");
+		sb->AppendC(UTF8STRC(" (File header)"));
 		break;
 	case 3:
-		sb->Append((const UTF8Char*)" (Service header)");
+		sb->AppendC(UTF8STRC(" (Service header)"));
 		break;
 	case 4:
-		sb->Append((const UTF8Char*)" (Archive encryption header)");
+		sb->AppendC(UTF8STRC(" (Archive encryption header)"));
 		break;
 	case 5:
-		sb->Append((const UTF8Char*)" (End of archive header)");
+		sb->AppendC(UTF8STRC(" (End of archive header)"));
 		break;
 	}
 	packPtr = ReadVInt(packPtr, &headerFlags);
-	sb->Append((const UTF8Char*)"\r\nHeader Flags = 0x");
+	sb->AppendC(UTF8STRC("\r\nHeader Flags = 0x"));
 	sb->AppendHex16((UInt16)iVal);
 	extraSize = 0;
 	if (headerFlags & 1)
 	{
 		packPtr = ReadVInt(packPtr, &extraSize);
-		sb->Append((const UTF8Char*)"\r\nExtra Area Size = ");
+		sb->AppendC(UTF8STRC("\r\nExtra Area Size = "));
 		sb->AppendU64(extraSize);
 	}
 	if (headerFlags & 2)
 	{
 		packPtr = ReadVInt(packPtr, &iVal);
-		sb->Append((const UTF8Char*)"\r\nData Size = ");
+		sb->AppendC(UTF8STRC("\r\nData Size = "));
 		sb->AppendU64(iVal);
 	}
 
 	if (pack->headerType == 1)
 	{
 		packPtr = ReadVInt(packPtr, &iVal);
-		sb->Append((const UTF8Char*)"\r\nArchive flags = 0x");
+		sb->AppendC(UTF8STRC("\r\nArchive flags = 0x"));
 		sb->AppendHex16((UInt16)iVal);
 		if (iVal & 1)
 		{
-			sb->Append((const UTF8Char*)" (Volume)");
+			sb->AppendC(UTF8STRC(" (Volume)"));
 		}
 		if (iVal & 2)
 		{
-			sb->Append((const UTF8Char*)" (Volume number field is present)");
+			sb->AppendC(UTF8STRC(" (Volume number field is present)"));
 		}
 		if (iVal & 4)
 		{
-			sb->Append((const UTF8Char*)" (Solid archive)");
+			sb->AppendC(UTF8STRC(" (Solid archive)"));
 		}
 		if (iVal & 8)
 		{
-			sb->Append((const UTF8Char*)" (Recovery record is present)");
+			sb->AppendC(UTF8STRC(" (Recovery record is present)"));
 		}
 		if (iVal & 16)
 		{
-			sb->Append((const UTF8Char*)" (Locked archive)");
+			sb->AppendC(UTF8STRC(" (Locked archive)"));
 		}
 
 		if (iVal & 2)
 		{
 			packPtr = ReadVInt(packPtr, &iVal);
-			sb->Append((const UTF8Char*)"\r\nVolume number = ");
+			sb->AppendC(UTF8STRC("\r\nVolume number = "));
 			sb->AppendU64(iVal);
 		}
 		extraEnd = packPtr + extraSize;
@@ -277,26 +277,26 @@ Bool IO::FileAnalyse::RAR5FileAnalyse::GetFrameDetail(UOSInt index, Text::String
 					break;
 				}
 				packPtr = ReadVInt(packPtr, &iVal);
-				sb->Append((const UTF8Char*)"\r\nExtra Rec Size = ");
+				sb->AppendC(UTF8STRC("\r\nExtra Rec Size = "));
 				sb->AppendU64(extraSize);
-				sb->Append((const UTF8Char*)", Type = ");
+				sb->AppendC(UTF8STRC(", Type = "));
 				sb->AppendU64(iVal);
 				if (iVal == 1)
 				{
-					sb->Append((const UTF8Char*)" (Locator)");
+					sb->AppendC(UTF8STRC(" (Locator)"));
 					packPtr = ReadVInt(packPtr, &iVal);
-					sb->Append((const UTF8Char*)", Flags = 0x");
+					sb->AppendC(UTF8STRC(", Flags = 0x"));
 					sb->AppendHex16((UInt16)iVal);
 					if (iVal & 1)
 					{
 						packPtr = ReadVInt(packPtr, &extraSize);
-						sb->Append((const UTF8Char*)", Quick open offset = 0x");
+						sb->AppendC(UTF8STRC(", Quick open offset = 0x"));
 						sb->AppendHex64V(extraSize);
 					}
 					if (iVal & 2)
 					{
 						packPtr = ReadVInt(packPtr, &extraSize);
-						sb->Append((const UTF8Char*)", Recovery record offset = 0x");
+						sb->AppendC(UTF8STRC(", Recovery record offset = 0x"));
 						sb->AppendHex64V(extraSize);
 					}
 				}
@@ -307,59 +307,59 @@ Bool IO::FileAnalyse::RAR5FileAnalyse::GetFrameDetail(UOSInt index, Text::String
 	else if (pack->headerType == 2 || pack->headerType == 3)
 	{
 		packPtr = ReadVInt(packPtr, &headerFlags);
-		sb->Append((const UTF8Char*)"\r\nFile flags = 0x");
+		sb->AppendC(UTF8STRC("\r\nFile flags = 0x"));
 		sb->AppendHex16((UInt16)headerFlags);
 		if (headerFlags & 1)
 		{
-			sb->Append((const UTF8Char*)" (Directory file system object)");
+			sb->AppendC(UTF8STRC(" (Directory file system object)"));
 		}
 		if (headerFlags & 2)
 		{
-			sb->Append((const UTF8Char*)" (Time field in Unix format is present)");
+			sb->AppendC(UTF8STRC(" (Time field in Unix format is present)"));
 		}
 		if (headerFlags & 4)
 		{
-			sb->Append((const UTF8Char*)" (CRC32 field is present)");
+			sb->AppendC(UTF8STRC(" (CRC32 field is present)"));
 		}
 		if (headerFlags & 8)
 		{
-			sb->Append((const UTF8Char*)" (Unpacked size is unknown)");
+			sb->AppendC(UTF8STRC(" (Unpacked size is unknown)"));
 		}
 
 		packPtr = ReadVInt(packPtr, &iVal);
-		sb->Append((const UTF8Char*)"\r\nUnpacked size = ");
+		sb->AppendC(UTF8STRC("\r\nUnpacked size = "));
 		sb->AppendU64(iVal);
 		packPtr = ReadVInt(packPtr, &iVal);
-		sb->Append((const UTF8Char*)"\r\nAttributes = ");
+		sb->AppendC(UTF8STRC("\r\nAttributes = "));
 		sb->AppendU64(iVal);
 		if (headerFlags & 2)
 		{
-			sb->Append((const UTF8Char*)"\r\nmtime = ");
+			sb->AppendC(UTF8STRC("\r\nmtime = "));
 			sb->AppendU32(ReadUInt32(packPtr));
 			packPtr += 4;
 		}
 		if (headerFlags & 4)
 		{
-			sb->Append((const UTF8Char*)"\r\nData CRC32 = 0x");
+			sb->AppendC(UTF8STRC("\r\nData CRC32 = 0x"));
 			sb->AppendHex32(ReadUInt32(packPtr));
 			packPtr += 4;
 		}
 		packPtr = ReadVInt(packPtr, &iVal);
-		sb->Append((const UTF8Char*)"\r\nCompression version = ");
+		sb->AppendC(UTF8STRC("\r\nCompression version = "));
 		sb->AppendU32((UInt8)(iVal & 0x3f));
-		sb->Append((const UTF8Char*)"\r\nCompression Solid Flag = ");
+		sb->AppendC(UTF8STRC("\r\nCompression Solid Flag = "));
 		sb->AppendU32((UInt8)((iVal & 0x40) >> 6));
-		sb->Append((const UTF8Char*)"\r\nCompression method = ");
+		sb->AppendC(UTF8STRC("\r\nCompression method = "));
 		sb->AppendU32((UInt8)((iVal & 0x380) >> 7));
-		sb->Append((const UTF8Char*)"\r\nCompression dir size = ");
+		sb->AppendC(UTF8STRC("\r\nCompression dir size = "));
 		sb->AppendU32((UInt8)((iVal & 0x3c00) >> 10));
 		packPtr = ReadVInt(packPtr, &iVal);
-		sb->Append((const UTF8Char*)"\r\nHost OS = ");
+		sb->AppendC(UTF8STRC("\r\nHost OS = "));
 		sb->AppendU64(iVal);
 		packPtr = ReadVInt(packPtr, &iVal);
-		sb->Append((const UTF8Char*)"\r\nName length = ");
+		sb->AppendC(UTF8STRC("\r\nName length = "));
 		sb->AppendU64(iVal);
-		sb->Append((const UTF8Char*)"\r\nName = ");
+		sb->AppendC(UTF8STRC("\r\nName = "));
 		sb->AppendC(packPtr, (UOSInt)iVal);
 		packPtr += iVal;
 
@@ -375,24 +375,24 @@ Bool IO::FileAnalyse::RAR5FileAnalyse::GetFrameDetail(UOSInt index, Text::String
 					break;
 				}
 				packPtr = ReadVInt(packPtr, &iVal);
-				sb->Append((const UTF8Char*)"\r\nExtra Rec Size = ");
+				sb->AppendC(UTF8STRC("\r\nExtra Rec Size = "));
 				sb->AppendU64(extraSize);
-				sb->Append((const UTF8Char*)", Type = ");
+				sb->AppendC(UTF8STRC(", Type = "));
 				sb->AppendU64(iVal);
 				if (iVal == 1)
 				{
-					sb->Append((const UTF8Char*)" (File encryption)");
+					sb->AppendC(UTF8STRC(" (File encryption)"));
 				}
 				else if (iVal == 2)
 				{
-					sb->Append((const UTF8Char*)" (File hash)");
+					sb->AppendC(UTF8STRC(" (File hash)"));
 				}
 				else if (iVal == 3)
 				{
 					Data::DateTime dt;
-					sb->Append((const UTF8Char*)" (File time)");
+					sb->AppendC(UTF8STRC(" (File time)"));
 					packPtr = ReadVInt(packPtr, &headerFlags);
-					sb->Append((const UTF8Char*)", Flags = 0x");
+					sb->AppendC(UTF8STRC(", Flags = 0x"));
 					sb->AppendHex16((UInt16)headerFlags);
 					if (headerFlags & 2)
 					{
@@ -406,7 +406,7 @@ Bool IO::FileAnalyse::RAR5FileAnalyse::GetFrameDetail(UOSInt index, Text::String
 							dt.SetValueFILETIME((void*)packPtr);
 							packPtr += 8;
 						}
-						sb->Append((const UTF8Char*)", mtime = ");
+						sb->AppendC(UTF8STRC(", mtime = "));
 						sb->AppendDate(&dt);
 					}
 					if (headerFlags & 4)
@@ -421,7 +421,7 @@ Bool IO::FileAnalyse::RAR5FileAnalyse::GetFrameDetail(UOSInt index, Text::String
 							dt.SetValueFILETIME((void*)packPtr);
 							packPtr += 8;
 						}
-						sb->Append((const UTF8Char*)", ctime = ");
+						sb->AppendC(UTF8STRC(", ctime = "));
 						sb->AppendDate(&dt);
 					}
 					if (headerFlags & 8)
@@ -436,25 +436,25 @@ Bool IO::FileAnalyse::RAR5FileAnalyse::GetFrameDetail(UOSInt index, Text::String
 							dt.SetValueFILETIME((void*)packPtr);
 							packPtr += 8;
 						}
-						sb->Append((const UTF8Char*)", atime = ");
+						sb->AppendC(UTF8STRC(", atime = "));
 						sb->AppendDate(&dt);
 					}
 				}
 				else if (iVal == 4)
 				{
-					sb->Append((const UTF8Char*)" (File version)");
+					sb->AppendC(UTF8STRC(" (File version)"));
 				}
 				else if (iVal == 5)
 				{
-					sb->Append((const UTF8Char*)" (Redirection)");
+					sb->AppendC(UTF8STRC(" (Redirection)"));
 				}
 				else if (iVal == 6)
 				{
-					sb->Append((const UTF8Char*)" (Unix owner)");
+					sb->AppendC(UTF8STRC(" (Unix owner)"));
 				}
 				else if (iVal == 7)
 				{
-					sb->Append((const UTF8Char*)" (Service data)");
+					sb->AppendC(UTF8STRC(" (Service data)"));
 				}
 				packPtr = nextPtr;
 			}
@@ -463,29 +463,29 @@ Bool IO::FileAnalyse::RAR5FileAnalyse::GetFrameDetail(UOSInt index, Text::String
 	else if (pack->headerType == 5)
 	{
 		packPtr = ReadVInt(packPtr, &headerFlags);
-		sb->Append((const UTF8Char*)"\r\nEnd of archive flags = 0x");
+		sb->AppendC(UTF8STRC("\r\nEnd of archive flags = 0x"));
 		sb->AppendHex16((UInt16)headerFlags);
 	}
 
-	/*	sb->Append((const UTF8Char*)"\r\nMicroSec Per Frame = ");
+	/*	sb->AppendC(UTF8STRC("\r\nMicroSec Per Frame = "));
 	sb->AppendU32(ReadUInt32(&packBuff[0]));
-	sb->Append((const UTF8Char*)"\r\nMax Bytes Per Second = ");
+	sb->AppendC(UTF8STRC("\r\nMax Bytes Per Second = "));
 	sb->AppendU32(ReadUInt32(&packBuff[4]));
-	sb->Append((const UTF8Char*)"\r\nPadding Granularity = ");
+	sb->AppendC(UTF8STRC("\r\nPadding Granularity = "));
 	sb->AppendU32(ReadUInt32(&packBuff[8]));
-	sb->Append((const UTF8Char*)"\r\nFlags = 0x");
+	sb->AppendC(UTF8STRC("\r\nFlags = 0x"));
 	sb->AppendHex32(ReadUInt32(&packBuff[12]));
-	sb->Append((const UTF8Char*)"\r\nTotal Frames = ");
+	sb->AppendC(UTF8STRC("\r\nTotal Frames = "));
 	sb->AppendU32(ReadUInt32(&packBuff[16]));
-	sb->Append((const UTF8Char*)"\r\nInitial Frames = ");
+	sb->AppendC(UTF8STRC("\r\nInitial Frames = "));
 	sb->AppendU32(ReadUInt32(&packBuff[20]));
-	sb->Append((const UTF8Char*)"\r\nStream Count = ");
+	sb->AppendC(UTF8STRC("\r\nStream Count = "));
 	sb->AppendU32(ReadUInt32(&packBuff[24]));
-	sb->Append((const UTF8Char*)"\r\nSuggested Buffer Size = ");
+	sb->AppendC(UTF8STRC("\r\nSuggested Buffer Size = "));
 	sb->AppendU32(ReadUInt32(&packBuff[28]));
-	sb->Append((const UTF8Char*)"\r\nWidth = ");
+	sb->AppendC(UTF8STRC("\r\nWidth = "));
 	sb->AppendU32(ReadUInt32(&packBuff[32]));
-	sb->Append((const UTF8Char*)"\r\nHeight = ");
+	sb->AppendC(UTF8STRC("\r\nHeight = "));
 	sb->AppendU32(ReadUInt32(&packBuff[36]));*/
 
 	MemFree(packBuff);
@@ -582,27 +582,27 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::RAR5FileAnalyse::GetFrameDetail(U
 	{
 		nextPtr = ReadVInt(packPtr, &iVal);
 		Text::StringBuilderUTF8 sb;
-		sb.Append((const UTF8Char*)"0x");
+		sb.AppendC(UTF8STRC("0x"));
 		sb.AppendHex16((UInt16)iVal);
 		if (iVal & 1)
 		{
-			sb.Append((const UTF8Char*)" (Volume)");
+			sb.AppendC(UTF8STRC(" (Volume)"));
 		}
 		if (iVal & 2)
 		{
-			sb.Append((const UTF8Char*)" (Volume number field is present)");
+			sb.AppendC(UTF8STRC(" (Volume number field is present)"));
 		}
 		if (iVal & 4)
 		{
-			sb.Append((const UTF8Char*)" (Solid archive)");
+			sb.AppendC(UTF8STRC(" (Solid archive)"));
 		}
 		if (iVal & 8)
 		{
-			sb.Append((const UTF8Char*)" (Recovery record is present)");
+			sb.AppendC(UTF8STRC(" (Recovery record is present)"));
 		}
 		if (iVal & 16)
 		{
-			sb.Append((const UTF8Char*)" (Locked archive)");
+			sb.AppendC(UTF8STRC(" (Locked archive)"));
 		}
 		frame->AddField((UOSInt)(packPtr - packBuff), (UOSInt)(nextPtr - packPtr), (const UTF8Char*)"Archive flags", sb.ToString());
 		packPtr = nextPtr;
@@ -651,23 +651,23 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::RAR5FileAnalyse::GetFrameDetail(U
 	{
 		nextPtr = ReadVInt(packPtr, &headerFlags);
 		Text::StringBuilderUTF8 sb;
-		sb.Append((const UTF8Char*)"0x");
+		sb.AppendC(UTF8STRC("0x"));
 		sb.AppendHex16((UInt16)headerFlags);
 		if (headerFlags & 1)
 		{
-			sb.Append((const UTF8Char*)" (Directory file system object)");
+			sb.AppendC(UTF8STRC(" (Directory file system object)"));
 		}
 		if (headerFlags & 2)
 		{
-			sb.Append((const UTF8Char*)" (Time field in Unix format is present)");
+			sb.AppendC(UTF8STRC(" (Time field in Unix format is present)"));
 		}
 		if (headerFlags & 4)
 		{
-			sb.Append((const UTF8Char*)" (CRC32 field is present)");
+			sb.AppendC(UTF8STRC(" (CRC32 field is present)"));
 		}
 		if (headerFlags & 8)
 		{
-			sb.Append((const UTF8Char*)" (Unpacked size is unknown)");
+			sb.AppendC(UTF8STRC(" (Unpacked size is unknown)"));
 		}
 		frame->AddField((UOSInt)(packPtr - packBuff), (UOSInt)(nextPtr - packPtr), (const UTF8Char*)"File flags", sb.ToString());
 		packPtr = nextPtr;
@@ -799,25 +799,25 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::RAR5FileAnalyse::GetFrameDetail(U
 		packPtr = AddVHex(frame, (UOSInt)(packPtr - packBuff), "End of archive flags", packPtr, &headerFlags);
 	}
 
-	/*	sb->Append((const UTF8Char*)"\r\nMicroSec Per Frame = ");
+	/*	sb->AppendC(UTF8STRC("\r\nMicroSec Per Frame = "));
 	sb->AppendU32(ReadUInt32(&packBuff[0]));
-	sb->Append((const UTF8Char*)"\r\nMax Bytes Per Second = ");
+	sb->AppendC(UTF8STRC("\r\nMax Bytes Per Second = "));
 	sb->AppendU32(ReadUInt32(&packBuff[4]));
-	sb->Append((const UTF8Char*)"\r\nPadding Granularity = ");
+	sb->AppendC(UTF8STRC("\r\nPadding Granularity = "));
 	sb->AppendU32(ReadUInt32(&packBuff[8]));
-	sb->Append((const UTF8Char*)"\r\nFlags = 0x");
+	sb->AppendC(UTF8STRC("\r\nFlags = 0x"));
 	sb->AppendHex32(ReadUInt32(&packBuff[12]));
-	sb->Append((const UTF8Char*)"\r\nTotal Frames = ");
+	sb->AppendC(UTF8STRC("\r\nTotal Frames = "));
 	sb->AppendU32(ReadUInt32(&packBuff[16]));
-	sb->Append((const UTF8Char*)"\r\nInitial Frames = ");
+	sb->AppendC(UTF8STRC("\r\nInitial Frames = "));
 	sb->AppendU32(ReadUInt32(&packBuff[20]));
-	sb->Append((const UTF8Char*)"\r\nStream Count = ");
+	sb->AppendC(UTF8STRC("\r\nStream Count = "));
 	sb->AppendU32(ReadUInt32(&packBuff[24]));
-	sb->Append((const UTF8Char*)"\r\nSuggested Buffer Size = ");
+	sb->AppendC(UTF8STRC("\r\nSuggested Buffer Size = "));
 	sb->AppendU32(ReadUInt32(&packBuff[28]));
-	sb->Append((const UTF8Char*)"\r\nWidth = ");
+	sb->AppendC(UTF8STRC("\r\nWidth = "));
 	sb->AppendU32(ReadUInt32(&packBuff[32]));
-	sb->Append((const UTF8Char*)"\r\nHeight = ");
+	sb->AppendC(UTF8STRC("\r\nHeight = "));
 	sb->AppendU32(ReadUInt32(&packBuff[36]));*/
 
 	MemFree(packBuff);

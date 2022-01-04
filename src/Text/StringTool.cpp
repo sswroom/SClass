@@ -8,7 +8,7 @@ void Text::StringTool::BuildString(Text::StringBuilderUTF *sb, Text::String *s)
 {
 	if (s == 0)
 	{
-		sb->Append((const UTF8Char*)"null");
+		sb->AppendC(UTF8STRC("null"));
 	}
 	else
 	{
@@ -20,7 +20,7 @@ void Text::StringTool::BuildString(Text::StringBuilderUTF *sb, const UTF8Char *s
 {
 	if (s == 0)
 	{
-		sb->Append((const UTF8Char*)"null");
+		sb->AppendC(UTF8STRC("null"));
 	}
 	else
 	{
@@ -32,7 +32,7 @@ void Text::StringTool::BuildString(Text::StringBuilderUTF *sb, Data::StringUTF8M
 {
 	if (map == 0)
 	{
-		sb->Append((const UTF8Char*)"null");
+		sb->AppendC(UTF8STRC("null"));
 		return;
 	}
 	sb->AppendChar('{', 1);
@@ -59,7 +59,7 @@ void Text::StringTool::BuildString(Text::StringBuilderUTF *sb, Data::StringUTF8M
 {
 	if (map == 0)
 	{
-		sb->Append((const UTF8Char*)"null");
+		sb->AppendC(UTF8STRC("null"));
 		return;
 	}
 	sb->AppendChar('{', 1);
@@ -86,7 +86,7 @@ void Text::StringTool::BuildString(Text::StringBuilderUTF *sb, Data::ReadingList
 {
 	if (list == 0)
 	{
-		sb->Append((const UTF8Char*)"null");
+		sb->AppendC(UTF8STRC("null"));
 		return;
 	}
 	sb->AppendChar('[', 1);
@@ -109,7 +109,7 @@ void Text::StringTool::BuildString(Text::StringBuilderUTF *sb, Data::ReadingList
 {
 	if (list == 0)
 	{
-		sb->Append((const UTF8Char*)"null");
+		sb->AppendC(UTF8STRC("null"));
 		return;
 	}
 	sb->AppendChar('[', 1);

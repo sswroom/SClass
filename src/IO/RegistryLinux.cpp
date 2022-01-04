@@ -132,7 +132,7 @@ IO::Registry *IO::Registry::OpenSoftware(IO::Registry::RegistryUser usr, const W
 		return 0;
 	}
 	Text::StringBuilderUTF8 sb;
-	sb.Append((const UTF8Char*)"Software\\");
+	sb.AppendC(UTF8STRC("Software\\"));
 	const UTF8Char *csptr = Text::StrToUTF8New(compName);
 	sb.Append(csptr);
 	Text::StrDelNew(csptr);
@@ -155,7 +155,7 @@ IO::Registry *IO::Registry::OpenSoftware(IO::Registry::RegistryUser usr, const W
 		return 0;
 	}
 	Text::StringBuilderUTF8 sb;
-	sb.Append((const UTF8Char*)"Software\\");
+	sb.AppendC(UTF8STRC("Software\\"));
 	const UTF8Char *csptr = Text::StrToUTF8New(compName);
 	sb.Append(csptr);
 	Text::StrDelNew(csptr);
@@ -285,7 +285,7 @@ WChar *IO::Registry::GetSubReg(WChar *buff, UOSInt index)
 void IO::Registry::SetValue(const WChar *name, Int32 value)
 {
 	Text::StringBuilderUTF8 sb;
-	sb.Append((const UTF8Char*)"dword:");
+	sb.AppendC(UTF8STRC("dword:"));
 	sb.AppendHex32((UInt32)value);
 
 	Sync::MutexUsage mutUsage(this->clsData->reg->mut);
@@ -302,7 +302,7 @@ void IO::Registry::SetValue(const WChar *name, Int32 value)
 void IO::Registry::SetValue(const WChar *name, const WChar *value)
 {
 	Text::StringBuilderUTF8 sb;
-	sb.Append((const UTF8Char*)"sz:");
+	sb.AppendC(UTF8STRC("sz:"));
 	const UTF8Char *csptr = Text::StrToUTF8New(value);
 	sb.Append(csptr);
 	Text::StrDelNew(csptr);

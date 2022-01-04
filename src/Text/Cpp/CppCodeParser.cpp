@@ -28,9 +28,9 @@ void Text::Cpp::CppCodeParser::LogError(Text::Cpp::CppParseStatus *status, const
 	Text::String *fname = fileStatus->fileName;
 	UOSInt i = fname->LastIndexOf('\\');
 	sb.Append(&fname->v[i + 1]);
-	sb.Append((const UTF8Char*)" (");
+	sb.AppendC(UTF8STRC(" ("));
 	sb.AppendI32(fileStatus->lineNum);
-	sb.Append((const UTF8Char*)"): ");
+	sb.AppendC(UTF8STRC("): "));
 	sb.Append(errMsg);
 	errMsgs->Add(Text::StrCopyNew(sb.ToString()));
 }
@@ -185,9 +185,9 @@ Bool Text::Cpp::CppCodeParser::ParseSharpIfParam(const UTF8Char *cond, Text::Cpp
 			else
 			{
 				Text::StringBuilderUTF8 sb;
-				sb.Append((const UTF8Char*)"Unknown symbol '");
+				sb.AppendC(UTF8STRC("Unknown symbol '"));
 				sb.AppendChar(c, 1);
-				sb.Append((const UTF8Char*)"'");
+				sb.AppendC(UTF8STRC("'"));
 				this->LogError(status, sb.ToString(), errMsgs);
 				succ = false;
 			}
@@ -225,7 +225,7 @@ Bool Text::Cpp::CppCodeParser::EvalSharpIfVal(Data::ArrayList<const UTF8Char *> 
 	while (i < j)
 	{
 		debugSB.Append(codePhases->GetItem(i));
-		debugSB.Append((const UTF8Char*)" ");
+		debugSB.AppendC(UTF8STRC(" "));
 		i++;
 	}
 
@@ -285,7 +285,7 @@ Bool Text::Cpp::CppCodeParser::EvalSharpIfVal(Data::ArrayList<const UTF8Char *> 
 		}
 		else
 		{
-			debugSB.Append((const UTF8Char*)": invalid defined syntex");
+			debugSB.AppendC(UTF8STRC(": invalid defined syntex"));
 			this->LogError(status, debugSB.ToString(), errMsgs);
 			return false;
 		}
@@ -318,7 +318,7 @@ Bool Text::Cpp::CppCodeParser::EvalSharpIfVal(Data::ArrayList<const UTF8Char *> 
 		}
 		else
 		{
-			debugSB.Append((const UTF8Char*)": invalid __has_feature syntex");
+			debugSB.AppendC(UTF8STRC(": invalid __has_feature syntex"));
 			this->LogError(status, debugSB.ToString(), errMsgs);
 			return false;
 		}
@@ -333,7 +333,7 @@ Bool Text::Cpp::CppCodeParser::EvalSharpIfVal(Data::ArrayList<const UTF8Char *> 
 		phase = codePhases->GetItem(cpIndex);
 		if (phase == 0 || !Text::StrEquals(phase, (const UTF8Char*)")"))
 		{
-			debugSB.Append((const UTF8Char*)": missing )");
+			debugSB.AppendC(UTF8STRC(": missing )"));
 			if (phase)
 			{
 				debugSB.Append(phase);
@@ -363,7 +363,7 @@ Bool Text::Cpp::CppCodeParser::EvalSharpIfVal(Data::ArrayList<const UTF8Char *> 
 		}
 		if (!Text::StrToInt32(phase, &val))
 		{
-			debugSB.Append((const UTF8Char*)": unknown syntex ");
+			debugSB.AppendC(UTF8STRC(": unknown syntex "));
 			debugSB.Append(phase);
 			this->LogError(status, debugSB.ToString(), errMsgs);
 			Text::StrDelNew(phase);
@@ -398,12 +398,12 @@ Bool Text::Cpp::CppCodeParser::EvalSharpIfVal(Data::ArrayList<const UTF8Char *> 
 					{
 						break;
 					}
-					params.Append((const UTF8Char*)")");
+					params.AppendC(UTF8STRC(")"));
 				}
 				else if (Text::StrEquals(phase2, (const UTF8Char*)"("))
 				{
 					lev++;
-					params.Append((const UTF8Char*)"(");
+					params.AppendC(UTF8STRC("("));
 					Text::StrDelNew(codePhases->RemoveAt(cpIndex));
 				}
 				else
@@ -414,7 +414,7 @@ Bool Text::Cpp::CppCodeParser::EvalSharpIfVal(Data::ArrayList<const UTF8Char *> 
 			}
 			if (lev != 0)
 			{
-				debugSB.Append((const UTF8Char*)": macro not supported ");
+				debugSB.AppendC(UTF8STRC(": macro not supported "));
 				debugSB.Append(phase);
 				this->LogError(status, debugSB.ToString(), errMsgs);
 				Text::StrDelNew(phase);
@@ -432,7 +432,7 @@ Bool Text::Cpp::CppCodeParser::EvalSharpIfVal(Data::ArrayList<const UTF8Char *> 
 	}
 	else
 	{
-		debugSB.Append((const UTF8Char*)": unknown syntex ");
+		debugSB.AppendC(UTF8STRC(": unknown syntex "));
 		debugSB.Append(phase);
 		this->LogError(status, debugSB.ToString(), errMsgs);
 		Text::StrDelNew(phase);
@@ -743,7 +743,7 @@ Bool Text::Cpp::CppCodeParser::EvalSharpIfVal(Data::ArrayList<const UTF8Char *> 
 		}
 		else
 		{
-			debugSB.Append((const UTF8Char*)": unknown syntex ");
+			debugSB.AppendC(UTF8STRC(": unknown syntex "));
 			debugSB.Append(phase);
 			this->LogError(status, debugSB.ToString(), errMsgs);
 			return false;
@@ -796,10 +796,10 @@ Bool Text::Cpp::CppCodeParser::EvalSharpIf(const UTF8Char *cond, Text::Cpp::CppP
 			{
 				Text::StringBuilderUTF8 sb;
 				sb.Append(cond);
-				sb.Append((const UTF8Char*)": unknown phases found:");
+				sb.AppendC(UTF8STRC(": unknown phases found:"));
 				while (i < j)
 				{
-					sb.Append((const UTF8Char*)" ");
+					sb.AppendC(UTF8STRC(" "));
 					sb.Append(codePhase.GetItem(i));
 					i++;
 				}

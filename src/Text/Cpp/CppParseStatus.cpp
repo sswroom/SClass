@@ -302,27 +302,27 @@ Bool Text::Cpp::CppParseStatus::GetDefineVal(const UTF8Char *defName, const UTF8
 				}
 
 				sb1.ClearStr();
-				sb1.Append((const UTF8Char*)"##");
+				sb1.AppendC(UTF8STRC("##"));
 				sb1.Append(defInfo->defineParam);
 				sb2.ClearStr();
 				sb2.Append(sb3.ToString());
-				sb2.Append((const UTF8Char*)" ");
+				sb2.AppendC(UTF8STRC(" "));
 				sb.Replace(sb1.ToString(), sb2.ToString());
 
 				sb1.ClearStr();
 				sb1.Append(defInfo->defineParam);
-				sb1.Append((const UTF8Char*)"##");
+				sb1.AppendC(UTF8STRC("##"));
 				sb2.ClearStr();
-				sb2.Append((const UTF8Char*)" ");
+				sb2.AppendC(UTF8STRC(" "));
 				sb2.Append(sb3.ToString());
 				sb.Replace(sb1.ToString(), sb2.ToString());
 
 				sb1.ClearStr();
 				sb1.Append(defInfo->defineParam);
 				sb2.ClearStr();
-				sb2.Append((const UTF8Char*)" ");
+				sb2.AppendC(UTF8STRC(" "));
 				sb2.Append(sb3.ToString());
-				sb2.Append((const UTF8Char*)" ");
+				sb2.AppendC(UTF8STRC(" "));
 				sb.Replace(sb1.ToString(), sb2.ToString());
 			}
 			sbOut->Append(sb.ToString());

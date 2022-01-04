@@ -201,7 +201,7 @@ Bool Win32::Clipboard::GetDataTextH(void *hand, UInt32 fmtId, Text::StringBuilde
 						else if (Text::StrEquals(typeName, "x-special/gnome-copied-files"))
 						{
 							sb->AppendHexBuff(rawdata, (UOSInt)leng, ' ', Text::LineBreakType::CRLF);
-//							sb->Append((const UTF8Char*)rawdata, leng);
+//							sb->Append((const UTF8Char*)rawdata, leng));
 						}
 						else
 						{
@@ -248,7 +248,7 @@ Bool Win32::Clipboard::GetDataTextH(void *hand, UInt32 fmtId, Text::StringBuilde
 					break;
 				if (i > 0)
 				{
-					sb->Append((const UTF8Char*)"\r\n");
+					sb->AppendC(UTF8STRC("\r\n"));
 				}
 				sb->Append((const UTF8Char*)s[i]);
 				i++;

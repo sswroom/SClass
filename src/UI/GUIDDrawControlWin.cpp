@@ -237,11 +237,11 @@ void __stdcall UI::GUIDDrawControl::OnResized(void *userObj)
 		if (me->debugWriter)
 		{
 			Text::StringBuilderUTF8 sb;
-			sb.Append((const UTF8Char*)"Surface size changed to ");
+			sb.AppendC(UTF8STRC("Surface size changed to "));
 			sb.AppendUOSInt(me->surfaceW);
-			sb.Append((const UTF8Char*)" x ");
+			sb.AppendC(UTF8STRC(" x "));
 			sb.AppendUOSInt(me->surfaceH);
-			sb.Append((const UTF8Char*)", hMon=");
+			sb.AppendC(UTF8STRC(", hMon="));
 			sb.AppendOSInt((OSInt)me->GetHMonitor());
 			me->debugWriter->WriteLine(sb.ToString());
 		}
@@ -334,15 +334,15 @@ Bool UI::GUIDDrawControl::CreateSurface()
 			if (this->debugWriter)
 			{
 				Text::StringBuilderUTF8 sb;
-				sb.Append((const UTF8Char*)"Primary surface desc: Size = ");
+				sb.AppendC(UTF8STRC("Primary surface desc: Size = "));
 				sb.AppendUOSInt(this->primarySurface->info->dispWidth);
-				sb.Append((const UTF8Char*)" x ");
+				sb.AppendC(UTF8STRC(" x "));
 				sb.AppendUOSInt(this->primarySurface->info->dispHeight);
-				sb.Append((const UTF8Char*)", bpl = ");
+				sb.AppendC(UTF8STRC(", bpl = "));
 				sb.AppendUOSInt(this->primarySurface->GetDataBpl());
-				sb.Append((const UTF8Char*)", hMon = ");
+				sb.AppendC(UTF8STRC(", hMon = "));
 				sb.AppendOSInt((OSInt)this->surfaceMon);
-				sb.Append((const UTF8Char*)", hWnd = ");
+				sb.AppendC(UTF8STRC(", hWnd = "));
 				sb.AppendOSInt((OSInt)hWnd);
 				this->debugWriter->WriteLine(sb.ToString());
 			}
@@ -386,9 +386,9 @@ void UI::GUIDDrawControl::CreateSubSurface()
 			if (this->debugWriter)
 			{
 				Text::StringBuilderUTF8 sb;
-				sb.Append((const UTF8Char*)"(CreateSubSurface) Surface size changed to ");
+				sb.AppendC(UTF8STRC("(CreateSubSurface) Surface size changed to "));
 				sb.AppendU32(w);
-				sb.Append((const UTF8Char*)" x ");
+				sb.AppendC(UTF8STRC(" x "));
 				sb.AppendU32(h);
 				this->debugWriter->WriteLine(sb.ToString());
 			}
@@ -575,7 +575,7 @@ void UI::GUIDDrawControl::DrawToScreen()
 		Text::StringBuilderUTF8 sb;
 		Data::DateTime dt;
 		dt.SetCurrTime();
-		sb.Append((const UTF8Char*)"DrawToScreen ");
+		sb.AppendC(UTF8STRC("DrawToScreen "));
 		sb.AppendDate(&dt);
 		this->debugWriter->WriteLine(sb.ToString());
 	}
@@ -603,7 +603,7 @@ void UI::GUIDDrawControl::DrawToScreen()
 			if (this->debugWriter)
 			{
 				Text::StringBuilderUTF8 sb;
-				sb.Append((const UTF8Char*)"DrawToScreen: surface not found: ");
+				sb.AppendC(UTF8STRC("DrawToScreen: surface not found: "));
 				this->debugWriter->WriteLine(sb.ToString());
 			}
 		}
@@ -628,7 +628,7 @@ void UI::GUIDDrawControl::DrawToScreen()
 				if (this->debugWriter)
 				{
 					Text::StringBuilderUTF8 sb;
-					sb.Append((const UTF8Char*)"DrawToScreen: Surface not found wind: ");
+					sb.AppendC(UTF8STRC("DrawToScreen: Surface not found wind: "));
 					this->debugWriter->WriteLine(sb.ToString());
 				}
 			}
@@ -650,10 +650,10 @@ void UI::GUIDDrawControl::SwitchFullScreen(Bool fullScn, Bool vfs)
 	if (this->debugWriter)
 	{
 		Text::StringBuilderUTF8 sb;
-		sb.Append((const UTF8Char*)"SwitchFullScreen ");
+		sb.AppendC(UTF8STRC("SwitchFullScreen "));
 		sb.AppendI32(fullScn?1:0);
 		sb.AppendI32(vfs?1:0);
-		sb.Append((const UTF8Char*)", hMon=");
+		sb.AppendC(UTF8STRC(", hMon="));
 		sb.AppendOSInt((OSInt)this->GetHMonitor());
 		this->debugWriter->WriteLine(sb.ToString());
 	}
@@ -729,13 +729,13 @@ void UI::GUIDDrawControl::SwitchFullScreen(Bool fullScn, Bool vfs)
 			GetClientRect((HWND)this->hwnd, &rc);
 			ClientToScreen((HWND)this->hwnd, (POINT*)&rc.left);
 			ClientToScreen((HWND)this->hwnd, (POINT*)&rc.right);
-			sb.Append((const UTF8Char*)"FS: Draw rect1 = ");
+			sb.AppendC(UTF8STRC("FS: Draw rect1 = "));
 			sb.AppendI32(rc.left);
-			sb.Append((const UTF8Char*)", ");
+			sb.AppendC(UTF8STRC(", "));
 			sb.AppendI32(rc.top);
-			sb.Append((const UTF8Char*)", ");
+			sb.AppendC(UTF8STRC(", "));
 			sb.AppendI32(rc.right);
-			sb.Append((const UTF8Char*)", ");
+			sb.AppendC(UTF8STRC(", "));
 			sb.AppendI32(rc.bottom);
 			this->debugWriter->WriteLine(sb.ToString());
 			this->rootForm->ToFullScn();
@@ -744,13 +744,13 @@ void UI::GUIDDrawControl::SwitchFullScreen(Bool fullScn, Bool vfs)
 			ClientToScreen((HWND)this->hwnd, (POINT*)&rc.left);
 			ClientToScreen((HWND)this->hwnd, (POINT*)&rc.right);
 			sb.ClearStr();
-			sb.Append((const UTF8Char*)"FS: Draw rect2 = ");
+			sb.AppendC(UTF8STRC("FS: Draw rect2 = "));
 			sb.AppendI32(rc.left);
-			sb.Append((const UTF8Char*)", ");
+			sb.AppendC(UTF8STRC(", "));
 			sb.AppendI32(rc.top);
-			sb.Append((const UTF8Char*)", ");
+			sb.AppendC(UTF8STRC(", "));
 			sb.AppendI32(rc.right);
-			sb.Append((const UTF8Char*)", ");
+			sb.AppendC(UTF8STRC(", "));
 			sb.AppendI32(rc.bottom);
 			this->debugWriter->WriteLine(sb.ToString());
 			this->rootForm->SetFormState(UI::GUIForm::FS_MAXIMIZED);
@@ -758,13 +758,13 @@ void UI::GUIDDrawControl::SwitchFullScreen(Bool fullScn, Bool vfs)
 			ClientToScreen((HWND)this->hwnd, (POINT*)&rc.left);
 			ClientToScreen((HWND)this->hwnd, (POINT*)&rc.right);
 			sb.ClearStr();
-			sb.Append((const UTF8Char*)"FS: Draw rect3 = ");
+			sb.AppendC(UTF8STRC("FS: Draw rect3 = "));
 			sb.AppendI32(rc.left);
-			sb.Append((const UTF8Char*)", ");
+			sb.AppendC(UTF8STRC(", "));
 			sb.AppendI32(rc.top);
-			sb.Append((const UTF8Char*)", ");
+			sb.AppendC(UTF8STRC(", "));
 			sb.AppendI32(rc.right);
-			sb.Append((const UTF8Char*)", ");
+			sb.AppendC(UTF8STRC(", "));
 			sb.AppendI32(rc.bottom);
 			this->debugWriter->WriteLine(sb.ToString());
 		}

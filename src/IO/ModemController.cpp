@@ -159,7 +159,7 @@ Bool IO::ModemController::SendStringListCommand(Text::StringBuilderUTF *sb, cons
 			while (j < i - 1)
 			{
 				sb->Append((const UTF8Char*)this->cmdResults->GetItem(j));
-				sb->Append((const UTF8Char*)"\r\n");
+				sb->AppendC(UTF8STRC("\r\n"));
 				j++;
 			}
 			

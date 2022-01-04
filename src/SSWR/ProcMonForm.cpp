@@ -57,9 +57,9 @@ Bool SSWR::ProcMonForm::SearchProcId(SSWR::ProcMonForm::ProgInfo *prog)
 					Text::StringBuilderUTF8 sb;
 					prog->procId = info.processId;
 					ret = true;
-					sb.Append((const UTF8Char*)"Prog ");
+					sb.AppendC(UTF8STRC("Prog "));
 					sb.Append(prog->progName);
-					sb.Append((const UTF8Char*)": Updated procId as ");
+					sb.AppendC(UTF8STRC(": Updated procId as "));
 					sb.AppendUOSInt(prog->procId);
 					this->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_COMMAND);
 					break;
@@ -146,7 +146,7 @@ void SSWR::ProcMonForm::SaveProgList()
 		prog = this->progList->GetItem(i);
 		sb.ClearStr();
 		sb.Append(prog->progName);
-		sb.Append((const UTF8Char*)",");
+		sb.AppendC(UTF8STRC(","));
 		if (prog->progPath)
 		{
 			sb.Append(prog->progPath);
@@ -251,9 +251,9 @@ void __stdcall SSWR::ProcMonForm::OnTimerTick(void *userObj)
 				{
 					prog->procId = 0;
 					Text::StringBuilderUTF8 sb;
-					sb.Append((const UTF8Char*)"Prog ");
+					sb.AppendC(UTF8STRC("Prog "));
 					sb.Append(prog->progName);
-					sb.Append((const UTF8Char*)" stopped");
+					sb.AppendC(UTF8STRC(" stopped"));
 					me->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_COMMAND);
 				}
 			}
@@ -266,9 +266,9 @@ void __stdcall SSWR::ProcMonForm::OnTimerTick(void *userObj)
 					{
 						prog->procId = proc.GetProcId();
 						Text::StringBuilderUTF8 sb;
-						sb.Append((const UTF8Char*)"Prog ");
+						sb.AppendC(UTF8STRC("Prog "));
 						sb.Append(prog->progName);
-						sb.Append((const UTF8Char*)" restarted, procId = ");
+						sb.AppendC(UTF8STRC(" restarted, procId = "));
 						sb.AppendUOSInt(prog->procId);
 						me->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_COMMAND);
 						
@@ -276,9 +276,9 @@ void __stdcall SSWR::ProcMonForm::OnTimerTick(void *userObj)
 						{
 							sb.ClearStr();
 							sb.Append(me->notifyCmd);
-							sb.Append((const UTF8Char*)" \"Prog ");
+							sb.AppendC(UTF8STRC(" \"Prog "));
 							sb.Append(prog->progName);
-							sb.Append((const UTF8Char*)" restarted\"");
+							sb.AppendC(UTF8STRC(" restarted\""));
 							Manage::Process proc2(sb.ToString());
 						}
 					}
@@ -340,9 +340,9 @@ SSWR::ProcMonForm::ProcMonForm(UI::GUIClientControl *parent, UI::GUICore *ui) : 
 
 	this->notifyCmd = 0;
 	Text::StringBuilderUTF8 sb;
-	sb.Append((const UTF8Char*)"Log");
+	sb.AppendC(UTF8STRC("Log"));
 	sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
-	sb.Append((const UTF8Char*)"ProgLog");
+	sb.AppendC(UTF8STRC("ProgLog"));
 	NEW_CLASS(this->log, IO::LogTool());
 	this->log->AddFileLog(sb.ToString(), IO::ILogHandler::LOG_TYPE_PER_DAY, IO::ILogHandler::LOG_GROUP_TYPE_PER_MONTH, IO::ILogHandler::LOG_LEVEL_RAW, "yyyy-MM-dd HH:mm:ss.fff", false);
 	NEW_CLASS(this->logger, UI::ListBoxLogger(this, this->lbLog, 512, false));

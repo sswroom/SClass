@@ -151,7 +151,7 @@ void UI::GUIDragDataGTK::OnDataReceived(void *selData)
 			GdkPixbuf *pixbuf = gtk_selection_data_get_pixbuf((GtkSelectionData*)selData);
 			if (pixbuf)
 			{
-				sb.Append((const UTF8Char*)"PixBuf Image");
+				sb.AppendC(UTF8STRC("PixBuf Image"));
 				g_object_unref(pixbuf);
 			}
 		}

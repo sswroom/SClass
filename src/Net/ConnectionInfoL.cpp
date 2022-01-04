@@ -133,9 +133,9 @@ Net::ConnectionInfo::ConnectionInfo(void *info)
 #endif
 	{
 		sb.ClearStr();
-		sb.Append((const UTF8Char*)"/sys/class/net/");
+		sb.AppendC(UTF8STRC("/sys/class/net/"));
 		sb.Append((const UTF8Char*)data->name);
-		sb.Append((const UTF8Char*)"/address");
+		sb.AppendC(UTF8STRC("/address"));
 	
 		UOSInt readSize;
 		NEW_CLASS(fs, IO::FileStream(sb.ToString(), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));

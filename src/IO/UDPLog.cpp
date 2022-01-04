@@ -12,7 +12,7 @@ Bool IO::UDPLog::ParseLog(UInt8 *dataBuff, UOSInt buffSize, Text::StringBuilderU
 
 	if (buffSize == 1 && dataBuff[0] == 0x48)
 	{
-		sb->Append((const UTF8Char*)"SP1000: Heartbeat");
+		sb->AppendC(UTF8STRC("SP1000: Heartbeat"));
 	}
 	else if (buffSize >= 10 && dataBuff[0] == 0xff && dataBuff[buffSize - 1] == 0xff)
 	{
@@ -20,34 +20,34 @@ Bool IO::UDPLog::ParseLog(UInt8 *dataBuff, UOSInt buffSize, Text::StringBuilderU
 		Int64 termId = Data::ByteTool::GetBCD8(dataBuff[4]) * 100000000LL + Data::ByteTool::GetBCD32(&dataBuff[5]);
 		if (cmdSize <= buffSize)
 		{
-			sb->Append((const UTF8Char*)"SP1000CS: ");
+			sb->AppendC(UTF8STRC("SP1000CS: "));
 			sb->AppendI64(termId);
 			switch (dataBuff[3])
 			{
 			case 1:
-				sb->Append((const UTF8Char*)", Register");
+				sb->AppendC(UTF8STRC(", Register"));
 				break;
 			case 3:
 			case 0x2a:
 			case 0x87:
 				if (dataBuff[3] == 3)
 				{
-					sb->Append((const UTF8Char*)", Basic GPS Data");
+					sb->AppendC(UTF8STRC(", Basic GPS Data"));
 				}
 				else if (dataBuff[3] == 0x2a)
 				{
-					sb->Append((const UTF8Char*)", Blind zone GPS Data");
+					sb->AppendC(UTF8STRC(", Blind zone GPS Data"));
 				}
 				else
 				{
-					sb->Append((const UTF8Char*)", LBS Data");
+					sb->AppendC(UTF8STRC(", LBS Data"));
 				}
 				if (detail)
 				{
 					if (cmdSize == 31)
 					{
 						Data::DateTime t;
-						sb->Append((const UTF8Char*)"\r\nGPS Time = ");
+						sb->AppendC(UTF8STRC("\r\nGPS Time = "));
 						t.SetValue((UInt16)(Data::ByteTool::GetBCD8(dataBuff[14]) + 2000), Data::ByteTool::GetBCD8(dataBuff[13]), Data::ByteTool::GetBCD8(dataBuff[12]), Data::ByteTool::GetBCD8(dataBuff[9]), Data::ByteTool::GetBCD8(dataBuff[10]), Data::ByteTool::GetBCD8(dataBuff[11]), 0, 0);
 						sb->AppendDate(&t);
 
@@ -67,126 +67,126 @@ Bool IO::UDPLog::ParseLog(UInt8 *dataBuff, UOSInt buffSize, Text::StringBuilderU
 						{
 							lat = -lat;
 						}
-						sb->Append((const UTF8Char*)"\r\nLatitude = ");
+						sb->AppendC(UTF8STRC("\r\nLatitude = "));
 						Text::SBAppendF64(sb, lat);
-						sb->Append((const UTF8Char*)"\r\nLongitude = ");
+						sb->AppendC(UTF8STRC("\r\nLongitude = "));
 						Text::SBAppendF64(sb, lon);
 						Int32 spdDir = Data::ByteTool::GetBCD8(dataBuff[23]) * 10000 + Data::ByteTool::GetBCD8(dataBuff[24]) * 100 + Data::ByteTool::GetBCD8(dataBuff[25]);
 						Double spd = spdDir / 1000;
 						Double dir = spdDir % 1000;
-						sb->Append((const UTF8Char*)"\r\nSpeed = ");
+						sb->AppendC(UTF8STRC("\r\nSpeed = "));
 						Text::SBAppendF64(sb, spd);
-						sb->Append((const UTF8Char*)" knot\r\nDirection = ");
+						sb->AppendC(UTF8STRC(" knot\r\nDirection = "));
 						Text::SBAppendF64(sb, dir);
-						sb->Append((const UTF8Char*)"\r\nStatus1 = 0x");
+						sb->AppendC(UTF8STRC("\r\nStatus1 = 0x"));
 						sb->AppendHex8(dataBuff[26]);
-						sb->Append((const UTF8Char*)"\r\nStatus2 = 0x");
+						sb->AppendC(UTF8STRC("\r\nStatus2 = 0x"));
 						sb->AppendHex8(dataBuff[27]);
-						sb->Append((const UTF8Char*)"\r\nPeriod = ");
+						sb->AppendC(UTF8STRC("\r\nPeriod = "));
 						sb->AppendU16(ReadMUInt16(&dataBuff[28]));
 					}
 				}
 				break;
 			case 7:
-				sb->Append((const UTF8Char*)", Check Parameter Reply");
+				sb->AppendC(UTF8STRC(", Check Parameter Reply"));
 				if (detail)
 				{
 					if (cmdSize == 23)
 					{
-						sb->Append((const UTF8Char*)"\r\nStatus1 = 0x");
+						sb->AppendC(UTF8STRC("\r\nStatus1 = 0x"));
 						sb->AppendHex8(dataBuff[9]);
-						sb->Append((const UTF8Char*)"\r\nStatus2 = 0x");
+						sb->AppendC(UTF8STRC("\r\nStatus2 = 0x"));
 						sb->AppendHex8(dataBuff[10]);
-						sb->Append((const UTF8Char*)"\r\nStatus3 = 0x");
+						sb->AppendC(UTF8STRC("\r\nStatus3 = 0x"));
 						sb->AppendHex8(dataBuff[11]);
-						sb->Append((const UTF8Char*)"\r\nVersion = ");
+						sb->AppendC(UTF8STRC("\r\nVersion = "));
 						sb->AppendC((const UTF8Char*)&dataBuff[14], 8);
 					}
 				}
 				break;
 			case 0xa:
-				sb->Append((const UTF8Char*)", MDT Message Echo");
+				sb->AppendC(UTF8STRC(", MDT Message Echo"));
 				if (detail)
 				{
 					if (cmdSize == 11 + (UInt32)dataBuff[9])
 					{
-						sb->Append((const UTF8Char*)"\r\nMessage = ");
+						sb->AppendC(UTF8STRC("\r\nMessage = "));
 						sb->AppendC((const UTF8Char*)&dataBuff[10], cmdSize - 11);
 					}
 				}
 				break;
 			case 0xb:
-				sb->Append((const UTF8Char*)", Text Message Reply");
+				sb->AppendC(UTF8STRC(", Text Message Reply"));
 				if (detail)
 				{
 					if (cmdSize == 11)
 					{
-						sb->Append((const UTF8Char*)"\r\nState = ");
+						sb->AppendC(UTF8STRC("\r\nState = "));
 						if (dataBuff[9] == 0x8f)
 						{
-							sb->Append((const UTF8Char*)"Accept");
+							sb->AppendC(UTF8STRC("Accept"));
 						}
 						else if (dataBuff[9] == 0x8e)
 						{
-							sb->Append((const UTF8Char*)"Reject");
+							sb->AppendC(UTF8STRC("Reject"));
 						}
 						else
 						{
-							sb->Append((const UTF8Char*)"Unknown (0x");
+							sb->AppendC(UTF8STRC("Unknown (0x"));
 							sb->AppendHex8(dataBuff[9]);
-							sb->Append((const UTF8Char*)")");
+							sb->AppendC(UTF8STRC(")"));
 						}
 					}
 				}
 				break;
 			case 0x0c:
-				sb->Append((const UTF8Char*)", SOS Alert");
+				sb->AppendC(UTF8STRC(", SOS Alert"));
 				if (detail)
 				{
 					if (cmdSize == 11)
 					{
-						sb->Append((const UTF8Char*)"\r\nState = ");
+						sb->AppendC(UTF8STRC("\r\nState = "));
 						sb->AppendU16(dataBuff[9]);
 						if (dataBuff[9] == 1)
 						{
-							sb->Append((const UTF8Char*)" (Driver Press SOS button)");
+							sb->AppendC(UTF8STRC(" (Driver Press SOS button)"));
 						}
 					}
 				}
 				break;
 			case 0x11:
-				sb->Append((const UTF8Char*)", Fuel operation reply");
+				sb->AppendC(UTF8STRC(", Fuel operation reply"));
 				break;
 			case 0x1a:
-				sb->Append((const UTF8Char*)", Set Basic Parameters reply");
+				sb->AppendC(UTF8STRC(", Set Basic Parameters reply"));
 				break;
 			case 0x1b:
-				sb->Append((const UTF8Char*)", Phone monitoring reply");
+				sb->AppendC(UTF8STRC(", Phone monitoring reply"));
 				if (detail)
 				{
 					if (cmdSize == 11)
 					{
-						sb->Append((const UTF8Char*)"\r\nStatus = ");
+						sb->AppendC(UTF8STRC("\r\nStatus = "));
 						sb->AppendU16(dataBuff[9]);
 						switch (dataBuff[9])
 						{
 						case 0:
-							sb->Append((const UTF8Char*)" (Success)");
+							sb->AppendC(UTF8STRC(" (Success)"));
 							break;
 						case 1:
-							sb->Append((const UTF8Char*)" (Interrupted)");
+							sb->AppendC(UTF8STRC(" (Interrupted)"));
 							break;
 						case 2:
-							sb->Append((const UTF8Char*)" (Overtime)");
+							sb->AppendC(UTF8STRC(" (Overtime)"));
 							break;
 						case 3:
-							sb->Append((const UTF8Char*)" (No answer)");
+							sb->AppendC(UTF8STRC(" (No answer)"));
 							break;
 						case 4:
-							sb->Append((const UTF8Char*)" (Busy)");
+							sb->AppendC(UTF8STRC(" (Busy)"));
 							break;
 						case 5:
-							sb->Append((const UTF8Char*)" (Finished)");
+							sb->AppendC(UTF8STRC(" (Finished)"));
 							break;
 						}
 					}
@@ -196,18 +196,18 @@ Bool IO::UDPLog::ParseLog(UInt8 *dataBuff, UOSInt buffSize, Text::StringBuilderU
 			case 0x94:
 				if (dataBuff[3] == 0x1f)
 				{
-					sb->Append((const UTF8Char*)", GPS Data 1 - Temperature");
+					sb->AppendC(UTF8STRC(", GPS Data 1 - Temperature"));
 				}
 				else
 				{
-					sb->Append((const UTF8Char*)", GPS Data - Temperature");
+					sb->AppendC(UTF8STRC(", GPS Data - Temperature"));
 				}
 				if (detail)
 				{
 					if (cmdSize == 48)
 					{
 						Data::DateTime t;
-						sb->Append((const UTF8Char*)"\r\nGPS Time = ");
+						sb->AppendC(UTF8STRC("\r\nGPS Time = "));
 						t.SetValue((UInt16)(Data::ByteTool::GetBCD8(dataBuff[14]) + 2000), Data::ByteTool::GetBCD8(dataBuff[13]), Data::ByteTool::GetBCD8(dataBuff[12]), Data::ByteTool::GetBCD8(dataBuff[9]), Data::ByteTool::GetBCD8(dataBuff[10]), Data::ByteTool::GetBCD8(dataBuff[11]), 0, 0);
 						sb->AppendDate(&t);
 
@@ -227,22 +227,22 @@ Bool IO::UDPLog::ParseLog(UInt8 *dataBuff, UOSInt buffSize, Text::StringBuilderU
 						{
 							lat = -lat;
 						}
-						sb->Append((const UTF8Char*)"\r\nLatitude = ");
+						sb->AppendC(UTF8STRC("\r\nLatitude = "));
 						Text::SBAppendF64(sb, lat);
-						sb->Append((const UTF8Char*)"\r\nLongitude = ");
+						sb->AppendC(UTF8STRC("\r\nLongitude = "));
 						Text::SBAppendF64(sb, lon);
 						Int32 spdDir = Data::ByteTool::GetBCD8(dataBuff[23]) * 10000 + Data::ByteTool::GetBCD8(dataBuff[24]) * 100 + Data::ByteTool::GetBCD8(dataBuff[25]);
 						Double spd = spdDir / 1000;
 						Double dir = spdDir % 1000;
-						sb->Append((const UTF8Char*)"\r\nSpeed = ");
+						sb->AppendC(UTF8STRC("\r\nSpeed = "));
 						Text::SBAppendF64(sb, spd);
-						sb->Append((const UTF8Char*)" knot\r\nDirection = ");
+						sb->AppendC(UTF8STRC(" knot\r\nDirection = "));
 						Text::SBAppendF64(sb, dir);
-						sb->Append((const UTF8Char*)"\r\nStatus1 = 0x");
+						sb->AppendC(UTF8STRC("\r\nStatus1 = 0x"));
 						sb->AppendHex8(dataBuff[26]);
-						sb->Append((const UTF8Char*)"\r\nStatus2 = 0x");
+						sb->AppendC(UTF8STRC("\r\nStatus2 = 0x"));
 						sb->AppendHex8(dataBuff[27]);
-						sb->Append((const UTF8Char*)"\r\nTemperature1 = ");
+						sb->AppendC(UTF8STRC("\r\nTemperature1 = "));
 						if (dataBuff[28] == 0x2d)
 						{
 							sb->AppendI64(-(Int64)ReadMUInt32(&dataBuff[29]));
@@ -251,7 +251,7 @@ Bool IO::UDPLog::ParseLog(UInt8 *dataBuff, UOSInt buffSize, Text::StringBuilderU
 						{
 							sb->AppendI64((Int64)ReadMUInt32(&dataBuff[29]));
 						}
-						sb->Append((const UTF8Char*)"\r\nTemperature2 = ");
+						sb->AppendC(UTF8STRC("\r\nTemperature2 = "));
 						if (dataBuff[33] == 0x2d)
 						{
 							sb->AppendI64(-(Int64)ReadMUInt32(&dataBuff[34]));
@@ -260,7 +260,7 @@ Bool IO::UDPLog::ParseLog(UInt8 *dataBuff, UOSInt buffSize, Text::StringBuilderU
 						{
 							sb->AppendU32(ReadMUInt32(&dataBuff[34]));
 						}
-						sb->Append((const UTF8Char*)"\r\nTemperature3 = ");
+						sb->AppendC(UTF8STRC("\r\nTemperature3 = "));
 						if (dataBuff[38] == 0x2d)
 						{
 							sb->AppendI64(-(Int64)ReadMUInt32(&dataBuff[39]));
@@ -269,17 +269,17 @@ Bool IO::UDPLog::ParseLog(UInt8 *dataBuff, UOSInt buffSize, Text::StringBuilderU
 						{
 							sb->AppendU32(ReadMUInt32(&dataBuff[39]));
 						}
-						sb->Append((const UTF8Char*)"\r\nPeriod = ");
+						sb->AppendC(UTF8STRC("\r\nPeriod = "));
 						sb->AppendU16(ReadMUInt16(&dataBuff[43]));
-						sb->Append((const UTF8Char*)"\r\nStatus3 = 0x");
+						sb->AppendC(UTF8STRC("\r\nStatus3 = 0x"));
 						sb->AppendHex8(dataBuff[45]);
-						sb->Append((const UTF8Char*)"\r\nStatus4 = 0x");
+						sb->AppendC(UTF8STRC("\r\nStatus4 = 0x"));
 						sb->AppendHex8(dataBuff[46]);
 					}
 					else if (cmdSize == 58)
 					{
 						Data::DateTime t;
-						sb->Append((const UTF8Char*)"\r\nGPS Time = ");
+						sb->AppendC(UTF8STRC("\r\nGPS Time = "));
 						t.SetValue((UInt16)(Data::ByteTool::GetBCD8(dataBuff[14]) + 2000), Data::ByteTool::GetBCD8(dataBuff[13]), Data::ByteTool::GetBCD8(dataBuff[12]), Data::ByteTool::GetBCD8(dataBuff[9]), Data::ByteTool::GetBCD8(dataBuff[10]), Data::ByteTool::GetBCD8(dataBuff[11]), 0, 0);
 						sb->AppendDate(&t);
 
@@ -299,22 +299,22 @@ Bool IO::UDPLog::ParseLog(UInt8 *dataBuff, UOSInt buffSize, Text::StringBuilderU
 						{
 							lat = -lat;
 						}
-						sb->Append((const UTF8Char*)"\r\nLatitude = ");
+						sb->AppendC(UTF8STRC("\r\nLatitude = "));
 						Text::SBAppendF64(sb, lat);
-						sb->Append((const UTF8Char*)"\r\nLongitude = ");
+						sb->AppendC(UTF8STRC("\r\nLongitude = "));
 						Text::SBAppendF64(sb, lon);
 						Int32 spdDir = Data::ByteTool::GetBCD8(dataBuff[23]) * 10000 + Data::ByteTool::GetBCD8(dataBuff[24]) * 100 + Data::ByteTool::GetBCD8(dataBuff[25]);
 						Double spd = spdDir / 1000;
 						Double dir = spdDir % 1000;
-						sb->Append((const UTF8Char*)"\r\nSpeed = ");
+						sb->AppendC(UTF8STRC("\r\nSpeed = "));
 						Text::SBAppendF64(sb, spd);
-						sb->Append((const UTF8Char*)" knot\r\nDirection = ");
+						sb->AppendC(UTF8STRC(" knot\r\nDirection = "));
 						Text::SBAppendF64(sb, dir);
-						sb->Append((const UTF8Char*)"\r\nStatus1 = 0x");
+						sb->AppendC(UTF8STRC("\r\nStatus1 = 0x"));
 						sb->AppendHex8(dataBuff[26]);
-						sb->Append((const UTF8Char*)"\r\nStatus2 = 0x");
+						sb->AppendC(UTF8STRC("\r\nStatus2 = 0x"));
 						sb->AppendHex8(dataBuff[27]);
-						sb->Append((const UTF8Char*)"\r\nTemperature1 = ");
+						sb->AppendC(UTF8STRC("\r\nTemperature1 = "));
 						if (dataBuff[28] == 0x2d)
 						{
 							sb->AppendI64(-(Int64)ReadMUInt32(&dataBuff[29]));
@@ -323,7 +323,7 @@ Bool IO::UDPLog::ParseLog(UInt8 *dataBuff, UOSInt buffSize, Text::StringBuilderU
 						{
 							sb->AppendU32(ReadMUInt32(&dataBuff[29]));
 						}
-						sb->Append((const UTF8Char*)"\r\nTemperature2 = ");
+						sb->AppendC(UTF8STRC("\r\nTemperature2 = "));
 						if (dataBuff[33] == 0x2d)
 						{
 							sb->AppendI64(-(Int64)ReadMUInt32(&dataBuff[34]));
@@ -332,7 +332,7 @@ Bool IO::UDPLog::ParseLog(UInt8 *dataBuff, UOSInt buffSize, Text::StringBuilderU
 						{
 							sb->AppendU32(ReadMUInt32(&dataBuff[34]));
 						}
-						sb->Append((const UTF8Char*)"\r\nTemperature3 = ");
+						sb->AppendC(UTF8STRC("\r\nTemperature3 = "));
 						if (dataBuff[38] == 0x2d)
 						{
 							sb->AppendI64(-(Int64)ReadMUInt32(&dataBuff[39]));
@@ -341,48 +341,48 @@ Bool IO::UDPLog::ParseLog(UInt8 *dataBuff, UOSInt buffSize, Text::StringBuilderU
 						{
 							sb->AppendU32(ReadMUInt32(&dataBuff[39]));
 						}
-						sb->Append((const UTF8Char*)"\r\nPeriod = ");
+						sb->AppendC(UTF8STRC("\r\nPeriod = "));
 						sb->AppendU16(ReadMUInt16(&dataBuff[43]));
-						sb->Append((const UTF8Char*)"\r\nStatus3 = 0x");
+						sb->AppendC(UTF8STRC("\r\nStatus3 = 0x"));
 						sb->AppendHex8(dataBuff[45]);
-						sb->Append((const UTF8Char*)"\r\nStatus4 = 0x");
+						sb->AppendC(UTF8STRC("\r\nStatus4 = 0x"));
 						sb->AppendHex8(dataBuff[46]);
-						sb->Append((const UTF8Char*)"\r\nSatellite in use = ");
+						sb->AppendC(UTF8STRC("\r\nSatellite in use = "));
 						sb->AppendU16(dataBuff[47]);
-						sb->Append((const UTF8Char*)"\r\nSatellite in view = ");
+						sb->AppendC(UTF8STRC("\r\nSatellite in view = "));
 						sb->AppendU16(dataBuff[48]);
-						sb->Append((const UTF8Char*)"\r\nDelta mileage = ");
+						sb->AppendC(UTF8STRC("\r\nDelta mileage = "));
 						sb->AppendU16(ReadMUInt16(&dataBuff[49]));
-						sb->Append((const UTF8Char*)"m\r\nMileage timezone = ");
+						sb->AppendC(UTF8STRC("m\r\nMileage timezone = "));
 						sb->AppendU16(dataBuff[51]);
-						sb->Append((const UTF8Char*)"\r\nDaily mileage = ");
+						sb->AppendC(UTF8STRC("\r\nDaily mileage = "));
 						sb->AppendU32(ReadMUInt16(&dataBuff[52]) * (UInt32)100);
-						sb->Append((const UTF8Char*)"m\r\nFuel level = ");
+						sb->AppendC(UTF8STRC("m\r\nFuel level = "));
 						Text::SBAppendF64(sb, ReadMUInt16(&dataBuff[54]) * 0.1);
-						sb->Append((const UTF8Char*)"%\r\nStatus5 = 0x");
+						sb->AppendC(UTF8STRC("%\r\nStatus5 = 0x"));
 						sb->AppendHex8(dataBuff[56]);
 					}
 				}
 				break;
 			case 0x22:
-				sb->Append((const UTF8Char*)", Set Temperature Alert reply");
+				sb->AppendC(UTF8STRC(", Set Temperature Alert reply"));
 				break;
 			case 0x3f:
 			case 0x42:
 				if (dataBuff[3] == 0x3f)
 				{
-					sb->Append((const UTF8Char*)", GPS Data 2 - Mileage, Fuel");
+					sb->AppendC(UTF8STRC(", GPS Data 2 - Mileage, Fuel"));
 				}
 				else
 				{
-					sb->Append((const UTF8Char*)", Fixed Mileage GPS Data");
+					sb->AppendC(UTF8STRC(", Fixed Mileage GPS Data"));
 				}
 				if (detail)
 				{
 					if (cmdSize == 43)
 					{
 						Data::DateTime t;
-						sb->Append((const UTF8Char*)"\r\nGPS Time = ");
+						sb->AppendC(UTF8STRC("\r\nGPS Time = "));
 						t.SetValue((UInt16)(Data::ByteTool::GetBCD8(dataBuff[14]) + 2000), Data::ByteTool::GetBCD8(dataBuff[13]), Data::ByteTool::GetBCD8(dataBuff[12]), Data::ByteTool::GetBCD8(dataBuff[9]), Data::ByteTool::GetBCD8(dataBuff[10]), Data::ByteTool::GetBCD8(dataBuff[11]), 0, 0);
 						sb->AppendDate(&t);
 
@@ -402,77 +402,77 @@ Bool IO::UDPLog::ParseLog(UInt8 *dataBuff, UOSInt buffSize, Text::StringBuilderU
 						{
 							lat = -lat;
 						}
-						sb->Append((const UTF8Char*)"\r\nLatitude = ");
+						sb->AppendC(UTF8STRC("\r\nLatitude = "));
 						Text::SBAppendF64(sb, lat);
-						sb->Append((const UTF8Char*)"\r\nLongitude = ");
+						sb->AppendC(UTF8STRC("\r\nLongitude = "));
 						Text::SBAppendF64(sb, lon);
 						Int32 spdDir = Data::ByteTool::GetBCD8(dataBuff[23]) * 10000 + Data::ByteTool::GetBCD8(dataBuff[24]) * 100 + Data::ByteTool::GetBCD8(dataBuff[25]);
 						Double spd = spdDir / 1000;
 						Double dir = spdDir % 1000;
-						sb->Append((const UTF8Char*)"\r\nSpeed = ");
+						sb->AppendC(UTF8STRC("\r\nSpeed = "));
 						Text::SBAppendF64(sb, spd);
-						sb->Append((const UTF8Char*)" knot\r\nDirection = ");
+						sb->AppendC(UTF8STRC(" knot\r\nDirection = "));
 						Text::SBAppendF64(sb, dir);
-						sb->Append((const UTF8Char*)"\r\nStatus1 = 0x");
+						sb->AppendC(UTF8STRC("\r\nStatus1 = 0x"));
 						sb->AppendHex8(dataBuff[26]);
-						sb->Append((const UTF8Char*)"\r\nStatus2 = 0x");
+						sb->AppendC(UTF8STRC("\r\nStatus2 = 0x"));
 						sb->AppendHex8(dataBuff[27]);
-						sb->Append((const UTF8Char*)"\r\nPeriod = ");
+						sb->AppendC(UTF8STRC("\r\nPeriod = "));
 						sb->AppendU16(ReadMUInt16(&dataBuff[28]));
-						sb->Append((const UTF8Char*)"\r\nStatus3 = 0x");
+						sb->AppendC(UTF8STRC("\r\nStatus3 = 0x"));
 						sb->AppendHex8(dataBuff[30]);
-						sb->Append((const UTF8Char*)"\r\nStatus4 = 0x");
+						sb->AppendC(UTF8STRC("\r\nStatus4 = 0x"));
 						sb->AppendHex8(dataBuff[31]);
-						sb->Append((const UTF8Char*)"\r\nSatellite in use = ");
+						sb->AppendC(UTF8STRC("\r\nSatellite in use = "));
 						sb->AppendU16(dataBuff[32]);
-						sb->Append((const UTF8Char*)"\r\nSatellite in view = ");
+						sb->AppendC(UTF8STRC("\r\nSatellite in view = "));
 						sb->AppendU16(dataBuff[33]);
-						sb->Append((const UTF8Char*)"\r\nDelta mileage = ");
+						sb->AppendC(UTF8STRC("\r\nDelta mileage = "));
 						sb->AppendU16(ReadMUInt16(&dataBuff[34]));
-						sb->Append((const UTF8Char*)"m\r\nMileage timezone = ");
+						sb->AppendC(UTF8STRC("m\r\nMileage timezone = "));
 						sb->AppendU16(dataBuff[36]);
-						sb->Append((const UTF8Char*)"\r\nDaily mileage = ");
+						sb->AppendC(UTF8STRC("\r\nDaily mileage = "));
 						sb->AppendU32(ReadMUInt16(&dataBuff[37]) * (UInt32)100);
-						sb->Append((const UTF8Char*)"m\r\nFuel level = ");
+						sb->AppendC(UTF8STRC("m\r\nFuel level = "));
 						Text::SBAppendF64(sb, ReadMUInt16(&dataBuff[39]) * 0.1);
-						sb->Append((const UTF8Char*)"%\r\nStatus5 = 0x");
+						sb->AppendC(UTF8STRC("%\r\nStatus5 = 0x"));
 						sb->AppendHex8(dataBuff[41]);
 					}
 				}
 				break;
 			case 0x46:
-				sb->Append((const UTF8Char*)", Get Timezone reply");
+				sb->AppendC(UTF8STRC(", Get Timezone reply"));
 				if (detail)
 				{
 					if (cmdSize == 11)
 					{
-						sb->Append((const UTF8Char*)"\r\nTimezone = ");
+						sb->AppendC(UTF8STRC("\r\nTimezone = "));
 						sb->AppendU16(dataBuff[9]);
 					}
 				}
 				break;
 			case 0x53:
-				sb->Append((const UTF8Char*)", Set DeadZone reporting period reply");
+				sb->AppendC(UTF8STRC(", Set DeadZone reporting period reply"));
 				break;
 			case 0x65:
-				sb->Append((const UTF8Char*)", Card Data");
+				sb->AppendC(UTF8STRC(", Card Data"));
 				if (detail)
 				{
 					if (cmdSize == 15)
 					{
-						sb->Append((const UTF8Char*)"\r\nID = ");
+						sb->AppendC(UTF8STRC("\r\nID = "));
 						sb->AppendU32(ReadMUInt32(&dataBuff[9]));
 					}
 				}
 				break;
 			case 0x67:
-				sb->Append((const UTF8Char*)", GPS Data 3 - Temperature, Humidity");
+				sb->AppendC(UTF8STRC(", GPS Data 3 - Temperature, Humidity"));
 				if (detail)
 				{
 					if (cmdSize == 45)
 					{
 						Data::DateTime t;
-						sb->Append((const UTF8Char*)"\r\nGPS Time = ");
+						sb->AppendC(UTF8STRC("\r\nGPS Time = "));
 						t.SetValue((UInt16)(Data::ByteTool::GetBCD8(dataBuff[14]) + 2000), Data::ByteTool::GetBCD8(dataBuff[13]), Data::ByteTool::GetBCD8(dataBuff[12]), Data::ByteTool::GetBCD8(dataBuff[9]), Data::ByteTool::GetBCD8(dataBuff[10]), Data::ByteTool::GetBCD8(dataBuff[11]), 0, 0);
 						sb->AppendDate(&t);
 
@@ -492,144 +492,144 @@ Bool IO::UDPLog::ParseLog(UInt8 *dataBuff, UOSInt buffSize, Text::StringBuilderU
 						{
 							lat = -lat;
 						}
-						sb->Append((const UTF8Char*)"\r\nLatitude = ");
+						sb->AppendC(UTF8STRC("\r\nLatitude = "));
 						Text::SBAppendF64(sb, lat);
-						sb->Append((const UTF8Char*)"\r\nLongitude = ");
+						sb->AppendC(UTF8STRC("\r\nLongitude = "));
 						Text::SBAppendF64(sb, lon);
 						Int32 spdDir = Data::ByteTool::GetBCD8(dataBuff[23]) * 10000 + Data::ByteTool::GetBCD8(dataBuff[24]) * 100 + Data::ByteTool::GetBCD8(dataBuff[25]);
 						Double spd = spdDir / 1000;
 						Double dir = spdDir % 1000;
-						sb->Append((const UTF8Char*)"\r\nSpeed = ");
+						sb->AppendC(UTF8STRC("\r\nSpeed = "));
 						Text::SBAppendF64(sb, spd);
-						sb->Append((const UTF8Char*)" knot\r\nDirection = ");
+						sb->AppendC(UTF8STRC(" knot\r\nDirection = "));
 						Text::SBAppendF64(sb, dir);
-						sb->Append((const UTF8Char*)"\r\nStatus1 = 0x");
+						sb->AppendC(UTF8STRC("\r\nStatus1 = 0x"));
 						sb->AppendHex8(dataBuff[26]);
-						sb->Append((const UTF8Char*)"\r\nStatus2 = 0x");
+						sb->AppendC(UTF8STRC("\r\nStatus2 = 0x"));
 						sb->AppendHex8(dataBuff[27]);
-						sb->Append((const UTF8Char*)"\r\nPeriod = ");
+						sb->AppendC(UTF8STRC("\r\nPeriod = "));
 						sb->AppendU16(ReadMUInt16(&dataBuff[28]));
-						sb->Append((const UTF8Char*)"\r\nStatus3 = 0x");
+						sb->AppendC(UTF8STRC("\r\nStatus3 = 0x"));
 						sb->AppendHex8(dataBuff[30]);
-						sb->Append((const UTF8Char*)"\r\nStatus4 = 0x");
+						sb->AppendC(UTF8STRC("\r\nStatus4 = 0x"));
 						sb->AppendHex8(dataBuff[31]);
-						sb->Append((const UTF8Char*)"\r\nSatellite in use = ");
+						sb->AppendC(UTF8STRC("\r\nSatellite in use = "));
 						sb->AppendU16(dataBuff[32]);
-						sb->Append((const UTF8Char*)"\r\nSatellite in view = ");
+						sb->AppendC(UTF8STRC("\r\nSatellite in view = "));
 						sb->AppendU16(dataBuff[33]);
-						sb->Append((const UTF8Char*)"\r\nTemperature Valid = ");
+						sb->AppendC(UTF8STRC("\r\nTemperature Valid = "));
 						if (dataBuff[34] & 1)
 						{
 							Double t = -39.65 + 0.01 * ReadMUInt32(&dataBuff[35]);
-							sb->Append((const UTF8Char*)"True\r\nTemperature = ");
+							sb->AppendC(UTF8STRC("True\r\nTemperature = "));
 							Text::SBAppendF64(sb, t);
-							sb->Append((const UTF8Char*)"\r\nRH Valid = ");
+							sb->AppendC(UTF8STRC("\r\nRH Valid = "));
 							if (dataBuff[39] & 1)
 							{
 								UInt32 rh = ReadMUInt32(&dataBuff[40]);
 								Double rhl = -2.0468 + 0.0367 * -(1.5955 * rh * rh) * 0.000001;
-								sb->Append((const UTF8Char*)"True\r\nRH(Linear) = ");
+								sb->AppendC(UTF8STRC("True\r\nRH(Linear) = "));
 								Text::SBAppendF64(sb, rhl);
-								sb->Append((const UTF8Char*)"%\r\nRH (Refined) = ");
+								sb->AppendC(UTF8STRC("%\r\nRH (Refined) = "));
 								Text::SBAppendF64(sb, (t - 25.0) * (0.01 + 0.00008 * rh) + rhl);
 							}
 							else
 							{
-								sb->Append((const UTF8Char*)"False");
+								sb->AppendC(UTF8STRC("False"));
 							}
 						}
 						else
 						{
-							sb->Append((const UTF8Char*)"False");
+							sb->AppendC(UTF8STRC("False"));
 						}
 					}
 				}
 				break;
 			case 0x6e:
-				sb->Append((const UTF8Char*)", LED Tran Msg reply");
+				sb->AppendC(UTF8STRC(", LED Tran Msg reply"));
 				break;
 			case 0x72:
-				sb->Append((const UTF8Char*)", LED Msg reply");
+				sb->AppendC(UTF8STRC(", LED Msg reply"));
 				break;
 			case 0x74:
-				sb->Append((const UTF8Char*)", LED Delete Msg reply");
+				sb->AppendC(UTF8STRC(", LED Delete Msg reply"));
 				break;
 			case 0x75:
-				sb->Append((const UTF8Char*)", LED Notify Msg reply");
+				sb->AppendC(UTF8STRC(", LED Notify Msg reply"));
 				break;
 			case 0x77:
-				sb->Append((const UTF8Char*)", Delete LED Notify Msg reply");
+				sb->AppendC(UTF8STRC(", Delete LED Notify Msg reply"));
 				break;
 			case 0x7c:
-				sb->Append((const UTF8Char*)", MDT message unicode echo");
+				sb->AppendC(UTF8STRC(", MDT message unicode echo"));
 				break;
 			case 0x7d:
-				sb->Append((const UTF8Char*)", Set MDT Phone reply");
+				sb->AppendC(UTF8STRC(", Set MDT Phone reply"));
 				break;
 			case 0x7f:
-				sb->Append((const UTF8Char*)", Capture photo reply");
+				sb->AppendC(UTF8STRC(", Capture photo reply"));
 				if (detail)
 				{
 					if (cmdSize == 13)
 					{
-						sb->Append((const UTF8Char*)", Size = ");
+						sb->AppendC(UTF8STRC(", Size = "));
 						sb->AppendU32(ReadMUInt24(&dataBuff[9]));
 					}
 				}
 				break;
 			case 0x80:
-				sb->Append((const UTF8Char*)", Photo packet");
+				sb->AppendC(UTF8STRC(", Photo packet"));
 				if (detail)
 				{
-					sb->Append((const UTF8Char*)", Packet ID = ");
+					sb->AppendC(UTF8STRC(", Packet ID = "));
 					sb->AppendU16(ReadMUInt16(&dataBuff[9]));
-					sb->Append((const UTF8Char*)", Data Size = ");
+					sb->AppendC(UTF8STRC(", Data Size = "));
 					sb->AppendU16(ReadMUInt16(&dataBuff[11]));
-					sb->Append((const UTF8Char*)", CheckDigits = ");
+					sb->AppendC(UTF8STRC(", CheckDigits = "));
 					sb->AppendHex16(ReadMUInt16(&dataBuff[cmdSize - 3]));
 				}
 				break;
 			case 0x81:
-				sb->Append((const UTF8Char*)", Photo end reply");
+				sb->AppendC(UTF8STRC(", Photo end reply"));
 				break;
 			case 0x8c:
-				sb->Append((const UTF8Char*)", Get Server time");
+				sb->AppendC(UTF8STRC(", Get Server time"));
 				break;
 			case 0x8d:
-				sb->Append((const UTF8Char*)", Get Device Battery");
+				sb->AppendC(UTF8STRC(", Get Device Battery"));
 				if (detail)
 				{
 					if (cmdSize == 23)
 					{
 						Data::DateTime dt;
 						dt.SetValue((UInt16)(Data::ByteTool::GetBCD8(dataBuff[14]) + 2000), Data::ByteTool::GetBCD8(dataBuff[13]), Data::ByteTool::GetBCD8(dataBuff[12]), Data::ByteTool::GetBCD8(dataBuff[9]), Data::ByteTool::GetBCD8(dataBuff[10]), Data::ByteTool::GetBCD8(dataBuff[11]), 0, (Int8)((Int8)dataBuff[15] * 4));
-						sb->Append((const UTF8Char*)"\r\nDevice Time = ");
+						sb->AppendC(UTF8STRC("\r\nDevice Time = "));
 						sb->AppendDate(&dt);
-						sb->Append((const UTF8Char*)"\r\nBattery Status = 0x");
+						sb->AppendC(UTF8STRC("\r\nBattery Status = 0x"));
 						sb->AppendHex8(dataBuff[16]);
-						sb->Append((const UTF8Char*)"\r\nBattery Level = ");
+						sb->AppendC(UTF8STRC("\r\nBattery Level = "));
 						sb->AppendU16(dataBuff[17]);
-						sb->Append((const UTF8Char*)"\r\nRSSI = ");
+						sb->AppendC(UTF8STRC("\r\nRSSI = "));
 						sb->AppendU16(dataBuff[18]);
-						sb->Append((const UTF8Char*)"\r\nDevice Status = 0x");
+						sb->AppendC(UTF8STRC("\r\nDevice Status = 0x"));
 						sb->AppendHex8(dataBuff[19]);
-						sb->Append((const UTF8Char*)"\r\nCard Space = ");
+						sb->AppendC(UTF8STRC("\r\nCard Space = "));
 						sb->AppendU16(ReadMUInt16(&dataBuff[20]));
-						sb->Append((const UTF8Char*)"MB");
+						sb->AppendC(UTF8STRC("MB"));
 					}
 				}
 				break;
 			case 0x91:
-				sb->Append((const UTF8Char*)", Wireless Sensor Data");
+				sb->AppendC(UTF8STRC(", Wireless Sensor Data"));
 				if (detail)
 				{
 					if (cmdSize == 43)
 					{
-						sb->Append((const UTF8Char*)"\r\nChannel = ");
+						sb->AppendC(UTF8STRC("\r\nChannel = "));
 						sb->AppendU16(dataBuff[9]);
-						sb->Append((const UTF8Char*)"\r\nRSSI = ");
+						sb->AppendC(UTF8STRC("\r\nRSSI = "));
 						sb->AppendU16(dataBuff[10]);
-						sb->Append((const UTF8Char*)"\r\nSensor IP = ");
+						sb->AppendC(UTF8STRC("\r\nSensor IP = "));
 						sb->AppendU16(dataBuff[11]);
 						sb->AppendChar('.', 1);
 						sb->AppendU16(dataBuff[12]);
@@ -637,17 +637,17 @@ Bool IO::UDPLog::ParseLog(UInt8 *dataBuff, UOSInt buffSize, Text::StringBuilderU
 						sb->AppendU16(dataBuff[13]);
 						sb->AppendChar('.', 1);
 						sb->AppendU16(dataBuff[14]);
-						sb->Append((const UTF8Char*)"\r\nSensor Port = ");
+						sb->AppendC(UTF8STRC("\r\nSensor Port = "));
 						sb->AppendU16(ReadMUInt16(&dataBuff[15]));
-						sb->Append((const UTF8Char*)"\r\nSensor ID = ");
+						sb->AppendC(UTF8STRC("\r\nSensor ID = "));
 						sb->AppendHexBuff(&dataBuff[17], 5, 0, Text::LineBreakType::None);
 						Data::DateTime t;
-						sb->Append((const UTF8Char*)"\r\nGPS Time = ");
+						sb->AppendC(UTF8STRC("\r\nGPS Time = "));
 						t.SetValue((UInt16)(Data::ByteTool::GetBCD8(dataBuff[27]) + 2000), Data::ByteTool::GetBCD8(dataBuff[26]), Data::ByteTool::GetBCD8(dataBuff[25]), Data::ByteTool::GetBCD8(dataBuff[22]), Data::ByteTool::GetBCD8(dataBuff[23]), Data::ByteTool::GetBCD8(dataBuff[24]), 0, 0);
 						sb->AppendDate(&t);
-						sb->Append((const UTF8Char*)"\r\nStatus1 = 0x");
+						sb->AppendC(UTF8STRC("\r\nStatus1 = 0x"));
 						sb->AppendHex8(dataBuff[28]);
-						sb->Append((const UTF8Char*)"\r\nTemperature = ");
+						sb->AppendC(UTF8STRC("\r\nTemperature = "));
 						if (dataBuff[28] & 4)
 						{
 							Text::SBAppendF64(sb, ReadMInt32(&dataBuff[29]) * 0.0001);
@@ -656,9 +656,9 @@ Bool IO::UDPLog::ParseLog(UInt8 *dataBuff, UOSInt buffSize, Text::StringBuilderU
 						{
 							Text::SBAppendF64(sb, ReadMInt32(&dataBuff[29]) * 0.01 - 39.65);
 						}
-						sb->Append((const UTF8Char*)"\r\nStatus2 = 0x");
+						sb->AppendC(UTF8STRC("\r\nStatus2 = 0x"));
 						sb->AppendHex8(dataBuff[33]);
-						sb->Append((const UTF8Char*)"\r\nHumidity = ");
+						sb->AppendC(UTF8STRC("\r\nHumidity = "));
 						if (dataBuff[33] & 2)
 						{
 							Text::SBAppendF64(sb, ReadMInt32(&dataBuff[34]) * 0.01);
@@ -668,20 +668,20 @@ Bool IO::UDPLog::ParseLog(UInt8 *dataBuff, UOSInt buffSize, Text::StringBuilderU
 							Double y = ReadMInt32(&dataBuff[34]);
 							Text::SBAppendF64(sb, -2.0468 + 0.0367 * y -(1.5955 * y * y) / 1000000);
 						}
-						sb->Append((const UTF8Char*)"\r\nBattery = ");
+						sb->AppendC(UTF8STRC("\r\nBattery = "));
 						Text::SBAppendF64(sb, dataBuff[38] / 128.0 * 3.28);
-						sb->Append((const UTF8Char*)"\r\nStatus3 = 0x");
+						sb->AppendC(UTF8STRC("\r\nStatus3 = 0x"));
 						sb->AppendHex8(dataBuff[39]);
-						sb->Append((const UTF8Char*)"\r\nPeriod = ");
+						sb->AppendC(UTF8STRC("\r\nPeriod = "));
 						sb->AppendU16(ReadMUInt16(&dataBuff[40]));
 					}
 					else if (cmdSize == 58)
 					{
-						sb->Append((const UTF8Char*)"\r\nChannel = ");
+						sb->AppendC(UTF8STRC("\r\nChannel = "));
 						sb->AppendU16(dataBuff[9]);
-						sb->Append((const UTF8Char*)"\r\nRSSI = ");
+						sb->AppendC(UTF8STRC("\r\nRSSI = "));
 						sb->AppendU16(dataBuff[10]);
-						sb->Append((const UTF8Char*)"\r\nSensor IP = ");
+						sb->AppendC(UTF8STRC("\r\nSensor IP = "));
 						sb->AppendU16(dataBuff[11]);
 						sb->AppendChar('.', 1);
 						sb->AppendU16(dataBuff[12]);
@@ -689,17 +689,17 @@ Bool IO::UDPLog::ParseLog(UInt8 *dataBuff, UOSInt buffSize, Text::StringBuilderU
 						sb->AppendU16(dataBuff[13]);
 						sb->AppendChar('.', 1);
 						sb->AppendU16(dataBuff[14]);
-						sb->Append((const UTF8Char*)"\r\nSensor Port = ");
+						sb->AppendC(UTF8STRC("\r\nSensor Port = "));
 						sb->AppendU16(ReadMUInt16(&dataBuff[15]));
-						sb->Append((const UTF8Char*)"\r\nSensor ID = ");
+						sb->AppendC(UTF8STRC("\r\nSensor ID = "));
 						sb->AppendHexBuff(&dataBuff[17], 5, 0, Text::LineBreakType::None);
 						Data::DateTime t;
-						sb->Append((const UTF8Char*)"\r\nGPS Time = ");
+						sb->AppendC(UTF8STRC("\r\nGPS Time = "));
 						t.SetValue((UInt16)(Data::ByteTool::GetBCD8(dataBuff[27]) + 2000), Data::ByteTool::GetBCD8(dataBuff[26]), Data::ByteTool::GetBCD8(dataBuff[25]), Data::ByteTool::GetBCD8(dataBuff[22]), Data::ByteTool::GetBCD8(dataBuff[23]), Data::ByteTool::GetBCD8(dataBuff[24]), 0, 0);
 						sb->AppendDate(&t);
-						sb->Append((const UTF8Char*)"\r\nStatus1 = 0x");
+						sb->AppendC(UTF8STRC("\r\nStatus1 = 0x"));
 						sb->AppendHex8(dataBuff[28]);
-						sb->Append((const UTF8Char*)"\r\nTemperature = ");
+						sb->AppendC(UTF8STRC("\r\nTemperature = "));
 						if (dataBuff[28] & 4)
 						{
 							Text::SBAppendF64(sb, ReadMInt32(&dataBuff[29]) * 0.0001);
@@ -708,9 +708,9 @@ Bool IO::UDPLog::ParseLog(UInt8 *dataBuff, UOSInt buffSize, Text::StringBuilderU
 						{
 							Text::SBAppendF64(sb, ReadMInt32(&dataBuff[29]) * 0.01 - 39.65);
 						}
-						sb->Append((const UTF8Char*)"\r\nStatus2 = 0x");
+						sb->AppendC(UTF8STRC("\r\nStatus2 = 0x"));
 						sb->AppendHex8(dataBuff[33]);
-						sb->Append((const UTF8Char*)"\r\nHumidity = ");
+						sb->AppendC(UTF8STRC("\r\nHumidity = "));
 						if (dataBuff[33] & 2)
 						{
 							Text::SBAppendF64(sb, ReadMInt32(&dataBuff[34]) * 0.01);
@@ -720,15 +720,15 @@ Bool IO::UDPLog::ParseLog(UInt8 *dataBuff, UOSInt buffSize, Text::StringBuilderU
 							Double y = ReadMInt32(&dataBuff[34]);
 							Text::SBAppendF64(sb, -2.0468 + 0.0367 * y -(1.5955 * y * y) / 1000000);
 						}
-						sb->Append((const UTF8Char*)"\r\nBattery = ");
+						sb->AppendC(UTF8STRC("\r\nBattery = "));
 						Text::SBAppendF64(sb, dataBuff[38] / 128.0 * 3.28);
-						sb->Append((const UTF8Char*)"\r\nStatus3 = 0x");
+						sb->AppendC(UTF8STRC("\r\nStatus3 = 0x"));
 						sb->AppendHex8(dataBuff[39]);
-						sb->Append((const UTF8Char*)"\r\nPeriod = ");
+						sb->AppendC(UTF8STRC("\r\nPeriod = "));
 						sb->AppendU16(ReadMUInt16(&dataBuff[40]));
-						sb->Append((const UTF8Char*)"\r\nStatus4 = 0x");
+						sb->AppendC(UTF8STRC("\r\nStatus4 = 0x"));
 						sb->AppendHex8(dataBuff[42]);
-						sb->Append((const UTF8Char*)"\r\nPosition Status = 0x");
+						sb->AppendC(UTF8STRC("\r\nPosition Status = 0x"));
 						sb->AppendHex8(dataBuff[43]);
 
 						Double lat;
@@ -747,33 +747,33 @@ Bool IO::UDPLog::ParseLog(UInt8 *dataBuff, UOSInt buffSize, Text::StringBuilderU
 						{
 							lat = -lat;
 						}
-						sb->Append((const UTF8Char*)"\r\nLatitude = ");
+						sb->AppendC(UTF8STRC("\r\nLatitude = "));
 						Text::SBAppendF64(sb, lat);
-						sb->Append((const UTF8Char*)"\r\nLongitude = ");
+						sb->AppendC(UTF8STRC("\r\nLongitude = "));
 						Text::SBAppendF64(sb, lon);
-						sb->Append((const UTF8Char*)"\r\nAltitude = ");
+						sb->AppendC(UTF8STRC("\r\nAltitude = "));
 						sb->AppendU16(ReadMUInt16(&dataBuff[52]));
 						Int32 spdDir = Data::ByteTool::GetBCD8(dataBuff[54]) * 10000 + Data::ByteTool::GetBCD8(dataBuff[55]) * 100 + Data::ByteTool::GetBCD8(dataBuff[56]);
 						Double spd = spdDir / 1000;
 						Double dir = spdDir % 1000;
-						sb->Append((const UTF8Char*)"\r\nSpeed = ");
+						sb->AppendC(UTF8STRC("\r\nSpeed = "));
 						Text::SBAppendF64(sb, spd);
-						sb->Append((const UTF8Char*)" knot\r\nDirection = ");
+						sb->AppendC(UTF8STRC(" knot\r\nDirection = "));
 						Text::SBAppendF64(sb, dir);
 					}
 				}
 				break;
 			case 0x93:
-				sb->Append((const UTF8Char*)", Wireless Sensor with Repeater Data");
+				sb->AppendC(UTF8STRC(", Wireless Sensor with Repeater Data"));
 				if (detail)
 				{
 					if (cmdSize >= 52)
 					{
-						sb->Append((const UTF8Char*)"\r\nChannel = ");
+						sb->AppendC(UTF8STRC("\r\nChannel = "));
 						sb->AppendU16(dataBuff[9]);
-						sb->Append((const UTF8Char*)"\r\nRSSI = ");
+						sb->AppendC(UTF8STRC("\r\nRSSI = "));
 						sb->AppendU16(dataBuff[10]);
-						sb->Append((const UTF8Char*)"\r\nSensor IP = ");
+						sb->AppendC(UTF8STRC("\r\nSensor IP = "));
 						sb->AppendU16(dataBuff[11]);
 						sb->AppendChar('.', 1);
 						sb->AppendU16(dataBuff[12]);
@@ -781,17 +781,17 @@ Bool IO::UDPLog::ParseLog(UInt8 *dataBuff, UOSInt buffSize, Text::StringBuilderU
 						sb->AppendU16(dataBuff[13]);
 						sb->AppendChar('.', 1);
 						sb->AppendU16(dataBuff[14]);
-						sb->Append((const UTF8Char*)"\r\nSensor Port = ");
+						sb->AppendC(UTF8STRC("\r\nSensor Port = "));
 						sb->AppendU16(ReadMUInt16(&dataBuff[15]));
-						sb->Append((const UTF8Char*)"\r\nSensor ID = ");
+						sb->AppendC(UTF8STRC("\r\nSensor ID = "));
 						sb->AppendHexBuff(&dataBuff[17], 5, 0, Text::LineBreakType::None);
 						Data::DateTime t;
-						sb->Append((const UTF8Char*)"\r\nGPS Time = ");
+						sb->AppendC(UTF8STRC("\r\nGPS Time = "));
 						t.SetValue((UInt16)(Data::ByteTool::GetBCD8(dataBuff[27]) + 2000), Data::ByteTool::GetBCD8(dataBuff[26]), Data::ByteTool::GetBCD8(dataBuff[25]), Data::ByteTool::GetBCD8(dataBuff[22]), Data::ByteTool::GetBCD8(dataBuff[23]), Data::ByteTool::GetBCD8(dataBuff[24]), 0, 0);
 						sb->AppendDate(&t);
-						sb->Append((const UTF8Char*)"\r\nStatus1 = 0x");
+						sb->AppendC(UTF8STRC("\r\nStatus1 = 0x"));
 						sb->AppendHex8(dataBuff[28]);
-						sb->Append((const UTF8Char*)"\r\nTemperature = ");
+						sb->AppendC(UTF8STRC("\r\nTemperature = "));
 						if (dataBuff[28] & 4)
 						{
 							Text::SBAppendF64(sb, ReadMInt32(&dataBuff[29]) * 0.0001);
@@ -800,9 +800,9 @@ Bool IO::UDPLog::ParseLog(UInt8 *dataBuff, UOSInt buffSize, Text::StringBuilderU
 						{
 							Text::SBAppendF64(sb, ReadMInt32(&dataBuff[29]) * 0.01 - 39.65);
 						}
-						sb->Append((const UTF8Char*)"\r\nStatus2 = 0x");
+						sb->AppendC(UTF8STRC("\r\nStatus2 = 0x"));
 						sb->AppendHex8(dataBuff[33]);
-						sb->Append((const UTF8Char*)"\r\nHumidity = ");
+						sb->AppendC(UTF8STRC("\r\nHumidity = "));
 						if (dataBuff[33] & 2)
 						{
 							Text::SBAppendF64(sb, ReadMInt32(&dataBuff[34]) * 0.01);
@@ -812,24 +812,24 @@ Bool IO::UDPLog::ParseLog(UInt8 *dataBuff, UOSInt buffSize, Text::StringBuilderU
 							Double y = ReadMInt32(&dataBuff[34]);
 							Text::SBAppendF64(sb, -2.0468 + 0.0367 * y -(1.5955 * y * y) / 1000000);
 						}
-						sb->Append((const UTF8Char*)"\r\nBattery = ");
+						sb->AppendC(UTF8STRC("\r\nBattery = "));
 						Text::SBAppendF64(sb, dataBuff[38] / 128.0 * 3.28);
-						sb->Append((const UTF8Char*)"\r\nStatus3 = 0x");
+						sb->AppendC(UTF8STRC("\r\nStatus3 = 0x"));
 						sb->AppendHex8(dataBuff[39]);
-						sb->Append((const UTF8Char*)"\r\nPeriod = ");
+						sb->AppendC(UTF8STRC("\r\nPeriod = "));
 						sb->AppendU16(ReadMUInt16(&dataBuff[40]));
 						//////////////////////////////
 					}
 				}
 				break;
 			default:
-				sb->Append((const UTF8Char*)", Unknown");
+				sb->AppendC(UTF8STRC(", Unknown"));
 				break;
 			}
 		}
 		else
 		{
-			sb->Append((const UTF8Char*)"Unknown protocol");
+			sb->AppendC(UTF8STRC("Unknown protocol"));
 		}
 	}
 	else if (buffSize >= 10 && dataBuff[0] == 0xfe && dataBuff[buffSize - 1] == 0xfe)
@@ -838,76 +838,76 @@ Bool IO::UDPLog::ParseLog(UInt8 *dataBuff, UOSInt buffSize, Text::StringBuilderU
 		Int64 termId = Data::ByteTool::GetBCD8(dataBuff[4]) * 100000000LL + Data::ByteTool::GetBCD32(&dataBuff[5]);
 		if (cmdSize <= buffSize)
 		{
-			sb->Append((const UTF8Char*)"SP1000SC: ");
+			sb->AppendC(UTF8STRC("SP1000SC: "));
 			sb->AppendI64(termId);
 			switch (dataBuff[3])
 			{
 			case 1:
-				sb->Append((const UTF8Char*)", Register reply");
+				sb->AppendC(UTF8STRC(", Register reply"));
 				if (detail)
 				{
 					if (cmdSize == 13)
 					{
-						sb->Append((const UTF8Char*)"\r\nACK = ");
+						sb->AppendC(UTF8STRC("\r\nACK = "));
 						sb->AppendU16(dataBuff[9]);
 						if (dataBuff[9] == 1)
 						{
-							sb->Append((const UTF8Char*)" (Success)");
+							sb->AppendC(UTF8STRC(" (Success)"));
 						}
 						else if (dataBuff[9] == 0)
 						{
-							sb->Append((const UTF8Char*)" (Failed)");
+							sb->AppendC(UTF8STRC(" (Failed)"));
 						}
-						sb->Append((const UTF8Char*)"\r\nPeriod = ");
+						sb->AppendC(UTF8STRC("\r\nPeriod = "));
 						sb->AppendU16((UInt16)((dataBuff[10] << 8) | dataBuff[11]));
-						sb->Append((const UTF8Char*)"s");
+						sb->AppendC(UTF8STRC("s"));
 					}
 				}
 				break;
 			case 7:
-				sb->Append((const UTF8Char*)", Check Parameter");
+				sb->AppendC(UTF8STRC(", Check Parameter"));
 				break;
 			case 0xc:
-				sb->Append((const UTF8Char*)", Cancel SOS Alert");
+				sb->AppendC(UTF8STRC(", Cancel SOS Alert"));
 				break;
 			case 0x1a:
-				sb->Append((const UTF8Char*)", Set Basic Parameters");
+				sb->AppendC(UTF8STRC(", Set Basic Parameters"));
 				if (detail)
 				{
 					if (cmdSize == 37)
 					{
-						sb->Append((const UTF8Char*)"\r\nServer IP = ");
+						sb->AppendC(UTF8STRC("\r\nServer IP = "));
 						Net::SocketUtil::GetIPv4Name(sbuff, ReadNUInt32(&dataBuff[9]));
 						sb->Append(sbuff);
-						sb->Append((const UTF8Char*)"\r\nServer Port = ");
+						sb->AppendC(UTF8STRC("\r\nServer Port = "));
 						sb->AppendU16(ReadMUInt16(&dataBuff[13]));
-						sb->Append((const UTF8Char*)"\r\nNew Device ID = ");
+						sb->AppendC(UTF8STRC("\r\nNew Device ID = "));
 						sb->AppendC((const UTF8Char*)&dataBuff[15], 10);
-						sb->Append((const UTF8Char*)"\r\nAPN = ");
+						sb->AppendC(UTF8STRC("\r\nAPN = "));
 						sb->AppendC((const UTF8Char*)&dataBuff[25], 11);
 					}
 					else if (cmdSize == 56)
 					{
-						sb->Append((const UTF8Char*)"\r\nServer IP = ");
+						sb->AppendC(UTF8STRC("\r\nServer IP = "));
 						Net::SocketUtil::GetIPv4Name(sbuff, ReadNUInt32(&dataBuff[9]));
 						sb->Append(sbuff);
-						sb->Append((const UTF8Char*)"\r\nServer Port = ");
+						sb->AppendC(UTF8STRC("\r\nServer Port = "));
 						sb->AppendU16(ReadMUInt16(&dataBuff[13]));
-						sb->Append((const UTF8Char*)"\r\nNew Device ID = ");
+						sb->AppendC(UTF8STRC("\r\nNew Device ID = "));
 						sb->AppendC((const UTF8Char*)&dataBuff[15], 10);
-						sb->Append((const UTF8Char*)"\r\nAPN = ");
+						sb->AppendC(UTF8STRC("\r\nAPN = "));
 						sb->AppendC((const UTF8Char*)&dataBuff[25], 30);
 					}
 				}
 				break;
 			default:
-				sb->Append((const UTF8Char*)", Unknown");
+				sb->AppendC(UTF8STRC(", Unknown"));
 				break;
 			}
 		}
 		else
 		{
-			sb->Append((const UTF8Char*)"Unknown protocol");
+			sb->AppendC(UTF8STRC("Unknown protocol"));
 		}
 	}
 	else if (dataBuff[buffSize - 2] == 0x0D && dataBuff[buffSize - 1] == 0x0A)
@@ -920,7 +920,7 @@ Bool IO::UDPLog::ParseLog(UInt8 *dataBuff, UOSInt buffSize, Text::StringBuilderU
 	}
 	else
 	{
-		sb->Append((const UTF8Char*)"Unknown protocol");
+		sb->AppendC(UTF8STRC("Unknown protocol"));
 	}
 	return true;
 }

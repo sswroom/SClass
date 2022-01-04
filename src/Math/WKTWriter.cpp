@@ -34,7 +34,7 @@ Bool Math::WKTWriter::GenerateWKT(Text::StringBuilderUTF *sb, Math::Vector2D *ve
 	switch (vec->GetVectorType())
 	{
 	case Math::Vector2D::VectorType::Point:
-		sb->Append((const UTF8Char*)"POINT(");
+		sb->AppendC(UTF8STRC("POINT("));
 		if (vec->Support3D())
 		{
 			Math::Point3D *pt = (Math::Point3D*)vec;
@@ -63,10 +63,10 @@ Bool Math::WKTWriter::GenerateWKT(Text::StringBuilderUTF *sb, Math::Vector2D *ve
 			Text::StrDouble(sbuff, y);
 			sb->Append(sbuff);
 		}
-		sb->Append((const UTF8Char*)")");
+		sb->AppendC(UTF8STRC(")"));
 		return true;
 	case Math::Vector2D::VectorType::Polygon:
-		sb->Append((const UTF8Char*)"POLYGON(");
+		sb->AppendC(UTF8STRC("POLYGON("));
 		{
 			Math::Polygon *pg = (Math::Polygon*)vec;
 			UOSInt nPtOfst;
@@ -115,10 +115,10 @@ Bool Math::WKTWriter::GenerateWKT(Text::StringBuilderUTF *sb, Math::Vector2D *ve
 			}
 			sb->AppendChar(')', 1);
 		}
-		sb->Append((const UTF8Char*)")");
+		sb->AppendC(UTF8STRC(")"));
 		return true;
 	case Math::Vector2D::VectorType::Polyline:
-		sb->Append((const UTF8Char*)"POLYLINE(");
+		sb->AppendC(UTF8STRC("POLYLINE("));
 		{
 			Math::Polyline *pl = (Math::Polyline*)vec;
 			UOSInt nPtOfst;
@@ -167,7 +167,7 @@ Bool Math::WKTWriter::GenerateWKT(Text::StringBuilderUTF *sb, Math::Vector2D *ve
 			}
 			sb->AppendChar(')', 1);
 		}
-		sb->Append((const UTF8Char*)")");
+		sb->AppendC(UTF8STRC(")"));
 		return true;
 	case Math::Vector2D::VectorType::Multipoint:
 	case Math::Vector2D::VectorType::Image:

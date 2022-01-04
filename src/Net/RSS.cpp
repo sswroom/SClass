@@ -748,6 +748,6 @@ Text::String *Net::RSS::GetDocs()
 
 void Net::RSS::GetYoutubeURL(const UTF8Char *channelId, Text::StringBuilderUTF *outURL)
 {
-	outURL->Append((const UTF8Char*)"https://www.youtube.com/feeds/videos.xml?channel_id=");
+	outURL->AppendC(UTF8STRC("https://www.youtube.com/feeds/videos.xml?channel_id="));
 	outURL->Append(channelId);
 }

@@ -12,7 +12,7 @@ void Test::TestSIM7000::SIM7000Info(IO::Writer *writer, IO::Device::SIM7000 *mod
 	if (modem->SIMCOMGetICCID(sbuff))
 	{
 		sb.ClearStr();
-		sb.Append((const UTF8Char*)"CCID: ");
+		sb.AppendC(UTF8STRC("CCID: "));
 		sb.Append(sbuff);
 		writer->WriteLine(sb.ToString());
 	}
@@ -24,7 +24,7 @@ void Test::TestSIM7000::SIM7000Info(IO::Writer *writer, IO::Device::SIM7000 *mod
 	if (modem->SIMCOMReadADC(&adc))
 	{
 		sb.ClearStr();
-		sb.Append((const UTF8Char*)"ADC: ");
+		sb.AppendC(UTF8STRC("ADC: "));
 		sb.AppendI32(adc);
 		writer->WriteLine(sb.ToString());
 	}
@@ -34,7 +34,7 @@ void Test::TestSIM7000::SIM7000Info(IO::Writer *writer, IO::Device::SIM7000 *mod
 	}
 
 	sb.ClearStr();
-	sb.Append((const UTF8Char*)"Flash Device Type:\r\n");
+	sb.AppendC(UTF8STRC("Flash Device Type:\r\n"));
 	if (modem->SIMCOMGetFlashDeviceType(&sb))
 	{
 		writer->WriteLine(sb.ToString());
@@ -45,7 +45,7 @@ void Test::TestSIM7000::SIM7000Info(IO::Writer *writer, IO::Device::SIM7000 *mod
 	}
 
 	sb.ClearStr();
-	sb.Append((const UTF8Char*)"Device Product ID:\r\n");
+	sb.AppendC(UTF8STRC("Device Product ID:\r\n"));
 	if (modem->SIMCOMGetDeviceProductID(&sb))
 	{
 		writer->WriteLine(sb.ToString());
@@ -58,7 +58,7 @@ void Test::TestSIM7000::SIM7000Info(IO::Writer *writer, IO::Device::SIM7000 *mod
 	if (modem->SIMCOMGetUESysInfo(sbuff))
 	{
 		sb.ClearStr();
-		sb.Append((const UTF8Char*)"UE Sys Info: ");
+		sb.AppendC(UTF8STRC("UE Sys Info: "));
 		sb.Append(sbuff);
 		writer->WriteLine(sb.ToString());
 	}
@@ -70,7 +70,7 @@ void Test::TestSIM7000::SIM7000Info(IO::Writer *writer, IO::Device::SIM7000 *mod
 	if (modem->SIMCOMGetNetworkAPN(sbuff))
 	{
 		sb.ClearStr();
-		sb.Append((const UTF8Char*)"Network APN: ");
+		sb.AppendC(UTF8STRC("Network APN: "));
 		sb.Append(sbuff);
 		writer->WriteLine(sb.ToString());
 	}

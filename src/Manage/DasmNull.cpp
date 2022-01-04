@@ -20,9 +20,9 @@ const UTF8Char *Manage::DasmNull::GetHeader(Bool fullRegs)
 Bool Manage::DasmNull::Disasm32(IO::Writer *writer, Manage::AddressResolver *addrResol, UInt32 *currInst, UInt32 *currStack, UInt32 *currFrame, Data::ArrayListInt32 *callAddrs, Data::ArrayListInt32 *jmpAddrs, UInt32 *blockStart, UInt32 *blockEnd, Manage::Dasm::Dasm_Regs *regs, Manage::IMemoryReader *memReader, Bool fullRegs)
 {
 	Text::StringBuilderUTF8 sb;
-	sb.Append((const UTF8Char*)"Unknown opcode ");
+	sb.AppendC(UTF8STRC("Unknown opcode "));
 	sb.AppendHexBuff((const UInt8*)(OSInt)*currInst, 16, ' ', Text::LineBreakType::None);
-	sb.Append((const UTF8Char*)"\r\n");
+	sb.AppendC(UTF8STRC("\r\n"));
 	writer->Write(sb.ToString());
 	return false;
 }

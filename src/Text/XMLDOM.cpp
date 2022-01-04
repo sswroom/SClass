@@ -186,9 +186,9 @@ void Text::XMLNode::GetInnerXML(Text::StringBuilderUTF *sb)
 		n = (Text::XMLNode*)this->childArr->GetItem(i);
 		if (n->nt == Text::XMLNode::NT_COMMENT)
 		{
-			sb->Append((const UTF8Char*)"<!--");
+			sb->AppendC(UTF8STRC("<!--"));
 			sb->Append(n->value);
-			sb->Append((const UTF8Char*)"-->");
+			sb->AppendC(UTF8STRC("-->"));
 		}
 		else if (n->nt == Text::XMLNode::NT_TEXT)
 		{
@@ -196,13 +196,13 @@ void Text::XMLNode::GetInnerXML(Text::StringBuilderUTF *sb)
 		}
 		else if (n->nt == Text::XMLNode::NT_CDATA)
 		{
-			sb->Append((const UTF8Char*)"<![CDATA[");
+			sb->AppendC(UTF8STRC("<![CDATA["));
 			sb->Append(n->value);
-			sb->Append((const UTF8Char*)"]]>");
+			sb->AppendC(UTF8STRC("]]>"));
 		}
 		else if (n->nt == Text::XMLNode::NT_ELEMENT)
 		{
-			sb->Append((const UTF8Char*)"<");
+			sb->AppendC(UTF8STRC("<"));
 			sb->Append(n->name);
 			if (n->attribArr)
 			{
@@ -211,28 +211,28 @@ void Text::XMLNode::GetInnerXML(Text::StringBuilderUTF *sb)
 				while (k < l)
 				{
 					attr = (Text::XMLAttrib*)n->attribArr->GetItem(k);
-					sb->Append((const UTF8Char*)" ");
+					sb->AppendC(UTF8STRC(" "));
 					sb->Append(attr->name);
 					if (attr->value)
 					{
-						sb->Append((const UTF8Char*)"=\"");
+						sb->AppendC(UTF8STRC("=\""));
 						sb->Append(attr->value);
-						sb->Append((const UTF8Char*)"\"");
+						sb->AppendC(UTF8STRC("\""));
 					}
 					k++;
 				}
 			}
 			if (n->childArr)
 			{
-				sb->Append((const UTF8Char*)">");
+				sb->AppendC(UTF8STRC(">"));
 				n->GetInnerXML(sb);
-				sb->Append((const UTF8Char*)"</");
+				sb->AppendC(UTF8STRC("</"));
 				sb->Append(n->name);
-				sb->Append((const UTF8Char*)">");
+				sb->AppendC(UTF8STRC(">"));
 			}
 			else
 			{
-				sb->Append((const UTF8Char*)"/>");
+				sb->AppendC(UTF8STRC("/>"));
 			}
 		}
 		i++;
@@ -1396,18 +1396,18 @@ void Text::XMLDocument::AppendXmlDeclaration(Text::StringBuilderUTF *sb)
 {
 	if (this->version || this->encoding)
 	{
-		sb->Append((const UTF8Char*)"<?xml");
+		sb->AppendC(UTF8STRC("<?xml"));
 		if (this->version)
 		{
-			sb->Append((const UTF8Char*)" version=\"");
+			sb->AppendC(UTF8STRC(" version=\""));
 			sb->Append(this->version);
-			sb->Append((const UTF8Char*)"\"");
+			sb->AppendC(UTF8STRC("\""));
 		}
 		if (this->encoding)
 		{
-			sb->Append((const UTF8Char*)" encoding=\"");
+			sb->AppendC(UTF8STRC(" encoding=\""));
 			sb->Append(this->encoding);
-			sb->Append((const UTF8Char*)"\"");
+			sb->AppendC(UTF8STRC("\""));
 		}
 	}
 }

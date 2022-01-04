@@ -33,7 +33,7 @@ void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnClientEvent(Net::TCPClient *cl
 		{
 			cli->GetRemoteName(sbuff);
 			Text::StringBuilderUTF8 sb;
-			sb.Append((const UTF8Char*)"CLI: Client disconnected: ");
+			sb.AppendC(UTF8STRC("CLI: Client disconnected: "));
 			sb.Append(sbuff);
 			me->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_ACTION);
 
@@ -88,7 +88,7 @@ void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnClientTimeout(Net::TCPClient *
 	UTF8Char sbuff[32];
 	cli->GetRemoteName(sbuff);
 	Text::StringBuilderUTF8 sb;
-	sb.Append((const UTF8Char*)"CLI: Client process timeout: ");
+	sb.AppendC(UTF8STRC("CLI: Client process timeout: "));
 	sb.Append(sbuff);
 	me->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_ACTION);
 }
@@ -386,9 +386,9 @@ void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnDataUDPPacket(const Net::Socke
 			default:
 				{
 					Text::StringBuilderUTF8 sb;
-					sb.Append((const UTF8Char*)"Received unknown packet func ");
+					sb.AppendC(UTF8STRC("Received unknown packet func "));
 					sb.AppendU16(ReadUInt16(&buff[2]));
-					sb.Append((const UTF8Char*)", size = ");
+					sb.AppendC(UTF8STRC(", size = "));
 					sb.AppendUOSInt(dataSize);
 					me->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_ERROR);
 				}
@@ -1098,7 +1098,7 @@ void SSWR::SMonitor::SMonitorSvrCore::UserPwdCalc(const UTF8Char *userName, cons
 	Crypto::Hash::MD5 md5;
 	Text::StringBuilderUTF8 sb;
 	sb.Append(userName);
-	sb.Append((const UTF8Char*)" pwd ");
+	sb.AppendC(UTF8STRC(" pwd "));
 	sb.Append(pwd);
 	md5.Calc(sb.ToString(), sb.GetLength());
 	md5.GetValue(buff);
@@ -1179,10 +1179,10 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(IO::Writer *writer, Media::Draw
 			{
 				sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
 			}
-			sb.Append((const UTF8Char*)"Log");
+			sb.AppendC(UTF8STRC("Log"));
 			this->log->AddFileLog(sb.ToString(), IO::ILogHandler::LOG_TYPE_PER_DAY, IO::ILogHandler::LOG_GROUP_TYPE_PER_MONTH, IO::ILogHandler::LOG_LEVEL_COMMAND, "yyyy-MM-dd HH:mm:ss.fff", false);
 			sb.RemoveChars(3);
-			sb.Append((const UTF8Char*)"Raw");
+			sb.AppendC(UTF8STRC("Raw"));
 			this->log->AddFileLog(sb.ToString(), IO::ILogHandler::LOG_TYPE_PER_DAY, IO::ILogHandler::LOG_GROUP_TYPE_PER_MONTH, IO::ILogHandler::LOG_LEVEL_RAW, "yyyy-MM-dd HH:mm:ss.fff", false);
 		}
 

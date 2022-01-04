@@ -99,26 +99,26 @@ void Media::AudioFormat::FromAudioFormat(Media::AudioFormat *fmt)
 
 void Media::AudioFormat::ToString(Text::StringBuilderUTF *sb)
 {
-	sb->Append((const UTF8Char*)"Foramt Id = 0x");
+	sb->AppendC(UTF8STRC("Foramt Id = 0x"));
 	sb->AppendHex32V(this->formatId);
-	sb->Append((const UTF8Char*)" (");
+	sb->AppendC(UTF8STRC(" ("));
 	sb->Append(GetNameFormatId(this->formatId));
-	sb->Append((const UTF8Char*)")");
-	sb->Append((const UTF8Char*)"\r\nFrequency = ");
+	sb->AppendC(UTF8STRC(")"));
+	sb->AppendC(UTF8STRC("\r\nFrequency = "));
 	sb->AppendU32(this->frequency);
-	sb->Append((const UTF8Char*)" Hz\r\nBit Per Sample = ");
+	sb->AppendC(UTF8STRC(" Hz\r\nBit Per Sample = "));
 	sb->AppendU16(this->bitpersample);
-	sb->Append((const UTF8Char*)"\r\nNumber of channels = ");
+	sb->AppendC(UTF8STRC("\r\nNumber of channels = "));
 	sb->AppendU16(this->nChannels);
-	sb->Append((const UTF8Char*)"\r\nBit Rate = ");
+	sb->AppendC(UTF8STRC("\r\nBit Rate = "));
 	sb->AppendU32(this->bitRate);
-	sb->Append((const UTF8Char*)"\r\nAlign = ");
+	sb->AppendC(UTF8STRC("\r\nAlign = "));
 	sb->AppendU32(this->align);
-	sb->Append((const UTF8Char*)"\r\nOther = ");
+	sb->AppendC(UTF8STRC("\r\nOther = "));
 	sb->AppendU32(this->other);
-	sb->Append((const UTF8Char*)"\r\nInteger Type = ");
+	sb->AppendC(UTF8STRC("\r\nInteger Type = "));
 	sb->Append(GetNameIntType(this->intType));
-	sb->Append((const UTF8Char*)"\r\nExtra Size = ");
+	sb->AppendC(UTF8STRC("\r\nExtra Size = "));
 	sb->AppendU32(this->extraSize);
 }
 

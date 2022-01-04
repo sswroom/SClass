@@ -323,33 +323,33 @@ void Media::AndroidVideoCapture::GetInfo(Text::StringBuilderUTF *sb)
 				switch (tags[i])
 				{
 				case ACAMERA_SCALER_AVAILABLE_STREAM_CONFIGURATIONS:
-					sb->Append((const UTF8Char*)"Available Format:\r\n");
+					sb->AppendC(UTF8STRC("Available Format:\r\n"));
 					j = 0;
 					while (j < entry.count)
 					{
-						sb->Append((const UTF8Char*)"-0x");
+						sb->AppendC(UTF8STRC("-0x"));
 						sb->AppendHex32V(entry.data.i32[j]);
-						sb->Append((const UTF8Char*)", ");
+						sb->AppendC(UTF8STRC(", "));
 						sb->AppendI32(entry.data.i32[j + 1]);
-						sb->Append((const UTF8Char*)", ");
+						sb->AppendC(UTF8STRC(", "));
 						sb->AppendI32(entry.data.i32[j + 2]);
-						sb->Append((const UTF8Char*)", ");
+						sb->AppendC(UTF8STRC(", "));
 						sb->AppendI32(entry.data.i32[j + 3]);
-						sb->Append((const UTF8Char*)"\r\n");
+						sb->AppendC(UTF8STRC("\r\n"));
 						j += 4;
 					}
 					break;
 				case ACAMERA_INFO_SUPPORTED_HARDWARE_LEVEL:
-					sb->Append((const UTF8Char*)"Supported Hardware Level: Count = ");
+					sb->AppendC(UTF8STRC("Supported Hardware Level: Count = "));
 					sb->AppendU32(entry.count);
-					sb->Append((const UTF8Char*)", ");
+					sb->AppendC(UTF8STRC(", "));
 					sb->AppendU16(entry.data.u8[0]);
-					sb->Append((const UTF8Char*)"\r\n");
+					sb->AppendC(UTF8STRC("\r\n"));
 					break;
 				default:
-					sb->Append((const UTF8Char*)"Unknown Info: 0x");
+					sb->AppendC(UTF8STRC("Unknown Info: 0x"));
 					sb->AppendHex32V(tags[i]);
-					sb->Append((const UTF8Char*)"\r\n");
+					sb->AppendC(UTF8STRC("\r\n"));
 					break;
 				}
 			}

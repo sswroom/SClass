@@ -366,23 +366,23 @@ UOSInt Media::V4LVideoCapture::GetSupportedFormats(VideoFormat *fmtArr, UOSInt m
 void Media::V4LVideoCapture::GetInfo(Text::StringBuilderUTF *sb)
 {
 	struct v4l2_capability video_cap;
-	sb->Append((const UTF8Char*)"DevPath: /dev/video");
+	sb->AppendC(UTF8STRC("DevPath: /dev/video"));
 	sb->AppendUOSInt(this->devId);
-	sb->Append((const UTF8Char*)"\r\n");
+	sb->AppendC(UTF8STRC("\r\n"));
 
 	if (ioctl(this->fd, VIDIOC_QUERYCAP, &video_cap) != -1)
 	{
-		sb->Append((const UTF8Char*)"Driver: ");
+		sb->AppendC(UTF8STRC("Driver: "));
 		sb->Append((const UTF8Char*)video_cap.driver);
-		sb->Append((const UTF8Char*)"\r\n");
+		sb->AppendC(UTF8STRC("\r\n"));
 
-		sb->Append((const UTF8Char*)"Card: ");
+		sb->AppendC(UTF8STRC("Card: "));
 		sb->Append((const UTF8Char*)video_cap.card);
-		sb->Append((const UTF8Char*)"\r\n");
+		sb->AppendC(UTF8STRC("\r\n"));
 
-		sb->Append((const UTF8Char*)"BusInfo: ");
+		sb->AppendC(UTF8STRC("BusInfo: "));
 		sb->Append((const UTF8Char*)video_cap.bus_info);
-		sb->Append((const UTF8Char*)"\r\n");
+		sb->AppendC(UTF8STRC("\r\n"));
 	}				
 }
 

@@ -28,7 +28,7 @@ UOSInt Net::WebSite::WebSiteTwitterControl::GetChannelItems(Text::String *channe
 	UOSInt retCnt = 0;
 	UOSInt i;
 	UOSInt j;
-	sb.Append((const UTF8Char*)"https://twitter.com/");
+	sb.AppendC(UTF8STRC("https://twitter.com/"));
 	sb.Append(channelId);
 	ItemData *item;
 	Text::XMLReader *reader;

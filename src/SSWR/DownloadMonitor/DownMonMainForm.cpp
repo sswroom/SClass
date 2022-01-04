@@ -285,24 +285,24 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnCopyTableClicked(void *
 		{
 			if (file->webType == 2)
 			{
-				sb.Append((const UTF8Char*)"https://48idol.net/video/");
+				sb.AppendC(UTF8STRC("https://48idol.net/video/"));
 			}
 			else if (file->webType == 1)
 			{
-				sb.Append((const UTF8Char*)"https://48idol.com/video/");
+				sb.AppendC(UTF8STRC("https://48idol.com/video/"));
 			}
 			else if (file->webType == 3)
 			{
-				sb.Append((const UTF8Char*)"https://48idol.tv/archive/video/");
+				sb.AppendC(UTF8STRC("https://48idol.tv/archive/video/"));
 			}
 			else
 			{
-				sb.Append((const UTF8Char*)"https://48idol.tv/video/");
+				sb.AppendC(UTF8STRC("https://48idol.tv/video/"));
 			}
 			sb.AppendI32(file->id);
 			sb.AppendChar('\t', 1);
 			sb.Append(file->dbName);
-			sb.Append((const UTF8Char*)"\r\n");
+			sb.AppendC(UTF8STRC("\r\n"));
 		}
 		i++;
 	}
@@ -556,19 +556,19 @@ void SSWR::DownloadMonitor::DownMonMainForm::SaveList()
 			sb.ClearStr();
 			if (file->webType == 2)
 			{
-				sb.Append((const UTF8Char*)"https://48idol.net/video/");
+				sb.AppendC(UTF8STRC("https://48idol.net/video/"));
 			}
 			else if (file->webType == 1)
 			{
-				sb.Append((const UTF8Char*)"https://48idol.com/video/");
+				sb.AppendC(UTF8STRC("https://48idol.com/video/"));
 			}
 			else if (file->webType == 3)
 			{
-				sb.Append((const UTF8Char*)"https://48idol.tv/archive/video/");
+				sb.AppendC(UTF8STRC("https://48idol.tv/archive/video/"));
 			}
 			else
 			{
-				sb.Append((const UTF8Char*)"https://48idol.tv/video/");
+				sb.AppendC(UTF8STRC("https://48idol.tv/video/"));
 			}
 			sb.AppendI32(file->id);
 			sb.AppendChar('\t', 1);

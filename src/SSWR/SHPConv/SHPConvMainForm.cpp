@@ -235,7 +235,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::GroupConvert(const UTF8Char *sourceFile, c
 	sb.Append(sourceFile);
 	i = sb.LastIndexOf('.');
 	sb.RemoveChars(sb.GetLength() - i - 1);
-	sb.Append((const UTF8Char*)"dbf");
+	sb.AppendC(UTF8STRC("dbf"));
 	NEW_CLASS(fd, IO::StmData::FileData(sb.ToString(), false));
 	NEW_CLASS(dbf, DB::DBFFile(fd, (UInt32)(UOSInt)this->lstLang->GetSelectedItem()));
 	r = dbf->GetTableData(0, 0, 0, 0, 0, 0);
@@ -342,7 +342,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(const UTF8Char *sourceFile, con
 	{
 		DEL_CLASS(fs);
 		Text::StringBuilderUTF8 sb;
-		sb.Append((const UTF8Char*)"Failed in converting ");
+		sb.AppendC(UTF8STRC("Failed in converting "));
 		sb.Append(sourceFile);
 		UI::MessageDialog::ShowDialog(sb.ToString(), (const UTF8Char*)"Error", this);
 		return 0;
@@ -366,16 +366,16 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(const UTF8Char *sourceFile, con
 	{
 		sb.ClearStr();
 		sb.Append(outFilePrefix);
-		sb.Append((const UTF8Char*)".cip");
+		sb.AppendC(UTF8STRC(".cip"));
 		NEW_CLASS(cip, IO::FileStream(sb.ToString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		sb.RemoveChars(4);
-		sb.Append((const UTF8Char*)".cix");
+		sb.AppendC(UTF8STRC(".cix"));
 		NEW_CLASS(cix, IO::FileStream(sb.ToString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		sb.RemoveChars(4);
-		sb.Append((const UTF8Char*)".blk");
+		sb.AppendC(UTF8STRC(".blk"));
 		NEW_CLASS(blk, IO::FileStream(sb.ToString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		sb.RemoveChars(4);
-		sb.Append((const UTF8Char*)".ciu");
+		sb.AppendC(UTF8STRC(".ciu"));
 		NEW_CLASS(cib, IO::FileStream(sb.ToString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		if (!cip->IsError() && !cix->IsError() && !blk->IsError() && !cib->IsError())
 		{
@@ -386,7 +386,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(const UTF8Char *sourceFile, con
 			{
 				sb.RemoveChars(sb.GetLength() - i);
 			}
-			sb.Append((const UTF8Char*)".dbf");
+			sb.AppendC(UTF8STRC(".dbf"));
 			NEW_CLASS(fd, IO::StmData::FileData(sb.ToString(), false));
 			NEW_CLASS(dbf, DB::DBFFile(fd, (UInt32)(UOSInt)this->lstLang->GetSelectedItem()));
 			dbfr = dbf->GetTableData(0, 0, 0, 0, 0, 0);
@@ -402,7 +402,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(const UTF8Char *sourceFile, con
 			currRec = 0;
 			cipPos = 8;
 			sb.ClearStr();
-			sb.Append((const UTF8Char*)"Reading ");
+			sb.AppendC(UTF8STRC("Reading "));
 			sb.Append(sourceFile);
 			progress->ProgressStart(sb.ToString(), nRecords);
 
@@ -664,7 +664,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(const UTF8Char *sourceFile, con
 			}
 
 			sb.ClearStr();
-			sb.Append((const UTF8Char*)"Writing ");
+			sb.AppendC(UTF8STRC("Writing "));
 			sb.Append(sourceFile);
 			progress->ProgressStart(sb.ToString(), blks.GetCount());
 
@@ -782,16 +782,16 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(const UTF8Char *sourceFile, con
 	{
 		sb.ClearStr();
 		sb.Append(outFilePrefix);
-		sb.Append((const UTF8Char*)".cip");
+		sb.AppendC(UTF8STRC(".cip"));
 		NEW_CLASS(cip, IO::FileStream(sb.ToString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		sb.RemoveChars(4);
-		sb.Append((const UTF8Char*)".cix");
+		sb.AppendC(UTF8STRC(".cix"));
 		NEW_CLASS(cix, IO::FileStream(sb.ToString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		sb.RemoveChars(4);
-		sb.Append((const UTF8Char*)".blk");
+		sb.AppendC(UTF8STRC(".blk"));
 		NEW_CLASS(blk, IO::FileStream(sb.ToString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		sb.RemoveChars(4);
-		sb.Append((const UTF8Char*)".ciu");
+		sb.AppendC(UTF8STRC(".ciu"));
 		NEW_CLASS(cib, IO::FileStream(sb.ToString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		if (!cip->IsError() && !cix->IsError() && !blk->IsError() && !cib->IsError())
 		{
@@ -802,7 +802,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(const UTF8Char *sourceFile, con
 			{
 				sb.RemoveChars(sb.GetLength() - i);
 			}
-			sb.Append((const UTF8Char*)".dbf");
+			sb.AppendC(UTF8STRC(".dbf"));
 			NEW_CLASS(fd, IO::StmData::FileData(sb.ToString(), false));
 			NEW_CLASS(dbf, DB::DBFFile(fd, (UInt32)(UOSInt)this->lstLang->GetSelectedItem()));
 			dbfr = dbf->GetTableData(0, 0, 0, 0, 0, 0);
@@ -818,7 +818,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(const UTF8Char *sourceFile, con
 			tRec = 0;
 			currRec = 0;
 			sb.ClearStr();
-			sb.Append((const UTF8Char*)"Reading ");
+			sb.AppendC(UTF8STRC("Reading "));
 			sb.Append(sourceFile);
 			progress->ProgressStart(sb.ToString(), nRecords);
 
@@ -993,7 +993,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(const UTF8Char *sourceFile, con
 			}
 
 			sb.ClearStr();
-			sb.Append((const UTF8Char*)"Writing ");
+			sb.AppendC(UTF8STRC("Writing "));
 			sb.Append(sourceFile);
 			progress->ProgressStart(sb.ToString(), blks.GetCount());
 

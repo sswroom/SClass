@@ -812,7 +812,7 @@ Bool Text::JSText::JSONWellFormat(const UTF8Char *buff, UOSInt buffSize, UOSInt 
 			if (lev > 0)
 				sb->AppendChar('\t', lev);
 			sb->AppendC(&buff[startOfst], i + 1 - startOfst);
-			sb->Append((const UTF8Char*)"\r\n");
+			sb->AppendC(UTF8STRC("\r\n"));
 			lev++;
 			startOfst = i + 1;
 			endOfst = -1;
@@ -831,7 +831,7 @@ Bool Text::JSText::JSONWellFormat(const UTF8Char *buff, UOSInt buffSize, UOSInt 
 				{
 					sb->AppendC(&buff[startOfst], i - startOfst);
 				}
-				sb->Append((const UTF8Char*)"\r\n");
+				sb->AppendC(UTF8STRC("\r\n"));
 			}
 			lev--;
 			startOfst = i;
@@ -842,7 +842,7 @@ Bool Text::JSText::JSONWellFormat(const UTF8Char *buff, UOSInt buffSize, UOSInt 
 			if (lev > 0)
 				sb->AppendChar('\t', lev);
 			sb->AppendC(&buff[startOfst], i + 1 - startOfst);
-			sb->Append((const UTF8Char*)"\r\n");
+			sb->AppendC(UTF8STRC("\r\n"));
 			startOfst = i + 1;
 			endOfst = -1;
 		}
@@ -905,7 +905,7 @@ Bool Text::JSText::JSWellFormat(const UTF8Char *buff, UOSInt buffSize, UOSInt in
 			if (lev > 0)
 				sb->AppendChar('\t', lev);
 			sb->AppendC(&buff[startOfst], i + 1 - startOfst);
-			sb->Append((const UTF8Char*)"\r\n");
+			sb->AppendC(UTF8STRC("\r\n"));
 			lev++;
 			startOfst = i + 1;
 			endOfst = -1;
@@ -925,7 +925,7 @@ Bool Text::JSText::JSWellFormat(const UTF8Char *buff, UOSInt buffSize, UOSInt in
 				{
 					sb->AppendC(&buff[startOfst], i - startOfst);
 				}
-				sb->Append((const UTF8Char*)"\r\n");
+				sb->AppendC(UTF8STRC("\r\n"));
 			}
 			lev--;
 			startOfst = i;
@@ -943,7 +943,7 @@ Bool Text::JSText::JSWellFormat(const UTF8Char *buff, UOSInt buffSize, UOSInt in
 				if (lev > 0)
 					sb->AppendChar('\t', lev);
 				sb->AppendC(&buff[startOfst], i + 1 - startOfst);
-				sb->Append((const UTF8Char*)"\r\n");
+				sb->AppendC(UTF8STRC("\r\n"));
 				lev++;
 				startOfst = i + 1;
 				endOfst = -1;
@@ -970,7 +970,7 @@ Bool Text::JSText::JSWellFormat(const UTF8Char *buff, UOSInt buffSize, UOSInt in
 					{
 						sb->AppendC(&buff[startOfst], i - startOfst);
 					}
-					sb->Append((const UTF8Char*)"\r\n");
+					sb->AppendC(UTF8STRC("\r\n"));
 				}
 				lev--;
 				startOfst = i;
@@ -989,7 +989,7 @@ Bool Text::JSText::JSWellFormat(const UTF8Char *buff, UOSInt buffSize, UOSInt in
 				if (lev > 0)
 					sb->AppendChar('\t', lev);
 				sb->AppendC(&buff[startOfst], i + 1 - startOfst);
-				sb->Append((const UTF8Char*)"\r\n");
+				sb->AppendC(UTF8STRC("\r\n"));
 				startOfst = i + 1;
 				endOfst = -1;
 			}
@@ -1004,7 +1004,7 @@ Bool Text::JSText::JSWellFormat(const UTF8Char *buff, UOSInt buffSize, UOSInt in
 			if (lev > 0)
 				sb->AppendChar('\t', lev);
 			sb->AppendC(&buff[startOfst], i + 1 - startOfst);
-			sb->Append((const UTF8Char*)"\r\n");
+			sb->AppendC(UTF8STRC("\r\n"));
 			startOfst = i + 1;
 			endOfst = -1;
 			lastC = c;
@@ -1058,7 +1058,7 @@ Bool Text::JSText::JSWellFormat(const UTF8Char *buff, UOSInt buffSize, UOSInt in
 				if (lev > 0)
 					sb->AppendChar('\t', lev);
 				sb->AppendC(&buff[startOfst], i + 1 - startOfst);
-				sb->Append((const UTF8Char*)"\r\n");
+				sb->AppendC(UTF8STRC("\r\n"));
 				startOfst = i + 1;
 				endOfst = -1;
 				lastC = c;

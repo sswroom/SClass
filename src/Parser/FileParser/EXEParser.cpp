@@ -512,9 +512,9 @@ IO::ParsedObject *Parser::FileParser::EXEParser::ParseFile(IO::IStreamData *fd, 
 							UInt32 readSize;
 
 							sb.ClearStr();
-							sb.Append((const UTF8Char*)"Section ");
+							sb.AppendC(UTF8STRC("Section "));
 							sb.AppendUOSInt(i);
-							sb.Append((const UTF8Char*)" Name");
+							sb.AppendC(UTF8STRC(" Name"));
 							Text::StrConcatC(sbuff, &sectionHeaders[sOfst], 8);
 							exef->AddProp(sb.ToString(), sbuff);
 
@@ -550,65 +550,65 @@ IO::ParsedObject *Parser::FileParser::EXEParser::ParseFile(IO::IStreamData *fd, 
 							}
 
 							sb.ClearStr();
-							sb.Append((const UTF8Char*)"Section ");
+							sb.AppendC(UTF8STRC("Section "));
 							sb.AppendUOSInt(i);
-							sb.Append((const UTF8Char*)" Virtual Size");
+							sb.AppendC(UTF8STRC(" Virtual Size"));
 							Text::StrUInt32(sbuff, virtSize);
 							exef->AddProp(sb.ToString(), sbuff);
 
 							sb.ClearStr();
-							sb.Append((const UTF8Char*)"Section ");
+							sb.AppendC(UTF8STRC("Section "));
 							sb.AppendUOSInt(i);
-							sb.Append((const UTF8Char*)" Virtual Address");
+							sb.AppendC(UTF8STRC(" Virtual Address"));
 							Text::StrHexVal32(Text::StrConcat(sbuff, (const UTF8Char*)"0x"), virtAddr);
 							exef->AddProp(sb.ToString(), sbuff);
 
 							sb.ClearStr();
-							sb.Append((const UTF8Char*)"Section ");
+							sb.AppendC(UTF8STRC("Section "));
 							sb.AppendUOSInt(i);
-							sb.Append((const UTF8Char*)" Size Of Raw Data");
+							sb.AppendC(UTF8STRC(" Size Of Raw Data"));
 							Text::StrUInt32(sbuff, dataSize);
 							exef->AddProp(sb.ToString(), sbuff);
 
 							sb.ClearStr();
-							sb.Append((const UTF8Char*)"Section ");
+							sb.AppendC(UTF8STRC("Section "));
 							sb.AppendUOSInt(i);
-							sb.Append((const UTF8Char*)" Pointer To Raw Data");
+							sb.AppendC(UTF8STRC(" Pointer To Raw Data"));
 							Text::StrHexVal32(Text::StrConcat(sbuff, (const UTF8Char*)"0x"), dataAddr);
 							exef->AddProp(sb.ToString(), sbuff);
 
 							sb.ClearStr();
-							sb.Append((const UTF8Char*)"Section ");
+							sb.AppendC(UTF8STRC("Section "));
 							sb.AppendUOSInt(i);
-							sb.Append((const UTF8Char*)" Pointer To Relocations");
+							sb.AppendC(UTF8STRC(" Pointer To Relocations"));
 							Text::StrHexVal32(Text::StrConcat(sbuff, (const UTF8Char*)"0x"), ReadUInt32(&sectionHeaders[sOfst + 24]));
 							exef->AddProp(sb.ToString(), sbuff);
 
 							sb.ClearStr();
-							sb.Append((const UTF8Char*)"Section ");
+							sb.AppendC(UTF8STRC("Section "));
 							sb.AppendUOSInt(i);
-							sb.Append((const UTF8Char*)" Pointer To Line numbers");
+							sb.AppendC(UTF8STRC(" Pointer To Line numbers"));
 							Text::StrHexVal32(Text::StrConcat(sbuff, (const UTF8Char*)"0x"), ReadUInt32(&sectionHeaders[sOfst + 28]));
 							exef->AddProp(sb.ToString(), sbuff);
 
 							sb.ClearStr();
-							sb.Append((const UTF8Char*)"Section ");
+							sb.AppendC(UTF8STRC("Section "));
 							sb.AppendUOSInt(i);
-							sb.Append((const UTF8Char*)" Number Of Relocations");
+							sb.AppendC(UTF8STRC(" Number Of Relocations"));
 							Text::StrInt32(sbuff, ReadUInt16(&sectionHeaders[sOfst + 32]));
 							exef->AddProp(sb.ToString(), sbuff);
 
 							sb.ClearStr();
-							sb.Append((const UTF8Char*)"Section ");
+							sb.AppendC(UTF8STRC("Section "));
 							sb.AppendUOSInt(i);
-							sb.Append((const UTF8Char*)" Number Of Line numbers");
+							sb.AppendC(UTF8STRC(" Number Of Line numbers"));
 							Text::StrInt32(sbuff, ReadUInt16(&sectionHeaders[sOfst + 34]));
 							exef->AddProp(sb.ToString(), sbuff);
 
 							sb.ClearStr();
-							sb.Append((const UTF8Char*)"Section ");
+							sb.AppendC(UTF8STRC("Section "));
 							sb.AppendUOSInt(i);
-							sb.Append((const UTF8Char*)" Characteristics");
+							sb.AppendC(UTF8STRC(" Characteristics"));
 							Text::StrHexVal32(Text::StrConcat(sbuff, (const UTF8Char*)"0x"), ReadUInt32(&sectionHeaders[sOfst + 36]));
 							exef->AddProp(sb.ToString(), sbuff);
 

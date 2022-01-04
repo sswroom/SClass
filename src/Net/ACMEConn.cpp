@@ -39,11 +39,11 @@ Text::String *Net::ACMEConn::JWK(Crypto::Cert::X509Key *key, Crypto::Token::JWSi
 				return 0;
 			}
 			Text::StringBuilderUTF8 sb;
-			sb.Append((const UTF8Char*)"{\"e\":\"");
+			sb.AppendC(UTF8STRC("{\"e\":\""));
 			b64.EncodeBin(&sb, e, eSize);
-			sb.Append((const UTF8Char*)"\",\"kty\":\"RSA\",\"n\":\"");
+			sb.AppendC(UTF8STRC("\",\"kty\":\"RSA\",\"n\":\""));
 			b64.EncodeBin(&sb, m, mSize);
-			sb.Append((const UTF8Char*)"\"}");
+			sb.AppendC(UTF8STRC("\"}"));
 			*alg = Crypto::Token::JWSignature::Algorithm::RS256;
 			return Text::String::NewNotNull(sb.ToString());
 		}
@@ -65,25 +65,25 @@ Text::String *Net::ACMEConn::ProtectedJWK(Text::String *nonce, Text::String *url
 		return 0;
 	}
 	Text::StringBuilderUTF8 sb;
-	sb.Append((const UTF8Char*)"{\"alg\":\"");
+	sb.AppendC(UTF8STRC("{\"alg\":\""));
 	sb.Append(Crypto::Token::JWSignature::AlgorithmGetName(*alg));
-	sb.Append((const UTF8Char*)"\",\"nonce\":\"");
+	sb.AppendC(UTF8STRC("\",\"nonce\":\""));
 	sb.Append(nonce);
-	sb.Append((const UTF8Char*)"\",\"url\":\"");
+	sb.AppendC(UTF8STRC("\",\"url\":\""));
 	sb.Append(url);
 	if (accountId)
 	{
-		sb.Append((const UTF8Char*)"\",\"kid\":\"");
+		sb.AppendC(UTF8STRC("\",\"kid\":\""));
 		sb.Append(accountId);
 		sb.AppendChar('\"', 1);
 	}
 	else
 	{
-		sb.Append((const UTF8Char*)"\",\"jwk\":");
+		sb.AppendC(UTF8STRC("\",\"jwk\":"));
 		sb.Append(jwk);
 	}
 	jwk->Release();
-	sb.Append((const UTF8Char*)"}");
+	sb.AppendC(UTF8STRC("}"));
 	return Text::String::NewNotNull(sb.ToString());
 }
 
@@ -99,13 +99,13 @@ Text::String *Net::ACMEConn::EncodeJWS(Net::SSLEngine *ssl, const UTF8Char *prot
 	sign->CalcHash(sb.ToString(), sb.GetLength());
 
 	sb.ClearStr();
-	sb.Append((const UTF8Char*)"{\"protected\":\"");
+	sb.AppendC(UTF8STRC("{\"protected\":\""));
 	b64.EncodeBin(&sb, protStr, Text::StrCharCnt(protStr));
-	sb.Append((const UTF8Char*)"\",\"payload\":\"");
+	sb.AppendC(UTF8STRC("\",\"payload\":\""));
 	b64.EncodeBin(&sb, data, Text::StrCharCnt(data));
-	sb.Append((const UTF8Char*)"\",\"signature\":\"");
+	sb.AppendC(UTF8STRC("\",\"signature\":\""));
 	sign->GetHashB64(&sb);
-	sb.Append((const UTF8Char*)"\"}");
+	sb.AppendC(UTF8STRC("\"}"));
 	DEL_CLASS(sign);
 	printf("Protected: %s\r\n", protStr);
 	printf("Payload: %s\r\n", data);
@@ -269,14 +269,14 @@ Net::ACMEConn::ACMEConn(Net::SocketFactory *sockf, const UTF8Char *serverHost, U
 	this->nonce = 0;
 	this->accountId = 0;
 	Text::StringBuilderUTF8 sb;
-	sb.Append((const UTF8Char*)"https://");
+	sb.AppendC(UTF8STRC("https://"));
 	sb.Append(serverHost);
 	if (port != 0 && port != 443)
 	{
 		sb.AppendChar(':', 1);
 		sb.AppendU16(port);
 	}
-	sb.Append((const UTF8Char*)"/directory");
+	sb.AppendC(UTF8STRC("/directory"));
 	Net::HTTPClient *cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, sb.ToString(), "GET", true);
 	if (cli)
 	{
@@ -450,7 +450,7 @@ Bool Net::ACMEConn::AccountNew()
 				if (s && s->Equals((const UTF8Char*)"urn:ietf:params:acme:error:accountDoesNotExist"))
 				{
 					Text::StringBuilderUTF8 sb;
-					sb.Append((const UTF8Char*)"{\"termsOfServiceAgreed\":true");
+					sb.AppendC(UTF8STRC("{\"termsOfServiceAgreed\":true"));
 					sb.AppendChar('}', 1);
 					cli = this->ACMEPost(this->urlNewAccount, (const Char*)sb.ToString());
 					if (cli)
@@ -519,7 +519,7 @@ Net::ACMEConn::Order *Net::ACMEConn::OrderNew(const UTF8Char *domainNames)
 	UOSInt i;
 	UTF8Char *sarr[2];
 	Bool found = false;
-	sb.Append((const UTF8Char*)"{\"identifiers\":[");
+	sb.AppendC(UTF8STRC("{\"identifiers\":["));
 	sbNames.Append(domainNames);
 	sarr[1] = sbNames.ToString();
 	i = 2;
@@ -528,20 +528,20 @@ Net::ACMEConn::Order *Net::ACMEConn::OrderNew(const UTF8Char *domainNames)
 		i = Text::StrSplit(sarr, 2, sarr[1], ',');
 		if (found)
 			sb.AppendChar(',', 1);
-		sb.Append((const UTF8Char*)"{\"type\":\"");
+		sb.AppendC(UTF8STRC("{\"type\":\""));
 		if (Net::SocketUtil::GetIPAddr(sarr[0], &addr))
 		{
-			sb.Append((const UTF8Char*)"ip");
+			sb.AppendC(UTF8STRC("ip"));
 		}
 		else
 		{
-			sb.Append((const UTF8Char*)"dns");
+			sb.AppendC(UTF8STRC("dns"));
 		}
-		sb.Append((const UTF8Char*)"\",\"value\":\"");
+		sb.AppendC(UTF8STRC("\",\"value\":\""));
 		sb.Append(sarr[0]);
-		sb.Append((const UTF8Char*)"\"}");
+		sb.AppendC(UTF8STRC("\"}"));
 	}
-	sb.Append((const UTF8Char*)"]}");
+	sb.AppendC(UTF8STRC("]}"));
 
 	Net::HTTPClient *cli = this->ACMEPost(this->urlNewOrder, (const Char*)sb.ToString());
 	if (cli->GetRespStatus() == 201)

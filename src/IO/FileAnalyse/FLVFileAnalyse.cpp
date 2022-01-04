@@ -46,7 +46,7 @@ UOSInt IO::FileAnalyse::FLVFileAnalyse::ParseScriptDataVal(UInt8 *data, UOSInt o
 			UInt32 arrCnt = ReadMUInt32(&data[ofst + 1]);
 			UInt32 i;
 			UInt32 strLen;
-			sb->Append((const UTF8Char*)"[");
+			sb->AppendC(UTF8STRC("["));
 			ofst += 5;
 			i = 0;
 			while (i < arrCnt)
@@ -56,17 +56,17 @@ UOSInt IO::FileAnalyse::FLVFileAnalyse::ParseScriptDataVal(UInt8 *data, UOSInt o
 					strLen = ReadMUInt16(&data[ofst]);
 					if (i > 0)
 					{
-						sb->Append((const UTF8Char*)",\r\n\t");
+						sb->AppendC(UTF8STRC(",\r\n\t"));
 					}
 					else
 					{
-						sb->Append((const UTF8Char*)"\r\n\t");
+						sb->AppendC(UTF8STRC("\r\n\t"));
 					}
 					if (ofst + 2 + strLen <= endOfst)
 					{
 						sb->AppendC((UTF8Char*)&data[ofst + 2], strLen);
 						ofst += 2 + strLen;
-						sb->Append((const UTF8Char*)" = ");
+						sb->AppendC(UTF8STRC(" = "));
 						ofst = ParseScriptDataVal(data, ofst, endOfst, sb);
 					}
 					else
@@ -81,7 +81,7 @@ UOSInt IO::FileAnalyse::FLVFileAnalyse::ParseScriptDataVal(UInt8 *data, UOSInt o
 				}
 				i++;
 			}
-			sb->Append((const UTF8Char*)"]");
+			sb->AppendC(UTF8STRC("]"));
 			if (ofst + 3 <= endOfst && data[ofst] == 0 && data[ofst + 1] == 0 && data[ofst + 2] == 9)
 			{
 				ofst += 3;
@@ -202,16 +202,16 @@ Bool IO::FileAnalyse::FLVFileAnalyse::GetFrameName(UOSInt index, Text::StringBui
 {
 	if (index == 0)
 	{
-		sb->Append((const UTF8Char*)"FLV Header");
+		sb->AppendC(UTF8STRC("FLV Header"));
 		return true;
 	}
 	IO::FileAnalyse::FLVFileAnalyse::FLVTag *tag = this->tags->GetItem(index - 1);
 	if (tag == 0)
 		return false;
 	sb->AppendU64(tag->ofst);
-	sb->Append((const UTF8Char*)": Type=");
+	sb->AppendC(UTF8STRC(": Type="));
 	sb->AppendU16(tag->tagType);
-	sb->Append((const UTF8Char*)", size=");
+	sb->AppendC(UTF8STRC(", size="));
 	sb->AppendUOSInt(tag->size);
 	return true;
 }
@@ -223,56 +223,56 @@ Bool IO::FileAnalyse::FLVFileAnalyse::GetFrameDetail(UOSInt index, Text::StringB
 	if (index == 0)
 	{
 		this->fd->GetRealData(0, this->hdrSize, buff);
-		sb->Append((const UTF8Char*)"Version = ");
+		sb->AppendC(UTF8STRC("Version = "));
 		sb->AppendU16(buff[3]);
-		sb->Append((const UTF8Char*)"\r\nTypeFlagsReserved = ");
+		sb->AppendC(UTF8STRC("\r\nTypeFlagsReserved = "));
 		sb->AppendU16((UInt16)(buff[4] >> 3));
-		sb->Append((const UTF8Char*)"\r\nTypeFlagsAudio = ");
+		sb->AppendC(UTF8STRC("\r\nTypeFlagsAudio = "));
 		sb->AppendU16((UInt16)((buff[4] >> 2) & 1));
-		sb->Append((const UTF8Char*)"\r\nTypeFlagsReserved = ");
+		sb->AppendC(UTF8STRC("\r\nTypeFlagsReserved = "));
 		sb->AppendU16((UInt16)((buff[4] >> 1) & 1));
-		sb->Append((const UTF8Char*)"\r\nTypeFlagsVideo = ");
+		sb->AppendC(UTF8STRC("\r\nTypeFlagsVideo = "));
 		sb->AppendU16((UInt16)(buff[4] & 1));
-		sb->Append((const UTF8Char*)"\r\nDataOffset = ");
+		sb->AppendC(UTF8STRC("\r\nDataOffset = "));
 		sb->AppendI32(ReadMInt32(&buff[5]));
 		return true;
 	}
 	IO::FileAnalyse::FLVFileAnalyse::FLVTag *tag = this->tags->GetItem(index - 1);
 	if (tag == 0)
 		return false;
-	sb->Append((const UTF8Char*)"Tag");
+	sb->AppendC(UTF8STRC("Tag"));
 	sb->AppendUOSInt(index);
 	this->fd->GetRealData(tag->ofst, 11, buff);
-	sb->Append((const UTF8Char*)"\r\nReserved = ");
+	sb->AppendC(UTF8STRC("\r\nReserved = "));
 	sb->AppendU16((UInt16)(buff[0] >> 6));
-	sb->Append((const UTF8Char*)"\r\nFilter = ");
+	sb->AppendC(UTF8STRC("\r\nFilter = "));
 	sb->AppendU16((UInt16)((buff[0] >> 5) & 1));
-	sb->Append((const UTF8Char*)"\r\nTagType = ");
+	sb->AppendC(UTF8STRC("\r\nTagType = "));
 	sb->AppendU16(buff[0] & 0x1f);
 	if (tag->tagType == 8)
 	{
-		sb->Append((const UTF8Char*)" (audio)");
+		sb->AppendC(UTF8STRC(" (audio)"));
 	}
 	else if (tag->tagType == 9)
 	{
-		sb->Append((const UTF8Char*)" (vidio)");
+		sb->AppendC(UTF8STRC(" (video)"));
 	}
 	else if (tag->tagType == 18)
 	{
-		sb->Append((const UTF8Char*)" (script data)");
+		sb->AppendC(UTF8STRC(" (script data)"));
 	}
-	sb->Append((const UTF8Char*)"\r\nDataSize = ");
+	sb->AppendC(UTF8STRC("\r\nDataSize = "));
 	sb->AppendU32(ReadMUInt24(&buff[1]));
-	sb->Append((const UTF8Char*)"\r\nTimestamp = ");
+	sb->AppendC(UTF8STRC("\r\nTimestamp = "));
 	sb->AppendU32(ReadMUInt24(&buff[4]));
-	sb->Append((const UTF8Char*)"\r\nTimestamp Extended = ");
+	sb->AppendC(UTF8STRC("\r\nTimestamp Extended = "));
 	sb->AppendU16(buff[7]);
 	if (tag->tagType == 8)
 	{
 		tagData = MemAlloc(UInt8, tag->size);
 		this->fd->GetRealData(tag->ofst, tag->size, tagData);
 
-		sb->Append((const UTF8Char*)"\r\n");
+		sb->AppendC(UTF8STRC("\r\n"));
 		if (tag->size >= 256 + 11)
 		{
 			sb->AppendHexBuff(tagData, 256, ' ', Text::LineBreakType::CRLF);
@@ -289,7 +289,7 @@ Bool IO::FileAnalyse::FLVFileAnalyse::GetFrameDetail(UOSInt index, Text::StringB
 		tagData = MemAlloc(UInt8, tag->size);
 		this->fd->GetRealData(tag->ofst, tag->size, tagData);
 
-		sb->Append((const UTF8Char*)"\r\n");
+		sb->AppendC(UTF8STRC("\r\n"));
 		if (tag->size >= 256 + 11)
 		{
 			sb->AppendHexBuff(tagData, 256, ' ', Text::LineBreakType::CRLF);

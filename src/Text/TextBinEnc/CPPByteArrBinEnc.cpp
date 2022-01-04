@@ -18,13 +18,13 @@ UOSInt Text::TextBinEnc::CPPByteArrBinEnc::EncodeBin(Text::StringBuilderUTF *sb,
 	{
 		if (i > 0)
 		{
-			sb->Append((const UTF8Char*)", ");
+			sb->AppendC(UTF8STRC(", "));
 			if ((i & 15) == 0)
 			{
-				sb->Append((const UTF8Char*)"\r\n");
+				sb->AppendC(UTF8STRC("\r\n"));
 			}
 		}
-		sb->Append((const UTF8Char*)"0x");
+		sb->AppendC(UTF8STRC("0x"));
 		sb->AppendHex8(dataBuff[i]);
 		i++;
 	}

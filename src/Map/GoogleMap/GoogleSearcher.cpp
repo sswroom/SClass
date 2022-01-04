@@ -217,7 +217,7 @@ UTF8Char *Map::GoogleMap::GoogleSearcher::SearchName(UTF8Char *buff, UOSInt buff
 		Text::StringBuilderUTF8 sb;
 		this->lastIsError = 2;
 		*buff = 0;
-		sb.Append((const UTF8Char*)"Cannot connect: ");
+		sb.AppendC(UTF8STRC("Cannot connect: "));
 		sb.Append(url);
 		errWriter->WriteLine(url);
 	}

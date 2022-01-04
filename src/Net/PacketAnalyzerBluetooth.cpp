@@ -1156,7 +1156,7 @@ void Net::PacketAnalyzerBluetooth::AddDirection(IO::FileAnalyse::FrameDetailHand
 	default:
 		{
 			Text::StringBuilderUTF8 sb;
-			sb.Append((const UTF8Char*)"Unknown (0x");
+			sb.AppendC(UTF8STRC("Unknown (0x"));
 			sb.AppendHex32(dir);
 			sb.AppendChar(')', 1);
 			frame->AddField(frameOfst, 4, (const UTF8Char*)"Direction", sb.ToString());
@@ -1220,9 +1220,9 @@ void Net::PacketAnalyzerBluetooth::AddScanInterval(IO::FileAnalyse::FrameDetailH
 {
 	Text::StringBuilderUTF8 sb;
 	sb.AppendU16(scanInt);
-	sb.Append((const UTF8Char*)" (");
+	sb.AppendC(UTF8STRC(" ("));
 	Text::SBAppendF64(&sb, 0.625 * scanInt);
-	sb.Append((const UTF8Char*)"ms)");
+	sb.AppendC(UTF8STRC("ms)"));
 	frame->AddField(frameOfst, 2, (const UTF8Char*)"Scan Interval", sb.ToString());
 }
 
@@ -1230,9 +1230,9 @@ void Net::PacketAnalyzerBluetooth::AddScanWindow(IO::FileAnalyse::FrameDetailHan
 {
 	Text::StringBuilderUTF8 sb;
 	sb.AppendU16(scanWind);
-	sb.Append((const UTF8Char*)" (");
+	sb.AppendC(UTF8STRC(" ("));
 	Text::SBAppendF64(&sb, 0.625 * scanWind);
-	sb.Append((const UTF8Char*)"ms)");
+	sb.AppendC(UTF8STRC("ms)"));
 	frame->AddField(frameOfst, 2, (const UTF8Char*)"Scan Window", sb.ToString());
 }
 
@@ -1312,36 +1312,36 @@ void Net::PacketAnalyzerBluetooth::AddAdvData(IO::FileAnalyse::FrameDetailHandle
 		if (packet[i + 1] == 1 && len == 2)
 		{
 			sb.ClearStr();
-			sb.Append((const UTF8Char*)"0x");
+			sb.AppendC(UTF8STRC("0x"));
 			sb.AppendHex8(packet[i + 2]);
 			Bool found = false;
 			if (packet[i + 2] & 1)
 			{
-				sb.Append((const UTF8Char*)" LE Limited Discoverable Mode");
+				sb.AppendC(UTF8STRC(" LE Limited Discoverable Mode"));
 				found = true;
 			}
 			if (packet[i + 2] & 2)
 			{
 				if (found) sb.AppendChar(',', 1);
-				sb.Append((const UTF8Char*)" LE General Discoverable Mode");
+				sb.AppendC(UTF8STRC(" LE General Discoverable Mode"));
 				found = true;
 			}
 			if (packet[i + 2] & 4)
 			{
 				if (found) sb.AppendChar(',', 1);
-				sb.Append((const UTF8Char*)" BR/EDR Not Supported");
+				sb.AppendC(UTF8STRC(" BR/EDR Not Supported"));
 				found = true;
 			}
 			if (packet[i + 2] & 8)
 			{
 				if (found) sb.AppendChar(',', 1);
-				sb.Append((const UTF8Char*)" Simultaneous LE and BR/EDR to Same Device Capable (Controller)");
+				sb.AppendC(UTF8STRC(" Simultaneous LE and BR/EDR to Same Device Capable (Controller)"));
 				found = true;
 			}
 			if (packet[i + 2] & 16)
 			{
 				if (found) sb.AppendChar(',', 1);
-				sb.Append((const UTF8Char*)" Simultaneous LE and BR/EDR to Same Device Capable (Host)");
+				sb.AppendC(UTF8STRC(" Simultaneous LE and BR/EDR to Same Device Capable (Host)"));
 				found = true;
 			}
 			frame->AddField(frameOfst + i + 2, 1, (const UTF8Char*)"Flags", sb.ToString());
@@ -1391,7 +1391,7 @@ void Net::PacketAnalyzerBluetooth::AddAdvData(IO::FileAnalyse::FrameDetailHandle
 					break;
 				default:
 					sb.ClearStr();
-					sb.Append((const UTF8Char*)"Unknown(0x");
+					sb.AppendC(UTF8STRC("Unknown(0x"));
 					sb.AppendHex16(ReadUInt16(&packet[i + j]));
 					sb.AppendChar(')', 1);
 					frame->AddField(frameOfst + i + j, 2, (const UTF8Char*)"16-bit Service Class UUIDs", sb.ToString());
@@ -1431,25 +1431,25 @@ void Net::PacketAnalyzerBluetooth::AddAdvData(IO::FileAnalyse::FrameDetailHandle
 		{
 			sb.ClearStr();
 			sb.AppendU16(packet[i + 2]);
-			sb.Append((const UTF8Char*)"dBm");
+			sb.AppendC(UTF8STRC("dBm"));
 			frame->AddField(frameOfst + i + 2, 1, (const UTF8Char*)"Tx Power Level", sb.ToString());
 		}
 		else if (packet[i + 1] == 0xff && len >= 3)
 		{
 			UInt16 compId = ReadUInt16(&packet[i + 2]);
 			sb.ClearStr();
-			sb.Append((const UTF8Char*)"0x");
+			sb.AppendC(UTF8STRC("0x"));
 			sb.AppendHex16(compId);
 			const UTF8Char *csptr = CompanyGetName(compId);
 			if (csptr)
 			{
-				sb.Append((const UTF8Char*)" (");
+				sb.AppendC(UTF8STRC(" ("));
 				sb.Append(csptr);
 				sb.AppendChar(')', 1);
 			}
 			else
 			{
-				sb.Append((const UTF8Char*)" (Unknown)");
+				sb.AppendC(UTF8STRC(" (Unknown)"));
 			}
 			if (compId == 0x4C)
 			{
@@ -1677,59 +1677,59 @@ void Net::PacketAnalyzerBluetooth::AddAdvData(IO::FileAnalyse::FrameDetailHandle
 						else if (packet[i + j] == 16 && appLen >= 2)
 						{
 							sb.ClearStr();
-							sb.Append((const UTF8Char*)"0x");
+							sb.AppendC(UTF8STRC("0x"));
 							sb.AppendHex8(packet[i + j + 2]);
 							switch (packet[i + j + 2] & 15)
 							{
 							case 0:
-								sb.Append((const UTF8Char*)" (Activity Level Unknown)");
+								sb.AppendC(UTF8STRC(" (Activity Level Unknown)"));
 								break;
 							case 1:
-								sb.Append((const UTF8Char*)" (Activity Reporting Disabled )");
+								sb.AppendC(UTF8STRC(" (Activity Reporting Disabled )"));
 								break;
 							case 3:
-								sb.Append((const UTF8Char*)" (Idle User)");
+								sb.AppendC(UTF8STRC(" (Idle User)"));
 								break;
 							case 5:
-								sb.Append((const UTF8Char*)" (Audio playing while screen locked)");
+								sb.AppendC(UTF8STRC(" (Audio playing while screen locked)"));
 								break;
 							case 7:
-								sb.Append((const UTF8Char*)" (Active user (screen on) )");
+								sb.AppendC(UTF8STRC(" (Active user (screen on) )"));
 								break;
 							case 9:
-								sb.Append((const UTF8Char*)" (Screen on with video playing)");
+								sb.AppendC(UTF8STRC(" (Screen on with video playing)"));
 								break;
 							case 10:
-								sb.Append((const UTF8Char*)" (Watch on wrist and unlocked)");
+								sb.AppendC(UTF8STRC(" (Watch on wrist and unlocked)"));
 								break;
 							case 11:
-								sb.Append((const UTF8Char*)" (Recent user interaction)");
+								sb.AppendC(UTF8STRC(" (Recent user interaction)"));
 								break;
 							case 13:
-								sb.Append((const UTF8Char*)" (User is driving a vehicle)");
+								sb.AppendC(UTF8STRC(" (User is driving a vehicle)"));
 								break;
 							case 14:
-								sb.Append((const UTF8Char*)" (Phone or Facetime Call)");
+								sb.AppendC(UTF8STRC(" (Phone or Facetime Call)"));
 								break;
 							default:
-								sb.Append((const UTF8Char*)" (Unknown)");
+								sb.AppendC(UTF8STRC(" (Unknown)"));
 								break;
 							}
 							if (packet[i + j + 2] & 0x10)
 							{
-								sb.Append((const UTF8Char*)", primary iCloud account device");
+								sb.AppendC(UTF8STRC(", primary iCloud account device"));
 							}
 							if (packet[i + j + 2] & 0x20)
 							{
-								sb.Append((const UTF8Char*)", Unknown");
+								sb.AppendC(UTF8STRC(", Unknown"));
 							}
 							if (packet[i + j + 2] & 0x40)
 							{
-								sb.Append((const UTF8Char*)", AirDrop Receiving is enabled");
+								sb.AppendC(UTF8STRC(", AirDrop Receiving is enabled"));
 							}
 							if (packet[i + j + 2] & 0x80)
 							{
-								sb.Append((const UTF8Char*)", Unknown");
+								sb.AppendC(UTF8STRC(", Unknown"));
 							}
 							frame->AddField(frameOfst + i + j + 2, 1, (const UTF8Char*)"Action", sb.ToString());
 							frame->AddHex8(frameOfst + i + j + 3, "Status", packet[i + j + 3]);
@@ -1781,7 +1781,7 @@ void Net::PacketAnalyzerBluetooth::AddAdvData(IO::FileAnalyse::FrameDetailHandle
 			}
 			else
 			{
-				sb.Append((const UTF8Char*)", Value=");
+				sb.AppendC(UTF8STRC(", Value="));
 				sb.AppendHexBuff(&packet[i + 4], (UOSInt)len - 3, ' ', Text::LineBreakType::None);
 				frame->AddField(frameOfst + i + 2, (UOSInt)len - 1, (const UTF8Char*)"Manufacturer Specific", sb.ToString());
 			}
@@ -1828,58 +1828,58 @@ void Net::PacketAnalyzerBluetooth::AddPageScanMode(IO::FileAnalyse::FrameDetailH
 void Net::PacketAnalyzerBluetooth::AddClassOfDevice(IO::FileAnalyse::FrameDetailHandler *frame, UInt32 frameOfst, UInt32 cls)
 {
 	Text::StringBuilderUTF8 sb;
-	sb.Append((const UTF8Char*)"0x");
+	sb.AppendC(UTF8STRC("0x"));
 	sb.AppendHex24(cls);
-	sb.Append((const UTF8Char*)", Class=");
+	sb.AppendC(UTF8STRC(", Class="));
 	switch (cls & 31)
 	{
 	case 2:
-		sb.Append((const UTF8Char*)"Phone");
+		sb.AppendC(UTF8STRC("Phone"));
 		break;
 	default:
 		sb.AppendU16(cls & 31);
-		sb.Append((const UTF8Char*)" (Unknown)");
+		sb.AppendC(UTF8STRC(" (Unknown)"));
 		break;
 	}
 	if (cls & 0x20)
 	{
-		sb.Append((const UTF8Char*)", Limited Discoverable Mode");
+		sb.AppendC(UTF8STRC(", Limited Discoverable Mode"));
 	}
 	if (cls & 0x100)
 	{
-		sb.Append((const UTF8Char*)", Positioning");
+		sb.AppendC(UTF8STRC(", Positioning"));
 	}
 	if (cls & 0x200)
 	{
-		sb.Append((const UTF8Char*)", Networking");
+		sb.AppendC(UTF8STRC(", Networking"));
 	}
 	if (cls & 0x400)
 	{
-		sb.Append((const UTF8Char*)", Rendering");
+		sb.AppendC(UTF8STRC(", Rendering"));
 	}
 	if (cls & 0x800)
 	{
-		sb.Append((const UTF8Char*)", Capturing");
+		sb.AppendC(UTF8STRC(", Capturing"));
 	}
 	if (cls & 0x1000)
 	{
-		sb.Append((const UTF8Char*)", Object Transfer");
+		sb.AppendC(UTF8STRC(", Object Transfer"));
 	}
 	if (cls & 0x2000)
 	{
-		sb.Append((const UTF8Char*)", Audio");
+		sb.AppendC(UTF8STRC(", Audio"));
 	}
 	if (cls & 0x4000)
 	{
-		sb.Append((const UTF8Char*)", Telephony");
+		sb.AppendC(UTF8STRC(", Telephony"));
 	}
 	if (cls & 0x8000)
 	{
-		sb.Append((const UTF8Char*)", Information");
+		sb.AppendC(UTF8STRC(", Information"));
 	}
-	sb.Append((const UTF8Char*)", Format=");
+	sb.AppendC(UTF8STRC(", Format="));
 	sb.AppendU32((cls >> 16) & 3);
-	sb.Append((const UTF8Char*)", Minor Class=");
+	sb.AppendC(UTF8STRC(", Minor Class="));
 	sb.AppendU32((cls >> 18) & 0x3F);
 	frame->AddField(frameOfst, 3, (const UTF8Char*)"Class Of Device", sb.ToString());
 }
@@ -1892,37 +1892,37 @@ void Net::PacketAnalyzerBluetooth::AddClockOffset(IO::FileAnalyse::FrameDetailHa
 void Net::PacketAnalyzerBluetooth::AddExAdvEvtType(IO::FileAnalyse::FrameDetailHandler *frame, UInt32 frameOfst, UInt16 evtType)
 {
 	Text::StringBuilderUTF8 sb;
-	sb.Append((const UTF8Char*)"0x");
+	sb.AppendC(UTF8STRC("0x"));
 	sb.AppendHex16(evtType);
 	if (evtType & 1)
 	{
-		sb.Append((const UTF8Char*)", Connectable");
+		sb.AppendC(UTF8STRC(", Connectable"));
 	}
 	if (evtType & 2)
 	{
-		sb.Append((const UTF8Char*)", Scannable");
+		sb.AppendC(UTF8STRC(", Scannable"));
 	}
 	if (evtType & 4)
 	{
-		sb.Append((const UTF8Char*)", Directed");
+		sb.AppendC(UTF8STRC(", Directed"));
 	}
 	if (evtType & 8)
 	{
-		sb.Append((const UTF8Char*)", Scan Response");
+		sb.AppendC(UTF8STRC(", Scan Response"));
 	}
 	if (evtType & 16)
 	{
-		sb.Append((const UTF8Char*)", Legacy");
+		sb.AppendC(UTF8STRC(", Legacy"));
 	}
-	sb.Append((const UTF8Char*)", Data Status=");
+	sb.AppendC(UTF8STRC(", Data Status="));
 	sb.AppendUOSInt((((UOSInt)evtType) >> 5) & 3);
 	switch ((((UOSInt)evtType) >> 5) & 3)
 	{
 	case 0:
-		sb.Append((const UTF8Char*)" (Complete)");
+		sb.AppendC(UTF8STRC(" (Complete)"));
 		break;
 	default:
-		sb.Append((const UTF8Char*)" (Unknown)");
+		sb.AppendC(UTF8STRC(" (Unknown)"));
 		break;
 	}
 	frame->AddField(frameOfst, 2, (const UTF8Char*)"Event Type", sb.ToString());
@@ -1993,11 +1993,11 @@ Bool Net::PacketAnalyzerBluetooth::PacketGetName(const UInt8 *packet, UOSInt pac
 		}
 		else
 		{
-			sb->Append((const UTF8Char*)"Bluetooth");
+			sb->AppendC(UTF8STRC("Bluetooth"));
 		}
 		return true;
 	case 2:
-		sb->Append((const UTF8Char*)"HCI ACL Packet");
+		sb->AppendC(UTF8STRC("HCI ACL Packet"));
 		return true;
 	case 4:
 		switch (packet[5])
@@ -2005,11 +2005,11 @@ Bool Net::PacketAnalyzerBluetooth::PacketGetName(const UInt8 *packet, UOSInt pac
 		case 1:
 			if (packet[7] == 0)
 			{
-				sb->Append((const UTF8Char*)"HCI Inquiry Success");
+				sb->AppendC(UTF8STRC("HCI Inquiry Success"));
 			}
 			else
 			{
-				sb->Append((const UTF8Char*)"HCI Inquiry Complete");
+				sb->AppendC(UTF8STRC("HCI Inquiry Complete"));
 			}
 			return true;
 		case 0x0E:
@@ -2017,11 +2017,11 @@ Bool Net::PacketAnalyzerBluetooth::PacketGetName(const UInt8 *packet, UOSInt pac
 			if (name)
 			{
 				sb->Append(name);
-				sb->Append((const UTF8Char*)" Accept");
+				sb->AppendC(UTF8STRC(" Accept"));
 			}
 			else
 			{
-				sb->Append((const UTF8Char*)"Bluetooth");
+				sb->AppendC(UTF8STRC("Bluetooth"));
 			}
 			return true;
 		case 0x0F:
@@ -2031,20 +2031,20 @@ Bool Net::PacketAnalyzerBluetooth::PacketGetName(const UInt8 *packet, UOSInt pac
 				if (packet[7] == 0)
 				{
 					sb->Append(name);
-					sb->Append((const UTF8Char*)" Pending");
+					sb->AppendC(UTF8STRC(" Pending"));
 				}
 				else
 				{
-					sb->Append((const UTF8Char*)"Bluetooth");
+					sb->AppendC(UTF8STRC("Bluetooth"));
 				}
 			}
 			else
 			{
-				sb->Append((const UTF8Char*)"Bluetooth");
+				sb->AppendC(UTF8STRC("Bluetooth"));
 			}
 			return true;
 		case 0x2F:
-			sb->Append((const UTF8Char*)"HCI Result: ");
+			sb->AppendC(UTF8STRC("HCI Result: "));
 			mac[0] = packet[13];
 			mac[1] = packet[12];
 			mac[2] = packet[11];
@@ -2057,7 +2057,7 @@ Bool Net::PacketAnalyzerBluetooth::PacketGetName(const UInt8 *packet, UOSInt pac
 			switch (packet[7])
 			{
 			case 0x2:
-				sb->Append((const UTF8Char*)"LE Adv: ");
+				sb->AppendC(UTF8STRC("LE Adv: "));
 				mac[0] = packet[16];
 				mac[1] = packet[15];
 				mac[2] = packet[14];
@@ -2067,7 +2067,7 @@ Bool Net::PacketAnalyzerBluetooth::PacketGetName(const UInt8 *packet, UOSInt pac
 				sb->AppendHexBuff(mac, 6, ':', Text::LineBreakType::None);
 				return true;
 			case 0xd:
-				sb->Append((const UTF8Char*)"LE AdvEx: ");
+				sb->AppendC(UTF8STRC("LE AdvEx: "));
 				mac[0] = packet[17];
 				mac[1] = packet[16];
 				mac[2] = packet[15];
@@ -2077,15 +2077,15 @@ Bool Net::PacketAnalyzerBluetooth::PacketGetName(const UInt8 *packet, UOSInt pac
 				sb->AppendHexBuff(mac, 6, ':', Text::LineBreakType::None);
 				return true;
 			default:
-				sb->Append((const UTF8Char*)"Bluetooth");
+				sb->AppendC(UTF8STRC("Bluetooth"));
 				return true;
 			}
 		default:
-			sb->Append((const UTF8Char*)"Bluetooth");
+			sb->AppendC(UTF8STRC("Bluetooth"));
 			return true;
 		}
 	default:
-		sb->Append((const UTF8Char*)"Bluetooth");
+		sb->AppendC(UTF8STRC("Bluetooth"));
 		return true;
 	}
 }

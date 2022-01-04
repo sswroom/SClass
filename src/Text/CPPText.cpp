@@ -232,7 +232,7 @@ Bool Text::CPPText::ParseEnum(Data::ArrayList<const UTF8Char*> *enumEntries, con
 			{
 				return false;
 			}
-			sbPrefix->Append((const UTF8Char*)"::");
+			sbPrefix->AppendC(UTF8STRC("::"));
 		}
 		sb.ClearStr();
 		if (!reader.NextWord(&sb))

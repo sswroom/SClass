@@ -116,11 +116,11 @@ void IO::LogTool::AddLogHandler(ILogHandler *hdlr, IO::ILogHandler::LogLevel log
 	IO::Path::GetProcessFileName(buff);
 	sptr = &buff[Text::StrLastIndexOf(buff, IO::Path::PATH_SEPERATOR) + 1];
 	Text::StringBuilderUTF8 sb;
-	sb.Append((const UTF8Char*)"Program ");
+	sb.AppendC(UTF8STRC("Program "));
 	sb.Append(sptr);
-	sb.Append((const UTF8Char*)" started");
+	sb.AppendC(UTF8STRC(" started"));
 	IO::BuildTime::GetBuildTime(&dt2);
-	sb.Append((const UTF8Char*)", version: ");
+	sb.AppendC(UTF8STRC(", version: "));
 	sb.AppendDate(&dt2);
 	hdlr->LogAdded(&dt, sb.ToString(), sb.GetLength(), (ILogHandler::LogLevel)0);
 }

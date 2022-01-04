@@ -39,12 +39,12 @@ void __stdcall Net::NTPServer::PacketHdlr(const Net::SocketUtil::AddressInfo *ad
 			{
 				Text::StringBuilderUTF8 sb;
 				UTF8Char sbuff[64];
-				sb.Append((const UTF8Char*)"NTP: Client ");
+				sb.AppendC(UTF8STRC("NTP: Client "));
 				Net::SocketUtil::GetAddrName(sbuff, addr, port);
 				sb.Append(sbuff);
 				dt.AddMS((OSInt)me->timeDiff);
 				dt.ToLocalTime();
-				sb.Append((const UTF8Char*)" reply time as ");
+				sb.AppendC(UTF8STRC(" reply time as "));
 				dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
 				sb.Append(sbuff);
 				me->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_COMMAND);
@@ -74,7 +74,7 @@ UInt32 __stdcall Net::NTPServer::CheckThread(void *userObj)
 					me->refTime = dt->ToTicks();
 					me->timeDiff = 0;
 					sb->ClearStr();
-					sb->Append((const UTF8Char*)"NTP: Time updated from Time Server as ");
+					sb->AppendC(UTF8STRC("NTP: Time updated from Time Server as "));
 					dt->ToLocalTime();
 					dt->ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
 					sb->Append(sbuff);
@@ -84,11 +84,11 @@ UInt32 __stdcall Net::NTPServer::CheckThread(void *userObj)
 				{
 					me->refTime = dt->ToTicks();
 					sb->ClearStr();
-					sb->Append((const UTF8Char*)"NTP: Time update to ");
+					sb->AppendC(UTF8STRC("NTP: Time update to "));
 					dt->ToLocalTime();
 					dt->ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
 					sb->Append(sbuff);
-					sb->Append((const UTF8Char*)" failed");
+					sb->AppendC(UTF8STRC(" failed"));
 					me->log->LogMessage(sb->ToString(), IO::ILogHandler::LOG_LEVEL_ERROR);
 					dt->SetCurrTimeUTC();
 					me->timeDiff = me->refTime - dt->ToTicks();

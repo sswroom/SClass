@@ -337,25 +337,25 @@ Bool Net::SDPFile::BuildBuff()
 	NEW_CLASS(writer, Text::UTF8Writer(mstm));
 	sb.ClearStr();
 
-	sb.Append((const UTF8Char*)"v=");
+	sb.AppendC(UTF8STRC("v="));
 	sb.AppendI32(this->version);
 	writer->WriteLine(sb.ToString());
 
 	sb.ClearStr();
-	sb.Append((const UTF8Char*)"o=");
+	sb.AppendC(UTF8STRC("o="));
 	sb.Append(this->userName);
-	sb.Append((const UTF8Char*)" ");
+	sb.AppendC(UTF8STRC(" "));
 	sb.Append(this->sessId);
-	sb.Append((const UTF8Char*)" ");
+	sb.AppendC(UTF8STRC(" "));
 	sb.Append(this->sessVer);
-	sb.Append((const UTF8Char*)" IN ");
+	sb.AppendC(UTF8STRC(" IN "));
 	sb.Append(this->userAddrType);
-	sb.Append((const UTF8Char*)" ");
+	sb.AppendC(UTF8STRC(" "));
 	sb.Append(this->userAddrHost);
 	writer->WriteLine(sb.ToString());
 
 	sb.ClearStr();
-	sb.Append((const UTF8Char*)"s=");
+	sb.AppendC(UTF8STRC("s="));
 	sb.Append(this->sessName);
 	writer->WriteLine(sb.ToString());
 
@@ -373,20 +373,20 @@ Bool Net::SDPFile::BuildBuff()
 	}
 
 	sb.ClearStr();
-	sb.Append((const UTF8Char*)"c=IN IP4 0.0.0.0");
+	sb.AppendC(UTF8STRC("c=IN IP4 0.0.0.0"));
 	writer->WriteLine(sb.ToString());
 
 	sb.ClearStr();
-	sb.Append((const UTF8Char*)"t=");
+	sb.AppendC(UTF8STRC("t="));
 	sb.AppendI64(this->startTime);
-	sb.Append((const UTF8Char*)" ");
+	sb.AppendC(UTF8STRC(" "));
 	sb.AppendI64(this->endTime);
 	writer->WriteLine(sb.ToString());
 
 	if (this->sessTool)
 	{
 		sb.ClearStr();
-		sb.Append((const UTF8Char*)"a=tool:");
+		sb.AppendC(UTF8STRC("a=tool:"));
 		sb.Append(this->sessTool);
 		writer->WriteLine(sb.ToString());
 	}
@@ -405,14 +405,14 @@ Bool Net::SDPFile::BuildBuff()
 	if (this->sessCharset)
 	{
 		sb.ClearStr();
-		sb.Append((const UTF8Char*)"a=charset:");
+		sb.AppendC(UTF8STRC("a=charset:"));
 		sb.Append(this->sessCharset);
 		writer->WriteLine(sb.ToString());
 	}
 	if (this->sessControl)
 	{
 		sb.ClearStr();
-		sb.Append((const UTF8Char*)"a=control:");
+		sb.AppendC(UTF8STRC("a=control:"));
 		sb.Append(this->sessControl);
 		writer->WriteLine(sb.ToString());
 	}
@@ -423,24 +423,24 @@ Bool Net::SDPFile::BuildBuff()
 	{
 		Net::ISDPMedia *media = this->sessMedia->GetItem(i);
 		sb.ClearStr();
-		sb.Append((const UTF8Char*)"m=");
+		sb.AppendC(UTF8STRC("m="));
 		if (media->GetSDPMediaType() == Media::MEDIA_TYPE_VIDEO)
 		{
-			sb.Append((const UTF8Char*)"video");
+			sb.AppendC(UTF8STRC("video"));
 		}
 		else if (media->GetSDPMediaType() == Media::MEDIA_TYPE_AUDIO)
 		{
-			sb.Append((const UTF8Char*)"audio");
+			sb.AppendC(UTF8STRC("audio"));
 		}
-		sb.Append((const UTF8Char*)" ");
+		sb.AppendC(UTF8STRC(" "));
 		sb.AppendU16(media->GetSDPMediaPort());
-		sb.Append((const UTF8Char*)" ");
+		sb.AppendC(UTF8STRC(" "));
 		sb.Append(media->GetSDPProtocol());
 		k = 0;
 		l = media->GetSDPDataCount();
 		while (k < l)
 		{
-			sb.Append((const UTF8Char*)" ");
+			sb.AppendC(UTF8STRC(" "));
 			sb.AppendU16(media->GetSDPData(k)->GetSDPDataPort());
 
 			k++;
@@ -453,19 +453,19 @@ Bool Net::SDPFile::BuildBuff()
 		{
 			Net::ISDPData *data = media->GetSDPData(k);
 			sb.ClearStr();
-			sb.Append((const UTF8Char*)"a=rtpmap:");
+			sb.AppendC(UTF8STRC("a=rtpmap:"));
 			sb.AppendU16(data->GetSDPDataPort());
-			sb.Append((const UTF8Char*)" ");
+			sb.AppendC(UTF8STRC(" "));
 			sb.AllocLeng(512);
 			sb.SetEndPtr(data->GetSDPDataType(sb.GetEndPtr()));
-			sb.Append((const UTF8Char*)"/");
+			sb.AppendC(UTF8STRC("/"));
 			sb.AppendU32(data->GetSDPDataFreq());
 			writer->WriteLine(sb.ToString());
 
 			sb.ClearStr();
-			sb.Append((const UTF8Char*)"a=fmtp:");
+			sb.AppendC(UTF8STRC("a=fmtp:"));
 			sb.AppendU16(data->GetSDPDataPort());
-			sb.Append((const UTF8Char*)" ");
+			sb.AppendC(UTF8STRC(" "));
 			sb.AllocLeng(512);
 			sb.SetEndPtr(data->GetSDPDataFormat(sb.GetEndPtr()));
 			writer->WriteLine(sb.ToString());
@@ -475,7 +475,7 @@ Bool Net::SDPFile::BuildBuff()
 		if (media->GetSDPControlURL(this->reqUserAgent))
 		{
 			sb.ClearStr();
-			sb.Append((const UTF8Char*)"a=control:");
+			sb.AppendC(UTF8STRC("a=control:"));
 			sb.Append(media->GetSDPControlURL(this->reqUserAgent));
 			writer->WriteLine(sb.ToString());
 		}

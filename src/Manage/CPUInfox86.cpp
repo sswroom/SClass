@@ -126,7 +126,7 @@ Manage::CPUInfo::CPUInfo()
 		{
 			if (sb.StartsWith((const UTF8Char*)"model name"))
 			{
-				i = sb.IndexOf((const UTF8Char*)": ");
+				i = sb.IndexOf((const UTF8Char*)": "));
 				info->cpuName = Text::StrCopyNew(sb.ToString() + i + 2);
 				break;
 			}
@@ -254,16 +254,16 @@ Bool Manage::CPUInfo::GetInfoValue(UOSInt index, Text::StringBuilderUTF *sb)
 				switch ((cpuInfo[0] >> 12) & 3)
 				{
 				case 0:
-					sb->Append((const UTF8Char*)"0 (Original OEM Processor)");
+					sb->AppendC(UTF8STRC("0 (Original OEM Processor)"));
 					break;
 				case 1:
-					sb->Append((const UTF8Char*)"1 (Intel OneDrive Processor)");
+					sb->AppendC(UTF8STRC("1 (Intel OneDrive Processor)"));
 					break;
 				case 2:
-					sb->Append((const UTF8Char*)"2 (Dual Processor)");
+					sb->AppendC(UTF8STRC("2 (Dual Processor)"));
 					break;
 				case 3:
-					sb->Append((const UTF8Char*)"3 (Intel reserved)");
+					sb->AppendC(UTF8STRC("3 (Intel reserved)"));
 					break;
 				}
 			}
@@ -385,7 +385,7 @@ Bool Manage::CPUInfo::GetInfoValue(UOSInt index, Text::StringBuilderUTF *sb)
 					}
 					else
 					{
-						sb->Append((const UTF8Char*)", ");
+						sb->AppendC(UTF8STRC(", "));
 					}
 					sb->Append(csptr);
 				}
@@ -464,43 +464,43 @@ Bool Manage::CPUInfo::GetInfoName(UOSInt index, Text::StringBuilderUTF *sb)
 	switch (index)
 	{
 	case 0:
-		sb->Append((const UTF8Char*)"Vendor identification");
+		sb->AppendC(UTF8STRC("Vendor identification"));
 		return true;
 	case 1:
-		sb->Append((const UTF8Char*)"Max CPUID Input");
+		sb->AppendC(UTF8STRC("Max CPUID Input"));
 		return true;
 	case 2:
-		sb->Append((const UTF8Char*)"Processor Type");
+		sb->AppendC(UTF8STRC("Processor Type"));
 		return true;
 	case 3:
-		sb->Append((const UTF8Char*)"Processor Family ID");
+		sb->AppendC(UTF8STRC("Processor Family ID"));
 		return true;
 	case 4:
-		sb->Append((const UTF8Char*)"Processor Model ID");
+		sb->AppendC(UTF8STRC("Processor Model ID"));
 		return true;
 	case 5:
-		sb->Append((const UTF8Char*)"Processor Stepping");
+		sb->AppendC(UTF8STRC("Processor Stepping"));
 		return true;
 	case 6:
-		sb->Append((const UTF8Char*)"8 Bit Brand ID");
+		sb->AppendC(UTF8STRC("8 Bit Brand ID"));
 		return true;
 	case 7:
-		sb->Append((const UTF8Char*)"CLFLUSH size");
+		sb->AppendC(UTF8STRC("CLFLUSH size"));
 		return true;
 	case 8:
-		sb->Append((const UTF8Char*)"Logical Processor Count exist");
+		sb->AppendC(UTF8STRC("Logical Processor Count exist"));
 		return true;
 	case 9:
-		sb->Append((const UTF8Char*)"Local APIC physical ID");
+		sb->AppendC(UTF8STRC("Local APIC physical ID"));
 		return true;
 	case 10:
-		sb->Append((const UTF8Char*)"Instruction Sets");
+		sb->AppendC(UTF8STRC("Instruction Sets"));
 		return true;
 	case 11:
-		sb->Append((const UTF8Char*)"CPU Features");
+		sb->AppendC(UTF8STRC("CPU Features"));
 		return true;
 	case 12:
-		sb->Append((const UTF8Char*)"TLB/Cache/Prefetch Information");
+		sb->AppendC(UTF8STRC("TLB/Cache/Prefetch Information"));
 		return true;
 	default:
 		return false;
@@ -1082,127 +1082,127 @@ const UTF8Char *Manage::CPUInfo::GetFeatureDesc(UOSInt index)
 void Manage::CPUInfo::AppendNameInfo10(UInt32 ecxv, UInt32 edxv, Text::StringBuilderUTF *sb)
 {
 	if (edxv & 1)
-		sb->Append((const UTF8Char*)"FPU ");
+		sb->AppendC(UTF8STRC("FPU "));
 	if (edxv & 0x10)
-		sb->Append((const UTF8Char*)"TSC ");
+		sb->AppendC(UTF8STRC("TSC "));
 	if (edxv & 0x20)
-		sb->Append((const UTF8Char*)"MSR ");
+		sb->AppendC(UTF8STRC("MSR "));
 	if (edxv & 0x100)
-		sb->Append((const UTF8Char*)"CMPXCHG8B ");
+		sb->AppendC(UTF8STRC("CMPXCHG8B "));
 	if (edxv & 0x800)
-		sb->Append((const UTF8Char*)"SysEnterSysExit ");
+		sb->AppendC(UTF8STRC("SysEnterSysExit "));
 	if (edxv & 0x8000)
-		sb->Append((const UTF8Char*)"CMOV ");
+		sb->AppendC(UTF8STRC("CMOV "));
 	if (edxv & 0x80000)
-		sb->Append((const UTF8Char*)"CFLSH ");
+		sb->AppendC(UTF8STRC("CFLSH "));
 	if (edxv & 0x800000)
-		sb->Append((const UTF8Char*)"MMX ");
+		sb->AppendC(UTF8STRC("MMX "));
 	if (edxv & 0x1000000)
-		sb->Append((const UTF8Char*)"FXSR ");
+		sb->AppendC(UTF8STRC("FXSR "));
 	if (edxv & 0x2000000)
-		sb->Append((const UTF8Char*)"SSE ");
+		sb->AppendC(UTF8STRC("SSE "));
 	if (edxv & 0x4000000)
-		sb->Append((const UTF8Char*)"SSE2 ");
+		sb->AppendC(UTF8STRC("SSE2 "));
 	if (ecxv & 0x1)
-		sb->Append((const UTF8Char*)"SSE3 ");
+		sb->AppendC(UTF8STRC("SSE3 "));
 	if (ecxv & 0x2)
-		sb->Append((const UTF8Char*)"PCLMULQDQ ");
+		sb->AppendC(UTF8STRC("PCLMULQDQ "));
 	if (ecxv & 0x8)
-		sb->Append((const UTF8Char*)"MONITOR ");
+		sb->AppendC(UTF8STRC("MONITOR "));
 	if (ecxv & 0x200)
-		sb->Append((const UTF8Char*)"SSSE3 ");
+		sb->AppendC(UTF8STRC("SSSE3 "));
 	if (ecxv & 0x1000)
-		sb->Append((const UTF8Char*)"FMA ");
+		sb->AppendC(UTF8STRC("FMA "));
 	if (ecxv & 0x2000)
-		sb->Append((const UTF8Char*)"CMPXCHG16B ");
+		sb->AppendC(UTF8STRC("CMPXCHG16B "));
 	if (ecxv & 0x80000)
-		sb->Append((const UTF8Char*)"SSE4.1 ");
+		sb->AppendC(UTF8STRC("SSE4.1 "));
 	if (ecxv & 0x100000)
-		sb->Append((const UTF8Char*)"SSE4.2 ");
+		sb->AppendC(UTF8STRC("SSE4.2 "));
 	if (ecxv & 0x400000)
-		sb->Append((const UTF8Char*)"MOVBE ");
+		sb->AppendC(UTF8STRC("MOVBE "));
 	if (ecxv & 0x800000)
-		sb->Append((const UTF8Char*)"POPCNT ");
+		sb->AppendC(UTF8STRC("POPCNT "));
 	if (ecxv & 0x2000000)
-		sb->Append((const UTF8Char*)"AESNI ");
+		sb->AppendC(UTF8STRC("AESNI "));
 	if (ecxv & 0x4000000)
-		sb->Append((const UTF8Char*)"XSAVE ");
+		sb->AppendC(UTF8STRC("XSAVE "));
 	if (ecxv & 0x8000000)
-		sb->Append((const UTF8Char*)"OSXSAVE ");
+		sb->AppendC(UTF8STRC("OSXSAVE "));
 	if (ecxv & 0x10000000)
-		sb->Append((const UTF8Char*)"AVX ");
+		sb->AppendC(UTF8STRC("AVX "));
 	if (ecxv & 0x20000000)
-		sb->Append((const UTF8Char*)"F16C ");
+		sb->AppendC(UTF8STRC("F16C "));
 	if (ecxv & 0x40000000)
-		sb->Append((const UTF8Char*)"RDRAND ");
+		sb->AppendC(UTF8STRC("RDRAND "));
 }
 
 void Manage::CPUInfo::AppendNameInfo11(UInt32 ecxv, UInt32 edxv, Text::StringBuilderUTF *sb)
 {
 	if (edxv & 2)
-		sb->Append((const UTF8Char*)"VME ");
+		sb->AppendC(UTF8STRC("VME "));
 	if (edxv & 4)
-		sb->Append((const UTF8Char*)"DE ");
+		sb->AppendC(UTF8STRC("DE "));
 	if (edxv & 8)
-		sb->Append((const UTF8Char*)"PSE ");
+		sb->AppendC(UTF8STRC("PSE "));
 	if (edxv & 0x40)
-		sb->Append((const UTF8Char*)"PAE ");
+		sb->AppendC(UTF8STRC("PAE "));
 	if (edxv & 0x80)
-		sb->Append((const UTF8Char*)"MCE ");
+		sb->AppendC(UTF8STRC("MCE "));
 	if (edxv & 0x200)
-		sb->Append((const UTF8Char*)"APIC ");
+		sb->AppendC(UTF8STRC("APIC "));
 	if (edxv & 0x1000)
-		sb->Append((const UTF8Char*)"MTRR ");
+		sb->AppendC(UTF8STRC("MTRR "));
 	if (edxv & 0x2000)
-		sb->Append((const UTF8Char*)"PGE ");
+		sb->AppendC(UTF8STRC("PGE "));
 	if (edxv & 0x4000)
-		sb->Append((const UTF8Char*)"MCA ");
+		sb->AppendC(UTF8STRC("MCA "));
 	if (edxv & 0x10000)
-		sb->Append((const UTF8Char*)"PAT ");
+		sb->AppendC(UTF8STRC("PAT "));
 	if (edxv & 0x20000)
-		sb->Append((const UTF8Char*)"PSE36 ");
+		sb->AppendC(UTF8STRC("PSE36 "));
 	if (edxv & 0x40000)
-		sb->Append((const UTF8Char*)"PSN ");
+		sb->AppendC(UTF8STRC("PSN "));
 	if (edxv & 0x200000)
-		sb->Append((const UTF8Char*)"DS ");
+		sb->AppendC(UTF8STRC("DS "));
 	if (edxv & 0x400000)
-		sb->Append((const UTF8Char*)"ACPI ");
+		sb->AppendC(UTF8STRC("ACPI "));
 	if (edxv & 0x8000000)
-		sb->Append((const UTF8Char*)"SS ");
+		sb->AppendC(UTF8STRC("SS "));
 	if (edxv & 0x10000000)
-		sb->Append((const UTF8Char*)"HTT ");
+		sb->AppendC(UTF8STRC("HTT "));
 	if (edxv & 0x20000000)
-		sb->Append((const UTF8Char*)"TM ");
+		sb->AppendC(UTF8STRC("TM "));
 	if (edxv & 0x80000000)
-		sb->Append((const UTF8Char*)"PBE ");
+		sb->AppendC(UTF8STRC("PBE "));
 	if (ecxv & 0x4)
-		sb->Append((const UTF8Char*)"DTES64 ");
+		sb->AppendC(UTF8STRC("DTES64 "));
 	if (ecxv & 0x10)
-		sb->Append((const UTF8Char*)"DS-CPL ");
+		sb->AppendC(UTF8STRC("DS-CPL "));
 	if (ecxv & 0x20)
-		sb->Append((const UTF8Char*)"VMX ");
+		sb->AppendC(UTF8STRC("VMX "));
 	if (ecxv & 0x40)
-		sb->Append((const UTF8Char*)"SMX ");
+		sb->AppendC(UTF8STRC("SMX "));
 	if (ecxv & 0x80)
-		sb->Append((const UTF8Char*)"EST ");
+		sb->AppendC(UTF8STRC("EST "));
 	if (ecxv & 0x100)
-		sb->Append((const UTF8Char*)"TM2 ");
+		sb->AppendC(UTF8STRC("TM2 "));
 	if (ecxv & 0x400)
-		sb->Append((const UTF8Char*)"CNXT-ID ");
+		sb->AppendC(UTF8STRC("CNXT-ID "));
 	if (ecxv & 0x800)
-		sb->Append((const UTF8Char*)"SDBG ");
+		sb->AppendC(UTF8STRC("SDBG "));
 	if (ecxv & 0x4000)
-		sb->Append((const UTF8Char*)"xTPR_Update ");
+		sb->AppendC(UTF8STRC("xTPR_Update "));
 	if (ecxv & 0x8000)
-		sb->Append((const UTF8Char*)"PDCM ");
+		sb->AppendC(UTF8STRC("PDCM "));
 	if (ecxv & 0x20000)
-		sb->Append((const UTF8Char*)"PCID ");
+		sb->AppendC(UTF8STRC("PCID "));
 	if (ecxv & 0x40000)
-		sb->Append((const UTF8Char*)"DCA ");
+		sb->AppendC(UTF8STRC("DCA "));
 	if (ecxv & 0x200000)
-		sb->Append((const UTF8Char*)"x2APIC ");
+		sb->AppendC(UTF8STRC("x2APIC "));
 	if (ecxv & 0x1000000)
-		sb->Append((const UTF8Char*)"TSC-Deadline ");
+		sb->AppendC(UTF8STRC("TSC-Deadline "));
 	if (ecxv & 0x80000000)
-		sb->Append((const UTF8Char*)"RAZ ");
+		sb->AppendC(UTF8STRC("RAZ "));
 }

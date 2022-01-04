@@ -189,7 +189,7 @@ Bool Manage::CPUInfo::GetInfoName(UOSInt index, Text::StringBuilderUTF *sb)
 	switch (index)
 	{
 	case 0:
-		sb->Append((const UTF8Char*)"Vendor identification");
+		sb->AppendC(UTF8STRC("Vendor identification"));
 		return true;
 	default:
 		return false;

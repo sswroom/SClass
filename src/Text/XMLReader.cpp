@@ -1732,17 +1732,17 @@ Bool Text::XMLReader::ToString(Text::StringBuilderUTF *sb)
 		}
 		return true;
 	case Text::XMLNode::NT_CDATA:
-		sb->Append((const UTF8Char*)"<![CDATA[");
+		sb->AppendC(UTF8STRC("<![CDATA["));
 		sb->Append(this->nodeText);
-		sb->Append((const UTF8Char*)"]]>");
+		sb->AppendC(UTF8STRC("]]>"));
 		return true;
 	case Text::XMLNode::NT_COMMENT:
-		sb->Append((const UTF8Char*)"<!--");
+		sb->AppendC(UTF8STRC("<!--"));
 		if (this->nodeText)
 		{
 			sb->Append(this->nodeText);
 		}
-		sb->Append((const UTF8Char*)"-->");
+		sb->AppendC(UTF8STRC("-->"));
 		return true;
 	case Text::XMLNode::NT_ATTRIBUTE:
 	case Text::XMLNode::NT_UNKNOWN:
@@ -1817,7 +1817,7 @@ Bool Text::XMLReader::XMLWellFormat(Text::EncodingFactory *encFact, IO::Stream *
 			{
 				if (lastNT == Text::XMLNode::NT_ELEMENT || lastNT == Text::XMLNode::NT_TEXT || lastNT == Text::XMLNode::NT_CDATA)
 				{
-					sb->Append((const UTF8Char*)"\r\n");
+					sb->AppendC(UTF8STRC("\r\n"));
 				}
 				sb->AppendChar('\t', reader->GetPathLev() + lev);
 			}
@@ -1825,7 +1825,7 @@ Bool Text::XMLReader::XMLWellFormat(Text::EncodingFactory *encFact, IO::Stream *
 			reader->ToString(sb);
 			if (thisNT != Text::XMLNode::NT_ELEMENT && thisNT != Text::XMLNode::NT_TEXT && thisNT != Text::XMLNode::NT_CDATA)
 			{
-				sb->Append((const UTF8Char*)"\r\n");
+				sb->AppendC(UTF8STRC("\r\n"));
 			}
 			lastNT = thisNT;
 		}

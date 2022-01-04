@@ -203,9 +203,9 @@ void __stdcall SSWR::OrganMgr::OrganTimeAdjForm::OnTimeApplyClicked(void *userOb
 	}
 	sb.ClearStr();
 	sb.AppendI32(succCnt);
-	sb.Append((const UTF8Char*)" succeed, ");
+	sb.AppendC(UTF8STRC(" succeed, "));
 	sb.AppendI32(failCnt);
-	sb.Append((const UTF8Char*)" failed");
+	sb.AppendC(UTF8STRC(" failed"));
 	UI::MessageDialog::ShowDialog(sb.ToString(), (const UTF8Char*)"Time Adjust", me);
 }
 
@@ -391,7 +391,7 @@ SSWR::OrganMgr::OrganTimeAdjForm::OrganTimeAdjForm(UI::GUIClientControl *parent,
 		sp = (OrganSpecies*)spItems.GetItem(i);
 		sbu8.ClearStr();
 		sbu8.Append(sp->GetCName());
-		sbu8.Append((const UTF8Char*)" ");
+		sbu8.AppendC(UTF8STRC(" "));
 		sbu8.Append(sp->GetSName());
 
 		this->cboSpecies->AddItem(sbu8.ToString(), (void*)(OSInt)sp->GetSpeciesId());

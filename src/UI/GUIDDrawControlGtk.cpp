@@ -228,11 +228,11 @@ void __stdcall UI::GUIDDrawControl::OnResized(void *userObj)
 		if (data->me->debugWriter)
 		{
 			Text::StringBuilderUTF8 sb;
-			sb.Append((const UTF8Char*)"Surface size changed to ");
+			sb.AppendC(UTF8STRC("Surface size changed to "));
 			sb.AppendUOSInt(data->me->surfaceW);
-			sb.Append((const UTF8Char*)" x ");
+			sb.AppendC(UTF8STRC(" x "));
 			sb.AppendUOSInt(data->me->surfaceH);
-			sb.Append((const UTF8Char*)", hMon=");
+			sb.AppendC(UTF8STRC(", hMon="));
 			sb.AppendOSInt((OSInt)data->me->GetHMonitor());
 			data->me->debugWriter->WriteLine(sb.ToString());
 		}
@@ -306,15 +306,15 @@ Bool UI::GUIDDrawControl::CreateSurface()
 			if (this->debugWriter)
 			{
 				Text::StringBuilderUTF8 sb;
-				sb.Append((const UTF8Char*)"Primary surface desc: Size = ");
+				sb.AppendC(UTF8STRC("Primary surface desc: Size = "));
 				sb.AppendUOSInt(this->primarySurface->info->dispWidth);
-				sb.Append((const UTF8Char*)" x ");
+				sb.AppendC(UTF8STRC(" x "));
 				sb.AppendUOSInt(this->primarySurface->info->dispHeight);
-				sb.Append((const UTF8Char*)", bpl = ");
+				sb.AppendC(UTF8STRC(", bpl = "));
 				sb.AppendUOSInt(this->primarySurface->GetDataBpl());
-				sb.Append((const UTF8Char*)", hMon = ");
+				sb.AppendC(UTF8STRC(", hMon = "));
 				sb.AppendOSInt((OSInt)this->surfaceMon);
-				sb.Append((const UTF8Char*)", hWnd = ");
+				sb.AppendC(UTF8STRC(", hWnd = "));
 				sb.AppendOSInt((OSInt)hWnd);
 				this->debugWriter->WriteLine(sb.ToString());
 			}

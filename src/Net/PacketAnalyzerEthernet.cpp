@@ -45,18 +45,18 @@ Bool Net::PacketAnalyzerEthernet::PacketEthernetDataGetName(UInt16 etherType, co
 	switch (etherType)
 	{
 	case 0x0004: //IEEE 802.2 LLC
-		sb->Append((const UTF8Char*)"IEEE802.2 LLC");
+		sb->AppendC(UTF8STRC("IEEE802.2 LLC"));
 		return true;
 	case 0x0006: //ARP
-		sb->Append((const UTF8Char*)"ARP");
+		sb->AppendC(UTF8STRC("ARP"));
 		return true;
 	case 0x26:
-		sb->Append((const UTF8Char*)"IEEE802.2 LLC");
+		sb->AppendC(UTF8STRC("IEEE802.2 LLC"));
 		return true;
 	case 0x0800: //IPv4
 		return PacketIPv4GetName(packet, packetSize, sb);
 	case 0x0806: //ARP
-		sb->Append((const UTF8Char*)"ARP");
+		sb->AppendC(UTF8STRC("ARP"));
 		return true;
 	case 0x86DD: //IPv6
 		return PacketIPv6GetName(packet, packetSize, sb);
@@ -91,7 +91,7 @@ Bool Net::PacketAnalyzerEthernet::PacketIPv4GetName(const UInt8 *packet, UOSInt 
 
 	Net::SocketUtil::GetIPv4Name(sbuff, srcIP);
 	sb->Append(sbuff);
-	sb->Append((const UTF8Char*)" -> ");
+	sb->AppendC(UTF8STRC(" -> "));
 	Net::SocketUtil::GetIPv4Name(sbuff, destIP);
 	sb->Append(sbuff);
 	sb->AppendChar(' ', 1);
@@ -112,7 +112,7 @@ Bool Net::PacketAnalyzerEthernet::PacketIPv6GetName(const UInt8 *packet, UOSInt 
 	Net::SocketUtil::SetAddrInfoV6(&destAddr, &packet[24], 0);
 	Net::SocketUtil::GetAddrName(sbuff, &srcAddr);
 	sb->Append(sbuff);
-	sb->Append((const UTF8Char*)" -> ");
+	sb->AppendC(UTF8STRC(" -> "));
 	Net::SocketUtil::GetAddrName(sbuff, &destAddr);
 	sb->Append(sbuff);
 	sb->AppendChar(' ', 1);
@@ -124,29 +124,29 @@ Bool Net::PacketAnalyzerEthernet::PacketIPDataGetName(UInt8 protocol, const UInt
 	switch (protocol)
 	{
 	case 0:
-		sb->Append((const UTF8Char*)"HOPOPT");
+		sb->AppendC(UTF8STRC("HOPOPT"));
 		return true;
 	case 1:
-		sb->Append((const UTF8Char*)"ICMP");
+		sb->AppendC(UTF8STRC("ICMP"));
 		return true;
 	case 2:
-		sb->Append((const UTF8Char*)"IGMP");
+		sb->AppendC(UTF8STRC("IGMP"));
 		return true;
 	case 3:
-		sb->Append((const UTF8Char*)"GGP");
+		sb->AppendC(UTF8STRC("GGP"));
 		return true;
 	case 4:
-		sb->Append((const UTF8Char*)"IP-in-IP");
+		sb->AppendC(UTF8STRC("IP-in-IP"));
 		return true;
 	case 5:
-		sb->Append((const UTF8Char*)"ST");
+		sb->AppendC(UTF8STRC("ST"));
 		return true;
 	case 6:
-		sb->Append((const UTF8Char*)"TCP");
+		sb->AppendC(UTF8STRC("TCP"));
 		return true;
 	case 17:
 	{
-		sb->Append((const UTF8Char*)"UDP");
+		sb->AppendC(UTF8STRC("UDP"));
 		if (packetSize >= 4)
 		{
 			UInt16 destPort = 0;
@@ -166,7 +166,7 @@ Bool Net::PacketAnalyzerEthernet::PacketIPDataGetName(UInt8 protocol, const UInt
 		return true;
 	}
 	case 58:
-		sb->Append((const UTF8Char*)"ICMPv6");
+		sb->AppendC(UTF8STRC("ICMPv6"));
 		return true;
 	default:
 		return false;
@@ -2174,9 +2174,9 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 											UInt8 *dataBuff;
 											Text::String *dataStr = jstr->GetValue();
 											sb.ClearStr();
-											sb.Append((const UTF8Char*)"\r\n");
+											sb.AppendC(UTF8STRC("\r\n"));
 											sb.Append(dataStr);
-											sb.Append((const UTF8Char*)":");
+											sb.AppendC(UTF8STRC(":"));
 											dataLen = b64.CalcBinSize(dataStr->v);
 											dataBuff = MemAlloc(UInt8, dataLen);
 											if (b64.DecodeBin(dataStr->v, dataBuff) == dataLen)
@@ -2185,7 +2185,7 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 											}
 											else
 											{
-												sb.Append((const UTF8Char*)"\r\nNot base64 encoding");
+												sb.AppendC(UTF8STRC("\r\nNot base64 encoding"));
 											}
 											frame->AddText(frameOfst + 12, sb.ToString());
 											MemFree(dataBuff);

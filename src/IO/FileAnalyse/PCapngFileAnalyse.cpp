@@ -212,20 +212,20 @@ Bool IO::FileAnalyse::PCapngFileAnalyse::GetFrameName(UOSInt index, Text::String
 	block = this->blockList->GetItem(index);
 	fd->GetRealData(block->ofst, block->blockLength, this->packetBuff);
 	sb->AppendU64(block->ofst);
-	sb->Append((const UTF8Char*)", size=");
+	sb->AppendC(UTF8STRC(", size="));
 	sb->AppendU32(block->blockLength);
 	if (block->blockType == 0x0a0d0d0a)
 	{
-		sb->Append((const UTF8Char*)", SHB");
+		sb->AppendC(UTF8STRC(", SHB"));
 	}
 	else if (block->blockType == 1)
 	{
-		sb->Append((const UTF8Char*)", IDB");
+		sb->AppendC(UTF8STRC(", IDB"));
 	}
 	else if (block->blockType == 6)
 	{
 		UInt32 psize;
-		sb->Append((const UTF8Char*)", EPB");
+		sb->AppendC(UTF8STRC(", EPB"));
 		if (this->isBE)
 		{
 			psize = ReadMUInt32(&this->packetBuff[20]);
@@ -236,17 +236,17 @@ Bool IO::FileAnalyse::PCapngFileAnalyse::GetFrameName(UOSInt index, Text::String
 		}
 		if (psize + 32 <= block->blockLength)
 		{
-			sb->Append((const UTF8Char*)", ");
+			sb->AppendC(UTF8STRC(", "));
 			if (!Net::PacketAnalyzer::PacketDataGetName(block->linkType, &this->packetBuff[28], psize, sb))
 			{
-				sb->Append((const UTF8Char*)"Unknown");
+				sb->AppendC(UTF8STRC("Unknown"));
 			}
 		}
 	}
 	else if (block->blockType == 3)
 	{
 		UInt32 psize;
-		sb->Append((const UTF8Char*)", SPB");
+		sb->AppendC(UTF8STRC(", SPB"));
 		if (this->isBE)
 		{
 			psize = ReadMUInt32(&this->packetBuff[8]);
@@ -257,36 +257,36 @@ Bool IO::FileAnalyse::PCapngFileAnalyse::GetFrameName(UOSInt index, Text::String
 		}
 		if (psize + 32 <= block->blockLength)
 		{
-			sb->Append((const UTF8Char*)", ");
+			sb->AppendC(UTF8STRC(", "));
 			if (!Net::PacketAnalyzer::PacketDataGetName(block->linkType, &this->packetBuff[28], psize, sb))
 			{
-				sb->Append((const UTF8Char*)"Unknown");
+				sb->AppendC(UTF8STRC("Unknown"));
 			}
 		}
 	}
 	else if (block->blockType == 4)
 	{
-		sb->Append((const UTF8Char*)", NRB");
+		sb->AppendC(UTF8STRC(", NRB"));
 	}
 	else if (block->blockType == 5)
 	{
-		sb->Append((const UTF8Char*)", ISB");
+		sb->AppendC(UTF8STRC(", ISB"));
 	}
 	else if (block->blockType == 9)
 	{
-		sb->Append((const UTF8Char*)", JEB");
+		sb->AppendC(UTF8STRC(", JEB"));
 	}
 	else if (block->blockType == 10)
 	{
-		sb->Append((const UTF8Char*)", DSB");
+		sb->AppendC(UTF8STRC(", DSB"));
 	}
 	else if (block->blockType == 0xBAD)
 	{
-		sb->Append((const UTF8Char*)", CB");
+		sb->AppendC(UTF8STRC(", CB"));
 	}
 	else if (block->blockType == 0x40000BAD)
 	{
-		sb->Append((const UTF8Char*)", CBNC");
+		sb->AppendC(UTF8STRC(", CBNC"));
 	}
 	return true;
 }
@@ -301,39 +301,39 @@ Bool IO::FileAnalyse::PCapngFileAnalyse::GetFrameDetail(UOSInt index, Text::Stri
 	}
 	block = this->blockList->GetItem(index);
 	fd->GetRealData(block->ofst, block->blockLength, this->packetBuff);
-	sb->Append((const UTF8Char*)"Offset=");
+	sb->AppendC(UTF8STRC("Offset="));
 	sb->AppendU64(block->ofst);
-	sb->Append((const UTF8Char*)"\r\nType=0x");
+	sb->AppendC(UTF8STRC("\r\nType=0x"));
 	sb->AppendHex32(block->blockType);
-	sb->Append((const UTF8Char*)"\r\nTotalSize=");
+	sb->AppendC(UTF8STRC("\r\nTotalSize="));
 	sb->AppendU32(block->blockLength);
-	sb->Append((const UTF8Char*)"\r\n");
+	sb->AppendC(UTF8STRC("\r\n"));
 	if (block->blockType == 0x0a0d0d0a)
 	{
-		sb->Append((const UTF8Char*)"\r\nSection Header Block:");
-		sb->Append((const UTF8Char*)"\r\nByte Order=");
+		sb->AppendC(UTF8STRC("\r\nSection Header Block:"));
+		sb->AppendC(UTF8STRC("\r\nByte Order="));
 		UInt16 majorVer;
 		UInt16 minorVer;
 		Int64 sectionLength;
 		if (this->isBE)
 		{
-			sb->Append((const UTF8Char*)"Big-endian");
+			sb->AppendC(UTF8STRC("Big-endian"));
 			majorVer = ReadMUInt16(&this->packetBuff[12]);
 			minorVer = ReadMUInt16(&this->packetBuff[14]);
 			sectionLength = ReadMInt64(&this->packetBuff[16]);
 		}
 		else
 		{
-			sb->Append((const UTF8Char*)"Little-endian");
+			sb->AppendC(UTF8STRC("Little-endian"));
 			majorVer = ReadUInt16(&this->packetBuff[12]);
 			minorVer = ReadUInt16(&this->packetBuff[14]);
 			sectionLength = ReadInt64(&this->packetBuff[16]);
 		}
-		sb->Append((const UTF8Char*)"\r\nMajor Version=");
+		sb->AppendC(UTF8STRC("\r\nMajor Version="));
 		sb->AppendU16(majorVer);
-		sb->Append((const UTF8Char*)"\r\nMinor Version=");
+		sb->AppendC(UTF8STRC("\r\nMinor Version="));
 		sb->AppendU16(minorVer);
-		sb->Append((const UTF8Char*)"\r\nSection Length=");
+		sb->AppendC(UTF8STRC("\r\nSection Length="));
 		sb->AppendI64(sectionLength);
 		UInt16 optCode;
 		UInt16 optLeng;
@@ -350,9 +350,9 @@ Bool IO::FileAnalyse::PCapngFileAnalyse::GetFrameDetail(UOSInt index, Text::Stri
 				optCode = ReadUInt16(&this->packetBuff[i]);
 				optLeng = ReadUInt16(&this->packetBuff[i + 2]);
 			}
-			sb->Append((const UTF8Char*)"\r\nOption Code=");
+			sb->AppendC(UTF8STRC("\r\nOption Code="));
 			sb->AppendU16(optCode);
-			sb->Append((const UTF8Char*)"\r\nOption Length=");
+			sb->AppendC(UTF8STRC("\r\nOption Length="));
 			sb->AppendU16(optLeng);
 			if (i + 4 + optLeng > block->blockLength)
 			{
@@ -364,22 +364,22 @@ Bool IO::FileAnalyse::PCapngFileAnalyse::GetFrameDetail(UOSInt index, Text::Stri
 			}
 			else if (optCode == 1)
 			{
-				sb->Append((const UTF8Char*)"\r\nComment=");
+				sb->AppendC(UTF8STRC("\r\nComment="));
 				sb->AppendC(&this->packetBuff[i + 4], optLeng);
 			}
 			else if (optCode == 2)
 			{
-				sb->Append((const UTF8Char*)"\r\nHardware=");
+				sb->AppendC(UTF8STRC("\r\nHardware="));
 				sb->AppendC(&this->packetBuff[i + 4], optLeng);
 			}
 			else if (optCode == 3)
 			{
-				sb->Append((const UTF8Char*)"\r\nOS=");
+				sb->AppendC(UTF8STRC("\r\nOS="));
 				sb->AppendC(&this->packetBuff[i + 4], optLeng);
 			}
 			else if (optCode == 4)
 			{
-				sb->Append((const UTF8Char*)"\r\nUser Application=");
+				sb->AppendC(UTF8STRC("\r\nUser Application="));
 				sb->AppendC(&this->packetBuff[i + 4], optLeng);
 			}
 
@@ -392,7 +392,7 @@ Bool IO::FileAnalyse::PCapngFileAnalyse::GetFrameDetail(UOSInt index, Text::Stri
 	}
 	else if (block->blockType == 1)
 	{
-		sb->Append((const UTF8Char*)"\r\nInterface Description Block:");
+		sb->AppendC(UTF8STRC("\r\nInterface Description Block:"));
 		UInt16 linkType;
 		UInt16 reserved;
 		UInt32 snapLen;
@@ -408,18 +408,18 @@ Bool IO::FileAnalyse::PCapngFileAnalyse::GetFrameDetail(UOSInt index, Text::Stri
 			reserved = ReadUInt16(&this->packetBuff[10]);
 			snapLen = ReadUInt32(&this->packetBuff[12]);
 		}
-		sb->Append((const UTF8Char*)"\r\nLinkType=");
+		sb->AppendC(UTF8STRC("\r\nLinkType="));
 		sb->AppendU16(linkType);
 		const UTF8Char *csptr = IO::RAWMonitor::LinkTypeGetName(linkType);
 		if (csptr)
 		{
-			sb->Append((const UTF8Char*)" (");
+			sb->AppendC(UTF8STRC(" ("));
 			sb->Append(csptr);
-			sb->Append((const UTF8Char*)")");
+			sb->AppendC(UTF8STRC(")"));
 		}
-		sb->Append((const UTF8Char*)"\r\nReserved=0x");
+		sb->AppendC(UTF8STRC("\r\nReserved=0x"));
 		sb->AppendU16(reserved);
-		sb->Append((const UTF8Char*)"\r\nSnap Length=");
+		sb->AppendC(UTF8STRC("\r\nSnap Length="));
 		sb->AppendU32(snapLen);
 		UInt16 optCode;
 		UInt16 optLeng;
@@ -436,9 +436,9 @@ Bool IO::FileAnalyse::PCapngFileAnalyse::GetFrameDetail(UOSInt index, Text::Stri
 				optCode = ReadUInt16(&this->packetBuff[i]);
 				optLeng = ReadUInt16(&this->packetBuff[i + 2]);
 			}
-			sb->Append((const UTF8Char*)"\r\nOption Code=");
+			sb->AppendC(UTF8STRC("\r\nOption Code="));
 			sb->AppendU16(optCode);
-			sb->Append((const UTF8Char*)"\r\nOption Length=");
+			sb->AppendC(UTF8STRC("\r\nOption Length="));
 			sb->AppendU16(optLeng);
 			if (i + 4 + optLeng > block->blockLength)
 			{
@@ -450,25 +450,25 @@ Bool IO::FileAnalyse::PCapngFileAnalyse::GetFrameDetail(UOSInt index, Text::Stri
 			}
 			else if (optCode == 1)
 			{
-				sb->Append((const UTF8Char*)"\r\nComment=");
+				sb->AppendC(UTF8STRC("\r\nComment="));
 				sb->AppendC(&this->packetBuff[i + 4], optLeng);
 			}
 			else if (optCode == 2)
 			{
-				sb->Append((const UTF8Char*)"\r\nName=");
+				sb->AppendC(UTF8STRC("\r\nName="));
 				sb->AppendC(&this->packetBuff[i + 4], optLeng);
 			}
 			else if (optCode == 3)
 			{
-				sb->Append((const UTF8Char*)"\r\nDescription=");
+				sb->AppendC(UTF8STRC("\r\nDescription="));
 				sb->AppendC(&this->packetBuff[i + 4], optLeng);
 			}
 			else if (optCode == 4)
 			{
-				sb->Append((const UTF8Char*)"\r\nIPv4 Address=");
+				sb->AppendC(UTF8STRC("\r\nIPv4 Address="));
 				Net::SocketUtil::GetIPv4Name(sbuff, ReadNUInt32(&this->packetBuff[i + 4]));
 				sb->Append(sbuff);
-				sb->Append((const UTF8Char*)"\r\nNetmask=");
+				sb->AppendC(UTF8STRC("\r\nNetmask="));
 				Net::SocketUtil::GetIPv4Name(sbuff, ReadNUInt32(&this->packetBuff[i + 8]));
 				sb->Append(sbuff);
 			}
@@ -476,20 +476,20 @@ Bool IO::FileAnalyse::PCapngFileAnalyse::GetFrameDetail(UOSInt index, Text::Stri
 			{
 				Net::SocketUtil::AddressInfo addr;
 				Net::SocketUtil::SetAddrInfoV6(&addr, &this->packetBuff[i + 4], 0);
-				sb->Append((const UTF8Char*)"\r\nIPv6 Address=");
+				sb->AppendC(UTF8STRC("\r\nIPv6 Address="));
 				Net::SocketUtil::GetAddrName(sbuff, &addr);
 				sb->Append(sbuff);
-				sb->Append((const UTF8Char*)"/");
+				sb->AppendC(UTF8STRC("/"));
 				sb->AppendU16(this->packetBuff[i + 20]);
 			}
 			else if (optCode == 6)
 			{
-				sb->Append((const UTF8Char*)"\r\nMAC Address=");
+				sb->AppendC(UTF8STRC("\r\nMAC Address="));
 				sb->AppendHexBuff(&this->packetBuff[i + 4], 6, ':', Text::LineBreakType::None);
 			}
 			else if (optCode == 7)
 			{
-				sb->Append((const UTF8Char*)"\r\nEUI Address=");
+				sb->AppendC(UTF8STRC("\r\nEUI Address="));
 				sb->AppendHexBuff(&this->packetBuff[i + 4], 8, ' ', Text::LineBreakType::None);
 			}
 			else if (optCode == 8)
@@ -503,13 +503,13 @@ Bool IO::FileAnalyse::PCapngFileAnalyse::GetFrameDetail(UOSInt index, Text::Stri
 				{
 					speed = ReadInt64(&this->packetBuff[i + 4]);
 				}
-				sb->Append((const UTF8Char*)"\r\nSpeed=");
+				sb->AppendC(UTF8STRC("\r\nSpeed="));
 				sb->AppendI64(speed);
-				sb->Append((const UTF8Char*)"bps");
+				sb->AppendC(UTF8STRC("bps"));
 			}
 			else if (optCode == 9)
 			{
-				sb->Append((const UTF8Char*)"\r\nTimestamps resolution=");
+				sb->AppendC(UTF8STRC("\r\nTimestamps resolution="));
 				sb->AppendI16((Int8)this->packetBuff[i + 4]);
 			}
 			else if (optCode == 10)
@@ -523,28 +523,28 @@ Bool IO::FileAnalyse::PCapngFileAnalyse::GetFrameDetail(UOSInt index, Text::Stri
 				{
 					tzone = ReadInt32(&this->packetBuff[i + 4]);
 				}
-				sb->Append((const UTF8Char*)"\r\nTime Zone=");
+				sb->AppendC(UTF8STRC("\r\nTime Zone="));
 				sb->AppendI32(tzone);
 			}
 			else if (optCode == 11)
 			{
-				sb->Append((const UTF8Char*)"\r\nFilter=");
+				sb->AppendC(UTF8STRC("\r\nFilter="));
 				sb->AppendU16(this->packetBuff[i + 4]);
 				if (optLeng > 1)
 				{
-					sb->Append((const UTF8Char*)" (");
+					sb->AppendC(UTF8STRC(" ("));
 					sb->AppendC(&this->packetBuff[i + 5], (UOSInt)optLeng - 1);
-					sb->Append((const UTF8Char*)")");
+					sb->AppendC(UTF8STRC(")"));
 				}
 			}
 			else if (optCode == 12)
 			{
-				sb->Append((const UTF8Char*)"\r\nOS=");
+				sb->AppendC(UTF8STRC("\r\nOS="));
 				sb->AppendC(&this->packetBuff[i + 4], (UOSInt)optLeng);
 			}
 			else if (optCode == 13)
 			{
-				sb->Append((const UTF8Char*)"\r\nFrame Check Sequence Length=");
+				sb->AppendC(UTF8STRC("\r\nFrame Check Sequence Length="));
 				sb->AppendU16(this->packetBuff[i + 4]);
 			}
 			else if (optCode == 14)
@@ -558,13 +558,13 @@ Bool IO::FileAnalyse::PCapngFileAnalyse::GetFrameDetail(UOSInt index, Text::Stri
 				{
 					tsOffset = ReadInt64(&this->packetBuff[i + 4]);
 				}
-				sb->Append((const UTF8Char*)"\r\nTS Offset=");
+				sb->AppendC(UTF8STRC("\r\nTS Offset="));
 				sb->AppendI64(tsOffset);
-				sb->Append((const UTF8Char*)"sec.");
+				sb->AppendC(UTF8STRC("sec."));
 			}
 			else if (optCode == 15)
 			{
-				sb->Append((const UTF8Char*)"\r\nHardware=");
+				sb->AppendC(UTF8STRC("\r\nHardware="));
 				sb->AppendHexBuff(&this->packetBuff[i + 4], 8, ' ', Text::LineBreakType::None);
 			}
 
@@ -577,7 +577,7 @@ Bool IO::FileAnalyse::PCapngFileAnalyse::GetFrameDetail(UOSInt index, Text::Stri
 	}
 	else if (block->blockType == 6)
 	{
-		sb->Append((const UTF8Char*)"\r\nEnhanced Packet Block:");
+		sb->AppendC(UTF8STRC("\r\nEnhanced Packet Block:"));
 		UInt32 ifId;
 		Int64 ts;
 		UInt32 capPSize;
@@ -597,16 +597,16 @@ Bool IO::FileAnalyse::PCapngFileAnalyse::GetFrameDetail(UOSInt index, Text::Stri
 			capPSize = ReadUInt32(&this->packetBuff[20]);
 			oriPSize = ReadUInt32(&this->packetBuff[24]);
 		}
-		sb->Append((const UTF8Char*)"\r\nInterface ID=");
+		sb->AppendC(UTF8STRC("\r\nInterface ID="));
 		sb->AppendU32(ifId);
 		SetTime(&dt, ts, block->timeResol);
 		dt.ToLocalTime();
 		dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
-		sb->Append((const UTF8Char*)"\r\nTime=");
+		sb->AppendC(UTF8STRC("\r\nTime="));
 		sb->Append(sbuff);
-		sb->Append((const UTF8Char*)"\r\nCaptured Packet Length=");
+		sb->AppendC(UTF8STRC("\r\nCaptured Packet Length="));
 		sb->AppendU32(capPSize);
-		sb->Append((const UTF8Char*)"\r\nOriginal Packet Length=");
+		sb->AppendC(UTF8STRC("\r\nOriginal Packet Length="));
 		sb->AppendU32(oriPSize);
 		if (capPSize + 32 <= block->blockLength)
 		{
@@ -631,9 +631,9 @@ Bool IO::FileAnalyse::PCapngFileAnalyse::GetFrameDetail(UOSInt index, Text::Stri
 					optCode = ReadUInt16(&this->packetBuff[i]);
 					optLeng = ReadUInt16(&this->packetBuff[i + 2]);
 				}
-				sb->Append((const UTF8Char*)"\r\nOption Code=");
+				sb->AppendC(UTF8STRC("\r\nOption Code="));
 				sb->AppendU16(optCode);
-				sb->Append((const UTF8Char*)"\r\nOption Length=");
+				sb->AppendC(UTF8STRC("\r\nOption Length="));
 				sb->AppendU16(optLeng);
 				if (i + 4 + optLeng > block->blockLength)
 				{
@@ -645,22 +645,22 @@ Bool IO::FileAnalyse::PCapngFileAnalyse::GetFrameDetail(UOSInt index, Text::Stri
 				}
 				else if (optCode == 1)
 				{
-					sb->Append((const UTF8Char*)"\r\nComment=");
+					sb->AppendC(UTF8STRC("\r\nComment="));
 					sb->AppendC(&this->packetBuff[i + 4], optLeng);
 				}
 				else if (optCode == 2)
 				{
-					sb->Append((const UTF8Char*)"\r\nHardware=");
+					sb->AppendC(UTF8STRC("\r\nHardware="));
 					sb->AppendC(&this->packetBuff[i + 4], optLeng);
 				}
 				else if (optCode == 3)
 				{
-					sb->Append((const UTF8Char*)"\r\nOS=");
+					sb->AppendC(UTF8STRC("\r\nOS="));
 					sb->AppendC(&this->packetBuff[i + 4], optLeng);
 				}
 				else if (optCode == 4)
 				{
-					sb->Append((const UTF8Char*)"\r\nUser Application=");
+					sb->AppendC(UTF8STRC("\r\nUser Application="));
 					sb->AppendC(&this->packetBuff[i + 4], optLeng);
 				}
 
@@ -673,14 +673,14 @@ Bool IO::FileAnalyse::PCapngFileAnalyse::GetFrameDetail(UOSInt index, Text::Stri
 		}
 		else
 		{
-			sb->Append((const UTF8Char*)"\r\n");
-			sb->Append((const UTF8Char*)"\r\n");
+			sb->AppendC(UTF8STRC("\r\n"));
+			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendHexBuff(&this->packetBuff[28], block->blockLength - 32, ' ', Text::LineBreakType::CRLF);
 		}
 	}
 	else if (block->blockType == 5)
 	{
-		sb->Append((const UTF8Char*)"\r\nInterface Statistics Block:");
+		sb->AppendC(UTF8STRC("\r\nInterface Statistics Block:"));
 		UInt32 ifId;
 		Int64 ts;
 		Data::DateTime dt;
@@ -694,12 +694,12 @@ Bool IO::FileAnalyse::PCapngFileAnalyse::GetFrameDetail(UOSInt index, Text::Stri
 			ifId = ReadUInt32(&this->packetBuff[8]);
 			ts = (((Int64)ReadInt32(&this->packetBuff[12])) << 32) | ReadUInt32(&this->packetBuff[16]);
 		}
-		sb->Append((const UTF8Char*)"\r\nInterface ID=");
+		sb->AppendC(UTF8STRC("\r\nInterface ID="));
 		sb->AppendU32(ifId);
 		SetTime(&dt, ts, block->timeResol);
 		dt.ToLocalTime();
 		dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
-		sb->Append((const UTF8Char*)"\r\nTime=");
+		sb->AppendC(UTF8STRC("\r\nTime="));
 		sb->Append(sbuff);
 		UInt16 optCode;
 		UInt16 optLeng;
@@ -716,9 +716,9 @@ Bool IO::FileAnalyse::PCapngFileAnalyse::GetFrameDetail(UOSInt index, Text::Stri
 				optCode = ReadUInt16(&this->packetBuff[i]);
 				optLeng = ReadUInt16(&this->packetBuff[i + 2]);
 			}
-			sb->Append((const UTF8Char*)"\r\nOption Code=");
+			sb->AppendC(UTF8STRC("\r\nOption Code="));
 			sb->AppendU16(optCode);
-			sb->Append((const UTF8Char*)"\r\nOption Length=");
+			sb->AppendC(UTF8STRC("\r\nOption Length="));
 			sb->AppendU16(optLeng);
 			if (i + 4 + optLeng > block->blockLength)
 			{
@@ -730,12 +730,12 @@ Bool IO::FileAnalyse::PCapngFileAnalyse::GetFrameDetail(UOSInt index, Text::Stri
 			}
 			else if (optCode == 1)
 			{
-				sb->Append((const UTF8Char*)"\r\nComment=");
+				sb->AppendC(UTF8STRC("\r\nComment="));
 				sb->AppendC(&this->packetBuff[i + 4], optLeng);
 			}
 			else if (optCode == 2)
 			{
-				sb->Append((const UTF8Char*)"\r\nStart Time=");
+				sb->AppendC(UTF8STRC("\r\nStart Time="));
 				if (this->isBE)
 				{
 					ts = ReadMInt64(&this->packetBuff[i + 4]);
@@ -751,7 +751,7 @@ Bool IO::FileAnalyse::PCapngFileAnalyse::GetFrameDetail(UOSInt index, Text::Stri
 			}
 			else if (optCode == 3)
 			{
-				sb->Append((const UTF8Char*)"\r\nEnd Time=");
+				sb->AppendC(UTF8STRC("\r\nEnd Time="));
 				if (this->isBE)
 				{
 					ts = ReadMInt64(&this->packetBuff[i + 4]);
@@ -767,7 +767,7 @@ Bool IO::FileAnalyse::PCapngFileAnalyse::GetFrameDetail(UOSInt index, Text::Stri
 			}
 			else if (optCode == 4)
 			{
-				sb->Append((const UTF8Char*)"\r\nReceived Packets=");
+				sb->AppendC(UTF8STRC("\r\nReceived Packets="));
 				if (this->isBE)
 				{
 					ts = ReadMInt64(&this->packetBuff[i + 4]);
@@ -780,7 +780,7 @@ Bool IO::FileAnalyse::PCapngFileAnalyse::GetFrameDetail(UOSInt index, Text::Stri
 			}
 			else if (optCode == 5)
 			{
-				sb->Append((const UTF8Char*)"\r\nDropped Packets=");
+				sb->AppendC(UTF8STRC("\r\nDropped Packets="));
 				if (this->isBE)
 				{
 					ts = ReadMInt64(&this->packetBuff[i + 4]);
@@ -793,7 +793,7 @@ Bool IO::FileAnalyse::PCapngFileAnalyse::GetFrameDetail(UOSInt index, Text::Stri
 			}
 			else if (optCode == 6)
 			{
-				sb->Append((const UTF8Char*)"\r\nPackets Accepted by Filter=");
+				sb->AppendC(UTF8STRC("\r\nPackets Accepted by Filter="));
 				if (this->isBE)
 				{
 					ts = ReadMInt64(&this->packetBuff[i + 4]);
@@ -806,7 +806,7 @@ Bool IO::FileAnalyse::PCapngFileAnalyse::GetFrameDetail(UOSInt index, Text::Stri
 			}
 			else if (optCode == 7)
 			{
-				sb->Append((const UTF8Char*)"\r\nPackets Dropped by OS=");
+				sb->AppendC(UTF8STRC("\r\nPackets Dropped by OS="));
 				if (this->isBE)
 				{
 					ts = ReadMInt64(&this->packetBuff[i + 4]);
@@ -819,7 +819,7 @@ Bool IO::FileAnalyse::PCapngFileAnalyse::GetFrameDetail(UOSInt index, Text::Stri
 			}
 			else if (optCode == 8)
 			{
-				sb->Append((const UTF8Char*)"\r\nPackets Delivered to the user=");
+				sb->AppendC(UTF8STRC("\r\nPackets Delivered to the user="));
 				if (this->isBE)
 				{
 					ts = ReadMInt64(&this->packetBuff[i + 4]);
@@ -1095,9 +1095,9 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::PCapngFileAnalyse::GetFrameDetail
 				sb.AppendU16(this->packetBuff[i + 4]);
 				if (optLeng > 1)
 				{
-					sb.Append((const UTF8Char*)" (");
+					sb.AppendC(UTF8STRC(" ("));
 					sb.AppendC(&this->packetBuff[i + 5], (UOSInt)optLeng - 1);
-					sb.Append((const UTF8Char*)")");
+					sb.AppendC(UTF8STRC(")"));
 				}
 				frame->AddField(i + 4, optLeng, (const UTF8Char*)"Filter", sb.ToString());
 			}

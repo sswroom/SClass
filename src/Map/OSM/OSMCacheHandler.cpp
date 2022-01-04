@@ -47,11 +47,11 @@ IO::SeekableStream *Map::OSM::OSMCacheHandler::GetTileData(Int32 lev, Int32 xTil
 		Text::StringBuilderUTF8 urlSb;
 		urlSb.Append(thisUrl);
 		urlSb.AppendI32(lev);
-		urlSb.Append((const UTF8Char*)"/");
+		urlSb.AppendC(UTF8STRC("/"));
 		urlSb.AppendI32(xTile);
-		urlSb.Append((const UTF8Char*)"/");
+		urlSb.AppendC(UTF8STRC("/"));
 		urlSb.AppendI32(yTile);
-		urlSb.Append((const UTF8Char*)".png");
+		urlSb.AppendC(UTF8STRC(".png"));
 
 		Net::HTTPClient *cli;
 		cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, (const UTF8Char*)"OSMTileMap/1.0 SSWR/1.0", true, urlSb.StartsWith((const UTF8Char*)"https://"));

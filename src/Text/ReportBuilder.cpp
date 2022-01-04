@@ -395,7 +395,7 @@ Text::SpreadSheet::Workbook *Text::ReportBuilder::CreateWorkbook()
 					icon = iconList->GetItem(l);
 					if (sbList[icon->col]->GetLength() > 0)
 					{
-						sbList[icon->col]->Append((const UTF8Char*)", ");
+						sbList[icon->col]->AppendC(UTF8STRC(", "));
 					}
 					sbList[icon->col]->Append(icon->name);
 					l++;
@@ -458,15 +458,15 @@ Text::SpreadSheet::Workbook *Text::ReportBuilder::CreateWorkbook()
 		{
 			url = this->urlList->GetItem(i);
 			sb.ClearStr();
-			sb.Append((const UTF8Char*)"https://www.google.com/maps/place/");
+			sb.AppendC(UTF8STRC("https://www.google.com/maps/place/"));
 			Text::SBAppendF64(&sb, url->lat);
-			sb.Append((const UTF8Char*)",");
+			sb.AppendC(UTF8STRC(","));
 			Text::SBAppendF64(&sb, url->lon);
-			sb.Append((const UTF8Char*)"/@");
+			sb.AppendC(UTF8STRC("/@"));
 			Text::SBAppendF64(&sb, url->lat);
-			sb.Append((const UTF8Char*)",");
+			sb.AppendC(UTF8STRC(","));
 			Text::SBAppendF64(&sb, url->lon);
-			sb.Append((const UTF8Char*)",19z");
+			sb.AppendC(UTF8STRC(",19z"));
 			ws->SetCellURL(url->row + urlAdd, url->col, sb.ToString());
 			i++;
 		}

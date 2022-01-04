@@ -265,16 +265,16 @@ void Media::Image::ToString(Text::StringBuilderUTF *sb)
 	this->info->ToString(sb);
 	if (this->HasHotSpot())
 	{
-		sb->Append((const UTF8Char*)"\r\nHot Spot: (");
+		sb->AppendC(UTF8STRC("\r\nHot Spot: ("));
 		sb->AppendOSInt(this->GetHotSpotX());
-		sb->Append((const UTF8Char*)", ");
+		sb->AppendC(UTF8STRC(", "));
 		sb->AppendOSInt(this->GetHotSpotY());
-		sb->Append((const UTF8Char*)")");
+		sb->AppendC(UTF8STRC(")"));
 	}
 
 	if (this->exif)
 	{
-		sb->Append((const UTF8Char*)"\r\n");
+		sb->AppendC(UTF8STRC("\r\n"));
 		this->exif->ToString(sb, 0);
 	}
 }

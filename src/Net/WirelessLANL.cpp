@@ -944,9 +944,9 @@ C0 05 01 2A 00 C0 FF C3 04 02 12 12 12 DD 1E 00
 					{
 					case 0:
 //						sbTmp.ClearStr();
-//						sbTmp.Append((const UTF8Char*)"IE ");
+//						sbTmp.AppendC(UTF8STRC("IE "));
 //						sbTmp.AppendI16(ieCmd);
-//						sbTmp.Append((const UTF8Char*)" - ");
+//						sbTmp.AppendC(UTF8STRC(" - "));
 //						sbTmp.Append(ptrCurr, ieSize);
 //						printf("%s\r\n", sbTmp.ToString());
 						break;

@@ -277,11 +277,11 @@ Bool Media::ImageList::ToValueString(Text::StringBuilderUTF *sb)
 		{
 			if (found)
 			{
-				sb->Append((const UTF8Char*)"\r\n");
+				sb->AppendC(UTF8STRC("\r\n"));
 			}
 			vt = this->valTypeStr->GetItem(i);
 			sb->Append(GetValueTypeName(vt));
-			sb->Append((const UTF8Char*)" = ");
+			sb->AppendC(UTF8STRC(" = "));
 			sb->Append(this->valStr->GetItem(i));
 			found = true;
 			i++;
@@ -295,11 +295,11 @@ Bool Media::ImageList::ToValueString(Text::StringBuilderUTF *sb)
 		{
 			if (found)
 			{
-				sb->Append((const UTF8Char*)"\r\n");
+				sb->AppendC(UTF8STRC("\r\n"));
 			}
 			vt = this->valTypeI32->GetItem(i);
 			sb->Append(GetValueTypeName(vt));
-			sb->Append((const UTF8Char*)" = ");
+			sb->AppendC(UTF8STRC(" = "));
 			v = this->valI32->GetItem(i);
 			if (vt == VT_FIRMWARE_VERSION)
 			{
@@ -326,11 +326,11 @@ Bool Media::ImageList::ToValueString(Text::StringBuilderUTF *sb)
 		{
 			if (found)
 			{
-				sb->Append((const UTF8Char*)"\r\n");
+				sb->AppendC(UTF8STRC("\r\n"));
 			}
 			vt = this->valTypeI64->GetItem(i);
 			sb->Append(GetValueTypeName(vt));
-			sb->Append((const UTF8Char*)" = ");
+			sb->AppendC(UTF8STRC(" = "));
 			v = this->valI64->GetItem(i);
 			if (vt == VT_CAPTURE_DATE)
 			{
@@ -369,14 +369,14 @@ void Media::ImageList::ToString(Text::StringBuilderUTF *sb)
 		{
 			if (hasData)
 			{
-				sb->Append((const UTF8Char*)"\r\n\r\n");
+				sb->AppendC(UTF8STRC("\r\n\r\n"));
 			}
 			hasData = true;
-			sb->Append((const UTF8Char*)"Image ");
+			sb->AppendC(UTF8STRC("Image "));
 			sb->AppendUOSInt(i);
-			sb->Append((const UTF8Char*)":\r\nDelay = ");
+			sb->AppendC(UTF8STRC(":\r\nDelay = "));
 			sb->AppendU32(delay);
-			sb->Append((const UTF8Char*)"\r\n");
+			sb->AppendC(UTF8STRC("\r\n"));
 			img->ToString(sb);
 		}
 		i++;

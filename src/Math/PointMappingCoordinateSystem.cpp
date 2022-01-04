@@ -177,27 +177,27 @@ void Math::PointMappingCoordinateSystem::ToString(Text::StringBuilderUTF *sb)
 	UOSInt i;
 	UOSInt j;
 	Double *ptItem;
-	sb->Append((const UTF8Char*)"Point Mapping File Name: ");
+	sb->AppendC(UTF8STRC("Point Mapping File Name: "));
 	sb->Append(this->sourceName);
-	sb->Append((const UTF8Char*)"\r\nCSys Name: ");
+	sb->AppendC(UTF8STRC("\r\nCSys Name: "));
 	sb->Append(this->csysName);
-	sb->Append((const UTF8Char*)"\r\nPoints:");
+	sb->AppendC(UTF8STRC("\r\nPoints:"));
 	i = 0;
 	j = this->mappingList->GetCount();
 	while (i < j)
 	{
 		ptItem = this->mappingList->GetItem(i);
-		sb->Append((const UTF8Char*)"\r\n");
+		sb->AppendC(UTF8STRC("\r\n"));
 		Text::SBAppendF64(sb, ptItem[0]);
-		sb->Append((const UTF8Char*)", ");
+		sb->AppendC(UTF8STRC(", "));
 		Text::SBAppendF64(sb, ptItem[1]);
-		sb->Append((const UTF8Char*)", ");
+		sb->AppendC(UTF8STRC(", "));
 		Text::SBAppendF64(sb, ptItem[2]);
-		sb->Append((const UTF8Char*)", ");
+		sb->AppendC(UTF8STRC(", "));
 		Text::SBAppendF64(sb, ptItem[3]);
 		i++;
 	}
-	sb->Append((const UTF8Char*)"\r\nBase Coordinate System:\r\n");
+	sb->AppendC(UTF8STRC("\r\nBase Coordinate System:\r\n"));
 	this->baseCSys->ToString(sb);
 }
 

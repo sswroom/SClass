@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "Stdafx.h"
 #include "MyMemory.h"
 #include "IO/FileViewStream.h"
 
@@ -61,20 +61,29 @@ Bool IO::FileViewStream::Recover()
 	return false;
 }
 
-UInt64 IO::FileViewStream::Seek(IO::SeekableStream::SeekType origin, Int64 position)
+UInt64 IO::FileViewStream::SeekFromBeginning(UInt64 position)
 {
-	switch (origin)
-	{
-	case IO::SeekableStream::ST_BEGIN:
-		this->currPos = position;
-		break;
-	case IO::SeekableStream::ST_CURRENT:
-		this->currPos += position;
-		break;
-	case IO::SeekableStream::ST_END:
-		this->currPos = this->length + position;
-		break;
-	}
+	this->currPos = position;
+	if (this->currPos > this->length)
+		this->currPos = this->length;
+	else if (this->currPos < 0)
+		this->currPos = 0;
+	return this->currPos;
+}
+
+UInt64 IO::FileViewStream::SeekFromCurrent(Int64 position)
+{
+	this->currPos += position;
+	if (this->currPos > this->length)
+		this->currPos = this->length;
+	else if (this->currPos < 0)
+		this->currPos = 0;
+	return this->currPos;
+}
+
+UInt64 IO::FileViewStream::SeekFromEnd(Int64 position)
+{
+	this->currPos = this->length + position;
 	if (this->currPos > this->length)
 		this->currPos = this->length;
 	else if (this->currPos < 0)

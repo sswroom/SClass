@@ -32,58 +32,58 @@ public:
 			switch (extIndex)
 			{
 			case 0:
-				sb->Append((const UTF8Char*)"RecvTime");
+				sb->AppendC(UTF8STRC("RecvTime"));
 				return true;
 			case 1:
-				sb->Append((const UTF8Char*)"Status1");
+				sb->AppendC(UTF8STRC("Status1"));
 				return true;
 			case 2:
-				sb->Append((const UTF8Char*)"Status2");
+				sb->AppendC(UTF8STRC("Status2"));
 				return true;
 			case 3:
-				sb->Append((const UTF8Char*)"Status3");
+				sb->AppendC(UTF8STRC("Status3"));
 				return true;
 			case 4:
-				sb->Append((const UTF8Char*)"ReportingCode");
+				sb->AppendC(UTF8STRC("ReportingCode"));
 				return true;
 			case 5:
-				sb->Append((const UTF8Char*)"AnalogCnt");
+				sb->AppendC(UTF8STRC("AnalogCnt"));
 				return true;
 			case 6:
-				sb->Append((const UTF8Char*)"RemoteAddr");
+				sb->AppendC(UTF8STRC("RemoteAddr"));
 				return true;
 			case 7:
-				sb->Append((const UTF8Char*)"ProcTime");
+				sb->AppendC(UTF8STRC("ProcTime"));
 				return true;
 			case 8:
-				sb->Append((const UTF8Char*)"ExtraSize");
+				sb->AppendC(UTF8STRC("ExtraSize"));
 				return true;
 			case 9:
-				sb->Append((const UTF8Char*)"HandlerType");
+				sb->AppendC(UTF8STRC("HandlerType"));
 				return true;
 			case 10:
-				sb->Append((const UTF8Char*)"MCC");
+				sb->AppendC(UTF8STRC("MCC"));
 				return true;
 			case 11:
-				sb->Append((const UTF8Char*)"MNC");
+				sb->AppendC(UTF8STRC("MNC"));
 				return true;
 			case 12:
-				sb->Append((const UTF8Char*)"LAC");
+				sb->AppendC(UTF8STRC("LAC"));
 				return true;
 			case 13:
-				sb->Append((const UTF8Char*)"CellId");
+				sb->AppendC(UTF8STRC("CellId"));
 				return true;
 			case 14:
-				sb->Append((const UTF8Char*)"SignalStrength");
+				sb->AppendC(UTF8STRC("SignalStrength"));
 				return true;
 			case 15:
-				sb->Append((const UTF8Char*)"DOP");
+				sb->AppendC(UTF8STRC("DOP"));
 				return true;
 			case 16:
-				sb->Append((const UTF8Char*)"IDType");
+				sb->AppendC(UTF8STRC("IDType"));
 				return true;
 			case 17:
-				sb->Append((const UTF8Char*)"DriverId");
+				sb->AppendC(UTF8STRC("DriverId"));
 				return true;
 			}
 		}
@@ -91,13 +91,13 @@ public:
 		{
 			if (extIndex & 1)
 			{
-				sb->Append((const UTF8Char*)"AnalogVal");
+				sb->AppendC(UTF8STRC("AnalogVal"));
 				sb->AppendUOSInt((extIndex - 8) >> 1);
 				return true;
 			}
 			else
 			{
-				sb->Append((const UTF8Char*)"AnalogId");
+				sb->AppendC(UTF8STRC("AnalogId"));
 				sb->AppendUOSInt((extIndex - 8) >> 1);
 				return true;
 			}
@@ -121,15 +121,15 @@ public:
 				}
 				return true;
 			case 1:
-				sb->Append((const UTF8Char*)"0x");
+				sb->AppendC(UTF8STRC("0x"));
 				sb->AppendHex32(ReadUInt32(&buff[8]));
 				return true;
 			case 2:
-				sb->Append((const UTF8Char*)"0x");
+				sb->AppendC(UTF8STRC("0x"));
 				sb->AppendHex32(ReadUInt32(&buff[12]));
 				return true;
 			case 3:
-				sb->Append((const UTF8Char*)"0x");
+				sb->AppendC(UTF8STRC("0x"));
 				sb->AppendHex32(ReadUInt32(&buff[16]));
 				return true;
 			case 4:
@@ -186,7 +186,7 @@ public:
 			}
 			else
 			{
-				sb->Append((const UTF8Char*)"0x");
+				sb->AppendC(UTF8STRC("0x"));
 				sb->AppendHex64(ReadUInt64(&buff[94 + (16 * ((extIndex - 18) >> 1)) + 8]));
 				return true;
 			}

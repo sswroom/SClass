@@ -59,13 +59,13 @@ Bool Text::HTMLUtil::HTMLWellFormat(Text::EncodingFactory *encFact, IO::Stream *
 			{
 				s = reader->GetNodeText();
 				Text::JSText::JSWellFormat(s->v, s->leng, reader->GetPathLev(), sb);
-				sb->Append((const UTF8Char*)"\r\n");
+				sb->AppendC(UTF8STRC("\r\n"));
 			}
 			else if (thisNT == Text::XMLNode::NT_TEXT && elementType == 3) //JSON
 			{
 				s = reader->GetNodeText();
 				Text::JSText::JSONWellFormat(s->v, s->leng, reader->GetPathLev(), sb);
-				sb->Append((const UTF8Char*)"\r\n");
+				sb->AppendC(UTF8STRC("\r\n"));
 			}
 			else if (thisNT == Text::XMLNode::NT_TEXT)
 			{
@@ -108,13 +108,13 @@ Bool Text::HTMLUtil::HTMLWellFormat(Text::EncodingFactory *encFact, IO::Stream *
 					sb->AppendChar('\t', reader->GetPathLev() + lev);
 					sb->AppendC(csptr, strLen);
 				}
-				sb->Append((const UTF8Char*)"\r\n");
+				sb->AppendC(UTF8STRC("\r\n"));
 			}
 			else
 			{
 				sb->AppendChar('\t', reader->GetPathLev() + lev);
 				reader->ToString(sb);
-				sb->Append((const UTF8Char*)"\r\n");
+				sb->AppendC(UTF8STRC("\r\n"));
 			}
 
 			elementType = 0;
@@ -412,7 +412,7 @@ Bool Text::HTMLUtil::XMLWellFormat(const UTF8Char *buff, UOSInt buffSize, UOSInt
 					sb->AppendChar(' ', lev << 1);
 				}
 				sb->AppendC(&buff[startOfst], currOfst - startOfst + 1);
-				sb->Append((const UTF8Char*)"\r\n");
+				sb->AppendC(UTF8STRC("\r\n"));
 				startType = 0;
 				startOfst = currOfst + 1;
 			}
@@ -425,7 +425,7 @@ Bool Text::HTMLUtil::XMLWellFormat(const UTF8Char *buff, UOSInt buffSize, UOSInt
 						sb->AppendChar(' ', lev << 1);
 					}
 					sb->AppendC(&buff[startOfst], currOfst - startOfst + 1);
-					sb->Append((const UTF8Char*)"\r\n");
+					sb->AppendC(UTF8STRC("\r\n"));
 					startType = 0;
 					startOfst = currOfst + 1;
 				}
@@ -441,7 +441,7 @@ Bool Text::HTMLUtil::XMLWellFormat(const UTF8Char *buff, UOSInt buffSize, UOSInt
 					}
 					lev++;
 					sb->AppendC(&buff[startOfst], currOfst - startOfst + 1);
-					sb->Append((const UTF8Char*)"\r\n");
+					sb->AppendC(UTF8STRC("\r\n"));
 					startType = 0;
 					startOfst = currOfst + 1;
 				}
@@ -457,7 +457,7 @@ Bool Text::HTMLUtil::XMLWellFormat(const UTF8Char *buff, UOSInt buffSize, UOSInt
 					sb->AppendChar(' ', lev << 1);
 				}
 				sb->AppendC(&buff[startOfst], currOfst - startOfst + 1);
-				sb->Append((const UTF8Char*)"\r\n");
+				sb->AppendC(UTF8STRC("\r\n"));
 				startType = 0;
 				startOfst = currOfst + 1;
 			}
@@ -472,7 +472,7 @@ Bool Text::HTMLUtil::XMLWellFormat(const UTF8Char *buff, UOSInt buffSize, UOSInt
 					}
 				}
 				sb->AppendC(&buff[startOfst], currOfst - startOfst + 1);
-				sb->Append((const UTF8Char*)"\r\n");
+				sb->AppendC(UTF8STRC("\r\n"));
 				startType = 0;
 				startOfst = currOfst + 1;
 			}

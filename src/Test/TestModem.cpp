@@ -18,9 +18,9 @@ UOSInt Test::TestModem::ListPorts(IO::Writer *writer)
 	while (i < j)
 	{
 		sb.ClearStr();
-		sb.Append((const UTF8Char*)"Port ");
+		sb.AppendC(UTF8STRC("Port "));
 		sb.AppendUOSInt(ports.GetItem(i));
-		sb.Append((const UTF8Char*)" - ");
+		sb.AppendC(UTF8STRC(" - "));
 		sb.Append(IO::SerialPort::GetPortTypeName(portTypes.GetItem(i)));
 		writer->WriteLine(sb.ToString());
 		i++;
@@ -38,7 +38,7 @@ void Test::TestModem::GSMModemTest(IO::Writer *writer, IO::GSMModemController *m
 	if (modem->GSMGetManufacturer(sbuff))
 	{
 		sb.ClearStr();
-		sb.Append((const UTF8Char*)"Manufacturer: ");
+		sb.AppendC(UTF8STRC("Manufacturer: "));
 		sb.Append(sbuff);
 		writer->WriteLine(sb.ToString());
 	}
@@ -50,7 +50,7 @@ void Test::TestModem::GSMModemTest(IO::Writer *writer, IO::GSMModemController *m
 	if (modem->GSMGetModelIdent(sbuff))
 	{
 		sb.ClearStr();
-		sb.Append((const UTF8Char*)"Model: ");
+		sb.AppendC(UTF8STRC("Model: "));
 		sb.Append(sbuff);
 		writer->WriteLine(sb.ToString());
 	}
@@ -62,7 +62,7 @@ void Test::TestModem::GSMModemTest(IO::Writer *writer, IO::GSMModemController *m
 	if (modem->GSMGetModemVer(sbuff))
 	{
 		sb.ClearStr();
-		sb.Append((const UTF8Char*)"Modem Ver: ");
+		sb.AppendC(UTF8STRC("Modem Ver: "));
 		sb.Append(sbuff);
 		writer->WriteLine(sb.ToString());
 	}
@@ -74,7 +74,7 @@ void Test::TestModem::GSMModemTest(IO::Writer *writer, IO::GSMModemController *m
 	if (modem->GSMGetIMEI(sbuff))
 	{
 		sb.ClearStr();
-		sb.Append((const UTF8Char*)"IMEI: ");
+		sb.AppendC(UTF8STRC("IMEI: "));
 		sb.Append(sbuff);
 		writer->WriteLine(sb.ToString());
 	}
@@ -86,7 +86,7 @@ void Test::TestModem::GSMModemTest(IO::Writer *writer, IO::GSMModemController *m
 	if (modem->GSMGetTECharset(sbuff))
 	{
 		sb.ClearStr();
-		sb.Append((const UTF8Char*)"TE Charset: ");
+		sb.AppendC(UTF8STRC("TE Charset: "));
 		sb.Append(sbuff);
 		writer->WriteLine(sb.ToString());
 	}
@@ -98,7 +98,7 @@ void Test::TestModem::GSMModemTest(IO::Writer *writer, IO::GSMModemController *m
 	if (modem->GSMGetIMSI(sbuff))
 	{
 		sb.ClearStr();
-		sb.Append((const UTF8Char*)"IMSI: ");
+		sb.AppendC(UTF8STRC("IMSI: "));
 		sb.Append(sbuff);
 		writer->WriteLine(sb.ToString());
 	}
@@ -110,7 +110,7 @@ void Test::TestModem::GSMModemTest(IO::Writer *writer, IO::GSMModemController *m
 	if (modem->GSMGetCurrOperator(sbuff))
 	{
 		sb.ClearStr();
-		sb.Append((const UTF8Char*)"Operator: ");
+		sb.AppendC(UTF8STRC("Operator: "));
 		sb.Append(sbuff);
 		writer->WriteLine(sb.ToString());
 	}
@@ -122,7 +122,7 @@ void Test::TestModem::GSMModemTest(IO::Writer *writer, IO::GSMModemController *m
 	if (modem->GSMGetCurrPLMN(sbuff))
 	{
 		sb.ClearStr();
-		sb.Append((const UTF8Char*)"PLMN: ");
+		sb.AppendC(UTF8STRC("PLMN: "));
 		sb.Append(sbuff);
 		writer->WriteLine(sb.ToString());
 	}
@@ -145,15 +145,15 @@ void Test::TestModem::GSMModemTest(IO::Writer *writer, IO::GSMModemController *m
 			{
 				oper = operList.GetItem(i);
 				sb.ClearStr();
-				sb.Append((const UTF8Char*)"-");
+				sb.AppendC(UTF8STRC("-"));
 				sb.Append(oper->shortName);
-				sb.Append((const UTF8Char*)", ");
+				sb.AppendC(UTF8STRC(", "));
 				sb.Append(oper->longName);
-				sb.Append((const UTF8Char*)", ");
+				sb.AppendC(UTF8STRC(", "));
 				sb.AppendI32(oper->plmn);
-				sb.Append((const UTF8Char*)", ");
+				sb.AppendC(UTF8STRC(", "));
 				sb.Append(IO::GSMModemController::OperStatusGetName(oper->status));
-				sb.Append((const UTF8Char*)", ");
+				sb.AppendC(UTF8STRC(", "));
 				sb.AppendI32(oper->netact);
 				writer->WriteLine(sb.ToString());
 				i++;
@@ -167,7 +167,7 @@ void Test::TestModem::GSMModemTest(IO::Writer *writer, IO::GSMModemController *m
 	}
 
 	sb.ClearStr();
-	sb.Append((const UTF8Char*)"SIM Status: ");
+	sb.AppendC(UTF8STRC("SIM Status: "));
 	sb.Append(IO::GSMModemController::SIMStatusGetName(modem->GSMGetSIMStatus()));
 	writer->WriteLine(sb.ToString());
 
@@ -176,10 +176,10 @@ void Test::TestModem::GSMModemTest(IO::Writer *writer, IO::GSMModemController *m
 	if (modem->GSMGetSignalQuality(&rssi, &ber))
 	{
 		sb.ClearStr();
-		sb.Append((const UTF8Char*)"RSSI: ");
+		sb.AppendC(UTF8STRC("RSSI: "));
 		IO::GSMModemController::GetRSSIString(sbuff, rssi);
 		sb.Append(sbuff);
-		sb.Append((const UTF8Char*)", BER: ");
+		sb.AppendC(UTF8STRC(", BER: "));
 		IO::GSMModemController::GetBERString(sbuff, ber);
 		sb.Append(sbuff);
 		writer->WriteLine(sb.ToString());
@@ -193,7 +193,7 @@ void Test::TestModem::GSMModemTest(IO::Writer *writer, IO::GSMModemController *m
 	if (modem->GSMGetModemTime(&dt))
 	{
 		sb.ClearStr();
-		sb.Append((const UTF8Char*)"Clock: ");
+		sb.AppendC(UTF8STRC("Clock: "));
 		sb.AppendDate(&dt);
 		writer->WriteLine(sb.ToString());
 	}
@@ -205,7 +205,7 @@ void Test::TestModem::GSMModemTest(IO::Writer *writer, IO::GSMModemController *m
 	if (modem->SMSGetSMSC(sbuff))
 	{
 		sb.ClearStr();
-		sb.Append((const UTF8Char*)"SMSC: ");
+		sb.AppendC(UTF8STRC("SMSC: "));
 		sb.Append(sbuff);
 		writer->WriteLine(sb.ToString());
 	}
@@ -226,11 +226,11 @@ void Test::TestModem::GSMModemTest(IO::Writer *writer, IO::GSMModemController *m
 		{
 			sms = smsList.GetItem(i);
 			sb.ClearStr();
-			sb.Append((const UTF8Char*)"-");
+			sb.AppendC(UTF8STRC("-"));
 			sb.AppendI32(sms->index);
-			sb.Append((const UTF8Char*)", ");
+			sb.AppendC(UTF8STRC(", "));
 			sb.AppendHexBuff(sms->pduMessage, sms->pduLeng, 0, Text::LineBreakType::None);
-			sb.Append((const UTF8Char*)", ");
+			sb.AppendC(UTF8STRC(", "));
 			sb.AppendI32(sms->status);
 			writer->WriteLine(sb.ToString());
 			i++;

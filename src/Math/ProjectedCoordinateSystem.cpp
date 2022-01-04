@@ -128,21 +128,21 @@ Bool Math::ProjectedCoordinateSystem::IsProjected()
 
 void Math::ProjectedCoordinateSystem::ToString(Text::StringBuilderUTF *sb)
 {
-	sb->Append((const UTF8Char*)"Projected File Name: ");
+	sb->AppendC(UTF8STRC("Projected File Name: "));
 	sb->Append(this->sourceName);
-	sb->Append((const UTF8Char*)"\r\nProjected Name: ");
+	sb->AppendC(UTF8STRC("\r\nProjected Name: "));
 	sb->Append(this->csysName);
-	sb->Append((const UTF8Char*)"\r\nFalse Easting: ");
+	sb->AppendC(UTF8STRC("\r\nFalse Easting: "));
 	Text::SBAppendF64(sb, this->falseEasting);
-	sb->Append((const UTF8Char*)"\r\nFalse Northing: ");
+	sb->AppendC(UTF8STRC("\r\nFalse Northing: "));
 	Text::SBAppendF64(sb, this->falseNorthing);
-	sb->Append((const UTF8Char*)"\r\nCentral Meridian: ");
+	sb->AppendC(UTF8STRC("\r\nCentral Meridian: "));
 	Text::SBAppendF64(sb, this->centralMeridian);
-	sb->Append((const UTF8Char*)"\r\nLatitude Of Origin: ");
+	sb->AppendC(UTF8STRC("\r\nLatitude Of Origin: "));
 	Text::SBAppendF64(sb, this->latitudeOfOrigin);
-	sb->Append((const UTF8Char*)"\r\nScale Factor: ");
+	sb->AppendC(UTF8STRC("\r\nScale Factor: "));
 	Text::SBAppendF64(sb, this->scaleFactor);
-	sb->Append((const UTF8Char*)"\r\n");
+	sb->AppendC(UTF8STRC("\r\n"));
 	this->gcs->ToString(sb);
 }
 

@@ -51,58 +51,58 @@ public:
 		switch (extIndex)
 		{
 		case 0:
-			sb->Append((const UTF8Char*)"TermId");
+			sb->AppendC(UTF8STRC("TermId"));
 			return true;
 		case 1:
-			sb->Append((const UTF8Char*)"Status");
+			sb->AppendC(UTF8STRC("Status"));
 			return true;
 		case 2:
-			sb->Append((const UTF8Char*)"InStatus");
+			sb->AppendC(UTF8STRC("InStatus"));
 			return true;
 		case 3:
-			sb->Append((const UTF8Char*)"OutStatus");
+			sb->AppendC(UTF8STRC("OutStatus"));
 			return true;
 		case 4:
-			sb->Append((const UTF8Char*)"FixMode");
+			sb->AppendC(UTF8STRC("FixMode"));
 			return true;
 		case 5:
-			sb->Append((const UTF8Char*)"GPSFix");
+			sb->AppendC(UTF8STRC("GPSFix"));
 			return true;
 		case 6:
-			sb->Append((const UTF8Char*)"PDOP");
+			sb->AppendC(UTF8STRC("PDOP"));
 			return true;
 		case 7:
-			sb->Append((const UTF8Char*)"HDOP");
+			sb->AppendC(UTF8STRC("HDOP"));
 			return true;
 		case 8:
-			sb->Append((const UTF8Char*)"VDOP");
+			sb->AppendC(UTF8STRC("VDOP"));
 			return true;
 		case 9:
-			sb->Append((const UTF8Char*)"ADC1");
+			sb->AppendC(UTF8STRC("ADC1"));
 			return true;
 		case 10:
-			sb->Append((const UTF8Char*)"ADC2");
+			sb->AppendC(UTF8STRC("ADC2"));
 			return true;
 		case 11:
-			sb->Append((const UTF8Char*)"DevType");
+			sb->AppendC(UTF8STRC("DevType"));
 			return true;
 		case 12:
-			sb->Append((const UTF8Char*)"Temper1");
+			sb->AppendC(UTF8STRC("Temper1"));
 			return true;
 		case 13:
-			sb->Append((const UTF8Char*)"Temper2");
+			sb->AppendC(UTF8STRC("Temper2"));
 			return true;
 		case 14:
-			sb->Append((const UTF8Char*)"Temper3");
+			sb->AppendC(UTF8STRC("Temper3"));
 			return true;
 		case 15:
-			sb->Append((const UTF8Char*)"CliIP");
+			sb->AppendC(UTF8STRC("CliIP"));
 			return true;
 		case 16:
-			sb->Append((const UTF8Char*)"CliPort");
+			sb->AppendC(UTF8STRC("CliPort"));
 			return true;
 		case 17:
-			sb->Append((const UTF8Char*)"RecvTime");
+			sb->AppendC(UTF8STRC("RecvTime"));
 			return true;
 		}
 		return false;
@@ -120,15 +120,15 @@ public:
 			sb->AppendI64(extInfo->termId);
 			return true;
 		case 1:
-			sb->Append((const UTF8Char*)"0x");
+			sb->AppendC(UTF8STRC("0x"));
 			sb->AppendHex32(extInfo->status);
 			return true;
 		case 2:
-			sb->Append((const UTF8Char*)"0x");
+			sb->AppendC(UTF8STRC("0x"));
 			sb->AppendHex32(extInfo->inStatus);
 			return true;
 		case 3:
-			sb->Append((const UTF8Char*)"0x");
+			sb->AppendC(UTF8STRC("0x"));
 			sb->AppendHex32(extInfo->outStatus);
 			return true;
 		case 4:

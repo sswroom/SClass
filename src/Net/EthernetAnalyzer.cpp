@@ -901,87 +901,87 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, UOSInt packetSize, U
 				{
 					sb.ClearStr();
 					sb.AppendDate(&dt);
-					sb.Append((const UTF8Char*)" ICMP ");
+					sb.AppendC(UTF8STRC(" ICMP "));
 					switch (ipData[0])
 					{
 					case 0:
-						sb.Append((const UTF8Char*)"Ping Reply to ");
+						sb.AppendC(UTF8STRC("Ping Reply to "));
 						break;
 					case 3:
-						sb.Append((const UTF8Char*)"Destination unreachable (");
+						sb.AppendC(UTF8STRC("Destination unreachable ("));
 						switch (ipData[1])
 						{
 						case 0:
-							sb.Append((const UTF8Char*)"Network unreachable error");
+							sb.AppendC(UTF8STRC("Network unreachable error"));
 							break;
 						case 1:
-							sb.Append((const UTF8Char*)"Protocol unreachable error");
+							sb.AppendC(UTF8STRC("Protocol unreachable error"));
 							break;
 						case 2:
-							sb.Append((const UTF8Char*)"Host unreachable error");
+							sb.AppendC(UTF8STRC("Host unreachable error"));
 							break;
 						case 3:
-							sb.Append((const UTF8Char*)"Port unreachable error");
+							sb.AppendC(UTF8STRC("Port unreachable error"));
 							break;
 						case 4:
-							sb.Append((const UTF8Char*)"The datagram is too big");
+							sb.AppendC(UTF8STRC("The datagram is too big"));
 							break;
 						case 5:
-							sb.Append((const UTF8Char*)"Source route failed error");
+							sb.AppendC(UTF8STRC("Source route failed error"));
 							break;
 						case 6:
-							sb.Append((const UTF8Char*)"Destination network unknown error");
+							sb.AppendC(UTF8STRC("Destination network unknown error"));
 							break;
 						case 7:
-							sb.Append((const UTF8Char*)"Destination host unknown error");
+							sb.AppendC(UTF8STRC("Destination host unknown error"));
 							break;
 						case 8:
-							sb.Append((const UTF8Char*)"Source host isolated error");
+							sb.AppendC(UTF8STRC("Source host isolated error"));
 							break;
 						case 9:
-							sb.Append((const UTF8Char*)"The destination network is administratively prohibited");
+							sb.AppendC(UTF8STRC("The destination network is administratively prohibited"));
 							break;
 						case 10:
-							sb.Append((const UTF8Char*)"The destination host is administratively prohibited");
+							sb.AppendC(UTF8STRC("The destination host is administratively prohibited"));
 							break;
 						case 11:
-							sb.Append((const UTF8Char*)"The network is unreachable for Type Of Service");
+							sb.AppendC(UTF8STRC("The network is unreachable for Type Of Service"));
 							break;
 						case 12:
-							sb.Append((const UTF8Char*)"The host is unreachable for Type Of Service");
+							sb.AppendC(UTF8STRC("The host is unreachable for Type Of Service"));
 							break;
 						case 13:
-							sb.Append((const UTF8Char*)"Communication Administratively Prohibited");
+							sb.AppendC(UTF8STRC("Communication Administratively Prohibited"));
 							break;
 						case 14:
-							sb.Append((const UTF8Char*)"Host precedence violation");
+							sb.AppendC(UTF8STRC("Host precedence violation"));
 							break;
 						case 15:
-							sb.Append((const UTF8Char*)"Precedence cutoff in effect");
+							sb.AppendC(UTF8STRC("Precedence cutoff in effect"));
 							break;
 						default:
 							sb.AppendU16(ipData[1]);
 							break;
 						}
-						sb.Append((const UTF8Char*)") to ");
+						sb.AppendC(UTF8STRC(") to "));
 						break;
 					case 8:
-						sb.Append((const UTF8Char*)"Ping Request to ");
+						sb.AppendC(UTF8STRC("Ping Request to "));
 						break;
 					case 11:
-						sb.Append((const UTF8Char*)"Time Exceeded to ");
+						sb.AppendC(UTF8STRC("Time Exceeded to "));
 						break;
 					default:
-						sb.Append((const UTF8Char*)"Unknown (");
+						sb.AppendC(UTF8STRC("Unknown ("));
 						sb.AppendU16(ipData[0]);
-						sb.Append((const UTF8Char*)") to ");
+						sb.AppendC(UTF8STRC(") to "));
 						break;
 					}
 					Net::SocketUtil::GetIPv4Name(sbuff, ip->destIP);
 					sb.Append(sbuff);
-					sb.Append((const UTF8Char*)", ttl = ");
+					sb.AppendC(UTF8STRC(", ttl = "));
 					sb.AppendU16(packet[8]);
-					sb.Append((const UTF8Char*)", size = ");
+					sb.AppendC(UTF8STRC(", size = "));
 					sb.AppendUOSInt(ipDataSize);
 					Sync::MutexUsage mutUsage(ipLog->mut);
 					while (ipLog->logList->GetCount() >= IPLOGCNT)
@@ -1010,87 +1010,87 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, UOSInt packetSize, U
 				{
 					sb.ClearStr();
 					sb.AppendDate(&dt);
-					sb.Append((const UTF8Char*)" ICMP ");
+					sb.AppendC(UTF8STRC(" ICMP "));
 					switch (ipData[0])
 					{
 					case 0:
-						sb.Append((const UTF8Char*)"Ping Reply from ");
+						sb.AppendC(UTF8STRC("Ping Reply from "));
 						break;
 					case 3:
-						sb.Append((const UTF8Char*)"Destination unreachable (");
+						sb.AppendC(UTF8STRC("Destination unreachable ("));
 						switch (ipData[1])
 						{
 						case 0:
-							sb.Append((const UTF8Char*)"Network unreachable error");
+							sb.AppendC(UTF8STRC("Network unreachable error"));
 							break;
 						case 1:
-							sb.Append((const UTF8Char*)"Protocol unreachable error");
+							sb.AppendC(UTF8STRC("Protocol unreachable error"));
 							break;
 						case 2:
-							sb.Append((const UTF8Char*)"Host unreachable error");
+							sb.AppendC(UTF8STRC("Host unreachable error"));
 							break;
 						case 3:
-							sb.Append((const UTF8Char*)"Port unreachable error");
+							sb.AppendC(UTF8STRC("Port unreachable error"));
 							break;
 						case 4:
-							sb.Append((const UTF8Char*)"The datagram is too big");
+							sb.AppendC(UTF8STRC("The datagram is too big"));
 							break;
 						case 5:
-							sb.Append((const UTF8Char*)"Source route failed error");
+							sb.AppendC(UTF8STRC("Source route failed error"));
 							break;
 						case 6:
-							sb.Append((const UTF8Char*)"Destination network unknown error");
+							sb.AppendC(UTF8STRC("Destination network unknown error"));
 							break;
 						case 7:
-							sb.Append((const UTF8Char*)"Destination host unknown error");
+							sb.AppendC(UTF8STRC("Destination host unknown error"));
 							break;
 						case 8:
-							sb.Append((const UTF8Char*)"Source host isolated error");
+							sb.AppendC(UTF8STRC("Source host isolated error"));
 							break;
 						case 9:
-							sb.Append((const UTF8Char*)"The destination network is administratively prohibited");
+							sb.AppendC(UTF8STRC("The destination network is administratively prohibited"));
 							break;
 						case 10:
-							sb.Append((const UTF8Char*)"The destination host is administratively prohibited");
+							sb.AppendC(UTF8STRC("The destination host is administratively prohibited"));
 							break;
 						case 11:
-							sb.Append((const UTF8Char*)"The network is unreachable for Type Of Service");
+							sb.AppendC(UTF8STRC("The network is unreachable for Type Of Service"));
 							break;
 						case 12:
-							sb.Append((const UTF8Char*)"The host is unreachable for Type Of Service");
+							sb.AppendC(UTF8STRC("The host is unreachable for Type Of Service"));
 							break;
 						case 13:
-							sb.Append((const UTF8Char*)"Communication Administratively Prohibited");
+							sb.AppendC(UTF8STRC("Communication Administratively Prohibited"));
 							break;
 						case 14:
-							sb.Append((const UTF8Char*)"Host precedence violation");
+							sb.AppendC(UTF8STRC("Host precedence violation"));
 							break;
 						case 15:
-							sb.Append((const UTF8Char*)"Precedence cutoff in effect");
+							sb.AppendC(UTF8STRC("Precedence cutoff in effect"));
 							break;
 						default:
 							sb.AppendU16(ipData[1]);
 							break;
 						}
-						sb.Append((const UTF8Char*)") from ");
+						sb.AppendC(UTF8STRC(") from "));
 						break;
 					case 8:
-						sb.Append((const UTF8Char*)"Ping Request from ");
+						sb.AppendC(UTF8STRC("Ping Request from "));
 						break;
 					case 11:
-						sb.Append((const UTF8Char*)"Time Exceeded from ");
+						sb.AppendC(UTF8STRC("Time Exceeded from "));
 						break;
 					default:
-						sb.Append((const UTF8Char*)"Unknown (");
+						sb.AppendC(UTF8STRC("Unknown ("));
 						sb.AppendU16(ipData[0]);
-						sb.Append((const UTF8Char*)") from ");
+						sb.AppendC(UTF8STRC(") from "));
 						break;
 					}
 					Net::SocketUtil::GetIPv4Name(sbuff, ip->srcIP);
 					sb.Append(sbuff);
-					sb.Append((const UTF8Char*)", ttl = ");
+					sb.AppendC(UTF8STRC(", ttl = "));
 					sb.AppendU16(packet[8]);
-					sb.Append((const UTF8Char*)", size = ");
+					sb.AppendC(UTF8STRC(", size = "));
 					sb.AppendUOSInt(ipDataSize);
 					Sync::MutexUsage mutUsage(ipLog->mut);
 					while (ipLog->logList->GetCount() >= IPLOGCNT)
@@ -1491,9 +1491,9 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, UOSInt packetSize, U
 									Data::DateTime dt;
 									dt.SetCurrTime();
 									sb.AppendDate(&dt);
-									sb.Append((const UTF8Char*)" UDP Port ");
+									sb.AppendC(UTF8STRC(" UDP Port "));
 									sb.AppendU16(srcPort);
-									sb.Append((const UTF8Char*)" NTP request to ");
+									sb.AppendC(UTF8STRC(" NTP request to "));
 									Net::SocketUtil::GetIPv4Name(sbuff, ip->destIP);
 									sb.Append(sbuff);
 									Sync::MutexUsage mutUsage(ipLog->mut);
@@ -1526,12 +1526,12 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, UOSInt packetSize, U
 									Data::DateTime dt;
 									dt.SetCurrTime();
 									sb.AppendDate(&dt);
-									sb.Append((const UTF8Char*)" UDP Port ");
+									sb.AppendC(UTF8STRC(" UDP Port "));
 									sb.AppendU16(destPort);
-									sb.Append((const UTF8Char*)" NTP reply from ");
+									sb.AppendC(UTF8STRC(" NTP reply from "));
 									Net::SocketUtil::GetIPv4Name(sbuff, ip->srcIP);
 									sb.Append(sbuff);
-									sb.Append((const UTF8Char*)", time = ");
+									sb.AppendC(UTF8STRC(", time = "));
 									Net::NTPServer::ReadTime(&ipData[40], &dt);
 									dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
 									sb.Append(sbuff);
@@ -1709,16 +1709,16 @@ FF FF FF FF FF FF 00 11 32 0A AB 9C 08 00 45 00
 							Data::DateTime dt;
 							dt.SetCurrTime();
 							sb.AppendDate(&dt);
-							sb.Append((const UTF8Char*)" UDP Port ");
+							sb.AppendC(UTF8STRC(" UDP Port "));
 							sb.AppendU16(srcPort);
-							sb.Append((const UTF8Char*)" SSDP to ");
+							sb.AppendC(UTF8STRC(" SSDP to "));
 							Net::SocketUtil::GetIPv4Name(sbuff, ip->destIP);
 							sb.Append(sbuff);
 //							ipData[udpLeng] = 0;
 							UOSInt i = Text::StrIndexOf(&ipData[8], (const UTF8Char*)" * ");
 							if (i != INVALID_INDEX && i > 0)
 							{
-								sb.Append((const UTF8Char*)", method = ");
+								sb.AppendC(UTF8STRC(", method = "));
 								sb.AppendC(&ipData[8], i);
 							}
 							Sync::MutexUsage mutUsage(ipLog->mut);

@@ -4899,41 +4899,41 @@ Bool Manage::DasmARM::Disasm32(IO::Writer *writer, Manage::AddressResolver *addr
 
 		outStr->ClearStr();
 		outStr->AppendHex32((UInt32)sess.regs.SP);
-		outStr->Append((const UTF8Char*)" ");
+		outStr->AppendC(UTF8STRC(" "));
 		outStr->AppendHex32((UInt32)sess.regs.LR);
-		outStr->Append((const UTF8Char*)" ");
+		outStr->AppendC(UTF8STRC(" "));
 		outStr->AppendHex32((UInt32)sess.regs.PC);
-		outStr->Append((const UTF8Char*)" ");
+		outStr->AppendC(UTF8STRC(" "));
 		outStr->AppendHex32((UInt32)sess.regs.CPSR);
-		outStr->Append((const UTF8Char*)" ");
+		outStr->AppendC(UTF8STRC(" "));
 		if (fullRegs)
 		{
 			outStr->AppendHex32((UInt32)sess.regs.R0);
-			outStr->Append((const UTF8Char*)" ");
+			outStr->AppendC(UTF8STRC(" "));
 			outStr->AppendHex32((UInt32)sess.regs.R1);
-			outStr->Append((const UTF8Char*)" ");
+			outStr->AppendC(UTF8STRC(" "));
 			outStr->AppendHex32((UInt32)sess.regs.R2);
-			outStr->Append((const UTF8Char*)" ");
+			outStr->AppendC(UTF8STRC(" "));
 			outStr->AppendHex32((UInt32)sess.regs.R3);
-			outStr->Append((const UTF8Char*)" ");
+			outStr->AppendC(UTF8STRC(" "));
 			outStr->AppendHex32((UInt32)sess.regs.R4);
-			outStr->Append((const UTF8Char*)" ");
+			outStr->AppendC(UTF8STRC(" "));
 			outStr->AppendHex32((UInt32)sess.regs.R5);
-			outStr->Append((const UTF8Char*)" ");
+			outStr->AppendC(UTF8STRC(" "));
 			outStr->AppendHex32((UInt32)sess.regs.R6);
-			outStr->Append((const UTF8Char*)" ");
+			outStr->AppendC(UTF8STRC(" "));
 			outStr->AppendHex32((UInt32)sess.regs.R7);
-			outStr->Append((const UTF8Char*)" ");
+			outStr->AppendC(UTF8STRC(" "));
 			outStr->AppendHex32((UInt32)sess.regs.R8);
-			outStr->Append((const UTF8Char*)" ");
+			outStr->AppendC(UTF8STRC(" "));
 			outStr->AppendHex32((UInt32)sess.regs.R9);
-			outStr->Append((const UTF8Char*)" ");
+			outStr->AppendC(UTF8STRC(" "));
 			outStr->AppendHex32((UInt32)sess.regs.R10);
-			outStr->Append((const UTF8Char*)" ");
+			outStr->AppendC(UTF8STRC(" "));
 			outStr->AppendHex32((UInt32)sess.regs.FP);
-			outStr->Append((const UTF8Char*)" ");
+			outStr->AppendC(UTF8STRC(" "));
 			outStr->AppendHex32((UInt32)sess.regs.IP);
-			outStr->Append((const UTF8Char*)" ");
+			outStr->AppendC(UTF8STRC(" "));
 		}
 		sess.sbuff = sbuff;
 		oriPC = sess.regs.PC;
@@ -4962,13 +4962,13 @@ Bool Manage::DasmARM::Disasm32(IO::Writer *writer, Manage::AddressResolver *addr
 		if (!ret)
 		{
 			OSInt buffSize;
-			outStr->Append((const UTF8Char*)"Unknown opcode ");
+			outStr->AppendC(UTF8STRC("Unknown opcode "));
 			buffSize = sess.memReader->ReadMemory(oriPC, buff, 16);
 			if (buffSize > 0)
 			{
 				outStr->AppendHexBuff(buff, buffSize, ' ', Text::LineBreakType::None);
 			}
-			outStr->Append((const UTF8Char*)"\r\n");
+			outStr->AppendC(UTF8STRC("\r\n"));
 			writer->Write(outStr->ToString());
 			DEL_CLASS(outStr);
 			return false;

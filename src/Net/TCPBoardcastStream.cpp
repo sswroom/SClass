@@ -19,10 +19,10 @@ void __stdcall Net::TCPBoardcastStream::ConnHandler(Socket *s, void *userObj)
 		me->writeBuffSize = 0;
 		if (me->log)
 		{
-			sb.Append((const UTF8Char*)"Sending to ");
+			sb.AppendC(UTF8STRC("Sending to "));
 			me->sockf->GetRemoteName(sbuff, s);
 			sb.Append(sbuff);
-			sb.Append((const UTF8Char*)" with ");
+			sb.AppendC(UTF8STRC(" with "));
 			sb.AppendUOSInt(size);
 			me->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_RAW);
 		}
@@ -52,10 +52,10 @@ void __stdcall Net::TCPBoardcastStream::ClientData(Net::TCPClient *cli, void *us
 	UTF8Char sbuff[32];
 	if (me->log)
 	{
-		sb.Append((const UTF8Char*)"Recv from ");
+		sb.AppendC(UTF8STRC("Recv from "));
 		cli->GetRemoteName(sbuff);
 		sb.Append(sbuff);
-		sb.Append((const UTF8Char*)" with ");
+		sb.AppendC(UTF8STRC(" with "));
 		sb.AppendUOSInt(size);
 		me->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_RAW);
 	}
@@ -92,7 +92,7 @@ void __stdcall Net::TCPBoardcastStream::ClientData(Net::TCPClient *cli, void *us
 	if (me->log)
 	{
 		sb.ClearStr();
-		sb.Append((const UTF8Char*)"Recv readBuffPtr2 = ");
+		sb.AppendC(UTF8STRC("Recv readBuffPtr2 = "));
 		sb.AppendUOSInt(me->readBuffPtr2);
 		me->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_RAW);
 	}
@@ -105,7 +105,7 @@ void __stdcall Net::TCPBoardcastStream::ClientTimeout(Net::TCPClient *cli, void 
 	{
 		Text::StringBuilderUTF8 sb;
 		UTF8Char sbuff[32];
-		sb.Append((const UTF8Char*)"Timeout processing ");
+		sb.AppendC(UTF8STRC("Timeout processing "));
 		cli->GetRemoteName(sbuff);
 		sb.Append(sbuff);
 		me->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_RAW);
@@ -195,9 +195,9 @@ UOSInt Net::TCPBoardcastStream::Read(UInt8 *buff, UOSInt size)
 	if (this->log)
 	{
 		Text::StringBuilderUTF8 sb;
-		sb.Append((const UTF8Char*)"TBS ");
+		sb.AppendC(UTF8STRC("TBS "));
 		sb.AppendUOSInt(size);
-		sb.Append((const UTF8Char*)" bytes returned");
+		sb.AppendC(UTF8STRC(" bytes returned"));
 		this->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_RAW);
 	}
 	return size;
@@ -223,10 +223,10 @@ UOSInt Net::TCPBoardcastStream::Write(const UInt8 *buff, UOSInt size)
 		if (this->log)
 		{
 			sb.ClearStr();
-			sb.Append((const UTF8Char*)"Sending to ");
+			sb.AppendC(UTF8STRC("Sending to "));
 			cli->GetRemoteName(sbuff);
 			sb.Append(sbuff);
-			sb.Append((const UTF8Char*)" with ");
+			sb.AppendC(UTF8STRC(" with "));
 			sb.AppendUOSInt(size);
 			this->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_RAW);
 		}

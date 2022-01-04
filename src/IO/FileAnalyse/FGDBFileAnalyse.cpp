@@ -132,9 +132,9 @@ Bool IO::FileAnalyse::FGDBFileAnalyse::GetFrameName(UOSInt index, Text::StringBu
 	if (tag == 0)
 		return false;
 	sb->AppendU64(tag->ofst);
-	sb->Append((const UTF8Char*)": Type=");
+	sb->AppendC(UTF8STRC(": Type="));
 	sb->Append(TagTypeGetName(tag->tagType));
-	sb->Append((const UTF8Char*)", size=");
+	sb->AppendC(UTF8STRC(", size="));
 	sb->AppendUOSInt(tag->size);
 	return true;
 }

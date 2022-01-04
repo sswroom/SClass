@@ -151,18 +151,18 @@ Bool Net::SSDPClient::IsError()
 Bool Net::SSDPClient::Scan()
 {
 	Text::StringBuilderUTF8 sb;
-	sb.Append((const UTF8Char*)"M-SEARCH * HTTP/1.1\r\n");
-	sb.Append((const UTF8Char*)"Host: 239.255.255.250:1900\r\n");
-	sb.Append((const UTF8Char*)"Man: \"ssdp:discover\"\r\n");
-	sb.Append((const UTF8Char*)"ST: ssdp:all\r\n");
-	sb.Append((const UTF8Char*)"MX: 3\r\n");
+	sb.AppendC(UTF8STRC("M-SEARCH * HTTP/1.1\r\n"));
+	sb.AppendC(UTF8STRC("Host: 239.255.255.250:1900\r\n"));
+	sb.AppendC(UTF8STRC("Man: \"ssdp:discover\"\r\n"));
+	sb.AppendC(UTF8STRC("ST: ssdp:all\r\n"));
+	sb.AppendC(UTF8STRC("MX: 3\r\n"));
 	if (this->userAgent)
 	{
-		sb.Append((const UTF8Char*)"User-Agent: ");
+		sb.AppendC(UTF8STRC("User-Agent: "));
 		sb.Append(this->userAgent);
-		sb.Append((const UTF8Char*)"\r\n");
+		sb.AppendC(UTF8STRC("\r\n"));
 	}
-	sb.Append((const UTF8Char*)"\r\n\r\n");
+	sb.AppendC(UTF8STRC("\r\n\r\n"));
 	Net::SocketUtil::AddressInfo addr;
 	Net::SocketUtil::GetIPAddr((const UTF8Char*)"239.255.255.250", &addr);
 	return this->udp->SendTo(&addr, 1900, sb.ToString(), sb.GetLength());

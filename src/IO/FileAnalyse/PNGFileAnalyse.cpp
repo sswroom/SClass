@@ -107,11 +107,11 @@ Bool IO::FileAnalyse::PNGFileAnalyse::GetFrameName(UOSInt index, Text::StringBui
 	if (tag == 0)
 		return false;
 	sb->AppendU64(tag->ofst);
-	sb->Append((const UTF8Char*)": Type=");
+	sb->AppendC(UTF8STRC(": Type="));
 	sb->AppendC((UTF8Char*)&tag->tagType, 4);
-	sb->Append((const UTF8Char*)", size=");
+	sb->AppendC(UTF8STRC(", size="));
 	sb->AppendUOSInt(tag->size);
-	sb->Append((const UTF8Char*)", CRC=0x");
+	sb->AppendC(UTF8STRC(", CRC=0x"));
 	sb->AppendHex32(tag->crc);
 	return true;
 }
@@ -122,31 +122,31 @@ Bool IO::FileAnalyse::PNGFileAnalyse::GetFrameDetail(UOSInt index, Text::StringB
 	IO::FileAnalyse::PNGFileAnalyse::PNGTag *tag = this->tags->GetItem(index);
 	if (tag == 0)
 		return false;
-	sb->Append((const UTF8Char*)"Tag");
+	sb->AppendC(UTF8STRC("Tag"));
 	sb->AppendUOSInt(index);
-	sb->Append((const UTF8Char*)"\r\nTagType = ");
+	sb->AppendC(UTF8STRC("\r\nTagType = "));
 	sb->AppendC((UTF8Char*)&tag->tagType, 4);
-	sb->Append((const UTF8Char*)"\r\nSize = ");
+	sb->AppendC(UTF8STRC("\r\nSize = "));
 	sb->AppendUOSInt(tag->size);
-	sb->Append((const UTF8Char*)"\r\nCRC = 0x");
+	sb->AppendC(UTF8STRC("\r\nCRC = 0x"));
 	sb->AppendHex32(tag->crc);
 	if (tag->tagType == *(Int32*)"IHDR")
 	{
 		tagData = MemAlloc(UInt8, tag->size);
 		this->fd->GetRealData(tag->ofst, tag->size, tagData);
-		sb->Append((const UTF8Char*)"\r\nWidth = ");
+		sb->AppendC(UTF8STRC("\r\nWidth = "));
 		sb->AppendI32(ReadMInt32(&tagData[8]));
-		sb->Append((const UTF8Char*)"\r\nHeight = ");
+		sb->AppendC(UTF8STRC("\r\nHeight = "));
 		sb->AppendI32(ReadMInt32(&tagData[12]));
-		sb->Append((const UTF8Char*)"\r\nBit depth = ");
+		sb->AppendC(UTF8STRC("\r\nBit depth = "));
 		sb->AppendU16(tagData[16]);
-		sb->Append((const UTF8Char*)"\r\nColor type = ");
+		sb->AppendC(UTF8STRC("\r\nColor type = "));
 		sb->AppendU16(tagData[17]);
-		sb->Append((const UTF8Char*)"\r\nCompression method = ");
+		sb->AppendC(UTF8STRC("\r\nCompression method = "));
 		sb->AppendU16(tagData[18]);
-		sb->Append((const UTF8Char*)"\r\nFilter method = ");
+		sb->AppendC(UTF8STRC("\r\nFilter method = "));
 		sb->AppendU16(tagData[19]);
-		sb->Append((const UTF8Char*)"\r\nInterlace method = ");
+		sb->AppendC(UTF8STRC("\r\nInterlace method = "));
 		sb->AppendU16(tagData[20]);
 
 		MemFree(tagData);
@@ -155,11 +155,11 @@ Bool IO::FileAnalyse::PNGFileAnalyse::GetFrameDetail(UOSInt index, Text::StringB
 	{
 		tagData = MemAlloc(UInt8, tag->size);
 		this->fd->GetRealData(tag->ofst, tag->size, tagData);
-		sb->Append((const UTF8Char*)"\r\nGamma = ");
+		sb->AppendC(UTF8STRC("\r\nGamma = "));
 		sb->AppendI32(ReadMInt32(&tagData[8]));
-		sb->Append((const UTF8Char*)" (");
+		sb->AppendC(UTF8STRC(" ("));
 		Text::SBAppendF64(sb, 100000.0 / ReadMInt32(&tagData[8]));
-		sb->Append((const UTF8Char*)")");
+		sb->AppendC(UTF8STRC(")"));
 
 		MemFree(tagData);
 	}
@@ -167,7 +167,7 @@ Bool IO::FileAnalyse::PNGFileAnalyse::GetFrameDetail(UOSInt index, Text::StringB
 	{
 		tagData = MemAlloc(UInt8, tag->size);
 		this->fd->GetRealData(tag->ofst, tag->size, tagData);
-		sb->Append((const UTF8Char*)"\r\nRendering intent = ");
+		sb->AppendC(UTF8STRC("\r\nRendering intent = "));
 		sb->AppendU16(tagData[8]);
 
 		MemFree(tagData);
@@ -176,24 +176,24 @@ Bool IO::FileAnalyse::PNGFileAnalyse::GetFrameDetail(UOSInt index, Text::StringB
 	{
 		tagData = MemAlloc(UInt8, tag->size);
 		this->fd->GetRealData(tag->ofst, tag->size, tagData);
-		sb->Append((const UTF8Char*)"\r\nWhite Point x = ");
+		sb->AppendC(UTF8STRC("\r\nWhite Point x = "));
 		Text::SBAppendF64(sb, ReadMInt32(&tagData[8]) / 100000.0);
-		sb->Append((const UTF8Char*)"\r\nWhite Point y = ");
+		sb->AppendC(UTF8STRC("\r\nWhite Point y = "));
 		Text::SBAppendF64(sb, ReadMInt32(&tagData[12]) / 100000.0);
 
-		sb->Append((const UTF8Char*)"\r\nRed x = ");
+		sb->AppendC(UTF8STRC("\r\nRed x = "));
 		Text::SBAppendF64(sb, ReadMInt32(&tagData[16]) / 100000.0);
-		sb->Append((const UTF8Char*)"\r\nRed y = ");
+		sb->AppendC(UTF8STRC("\r\nRed y = "));
 		Text::SBAppendF64(sb, ReadMInt32(&tagData[20]) / 100000.0);
 
-		sb->Append((const UTF8Char*)"\r\nGreen x = ");
+		sb->AppendC(UTF8STRC("\r\nGreen x = "));
 		Text::SBAppendF64(sb, ReadMInt32(&tagData[24]) / 100000.0);
-		sb->Append((const UTF8Char*)"\r\nGreen y = ");
+		sb->AppendC(UTF8STRC("\r\nGreen y = "));
 		Text::SBAppendF64(sb, ReadMInt32(&tagData[28]) / 100000.0);
 
-		sb->Append((const UTF8Char*)"\r\nBlue x = ");
+		sb->AppendC(UTF8STRC("\r\nBlue x = "));
 		Text::SBAppendF64(sb, ReadMInt32(&tagData[32]) / 100000.0);
-		sb->Append((const UTF8Char*)"\r\nBlue y = ");
+		sb->AppendC(UTF8STRC("\r\nBlue y = "));
 		Text::SBAppendF64(sb, ReadMInt32(&tagData[36]) / 100000.0);
 
 		MemFree(tagData);
@@ -202,9 +202,9 @@ Bool IO::FileAnalyse::PNGFileAnalyse::GetFrameDetail(UOSInt index, Text::StringB
 	{
 		tagData = MemAlloc(UInt8, tag->size);
 		this->fd->GetRealData(tag->ofst, tag->size, tagData);
-		sb->Append((const UTF8Char*)"\r\nNumber of frames = ");
+		sb->AppendC(UTF8STRC("\r\nNumber of frames = "));
 		sb->AppendI32(ReadMInt32(&tagData[8]));
-		sb->Append((const UTF8Char*)"\r\nNumber of time to loop = ");
+		sb->AppendC(UTF8STRC("\r\nNumber of time to loop = "));
 		sb->AppendI32(ReadMInt32(&tagData[12]));
 
 		MemFree(tagData);
@@ -213,23 +213,23 @@ Bool IO::FileAnalyse::PNGFileAnalyse::GetFrameDetail(UOSInt index, Text::StringB
 	{
 		tagData = MemAlloc(UInt8, tag->size);
 		this->fd->GetRealData(tag->ofst, tag->size, tagData);
-		sb->Append((const UTF8Char*)"\r\nSequence number = ");
+		sb->AppendC(UTF8STRC("\r\nSequence number = "));
 		sb->AppendI32(ReadMInt32(&tagData[8]));
-		sb->Append((const UTF8Char*)"\r\nWidth = ");
+		sb->AppendC(UTF8STRC("\r\nWidth = "));
 		sb->AppendI32(ReadMInt32(&tagData[12]));
-		sb->Append((const UTF8Char*)"\r\nHeight = ");
+		sb->AppendC(UTF8STRC("\r\nHeight = "));
 		sb->AppendI32(ReadMInt32(&tagData[16]));
-		sb->Append((const UTF8Char*)"\r\nX Offset = ");
+		sb->AppendC(UTF8STRC("\r\nX Offset = "));
 		sb->AppendI32(ReadMInt32(&tagData[20]));
-		sb->Append((const UTF8Char*)"\r\nY Offset = ");
+		sb->AppendC(UTF8STRC("\r\nY Offset = "));
 		sb->AppendI32(ReadMInt32(&tagData[24]));
-		sb->Append((const UTF8Char*)"\r\nDelay numerator = ");
+		sb->AppendC(UTF8STRC("\r\nDelay numerator = "));
 		sb->AppendI16(ReadMInt16(&tagData[28]));
-		sb->Append((const UTF8Char*)"\r\nDelay denominator = ");
+		sb->AppendC(UTF8STRC("\r\nDelay denominator = "));
 		sb->AppendI16(ReadMInt16(&tagData[30]));
-		sb->Append((const UTF8Char*)"\r\nDisposal operation = ");
+		sb->AppendC(UTF8STRC("\r\nDisposal operation = "));
 		sb->AppendU16(tagData[32]);
-		sb->Append((const UTF8Char*)"\r\nBlend operation = ");
+		sb->AppendC(UTF8STRC("\r\nBlend operation = "));
 		sb->AppendU16(tagData[33]);
 
 		MemFree(tagData);
@@ -238,7 +238,7 @@ Bool IO::FileAnalyse::PNGFileAnalyse::GetFrameDetail(UOSInt index, Text::StringB
 	{
 		tagData = MemAlloc(UInt8, tag->size);
 		this->fd->GetRealData(tag->ofst, tag->size, tagData);
-		sb->Append((const UTF8Char*)"\r\nSequence number = ");
+		sb->AppendC(UTF8STRC("\r\nSequence number = "));
 		sb->AppendI32(ReadMInt32(&tagData[8]));
 
 		MemFree(tagData);
@@ -247,11 +247,11 @@ Bool IO::FileAnalyse::PNGFileAnalyse::GetFrameDetail(UOSInt index, Text::StringB
 	{
 		tagData = MemAlloc(UInt8, tag->size);
 		this->fd->GetRealData(tag->ofst, tag->size, tagData);
-		sb->Append((const UTF8Char*)"\r\nH Pixel per unit = ");
+		sb->AppendC(UTF8STRC("\r\nH Pixel per unit = "));
 		sb->AppendI32(ReadMInt32(&tagData[8]));
-		sb->Append((const UTF8Char*)"\r\nV Pixel per unit = ");
+		sb->AppendC(UTF8STRC("\r\nV Pixel per unit = "));
 		sb->AppendI32(ReadMInt32(&tagData[12]));
-		sb->Append((const UTF8Char*)"\r\nUnit type = ");
+		sb->AppendC(UTF8STRC("\r\nUnit type = "));
 		sb->AppendU16(tagData[16]);
 
 		MemFree(tagData);
@@ -262,18 +262,18 @@ Bool IO::FileAnalyse::PNGFileAnalyse::GetFrameDetail(UOSInt index, Text::StringB
 		tagData = MemAlloc(UInt8, tag->size);
 		this->fd->GetRealData(tag->ofst, tag->size, tagData);
 		i = Text::StrCharCnt((Char*)&tagData[8]) + 9;
-		sb->Append((const UTF8Char*)"\r\nProfile name = ");
+		sb->AppendC(UTF8STRC("\r\nProfile name = "));
 		sb->Append((UTF8Char*)&tagData[8]);
-		sb->Append((const UTF8Char*)"\r\nCompression Method = ");
+		sb->AppendC(UTF8STRC("\r\nCompression Method = "));
 		sb->AppendU16(tagData[i]);
 
 		if (tagData[i] == 0)
 		{
-			sb->Append((const UTF8Char*)"\r\nzlib Compression Method = ");
+			sb->AppendC(UTF8STRC("\r\nzlib Compression Method = "));
 			sb->AppendU16(tagData[i + 1]);
-			sb->Append((const UTF8Char*)"\r\nAdditional flags = ");
+			sb->AppendC(UTF8STRC("\r\nAdditional flags = "));
 			sb->AppendU16(tagData[i + 2]);
-			sb->Append((const UTF8Char*)"\r\nCheck value = 0x");
+			sb->AppendC(UTF8STRC("\r\nCheck value = 0x"));
 			sb->AppendHex32(ReadMUInt32(&tagData[tag->size - 8]));
 
 			IO::MemoryStream *mstm;
@@ -287,7 +287,7 @@ Bool IO::FileAnalyse::PNGFileAnalyse::GetFrameDetail(UOSInt index, Text::StringB
 				Media::ICCProfile *icc = Media::ICCProfile::Parse(iccBuff, iccSize);
 				if (icc)
 				{
-					sb->Append((const UTF8Char*)"\r\n\r\n");
+					sb->AppendC(UTF8STRC("\r\n\r\n"));
 					icc->ToString(sb);
 					DEL_CLASS(icc);
 				}
@@ -309,7 +309,7 @@ Bool IO::FileAnalyse::PNGFileAnalyse::GetFrameDetail(UOSInt index, Text::StringB
 			j = 0;
 			while (j < tag->size - 12)
 			{
-				sb->Append((const UTF8Char*)"\r\nEntry ");
+				sb->AppendC(UTF8STRC("\r\nEntry "));
 				sb->AppendUOSInt(i);
 				sb->AppendChar(' ', 1);
 				sb->AppendChar('R', 1);
@@ -476,7 +476,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::PNGFileAnalyse::GetFrameDetail(UO
 				Media::ICCProfile *icc = Media::ICCProfile::Parse(iccBuff, iccSize);
 				if (icc)
 				{
-					sb->Append((const UTF8Char*)"\r\n\r\n");
+					sb->AppendC(UTF8STRC("\r\n\r\n"));
 					icc->ToString(sb);
 					DEL_CLASS(icc);
 				}

@@ -392,23 +392,23 @@ UInt32 __stdcall Media::AudioFilter::DTMFDecoder::CalcThread(void *userObj)
 #ifdef SHOWLOG
 			sb->ClearStr();
 			sb->Append(clk->GetTimeDiff());
-			sb->Append((const UTF8Char*)"\t");
+			sb->AppendC(UTF8STRC("\t"));
 			sb->Append(maxLoInd);
-			sb->Append((const UTF8Char*)"\t");
+			sb->AppendC(UTF8STRC("\t"));
 			sb->Append(maxLo);
-			sb->Append((const UTF8Char*)"\t");
+			sb->AppendC(UTF8STRC("\t"));
 			sb->Append(maxHiInd);
-			sb->Append((const UTF8Char*)"\t");
+			sb->AppendC(UTF8STRC("\t"));
 			sb->Append(maxHi);
-			sb->Append((const UTF8Char*)"\t");
+			sb->AppendC(UTF8STRC("\t"));
 			sb->Append(tone, 1);
-			sb->Append((const UTF8Char*)"\t");
+			sb->AppendC(UTF8STRC("\t"));
 			sb->Append(minAbsVolD);
-			sb->Append((const UTF8Char*)"\t");
+			sb->AppendC(UTF8STRC("\t"));
 			sb->Append(maxAbsVolD);
-			sb->Append((const UTF8Char*)"\t");
+			sb->AppendC(UTF8STRC("\t"));
 			sb->Append(maxLoInd * me->frequency / me->sampleCnt);
-			sb->Append((const UTF8Char*)"\t");
+			sb->AppendC(UTF8STRC("\t"));
 			sb->Append(maxHiInd * me->frequency / me->sampleCnt);
 			debugWriter->WriteLine(sb->ToString());
 #endif

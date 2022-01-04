@@ -18,7 +18,7 @@ Net::OSMGPXDownloader::OSMGPXDownloader(Net::SocketFactory *sockf, const UTF8Cha
 	this->writer = writer;
 	this->storeDir = Text::StrCopyNew(sbuff);
 	this->sockf = sockf;
-	NEW_CLASS(reader, Net::RSSReader((const UTF8Char*)"http://www.openstreetmap.org/traces/rss", sockf, 900, this));
+	NEW_CLASS(reader, Net::RSSReader((const UTF8Char*)"http://www.openstreetmap.org/traces/rss", sockf, 0, 900, this));
 }
 
 Net::OSMGPXDownloader::~OSMGPXDownloader()
@@ -37,7 +37,7 @@ void Net::OSMGPXDownloader::ItemAdded(Net::RSSItem *item)
 	UOSInt i;
 	IO::Path::PathType pt;
 
-	Text::StrConcat(sbuff, item->link);
+	item->link->ConcatTo(sbuff);
 	i = Text::StrLastIndexOf(sbuff, '/');
 	sptr = &sbuff[i + 1];
 	Text::StrConcat(gpxId, sptr);
@@ -46,7 +46,7 @@ void Net::OSMGPXDownloader::ItemAdded(Net::RSSItem *item)
 	sptr2 = Text::StrConcat(sptr2, (const UTF8Char*)"/data");
 
 	sptr = Text::StrConcat(sbuff, this->storeDir);
-	sptr = Text::StrConcat(sptr, item->author);
+	sptr = item->author->ConcatTo(sptr);
 	pt = IO::Path::GetPathType(sbuff);
 	if (pt == IO::Path::PathType::Unknown)
 	{
@@ -69,14 +69,14 @@ void Net::OSMGPXDownloader::ItemAdded(Net::RSSItem *item)
 		IO::FileStream *fs;
 		UOSInt retryCnt = 3;
 
-		sb.Append((const UTF8Char*)"Downloading: ");
+		sb.AppendC(UTF8STRC("Downloading: "));
 		sb.Append(sbuff2);
 		this->writer->WriteLine(sb.ToString());
 
 		while (retryCnt-- > 0)
 		{
 			NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
-			cli = Net::HTTPClient::CreateConnect(sockf, sbuff2, "GET", true);
+			cli = Net::HTTPClient::CreateConnect(sockf, 0, sbuff2, "GET", true);
 
 			totalSize = 0;
 			while (true)

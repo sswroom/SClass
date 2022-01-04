@@ -14,25 +14,25 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::StatusReq(SSWR::SDNSProxy::
 	AppendHeader(&sbOut);
 	AppendMenu(&sbOut);
 
-	sbOut.Append((const UTF8Char*)"<h2>Status</h2>\r\n");
+	sbOut.AppendC(UTF8STRC("<h2>Status</h2>\r\n"));
 
-	sbOut.Append((const UTF8Char*)"<table border=\"1\">\r\n");
-	sbOut.Append((const UTF8Char*)"<tr><td>Listening Port</td><td>53</td></tr>\r\n");
-	sbOut.Append((const UTF8Char*)"<tr><td>Disable IPv6</td><td>");
+	sbOut.AppendC(UTF8STRC("<table border=\"1\">\r\n"));
+	sbOut.AppendC(UTF8STRC("<tr><td>Listening Port</td><td>53</td></tr>\r\n"));
+	sbOut.AppendC(UTF8STRC("<tr><td>Disable IPv6</td><td>"));
 	if (me->proxy->IsDisableV6())
 	{
-		sbOut.Append((const UTF8Char*)"Yes");
+		sbOut.AppendC(UTF8STRC("Yes"));
 	}
 	else
 	{
-		sbOut.Append((const UTF8Char*)"No");
+		sbOut.AppendC(UTF8STRC("No"));
 	}
-	sbOut.Append((const UTF8Char*)"</td></tr>\r\n");
-	sbOut.Append((const UTF8Char*)"<tr><td>DNS Server</td><td>");
+	sbOut.AppendC(UTF8STRC("</td></tr>\r\n"));
+	sbOut.AppendC(UTF8STRC("<tr><td>DNS Server</td><td>"));
 	Net::SocketUtil::GetIPv4Name(sbuff, me->proxy->GetServerIP());
 	sbOut.Append(sbuff);
-	sbOut.Append((const UTF8Char*)"</td></tr>\r\n");
-	sbOut.Append((const UTF8Char*)"<tr><td>DNS List</td><td>");
+	sbOut.AppendC(UTF8STRC("</td></tr>\r\n"));
+	sbOut.AppendC(UTF8STRC("<tr><td>DNS List</td><td>"));
 	Data::ArrayList<UInt32> dnsList;
 	UOSInt i;
 	UOSInt j;
@@ -43,14 +43,14 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::StatusReq(SSWR::SDNSProxy::
 	{
 		if (i > 0)
 		{
-			sbOut.Append((const UTF8Char*)"<br/>\r\n");
+			sbOut.AppendC(UTF8STRC("<br/>\r\n"));
 		}
 		Net::SocketUtil::GetIPv4Name(sbuff, dnsList.GetItem(i));
 		sbOut.Append(sbuff);
 		i++;
 	}
-	sbOut.Append((const UTF8Char*)"</td></tr>\r\n");
-	sbOut.Append((const UTF8Char*)"</table>");
+	sbOut.AppendC(UTF8STRC("</td></tr>\r\n"));
+	sbOut.AppendC(UTF8STRC("</table>"));
 	AppendFooter(&sbOut);
 
 	resp->SetStatusCode(Net::WebStatus::SC_OK);
@@ -67,8 +67,8 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::ReqV4Req(SSWR::SDNSProxy::S
 	AppendHeader(&sbOut);
 	AppendMenu(&sbOut);
 
-	sbOut.Append((const UTF8Char*)"<h2>Req V4</h2>\r\n");
-	sbOut.Append((const UTF8Char*)"<table border=\"0\"><tr><td>\r\n");
+	sbOut.AppendC(UTF8STRC("<h2>Req V4</h2>\r\n"));
+	sbOut.AppendC(UTF8STRC("<table border=\"0\"><tr><td>\r\n"));
 
 	Data::ArrayList<const UTF8Char *> nameList;
 	UTF8Char sbuff[128];
@@ -98,7 +98,7 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::ReqV4Req(SSWR::SDNSProxy::S
 		i++;
 	}
 
-	sbOut.Append((const UTF8Char*)"</td><td valign=\"top\">\r\n");
+	sbOut.AppendC(UTF8STRC("</td><td valign=\"top\">\r\n"));
 
 	if (req->GetQueryValueStr((const UTF8Char*)"qry", sbuff, 128))
 	{
@@ -108,52 +108,52 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::ReqV4Req(SSWR::SDNSProxy::S
 		UInt32 ttl;
 		if (me->proxy->GetRequestInfov4(sbuff, &ansList, &reqTime, &ttl))
 		{
-			sbOut.Append((const UTF8Char*)"<table border=\"1\"><tr><td>Request Name</td><td>");
+			sbOut.AppendC(UTF8STRC("<table border=\"1\"><tr><td>Request Name</td><td>"));
 			sbOut.Append(sbuff);
-			sbOut.Append((const UTF8Char*)"</td></tr>\r\n");
-			sbOut.Append((const UTF8Char*)"<tr><td>Request Time</td><td>");
+			sbOut.AppendC(UTF8STRC("</td></tr>\r\n"));
+			sbOut.AppendC(UTF8STRC("<tr><td>Request Time</td><td>"));
 			reqTime.ToLocalTime();
 			reqTime.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff zzzz");
 			sbOut.Append(sbuff);
-			sbOut.Append((const UTF8Char*)"</td></tr>\r\n");
-			sbOut.Append((const UTF8Char*)"<tr><td>TTL</td><td>");
+			sbOut.AppendC(UTF8STRC("</td></tr>\r\n"));
+			sbOut.AppendC(UTF8STRC("<tr><td>TTL</td><td>"));
 			sbOut.AppendU32(ttl);
-			sbOut.Append((const UTF8Char*)"</td></tr>\r\n");
-			sbOut.Append((const UTF8Char*)"<tr><td>Results</td><td>");
+			sbOut.AppendC(UTF8STRC("</td></tr>\r\n"));
+			sbOut.AppendC(UTF8STRC("<tr><td>Results</td><td>"));
 
-			sbOut.Append((const UTF8Char*)"<table border=\"1\"><tr><td>Name</td><td>Type</td><td>Class</td><td>TTL</td><td>RD</td><tr>\r\n");
+			sbOut.AppendC(UTF8STRC("<table border=\"1\"><tr><td>Name</td><td>Type</td><td>Class</td><td>TTL</td><td>RD</td><tr>\r\n"));
 			i = 0;
 			j = ansList.GetCount();
 			while (i < j)
 			{
 				ans = ansList.GetItem(i);
-				sbOut.Append((const UTF8Char*)"<tr><td>");
+				sbOut.AppendC(UTF8STRC("<tr><td>"));
 				sbOut.Append(ans->name);
-				sbOut.Append((const UTF8Char*)"</td><td>");
+				sbOut.AppendC(UTF8STRC("</td><td>"));
 				sbOut.AppendI32(ans->recType);
-				sbOut.Append((const UTF8Char*)"</td><td>");
+				sbOut.AppendC(UTF8STRC("</td><td>"));
 				sbOut.AppendI32(ans->recClass);
-				sbOut.Append((const UTF8Char*)"</td><td>");
+				sbOut.AppendC(UTF8STRC("</td><td>"));
 				sbOut.AppendU32(ans->ttl);
-				sbOut.Append((const UTF8Char*)"</td><td>");
+				sbOut.AppendC(UTF8STRC("</td><td>"));
 				if (ans->rd)
 				{
 					sbOut.Append(ans->rd);
 				}
-				sbOut.Append((const UTF8Char*)"</td></tr>\r\n");
+				sbOut.AppendC(UTF8STRC("</td></tr>\r\n"));
 				i++;
 			}
-			sbOut.Append((const UTF8Char*)"</table>\r\n");
+			sbOut.AppendC(UTF8STRC("</table>\r\n"));
 
 			Net::DNSClient::FreeAnswers(&ansList);
-			sbOut.Append((const UTF8Char*)"</td></tr></table>\r\n");
+			sbOut.AppendC(UTF8STRC("</td></tr></table>\r\n"));
 		}
 		else
 		{
 		}
 	}
 
-	sbOut.Append((const UTF8Char*)"</td></tr></table>\r\n");
+	sbOut.AppendC(UTF8STRC("</td></tr></table>\r\n"));
 	AppendFooter(&sbOut);
 
 	resp->SetStatusCode(Net::WebStatus::SC_OK);
@@ -170,8 +170,8 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::ReqV6Req(SSWR::SDNSProxy::S
 	AppendHeader(&sbOut);
 	AppendMenu(&sbOut);
 
-	sbOut.Append((const UTF8Char*)"<h2>Req V6</h2>\r\n");
-	sbOut.Append((const UTF8Char*)"<table border=\"0\"><tr><td>\r\n");
+	sbOut.AppendC(UTF8STRC("<h2>Req V6</h2>\r\n"));
+	sbOut.AppendC(UTF8STRC("<table border=\"0\"><tr><td>\r\n"));
 
 	Data::ArrayList<const UTF8Char *> nameList;
 	UTF8Char sbuff[128];
@@ -187,18 +187,18 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::ReqV6Req(SSWR::SDNSProxy::S
 		name = nameList.GetItem(i);
 		if (i > 0)
 		{
-			sbOut.Append((const UTF8Char*)"<br/>\r\n");
+			sbOut.AppendC(UTF8STRC("<br/>\r\n"));
 		}
-		sbOut.Append((const UTF8Char*)"<a href=\"/reqv6?qry=");
+		sbOut.AppendC(UTF8STRC("<a href=\"/reqv6?qry="));
 		sbOut.Append(name);
-		sbOut.Append((const UTF8Char*)"\">");
+		sbOut.AppendC(UTF8STRC("\">"));
 		sbOut.Append(name);
-		sbOut.Append((const UTF8Char*)"</a>");
+		sbOut.AppendC(UTF8STRC("</a>"));
 
 		i++;
 	}
 
-	sbOut.Append((const UTF8Char*)"</td><td valign=\"top\">\r\n");
+	sbOut.AppendC(UTF8STRC("</td><td valign=\"top\">\r\n"));
 
 	if (req->GetQueryValueStr((const UTF8Char*)"qry", sbuff, 128))
 	{
@@ -208,52 +208,52 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::ReqV6Req(SSWR::SDNSProxy::S
 		UInt32 ttl;
 		if (me->proxy->GetRequestInfov6(sbuff, &ansList, &reqTime, &ttl))
 		{
-			sbOut.Append((const UTF8Char*)"<table border=\"1\"><tr><td>Request Name</td><td>");
+			sbOut.AppendC(UTF8STRC("<table border=\"1\"><tr><td>Request Name</td><td>"));
 			sbOut.Append(sbuff);
-			sbOut.Append((const UTF8Char*)"</td></tr>\r\n");
-			sbOut.Append((const UTF8Char*)"<tr><td>Request Time</td><td>");
+			sbOut.AppendC(UTF8STRC("</td></tr>\r\n"));
+			sbOut.AppendC(UTF8STRC("<tr><td>Request Time</td><td>"));
 			reqTime.ToLocalTime();
 			reqTime.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff zzzz");
 			sbOut.Append(sbuff);
-			sbOut.Append((const UTF8Char*)"</td></tr>\r\n");
-			sbOut.Append((const UTF8Char*)"<tr><td>TTL</td><td>");
+			sbOut.AppendC(UTF8STRC("</td></tr>\r\n"));
+			sbOut.AppendC(UTF8STRC("<tr><td>TTL</td><td>"));
 			sbOut.AppendU32(ttl);
-			sbOut.Append((const UTF8Char*)"</td></tr>\r\n");
-			sbOut.Append((const UTF8Char*)"<tr><td>Results</td><td>");
+			sbOut.AppendC(UTF8STRC("</td></tr>\r\n"));
+			sbOut.AppendC(UTF8STRC("<tr><td>Results</td><td>"));
 
-			sbOut.Append((const UTF8Char*)"<table border=\"1\"><tr><td>Name</td><td>Type</td><td>Class</td><td>TTL</td><td>RD</td><tr>\r\n");
+			sbOut.AppendC(UTF8STRC("<table border=\"1\"><tr><td>Name</td><td>Type</td><td>Class</td><td>TTL</td><td>RD</td><tr>\r\n"));
 			i = 0;
 			j = ansList.GetCount();
 			while (i < j)
 			{
 				ans = ansList.GetItem(i);
-				sbOut.Append((const UTF8Char*)"<tr><td>");
+				sbOut.AppendC(UTF8STRC("<tr><td>"));
 				sbOut.Append(ans->name);
-				sbOut.Append((const UTF8Char*)"</td><td>");
+				sbOut.AppendC(UTF8STRC("</td><td>"));
 				sbOut.AppendI32(ans->recType);
-				sbOut.Append((const UTF8Char*)"</td><td>");
+				sbOut.AppendC(UTF8STRC("</td><td>"));
 				sbOut.AppendI32(ans->recClass);
-				sbOut.Append((const UTF8Char*)"</td><td>");
+				sbOut.AppendC(UTF8STRC("</td><td>"));
 				sbOut.AppendU32(ans->ttl);
-				sbOut.Append((const UTF8Char*)"</td><td>");
+				sbOut.AppendC(UTF8STRC("</td><td>"));
 				if (ans->rd)
 				{
 					sbOut.Append(ans->rd);
 				}
-				sbOut.Append((const UTF8Char*)"</td><tr>\r\n");
+				sbOut.AppendC(UTF8STRC("</td><tr>\r\n"));
 				i++;
 			}
-			sbOut.Append((const UTF8Char*)"</table>\r\n");
+			sbOut.AppendC(UTF8STRC("</table>\r\n"));
 
 			Net::DNSClient::FreeAnswers(&ansList);
-			sbOut.Append((const UTF8Char*)"</table>\r\n");
+			sbOut.AppendC(UTF8STRC("</table>\r\n"));
 		}
 		else
 		{
 		}
 	}
 
-	sbOut.Append((const UTF8Char*)"</td></tr></table>\r\n");
+	sbOut.AppendC(UTF8STRC("</td></tr></table>\r\n"));
 	AppendFooter(&sbOut);
 
 	resp->SetStatusCode(Net::WebStatus::SC_OK);
@@ -270,8 +270,8 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::ReqOthReq(SSWR::SDNSProxy::
 	AppendHeader(&sbOut);
 	AppendMenu(&sbOut);
 
-	sbOut.Append((const UTF8Char*)"<h2>Req Oth</h2>\r\n");
-	sbOut.Append((const UTF8Char*)"<table border=\"0\"><tr><td>\r\n");
+	sbOut.AppendC(UTF8STRC("<h2>Req Oth</h2>\r\n"));
+	sbOut.AppendC(UTF8STRC("<table border=\"0\"><tr><td>\r\n"));
 
 	Data::ArrayList<const UTF8Char *> nameList;
 	UTF8Char sbuff[128];
@@ -287,18 +287,18 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::ReqOthReq(SSWR::SDNSProxy::
 		name = nameList.GetItem(i);
 		if (i > 0)
 		{
-			sbOut.Append((const UTF8Char*)"<br/>\r\n");
+			sbOut.AppendC(UTF8STRC("<br/>\r\n"));
 		}
-		sbOut.Append((const UTF8Char*)"<a href=\"/reqoth?qry=");
+		sbOut.AppendC(UTF8STRC("<a href=\"/reqoth?qry="));
 		sbOut.Append(name);
-		sbOut.Append((const UTF8Char*)"\">");
+		sbOut.AppendC(UTF8STRC("\">"));
 		sbOut.Append(name);
-		sbOut.Append((const UTF8Char*)"</a>");
+		sbOut.AppendC(UTF8STRC("</a>"));
 
 		i++;
 	}
 
-	sbOut.Append((const UTF8Char*)"</td><td valign=\"top\">\r\n");
+	sbOut.AppendC(UTF8STRC("</td><td valign=\"top\">\r\n"));
 
 	if (req->GetQueryValueStr((const UTF8Char*)"qry", sbuff, 128))
 	{
@@ -308,52 +308,52 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::ReqOthReq(SSWR::SDNSProxy::
 		UInt32 ttl;
 		if (me->proxy->GetRequestInfoOth(sbuff, &ansList, &reqTime, &ttl))
 		{
-			sbOut.Append((const UTF8Char*)"<table border=\"1\"><tr><td>Request Name</td><td>");
+			sbOut.AppendC(UTF8STRC("<table border=\"1\"><tr><td>Request Name</td><td>"));
 			sbOut.Append(sbuff);
-			sbOut.Append((const UTF8Char*)"</td></tr>\r\n");
-			sbOut.Append((const UTF8Char*)"<tr><td>Request Time</td><td>");
+			sbOut.AppendC(UTF8STRC("</td></tr>\r\n"));
+			sbOut.AppendC(UTF8STRC("<tr><td>Request Time</td><td>"));
 			reqTime.ToLocalTime();
 			reqTime.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff zzzz");
 			sbOut.Append(sbuff);
-			sbOut.Append((const UTF8Char*)"</td></tr>\r\n");
-			sbOut.Append((const UTF8Char*)"<tr><td>TTL</td><td>");
+			sbOut.AppendC(UTF8STRC("</td></tr>\r\n"));
+			sbOut.AppendC(UTF8STRC("<tr><td>TTL</td><td>"));
 			sbOut.AppendU32(ttl);
-			sbOut.Append((const UTF8Char*)"</td></tr>\r\n");
-			sbOut.Append((const UTF8Char*)"<tr><td>Results</td><td>");
+			sbOut.AppendC(UTF8STRC("</td></tr>\r\n"));
+			sbOut.AppendC(UTF8STRC("<tr><td>Results</td><td>"));
 
-			sbOut.Append((const UTF8Char*)"<table border=\"1\"><tr><td>Name</td><td>Type</td><td>Class</td><td>TTL</td><td>RD</td><tr>\r\n");
+			sbOut.AppendC(UTF8STRC("<table border=\"1\"><tr><td>Name</td><td>Type</td><td>Class</td><td>TTL</td><td>RD</td><tr>\r\n"));
 			i = 0;
 			j = ansList.GetCount();
 			while (i < j)
 			{
 				ans = ansList.GetItem(i);
-				sbOut.Append((const UTF8Char*)"<tr><td>");
+				sbOut.AppendC(UTF8STRC("<tr><td>"));
 				sbOut.Append(ans->name);
-				sbOut.Append((const UTF8Char*)"</td><td>");
+				sbOut.AppendC(UTF8STRC("</td><td>"));
 				sbOut.AppendI32(ans->recType);
-				sbOut.Append((const UTF8Char*)"</td><td>");
+				sbOut.AppendC(UTF8STRC("</td><td>"));
 				sbOut.AppendI32(ans->recClass);
-				sbOut.Append((const UTF8Char*)"</td><td>");
+				sbOut.AppendC(UTF8STRC("</td><td>"));
 				sbOut.AppendU32(ans->ttl);
-				sbOut.Append((const UTF8Char*)"</td><td>");
+				sbOut.AppendC(UTF8STRC("</td><td>"));
 				if (ans->rd)
 				{
 					sbOut.Append(ans->rd);
 				}
-				sbOut.Append((const UTF8Char*)"</td><tr>\r\n");
+				sbOut.AppendC(UTF8STRC("</td><tr>\r\n"));
 				i++;
 			}
-			sbOut.Append((const UTF8Char*)"</table>\r\n");
+			sbOut.AppendC(UTF8STRC("</table>\r\n"));
 
 			Net::DNSClient::FreeAnswers(&ansList);
-			sbOut.Append((const UTF8Char*)"</table>\r\n");
+			sbOut.AppendC(UTF8STRC("</table>\r\n"));
 		}
 		else
 		{
 		}
 	}
 
-	sbOut.Append((const UTF8Char*)"</td></tr></table>\r\n");
+	sbOut.AppendC(UTF8STRC("</td></tr></table>\r\n"));
 	AppendFooter(&sbOut);
 
 	resp->SetStatusCode(Net::WebStatus::SC_OK);
@@ -370,8 +370,8 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::TargetReq(SSWR::SDNSProxy::
 	AppendHeader(&sbOut);
 	AppendMenu(&sbOut);
 
-	sbOut.Append((const UTF8Char*)"<h2>Target</h2>\r\n");
-	sbOut.Append((const UTF8Char*)"<table border=\"0\"><tr><td>\r\n");
+	sbOut.AppendC(UTF8STRC("<h2>Target</h2>\r\n"));
+	sbOut.AppendC(UTF8STRC("<table border=\"0\"><tr><td>\r\n"));
 
 	Data::ArrayList<Net::DNSProxy::TargetInfo *> targetList;
 	UTF8Char sbuff[128];
@@ -390,14 +390,14 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::TargetReq(SSWR::SDNSProxy::
 		target = targetList.GetItem(i);
 		if (i > 0)
 		{
-			sbOut.Append((const UTF8Char*)"<br/>\r\n");
+			sbOut.AppendC(UTF8STRC("<br/>\r\n"));
 		}
-		sbOut.Append((const UTF8Char*)"<a href=\"/target?qry=");
+		sbOut.AppendC(UTF8STRC("<a href=\"/target?qry="));
 		sbOut.AppendU32(target->ip);
-		sbOut.Append((const UTF8Char*)"\">");
+		sbOut.AppendC(UTF8STRC("\">"));
 		Net::SocketUtil::GetIPv4Name(sbuff, target->ip);
 		sbOut.Append(sbuff);
-		sbOut.Append((const UTF8Char*)"</a>");
+		sbOut.AppendC(UTF8STRC("</a>"));
 		if (target->ip == targetIP)
 		{
 			targetIndex = (OSInt)i;
@@ -406,14 +406,14 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::TargetReq(SSWR::SDNSProxy::
 		i++;
 	}
 
-	sbOut.Append((const UTF8Char*)"</td><td valign=\"top\">\r\n");
+	sbOut.AppendC(UTF8STRC("</td><td valign=\"top\">\r\n"));
 
 	if (targetIndex >= 0)
 	{
-		sbOut.Append((const UTF8Char*)"<h3>");
+		sbOut.AppendC(UTF8STRC("<h3>"));
 		Net::SocketUtil::GetIPv4Name(sbuff, targetIP);
 		sbOut.Append(sbuff);
-		sbOut.Append((const UTF8Char*)"</h3>\r\n");
+		sbOut.AppendC(UTF8STRC("</h3>\r\n"));
 
 		target = targetList.GetItem((UOSInt)targetIndex);
 		Sync::MutexUsage mutUsage(target->mut);
@@ -431,7 +431,7 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::TargetReq(SSWR::SDNSProxy::
 		mutUsage.EndUse();
 	}
 
-	sbOut.Append((const UTF8Char*)"</td></tr></table>\r\n");
+	sbOut.AppendC(UTF8STRC("</td></tr></table>\r\n"));
 	AppendFooter(&sbOut);
 
 	resp->SetStatusCode(Net::WebStatus::SC_OK);
@@ -457,9 +457,9 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::BlacklistReq(SSWR::SDNSProx
 	AppendHeader(&sbOut);
 	AppendMenu(&sbOut);
 
-	sbOut.Append((const UTF8Char*)"<h2>Blacklist</h2>\r\n");
-	sbOut.Append((const UTF8Char*)"<form method=\"POST\" action=\"/blacklist\"><input type=\"text\" name=\"blacklist\" />");
-	sbOut.Append((const UTF8Char*)"<input type=\"submit\" value=\"Add\" /></form>\r\n");
+	sbOut.AppendC(UTF8STRC("<h2>Blacklist</h2>\r\n"));
+	sbOut.AppendC(UTF8STRC("<form method=\"POST\" action=\"/blacklist\"><input type=\"text\" name=\"blacklist\" />"));
+	sbOut.AppendC(UTF8STRC("<input type=\"submit\" value=\"Add\" /></form>\r\n"));
 
 	UOSInt i;
 	UOSInt j;
@@ -469,7 +469,7 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::BlacklistReq(SSWR::SDNSProx
 	j = blkList.GetCount();
 	while (i < j)
 	{
-		sbOut.Append((const UTF8Char*)"<br/>\r\n");
+		sbOut.AppendC(UTF8STRC("<br/>\r\n"));
 		sbOut.Append(blkList.GetItem(i));
 		i++;
 	}
@@ -490,7 +490,7 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::LogReq(SSWR::SDNSProxy::SDN
 	AppendHeader(&sbOut);
 	AppendMenu(&sbOut);
 
-	sbOut.Append((const UTF8Char*)"<h2>Log</h2>\r\n");
+	sbOut.AppendC(UTF8STRC("<h2>Log</h2>\r\n"));
 	me->logBuff->GetLogs(&sbOut, (const UTF8Char*)"<br/>\r\n");
 	AppendFooter(&sbOut);
 
@@ -508,8 +508,8 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::ClientReq(SSWR::SDNSProxy::
 	AppendHeader(&sbOut);
 	AppendMenu(&sbOut);
 
-	sbOut.Append((const UTF8Char*)"<h2>Client</h2>\r\n");
-	sbOut.Append((const UTF8Char*)"<table border=\"0\"><tr><td valign=\"top\">\r\n");
+	sbOut.AppendC(UTF8STRC("<h2>Client</h2>\r\n"));
+	sbOut.AppendC(UTF8STRC("<table border=\"0\"><tr><td valign=\"top\">\r\n"));
 
 	Data::ArrayList<SSWR::SDNSProxy::SDNSProxyCore::ClientInfo *> cliList;
 	UOSInt i;
@@ -530,13 +530,13 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::ClientReq(SSWR::SDNSProxy::
 		Net::SocketUtil::GetAddrName(sbuff, &cli->addr);
 		if (i > 0)
 		{
-			sbOut.Append((const UTF8Char*)"<br/>\r\n");
+			sbOut.AppendC(UTF8STRC("<br/>\r\n"));
 		}
-		sbOut.Append((const UTF8Char*)"<a href=\"/client?cliId=");
+		sbOut.AppendC(UTF8STRC("<a href=\"/client?cliId="));
 		sbOut.AppendU32(ReadUInt32(cli->addr.addr));
-		sbOut.Append((const UTF8Char*)"\">");
+		sbOut.AppendC(UTF8STRC("\">"));
 		sbOut.Append(sbuff);
-		sbOut.Append((const UTF8Char*)"</a>");
+		sbOut.AppendC(UTF8STRC("</a>"));
 
 		if (ReadUInt32(cli->addr.addr) == selCliId)
 		{
@@ -545,15 +545,15 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::ClientReq(SSWR::SDNSProxy::
 		i++;
 	}
 
-	sbOut.Append((const UTF8Char*)"</td><td valign=\"top\">\r\n");
+	sbOut.AppendC(UTF8STRC("</td><td valign=\"top\">\r\n"));
 
 	if (selCli)
 	{
 		Net::SocketUtil::GetAddrName(sbuff, &selCli->addr);
-		sbOut.Append((const UTF8Char*)"<h3>");
+		sbOut.AppendC(UTF8STRC("<h3>"));
 		sbOut.Append(sbuff);
-		sbOut.Append((const UTF8Char*)"</h3>");
-		sbOut.Append((const UTF8Char*)"<table border=\"1\"><tr><td>Time</td><td>Count</td></tr>");
+		sbOut.AppendC(UTF8STRC("</h3>"));
+		sbOut.AppendC(UTF8STRC("<table border=\"1\"><tr><td>Time</td><td>Count</td></tr>"));
 		SSWR::SDNSProxy::SDNSProxyCore::HourInfo *hInfo;
 		Sync::MutexUsage mutUsage(selCli->mut);
 		i = selCli->hourInfos->GetCount();
@@ -561,7 +561,7 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::ClientReq(SSWR::SDNSProxy::
 		{
 			hInfo = selCli->hourInfos->GetItem(i);
 
-			sbOut.Append((const UTF8Char*)"<tr><td>");
+			sbOut.AppendC(UTF8STRC("<tr><td>"));
 			sbOut.AppendI32(hInfo->year);
 			sbOut.AppendChar('-', 1);
 			sbOut.AppendI32(hInfo->month);
@@ -569,17 +569,17 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::ClientReq(SSWR::SDNSProxy::
 			sbOut.AppendI32(hInfo->day);
 			sbOut.AppendChar(' ', 1);
 			sbOut.AppendI32(hInfo->hour);
-			sbOut.Append((const UTF8Char*)":00");
-			sbOut.Append((const UTF8Char*)"</td><td>");
+			sbOut.AppendC(UTF8STRC(":00"));
+			sbOut.AppendC(UTF8STRC("</td><td>"));
 			sbOut.AppendI64(hInfo->reqCount);
-			sbOut.Append((const UTF8Char*)"</td></tr>");
+			sbOut.AppendC(UTF8STRC("</td></tr>"));
 		}
 		mutUsage.EndUse();
 
-		sbOut.Append((const UTF8Char*)"</table>");
+		sbOut.AppendC(UTF8STRC("</table>"));
 	}
 
-	sbOut.Append((const UTF8Char*)"</td></tr></table>\r\n");
+	sbOut.AppendC(UTF8STRC("</td></tr></table>\r\n"));
 	AppendFooter(&sbOut);
 
 	resp->SetStatusCode(Net::WebStatus::SC_OK);
@@ -604,27 +604,27 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::ReqPerMinReq(SSWR::SDNSProx
 
 void SSWR::SDNSProxy::SDNSProxyWebHandler::AppendHeader(Text::StringBuilderUTF *sbOut)
 {
-	sbOut->Append((const UTF8Char*)"<html><head><title>SDNSProxy</title></head><body>\r\n");
+	sbOut->AppendC(UTF8STRC("<html><head><title>SDNSProxy</title></head><body>\r\n"));
 }
 
 void SSWR::SDNSProxy::SDNSProxyWebHandler::AppendMenu(Text::StringBuilderUTF *sbOut)
 {
-	sbOut->Append((const UTF8Char*)"<table border=\"1\"><tr>");
-	sbOut->Append((const UTF8Char*)"<td><a href=\"/\">Status</a></td>");
-	sbOut->Append((const UTF8Char*)"<td><a href=\"/reqv4\">Req v4</a></td>");
-	sbOut->Append((const UTF8Char*)"<td><a href=\"/reqv6\">Req v6</a></td>");
-	sbOut->Append((const UTF8Char*)"<td><a href=\"/reqoth\">Req Oth</a></td>");
-	sbOut->Append((const UTF8Char*)"<td><a href=\"/target\">Target</a></td>");
-//	sbOut->Append((const UTF8Char*)"<td><a href=\"/search\">Search</a></td>");
-	sbOut->Append((const UTF8Char*)"<td><a href=\"/blacklist\">Blacklist</a></td>");
-	sbOut->Append((const UTF8Char*)"<td><a href=\"/log\">Log</a></td>");
-	sbOut->Append((const UTF8Char*)"<td><a href=\"/client\">Client</a></td>");
-	sbOut->Append((const UTF8Char*)"</table>\r\n");
+	sbOut->AppendC(UTF8STRC("<table border=\"1\"><tr>"));
+	sbOut->AppendC(UTF8STRC("<td><a href=\"/\">Status</a></td>"));
+	sbOut->AppendC(UTF8STRC("<td><a href=\"/reqv4\">Req v4</a></td>"));
+	sbOut->AppendC(UTF8STRC("<td><a href=\"/reqv6\">Req v6</a></td>"));
+	sbOut->AppendC(UTF8STRC("<td><a href=\"/reqoth\">Req Oth</a></td>"));
+	sbOut->AppendC(UTF8STRC("<td><a href=\"/target\">Target</a></td>"));
+//	sbOut->AppendC(UTF8STRC("<td><a href=\"/search\">Search</a></td>"));
+	sbOut->AppendC(UTF8STRC("<td><a href=\"/blacklist\">Blacklist</a></td>"));
+	sbOut->AppendC(UTF8STRC("<td><a href=\"/log\">Log</a></td>"));
+	sbOut->AppendC(UTF8STRC("<td><a href=\"/client\">Client</a></td>"));
+	sbOut->AppendC(UTF8STRC("</table>\r\n"));
 }
 
 void SSWR::SDNSProxy::SDNSProxyWebHandler::AppendFooter(Text::StringBuilderUTF *sbOut)
 {
-	sbOut->Append((const UTF8Char*)"</body></html>");
+	sbOut->AppendC(UTF8STRC("</body></html>"));
 }
 
 Bool SSWR::SDNSProxy::SDNSProxyWebHandler::ProcessRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *subReq)

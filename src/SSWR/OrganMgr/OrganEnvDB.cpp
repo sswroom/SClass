@@ -481,9 +481,9 @@ UOSInt SSWR::OrganMgr::OrganEnvDB::GetGroupImages(Data::ArrayList<OrganImageItem
 			
 			sb.ClearStr();
 			r->GetStr(1, &sb);
-			sb.Append((const UTF8Char*)" (");
+			sb.AppendC(UTF8STRC(" ("));
 			r->GetStr(2, &sb);
-			sb.Append((const UTF8Char*)")");
+			sb.AppendC(UTF8STRC(")"));
 			item->SetDispName(sb.ToString());
 
 			if (spId == grp->GetPhotoSpecies())
@@ -1357,7 +1357,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::IsBookSpeciesExist(const UTF8Char *sName, Text:
 			{
 				if (found)
 				{
-					sb->Append((const UTF8Char*)"\r\n");
+					sb->AppendC(UTF8STRC("\r\n"));
 				}
 				r->GetStr(0, sb);
 
@@ -1539,7 +1539,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 							{
 								Text::StringBuilderUTF8 sb;
 								sb.Append(csptr);
-								sb.Append((const UTF8Char*)" ");
+								sb.AppendC(UTF8STRC(" "));
 								sb.Append(csptr2);
 								camera = Text::String::NewNotNull(sb.ToString());
 							}
@@ -2232,9 +2232,9 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesWeb
 	NEW_CLASS(writer, Text::UTF8Writer(fs));
 	writer->WriteSignature();
 	sb.Append(fileName);
-	sb.Append((const UTF8Char*)"\t");
+	sb.AppendC(UTF8STRC("\t"));
 	sb.Append(imgURL);
-	sb.Append((const UTF8Char*)"\t");
+	sb.AppendC(UTF8STRC("\t"));
 	sb.Append(srcURL);
 	writer->WriteLine(sb.ToString());
 	DEL_CLASS(writer);
@@ -2323,9 +2323,9 @@ Bool SSWR::OrganMgr::OrganEnvDB::UpdateSpeciesWebFileOld(OrganSpecies *sp, const
 				found = true;
 				sb2.ClearStr();
 				sb2.Append(sarr[0]);
-				sb2.Append((const UTF8Char*)"\t");
+				sb2.AppendC(UTF8STRC("\t"));
 				sb2.Append(sarr[1]);
-				sb2.Append((const UTF8Char*)"\t");
+				sb2.AppendC(UTF8STRC("\t"));
 				sb2.Append(srcURL);
 			}
 		}
@@ -2722,9 +2722,9 @@ Bool SSWR::OrganMgr::OrganEnvDB::MoveImages(Data::ArrayList<OrganImages*> *imgLi
 				name = &name[Text::StrLastIndexOf(name, IO::Path::PATH_SEPERATOR) + 1];
 				sb.ClearStr();
 				sb.Append(name);
-				sb.Append((const UTF8Char*)"\t");
+				sb.AppendC(UTF8STRC("\t"));
 				sb.Append(img->GetImgItem()->GetImgURL()->v);
-				sb.Append((const UTF8Char*)"\t");
+				sb.AppendC(UTF8STRC("\t"));
 				sb.Append(img->GetImgItem()->GetSrcURL()->v);
 				writer->WriteLine(sb.ToString());
 			}
@@ -3483,7 +3483,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::GetUserFilePath(UserFileInfo *userFile, Text::S
 	{
 		sb->AppendChar(IO::Path::PATH_SEPERATOR, 1);
 	}
-	sb->Append((const UTF8Char*)"UserFile");
+	sb->AppendC(UTF8STRC("UserFile"));
 	sb->AppendChar(IO::Path::PATH_SEPERATOR, 1);
 	sb->AppendI32(userFile->webuserId);
 	sb->AppendChar(IO::Path::PATH_SEPERATOR, 1);
@@ -4622,7 +4622,7 @@ void SSWR::OrganMgr::OrganEnvDB::Test()
 					else
 					{
 						sb.AppendASCII(csptr);
-						sb.Append((const UTF8Char*)" ");
+						sb.AppendC(UTF8STRC(" ");
 						sb.AppendASCII(csptr2);
 					}
 				}

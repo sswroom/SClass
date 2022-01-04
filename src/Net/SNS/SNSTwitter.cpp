@@ -38,9 +38,9 @@ Net::SNS::SNSTwitter::SNSTwitter(Net::SocketFactory *sockf, Net::SSLEngine *ssl,
 		item = itemList.GetItem(i);
 		Text::StrInt64(sbuff, item->id);
 		sb.ClearStr();
-		sb.Append((const UTF8Char*)"https://twitter.com/");
+		sb.AppendC(UTF8STRC("https://twitter.com/"));
 		sb.Append(this->channelId);
-		sb.Append((const UTF8Char*)"/status/");
+		sb.AppendC(UTF8STRC("/status/"));
 		sb.AppendI64(item->id);
 		Text::String *s = Text::String::NewNotNull(sbuff);
 		Text::String *s2 = Text::String::New(sb.ToString(), sb.GetLength());
@@ -139,9 +139,9 @@ Bool Net::SNS::SNSTwitter::Reload()
 			{
 				Text::StrInt64(sbuff, item->id);
 				sb.ClearStr();
-				sb.Append((const UTF8Char*)"https://twitter.com/");
+				sb.AppendC(UTF8STRC("https://twitter.com/"));
 				sb.Append(this->channelId);
-				sb.Append((const UTF8Char*)"/status/");
+				sb.AppendC(UTF8STRC("/status/"));
 				sb.AppendI64(item->id);
 				Text::String *s = Text::String::NewNotNull(sbuff);
 				Text::String *s2 = Text::String::New(sb.ToString(), sb.GetLength());

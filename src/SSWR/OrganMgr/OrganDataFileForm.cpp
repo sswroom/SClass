@@ -45,9 +45,9 @@ void __stdcall SSWR::OrganMgr::OrganDataFileForm::OnDeleteClicked(void *userObj)
 	DataFileInfo *dataFile = (DataFileInfo*)me->lvFiles->GetSelectedItem();
 	if (dataFile == 0)
 		return;
-	sb.Append((const UTF8Char*)"Are you sure to delete ");
+	sb.AppendC(UTF8STRC("Are you sure to delete "));
 	sb.AppendC(dataFile->fileName->v, dataFile->fileName->leng);
-	sb.Append((const UTF8Char*)"?");
+	sb.AppendC(UTF8STRC("?"));
 	if (UI::MessageDialog::ShowYesNoDialog(sb.ToString(), (const UTF8Char*)"Question", me))
 	{
 		if (me->env->DelDataFile(dataFile))

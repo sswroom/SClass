@@ -305,34 +305,34 @@ Bool Net::WiFiLogFile::StoreFile(const UTF8Char *fileName)
 		log = this->logList->GetItem(i);
 		sb.ClearStr();
 		sb.AppendHexBuff(log->mac, 6, ':', Text::LineBreakType::None);
-		sb.Append((const UTF8Char*)"\t");
+		sb.AppendC(UTF8STRC("\t"));
 		sb.Append(log->ssid);
-		sb.Append((const UTF8Char*)"\t");
+		sb.AppendC(UTF8STRC("\t"));
 		sb.AppendI32(log->phyType);
-		sb.Append((const UTF8Char*)"\t");
+		sb.AppendC(UTF8STRC("\t"));
 		Text::SBAppendF64(&sb, log->freq);
-		sb.Append((const UTF8Char*)"\t");
+		sb.AppendC(UTF8STRC("\t"));
 		if (log->manuf)
 		{
 			sb.Append(log->manuf);
 		}
-		sb.Append((const UTF8Char*)"\t");
+		sb.AppendC(UTF8STRC("\t"));
 		if (log->model)
 		{
 			sb.Append(log->model);
 		}
-		sb.Append((const UTF8Char*)"\t");
+		sb.AppendC(UTF8STRC("\t"));
 		if (log->serialNum)
 		{
 			sb.Append(log->serialNum);
 		}
-		sb.Append((const UTF8Char*)"\t");
+		sb.AppendC(UTF8STRC("\t"));
 		sb.AppendHexBuff(log->ouis[0], 3, 0, Text::LineBreakType::None);
 		sb.AppendChar(',', 1);
 		sb.AppendHexBuff(log->ouis[1], 3, 0, Text::LineBreakType::None);
 		sb.AppendChar(',', 1);
 		sb.AppendHexBuff(log->ouis[2], 3, 0, Text::LineBreakType::None);
-		sb.Append((const UTF8Char*)"\t");
+		sb.AppendC(UTF8STRC("\t"));
 		if (log->country)
 		{
 			sb.Append(log->country);

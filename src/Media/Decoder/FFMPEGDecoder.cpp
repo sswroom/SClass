@@ -173,11 +173,11 @@ void Media::Decoder::FFMPEGDecoder::ProcVideoFrame(UInt32 frameTime, UInt32 fram
 			break;
 		}
 		sb.AppendU32(frameNum);
-		sb.Append((const UTF8Char*)"\t");
+		sb.AppendC(UTF8STRC("\t"));
 		sb.AppendU32(frameTime);
-		sb.Append((const UTF8Char*)"\t");
+		sb.AppendC(UTF8STRC("\t"));
 		sb.AppendChar(fType, 1);
-		sb.Append((const UTF8Char*)"\t");
+		sb.AppendC(UTF8STRC("\t"));
 		sb.AppendOSInt(dataSize);
 		data->dbgWriter->WriteLine(sb.ToString());
 	}

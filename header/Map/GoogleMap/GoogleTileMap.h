@@ -27,6 +27,7 @@ namespace Map
 			const UTF8Char *cacheDir;
 			IO::SPackageFile *spkg;
 			Net::SocketFactory *sockf;
+			Net::SSLEngine *ssl;
 			UOSInt tileWidth;
 			UOSInt tileHeight;
 			UOSInt maxLevel;

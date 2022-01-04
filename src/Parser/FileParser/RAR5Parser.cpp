@@ -188,13 +188,13 @@ IO::ParsedObject *Parser::FileParser::RAR5Parser::ParseFile(IO::IStreamData *fd,
 				}
 			}
 
-	/*		sb->Append((const UTF8Char*)"\r\nCompression version = ");
+	/*		sb->AppendC(UTF8STRC("\r\nCompression version = "));
 			sb->AppendU32(iVal & 0x3f);
-			sb->Append((const UTF8Char*)"\r\nCompression Solid Flag = ");
+			sb->AppendC(UTF8STRC("\r\nCompression Solid Flag = "));
 			sb->AppendU32((iVal & 0x40) >> 6);
-			sb->Append((const UTF8Char*)"\r\nCompression method = ");
+			sb->AppendC(UTF8STRC("\r\nCompression method = "));
 			sb->AppendU32((iVal & 0x380) >> 7);
-			sb->Append((const UTF8Char*)"\r\nCompression dir size = ");
+			sb->AppendC(UTF8STRC("\r\nCompression dir size = "));
 			sb->AppendU32((iVal & 0x3c00) >> 10);*/
 			if (((compInfo & 0x380) >> 7) == 0)
 			{

@@ -192,12 +192,12 @@ Net::Email::SMTPConn::SMTPConn(Net::SocketFactory *sockf, Net::SSLEngine *ssl, c
 	{
 		Text::StringBuilderUTF8 sb;
 		UTF8Char sbuff[128];
-		sb.Append((const UTF8Char*)"Connect to ");
+		sb.AppendC(UTF8STRC("Connect to "));
 		sb.Append(host);
-		sb.Append((const UTF8Char*)"(");
+		sb.AppendC(UTF8STRC("("));
 		Net::SocketUtil::GetAddrName(sbuff, &addr);
 		sb.Append(sbuff);
-		sb.Append((const UTF8Char*)"):");
+		sb.AppendC(UTF8STRC("):"));
 		sb.AppendU16(port);
 		this->logWriter->WriteLine(sb.ToString());
 	}
@@ -327,7 +327,7 @@ Bool Net::Email::SMTPConn::SendAuth(const UTF8Char *userName, const UTF8Char *pa
 		sptr2 = Text::StrConcat(sptr2, password);
 		Text::TextBinEnc::Base64Enc b64;
 		Text::StringBuilderUTF8 sbCmd;
-		sbCmd.Append((const UTF8Char*)"AUTH PLAIN ");
+		sbCmd.AppendC(UTF8STRC("AUTH PLAIN "));
 		b64.EncodeBin(&sbCmd, pwdBuff, (UOSInt)(sptr2 - pwdBuff));
 		
 		this->statusChg = false;

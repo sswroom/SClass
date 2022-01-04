@@ -41,13 +41,13 @@ UOSInt Text::MIMEObj::MailMessage::WriteStream(IO::Stream *stm)
 	while (i < j)
 	{
 		sbc.Append(this->headerName->GetItem(i));
-		sbc.Append((const UTF8Char*)": ");
+		sbc.AppendC(UTF8STRC(": "));
 		csptr = this->headerValue->GetItem(i);
 		sbc.Append(csptr);
-		sbc.Append((const UTF8Char*)"\r\n");
+		sbc.AppendC(UTF8STRC("\r\n"));
 		i++;
 	}
-	sbc.Append((const UTF8Char*)"\r\n");
+	sbc.AppendC(UTF8STRC("\r\n"));
 	stm->Write((UInt8*)sbc.ToString(), sbc.GetLength());
 	i = sbc.GetLength();
 	if (this->content)

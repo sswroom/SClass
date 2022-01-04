@@ -963,10 +963,10 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnSpAddClicked(void *userObj)
 				UI::MessageDialog::ShowDialog((const UTF8Char *)"Species already exist", (const UTF8Char *)"Add Species", me);
 				return;
 			}
-			sb2.Append((const UTF8Char*)"Species already exist in book:\r\n");
+			sb2.AppendC(UTF8STRC("Species already exist in book:\r\n"));
 			if (me->env->IsBookSpeciesExist(sb.ToString(), &sb2))
 			{
-				sb2.Append((const UTF8Char*)"\r\n, continue?");
+				sb2.AppendC(UTF8STRC("\r\n, continue?"));
 				if (!UI::MessageDialog::ShowYesNoDialog(sb2.ToString(), (const UTF8Char *)"Add Species", me))
 				{
 					return;
@@ -3426,7 +3426,7 @@ void SSWR::OrganMgr::OrganMainForm::DropData(UI::GUIDropData *data, OSInt x, OSI
 						DEL_CLASS(mstm);
 						if (!hasSURL)
 						{
-							sURL.Append((const UTF8Char*)"about:blank");
+							sURL.AppendC(UTF8STRC("about:blank"));
 							hasSURL = true;
 						}
 					}

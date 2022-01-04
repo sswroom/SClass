@@ -1113,9 +1113,9 @@ Int32 __stdcall DasmX86_64_GetFuncStack(Manage::DasmX86_64::DasmX86_64_Sess* ses
 			console.Write(sb.ToString());
 
 			sb.ClearStr();
-			sb.Append((const UTF8Char*)"Func Buff 0x");
+			sb.AppendC(UTF8STRC("Func Buff 0x"));
 			sb.AppendHex64(funcAddr);
-			sb.Append((const UTF8Char*)" ");
+			sb.AppendC(UTF8STRC(" "));
 			tmpSess.addrResol->ResolveNameSB(&sb, funcAddr);
 			console.WriteLine(sb.ToString());
 			buffSize = tmpSess.memReader->ReadMemory(funcAddr, buff, tmpSess.regs.rip - funcAddr);
@@ -19408,41 +19408,41 @@ Bool Manage::DasmX86_64::Disasm64(IO::Writer *writer, Manage::AddressResolver *a
 
 		outStr->ClearStr();
 		outStr->AppendHex64(sess.regs.rsp);
-		outStr->Append((const UTF8Char*)" ");
+		outStr->AppendC(UTF8STRC(" "));
 		outStr->AppendHex64(sess.regs.rbp);
-		outStr->Append((const UTF8Char*)" ");
+		outStr->AppendC(UTF8STRC(" "));
 		outStr->AppendHex64(sess.regs.rip);
-		outStr->Append((const UTF8Char*)" ");
+		outStr->AppendC(UTF8STRC(" "));
 		if (fullRegs)
 		{
 			outStr->AppendHex64(sess.regs.rax);
-			outStr->Append((const UTF8Char*)" ");
+			outStr->AppendC(UTF8STRC(" "));
 			outStr->AppendHex64(sess.regs.rdx);
-			outStr->Append((const UTF8Char*)" ");
+			outStr->AppendC(UTF8STRC(" "));
 			outStr->AppendHex64(sess.regs.rcx);
-			outStr->Append((const UTF8Char*)" ");
+			outStr->AppendC(UTF8STRC(" "));
 			outStr->AppendHex64(sess.regs.rbx);
-			outStr->Append((const UTF8Char*)" ");
+			outStr->AppendC(UTF8STRC(" "));
 			outStr->AppendHex64(sess.regs.rsi);
-			outStr->Append((const UTF8Char*)" ");
+			outStr->AppendC(UTF8STRC(" "));
 			outStr->AppendHex64(sess.regs.rdi);
-			outStr->Append((const UTF8Char*)" ");
+			outStr->AppendC(UTF8STRC(" "));
 			outStr->AppendHex64(sess.regs.r8);
-			outStr->Append((const UTF8Char*)" ");
+			outStr->AppendC(UTF8STRC(" "));
 			outStr->AppendHex64(sess.regs.r9);
-			outStr->Append((const UTF8Char*)" ");
+			outStr->AppendC(UTF8STRC(" "));
 			outStr->AppendHex64(sess.regs.r10);
-			outStr->Append((const UTF8Char*)" ");
+			outStr->AppendC(UTF8STRC(" "));
 			outStr->AppendHex64(sess.regs.r11);
-			outStr->Append((const UTF8Char*)" ");
+			outStr->AppendC(UTF8STRC(" "));
 			outStr->AppendHex64(sess.regs.r12);
-			outStr->Append((const UTF8Char*)" ");
+			outStr->AppendC(UTF8STRC(" "));
 			outStr->AppendHex64(sess.regs.r13);
-			outStr->Append((const UTF8Char*)" ");
+			outStr->AppendC(UTF8STRC(" "));
 			outStr->AppendHex64(sess.regs.r14);
-			outStr->Append((const UTF8Char*)" ");
+			outStr->AppendC(UTF8STRC(" "));
 			outStr->AppendHex64(sess.regs.r15);
-			outStr->Append((const UTF8Char*)" ");
+			outStr->AppendC(UTF8STRC(" "));
 		}
 		sess.sbuff = sbuff;
 		if (sess.memReader->ReadMemory(sess.regs.rip, buff, 1) == 0)
@@ -19456,13 +19456,13 @@ Bool Manage::DasmX86_64::Disasm64(IO::Writer *writer, Manage::AddressResolver *a
 		if (!ret)
 		{
 			UOSInt buffSize;
-			outStr->Append((const UTF8Char*)"Unknown opcode ");
+			outStr->AppendC(UTF8STRC("Unknown opcode "));
 			buffSize = sess.memReader->ReadMemory(sess.regs.rip, buff, 16);
 			if (buffSize > 0)
 			{
 				outStr->AppendHex(buff, buffSize, ' ', Text::LineBreakType::None);
 			}
-			outStr->Append((const UTF8Char*)"\r\n");
+			outStr->AppendC(UTF8STRC("\r\n"));
 			writer->Write(outStr->ToString());
 			DEL_CLASS(outStr);
 			return false;
@@ -19549,7 +19549,7 @@ Bool Manage::DasmX86_64::Disasm64In(Text::StringBuilderUTF *outStr, Manage::Addr
 	while (sess.memReader->ReadMemUInt8(sess.regs.rip) == 0xe9)
 	{
 		outStr->AppendHex64(sess.regs.rip);
-		outStr->Append((const UTF8Char*)" ");
+		outStr->AppendC(UTF8STRC(" "));
 		sess.sbuff = sbuff;
 		Bool ret = this->codes[sess.memReader->ReadMemUInt8(sess.regs.rip)](&sess);
 		if (!ret)
@@ -19566,7 +19566,7 @@ Bool Manage::DasmX86_64::Disasm64In(Text::StringBuilderUTF *outStr, Manage::Addr
 		UInt64 oriip = sess.regs.rip;
 
 		outStr->AppendHex64(sess.regs.rip);
-		outStr->Append((const UTF8Char*)" ");
+		outStr->AppendC(UTF8STRC(" "));
 		sess.sbuff = sbuff;
 		Bool ret = this->codes[sess.memReader->ReadMemUInt8(sess.regs.rip)](&sess);
 		console.Write(sbuff);
@@ -19576,18 +19576,18 @@ Bool Manage::DasmX86_64::Disasm64In(Text::StringBuilderUTF *outStr, Manage::Addr
 			UInt8 buff[256];
 			UOSInt buffSize;
 			buffSize = sess.memReader->ReadMemory(oriip, buff, 16);
-			outStr->Append((const UTF8Char*)"Unknown opcode ");
+			outStr->AppendC(UTF8STRC("Unknown opcode "));
 			if (buffSize > 0)
 			{
 				outStr->AppendHexBuff(buff, buffSize, ' ', Text::LineBreakType::None);
 			}
-			outStr->Append((const UTF8Char*)"\r\n");
+			outStr->AppendC(UTF8STRC("\r\n"));
 			buffSize = sess.memReader->ReadMemory(initIP, buff, 256);
 			if (buffSize > 0)
 			{
-				outStr->Append((const UTF8Char*)"Inst Buff:\r\n");
+				outStr->AppendC(UTF8STRC("Inst Buff:\r\n"));
 				outStr->AppendHexBuff(buff, buffSize, ' ', Text::LineBreakType::CRLF);
-				outStr->Append((const UTF8Char*)"\r\n");
+				outStr->AppendC(UTF8STRC("\r\n"));
 			}
 			return false;
 		}

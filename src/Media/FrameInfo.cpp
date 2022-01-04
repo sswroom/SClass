@@ -66,7 +66,7 @@ void Media::FrameInfo::Set(const FrameInfo *info)
 
 void Media::FrameInfo::ToString(Text::StringBuilderUTF *sb)
 {
-	sb->Append((const UTF8Char*)"FourCC = ");
+	sb->AppendC(UTF8STRC("FourCC = "));
 	if (this->fourcc < 1024)
 	{
 		sb->AppendU32(this->fourcc);
@@ -75,48 +75,48 @@ void Media::FrameInfo::ToString(Text::StringBuilderUTF *sb)
 	{
 		sb->AppendC((const UTF8Char*)&this->fourcc, 4);
 	}
-	sb->Append((const UTF8Char*)"\r\n");
-	sb->Append((const UTF8Char*)"Display Size = ");
+	sb->AppendC(UTF8STRC("\r\n"));
+	sb->AppendC(UTF8STRC("Display Size = "));
 	sb->AppendUOSInt(this->dispWidth);
-	sb->Append((const UTF8Char*)" x ");
+	sb->AppendC(UTF8STRC(" x "));
 	sb->AppendUOSInt(this->dispHeight);
-	sb->Append((const UTF8Char*)"\r\n");
-	sb->Append((const UTF8Char*)"Store Size = ");
+	sb->AppendC(UTF8STRC("\r\n"));
+	sb->AppendC(UTF8STRC("Store Size = "));
 	sb->AppendUOSInt(this->storeWidth);
-	sb->Append((const UTF8Char*)" x ");
+	sb->AppendC(UTF8STRC(" x "));
 	sb->AppendUOSInt(this->storeHeight);
-	sb->Append((const UTF8Char*)"\r\n");
-	sb->Append((const UTF8Char*)"Store BPP = ");
+	sb->AppendC(UTF8STRC("\r\n"));
+	sb->AppendC(UTF8STRC("Store BPP = "));
 	sb->AppendU32(this->storeBPP);
-	sb->Append((const UTF8Char*)"\r\n");
-	sb->Append((const UTF8Char*)"Pixel Format = ");
+	sb->AppendC(UTF8STRC("\r\n"));
+	sb->AppendC(UTF8STRC("Pixel Format = "));
 	sb->Append(Media::PixelFormatGetName(this->pf));
-	sb->Append((const UTF8Char*)"\r\n");
-	sb->Append((const UTF8Char*)"Byte Size = ");
+	sb->AppendC(UTF8STRC("\r\n"));
+	sb->AppendC(UTF8STRC("Byte Size = "));
 	sb->AppendUOSInt(this->byteSize);
-	sb->Append((const UTF8Char*)"\r\n");
-	sb->Append((const UTF8Char*)"Pixel Aspect Ratio = ");
+	sb->AppendC(UTF8STRC("\r\n"));
+	sb->AppendC(UTF8STRC("Pixel Aspect Ratio = "));
 	Text::SBAppendF64(sb, this->par2);
-	sb->Append((const UTF8Char*)"\r\n");
-	sb->Append((const UTF8Char*)"H-DPI = ");
+	sb->AppendC(UTF8STRC("\r\n"));
+	sb->AppendC(UTF8STRC("H-DPI = "));
 	Text::SBAppendF64(sb, this->hdpi);
-	sb->Append((const UTF8Char*)"\r\n");
-	sb->Append((const UTF8Char*)"V-DPI = ");
+	sb->AppendC(UTF8STRC("\r\n"));
+	sb->AppendC(UTF8STRC("V-DPI = "));
 	Text::SBAppendF64(sb, this->vdpi);
-	sb->Append((const UTF8Char*)"\r\n");
-	sb->Append((const UTF8Char*)"Pixel Format = ");
+	sb->AppendC(UTF8STRC("\r\n"));
+	sb->AppendC(UTF8STRC("Pixel Format = "));
 	sb->Append(Media::FrameTypeGetName(this->ftype));
-	sb->Append((const UTF8Char*)"\r\n");
-	sb->Append((const UTF8Char*)"Alpha Type = ");
+	sb->AppendC(UTF8STRC("\r\n"));
+	sb->AppendC(UTF8STRC("Alpha Type = "));
 	sb->Append(Media::AlphaTypeGetName(this->atype));
-	sb->Append((const UTF8Char*)"\r\n");
-	sb->Append((const UTF8Char*)"YUV Type = ");
+	sb->AppendC(UTF8STRC("\r\n"));
+	sb->AppendC(UTF8STRC("YUV Type = "));
 	sb->Append(Media::ColorProfile::YUVTypeGetName(this->yuvType));
-	sb->Append((const UTF8Char*)"\r\n");
-	sb->Append((const UTF8Char*)"Y/C Offset = ");
+	sb->AppendC(UTF8STRC("\r\n"));
+	sb->AppendC(UTF8STRC("Y/C Offset = "));
 	sb->Append(Media::YCOffsetGetName(this->ycOfst));
-	sb->Append((const UTF8Char*)"\r\n");
-	sb->Append((const UTF8Char*)"\r\nColor Profile:\r\n");
+	sb->AppendC(UTF8STRC("\r\n"));
+	sb->AppendC(UTF8STRC("\r\nColor Profile:\r\n"));
 	this->color->ToString(sb);
 }
 

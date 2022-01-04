@@ -320,9 +320,9 @@ void __stdcall Net::MySQLServer::OnClientData(Net::TCPClient *cli, void *userObj
 	if (me->log)
 	{
 		Text::StringBuilderUTF8 sb;
-		sb.Append((const UTF8Char*)"Received ");
+		sb.AppendC(UTF8STRC("Received "));
 		sb.AppendUOSInt(size);
-		sb.Append((const UTF8Char*)" bytes");
+		sb.AppendC(UTF8STRC(" bytes"));
 		me->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_ACTION);
 	}
 	MemCopyNO(&data->buff[data->buffSize], buff, size);
@@ -373,16 +373,16 @@ void __stdcall Net::MySQLServer::OnClientData(Net::TCPClient *cli, void *userObj
 						}
 					}
 					data->clientCS = data->buff[12];
-					sb.Append((const UTF8Char*)"Handshake Response 41");
-					sb.Append((const UTF8Char*)"\r\nCapability Flags = 0x");
+					sb.AppendC(UTF8STRC("Handshake Response 41"));
+					sb.AppendC(UTF8STRC("\r\nCapability Flags = 0x"));
 					sb.AppendHex32(data->clientCap);
-					sb.Append((const UTF8Char*)"\r\nMax Packet Size = ");
+					sb.AppendC(UTF8STRC("\r\nMax Packet Size = "));
 					sb.AppendU32(data->param.clientMaxPacketSize);
-					sb.Append((const UTF8Char*)"\r\nCharacter Set = ");
+					sb.AppendC(UTF8STRC("\r\nCharacter Set = "));
 					sb.AppendU16(data->clientCS);
 					len = (UOSInt)(Text::StrConcat(data->userName, &data->buff[36]) - data->userName);
 					bptr = &data->buff[37] + len;
-					sb.Append((const UTF8Char*)"\r\nUsername = ");
+					sb.AppendC(UTF8STRC("\r\nUsername = "));
 					sb.Append(data->userName);
 					if (data->clientCap & Net::MySQLUtil::CLIENT_PLUGIN_AUTH_LENENC_CLIENT_DATA)
 					{
@@ -403,39 +403,39 @@ void __stdcall Net::MySQLServer::OnClientData(Net::TCPClient *cli, void *userObj
 						authResp = bptr;
 						bptr += authLen + 1;
 					}
-					sb.Append((const UTF8Char*)"\r\nAuth Response = ");
+					sb.AppendC(UTF8STRC("\r\nAuth Response = "));
 					sb.AppendHexBuff(authResp, authLen, ' ', Text::LineBreakType::None);
 					if (data->clientCap & Net::MySQLUtil::CLIENT_CONNECT_WITH_DB)
 					{
 						len = (UOSInt)(Text::StrConcat(data->database, bptr) - data->database);
-						sb.Append((const UTF8Char*)"\r\nDatabase = ");
+						sb.AppendC(UTF8STRC("\r\nDatabase = "));
 						sb.Append(data->database);
 						bptr += len + 1;
 					}
 					if (data->clientCap & Net::MySQLUtil::CLIENT_PLUGIN_AUTH)
 					{
 						len = Text::StrCharCnt(bptr);
-						sb.Append((const UTF8Char*)"\r\nAuth Plugin Name = ");
+						sb.AppendC(UTF8STRC("\r\nAuth Plugin Name = "));
 						sb.Append(bptr);
 						bptr += len + 1;
 					}
 					if (data->clientCap & Net::MySQLUtil::CLIENT_CONNECT_ATTRS)
 					{
 						bptrEnd = &data->buff[packetSize + 4];
-						sb.Append((const UTF8Char*)"\r\nAttr:");
+						sb.AppendC(UTF8STRC("\r\nAttr:"));
 						bptr = Net::MySQLUtil::ReadLenencInt(bptr, &iVal);
-						sb.Append((const UTF8Char*)"\r\n-Length of all key-values = ");
+						sb.AppendC(UTF8STRC("\r\n-Length of all key-values = "));
 						sb.AppendU64(iVal);
 						while (bptr < bptrEnd)
 						{
 							bptr = Net::MySQLUtil::ReadLenencInt(bptr, &iVal);
 							if (iVal == 0 || bptr + iVal > bptrEnd)
 								break;
-							sb.Append((const UTF8Char*)"\r\n-");
+							sb.AppendC(UTF8STRC("\r\n-"));
 							sb.AppendC(bptr, (UOSInt)iVal);
 							Text::StrConcatC(sbuff, bptr, (UOSInt)iVal);
 							bptr += iVal;
-							sb.Append((const UTF8Char*)" = ");
+							sb.AppendC(UTF8STRC(" = "));
 							bptr = Net::MySQLUtil::ReadLenencInt(bptr, &iVal);
 							if (bptr + iVal > bptrEnd)
 								break;
@@ -449,14 +449,14 @@ void __stdcall Net::MySQLServer::OnClientData(Net::TCPClient *cli, void *userObj
 				{
 					data->clientCap = data->clientCap & 0xffff;
 					data->param.clientMaxPacketSize = ReadUInt24(&data->buff[6]);
-					sb.Append((const UTF8Char*)"Handshake Response 320");
-					sb.Append((const UTF8Char*)"\r\nCapability Flags = 0x");
+					sb.AppendC(UTF8STRC("Handshake Response 320"));
+					sb.AppendC(UTF8STRC("\r\nCapability Flags = 0x"));
 					sb.AppendHex16((UInt16)data->clientCap);
-					sb.Append((const UTF8Char*)"\r\nMax Packet Size = ");
+					sb.AppendC(UTF8STRC("\r\nMax Packet Size = "));
 					sb.AppendU32(data->param.clientMaxPacketSize);
 					len = (UOSInt)(Text::StrConcat(data->userName, &data->buff[9]) - data->userName);
 					bptr = &data->buff[10] + len;
-					sb.Append((const UTF8Char*)"\r\nUsername = ");
+					sb.AppendC(UTF8STRC("\r\nUsername = "));
 					sb.Append(data->userName);
 					if (data->clientCap & Net::MySQLUtil::CLIENT_CONNECT_WITH_DB)
 					{
@@ -464,7 +464,7 @@ void __stdcall Net::MySQLServer::OnClientData(Net::TCPClient *cli, void *userObj
 						authLen = Text::StrCharCnt(authResp);
 						bptr += authLen + 1;
 						Text::StrConcat(data->database, bptr);
-						sb.Append((const UTF8Char*)"\r\nDatabase = ");
+						sb.AppendC(UTF8STRC("\r\nDatabase = "));
 						sb.Append(data->database);
 					}
 					else
@@ -472,7 +472,7 @@ void __stdcall Net::MySQLServer::OnClientData(Net::TCPClient *cli, void *userObj
 						authResp = bptr;
 						authLen = packetSize - (UOSInt)(bptr - data->buff) + 4;
 					}
-					sb.Append((const UTF8Char*)"\r\nAuth Response = ");
+					sb.AppendC(UTF8STRC("\r\nAuth Response = "));
 					sb.AppendHexBuff(authResp, authLen, ' ', Text::LineBreakType::None);
 				}
 				#if defined(VERBOSE)

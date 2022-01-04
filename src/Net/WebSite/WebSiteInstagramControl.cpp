@@ -57,7 +57,7 @@ OSInt Net::WebSite::WebSiteInstagramControl::GetChannelItems(Text::String *chann
 {
 	Text::StringBuilderUTF8 sb;
 	OSInt retCnt = 0;
-	sb.Append((const UTF8Char*)"https://www.instagram.com/");
+	sb.AppendC(UTF8STRC("https://www.instagram.com/"));
 	sb.Append(channelId);
 	sb.AppendChar('/', 1);
 	Net::WebSite::WebSiteInstagramControl::ItemData *item;
@@ -242,7 +242,7 @@ OSInt Net::WebSite::WebSiteInstagramControl::GetPageImages(Text::String *shortCo
 {
 	Text::StringBuilderUTF8 sb;
 	OSInt retCnt = 0;
-	sb.Append((const UTF8Char*)"https://www.instagram.com/p/");
+	sb.AppendC(UTF8STRC("https://www.instagram.com/p/"));
 	sb.Append(shortCode);
 	sb.AppendChar('/', 1);
 	Text::JSONBase *baseData = this->ParsePageJSON(sb.ToString());

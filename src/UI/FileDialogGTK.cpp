@@ -157,7 +157,7 @@ Bool UI::FileDialog::ShowDialog(ControlHandle *ownerHandle)
 		filter = gtk_file_filter_new();
 		sb.ClearStr();
 		sb.Append(this->names->GetItem(i));
-		sb.Append((const UTF8Char*)" (");
+		sb.AppendC(UTF8STRC(" ("));
 		sb.Append(this->patterns->GetItem(i));
 		sb.AppendChar(')', 1);
 		gtk_file_filter_set_name(filter, (const Char*)sb.ToString());

@@ -114,9 +114,9 @@ void __stdcall Net::TFTPServer::OnCommandPacket(const Net::SocketUtil::AddressIn
 			if (me->log)
 			{
 				sb.ClearStr();
-				sb.Append((const UTF8Char*)"Sending ");
+				sb.AppendC(UTF8STRC("Sending "));
 				sb.Append(fileName);
-				sb.Append((const UTF8Char*)" to ");
+				sb.AppendC(UTF8STRC(" to "));
 				Net::SocketUtil::GetAddrName(repBuff, addr, port);
 				sb.Append(repBuff);
 				me->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_ACTION);
@@ -183,9 +183,9 @@ void __stdcall Net::TFTPServer::OnCommandPacket(const Net::SocketUtil::AddressIn
 			if (me->log)
 			{
 				sb.ClearStr();
-				sb.Append((const UTF8Char*)"Receiving ");
+				sb.AppendC(UTF8STRC("Receiving "));
 				sb.Append(fileName);
-				sb.Append((const UTF8Char*)" to ");
+				sb.AppendC(UTF8STRC(" to "));
 				Net::SocketUtil::GetAddrName(repBuff, addr, port);
 				sb.Append(repBuff);
 				me->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_ACTION);
@@ -246,10 +246,10 @@ void __stdcall Net::TFTPServer::OnDataPacket(const Net::SocketUtil::AddressInfo 
 					{
 						Text::StringBuilderUTF8 sb;
 						UOSInt i;
-						sb.Append((const UTF8Char*)"End receiving ");
+						sb.AppendC(UTF8STRC("End receiving "));
 						i = Text::StrLastIndexOf(sess->fileName, IO::Path::PATH_SEPERATOR);
 						sb.Append(&sess->fileName[i + 1]);
-						sb.Append((const UTF8Char*)" to ");
+						sb.AppendC(UTF8STRC(" to "));
 						Net::SocketUtil::GetAddrName(repBuff, addr, port);
 						sb.Append(repBuff);
 						me->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_ACTION);
@@ -277,10 +277,10 @@ void __stdcall Net::TFTPServer::OnDataPacket(const Net::SocketUtil::AddressInfo 
 					{
 						Text::StringBuilderUTF8 sb;
 						UOSInt i;
-						sb.Append((const UTF8Char*)"End sending ");
+						sb.AppendC(UTF8STRC("End sending "));
 						i = Text::StrLastIndexOf(sess->fileName, IO::Path::PATH_SEPERATOR);
 						sb.Append(&sess->fileName[i + 1]);
-						sb.Append((const UTF8Char*)" to ");
+						sb.AppendC(UTF8STRC(" to "));
 						Net::SocketUtil::GetAddrName(repBuff, addr, port);
 						sb.Append(repBuff);
 						me->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_ACTION);

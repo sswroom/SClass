@@ -200,7 +200,7 @@ void Media::PhotoInfo::ToString(Text::StringBuilderUTF *sb)
 	{
 		if (this->model == 0)
 		{
-			sb->Append((const UTF8Char*)"Unknown camera");
+			sb->AppendC(UTF8STRC("Unknown camera"));
 		}
 		else
 		{
@@ -220,29 +220,29 @@ void Media::PhotoInfo::ToString(Text::StringBuilderUTF *sb)
 		else
 		{
 			sb->Append(this->make);
-			sb->Append((const UTF8Char*)" ");
+			sb->AppendC(UTF8STRC(" "));
 			sb->Append(this->model);
 		}
 	}
 
 	if (this->width != 0 && this->height != 0)
 	{
-		sb->Append((const UTF8Char*)" ");
+		sb->AppendC(UTF8STRC(" "));
 		sb->AppendU32(this->width);
-		sb->Append((const UTF8Char*)"x");
+		sb->AppendC(UTF8STRC("x"));
 		sb->AppendU32(this->height);
 	}
 
 	if (this->fNumber != 0)
 	{
-		sb->Append((const UTF8Char*)" f/");
+		sb->AppendC(UTF8STRC(" f/"));
 		Text::StrDoubleFmt(sbuff, this->fNumber, "0.0");
 		sb->Append(sbuff);
 	}
 
 	if (this->expTime != 0)
 	{
-		sb->Append((const UTF8Char*)" ");
+		sb->AppendC(UTF8STRC(" "));
 		if (this->expTime >= 1)
 		{
 			Text::StrDoubleFmt(sbuff, this->expTime, "0.0");
@@ -250,7 +250,7 @@ void Media::PhotoInfo::ToString(Text::StringBuilderUTF *sb)
 		}
 		else if (this->expTime < 0.3)
 		{
-			sb->Append((const UTF8Char*)"1/");
+			sb->AppendC(UTF8STRC("1/"));
 			sb->AppendI32(Math::Double2Int32(1.0 / this->expTime));
 		}
 		else
@@ -258,7 +258,7 @@ void Media::PhotoInfo::ToString(Text::StringBuilderUTF *sb)
 			Double invExp = 1.0 / this->expTime;
 			if (invExp == Math::Double2Int32(invExp))
 			{
-				sb->Append((const UTF8Char*)"1/");
+				sb->AppendC(UTF8STRC("1/"));
 				sb->AppendI32(Math::Double2Int32(invExp));
 			}
 			else
@@ -267,25 +267,25 @@ void Media::PhotoInfo::ToString(Text::StringBuilderUTF *sb)
 				sb->Append(sbuff);
 			}
 		}
-		sb->Append((const UTF8Char*)"sec");
+		sb->AppendC(UTF8STRC("sec"));
 	}
 	
 	if (this->isoRating != 0)
 	{
-		sb->Append((const UTF8Char*)" ISO");
+		sb->AppendC(UTF8STRC(" ISO"));
 		sb->AppendU32(this->isoRating);
 	}
 
 	if (this->lens)
 	{
-		sb->Append((const UTF8Char*)" Lens ");
+		sb->AppendC(UTF8STRC(" Lens "));
 		sb->Append(this->lens);
 	}
 
 	if (this->focalLength != 0)
 	{
-		sb->Append((const UTF8Char*)"@");
+		sb->AppendC(UTF8STRC("@"));
 		Text::SBAppendF64(sb, this->focalLength);
-		sb->Append((const UTF8Char*)"mm");
+		sb->AppendC(UTF8STRC("mm"));
 	}
 }

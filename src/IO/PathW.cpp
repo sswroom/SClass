@@ -733,14 +733,14 @@ Bool IO::Path::AppendPath(Text::StringBuilderUTF8 *sb, const UTF8Char *toAppend)
 				{
 					sb->SetEndPtr(&lastSep[1]);
 					sb->Append(pathArr[i]);
-					sb->Append((const UTF8Char*)"\\");
+					sb->AppendC(UTF8STRC("\\"));
 					lastSep = sb->GetEndPtr() - 1;
 				}
 				else
 				{
 					sb->SetEndPtr(lastSep);
 					sb->Append(pathArr[i]);
-					sb->Append((const UTF8Char*)"\\");
+					sb->AppendC(UTF8STRC("\\"));
 					lastSep = sb->GetEndPtr() - 1;
 				}
 			}

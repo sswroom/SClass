@@ -203,9 +203,9 @@ UOSInt Net::TCPClient::Read(UInt8 *buff, UOSInt size)
 #ifdef PRINTDEBUG
 			{
 				Text::StringBuilderUTF8 sb;
-				sb.Append((const UTF8Char*)"Client received ");
+				sb.AppendC(UTF8STRC("Client received "));
 				sb.AppendUOSInt(recvSize);
-				sb.Append((const UTF8Char*)" bytes\r\n");
+				sb.AppendC(UTF8STRC(" bytes\r\n"));
 				IO::Console::PrintStrO(sb.ToString());
 			}
 #endif
@@ -248,9 +248,9 @@ UOSInt Net::TCPClient::Write(const UInt8 *buff, UOSInt size)
 #ifdef PRINTDEBUG
 		{
 			Text::StringBuilderUTF8 sb;
-			sb.Append((const UTF8Char*)"Client sending ");
+			sb.AppendC(UTF8STRC("Client sending "));
 			sb.AppendUOSInt(size);
-			sb.Append((const UTF8Char*)" bytes out\r\n");
+			sb.AppendC(UTF8STRC(" bytes out\r\n"));
 			IO::Console::PrintStrO(sb.ToString());
 		}
 #endif

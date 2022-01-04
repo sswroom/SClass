@@ -904,11 +904,11 @@ Bool Manage::DasmMIPS::Disasm32(IO::Writer *writer, Manage::AddressResolver *add
 
 		outStr->ClearStr();
 		outStr->AppendHex32((UInt32)sess.regs.sp);
-		outStr->Append((const UTF8Char*)" ");
+		outStr->AppendC(UTF8STRC(" "));
 		outStr->AppendHex32((UInt32)sess.regs.fp);
-		outStr->Append((const UTF8Char*)" ");
+		outStr->AppendC(UTF8STRC(" "));
 		outStr->AppendHex32((UInt32)sess.regs.pc);
-		outStr->Append((const UTF8Char*)" ");
+		outStr->AppendC(UTF8STRC(" "));
 		if (fullRegs)
 		{
 			OSInt i;
@@ -916,11 +916,11 @@ Bool Manage::DasmMIPS::Disasm32(IO::Writer *writer, Manage::AddressResolver *add
 			while (i < 29)
 			{
 				outStr->AppendHex32((UInt32)sess.regs.regs[i]);
-				outStr->Append((const UTF8Char*)" ");
+				outStr->AppendC(UTF8STRC(" "));
 				i++;
 			}
 			outStr->AppendHex32((UInt32)sess.regs.ra);
-			outStr->Append((const UTF8Char*)" ");
+			outStr->AppendC(UTF8STRC(" "));
 		}
 		sess.sbuff = sbuff;
 		if (sess.memReader->ReadMemory(sess.regs.pc, buff, 4) != 4)
@@ -934,13 +934,13 @@ Bool Manage::DasmMIPS::Disasm32(IO::Writer *writer, Manage::AddressResolver *add
 		if (!ret)
 		{
 			OSInt buffSize;
-			outStr->Append((const UTF8Char*)"Unknown opcode ");
+			outStr->AppendC(UTF8STRC("Unknown opcode "));
 			buffSize = sess.memReader->ReadMemory(sess.regs.pc, buff, 16);
 			if (buffSize > 0)
 			{
 				outStr->AppendHexBuff(buff, buffSize, ' ', Text::LineBreakType::None);
 			}
-			outStr->Append((const UTF8Char*)"\r\n");
+			outStr->AppendC(UTF8STRC("\r\n"));
 			writer->Write(outStr->ToString());
 			DEL_CLASS(outStr);
 			return false;

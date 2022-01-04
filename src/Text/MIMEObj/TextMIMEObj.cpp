@@ -11,7 +11,7 @@ void Text::MIMEObj::TextMIMEObj::BuildContentType()
 	Text::StringBuilderUTF8 sbc;
 	UTF8Char u8buff[64];
 	u8buff[0] = 0;
-	sbc.Append((const UTF8Char*)"text/plain; charset=");
+	sbc.AppendC(UTF8STRC("text/plain; charset="));
 	Text::EncodingFactory::GetInternetName(u8buff, this->codePage);
 	sbc.Append(u8buff);
 	this->contType = Text::StrCopyNew(sbc.ToString());

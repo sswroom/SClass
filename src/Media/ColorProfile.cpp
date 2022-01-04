@@ -808,42 +808,42 @@ Media::ColorProfile::ColorPrimaries *Media::ColorProfile::GetPrimaries()
 
 void Media::ColorProfile::ToString(Text::StringBuilderUTF *sb)
 {
-	sb->Append((const UTF8Char*)"-R Transfer: ");
+	sb->AppendC(UTF8STRC("-R Transfer: "));
 	sb->Append(Media::CS::TransferFunc::GetTransferFuncName(this->GetRTranParam()->GetTranType()));
-	sb->Append((const UTF8Char*)"\r\n-G Transfer: ");
+	sb->AppendC(UTF8STRC("\r\n-G Transfer: "));
 	sb->Append(Media::CS::TransferFunc::GetTransferFuncName(this->GetGTranParam()->GetTranType()));
-	sb->Append((const UTF8Char*)"\r\n-B Transfer: ");
+	sb->AppendC(UTF8STRC("\r\n-B Transfer: "));
 	sb->Append(Media::CS::TransferFunc::GetTransferFuncName(this->GetBTranParam()->GetTranType()));
-	sb->Append((const UTF8Char*)"\r\n-Gamma: ");
+	sb->AppendC(UTF8STRC("\r\n-Gamma: "));
 	Text::SBAppendF64(sb, this->GetRTranParam()->GetGamma());
 	Media::ColorProfile::ColorPrimaries *primaries = this->GetPrimaries(); 
-	sb->Append((const UTF8Char*)"\r\n-RGB Primary: ");
+	sb->AppendC(UTF8STRC("\r\n-RGB Primary: "));
 	sb->Append(Media::ColorProfile::ColorTypeGetName(primaries->colorType));
-	sb->Append((const UTF8Char*)"\r\n-Red:   ");
+	sb->AppendC(UTF8STRC("\r\n-Red:   "));
 	Text::SBAppendF64(sb, primaries->rx);
-	sb->Append((const UTF8Char*)", ");
+	sb->AppendC(UTF8STRC(", "));
 	Text::SBAppendF64(sb, primaries->ry);
-	sb->Append((const UTF8Char*)"\r\n-Green: ");
+	sb->AppendC(UTF8STRC("\r\n-Green: "));
 	Text::SBAppendF64(sb, primaries->gx);
-	sb->Append((const UTF8Char*)", ");
+	sb->AppendC(UTF8STRC(", "));
 	Text::SBAppendF64(sb, primaries->gy);
-	sb->Append((const UTF8Char*)"\r\n-Blue:  ");
+	sb->AppendC(UTF8STRC("\r\n-Blue:  "));
 	Text::SBAppendF64(sb, primaries->bx);
-	sb->Append((const UTF8Char*)", ");
+	sb->AppendC(UTF8STRC(", "));
 	Text::SBAppendF64(sb, primaries->by);
-	sb->Append((const UTF8Char*)"\r\n-White: ");
+	sb->AppendC(UTF8STRC("\r\n-White: "));
 	Text::SBAppendF64(sb, primaries->wx);
-	sb->Append((const UTF8Char*)", ");
+	sb->AppendC(UTF8STRC(", "));
 	Text::SBAppendF64(sb, primaries->wy);
-	sb->Append((const UTF8Char*)"\r\n");
+	sb->AppendC(UTF8STRC("\r\n"));
 
 	if (this->rawICC)
 	{
 		Media::ICCProfile *icc = Media::ICCProfile::Parse(rawICC, ReadMUInt32(this->rawICC));
 		if (icc)
 		{
-			sb->Append((const UTF8Char*)"\r\n");
-			sb->Append((const UTF8Char*)"ICC Profile:\r\n");
+			sb->AppendC(UTF8STRC("\r\n"));
+			sb->AppendC(UTF8STRC("ICC Profile:\r\n"));
 			icc->ToString(sb);
 			DEL_CLASS(icc);
 		}

@@ -89,9 +89,9 @@ Net::SNS::SNSInstagram::SNSInstagram(Net::SocketFactory *sockf, Net::SSLEngine *
 		}
 
 		sb.ClearStr();
-		sb.Append((const UTF8Char*)"https://www.instagram.com/p/");
+		sb.AppendC(UTF8STRC("https://www.instagram.com/p/"));
 		sb.Append(item->shortCode);
-		sb.Append((const UTF8Char*)"/");
+		sb.AppendC(UTF8STRC("/"));
 		Text::String *s = Text::String::New(sb.ToString(), sb.GetLength());
 		snsItem = CreateItem(item->shortCode, item->recTime, 0, item->message, s, item->imgURL, item->videoURL);
 		s->Release();
@@ -242,9 +242,9 @@ Bool Net::SNS::SNSInstagram::Reload()
 				}
 
 				sb.ClearStr();
-				sb.Append((const UTF8Char*)"https://www.instagram.com/p/");
+				sb.AppendC(UTF8STRC("https://www.instagram.com/p/"));
 				sb.Append(item->shortCode);
-				sb.Append((const UTF8Char*)"/");
+				sb.AppendC(UTF8STRC("/"));
 				Text::String *s = Text::String::New(sb.ToString(), sb.GetLength());
 				snsItem = CreateItem(item->shortCode, item->recTime, 0, item->message, s, item->imgURL, item->videoURL);
 				s->Release();

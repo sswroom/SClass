@@ -48,49 +48,49 @@ public:
 		switch (extIndex)
 		{
 		case 0:
-			sb->Append((const UTF8Char*)"DevID");
+			sb->AppendC(UTF8STRC("DevID"));
 			return true;
 		case 1:
-			sb->Append((const UTF8Char*)"DevType");
+			sb->AppendC(UTF8STRC("DevType"));
 			return true;
 		case 2:
-			sb->Append((const UTF8Char*)"Funcs");
+			sb->AppendC(UTF8STRC("Funcs"));
 			return true;
 		case 3:
-			sb->Append((const UTF8Char*)"Status");
+			sb->AppendC(UTF8STRC("Status"));
 			return true;
 		case 4:
-			sb->Append((const UTF8Char*)"Status2");
+			sb->AppendC(UTF8STRC("Status2"));
 			return true;
 		case 5:
-			sb->Append((const UTF8Char*)"Other0");
+			sb->AppendC(UTF8STRC("Other0"));
 			return true;
 		case 6:
-			sb->Append((const UTF8Char*)"Other1");
+			sb->AppendC(UTF8STRC("Other1"));
 			return true;
 		case 7:
-			sb->Append((const UTF8Char*)"Other2");
+			sb->AppendC(UTF8STRC("Other2"));
 			return true;
 		case 8:
-			sb->Append((const UTF8Char*)"Other3");
+			sb->AppendC(UTF8STRC("Other3"));
 			return true;
 		case 9:
-			sb->Append((const UTF8Char*)"LocTime");
+			sb->AppendC(UTF8STRC("LocTime"));
 			return true;
 		case 10:
-			sb->Append((const UTF8Char*)"RecvTime");
+			sb->AppendC(UTF8STRC("RecvTime"));
 			return true;
 		case 11:
-			sb->Append((const UTF8Char*)"ConnId");
+			sb->AppendC(UTF8STRC("ConnId"));
 			return true;
 		case 12:
-			sb->Append((const UTF8Char*)"GTime");
+			sb->AppendC(UTF8STRC("GTime"));
 			return true;
 		case 13:
-			sb->Append((const UTF8Char*)"GPS Lat");
+			sb->AppendC(UTF8STRC("GPS Lat"));
 			return true;
 		case 14:
-			sb->Append((const UTF8Char*)"GPS Lon");
+			sb->AppendC(UTF8STRC("GPS Lon"));
 			return true;
 		}
 		return false;
@@ -114,11 +114,11 @@ public:
 			sb->AppendI32(extInfo->funcs);
 			return true;
 		case 3:
-			sb->Append((const UTF8Char*)"0x");
+			sb->AppendC(UTF8STRC("0x"));
 			sb->AppendHex32(extInfo->status);
 			return true;
 		case 4:
-			sb->Append((const UTF8Char*)"0x");
+			sb->AppendC(UTF8STRC("0x"));
 			sb->AppendHex32(extInfo->status2);
 			return true;
 		case 5:

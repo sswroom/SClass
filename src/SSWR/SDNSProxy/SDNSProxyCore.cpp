@@ -11,14 +11,14 @@ void __stdcall SSWR::SDNSProxy::SDNSProxyCore::OnDNSRequest(void *userObj, const
 	UTF8Char sbuff[32];
 	Text::StringBuilderUTF8 sb;
 	sb.Append(reqName);
-	sb.Append((const UTF8Char*)" from ");
+	sb.AppendC(UTF8STRC(" from "));
 	Net::SocketUtil::GetAddrName(sbuff, reqAddr, reqPort);
 	sb.Append(sbuff);
-	sb.Append((const UTF8Char*)", T=");
+	sb.AppendC(UTF8STRC(", T="));
 	sb.AppendI32(reqType);
-	sb.Append((const UTF8Char*)", C=");
+	sb.AppendC(UTF8STRC(", C="));
 	sb.AppendI32(reqClass);
-	sb.Append((const UTF8Char*)", t=");
+	sb.AppendC(UTF8STRC(", t="));
 	Text::SBAppendF64(&sb, timeUsed);
 	me->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_RAW);
 

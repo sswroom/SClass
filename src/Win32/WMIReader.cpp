@@ -385,7 +385,7 @@ Bool Win32::WMIReader::GetStr(UOSInt colIndex, Text::StringBuilderUTF *sb)
 			case CIM_UINT8 | CIM_FLAG_ARRAY:
 				{
 					SAFEARRAY * arr = V_ARRAY(&v);
-					sb->Append((const UTF8Char*)"0x");
+					sb->AppendC(UTF8STRC("0x"));
 					sb->AppendHexBuff((UInt8*)arr->pvData, arr->rgsabound[0].cElements, 0, Text::LineBreakType::None);
 					ret = true;
 				}

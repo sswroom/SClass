@@ -20,7 +20,7 @@ void __stdcall Net::SyslogServer::OnUDPPacket(const Net::SocketUtil::AddressInfo
 		{
 			Net::SocketUtil::GetAddrName(sbuff, addr);
 			sb.Append(sbuff);
-			sb.Append((const UTF8Char*)"> ");
+			sb.AppendC(UTF8STRC("> "));
 			sb.AppendC(buff, dataSize);
 			me->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_COMMAND);
 		}

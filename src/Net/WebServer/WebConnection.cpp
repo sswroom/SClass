@@ -426,7 +426,7 @@ void Net::WebServer::WebConnection::ProcessTimeout()
 	Text::StringBuilderUTF8 sb;
 	this->cli->GetRemoteName(sbuff);
 	sb.Append(sbuff);
-	sb.Append((const UTF8Char*)" ");
+	sb.AppendC(UTF8STRC(" "));
 	if (this->currReq)
 	{
 		Text::String *uri = this->currReq->GetRequestURI();
@@ -436,7 +436,7 @@ void Net::WebServer::WebConnection::ProcessTimeout()
 			sb.AppendChar(' ', 1);
 		}
 	}
-	sb.Append((const UTF8Char*)"Process Timeout");
+	sb.AppendC(UTF8STRC("Process Timeout"));
 	this->svr->LogMessage(0, sb.ToString());
 }
 
@@ -569,7 +569,7 @@ void Net::WebServer::WebConnection::ProcessResponse()
 			if (httpCli->IsError())
 			{
 				sb.ClearStr();
-				sb.Append((const UTF8Char*)"Conn Err: ");
+				sb.AppendC(UTF8STRC("Conn Err: "));
 				sb.Append(reqURI);
 				this->svr->LogMessage(this->currReq, sb.ToString());
 
@@ -798,9 +798,9 @@ Bool Net::WebServer::WebConnection::AddHeader(const UTF8Char *name, const UTF8Ch
 	if (this->respHeaderSent)
 		return false;
 	this->respHeaders->Append(name);
-	this->respHeaders->Append((const UTF8Char*)": ");
+	this->respHeaders->AppendC(UTF8STRC(": "));
 	this->respHeaders->Append(value);
-	this->respHeaders->Append((const UTF8Char*)"\r\n");
+	this->respHeaders->AppendC(UTF8STRC("\r\n"));
 
 	if (Text::StrEqualsICase(name, (const UTF8Char*)"Transfer-Encoding") && Text::StrEquals(value, (const UTF8Char*)"chunked"))
 	{
@@ -879,13 +879,13 @@ Bool Net::WebServer::WebConnection::SSESend(const UTF8Char *eventName, const UTF
 	Text::StringBuilderUTF8 sb;
 	if (eventName)
 	{
-		sb.Append((const UTF8Char*)"event:");
+		sb.AppendC(UTF8STRC("event:"));
 		sb.Append(eventName);
 		sb.AppendLB(Text::LineBreakType::LF);
 	}
 	if (data)
 	{
-		sb.Append((const UTF8Char*)"data:");
+		sb.AppendC(UTF8STRC("data:"));
 		sb.Append(data);
 		sb.AppendLB(Text::LineBreakType::LF);
 	}

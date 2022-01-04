@@ -374,7 +374,7 @@ Net::SNMPManager::AgentInfo *Net::SNMPManager::AddAgent(const Net::SocketUtil::A
 								FreeAllItems(&itemList);
 
 								sb.ClearStr();
-								sb.Append((const UTF8Char*)"Disk ");
+								sb.AppendC(UTF8STRC("Disk "));
 								sb.AppendUOSInt(i);
 								Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"1.3.6.1.4.1.24681.1.4.1.1.1.1.5.2.1.8."), i);
 								err = this->cli->V1GetRequest(addr, community, sbuff, &itemList); //diskModel
@@ -493,7 +493,7 @@ Net::SNMPManager::AgentInfo *Net::SNMPManager::AddAgent(const Net::SocketUtil::A
 									}
 									if (sb.GetLength() == 0)
 									{
-										sb.Append((const UTF8Char*)"Disk ");
+										sb.AppendC(UTF8STRC("Disk "));
 										sb.AppendUOSInt(i + 1);
 									}
 									FreeAllItems(&itemList);
@@ -838,7 +838,7 @@ Net::SNMPManager::AgentInfo *Net::SNMPManager::AddAgent(const Net::SocketUtil::A
 					agent->vendor = Text::StrCopyNew((const UTF8Char*)"Microsoft");
 
 					Text::StringBuilderUTF8 sb;
-					sb.Append((const UTF8Char*)"WindowsNT");
+					sb.AppendC(UTF8STRC("WindowsNT"));
 
 					err = this->cli->V1GetRequest(addr, community, (const UTF8Char*)"1.3.6.1.4.1.77.1.1.1.0", &itemList); //comVersionMaj.0
 					if (err == Net::SNMPUtil::ES_NOERROR && itemList.GetCount() == 1)

@@ -57,76 +57,76 @@ public:
 		switch (extIndex)
 		{
 		case 0:
-			sb->Append((const UTF8Char*)"TermId");
+			sb->AppendC(UTF8STRC("TermId"));
 			return true;
 		case 1:
-			sb->Append((const UTF8Char*)"DevType");
+			sb->AppendC(UTF8STRC("DevType"));
 			return true;
 		case 2:
-			sb->Append((const UTF8Char*)"RecvTime");
+			sb->AppendC(UTF8STRC("RecvTime"));
 			return true;
 		case 3:
-			sb->Append((const UTF8Char*)"Status");
+			sb->AppendC(UTF8STRC("Status"));
 			return true;
 		case 4:
-			sb->Append((const UTF8Char*)"Status2");
+			sb->AppendC(UTF8STRC("Status2"));
 			return true;
 		case 5:
-			sb->Append((const UTF8Char*)"Period");
+			sb->AppendC(UTF8STRC("Period"));
 			return true;
 		case 6:
-			sb->Append((const UTF8Char*)"MileageTZ");
+			sb->AppendC(UTF8STRC("MileageTZ"));
 			return true;
 		case 7:
-			sb->Append((const UTF8Char*)"Temperature1");
+			sb->AppendC(UTF8STRC("Temperature1"));
 			return true;
 		case 8:
-			sb->Append((const UTF8Char*)"Temperature2");
+			sb->AppendC(UTF8STRC("Temperature2"));
 			return true;
 		case 9:
-			sb->Append((const UTF8Char*)"Temperature3");
+			sb->AppendC(UTF8STRC("Temperature3"));
 			return true;
 		case 10:
-			sb->Append((const UTF8Char*)"RHLine");
+			sb->AppendC(UTF8STRC("RHLine"));
 			return true;
 		case 11:
-			sb->Append((const UTF8Char*)"RHRef");
+			sb->AppendC(UTF8STRC("RHRef"));
 			return true;
 		case 12:
-			sb->Append((const UTF8Char*)"MileageDiff");
+			sb->AppendC(UTF8STRC("MileageDiff"));
 			return true;
 		case 13:
-			sb->Append((const UTF8Char*)"MileageDaily");
+			sb->AppendC(UTF8STRC("MileageDaily"));
 			return true;
 		case 14:
-			sb->Append((const UTF8Char*)"FuelLev");
+			sb->AppendC(UTF8STRC("FuelLev"));
 			return true;
 		case 15:
-			sb->Append((const UTF8Char*)"DevIP");
+			sb->AppendC(UTF8STRC("DevIP"));
 			return true;
 		case 16:
-			sb->Append((const UTF8Char*)"DevPort");
+			sb->AppendC(UTF8STRC("DevPort"));
 			return true;
 		case 17:
-			sb->Append((const UTF8Char*)"RecType");
+			sb->AppendC(UTF8STRC("RecType"));
 			return true;
 		case 18:
-			sb->Append((const UTF8Char*)"Status4");
+			sb->AppendC(UTF8STRC("Status4"));
 			return true;
 		case 19:
-			sb->Append((const UTF8Char*)"adc5");
+			sb->AppendC(UTF8STRC("adc5"));
 			return true;
 		case 20:
-			sb->Append((const UTF8Char*)"adc6");
+			sb->AppendC(UTF8STRC("adc6"));
 			return true;
 		case 21:
-			sb->Append((const UTF8Char*)"adc7");
+			sb->AppendC(UTF8STRC("adc7"));
 			return true;
 		case 22:
-			sb->Append((const UTF8Char*)"adc8");
+			sb->AppendC(UTF8STRC("adc8"));
 			return true;
 		case 23:
-			sb->Append((const UTF8Char*)"FileOffset");
+			sb->AppendC(UTF8STRC("FileOffset"));
 			return true;
 		}
 		return false;
@@ -155,11 +155,11 @@ public:
 			}
 			return true;
 		case 3:
-			sb->Append((const UTF8Char*)"0x");
+			sb->AppendC(UTF8STRC("0x"));
 			sb->AppendHex32(extInfo->status);
 			return true;
 		case 4:
-			sb->Append((const UTF8Char*)"0x");
+			sb->AppendC(UTF8STRC("0x"));
 			sb->AppendHex32(extInfo->status2);
 			return true;
 		case 5:
@@ -206,7 +206,7 @@ public:
 			sb->AppendU16(extInfo->recType);
 			return true;
 		case 18:
-			sb->Append((const UTF8Char*)"0x");
+			sb->AppendC(UTF8STRC("0x"));
 			sb->AppendHex32(extInfo->status4);
 			return true;
 		case 19:

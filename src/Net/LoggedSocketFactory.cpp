@@ -31,14 +31,14 @@ Socket *Net::LoggedSocketFactory::CreateTCPSocketv4()
 	{
 		sb.Append(this->logPrefix);
 	}
-	sb.Append((const UTF8Char*)"Create TCP Socket v4: ");
+	sb.AppendC(UTF8STRC("Create TCP Socket v4: "));
 	if (!this->sockf->SocketIsInvalid(ret))
 	{
-		sb.Append((const UTF8Char*)"Success");
+		sb.AppendC(UTF8STRC("Success"));
 	}
 	else
 	{
-		sb.Append((const UTF8Char*)"Failed");
+		sb.AppendC(UTF8STRC("Failed"));
 	}
 	this->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_ACTION);
 	return ret;
@@ -52,14 +52,14 @@ Socket *Net::LoggedSocketFactory::CreateTCPSocketv6()
 	{
 		sb.Append(this->logPrefix);
 	}
-	sb.Append((const UTF8Char*)"Create TCP Socket v6: ");
+	sb.AppendC(UTF8STRC("Create TCP Socket v6: "));
 	if (!this->sockf->SocketIsInvalid(ret))
 	{
-		sb.Append((const UTF8Char*)"Success");
+		sb.AppendC(UTF8STRC("Success"));
 	}
 	else
 	{
-		sb.Append((const UTF8Char*)"Failed");
+		sb.AppendC(UTF8STRC("Failed"));
 	}
 	this->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_ACTION);
 	return ret;
@@ -73,14 +73,14 @@ Socket *Net::LoggedSocketFactory::CreateUDPSocketv4()
 	{
 		sb.Append(this->logPrefix);
 	}
-	sb.Append((const UTF8Char*)"Create UDP Socket v4: ");
+	sb.AppendC(UTF8STRC("Create UDP Socket v4: "));
 	if (!this->sockf->SocketIsInvalid(ret))
 	{
-		sb.Append((const UTF8Char*)"Success");
+		sb.AppendC(UTF8STRC("Success"));
 	}
 	else
 	{
-		sb.Append((const UTF8Char*)"Failed");
+		sb.AppendC(UTF8STRC("Failed"));
 	}
 	this->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_ACTION);
 	return ret;
@@ -94,7 +94,7 @@ void Net::LoggedSocketFactory::DestroySocket(Socket *socket)
 	{
 		sb.Append(this->logPrefix);
 	}
-	sb.Append((const UTF8Char*)"Destroy Socket: ");
+	sb.AppendC(UTF8STRC("Destroy Socket: "));
 	this->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_ACTION);
 }
 
@@ -113,16 +113,16 @@ Bool Net::LoggedSocketFactory::SocketBindv4(Socket *socket, UInt32 ip, UInt16 po
 	{
 		sb.Append(this->logPrefix);
 	}
-	sb.Append((const UTF8Char*)"Bind v4: ");
+	sb.AppendC(UTF8STRC("Bind v4: "));
 	sb.Append(sbuff);
-	sb.Append((const UTF8Char*)", ");
+	sb.AppendC(UTF8STRC(", "));
 	if (ret)
 	{
-		sb.Append((const UTF8Char*)"Success");
+		sb.AppendC(UTF8STRC("Success"));
 	}
 	else
 	{
-		sb.Append((const UTF8Char*)"Failed");
+		sb.AppendC(UTF8STRC("Failed"));
 	}
 	this->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_ACTION);
 	return ret;
@@ -136,14 +136,14 @@ Bool Net::LoggedSocketFactory::SocketListen(Socket *socket)
 	{
 		sb.Append(this->logPrefix);
 	}
-	sb.Append((const UTF8Char*)"Listen to socket: ");
+	sb.AppendC(UTF8STRC("Listen to socket: "));
 	if (ret)
 	{
-		sb.Append((const UTF8Char*)"Success");
+		sb.AppendC(UTF8STRC("Success"));
 	}
 	else
 	{
-		sb.Append((const UTF8Char*)"Failed");
+		sb.AppendC(UTF8STRC("Failed"));
 	}
 	this->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_ACTION);
 	return ret;
@@ -157,7 +157,7 @@ Socket *Net::LoggedSocketFactory::SocketAccept(Socket *socket)
 	{
 		sb.Append(this->logPrefix);
 	}
-	sb.Append((const UTF8Char*)"Begin socket accept");
+	sb.AppendC(UTF8STRC("Begin socket accept"));
 	this->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_ACTION);
 	Socket *ret = this->sockf->SocketAccept(socket);
 	sb.ClearStr();
@@ -165,14 +165,14 @@ Socket *Net::LoggedSocketFactory::SocketAccept(Socket *socket)
 	{
 		sb.Append(this->logPrefix);
 	}
-	sb.Append((const UTF8Char*)"End socket accept: ");
+	sb.AppendC(UTF8STRC("End socket accept: "));
 	if (ret == 0 || this->sockf->SocketIsInvalid(ret))
 	{
-		sb.Append((const UTF8Char*)"Failed");
+		sb.AppendC(UTF8STRC("Failed"));
 	}
 	else
 	{
-		sb.Append((const UTF8Char*)"Success, remote: ");
+		sb.AppendC(UTF8STRC("Success, remote: "));
 		this->sockf->GetRemoteName(sbuff, ret);
 		sb.Append(sbuff);
 	}
@@ -188,9 +188,9 @@ UOSInt Net::LoggedSocketFactory::SendData(Socket *socket, const UInt8 *buff, UOS
 	{
 		sb.Append(this->logPrefix);
 	}
-	sb.Append((const UTF8Char*)"Sent ");
+	sb.AppendC(UTF8STRC("Sent "));
 	sb.AppendOSInt(ret);
-	sb.Append((const UTF8Char*)" bytes");
+	sb.AppendC(UTF8STRC(" bytes"));
 	this->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_ACTION);
 	return ret;
 }
@@ -203,9 +203,9 @@ UOSInt Net::LoggedSocketFactory::ReceiveData(Socket *socket, UInt8 *buff, UOSInt
 	{
 		sb.Append(this->logPrefix);
 	}
-	sb.Append((const UTF8Char*)"Received ");
+	sb.AppendC(UTF8STRC("Received "));
 	sb.AppendOSInt(ret);
-	sb.Append((const UTF8Char*)" bytes");
+	sb.AppendC(UTF8STRC(" bytes"));
 	this->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_ACTION);
 	return ret;
 }
@@ -225,9 +225,9 @@ UOSInt Net::LoggedSocketFactory::EndReceiveData(void *reqData, Bool toWait, Bool
 		{
 			sb.Append(this->logPrefix);
 		}
-		sb.Append((const UTF8Char*)"End Received ");
+		sb.AppendC(UTF8STRC("End Received "));
 		sb.AppendOSInt(ret);
-		sb.Append((const UTF8Char*)" bytes");
+		sb.AppendC(UTF8STRC(" bytes"));
 		this->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_ACTION);
 	}
 	return ret;
@@ -247,20 +247,20 @@ UOSInt Net::LoggedSocketFactory::UDPReceive(Socket *socket, UInt8 *buff, UOSInt 
 	{
 		sb.Append(this->logPrefix);
 	}
-	sb.Append((const UTF8Char*)"UDP Receive: ");
+	sb.AppendC(UTF8STRC("UDP Receive: "));
 	if (ret == 0)
 	{
-		sb.Append((const UTF8Char*)"Failed");
+		sb.AppendC(UTF8STRC("Failed"));
 		if (et)
 		{
-			sb.Append((const UTF8Char*)", ErrorType = ");
+			sb.AppendC(UTF8STRC(", ErrorType = "));
 			sb.AppendI32(*et);
 		}
 	}
 	else
 	{
 		sb.AppendOSInt(ret);
-		sb.Append((const UTF8Char*)" bytes from");
+		sb.AppendC(UTF8STRC(" bytes from"));
 		Net::SocketUtil::GetAddrName(sbuff, addr, *port);
 		sb.Append(sbuff);
 	}
@@ -277,18 +277,18 @@ UOSInt Net::LoggedSocketFactory::SendTo(Socket *socket, const UInt8 *buff, UOSIn
 	{
 		sb.Append(this->logPrefix);
 	}
-	sb.Append((const UTF8Char*)"Send To ");
+	sb.AppendC(UTF8STRC("Send To "));
 	Net::SocketUtil::GetAddrName(sbuff, addr, port);
 	sb.Append(sbuff);
-	sb.Append((const UTF8Char*)": ");
+	sb.AppendC(UTF8STRC(": "));
 	if (ret == 0)
 	{
-		sb.Append((const UTF8Char*)"Failed");
+		sb.AppendC(UTF8STRC("Failed"));
 	}
 	else
 	{
 		sb.AppendUOSInt(ret);
-		sb.Append((const UTF8Char*)" bytes");
+		sb.AppendC(UTF8STRC(" bytes"));
 	}
 	this->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_ACTION);
 	return ret;
@@ -303,16 +303,16 @@ Bool Net::LoggedSocketFactory::Connect(Socket *socket, UInt32 ip, UInt16 port)
 	{
 		sb.Append(this->logPrefix);
 	}
-	sb.Append((const UTF8Char*)"Connect to ");
+	sb.AppendC(UTF8STRC("Connect to "));
 	Net::SocketUtil::GetIPv4Name(sbuff, ip, port);
-	sb.Append((const UTF8Char*)": ");
+	sb.AppendC(UTF8STRC(": "));
 	if (ret)
 	{
-		sb.Append((const UTF8Char*)"Success");
+		sb.AppendC(UTF8STRC("Success"));
 	}
 	else
 	{
-		sb.Append((const UTF8Char*)"Failed");
+		sb.AppendC(UTF8STRC("Failed"));
 	}
 	return ret;
 }
@@ -325,6 +325,6 @@ void Net::LoggedSocketFactory::ShutdownSend(Socket *socket)
 	{
 		sb.Append(this->logPrefix);
 	}
-	sb.Append((const UTF8Char*)"Shutdown Send");
+	sb.AppendC(UTF8STRC("Shutdown Send"));
 	this->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_ACTION);
 }

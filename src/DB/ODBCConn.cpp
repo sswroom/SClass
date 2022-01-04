@@ -457,7 +457,7 @@ Int8 DB::ODBCConn::GetTzQhr()
 
 void DB::ODBCConn::GetConnName(Text::StringBuilderUTF *sb)
 {
-	sb->Append((const UTF8Char*)"ODBC:");
+	sb->AppendC(UTF8STRC("ODBC:"));
 	if (this->connStr)
 	{
 		sb->Append(this->connStr);

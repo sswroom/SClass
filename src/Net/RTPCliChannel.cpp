@@ -137,27 +137,27 @@ void __stdcall Net::RTPCliChannel::PacketCtrlHdlr(const Net::SocketUtil::Address
 			{
 			case 200: //SR - Sender Report
 				NEW_CLASS(sb, Text::StringBuilderUTF8());
-				sb->Append((const UTF8Char*)"SR: Len=");
+				sb->AppendC(UTF8STRC("SR: Len="));
 				sb->AppendUOSInt(size);
-				sb->Append((const UTF8Char*)",RC=");
+				sb->AppendC(UTF8STRC(",RC="));
 				sb->AppendU32(buff[ofst +0] & 0x1f);
-				sb->Append((const UTF8Char*)",SSRC=");
+				sb->AppendC(UTF8STRC(",SSRC="));
 				sb->AppendI32(ReadMInt32(&buff[ofst + 4]));
 				if (size >= 28)
 				{
 					NEW_CLASS(dt, Data::DateTime());
-					sb->Append((const UTF8Char*)",NTP ts=");
+					sb->AppendC(UTF8STRC(",NTP ts="));
 					dt->SetNTPTime(ReadMInt32(&buff[ofst + 8]), ReadMInt32(&buff[ofst + 12]));
 					sb->AppendDate(dt);
-					sb->Append((const UTF8Char*)",RTP ts=");
+					sb->AppendC(UTF8STRC(",RTP ts="));
 					sb->AppendI32(ReadMInt32(&buff[ofst + 16]));
-					sb->Append((const UTF8Char*)",nPacket=");
+					sb->AppendC(UTF8STRC(",nPacket="));
 					sb->AppendI32(ReadMInt32(&buff[ofst + 20]));
-					sb->Append((const UTF8Char*)",nOctet=");
+					sb->AppendC(UTF8STRC(",nOctet="));
 					sb->AppendI32(ReadMInt32(&buff[ofst + 24]));
 					DEL_CLASS(dt);
 				}
-				sb->Append((const UTF8Char*)"\r\n");
+				sb->AppendC(UTF8STRC("\r\n"));
 				printf("%s", sb->ToString());
 				DEL_CLASS(sb);
 
@@ -201,11 +201,11 @@ void __stdcall Net::RTPCliChannel::PacketCtrlHdlr(const Net::SocketUtil::Address
 				break;
 			case 202: //SDES - Source Description RTCP Packet
 				NEW_CLASS(sb, Text::StringBuilderUTF8());
-				sb->Append((const UTF8Char*)"SDES: Len=");
+				sb->AppendC(UTF8STRC("SDES: Len="));
 				sb->AppendUOSInt(size);
-				sb->Append((const UTF8Char*)",RC=");
+				sb->AppendC(UTF8STRC(",RC="));
 				sb->AppendU32(buff[ofst + 0] & 0x1f);
-				sb->Append((const UTF8Char*)",SSRC=");
+				sb->AppendC(UTF8STRC(",SSRC="));
 				sb->AppendI32(ReadMInt32(&buff[ofst + 4]));
 				{
 					i = 8;
@@ -218,48 +218,48 @@ void __stdcall Net::RTPCliChannel::PacketCtrlHdlr(const Net::SocketUtil::Address
 							i = size;
 							break;
 						case 1:
-							sb->Append((const UTF8Char*)", CNAME=");
+							sb->AppendC(UTF8STRC(", CNAME="));
 							sb->AppendC((const UTF8Char*)&buff[ofst + i + 2], buff[ofst + i + 1]);
 							i += (UOSInt)(buff[ofst + i + 1] + 2);
 							break;
 						case 2:
-							sb->Append((const UTF8Char*)", NAME=");
+							sb->AppendC(UTF8STRC(", NAME="));
 							sb->AppendC((const UTF8Char*)&buff[ofst + i + 2], buff[ofst + i + 1]);
 							i += (UOSInt)(buff[ofst + i + 1] + 2);
 							break;
 						case 3:
-							sb->Append((const UTF8Char*)", EMAIL=");
+							sb->AppendC(UTF8STRC(", EMAIL="));
 							sb->AppendC((const UTF8Char*)&buff[ofst + i + 2], buff[ofst + i + 1]);
 							i += (UOSInt)(buff[ofst + i + 1] + 2);
 							break;
 						case 4:
-							sb->Append((const UTF8Char*)", PHONE=");
+							sb->AppendC(UTF8STRC(", PHONE="));
 							sb->AppendC((const UTF8Char*)&buff[ofst + i + 2], buff[ofst + i + 1]);
 							i += (UOSInt)(buff[ofst + i + 1] + 2);
 							break;
 						case 5:
-							sb->Append((const UTF8Char*)", LOC=");
+							sb->AppendC(UTF8STRC(", LOC="));
 							sb->AppendC((const UTF8Char*)&buff[ofst + i + 2], buff[ofst + i + 1]);
 							i += (UOSInt)(buff[ofst + i + 1] + 2);
 							break;
 						case 6:
-							sb->Append((const UTF8Char*)", TOOL=");
+							sb->AppendC(UTF8STRC(", TOOL="));
 							sb->AppendC((const UTF8Char*)&buff[ofst + i + 2], buff[ofst + i + 1]);
 							i += (UOSInt)(buff[ofst + i + 1] + 2);
 							break;
 						case 7:
-							sb->Append((const UTF8Char*)", NOTE=");
+							sb->AppendC(UTF8STRC(", NOTE="));
 							sb->AppendC((const UTF8Char*)&buff[ofst + i + 2], buff[ofst + i + 1]);
 							i += (UOSInt)(buff[ofst + i + 1] + 2);
 							break;
 						case 8:
-							sb->Append((const UTF8Char*)", PRIV=");
+							sb->AppendC(UTF8STRC(", PRIV="));
 							i = size;
 							break;
 						}
 					}
 				}
-				sb->Append((const UTF8Char*)"\r\n");
+				sb->AppendC(UTF8STRC("\r\n"));
 				printf("%s", sb->ToString());
 				DEL_CLASS(sb);
 				break;

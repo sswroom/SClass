@@ -89,7 +89,7 @@ Bool UI::GUIWindowDragData::GetDataText(const UTF8Char *name, Text::StringBuilde
 		}
 		else
 		{
-			sb->Append((const UTF8Char*)"Unknown data");
+			sb->AppendC(UTF8STRC("Unknown data"));
 		}
 		ReleaseStgMedium(&med);
 		return true;

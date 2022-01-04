@@ -707,7 +707,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingReq(SSWR::SMonit
 			{
 				if (i > 0)
 				{
-					sb.Append((const UTF8Char*)"|");
+					sb.AppendC(UTF8STRC("|"));
 				}
 				Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char *)"readingName"), i);
 				s = req->GetHTTPFormStr(sbuff);
@@ -850,7 +850,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceDigitalsReq(SSWR::SMoni
 			{
 				if (i > 0)
 				{
-					sb.Append((const UTF8Char*)"|");
+					sb.AppendC(UTF8STRC("|"));
 				}
 				Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char *)"digitalName"), i);
 				s = req->GetHTTPFormStr(sbuff);
@@ -1200,11 +1200,11 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(SSWR::SMo
 		}
 		else
 		{
-			sb.Append((const UTF8Char*)"Sensor ");
+			sb.AppendC(UTF8STRC("Sensor "));
 			sb.AppendI32(ReadInt16(dev->readings[readingIndex].status));
 			if (ReadInt16(&dev->readings[readingIndex].status[6]) != SSWR::SMonitor::SAnalogSensor::RT_UNKNOWN)
 			{
-				sb.Append((const UTF8Char*)" ");
+				sb.AppendC(UTF8STRC(" "));
 				sb.Append(SSWR::SMonitor::SAnalogSensor::GetReadingTypeName((SSWR::SMonitor::SAnalogSensor::ReadingType)ReadInt16(&dev->readings[readingIndex].status[6])));
 			}
 		}
@@ -1228,9 +1228,9 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(SSWR::SMo
 		{
 			currVal = dev->readings[readingIndex].reading;
 		}
-		sb.Append((const UTF8Char*)" (");
+		sb.AppendC(UTF8STRC(" ("));
 		Text::SBAppendF64(&sb, currVal);
-		sb.Append((const UTF8Char*)")");
+		sb.AppendC(UTF8STRC(")"));
 		if (dateList.GetCount() >= 2)
 		{
 			Int64 maxTime;
@@ -1333,11 +1333,11 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(SSWR::SMo
 				{
 					if (yesterdayVal < currVal)
 					{
-						sb.Append((const UTF8Char*)" +");
+						sb.AppendC(UTF8STRC(" +"));
 					}
 					else
 					{
-						sb.Append((const UTF8Char*)" ");
+						sb.AppendC(UTF8STRC(" "));
 					}
 					Text::SBAppendF64(&sb, currVal - yesterdayVal);
 				}
@@ -1398,11 +1398,11 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(SSWR::SMo
 				{
 					if (yesterdayVal < dev->readings[readingIndex].reading)
 					{
-						sb.Append((const UTF8Char*)" +");
+						sb.AppendC(UTF8STRC(" +"));
 					}
 					else
 					{
-						sb.Append((const UTF8Char*)" ");
+						sb.AppendC(UTF8STRC(" "));
 					}
 					Text::SBAppendF64(&sb, dev->readings[readingIndex].reading - yesterdayVal);
 				}
@@ -1745,11 +1745,11 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataImgReq(SSWR::SM
 		}
 		else
 		{
-			sb.Append((const UTF8Char*)"Sensor ");
+			sb.AppendC(UTF8STRC("Sensor "));
 			sb.AppendI32(ReadInt16(dev->readings[readingIndex].status));
 			if (ReadInt16(&dev->readings[readingIndex].status[6]) != SSWR::SMonitor::SAnalogSensor::RT_UNKNOWN)
 			{
-				sb.Append((const UTF8Char*)" ");
+				sb.AppendC(UTF8STRC(" "));
 				sb.Append(SSWR::SMonitor::SAnalogSensor::GetReadingTypeName((SSWR::SMonitor::SAnalogSensor::ReadingType)ReadInt16(&dev->readings[readingIndex].status[6])));
 			}
 		}
@@ -1758,7 +1758,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataImgReq(SSWR::SM
 		dt.SetTicks(startTime);
 		dt.ToLocalTime();
 		dt.ToString(sbuff, "yyyy-MM-dd");
-		sb.Append((const UTF8Char*)" ");
+		sb.AppendC(UTF8STRC(" "));
 		sb.Append(sbuff);
 
 		if (dateList.GetCount() >= 2)

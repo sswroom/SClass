@@ -95,7 +95,7 @@ IO::ParsedObject *Parser::FileParser::TARParser::ParseFile(IO::IStreamData *fd, 
 					if (i != INVALID_INDEX)
 					{
 						sptr[i] = 0;
-						sb.Append((const UTF8Char*)"\\");
+						sb.AppendC(UTF8STRC("\\"));
 						sb.Append(sptr);
 						pf3 = pf2->GetPackFile(sptr);
 						if (pf3 == 0)
@@ -110,7 +110,7 @@ IO::ParsedObject *Parser::FileParser::TARParser::ParseFile(IO::IStreamData *fd, 
 					{
 						if (sptr[0] != 0)
 						{
-							sb.Append((const UTF8Char*)"\\");
+							sb.AppendC(UTF8STRC("\\"));
 							sb.Append(sptr);
 							pf3 = pf2->GetPackFile(sptr);
 							if (pf3 == 0)
@@ -137,7 +137,7 @@ IO::ParsedObject *Parser::FileParser::TARParser::ParseFile(IO::IStreamData *fd, 
 			if (i != INVALID_INDEX)
 			{
 				sptr[i] = 0;
-				sb.Append((const UTF8Char*)"\\");
+				sb.AppendC(UTF8STRC("\\"));
 				sb.Append(sptr);
 				pf3 = pf2->GetPackFile(sptr);
 				if (pf3 == 0)

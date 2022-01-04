@@ -841,62 +841,62 @@ void Media::ICCProfile::ToString(Text::StringBuilderUTF *sb)
 	CIEXYZ xyz;
 	Int32 val;
 
-	sb->Append((const UTF8Char*)"Preferred CMM Type = ");
+	sb->AppendC(UTF8STRC("Preferred CMM Type = "));
 	sb->Append(GetNameCMMType(this->GetCMMType()));
 
 	this->GetProfileVer(&majorVer, &minorVer, &bugFixVer);
-	sb->Append((const UTF8Char*)"\r\nProfile version number = ");
+	sb->AppendC(UTF8STRC("\r\nProfile version number = "));
 	sb->AppendU16(majorVer);
-	sb->Append((const UTF8Char*)".");
+	sb->AppendC(UTF8STRC("."));
 	sb->AppendU16(minorVer);
-	sb->Append((const UTF8Char*)".");
+	sb->AppendC(UTF8STRC("."));
 	sb->AppendU16(bugFixVer);
 
-	sb->Append((const UTF8Char*)"\r\nProfile/Device class = ");
+	sb->AppendC(UTF8STRC("\r\nProfile/Device class = "));
 	sb->Append(GetNameProfileClass(this->GetProfileClass()));
 
-	sb->Append((const UTF8Char*)"\r\nData colour space = ");
+	sb->AppendC(UTF8STRC("\r\nData colour space = "));
 	sb->Append(GetNameDataColorspace(this->GetDataColorspace()));
 
-	sb->Append((const UTF8Char*)"\r\nPCS (profile connection space) = ");
+	sb->AppendC(UTF8STRC("\r\nPCS (profile connection space) = "));
 	sb->Append(GetNameDataColorspace(this->GetPCS()));
 
 	this->GetCreateTime(&dt);
-	sb->Append((const UTF8Char*)"\r\nCreate Time = ");
+	sb->AppendC(UTF8STRC("\r\nCreate Time = "));
 	sb->AppendDate(&dt);
 
-	sb->Append((const UTF8Char*)"\r\nPrimary Platform = ");
+	sb->AppendC(UTF8STRC("\r\nPrimary Platform = "));
 	sb->Append(GetNamePrimaryPlatform(this->GetPrimaryPlatform()));
 
 	val = this->GetProfileFlag();
 	if (val & 1)
 	{
-		sb->Append((const UTF8Char*)"\r\nEmbedded profile = True");
+		sb->AppendC(UTF8STRC("\r\nEmbedded profile = True"));
 	}
 	else
 	{
-		sb->Append((const UTF8Char*)"\r\nEmbedded profile = False");
+		sb->AppendC(UTF8STRC("\r\nEmbedded profile = False"));
 	}
 	if (val & 2)
 	{
-		sb->Append((const UTF8Char*)"\r\nProfile cannot be used independently of the embedded colour data = True");
+		sb->AppendC(UTF8STRC("\r\nProfile cannot be used independently of the embedded colour data = True"));
 	}
 	else
 	{
-		sb->Append((const UTF8Char*)"\r\nProfile cannot be used independently of the embedded colour data = False");
+		sb->AppendC(UTF8STRC("\r\nProfile cannot be used independently of the embedded colour data = False"));
 	}
 
-	sb->Append((const UTF8Char*)"\r\nDevice manufacturer = ");
+	sb->AppendC(UTF8STRC("\r\nDevice manufacturer = "));
 	sb->Append(GetNameDeviceManufacturer(this->GetDeviceManufacturer()));
 
-	sb->Append((const UTF8Char*)"\r\nDevice model = ");
+	sb->AppendC(UTF8STRC("\r\nDevice model = "));
 	sb->Append(GetNameDeviceModel(this->GetDeviceModel()));
 
 	this->GetPCSIlluminant(&xyz);
-	sb->Append((const UTF8Char*)"\r\nPCS illuminant = ");
+	sb->AppendC(UTF8STRC("\r\nPCS illuminant = "));
 	GetDispCIEXYZ(sb, &xyz);
 
-	sb->Append((const UTF8Char*)"\r\nProfile creator = ");
+	sb->AppendC(UTF8STRC("\r\nProfile creator = "));
 	sb->Append(GetNameDeviceManufacturer(this->GetProfileCreator()));
 
 	UInt32 cnt = ReadMUInt32(&this->iccBuff[128]);
@@ -910,9 +910,9 @@ void Media::ICCProfile::ToString(Text::StringBuilderUTF *sb)
 		tagOfst = ReadMInt32(&this->iccBuff[136 + 12 * i]);
 		tagLeng = ReadMUInt32(&this->iccBuff[140 + 12 * i]);
 
-		sb->Append((const UTF8Char*)"\r\n");
+		sb->AppendC(UTF8STRC("\r\n"));
 		sb->Append(GetNameTag(tagSign));
-		sb->Append((const UTF8Char*)" = ");
+		sb->AppendC(UTF8STRC(" = "));
 		GetDispTagType(sb, &this->iccBuff[tagOfst], tagLeng);
 		i++;
 	}
@@ -1293,19 +1293,19 @@ const UTF8Char *Media::ICCProfile::GetNameStandardIlluminent(Int32 val)
 
 void Media::ICCProfile::GetDispCIEXYZ(Text::StringBuilderUTF *sb, CIEXYZ *xyz)
 {
-	sb->Append((const UTF8Char*)"X = ");
+	sb->AppendC(UTF8STRC("X = "));
 	Text::SBAppendF64(sb, xyz->val[0]);
-	sb->Append((const UTF8Char*)", Y = ");
+	sb->AppendC(UTF8STRC(", Y = "));
 	Text::SBAppendF64(sb, xyz->val[1]);
-	sb->Append((const UTF8Char*)", Z = ");
+	sb->AppendC(UTF8STRC(", Z = "));
 	Text::SBAppendF64(sb, xyz->val[2]);
 
 	Double sum = xyz->val[0] + xyz->val[1] + xyz->val[2];
 	if (sum != 0)
 	{
-		sb->Append((const UTF8Char*)", x = ");
+		sb->AppendC(UTF8STRC(", x = "));
 		Text::SBAppendF64(sb, xyz->val[0] / sum);
-		sb->Append((const UTF8Char*)", y = ");
+		sb->AppendC(UTF8STRC(", y = "));
 		Text::SBAppendF64(sb, xyz->val[1] / sum);
 	}
 }
@@ -1322,28 +1322,28 @@ void Media::ICCProfile::GetDispTagType(Text::StringBuilderUTF *sb, UInt8 *buff, 
 	switch(typ)
 	{
 	case 0:
-		sb->Append((const UTF8Char*)"(not used)");
+		sb->AppendC(UTF8STRC("(not used)"));
 		break;
 	case 0x6368726D:
 		nCh = ReadMInt16(&buff[8]);
 		val = ReadMInt16(&buff[10]);
 		sb->AppendI32(val);
-		sb->Append((const UTF8Char*)" {");
+		sb->AppendC(UTF8STRC(" {"));
 		val = 0;
 		while (val < nCh)
 		{
 			if (val > 0)
 			{
-				sb->Append((const UTF8Char*)", ");
+				sb->AppendC(UTF8STRC(", "));
 			}
-			sb->Append((const UTF8Char*)"(");
+			sb->AppendC(UTF8STRC("("));
 			Text::SBAppendF64(sb, ReadU16Fixed16Number(&buff[val * 8 + 12]));
-			sb->Append((const UTF8Char*)", ");
+			sb->AppendC(UTF8STRC(", "));
 			Text::SBAppendF64(sb, ReadU16Fixed16Number(&buff[val * 8 + 16]));
-			sb->Append((const UTF8Char*)")");
+			sb->AppendC(UTF8STRC(")"));
 			val++;
 		}
-		sb->Append((const UTF8Char*)"}");
+		sb->AppendC(UTF8STRC("}"));
 		break;
 	case 0x74657874: //textType
 		{
@@ -1363,7 +1363,7 @@ void Media::ICCProfile::GetDispTagType(Text::StringBuilderUTF *sb, UInt8 *buff, 
 		while ((UInt32)val <= leng - 12)
 		{
 			if (nCh)
-				sb->Append((const UTF8Char*)"  ");
+				sb->AppendC(UTF8STRC("  "));
 			ReadXYZNumber(&buff[val], &xyz);
 			GetDispCIEXYZ(sb, &xyz);
 			val += 12;
@@ -1371,27 +1371,27 @@ void Media::ICCProfile::GetDispTagType(Text::StringBuilderUTF *sb, UInt8 *buff, 
 		}
 		break;
 	case 0x76696577: //viewingConditionsTag
-		sb->Append((const UTF8Char*)"Illuminant: {");
+		sb->AppendC(UTF8STRC("Illuminant: {"));
 		ReadXYZNumber(&buff[8], &xyz);
 		GetDispCIEXYZ(sb, &xyz);
 
-		sb->Append((const UTF8Char*)"}, Surround: {");
+		sb->AppendC(UTF8STRC("}, Surround: {"));
 		ReadXYZNumber(&buff[20], &xyz);
 		GetDispCIEXYZ(sb, &xyz);
-		sb->Append((const UTF8Char*)"}, Illuminant type = ");
+		sb->AppendC(UTF8STRC("}, Illuminant type = "));
 		sb->AppendI32(ReadMInt32(&buff[32]));
 		break;
 	case 0x6D656173: //measurementType
-		sb->Append((const UTF8Char*)"Standard observer = ");
+		sb->AppendC(UTF8STRC("Standard observer = "));
 		sb->Append(GetNameStandardObserver(ReadMInt32(&buff[8])));
-		sb->Append((const UTF8Char*)", Measurement backing: {");
+		sb->AppendC(UTF8STRC(", Measurement backing: {"));
 		ReadXYZNumber(&buff[12], &xyz);
 		GetDispCIEXYZ(sb, &xyz);
-		sb->Append((const UTF8Char*)"}, Measurement geometry = ");
+		sb->AppendC(UTF8STRC("}, Measurement geometry = "));
 		sb->AppendI32(ReadMInt32(&buff[24]));
-		sb->Append((const UTF8Char*)", Measurement flare = ");
+		sb->AppendC(UTF8STRC(", Measurement flare = "));
 		sb->AppendI32(ReadMInt32(&buff[28]));
-		sb->Append((const UTF8Char*)", Standard illuminent = ");
+		sb->AppendC(UTF8STRC(", Standard illuminent = "));
 		sb->Append(GetNameStandardIlluminent(ReadMInt32(&buff[32])));
 		break;
 	case 0x64657363: //desc
@@ -1412,23 +1412,23 @@ void Media::ICCProfile::GetDispTagType(Text::StringBuilderUTF *sb, UInt8 *buff, 
 		break;
 	case 0x63757276: //curveType
 		val = ReadMInt32(&buff[8]);
-		sb->Append((const UTF8Char*)"Curve: ");
+		sb->AppendC(UTF8STRC("Curve: "));
 		if (val > 1)
 		{
 			sb->AppendI32(val);
-			sb->Append((const UTF8Char*)" entries, ");
-			sb->Append((const UTF8Char*)"Closed to ");
+			sb->AppendC(UTF8STRC(" entries, "));
+			sb->AppendC(UTF8STRC("Closed to "));
 		}
 		tt = FindTransferType((UInt32)val, (UInt16*)&buff[12], &gamma);
 		sb->Append(Media::CS::TransferFunc::GetTransferFuncName(tt));
 		if (tt == Media::CS::TRANT_GAMMA)
 		{
-			sb->Append((const UTF8Char*)", gamma = ");
+			sb->AppendC(UTF8STRC(", gamma = "));
 			Text::SBAppendF64(sb, gamma);
 		}
 		break;
 	case 0x70617261: //parametricCurveType
-		sb->Append((const UTF8Char*)"CurveType: ");
+		sb->AppendC(UTF8STRC("CurveType: "));
 		sb->AppendI16(ReadMInt16(&buff[8]));
 		{
 			Double g;
@@ -1443,7 +1443,7 @@ void Media::ICCProfile::GetDispTagType(Text::StringBuilderUTF *sb, UInt8 *buff, 
 			{
 			case 0:
 				g = ReadS15Fixed16Number(&buff[12]);
-				sb->Append((const UTF8Char*)" Y = X ^ ");
+				sb->AppendC(UTF8STRC(" Y = X ^ "));
 				Text::SBAppendF64(sb, g);
 				break;
 			case 1:
@@ -1463,17 +1463,17 @@ void Media::ICCProfile::GetDispTagType(Text::StringBuilderUTF *sb, UInt8 *buff, 
 				b = ReadS15Fixed16Number(&buff[20]);
 				c = ReadS15Fixed16Number(&buff[24]);
 				d = ReadS15Fixed16Number(&buff[28]);
-				sb->Append((const UTF8Char*)" if (X >= ");
+				sb->AppendC(UTF8STRC(" if (X >= "));
 				Text::SBAppendF64(sb, d);
-				sb->Append((const UTF8Char*)") Y = (");
+				sb->AppendC(UTF8STRC(") Y = ("));
 				Text::SBAppendF64(sb, a);
-				sb->Append((const UTF8Char*)" * X + ");
+				sb->AppendC(UTF8STRC(" * X + "));
 				Text::SBAppendF64(sb, b);
-				sb->Append((const UTF8Char*)") ^ ");
+				sb->AppendC(UTF8STRC(") ^ "));
 				Text::SBAppendF64(sb, g);
-				sb->Append((const UTF8Char*)" else Y = ");
+				sb->AppendC(UTF8STRC(" else Y = "));
 				Text::SBAppendF64(sb, c);
-				sb->Append((const UTF8Char*)" * X");
+				sb->AppendC(UTF8STRC(" * X"));
 				break;
 			case 4:
 				g = ReadS15Fixed16Number(&buff[12]);
@@ -1483,19 +1483,19 @@ void Media::ICCProfile::GetDispTagType(Text::StringBuilderUTF *sb, UInt8 *buff, 
 				d = ReadS15Fixed16Number(&buff[28]);
 				e = ReadS15Fixed16Number(&buff[32]);
 				f = ReadS15Fixed16Number(&buff[36]);
-				sb->Append((const UTF8Char*)" if (X >= ");
+				sb->AppendC(UTF8STRC(" if (X >= "));
 				Text::SBAppendF64(sb, d);
-				sb->Append((const UTF8Char*)") Y = (");
+				sb->AppendC(UTF8STRC(") Y = ("));
 				Text::SBAppendF64(sb, a);
-				sb->Append((const UTF8Char*)" * X + ");
+				sb->AppendC(UTF8STRC(" * X + "));
 				Text::SBAppendF64(sb, b);
-				sb->Append((const UTF8Char*)") ^ ");
+				sb->AppendC(UTF8STRC(") ^ "));
 				Text::SBAppendF64(sb, g);
-				sb->Append((const UTF8Char*)" + ");
+				sb->AppendC(UTF8STRC(" + "));
 				Text::SBAppendF64(sb, e);
-				sb->Append((const UTF8Char*)" else Y = ");
+				sb->AppendC(UTF8STRC(" else Y = "));
 				Text::SBAppendF64(sb, c);
-				sb->Append((const UTF8Char*)" * X + ");
+				sb->AppendC(UTF8STRC(" * X + "));
 				Text::SBAppendF64(sb, f);
 				break;
 			default:
@@ -1504,25 +1504,25 @@ void Media::ICCProfile::GetDispTagType(Text::StringBuilderUTF *sb, UInt8 *buff, 
 		}
 		break;
 	case 0x6d667431: //lut8Type
-		sb->Append((const UTF8Char*)"LUT8");
+		sb->AppendC(UTF8STRC("LUT8"));
 		break;
 	case 0x6d667432: //lut16Type
-		sb->Append((const UTF8Char*)"LUT16");
+		sb->AppendC(UTF8STRC("LUT16"));
 		break;
 	case 0x75693332: //uInt32ArrayType
-		sb->Append((const UTF8Char*)"uInt32 Array (");
+		sb->AppendC(UTF8STRC("uInt32 Array ("));
 		sb->AppendU32((leng - 8) >> 2);
-		sb->Append((const UTF8Char*)")");
+		sb->AppendC(UTF8STRC(")"));
 		break;
 	case 0x75693038: //uInt8ArrayType
-		sb->Append((const UTF8Char*)"uInt8 Array (");
+		sb->AppendC(UTF8STRC("uInt8 Array ("));
 		sb->AppendU32((leng - 8));
-		sb->Append((const UTF8Char*)")");
+		sb->AppendC(UTF8STRC(")"));
 		break;
 	case 0x73663332: //s15Fixed16ArrayType
-		sb->Append((const UTF8Char*)"s15Fixed16 Array (");
+		sb->AppendC(UTF8STRC("s15Fixed16 Array ("));
 		sb->AppendU32((leng - 8) >> 2);
-		sb->Append((const UTF8Char*)")");
+		sb->AppendC(UTF8STRC(")"));
 		break;
 	case 0x6D6C7563: //multiLocalizedUnicodeType
 		{
@@ -1537,23 +1537,23 @@ void Media::ICCProfile::GetDispTagType(Text::StringBuilderUTF *sb, UInt8 *buff, 
 				sb->Append(sbuff);
 				if (i > 0)
 				{
-					sb->Append((const UTF8Char*)", ");
+					sb->AppendC(UTF8STRC(", "));
 				}
 				j += 12;
 			}
 		}
 		break;
 	case 0x6d6d6f64:
-		sb->Append((const UTF8Char*)"Unknown (mmod)");
+		sb->AppendC(UTF8STRC("Unknown (mmod)"));
 		break;
 	case 0x6D414220:
-		sb->Append((const UTF8Char*)"lutAToBType");
+		sb->AppendC(UTF8STRC("lutAToBType"));
 		break;
 	case 0x6D424120:
-		sb->Append((const UTF8Char*)"lutBToAType");
+		sb->AppendC(UTF8STRC("lutBToAType"));
 		break;
 	default:
-		sb->Append((const UTF8Char*)"Unknown");
+		sb->AppendC(UTF8STRC("Unknown"));
 		break;
 	}
 }
@@ -1623,7 +1623,7 @@ UTF8Char *Media::ICCProfile::GetProfilePath(UTF8Char *sbuff)
 	UTF8Char *sptr = sbuff;
 #if defined(WIN32)
 	sptr = IO::Path::GetOSPath(sptr);
-	sptr = Text::StrConcat(sptr, (const UTF8Char*)"\\System32\\spool\\drivers\\color");
+	sptr = Text::StrConcat(sptr, (const UTF8Char*)"\\System32\\spool\\drivers\\color"));
 #endif
 	return sptr;
 }

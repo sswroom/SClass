@@ -562,12 +562,12 @@ void Net::WebServer::WebRequest::GetRequestURLBase(Text::StringBuilderUTF *sb)
 	case RequestProtocol::HTTP2_0:
 		if (this->secureConn)
 		{
-			sb->Append((const UTF8Char*)"https://");
+			sb->AppendC(UTF8STRC("https://"));
 			defPort=443;
 		}
 		else
 		{
-			sb->Append((const UTF8Char*)"http://");
+			sb->AppendC(UTF8STRC("http://"));
 			defPort=80;
 		}
 		s = this->GetSHeader((const UTF8Char*)"Host");
@@ -582,7 +582,7 @@ void Net::WebServer::WebRequest::GetRequestURLBase(Text::StringBuilderUTF *sb)
 		}
 		break;
 	case RequestProtocol::RTSP1_0:
-		sb->Append((const UTF8Char*)"rtsp://");
+		sb->AppendC(UTF8STRC("rtsp://");
 		defPort=554;
 		break;
 	}

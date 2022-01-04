@@ -139,9 +139,9 @@ Net::WirelessLAN::BSSInfo::BSSInfo(const UTF8Char *ssid, const void *bssEntry)
 		{
 		case 0:
 //			sbTmp.ClearStr();
-//			sbTmp.Append((const UTF8Char*)"IE ");
+//			sbTmp.AppendC(UTF8STRC("IE "));
 //			sbTmp.AppendI16(ieCmd);
-//			sbTmp.Append((const UTF8Char*)" - ");
+//			sbTmp.AppendC(UTF8STRC(" - "));
 //			sbTmp.Append(ptrCurr, ieSize);
 //			printf("%s\r\n", sbTmp.ToString());
 			break;

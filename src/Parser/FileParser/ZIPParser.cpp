@@ -224,7 +224,7 @@ IO::ParsedObject *Parser::FileParser::ZIPParser::ParseFile(IO::IStreamData *fd, 
 					}
 					else
 					{
-						sb.Append((const UTF8Char*)"\\");
+						sb.AppendC(UTF8STRC("\\"));
 						sb.Append(sptr);
 						pf3 = pf2->GetPackFile(sptr);
 						if (pf3 == 0)

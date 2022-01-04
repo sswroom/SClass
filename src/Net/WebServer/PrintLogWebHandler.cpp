@@ -36,7 +36,7 @@ void Net::WebServer::PrintLogWebHandler::WebRequest(IWebRequest *req, IWebRespon
 		sb.Append(sbuff);
 		header = headers.GetItem(i);
 		sb.Append(header);
-		sb.Append((const UTF8Char*)": ");
+		sb.AppendC(UTF8STRC(": "));
 		req->GetHeader(&sb, header->v);
 		this->writer->WriteLine(sb.ToString());
 		i++;

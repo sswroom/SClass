@@ -338,20 +338,20 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(SSWR::Benchmark:
 
 	Text::StringBuilderUTF8 sbOut;
 
-	sbOut.Append((const UTF8Char*)"<html><head><title>CPUInfo</title></head>\r\n");
-	sbOut.Append((const UTF8Char*)"<body>\r\n");
-	sbOut.Append((const UTF8Char*)"<h2>CPUInfo</h2>\r\n");
-	sbOut.Append((const UTF8Char*)"<form name=\"upload\" method=\"POST\" action=\"cpuinfo\" enctype=\"multipart/form-data\">");
-	sbOut.Append((const UTF8Char*)"Upload /proc/cpuinfo: <input type=\"file\" name=\"uploadfile\"/><br/><input type=\"submit\"/>");
-	sbOut.Append((const UTF8Char*)"</form>");
+	sbOut.AppendC(UTF8STRC("<html><head><title>CPUInfo</title></head>\r\n"));
+	sbOut.AppendC(UTF8STRC("<body>\r\n"));
+	sbOut.AppendC(UTF8STRC("<h2>CPUInfo</h2>\r\n"));
+	sbOut.AppendC(UTF8STRC("<form name=\"upload\" method=\"POST\" action=\"cpuinfo\" enctype=\"multipart/form-data\">"));
+	sbOut.AppendC(UTF8STRC("Upload /proc/cpuinfo: <input type=\"file\" name=\"uploadfile\"/><br/><input type=\"submit\"/>"));
+	sbOut.AppendC(UTF8STRC("</form>"));
 	if (msg)
 	{
 		sbOut.Append(msg);
 	}
 
-	sbOut.Append((const UTF8Char*)"<h3>Uploaded list</h3>\r\n");
-	sbOut.Append((const UTF8Char*)"<table border=\"1\">\r\n");
-	sbOut.Append((const UTF8Char*)"<tr><td>Model</td><td>Brand</td><td>Name</td><td>Archtecture</td></tr>\r\n");
+	sbOut.AppendC(UTF8STRC("<h3>Uploaded list</h3>\r\n"));
+	sbOut.AppendC(UTF8STRC("<table border=\"1\">\r\n"));
+	sbOut.AppendC(UTF8STRC("<tr><td>Model</td><td>Brand</td><td>Name</td><td>Archtecture</td></tr>\r\n"));
 	IO::Path::GetProcessFileName(path);
 	u8ptr = IO::Path::AppendPath(path, (const UTF8Char*)"CPUInfo");
 	IO::Path::CreateDirectory(path);
@@ -367,74 +367,74 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(SSWR::Benchmark:
 			{
 				if (Text::StrStartsWith(u8ptr, (const UTF8Char*)"Unknown"))
 				{
-					sbOut.Append((const UTF8Char*)"<tr><td>");
-					sbOut.Append((const UTF8Char*)"<a href=\"cpuinfo?model=");
+					sbOut.AppendC(UTF8STRC("<tr><td>"));
+					sbOut.AppendC(UTF8STRC("<a href=\"cpuinfo?model="));
 					sbOut.Append(u8ptr);
-					sbOut.Append((const UTF8Char*)"\">Unknown</a></td><td>");
-					sbOut.Append((const UTF8Char*)"?</td><td>?</td><td>?");
-					sbOut.Append((const UTF8Char*)"</td></tr>\r\n");
+					sbOut.AppendC(UTF8STRC("\">Unknown</a></td><td>"));
+					sbOut.AppendC(UTF8STRC("?</td><td>?</td><td>?"));
+					sbOut.AppendC(UTF8STRC("</td></tr>\r\n"));
 				}
 				else
 				{
 					const Manage::CPUDB::CPUSpec *cpu = Manage::CPUDB::GetCPUSpec(u8ptr);
-					sbOut.Append((const UTF8Char*)"<tr><td>");
-					sbOut.Append((const UTF8Char*)"<a href=\"cpuinfo?model=");
+					sbOut.AppendC(UTF8STRC("<tr><td>"));
+					sbOut.AppendC(UTF8STRC("<a href=\"cpuinfo?model="));
 					sbOut.Append(u8ptr);
-					sbOut.Append((const UTF8Char*)"\">");
+					sbOut.AppendC(UTF8STRC("\">"));
 					sbOut.Append(u8ptr);
-					sbOut.Append((const UTF8Char*)"</a></td><td>");
+					sbOut.AppendC(UTF8STRC("</a></td><td>"));
 					if (cpu)
 					{
 						sbOut.Append(Manage::CPUVendor::GetBrandName(cpu->brand));
-						sbOut.Append((const UTF8Char*)"</td><td>");
+						sbOut.AppendC(UTF8STRC("</td><td>"));
 						if (cpu->name)
 						{
 							sbOut.Append((const UTF8Char*)cpu->name);
 						}
-						sbOut.Append((const UTF8Char*)"</td><td>");
+						sbOut.AppendC(UTF8STRC("</td><td>"));
 						switch (cpu->contextType)
 						{
 						case Manage::ThreadContext::CT_ARM:
-							sbOut.Append((const UTF8Char*)"ARM 32-bit");
+							sbOut.AppendC(UTF8STRC("ARM 32-bit"));
 							break;
 						case Manage::ThreadContext::CT_ARM64:
-							sbOut.Append((const UTF8Char*)"ARM 64-bit");
+							sbOut.AppendC(UTF8STRC("ARM 64-bit"));
 							break;
 						case Manage::ThreadContext::CT_MIPS:
-							sbOut.Append((const UTF8Char*)"MIPS 32-bit");
+							sbOut.AppendC(UTF8STRC("MIPS 32-bit"));
 							break;
 						case Manage::ThreadContext::CT_MIPS64:
-							sbOut.Append((const UTF8Char*)"MIPS 64-bit");
+							sbOut.AppendC(UTF8STRC("MIPS 64-bit"));
 							break;
 						case Manage::ThreadContext::CT_X86_32:
-							sbOut.Append((const UTF8Char*)"x86 32-bit");
+							sbOut.AppendC(UTF8STRC("x86 32-bit"));
 							break;
 						case Manage::ThreadContext::CT_X86_64:
-							sbOut.Append((const UTF8Char*)"x86 64-bit");
+							sbOut.AppendC(UTF8STRC("x86 64-bit"));
 							break;
 						case Manage::ThreadContext::CT_AVR:
-							sbOut.Append((const UTF8Char*)"AVR");
+							sbOut.AppendC(UTF8STRC("AVR"));
 							break;
 						default:
-							sbOut.Append((const UTF8Char*)"?");
+							sbOut.AppendC(UTF8STRC("?"));
 							break;
 						}
 					}
 					else
 					{
 						printf("CPU not found: \"%s\"\r\n", u8ptr);
-						sbOut.Append((const UTF8Char*)"?</td><td>?</td><td>?");
+						sbOut.AppendC(UTF8STRC("?</td><td>?</td><td>?"));
 					}
-					sbOut.Append((const UTF8Char*)"</td></tr>\r\n");
+					sbOut.AppendC(UTF8STRC("</td></tr>\r\n"));
 				}
 			}
 		}
 		IO::Path::FindFileClose(sess);
 	}
-	sbOut.Append((const UTF8Char*)"</table>\r\n");
+	sbOut.AppendC(UTF8STRC("</table>\r\n"));
 
-	sbOut.Append((const UTF8Char*)"</body>\r\n");
-	sbOut.Append((const UTF8Char*)"</html>");
+	sbOut.AppendC(UTF8STRC("</body>\r\n"));
+	sbOut.AppendC(UTF8STRC("</html>"));
 
 	resp->SetStatusCode(Net::WebStatus::SC_OK);
 	resp->AddDefHeaders(req);

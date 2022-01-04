@@ -201,15 +201,15 @@ Text::MIMEObj::MultipartMIMEObj::MultipartMIMEObj(const UTF8Char *contentType, c
 	Text::StringBuilderUTF8 sbc;
 	Data::DateTime dt;
 	dt.SetCurrTimeUTC();
-	sbc.Append((const UTF8Char*)"----------");
+	sbc.AppendC(UTF8STRC("----------"));
 	sbc.AppendI64(dt.ToTicks());
 	sbc.AppendOSInt((0x7fffffff & (OSInt)this));
 	this->boundary = Text::StrCopyNew(sbc.ToString());
 	sbc.ClearStr();
 	sbc.Append(contentType);
-	sbc.Append((const UTF8Char*)";\r\n\tboundary=\"");
+	sbc.AppendC(UTF8STRC(";\r\n\tboundary=\""));
 	sbc.Append(this->boundary);
-	sbc.Append((const UTF8Char*)"\"");
+	sbc.AppendC(UTF8STRC("\""));
 	this->contentType = Text::StrCopyNew(sbc.ToString());
 	if (defMsg)
 	{
@@ -274,9 +274,9 @@ UOSInt Text::MIMEObj::MultipartMIMEObj::WriteStream(IO::Stream *stm)
 		part = this->parts->GetItem(i);
 		encType = 0;
 		sbc.ClearStr();
-		sbc.Append((const UTF8Char*)"\r\n--");
+		sbc.AppendC(UTF8STRC("\r\n--"));
 		sbc.Append(this->boundary);
-		sbc.Append((const UTF8Char*)"\r\n");
+		sbc.AppendC(UTF8STRC("\r\n"));
 		stm->Write((const UInt8*)sbc.ToString(), sbc.GetLength());
 		ret += sbc.GetLength();
 
@@ -288,9 +288,9 @@ UOSInt Text::MIMEObj::MultipartMIMEObj::WriteStream(IO::Stream *stm)
 			hdrValue = part->GetHeaderValue(k);
 			sbc.ClearStr();
 			sbc.Append(hdrName);
-			sbc.Append((const UTF8Char*)": ");
+			sbc.AppendC(UTF8STRC(": "));
 			sbc.Append(hdrValue);
-			sbc.Append((const UTF8Char*)"\r\n");
+			sbc.AppendC(UTF8STRC("\r\n"));
 			stm->Write((const UInt8*)sbc.ToString(), sbc.GetLength());
 			ret += sbc.GetLength();
 			if (Text::StrEquals(hdrName, (const UTF8Char*)"Content-Transfer-Encoding"))
@@ -321,9 +321,9 @@ UOSInt Text::MIMEObj::MultipartMIMEObj::WriteStream(IO::Stream *stm)
 		i++;
 	}
 	sbc.ClearStr();
-	sbc.Append((const UTF8Char*)"\r\n--");
+	sbc.AppendC(UTF8STRC("\r\n--"));
 	sbc.Append(this->boundary);
-	sbc.Append((const UTF8Char*)"--");
+	sbc.AppendC(UTF8STRC("--"));
 	stm->Write((const UInt8*)sbc.ToString(), sbc.GetLength());
 	ret += sbc.GetLength();
 	return ret;
@@ -424,7 +424,7 @@ Text::MIMEObj::MultipartMIMEObj *Text::MIMEObj::MultipartMIMEObj::ParseFile(cons
 			i = j + k;
 		}
 
-		boundary.Append((const UTF8Char*)"--");
+		boundary.AppendC(UTF8STRC("--"));
 		if (contentType[j + 9] == '"' && contentType[i - 1] == '"')
 		{
 			boundary.AppendC(&contentType[j + 10], i - j - 11);

@@ -105,37 +105,37 @@ Bool Math::GeographicCoordinateSystem::IsProjected()
 
 void Math::GeographicCoordinateSystem::ToString(Text::StringBuilderUTF *sb)
 {
-	sb->Append((const UTF8Char*)"Geographic File Name: ");
+	sb->AppendC(UTF8STRC("Geographic File Name: "));
 	sb->Append(this->sourceName);
-	sb->Append((const UTF8Char*)"\r\nSRID: ");
+	sb->AppendC(UTF8STRC("\r\nSRID: "));
 	sb->AppendU32(this->srid);
-	sb->Append((const UTF8Char*)"\r\nGeographic Name: ");
+	sb->AppendC(UTF8STRC("\r\nGeographic Name: "));
 	sb->Append(this->csysName);
-	sb->Append((const UTF8Char*)"\r\nDatum Name: ");
+	sb->AppendC(UTF8STRC("\r\nDatum Name: "));
 	sb->Append((const UTF8Char*)this->datum.name);
-	sb->Append((const UTF8Char*)"\r\nRotate Center: ");
+	sb->AppendC(UTF8STRC("\r\nRotate Center: "));
 	Text::SBAppendF64(sb, this->datum.x0);
-	sb->Append((const UTF8Char*)", ");
+	sb->AppendC(UTF8STRC(", "));
 	Text::SBAppendF64(sb, this->datum.y0);
-	sb->Append((const UTF8Char*)", ");
+	sb->AppendC(UTF8STRC(", "));
 	Text::SBAppendF64(sb, this->datum.z0);
-	sb->Append((const UTF8Char*)"\r\nShifting: ");
+	sb->AppendC(UTF8STRC("\r\nShifting: "));
 	Text::SBAppendF64(sb, this->datum.cX);
-	sb->Append((const UTF8Char*)", ");
+	sb->AppendC(UTF8STRC(", "));
 	Text::SBAppendF64(sb, this->datum.cY);
-	sb->Append((const UTF8Char*)", ");
+	sb->AppendC(UTF8STRC(", "));
 	Text::SBAppendF64(sb, this->datum.cZ);
-	sb->Append((const UTF8Char*)"\r\nRotation: ");
+	sb->AppendC(UTF8STRC("\r\nRotation: "));
 	Text::SBAppendF64(sb, this->datum.xAngle);
-	sb->Append((const UTF8Char*)", ");
+	sb->AppendC(UTF8STRC(", "));
 	Text::SBAppendF64(sb, this->datum.yAngle);
-	sb->Append((const UTF8Char*)", ");
+	sb->AppendC(UTF8STRC(", "));
 	Text::SBAppendF64(sb, this->datum.zAngle);
-	sb->Append((const UTF8Char*)"\r\nScale Factor: ");
+	sb->AppendC(UTF8STRC("\r\nScale Factor: "));
 	Text::SBAppendF64(sb, this->datum.scale);
-	sb->Append((const UTF8Char*)"\r\nSemi-Major Axis: ");
+	sb->AppendC(UTF8STRC("\r\nSemi-Major Axis: "));
 	Text::SBAppendF64(sb, this->datum.spheroid.ellipsoid->GetSemiMajorAxis());
-	sb->Append((const UTF8Char*)"\r\nInverse Flattening: ");
+	sb->AppendC(UTF8STRC("\r\nInverse Flattening: "));
 	Text::SBAppendF64(sb, this->datum.spheroid.ellipsoid->GetInverseFlattening());
 }
 

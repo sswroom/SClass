@@ -48,9 +48,9 @@ Bool Net::Email::EmailMessage::SetHeader(const Char *name, const UTF8Char *val)
 Bool Net::Email::EmailMessage::AppendUTF8Header(Text::StringBuilderUTF *sb, const UTF8Char *val)
 {
 	Text::TextBinEnc::Base64Enc b64;
-	sb->Append((const UTF8Char*)"=?UTF-8?B?");
+	sb->AppendC(UTF8STRC("=?UTF-8?B?"));
 	b64.EncodeBin(sb, val, Text::StrCharCnt(val));
-	sb->Append((const UTF8Char*)"?=");
+	sb->AppendC(UTF8STRC("?="));
 	return true;
 }
 
@@ -180,7 +180,7 @@ Bool Net::Email::EmailMessage::AddTo(const UTF8Char *name, const UTF8Char *addr)
 	if (i != INVALID_INDEX)
 	{
 		sb.Append(this->headerList->GetItem(i) + 4);
-		sb.Append((const UTF8Char*)", ");
+		sb.AppendC(UTF8STRC(", "));
 	}
 	if (name)
 	{
@@ -237,7 +237,7 @@ Bool Net::Email::EmailMessage::AddCc(const UTF8Char *name, const UTF8Char *addr)
 	if (i != INVALID_INDEX)
 	{
 		sb.Append(this->headerList->GetItem(i) + 4);
-		sb.Append((const UTF8Char*)", ");
+		sb.AppendC(UTF8STRC(", "));
 	}
 	if (name)
 	{

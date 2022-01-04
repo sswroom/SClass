@@ -10,7 +10,7 @@ void Text::MIMEObj::HTMLMIMEObj::BuildContentType()
 	Text::StringBuilderUTF8 sbc;
 	UTF8Char u8buff[64];
 	u8buff[0] = 0;
-	sbc.Append((const UTF8Char*)"text/html; charset=");
+	sbc.AppendC(UTF8STRC("text/html; charset="));
 	Text::EncodingFactory::GetInternetName(u8buff, this->codePage);
 	sbc.Append(u8buff);
 	this->contType = Text::StrCopyNew(sbc.ToString());

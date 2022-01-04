@@ -501,20 +501,20 @@ Net::DNSClient::RequestAnswer *Net::DNSClient::ParseAnswer(const UInt8 *buff, UO
 			Text::StringBuilderUTF8 sb;
 			l = ParseString(sbuff, buff, i + 10, i + 10 + k);
 			sb.Append(sbuff);
-			sb.Append((const UTF8Char*)", MailAddr=");
+			sb.AppendC(UTF8STRC(", MailAddr="));
 			l = ParseString(sbuff, buff, l, i + 10 + k);
 			sb.Append(sbuff);
 			if (l + 20 <= i + 10 + k)
 			{
-				sb.Append((const UTF8Char*)", SN=");
+				sb.AppendC(UTF8STRC(", SN="));
 				sb.AppendU32(ReadMUInt32(&buff[l]));
-				sb.Append((const UTF8Char*)", Refresh=");
+				sb.AppendC(UTF8STRC(", Refresh="));
 				sb.AppendU32(ReadMUInt32(&buff[l + 4]));
-				sb.Append((const UTF8Char*)", Retry=");
+				sb.AppendC(UTF8STRC(", Retry="));
 				sb.AppendU32(ReadMUInt32(&buff[l + 8]));
-				sb.Append((const UTF8Char*)", Expire=");
+				sb.AppendC(UTF8STRC(", Expire="));
 				sb.AppendU32(ReadMUInt32(&buff[l + 12]));
-				sb.Append((const UTF8Char*)", DefTTL=");
+				sb.AppendC(UTF8STRC(", DefTTL="));
 				sb.AppendU32(ReadMUInt32(&buff[l + 16]));
 			}
 			ans->rd = Text::StrCopyNew(sb.ToString());

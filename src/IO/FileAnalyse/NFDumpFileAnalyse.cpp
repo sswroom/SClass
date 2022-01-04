@@ -143,24 +143,24 @@ Bool IO::FileAnalyse::NFDumpFileAnalyse::GetFrameName(UOSInt index, Text::String
 	if (pack == 0)
 		return false;
 	sb->AppendU64(pack->fileOfst);
-	sb->Append((const UTF8Char*)": Type=");
+	sb->AppendC(UTF8STRC(": Type="));
 	if (pack->packType == 0)
 	{
-		sb->Append((const UTF8Char*)"File header");
+		sb->AppendC(UTF8STRC("File header"));
 	}
 	else if (pack->packType == 1)
 	{
-		sb->Append((const UTF8Char*)"Stat Record");
+		sb->AppendC(UTF8STRC("Stat Record"));
 	}
 	else if (pack->packType == 2)
 	{
-		sb->Append((const UTF8Char*)"Data Block Header");
+		sb->AppendC(UTF8STRC("Data Block Header"));
 	}
 	else if (pack->packType == 3)
 	{
-		sb->Append((const UTF8Char*)"Data Block");
+		sb->AppendC(UTF8STRC("Data Block"));
 	}
-	sb->Append((const UTF8Char*)", size=");
+	sb->AppendC(UTF8STRC(", size="));
 	sb->AppendI32((Int32)pack->packSize);
 	return true;
 }
@@ -180,24 +180,24 @@ Bool IO::FileAnalyse::NFDumpFileAnalyse::GetFrameDetail(UOSInt index, Text::Stri
 		return false;
 
 	sb->AppendU64(pack->fileOfst);
-	sb->Append((const UTF8Char*)": Type=");
+	sb->AppendC(UTF8STRC(": Type="));
 	if (pack->packType == 0)
 	{
-		sb->Append((const UTF8Char*)"File header");
+		sb->AppendC(UTF8STRC("File header"));
 	}
 	else if (pack->packType == 1)
 	{
-		sb->Append((const UTF8Char*)"Stat Record");
+		sb->AppendC(UTF8STRC("Stat Record"));
 	}
 	else if (pack->packType == 2)
 	{
-		sb->Append((const UTF8Char*)"Data Block Header");
+		sb->AppendC(UTF8STRC("Data Block Header"));
 	}
 	else if (pack->packType == 3)
 	{
-		sb->Append((const UTF8Char*)"Data Block");
+		sb->AppendC(UTF8STRC("Data Block"));
 	}
-	sb->Append((const UTF8Char*)", size=");
+	sb->AppendC(UTF8STRC(", size="));
 	sb->AppendI32((Int32)pack->packSize);
 
 	if (pack->packType == 0)
@@ -205,25 +205,25 @@ Bool IO::FileAnalyse::NFDumpFileAnalyse::GetFrameDetail(UOSInt index, Text::Stri
 		packBuff = MemAlloc(UInt8, pack->packSize);
 		this->fd->GetRealData(pack->fileOfst, pack->packSize, packBuff);
 
-		sb->Append((const UTF8Char*)"\r\nVersion = ");
+		sb->AppendC(UTF8STRC("\r\nVersion = "));
 		sb->AppendU16(ReadUInt16(&packBuff[2]));
-		sb->Append((const UTF8Char*)"\r\nFlags = 0x");
+		sb->AppendC(UTF8STRC("\r\nFlags = 0x"));
 		sb->AppendHex32V(ReadUInt32(&packBuff[4]));
 		if (packBuff[4] & 1)
 		{
-			sb->Append((const UTF8Char*)" Compressed");
+			sb->AppendC(UTF8STRC(" Compressed"));
 		}
 		if (packBuff[4] & 2)
 		{
-			sb->Append((const UTF8Char*)" Anonimized");
+			sb->AppendC(UTF8STRC(" Anonimized"));
 		}
 		if (packBuff[4] & 4)
 		{
-			sb->Append((const UTF8Char*)" Catalog");
+			sb->AppendC(UTF8STRC(" Catalog"));
 		}
-		sb->Append((const UTF8Char*)"\r\nNumber of Blocks = ");
+		sb->AppendC(UTF8STRC("\r\nNumber of Blocks = "));
 		sb->AppendU32(ReadUInt32(&packBuff[8]));
-		sb->Append((const UTF8Char*)"\r\nIdentifier = ");
+		sb->AppendC(UTF8STRC("\r\nIdentifier = "));
 		sb->Append((UTF8Char*)&packBuff[12]);
 
 		MemFree(packBuff);
@@ -233,45 +233,45 @@ Bool IO::FileAnalyse::NFDumpFileAnalyse::GetFrameDetail(UOSInt index, Text::Stri
 		packBuff = MemAlloc(UInt8, pack->packSize);
 		this->fd->GetRealData(pack->fileOfst, pack->packSize, packBuff);
 
-		sb->Append((const UTF8Char*)"\r\nNumber of flows = ");
+		sb->AppendC(UTF8STRC("\r\nNumber of flows = "));
 		sb->AppendI64(ReadInt64(&packBuff[0]));
-		sb->Append((const UTF8Char*)"\r\nNumber of bytes = ");
+		sb->AppendC(UTF8STRC("\r\nNumber of bytes = "));
 		sb->AppendI64(ReadInt64(&packBuff[8]));
-		sb->Append((const UTF8Char*)"\r\nNumber of packets = ");
+		sb->AppendC(UTF8STRC("\r\nNumber of packets = "));
 		sb->AppendI64(ReadInt64(&packBuff[16]));
-		sb->Append((const UTF8Char*)"\r\nNumber of flows (TCP) = ");
+		sb->AppendC(UTF8STRC("\r\nNumber of flows (TCP) = "));
 		sb->AppendI64(ReadInt64(&packBuff[24]));
-		sb->Append((const UTF8Char*)"\r\nNumber of flows (UDP) = ");
+		sb->AppendC(UTF8STRC("\r\nNumber of flows (UDP) = "));
 		sb->AppendI64(ReadInt64(&packBuff[32]));
-		sb->Append((const UTF8Char*)"\r\nNumber of flows (ICMP) = ");
+		sb->AppendC(UTF8STRC("\r\nNumber of flows (ICMP) = "));
 		sb->AppendI64(ReadInt64(&packBuff[40]));
-		sb->Append((const UTF8Char*)"\r\nNumber of flows (Other) = ");
+		sb->AppendC(UTF8STRC("\r\nNumber of flows (Other) = "));
 		sb->AppendI64(ReadInt64(&packBuff[48]));
-		sb->Append((const UTF8Char*)"\r\nNumber of bytes (TCP) = ");
+		sb->AppendC(UTF8STRC("\r\nNumber of bytes (TCP) = "));
 		sb->AppendI64(ReadInt64(&packBuff[56]));
-		sb->Append((const UTF8Char*)"\r\nNumber of bytes (UDP) = ");
+		sb->AppendC(UTF8STRC("\r\nNumber of bytes (UDP) = "));
 		sb->AppendI64(ReadInt64(&packBuff[64]));
-		sb->Append((const UTF8Char*)"\r\nNumber of bytes (ICMP) = ");
+		sb->AppendC(UTF8STRC("\r\nNumber of bytes (ICMP) = "));
 		sb->AppendI64(ReadInt64(&packBuff[72]));
-		sb->Append((const UTF8Char*)"\r\nNumber of bytes (Other) = ");
+		sb->AppendC(UTF8STRC("\r\nNumber of bytes (Other) = "));
 		sb->AppendI64(ReadInt64(&packBuff[80]));
-		sb->Append((const UTF8Char*)"\r\nNumber of packets (TCP) = ");
+		sb->AppendC(UTF8STRC("\r\nNumber of packets (TCP) = "));
 		sb->AppendI64(ReadInt64(&packBuff[88]));
-		sb->Append((const UTF8Char*)"\r\nNumber of packets (UDP) = ");
+		sb->AppendC(UTF8STRC("\r\nNumber of packets (UDP) = "));
 		sb->AppendI64(ReadInt64(&packBuff[96]));
-		sb->Append((const UTF8Char*)"\r\nNumber of packets (ICMP) = ");
+		sb->AppendC(UTF8STRC("\r\nNumber of packets (ICMP) = "));
 		sb->AppendI64(ReadInt64(&packBuff[104]));
-		sb->Append((const UTF8Char*)"\r\nNumber of packets (Other) = ");
+		sb->AppendC(UTF8STRC("\r\nNumber of packets (Other) = "));
 		sb->AppendI64(ReadInt64(&packBuff[112]));
-		sb->Append((const UTF8Char*)"\r\nFirst seen = ");
+		sb->AppendC(UTF8STRC("\r\nFirst seen = "));
 		sb->AppendU32(ReadUInt32(&packBuff[120]));
-		sb->Append((const UTF8Char*)"\r\nLast seen = ");
+		sb->AppendC(UTF8STRC("\r\nLast seen = "));
 		sb->AppendU32(ReadUInt32(&packBuff[124]));
-		sb->Append((const UTF8Char*)"\r\nmSec First = ");
+		sb->AppendC(UTF8STRC("\r\nmSec First = "));
 		sb->AppendU16(ReadUInt16(&packBuff[128]));
-		sb->Append((const UTF8Char*)"\r\nmSec Last = ");
+		sb->AppendC(UTF8STRC("\r\nmSec Last = "));
 		sb->AppendU16(ReadUInt16(&packBuff[130]));
-		sb->Append((const UTF8Char*)"\r\nSequence Failure = ");
+		sb->AppendC(UTF8STRC("\r\nSequence Failure = "));
 		sb->AppendU32(ReadUInt32(&packBuff[132]));
 
 		MemFree(packBuff);
@@ -281,25 +281,25 @@ Bool IO::FileAnalyse::NFDumpFileAnalyse::GetFrameDetail(UOSInt index, Text::Stri
 		packBuff = MemAlloc(UInt8, pack->packSize);
 		this->fd->GetRealData(pack->fileOfst, pack->packSize, packBuff);
 
-		sb->Append((const UTF8Char*)"\r\nNumber of records = ");
+		sb->AppendC(UTF8STRC("\r\nNumber of records = "));
 		sb->AppendU32(ReadUInt32(&packBuff[0]));
-		sb->Append((const UTF8Char*)"\r\nBlock size = ");
+		sb->AppendC(UTF8STRC("\r\nBlock size = "));
 		sb->AppendU32(ReadUInt32(&packBuff[4]));
-		sb->Append((const UTF8Char*)"\r\nBlock ID = ");
+		sb->AppendC(UTF8STRC("\r\nBlock ID = "));
 		sb->AppendU16(ReadUInt16(&packBuff[8]));
-		sb->Append((const UTF8Char*)"\r\nFlags = ");
+		sb->AppendC(UTF8STRC("\r\nFlags = "));
 		sb->AppendU16(ReadUInt16(&packBuff[10]));
 		if (packBuff[10] == 0)
 		{
-			sb->Append((const UTF8Char*)" kompatibility");
+			sb->AppendC(UTF8STRC(" kompatibility"));
 		}
 		else if (packBuff[10] == 1)
 		{
-			sb->Append((const UTF8Char*)" block uncompressed");
+			sb->AppendC(UTF8STRC(" block uncompressed"));
 		}
 		else if (packBuff[10] == 2)
 		{
-			sb->Append((const UTF8Char*)" block compressed");
+			sb->AppendC(UTF8STRC(" block compressed"));
 		}
 		MemFree(packBuff);
 	}
@@ -312,7 +312,7 @@ Bool IO::FileAnalyse::NFDumpFileAnalyse::GetFrameDetail(UOSInt index, Text::Stri
 		packBuff = MemAlloc(UInt8, size);
 		this->fd->GetRealData(pack->fileOfst, size, packBuff);
 
-		sb->Append((const UTF8Char*)"\r\n\r\n");
+		sb->AppendC(UTF8STRC("\r\n\r\n"));
 		sb->AppendHexBuff(packBuff, dispSize, ' ', Text::LineBreakType::CRLF);
 		if (this->hasLZODecomp)
 		{
@@ -324,72 +324,72 @@ Bool IO::FileAnalyse::NFDumpFileAnalyse::GetFrameDetail(UOSInt index, Text::Stri
 			{
 				UInt32 recType;
 				UInt32 recSize;
-				sb->Append((const UTF8Char*)"\r\n");
+				sb->AppendC(UTF8STRC("\r\n"));
 				i = 0;
 				while (i < decBuffSize)
 				{
 					recType = ReadUInt16(&decBuff[i]);
 					recSize = ReadUInt16(&decBuff[i + 2]);
-					sb->Append((const UTF8Char*)"\r\nRec Size = ");
+					sb->AppendC(UTF8STRC("\r\nRec Size = "));
 					sb->AppendU32(recSize);
-					sb->Append((const UTF8Char*)", Rec Type = ");
+					sb->AppendC(UTF8STRC(", Rec Type = "));
 					sb->AppendU32(recType);
 					if (recSize < 4)
 						break;
 					if (recType == 1)
 					{
-						sb->Append((const UTF8Char*)" (CommonRecordV0)");
-						sb->Append((const UTF8Char*)", Flags = 0x");
+						sb->AppendC(UTF8STRC(" (CommonRecordV0)"));
+						sb->AppendC(UTF8STRC(", Flags = 0x"));
 						sb->AppendHex8(decBuff[i + 4]);
-						sb->Append((const UTF8Char*)", Exporter Sys ID = ");
+						sb->AppendC(UTF8STRC(", Exporter Sys ID = "));
 						sb->AppendU16(decBuff[i + 5]);
-						sb->Append((const UTF8Char*)", Ext Map ID = ");
+						sb->AppendC(UTF8STRC(", Ext Map ID = "));
 						sb->AppendU16(ReadUInt16(&decBuff[i + 6]));
 						dt.SetUnixTimestamp(ReadUInt32(&decBuff[i + 12]));
 						dt.AddMS(ReadUInt16(&decBuff[i + 8]));
 						dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fffzz");
-						sb->Append((const UTF8Char*)", first = ");
+						sb->AppendC(UTF8STRC(", first = "));
 						sb->Append(sbuff);
 						dt.SetUnixTimestamp(ReadUInt32(&decBuff[i + 16]));
 						dt.AddMS(ReadUInt16(&decBuff[i + 10]));
 						dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fffzz");
-						sb->Append((const UTF8Char*)", last = ");
+						sb->AppendC(UTF8STRC(", last = "));
 						sb->Append(sbuff);
 
-						sb->Append((const UTF8Char*)", Fwd Status = ");
+						sb->AppendC(UTF8STRC(", Fwd Status = "));
 						sb->AppendU16(decBuff[i + 20]);
-						sb->Append((const UTF8Char*)", TCP Flags = ");
+						sb->AppendC(UTF8STRC(", TCP Flags = "));
 						sb->AppendU16(decBuff[i + 21]);
-						sb->Append((const UTF8Char*)", Prot = ");
+						sb->AppendC(UTF8STRC(", Prot = "));
 						sb->AppendU16(decBuff[i + 22]);
-						sb->Append((const UTF8Char*)", Tos = ");
+						sb->AppendC(UTF8STRC(", Tos = "));
 						sb->AppendU16(decBuff[i + 23]);
-						sb->Append((const UTF8Char*)", src Port = ");
+						sb->AppendC(UTF8STRC(", src Port = "));
 						sb->AppendU16(ReadUInt16(&decBuff[i + 24]));
-						sb->Append((const UTF8Char*)", dest port = ");
+						sb->AppendC(UTF8STRC(", dest port = "));
 						sb->AppendU16(ReadUInt16(&decBuff[i + 26]));
 						j = 28;
 						if (decBuff[i + 4] & 1) //IPv6
 						{
-							sb->Append((const UTF8Char*)", src IP = ");
+							sb->AppendC(UTF8STRC(", src IP = "));
 //							Net::SocketUtil::GetIPv6Name(sbuff, ReadUInt32(&decBuff[i + j]));
 //							sb->Append(sbuff);
-							sb->Append((const UTF8Char*)", dest IP = ");
+							sb->AppendC(UTF8STRC(", dest IP = "));
 //							Net::SocketUtil::GetIPv6Name(sbuff, ReadUInt32(&decBuff[i + j + 16]));
 //							sb->Append(sbuff);
 							j += 32;
 						}
 						else //IPv4
 						{
-							sb->Append((const UTF8Char*)", src IP = ");
+							sb->AppendC(UTF8STRC(", src IP = "));
 							Net::SocketUtil::GetIPv4Name(sbuff, ReadMUInt32(&decBuff[i + j]));
 							sb->Append(sbuff);
-							sb->Append((const UTF8Char*)", dest IP = ");
+							sb->AppendC(UTF8STRC(", dest IP = "));
 							Net::SocketUtil::GetIPv4Name(sbuff, ReadMUInt32(&decBuff[i + j + 4]));
 							sb->Append(sbuff);
 							j += 8;
 						}
-						sb->Append((const UTF8Char*)", In Pkts = ");
+						sb->AppendC(UTF8STRC(", In Pkts = "));
 						if (decBuff[i + 4] & 2) //64 bit
 						{
 							sb->AppendU64(ReadUInt64(&decBuff[i + j]));
@@ -400,7 +400,7 @@ Bool IO::FileAnalyse::NFDumpFileAnalyse::GetFrameDetail(UOSInt index, Text::Stri
 							sb->AppendU32(ReadUInt32(&decBuff[i + j]));
 							j += 4;
 						}
-						sb->Append((const UTF8Char*)", In Bytes = ");
+						sb->AppendC(UTF8STRC(", In Bytes = "));
 						if (decBuff[i + 4] & 4) //64 bit
 						{
 							sb->AppendU64(ReadUInt64(&decBuff[i + j]));
@@ -422,183 +422,183 @@ Bool IO::FileAnalyse::NFDumpFileAnalyse::GetFrameDetail(UOSInt index, Text::Stri
 								extId = ReadUInt16(&extBuff[l]);
 								if (extId == 4) //EX_IO_SNMP_2
 								{
-									sb->Append((const UTF8Char*)", input = ");
+									sb->AppendC(UTF8STRC(", input = "));
 									sb->AppendU16(ReadUInt16(&decBuff[i + j]));
-									sb->Append((const UTF8Char*)", output = ");
+									sb->AppendC(UTF8STRC(", output = "));
 									sb->AppendU16(ReadUInt16(&decBuff[i + j + 2]));
 									j += 4;
 								}
 								else if (extId == 5) //EX_IO_SNMP_4
 								{
-									sb->Append((const UTF8Char*)", input = ");
+									sb->AppendC(UTF8STRC(", input = "));
 									sb->AppendU32(ReadUInt32(&decBuff[i + j]));
-									sb->Append((const UTF8Char*)", output = ");
+									sb->AppendC(UTF8STRC(", output = "));
 									sb->AppendU32(ReadUInt32(&decBuff[i + j + 4]));
 									j += 8;
 								}
 								else if (extId == 6) //EX_AS_2
 								{
-									sb->Append((const UTF8Char*)", Src AS = ");
+									sb->AppendC(UTF8STRC(", Src AS = "));
 									sb->AppendU16(ReadUInt16(&decBuff[i + j]));
-									sb->Append((const UTF8Char*)", Dest AS = ");
+									sb->AppendC(UTF8STRC(", Dest AS = "));
 									sb->AppendU16(ReadUInt16(&decBuff[i + j + 2]));
 									j += 4;
 								}
 								else if (extId == 7) //EX_AS_4
 								{
-									sb->Append((const UTF8Char*)", Src AS = ");
+									sb->AppendC(UTF8STRC(", Src AS = "));
 									sb->AppendU32(ReadUInt32(&decBuff[i + j]));
-									sb->Append((const UTF8Char*)", dest AS = ");
+									sb->AppendC(UTF8STRC(", dest AS = "));
 									sb->AppendU32(ReadUInt32(&decBuff[i + j + 4]));
 									j += 8;
 								}
 								else if (extId == 8) //EX_MULTIPLE
 								{
-									sb->Append((const UTF8Char*)", Dst Tos = ");
+									sb->AppendC(UTF8STRC(", Dst Tos = "));
 									sb->AppendU16(decBuff[i + j]);
-									sb->Append((const UTF8Char*)", Dir = ");
+									sb->AppendC(UTF8STRC(", Dir = "));
 									sb->AppendU16(decBuff[i + j + 1]);
-									sb->Append((const UTF8Char*)", Src Mask = ");
+									sb->AppendC(UTF8STRC(", Src Mask = "));
 									sb->AppendU16(decBuff[i + j + 2]);
-									sb->Append((const UTF8Char*)", Dst Mask = ");
+									sb->AppendC(UTF8STRC(", Dst Mask = "));
 									sb->AppendU16(decBuff[i + j + 3]);
 									j += 4;
 								}
 								else if (extId == 9) //EX_NEXT_HOP_v4
 								{
-									sb->Append((const UTF8Char*)", Next HOP IP = ");
+									sb->AppendC(UTF8STRC(", Next HOP IP = "));
 									Net::SocketUtil::GetIPv4Name(sbuff, ReadMUInt32(&decBuff[i + j]));
 									sb->Append(sbuff);
 									j += 4;
 								}
 								else if (extId == 10) //EX_NEXT_HOP_v6
 								{
-									sb->Append((const UTF8Char*)", Next HOP IP = ");
+									sb->AppendC(UTF8STRC(", Next HOP IP = "));
 //									Net::SocketUtil::GetIPv4Name(sbuff, ReadMUInt32(&decBuff[i + j]));
 //									sb->Append(sbuff);
 									j += 16;
 								}
 								else if (extId == 11) //EX_NEXT_HOP_BGP_v4
 								{
-									sb->Append((const UTF8Char*)", BGP Next IP = ");
+									sb->AppendC(UTF8STRC(", BGP Next IP = "));
 									Net::SocketUtil::GetIPv4Name(sbuff, ReadMUInt32(&decBuff[i + j]));
 									sb->Append(sbuff);
 									j += 4;
 								}
 								else if (extId == 12) //EX_NEXT_HOP_BGP_v6
 								{
-									sb->Append((const UTF8Char*)", BGP Next IP = ");
+									sb->AppendC(UTF8STRC(", BGP Next IP = "));
 //									Net::SocketUtil::GetIPv4Name(sbuff, ReadMUInt32(&decBuff[i + j]));
 //									sb->Append(sbuff);
 									j += 16;
 								}
 								else if (extId == 13) //EX_VLAN
 								{
-									sb->Append((const UTF8Char*)", Src VLAN = ");
+									sb->AppendC(UTF8STRC(", Src VLAN = "));
 									sb->AppendU16(ReadUInt16(&decBuff[i + j]));
-									sb->Append((const UTF8Char*)", Dst VLAN = ");
+									sb->AppendC(UTF8STRC(", Dst VLAN = "));
 									sb->AppendU16(ReadUInt16(&decBuff[i + j + 2]));
 									j += 4;
 								}
 								else if (extId == 14) //EX_OUT_PKG_4
 								{
-									sb->Append((const UTF8Char*)", Out Pkts = ");
+									sb->AppendC(UTF8STRC(", Out Pkts = "));
 									sb->AppendU32(ReadUInt32(&decBuff[i + j]));
 									j += 4;
 								}
 								else if (extId == 15) //EX_OUT_PKG_8
 								{
-									sb->Append((const UTF8Char*)", Out Pkts = ");
+									sb->AppendC(UTF8STRC(", Out Pkts = "));
 									sb->AppendU64(ReadUInt64(&decBuff[i + j]));
 									j += 8;
 								}
 								else if (extId == 16) //EX_OUT_BYTES_4
 								{
-									sb->Append((const UTF8Char*)", Out Bytes = ");
+									sb->AppendC(UTF8STRC(", Out Bytes = "));
 									sb->AppendU32(ReadUInt32(&decBuff[i + j]));
 									j += 4;
 								}
 								else if (extId == 17) //EX_OUT_BYTES_8
 								{
-									sb->Append((const UTF8Char*)", Out Bytes = ");
+									sb->AppendC(UTF8STRC(", Out Bytes = "));
 									sb->AppendU64(ReadUInt64(&decBuff[i + j]));
 									j += 8;
 								}
 								else if (extId == 18) //EX_AGGR_FLOWS_4
 								{
-									sb->Append((const UTF8Char*)", Aggr Flows = ");
+									sb->AppendC(UTF8STRC(", Aggr Flows = "));
 									sb->AppendU32(ReadUInt32(&decBuff[i + j]));
 									j += 4;
 								}
 								else if (extId == 19) //EX_AGGR_FLOWS_8
 								{
-									sb->Append((const UTF8Char*)", Aggr Flows = ");
+									sb->AppendC(UTF8STRC(", Aggr Flows = "));
 									sb->AppendU64(ReadUInt64(&decBuff[i + j]));
 									j += 8;
 								}
 								else if (extId == 20) //EX_MAC_1
 								{
-									sb->Append((const UTF8Char*)", In Src MAC = ");
+									sb->AppendC(UTF8STRC(", In Src MAC = "));
 									sb->AppendHexBuff(&decBuff[i + j + 2], 6, 0, Text::LineBreakType::None);
-									sb->Append((const UTF8Char*)", Out Dst MAC = ");
+									sb->AppendC(UTF8STRC(", Out Dst MAC = "));
 									sb->AppendHexBuff(&decBuff[i + j + 10], 6, 0, Text::LineBreakType::None);
 									j += 16;
 								}
 								else if (extId == 21) //EX_MAC_2
 								{
-									sb->Append((const UTF8Char*)", In Dst MAC = ");
+									sb->AppendC(UTF8STRC(", In Dst MAC = "));
 									sb->AppendHexBuff(&decBuff[i + j + 2], 6, 0, Text::LineBreakType::None);
-									sb->Append((const UTF8Char*)", Out Src MAC = ");
+									sb->AppendC(UTF8STRC(", Out Src MAC = "));
 									sb->AppendHexBuff(&decBuff[i + j + 10], 6, 0, Text::LineBreakType::None);
 									j += 16;
 								}
 								else if (extId == 22) //EX_MPLS
 								{
-									sb->Append((const UTF8Char*)", MPLS LABEL 1 = ");
-									sb->Append((const UTF8Char*)", MPLS LABEL 2 = ");
-									sb->Append((const UTF8Char*)", MPLS LABEL 3 = ");
-									sb->Append((const UTF8Char*)", MPLS LABEL 4 = ");
-									sb->Append((const UTF8Char*)", MPLS LABEL 5 = ");
-									sb->Append((const UTF8Char*)", MPLS LABEL 6 = ");
-									sb->Append((const UTF8Char*)", MPLS LABEL 7 = ");
-									sb->Append((const UTF8Char*)", MPLS LABEL 8 = ");
-									sb->Append((const UTF8Char*)", MPLS LABEL 9 = ");
-									sb->Append((const UTF8Char*)", MPLS LABEL 10 = ");
+									sb->AppendC(UTF8STRC(", MPLS LABEL 1 = "));
+									sb->AppendC(UTF8STRC(", MPLS LABEL 2 = "));
+									sb->AppendC(UTF8STRC(", MPLS LABEL 3 = "));
+									sb->AppendC(UTF8STRC(", MPLS LABEL 4 = "));
+									sb->AppendC(UTF8STRC(", MPLS LABEL 5 = "));
+									sb->AppendC(UTF8STRC(", MPLS LABEL 6 = "));
+									sb->AppendC(UTF8STRC(", MPLS LABEL 7 = "));
+									sb->AppendC(UTF8STRC(", MPLS LABEL 8 = "));
+									sb->AppendC(UTF8STRC(", MPLS LABEL 9 = "));
+									sb->AppendC(UTF8STRC(", MPLS LABEL 10 = "));
 									j += 40;
 								}
 								else if (extId == 23) //EX_ROUTER_IP_v4
 								{
-									sb->Append((const UTF8Char*)", Router IP = ");
+									sb->AppendC(UTF8STRC(", Router IP = "));
 									Net::SocketUtil::GetIPv4Name(sbuff, ReadMUInt32(&decBuff[i + j]));
 									sb->Append(sbuff);
 									j += 4;
 								}
 								else if (extId == 24) //EX_ROUTER_IP_v6
 								{
-									sb->Append((const UTF8Char*)", Router IP = ");
+									sb->AppendC(UTF8STRC(", Router IP = "));
 //									Net::SocketUtil::GetIPv4Name(sbuff, ReadMUInt32(&decBuff[i + j]));
 //									sb->Append(sbuff);
 									j += 16;
 								}
 								else if (extId == 25) //EX_ROUTER_ID
 								{
-									sb->Append((const UTF8Char*)", Engine Type = ");
+									sb->AppendC(UTF8STRC(", Engine Type = "));
 									sb->AppendU16(decBuff[i + j + 2]);
-									sb->Append((const UTF8Char*)", Engine ID = ");
+									sb->AppendC(UTF8STRC(", Engine ID = "));
 									sb->AppendU16(decBuff[i + j + 3]);
 									j += 4;
 								}
 								else if (extId == 26) //EX_BGPADJ
 								{
-									sb->Append((const UTF8Char*)", BGP Next Adjacent AS Number = ");
+									sb->AppendC(UTF8STRC(", BGP Next Adjacent AS Number = "));
 									sb->AppendU32(ReadUInt32(&decBuff[i + j]));
-									sb->Append((const UTF8Char*)", BGP Prev Adjacent AS Number = ");
+									sb->AppendC(UTF8STRC(", BGP Prev Adjacent AS Number = "));
 									sb->AppendU32(ReadUInt32(&decBuff[i + j + 4]));
 									j += 8;
 								}
 								else if (extId == 27) //EX_BGPADJ
 								{
-									sb->Append((const UTF8Char*)", T Received = ");
+									sb->AppendC(UTF8STRC(", T Received = "));
 									dt.SetTicks(ReadInt64(&decBuff[i + j]));
 									dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fffzz");
 									sb->Append(sbuff);
@@ -612,10 +612,10 @@ Bool IO::FileAnalyse::NFDumpFileAnalyse::GetFrameDetail(UOSInt index, Text::Stri
 					}
 					else if (recType == 2)
 					{
-						sb->Append((const UTF8Char*)" (ExtensionMap)");
-						sb->Append((const UTF8Char*)", Map ID = ");
+						sb->AppendC(UTF8STRC(" (ExtensionMap)"));
+						sb->AppendC(UTF8STRC(", Map ID = "));
 						sb->AppendU16(ReadUInt16(&decBuff[i + 4]));
-						sb->Append((const UTF8Char*)", Extension Size = ");
+						sb->AppendC(UTF8STRC(", Extension Size = "));
 						sb->AppendU16(ReadUInt16(&decBuff[i + 6]));
 						j = 1;
 						k = 8;
@@ -624,9 +624,9 @@ Bool IO::FileAnalyse::NFDumpFileAnalyse::GetFrameDetail(UOSInt index, Text::Stri
 							l = ReadUInt16(&decBuff[i + k]);
 							if (l == 0)
 								break;
-							sb->Append((const UTF8Char*)", Extension ID");
+							sb->AppendC(UTF8STRC(", Extension ID"));
 							sb->AppendUOSInt(j);
-							sb->Append((const UTF8Char*)" = ");
+							sb->AppendC(UTF8STRC(" = "));
 							sb->AppendUOSInt(l);
 							j++;
 							k += 2;
@@ -642,28 +642,28 @@ Bool IO::FileAnalyse::NFDumpFileAnalyse::GetFrameDetail(UOSInt index, Text::Stri
 					}
 					else if (recType == 3)
 					{
-						sb->Append((const UTF8Char*)" (PortHistogram)");
+						sb->AppendC(UTF8STRC(" (PortHistogram)"));
 					}
 					else if (recType == 4)
 					{
-						sb->Append((const UTF8Char*)" (BppHistogram)");
+						sb->AppendC(UTF8STRC(" (BppHistogram)"));
 					}
 					else if (recType == 5)
 					{
-						sb->Append((const UTF8Char*)" (ExporterRecord)");
+						sb->AppendC(UTF8STRC(" (ExporterRecord)"));
 					}
 					else if (recType == 6)
 					{
-						sb->Append((const UTF8Char*)" (SamplerRecord)");
+						sb->AppendC(UTF8STRC(" (SamplerRecord)"));
 					}
 					else if (recType == 7)
 					{
-						sb->Append((const UTF8Char*)" (ExporterInfoRecord)");
-						sb->Append((const UTF8Char*)", version = ");
+						sb->AppendC(UTF8STRC(" (ExporterInfoRecord)"));
+						sb->AppendC(UTF8STRC(", version = "));
 						sb->AppendU32(ReadUInt32(&decBuff[i + 4]));
-						sb->Append((const UTF8Char*)", SA Family = ");
+						sb->AppendC(UTF8STRC(", SA Family = "));
 						sb->AppendUOSInt(j = ReadUInt16(&decBuff[i + 24]));
-						sb->Append((const UTF8Char*)", IP = ");
+						sb->AppendC(UTF8STRC(", IP = "));
 						if (j == 2) //AF_INET
 						{
 							Net::SocketUtil::GetIPv4Name(sbuff, ReadMUInt32(&decBuff[i + 16]));
@@ -678,36 +678,36 @@ Bool IO::FileAnalyse::NFDumpFileAnalyse::GetFrameDetail(UOSInt index, Text::Stri
 						{
 							sb->AppendHexBuff(&decBuff[i + 8], 16, 0, Text::LineBreakType::None);
 						}
-						sb->Append((const UTF8Char*)", Sys ID = ");
+						sb->AppendC(UTF8STRC(", Sys ID = "));
 						sb->AppendU16(ReadUInt16(&decBuff[i + 26]));
-						sb->Append((const UTF8Char*)", SA Family = ");
+						sb->AppendC(UTF8STRC(", SA Family = "));
 						sb->AppendU32(ReadUInt32(&decBuff[i + 28]));
 					}
 					else if (recType == 8)
 					{
-						sb->Append((const UTF8Char*)" (ExporterStatRecord)");
-						sb->Append((const UTF8Char*)", Stat Cnt = ");
+						sb->AppendC(UTF8STRC(" (ExporterStatRecord)"));
+						sb->AppendC(UTF8STRC(", Stat Cnt = "));
 						j = 8;
 						l = ReadUInt32(&decBuff[i + 4]);
 						k = 0;
 						sb->AppendU32((UInt32)l);
 						while (k < l)
 						{
-							sb->Append((const UTF8Char*)", Sys ID");
+							sb->AppendC(UTF8STRC(", Sys ID"));
 							sb->AppendUOSInt(k);
-							sb->Append((const UTF8Char*)" = ");
+							sb->AppendC(UTF8STRC(" = "));
 							sb->AppendU32(ReadUInt32(&decBuff[i + j]));
-							sb->Append((const UTF8Char*)", Seq Failure");
+							sb->AppendC(UTF8STRC(", Seq Failure"));
 							sb->AppendUOSInt(k);
-							sb->Append((const UTF8Char*)" = ");
+							sb->AppendC(UTF8STRC(" = "));
 							sb->AppendU32(ReadUInt32(&decBuff[i + j + 4]));
-							sb->Append((const UTF8Char*)", Packets");
+							sb->AppendC(UTF8STRC(", Packets"));
 							sb->AppendUOSInt(k);
-							sb->Append((const UTF8Char*)" = ");
+							sb->AppendC(UTF8STRC(" = "));
 							sb->AppendU64(ReadUInt64(&decBuff[i + j + 8]));
-							sb->Append((const UTF8Char*)", Flows");
+							sb->AppendC(UTF8STRC(", Flows"));
 							sb->AppendUOSInt(k);
-							sb->Append((const UTF8Char*)" = ");
+							sb->AppendC(UTF8STRC(" = "));
 							sb->AppendU64(ReadUInt64(&decBuff[i + j + 16]));
 							j += 24;
 							k++;
@@ -715,19 +715,19 @@ Bool IO::FileAnalyse::NFDumpFileAnalyse::GetFrameDetail(UOSInt index, Text::Stri
 					}
 					else if (recType == 9)
 					{
-						sb->Append((const UTF8Char*)" (SamplerInfoRecord)");
-						sb->Append((const UTF8Char*)", ID = ");
+						sb->AppendC(UTF8STRC(" (SamplerInfoRecord)"));
+						sb->AppendC(UTF8STRC(", ID = "));
 						sb->AppendI32(ReadInt32(&decBuff[i + 4]));
-						sb->Append((const UTF8Char*)", Interval = ");
+						sb->AppendC(UTF8STRC(", Interval = "));
 						sb->AppendU32(ReadUInt32(&decBuff[i + 8]));
-						sb->Append((const UTF8Char*)", Mode = ");
+						sb->AppendC(UTF8STRC(", Mode = "));
 						sb->AppendU16(ReadUInt16(&decBuff[i + 12]));
-						sb->Append((const UTF8Char*)", Exporter Sys ID = ");
+						sb->AppendC(UTF8STRC(", Exporter Sys ID = "));
 						sb->AppendU16(ReadUInt16(&decBuff[i + 14]));
 					}
 					else if (recType == 10)
 					{
-						sb->Append((const UTF8Char*)" (CommonRecord)");
+						sb->AppendC(UTF8STRC(" (CommonRecord)"));
 					}
 					i += recSize;
 				}
@@ -898,72 +898,72 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::NFDumpFileAnalyse::GetFrameDetail
 				UOSInt l;
 				UInt32 recType;
 				UInt32 recSize;
-				sb->Append((const UTF8Char*)"\r\n");
+				sb->AppendC(UTF8STRC("\r\n"));
 				i = 0;
 				while (i < decBuffSize)
 				{
 					recType = ReadUInt16(&decBuff[i]);
 					recSize = ReadUInt16(&decBuff[i + 2]);
-					sb->Append((const UTF8Char*)"\r\nRec Size = ");
+					sb->AppendC(UTF8STRC("\r\nRec Size = "));
 					sb->AppendU32(recSize);
-					sb->Append((const UTF8Char*)", Rec Type = ");
+					sb->AppendC(UTF8STRC(", Rec Type = "));
 					sb->AppendU32(recType);
 					if (recSize < 4)
 						break;
 					if (recType == 1)
 					{
-						sb->Append((const UTF8Char*)" (CommonRecordV0)");
-						sb->Append((const UTF8Char*)", Flags = 0x");
+						sb->AppendC(UTF8STRC(" (CommonRecordV0)"));
+						sb->AppendC(UTF8STRC(", Flags = 0x"));
 						sb->AppendHex8(decBuff[i + 4]);
-						sb->Append((const UTF8Char*)", Exporter Sys ID = ");
+						sb->AppendC(UTF8STRC(", Exporter Sys ID = "));
 						sb->AppendU16(decBuff[i + 5]);
-						sb->Append((const UTF8Char*)", Ext Map ID = ");
+						sb->AppendC(UTF8STRC(", Ext Map ID = "));
 						sb->AppendU16(ReadUInt16(&decBuff[i + 6]));
 						dt.SetUnixTimestamp(ReadUInt32(&decBuff[i + 12]));
 						dt.AddMS(ReadUInt16(&decBuff[i + 8]));
-						dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fffzz");
-						sb->Append((const UTF8Char*)", first = ");
+						dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fffzz"));
+						sb->AppendC(UTF8STRC(", first = "));
 						sb->Append(sbuff);
 						dt.SetUnixTimestamp(ReadUInt32(&decBuff[i + 16]));
 						dt.AddMS(ReadUInt16(&decBuff[i + 10]));
-						dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fffzz");
-						sb->Append((const UTF8Char*)", last = ");
+						dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fffzz"));
+						sb->AppendC(UTF8STRC(", last = "));
 						sb->Append(sbuff);
 
-						sb->Append((const UTF8Char*)", Fwd Status = ");
+						sb->AppendC(UTF8STRC(", Fwd Status = "));
 						sb->AppendU16(decBuff[i + 20]);
-						sb->Append((const UTF8Char*)", TCP Flags = ");
+						sb->AppendC(UTF8STRC(", TCP Flags = "));
 						sb->AppendU16(decBuff[i + 21]);
-						sb->Append((const UTF8Char*)", Prot = ");
+						sb->AppendC(UTF8STRC(", Prot = "));
 						sb->AppendU16(decBuff[i + 22]);
-						sb->Append((const UTF8Char*)", Tos = ");
+						sb->AppendC(UTF8STRC(", Tos = "));
 						sb->AppendU16(decBuff[i + 23]);
-						sb->Append((const UTF8Char*)", src Port = ");
+						sb->AppendC(UTF8STRC(", src Port = "));
 						sb->AppendU16(ReadUInt16(&decBuff[i + 24]));
-						sb->Append((const UTF8Char*)", dest port = ");
+						sb->AppendC(UTF8STRC(", dest port = "));
 						sb->AppendU16(ReadUInt16(&decBuff[i + 26]));
 						j = 28;
 						if (decBuff[i + 4] & 1) //IPv6
 						{
-							sb->Append((const UTF8Char*)", src IP = ");
+							sb->AppendC(UTF8STRC(", src IP = "));
 //							Net::SocketUtil::GetIPv6Name(sbuff, ReadUInt32(&decBuff[i + j]));
 //							sb->Append(sbuff);
-							sb->Append((const UTF8Char*)", dest IP = ");
+							sb->AppendC(UTF8STRC(", dest IP = "));
 //							Net::SocketUtil::GetIPv6Name(sbuff, ReadUInt32(&decBuff[i + j + 16]));
 //							sb->Append(sbuff);
 							j += 32;
 						}
 						else //IPv4
 						{
-							sb->Append((const UTF8Char*)", src IP = ");
+							sb->AppendC(UTF8STRC(", src IP = "));
 							Net::SocketUtil::GetIPv4Name(sbuff, ReadMUInt32(&decBuff[i + j]));
 							sb->Append(sbuff);
-							sb->Append((const UTF8Char*)", dest IP = ");
+							sb->AppendC(UTF8STRC(", dest IP = "));
 							Net::SocketUtil::GetIPv4Name(sbuff, ReadMUInt32(&decBuff[i + j + 4]));
 							sb->Append(sbuff);
 							j += 8;
 						}
-						sb->Append((const UTF8Char*)", In Pkts = ");
+						sb->AppendC(UTF8STRC(", In Pkts = "));
 						if (decBuff[i + 4] & 2) //64 bit
 						{
 							sb->AppendU64(ReadUInt64(&decBuff[i + j]));
@@ -974,7 +974,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::NFDumpFileAnalyse::GetFrameDetail
 							sb->AppendU32(ReadUInt32(&decBuff[i + j]));
 							j += 4;
 						}
-						sb->Append((const UTF8Char*)", In Bytes = ");
+						sb->AppendC(UTF8STRC(", In Bytes = "));
 						if (decBuff[i + 4] & 4) //64 bit
 						{
 							sb->AppendU64(ReadUInt64(&decBuff[i + j]));
@@ -996,185 +996,185 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::NFDumpFileAnalyse::GetFrameDetail
 								extId = ReadUInt16(&extBuff[l]);
 								if (extId == 4) //EX_IO_SNMP_2
 								{
-									sb->Append((const UTF8Char*)", input = ");
+									sb->AppendC(UTF8STRC(", input = "));
 									sb->AppendU16(ReadUInt16(&decBuff[i + j]));
-									sb->Append((const UTF8Char*)", output = ");
+									sb->AppendC(UTF8STRC(", output = "));
 									sb->AppendU16(ReadUInt16(&decBuff[i + j + 2]));
 									j += 4;
 								}
 								else if (extId == 5) //EX_IO_SNMP_4
 								{
-									sb->Append((const UTF8Char*)", input = ");
+									sb->AppendC(UTF8STRC(", input = "));
 									sb->AppendU32(ReadUInt32(&decBuff[i + j]));
-									sb->Append((const UTF8Char*)", output = ");
+									sb->AppendC(UTF8STRC(", output = "));
 									sb->AppendU32(ReadUInt32(&decBuff[i + j + 4]));
 									j += 8;
 								}
 								else if (extId == 6) //EX_AS_2
 								{
-									sb->Append((const UTF8Char*)", Src AS = ");
+									sb->AppendC(UTF8STRC(", Src AS = "));
 									sb->AppendU16(ReadUInt16(&decBuff[i + j]));
-									sb->Append((const UTF8Char*)", Dest AS = ");
+									sb->AppendC(UTF8STRC(", Dest AS = "));
 									sb->AppendU16(ReadUInt16(&decBuff[i + j + 2]));
 									j += 4;
 								}
 								else if (extId == 7) //EX_AS_4
 								{
-									sb->Append((const UTF8Char*)", Src AS = ");
+									sb->AppendC(UTF8STRC(", Src AS = "));
 									sb->AppendU32(ReadUInt32(&decBuff[i + j]));
-									sb->Append((const UTF8Char*)", dest AS = ");
+									sb->AppendC(UTF8STRC(", dest AS = "));
 									sb->AppendU32(ReadUInt32(&decBuff[i + j + 4]));
 									j += 8;
 								}
 								else if (extId == 8) //EX_MULTIPLE
 								{
-									sb->Append((const UTF8Char*)", Dst Tos = ");
+									sb->AppendC(UTF8STRC(", Dst Tos = "));
 									sb->AppendU16(decBuff[i + j]);
-									sb->Append((const UTF8Char*)", Dir = ");
+									sb->AppendC(UTF8STRC(", Dir = "));
 									sb->AppendU16(decBuff[i + j + 1]);
-									sb->Append((const UTF8Char*)", Src Mask = ");
+									sb->AppendC(UTF8STRC(", Src Mask = "));
 									sb->AppendU16(decBuff[i + j + 2]);
-									sb->Append((const UTF8Char*)", Dst Mask = ");
+									sb->AppendC(UTF8STRC(", Dst Mask = "));
 									sb->AppendU16(decBuff[i + j + 3]);
 									j += 4;
 								}
 								else if (extId == 9) //EX_NEXT_HOP_v4
 								{
-									sb->Append((const UTF8Char*)", Next HOP IP = ");
+									sb->AppendC(UTF8STRC(", Next HOP IP = "));
 									Net::SocketUtil::GetIPv4Name(sbuff, ReadMUInt32(&decBuff[i + j]));
 									sb->Append(sbuff);
 									j += 4;
 								}
 								else if (extId == 10) //EX_NEXT_HOP_v6
 								{
-									sb->Append((const UTF8Char*)", Next HOP IP = ");
+									sb->AppendC(UTF8STRC(", Next HOP IP = "));
 //									Net::SocketUtil::GetIPv4Name(sbuff, ReadMUInt32(&decBuff[i + j]));
 //									sb->Append(sbuff);
 									j += 16;
 								}
 								else if (extId == 11) //EX_NEXT_HOP_BGP_v4
 								{
-									sb->Append((const UTF8Char*)", BGP Next IP = ");
+									sb->AppendC(UTF8STRC(", BGP Next IP = "));
 									Net::SocketUtil::GetIPv4Name(sbuff, ReadMUInt32(&decBuff[i + j]));
 									sb->Append(sbuff);
 									j += 4;
 								}
 								else if (extId == 12) //EX_NEXT_HOP_BGP_v6
 								{
-									sb->Append((const UTF8Char*)", BGP Next IP = ");
+									sb->AppendC(UTF8STRC(", BGP Next IP = "));
 //									Net::SocketUtil::GetIPv4Name(sbuff, ReadMUInt32(&decBuff[i + j]));
 //									sb->Append(sbuff);
 									j += 16;
 								}
 								else if (extId == 13) //EX_VLAN
 								{
-									sb->Append((const UTF8Char*)", Src VLAN = ");
+									sb->AppendC(UTF8STRC(", Src VLAN = "));
 									sb->AppendU16(ReadUInt16(&decBuff[i + j]));
-									sb->Append((const UTF8Char*)", Dst VLAN = ");
+									sb->AppendC(UTF8STRC(", Dst VLAN = "));
 									sb->AppendU16(ReadUInt16(&decBuff[i + j + 2]));
 									j += 4;
 								}
 								else if (extId == 14) //EX_OUT_PKG_4
 								{
-									sb->Append((const UTF8Char*)", Out Pkts = ");
+									sb->AppendC(UTF8STRC(", Out Pkts = "));
 									sb->AppendU32(ReadUInt32(&decBuff[i + j]));
 									j += 4;
 								}
 								else if (extId == 15) //EX_OUT_PKG_8
 								{
-									sb->Append((const UTF8Char*)", Out Pkts = ");
+									sb->AppendC(UTF8STRC(", Out Pkts = "));
 									sb->AppendU64(ReadUInt64(&decBuff[i + j]));
 									j += 8;
 								}
 								else if (extId == 16) //EX_OUT_BYTES_4
 								{
-									sb->Append((const UTF8Char*)", Out Bytes = ");
+									sb->AppendC(UTF8STRC(", Out Bytes = "));
 									sb->AppendU32(ReadUInt32(&decBuff[i + j]));
 									j += 4;
 								}
 								else if (extId == 17) //EX_OUT_BYTES_8
 								{
-									sb->Append((const UTF8Char*)", Out Bytes = ");
+									sb->AppendC(UTF8STRC(", Out Bytes = "));
 									sb->AppendU64(ReadUInt64(&decBuff[i + j]));
 									j += 8;
 								}
 								else if (extId == 18) //EX_AGGR_FLOWS_4
 								{
-									sb->Append((const UTF8Char*)", Aggr Flows = ");
+									sb->AppendC(UTF8STRC(", Aggr Flows = "));
 									sb->AppendU32(ReadUInt32(&decBuff[i + j]));
 									j += 4;
 								}
 								else if (extId == 19) //EX_AGGR_FLOWS_8
 								{
-									sb->Append((const UTF8Char*)", Aggr Flows = ");
+									sb->AppendC(UTF8STRC(", Aggr Flows = "));
 									sb->AppendU64(ReadUInt64(&decBuff[i + j]));
 									j += 8;
 								}
 								else if (extId == 20) //EX_MAC_1
 								{
-									sb->Append((const UTF8Char*)", In Src MAC = ");
+									sb->AppendC(UTF8STRC(", In Src MAC = "));
 									sb->AppendHexBuff(&decBuff[i + j + 2], 6, 0, Text::LineBreakType::None);
-									sb->Append((const UTF8Char*)", Out Dst MAC = ");
+									sb->AppendC(UTF8STRC(", Out Dst MAC = "));
 									sb->AppendHexBuff(&decBuff[i + j + 10], 6, 0, Text::LineBreakType::None);
 									j += 16;
 								}
 								else if (extId == 21) //EX_MAC_2
 								{
-									sb->Append((const UTF8Char*)", In Dst MAC = ");
+									sb->AppendC(UTF8STRC(", In Dst MAC = "));
 									sb->AppendHexBuff(&decBuff[i + j + 2], 6, 0, Text::LineBreakType::None);
-									sb->Append((const UTF8Char*)", Out Src MAC = ");
+									sb->AppendC(UTF8STRC(", Out Src MAC = "));
 									sb->AppendHexBuff(&decBuff[i + j + 10], 6, 0, Text::LineBreakType::None);
 									j += 16;
 								}
 								else if (extId == 22) //EX_MPLS
 								{
-									sb->Append((const UTF8Char*)", MPLS LABEL 1 = ");
-									sb->Append((const UTF8Char*)", MPLS LABEL 2 = ");
-									sb->Append((const UTF8Char*)", MPLS LABEL 3 = ");
-									sb->Append((const UTF8Char*)", MPLS LABEL 4 = ");
-									sb->Append((const UTF8Char*)", MPLS LABEL 5 = ");
-									sb->Append((const UTF8Char*)", MPLS LABEL 6 = ");
-									sb->Append((const UTF8Char*)", MPLS LABEL 7 = ");
-									sb->Append((const UTF8Char*)", MPLS LABEL 8 = ");
-									sb->Append((const UTF8Char*)", MPLS LABEL 9 = ");
-									sb->Append((const UTF8Char*)", MPLS LABEL 10 = ");
+									sb->AppendC(UTF8STRC(", MPLS LABEL 1 = "));
+									sb->AppendC(UTF8STRC(", MPLS LABEL 2 = "));
+									sb->AppendC(UTF8STRC(", MPLS LABEL 3 = "));
+									sb->AppendC(UTF8STRC(", MPLS LABEL 4 = "));
+									sb->AppendC(UTF8STRC(", MPLS LABEL 5 = "));
+									sb->AppendC(UTF8STRC(", MPLS LABEL 6 = "));
+									sb->AppendC(UTF8STRC(", MPLS LABEL 7 = "));
+									sb->AppendC(UTF8STRC(", MPLS LABEL 8 = "));
+									sb->AppendC(UTF8STRC(", MPLS LABEL 9 = "));
+									sb->AppendC(UTF8STRC(", MPLS LABEL 10 = "));
 									j += 40;
 								}
 								else if (extId == 23) //EX_ROUTER_IP_v4
 								{
-									sb->Append((const UTF8Char*)", Router IP = ");
+									sb->AppendC(UTF8STRC(", Router IP = "));
 									Net::SocketUtil::GetIPv4Name(sbuff, ReadMUInt32(&decBuff[i + j]));
 									sb->Append(sbuff);
 									j += 4;
 								}
 								else if (extId == 24) //EX_ROUTER_IP_v6
 								{
-									sb->Append((const UTF8Char*)", Router IP = ");
+									sb->AppendC(UTF8STRC(", Router IP = "));
 //									Net::SocketUtil::GetIPv4Name(sbuff, ReadMUInt32(&decBuff[i + j]));
 //									sb->Append(sbuff);
 									j += 16;
 								}
 								else if (extId == 25) //EX_ROUTER_ID
 								{
-									sb->Append((const UTF8Char*)", Engine Type = ");
+									sb->AppendC(UTF8STRC(", Engine Type = "));
 									sb->AppendU16(decBuff[i + j + 2]);
-									sb->Append((const UTF8Char*)", Engine ID = ");
+									sb->AppendC(UTF8STRC(", Engine ID = "));
 									sb->AppendU16(decBuff[i + j + 3]);
 									j += 4;
 								}
 								else if (extId == 26) //EX_BGPADJ
 								{
-									sb->Append((const UTF8Char*)", BGP Next Adjacent AS Number = ");
+									sb->AppendC(UTF8STRC(", BGP Next Adjacent AS Number = "));
 									sb->AppendU32(ReadUInt32(&decBuff[i + j]));
-									sb->Append((const UTF8Char*)", BGP Prev Adjacent AS Number = ");
+									sb->AppendC(UTF8STRC(", BGP Prev Adjacent AS Number = "));
 									sb->AppendU32(ReadUInt32(&decBuff[i + j + 4]));
 									j += 8;
 								}
 								else if (extId == 27) //EX_BGPADJ
 								{
-									sb->Append((const UTF8Char*)", T Received = ");
+									sb->AppendC(UTF8STRC(", T Received = "));
 									dt.SetTicks(ReadInt64(&decBuff[i + j]));
-									dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fffzz");
+									dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fffzz"));
 									sb->Append(sbuff);
 									j += 8;
 								}
@@ -1186,10 +1186,10 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::NFDumpFileAnalyse::GetFrameDetail
 					}
 					else if (recType == 2)
 					{
-						sb->Append((const UTF8Char*)" (ExtensionMap)");
-						sb->Append((const UTF8Char*)", Map ID = ");
+						sb->AppendC(UTF8STRC(" (ExtensionMap)"));
+						sb->AppendC(UTF8STRC(", Map ID = "));
 						sb->AppendU16(ReadUInt16(&decBuff[i + 4]));
-						sb->Append((const UTF8Char*)", Extension Size = ");
+						sb->AppendC(UTF8STRC(", Extension Size = "));
 						sb->AppendU16(ReadUInt16(&decBuff[i + 6]));
 						j = 1;
 						k = 8;
@@ -1198,9 +1198,9 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::NFDumpFileAnalyse::GetFrameDetail
 							l = ReadUInt16(&decBuff[i + k]);
 							if (l == 0)
 								break;
-							sb->Append((const UTF8Char*)", Extension ID");
+							sb->AppendC(UTF8STRC(", Extension ID"));
 							sb->AppendUOSInt(j);
-							sb->Append((const UTF8Char*)" = ");
+							sb->AppendC(UTF8STRC(" = "));
 							sb->AppendUOSInt(l);
 							j++;
 							k += 2;
@@ -1216,28 +1216,28 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::NFDumpFileAnalyse::GetFrameDetail
 					}
 					else if (recType == 3)
 					{
-						sb->Append((const UTF8Char*)" (PortHistogram)");
+						sb->AppendC(UTF8STRC(" (PortHistogram)"));
 					}
 					else if (recType == 4)
 					{
-						sb->Append((const UTF8Char*)" (BppHistogram)");
+						sb->AppendC(UTF8STRC(" (BppHistogram)"));
 					}
 					else if (recType == 5)
 					{
-						sb->Append((const UTF8Char*)" (ExporterRecord)");
+						sb->AppendC(UTF8STRC(" (ExporterRecord)"));
 					}
 					else if (recType == 6)
 					{
-						sb->Append((const UTF8Char*)" (SamplerRecord)");
+						sb->AppendC(UTF8STRC(" (SamplerRecord)"));
 					}
 					else if (recType == 7)
 					{
-						sb->Append((const UTF8Char*)" (ExporterInfoRecord)");
-						sb->Append((const UTF8Char*)", version = ");
+						sb->AppendC(UTF8STRC(" (ExporterInfoRecord)"));
+						sb->AppendC(UTF8STRC(", version = "));
 						sb->AppendU32(ReadUInt32(&decBuff[i + 4]));
-						sb->Append((const UTF8Char*)", SA Family = ");
+						sb->AppendC(UTF8STRC(", SA Family = "));
 						sb->AppendUOSInt(j = ReadUInt16(&decBuff[i + 24]));
-						sb->Append((const UTF8Char*)", IP = ");
+						sb->AppendC(UTF8STRC(", IP = "));
 						if (j == 2) //AF_INET
 						{
 							Net::SocketUtil::GetIPv4Name(sbuff, ReadMUInt32(&decBuff[i + 16]));
@@ -1252,36 +1252,36 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::NFDumpFileAnalyse::GetFrameDetail
 						{
 							sb->AppendHexBuff(&decBuff[i + 8], 16, 0, Text::LineBreakType::None);
 						}
-						sb->Append((const UTF8Char*)", Sys ID = ");
+						sb->AppendC(UTF8STRC(", Sys ID = "));
 						sb->AppendU16(ReadUInt16(&decBuff[i + 26]));
-						sb->Append((const UTF8Char*)", SA Family = ");
+						sb->AppendC(UTF8STRC(", SA Family = "));
 						sb->AppendU32(ReadUInt32(&decBuff[i + 28]));
 					}
 					else if (recType == 8)
 					{
-						sb->Append((const UTF8Char*)" (ExporterStatRecord)");
-						sb->Append((const UTF8Char*)", Stat Cnt = ");
+						sb->AppendC(UTF8STRC(" (ExporterStatRecord)"));
+						sb->AppendC(UTF8STRC(", Stat Cnt = "));
 						j = 8;
 						l = ReadUInt32(&decBuff[i + 4]);
 						k = 0;
 						sb->AppendU32((UInt32)l);
 						while (k < l)
 						{
-							sb->Append((const UTF8Char*)", Sys ID");
+							sb->AppendC(UTF8STRC(", Sys ID"));
 							sb->AppendUOSInt(k);
-							sb->Append((const UTF8Char*)" = ");
+							sb->AppendC(UTF8STRC(" = "));
 							sb->AppendU32(ReadUInt32(&decBuff[i + j]));
-							sb->Append((const UTF8Char*)", Seq Failure");
+							sb->AppendC(UTF8STRC(", Seq Failure"));
 							sb->AppendUOSInt(k);
-							sb->Append((const UTF8Char*)" = ");
+							sb->AppendC(UTF8STRC(" = "));
 							sb->AppendU32(ReadUInt32(&decBuff[i + j + 4]));
-							sb->Append((const UTF8Char*)", Packets");
+							sb->AppendC(UTF8STRC(", Packets"));
 							sb->AppendUOSInt(k);
-							sb->Append((const UTF8Char*)" = ");
+							sb->AppendC(UTF8STRC(" = "));
 							sb->AppendU64(ReadUInt64(&decBuff[i + j + 8]));
-							sb->Append((const UTF8Char*)", Flows");
+							sb->AppendC(UTF8STRC(", Flows"));
 							sb->AppendUOSInt(k);
-							sb->Append((const UTF8Char*)" = ");
+							sb->AppendC(UTF8STRC(" = "));
 							sb->AppendU64(ReadUInt64(&decBuff[i + j + 16]));
 							j += 24;
 							k++;
@@ -1289,19 +1289,19 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::NFDumpFileAnalyse::GetFrameDetail
 					}
 					else if (recType == 9)
 					{
-						sb->Append((const UTF8Char*)" (SamplerInfoRecord)");
-						sb->Append((const UTF8Char*)", ID = ");
+						sb->AppendC(UTF8STRC(" (SamplerInfoRecord)"));
+						sb->AppendC(UTF8STRC(", ID = "));
 						sb->AppendI32(ReadInt32(&decBuff[i + 4]));
-						sb->Append((const UTF8Char*)", Interval = ");
+						sb->AppendC(UTF8STRC(", Interval = "));
 						sb->AppendU32(ReadUInt32(&decBuff[i + 8]));
-						sb->Append((const UTF8Char*)", Mode = ");
+						sb->AppendC(UTF8STRC(", Mode = "));
 						sb->AppendU16(ReadUInt16(&decBuff[i + 12]));
-						sb->Append((const UTF8Char*)", Exporter Sys ID = ");
+						sb->AppendC(UTF8STRC(", Exporter Sys ID = "));
 						sb->AppendU16(ReadUInt16(&decBuff[i + 14]));
 					}
 					else if (recType == 10)
 					{
-						sb->Append((const UTF8Char*)" (CommonRecord)");
+						sb->AppendC(UTF8STRC(" (CommonRecord)"));
 					}
 					i += recSize;
 				}*/

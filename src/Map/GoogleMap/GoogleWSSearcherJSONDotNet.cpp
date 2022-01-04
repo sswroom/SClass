@@ -278,7 +278,7 @@ UTF8Char *Map::GoogleMap::GoogleWSSearcherJSONDotNet::SearchName(UTF8Char *buff,
 		Text::StringBuilderUTF8 sb;
 		*buff = 0;
 		this->lastIsError = 2;
-		sb.Append((const UTF8Char*)"Cannot connect: ");
+		sb.AppendC(UTF8STRC("Cannot connect: "));
 		sb.Append(url);
 		errWriter->WriteLine(sb.ToString());
 	}

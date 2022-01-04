@@ -285,7 +285,7 @@ IO::IStreamData *IO::PackageFile::GetPItemStmData(const PackFileItem *item)
 			IO::IStreamData *data = item->fd->GetPartialData(0, item->fd->GetDataSize());
 			Text::StringBuilderUTF8 sb;
 			sb.Append(this->sourceName);
-			sb.Append((const UTF8Char*)"\\");
+			sb.AppendC(UTF8STRC("\\"));
 			sb.Append(item->name);
 			data->SetFullName(sb.ToString());
 			return data;
@@ -364,7 +364,7 @@ IO::IStreamData *IO::PackageFile::GetPItemStmData(const PackFileItem *item)
 				Text::StringBuilderUTF8 sb;
 				NEW_CLASS(fd, IO::StmData::FileData(sbuff, true));
 				sb.Append(this->sourceName);
-				sb.Append((const UTF8Char*)"\\");
+				sb.AppendC(UTF8STRC("\\"));
 				if (item->name)
 				{
 					sb.Append(item->name);
@@ -864,10 +864,10 @@ void IO::PackageFile::GetInfoText(Text::StringBuilderUTF *sb)
 	{
 		if (i > 0)
 		{
-			sb->Append((const UTF8Char*)"\r\n");
+			sb->AppendC(UTF8STRC("\r\n"));
 		}
 		sb->Append(GetInfoTypeName((InfoType)typeList->GetItem(i)));
-		sb->Append((const UTF8Char*)": ");
+		sb->AppendC(UTF8STRC(": "));
 		sb->Append(valList->GetItem(i));
 		i++;
 	}

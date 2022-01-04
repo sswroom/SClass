@@ -29,12 +29,12 @@ void Manage::ExceptionLogger::WriteContext(IO::Writer *writer, IO::Stream *stm, 
 		UInt8 *currPtr = buff;
 		writer->WriteLine();
 		sb.ClearStr();
-		sb.Append((const UTF8Char*)"Memory Dumps (Instructions):");
+		sb.AppendC(UTF8STRC("Memory Dumps (Instructions):"));
 		while (size > 0)
 		{
-			sb.Append((const UTF8Char*)"\r\n");
+			sb.AppendC(UTF8STRC("\r\n"));
 			sb.AppendHexOS(currAddr);
-			sb.Append((const UTF8Char*)" ");
+			sb.AppendC(UTF8STRC(" "));
 			if (size >= 16)
 			{
 				sb.AppendHex(currPtr, 16, ' ', Text::LineBreakType::None);
@@ -58,12 +58,12 @@ void Manage::ExceptionLogger::WriteContext(IO::Writer *writer, IO::Stream *stm, 
 		UInt8 *currPtr = buff;
 		writer->WriteLine();
 		sb.ClearStr();
-		sb.Append((const UTF8Char*)"Stack Dumps:");
+		sb.AppendC(UTF8STRC("Stack Dumps:"));
 		while (size > 0)
 		{
-			sb.Append((const UTF8Char*)"\r\n");
+			sb.AppendC(UTF8STRC("\r\n"));
 			sb.AppendHexOS(currAddr);
-			sb.Append((const UTF8Char*)" ");
+			sb.AppendC(UTF8STRC(" "));
 			if (size >= 16)
 			{
 				sb.AppendHex(currPtr, 16, ' ', Text::LineBreakType::None);
@@ -111,11 +111,11 @@ void Manage::ExceptionLogger::WriteContext(IO::Writer *writer, IO::Stream *stm, 
 			Bool fin = false;
 
 			sb.ClearStr();
-			sb.Append((const UTF8Char*)"(");
+			sb.AppendC(UTF8STRC("("));
 			if (addrResol->ResolveName(sbuff, currInst))
 			{
 				sb.Append(sbuff);
-				sb.Append((const UTF8Char*)")");
+				sb.AppendC(UTF8STRC(")"));
 				writer->WriteLine(sb.ToString());
 			}
 
@@ -129,12 +129,12 @@ void Manage::ExceptionLogger::WriteContext(IO::Writer *writer, IO::Stream *stm, 
 					UOSInt currAddr = currInst;
 					UInt8 *currPtr = buff;
 					sb.ClearStr();
-					sb.Append((const UTF8Char*)"Memory Dumps (Instructions):");
+					sb.AppendC(UTF8STRC("Memory Dumps (Instructions):"));
 					while (size > 0)
 					{
-						sb.Append((const UTF8Char*)"\r\n");
+						sb.AppendC(UTF8STRC("\r\n"));
 						sb.AppendHexOS(currAddr);
-						sb.Append((const UTF8Char*)" ");
+						sb.AppendC(UTF8STRC(" "));
 						if (size >= 16)
 						{
 							sb.AppendHex(currPtr, 16, ' ', Text::LineBreakType::None);
@@ -187,9 +187,9 @@ void Manage::ExceptionLogger::WriteContext(IO::Writer *writer, IO::Stream *stm, 
 				sb.ClearStr();
 				if (addrResol->ResolveName(sbuff, currInst))
 				{
-					sb.Append((const UTF8Char*)" (");
+					sb.AppendC(UTF8STRC(" ("));
 					sb.Append(sbuff);
-					sb.Append((const UTF8Char*)")");
+					sb.AppendC(UTF8STRC(")"));
 					writer->WriteLine(sb.ToString());
 				}
 				else
@@ -232,11 +232,11 @@ void Manage::ExceptionLogger::WriteContext(IO::Writer *writer, IO::Stream *stm, 
 			Bool fin = false;
 
 			sb.ClearStr();
-			sb.Append((const UTF8Char*)"(");
+			sb.AppendC(UTF8STRC("("));
 			if (addrResol->ResolveName(sbuff, currInst))
 			{
 				sb.Append(sbuff);
-				sb.Append((const UTF8Char*)")");
+				sb.AppendC(UTF8STRC(")"));
 				writer->WriteLine(sb.ToString());
 			}
 
@@ -250,12 +250,12 @@ void Manage::ExceptionLogger::WriteContext(IO::Writer *writer, IO::Stream *stm, 
 					UInt64 currAddr = currInst;
 					UInt8 *currPtr = buff;
 					sb.ClearStr();
-					sb.Append((const UTF8Char*)"Memory Dumps (Instructions):");
+					sb.AppendC(UTF8STRC("Memory Dumps (Instructions):"));
 					while (size > 0)
 					{
-						sb.Append((const UTF8Char*)"\r\n");
+						sb.AppendC(UTF8STRC("\r\n"));
 						sb.AppendHex64(currAddr);
-						sb.Append((const UTF8Char*)" ");
+						sb.AppendC(UTF8STRC(" "));
 						if (size >= 16)
 						{
 							sb.AppendHex(currPtr, 16, ' ', Text::LineBreakType::None);
@@ -308,9 +308,9 @@ void Manage::ExceptionLogger::WriteContext(IO::Writer *writer, IO::Stream *stm, 
 				sb.ClearStr();
 				if (addrResol->ResolveName(sbuff, currInst))
 				{
-					sb.Append((const UTF8Char*)" (");
+					sb.AppendC(UTF8STRC(" ("));
 					sb.Append(sbuff);
-					sb.Append((const UTF8Char*)")");
+					sb.AppendC(UTF8STRC(")"));
 					writer->WriteLine(sb.ToString());
 				}
 				else
@@ -343,7 +343,7 @@ void Manage::ExceptionLogger::WriteStackTrace(IO::Writer *writer, Manage::StackT
 		{
 			sb.ClearStr();
 			sb.AppendHex64(tracer->GetCurrentAddr());
-			sb.Append((const UTF8Char*)" ");
+			sb.AppendC(UTF8STRC(" "));
 			addrResol->ResolveNameSB(&sb, tracer->GetCurrentAddr());
 			writer->WriteLine(sb.ToString());
 		}
@@ -367,13 +367,13 @@ Bool Manage::ExceptionLogger::LogToFile(const UTF8Char *fileName, UInt32 exCode,
 	d.SetCurrTime();
 	NEW_CLASS(symResol, Manage::SymbolResolver(&proc));
 	writer.WriteLine((const UTF8Char*)"----------------------------------");
-	sb.Append((const UTF8Char*)"Exception occurs: Code = 0x");
+	sb.AppendC(UTF8STRC("Exception occurs: Code = 0x"));
 	sb.AppendHex32(exCode);
-	sb.Append((const UTF8Char*)" at ");
+	sb.AppendC(UTF8STRC(" at "));
 	sb.AppendHexOS(exAddr);
-	sb.Append((const UTF8Char*)", time = ");
+	sb.AppendC(UTF8STRC(", time = "));
 	sb.AppendDate(&d);
-	sb.Append((const UTF8Char*)", Type = ");
+	sb.AppendC(UTF8STRC(", Type = "));
 	sb.Append(exName);
 	writer.WriteLine(sb.ToString());
 
@@ -385,9 +385,9 @@ Bool Manage::ExceptionLogger::LogToFile(const UTF8Char *fileName, UInt32 exCode,
 	{
 		sb.ClearStr();
 		sb.Append(symResol->GetModuleName(i));
-		sb.Append((const UTF8Char*)", Addr=");
+		sb.AppendC(UTF8STRC(", Addr="));
 		sb.AppendHexOS((UOSInt)symResol->GetModuleAddr(i));
-		sb.Append((const UTF8Char*)",size=");
+		sb.AppendC(UTF8STRC(",size="));
 		sb.AppendHexOS((UOSInt)symResol->GetModuleSize(i));
 		writer.WriteLine(sb.ToString());
 
@@ -410,12 +410,12 @@ Bool Manage::ExceptionLogger::LogToFile(const UTF8Char *fileName, UInt32 exCode,
 
 			sb.ClearStr();
 			writer.WriteLine();
-			sb.Append((const UTF8Char*)"Running threads: (0x");
+			sb.AppendC(UTF8STRC("Running threads: (0x"));
 			sb.AppendHex32((UInt32)thread->GetThreadId());
-			sb.Append((const UTF8Char*)")");
+			sb.AppendC(UTF8STRC(")"));
 			if (thread->IsCurrThread())
 			{
-				sb.Append((const UTF8Char*)" current thread");
+				sb.AppendC(UTF8STRC(" current thread"));
 			}
 			writer.WriteLine(sb.ToString());
 
@@ -423,9 +423,9 @@ Bool Manage::ExceptionLogger::LogToFile(const UTF8Char *fileName, UInt32 exCode,
 			if (startAddr != 0)
 			{
 				sb.ClearStr();
-				sb.Append((const UTF8Char*)"Start address 0x");
+				sb.AppendC(UTF8STRC("Start address 0x"));
 				sb.AppendHex64(startAddr);
-				sb.Append((const UTF8Char*)" ");
+				sb.AppendC(UTF8STRC(" "));
 				symResol->ResolveNameSB(&sb, startAddr);
 				writer.WriteLine(sb.ToString());
 			}
@@ -436,9 +436,9 @@ Bool Manage::ExceptionLogger::LogToFile(const UTF8Char *fileName, UInt32 exCode,
 				if ((tCont = thread->GetThreadContext()) != 0)
 				{
 					sb.ClearStr();
-					sb.Append((const UTF8Char*)"Curr address 0x");
+					sb.AppendC(UTF8STRC("Curr address 0x"));
 					sb.AppendHexOS(tCont->GetInstAddr());
-					sb.Append((const UTF8Char*)" ");
+					sb.AppendC(UTF8STRC(" "));
 					symResol->ResolveNameSB(&sb, tCont->GetInstAddr());
 					writer.WriteLine(sb.ToString());
 
@@ -495,9 +495,9 @@ Bool Manage::ExceptionLogger::LogToFile(const UTF8Char *fileName, UInt32 exCode,
 			{
 				sb.ClearStr();
 				writer.WriteLine();
-				sb.Append((const UTF8Char*)"Running threads: (0x");
+				sb.AppendC(UTF8STRC("Running threads: (0x"));
 				sb.AppendHex32((UInt32)thread->GetThreadId());
-				sb.Append((const UTF8Char*)")");
+				sb.AppendC(UTF8STRC(")"));
 				writer.WriteLine(sb.ToString());
 
 				tCont = thread->GetThreadContext();

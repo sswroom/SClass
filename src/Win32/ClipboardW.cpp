@@ -180,7 +180,7 @@ Bool Win32::Clipboard::GetDataTextH(void *hand, UInt32 fmtId, Text::StringBuilde
 		{
 			if (leng > 0)
 			{
-				sb->Append((const UTF8Char*)"\r\n");
+				sb->AppendC(UTF8STRC("\r\n"));
 			}
 			csptr = Text::StrToUTF8New(sbuff);
 			sb->Append(csptr);
@@ -196,11 +196,11 @@ Bool Win32::Clipboard::GetDataTextH(void *hand, UInt32 fmtId, Text::StringBuilde
 			if (locale)
 			{
 				sb->AppendU32(locale->lcid);
-				sb->Append((const UTF8Char*)", ");
+				sb->AppendC(UTF8STRC(", "));
 				sb->Append(locale->shortName);
-				sb->Append((const UTF8Char*)", ");
+				sb->AppendC(UTF8STRC(", "));
 				sb->Append(locale->desc);
-				sb->Append((const UTF8Char*)", ");
+				sb->AppendC(UTF8STRC(", "));
 				sb->AppendU32(locale->defCodePage);
 				return true;
 			}
@@ -213,54 +213,54 @@ Bool Win32::Clipboard::GetDataTextH(void *hand, UInt32 fmtId, Text::StringBuilde
 #endif
 	case CF_DIB: //8
 		memptr = (UInt8*)GlobalLock(hand);
-		sb->Append((const UTF8Char*)"Header Size = ");
+		sb->AppendC(UTF8STRC("Header Size = "));
 		sb->AppendI32(ReadInt32(&memptr[0]));
-		sb->Append((const UTF8Char*)"\r\nWidth = ");
+		sb->AppendC(UTF8STRC("\r\nWidth = "));
 		sb->AppendI32(ReadInt32(&memptr[4]));
-		sb->Append((const UTF8Char*)"\r\nHeight = ");
+		sb->AppendC(UTF8STRC("\r\nHeight = "));
 		sb->AppendI32(ReadInt32(&memptr[8]));
-		sb->Append((const UTF8Char*)"\r\nPlanes = ");
+		sb->AppendC(UTF8STRC("\r\nPlanes = "));
 		sb->AppendI16(ReadInt16(&memptr[12]));
-		sb->Append((const UTF8Char*)"\r\nBitCount = ");
+		sb->AppendC(UTF8STRC("\r\nBitCount = "));
 		sb->AppendI16(ReadInt16(&memptr[14]));
-		sb->Append((const UTF8Char*)"\r\nCompression = 0x");
+		sb->AppendC(UTF8STRC("\r\nCompression = 0x"));
 		sb->AppendHex32V(ReadUInt32(&memptr[16]));
-		sb->Append((const UTF8Char*)"\r\nSizeImage = ");
+		sb->AppendC(UTF8STRC("\r\nSizeImage = "));
 		sb->AppendI32(ReadInt32(&memptr[20]));
-		sb->Append((const UTF8Char*)"\r\nXPelsPerMeter = ");
+		sb->AppendC(UTF8STRC("\r\nXPelsPerMeter = "));
 		sb->AppendI32(ReadInt32(&memptr[24]));
-		sb->Append((const UTF8Char*)"\r\nYPelsPerMeter = ");
+		sb->AppendC(UTF8STRC("\r\nYPelsPerMeter = "));
 		sb->AppendI32(ReadInt32(&memptr[28]));
-		sb->Append((const UTF8Char*)"\r\nClrUsed = ");
+		sb->AppendC(UTF8STRC("\r\nClrUsed = "));
 		sb->AppendI32(ReadInt32(&memptr[32]));
-		sb->Append((const UTF8Char*)"\r\nClrImportant = ");
+		sb->AppendC(UTF8STRC("\r\nClrImportant = "));
 		sb->AppendI32(ReadInt32(&memptr[36]));
 		GlobalUnlock(hand);
 		return true;
 #if !defined(_WIN32_WCE)
 	case CF_DIBV5: //17
 		memptr = (UInt8*)GlobalLock(hand);
-		sb->Append((const UTF8Char*)"Header Size = ");
+		sb->AppendC(UTF8STRC("Header Size = "));
 		sb->AppendI32(ReadInt32(&memptr[0]));
-		sb->Append((const UTF8Char*)"\r\nWidth = ");
+		sb->AppendC(UTF8STRC("\r\nWidth = "));
 		sb->AppendI32(ReadInt32(&memptr[4]));
-		sb->Append((const UTF8Char*)"\r\nHeight = ");
+		sb->AppendC(UTF8STRC("\r\nHeight = "));
 		sb->AppendI32(ReadInt32(&memptr[8]));
-		sb->Append((const UTF8Char*)"\r\nPlanes = ");
+		sb->AppendC(UTF8STRC("\r\nPlanes = "));
 		sb->AppendI16(ReadInt16(&memptr[12]));
-		sb->Append((const UTF8Char*)"\r\nBitCount = ");
+		sb->AppendC(UTF8STRC("\r\nBitCount = "));
 		sb->AppendI16(ReadInt16(&memptr[14]));
-		sb->Append((const UTF8Char*)"\r\nCompression = 0x");
+		sb->AppendC(UTF8STRC("\r\nCompression = 0x"));
 		sb->AppendHex32V(ReadUInt32(&memptr[16]));
-		sb->Append((const UTF8Char*)"\r\nSizeImage = ");
+		sb->AppendC(UTF8STRC("\r\nSizeImage = "));
 		sb->AppendI32(ReadInt32(&memptr[20]));
-		sb->Append((const UTF8Char*)"\r\nXPelsPerMeter = ");
+		sb->AppendC(UTF8STRC("\r\nXPelsPerMeter = "));
 		sb->AppendI32(ReadInt32(&memptr[24]));
-		sb->Append((const UTF8Char*)"\r\nYPelsPerMeter = ");
+		sb->AppendC(UTF8STRC("\r\nYPelsPerMeter = "));
 		sb->AppendI32(ReadInt32(&memptr[28]));
-		sb->Append((const UTF8Char*)"\r\nClrUsed = ");
+		sb->AppendC(UTF8STRC("\r\nClrUsed = "));
 		sb->AppendI32(ReadInt32(&memptr[32]));
-		sb->Append((const UTF8Char*)"\r\nClrImportant = ");
+		sb->AppendC(UTF8STRC("\r\nClrImportant = "));
 		sb->AppendI32(ReadInt32(&memptr[36]));
 		GlobalUnlock(hand);
 		return true;
@@ -303,31 +303,31 @@ Bool Win32::Clipboard::GetDataTextH(void *hand, UInt32 fmtId, Text::StringBuilde
 		found = false;
 		if (eff & 1)
 		{
-			if (found) sb->Append((const UTF8Char*)" | ");
-			sb->Append((const UTF8Char*)"Copy");
+			if (found) sb->AppendC(UTF8STRC(" | "));
+			sb->AppendC(UTF8STRC("Copy"));
 			found = true;
 		}
 		if (eff & 2)
 		{
-			if (found) sb->Append((const UTF8Char*)" | ");
-			sb->Append((const UTF8Char*)"Move");
+			if (found) sb->AppendC(UTF8STRC(" | "));
+			sb->AppendC(UTF8STRC("Move"));
 			found = true;
 		}
 		if (eff & 4)
 		{
-			if (found) sb->Append((const UTF8Char*)" | ");
-			sb->Append((const UTF8Char*)"Link");
+			if (found) sb->AppendC(UTF8STRC(" | "));
+			sb->AppendC(UTF8STRC("Link"));
 			found = true;
 		}
 		if (eff & 0x80000000)
 		{
-			if (found) sb->Append((const UTF8Char*)" | ");
-			sb->Append((const UTF8Char*)"Scroll");
+			if (found) sb->AppendC(UTF8STRC(" | "));
+			sb->AppendC(UTF8STRC("Scroll"));
 			found = true;
 		}
 		if (!found)
 		{
-			sb->Append((const UTF8Char*)"None");
+			sb->AppendC(UTF8STRC("None"));
 		}
 		return true;
 	}
@@ -374,7 +374,7 @@ Bool Win32::Clipboard::GetDataTextH(void *hand, UInt32 fmtId, Text::StringBuilde
 			ili.QuadPart = 0;
 			if (stm->Seek(ili, STREAM_SEEK_END, &li) == S_OK)
 			{
-				sb->Append((const UTF8Char*)"File Size = ");
+				sb->AppendC(UTF8STRC("File Size = "));
 				sb->AppendU64(li.QuadPart);
 				stm->Seek(ili, STREAM_SEEK_SET, &li);
 				return true;
@@ -390,7 +390,7 @@ Bool Win32::Clipboard::GetDataTextH(void *hand, UInt32 fmtId, Text::StringBuilde
 						break;
 					fileSize += readSize;
 				}
-				sb->Append((const UTF8Char*)"File Size = ");
+				sb->AppendC(UTF8STRC("File Size = "));
 				sb->AppendI64(fileSize);
 				MemFree(tmpPtr);
 				return true;

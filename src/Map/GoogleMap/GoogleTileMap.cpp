@@ -99,12 +99,13 @@ UOSInt Map::GoogleMap::GoogleTileMap::GetConcurrentCount()
 	return 2;
 }
 
-void Map::GoogleMap::GoogleTileMap::GetBounds(Double *minX, Double *minY, Double *maxX, Double *maxY)
+Bool Map::GoogleMap::GoogleTileMap::GetBounds(Double *minX, Double *minY, Double *maxX, Double *maxY)
 {
 	*minX = -180;
 	*minY = -85.051128779806592377796715521925;
 	*maxX = 180;
 	*maxY = 85.051128779806592377796715521925;
+	return true;
 }
 
 Map::TileMap::ProjectionType Map::GoogleMap::GoogleTileMap::GetProjectionType()
@@ -277,13 +278,13 @@ Media::ImageList *Map::GoogleMap::GoogleTileMap::LoadTileImage(UOSInt level, Int
 
 	urlSb.ClearStr();
 	urlSb.Append(GMAPURL);
-	urlSb.Append((const UTF8Char*)"lyrs=");
+	urlSb.AppendC(UTF8STRC("lyrs="));
 	urlSb.AppendChar((UTF32Char)this->mapType, 1);
-	urlSb.Append((const UTF8Char*)"&x=");
+	urlSb.AppendC(UTF8STRC("&x="));
 	urlSb.AppendI32(imgX);
-	urlSb.Append((const UTF8Char*)"&y=");
+	urlSb.AppendC(UTF8STRC("&y="));
 	urlSb.AppendI32(imgY);
-	urlSb.Append((const UTF8Char*)"&z=");
+	urlSb.AppendC(UTF8STRC("&z="));
 	urlSb.AppendUOSInt(level);
 
 	cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, (const UTF8Char*)"GoogleTileMap/1.0 SSWR/1.0", true, urlSb.StartsWith((const UTF8Char*)"https://"));
@@ -483,16 +484,16 @@ IO::IStreamData *Map::GoogleMap::GoogleTileMap::LoadTileImageData(UOSInt level, 
 
 	urlSb.ClearStr();
 	urlSb.Append(GMAPURL);
-	urlSb.Append((const UTF8Char*)"lyrs=");
+	urlSb.AppendC(UTF8STRC("lyrs="));
 	urlSb.AppendChar((UTF32Char)this->mapType, 1);
-	urlSb.Append((const UTF8Char*)"&x=");
+	urlSb.AppendC(UTF8STRC("&x="));
 	urlSb.AppendI32(imgX);
-	urlSb.Append((const UTF8Char*)"&y=");
+	urlSb.AppendC(UTF8STRC("&y="));
 	urlSb.AppendI32(imgY);
-	urlSb.Append((const UTF8Char*)"&z=");
+	urlSb.AppendC(UTF8STRC("&z="));
 	urlSb.AppendOSInt(level);
 
-	cli = Net::HTTPClient::CreateClient(this->sockf, (const UTF8Char*)"GoogleTileMap/1.0 SSWR/1.0", true, urlSb.StartsWith((const UTF8Char*)"https://"));
+	cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, (const UTF8Char*)"GoogleTileMap/1.0 SSWR/1.0", true, urlSb.StartsWith((const UTF8Char*)"https://"));
 	cli->Connect(urlSb.ToString(), "GET", 0, 0, true);
 	if (hasTime)
 	{

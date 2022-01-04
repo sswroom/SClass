@@ -23,7 +23,7 @@ Bool Text::CSSBuilder::NewStyle(const Char *name, const Char *className)
 	{
 		if (className == 0)
 		{
-			this->sb->Append((const UTF8Char*)"*");
+			this->sb->AppendC(UTF8STRC("*"));
 		}
 		else
 		{
@@ -113,17 +113,17 @@ Bool Text::CSSBuilder::AddFontSize(Double size, Math::Unit::Distance::DistanceUn
 	if (du == Math::Unit::Distance::DU_PIXEL)
 	{
 		Text::SBAppendF64(this->sb, size);
-		this->sb->Append((const UTF8Char*)"px");
+		this->sb->AppendC(UTF8STRC("px"));
 	}
 	else if (du == Math::Unit::Distance::DU_POINT)
 	{
 		Text::SBAppendF64(this->sb, size);
-		this->sb->Append((const UTF8Char*)"pt");
+		this->sb->AppendC(UTF8STRC("pt"));
 	}
 	else
 	{
 		Text::SBAppendF64(this->sb, Math::Unit::Distance::Convert(du, Math::Unit::Distance::DU_PIXEL, size));
-		this->sb->Append((const UTF8Char*)"px");
+		this->sb->AppendC(UTF8STRC("px"));
 	}
 	return true;
 }
@@ -135,22 +135,22 @@ Bool Text::CSSBuilder::AddFontWeight(FontWeight weight)
 	switch (weight)
 	{
 		case FONT_WEIGHT_NORMAL:
-			this->sb->Append((const UTF8Char*)"normal");
+			this->sb->AppendC(UTF8STRC("normal"));
 			break;
 		case FONT_WEIGHT_BOLD:
-			this->sb->Append((const UTF8Char*)"bold");
+			this->sb->AppendC(UTF8STRC("bold"));
 			break;
 		case FONT_WEIGHT_BOLDER:
-			this->sb->Append((const UTF8Char*)"bolder");
+			this->sb->AppendC(UTF8STRC("bolder"));
 			break;
 		case FONT_WEIGHT_LIGHTER:
-			this->sb->Append((const UTF8Char*)"lighter");
+			this->sb->AppendC(UTF8STRC("lighter"));
 			break;
 		case FONT_WEIGHT_INHERIT:
-			this->sb->Append((const UTF8Char*)"inherit");
+			this->sb->AppendC(UTF8STRC("inherit"));
 			break;
 		case FONT_WEIGHT_INITIAL:
-			this->sb->Append((const UTF8Char*)"initial");
+			this->sb->AppendC(UTF8STRC("initial"));
 			break;
 		default:
 			this->sb->AppendI32(weight);
@@ -167,7 +167,7 @@ const UTF8Char *Text::CSSBuilder::ToString()
 
 void Text::CSSBuilder::AppendNewLine()
 {
-	this->sb->Append((const UTF8Char*)"\r\n");
+	this->sb->AppendC(UTF8STRC("\r\n"));
 }
 
 void Text::CSSBuilder::AppendStyleName(const Char *name)
@@ -184,13 +184,13 @@ void Text::CSSBuilder::AppendStyleName(const Char *name)
 	}
 	else
 	{
-		this->sb->Append((const UTF8Char*)": ");
+		this->sb->AppendC(UTF8STRC(": "));
 	}
 }
 
 void Text::CSSBuilder::AppendRGBAColor(UInt32 argb)
 {
-	this->sb->Append((const UTF8Char*)"rgba(");
+	this->sb->AppendC(UTF8STRC("rgba("));
 	this->sb->AppendU32((argb >> 16) & 0xff);
 	this->sb->AppendChar(',', 1);
 	this->sb->AppendU32((argb >> 8) & 0xff);
@@ -198,7 +198,7 @@ void Text::CSSBuilder::AppendRGBAColor(UInt32 argb)
 	this->sb->AppendU32(argb & 0xff);
 	this->sb->AppendChar(',', 1);
 	Text::SBAppendF64(this->sb, (argb >> 24) / 255.0);
-	this->sb->Append((const UTF8Char*)")");	
+	this->sb->AppendC(UTF8STRC(")"));
 }
 
 void Text::CSSBuilder::NextEntry()
@@ -213,10 +213,10 @@ void Text::CSSBuilder::NextEntry()
 	}
 	else if (this->pm == PM_SPACE)
 	{
-		this->sb->Append((const UTF8Char*)"; ");
+		this->sb->AppendC(UTF8STRC("; "));
 	}
 	else if (this->pm == PM_LINES)
 	{
-		this->sb->Append((const UTF8Char*)";\r\n");
+		this->sb->AppendC(UTF8STRC(";\r\n"));
 	}
 }

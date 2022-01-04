@@ -488,11 +488,11 @@ void Media::DShow::DShowVideoCapture::GetInfo(Text::StringBuilderUTF *sb)
 		WChar *vendorName;
 		if (S_OK == this->baseFilter->QueryFilterInfo(&finfo))
 		{
-			sb->Append((const UTF8Char*)"Base Filter Name: ");
+			sb->AppendC(UTF8STRC("Base Filter Name: "));
 			const UTF8Char *csptr = Text::StrToUTF8New(finfo.achName);
 			sb->Append(csptr);
 			Text::StrDelNew(csptr);
-			sb->Append((const UTF8Char*)"\r\n");
+			sb->AppendC(UTF8STRC("\r\n"));
 			if (finfo.pGraph)
 			{
 				finfo.pGraph->Release();
@@ -501,11 +501,11 @@ void Media::DShow::DShowVideoCapture::GetInfo(Text::StringBuilderUTF *sb)
 
 		if (S_OK == this->baseFilter->QueryVendorInfo(&vendorName))
 		{
-			sb->Append((const UTF8Char*)"Vendor Info: ");
+			sb->AppendC(UTF8STRC("Vendor Info: "));
 			const UTF8Char *csptr = Text::StrToUTF8New(vendorName);
 			sb->Append(csptr);
 			Text::StrDelNew(csptr);
-			sb->Append((const UTF8Char*)"\r\n");
+			sb->AppendC(UTF8STRC("\r\n"));
 		}
 	}
 	if (this->pPropBag)
@@ -517,52 +517,52 @@ void Media::DShow::DShowVideoCapture::GetInfo(Text::StringBuilderUTF *sb)
 		hr = this->pPropBag->Read(L"Description", &var, 0);
 		if (SUCCEEDED(hr))
 		{
-			sb->Append((const UTF8Char*)"Description: ");
+			sb->AppendC(UTF8STRC("Description: "));
 			if (var.vt == VT_BSTR)
 			{
 				const UTF8Char *csptr = Text::StrToUTF8New(var.bstrVal);
 				sb->Append(csptr);
 				Text::StrDelNew(csptr);
 			}
-			sb->Append((const UTF8Char*)"\r\n");
+			sb->AppendC(UTF8STRC("\r\n"));
 			VariantClear(&var);
 		}
 
 		hr = this->pPropBag->Read(L"FriendlyName", &var, 0);
 		if (SUCCEEDED(hr))
 		{
-			sb->Append((const UTF8Char*)"FriendlyName: ");
+			sb->AppendC(UTF8STRC("FriendlyName: "));
 			if (var.vt == VT_BSTR)
 			{
 				const UTF8Char *csptr = Text::StrToUTF8New(var.bstrVal);
 				sb->Append(csptr);
 				Text::StrDelNew(csptr);
 			}
-			sb->Append((const UTF8Char*)"\r\n");
+			sb->AppendC(UTF8STRC("\r\n"));
 			VariantClear(&var);
 		}
 
 		hr = this->pPropBag->Read(L"CLSID", &var, 0);
 		if (SUCCEEDED(hr))
 		{
-			sb->Append((const UTF8Char*)"CLSID: ");
+			sb->AppendC(UTF8STRC("CLSID: "));
 			if (var.vt == VT_BSTR)
 			{
 				const UTF8Char *csptr = Text::StrToUTF8New(var.bstrVal);
 				sb->Append(csptr);
 				Text::StrDelNew(csptr);
 			}
-			sb->Append((const UTF8Char*)"\r\n");
+			sb->AppendC(UTF8STRC("\r\n"));
 			VariantClear(&var);
 		}
 	}
 	if (this->displayName)
 	{
-		sb->Append((const UTF8Char*)"DisplayName: ");
+		sb->AppendC(UTF8STRC("DisplayName: "));
 		const UTF8Char *csptr = Text::StrToUTF8New(this->displayName);
 		sb->Append(csptr);
 		Text::StrDelNew(csptr);
-		sb->Append((const UTF8Char*)"\r\n");
+		sb->AppendC(UTF8STRC("\r\n"));
 	}
 }
 

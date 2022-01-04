@@ -110,29 +110,29 @@ Bool IO::FileAnalyse::MDBFileAnalyse::GetFrameName(UOSInt index, Text::StringBui
 	if (pack == 0)
 		return false;
 	sb->AppendU64(pack->fileOfst);
-	sb->Append((const UTF8Char*)": Num=");
+	sb->AppendC(UTF8STRC(": Num="));
 	sb->AppendUOSInt(index);
-	sb->Append((const UTF8Char*)", Type=0x");
+	sb->AppendC(UTF8STRC(", Type=0x"));
 	sb->AppendHex16(pack->packType);
 	switch (pack->packType)
 	{
 	case 0x100:
-		sb->Append((const UTF8Char*)" (File Header)");
+		sb->AppendC(UTF8STRC(" (File Header)"));
 		break;
 	case 0x101:
-		sb->Append((const UTF8Char*)" (Data Page)");
+		sb->AppendC(UTF8STRC(" (Data Page)"));
 		break;
 	case 0x102:
-		sb->Append((const UTF8Char*)" (Table Definition)");
+		sb->AppendC(UTF8STRC(" (Table Definition)"));
 		break;
 	case 0x103:
-		sb->Append((const UTF8Char*)" (Intermediate Index pages)");
+		sb->AppendC(UTF8STRC(" (Intermediate Index pages)"));
 		break;
 	case 0x104:
-		sb->Append((const UTF8Char*)" (Leaf Index pages)");
+		sb->AppendC(UTF8STRC(" (Leaf Index pages)"));
 		break;
 	case 0x105:
-		sb->Append((const UTF8Char*)" (Page Usage Bitmaps)");
+		sb->AppendC(UTF8STRC(" (Page Usage Bitmaps)"));
 		break;
 	}
 	return true;
