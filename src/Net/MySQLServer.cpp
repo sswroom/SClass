@@ -286,7 +286,7 @@ void __stdcall Net::MySQLServer::OnClientEvent(Net::TCPClient *cli, void *userOb
 			sptr = Text::StrConcat(sbuff, (const UTF8Char*)"Client ");
 			sptr = cli->GetRemoteName(sptr);
 			sptr = Text::StrConcat(sptr, (const UTF8Char*)" disconnect");
-			me->log->LogMessage(sbuff, IO::ILogHandler::LOG_LEVEL_ACTION);
+			me->log->LogMessageC(sbuff, (UOSInt)(sptr - sbuff), IO::ILogHandler::LOG_LEVEL_ACTION);
 		}
 		me->dbms->SessEnd(data->connId);
 		#if defined(VERBOSE)
@@ -323,7 +323,7 @@ void __stdcall Net::MySQLServer::OnClientData(Net::TCPClient *cli, void *userObj
 		sb.AppendC(UTF8STRC("Received "));
 		sb.AppendUOSInt(size);
 		sb.AppendC(UTF8STRC(" bytes"));
-		me->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_ACTION);
+		me->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_ACTION);
 	}
 	MemCopyNO(&data->buff[data->buffSize], buff, size);
 	data->buffSize += size;

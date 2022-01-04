@@ -35,7 +35,7 @@ void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnClientEvent(Net::TCPClient *cl
 			Text::StringBuilderUTF8 sb;
 			sb.AppendC(UTF8STRC("CLI: Client disconnected: "));
 			sb.Append(sbuff);
-			me->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_ACTION);
+			me->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_ACTION);
 
 			if (status->dev)
 			{
@@ -90,7 +90,7 @@ void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnClientTimeout(Net::TCPClient *
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("CLI: Client process timeout: "));
 	sb.Append(sbuff);
-	me->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_ACTION);
+	me->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_ACTION);
 }
 
 void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnServerConn(Socket *s, void *userObj)
@@ -248,7 +248,7 @@ void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnDataUDPPacket(const Net::Socke
 					dev->photoOfst = 0;
 					dev->photoSeq = 0;
 					dev->mut->UnlockWrite();
-					me->log->LogMessage((const UTF8Char*)"Received photo info", IO::ILogHandler::LOG_LEVEL_RAW);
+					me->log->LogMessageC(UTF8STRC("Received photo info"), IO::ILogHandler::LOG_LEVEL_RAW);
 				}
 				break;
 			case 12:
@@ -273,22 +273,22 @@ void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnDataUDPPacket(const Net::Socke
 							{
 								MemCopyNO(&dev->photoBuff[currOfst], &buff[24], dataSize - 26);
 								dev->photoBuffRecv[seq] = 1;
-								me->log->LogMessage((const UTF8Char*)"Received photo packet, success", IO::ILogHandler::LOG_LEVEL_RAW);
+								me->log->LogMessageC(UTF8STRC("Received photo packet, success"), IO::ILogHandler::LOG_LEVEL_RAW);
 							}
 							else
 							{
-								me->log->LogMessage((const UTF8Char*)"Received photo packet, size error", IO::ILogHandler::LOG_LEVEL_RAW);
+								me->log->LogMessageC(UTF8STRC("Received photo packet, size error"), IO::ILogHandler::LOG_LEVEL_RAW);
 							}
 						}
 						else
 						{
-							me->log->LogMessage((const UTF8Char*)"Received photo packet, photo not receiving", IO::ILogHandler::LOG_LEVEL_RAW);
+							me->log->LogMessageC(UTF8STRC("Received photo packet, photo not receiving"), IO::ILogHandler::LOG_LEVEL_RAW);
 						}
 						dev->mut->UnlockWrite();
 					}
 					else
 					{
-						me->log->LogMessage((const UTF8Char*)"Received photo packet, device not found", IO::ILogHandler::LOG_LEVEL_RAW);
+						me->log->LogMessageC(UTF8STRC("Received photo packet, device not found"), IO::ILogHandler::LOG_LEVEL_RAW);
 					}
 				}
 				break;
@@ -390,7 +390,7 @@ void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnDataUDPPacket(const Net::Socke
 					sb.AppendU16(ReadUInt16(&buff[2]));
 					sb.AppendC(UTF8STRC(", size = "));
 					sb.AppendUOSInt(dataSize);
-					me->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_ERROR);
+					me->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_ERROR);
 				}
 				break;
 			}

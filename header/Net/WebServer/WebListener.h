@@ -72,7 +72,7 @@ namespace Net
 			void SetAccessLog(IO::LogTool *accLog, IO::ILogHandler::LogLevel accLogLev);
 			void SetRequestLog(IReqLogger *reqLog);
 			void LogAccess(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Double time);
-			void LogMessage(Net::WebServer::IWebRequest *req, const UTF8Char *msg);
+			void LogMessageC(Net::WebServer::IWebRequest *req, const UTF8Char *msg, UOSInt msgLen);
 			void AddProxyConn(Net::WebServer::WebConnection *conn, Net::TCPClient *proxyCli);
 			void HandleTimeout(TimeoutHandler hdlr, void *userObj);
 

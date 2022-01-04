@@ -145,7 +145,7 @@ UTF8Char *__stdcall SSWR::AVIRead::AVIRSMTPServerForm::OnMailReceived(UTF8Char *
 	Int64 id = me->NextEmailId();
 	sb.AppendC(UTF8STRC(", id = "));
 	sb.AppendI64(id);
-	me->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_COMMAND);
+	me->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_COMMAND);
 
 	Data::DateTime currTime;
 	EmailInfo *email;
@@ -206,7 +206,7 @@ Bool __stdcall SSWR::AVIRead::AVIRSMTPServerForm::OnMailLogin(void *userObj, con
 	sb.Append(userName);
 	sb.AppendC(UTF8STRC(", Pwd: "));
 	sb.Append(pwd);
-	me->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_COMMAND);
+	me->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_COMMAND);
 	return true;
 }
 

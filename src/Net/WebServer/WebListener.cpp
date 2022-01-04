@@ -230,12 +230,12 @@ void Net::WebServer::WebListener::LogAccess(Net::WebServer::IWebRequest *req, Ne
 		sb.AppendC(UTF8STRC(" "));
 		Text::SBAppendF64(&sb, time);
 
-		this->accLog->LogMessage(sb.ToString(), this->accLogLev);
+		this->accLog->LogMessageC(sb.ToString(), sb.GetLength(), this->accLogLev);
 	}
 	accLogMutUsage.EndUse();
 }
 
-void Net::WebServer::WebListener::LogMessage(Net::WebServer::IWebRequest *req, const UTF8Char *msg)
+void Net::WebServer::WebListener::LogMessageC(Net::WebServer::IWebRequest *req, const UTF8Char *msg, UOSInt msgLen)
 {
 	UTF8Char sbuff[32];
 	Sync::MutexUsage mutUsage(this->accLogMut);
@@ -244,15 +244,15 @@ void Net::WebServer::WebListener::LogMessage(Net::WebServer::IWebRequest *req, c
 		if (req)
 		{
 			Text::StringBuilderUTF8 sb;
-			Net::SocketUtil::GetAddrName(sbuff, req->GetClientAddr(), req->GetClientPort());
-			sb.Append(sbuff);
+			UTF8Char *sptr = Net::SocketUtil::GetAddrName(sbuff, req->GetClientAddr(), req->GetClientPort());
+			sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 			sb.AppendC(UTF8STRC(" "));
-			sb.Append(msg);
-			this->accLog->LogMessage(sb.ToString(), this->accLogLev);
+			sb.AppendC(msg, msgLen);
+			this->accLog->LogMessageC(sb.ToString(), sb.GetLength(), this->accLogLev);
 		}
 		else
 		{
-			this->accLog->LogMessage(msg, this->accLogLev);
+			this->accLog->LogMessageC(msg, msgLen, this->accLogLev);
 		}
 	}
 }

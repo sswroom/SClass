@@ -26,7 +26,7 @@ void IO::ProtoHdlr::ProtoTramwayV1Handler::DeleteStreamData(IO::Stream *stm, voi
 	MemFree(stat);
 }
 
-UOSInt IO::ProtoHdlr::ProtoTramwayV1Handler::ParseProtocol(IO::Stream *stm, void *stmObj, void *stmData, UInt8 *buff, UOSInt buffSize)
+UOSInt IO::ProtoHdlr::ProtoTramwayV1Handler::ParseProtocol(IO::Stream *stm, void *stmObj, void *stmData, const UInt8 *buff, UOSInt buffSize)
 {
 	ProtocolStatus *stat = (ProtocolStatus *)stmData;;
 	UOSInt skipStart = 0;
@@ -103,7 +103,7 @@ UOSInt IO::ProtoHdlr::ProtoTramwayV1Handler::ParseProtocol(IO::Stream *stm, void
 	return 0;
 }
 
-UOSInt IO::ProtoHdlr::ProtoTramwayV1Handler::BuildPacket(UInt8 *buff, Int32 cmdType, Int32 seqId, UInt8 *cmd, UOSInt cmdSize, void *stmData)
+UOSInt IO::ProtoHdlr::ProtoTramwayV1Handler::BuildPacket(UInt8 *buff, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize, void *stmData)
 {
 	return 0;
 }

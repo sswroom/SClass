@@ -21,7 +21,7 @@ void IO::ProtoHdlr::ProtoLSHandler::DeleteStreamData(IO::Stream *stm, void *stmD
 {
 }
 
-UOSInt IO::ProtoHdlr::ProtoLSHandler::ParseProtocol(IO::Stream *stm, void *stmObj, void *stmData, UInt8 *buff, UOSInt buffSize)
+UOSInt IO::ProtoHdlr::ProtoLSHandler::ParseProtocol(IO::Stream *stm, void *stmObj, void *stmData, const UInt8 *buff, UOSInt buffSize)
 {
 	Bool found;
 	while (buffSize >= 10)
@@ -56,7 +56,7 @@ UOSInt IO::ProtoHdlr::ProtoLSHandler::ParseProtocol(IO::Stream *stm, void *stmOb
 	return buffSize;
 }
 
-UOSInt IO::ProtoHdlr::ProtoLSHandler::BuildPacket(UInt8 *buff, Int32 cmdType, Int32 seqId, UInt8 *cmd, UOSInt cmdSize, void *stmData)
+UOSInt IO::ProtoHdlr::ProtoLSHandler::BuildPacket(UInt8 *buff, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize, void *stmData)
 {
 	*(Int16*)buff = *(Int16*)"MW";
 	*(Int16*)&buff[2] = (Int16)(cmdSize + 10);
@@ -70,7 +70,7 @@ UOSInt IO::ProtoHdlr::ProtoLSHandler::BuildPacket(UInt8 *buff, Int32 cmdType, In
 	return cmdSize + 10;
 }
 
-UInt16 IO::ProtoHdlr::ProtoLSHandler::CalCheck(UInt8 *buff, UOSInt buffSize)
+UInt16 IO::ProtoHdlr::ProtoLSHandler::CalCheck(const UInt8 *buff, UOSInt buffSize)
 {
 	Crypto::Hash::CRC32R crc;
 	UInt32 crcVal;

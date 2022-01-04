@@ -61,7 +61,7 @@ Bool SSWR::ProcMonForm::SearchProcId(SSWR::ProcMonForm::ProgInfo *prog)
 					sb.Append(prog->progName);
 					sb.AppendC(UTF8STRC(": Updated procId as "));
 					sb.AppendUOSInt(prog->procId);
-					this->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_COMMAND);
+					this->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_COMMAND);
 					break;
 				}
 			}
@@ -254,7 +254,7 @@ void __stdcall SSWR::ProcMonForm::OnTimerTick(void *userObj)
 					sb.AppendC(UTF8STRC("Prog "));
 					sb.Append(prog->progName);
 					sb.AppendC(UTF8STRC(" stopped"));
-					me->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_COMMAND);
+					me->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_COMMAND);
 				}
 			}
 			if (prog->procId == 0)
@@ -270,7 +270,7 @@ void __stdcall SSWR::ProcMonForm::OnTimerTick(void *userObj)
 						sb.Append(prog->progName);
 						sb.AppendC(UTF8STRC(" restarted, procId = "));
 						sb.AppendUOSInt(prog->procId);
-						me->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_COMMAND);
+						me->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_COMMAND);
 						
 						if (me->notifyCmd)
 						{

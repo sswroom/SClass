@@ -23,7 +23,7 @@ void __stdcall SSWR::AVIRead::AVIRARPPingForm::OnARPHandler(const UInt8 *hwAddr,
 			sb.AppendC(UTF8STRC("Ping time: round trip = "));
 			Text::SBAppendF64(&sb, t);
 			sb.AppendC(UTF8STRC("ms"));
-			me->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_COMMAND);
+			me->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_COMMAND);
 			me->rlcPing->AddSample(&t);
 			if (me->reqEvt)
 			{
@@ -89,14 +89,14 @@ void __stdcall SSWR::AVIRead::AVIRARPPingForm::OnPingClicked(void *userObj)
 				me->arpHdlr = 0;
 				if (me->requested)
 				{
-					me->log->LogMessage((const UTF8Char*)"Ping: no response from target", IO::ILogHandler::LOG_LEVEL_COMMAND);
+					me->log->LogMessageC(UTF8STRC("Ping: no response from target"), IO::ILogHandler::LOG_LEVEL_COMMAND);
 				}
 			}
 			else
 			{
 				DEL_CLASS(me->arpHdlr);
 				me->arpHdlr = 0;
-				me->log->LogMessage((const UTF8Char*)"Ping: Cannot send request to target", IO::ILogHandler::LOG_LEVEL_COMMAND);
+				me->log->LogMessageC(UTF8STRC("Ping: Cannot send request to target"), IO::ILogHandler::LOG_LEVEL_COMMAND);
 			}
 			DEL_CLASS(me->reqEvt);
 			me->reqEvt = 0;

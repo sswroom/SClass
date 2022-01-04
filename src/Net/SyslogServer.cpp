@@ -22,14 +22,14 @@ void __stdcall Net::SyslogServer::OnUDPPacket(const Net::SocketUtil::AddressInfo
 			sb.Append(sbuff);
 			sb.AppendC(UTF8STRC("> "));
 			sb.AppendC(buff, dataSize);
-			me->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_COMMAND);
+			me->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_COMMAND);
 		}
 
 		if (status)
 		{
 			sb.ClearStr();
 			sb.AppendC(buff, dataSize);
-			status->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_COMMAND);
+			status->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_COMMAND);
 
 			if (me->logHdlr)
 			{

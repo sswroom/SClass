@@ -22,24 +22,6 @@
 #include "Text/StringBuilderUTF8.h"
 #include "Text/UTF8Writer.h"
 
-void DB::ReadingDBTool::AddLogMsg(const UTF8Char *msg, IO::ILogHandler::LogLevel logLev)
-{
-	if (log)
-	{
-		if (logPrefix)
-		{
-			Text::StringBuilderUTF8 str;
-			str.Append(logPrefix);
-			str.Append(msg);
-			log->LogMessageC(str.ToString(), str.GetLength(), logLev);
-		}
-		else
-		{
-			log->LogMessage(msg, logLev);
-		}
-	}
-}
-
 void DB::ReadingDBTool::AddLogMsgC(const UTF8Char *msg, UOSInt msgLen, IO::ILogHandler::LogLevel logLev)
 {
 	if (log)
@@ -76,31 +58,31 @@ DB::ReadingDBTool::ReadingDBTool(DB::DBConn *db, Bool needRelease, IO::LogTool *
 	this->svrType = db->GetSvrType();
 	if (this->svrType == DB::DBUtil::ServerType::Access)
 	{
-		this->AddLogMsg((const UTF8Char*)"Server type is Access", IO::ILogHandler::LOG_LEVEL_COMMAND);
+		this->AddLogMsgC(UTF8STRC("Server type is Access"), IO::ILogHandler::LOG_LEVEL_COMMAND);
 	}
 	else if (this->svrType == DB::DBUtil::ServerType::MSSQL)
 	{
-		this->AddLogMsg((const UTF8Char*)"Server type is MSSQL", IO::ILogHandler::LOG_LEVEL_COMMAND);
+		this->AddLogMsgC(UTF8STRC("Server type is MSSQL"), IO::ILogHandler::LOG_LEVEL_COMMAND);
 	}
 	else if (this->svrType == DB::DBUtil::ServerType::MySQL)
 	{
-		this->AddLogMsg((const UTF8Char*)"Server type is MySQL", IO::ILogHandler::LOG_LEVEL_COMMAND);
+		this->AddLogMsgC(UTF8STRC("Server type is MySQL"), IO::ILogHandler::LOG_LEVEL_COMMAND);
 	}
 	else if (this->svrType == DB::DBUtil::ServerType::Oracle)
 	{
-		this->AddLogMsg((const UTF8Char*)"Server type is Oracle", IO::ILogHandler::LOG_LEVEL_COMMAND);
+		this->AddLogMsgC(UTF8STRC("Server type is Oracle"), IO::ILogHandler::LOG_LEVEL_COMMAND);
 	}
 	else if (this->svrType == DB::DBUtil::ServerType::Text)
 	{
-		this->AddLogMsg((const UTF8Char*)"Server type is Text", IO::ILogHandler::LOG_LEVEL_COMMAND);
+		this->AddLogMsgC(UTF8STRC("Server type is Text"), IO::ILogHandler::LOG_LEVEL_COMMAND);
 	}
 	else if (this->svrType == DB::DBUtil::ServerType::SQLite)
 	{
-		this->AddLogMsg((const UTF8Char*)"Server type is SQLite", IO::ILogHandler::LOG_LEVEL_COMMAND);
+		this->AddLogMsgC(UTF8STRC("Server type is SQLite"), IO::ILogHandler::LOG_LEVEL_COMMAND);
 	}
 	else
 	{
-		this->AddLogMsg((const UTF8Char*)"Server type is Unknown", IO::ILogHandler::LOG_LEVEL_ERROR);
+		this->AddLogMsgC(UTF8STRC("Server type is Unknown"), IO::ILogHandler::LOG_LEVEL_ERROR);
 	}
 }
 
@@ -434,7 +416,7 @@ DB::DBReader *DB::ReadingDBTool::ExecuteReaderC(const UTF8Char *sqlCmd, UOSInt l
 		{
 			if (lastReader)
 			{
-				AddLogMsg((const UTF8Char*)"Automatically closed last reader", IO::ILogHandler::LOG_LEVEL_ACTION);
+				AddLogMsgC(UTF8STRC("Automatically closed last reader"), IO::ILogHandler::LOG_LEVEL_ACTION);
 
 				this->CloseReader(lastReader);
 			}
@@ -624,7 +606,7 @@ DB::DBReader *DB::ReadingDBTool::GetTableData(const UTF8Char *tableName, Data::A
 		{
 			if (lastReader)
 			{
-				AddLogMsg((const UTF8Char*)"Automatically closed last reader", IO::ILogHandler::LOG_LEVEL_ACTION);
+				AddLogMsgC(UTF8STRC("Automatically closed last reader"), IO::ILogHandler::LOG_LEVEL_ACTION);
 
 				this->CloseReader(lastReader);
 			}

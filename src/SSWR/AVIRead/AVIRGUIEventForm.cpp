@@ -13,7 +13,7 @@ void __stdcall SSWR::AVIRead::AVIRGUIEventForm::OnLogSelChg(void *userObj)
 void __stdcall SSWR::AVIRead::AVIRGUIEventForm::OnDisplayOffClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRGUIEventForm *me = (SSWR::AVIRead::AVIRGUIEventForm*)userObj;
-	me->log->LogMessage((const UTF8Char*)"DisplayOff", IO::ILogHandler::LOG_LEVEL_ACTION);
+	me->log->LogMessageC(UTF8STRC("DisplayOff"), IO::ILogHandler::LOG_LEVEL_ACTION);
 	me->ui->DisplayOff();
 }
 
@@ -23,7 +23,7 @@ void __stdcall SSWR::AVIRead::AVIRGUIEventForm::OnKeyDown(void *userObj, UOSInt 
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("Key Down - "));
 	sb.Append(GUIKeyGetName(OSKey2GUIKey((UInt32)keyCode)));
-	me->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_ACTION);
+	me->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_ACTION);
 }
 
 SSWR::AVIRead::AVIRGUIEventForm::AVIRGUIEventForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 640, 480, ui)
@@ -62,27 +62,27 @@ SSWR::AVIRead::AVIRGUIEventForm::~AVIRGUIEventForm()
 
 Bool SSWR::AVIRead::AVIRGUIEventForm::OnPaint()
 {
-	this->log->LogMessage((const UTF8Char*)"Paint", IO::ILogHandler::LOG_LEVEL_ACTION);
+	this->log->LogMessageC(UTF8STRC("Paint"), IO::ILogHandler::LOG_LEVEL_ACTION);
 	return false;
 }
 
 void SSWR::AVIRead::AVIRGUIEventForm::OnMonitorChanged()
 {
-	this->log->LogMessage((const UTF8Char*)"MonitorChanged", IO::ILogHandler::LOG_LEVEL_ACTION);
+	this->log->LogMessageC(UTF8STRC("MonitorChanged"), IO::ILogHandler::LOG_LEVEL_ACTION);
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 }
 
 void SSWR::AVIRead::AVIRGUIEventForm::OnFocus()
 {
-	this->log->LogMessage((const UTF8Char*)"Focus", IO::ILogHandler::LOG_LEVEL_ACTION);
+	this->log->LogMessageC(UTF8STRC("Focus"), IO::ILogHandler::LOG_LEVEL_ACTION);
 }
 
 void SSWR::AVIRead::AVIRGUIEventForm::OnFocusLost()
 {
-	this->log->LogMessage((const UTF8Char*)"FocusLost", IO::ILogHandler::LOG_LEVEL_ACTION);
+	this->log->LogMessageC(UTF8STRC("FocusLost"), IO::ILogHandler::LOG_LEVEL_ACTION);
 }
 
 void SSWR::AVIRead::AVIRGUIEventForm::OnDisplaySizeChange(UOSInt dispWidth, UOSInt dispHeight)
 {
-	this->log->LogMessage((const UTF8Char*)"DisplaySizeChange", IO::ILogHandler::LOG_LEVEL_ACTION);
+	this->log->LogMessageC(UTF8STRC("DisplaySizeChange"), IO::ILogHandler::LOG_LEVEL_ACTION);
 }

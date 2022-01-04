@@ -48,11 +48,11 @@ void __stdcall SSWR::AVIRead::AVIRNetPingForm::OnPingClicked(void *userObj)
 				Text::SBAppendF64(&sb, t2 * 1000);
 				sb.AppendC(UTF8STRC("ms, ttl = "));
 				sb.AppendU32(ttl);
-				me->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_COMMAND);
+				me->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_COMMAND);
 			}
 			else
 			{
-				me->log->LogMessage((const UTF8Char*)"Ping: no response from target", IO::ILogHandler::LOG_LEVEL_COMMAND);
+				me->log->LogMessageC(UTF8STRC("Ping: no response from target"), IO::ILogHandler::LOG_LEVEL_COMMAND);
 			}
 		}
 	}
@@ -81,14 +81,14 @@ void __stdcall SSWR::AVIRead::AVIRNetPingForm::OnTimerTick(void *userObj)
 			Text::SBAppendF64(&sb, t2 * 1000);
 			sb.AppendC(UTF8STRC("ms, ttl = "));
 			sb.AppendU32(ttl);
-			me->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_COMMAND);
+			me->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_COMMAND);
 			me->rlcPing->AddSample(t);
 		}
 		else
 		{
 			t[0] = 1000;
 			t[1] = 1000;
-			me->log->LogMessage((const UTF8Char*)"Ping: no response from target", IO::ILogHandler::LOG_LEVEL_COMMAND);
+			me->log->LogMessageC(UTF8STRC("Ping: no response from target"), IO::ILogHandler::LOG_LEVEL_COMMAND);
 			me->rlcPing->AddSample(t);
 		}
 	}

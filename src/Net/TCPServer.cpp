@@ -16,7 +16,7 @@
 #include "Text/MyString.h"
 #include "Text/UTF8Writer.h"
 
-void Net::TCPServer::AddLogMsg(const UTF8Char *msg, IO::ILogHandler::LogLevel logLev)
+void Net::TCPServer::AddLogMsgC(const UTF8Char *msg, UOSInt msgLen, IO::ILogHandler::LogLevel logLev)
 {
 	if (log)
 	{
@@ -24,12 +24,12 @@ void Net::TCPServer::AddLogMsg(const UTF8Char *msg, IO::ILogHandler::LogLevel lo
 		{
 			UTF8Char buff[1024];
 			UTF8Char *str = Text::StrConcat(buff, this->logPrefix);
-			str = Text::StrConcat(str, msg);
-			log->LogMessage(buff, logLev);
+			str = Text::StrConcatC(str, msg, msgLen);
+			log->LogMessageC(buff, (UOSInt)(str - buff), logLev);
 		}
 		else
 		{
-			log->LogMessage(msg, logLev);
+			log->LogMessageC(msg, msgLen, logLev);
 		}
 	}
 }
@@ -65,7 +65,7 @@ UInt32 __stdcall Net::TCPServer::Svrv4Thread(void *o)
 	{
 		str = Text::StrConcat(buff, (const UTF8Char*)"Cannot bind to the v4 port: ");
 		str = Text::StrInt32(str, svr->port);
-		svr->AddLogMsg(buff, IO::ILogHandler::LOG_LEVEL_ERROR);
+		svr->AddLogMsgC(buff, (UOSInt)(str - buff), IO::ILogHandler::LOG_LEVEL_ERROR);
 		svr->socf->DestroySocket(svr->svrSocv4);
 		svr->svrSocv4 = 0;
 		svr->errorv4 = true;
@@ -75,7 +75,7 @@ UInt32 __stdcall Net::TCPServer::Svrv4Thread(void *o)
 	{
 		str = Text::StrConcat(buff, (const UTF8Char*)"Cannot start listening the v4 port: ");
 		str = Text::StrInt32(str, svr->port);
-		svr->AddLogMsg(buff, IO::ILogHandler::LOG_LEVEL_ERROR);
+		svr->AddLogMsgC(buff, (UOSInt)(str - buff), IO::ILogHandler::LOG_LEVEL_ERROR);
 		svr->socf->DestroySocket(svr->svrSocv4);
 		svr->svrSocv4 = 0;
 		svr->errorv4 = true;
@@ -85,7 +85,7 @@ UInt32 __stdcall Net::TCPServer::Svrv4Thread(void *o)
 	svr->threadRunning |= 1;
 	str = Text::StrConcat(buff, (const UTF8Char*)"Start listening to v4 port ");
 	str = Text::StrInt32(str, svr->port);
-	svr->AddLogMsg(buff, IO::ILogHandler::LOG_LEVEL_ACTION);
+	svr->AddLogMsgC(buff, (UOSInt)(str - buff), IO::ILogHandler::LOG_LEVEL_ACTION);
 
 	if (sthreadCnt > 0)
 	{
@@ -157,7 +157,7 @@ UInt32 __stdcall Net::TCPServer::Svrv4Thread(void *o)
 	}
 	str = Text::StrConcat(buff, (const UTF8Char*)"End listening on v4 port ");
 	str = Text::StrInt32(str, svr->port);
-	svr->AddLogMsg(buff, IO::ILogHandler::LOG_LEVEL_ACTION);
+	svr->AddLogMsgC(buff, (UOSInt)(str - buff), IO::ILogHandler::LOG_LEVEL_ACTION);
 	svr->threadRunning &= ~1;
 	return 0;
 }
@@ -195,7 +195,7 @@ UInt32 __stdcall Net::TCPServer::Svrv6Thread(void *o)
 	{
 		str = Text::StrConcat(buff, (const UTF8Char*)"Cannot bind to the v6 port: ");
 		str = Text::StrInt32(str, svr->port);
-		svr->AddLogMsg(buff, IO::ILogHandler::LOG_LEVEL_ERROR);
+		svr->AddLogMsgC(buff, (UOSInt)(str - buff), IO::ILogHandler::LOG_LEVEL_ERROR);
 		svr->socf->DestroySocket(svr->svrSocv6);
 		svr->svrSocv6 = 0;
 		svr->errorv6 = true;
@@ -205,7 +205,7 @@ UInt32 __stdcall Net::TCPServer::Svrv6Thread(void *o)
 	{
 		str = Text::StrConcat(buff, (const UTF8Char*)"Cannot start listening the v6 port: ");
 		str = Text::StrInt32(str, svr->port);
-		svr->AddLogMsg(buff, IO::ILogHandler::LOG_LEVEL_ERROR);
+		svr->AddLogMsgC(buff, (UOSInt)(str - buff), IO::ILogHandler::LOG_LEVEL_ERROR);
 		svr->socf->DestroySocket(svr->svrSocv6);
 		svr->svrSocv6 = 0;
 		svr->errorv6 = true;
@@ -215,7 +215,7 @@ UInt32 __stdcall Net::TCPServer::Svrv6Thread(void *o)
 	svr->threadRunning |= 4;
 	str = Text::StrConcat(buff, (const UTF8Char*)"Start listening to v6 port ");
 	str = Text::StrInt32(str, svr->port);
-	svr->AddLogMsg(buff, IO::ILogHandler::LOG_LEVEL_ACTION);
+	svr->AddLogMsgC(buff, (UOSInt)(str - buff), IO::ILogHandler::LOG_LEVEL_ACTION);
 
 	if (sthreadCnt > 0)
 	{
@@ -287,7 +287,7 @@ UInt32 __stdcall Net::TCPServer::Svrv6Thread(void *o)
 	}
 	str = Text::StrConcat(buff, (const UTF8Char*)"End listening on v6 port ");
 	str = Text::StrInt32(str, svr->port);
-	svr->AddLogMsg(buff, IO::ILogHandler::LOG_LEVEL_ACTION);
+	svr->AddLogMsgC(buff, (UOSInt)(str - buff), IO::ILogHandler::LOG_LEVEL_ACTION);
 	svr->threadRunning &= ~4;
 	return 0;
 }
@@ -307,7 +307,7 @@ UInt32 __stdcall Net::TCPServer::SvrThread2(void *o)
 			Socket *s = (Socket*)svr->socs->Get();
 			str = Text::StrConcat(buff, (const UTF8Char*)"Client connected: ");
 			str = svr->socf->GetRemoteName(str, s);
-			svr->AddLogMsg(buff, IO::ILogHandler::LOG_LEVEL_ACTION);
+			svr->AddLogMsgC(buff, (UOSInt)(str - buff), IO::ILogHandler::LOG_LEVEL_ACTION);
 			svr->hdlr(s, svr->userObj);
 		}
 		svr->socsEvt->Wait(100);
@@ -327,7 +327,7 @@ void Net::TCPServer::AcceptSocket(Socket *svrSoc)
 		Int32 errCode = this->socf->SocketGetLastError();
 		sptr = Text::StrConcat(sbuff, (const UTF8Char*)"Client connect error: ");
 		sptr = Text::StrInt32(sptr, errCode);
-		this->AddLogMsg(sbuff, IO::ILogHandler::LOG_LEVEL_ERR_DETAIL);
+		this->AddLogMsgC(sbuff, (UOSInt)(sptr - sbuff), IO::ILogHandler::LOG_LEVEL_ERR_DETAIL);
 		if (errCode == 24) // too many opened files
 		{
 			Sync::Thread::Sleep(2000);
@@ -345,7 +345,7 @@ void Net::TCPServer::AcceptSocket(Socket *svrSoc)
 		}
 /*		str = Text::StrConcat(buff, (const UTF8Char*)"Client connected: ");
 		str = this->socf->GetRemoteName(str, (UInt32*)s);
-		this->AddLogMsg(buff, IO::ILogHandler::LOG_LEVEL_ACTION);
+		this->AddLogMsgC(buff, (UOSInt)(str - buff), IO::ILogHandler::LOG_LEVEL_ACTION);
 		this->hdlr((UInt32*)s, this->userObj);*/
 	}	
 }

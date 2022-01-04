@@ -404,7 +404,7 @@ void Net::WebServer::WebConnection::EndProxyConn()
 		this->proxyMode = false;
 		DEL_CLASS(this->proxyCli);
 		this->proxyCli = 0;
-		this->svr->LogMessage(this->currReq, (const UTF8Char*)"End Proxy Conn");
+		this->svr->LogMessageC(this->currReq, UTF8STRC("End Proxy Conn"));
 	}
 	else
 	{
@@ -437,7 +437,7 @@ void Net::WebServer::WebConnection::ProcessTimeout()
 		}
 	}
 	sb.AppendC(UTF8STRC("Process Timeout"));
-	this->svr->LogMessage(0, sb.ToString());
+	this->svr->LogMessageC(0, sb.ToString(), sb.GetLength());
 }
 
 Text::String *Net::WebServer::WebConnection::GetRequestURL()
@@ -571,7 +571,7 @@ void Net::WebServer::WebConnection::ProcessResponse()
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("Conn Err: "));
 				sb.Append(reqURI);
-				this->svr->LogMessage(this->currReq, sb.ToString());
+				this->svr->LogMessageC(this->currReq, sb.ToString(), sb.GetLength());
 
 				this->respStatus = Net::WebStatus::SC_NOT_FOUND;
 				this->AddDefHeaders(this->currReq);

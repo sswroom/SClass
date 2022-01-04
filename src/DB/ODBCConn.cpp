@@ -46,7 +46,7 @@ void DB::ODBCConn::UpdateConnInfo()
 			Text::StringBuilderUTF8 sb;
 			sb.AppendC(UTF8STRC("Driver is "));
 			sb.Append((const UTF8Char*)buff);
-			log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_ACTION);
+			log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_ACTION);
 		}
 //		Text::StrToLower(buff);
 		if (Text::StrStartsWith(buff, "myodbc"))

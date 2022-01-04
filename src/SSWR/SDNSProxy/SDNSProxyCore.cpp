@@ -20,7 +20,7 @@ void __stdcall SSWR::SDNSProxy::SDNSProxyCore::OnDNSRequest(void *userObj, const
 	sb.AppendI32(reqClass);
 	sb.AppendC(UTF8STRC(", t="));
 	Text::SBAppendF64(&sb, timeUsed);
-	me->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_RAW);
+	me->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_RAW);
 
 	Data::DateTime dt;
 	ClientInfo *cli;

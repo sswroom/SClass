@@ -46,7 +46,6 @@ namespace DB
 		static ReadingDBTool *MongoDBSource(const UTF8Char *url, IO::LogTool *log, const UTF8Char *logPrefix);
 
 	protected:
-		void AddLogMsg(const UTF8Char *msg, IO::ILogHandler::LogLevel logLev);
 		void AddLogMsgC(const UTF8Char *msg, UOSInt msgLen, IO::ILogHandler::LogLevel logLev);
 
 		UOSInt SplitMySQL(UTF8Char **outStrs, UOSInt maxCnt, UTF8Char *oriStr);

@@ -31,7 +31,7 @@ void __stdcall Net::MQTTBroker::OnClientEvent(Net::TCPClient *cli, void *userObj
 			sptr = Text::StrConcat(sbuff, (const UTF8Char*)"Client ");
 			sptr = cli->GetRemoteName(sptr);
 			sptr = Text::StrConcat(sptr, (const UTF8Char*)" disconnect");
-			me->log->LogMessage(sbuff, IO::ILogHandler::LOG_LEVEL_ACTION);
+			me->log->LogMessageC(sbuff, (UOSInt)(sptr - sbuff), IO::ILogHandler::LOG_LEVEL_ACTION);
 		}
 		me->protoHdlr->DeleteStreamData(cli, data->cliData);
 		SDEL_TEXT(data->cliId);
@@ -68,7 +68,7 @@ void __stdcall Net::MQTTBroker::OnClientData(Net::TCPClient *cli, void *userObj,
 		sb.AppendC(UTF8STRC("Received "));
 		sb.AppendUOSInt(size);
 		sb.AppendC(UTF8STRC(" bytes"));
-		me->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_ACTION);
+		me->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_ACTION);
 	}
 	UOSInt i;
 	if (data->buffSize > 0)
@@ -224,14 +224,14 @@ void Net::MQTTBroker::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, I
 				{
 					sb.AppendC(UTF8STRC(", data = "));
 					sb.AppendHex(&cmd[i], cmdSize - i, ' ', Text::LineBreakType::CRLF);
-					this->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_ACTION);
+					this->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_ACTION);
 					break;
 				}
 				if (cmdSize - i < 4)
 				{
 					sb.AppendC(UTF8STRC(", data = "));
 					sb.AppendHex(&cmd[i], cmdSize - i, ' ', Text::LineBreakType::CRLF);
-					this->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_ACTION);
+					this->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_ACTION);
 					break;
 				}
 				sb.AppendC(UTF8STRC(", Level = "));
@@ -249,7 +249,7 @@ void Net::MQTTBroker::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, I
 				{
 					sb.AppendC(UTF8STRC(", data = "));
 					sb.AppendHex(&cmd[i], cmdSize - i, ' ', Text::LineBreakType::CRLF);
-					this->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_ACTION);
+					this->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_ACTION);
 					break;
 				}
 				clientId = Text::StrCopyNew(sb.ToString());
@@ -261,7 +261,7 @@ void Net::MQTTBroker::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, I
 					{
 						sb.AppendC(UTF8STRC(", data = "));
 						sb.AppendHex(&cmd[i], cmdSize - i, ' ', Text::LineBreakType::CRLF);
-						this->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_ACTION);
+						this->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_ACTION);
 						SDEL_TEXT(clientId);
 						break;
 					}
@@ -270,7 +270,7 @@ void Net::MQTTBroker::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, I
 					{
 						sb.AppendC(UTF8STRC(", data = "));
 						sb.AppendHex(&cmd[i], cmdSize - i, ' ', Text::LineBreakType::CRLF);
-						this->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_ACTION);
+						this->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_ACTION);
 						SDEL_TEXT(clientId);
 						break;
 					}
@@ -283,7 +283,7 @@ void Net::MQTTBroker::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, I
 					{
 						sb.AppendC(UTF8STRC(", data = "));
 						sb.AppendHex(&cmd[i], cmdSize - i, ' ', Text::LineBreakType::CRLF);
-						this->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_ACTION);
+						this->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_ACTION);
 						SDEL_TEXT(clientId);
 						break;
 					}
@@ -297,7 +297,7 @@ void Net::MQTTBroker::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, I
 					{
 						sb.AppendC(UTF8STRC(", data = "));
 						sb.AppendHex(&cmd[i], cmdSize - i, ' ', Text::LineBreakType::CRLF);
-						this->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_ACTION);
+						this->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_ACTION);
 						SDEL_TEXT(clientId);
 						SDEL_TEXT(userName);
 						break;
@@ -307,7 +307,7 @@ void Net::MQTTBroker::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, I
 					{
 						sb.AppendC(UTF8STRC(", data = "));
 						sb.AppendHex(&cmd[i], cmdSize - i, ' ', Text::LineBreakType::CRLF);
-						this->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_ACTION);
+						this->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_ACTION);
 						SDEL_TEXT(clientId);
 						SDEL_TEXT(userName);
 						break;
@@ -319,7 +319,7 @@ void Net::MQTTBroker::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, I
 					sb.AppendHex(&cmd[i + 2], pwdSize, ' ', Text::LineBreakType::None);
 					i += pwdSize + 2;
 				}
-				this->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_ACTION);
+				this->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_ACTION);
 			}
 			else
 			{
@@ -455,7 +455,7 @@ void Net::MQTTBroker::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, I
 			sb.AppendUOSInt(cmdSize);
 			sb.AppendC(UTF8STRC(", data = "));
 			sb.AppendHex(cmd, cmdSize, ' ', Text::LineBreakType::CRLF);
-			this->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_ACTION);
+			this->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_ACTION);
 		}
 		break;
 	case 3: //PUBLISH
@@ -476,7 +476,7 @@ void Net::MQTTBroker::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, I
 				{
 					sb.AppendC(UTF8STRC(", data = "));
 					sb.AppendHex(&cmd[i], cmdSize - i, ' ', Text::LineBreakType::CRLF);
-					this->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_ACTION);
+					this->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_ACTION);
 					break;
 				}
 				sb.Append(topicSb.ToString());
@@ -486,7 +486,7 @@ void Net::MQTTBroker::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, I
 					{
 						sb.AppendC(UTF8STRC(", data = "));
 						sb.AppendHex(&cmd[i], cmdSize - i, ' ', Text::LineBreakType::CRLF);
-						this->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_ACTION);
+						this->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_ACTION);
 						break;
 					}
 					sb.AppendC(UTF8STRC(", PacketId = "));					
@@ -507,7 +507,7 @@ void Net::MQTTBroker::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, I
 				{
 					messageSize = 0;
 				}
-				this->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_ACTION);
+				this->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_ACTION);
 			}
 			else
 			{
@@ -588,7 +588,7 @@ void Net::MQTTBroker::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, I
 			sb.AppendUOSInt(cmdSize);
 			sb.AppendC(UTF8STRC(" bytes, data = "));
 			sb.AppendHex(cmd, cmdSize, ' ', Text::LineBreakType::CRLF);
-			this->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_ACTION);
+			this->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_ACTION);
 		}
 		break;
 	case 5: //PUBREC
@@ -599,7 +599,7 @@ void Net::MQTTBroker::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, I
 			sb.AppendUOSInt(cmdSize);
 			sb.AppendC(UTF8STRC(" bytes, data = "));
 			sb.AppendHex(cmd, cmdSize, ' ', Text::LineBreakType::CRLF);
-			this->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_ACTION);
+			this->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_ACTION);
 		}
 		break;
 	case 6: //PUBREL
@@ -610,7 +610,7 @@ void Net::MQTTBroker::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, I
 			sb.AppendUOSInt(cmdSize);
 			sb.AppendC(UTF8STRC(" bytes, data = "));
 			sb.AppendHex(cmd, cmdSize, ' ', Text::LineBreakType::CRLF);
-			this->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_ACTION);
+			this->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_ACTION);
 		}
 		break;
 	case 7: //PUBCOMP
@@ -621,7 +621,7 @@ void Net::MQTTBroker::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, I
 			sb.AppendUOSInt(cmdSize);
 			sb.AppendC(UTF8STRC(" bytes, data = "));
 			sb.AppendHex(cmd, cmdSize, ' ', Text::LineBreakType::CRLF);
-			this->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_ACTION);
+			this->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_ACTION);
 		}
 		break;
 	case 8: //SUBSCRIBE
@@ -643,7 +643,7 @@ void Net::MQTTBroker::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, I
 			{
 				sb.AppendC(UTF8STRC(", data = "));
 				sb.AppendHex(&cmd[i], cmdSize - i, ' ', Text::LineBreakType::CRLF);
-				this->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_ACTION);
+				this->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_ACTION);
 				break;
 			}
 			if (cmdSize > i)
@@ -651,7 +651,7 @@ void Net::MQTTBroker::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, I
 				sb.AppendC(UTF8STRC(", Requested QoS = "));
 				sb.AppendU16(cmd[i]);
 			}
-			this->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_ACTION);
+			this->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_ACTION);
 		}
 		{
 			UInt16 packetId = 0;
@@ -732,7 +732,7 @@ void Net::MQTTBroker::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, I
 			sb.AppendUOSInt(cmdSize);
 			sb.AppendC(UTF8STRC(" bytes, data = "));
 			sb.AppendHex(cmd, cmdSize, ' ', Text::LineBreakType::CRLF);
-			this->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_ACTION);
+			this->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_ACTION);
 		}
 		break;
 	case 10: //UNSUBSCRIBE
@@ -743,7 +743,7 @@ void Net::MQTTBroker::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, I
 			sb.AppendUOSInt(cmdSize);
 			sb.AppendC(UTF8STRC(" bytes, data = "));
 			sb.AppendHex(cmd, cmdSize, ' ', Text::LineBreakType::CRLF);
-			this->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_ACTION);
+			this->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_ACTION);
 		}
 		break;
 	case 11: //UNSUBACK
@@ -754,7 +754,7 @@ void Net::MQTTBroker::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, I
 			sb.AppendUOSInt(cmdSize);
 			sb.AppendC(UTF8STRC(" bytes, data = "));
 			sb.AppendHex(cmd, cmdSize, ' ', Text::LineBreakType::CRLF);
-			this->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_ACTION);
+			this->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_ACTION);
 		}
 		break;
 	case 12: //PINGREQ
@@ -765,7 +765,7 @@ void Net::MQTTBroker::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, I
 			sb.AppendUOSInt(cmdSize);
 			sb.AppendC(UTF8STRC(" bytes, data = "));
 			sb.AppendHex(cmd, cmdSize, ' ', Text::LineBreakType::CRLF);
-			this->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_ACTION);
+			this->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_ACTION);
 		}
 		i = this->protoHdlr->BuildPacket(packet2, 0xD0, 0, packet, 0, data->cliData);
 		sent = stm->Write(packet2, i);
@@ -779,7 +779,7 @@ void Net::MQTTBroker::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, I
 			sb.AppendUOSInt(cmdSize);
 			sb.AppendC(UTF8STRC(" bytes, data = "));
 			sb.AppendHex(cmd, cmdSize, ' ', Text::LineBreakType::CRLF);
-			this->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_ACTION);
+			this->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_ACTION);
 		}
 		break;
 	case 14: //DISCONNECT
@@ -790,7 +790,7 @@ void Net::MQTTBroker::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, I
 			sb.AppendUOSInt(cmdSize);
 			sb.AppendC(UTF8STRC(" bytes, data = "));
 			sb.AppendHex(cmd, cmdSize, ' ', Text::LineBreakType::CRLF);
-			this->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_ACTION);
+			this->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_ACTION);
 		}
 		break;
 	default:
@@ -801,7 +801,7 @@ void Net::MQTTBroker::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, I
 			sb.AppendUOSInt(cmdSize);
 			sb.AppendC(UTF8STRC(" bytes, data = "));
 			sb.AppendHex(cmd, cmdSize, ' ', Text::LineBreakType::CRLF);
-			this->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_ACTION);
+			this->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_ACTION);
 		}
 		break;
 	}

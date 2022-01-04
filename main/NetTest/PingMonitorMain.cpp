@@ -81,7 +81,7 @@ UInt32 __stdcall RecvThread(void *userObj)
 							sb->Append(sbuff);
 							sb->AppendC(UTF8STRC(", Size = "));
 							sb->AppendUOSInt(ipDataSize);
-							logTool->LogMessage(sb->ToString(), IO::ILogHandler::LOG_LEVEL_COMMAND);
+							logTool->LogMessageC(sb->ToString(), sb->GetLength(), IO::ILogHandler::LOG_LEVEL_COMMAND);
 //							console->WriteLine(sb->ToString());
 						}
 						break;

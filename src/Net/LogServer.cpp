@@ -34,7 +34,7 @@ void __stdcall Net::LogServer::ClientEvent(Net::TCPClient *cli, void *userObj, v
 		ClientStatus *cliStatus;
 		if (me->log)
 		{
-			me->log->LogMessage((const UTF8Char*)"Client Disconnected", IO::ILogHandler::LOG_LEVEL_COMMAND);
+			me->log->LogMessageC(UTF8STRC("Client Disconnected"), IO::ILogHandler::LOG_LEVEL_COMMAND);
 		}
 		cliStatus = (ClientStatus*)cliData;
 		MemFree(cliStatus->buff);
@@ -190,14 +190,14 @@ void Net::LogServer::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, In
 				sb.Append(sbuff);
 				sb.AppendC(UTF8STRC("> "));
 				sb.AppendC(&cmd[8], cmdSize - 8);
-				this->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_COMMAND);
+				this->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_COMMAND);
 			}
 
 			if (cliStatus->status)
 			{
 				sb.ClearStr();
 				sb.AppendC(&cmd[8], cmdSize - 8);
-				cliStatus->status->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_COMMAND);
+				cliStatus->status->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_COMMAND);
 
 				if (this->logHdlr)
 				{
@@ -211,7 +211,7 @@ void Net::LogServer::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, In
 			{
 				MemCopyNO(sbuff, &cmd[8], cmdSize - 8);
 				sbuff[cmdSize - 8] = 0;
-				cliStatus->status->log->LogMessage(sbuff, IO::ILogHandler::LOG_LEVEL_COMMAND);
+				cliStatus->status->log->LogMessageC(sbuff, cmdSize - 8, IO::ILogHandler::LOG_LEVEL_COMMAND);
 
 				if (this->logHdlr)
 				{
@@ -226,7 +226,7 @@ void Net::LogServer::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, In
 				UInt8 *tmpPtr = MemAlloc(UInt8, cmdSize - 8 + 1);
 				MemCopyNO(tmpPtr, &cmd[8], cmdSize - 8);
 				tmpPtr[cmdSize - 8] = 0;
-				cliStatus->status->log->LogMessage(tmpPtr, IO::ILogHandler::LOG_LEVEL_COMMAND);
+				cliStatus->status->log->LogMessageC(tmpPtr, cmdSize - 8, IO::ILogHandler::LOG_LEVEL_COMMAND);
 
 				if (this->logHdlr)
 				{

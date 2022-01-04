@@ -90,7 +90,7 @@ void __stdcall SSWR::AVIRead::AVIRTVControlForm::OnSendCommandClicked(void *user
 		CommandInfo *cmdInfo = (CommandInfo*)me->cboCommand->GetSelectedItem();
 		sb.AppendC(UTF8STRC("Sending "));
 		sb.Append(IO::TVControl::GetCommandName(cmdInfo->cmdType));
-		me->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_RAW);
+		me->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_RAW);
 		if (cmdInfo->cmdFmt == IO::TVControl::CF_INSTRUCTION)
 		{
 			if (me->tvCtrl->SendInstruction(cmdInfo->cmdType))
@@ -98,7 +98,7 @@ void __stdcall SSWR::AVIRead::AVIRTVControlForm::OnSendCommandClicked(void *user
 				sb.ClearStr();
 				sb.Append(IO::TVControl::GetCommandName(cmdInfo->cmdType));
 				sb.AppendC(UTF8STRC(" success"));
-				me->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_ACTION);
+				me->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_ACTION);
 				me->txtCommand->SetText((const UTF8Char*)"Success");
 			}
 			else
@@ -106,7 +106,7 @@ void __stdcall SSWR::AVIRead::AVIRTVControlForm::OnSendCommandClicked(void *user
 				sb.ClearStr();
 				sb.Append(IO::TVControl::GetCommandName(cmdInfo->cmdType));
 				sb.AppendC(UTF8STRC(" failed"));
-				me->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_ERROR);
+				me->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_ERROR);
 				me->txtCommand->SetText((const UTF8Char*)"Failed");
 			}
 		}
@@ -118,7 +118,7 @@ void __stdcall SSWR::AVIRead::AVIRTVControlForm::OnSendCommandClicked(void *user
 				sb.Append(IO::TVControl::GetCommandName(cmdInfo->cmdType));
 				sb.AppendC(UTF8STRC(" success, reply = "));
 				sb.Append(sbuff);
-				me->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_ACTION);
+				me->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_ACTION);
 				me->txtCommand->SetText(sbuff);
 			}
 			else
@@ -126,7 +126,7 @@ void __stdcall SSWR::AVIRead::AVIRTVControlForm::OnSendCommandClicked(void *user
 				sb.ClearStr();
 				sb.Append(IO::TVControl::GetCommandName(cmdInfo->cmdType));
 				sb.AppendC(UTF8STRC(" failed"));
-				me->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_ERROR);
+				me->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_ERROR);
 				me->txtCommand->SetText((const UTF8Char*)"Failed");
 			}
 		}
@@ -143,7 +143,7 @@ void __stdcall SSWR::AVIRead::AVIRTVControlForm::OnSendCommandClicked(void *user
 					sb.Append(IO::TVControl::GetCommandName(cmdInfo->cmdType));
 					sb.AppendC(UTF8STRC(" success, value = "));
 					sb.AppendI32(val);
-					me->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_ACTION);
+					me->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_ACTION);
 					me->txtCommand->SetText(sb.ToString());
 				}
 				else
@@ -151,7 +151,7 @@ void __stdcall SSWR::AVIRead::AVIRTVControlForm::OnSendCommandClicked(void *user
 					sb.ClearStr();
 					sb.Append(IO::TVControl::GetCommandName(cmdInfo->cmdType));
 					sb.AppendC(UTF8STRC(" failed"));
-					me->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_ERROR);
+					me->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_ERROR);
 					me->txtCommand->SetText((const UTF8Char*)"Failed");
 				}
 				me->txtCommand->SetReadOnly(true);

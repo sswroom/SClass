@@ -145,7 +145,7 @@ OSInt DB::OLEDBConn::ExecuteNonQuery(const UTF8Char *sql)
 						Text::StringBuilderUTF8 sb;
 						sb.AppendC(UTF8STRC("ExecuteNonQuery: "));
 						sb.AppendW(bstr);
-						data->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_ERR_DETAIL);
+						data->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_ERR_DETAIL);
 						SysFreeString(bstr);
 					}
 					pIErrorInfoAll->Release();
@@ -253,7 +253,7 @@ DB::DBReader *DB::OLEDBConn::ExecuteReader(const UTF8Char *sql)
 						Text::StringBuilderUTF8 sb;
 						sb.AppendC(UTF8STRC("ExecuteReader: "));
 						sb.AppendW(bstr);
-						data->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_ERR_DETAIL);
+						data->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_ERR_DETAIL);
 						SysFreeString(bstr);
 					}
 					pIErrorInfoAll->Release();

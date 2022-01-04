@@ -47,7 +47,7 @@ void __stdcall Net::NTPServer::PacketHdlr(const Net::SocketUtil::AddressInfo *ad
 				sb.AppendC(UTF8STRC(" reply time as "));
 				dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
 				sb.Append(sbuff);
-				me->log->LogMessage(sb.ToString(), IO::ILogHandler::LOG_LEVEL_COMMAND);
+				me->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_COMMAND);
 			}
 		}
 	}
@@ -78,7 +78,7 @@ UInt32 __stdcall Net::NTPServer::CheckThread(void *userObj)
 					dt->ToLocalTime();
 					dt->ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
 					sb->Append(sbuff);
-					me->log->LogMessage(sb->ToString(), IO::ILogHandler::LOG_LEVEL_ACTION);
+					me->log->LogMessageC(sb->ToString(), sb->GetLength(), IO::ILogHandler::LOG_LEVEL_ACTION);
 				}
 				else
 				{
@@ -89,7 +89,7 @@ UInt32 __stdcall Net::NTPServer::CheckThread(void *userObj)
 					dt->ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
 					sb->Append(sbuff);
 					sb->AppendC(UTF8STRC(" failed"));
-					me->log->LogMessage(sb->ToString(), IO::ILogHandler::LOG_LEVEL_ERROR);
+					me->log->LogMessageC(sb->ToString(), sb->GetLength(), IO::ILogHandler::LOG_LEVEL_ERROR);
 					dt->SetCurrTimeUTC();
 					me->timeDiff = me->refTime - dt->ToTicks();
 				}
@@ -98,7 +98,7 @@ UInt32 __stdcall Net::NTPServer::CheckThread(void *userObj)
 			{
 				if (me->log)
 				{
-					me->log->LogMessage((const UTF8Char*)"NTP: Requesting to Time Server", IO::ILogHandler::LOG_LEVEL_ERROR);
+					me->log->LogMessageC(UTF8STRC("NTP: Requesting to Time Server"), IO::ILogHandler::LOG_LEVEL_ERROR);
 				}
 			}
 		}
@@ -106,7 +106,7 @@ UInt32 __stdcall Net::NTPServer::CheckThread(void *userObj)
 		{
 			if (me->log)
 			{
-				me->log->LogMessage((const UTF8Char*)"NTP: Error in resolving time server", IO::ILogHandler::LOG_LEVEL_ERROR);
+				me->log->LogMessageC(UTF8STRC("NTP: Error in resolving time server"), IO::ILogHandler::LOG_LEVEL_ERROR);
 			}
 		}
 		me->evt->Wait(60000);
