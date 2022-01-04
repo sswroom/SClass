@@ -3,6 +3,11 @@
 #include "IO/RobustelStatus.h"
 #include "Text/MyString.h"
 
+Text::String *IO::RobustelInfo::GetIMEI()
+{
+	return IO::RobustelStatus::GetStatus("cellular.status.imei");
+}
+
 Text::String *IO::RobustelInfo::GetCellID()
 {
 	return IO::RobustelStatus::GetStatus("cellular.status.cell_id");

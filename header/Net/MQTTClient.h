@@ -10,7 +10,6 @@ namespace Net
 
 		virtual Bool Subscribe(const UTF8Char *topic) = 0;
 		virtual Bool Publish(const UTF8Char *topic, const UTF8Char *message) = 0;
-		
 	};
 }
 #endif
