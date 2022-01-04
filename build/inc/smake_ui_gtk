@@ -1,7 +1,4 @@
 
-Core/DefaultDrawEngine.h: ../../src/Core/DefaultDrawEngineGTK.cpp
-@DefaultDrawEngine.o
-
 Exporter/GUIExporter.h: ../../src/Exporter/GUIExporterGTK.cpp
 @GUIExporter.o
 Exporter/GUIGIFExporter.h: ../../src/Exporter/GUIGIFExporterGTK.cpp
@@ -14,6 +11,8 @@ Exporter/GUITIFExporter.h: ../../src/Exporter/GUITIFExporterGTK.cpp
 @GUITIFExporter.o
 
 Media/DDrawManager.h:
+Media/DrawEngineFactory.h: ../../src/Media/DrawEngineFactoryGTK.cpp
+@DrawEngineFactory.o
 Media/DrawEngineGUI.h: ../../src/Media/GTKDrawEngine.cpp
 @DrawEngineGUI.o
 Media/GTKDrawEngine.h: ../../src/Media/GTKDrawEngine.cpp
@@ -116,7 +115,6 @@ Win32/Clipboard.h: ../../src/Win32/ClipboardGTK.cpp
 GUIStartup.o: ../../startup/GtkStartup.cpp
 $`pkg-config --cflags gtk+-3.0`
 !`pkg-config --libs gtk+-3.0`
-DefaultDrawEngine.o: ../../src/Core/DefaultDrawEngineGTK.cpp
 GUIExporter.o: ../../src/Exporter/GUIExporterGTK.cpp
 $`pkg-config --cflags gtk+-3.0`
 !`pkg-config --libs gtk+-3.0`
@@ -128,11 +126,12 @@ GUIPNGExporter.o: ../../src/Exporter/GUIPNGExporterGTK.cpp
 $`pkg-config --cflags gtk+-3.0`
 GUITIFExporter.o: ../../src/Exporter/GUITIFExporterGTK.cpp
 $`pkg-config --cflags gtk+-3.0`
+DrawEngineFactory.o: ../../src/Media/DrawEngineFactoryGTK.cpp
+DrawEngineGUI.o: ../../src/Media/GTKDrawEngine.cpp
+$`pkg-config --cflags gtk+-3.0`
 MonitorInfo.o: ../../src/Media/MonitorInfoGTK.cpp
 $`pkg-config --cflags gtk+-3.0`
 !`pkg-config --libs gtk+-3.0`
-DrawEngineGUI.o: ../../src/Media/GTKDrawEngine.cpp
-$`pkg-config --cflags gtk+-3.0`
 ScreenCapturer.o: ../../src/Media/ScreenCapturerX11.cpp
 !-lX11
 GUIImgParser.o: ../../src/Parser/FileParser/GUIImgParserGTK.cpp

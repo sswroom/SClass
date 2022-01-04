@@ -22,7 +22,7 @@
 #include "Media/MediaFile.h"
 #include "Media/Playlist.h"
 #include "Media/ScreenCapturer.h"
-#include "Net/DefaultSSLEngine.h"
+#include "Net/SSLEngineFactory.h"
 #include "Net/URL.h"
 #include "SSWR/AVIRead/AVIRAboutForm.h"
 #include "SSWR/AVIRead/AVIRAccelerometerForm.h"
@@ -492,7 +492,7 @@ void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(void *userObj, const UTF
 SSWR::AVIRead::AVIRBaseForm::AVIRBaseForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 480, ui)
 {
 	this->core = core;
-	this->ssl = Net::DefaultSSLEngine::Create(this->core->GetSocketFactory(), true);
+	this->ssl = Net::SSLEngineFactory::Create(this->core->GetSocketFactory(), true);
 #if defined(CPU_X86_32)
 	this->SetText((const UTF8Char*)"AVIRead (x86 32-bit)");
 #elif defined(CPU_X86_64)

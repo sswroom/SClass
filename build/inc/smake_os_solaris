@@ -44,8 +44,8 @@ Manage/ThreadInfo.h: ../../src/Manage/ThreadInfoL.cpp
 
 Media/AudioDevice.h: ../../src/Media/AudioDeviceNull.cpp
 @AudioDevice.o
-Media/DefaultMonitorSurfaceMgr.h: ../../src/Media/DefaultMonitorSurfaceMgrNull.cpp
-@DefaultMonitorSurfaceMgr.o
+Media/MonitorSurfaceMgrFactory.h: ../../src/Media/MonitorSurfaceMgrFactoryNull.cpp
+@MonitorSurfaceMgrFactory.o
 Media/Printer.h: ../../src/Media/PrinterCUPS.cpp
 @Printer.o
 Media/Decoder/FFMPEGDecoder.h: ../../src/Media/Decoder/FFMPEGDecoder.cpp
@@ -60,10 +60,10 @@ Media/OpenCV/OCVObjectDetector.h: ../../src/Media/OpenCV/OCVObjectDetector.cpp
 Media/OpenCV/OCVUtil.h: ../../src/Media/OpenCV/OCVUtil.cpp
 @OCVUtil.o
 
-Net/DefaultSSLEngine.h: ../../src/Net/DefaultSSLEngineOpenSSL.cpp
-@DefaultSSLEngine.o
 Net/HTTPOSClient.h: ../../src/Net/HTTPOSClientL.cpp
 @HTTPOSClient.o
+Net/SSLEngineFactory.h: ../../src/Net/SSLEngineFactoryOpenSSL.cpp
+@SSLEngineFactory.o
 Net/WirelessLAN.h: ../../src/Net/WirelessLANL.cpp
 @WirelessLAN.o
 
@@ -104,7 +104,7 @@ SymbolResolver.o: ../../src/Manage/SymbolResolverL.cpp
 ThreadInfo.o: ../../src/Manage/ThreadInfoL.cpp
 !-lpthread
 AudioDevice.o: ../../src/Media/AudioDeviceNull.cpp
-DefaultMonitorSurfaceMgr.o: ../../src/Media/DefaultMonitorSurfaceMgrNull.cpp
+MonitorSurfaceMgrFactory.o: ../../src/Media/MonitorSurfaceMgrFactoryNull.cpp
 Printer.o: ../../src/Media/PrinterCUPS.cpp
 $`pkg-config --cflags --libs cairo` `cups-config --cflags`
 !`cups-config --libs`
@@ -123,9 +123,9 @@ OCVObjectDetector.o: ../../src/Media/OpenCV/OCVObjectDetector.cpp
 OCVUtil.o: ../../src/Media/OpenCV/OCVUtil.cpp
 #$`pkg-config --cflags opencv4`
 !`pkg-config --libs opencv`
-DefaultSSLEngine.o: ../../src/Net/DefaultSSLEngineOpenSSL.cpp
 HTTPOSClient.o: ../../src/Net/HTTPOSClientL.cpp
 !-lcurl
+SSLEngineFactory.o: ../../src/Net/SSLEngineFactoryOpenSSL.cpp
 WirelessLAN.o: ../../src/Net/WirelessLANL.cpp
 Thread.o: ../../src/Sync/ThreadU.cpp
 !-lpthread

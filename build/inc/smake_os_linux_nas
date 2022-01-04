@@ -44,8 +44,8 @@ Manage/ThreadInfo.h: ../../src/Manage/ThreadInfoL.cpp
 
 Media/AudioDevice.h: ../../src/Media/AudioDeviceNull.cpp
 @AudioDevice.o
-Media/DefaultMonitorSurfaceMgr.h: ../../src/Media/DefaultMonitorSurfaceMgrLinux.cpp
-@DefaultMonitorSurfaceMgr.o
+Media/MonitorSurfaceMgrFactory.h: ../../src/Media/MonitorSurfaceMgrFactoryLinux.cpp
+@MonitorSurfaceMgrFactory.o
 Media/FBMonitorSurfaceMgr.h: ../../src/Media/FBMonitorSurfaceMgr.cpp
 @FBMonitorSurfaceMgr.o
 Media/Printer.h: ../../src/Media/PrinterNull.cpp
@@ -62,10 +62,10 @@ Media/OpenCV/OCVObjectDetector.h: ../../src/Media/OpenCV/OCVObjectDetector.cpp
 Media/OpenCV/OCVUtil.h: ../../src/Media/OpenCV/OCVUtil.cpp
 @OCVUtil.o
 
-Net/DefaultSSLEngine.h: ../../src/Net/DefaultSSLEngineOpenSSL.cpp
-@DefaultSSLEngine.o
 Net/HTTPOSClient.h: ../../src/Net/HTTPOSClientNull.cpp
 @HTTPOSClient.o
+Net/SSLEngineFactory.h: ../../src/Net/SSLEngineFactoryOpenSSL.cpp
+@SSLEngineFactory.o
 Net/WirelessLAN.h: ../../src/Net/WirelessLANL.cpp
 @WirelessLAN.o
 
@@ -94,7 +94,7 @@ SymbolResolver.o: ../../src/Manage/SymbolResolverL.cpp
 ThreadInfo.o: ../../src/Manage/ThreadInfoL.cpp
 !-lpthread
 AudioDevice.o: ../../src/Media/AudioDeviceNull.cpp
-DefaultMonitorSurfaceMgr.o: ../../src/Media/DefaultMonitorSurfaceMgrLinux.cpp
+MonitorSurfaceMgrFactory.o: ../../src/Media/MonitorSurfaceMgrFactoryLinux.cpp
 FBMonitorSurfaceMgr.o: ../../src/Media/FBMonitorSurfaceMgr.cpp
 Printer.o: ../../src/Media/PrinterNull.cpp
 FFMPEGDecoder.o: ../../src/Media/Decoder/FFMPEGDecoderNull.cpp
@@ -102,8 +102,8 @@ OCVFrame.o: ../../src/Media/OpenCV/OCVFrameNull.cpp
 OCVFrameFeeder.o: ../../src/Media/OpenCV/OCVFrameFeeder.cpp
 OCVObjectDetector.o: ../../src/Media/OpenCV/OCVObjectDetectorNull.cpp
 OCVUtil.o: ../../src/Media/OpenCV/OCVUtil.cpp
-DefaultSSLEngine.o: ../../src/Net/DefaultSSLEngineOpenSSL.cpp
 HTTPOSClient.o: ../../src/Net/HTTPOSClientNull.cpp
+SSLEngineFactory.o: ../../src/Net/SSLEngineFactoryOpenSSL.cpp
 WirelessLAN.o: ../../src/Net/WirelessLANL.cpp
 Thread.o: ../../src/Sync/ThreadU.cpp
 !-lpthread

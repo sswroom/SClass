@@ -3,10 +3,10 @@
 #include "IO/Path.h"
 #include "IO/StmData/MemoryData.h"
 #include "Manage/HiResClock.h"
-#include "Net/DefaultSSLEngine.h"
 #include "Net/HTTPClient.h"
 #include "Net/HTTPOSClient.h"
 #include "Net/MIME.h"
+#include "Net/SSLEngineFactory.h"
 #include "SSWR/AVIRead/AVIRHTTPClientForm.h"
 #include "SSWR/AVIRead/AVIRUserAgentSelForm.h"
 #include "Sync/MutexUsage.h"
@@ -1070,7 +1070,7 @@ SSWR::AVIRead::AVIRHTTPClientForm::AVIRHTTPClientForm(UI::GUIClientControl *pare
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->sockf = core->GetSocketFactory();
-	this->ssl = Net::DefaultSSLEngine::Create(this->sockf, true);
+	this->ssl = Net::SSLEngineFactory::Create(this->sockf, true);
 	Net::HTTPClient::PrepareSSL(this->ssl);
 	this->respChanged = false;
 	this->threadRunning = false;

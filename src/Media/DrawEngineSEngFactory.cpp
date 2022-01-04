@@ -1,9 +1,9 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Core/DefaultDrawEngine.h"
+#include "Media/DrawEngineFactory.h"
 #include "Media/StaticEngine.h"
 
-Media::DrawEngine *Core::DefaultDrawEngine::CreateDrawEngine()
+Media::DrawEngine *Media::DrawEngineFactory::CreateDrawEngine()
 {
 	Media::StaticEngine *deng;
 	NEW_CLASS(deng, Media::StaticEngine(0));

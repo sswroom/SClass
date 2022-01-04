@@ -2,7 +2,7 @@
 #include "IO/StmData/FileData.h"
 #include "Math/Math.h"
 #include "Media/CS/TransferFunc.h"
-#include "Net/DefaultSSLEngine.h"
+#include "Net/SSLEngineFactory.h"
 #include "Net/URL.h"
 #include "SSWR/AVIRead/AVIRCaptureDevForm.h"
 #include "SSWR/AVIRead/AVIRColorSettingForm.h"
@@ -368,7 +368,7 @@ void SSWR::AVIRead::AVIRHQMPDSForm::CloseFile()
 SSWR::AVIRead::AVIRHQMPDSForm::AVIRHQMPDSForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, QualityMode qMode) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->core = core;
-	this->ssl = Net::DefaultSSLEngine::Create(this->core->GetSocketFactory(), true);
+	this->ssl = Net::SSLEngineFactory::Create(this->core->GetSocketFactory(), true);
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->colorSess = this->core->GetColorMgr()->CreateSess(this->GetHMonitor());
 	this->qMode = qMode;

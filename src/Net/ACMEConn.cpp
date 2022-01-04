@@ -5,8 +5,8 @@
 #include "IO/FileStream.h"
 #include "IO/MemoryStream.h"
 #include "Net/ACMEConn.h"
-#include "Net/DefaultSSLEngine.h"
 #include "Net/HTTPClient.h"
+#include "Net/SSLEngineFactory.h"
 #include "Parser/FileParser/X509Parser.h"
 #include "Text/JSON.h"
 #include "Text/TextBinEnc/Base64Enc.h"
@@ -255,7 +255,7 @@ Net::ACMEConn::ACMEConn(Net::SocketFactory *sockf, const UTF8Char *serverHost, U
 	UOSInt recvSize;
 	this->sockf = sockf;
 	this->key = 0;
-	this->ssl = Net::DefaultSSLEngine::Create(sockf, false);
+	this->ssl = Net::SSLEngineFactory::Create(sockf, false);
 	this->serverHost = Text::String::NewNotNull(serverHost);
 	this->port = port;
 	this->urlNewNonce = 0;

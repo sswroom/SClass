@@ -4,10 +4,10 @@
 #include "IO/ConsoleWriter.h"
 #include "IO/FileStream.h"
 #include "IO/MemoryStream.h"
-#include "Net/DefaultSSLEngine.h"
 #include "Net/HTTPClient.h"
 #include "Net/MIME.h"
 #include "Net/OSSocketFactory.h"
+#include "Net/SSLEngineFactory.h"
 #include "Text/StringBuilderUTF8.h"
 
 Int32 MyMain(Core::IProgControl *progCtrl)
@@ -67,7 +67,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			Net::SSLEngine *ssl;
 			Net::HTTPClient *cli;
 			NEW_CLASS(sockf, Net::OSSocketFactory(true));
-			ssl = Net::DefaultSSLEngine::Create(sockf, true);
+			ssl = Net::SSLEngineFactory::Create(sockf, true);
 			cli = Net::HTTPClient::CreateConnect(sockf, ssl, url, "POST", false);
 			if (mime)
 			{

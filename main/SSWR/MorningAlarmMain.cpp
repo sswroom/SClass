@@ -22,10 +22,10 @@
 #include "Media/RefClock.h"
 #include "Media/ClockSpeechCh.h"
 
-#include "Net/DefaultSSLEngine.h"
 #include "Net/HKOWeather.h"
 #include "Net/NTPClient.h"
 #include "Net/OSSocketFactory.h"
+#include "Net/SSLEngineFactory.h"
 
 #include "Parser/FileParser/WAVParser.h"
 
@@ -269,7 +269,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 
 	NEW_CLASS(console, IO::ConsoleWriter());
 	NEW_CLASS(sockf, Net::OSSocketFactory(true));
-	ssl = Net::DefaultSSLEngine::Create(sockf, true);
+	ssl = Net::SSLEngineFactory::Create(sockf, true);
 	NEW_CLASS(encFact, Text::EncodingFactory());
 	NEW_CLASS(timeCli, Net::NTPClient(sockf, 14562));
 	NEW_CLASS(tmpDt, Data::DateTime());

@@ -2,8 +2,8 @@
 #include "Data/ByteTool.h"
 #include "IO/FileStream.h"
 #include "IO/Path.h"
-#include "Net/DefaultSSLEngine.h"
 #include "Net/HTTPClient.h"
+#include "Net/SSLEngineFactory.h"
 #include "SSWR/AVIRead/AVIRSNBDongleForm.h"
 #include "SSWR/AVIRead/AVIRSNBHandlerForm.h"
 #include "Text/Encoding.h"
@@ -482,7 +482,7 @@ SSWR::AVIRead::AVIRSNBDongleForm::AVIRSNBDongleForm(UI::GUIClientControl *parent
 	this->SetFont(0, 8.25, false);
 
 	this->core = core;
-	this->ssl = Net::DefaultSSLEngine::Create(this->core->GetSocketFactory(), true);
+	this->ssl = Net::SSLEngineFactory::Create(this->core->GetSocketFactory(), true);
 	this->stm = stm;
 	NEW_CLASS(this->log, IO::LogTool());
 	NEW_CLASS(this->devMut, Sync::RWMutex());

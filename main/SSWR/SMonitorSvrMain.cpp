@@ -1,10 +1,10 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Core/Core.h"
-#include "Core/DefaultDrawEngine.h"
 #include "IO/ConsoleWriter.h"
 #include "IO/Path.h"
 #include "Manage/ExceptionRecorder.h"
+#include "Media/DrawEngineFactory.h"
 #include "SSWR/SMonitor/SMonitorSvrCore.h"
 
 Int32 MyMain(Core::IProgControl *progCtrl)
@@ -21,7 +21,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	IO::Path::AppendPath(sbuff, (const UTF8Char*)"SMonitorSvr.err");
 	NEW_CLASS(exHdlr, Manage::ExceptionRecorder(sbuff, Manage::ExceptionRecorder::EA_RESTART));
 	NEW_CLASS(console, IO::ConsoleWriter());
-	NEW_CLASS(core, SSWR::SMonitor::SMonitorSvrCore(console, Core::DefaultDrawEngine::CreateDrawEngine()));
+	NEW_CLASS(core, SSWR::SMonitor::SMonitorSvrCore(console, Media::DrawEngineFactory::CreateDrawEngine()));
 	if (!core->IsError())
 	{
 		console->WriteLine((const UTF8Char*)"SMonitorSvr running");

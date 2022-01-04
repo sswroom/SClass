@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "Manage/HiResClock.h"
-#include "Net/DefaultSSLEngine.h"
 #include "Net/HTTPClient.h"
+#include "Net/SSLEngineFactory.h"
 #include "SSWR/AVIRead/AVIRHTTPTestForm.h"
 #include "Sync/Interlocked.h"
 #include "Sync/MutexUsage.h"
@@ -316,7 +316,7 @@ SSWR::AVIRead::AVIRHTTPTestForm::AVIRHTTPTestForm(UI::GUIClientControl *parent, 
 
 	this->core = core;
 	this->sockf = core->GetSocketFactory();
-	this->ssl = Net::DefaultSSLEngine::Create(this->sockf, true);
+	this->ssl = Net::SSLEngineFactory::Create(this->sockf, true);
 	this->threadStatus = 0;
 	NEW_CLASS(this->connMut, Sync::Mutex());
 	NEW_CLASS(this->connURLs, Data::ArrayList<const UTF8Char*>());

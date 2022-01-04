@@ -3,7 +3,7 @@
 #include "Crypto/Cert/X509Cert.h"
 #include "Crypto/Cert/X509PrivKey.h"
 #include "IO/StmData/FileData.h"
-#include "Net/DefaultSSLEngine.h"
+#include "Net/SSLEngineFactory.h"
 #include "SSWR/AVIRead/AVIRCertUtilForm.h"
 #include "Text/StringTool.h"
 #include "UI/MessageDialog.h"
@@ -378,7 +378,7 @@ SSWR::AVIRead::AVIRCertUtilForm::AVIRCertUtilForm(UI::GUIClientControl *parent, 
 	this->SetFont(0, 8.25, false);
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
-	this->ssl = Net::DefaultSSLEngine::Create(this->core->GetSocketFactory(), true);
+	this->ssl = Net::SSLEngineFactory::Create(this->core->GetSocketFactory(), true);
 	NEW_CLASS(this->sanList, Data::ArrayList<const UTF8Char*>());
 	this->key = 0;
 

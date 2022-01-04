@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "Net/DefaultSSLEngine.h"
+#include "Net/SSLEngineFactory.h"
 #include "Net/Email/SMTPClient.h"
 #include "SSWR/AVIRead/AVIRSMTPClientForm.h"
 #include "Text/StringBuilderWriter.h"
@@ -113,7 +113,7 @@ SSWR::AVIRead::AVIRSMTPClientForm::AVIRSMTPClientForm(UI::GUIClientControl *pare
 	this->SetText((const UTF8Char*)"SMTP Client");
 
 	this->core = core;
-	this->ssl = Net::DefaultSSLEngine::Create(this->core->GetSocketFactory(), true);
+	this->ssl = Net::SSLEngineFactory::Create(this->core->GetSocketFactory(), true);
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	NEW_CLASS(this->pnlControl, UI::GUIPanel(ui, this));

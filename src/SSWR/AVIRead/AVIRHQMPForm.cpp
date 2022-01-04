@@ -7,8 +7,8 @@
 #include "Math/Math.h"
 #include "Media/MediaPlayerWebInterface.h"
 #include "Media/CS/TransferFunc.h"
-#include "Net/DefaultSSLEngine.h"
 #include "Net/MIME.h"
+#include "Net/SSLEngineFactory.h"
 #include "Net/URL.h"
 #include "SSWR/AVIRead/AVIRCaptureDevForm.h"
 #include "SSWR/AVIRead/AVIRColorSettingForm.h"
@@ -552,7 +552,7 @@ SSWR::AVIRead::AVIRHQMPForm::AVIRHQMPForm(UI::GUIClientControl *parent, UI::GUIC
 	this->core = core;
 	this->colorSess = this->core->GetColorMgr()->CreateSess(this->GetHMonitor());
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
-	this->ssl = Net::DefaultSSLEngine::Create(this->core->GetSocketFactory(), true);
+	this->ssl = Net::SSLEngineFactory::Create(this->core->GetSocketFactory(), true);
 	this->qMode = qMode;
 	this->pbEnd = false;
 	this->listener = 0;

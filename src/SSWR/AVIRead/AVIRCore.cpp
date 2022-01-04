@@ -9,8 +9,8 @@
 #include "IO/Path.h"
 #include "IO/StmData/MemoryData2.h"
 #include "Math/Math.h"
-#include "Net/DefaultSSLEngine.h"
 #include "Net/OSSocketFactory.h"
+#include "Net/SSLEngineFactory.h"
 #include "Net/WebBrowser.h"
 #include "Parser/FullParserList.h"
 #include "SSWR/AVIRead/AVIRCore.h"
@@ -55,7 +55,7 @@ SSWR::AVIRead::AVIRCore::AVIRCore(UI::GUICore *ui)
 	NEW_CLASS(this->sockf, Net::OSSocketFactory(true));
 	NEW_CLASS(this->encFact, Text::EncodingFactory());
 	NEW_CLASS(this->exporters, Exporter::ExporterList());
-	this->ssl = Net::DefaultSSLEngine::Create(this->sockf, true);
+	this->ssl = Net::SSLEngineFactory::Create(this->sockf, true);
 	NEW_CLASS(this->browser, Net::WebBrowser(sockf, this->ssl, u8buff));
 	NEW_CLASS(this->frms, Data::ArrayList<UI::GUIForm*>());
 	NEW_CLASS(this->log, IO::LogTool());

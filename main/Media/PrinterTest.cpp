@@ -1,8 +1,8 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Core/Core.h"
-#include "Core/DefaultDrawEngine.h"
 #include "IO/ConsoleWriter.h"
+#include "Media/DrawEngineFactory.h"
 #include "Media/Printer.h"
 
 #define PRINTERNAME (const UTF8Char*)"PDFCreator"
@@ -59,7 +59,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		console->WriteLine(sbuff);
 		i++;
 	}
-	eng = Core::DefaultDrawEngine::CreateDrawEngine();
+	eng = Media::DrawEngineFactory::CreateDrawEngine();
 	NEW_CLASS(printer, Media::Printer(PRINTERNAME));
 	printer->ShowPrintSettings(0);
 	NEW_CLASS(prtobj, PrintObj());

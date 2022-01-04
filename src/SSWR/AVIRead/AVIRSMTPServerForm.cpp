@@ -3,7 +3,7 @@
 #include "IO/FileStream.h"
 #include "IO/Path.h"
 #include "IO/StmData/FileData.h"
-#include "Net/DefaultSSLEngine.h"
+#include "Net/SSLEngineFactory.h"
 #include "SSWR/AVIRead/AVIRMIMEViewerForm.h"
 #include "SSWR/AVIRead/AVIRSMTPServerForm.h"
 #include "SSWR/AVIRead/AVIRSSLCertKeyForm.h"
@@ -337,7 +337,7 @@ SSWR::AVIRead::AVIRSMTPServerForm::AVIRSMTPServerForm(UI::GUIClientControl *pare
 
 	this->core = core;
 	this->sockf = core->GetSocketFactory();
-	this->ssl = Net::DefaultSSLEngine::Create(this->sockf, true);
+	this->ssl = Net::SSLEngineFactory::Create(this->sockf, true);
 	this->sslCert = 0;
 	this->sslKey = 0;
 	this->smtpSvr = 0;

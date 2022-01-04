@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "IO/FileStream.h"
 #include "IO/Path.h"
-#include "Net/DefaultSSLEngine.h"
+#include "Net/SSLEngineFactory.h"
 #include "Net/UserAgentDB.h"
 #include "SSWR/AVIRead/AVIRRSSItemForm.h"
 #include "SSWR/AVIRead/AVIRRSSReaderForm.h"
@@ -204,7 +204,7 @@ SSWR::AVIRead::AVIRRSSReaderForm::AVIRRSSReaderForm(UI::GUIClientControl *parent
 	this->SetFont((const UTF8Char*)"MingLiu", 8.25, false);
 
 	this->core = core;
-	this->ssl = Net::DefaultSSLEngine::Create(this->core->GetSocketFactory(), true);
+	this->ssl = Net::SSLEngineFactory::Create(this->core->GetSocketFactory(), true);
 	NEW_CLASS(this->rssList, Data::ArrayListStrUTF8());
 	this->rss = 0;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));

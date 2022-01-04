@@ -1,15 +1,15 @@
 #include "Stdafx.h"
 #include "Core/Core.h"
-#include "Core/DefaultDrawEngine.h"
 #include "DB/DBTool.h"
 #include "DB/MDBFileConn.h"
 #include "DB/ODBCConn.h"
 #include "IO/ConsoleWriter.h"
 #include "IO/IniFile.h"
 #include "Manage/ExceptionRecorder.h"
-#include "Net/DefaultSSLEngine.h"
+#include "Media/DrawEngineFactory.h"
 #include "Net/MySQLTCPClient.h"
 #include "Net/OSSocketFactory.h"
+#include "Net/SSLEngineFactory.h"
 #include "SSWR/OrganMgr/OrganWebHandler.h"
 
 Int32 MyMain(Core::IProgControl *progCtrl)
@@ -44,7 +44,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			Int32 sslEnable = s->ToInt32();
 			if (sslEnable)
 			{
-				ssl =  Net::DefaultSSLEngine::Create(sockf, false);
+				ssl =  Net::SSLEngineFactory::Create(sockf, false);
 				if (ssl == 0)
 				{
 					console->WriteLine((const UTF8Char*)"Error in initializing SSL engine");
@@ -97,7 +97,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		}
 		UInt16 port;
 		cfg->GetValue((const UTF8Char*)"SvrPort")->ToUInt16S(&port, 0);
-		NEW_CLASS(dataHdlr, SSWR::OrganMgr::OrganWebHandler(sockf, ssl, log, db, cfg->GetValue((const UTF8Char*)"ImageDir"), port, cfg->GetValue((const UTF8Char*)"CacheDir"), cfg->GetValue((const UTF8Char*)"DataDir"), scnSize, cfg->GetValue((const UTF8Char*)"ReloadPwd"), unorganizedGroupId, Core::DefaultDrawEngine::CreateDrawEngine()));
+		NEW_CLASS(dataHdlr, SSWR::OrganMgr::OrganWebHandler(sockf, ssl, log, db, cfg->GetValue((const UTF8Char*)"ImageDir"), port, cfg->GetValue((const UTF8Char*)"CacheDir"), cfg->GetValue((const UTF8Char*)"DataDir"), scnSize, cfg->GetValue((const UTF8Char*)"ReloadPwd"), unorganizedGroupId, Media::DrawEngineFactory::CreateDrawEngine()));
 		DEL_CLASS(cfg);
 
 		if (dataHdlr->IsError())

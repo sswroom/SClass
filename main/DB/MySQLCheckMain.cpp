@@ -5,8 +5,8 @@
 #include "IO/FileStream.h"
 #include "IO/IniFile.h"
 #include "IO/Path.h"
-#include "Net/DefaultSSLEngine.h"
 #include "Net/OSSocketFactory.h"
+#include "Net/SSLEngineFactory.h"
 #include "Net/Email/SMTPClient.h"
 
 Int32 MyMain(Core::IProgControl *progCtrl)
@@ -148,7 +148,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			NEW_CLASS(fs, IO::FileStream(sb.ToString(), IO::FileMode::Append, IO::FileShare::DenyWrite, IO::FileStream::BufferType::Normal));
 			NEW_CLASS(writer, Text::UTF8Writer(fs));
 
-			Net::SSLEngine *ssl = Net::DefaultSSLEngine::Create(sockf, true);
+			Net::SSLEngine *ssl = Net::SSLEngineFactory::Create(sockf, true);
 			Net::Email::SMTPClient *smtp;
 			Net::Email::EmailMessage *msg;
 			Data::DateTime currTime;

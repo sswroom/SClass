@@ -1,7 +1,4 @@
 
-Core/DefaultDrawEngine.h: ../../src/Core/DefaultDrawEngineGTK.cpp
-@DefaultDrawEngine.o
-
 Exporter/GUIExporter.h: ../../src/Exporter/GUIExporterGTK.cpp
 @GUIExporter.o
 Exporter/GUIGIFExporter.h: ../../src/Exporter/GUIGIFExporterGTK.cpp
@@ -14,6 +11,8 @@ Exporter/GUITIFExporter.h: ../../src/Exporter/GUITIFExporterGTK.cpp
 @GUITIFExporter.o
 
 Media/DDrawManager.h:
+Media/DrawEngineFactory.h: ../../src/Media/DrawEngineFactoryGTK.cpp
+@DrawEngineFactory.o
 Media/DrawEngineGUI.h: ../../src/Media/GTKDrawEngine.cpp
 @DrawEngineGUI.o
 Media/GTKDrawEngine.h: ../../src/Media/GTKDrawEngine.cpp
@@ -113,14 +112,14 @@ Win32/Clipboard.h: ../../src/Win32/ClipboardJava.cpp
 GUIStartup.o: ../../startup/JavaStartup.cpp
 $-I/usr/lib/jvm/java-11-openjdk-amd64/include
 $-I/usr/lib/jvm/java-11-openjdk-amd64/include/linux
-DefaultDrawEngine.o: ../../src/Core/DefaultDrawEngineGTK.cpp
 GUIExporter.o: ../../src/Exporter/GUIExporterGTK.cpp
 GUIGIFExporter.o: ../../src/Exporter/GUIGIFExporterGTK.cpp
 GUIJPGExporter.o: ../../src/Exporter/GUIJPGExporterGTK.cpp
 GUIPNGExporter.o: ../../src/Exporter/GUIPNGExporterGTK.cpp
 GUITIFExporter.o: ../../src/Exporter/GUITIFExporterGTK.cpp
-MonitorInfo.o: ../../src/Media/MonitorInfoJava.cpp
+DrawEngineFactory.o: ../../src/Media/DrawEngineFactoryGTK.cpp
 DrawEngineGUI.o: ../../src/Media/GTKDrawEngine.cpp
+MonitorInfo.o: ../../src/Media/MonitorInfoJava.cpp
 ScreenCapturer.o: ../../src/Media/ScreenCapturerNull.cpp
 GUIImgParser.o: ../../src/Parser/FileParser/GUIImgParserGTK.cpp
 FileDialog.o: ../../src/UI/FileDialogGTK.cpp

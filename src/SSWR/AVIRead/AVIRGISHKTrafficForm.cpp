@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "IO/StmData/FileData.h"
 #include "Map/HKTrafficLayer.h"
-#include "Net/DefaultSSLEngine.h"
+#include "Net/SSLEngineFactory.h"
 #include "SSWR/AVIRead/AVIRGISHKTrafficForm.h"
 #include "Text/StringBuilderUTF8.h"
 #include "UI/FileDialog.h"
@@ -73,7 +73,7 @@ SSWR::AVIRead::AVIRGISHKTrafficForm::AVIRGISHKTrafficForm(UI::GUIClientControl *
 	this->SetNoResize(true);
 
 	this->core = core;
-	this->ssl = Net::DefaultSSLEngine::Create(this->core->GetSocketFactory(), true);
+	this->ssl = Net::SSLEngineFactory::Create(this->core->GetSocketFactory(), true);
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->lyr = 0;
 

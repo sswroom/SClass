@@ -1,6 +1,6 @@
 #include "Stdafx.h"
-#include "Net/DefaultSSLEngine.h"
 #include "Net/HTTPClient.h"
+#include "Net/SSLEngineFactory.h"
 #include "SSWR/AVIRead/AVIRSSDPClientForm.h"
 #include "Text/StringTool.h"
 #include "UI/MessageDialog.h"
@@ -154,7 +154,7 @@ SSWR::AVIRead::AVIRSSDPClientForm::AVIRSSDPClientForm(UI::GUIClientControl *pare
 
 	this->core = core;
 	this->sockf = this->core->GetSocketFactory();
-	this->ssl = Net::DefaultSSLEngine::Create(this->sockf, false);
+	this->ssl = Net::SSLEngineFactory::Create(this->sockf, false);
 	NEW_CLASS(this->ssdp, Net::SSDPClient(this->sockf, 0));
 	NEW_CLASS(this->rootMap, Data::StringUTF8Map<Net::SSDPClient::SSDPRoot*>());
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));

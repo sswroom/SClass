@@ -1,7 +1,4 @@
 
-Core/DefaultDrawEngine.h: ../../src/Core/DefaultDrawEngineWin.cpp
-@DefaultDrawEngine.o
-
 Exporter/GUIExporter.h: ../../src/Exporter/GUIExporterW.cpp
 @GUIExporter.o
 Exporter/GUIGIFExporter.h: ../../src/Exporter/GUIGIFExporterW.cpp
@@ -15,6 +12,8 @@ Exporter/GUITIFExporter.h: ../../src/Exporter/GUITIFExporterW.cpp
 
 Media/DDrawManager.h: ../../src/Media/DDrawManager.cpp
 @DDrawManager.o
+Media/DrawEngineFactory.h: ../../src/Media/DrawEngineFactoryWin.cpp
+@DrawEngineFactory.o
 Media/DrawEngineGUI.h: ../../src/Media/GDIEngineC.cpp
 @DrawEngineGUI.o
 Media/GDIEngine.h: ../../src/Media/GDIEngine.cpp
@@ -122,7 +121,6 @@ Win32/Clipboard.h: ../../src/Win32/ClipboardW.cpp
 GUIStartup.o: ../../startup/WinStartup.cpp
 !-Wl,--subsystem,windows
 !-mwindows
-DefaultDrawEngine.o: ../../src/Core/DefaultDrawEngineWin.cpp
 GUIExporter.o: ../../src/Exporter/GUIExporterW.cpp
 !-lgdiplus
 GUIGIFExporter.o: ../../src/Exporter/GUIGIFExporterW.cpp
@@ -132,6 +130,7 @@ GUITIFExporter.o: ../../src/Exporter/GUITIFExporterW.cpp
 DDrawManager.o: ../../src/Media/DDrawManager.cpp
 !-lddraw
 !-ldxguid
+DrawEngineFactory.o: ../../src/Core/DrawEngineFactoryWin.cpp
 DrawEngineGUI.o: ../../src/Media/GDIEngineC.cpp
 GDIEngine.o: ../../src/Media/GDIEngine.cpp
 !-lgdi32

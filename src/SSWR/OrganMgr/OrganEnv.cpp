@@ -1,5 +1,4 @@
 ﻿#include "Stdafx.h"
-#include "Core/DefaultDrawEngine.h"
 #include "Crypto/Hash/CRC32R.h"
 #include "Crypto/Hash/MD5.h"
 #include "Data/ByteTool.h"
@@ -14,13 +13,14 @@
 #include "IO/StmData/FileData.h"
 #include "IO/StmData/MemoryData.h"
 #include "Map/GPSTrack.h"
+#include "Media/DrawEngineFactory.h"
 #include "Media/FrequencyGraph.h"
 #include "Media/JPEGFile.h"
 #include "Media/MediaFile.h"
 #include "Media/StaticImage.h"
 #include "Media/Resizer/LanczosResizerH8_8.h"
-#include "Net/DefaultSSLEngine.h"
 #include "Net/OSSocketFactory.h"
+#include "Net/SSLEngineFactory.h"
 #include "Parser/FullParserList.h"
 #include "SSWR/OrganMgr/OrganImageItem.h"
 #include "SSWR/OrganMgr/OrganImages.h"
@@ -142,9 +142,9 @@ SSWR::OrganMgr::OrganEnv::OrganEnv()
 {
 	NEW_CLASS(this->parsers, Parser::FullParserList());
 	NEW_CLASS(this->colorMgr, Media::ColorManager());
-	this->drawEng = Core::DefaultDrawEngine::CreateDrawEngine();
+	this->drawEng = Media::DrawEngineFactory::CreateDrawEngine();
 	NEW_CLASS(this->sockf, Net::OSSocketFactory(true));
-	this->ssl = Net::DefaultSSLEngine::Create(this->sockf, true);
+	this->ssl = Net::SSLEngineFactory::Create(this->sockf, true);
 	NEW_CLASS(this->monMgr, Media::MonitorMgr());
 	this->currCate = 0;
 	this->trips = 0;

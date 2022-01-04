@@ -6,8 +6,8 @@
 #include "IO/ConsoleWriter.h"
 #include "IO/FileStream.h"
 #include "IO/Path.h"
-#include "Net/DefaultSSLEngine.h"
 #include "Net/OSSocketFactory.h"
+#include "Net/SSLEngineFactory.h"
 #include "Parser/FileParser/X509Parser.h"
 
 Int32 MyMain(Core::IProgControl *progCtrl)
@@ -41,7 +41,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	Net::SocketFactory *sockf;
 	Net::SSLEngine *ssl;
 	NEW_CLASS(sockf, Net::OSSocketFactory(false));
-	ssl = Net::DefaultSSLEngine::Create(sockf, true);
+	ssl = Net::SSLEngineFactory::Create(sockf, true);
 	Crypto::Cert::X509Key *key = (Crypto::Cert::X509Key*)x509;
 	Crypto::Cert::CertNames names;
 	Crypto::Cert::CertExtensions ext;

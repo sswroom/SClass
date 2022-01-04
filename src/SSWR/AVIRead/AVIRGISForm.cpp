@@ -13,7 +13,7 @@
 #include "Math/UTMGridConvertDbl.h"
 #include "Math/VectorImage.h"
 #include "Media/SharedImage.h"
-#include "Net/DefaultSSLEngine.h"
+#include "Net/SSLEngineFactory.h"
 #include "Net/WebBrowser.h"
 #include "SSWR/AVIRead/AVIRDBForm.h"
 #include "SSWR/AVIRead/AVIRGISCombineForm.h"
@@ -590,7 +590,7 @@ void SSWR::AVIRead::AVIRGISForm::HKOPortal(const UTF8Char *listFile, const UTF8C
 SSWR::AVIRead::AVIRGISForm::AVIRGISForm(UI::GUIClientControl *parent, UI::GUICore *ui, AVIRead::AVIRCore *core, Map::MapEnv *env, Map::MapView *view) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->core = core;
-	this->ssl = Net::DefaultSSLEngine::Create(this->core->GetSocketFactory(), true);
+	this->ssl = Net::SSLEngineFactory::Create(this->core->GetSocketFactory(), true);
 	this->env = env;
 	this->colorSess = this->core->GetColorMgr()->CreateSess(this->GetHMonitor());
 	this->scaleChanging = false;

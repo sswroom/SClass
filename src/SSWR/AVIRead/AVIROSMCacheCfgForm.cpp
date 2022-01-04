@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "IO/Path.h"
 #include "Map/OSM/OSMCacheHandler.h"
-#include "Net/DefaultSSLEngine.h"
+#include "Net/SSLEngineFactory.h"
 #include "Net/WebServer/WebListener.h"
 #include "SSWR/AVIRead/AVIROSMCacheCfgForm.h"
 #include "SSWR/AVIRead/AVIROSMCacheForm.h"
@@ -111,7 +111,7 @@ SSWR::AVIRead::AVIROSMCacheCfgForm::AVIROSMCacheCfgForm(UI::GUIClientControl *pa
 
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
-	this->ssl = Net::DefaultSSLEngine::Create(this->core->GetSocketFactory(), true);
+	this->ssl = Net::SSLEngineFactory::Create(this->core->GetSocketFactory(), true);
 	NEW_CLASS(this->lblMapType, UI::GUILabel(ui, this, (const UTF8Char*)"Map Type"));
 	this->lblMapType->SetRect(8, 8, 100, 23, false);
 	NEW_CLASS(this->cboMapType, UI::GUIComboBox(ui, this, false));

@@ -5,8 +5,8 @@
 #include "IO/StreamReader.h"
 #include "Manage/HiResClock.h"
 #include "Math/Math.h"
-#include "Net/DefaultSSLEngine.h"
 #include "Net/HTTPClient.h"
+#include "Net/SSLEngineFactory.h"
 #include "SSWR/AVIRead/AVIRCOVID19Form.h"
 #include "Sync/Thread.h"
 #include "Text/MyStringFloat.h"
@@ -255,7 +255,7 @@ SSWR::AVIRead::AVIRCOVID19Form::AVIRCOVID19Form(UI::GUIClientControl *parent, UI
 
 	this->core = core;
 	this->sockf = core->GetSocketFactory();
-	this->ssl = Net::DefaultSSLEngine::Create(this->sockf, true);
+	this->ssl = Net::SSLEngineFactory::Create(this->sockf, true);
 	NEW_CLASS(this->countries, Data::StringUTF8Map<SSWR::AVIRead::AVIRCOVID19Form::CountryInfo*>());
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 

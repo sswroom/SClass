@@ -1,7 +1,4 @@
 
-Core/DefaultDrawEngine.h: ../../src/Core/DefaultDrawEngineSEng.cpp
-@DefaultDrawEngine.o
-
 Exporter/GUIExporter.h: ../../src/Exporter/GUIExporterNull.cpp
 @GUIExporter.o
 Exporter/GUIGIFExporter.h: ../../src/Exporter/GUIGIFExporterNull.cpp
@@ -14,6 +11,8 @@ Exporter/GUITIFExporter.h: ../../src/Exporter/GUITIFExporterNull.cpp
 @GUITIFExporter.o
 
 Media/DDrawManager.h:
+Media/DrawEngineFactory.h: ../../src/Media/DrawEngineFactorySEng.cpp
+@DrawEngineFactory.o
 Media/DrawEngineGUI.h: ../../src/Media/NoGUIDrawEngine.cpp
 @DrawEngineGUI.o
 Media/MonitorInfo.h: ../../src/Media/MonitorInfoNul.cpp
@@ -25,13 +24,13 @@ Parser/FileParser/GUIImgParser.h: ../../src/Parser/FileParser/GUIImgParserNul.cp
 @GUIImgParser.o
 
 GUIStartup.o: ../../startup/GtkStartup.cpp
-DefaultDrawEngine.o: ../../src/Core/DefaultDrawEngineSEng.cpp
 GUIExporter.o: ../../src/Exporter/GUIExporterNull.cpp
 GUIGIFExporter.o: ../../src/Exporter/GUIGIFExporterNull.cpp
 GUIJPGExporter.o: ../../src/Exporter/GUIJPGExporterNull.cpp
 GUIPNGExporter.o: ../../src/Exporter/GUIPNGExporterNull.cpp
 GUITIFExporter.o: ../../src/Exporter/GUITIFExporterNull.cpp
-MonitorInfo.o: ../../src/Media/MonitorInfoNul.cpp
+DrawEngineFactory.o: ../../src/Media/DrawEngineFactorySEng.cpp
 DrawEngineGUI.o: ../../src/Media/NoGUIDrawEngine.cpp
+MonitorInfo.o: ../../src/Media/MonitorInfoNul.cpp
 ScreenCapturer.o: ../../src/Media/ScreenCapturerNull.cpp
 GUIImgParser.o: ../../src/Parser/FileParser/GUIImgParserNul.cpp

@@ -61,8 +61,8 @@ Media/AudioDevice.h: ../../src/Media/AudioDeviceW.cpp
 @AudioDevice.o
 Media/DDrawSurface.h: ../../src/Media/DDrawSurface.cpp
 @DDrawSurface.o
-Media/DefaultMonitorSurfaceMgr.h: ../../src/Media/DefaultMonitorSurfaceMgrWin.cpp
-@DefaultMonitorSurfaceMgr.o
+Media/MonitorSurfaceMgrFactory.h: ../../src/Media/MonitorSurfaceMgrFactoryWin.cpp
+@MonitorSurfaceMgrFactory.o
 Media/KSRenderer.h: ../../src/Media/KSRenderer.cpp
 @KSRenderer.o
 @audfilter.o
@@ -109,10 +109,10 @@ node.h:
 tlist.h:
 util.h:
 
-Net/DefaultSSLEngine.h: ../../src/Net/DefaultSSLEngineWin.cpp
-@DefaultSSLEngine.o
 Net/HTTPOSClient.h: ../../src/Net/HTTPOSClientW.cpp
 @HTTPOSClient.o
+Net/SSLEngineFactory.h: ../../src/Net/SSLEngineFactoryWin.cpp
+@SSLEngineFactory.o
 Net/WinSSLClient.h: ../../src/Net/WinSSLClient.cpp
 @WinSSLClient.o
 Net/WinSSLEngine.h: ../../src/Net/WinSSLEngine.cpp
@@ -164,7 +164,7 @@ ASIOOutRenderer.o: ../../src/Media/ASIOOutRenderer.cpp
 !-lole32
 AudioDevice.o: ../../src/Media/AudioDeviceW.cpp
 DDrawSurface.o: ../../src/Media/DDrawSurface.cpp
-DefaultMonitorSurfaceMgr.o: ../../src/Media/DefaultMonitorSurfaceMgrWin.cpp
+MonitorSurfaceMgrFactory.o: ../../src/Media/MonitorSurfaceMgrFactoryWin.cpp
 KSRenderer.o: ../../src/Media/KSRenderer.cpp
 $-I ../../ThirdParty/KSSample
 !-luuid
@@ -187,9 +187,9 @@ OCVFrame.o: ../../src/Media/OpenCV/OCVFrameNull.cpp
 OCVFrameFeeder.o: ../../src/Media/OpenCV/OCVFrameFeeder.cpp
 OCVObjectDetector.o: ../../src/Media/OpenCV/OCVObjectDetectorNull.cpp
 OCVUtil.o: ../../src/Media/OpenCV/OCVUtil.cpp
-DefaultSSLEngine.o: ../../src/Net/DefaultSSLEngineWin.cpp
 HTTPOSClient.o: ../../src/Net/HTTPOSClientW.cpp
 !-lwinhttp
+SSLEngineFactory.o: ../../src/Net/SSLEngineFactoryWin.cpp
 WinSSLClient.o: ../../src/Net/WinSSLClient.cpp
 WinSSLEngine.o: ../../src/Net/WinSSLEngine.cpp
 !-lsecur32

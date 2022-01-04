@@ -1,8 +1,8 @@
 #include "Stdafx.h"
 #include "Manage/CPUDB.h"
 #include "Manage/CPUInfoDetail.h"
-#include "Net/DefaultSSLEngine.h"
 #include "Net/HTTPClient.h"
+#include "Net/SSLEngineFactory.h"
 #include "SSWR/AVIRead/AVIRCPUInfoForm.h"
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
@@ -92,7 +92,7 @@ SSWR::AVIRead::AVIRCPUInfoForm::AVIRCPUInfoForm(UI::GUIClientControl *parent, UI
 	this->SetFont(0, 8.25, false);
 	
 	this->core = core;
-	this->ssl = Net::DefaultSSLEngine::Create(this->core->GetSocketFactory(), true);
+	this->ssl = Net::SSLEngineFactory::Create(this->core->GetSocketFactory(), true);
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));

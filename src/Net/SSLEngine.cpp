@@ -1,6 +1,5 @@
 #include "Stdafx.h"
 #include "Crypto/Cert/CertUtil.h"
-#include "Net/DefaultSSLEngine.h"
 #include "Net/SSLEngine.h"
 #include "Parser/FileParser/X509Parser.h"
 #include "Sync/MutexUsage.h"

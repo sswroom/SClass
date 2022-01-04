@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "Crypto/Cert/CertUtil.h"
 #include "Data/ByteTool.h"
-#include "Net/DefaultSSLEngine.h"
+#include "Net/SSLEngineFactory.h"
 #include "SSWR/AVIRead/AVIRMQTTBrokerForm.h"
 #include "SSWR/AVIRead/AVIRSSLCertKeyForm.h"
 #include "Sync/MutexUsage.h"
@@ -211,7 +211,7 @@ SSWR::AVIRead::AVIRMQTTBrokerForm::AVIRMQTTBrokerForm(UI::GUIClientControl *pare
 
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
-	this->ssl = Net::DefaultSSLEngine::Create(this->core->GetSocketFactory(), true);
+	this->ssl = Net::SSLEngineFactory::Create(this->core->GetSocketFactory(), true);
 	this->sslCert = 0;
 	this->sslKey = 0;
 	NEW_CLASS(this->topicMut, Sync::Mutex());

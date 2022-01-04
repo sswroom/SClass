@@ -1,8 +1,8 @@
 #include "Stdafx.h"
 #include "Core/Core.h"
 #include "IO/ConsoleWriter.h"
-#include "Net/DefaultSSLEngine.h"
 #include "Net/OSSocketFactory.h"
+#include "Net/SSLEngineFactory.h"
 #include "Net/WebServer/HTTPDirectoryHandler.h"
 #include "Net/WebServer/HTTPFormParser.h"
 #include "Net/WebServer/WebListener.h"
@@ -95,7 +95,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	NEW_CLASS(sockf, Net::OSSocketFactory(true));
 	if (useSSL)
 	{
-		ssl = Net::DefaultSSLEngine::Create(sockf, true);
+		ssl = Net::SSLEngineFactory::Create(sockf, true);
 		if (ssl == 0 || !ssl->SetServerCerts((const UTF8Char*)"test.crt", (const UTF8Char*)"test.key"))
 		{
 			UTF8Char sbuff[512];

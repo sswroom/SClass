@@ -1,8 +1,5 @@
 CFLAGS += -DNO_GDK
 
-Core/DefaultDrawEngine.h: ../../src/Core/DefaultDrawEngineGTK.cpp
-@DefaultDrawEngine.o
-
 Exporter/GUIExporter.h: ../../src/Exporter/GUIExporterNull.cpp
 @GUIExporter.o
 Exporter/GUIGIFExporter.h: ../../src/Exporter/GUIGIFExporterNull.cpp
@@ -15,6 +12,8 @@ Exporter/GUITIFExporter.h: ../../src/Exporter/GUITIFExporterNull.cpp
 @GUITIFExporter.o
 
 Media/DDrawManager.h:
+Media/DrawEngineFactory.h: ../../src/Media/DrawEngineFactoryGTK.cpp
+@DrawEngineFactory.o
 Media/DrawEngineGUI.h: ../../src/Media/GTKDrawEngine.cpp
 @DrawEngineGUI.o
 Media/GTKDrawEngine.h: ../../src/Media/GTKDrawEngine.cpp
@@ -28,15 +27,15 @@ Parser/FileParser/GUIImgParser.h: ../../src/Parser/FileParser/GUIImgParserNul.cp
 @GUIImgParser.o
 
 GUIStartup.o: ../../startup/GtkStartup.cpp
-DefaultDrawEngine.o: ../../src/Core/DefaultDrawEngineGTK.cpp
 !-lcairo
 GUIExporter.o: ../../src/Exporter/GUIExporterNull.cpp
 GUIGIFExporter.o: ../../src/Exporter/GUIGIFExporterNull.cpp
 GUIJPGExporter.o: ../../src/Exporter/GUIJPGExporterNull.cpp
 GUIPNGExporter.o: ../../src/Exporter/GUIPNGExporterNull.cpp
 GUITIFExporter.o: ../../src/Exporter/GUITIFExporterNull.cpp
-MonitorInfo.o: ../../src/Media/MonitorInfoNul.cpp
+DrawEngineFactory.o: ../../src/Media/DrawEngineFactoryGTK.cpp
 DrawEngineGUI.o: ../../src/Media/GTKDrawEngine.cpp
 !-lcairo
+MonitorInfo.o: ../../src/Media/MonitorInfoNul.cpp
 ScreenCapturer.o: ../../src/Media/ScreenCapturerNull.cpp
 GUIImgParser.o: ../../src/Parser/FileParser/GUIImgParserNul.cpp

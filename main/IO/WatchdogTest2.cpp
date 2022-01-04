@@ -5,10 +5,10 @@
 #include "IO/FileStream.h"
 #include "IO/Watchdog.h"
 #include "IO/Device/AM2315.h"
-#include "Net/DefaultSSLEngine.h"
 #include "Net/HTTPClient.h"
 #include "Net/OSSocketFactory.h"
 #include "Net/SSLEngine.h"
+#include "Net/SSLEngineFactory.h"
 #include "Sync/Thread.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
@@ -158,7 +158,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	NEW_CLASS(evt, Sync::Event(true, (const UTF8Char*)"evt"));
 	NEW_CLASS(httpEvt, Sync::Event(true, (const UTF8Char*)"evt"));
 	NEW_CLASS(sockf, Net::OSSocketFactory(false));
-	ssl = Net::DefaultSSLEngine::Create(sockf, true);
+	ssl = Net::SSLEngineFactory::Create(sockf, true);
 
 	wd = IO::Watchdog::Create(1);
 	if (wd && wd->IsError())

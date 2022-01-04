@@ -2,8 +2,8 @@
 #include "Core/Core.h"
 #include "IO/ConsoleWriter.h"
 #include "IO/Path.h"
-#include "Net/DefaultSSLEngine.h"
 #include "Net/OSSocketFactory.h"
+#include "Net/SSLEngineFactory.h"
 #include "Net/WebServer/PrintLogWebHandler.h"
 #include "Net/WebServer/WebListener.h"
 #include "Net/WebServer/WebServiceHandler.h"
@@ -36,7 +36,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	NEW_CLASS(console, IO::ConsoleWriter());
 	NEW_CLASS(sockf, Net::OSSocketFactory(true));
 	initSucc = false;
-	ssl = Net::DefaultSSLEngine::Create(sockf, false);
+	ssl = Net::SSLEngineFactory::Create(sockf, false);
 	if (ssl)
 	{
 		IO::Path::GetProcessFileName(sbuff1);

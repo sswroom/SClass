@@ -55,8 +55,8 @@ Media/ALSARenderer.h: ../../src/Media/ALSARenderer.cpp
 @ALSARenderer.o
 Media/AudioDevice.h: ../../src/Media/AudioDeviceL.cpp
 @AudioDevice.o
-Media/DefaultMonitorSurfaceMgr.h: ../../src/Media/DefaultMonitorSurfaceMgrLinux.cpp
-@DefaultMonitorSurfaceMgr.o
+Media/MonitorSurfaceMgrFactory.h: ../../src/Media/MonitorSurfaceMgrFactoryLinux.cpp
+@MonitorSurfaceMgrFactory.o
 Media/DRMMonitorSurfaceMgr.h: ../../src/Media/DRMMonitorSurfaceMgr.cpp
 @DRMMonitorSurfaceMgr.o
 Media/DRMSurface.h: ../../src/Media/DRMSurface.cpp
@@ -79,10 +79,10 @@ Media/OpenCV/OCVObjectDetector.h: ../../src/Media/OpenCV/OCVObjectDetector.cpp
 Media/OpenCV/OCVUtil.h: ../../src/Media/OpenCV/OCVUtil.cpp
 @OCVUtil.o
 
-Net/DefaultSSLEngine.h: ../../src/Net/DefaultSSLEngineOpenSSL.cpp
-@DefaultSSLEngine.o
 Net/HTTPOSClient.h: ../../src/Net/HTTPOSClientL.cpp
 @HTTPOSClient.o
+Net/SSLEngineFactory.h: ../../src/Net/SSLEngineFactoryOpenSSL.cpp
+@SSLEngineFactory.o
 Net/WirelessLAN.h: ../../src/Net/WirelessLANL.cpp
 @WirelessLAN.o
 
@@ -137,7 +137,7 @@ ThreadInfo.o: ../../src/Manage/ThreadInfoL.cpp
 ALSARenderer.o: ../../src/Media/ALSARenderer.cpp
 !-lasound
 AudioDevice.o: ../../src/Media/AudioDeviceL.cpp
-DefaultMonitorSurfaceMgr.o: ../../src/Media/DefaultMonitorSurfaceMgrLinux.cpp
+MonitorSurfaceMgrFactory.o: ../../src/Media/MonitorSurfaceMgrFactoryLinux.cpp
 DRMMonitorSurfaceMgr.o: ../../src/Media/DRMMonitorSurfaceMgr.cpp
 $`pkg-config --cflags libdrm`
 !`pkg-config --libs libdrm`
@@ -168,9 +168,9 @@ OCVUtil.o: ../../src/Media/OpenCV/OCVUtil.cpp
 $@(pkg-config --exists opencv4) `pkg-config --cflags opencv4`
 !@(pkg-config --exists opencv) `pkg-config --libs opencv`
 !@(pkg-config --exists opencv4) `pkg-config --libs opencv4`
-DefaultSSLEngine.o: ../../src/Net/DefaultSSLEngineOpenSSL.cpp
 HTTPOSClient.o: ../../src/Net/HTTPOSClientL.cpp
 !-lcurl
+SSLEngineFactory.o: ../../src/Net/SSLEngineFactoryOpenSSL.cpp
 WirelessLAN.o: ../../src/Net/WirelessLANL.cpp
 Thread.o: ../../src/Sync/ThreadU.cpp
 !-lpthread

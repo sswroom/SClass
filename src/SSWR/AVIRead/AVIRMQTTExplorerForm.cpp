@@ -6,7 +6,7 @@
 #include "IO/StmData/FileData.h"
 #include "Math/Math.h"
 #include "Media/ColorProfile.h"
-#include "Net/DefaultSSLEngine.h"
+#include "Net/SSLEngineFactory.h"
 #include "SSWR/AVIRead/AVIRMQTTExplorerForm.h"
 #include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
@@ -522,7 +522,7 @@ SSWR::AVIRead::AVIRMQTTExplorerForm::AVIRMQTTExplorerForm(UI::GUIClientControl *
 
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
-	this->ssl = Net::DefaultSSLEngine::Create(this->core->GetSocketFactory(), true);
+	this->ssl = Net::SSLEngineFactory::Create(this->core->GetSocketFactory(), true);
 	NEW_CLASS(this->topicMut, Sync::Mutex());
 	NEW_CLASS(this->topicMap, Data::StringUTF8Map<SSWR::AVIRead::AVIRMQTTExplorerForm::TopicStatus*>());
 	this->currTopic = 0;

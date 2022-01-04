@@ -2,8 +2,8 @@
 #include "IO/FileStream.h"
 #include "IO/Path.h"
 #include "Manage/HiResClock.h"
-#include "Net/DefaultSSLEngine.h"
 #include "Net/HTTPOSClient.h"
+#include "Net/SSLEngineFactory.h"
 #include "SSWR/AVIRead/AVIRHTTPDownloaderForm.h"
 #include "Sync/Thread.h"
 #include "Text/MyString.h"
@@ -268,7 +268,7 @@ SSWR::AVIRead::AVIRHTTPDownloaderForm::AVIRHTTPDownloaderForm(UI::GUIClientContr
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->sockf = core->GetSocketFactory();
-	this->ssl = Net::DefaultSSLEngine::Create(this->sockf, true);
+	this->ssl = Net::SSLEngineFactory::Create(this->sockf, true);
 	this->respChanged = false;
 	this->respHdrChanged = false;
 	this->threadRunning = false;

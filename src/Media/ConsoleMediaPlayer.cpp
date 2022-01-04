@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "IO/StmData/FileData.h"
 #include "Media/ConsoleMediaPlayer.h"
-#include "Media/DefaultMonitorSurfaceMgr.h"
+#include "Media/MonitorSurfaceMgrFactory.h"
 
 void Media::ConsoleMediaPlayer::OnMediaOpened()
 {
@@ -11,7 +11,7 @@ void Media::ConsoleMediaPlayer::OnMediaOpened()
 Media::ConsoleMediaPlayer::ConsoleMediaPlayer(Media::MonitorMgr *monMgr, Media::ColorManager *colorMgr, Parser::ParserList *parsers, Media::AudioDevice *audioDev) : Media::MediaPlayerInterface(parsers)
 {
 	this->colorMgr = colorMgr;
-	this->surfaceMgr = Media::DefaultMonitorSurfaceMgr::Create(monMgr, colorMgr);
+	this->surfaceMgr = Media::MonitorSurfaceMgrFactory::Create(monMgr, colorMgr);
 	this->colorSess = 0;
 	this->renderer = 0;
 

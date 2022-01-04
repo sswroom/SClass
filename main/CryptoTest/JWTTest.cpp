@@ -6,8 +6,8 @@
 #include "IO/ConsoleWriter.h"
 #include "IO/FileStream.h"
 #include "IO/Path.h"
-#include "Net/DefaultSSLEngine.h"
 #include "Net/OSSocketFactory.h"
+#include "Net/SSLEngineFactory.h"
 #include "Parser/FileParser/X509Parser.h"
 #include "Text/StringBuilderUTF8.h"
 #include "Text/StringTool.h"
@@ -20,7 +20,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	Crypto::Token::JWTHandler *jwt;
 	Net::SocketFactory *sockf;
 	NEW_CLASS(sockf, Net::OSSocketFactory(false));
-	Net::SSLEngine *ssl = Net::DefaultSSLEngine::Create(sockf, true);
+	Net::SSLEngine *ssl = Net::SSLEngineFactory::Create(sockf, true);
 	NEW_CLASS(jwt, Crypto::Token::JWTHandler(ssl, Crypto::Token::JWSignature::Algorithm::HS256, (const UInt8*)"your-256-bit-secret", 19));
 
 	Crypto::Token::JWTParam param;

@@ -1,7 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Core/Core.h"
-#include "Core/DefaultDrawEngine.h"
 #include "Data/ByteTool.h"
 #include "IO/BuildTime.h"
 #include "IO/ConsoleWriter.h"
@@ -22,6 +21,7 @@
 #include "Math/Unit/Distance.h"
 #include "Math/Unit/Pressure.h"
 #include "Media/DDCReader.h"
+#include "Media/DrawEngineFactory.h"
 #include "Media/EDID.h"
 #include "Media/PaperSize.h"
 #include "Media/Printer.h"
@@ -546,7 +546,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		{
 			const UTF8Char *csptr;
 			Media::Printer *printer;
-			Media::DrawEngine *deng = Core::DefaultDrawEngine::CreateDrawEngine();
+			Media::DrawEngine *deng = Media::DrawEngineFactory::CreateDrawEngine();
 			while (i-- > 0)
 			{
 				csptr = printerList.GetItem(i);

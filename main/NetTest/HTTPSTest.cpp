@@ -1,8 +1,8 @@
 #include "Stdafx.h"
 #include "Core/Core.h"
-#include "Net/DefaultSSLEngine.h"
 #include "Net/HTTPOSClient.h"
 #include "Net/OSSocketFactory.h"
+#include "Net/SSLEngineFactory.h"
 #include <stdio.h>
 
 Int32 MyMain(Core::IProgControl *progCtrl)
@@ -14,7 +14,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	Net::SSLEngine *ssl;
 	Net::HTTPClient *cli;
 	NEW_CLASS(sockf, Net::OSSocketFactory(false));
-	ssl = Net::DefaultSSLEngine::Create(sockf, true);
+	ssl = Net::SSLEngineFactory::Create(sockf, true);
 	cli = Net::HTTPClient::CreateClient(sockf, ssl, 0, true, Text::StrStartsWith(url, (const UTF8Char*)"https://"));
 	printf("Connecting to %s\r\n", url);
 	cli->Connect(url, "GET", 0, 0, true);

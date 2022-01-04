@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "Crypto/Cert/CertUtil.h"
 #include "IO/Path.h"
-#include "Net/DefaultSSLEngine.h"
+#include "Net/SSLEngineFactory.h"
 #include "SSWR/AVIRead/AVIRHTTPSvrForm.h"
 #include "SSWR/AVIRead/AVIRSSLCertKeyForm.h"
 #include "Sync/MutexUsage.h"
@@ -435,7 +435,7 @@ SSWR::AVIRead::AVIRHTTPSvrForm::AVIRHTTPSvrForm(UI::GUIClientControl *parent, UI
 	this->core = core;
 	this->SetText((const UTF8Char*)"HTTP Server");
 	this->SetFont(0, 8.25, false);
-	this->ssl = Net::DefaultSSLEngine::Create(this->core->GetSocketFactory(), true);
+	this->ssl = Net::SSLEngineFactory::Create(this->core->GetSocketFactory(), true);
 	this->sslCert = 0;
 	this->sslKey = 0;
 	this->svr = 0;
