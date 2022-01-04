@@ -110,9 +110,9 @@ void __stdcall SSWR::AVIRead::AVIRCaptureDevForm::OnDevChg(void *userObj)
 			
 			sb.ClearStr();
 			sb.AppendUOSInt(cfmt->width);
-			sb.AppendC(UTF8STRC(" x ");
+			sb.AppendC(UTF8STRC(" x "));
 			sb.AppendUOSInt(cfmt->height);
-			sb.AppendC(UTF8STRC(" (");
+			sb.AppendC(UTF8STRC(" ("));
 			if (cfmt->fourcc)
 			{
 				UInt8 fcc[4];
@@ -122,17 +122,17 @@ void __stdcall SSWR::AVIRead::AVIRCaptureDevForm::OnDevChg(void *userObj)
 			else
 			{
 				sb.AppendU32(cfmt->bpp);
-				sb.AppendC(UTF8STRC(" bits RGB");
+				sb.AppendC(UTF8STRC(" bits RGB"));
 			}
-			sb.AppendC(UTF8STRC(")");
+			sb.AppendC(UTF8STRC(")"));
 
 			me->cboFormat->AddItem(sb.ToString(), cfmt);
 			me->currFormats->Add(cfmt);
 
 			devInfo.AppendUOSInt(cfmt->width);
-			devInfo.AppendC(UTF8STRC(" x ");
+			devInfo.AppendC(UTF8STRC(" x "));
 			devInfo.AppendUOSInt(cfmt->height);
-			devInfo.AppendC(UTF8STRC(" (");
+			devInfo.AppendC(UTF8STRC(" ("));
 			if (cfmt->fourcc)
 			{
 				UInt8 fcc[4];
@@ -142,12 +142,12 @@ void __stdcall SSWR::AVIRead::AVIRCaptureDevForm::OnDevChg(void *userObj)
 			else
 			{
 				devInfo.AppendU32(cfmt->bpp);
-				devInfo.AppendC(UTF8STRC(" bits RGB");
+				devInfo.AppendC(UTF8STRC(" bits RGB"));
 			}
-			devInfo.AppendC(UTF8STRC(")");
-			devInfo.AppendC(UTF8STRC(" ");
+			devInfo.AppendC(UTF8STRC(")"));
+			devInfo.AppendC(UTF8STRC(" "));
 			Text::SBAppendF64(&devInfo, cfmt->frameRateNumer / (Double)cfmt->frameRateDenom);
-			devInfo.AppendC(UTF8STRC(" fps\r\n");
+			devInfo.AppendC(UTF8STRC(" fps\r\n"));
 
 			i++;
 		}

@@ -45,7 +45,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		MemClear(buff, sizeof(buff));
 	t = clk.GetTimeDiff();
 	sb.ClearStr();
-	sb.AppendC(UTF8STRC("z1 = ");
+	sb.AppendC(UTF8STRC("z1 = "));
 	Text::SBAppendF64(&sb, t);
 	console.WriteLine(sb.ToString());
 
@@ -55,7 +55,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		MemClear(buff2, BUFFSIZE);
 	t = clk.GetTimeDiff();
 	sb.ClearStr();
-	sb.AppendC(UTF8STRC("z2 = ");
+	sb.AppendC(UTF8STRC("z2 = "));
 	Text::SBAppendF64(&sb, t);
 	console.WriteLine(sb.ToString());
 
@@ -65,7 +65,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		MemClearAC(buff2, BUFFSIZE);
 	t = clk.GetTimeDiff();
 	sb.ClearStr();
-	sb.AppendC(UTF8STRC("z3 = ");
+	sb.AppendC(UTF8STRC("z3 = "));
 	Text::SBAppendF64(&sb, t);
 	console.WriteLine(sb.ToString());
 
@@ -75,7 +75,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		MemClearANC(buff2, BUFFSIZE);
 	t = clk.GetTimeDiff();
 	sb.ClearStr();
-	sb.AppendC(UTF8STRC("z4 = ");
+	sb.AppendC(UTF8STRC("z4 = "));
 	Text::SBAppendF64(&sb, t);
 	console.WriteLine(sb.ToString());
 

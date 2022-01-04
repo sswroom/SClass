@@ -582,7 +582,7 @@ void Net::WebServer::WebRequest::GetRequestURLBase(Text::StringBuilderUTF *sb)
 		}
 		break;
 	case RequestProtocol::RTSP1_0:
-		sb->AppendC(UTF8STRC("rtsp://");
+		sb->AppendC(UTF8STRC("rtsp://"));
 		defPort=554;
 		break;
 	}
