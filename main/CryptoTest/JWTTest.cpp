@@ -24,7 +24,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	NEW_CLASS(jwt, Crypto::Token::JWTHandler(ssl, Crypto::Token::JWSignature::Algorithm::HS256, (const UInt8*)"your-256-bit-secret", 19));
 
 	Crypto::Token::JWTParam param;
-	Text::String *s = Text::String::NewNotNull((const UTF8Char*)"1234567890");
+	Text::String *s = Text::String::New(UTF8STRC("1234567890"));
 	param.SetSubject(s);
 	s->Release();
 	param.SetIssuedAt(1516239022);

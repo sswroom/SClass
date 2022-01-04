@@ -111,7 +111,7 @@ template <class T> Bool DB::DBUtil::SaveCSV(IO::Stream *stm, Data::ArrayList<T*>
 		s->Release();
 		i++;
 	}
-	sb.AppendC((const UTF8Char*)"\r\n", 2);
+	sb.AppendC(UTF8STRC("\r\n"));
 	if (stm->Write(sb.ToString(), sb.GetCharCnt()) != sb.GetCharCnt()) succ = false;
 
 	Data::VariItem itm;
@@ -133,7 +133,7 @@ template <class T> Bool DB::DBUtil::SaveCSV(IO::Stream *stm, Data::ArrayList<T*>
 			Data::VariItem::ItemType itmType = itm.GetItemType();
 			if (itmType == Data::VariItem::ItemType::Null)
 			{
-				sb.AppendC((const UTF8Char*)"\"\"", 2);
+				sb.AppendC(UTF8STRC("\"\""));
 			}
 			else if (itmType == Data::VariItem::ItemType::Str)
 			{
@@ -151,7 +151,7 @@ template <class T> Bool DB::DBUtil::SaveCSV(IO::Stream *stm, Data::ArrayList<T*>
 			}
 			i++;
 		}
-		sb.AppendC((const UTF8Char*)"\r\n", 2);
+		sb.AppendC(UTF8STRC("\r\n"));
 		if (stm->Write(sb.ToString(), sb.GetCharCnt()) != sb.GetCharCnt())
 		{
 			succ = false;

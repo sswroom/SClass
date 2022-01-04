@@ -22,7 +22,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	i = 10000;
 	while (i-- > 0)
 	{
-		strArr[i] = Text::String::NewNotNull((const UTF8Char*)"1234567890");
+		strArr[i] = Text::String::New(UTF8STRC("1234567890"));
 	}
 
 	clk->Start();

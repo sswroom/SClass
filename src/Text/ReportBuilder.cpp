@@ -27,7 +27,7 @@ Text::ReportBuilder::ReportBuilder(const UTF8Char *name, UOSInt colCount, const 
 	const UTF8Char **cols;
 	UOSInt i;
 	this->name = Text::String::NewNotNull(name);
-	this->fontName = Text::String::NewNotNull((const UTF8Char*)"Arial");
+	this->fontName = Text::String::New(UTF8STRC("Arial"));
 	this->colCount = colCount;
 	this->colWidthPts = MemAlloc(Double, this->colCount);
 	this->chart = 0;

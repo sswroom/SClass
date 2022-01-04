@@ -843,7 +843,7 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 											elemType = 6;
 											isPG = true;
 											SDEL_STRING(names[1]);
-											names[1] = Text::String::NewNotNull((const UTF8Char*)"School");
+											names[1] = Text::String::New(UTF8STRC("School"));
 										}
 									}
 									else if (vName->Equals((const UTF8Char*)"parking"))
@@ -853,7 +853,7 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 											elemType = 7;
 											isPG = true;
 											SDEL_STRING(names[1]);
-											names[1] = Text::String::NewNotNull((const UTF8Char*)"Parking");
+											names[1] = Text::String::New(UTF8STRC("Parking"));
 										}
 									}
 									else if (vName->Equals((const UTF8Char*)"hospital"))
@@ -863,7 +863,7 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 											elemType = 18;
 											isPG = true;
 											SDEL_STRING(names[1]);
-											names[1] = Text::String::NewNotNull((const UTF8Char*)"Hospital");
+											names[1] = Text::String::New(UTF8STRC("Hospital"));
 										}
 									}
 									else if (vName->Equals((const UTF8Char*)"college"))
@@ -873,7 +873,7 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 											elemType = 6;
 											isPG = true;
 											SDEL_STRING(names[1]);
-											names[1] = Text::String::NewNotNull((const UTF8Char*)"College");
+											names[1] = Text::String::New(UTF8STRC("College"));
 										}
 									}
 									else if (vName->Equals((const UTF8Char*)"place_of_worship"))
@@ -883,7 +883,7 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 											elemType = 18;
 											isPG = true;
 											SDEL_STRING(names[1]);
-											names[1] = Text::String::NewNotNull((const UTF8Char*)"PlaceOfWorship");
+											names[1] = Text::String::New(UTF8STRC("PlaceOfWorship"));
 										}
 									}
 									else if (vName->Equals((const UTF8Char*)"nursing_home"))
@@ -893,7 +893,7 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 											elemType = 18;
 											isPG = true;
 											SDEL_STRING(names[1]);
-											names[1] = Text::String::NewNotNull((const UTF8Char*)"NursingHome");
+											names[1] = Text::String::New(UTF8STRC("NursingHome"));
 										}
 									}
 									else if (vName->Equals((const UTF8Char*)"community_centre"))
@@ -903,7 +903,7 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 											elemType = 18;
 											isPG = true;
 											SDEL_STRING(names[1]);
-											names[1] = Text::String::NewNotNull((const UTF8Char*)"CommunityCentre");
+											names[1] = Text::String::New(UTF8STRC("CommunityCentre"));
 										}
 									}
 									else if (vName->Equals((const UTF8Char*)"university"))
@@ -913,7 +913,7 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 											elemType = 6;
 											isPG = true;
 											SDEL_STRING(names[1]);
-											names[1] = Text::String::NewNotNull((const UTF8Char*)"University");
+											names[1] = Text::String::New(UTF8STRC("University"));
 										}
 									}
 								}
@@ -936,7 +936,7 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 											elemType = 18;
 											isPG = true;
 											SDEL_STRING(names[1]);
-											names[1] = Text::String::NewNotNull((const UTF8Char*)"Building");
+											names[1] = Text::String::New(UTF8STRC("Building"));
 										}
 									}
 									else if (vName->Equals((const UTF8Char*)"house"))
@@ -946,7 +946,7 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 											elemType = 18;
 											isPG = true;
 											SDEL_STRING(names[1]);
-											names[1] = Text::String::NewNotNull((const UTF8Char*)"House");
+											names[1] = Text::String::New(UTF8STRC("House"));
 										}
 									}
 									else if (vName->Equals((const UTF8Char*)"school"))
@@ -956,7 +956,7 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 											elemType = 18;
 											isPG = true;
 											SDEL_STRING(names[1]);
-											names[1] = Text::String::NewNotNull((const UTF8Char*)"School");
+											names[1] = Text::String::New(UTF8STRC("School"));
 										}
 									}
 									else if (vName->Equals((const UTF8Char*)"apartments"))
@@ -966,7 +966,7 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 											elemType = 18;
 											isPG = true;
 											SDEL_STRING(names[1]);
-											names[1] = Text::String::NewNotNull((const UTF8Char*)"Apartments");
+											names[1] = Text::String::New(UTF8STRC("Apartments"));
 										}
 									}
 									else if (vName->Equals((const UTF8Char*)"residential"))
@@ -976,7 +976,7 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 											elemType = 18;
 											isPG = true;
 											SDEL_STRING(names[1]);
-											names[1] = Text::String::NewNotNull((const UTF8Char*)"Residential");
+											names[1] = Text::String::New(UTF8STRC("Residential"));
 										}
 									}
 									else
@@ -986,7 +986,7 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 											elemType = 18;
 											isPG = true;
 											SDEL_STRING(names[1]);
-											names[1] = Text::String::NewNotNull((const UTF8Char*)"Unknown");
+											names[1] = Text::String::New(UTF8STRC("Unknown"));
 										}
 									}
 								}
@@ -998,7 +998,7 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 										{
 											elemType = 16;
 											SDEL_STRING(names[1]);
-											names[1] = Text::String::NewNotNull((const UTF8Char*)"Service");
+											names[1] = Text::String::New(UTF8STRC("Service"));
 										}
 									}
 									else if (vName->Equals((const UTF8Char*)"secondary"))
@@ -1007,7 +1007,7 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 										{
 											elemType = 16;
 											SDEL_STRING(names[1]);
-											names[1] = Text::String::NewNotNull((const UTF8Char*)"Secondary");
+											names[1] = Text::String::New(UTF8STRC("Secondary"));
 										}
 									}
 									else if (vName->Equals((const UTF8Char*)"footway"))
@@ -1016,7 +1016,7 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 										{
 											elemType = 17;
 											SDEL_STRING(names[1]);
-											names[1] = Text::String::NewNotNull((const UTF8Char*)"Footway");
+											names[1] = Text::String::New(UTF8STRC("Footway"));
 										}
 									}
 									else if (vName->Equals((const UTF8Char*)"motorway"))
@@ -1025,7 +1025,7 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 										{
 											elemType = 16;
 											SDEL_STRING(names[1]);
-											names[1] = Text::String::NewNotNull((const UTF8Char*)"Motorway");
+											names[1] = Text::String::New(UTF8STRC("Motorway"));
 										}
 									}
 									else if (vName->Equals((const UTF8Char*)"motorway_link"))
@@ -1034,7 +1034,7 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 										{
 											elemType = 16;
 											SDEL_STRING(names[1]);
-											names[1] = Text::String::NewNotNull((const UTF8Char*)"MotorwayLink");
+											names[1] = Text::String::New(UTF8STRC("MotorwayLink"));
 										}
 									}
 									else if (vName->Equals((const UTF8Char*)"residential"))
@@ -1043,7 +1043,7 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 										{
 											elemType = 16;
 											SDEL_STRING(names[1]);
-											names[1] = Text::String::NewNotNull((const UTF8Char*)"Residential");
+											names[1] = Text::String::New(UTF8STRC("Residential"));
 										}
 									}
 									else if (vName->Equals((const UTF8Char*)"tertiary"))
@@ -1052,7 +1052,7 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 										{
 											elemType = 16;
 											SDEL_STRING(names[1]);
-											names[1] = Text::String::NewNotNull((const UTF8Char*)"Tertiary");
+											names[1] = Text::String::New(UTF8STRC("Tertiary"));
 										}
 									}
 									else if (vName->Equals((const UTF8Char*)"path"))
@@ -1061,7 +1061,7 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 										{
 											elemType = 17;
 											SDEL_STRING(names[1]);
-											names[1] = Text::String::NewNotNull((const UTF8Char*)"Path");
+											names[1] = Text::String::New(UTF8STRC("Path"));
 										}
 									}
 									else if (vName->Equals((const UTF8Char*)"primary"))
@@ -1070,7 +1070,7 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 										{
 											elemType = 16;
 											SDEL_STRING(names[1]);
-											names[1] = Text::String::NewNotNull((const UTF8Char*)"Primary");
+											names[1] = Text::String::New(UTF8STRC("Primary"));
 										}
 									}
 									else if (vName->Equals((const UTF8Char*)"steps"))
@@ -1079,7 +1079,7 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 										{
 											elemType = 17;
 											SDEL_STRING(names[1]);
-											names[1] = Text::String::NewNotNull((const UTF8Char*)"Steps");
+											names[1] = Text::String::New(UTF8STRC("Steps"));
 										}
 									}
 									else if (vName->Equals((const UTF8Char*)"cycleway"))
@@ -1088,7 +1088,7 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 										{
 											elemType = 19;
 											SDEL_STRING(names[1]);
-											names[1] = Text::String::NewNotNull((const UTF8Char*)"Cycleway");
+											names[1] = Text::String::New(UTF8STRC("Cycleway"));
 										}
 									}
 									else if (vName->Equals((const UTF8Char*)"pedestrian"))
@@ -1097,7 +1097,7 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 										{
 											elemType = 17;
 											SDEL_STRING(names[1]);
-											names[1] = Text::String::NewNotNull((const UTF8Char*)"Pedestrian");
+											names[1] = Text::String::New(UTF8STRC("Pedestrian"));
 										}
 									}
 									else if (vName->Equals((const UTF8Char*)"track"))
@@ -1106,7 +1106,7 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 										{
 											elemType = 16;
 											SDEL_STRING(names[1]);
-											names[1] = Text::String::NewNotNull((const UTF8Char*)"Pedestrian");
+											names[1] = Text::String::New(UTF8STRC("Pedestrian"));
 										}
 									}
 								}
@@ -1119,7 +1119,7 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 											elemType = 10;
 											isPG = true;
 											SDEL_STRING(names[1]);
-											names[1] = Text::String::NewNotNull((const UTF8Char*)"Reservoir");
+											names[1] = Text::String::New(UTF8STRC("Reservoir"));
 										}
 									}
 									else if (vName->Equals((const UTF8Char*)"residential"))
@@ -1172,7 +1172,7 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 											elemType = 5;
 											isPG = true;
 											SDEL_STRING(names[1]);
-											names[1] = Text::String::NewNotNull((const UTF8Char*)"Pitch");
+											names[1] = Text::String::New(UTF8STRC("Pitch"));
 										}
 									}
 									else if (vName->Equals((const UTF8Char*)"swimming_pool"))
@@ -1182,7 +1182,7 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 											elemType = 18;
 											isPG = true;
 											SDEL_STRING(names[1]);
-											names[1] = Text::String::NewNotNull((const UTF8Char*)"SwimmingPool");
+											names[1] = Text::String::New(UTF8STRC("SwimmingPool"));
 										}
 									}
 									else if (vName->Equals((const UTF8Char*)"track"))
@@ -1192,7 +1192,7 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 											elemType = 5;
 											isPG = true;
 											SDEL_STRING(names[1]);
-											names[1] = Text::String::NewNotNull((const UTF8Char*)"Track");
+											names[1] = Text::String::New(UTF8STRC("Track"));
 										}
 									}
 									else if (vName->Equals((const UTF8Char*)"stadium"))
@@ -1202,7 +1202,7 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 											elemType = 5;
 											isPG = true;
 											SDEL_STRING(names[1]);
-											names[1] = Text::String::NewNotNull((const UTF8Char*)"Stadium");
+											names[1] = Text::String::New(UTF8STRC("Stadium"));
 										}
 									}
 								}
@@ -1225,7 +1225,7 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 											elemType = 18;
 											isPG = true;
 											SDEL_STRING(names[1]);
-											names[1] = Text::String::NewNotNull((const UTF8Char*)"PowerSubStation");
+											names[1] = Text::String::New(UTF8STRC("PowerSubStation"));
 										}
 									}
 								}
@@ -1237,7 +1237,7 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 										{
 											elemType = 15;
 											SDEL_STRING(names[1]);
-											names[1] = Text::String::NewNotNull((const UTF8Char*)"Rail");
+											names[1] = Text::String::New(UTF8STRC("Rail"));
 										}
 									}
 								}
@@ -1250,7 +1250,7 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 											elemType = 22;
 											isPG = true;
 											SDEL_STRING(names[1]);
-											names[1] = Text::String::NewNotNull((const UTF8Char*)"GardenCentre");
+											names[1] = Text::String::New(UTF8STRC("GardenCentre"));
 										}
 									}
 									else if (vName->Equals((const UTF8Char*)"mall"))
@@ -1260,7 +1260,7 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 											elemType = 18;
 											isPG = true;
 											SDEL_STRING(names[1]);
-											names[1] = Text::String::NewNotNull((const UTF8Char*)"Mall");
+											names[1] = Text::String::New(UTF8STRC("Mall"));
 										}
 									}
 								}
@@ -1272,7 +1272,7 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 										{
 											elemType = 11;
 											SDEL_STRING(names[1]);
-											names[1] = Text::String::NewNotNull((const UTF8Char*)"Stream");
+											names[1] = Text::String::New(UTF8STRC("Stream"));
 										}
 									}
 									else if (vName->Equals((const UTF8Char*)"weir"))
@@ -1282,7 +1282,7 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 											elemType = 0;
 											isPG = true;
 											SDEL_STRING(names[1]);
-											names[1] = Text::String::NewNotNull((const UTF8Char*)"Weir");
+											names[1] = Text::String::New(UTF8STRC("Weir"));
 										}
 									}
 									else if (vName->Equals((const UTF8Char*)"riverbank"))
@@ -1292,7 +1292,7 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 											elemType = 8;
 											isPG = true;
 											SDEL_STRING(names[1]);
-											names[1] = Text::String::NewNotNull((const UTF8Char*)"Riverbank");
+											names[1] = Text::String::New(UTF8STRC("Riverbank"));
 										}
 									}
 								}

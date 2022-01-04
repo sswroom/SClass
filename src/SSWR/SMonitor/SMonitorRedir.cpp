@@ -63,7 +63,7 @@ void SSWR::SMonitor::SMonitorRedir::CalcCRC(const UInt8 *buff, UOSInt size, UInt
 SSWR::SMonitor::SMonitorRedir::SMonitorRedir(Net::SocketFactory *sockf)
 {
 	this->sockf = sockf;
-	this->hostName = Text::String::NewNotNull((const UTF8Char*)"sswroom.no-ip.org");
+	this->hostName = Text::String::New(UTF8STRC("sswroom.no-ip.org"));
 	this->port = 5100;
 	this->recReplyHdlr = 0;
 	this->recReplyObj = 0;

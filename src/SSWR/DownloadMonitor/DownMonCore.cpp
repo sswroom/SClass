@@ -509,13 +509,13 @@ SSWR::DownloadMonitor::DownMonCore::DownMonCore()
 		s = cfg->GetValue((const UTF8Char*)"ListFile");
 		this->listFile = SCOPY_STRING(s);
 	}
-	if (this->downPath == 0) this->downPath = Text::String::NewNotNull((const UTF8Char*)"D:\\DownTemp");
-	if (this->succPath == 0) this->succPath = Text::String::NewNotNull((const UTF8Char*)"\\\\192.168.0.21\\disk4\\DownVideo\\ToCheck");
-	if (this->errPath == 0) this->errPath = Text::String::NewNotNull((const UTF8Char*)"D:\\DownTemp\\Err");
-	if (this->ytPath == 0) this->ytPath = Text::String::NewNotNull((const UTF8Char*)"D:\\DownTemp\\Youtube");
-	if (this->ffmpegPath == 0) this->ffmpegPath = Text::String::NewNotNull((const UTF8Char*)"C:\\BDTools\\ffmpeg.exe");
-	if (this->firefoxPath == 0) this->firefoxPath = Text::String::NewNotNull((const UTF8Char*)"C:\\Program Files\\Firefox Developer Edition\\firefox.exe");
-	if (this->listFile == 0) this->listFile = Text::String::NewNotNull((const UTF8Char*)"I:\\PROGS\\DownList2.txt");
+	if (this->downPath == 0) this->downPath = Text::String::New(UTF8STRC("D:\\DownTemp"));
+	if (this->succPath == 0) this->succPath = Text::String::New(UTF8STRC("\\\\192.168.0.21\\disk4\\DownVideo\\ToCheck"));
+	if (this->errPath == 0) this->errPath = Text::String::New(UTF8STRC("D:\\DownTemp\\Err"));
+	if (this->ytPath == 0) this->ytPath = Text::String::New(UTF8STRC("D:\\DownTemp\\Youtube"));
+	if (this->ffmpegPath == 0) this->ffmpegPath = Text::String::New(UTF8STRC("C:\\BDTools\\ffmpeg.exe"));
+	if (this->firefoxPath == 0) this->firefoxPath = Text::String::New(UTF8STRC("C:\\Program Files\\Firefox Developer Edition\\firefox.exe"));
+	if (this->listFile == 0) this->listFile = Text::String::New(UTF8STRC("I:\\PROGS\\DownList2.txt"));
 
 	Sync::Thread::Create(CheckThread, this);
 	while (!this->chkRunning)

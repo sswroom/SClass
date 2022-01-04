@@ -182,13 +182,13 @@ Bool IO::Device::GoProCameraControl::GetInfo(Data::ArrayList<Text::String*> *nam
 				jsBase2 = jsInfo->GetObjectValue((const UTF8Char*)"model_name");
 				if (jsBase2 && jsBase2->GetType() == Text::JSONType::String)
 				{
-					nameList->Add(Text::String::NewNotNull((const UTF8Char*)"Model"));
+					nameList->Add(Text::String::New(UTF8STRC("Model")));
 					valueList->Add(((Text::JSONString*)jsBase2)->GetValue()->Clone());
 				}
 				jsBase2 = jsInfo->GetObjectValue((const UTF8Char*)"model_number");
 				if (jsBase2 && jsBase2->GetType() == Text::JSONType::Number)
 				{
-					nameList->Add(Text::String::NewNotNull((const UTF8Char*)"Model Number"));
+					nameList->Add(Text::String::New(UTF8STRC("Model Number")));
 					sb.ClearStr();
 					Text::SBAppendF64(&sb, ((Text::JSONNumber*)jsBase2)->GetValue());
 					valueList->Add(Text::String::New(sb.ToString(), sb.GetLength()));
@@ -196,19 +196,19 @@ Bool IO::Device::GoProCameraControl::GetInfo(Data::ArrayList<Text::String*> *nam
 				jsBase2 = jsInfo->GetObjectValue((const UTF8Char*)"firmware_version");
 				if (jsBase2 && jsBase2->GetType() == Text::JSONType::String)
 				{
-					nameList->Add(Text::String::NewNotNull((const UTF8Char*)"Firmware Version"));
+					nameList->Add(Text::String::New(UTF8STRC("Firmware Version")));
 					valueList->Add(((Text::JSONString*)jsBase2)->GetValue()->Clone());
 				}
 				jsBase2 = jsInfo->GetObjectValue((const UTF8Char*)"serial_number");
 				if (jsBase2 && jsBase2->GetType() == Text::JSONType::String)
 				{
-					nameList->Add(Text::String::NewNotNull((const UTF8Char*)"Serial Number"));
+					nameList->Add(Text::String::New(UTF8STRC("Serial Number")));
 					valueList->Add(((Text::JSONString*)jsBase2)->GetValue()->Clone());
 				}
 				jsBase2 = jsInfo->GetObjectValue((const UTF8Char*)"board_type");
 				if (jsBase2 && jsBase2->GetType() == Text::JSONType::String)
 				{
-					nameList->Add(Text::String::NewNotNull((const UTF8Char*)"Board Type"));
+					nameList->Add(Text::String::New(UTF8STRC("Board Type")));
 					valueList->Add(((Text::JSONString*)jsBase2)->GetValue()->Clone());
 				}
 			}

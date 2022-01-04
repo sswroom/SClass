@@ -366,13 +366,13 @@ IO::Path::FindFileSession *IO::Path::FindFile(const UTF8Char *utfPath)
 	{
 		dirObj = opendir(".");
 		searchPattern = utfPath;
-		searchDir = Text::String::NewNotNull((const UTF8Char*)"./");
+		searchDir = Text::String::New(UTF8STRC("./"));
 	}
 	else if (i == 0)
 	{
 		dirObj = opendir("/");
 		searchPattern = utfPath + 1;
-		searchDir = Text::String::NewNotNull((const UTF8Char*)"/");
+		searchDir = Text::String::New(UTF8STRC("/"));
 	}
 	else
 	{
@@ -411,13 +411,13 @@ IO::Path::FindFileSession *IO::Path::FindFileW(const WChar *path)
 	{
 		dirObj = opendir(".");
 		searchPattern = utfPath;
-		searchDir = Text::String::NewNotNull((const UTF8Char*)"./");
+		searchDir = Text::String::New(UTF8STRC("./"));
 	}
 	else if (i == 0)
 	{
 		dirObj = opendir("/");
 		searchPattern = utfPath + 1;
-		searchDir = Text::String::NewNotNull((const UTF8Char*)"/");
+		searchDir = Text::String::New(UTF8STRC("/"));
 	}
 	else
 	{

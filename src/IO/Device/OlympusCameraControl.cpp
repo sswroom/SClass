@@ -281,17 +281,17 @@ UOSInt IO::Device::OlympusCameraControl::GetInfoList(Data::ArrayList<Text::Strin
 	UOSInt initCnt = nameList->GetCount();
 	if (this->GetModel(&sb))
 	{
-		nameList->Add(Text::String::NewNotNull((const UTF8Char*)"Model"));
+		nameList->Add(Text::String::New(UTF8STRC("Model")));
 		valueList->Add(Text::String::New(sb.ToString(), sb.GetLength()));
 	}
 	if (this->oiVersion)
 	{
-		nameList->Add(Text::String::NewNotNull((const UTF8Char*)"OI Version"));
+		nameList->Add(Text::String::New(UTF8STRC("OI Version")));
 		valueList->Add(this->oiVersion->Clone());
 	}
 	if (this->oiTrackVersion)
 	{
-		nameList->Add(Text::String::NewNotNull((const UTF8Char*)"OI Track Version"));
+		nameList->Add(Text::String::New(UTF8STRC("OI Track Version")));
 		valueList->Add(this->oiTrackVersion->Clone());
 	}
 	return nameList->GetCount() - initCnt;
