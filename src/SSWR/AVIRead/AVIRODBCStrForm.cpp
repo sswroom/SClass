@@ -14,7 +14,7 @@ void __stdcall SSWR::AVIRead::AVIRODBCStrForm::OnDriverSelChg(void *userObj)
 	{
 		Text::StringBuilderUTF8 sb2;
 		sb2.AppendC(UTF8STRC("Driver={"));
-		sb2.Append(sb.ToString());
+		sb2.AppendC(sb.ToString(), sb.GetLength());
 		sb2.AppendChar('}', 1);
 		me->txtConnStr->SetText(sb2.ToString());
 	}

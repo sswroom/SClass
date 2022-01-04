@@ -70,7 +70,7 @@ void SSWR::AVIRead::AVIRUserAgentBatchForm::UserAgent2Output(const UTF8Char *use
 	sb.Append(s);
 	s->Release();
 	sb.AppendC(UTF8STRC("},\r\n"));
-	outSb->Append(sb.ToString());
+	outSb->AppendC(sb.ToString(), sb.GetLength());
 
 	SDEL_TEXT(ent.browserVer);
 	SDEL_TEXT(ent.osVer);

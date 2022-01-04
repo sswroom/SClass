@@ -1241,7 +1241,7 @@ Text::String *DB::DBMS::Evals(const UTF8Char **valPtr, DB::DBMS::SessionInfo *se
 			*valid = false;
 
 			sb.AppendC(UTF8STRC("#HY000Unknown system variable '"));
-			sb.Append(sb2.ToString());
+			sb.AppendC(sb2.ToString(), sb2.GetLength());
 			sb.AppendC(UTF8STRC("'"));
 			SDEL_TEXT(sess->lastError);
 			sess->lastError = Text::StrCopyNew(sb.ToString());

@@ -794,7 +794,7 @@ Bool Data::QueryConditions::InnerCondition::ToWhereClause(Text::StringBuilderUTF
 	else
 	{
 		sb->AppendChar('(', 1);
-		sb->Append(sbTmp.ToString());
+		sb->AppendC(sbTmp.ToString(), sbTmp.GetLength());
 		sb->AppendChar(')', 1);
 		return true;
 	}
@@ -934,7 +934,7 @@ Bool Data::QueryConditions::ToWhereClause(Text::StringBuilderUTF *sb, DB::DBUtil
 					{
 						sb->AppendC(UTF8STRC(" and "));
 					}
-					sb->Append(sbTmp.ToString());
+					sb->AppendC(sbTmp.ToString(), sbTmp.GetLength());
 				}
 			}
 			i++;
@@ -963,7 +963,7 @@ Bool Data::QueryConditions::ToWhereClause(Text::StringBuilderUTF *sb, DB::DBUtil
 				{
 					sb->AppendC(UTF8STRC(" and "));
 				}
-				sb->Append(sbTmp.ToString());
+				sb->AppendC(sbTmp.ToString(), sbTmp.GetLength());
 				hasCond = true;
 			}
 			i++;

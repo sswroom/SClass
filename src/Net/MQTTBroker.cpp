@@ -253,7 +253,7 @@ void Net::MQTTBroker::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, I
 					break;
 				}
 				clientId = Text::StrCopyNew(sb.ToString());
-				sb.Append(sb2.ToString());
+				sb.AppendC(sb2.ToString(), sb2.GetLength());
 				if (connFlags & 4)
 				{
 					sb.AppendC(UTF8STRC(", Will Topic = "));
@@ -288,7 +288,7 @@ void Net::MQTTBroker::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, I
 						break;
 					}
 					userName = Text::StrCopyNew(sb2.ToString());
-					sb.Append(sb2.ToString());
+					sb.AppendC(sb2.ToString(), sb2.GetLength());
 				}
 				if (connFlags & 0x40)
 				{

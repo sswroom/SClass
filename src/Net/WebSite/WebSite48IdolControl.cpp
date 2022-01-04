@@ -350,6 +350,6 @@ void Net::WebSite::WebSite48IdolControl::Title2DisplayName(Text::String *title, 
 	}
 	else
 	{
-		dispName->Append(sb.ToString());
+		dispName->AppendC(sb.ToString(), sb.GetLength());
 	}
 }

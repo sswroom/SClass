@@ -305,7 +305,7 @@ Bool Text::Cpp::CppParseStatus::GetDefineVal(const UTF8Char *defName, const UTF8
 				sb1.AppendC(UTF8STRC("##"));
 				sb1.Append(defInfo->defineParam);
 				sb2.ClearStr();
-				sb2.Append(sb3.ToString());
+				sb2.AppendC(sb3.ToString(), sb3.GetLength());
 				sb2.AppendC(UTF8STRC(" "));
 				sb.Replace(sb1.ToString(), sb2.ToString());
 
@@ -314,18 +314,18 @@ Bool Text::Cpp::CppParseStatus::GetDefineVal(const UTF8Char *defName, const UTF8
 				sb1.AppendC(UTF8STRC("##"));
 				sb2.ClearStr();
 				sb2.AppendC(UTF8STRC(" "));
-				sb2.Append(sb3.ToString());
+				sb2.AppendC(sb3.ToString(), sb3.GetLength());
 				sb.Replace(sb1.ToString(), sb2.ToString());
 
 				sb1.ClearStr();
 				sb1.Append(defInfo->defineParam);
 				sb2.ClearStr();
 				sb2.AppendC(UTF8STRC(" "));
-				sb2.Append(sb3.ToString());
+				sb2.AppendC(sb3.ToString(), sb3.GetLength());
 				sb2.AppendC(UTF8STRC(" "));
 				sb.Replace(sb1.ToString(), sb2.ToString());
 			}
-			sbOut->Append(sb.ToString());
+			sbOut->AppendC(sb.ToString(), sb.GetLength());
 			return true;
 		}
 	}

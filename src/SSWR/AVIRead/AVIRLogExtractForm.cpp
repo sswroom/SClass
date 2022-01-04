@@ -104,7 +104,7 @@ void __stdcall SSWR::AVIRead::AVIRLogExtractForm::OnExtractClicked(void *userObj
 					reader->GetLastLineBreak(sbuff);
 				}
 
-				sb1.Append(sbSuffix.ToString());
+				sb1.AppendC(sbSuffix.ToString(), sbSuffix.GetLength());
 				i = sb1.IndexOf('\t');
 				if (i != INVALID_INDEX)
 				{

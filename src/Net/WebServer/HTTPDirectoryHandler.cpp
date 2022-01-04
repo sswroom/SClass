@@ -168,7 +168,7 @@ void Net::WebServer::HTTPDirectoryHandler::ResponsePackageFile(Net::WebServer::I
 		if (uplfile)
 		{
 			Text::StringBuilder sbTmp;
-			sbTmp.Append(sb.ToString());
+			sbTmp.AppendC(sb.ToString(), sb.GetLength());
 			sbTmp.Append(sbuff);
 			if (IO::Path::GetPathType(sbTmp.ToString()) == IO::Path::PathType::Unknown)
 			{
@@ -647,7 +647,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 	else if (pt == IO::Path::PathType::Directory)
 	{
 		Text::StringBuilderUTF8 sb2;
-		sb2.Append(sb.ToString());
+		sb2.AppendC(sb.ToString(), sb.GetLength());
 		if (sb.EndsWith((Char)IO::Path::PATH_SEPERATOR))
 		{
 			sb2.AppendC(UTF8STRC("index.html"));
@@ -661,7 +661,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 		if (pt == IO::Path::PathType::File)
 		{
 			sb.ClearStr();
-			sb.Append(sb2.ToString());
+			sb.AppendC(sb2.ToString(), sb2.GetLength());
 			sptr = sb.ToString();
 			IO::FileStream *fs;
 			UInt64 sizeLeft;
@@ -754,7 +754,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 					while ((uplfile = req->GetHTTPFormFile((const UTF8Char *)"uploadfile", fileId, (UTF8Char*)buff, sizeof(buff), &uplSize)) != 0)
 					{
 						Text::StringBuilderUTF8 sbTmp;
-						sbTmp.Append(sb.ToString());
+						sbTmp.AppendC(sb.ToString(), sb.GetLength());
 						sbTmp.Append((UTF8Char*)buff);
 						if (IO::Path::GetPathType(sbTmp.ToString()) == IO::Path::PathType::Unknown)
 						{
@@ -809,7 +809,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 				}
 
 				Text::StringBuilderUTF8 sb3;
-				sb3.Append(sb2.ToString());
+				sb3.AppendC(sb2.ToString(), sb2.GetLength());
 				sb3.AppendC((const UTF8Char*)"?sort=1", 7);
 				s = Text::XML::ToNewAttrText(sb3.ToString());
 				sbOut.AppendC((const UTF8Char*)"<table><tr><th><a href=", 23);

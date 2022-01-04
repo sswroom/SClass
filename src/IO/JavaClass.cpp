@@ -1067,7 +1067,7 @@ void IO::JavaClass::DetailNameType(UInt16 nameIndex, UInt16 typeIndex, UInt16 cl
 		sb->AppendChar(' ', 1);
 		sb->AppendC(&ptr2[3], strLen);
 	}
-	sb->Append(sbParam.ToString());
+	sb->AppendC(sbParam.ToString(), sbParam.GetLength());
 }
 
 void IO::JavaClass::DetailType(UInt16 typeIndex, Text::StringBuilderUTF *sb, Data::ArrayListStrUTF8 *importList, const UTF8Char *packageName)
@@ -3669,7 +3669,7 @@ const UInt8 *IO::JavaClass::DetailVerificationTypeInfo(const UInt8 *currPtr, con
 				sbTmp.AppendC(ptr + 3, strLen);
 				sbTmp.Replace('/', '.');
 				sb->AppendC(UTF8STRC(" ("));
-				sb->Append(sbTmp.ToString());
+				sb->AppendC(sbTmp.ToString(), sbTmp.GetLength());
 				sb->AppendC(UTF8STRC(")"));
 			}*/
 			sb->AppendC(UTF8STRC("\r\n"));
@@ -4149,7 +4149,7 @@ void IO::JavaClass::AppendCodeClassContent(Text::StringBuilderUTF *sb, UOSInt le
 		if (!sbTmp.Equals((const UTF8Char*)"Object"))
 		{
 			sb->AppendC(UTF8STRC(" extends "));
-			sb->Append(sbTmp.ToString());
+			sb->AppendC(sbTmp.ToString(), sbTmp.GetLength());
 		}
 		if (this->interfaces && this->interfaceCnt > 0)
 		{
@@ -4350,7 +4350,7 @@ void IO::JavaClass::AppendCodeField(Text::StringBuilderUTF *sb, UOSInt index, Da
 	}
 	else if (importList == 0 && packageName == 0)
 	{
-		sb->Append(sbTypeName.ToString());
+		sb->AppendC(sbTypeName.ToString(), sbTypeName.GetLength());
 	}
 	else
 	{
@@ -4359,7 +4359,7 @@ void IO::JavaClass::AppendCodeField(Text::StringBuilderUTF *sb, UOSInt index, Da
 	sb->AppendChar(' ', 1);
 	this->GetConstName(sbuff, nameIndex);
 	sb->Append(sbuff);
-	sb->Append(sbValue.ToString());
+	sb->AppendC(sbValue.ToString(), sbValue.GetLength());
 }
 
 void IO::JavaClass::AppendCodeMethod(Text::StringBuilderUTF *sb, UOSInt index, UOSInt lev, Bool disasm, Bool decompile, Data::ArrayListStrUTF8 *importList, const UTF8Char *packageName)
@@ -5594,7 +5594,7 @@ void IO::JavaClass::DecompileFile(Text::StringBuilderUTF *sb)
 		}
 		sb->AppendC(UTF8STRC("\r\n"));
 	}
-	sb->Append(sbClass.ToString());
+	sb->AppendC(sbClass.ToString(), sbClass.GetLength());
 
 	LIST_FREE_FUNC(&importList, Text::StrDelNew);
 	SDEL_TEXT(packageName);
@@ -7495,7 +7495,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				EndType et = EndType::CodeEnd;//this->DecompileCode(codePtr + 3, codePtr + i, env, lev + 1, &sbTmp);
 				if (et == EndType::Error)
 				{
-					sb->Append(sbTmp.ToString());
+					sb->AppendC(sbTmp.ToString(), sbTmp.GetLength());
 					return et;
 				}
 				if (stackCnt == env->stacks->GetCount() && (et == EndType::CodeEnd || et == EndType::Throw || et == EndType::Return))
@@ -7504,7 +7504,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 					sb->AppendC(UTF8STRC("if (false)\r\n"));
 					this->AppendIndent(sb, lev);
 					sb->AppendC(UTF8STRC("{\r\n"));
-					sb->Append(sbTmp.ToString());
+					sb->AppendC(sbTmp.ToString(), sbTmp.GetLength());
 					this->AppendIndent(sb, lev);
 					sb->AppendC(UTF8STRC("}\r\n"));
 					codePtr = codePtr + i;
@@ -7889,7 +7889,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			if (this->DecompileMethod(val, sbuff, &classIndex, typeBuff, env, &sbTmp) == 0)
 			{
 				this->AppendIndent(sb, lev);
-				sb->Append(sbTmp.ToString());
+				sb->AppendC(sbTmp.ToString(), sbTmp.GetLength());
 				return EndType::Error;
 			}
 			if (env->stacks->GetCount() == 0)
@@ -7906,7 +7906,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				sbTmp2.Append(env->stacks->GetItem(env->stacks->GetCount() - 1));
 				sbTmp2.AppendChar('.', 1);
 				sbTmp2.Append(sbuff);
-				sbTmp2.Append(sbTmp.ToString());
+				sbTmp2.AppendC(sbTmp.ToString(), sbTmp.GetLength());
 				env->stacks->Pop()->Release();
 				env->stackTypes->Pop()->Release();
 				if (typeBuff[0])
@@ -7917,7 +7917,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				else
 				{
 					this->AppendIndent(sb, lev);
-					sb->Append(sbTmp2.ToString());
+					sb->AppendC(sbTmp2.ToString(), sbTmp2.GetLength());
 					sb->AppendC(UTF8STRC(";"));
 					this->AppendLineNum(sb, env, codePtr);
 					sb->AppendC(UTF8STRC("\r\n"));
@@ -7932,7 +7932,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			if (this->DecompileMethod(val, sbuff, &classIndex, typeBuff, env, &sbTmp) == 0)
 			{
 				this->AppendIndent(sb, lev);
-				sb->Append(sbTmp.ToString());
+				sb->AppendC(sbTmp.ToString(), sbTmp.GetLength());
 				return EndType::Error;
 			}
 			if (env->stacks->GetCount() == 0)
@@ -7986,7 +7986,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 					}
 					sbTmp2.Append(sbuff);
 				}
-				sbTmp2.Append(sbTmp.ToString());
+				sbTmp2.AppendC(sbTmp.ToString(), sbTmp.GetLength());
 				env->stacks->Pop()->Release();
 				env->stackTypes->Pop()->Release();
 				if (typeBuff[0])
@@ -8002,7 +8002,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				else
 				{
 					this->AppendIndent(sb, lev);
-					sb->Append(sbTmp2.ToString());
+					sb->AppendC(sbTmp2.ToString(), sbTmp2.GetLength());
 					sb->AppendC(UTF8STRC(";"));
 					this->AppendLineNum(sb, env, codePtr);
 					sb->AppendC(UTF8STRC("\r\n"));
@@ -8017,7 +8017,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			if (this->DecompileMethod(val, sbuff, &classIndex, typeBuff, env, &sbTmp) == 0)
 			{
 				this->AppendIndent(sb, lev);
-				sb->Append(sbTmp.ToString());
+				sb->AppendC(sbTmp.ToString(), sbTmp.GetLength());
 				return EndType::Error;
 			}
 			sbTmp2.ClearStr();
@@ -8026,7 +8026,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			this->AppendCodeClassName(&sbTmp2, sbTmp3.ToString(), env->importList, env->packageName);
 			sbTmp2.AppendChar('.', 1);
 			sbTmp2.Append(sbuff);
-			sbTmp2.Append(sbTmp.ToString());
+			sbTmp2.AppendC(sbTmp.ToString(), sbTmp.GetLength());
 			if (typeBuff[0])
 			{
 				env->stacks->Add(Text::String::New(sbTmp2.ToString(), sbTmp2.GetLength()));
@@ -8035,7 +8035,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			else
 			{
 				this->AppendIndent(sb, lev);
-				sb->Append(sbTmp2.ToString());
+				sb->AppendC(sbTmp2.ToString(), sbTmp2.GetLength());
 				sb->AppendC(UTF8STRC(";"));
 				this->AppendLineNum(sb, env, codePtr);
 				sb->AppendC(UTF8STRC("\r\n"));
@@ -8049,7 +8049,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			if (this->DecompileMethod(val, sbuff, &classIndex, typeBuff, env, &sbTmp) == 0)
 			{
 				this->AppendIndent(sb, lev);
-				sb->Append(sbTmp.ToString());
+				sb->AppendC(sbTmp.ToString(), sbTmp.GetLength());
 				return EndType::Error;
 			}
 			if (env->stacks->GetCount() == 0)
@@ -8066,7 +8066,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				sbTmp2.Append(env->stacks->GetItem(env->stacks->GetCount() - 1));
 				sbTmp2.AppendChar('.', 1);
 				sbTmp2.Append(sbuff);
-				sbTmp2.Append(sbTmp.ToString());
+				sbTmp2.AppendC(sbTmp.ToString(), sbTmp.GetLength());
 				env->stacks->Pop()->Release();
 				env->stackTypes->Pop()->Release();
 				if (typeBuff[0])
@@ -8077,7 +8077,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				else
 				{
 					this->AppendIndent(sb, lev);
-					sb->Append(sbTmp2.ToString());
+					sb->AppendC(sbTmp2.ToString(), sbTmp2.GetLength());
 					sb->AppendC(UTF8STRC(";"));
 					this->AppendLineNum(sb, env, codePtr);
 					sb->AppendC(UTF8STRC("\r\n"));
@@ -8469,7 +8469,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCondBranch(const UInt8 *codePtr, 
 		EndType et = DecompileCode(codeEnd, codePtr - 3, env, lev + 1, &sbTmp);
 		if (et == EndType::Error)
 		{
-			sb->Append(sbTmp.ToString());
+			sb->AppendC(sbTmp.ToString(), sbTmp.GetLength());
 			return et;
 		}
 		if (initStackCnt + 1 == env->stacks->GetCount() && (et == EndType::Return || et == EndType::Throw || et == EndType::CodeEnd))
@@ -8482,7 +8482,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCondBranch(const UInt8 *codePtr, 
 			sb->AppendC(UTF8STRC(")\r\n"));
 			this->AppendIndent(sb, lev);
 			sb->AppendC(UTF8STRC("{\r\n"));
-			sb->Append(sbTmp.ToString());
+			sb->AppendC(sbTmp.ToString(), sbTmp.GetLength());
 			this->AppendIndent(sb, lev);
 			sb->AppendC(UTF8STRC("}\r\n"));
 			env->stacks->Pop()->Release();
@@ -8504,7 +8504,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCondBranch(const UInt8 *codePtr, 
 			sb->AppendC(UTF8STRC(")\r\n"));
 			this->AppendIndent(sb, lev);
 			sb->AppendC(UTF8STRC("{\r\n"));
-			sb->Append(sbTmp.ToString());
+			sb->AppendC(sbTmp.ToString(), sbTmp.GetLength());
 			this->AppendIndent(sb, lev);
 			sb->AppendC(UTF8STRC("}\r\n"));
 			env->stacks->Pop()->Release();
@@ -8522,7 +8522,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCondBranch(const UInt8 *codePtr, 
 		sb->AppendC(UTF8STRC(", et = "));
 		sb->Append(EndTypeGetName(et));
 		sb->AppendC(UTF8STRC("\r\n"));
-		sb->Append(sbTmp.ToString());
+		sb->AppendC(sbTmp.ToString(), sbTmp.GetLength());
 		return EndType::Error;
 	}
 	else if (codePtr == codeEnd)
@@ -8547,7 +8547,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCondBranch(const UInt8 *codePtr, 
 	EndType et = DecompileCode(codePtr, codeEnd, env, lev + 1, &sbTmp);
 	if (et == EndType::Error)
 	{
-		sb->Append(sbTmp.ToString());
+		sb->AppendC(sbTmp.ToString(), sbTmp.GetLength());
 		return et;
 	}
 	if (initStackCnt + 1 == env->stacks->GetCount() && et == EndType::Goto && sbTmp.GetLength() == 0)
@@ -8555,7 +8555,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCondBranch(const UInt8 *codePtr, 
 		et = DecompileCode(codeEnd, env->endPtr, env, lev + 1, &sbTmp);
 		if (et == EndType::Error)
 		{
-			sb->Append(sbTmp.ToString());
+			sb->AppendC(sbTmp.ToString(), sbTmp.GetLength());
 			return et;
 		}
 		else if (et == EndType::CodeEnd && initStackCnt + 2 == env->stacks->GetCount() && sbTmp.GetLength() == 0)
@@ -8589,7 +8589,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCondBranch(const UInt8 *codePtr, 
 			sb->AppendC(UTF8STRC(")\r\n"));
 			this->AppendIndent(sb, lev);
 			sb->AppendC(UTF8STRC("{\r\n"));
-			sb->Append(sbTmp.ToString());
+			sb->AppendC(sbTmp.ToString(), sbTmp.GetLength());
 			this->AppendIndent(sb, lev);
 			sb->AppendC(UTF8STRC("}\r\n"));
 			env->stacks->RemoveAt(initStackCnt - 1)->Release();
@@ -8605,7 +8605,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCondBranch(const UInt8 *codePtr, 
 			et = DecompileCode(codeEnd, env->endPtr, env, lev + 1, &sbTmp2);
 			if (et == EndType::Error)
 			{
-				sb->Append(sbTmp2.ToString());
+				sb->AppendC(sbTmp2.ToString(), sbTmp2.GetLength());
 				return et;
 			}
 			else if (et == EndType::CodeEnd && initStackCnt == env->stacks->GetCount())
@@ -8616,14 +8616,14 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCondBranch(const UInt8 *codePtr, 
 				sb->AppendC(UTF8STRC(")\r\n"));
 				this->AppendIndent(sb, lev);
 				sb->AppendC(UTF8STRC("{\r\n"));
-				sb->Append(sbTmp.ToString());
+				sb->AppendC(sbTmp.ToString(), sbTmp.GetLength());
 				this->AppendIndent(sb, lev);
 				sb->AppendC(UTF8STRC("}\r\n"));
 				this->AppendIndent(sb, lev);
 				sb->AppendC(UTF8STRC("else\r\n"));
 				this->AppendIndent(sb, lev);
 				sb->AppendC(UTF8STRC("{\r\n"));
-				sb->Append(sbTmp2.ToString());
+				sb->AppendC(sbTmp2.ToString(), sbTmp2.GetLength());
 				this->AppendIndent(sb, lev);
 				sb->AppendC(UTF8STRC("}\r\n"));
 				env->stacks->RemoveAt(initStackCnt - 1)->Release();
@@ -8642,7 +8642,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCondBranch(const UInt8 *codePtr, 
 		sb->AppendC(UTF8STRC(")\r\n"));
 		this->AppendIndent(sb, lev);
 		sb->AppendC(UTF8STRC("{\r\n"));
-		sb->Append(sbTmp.ToString());
+		sb->AppendC(sbTmp.ToString(), sbTmp.GetLength());
 		this->AppendIndent(sb, lev);
 		sb->AppendC(UTF8STRC("}\r\n"));
 		env->stacks->Pop()->Release();

@@ -133,7 +133,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnRequestClicked(void *userObj
 		sbBoundary.AppendC(UTF8STRC("---------------------------Boundary"));
 		sbBoundary.AppendI64(dt.ToTicks());
 		sb2.AppendC(UTF8STRC("multipart/form-data; boundary="));
-		sb2.Append(sbBoundary.ToString());
+		sb2.AppendC(sbBoundary.ToString(), sbBoundary.GetLength());
 		me->reqBodyType = Text::StrCopyNew(sb2.ToString());
 		IO::MemoryStream mstm((const UTF8Char*)"SSWR.AVIRead.AVIRHTTPClientForm.OnRequestClicked.mstm");
 		UOSInt i = 0;
