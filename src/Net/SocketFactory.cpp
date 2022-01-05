@@ -30,6 +30,12 @@ Bool Net::SocketFactory::AdapterSetHWAddr(const UTF8Char *adapterName, const UIn
 	return false;
 }
 
+Bool Net::SocketFactory::ReloadDNS()
+{
+	Sync::MutexUsage mutUsage(this->dnsMut);
+	SDEL_CLASS(this->dnsHdlr);
+}
+
 Bool Net::SocketFactory::DNSResolveIP(const Char *host, Net::SocketUtil::AddressInfo *addr)
 {
 	UTF8Char sbuff[256];

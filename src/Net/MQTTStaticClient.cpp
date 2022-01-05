@@ -20,6 +20,7 @@ UInt32 __stdcall Net::MQTTStaticClient::KAThread(void *userObj)
 		else
 		{
 			mutUsage.EndUse();
+			if (me->errLog) me->errLog->WriteLine(UTF8STRC("MQTT: Reconnecting to server"));
 			me->Connect();
 		}
 		me->kaEvt->Wait((UOSInt)me->kaSeconds * 500);
@@ -50,6 +51,7 @@ void Net::MQTTStaticClient::Connect()
 	NEW_CLASS(conn, Net::MQTTConn(this->sockf, this->ssl, this->host, this->port, OnDisconnect, this));
 	if (conn->IsError())
 	{
+		if (errLog) errLog->WriteLine(UTF8STRC("MQTT: Error in connecting to server"));
 		DEL_CLASS(conn);
 		return;
 	}
@@ -73,12 +75,14 @@ void Net::MQTTStaticClient::Connect()
 	if (!succ)
 	{
 		DEL_CLASS(conn);
+		if (errLog) errLog->WriteLine(UTF8STRC("MQTT: Error in sending connect packet"));
 	}
 	else
 	{
 		mutUsage.ReplaceMutex(this->connMut);
 		if (conn->IsError())
 		{
+			if (errLog) errLog->WriteLine(UTF8STRC("MQTT: Connection is error"));
 			DEL_CLASS(conn);
 			return;
 		}
@@ -119,7 +123,7 @@ UInt16 Net::MQTTStaticClient::GetNextPacketId()
 	return this->packetId++;
 }
 
-Net::MQTTStaticClient::MQTTStaticClient(Net::MQTTConn::PublishMessageHdlr hdlr, void *userObj)
+Net::MQTTStaticClient::MQTTStaticClient(Net::MQTTConn::PublishMessageHdlr hdlr, void *userObj, IO::Writer *errLog)
 {
 	this->kaRunning = false;
 	this->kaToStop = false;
@@ -127,6 +131,7 @@ Net::MQTTStaticClient::MQTTStaticClient(Net::MQTTConn::PublishMessageHdlr hdlr, 
 	NEW_CLASS(this->kaEvt, Sync::Event(true, (const UTF8Char*)"Net.MQTThandler.kaEvt"));
 	NEW_CLASS(this->connMut, Sync::Mutex());
 	this->conn = 0;
+	this->errLog = errLog;
 
 	Data::DateTime dt;
 	dt.SetCurrTimeUTC();
@@ -152,7 +157,7 @@ Net::MQTTStaticClient::MQTTStaticClient(Net::MQTTConn::PublishMessageHdlr hdlr, 
 	this->password = 0;
 }
 
-Net::MQTTStaticClient::MQTTStaticClient(Net::SocketFactory *sockf, Net::SSLEngine *ssl, const UTF8Char *host, UInt16 port, const UTF8Char *username, const UTF8Char *password, Net::MQTTConn::PublishMessageHdlr hdlr, void *userObj, UInt16 kaSeconds) : Net::MQTTStaticClient(hdlr, userObj)
+Net::MQTTStaticClient::MQTTStaticClient(Net::SocketFactory *sockf, Net::SSLEngine *ssl, const UTF8Char *host, UInt16 port, const UTF8Char *username, const UTF8Char *password, Net::MQTTConn::PublishMessageHdlr hdlr, void *userObj, UInt16 kaSeconds, IO::Writer *errLog) : Net::MQTTStaticClient(hdlr, userObj, errLog)
 {
 	this->sockf = sockf;
 	this->ssl = ssl;

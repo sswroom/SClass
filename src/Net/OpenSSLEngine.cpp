@@ -11,9 +11,15 @@
 #include <openssl/ssl.h>
 #include <openssl/err.h>
 
-//#define SHOW_DEBUG
+#define SHOW_DEBUG
 #ifdef SHOW_DEBUG
+#if defined(DEBUGCON)
 #include <stdio.h>
+#include <syslog.h>
+#define printf(fmt, ...) {Char sbuff[512]; sprintf(sbuff, fmt, __VA_ARGS__); syslog(LOG_DEBUG, sbuff);}
+#else
+#include <stdio.h>
+#endif
 #endif
 
 #if OPENSSL_VERSION_NUMBER < 0x10100000L

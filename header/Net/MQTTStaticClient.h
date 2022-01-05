@@ -1,5 +1,6 @@
 #ifndef _SM_NET_MQTTSTATICCLIENT
 #define _SM_NET_MQTTSTATICCLIENT
+#include "IO/Writer.h"
 #include "Net/FailoverChannel.h"
 #include "Net/MQTTClient.h"
 #include "Net/MQTTConn.h"
@@ -19,6 +20,7 @@ namespace Net
 		Sync::Event *kaEvt;
 		UInt16 packetId;
 		Sync::Mutex *packetIdMut;
+		IO::Writer *errLog;
 
 		const UTF8Char *clientId;
 		Sync::Mutex *hdlrMut;
@@ -33,14 +35,15 @@ namespace Net
 		UInt16 port;
 		const UTF8Char *username;
 		const UTF8Char *password;
+		Bool autoReconn;
 
 		static UInt32 __stdcall KAThread(void *userObj);
 		static void __stdcall OnDisconnect(void *user);
 		void Connect();
 		UInt16 GetNextPacketId();
 	public:
-		MQTTStaticClient(Net::MQTTConn::PublishMessageHdlr hdlr, void *hdlrObj);
-		MQTTStaticClient(Net::SocketFactory *sockf, Net::SSLEngine *ssl, const UTF8Char *host, UInt16 port, const UTF8Char *username, const UTF8Char *password, Net::MQTTConn::PublishMessageHdlr hdlr, void *userObj, UInt16 kaSeconds);
+		MQTTStaticClient(Net::MQTTConn::PublishMessageHdlr hdlr, void *hdlrObj, IO::Writer *errLog);
+		MQTTStaticClient(Net::SocketFactory *sockf, Net::SSLEngine *ssl, const UTF8Char *host, UInt16 port, const UTF8Char *username, const UTF8Char *password, Net::MQTTConn::PublishMessageHdlr hdlr, void *userObj, UInt16 kaSeconds, IO::Writer *errLog);
 		virtual ~MQTTStaticClient();
 
 		Bool IsStarted();

@@ -12,6 +12,10 @@
 #include <windows.h>
 #include <stdio.h>
 #define printf(fmt, ...) {Char sbuff[512]; sprintf(sbuff, fmt, __VA_ARGS__); OutputDebugStringA(sbuff);}
+#elif defined(DEBUGCON)
+#include <stdio.h>
+#include <syslog.h>
+#define printf(fmt, ...) {Char sbuff[512]; sprintf(sbuff, fmt, __VA_ARGS__); syslog(LOG_DEBUG, sbuff);}
 #else
 #include <stdio.h>
 #endif
@@ -159,6 +163,10 @@ Net::MQTTConn::PacketInfo *Net::MQTTConn::GetNextPacket(UInt8 packetType, UOSInt
 
 Bool Net::MQTTConn::SendPacket(const UInt8 *packet, UOSInt packetSize)
 {
+	if (this->cli == 0)
+	{
+		return false;
+	}
 	UOSInt sendSize = this->cli->Write(packet, packetSize);
 	this->totalUpload += sendSize;
 	return sendSize == packetSize;
@@ -185,7 +193,11 @@ Net::MQTTConn::MQTTConn(Net::SocketFactory *sockf, Net::SSLEngine *ssl, const UT
 	if (this->ssl)
 	{
 		Net::SSLEngine::ErrorType err;
+		this->sockf->ReloadDNS();
 		this->cli = this->ssl->Connect(host, port, &err);
+#ifdef DEBUG_PRINT
+	printf("MQTTConn: Connect to MQTTS: err = %d\r\n", (UInt32)err);
+#endif
 	}
 	else
 	{
@@ -199,6 +211,9 @@ Net::MQTTConn::MQTTConn(Net::SocketFactory *sockf, Net::SSLEngine *ssl, const UT
 	{
 		DEL_CLASS(this->cli);
 		this->cli = 0;
+#ifdef DEBUG_PRINT
+		printf("MQTTConn connect error, %d\r\n", 0);
+#endif
 	}
 	else
 	{

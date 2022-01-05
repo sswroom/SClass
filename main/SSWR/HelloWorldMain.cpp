@@ -5,6 +5,8 @@
 #else
 #include "IO/ConsoleWriter.h"
 #endif
+#include "IO/Path.h"
+#include "Text/MyString.h"
 
 Int32 MyMain(Core::IProgControl *progCtrl)
 {
@@ -13,6 +15,9 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 #else
 	IO::ConsoleWriter console;
 #endif
-	console.WriteLine((const UTF8Char*)"Hello World");
+	console.WriteLine(UTF8STRC("Hello World"));
+	UTF8Char sbuff[512];
+	UTF8Char *sptr = IO::Path::GetProcessFileName(sbuff);
+	console.WriteLine(sbuff, (UOSInt)(sptr - sbuff));
 	return 0;
 }

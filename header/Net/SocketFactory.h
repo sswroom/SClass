@@ -215,6 +215,7 @@ namespace Net
 
 		virtual Bool AdapterSetHWAddr(const UTF8Char *adapterName, const UInt8 *hwAddr);
 
+		Bool ReloadDNS();
 		Bool DNSResolveIP(const Char *host, Net::SocketUtil::AddressInfo *addr);
 		FORCEINLINE Bool DNSResolveIP(const UTF8Char *host, Net::SocketUtil::AddressInfo *addr) { return DNSResolveIP((const Char *)host, addr); }
 		UInt32 DNSResolveIPv4(const UTF8Char *host);

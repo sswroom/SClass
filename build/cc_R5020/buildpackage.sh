@@ -62,11 +62,11 @@ then
 	echo "  	start" >> $PKG_DIR/$1/files/sdk.sh
 	echo "	;;" >> $PKG_DIR/$1/files/sdk.sh
 	echo "  on_link_up)" >> $PKG_DIR/$1/files/sdk.sh
-	echo "  	stop" >> $PKG_DIR/$1/files/sdk.sh
-	echo "  	start" >> $PKG_DIR/$1/files/sdk.sh
+#	echo "  	stop" >> $PKG_DIR/$1/files/sdk.sh
+#	echo "  	start" >> $PKG_DIR/$1/files/sdk.sh
 	echo "	;;" >> $PKG_DIR/$1/files/sdk.sh
 	echo "  on_link_down)" >> $PKG_DIR/$1/files/sdk.sh
-	echo "  	stop" >> $PKG_DIR/$1/files/sdk.sh
+#	echo "  	stop" >> $PKG_DIR/$1/files/sdk.sh
 	echo "	;;" >> $PKG_DIR/$1/files/sdk.sh
 	echo "  on_reboot)" >> $PKG_DIR/$1/files/sdk.sh
 	echo "  	stop" >> $PKG_DIR/$1/files/sdk.sh

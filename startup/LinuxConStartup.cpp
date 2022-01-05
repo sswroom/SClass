@@ -7,6 +7,11 @@
 #include <unistd.h>
 #include <syslog.h>
 
+//#define SHOW_DEBUG
+#if defined(DEBUGCON)
+#define printf(fmt, ...) {Char sbuff[512]; sprintf(sbuff, fmt, __VA_ARGS__); syslog(LOG_DEBUG, sbuff);}
+#endif
+
 Int32 MyMain(Core::IProgControl *progCtrl);
 
 struct LinuxProgControl : public Core::IProgControl
@@ -17,10 +22,8 @@ struct LinuxProgControl : public Core::IProgControl
 
 void LinuxProgControl_OnSignal(Int32 sigNum)
 {
-#if defined(DDEBUGCON)
-	Char sbuff[32];
-	Text::StrInt32(Text::StrConcat(sbuff, "Received signal "), sigNum);
-	syslog(LOG_DEBUG, sbuff);
+#if defined(SHOW_DEBUG)
+	printf("Received signal %d\r\n", sigNum);
 #endif
 }
 
