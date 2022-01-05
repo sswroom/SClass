@@ -137,7 +137,7 @@ void IO::MTFileLog::WriteArr(Text::String **msgArr, Int64 *dateArr, UOSInt arrCn
 			log->WriteSignature();
 
 			sptr = Text::StrConcat(time.ToString(buff, this->dateFormat), (const UTF8Char*)"Program running");
-			log->WriteLine(buff, (UOSInt)(sptr - buff));
+			log->WriteLineC(buff, (UOSInt)(sptr - buff));
 			newFile = false;
 		}
 

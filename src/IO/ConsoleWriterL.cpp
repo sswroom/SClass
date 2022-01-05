@@ -20,19 +20,19 @@ IO::ConsoleWriter::~ConsoleWriter()
 {
 }
 
-Bool IO::ConsoleWriter::Write(const UTF8Char *str, UOSInt nChar)
+Bool IO::ConsoleWriter::WriteStrC(const UTF8Char *str, UOSInt nChar)
 {
 	printf("%s", str);
 	return true;
 }
 
-Bool IO::ConsoleWriter::Write(const UTF8Char *str)
+Bool IO::ConsoleWriter::WriteStr(const UTF8Char *str)
 {
 	printf("%s", str);
 	return true;
 }
 
-Bool IO::ConsoleWriter::WriteLine(const UTF8Char *str, UOSInt nChar)
+Bool IO::ConsoleWriter::WriteLineC(const UTF8Char *str, UOSInt nChar)
 {
 	printf("%s\n", str);
 	return true;

@@ -8,9 +8,9 @@ namespace IO
 	public:
 		virtual ~Writer() {};
 
-		virtual Bool Write(const UTF8Char *str, UOSInt nChar) = 0;
-		virtual Bool Write(const UTF8Char *str) = 0;
-		virtual Bool WriteLine(const UTF8Char *str, UOSInt nChar) = 0;
+		virtual Bool WriteStrC(const UTF8Char *str, UOSInt nChar) = 0;
+		virtual Bool WriteStr(const UTF8Char *str) = 0;
+		virtual Bool WriteLineC(const UTF8Char *str, UOSInt nChar) = 0;
 		virtual Bool WriteLine(const UTF8Char *str) = 0;
 		virtual Bool WriteLine() = 0;
 	};

@@ -878,7 +878,7 @@ Int32 __stdcall DasmX86_32_GetFuncStack(Manage::DasmX86_32::DasmX86_32_Sess* ses
 				buffSize = 256;
 			buff = MemAlloc(UInt8, buffSize);
 			console.WriteLine();
-			console.Write(sb.ToString());
+			console.WriteStrC(sb.ToString(), sb.GetLength());
 
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Func Buff 0x"));
@@ -19259,12 +19259,12 @@ Bool Manage::DasmX86_32::Disasm32(IO::Writer *writer, Manage::AddressResolver *a
 				outStr->AppendHex(buff, buffSize, ' ', Text::LineBreakType::None);
 			}
 			outStr->AppendC(UTF8STRC("\r\n"));
-			writer->Write(outStr->ToString());
+			writer->WriteStrC(outStr->ToString(), outStr->GetLength());
 			DEL_CLASS(outStr);
 			return false;
 		}
 		outStr->Append(sbuff);
-		writer->Write(outStr->ToString());
+		writer->WriteStrC(outStr->ToString(), outStr->GetLength());
 		if (sess.endType == Manage::DasmX86_32::ET_JMP && (UInt32)sess.retAddr >= *blockStart && (UInt32)sess.retAddr <= sess.regs.EIP)
 		{
 			UOSInt i;
@@ -19354,7 +19354,7 @@ Bool Manage::DasmX86_32::Disasm32In(Text::StringBuilderUTF *outStr, Manage::Addr
 		outStr->AppendC(UTF8STRC(" "));
 		sess.sbuff = sbuff;
 		Bool ret = this->codes[sess.memReader->ReadMemUInt8(sess.regs.EIP)](&sess);
-		console.Write(sbuff);
+		console.WriteStr(sbuff);
 		outStr->Append(sbuff);
 		if (!ret)
 		{

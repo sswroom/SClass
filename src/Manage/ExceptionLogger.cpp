@@ -182,7 +182,7 @@ void Manage::ExceptionLogger::WriteContext(IO::Writer *writer, IO::Stream *stm, 
 
 				sb.ClearStr();
 				sb.AppendHex32(currInst);
-				writer->Write(sb.ToString());
+				writer->WriteStrC(sb.ToString(), sb.GetLength());
 
 				sb.ClearStr();
 				if (addrResol->ResolveName(sbuff, currInst))
@@ -303,7 +303,7 @@ void Manage::ExceptionLogger::WriteContext(IO::Writer *writer, IO::Stream *stm, 
 
 				sb.ClearStr();
 				sb.AppendHex64(currInst);
-				writer->Write(sb.ToString());
+				writer->WriteStrC(sb.ToString(), sb.GetLength());
 
 				sb.ClearStr();
 				if (addrResol->ResolveName(sbuff, currInst))

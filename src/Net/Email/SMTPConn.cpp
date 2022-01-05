@@ -132,7 +132,7 @@ Net::Email::SMTPConn::SMTPConn(Net::SocketFactory *sockf, Net::SSLEngine *ssl, c
 		buffSize = this->cli->Read(buff, 1024);
 		if (this->logWriter)
 		{
-			this->logWriter->Write(buff, buffSize);
+			this->logWriter->WriteStrC(buff, buffSize);
 		}
 		if (buffSize > 2 && Text::StrStartsWith(buff, (const UTF8Char*)"220 ") && buff[buffSize - 2] == '\r' && buff[buffSize - 1] == '\n')
 		{
@@ -140,11 +140,11 @@ Net::Email::SMTPConn::SMTPConn(Net::SocketFactory *sockf, Net::SSLEngine *ssl, c
 			{
 				this->logWriter->WriteLine((const UTF8Char*)"STARTTLS");
 			}
-			this->cli->Write((const UTF8Char*)"STARTTLS\r\n", 10);
+			this->cli->Write((const UInt8*)"STARTTLS\r\n", 10);
 			buffSize = this->cli->Read(buff, 1024);
 			if (this->logWriter)
 			{
-				this->logWriter->Write(buff, buffSize);
+				this->logWriter->WriteStrC(buff, buffSize);
 			}
 			if (buffSize > 0 && Text::StrStartsWith(buff, (const UTF8Char*)"220 ") && buff[buffSize - 2] == '\r' && buff[buffSize - 1] == '\n')
 			{
@@ -256,21 +256,22 @@ Bool Net::Email::SMTPConn::SendEHlo(const UTF8Char *cliName)
 {
 	UTF8Char returnMsg[2048];
 	UTF8Char sbuff[512];
-	Text::StrConcat(Text::StrConcat(Text::StrConcat(sbuff, (const UTF8Char*)"EHLO "), cliName), (const UTF8Char*)"\r\n");
+	UTF8Char *sptr;
+	sptr = Text::StrConcat(Text::StrConcat(Text::StrConcat(sbuff, (const UTF8Char*)"EHLO "), cliName), (const UTF8Char*)"\r\n");
 	this->statusChg = false;
 	returnMsg[0] = 0;
 	this->msgRet = returnMsg;
 	if (this->logWriter)
 	{
-		this->logWriter->Write(sbuff);
+		this->logWriter->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
 	}
-	writer->Write(sbuff);
+	writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
 	UInt32 code = WaitForResult();
 	if (code == 0)
 	{
 		this->statusChg = false;
 		this->msgRet = returnMsg;
-		writer->Write(sbuff);
+		writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
 		code = WaitForResult();
 	}
 	if (code == 250)

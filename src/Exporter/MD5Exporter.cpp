@@ -77,7 +77,7 @@ Bool Exporter::MD5Exporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 		sptr2 = sptr;
 		sptr = Text::StrConcat(sptr, fchk->GetEntryName(i));
 		Text::StrReplace(sptr2, '/', '\\');
-		writer->WriteLine(sbuff, (UOSInt)(sptr - sbuff));
+		writer->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
 		i++;
 	}
 	DEL_CLASS(writer);

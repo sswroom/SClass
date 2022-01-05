@@ -87,6 +87,7 @@ SSWR::AVIRead::AVIRLogFileForm::~AVIRLogFileForm()
 void SSWR::AVIRead::AVIRLogFileForm::EventMenuClicked(UInt16 cmdId)
 {
 	UTF8Char sbuff[64];
+	UTF8Char *sptr;
 	switch (cmdId)
 	{
 	case MNU_LOG_SAVE:
@@ -113,8 +114,8 @@ void SSWR::AVIRead::AVIRLogFileForm::EventMenuClicked(UInt16 cmdId)
 					sb->AppendC(UTF8STRC("\t"));
 					this->logFile->GetLogMessage(this->logLevel, i, &dt, sb, Text::LineBreakType::CRLF);
 					dt.ToLocalTime();
-					dt.ToString(sbuff);
-					writer->Write(sbuff);
+					sptr = dt.ToString(sbuff);
+					writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
 					writer->WriteLine(sb->ToString());
 					i++;
 				}

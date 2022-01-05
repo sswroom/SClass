@@ -135,7 +135,7 @@ Bool Exporter::KMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 	sptr = Text::StrConcat(sptr, (const UTF8Char*)"<Folder>");
 	sptr = Text::StrConcat(sptr, (const UTF8Char*)"<name>Points</name>");
 	sptr = Text::StrConcat(sptr, (const UTF8Char*)"<open>1</open>");
-	writer->Write(sbuff2, (UOSInt)(sptr - sbuff2));
+	writer->WriteStrC(sbuff2, (UOSInt)(sptr - sbuff2));
 
 	NEW_CLASS(ids, Data::ArrayListInt64());
 	layer->GetAllObjectIds(ids, &nameArr);
@@ -190,7 +190,7 @@ Bool Exporter::KMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 				sptr = Text::StrDouble(sptr, z);
 				sptr = Text::StrConcat(sptr, (const UTF8Char*)"</coordinates></Point>");
 				sptr = Text::StrConcat(sptr, (const UTF8Char*)"</Placemark>");
-				writer->WriteLine(sbuff2, (UOSInt)(sptr - sbuff2));
+				writer->WriteLineC(sbuff2, (UOSInt)(sptr - sbuff2));
 			}
 			else if (vec->GetVectorType() == Math::Vector2D::VectorType::Polyline)
 			{
@@ -295,7 +295,7 @@ Bool Exporter::KMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 				}
 
 				sb.AppendC(UTF8STRC("</coordinates></LineString></Placemark>"));
-				writer->WriteLine(sb.ToString(), sb.GetLength());
+				writer->WriteLineC(sb.ToString(), sb.GetLength());
 			}
 			else if (vec->GetVectorType() == Math::Vector2D::VectorType::Polygon)
 			{
@@ -561,7 +561,7 @@ Bool Exporter::KMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 	sptr = Text::StrConcat(sbuff2, (const UTF8Char*)"</Folder>");
 	sptr = Text::StrConcat(sptr, (const UTF8Char*)"</Document>");
 	sptr = Text::StrConcat(sptr, (const UTF8Char*)"</kml>");
-	writer->Write(sbuff2, (UOSInt)(sptr - sbuff2));
+	writer->WriteStrC(sbuff2, (UOSInt)(sptr - sbuff2));
 
 	DEL_CLASS(writer);
 	DEL_CLASS(cstm);

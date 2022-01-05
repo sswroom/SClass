@@ -74,7 +74,7 @@ Bool Exporter::MD4Exporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 		sptr = Text::StrHexBytes(sbuff, buff, 16, 0);
 		sptr = Text::StrConcat(sptr, (const UTF8Char*)" *");
 		sptr = Text::StrConcat(sptr, fchk->GetEntryName(i));
-		writer->WriteLine(sbuff, (UOSInt)(sptr - sbuff));
+		writer->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
 		i++;
 	}
 	DEL_CLASS(writer);

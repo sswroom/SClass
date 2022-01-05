@@ -79,7 +79,7 @@ Bool Exporter::DBHTMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8Cha
 
 	writer->WriteLine((const UTF8Char*)"<html>");
 	writer->WriteLine((const UTF8Char*)"<head>");
-	writer->Write((const UTF8Char*)"<title>");
+	writer->WriteStrC(UTF8STRC("<title>"));
 	db->GetSourceName(lineBuff1);
 	sptr = lineBuff1;
 	if ((i = Text::StrLastIndexOf(sptr, '\\')) != INVALID_INDEX)
@@ -88,14 +88,14 @@ Bool Exporter::DBHTMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8Cha
 	writer->WriteLine(lineBuff2);
 	writer->WriteLine((const UTF8Char*)"</title>");
 	sptr = Text::StrConcat(Text::EncodingFactory::GetInternetName(Text::StrConcat(lineBuff1, (const UTF8Char*)"<meta http-equiv=\"Content-Type\" content=\"text/html; charset="), this->codePage), (const UTF8Char*)"\">");
-	writer->WriteLine(lineBuff1, (UOSInt)(sptr - lineBuff1));
+	writer->WriteLineC(lineBuff1, (UOSInt)(sptr - lineBuff1));
 	writer->WriteLine((const UTF8Char*)"</head>");
 	db->GetSourceName(lineBuff2);
 	sptr = lineBuff2;
 	if ((i = Text::StrLastIndexOf(sptr, '\\')) != INVALID_INDEX)
 		sptr = &sptr[i + 1];
 	sptr = Text::XML::ToXMLText(Text::StrConcat(lineBuff1, (const UTF8Char*)"<body><h1>"), sptr);
-	writer->WriteLine(lineBuff1, (UOSInt)(sptr - lineBuff1));
+	writer->WriteLineC(lineBuff1, (UOSInt)(sptr - lineBuff1));
 	writer->WriteLine((const UTF8Char*)"</h1>");
 	writer->WriteLine((const UTF8Char*)"<table border=1 cellspacing=1 cellpadding=0><tr>");
 
@@ -113,7 +113,7 @@ Bool Exporter::DBHTMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8Cha
 		i++;
 	}
 	sptr = Text::StrConcat(sptr, (const UTF8Char*)"</tr>");
-	writer->WriteLine(lineBuff2, (UOSInt)(sptr - lineBuff2));
+	writer->WriteLineC(lineBuff2, (UOSInt)(sptr - lineBuff2));
 
 	while (r->ReadNext())
 	{
@@ -131,7 +131,7 @@ Bool Exporter::DBHTMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8Cha
 			sptr = Text::StrConcat(sptr, (const UTF8Char*)"</td>");
 			i++;
 		}
-		writer->WriteLine(lineBuff2, (UOSInt)(sptr - lineBuff2));
+		writer->WriteLineC(lineBuff2, (UOSInt)(sptr - lineBuff2));
 	}
 	
 	MemFree(lineBuff2);

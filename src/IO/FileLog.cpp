@@ -220,7 +220,7 @@ void IO::FileLog::LogAdded(Data::DateTime *time, const UTF8Char *logMsg, UOSInt 
 		log->WriteSignature();
 
 		sptr = Text::StrConcat(time->ToString(buff, this->dateFormat), (const UTF8Char*)"Program running");
-		log->WriteLine(buff, (UOSInt)(sptr - buff));
+		log->WriteLineC(buff, (UOSInt)(sptr - buff));
 		fileStm->Flush();
 	}
 
@@ -230,7 +230,7 @@ void IO::FileLog::LogAdded(Data::DateTime *time, const UTF8Char *logMsg, UOSInt 
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(buff, (UOSInt)(sptr - buff));
 		sb.AppendC(logMsg, msgLen);
-		log->WriteLine(sb.ToString(), sb.GetLength());
+		log->WriteLineC(sb.ToString(), sb.GetLength());
 	}
 	mutUsage.EndUse();
 }

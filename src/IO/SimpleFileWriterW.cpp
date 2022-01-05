@@ -79,19 +79,19 @@ IO::SimpleFileWriter::~SimpleFileWriter()
 	CloseHandle((HANDLE)handle);
 }
 
-Bool IO::SimpleFileWriter::Write(const UTF8Char *str, UOSInt nChar)
+Bool IO::SimpleFileWriter::WriteStrC(const UTF8Char *str, UOSInt nChar)
 {
 	UOSInt writeCnt = WriteBuff(str, nChar);
 	return writeCnt > 0;
 }
 
-Bool IO::SimpleFileWriter::Write(const UTF8Char *str)
+Bool IO::SimpleFileWriter::WriteStr(const UTF8Char *str)
 {
 	UOSInt writeCnt = WriteBuff(str, Text::StrCharCnt(str));
 	return writeCnt > 0;
 }
 
-Bool IO::SimpleFileWriter::WriteLine(const UTF8Char *str, UOSInt nChar)
+Bool IO::SimpleFileWriter::WriteLineC(const UTF8Char *str, UOSInt nChar)
 {
 	UOSInt writeCnt = WriteBuff(str, nChar);
 	UInt8 buff[2];

@@ -131,10 +131,10 @@ Bool IO::IniFile::SaveConfig(IO::Writer *writer, IO::ConfigFile *cfg)
 	while (i < j)
 	{
 		s = keyList.GetItem(i);
-		writer->Write(s->v, s->leng);
-		writer->Write((const UTF8Char*)"=");
+		writer->WriteStrC(s->v, s->leng);
+		writer->WriteStrC(UTF8STRC("="));
 		s = cfg->GetValue(s);
-		writer->WriteLine(s->v, s->leng);
+		writer->WriteLineC(s->v, s->leng);
 		i++;
 	}
 	cfg->GetCateList(&cateList, false);
@@ -144,9 +144,9 @@ Bool IO::IniFile::SaveConfig(IO::Writer *writer, IO::ConfigFile *cfg)
 	{
 		s2 = cateList.GetItem(i);
 		writer->WriteLine();
-		writer->Write((const UTF8Char*)"[");
-		writer->Write(s2->v, s2->leng);
-		writer->WriteLine((const UTF8Char*)"]");
+		writer->WriteStrC(UTF8STRC("["));
+		writer->WriteStrC(s2->v, s2->leng);
+		writer->WriteLineC(UTF8STRC("]"));
 
 		keyList.Clear();
 		cfg->GetKeys(s2, &keyList);
@@ -155,10 +155,10 @@ Bool IO::IniFile::SaveConfig(IO::Writer *writer, IO::ConfigFile *cfg)
 		while (k < l)
 		{
 			s = keyList.GetItem(k);
-			writer->Write(s->v, s->leng);
-			writer->Write((const UTF8Char*)"=");
+			writer->WriteStrC(s->v, s->leng);
+			writer->WriteStrC(UTF8STRC("="));
 			s = cfg->GetValue(s2, s);
-			writer->WriteLine(s->v, s->leng);
+			writer->WriteLineC(s->v, s->leng);
 			k++;
 		}
 		i++;

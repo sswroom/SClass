@@ -106,7 +106,7 @@ Bool Exporter::DBCSVExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char
 		}
 		i++;
 	}
-	writer->WriteLine(lineBuff2, (UOSInt)(sptr - lineBuff2));
+	writer->WriteLineC(lineBuff2, (UOSInt)(sptr - lineBuff2));
 
 	while (r->ReadNext())
 	{
@@ -135,7 +135,7 @@ Bool Exporter::DBCSVExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char
 			}
 			i++;
 		}
-		writer->WriteLine(lineBuff2, (UOSInt)(sptr - lineBuff2));
+		writer->WriteLineC(lineBuff2, (UOSInt)(sptr - lineBuff2));
 	}
 	
 	MemFree(lineBuff2);

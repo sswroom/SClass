@@ -62,6 +62,7 @@ void Media::MediaPlayerWebInterface::BrowseRequest(Net::WebServer::IWebRequest *
 	UInt8 *buff;
 	Text::String *s;
 	const UTF8Char *u8ptr;
+	UTF8Char *sptr2;
 	UOSInt size;
 	UInt64 fileSize;
 
@@ -73,9 +74,9 @@ void Media::MediaPlayerWebInterface::BrowseRequest(Net::WebServer::IWebRequest *
 	writer->WriteLine((const UTF8Char*)"</head>");
 	writer->WriteLine((const UTF8Char*)"<body>");
 	writer->WriteLine((const UTF8Char*)"<a href=\"/\">Back</a><br/><br/>");
-	writer->Write((const UTF8Char*)"<b>Current File: </b>");
+	writer->WriteStrC(UTF8STRC("<b>Current File: </b>"));
 	s = Text::XML::ToNewHTMLText(this->iface->GetOpenedFile()->GetSourceNameObj()->v);
-	writer->Write(s->v, s->leng);
+	writer->WriteStrC(s->v, s->leng);
 	s->Release();
 	writer->WriteLine((const UTF8Char*)"<hr/>");
 
@@ -110,25 +111,25 @@ void Media::MediaPlayerWebInterface::BrowseRequest(Net::WebServer::IWebRequest *
 		{
 			vfile = fileList.GetItem(i);
 
-			writer->Write((const UTF8Char*)"<tr><td>");
-			writer->Write((const UTF8Char*)"<a href=\"/browse?fname=");
+			writer->WriteStrC(UTF8STRC("<tr><td>"));
+			writer->WriteStrC(UTF8STRC("<a href=\"/browse?fname="));
 			Text::TextEnc::URIEncoding::URIEncode(sbuff2, vfile->fileName);
 			s = Text::XML::ToNewXMLText(sbuff2);
-			writer->Write(s->v, s->leng);
+			writer->WriteStrC(s->v, s->leng);
 			s->Release();
-			writer->Write((const UTF8Char*)"\">");
+			writer->WriteStrC(UTF8STRC("\">"));
 
 			s = Text::XML::ToNewHTMLText(vfile->fileName);
-			writer->Write(s->v, s->leng);
+			writer->WriteStrC(s->v, s->leng);
 			s->Release();
-			writer->Write((const UTF8Char*)"</a></td><td>");
-			Text::StrUInt64(sbuff2, vfile->fileSize);
-			writer->Write(sbuff2);
-			writer->Write((const UTF8Char*)"</td><td>");
+			writer->WriteStrC(UTF8STRC("</a></td><td>"));
+			sptr2 = Text::StrUInt64(sbuff2, vfile->fileSize);
+			writer->WriteStrC(sbuff2, (UOSInt)(sptr2 - sbuff));
+			writer->WriteStrC(UTF8STRC("</td><td>"));
 
 			IO::Path::GetFileExt(sbuff2, vfile->fileName);
 			u8ptr = Net::MIME::GetMIMEFromExt(sbuff2);
-			writer->Write(u8ptr);
+			writer->WriteStr(u8ptr);
 			writer->WriteLine((const UTF8Char*)"</td></tr>");
 
 			Text::StrDelNew(vfile->fileName);
@@ -217,18 +218,18 @@ void Media::MediaPlayerWebInterface::WebRequest(Net::WebServer::IWebRequest *req
 	writer->WriteLine((const UTF8Char*)"</head>");
 	writer->WriteLine((const UTF8Char*)"<body>");
 	writer->WriteLine((const UTF8Char*)"<a href=\"/\">Refresh</a><br/><br/>");
-	writer->Write((const UTF8Char*)"<b>Current File: </b>");
+	writer->WriteStrC(UTF8STRC("<b>Current File: </b>"));
 	if (this->iface->GetOpenedFile())
 	{
 		s = Text::XML::ToNewHTMLText(this->iface->GetOpenedFile()->GetSourceNameObj()->v);
-		writer->Write(s->v, s->leng);
+		writer->WriteStrC(s->v, s->leng);
 		s->Release();
 
-		writer->Write((const UTF8Char*)" <a href=\"/browse\">Browse</a>");
+		writer->WriteStrC(UTF8STRC(" <a href=\"/browse\">Browse</a>"));
 	}
 	else
 	{
-		writer->Write((const UTF8Char*)"-");
+		writer->WriteStrC(UTF8STRC("-"));
 	}
 	writer->WriteLine((const UTF8Char*)"<br/>");
 
@@ -412,7 +413,7 @@ void Media::MediaPlayerWebInterface::WebRequest(Net::WebServer::IWebRequest *req
 		Text::SBAppendF64(&sb, primaries->wy);
 		sb.AppendC(UTF8STRC("<br/>\r\n"));
 		DEL_CLASS(status.color);
-		writer->Write(sb.ToString());
+		writer->WriteStrC(sb.ToString(), sb.GetLength());
 	}
 
 	writer->WriteLine((const UTF8Char*)"</body>");

@@ -107,24 +107,24 @@ Bool Exporter::DBPListExporter::ExportFile(IO::SeekableStream *stm, const UTF8Ch
 			case DB::DBUtil::CT_DateTime2:
 				r->GetDate(i, &dt);
 				sptr = Text::StrConcat(dt.ToString(Text::StrConcat(lineBuff1, (const UTF8Char*)"        <string>"), "yyyy-MM-dd HH:mm:ss"), (const UTF8Char*)"</string>");
-				writer->WriteLine(lineBuff1, (UOSInt)(sptr - lineBuff1));
+				writer->WriteLineC(lineBuff1, (UOSInt)(sptr - lineBuff1));
 				break;
 			case DB::DBUtil::CT_Double:
 			case DB::DBUtil::CT_Float:
 				sptr = Text::StrConcat(Text::StrDouble(Text::StrConcat(lineBuff1, (const UTF8Char*)"        <string>"), r->GetDbl(i)), (const UTF8Char*)"</string>");
-				writer->WriteLine(lineBuff1, (UOSInt)(sptr - lineBuff1));
+				writer->WriteLineC(lineBuff1, (UOSInt)(sptr - lineBuff1));
 				break;
 			case DB::DBUtil::CT_Int16:
 			case DB::DBUtil::CT_Int32:
 			case DB::DBUtil::CT_UInt16:
 				sptr = Text::StrConcat(Text::StrInt32(Text::StrConcat(lineBuff1, (const UTF8Char*)"        <integer>"), r->GetInt32(i)), (const UTF8Char*)"</integer>");
-				writer->WriteLine(lineBuff1, (UOSInt)(sptr - lineBuff1));
+				writer->WriteLineC(lineBuff1, (UOSInt)(sptr - lineBuff1));
 				break;
 			case DB::DBUtil::CT_Int64:
 			case DB::DBUtil::CT_UInt32:
 			case DB::DBUtil::CT_UInt64:
 				sptr = Text::StrConcat(Text::StrInt64(Text::StrConcat(lineBuff1, (const UTF8Char*)"        <integer>"), r->GetInt64(i)), (const UTF8Char*)"</integer>");
-				writer->WriteLine(lineBuff1, (UOSInt)(sptr - lineBuff1));
+				writer->WriteLineC(lineBuff1, (UOSInt)(sptr - lineBuff1));
 				break;
 			case DB::DBUtil::CT_Bool:
 			case DB::DBUtil::CT_Byte:
@@ -146,7 +146,7 @@ Bool Exporter::DBPListExporter::ExportFile(IO::SeekableStream *stm, const UTF8Ch
 				{
 					sptr = Text::StrConcat(lineBuff1, (const UTF8Char*)"        <string>(null)</string>");
 				}
-				writer->WriteLine(lineBuff1, (UOSInt)(sptr - lineBuff1));
+				writer->WriteLineC(lineBuff1, (UOSInt)(sptr - lineBuff1));
 				break;
 			}
 

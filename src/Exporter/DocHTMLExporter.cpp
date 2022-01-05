@@ -76,51 +76,51 @@ Bool Exporter::DocHTMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8Ch
 	writer->WriteLine((const UTF8Char*)"<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">");
 	writer->WriteLine((const UTF8Char*)"<html xmlns=\"http://www.w3.org/1999/xhtml\">");
 	writer->WriteLine((const UTF8Char*)"<head>");
-	writer->Write((const UTF8Char*)"<title>");
+	writer->WriteStrC(UTF8STRC("<title>"));
 	doc->GetDocumentName(lineBuff1);
-	Text::XML::ToXMLText(lineBuff2, lineBuff1);
-	writer->Write(lineBuff2);
+	sptr = Text::XML::ToXMLText(lineBuff2, lineBuff1);
+	writer->WriteStrC(lineBuff2, (UOSInt)(sptr - lineBuff2));
 	writer->WriteLine((const UTF8Char*)"</title>");
 	sptr = Text::StrConcat(Text::EncodingFactory::GetInternetName(Text::StrConcat(lineBuff1, (const UTF8Char*)"<meta http-equiv=\"Content-Type\" content=\"text/html; charset="), this->codePage), (const UTF8Char*)"\" />");
-	writer->WriteLine(lineBuff1, (UOSInt)(sptr - lineBuff1));
+	writer->WriteLineC(lineBuff1, (UOSInt)(sptr - lineBuff1));
 	writer->WriteLine((const UTF8Char*)"<style type=\"text/css\">");
 /*
 a:hover {color:#FF00FF;}
 */
 	if (doc->GetTextColor(&color))
 	{
-		writer->Write((const UTF8Char*)"body {color:");
+		writer->WriteStrC(UTF8STRC("body {color:"));
 		WriteColor(writer, color);
 		writer->WriteLine((const UTF8Char*)";}");
 	}
 	if (doc->GetLinkColor(&color))
 	{
-		writer->Write((const UTF8Char*)"a:link {color:");
+		writer->WriteStrC(UTF8STRC("a:link {color:"));
 		WriteColor(writer, color);
 		writer->WriteLine((const UTF8Char*)";}");
 	}
 	if (doc->GetVisitedLinkColor(&color))
 	{
-		writer->Write((const UTF8Char*)"a:visited {color:");
+		writer->WriteStrC(UTF8STRC("a:visited {color:"));
 		WriteColor(writer, color);
 		writer->WriteLine((const UTF8Char*)";}");
 	}
 	if (doc->GetActiveLinkColor(&color))
 	{
-		writer->Write((const UTF8Char*)"a:active {color:");
+		writer->WriteStrC(UTF8STRC("a:active {color:"));
 		WriteColor(writer, color);
 		writer->WriteLine((const UTF8Char*)";}");
 	}
 	if (doc->GetBGColor(&color))
 	{
-		writer->Write((const UTF8Char*)"body {background-color:");
+		writer->WriteStrC(UTF8STRC("body {background-color:"));
 		WriteColor(writer, color);
 		writer->WriteLine((const UTF8Char*)";}");
 	}
 	writer->WriteLine((const UTF8Char*)"</style>");
 
 	writer->WriteLine((const UTF8Char*)"</head>");
-	writer->Write((const UTF8Char*)"<body>");
+	writer->WriteStrC(UTF8STRC("<body>"));
 
 	UOSInt i;
 	UOSInt j;
@@ -143,9 +143,10 @@ a:hover {color:#FF00FF;}
 void Exporter::DocHTMLExporter::WriteColor(IO::Writer *writer, UInt32 color)
 {
 	UTF8Char sbuff[8];
+	UTF8Char *sptr;
 	sbuff[0] = '#';
-	Text::StrHexByte(Text::StrHexByte(Text::StrHexByte(&sbuff[1], (color >> 16) & 0xff), (color >> 8) & 0xff), color & 0xff);
-	writer->Write(sbuff); 
+	sptr = Text::StrHexByte(Text::StrHexByte(Text::StrHexByte(&sbuff[1], (color >> 16) & 0xff), (color >> 8) & 0xff), color & 0xff);
+	writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff)); 
 }
 
 void Exporter::DocHTMLExporter::WriteItems(IO::Writer *writer, Data::ReadingList<Text::Doc::DocItem *> *items, const UTF8Char *parentNodeName)
@@ -164,40 +165,40 @@ void Exporter::DocHTMLExporter::WriteItems(IO::Writer *writer, Data::ReadingList
 		case Text::Doc::DocItem::DIT_URL:
 			if (Text::StrCompare(parentNodeName, (const UTF8Char*)"body") == 0)
 			{
-				writer->Write((const UTF8Char*)"<p>");
+				writer->WriteStrC(UTF8STRC("<p>"));
 			}
 			s = Text::XML::ToNewAttrText(((Text::Doc::DocLink*)item)->GetLink());
-			writer->Write((const UTF8Char*)"<a href=");
-			writer->Write(s->v, s->leng);
+			writer->WriteStrC(UTF8STRC("<a href="));
+			writer->WriteStrC(s->v, s->leng);
 			s->Release();
-			writer->Write((const UTF8Char*)">");
+			writer->WriteStrC(UTF8STRC(">"));
 			WriteItems(writer, item, (const UTF8Char*)"a");
-			writer->Write((const UTF8Char*)"</a>");
+			writer->WriteStrC(UTF8STRC("</a>"));
 			if (Text::StrCompare(parentNodeName, (const UTF8Char*)"body") == 0)
 			{
-				writer->Write((const UTF8Char*)"</p>");
+				writer->WriteStrC(UTF8STRC("</p>"));
 			}
 			break;
 		case Text::Doc::DocItem::DIT_HEADING:
 			heading = (Text::Doc::DocHeading*)item;
 			halign = heading->GetHAlignment();
-			writer->Write((const UTF8Char*)"<h1");
+			writer->WriteStrC(UTF8STRC("<h1"));
 			switch (halign)
 			{
 			case Text::Doc::DocItem::HALIGN_CENTER:
-				writer->Write((const UTF8Char*)" style=\"text-align: center;\"");
+				writer->WriteStrC(UTF8STRC(" style=\"text-align: center;\""));
 				break;
 			case Text::Doc::DocItem::HALIGN_NONE:
 			default:
 				break;
 			}
-			writer->Write((const UTF8Char*)">");
+			writer->WriteStrC(UTF8STRC(">"));
 			WriteItems(writer, heading, (const UTF8Char*)"h1");
-			writer->Write((const UTF8Char*)"</h1>");
+			writer->WriteStrC(UTF8STRC("</h1>"));
 			break;
 		case Text::Doc::DocItem::DIT_TEXT:
 			s = Text::XML::ToNewXMLText(((Text::Doc::DocText*)item)->GetText());
-			writer->Write(s->v, s->leng);
+			writer->WriteStrC(s->v, s->leng);
 			s->Release();
 			break;
 		case Text::Doc::DocItem::DIT_VALIDATOR:
@@ -207,11 +208,11 @@ void Exporter::DocHTMLExporter::WriteItems(IO::Writer *writer, Data::ReadingList
 			writer->WriteLine((const UTF8Char*)"</p>");
 			break;
 		case Text::Doc::DocItem::DIT_HORICENTER:
-			writer->Write((const UTF8Char*)"<center>");
+			writer->WriteStrC(UTF8STRC("<center>"));
 			s = Text::XML::ToNewXMLText(((Text::Doc::DocText*)item)->GetText());
-			writer->Write(s->v, s->leng);
+			writer->WriteStrC(s->v, s->leng);
 			s->Release();
-			writer->Write((const UTF8Char*)"</center>");
+			writer->WriteStrC(UTF8STRC("</center>"));
 			break;
 		default:
 			break;

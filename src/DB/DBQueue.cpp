@@ -235,7 +235,7 @@ DB::DBQueue::~DBQueue()
 					NEW_CLASS(fs, IO::FileStream((const UTF8Char*)"FailSQL.txt", IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 					NEW_CLASS(writer, Text::UTF8Writer(fs));
 				}
-				writer->Write(((DB::DBQueue::SQLCmd*)c)->GetSQL());
+				writer->WriteStr(((DB::DBQueue::SQLCmd*)c)->GetSQL());
 				writer->WriteLine((const UTF8Char*)";");
 			}
 			DEL_CLASS(c);
@@ -256,7 +256,7 @@ DB::DBQueue::~DBQueue()
 						NEW_CLASS(fs, IO::FileStream((const UTF8Char*)"FailSQL.txt", IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 						NEW_CLASS(writer, Text::UTF8Writer(fs));
 					}
-					writer->Write(((DB::DBQueue::SQLCmd*)c)->GetSQL());
+					writer->WriteStr(((DB::DBQueue::SQLCmd*)c)->GetSQL());
 					writer->WriteLine((const UTF8Char*)";");
 				}
 				DEL_CLASS(c);
@@ -574,7 +574,7 @@ void DB::DBHandler::WriteError(const UTF8Char *errMsg, const UTF8Char *sqlCmd)
 	Sync::MutexUsage mutUsage(this->mut);
 	NEW_CLASS(fs, IO::FileStream((const UTF8Char*)"FailSQL.txt", IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	NEW_CLASS(writer, Text::UTF8Writer(fs));
-	writer->Write(sqlCmd);
+	writer->WriteStr(sqlCmd);
 	writer->WriteLine((const UTF8Char*)";");
 	DEL_CLASS(writer);
 	DEL_CLASS(fs);

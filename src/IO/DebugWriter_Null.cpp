@@ -15,17 +15,17 @@ void IO::DebugWriter::Flush()
 {
 }
 
-Bool IO::DebugWriter::Write(const UTF8Char *str, UOSInt nChar)
+Bool IO::DebugWriter::WriteStrC(const UTF8Char *str, UOSInt nChar)
 {
 	return true;
 }
 
-Bool IO::DebugWriter::Write(const UTF8Char *str)
+Bool IO::DebugWriter::WriteStr(const UTF8Char *str)
 {
 	return true;
 }
 
-Bool IO::DebugWriter::WriteLine(const UTF8Char *str, UOSInt nChar)
+Bool IO::DebugWriter::WriteLineC(const UTF8Char *str, UOSInt nChar)
 {
 	return true;
 }

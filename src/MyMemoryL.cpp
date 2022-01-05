@@ -199,10 +199,11 @@ Int32 MemCheckError()
 	if (mcMemoryCnt)
 	{
 		UTF8Char buff[12];
-		Text::StrInt32(buff, mcMemoryCnt);
+		UTF8Char *sptr;
+		sptr = Text::StrInt32(buff, mcMemoryCnt);
 		console = MemOpenWriter();
-		console->Write((const UTF8Char*)"Memory leaks occurs for ");
-		console->Write(buff);
+		console->WriteStrC(UTF8STRC("Memory leaks occurs for "));
+		console->WriteStrC(buff, (UOSInt)(sptr - buff));
 		console->WriteLine((const UTF8Char*)" times");
 		delete console;
 		found = true;

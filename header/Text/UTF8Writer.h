@@ -13,9 +13,9 @@ namespace Text
 		UTF8Writer(IO::Stream *stm);
 		virtual ~UTF8Writer();
 
-		virtual Bool Write(const UTF8Char *str, UOSInt nChar);
-		virtual Bool Write(const UTF8Char *str);
-		virtual Bool WriteLine(const UTF8Char *str, UOSInt nChar);
+		virtual Bool WriteStrC(const UTF8Char *str, UOSInt nChar);
+		virtual Bool WriteStr(const UTF8Char *str);
+		virtual Bool WriteLineC(const UTF8Char *str, UOSInt nChar);
 		virtual Bool WriteLine(const UTF8Char *str);
 		virtual Bool WriteW(const UTF16Char *str, UOSInt nChar);
 		virtual Bool WriteW(const UTF16Char *str);

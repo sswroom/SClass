@@ -20,7 +20,7 @@ UInt32 __stdcall Net::MQTTStaticClient::KAThread(void *userObj)
 		else
 		{
 			mutUsage.EndUse();
-			if (me->errLog) me->errLog->WriteLine(UTF8STRC("MQTT: Reconnecting to server"));
+			if (me->errLog) me->errLog->WriteLineC(UTF8STRC("MQTT: Reconnecting to server"));
 			me->Connect();
 		}
 		me->kaEvt->Wait((UOSInt)me->kaSeconds * 500);
@@ -51,7 +51,7 @@ void Net::MQTTStaticClient::Connect()
 	NEW_CLASS(conn, Net::MQTTConn(this->sockf, this->ssl, this->host, this->port, OnDisconnect, this));
 	if (conn->IsError())
 	{
-		if (errLog) errLog->WriteLine(UTF8STRC("MQTT: Error in connecting to server"));
+		if (errLog) errLog->WriteLineC(UTF8STRC("MQTT: Error in connecting to server"));
 		DEL_CLASS(conn);
 		return;
 	}
@@ -75,14 +75,14 @@ void Net::MQTTStaticClient::Connect()
 	if (!succ)
 	{
 		DEL_CLASS(conn);
-		if (errLog) errLog->WriteLine(UTF8STRC("MQTT: Error in sending connect packet"));
+		if (errLog) errLog->WriteLineC(UTF8STRC("MQTT: Error in sending connect packet"));
 	}
 	else
 	{
 		mutUsage.ReplaceMutex(this->connMut);
 		if (conn->IsError())
 		{
-			if (errLog) errLog->WriteLine(UTF8STRC("MQTT: Connection is error"));
+			if (errLog) errLog->WriteLineC(UTF8STRC("MQTT: Connection is error"));
 			DEL_CLASS(conn);
 			return;
 		}

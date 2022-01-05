@@ -63,6 +63,7 @@ Bool Exporter::GPXExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 		return false;
 	Map::GPSTrack *track = (Map::GPSTrack*)layer;
 	UTF8Char sbuff[256];
+	UTF8Char *sptr;
 
 	UOSInt i;
 	UOSInt j;
@@ -78,9 +79,9 @@ Bool Exporter::GPXExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 	NEW_CLASS(cstm, IO::BufferedOutputStream(stm, 65536));
 	NEW_CLASS(writer, IO::StreamWriter(cstm, &enc));
 
-	writer->Write((const UTF8Char*)"<?xml version=\"1.0\" encoding=\"");
-	Text::EncodingFactory::GetInternetName(sbuff, this->codePage);
-	writer->Write(sbuff);
+	writer->WriteStrC(UTF8STRC("<?xml version=\"1.0\" encoding=\""));
+	sptr = Text::EncodingFactory::GetInternetName(sbuff, this->codePage);
+	writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
 	writer->WriteLine((const UTF8Char*)"\"?>");
 	writer->WriteLine((const UTF8Char*)"<gpx version=\"v1.0\" creator=\"iTravel Tech Inc. - http://www.itravel-tech.com\">");
 	writer->WriteLine((const UTF8Char*)"<trk>");
@@ -94,42 +95,42 @@ Bool Exporter::GPXExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 		recs = track->GetTrack(i, &l);
 		while (k < l)
 		{
-			writer->Write((const UTF8Char*)"<trkpt lat=\"");
-			Text::StrDouble(sbuff, recs[k].lat);
-			writer->Write(sbuff);
-			writer->Write((const UTF8Char*)"\" lon=\"");
-			Text::StrDouble(sbuff, recs[k].lon);
-			writer->Write(sbuff);
+			writer->WriteStrC(UTF8STRC("<trkpt lat=\""));
+			sptr = Text::StrDouble(sbuff, recs[k].lat);
+			writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
+			writer->WriteStrC(UTF8STRC("\" lon=\""));
+			sptr = Text::StrDouble(sbuff, recs[k].lon);
+			writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
 			writer->WriteLine((const UTF8Char*)"\">");
 			
-			writer->Write((const UTF8Char*)"<ele>");
-			Text::StrDouble(sbuff, recs[k].altitude);
-			writer->Write(sbuff);
+			writer->WriteStrC(UTF8STRC("<ele>"));
+			sptr = Text::StrDouble(sbuff, recs[k].altitude);
+			writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
 			writer->WriteLine((const UTF8Char*)"</ele>");
 
-			writer->Write((const UTF8Char*)"<time>");
+			writer->WriteStrC(UTF8STRC("<time>"));
 			dt.SetTicks(recs[k].utcTimeTicks);
-			dt.ToString(sbuff, "yyyy-MM-ddTHH:mm:ssZ");
-			writer->Write(sbuff);
+			sptr = dt.ToString(sbuff, "yyyy-MM-ddTHH:mm:ssZ");
+			writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
 			writer->WriteLine((const UTF8Char*)"</time>");
 
-			writer->Write((const UTF8Char*)"<desc>lat.=");
-			Text::StrDoubleFmt(sbuff, recs[k].lat, "0.000000");
-			writer->Write(sbuff);
-			writer->Write((const UTF8Char*)", lon.=");
-			Text::StrDoubleFmt(sbuff, recs[k].lon, "0.000000");
-			writer->Write(sbuff);
-			writer->Write((const UTF8Char*)", Alt.=");
-			Text::StrDoubleFmt(sbuff, recs[k].altitude, "0.000000");
-			writer->Write(sbuff);
-			writer->Write((const UTF8Char*)"m, Speed=");
-			Text::StrDoubleFmt(sbuff, recs[k].speed * 1.852, "0.000000");
-			writer->Write(sbuff);
+			writer->WriteStrC(UTF8STRC("<desc>lat.="));
+			sptr = Text::StrDoubleFmt(sbuff, recs[k].lat, "0.000000");
+			writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
+			writer->WriteStrC(UTF8STRC(", lon.="));
+			sptr = Text::StrDoubleFmt(sbuff, recs[k].lon, "0.000000");
+			writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
+			writer->WriteStrC(UTF8STRC(", Alt.="));
+			sptr = Text::StrDoubleFmt(sbuff, recs[k].altitude, "0.000000");
+			writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
+			writer->WriteStrC(UTF8STRC("m, Speed="));
+			sptr = Text::StrDoubleFmt(sbuff, recs[k].speed * 1.852, "0.000000");
+			writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
 			writer->WriteLine((const UTF8Char*)"m/h.</desc>");
 
-			writer->Write((const UTF8Char*)"<speed>");
-			Text::StrDoubleFmt(sbuff, recs[k].speed * 1.852 / 3.6, "0.000000");
-			writer->Write(sbuff);
+			writer->WriteStrC(UTF8STRC("<speed>"));
+			sptr = Text::StrDoubleFmt(sbuff, recs[k].speed * 1.852 / 3.6, "0.000000");
+			writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
 			writer->WriteLine((const UTF8Char*)"</speed>");
 
 			writer->WriteLine((const UTF8Char*)"</trkpt>");

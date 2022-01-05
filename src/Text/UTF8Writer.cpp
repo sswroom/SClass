@@ -15,18 +15,18 @@ Text::UTF8Writer::~UTF8Writer()
 {
 }
 
-Bool Text::UTF8Writer::Write(const UTF8Char *str, UOSInt nChar)
+Bool Text::UTF8Writer::WriteStrC(const UTF8Char *str, UOSInt nChar)
 {
 	return this->stm->Write(str, nChar) == nChar;
 }
 
-Bool Text::UTF8Writer::Write(const UTF8Char *str)
+Bool Text::UTF8Writer::WriteStr(const UTF8Char *str)
 {
 	UOSInt len = Text::StrCharCnt(str);
 	return this->stm->Write(str, len) == len;
 }
 
-Bool Text::UTF8Writer::WriteLine(const UTF8Char *str, UOSInt nChar)
+Bool Text::UTF8Writer::WriteLineC(const UTF8Char *str, UOSInt nChar)
 {
 	const UTF8Char crlf[2] = {13, 10};
 	UOSInt ret = this->stm->Write(str, nChar);

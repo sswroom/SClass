@@ -69,7 +69,7 @@ Bool Exporter::SFVExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 		sptr = Text::StrConcat(sbuff, fchk->GetEntryName(i));
 		*sptr++ = ' ';
 		sptr = Text::StrHexVal32(sptr, ReadMUInt32(buff));
-		writer->WriteLine(sbuff, (UOSInt)(sptr - sbuff));
+		writer->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
 		i++;
 	}
 	DEL_CLASS(writer);

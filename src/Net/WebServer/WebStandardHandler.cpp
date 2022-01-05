@@ -122,8 +122,8 @@ void Net::WebServer::WebStandardHandler::WebRequest(Net::WebServer::IWebRequest 
 				writer->WriteLine((const UTF8Char*)"<title>404 Not Found</title>");
 				writer->WriteLine((const UTF8Char*)"</head><body>");
 				writer->WriteLine((const UTF8Char*)"<h1>Not Found</h1>");
-				writer->Write((const UTF8Char*)"<p>The requested URL ");
-				writer->Write(reqURL->v, reqURL->leng);
+				writer->WriteStrC(UTF8STRC("<p>The requested URL "));
+				writer->WriteStrC(reqURL->v, reqURL->leng);
 				writer->WriteLine((const UTF8Char*)" was not found on this server.</p>");
 				writer->WriteLine((const UTF8Char*)"</body></html>");
 				DEL_CLASS(writer);

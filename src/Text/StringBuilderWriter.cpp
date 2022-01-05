@@ -11,34 +11,34 @@ Text::StringBuilderWriter::~StringBuilderWriter()
 {
 }
 
-Bool Text::StringBuilderWriter::Write(const UTF8Char *str, UOSInt nChar)
+Bool Text::StringBuilderWriter::WriteStrC(const UTF8Char *str, UOSInt nChar)
 {
 	this->sb->AppendC(str, nChar);
 	return true;
 }
 
-Bool Text::StringBuilderWriter::Write(const UTF8Char *str)
+Bool Text::StringBuilderWriter::WriteStr(const UTF8Char *str)
 {
 	this->sb->Append(str);
 	return true;
 }
 
-Bool Text::StringBuilderWriter::WriteLine(const UTF8Char *str, UOSInt nChar)
+Bool Text::StringBuilderWriter::WriteLineC(const UTF8Char *str, UOSInt nChar)
 {
 	this->sb->AppendC(str, nChar);
-	this->sb->AppendC((const UTF8Char*)"\r\n", 2);
+	this->sb->AppendC(UTF8STRC("\r\n"));
 	return true;
 }
 
 Bool Text::StringBuilderWriter::WriteLine(const UTF8Char *str)
 {
 	this->sb->Append(str);
-	this->sb->AppendC((const UTF8Char*)"\r\n", 2);
+	this->sb->AppendC(UTF8STRC("\r\n"));
 	return true;
 }
 
 Bool Text::StringBuilderWriter::WriteLine()
 {
-	this->sb->AppendC((const UTF8Char*)"\r\n", 2);
+	this->sb->AppendC(UTF8STRC("\r\n"));
 	return true;
 }

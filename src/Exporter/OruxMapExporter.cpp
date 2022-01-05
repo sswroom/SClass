@@ -75,6 +75,7 @@ Bool Exporter::OruxMapExporter::ExportFile(IO::SeekableStream *stm, const UTF8Ch
 	UTF8Char fileName2[512];
 	UTF8Char u8fileName[512];
 	UTF8Char sbuff[256];
+	UTF8Char *sptr;
 	if (pobj->GetParserType() != IO::ParserType::MapLayer)
 	{
 		return false;
@@ -147,13 +148,13 @@ Bool Exporter::OruxMapExporter::ExportFile(IO::SeekableStream *stm, const UTF8Ch
 			succ = true;
 			Map::OSM::OSMLocalTileMap *osm = (Map::OSM::OSMLocalTileMap*)tileMap;
 			NEW_CLASS(writer, Text::UTF8Writer(stm));
-			writer->Write((const UTF8Char*)"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
-			writer->Write((const UTF8Char*)"<OruxTracker xmlns=\"http://oruxtracker.com/app/res/calibration\"\n");
-			writer->Write((const UTF8Char*)" versionCode=\"3.0\">\n");
-			writer->Write((const UTF8Char*)"<MapCalibration layers=\"true\" layerLevel=\"0\">\n");
-			writer->Write((const UTF8Char*)"<MapName><![CDATA[");
-			writer->Write(s->v, s->leng);
-			writer->Write((const UTF8Char*)"]]></MapName>\n");
+			writer->WriteStrC(UTF8STRC("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"));
+			writer->WriteStrC(UTF8STRC("<OruxTracker xmlns=\"http://oruxtracker.com/app/res/calibration\"\n"));
+			writer->WriteStrC(UTF8STRC(" versionCode=\"3.0\">\n"));
+			writer->WriteStrC(UTF8STRC("<MapCalibration layers=\"true\" layerLevel=\"0\">\n"));
+			writer->WriteStrC(UTF8STRC("<MapName><![CDATA["));
+			writer->WriteStrC(s->v, s->leng);
+			writer->WriteStrC(UTF8STRC("]]></MapName>\n"));
 			level = 0;
 			while (level <= 18)
 			{
@@ -163,86 +164,86 @@ Bool Exporter::OruxMapExporter::ExportFile(IO::SeekableStream *stm, const UTF8Ch
 					maxLon = Map::OSM::OSMTileMap::TileX2Lon(maxX + 1, level);
 					minLat = Map::OSM::OSMTileMap::TileY2Lat(maxY + 1, level);
 					maxLat = Map::OSM::OSMTileMap::TileY2Lat(minY, level);
-					writer->Write((const UTF8Char*)"<OruxTracker  versionCode=\"2.1\">\n");
+					writer->WriteStrC(UTF8STRC("<OruxTracker  versionCode=\"2.1\">\n"));
 
-					writer->Write((const UTF8Char*)"<MapCalibration layers=\"false\" layerLevel=\"");
-					Text::StrUOSInt(sbuff, level);
-					writer->Write(sbuff);
-					writer->Write((const UTF8Char*)"\">\n");
+					writer->WriteStrC(UTF8STRC("<MapCalibration layers=\"false\" layerLevel=\""));
+					sptr = Text::StrUOSInt(sbuff, level);
+					writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
+					writer->WriteStrC(UTF8STRC("\">\n"));
 
-					writer->Write((const UTF8Char*)"<MapName><![CDATA[");
-					writer->Write(s->v, s->leng);
-					writer->Write((const UTF8Char*)"]]></MapName>\n");
+					writer->WriteStrC(UTF8STRC("<MapName><![CDATA["));
+					writer->WriteStrC(s->v, s->leng);
+					writer->WriteStrC(UTF8STRC("]]></MapName>\n"));
 
-					writer->Write((const UTF8Char*)"<MapChunks xMax=\"");
-					Text::StrInt32(sbuff, maxX - minX + 1);
-					writer->Write(sbuff);
-					writer->Write((const UTF8Char*)"\" yMax=\"");
-					Text::StrInt32(sbuff, maxY - minY + 1);
-					writer->Write(sbuff);
-					writer->Write((const UTF8Char*)"\" datum=\"WGS84\" projection=\"Mercator\" img_height=\"256\" img_width=\"256\" file_name=\"");
-					writer->Write(s->v, s->leng);
-					writer->Write((const UTF8Char*)"\" />\n");
+					writer->WriteStrC(UTF8STRC("<MapChunks xMax=\""));
+					sptr = Text::StrInt32(sbuff, maxX - minX + 1);
+					writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
+					writer->WriteStrC(UTF8STRC("\" yMax=\""));
+					sptr = Text::StrInt32(sbuff, maxY - minY + 1);
+					writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
+					writer->WriteStrC(UTF8STRC("\" datum=\"WGS84\" projection=\"Mercator\" img_height=\"256\" img_width=\"256\" file_name=\""));
+					writer->WriteStrC(s->v, s->leng);
+					writer->WriteStrC(UTF8STRC("\" />\n"));
 
-					writer->Write((const UTF8Char*)"<MapDimensions height=\"");
-					Text::StrInt32(sbuff, (maxY - minY + 1) * 256);
-					writer->Write(sbuff);
-					writer->Write((const UTF8Char*)"\" width=\"");
-					Text::StrInt32(sbuff, (maxX - minX + 1) * 256);
-					writer->Write(sbuff);
-					writer->Write((const UTF8Char*)"\" />\n");
+					writer->WriteStrC(UTF8STRC("<MapDimensions height=\""));
+					sptr = Text::StrInt32(sbuff, (maxY - minY + 1) * 256);
+					writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
+					writer->WriteStrC(UTF8STRC("\" width=\""));
+					sptr = Text::StrInt32(sbuff, (maxX - minX + 1) * 256);
+					writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
+					writer->WriteStrC(UTF8STRC("\" />\n"));
 
-					writer->Write((const UTF8Char*)"<MapBounds minLat=\"");
-					Text::StrDouble(sbuff, minLat);
-					writer->Write(sbuff);
-					writer->Write((const UTF8Char*)"\" maxLat=\"");
-					Text::StrDouble(sbuff, maxLat);
-					writer->Write(sbuff);
-					writer->Write((const UTF8Char*)"\" minLon=\"");
-					Text::StrDouble(sbuff, minLon);
-					writer->Write(sbuff);
-					writer->Write((const UTF8Char*)"\" maxLon=\"");
-					Text::StrDouble(sbuff, maxLon);
-					writer->Write(sbuff);
-					writer->Write((const UTF8Char*)"\" />\n");
+					writer->WriteStrC(UTF8STRC("<MapBounds minLat=\""));
+					sptr = Text::StrDouble(sbuff, minLat);
+					writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
+					writer->WriteStrC(UTF8STRC("\" maxLat=\""));
+					sptr = Text::StrDouble(sbuff, maxLat);
+					writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
+					writer->WriteStrC(UTF8STRC("\" minLon=\""));
+					sptr = Text::StrDouble(sbuff, minLon);
+					writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
+					writer->WriteStrC(UTF8STRC("\" maxLon=\""));
+					sptr = Text::StrDouble(sbuff, maxLon);
+					writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
+					writer->WriteStrC(UTF8STRC("\" />\n"));
 
-					writer->Write((const UTF8Char*)"<CalibrationPoints>\n");
+					writer->WriteStrC(UTF8STRC("<CalibrationPoints>\n"));
 
-					writer->Write((const UTF8Char*)"<CalibrationPoint corner=\"TL\" lon=\"");
-					Text::StrDouble(sbuff, minLon);
-					writer->Write(sbuff);
-					writer->Write((const UTF8Char*)"\" lat=\"");
-					Text::StrDouble(sbuff, maxLat);
-					writer->Write(sbuff);
-					writer->Write((const UTF8Char*)"\" />\n");
+					writer->WriteStrC(UTF8STRC("<CalibrationPoint corner=\"TL\" lon=\""));
+					sptr = Text::StrDouble(sbuff, minLon);
+					writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
+					writer->WriteStrC(UTF8STRC("\" lat=\""));
+					sptr = Text::StrDouble(sbuff, maxLat);
+					writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
+					writer->WriteStrC(UTF8STRC("\" />\n"));
 
-					writer->Write((const UTF8Char*)"<CalibrationPoint corner=\"BR\" lon=\"");
-					Text::StrDouble(sbuff, maxLon);
-					writer->Write(sbuff);
-					writer->Write((const UTF8Char*)"\" lat=\"");
-					Text::StrDouble(sbuff, minLat);
-					writer->Write(sbuff);
-					writer->Write((const UTF8Char*)"\" />\n");
+					writer->WriteStrC(UTF8STRC("<CalibrationPoint corner=\"BR\" lon=\""));
+					sptr = Text::StrDouble(sbuff, maxLon);
+					writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
+					writer->WriteStrC(UTF8STRC("\" lat=\""));
+					sptr = Text::StrDouble(sbuff, minLat);
+					writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
+					writer->WriteStrC(UTF8STRC("\" />\n"));
 
-					writer->Write((const UTF8Char*)"<CalibrationPoint corner=\"TR\" lon=\"");
-					Text::StrDouble(sbuff, maxLon);
-					writer->Write(sbuff);
-					writer->Write((const UTF8Char*)"\" lat=\"");
-					Text::StrDouble(sbuff, maxLat);
-					writer->Write(sbuff);
-					writer->Write((const UTF8Char*)"\" />\n");
+					writer->WriteStrC(UTF8STRC("<CalibrationPoint corner=\"TR\" lon=\""));
+					sptr = Text::StrDouble(sbuff, maxLon);
+					writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
+					writer->WriteStrC(UTF8STRC("\" lat=\""));
+					sptr = Text::StrDouble(sbuff, maxLat);
+					writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
+					writer->WriteStrC(UTF8STRC("\" />\n"));
 
-					writer->Write((const UTF8Char*)"<CalibrationPoint corner=\"BL\" lon=\"");
-					Text::StrDouble(sbuff, minLon);
-					writer->Write(sbuff);
-					writer->Write((const UTF8Char*)"\" lat=\"");
-					Text::StrDouble(sbuff, minLat);
-					writer->Write(sbuff);
-					writer->Write((const UTF8Char*)"\" />\n");
+					writer->WriteStrC(UTF8STRC("<CalibrationPoint corner=\"BL\" lon=\""));
+					sptr = Text::StrDouble(sbuff, minLon);
+					writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
+					writer->WriteStrC(UTF8STRC("\" lat=\""));
+					sptr = Text::StrDouble(sbuff, minLat);
+					writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
+					writer->WriteStrC(UTF8STRC("\" />\n"));
 
-					writer->Write((const UTF8Char*)"</CalibrationPoints>\n");
-					writer->Write((const UTF8Char*)"</MapCalibration>\n");
-					writer->Write((const UTF8Char*)"</OruxTracker>\n");
+					writer->WriteStrC(UTF8STRC("</CalibrationPoints>\n"));
+					writer->WriteStrC(UTF8STRC("</MapCalibration>\n"));
+					writer->WriteStrC(UTF8STRC("</OruxTracker>\n"));
 				
 					imgIds.Clear();
 					osm->GetImageIDs(level, minLon, maxLat, maxLon, minLat, &imgIds);
@@ -282,8 +283,8 @@ Bool Exporter::OruxMapExporter::ExportFile(IO::SeekableStream *stm, const UTF8Ch
 				level++;
 			}
 			s->Release();
-			writer->Write((const UTF8Char*)"</MapCalibration>\n");
-			writer->Write((const UTF8Char*)"</OruxTracker>\n");
+			writer->WriteStrC(UTF8STRC("</MapCalibration>\n"));
+			writer->WriteStrC(UTF8STRC("</OruxTracker>\n"));
 			DEL_CLASS(writer);
 		}
 		DEL_CLASS(db);

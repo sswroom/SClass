@@ -765,15 +765,15 @@ void SSWR::OrganMgr::OrganEnv::ExportWeb(const UTF8Char *exportDir, Bool include
 				photoParsed += thisPhotoCnt;
 				speciesParsed += thisSpeciesCnt;
 
-				writer->Write((const UTF8Char*)"<a href=");
+				writer->WriteStrC(UTF8STRC("<a href="));
 				sb->ClearStr();
 				sb->AppendC(UTF8STRC("indexhd/grp"));
 				sb->AppendI32(grp->GetGroupId());
 				sb->AppendC(UTF8STRC("/index.html"));
 				s = Text::XML::ToNewAttrText(sb->ToString());
-				writer->Write(s->v, s->leng);
+				writer->WriteStrC(s->v, s->leng);
 				s->Release();
-				writer->Write((const UTF8Char*)">");
+				writer->WriteStrC(UTF8STRC(">"));
 
 				sb->ClearStr();
 				sb->Append(grp->GetCName());
@@ -785,7 +785,7 @@ void SSWR::OrganMgr::OrganEnv::ExportWeb(const UTF8Char *exportDir, Bool include
 				sb->AppendUOSInt(thisSpeciesCnt);
 				sb->AppendC(UTF8STRC(")"));
 				s = Text::XML::ToNewXMLText(sb->ToString());
-				writer->Write(s->v, s->leng);
+				writer->WriteStrC(s->v, s->leng);
 				s->Release();
 				writer->WriteLine((const UTF8Char*)"</a><br/>");
 			}
@@ -858,15 +858,15 @@ void SSWR::OrganMgr::OrganEnv::ExportBeginPage(IO::Writer *writer, const UTF8Cha
 	writer->WriteLine((const UTF8Char*)"<HTML>");
 	writer->WriteLine((const UTF8Char*)"<HEAD>");
 	writer->WriteLine((const UTF8Char*)"<META HTTP-EQUIV=\"Content-Type\" CONTENT=\"text/html; charset=utf8\">");
-	writer->Write((const UTF8Char*)"<title>");
+	writer->WriteStrC(UTF8STRC("<title>"));
 	s = Text::XML::ToNewXMLText(title);
-	writer->Write(s->v, s->leng);
+	writer->WriteStrC(s->v, s->leng);
 	writer->WriteLine((const UTF8Char*)"</title>");
 	writer->WriteLine((const UTF8Char*)"</HEAD>");
 	writer->WriteLine();
 	writer->WriteLine((const UTF8Char*)"<BODY TEXT=\"#c0e0ff\" LINK=\"#6080ff\" VLINK=\"#4060ff\" ALINK=\"#4040FF\" bgcolor=\"#000000\">");
-	writer->Write((const UTF8Char*)"<center><h1>");
-	writer->Write(s->v, s->leng);
+	writer->WriteStrC(UTF8STRC("<center><h1>"));
+	writer->WriteStrC(s->v, s->leng);
 	writer->WriteLine((const UTF8Char*)"</h1></center>");
 	s->Release();
 }
@@ -934,15 +934,15 @@ void SSWR::OrganMgr::OrganEnv::ExportGroup(OrganGroup *grp, Data::Int32Map<Data:
 					ExportBeginPage(writer, sb->ToString());
 				}
 
-				writer->Write((const UTF8Char*)"<a href=");
+				writer->WriteStrC(UTF8STRC("<a href="));
 				sb->ClearStr();
 				sb->AppendC(UTF8STRC("../grp"));
 				sb->AppendI32(myGrp->GetGroupId());
 				sb->AppendC(UTF8STRC("/index.html"));
 				s = Text::XML::ToNewAttrText(sb->ToString());
-				writer->Write(s->v, s->leng);
+				writer->WriteStrC(s->v, s->leng);
 				s->Release();
-				writer->Write((const UTF8Char*)">");
+				writer->WriteStrC(UTF8STRC(">"));
 
 				sb->ClearStr();
 				sb->Append(myGrp->GetCName());
@@ -954,7 +954,7 @@ void SSWR::OrganMgr::OrganEnv::ExportGroup(OrganGroup *grp, Data::Int32Map<Data:
 				sb->AppendUOSInt(thisSpecies);
 				sb->AppendC(UTF8STRC(")"));
 				s = Text::XML::ToNewXMLText(sb->ToString());
-				writer->Write(s->v, s->leng);
+				writer->WriteStrC(s->v, s->leng);
 				s->Release();
 				writer->WriteLine((const UTF8Char*)"</a><br/>");
 			}
@@ -1000,10 +1000,10 @@ void SSWR::OrganMgr::OrganEnv::ExportGroup(OrganGroup *grp, Data::Int32Map<Data:
 				sb->AppendC(UTF8STRC("/"));
 				sb->Append(u8ptr);
 				sb->AppendC(UTF8STRC("/index.html"));
-				writer->Write((const UTF8Char*)"<a href=");
+				writer->WriteStrC(UTF8STRC("<a href="));
 				s = Text::XML::ToNewAttrText(sb->ToString());
-				writer->Write(s->v, s->leng);
-				writer->Write((const UTF8Char*)">");
+				writer->WriteStrC(s->v, s->leng);
+				writer->WriteStrC(UTF8STRC(">"));
 				s->Release();
 				sb->ClearStr();
 				sb->Append(sp->GetSName());
@@ -1015,7 +1015,7 @@ void SSWR::OrganMgr::OrganEnv::ExportGroup(OrganGroup *grp, Data::Int32Map<Data:
 					sb->Append(sp->GetEName());
 				}
 				s = Text::XML::ToNewXMLText(sb->ToString());
-				writer->Write(s->v, s->leng);
+				writer->WriteStrC(s->v, s->leng);
 				s->Release();
 				writer->WriteLine((const UTF8Char*)"</a><br/>");
 
@@ -1033,9 +1033,9 @@ void SSWR::OrganMgr::OrganEnv::ExportGroup(OrganGroup *grp, Data::Int32Map<Data:
 	if (fs)
 	{
 		writer->WriteLineW(L"<br/><a href=\"list.html\">すべて</a><br>");
-		writer->Write((const UTF8Char*)"<br><a href=");
+		writer->WriteStrC(UTF8STRC("<br><a href="));
 		s = Text::XML::ToNewAttrText(backURL);
-		writer->Write(s->v, s->leng);
+		writer->WriteStrC(s->v, s->leng);
 		s->Release();
 		writer->WriteLineW(L">戻る</a>");
 
@@ -1128,9 +1128,9 @@ Bool SSWR::OrganMgr::OrganEnv::ExportSpecies(OrganSpecies *sp, const UTF8Char *b
 	}
 
 
-	writer->Write((const UTF8Char*)"<a href=");
+	writer->WriteStrC(UTF8STRC("<a href="));
 	s = Text::XML::ToNewAttrText(backURL);
-	writer->Write(s->v, s->leng);
+	writer->WriteStrC(s->v, s->leng);
 	s->Release();
 	writer->WriteW(L">戻る</a><br/>");
 

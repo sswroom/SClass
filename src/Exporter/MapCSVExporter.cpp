@@ -140,7 +140,7 @@ Bool Exporter::MapCSVExporter::ExportFile(IO::SeekableStream *stm, const UTF8Cha
 				sptr = Text::StrInt32(sptr, rec[k].nSateUsed);
 				sptr = Text::StrConcat(sptr, (const UTF8Char*)"/");
 				sptr = Text::StrInt32(sptr, rec[k].nSateView);
-				writer->WriteLine(sbuff, (UOSInt)(sptr - sbuff));
+				writer->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
 
 				currInd++;
 				k++;
@@ -203,7 +203,7 @@ Bool Exporter::MapCSVExporter::ExportFile(IO::SeekableStream *stm, const UTF8Cha
 					sptr = Text::StrDouble(sptr, v);
 					sptr = Text::StrConcat(sptr, (const UTF8Char*)",E");
 				}
-				writer->WriteLine(sbuff, (UOSInt)(sptr - sbuff));
+				writer->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
 				currInd++;
 				k++;
 			}

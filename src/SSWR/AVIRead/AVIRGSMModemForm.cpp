@@ -141,14 +141,14 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnSMSSaveClick(void *userObj)
 			NEW_CLASS(fs, IO::FileStream(dlg->GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 			NEW_CLASS(writer, Text::UTF8Writer(fs));
 			writer->WriteSignature();
-			writer->Write((const UTF8Char*)"From: ");
+			writer->WriteStrC(UTF8STRC("From: "));
 			writer->WriteLineW(smsMsg->GetAddress());
 			if (smsMsg->GetSMSC())
 			{
-				writer->Write((const UTF8Char*)"SMSC: ");
+				writer->WriteStrC(UTF8STRC("SMSC: "));
 				writer->WriteLineW(smsMsg->GetSMSC());
 			}
-			writer->Write((const UTF8Char*)"Date: ");
+			writer->WriteStrC(UTF8STRC("Date: "));
 			dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss zzzz");
 			writer->WriteLine(sbuff);
 			writer->WriteLine((const UTF8Char*)"Content: ");
@@ -218,14 +218,14 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnSMSSaveAllClick(void *userObj)
 				NEW_CLASS(fs, IO::FileStream(sb.ToString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 				NEW_CLASS(writer, Text::UTF8Writer(fs));
 				writer->WriteSignature();
-				writer->Write((const UTF8Char*)"From: ");
+				writer->WriteStrC(UTF8STRC("From: "));
 				writer->WriteLineW(smsMsg->GetAddress());
 				if (smsMsg->GetSMSC())
 				{
-					writer->Write((const UTF8Char*)"SMSC: ");
+					writer->WriteStrC(UTF8STRC("SMSC: "));
 					writer->WriteLineW(smsMsg->GetSMSC());
 				}
-				writer->Write((const UTF8Char*)"Date: ");
+				writer->WriteStrC(UTF8STRC("Date: "));
 				dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss zzzz");
 				writer->WriteLine(sbuff);
 				writer->WriteLine((const UTF8Char*)"Content: ");
