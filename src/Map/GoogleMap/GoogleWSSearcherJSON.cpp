@@ -235,7 +235,7 @@ UTF8Char *Map::GoogleMap::GoogleWSSearcherJSON::SearchName(UTF8Char *buff, UOSIn
 							sptr = Text::StrConcat(url, (const UTF8Char*)"Google JSON Status ");
 							sptr = jstr->GetValue()->ConcatTo(sptr);
 							sptr = Text::StrConcat(sptr, (const UTF8Char*)" Error");
-							errWriter->WriteLine(url);
+							errWriter->WriteLineC(url, (UOSInt)(sptr - url));
 							this->lastIsError = 1;
 						}
 					}
@@ -262,11 +262,11 @@ UTF8Char *Map::GoogleMap::GoogleWSSearcherJSON::SearchName(UTF8Char *buff, UOSIn
 		}
 		else
 		{
-			errWriter->WriteLine(url);
+			errWriter->WriteLineC(url, (UOSInt)(sptr - url));
 			sptr = Text::StrConcatC(url, UTF8STRC("Google HTTP "));
 			sptr = Text::StrInt32(sptr, status);
 			sptr = Text::StrConcatC(sptr, UTF8STRC(" Error"));
-			errWriter->WriteLine(url);
+			errWriter->WriteLineC(url, (UOSInt)(sptr - url));
 			*buff = 0;
 			this->lastIsError = 1;
 		}
@@ -277,7 +277,7 @@ UTF8Char *Map::GoogleMap::GoogleWSSearcherJSON::SearchName(UTF8Char *buff, UOSIn
 		*buff = 0;
 		this->lastIsError = 2;
 		sb.AppendC(UTF8STRC("Cannot connect: "));
-		sb.Append(url);
+		sb.AppendC(url, (UOSInt)(sptr - url));
 		errWriter->WriteLineC(sb.ToString(), sb.GetLength());
 	}
 

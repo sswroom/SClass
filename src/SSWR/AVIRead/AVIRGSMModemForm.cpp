@@ -125,13 +125,13 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnSMSSaveClick(void *userObj)
 		NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"AVIRead", L"SMSSave", true));
 		dlg->AddFilter((const UTF8Char*)"*.sms", (const UTF8Char*)"SMS File");
 		
-		sptr = Text::StrConcat(sbuff, (const UTF8Char*)"SMS");
+		sptr = Text::StrConcatC(sbuff, UTF8STRC("SMS"));
 		sptr = Text::StrInt64(sptr, dt.ToDotNetTicks());
-		sptr = Text::StrConcat(sptr, (const UTF8Char*)"_");
+		sptr = Text::StrConcatC(sptr, UTF8STRC("_"));
 		sptr = Text::StrInt32(sptr, sms->index);
-		sptr = Text::StrConcat(sptr, (const UTF8Char*)"_");
+		sptr = Text::StrConcatC(sptr, UTF8STRC("_"));
 		sptr = Text::StrUTF16_UTF8(sptr, smsMsg->GetAddress());
-		sptr = Text::StrConcat(sptr, (const UTF8Char*)".sms");
+		sptr = Text::StrConcatC(sptr, UTF8STRC(".sms"));
 		dlg->SetFileName(sbuff);
 
 		if (dlg->ShowDialog(me->GetHandle()))
@@ -149,8 +149,8 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnSMSSaveClick(void *userObj)
 				writer->WriteLineW(smsMsg->GetSMSC());
 			}
 			writer->WriteStrC(UTF8STRC("Date: "));
-			dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss zzzz");
-			writer->WriteLine(sbuff);
+			sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss zzzz");
+			writer->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
 			writer->WriteLineC(UTF8STRC("Content: "));
 			writer->WriteLineW(smsMsg->GetContent());
 			
@@ -184,6 +184,7 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnSMSSaveAllClick(void *userObj)
 	SSWR::AVIRead::AVIRGSMModemForm *me = (SSWR::AVIRead::AVIRGSMModemForm*)userObj;
 	IO::GSMModemController::SMSMessage *sms;
 	UTF8Char sbuff[128];
+	UTF8Char *sptr;
 	Text::SMSMessage *smsMsg;
 	IO::FileStream *fs;
 	Text::UTF8Writer *writer;
@@ -226,8 +227,8 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnSMSSaveAllClick(void *userObj)
 					writer->WriteLineW(smsMsg->GetSMSC());
 				}
 				writer->WriteStrC(UTF8STRC("Date: "));
-				dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss zzzz");
-				writer->WriteLine(sbuff);
+				sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss zzzz");
+				writer->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
 				writer->WriteLineC(UTF8STRC("Content: "));
 				writer->WriteLineW(smsMsg->GetContent());
 				

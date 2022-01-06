@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "MemTool.h"
 #include "MyMemory.h"
+#include "Data/DateTime.h"
 #if !defined(_CONSOLE) && !defined(__CYGWIN__)
 #include "IO/DebugWriter.h"
 #else
@@ -284,16 +285,16 @@ Int32 MemCheckError()
 
 	if (mcMemoryCnt)
 	{
-		Text::StrInt32(buff, mcMemoryCnt);
+		sptr = Text::StrInt32(buff, mcMemoryCnt);
 		if (console == 0)
 			console = MemOpenWriter();
-		console->WriteStrC(UTF8STRC("Memory leaks occurs for ");
-		console->Write(buff);
-		console->WriteStrC(UTF8STRC(" times at ");
+		console->WriteStrC(UTF8STRC("Memory leaks occurs for "));
+		console->WriteStrC(buff, (UOSInt)(sptr - buff));
+		console->WriteStrC(UTF8STRC(" times at "));
 		Data::DateTime dt;
 		dt.SetCurrTimeUTC();
-		dt.ToString(buff, "yyyy-MM-dd HH:mm:ss");
-		console->WriteLine(buff);
+		sptr = dt.ToString(buff, "yyyy-MM-dd HH:mm:ss");
+		console->WriteLineC(buff, (UOSInt)(sptr - buff));
 		found = true;
 	}
 
@@ -380,7 +381,7 @@ Int32 MemCheckError()
 
 				if (console == 0)
 					console = MemOpenWriter();
-				console->WriteLine(buff);
+				console->WriteLineC(buff, (UOSInt)(sptr - buff));
 				lastData = ent.lpData;
 				found = true;
 			}

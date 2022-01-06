@@ -53,7 +53,7 @@ UInt32 __stdcall DispThread(void *userObj)
 			sptr = Text::StrConcat(sptr, (const UTF8Char*)"Bps\tRecv: ");
 			sptr = Text::StrDouble(sptr, (Double)(currRecvSize - lastRecvSize) / (currTime - lastTime));
 			sptr = Text::StrConcat(sptr, (const UTF8Char*)"Bps       ");
-			console->WriteLine(sbuff);
+			console->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
 		}
 		lastTime = currTime;
 		lastRecvSize = currRecvSize;

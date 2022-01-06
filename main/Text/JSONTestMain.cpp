@@ -25,7 +25,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			IO::ConsoleWriter console;
 			Text::StringBuilderUTF8 sb;
 			console.WriteLineC(UTF8STRC("Original:"));
-			console.WriteLine(buff);
+			console.WriteLineC(buff, flen);
 			console.WriteLine();
 			console.WriteLineC(UTF8STRC("Parsed:"));
 			obj->ToJSONString(&sb);

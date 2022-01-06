@@ -1,12 +1,13 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "IO/FileStream.h"
+#include "IO/MemoryStream.h"
+#include "Map/MapBar/MapBarAdjuster.h"
+#include "Net/HTTPClient.h"
+#include "Net/TCPClient.h"
+#include "Text/MyStringFloat.h"
 #include "Text/StringBuilder.h"
 #include "Text/XMLDOM.h"
-#include "IO/MemoryStream.h"
-#include "IO/FileStream.h"
-#include "Net/TCPClient.h"
-#include "Net/HTTPClient.h"
-#include "Map/MapBar/MapBarAdjuster.h"
 
 Map::MapBar::MapBarAdjuster::MapBarAdjuster(Net::SocketFactory *sockf, IO::Writer *errWriter)
 {
@@ -26,21 +27,21 @@ Bool Map::MapBar::MapBarAdjuster::AdjustPoints(Double *srcLatLons, Double *destL
 	IO::MemoryStream *mstm;
 	Text::XMLDocument *xmlDoc;
 	Text::EncodingFactory encFact;
-	Text::StringBuilder sb;
-	Text::StringBuilder sb2;
+	Text::StringBuilderUTF8 sb;
+	Text::StringBuilderUTF8 sb2;
 	OSInt currPoint;
 	OSInt nextPoint;
 	OSInt i;
 	OSInt cnt;
-	OSInt readSize;
-	OSInt objCnt;
+	UOSInt readSize;
+	UOSInt objCnt;
 	Int32 j;
 	Text::XMLNode **xmlNodes;
 	Text::XMLNode *node;
 	Bool valid;
 
 	buff = MemAlloc(UInt8, 2048);
-	NEW_CLASS(mstm, IO::MemoryStream());
+	NEW_CLASS(mstm, IO::MemoryStream((const UTF8Char*)"Map.MapBar.MapBarAdjuster.AdjustPoints.mstm"));
 	currPoint = 0;
 	while (currPoint < nPoints)
 	{
@@ -49,43 +50,46 @@ Bool Map::MapBar::MapBarAdjuster::AdjustPoints(Double *srcLatLons, Double *destL
 			nextPoint = nPoints;
 
 		sb.ClearStr();
-		sb.Append(L"http://geocode.mapbar.com/decode/getLatLon.jsp?latlon=");
+		sb.AppendC(UTF8STRC("http://geocode.mapbar.com/decode/getLatLon.jsp?latlon="));
 		cnt = nextPoint - currPoint;
 		i = 0;
 		while (i < cnt)
 		{
 			if (i > 0)
 			{
-				sb.Append(L";");
+				sb.AppendC(UTF8STRC(";"));
 			}
-			sb.Append(destLatLons[((currPoint + i) << 1) + 1] = srcLatLons[((currPoint + i) << 1) + 1]);
-			sb.Append(L",");
-			sb.Append(destLatLons[((currPoint + i) << 1) + 0] = srcLatLons[((currPoint + i) << 1) + 0]);
+			Text::SBAppendF64(&sb, destLatLons[((currPoint + i) << 1) + 1] = srcLatLons[((currPoint + i) << 1) + 1]);
+			sb.AppendC(UTF8STRC(","));
+			Text::SBAppendF64(&sb, destLatLons[((currPoint + i) << 1) + 0] = srcLatLons[((currPoint + i) << 1) + 0]);
 			i++;
 		}
 		if (imgWidth != 0 || imgHeight != 0)
 		{
-			sb.Append(L"&width=");
-			sb.Append(imgWidth);
-			sb.Append(L"&height=");
-			sb.Append(imgHeight);
+			sb.AppendC(UTF8STRC("&width="));
+			sb.AppendI32(imgWidth);
+			sb.AppendC(UTF8STRC("&height="));
+			sb.AppendI32(imgHeight);
 		}
-		sb.Append(L"&customer=2");
+		sb.AppendC(UTF8STRC("&customer=2"));
 
 		mstm->Clear();
-		NEW_CLASS(cli, Net::HTTPClient(sockf, sb.ToString(), L"GET", false));
-		while ((readSize = cli->Read(buff, 2048)) > 0)
+		cli = Net::HTTPClient::CreateConnect(sockf, 0, sb.ToString(), "GET", false);
+		if (cli)
 		{
-			mstm->Write(buff, readSize);
+			while ((readSize = cli->Read(buff, 2048)) > 0)
+			{
+				mstm->Write(buff, readSize);
+			}
+			DEL_CLASS(cli);
 		}
-		DEL_CLASS(cli);
 
 		xmlBuff = mstm->GetBuff(&readSize);
 		valid = false;
 		NEW_CLASS(xmlDoc, Text::XMLDocument());
 		if (xmlDoc->ParseBuff(&encFact, xmlBuff, readSize))
 		{
-			xmlNodes = xmlDoc->SearchNode(L"/result/pois/item", &objCnt);
+			xmlNodes = xmlDoc->SearchNode((const UTF8Char*)"/result/pois/item", &objCnt);
 			if (xmlNodes)
 			{
 				if (objCnt == cnt)
@@ -94,17 +98,17 @@ Bool Map::MapBar::MapBarAdjuster::AdjustPoints(Double *srcLatLons, Double *destL
 					i = objCnt;
 					while (i-- > 0)
 					{
-						node = xmlNodes[i]->SearchFirstNode(L"/@id");
+						node = xmlNodes[i]->SearchFirstNode((const UTF8Char*)"/@id");
 						if (node == 0)
 						{
 							valid = false;
 						}
 						else
 						{
-							j = Text::StrToInt32(node->value);
+							j = node->value->ToInt32();
 							if (j >= 0 && j < cnt)
 							{
-								node = xmlNodes[i]->SearchFirstNode(L"/lat");
+								node = xmlNodes[i]->SearchFirstNode((const UTF8Char*)"/lat");
 								if (node)
 								{
 									sb2.ClearStr();
@@ -115,7 +119,7 @@ Bool Map::MapBar::MapBarAdjuster::AdjustPoints(Double *srcLatLons, Double *destL
 								{
 									valid = false;
 								}
-								node = xmlNodes[i]->SearchFirstNode(L"/lon");
+								node = xmlNodes[i]->SearchFirstNode((const UTF8Char*)"/lon");
 								if (node)
 								{
 									sb2.ClearStr();
@@ -141,7 +145,7 @@ Bool Map::MapBar::MapBarAdjuster::AdjustPoints(Double *srcLatLons, Double *destL
 
 		if (!valid)
 		{
-			this->errWriter->WriteLine(L"Request result not valid");
+			this->errWriter->WriteLineC(UTF8STRC("Request result not valid"));
 		}
 
 		currPoint = nextPoint;

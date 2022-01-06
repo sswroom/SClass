@@ -8,6 +8,7 @@
 Int32 MyMain(Core::IProgControl *progCtrl)
 {
 	UTF8Char sbuff[32];
+	UTF8Char *sptr;
 	Sync::Thread::Sleep(10000);
 	IO::ConsoleWriter console;
 	Manage::HiResClock clk;
@@ -15,9 +16,9 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	{
 		clk.Start();
 		Sync::Thread::Sleep(1000);
-		Text::StrInt64(sbuff, clk.GetTimeDiffus());
-		console.WriteStrC(UTF8STRC("Time used(us): ");
-		console.WriteLine(sbuff);
+		sptr = Text::StrInt64(sbuff, clk.GetTimeDiffus());
+		console.WriteStrC(UTF8STRC("Time used(us): "));
+		console.WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
 	}
 	return 0;
 }

@@ -9,6 +9,7 @@
 Int32 MyMain(Core::IProgControl *progCtrl)
 {
 	UTF8Char sbuff[32];
+	UTF8Char *sptr;
 	Text::StringBuilderUTF8 sb;
 	IO::ConsoleWriter console;
 	console.WriteLineC(UTF8STRC("Ln(10) = 2.302585092994"));
@@ -66,8 +67,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	console.WriteLineC(sb.ToString(), sb.GetLength());
 	console.WriteLine();
 
-	Text::StrDoubleFmt(sbuff, 123456789.0, "#,###.000");
+	sptr = Text::StrDoubleFmt(sbuff, 123456789.0, "#,###.000");
 	console.WriteStrC(UTF8STRC("StrDoubleFmt = "));
-	console.WriteLine(sbuff);
+	console.WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
 	return 0;
 }

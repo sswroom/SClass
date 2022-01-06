@@ -9,22 +9,23 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 {
 	UInt8 hashVal[32];
 	UTF8Char sbuff[65];
+	UTF8Char *sptr;
 	Crypto::Hash::IHash *hash;
 	IO::ConsoleWriter console;
 
 	NEW_CLASS(hash, Crypto::Hash::SHA256());
 
 	hash->GetValue(hashVal);
-	Text::StrHexBytes(sbuff, hashVal, 32, 0);
-	console.WriteLine(sbuff);
+	sptr = Text::StrHexBytes(sbuff, hashVal, 32, 0);
+	console.WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
 	console.WriteLineC(UTF8STRC("a7ffc6f8bf1ed76651c14756a061d662f580ff4de43b49fa82d80a4b80f8434a"));
 	console.WriteLine();
 
 	const UInt8 testBlock[] = "abc";
 	hash->Calc(testBlock, sizeof(testBlock) - 1);
 	hash->GetValue(hashVal);
-	Text::StrHexBytes(sbuff, hashVal, 32, 0);
-	console.WriteLine(sbuff);
+	sptr = Text::StrHexBytes(sbuff, hashVal, 32, 0);
+	console.WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
 	console.WriteLineC(UTF8STRC("3a985da74fe225b2045c172d6bd390bd855f086e3e9d525b46bfe24511431532"));
 	console.WriteLine();
 
@@ -32,8 +33,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	hash->Clear();
 	hash->Calc(testBlock2, sizeof(testBlock2) - 1);
 	hash->GetValue(hashVal);
-	Text::StrHexBytes(sbuff, hashVal, 32, 0);
-	console.WriteLine(sbuff);
+	sptr = Text::StrHexBytes(sbuff, hashVal, 32, 0);
+	console.WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
 	console.WriteLineC(UTF8STRC("41c0dba2a9d6240849100376a8235e2c82e1b9998a999e21db32dd97496d3376"));
 
 	DEL_CLASS(hash);

@@ -125,11 +125,11 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		}
 		if (valid)
 		{
-			console.WriteLine(L", Result sorted");
+			console.WriteLineC(UTF8STRC(", Result sorted"));
 		}
 		else
 		{
-			console.WriteLine(L", Result wrong");
+			console.WriteLineC(UTF8STRC(", Result wrong"));
 		}
 		if (t1 >= 1.0)
 		{
@@ -207,11 +207,11 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		}
 		if (valid)
 		{
-			console.WriteLine(L", Result sorted");
+			console.WriteLineC(UTF8STRC(", Result sorted"));
 		}
 		else
 		{
-			console.WriteLine(L", Result wrong");
+			console.WriteLineC(UTF8STRC(", Result wrong"));
 		}
 		if (t1 >= 1.0)
 		{
@@ -247,11 +247,11 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		}
 		if (valid)
 		{
-			console.WriteLine(L", Result sorted");
+			console.WriteLineC(UTF8STRC(", Result sorted"));
 		}
 		else
 		{
-			console.WriteLine(L", Result wrong");
+			console.WriteLineC(UTF8STRC(", Result wrong"));
 		}
 		if (t1 >= 1.0)
 		{
@@ -406,11 +406,11 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	}
 	if (valid)
 	{
-		console.WriteLine(L"Result is sorted");
+		console.WriteLineC(UTF8STRC("Result is sorted"));
 	}
 	else
 	{
-		console.WriteLine(L"Result is not sorted");
+		console.WriteLineC(UTF8STRC("Result is not sorted"));
 	}*/
 
 /*	Bool succ = false;
@@ -425,7 +425,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
 	if (fs->IsError())
 	{
-		console.WriteLine(L"Error in writing SortResult.txt");
+		console.WriteLineC(UTF8STRC("Error in writing SortResult.txt"));
 	}
 	else
 	{

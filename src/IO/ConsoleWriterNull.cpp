@@ -11,17 +11,17 @@ IO::ConsoleWriter::~ConsoleWriter()
 {
 }
 
-Bool IO::ConsoleWriter::Write(const UTF8Char *str, UOSInt nChar)
+Bool IO::ConsoleWriter::WriteStrC(const UTF8Char *str, UOSInt nChar)
 {
 	return false;
 }
 
-Bool IO::ConsoleWriter::Write(const UTF8Char *str)
+Bool IO::ConsoleWriter::WriteStr(const UTF8Char *str)
 {
 	return false;
 }
 
-Bool IO::ConsoleWriter::WriteLine(const UTF8Char *str, UOSInt nChar)
+Bool IO::ConsoleWriter::WriteLineC(const UTF8Char *str, UOSInt nChar)
 {
 	return false;
 }
@@ -44,12 +44,12 @@ void IO::ConsoleWriter::ResetTextColor()
 {
 }
 		
-OSInt IO::ConsoleWriter::CalDisplaySize(const WChar *str)
+UOSInt IO::ConsoleWriter::CalDisplaySize(const WChar *str)
 {
 	return 0;
 }
 
-WChar *IO::ConsoleWriter::ReadLine(WChar *sbuff, OSInt nChar)
+WChar *IO::ConsoleWriter::ReadLine(WChar *sbuff, UOSInt nChar)
 {
 	return 0;
 }
@@ -67,7 +67,7 @@ Bool IO::ConsoleWriter::GetConsoleState(IO::ConsoleWriter::ConsoleState *state)
 	return false;
 }
 
-Bool IO::ConsoleWriter::SetCursorPos(Int32 x, Int32 y)
+Bool IO::ConsoleWriter::SetCursorPos(UInt32 x, Int32 y)
 {
 	return false;
 }
@@ -77,16 +77,16 @@ Bool IO::ConsoleWriter::IsFileOutput()
 	return false;
 }
 
-void IO::ConsoleWriter::FixWrite(const WChar *str, OSInt displayWidth)
+void IO::ConsoleWriter::FixWrite(const WChar *str, UOSInt displayWidth)
 {
 }
 
-OSInt IO::ConsoleWriter::GetDisplayWidth(const WChar *str)
+UOSInt IO::ConsoleWriter::GetDisplayWidth(const WChar *str)
 {
 	return 0;
 }
 
-OSInt IO::ConsoleWriter::GetDisplayCharWidth(WChar c)
+UOSInt IO::ConsoleWriter::GetDisplayCharWidth(WChar c)
 {
 	return 1;
 }

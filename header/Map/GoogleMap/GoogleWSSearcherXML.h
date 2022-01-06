@@ -15,6 +15,7 @@ namespace Map
 		{
 		private:
 			Net::SocketFactory *sockf;
+			Net::SSLEngine *ssl;
 			IO::Writer *errWriter;
 			Data::DateTime *lastSrchDate;
 			Sync::Mutex *mut;
@@ -22,12 +23,12 @@ namespace Map
 			Bool lastIsError;
 			
 		public:
-			GoogleWSSearcherXML(Net::SocketFactory *sockf, IO::Writer *errWriter, Text::EncodingFactory *encFact);
+			GoogleWSSearcherXML(Net::SocketFactory *sockf, Net::SSLEngine *ssl, IO::Writer *errWriter, Text::EncodingFactory *encFact);
 			virtual ~GoogleWSSearcherXML();
 
-			WChar *SearchName(WChar *buff, Double lat, Double lon, const WChar *lang); //lang = en-us, zh-cn, zh-tw
-			virtual WChar *SearchName(WChar *buff, Double lat, Double lon, Int32 lcid);
-			virtual WChar *CacheName(WChar *buff, Double lat, Double lon, Int32 lcid);
+			UTF8Char *SearchName(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, const UTF8Char *lang); //lang = en-us, zh-cn, zh-tw
+			virtual UTF8Char *SearchName(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, Int32 lcid);
+			virtual UTF8Char *CacheName(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, Int32 lcid);
 		};
 	}
 }

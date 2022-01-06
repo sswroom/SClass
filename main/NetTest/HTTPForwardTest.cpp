@@ -16,6 +16,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	const UTF8Char *sslKey = (const UTF8Char*)"/home/sswroom/Progs/VCClass/keystore/localhost.key";
 	const UTF8Char *fwdUrl = (const UTF8Char*)"https://192.168.0.196:8448/";
 	UInt16 port = 12345;
+	UTF8Char sbuff[512];
+	UTF8Char *sptr;
 
 	NEW_CLASS(console, IO::ConsoleWriter());
 	Net::SocketFactory *sockf;
@@ -25,18 +27,16 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	ssl = Net::SSLEngineFactory::Create(sockf, true);
 	if (ssl == 0)
 	{
-		UTF8Char sbuff[512];
 		console->WriteLineC(UTF8STRC("Error in initializing SSL"));
-		ssl->GetErrorDetail(sbuff);
-		console->WriteLine(sbuff);
+		sptr = ssl->GetErrorDetail(sbuff);
+		console->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
 		succ = false;
 	}
 	else if (!ssl->SetServerCerts(sslCert, sslKey))
 	{
-		UTF8Char sbuff[512];
 		console->WriteLineC(UTF8STRC("Error in loading Cert/Key"));
-		ssl->GetErrorDetail(sbuff);
-		console->WriteLine(sbuff);
+		sptr = ssl->GetErrorDetail(sbuff);
+		console->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
 		succ = false;
 	}
 

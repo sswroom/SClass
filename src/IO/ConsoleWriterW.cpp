@@ -88,16 +88,16 @@ Bool IO::ConsoleWriter::WriteLine(const UTF8Char *str)
 	return ret;
 }*/
 
-Bool IO::ConsoleWriter::Write(const UTF8Char *s, UOSInt nUTF8Char)
+Bool IO::ConsoleWriter::WriteStrC(const UTF8Char *s, UOSInt nUTF8Char)
 {
 	Bool ret;
 	const UTF8Char *csptr = Text::StrCopyNewC(s, nUTF8Char);
-	ret = this->Write(csptr);
+	ret = this->WriteStr(csptr);
 	Text::StrDelNew(csptr);
 	return ret;
 }
 
-Bool IO::ConsoleWriter::Write(const UTF8Char *s)
+Bool IO::ConsoleWriter::WriteStr(const UTF8Char *s)
 {
 	UInt32 outChars = 0;
 	UInt32 nChar;
@@ -145,7 +145,7 @@ Bool IO::ConsoleWriter::Write(const UTF8Char *s)
 	}
 }
 
-Bool IO::ConsoleWriter::WriteLine(const UTF8Char *s, UOSInt nUTF8Char)
+Bool IO::ConsoleWriter::WriteLineC(const UTF8Char *s, UOSInt nUTF8Char)
 {
 	Bool ret;
 	const UTF8Char *csptr = Text::StrCopyNewC(s, nUTF8Char);
@@ -363,12 +363,12 @@ void IO::ConsoleWriter::FixWrite(const WChar *str, UOSInt displayWidth)
 	if (width <= displayWidth)
 	{
 		const UTF8Char *csptr = Text::StrToUTF8New(str);
-		this->Write(csptr);
+		this->WriteStr(csptr);
 		Text::StrDelNew(csptr);
 		while (width < displayWidth)
 		{
 			width++;
-			WriteStrC(UTF8STRC(" ");
+			WriteStrC(UTF8STRC(" "));
 		}
 		return;
 	}
@@ -384,13 +384,13 @@ void IO::ConsoleWriter::FixWrite(const WChar *str, UOSInt displayWidth)
 			width += GetDisplayCharWidth(*str);
 			if (width > displayWidth)
 			{
-				WriteStrC(UTF8STRC(" ", 1);
+				WriteStrC(UTF8STRC(" "));
 				return;
 			}
 			wbuff[0] = str[0];
 			wbuff[1] = 0;
 			const UTF8Char *csptr = Text::StrToUTF8New(wbuff);
-			this->Write(csptr);
+			this->WriteStr(csptr);
 			Text::StrDelNew(csptr);
 			str++;
 		}
@@ -405,13 +405,13 @@ void IO::ConsoleWriter::FixWrite(const WChar *str, UOSInt displayWidth)
 			wbuff[0] = str[0];
 			wbuff[1] = 0;
 			const UTF8Char *csptr = Text::StrToUTF8New(wbuff);
-			this->Write(csptr);
+			this->WriteStr(csptr);
 			Text::StrDelNew(csptr);
 			str++;
 		}
 		while (width < displayWidth)
 		{
-			this->WriteStrC(UTF8STRC(".");
+			this->WriteStrC(UTF8STRC("."));
 			width++;
 		}
 	}

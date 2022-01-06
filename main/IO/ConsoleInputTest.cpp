@@ -8,14 +8,15 @@
 Int32 MyMain(Core::IProgControl *progCtrl)
 {
 	UTF8Char sbuff[512];
+	UTF8Char *sptr;
 	IO::ConsoleWriter console;
-	while (IO::Console::GetLine(sbuff))
+	while ((sptr = IO::Console::GetLine(sbuff)) != 0)
 	{
 		if (Text::StrEquals(sbuff, (const UTF8Char*)"q"))
 		{
 			break;
 		}
-		console.WriteLine(sbuff);
+		console.WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
 	}
 	return 0;
 }

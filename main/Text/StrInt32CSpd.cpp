@@ -9,8 +9,9 @@
 
 Int32 MyMain(Core::IProgControl *progCtrl)
 {
-	WChar sbuff[256];
-	UTF8Char sbuff2[256];
+	WChar wbuff[256];
+	UTF8Char sbuff[256];
+	UTF8Char *sptr;
 	Manage::HiResClock *clk;
 
 	NEW_CLASS(clk, Manage::HiResClock());
@@ -20,7 +21,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	i = 100000000;
 	while (i-- > 0)
 	{
-		Text::StrInt32(sbuff2, i);
+		Text::StrInt32(sbuff, i);
 	}
 	Double t1 = clk->GetTimeDiff();
 
@@ -28,16 +29,16 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	i = 100000000;
 	while (i-- > 0)
 	{
-		Text::StrInt32(sbuff, i);
+		Text::StrInt32(wbuff, i);
 	}
 	Double t2 = clk->GetTimeDiff();
 
 	IO::ConsoleWriter *console;
 	NEW_CLASS(console, IO::ConsoleWriter());
-	Text::StrConcat(Text::StrDouble(Text::StrConcat(sbuff2, (const UTF8Char*)"t1 = "), t1), (const UTF8Char*)" s");
-	console->WriteLine(sbuff2);
-	Text::StrConcat(Text::StrDouble(Text::StrConcat(sbuff2, (const UTF8Char*)"t2 = "), t2), (const UTF8Char*)" s");
-	console->WriteLine(sbuff2);
+	sptr = Text::StrConcatC(Text::StrDouble(Text::StrConcatC(sbuff, UTF8STRC("t1 = ")), t1), UTF8STRC(" s"));
+	console->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
+	sptr = Text::StrConcatC(Text::StrDouble(Text::StrConcatC(sbuff, UTF8STRC("t2 = ")), t2), UTF8STRC(" s"));
+	console->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
 	DEL_CLASS(console);
 	return 0;
 }

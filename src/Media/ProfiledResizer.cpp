@@ -266,8 +266,8 @@ Bool Media::ProfiledResizer::SaveProfile(const UTF8Char *fileName)
 		cols[7] = sptr;
 		sptr = Text::StrInt32(sptr, (Int32)profile->sizeType) + 1;
 
-		Text::StrCSVJoin(sbuff, cols, 8);
-		writer->WriteLine(sbuff);
+		sptr = Text::StrCSVJoin(sbuff, cols, 8);
+		writer->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
 
 		i++;
 	}

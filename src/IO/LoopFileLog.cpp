@@ -102,6 +102,7 @@ void IO::LoopFileLog::LogAdded(Data::DateTime *time, const UTF8Char *logMsg, UOS
 {
 	Bool newFile = false;
 	UTF8Char buff[256];
+	UTF8Char *sptr;
 
 	Sync::MutexUsage mutUsage(mut);
 
@@ -151,8 +152,8 @@ void IO::LoopFileLog::LogAdded(Data::DateTime *time, const UTF8Char *logMsg, UOS
 		NEW_CLASS(log, Text::UTF8Writer(fileStm));
 		log->WriteSignature();
 
-		Text::StrConcat(time->ToString(buff, "yyyy-MM-dd HH:mm:ss.fff\t"), (const UTF8Char*)"Program running");
-		log->WriteLine(buff);
+		sptr = Text::StrConcat(time->ToString(buff, "yyyy-MM-dd HH:mm:ss.fff\t"), (const UTF8Char*)"Program running");
+		log->WriteLineC(buff, (UOSInt)(sptr - buff));
 		fileStm->Flush();
 	}
 

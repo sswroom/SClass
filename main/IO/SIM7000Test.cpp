@@ -23,12 +23,13 @@ void __stdcall OnUDPData(const Net::SocketUtil::AddressInfo *addr, UInt16 port, 
 	sptr = Net::SocketUtil::GetAddrName(sptr, addr, port);
 	sptr = Text::StrConcat(sptr, (const UTF8Char*)", Size = ");
 	sptr = Text::StrUOSInt(sptr, dataSize);
-	console->WriteLine(sbuff);
+	console->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
 }
 
 Int32 MyMain(Core::IProgControl *progCtrl)
 {
 	UTF8Char sbuff[256];
+	UTF8Char *sptr;
 	Text::StringBuilderUTF8 sb;
 	NEW_CLASS(console, IO::ConsoleWriter());
 	UOSInt portNum = Test::TestModem::ListPorts(console);
@@ -138,8 +139,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 					console->WriteStrC(UTF8STRC("Resolving (def) www.google.com: "));
 					if (sockf->DNSResolveIPDef("www.google.com", &addr))
 					{
-						Net::SocketUtil::GetAddrName(sbuff, &addr);
-						console->WriteLine(sbuff);
+						sptr = Net::SocketUtil::GetAddrName(sbuff, &addr);
+						console->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
 					}
 					else
 					{
@@ -210,8 +211,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 					console->WriteStrC(UTF8STRC("Resolving www.google.com: "));
 					if (sockf->DNSResolveIP("www.google.com", &addr))
 					{
-						Net::SocketUtil::GetAddrName(sbuff, &addr);
-						console->WriteLine(sbuff);
+						sptr = Net::SocketUtil::GetAddrName(sbuff, &addr);
+						console->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
 					}
 					else
 					{
@@ -234,8 +235,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 						console->WriteStrC(UTF8STRC("Resolving (def) my server: "));
 						if (sockf->DNSResolveIPDef("sswroom.no-ip.org", &addr))
 						{
-							Net::SocketUtil::GetAddrName(sbuff, &addr);
-							console->WriteLine(sbuff);
+							sptr = Net::SocketUtil::GetAddrName(sbuff, &addr);
+							console->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
 						}
 						else
 						{

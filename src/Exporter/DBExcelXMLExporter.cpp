@@ -76,8 +76,8 @@ Bool Exporter::DBExcelXMLExporter::ExportFile(IO::SeekableStream *stm, const UTF
 	DB::ReadingDB *db = (DB::ReadingDB*)pobj;
 	DB::DBReader *r;
 
-	sptr = Text::StrConcat(Text::EncodingFactory::GetInternetName(Text::StrConcat(lineBuff1, (const UTF8Char*)"<?xml version=\"1.0\" encoding=\""), this->codePage), (const UTF8Char*)"\"?>");
-	writer->WriteLine(lineBuff1);
+	sptr = Text::StrConcatC(Text::EncodingFactory::GetInternetName(Text::StrConcatC(lineBuff1, UTF8STRC("<?xml version=\"1.0\" encoding=\"")), this->codePage), UTF8STRC("\"?>"));
+	writer->WriteLineC(lineBuff1, (UOSInt)(sptr - lineBuff1));
 	writer->WriteLineC(UTF8STRC("<?mso-application progid=\"Excel.Sheet\"?>"));
 	writer->WriteLineC(UTF8STRC("<Workbook xmlns=\"urn:schemas-microsoft-com:office:spreadsheet\""));
 	writer->WriteLineC(UTF8STRC(" xmlns:x=\"urn:schemas-microsoft-com:office:excel\""));

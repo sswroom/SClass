@@ -1,11 +1,11 @@
-#include "stdafx.h"
+#include "Stdafx.h"
 #include "MyMemory.h"
 #include "IO/CortexControl.h"
 #include "IO/SerialPort.h"
 #include "Manage/HiResClock.h"
 #include "Math/Math.h"
 #include "Sync/Thread.h"
-#include "Text/StringBuilder.h"
+#include "Text/StringBuilderUTF8.h"
 
 UInt32 __stdcall IO::CortexControl::RecvThread(void *userObj)
 {
@@ -13,13 +13,13 @@ UInt32 __stdcall IO::CortexControl::RecvThread(void *userObj)
 	UInt8 buff[260];
 	OSInt buffSize = 0;
 	OSInt recvSize;
-	if (me->errWriter) me->errWriter->WriteLine(L"Thread started");
+	if (me->errWriter) me->errWriter->WriteLineC(UTF8STRC("Thread started"));
 	me->recvRunning = true;
 	while (!me->recvToStop)
 	{
-		if (me->errWriter) me->errWriter->WriteLine(L"Start Receive");
+		if (me->errWriter) me->errWriter->WriteLineC(UTF8STRC("Start Receive"));
 		recvSize = me->stm->Read(&buff[buffSize], 260 - buffSize);
-		if (me->errWriter) me->errWriter->WriteLine(L"End Receive");
+		if (me->errWriter) me->errWriter->WriteLineC(UTF8STRC("End Receive"));
 		if (recvSize <= 0)
 		{
 			if (me->recvToStop)
@@ -31,9 +31,9 @@ UInt32 __stdcall IO::CortexControl::RecvThread(void *userObj)
 		{
 			if (me->errWriter)
 			{
-				Text::StringBuilder sb;
-				sb.Append(L"Recv: ");
-				sb.AppendHex(&buff[buffSize], recvSize, ' ', Text::StringBuilder::LBT_CRLF);
+				Text::StringBuilderUTF8 sb;
+				sb.AppendC(UTF8STRC("Recv: "));
+				sb.AppendHex(&buff[buffSize], recvSize, ' ', Text::LineBreakType::CRLF);
 				me->errWriter->WriteLineC(sb.ToString(), sb.GetLength());
 			}
 			buffSize += recvSize;
@@ -44,7 +44,7 @@ UInt32 __stdcall IO::CortexControl::RecvThread(void *userObj)
 			}
 			else if (recvSize < buffSize)
 			{
-				MemCopy(buff, &buff[buffSize - recvSize], recvSize);
+				MemCopyO(buff, &buff[buffSize - recvSize], recvSize);
 				buffSize = buffSize;
 			}
 			else
@@ -52,7 +52,7 @@ UInt32 __stdcall IO::CortexControl::RecvThread(void *userObj)
 			}
 		}
 	}
-	if (me->errWriter) me->errWriter->WriteLine(L"Thread End");
+	if (me->errWriter) me->errWriter->WriteLineC(UTF8STRC("Thread End"));
 	me->recvRunning = false;
 	return 0;
 }
@@ -67,16 +67,16 @@ IO::CortexControl::CortexControl(Int32 portNum, IO::Writer *errWriter)
 	this->recvToStop = false;
 	this->errWriter = errWriter;
 
-	NEW_CLASS(this->stm, IO::SerialPort(portNum, 115200, false));
+	NEW_CLASS(this->stm, IO::SerialPort(portNum, 115200, IO::SerialPort::PARITY_NONE, false));
 	if (((IO::SerialPort*)this->stm)->IsError())
 	{
 		DEL_CLASS(this->stm);
 		this->stm = 0;
 		return;
 	}
-	NEW_CLASS(this->protoHdlr, IO::ProtoCortexHandler(this));
+	NEW_CLASS(this->protoHdlr, IO::ProtoHdlr::ProtoCortexHandler(this));
 	NEW_CLASS(this->sendMut, Sync::Mutex());
-	NEW_CLASS(this->sendEvt, Sync::Event(true, L"IO.CortexControl.sendEvt"));
+	NEW_CLASS(this->sendEvt, Sync::Event(true, (const UTF8Char*)"IO.CortexControl.sendEvt"));
 
 	Sync::Thread::Create(RecvThread, this);
 }
@@ -103,7 +103,7 @@ Bool IO::CortexControl::IsError()
 	return stm == 0;
 }
 
-void IO::CortexControl::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, Int32 seqId, UInt8 *cmd, OSInt cmdSize)
+void IO::CortexControl::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize)
 {
 	if (cmdType == (this->sendType | 0x80))
 	{
@@ -218,7 +218,7 @@ void IO::CortexControl::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType,
 	}
 }
 
-void IO::CortexControl::DataSkipped(IO::Stream *stm, void *stmObj, UInt8 *buff, OSInt buffSize)
+void IO::CortexControl::DataSkipped(IO::Stream *stm, void *stmObj, const UInt8 *buff, UOSInt buffSize)
 {
 }
 
@@ -229,16 +229,16 @@ Bool IO::CortexControl::GetFWVersion(Int32 *majorVer, Int32 *minorVer)
 	Manage::HiResClock clk;
 	Double t;
 	Bool succ = false;
-	packetSize = this->protoHdlr->BuildPacket(buff, 0, 0, 0, 0);
+	packetSize = this->protoHdlr->BuildPacket(buff, 0, 0, 0, 0, 0);
 	this->sendMut->Lock();
 	this->sendType = 0;
 	this->sendHasResult = false;
 	clk.Start();
 	if (this->errWriter)
 	{
-		Text::StringBuilder sb;
-		sb.Append(L"Send: ");
-		sb.AppendHex(buff, packetSize, ' ', Text::StringBuilder::LBT_CRLF);
+		Text::StringBuilderUTF8 sb;
+		sb.AppendC(UTF8STRC("Send: "));
+		sb.AppendHex(buff, packetSize, ' ', Text::LineBreakType::CRLF);
 		this->errWriter->WriteLineC(sb.ToString(), sb.GetLength());
 	}
 	this->stm->Write(buff, packetSize);
@@ -247,7 +247,7 @@ Bool IO::CortexControl::GetFWVersion(Int32 *majorVer, Int32 *minorVer)
 		t = clk.GetTimeDiff();
 		if (t > 2)
 			break;
-		this->sendEvt->Wait(Math::Double2Int((2 - t) * 1000));
+		this->sendEvt->Wait((UInt32)Math::Double2Int32((2 - t) * 1000));
 	}
 	if (this->sendHasResult)
 	{
@@ -266,16 +266,16 @@ Bool IO::CortexControl::ReadDIO(Int32 *dioValues)
 	Manage::HiResClock clk;
 	Double t;
 	Bool succ = false;
-	packetSize = this->protoHdlr->BuildPacket(buff, 1, 0, 0, 0);
+	packetSize = this->protoHdlr->BuildPacket(buff, 1, 0, 0, 0, 0);
 	this->sendMut->Lock();
 	this->sendType = 1;
 	this->sendHasResult = false;
 	clk.Start();
 	if (this->errWriter)
 	{
-		Text::StringBuilder sb;
-		sb.Append(L"Send: ");
-		sb.AppendHex(buff, packetSize, ' ', Text::StringBuilder::LBT_CRLF);
+		Text::StringBuilderUTF8 sb;
+		sb.AppendC(UTF8STRC("Send: "));
+		sb.AppendHex(buff, packetSize, ' ', Text::LineBreakType::CRLF);
 		this->errWriter->WriteLineC(sb.ToString(), sb.GetLength());
 	}
 	this->stm->Write(buff, packetSize);
@@ -284,7 +284,7 @@ Bool IO::CortexControl::ReadDIO(Int32 *dioValues)
 		t = clk.GetTimeDiff();
 		if (t > 2)
 			break;
-		this->sendEvt->Wait(Math::Double2Int((2 - t) * 1000));
+		this->sendEvt->Wait((UInt32)Math::Double2Int32((2 - t) * 1000));
 	}
 	if (this->sendHasResult)
 	{
@@ -305,16 +305,16 @@ Bool IO::CortexControl::WriteDIO(Int32 outVal, Int32 outMask)
 	Bool succ = false;
 	cmd[0] = (UInt8)(outVal & 0xff);
 	cmd[1] = (UInt8)(outMask & 0xff);
-	packetSize = this->protoHdlr->BuildPacket(buff, 2, 0, cmd, 2);
+	packetSize = this->protoHdlr->BuildPacket(buff, 2, 0, cmd, 2, 0);
 	this->sendMut->Lock();
 	this->sendType = 2;
 	this->sendHasResult = false;
 	clk.Start();
 	if (this->errWriter)
 	{
-		Text::StringBuilder sb;
-		sb.Append(L"Send: ");
-		sb.AppendHex(buff, packetSize, ' ', Text::StringBuilder::LBT_CRLF);
+		Text::StringBuilderUTF8 sb;
+		sb.AppendC(UTF8STRC("Send: "));
+		sb.AppendHex(buff, packetSize, ' ', Text::LineBreakType::CRLF);
 		this->errWriter->WriteLineC(sb.ToString(), sb.GetLength());
 	}
 	this->stm->Write(buff, packetSize);
@@ -323,7 +323,7 @@ Bool IO::CortexControl::WriteDIO(Int32 outVal, Int32 outMask)
 		t = clk.GetTimeDiff();
 		if (t > 2)
 			break;
-		this->sendEvt->Wait(Math::Double2Int((2 - t) * 1000));
+		this->sendEvt->Wait(Math::Double2Int32((2 - t) * 1000));
 	}
 	if (this->sendHasResult)
 	{
@@ -340,16 +340,16 @@ Bool IO::CortexControl::ReadVin(Int32 *voltage)
 	Manage::HiResClock clk;
 	Double t;
 	Bool succ = false;
-	packetSize = this->protoHdlr->BuildPacket(buff, 3, 0, 0, 0);
+	packetSize = this->protoHdlr->BuildPacket(buff, 3, 0, 0, 0, 0);
 	this->sendMut->Lock();
 	this->sendType = 3;
 	this->sendHasResult = false;
 	clk.Start();
 	if (this->errWriter)
 	{
-		Text::StringBuilder sb;
-		sb.Append(L"Send: ");
-		sb.AppendHex(buff, packetSize, ' ', Text::StringBuilder::LBT_CRLF);
+		Text::StringBuilderUTF8 sb;
+		sb.AppendC(UTF8STRC("Send: "));
+		sb.AppendHex(buff, packetSize, ' ', Text::LineBreakType::CRLF);
 		this->errWriter->WriteLineC(sb.ToString(), sb.GetLength());
 	}
 	this->stm->Write(buff, packetSize);
@@ -358,7 +358,7 @@ Bool IO::CortexControl::ReadVin(Int32 *voltage)
 		t = clk.GetTimeDiff();
 		if (t > 2)
 			break;
-		this->sendEvt->Wait(Math::Double2Int((2 - t) * 1000));
+		this->sendEvt->Wait(Math::Double2Int32((2 - t) * 1000));
 	}
 	if (this->sendHasResult)
 	{
@@ -376,16 +376,16 @@ Bool IO::CortexControl::ReadVBatt(Int32 *voltage)
 	Manage::HiResClock clk;
 	Double t;
 	Bool succ = false;
-	packetSize = this->protoHdlr->BuildPacket(buff, 6, 0, 0, 0);
+	packetSize = this->protoHdlr->BuildPacket(buff, 6, 0, 0, 0, 0);
 	this->sendMut->Lock();
 	this->sendType = 6;
 	this->sendHasResult = false;
 	clk.Start();
 	if (this->errWriter)
 	{
-		Text::StringBuilder sb;
-		sb.Append(L"Send: ");
-		sb.AppendHex(buff, packetSize, ' ', Text::StringBuilder::LBT_CRLF);
+		Text::StringBuilderUTF8 sb;
+		sb.AppendC(UTF8STRC("Send: "));
+		sb.AppendHex(buff, packetSize, ' ', Text::LineBreakType::CRLF);
 		this->errWriter->WriteLineC(sb.ToString(), sb.GetLength());
 	}
 	this->stm->Write(buff, packetSize);
@@ -394,7 +394,7 @@ Bool IO::CortexControl::ReadVBatt(Int32 *voltage)
 		t = clk.GetTimeDiff();
 		if (t > 2)
 			break;
-		this->sendEvt->Wait(Math::Double2Int((2 - t) * 1000));
+		this->sendEvt->Wait(Math::Double2Int32((2 - t) * 1000));
 	}
 	if (this->sendHasResult)
 	{
@@ -412,16 +412,16 @@ Bool IO::CortexControl::ReadOdometerCounter(Int32 *odoCount)
 	Manage::HiResClock clk;
 	Double t;
 	Bool succ = false;
-	packetSize = this->protoHdlr->BuildPacket(buff, 7, 0, 0, 0);
+	packetSize = this->protoHdlr->BuildPacket(buff, 7, 0, 0, 0, 0);
 	this->sendMut->Lock();
 	this->sendType = 7;
 	this->sendHasResult = false;
 	clk.Start();
 	if (this->errWriter)
 	{
-		Text::StringBuilder sb;
-		sb.Append(L"Send: ");
-		sb.AppendHex(buff, packetSize, ' ', Text::StringBuilder::LBT_CRLF);
+		Text::StringBuilderUTF8 sb;
+		sb.AppendC(UTF8STRC("Send: "));
+		sb.AppendHex(buff, packetSize, ' ', Text::LineBreakType::CRLF);
 		this->errWriter->WriteLineC(sb.ToString(), sb.GetLength());
 	}
 	this->stm->Write(buff, packetSize);
@@ -430,7 +430,7 @@ Bool IO::CortexControl::ReadOdometerCounter(Int32 *odoCount)
 		t = clk.GetTimeDiff();
 		if (t > 2)
 			break;
-		this->sendEvt->Wait(Math::Double2Int((2 - t) * 1000));
+		this->sendEvt->Wait(Math::Double2Int32((2 - t) * 1000));
 	}
 	if (this->sendHasResult)
 	{
@@ -448,16 +448,16 @@ Bool IO::CortexControl::ResetOdometerCounter()
 	Manage::HiResClock clk;
 	Double t;
 	Bool succ = false;
-	packetSize = this->protoHdlr->BuildPacket(buff, 8, 0, 0, 0);
+	packetSize = this->protoHdlr->BuildPacket(buff, 8, 0, 0, 0, 0);
 	this->sendMut->Lock();
 	this->sendType = 8;
 	this->sendHasResult = false;
 	clk.Start();
 	if (this->errWriter)
 	{
-		Text::StringBuilder sb;
-		sb.Append(L"Send: ");
-		sb.AppendHex(buff, packetSize, ' ', Text::StringBuilder::LBT_CRLF);
+		Text::StringBuilderUTF8 sb;
+		sb.AppendC(UTF8STRC("Send: "));
+		sb.AppendHex(buff, packetSize, ' ', Text::LineBreakType::CRLF);
 		this->errWriter->WriteLineC(sb.ToString(), sb.GetLength());
 	}
 	this->stm->Write(buff, packetSize);
@@ -466,7 +466,7 @@ Bool IO::CortexControl::ResetOdometerCounter()
 		t = clk.GetTimeDiff();
 		if (t > 2)
 			break;
-		this->sendEvt->Wait(Math::Double2Int((2 - t) * 1000));
+		this->sendEvt->Wait(Math::Double2Int32((2 - t) * 1000));
 	}
 	if (this->sendHasResult)
 	{
@@ -483,16 +483,16 @@ Bool IO::CortexControl::ReadEnvBrightness(Int32 *brightness)
 	Manage::HiResClock clk;
 	Double t;
 	Bool succ = false;
-	packetSize = this->protoHdlr->BuildPacket(buff, 10, 0, 0, 0);
+	packetSize = this->protoHdlr->BuildPacket(buff, 10, 0, 0, 0, 0);
 	this->sendMut->Lock();
 	this->sendType = 10;
 	this->sendHasResult = false;
 	clk.Start();
 	if (this->errWriter)
 	{
-		Text::StringBuilder sb;
-		sb.Append(L"Send: ");
-		sb.AppendHex(buff, packetSize, ' ', Text::StringBuilder::LBT_CRLF);
+		Text::StringBuilderUTF8 sb;
+		sb.AppendC(UTF8STRC("Send: "));
+		sb.AppendHex(buff, packetSize, ' ', Text::LineBreakType::CRLF);
 		this->errWriter->WriteLineC(sb.ToString(), sb.GetLength());
 	}
 	this->stm->Write(buff, packetSize);
@@ -501,7 +501,7 @@ Bool IO::CortexControl::ReadEnvBrightness(Int32 *brightness)
 		t = clk.GetTimeDiff();
 		if (t > 2)
 			break;
-		this->sendEvt->Wait(Math::Double2Int((2 - t) * 1000));
+		this->sendEvt->Wait(Math::Double2Int32((2 - t) * 1000));
 	}
 	if (this->sendHasResult)
 	{
@@ -519,16 +519,16 @@ Bool IO::CortexControl::ReadTemperature(Int32 *temperature)
 	Manage::HiResClock clk;
 	Double t;
 	Bool succ = false;
-	packetSize = this->protoHdlr->BuildPacket(buff, 11, 0, 0, 0);
+	packetSize = this->protoHdlr->BuildPacket(buff, 11, 0, 0, 0, 0);
 	this->sendMut->Lock();
 	this->sendType = 11;
 	this->sendHasResult = false;
 	clk.Start();
 	if (this->errWriter)
 	{
-		Text::StringBuilder sb;
-		sb.Append(L"Send: ");
-		sb.AppendHex(buff, packetSize, ' ', Text::StringBuilder::LBT_CRLF);
+		Text::StringBuilderUTF8 sb;
+		sb.AppendC(UTF8STRC("Send: "));
+		sb.AppendHex(buff, packetSize, ' ', Text::LineBreakType::CRLF);
 		this->errWriter->WriteLineC(sb.ToString(), sb.GetLength());
 	}
 	this->stm->Write(buff, packetSize);
@@ -537,7 +537,7 @@ Bool IO::CortexControl::ReadTemperature(Int32 *temperature)
 		t = clk.GetTimeDiff();
 		if (t > 2)
 			break;
-		this->sendEvt->Wait(Math::Double2Int((2 - t) * 1000));
+		this->sendEvt->Wait(Math::Double2Int32((2 - t) * 1000));
 	}
 	if (this->sendHasResult)
 	{
@@ -555,16 +555,16 @@ Bool IO::CortexControl::PowerOff()
 	Manage::HiResClock clk;
 	Double t;
 	Bool succ = false;
-	packetSize = this->protoHdlr->BuildPacket(buff, 13, 0, 0, 0);
+	packetSize = this->protoHdlr->BuildPacket(buff, 13, 0, 0, 0, 0);
 	this->sendMut->Lock();
 	this->sendType = 13;
 	this->sendHasResult = false;
 	clk.Start();
 	if (this->errWriter)
 	{
-		Text::StringBuilder sb;
-		sb.Append(L"Send: ");
-		sb.AppendHex(buff, packetSize, ' ', Text::StringBuilder::LBT_CRLF);
+		Text::StringBuilderUTF8 sb;
+		sb.AppendC(UTF8STRC("Send: "));
+		sb.AppendHex(buff, packetSize, ' ', Text::LineBreakType::CRLF);
 		this->errWriter->WriteLineC(sb.ToString(), sb.GetLength());
 	}
 	this->stm->Write(buff, packetSize);
@@ -573,7 +573,7 @@ Bool IO::CortexControl::PowerOff()
 		t = clk.GetTimeDiff();
 		if (t > 2)
 			break;
-		this->sendEvt->Wait(Math::Double2Int((2 - t) * 1000));
+		this->sendEvt->Wait(Math::Double2Int32((2 - t) * 1000));
 	}
 	if (this->sendHasResult)
 	{
@@ -592,16 +592,16 @@ Bool IO::CortexControl::HDACodecPower(Bool turnOn)
 	Double t;
 	Bool succ = false;
 	cmd = turnOn?1:0;
-	packetSize = this->protoHdlr->BuildPacket(buff, 14, 0, &cmd, 1);
+	packetSize = this->protoHdlr->BuildPacket(buff, 14, 0, &cmd, 1, 0);
 	this->sendMut->Lock();
 	this->sendType = 14;
 	this->sendHasResult = false;
 	clk.Start();
 	if (this->errWriter)
 	{
-		Text::StringBuilder sb;
-		sb.Append(L"Send: ");
-		sb.AppendHex(buff, packetSize, ' ', Text::StringBuilder::LBT_CRLF);
+		Text::StringBuilderUTF8 sb;
+		sb.AppendC(UTF8STRC("Send: "));
+		sb.AppendHex(buff, packetSize, ' ', Text::LineBreakType::CRLF);
 		this->errWriter->WriteLineC(sb.ToString(), sb.GetLength());
 	}
 	this->stm->Write(buff, packetSize);
@@ -610,7 +610,7 @@ Bool IO::CortexControl::HDACodecPower(Bool turnOn)
 		t = clk.GetTimeDiff();
 		if (t > 2)
 			break;
-		this->sendEvt->Wait(Math::Double2Int((2 - t) * 1000));
+		this->sendEvt->Wait(Math::Double2Int32((2 - t) * 1000));
 	}
 	if (this->sendHasResult)
 	{
@@ -627,16 +627,16 @@ Bool IO::CortexControl::SetWatchdogTimeout(UInt8 timeout)
 	Manage::HiResClock clk;
 	Double t;
 	Bool succ = false;
-	packetSize = this->protoHdlr->BuildPacket(buff, 15, 0, &timeout, 1);
+	packetSize = this->protoHdlr->BuildPacket(buff, 15, 0, &timeout, 1, 0);
 	this->sendMut->Lock();
 	this->sendType = 15;
 	this->sendHasResult = false;
 	clk.Start();
 	if (this->errWriter)
 	{
-		Text::StringBuilder sb;
-		sb.Append(L"Send: ");
-		sb.AppendHex(buff, packetSize, ' ', Text::StringBuilder::LBT_CRLF);
+		Text::StringBuilderUTF8 sb;
+		sb.AppendC(UTF8STRC("Send: "));
+		sb.AppendHex(buff, packetSize, ' ', Text::LineBreakType::CRLF);
 		this->errWriter->WriteLineC(sb.ToString(), sb.GetLength());
 	}
 	this->stm->Write(buff, packetSize);
@@ -645,7 +645,7 @@ Bool IO::CortexControl::SetWatchdogTimeout(UInt8 timeout)
 		t = clk.GetTimeDiff();
 		if (t > 2)
 			break;
-		this->sendEvt->Wait(Math::Double2Int((2 - t) * 1000));
+		this->sendEvt->Wait(Math::Double2Int32((2 - t) * 1000));
 	}
 	if (this->sendHasResult)
 	{

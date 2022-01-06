@@ -44,6 +44,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	UOSInt i;
 	UOSInt j;
 	UTF8Char sbuff[256];
+	UTF8Char *sptr;
 	Media::DrawEngine *eng;
 	Media::Printer *printer;
 	Media::IPrintDocument *doc;
@@ -55,8 +56,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	j = Media::Printer::GetPrinterCount();
 	while (i < j)
 	{
-		Media::Printer::GetPrinterName(sbuff, i);
-		console->WriteLine(sbuff);
+		sptr = Media::Printer::GetPrinterName(sbuff, i);
+		console->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
 		i++;
 	}
 	eng = Media::DrawEngineFactory::CreateDrawEngine();

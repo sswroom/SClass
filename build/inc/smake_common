@@ -19,6 +19,7 @@ nodeps:
 @AES256Test
 @BcryptTest
 @BlowfishTest
+@CRC32CTest
 @CRC32RTest
 @CSRTest
 @HOTPTest

@@ -164,7 +164,7 @@ UInt32 __stdcall PlayThread(void *obj)
 					sptr = Text::StrConcat(sptr, (const UTF8Char*)" none");
 					typhoonStop = false;
 				}
-				console->WriteLine(sbuff);
+				console->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
 			}
 			currSignal = nextSignal;
 		}

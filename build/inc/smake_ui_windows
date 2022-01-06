@@ -130,7 +130,7 @@ GUITIFExporter.o: ../../src/Exporter/GUITIFExporterW.cpp
 DDrawManager.o: ../../src/Media/DDrawManager.cpp
 !-lddraw
 !-ldxguid
-DrawEngineFactory.o: ../../src/Core/DrawEngineFactoryWin.cpp
+DrawEngineFactory.o: ../../src/Media/DrawEngineFactoryWin.cpp
 DrawEngineGUI.o: ../../src/Media/GDIEngineC.cpp
 GDIEngine.o: ../../src/Media/GDIEngine.cpp
 !-lgdi32

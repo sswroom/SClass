@@ -68,17 +68,17 @@ void IO::FileStream::InitStream(const WChar *fileName, FileMode mode, FileShare 
 		break;
 	}
 
-	if (mode == FileStream::FileMode::Create)
+	if (mode == IO::FileMode::Create)
 	{
 		handle = CreateFileW(fileName, GENERIC_READ | GENERIC_WRITE, shflag, &secAttr, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL | fileFlag, 0);
 		currPos = 0;
 	}
-	else if (mode == FileStream::FileMode::CreateWrite)
+	else if (mode == IO::FileMode::CreateWrite)
 	{
 		handle = CreateFileW(fileName, GENERIC_WRITE, shflag, &secAttr, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL | fileFlag, 0);
 		currPos = 0;
 	}
-	else if (mode == FileStream::FileMode::Append)
+	else if (mode == IO::FileMode::Append)
 	{
 		handle = CreateFileW(fileName, GENERIC_READ | GENERIC_WRITE, shflag, &secAttr, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL | fileFlag, 0);
 		if (handle == INVALID_HANDLE_VALUE)
@@ -92,17 +92,17 @@ void IO::FileStream::InitStream(const WChar *fileName, FileMode mode, FileShare 
 			((Int32*)&this->currPos)[1] = fleng;
 		}
 	}
-	else if (mode == FileStream::FileMode::ReadOnly)
+	else if (mode == IO::FileMode::ReadOnly)
 	{
 		handle = CreateFileW(fileName, GENERIC_READ, shflag, &secAttr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL | fileFlag, 0);
 		currPos = 0;
 	}
-	else if (mode == FileStream::FileMode::ReadWriteExisting)
+	else if (mode == IO::FileMode::ReadWriteExisting)
 	{
 		handle = CreateFileW(fileName, GENERIC_READ | GENERIC_WRITE, shflag, &secAttr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL | fileFlag, 0);
 		currPos = 0;
 	}
-	else if (mode == FileStream::FileMode::Device)
+	else if (mode == IO::FileMode::Device)
 	{
 		handle = CreateFileW(fileName, GENERIC_READ | GENERIC_WRITE, 0, 0, OPEN_EXISTING, 0, 0);
 		currPos = 0;
@@ -178,17 +178,17 @@ IO::FileStream::FileStream(Text::String *fileName, FileMode mode, FileShare shar
 
 
 	const WChar *wptr = Text::StrToWCharNew(fileName->v);
-	if (mode == FileStream::FileMode::Create)
+	if (mode == IO::FileMode::Create)
 	{
 		handle = CreateFileW(wptr, GENERIC_READ | GENERIC_WRITE, shflag, &secAttr, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL | fileFlag, 0);
 		currPos = 0;
 	}
-	else if (mode == FileStream::FileMode::CreateWrite)
+	else if (mode == IO::FileMode::CreateWrite)
 	{
 		handle = CreateFileW(wptr, GENERIC_WRITE, shflag, &secAttr, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL | fileFlag, 0);
 		currPos = 0;
 	}
-	else if (mode == FileStream::FileMode::Append)
+	else if (mode == IO::FileMode::Append)
 	{
 		handle = CreateFileW(wptr, GENERIC_READ | GENERIC_WRITE, shflag, &secAttr, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL | fileFlag, 0);
 		if (handle == INVALID_HANDLE_VALUE)
@@ -202,7 +202,7 @@ IO::FileStream::FileStream(Text::String *fileName, FileMode mode, FileShare shar
 			((Int32*)&this->currPos)[1] = fleng;
 		}
 	}
-	else if (mode == FileStream::FileMode::ReadOnly)
+	else if (mode == IO::FileMode::ReadOnly)
 	{
 		handle = CreateFileW(wptr, GENERIC_READ, shflag, &secAttr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL | fileFlag, 0);
 		currPos = 0;
@@ -273,17 +273,17 @@ IO::FileStream::FileStream(const UTF8Char *fileName, IO::FileMode mode, FileShar
 
 
 	const WChar *wptr = Text::StrToWCharNew(fileName);
-	if (mode == FileStream::FileMode::Create)
+	if (mode == IO::FileMode::Create)
 	{
 		handle = CreateFileW(wptr, GENERIC_READ | GENERIC_WRITE, shflag, &secAttr, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL | fileFlag, 0);
 		currPos = 0;
 	}
-	else if (mode == FileStream::FileMode::CreateWrite)
+	else if (mode == IO::FileMode::CreateWrite)
 	{
 		handle = CreateFileW(wptr, GENERIC_WRITE, shflag, &secAttr, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL | fileFlag, 0);
 		currPos = 0;
 	}
-	else if (mode == FileStream::FileMode::Append)
+	else if (mode == IO::FileMode::Append)
 	{
 		handle = CreateFileW(wptr, GENERIC_READ | GENERIC_WRITE, shflag, &secAttr, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL | fileFlag, 0);
 		if (handle == INVALID_HANDLE_VALUE)
@@ -297,7 +297,7 @@ IO::FileStream::FileStream(const UTF8Char *fileName, IO::FileMode mode, FileShar
 			((Int32*)&this->currPos)[1] = fleng;
 		}
 	}
-	else if (mode == FileStream::FileMode::ReadOnly)
+	else if (mode == IO::FileMode::ReadOnly)
 	{
 		handle = CreateFileW(wptr, GENERIC_READ, shflag, &secAttr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL | fileFlag, 0);
 		currPos = 0;

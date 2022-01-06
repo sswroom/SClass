@@ -12,16 +12,18 @@ void DateTest(const Char *s)
 {
 	Data::DateTime dt;
 	UTF8Char sbuff[64];
+	UTF8Char *sptr;
 	console->WriteLine((const UTF8Char*)s);
 	dt.SetValue(s);
-	dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff zzz");
-	console->WriteLine(sbuff);
+	sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff zzz");
+	console->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
 	console->WriteLine();
 }
 
 void CurrTimeTest()
 {
 	UTF8Char sbuff[64];
+	UTF8Char *sptr;
 	Data::DateTime dt;
 	dt.SetCurrTimeUTC();
 	Int64 initTicks = dt.ToTicks();
@@ -30,11 +32,11 @@ void CurrTimeTest()
 	{
 		Sync::Thread::Sleep(10);
 		dt.SetCurrTimeUTC();
-		Text::StrInt64(sbuff, dt.ToTicks() - initTicks);
-		console->WriteLine(sbuff);
+		sptr = Text::StrInt64(sbuff, dt.ToTicks() - initTicks);
+		console->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
 	}
-	dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff zzz");
-	console->WriteLine(sbuff);
+	sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff zzz");
+	console->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
 }
 
 Int32 MyMain(Core::IProgControl *progCtrl)

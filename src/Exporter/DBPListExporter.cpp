@@ -70,6 +70,7 @@ Bool Exporter::DBPListExporter::ExportFile(IO::SeekableStream *stm, const UTF8Ch
 	UTF8Char *lineBuff1;
 	UTF8Char *lineBuff2;
 	UTF8Char *sptr;
+	UTF8Char *sptr2;
 	UOSInt colCnt;
 	UOSInt i;
 	UOSInt colSize;
@@ -80,8 +81,8 @@ Bool Exporter::DBPListExporter::ExportFile(IO::SeekableStream *stm, const UTF8Ch
 	lineBuff1 = MemAlloc(UTF8Char, 65536);
 	lineBuff2 = MemAlloc(UTF8Char, 65536);
 
-	sptr = Text::StrConcat(Text::EncodingFactory::GetInternetName(Text::StrConcat(lineBuff1, (const UTF8Char*)"<?xml version=\"1.0\" encoding=\""), this->codePage), (const UTF8Char*)"\"?>");
-	writer->WriteLine(lineBuff1);
+	sptr = Text::StrConcatC(Text::EncodingFactory::GetInternetName(Text::StrConcatC(lineBuff1, UTF8STRC("<?xml version=\"1.0\" encoding=\"")), this->codePage), UTF8STRC("\"?>"));
+	writer->WriteLineC(lineBuff1, (UOSInt)(sptr - lineBuff1));
 	writer->WriteLineC(UTF8STRC("<!DOCTYPE plist PUBLIC \"-//Apple Computer//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">"));
 	writer->WriteLineC(UTF8STRC("<plist version=\"1.0\">"));
 	writer->WriteLineC(UTF8STRC("<array>"));
@@ -97,8 +98,8 @@ Bool Exporter::DBPListExporter::ExportFile(IO::SeekableStream *stm, const UTF8Ch
 		while (i < colCnt)
 		{
 			r->GetName(i, lineBuff1);
-			Text::StrConcat(Text::XML::ToXMLText(Text::StrConcat(lineBuff2, (const UTF8Char*)"        <key>"), lineBuff1), (const UTF8Char*)"</key>");
-			writer->WriteLine(lineBuff2);
+			sptr2 = Text::StrConcatC(Text::XML::ToXMLText(Text::StrConcatC(lineBuff2, UTF8STRC("        <key>")), lineBuff1), UTF8STRC("</key>"));
+			writer->WriteLineC(lineBuff2, (UOSInt)(sptr2 - lineBuff2));
 
 			DB::DBUtil::ColType ct = r->GetColType(i, &colSize);
 			switch (ct)
@@ -106,24 +107,24 @@ Bool Exporter::DBPListExporter::ExportFile(IO::SeekableStream *stm, const UTF8Ch
 			case DB::DBUtil::CT_DateTime:
 			case DB::DBUtil::CT_DateTime2:
 				r->GetDate(i, &dt);
-				sptr = Text::StrConcat(dt.ToString(Text::StrConcat(lineBuff1, (const UTF8Char*)"        <string>"), "yyyy-MM-dd HH:mm:ss"), (const UTF8Char*)"</string>");
+				sptr = Text::StrConcatC(dt.ToString(Text::StrConcatC(lineBuff1, UTF8STRC("        <string>")), "yyyy-MM-dd HH:mm:ss"), UTF8STRC("</string>"));
 				writer->WriteLineC(lineBuff1, (UOSInt)(sptr - lineBuff1));
 				break;
 			case DB::DBUtil::CT_Double:
 			case DB::DBUtil::CT_Float:
-				sptr = Text::StrConcat(Text::StrDouble(Text::StrConcat(lineBuff1, (const UTF8Char*)"        <string>"), r->GetDbl(i)), (const UTF8Char*)"</string>");
+				sptr = Text::StrConcatC(Text::StrDouble(Text::StrConcatC(lineBuff1, UTF8STRC("        <string>")), r->GetDbl(i)), UTF8STRC("</string>"));
 				writer->WriteLineC(lineBuff1, (UOSInt)(sptr - lineBuff1));
 				break;
 			case DB::DBUtil::CT_Int16:
 			case DB::DBUtil::CT_Int32:
 			case DB::DBUtil::CT_UInt16:
-				sptr = Text::StrConcat(Text::StrInt32(Text::StrConcat(lineBuff1, (const UTF8Char*)"        <integer>"), r->GetInt32(i)), (const UTF8Char*)"</integer>");
+				sptr = Text::StrConcatC(Text::StrInt32(Text::StrConcatC(lineBuff1, UTF8STRC("        <integer>")), r->GetInt32(i)), UTF8STRC("</integer>"));
 				writer->WriteLineC(lineBuff1, (UOSInt)(sptr - lineBuff1));
 				break;
 			case DB::DBUtil::CT_Int64:
 			case DB::DBUtil::CT_UInt32:
 			case DB::DBUtil::CT_UInt64:
-				sptr = Text::StrConcat(Text::StrInt64(Text::StrConcat(lineBuff1, (const UTF8Char*)"        <integer>"), r->GetInt64(i)), (const UTF8Char*)"</integer>");
+				sptr = Text::StrConcatC(Text::StrInt64(Text::StrConcatC(lineBuff1, UTF8STRC("        <integer>")), r->GetInt64(i)), UTF8STRC("</integer>"));
 				writer->WriteLineC(lineBuff1, (UOSInt)(sptr - lineBuff1));
 				break;
 			case DB::DBUtil::CT_Bool:

@@ -16,9 +16,10 @@ Net::WebServer::PrintLogWebHandler::PrintLogWebHandler(Net::WebServer::IWebHandl
 void Net::WebServer::PrintLogWebHandler::WebRequest(IWebRequest *req, IWebResponse *resp)
 {
 	UTF8Char sbuff[128];
-	Text::StrConcat(Net::SocketUtil::GetAddrName(sbuff, req->GetClientAddr(), req->GetClientPort()), (const UTF8Char*)": ");
+	UTF8Char *sptr;
+	sptr = Text::StrConcatC(Net::SocketUtil::GetAddrName(sbuff, req->GetClientAddr(), req->GetClientPort()), UTF8STRC(": "));
 	Text::StringBuilderUTF8 sb;
-	sb.Append(sbuff);
+	sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 	sb.Append((const UTF8Char*)req->GetReqMethodStr());
 	sb.AppendChar(' ', 1);
 	sb.Append(req->GetRequestURI());
@@ -33,7 +34,7 @@ void Net::WebServer::PrintLogWebHandler::WebRequest(IWebRequest *req, IWebRespon
 	while (i < j)
 	{
 		sb.ClearStr();
-		sb.Append(sbuff);
+		sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 		header = headers.GetItem(i);
 		sb.Append(header);
 		sb.AppendC(UTF8STRC(": "));
@@ -41,7 +42,7 @@ void Net::WebServer::PrintLogWebHandler::WebRequest(IWebRequest *req, IWebRespon
 		this->writer->WriteLineC(sb.ToString(), sb.GetLength());
 		i++;
 	}
-	this->writer->WriteLine(sbuff);
+	this->writer->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
 	Net::WebServer::PrintLogWebResponse plResp(resp, this->writer, sbuff);
 	this->hdlr->WebRequest(req, &plResp);
 }

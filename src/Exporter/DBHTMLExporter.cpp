@@ -69,6 +69,7 @@ Bool Exporter::DBHTMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8Cha
 	UTF8Char *lineBuff1;
 	UTF8Char *lineBuff2;
 	UTF8Char *sptr;
+	UTF8Char *sptr2;
 	UOSInt colCnt;
 	UOSInt i;
 
@@ -84,8 +85,8 @@ Bool Exporter::DBHTMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8Cha
 	sptr = lineBuff1;
 	if ((i = Text::StrLastIndexOf(sptr, '\\')) != INVALID_INDEX)
 		sptr = &sptr[i + 1];
-	Text::XML::ToXMLText(lineBuff2, sptr);
-	writer->WriteLine(lineBuff2);
+	sptr2 = Text::XML::ToXMLText(lineBuff2, sptr);
+	writer->WriteLineC(lineBuff2, (UOSInt)(sptr2 - lineBuff2));
 	writer->WriteLineC(UTF8STRC("</title>"));
 	sptr = Text::StrConcatC(Text::EncodingFactory::GetInternetName(Text::StrConcatC(lineBuff1, UTF8STRC("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=")), this->codePage), UTF8STRC("\">"));
 	writer->WriteLineC(lineBuff1, (UOSInt)(sptr - lineBuff1));

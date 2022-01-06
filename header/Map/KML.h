@@ -9,7 +9,7 @@ namespace Map
 	class KML
 	{
 	public:
-		static Bool GenKML(IO::FileStream *fs, Data::ArrayList<const WChar*> *names, Data::ArrayListDbl *lats, Data::ArrayListDbl *lons);
+		static Bool GenKML(IO::FileStream *fs, Data::ArrayList<const UTF8Char*> *names, Data::ArrayListDbl *lats, Data::ArrayListDbl *lons);
 	};
-};
+}
 #endif

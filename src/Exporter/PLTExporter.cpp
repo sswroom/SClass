@@ -108,7 +108,7 @@ Bool Exporter::PLTExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 			sptr = Text::StrConcat(sptr, (const UTF8Char*)", ");
 			sptr = dt.ToString(sptr, "hh:mm:ss tt");
 
-			writer->WriteLine(sbuff);
+			writer->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
 
 			k++;
 		}

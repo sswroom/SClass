@@ -103,12 +103,13 @@ Int32 MemCheckError()
 	Bool found = false;
 	if (mcMemoryCnt)
 	{
-		WChar buff[12];
-		Text::StrInt32(buff, mcMemoryCnt);
+		UTF8Char buff[12];
+		UTF8Char *sptr;
+		sptr = Text::StrInt32(buff, mcMemoryCnt);
 		IO::ConsoleWriter writer;
-		writer.Write(L"Memory leaks occurs for ");
-		writer.Write(buff);
-		writer.WriteLine(L" times");
+		writer.WriteStrC(UTF8STRC("Memory leaks occurs for "));
+		writer.WriteStrC(buff, (UOSInt)(sptr - buff));
+		writer.WriteLineC(UTF8STRC())" times"));
 		found = true;
 	}
 #if defined(MSC_VER) && !defined(_WIN32_WCE)

@@ -1623,7 +1623,7 @@ UTF8Char *Media::ICCProfile::GetProfilePath(UTF8Char *sbuff)
 	UTF8Char *sptr = sbuff;
 #if defined(WIN32)
 	sptr = IO::Path::GetOSPath(sptr);
-	sptr = Text::StrConcat(sptr, (const UTF8Char*)"\\System32\\spool\\drivers\\color"));
+	sptr = Text::StrConcatC(sptr, UTF8STRC("\\System32\\spool\\drivers\\color"));
 #endif
 	return sptr;
 }

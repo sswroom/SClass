@@ -1,15 +1,17 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Text/XMLDOM.h"
-#include "Text/Locale.h"
-#include "Sync/Thread.h"
-#include "Net/HTTPClient.h"
 #include "IO/MemoryStream.h"
 #include "Map/GoogleMap/GoogleWSSearcherXML.h"
+#include "Net/HTTPClient.h"
+#include "Sync/Thread.h"
+#include "Text/Locale.h"
+#include "Text/MyStringFloat.h"
+#include "Text/XMLDOM.h"
 
-Map::GoogleMap::GoogleWSSearcherXML::GoogleWSSearcherXML(Net::SocketFactory *sockf, IO::Writer *errWriter, Text::EncodingFactory *encFact)
+Map::GoogleMap::GoogleWSSearcherXML::GoogleWSSearcherXML(Net::SocketFactory *sockf, Net::SSLEngine *ssl, IO::Writer *errWriter, Text::EncodingFactory *encFact)
 {
 	this->sockf = sockf;
+	this->ssl = ssl;
 	this->errWriter = errWriter;
 	this->encFact = encFact;
 	this->lastIsError = false;
@@ -24,10 +26,10 @@ Map::GoogleMap::GoogleWSSearcherXML::~GoogleWSSearcherXML()
 	DEL_CLASS(this->mut);
 }
 
-WChar *Map::GoogleMap::GoogleWSSearcherXML::SearchName(WChar *buff, Double lat, Double lon, const WChar *lang)
+UTF8Char *Map::GoogleMap::GoogleWSSearcherXML::SearchName(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, const UTF8Char *lang)
 {
-	WChar url[1024];
-	WChar *sptr;
+	UTF8Char url[1024];
+	UTF8Char *sptr;
 	Data::DateTime currDt;
 	UInt8 databuff[2048];
 	IO::MemoryStream *mstm;
@@ -42,31 +44,30 @@ WChar *Map::GoogleMap::GoogleWSSearcherXML::SearchName(WChar *buff, Double lat, 
 	}
 
 	Net::HTTPClient *cli;
-	sptr = Text::StrConcat(url, L"http://maps.googleapis.com/maps/api/geocode/xml?latlng=");
+	sptr = Text::StrConcatC(url, UTF8STRC("http://maps.googleapis.com/maps/api/geocode/xml?latlng="));
 	sptr = Text::StrDouble(sptr, lat);
-	sptr = Text::StrConcat(sptr, L",");
+	sptr = Text::StrConcatC(sptr, UTF8STRC(","));
 	sptr = Text::StrDouble(sptr, lon);
-	sptr = Text::StrConcat(sptr, L"&sensor=false");
+	sptr = Text::StrConcatC(sptr, UTF8STRC("&sensor=false"));
 
-	NEW_CLASS(cli, Net::HTTPClient(this->sockf, url, 0, true));
-	if (!cli->IsError())
+	cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, url, 0, true);
+	if (cli && !cli->IsError())
 	{
 		if (lang)
 		{
-			cli->AddHeader(L"Accept-Language", lang);
+			cli->AddHeader((const UTF8Char*)"Accept-Language", lang);
 		}
 		Int32 status = cli->GetRespStatus();
-		OSInt readSize;
-		NEW_CLASS(mstm, IO::MemoryStream());
+		UOSInt readSize;
+		NEW_CLASS(mstm, IO::MemoryStream((const UTF8Char*)"Map.GoogleMap.GoogleWSSearcherXML.SearchName.mstm"));
 		while ((readSize = cli->Read(databuff, 2048)) > 0)
 		{
 			mstm->Write(databuff, readSize);
 		}
 		if (status == 200)
 		{
-			Text::StringBuilder *sb;
-			NEW_CLASS(sb, Text::StringBuilder());
-			Text::Encoding enc(65001);
+			Text::StringBuilderUTF8 *sb;
+			NEW_CLASS(sb, Text::StringBuilderUTF8());
 			UInt8 *xmlBuff = mstm->GetBuff(&readSize);
 			Text::XMLDocument *doc;
 			NEW_CLASS(doc, Text::XMLDocument());
@@ -74,26 +75,26 @@ WChar *Map::GoogleMap::GoogleWSSearcherXML::SearchName(WChar *buff, Double lat, 
 			{
 				Bool succ = false;
 				Text::XMLNode **result;
-				OSInt resultCnt;
-				result = doc->SearchNode(L"/GeocodeResponse/status", &resultCnt);
+				UOSInt resultCnt;
+				result = doc->SearchNode((const UTF8Char*)"/GeocodeResponse/status", &resultCnt);
 				if (resultCnt == 1)
 				{
 					result[0]->GetInnerXML(sb);
-					if (Text::StrCompareICase(sb->ToString(), L"OK") == 0)
+					if (Text::StrEqualsICase(sb->ToString(), (const UTF8Char*)"OK"))
 					{
 						succ = true;
 					}
 					else
 					{
 						this->lastIsError = true;
-						errWriter->Write(L"Google respose status invalid: ");
+						errWriter->WriteStrC(UTF8STRC("Google respose status invalid: "));
 						errWriter->WriteLineC(sb->ToString(), sb->GetLength());
 					}
 				}
 				else
 				{
 					this->lastIsError = true;
-					errWriter->WriteLine(L"Invalid google response content");
+					errWriter->WriteLineC(UTF8STRC("Invalid google response content"));
 				}
 				if (result)
 				{
@@ -101,12 +102,12 @@ WChar *Map::GoogleMap::GoogleWSSearcherXML::SearchName(WChar *buff, Double lat, 
 				}
 				if (succ)
 				{
-					result = doc->SearchNode(L"/GeocodeResponse/result[type='street_address']/formatted_address", &resultCnt);
+					result = doc->SearchNode((const UTF8Char*)"/GeocodeResponse/result[type='street_address']/formatted_address", &resultCnt);
 					if (resultCnt > 0)
 					{
 						sb->ClearStr();
 						result[0]->GetInnerXML(sb);
-						buff = Text::StrConcat(buff, sb->ToString());
+						buff = Text::StrConcatS(buff, sb->ToString(), buffSize);
 					}
 					if (result)
 					{
@@ -124,10 +125,10 @@ WChar *Map::GoogleMap::GoogleWSSearcherXML::SearchName(WChar *buff, Double lat, 
 		}
 		else
 		{
-			sptr = Text::StrConcat(url, L"Google ");
+			sptr = Text::StrConcatC(url, UTF8STRC("Google "));
 			sptr = Text::StrInt32(sptr, status);
-			sptr = Text::StrConcat(sptr, L" Error");
-			errWriter->WriteLine(url);
+			sptr = Text::StrConcatC(sptr, UTF8STRC(" Error"));
+			errWriter->WriteLineC(url, (UOSInt)(sptr - url));
 			*buff = 0;
 		}
 		DEL_CLASS(mstm);
@@ -138,20 +139,20 @@ WChar *Map::GoogleMap::GoogleWSSearcherXML::SearchName(WChar *buff, Double lat, 
 	}
 
 	this->lastSrchDate->SetCurrTimeUTC();
-	DEL_CLASS(cli);
+	SDEL_CLASS(cli);
 	this->mut->Unlock();
 	return buff;
 }
 
-WChar *Map::GoogleMap::GoogleWSSearcherXML::SearchName(WChar *buff, Double lat, Double lon, Int32 lcid)
+UTF8Char *Map::GoogleMap::GoogleWSSearcherXML::SearchName(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, Int32 lcid)
 {
 	Text::Locale::LocaleEntry *ent = Text::Locale::GetLocaleEntry(lcid);
 	if (ent == 0)
 		return 0;
-	return SearchName(buff, lat, lon, ent->shortName);
+	return SearchName(buff, buffSize, lat, lon, ent->shortName);
 }
 
-WChar *Map::GoogleMap::GoogleWSSearcherXML::CacheName(WChar *buff, Double lat, Double lon, Int32 lcid)
+UTF8Char *Map::GoogleMap::GoogleWSSearcherXML::CacheName(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, Int32 lcid)
 {
 	if (this->lastIsError)
 	{
@@ -163,5 +164,5 @@ WChar *Map::GoogleMap::GoogleWSSearcherXML::CacheName(WChar *buff, Double lat, D
 	Text::Locale::LocaleEntry *ent = Text::Locale::GetLocaleEntry(lcid);
 	if (ent == 0)
 		return 0;
-	return SearchName(buff, lat, lon, ent->shortName);
+	return SearchName(buff, buffSize, lat, lon, ent->shortName);
 }

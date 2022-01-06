@@ -61,7 +61,7 @@ Net::SNS::SNSManager::ChannelData *Net::SNS::SNSManager::ChannelInit(Net::SNS::S
 	sptr = ctrl->GetDirName(sptr);
 	IO::Path::CreateDirectory(sbuff);
 	*sptr++ = IO::Path::PATH_SEPERATOR;
-	Text::StrConcat(sptr, (const UTF8Char*)"curritem.txt");
+	Text::StrConcatC(sptr, UTF8STRC("curritem.txt"));
 	IO::FileStream *fs;
 	Text::UTF8Reader *reader;
 	Text::StringBuilderUTF8 sb;
@@ -95,7 +95,7 @@ void Net::SNS::SNSManager::ChannelAddMessage(Net::SNS::SNSManager::ChannelData *
 	IO::Path::CreateDirectory(sbuff);
 	*sptr++ = IO::Path::PATH_SEPERATOR;
 	sptr = dt.ToString(sptr, "yyyyMM");
-	Text::StrConcat(sptr, (const UTF8Char*)".csv");
+	Text::StrConcatC(sptr, UTF8STRC(".csv"));
 
 	IO::FileStream *fs;
 	Text::UTF8Writer *writer;
@@ -309,7 +309,7 @@ void Net::SNS::SNSManager::ChannelStoreCurr(Net::SNS::SNSManager::ChannelData *c
 	sptr = channel->ctrl->GetDirName(sptr);
 	IO::Path::CreateDirectory(sbuff);
 	*sptr++ = IO::Path::PATH_SEPERATOR;
-	Text::StrConcat(sptr, (const UTF8Char*)"curritem.txt");
+	Text::StrConcatC(sptr, UTF8STRC("curritem.txt"));
 	IO::FileStream *fs;
 	Text::UTF8Writer *writer;
 	Text::StringBuilderUTF8 sb;
@@ -319,7 +319,8 @@ void Net::SNS::SNSManager::ChannelStoreCurr(Net::SNS::SNSManager::ChannelData *c
 	UOSInt j = channel->currItems->GetCount();
 	while (i < j)
 	{
-		writer->WriteLine(channel->currItems->GetItem(i)->v);
+		Text::String *s = channel->currItems->GetItem(i);
+		writer->WriteLineC(s->v, s->leng);
 		i++;
 	}
 	DEL_CLASS(writer);
@@ -565,13 +566,14 @@ Net::SNS::SNSControl *Net::SNS::SNSManager::AddChannel(Net::SNS::SNSControl::SNS
 		sptr = ctrl->GetDirName(sptr);
 		IO::Path::CreateDirectory(sbuff);
 		*sptr++ = IO::Path::PATH_SEPERATOR;
-		Text::StrConcat(sptr, (const UTF8Char*)"channel.txt");
+		Text::StrConcatC(sptr, UTF8STRC("channel.txt"));
 		IO::FileStream *fs;
 		Text::UTF8Writer *writer;
 		NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		NEW_CLASS(writer, Text::UTF8Writer(fs));
 		writer->WriteLine(Net::SNS::SNSControl::SNSTypeGetName(ctrl->GetSNSType()));
-		writer->WriteLine(ctrl->GetChannelId()->v);
+		Text::String *s = ctrl->GetChannelId();
+		writer->WriteLineC(s->v, s->leng);
 		DEL_CLASS(writer);
 		DEL_CLASS(fs);
 		Net::SNS::SNSManager::ChannelData *channel = this->ChannelInit(ctrl);

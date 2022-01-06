@@ -208,7 +208,7 @@ UTF8Char *Map::GoogleMap::GoogleSearcher::SearchName(UTF8Char *buff, UOSInt buff
 			sptr = Text::StrConcat(url, (const UTF8Char*)"Google ");
 			sptr = Text::StrInt32(sptr, status);
 			sptr = Text::StrConcat(sptr, (const UTF8Char*)" Error");
-			errWriter->WriteLine(url);
+			errWriter->WriteLineC(url, (UOSInt)(sptr - url));
 			*buff = 0;
 		}
 	}
@@ -218,8 +218,8 @@ UTF8Char *Map::GoogleMap::GoogleSearcher::SearchName(UTF8Char *buff, UOSInt buff
 		this->lastIsError = 2;
 		*buff = 0;
 		sb.AppendC(UTF8STRC("Cannot connect: "));
-		sb.Append(url);
-		errWriter->WriteLine(url);
+		sb.AppendC(url, (UOSInt)(sptr - url));
+		errWriter->WriteLineC(sb.ToString(), sb.GetLength());
 	}
 	this->lastSrchDate->SetCurrTimeUTC();
 	DEL_CLASS(cli);

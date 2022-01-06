@@ -59,6 +59,8 @@ public:
 
 Int32 MyMain(Core::IProgControl *progCtrl)
 {
+	UTF8Char sbuff[512];
+	UTF8Char *sptr;
 	Bool useSSL = false;
 	Net::WebServer::WebListener *svr;
 	Net::SocketFactory *sockf;
@@ -98,10 +100,9 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		ssl = Net::SSLEngineFactory::Create(sockf, true);
 		if (ssl == 0 || !ssl->SetServerCerts((const UTF8Char*)"test.crt", (const UTF8Char*)"test.key"))
 		{
-			UTF8Char sbuff[512];
 			console->WriteLineC(UTF8STRC("Error in initializing SSL"));
-			ssl->GetErrorDetail(sbuff);
-			console->WriteLine(sbuff);
+			sptr = ssl->GetErrorDetail(sbuff);
+			console->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
 			succ = false;
 		}
 	}

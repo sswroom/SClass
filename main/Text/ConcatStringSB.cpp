@@ -10,7 +10,8 @@
 
 Int32 MyMain(Core::IProgControl *progCtrl)
 {
-	UTF8Char sbuff2[256];
+	UTF8Char sbuff[256];
+	UTF8Char *sptr;
 	Manage::HiResClock *clk;
 	OSInt i;
 	OSInt j;
@@ -32,8 +33,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	Double t1 = clk->GetTimeDiff();
 	IO::ConsoleWriter *console;
 	NEW_CLASS(console, IO::ConsoleWriter());
-	Text::StrConcat(Text::StrDouble(sbuff2, t1), (const UTF8Char*)" s");
-	console->WriteLine(sbuff2);
+	sptr = Text::StrConcatC(Text::StrDouble(sbuff, t1), UTF8STRC(" s"));
+	console->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
 	DEL_CLASS(console);
 
 	DEL_CLASS(clk);

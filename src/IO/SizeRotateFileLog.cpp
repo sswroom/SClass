@@ -1,42 +1,42 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Data/DateTime.h"
-#include "Text/MyString.h"
 #include "IO/FileUtil.h"
 #include "IO/SizeRotateFileLog.h"
-#include "Text/StringBuilder.h"
+#include "Text/MyString.h"
+#include "Text/StringBuilderUTF8.h"
 
 void IO::SizeRotateFileLog::SwapFiles()
 {
-	WChar buff1[256];
-	WChar buff2[256];
+	UTF8Char buff1[256];
+	UTF8Char buff2[256];
 	Int32 i;
 	i = this->nFiles - 1;
 	
-	Text::StrConcat(Text::StrInt32(Text::StrConcat(buff1, this->fileName), i), L".log");
+	Text::StrConcatC(Text::StrInt32(Text::StrConcat(buff1, this->fileName), i), UTF8STRC(".log"));
 	IO::FileUtil::DeleteFile(buff1, true);
 	while (i-- > 0)
 	{
-		Text::StrConcat(Text::StrInt32(Text::StrConcat(buff1, this->fileName), i), L".log");
-		Text::StrConcat(Text::StrInt32(Text::StrConcat(buff2, this->fileName), i + 1), L".log");
+		Text::StrConcatC(Text::StrInt32(Text::StrConcat(buff1, this->fileName), i), UTF8STRC(".log"));
+		Text::StrConcatC(Text::StrInt32(Text::StrConcat(buff2, this->fileName), i + 1), UTF8STRC(".log"));
 		IO::FileUtil::RenameFile(buff1, buff2);
 	}
 }
 
-IO::SizeRotateFileLog::SizeRotateFileLog(const WChar *fileName, Int32 nFiles, Int64 fileSize)
+IO::SizeRotateFileLog::SizeRotateFileLog(const UTF8Char *fileName, Int32 nFiles, Int64 fileSize)
 {
 	NEW_CLASS(mut, Sync::Mutex());
 	this->nFiles = nFiles;
 	this->fileSize = fileSize;
 	this->closed = false;
 
-	WChar buff[256];
+	UTF8Char buff[256];
 
 	this->fileName = Text::StrCopyNew(fileName);
 	this->extName = 0;
 
 	NEW_CLASS(enc, Text::Encoding(65001));
-	Text::StrConcat(Text::StrConcat(buff, fileName), L"0.log");
+	Text::StrConcatC(Text::StrConcat(buff, fileName), UTF8STRC("0.log"));
 	NEW_CLASS(fileStm, IO::FileStream(buff, IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	NEW_CLASS(log, IO::StreamWriter(fileStm, enc));
 	log->WriteSignature();
@@ -96,10 +96,11 @@ void IO::SizeRotateFileLog::LogClosed()
 		closed = true;
 	}
 }
-void IO::SizeRotateFileLog::LogAdded(Data::DateTime *time, const WChar *logMsg, LogLevel logLev)
+void IO::SizeRotateFileLog::LogAdded(Data::DateTime *time, const UTF8Char *logMsg, LogLevel logLev)
 {
 	Bool newFile = false;
-	WChar buff[256];
+	UTF8Char buff[256];
+	UTF8Char *sptr;
 
 	mut->Lock();
 	if (this->fileStm == 0 || this->fileStm->GetLength() > this->fileSize)
@@ -114,22 +115,22 @@ void IO::SizeRotateFileLog::LogAdded(Data::DateTime *time, const WChar *logMsg, 
 		DEL_CLASS(fileStm);
 
 		SwapFiles();
-		Text::StrConcat(Text::StrConcat(buff, fileName), L"0.log");
+		Text::StrConcatC(Text::StrConcat(buff, fileName), UTF8STRC("0.log"));
 
 		NEW_CLASS(fileStm, IO::FileStream(buff, IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		NEW_CLASS(log, IO::StreamWriter(fileStm, enc));
 		log->WriteSignature();
 
-		Text::StrConcat(time->ToString(buff, L"yyyy-MM-dd HH:mm:ss.fff\t"), L"Program running");
-		log->WriteLine(buff);
+		sptr = Text::StrConcatC(time->ToString(buff, "yyyy-MM-dd HH:mm:ss.fff\t"), UTF8STRC("Program running"));
+		log->WriteLineC(buff, (UOSInt)(sptr - buff));
 		fileStm->Flush();
 	}
 
 	if (!this->closed)
 	{
-		time->ToString(buff, L"yyyy-MM-dd HH:mm:ss.fff\t");
-		Text::StringBuilder sb;
-		sb.Append(buff);
+		sptr = time->ToString(buff, "yyyy-MM-dd HH:mm:ss.fff\t");
+		Text::StringBuilderUTF8 sb;
+		sb.AppendC(buff, (UOSInt)(sptr - buff));
 		sb.Append(logMsg);
 		log->WriteLineC(sb.ToString(), sb.GetLength());
 	}

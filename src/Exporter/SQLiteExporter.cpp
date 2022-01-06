@@ -122,7 +122,7 @@ Bool Exporter::SQLiteExporter::ExportFile(IO::SeekableStream *stm, const UTF8Cha
 				Text::UTF8Writer *debugWriter;
 				NEW_CLASS(debugFS, IO::FileStream((const UTF8Char*)"Debug.txt", IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 				NEW_CLASS(debugWriter, Text::UTF8Writer(debugFS));
-				debugWriter->WriteLine(sql.ToString());
+				debugWriter->WriteLineC(sql.ToString(), sql.GetLength());
 				DEL_CLASS(debugWriter);
 				DEL_CLASS(debugFS);
 
@@ -154,7 +154,7 @@ Bool Exporter::SQLiteExporter::ExportFile(IO::SeekableStream *stm, const UTF8Cha
 					Text::UTF8Writer *debugWriter;
 					NEW_CLASS(debugFS, IO::FileStream((const UTF8Char*)"Debug.txt", IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 					NEW_CLASS(debugWriter, Text::UTF8Writer(debugFS));
-					debugWriter->WriteLine(sql.ToString());
+					debugWriter->WriteLineC(sql.ToString(), sql.GetLength());
 					debugWriter->WriteLineC(sb.ToString(), sb.GetLength());
 					DEL_CLASS(debugWriter);
 					DEL_CLASS(debugFS);

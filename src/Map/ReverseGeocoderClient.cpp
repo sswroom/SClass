@@ -104,7 +104,7 @@ UInt32 __stdcall Map::ReverseGeocoderClient::MonThread(void *userObj)
 			{
 				me->cli->Write(kaBuff, me->protocol->BuildPacket(kaBuff, 4, 0, 0, 0, 0));
 				me->lastKASent->SetCurrTimeUTC();
-//				me->errWriter->WriteLine(L"KA sent");
+//				me->errWriter->WriteLineC(UTF8STRC("KA sent"));
 			}
 			me->cliMut->Unlock();
 		}

@@ -295,7 +295,7 @@ Bool UI::GUIDDrawControl::CreateSurface()
 
 	if (this->debugWriter)
 	{
-		this->debugWriter->WriteLineC(UTF8STRC("Create Surface");
+		this->debugWriter->WriteLineC(UTF8STRC("Create Surface"));
 	}
 
 	if (this->currScnMode == SM_FS)
@@ -371,7 +371,7 @@ void UI::GUIDDrawControl::CreateSubSurface()
 	GetDrawingRect(&rc);
 	if (this->debugWriter)
 	{
-		this->debugWriter->WriteLineC(UTF8STRC("Create Subsurface");
+		this->debugWriter->WriteLineC(UTF8STRC("Create Subsurface"));
 	}
 
 	if (rc.right <= rc.left || rc.bottom <= rc.top)
@@ -553,7 +553,7 @@ UI::GUIDDrawControl::~GUIDDrawControl()
 	SDEL_CLASS(this->imgCopy);
 	if (this->debugWriter)
 	{
-		this->debugWriter->WriteLineC(UTF8STRC("Release DDraw");
+		this->debugWriter->WriteLineC(UTF8STRC("Release DDraw"));
 		DEL_CLASS(this->debugWriter);
 		DEL_CLASS(this->debugFS);
 		this->debugFS = 0;
@@ -594,7 +594,7 @@ void UI::GUIDDrawControl::DrawToScreen()
 			{
 				if (this->debugWriter)
 				{
-					this->debugWriter->WriteLineC(UTF8STRC("DrawToScreen: failed");
+					this->debugWriter->WriteLineC(UTF8STRC("DrawToScreen: failed"));
 				}
 			}
 		}

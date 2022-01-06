@@ -1271,14 +1271,14 @@ Bool IO::Path::IsSearchPattern(const UTF8Char *path)
 
 UTF8Char *IO::Path::GetRealPath(UTF8Char *sbuff, const UTF8Char *path)
 {
-	UTF8Char *ret;
+	UTF8Char *sptr;
 	if (Text::StrStartsWith(path, (const UTF8Char*)"~/"))
 	{
-		ret = Text::StrConcat(IO::Path::GetUserHome(sbuff), path + 1);
+		sptr = Text::StrConcat(IO::Path::GetUserHome(sbuff), path + 1);
 	}
 	else
 	{
-		ret = Text::StrConcat(sbuff, path);
+		sptr = Text::StrConcat(sbuff, path);
 	}
 	Text::StrReplace(sbuff, '/', '\\');
 	UTF8Char *sptr2 = sbuff;
@@ -1335,5 +1335,5 @@ UTF8Char *IO::Path::GetRealPath(UTF8Char *sbuff, const UTF8Char *path)
 			}
 		}
 	}
-	return ret;
+	return sptr;
 }

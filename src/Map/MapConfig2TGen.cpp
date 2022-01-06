@@ -111,7 +111,7 @@ public:
 		{
 			sptr = Text::StrConcat(sptr, (const UTF8Char*)"0");
 		}
-		this->writer->WriteLine(sbuff);
+		this->writer->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
 	}
 
 	void AddStringL(const UTF8Char *label, Double *mapPts, Int32 *scnPts, UOSInt nPoints, UInt32 thisPt, Double scaleN, Double scaleD, UInt32 fontStyle, Bool isAlign, const Double *bounds)

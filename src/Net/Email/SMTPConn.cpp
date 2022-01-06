@@ -36,7 +36,7 @@ UInt32 __stdcall Net::Email::SMTPConn::SMTPThread(void *userObj)
 
 		if (me->logWriter)
 		{
-			me->logWriter->WriteLine(sbuff);
+			me->logWriter->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
 		}
 		if (sbuff[0] == ' ')
 		{
@@ -241,13 +241,14 @@ Bool Net::Email::SMTPConn::IsError()
 Bool Net::Email::SMTPConn::SendHelo(const UTF8Char *cliName)
 {
 	UTF8Char sbuff[512];
-	Text::StrConcat(Text::StrConcat(sbuff, (const UTF8Char*)"HELO "), cliName);
+	UTF8Char *sptr;
+	sptr = Text::StrConcat(Text::StrConcatC(sbuff, UTF8STRC("HELO ")), cliName);
 	this->statusChg = false;
 	if (this->logWriter)
 	{
-		this->logWriter->WriteLine(sbuff);
+		this->logWriter->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
 	}
-	writer->WriteLine(sbuff);
+	writer->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
 	UInt32 code = WaitForResult();
 	return code == 250;
 }
@@ -394,13 +395,14 @@ Bool Net::Email::SMTPConn::SendAuth(const UTF8Char *userName, const UTF8Char *pa
 Bool Net::Email::SMTPConn::SendMailFrom(const UTF8Char *fromEmail)
 {
 	UTF8Char sbuff[512];
-	Text::StrConcat(Text::StrConcat(Text::StrConcat(sbuff, (const UTF8Char*)"MAIL FROM: <"), fromEmail), (const UTF8Char*)">");
+	UTF8Char *sptr;
+	sptr = Text::StrConcatC(Text::StrConcat(Text::StrConcatC(sbuff, UTF8STRC("MAIL FROM: <")), fromEmail), UTF8STRC(">"));
 	this->statusChg = false;
 	if (this->logWriter)
 	{
-		this->logWriter->WriteLine(sbuff);
+		this->logWriter->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
 	}
-	writer->WriteLine(sbuff);
+	writer->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
 	UInt32 code = WaitForResult();
 	return code == 250;
 }
@@ -408,13 +410,14 @@ Bool Net::Email::SMTPConn::SendMailFrom(const UTF8Char *fromEmail)
 Bool Net::Email::SMTPConn::SendRcptTo(const UTF8Char *toEmail)
 {
 	UTF8Char sbuff[512];
-	Text::StrConcat(Text::StrConcat(Text::StrConcat(sbuff, (const UTF8Char*)"RCPT TO: <"), toEmail), (const UTF8Char*)">");
+	UTF8Char *sptr;
+	sptr = Text::StrConcatC(Text::StrConcat(Text::StrConcatC(sbuff, UTF8STRC("RCPT TO: <")), toEmail), UTF8STRC(">"));
 	this->statusChg = false;
 	if (this->logWriter)
 	{
-		this->logWriter->WriteLine(sbuff);
+		this->logWriter->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
 	}
-	writer->WriteLine(sbuff);
+	writer->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
 	UInt32 code = WaitForResult();
 	return code == 250;
 }

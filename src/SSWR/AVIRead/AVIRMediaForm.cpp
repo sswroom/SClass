@@ -254,9 +254,10 @@ void __stdcall SSWR::AVIRead::AVIRMediaForm::VideoCropImage(void *userObj, UInt3
 Bool __stdcall SSWR::AVIRead::AVIRMediaForm::OnFrameTime(UInt32 frameTime, UOSInt frameNum, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, Media::FrameType frameType, void *userData, Media::YCOffset ycOfst)
 {
 	UTF8Char sbuff[64];
+	UTF8Char *sptr;
 	IO::Writer *writer = (IO::Writer *)userData;
-	Text::StrUInt32(sbuff, frameTime);
-	writer->WriteLine(sbuff);
+	sptr = Text::StrUInt32(sbuff, frameTime);
+	writer->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
 	return true;
 }
 
@@ -592,6 +593,7 @@ void SSWR::AVIRead::AVIRMediaForm::EventMenuClicked(UInt16 cmdId)
 			{
 				Media::IVideoSource *video;
 				UTF8Char sbuff[40];
+				UTF8Char *sptr;
 				UOSInt j;
 				IO::FileStream *fs;
 				Text::UTF8Writer *writer;
@@ -605,8 +607,8 @@ void SSWR::AVIRead::AVIRMediaForm::EventMenuClicked(UInt16 cmdId)
 					i = 0;
 					while (i < j)
 					{
-						Text::StrUInt32(sbuff, video->GetFrameTime(i));
-						writer->WriteLine(sbuff);
+						sptr = Text::StrUInt32(sbuff, video->GetFrameTime(i));
+						writer->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
 						i++;
 					}
 				}

@@ -121,9 +121,10 @@ Bool Net::FTPConn::IsLogged()
 Bool Net::FTPConn::SendUser(const UTF8Char *userName)
 {
 	UTF8Char sbuff[512];
-	Text::StrConcat(Text::StrConcat(sbuff, (const UTF8Char*)"USER "), userName);
+	UTF8Char *sptr;
+	sptr = Text::StrConcat(Text::StrConcatC(sbuff, UTF8STRC("USER ")), userName);
 	this->statusChg = false;
-	writer->WriteLine(sbuff);
+	writer->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
 	Int32 code = WaitForResult();
 	return code == 331;
 }
@@ -131,9 +132,10 @@ Bool Net::FTPConn::SendUser(const UTF8Char *userName)
 Bool Net::FTPConn::SendPassword(const UTF8Char *password)
 {
 	UTF8Char sbuff[512];
-	Text::StrConcat(Text::StrConcat(sbuff, (const UTF8Char*)"PASS "), password);
+	UTF8Char *sptr;
+	sptr = Text::StrConcat(Text::StrConcatC(sbuff, UTF8STRC("PASS ")), password);
 	this->statusChg = false;
-	writer->WriteLine(sbuff);
+	writer->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
 	Int32 code = WaitForResult();
 	return code == 230;
 }
@@ -141,9 +143,10 @@ Bool Net::FTPConn::SendPassword(const UTF8Char *password)
 Bool Net::FTPConn::ChangeDirectory(const UTF8Char *dir)
 {
 	UTF8Char sbuff[512];
-	Text::StrConcat(Text::StrConcat(sbuff, (const UTF8Char*)"CWD "), dir);
+	UTF8Char *sptr;
+	sptr = Text::StrConcat(Text::StrConcatC(sbuff, UTF8STRC("CWD ")), dir);
 	this->statusChg = false;
-	writer->WriteLine(sbuff);
+	writer->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
 	Int32 code = WaitForResult();
 	return code == 250;
 }
@@ -151,9 +154,10 @@ Bool Net::FTPConn::ChangeDirectory(const UTF8Char *dir)
 Bool Net::FTPConn::MakeDirectory(const UTF8Char *dir)
 {
 	UTF8Char sbuff[512];
-	Text::StrConcat(Text::StrConcat(sbuff, (const UTF8Char*)"MKD "), dir);
+	UTF8Char *sptr;
+	sptr = Text::StrConcat(Text::StrConcatC(sbuff, UTF8STRC("MKD ")), dir);
 	this->statusChg = false;
-	writer->WriteLine(sbuff);
+	writer->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
 	Int32 code = WaitForResult();
 	return code == 257;
 }
@@ -161,9 +165,10 @@ Bool Net::FTPConn::MakeDirectory(const UTF8Char *dir)
 Bool Net::FTPConn::RemoveDirectory(const UTF8Char *dir)
 {
 	UTF8Char sbuff[512];
-	Text::StrConcat(Text::StrConcat(sbuff, (const UTF8Char*)"RMD "), dir);
+	UTF8Char *sptr;
+	sptr = Text::StrConcat(Text::StrConcatC(sbuff, UTF8STRC("RMD ")), dir);
 	this->statusChg = false;
-	writer->WriteLine(sbuff);
+	writer->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
 	Int32 code = WaitForResult();
 	return code == 250;
 }
@@ -171,10 +176,11 @@ Bool Net::FTPConn::RemoveDirectory(const UTF8Char *dir)
 Bool Net::FTPConn::GetFileSize(const UTF8Char *fileName, UInt64 *fileSize)
 {
 	UTF8Char sbuff[512];
-	Text::StrConcat(Text::StrConcat(sbuff, (const UTF8Char*)"SIZE "), fileName);
+	UTF8Char *sptr;
+	sptr = Text::StrConcat(Text::StrConcatC(sbuff, UTF8STRC("SIZE ")), fileName);
 	this->msgRet = sbuff;
 	this->statusChg = false;
-	writer->WriteLine(sbuff);
+	writer->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
 	Int32 code = WaitForResult();
 	if (code == 213)
 	{
@@ -193,10 +199,11 @@ Bool Net::FTPConn::GetFileSize(const UTF8Char *fileName, UInt64 *fileSize)
 Bool Net::FTPConn::GetFileModTime(const UTF8Char *fileName, Data::DateTime *modTime)
 {
 	UTF8Char sbuff[512];
-	Text::StrConcat(Text::StrConcat(sbuff, (const UTF8Char*)"MDTM "), fileName);
+	UTF8Char *sptr;
+	sptr = Text::StrConcat(Text::StrConcatC(sbuff, UTF8STRC("MDTM ")), fileName);
 	this->msgRet = sbuff;
 	this->statusChg = false;
-	writer->WriteLine(sbuff);
+	writer->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
 	Int32 code = WaitForResult();
 	if (code == 213)
 	{
@@ -230,7 +237,7 @@ Bool Net::FTPConn::GetFileModTime(const UTF8Char *fileName, Data::DateTime *modT
 Bool Net::FTPConn::ToBinaryType()
 {
 	this->statusChg = false;
-	writer->WriteLine((const UTF8Char *)"TYPE I");
+	writer->WriteLineC(UTF8STRC("TYPE I"));
 	Int32 code = WaitForResult();
 	return code == 200;
 }
@@ -238,7 +245,7 @@ Bool Net::FTPConn::ToBinaryType()
 Bool Net::FTPConn::ToASCIIType()
 {
 	this->statusChg = false;
-	writer->WriteLine((const UTF8Char *)"TYPE A");
+	writer->WriteLineC(UTF8STRC("TYPE A"));
 	Int32 code = WaitForResult();
 	return code == 200;
 }
@@ -246,7 +253,7 @@ Bool Net::FTPConn::ToASCIIType()
 Bool Net::FTPConn::ToEBCDICType()
 {
 	this->statusChg = false;
-	writer->WriteLine((const UTF8Char *)"TYPE E");
+	writer->WriteLineC(UTF8STRC("TYPE E"));
 	Int32 code = WaitForResult();
 	return code == 200;
 }
@@ -261,7 +268,7 @@ Bool Net::FTPConn::ChangePassiveMode(UInt32 *ip, UInt16 *port)
 	UOSInt i;
 	this->msgRet = sbuff;
 	this->statusChg = false;
-	writer->WriteLine((const UTF8Char *)"PASV");
+	writer->WriteLineC(UTF8STRC("PASV"));
 	Int32 code = WaitForResult();
 	if (code == 227)
 	{
@@ -306,20 +313,20 @@ Bool Net::FTPConn::ChangeActiveMode(UInt32 ip, UInt16 port)
 	UTF8Char *sptr;
 	*(UInt32*)&buff[0] = ip;
 	*(UInt16*)&buff[4] = port;
-	sptr = Text::StrConcat(sbuff, (const UTF8Char*)"PORT ");
+	sptr = Text::StrConcatC(sbuff, UTF8STRC("PORT "));
 	sptr = Text::StrUInt16(sptr, buff[0]);
-	sptr = Text::StrConcat(sptr, (const UTF8Char*)",");
+	sptr = Text::StrConcatC(sptr, UTF8STRC(","));
 	sptr = Text::StrUInt16(sptr, buff[1]);
-	sptr = Text::StrConcat(sptr, (const UTF8Char*)",");
+	sptr = Text::StrConcatC(sptr, UTF8STRC(","));
 	sptr = Text::StrUInt16(sptr, buff[2]);
-	sptr = Text::StrConcat(sptr, (const UTF8Char*)",");
+	sptr = Text::StrConcatC(sptr, UTF8STRC(","));
 	sptr = Text::StrUInt16(sptr, buff[3]);
-	sptr = Text::StrConcat(sptr, (const UTF8Char*)",");
+	sptr = Text::StrConcatC(sptr, UTF8STRC(","));
 	sptr = Text::StrUInt16(sptr, buff[5]);
-	sptr = Text::StrConcat(sptr, (const UTF8Char*)",");
+	sptr = Text::StrConcatC(sptr, UTF8STRC(","));
 	sptr = Text::StrUInt16(sptr, buff[4]);
 	this->statusChg = false;
-	writer->WriteLine(sbuff);
+	writer->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
 	Int32 code = WaitForResult();
 	return code == 200;
 }
@@ -327,9 +334,10 @@ Bool Net::FTPConn::ChangeActiveMode(UInt32 ip, UInt16 port)
 Bool Net::FTPConn::ResumeTransferPos(UInt64 pos)
 {
 	UTF8Char sbuff[64];
-	Text::StrUInt64(Text::StrConcat(sbuff, (const UTF8Char*)"REST "), pos);
+	UTF8Char *sptr;
+	sptr = Text::StrUInt64(Text::StrConcatC(sbuff, UTF8STRC("REST ")), pos);
 	this->statusChg = false;
-	writer->WriteLine(sbuff);
+	writer->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
 	Int32 code = WaitForResult();
 	return code == 200;
 }
@@ -337,9 +345,10 @@ Bool Net::FTPConn::ResumeTransferPos(UInt64 pos)
 Bool Net::FTPConn::GetFile(const UTF8Char *fileName)
 {
 	UTF8Char sbuff[512];
-	Text::StrConcat(Text::StrConcat(sbuff, (const UTF8Char*)"RETR "), fileName);
+	UTF8Char *sptr;
+	sptr = Text::StrConcat(Text::StrConcatC(sbuff, UTF8STRC("RETR ")), fileName);
 	this->statusChg = false;
-	writer->WriteLine(sbuff);
+	writer->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
 	Int32 code = WaitForResult();
 	return code == 150;
 }
@@ -347,15 +356,16 @@ Bool Net::FTPConn::GetFile(const UTF8Char *fileName)
 Bool Net::FTPConn::RenameFile(const UTF8Char *fromFile, const UTF8Char *toFile)
 {
 	UTF8Char sbuff[512];
-	Text::StrConcat(Text::StrConcat(sbuff, (const UTF8Char *)"RNFR "), fromFile);
+	UTF8Char *sptr;
+	sptr = Text::StrConcat(Text::StrConcatC(sbuff, UTF8STRC("RNFR ")), fromFile);
 	this->statusChg = false;
-	writer->WriteLine(sbuff);
+	writer->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
 	Int32 code = WaitForResult();
 	if (code != 350)
 		return false;
-	Text::StrConcat(Text::StrConcat(sbuff, (const UTF8Char *)"RNTO "), toFile);
+	sptr = Text::StrConcat(Text::StrConcatC(sbuff, UTF8STRC("RNTO ")), toFile);
 	this->statusChg = false;
-	writer->WriteLine(sbuff);
+	writer->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
 	code = WaitForResult();
 	return code == 250;
 }

@@ -151,7 +151,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 					DEL_CLASS(fs);
 					if (argc != mstm->GetLength())
 					{
-						console->WriteLine(L"Error in writing to file");
+						console->WriteLineC(UTF8STRC("Error in writing to file"));
 					}*/
 					Text::StrDelNew(fileName);
 				}
