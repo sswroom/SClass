@@ -29,8 +29,8 @@ Bool Exporter::GUITIFExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, U
 {
 	if (index == 0)
 	{
-		Text::StrConcat(nameBuff, (const UTF8Char*)"TIFF file (GDI+)");
-		Text::StrConcat(fileNameBuff, (const UTF8Char*)"*.tif");
+		Text::StrConcatC(nameBuff, UTF8STRC("TIFF file (GDI+)"));
+		Text::StrConcatC(fileNameBuff, UTF8STRC("*.tif"));
 		return true;
 	}
 	return false;

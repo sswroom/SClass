@@ -48,11 +48,11 @@ UInt32 __stdcall DispThread(void *userObj)
 		if (currTime > lastTime)
 		{
 			sptr = sbuff;
-			sptr = Text::StrConcat(sptr, (const UTF8Char*)"Send: ");
+			sptr = Text::StrConcatC(sptr, UTF8STRC("Send: "));
 			sptr = Text::StrDouble(sptr, (Double)(currSendSize - lastSendSize) / (currTime - lastTime));
-			sptr = Text::StrConcat(sptr, (const UTF8Char*)"Bps\tRecv: ");
+			sptr = Text::StrConcatC(sptr, UTF8STRC("Bps\tRecv: "));
 			sptr = Text::StrDouble(sptr, (Double)(currRecvSize - lastRecvSize) / (currTime - lastTime));
-			sptr = Text::StrConcat(sptr, (const UTF8Char*)"Bps       ");
+			sptr = Text::StrConcatC(sptr, UTF8STRC("Bps       "));
 			console->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
 		}
 		lastTime = currTime;

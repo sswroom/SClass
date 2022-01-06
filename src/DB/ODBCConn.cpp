@@ -925,17 +925,17 @@ void DB::ODBCConn::SetTraceFile(const WChar *fileName)
 UTF8Char *DB::ODBCConn::ShowTablesCmd(UTF8Char *sqlstr)
 {
 	if (this->svrType == DB::DBUtil::ServerType::MySQL)
-		return Text::StrConcat(sqlstr, (const UTF8Char*)"show Tables");
+		return Text::StrConcatC(sqlstr, UTF8STRC("show Tables"));
 	else if (this->svrType == DB::DBUtil::ServerType::MSSQL)
-		return Text::StrConcat(sqlstr, (const UTF8Char*)"select TABLE_NAME from user_tables");
+		return Text::StrConcatC(sqlstr, UTF8STRC("select TABLE_NAME from user_tables"));
 	else if (this->svrType == DB::DBUtil::ServerType::Oracle)
-		return Text::StrConcat(sqlstr, (const UTF8Char*)"select table_name from user_tables");
+		return Text::StrConcatC(sqlstr, UTF8STRC("select table_name from user_tables"));
 	else if (this->svrType == DB::DBUtil::ServerType::Access)
-		return Text::StrConcat(sqlstr, (const UTF8Char*)"select name from MSysObjects where type = 1");
+		return Text::StrConcatC(sqlstr, UTF8STRC("select name from MSysObjects where type = 1"));
 	else if (this->svrType == DB::DBUtil::ServerType::MDBTools)
-		return Text::StrConcat(sqlstr, (const UTF8Char*)"select name from MSysObjects where type = 1");
+		return Text::StrConcatC(sqlstr, UTF8STRC("select name from MSysObjects where type = 1"));
 	else
-		return Text::StrConcat(sqlstr, (const UTF8Char*)"show Tables");
+		return Text::StrConcatC(sqlstr, UTF8STRC("show Tables"));
 }
 
 DB::DBReader *DB::ODBCConn::GetTablesInfo()
@@ -1977,7 +1977,7 @@ UTF8Char *DB::ODBCReader::GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSiz
 				Math::WKTWriter wkt;
 				wkt.GenerateWKT(&sb, vec);
 				DEL_CLASS(vec);
-				return Text::StrConcat(buff, sb.ToString());
+				return Text::StrConcatC(buff, sb.ToString(), sb.GetLength());
 			}
 		}
 		return 0;

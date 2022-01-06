@@ -81,8 +81,8 @@ UOSInt IO::PCIInfo::GetPCIList(Data::ArrayList<PCIInfo*> *pciList)
 	IO::Path::FindFileSession *sess;
 	IO::Path::PathType pt;
 	clsData.dispName = (const UTF8Char*)"PCI Device";
-	sptr = Text::StrConcat(sbuff, (const UTF8Char*)"/sys/bus/pci/devices/");
-	Text::StrConcat(sptr, IO::Path::ALL_FILES);
+	sptr = Text::StrConcatC(sbuff, UTF8STRC("/sys/bus/pci/devices/"));
+	Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
 	sess = IO::Path::FindFile(sbuff);
 	if (sess)
 	{
@@ -90,9 +90,9 @@ UOSInt IO::PCIInfo::GetPCIList(Data::ArrayList<PCIInfo*> *pciList)
 		{
 			if (sptr[0] != '.')
 			{
-				Text::StrConcat(sptr2, (const UTF8Char*)"/vendor");
+				Text::StrConcatC(sptr2, UTF8STRC("/vendor"));
 				clsData.vendorId = PCIInfo_ReadI16(sbuff);
-				Text::StrConcat(sptr2, (const UTF8Char*)"/device");
+				Text::StrConcatC(sptr2, UTF8STRC("/device"));
 				clsData.productId = PCIInfo_ReadI16(sbuff);
 				if (clsData.vendorId != 0)
 				{

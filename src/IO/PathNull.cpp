@@ -9,6 +9,7 @@
 
 UTF8Char IO::Path::PATH_SEPERATOR = (UTF8Char)'/';
 const UTF8Char *IO::Path::ALL_FILES = (const UTF8Char*)"*";
+UOSInt IO::Path::ALL_FILES_LEN = 1;
 
 WChar *IO::Path::GetTempFileW(WChar *buff, const WChar *fileName)
 {

@@ -49,8 +49,8 @@ Bool Exporter::ICOExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8
 {
 	if (index == 0)
 	{
-		Text::StrConcat(nameBuff, (const UTF8Char*)"Icon File");
-		Text::StrConcat(fileNameBuff, (const UTF8Char*)"*.ico");
+		Text::StrConcatC(nameBuff, UTF8STRC("Icon File"));
+		Text::StrConcatC(fileNameBuff, UTF8STRC("*.ico"));
 		return true;
 	}
 	return false;

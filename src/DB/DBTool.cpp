@@ -59,9 +59,9 @@ OSInt DB::DBTool::ExecuteNonQueryC(const UTF8Char *sqlCmd, UOSInt len)
 		{
 			UTF8Char buff[256];
 			UTF8Char *ptr;
-			ptr = Text::StrConcat(buff, (const UTF8Char*)"SQL R t1 = ");
+			ptr = Text::StrConcatC(buff, UTF8STRC("SQL R t1 = "));
 			ptr = Text::StrInt32(ptr, (Int32)t2.DiffMS(&t1));
-			ptr = Text::StrConcat(ptr, (const UTF8Char*)", t2 = ");
+			ptr = Text::StrConcatC(ptr, UTF8STRC(", t2 = "));
 			ptr = Text::StrInt32(ptr, (Int32)t3.DiffMS(&t2));
 			AddLogMsgC(buff, (UOSInt)(ptr - buff), IO::ILogHandler::LOG_LEVEL_COMMAND);
 		}
@@ -524,7 +524,7 @@ UTF8Char *DB::DBTool::GenInsertCmd(UTF8Char *sqlstr, const UTF8Char *tableName, 
 	UOSInt i;
 	UOSInt j;
 
-	currPtr = Text::StrConcat(sqlstr, (const UTF8Char*)"insert into ");
+	currPtr = Text::StrConcatC(sqlstr, UTF8STRC("insert into "));
 	currPtr = DBColUTF8(currPtr, tableName);
 	r->GetName(0, tmpBuff);
 	currPtr = DBColUTF8(currPtr, tmpBuff);
@@ -532,14 +532,14 @@ UTF8Char *DB::DBTool::GenInsertCmd(UTF8Char *sqlstr, const UTF8Char *tableName, 
 	i = 1;
 	while (i < j)
 	{
-		currPtr = Text::StrConcat(currPtr, (const UTF8Char*)", ");
+		currPtr = Text::StrConcatC(currPtr, UTF8STRC(", "));
 		r->GetName(i++, tmpBuff);
 		currPtr = DBColUTF8(currPtr, tmpBuff);
 	}
-	currPtr = Text::StrConcat(currPtr, (const UTF8Char*)") values (");
+	currPtr = Text::StrConcatC(currPtr, UTF8STRC(") values ("));
 	if (r->IsNull(0))
 	{
-		currPtr = Text::StrConcat(currPtr, (const UTF8Char*)"NULL");
+		currPtr = Text::StrConcatC(currPtr, UTF8STRC("NULL"));
 	}
 	else
 	{
@@ -549,10 +549,10 @@ UTF8Char *DB::DBTool::GenInsertCmd(UTF8Char *sqlstr, const UTF8Char *tableName, 
 	i = 1;
 	while (i < j)
 	{
-		currPtr = Text::StrConcat(currPtr, (const UTF8Char*)", ");
+		currPtr = Text::StrConcatC(currPtr, UTF8STRC(", "));
 		if (r->IsNull(i))
 		{
-			currPtr = Text::StrConcat(currPtr, (const UTF8Char*)"NULL");
+			currPtr = Text::StrConcatC(currPtr, UTF8STRC("NULL"));
 		}
 		else
 		{
@@ -562,6 +562,6 @@ UTF8Char *DB::DBTool::GenInsertCmd(UTF8Char *sqlstr, const UTF8Char *tableName, 
 		i++;
 	}
 
-	currPtr = Text::StrConcat(currPtr, (const UTF8Char*)")");
+	currPtr = Text::StrConcatC(currPtr, UTF8STRC(")"));
 	return currPtr;
 }

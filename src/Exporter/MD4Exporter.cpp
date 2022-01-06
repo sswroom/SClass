@@ -37,8 +37,8 @@ Bool Exporter::MD4Exporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8
 {
 	if (index == 0)
 	{
-		Text::StrConcat(nameBuff, (const UTF8Char*)"MD4 File");
-		Text::StrConcat(fileNameBuff, (const UTF8Char*)"*.md4");
+		Text::StrConcatC(nameBuff, UTF8STRC("MD4 File"));
+		Text::StrConcatC(fileNameBuff, UTF8STRC("*.md4"));
 		return true;
 	}
 	return false;
@@ -72,7 +72,7 @@ Bool Exporter::MD4Exporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 	{
 		fchk->GetEntryHash(i, buff);
 		sptr = Text::StrHexBytes(sbuff, buff, 16, 0);
-		sptr = Text::StrConcat(sptr, (const UTF8Char*)" *");
+		sptr = Text::StrConcatC(sptr, UTF8STRC(" *"));
 		sptr = Text::StrConcat(sptr, fchk->GetEntryName(i));
 		writer->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
 		i++;

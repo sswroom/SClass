@@ -40,8 +40,8 @@ Bool Exporter::PLTExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8
 {
 	if (index == 0)
 	{
-		Text::StrConcat(nameBuff, (const UTF8Char*)"OziExplorer Track file");
-		Text::StrConcat(fileNameBuff, (const UTF8Char*)"*.plt");
+		Text::StrConcatC(nameBuff, UTF8STRC("OziExplorer Track file"));
+		Text::StrConcatC(fileNameBuff, UTF8STRC("*.plt"));
 		return true;
 	}
 	return false;
@@ -88,24 +88,24 @@ Bool Exporter::PLTExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 		while (k < l)
 		{
 			sptr = FixDouble(sbuff, recs[k].lat, "0.000000", 11);
-			sptr = Text::StrConcat(sptr, (const UTF8Char*)",");
+			sptr = Text::StrConcatC(sptr, UTF8STRC(","));
 			sptr = FixDouble(sptr, recs[k].lon, "0.000000", 11);
-			sptr = Text::StrConcat(sptr, (const UTF8Char*)",");
+			sptr = Text::StrConcatC(sptr, UTF8STRC(","));
 			if (k == 0)
 			{
-				sptr = Text::StrConcat(sptr, (const UTF8Char*)"1,");
+				sptr = Text::StrConcatC(sptr, UTF8STRC("1,"));
 			}
 			else
 			{
-				sptr = Text::StrConcat(sptr, (const UTF8Char*)"0,");
+				sptr = Text::StrConcatC(sptr, UTF8STRC("0,"));
 			}
 			sptr = FixDouble(sptr, recs[k].altitude * 3.2808333333333333333333333333333, "0", 7);
-			sptr = Text::StrConcat(sptr, (const UTF8Char*)",");
+			sptr = Text::StrConcatC(sptr, UTF8STRC(","));
 			dt.SetTicks(recs[k].utcTimeTicks);
 			sptr = Text::StrDoubleFmt(sptr, (Double)dt.DiffMS(&refTime) / 86400000.0, "0.0000000");
-			sptr = Text::StrConcat(sptr, (const UTF8Char*)", ");
+			sptr = Text::StrConcatC(sptr, UTF8STRC(", "));
 			sptr = dt.ToString(sptr, "dd-MMM-yy");
-			sptr = Text::StrConcat(sptr, (const UTF8Char*)", ");
+			sptr = Text::StrConcatC(sptr, UTF8STRC(", "));
 			sptr = dt.ToString(sptr, "hh:mm:ss tt");
 
 			writer->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));

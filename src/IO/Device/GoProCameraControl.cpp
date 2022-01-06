@@ -19,9 +19,9 @@ void IO::Device::GoProCameraControl::GetMediaList()
 		Text::UTF8Reader *reader;
 		Text::StringBuilderUTF8 sb;
 		IO::CameraControl::FileInfo *file;
-		sptr = Text::StrConcat(sbuff, (const UTF8Char*)"http://");
+		sptr = Text::StrConcatC(sbuff, UTF8STRC("http://"));
 		sptr = Net::SocketUtil::GetAddrName(sptr, &this->addr);
-		sptr = Text::StrConcat(sptr, (const UTF8Char*)":8080/gp/gpMediaList");
+		sptr = Text::StrConcatC(sptr, UTF8STRC(":8080/gp/gpMediaList"));
 		cli = Net::HTTPClient::CreateConnect(this->sockf, 0, sbuff, "GET", true);
 		NEW_CLASS(reader, Text::UTF8Reader(cli));
 		reader->ReadToEnd(&sb);
@@ -158,9 +158,9 @@ Bool IO::Device::GoProCameraControl::GetInfo(Data::ArrayList<Text::String*> *nam
 	Net::HTTPClient *cli;
 	Text::UTF8Reader *reader;
 	Text::StringBuilderUTF8 sb;
-	sptr = Text::StrConcat(sbuff, (const UTF8Char*)"http://");
+	sptr = Text::StrConcatC(sbuff, UTF8STRC("http://"));
 	sptr = Net::SocketUtil::GetAddrName(sptr, &this->addr);
-	sptr = Text::StrConcat(sptr, (const UTF8Char*)"/gp/gpControl/info");
+	sptr = Text::StrConcatC(sptr, UTF8STRC("/gp/gpControl/info"));
 	cli = Net::HTTPClient::CreateConnect(this->sockf, 0, sbuff, "GET", true);
 	NEW_CLASS(reader, Text::UTF8Reader(cli));
 	reader->ReadToEnd(&sb);
@@ -284,11 +284,11 @@ Bool IO::Device::GoProCameraControl::GetFile(IO::CameraControl::FileInfo *file, 
 	UInt64 totalWriteSize = 0;
 	UTF8Char *sptr;
 	Net::HTTPClient *cli;
-	sptr = Text::StrConcat(sbuff, (const UTF8Char*)"http://");
+	sptr = Text::StrConcatC(sbuff, UTF8STRC("http://"));
 	sptr = Net::SocketUtil::GetAddrName(sptr, &this->addr);
-	sptr = Text::StrConcat(sptr, (const UTF8Char*)":8080/videos/DCIM/");
+	sptr = Text::StrConcatC(sptr, UTF8STRC(":8080/videos/DCIM/"));
 	sptr = Text::StrConcat(sptr, file->filePath);
-	sptr = Text::StrConcat(sptr, (const UTF8Char*)"/");
+	sptr = Text::StrConcatC(sptr, UTF8STRC("/"));
 	sptr = Text::StrConcat(sptr, file->fileName);
 	cli = Net::HTTPClient::CreateConnect(this->sockf, 0, sbuff, "GET", true);
 	while ((readSize = cli->Read(sbuff, 2048)) > 0)
@@ -311,11 +311,11 @@ Bool IO::Device::GoProCameraControl::GetThumbnailFile(IO::CameraControl::FileInf
 	{
 		return false;
 	}
-	sptr = Text::StrConcat(sbuff, (const UTF8Char*)"http://");
+	sptr = Text::StrConcatC(sbuff, UTF8STRC("http://"));
 	sptr = Net::SocketUtil::GetAddrName(sptr, &this->addr);
-	sptr = Text::StrConcat(sptr, (const UTF8Char*)":8080/gp/gpMediaMetadata?p=");
+	sptr = Text::StrConcatC(sptr, UTF8STRC(":8080/gp/gpMediaMetadata?p="));
 	sptr = Text::StrConcat(sptr, file->filePath);
-	sptr = Text::StrConcat(sptr, (const UTF8Char*)"/");
+	sptr = Text::StrConcatC(sptr, UTF8STRC("/"));
 	sptr = Text::StrConcat(sptr, file->fileName);
 	cli = Net::HTTPClient::CreateConnect(this->sockf, 0, sbuff, "GET", true);
 	while ((readSize = cli->Read(sbuff, 2048)) > 0)

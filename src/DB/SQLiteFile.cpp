@@ -423,26 +423,21 @@ Int64 DB::SQLiteReader::GetInt64(UOSInt colIndex)
 
 WChar *DB::SQLiteReader::GetStr(UOSInt colIndex, WChar *buff)
 {
-	if (sizeof(WChar) == 2)
-	{
-		const void *outp = sqlite3_column_text16((sqlite3_stmt*)this->hStmt, (int)colIndex);
-		if (outp == 0)
-			return 0;
-		else
-			return Text::StrConcat(buff, (const WChar *)outp);
-	}
+#if _WCHAR_SIZE == 2
+	const void *outp = sqlite3_column_text16((sqlite3_stmt*)this->hStmt, (int)colIndex);
+	if (outp == 0)
+		return 0;
+	else
+		return Text::StrConcat(buff, (const WChar *)outp);
+#else
+	const void *outp = sqlite3_column_text16((sqlite3_stmt*)this->hStmt, (int)colIndex);
+	if (outp == 0)
+		return 0;
 	else
 	{
-		const void *outp = sqlite3_column_text16((sqlite3_stmt*)this->hStmt, (int)colIndex);
-		if (outp == 0)
-			return 0;
-		else
-		{
-			const UInt16 *us = (const UInt16*)outp;
-			while ((*buff++ = *us++) != 0);
-			return buff - 1;
-		}
+		return Text::StrUTF16_UTF32(buff, (const UTF16Char*)outp);
 	}
+#endif
 }
 
 Text::String *DB::SQLiteReader::GetNewStr(UOSInt colIndex)

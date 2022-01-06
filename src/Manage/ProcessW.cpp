@@ -1047,9 +1047,9 @@ Int32 Manage::Process::ExecuteProcessW(const WChar *cmd, Text::StringBuilderUTF 
 	BOOL createRet;
 	sptr = IO::Path::GetTempFile(tmpFile, (const UTF8Char*)"ProcessTmp");
 	sptr = Text::StrUInt32(sptr, (UInt32)GetCurrProcId());
-	sptr = Text::StrConcat(sptr, (const UTF8Char*)"_");
+	sptr = Text::StrConcatC(sptr, UTF8STRC("_"));
 	sptr = Text::StrInt32(sptr, Sync::Interlocked::Increment(&Process_ExecFileId));
-	sptr = Text::StrConcat(sptr, (const UTF8Char*)".dat");
+	sptr = Text::StrConcatC(sptr, UTF8STRC(".dat"));
 
 	SECURITY_ATTRIBUTES sa;
 	sa.nLength= sizeof(SECURITY_ATTRIBUTES);

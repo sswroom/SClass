@@ -11,7 +11,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	UTF8Char *sptr;
 	OSInt readSize;
 	UInt16 tmpVal = (UInt16)(((F_CPU / 8 / 115200) - 1) >> 1);
-	sptr = Text::StrConcat(buff, (const UTF8Char*)"UBBR0 = ");
+	sptr = Text::StrConcatC(buff, UTF8STRC("UBBR0 = "));
 	sptr = Text::StrUInt16(sptr, tmpVal);
 	*sptr++ = 13;
 	*sptr++ = 10;

@@ -33,8 +33,8 @@ Bool Exporter::DBHTMLExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, U
 {
 	if (index == 0)
 	{
-		Text::StrConcat(nameBuff, (const UTF8Char*)"DB HTML File");
-		Text::StrConcat(fileNameBuff, (const UTF8Char*)"*.html");
+		Text::StrConcatC(nameBuff, UTF8STRC("DB HTML File"));
+		Text::StrConcatC(fileNameBuff, UTF8STRC("*.html"));
 		return true;
 	}
 	return false;

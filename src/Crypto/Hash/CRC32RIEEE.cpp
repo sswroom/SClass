@@ -31,7 +31,7 @@ Crypto::Hash::CRC32RIEEE::~CRC32RIEEE()
 
 UTF8Char *Crypto::Hash::CRC32RIEEE::GetName(UTF8Char *sbuff)
 {
-	return Text::StrConcat(sbuff, (const UTF8Char*)"CRC32 IEEE");
+	return Text::StrConcatC(sbuff, UTF8STRC("CRC32 IEEE"));
 }
 
 Crypto::Hash::IHash *Crypto::Hash::CRC32RIEEE::Clone()

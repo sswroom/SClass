@@ -13,69 +13,69 @@ UTF8Char *DasmMIPS_ParseReg8(Manage::DasmMIPS::DasmMIPS_Sess* sess, UTF8Char *re
 	switch (regNo)
 	{
 	case 0:
-		return Text::StrConcat(regName, (const UTF8Char*)"$zero");
+		return Text::StrConcatC(regName, UTF8STRC("$zero"));
 	case 1:
-		return Text::StrConcat(regName, (const UTF8Char*)"$at");
+		return Text::StrConcatC(regName, UTF8STRC("$at"));
 	case 2:
-		return Text::StrConcat(regName, (const UTF8Char*)"$v0");
+		return Text::StrConcatC(regName, UTF8STRC("$v0"));
 	case 3:
-		return Text::StrConcat(regName, (const UTF8Char*)"$v1");
+		return Text::StrConcatC(regName, UTF8STRC("$v1"));
 	case 4:
-		return Text::StrConcat(regName, (const UTF8Char*)"$a0");
+		return Text::StrConcatC(regName, UTF8STRC("$a0"));
 	case 5:
-		return Text::StrConcat(regName, (const UTF8Char*)"$a1");
+		return Text::StrConcatC(regName, UTF8STRC("$a1"));
 	case 6:
-		return Text::StrConcat(regName, (const UTF8Char*)"$a2");
+		return Text::StrConcatC(regName, UTF8STRC("$a2"));
 	case 7:
-		return Text::StrConcat(regName, (const UTF8Char*)"$a3");
+		return Text::StrConcatC(regName, UTF8STRC("$a3"));
 	case 8:
-		return Text::StrConcat(regName, (const UTF8Char*)"$t0");
+		return Text::StrConcatC(regName, UTF8STRC("$t0"));
 	case 9:
-		return Text::StrConcat(regName, (const UTF8Char*)"$t1");
+		return Text::StrConcatC(regName, UTF8STRC("$t1"));
 	case 10:
-		return Text::StrConcat(regName, (const UTF8Char*)"$t2");
+		return Text::StrConcatC(regName, UTF8STRC("$t2"));
 	case 11:
-		return Text::StrConcat(regName, (const UTF8Char*)"$t3");
+		return Text::StrConcatC(regName, UTF8STRC("$t3"));
 	case 12:
-		return Text::StrConcat(regName, (const UTF8Char*)"$t4");
+		return Text::StrConcatC(regName, UTF8STRC("$t4"));
 	case 13:
-		return Text::StrConcat(regName, (const UTF8Char*)"$t5");
+		return Text::StrConcatC(regName, UTF8STRC("$t5"));
 	case 14:
-		return Text::StrConcat(regName, (const UTF8Char*)"$t6");
+		return Text::StrConcatC(regName, UTF8STRC("$t6"));
 	case 15:
-		return Text::StrConcat(regName, (const UTF8Char*)"$t7");
+		return Text::StrConcatC(regName, UTF8STRC("$t7"));
 	case 16:
-		return Text::StrConcat(regName, (const UTF8Char*)"$s0");
+		return Text::StrConcatC(regName, UTF8STRC("$s0"));
 	case 17:
-		return Text::StrConcat(regName, (const UTF8Char*)"$s1");
+		return Text::StrConcatC(regName, UTF8STRC("$s1"));
 	case 18:
-		return Text::StrConcat(regName, (const UTF8Char*)"$s2");
+		return Text::StrConcatC(regName, UTF8STRC("$s2"));
 	case 19:
-		return Text::StrConcat(regName, (const UTF8Char*)"$s3");
+		return Text::StrConcatC(regName, UTF8STRC("$s3"));
 	case 20:
-		return Text::StrConcat(regName, (const UTF8Char*)"$s4");
+		return Text::StrConcatC(regName, UTF8STRC("$s4"));
 	case 21:
-		return Text::StrConcat(regName, (const UTF8Char*)"$s5");
+		return Text::StrConcatC(regName, UTF8STRC("$s5"));
 	case 22:
-		return Text::StrConcat(regName, (const UTF8Char*)"$s6");
+		return Text::StrConcatC(regName, UTF8STRC("$s6"));
 	case 23:
-		return Text::StrConcat(regName, (const UTF8Char*)"$s7");
+		return Text::StrConcatC(regName, UTF8STRC("$s7"));
 	case 24:
-		return Text::StrConcat(regName, (const UTF8Char*)"$t8");
+		return Text::StrConcatC(regName, UTF8STRC("$t8"));
 	case 25:
-		return Text::StrConcat(regName, (const UTF8Char*)"$t9");
+		return Text::StrConcatC(regName, UTF8STRC("$t9"));
 	case 26:
-		return Text::StrConcat(regName, (const UTF8Char*)"$k0");
+		return Text::StrConcatC(regName, UTF8STRC("$k0"));
 	case 27:
-		return Text::StrConcat(regName, (const UTF8Char*)"$k1");
+		return Text::StrConcatC(regName, UTF8STRC("$k1"));
 	case 28:
-		return Text::StrConcat(regName, (const UTF8Char*)"$gp");
+		return Text::StrConcatC(regName, UTF8STRC("$gp"));
 	case 29:
-		return Text::StrConcat(regName, (const UTF8Char*)"$sp");
+		return Text::StrConcatC(regName, UTF8STRC("$sp"));
 	case 30:
-		return Text::StrConcat(regName, (const UTF8Char*)"$fp");
+		return Text::StrConcatC(regName, UTF8STRC("$fp"));
 	case 31:
-		return Text::StrConcat(regName, (const UTF8Char*)"$ra");
+		return Text::StrConcatC(regName, UTF8STRC("$ra"));
 	}
 	return 0;
 }
@@ -941,12 +941,12 @@ Bool Manage::DasmMIPS::Disasm32(IO::Writer *writer, Manage::AddressResolver *add
 				outStr->AppendHexBuff(buff, buffSize, ' ', Text::LineBreakType::None);
 			}
 			outStr->AppendC(UTF8STRC("\r\n"));
-			writer->Write(outStr->ToString());
+			writer->WriteStrC(outStr->ToString(), outStr->GetLength());
 			DEL_CLASS(outStr);
 			return false;
 		}
 		outStr->Append(sbuff);
-		writer->Write(outStr->ToString());
+		writer->WriteStrC(outStr->ToString(), outStr->GetLength());
 		if (sess.endType == Manage::DasmMIPS::ET_JMP && (UInt32)sess.retAddr >= *blockStart && (UInt32)sess.retAddr <= sess.regs.pc)
 		{
 			OSInt i;

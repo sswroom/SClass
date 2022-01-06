@@ -37,8 +37,8 @@ Bool Exporter::SHA1Exporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF
 {
 	if (index == 0)
 	{
-		Text::StrConcat(nameBuff, (const UTF8Char*)"SHA-1 File");
-		Text::StrConcat(fileNameBuff, (const UTF8Char*)"*.sha1");
+		Text::StrConcatC(nameBuff, UTF8STRC("SHA-1 File"));
+		Text::StrConcatC(fileNameBuff, UTF8STRC("*.sha1"));
 		return true;
 	}
 	return false;
@@ -72,7 +72,7 @@ Bool Exporter::SHA1Exporter::ExportFile(IO::SeekableStream *stm, const UTF8Char 
 	{
 		fchk->GetEntryHash(i, buff);
 		sptr = Text::StrHexBytes(sbuff, buff, 20, 0);
-		sptr = Text::StrConcat(sptr, (const UTF8Char*)" *");
+		sptr = Text::StrConcatC(sptr, UTF8STRC(" *"));
 		sptr = Text::StrConcat(sptr, fchk->GetEntryName(i));
 		writer->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
 		i++;

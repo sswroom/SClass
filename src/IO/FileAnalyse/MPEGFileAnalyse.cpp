@@ -973,7 +973,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::MPEGFileAnalyse::GetFrameDetail(U
 				i += 4;
 			}
 
-			Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"Content Size="), pack->packSize - i);
+			Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Content Size=")), pack->packSize - i);
 			frame->AddText(i, sbuff);
 			frame->AddHexBuff(i, pack->packSize - i, "Content", &packBuff[i], true);
 		}
@@ -1020,7 +1020,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::MPEGFileAnalyse::GetFrameDetail(U
 				break;
 			}
 
-			Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"Content Size="), pack->packSize - i);
+			Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Content Size=")), pack->packSize - i);
 			frame->AddText(i, sbuff);
 			frame->AddHexBuff(i, pack->packSize - i, "Content", &packBuff[i], true);
 		}
@@ -1031,7 +1031,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::MPEGFileAnalyse::GetFrameDetail(U
 		break;
 	case 0xbf:
 		frame->AddField(0, 4, (const UTF8Char*)"Sequence", (const UTF8Char*)"Private Stream 2");
-		Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"Content Size="), pack->packSize - 6);
+		Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Content Size=")), pack->packSize - 6);
 		frame->AddText(6, sbuff);
 		frame->AddHexBuff(6, pack->packSize - 6, "Content", &packBuff[6], true);
 		break;
@@ -1079,7 +1079,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::MPEGFileAnalyse::GetFrameDetail(U
 				break;
 			}
 
-			Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"Content Size="), pack->packSize - i);
+			Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Content Size=")), pack->packSize - i);
 			frame->AddText(i, sbuff);
 			frame->AddHexBuff(i, pack->packSize - i, "Content", &packBuff[i], true);
 		}
@@ -1160,7 +1160,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::MPEGFileAnalyse::GetFrameDetail(U
 				i += 1;
 			}
 		
-			Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"Content Size="), pack->packSize - 9 - packBuff[8]);
+			Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Content Size=")), pack->packSize - 9 - packBuff[8]);
 			frame->AddText(i, sbuff);
 			frame->AddHexBuff(9 + (UOSInt)packBuff[8], pack->packSize - 9 - packBuff[8], "Content", &packBuff[9 + packBuff[8]], true);
 		}
@@ -1207,7 +1207,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::MPEGFileAnalyse::GetFrameDetail(U
 				break;
 			}
 
-			Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"Content Size="), pack->packSize - i);
+			Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Content Size=")), pack->packSize - i);
 			frame->AddText(i, sbuff);
 			frame->AddHexBuff(i, pack->packSize - i, "Content", &packBuff[i], true);
 		}

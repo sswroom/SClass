@@ -20,7 +20,7 @@ void IO::FileAnalyse::FrameDetailHandler::AddBool(UOSInt frameOfst, const Char *
 	else
 	{
 		UTF8Char sbuff[16];
-		Text::StrHexByte(Text::StrConcat(sbuff, (const UTF8Char*)"0x"), v);
+		Text::StrHexByte(Text::StrConcatC(sbuff, UTF8STRC("0x")), v);
 		this->AddField(frameOfst, 1, (const UTF8Char*)name, sbuff);
 	}
 }
@@ -111,42 +111,42 @@ void IO::FileAnalyse::FrameDetailHandler::AddFloat(UOSInt frameOfst, UOSInt size
 void IO::FileAnalyse::FrameDetailHandler::AddHex8(UOSInt frameOfst, const Char *name, UInt8 v)
 {
 	UTF8Char sbuff[16];
-	Text::StrHexByte(Text::StrConcat(sbuff, (const UTF8Char*)"0x"), v);
+	Text::StrHexByte(Text::StrConcatC(sbuff, UTF8STRC("0x")), v);
 	this->AddField(frameOfst, 1, (const UTF8Char*)name, sbuff);
 }
 
 void IO::FileAnalyse::FrameDetailHandler::AddHex16(UOSInt frameOfst, const Char *name, UInt16 v)
 {
 	UTF8Char sbuff[16];
-	Text::StrHexVal16(Text::StrConcat(sbuff, (const UTF8Char*)"0x"), v);
+	Text::StrHexVal16(Text::StrConcatC(sbuff, UTF8STRC("0x")), v);
 	this->AddField(frameOfst, 2, (const UTF8Char*)name, sbuff);
 }
 
 void IO::FileAnalyse::FrameDetailHandler::AddHex24(UOSInt frameOfst, const Char *name, UInt32 v)
 {
 	UTF8Char sbuff[16];
-	Text::StrHexVal24(Text::StrConcat(sbuff, (const UTF8Char*)"0x"), v);
+	Text::StrHexVal24(Text::StrConcatC(sbuff, UTF8STRC("0x")), v);
 	this->AddField(frameOfst, 3, (const UTF8Char*)name, sbuff);
 }
 
 void IO::FileAnalyse::FrameDetailHandler::AddHex32(UOSInt frameOfst, const Char *name, UInt32 v)
 {
 	UTF8Char sbuff[16];
-	Text::StrHexVal32(Text::StrConcat(sbuff, (const UTF8Char*)"0x"), v);
+	Text::StrHexVal32(Text::StrConcatC(sbuff, UTF8STRC("0x")), v);
 	this->AddField(frameOfst, 4, (const UTF8Char*)name, sbuff);
 }
 
 void IO::FileAnalyse::FrameDetailHandler::AddHex64(UOSInt frameOfst, const Char *name, UInt64 v)
 {
 	UTF8Char sbuff[19];
-	Text::StrHexVal64(Text::StrConcat(sbuff, (const UTF8Char*)"0x"), v);
+	Text::StrHexVal64(Text::StrConcatC(sbuff, UTF8STRC("0x")), v);
 	this->AddField(frameOfst, 8, (const UTF8Char*)name, sbuff);
 }
 
 void IO::FileAnalyse::FrameDetailHandler::AddHex64V(UOSInt frameOfst, UOSInt size, const Char *name, UInt64 v)
 {
 	UTF8Char sbuff[19];
-	Text::StrHexVal64V(Text::StrConcat(sbuff, (const UTF8Char*)"0x"), v);
+	Text::StrHexVal64V(Text::StrConcatC(sbuff, UTF8STRC("0x")), v);
 	this->AddField(frameOfst, size, (const UTF8Char*)name, sbuff);
 }
 

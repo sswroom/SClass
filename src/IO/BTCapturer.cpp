@@ -103,9 +103,9 @@ void IO::BTCapturer::StoreStatus()
 	sptr = IO::Path::GetProcessFileName(sbuff);
 	i = Text::StrLastIndexOf(sbuff, IO::Path::PATH_SEPERATOR);
 	sptr = &sbuff[i + 1];
-	sptr = Text::StrConcat(sptr, (const UTF8Char*)"bt");
+	sptr = Text::StrConcatC(sptr, UTF8STRC("bt"));
 	sptr = dt.ToString(sptr, "yyyyMMddHHmmss");
-	sptr = Text::StrConcat(sptr, (const UTF8Char*)".txt");
+	sptr = Text::StrConcatC(sptr, UTF8STRC(".txt"));
 	if (btLog.StoreFile(sbuff))
 	{
 		if (this->lastFileName)

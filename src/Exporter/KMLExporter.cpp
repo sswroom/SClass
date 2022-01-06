@@ -68,8 +68,8 @@ Bool Exporter::KMLExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8
 {
 	if (index == 0)
 	{
-		Text::StrConcat(nameBuff, (const UTF8Char*)"KML file");
-		Text::StrConcat(fileNameBuff, (const UTF8Char*)"*.kml");
+		Text::StrConcatC(nameBuff, UTF8STRC("KML file"));
+		Text::StrConcatC(fileNameBuff, UTF8STRC("*.kml"));
 		return true;
 	}
 	return false;
@@ -127,14 +127,14 @@ Bool Exporter::KMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 	NEW_CLASS(cstm, IO::BufferedOutputStream(stm, 65536));
 	NEW_CLASS(writer, IO::StreamWriter(cstm, &enc));
 
-	sptr = Text::StrConcat(sbuff2, (const UTF8Char*)"<?xml version=\"1.0\" encoding=\"");
+	sptr = Text::StrConcatC(sbuff2, UTF8STRC("<?xml version=\"1.0\" encoding=\""));
 	sptr = Text::EncodingFactory::GetInternetName(sptr, this->codePage);
-	sptr = Text::StrConcat(sptr, (const UTF8Char*)"\"?>");
-	sptr = Text::StrConcat(sptr, (const UTF8Char*)"<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:kml=\"http://www.opengis.net/kml/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\">");
-	sptr = Text::StrConcat(sptr, (const UTF8Char*)"<Document>");
-	sptr = Text::StrConcat(sptr, (const UTF8Char*)"<Folder>");
-	sptr = Text::StrConcat(sptr, (const UTF8Char*)"<name>Points</name>");
-	sptr = Text::StrConcat(sptr, (const UTF8Char*)"<open>1</open>");
+	sptr = Text::StrConcatC(sptr, UTF8STRC("\"?>"));
+	sptr = Text::StrConcatC(sptr, UTF8STRC("<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\" xmlns:kml=\"http://www.opengis.net/kml/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\">"));
+	sptr = Text::StrConcatC(sptr, UTF8STRC("<Document>"));
+	sptr = Text::StrConcatC(sptr, UTF8STRC("<Folder>"));
+	sptr = Text::StrConcatC(sptr, UTF8STRC("<name>Points</name>"));
+	sptr = Text::StrConcatC(sptr, UTF8STRC("<open>1</open>"));
 	writer->WriteStrC(sbuff2, (UOSInt)(sptr - sbuff2));
 
 	NEW_CLASS(ids, Data::ArrayListInt64());
@@ -178,18 +178,18 @@ Bool Exporter::KMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 					Math::CoordinateSystem::ConvertXYZ(srcCsys, destCsys, x, y, z, &x, &y, &z);
 				}
 
-				sptr = Text::StrConcat(sbuff2, (const UTF8Char*)"<Placemark>");
-				sptr = Text::StrConcat(sptr, (const UTF8Char*)"<name>");
+				sptr = Text::StrConcatC(sbuff2, UTF8STRC("<Placemark>"));
+				sptr = Text::StrConcatC(sptr, UTF8STRC("<name>"));
 				sptr = Text::XML::ToXMLText(sptr, sbuff);
-				sptr = Text::StrConcat(sptr, (const UTF8Char*)"</name>");
-				sptr = Text::StrConcat(sptr, (const UTF8Char*)"<Point><coordinates>");
+				sptr = Text::StrConcatC(sptr, UTF8STRC("</name>"));
+				sptr = Text::StrConcatC(sptr, UTF8STRC("<Point><coordinates>"));
 				sptr = Text::StrDouble(sptr, x);
-				sptr = Text::StrConcat(sptr, (const UTF8Char*)",");
+				sptr = Text::StrConcatC(sptr, UTF8STRC(","));
 				sptr = Text::StrDouble(sptr, y);
-				sptr = Text::StrConcat(sptr, (const UTF8Char*)",");
+				sptr = Text::StrConcatC(sptr, UTF8STRC(","));
 				sptr = Text::StrDouble(sptr, z);
-				sptr = Text::StrConcat(sptr, (const UTF8Char*)"</coordinates></Point>");
-				sptr = Text::StrConcat(sptr, (const UTF8Char*)"</Placemark>");
+				sptr = Text::StrConcatC(sptr, UTF8STRC("</coordinates></Point>"));
+				sptr = Text::StrConcatC(sptr, UTF8STRC("</Placemark>"));
 				writer->WriteLineC(sbuff2, (UOSInt)(sptr - sbuff2));
 			}
 			else if (vec->GetVectorType() == Math::Vector2D::VectorType::Polyline)
@@ -333,11 +333,11 @@ Bool Exporter::KMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 						{
 							Math::CoordinateSystem::ConvertXYZ(srcCsys, destCsys, points[k << 1], points[(k << 1) + 1], defHeight, &x, &y, &z);
 							sptr = Text::StrDouble(sbuff2, x);
-							sptr = Text::StrConcat(sptr, (const UTF8Char*)",");
+							sptr = Text::StrConcatC(sptr, UTF8STRC(","));
 							sptr = Text::StrDouble(sptr, y);
-							sptr = Text::StrConcat(sptr, (const UTF8Char*)",");
+							sptr = Text::StrConcatC(sptr, UTF8STRC(","));
 							sptr = Text::StrDouble(sptr, z);
-							sptr = Text::StrConcat(sptr, (const UTF8Char*)" ");
+							sptr = Text::StrConcatC(sptr, UTF8STRC(" "));
 							sb.AppendC(sbuff2, (UOSInt)(sptr - sbuff2));
 						}
 						k++;
@@ -354,11 +354,11 @@ Bool Exporter::KMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 						while (k-- > ptOfsts[l])
 						{
 							sptr = Text::StrDouble(sbuff2, points[k << 1]);
-							sptr = Text::StrConcat(sptr, (const UTF8Char*)",");
+							sptr = Text::StrConcatC(sptr, UTF8STRC(","));
 							sptr = Text::StrDouble(sptr, points[(k << 1) + 1]);
-							sptr = Text::StrConcat(sptr, (const UTF8Char*)",");
+							sptr = Text::StrConcatC(sptr, UTF8STRC(","));
 							sptr = Text::StrDouble(sptr, defHeight);
-							sptr = Text::StrConcat(sptr, (const UTF8Char*)" ");
+							sptr = Text::StrConcatC(sptr, UTF8STRC(" "));
 							sb.AppendC(sbuff2, (UOSInt)(sptr - sbuff2));
 						}
 						k++;
@@ -558,9 +558,9 @@ Bool Exporter::KMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 	DEL_CLASS(destCsys);
 	DEL_CLASS(ids);
 
-	sptr = Text::StrConcat(sbuff2, (const UTF8Char*)"</Folder>");
-	sptr = Text::StrConcat(sptr, (const UTF8Char*)"</Document>");
-	sptr = Text::StrConcat(sptr, (const UTF8Char*)"</kml>");
+	sptr = Text::StrConcatC(sbuff2, UTF8STRC("</Folder>"));
+	sptr = Text::StrConcatC(sptr, UTF8STRC("</Document>"));
+	sptr = Text::StrConcatC(sptr, UTF8STRC("</kml>"));
 	writer->WriteStrC(sbuff2, (UOSInt)(sptr - sbuff2));
 
 	DEL_CLASS(writer);

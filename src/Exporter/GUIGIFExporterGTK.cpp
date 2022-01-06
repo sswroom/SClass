@@ -19,8 +19,8 @@ Bool Exporter::GUIGIFExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, U
 {
 	if (index == 0)
 	{
-		Text::StrConcat(nameBuff, (const UTF8Char*)"GIF file (GDK)");
-		Text::StrConcat(fileNameBuff, (const UTF8Char*)"*.gif");
+		Text::StrConcatC(nameBuff, UTF8STRC("GIF file (GDK)"));
+		Text::StrConcatC(fileNameBuff, UTF8STRC("*.gif"));
 		return true;
 	}
 	return false;

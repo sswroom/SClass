@@ -18,8 +18,8 @@ Bool Exporter::GUIPNGExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, U
 {
 	if (index == 0)
 	{
-		Text::StrConcat(nameBuff, (const UTF8Char*)"PNG file");
-		Text::StrConcat(fileNameBuff, (const UTF8Char*)"*.png");
+		Text::StrConcatC(nameBuff, UTF8STRC("PNG file"));
+		Text::StrConcatC(fileNameBuff, UTF8STRC("*.png"));
 		return true;
 	}
 	return false;

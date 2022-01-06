@@ -37,28 +37,28 @@ UTF8Char *DasmX86_32_ParseReg8(Manage::DasmX86_32::DasmX86_32_Sess* sess, UTF8Ch
 	{
 	case 0:
 		*regPtr = (UInt8*)&sess->regs.EAX;
-		return Text::StrConcat(regName, (const UTF8Char*)"AL");
+		return Text::StrConcatC(regName, UTF8STRC("AL"));
 	case 1:
 		*regPtr = (UInt8*)&sess->regs.ECX;
-		return Text::StrConcat(regName, (const UTF8Char*)"CL");
+		return Text::StrConcatC(regName, UTF8STRC("CL"));
 	case 2:
 		*regPtr = (UInt8*)&sess->regs.EDX;
-		return Text::StrConcat(regName, (const UTF8Char*)"DL");
+		return Text::StrConcatC(regName, UTF8STRC("DL"));
 	case 3:
 		*regPtr = (UInt8*)&sess->regs.EBX;
-		return Text::StrConcat(regName, (const UTF8Char*)"BL");
+		return Text::StrConcatC(regName, UTF8STRC("BL"));
 	case 4:
 		*regPtr = 1 + (UInt8*)&sess->regs.EAX;
-		return Text::StrConcat(regName, (const UTF8Char*)"AH");
+		return Text::StrConcatC(regName, UTF8STRC("AH"));
 	case 5:
 		*regPtr = 1 + (UInt8*)&sess->regs.ECX;
-		return Text::StrConcat(regName, (const UTF8Char*)"CH");
+		return Text::StrConcatC(regName, UTF8STRC("CH"));
 	case 6:
 		*regPtr = 1 + (UInt8*)&sess->regs.EDX;
-		return Text::StrConcat(regName, (const UTF8Char*)"DH");
+		return Text::StrConcatC(regName, UTF8STRC("DH"));
 	case 7:
 		*regPtr = 1 + (UInt8*)&sess->regs.EBX;
-		return Text::StrConcat(regName, (const UTF8Char*)"BH");
+		return Text::StrConcatC(regName, UTF8STRC("BH"));
 	default:
 		*regName = 0;
 		return regName;
@@ -71,28 +71,28 @@ UTF8Char *DasmX86_32_ParseReg16(Manage::DasmX86_32::DasmX86_32_Sess* sess, UTF8C
 	{
 	case 0:
 		*regPtr = &sess->regs.EAX;
-		return Text::StrConcat(regName, (const UTF8Char*)"AX");
+		return Text::StrConcatC(regName, UTF8STRC("AX"));
 	case 1:
 		*regPtr = &sess->regs.ECX;
-		return Text::StrConcat(regName, (const UTF8Char*)"CX");
+		return Text::StrConcatC(regName, UTF8STRC("CX"));
 	case 2:
 		*regPtr = &sess->regs.EDX;
-		return Text::StrConcat(regName, (const UTF8Char*)"DX");
+		return Text::StrConcatC(regName, UTF8STRC("DX"));
 	case 3:
 		*regPtr = &sess->regs.EBX;
-		return Text::StrConcat(regName, (const UTF8Char*)"BX");
+		return Text::StrConcatC(regName, UTF8STRC("BX"));
 	case 4:
 		*regPtr = &sess->regs.ESP;
-		return Text::StrConcat(regName, (const UTF8Char*)"SP");
+		return Text::StrConcatC(regName, UTF8STRC("SP"));
 	case 5:
 		*regPtr = &sess->regs.EBP;
-		return Text::StrConcat(regName, (const UTF8Char*)"BP");
+		return Text::StrConcatC(regName, UTF8STRC("BP"));
 	case 6:
 		*regPtr = &sess->regs.ESI;
-		return Text::StrConcat(regName, (const UTF8Char*)"SI");
+		return Text::StrConcatC(regName, UTF8STRC("SI"));
 	case 7:
 		*regPtr = &sess->regs.EDI;
-		return Text::StrConcat(regName, (const UTF8Char*)"DI");
+		return Text::StrConcatC(regName, UTF8STRC("DI"));
 	default:
 		*regName = 0;
 		return regName;
@@ -105,28 +105,28 @@ UTF8Char *DasmX86_32_ParseReg32(Manage::DasmX86_32::DasmX86_32_Sess* sess, UTF8C
 	{
 	case 0:
 		*regPtr = &sess->regs.EAX;
-		return Text::StrConcat(regName, (const UTF8Char*)"EAX");
+		return Text::StrConcatC(regName, UTF8STRC("EAX"));
 	case 1:
 		*regPtr = &sess->regs.ECX;
-		return Text::StrConcat(regName, (const UTF8Char*)"ECX");
+		return Text::StrConcatC(regName, UTF8STRC("ECX"));
 	case 2:
 		*regPtr = &sess->regs.EDX;
-		return Text::StrConcat(regName, (const UTF8Char*)"EDX");
+		return Text::StrConcatC(regName, UTF8STRC("EDX"));
 	case 3:
 		*regPtr = &sess->regs.EBX;
-		return Text::StrConcat(regName, (const UTF8Char*)"EBX");
+		return Text::StrConcatC(regName, UTF8STRC("EBX"));
 	case 4:
 		*regPtr = &sess->regs.ESP;
-		return Text::StrConcat(regName, (const UTF8Char*)"ESP");
+		return Text::StrConcatC(regName, UTF8STRC("ESP"));
 	case 5:
 		*regPtr = &sess->regs.EBP;
-		return Text::StrConcat(regName, (const UTF8Char*)"EBP");
+		return Text::StrConcatC(regName, UTF8STRC("EBP"));
 	case 6:
 		*regPtr = &sess->regs.ESI;
-		return Text::StrConcat(regName, (const UTF8Char*)"ESI");
+		return Text::StrConcatC(regName, UTF8STRC("ESI"));
 	case 7:
 		*regPtr = &sess->regs.EDI;
-		return Text::StrConcat(regName, (const UTF8Char*)"EDI");
+		return Text::StrConcatC(regName, UTF8STRC("EDI"));
 	default:
 		*regName = 0;
 		return regName;
@@ -138,21 +138,21 @@ UTF8Char *DasmX86_32_ParseSReg(Manage::DasmX86_32::DasmX86_32_Sess* sess, UTF8Ch
 	switch (regNo)
 	{
 	case 0:
-		return Text::StrConcat(regName, (const UTF8Char*)"ES");
+		return Text::StrConcatC(regName, UTF8STRC("ES"));
 	case 1:
-		return Text::StrConcat(regName, (const UTF8Char*)"CS");
+		return Text::StrConcatC(regName, UTF8STRC("CS"));
 	case 2:
-		return Text::StrConcat(regName, (const UTF8Char*)"SS");
+		return Text::StrConcatC(regName, UTF8STRC("SS"));
 	case 3:
-		return Text::StrConcat(regName, (const UTF8Char*)"DS");
+		return Text::StrConcatC(regName, UTF8STRC("DS"));
 	case 4:
-		return Text::StrConcat(regName, (const UTF8Char*)"FS");
+		return Text::StrConcatC(regName, UTF8STRC("FS"));
 	case 5:
-		return Text::StrConcat(regName, (const UTF8Char*)"GS");
+		return Text::StrConcatC(regName, UTF8STRC("GS"));
 	case 6:
-		return Text::StrConcat(regName, (const UTF8Char*)"");
+		return Text::StrConcatC(regName, UTF8STRC(""));
 	case 7:
-		return Text::StrConcat(regName, (const UTF8Char*)"");
+		return Text::StrConcatC(regName, UTF8STRC(""));
 	default:
 		*regName = 0;
 		return regName;
@@ -176,21 +176,21 @@ UTF8Char *DasmX86_32_ParseRegx87(UTF8Char *regName, Int32 regNo)
 	switch (regNo)
 	{
 	case 0:
-		return Text::StrConcat(regName, (const UTF8Char*)"ST(0)");
+		return Text::StrConcatC(regName, UTF8STRC("ST(0)"));
 	case 1:
-		return Text::StrConcat(regName, (const UTF8Char*)"ST(1)");
+		return Text::StrConcatC(regName, UTF8STRC("ST(1)"));
 	case 2:
-		return Text::StrConcat(regName, (const UTF8Char*)"ST(2)");
+		return Text::StrConcatC(regName, UTF8STRC("ST(2)"));
 	case 3:
-		return Text::StrConcat(regName, (const UTF8Char*)"ST(3)");
+		return Text::StrConcatC(regName, UTF8STRC("ST(3)"));
 	case 4:
-		return Text::StrConcat(regName, (const UTF8Char*)"ST(4)");
+		return Text::StrConcatC(regName, UTF8STRC("ST(4)"));
 	case 5:
-		return Text::StrConcat(regName, (const UTF8Char*)"ST(5)");
+		return Text::StrConcatC(regName, UTF8STRC("ST(5)"));
 	case 6:
-		return Text::StrConcat(regName, (const UTF8Char*)"ST(6)");
+		return Text::StrConcatC(regName, UTF8STRC("ST(6)"));
 	case 7:
-		return Text::StrConcat(regName, (const UTF8Char*)"ST(7)");
+		return Text::StrConcatC(regName, UTF8STRC("ST(7)"));
 	default:
 		*regName = 0;
 		return regName;
@@ -202,21 +202,21 @@ UTF8Char *DasmX86_32_ParseRegMM(UTF8Char *regName, Int32 regNo)
 	switch (regNo)
 	{
 	case 0:
-		return Text::StrConcat(regName, (const UTF8Char*)"MM0");
+		return Text::StrConcatC(regName, UTF8STRC("MM0"));
 	case 1:
-		return Text::StrConcat(regName, (const UTF8Char*)"MM1");
+		return Text::StrConcatC(regName, UTF8STRC("MM1"));
 	case 2:
-		return Text::StrConcat(regName, (const UTF8Char*)"MM2");
+		return Text::StrConcatC(regName, UTF8STRC("MM2"));
 	case 3:
-		return Text::StrConcat(regName, (const UTF8Char*)"MM3");
+		return Text::StrConcatC(regName, UTF8STRC("MM3"));
 	case 4:
-		return Text::StrConcat(regName, (const UTF8Char*)"MM4");
+		return Text::StrConcatC(regName, UTF8STRC("MM4"));
 	case 5:
-		return Text::StrConcat(regName, (const UTF8Char*)"MM5");
+		return Text::StrConcatC(regName, UTF8STRC("MM5"));
 	case 6:
-		return Text::StrConcat(regName, (const UTF8Char*)"MM6");
+		return Text::StrConcatC(regName, UTF8STRC("MM6"));
 	case 7:
-		return Text::StrConcat(regName, (const UTF8Char*)"MM7");
+		return Text::StrConcatC(regName, UTF8STRC("MM7"));
 	default:
 		*regName = 0;
 		return regName;
@@ -228,21 +228,21 @@ UTF8Char *DasmX86_32_ParseRegXMM(UTF8Char *regName, Int32 regNo)
 	switch (regNo)
 	{
 	case 0:
-		return Text::StrConcat(regName, (const UTF8Char*)"XMM0");
+		return Text::StrConcatC(regName, UTF8STRC("XMM0"));
 	case 1:
-		return Text::StrConcat(regName, (const UTF8Char*)"XMM1");
+		return Text::StrConcatC(regName, UTF8STRC("XMM1"));
 	case 2:
-		return Text::StrConcat(regName, (const UTF8Char*)"XMM2");
+		return Text::StrConcatC(regName, UTF8STRC("XMM2"));
 	case 3:
-		return Text::StrConcat(regName, (const UTF8Char*)"XMM3");
+		return Text::StrConcatC(regName, UTF8STRC("XMM3"));
 	case 4:
-		return Text::StrConcat(regName, (const UTF8Char*)"XMM4");
+		return Text::StrConcatC(regName, UTF8STRC("XMM4"));
 	case 5:
-		return Text::StrConcat(regName, (const UTF8Char*)"XMM5");
+		return Text::StrConcatC(regName, UTF8STRC("XMM5"));
 	case 6:
-		return Text::StrConcat(regName, (const UTF8Char*)"XMM6");
+		return Text::StrConcatC(regName, UTF8STRC("XMM6"));
 	case 7:
-		return Text::StrConcat(regName, (const UTF8Char*)"XMM7");
+		return Text::StrConcatC(regName, UTF8STRC("XMM7"));
 	default:
 		*regName = 0;
 		return regName;
@@ -254,21 +254,21 @@ UTF8Char *DasmX86_32_ParseRegCR(UTF8Char *regName, Int32 regNo)
 	switch (regNo)
 	{
 	case 0:
-		return Text::StrConcat(regName, (const UTF8Char*)"CR0");
+		return Text::StrConcatC(regName, UTF8STRC("CR0"));
 	case 1:
-		return Text::StrConcat(regName, (const UTF8Char*)"CR1");
+		return Text::StrConcatC(regName, UTF8STRC("CR1"));
 	case 2:
-		return Text::StrConcat(regName, (const UTF8Char*)"CR2");
+		return Text::StrConcatC(regName, UTF8STRC("CR2"));
 	case 3:
-		return Text::StrConcat(regName, (const UTF8Char*)"CR3");
+		return Text::StrConcatC(regName, UTF8STRC("CR3"));
 	case 4:
-		return Text::StrConcat(regName, (const UTF8Char*)"CR4");
+		return Text::StrConcatC(regName, UTF8STRC("CR4"));
 	case 5:
-		return Text::StrConcat(regName, (const UTF8Char*)"CR5");
+		return Text::StrConcatC(regName, UTF8STRC("CR5"));
 	case 6:
-		return Text::StrConcat(regName, (const UTF8Char*)"CR6");
+		return Text::StrConcatC(regName, UTF8STRC("CR6"));
 	case 7:
-		return Text::StrConcat(regName, (const UTF8Char*)"CR7");
+		return Text::StrConcatC(regName, UTF8STRC("CR7"));
 	default:
 		*regName = 0;
 		return regName;
@@ -280,21 +280,21 @@ UTF8Char *DasmX86_32_ParseRegDR(UTF8Char *regName, Int32 regNo)
 	switch (regNo)
 	{
 	case 0:
-		return Text::StrConcat(regName, (const UTF8Char*)"DR0");
+		return Text::StrConcatC(regName, UTF8STRC("DR0"));
 	case 1:
-		return Text::StrConcat(regName, (const UTF8Char*)"DR1");
+		return Text::StrConcatC(regName, UTF8STRC("DR1"));
 	case 2:
-		return Text::StrConcat(regName, (const UTF8Char*)"DR2");
+		return Text::StrConcatC(regName, UTF8STRC("DR2"));
 	case 3:
-		return Text::StrConcat(regName, (const UTF8Char*)"DR3");
+		return Text::StrConcatC(regName, UTF8STRC("DR3"));
 	case 4:
-		return Text::StrConcat(regName, (const UTF8Char*)"DR4");
+		return Text::StrConcatC(regName, UTF8STRC("DR4"));
 	case 5:
-		return Text::StrConcat(regName, (const UTF8Char*)"DR5");
+		return Text::StrConcatC(regName, UTF8STRC("DR5"));
 	case 6:
-		return Text::StrConcat(regName, (const UTF8Char*)"DR6");
+		return Text::StrConcatC(regName, UTF8STRC("DR6"));
 	case 7:
-		return Text::StrConcat(regName, (const UTF8Char*)"DR7");
+		return Text::StrConcatC(regName, UTF8STRC("DR7"));
 	default:
 		*regName = 0;
 		return regName;
@@ -429,7 +429,7 @@ void DasmX86_32_ParseSIB(Manage::DasmX86_32::DasmX86_32_Sess* sess, UTF8Char *me
 		}
 		else if (addr > 1024)
 		{
-			memName = Text::StrConcat(memName, (const UTF8Char*)"+0x");
+			memName = Text::StrConcatC(memName, UTF8STRC("+0x"));
 			memName = Text::StrHexVal32(memName, addr);
 		}
 		else
@@ -460,7 +460,7 @@ void DasmX86_32_ParseAddr32(Manage::DasmX86_32::DasmX86_32_Sess* sess, UTF8Char 
 			if (sess->thisStatus & 0x10000)
 				memName = Text::StrConcat(memName, DasmX86_32_Segms[sess->segmId]);
 			srcAddr = sess->memReader->ReadMemUInt32(sess->regs.EIP + 1);
-			memName = Text::StrConcat(memName, (const UTF8Char*)"[0x");
+			memName = Text::StrConcatC(memName, UTF8STRC("[0x"));
 			memName = Text::StrHexVal32(memName, srcAddr);
 			*memName++ = ']';
 			*memName = 0;
@@ -486,7 +486,7 @@ void DasmX86_32_ParseAddr32(Manage::DasmX86_32::DasmX86_32_Sess* sess, UTF8Char 
 		{
 			if (sess->thisStatus & 0x10000)
 				memName = Text::StrConcat(memName, DasmX86_32_Segms[sess->segmId]);
-			memName = Text::StrConcat(memName, (const UTF8Char*)"[");
+			memName = Text::StrConcatC(memName, UTF8STRC("["));
 			memName = DasmX86_32_ParseReg32(sess, memName, b & 7, &regPtr);
 			*memName++ = ']';
 			*memName = 0;
@@ -501,7 +501,7 @@ void DasmX86_32_ParseAddr32(Manage::DasmX86_32::DasmX86_32_Sess* sess, UTF8Char 
 	case 1:
 		if (sess->thisStatus & 0x10000)
 			memName = Text::StrConcat(memName, DasmX86_32_Segms[sess->segmId]);
-		memName = Text::StrConcat(memName, (const UTF8Char*)"[");
+		memName = Text::StrConcatC(memName, UTF8STRC("["));
 		sess->regs.EIP += 1;
 		if ((b & 7) == 4)
 		{
@@ -535,7 +535,7 @@ void DasmX86_32_ParseAddr32(Manage::DasmX86_32::DasmX86_32_Sess* sess, UTF8Char 
 	case 2:
 		if (sess->thisStatus & 0x10000)
 			memName = Text::StrConcat(memName, DasmX86_32_Segms[sess->segmId]);
-		memName = Text::StrConcat(memName, (const UTF8Char*)"[");
+		memName = Text::StrConcatC(memName, UTF8STRC("["));
 		sess->regs.EIP += 1;
 		if ((b & 7) == 4)
 		{
@@ -555,12 +555,12 @@ void DasmX86_32_ParseAddr32(Manage::DasmX86_32::DasmX86_32_Sess* sess, UTF8Char 
 		}
 		else if (addr < 1024)
 		{
-			memName = Text::StrConcat(memName, (const UTF8Char*)"+");
+			memName = Text::StrConcatC(memName, UTF8STRC("+"));
 			memName = Text::StrInt32(memName, (Int32)addr);
 		}
 		else
 		{
-			memName = Text::StrConcat(memName, (const UTF8Char*)"+0x");
+			memName = Text::StrConcatC(memName, UTF8STRC("+0x"));
 			memName = Text::StrHexVal32(memName, addr);
 		}
 		if (memAddr)
@@ -593,7 +593,7 @@ void DasmX86_32_ParseModR32M8(Manage::DasmX86_32::DasmX86_32_Sess* sess, UTF8Cha
 	else
 	{
 		UInt32 addr;
-		DasmX86_32_ParseAddr32(sess, Text::StrConcat(memName, (const UTF8Char*)"BYTE PTR "), reg, &addr);
+		DasmX86_32_ParseAddr32(sess, Text::StrConcatC(memName, UTF8STRC("BYTE PTR ")), reg, &addr);
 	}
 }
 
@@ -614,7 +614,7 @@ void DasmX86_32_ParseModRM8(Manage::DasmX86_32::DasmX86_32_Sess* sess, UTF8Char 
 	else
 	{
 		UInt32 addr;
-		DasmX86_32_ParseAddr32(sess, Text::StrConcat(memName, (const UTF8Char*)"BYTE PTR "), reg, &addr);
+		DasmX86_32_ParseAddr32(sess, Text::StrConcatC(memName, UTF8STRC("BYTE PTR ")), reg, &addr);
 		if (memVal)
 		{
 			*memVal = sess->memReader->ReadMemUInt8(addr);
@@ -639,7 +639,7 @@ void DasmX86_32_ParseModR32M16(Manage::DasmX86_32::DasmX86_32_Sess* sess, UTF8Ch
 	else
 	{
 		UInt32 addr;
-		DasmX86_32_ParseAddr32(sess, Text::StrConcat(memName, (const UTF8Char*)"WORD PTR "), reg, &addr);
+		DasmX86_32_ParseAddr32(sess, Text::StrConcatC(memName, UTF8STRC("WORD PTR ")), reg, &addr);
 		if (memVal)
 		{
 			*memVal = sess->memReader->ReadMemUInt16(addr);
@@ -664,7 +664,7 @@ void DasmX86_32_ParseModRM16(Manage::DasmX86_32::DasmX86_32_Sess* sess, UTF8Char
 	else
 	{
 		UInt32 addr;
-		DasmX86_32_ParseAddr32(sess, Text::StrConcat(memName, (const UTF8Char*)"WORD PTR "), reg, &addr);
+		DasmX86_32_ParseAddr32(sess, Text::StrConcatC(memName, UTF8STRC("WORD PTR ")), reg, &addr);
 		if (memVal)
 		{
 			*memVal = sess->memReader->ReadMemUInt16(addr);
@@ -698,7 +698,7 @@ void DasmX86_32_ParseModRM32(Manage::DasmX86_32::DasmX86_32_Sess* sess, UTF8Char
 		else
 		{
 			UInt32 addr;
-			DasmX86_32_ParseAddr32(sess, Text::StrConcat(memName, (const UTF8Char*)"DWORD PTR "), reg, &addr);
+			DasmX86_32_ParseAddr32(sess, Text::StrConcatC(memName, UTF8STRC("DWORD PTR ")), reg, &addr);
 			if (memVal)
 			{
 				*memVal = sess->memReader->ReadMemUInt32(addr);
@@ -724,7 +724,7 @@ void DasmX86_32_ParseModRM48(Manage::DasmX86_32::DasmX86_32_Sess* sess, UTF8Char
 	else
 	{
 		UInt32 addr;
-		DasmX86_32_ParseAddr32(sess, Text::StrConcat(memName, (const UTF8Char*)"FWORD PTR "), reg, &addr);
+		DasmX86_32_ParseAddr32(sess, Text::StrConcatC(memName, UTF8STRC("FWORD PTR ")), reg, &addr);
 	}
 }
 
@@ -741,7 +741,7 @@ void DasmX86_32_ParseModRM64(Manage::DasmX86_32::DasmX86_32_Sess* sess, UTF8Char
 	else
 	{
 		UInt32 addr;
-		DasmX86_32_ParseAddr32(sess, Text::StrConcat(memName, (const UTF8Char*)"QWORD PTR "), reg, &addr);
+		DasmX86_32_ParseAddr32(sess, Text::StrConcatC(memName, UTF8STRC("QWORD PTR ")), reg, &addr);
 	}
 }
 
@@ -757,7 +757,7 @@ void DasmX86_32_ParseModRMR80(Manage::DasmX86_32::DasmX86_32_Sess* sess, UTF8Cha
 	else
 	{
 		UInt32 addr;
-		DasmX86_32_ParseAddr32(sess, Text::StrConcat(memName, (const UTF8Char*)"REAL10 PTR "), reg, &addr);
+		DasmX86_32_ParseAddr32(sess, Text::StrConcatC(memName, UTF8STRC("REAL10 PTR ")), reg, &addr);
 	}
 }
 
@@ -774,7 +774,7 @@ void DasmX86_32_ParseModRM128(Manage::DasmX86_32::DasmX86_32_Sess* sess, UTF8Cha
 	else
 	{
 		UInt32 addr;
-		DasmX86_32_ParseAddr32(sess, Text::StrConcat(memName, (const UTF8Char*)""), reg, &addr);
+		DasmX86_32_ParseAddr32(sess, Text::StrConcatC(memName, UTF8STRC("")), reg, &addr);
 	}
 }
 
@@ -790,7 +790,7 @@ void DasmX86_32_ParseModRMMM64(Manage::DasmX86_32::DasmX86_32_Sess* sess, UTF8Ch
 	else
 	{
 		UInt32 addr;
-		DasmX86_32_ParseAddr32(sess, Text::StrConcat(memName, (const UTF8Char*)"MMWORD PTR "), reg, &addr);
+		DasmX86_32_ParseAddr32(sess, Text::StrConcatC(memName, UTF8STRC("MMWORD PTR ")), reg, &addr);
 	}
 }
 
@@ -806,7 +806,7 @@ void DasmX86_32_ParseModRMXMM128(Manage::DasmX86_32::DasmX86_32_Sess* sess, UTF8
 	else
 	{
 		UInt32 addr;
-		DasmX86_32_ParseAddr32(sess, Text::StrConcat(memName, (const UTF8Char*)"XMMWORD PTR "), reg, &addr);
+		DasmX86_32_ParseAddr32(sess, Text::StrConcatC(memName, UTF8STRC("XMMWORD PTR ")), reg, &addr);
 	}
 }
 
@@ -939,11 +939,11 @@ Bool __stdcall DasmX86_32_00(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	sess->regs.EIP++;
 	DasmX86_32_ParseModRM8(sess, mem, &reg, &memVal);
 	DasmX86_32_ParseReg8(sess, regs, reg, &regPtr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"add ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("add "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, regs);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -960,16 +960,16 @@ Bool __stdcall DasmX86_32_01(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	DasmX86_32_ParseModRM32(sess, mem, &reg, &memVal, 0);
 	DasmX86_32_ParseReg(sess, regs, reg, &regPtr);
 
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"add ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("add "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, regs);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	if ((sess->thisStatus & 0x80000000) == 0)
 	{
 		if ((b & 0xc7) == 0xc4)
 		{
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"Unknown operation to stack\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("Unknown operation to stack\r\n"));
 			return false;
 		}
 	}
@@ -988,11 +988,11 @@ Bool __stdcall DasmX86_32_02(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	sess->regs.EIP++;
 	DasmX86_32_ParseModRM8(sess, mem, &reg, &memVal);
 	DasmX86_32_ParseReg8(sess, regs, reg, &regPtr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"add ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("add "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, regs);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	*regPtr = (UInt8)(*regPtr + memVal);
 	return true;
 }
@@ -1017,16 +1017,16 @@ Bool __stdcall DasmX86_32_03(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	{
 		*regPtr = memVal + *regPtr;
 	}
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"add ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("add "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, regs);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 /*	if ((sess->thisStatus & 0x80000000) == 0)
 	{
 		if (reg == 4)
 		{
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"Unknown operation to stack\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("Unknown operation to stack\r\n"));
 			return false;
 		}
 	}*/
@@ -1035,9 +1035,9 @@ Bool __stdcall DasmX86_32_03(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 
 Bool __stdcall DasmX86_32_04(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 {
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"add AL,");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("add AL,"));
 	sess->sbuff = Text::StrInt32(sess->sbuff, sess->memReader->ReadMemUInt8(sess->regs.EIP + 1));
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	sess->regs.EIP += 2;
 	return true;
 }
@@ -1046,14 +1046,14 @@ Bool __stdcall DasmX86_32_05(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 {
 	if (sess->thisStatus & 1)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"add AX,");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("add AX,"));
 		sess->sbuff = Text::StrInt32(sess->sbuff, (Int16)sess->memReader->ReadMemUInt16(sess->regs.EIP + 1));
 		sess->regs.EIP += 3;
 		return true;
 	}
 	else
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"add EAX,");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("add EAX,"));
 		sess->sbuff = Text::StrInt32(sess->sbuff, (Int32)sess->memReader->ReadMemUInt32(sess->regs.EIP + 1));
 		sess->regs.EIP += 5;
 		return true;
@@ -1062,14 +1062,14 @@ Bool __stdcall DasmX86_32_05(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 
 Bool __stdcall DasmX86_32_06(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 {
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"push ES\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("push ES\r\n"));
 	sess->regs.EIP += 1;
 	return true;
 }
 
 Bool __stdcall DasmX86_32_07(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 {
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pop ES\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pop ES\r\n"));
 	sess->regs.EIP += 1;
 	return true;
 }
@@ -1084,11 +1084,11 @@ Bool __stdcall DasmX86_32_08(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	sess->regs.EIP += 1;
 	DasmX86_32_ParseModRM8(sess, mem, &regNo, &memVal);
 	DasmX86_32_ParseReg8(sess, reg, regNo, &regPtr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"or ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("or "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -1102,11 +1102,11 @@ Bool __stdcall DasmX86_32_09(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	sess->regs.EIP += 1;
 	DasmX86_32_ParseModRM32(sess, mem, &regNo, &memVal, 0);
 	DasmX86_32_ParseReg(sess, reg, regNo, &regPtr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"or ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("or "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -1120,11 +1120,11 @@ Bool __stdcall DasmX86_32_0a(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	sess->regs.EIP += 1;
 	DasmX86_32_ParseModRM8(sess, mem, &regNo, &memVal);
 	DasmX86_32_ParseReg8(sess, reg, regNo, &regPtr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"or ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("or "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	*regPtr |= memVal;
 	return true;
 }
@@ -1139,11 +1139,11 @@ Bool __stdcall DasmX86_32_0b(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	sess->regs.EIP += 1;
 	DasmX86_32_ParseModRM32(sess, mem, &regNo, &memVal, 0);
 	DasmX86_32_ParseReg(sess, reg, regNo, &regPtr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"or ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("or "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	if (sess->thisStatus)
 	{
 		OrEqU16((UInt16*)regPtr, (UInt16)memVal);
@@ -1158,9 +1158,9 @@ Bool __stdcall DasmX86_32_0b(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 Bool __stdcall DasmX86_32_0c(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 {
 	UInt8 v = sess->memReader->ReadMemUInt8(sess->regs.EIP + 1);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"or AL, ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("or AL, "));
 	sess->sbuff = Text::StrInt32(sess->sbuff, v);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	sess->regs.EIP += 2;
 	sess->regs.EAX |= v;
 	return true;
@@ -1171,7 +1171,7 @@ Bool __stdcall DasmX86_32_0d(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	if (sess->thisStatus & 1)
 	{
 		UInt16 v = sess->memReader->ReadMemUInt16(sess->regs.EIP + 1);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"or AX, 0x");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("or AX, 0x"));
 		sess->sbuff = Text::StrHexVal16(sess->sbuff, v);
 		sess->regs.EIP += 3;
 		sess->regs.EAX |= v;
@@ -1179,18 +1179,18 @@ Bool __stdcall DasmX86_32_0d(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	else
 	{
 		UInt32 v = sess->memReader->ReadMemUInt32(sess->regs.EIP + 1);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"or EAX, 0x");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("or EAX, 0x"));
 		sess->sbuff = Text::StrHexVal32(sess->sbuff, v);
 		sess->regs.EIP += 5;
 		sess->regs.EAX |= v;
 	}
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
 Bool __stdcall DasmX86_32_0e(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 {
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"push CS\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("push CS\r\n"));
 	sess->regs.EIP += 1;
 	return true;
 }
@@ -1210,12 +1210,12 @@ Bool __stdcall DasmX86_32_10(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 
 	sess->regs.EIP++;
 	DasmX86_32_ParseModRM8(sess, mem, &reg, &memVal);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"adc ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("adc "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 	DasmX86_32_ParseReg8(sess, mem, reg, &regPtr);
 	sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -1229,15 +1229,15 @@ Bool __stdcall DasmX86_32_11(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 
 	sess->regs.EIP++;
 	DasmX86_32_ParseModRM32(sess, mem, &reg, &memVal, 0);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"adc ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("adc "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 	DasmX86_32_ParseReg(sess, mem, reg, &regPtr);
 	sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	if ((b & 0xc7) == 0xc4)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"Unknown operation to stack\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("Unknown operation to stack\r\n"));
 		return false;
 	}
 	else
@@ -1258,11 +1258,11 @@ Bool __stdcall DasmX86_32_12(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	sess->regs.EIP++;
 	DasmX86_32_ParseModRM8(sess, mem, &reg, &memVal);
 	DasmX86_32_ParseReg8(sess, regs, reg, &regPtr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"adc ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("adc "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, regs);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	AddEqU8(regPtr, memVal);
 	return true;
 }
@@ -1279,11 +1279,11 @@ Bool __stdcall DasmX86_32_13(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	sess->regs.EIP++;
 	DasmX86_32_ParseModRM32(sess, mem, &reg, &memVal, 0);
 	DasmX86_32_ParseReg(sess, regs, reg, &regPtr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"adc ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("adc "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, regs);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	if (sess->thisStatus & 1)
 	{
 		AddEqU16((UInt16*)regPtr, (UInt16)(memVal & 0xffff));
@@ -1294,7 +1294,7 @@ Bool __stdcall DasmX86_32_13(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	}
 	if ((b & 0xc7) == 0xc4)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"Unknown operation to stack\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("Unknown operation to stack\r\n"));
 		return false;
 	}
 	else
@@ -1305,9 +1305,9 @@ Bool __stdcall DasmX86_32_13(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 
 Bool __stdcall DasmX86_32_14(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 {
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"adc al,");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("adc al,"));
 	sess->sbuff = Text::StrInt32(sess->sbuff, sess->memReader->ReadMemUInt8(sess->regs.EIP + 1));
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	sess->regs.EIP += 2;
 	return true;
 }
@@ -1316,17 +1316,17 @@ Bool __stdcall DasmX86_32_15(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 {
 	if (sess->thisStatus & 1)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"adc ax,");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("adc ax,"));
 		sess->sbuff = Text::StrInt32(sess->sbuff, (Int16)sess->memReader->ReadMemUInt16(sess->regs.EIP + 1));
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		sess->regs.EIP += 3;
 		return true;
 	}
 	else
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"adc eax,");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("adc eax,"));
 		sess->sbuff = Text::StrInt32(sess->sbuff, (Int32)sess->memReader->ReadMemUInt32(sess->regs.EIP + 1));
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		sess->regs.EIP += 4;
 		return true;
 	}
@@ -1334,14 +1334,14 @@ Bool __stdcall DasmX86_32_15(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 
 Bool __stdcall DasmX86_32_16(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 {
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"push SS\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("push SS\r\n"));
 	sess->regs.EIP += 1;
 	return true;
 }
 
 Bool __stdcall DasmX86_32_17(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 {
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pop SS\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pop SS\r\n"));
 	sess->regs.EIP += 1;
 	return true;
 }
@@ -1356,11 +1356,11 @@ Bool __stdcall DasmX86_32_18(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	sess->regs.EIP += 1;
 	DasmX86_32_ParseModRM8(sess, mem, &regNo, &memVal);
 	DasmX86_32_ParseReg8(sess, reg, regNo, &regPtr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"sbb ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("sbb "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -1374,11 +1374,11 @@ Bool __stdcall DasmX86_32_19(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	sess->regs.EIP += 1;
 	DasmX86_32_ParseModRM32(sess, mem, &regNo, &memVal, 0);
 	DasmX86_32_ParseReg(sess, reg, regNo, &regPtr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"sbb ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("sbb "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -1392,11 +1392,11 @@ Bool __stdcall DasmX86_32_1a(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	sess->regs.EIP += 1;
 	DasmX86_32_ParseModRM8(sess, mem, &regNo, &memVal);
 	DasmX86_32_ParseReg8(sess, reg, regNo, &regPtr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"sbb ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("sbb "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	SubEqU8(regPtr, memVal);
 	return true;
 }
@@ -1411,11 +1411,11 @@ Bool __stdcall DasmX86_32_1b(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	sess->regs.EIP += 1;
 	DasmX86_32_ParseModRM32(sess, mem, &regNo, &memVal, 0);
 	DasmX86_32_ParseReg(sess, reg, regNo, &regPtr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"sbb ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("sbb "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	if (sess->thisStatus & 1)
 	{
 		SubEqU16((UInt16*)regPtr, (UInt16)(memVal & 0xffff));
@@ -1430,9 +1430,9 @@ Bool __stdcall DasmX86_32_1b(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 Bool __stdcall DasmX86_32_1c(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 {
 	UInt8 v = sess->memReader->ReadMemUInt8(sess->regs.EIP + 1);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"sbb AL, ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("sbb AL, "));
 	sess->sbuff = Text::StrInt32(sess->sbuff, v);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	sess->regs.EIP += 2;
 	SubEqU8((UInt8*)&sess->regs.EAX, v);
 	return true;
@@ -1442,30 +1442,30 @@ Bool __stdcall DasmX86_32_1d(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 {
 	if (sess->thisStatus & 1)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"sbb AL, ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("sbb AL, "));
 		sess->sbuff = Text::StrInt32(sess->sbuff, (Int16)sess->memReader->ReadMemUInt16(sess->regs.EIP + 1));
 		sess->regs.EIP += 3;
 	}
 	else
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"sbb AL, ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("sbb AL, "));
 		sess->sbuff = Text::StrInt32(sess->sbuff, (Int32)sess->memReader->ReadMemUInt32(sess->regs.EIP + 1));
 		sess->regs.EIP += 5;
 	}
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
 Bool __stdcall DasmX86_32_1e(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 {
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"push DS\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("push DS\r\n"));
 	sess->regs.EIP += 1;
 	return true;
 }
 
 Bool __stdcall DasmX86_32_1f(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 {
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pop DS\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pop DS\r\n"));
 	sess->regs.EIP += 1;
 	return true;
 }
@@ -1482,11 +1482,11 @@ Bool __stdcall DasmX86_32_20(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	sess->regs.EIP++;
 	DasmX86_32_ParseModRM8(sess, mem, &reg, &memVal);
 	DasmX86_32_ParseReg8(sess, regs, reg, &regPtr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"and ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("and "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, regs);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -1502,14 +1502,14 @@ Bool __stdcall DasmX86_32_21(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	sess->regs.EIP++;
 	DasmX86_32_ParseModRM32(sess, mem, &reg, &memVal, 0);
 	DasmX86_32_ParseReg(sess, regs, reg, &regPtr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"and ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("and "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, regs);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	if ((b & 0xc7) == 0xc4)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"Unknown operation to stack\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("Unknown operation to stack\r\n"));
 		return false;
 	}
 	else
@@ -1530,11 +1530,11 @@ Bool __stdcall DasmX86_32_22(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	sess->regs.EIP++;
 	DasmX86_32_ParseModRM8(sess, mem, &reg, &memVal);
 	DasmX86_32_ParseReg8(sess, regs, reg, &regPtr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"and ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("and "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, regs);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	*regPtr &= memVal;
 	return true;
 }
@@ -1551,11 +1551,11 @@ Bool __stdcall DasmX86_32_23(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	sess->regs.EIP++;
 	DasmX86_32_ParseModRM32(sess, mem, &reg, &memVal, 0);
 	DasmX86_32_ParseReg(sess, regs, reg, &regPtr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"and ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("and "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, regs);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	if (sess->thisStatus & 1)
 	{
 		*(UInt16*)regPtr &= (UInt16)(memVal & 0xffff);
@@ -1566,7 +1566,7 @@ Bool __stdcall DasmX86_32_23(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	}
 	if ((b & 0xc7) == 0xc4)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"Unknown operation to stack\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("Unknown operation to stack\r\n"));
 		return false;
 	}
 	else
@@ -1578,10 +1578,10 @@ Bool __stdcall DasmX86_32_23(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 Bool __stdcall DasmX86_32_24(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 {
 	UInt8 v = sess->memReader->ReadMemUInt8(sess->regs.EIP + 1);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"and AL, ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("and AL, "));
 	sess->sbuff = Text::StrInt32(sess->sbuff, v);
 	sess->regs.EIP += 2;
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	sess->regs.EAX &= v;
 	return true;
 }
@@ -1591,7 +1591,7 @@ Bool __stdcall DasmX86_32_25(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	if (sess->thisStatus & 1)
 	{
 		UInt16 v = sess->memReader->ReadMemUInt16(sess->regs.EIP + 1);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"and AX, 0x");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("and AX, 0x"));
 		sess->sbuff = Text::StrHexVal16(sess->sbuff, v);
 		sess->regs.EIP += 3;
 		sess->regs.EAX &= v;
@@ -1599,12 +1599,12 @@ Bool __stdcall DasmX86_32_25(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	else
 	{
 		UInt32 v = sess->memReader->ReadMemUInt32(sess->regs.EIP + 1);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"and EAX, 0x");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("and EAX, 0x"));
 		sess->sbuff = Text::StrHexVal32(sess->sbuff, v);
 		sess->regs.EIP += 5;
 		sess->regs.EAX &= v;
 	}
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -1618,7 +1618,7 @@ Bool __stdcall DasmX86_32_26(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 
 Bool __stdcall DasmX86_32_27(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 {
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"daa\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("daa\r\n"));
 	sess->regs.EIP++;
 	return true;
 }
@@ -1635,11 +1635,11 @@ Bool __stdcall DasmX86_32_28(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	DasmX86_32_ParseModRM8(sess, mem, &regNo, &memVal);
 	DasmX86_32_ParseReg8(sess, reg, regNo, &regPtr);
 
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"sub ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("sub "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -1655,11 +1655,11 @@ Bool __stdcall DasmX86_32_29(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	DasmX86_32_ParseModRM32(sess, mem, &regNo, &memVal, 0);
 	DasmX86_32_ParseReg(sess, reg, regNo, &regPtr);
 
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"sub ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("sub "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -1675,11 +1675,11 @@ Bool __stdcall DasmX86_32_2a(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	DasmX86_32_ParseModRM8(sess, mem, &regNo, &memVal);
 	DasmX86_32_ParseReg8(sess, reg, regNo, &regPtr);
 
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"sub ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("sub "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	SubEqU8(regPtr, memVal);
 	return true;
 }
@@ -1696,11 +1696,11 @@ Bool __stdcall DasmX86_32_2b(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	DasmX86_32_ParseModRM32(sess, mem, &regNo, &memVal, 0);
 	DasmX86_32_ParseReg(sess, reg, regNo, &regPtr);
 
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"sub ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("sub "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	if (sess->thisStatus & 1)
 	{
 		SubEqU16((UInt16*)regPtr, (UInt16)(memVal & 0xffff));
@@ -1715,9 +1715,9 @@ Bool __stdcall DasmX86_32_2b(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 Bool __stdcall DasmX86_32_2c(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 {
 	UInt8 v = sess->memReader->ReadMemUInt8(sess->regs.EIP + 1);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"sub AL, ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("sub AL, "));
 	sess->sbuff = Text::StrInt32(sess->sbuff, v);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	sess->regs.EIP += 2;
 	SubEqU8((UInt8*)&sess->regs.EAX, v);
 	return true;
@@ -1728,7 +1728,7 @@ Bool __stdcall DasmX86_32_2d(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	if (sess->thisStatus & 1)
 	{
 		UInt16 v = sess->memReader->ReadMemUInt16(sess->regs.EIP + 1);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"sub AX, 0x");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("sub AX, 0x"));
 		sess->sbuff = Text::StrHexVal16(sess->sbuff, v);
 		sess->regs.EIP += 3;
 		SubEqU16((UInt16*)&sess->regs.EAX, v);
@@ -1736,12 +1736,12 @@ Bool __stdcall DasmX86_32_2d(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	else
 	{
 		UInt32 v = sess->memReader->ReadMemUInt32(sess->regs.EIP + 1);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"sub EAX, 0x");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("sub EAX, 0x"));
 		sess->sbuff = Text::StrHexVal32(sess->sbuff, v);
 		sess->regs.EIP += 5;
 		sess->regs.EAX -= v;
 	}
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -1755,7 +1755,7 @@ Bool __stdcall DasmX86_32_2e(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 
 Bool __stdcall DasmX86_32_2f(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 {
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"das\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("das\r\n"));
 	sess->regs.EIP++;
 	return true;
 }
@@ -1770,11 +1770,11 @@ Bool __stdcall DasmX86_32_30(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	sess->regs.EIP++;
 	DasmX86_32_ParseModRM8(sess, mem, &regNo, &memVal);
 	DasmX86_32_ParseReg8(sess, reg, regNo, &regPtr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"xor ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("xor "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -1788,11 +1788,11 @@ Bool __stdcall DasmX86_32_31(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	sess->regs.EIP++;
 	DasmX86_32_ParseModRM32(sess, mem, &regNo, &memVal, 0);
 	DasmX86_32_ParseReg(sess, reg, regNo, &regPtr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"xor ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("xor "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -1806,11 +1806,11 @@ Bool __stdcall DasmX86_32_32(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	sess->regs.EIP++;
 	DasmX86_32_ParseModRM8(sess, mem, &regNo, &memVal);
 	DasmX86_32_ParseReg8(sess, reg, regNo, &regPtr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"xor ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("xor "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	*regPtr ^= memVal;
 	return true;
 }
@@ -1825,11 +1825,11 @@ Bool __stdcall DasmX86_32_33(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	sess->regs.EIP++;
 	DasmX86_32_ParseModRM32(sess, mem, &regNo, &memVal, 0);
 	DasmX86_32_ParseReg(sess, reg, regNo, &regPtr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"xor ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("xor "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	if (sess->thisStatus & 1)
 	{
 		*regPtr ^= memVal & 0xffff;
@@ -1844,9 +1844,9 @@ Bool __stdcall DasmX86_32_33(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 Bool __stdcall DasmX86_32_34(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 {
 	UInt8 v = sess->memReader->ReadMemUInt8(sess->regs.EIP + 1);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"xor AL, ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("xor AL, "));
 	sess->sbuff = Text::StrInt32(sess->sbuff, v);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	sess->regs.EIP += 2;
 	sess->regs.EAX ^= v;
 	return true;
@@ -1857,7 +1857,7 @@ Bool __stdcall DasmX86_32_35(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	if (sess->thisStatus & 1)
 	{
 		UInt16 v = sess->memReader->ReadMemUInt16(sess->regs.EIP + 1);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"xor AX, 0x");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("xor AX, 0x"));
 		sess->sbuff = Text::StrHexVal16(sess->sbuff, v);
 		sess->regs.EIP += 3;
 		sess->regs.EAX ^= v;
@@ -1865,12 +1865,12 @@ Bool __stdcall DasmX86_32_35(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	else
 	{
 		UInt32 v = sess->memReader->ReadMemUInt32(sess->regs.EIP + 1);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"xor EAX, 0x");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("xor EAX, 0x"));
 		sess->sbuff = Text::StrHexVal32(sess->sbuff, v);
 		sess->regs.EIP += 5;
 		sess->regs.EAX ^= v;
 	}
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -1884,7 +1884,7 @@ Bool __stdcall DasmX86_32_36(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 
 Bool __stdcall DasmX86_32_37(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 {
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"aaa\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("aaa\r\n"));
 	sess->regs.EIP++;
 	return true;
 }
@@ -1899,11 +1899,11 @@ Bool __stdcall DasmX86_32_38(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	sess->regs.EIP += 1;
 	DasmX86_32_ParseModRM8(sess, mem, &regNo, &memVal);
 	DasmX86_32_ParseReg8(sess, reg, regNo, &regPtr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"cmp ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("cmp "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -1917,11 +1917,11 @@ Bool __stdcall DasmX86_32_39(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	sess->regs.EIP += 1;
 	DasmX86_32_ParseModRM32(sess, mem, &regNo, &memVal, 0);
 	DasmX86_32_ParseReg(sess, reg, regNo, &regPtr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"cmp ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("cmp "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -1935,11 +1935,11 @@ Bool __stdcall DasmX86_32_3a(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	sess->regs.EIP += 1;
 	DasmX86_32_ParseModRM8(sess, mem, &regNo, &memVal);
 	DasmX86_32_ParseReg8(sess, reg, regNo, &regPtr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"cmp ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("cmp "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -1953,20 +1953,20 @@ Bool __stdcall DasmX86_32_3b(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	sess->regs.EIP += 1;
 	DasmX86_32_ParseModRM32(sess, mem, &regNo, &memVal, 0);
 	DasmX86_32_ParseReg(sess, reg, regNo, &regPtr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"cmp ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("cmp "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
 Bool __stdcall DasmX86_32_3c(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 {
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"cmp AL, ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("cmp AL, "));
 	sess->sbuff = Text::StrInt32(sess->sbuff, sess->memReader->ReadMemUInt8(sess->regs.EIP + 1));
 	sess->regs.EIP += 2;
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -1974,17 +1974,17 @@ Bool __stdcall DasmX86_32_3d(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 {
 	if (sess->thisStatus & 1)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"cmp AX, ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("cmp AX, "));
 		sess->sbuff = Text::StrInt32(sess->sbuff, (Int16)sess->memReader->ReadMemUInt16(sess->regs.EIP + 1));
 		sess->regs.EIP += 3;
 	}
 	else
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"cmp EAX, ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("cmp EAX, "));
 		sess->sbuff = Text::StrHexVal32(sess->sbuff, sess->memReader->ReadMemUInt32(sess->regs.EIP + 1));
 		sess->regs.EIP += 5;
 	}
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 
 	return true;
 }
@@ -2000,7 +2000,7 @@ Bool __stdcall DasmX86_32_3e(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 Bool __stdcall DasmX86_32_3f(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 {
 	sess->regs.EIP++;
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"aas\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("aas\r\n"));
 	return true;
 }
 
@@ -2010,9 +2010,9 @@ Bool __stdcall DasmX86_32_40(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	UInt32 *regPtr;
 	DasmX86_32_ParseReg(sess, reg, 0, &regPtr);
 	sess->regs.EIP += 1;
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"inc ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("inc "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	if (sess->thisStatus & 1)
 	{
 		++*(UInt16*)regPtr;
@@ -2030,9 +2030,9 @@ Bool __stdcall DasmX86_32_41(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	UInt32 *regPtr;
 	DasmX86_32_ParseReg(sess, reg, 1, &regPtr);
 	sess->regs.EIP += 1;
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"inc ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("inc "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	if (sess->thisStatus & 1)
 	{
 		++*(UInt16*)regPtr;
@@ -2050,9 +2050,9 @@ Bool __stdcall DasmX86_32_42(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	UInt32 *regPtr;
 	DasmX86_32_ParseReg(sess, reg, 2, &regPtr);
 	sess->regs.EIP += 1;
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"inc ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("inc "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	if (sess->thisStatus & 1)
 	{
 		++*(UInt16*)regPtr;
@@ -2070,9 +2070,9 @@ Bool __stdcall DasmX86_32_43(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	UInt32 *regPtr;
 	DasmX86_32_ParseReg(sess, reg, 3, &regPtr);
 	sess->regs.EIP += 1;
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"inc ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("inc "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	if (sess->thisStatus & 1)
 	{
 		++*(UInt16*)regPtr;
@@ -2090,9 +2090,9 @@ Bool __stdcall DasmX86_32_44(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	UInt32 *regPtr;
 	DasmX86_32_ParseReg(sess, reg, 4, &regPtr);
 	sess->regs.EIP += 1;
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"inc ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("inc "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	if ((sess->thisStatus & 0x80000000) == 0)
 	{
 		if (sess->thisStatus & 1)
@@ -2113,9 +2113,9 @@ Bool __stdcall DasmX86_32_45(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	UInt32 *regPtr;
 	DasmX86_32_ParseReg(sess, reg, 5, &regPtr);
 	sess->regs.EIP += 1;
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"inc ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("inc "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	if ((sess->thisStatus & 0x80000000) == 0)
 	{
 		if (sess->thisStatus & 1)
@@ -2136,9 +2136,9 @@ Bool __stdcall DasmX86_32_46(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	UInt32 *regPtr;
 	DasmX86_32_ParseReg(sess, reg, 6, &regPtr);
 	sess->regs.EIP += 1;
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"inc ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("inc "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	if (sess->thisStatus & 1)
 	{
 		++*(UInt16*)regPtr;
@@ -2156,9 +2156,9 @@ Bool __stdcall DasmX86_32_47(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	UInt32 *regPtr;
 	DasmX86_32_ParseReg(sess, reg, 7, &regPtr);
 	sess->regs.EIP += 1;
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"inc ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("inc "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	if (sess->thisStatus & 1)
 	{
 		++*(UInt16*)regPtr;
@@ -2176,9 +2176,9 @@ Bool __stdcall DasmX86_32_48(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	UInt32 *regPtr;
 	DasmX86_32_ParseReg(sess, reg, 0, &regPtr);
 	sess->regs.EIP += 1;
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"dec ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("dec "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	if (sess->thisStatus & 1)
 	{
 		--*(UInt16*)regPtr;
@@ -2196,9 +2196,9 @@ Bool __stdcall DasmX86_32_49(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	UInt32 *regPtr;
 	DasmX86_32_ParseReg(sess, reg, 1, &regPtr);
 	sess->regs.EIP += 1;
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"dec ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("dec "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	if (sess->thisStatus & 1)
 	{
 		--*(UInt16*)regPtr;
@@ -2216,9 +2216,9 @@ Bool __stdcall DasmX86_32_4a(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	UInt32 *regPtr;
 	DasmX86_32_ParseReg(sess, reg, 2, &regPtr);
 	sess->regs.EIP += 1;
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"dec ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("dec "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	if (sess->thisStatus & 1)
 	{
 		--*(UInt16*)regPtr;
@@ -2236,9 +2236,9 @@ Bool __stdcall DasmX86_32_4b(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	UInt32 *regPtr;
 	DasmX86_32_ParseReg(sess, reg, 3, &regPtr);
 	sess->regs.EIP += 1;
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"dec ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("dec "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	if (sess->thisStatus & 1)
 	{
 		--*(UInt16*)regPtr;
@@ -2256,9 +2256,9 @@ Bool __stdcall DasmX86_32_4c(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	UInt32 *regPtr;
 	DasmX86_32_ParseReg(sess, reg, 4, &regPtr);
 	sess->regs.EIP += 1;
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"dec ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("dec "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	if ((sess->thisStatus & 0x80000000) == 0)
 	{
 		if (sess->thisStatus & 1)
@@ -2279,9 +2279,9 @@ Bool __stdcall DasmX86_32_4d(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	UInt32 *regPtr;
 	DasmX86_32_ParseReg(sess, reg, 5, &regPtr);
 	sess->regs.EIP += 1;
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"dec ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("dec "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	if ((sess->thisStatus & 0x80000000) == 0)
 	{
 		if (sess->thisStatus & 1)
@@ -2302,9 +2302,9 @@ Bool __stdcall DasmX86_32_4e(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	UInt32 *regPtr;
 	DasmX86_32_ParseReg(sess, reg, 6, &regPtr);
 	sess->regs.EIP += 1;
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"dec ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("dec "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	if (sess->thisStatus & 1)
 	{
 		--*(UInt16*)regPtr;
@@ -2322,9 +2322,9 @@ Bool __stdcall DasmX86_32_4f(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	UInt32 *regPtr;
 	DasmX86_32_ParseReg(sess, reg, 7, &regPtr);
 	sess->regs.EIP += 1;
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"dec ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("dec "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	if (sess->thisStatus & 1)
 	{
 		--*(UInt16*)regPtr;
@@ -2342,9 +2342,9 @@ Bool __stdcall DasmX86_32_50(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	UInt32 *regPtr;
 	DasmX86_32_ParseReg(sess, reg, 0, &regPtr);
 	sess->regs.EIP += 1;
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"push ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("push "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	if ((sess->thisStatus & 0x80000000) == 0)
 	{
 		sess->regs.ESP -= 4;
@@ -2358,9 +2358,9 @@ Bool __stdcall DasmX86_32_51(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	UInt32 *regPtr;
 	DasmX86_32_ParseReg(sess, reg, 1, &regPtr);
 	sess->regs.EIP += 1;
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"push ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("push "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	if ((sess->thisStatus & 0x80000000) == 0)
 	{
 		sess->regs.ESP -= 4;
@@ -2374,9 +2374,9 @@ Bool __stdcall DasmX86_32_52(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	UInt32 *regPtr;
 	DasmX86_32_ParseReg(sess, reg, 2, &regPtr);
 	sess->regs.EIP += 1;
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"push ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("push "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	if ((sess->thisStatus & 0x80000000) == 0)
 	{
 		sess->regs.ESP -= 4;
@@ -2390,9 +2390,9 @@ Bool __stdcall DasmX86_32_53(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	UInt32 *regPtr;
 	DasmX86_32_ParseReg(sess, reg, 3, &regPtr);
 	sess->regs.EIP += 1;
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"push ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("push "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	if ((sess->thisStatus & 0x80000000) == 0)
 	{
 		sess->regs.ESP -= 4;
@@ -2406,9 +2406,9 @@ Bool __stdcall DasmX86_32_54(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	UInt32 *regPtr;
 	DasmX86_32_ParseReg(sess, reg, 4, &regPtr);
 	sess->regs.EIP += 1;
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"push ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("push "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	if ((sess->thisStatus & 0x80000000) == 0)
 	{
 		sess->regs.ESP -= 4;
@@ -2422,9 +2422,9 @@ Bool __stdcall DasmX86_32_55(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	UInt32 *regPtr;
 	DasmX86_32_ParseReg(sess, reg, 5, &regPtr);
 	sess->regs.EIP += 1;
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"push ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("push "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	if ((sess->thisStatus & 0x80000000) == 0)
 	{
 		sess->regs.ESP -= 4;
@@ -2439,9 +2439,9 @@ Bool __stdcall DasmX86_32_56(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	UInt32 *regPtr;
 	DasmX86_32_ParseReg(sess, reg, 6, &regPtr);
 	sess->regs.EIP += 1;
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"push ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("push "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	if ((sess->thisStatus & 0x80000000) == 0)
 	{
 		sess->regs.ESP -= 4;
@@ -2455,9 +2455,9 @@ Bool __stdcall DasmX86_32_57(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	UInt32 *regPtr;
 	DasmX86_32_ParseReg(sess, reg, 7, &regPtr);
 	sess->regs.EIP += 1;
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"push ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("push "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	if ((sess->thisStatus & 0x80000000) == 0)
 	{
 		sess->regs.ESP -= 4;
@@ -2469,10 +2469,10 @@ Bool __stdcall DasmX86_32_58(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 {
 	UTF8Char reg[5];
 	UInt32 *regPtr;
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pop ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pop "));
 	DasmX86_32_ParseReg32(sess, reg, 0, &regPtr);
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	if ((sess->thisStatus & 0x80000000) == 0)
 	{
 		sess->espOfst += 4;
@@ -2486,10 +2486,10 @@ Bool __stdcall DasmX86_32_59(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 {
 	UTF8Char reg[5];
 	UInt32 *regPtr;
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pop ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pop "));
 	DasmX86_32_ParseReg32(sess, reg, 1, &regPtr);
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	if ((sess->thisStatus & 0x80000000) == 0)
 	{
 		sess->espOfst += 4;
@@ -2503,10 +2503,10 @@ Bool __stdcall DasmX86_32_5a(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 {
 	UTF8Char reg[5];
 	UInt32 *regPtr;
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pop ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pop "));
 	DasmX86_32_ParseReg32(sess, reg, 2, &regPtr);
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	if ((sess->thisStatus & 0x80000000) == 0)
 	{
 		sess->espOfst += 4;
@@ -2520,10 +2520,10 @@ Bool __stdcall DasmX86_32_5b(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 {
 	UTF8Char reg[5];
 	UInt32 *regPtr;
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pop ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pop "));
 	DasmX86_32_ParseReg32(sess, reg, 3, &regPtr);
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	if ((sess->thisStatus & 0x80000000) == 0)
 	{
 		sess->espOfst += 4;
@@ -2537,10 +2537,10 @@ Bool __stdcall DasmX86_32_5c(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 {
 	UTF8Char reg[5];
 	UInt32 *regPtr;
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pop ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pop "));
 	DasmX86_32_ParseReg32(sess, reg, 4, &regPtr);
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	if ((sess->thisStatus & 0x80000000) == 0)
 	{
 		sess->espOfst += (sess->memReader->ReadMemUInt32(sess->regs.EIP) - sess->regs.EIP);
@@ -2554,10 +2554,10 @@ Bool __stdcall DasmX86_32_5d(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 {
 	UTF8Char reg[5];
 	UInt32 *regPtr;
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pop ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pop "));
 	DasmX86_32_ParseReg32(sess, reg, 5, &regPtr);
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	if ((sess->thisStatus & 0x80000000) == 0)
 	{
 		sess->regs.EBP = sess->memReader->ReadMemUInt32(sess->regs.ESP);
@@ -2572,10 +2572,10 @@ Bool __stdcall DasmX86_32_5e(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 {
 	UTF8Char reg[5];
 	UInt32 *regPtr;
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pop ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pop "));
 	DasmX86_32_ParseReg32(sess, reg, 6, &regPtr);
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	if ((sess->thisStatus & 0x80000000) == 0)
 	{
 		sess->espOfst += 4;
@@ -2589,10 +2589,10 @@ Bool __stdcall DasmX86_32_5f(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 {
 	UTF8Char reg[5];
 	UInt32 *regPtr;
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pop ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pop "));
 	DasmX86_32_ParseReg32(sess, reg, 7, &regPtr);
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	if ((sess->thisStatus & 0x80000000) == 0)
 	{
 		sess->regs.ESP += 4;
@@ -2606,11 +2606,11 @@ Bool __stdcall DasmX86_32_60(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 {
 	if (sess->thisStatus & 1)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pusha\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pusha\r\n"));
 	}
 	else
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pushad\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pushad\r\n"));
 	}
 	sess->regs.EIP += 1;
 	return true;
@@ -2620,11 +2620,11 @@ Bool __stdcall DasmX86_32_61(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 {
 	if (sess->thisStatus & 1)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"popa\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("popa\r\n"));
 	}
 	else
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"popad\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("popad\r\n"));
 	}
 	sess->regs.EIP += 1;
 	return true;
@@ -2649,11 +2649,11 @@ Bool __stdcall DasmX86_32_62(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		DasmX86_32_ParseModRM32(sess, mem, &regNo, &memVal, 0);
 		DasmX86_32_ParseReg32(sess, reg, regNo, &regPtr);
 	}
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"bound ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("bound "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -2667,11 +2667,11 @@ Bool __stdcall DasmX86_32_63(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	sess->regs.EIP += 1;
 	DasmX86_32_ParseModRM16(sess, mem, &regNo, &memVal);
 	DasmX86_32_ParseReg16(sess, reg, regNo, &regPtr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"arpl ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("arpl "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -2708,15 +2708,15 @@ Bool __stdcall DasmX86_32_68(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	Int32 iVal = (Int32)sess->memReader->ReadMemUInt32(sess->regs.EIP + 1);
 	if (iVal > -128 && iVal < 128)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"push ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("push "));
 		sess->sbuff = Text::StrInt32(sess->sbuff, iVal);
 	}
 	else
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"push 0x");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("push 0x"));
 		sess->sbuff = Text::StrHexVal32(sess->sbuff, (UInt32)iVal);
 	}
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	sess->regs.EIP += 5;
 	sess->regs.ESP -= 4;
 	return true;
@@ -2732,11 +2732,11 @@ Bool __stdcall DasmX86_32_69(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	sess->regs.EIP += 1;
 	DasmX86_32_ParseModRM32(sess, mem, &regNo, &memVal, 0);
 	DasmX86_32_ParseReg(sess, reg, regNo, &regPtr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"imul ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("imul "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 	if (sess->thisStatus & 1)
 	{
 		sess->sbuff = Text::StrInt32(sess->sbuff, (Int16)sess->memReader->ReadMemUInt16(sess->regs.EIP));
@@ -2747,15 +2747,15 @@ Bool __stdcall DasmX86_32_69(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->sbuff = Text::StrInt32(sess->sbuff, (Int32)sess->memReader->ReadMemUInt32(sess->regs.EIP));
 		sess->regs.EIP += 4;
 	}
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
 Bool __stdcall DasmX86_32_6a(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 {
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"push ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("push "));
 	sess->sbuff = Text::StrInt32(sess->sbuff, sess->memReader->ReadMemUInt8(sess->regs.EIP + 1));
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	sess->regs.EIP += 2;
 	sess->regs.ESP -= 4;
 	return true;
@@ -2771,13 +2771,13 @@ Bool __stdcall DasmX86_32_6b(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	sess->regs.EIP += 1;
 	DasmX86_32_ParseModRM32(sess, mem, &regNo, &memVal, 0);
 	DasmX86_32_ParseReg(sess, reg, regNo, &regPtr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"imul ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("imul "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 	sess->sbuff = Text::StrInt32(sess->sbuff, (Int8)sess->memReader->ReadMemUInt8(sess->regs.EIP));
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	sess->regs.EIP += 1;
 	return true;
 }
@@ -2786,9 +2786,9 @@ Bool __stdcall DasmX86_32_6c(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 {
 	if ((sess->thisStatus & 5) == 5)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"rep ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("rep "));
 	}
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"insb\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("insb\r\n"));
 	sess->regs.EIP += 1;
 	return true;
 }
@@ -2797,15 +2797,15 @@ Bool __stdcall DasmX86_32_6d(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 {
 	if ((sess->thisStatus & 5) == 5)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"rep ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("rep "));
 	}
 	if (sess->thisStatus & 1)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"insw\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("insw\r\n"));
 	}
 	else
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"insd\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("insd\r\n"));
 	}
 	sess->regs.EIP += 1;
 	return true;
@@ -2815,9 +2815,9 @@ Bool __stdcall DasmX86_32_6e(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 {
 	if ((sess->thisStatus & 5) == 5)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"rep ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("rep "));
 	}
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"outsb\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("outsb\r\n"));
 	sess->regs.EIP += 1;
 	return true;
 }
@@ -2826,15 +2826,15 @@ Bool __stdcall DasmX86_32_6f(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 {
 	if ((sess->thisStatus & 5) == 5)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"rep ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("rep "));
 	}
 	if (sess->thisStatus & 1)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"outsw\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("outsw\r\n"));
 	}
 	else
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"outsd\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("outsd\r\n"));
 	}
 	sess->regs.EIP += 1;
 	return true;
@@ -2845,9 +2845,9 @@ Bool __stdcall DasmX86_32_70(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	UInt32 addr = (UInt32)((Int32)sess->regs.EIP + 2 + (Int8)sess->memReader->ReadMemUInt8(sess->regs.EIP + 1));
 	sess->regs.EIP += 2;
 	sess->jmpAddrs->Add(addr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"jo 0x");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("jo 0x"));
 	sess->sbuff = Text::StrHexVal32(sess->sbuff, addr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -2856,9 +2856,9 @@ Bool __stdcall DasmX86_32_71(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	UInt32 addr = (UInt32)((Int32)sess->regs.EIP + 2 + (Int8)sess->memReader->ReadMemUInt8(sess->regs.EIP + 1));
 	sess->regs.EIP += 2;
 	sess->jmpAddrs->Add(addr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"jno 0x");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("jno 0x"));
 	sess->sbuff = Text::StrHexVal32(sess->sbuff, addr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -2867,9 +2867,9 @@ Bool __stdcall DasmX86_32_72(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	UInt32 addr = (UInt32)((Int32)sess->regs.EIP + 2 + (Int8)sess->memReader->ReadMemUInt8(sess->regs.EIP + 1));
 	sess->regs.EIP += 2;
 	sess->jmpAddrs->Add(addr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"jb 0x");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("jb 0x"));
 	sess->sbuff = Text::StrHexVal32(sess->sbuff, addr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -2878,9 +2878,9 @@ Bool __stdcall DasmX86_32_73(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	UInt32 addr = (UInt32)((Int32)sess->regs.EIP + 2 + (Int8)sess->memReader->ReadMemUInt8(sess->regs.EIP + 1));
 	sess->regs.EIP += 2;
 	sess->jmpAddrs->Add(addr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"jnb 0x");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("jnb 0x"));
 	sess->sbuff = Text::StrHexVal32(sess->sbuff, addr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -2889,9 +2889,9 @@ Bool __stdcall DasmX86_32_74(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	UInt32 addr = (UInt32)((Int32)sess->regs.EIP + 2 + (Int8)sess->memReader->ReadMemUInt8(sess->regs.EIP + 1));
 	sess->regs.EIP += 2;
 	sess->jmpAddrs->Add(addr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"jz 0x");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("jz 0x"));
 	sess->sbuff = Text::StrHexVal32(sess->sbuff, addr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -2900,9 +2900,9 @@ Bool __stdcall DasmX86_32_75(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	UInt32 addr = (UInt32)((Int32)sess->regs.EIP + 2 + (Int8)sess->memReader->ReadMemUInt8(sess->regs.EIP + 1));
 	sess->regs.EIP += 2;
 	sess->jmpAddrs->Add(addr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"jnz 0x");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("jnz 0x"));
 	sess->sbuff = Text::StrHexVal32(sess->sbuff, addr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -2911,9 +2911,9 @@ Bool __stdcall DasmX86_32_76(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	UInt32 addr = (UInt32)((Int32)sess->regs.EIP + 2 + (Int8)sess->memReader->ReadMemUInt8(sess->regs.EIP + 1));
 	sess->regs.EIP += 2;
 	sess->jmpAddrs->Add(addr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"jbe 0x");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("jbe 0x"));
 	sess->sbuff = Text::StrHexVal32(sess->sbuff, addr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -2922,9 +2922,9 @@ Bool __stdcall DasmX86_32_77(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	UInt32 addr = (UInt32)((Int32)sess->regs.EIP + 2 + (Int8)sess->memReader->ReadMemUInt8(sess->regs.EIP + 1));
 	sess->regs.EIP += 2;
 	sess->jmpAddrs->Add(addr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"ja 0x");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("ja 0x"));
 	sess->sbuff = Text::StrHexVal32(sess->sbuff, addr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -2933,9 +2933,9 @@ Bool __stdcall DasmX86_32_78(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	UInt32 addr = (UInt32)((Int32)sess->regs.EIP + 2 + (Int8)sess->memReader->ReadMemUInt8(sess->regs.EIP + 1));
 	sess->regs.EIP += 2;
 	sess->jmpAddrs->Add(addr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"js 0x");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("js 0x"));
 	sess->sbuff = Text::StrHexVal32(sess->sbuff, addr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -2944,9 +2944,9 @@ Bool __stdcall DasmX86_32_79(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	UInt32 addr = (UInt32)((Int32)sess->regs.EIP + 2 + (Int8)sess->memReader->ReadMemUInt8(sess->regs.EIP + 1));
 	sess->regs.EIP += 2;
 	sess->jmpAddrs->Add(addr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"jns 0x");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("jns 0x"));
 	sess->sbuff = Text::StrHexVal32(sess->sbuff, addr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -2955,9 +2955,9 @@ Bool __stdcall DasmX86_32_7a(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	UInt32 addr = (UInt32)((Int32)sess->regs.EIP + 2 + (Int8)sess->memReader->ReadMemUInt8(sess->regs.EIP + 1));
 	sess->regs.EIP += 2;
 	sess->jmpAddrs->Add(addr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"jp 0x");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("jp 0x"));
 	sess->sbuff = Text::StrHexVal32(sess->sbuff, addr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -2966,9 +2966,9 @@ Bool __stdcall DasmX86_32_7b(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	UInt32 addr = (UInt32)((Int32)sess->regs.EIP + 2 + (Int8)sess->memReader->ReadMemUInt8(sess->regs.EIP + 1));
 	sess->regs.EIP += 2;
 	sess->jmpAddrs->Add(addr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"jnp 0x");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("jnp 0x"));
 	sess->sbuff = Text::StrHexVal32(sess->sbuff, addr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -2977,9 +2977,9 @@ Bool __stdcall DasmX86_32_7c(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	UInt32 addr = (UInt32)((Int32)sess->regs.EIP + 2 + (Int8)sess->memReader->ReadMemUInt8(sess->regs.EIP + 1));
 	sess->regs.EIP += 2;
 	sess->jmpAddrs->Add(addr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"jl 0x");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("jl 0x"));
 	sess->sbuff = Text::StrHexVal32(sess->sbuff, addr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -2988,9 +2988,9 @@ Bool __stdcall DasmX86_32_7d(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	UInt32 addr = (UInt32)((Int32)sess->regs.EIP + 2 + (Int8)sess->memReader->ReadMemUInt8(sess->regs.EIP + 1));
 	sess->regs.EIP += 2;
 	sess->jmpAddrs->Add(addr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"jge 0x");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("jge 0x"));
 	sess->sbuff = Text::StrHexVal32(sess->sbuff, addr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -2999,9 +2999,9 @@ Bool __stdcall DasmX86_32_7e(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	UInt32 addr = (UInt32)((Int32)sess->regs.EIP + 2 + (Int8)sess->memReader->ReadMemUInt8(sess->regs.EIP + 1));
 	sess->regs.EIP += 2;
 	sess->jmpAddrs->Add(addr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"jle 0x");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("jle 0x"));
 	sess->sbuff = Text::StrHexVal32(sess->sbuff, addr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -3010,9 +3010,9 @@ Bool __stdcall DasmX86_32_7f(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	UInt32 addr = (UInt32)((Int32)sess->regs.EIP + 2 + (Int8)sess->memReader->ReadMemUInt8(sess->regs.EIP + 1));
 	sess->regs.EIP += 2;
 	sess->jmpAddrs->Add(addr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"jg 0x");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("jg 0x"));
 	sess->sbuff = Text::StrHexVal32(sess->sbuff, addr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -3027,81 +3027,81 @@ Bool __stdcall DasmX86_32_80(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 
 	if (b == 0)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"add ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("add "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrInt32(sess->sbuff, sess->memReader->ReadMemUInt8(sess->regs.EIP));
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		sess->regs.EIP++;
 		return true;
 	}
 	else if (b == 1)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"or ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("or "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrInt32(sess->sbuff, sess->memReader->ReadMemUInt8(sess->regs.EIP));
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		sess->regs.EIP++;
 		return true;
 	}
 	else if (b == 2)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"adc ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("adc "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrInt32(sess->sbuff, sess->memReader->ReadMemUInt8(sess->regs.EIP));
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		sess->regs.EIP++;
 		return true;
 	}
 	else if (b == 3)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"sbb ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("sbb "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrInt32(sess->sbuff, sess->memReader->ReadMemUInt8(sess->regs.EIP));
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		sess->regs.EIP++;
 		return true;
 	}
 	else if (b == 4)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"and ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("and "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrInt32(sess->sbuff, sess->memReader->ReadMemUInt8(sess->regs.EIP));
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		sess->regs.EIP++;
 		return true;
 	}
 	else if (b == 5)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"sub ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("sub "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrInt32(sess->sbuff, sess->memReader->ReadMemUInt8(sess->regs.EIP));
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		sess->regs.EIP++;
 		return true;
 	}
 	else if (b == 6)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"xor ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("xor "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrInt32(sess->sbuff, sess->memReader->ReadMemUInt8(sess->regs.EIP));
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		sess->regs.EIP++;
 		return true;
 	}
 	else if (b == 7)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"cmp ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("cmp "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrInt32(sess->sbuff, sess->memReader->ReadMemUInt8(sess->regs.EIP));
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		sess->regs.EIP++;
 		return true;
 	}
@@ -3134,11 +3134,11 @@ Bool __stdcall DasmX86_32_81(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 
 	if (reg == 0)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"add ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("add "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrInt32(sess->sbuff, iVal);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		if ((b & 0xc7) == 0xc4)
 		{
 			sess->regs.ESP += (UInt32)iVal;
@@ -3156,11 +3156,11 @@ Bool __stdcall DasmX86_32_81(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	}
 	else if (reg == 1)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"or ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("or "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrInt32(sess->sbuff, iVal);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		if ((b & 0xc7) == 0xc4)
 		{
 			sess->regs.ESP = (sess->regs.ESP | (UInt32)iVal);
@@ -3178,11 +3178,11 @@ Bool __stdcall DasmX86_32_81(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	}
 	else if (reg == 2)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"adc ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("adc "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrInt32(sess->sbuff, iVal);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		if ((b & 0xc7) == 0xc4)
 		{
 			sess->regs.ESP += (UInt32)iVal;
@@ -3200,11 +3200,11 @@ Bool __stdcall DasmX86_32_81(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	}
 	else if (reg == 3)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"sbb ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("sbb "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrInt32(sess->sbuff, iVal);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		if ((b & 0xc7) == 0xc4)
 		{
 			sess->regs.ESP -= (UInt32)iVal;
@@ -3222,11 +3222,11 @@ Bool __stdcall DasmX86_32_81(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	}
 	else if (reg == 4)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"and ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("and "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrInt32(sess->sbuff, iVal);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		if ((b & 0xc7) == 0xc4)
 		{
 			sess->regs.ESP = (sess->regs.ESP & (UInt32)iVal);
@@ -3244,11 +3244,11 @@ Bool __stdcall DasmX86_32_81(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	}
 	else if (reg == 5)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"sub ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("sub "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrInt32(sess->sbuff, iVal);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		if ((b & 0xc7) == 0xc4)
 		{
 			sess->regs.ESP -= (UInt32)iVal;
@@ -3266,11 +3266,11 @@ Bool __stdcall DasmX86_32_81(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	}
 	else if (reg == 6)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"xor ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("xor "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrInt32(sess->sbuff, iVal);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		if ((b & 0xc7) == 0xc4)
 		{
 			sess->regs.ESP = (sess->regs.ESP ^ (UInt32)iVal);
@@ -3288,11 +3288,11 @@ Bool __stdcall DasmX86_32_81(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	}
 	else if (reg == 7)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"cmp ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("cmp "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrInt32(sess->sbuff, iVal);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else
@@ -3318,13 +3318,13 @@ Bool __stdcall DasmX86_32_83(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	DasmX86_32_ParseModRM32(sess, mem, &reg, &memVal, 0);
 	if (reg == 0)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"add ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("add "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrInt32(sess->sbuff, iVal = (Int8)sess->memReader->ReadMemUInt8(sess->regs.EIP));
 		sess->regs.EIP += 1;
 
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		if ((sess->thisStatus & 0x80000000) == 0)
 		{
 			if ((b & 0xc7) == 0xc4)
@@ -3341,7 +3341,7 @@ Bool __stdcall DasmX86_32_83(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 				{
 					sess->regs.ESP += iVal;
 					return true;
-//					sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"Unknown operation to stack\r\n");
+//					sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("Unknown operation to stack\r\n"));
 //					return false;
 				}*/
 			}
@@ -3362,13 +3362,13 @@ Bool __stdcall DasmX86_32_83(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	}
 	else if (reg == 1)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"or ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("or "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrInt32(sess->sbuff, iVal = (Int8)sess->memReader->ReadMemUInt8(sess->regs.EIP));
 		sess->regs.EIP += 1;
 
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		if ((sess->thisStatus & 0x80000000) == 0)
 		{
 			if ((b & 0xc7) == 0xc4)
@@ -3380,7 +3380,7 @@ Bool __stdcall DasmX86_32_83(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 				}
 				else
 				{
-					sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"Unknown operation to stack\r\n");
+					sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("Unknown operation to stack\r\n"));
 					return false;
 				}
 			}
@@ -3401,13 +3401,13 @@ Bool __stdcall DasmX86_32_83(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	}
 	else if (reg == 2)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"adc ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("adc "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrInt32(sess->sbuff, iVal = (Int8)sess->memReader->ReadMemUInt8(sess->regs.EIP));
 		sess->regs.EIP += 1;
 
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		if ((sess->thisStatus & 0x80000000) == 0)
 		{
 			if ((b & 0xc7) == 0xc4)
@@ -3419,7 +3419,7 @@ Bool __stdcall DasmX86_32_83(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 				}
 				else
 				{
-					sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"Unknown operation to stack\r\n");
+					sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("Unknown operation to stack\r\n"));
 					return false;
 				}
 			}
@@ -3440,13 +3440,13 @@ Bool __stdcall DasmX86_32_83(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	}
 	else if (reg == 3)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"sbb ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("sbb "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrInt32(sess->sbuff, iVal = (Int8)sess->memReader->ReadMemUInt8(sess->regs.EIP));
 		sess->regs.EIP += 1;
 
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		if ((sess->thisStatus & 0x80000000) == 0)
 		{
 			if ((b & 0xc7) == 0xc4)
@@ -3458,7 +3458,7 @@ Bool __stdcall DasmX86_32_83(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 				}
 				else
 				{
-					sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"Unknown operation to stack\r\n");
+					sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("Unknown operation to stack\r\n"));
 					return false;
 				}
 			}
@@ -3479,13 +3479,13 @@ Bool __stdcall DasmX86_32_83(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	}
 	else if (reg == 4)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"and ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("and "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrInt32(sess->sbuff, iVal = (Int8)sess->memReader->ReadMemUInt8(sess->regs.EIP));
 		sess->regs.EIP += 1;
 
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		if ((sess->thisStatus & 0x80000000) == 0)
 		{
 			if ((b & 0xc7) == 0xc4)
@@ -3497,7 +3497,7 @@ Bool __stdcall DasmX86_32_83(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 				}
 				else
 				{
-					sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"Unknown operation to stack\r\n");
+					sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("Unknown operation to stack\r\n"));
 					return false;
 				}
 			}
@@ -3518,13 +3518,13 @@ Bool __stdcall DasmX86_32_83(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	}
 	else if (reg == 5)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"sub ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("sub "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrInt32(sess->sbuff, iVal = (Int8)sess->memReader->ReadMemUInt8(sess->regs.EIP));
 		sess->regs.EIP += 1;
 
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		if ((sess->thisStatus & 0x80000000) == 0)
 		{
 			if ((b & 0xc7) == 0xc4)
@@ -3557,13 +3557,13 @@ Bool __stdcall DasmX86_32_83(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	}
 	else if (reg == 6)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"xor ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("xor "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrInt32(sess->sbuff, (Int8)sess->memReader->ReadMemUInt8(sess->regs.EIP));
 		sess->regs.EIP += 1;
 
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		if ((b & 0xc7) == 0xc4)
 		{
 			if (sess->lastStatus & 2)
@@ -3572,7 +3572,7 @@ Bool __stdcall DasmX86_32_83(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 			}
 			else
 			{
-				sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"Unknown operation to stack\r\n");
+				sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("Unknown operation to stack\r\n"));
 				return false;
 			}
 		}
@@ -3583,12 +3583,12 @@ Bool __stdcall DasmX86_32_83(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	}
 	else if (reg == 7)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"cmp ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("cmp "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrInt32(sess->sbuff, (Int8)sess->memReader->ReadMemUInt8(sess->regs.EIP));
 		sess->regs.EIP += 1;
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else
@@ -3608,11 +3608,11 @@ Bool __stdcall DasmX86_32_84(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	sess->regs.EIP++;
 	DasmX86_32_ParseModRM8(sess, mem, &regNo, &memVal);
 	DasmX86_32_ParseReg8(sess, reg, regNo, &regPtr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"test ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("test "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -3627,11 +3627,11 @@ Bool __stdcall DasmX86_32_85(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	sess->regs.EIP++;
 	DasmX86_32_ParseModRM32(sess, mem, &regNo, &memVal, 0);
 	DasmX86_32_ParseReg(sess, reg, regNo, &regPtr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"test ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("test "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -3645,11 +3645,11 @@ Bool __stdcall DasmX86_32_86(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	sess->regs.EIP++;
 	DasmX86_32_ParseModRM8(sess, mem, &destReg, &memVal);
 	DasmX86_32_ParseReg8(sess, reg, destReg, &regPtr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"xchg ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("xchg "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -3663,11 +3663,11 @@ Bool __stdcall DasmX86_32_87(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	sess->regs.EIP++;
 	DasmX86_32_ParseModRM32(sess, mem, &destReg, &memVal, 0);
 	DasmX86_32_ParseReg(sess, reg, destReg, &regPtr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"xchg ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("xchg "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -3681,11 +3681,11 @@ Bool __stdcall DasmX86_32_88(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	sess->regs.EIP++;
 	DasmX86_32_ParseModRM8(sess, mem, &destReg, &memVal);
 	DasmX86_32_ParseReg8(sess, reg, destReg, &regPtr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"mov ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("mov "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -3700,11 +3700,11 @@ Bool __stdcall DasmX86_32_89(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	UInt8 b = sess->memReader->ReadMemUInt8(sess->regs.EIP);
 	DasmX86_32_ParseModRM32(sess, mem, &destReg, &memVal, 0);
 	DasmX86_32_ParseReg(sess, reg, destReg, &regPtr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"mov ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("mov "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 
 	if ((b & 0xc7) == 0xc4)
 	{
@@ -3715,7 +3715,7 @@ Bool __stdcall DasmX86_32_89(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		}
 		else
 		{
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"Unknown operation to stack\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("Unknown operation to stack\r\n"));
 			return false;
 		}
 	}
@@ -3728,7 +3728,7 @@ Bool __stdcall DasmX86_32_89(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		}
 		else
 		{
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"Unknown operation to ebp\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("Unknown operation to ebp\r\n"));
 			return false;
 		}
 	}
@@ -3748,11 +3748,11 @@ Bool __stdcall DasmX86_32_8a(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	sess->regs.EIP++;
 	DasmX86_32_ParseModRM8(sess, mem, &destReg, &memVal);
 	DasmX86_32_ParseReg8(sess, reg, destReg, &regPtr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"mov ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("mov "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	*regPtr = memVal;
 	return true;
 }
@@ -3768,11 +3768,11 @@ Bool __stdcall DasmX86_32_8b(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 
 	DasmX86_32_ParseModRM32(sess, mem, &destReg, &memVal, 0);
 	DasmX86_32_ParseReg32(sess, reg, destReg, &regPtr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"mov ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("mov "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	*regPtr = memVal;
 	return true;
 }
@@ -3786,11 +3786,11 @@ Bool __stdcall DasmX86_32_8c(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	sess->regs.EIP++;
 	DasmX86_32_ParseModRM8(sess, mem, &destReg, &memVal);
 	DasmX86_32_ParseSReg(sess, reg, destReg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"mov ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("mov "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -3805,11 +3805,11 @@ Bool __stdcall DasmX86_32_8d(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	sess->regs.EIP++;
 	DasmX86_32_ParseModRM32(sess, mem, &destReg, &memVal, &memAddr);
 	DasmX86_32_ParseReg(sess, reg, destReg, &regPtr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"lea ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("lea "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	*regPtr = memAddr;
 	return true;
 }
@@ -3823,11 +3823,11 @@ Bool __stdcall DasmX86_32_8e(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	sess->regs.EIP++;
 	DasmX86_32_ParseModRM8(sess, mem, &destReg, &memVal);
 	DasmX86_32_ParseSReg(sess, reg, destReg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"mov ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("mov "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -3840,9 +3840,9 @@ Bool __stdcall DasmX86_32_8f(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	DasmX86_32_ParseModRM32(sess, mem, &regNo, &memVal, 0);
 	if (regNo == 0)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pop ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pop "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else
@@ -3855,11 +3855,11 @@ Bool __stdcall DasmX86_32_90(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 {
 	if ((sess->thisStatus & 5) == 5)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pause\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pause\r\n"));
 	}
 	else
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"nop\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("nop\r\n"));
 	}
 	sess->regs.EIP += 1;
 	return true;
@@ -3873,7 +3873,7 @@ Bool __stdcall DasmX86_32_91(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		UInt32 *regPtr;
 		UInt16 v;
 		DasmX86_32_ParseReg16(sess, reg, 1, &regPtr);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"xchg AX, ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("xchg AX, "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
 		v = (UInt16)sess->regs.EAX & 0xffff;
 		*(UInt16*)&sess->regs.EAX = *(UInt16*)regPtr;
@@ -3884,13 +3884,13 @@ Bool __stdcall DasmX86_32_91(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		UInt32 *regPtr;
 		UInt32 v;
 		DasmX86_32_ParseReg32(sess, reg, 1, &regPtr);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"xchg EAX, ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("xchg EAX, "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
 		v = sess->regs.EAX;
 		sess->regs.EAX = *regPtr;
 		*regPtr = v;
 	}
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	sess->regs.EIP += 1;
 	return true;
 }
@@ -3903,7 +3903,7 @@ Bool __stdcall DasmX86_32_92(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		UInt32 *regPtr;
 		UInt16 v;
 		DasmX86_32_ParseReg16(sess, reg, 2, &regPtr);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"xchg AX, ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("xchg AX, "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
 		v = (UInt16)sess->regs.EAX & 0xffff;
 		*(UInt16*)&sess->regs.EAX = *(UInt16*)regPtr;
@@ -3914,13 +3914,13 @@ Bool __stdcall DasmX86_32_92(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		UInt32 *regPtr;
 		UInt32 v;
 		DasmX86_32_ParseReg32(sess, reg, 2, &regPtr);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"xchg EAX, ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("xchg EAX, "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
 		v = sess->regs.EAX;
 		sess->regs.EAX = *regPtr;
 		*regPtr = v;
 	}
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	sess->regs.EIP += 1;
 	return true;
 }
@@ -3933,7 +3933,7 @@ Bool __stdcall DasmX86_32_93(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		UInt32 *regPtr;
 		UInt16 v;
 		DasmX86_32_ParseReg16(sess, reg, 3, &regPtr);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"xchg AX, ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("xchg AX, "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
 		v = (UInt16)sess->regs.EAX & 0xffff;
 		*(UInt16*)&sess->regs.EAX = *(UInt16*)regPtr;
@@ -3944,13 +3944,13 @@ Bool __stdcall DasmX86_32_93(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		UInt32 *regPtr;
 		UInt32 v;
 		DasmX86_32_ParseReg32(sess, reg, 3, &regPtr);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"xchg EAX, ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("xchg EAX, "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
 		v = sess->regs.EAX;
 		sess->regs.EAX = *regPtr;
 		*regPtr = v;
 	}
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	sess->regs.EIP += 1;
 	return true;
 }
@@ -3963,7 +3963,7 @@ Bool __stdcall DasmX86_32_94(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		UInt32 *regPtr;
 		UInt16 v;
 		DasmX86_32_ParseReg16(sess, reg, 4, &regPtr);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"xchg AX, ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("xchg AX, "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
 		v = (UInt16)sess->regs.EAX & 0xffff;
 		*(UInt16*)&sess->regs.EAX = *(UInt16*)regPtr;
@@ -3974,13 +3974,13 @@ Bool __stdcall DasmX86_32_94(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		UInt32 *regPtr;
 		UInt32 v;
 		DasmX86_32_ParseReg32(sess, reg, 4, &regPtr);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"xchg EAX, ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("xchg EAX, "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
 		v = sess->regs.EAX;
 		sess->regs.EAX = *regPtr;
 		*regPtr = v;
 	}
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	sess->regs.EIP += 1;
 	return true;
 }
@@ -3993,7 +3993,7 @@ Bool __stdcall DasmX86_32_95(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		UInt32 *regPtr;
 		UInt16 v;
 		DasmX86_32_ParseReg16(sess, reg, 5, &regPtr);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"xchg AX, ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("xchg AX, "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
 		v = (UInt16)sess->regs.EAX & 0xffff;
 		*(UInt16*)&sess->regs.EAX = *(UInt16*)regPtr;
@@ -4004,13 +4004,13 @@ Bool __stdcall DasmX86_32_95(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		UInt32 *regPtr;
 		UInt32 v;
 		DasmX86_32_ParseReg32(sess, reg, 5, &regPtr);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"xchg EAX, ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("xchg EAX, "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
 		v = sess->regs.EAX;
 		sess->regs.EAX = *regPtr;
 		*regPtr = v;
 	}
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	sess->regs.EIP += 1;
 	return true;
 }
@@ -4023,7 +4023,7 @@ Bool __stdcall DasmX86_32_96(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		UInt32 *regPtr;
 		UInt16 v;
 		DasmX86_32_ParseReg16(sess, reg, 6, &regPtr);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"xchg AX, ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("xchg AX, "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
 		v = (UInt16)sess->regs.EAX & 0xffff;
 		*(UInt16*)&sess->regs.EAX = *(UInt16*)regPtr;
@@ -4034,13 +4034,13 @@ Bool __stdcall DasmX86_32_96(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		UInt32 *regPtr;
 		UInt32 v;
 		DasmX86_32_ParseReg32(sess, reg, 6, &regPtr);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"xchg EAX, ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("xchg EAX, "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
 		v = sess->regs.EAX;
 		sess->regs.EAX = *regPtr;
 		*regPtr = v;
 	}
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	sess->regs.EIP += 1;
 	return true;
 }
@@ -4053,7 +4053,7 @@ Bool __stdcall DasmX86_32_97(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		UInt32 *regPtr;
 		UInt16 v;
 		DasmX86_32_ParseReg16(sess, reg, 7, &regPtr);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"xchg AX, ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("xchg AX, "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
 		v = (UInt16)sess->regs.EAX & 0xffff;
 		*(UInt16*)&sess->regs.EAX = *(UInt16*)regPtr;
@@ -4064,13 +4064,13 @@ Bool __stdcall DasmX86_32_97(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		UInt32 *regPtr;
 		UInt32 v;
 		DasmX86_32_ParseReg32(sess, reg, 7, &regPtr);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"xchg EAX, ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("xchg EAX, "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
 		v = sess->regs.EAX;
 		sess->regs.EAX = *regPtr;
 		*regPtr = v;
 	}
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	sess->regs.EIP += 1;
 	return true;
 }
@@ -4080,11 +4080,11 @@ Bool __stdcall DasmX86_32_98(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	sess->regs.EIP++;
 	if (sess->thisStatus & 1)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"cbw\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("cbw\r\n"));
 	}
 	else
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"cwd\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("cwd\r\n"));
 	}
 	return true;
 }
@@ -4094,11 +4094,11 @@ Bool __stdcall DasmX86_32_99(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	sess->regs.EIP++;
 	if (sess->thisStatus & 1)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"cwd\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("cwd\r\n"));
 	}
 	else
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"cdq\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("cdq\r\n"));
 	}
 	return true;
 }
@@ -4110,7 +4110,7 @@ Bool __stdcall DasmX86_32_9a(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 
 Bool __stdcall DasmX86_32_9b(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 {
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fwait\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fwait\r\n"));
 	sess->regs.EIP += 1;
 	return true;
 }
@@ -4119,11 +4119,11 @@ Bool __stdcall DasmX86_32_9c(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 {
 	if (sess->thisStatus & 1)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pushf\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pushf\r\n"));
 	}
 	else
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pushfd\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pushfd\r\n"));
 	}
 	sess->regs.EIP += 1;
 	return true;
@@ -4133,11 +4133,11 @@ Bool __stdcall DasmX86_32_9d(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 {
 	if (sess->thisStatus & 1)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"popf\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("popf\r\n"));
 	}
 	else
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"popfd\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("popfd\r\n"));
 	}
 	sess->regs.EIP += 1;
 	return true;
@@ -4145,14 +4145,14 @@ Bool __stdcall DasmX86_32_9d(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 
 Bool __stdcall DasmX86_32_9e(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 {
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"sahf\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("sahf\r\n"));
 	sess->regs.EIP += 1;
 	return true;
 }
 
 Bool __stdcall DasmX86_32_9f(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 {
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"lahf\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("lahf\r\n"));
 	sess->regs.EIP++;
 	return true;
 }
@@ -4161,9 +4161,9 @@ Bool __stdcall DasmX86_32_a0(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 {
 	UInt32 addr = sess->memReader->ReadMemUInt32(sess->regs.EIP + 1);
 	*(UInt8*)&sess->regs.EAX = sess->memReader->ReadMemUInt8(addr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"mov AL,BYTE PTR [");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("mov AL,BYTE PTR ["));
 	sess->sbuff = Text::StrHexVal32(sess->sbuff, addr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"]\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("]\r\n"));
 	sess->regs.EIP += 5;
 	return true;
 }
@@ -4173,21 +4173,21 @@ Bool __stdcall DasmX86_32_a1(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	UInt32 addr = sess->memReader->ReadMemUInt32(sess->regs.EIP + 1);
 	if (sess->thisStatus & 1)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"mov AX,WORD PTR ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("mov AX,WORD PTR "));
 		*(UInt16*)&sess->regs.EAX = sess->memReader->ReadMemUInt16(addr);
 	}
 	else
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"mov EAX,DWORD PTR ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("mov EAX,DWORD PTR "));
 		sess->regs.EAX = sess->memReader->ReadMemUInt32(addr);
 	}
 	if (sess->thisStatus & 0x10000)
 	{
 		sess->sbuff = Text::StrConcat(sess->sbuff, DasmX86_32_Segms[sess->segmId]);
 	}
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"[0x");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("[0x"));
 	sess->sbuff = Text::StrHexVal32(sess->sbuff, addr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"]\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("]\r\n"));
 	sess->regs.EIP += 5;
 	return true;
 }
@@ -4195,14 +4195,14 @@ Bool __stdcall DasmX86_32_a1(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 Bool __stdcall DasmX86_32_a2(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 {
 	UInt32 addr = sess->memReader->ReadMemUInt32(sess->regs.EIP + 1);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"mov BYTE PTR ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("mov BYTE PTR "));
 	if (sess->thisStatus & 0x10000)
 	{
 		sess->sbuff = Text::StrConcat(sess->sbuff, DasmX86_32_Segms[sess->segmId]);
 	}
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"[");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("["));
 	sess->sbuff = Text::StrHexVal32(sess->sbuff, addr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"],AL\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("],AL\r\n"));
 	sess->regs.EIP += 5;
 	return true;
 }
@@ -4211,25 +4211,25 @@ Bool __stdcall DasmX86_32_a3(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 {
 	if (sess->thisStatus & 1)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"mov WORD PTR ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("mov WORD PTR "));
 		if (sess->thisStatus & 0x10000)
 		{
 			sess->sbuff = Text::StrConcat(sess->sbuff, DasmX86_32_Segms[sess->segmId]);
 		}
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"[");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("["));
 		sess->sbuff = Text::StrHexVal32(sess->sbuff, sess->memReader->ReadMemUInt32(sess->regs.EIP + 1));
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"],AX\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("],AX\r\n"));
 	}
 	else
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"mov DWORD PTR ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("mov DWORD PTR "));
 		if (sess->thisStatus & 0x10000)
 		{
 			sess->sbuff = Text::StrConcat(sess->sbuff, DasmX86_32_Segms[sess->segmId]);
 		}
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"[");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("["));
 		sess->sbuff = Text::StrHexVal32(sess->sbuff, sess->memReader->ReadMemUInt32(sess->regs.EIP + 1));
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"],EAX\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("],EAX\r\n"));
 	}
 	sess->regs.EIP += 5;
 	return true;
@@ -4239,9 +4239,9 @@ Bool __stdcall DasmX86_32_a4(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 {
 	if ((sess->thisStatus & 5) == 5)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"rep ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("rep "));
 	}
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"movsb\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("movsb\r\n"));
 	sess->regs.EIP += 1;
 	return true;
 }
@@ -4250,15 +4250,15 @@ Bool __stdcall DasmX86_32_a5(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 {
 	if ((sess->thisStatus & 5) == 5)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"rep ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("rep "));
 	}
 	if (sess->thisStatus & 1)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"movsw\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("movsw\r\n"));
 	}
 	else
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"movsd\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("movsd\r\n"));
 	}
 	sess->regs.EIP += 1;
 	return true;
@@ -4268,14 +4268,14 @@ Bool __stdcall DasmX86_32_a6(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 {
 	if ((sess->thisStatus & 5) == 5)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"repz ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("repz "));
 	}
 	else if ((sess->thisStatus & 5) == 4)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"repnz ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("repnz "));
 	}
 
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"cmpsb\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("cmpsb\r\n"));
 	sess->regs.EIP += 1;
 	return true;
 }
@@ -4284,21 +4284,21 @@ Bool __stdcall DasmX86_32_a7(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 {
 	if ((sess->thisStatus & 5) == 5)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"repz ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("repz "));
 	}
 	else if ((sess->thisStatus & 5) == 4)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"repnz ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("repnz "));
 	}
 
 	if (sess->thisStatus & 1)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"cmpsw\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("cmpsw\r\n"));
 		sess->regs.EIP += 1;
 	}
 	else
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"cmpsd\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("cmpsd\r\n"));
 		sess->regs.EIP += 1;
 	}
 	return true;
@@ -4306,9 +4306,9 @@ Bool __stdcall DasmX86_32_a7(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 
 Bool __stdcall DasmX86_32_a8(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 {
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"test AL, ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("test AL, "));
 	sess->sbuff = Text::StrInt32(sess->sbuff, (Int8)sess->memReader->ReadMemUInt8(sess->regs.EIP + 1));
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	sess->regs.EIP += 2;
 	return true;
 }
@@ -4317,17 +4317,17 @@ Bool __stdcall DasmX86_32_a9(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 {
 	if (sess->thisStatus & 1)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"test AX, 0x");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("test AX, 0x"));
 		sess->sbuff = Text::StrHexVal16(sess->sbuff, sess->memReader->ReadMemUInt16(sess->regs.EIP + 1));
 		sess->regs.EIP += 3;
 	}
 	else
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"test EAX, 0x");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("test EAX, 0x"));
 		sess->sbuff = Text::StrHexVal32(sess->sbuff, sess->memReader->ReadMemUInt32(sess->regs.EIP + 1));
 		sess->regs.EIP += 5;
 	}
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -4335,10 +4335,10 @@ Bool __stdcall DasmX86_32_aa(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 {
 	if ((sess->thisStatus & 5) == 5)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"rep ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("rep "));
 	}
 	sess->regs.EIP++;
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"stosb\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("stosb\r\n"));
 	return true;
 }
 
@@ -4346,16 +4346,16 @@ Bool __stdcall DasmX86_32_ab(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 {
 	if ((sess->thisStatus & 5) == 5)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"rep ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("rep "));
 	}
 	sess->regs.EIP++;
 	if (sess->thisStatus & 1)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"stosw\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("stosw\r\n"));
 	}
 	else
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"stosd\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("stosd\r\n"));
 	}
 	return true;
 }
@@ -4364,10 +4364,10 @@ Bool __stdcall DasmX86_32_ac(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 {
 	if ((sess->thisStatus & 5) == 5)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"rep ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("rep "));
 	}
 	sess->regs.EIP += 1;
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"lodsb\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("lodsb\r\n"));
 	return true;
 }
 
@@ -4375,16 +4375,16 @@ Bool __stdcall DasmX86_32_ad(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 {
 	if ((sess->thisStatus & 5) == 5)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"rep ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("rep "));
 	}
 	sess->regs.EIP += 1;
 	if (sess->thisStatus & 1)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"lodsw\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("lodsw\r\n"));
 	}
 	else
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"lodsd\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("lodsd\r\n"));
 	}
 	return true;
 }
@@ -4393,9 +4393,9 @@ Bool __stdcall DasmX86_32_ae(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 {
 	if ((sess->thisStatus & 5) == 5)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"rep ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("rep "));
 	}
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"scasb\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("scasb\r\n"));
 	sess->regs.EIP += 1;
 	return true;
 }
@@ -4404,15 +4404,15 @@ Bool __stdcall DasmX86_32_af(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 {
 	if ((sess->thisStatus & 5) == 5)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"rep ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("rep "));
 	}
 	if (sess->thisStatus & 1)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"scasw\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("scasw\r\n"));
 	}
 	else
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"scasd\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("scasd\r\n"));
 	}
 	sess->regs.EIP += 1;
 	return true;
@@ -4424,11 +4424,11 @@ Bool __stdcall DasmX86_32_b0(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	UInt8 memVal = sess->memReader->ReadMemUInt8(sess->regs.EIP + 1);
 	UInt8 *regPtr;
 	DasmX86_32_ParseReg8(sess, reg, 0, &regPtr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"mov ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("mov "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 	sess->sbuff = Text::StrInt32(sess->sbuff, memVal);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	sess->regs.EIP += 2;
 	*regPtr = memVal;
 	return true;
@@ -4440,11 +4440,11 @@ Bool __stdcall DasmX86_32_b1(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	UInt8 memVal = sess->memReader->ReadMemUInt8(sess->regs.EIP + 1);
 	UInt8 *regPtr;
 	DasmX86_32_ParseReg8(sess, reg, 1, &regPtr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"mov ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("mov "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 	sess->sbuff = Text::StrInt32(sess->sbuff, memVal);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	sess->regs.EIP += 2;
 	*regPtr = memVal;
 	return true;
@@ -4456,11 +4456,11 @@ Bool __stdcall DasmX86_32_b2(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	UInt8 memVal = sess->memReader->ReadMemUInt8(sess->regs.EIP + 1);
 	UInt8 *regPtr;
 	DasmX86_32_ParseReg8(sess, reg, 2, &regPtr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"mov ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("mov "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 	sess->sbuff = Text::StrInt32(sess->sbuff, memVal);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	sess->regs.EIP += 2;
 	*regPtr = memVal;
 	return true;
@@ -4472,11 +4472,11 @@ Bool __stdcall DasmX86_32_b3(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	UInt8 memVal = sess->memReader->ReadMemUInt8(sess->regs.EIP + 1);
 	UInt8 *regPtr;
 	DasmX86_32_ParseReg8(sess, reg, 3, &regPtr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"mov ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("mov "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 	sess->sbuff = Text::StrInt32(sess->sbuff, memVal);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	sess->regs.EIP += 2;
 	*regPtr = memVal;
 	return true;
@@ -4488,11 +4488,11 @@ Bool __stdcall DasmX86_32_b4(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	UInt8 memVal = sess->memReader->ReadMemUInt8(sess->regs.EIP + 1);
 	UInt8 *regPtr;
 	DasmX86_32_ParseReg8(sess, reg, 4, &regPtr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"mov ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("mov "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 	sess->sbuff = Text::StrInt32(sess->sbuff, memVal);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	sess->regs.EIP += 2;
 	*regPtr = memVal;
 	return true;
@@ -4504,11 +4504,11 @@ Bool __stdcall DasmX86_32_b5(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	UInt8 memVal = sess->memReader->ReadMemUInt8(sess->regs.EIP + 1);
 	UInt8 *regPtr;
 	DasmX86_32_ParseReg8(sess, reg, 5, &regPtr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"mov ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("mov "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 	sess->sbuff = Text::StrInt32(sess->sbuff, memVal);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	sess->regs.EIP += 2;
 	*regPtr = memVal;
 	return true;
@@ -4520,11 +4520,11 @@ Bool __stdcall DasmX86_32_b6(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	UInt8 memVal = sess->memReader->ReadMemUInt8(sess->regs.EIP + 1);
 	UInt8 *regPtr;
 	DasmX86_32_ParseReg8(sess, reg, 6, &regPtr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"mov ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("mov "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 	sess->sbuff = Text::StrInt32(sess->sbuff, memVal);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	sess->regs.EIP += 2;
 	*regPtr = memVal;
 	return true;
@@ -4536,11 +4536,11 @@ Bool __stdcall DasmX86_32_b7(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	UInt8 memVal = sess->memReader->ReadMemUInt8(sess->regs.EIP + 1);
 	UInt8 *regPtr;
 	DasmX86_32_ParseReg8(sess, reg, 7, &regPtr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"mov ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("mov "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 	sess->sbuff = Text::StrInt32(sess->sbuff, memVal);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	sess->regs.EIP += 2;
 	*regPtr = memVal;
 	return true;
@@ -4551,9 +4551,9 @@ Bool __stdcall DasmX86_32_b8(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	UTF8Char reg[8];
 	UInt32 *regPtr;
 	DasmX86_32_ParseReg(sess, reg, 0, &regPtr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"mov ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("mov "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 	if (sess->thisStatus & 1)
 	{
 		UInt16 memVal = sess->memReader->ReadMemUInt16(sess->regs.EIP + 1);
@@ -4568,7 +4568,7 @@ Bool __stdcall DasmX86_32_b8(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 5;
 		*regPtr = memVal;
 	}
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -4577,9 +4577,9 @@ Bool __stdcall DasmX86_32_b9(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	UTF8Char reg[8];
 	UInt32 *regPtr;
 	DasmX86_32_ParseReg(sess, reg, 1, &regPtr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"mov ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("mov "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 	if (sess->thisStatus & 1)
 	{
 		UInt16 memVal = sess->memReader->ReadMemUInt16(sess->regs.EIP + 1);
@@ -4594,7 +4594,7 @@ Bool __stdcall DasmX86_32_b9(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 5;
 		*regPtr = memVal;
 	}
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -4603,9 +4603,9 @@ Bool __stdcall DasmX86_32_ba(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	UTF8Char reg[8];
 	UInt32 *regPtr;
 	DasmX86_32_ParseReg(sess, reg, 2, &regPtr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"mov ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("mov "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 	if (sess->thisStatus & 1)
 	{
 		UInt16 memVal = sess->memReader->ReadMemUInt16(sess->regs.EIP + 1);
@@ -4620,7 +4620,7 @@ Bool __stdcall DasmX86_32_ba(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 5;
 		*regPtr = memVal;
 	}
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -4629,9 +4629,9 @@ Bool __stdcall DasmX86_32_bb(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	UTF8Char reg[8];
 	UInt32 *regPtr;
 	DasmX86_32_ParseReg(sess, reg, 3, &regPtr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"mov ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("mov "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 	if (sess->thisStatus & 1)
 	{
 		UInt16 memVal = sess->memReader->ReadMemUInt16(sess->regs.EIP + 1);
@@ -4646,7 +4646,7 @@ Bool __stdcall DasmX86_32_bb(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 5;
 		*regPtr = memVal;
 	}
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -4655,9 +4655,9 @@ Bool __stdcall DasmX86_32_bc(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	UTF8Char reg[8];
 	UInt32 *regPtr;
 	DasmX86_32_ParseReg(sess, reg, 4, &regPtr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"mov ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("mov "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 	if (sess->thisStatus & 1)
 	{
 		UInt16 memVal = sess->memReader->ReadMemUInt16(sess->regs.EIP + 1);
@@ -4672,7 +4672,7 @@ Bool __stdcall DasmX86_32_bc(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 5;
 		*regPtr = memVal;
 	}
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -4681,9 +4681,9 @@ Bool __stdcall DasmX86_32_bd(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	UTF8Char reg[8];
 	UInt32 *regPtr;
 	DasmX86_32_ParseReg(sess, reg, 5, &regPtr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"mov ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("mov "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 	if (sess->thisStatus & 1)
 	{
 		UInt16 memVal = sess->memReader->ReadMemUInt16(sess->regs.EIP + 1);
@@ -4698,7 +4698,7 @@ Bool __stdcall DasmX86_32_bd(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 5;
 		*regPtr = memVal;
 	}
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -4707,9 +4707,9 @@ Bool __stdcall DasmX86_32_be(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	UTF8Char reg[8];
 	UInt32 *regPtr;
 	DasmX86_32_ParseReg(sess, reg, 6, &regPtr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"mov ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("mov "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 	if (sess->thisStatus & 1)
 	{
 		UInt16 memVal = sess->memReader->ReadMemUInt16(sess->regs.EIP + 1);
@@ -4724,7 +4724,7 @@ Bool __stdcall DasmX86_32_be(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 5;
 		*regPtr = memVal;
 	}
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -4733,9 +4733,9 @@ Bool __stdcall DasmX86_32_bf(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	UTF8Char reg[8];
 	UInt32 *regPtr;
 	DasmX86_32_ParseReg(sess, reg, 7, &regPtr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"mov ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("mov "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 	if (sess->thisStatus & 1)
 	{
 		UInt16 memVal = sess->memReader->ReadMemUInt16(sess->regs.EIP + 1);
@@ -4750,7 +4750,7 @@ Bool __stdcall DasmX86_32_bf(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 5;
 		*regPtr = memVal;
 	}
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -4763,71 +4763,71 @@ Bool __stdcall DasmX86_32_c0(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	DasmX86_32_ParseModRM8(sess, mem, &regNo, &memVal);
 	if (regNo == 0)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"rol ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("rol "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrInt32(sess->sbuff, sess->memReader->ReadMemUInt8(sess->regs.EIP));
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		sess->regs.EIP += 1;
 		return true;
 	}
 	else if (regNo == 1)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"ror ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("ror "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrInt32(sess->sbuff, sess->memReader->ReadMemUInt8(sess->regs.EIP));
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		sess->regs.EIP += 1;
 		return true;
 	}
 	else if (regNo == 2)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"rcl ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("rcl "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrInt32(sess->sbuff, sess->memReader->ReadMemUInt8(sess->regs.EIP));
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		sess->regs.EIP += 1;
 		return true;
 	}
 	else if (regNo == 3)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"rcr ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("rcr "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrInt32(sess->sbuff, sess->memReader->ReadMemUInt8(sess->regs.EIP));
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		sess->regs.EIP += 1;
 		return true;
 	}
 	else if (regNo == 4)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"sal ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("sal "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrInt32(sess->sbuff, sess->memReader->ReadMemUInt8(sess->regs.EIP));
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		sess->regs.EIP += 1;
 		return true;
 	}
 	else if (regNo == 5)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"shr ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("shr "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrInt32(sess->sbuff, sess->memReader->ReadMemUInt8(sess->regs.EIP));
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		sess->regs.EIP += 1;
 		return true;
 	}
 	else if (regNo == 7)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"sar ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("sar "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrInt32(sess->sbuff, sess->memReader->ReadMemUInt8(sess->regs.EIP));
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		sess->regs.EIP += 1;
 		return true;
 	}
@@ -4846,71 +4846,71 @@ Bool __stdcall DasmX86_32_c1(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	DasmX86_32_ParseModRM32(sess, mem, &regNo, &memVal, 0);
 	if (regNo == 0)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"rol ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("rol "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrInt32(sess->sbuff, sess->memReader->ReadMemUInt8(sess->regs.EIP));
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		sess->regs.EIP += 1;
 		return true;
 	}
 	else if (regNo == 1)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"ror ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("ror "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrInt32(sess->sbuff, sess->memReader->ReadMemUInt8(sess->regs.EIP));
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		sess->regs.EIP += 1;
 		return true;
 	}
 	else if (regNo == 2)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"rcl ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("rcl "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrInt32(sess->sbuff, sess->memReader->ReadMemUInt8(sess->regs.EIP));
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		sess->regs.EIP += 1;
 		return true;
 	}
 	else if (regNo == 3)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"rcr ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("rcr "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrInt32(sess->sbuff, sess->memReader->ReadMemUInt8(sess->regs.EIP));
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		sess->regs.EIP += 1;
 		return true;
 	}
 	else if (regNo == 4)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"sal ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("sal "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrInt32(sess->sbuff, sess->memReader->ReadMemUInt8(sess->regs.EIP));
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		sess->regs.EIP += 1;
 		return true;
 	}
 	else if (regNo == 5)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"shr ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("shr "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrInt32(sess->sbuff, sess->memReader->ReadMemUInt8(sess->regs.EIP));
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		sess->regs.EIP += 1;
 		return true;
 	}
 	else if (regNo == 7)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"sar ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("sar "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrInt32(sess->sbuff, sess->memReader->ReadMemUInt8(sess->regs.EIP));
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		sess->regs.EIP += 1;
 		return true;
 	}
@@ -4924,7 +4924,7 @@ Bool __stdcall DasmX86_32_c2(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 {
 	UInt32 cnt = sess->memReader->ReadMemUInt16(sess->regs.EIP + 1);
 	sess->endType = Manage::DasmX86_32::ET_FUNC_RET;
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"ret ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("ret "));
 	sess->sbuff = Text::StrUInt32(sess->sbuff, cnt);
 	if (sess->thisStatus & 0x80000000)
 	{
@@ -4935,7 +4935,7 @@ Bool __stdcall DasmX86_32_c2(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		UInt8 *buff;
 		UOSInt buffSize;
 		sess->retAddr = sess->memReader->ReadMemUInt32(sess->regs.ESP);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\t;");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\t;"));
 		buff = MemAlloc(UInt8, cnt);
 		buffSize = sess->memReader->ReadMemory(sess->regs.ESP + 4, buff, cnt);
 		if (buffSize > 0)
@@ -4945,7 +4945,7 @@ Bool __stdcall DasmX86_32_c2(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.ESP += 4 + cnt;
 		MemFree(buff);
 	}
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	sess->regs.EIP += 3;
 	return true;
 }
@@ -4953,7 +4953,7 @@ Bool __stdcall DasmX86_32_c2(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 Bool __stdcall DasmX86_32_c3(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 {
 	sess->endType = Manage::DasmX86_32::ET_FUNC_RET;
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"ret\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("ret\r\n"));
 	if (sess->thisStatus & 0x80000000)
 	{
 		sess->retAddr = 0;
@@ -4976,11 +4976,11 @@ Bool __stdcall DasmX86_32_c4(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	sess->regs.EIP += 1;
 	DasmX86_32_ParseModRM48(sess, mem, &regNo);
 	DasmX86_32_ParseReg(sess, reg, regNo, &regPtr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"les ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("les "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -4993,11 +4993,11 @@ Bool __stdcall DasmX86_32_c5(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	sess->regs.EIP += 1;
 	DasmX86_32_ParseModRM48(sess, mem, &regNo);
 	DasmX86_32_ParseReg(sess, reg, regNo, &regPtr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"lds ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("lds "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -5010,12 +5010,12 @@ Bool __stdcall DasmX86_32_c6(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	DasmX86_32_ParseModRM8(sess, mem, &destReg, &memVal);
 	if (destReg == 0)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"mov ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("mov "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrInt32(sess->sbuff, sess->memReader->ReadMemUInt8(sess->regs.EIP));
 		sess->regs.EIP += 1;
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else
@@ -5033,9 +5033,9 @@ Bool __stdcall DasmX86_32_c7(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	if (((sess->memReader->ReadMemUInt8(sess->regs.EIP) >> 3) & 7) == 0)
 	{
 		DasmX86_32_ParseModRM32(sess, mem, &destReg, &memVal, 0);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"mov ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("mov "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		if (sess->thisStatus & 1)
 		{
 			sess->sbuff = Text::StrInt32(sess->sbuff, (Int16)sess->memReader->ReadMemUInt16(sess->regs.EIP));
@@ -5046,30 +5046,30 @@ Bool __stdcall DasmX86_32_c7(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 			sess->sbuff = Text::StrInt32(sess->sbuff, (Int32)sess->memReader->ReadMemUInt32(sess->regs.EIP));
 			sess->regs.EIP += 4;
 		}
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"Unknown operation to stack\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("Unknown operation to stack\r\n"));
 		return false;
 	}
 }
 
 Bool __stdcall DasmX86_32_c8(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 {
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"enter ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("enter "));
 	sess->sbuff = Text::StrInt32(sess->sbuff, (Int16)sess->memReader->ReadMemUInt16(sess->regs.EIP + 1));
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 	sess->sbuff = Text::StrInt32(sess->sbuff, sess->memReader->ReadMemUInt8(sess->regs.EIP + 3));
 	sess->regs.EIP += 4;
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
 Bool __stdcall DasmX86_32_c9(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 {
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"leave\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("leave\r\n"));
 	sess->regs.EIP += 1;
 	sess->regs.ESP = sess->regs.EBP;
 	sess->regs.EBP = sess->memReader->ReadMemUInt32(sess->regs.ESP);
@@ -5081,7 +5081,7 @@ Bool __stdcall DasmX86_32_ca(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 {
 	UInt32 cnt = sess->memReader->ReadMemUInt16(sess->regs.EIP + 1);
 	sess->endType = Manage::DasmX86_32::ET_FUNC_RET;
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"retf ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("retf "));
 	sess->sbuff = Text::StrUInt32(sess->sbuff, cnt);
 	if (sess->thisStatus & 0x80000000)
 	{
@@ -5092,7 +5092,7 @@ Bool __stdcall DasmX86_32_ca(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		UInt8 *buff;
 		UOSInt buffSize;
 		sess->retAddr = sess->memReader->ReadMemUInt32(sess->regs.ESP);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\t;");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\t;"));
 		buff = MemAlloc(UInt8, cnt);
 		buffSize = sess->memReader->ReadMemory(sess->regs.ESP + 8, buff, cnt);
 		if (buffSize > 0)
@@ -5102,7 +5102,7 @@ Bool __stdcall DasmX86_32_ca(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.ESP += 8 + cnt;
 		MemFree(buff);
 	}
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	sess->regs.EIP += 3;
 	return true;
 }
@@ -5110,7 +5110,7 @@ Bool __stdcall DasmX86_32_ca(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 Bool __stdcall DasmX86_32_cb(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 {
 	sess->endType = Manage::DasmX86_32::ET_FUNC_RET;
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"retf\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("retf\r\n"));
 	if (sess->thisStatus & 0x80000000)
 	{
 		sess->retAddr = 0;
@@ -5126,23 +5126,23 @@ Bool __stdcall DasmX86_32_cb(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 
 Bool __stdcall DasmX86_32_cc(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 {
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"int 3\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("int 3\r\n"));
 	sess->regs.EIP++;
 	return true;
 }
 
 Bool __stdcall DasmX86_32_cd(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 {
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"int 0x");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("int 0x"));
 	sess->sbuff = Text::StrHexByte(sess->sbuff, sess->memReader->ReadMemUInt8(sess->regs.EIP + 1));
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	sess->regs.EIP += 2;
 	return true;
 }
 
 Bool __stdcall DasmX86_32_ce(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 {
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"into\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("into\r\n"));
 	sess->regs.EIP++;
 	return true;
 }
@@ -5151,11 +5151,11 @@ Bool __stdcall DasmX86_32_cf(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 {
 	if (sess->thisStatus & 1)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"iret\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("iret\r\n"));
 	}
 	else
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"iretd\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("iretd\r\n"));
 	}
 	if (sess->thisStatus & 0x80000000)
 	{
@@ -5179,51 +5179,51 @@ Bool __stdcall DasmX86_32_d0(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	DasmX86_32_ParseModRM8(sess, mem, &regNo, &memVal);
 	if (regNo == 0)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"rol ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("rol "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", 1\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", 1\r\n"));
 		return true;
 	}
 	else if (regNo == 1)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"ror ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("ror "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", 1\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", 1\r\n"));
 		return true;
 	}
 	else if (regNo == 2)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"rcl ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("rcl "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", 1\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", 1\r\n"));
 		return true;
 	}
 	else if (regNo == 3)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"rcr ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("rcr "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", 1\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", 1\r\n"));
 		return true;
 	}
 	else if (regNo == 4)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"sal ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("sal "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", 1\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", 1\r\n"));
 		return true;
 	}
 	else if (regNo == 5)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"shr ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("shr "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", 1\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", 1\r\n"));
 		return true;
 	}
 	else if (regNo == 7)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"sar ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("sar "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", 1\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", 1\r\n"));
 		return true;
 	}
 	else
@@ -5241,51 +5241,51 @@ Bool __stdcall DasmX86_32_d1(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	DasmX86_32_ParseModRM32(sess, mem, &regNo, &memVal, 0);
 	if (regNo == 0)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"rol ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("rol "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", 1\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", 1\r\n"));
 		return true;
 	}
 	else if (regNo == 1)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"ror ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("ror "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", 1\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", 1\r\n"));
 		return true;
 	}
 	else if (regNo == 2)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"rcl ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("rcl "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", 1\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", 1\r\n"));
 		return true;
 	}
 	else if (regNo == 3)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"rcr ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("rcr "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", 1\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", 1\r\n"));
 		return true;
 	}
 	else if (regNo == 4)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"sal ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("sal "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", 1\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", 1\r\n"));
 		return true;
 	}
 	else if (regNo == 5)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"shr ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("shr "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", 1\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", 1\r\n"));
 		return true;
 	}
 	else if (regNo == 7)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"sar ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("sar "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", 1\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", 1\r\n"));
 		return true;
 	}
 	else
@@ -5303,51 +5303,51 @@ Bool __stdcall DasmX86_32_d2(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	DasmX86_32_ParseModRM8(sess, mem, &regNo, &memVal);
 	if (regNo == 0)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"rol ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("rol "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", CL\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", CL\r\n"));
 		return true;
 	}
 	else if (regNo == 1)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"ror ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("ror "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", CL\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", CL\r\n"));
 		return true;
 	}
 	else if (regNo == 2)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"rcl ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("rcl "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", CL\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", CL\r\n"));
 		return true;
 	}
 	else if (regNo == 3)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"rcr ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("rcr "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", CL\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", CL\r\n"));
 		return true;
 	}
 	else if (regNo == 4)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"sal ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("sal "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", CL\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", CL\r\n"));
 		return true;
 	}
 	else if (regNo == 5)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"shr ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("shr "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", CL\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", CL\r\n"));
 		return true;
 	}
 	else if (regNo == 7)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"sar ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("sar "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", CL\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", CL\r\n"));
 		return true;
 	}
 	else
@@ -5365,51 +5365,51 @@ Bool __stdcall DasmX86_32_d3(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	DasmX86_32_ParseModRM32(sess, mem, &regNo, &memVal, 0);
 	if (regNo == 0)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"rol ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("rol "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", CL\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", CL\r\n"));
 		return true;
 	}
 	else if (regNo == 1)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"ror ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("ror "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", CL\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", CL\r\n"));
 		return true;
 	}
 	else if (regNo == 2)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"rcl ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("rcl "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", CL\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", CL\r\n"));
 		return true;
 	}
 	else if (regNo == 3)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"rcr ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("rcr "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", CL\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", CL\r\n"));
 		return true;
 	}
 	else if (regNo == 4)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"sal ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("sal "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", CL\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", CL\r\n"));
 		return true;
 	}
 	else if (regNo == 5)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"shr ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("shr "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", CL\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", CL\r\n"));
 		return true;
 	}
 	else if (regNo == 7)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"sar ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("sar "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", CL\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", CL\r\n"));
 		return true;
 	}
 	else
@@ -5423,7 +5423,7 @@ Bool __stdcall DasmX86_32_d4(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	if (sess->memReader->ReadMemUInt8(sess->regs.EIP + 1) == 0xa)
 	{
 		sess->regs.EIP += 2;
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"aam\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("aam\r\n"));
 		return true;
 	}
 	else
@@ -5437,7 +5437,7 @@ Bool __stdcall DasmX86_32_d5(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	if (sess->memReader->ReadMemUInt8(sess->regs.EIP + 1) == 0xa)
 	{
 		sess->regs.EIP += 2;
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"aad\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("aad\r\n"));
 		return true;
 	}
 	else
@@ -5454,7 +5454,7 @@ Bool __stdcall DasmX86_32_d6(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 Bool __stdcall DasmX86_32_d7(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 {
 	sess->regs.EIP += 1;
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"xlatb\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("xlatb\r\n"));
 	return true;
 }
 
@@ -5469,90 +5469,90 @@ Bool __stdcall DasmX86_32_d8(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		b2 = (b >> 3) & 7;
 		if (b2 == 0)
 		{
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fadd ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fadd "));
 			DasmX86_32_ParseRegx87(mem, 0);
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 			DasmX86_32_ParseRegx87(mem, b & 7);
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 			return true;
 		}
 		else if (b2 == 1)
 		{
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fmul ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fmul "));
 			DasmX86_32_ParseRegx87(mem, 0);
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 			DasmX86_32_ParseRegx87(mem, b & 7);
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 			return true;
 		}
 		else if (b2 == 2)
 		{
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fcom ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fcom "));
 			DasmX86_32_ParseRegx87(mem, 0);
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 			DasmX86_32_ParseRegx87(mem, b & 7);
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 			return true;
 		}
 		else if (b2 == 3)
 		{
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fcomp ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fcomp "));
 			DasmX86_32_ParseRegx87(mem, 0);
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 			DasmX86_32_ParseRegx87(mem, b & 7);
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 			return true;
 		}
 		else if (b2 == 4)
 		{
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fsub ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fsub "));
 			DasmX86_32_ParseRegx87(mem, 0);
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 			DasmX86_32_ParseRegx87(mem, b & 7);
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 			return true;
 		}
 		else if (b2 == 5)
 		{
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fsubr ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fsubr "));
 			DasmX86_32_ParseRegx87(mem, 0);
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 			DasmX86_32_ParseRegx87(mem, b & 7);
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 			return true;
 		}
 		else if (b2 == 6)
 		{
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fdiv ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fdiv "));
 			DasmX86_32_ParseRegx87(mem, 0);
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 			DasmX86_32_ParseRegx87(mem, b & 7);
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 			return true;
 		}
 		else if (b2 == 7)
 		{
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fdivr ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fdivr "));
 			DasmX86_32_ParseRegx87(mem, 0);
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 			DasmX86_32_ParseRegx87(mem, b & 7);
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 			return true;
 		}
 	}
@@ -5563,65 +5563,65 @@ Bool __stdcall DasmX86_32_d8(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		DasmX86_32_ParseModRM32(sess, mem, &b2, &memVal, 0);
 		if (b2 == 0)
 		{
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fadd ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fadd "));
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 			sess->thisStatus |= 2;
 			return true;
 		}
 		else if (b2 == 1)
 		{
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fmul ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fmul "));
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 			sess->thisStatus |= 2;
 			return true;
 		}
 		else if (b2 == 2)
 		{
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fcom ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fcom "));
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 			sess->thisStatus |= 2;
 			return true;
 		}
 		else if (b2 == 3)
 		{
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fcomp ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fcomp "));
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 			sess->thisStatus |= 2;
 			return true;
 		}
 		else if (b2 == 4)
 		{
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fsub ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fsub "));
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 			sess->thisStatus |= 2;
 			return true;
 		}
 		else if (b2 == 5)
 		{
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fsubr ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fsubr "));
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 			sess->thisStatus |= 2;
 			return true;
 		}
 		else if (b2 == 6)
 		{
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fdiv ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fdiv "));
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 			sess->thisStatus |= 2;
 			return true;
 		}
 		else if (b2 == 7)
 		{
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fdivr ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fdivr "));
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 			sess->thisStatus |= 2;
 			return true;
 		}
@@ -5646,95 +5646,95 @@ Bool __stdcall DasmX86_32_d9(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 			switch (b & 0x1f)
 			{
 			case 0:
-				sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fchs\r\n");
+				sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fchs\r\n"));
 				return true;
 			case 1:
-				sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fabs\r\n");
+				sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fabs\r\n"));
 				return true;
 			case 2:
 				break;
 			case 3:
 				break;
 			case 4:
-				sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"ftst\r\n");
+				sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("ftst\r\n"));
 				return true;
 			case 5:
-				sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fxam\r\n");
+				sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fxam\r\n"));
 				return true;
 			case 6:
 				break;
 			case 7:
 				break;
 			case 8:
-				sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fld1\r\n");
+				sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fld1\r\n"));
 				return true;
 			case 9:
-				sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fldl2t\r\n");
+				sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fldl2t\r\n"));
 				return true;
 			case 0xa:
-				sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fldl2e\r\n");
+				sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fldl2e\r\n"));
 				return true;
 			case 0xb:
-				sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fldpi\r\n");
+				sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fldpi\r\n"));
 				return true;
 			case 0xc:
-				sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fldlg2\r\n");
+				sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fldlg2\r\n"));
 				return true;
 			case 0xd:
-				sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fldln2\r\n");
+				sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fldln2\r\n"));
 				return true;
 			case 0xe:
-				sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fldz\r\n");
+				sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fldz\r\n"));
 				return true;
 			case 0xf:
 				break;
 			case 0x10:
-				sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"f2xm1\r\n");
+				sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("f2xm1\r\n"));
 				return true;
 			case 0x11:
-				sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fyl2x\r\n");
+				sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fyl2x\r\n"));
 				return true;
 			case 0x12:
-				sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fptan\r\n");
+				sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fptan\r\n"));
 				return true;
 			case 0x13:
-				sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fpatan\r\n");
+				sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fpatan\r\n"));
 				return true;
 			case 0x14:
-				sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fxtract\r\n");
+				sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fxtract\r\n"));
 				return true;
 			case 0x15:
-				sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fprem1\r\n");
+				sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fprem1\r\n"));
 				return true;
 			case 0x16:
-				sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fdecstp\r\n");
+				sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fdecstp\r\n"));
 				return true;
 			case 0x17:
-				sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fincstp\r\n");
+				sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fincstp\r\n"));
 				return true;
 			case 0x18:
-				sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fprem\r\n");
+				sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fprem\r\n"));
 				return true;
 			case 0x19:
-				sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fyl2xp1\r\n");
+				sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fyl2xp1\r\n"));
 				return true;
 			case 0x1a:
-				sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fsqrt\r\n");
+				sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fsqrt\r\n"));
 				return true;
 			case 0x1b:
-				sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fsincos\r\n");
+				sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fsincos\r\n"));
 				return true;
 			case 0x1c:
-				sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"frndint\r\n");
+				sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("frndint\r\n"));
 				return true;
 			case 0x1d:
-				sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fscale\r\n");
+				sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fscale\r\n"));
 				return true;
 			case 0x1e:
-				sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fsin\r\n");
+				sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fsin\r\n"));
 				return true;
 			case 0x1f:
-				sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fcos\r\n");
+				sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fcos\r\n"));
 				return true;
 			}
 		}
@@ -5743,29 +5743,29 @@ Bool __stdcall DasmX86_32_d9(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 			b2 = (b >> 3) & 7;
 			if (b == 0xd0)
 			{
-				sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fnop\r\n");
+				sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fnop\r\n"));
 				return true;
 			}
 			else if (b2 == 0)
 			{
-				sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fld ");
+				sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fld "));
 				DasmX86_32_ParseRegx87(mem, 0);
 				sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-				sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+				sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 				DasmX86_32_ParseRegx87(mem, b & 7);
 				sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-				sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+				sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 				return true;
 			}
 			else if (b2 == 1)
 			{
-				sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fxch ");
+				sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fxch "));
 				DasmX86_32_ParseRegx87(mem, 0);
 				sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-				sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+				sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 				DasmX86_32_ParseRegx87(mem, b & 7);
 				sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-				sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+				sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 				return true;
 			}
 		}
@@ -5783,23 +5783,23 @@ Bool __stdcall DasmX86_32_d9(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 			DasmX86_32_ParseModRM32(sess, mem, &b2, &memVal, 0);
 			if (b2 == 0)
 			{
-				sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fld ");
+				sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fld "));
 				sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-				sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+				sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 				return true;
 			}
 			else if (b2 == 2)
 			{
-				sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fst ");
+				sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fst "));
 				sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-				sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+				sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 				return true;
 			}
 			else if (b2 == 3)
 			{
-				sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fstp ");
+				sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fstp "));
 				sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-				sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+				sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 				return true;
 			}
 		}
@@ -5819,51 +5819,51 @@ Bool __stdcall DasmX86_32_da(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		b2 = (b >> 3) & 7;
 		if (b == 0xe9)
 		{
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fucompp\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fucompp\r\n"));
 			return true;
 		}
 		else if (b2 == 0)
 		{
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fcmovb ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fcmovb "));
 			DasmX86_32_ParseRegx87(mem, 0);
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 			DasmX86_32_ParseRegx87(mem, b & 7);
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 			return true;
 		}
 		else if (b2 == 1)
 		{
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fcmove ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fcmove "));
 			DasmX86_32_ParseRegx87(mem, 0);
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 			DasmX86_32_ParseRegx87(mem, b & 7);
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 			return true;
 		}
 		else if (b2 == 2)
 		{
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fcmovbe ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fcmovbe "));
 			DasmX86_32_ParseRegx87(mem, 0);
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 			DasmX86_32_ParseRegx87(mem, b & 7);
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 			return true;
 		}
 		else if (b2 == 3)
 		{
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fcmovu ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fcmovu "));
 			DasmX86_32_ParseRegx87(mem, 0);
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 			DasmX86_32_ParseRegx87(mem, b & 7);
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 			return true;
 		}
 	}
@@ -5874,65 +5874,65 @@ Bool __stdcall DasmX86_32_da(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		DasmX86_32_ParseModRM32(sess, mem, &b2, &memVal, 0);
 		if (b2 == 0)
 		{
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fiadd ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fiadd "));
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 			sess->thisStatus |= 2;
 			return true;
 		}
 		else if (b2 == 1)
 		{
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fimul ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fimul "));
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 			sess->thisStatus |= 2;
 			return true;
 		}
 		else if (b2 == 2)
 		{
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"ficom ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("ficom "));
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 			sess->thisStatus |= 2;
 			return true;
 		}
 		else if (b2 == 3)
 		{
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"ficomp ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("ficomp "));
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 			sess->thisStatus |= 2;
 			return true;
 		}
 		else if (b2 == 4)
 		{
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fisub ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fisub "));
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 			sess->thisStatus |= 2;
 			return true;
 		}
 		else if (b2 == 5)
 		{
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fisubr ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fisubr "));
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 			sess->thisStatus |= 2;
 			return true;
 		}
 		else if (b2 == 6)
 		{
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fidiv ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fidiv "));
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 			sess->thisStatus |= 2;
 			return true;
 		}
 		else if (b2 == 7)
 		{
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fidivr ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fidivr "));
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 			sess->thisStatus |= 2;
 			return true;
 		}
@@ -5955,80 +5955,80 @@ Bool __stdcall DasmX86_32_db(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		b2 = (b >> 3) & 7;
 		if (b == 0xe2)
 		{
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fnclex\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fnclex\r\n"));
 			sess->regs.EIP += 2;
 			return true;
 		}
 		else if (b == 0xe3)
 		{
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fninit\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fninit\r\n"));
 			sess->regs.EIP += 2;
 			return true;
 		}
 		else if (b2 == 0)
 		{
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fcmovnb ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fcmovnb "));
 			DasmX86_32_ParseRegx87(mem, 0);
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 			DasmX86_32_ParseRegx87(mem, b & 7);
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 			return true;
 		}
 		else if (b2 == 1)
 		{
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fcmovne ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fcmovne "));
 			DasmX86_32_ParseRegx87(mem, 0);
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 			DasmX86_32_ParseRegx87(mem, b & 7);
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 			return true;
 		}
 		else if (b2 == 2)
 		{
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fcmovnbe ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fcmovnbe "));
 			DasmX86_32_ParseRegx87(mem, 0);
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 			DasmX86_32_ParseRegx87(mem, b & 7);
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 			return true;
 		}
 		else if (b2 == 3)
 		{
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fcmovnu ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fcmovnu "));
 			DasmX86_32_ParseRegx87(mem, 0);
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 			DasmX86_32_ParseRegx87(mem, b & 7);
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 			return true;
 		}
 		else if (b2 == 5)
 		{
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fucomi ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fucomi "));
 			DasmX86_32_ParseRegx87(mem, 0);
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 			DasmX86_32_ParseRegx87(mem, b & 7);
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 			return true;
 		}
 		else if (b2 == 6)
 		{
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fcomi ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fcomi "));
 			DasmX86_32_ParseRegx87(mem, 0);
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 			DasmX86_32_ParseRegx87(mem, b & 7);
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 			return true;
 		}
 	}
@@ -6040,16 +6040,16 @@ Bool __stdcall DasmX86_32_db(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 /*	1		DasmX86_32_ParseModRM80(sess, mem, &b2);
 			if (b2 == 5)
 			{
-				sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fld ");
+				sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fld "));
 				sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-				sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+				sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 				return true;
 			}
 			else if (b2 == 7)
 			{
-				sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fstp ");
+				sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fstp "));
 				sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-				sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+				sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 				return true;
 			}*/
 		}
@@ -6059,30 +6059,30 @@ Bool __stdcall DasmX86_32_db(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 			DasmX86_32_ParseModRM32(sess, mem, &b2, &memVal, 0);
 			if (b2 == 0)
 			{
-				sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fild ");
+				sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fild "));
 				sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-				sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+				sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 				return true;
 			}
 			else if (b2 == 1)
 			{
-				sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fisttp ");
+				sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fisttp "));
 				sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-				sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+				sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 				return true;
 			}
 			else if (b2 == 2)
 			{
-				sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fist ");
+				sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fist "));
 				sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-				sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+				sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 				return true;
 			}
 			else if (b2 == 3)
 			{
-				sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fistp ");
+				sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fistp "));
 				sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-				sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+				sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 				return true;
 			}
 		}
@@ -6101,68 +6101,68 @@ Bool __stdcall DasmX86_32_dc(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		if (b2 == 0)
 		{
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fadd ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fadd "));
 			DasmX86_32_ParseRegx87(mem, b & 7);
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 			DasmX86_32_ParseRegx87(mem, 0);
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 			return true;
 		}
 		else if (b2 == 1)
 		{
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fmul ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fmul "));
 			DasmX86_32_ParseRegx87(mem, b & 7);
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 			DasmX86_32_ParseRegx87(mem, 0);
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 			return true;
 		}
 		else if (b2 == 4)
 		{
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fsubr ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fsubr "));
 			DasmX86_32_ParseRegx87(mem, b & 7);
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 			DasmX86_32_ParseRegx87(mem, 0);
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 			return true;
 		}
 		else if (b2 == 5)
 		{
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fsub ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fsub "));
 			DasmX86_32_ParseRegx87(mem, b & 7);
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 			DasmX86_32_ParseRegx87(mem, 0);
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 			return true;
 		}
 		else if (b2 == 6)
 		{
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fdivr ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fdivr "));
 			DasmX86_32_ParseRegx87(mem, b & 7);
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 			DasmX86_32_ParseRegx87(mem, 0);
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 			return true;
 		}
 		else if (b2 == 7)
 		{
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fdiv ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fdiv "));
 			DasmX86_32_ParseRegx87(mem, b & 7);
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 			DasmX86_32_ParseRegx87(mem, 0);
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 			return true;
 		}
 	}
@@ -6172,65 +6172,65 @@ Bool __stdcall DasmX86_32_dc(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		DasmX86_32_ParseModRM64(sess, mem, &b2);
 		if (b2 == 0)
 		{
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fadd ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fadd "));
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 			sess->thisStatus |= 2;
 			return true;
 		}
 		else if (b2 == 1)
 		{
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fmul ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fmul "));
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 			sess->thisStatus |= 2;
 			return true;
 		}
 		else if (b2 == 2)
 		{
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fcom ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fcom "));
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 			sess->thisStatus |= 2;
 			return true;
 		}
 		else if (b2 == 3)
 		{
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fcomp ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fcomp "));
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 			sess->thisStatus |= 2;
 			return true;
 		}
 		else if (b2 == 4)
 		{
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fsub ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fsub "));
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 			sess->thisStatus |= 2;
 			return true;
 		}
 		else if (b2 == 5)
 		{
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fsubr ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fsubr "));
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 			sess->thisStatus |= 2;
 			return true;
 		}
 		else if (b2 == 6)
 		{
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fdiv ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fdiv "));
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 			sess->thisStatus |= 2;
 			return true;
 		}
 		else if (b2 == 7)
 		{
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fdivr ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fdivr "));
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 			sess->thisStatus |= 2;
 			return true;
 		}
@@ -6253,45 +6253,45 @@ Bool __stdcall DasmX86_32_dd(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		b2 = (b >> 3) & 7;
 		if (b2 == 0)
 		{
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"ffree ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("ffree "));
 			DasmX86_32_ParseRegx87(mem, b & 7);
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 			return true;
 		}
 		else if (b2 == 2)
 		{
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fst ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fst "));
 			DasmX86_32_ParseRegx87(mem, b & 7);
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 			return true;
 		}
 		else if (b2 == 3)
 		{
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fstp ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fstp "));
 			DasmX86_32_ParseRegx87(mem, b & 7);
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 			return true;
 		}
 		else if (b2 == 4)
 		{
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fucom ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fucom "));
 			DasmX86_32_ParseRegx87(mem, b & 7);
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 			DasmX86_32_ParseRegx87(mem, 0);
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 			return true;
 		}
 		else if (b2 == 5)
 		{
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fucomp ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fucomp "));
 			DasmX86_32_ParseRegx87(mem, b & 7);
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 			return true;
 		}
 	}
@@ -6306,33 +6306,33 @@ Bool __stdcall DasmX86_32_dd(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 			DasmX86_32_ParseModRM64(sess, mem, &b2);
 			if (b2 == 0)
 			{
-				sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fld ");
+				sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fld "));
 				sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-				sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+				sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 				sess->thisStatus |= 2;
 				return true;
 			}
 			else if (b2 == 1)
 			{
-				sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fisttp ");
+				sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fisttp "));
 				sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-				sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+				sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 				sess->thisStatus |= 2;
 				return true;
 			}
 			else if (b2 == 2)
 			{
-				sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fst ");
+				sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fst "));
 				sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-				sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+				sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 				sess->thisStatus |= 2;
 				return true;
 			}
 			else if (b2 == 3)
 			{
-				sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fstp ");
+				sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fstp "));
 				sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-				sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+				sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 				sess->thisStatus |= 2;
 				return true;
 			}
@@ -6352,73 +6352,73 @@ Bool __stdcall DasmX86_32_de(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		if (b == 0xd9)
 		{
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fcompp\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fcompp\r\n"));
 			return true;
 		}
 		else if (b2 == 0)
 		{
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"faddp ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("faddp "));
 			DasmX86_32_ParseRegx87(mem, b & 7);
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 			DasmX86_32_ParseRegx87(mem, 0);
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 			return true;
 		}
 		else if (b2 == 1)
 		{
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fmulp ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fmulp "));
 			DasmX86_32_ParseRegx87(mem, b & 7);
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 			DasmX86_32_ParseRegx87(mem, 0);
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 			return true;
 		}
 		else if (b2 == 4)
 		{
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fsubrp ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fsubrp "));
 			DasmX86_32_ParseRegx87(mem, b & 7);
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 			DasmX86_32_ParseRegx87(mem, 0);
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 			return true;
 		}
 		else if (b2 == 5)
 		{
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fsubp ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fsubp "));
 			DasmX86_32_ParseRegx87(mem, b & 7);
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 			DasmX86_32_ParseRegx87(mem, 0);
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 			return true;
 		}
 		else if (b2 == 6)
 		{
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fdivrp ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fdivrp "));
 			DasmX86_32_ParseRegx87(mem, b & 7);
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 			DasmX86_32_ParseRegx87(mem, 0);
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 			return true;
 		}
 		else if (b2 == 7)
 		{
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fdivp ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fdivp "));
 			DasmX86_32_ParseRegx87(mem, b & 7);
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 			DasmX86_32_ParseRegx87(mem, 0);
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 			return true;
 		}
 	}
@@ -6429,65 +6429,65 @@ Bool __stdcall DasmX86_32_de(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		DasmX86_32_ParseModRM16(sess, mem, &b2, &memVal);
 		if (b2 == 0)
 		{
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fiadd ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fiadd "));
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 			sess->thisStatus |= 2;
 			return true;
 		}
 		else if (b2 == 1)
 		{
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fimul ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fimul "));
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 			sess->thisStatus |= 2;
 			return true;
 		}
 		else if (b2 == 2)
 		{
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"ficom ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("ficom "));
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 			sess->thisStatus |= 2;
 			return true;
 		}
 		else if (b2 == 3)
 		{
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"ficomp ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("ficomp "));
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 			sess->thisStatus |= 2;
 			return true;
 		}
 		else if (b2 == 4)
 		{
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fisub ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fisub "));
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 			sess->thisStatus |= 2;
 			return true;
 		}
 		else if (b2 == 5)
 		{
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fisubr ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fisubr "));
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 			sess->thisStatus |= 2;
 			return true;
 		}
 		else if (b2 == 6)
 		{
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fidiv ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fidiv "));
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 			sess->thisStatus |= 2;
 			return true;
 		}
 		else if (b2 == 7)
 		{
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fidivr ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fidivr "));
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 			sess->thisStatus |= 2;
 			return true;
 		}
@@ -6510,31 +6510,31 @@ Bool __stdcall DasmX86_32_df(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		if (b == 0xe0)
 		{
 			sess->regs.EIP += 2;
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fnstsw AX\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fnstsw AX\r\n"));
 			return true;
 		}
 		else if (b2 == 5)
 		{
 			sess->regs.EIP += 2;
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fucomip ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fucomip "));
 			DasmX86_32_ParseRegx87(mem, 0);
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 			DasmX86_32_ParseRegx87(mem, b & 7);
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 			return true;
 		}
 		else if (b2 == 6)
 		{
 			sess->regs.EIP += 2;
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fcomip ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fcomip "));
 			DasmX86_32_ParseRegx87(mem, 0);
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 			DasmX86_32_ParseRegx87(mem, b & 7);
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 			return true;
 		}
 	}
@@ -6549,16 +6549,16 @@ Bool __stdcall DasmX86_32_df(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 				DasmX86_32_ParseModRM64(sess, mem, &b2);
 				if (b2 == 5)
 				{
-					sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fild ");
+					sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fild "));
 					sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-					sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+					sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 					return true;
 				}
 				else if (b2 == 7)
 				{
-					sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fistp ");
+					sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fistp "));
 					sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-					sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+					sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 					return true;
 				}
 			}
@@ -6568,16 +6568,16 @@ Bool __stdcall DasmX86_32_df(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 				DasmX86_32_ParseModRMR80(sess, mem, &b2);
 				if (b2 == 4)
 				{
-					sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fbld ");
+					sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fbld "));
 					sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-					sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+					sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 					return true;
 				}
 				else if (b2 == 6)
 				{
-					sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fbstp ");
+					sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fbstp "));
 					sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-					sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+					sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 					return true;
 				}
 			}
@@ -6589,30 +6589,30 @@ Bool __stdcall DasmX86_32_df(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 			DasmX86_32_ParseModRM16(sess, mem, &b2, &memVal);
 			if (b2 == 0)
 			{
-				sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fild ");
+				sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fild "));
 				sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-				sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+				sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 				return true;
 			}
 			else if (b2 == 1)
 			{
-				sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fisttp ");
+				sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fisttp "));
 				sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-				sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+				sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 				return true;
 			}
 			else if (b2 == 2)
 			{
-				sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fist ");
+				sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fist "));
 				sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-				sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+				sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 				return true;
 			}
 			else if (b2 == 3)
 			{
-				sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"fistp ");
+				sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("fistp "));
 				sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-				sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+				sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 				return true;
 			}
 		}
@@ -6625,9 +6625,9 @@ Bool __stdcall DasmX86_32_e0(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	UInt32 addr = (UInt32)((Int32)sess->regs.EIP + 2 + (Int8)sess->memReader->ReadMemUInt8(sess->regs.EIP + 1));
 	sess->regs.EIP += 2;
 	sess->jmpAddrs->Add(addr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"loopnz 0x");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("loopnz 0x"));
 	sess->sbuff = Text::StrHexVal32(sess->sbuff, addr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -6636,9 +6636,9 @@ Bool __stdcall DasmX86_32_e1(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	UInt32 addr = (UInt32)((Int32)sess->regs.EIP + 2 + (Int8)sess->memReader->ReadMemUInt8(sess->regs.EIP + 1));
 	sess->regs.EIP += 2;
 	sess->jmpAddrs->Add(addr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"loopz 0x");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("loopz 0x"));
 	sess->sbuff = Text::StrHexVal32(sess->sbuff, addr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -6647,9 +6647,9 @@ Bool __stdcall DasmX86_32_e2(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	UInt32 addr = (UInt32)((Int32)sess->regs.EIP + 2 + (Int8)sess->memReader->ReadMemUInt8(sess->regs.EIP + 1));
 	sess->regs.EIP += 2;
 	sess->jmpAddrs->Add(addr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"loop 0x");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("loop 0x"));
 	sess->sbuff = Text::StrHexVal32(sess->sbuff, addr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -6659,23 +6659,23 @@ Bool __stdcall DasmX86_32_e3(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	sess->regs.EIP += 2;
 	if (sess->thisStatus & 1)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"jcxz 0x");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("jcxz 0x"));
 	}
 	else
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"jecxz 0x");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("jecxz 0x"));
 	}
 	sess->jmpAddrs->Add(addr);
 	sess->sbuff = Text::StrHexVal32(sess->sbuff, addr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
 Bool __stdcall DasmX86_32_e4(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 {
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"in AL, 0x");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("in AL, 0x"));
 	sess->sbuff = Text::StrHexByte(sess->sbuff, sess->memReader->ReadMemUInt8(sess->regs.EIP + 1));
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	sess->regs.EIP += 2;
 	return true;
 }
@@ -6684,38 +6684,38 @@ Bool __stdcall DasmX86_32_e5(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 {
 	if (sess->thisStatus & 1)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"in AX, 0x");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("in AX, 0x"));
 	}
 	else
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"in EAX, 0x");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("in EAX, 0x"));
 	}
 	sess->sbuff = Text::StrHexByte(sess->sbuff, sess->memReader->ReadMemUInt8(sess->regs.EIP + 1));
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	sess->regs.EIP += 2;
 	return true;
 }
 
 Bool __stdcall DasmX86_32_e6(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 {
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"out 0x");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("out 0x"));
 	sess->sbuff = Text::StrHexByte(sess->sbuff, sess->memReader->ReadMemUInt8(sess->regs.EIP + 1));
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", AL\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", AL\r\n"));
 	sess->regs.EIP += 2;
 	return true;
 }
 
 Bool __stdcall DasmX86_32_e7(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 {
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"out 0x");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("out 0x"));
 	sess->sbuff = Text::StrHexByte(sess->sbuff, sess->memReader->ReadMemUInt8(sess->regs.EIP + 1));
 	if (sess->thisStatus & 1)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", AX\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", AX\r\n"));
 	}
 	else
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", EAX\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", EAX\r\n"));
 	}
 	sess->regs.EIP += 2;
 	return true;
@@ -6735,7 +6735,7 @@ Bool __stdcall DasmX86_32_e8(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		addr = sess->regs.EIP + (sess->memReader->ReadMemUInt32(sess->regs.EIP + 1)) + 5;
 		sess->regs.EIP += 5;
 	}
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"call 0x");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("call 0x"));
 	sess->sbuff = Text::StrHexVal32(sess->sbuff, addr);
 
 	if (sess->thisStatus & 0x80000000)
@@ -6745,7 +6745,7 @@ Bool __stdcall DasmX86_32_e8(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	{
 		UInt32 outEsp;
 		Int32 stackCnt = DasmX86_32_GetFuncStack(sess, addr, &outEsp);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)" ParamStack = ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" ParamStack = "));
 		sess->sbuff = Text::StrInt32(sess->sbuff, stackCnt);
 		if (outEsp != 0)
 		{
@@ -6765,7 +6765,7 @@ Bool __stdcall DasmX86_32_e8(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	}
 	if (sess->addrResol)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)" ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
 		sess->sbuff = sess->addrResol->ResolveName(sptr = sess->sbuff, addr);
 		if (sess->sbuff == 0)
 		{
@@ -6777,7 +6777,7 @@ Bool __stdcall DasmX86_32_e8(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 			sess->retAddr = sess->regs.EIP;
 		}
 	}
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	sess->callAddrs->Add(addr);
 	sess->stabesp = sess->regs.ESP;
 	sess->thisStatus |= 2;
@@ -6799,9 +6799,9 @@ Bool __stdcall DasmX86_32_e9(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		addr = sess->regs.EIP + 5 + sess->memReader->ReadMemUInt32(sess->regs.EIP + 1);
 		sess->regs.EIP += 5;
 	}
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"jmp 0x");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("jmp 0x"));
 	sess->sbuff = Text::StrHexVal32(sess->sbuff, addr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	sess->jmpAddrs->Add(addr);
 	addr2 = sess->regs.EIP;
 
@@ -6837,11 +6837,11 @@ Bool __stdcall DasmX86_32_ea(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		addr2 = sess->memReader->ReadMemUInt32(sess->regs.EIP + 5);
 		sess->regs.EIP += 7;
 	}
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"jmp ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("jmp "));
 	sess->sbuff = Text::StrHexVal32(sess->sbuff, addr2);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)":");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(":"));
 	sess->sbuff = Text::StrHexVal32(sess->sbuff, addr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	sess->jmpAddrs->Add(addr);
 	addr2 = sess->regs.EIP;
 
@@ -6866,9 +6866,9 @@ Bool __stdcall DasmX86_32_eb(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	UInt32 addr2;
 	UOSInt i;
 	sess->regs.EIP += 2;
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"jmp 0x");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("jmp 0x"));
 	sess->sbuff = Text::StrHexVal32(sess->sbuff, addr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	sess->jmpAddrs->Add(addr);
 	addr2 = sess->regs.EIP;
 
@@ -6889,7 +6889,7 @@ Bool __stdcall DasmX86_32_eb(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 
 Bool __stdcall DasmX86_32_ec(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 {
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"in AL, DX\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("in AL, DX\r\n"));
 	sess->regs.EIP += 1;
 	return true;
 }
@@ -6898,11 +6898,11 @@ Bool __stdcall DasmX86_32_ed(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 {
 	if (sess->thisStatus & 1)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"in AX, DX\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("in AX, DX\r\n"));
 	}
 	else
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"in EAX, DX\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("in EAX, DX\r\n"));
 	}
 	sess->regs.EIP += 1;
 	return true;
@@ -6910,7 +6910,7 @@ Bool __stdcall DasmX86_32_ed(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 
 Bool __stdcall DasmX86_32_ee(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 {
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"out DX, AL\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("out DX, AL\r\n"));
 	sess->regs.EIP += 1;
 	return true;
 }
@@ -6919,11 +6919,11 @@ Bool __stdcall DasmX86_32_ef(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 {
 	if (sess->thisStatus & 1)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"out DX, AX\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("out DX, AX\r\n"));
 	}
 	else
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"out DX, EAX\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("out DX, EAX\r\n"));
 	}
 	sess->regs.EIP += 1;
 	return true;
@@ -6932,13 +6932,13 @@ Bool __stdcall DasmX86_32_ef(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 Bool __stdcall DasmX86_32_f0(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 {
 	sess->regs.EIP += 1;
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"lock ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("lock "));
 	return ((Manage::DasmX86_32::DasmX86_32_Code*)sess->codes)[sess->memReader->ReadMemUInt8(sess->regs.EIP)](sess);
 /*	UInt8 b = sess->memReader->ReadMemUInt8(sess->regs.EIP + 1);
 	if (b == 0xaa)
 	{
 		sess->regs.EIP += 2;
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"lock stosb\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("lock stosb\r\n"));
 		return true;
 	}
 	else
@@ -6968,14 +6968,14 @@ Bool __stdcall DasmX86_32_f3(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 
 Bool __stdcall DasmX86_32_f4(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 {
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"hlt\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("hlt\r\n"));
 	sess->regs.EIP++;
 	return true;
 }
 
 Bool __stdcall DasmX86_32_f5(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 {
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"cmc\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("cmc\r\n"));
 	sess->regs.EIP++;
 	return true;
 }
@@ -6989,54 +6989,54 @@ Bool __stdcall DasmX86_32_f6(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	DasmX86_32_ParseModRM8(sess, mem, &destReg, &memVal);
 	if (destReg == 0)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"test ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("test "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrInt32(sess->sbuff, (Int8)sess->memReader->ReadMemUInt8(sess->regs.EIP));
 		sess->regs.EIP += 1;
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if (destReg == 2)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"not ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("not "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if (destReg == 3)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"neg ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("neg "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if (destReg == 4)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"mul ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("mul "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if (destReg == 5)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"imul ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("imul "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if (destReg == 6)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"div ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("div "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if (destReg == 7)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"idiv ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("idiv "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else
@@ -7054,111 +7054,111 @@ Bool __stdcall DasmX86_32_f7(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	DasmX86_32_ParseModRM32(sess, mem, &destReg, &memVal, 0);
 	if (destReg == 0)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"test ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("test "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		if (sess->thisStatus & 1)
 		{
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"0x");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("0x"));
 			sess->sbuff = Text::StrHexVal16(sess->sbuff, sess->memReader->ReadMemUInt16(sess->regs.EIP));
 			sess->regs.EIP += 2;
 		}
 		else
 		{
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"0x");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("0x"));
 			sess->sbuff = Text::StrHexVal32(sess->sbuff, sess->memReader->ReadMemUInt32(sess->regs.EIP));
 			sess->regs.EIP += 4;
 		}
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if (destReg == 2)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"not ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("not "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if (destReg == 3)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"neg ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("neg "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if (destReg == 4)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"imul ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("imul "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if (destReg == 5)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"imul ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("imul "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if (destReg == 6)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"div ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("div "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if (destReg == 7)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"idiv ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("idiv "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"Unknown operation to stack\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("Unknown operation to stack\r\n"));
 		return false;
 	}
 }
 
 Bool __stdcall DasmX86_32_f8(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 {
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"clc\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("clc\r\n"));
 	sess->regs.EIP++;
 	return true;
 }
 
 Bool __stdcall DasmX86_32_f9(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 {
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"stc\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("stc\r\n"));
 	sess->regs.EIP++;
 	return true;
 }
 
 Bool __stdcall DasmX86_32_fa(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 {
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"cli\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("cli\r\n"));
 	sess->regs.EIP++;
 	return true;
 }
 
 Bool __stdcall DasmX86_32_fb(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 {
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"sti\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("sti\r\n"));
 	sess->regs.EIP++;
 	return true;
 }
 
 Bool __stdcall DasmX86_32_fc(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 {
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"cld\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("cld\r\n"));
 	sess->regs.EIP++;
 	return true;
 }
 
 Bool __stdcall DasmX86_32_fd(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 {
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"std\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("std\r\n"));
 	sess->regs.EIP++;
 	return true;
 }
@@ -7172,16 +7172,16 @@ Bool __stdcall DasmX86_32_fe(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	DasmX86_32_ParseModRM8(sess, mem, &regNo, &memVal);
 	if (regNo == 0)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"inc ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("inc "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if (regNo == 1)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"dec ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("dec "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else
@@ -7199,21 +7199,21 @@ Bool __stdcall DasmX86_32_ff(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	DasmX86_32_ParseModRM32(sess, mem, &regNo, &memVal, 0);
 	if (regNo == 0)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"inc ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("inc "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if (regNo == 1)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"dec ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("dec "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if (regNo == 2)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"call ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("call "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
 		if (sess->thisStatus & 0x80000000)
 		{
@@ -7222,11 +7222,11 @@ Bool __stdcall DasmX86_32_ff(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		{
 			UInt32 outEsp;
 			Int32 stackCnt = DasmX86_32_GetFuncStack(sess, memVal, &outEsp);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)" (0x");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" (0x"));
 			sess->sbuff = Text::StrHexVal32(sess->sbuff, memVal);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)")");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(")"));
 
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)" ParamStack = ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" ParamStack = "));
 			sess->sbuff = Text::StrInt32(sess->sbuff, stackCnt);
 			if (outEsp != 0)
 			{
@@ -7247,7 +7247,7 @@ Bool __stdcall DasmX86_32_ff(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		if (sess->addrResol)
 		{
 			UTF8Char *sptr;
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)" ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
 			sess->sbuff = sess->addrResol->ResolveName(sptr = sess->sbuff, memVal);
 			if (sess->sbuff == 0)
 			{
@@ -7259,21 +7259,21 @@ Bool __stdcall DasmX86_32_ff(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 				sess->retAddr = sess->regs.EIP;
 			}
 		}
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if (regNo == 4)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"jmp ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("jmp "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if (regNo == 6)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"push ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("push "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else
@@ -7291,44 +7291,44 @@ Bool __stdcall DasmX86_32_0f00(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	DasmX86_32_ParseModR32M16(sess, mem, &regNo, &memVal);
 	if (regNo == 0)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"sldt ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("sldt "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if (regNo == 1)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"str ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("str "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if (regNo == 2)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"lldt ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("lldt "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if (regNo == 3)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"ltr ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("ltr "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if (regNo == 4)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"verr ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("verr "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if (regNo == 5)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"verw ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("verw "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -7339,61 +7339,61 @@ Bool __stdcall DasmX86_32_0f01(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	if (sess->memReader->ReadMemUInt8(sess->regs.EIP + 2) == 0xc1)
 	{
 		sess->regs.EIP += 3;
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"vmcall\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("vmcall\r\n"));
 		return true;
 	}
 	else if (sess->memReader->ReadMemUInt8(sess->regs.EIP + 2) == 0xc2)
 	{
 		sess->regs.EIP += 3;
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"vmlaunch\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("vmlaunch\r\n"));
 		return true;
 	}
 	else if (sess->memReader->ReadMemUInt8(sess->regs.EIP + 2) == 0xc3)
 	{
 		sess->regs.EIP += 3;
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"vmresume\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("vmresume\r\n"));
 		return true;
 	}
 	else if (sess->memReader->ReadMemUInt8(sess->regs.EIP + 2) == 0xc4)
 	{
 		sess->regs.EIP += 3;
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"vmxoff\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("vmxoff\r\n"));
 		return true;
 	}
 	else if (sess->memReader->ReadMemUInt8(sess->regs.EIP + 2) == 0xc8)
 	{
 		sess->regs.EIP += 3;
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"monitor\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("monitor\r\n"));
 		return true;
 	}
 	else if (sess->memReader->ReadMemUInt8(sess->regs.EIP + 2) == 0xc8)
 	{
 		sess->regs.EIP += 3;
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"mwait\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("mwait\r\n"));
 		return true;
 	}
 	else if (sess->memReader->ReadMemUInt8(sess->regs.EIP + 2) == 0xca)
 	{
 		sess->regs.EIP += 3;
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"clac\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("clac\r\n"));
 		return true;
 	}
 	else if (sess->memReader->ReadMemUInt8(sess->regs.EIP + 2) == 0xd0)
 	{
 		sess->regs.EIP += 3;
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"xgetbv\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("xgetbv\r\n"));
 		return true;
 	}
 	else if (sess->memReader->ReadMemUInt8(sess->regs.EIP + 2) == 0xd1)
 	{
 		sess->regs.EIP += 3;
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"xsetbv\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("xsetbv\r\n"));
 		return true;
 	}
 	else if (sess->memReader->ReadMemUInt8(sess->regs.EIP + 2) == 0xf9)
 	{
 		sess->regs.EIP += 3;
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"rdtscp\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("rdtscp\r\n"));
 		return true;
 	}
 	return false;
@@ -7419,11 +7419,11 @@ Bool __stdcall DasmX86_32_0f02(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		DasmX86_32_ParseModR32M16(sess, mem, &regNo, &memVal);
 		DasmX86_32_ParseReg16(sess, reg, regNo, &regPtr);
 	}
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"lar ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("lar "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -7447,11 +7447,11 @@ Bool __stdcall DasmX86_32_0f03(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		DasmX86_32_ParseModR32M16(sess, mem, &regNo, &memVal);
 		DasmX86_32_ParseReg16(sess, reg, regNo, &regPtr);
 	}
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"lsl ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("lsl "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -7463,35 +7463,35 @@ Bool __stdcall DasmX86_32_0f04(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 Bool __stdcall DasmX86_32_0f05(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 {
 	sess->regs.EIP += 2;
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"syscall\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("syscall\r\n"));
 	return true;
 }
 
 Bool __stdcall DasmX86_32_0f06(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 {
 	sess->regs.EIP += 2;
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"clts\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("clts\r\n"));
 	return true;
 }
 
 Bool __stdcall DasmX86_32_0f07(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 {
 	sess->regs.EIP += 2;
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"sysret\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("sysret\r\n"));
 	return true;
 }
 
 Bool __stdcall DasmX86_32_0f08(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 {
 	sess->regs.EIP += 2;
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"invd\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("invd\r\n"));
 	return true;
 }
 
 Bool __stdcall DasmX86_32_0f09(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 {
 	sess->regs.EIP += 2;
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"wbinvd\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("wbinvd\r\n"));
 	return true;
 }
 
@@ -7503,7 +7503,7 @@ Bool __stdcall DasmX86_32_0f0A(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 Bool __stdcall DasmX86_32_0f0B(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 {
 	sess->regs.EIP += 2;
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"ud2\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("ud2\r\n"));
 	return true;
 }
 
@@ -7520,7 +7520,7 @@ Bool __stdcall DasmX86_32_0f0D(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 Bool __stdcall DasmX86_32_0f0E(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 {
 	sess->regs.EIP += 2;
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"femms\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("femms\r\n"));
 	return true;
 }
 
@@ -7537,172 +7537,172 @@ Bool __stdcall DasmX86_32_0f0F(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	switch (cmdId)
 	{
 	case 0x0C:
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pi2fw ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pi2fw "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	case 0x0D:
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pi2fd ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pi2fd "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	case 0x1C:
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pf2iw ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pf2iw "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	case 0x1D:
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pf2id ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pf2id "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	case 0x8A:
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pfnacc ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pfnacc "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	case 0x8E:
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pfpnacc ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pfpnacc "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	case 0x90:
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pfcmpge ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pfcmpge "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	case 0x94:
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pfmin ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pfmin "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	case 0x96:
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pfrcp ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pfrcp "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	case 0x97:
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pfrsqrt ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pfrsqrt "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	case 0x9A:
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pfsub ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pfsub "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	case 0x9E:
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pfadd ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pfadd "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	case 0xA0:
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pfcmpgt ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pfcmpgt "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	case 0xA4:
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pfmax ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pfmax "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	case 0xA6:
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pfrcpit1 ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pfrcpit1 "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	case 0xA7:
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pfrsqit1 ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pfrsqit1 "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	case 0xAA:
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pfsubr ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pfsubr "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	case 0xAE:
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pfacc ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pfacc "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	case 0xB0:
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pfcmpeq ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pfcmpeq "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	case 0xB4:
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pfmul ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pfmul "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	case 0xB6:
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pfrcpit2 ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pfrcpit2 "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	case 0xB7:
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pmulhrw ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pmulhrw "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	case 0xBB:
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pswapd ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pswapd "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	case 0xBF:
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pavgusb ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pavgusb "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -7718,11 +7718,11 @@ Bool __stdcall DasmX86_32_0f10(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"movups ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("movups "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 1)
@@ -7730,11 +7730,11 @@ Bool __stdcall DasmX86_32_0f10(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"movupd ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("movupd "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 4)
@@ -7742,11 +7742,11 @@ Bool __stdcall DasmX86_32_0f10(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"movsd ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("movsd "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 5)
@@ -7754,11 +7754,11 @@ Bool __stdcall DasmX86_32_0f10(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"movss ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("movss "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -7774,11 +7774,11 @@ Bool __stdcall DasmX86_32_0f11(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"movups ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("movups "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 1)
@@ -7786,11 +7786,11 @@ Bool __stdcall DasmX86_32_0f11(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"movupd ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("movupd "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 4)
@@ -7798,11 +7798,11 @@ Bool __stdcall DasmX86_32_0f11(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"movsd ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("movsd "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 5)
@@ -7810,11 +7810,11 @@ Bool __stdcall DasmX86_32_0f11(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"movss ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("movss "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -7832,20 +7832,20 @@ Bool __stdcall DasmX86_32_0f12(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		DasmX86_32_ParseRegXMM(reg, regNo);
 		if (mem[4] == 0)
 		{
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"movhlps ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("movhlps "));
 			sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", X");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", X"));
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 			return true;
 		}
 		else
 		{
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"movlps ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("movlps "));
 			sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 			return true;
 		}
 	}
@@ -7854,11 +7854,11 @@ Bool __stdcall DasmX86_32_0f12(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMMM64(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"movlpd ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("movlpd "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 4)
@@ -7866,11 +7866,11 @@ Bool __stdcall DasmX86_32_0f12(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"movddup ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("movddup "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 5)
@@ -7878,11 +7878,11 @@ Bool __stdcall DasmX86_32_0f12(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"movsldup ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("movsldup "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -7898,11 +7898,11 @@ Bool __stdcall DasmX86_32_0f13(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMMM64(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"movlps ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("movlps "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 1)
@@ -7910,11 +7910,11 @@ Bool __stdcall DasmX86_32_0f13(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMMM64(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"movlpd ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("movlpd "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -7930,11 +7930,11 @@ Bool __stdcall DasmX86_32_0f14(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"unpcklps ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("unpcklps "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 1)
@@ -7942,11 +7942,11 @@ Bool __stdcall DasmX86_32_0f14(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMMM64(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"unpcklpd ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("unpcklpd "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -7962,11 +7962,11 @@ Bool __stdcall DasmX86_32_0f15(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"unpckhps ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("unpckhps "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 1)
@@ -7974,11 +7974,11 @@ Bool __stdcall DasmX86_32_0f15(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMMM64(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"unpckhpd ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("unpckhpd "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -7996,20 +7996,20 @@ Bool __stdcall DasmX86_32_0f16(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		DasmX86_32_ParseRegXMM(reg, regNo);
 		if (mem[4] == 0)
 		{
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"movlhps ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("movlhps "));
 			sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", X");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", X"));
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 			return true;
 		}
 		else
 		{
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"movhps ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("movhps "));
 			sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 			return true;
 		}
 	}
@@ -8018,11 +8018,11 @@ Bool __stdcall DasmX86_32_0f16(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMMM64(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"movhpd ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("movhpd "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 5)
@@ -8030,11 +8030,11 @@ Bool __stdcall DasmX86_32_0f16(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"movshdup ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("movshdup "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -8050,11 +8050,11 @@ Bool __stdcall DasmX86_32_0f17(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMMM64(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"movhps ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("movhps "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 1)
@@ -8062,11 +8062,11 @@ Bool __stdcall DasmX86_32_0f17(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMMM64(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"movhpd ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("movhpd "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -8116,9 +8116,9 @@ Bool __stdcall DasmX86_32_0f1F(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	DasmX86_32_ParseModRM32(sess, mem, &regNo, &memVal, 0);
 	if (regNo == 0)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"nop ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("nop "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 
 	}
@@ -8134,11 +8134,11 @@ Bool __stdcall DasmX86_32_0f20(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	sess->regs.EIP += 2;
 	DasmX86_32_ParseModRM32(sess, mem, &regNo, &memVal, 0);
 	DasmX86_32_ParseRegCR(reg, regNo);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"mov ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("mov "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -8151,11 +8151,11 @@ Bool __stdcall DasmX86_32_0f21(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	sess->regs.EIP += 2;
 	DasmX86_32_ParseModRM32(sess, mem, &regNo, &memVal, 0);
 	DasmX86_32_ParseRegDR(reg, regNo);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"mov ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("mov "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -8168,11 +8168,11 @@ Bool __stdcall DasmX86_32_0f22(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	sess->regs.EIP += 2;
 	DasmX86_32_ParseModRM32(sess, mem, &regNo, &memVal, 0);
 	DasmX86_32_ParseRegCR(reg, regNo);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"mov ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("mov "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -8185,11 +8185,11 @@ Bool __stdcall DasmX86_32_0f23(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	sess->regs.EIP += 2;
 	DasmX86_32_ParseModRM32(sess, mem, &regNo, &memVal, 0);
 	DasmX86_32_ParseRegDR(reg, regNo);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"mov ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("mov "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -8223,11 +8223,11 @@ Bool __stdcall DasmX86_32_0f28(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"movaps ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("movaps "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 1)
@@ -8235,11 +8235,11 @@ Bool __stdcall DasmX86_32_0f28(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"movapd ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("movapd "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -8255,11 +8255,11 @@ Bool __stdcall DasmX86_32_0f29(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"movaps ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("movaps "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 1)
@@ -8267,11 +8267,11 @@ Bool __stdcall DasmX86_32_0f29(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"movapd ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("movapd "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -8287,11 +8287,11 @@ Bool __stdcall DasmX86_32_0f2A(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMMM64(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"cvtpi2ps ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("cvtpi2ps "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 1)
@@ -8299,11 +8299,11 @@ Bool __stdcall DasmX86_32_0f2A(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMMM64(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"cvtpi2pd ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("cvtpi2pd "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 4)
@@ -8313,11 +8313,11 @@ Bool __stdcall DasmX86_32_0f2A(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->thisStatus &= (UInt32)~5;
 		DasmX86_32_ParseModRM32(sess, mem, &regNo, &memVal, 0);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"cvtsi2sd ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("cvtsi2sd "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 5)
@@ -8327,11 +8327,11 @@ Bool __stdcall DasmX86_32_0f2A(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->thisStatus &= (UInt32)~5;
 		DasmX86_32_ParseModRM32(sess, mem, &regNo, &memVal, 0);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"cvtsi2ss ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("cvtsi2ss "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -8347,11 +8347,11 @@ Bool __stdcall DasmX86_32_0f2B(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"movntps ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("movntps "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 1)
@@ -8359,11 +8359,11 @@ Bool __stdcall DasmX86_32_0f2B(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"movntpd ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("movntpd "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 4)
@@ -8371,11 +8371,11 @@ Bool __stdcall DasmX86_32_0f2B(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMMM64(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"movntsd ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("movntsd "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 1)
@@ -8385,11 +8385,11 @@ Bool __stdcall DasmX86_32_0f2B(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->thisStatus &= (UInt32)~5;
 		DasmX86_32_ParseModRM32(sess, mem, &regNo, &memVal, 0);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"movntss ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("movntss "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -8405,11 +8405,11 @@ Bool __stdcall DasmX86_32_0f2C(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"cvttps2pi ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("cvttps2pi "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 1)
@@ -8417,11 +8417,11 @@ Bool __stdcall DasmX86_32_0f2C(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"cvttpd2pi ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("cvttpd2pi "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 4)
@@ -8430,11 +8430,11 @@ Bool __stdcall DasmX86_32_0f2C(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseReg32(sess, reg, regNo, &regPtr);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"cvttsd2si ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("cvttsd2si "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 5)
@@ -8443,11 +8443,11 @@ Bool __stdcall DasmX86_32_0f2C(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseReg32(sess, reg, regNo, &regPtr);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"cvttss2si ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("cvttss2si "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -8463,11 +8463,11 @@ Bool __stdcall DasmX86_32_0f2D(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"cvtps2pi ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("cvtps2pi "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 1)
@@ -8475,11 +8475,11 @@ Bool __stdcall DasmX86_32_0f2D(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"cvtpd2pi ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("cvtpd2pi "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 4)
@@ -8488,11 +8488,11 @@ Bool __stdcall DasmX86_32_0f2D(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseReg32(sess, reg, regNo, &regPtr);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"cvtsd2si ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("cvtsd2si "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 5)
@@ -8501,11 +8501,11 @@ Bool __stdcall DasmX86_32_0f2D(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseReg32(sess, reg, regNo, &regPtr);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"cvtss2si ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("cvtss2si "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -8521,11 +8521,11 @@ Bool __stdcall DasmX86_32_0f2E(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"ucomiss ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("ucomiss "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 1)
@@ -8533,11 +8533,11 @@ Bool __stdcall DasmX86_32_0f2E(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"ucomisd ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("ucomisd "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -8553,11 +8553,11 @@ Bool __stdcall DasmX86_32_0f2F(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"comiss ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("comiss "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 1)
@@ -8565,11 +8565,11 @@ Bool __stdcall DasmX86_32_0f2F(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"comisd ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("comisd "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -8578,42 +8578,42 @@ Bool __stdcall DasmX86_32_0f2F(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 Bool __stdcall DasmX86_32_0f30(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 {
 	sess->regs.EIP += 2;
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"wrmsr\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("wrmsr\r\n"));
 	return true;
 }
 
 Bool __stdcall DasmX86_32_0f31(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 {
 	sess->regs.EIP += 2;
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"rdtsc\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("rdtsc\r\n"));
 	return true;
 }
 
 Bool __stdcall DasmX86_32_0f32(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 {
 	sess->regs.EIP += 2;
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"rdmsr\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("rdmsr\r\n"));
 	return true;
 }
 
 Bool __stdcall DasmX86_32_0f33(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 {
 	sess->regs.EIP += 2;
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"rdpmc\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("rdpmc\r\n"));
 	return true;
 }
 
 Bool __stdcall DasmX86_32_0f34(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 {
 	sess->regs.EIP += 2;
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"sysenter\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("sysenter\r\n"));
 	return true;
 }
 
 Bool __stdcall DasmX86_32_0f35(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 {
 	sess->regs.EIP += 2;
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"sysexit\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("sysexit\r\n"));
 	return true;
 }
 
@@ -8625,7 +8625,7 @@ Bool __stdcall DasmX86_32_0f36(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 Bool __stdcall DasmX86_32_0f37(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 {
 	sess->regs.EIP += 2;
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"getsec\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("getsec\r\n"));
 	return true;
 }
 
@@ -8679,11 +8679,11 @@ Bool __stdcall DasmX86_32_0f40(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	sess->regs.EIP += 2;
 	DasmX86_32_ParseModRM32(sess, mem, &regNo, &memVal, 0);
 	DasmX86_32_ParseReg(sess, reg, regNo, &regPtr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"cmovo ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("cmovo "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -8697,11 +8697,11 @@ Bool __stdcall DasmX86_32_0f41(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	sess->regs.EIP += 2;
 	DasmX86_32_ParseModRM32(sess, mem, &regNo, &memVal, 0);
 	DasmX86_32_ParseReg(sess, reg, regNo, &regPtr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"cmovno ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("cmovno "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -8715,11 +8715,11 @@ Bool __stdcall DasmX86_32_0f42(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	sess->regs.EIP += 2;
 	DasmX86_32_ParseModRM32(sess, mem, &regNo, &memVal, 0);
 	DasmX86_32_ParseReg(sess, reg, regNo, &regPtr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"cmovb ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("cmovb "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -8733,11 +8733,11 @@ Bool __stdcall DasmX86_32_0f43(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	sess->regs.EIP += 2;
 	DasmX86_32_ParseModRM32(sess, mem, &regNo, &memVal, 0);
 	DasmX86_32_ParseReg(sess, reg, regNo, &regPtr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"cmovnb ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("cmovnb "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -8751,11 +8751,11 @@ Bool __stdcall DasmX86_32_0f44(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	sess->regs.EIP += 2;
 	DasmX86_32_ParseModRM32(sess, mem, &regNo, &memVal, 0);
 	DasmX86_32_ParseReg(sess, reg, regNo, &regPtr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"cmovz ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("cmovz "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -8769,11 +8769,11 @@ Bool __stdcall DasmX86_32_0f45(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	sess->regs.EIP += 2;
 	DasmX86_32_ParseModRM32(sess, mem, &regNo, &memVal, 0);
 	DasmX86_32_ParseReg(sess, reg, regNo, &regPtr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"cmovnz ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("cmovnz "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -8787,11 +8787,11 @@ Bool __stdcall DasmX86_32_0f46(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	sess->regs.EIP += 2;
 	DasmX86_32_ParseModRM32(sess, mem, &regNo, &memVal, 0);
 	DasmX86_32_ParseReg(sess, reg, regNo, &regPtr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"cmovbe ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("cmovbe "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -8805,11 +8805,11 @@ Bool __stdcall DasmX86_32_0f47(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	sess->regs.EIP += 2;
 	DasmX86_32_ParseModRM32(sess, mem, &regNo, &memVal, 0);
 	DasmX86_32_ParseReg(sess, reg, regNo, &regPtr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"cmova ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("cmova "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -8823,11 +8823,11 @@ Bool __stdcall DasmX86_32_0f48(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	sess->regs.EIP += 2;
 	DasmX86_32_ParseModRM32(sess, mem, &regNo, &memVal, 0);
 	DasmX86_32_ParseReg(sess, reg, regNo, &regPtr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"cmovs ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("cmovs "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -8841,11 +8841,11 @@ Bool __stdcall DasmX86_32_0f49(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	sess->regs.EIP += 2;
 	DasmX86_32_ParseModRM32(sess, mem, &regNo, &memVal, 0);
 	DasmX86_32_ParseReg(sess, reg, regNo, &regPtr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"cmovns ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("cmovns "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -8859,11 +8859,11 @@ Bool __stdcall DasmX86_32_0f4A(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	sess->regs.EIP += 2;
 	DasmX86_32_ParseModRM32(sess, mem, &regNo, &memVal, 0);
 	DasmX86_32_ParseReg(sess, reg, regNo, &regPtr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"cmovp ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("cmovp "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -8877,11 +8877,11 @@ Bool __stdcall DasmX86_32_0f4B(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	sess->regs.EIP += 2;
 	DasmX86_32_ParseModRM32(sess, mem, &regNo, &memVal, 0);
 	DasmX86_32_ParseReg(sess, reg, regNo, &regPtr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"cmovnp ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("cmovnp "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -8895,11 +8895,11 @@ Bool __stdcall DasmX86_32_0f4C(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	sess->regs.EIP += 2;
 	DasmX86_32_ParseModRM32(sess, mem, &regNo, &memVal, 0);
 	DasmX86_32_ParseReg(sess, reg, regNo, &regPtr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"cmovl ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("cmovl "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -8913,11 +8913,11 @@ Bool __stdcall DasmX86_32_0f4D(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	sess->regs.EIP += 2;
 	DasmX86_32_ParseModRM32(sess, mem, &regNo, &memVal, 0);
 	DasmX86_32_ParseReg(sess, reg, regNo, &regPtr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"cmovge ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("cmovge "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -8931,11 +8931,11 @@ Bool __stdcall DasmX86_32_0f4E(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	sess->regs.EIP += 2;
 	DasmX86_32_ParseModRM32(sess, mem, &regNo, &memVal, 0);
 	DasmX86_32_ParseReg(sess, reg, regNo, &regPtr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"cmovle ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("cmovle "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -8949,11 +8949,11 @@ Bool __stdcall DasmX86_32_0f4F(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	sess->regs.EIP += 2;
 	DasmX86_32_ParseModRM32(sess, mem, &regNo, &memVal, 0);
 	DasmX86_32_ParseReg(sess, reg, regNo, &regPtr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"cmovg ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("cmovg "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -8968,11 +8968,11 @@ Bool __stdcall DasmX86_32_0f50(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseReg32(sess, reg, regNo, &regPtr);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"movmskps ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("movmskps "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 1)
@@ -8980,11 +8980,11 @@ Bool __stdcall DasmX86_32_0f50(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseReg32(sess, reg, regNo, &regPtr);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"movmskpd ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("movmskpd "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -9000,11 +9000,11 @@ Bool __stdcall DasmX86_32_0f51(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"sqrtps ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("sqrtps "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 4)
@@ -9012,11 +9012,11 @@ Bool __stdcall DasmX86_32_0f51(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"sqrtsd ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("sqrtsd "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 5)
@@ -9024,11 +9024,11 @@ Bool __stdcall DasmX86_32_0f51(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"sqrtss ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("sqrtss "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -9044,11 +9044,11 @@ Bool __stdcall DasmX86_32_0f52(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"rsqrtps ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("rsqrtps "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 5)
@@ -9056,11 +9056,11 @@ Bool __stdcall DasmX86_32_0f52(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"rsqrtss ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("rsqrtss "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -9076,11 +9076,11 @@ Bool __stdcall DasmX86_32_0f53(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"rcpps ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("rcpps "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 5)
@@ -9088,11 +9088,11 @@ Bool __stdcall DasmX86_32_0f53(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"rcpss ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("rcpss "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -9108,11 +9108,11 @@ Bool __stdcall DasmX86_32_0f54(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"andps ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("andps "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 1)
@@ -9120,11 +9120,11 @@ Bool __stdcall DasmX86_32_0f54(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"andpd ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("andpd "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -9140,11 +9140,11 @@ Bool __stdcall DasmX86_32_0f55(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"andnps ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("andnps "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 1)
@@ -9152,11 +9152,11 @@ Bool __stdcall DasmX86_32_0f55(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"andnpd ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("andnpd "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -9172,11 +9172,11 @@ Bool __stdcall DasmX86_32_0f56(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"orps ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("orps "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 1)
@@ -9184,11 +9184,11 @@ Bool __stdcall DasmX86_32_0f56(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"orpd ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("orpd "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -9204,11 +9204,11 @@ Bool __stdcall DasmX86_32_0f57(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"xorps ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("xorps "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 1)
@@ -9216,11 +9216,11 @@ Bool __stdcall DasmX86_32_0f57(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"xorpd ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("xorpd "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -9236,11 +9236,11 @@ Bool __stdcall DasmX86_32_0f58(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"addps ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("addps "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 1)
@@ -9248,11 +9248,11 @@ Bool __stdcall DasmX86_32_0f58(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"addpd ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("addpd "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 4)
@@ -9260,11 +9260,11 @@ Bool __stdcall DasmX86_32_0f58(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"addsd ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("addsd "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 5)
@@ -9272,11 +9272,11 @@ Bool __stdcall DasmX86_32_0f58(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"addpd ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("addpd "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -9292,11 +9292,11 @@ Bool __stdcall DasmX86_32_0f59(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"mulps ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("mulps "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 1)
@@ -9304,11 +9304,11 @@ Bool __stdcall DasmX86_32_0f59(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"mulpd ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("mulpd "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 4)
@@ -9316,11 +9316,11 @@ Bool __stdcall DasmX86_32_0f59(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"mulsd ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("mulsd "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 5)
@@ -9328,11 +9328,11 @@ Bool __stdcall DasmX86_32_0f59(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"mulpd ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("mulpd "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -9348,11 +9348,11 @@ Bool __stdcall DasmX86_32_0f5A(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"cvtps2pd ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("cvtps2pd "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 1)
@@ -9360,11 +9360,11 @@ Bool __stdcall DasmX86_32_0f5A(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"cvtpd2ps ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("cvtpd2ps "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 4)
@@ -9372,11 +9372,11 @@ Bool __stdcall DasmX86_32_0f5A(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"cvtsd2ss ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("cvtsd2ss "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -9392,11 +9392,11 @@ Bool __stdcall DasmX86_32_0f5B(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"cvtdq2ps ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("cvtdq2ps "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 1)
@@ -9404,11 +9404,11 @@ Bool __stdcall DasmX86_32_0f5B(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"cvtps2dq ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("cvtps2dq "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 5)
@@ -9416,11 +9416,11 @@ Bool __stdcall DasmX86_32_0f5B(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"cvttps2dq ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("cvttps2dq "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -9436,11 +9436,11 @@ Bool __stdcall DasmX86_32_0f5C(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"subps ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("subps "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 1)
@@ -9448,11 +9448,11 @@ Bool __stdcall DasmX86_32_0f5C(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"subpd ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("subpd "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 4)
@@ -9460,11 +9460,11 @@ Bool __stdcall DasmX86_32_0f5C(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"subsd ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("subsd "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 5)
@@ -9472,11 +9472,11 @@ Bool __stdcall DasmX86_32_0f5C(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"subss ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("subss "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -9492,11 +9492,11 @@ Bool __stdcall DasmX86_32_0f5D(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"minps ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("minps "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 1)
@@ -9504,11 +9504,11 @@ Bool __stdcall DasmX86_32_0f5D(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"minpd ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("minpd "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 4)
@@ -9516,11 +9516,11 @@ Bool __stdcall DasmX86_32_0f5D(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"minsd ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("minsd "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 5)
@@ -9528,11 +9528,11 @@ Bool __stdcall DasmX86_32_0f5D(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"minss ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("minss "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -9548,11 +9548,11 @@ Bool __stdcall DasmX86_32_0f5E(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"divps ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("divps "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 1)
@@ -9560,11 +9560,11 @@ Bool __stdcall DasmX86_32_0f5E(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"divpd ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("divpd "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 4)
@@ -9572,11 +9572,11 @@ Bool __stdcall DasmX86_32_0f5E(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"divsd ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("divsd "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 5)
@@ -9584,11 +9584,11 @@ Bool __stdcall DasmX86_32_0f5E(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"divss ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("divss "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -9604,11 +9604,11 @@ Bool __stdcall DasmX86_32_0f5F(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"maxps ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("maxps "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 1)
@@ -9616,11 +9616,11 @@ Bool __stdcall DasmX86_32_0f5F(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"maxpd ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("maxpd "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 4)
@@ -9628,11 +9628,11 @@ Bool __stdcall DasmX86_32_0f5F(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"maxsd ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("maxsd "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 5)
@@ -9640,11 +9640,11 @@ Bool __stdcall DasmX86_32_0f5F(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"maxss ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("maxss "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -9660,11 +9660,11 @@ Bool __stdcall DasmX86_32_0f60(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMMM64(sess, mem, &regNo);
 		DasmX86_32_ParseRegMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"punpcklbw ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("punpcklbw "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 1)
@@ -9672,11 +9672,11 @@ Bool __stdcall DasmX86_32_0f60(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"punpcklbw ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("punpcklbw "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -9692,11 +9692,11 @@ Bool __stdcall DasmX86_32_0f61(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMMM64(sess, mem, &regNo);
 		DasmX86_32_ParseRegMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"punpcklwd ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("punpcklwd "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 1)
@@ -9704,11 +9704,11 @@ Bool __stdcall DasmX86_32_0f61(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"punpcklwd ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("punpcklwd "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -9724,11 +9724,11 @@ Bool __stdcall DasmX86_32_0f62(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMMM64(sess, mem, &regNo);
 		DasmX86_32_ParseRegMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"punpckldq ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("punpckldq "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 1)
@@ -9736,11 +9736,11 @@ Bool __stdcall DasmX86_32_0f62(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"punpckldq ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("punpckldq "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -9756,11 +9756,11 @@ Bool __stdcall DasmX86_32_0f63(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMMM64(sess, mem, &regNo);
 		DasmX86_32_ParseRegMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"packsswb ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("packsswb "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 1)
@@ -9768,11 +9768,11 @@ Bool __stdcall DasmX86_32_0f63(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"packsswb ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("packsswb "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -9788,11 +9788,11 @@ Bool __stdcall DasmX86_32_0f64(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMMM64(sess, mem, &regNo);
 		DasmX86_32_ParseRegMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pcmpgtb ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pcmpgtb "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 1)
@@ -9800,11 +9800,11 @@ Bool __stdcall DasmX86_32_0f64(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pcmpgtb ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pcmpgtb "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -9820,11 +9820,11 @@ Bool __stdcall DasmX86_32_0f65(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMMM64(sess, mem, &regNo);
 		DasmX86_32_ParseRegMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pcmpgtw ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pcmpgtw "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 1)
@@ -9832,11 +9832,11 @@ Bool __stdcall DasmX86_32_0f65(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pcmpgtw ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pcmpgtw "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -9852,11 +9852,11 @@ Bool __stdcall DasmX86_32_0f66(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMMM64(sess, mem, &regNo);
 		DasmX86_32_ParseRegMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pcmpgtd ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pcmpgtd "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 1)
@@ -9864,11 +9864,11 @@ Bool __stdcall DasmX86_32_0f66(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pcmpgtd ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pcmpgtd "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -9884,11 +9884,11 @@ Bool __stdcall DasmX86_32_0f67(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMMM64(sess, mem, &regNo);
 		DasmX86_32_ParseRegMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"packuswb ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("packuswb "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 1)
@@ -9896,11 +9896,11 @@ Bool __stdcall DasmX86_32_0f67(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"packuswb ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("packuswb "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -9916,11 +9916,11 @@ Bool __stdcall DasmX86_32_0f68(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMMM64(sess, mem, &regNo);
 		DasmX86_32_ParseRegMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"punpckhbw ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("punpckhbw "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 1)
@@ -9928,11 +9928,11 @@ Bool __stdcall DasmX86_32_0f68(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMMM64(sess, mem, &regNo);
 		DasmX86_32_ParseRegMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"punpckhbw ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("punpckhbw "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -9948,11 +9948,11 @@ Bool __stdcall DasmX86_32_0f69(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMMM64(sess, mem, &regNo);
 		DasmX86_32_ParseRegMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"punpckhwd ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("punpckhwd "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 1)
@@ -9960,11 +9960,11 @@ Bool __stdcall DasmX86_32_0f69(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"punpckhwd ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("punpckhwd "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -9980,11 +9980,11 @@ Bool __stdcall DasmX86_32_0f6A(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMMM64(sess, mem, &regNo);
 		DasmX86_32_ParseRegMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"punpckhdq ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("punpckhdq "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 1)
@@ -9992,11 +9992,11 @@ Bool __stdcall DasmX86_32_0f6A(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"punpckhdq ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("punpckhdq "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -10012,11 +10012,11 @@ Bool __stdcall DasmX86_32_0f6B(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMMM64(sess, mem, &regNo);
 		DasmX86_32_ParseRegMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"packssdw ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("packssdw "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 1)
@@ -10024,11 +10024,11 @@ Bool __stdcall DasmX86_32_0f6B(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"packssdw ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("packssdw "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -10044,11 +10044,11 @@ Bool __stdcall DasmX86_32_0f6C(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"punpcklqdq ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("punpcklqdq "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -10064,11 +10064,11 @@ Bool __stdcall DasmX86_32_0f6D(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"punpckhqdq ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("punpckhqdq "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -10086,11 +10086,11 @@ Bool __stdcall DasmX86_32_0f6E(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->thisStatus &= (UInt32)~5;
 		DasmX86_32_ParseModRM32(sess, mem, &regNo, &memVal, 0);
 		DasmX86_32_ParseRegMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"movd ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("movd "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 1)
@@ -10099,11 +10099,11 @@ Bool __stdcall DasmX86_32_0f6E(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->thisStatus &= (UInt32)~5;
 		DasmX86_32_ParseModRM32(sess, mem, &regNo, &memVal, 0);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"movd ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("movd "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -10119,11 +10119,11 @@ Bool __stdcall DasmX86_32_0f6F(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMMM64(sess, mem, &regNo);
 		DasmX86_32_ParseRegMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"movq ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("movq "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 1)
@@ -10131,11 +10131,11 @@ Bool __stdcall DasmX86_32_0f6F(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"movdqa ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("movdqa "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 5)
@@ -10143,11 +10143,11 @@ Bool __stdcall DasmX86_32_0f6F(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"movdqu ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("movdqu "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -10163,13 +10163,13 @@ Bool __stdcall DasmX86_32_0f70(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMMM64(sess, mem, &regNo);
 		DasmX86_32_ParseRegMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pshufw ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pshufw "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrInt32(sess->sbuff, sess->memReader->ReadMemUInt8(sess->regs.EIP));
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		sess->regs.EIP++;
 		return true;
 	}
@@ -10178,13 +10178,13 @@ Bool __stdcall DasmX86_32_0f70(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pshufd ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pshufd "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrInt32(sess->sbuff, sess->memReader->ReadMemUInt8(sess->regs.EIP));
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		sess->regs.EIP++;
 		return true;
 	}
@@ -10193,13 +10193,13 @@ Bool __stdcall DasmX86_32_0f70(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pshuflw ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pshuflw "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrInt32(sess->sbuff, sess->memReader->ReadMemUInt8(sess->regs.EIP));
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		sess->regs.EIP++;
 		return true;
 	}
@@ -10208,13 +10208,13 @@ Bool __stdcall DasmX86_32_0f70(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pshufhw ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pshufhw "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrInt32(sess->sbuff, sess->memReader->ReadMemUInt8(sess->regs.EIP));
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		sess->regs.EIP++;
 		return true;
 	}
@@ -10235,11 +10235,11 @@ Bool __stdcall DasmX86_32_0f71(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		{
 			DasmX86_32_ParseRegMM(reg, sess->memReader->ReadMemUInt8(sess->regs.EIP + 2) & 7);
 		}
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"psrlw ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("psrlw "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrInt32(sess->sbuff, sess->memReader->ReadMemUInt8(sess->regs.EIP + 3));
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		sess->regs.EIP += 4;
 		return true;
 	}
@@ -10253,11 +10253,11 @@ Bool __stdcall DasmX86_32_0f71(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		{
 			DasmX86_32_ParseRegMM(reg, sess->memReader->ReadMemUInt8(sess->regs.EIP + 2) & 7);
 		}
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"psraw ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("psraw "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrInt32(sess->sbuff, sess->memReader->ReadMemUInt8(sess->regs.EIP + 3));
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		sess->regs.EIP += 4;
 		return true;
 	}
@@ -10271,11 +10271,11 @@ Bool __stdcall DasmX86_32_0f71(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		{
 			DasmX86_32_ParseRegMM(reg, sess->memReader->ReadMemUInt8(sess->regs.EIP + 2) & 7);
 		}
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"psllw ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("psllw "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrInt32(sess->sbuff, sess->memReader->ReadMemUInt8(sess->regs.EIP + 3));
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		sess->regs.EIP += 4;
 		return true;
 	}
@@ -10296,11 +10296,11 @@ Bool __stdcall DasmX86_32_0f72(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		{
 			DasmX86_32_ParseRegMM(reg, sess->memReader->ReadMemUInt8(sess->regs.EIP + 2) & 7);
 		}
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"psrld ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("psrld "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrInt32(sess->sbuff, sess->memReader->ReadMemUInt8(sess->regs.EIP + 3));
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		sess->regs.EIP += 4;
 		return true;
 	}
@@ -10314,11 +10314,11 @@ Bool __stdcall DasmX86_32_0f72(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		{
 			DasmX86_32_ParseRegMM(reg, sess->memReader->ReadMemUInt8(sess->regs.EIP + 2) & 7);
 		}
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"psrad ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("psrad "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrInt32(sess->sbuff, sess->memReader->ReadMemUInt8(sess->regs.EIP + 3));
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		sess->regs.EIP += 4;
 		return true;
 	}
@@ -10332,11 +10332,11 @@ Bool __stdcall DasmX86_32_0f72(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		{
 			DasmX86_32_ParseRegMM(reg, sess->memReader->ReadMemUInt8(sess->regs.EIP + 2) & 7);
 		}
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pslld ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pslld "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrInt32(sess->sbuff, sess->memReader->ReadMemUInt8(sess->regs.EIP + 3));
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		sess->regs.EIP += 4;
 		return true;
 	}
@@ -10357,22 +10357,22 @@ Bool __stdcall DasmX86_32_0f73(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		{
 			DasmX86_32_ParseRegMM(reg, sess->memReader->ReadMemUInt8(sess->regs.EIP + 2) & 7);
 		}
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"psrlq ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("psrlq "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrInt32(sess->sbuff, sess->memReader->ReadMemUInt8(sess->regs.EIP + 3));
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		sess->regs.EIP += 4;
 		return true;
 	}
 	else if (b2 == 3)
 	{
 		DasmX86_32_ParseRegXMM(reg, sess->memReader->ReadMemUInt8(sess->regs.EIP + 2) & 7);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"psrldq ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("psrldq "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrInt32(sess->sbuff, sess->memReader->ReadMemUInt8(sess->regs.EIP + 3));
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		sess->regs.EIP += 4;
 		return true;
 	}
@@ -10386,22 +10386,22 @@ Bool __stdcall DasmX86_32_0f73(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		{
 			DasmX86_32_ParseRegMM(reg, sess->memReader->ReadMemUInt8(sess->regs.EIP + 2) & 7);
 		}
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"psllq ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("psllq "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrInt32(sess->sbuff, sess->memReader->ReadMemUInt8(sess->regs.EIP + 3));
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		sess->regs.EIP += 4;
 		return true;
 	}
 	else if (b2 == 7)
 	{
 		DasmX86_32_ParseRegXMM(reg, sess->memReader->ReadMemUInt8(sess->regs.EIP + 2) & 7);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pslldq ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pslldq "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrInt32(sess->sbuff, sess->memReader->ReadMemUInt8(sess->regs.EIP + 3));
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		sess->regs.EIP += 4;
 		return true;
 	}
@@ -10419,11 +10419,11 @@ Bool __stdcall DasmX86_32_0f74(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMMM64(sess, mem, &regNo);
 		DasmX86_32_ParseRegMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pcmpeqb ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pcmpeqb "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 1)
@@ -10431,11 +10431,11 @@ Bool __stdcall DasmX86_32_0f74(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pcmpeqb ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pcmpeqb "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -10451,11 +10451,11 @@ Bool __stdcall DasmX86_32_0f75(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMMM64(sess, mem, &regNo);
 		DasmX86_32_ParseRegMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pcmpeqw ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pcmpeqw "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 1)
@@ -10463,11 +10463,11 @@ Bool __stdcall DasmX86_32_0f75(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pcmpeqw ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pcmpeqw "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -10483,11 +10483,11 @@ Bool __stdcall DasmX86_32_0f76(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMMM64(sess, mem, &regNo);
 		DasmX86_32_ParseRegMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pcmpeqd ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pcmpeqd "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 1)
@@ -10495,11 +10495,11 @@ Bool __stdcall DasmX86_32_0f76(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pcmpeqd ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pcmpeqd "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -10508,7 +10508,7 @@ Bool __stdcall DasmX86_32_0f76(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 Bool __stdcall DasmX86_32_0f77(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 {
 	sess->regs.EIP += 2;
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"emms\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("emms\r\n"));
 	return true;
 }
 
@@ -10524,11 +10524,11 @@ Bool __stdcall DasmX86_32_0f78(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRM32(sess, mem, &regNo, &memVal, 0);
 		DasmX86_32_ParseReg32(sess, reg, regNo, &regPtr);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"vmread ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("vmread "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
     else if ((sess->thisStatus & 5) == 1)
@@ -10537,13 +10537,13 @@ Bool __stdcall DasmX86_32_0f78(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		if (regNo == 0)
 		{
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"extrq ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("extrq "));
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 			sess->sbuff = Text::StrInt32(sess->sbuff, sess->memReader->ReadMemUInt8(sess->regs.EIP));
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 			sess->sbuff = Text::StrInt32(sess->sbuff, sess->memReader->ReadMemUInt8(sess->regs.EIP + 1));
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 			sess->regs.EIP += 2;
 			return true;
 		}
@@ -10553,15 +10553,15 @@ Bool __stdcall DasmX86_32_0f78(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"insertq ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("insertq "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrInt32(sess->sbuff, sess->memReader->ReadMemUInt8(sess->regs.EIP));
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrInt32(sess->sbuff, sess->memReader->ReadMemUInt8(sess->regs.EIP + 1));
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		sess->regs.EIP += 2;
 		return true;
 	}
@@ -10581,11 +10581,11 @@ Bool __stdcall DasmX86_32_0f79(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRM32(sess, mem, &regNo, &memVal, 0);
 		DasmX86_32_ParseReg32(sess, reg, regNo, &regPtr);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"vmwrite ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("vmwrite "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 1)
@@ -10593,11 +10593,11 @@ Bool __stdcall DasmX86_32_0f79(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"extrq ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("extrq "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 4)
@@ -10605,11 +10605,11 @@ Bool __stdcall DasmX86_32_0f79(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"insertq ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("insertq "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -10635,11 +10635,11 @@ Bool __stdcall DasmX86_32_0f7C(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"haddpd ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("haddpd "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 4)
@@ -10647,11 +10647,11 @@ Bool __stdcall DasmX86_32_0f7C(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"haddps ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("haddps "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -10667,11 +10667,11 @@ Bool __stdcall DasmX86_32_0f7D(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"hsubpd ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("hsubpd "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 4)
@@ -10679,11 +10679,11 @@ Bool __stdcall DasmX86_32_0f7D(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"hsubps ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("hsubps "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -10701,11 +10701,11 @@ Bool __stdcall DasmX86_32_0f7E(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->thisStatus &= (UInt32)~5;
 		DasmX86_32_ParseModRM32(sess, mem, &regNo, &memVal, 0);
 		DasmX86_32_ParseRegMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"movd ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("movd "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 1)
@@ -10714,11 +10714,11 @@ Bool __stdcall DasmX86_32_0f7E(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->thisStatus &= (UInt32)~5;
 		DasmX86_32_ParseModRM32(sess, mem, &regNo, &memVal, 0);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"movd ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("movd "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 5)
@@ -10727,11 +10727,11 @@ Bool __stdcall DasmX86_32_0f7E(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->thisStatus &= (UInt32)~5;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"movq ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("movq "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -10747,11 +10747,11 @@ Bool __stdcall DasmX86_32_0f7F(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMMM64(sess, mem, &regNo);
 		DasmX86_32_ParseRegMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"movq ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("movq "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 1)
@@ -10759,11 +10759,11 @@ Bool __stdcall DasmX86_32_0f7F(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"movdqa ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("movdqa "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 5)
@@ -10771,11 +10771,11 @@ Bool __stdcall DasmX86_32_0f7F(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"movdqu ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("movdqu "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -10795,9 +10795,9 @@ Bool __stdcall DasmX86_32_0f80(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 6;
 	}
 	sess->jmpAddrs->Add(addr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"jo 0x");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("jo 0x"));
 	sess->sbuff = Text::StrHexVal32(sess->sbuff, addr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -10815,9 +10815,9 @@ Bool __stdcall DasmX86_32_0f81(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 6;
 	}
 	sess->jmpAddrs->Add(addr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"jno 0x");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("jno 0x"));
 	sess->sbuff = Text::StrHexVal32(sess->sbuff, addr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -10835,9 +10835,9 @@ Bool __stdcall DasmX86_32_0f82(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 6;
 	}
 	sess->jmpAddrs->Add(addr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"jb 0x");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("jb 0x"));
 	sess->sbuff = Text::StrHexVal32(sess->sbuff, addr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -10855,9 +10855,9 @@ Bool __stdcall DasmX86_32_0f83(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 6;
 	}
 	sess->jmpAddrs->Add(addr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"jnb 0x");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("jnb 0x"));
 	sess->sbuff = Text::StrHexVal32(sess->sbuff, addr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -10875,9 +10875,9 @@ Bool __stdcall DasmX86_32_0f84(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 6;
 	}
 	sess->jmpAddrs->Add(addr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"jz 0x");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("jz 0x"));
 	sess->sbuff = Text::StrHexVal32(sess->sbuff, addr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -10895,9 +10895,9 @@ Bool __stdcall DasmX86_32_0f85(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 6;
 	}
 	sess->jmpAddrs->Add(addr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"jnz 0x");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("jnz 0x"));
 	sess->sbuff = Text::StrHexVal32(sess->sbuff, addr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -10915,9 +10915,9 @@ Bool __stdcall DasmX86_32_0f86(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 6;
 	}
 	sess->jmpAddrs->Add(addr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"jbe 0x");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("jbe 0x"));
 	sess->sbuff = Text::StrHexVal32(sess->sbuff, addr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -10935,9 +10935,9 @@ Bool __stdcall DasmX86_32_0f87(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 6;
 	}
 	sess->jmpAddrs->Add(addr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"ja 0x");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("ja 0x"));
 	sess->sbuff = Text::StrHexVal32(sess->sbuff, addr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -10955,9 +10955,9 @@ Bool __stdcall DasmX86_32_0f88(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 6;
 	}
 	sess->jmpAddrs->Add(addr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"js 0x");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("js 0x"));
 	sess->sbuff = Text::StrHexVal32(sess->sbuff, addr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -10975,9 +10975,9 @@ Bool __stdcall DasmX86_32_0f89(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 6;
 	}
 	sess->jmpAddrs->Add(addr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"jns 0x");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("jns 0x"));
 	sess->sbuff = Text::StrHexVal32(sess->sbuff, addr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -10995,9 +10995,9 @@ Bool __stdcall DasmX86_32_0f8A(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 6;
 	}
 	sess->jmpAddrs->Add(addr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"jp 0x");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("jp 0x"));
 	sess->sbuff = Text::StrHexVal32(sess->sbuff, addr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -11015,9 +11015,9 @@ Bool __stdcall DasmX86_32_0f8B(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 6;
 	}
 	sess->jmpAddrs->Add(addr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"jnp 0x");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("jnp 0x"));
 	sess->sbuff = Text::StrHexVal32(sess->sbuff, addr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -11035,9 +11035,9 @@ Bool __stdcall DasmX86_32_0f8C(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 6;
 	}
 	sess->jmpAddrs->Add(addr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"jl 0x");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("jl 0x"));
 	sess->sbuff = Text::StrHexVal32(sess->sbuff, addr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -11055,9 +11055,9 @@ Bool __stdcall DasmX86_32_0f8D(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 6;
 	}
 	sess->jmpAddrs->Add(addr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"jge 0x");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("jge 0x"));
 	sess->sbuff = Text::StrHexVal32(sess->sbuff, addr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -11075,9 +11075,9 @@ Bool __stdcall DasmX86_32_0f8E(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 6;
 	}
 	sess->jmpAddrs->Add(addr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"jle 0x");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("jle 0x"));
 	sess->sbuff = Text::StrHexVal32(sess->sbuff, addr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -11095,9 +11095,9 @@ Bool __stdcall DasmX86_32_0f8F(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 6;
 	}
 	sess->jmpAddrs->Add(addr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"jg 0x");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("jg 0x"));
 	sess->sbuff = Text::StrHexVal32(sess->sbuff, addr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -11110,9 +11110,9 @@ Bool __stdcall DasmX86_32_0f90(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	DasmX86_32_ParseModRM8(sess, mem, &regNo, &memVal);
 	if (regNo == 0)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"seto ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("seto "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else
@@ -11130,9 +11130,9 @@ Bool __stdcall DasmX86_32_0f91(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	DasmX86_32_ParseModRM8(sess, mem, &regNo, &memVal);
 	if (regNo == 0)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"setno ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("setno "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else
@@ -11150,9 +11150,9 @@ Bool __stdcall DasmX86_32_0f92(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	DasmX86_32_ParseModRM8(sess, mem, &regNo, &memVal);
 	if (regNo == 0)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"setb ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("setb "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else
@@ -11170,9 +11170,9 @@ Bool __stdcall DasmX86_32_0f93(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	DasmX86_32_ParseModRM8(sess, mem, &regNo, &memVal);
 	if (regNo == 0)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"setnb ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("setnb "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else
@@ -11190,9 +11190,9 @@ Bool __stdcall DasmX86_32_0f94(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	DasmX86_32_ParseModRM8(sess, mem, &regNo, &memVal);
 	if (regNo == 0)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"setz ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("setz "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else
@@ -11210,9 +11210,9 @@ Bool __stdcall DasmX86_32_0f95(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	DasmX86_32_ParseModRM8(sess, mem, &regNo, &memVal);
 	if (regNo == 0)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"setnz ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("setnz "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else
@@ -11230,9 +11230,9 @@ Bool __stdcall DasmX86_32_0f96(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	DasmX86_32_ParseModRM8(sess, mem, &regNo, &memVal);
 	if (regNo == 0)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"setbe ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("setbe "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else
@@ -11250,9 +11250,9 @@ Bool __stdcall DasmX86_32_0f97(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	DasmX86_32_ParseModRM8(sess, mem, &regNo, &memVal);
 	if (regNo == 0)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"seta ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("seta "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else
@@ -11270,9 +11270,9 @@ Bool __stdcall DasmX86_32_0f98(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	DasmX86_32_ParseModRM8(sess, mem, &regNo, &memVal);
 	if (regNo == 0)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"sets ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("sets "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else
@@ -11290,9 +11290,9 @@ Bool __stdcall DasmX86_32_0f99(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	DasmX86_32_ParseModRM8(sess, mem, &regNo, &memVal);
 	if (regNo == 0)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"setns ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("setns "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else
@@ -11310,9 +11310,9 @@ Bool __stdcall DasmX86_32_0f9A(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	DasmX86_32_ParseModRM8(sess, mem, &regNo, &memVal);
 	if (regNo == 0)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"setp ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("setp "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else
@@ -11330,9 +11330,9 @@ Bool __stdcall DasmX86_32_0f9B(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	DasmX86_32_ParseModRM8(sess, mem, &regNo, &memVal);
 	if (regNo == 0)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"setnp ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("setnp "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else
@@ -11350,9 +11350,9 @@ Bool __stdcall DasmX86_32_0f9C(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	DasmX86_32_ParseModRM8(sess, mem, &regNo, &memVal);
 	if (regNo == 0)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"setl ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("setl "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else
@@ -11370,9 +11370,9 @@ Bool __stdcall DasmX86_32_0f9D(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	DasmX86_32_ParseModRM8(sess, mem, &regNo, &memVal);
 	if (regNo == 0)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"setge ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("setge "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else
@@ -11390,9 +11390,9 @@ Bool __stdcall DasmX86_32_0f9E(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	DasmX86_32_ParseModRM8(sess, mem, &regNo, &memVal);
 	if (regNo == 0)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"setle ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("setle "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else
@@ -11410,9 +11410,9 @@ Bool __stdcall DasmX86_32_0f9F(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	DasmX86_32_ParseModRM8(sess, mem, &regNo, &memVal);
 	if (regNo == 0)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"setg ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("setg "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else
@@ -11423,21 +11423,21 @@ Bool __stdcall DasmX86_32_0f9F(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 
 Bool __stdcall DasmX86_32_0fA0(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 {
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"push FS\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("push FS\r\n"));
 	sess->regs.EIP += 2;
 	return true;
 }
 
 Bool __stdcall DasmX86_32_0fA1(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 {
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pop FS\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pop FS\r\n"));
 	sess->regs.EIP += 2;
 	return true;
 }
 
 Bool __stdcall DasmX86_32_0fA2(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 {
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"cpuid\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("cpuid\r\n"));
 	sess->regs.EIP += 2;
 	return true;
 }
@@ -11452,11 +11452,11 @@ Bool __stdcall DasmX86_32_0fA3(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	sess->regs.EIP += 2;
 	DasmX86_32_ParseModRM32(sess, mem, &regNo, &memVal, 0);
 	DasmX86_32_ParseReg(sess, reg, regNo, &regPtr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"bt ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("bt "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -11470,13 +11470,13 @@ Bool __stdcall DasmX86_32_0fA4(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	sess->regs.EIP += 2;
 	DasmX86_32_ParseModRM32(sess, mem, &regNo, &memVal, 0);
 	DasmX86_32_ParseReg(sess, reg, regNo, &regPtr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"shld ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("shld "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 	sess->sbuff = Text::StrInt32(sess->sbuff, sess->memReader->ReadMemUInt8(sess->regs.EIP));
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	sess->regs.EIP += 1;
 	return true;
 }
@@ -11491,11 +11491,11 @@ Bool __stdcall DasmX86_32_0fA5(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	sess->regs.EIP += 2;
 	DasmX86_32_ParseModRM32(sess, mem, &regNo, &memVal, 0);
 	DasmX86_32_ParseReg(sess, reg, regNo, &regPtr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"shld ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("shld "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", CL\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", CL\r\n"));
 	return true;
 }
 
@@ -11511,21 +11511,21 @@ Bool __stdcall DasmX86_32_0fA7(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 
 Bool __stdcall DasmX86_32_0fA8(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 {
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"push GS\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("push GS\r\n"));
 	sess->regs.EIP += 2;
 	return true;
 }
 
 Bool __stdcall DasmX86_32_0fA9(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 {
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pop GS\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pop GS\r\n"));
 	sess->regs.EIP += 2;
 	return true;
 }
 
 Bool __stdcall DasmX86_32_0fAA(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 {
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"rsm\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("rsm\r\n"));
 	sess->regs.EIP += 2;
 	return true;
 }
@@ -11540,11 +11540,11 @@ Bool __stdcall DasmX86_32_0fAB(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	sess->regs.EIP += 2;
 	DasmX86_32_ParseModRM32(sess, mem, &regNo, &memVal, 0);
 	DasmX86_32_ParseReg(sess, reg, regNo, &regPtr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"bts ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("bts "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -11558,13 +11558,13 @@ Bool __stdcall DasmX86_32_0fAC(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	sess->regs.EIP += 2;
 	DasmX86_32_ParseModRM32(sess, mem, &regNo, &memVal, 0);
 	DasmX86_32_ParseReg(sess, reg, regNo, &regPtr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"shrd ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("shrd "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 	sess->sbuff = Text::StrInt32(sess->sbuff, sess->memReader->ReadMemUInt8(sess->regs.EIP));
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	sess->regs.EIP += 1;
 	return true;
 }
@@ -11579,11 +11579,11 @@ Bool __stdcall DasmX86_32_0fAD(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	sess->regs.EIP += 2;
 	DasmX86_32_ParseModRM32(sess, mem, &regNo, &memVal, 0);
 	DasmX86_32_ParseReg(sess, reg, regNo, &regPtr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"shrd ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("shrd "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", CL\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", CL\r\n"));
 	return true;
 }
 
@@ -11594,19 +11594,19 @@ Bool __stdcall DasmX86_32_0fAE(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	sess->regs.EIP += 2;
 	if (sess->memReader->ReadMemUInt8(sess->regs.EIP) == 0xe8)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"lfence\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("lfence\r\n"));
 		sess->regs.EIP += 1;
 		return true;
 	}
 	else if (sess->memReader->ReadMemUInt8(sess->regs.EIP) == 0xf0)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"mfence\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("mfence\r\n"));
 		sess->regs.EIP += 1;
 		return true;
 	}
 	else if (sess->memReader->ReadMemUInt8(sess->regs.EIP) == 0xf8)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"sfence\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("sfence\r\n"));
 		sess->regs.EIP += 1;
 		return true;
 	}
@@ -11617,26 +11617,26 @@ Bool __stdcall DasmX86_32_0fAE(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		if (regNo == 2)
 		{
 			DasmX86_32_ParseModRM32(sess, mem, &regNo, &memVal, 0);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"ldmxcsr ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("ldmxcsr "));
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 			return true;
 		}
 		else if (regNo == 2)
 		{
 			DasmX86_32_ParseModRM32(sess, mem, &regNo, &memVal, 0);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"stmxcsr ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("stmxcsr "));
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 			return true;
 		}
 		else if (regNo == 7)
 		{
 			UInt8 memVal8;
 			DasmX86_32_ParseModRM8(sess, mem, &regNo, &memVal8);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"clflush ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("clflush "));
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 			return true;
 		}
 		else
@@ -11656,11 +11656,11 @@ Bool __stdcall DasmX86_32_0fAF(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	sess->regs.EIP += 2;
 	DasmX86_32_ParseModRM32(sess, mem, &regNo, &memVal, 0);
 	DasmX86_32_ParseReg(sess, reg, regNo, &regPtr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"imul ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("imul "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -11674,11 +11674,11 @@ Bool __stdcall DasmX86_32_0fB0(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	sess->regs.EIP += 2;
 	DasmX86_32_ParseModRM8(sess, mem, &regNo, &memVal);
 	DasmX86_32_ParseReg8(sess, reg, regNo, &regPtr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"cmpxchg ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("cmpxchg "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -11692,11 +11692,11 @@ Bool __stdcall DasmX86_32_0fB1(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	sess->regs.EIP += 2;
 	DasmX86_32_ParseModRM32(sess, mem, &regNo, &memVal, 0);
 	DasmX86_32_ParseReg(sess, reg, regNo, &regPtr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"cmpxchg ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("cmpxchg "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -11715,11 +11715,11 @@ Bool __stdcall DasmX86_32_0fB3(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	sess->regs.EIP += 2;
 	DasmX86_32_ParseModRM32(sess, mem, &regNo, &memVal, 0);
 	DasmX86_32_ParseReg(sess, reg, regNo, &regPtr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"btr ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("btr "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -11743,11 +11743,11 @@ Bool __stdcall DasmX86_32_0fB6(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	sess->regs.EIP += 2;
 	DasmX86_32_ParseModRM8(sess, mem, &regNo, &memVal);
 	DasmX86_32_ParseReg(sess, reg, regNo, &regPtr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"movzx ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("movzx "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	if (sess->thisStatus & 1)
 	{
 		*(UInt16*)regPtr = memVal;
@@ -11769,11 +11769,11 @@ Bool __stdcall DasmX86_32_0fB7(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	sess->regs.EIP += 2;
 	DasmX86_32_ParseModRM16(sess, mem, &regNo, &memVal);
 	DasmX86_32_ParseReg32(sess, reg, regNo, &regPtr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"movzx ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("movzx "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	*regPtr = memVal;
 	return true;
 }
@@ -11797,11 +11797,11 @@ Bool __stdcall DasmX86_32_0fB8(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		DasmX86_32_ParseModRM32(sess, mem, &regNo, &memVal, 0);
 		DasmX86_32_ParseReg32(sess, reg, regNo, &regPtr);
 	}
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"popcnt ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("popcnt "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -11819,42 +11819,42 @@ Bool __stdcall DasmX86_32_0fBA(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	DasmX86_32_ParseModRM32(sess, mem, &regNo, &memVal, 0);
 	if (regNo == 4)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"bt ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("bt "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrInt32(sess->sbuff, sess->memReader->ReadMemUInt8(sess->regs.EIP));
 		sess->regs.EIP += 1;
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if (regNo == 5)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"bts ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("bts "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrInt32(sess->sbuff, sess->memReader->ReadMemUInt8(sess->regs.EIP));
 		sess->regs.EIP += 1;
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if (regNo == 6)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"btr ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("btr "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrInt32(sess->sbuff, sess->memReader->ReadMemUInt8(sess->regs.EIP));
 		sess->regs.EIP += 1;
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if (regNo == 7)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"btc ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("btc "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrInt32(sess->sbuff, sess->memReader->ReadMemUInt8(sess->regs.EIP));
 		sess->regs.EIP += 1;
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else
@@ -11873,11 +11873,11 @@ Bool __stdcall DasmX86_32_0fBB(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	sess->regs.EIP += 2;
 	DasmX86_32_ParseModRM32(sess, mem, &regNo, &memVal, 0);
 	DasmX86_32_ParseReg(sess, reg, regNo, &regPtr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"btc ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("btc "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -11891,11 +11891,11 @@ Bool __stdcall DasmX86_32_0fBC(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	sess->regs.EIP += 2;
 	DasmX86_32_ParseModRM32(sess, mem, &regNo, &memVal, 0);
 	DasmX86_32_ParseReg(sess, reg, regNo, &regPtr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"bsf ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("bsf "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -11909,11 +11909,11 @@ Bool __stdcall DasmX86_32_0fBD(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	sess->regs.EIP += 2;
 	DasmX86_32_ParseModRM32(sess, mem, &regNo, &memVal, 0);
 	DasmX86_32_ParseReg(sess, reg, regNo, &regPtr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"bsr ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("bsr "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -11927,11 +11927,11 @@ Bool __stdcall DasmX86_32_0fBE(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	sess->regs.EIP += 2;
 	DasmX86_32_ParseModRM8(sess, mem, &regNo, &memVal);
 	DasmX86_32_ParseReg(sess, reg, regNo, &regPtr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"movsx ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("movsx "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	if (sess->thisStatus & 1)
 	{
 		*(Int16*)regPtr = (Int8)memVal;
@@ -11953,11 +11953,11 @@ Bool __stdcall DasmX86_32_0fBF(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	sess->regs.EIP += 2;
 	DasmX86_32_ParseModRM16(sess, mem, &regNo, &memVal);
 	DasmX86_32_ParseReg32(sess, reg, regNo, &regPtr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"movsx ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("movsx "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	*(Int32*)regPtr = (Int16)memVal;
 	return true;
 }
@@ -11972,11 +11972,11 @@ Bool __stdcall DasmX86_32_0fC0(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	sess->regs.EIP += 2;
 	DasmX86_32_ParseModRM8(sess, mem, &regNo, &memVal);
 	DasmX86_32_ParseReg8(sess, reg, regNo, &regPtr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"xadd ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("xadd "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -11990,11 +11990,11 @@ Bool __stdcall DasmX86_32_0fC1(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	sess->regs.EIP += 2;
 	DasmX86_32_ParseModRM32(sess, mem, &regNo, &memVal, 0);
 	DasmX86_32_ParseReg(sess, reg, regNo, &regPtr);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"xadd ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("xadd "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -12014,60 +12014,60 @@ Bool __stdcall DasmX86_32_0fC2(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		switch (cmdId & 7)
 		{
 		case 0:
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"cmpeqps ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("cmpeqps "));
 			sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 			return true;
 		case 1:
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"cmpltps ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("cmpltps "));
 			sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 			return true;
 		case 2:
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"cmpleps ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("cmpleps "));
 			sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 			return true;
 		case 3:
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"cmpunordps ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("cmpunordps "));
 			sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 			return true;
 		case 4:
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"cmpneqps ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("cmpneqps "));
 			sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 			return true;
 		case 5:
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"cmpnltps ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("cmpnltps "));
 			sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 			return true;
 		case 6:
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"cmpnleps ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("cmpnleps "));
 			sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 			return true;
 		case 7:
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"cmpordps ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("cmpordps "));
 			sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 			return true;
 		}
 		return false;
@@ -12082,60 +12082,60 @@ Bool __stdcall DasmX86_32_0fC2(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		switch (cmdId & 7)
 		{
 		case 0:
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"cmpeqpd ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("cmpeqpd "));
 			sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 			return true;
 		case 1:
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"cmpltpd ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("cmpltpd "));
 			sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 			return true;
 		case 2:
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"cmplepd ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("cmplepd "));
 			sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 			return true;
 		case 3:
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"cmpunordpd ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("cmpunordpd "));
 			sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 			return true;
 		case 4:
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"cmpneqpd ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("cmpneqpd "));
 			sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 			return true;
 		case 5:
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"cmpnltpd ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("cmpnltpd "));
 			sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 			return true;
 		case 6:
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"cmpnlepd ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("cmpnlepd "));
 			sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 			return true;
 		case 7:
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"cmpordpd ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("cmpordpd "));
 			sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 			return true;
 		}
 		return false;
@@ -12150,60 +12150,60 @@ Bool __stdcall DasmX86_32_0fC2(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		switch (cmdId & 7)
 		{
 		case 0:
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"cmpeqsd ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("cmpeqsd "));
 			sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 			return true;
 		case 1:
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"cmpltsd ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("cmpltsd "));
 			sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 			return true;
 		case 2:
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"cmplesd ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("cmplesd "));
 			sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 			return true;
 		case 3:
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"cmpunordsd ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("cmpunordsd "));
 			sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 			return true;
 		case 4:
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"cmpneqsd ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("cmpneqsd "));
 			sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 			return true;
 		case 5:
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"cmpnltsd ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("cmpnltsd "));
 			sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 			return true;
 		case 6:
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"cmpnlesd ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("cmpnlesd "));
 			sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 			return true;
 		case 7:
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"cmpordsd ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("cmpordsd "));
 			sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 			return true;
 		}
 		return false;
@@ -12218,60 +12218,60 @@ Bool __stdcall DasmX86_32_0fC2(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		switch (cmdId & 7)
 		{
 		case 0:
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"cmpeqss ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("cmpeqss "));
 			sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 			return true;
 		case 1:
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"cmpltss ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("cmpltss "));
 			sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 			return true;
 		case 2:
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"cmpless ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("cmpless "));
 			sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 			return true;
 		case 3:
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"cmpunordss ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("cmpunordss "));
 			sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 			return true;
 		case 4:
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"cmpneqss ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("cmpneqss "));
 			sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 			return true;
 		case 5:
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"cmpnltss ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("cmpnltss "));
 			sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 			return true;
 		case 6:
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"cmpnless ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("cmpnless "));
 			sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 			return true;
 		case 7:
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"cmpordss ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("cmpordss "));
 			sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 			return true;
 		}
 		return false;
@@ -12291,11 +12291,11 @@ Bool __stdcall DasmX86_32_0fC3(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRM32(sess, mem, &regNo, &memVal, 0);
 		DasmX86_32_ParseReg32(sess, reg, regNo, &regPtr);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"movnti ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("movnti "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -12312,13 +12312,13 @@ Bool __stdcall DasmX86_32_0fC4(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModR32M16(sess, mem, &regNo, &memVal);
 		DasmX86_32_ParseRegMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pinsrw ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pinsrw "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrInt32(sess->sbuff, sess->memReader->ReadMemUInt8(sess->regs.EIP));
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		sess->regs.EIP++;
 		return true;
 	}
@@ -12327,13 +12327,13 @@ Bool __stdcall DasmX86_32_0fC4(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModR32M16(sess, mem, &regNo, &memVal);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pinsrw ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pinsrw "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrInt32(sess->sbuff, sess->memReader->ReadMemUInt8(sess->regs.EIP));
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		sess->regs.EIP++;
 		return true;
 	}
@@ -12351,13 +12351,13 @@ Bool __stdcall DasmX86_32_0fC5(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRM32(sess, mem, &regNo, &memVal, 0);
 		DasmX86_32_ParseRegMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pextrw ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pextrw "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrInt32(sess->sbuff, sess->memReader->ReadMemUInt8(sess->regs.EIP));
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		sess->regs.EIP++;
 		return true;
 	}
@@ -12366,13 +12366,13 @@ Bool __stdcall DasmX86_32_0fC5(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRM32(sess, mem, &regNo, &memVal, 0);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pextrw ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pextrw "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrInt32(sess->sbuff, sess->memReader->ReadMemUInt8(sess->regs.EIP));
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		sess->regs.EIP++;
 		return true;
 	}
@@ -12388,13 +12388,13 @@ Bool __stdcall DasmX86_32_0fC6(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"shufps ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("shufps "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrInt32(sess->sbuff, sess->memReader->ReadMemUInt8(sess->regs.EIP));
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		sess->regs.EIP++;
 		return true;
 	}
@@ -12403,13 +12403,13 @@ Bool __stdcall DasmX86_32_0fC6(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"shufpd ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("shufpd "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrInt32(sess->sbuff, sess->memReader->ReadMemUInt8(sess->regs.EIP));
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		sess->regs.EIP++;
 		return true;
 	}
@@ -12424,40 +12424,40 @@ Bool __stdcall DasmX86_32_0fC7(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	DasmX86_32_ParseModRM64(sess, mem, &regNo);
 	if (regNo == 1)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"cmpxchg8b ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("cmpxchg8b "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if (regNo == 6)
 	{
 		if ((sess->thisStatus & 5) == 0)
 		{
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"vmptrld ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("vmptrld "));
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 			return true;
 		}
 		else if ((sess->thisStatus & 5) == 1)
 		{
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"vmclear ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("vmclear "));
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 			return true;
 		}
 		else if ((sess->thisStatus & 5) == 5)
 		{
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"vmxon ");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("vmxon "));
 			sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-			sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 			return true;
 		}
 	}
 	else if (regNo == 7)
 	{
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"vmptrst ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("vmptrst "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else
@@ -12473,9 +12473,9 @@ Bool __stdcall DasmX86_32_0fC8(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	UInt32 *regPtr;
 	DasmX86_32_ParseReg32(sess, reg, 0, &regPtr);
 	sess->regs.EIP+=2;
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"bswap ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("bswap "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -12485,9 +12485,9 @@ Bool __stdcall DasmX86_32_0fC9(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	UInt32 *regPtr;
 	DasmX86_32_ParseReg32(sess, reg, 1, &regPtr);
 	sess->regs.EIP+=2;
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"bswap ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("bswap "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -12497,9 +12497,9 @@ Bool __stdcall DasmX86_32_0fCA(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	UInt32 *regPtr;
 	DasmX86_32_ParseReg32(sess, reg, 2, &regPtr);
 	sess->regs.EIP+=2;
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"bswap ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("bswap "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -12509,9 +12509,9 @@ Bool __stdcall DasmX86_32_0fCB(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	UInt32 *regPtr;
 	DasmX86_32_ParseReg32(sess, reg, 3, &regPtr);
 	sess->regs.EIP+=2;
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"bswap ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("bswap "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -12521,9 +12521,9 @@ Bool __stdcall DasmX86_32_0fCC(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	UInt32 *regPtr;
 	DasmX86_32_ParseReg32(sess, reg, 4, &regPtr);
 	sess->regs.EIP+=2;
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"bswap ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("bswap "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -12533,9 +12533,9 @@ Bool __stdcall DasmX86_32_0fCD(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	UInt32 *regPtr;
 	DasmX86_32_ParseReg32(sess, reg, 5, &regPtr);
 	sess->regs.EIP+=2;
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"bswap ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("bswap "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -12545,9 +12545,9 @@ Bool __stdcall DasmX86_32_0fCE(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	UInt32 *regPtr;
 	DasmX86_32_ParseReg32(sess, reg, 6, &regPtr);
 	sess->regs.EIP+=2;
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"bswap ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("bswap "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -12557,9 +12557,9 @@ Bool __stdcall DasmX86_32_0fCF(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	UInt32 *regPtr;
 	DasmX86_32_ParseReg32(sess, reg, 7, &regPtr);
 	sess->regs.EIP+=2;
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"bswap ");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("bswap "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-	sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 	return true;
 }
 
@@ -12573,11 +12573,11 @@ Bool __stdcall DasmX86_32_0fD0(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"addsubpd ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("addsubpd "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 4)
@@ -12585,11 +12585,11 @@ Bool __stdcall DasmX86_32_0fD0(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"addsubps ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("addsubps "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -12605,11 +12605,11 @@ Bool __stdcall DasmX86_32_0fD1(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMMM64(sess, mem, &regNo);
 		DasmX86_32_ParseRegMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"psrlw ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("psrlw "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 1)
@@ -12617,11 +12617,11 @@ Bool __stdcall DasmX86_32_0fD1(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"psrlw ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("psrlw "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -12637,11 +12637,11 @@ Bool __stdcall DasmX86_32_0fD2(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMMM64(sess, mem, &regNo);
 		DasmX86_32_ParseRegMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"psrld ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("psrld "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 1)
@@ -12649,11 +12649,11 @@ Bool __stdcall DasmX86_32_0fD2(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"psrld ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("psrld "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -12669,11 +12669,11 @@ Bool __stdcall DasmX86_32_0fD3(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMMM64(sess, mem, &regNo);
 		DasmX86_32_ParseRegMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"psrlq ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("psrlq "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 1)
@@ -12681,11 +12681,11 @@ Bool __stdcall DasmX86_32_0fD3(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"psrlq ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("psrlq "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -12701,11 +12701,11 @@ Bool __stdcall DasmX86_32_0fD4(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMMM64(sess, mem, &regNo);
 		DasmX86_32_ParseRegMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"paddq ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("paddq "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 1)
@@ -12713,11 +12713,11 @@ Bool __stdcall DasmX86_32_0fD4(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"paddq ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("paddq "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -12733,11 +12733,11 @@ Bool __stdcall DasmX86_32_0fD5(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMMM64(sess, mem, &regNo);
 		DasmX86_32_ParseRegMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pmullw ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pmullw "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 1)
@@ -12745,11 +12745,11 @@ Bool __stdcall DasmX86_32_0fD5(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pmullw ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pmullw "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -12765,11 +12765,11 @@ Bool __stdcall DasmX86_32_0fD6(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"movq ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("movq "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 4)
@@ -12777,11 +12777,11 @@ Bool __stdcall DasmX86_32_0fD6(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"movq ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("movq "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 5)
@@ -12789,11 +12789,11 @@ Bool __stdcall DasmX86_32_0fD6(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMMM64(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"movq2dq ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("movq2dq "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -12814,11 +12814,11 @@ Bool __stdcall DasmX86_32_0fD8(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMMM64(sess, mem, &regNo);
 		DasmX86_32_ParseRegMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"psubusb ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("psubusb "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 1)
@@ -12826,11 +12826,11 @@ Bool __stdcall DasmX86_32_0fD8(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"psubusb ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("psubusb "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -12846,11 +12846,11 @@ Bool __stdcall DasmX86_32_0fD9(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMMM64(sess, mem, &regNo);
 		DasmX86_32_ParseRegMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"psubusw ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("psubusw "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 1)
@@ -12858,11 +12858,11 @@ Bool __stdcall DasmX86_32_0fD9(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"psubusw ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("psubusw "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -12878,11 +12878,11 @@ Bool __stdcall DasmX86_32_0fDA(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMMM64(sess, mem, &regNo);
 		DasmX86_32_ParseRegMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pminub ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pminub "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 1)
@@ -12890,11 +12890,11 @@ Bool __stdcall DasmX86_32_0fDA(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pminub ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pminub "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -12910,11 +12910,11 @@ Bool __stdcall DasmX86_32_0fDB(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMMM64(sess, mem, &regNo);
 		DasmX86_32_ParseRegMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pand ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pand "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 1)
@@ -12922,11 +12922,11 @@ Bool __stdcall DasmX86_32_0fDB(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pand ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pand "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -12942,11 +12942,11 @@ Bool __stdcall DasmX86_32_0fDC(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMMM64(sess, mem, &regNo);
 		DasmX86_32_ParseRegMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"paddusb ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("paddusb "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 1)
@@ -12954,11 +12954,11 @@ Bool __stdcall DasmX86_32_0fDC(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"paddusb ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("paddusb "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -12974,11 +12974,11 @@ Bool __stdcall DasmX86_32_0fDD(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMMM64(sess, mem, &regNo);
 		DasmX86_32_ParseRegMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"paddusw ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("paddusw "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 1)
@@ -12986,11 +12986,11 @@ Bool __stdcall DasmX86_32_0fDD(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"paddusw ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("paddusw "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -13006,11 +13006,11 @@ Bool __stdcall DasmX86_32_0fDE(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMMM64(sess, mem, &regNo);
 		DasmX86_32_ParseRegMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pmaxub ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pmaxub "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 1)
@@ -13018,11 +13018,11 @@ Bool __stdcall DasmX86_32_0fDE(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pmaxub ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pmaxub "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -13038,11 +13038,11 @@ Bool __stdcall DasmX86_32_0fDF(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMMM64(sess, mem, &regNo);
 		DasmX86_32_ParseRegMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pandn ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pandn "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 1)
@@ -13050,11 +13050,11 @@ Bool __stdcall DasmX86_32_0fDF(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pandn ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pandn "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -13070,11 +13070,11 @@ Bool __stdcall DasmX86_32_0fE0(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMMM64(sess, mem, &regNo);
 		DasmX86_32_ParseRegMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pavgb ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pavgb "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 1)
@@ -13082,11 +13082,11 @@ Bool __stdcall DasmX86_32_0fE0(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pavgb ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pavgb "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -13102,11 +13102,11 @@ Bool __stdcall DasmX86_32_0fE1(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMMM64(sess, mem, &regNo);
 		DasmX86_32_ParseRegMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"psraw ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("psraw "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 1)
@@ -13114,11 +13114,11 @@ Bool __stdcall DasmX86_32_0fE1(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"psraw ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("psraw "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -13134,11 +13134,11 @@ Bool __stdcall DasmX86_32_0fE2(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMMM64(sess, mem, &regNo);
 		DasmX86_32_ParseRegMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"psrad ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("psrad "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 1)
@@ -13146,11 +13146,11 @@ Bool __stdcall DasmX86_32_0fE2(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"psrad ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("psrad "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -13166,11 +13166,11 @@ Bool __stdcall DasmX86_32_0fE3(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMMM64(sess, mem, &regNo);
 		DasmX86_32_ParseRegMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pavgw ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pavgw "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 0)
@@ -13178,11 +13178,11 @@ Bool __stdcall DasmX86_32_0fE3(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pavgw ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pavgw "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -13198,11 +13198,11 @@ Bool __stdcall DasmX86_32_0fE4(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMMM64(sess, mem, &regNo);
 		DasmX86_32_ParseRegMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pmulhuw ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pmulhuw "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 1)
@@ -13210,11 +13210,11 @@ Bool __stdcall DasmX86_32_0fE4(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pmulhuw ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pmulhuw "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -13230,11 +13230,11 @@ Bool __stdcall DasmX86_32_0fE5(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMMM64(sess, mem, &regNo);
 		DasmX86_32_ParseRegMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pmulhw ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pmulhw "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 1)
@@ -13242,11 +13242,11 @@ Bool __stdcall DasmX86_32_0fE5(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pmulhw ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pmulhw "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -13262,11 +13262,11 @@ Bool __stdcall DasmX86_32_0fE6(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"cvttpd2dq ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("cvttpd2dq "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 4)
@@ -13274,11 +13274,11 @@ Bool __stdcall DasmX86_32_0fE6(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"cvtpd2dq ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("cvtpd2dq "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 5)
@@ -13286,11 +13286,11 @@ Bool __stdcall DasmX86_32_0fE6(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"cvtdq2pd ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("cvtdq2pd "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -13306,11 +13306,11 @@ Bool __stdcall DasmX86_32_0fE7(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMMM64(sess, mem, &regNo);
 		DasmX86_32_ParseRegMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"movntq ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("movntq "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 1)
@@ -13318,11 +13318,11 @@ Bool __stdcall DasmX86_32_0fE7(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"movntdq ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("movntdq "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -13338,11 +13338,11 @@ Bool __stdcall DasmX86_32_0fE8(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMMM64(sess, mem, &regNo);
 		DasmX86_32_ParseRegMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"psubsb ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("psubsb "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 1)
@@ -13350,11 +13350,11 @@ Bool __stdcall DasmX86_32_0fE8(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"psubsb ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("psubsb "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -13370,11 +13370,11 @@ Bool __stdcall DasmX86_32_0fE9(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMMM64(sess, mem, &regNo);
 		DasmX86_32_ParseRegMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"psubsw ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("psubsw "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 1)
@@ -13382,11 +13382,11 @@ Bool __stdcall DasmX86_32_0fE9(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"psubsw ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("psubsw "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -13402,11 +13402,11 @@ Bool __stdcall DasmX86_32_0fEA(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMMM64(sess, mem, &regNo);
 		DasmX86_32_ParseRegMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pminsw ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pminsw "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 1)
@@ -13414,11 +13414,11 @@ Bool __stdcall DasmX86_32_0fEA(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pminsw ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pminsw "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -13434,11 +13434,11 @@ Bool __stdcall DasmX86_32_0fEB(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMMM64(sess, mem, &regNo);
 		DasmX86_32_ParseRegMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"por ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("por "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 1)
@@ -13446,11 +13446,11 @@ Bool __stdcall DasmX86_32_0fEB(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"por ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("por "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -13466,11 +13466,11 @@ Bool __stdcall DasmX86_32_0fEC(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMMM64(sess, mem, &regNo);
 		DasmX86_32_ParseRegMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"paddsb ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("paddsb "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 1)
@@ -13478,11 +13478,11 @@ Bool __stdcall DasmX86_32_0fEC(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"paddsb ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("paddsb "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -13498,11 +13498,11 @@ Bool __stdcall DasmX86_32_0fED(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMMM64(sess, mem, &regNo);
 		DasmX86_32_ParseRegMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"paddsw ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("paddsw "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 1)
@@ -13510,11 +13510,11 @@ Bool __stdcall DasmX86_32_0fED(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"paddsw ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("paddsw "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -13530,11 +13530,11 @@ Bool __stdcall DasmX86_32_0fEE(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMMM64(sess, mem, &regNo);
 		DasmX86_32_ParseRegMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pmaxsw ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pmaxsw "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 1)
@@ -13542,11 +13542,11 @@ Bool __stdcall DasmX86_32_0fEE(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pmaxsw ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pmaxsw "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -13562,11 +13562,11 @@ Bool __stdcall DasmX86_32_0fEF(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMMM64(sess, mem, &regNo);
 		DasmX86_32_ParseRegMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pxor ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pxor "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 1)
@@ -13574,11 +13574,11 @@ Bool __stdcall DasmX86_32_0fEF(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pxor ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pxor "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -13594,11 +13594,11 @@ Bool __stdcall DasmX86_32_0fF0(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"lddqu ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("lddqu "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -13614,11 +13614,11 @@ Bool __stdcall DasmX86_32_0fF1(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMMM64(sess, mem, &regNo);
 		DasmX86_32_ParseRegMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"psllw ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("psllw "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 1)
@@ -13626,11 +13626,11 @@ Bool __stdcall DasmX86_32_0fF1(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"psllw ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("psllw "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -13646,11 +13646,11 @@ Bool __stdcall DasmX86_32_0fF2(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMMM64(sess, mem, &regNo);
 		DasmX86_32_ParseRegMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pslld ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pslld "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 1)
@@ -13658,11 +13658,11 @@ Bool __stdcall DasmX86_32_0fF2(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMMM64(sess, mem, &regNo);
 		DasmX86_32_ParseRegMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pslld ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pslld "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -13678,11 +13678,11 @@ Bool __stdcall DasmX86_32_0fF3(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMMM64(sess, mem, &regNo);
 		DasmX86_32_ParseRegMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"psllq ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("psllq "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -13698,11 +13698,11 @@ Bool __stdcall DasmX86_32_0fF4(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMMM64(sess, mem, &regNo);
 		DasmX86_32_ParseRegMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pmuludq ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pmuludq "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 1)
@@ -13710,11 +13710,11 @@ Bool __stdcall DasmX86_32_0fF4(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pmuludq ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pmuludq "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -13730,11 +13730,11 @@ Bool __stdcall DasmX86_32_0fF5(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMMM64(sess, mem, &regNo);
 		DasmX86_32_ParseRegMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pmaddwd ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pmaddwd "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 1)
@@ -13742,11 +13742,11 @@ Bool __stdcall DasmX86_32_0fF5(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pmaddwd ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pmaddwd "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -13762,11 +13762,11 @@ Bool __stdcall DasmX86_32_0fF6(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMMM64(sess, mem, &regNo);
 		DasmX86_32_ParseRegMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"psadbw ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("psadbw "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 1)
@@ -13774,11 +13774,11 @@ Bool __stdcall DasmX86_32_0fF6(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMMM64(sess, mem, &regNo);
 		DasmX86_32_ParseRegMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"psadbw ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("psadbw "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -13794,11 +13794,11 @@ Bool __stdcall DasmX86_32_0fF7(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMMM64(sess, mem, &regNo);
 		DasmX86_32_ParseRegMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"maskmovq ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("maskmovq "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 1)
@@ -13806,11 +13806,11 @@ Bool __stdcall DasmX86_32_0fF7(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"maskmovdqu ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("maskmovdqu "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -13826,11 +13826,11 @@ Bool __stdcall DasmX86_32_0fF8(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMMM64(sess, mem, &regNo);
 		DasmX86_32_ParseRegMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"psubb ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("psubb "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 1)
@@ -13838,11 +13838,11 @@ Bool __stdcall DasmX86_32_0fF8(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"psubb ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("psubb "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -13858,11 +13858,11 @@ Bool __stdcall DasmX86_32_0fF9(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMMM64(sess, mem, &regNo);
 		DasmX86_32_ParseRegMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"psubw ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("psubw "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 1)
@@ -13870,11 +13870,11 @@ Bool __stdcall DasmX86_32_0fF9(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"psubw ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("psubw "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -13890,11 +13890,11 @@ Bool __stdcall DasmX86_32_0fFA(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMMM64(sess, mem, &regNo);
 		DasmX86_32_ParseRegMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"psubd ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("psubd "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 1)
@@ -13902,11 +13902,11 @@ Bool __stdcall DasmX86_32_0fFA(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"psubd ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("psubd "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -13922,11 +13922,11 @@ Bool __stdcall DasmX86_32_0fFB(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMMM64(sess, mem, &regNo);
 		DasmX86_32_ParseRegMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"psubq ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("psubq "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -13942,11 +13942,11 @@ Bool __stdcall DasmX86_32_0fFC(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMMM64(sess, mem, &regNo);
 		DasmX86_32_ParseRegMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"paddb ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("paddb "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 1)
@@ -13954,11 +13954,11 @@ Bool __stdcall DasmX86_32_0fFC(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"paddb ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("paddb "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -13974,11 +13974,11 @@ Bool __stdcall DasmX86_32_0fFD(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMMM64(sess, mem, &regNo);
 		DasmX86_32_ParseRegMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"paddw ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("paddw "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 1)
@@ -13986,11 +13986,11 @@ Bool __stdcall DasmX86_32_0fFD(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"paddw ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("paddw "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -14006,11 +14006,11 @@ Bool __stdcall DasmX86_32_0fFE(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMMM64(sess, mem, &regNo);
 		DasmX86_32_ParseRegMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"paddd ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("paddd "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 1)
@@ -14018,11 +14018,11 @@ Bool __stdcall DasmX86_32_0fFE(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 2;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"paddd ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("paddd "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -14043,11 +14043,11 @@ Bool __stdcall DasmX86_32_0f3800(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 3;
 		DasmX86_32_ParseModRMMM64(sess, mem, &regNo);
 		DasmX86_32_ParseRegMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pshufb ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pshufb "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 1)
@@ -14055,11 +14055,11 @@ Bool __stdcall DasmX86_32_0f3800(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 3;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pshufb ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pshufb "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -14075,11 +14075,11 @@ Bool __stdcall DasmX86_32_0f3801(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 3;
 		DasmX86_32_ParseModRMMM64(sess, mem, &regNo);
 		DasmX86_32_ParseRegMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"phaddw ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("phaddw "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 1)
@@ -14087,11 +14087,11 @@ Bool __stdcall DasmX86_32_0f3801(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 3;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"phaddw ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("phaddw "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -14107,11 +14107,11 @@ Bool __stdcall DasmX86_32_0f3802(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 3;
 		DasmX86_32_ParseModRMMM64(sess, mem, &regNo);
 		DasmX86_32_ParseRegMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"phaddd ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("phaddd "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 1)
@@ -14119,11 +14119,11 @@ Bool __stdcall DasmX86_32_0f3802(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 3;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"phaddd ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("phaddd "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -14139,11 +14139,11 @@ Bool __stdcall DasmX86_32_0f3803(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 3;
 		DasmX86_32_ParseModRMMM64(sess, mem, &regNo);
 		DasmX86_32_ParseRegMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"phaddsw ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("phaddsw "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 1)
@@ -14151,11 +14151,11 @@ Bool __stdcall DasmX86_32_0f3803(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 3;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"phaddsw ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("phaddsw "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -14171,11 +14171,11 @@ Bool __stdcall DasmX86_32_0f3804(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 3;
 		DasmX86_32_ParseModRMMM64(sess, mem, &regNo);
 		DasmX86_32_ParseRegMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pmaddubsw ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pmaddubsw "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 1)
@@ -14183,11 +14183,11 @@ Bool __stdcall DasmX86_32_0f3804(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 3;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pmaddubsw ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pmaddubsw "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -14203,11 +14203,11 @@ Bool __stdcall DasmX86_32_0f3805(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 3;
 		DasmX86_32_ParseModRMMM64(sess, mem, &regNo);
 		DasmX86_32_ParseRegMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"phsubw ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("phsubw "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 1)
@@ -14215,11 +14215,11 @@ Bool __stdcall DasmX86_32_0f3805(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 3;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"phsubw ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("phsubw "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -14235,11 +14235,11 @@ Bool __stdcall DasmX86_32_0f3806(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 3;
 		DasmX86_32_ParseModRMMM64(sess, mem, &regNo);
 		DasmX86_32_ParseRegMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"phsubd ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("phsubd "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 1)
@@ -14247,11 +14247,11 @@ Bool __stdcall DasmX86_32_0f3806(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 3;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"phsubd ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("phsubd "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -14267,11 +14267,11 @@ Bool __stdcall DasmX86_32_0f3807(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 3;
 		DasmX86_32_ParseModRMMM64(sess, mem, &regNo);
 		DasmX86_32_ParseRegMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"phsubsw ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("phsubsw "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 1)
@@ -14279,11 +14279,11 @@ Bool __stdcall DasmX86_32_0f3807(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 3;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"phsubsw ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("phsubsw "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -14299,11 +14299,11 @@ Bool __stdcall DasmX86_32_0f3808(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 3;
 		DasmX86_32_ParseModRMMM64(sess, mem, &regNo);
 		DasmX86_32_ParseRegMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"psignb ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("psignb "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 1)
@@ -14311,11 +14311,11 @@ Bool __stdcall DasmX86_32_0f3808(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 3;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"psignb ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("psignb "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -14331,11 +14331,11 @@ Bool __stdcall DasmX86_32_0f3809(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 3;
 		DasmX86_32_ParseModRMMM64(sess, mem, &regNo);
 		DasmX86_32_ParseRegMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"psignw ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("psignw "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 1)
@@ -14343,11 +14343,11 @@ Bool __stdcall DasmX86_32_0f3809(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 3;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"psignw ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("psignw "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -14363,11 +14363,11 @@ Bool __stdcall DasmX86_32_0f380A(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 3;
 		DasmX86_32_ParseModRMMM64(sess, mem, &regNo);
 		DasmX86_32_ParseRegMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"psignd ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("psignd "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 1)
@@ -14375,11 +14375,11 @@ Bool __stdcall DasmX86_32_0f380A(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 3;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"psignd ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("psignd "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -14395,11 +14395,11 @@ Bool __stdcall DasmX86_32_0f380B(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 3;
 		DasmX86_32_ParseModRMMM64(sess, mem, &regNo);
 		DasmX86_32_ParseRegMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pmulhrsw ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pmulhrsw "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 1)
@@ -14407,11 +14407,11 @@ Bool __stdcall DasmX86_32_0f380B(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 3;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pmulhrsw ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pmulhrsw "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -14447,11 +14447,11 @@ Bool __stdcall DasmX86_32_0f3810(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 3;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pblendvb ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pblendvb "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -14482,11 +14482,11 @@ Bool __stdcall DasmX86_32_0f3814(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	{
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"blendvps ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("blendvps "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)",");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(","));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -14502,11 +14502,11 @@ Bool __stdcall DasmX86_32_0f3815(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	{
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"blendvpd ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("blendvpd "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)",");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(","));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -14527,11 +14527,11 @@ Bool __stdcall DasmX86_32_0f3817(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	{
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"ptest ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("ptest "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)",");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(","));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -14567,11 +14567,11 @@ Bool __stdcall DasmX86_32_0f381C(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 3;
 		DasmX86_32_ParseModRMMM64(sess, mem, &regNo);
 		DasmX86_32_ParseRegMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pabsb ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pabsb "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 1)
@@ -14579,11 +14579,11 @@ Bool __stdcall DasmX86_32_0f381C(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 3;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pabsb ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pabsb "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -14599,11 +14599,11 @@ Bool __stdcall DasmX86_32_0f381D(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 3;
 		DasmX86_32_ParseModRMMM64(sess, mem, &regNo);
 		DasmX86_32_ParseRegMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pabsw ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pabsw "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 1)
@@ -14611,11 +14611,11 @@ Bool __stdcall DasmX86_32_0f381D(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 3;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pabsw ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pabsw "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -14631,11 +14631,11 @@ Bool __stdcall DasmX86_32_0f381E(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 3;
 		DasmX86_32_ParseModRMMM64(sess, mem, &regNo);
 		DasmX86_32_ParseRegMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pabsd ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pabsd "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 1)
@@ -14643,11 +14643,11 @@ Bool __stdcall DasmX86_32_0f381E(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 3;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pabsd ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pabsd "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -14668,11 +14668,11 @@ Bool __stdcall DasmX86_32_0f3820(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 3;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pmovsxbw ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pmovsxbw "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -14688,11 +14688,11 @@ Bool __stdcall DasmX86_32_0f3821(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 3;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pmovsxbd ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pmovsxbd "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -14708,11 +14708,11 @@ Bool __stdcall DasmX86_32_0f3822(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 3;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pmovsxbq ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pmovsxbq "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -14728,11 +14728,11 @@ Bool __stdcall DasmX86_32_0f3823(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 3;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pmovsxwd ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pmovsxwd "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -14748,11 +14748,11 @@ Bool __stdcall DasmX86_32_0f3824(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 3;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pmovsxwq ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pmovsxwq "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -14768,11 +14768,11 @@ Bool __stdcall DasmX86_32_0f3825(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 3;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pmovsxdq ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pmovsxdq "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -14798,11 +14798,11 @@ Bool __stdcall DasmX86_32_0f3828(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 3;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pmuldq ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pmuldq "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -14818,11 +14818,11 @@ Bool __stdcall DasmX86_32_0f3829(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 3;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pcmpeqq ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pcmpeqq "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -14838,11 +14838,11 @@ Bool __stdcall DasmX86_32_0f382A(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 3;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"movntdqa ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("movntdqa "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -14858,11 +14858,11 @@ Bool __stdcall DasmX86_32_0f382B(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 3;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"packusdw ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("packusdw "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -14898,11 +14898,11 @@ Bool __stdcall DasmX86_32_0f3830(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 3;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pmovzxbw ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pmovzxbw "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -14918,11 +14918,11 @@ Bool __stdcall DasmX86_32_0f3831(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 3;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pmovzxbd ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pmovzxbd "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -14938,11 +14938,11 @@ Bool __stdcall DasmX86_32_0f3832(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 3;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pmovzxbq ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pmovzxbq "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -14958,11 +14958,11 @@ Bool __stdcall DasmX86_32_0f3833(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 3;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pmovzxwd ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pmovzxwd "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -14978,11 +14978,11 @@ Bool __stdcall DasmX86_32_0f3834(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 3;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pmovzxwq ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pmovzxwq "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -14998,11 +14998,11 @@ Bool __stdcall DasmX86_32_0f3835(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 3;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pmovzxdq ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pmovzxdq "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -15023,11 +15023,11 @@ Bool __stdcall DasmX86_32_0f3837(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 3;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pcmpgtq ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pcmpgtq "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -15043,11 +15043,11 @@ Bool __stdcall DasmX86_32_0f3838(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 3;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pminsb ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pminsb "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -15063,11 +15063,11 @@ Bool __stdcall DasmX86_32_0f3839(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 3;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pminsd ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pminsd "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -15083,11 +15083,11 @@ Bool __stdcall DasmX86_32_0f383A(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 3;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pminuw ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pminuw "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -15103,11 +15103,11 @@ Bool __stdcall DasmX86_32_0f383B(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 3;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pminud ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pminud "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -15123,11 +15123,11 @@ Bool __stdcall DasmX86_32_0f383C(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 3;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pmaxsb ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pmaxsb "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -15143,11 +15143,11 @@ Bool __stdcall DasmX86_32_0f383D(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 3;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pmaxsd ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pmaxsd "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -15163,11 +15163,11 @@ Bool __stdcall DasmX86_32_0f383E(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 3;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pmaxuw ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pmaxuw "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -15183,11 +15183,11 @@ Bool __stdcall DasmX86_32_0f383F(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 3;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pmaxud ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pmaxud "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -15203,11 +15203,11 @@ Bool __stdcall DasmX86_32_0f3840(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 3;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pmulld ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pmulld "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -15223,11 +15223,11 @@ Bool __stdcall DasmX86_32_0f3841(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 3;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"phminposuw ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("phminposuw "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -15554,11 +15554,11 @@ Bool __stdcall DasmX86_32_0f3880(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 3;
 		DasmX86_32_ParseModRM128(sess, mem, &regNo);
 		DasmX86_32_ParseReg32(sess, reg, regNo, &regPtr);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"invept ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("invept "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -15575,11 +15575,11 @@ Bool __stdcall DasmX86_32_0f3881(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 3;
 		DasmX86_32_ParseModRM128(sess, mem, &regNo);
 		DasmX86_32_ParseReg32(sess, reg, regNo, &regPtr);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"invvpid ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("invvpid "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -16040,11 +16040,11 @@ Bool __stdcall DasmX86_32_0f38DB(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	{
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"aesimc ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("aesimc "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)",");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(","));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -16060,11 +16060,11 @@ Bool __stdcall DasmX86_32_0f38DC(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	{
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"aesenc ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("aesenc "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)",");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(","));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -16080,11 +16080,11 @@ Bool __stdcall DasmX86_32_0f38DD(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	{
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"aesenclast ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("aesenclast "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)",");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(","));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -16100,11 +16100,11 @@ Bool __stdcall DasmX86_32_0f38DE(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	{
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"aesdec ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("aesdec "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)",");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(","));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -16120,11 +16120,11 @@ Bool __stdcall DasmX86_32_0f38DF(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	{
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"aesdeclast ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("aesdeclast "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)",");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(","));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -16175,11 +16175,11 @@ Bool __stdcall DasmX86_32_0f38E7(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 3;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"movntdq ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("movntdq "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -16237,11 +16237,11 @@ Bool __stdcall DasmX86_32_0f38F0(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 3;
 		DasmX86_32_ParseModRM32(sess, mem, &regNo, &memVal, 0);
 		DasmX86_32_ParseReg32(sess, reg, regNo, &regPtr);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"movbe ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("movbe "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 1)
@@ -16251,11 +16251,11 @@ Bool __stdcall DasmX86_32_0f38F0(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 3;
 		DasmX86_32_ParseModRM16(sess, mem, &regNo, &memVal);
 		DasmX86_32_ParseReg16(sess, reg, regNo, &regPtr);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"movbe ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("movbe "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 4)
@@ -16265,11 +16265,11 @@ Bool __stdcall DasmX86_32_0f38F0(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 3;
 		DasmX86_32_ParseModRM8(sess, mem, &regNo, &memVal);
 		DasmX86_32_ParseReg32(sess, reg, regNo, &regPtr);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"crc32 ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("crc32 "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -16287,11 +16287,11 @@ Bool __stdcall DasmX86_32_0f38F1(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 3;
 		DasmX86_32_ParseModRM32(sess, mem, &regNo, &memVal, 0);
 		DasmX86_32_ParseReg32(sess, reg, regNo, &regPtr);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"movbe ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("movbe "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 1)
@@ -16301,11 +16301,11 @@ Bool __stdcall DasmX86_32_0f38F1(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 3;
 		DasmX86_32_ParseModRM16(sess, mem, &regNo, &memVal);
 		DasmX86_32_ParseReg16(sess, reg, regNo, &regPtr);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"movbe ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("movbe "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 4)
@@ -16315,11 +16315,11 @@ Bool __stdcall DasmX86_32_0f38F1(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 3;
 		DasmX86_32_ParseModRM32(sess, mem, &regNo, &memVal, 0);
 		DasmX86_32_ParseReg32(sess, reg, regNo, &regPtr);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"crc32 ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("crc32 "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -16358,11 +16358,11 @@ Bool __stdcall DasmX86_32_0f38F6(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 3;
 		DasmX86_32_ParseModRM32(sess, mem, &reg, &memVal, 0);
 		DasmX86_32_ParseReg(sess, regs, reg, &regPtr);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"adcx ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("adcx "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, regs);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	else if ((sess->thisStatus & 5) == 5)
@@ -16376,11 +16376,11 @@ Bool __stdcall DasmX86_32_0f38F6(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 3;
 		DasmX86_32_ParseModRM32(sess, mem, &reg, &memVal, 0);
 		DasmX86_32_ParseReg(sess, regs, reg, &regPtr);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"adox ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("adox "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, regs);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	}
 	return false;
@@ -16481,13 +16481,13 @@ Bool __stdcall DasmX86_32_0f3a08(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	{
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"roundps ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("roundps "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)",");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(","));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)",");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(","));
 		sess->sbuff = Text::StrInt32(sess->sbuff, sess->memReader->ReadMemUInt8(sess->regs.EIP));
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		sess->regs.EIP++;
 		return true;
 	}
@@ -16504,13 +16504,13 @@ Bool __stdcall DasmX86_32_0f3a09(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	{
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"roundpd ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("roundpd "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)",");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(","));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)",");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(","));
 		sess->sbuff = Text::StrInt32(sess->sbuff, sess->memReader->ReadMemUInt8(sess->regs.EIP));
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		sess->regs.EIP++;
 		return true;
 	}
@@ -16527,13 +16527,13 @@ Bool __stdcall DasmX86_32_0f3a0A(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	{
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"roundss ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("roundss "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)",");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(","));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)",");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(","));
 		sess->sbuff = Text::StrInt32(sess->sbuff, sess->memReader->ReadMemUInt8(sess->regs.EIP));
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		sess->regs.EIP++;
 		return true;
 	}
@@ -16555,13 +16555,13 @@ Bool __stdcall DasmX86_32_0f3a0C(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	{
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"blendps ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("blendps "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)",");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(","));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)",");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(","));
 		sess->sbuff = Text::StrInt32(sess->sbuff, sess->memReader->ReadMemUInt8(sess->regs.EIP));
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		sess->regs.EIP++;
 		return true;
 	}
@@ -16578,13 +16578,13 @@ Bool __stdcall DasmX86_32_0f3a0D(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	{
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"blendpd ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("blendpd "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)",");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(","));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)",");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(","));
 		sess->sbuff = Text::StrInt32(sess->sbuff, sess->memReader->ReadMemUInt8(sess->regs.EIP));
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		sess->regs.EIP++;
 		return true;
 	}
@@ -16601,13 +16601,13 @@ Bool __stdcall DasmX86_32_0f3a0E(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 3;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pblendw ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pblendw "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrInt32(sess->sbuff, sess->memReader->ReadMemUInt8(sess->regs.EIP));
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		sess->regs.EIP++;
 		return true;
 	}
@@ -16624,13 +16624,13 @@ Bool __stdcall DasmX86_32_0f3a0F(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 3;
 		DasmX86_32_ParseModRMMM64(sess, mem, &regNo);
 		DasmX86_32_ParseRegMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"palignr ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("palignr "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrInt32(sess->sbuff, sess->memReader->ReadMemUInt8(sess->regs.EIP));
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		sess->regs.EIP++;
 		return true;
 	}
@@ -16639,13 +16639,13 @@ Bool __stdcall DasmX86_32_0f3a0F(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 3;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"palignr ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("palignr "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrInt32(sess->sbuff, sess->memReader->ReadMemUInt8(sess->regs.EIP));
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		sess->regs.EIP++;
 		return true;
 	}
@@ -16683,13 +16683,13 @@ Bool __stdcall DasmX86_32_0f3a14(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 3;
 		DasmX86_32_ParseModR32M8(sess, mem, &regNo, &memVal);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pextrb ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pextrb "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrInt32(sess->sbuff, sess->memReader->ReadMemUInt8(sess->regs.EIP));
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		sess->regs.EIP++;
 		return true;
 	}
@@ -16712,13 +16712,13 @@ Bool __stdcall DasmX86_32_0f3a16(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 3;
 		DasmX86_32_ParseModRM32(sess, mem, &regNo, &memVal, 0);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pextrd ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pextrd "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrInt32(sess->sbuff, sess->memReader->ReadMemUInt8(sess->regs.EIP));
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		sess->regs.EIP++;
 		return true;
 	}
@@ -16736,13 +16736,13 @@ Bool __stdcall DasmX86_32_0f3a17(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	{
 		DasmX86_32_ParseModRM32(sess, mem, &regNo, &memVal, 0);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"extractps ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("extractps "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)",");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(","));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)",");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(","));
 		sess->sbuff = Text::StrInt32(sess->sbuff, sess->memReader->ReadMemUInt8(sess->regs.EIP));
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		sess->regs.EIP++;
 		return true;
 	}
@@ -16800,13 +16800,13 @@ Bool __stdcall DasmX86_32_0f3a20(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 3;
 		DasmX86_32_ParseModR32M8(sess, mem, &regNo, &memVal);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pinsrb ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pinsrb "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrInt32(sess->sbuff, sess->memReader->ReadMemUInt8(sess->regs.EIP));
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		sess->regs.EIP++;
 		return true;
 	}
@@ -16823,13 +16823,13 @@ Bool __stdcall DasmX86_32_0f3a21(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	{
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"insertps ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("insertps "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)",");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(","));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)",");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(","));
 		sess->sbuff = Text::StrInt32(sess->sbuff, sess->memReader->ReadMemUInt8(sess->regs.EIP));
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		sess->regs.EIP++;
 		return true;
 	}
@@ -16847,13 +16847,13 @@ Bool __stdcall DasmX86_32_0f3a22(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 3;
 		DasmX86_32_ParseModRM32(sess, mem, &regNo, &memVal, 0);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pinsrd ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pinsrd "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrInt32(sess->sbuff, sess->memReader->ReadMemUInt8(sess->regs.EIP));
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		sess->regs.EIP++;
 		return true;
 	}
@@ -17015,13 +17015,13 @@ Bool __stdcall DasmX86_32_0f3a40(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	{
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"dpps ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("dpps "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)",");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(","));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)",");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(","));
 		sess->sbuff = Text::StrInt32(sess->sbuff, sess->memReader->ReadMemUInt8(sess->regs.EIP));
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		sess->regs.EIP++;
 		return true;
 	}
@@ -17038,13 +17038,13 @@ Bool __stdcall DasmX86_32_0f3a41(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	{
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"dppd ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("dppd "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)",");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(","));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)",");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(","));
 		sess->sbuff = Text::StrInt32(sess->sbuff, sess->memReader->ReadMemUInt8(sess->regs.EIP));
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		sess->regs.EIP++;
 		return true;
 	}
@@ -17061,13 +17061,13 @@ Bool __stdcall DasmX86_32_0f3a42(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	{
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"mpsadbw ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("mpsadbw "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)",");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(","));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)",");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(","));
 		sess->sbuff = Text::StrInt32(sess->sbuff, sess->memReader->ReadMemUInt8(sess->regs.EIP));
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		sess->regs.EIP++;
 		return true;
 	}
@@ -17089,13 +17089,13 @@ Bool __stdcall DasmX86_32_0f3a44(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 3;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pclmulqdq ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pclmulqdq "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrInt32(sess->sbuff, sess->memReader->ReadMemUInt8(sess->regs.EIP));
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		sess->regs.EIP++;
 		return true;
 	}
@@ -17247,13 +17247,13 @@ Bool __stdcall DasmX86_32_0f3a60(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 3;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pcmpestrm ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pcmpestrm "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrInt32(sess->sbuff, sess->memReader->ReadMemUInt8(sess->regs.EIP));
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		sess->regs.EIP++;
 		return true;
 	}
@@ -17270,13 +17270,13 @@ Bool __stdcall DasmX86_32_0f3a61(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 3;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pcmpestri ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pcmpestri "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrInt32(sess->sbuff, sess->memReader->ReadMemUInt8(sess->regs.EIP));
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		sess->regs.EIP++;
 		return true;
 	}
@@ -17293,13 +17293,13 @@ Bool __stdcall DasmX86_32_0f3a62(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 3;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pcmpistrm ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pcmpistrm "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrInt32(sess->sbuff, sess->memReader->ReadMemUInt8(sess->regs.EIP));
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		sess->regs.EIP++;
 		return true;
 	}
@@ -17316,13 +17316,13 @@ Bool __stdcall DasmX86_32_0f3a63(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 		sess->regs.EIP += 3;
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"pcmpistri ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("pcmpistri "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)", ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = Text::StrInt32(sess->sbuff, sess->memReader->ReadMemUInt8(sess->regs.EIP));
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		sess->regs.EIP++;
 		return true;
 	}
@@ -17954,13 +17954,13 @@ Bool __stdcall DasmX86_32_0f3aDF(Manage::DasmX86_32::DasmX86_32_Sess* sess)
 	{
 		DasmX86_32_ParseModRMXMM128(sess, mem, &regNo);
 		DasmX86_32_ParseRegXMM(reg, regNo);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"aeskeygenassist ");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("aeskeygenassist "));
 		sess->sbuff = Text::StrConcat(sess->sbuff, reg);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)",");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(","));
 		sess->sbuff = Text::StrConcat(sess->sbuff, mem);
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)",");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(","));
 		sess->sbuff = Text::StrInt32(sess->sbuff, sess->memReader->ReadMemUInt8(sess->regs.EIP));
-		sess->sbuff = Text::StrConcat(sess->sbuff, (const UTF8Char*)"\r\n");
+		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		sess->regs.EIP++;
 		return true;
 	}
@@ -19446,7 +19446,7 @@ UTF8Char *Manage::DasmX86_32::DasmNext(void *sess, UTF8Char *buff)
 	{
 		UInt8 cbuff[16];
 		UOSInt buffSize;
-		sptr = Text::StrConcat(buff, (const UTF8Char*)"Unknown opcode ");
+		sptr = Text::StrConcatC(buff, UTF8STRC("Unknown opcode "));
 		buffSize = ses->memReader->ReadMemory(ses->regs.EIP, cbuff, 16);
 		if (buffSize > 0)
 		{

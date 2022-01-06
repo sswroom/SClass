@@ -37,8 +37,8 @@ Bool Exporter::SQLiteExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, U
 {
 	if (index == 0)
 	{
-		Text::StrConcat(nameBuff, (const UTF8Char*)"SQLite File");
-		Text::StrConcat(fileNameBuff, (const UTF8Char*)"*.sqlite");
+		Text::StrConcatC(nameBuff, UTF8STRC("SQLite File"));
+		Text::StrConcatC(fileNameBuff, UTF8STRC("*.sqlite"));
 		return true;
 	}
 	return false;

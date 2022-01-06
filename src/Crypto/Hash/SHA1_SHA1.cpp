@@ -20,7 +20,7 @@ Crypto::Hash::SHA1_SHA1::~SHA1_SHA1()
 
 UTF8Char *Crypto::Hash::SHA1_SHA1::GetName(UTF8Char *sbuff)
 {
-	return Text::StrConcat(sbuff, (const UTF8Char*)"SHA1_SHA1 (MySQL)");
+	return Text::StrConcatC(sbuff, UTF8STRC("SHA1_SHA1 (MySQL)"));
 }
 
 Crypto::Hash::IHash *Crypto::Hash::SHA1_SHA1::Clone()

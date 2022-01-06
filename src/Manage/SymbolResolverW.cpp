@@ -102,13 +102,13 @@ UTF8Char *Manage::SymbolResolver::ResolveName(UTF8Char *buff, UInt64 address)
 	{
 		if (found)
 		{
-			buff = Text::StrConcat(buff, (const UTF8Char*)"!");
+			buff = Text::StrConcatC(buff, UTF8STRC("!"));
 		}
 		buff = Text::StrConcat(buff, (const UTF8Char*)symb->Name);
 		found = true;
 		if (address != symb->Address)
 		{
-			buff = Text::StrConcat(buff, (const UTF8Char*)"+0x");;
+			buff = Text::StrConcatC(buff, UTF8STRC("+0x"));
 			buff = Text::StrHexVal32(buff, (UInt32)address - (UInt32)symb->Address);
 		}
 	}
@@ -116,7 +116,7 @@ UTF8Char *Manage::SymbolResolver::ResolveName(UTF8Char *buff, UInt64 address)
 	{
 		if (address != (UInt64)this->modBaseAddrs->GetItem(i))
 		{
-			buff = Text::StrConcat(buff, (const UTF8Char*)"+0x");;
+			buff = Text::StrConcatC(buff, UTF8STRC("+0x"));
 			buff = Text::StrHexVal32(buff, (UInt32)address - (UInt32)this->modBaseAddrs->GetItem(i));
 		}
 	}
@@ -127,11 +127,11 @@ UTF8Char *Manage::SymbolResolver::ResolveName(UTF8Char *buff, UInt64 address)
 	if (SymGetLineFromAddr64(this->proc->GetHandle(), address, (DWORD*)&displacement, &line))
 	{
 		UOSInt i = Text::StrLastIndexOf(line.FileName, '\\');
-		buff = Text::StrConcat(buff, (const UTF8Char*)" ");
+		buff = Text::StrConcatC(buff, UTF8STRC(" "));
 		buff = Text::StrConcat(buff, (const UTF8Char*)&line.FileName[i + 1]);
-		buff = Text::StrConcat(buff, (const UTF8Char*)"(");
+		buff = Text::StrConcatC(buff, UTF8STRC("("));
 		buff = Text::StrInt32(buff, (Int32)line.LineNumber);
-		buff = Text::StrConcat(buff, (const UTF8Char*)")");
+		buff = Text::StrConcatC(buff, UTF8STRC(")"));
 	}
 	if (!found)
 	{

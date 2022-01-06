@@ -160,5 +160,5 @@ Bool IO::VirtualIOPin::SetPullType(PullType pt)
 
 UTF8Char *IO::VirtualIOPin::GetName(UTF8Char *buff)
 {
-	return Text::StrUInt32(Text::StrConcat(buff, (const UTF8Char*)"VirtualIOPin"), this->pinStatus->pinNum);
+	return Text::StrUInt32(Text::StrConcatC(buff, UTF8STRC("VirtualIOPin")), this->pinStatus->pinNum);
 }

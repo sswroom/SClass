@@ -24,7 +24,7 @@ Crypto::Hash::Adler32::~Adler32()
 
 UTF8Char *Crypto::Hash::Adler32::GetName(UTF8Char *sbuff)
 {
-	return Text::StrConcat(sbuff, (const UTF8Char*)"Adler-32");
+	return Text::StrConcatC(sbuff, UTF8STRC("Adler-32"));
 }
 
 Crypto::Hash::IHash *Crypto::Hash::Adler32::Clone()

@@ -18,6 +18,7 @@ namespace IO
 
 		static UTF8Char PATH_SEPERATOR;
 		static const UTF8Char *ALL_FILES;
+		static UOSInt ALL_FILES_LEN;
 
 		static UTF8Char *GetTempFile(UTF8Char *buff, const UTF8Char *fileName);
 		static WChar *GetTempFileW(WChar *buff, const WChar *fileName);

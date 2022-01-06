@@ -78,7 +78,7 @@ void MemSetLogFile(const UTF8Char *logFile)
 	{
 		UOSInt size = Text::StrCharCnt(logFile);
 		mcLogFile = (const UTF8Char *)HeapAlloc(mcIntHandle, 0, (size + 1) * sizeof(UTF8Char));
-		Text::StrConcat((UTF8Char*)mcLogFile, logFile);
+		Text::StrConcatC((UTF8Char*)mcLogFile, logFile, size);
 	}
 }
 
@@ -335,15 +335,15 @@ Int32 MemCheckError()
 				{
 					break;
 				}
-				sptr = Text::StrConcat(buff, (const UTF8Char*)"(");
+				sptr = Text::StrConcatC(buff, UTF8STRC("("));
 				sptr = Text::StrHexVal32(sptr, (UInt32)(UOSInt)ent.lpData);
-				sptr = Text::StrConcat(sptr, (const UTF8Char*)") size = ");
+				sptr = Text::StrConcatC(sptr, UTF8STRC(") size = "));
 				sptr = Text::StrUInt32(sptr, ent.cbData - 8);
-				sptr = Text::StrConcat(sptr, (const UTF8Char*)": ");
+				sptr = Text::StrConcatC(sptr, UTF8STRC(": "));
 				if (ent.cbData > 24)
 				{
 					sptr = Text::StrHexBytes(sptr, (UInt8*)ent.lpData + 8, 8, ' ');
-					sptr = Text::StrConcat(sptr, (const UTF8Char*)".. ");
+					sptr = Text::StrConcatC(sptr, UTF8STRC(".. "));
 					sptr = Text::StrHexBytes(sptr, ((UInt8*)ent.lpData) + ent.cbData - 8, 8, ' ');
 				}
 				else
@@ -354,7 +354,7 @@ Int32 MemCheckError()
 				UOSInt address = *(UOSInt*)ent.lpData;
 				if (address)
 				{
-					sptr = Text::StrConcat(sptr, (const UTF8Char*)" Alloc from ");
+					sptr = Text::StrConcatC(sptr, UTF8STRC(" Alloc from "));
 					if (SymFromAddr(procHand, address, &disp, symb))
 					{
 						cptr = symb->Name;
@@ -363,14 +363,14 @@ Int32 MemCheckError()
 
 						if (SymGetLineFromAddr64(procHand, address, (DWORD*)&displacement, &line))
 						{
-							sptr = Text::StrConcat(sptr, (const UTF8Char*)" ");
+							sptr = Text::StrConcatC(sptr, UTF8STRC(" "));
 							cptr = line.FileName;
 							i = Text::StrLastIndexOf(cptr, '\\');
 							cptr = &cptr[i + 1];
 							while ((*sptr++ = (UTF8Char)*cptr++) != 0);
-							sptr = Text::StrConcat(sptr - 1, (const UTF8Char*)"(");
+							sptr = Text::StrConcatC(sptr - 1, UTF8STRC("("));
 							sptr = Text::StrInt32(sptr, (Int32)line.LineNumber);
-							sptr = Text::StrConcat(sptr, (const UTF8Char*)")");
+							sptr = Text::StrConcatC(sptr, UTF8STRC(")"));
 						}
 
 					}

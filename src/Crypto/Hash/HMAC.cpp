@@ -57,7 +57,7 @@ Crypto::Hash::HMAC::~HMAC()
 
 UTF8Char *Crypto::Hash::HMAC::GetName(UTF8Char *sbuff)
 {
-	return this->hashInner->GetName(Text::StrConcat(sbuff, (const UTF8Char*)"HMAC-"));
+	return this->hashInner->GetName(Text::StrConcatC(sbuff, UTF8STRC("HMAC-")));
 }
 
 Crypto::Hash::IHash *Crypto::Hash::HMAC::Clone()

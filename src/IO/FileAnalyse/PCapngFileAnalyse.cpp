@@ -1045,7 +1045,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::PCapngFileAnalyse::GetFrameDetail
 			{
 				Net::SocketUtil::AddressInfo addr;
 				Net::SocketUtil::SetAddrInfoV6(&addr, &this->packetBuff[i + 4], 0);
-				Text::StrUInt16(Text::StrConcat(Net::SocketUtil::GetAddrName(sbuff, &addr), (const UTF8Char*)"/"), this->packetBuff[i + 20]);
+				Text::StrUInt16(Text::StrConcatC(Net::SocketUtil::GetAddrName(sbuff, &addr), UTF8STRC("/")), this->packetBuff[i + 20]);
 				frame->AddField(i + 4, 17, (const UTF8Char*)"IPv6 Address", sbuff);
 			}
 			else if (optCode == 6)
@@ -1069,7 +1069,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::PCapngFileAnalyse::GetFrameDetail
 				{
 					speed = ReadInt64(&this->packetBuff[i + 4]);
 				}
-				Text::StrConcat(Text::StrInt64(sbuff, speed), (const UTF8Char*)"bps");
+				Text::StrConcatC(Text::StrInt64(sbuff, speed), UTF8STRC("bps"));
 				frame->AddField(i + 4, 8, (const UTF8Char*)"Speed", sbuff);
 			}
 			else if (optCode == 9)
@@ -1120,7 +1120,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::PCapngFileAnalyse::GetFrameDetail
 				{
 					tsOffset = ReadInt64(&this->packetBuff[i + 4]);
 				}
-				Text::StrConcat(Text::StrInt64(sbuff, tsOffset), (const UTF8Char*)"sec.");
+				Text::StrConcatC(Text::StrInt64(sbuff, tsOffset), UTF8STRC("sec."));
 				frame->AddField(i + 4, 8, (const UTF8Char*)"TS Offset", sbuff);
 			}
 			else if (optCode == 15)

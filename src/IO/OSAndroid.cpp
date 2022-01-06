@@ -7,7 +7,7 @@
 
 UTF8Char *IO::OS::GetDistro(UTF8Char *sbuff)
 {
-	return Text::StrConcat(sbuff, (const UTF8Char*)"Android");
+	return Text::StrConcatC(sbuff, UTF8STRC("Android"));
 }
 
 UTF8Char *IO::OS::GetVersion(UTF8Char *sbuff)

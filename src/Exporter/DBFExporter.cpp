@@ -43,8 +43,8 @@ Bool Exporter::DBFExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8
 {
 	if (index == 0)
 	{
-		Text::StrConcat(nameBuff, (const UTF8Char*)"DBase File");
-		Text::StrConcat(fileNameBuff, (const UTF8Char*)"*.dbf");
+		Text::StrConcatC(nameBuff, UTF8STRC("DBase File"));
+		Text::StrConcatC(fileNameBuff, UTF8STRC("*.dbf"));
 		return true;
 	}
 	return false;

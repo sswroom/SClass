@@ -472,25 +472,25 @@ Bool IO::TVCtrl::NECTVControl::SendGetCommand(CommandType ct, Int32 *val, UTF8Ch
 		if (buff[12] == '0' && buff[13] == '0' && buff[14] == '0' && buff[15] == '1')
 		{
 			*val = 1;
-			Text::StrConcat(sbuff, (const UTF8Char*)"On");
+			Text::StrConcatC(sbuff, UTF8STRC("On"));
 			return true;
 		}
 		else if (buff[12] == '0' && buff[13] == '0' && buff[14] == '0' && buff[15] == '2')
 		{
 			*val = 2;
-			Text::StrConcat(sbuff, (const UTF8Char*)"Stand-by (power save)");
+			Text::StrConcatC(sbuff, UTF8STRC("Stand-by (power save)"));
 			return true;
 		}
 		else if (buff[12] == '0' && buff[13] == '0' && buff[14] == '0' && buff[15] == '3')
 		{
 			*val = 3;
-			Text::StrConcat(sbuff, (const UTF8Char*)"Suspend (power save)");
+			Text::StrConcatC(sbuff, UTF8STRC("Suspend (power save)"));
 			return true;
 		}
 		else if (buff[12] == '0' && buff[13] == '0' && buff[14] == '0' && buff[15] == '4')
 		{
 			*val = 4;
-			Text::StrConcat(sbuff, (const UTF8Char*)"Off");
+			Text::StrConcatC(sbuff, UTF8STRC("Off"));
 			return true;
 		}
 		return false;
@@ -512,91 +512,91 @@ Bool IO::TVCtrl::NECTVControl::SendGetCommand(CommandType ct, Int32 *val, UTF8Ch
 		if (buff[2] == '0' && buff[3] == '0')
 		{
 			*val = 0;
-			Text::StrConcat(sbuff, (const UTF8Char*)"Normal");
+			Text::StrConcatC(sbuff, UTF8STRC("Normal"));
 			return true;
 		}
 		else if (buff[2] == '7' && buff[3] == '0')
 		{
 			*val = 0x70;
-			Text::StrConcat(sbuff, (const UTF8Char*)"Standby-power +3.3V abnormality");
+			Text::StrConcatC(sbuff, UTF8STRC("Standby-power +3.3V abnormality"));
 			return true;
 		}
 		else if (buff[2] == '7' && buff[3] == '1')
 		{
 			*val = 0x71;
-			Text::StrConcat(sbuff, (const UTF8Char*)"Standby-power +5V abnormality");
+			Text::StrConcatC(sbuff, UTF8STRC("Standby-power +5V abnormality"));
 			return true;
 		}
 		else if (buff[2] == '7' && buff[3] == '2')
 		{
 			*val = 0x72;
-			Text::StrConcat(sbuff, (const UTF8Char*)"Panel-power +12V abnormality");
+			Text::StrConcatC(sbuff, UTF8STRC("Panel-power +12V abnormality"));
 			return true;
 		}
 		else if (buff[2] == '7' && buff[3] == '8')
 		{
 			*val = 0x78;
-			Text::StrConcat(sbuff, (const UTF8Char*)"Inverter power/Option slot2 power +24V Abnormality");
+			Text::StrConcatC(sbuff, UTF8STRC("Inverter power/Option slot2 power +24V Abnormality"));
 			return true;
 		}
 		else if (buff[2] == '8' && buff[3] == '0')
 		{
 			*val = 0x80;
-			Text::StrConcat(sbuff, (const UTF8Char*)"Cooling fan-1 abnormality");
+			Text::StrConcatC(sbuff, UTF8STRC("Cooling fan-1 abnormality"));
 			return true;
 		}
 		else if (buff[2] == '8' && buff[3] == '1')
 		{
 			*val = 0x81;
-			Text::StrConcat(sbuff, (const UTF8Char*)"Cooling fan-2 abnormality");
+			Text::StrConcatC(sbuff, UTF8STRC("Cooling fan-2 abnormality"));
 			return true;
 		}
 		else if (buff[2] == '8' && buff[3] == '2')
 		{
 			*val = 0x82;
-			Text::StrConcat(sbuff, (const UTF8Char*)"Cooling fan-3 abnormality");
+			Text::StrConcatC(sbuff, UTF8STRC("Cooling fan-3 abnormality"));
 			return true;
 		}
 		else if (buff[2] == '9' && buff[3] == '1')
 		{
 			*val = 0x91;
-			Text::StrConcat(sbuff, (const UTF8Char*)"LED Backlight abnormality");
+			Text::StrConcatC(sbuff, UTF8STRC("LED Backlight abnormality"));
 			return true;
 		}
 		else if (buff[2] == 'A' && buff[3] == '0')
 		{
 			*val = 0xa0;
-			Text::StrConcat(sbuff, (const UTF8Char*)"Temperature abnormality - shutdown");
+			Text::StrConcatC(sbuff, UTF8STRC("Temperature abnormality - shutdown"));
 			return true;
 		}
 		else if (buff[2] == 'A' && buff[3] == '1')
 		{
 			*val = 0xa1;
-			Text::StrConcat(sbuff, (const UTF8Char*)"Temperature abnormality - half brightness");
+			Text::StrConcatC(sbuff, UTF8STRC("Temperature abnormality - half brightness"));
 			return true;
 		}
 		else if (buff[2] == 'A' && buff[3] == '2')
 		{
 			*val = 0xa2;
-			Text::StrConcat(sbuff, (const UTF8Char*)"SENSOR reached at the temperature that the user had specified.");
+			Text::StrConcatC(sbuff, UTF8STRC("SENSOR reached at the temperature that the user had specified."));
 			return true;
 		}
 		else if (buff[2] == 'B' && buff[3] == '0')
 		{
 			*val = 0xb0;
-			Text::StrConcat(sbuff, (const UTF8Char*)"No signal");
+			Text::StrConcatC(sbuff, UTF8STRC("No signal"));
 			return true;
 		}
 		else if (buff[2] == 'D' && buff[3] == '0')
 		{
 			*val = 0xd0;
-			Text::StrConcat(sbuff, (const UTF8Char*)"PROOF OF PLAY buffer reduction");
+			Text::StrConcatC(sbuff, UTF8STRC("PROOF OF PLAY buffer reduction"));
 			return true;
 		}
 		else if (buff[2] == 'E' && buff[3] == '0')
 		{
 			*val = 0xe0;
-			Text::StrConcat(sbuff, (const UTF8Char*)"System error");
+			Text::StrConcatC(sbuff, UTF8STRC("System error"));
 			return true;
 		}
 		return false;
@@ -669,19 +669,19 @@ Bool IO::TVCtrl::NECTVControl::SendGetCommand(CommandType ct, Int32 *val, UTF8Ch
 			*val = byteBuff[0];
 			if (byteBuff[0] == 0)
 			{
-				Text::StrConcat(sbuff, (const UTF8Char*)"Auto Power Save");
+				Text::StrConcatC(sbuff, UTF8STRC("Auto Power Save"));
 			}
 			else if (byteBuff[0] == 1)
 			{
-				Text::StrConcat(sbuff, (const UTF8Char*)"Auto Standby");
+				Text::StrConcatC(sbuff, UTF8STRC("Auto Standby"));
 			}
 			else if (byteBuff[0] == 2)
 			{
-				Text::StrConcat(sbuff, (const UTF8Char*)"Power Save Off");
+				Text::StrConcatC(sbuff, UTF8STRC("Power Save Off"));
 			}
 			else
 			{
-				Text::StrConcat(sbuff, (const UTF8Char*)"Unknown mode");
+				Text::StrConcatC(sbuff, UTF8STRC("Unknown mode"));
 			}
 		}
 		return true;
@@ -692,7 +692,7 @@ Bool IO::TVCtrl::NECTVControl::SendGetCommand(CommandType ct, Int32 *val, UTF8Ch
 			UInt8 byteBuff[16];
 			Text::StrHex2Bytes(&buff[6], byteBuff);
 			*val = byteBuff[0] * 5;
-			Text::StrConcat(Text::StrInt32(sbuff, byteBuff[0] * 5), (const UTF8Char*)" secs");
+			Text::StrConcatC(Text::StrInt32(sbuff, byteBuff[0] * 5), UTF8STRC(" secs"));
 		}
 		return true;
 	case CT_GETAUTOSTANDBYTIME:
@@ -702,7 +702,7 @@ Bool IO::TVCtrl::NECTVControl::SendGetCommand(CommandType ct, Int32 *val, UTF8Ch
 			UInt8 byteBuff[16];
 			Text::StrHex2Bytes(&buff[6], byteBuff);
 			*val = byteBuff[0] * 5;
-			Text::StrConcat(Text::StrInt32(sbuff, byteBuff[0] * 5), (const UTF8Char*)" secs");
+			Text::StrConcatC(Text::StrInt32(sbuff, byteBuff[0] * 5), UTF8STRC(" secs"));
 		}
 		return true;
 	case CT_GETLANMAC:
@@ -722,49 +722,49 @@ Bool IO::TVCtrl::NECTVControl::SendGetCommand(CommandType ct, Int32 *val, UTF8Ch
 		switch (currVal)
 		{
 		case 1:
-			Text::StrConcat(sbuff, (const UTF8Char*)"VGA");
+			Text::StrConcatC(sbuff, UTF8STRC("VGA"));
 			break;
 		case 2:
-			Text::StrConcat(sbuff, (const UTF8Char*)"RGB/HV");
+			Text::StrConcatC(sbuff, UTF8STRC("RGB/HV"));
 			break;
 		case 3:
-			Text::StrConcat(sbuff, (const UTF8Char*)"DVI");
+			Text::StrConcatC(sbuff, UTF8STRC("DVI"));
 			break;
 		case 4:
-			Text::StrConcat(sbuff, (const UTF8Char*)"HDMI");
+			Text::StrConcatC(sbuff, UTF8STRC("HDMI"));
 			break;
 		case 5:
-			Text::StrConcat(sbuff, (const UTF8Char*)"Video");
+			Text::StrConcatC(sbuff, UTF8STRC("Video"));
 			break;
 		case 7:
-			Text::StrConcat(sbuff, (const UTF8Char*)"S-Video");
+			Text::StrConcatC(sbuff, UTF8STRC("S-Video"));
 			break;
 		case 12:
-			Text::StrConcat(sbuff, (const UTF8Char*)"Y/Pb/Pr");
+			Text::StrConcatC(sbuff, UTF8STRC("Y/Pb/Pr"));
 			break;
 		case 13:
-			Text::StrConcat(sbuff, (const UTF8Char*)"OPTION");
+			Text::StrConcatC(sbuff, UTF8STRC("OPTION"));
 			break;
 		case 14:
-			Text::StrConcat(sbuff, (const UTF8Char*)"Y/Pb/Pr2");
+			Text::StrConcatC(sbuff, UTF8STRC("Y/Pb/Pr2"));
 			break;
 		case 15:
-			Text::StrConcat(sbuff, (const UTF8Char*)"Display Port");
+			Text::StrConcatC(sbuff, UTF8STRC("Display Port"));
 			break;
 		case 16:
-			Text::StrConcat(sbuff, (const UTF8Char*)"Display Port2");
+			Text::StrConcatC(sbuff, UTF8STRC("Display Port2"));
 			break;
 		case 17:
-			Text::StrConcat(sbuff, (const UTF8Char*)"HDMI");
+			Text::StrConcatC(sbuff, UTF8STRC("HDMI"));
 			break;
 		case 18:
-			Text::StrConcat(sbuff, (const UTF8Char*)"HDMI2");
+			Text::StrConcatC(sbuff, UTF8STRC("HDMI2"));
 			break;
 		case 128:
-			Text::StrConcat(sbuff, (const UTF8Char*)"Display Port3");
+			Text::StrConcatC(sbuff, UTF8STRC("Display Port3"));
 			break;
 		default:
-			Text::StrConcat(sbuff, (const UTF8Char*)"Unknown");
+			Text::StrConcatC(sbuff, UTF8STRC("Unknown"));
 			break;
 		}
 		return true;
@@ -839,9 +839,9 @@ Bool IO::TVCtrl::NECTVControl::SendGetCommand(CommandType ct, Int32 *val, UTF8Ch
 			return false;
 		*val = (currVal == 4)?1:0;
 		if (currVal == 4)
-			Text::StrConcat(sbuff, (const UTF8Char*)"Locked");
+			Text::StrConcatC(sbuff, UTF8STRC("Locked"));
 		else
-			Text::StrConcat(sbuff, (const UTF8Char*)"Not locked");
+			Text::StrConcatC(sbuff, UTF8STRC("Not locked"));
 		return true;
 	case CT_GETHPOS:
 		if (!GetParameter(0x00, 0x20, &maxVal, &currVal, 2000))

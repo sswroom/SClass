@@ -34,6 +34,7 @@ Bool Net::SocketFactory::ReloadDNS()
 {
 	Sync::MutexUsage mutUsage(this->dnsMut);
 	SDEL_CLASS(this->dnsHdlr);
+	return true;
 }
 
 Bool Net::SocketFactory::DNSResolveIP(const Char *host, Net::SocketUtil::AddressInfo *addr)

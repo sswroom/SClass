@@ -617,14 +617,14 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::JPGFileAnalyse::GetFrameDetail(UO
 		return 0;
 	
 	NEW_CLASS(frame, IO::FileAnalyse::FrameDetail(tag->ofst, (UInt32)tag->size));
-	Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"Tag"), index);
+	Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Tag")), index);
 	frame->AddHeader(sbuff);
 	if (tag->tagType != 0)
 	{
 		frame->AddHex8(0, "Start of Tag", 0xFF);
 		frame->AddHex8Name(1, "TagType", tag->tagType, GetTagName(tag->tagType));
 	}
-	Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"Size="), tag->size);
+	Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Size=")), tag->size);
 	frame->AddText(2, sbuff);
 	if (tag->tagType == 0xc4)
 	{
@@ -636,7 +636,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::JPGFileAnalyse::GetFrameDetail(UO
 		i = 0;
 		while (i < 16)
 		{
-			Text::StrConcat(Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"Code length "), i + 1), (const UTF8Char*)" count");
+			Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Code length ")), i + 1), UTF8STRC(" count"));
 			frame->AddUInt(5 + i, 1, (const Char*)sbuff, tagData[5 + i]);
 
 			i++;
@@ -662,7 +662,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::JPGFileAnalyse::GetFrameDetail(UO
 		j = 10;
 		while (i < tagData[9])
 		{
-			Text::StrConcat(Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"Component "), i), (const UTF8Char*)":");
+			Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Component ")), i), UTF8STRC(":"));
 			frame->AddText((UInt32)j, sbuff);
 			frame->AddUInt(j, 1, "Component identifier", tagData[j]);
 			frame->AddUInt(j + 1, 1, "Horizontal sampling factor", (UInt16)(tagData[j + 1] >> 4));
@@ -684,7 +684,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::JPGFileAnalyse::GetFrameDetail(UO
 		i = 0;
 		while (i < tagData[4])
 		{
-			Text::StrConcat(Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"Component "), i), (const UTF8Char*)":");
+			Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Component ")), i), UTF8STRC(":"));
 			frame->AddText((UInt32)j, sbuff);
 			frame->AddUInt(j, 1, "Scan component selector", tagData[j]);
 			frame->AddUInt(j + 1, 1, "DC entropy coding selector", (UInt16)(tagData[j + 1] >> 4));

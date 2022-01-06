@@ -18,10 +18,10 @@
 
 IO::I2CChannelOS::I2CChannelOS(Int32 busNo, UInt8 slaveAddr)
 {
-	Char sbuff[32];
+	UTF8Char sbuff[32];
 	this->hand = 0;
-	Text::StrInt32(Text::StrConcat(sbuff, "/dev/i2c-"), busNo);
-	Int32 fd = open(sbuff, O_RDWR);
+	Text::StrInt32(Text::StrConcatC(sbuff, UTF8STRC("/dev/i2c-")), busNo);
+	Int32 fd = open((Char*)sbuff, O_RDWR);
 	if (fd < 0)
 		return;
 	if (ioctl(fd, I2C_SLAVE, slaveAddr) < 0)

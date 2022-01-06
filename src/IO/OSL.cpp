@@ -19,7 +19,7 @@ UTF8Char *IO::OS::GetDistro(UTF8Char *sbuff)
 		}
 		if (sb.GetLength() > 0)
 		{
-			return Text::StrConcat(sbuff, sb.ToString());
+			return Text::StrConcatC(sbuff, sb.ToString(), sb.GetLength());
 		}
 	}
 	if (IO::Path::GetPathType((const UTF8Char*)"/etc/os-release") == IO::Path::PathType::File)
@@ -38,23 +38,23 @@ UTF8Char *IO::OS::GetDistro(UTF8Char *sbuff)
 	}
 	if (IO::Path::GetPathType((const UTF8Char*)"/sbin/getcfg") == IO::Path::PathType::File)
 	{
-		return Text::StrConcat(sbuff, (const UTF8Char*)"DSM");
+		return Text::StrConcatC(sbuff, UTF8STRC("DSM"));
 	}
 	if (IO::Path::GetPathType((const UTF8Char*)"/etc/VERSION") == IO::Path::PathType::File)
 	{
-		return Text::StrConcat(sbuff, (const UTF8Char*)"DSM");
+		return Text::StrConcatC(sbuff, UTF8STRC("DSM"));
 	}
 	if (IO::Path::GetPathType((const UTF8Char*)"/etc/openwrt_release") == IO::Path::PathType::File)
 	{
-		return Text::StrConcat(sbuff, (const UTF8Char*)"OpenWRT");
+		return Text::StrConcatC(sbuff, UTF8STRC("OpenWRT"));
 	}
 	if (IO::Path::GetPathType((const UTF8Char*)"/etc/br-version") == IO::Path::PathType::File)
 	{
-		return Text::StrConcat(sbuff, (const UTF8Char*)"Bovine");
+		return Text::StrConcatC(sbuff, UTF8STRC("Bovine"));
 	}
 	if (IO::Path::GetPathType((const UTF8Char*)"/etc/mlinux-version") == IO::Path::PathType::File)
 	{
-		return Text::StrConcat(sbuff, (const UTF8Char*)"mLinux");
+		return Text::StrConcatC(sbuff, UTF8STRC("mLinux"));
 	}
 	if (IO::Path::GetPathType((const UTF8Char*)"/etc/release") == IO::Path::PathType::File) //Eurotech
 	{
@@ -111,7 +111,7 @@ UTF8Char *IO::OS::GetDistro(UTF8Char *sbuff)
 					sb.ClearStr();
 					if (reader->ReadLine(&sb, 512))
 					{
-						ret = Text::StrConcat(sbuff, sb.ToString());
+						ret = Text::StrConcatC(sbuff, sb.ToString(), sb.GetLength());
 					}
 				}
 				sb.ClearStr();
@@ -138,7 +138,7 @@ UTF8Char *IO::OS::GetVersion(UTF8Char *sbuff)
 		}
 		if (sb.GetLength() > 0)
 		{
-			return Text::StrConcat(sbuff, sb.ToString());
+			return Text::StrConcatC(sbuff, sb.ToString(), sb.GetLength());
 		}
 
 		Manage::Process::ExecuteProcess((const UTF8Char*)"nvram get FirmwareVersion", &sb);
@@ -148,7 +148,7 @@ UTF8Char *IO::OS::GetVersion(UTF8Char *sbuff)
 		}
 		if (sb.GetLength() > 0)
 		{
-			return Text::StrConcat(sbuff, sb.ToString());
+			return Text::StrConcatC(sbuff, sb.ToString(), sb.GetLength());
 		}
 	}
 	if (IO::Path::GetPathType((const UTF8Char*)"/etc/debian_version") == IO::Path::PathType::File)
@@ -211,7 +211,7 @@ UTF8Char *IO::OS::GetVersion(UTF8Char *sbuff)
 			{
 				sb.RemoveChars(1);
 			}
-			return Text::StrConcat(sbuff, sb.ToString());
+			return Text::StrConcatC(sbuff, sb.ToString(), sb.GetLength());
 		}
 	}
 	if (IO::Path::GetPathType((const UTF8Char*)"/etc/VERSION") == IO::Path::PathType::File)
@@ -228,7 +228,7 @@ UTF8Char *IO::OS::GetVersion(UTF8Char *sbuff)
 			s = cfg->GetValue((const UTF8Char*)"buildnumber");
 			if (s)
 			{
-				sbuff = s->ConcatTo(Text::StrConcat(sbuff, (const UTF8Char*)"-"));
+				sbuff = s->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("-")));
 			}
 			DEL_CLASS(cfg);
 			return sbuff;

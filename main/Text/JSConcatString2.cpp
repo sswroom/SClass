@@ -42,7 +42,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	Double t1 = clk->GetTimeDiff();
 	IO::ConsoleWriter *console;
 	NEW_CLASS(console, IO::ConsoleWriter());
-	sptr = Text::StrConcat(Text::StrDouble(sbuff, t1), (const UTF8Char*)" s");
+	sptr = Text::StrConcatC(Text::StrDouble(sbuff, t1), UTF8STRC(" s"));
 	console->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
 	DEL_CLASS(console);
 

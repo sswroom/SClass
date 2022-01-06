@@ -24,7 +24,7 @@ Crypto::Hash::SHA512::~SHA512()
 
 UTF8Char *Crypto::Hash::SHA512::GetName(UTF8Char *sbuff)
 {
-	return Text::StrConcat(sbuff, (const UTF8Char*)"SHA-512");
+	return Text::StrConcatC(sbuff, UTF8STRC("SHA-512"));
 }
 
 Crypto::Hash::IHash *Crypto::Hash::SHA512::Clone()

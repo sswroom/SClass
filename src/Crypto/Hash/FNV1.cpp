@@ -19,7 +19,7 @@ Crypto::Hash::FNV1::~FNV1()
 
 UTF8Char *Crypto::Hash::FNV1::GetName(UTF8Char *sbuff)
 {
-	return Text::StrConcat(sbuff, (const UTF8Char*)"FNV1");
+	return Text::StrConcatC(sbuff, UTF8STRC("FNV1"));
 }
 
 Crypto::Hash::IHash *Crypto::Hash::FNV1::Clone()

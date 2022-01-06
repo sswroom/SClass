@@ -102,19 +102,19 @@ UTF8Char *ByteDisp(UTF8Char *sbuff, UInt64 byteSize)
 {
 	if (byteSize >= 1073741824)
 	{
-		return Text::StrConcat(Text::StrDoubleFmt(sbuff, (Double)byteSize / 1073741824.0, "0.#"), (const UTF8Char*)"GB");
+		return Text::StrConcatC(Text::StrDoubleFmt(sbuff, (Double)byteSize / 1073741824.0, "0.#"), UTF8STRC("GB"));
 	}
 	else if (byteSize >= 1048576)
 	{
-		return Text::StrConcat(Text::StrDoubleFmt(sbuff, (Double)byteSize / 1048576.0, "0.#"), (const UTF8Char*)"MB");
+		return Text::StrConcatC(Text::StrDoubleFmt(sbuff, (Double)byteSize / 1048576.0, "0.#"), UTF8STRC("MB"));
 	}
 	else if (byteSize >= 1024)
 	{
-		return Text::StrConcat(Text::StrDoubleFmt(sbuff, (Double)byteSize / 1024.0, "0.#"), (const UTF8Char*)"KB");
+		return Text::StrConcatC(Text::StrDoubleFmt(sbuff, (Double)byteSize / 1024.0, "0.#"), UTF8STRC("KB"));
 	}
 	else
 	{
-		return Text::StrConcat(Text::StrUInt64(sbuff, byteSize), (const UTF8Char*)"B");
+		return Text::StrConcatC(Text::StrUInt64(sbuff, byteSize), UTF8STRC("B"));
 	}
 }
 

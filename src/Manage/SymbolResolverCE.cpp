@@ -77,7 +77,7 @@ UTF8Char *Manage::SymbolResolver::ResolveName(UTF8Char *buff, UInt64 address)
 	{
 		if (address != this->modBaseAddrs->GetItem(i))
 		{
-			buff = Text::StrConcat(buff, (const UTF8Char*)"+0x");;
+			buff = Text::StrConcatC(buff, UTF8STRC("+0x"));
 			buff = Text::StrHexVal32(buff, (UInt32)address - (UInt32)this->modBaseAddrs->GetItem(i));
 		}
 	}

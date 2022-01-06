@@ -176,7 +176,7 @@ Bool IO::IOPinCapture::SetPullType(PullType pt)
 }
 UTF8Char *IO::IOPinCapture::GetName(UTF8Char *buff)
 {
-	return this->pin->GetName(Text::StrConcat(buff, (const UTF8Char*)"IOPinCapture - "));
+	return this->pin->GetName(Text::StrConcatC(buff, UTF8STRC("IOPinCapture - ")));
 }
 
 UOSInt IO::IOPinCapture::GetCaptureData(Data::ArrayList<Double> *times, Data::ArrayList<Int32> *isHigh)

@@ -33,6 +33,7 @@ struct IO::Path::FindFileSession
 
 UTF8Char IO::Path::PATH_SEPERATOR = (UTF8Char)'\\';
 const UTF8Char *IO::Path::ALL_FILES = (const UTF8Char*)"*.*";
+UOSInt IO::Path::ALL_FILES_LEN = 3;
 
 UTF8Char *IO::Path::GetTempFile(UTF8Char *buff, const UTF8Char *fileName)
 {

@@ -52,8 +52,8 @@ Bool Exporter::SPKExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8
 {
 	if (index == 0)
 	{
-		Text::StrConcat(nameBuff, (const UTF8Char*)"SPackage File");
-		Text::StrConcat(fileNameBuff, (const UTF8Char*)"*.spk");
+		Text::StrConcatC(nameBuff, UTF8STRC("SPackage File"));
+		Text::StrConcatC(fileNameBuff, UTF8STRC("*.spk"));
 		return true;
 	}
 	return false;
@@ -161,7 +161,7 @@ Bool Exporter::SPKExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 						sptr = Text::StrInt32(sptr, tileX + xAdd);
 						*sptr++ = IO::Path::PATH_SEPERATOR;
 						sptr = Text::StrInt32(sptr, tileY + yAdd);
-						sptr = Text::StrConcat(sptr, (const UTF8Char*)".png");
+						sptr = Text::StrConcatC(sptr, UTF8STRC(".png"));
 						fileBuff = mstm->GetBuff(&fileSize);
 						spkg->AddFile(fileBuff, fileSize, sbuff, modTimeTicks);
 					}

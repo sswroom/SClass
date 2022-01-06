@@ -19,7 +19,7 @@ Crypto::Hash::SuperFastHash::~SuperFastHash()
 
 UTF8Char *Crypto::Hash::SuperFastHash::GetName(UTF8Char *sbuff)
 {
-	return Text::StrConcat(sbuff, (const UTF8Char*)"SuperFastHash");
+	return Text::StrConcatC(sbuff, UTF8STRC("SuperFastHash"));
 }
 
 Crypto::Hash::IHash *Crypto::Hash::SuperFastHash::Clone()

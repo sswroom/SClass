@@ -88,9 +88,9 @@ IO::RadioSignalLogger::RadioSignalLogger()
 	sptr = IO::Path::GetProcessFileName(sbuff);
 	i = Text::StrLastIndexOf(sbuff, IO::Path::PATH_SEPERATOR);
 	sptr = &sbuff[i + 1];
-	sptr = Text::StrConcat(sptr, (const UTF8Char*)"radio");
+	sptr = Text::StrConcatC(sptr, UTF8STRC("radio"));
 	sptr = dt.ToString(sptr, "yyyyMMddHHmmss");
-	sptr = Text::StrConcat(sptr, (const UTF8Char*)".txt");
+	sptr = Text::StrConcatC(sptr, UTF8STRC(".txt"));
 	NEW_CLASS(this->fs, IO::FileStream(sbuff, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (this->fs->IsError())
 	{

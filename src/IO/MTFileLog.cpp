@@ -57,22 +57,22 @@ UTF8Char *IO::MTFileLog::GetNewName(UTF8Char *buff, Data::DateTime *time)
 	else if (this->logStyle == IO::ILogHandler::LOG_TYPE_PER_HOUR)
 	{
 		lastVal = time->GetDay() * 24 + time->GetHour();
-		currName = Text::StrConcat(time->ToString(currName, "yyyyMMddHH"), (const UTF8Char*)".log");
+		currName = Text::StrConcatC(time->ToString(currName, "yyyyMMddHH"), UTF8STRC(".log"));
 	}
 	else if (this->logStyle == IO::ILogHandler::LOG_TYPE_PER_DAY)
 	{
 		lastVal = time->GetDay();
-		currName = Text::StrConcat(time->ToString(currName, "yyyyMMdd"), (const UTF8Char*)".log");
+		currName = Text::StrConcatC(time->ToString(currName, "yyyyMMdd"), UTF8STRC(".log"));
 	}
 	else if (this->logStyle == IO::ILogHandler::LOG_TYPE_PER_MONTH)
 	{
 		lastVal = time->GetMonth();
-		currName = Text::StrConcat(time->ToString(currName, "yyyyMM"), (const UTF8Char*)".log");
+		currName = Text::StrConcatC(time->ToString(currName, "yyyyMM"), UTF8STRC(".log"));
 	}
 	else if (this->logStyle == IO::ILogHandler::LOG_TYPE_PER_YEAR)
 	{
 		lastVal = time->GetYear();
-		currName = Text::StrConcat(time->ToString(currName, "yyyy"), (const UTF8Char*)".log");
+		currName = Text::StrConcatC(time->ToString(currName, "yyyy"), UTF8STRC(".log"));
 	}
 	return currName;
 }
@@ -136,7 +136,7 @@ void IO::MTFileLog::WriteArr(Text::String **msgArr, Int64 *dateArr, UOSInt arrCn
 			NEW_CLASS(log, Text::UTF8Writer(cstm));
 			log->WriteSignature();
 
-			sptr = Text::StrConcat(time.ToString(buff, this->dateFormat), (const UTF8Char*)"Program running");
+			sptr = Text::StrConcatC(time.ToString(buff, this->dateFormat), UTF8STRC("Program running"));
 			log->WriteLineC(buff, (UOSInt)(sptr - buff));
 			newFile = false;
 		}
@@ -218,7 +218,7 @@ void IO::MTFileLog::Init(LogType style, LogGroup groupStyle, const Char *dateFor
 	}
 	else
 	{
-		Text::StrConcat(Text::StrConcat(cbuff, dateFormat), "\t");
+		Text::StrConcatC(Text::StrConcat(cbuff, dateFormat), "\t", 1);
 		this->dateFormat = Text::StrCopyNew(cbuff);
 	}
 	this->logStyle = style;

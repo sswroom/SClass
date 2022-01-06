@@ -38,8 +38,8 @@ Bool Exporter::ExcelXMLExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff,
 {
 	if (index == 0)
 	{
-		Text::StrConcat(nameBuff, (const UTF8Char*)"Excel XML File");
-		Text::StrConcat(fileNameBuff, (const UTF8Char*)"*.xml");
+		Text::StrConcatC(nameBuff, UTF8STRC("Excel XML File"));
+		Text::StrConcatC(fileNameBuff, UTF8STRC("*.xml"));
 		return true;
 	}
 	return false;

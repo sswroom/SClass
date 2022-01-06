@@ -23,7 +23,7 @@ Crypto::Hash::RIPEMD160::~RIPEMD160()
 
 UTF8Char *Crypto::Hash::RIPEMD160::GetName(UTF8Char *sbuff)
 {
-	return Text::StrConcat(sbuff, (const UTF8Char*)"RIPEMD-160");
+	return Text::StrConcatC(sbuff, UTF8STRC("RIPEMD-160"));
 }
 
 Crypto::Hash::IHash *Crypto::Hash::RIPEMD160::Clone()

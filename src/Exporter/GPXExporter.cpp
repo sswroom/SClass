@@ -40,8 +40,8 @@ Bool Exporter::GPXExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8
 {
 	if (index == 0)
 	{
-		Text::StrConcat(nameBuff, (const UTF8Char*)"GPX file");
-		Text::StrConcat(fileNameBuff, (const UTF8Char*)"*.gpx");
+		Text::StrConcatC(nameBuff, UTF8STRC("GPX file"));
+		Text::StrConcatC(fileNameBuff, UTF8STRC("*.gpx"));
 		return true;
 	}
 	return false;

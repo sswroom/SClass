@@ -24,7 +24,7 @@ Crypto::Hash::SHA384::~SHA384()
 
 UTF8Char *Crypto::Hash::SHA384::GetName(UTF8Char *sbuff)
 {
-	return Text::StrConcat(sbuff, (const UTF8Char*)"SHA-384");
+	return Text::StrConcatC(sbuff, UTF8STRC("SHA-384"));
 }
 
 Crypto::Hash::IHash *Crypto::Hash::SHA384::Clone()

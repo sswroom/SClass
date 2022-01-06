@@ -16,7 +16,7 @@ Crypto::Hash::ExcelHash::~ExcelHash()
 
 UTF8Char *Crypto::Hash::ExcelHash::GetName(UTF8Char *sbuff)
 {
-	return Text::StrConcat(sbuff, (const UTF8Char*)"Excel Hash");
+	return Text::StrConcatC(sbuff, UTF8STRC("Excel Hash"));
 }
 
 Crypto::Hash::IHash *Crypto::Hash::ExcelHash::Clone()

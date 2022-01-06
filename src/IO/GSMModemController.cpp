@@ -1223,72 +1223,72 @@ UTF8Char *IO::GSMModemController::GetRSSIString(UTF8Char *buff, RSSI rssi)
 	switch (rssi)
 	{
 	case RSSI_113:
-		return Text::StrConcat(buff, (const UTF8Char*)"-113 dBm");
+		return Text::StrConcatC(buff, UTF8STRC("-113 dBm"));
 	case RSSI_111:
-		return Text::StrConcat(buff, (const UTF8Char*)"-111 dBm");
+		return Text::StrConcatC(buff, UTF8STRC("-111 dBm"));
 	case RSSI_109:
-		return Text::StrConcat(buff, (const UTF8Char*)"-109 dBm");
+		return Text::StrConcatC(buff, UTF8STRC("-109 dBm"));
 	case RSSI_107:
-		return Text::StrConcat(buff, (const UTF8Char*)"-107 dBm");
+		return Text::StrConcatC(buff, UTF8STRC("-107 dBm"));
 	case RSSI_105:
-		return Text::StrConcat(buff, (const UTF8Char*)"-105 dBm");
+		return Text::StrConcatC(buff, UTF8STRC("-105 dBm"));
 	case RSSI_103:
-		return Text::StrConcat(buff, (const UTF8Char*)"-103 dBm");
+		return Text::StrConcatC(buff, UTF8STRC("-103 dBm"));
 	case RSSI_101:
-		return Text::StrConcat(buff, (const UTF8Char*)"-101 dBm");
+		return Text::StrConcatC(buff, UTF8STRC("-101 dBm"));
 	case RSSI_99:
-		return Text::StrConcat(buff, (const UTF8Char*)"-99 dBm");
+		return Text::StrConcatC(buff, UTF8STRC("-99 dBm"));
 	case RSSI_97:
-		return Text::StrConcat(buff, (const UTF8Char*)"-97 dBm");
+		return Text::StrConcatC(buff, UTF8STRC("-97 dBm"));
 	case RSSI_95:
-		return Text::StrConcat(buff, (const UTF8Char*)"-95 dBm");
+		return Text::StrConcatC(buff, UTF8STRC("-95 dBm"));
 	case RSSI_93:
-		return Text::StrConcat(buff, (const UTF8Char*)"-93 dBm");
+		return Text::StrConcatC(buff, UTF8STRC("-93 dBm"));
 	case RSSI_91:
-		return Text::StrConcat(buff, (const UTF8Char*)"-91 dBm");
+		return Text::StrConcatC(buff, UTF8STRC("-91 dBm"));
 	case RSSI_89:
-		return Text::StrConcat(buff, (const UTF8Char*)"-89 dBm");
+		return Text::StrConcatC(buff, UTF8STRC("-89 dBm"));
 	case RSSI_87:
-		return Text::StrConcat(buff, (const UTF8Char*)"-87 dBm");
+		return Text::StrConcatC(buff, UTF8STRC("-87 dBm"));
 	case RSSI_85:
-		return Text::StrConcat(buff, (const UTF8Char*)"-85 dBm");
+		return Text::StrConcatC(buff, UTF8STRC("-85 dBm"));
 	case RSSI_83:
-		return Text::StrConcat(buff, (const UTF8Char*)"-83 dBm");
+		return Text::StrConcatC(buff, UTF8STRC("-83 dBm"));
 	case RSSI_81:
-		return Text::StrConcat(buff, (const UTF8Char*)"-81 dBm");
+		return Text::StrConcatC(buff, UTF8STRC("-81 dBm"));
 	case RSSI_79:
-		return Text::StrConcat(buff, (const UTF8Char*)"-79 dBm");
+		return Text::StrConcatC(buff, UTF8STRC("-79 dBm"));
 	case RSSI_77:
-		return Text::StrConcat(buff, (const UTF8Char*)"-77 dBm");
+		return Text::StrConcatC(buff, UTF8STRC("-77 dBm"));
 	case RSSI_75:
-		return Text::StrConcat(buff, (const UTF8Char*)"-75 dBm");
+		return Text::StrConcatC(buff, UTF8STRC("-75 dBm"));
 	case RSSI_73:
-		return Text::StrConcat(buff, (const UTF8Char*)"-73 dBm");
+		return Text::StrConcatC(buff, UTF8STRC("-73 dBm"));
 	case RSSI_71:
-		return Text::StrConcat(buff, (const UTF8Char*)"-71 dBm");
+		return Text::StrConcatC(buff, UTF8STRC("-71 dBm"));
 	case RSSI_69:
-		return Text::StrConcat(buff, (const UTF8Char*)"-69 dBm");
+		return Text::StrConcatC(buff, UTF8STRC("-69 dBm"));
 	case RSSI_67:
-		return Text::StrConcat(buff, (const UTF8Char*)"-67 dBm");
+		return Text::StrConcatC(buff, UTF8STRC("-67 dBm"));
 	case RSSI_65:
-		return Text::StrConcat(buff, (const UTF8Char*)"-65 dBm");
+		return Text::StrConcatC(buff, UTF8STRC("-65 dBm"));
 	case RSSI_63:
-		return Text::StrConcat(buff, (const UTF8Char*)"-63 dBm");
+		return Text::StrConcatC(buff, UTF8STRC("-63 dBm"));
 	case RSSI_61:
-		return Text::StrConcat(buff, (const UTF8Char*)"-61 dBm");
+		return Text::StrConcatC(buff, UTF8STRC("-61 dBm"));
 	case RSSI_59:
-		return Text::StrConcat(buff, (const UTF8Char*)"-59 dBm");
+		return Text::StrConcatC(buff, UTF8STRC("-59 dBm"));
 	case RSSI_57:
-		return Text::StrConcat(buff, (const UTF8Char*)"-57 dBm");
+		return Text::StrConcatC(buff, UTF8STRC("-57 dBm"));
 	case RSSI_55:
-		return Text::StrConcat(buff, (const UTF8Char*)"-55 dBm");
+		return Text::StrConcatC(buff, UTF8STRC("-55 dBm"));
 	case RSSI_53:
-		return Text::StrConcat(buff, (const UTF8Char*)"-53 dBm");
+		return Text::StrConcatC(buff, UTF8STRC("-53 dBm"));
 	case RSSI_51:
-		return Text::StrConcat(buff, (const UTF8Char*)"-51 dBm");
+		return Text::StrConcatC(buff, UTF8STRC("-51 dBm"));
 	case RSSI_UNKNOWN:
 	default:
-		return Text::StrConcat(buff, (const UTF8Char*)"Unknown");
+		return Text::StrConcatC(buff, UTF8STRC("Unknown"));
 	}
 }
 
@@ -1297,24 +1297,24 @@ UTF8Char *IO::GSMModemController::GetBERString(UTF8Char *buff, BER ber)
 	switch (ber)
 	{
 	case BER_RXQUAL_0:
-		return Text::StrConcat(buff, (const UTF8Char*)"< 0.2%");
+		return Text::StrConcatC(buff, UTF8STRC("< 0.2%"));
 	case BER_RXQUAL_1:
-		return Text::StrConcat(buff, (const UTF8Char*)"0.2% - 0.4%");
+		return Text::StrConcatC(buff, UTF8STRC("0.2% - 0.4%"));
 	case BER_RXQUAL_2:
-		return Text::StrConcat(buff, (const UTF8Char*)"0.4% - 0.8%");
+		return Text::StrConcatC(buff, UTF8STRC("0.4% - 0.8%"));
 	case BER_RXQUAL_3:
-		return Text::StrConcat(buff, (const UTF8Char*)"0.8% - 1.6%");
+		return Text::StrConcatC(buff, UTF8STRC("0.8% - 1.6%"));
 	case BER_RXQUAL_4:
-		return Text::StrConcat(buff, (const UTF8Char*)"1.6% - 3.2%");
+		return Text::StrConcatC(buff, UTF8STRC("1.6% - 3.2%"));
 	case BER_RXQUAL_5:
-		return Text::StrConcat(buff, (const UTF8Char*)"3.2% - 6.4%");
+		return Text::StrConcatC(buff, UTF8STRC("3.2% - 6.4%"));
 	case BER_RXQUAL_6:
-		return Text::StrConcat(buff, (const UTF8Char*)"6.4% - 12.8%");
+		return Text::StrConcatC(buff, UTF8STRC("6.4% - 12.8%"));
 	case BER_RXQUAL_7:
-		return Text::StrConcat(buff, (const UTF8Char*)"12.8%");
+		return Text::StrConcatC(buff, UTF8STRC("12.8%"));
 	case BER_UNKNWON:
 	default:
-		return Text::StrConcat(buff, (const UTF8Char*)"Unknown");
+		return Text::StrConcatC(buff, UTF8STRC("Unknown"));
 	}
 }
 

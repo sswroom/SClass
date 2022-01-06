@@ -24,7 +24,7 @@ Crypto::Hash::SHA224::~SHA224()
 
 UTF8Char *Crypto::Hash::SHA224::GetName(UTF8Char *sbuff)
 {
-	return Text::StrConcat(sbuff, (const UTF8Char*)"SHA-224");
+	return Text::StrConcatC(sbuff, UTF8STRC("SHA-224"));
 }
 
 Crypto::Hash::IHash *Crypto::Hash::SHA224::Clone()

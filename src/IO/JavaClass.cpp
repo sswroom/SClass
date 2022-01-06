@@ -3795,7 +3795,7 @@ UTF8Char *IO::JavaClass::GetLVType(UTF8Char *sbuff, UInt16 index, const MethodIn
 			{
 				Text::StringBuilderUTF8 sbTmp;
 				this->DetailType(lvt->signatureIndex, &sbTmp, importList, packageName);
-				return Text::StrConcat(sbuff, sbTmp.ToString());
+				return Text::StrConcatC(sbuff, sbTmp.ToString(), sbTmp.GetLength());
 			}
 			i++;
 		}
@@ -3809,12 +3809,12 @@ UTF8Char *IO::JavaClass::GetLVType(UTF8Char *sbuff, UInt16 index, const MethodIn
 			{
 				Text::StringBuilderUTF8 sbTmp;
 				this->DetailType(lv->descriptorIndex, &sbTmp, importList, packageName);
-				return Text::StrConcat(sbuff, sbTmp.ToString());
+				return Text::StrConcatC(sbuff, sbTmp.ToString(), sbTmp.GetLength());
 			}
 			i++;
 		}
 	}
-	return Text::StrConcat(sbuff, (const UTF8Char*)"java.lang.Object");
+	return Text::StrConcatC(sbuff, UTF8STRC("java.lang.Object"));
 }
 
 Bool IO::JavaClass::MethodParse(MethodInfo *method, const UInt8 *methodBuff)
@@ -8736,7 +8736,7 @@ UTF8Char *IO::JavaClass::DecompileMethod(UInt16 methodIndex, UTF8Char *nameBuff,
 			{
 				Text::StringBuilderUTF8 sbTmp;
 				Type2String(sptr, &sbTmp);
-				Text::StrConcat(retType, sbTmp.ToString());
+				Text::StrConcatC(retType, sbTmp.ToString(), sbTmp.GetLength());
 			}
 			break;
 		}

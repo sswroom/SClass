@@ -85,7 +85,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 
 		if (succ)
 		{
-			sptr = Text::StrConcat(sbuff, (const UTF8Char*)"http://127.0.0.1");
+			sptr = Text::StrConcatC(sbuff, UTF8STRC("http://127.0.0.1"));
 			if (forwardPort != 80)
 			{
 				*sptr++ = ':';

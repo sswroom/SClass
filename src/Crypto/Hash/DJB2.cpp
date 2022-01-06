@@ -19,7 +19,7 @@ Crypto::Hash::DJB2::~DJB2()
 
 UTF8Char *Crypto::Hash::DJB2::GetName(UTF8Char *sbuff)
 {
-	return Text::StrConcat(sbuff, (const UTF8Char*)"DJB2");
+	return Text::StrConcatC(sbuff, UTF8STRC("DJB2"));
 }
 
 Crypto::Hash::IHash *Crypto::Hash::DJB2::Clone()

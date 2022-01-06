@@ -254,8 +254,8 @@ UOSInt IO::SDCardMgr::GetCardList(Data::ArrayList<IO::SDCardInfo*> *cardList)
 		UInt8 csd[16];
 		IO::Path::PathType pt;
 
-		sptr = Text::StrConcat(sbuff, (const UTF8Char*)"Z:\\sys\\class\\mmc_host\\");
-		Text::StrConcat(sptr, IO::Path::ALL_FILES);
+		sptr = Text::StrConcatC(sbuff, UTF8STRC("Z:\\sys\\class\\mmc_host\\"));
+		Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
 		IO::Path::FindFileSession *sess = IO::Path::FindFile(sbuff);
 		if (sess)
 		{
@@ -263,8 +263,8 @@ UOSInt IO::SDCardMgr::GetCardList(Data::ArrayList<IO::SDCardInfo*> *cardList)
 			{
 				if (sptr[0] != '.' && pt != IO::Path::PathType::File)
 				{
-					sptr2 = Text::StrConcat(sptr2, (const UTF8Char*)"\\");
-					Text::StrConcat(sptr2, IO::Path::ALL_FILES);
+					sptr2 = Text::StrConcatC(sptr2, UTF8STRC("\\"));
+					Text::StrConcatC(sptr2, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
 					IO::Path::FindFileSession *sess2 = IO::Path::FindFile(sbuff);
 					if (sess2)
 					{
@@ -275,10 +275,10 @@ UOSInt IO::SDCardMgr::GetCardList(Data::ArrayList<IO::SDCardInfo*> *cardList)
 								Bool valid = true;
 								Text::StrConcat(nameBuff, sptr2);
 
-								Text::StrConcat(sptr3, (const UTF8Char*)"\\cid");
+								Text::StrConcatC(sptr3, UTF8STRC("\\cid"));
 								if (!SDCardMgr_ReadId(sbuff, cid))
 									valid = false;
-								Text::StrConcat(sptr3, (const UTF8Char*)"\\csd");
+								Text::StrConcatC(sptr3, UTF8STRC("\\csd"));
 								if (!SDCardMgr_ReadId(sbuff, csd))
 									valid = false;
 								if (valid)

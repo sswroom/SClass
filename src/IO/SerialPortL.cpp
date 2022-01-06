@@ -27,27 +27,27 @@
 
 Bool IO::SerialPort::InitStream()
 {
-	Char portName[16];
+	UTF8Char portName[16];
 	if (portNum <= 0)
 		return false;
 	if (portNum <= 32)
 	{
-		Text::StrUOSInt(Text::StrConcat(portName, "/dev/ttyS"), portNum - 1);
+		Text::StrUOSInt(Text::StrConcatC(portName, UTF8STRC("/dev/ttyS")), portNum - 1);
 	}
 	else if (portNum <= 64)
 	{
-		Text::StrUOSInt(Text::StrConcat(portName, "/dev/ttyUSB"), portNum - 33);
+		Text::StrUOSInt(Text::StrConcatC(portName, UTF8STRC("/dev/ttyUSB")), portNum - 33);
 	}
 	else if (portNum <= 96)
 	{
-		Text::StrUOSInt(Text::StrConcat(portName, "/dev/ttyACM"), portNum - 65);
+		Text::StrUOSInt(Text::StrConcatC(portName, UTF8STRC("/dev/ttyACM")), portNum - 65);
 	}
 	else
 	{
 		return false;
 	}
 
-	Int32 h = open(portName, O_RDWR | O_NOCTTY | O_NDELAY);
+	Int32 h = open((Char*)portName, O_RDWR | O_NOCTTY | O_NDELAY);
 	this->handle = (void*)(OSInt)h;
 	if (h < 0)
 	{
@@ -248,15 +248,15 @@ UTF8Char *IO::SerialPort::GetPortName(UTF8Char *buff, UOSInt portNum)
 		return 0;
 	if (portNum <= 32)
 	{
-		return Text::StrUOSInt(Text::StrConcat(buff, (const UTF8Char*)"/dev/ttyS"), portNum - 1);
+		return Text::StrUOSInt(Text::StrConcatC(buff, UTF8STRC("/dev/ttyS")), portNum - 1);
 	}
 	else if (portNum <= 64)
 	{
-		return Text::StrUOSInt(Text::StrConcat(buff, (const UTF8Char*)"/dev/ttyUSB"), portNum - 33);
+		return Text::StrUOSInt(Text::StrConcatC(buff, UTF8STRC("/dev/ttyUSB")), portNum - 33);
 	}
 	else if (portNum <= 96)
 	{
-		return Text::StrUOSInt(Text::StrConcat(buff, (const UTF8Char*)"/dev/ttyACM"), portNum - 65);
+		return Text::StrUOSInt(Text::StrConcatC(buff, UTF8STRC("/dev/ttyACM")), portNum - 65);
 	}
 	else
 	{
@@ -296,7 +296,7 @@ Bool IO::SerialPort::ResetPort(UOSInt portNum)
 	}
 	else if (portNum <= 64)
 	{
-		Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"/sys/bus/usb-serial/devices/ttyUSB"), portNum - 33);
+		Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("/sys/bus/usb-serial/devices/ttyUSB")), portNum - 33);
 		if ((si = readlink((const Char*)sbuff, (Char*)sbuff2, 511)) <= 0)
 		{
 			return false;
@@ -311,7 +311,7 @@ Bool IO::SerialPort::ResetPort(UOSInt portNum)
 		if (i == INVALID_INDEX)
 			return false;
 		sptr = &sbuff[i + 1];
-		Text::StrConcat(sptr, (const UTF8Char*)"authorized");
+		Text::StrConcatC(sptr, UTF8STRC("authorized"));
 		if (SerialPort_WriteInt32(sbuff, 0) && SerialPort_WriteInt32(sbuff, 1))
 		{
 			return true;

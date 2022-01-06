@@ -535,16 +535,16 @@ IO::FileStream *IO::FileStream::OpenNamedPipe(const UTF8Char *server, const UTF8
 #else
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
-	sptr = Text::StrConcat(sbuff, (const UTF8Char*)"\\\\");
+	sptr = Text::StrConcatC(sbuff, UTF8STRC("\\\\"));
 	if (server == 0)
 	{
-		sptr = Text::StrConcat(sptr, (const UTF8Char*)".");
+		sptr = Text::StrConcatC(sptr, UTF8STRC("."));
 	}
 	else
 	{
 		sptr = Text::StrConcat(sptr, server);
 	}
-	sptr = Text::StrConcat(sptr, (const UTF8Char*)"\\pipe\\");
+	sptr = Text::StrConcatC(sptr, UTF8STRC("\\pipe\\"));
 	sptr = Text::StrConcat(sptr, pipeName);
 	IO::FileStream *outStm;
 	NEW_CLASS(outStm, IO::FileStream(sbuff, IO::FileMode::Device, IO::FileShare::DenyAll, IO::FileStream::BufferType::Normal));

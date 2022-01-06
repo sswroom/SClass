@@ -6,7 +6,7 @@
 
 UTF8Char *IO::OS::GetDistro(UTF8Char *sbuff)
 {
-	return Text::StrConcat(sbuff, (const UTF8Char*)"FreeBSD");
+	return Text::StrConcatC(sbuff, UTF8STRC("FreeBSD"));
 }
 
 UTF8Char *IO::OS::GetVersion(UTF8Char *sbuff)
@@ -17,5 +17,5 @@ UTF8Char *IO::OS::GetVersion(UTF8Char *sbuff)
 	{
 		sb.RemoveChars(1);
 	}
-	return Text::StrConcat(sbuff, sb.ToString());
+	return Text::StrConcatC(sbuff, sb.ToString(), sb.GetLength());
 }

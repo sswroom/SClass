@@ -34,8 +34,8 @@ Bool Exporter::PDFExporter::GetOutputName(OSInt index, UTF8Char *nameBuff, UTF8C
 {
 	if (index == 0)
 	{
-		Text::StrConcat(nameBuff, (const UTF8Char*)"PDF File");
-		Text::StrConcat(fileNameBuff, (const UTF8Char*)"*.pdf");
+		Text::StrConcatC(nameBuff, UTF8STRC("PDF File"));
+		Text::StrConcatC(fileNameBuff, UTF8STRC("*.pdf"));
 		return true;
 	}
 	return false;

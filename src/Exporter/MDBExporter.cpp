@@ -40,8 +40,8 @@ Bool Exporter::MDBExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8
 {
 	if (index == 0)
 	{
-		Text::StrConcat(nameBuff, (const UTF8Char*)"Access File");
-		Text::StrConcat(fileNameBuff, (const UTF8Char*)"*.mdb");
+		Text::StrConcatC(nameBuff, UTF8STRC("Access File"));
+		Text::StrConcatC(fileNameBuff, UTF8STRC("*.mdb"));
 		return true;
 	}
 	return false;

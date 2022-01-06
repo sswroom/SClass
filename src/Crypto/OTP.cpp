@@ -17,23 +17,23 @@ UTF8Char *Crypto::OTP::CodeString(UTF8Char *sbuff, UInt32 code)
 	{
 		if (code < 10)
 		{
-			return Text::StrUInt32(Text::StrConcat(sbuff, (const UTF8Char*)"00000"), code);
+			return Text::StrUInt32(Text::StrConcatC(sbuff, UTF8STRC("00000")), code);
 		}
 		else if (code < 100)
 		{
-			return Text::StrUInt32(Text::StrConcat(sbuff, (const UTF8Char*)"0000"), code);
+			return Text::StrUInt32(Text::StrConcatC(sbuff, UTF8STRC("0000")), code);
 		}
 		else if (code < 1000)
 		{
-			return Text::StrUInt32(Text::StrConcat(sbuff, (const UTF8Char*)"000"), code);
+			return Text::StrUInt32(Text::StrConcatC(sbuff, UTF8STRC("000")), code);
 		}
 		else if (code < 10000)
 		{
-			return Text::StrUInt32(Text::StrConcat(sbuff, (const UTF8Char*)"00"), code);
+			return Text::StrUInt32(Text::StrConcatC(sbuff, UTF8STRC("00")), code);
 		}
 		else if (code < 100000)
 		{
-			return Text::StrUInt32(Text::StrConcat(sbuff, (const UTF8Char*)"0"), code);
+			return Text::StrUInt32(Text::StrConcatC(sbuff, UTF8STRC("0")), code);
 		}
 		else
 		{

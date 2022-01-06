@@ -34,8 +34,8 @@ Bool Exporter::DBPListExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, 
 {
 	if (index == 0)
 	{
-		Text::StrConcat(nameBuff, (const UTF8Char*)"DB Parameter List File");
-		Text::StrConcat(fileNameBuff, (const UTF8Char*)"*.plist");
+		Text::StrConcatC(nameBuff, UTF8STRC("DB Parameter List File"));
+		Text::StrConcatC(fileNameBuff, UTF8STRC("*.plist"));
 		return true;
 	}
 	return false;

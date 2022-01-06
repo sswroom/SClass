@@ -83,9 +83,9 @@ UInt32 __stdcall PlayThread(void *obj)
 	i = 1;
 	while (true)
 	{
-		sptr = Text::StrConcat(sbuff, (const UTF8Char*)"Alarm");
+		sptr = Text::StrConcatC(sbuff, UTF8STRC("Alarm"));
 		sptr = Text::StrUOSInt(sptr, i);
-		sptr = Text::StrConcat(sptr, (const UTF8Char*)".wav");
+		sptr = Text::StrConcatC(sptr, UTF8STRC(".wav"));
 
 		NEW_CLASS(fd, IO::StmData::FileData(sbuff, false));
 		file = (Media::MediaFile*)parser->ParseFile(fd, 0, IO::ParserType::MediaFile);
@@ -118,50 +118,50 @@ UInt32 __stdcall PlayThread(void *obj)
 			if ((nextSignal & Net::HKOWeather::WS_TYPHOON_MASK) != 0 || (currSignal & Net::HKOWeather::WS_TYPHOON_MASK) != 0)
 			{
 				sptr = currDt->ToString(sbuff, "yyyy-MM-dd HH:mm:ss");
-				sptr = Text::StrConcat(sptr, (const UTF8Char*)" Typhoon now is ");
+				sptr = Text::StrConcatC(sptr, UTF8STRC(" Typhoon now is "));
 				if ((nextSignal & Net::HKOWeather::WS_TYPHOON_MASK) == Net::HKOWeather::WS_TYPHOON_1)
 				{
-					sptr = Text::StrConcat(sptr, (const UTF8Char*)" No. 1");
+					sptr = Text::StrConcatC(sptr, UTF8STRC(" No. 1"));
 					typhoonStop = false;
 				}
 				else if ((nextSignal & Net::HKOWeather::WS_TYPHOON_MASK) == Net::HKOWeather::WS_TYPHOON_3)
 				{
-					sptr = Text::StrConcat(sptr, (const UTF8Char*)" No. 3");
+					sptr = Text::StrConcatC(sptr, UTF8STRC(" No. 3"));
 					typhoonStop = false;
 				}
 				else if ((nextSignal & Net::HKOWeather::WS_TYPHOON_MASK) == Net::HKOWeather::WS_TYPHOON_8NE)
 				{
-					sptr = Text::StrConcat(sptr, (const UTF8Char*)" No. 8 NE");
+					sptr = Text::StrConcatC(sptr, UTF8STRC(" No. 8 NE"));
 					typhoonStop = true;
 				}
 				else if ((nextSignal & Net::HKOWeather::WS_TYPHOON_MASK) == Net::HKOWeather::WS_TYPHOON_8SE)
 				{
-					sptr = Text::StrConcat(sptr, (const UTF8Char*)" No. 8 SE");
+					sptr = Text::StrConcatC(sptr, UTF8STRC(" No. 8 SE"));
 					typhoonStop = true;
 				}
 				else if ((nextSignal & Net::HKOWeather::WS_TYPHOON_MASK) == Net::HKOWeather::WS_TYPHOON_8NW)
 				{
-					sptr = Text::StrConcat(sptr, (const UTF8Char*)" No. 8 NW");
+					sptr = Text::StrConcatC(sptr, UTF8STRC(" No. 8 NW"));
 					typhoonStop = true;
 				}
 				else if ((nextSignal & Net::HKOWeather::WS_TYPHOON_MASK) == Net::HKOWeather::WS_TYPHOON_8SW)
 				{
-					sptr = Text::StrConcat(sptr, (const UTF8Char*)" No. 8 SW");
+					sptr = Text::StrConcatC(sptr, UTF8STRC(" No. 8 SW"));
 					typhoonStop = true;
 				}
 				else if ((nextSignal & Net::HKOWeather::WS_TYPHOON_MASK) == Net::HKOWeather::WS_TYPHOON_9)
 				{
-					sptr = Text::StrConcat(sptr, (const UTF8Char*)" No. 9");
+					sptr = Text::StrConcatC(sptr, UTF8STRC(" No. 9"));
 					typhoonStop = true;
 				}
 				else if ((nextSignal & Net::HKOWeather::WS_TYPHOON_MASK) == Net::HKOWeather::WS_TYPHOON_10)
 				{
-					sptr = Text::StrConcat(sptr, (const UTF8Char*)" No. 10");
+					sptr = Text::StrConcatC(sptr, UTF8STRC(" No. 10"));
 					typhoonStop = true;
 				}
 				else
 				{
-					sptr = Text::StrConcat(sptr, (const UTF8Char*)" none");
+					sptr = Text::StrConcatC(sptr, UTF8STRC(" none"));
 					typhoonStop = false;
 				}
 				console->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));

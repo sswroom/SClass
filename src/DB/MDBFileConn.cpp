@@ -140,27 +140,27 @@ Bool DB::MDBFileConn::CreateMDBFile(const UTF8Char *fileName)
 {
 #if _WCHAR_SIZE == 4
 	BOOL fCreated;
-	Char sbuff[512];
-	Char *sptr;
-	sptr = Text::StrConcat(sbuff, "CREATE_DB=");
-	sptr = Text::StrConcat(sptr, (const Char*)fileName);
-	sptr = Text::StrConcat(sptr, " General");
+	UTF8Char sbuff[512];
+	UTF8Char *sptr;
+	sptr = Text::StrConcatC(sbuff, UTF8STRC("CREATE_DB="));
+	sptr = Text::StrConcat(sptr, fileName);
+	sptr = Text::StrConcatC(sptr, UTF8STRC(" General"));
 	sptr[1] = 0;
-	fCreated = SQLConfigDataSource(0, ODBC_ADD_DSN, "Microsoft Access Driver (*.mdb)", sbuff);
+	fCreated = SQLConfigDataSource(0, ODBC_ADD_DSN, "Microsoft Access Driver (*.mdb)", (Char*)sbuff);
 	if (fCreated == 0)
 	{
-		sptr = Text::StrConcat(sbuff, "CREATE_DBV4=");
-		sptr = Text::StrConcat(sptr, (const Char*)fileName);
-		sptr = Text::StrConcat(sptr, " General");
+		sptr = Text::StrConcatC(sbuff, UTF8STRC("CREATE_DBV4="));
+		sptr = Text::StrConcat(sptr, fileName);
+		sptr = Text::StrConcatC(sptr, UTF8STRC(" General"));
 		sptr[1] = 0;
-		fCreated = SQLConfigDataSource(0, ODBC_ADD_DSN, "Microsoft Access Driver (*.mdb, *.accdb)", sbuff);
+		fCreated = SQLConfigDataSource(0, ODBC_ADD_DSN, "Microsoft Access Driver (*.mdb, *.accdb)", (Char*)sbuff);
 		if (fCreated == 0)
 		{
-			sptr = Text::StrConcat(sbuff, "CREATE_DB=");
-			sptr = Text::StrConcat(sptr, (const Char*)fileName);
-			sptr = Text::StrConcat(sptr, " General");
+			sptr = Text::StrConcatC(sbuff, UTF8STRC("CREATE_DB="));
+			sptr = Text::StrConcat(sptr, fileName);
+			sptr = Text::StrConcatC(sptr, UTF8STRC(" General"));
 			sptr[1] = 0;
-			fCreated = SQLConfigDataSource(0, ODBC_ADD_DSN, "MDBTools", sbuff);
+			fCreated = SQLConfigDataSource(0, ODBC_ADD_DSN, "MDBTools", (Char*)sbuff);
 		}
 	}
 	return fCreated != 0;

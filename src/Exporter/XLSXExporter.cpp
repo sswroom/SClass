@@ -40,8 +40,8 @@ Bool Exporter::XLSXExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF
 {
 	if (index == 0)
 	{
-		Text::StrConcat(nameBuff, (const UTF8Char*)"Excel XLSX File");
-		Text::StrConcat(fileNameBuff, (const UTF8Char*)"*.xlsx");
+		Text::StrConcatC(nameBuff, UTF8STRC("Excel XLSX File"));
+		Text::StrConcatC(fileNameBuff, UTF8STRC("*.xlsx"));
 		return true;
 	}
 	return false;
@@ -335,7 +335,7 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char 
 			k++;
 		}
 		sb.AppendC(UTF8STRC("</worksheet>"));
-		Text::StrConcat(Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"xl/worksheets/sheet"), i + 1), (const UTF8Char*)".xml");
+		Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("xl/worksheets/sheet")), i + 1), UTF8STRC(".xml"));
 		zip->AddFile(sbuff, sb.ToString(), sb.GetLength(), dt.ToTicks(), false);
 		sbContTypes.AppendC(UTF8STRC("<Override PartName=\"/"));
 		sbContTypes.Append(sbuff);
@@ -374,7 +374,7 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char 
 			}
 			sb.AppendC(UTF8STRC("</Relationships>"));
 
-			Text::StrConcat(Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"xl/worksheets/_rels/sheet"), i + 1), (const UTF8Char*)".xml.rels");
+			Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("xl/worksheets/_rels/sheet")), i + 1), UTF8STRC(".xml.rels"));
 			zip->AddFile(sbuff, sb.ToString(), sb.GetLength(), dt.ToTicks(), false);
 			sbContTypes.AppendC(UTF8STRC("<Override PartName=\"/"));
 			sbContTypes.Append(sbuff);
@@ -508,7 +508,7 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char 
 				}
 				sb.AppendC(UTF8STRC("</xdr:wsDr>"));
 				drawingCnt++;
-				Text::StrConcat(Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"xl/drawings/drawing"), drawingCnt), (const UTF8Char*)".xml");
+				Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("xl/drawings/drawing")), drawingCnt), UTF8STRC(".xml"));
 				zip->AddFile(sbuff, sb.ToString(), sb.GetLength(), dt.ToTicks(), false);
 				sbContTypes.AppendC(UTF8STRC("<Override PartName=\"/"));
 				sbContTypes.Append(sbuff);
@@ -524,7 +524,7 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char 
 					sb.AppendC(UTF8STRC(".xml\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/chart\"/>"));
 					sb.AppendC(UTF8STRC("</Relationships>"));
 
-					Text::StrConcat(Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"xl/drawings/_rels/drawing"), drawingCnt), (const UTF8Char*)".xml.rels");
+					Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("xl/drawings/_rels/drawing")), drawingCnt), UTF8STRC(".xml.rels"));
 					zip->AddFile(sbuff, sb.ToString(), sb.GetLength(), dt.ToTicks(), false);
 					sbContTypes.AppendC(UTF8STRC("<Override PartName=\"/"));
 					sbContTypes.Append(sbuff);
@@ -627,7 +627,7 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char 
 					//////////////////////////////////////
 					sb.AppendC(UTF8STRC("</c:chartSpace>"));
 
-					Text::StrConcat(Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"xl/charts/chart"), chartCnt), (const UTF8Char*)".xml");
+					Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("xl/charts/chart")), chartCnt), UTF8STRC(".xml"));
 					zip->AddFile(sbuff, sb.ToString(), sb.GetLength(), dt.ToTicks(), false);
 					sbContTypes.AppendC(UTF8STRC("<Override PartName=\"/"));
 					sbContTypes.Append(sbuff);

@@ -1415,8 +1415,8 @@ Bool Exporter::PNGExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8
 {
 	if (index == 0)
 	{
-		Text::StrConcat(nameBuff, (const UTF8Char*)"Portable Network Graphic");
-		Text::StrConcat(fileNameBuff, (const UTF8Char*)"*.png");
+		Text::StrConcatC(nameBuff, UTF8STRC("Portable Network Graphic"));
+		Text::StrConcatC(fileNameBuff, UTF8STRC("*.png"));
 		return true;
 	}
 	return false;
@@ -1547,7 +1547,7 @@ Bool Exporter::PNGExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 			UInt32 iccSize = ReadMUInt32(iccBuff);
 			tmpBuff = MemAlloc(UInt8, iccSize + 35 + 11);
 			*(Int32*)&tmpBuff[4] = *(Int32*)"iCCP";
-			Text::StrConcat((Char*)&tmpBuff[8], "Photoshop ICC profile");
+			Text::StrConcatC((UTF8Char*)&tmpBuff[8], UTF8STRC("Photoshop ICC profile"));
 			tmpBuff[30] = 0;
 
 			i = Data::Compress::Inflate::Compress(iccBuff, iccSize, &tmpBuff[31], true);

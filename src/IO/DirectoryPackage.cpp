@@ -46,7 +46,7 @@ void IO::DirectoryPackage::Init()
 		{
 			*sptr++ = IO::Path::PATH_SEPERATOR;
 		}
-		Text::StrConcat(sptr, IO::Path::ALL_FILES);
+		Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
 		sess = IO::Path::FindFile(sbuff);
 		if (sess)
 		{
@@ -75,7 +75,7 @@ IO::DirectoryPackage::DirectoryPackage(Text::String *dirName) : IO::PackageFile(
 	UTF8Char sbuff[512];
 	if (dirName->StartsWith((const UTF8Char*)"~/"))
 	{
-		Text::StrConcat(IO::Path::GetUserHome(sbuff), dirName->v + 1);
+		Text::StrConcatC(IO::Path::GetUserHome(sbuff), dirName->v + 1, dirName->leng - 1);
 		this->dirName = Text::String::NewNotNull(sbuff);
 	}
 	else

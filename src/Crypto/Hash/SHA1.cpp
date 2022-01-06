@@ -26,7 +26,7 @@ Crypto::Hash::SHA1::~SHA1()
 
 UTF8Char *Crypto::Hash::SHA1::GetName(UTF8Char *sbuff)
 {
-	return Text::StrConcat(sbuff, (const UTF8Char*)"SHA-1");
+	return Text::StrConcatC(sbuff, UTF8STRC("SHA-1"));
 }
 
 Crypto::Hash::IHash *Crypto::Hash::SHA1::Clone()

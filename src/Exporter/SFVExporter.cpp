@@ -37,8 +37,8 @@ Bool Exporter::SFVExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8
 {
 	if (index == 0)
 	{
-		Text::StrConcat(nameBuff, (const UTF8Char*)"SFV File");
-		Text::StrConcat(fileNameBuff, (const UTF8Char*)"*.sfv");
+		Text::StrConcatC(nameBuff, UTF8STRC("SFV File"));
+		Text::StrConcatC(fileNameBuff, UTF8STRC("*.sfv"));
 		return true;
 	}
 	return false;

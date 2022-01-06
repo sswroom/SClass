@@ -54,9 +54,9 @@ void *IO::Registry::OpenUserType(RegistryUser usr)
 		{
 			return 0;
 		}
-		sptr = Text::StrConcat(sptr, (const UTF8Char*)"/.sswr");
+		sptr = Text::StrConcatC(sptr, UTF8STRC("/.sswr"));
 		IO::Path::CreateDirectory(sbuff);
-		sptr = Text::StrConcat(sptr, (const UTF8Char*)"/alluser.reg");
+		sptr = Text::StrConcatC(sptr, UTF8STRC("/alluser.reg"));
 		reg = MemAlloc(Registry_File, 1);
 		allRegistryFile = reg;
 		reg->useCnt = 1;
@@ -77,9 +77,9 @@ void *IO::Registry::OpenUserType(RegistryUser usr)
 		{
 			return 0;
 		}
-		sptr = Text::StrConcat(sptr, (const UTF8Char*)"/.sswr");
+		sptr = Text::StrConcatC(sptr, UTF8STRC("/.sswr"));
 		IO::Path::CreateDirectory(sbuff);
-		sptr = Text::StrConcat(sptr, (const UTF8Char*)"/thisuser.reg");
+		sptr = Text::StrConcatC(sptr, UTF8STRC("/thisuser.reg"));
 
 		reg = MemAlloc(Registry_File, 1);
 		thisRegistryFile = reg;

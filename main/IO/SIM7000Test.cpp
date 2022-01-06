@@ -19,9 +19,9 @@ void __stdcall OnUDPData(const Net::SocketUtil::AddressInfo *addr, UInt16 port, 
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
-	sptr = Text::StrConcat(sbuff, (const UTF8Char*)"UDP: ");
+	sptr = Text::StrConcatC(sbuff, UTF8STRC("UDP: "));
 	sptr = Net::SocketUtil::GetAddrName(sptr, addr, port);
-	sptr = Text::StrConcat(sptr, (const UTF8Char*)", Size = ");
+	sptr = Text::StrConcatC(sptr, UTF8STRC(", Size = "));
 	sptr = Text::StrUOSInt(sptr, dataSize);
 	console->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
 }

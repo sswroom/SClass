@@ -25,8 +25,8 @@ Bool Exporter::GUIJPGExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, U
 {
 	if (index == 0)
 	{
-		Text::StrConcat(nameBuff, (const UTF8Char*)"JPEG file (GDK)");
-		Text::StrConcat(fileNameBuff, (const UTF8Char*)"*.jpg");
+		Text::StrConcatC(nameBuff, UTF8STRC("JPEG file (GDK)"));
+		Text::StrConcatC(fileNameBuff, UTF8STRC("*.jpg"));
 		return true;
 	}
 	return false;

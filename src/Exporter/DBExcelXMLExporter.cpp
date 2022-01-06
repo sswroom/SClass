@@ -36,8 +36,8 @@ Bool Exporter::DBExcelXMLExporter::GetOutputName(UOSInt index, UTF8Char *nameBuf
 {
 	if (index == 0)
 	{
-		Text::StrConcat(nameBuff, (const UTF8Char*)"DB Excel XML File");
-		Text::StrConcat(fileNameBuff, (const UTF8Char*)"*.xml");
+		Text::StrConcatC(nameBuff, UTF8STRC("DB Excel XML File"));
+		Text::StrConcatC(fileNameBuff, UTF8STRC("*.xml"));
 		return true;
 	}
 	return false;
@@ -95,7 +95,7 @@ Bool Exporter::DBExcelXMLExporter::ExportFile(IO::SeekableStream *stm, const UTF
 		if (r)
 		{
 			UOSInt ind = Text::StrLastIndexOf(tableName, '\\');
-			sptr = Text::StrConcat(Text::XML::ToAttrText(Text::StrConcat(lineBuff1, (const UTF8Char*)" <Worksheet ss:Name="), &tableName[ind + 1]), (const UTF8Char*)">");
+			sptr = Text::StrConcatC(Text::XML::ToAttrText(Text::StrConcatC(lineBuff1, UTF8STRC(" <Worksheet ss:Name=")), &tableName[ind + 1]), UTF8STRC(">"));
 			Text::StrReplace(lineBuff1, '?', '_');
 			Text::StrReplace(lineBuff1, '\\', '_');
 			writer->WriteLineC(lineBuff1, (UOSInt)(sptr - lineBuff1));
@@ -108,7 +108,7 @@ Bool Exporter::DBExcelXMLExporter::ExportFile(IO::SeekableStream *stm, const UTF
 			{
 				if (r->GetName(i, lineBuff1))
 				{
-					sptr = Text::StrConcat(Text::XML::ToXMLText(Text::StrConcat(lineBuff2, (const UTF8Char*)"    <Cell><Data ss:Type=\"String\">"), lineBuff1), (const UTF8Char*)"</Data></Cell>");
+					sptr = Text::StrConcatC(Text::XML::ToXMLText(Text::StrConcatC(lineBuff2, UTF8STRC("    <Cell><Data ss:Type=\"String\">")), lineBuff1), UTF8STRC("</Data></Cell>"));
 					writer->WriteLineC(lineBuff2, (UOSInt)(sptr - lineBuff2));
 				}
 				else
@@ -133,28 +133,28 @@ Bool Exporter::DBExcelXMLExporter::ExportFile(IO::SeekableStream *stm, const UTF
 					case DB::DBUtil::CT_DateTime2:
 					case DB::DBUtil::CT_DateTime:
 						r->GetDate(i, &dt);
-						sptr = Text::StrConcat(dt.ToString(Text::StrConcat(lineBuff1, (const UTF8Char*)"    <Cell><Data ss:Type=\"DateTime\">"), "yyyy-MM-ddTHH:mm:ss.fff"), (const UTF8Char*)"</Data></Cell>");
+						sptr = Text::StrConcatC(dt.ToString(Text::StrConcatC(lineBuff1, UTF8STRC("    <Cell><Data ss:Type=\"DateTime\">")), "yyyy-MM-ddTHH:mm:ss.fff"), UTF8STRC("</Data></Cell>"));
 						writer->WriteLineC(lineBuff1, (UOSInt)(sptr - lineBuff1));
 						break;
 					case DB::DBUtil::CT_Double:
 					case DB::DBUtil::CT_Float:
-						sptr = Text::StrConcat(Text::StrDouble(Text::StrConcat(lineBuff1, (const UTF8Char*)"    <Cell><Data ss:Type=\"Number\">"), r->GetDbl(i)), (const UTF8Char*)"</Data></Cell>");
+						sptr = Text::StrConcatC(Text::StrDouble(Text::StrConcatC(lineBuff1, UTF8STRC("    <Cell><Data ss:Type=\"Number\">")), r->GetDbl(i)), UTF8STRC("</Data></Cell>"));
 						writer->WriteLineC(lineBuff1, (UOSInt)(sptr - lineBuff1));
 						break;
 					case DB::DBUtil::CT_Byte:
 					case DB::DBUtil::CT_Int16:
 					case DB::DBUtil::CT_Int32:
 					case DB::DBUtil::CT_UInt16:
-						sptr = Text::StrConcat(Text::StrInt32(Text::StrConcat(lineBuff1, (const UTF8Char*)"    <Cell><Data ss:Type=\"Number\">"), r->GetInt32(i)), (const UTF8Char*)"</Data></Cell>");
+						sptr = Text::StrConcatC(Text::StrInt32(Text::StrConcatC(lineBuff1, UTF8STRC("    <Cell><Data ss:Type=\"Number\">")), r->GetInt32(i)), UTF8STRC("</Data></Cell>"));
 						writer->WriteLineC(lineBuff1, (UOSInt)(sptr - lineBuff1));
 						break;
 					case DB::DBUtil::CT_Int64:
 					case DB::DBUtil::CT_UInt32:
-						sptr = Text::StrConcat(Text::StrInt64(Text::StrConcat(lineBuff1, (const UTF8Char*)"    <Cell><Data ss:Type=\"Number\">"), r->GetInt64(i)), (const UTF8Char*)"</Data></Cell>");
+						sptr = Text::StrConcatC(Text::StrInt64(Text::StrConcatC(lineBuff1, UTF8STRC("    <Cell><Data ss:Type=\"Number\">")), r->GetInt64(i)), UTF8STRC("</Data></Cell>"));
 						writer->WriteLineC(lineBuff1, (UOSInt)(sptr - lineBuff1));
 						break;
 					case DB::DBUtil::CT_UInt64:
-						sptr = Text::StrConcat(Text::StrUInt64(Text::StrConcat(lineBuff1, (const UTF8Char*)"    <Cell><Data ss:Type=\"Number\">"), (UInt64)r->GetInt64(i)), (const UTF8Char*)"</Data></Cell>");
+						sptr = Text::StrConcatC(Text::StrUInt64(Text::StrConcatC(lineBuff1, UTF8STRC("    <Cell><Data ss:Type=\"Number\">")), (UInt64)r->GetInt64(i)), UTF8STRC("</Data></Cell>"));
 						writer->WriteLineC(lineBuff1, (UOSInt)(sptr - lineBuff1));
 						break;
 					case DB::DBUtil::CT_VarChar:
@@ -169,7 +169,7 @@ Bool Exporter::DBExcelXMLExporter::ExportFile(IO::SeekableStream *stm, const UTF
 					default:
 						lineBuff2[0] = 0;
 						r->GetStr(i, lineBuff2, 65536);
-						sptr = Text::StrConcat(Text::XML::ToXMLText(Text::StrConcat(lineBuff1, (const UTF8Char*)"    <Cell><Data ss:Type=\"String\">"), lineBuff2), (const UTF8Char*)"</Data></Cell>");
+						sptr = Text::StrConcatC(Text::XML::ToXMLText(Text::StrConcatC(lineBuff1, UTF8STRC("    <Cell><Data ss:Type=\"String\">")), lineBuff2), UTF8STRC("</Data></Cell>"));
 						writer->WriteLineC(lineBuff1, (UOSInt)(sptr - lineBuff1));
 						break;
 					}

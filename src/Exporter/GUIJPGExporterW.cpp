@@ -32,8 +32,8 @@ Bool Exporter::GUIJPGExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, U
 {
 	if (index == 0)
 	{
-		Text::StrConcat(nameBuff, (const UTF8Char*)"JPEG file (GDI+)");
-		Text::StrConcat(fileNameBuff, (const UTF8Char*)"*.jpg");
+		Text::StrConcatC(nameBuff, UTF8STRC("JPEG file (GDI+)"));
+		Text::StrConcatC(fileNameBuff, UTF8STRC("*.jpg"));
 		return true;
 	}
 	return false;
@@ -150,7 +150,7 @@ Bool Exporter::GUIJPGExporter::ExportFile(IO::SeekableStream *stm, const UTF8Cha
 					iccHdr[0] = 0xff;
 					iccHdr[1] = 0xe2;
 					WriteMInt16(&iccHdr[2], iccLeng + 16);
-					Text::StrConcat((Char*)&iccHdr[4], "ICC_PROFILE");
+					Text::StrConcatC((UTF8Char*)&iccHdr[4], UTF8STRC("ICC_PROFILE"));
 					iccHdr[16] = 1;
 					iccHdr[17] = 1;
 					stm->Write(iccHdr, 18);

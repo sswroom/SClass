@@ -36,5 +36,5 @@ Bool IO::NullIOPin::SetPullType(PullType pt)
 
 UTF8Char *IO::NullIOPin::GetName(UTF8Char *buff)
 {
-	return Text::StrConcat(buff, (const UTF8Char*)"NullIOPin");
+	return Text::StrConcatC(buff, UTF8STRC("NullIOPin"));
 }

@@ -19,7 +19,7 @@ Crypto::Hash::SDBM::~SDBM()
 
 UTF8Char *Crypto::Hash::SDBM::GetName(UTF8Char *sbuff)
 {
-	return Text::StrConcat(sbuff, (const UTF8Char*)"SDBM");
+	return Text::StrConcatC(sbuff, UTF8STRC("SDBM"));
 }
 
 Crypto::Hash::IHash *Crypto::Hash::SDBM::Clone()

@@ -63,8 +63,8 @@ Bool Exporter::OruxMapExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, 
 {
 	if (index == 0)
 	{
-		Text::StrConcat(nameBuff, (const UTF8Char*)"OruxMaps");
-		Text::StrConcat(fileNameBuff, (const UTF8Char*)"*.otrk2.xml");
+		Text::StrConcatC(nameBuff, UTF8STRC("OruxMaps"));
+		Text::StrConcatC(fileNameBuff, UTF8STRC("*.otrk2.xml"));
 		return true;
 	}
 	return false;

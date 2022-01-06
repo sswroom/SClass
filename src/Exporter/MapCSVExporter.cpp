@@ -41,8 +41,8 @@ Bool Exporter::MapCSVExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, U
 {
 	if (index == 0)
 	{
-		Text::StrConcat(nameBuff, (const UTF8Char*)"Map CSV File");
-		Text::StrConcat(fileNameBuff, (const UTF8Char*)"*.csv");
+		Text::StrConcatC(nameBuff, UTF8STRC("Map CSV File"));
+		Text::StrConcatC(fileNameBuff, UTF8STRC("*.csv"));
 		return true;
 	}
 	return false;
@@ -94,51 +94,51 @@ Bool Exporter::MapCSVExporter::ExportFile(IO::SeekableStream *stm, const UTF8Cha
 			while (k < recCnt)
 			{
 				sptr = Text::StrInt32(sbuff, currInd);
-				sptr = Text::StrConcat(sptr, (const UTF8Char*)", ");
+				sptr = Text::StrConcatC(sptr, UTF8STRC(", "));
 				d.SetTicks(rec[k].utcTimeTicks);
 				sptr = d.ToString(sptr, "yyyy/MM/dd, HH:mm:ss.fff");
 				if (rec[k].valid == 1)
 				{
-					sptr = Text::StrConcat(sptr, (const UTF8Char*)", DGPS, ");
+					sptr = Text::StrConcatC(sptr, UTF8STRC(", DGPS, "));
 				}
 				else if (rec[k].valid)
 				{
-					sptr = Text::StrConcat(sptr, (const UTF8Char*)", SPS, ");
+					sptr = Text::StrConcatC(sptr, UTF8STRC(", SPS, "));
 				}
 				else
 				{
-					sptr = Text::StrConcat(sptr, (const UTF8Char*)", Estimated (dead reckoning), ");
+					sptr = Text::StrConcatC(sptr, UTF8STRC(", Estimated (dead reckoning), "));
 				}
 				v = rec[k].lat;
 				if (v < 0)
 				{
 					sptr = Text::StrDouble(sptr, -v);
-					sptr = Text::StrConcat(sptr, (const UTF8Char*)", S, ");
+					sptr = Text::StrConcatC(sptr, UTF8STRC(", S, "));
 				}
 				else
 				{
 					sptr = Text::StrDouble(sptr, v);
-					sptr = Text::StrConcat(sptr, (const UTF8Char*)", N, ");
+					sptr = Text::StrConcatC(sptr, UTF8STRC(", N, "));
 				}
 				v = rec[k].lon;
 				if (v < 0)
 				{
 					sptr = Text::StrDouble(sptr, -v);
-					sptr = Text::StrConcat(sptr, (const UTF8Char*)", W, ");
+					sptr = Text::StrConcatC(sptr, UTF8STRC(", W, "));
 				}
 				else
 				{
 					sptr = Text::StrDouble(sptr, v);
-					sptr = Text::StrConcat(sptr, (const UTF8Char*)", E, ");
+					sptr = Text::StrConcatC(sptr, UTF8STRC(", E, "));
 				}
 				sptr = Text::StrDoubleFmt(sptr, rec[k].altitude, "0.000");
-				sptr = Text::StrConcat(sptr, (const UTF8Char*)" M, ");
+				sptr = Text::StrConcatC(sptr, UTF8STRC(" M, "));
 				sptr = Text::StrDoubleFmt(sptr, rec[k].speed * 1.852, "0.000");
-				sptr = Text::StrConcat(sptr, (const UTF8Char*)" km/h, ");
+				sptr = Text::StrConcatC(sptr, UTF8STRC(" km/h, "));
 				sptr = Text::StrDoubleFmt(sptr, rec[k].heading, "0.000000");
-				sptr = Text::StrConcat(sptr, (const UTF8Char*)", ");
+				sptr = Text::StrConcatC(sptr, UTF8STRC(", "));
 				sptr = Text::StrInt32(sptr, rec[k].nSateUsed);
-				sptr = Text::StrConcat(sptr, (const UTF8Char*)"/");
+				sptr = Text::StrConcatC(sptr, UTF8STRC("/"));
 				sptr = Text::StrInt32(sptr, rec[k].nSateView);
 				writer->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
 
@@ -180,28 +180,28 @@ Bool Exporter::MapCSVExporter::ExportFile(IO::SeekableStream *stm, const UTF8Cha
 			while (k < l)
 			{
 				sptr = Text::StrInt32(sbuff, currInd);
-				sptr = Text::StrConcat(sptr, (const UTF8Char*)",");
+				sptr = Text::StrConcatC(sptr, UTF8STRC(","));
 				v = points[(k << 1) + 1];
 				if (v < 0)
 				{
 					sptr = Text::StrDouble(sptr, -v);
-					sptr = Text::StrConcat(sptr, (const UTF8Char*)",S,");
+					sptr = Text::StrConcatC(sptr, UTF8STRC(",S,"));
 				}
 				else
 				{
 					sptr = Text::StrDouble(sptr, v);
-					sptr = Text::StrConcat(sptr, (const UTF8Char*)",N,");
+					sptr = Text::StrConcatC(sptr, UTF8STRC(",N,"));
 				}
 				v = points[(k << 1)];
 				if (v < 0)
 				{
 					sptr = Text::StrDouble(sptr, -v);
-					sptr = Text::StrConcat(sptr, (const UTF8Char*)",W");
+					sptr = Text::StrConcatC(sptr, UTF8STRC(",W"));
 				}
 				else
 				{
 					sptr = Text::StrDouble(sptr, v);
-					sptr = Text::StrConcat(sptr, (const UTF8Char*)",E");
+					sptr = Text::StrConcatC(sptr, UTF8STRC(",E"));
 				}
 				writer->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
 				currInd++;

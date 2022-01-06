@@ -45,8 +45,8 @@ Bool Exporter::SHPExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8
 {
 	if (index == 0)
 	{
-		Text::StrConcat(nameBuff, (const UTF8Char*)"ESRI Shapefile");
-		Text::StrConcat(fileNameBuff, (const UTF8Char*)"*.shp");
+		Text::StrConcatC(nameBuff, UTF8STRC("ESRI Shapefile"));
+		Text::StrConcatC(fileNameBuff, UTF8STRC("*.shp"));
 		return true;
 	}
 	return false;

@@ -63,8 +63,8 @@ Bool Exporter::BMPExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8
 {
 	if (index == 0)
 	{
-		Text::StrConcat(nameBuff, (const UTF8Char*)"Bitmap Image");
-		Text::StrConcat(fileNameBuff, (const UTF8Char*)"*.bmp");
+		Text::StrConcatC(nameBuff, UTF8STRC("Bitmap Image"));
+		Text::StrConcatC(fileNameBuff, UTF8STRC("*.bmp"));
 		return true;
 	}
 	return false;

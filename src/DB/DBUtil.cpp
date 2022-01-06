@@ -16,7 +16,7 @@ UTF8Char *DB::DBUtil::SDBStrUTF8(UTF8Char *sqlstr, const UTF8Char *val, ServerTy
 	UTF8Char *sptr;
 	UTF8Char c;
 	if (val == 0)
-		return Text::StrConcat(sqlstr, (const UTF8Char*)"NULL");
+		return Text::StrConcatC(sqlstr, UTF8STRC("NULL"));
 
 	if (svrType == DB::DBUtil::ServerType::MySQL)
 	{
@@ -678,7 +678,7 @@ UTF8Char *DB::DBUtil::SDBStrW(UTF8Char *sqlstr, const WChar *val, DB::DBUtil::Se
 	UTF8Char *sptr;
 	UTF32Char c;
 	if (val == 0)
-		return Text::StrConcat(sqlstr, (const UTF8Char*)"NULL");
+		return Text::StrConcatC(sqlstr, UTF8STRC("NULL"));
 
 	if (svrType == DB::DBUtil::ServerType::MySQL)
 	{
@@ -1143,7 +1143,7 @@ UTF8Char *DB::DBUtil::SDBDate(UTF8Char *sqlstr, Data::DateTime *dat, DB::DBUtil:
 {
 	UTF8Char *sptr;
 	if (dat == 0)
-		return Text::StrConcat(sqlstr, (const UTF8Char*)"NULL");
+		return Text::StrConcatC(sqlstr, UTF8STRC("NULL"));
 	Data::DateTime dt(dat);
 	if (svrType == DB::DBUtil::ServerType::Access)
 	{
@@ -1179,7 +1179,7 @@ UTF8Char *DB::DBUtil::SDBDate(UTF8Char *sqlstr, Data::DateTime *dat, DB::DBUtil:
 	{
 		dt.ToUTCTime();
 		sptr = sqlstr;
-		sptr = Text::StrConcat(sptr, (const UTF8Char*)"TIMESTAMP '");
+		sptr = Text::StrConcatC(sptr, UTF8STRC("TIMESTAMP '"));
 		sptr = dt.ToString(sptr, "yyyy-MM-dd HH:mm:ss.fff");
 		*sptr++ = '\'';
 		*sptr = 0;
@@ -1316,12 +1316,12 @@ UTF8Char *DB::DBUtil::SDBBin(UTF8Char *sqlstr, const UInt8 *buff, UOSInt size, D
 	UTF8Char *sptr;
 	if (buff == 0)
 	{
-		return Text::StrConcat(sqlstr, (const UTF8Char*)"NULL");
+		return Text::StrConcatC(sqlstr, UTF8STRC("NULL"));
 	}
 	if (svrType == DB::DBUtil::ServerType::MySQL || svrType == DB::DBUtil::ServerType::SQLite)
 	{
 		sptr = sqlstr;
-		sptr = Text::StrConcat(sptr, (const UTF8Char*)"x'");
+		sptr = Text::StrConcatC(sptr, UTF8STRC("x'"));
 		sptr = Text::StrHexBytes(sptr, buff, size, 0);
 		*sptr++ = '\'';
 		*sptr = 0;
@@ -1329,12 +1329,12 @@ UTF8Char *DB::DBUtil::SDBBin(UTF8Char *sqlstr, const UInt8 *buff, UOSInt size, D
 	}
 	else if (svrType == DB::DBUtil::ServerType::MSSQL)
 	{
-		return Text::StrHexBytes(Text::StrConcat(sqlstr, (const UTF8Char*)"0x"), buff, size, 0);
+		return Text::StrHexBytes(Text::StrConcatC(sqlstr, UTF8STRC("0x")), buff, size, 0);
 	}
 	else
 	{
 		/////////////////////////////////////
-		return Text::StrConcat(sqlstr, (const UTF8Char*)"''");
+		return Text::StrConcatC(sqlstr, UTF8STRC("''"));
 	}
 }
 
@@ -1362,7 +1362,7 @@ UTF8Char *DB::DBUtil::SDBVector(UTF8Char *sqlstr, Math::Vector2D *vec, DB::DBUti
 {
 	if (vec == 0)
 	{
-		return Text::StrConcat(sqlstr, (const UTF8Char*)"NULL");
+		return Text::StrConcatC(sqlstr, UTF8STRC("NULL"));
 	}
 	if (svrType == DB::DBUtil::ServerType::MSSQL)
 	{
@@ -1387,11 +1387,11 @@ UTF8Char *DB::DBUtil::SDBVector(UTF8Char *sqlstr, Math::Vector2D *vec, DB::DBUti
 		Text::StringBuilderUTF8 sb;
 		if (writer.GenerateWKT(&sb, vec))
 		{
-			sqlstr = Text::StrConcat(sqlstr, (const UTF8Char*)"geometry::STGeomFromText('");
-			sqlstr = Text::StrConcat(sqlstr, sb.ToString());
-			sqlstr = Text::StrConcat(sqlstr, (const UTF8Char*)"', ");
+			sqlstr = Text::StrConcatC(sqlstr, UTF8STRC("geometry::STGeomFromText('"));
+			sqlstr = Text::StrConcatC(sqlstr, sb.ToString(), sb.GetLength());
+			sqlstr = Text::StrConcatC(sqlstr, UTF8STRC("', "));
 			sqlstr = Text::StrUInt32(sqlstr, vec->GetSRID());
-			sqlstr = Text::StrConcat(sqlstr, (const UTF8Char*)")");
+			sqlstr = Text::StrConcatC(sqlstr, UTF8STRC(")"));
 			return sqlstr;
 		}
 		else
@@ -1583,11 +1583,11 @@ UTF8Char *DB::DBUtil::SDBTrim(UTF8Char *sqlstr, const UTF8Char *val, DB::DBUtil:
 {
 	if (svrType == DB::DBUtil::ServerType::MSSQL)
 	{
-		return Text::StrConcat(Text::StrConcat(Text::StrConcat(sqlstr, (const UTF8Char*)"LTRIM(RTRIM("), val), (const UTF8Char*)"))");
+		return Text::StrConcatC(Text::StrConcat(Text::StrConcatC(sqlstr, UTF8STRC("LTRIM(RTRIM(")), val), UTF8STRC("))"));
 	}
 	else
 	{
-		return Text::StrConcat(Text::StrConcat(Text::StrConcat(sqlstr, (const UTF8Char*)"TRIM("), val), (const UTF8Char*)")");
+		return Text::StrConcatC(Text::StrConcat(Text::StrConcatC(sqlstr, UTF8STRC("TRIM(")), val), UTF8STRC(")"));
 	}
 }
 
@@ -1895,46 +1895,46 @@ UTF8Char *DB::DBUtil::ColTypeGetString(UTF8Char *sbuff, DB::DBUtil::ColType colT
 	switch (colType)
 	{
 	case DB::DBUtil::CT_UInt32:
-		return Text::StrConcat(sbuff, (const UTF8Char*)"UNSIGNED INTEGER");
+		return Text::StrConcatC(sbuff, UTF8STRC("UNSIGNED INTEGER"));
 	case DB::DBUtil::CT_Int32:
-		return Text::StrConcat(sbuff, (const UTF8Char*)"INTEGER");
+		return Text::StrConcatC(sbuff, UTF8STRC("INTEGER"));
 	case DB::DBUtil::CT_VarChar:
-		return Text::StrConcat(Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"VARCHAR("), colSize), (const UTF8Char*)")");
+		return Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("VARCHAR(")), colSize), UTF8STRC(")"));
 	case DB::DBUtil::CT_Char:
-		return Text::StrConcat(Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"CHAR("), colSize), (const UTF8Char*)")");
+		return Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("CHAR(")), colSize), UTF8STRC(")"));
 	case DB::DBUtil::CT_NVarChar:
-		return Text::StrConcat(Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"NVARCHAR("), colSize), (const UTF8Char*)")");
+		return Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("NVARCHAR(")), colSize), UTF8STRC(")"));
 	case DB::DBUtil::CT_NChar:
-		return Text::StrConcat(Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"NCHAR("), colSize), (const UTF8Char*)")");
+		return Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("NCHAR(")), colSize), UTF8STRC(")"));
 	case DB::DBUtil::CT_DateTime:
-		return Text::StrConcat(sbuff, (const UTF8Char*)"DATETIME");
+		return Text::StrConcatC(sbuff, UTF8STRC("DATETIME"));
 	case DB::DBUtil::CT_DateTime2:
-		return Text::StrConcat(sbuff, (const UTF8Char*)"DATETIME2");
+		return Text::StrConcatC(sbuff, UTF8STRC("DATETIME2"));
 	case DB::DBUtil::CT_Double:
-		return Text::StrConcat(sbuff, (const UTF8Char*)"DOUBLE");
+		return Text::StrConcatC(sbuff, UTF8STRC("DOUBLE"));
 	case DB::DBUtil::CT_Float:
-		return Text::StrConcat(sbuff, (const UTF8Char*)"FLOAT");
+		return Text::StrConcatC(sbuff, UTF8STRC("FLOAT"));
 	case DB::DBUtil::CT_Bool:
-		return Text::StrConcat(sbuff, (const UTF8Char*)"BIT");
+		return Text::StrConcatC(sbuff, UTF8STRC("BIT"));
 	case DB::DBUtil::CT_Byte:
-		return Text::StrConcat(sbuff, (const UTF8Char*)"TINYINT");
+		return Text::StrConcatC(sbuff, UTF8STRC("TINYINT"));
 	case DB::DBUtil::CT_Int16:
-		return Text::StrConcat(sbuff, (const UTF8Char*)"SMALLINT");
+		return Text::StrConcatC(sbuff, UTF8STRC("SMALLINT"));
 	case DB::DBUtil::CT_Int64:
-		return Text::StrConcat(sbuff, (const UTF8Char*)"BIGINT");
+		return Text::StrConcatC(sbuff, UTF8STRC("BIGINT"));
 	case DB::DBUtil::CT_UInt16:
-		return Text::StrConcat(sbuff, (const UTF8Char*)"UNSIGNED SMALLINT");
+		return Text::StrConcatC(sbuff, UTF8STRC("UNSIGNED SMALLINT"));
 	case DB::DBUtil::CT_UInt64:
-		return Text::StrConcat(sbuff, (const UTF8Char*)"UNSIGNED BIGINT");
+		return Text::StrConcatC(sbuff, UTF8STRC("UNSIGNED BIGINT"));
 	case DB::DBUtil::CT_Binary:
-		return Text::StrConcat(Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"BINARY("), colSize), (const UTF8Char*)")");
+		return Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("BINARY(")), colSize), UTF8STRC(")"));
 	case DB::DBUtil::CT_Vector:
-		return Text::StrConcat(sbuff, (const UTF8Char*)"GEOMETRY");
+		return Text::StrConcatC(sbuff, UTF8STRC("GEOMETRY"));
 	case DB::DBUtil::CT_UUID:
-		return Text::StrConcat(sbuff, (const UTF8Char*)"UUID");
+		return Text::StrConcatC(sbuff, UTF8STRC("UUID"));
 	case DB::DBUtil::CT_Unknown:
 	default:
-		return Text::StrConcat(Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"UNKNOWN("), colSize), (const UTF8Char*)")");
+		return Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("UNKNOWN(")), colSize), UTF8STRC(")"));
 	}
 }
 

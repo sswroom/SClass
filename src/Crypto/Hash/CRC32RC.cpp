@@ -31,7 +31,7 @@ Crypto::Hash::CRC32RC::~CRC32RC()
 
 UTF8Char *Crypto::Hash::CRC32RC::GetName(UTF8Char *sbuff)
 {
-	return Text::StrConcat(sbuff, (const UTF8Char*)"CRC-32C");
+	return Text::StrConcatC(sbuff, UTF8STRC("CRC-32C"));
 }
 
 Crypto::Hash::IHash *Crypto::Hash::CRC32RC::Clone()

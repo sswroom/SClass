@@ -36,7 +36,7 @@ Crypto::Hash::CRC16::~CRC16()
 
 UTF8Char *Crypto::Hash::CRC16::GetName(UTF8Char *sbuff)
 {
-	return Text::StrConcat(sbuff, (const UTF8Char*)"CRC (16-bit)");
+	return Text::StrConcatC(sbuff, UTF8STRC("CRC (16-bit)"));
 }
 
 Crypto::Hash::IHash *Crypto::Hash::CRC16::Clone()

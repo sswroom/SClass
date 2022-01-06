@@ -201,7 +201,7 @@ Bool Manage::Process::IsRunning()
 	UTF8Char sbuff[128];
 	Int32 exitCode;
 	waitpid((__pid_t)this->procId, &exitCode, WNOHANG);
-	Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"/proc/"), this->procId);
+	Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("/proc/")), this->procId);
 	if (IO::Path::GetPathType(sbuff) == IO::Path::PathType::Directory)
 	{
 		return true;
@@ -219,11 +219,11 @@ WChar *Manage::Process::GetFilename(WChar *buff)
 {
 	UTF8Char sbuff2[512];
 	UTF8Char sbuff[128];
-	Text::StrConcat(Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"/proc/"), this->procId), (const UTF8Char*)"/exe");
+	Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("/proc/")), this->procId), UTF8STRC("/exe"));
 	OSInt sz = readlink((const Char*)sbuff, (Char*)sbuff2, 511);
 	if (sz < 0)
 	{
-		Text::StrConcat(Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"/proc/"), this->procId), (const UTF8Char*)"/cmdline");
+		Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("/proc/")), this->procId), UTF8STRC("/cmdline"));
 		IO::FileStream *fs;
 		NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		sz = (OSInt)fs->Read((UInt8*)sbuff2, 511);
@@ -243,11 +243,11 @@ Bool Manage::Process::GetFilename(Text::StringBuilderUTF *sb)
 {
 	UTF8Char sbuff2[512];
 	UTF8Char sbuff[128];
-	Text::StrConcat(Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"/proc/"), this->procId), (const UTF8Char*)"/exe");
+	Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("/proc/")), this->procId), UTF8STRC("/exe"));
 	OSInt sz = readlink((const Char*)sbuff, (Char*)sbuff2, 511);
 	if (sz < 0)
 	{
-		Text::StrConcat(Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"/proc/"), this->procId), (const UTF8Char*)"/cmdline");
+		Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("/proc/")), this->procId), UTF8STRC("/cmdline"));
 		IO::FileStream *fs;
 		NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		if (fs->IsError())
@@ -387,7 +387,7 @@ UOSInt Manage::Process::GetModules(Data::ArrayList<Manage::ModuleInfo *> *modLis
 		UOSInt ret = 0;
 		UOSInt i;
 		Text::StringBuilderUTF8 sb;
-		Text::StrConcat(Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"/proc/"), this->procId), (const UTF8Char*)"/maps");
+		Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("/proc/")), this->procId), UTF8STRC("/maps"));
 		NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		NEW_CLASS(reader, Text::UTF8Reader(fs));
 		sb.ClearStr();
@@ -443,13 +443,13 @@ UOSInt Manage::Process::GetModules(Data::ArrayList<Manage::ModuleInfo *> *modLis
 
 UOSInt Manage::Process::GetThreads(Data::ArrayList<Manage::ThreadInfo *> *threadList)
 {
-	Char sbuff[128];
+	UTF8Char sbuff[128];
 	DIR *dir;
 	UOSInt retCnt = 0;
 	UInt32 threadId;
 	Manage::ThreadInfo *thread;
-	Text::StrConcat(Text::StrUOSInt(Text::StrConcat(sbuff, "/proc/"), this->procId), "/task");
-	dir = opendir(sbuff);
+	Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("/proc/")), this->procId), UTF8STRC("/task"));
+	dir = opendir((Char*)sbuff);
 	if (dir)
 	{
 		struct dirent *dirent;
@@ -495,7 +495,7 @@ Bool Manage::Process::GetMemoryInfo(UOSInt *pageFault, UOSInt *workingSetSize, U
 	IO::FileStream *fs;
 	Text::UTF8Reader *reader;
 	Bool succ = false;
-	Text::StrConcat(Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"/proc/"), this->procId), (const UTF8Char*)"/statm");
+	Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("/proc/")), this->procId), UTF8STRC("/statm"));
 	Text::StringBuilderUTF8 sb;
 	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	NEW_CLASS(reader, Text::UTF8Reader(fs));
@@ -541,7 +541,7 @@ Bool Manage::Process::GetTimeInfo(Data::DateTime *createTime, Data::DateTime *ke
 	IO::FileStream *fs;
 	Text::UTF8Reader *reader;
 	Bool succ = false;
-	Text::StrConcat(Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"/proc/"), this->procId), (const UTF8Char*)"/stat");
+	Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("/proc/")), this->procId), UTF8STRC("/stat"));
 	Text::StringBuilderUTF8 sb;
 	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	NEW_CLASS(reader, Text::UTF8Reader(fs));
@@ -584,11 +584,11 @@ UInt32 Manage::Process::GetUserObjCount()
 
 UInt32 Manage::Process::GetHandleCount()
 {
-	Char sbuff[128];
+	UTF8Char sbuff[128];
 	DIR *dir;
 	UInt32 retCnt = 0;
-	Text::StrConcat(Text::StrUOSInt(Text::StrConcat(sbuff, "/proc/"), this->procId), "/fd");
-	dir = opendir(sbuff);
+	Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("/proc/")), this->procId), UTF8STRC("/fd"));
+	dir = opendir((Char*)sbuff);
 	if (dir)
 	{
 		struct dirent *dirent;
@@ -753,7 +753,7 @@ UTF8Char *Manage::Process::FindProcessNext(UTF8Char *processNameBuff, Manage::Pr
 	IO::Path::PathType pt;
 	Text::StringBuilderUTF8 sb;
 	Bool found = false;
-	sptr = Text::StrConcat(sbuff, (const UTF8Char*)"/proc/");
+	sptr = Text::StrConcatC(sbuff, UTF8STRC("/proc/"));
 	while ((sptr2 = IO::Path::FindNextFile(sptr, fpsess->findFileSess, 0, &pt, 0)) != 0)
 	{
 		if (pt == IO::Path::PathType::Directory && Text::StrToUInt32(sptr, &pid))
@@ -765,7 +765,7 @@ UTF8Char *Manage::Process::FindProcessNext(UTF8Char *processNameBuff, Manage::Pr
 			info->threadCnt = 0;
 			info->parentId = 0;
 
-			Text::StrConcat(sptr2, (const UTF8Char*)"/status");
+			Text::StrConcatC(sptr2, UTF8STRC("/status"));
 			NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 			if (!fs->IsError())
 			{
@@ -787,7 +787,7 @@ UTF8Char *Manage::Process::FindProcessNext(UTF8Char *processNameBuff, Manage::Pr
 			}
 			DEL_CLASS(fs);
 
-			Text::StrConcat(sptr2, (const UTF8Char*)"/comm");
+			Text::StrConcatC(sptr2, UTF8STRC("/comm"));
 			NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 			if (!fs->IsError())
 			{
@@ -806,7 +806,7 @@ UTF8Char *Manage::Process::FindProcessNext(UTF8Char *processNameBuff, Manage::Pr
 
 			if (found)
 			{
-				return Text::StrConcat(processNameBuff, sb.ToString());
+				return Text::StrConcatC(processNameBuff, sb.ToString(), sb.GetLength());
 			}
 		}
 	}
@@ -822,7 +822,7 @@ WChar *Manage::Process::FindProcessNextW(WChar *processNameBuff, Manage::Process
 	IO::Path::PathType pt;
 	Text::StringBuilderUTF8 sb;
 	Bool found = false;
-	sptr = Text::StrConcat(sbuff, (const UTF8Char*)"/proc/");
+	sptr = Text::StrConcatC(sbuff, UTF8STRC("/proc/"));
 	while ((sptr2 = IO::Path::FindNextFile(sptr, fpsess->findFileSess, 0, &pt, 0)) != 0)
 	{
 		if (pt == IO::Path::PathType::Directory && Text::StrToUInt32(sptr, &pid))
@@ -834,7 +834,7 @@ WChar *Manage::Process::FindProcessNextW(WChar *processNameBuff, Manage::Process
 			info->threadCnt = 0;
 			info->parentId = 0;
 
-			Text::StrConcat(sptr2, (const UTF8Char*)"/status");
+			Text::StrConcatC(sptr2, UTF8STRC("/status"));
 			NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 			if (!fs->IsError())
 			{
@@ -856,7 +856,7 @@ WChar *Manage::Process::FindProcessNextW(WChar *processNameBuff, Manage::Process
 			}
 			DEL_CLASS(fs);
 
-			Text::StrConcat(sptr2, (const UTF8Char*)"/comm");
+			Text::StrConcatC(sptr2, UTF8STRC("/comm"));
 			NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 			if (!fs->IsError())
 			{
@@ -943,16 +943,16 @@ Int32 Manage::Process::ExecuteProcess(Text::String *cmd, Text::StringBuilderUTF 
 	UTF8Char *sptr;
 	if (IO::Path::GetPathType((const UTF8Char*)"/tmp") == IO::Path::PathType::Directory)
 	{
-		sptr = Text::StrConcat(tmpFile, (const UTF8Char*)"/tmp/ExecuteProcess");
+		sptr = Text::StrConcatC(tmpFile, UTF8STRC("/tmp/ExecuteProcess"));
 	}
 	else
 	{
-		sptr = Text::StrConcat(tmpFile, (const UTF8Char*)"ExecuteProcess");
+		sptr = Text::StrConcatC(tmpFile, UTF8STRC("ExecuteProcess"));
 	}
 	sptr = Text::StrUInt32(sptr, (UInt32)GetCurrProcId());
-	sptr = Text::StrConcat(sptr, (const UTF8Char*)"_");
+	sptr = Text::StrConcatC(sptr, UTF8STRC("_"));
 	sptr = Text::StrInt32(sptr, Sync::Interlocked::Increment(&Process_Id));
-	sptr = Text::StrConcat(sptr, (const UTF8Char*)".tmp");
+	sptr = Text::StrConcatC(sptr, UTF8STRC(".tmp"));
 	int fd = open((Char*)tmpFile, O_RDWR | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR);
 	pid_t pid = fork();
 	int ret = -1;
@@ -1047,16 +1047,16 @@ Int32 Manage::Process::ExecuteProcess(const UTF8Char *cmd, Text::StringBuilderUT
 	UTF8Char *sptr;
 	if (IO::Path::GetPathType((const UTF8Char*)"/tmp") == IO::Path::PathType::Directory)
 	{
-		sptr = Text::StrConcat(tmpFile, (const UTF8Char*)"/tmp/ExecuteProcess");
+		sptr = Text::StrConcatC(tmpFile, UTF8STRC("/tmp/ExecuteProcess"));
 	}
 	else
 	{
-		sptr = Text::StrConcat(tmpFile, (const UTF8Char*)"ExecuteProcess");
+		sptr = Text::StrConcatC(tmpFile, UTF8STRC("ExecuteProcess"));
 	}
 	sptr = Text::StrUInt32(sptr, (UInt32)GetCurrProcId());
-	sptr = Text::StrConcat(sptr, (const UTF8Char*)"_");
+	sptr = Text::StrConcatC(sptr, UTF8STRC("_"));
 	sptr = Text::StrInt32(sptr, Sync::Interlocked::Increment(&Process_Id));
-	sptr = Text::StrConcat(sptr, (const UTF8Char*)".tmp");
+	sptr = Text::StrConcatC(sptr, UTF8STRC(".tmp"));
 	int fd = open((Char*)tmpFile, O_RDWR | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR);
 	pid_t pid = fork();
 	int ret = -1;

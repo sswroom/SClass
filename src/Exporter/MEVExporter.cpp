@@ -34,8 +34,8 @@ Bool Exporter::MEVExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8
 {
 	if (index == 0)
 	{
-		Text::StrConcat(nameBuff, (const UTF8Char*)"Map Env file");
-		Text::StrConcat(fileNameBuff, (const UTF8Char*)"*.mev");
+		Text::StrConcatC(nameBuff, UTF8STRC("Map Env file"));
+		Text::StrConcatC(fileNameBuff, UTF8STRC("*.mev"));
 		return true;
 	}
 	return false;

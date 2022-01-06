@@ -657,8 +657,8 @@ Bool Exporter::ANIExporter::GetOutputName(OSInt index, UTF8Char *nameBuff, UTF8C
 {
 	if (index == 0)
 	{
-		Text::StrConcat(nameBuff, (const UTF8Char*)"Cursor File");
-		Text::StrConcat(fileNameBuff, (const UTF8Char*)"*.cur");
+		Text::StrConcatC(nameBuff, UTF8STRC("Cursor File"));
+		Text::StrConcatC(fileNameBuff, UTF8STRC("*.cur"));
 		return true;
 	}
 	return false;

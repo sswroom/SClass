@@ -17,19 +17,19 @@ UTF8Char *ByteDisp(UTF8Char *sbuff, UInt64 byteSize)
 {
 	if (byteSize >= 1073741824)
 	{
-		return Text::StrConcat(Text::StrUInt64(sbuff, byteSize >> 30), (const UTF8Char*)"GB");
+		return Text::StrConcatC(Text::StrUInt64(sbuff, byteSize >> 30), UTF8STRC("GB"));
 	}
 	else if (byteSize >= 1048576)
 	{
-		return Text::StrConcat(Text::StrUInt64(sbuff, byteSize >> 20), (const UTF8Char*)"MB");
+		return Text::StrConcatC(Text::StrUInt64(sbuff, byteSize >> 20), UTF8STRC("MB"));
 	}
 	else if (byteSize >= 1024)
 	{
-		return Text::StrConcat(Text::StrUInt64(sbuff, byteSize >> 10), (const UTF8Char*)"KB");
+		return Text::StrConcatC(Text::StrUInt64(sbuff, byteSize >> 10), UTF8STRC("KB"));
 	}
 	else
 	{
-		return Text::StrConcat(Text::StrUInt64(sbuff, byteSize), (const UTF8Char*)"B");
+		return Text::StrConcatC(Text::StrUInt64(sbuff, byteSize), UTF8STRC("B"));
 	}
 }
 
@@ -54,7 +54,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	UTF8Char *sptr2;
 	UOSInt i;
 	UOSInt j;
-	sptr = Text::StrConcat(sbuff, (const UTF8Char*)"Benchmark_");
+	sptr = Text::StrConcatC(sbuff, UTF8STRC("Benchmark_"));
 	sptr2 = sysInfo.GetPlatformName(sptr);
 	if (sptr2)
 	{
@@ -62,9 +62,9 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	}
 	else
 	{
-		sptr = Text::StrConcat(sptr, (const UTF8Char*)"Unknown");
+		sptr = Text::StrConcatC(sptr, UTF8STRC("Unknown"));
 	}
-	Text::StrConcat(sptr, (const UTF8Char*)".txt");
+	Text::StrConcatC(sptr, UTF8STRC(".txt"));
 
 	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	NEW_CLASS(writer, IO::StreamWriter(fs, 65001));

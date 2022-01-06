@@ -353,7 +353,7 @@ UTF8Char *DB::MongoDBReader::GetName(UOSInt colIndex, UTF8Char *buff)
 {
 	if (colIndex != 0)
 		return 0;
-	return Text::StrConcat(buff, (const UTF8Char*)"Data");
+	return Text::StrConcatC(buff, UTF8STRC("Data"));
 }
 
 Bool DB::MongoDBReader::IsNull(UOSInt colIndex)

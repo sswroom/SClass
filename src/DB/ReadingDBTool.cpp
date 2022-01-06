@@ -381,9 +381,9 @@ DB::DBReader *DB::ReadingDBTool::ExecuteReaderC(const UTF8Char *sqlCmd, UOSInt l
 		{
 			UTF8Char buff[256];
 			UTF8Char *ptr;
-			ptr = Text::StrConcat(buff, (const UTF8Char*)"SQL R t1 = ");
+			ptr = Text::StrConcatC(buff, UTF8STRC("SQL R t1 = "));
 			ptr = Text::StrInt32(ptr, (Int32)t2.DiffMS(&t1));
-			ptr = Text::StrConcat(ptr, (const UTF8Char*)", t2 = ");
+			ptr = Text::StrConcatC(ptr, UTF8STRC(", t2 = "));
 			ptr = Text::StrInt32(ptr, (Int32)t3.DiffMS(&t2));
 			AddLogMsgC(buff, (UOSInt)(ptr - buff), IO::ILogHandler::LOG_LEVEL_COMMAND);
 		}
@@ -571,9 +571,9 @@ DB::DBReader *DB::ReadingDBTool::GetTableData(const UTF8Char *tableName, Data::A
 		{
 			UTF8Char buff[256];
 			UTF8Char *ptr;
-			ptr = Text::StrConcat(buff, (const UTF8Char*)"SQL R t1 = ");
+			ptr = Text::StrConcatC(buff, UTF8STRC("SQL R t1 = "));
 			ptr = Text::StrInt32(ptr, (Int32)t2.DiffMS(&t1));
-			ptr = Text::StrConcat(ptr, (const UTF8Char*)", t2 = ");
+			ptr = Text::StrConcatC(ptr, UTF8STRC(", t2 = "));
 			ptr = Text::StrInt32(ptr, (Int32)t3.DiffMS(&t2));
 			AddLogMsgC(buff, (UOSInt)(ptr - buff), IO::ILogHandler::LOG_LEVEL_COMMAND);
 		}
@@ -753,7 +753,7 @@ DB::TableDef *DB::ReadingDBTool::GetTableDef(const UTF8Char *tableName)
 	{
 		OSInt i = 4;
 		DB::DBReader *r = 0;
-		ptr = Text::StrConcat(buff, (const UTF8Char*)"show table status where Name = ");
+		ptr = Text::StrConcatC(buff, UTF8STRC("show table status where Name = "));
 		ptr = this->DBStrUTF8(ptr, tableName);
 
 		while (i-- > 0 && r == 0)
@@ -797,7 +797,7 @@ DB::TableDef *DB::ReadingDBTool::GetTableDef(const UTF8Char *tableName)
 			return 0;
 		}
 		DB::ColDef *col;
-		ptr = Text::StrConcat(buff, (const UTF8Char*)"desc ");
+		ptr = Text::StrConcatC(buff, UTF8STRC("desc "));
 		ptr = this->DBColUTF8(ptr, tableName);
 		r = this->ExecuteReaderC(buff, (UOSInt)(ptr - buff));
 		if (r)
@@ -860,12 +860,12 @@ DB::TableDef *DB::ReadingDBTool::GetTableDef(const UTF8Char *tableName)
 		Int32 i = 4;
 		DB::DBReader *r = 0;
 		UOSInt ind;
-		ptr = Text::StrConcat(buff, (const UTF8Char*)"exec sp_columns ");
+		ptr = Text::StrConcatC(buff, UTF8STRC("exec sp_columns "));
 		ind = Text::StrIndexOf(tableName, '.');
 		if (ind != INVALID_INDEX)
 		{
 			ptr = this->DBStrUTF8(ptr, &tableName[ind + 1]);
-			ptr = Text::StrConcat(ptr, (const UTF8Char*)", ");
+			ptr = Text::StrConcatC(ptr, UTF8STRC(", "));
 			const UTF8Char *tmpPtr = Text::StrCopyNewC(tableName, (UOSInt)ind);
 			ptr = this->DBStrUTF8(ptr, tmpPtr);
 			Text::StrDelNew(tmpPtr);
@@ -1084,7 +1084,7 @@ Bool DB::ReadingDBTool::ChangeDatabase(const UTF8Char *databaseName)
 	UTF8Char sbuff[256];
 	if (this->svrType == DB::DBUtil::ServerType::MSSQL)
 	{
-		UTF8Char *sptr = this->DBColUTF8(Text::StrConcat(sbuff, (const UTF8Char*)"use "), databaseName);
+		UTF8Char *sptr = this->DBColUTF8(Text::StrConcatC(sbuff, UTF8STRC("use ")), databaseName);
 		DB::DBReader *r = this->ExecuteReaderC(sbuff, (UOSInt)(sptr - sbuff));
 		if (r)
 		{
@@ -1099,7 +1099,7 @@ Bool DB::ReadingDBTool::ChangeDatabase(const UTF8Char *databaseName)
 	}
 	else if (this->svrType == DB::DBUtil::ServerType::MySQL)
 	{
-		UTF8Char *sptr = this->DBColUTF8(Text::StrConcat(sbuff, (const UTF8Char*)"use "), databaseName);
+		UTF8Char *sptr = this->DBColUTF8(Text::StrConcatC(sbuff, UTF8STRC("use ")), databaseName);
 		DB::DBReader *r = this->ExecuteReaderC(sbuff, (UOSInt)(sptr - sbuff));
 		if (r)
 		{

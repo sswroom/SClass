@@ -37,8 +37,8 @@ Bool Exporter::MD5Exporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8
 {
 	if (index == 0)
 	{
-		Text::StrConcat(nameBuff, (const UTF8Char*)"MD5 File");
-		Text::StrConcat(fileNameBuff, (const UTF8Char*)"*.md5");
+		Text::StrConcatC(nameBuff, UTF8STRC("MD5 File"));
+		Text::StrConcatC(fileNameBuff, UTF8STRC("*.md5"));
 		return true;
 	}
 	return false;
@@ -73,7 +73,7 @@ Bool Exporter::MD5Exporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 	{
 		fchk->GetEntryHash(i, buff);
 		sptr = Text::StrHexBytes(sbuff, buff, 16, 0);
-		sptr = Text::StrConcat(sptr, (const UTF8Char*)" *");
+		sptr = Text::StrConcatC(sptr, UTF8STRC(" *"));
 		sptr2 = sptr;
 		sptr = Text::StrConcat(sptr, fchk->GetEntryName(i));
 		Text::StrReplace(sptr2, '/', '\\');

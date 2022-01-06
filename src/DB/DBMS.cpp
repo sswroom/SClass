@@ -322,7 +322,7 @@ namespace DB
 			}
 			else
 			{
-				return Text::StrUOSInt(Text::StrConcat(buff, (const UTF8Char*)"column"), colIndex + 1);
+				return Text::StrUOSInt(Text::StrConcatC(buff, UTF8STRC("column")), colIndex + 1);
 			}
 
 		}
@@ -349,7 +349,7 @@ namespace DB
 			}
 			else
 			{
-				Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"column"), colIndex + 1);
+				Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("column")), colIndex + 1);
 				colDef->SetColName(sbuff);
 			}
 			colDef->SetColType(this->colTypes[colIndex]);
@@ -930,7 +930,7 @@ void DB::DBMS::SysVarColumn(DB::DBMSReader *reader, UOSInt colIndex, const UTF8C
 	UTF8Char sbuff[128];
 	if (colName == 0)
 	{
-		Text::StrConcat(Text::StrConcat(sbuff, (const UTF8Char*)"@@"), varName);
+		Text::StrConcat(Text::StrConcatC(sbuff, UTF8STRC("@@")), varName);
 		colName = sbuff;
 	}
 	
@@ -1164,7 +1164,7 @@ void DB::DBMS::UserVarColumn(DB::DBMSReader *reader, UOSInt colIndex, const UTF8
 	UTF8Char sbuff[128];
 	if (colName == 0)
 	{
-		Text::StrConcat(Text::StrConcat(sbuff, (const UTF8Char*)"@"), varName);
+		Text::StrConcat(Text::StrConcatC(sbuff, UTF8STRC("@")), varName);
 		colName = sbuff;
 	}
 

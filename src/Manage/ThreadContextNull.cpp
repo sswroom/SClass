@@ -15,12 +15,12 @@ Manage::ThreadContextX86_64::~ThreadContextX86_64()
 {
 }
 
-OSInt Manage::ThreadContextX86_64::GetRegisterCnt()
+UOSInt Manage::ThreadContextX86_64::GetRegisterCnt()
 {
 	return 0;
 }
 
-UTF8Char *Manage::ThreadContextX86_64::GetRegister(OSInt index, UTF8Char *buff, UInt8 *regVal, Int32 *regBitCount)
+UTF8Char *Manage::ThreadContextX86_64::GetRegister(UOSInt index, UTF8Char *buff, UInt8 *regVal, UInt32 *regBitCount)
 {
 	return 0;
 }
@@ -30,22 +30,22 @@ void Manage::ThreadContextX86_64::ToString(Text::StringBuilderUTF *sb)
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
 	UInt8 regBuff[16];
-	Int32 bitCnt;
-	OSInt i = 0;
-	OSInt j = this->GetRegisterCnt();
-	OSInt k;
+	UInt32 bitCnt;
+	UOSInt i = 0;
+	UOSInt j = this->GetRegisterCnt();
+	UOSInt k;
 
 	while (i < j)
 	{
 		if ((sptr = this->GetRegister(i, sbuff, regBuff, &bitCnt)) != 0)
 		{
-			sptr = Text::StrConcat(sptr, (const UTF8Char*)" = ");
+			sptr = Text::StrConcatC(sptr, UTF8STRC(" = "));
 			k = bitCnt >> 3;
 			while (k-- > 0)
 			{
 				sptr = Text::StrHexByte(sptr, regBuff[k]);
 			}
-			sptr = Text::StrConcat(sptr, (const UTF8Char*)"\r\n");
+			sptr = Text::StrConcatC(sptr, UTF8STRC("\r\n"));
 			sb->Append(sbuff);
 		}
 
@@ -68,30 +68,30 @@ UOSInt Manage::ThreadContextX86_64::GetProcessId()
 	return this->procId;
 }
 
-OSInt Manage::ThreadContextX86_64::GetInstAddr()
+UOSInt Manage::ThreadContextX86_64::GetInstAddr()
 {
 	return 0;
 }
 
-OSInt Manage::ThreadContextX86_64::GetStackAddr()
+UOSInt Manage::ThreadContextX86_64::GetStackAddr()
 {
 	return 0;
 }
 
-OSInt Manage::ThreadContextX86_64::GetFrameAddr()
+UOSInt Manage::ThreadContextX86_64::GetFrameAddr()
 {
 	return 0;
 }
 
-void Manage::ThreadContextX86_64::SetInstAddr(OSInt instAddr)
+void Manage::ThreadContextX86_64::SetInstAddr(UOSInt instAddr)
 {
 }
 
-void Manage::ThreadContextX86_64::SetStackAddr(OSInt stackAddr)
+void Manage::ThreadContextX86_64::SetStackAddr(UOSInt stackAddr)
 {
 }
 
-void Manage::ThreadContextX86_64::SetFrameAddr(OSInt frameAddr)
+void Manage::ThreadContextX86_64::SetFrameAddr(UOSInt frameAddr)
 {
 }
 

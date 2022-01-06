@@ -39,7 +39,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			tv2 = t0 - t2;
 			if (tv1 >= -10 && tv1 <= 10 && tv2 >= -10 && tv2 <= 10)
 			{
-				sptr = Text::StrConcat(sbuff, (const UTF8Char*)"distance(mm) = ");
+				sptr = Text::StrConcatC(sbuff, UTF8STRC("distance(mm) = "));
 				sptr = Text::StrInt32(sptr, distSensor.ConvDistanceMM_RoomTemp(t0));
 
 				console.WriteLineC(sbuff, (UOSInt)(sptr - sbuff));

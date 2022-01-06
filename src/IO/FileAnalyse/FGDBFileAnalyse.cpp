@@ -176,7 +176,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::FGDBFileAnalyse::GetFrameDetail(U
 		return 0;
 	
 	NEW_CLASS(frame, IO::FileAnalyse::FrameDetail(tag->ofst, (UInt32)tag->size));
-	Text::StrConcat(Text::StrConcat(sbuff, (const UTF8Char*)"Type="), TagTypeGetName(tag->tagType));
+	Text::StrConcat(Text::StrConcatC(sbuff, UTF8STRC("Type=")), TagTypeGetName(tag->tagType));
 	frame->AddHeader(sbuff);
 
 	tagData = MemAlloc(UInt8, tag->size);
@@ -389,7 +389,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::FGDBFileAnalyse::GetFrameDetail(U
 				if (field->flags & 1)
 				{
 					isNull = ((tagData[4 + (nullIndex >> 3)] & (1 << (nullIndex & 7))) != 0);
-					Text::StrConcat(field->name->ConcatTo(sbuff), (const UTF8Char*)" isNull");
+					Text::StrConcatC(field->name->ConcatTo(sbuff), UTF8STRC(" isNull"));
 					frame->AddUInt(4 + (nullIndex >> 3), 1, (const Char*)sbuff, isNull?1:0);
 					nullIndex++;
 				}
@@ -426,7 +426,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::FGDBFileAnalyse::GetFrameDetail(U
 					else if (field->fieldType == 5) //datetime
 					{
 						Double t = ReadDouble(&tagData[ofst]);
-						field->name->ConcatTo(Text::StrConcat(sbuff, (const UTF8Char*)"RAW "));
+						field->name->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("RAW ")));
 						frame->AddFloat(ofst, 8, (const Char*)sbuff, t);
 						Data::DateTime dt;
 						Text::XLSUtil::Number2Date(&dt, t);

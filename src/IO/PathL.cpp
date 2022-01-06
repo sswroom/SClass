@@ -30,10 +30,11 @@ struct IO::Path::FindFileSession
 
 UTF8Char IO::Path::PATH_SEPERATOR = (UTF8Char)'/';
 const UTF8Char *IO::Path::ALL_FILES = (const UTF8Char*)"*";
+UOSInt IO::Path::ALL_FILES_LEN = 1;
 
 UTF8Char *IO::Path::GetTempFile(UTF8Char *buff, const UTF8Char *fileName)
 {
-	return Text::StrConcat(Text::StrConcat(buff, (const UTF8Char*)"/tmp/"), fileName);
+	return Text::StrConcat(Text::StrConcatC(buff, UTF8STRC("/tmp/")), fileName);
 }
 
 WChar *IO::Path::GetTempFileW(WChar *buff, const WChar *fileName)

@@ -28,8 +28,8 @@ Bool Exporter::ZIPExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8
 {
 	if (index == 0)
 	{
-		Text::StrConcat(nameBuff, (const UTF8Char*)"ZIP File");
-		Text::StrConcat(fileNameBuff, (const UTF8Char*)"*.zip");
+		Text::StrConcatC(nameBuff, UTF8STRC("ZIP File"));
+		Text::StrConcatC(fileNameBuff, UTF8STRC("*.zip"));
 		return true;
 	}
 	return false;

@@ -80,8 +80,8 @@ OSInt IO::HIDInfo::GetHIDList(Data::ArrayList<HIDInfo*> *hidList)
 	OSInt ret = 0;
 	Int32 busType;
 	IO::HIDInfo *hid;
-	sptr = Text::StrConcat(sbuff, (const UTF8Char*)"/sys/bus/hid/devices/");
-	Text::StrConcat(sptr, IO::Path::ALL_FILES);
+	sptr = Text::StrConcatC(sbuff, UTF8STRC("/sys/bus/hid/devices/"));
+	Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
 	sess = IO::Path::FindFile(sbuff);
 	if (sess)
 	{
@@ -111,14 +111,14 @@ OSInt IO::HIDInfo::GetHIDList(Data::ArrayList<HIDInfo*> *hidList)
 					clsData->busType = IO::HIDInfo::BT_UNKNOWN;
 					break;
 				}
-				sptr2 = Text::StrConcat(sptr2, (const UTF8Char*)"/hidraw/");
-				Text::StrConcat(sptr2, (const UTF8Char*)"hidraw*");
+				sptr2 = Text::StrConcatC(sptr2, UTF8STRC("/hidraw/"));
+				Text::StrConcatC(sptr2, UTF8STRC("hidraw*"));
 				sess2 = IO::Path::FindFile(sbuff);
 				if (sess2)
 				{
 					if (IO::Path::FindNextFile(sptr2, sess2, 0, &pt, 0))
 					{
-						Text::StrConcat(Text::StrConcat(sbuff2, (const UTF8Char*)"/dev/"), sptr2);
+						Text::StrConcat(Text::StrConcatC(sbuff2, UTF8STRC("/dev/")), sptr2);
 						clsData->devPath = Text::StrCopyNew(sbuff2);
 						NEW_CLASS(hid, IO::HIDInfo(clsData));
 						hidList->Add(hid);

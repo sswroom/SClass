@@ -332,7 +332,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::PCapFileAnalyse::GetFrameDetail(U
 	mutUsage.EndUse();
 	NEW_CLASS(frame, IO::FileAnalyse::FrameDetail(ofst, (UInt32)size));
 	fd->GetRealData(ofst, (UOSInt)size, this->packetBuff);
-	Text::StrUInt64(Text::StrConcat(sbuff, (const UTF8Char*)"TotalSize="), size);
+	Text::StrUInt64(Text::StrConcatC(sbuff, UTF8STRC("TotalSize=")), size);
 	frame->AddHeader(sbuff);
 	Data::DateTime dt;
 	if (this->isBE)

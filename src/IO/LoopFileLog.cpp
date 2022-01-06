@@ -13,17 +13,17 @@ void IO::LoopFileLog::SwapFiles()
 	UTF8Char buff2[256];
 	Int32 i;
 	i = this->nFiles - 1;
-	Text::StrConcat(Text::StrInt32(Text::StrConcat(buff1, this->fileName), i), (const UTF8Char*)".log");
-	Text::StrConcat(Text::StrConcat(buff2, this->fileName), (const UTF8Char*)"0.tmp");
+	Text::StrConcatC(Text::StrInt32(Text::StrConcat(buff1, this->fileName), i), UTF8STRC(".log"));
+	Text::StrConcatC(Text::StrConcat(buff2, this->fileName), UTF8STRC("0.tmp"));
 	IO::FileUtil::RenameFile(buff1, buff2);
 	while (i-- > 0)
 	{
-		Text::StrConcat(Text::StrInt32(Text::StrConcat(buff1, this->fileName), i), (const UTF8Char*)".log");
-		Text::StrConcat(Text::StrInt32(Text::StrConcat(buff2, this->fileName), i + 1), (const UTF8Char*)".log");
+		Text::StrConcatC(Text::StrInt32(Text::StrConcat(buff1, this->fileName), i), UTF8STRC(".log"));
+		Text::StrConcatC(Text::StrInt32(Text::StrConcat(buff2, this->fileName), i + 1), UTF8STRC(".log"));
 		IO::FileUtil::RenameFile(buff1, buff2);
 	}
-	Text::StrConcat(Text::StrConcat(buff1, this->fileName), (const UTF8Char*)"0.tmp");
-	Text::StrConcat(Text::StrConcat(buff2, this->fileName), (const UTF8Char*)"0.log");
+	Text::StrConcatC(Text::StrConcat(buff1, this->fileName), UTF8STRC("0.tmp"));
+	Text::StrConcatC(Text::StrConcat(buff2, this->fileName), UTF8STRC("0.log"));
 	IO::FileUtil::RenameFile(buff1, buff2);
 }
 
@@ -39,7 +39,7 @@ IO::LoopFileLog::LoopFileLog(const UTF8Char *fileName, Int32 nFiles, LogType sty
 	this->fileName = Text::StrCopyNew(fileName);
 	SwapFiles();
 
-	Text::StrConcat(Text::StrConcat(buff, fileName), (const UTF8Char*)"0.log");
+	Text::StrConcatC(Text::StrConcat(buff, fileName), UTF8STRC("0.log"));
 	NEW_CLASS(fileStm, IO::FileStream(buff, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	NEW_CLASS(log, Text::UTF8Writer(fileStm));
 	log->WriteSignature();
@@ -146,13 +146,13 @@ void IO::LoopFileLog::LogAdded(Data::DateTime *time, const UTF8Char *logMsg, UOS
 		DEL_CLASS(fileStm);
 
 		SwapFiles();
-		Text::StrConcat(Text::StrConcat(buff, fileName), (const UTF8Char*)"0.log");
+		Text::StrConcatC(Text::StrConcat(buff, fileName), UTF8STRC("0.log"));
 
 		NEW_CLASS(fileStm, IO::FileStream(buff, IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		NEW_CLASS(log, Text::UTF8Writer(fileStm));
 		log->WriteSignature();
 
-		sptr = Text::StrConcat(time->ToString(buff, "yyyy-MM-dd HH:mm:ss.fff\t"), (const UTF8Char*)"Program running");
+		sptr = Text::StrConcatC(time->ToString(buff, "yyyy-MM-dd HH:mm:ss.fff\t"), UTF8STRC("Program running"));
 		log->WriteLineC(buff, (UOSInt)(sptr - buff));
 		fileStm->Flush();
 	}

@@ -711,8 +711,8 @@ Bool Exporter::CURExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8
 {
 	if (index == 0)
 	{
-		Text::StrConcat(nameBuff, (const UTF8Char*)"Cursor File");
-		Text::StrConcat(fileNameBuff, (const UTF8Char*)"*.cur");
+		Text::StrConcatC(nameBuff, UTF8STRC("Cursor File"));
+		Text::StrConcatC(fileNameBuff, UTF8STRC("*.cur"));
 		return true;
 	}
 	return false;

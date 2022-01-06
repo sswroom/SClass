@@ -487,7 +487,7 @@ Bool IO::FileUtil::CopyFile(const UTF8Char *file1, const UTF8Char *file2, FileEx
 	{
 		*dptr++ = '\\';
 	}
-	Text::StrConcat(sptr, L"*.*");
+	Text::StrConcatC(sptr, IO::Path::ALL_FiLES, IO::Path::ALL_FILES_LEN);
 	sess = IO::Path::FindFile(sbuff);
 	if (sess)
 	{
@@ -561,7 +561,7 @@ Bool IO::FileUtil::CopyDir(const UTF8Char *srcDir, const UTF8Char *destDir, File
 	{
 		*dptr++ = IO::Path::PATH_SEPERATOR;
 	}
-	Text::StrConcat(sptr, IO::Path::ALL_FILES);
+	Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
 	sess = IO::Path::FindFile(sbuff);
 	if (sess)
 	{
@@ -786,7 +786,7 @@ Bool IO::FileUtil::MoveDir(const UTF8Char *srcDir, const UTF8Char *destDir, File
 	{
 		*dptr++ = IO::Path::PATH_SEPERATOR;
 	}
-	Text::StrConcat(sptr, IO::Path::ALL_FILES);
+	Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
 	sess = IO::Path::FindFile(sbuff);
 	succ = true;
 	if (sess)
@@ -854,7 +854,7 @@ Bool IO::FileUtil::DeleteDir(UTF8Char *dir, Bool deleteRdonlyFile)
 	{
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 	}
-	Text::StrConcat(sptr, IO::Path::ALL_FILES);
+	Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
 	Bool succ = true;
 	IO::Path::PathType pt;
 	IO::Path::FindFileSession *sess = IO::Path::FindFile(dir);

@@ -12,7 +12,7 @@ IO::SystemInfo::~SystemInfo()
 
 UTF8Char *IO::SystemInfo::GetPlatformName(UTF8Char *sbuff)
 {
-	return Text::StrConcat(sbuff, (const UTF8Char*)"Arduino");
+	return Text::StrConcatC(sbuff, UTF8STRC("Arduino"));
 }
 
 UTF8Char *IO::SystemInfo::GetPlatformSN(UTF8Char *sbuff)

@@ -25,7 +25,7 @@ Crypto::Hash::MD5::~MD5()
 
 UTF8Char *Crypto::Hash::MD5::GetName(UTF8Char *sbuff)
 {
-	return Text::StrConcat(sbuff, (const UTF8Char*)"MD5");
+	return Text::StrConcatC(sbuff, UTF8STRC("MD5"));
 }
 
 Crypto::Hash::IHash *Crypto::Hash::MD5::Clone()

@@ -20,7 +20,7 @@ Bool IO::MinizZIP::AddDir(UTF8Char *zipPath, UTF8Char *dirPath)
 	{
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 	}
-	Text::StrConcat(sptr, IO::Path::ALL_FILES);
+	Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
 	sess = IO::Path::FindFile(dirPath);
 	if (sess == 0)
 		return false;

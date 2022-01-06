@@ -1050,7 +1050,7 @@ void Data::LineChart::Plot(Media::DrawImage *img, Double x, Double y, Double wid
 			}
 			else
 			{
-				sptr = Text::StrConcat(sbuff, (const UTF8Char*)"");
+				sptr = Text::StrConcatC(sbuff, UTF8STRC(""));
 			}
 			img->GetTextSizeC(fnt, sbuff, (UOSInt)(sptr - sbuff), rcSize);
 			xLeng = (Single)rcSize[0];
@@ -1066,7 +1066,7 @@ void Data::LineChart::Plot(Media::DrawImage *img, Double x, Double y, Double wid
 				}
 				else
 				{
-					sptr = Text::StrConcat(sbuff, (const UTF8Char*)"");
+					sptr = Text::StrConcatC(sbuff, UTF8STRC(""));
 				}
 			}
 			img->GetTextSizeC(fnt, sbuff, (UOSInt)(sptr - sbuff), rcSize);
@@ -1084,7 +1084,7 @@ void Data::LineChart::Plot(Media::DrawImage *img, Double x, Double y, Double wid
 			}
 			else
 			{
-				sptr = Text::StrConcat(sbuff, (const UTF8Char*)"");
+				sptr = Text::StrConcatC(sbuff, UTF8STRC(""));
 			}
 			img->GetTextSizeC(fnt, sbuff, (UOSInt)(sptr - sbuff), rcSize);
 			if (rcSize[0] > xLeng)

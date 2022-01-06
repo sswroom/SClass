@@ -149,8 +149,8 @@ OSInt IO::USBInfo::GetUSBList(Data::ArrayList<USBInfo*> *usbList)
 		IO::Path::FindFileSession *sess;
 		IO::FileStream *fs;
 		IO::Path::PathType pt;
-		sptr = Text::StrConcat(sbuff, (const UTF8Char*)"Z:\\sys\\bus\\usb\\devices\\");
-		Text::StrConcat(sptr, IO::Path::ALL_FILES);
+		sptr = Text::StrConcatC(sbuff, UTF8STRC("Z:\\sys\\bus\\usb\\devices\\"));
+		Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
 		sess = IO::Path::FindFile(sbuff);
 		if (sess)
 		{
@@ -158,16 +158,16 @@ OSInt IO::USBInfo::GetUSBList(Data::ArrayList<USBInfo*> *usbList)
 			{
 				if (sptr[0] != '.')
 				{
-					Text::StrConcat(sptr2, (const UTF8Char*)"\\idVendor");
+					Text::StrConcatC(sptr2, UTF8STRC("\\idVendor"));
 					clsData.idVendor = USBInfo_ReadI16(sbuff);
-					Text::StrConcat(sptr2, (const UTF8Char*)"\\idProduct");
+					Text::StrConcatC(sptr2, UTF8STRC("\\idProduct"));
 					clsData.idProduct = USBInfo_ReadI16(sbuff);
-					Text::StrConcat(sptr2, (const UTF8Char*)"\\bcdDevice");
+					Text::StrConcatC(sptr2, UTF8STRC("\\bcdDevice"));
 					clsData.bcdDevice = USBInfo_ReadI16(sbuff);
 					if (clsData.idVendor != 0)
 					{
 						sb.ClearStr();
-						Text::StrConcat(sptr2, (const UTF8Char*)"\\manufacturer");
+						Text::StrConcatC(sptr2, UTF8STRC("\\manufacturer"));
 						NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 						if (!fs->IsError())
 						{
@@ -192,7 +192,7 @@ OSInt IO::USBInfo::GetUSBList(Data::ArrayList<USBInfo*> *usbList)
 						}
 						DEL_CLASS(fs);
 						
-						Text::StrConcat(sptr2, (const UTF8Char*)"\\product");
+						Text::StrConcatC(sptr2, UTF8STRC("\\product"));
 						NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 						if (!fs->IsError())
 						{

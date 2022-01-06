@@ -45,7 +45,7 @@ Bool IO::GPIOPin::SetPullType(PullType pt)
 
 UTF8Char *IO::GPIOPin::GetName(UTF8Char *buff)
 {
-	return Text::StrOSInt(Text::StrConcat(buff, (const UTF8Char*)"GPIO"), this->pinNum);
+	return Text::StrUOSInt(Text::StrConcatC(buff, UTF8STRC("GPIO")), this->pinNum);
 }
 
 void IO::GPIOPin::SetEventOnHigh(Bool enable)

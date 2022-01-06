@@ -1367,7 +1367,7 @@ void IO::SMake::CleanFiles()
 	IO::Path::PathType pt;
 	sptr = Text::StrConcat(Text::StrConcat(sbuff, this->basePath), OBJECTPATH);
 	*sptr++ = IO::Path::PATH_SEPERATOR;
-	Text::StrConcat(sptr, (const UTF8Char*)"*.o");
+	Text::StrConcatC(sptr, UTF8STRC("*.o"));
 	IO::Path::FindFileSession *sess = IO::Path::FindFile(sbuff);
 	if (sess)
 	{

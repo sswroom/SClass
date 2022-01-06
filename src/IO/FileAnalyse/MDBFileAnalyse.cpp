@@ -187,7 +187,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::MDBFileAnalyse::GetFrameDetail(UO
 				Data::DateTime dt;
 				Text::XLSUtil::Number2Date(&dt, ddays);
 				dt.ToLocalTime();
-				Text::StrConcat(dt.ToString(Text::StrConcat(Text::StrDouble(sbuff, ddays), (const UTF8Char*)" ("), "yyyy-MM-dd HH:mm:ss.fff"), (const UTF8Char*)")");
+				Text::StrConcatC(dt.ToString(Text::StrConcatC(Text::StrDouble(sbuff, ddays), UTF8STRC(" (")), "yyyy-MM-dd HH:mm:ss.fff"), UTF8STRC(")"));
 				frame->AddField(24 + 0x5A, 8, (const UTF8Char*)"Creation date", sbuff);
 				frame->AddHexBuff(24 + 0x62, 28, "Unknown", &decBuff[0x62], true);
 			}
@@ -216,7 +216,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::MDBFileAnalyse::GetFrameDetail(UO
 				Data::DateTime dt;
 				Text::XLSUtil::Number2Date(&dt, ddays);
 				dt.ToLocalTime();
-				Text::StrConcat(dt.ToString(Text::StrConcat(Text::StrDouble(sbuff, ddays), (const UTF8Char*)" ("), "yyyy-MM-dd HH:mm:ss.fff"), (const UTF8Char*)")");
+				Text::StrConcatC(dt.ToString(Text::StrConcatC(Text::StrDouble(sbuff, ddays), UTF8STRC(" (")), "yyyy-MM-dd HH:mm:ss.fff"), UTF8STRC(")"));
 				frame->AddField(24 + 0x5A, 8, (const UTF8Char*)"Creation date", sbuff);
 				frame->AddHexBuff(24 + 0x62, 30, "Unknown", &decBuff[0x62], true);
 
@@ -240,14 +240,14 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::MDBFileAnalyse::GetFrameDetail(UO
 				sptr = Text::StrUOSInt(sbuff, thisOfst & 0xFFF);
 				if (thisOfst & 0x4000)
 				{
-					sptr = Text::StrConcat(sptr, (const UTF8Char*)" (overflow)");
+					sptr = Text::StrConcatC(sptr, UTF8STRC(" (overflow)"));
 				}
 				if (thisOfst & 0x8000)
 				{
-					sptr = Text::StrConcat(sptr, (const UTF8Char*)" (deleted)");
+					sptr = Text::StrConcatC(sptr, UTF8STRC(" (deleted)"));
 				}
 				frame->AddField(14 + i * 2, 2, (const UTF8Char*)"Record Offset", sbuff);
-				Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"Record "), i);
+				Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Record ")), i);
 				thisOfst &= 0xfff;
 				frame->AddHexBuff(thisOfst, lastOfst - thisOfst, (const Char*)sbuff, &packBuff[thisOfst], true);
 				lastOfst = thisOfst;
@@ -321,9 +321,9 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::MDBFileAnalyse::GetFrameDetail(UO
 			while (i < j)
 			{
 				UOSInt colSize = ReadUInt16(&packBuff[ofst]);
-				Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"Column Name Size "), i);
+				Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Column Name Size ")), i);
 				frame->AddUInt(ofst, 2, (const Char*)sbuff, colSize);
-				Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"Column Name "), i);
+				Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Column Name ")), i);
 				Text::StrUTF16_UTF8C(sbuff2, (const UTF16Char*)&packBuff[ofst + 2], colSize >> 1)[0] = 0;
 				frame->AddField(ofst + 2, colSize, sbuff, sbuff2);
 				ofst += 2 + colSize;
@@ -382,9 +382,9 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::MDBFileAnalyse::GetFrameDetail(UO
 			while (i < j)
 			{
 				UOSInt colSize = ReadUInt16(&packBuff[ofst]);
-				Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"Index Name Size "), i);
+				Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Index Name Size ")), i);
 				frame->AddUInt(ofst, 2, (const Char*)sbuff, colSize);
-				Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"Index Name "), i);
+				Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Index Name ")), i);
 				Text::StrUTF16_UTF8C(sbuff2, (const UTF16Char*)&packBuff[ofst + 2], colSize >> 1)[0] = 0;
 				frame->AddField(ofst + 2, colSize, sbuff, sbuff2);
 				ofst += 2 + colSize;

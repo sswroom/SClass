@@ -203,8 +203,8 @@ Bool Exporter::TIFFExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF
 {
 	if (index == 0)
 	{
-		Text::StrConcat(nameBuff, (const UTF8Char*)"TIFF Image");
-		Text::StrConcat(fileNameBuff, (const UTF8Char*)"*.tif");
+		Text::StrConcatC(nameBuff, UTF8STRC("TIFF Image"));
+		Text::StrConcatC(fileNameBuff, UTF8STRC("*.tif"));
 		return true;
 	}
 	return false;

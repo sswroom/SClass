@@ -33,8 +33,8 @@ Bool Exporter::DBCSVExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UT
 {
 	if (index == 0)
 	{
-		Text::StrConcat(nameBuff, (const UTF8Char*)"DB CSV File");
-		Text::StrConcat(fileNameBuff, (const UTF8Char*)"*.csv");
+		Text::StrConcatC(nameBuff, UTF8STRC("DB CSV File"));
+		Text::StrConcatC(fileNameBuff, UTF8STRC("*.csv"));
 		return true;
 	}
 	return false;
@@ -93,7 +93,7 @@ Bool Exporter::DBCSVExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char
 		}
 		else
 		{
-			sptr = Text::StrConcat(sptr, (const UTF8Char*)",");
+			sptr = Text::StrConcatC(sptr, UTF8STRC(","));
 		}
 
 		if (r->GetName(i, lineBuff1))
@@ -122,7 +122,7 @@ Bool Exporter::DBCSVExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char
 			}
 			else
 			{
-				sptr = Text::StrConcat(sptr, (const UTF8Char*)",");
+				sptr = Text::StrConcatC(sptr, UTF8STRC(","));
 			}
 
 			if (r->GetStr(i, lineBuff1, 65536))

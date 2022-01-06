@@ -9,24 +9,24 @@
 Bool GPIOPin_EchoFile(const UTF8Char *fileName, const Char *msg)
 {
 	IO::FileStream *fs;
-	NEW_CLASS(fs, IO::FileStream(fileName, IO::FileMode::CreateWRITE, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(fs, IO::FileStream(fileName, IO::FileMode::CreateWrite, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (fs->IsError())
 	{
 		DEL_CLASS(fs);
 		return false;
 	}
-	OSInt fileSize = Text::StrCharCnt(msg);
+	UOSInt fileSize = Text::StrCharCnt(msg);
 	fs->Write((const UInt8*)msg, fileSize);
 	DEL_CLASS(fs);
 	return true;
 }
 
-IO::GPIOPin::GPIOPin(OSInt pinNum)
+IO::GPIOPin::GPIOPin(UOSInt pinNum)
 {
 	this->pinNum = pinNum;
 
 	UTF8Char sbuff[128];
-	UTF8Char *sptr = Text::StrConcat(sbuff, (const UTF8Char*)"/sys/class/gpio/gpio");
+	UTF8Char *sptr = Text::StrConcatC(sbuff, UTF8STRC("/sys/class/gpio/gpio"));
 	sptr = Text::StrInt32(sptr, this->pinNum);
 	if (IO::Path::GetPathType(sbuff) != IO::Path::PathType::Directory)
 	{
@@ -43,7 +43,7 @@ IO::GPIOPin::~GPIOPin()
 Bool IO::GPIOPin::IsError()
 {
 	UTF8Char sbuff[128];
-	UTF8Char *sptr = Text::StrConcat(sbuff, (const UTF8Char*)"/sys/class/gpio/gpio");
+	UTF8Char *sptr = Text::StrConcatC(sbuff, UTF8STRC("/sys/class/gpio/gpio"));
 	sptr = Text::StrInt32(sptr, this->pinNum);
 	return IO::Path::GetPathType(sbuff) != IO::Path::PathType::Directory;
 }
@@ -51,9 +51,9 @@ Bool IO::GPIOPin::IsError()
 Bool IO::GPIOPin::IsPinHigh()
 {
 	UTF8Char sbuff[128];
-	UTF8Char *sptr = Text::StrConcat(sbuff, (const UTF8Char*)"/sys/class/gpio/gpio");
+	UTF8Char *sptr = Text::StrConcatC(sbuff, UTF8STRC("/sys/class/gpio/gpio"));
 	sptr = Text::StrInt32(sptr, this->pinNum);
-	sptr = Text::StrConcat(sptr, (const UTF8Char*)"/value");
+	sptr = Text::StrConcatC(sptr, UTF8STRC("/value"));
 
 	Bool isHigh = false;
 	IO::FileStream *fs;
@@ -76,9 +76,9 @@ Bool IO::GPIOPin::IsPinHigh()
 Bool IO::GPIOPin::IsPinOutput()
 {
 	UTF8Char sbuff[128];
-	UTF8Char *sptr = Text::StrConcat(sbuff, (const UTF8Char*)"/sys/class/gpio/gpio");
+	UTF8Char *sptr = Text::StrConcatC(sbuff, UTF8STRC("/sys/class/gpio/gpio"));
 	sptr = Text::StrInt32(sptr, this->pinNum);
-	sptr = Text::StrConcat(sptr, (const UTF8Char*)"/direction");
+	sptr = Text::StrConcatC(sptr, UTF8STRC("/direction"));
 
 	Bool isOutput = false;
 	IO::FileStream *fs;
@@ -101,18 +101,18 @@ Bool IO::GPIOPin::IsPinOutput()
 void IO::GPIOPin::SetPinOutput(Bool isOutput)
 {
 	UTF8Char sbuff[128];
-	UTF8Char *sptr = Text::StrConcat(sbuff, (const UTF8Char*)"/sys/class/gpio/gpio");
+	UTF8Char *sptr = Text::StrConcatC(sbuff, UTF8STRC("/sys/class/gpio/gpio"));
 	sptr = Text::StrInt32(sptr, this->pinNum);
-	sptr = Text::StrConcat(sptr, (const UTF8Char*)"/direction");
+	sptr = Text::StrConcatC(sptr, UTF8STRC("/direction"));
 	GPIOPin_EchoFile(sbuff, isOutput?"out":"in");
 }
 
 void IO::GPIOPin::SetPinState(Bool isHigh)
 {
 	UTF8Char sbuff[128];
-	UTF8Char *sptr = Text::StrConcat(sbuff, (const UTF8Char*)"/sys/class/gpio/gpio");
+	UTF8Char *sptr = Text::StrConcatC(sbuff, UTF8STRC("/sys/class/gpio/gpio"));
 	sptr = Text::StrInt32(sptr, this->pinNum);
-	sptr = Text::StrConcat(sptr, (const UTF8Char*)"/value");
+	sptr = Text::StrConcatC(sptr, UTF8STRC("/value"));
 	GPIOPin_EchoFile(sbuff, isHigh?"1":"0");
 }
 
@@ -123,7 +123,7 @@ Bool IO::GPIOPin::SetPullType(PullType pt)
 
 UTF8Char *IO::GPIOPin::GetName(UTF8Char *buff)
 {
-	return Text::StrInt32(Text::StrConcat(buff, (const UTF8Char*)"GPIO"), this->pinNum);
+	return Text::StrInt32(Text::StrConcatC(buff, UTF8STRC("GPIO")), this->pinNum);
 }
 
 void IO::GPIOPin::SetEventOnHigh(Bool enable)
@@ -149,29 +149,4 @@ Bool IO::GPIOPin::HasEvent()
 
 void IO::GPIOPin::ClearEvent()
 {
-}
-
-OSInt IO::GPIOPin::GetAvailablePins(Data::ArrayList<Int32> *pinList)
-{
-	OSInt ret = 0;
-	void *sess = IO::Path::FindFile((const UTF8Char*)"/sys/class/gpio/*");
-	UTF8Char sbuff[128];
-	IO::Path::PathType pt;
-	Int32 pinNum;
-	if (sess)
-	{
-		while (IO::Path::FindNextFile(sbuff, sess, 0, &pt, 0))
-		{
-			if (Text::StrStartsWith(sbuff, (const UTF8Char*)"gpio"))
-			{
-				if (Text::StrToInt32(&sbuff[4], &pinNum))
-				{
-					pinList->Add(pinNum);
-					ret++;
-				}
-			}
-		}
-		IO::Path::FindFileClose(sess);
-	}
-	return ret;
 }

@@ -36,8 +36,8 @@ Bool Exporter::DocHTMLExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, 
 {
 	if (index == 0)
 	{
-		Text::StrConcat(nameBuff, (const UTF8Char*)"Document HTML File");
-		Text::StrConcat(fileNameBuff, (const UTF8Char*)"*.html");
+		Text::StrConcatC(nameBuff, UTF8STRC("Document HTML File"));
+		Text::StrConcatC(fileNameBuff, UTF8STRC("*.html"));
 		return true;
 	}
 	return false;
@@ -81,7 +81,7 @@ Bool Exporter::DocHTMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8Ch
 	sptr = Text::XML::ToXMLText(lineBuff2, lineBuff1);
 	writer->WriteStrC(lineBuff2, (UOSInt)(sptr - lineBuff2));
 	writer->WriteLineC(UTF8STRC("</title>"));
-	sptr = Text::StrConcat(Text::EncodingFactory::GetInternetName(Text::StrConcat(lineBuff1, (const UTF8Char*)"<meta http-equiv=\"Content-Type\" content=\"text/html; charset="), this->codePage), (const UTF8Char*)"\" />");
+	sptr = Text::StrConcatC(Text::EncodingFactory::GetInternetName(Text::StrConcatC(lineBuff1, UTF8STRC("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=")), this->codePage), UTF8STRC("\" />"));
 	writer->WriteLineC(lineBuff1, (UOSInt)(sptr - lineBuff1));
 	writer->WriteLineC(UTF8STRC("<style type=\"text/css\">"));
 /*

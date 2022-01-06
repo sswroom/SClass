@@ -25,8 +25,8 @@ Bool Exporter::GUIPNGExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, U
 {
 	if (index == 0)
 	{
-		Text::StrConcat(nameBuff, (const UTF8Char*)"PNG file (GDK)");
-		Text::StrConcat(fileNameBuff, (const UTF8Char*)"*.png");
+		Text::StrConcatC(nameBuff, UTF8STRC("PNG file (GDK)"));
+		Text::StrConcatC(fileNameBuff, UTF8STRC("*.png"));
 		return true;
 	}
 	return false;
@@ -95,7 +95,7 @@ Bool Exporter::GUIPNGExporter::ExportFile(IO::SeekableStream *stm, const UTF8Cha
 						UInt32 iccSize = ReadMUInt32(iccBuff);
 						UInt8 *chunkBuff = MemAlloc(UInt8, iccSize + 32);
 						WriteInt32(&chunkBuff[4], ReadInt32("iCCP"));
-						Text::StrConcat((Char*)&chunkBuff[8], "Photoshop ICC profile");
+						Text::StrConcatC((UTF8Char*)&chunkBuff[8], UTF8STRC("Photoshop ICC profile"));
 						chunkBuff[30] = 0;
 
 						UOSInt compSize = Data::Compress::Inflate::Compress(iccBuff, iccSize, &chunkBuff[31], true);

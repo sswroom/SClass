@@ -47,8 +47,8 @@ Bool Exporter::CIPExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8
 {
 	if (index == 0)
 	{
-		Text::StrConcat(nameBuff, (const UTF8Char*)"CIP file");
-		Text::StrConcat(fileNameBuff, (const UTF8Char*)"*.cip");
+		Text::StrConcatC(nameBuff, UTF8STRC("CIP file"));
+		Text::StrConcatC(fileNameBuff, UTF8STRC("*.cip"));
 		return true;
 	}
 	return false;

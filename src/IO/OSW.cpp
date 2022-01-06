@@ -20,7 +20,7 @@ void OS_LoadVersion()
 		OS_VersionLoaded = true;
 
 		sptr = Manage::EnvironmentVar::GetEnvValue(sbuff, (const UTF8Char*)"SystemRoot");
-		sptr = Text::StrConcat(sptr, (const UTF8Char*)"\\System32\\kernel32.dll");
+		sptr = Text::StrConcatC(sptr, UTF8STRC("\\System32\\kernel32.dll"));
 		DWORD dwDummy;
 		DWORD dwFVISize = GetFileVersionInfoSizeA((LPCSTR)sbuff, &dwDummy);
 		LPBYTE lpVersionInfo = MemAlloc(BYTE, dwFVISize);
@@ -54,11 +54,11 @@ UTF8Char *IO::OS::GetDistro(UTF8Char *sbuff)
 	{
 		if (v.wProductType == VER_NT_WORKSTATION)
 		{
-			return Text::StrConcat(sbuff, (const UTF8Char*)"WindowsNT");
+			return Text::StrConcatC(sbuff, UTF8STRC("WindowsNT"));
 		}
 		else
 		{
-			return Text::StrConcat(sbuff, (const UTF8Char*)"Windows Server");
+			return Text::StrConcatC(sbuff, UTF8STRC("Windows Server"));
 		}
 	}
 	return 0;

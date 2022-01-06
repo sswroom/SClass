@@ -23,7 +23,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	val = 0;
 	while (val < DATACNT)
 	{
-		sptr = Text::StrUInt32(Text::StrConcat(sbuff, (const UTF8Char*)"Text"), val);
+		sptr = Text::StrUInt32(Text::StrConcatC(sbuff, UTF8STRC("Text")), val);
 		s = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 		map.Put(s, val);
 		s->Release();
@@ -33,7 +33,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	val = 0;
 	while (val < DATACNT)
 	{
-		sptr = Text::StrUInt32(Text::StrConcat(sbuff, (const UTF8Char*)"Text"), val);
+		sptr = Text::StrUInt32(Text::StrConcatC(sbuff, UTF8STRC("Text")), val);
 		s = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 		val2 = map.Get(s);
 		s->Release();

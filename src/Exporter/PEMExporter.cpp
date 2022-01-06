@@ -40,20 +40,20 @@ Bool Exporter::PEMExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8
 	switch (index)
 	{
 	case 0:
-		Text::StrConcat(nameBuff, (const UTF8Char*)"PEM file");
-		Text::StrConcat(fileNameBuff, (const UTF8Char*)"*.pem");
+		Text::StrConcatC(nameBuff, UTF8STRC("PEM file"));
+		Text::StrConcatC(fileNameBuff, UTF8STRC("*.pem"));
 		return true;
 	case 1:
-		Text::StrConcat(nameBuff, (const UTF8Char*)"Cert file");
-		Text::StrConcat(fileNameBuff, (const UTF8Char*)"*.crt");
+		Text::StrConcatC(nameBuff, UTF8STRC("Cert file"));
+		Text::StrConcatC(fileNameBuff, UTF8STRC("*.crt"));
 		return true;
 	case 2:
-		Text::StrConcat(nameBuff, (const UTF8Char*)"Key file");
-		Text::StrConcat(fileNameBuff, (const UTF8Char*)"*.key");
+		Text::StrConcatC(nameBuff, UTF8STRC("Key file"));
+		Text::StrConcatC(fileNameBuff, UTF8STRC("*.key"));
 		return true;
 	case 3:
-		Text::StrConcat(nameBuff, (const UTF8Char*)"Cert Sign Request file");
-		Text::StrConcat(fileNameBuff, (const UTF8Char*)"*.csr");
+		Text::StrConcatC(nameBuff, UTF8STRC("Cert Sign Request file"));
+		Text::StrConcatC(fileNameBuff, UTF8STRC("*.csr"));
 		return true;
 	}
 	return false;

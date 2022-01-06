@@ -866,9 +866,9 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::EXEFileAnalyse::GetFrameDetail(UO
 
 	IO::FileAnalyse::FrameDetail *frame;
 	NEW_CLASS(frame, IO::FileAnalyse::FrameDetail(pack->fileOfst, (UInt32)pack->packSize));
-	Text::StrConcat(Text::StrConcat(sbuff, (const UTF8Char*)"Type="), PackTypeGetName(pack->packType));
+	Text::StrConcat(Text::StrConcatC(sbuff, UTF8STRC("Type=")), PackTypeGetName(pack->packType));
 	frame->AddText(0, sbuff);
-	Text::StrUInt64(Text::StrConcat(sbuff, (const UTF8Char*)"Size="), pack->packSize);
+	Text::StrUInt64(Text::StrConcatC(sbuff, UTF8STRC("Size=")), pack->packSize);
 	frame->AddText(0, sbuff);
 
 	if (pack->packType == 0)

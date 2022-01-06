@@ -40,8 +40,8 @@ Bool Exporter::WAVExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8
 {
 	if (index == 0)
 	{
-		Text::StrConcat(nameBuff, (const UTF8Char*)"WAV File");
-		Text::StrConcat(fileNameBuff, (const UTF8Char*)"*.wav");
+		Text::StrConcatC(nameBuff, UTF8STRC("WAV File"));
+		Text::StrConcatC(fileNameBuff, UTF8STRC("*.wav"));
 		return true;
 	}
 	return false;

@@ -357,7 +357,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::FLVFileAnalyse::GetFrameDetail(UO
 		frame->AddField(0, 3, (const UTF8Char*)"Magic", sbuff);
 		Text::StrUInt16(sbuff, buff[3]);
 		frame->AddField(3, 1, (const UTF8Char*)"Version", sbuff);
-		Text::StrHexByte(Text::StrConcat(sbuff, (const UTF8Char*)"0x"), buff[4]);
+		Text::StrHexByte(Text::StrConcatC(sbuff, UTF8STRC("0x")), buff[4]);
 		frame->AddField(4, 1, (const UTF8Char*)"TypeFlags", sbuff);
 		Text::StrUInt16(sbuff, (UInt16)(buff[4] >> 3));
 		frame->AddSubfield(4, 1, (const UTF8Char*)"Reserved", sbuff);
@@ -376,7 +376,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::FLVFileAnalyse::GetFrameDetail(UO
 		return 0;
 	
 	NEW_CLASS(frame, IO::FileAnalyse::FrameDetail(tag->ofst, (UInt32)tag->size));
-	Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"Tag"), index);
+	Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Tag")), index);
 	frame->AddHeader(sbuff);
 
 	this->fd->GetRealData(tag->ofst, 11, buff);
