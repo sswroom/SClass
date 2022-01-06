@@ -14,7 +14,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	Text::StrConcat(sbuff, srcStr);
 	if (Text::StrEquals(sbuff, srcStr))
 	{
-		console->WriteLine((const UTF8Char*)"Success");
+		console->WriteLineC(UTF8STRC("Success"));
 	}
 	DEL_CLASS(console);
 	return 0;

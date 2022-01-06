@@ -151,7 +151,7 @@ void SSWR::ProcMonForm::SaveProgList()
 		{
 			sb.Append(prog->progPath);
 		}
-		writer->WriteLine(sb.ToString());
+		writer->WriteLineC(sb.ToString(), sb.GetLength());
 		i++;
 	}
 	DEL_CLASS(writer);

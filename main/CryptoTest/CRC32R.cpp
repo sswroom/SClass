@@ -19,14 +19,14 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	hash->GetValue(hashVal);
 	Text::StrHexBytes(sbuff, hashVal, 4, 0);
 	console.WriteLine(sbuff);
-	console.WriteLine((const UTF8Char*)"00000000");
+	console.WriteLineC(UTF8STRC("00000000"));
 	console.WriteLine();
 
 	hash->Calc(testBlock, sizeof(testBlock) - 1);
 	hash->GetValue(hashVal);
 	Text::StrHexBytes(sbuff, hashVal, 4, 0);
 	console.WriteLine(sbuff);
-	console.WriteLine((const UTF8Char*)"CBF43926");
+	console.WriteLineC(UTF8STRC("CBF43926"));
 	console.WriteLine();
 
 	hash->Clear();
@@ -34,7 +34,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	hash->GetValue(hashVal);
 	Text::StrHexBytes(sbuff, hashVal, 4, 0);
 	console.WriteLine(sbuff);
-	console.WriteLine((const UTF8Char*)"3FA43360");
+	console.WriteLineC(UTF8STRC("3FA43360"));
 
 	DEL_CLASS(hash);
 	return 0;

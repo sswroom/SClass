@@ -20,7 +20,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	UOSInt buffSize = IO::FileStream::LoadFile(sbuff, buff, 4096);
 	if (buffSize == 0)
 	{
-		console.WriteLine((const UTF8Char*)"Error in loading ACMEKey.pem");
+		console.WriteLineC(UTF8STRC("Error in loading ACMEKey.pem"));
 		return 0;
 	}
 	Parser::FileParser::X509Parser parser;
@@ -29,12 +29,12 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	s->Release();
 	if (x509 == 0)
 	{
-		console.WriteLine((const UTF8Char*)"Error in parsing ACMEKey.pem");
+		console.WriteLineC(UTF8STRC("Error in parsing ACMEKey.pem"));
 		return 0;
 	}
 	if (x509->GetFileType() != Crypto::Cert::X509File::FileType::Key)
 	{
-		console.WriteLine((const UTF8Char*)"ACMEKey.pem is not a key file");
+		console.WriteLineC(UTF8STRC("ACMEKey.pem is not a key file"));
 		DEL_CLASS(x509);
 		return 0;
 	}
@@ -67,7 +67,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	}
 	else
 	{
-		console.WriteLine((const UTF8Char*)"Error in creating csr");
+		console.WriteLineC(UTF8STRC("Error in creating csr"));
 	}
 	LIST_FREE_FUNC(ext.subjectAltName, Text::StrDelNew);
 	DEL_CLASS(ext.subjectAltName);

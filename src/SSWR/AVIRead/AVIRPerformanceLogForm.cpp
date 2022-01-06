@@ -95,7 +95,7 @@ void SSWR::AVIRead::AVIRPerformanceLogForm::TestSpeed()
 	sb.AppendDate(this->testTime);
 	sb.AppendC(UTF8STRC("\t"));
 	Text::SBAppendF64(&sb, spd);
-	this->writer->WriteLine(sb.ToString());
+	this->writer->WriteLineC(sb.ToString(), sb.GetLength());
 	this->rlcWRate->AddSample(&spd);
 	sb.ClearStr();
 	Text::SBAppendF64(&sb, spd);

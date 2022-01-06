@@ -21,7 +21,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	argv = progCtrl->GetCommandLines(progCtrl, &argc);
 	if (argc <= 1)
 	{
-		console->WriteLine((const UTF8Char*)"Usage: SHTTPCliSpd [URL]");
+		console->WriteLineC(UTF8STRC("Usage: SHTTPCliSpd [URL]"));
 	}
 	else
 	{
@@ -45,7 +45,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			cli = Net::HTTPClient::CreateClient(sockf, ssl, (const UTF8Char*)"Test/1.0", false, Text::StrStartsWith(url, (const UTF8Char*)"https://"));
 			if (!cli->Connect(url, "GET", &respTimeDNS, &respTimeConn, false))
 			{
-				console->WriteLine((const UTF8Char*)"Error in requesting to server");
+				console->WriteLineC(UTF8STRC("Error in requesting to server"));
 			}
 			else
 			{
@@ -57,7 +57,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				httpStatus = cli->GetRespStatus();
 				if (httpStatus == 0)
 				{
-					console->WriteLine((const UTF8Char*)"Error in requesting to server");
+					console->WriteLineC(UTF8STRC("Error in requesting to server"));
 				}
 				else
 				{
@@ -72,43 +72,43 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("Server response "));
 					sb.AppendI32(httpStatus);
-					console->WriteLine(sb.ToString());
+					console->WriteLineC(sb.ToString(), sb.GetLength());
 
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("Received "));
 					sb.AppendU64(totalReadSize);
 					sb.AppendC(UTF8STRC(" bytes from server"));
-					console->WriteLine(sb.ToString());
+					console->WriteLineC(sb.ToString(), sb.GetLength());
 
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("DNS Time = "));
 					Text::SBAppendF64(&sb, respTimeDNS);
-					console->WriteLine(sb.ToString());
+					console->WriteLineC(sb.ToString(), sb.GetLength());
 
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("Conn Time = "));
 					Text::SBAppendF64(&sb, respTimeConn - respTimeDNS);
-					console->WriteLine(sb.ToString());
+					console->WriteLineC(sb.ToString(), sb.GetLength());
 
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("Request Time = "));
 					Text::SBAppendF64(&sb, respTimeReq - respTimeConn);
-					console->WriteLine(sb.ToString());
+					console->WriteLineC(sb.ToString(), sb.GetLength());
 
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("Response Time = "));
 					Text::SBAppendF64(&sb, respTimeResp - respTimeReq);
-					console->WriteLine(sb.ToString());
+					console->WriteLineC(sb.ToString(), sb.GetLength());
 
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("Download Time = "));
 					Text::SBAppendF64(&sb, respTimeTotal - respTimeResp);
-					console->WriteLine(sb.ToString());
+					console->WriteLineC(sb.ToString(), sb.GetLength());
 
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("Total Time = "));
 					Text::SBAppendF64(&sb, respTimeTotal);
-					console->WriteLine(sb.ToString());
+					console->WriteLineC(sb.ToString(), sb.GetLength());
 				}
 			}
 			DEL_CLASS(cli);	
@@ -117,7 +117,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		}
 		else
 		{
-			console->WriteLine((const UTF8Char*)"Only support http url");
+			console->WriteLineC(UTF8STRC("Only support http url"));
 		}
 	}
 

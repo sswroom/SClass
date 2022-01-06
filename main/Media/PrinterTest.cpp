@@ -50,7 +50,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	PrintObj *prtobj;
 
 	NEW_CLASS(console, IO::ConsoleWriter());
-	console->WriteLine((const UTF8Char*)"Found Printers:");
+	console->WriteLineC(UTF8STRC("Found Printers:"));
 	i = 0;
 	j = Media::Printer::GetPrinterCount();
 	while (i < j)

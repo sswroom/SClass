@@ -145,7 +145,7 @@ void IO::MTFileLog::WriteArr(Text::String **msgArr, Int64 *dateArr, UOSInt arrCn
 		sb.ClearStr();
 		sb.AppendC(buff, (UOSInt)(sptr - buff));
 		sb.Append(msgArr[i]);
-		log->WriteLine(sb.ToString());
+		log->WriteLineC(sb.ToString(), sb.GetLength());
 
 		msgArr[i]->Release();
 		i++;

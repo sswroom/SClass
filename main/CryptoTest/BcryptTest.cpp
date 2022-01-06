@@ -24,7 +24,7 @@ void BCryptTest(IO::ConsoleWriter *console, Crypto::Hash::Bcrypt *bcrypt, const 
 	}
 	sb.AppendC(UTF8STRC(", t = "));
 	Text::SBAppendF64(&sb, t);
-	console->WriteLine(sb.ToString());
+	console->WriteLineC(sb.ToString(), sb.GetLength());
 	console->WriteLine();
 }
 
@@ -39,15 +39,15 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	NEW_CLASS(radix64, Text::TextBinEnc::Radix64Enc("./ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"));
 	Text::StringBuilderUTF8 sb;
 	radix64->EncodeBin(&sb, radixTest, sizeof(radixTest));
-	console.WriteLine((const UTF8Char*)"Radix64 test:");
-	console.Write((const UTF8Char*)"Get: ");
-	console.WriteLine(sb.ToString());
-	console.WriteLine((const UTF8Char*)"Exp: hSCvnwM9s4wIX9JeLapehKK5YdLxKcmk");
+	console.WriteLineC(UTF8STRC("Radix64 test:"));
+	console.WriteStrC(UTF8STRC("Get: "));
+	console.WriteLineC(sb.ToString(), sb.GetLength());
+	console.WriteLineC(UTF8STRC("Exp: hSCvnwM9s4wIX9JeLapehKK5YdLxKcmk"));
 	decSize = radix64->DecodeBin(sb.ToString(), sb.GetCharCnt(), decTest);
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("Dec: "));
 	sb.AppendHexBuff(decTest, decSize, ' ', Text::LineBreakType::None);
-	console.WriteLine(sb.ToString());
+	console.WriteLineC(sb.ToString(), sb.GetLength());
 	console.WriteLine();
 	BCryptTest(&console, &bcrypt, (const UTF8Char*)"$2a$10$IIlT8V9XkWW5WxvoIjC/Q.hAGkGFd54hcUaGSBo8p1xL847drOwAa", (const UTF8Char*)"admin");
 	BCryptTest(&console, &bcrypt, (const UTF8Char*)"$2y$11$hbIW55e9K0klAOTBidPNIeSszueX1nQbDZgGuNur5qAExTwX6pe8i", (const UTF8Char*)"admin");
@@ -60,6 +60,6 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("Generating hash: "));
 	bcrypt.GenHash(&sb, 12, (const UTF8Char*)"admin");
-	console.WriteLine(sb.ToString());
+	console.WriteLineC(sb.ToString(), sb.GetLength());
 	return 0;
 }

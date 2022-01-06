@@ -27,7 +27,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("t1 = "));
 	Text::SBAppendF64(&sb, t);
-	console.WriteLine(sb.ToString());
+	console.WriteLineC(sb.ToString(), sb.GetLength());
 
 	clk.Start();
 	i = 300;
@@ -37,7 +37,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("t2 = "));
 	Text::SBAppendF64(&sb, t);
-	console.WriteLine(sb.ToString());
+	console.WriteLineC(sb.ToString(), sb.GetLength());
 
 	clk.Start();
 	i = 30000000;
@@ -47,7 +47,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("z1 = "));
 	Text::SBAppendF64(&sb, t);
-	console.WriteLine(sb.ToString());
+	console.WriteLineC(sb.ToString(), sb.GetLength());
 
 	clk.Start();
 	i = 300;
@@ -57,7 +57,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("z2 = "));
 	Text::SBAppendF64(&sb, t);
-	console.WriteLine(sb.ToString());
+	console.WriteLineC(sb.ToString(), sb.GetLength());
 
 	clk.Start();
 	i = 300;
@@ -67,7 +67,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("z3 = "));
 	Text::SBAppendF64(&sb, t);
-	console.WriteLine(sb.ToString());
+	console.WriteLineC(sb.ToString(), sb.GetLength());
 
 	clk.Start();
 	i = 300;
@@ -77,7 +77,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("z4 = "));
 	Text::SBAppendF64(&sb, t);
-	console.WriteLine(sb.ToString());
+	console.WriteLineC(sb.ToString(), sb.GetLength());
 
 	MemFreeA(buff2);
 	return 0;

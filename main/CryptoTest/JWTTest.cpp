@@ -31,18 +31,18 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	Data::StringUTF8Map<const UTF8Char*> payload;
 	payload.Put((const UTF8Char*)"name", (const UTF8Char*)"John Doe");
 	jwt->Generate(&sb, &payload, &param);
-	console.WriteLine(sb.ToString());
-	console.WriteLine((const UTF8Char*)"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiSm9obiBEb2UiLCJzdWIiOiIxMjM0NTY3ODkwIiwiaWF0IjoxNTE2MjM5MDIyfQ.3uGPWYtY_HtIcBGz4eUmTtcjZ4HnJZK9Z2uhx0Ks4n8");
+	console.WriteLineC(sb.ToString(), sb.GetLength());
+	console.WriteLineC(UTF8STRC("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiSm9obiBEb2UiLCJzdWIiOiIxMjM0NTY3ODkwIiwiaWF0IjoxNTE2MjM5MDIyfQ.3uGPWYtY_HtIcBGz4eUmTtcjZ4HnJZK9Z2uhx0Ks4n8"));
 	
 	Data::StringUTF8Map<Text::String*> *result = jwt->Parse((const UTF8Char*)"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiSm9obiBEb2UiLCJzdWIiOiIxMjM0NTY3ODkwIiwiaWF0IjoxNTE2MjM5MDIyfQ.3uGPWYtY_HtIcBGz4eUmTtcjZ4HnJZK9Z2uhx0Ks4n8", &param);
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("Payload = "));
 	Text::StringTool::BuildString(&sb, result);
-	console.WriteLine(sb.ToString());
+	console.WriteLineC(sb.ToString(), sb.GetLength());
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("Params = "));
 	param.ToString(&sb);
-	console.WriteLine(sb.ToString());
+	console.WriteLineC(sb.ToString(), sb.GetLength());
 
 	jwt->FreeResult(result);
 
@@ -57,7 +57,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		keySize = IO::FileStream::LoadFile(sbuff, keyBuff, 4096);
 		if (keySize == 0)
 		{
-			console.WriteLine((const UTF8Char*)"Error in loading jwtrsa.key file");
+			console.WriteLineC(UTF8STRC("Error in loading jwtrsa.key file"));
 		}
 		else
 		{
@@ -67,7 +67,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			s->Release();
 			if (x509 == 0)
 			{
-				console.WriteLine((const UTF8Char*)"Error in parsing jwtrsa.key file");
+				console.WriteLineC(UTF8STRC("Error in parsing jwtrsa.key file"));
 			}
 			else
 			{
@@ -82,7 +82,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				}
 				if (key == 0)
 				{
-					console.WriteLine((const UTF8Char*)"jwtrsa.key is not a key file");
+					console.WriteLineC(UTF8STRC("jwtrsa.key is not a key file"));
 				}
 				DEL_CLASS(x509);
 			}
@@ -93,11 +93,11 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("Payload = "));
 				Text::StringTool::BuildString(&sb, result);
-				console.WriteLine(sb.ToString());
+				console.WriteLineC(sb.ToString(), sb.GetLength());
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("Params = "));
 				param.ToString(&sb);
-				console.WriteLine(sb.ToString());
+				console.WriteLineC(sb.ToString(), sb.GetLength());
 				jwt->FreeResult(result);
 
 				DEL_CLASS(jwt);

@@ -19,11 +19,11 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	Text::StrConcatS(sbuff3, srcStr, 27);
 	if (Text::StrEquals(sbuff, srcStr) && !Text::StrEquals(sbuff2, srcStr) && Text::StrEquals(sbuff3, srcStr))
 	{
-		console->WriteLine((const UTF8Char*)"Success");
+		console->WriteLineC(UTF8STRC("Success"));
 	}
 	else
 	{
-		console->WriteLine((const UTF8Char*)"Fail");
+		console->WriteLineC(UTF8STRC("Fail"));
 	}
 	DEL_CLASS(console);
 	return 0;

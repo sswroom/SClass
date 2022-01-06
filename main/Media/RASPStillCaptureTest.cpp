@@ -19,11 +19,11 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		NEW_CLASS(fs, IO::FileStream((const UTF8Char*)"Capture.jpg", IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		if (!capture->CapturePhoto(&pf, fs))
 		{
-			console.WriteLine((const UTF8Char*)"Error in capturing image");
+			console.WriteLineC(UTF8STRC("Error in capturing image");
 		}
 		else
 		{
-			console.WriteLine((const UTF8Char*)"Image captured to Capture.jpg");
+			console.WriteLineC(UTF8STRC("Image captured to Capture.jpg");
 		}
 		DEL_CLASS(fs);
 
@@ -31,18 +31,18 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		NEW_CLASS(fs, IO::FileStream((const UTF8Char*)"Capture2.jpg", IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		if (!capture->CapturePhoto(&pf, fs))
 		{
-			console.WriteLine((const UTF8Char*)"Error in capturing image");
+			console.WriteLineC(UTF8STRC("Error in capturing image");
 		}
 		else
 		{
-			console.WriteLine((const UTF8Char*)"Image captured to Capture2.jpg");
+			console.WriteLineC(UTF8STRC("Image captured to Capture2.jpg");
 		}
 		DEL_CLASS(fs);
 		capture->DeviceEnd();
 	}
 	else
 	{
-		console.WriteLine((const UTF8Char*)"Error in begin capture");
+		console.WriteLineC(UTF8STRC("Error in begin capture");
 	}
 	DEL_CLASS(capture);
 	return 0;

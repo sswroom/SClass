@@ -368,7 +368,7 @@ Bool Exporter::KMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 
 				sb.AppendC(UTF8STRC("</Polygon>"));
 				sb.AppendC(UTF8STRC("</Placemark>"));
-				writer->WriteLine(sb.ToString());
+				writer->WriteLineC(sb.ToString(), sb.GetLength());
 			}
 			else if (vec->GetVectorType() == Math::Vector2D::VectorType::Image)
 			{
@@ -460,7 +460,7 @@ Bool Exporter::KMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 					sb.AppendC(UTF8STRC("\" xunits=\"fraction\" yunits=\"fraction\"/>"));
 
 					sb.AppendC(UTF8STRC("</ScreenOverlay>"));
-					writer->WriteLine(sb.ToString());
+					writer->WriteLineC(sb.ToString(), sb.GetLength());
 				}
 				else
 				{
@@ -545,7 +545,7 @@ Bool Exporter::KMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 					}
 
 					sb.AppendC(UTF8STRC("</GroundOverlay>"));
-					writer->WriteLine(sb.ToString());
+					writer->WriteLineC(sb.ToString(), sb.GetLength());
 				}
 			}
 			DEL_CLASS(vec);

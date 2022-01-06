@@ -12,11 +12,11 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	IO::ConsoleWriter console;
 	UOSInt i;
 	UOSInt j;
-	console.WriteLine((const UTF8Char*)"GPIO Pins:");
+	console.WriteLineC(UTF8STRC("GPIO Pins:"));
 	NEW_CLASS(ctrl, IO::GPIOControl());
 	if (ctrl->IsError())
 	{
-		console.WriteLine((const UTF8Char*)"Error");
+		console.WriteLineC(UTF8STRC("Error"));
 	}
 	else
 	{
@@ -38,7 +38,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			}
 			sb.AppendChar(',', 1);
 			sb.Append(IO::GPIOControl::PinModeGetName(i, ctrl->GetPinMode(i)));
-			console.WriteLine(sb.ToString());
+			console.WriteLineC(sb.ToString(), sb.GetLength());
 			
 			i++;
 		}

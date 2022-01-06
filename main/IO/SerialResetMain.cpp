@@ -13,16 +13,16 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 
 	if (argc != 2)
 	{
-		console.Write((const UTF8Char*)"Usage: ");
+		console.WriteStrC(UTF8STRC("Usage: "));
 		if (argc >= 1)
 		{
-			console.Write(argv[0]);
+			console.WriteStr(argv[0]);
 		}
 		else
 		{
-			console.Write((const UTF8Char*)"SerialReset");
+			console.WriteStrC(UTF8STRC("SerialReset"));
 		}
-		console.WriteLine((const UTF8Char*)" [PortNum]");
+		console.WriteLineC(UTF8STRC(" [PortNum]"));
 	}
 	else
 	{
@@ -31,17 +31,17 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		{
 			if (IO::SerialPort::ResetPort(portNum))
 			{
-				console.WriteLine((const UTF8Char*)"Serial port resetted");
+				console.WriteLineC(UTF8STRC("Serial port resetted"));
 			}
 			else
 			{
-				console.WriteLine((const UTF8Char*)"Error in opening serial port");
+				console.WriteLineC(UTF8STRC("Error in opening serial port"));
 
 			}			
 		}
 		else
 		{
-			console.WriteLine((const UTF8Char*)"Parameter error");
+			console.WriteLineC(UTF8STRC("Parameter error"));
 		}
 	}
 	return 0;

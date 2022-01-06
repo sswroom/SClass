@@ -82,15 +82,15 @@ Bool Exporter::GPXExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 	writer->WriteStrC(UTF8STRC("<?xml version=\"1.0\" encoding=\""));
 	sptr = Text::EncodingFactory::GetInternetName(sbuff, this->codePage);
 	writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
-	writer->WriteLine((const UTF8Char*)"\"?>");
-	writer->WriteLine((const UTF8Char*)"<gpx version=\"v1.0\" creator=\"iTravel Tech Inc. - http://www.itravel-tech.com\">");
-	writer->WriteLine((const UTF8Char*)"<trk>");
-	writer->WriteLine((const UTF8Char*)"<name>Track</name>");
+	writer->WriteLineC(UTF8STRC("\"?>"));
+	writer->WriteLineC(UTF8STRC("<gpx version=\"v1.0\" creator=\"iTravel Tech Inc. - http://www.itravel-tech.com\">"));
+	writer->WriteLineC(UTF8STRC("<trk>"));
+	writer->WriteLineC(UTF8STRC("<name>Track</name>"));
 	i = 0;
 	j = track->GetTrackCnt();
 	while (i < j)
 	{
-		writer->WriteLine((const UTF8Char*)"<trkseg>");
+		writer->WriteLineC(UTF8STRC("<trkseg>"));
 		k = 0;
 		recs = track->GetTrack(i, &l);
 		while (k < l)
@@ -101,18 +101,18 @@ Bool Exporter::GPXExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 			writer->WriteStrC(UTF8STRC("\" lon=\""));
 			sptr = Text::StrDouble(sbuff, recs[k].lon);
 			writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
-			writer->WriteLine((const UTF8Char*)"\">");
+			writer->WriteLineC(UTF8STRC("\">"));
 			
 			writer->WriteStrC(UTF8STRC("<ele>"));
 			sptr = Text::StrDouble(sbuff, recs[k].altitude);
 			writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
-			writer->WriteLine((const UTF8Char*)"</ele>");
+			writer->WriteLineC(UTF8STRC("</ele>"));
 
 			writer->WriteStrC(UTF8STRC("<time>"));
 			dt.SetTicks(recs[k].utcTimeTicks);
 			sptr = dt.ToString(sbuff, "yyyy-MM-ddTHH:mm:ssZ");
 			writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
-			writer->WriteLine((const UTF8Char*)"</time>");
+			writer->WriteLineC(UTF8STRC("</time>"));
 
 			writer->WriteStrC(UTF8STRC("<desc>lat.="));
 			sptr = Text::StrDoubleFmt(sbuff, recs[k].lat, "0.000000");
@@ -126,24 +126,24 @@ Bool Exporter::GPXExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 			writer->WriteStrC(UTF8STRC("m, Speed="));
 			sptr = Text::StrDoubleFmt(sbuff, recs[k].speed * 1.852, "0.000000");
 			writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
-			writer->WriteLine((const UTF8Char*)"m/h.</desc>");
+			writer->WriteLineC(UTF8STRC("m/h.</desc>"));
 
 			writer->WriteStrC(UTF8STRC("<speed>"));
 			sptr = Text::StrDoubleFmt(sbuff, recs[k].speed * 1.852 / 3.6, "0.000000");
 			writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
-			writer->WriteLine((const UTF8Char*)"</speed>");
+			writer->WriteLineC(UTF8STRC("</speed>"));
 
-			writer->WriteLine((const UTF8Char*)"</trkpt>");
+			writer->WriteLineC(UTF8STRC("</trkpt>"));
 
 			k++;
 		}
 
-		writer->WriteLine((const UTF8Char*)"</trkseg>");
+		writer->WriteLineC(UTF8STRC("</trkseg>"));
 		i++;
 	}
 
-	writer->WriteLine((const UTF8Char*)"</trk>");
-	writer->WriteLine((const UTF8Char*)"</gpx>");
+	writer->WriteLineC(UTF8STRC("</trk>"));
+	writer->WriteLineC(UTF8STRC("</gpx>"));
 
 	DEL_CLASS(writer);
 	DEL_CLASS(cstm);

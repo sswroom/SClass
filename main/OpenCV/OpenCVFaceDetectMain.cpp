@@ -50,7 +50,7 @@ void __stdcall OnDetectResult(void *userObj, UOSInt objCnt, const Media::OpenCV:
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(UTF8STRC("People detected, cnt = "));
 		sb.AppendUOSInt(thisCnt);
-		console->WriteLine(sb.ToString());
+		console->WriteLineC(sb.ToString(), sb.GetLength());
 
 		Media::ColorProfile srgb(Media::ColorProfile::CPT_SRGB);
 		if (csConv == 0)
@@ -237,19 +237,19 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		DEL_CLASS(cfg);
 	}
 
-	console->WriteLine((const UTF8Char*)"Starting OpenCVPeopleCounting");
+	console->WriteLineC(UTF8STRC("Starting OpenCVPeopleCounting"));
 	capture = OpenCapture(defIndex);
 	if (capture)
 	{
 		Text::StringBuilderUTF8 sb;
 		capture->GetInfo(&sb);
-		console->WriteLine(sb.ToString());
+		console->WriteLineC(sb.ToString(), sb.GetLength());
 
 		Media::OpenCV::OCVObjectDetector *objDetect;
 		NEW_CLASS(objDetect, Media::OpenCV::OCVObjectDetector((const UTF8Char*)"haarcascades", (const UTF8Char*)"haarcascade_frontalface_alt.xml"));
 		if (objDetect->IsError())
 		{
-			console->WriteLine((const UTF8Char*)"Error in initializing object detector");
+			console->WriteLineC(UTF8STRC("Error in initializing object detector"));
 		}
 		else
 		{
@@ -260,13 +260,13 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			objDetect->HandleDetectResult(OnDetectResult, console);
 			if (!feeder->Start())
 			{
-				console->WriteLine((const UTF8Char*)"Error in starting feeder");
+				console->WriteLineC(UTF8STRC("Error in starting feeder"));
 			}
 			else
 			{
-				console->WriteLine((const UTF8Char*)"Inited");
+				console->WriteLineC(UTF8STRC("Inited"));
 				progCtrl->WaitForExit(progCtrl);
-				console->WriteLine((const UTF8Char*)"Exiting");
+				console->WriteLineC(UTF8STRC("Exiting"));
 			}
 			DEL_CLASS(feeder);
 		}
@@ -275,7 +275,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	}
 	else
 	{
-		console->WriteLine((const UTF8Char*)"Error in opening video capture");
+		console->WriteLineC(UTF8STRC("Error in opening video capture"));
 	}
 	SDEL_CLASS(csConv);
 	SDEL_CLASS(exporter);

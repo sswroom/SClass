@@ -36,10 +36,10 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	NEW_CLASS(smake, IO::SMake((const UTF8Char*)"SMake.cfg", 0, verbose?console:0));
 	if (smake->IsLoadFailed())
 	{
-		console->WriteLine((const UTF8Char*)"Error in loading SMake.cfg");
+		console->WriteLineC(UTF8STRC("Error in loading SMake.cfg"));
 		Text::StringBuilderUTF8 sb;
 		smake->GetErrorMsg(&sb);
-		console->WriteLine(sb.ToString());
+		console->WriteLineC(sb.ToString(), sb.GetLength());
 	}
 	else
 	{
@@ -68,7 +68,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 						sb.Append(cfg->name);
 						sb.AppendC(UTF8STRC(" = "));
 						sb.Append(cfg->value);
-						console->WriteLine(sb.ToString());
+						console->WriteLineC(sb.ToString(), sb.GetLength());
 						j++;
 					}
 				}
@@ -108,7 +108,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 							Text::StringBuilderUTF8 sb;
 							smake->GetErrorMsg(&sb);
 							console->SetTextColor(IO::ConsoleWriter::CC_RED, IO::ConsoleWriter::CC_BLACK);
-							console->WriteLine(sb.ToString());
+							console->WriteLineC(sb.ToString(), sb.GetLength());
 							console->ResetTextColor();
 						}
 					}
@@ -119,7 +119,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 						sb.Append(cmdLines[i]);
 						sb.AppendC(UTF8STRC(" not found"));
 						console->SetTextColor(IO::ConsoleWriter::CC_RED, IO::ConsoleWriter::CC_BLACK);
-						console->WriteLine(sb.ToString());
+						console->WriteLineC(sb.ToString(), sb.GetLength());
 						console->ResetTextColor();
 					}
 				}
@@ -129,13 +129,13 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	}
 	if (showHelp)
 	{
-		console->WriteLine((const UTF8Char*)"Usage: smake [Options] [File To Compile]");
-		console->WriteLine((const UTF8Char*)"Options:");
-		console->WriteLine((const UTF8Char*)"-D[object name]    Display object related file");
-		console->WriteLine((const UTF8Char*)"-V                 Verbose");
-		console->WriteLine((const UTF8Char*)"-a                 Assembly listing");
-		console->WriteLine((const UTF8Char*)"-q                 Quiet");
-		console->WriteLine((const UTF8Char*)"-s                 Single Thread");
+		console->WriteLineC(UTF8STRC("Usage: smake [Options] [File To Compile]"));
+		console->WriteLineC(UTF8STRC("Options:"));
+		console->WriteLineC(UTF8STRC("-D[object name]    Display object related file"));
+		console->WriteLineC(UTF8STRC("-V                 Verbose"));
+		console->WriteLineC(UTF8STRC("-a                 Assembly listing"));
+		console->WriteLineC(UTF8STRC("-q                 Quiet"));
+		console->WriteLineC(UTF8STRC("-s                 Single Thread"));
 	}
 	DEL_CLASS(smake);
 	DEL_CLASS(console);

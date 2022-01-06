@@ -9,7 +9,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	Sync::Thread::Sleep(10000);
 	while (true)
 	{
-		console.WriteLine((const UTF8Char*)"Console Test");
+		console.WriteLineC(UTF8STRC("Console Test");
 		Sync::Thread::Sleep(1000);
 	}
 	return 0;

@@ -287,9 +287,9 @@ Int32 MemCheckError()
 		Text::StrInt32(buff, mcMemoryCnt);
 		if (console == 0)
 			console = MemOpenWriter();
-		console->Write((const UTF8Char*)"Memory leaks occurs for ");
+		console->WriteStrC(UTF8STRC("Memory leaks occurs for ");
 		console->Write(buff);
-		console->Write((const UTF8Char*)" times at ");
+		console->WriteStrC(UTF8STRC(" times at ");
 		Data::DateTime dt;
 		dt.SetCurrTimeUTC();
 		dt.ToString(buff, "yyyy-MM-dd HH:mm:ss");

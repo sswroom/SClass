@@ -25,7 +25,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			sb.AppendI64(i);
 			sb.AppendC(UTF8STRC(" != "));
 			sb.AppendI64(j);
-			console->WriteLine(sb.ToString());
+			console->WriteLineC(sb.ToString(), sb.GetLength());
 			succ = false;
 			break;
 		}
@@ -43,7 +43,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				sb.AppendI64(i);
 				sb.AppendC(UTF8STRC(" != "));
 				sb.AppendI64(j);
-				console->WriteLine(sb.ToString());
+				console->WriteLineC(sb.ToString(), sb.GetLength());
 				succ = false;
 				break;
 			}
@@ -62,7 +62,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				sb.AppendI64(i);
 				sb.AppendC(UTF8STRC(" != "));
 				sb.AppendI64(j);
-				console->WriteLine(sb.ToString());
+				console->WriteLineC(sb.ToString(), sb.GetLength());
 				succ = false;
 				break;
 			}
@@ -81,7 +81,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				sb.AppendI64(i);
 				sb.AppendC(UTF8STRC(" != "));
 				sb.AppendI64(j);
-				console->WriteLine(sb.ToString());
+				console->WriteLineC(sb.ToString(), sb.GetLength());
 				succ = false;
 				break;
 			}
@@ -100,7 +100,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				sb.AppendI64(i);
 				sb.AppendC(UTF8STRC(" != "));
 				sb.AppendI64(j);
-				console->WriteLine(sb.ToString());
+				console->WriteLineC(sb.ToString(), sb.GetLength());
 				succ = false;
 				break;
 			}
@@ -110,7 +110,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 
 	if (succ)
 	{
-		console->WriteLine((const UTF8Char*)"Success");
+		console->WriteLineC(UTF8STRC("Success"));
 	}
 	DEL_CLASS(console);
 	return 0;

@@ -16,7 +16,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		clk.Start();
 		Sync::Thread::Sleep(1000);
 		Text::StrInt64(sbuff, clk.GetTimeDiffus());
-		console.Write((const UTF8Char*)"Time used(us): ");
+		console.WriteStrC(UTF8STRC("Time used(us): ");
 		console.WriteLine(sbuff);
 	}
 	return 0;

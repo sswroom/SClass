@@ -204,7 +204,7 @@ Int32 MemCheckError()
 		console = MemOpenWriter();
 		console->WriteStrC(UTF8STRC("Memory leaks occurs for "));
 		console->WriteStrC(buff, (UOSInt)(sptr - buff));
-		console->WriteLine((const UTF8Char*)" times");
+		console->WriteLineC(UTF8STRC(" times"));
 		delete console;
 		found = true;
 	}

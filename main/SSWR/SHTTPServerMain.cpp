@@ -49,7 +49,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("Listening to port "));
 	sb.AppendI32(port);
-	console->WriteLine(sb.ToString());
+	console->WriteLineC(sb.ToString(), sb.GetLength());
 	NEW_CLASS(sockf, Net::OSSocketFactory(true));
 	NEW_CLASS(hdlr, Net::WebServer::HTTPDirectoryHandler(path, true, 65536, true));
 	NEW_CLASS(svr, Net::WebServer::WebListener(sockf, 0, hdlr, port, 120, 8, (const UTF8Char*)"sswr/1.0", false, true));
@@ -59,7 +59,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	}
 	else
 	{
-		console->WriteLine((const UTF8Char*)"Error in listening port");
+		console->WriteLineC(UTF8STRC("Error in listening port"));
 	}
 	DEL_CLASS(svr);
 	hdlr->Release();

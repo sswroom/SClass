@@ -259,7 +259,7 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnConvFileClicked(void *userObj
 	sarr[colCnt + 1] = (const UTF8Char*)"OutY";
 	sb.ClearStr();
 	sb.AppendCSV(sarr, colCnt + 2);
-	writer->WriteLine(sb.ToString());
+	writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 	Double inX;
 	Double inY;
@@ -300,7 +300,7 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnConvFileClicked(void *userObj
 		}
 		sb.ClearStr();
 		sb.AppendCSV(sarr, colCnt + 2);
-		writer->WriteLine(sb.ToString());
+		writer->WriteLineC(sb.ToString(), sb.GetLength());
 	}
 
 	MemFree(strBuff);

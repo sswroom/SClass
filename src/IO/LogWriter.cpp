@@ -22,7 +22,7 @@ IO::LogWriter::~LogWriter()
 	DEL_CLASS(this->sb);
 }
 
-Bool IO::LogWriter::Write(const UTF8Char *str, UOSInt nChar)
+Bool IO::LogWriter::WriteStrC(const UTF8Char *str, UOSInt nChar)
 {
 	this->mut->Lock();
 	sb->AppendC(str, nChar);
@@ -31,7 +31,7 @@ Bool IO::LogWriter::Write(const UTF8Char *str, UOSInt nChar)
 	return true;
 }
 
-Bool IO::LogWriter::Write(const UTF8Char *str)
+Bool IO::LogWriter::WriteStr(const UTF8Char *str)
 {
 	this->mut->Lock();
 	sb->Append(str);
@@ -40,7 +40,7 @@ Bool IO::LogWriter::Write(const UTF8Char *str)
 	return true;
 }
 
-Bool IO::LogWriter::WriteLine(const UTF8Char *str, UOSInt nChar)
+Bool IO::LogWriter::WriteLineC(const UTF8Char *str, UOSInt nChar)
 {
 	this->mut->Lock();
 	sb->AppendC(str, nChar);

@@ -156,7 +156,7 @@ public:
 		{
 			sptr = Text::StrConcat(sptr, (const UTF8Char*)"0");
 		}
-		this->writer->Write(sbuff);
+		this->writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
 		i = 0;
 		while (i < nPoints)
 		{
@@ -171,7 +171,7 @@ public:
 			sptr = Text::StrConcat(sptr, (const UTF8Char*)"}");
 			mapPts += 2;
 			scnPts += 2;
-			this->writer->Write(sbuff);
+			this->writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
 			i++;
 		}
 
@@ -2505,7 +2505,7 @@ Map::IMapDrawLayer *Map::MapConfig2TGen::GetDrawLayer(const UTF8Char *name, Data
 	NEW_CLASS(cip, Map::CIPLayer2(name));
 	if (cip->IsError())
 	{
-		errWriter->Write((const UTF8Char*)"Error in loading ");
+		errWriter->WriteStrC(UTF8STRC("Error in loading "));
 		errWriter->WriteLine(name);
 		DEL_CLASS(cip);
 		return 0;

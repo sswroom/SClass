@@ -16,21 +16,21 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("Name = "));
 		sb.Append(info->GetName());
-		console.WriteLine(sb.ToString());
+		console.WriteLineC(sb.ToString(), sb.GetLength());
 	}
 	if (info->GetDesc())
 	{
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("Desc = "));
 		sb.Append(info->GetDesc());
-		console.WriteLine(sb.ToString());
+		console.WriteLineC(sb.ToString(), sb.GetLength());
 	}
 	if (info->GetMonitorID())
 	{
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("MonitorID = "));
 		sb.Append(info->GetMonitorID());
-		console.WriteLine(sb.ToString());
+		console.WriteLineC(sb.ToString(), sb.GetLength());
 	}
 	DEL_CLASS(info);
 	return 0;

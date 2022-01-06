@@ -263,7 +263,7 @@ Bool Text::HTMLUtil::HTMLGetText(Text::EncodingFactory *encFact, const UInt8 *bu
 						if (!lastIsSpace)
 						{
 							lastIsSpace = true;
-							wmstm->Write((const UTF8Char*)" ", 1);
+							wmstm->Write((const UInt8*)" ", 1);
 						}
 					}
 					else if (c == '&')
@@ -275,19 +275,19 @@ Bool Text::HTMLUtil::HTMLGetText(Text::EncodingFactory *encFact, const UInt8 *bu
 								if (!lastIsSpace)
 								{
 									lastIsSpace = true;
-									wmstm->Write((const UTF8Char*)" ", 1);
+									wmstm->Write((const UInt8*)" ", 1);
 								}
 							}
 							else
 							{
-								wmstm->Write((const UTF8Char*)" ", 1);
+								wmstm->Write((const UInt8*)" ", 1);
 								lastIsSpace = true;
 							}
 							csptr += 5;
 						}
 						else
 						{
-							wmstm->Write((const UTF8Char*)"&", 1);
+							wmstm->Write((const UInt8*)"&", 1);
 							lastIsSpace = false;
 						}
 					}
@@ -317,12 +317,12 @@ Bool Text::HTMLUtil::HTMLGetText(Text::EncodingFactory *encFact, const UInt8 *bu
 				{
 					if (!lastIsSpace)
 					{
-						wmstm->Write((const UTF8Char*)" ", 1);
+						wmstm->Write((const UInt8*)" ", 1);
 					}					
 				}
 				else
 				{
-					wmstm->Write((const UTF8Char*)"\r\n", 2);
+					wmstm->Write((const UInt8*)"\r\n", 2);
 				}
 				lastIsSpace = true;
 				lastType = 0;

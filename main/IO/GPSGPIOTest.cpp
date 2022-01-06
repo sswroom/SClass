@@ -31,7 +31,7 @@ void __stdcall OnGPSPos(void *userObj, Map::GPSTrack::GPSRecord *record)
 	sb.AppendI32(record->nSateUsed);
 	sb.AppendC(UTF8STRC(", nSateView = "));
 	sb.AppendI32(record->nSateView);
-	console->WriteLine(sb.ToString());
+	console->WriteLineC(sb.ToString(), sb.GetLength());
 }
 
 Int32 MyMain(Core::IProgControl *progCtrl)
@@ -51,7 +51,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	Sync::Thread::SetPriority(Sync::Thread::TP_REALTIME);
 	sb.AppendC(UTF8STRC("Run using GPIO pin "));
 	sb.AppendI32(pinNum);
-	console->WriteLine(sb.ToString());
+	console->WriteLineC(sb.ToString(), sb.GetLength());
 
 	NEW_CLASS(gpio, IO::GPIOControl());
 	NEW_CLASS(port, IO::RS232GPIO(gpio, pinNum, 255, 9600));

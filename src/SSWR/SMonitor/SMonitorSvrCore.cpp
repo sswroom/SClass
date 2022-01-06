@@ -1166,7 +1166,7 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(IO::Writer *writer, Media::Draw
 	}
 	if (cfg == 0)
 	{
-		writer->WriteLine((const UTF8Char*)"Config file not found");
+		writer->WriteLineC(UTF8STRC("Config file not found"));
 	}
 	else
 	{
@@ -1210,7 +1210,7 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(IO::Writer *writer, Media::Draw
 			NEW_CLASS(this->dbMut, Sync::Mutex());
 			if (this->db == 0)
 			{
-				writer->WriteLine((const UTF8Char*)"Error in connecting to mysql database");
+				writer->WriteLineC(UTF8STRC("Error in connecting to mysql database"));
 			}
 			else
 			{
@@ -1228,7 +1228,7 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(IO::Writer *writer, Media::Draw
 				NEW_CLASS(this->dbMut, Sync::Mutex());
 				if (this->db == 0)
 				{
-					writer->WriteLine((const UTF8Char*)"Error in connecting to odbc database");
+					writer->WriteLineC(UTF8STRC("Error in connecting to odbc database"));
 				}
 				else
 				{
@@ -1237,7 +1237,7 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(IO::Writer *writer, Media::Draw
 			}
 			else
 			{
-				writer->WriteLine((const UTF8Char*)"Config DSN/MySQLServer not found");
+				writer->WriteLineC(UTF8STRC("Config DSN/MySQLServer not found"));
 			}
 		}
 
@@ -1271,7 +1271,7 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(IO::Writer *writer, Media::Draw
 						DEL_CLASS(this->listener);
 						this->listener = 0;
 						this->initErr = true;
-						writer->WriteLine((const UTF8Char*)"Error in listening web port");
+						writer->WriteLineC(UTF8STRC("Error in listening web port"));
 					}
 					else
 					{
@@ -1281,17 +1281,17 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(IO::Writer *writer, Media::Draw
 				}
 				else
 				{
-					writer->WriteLine((const UTF8Char*)"Config WebPort invalid");
+					writer->WriteLineC(UTF8STRC("Config WebPort invalid"));
 				}
 			}
 			else
 			{
-				writer->WriteLine((const UTF8Char*)"Config HTTPFiles not valid");
+				writer->WriteLineC(UTF8STRC("Config HTTPFiles not valid"));
 			}
 		}
 		else
 		{
-			writer->WriteLine((const UTF8Char*)"Config WebPort not found");
+			writer->WriteLineC(UTF8STRC("Config WebPort not found"));
 		}
 
 		s = cfg->GetValue((const UTF8Char*)"ClientPort");
@@ -1306,17 +1306,17 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(IO::Writer *writer, Media::Draw
 					DEL_CLASS(this->cliSvr);
 					this->cliSvr = 0;
 					this->initErr = true;
-					writer->WriteLine((const UTF8Char*)"Error in listening client port");
+					writer->WriteLineC(UTF8STRC("Error in listening client port"));
 				}
 			}
 			else
 			{
-				writer->WriteLine((const UTF8Char*)"Config ClientPort invalid");
+				writer->WriteLineC(UTF8STRC("Config ClientPort invalid"));
 			}
 		}
 		else
 		{
-			writer->WriteLine((const UTF8Char*)"Config ClientPort not found");
+			writer->WriteLineC(UTF8STRC("Config ClientPort not found"));
 		}
 
 		s = cfg->GetValue((const UTF8Char*)"DataUDPPort");
@@ -1332,17 +1332,17 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(IO::Writer *writer, Media::Draw
 				{
 					DEL_CLASS(this->dataUDP);
 					this->dataUDP = 0;
-					writer->WriteLine((const UTF8Char*)"Error in listening data UDP port");
+					writer->WriteLineC(UTF8STRC("Error in listening data UDP port"));
 				}
 			}
 			else
 			{
-				writer->WriteLine((const UTF8Char*)"Config DataUDPPort invalid");
+				writer->WriteLineC(UTF8STRC("Config DataUDPPort invalid"));
 			}
 		}
 		else
 		{
-			writer->WriteLine((const UTF8Char*)"Config DataUDPPort not found");
+			writer->WriteLineC(UTF8STRC("Config DataUDPPort not found"));
 		}
 
 		DEL_CLASS(cfg);

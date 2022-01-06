@@ -27,7 +27,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("t = "));
 	Text::SBAppendF64(&sb, t);
-	console->WriteLine(sb.ToString());
+	console->WriteLineC(sb.ToString(), sb.GetLength());
 	DEL_CLASS(console);
 	return 0;
 }

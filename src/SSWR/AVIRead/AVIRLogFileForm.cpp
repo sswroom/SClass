@@ -116,7 +116,7 @@ void SSWR::AVIRead::AVIRLogFileForm::EventMenuClicked(UInt16 cmdId)
 					dt.ToLocalTime();
 					sptr = dt.ToString(sbuff);
 					writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
-					writer->WriteLine(sb->ToString());
+					writer->WriteLineC(sb->ToString(), sb->GetLength());
 					i++;
 				}
 				DEL_CLASS(writer);

@@ -598,7 +598,7 @@ void SSWR::AVIRead::AVIRMediaForm::EventMenuClicked(UInt16 cmdId)
 				video = (Media::IVideoSource*)this->popMedia;
 				NEW_CLASS(fs, IO::FileStream(dlg->GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 				NEW_CLASS(writer, Text::UTF8Writer(fs));
-				writer->WriteLine((const UTF8Char*)"# timecode format v2");
+				writer->WriteLineC(UTF8STRC("# timecode format v2"));
 				j = video->GetFrameCount();
 				if (j >= 0)
 				{

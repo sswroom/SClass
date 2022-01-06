@@ -969,7 +969,7 @@ Bool SSWR::AVIRead::AVIRImageControl::SaveSetting()
 		Text::SBAppendF64(&sb, status->setting.contrast);
 		sb.AppendC(UTF8STRC("\t"));
 		Text::SBAppendF64(&sb, status->setting.gamma);
-		writer->WriteLine(sb.ToString());
+		writer->WriteLineC(sb.ToString(), sb.GetLength());
 		i++;
 	}
 	mutUsage.EndUse();

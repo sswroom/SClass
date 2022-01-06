@@ -74,12 +74,12 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		NEW_CLASS(sockf, Net::OSSocketFactory(false));
 		if ((s = cfg->GetValue((const UTF8Char*)"ListenPort")) == 0 || !s->ToUInt16(&listenPort))
 		{
-			console->WriteLine((const UTF8Char*)"Config ListenPort is not valid");
+			console->WriteLineC(UTF8STRC("Config ListenPort is not valid"));
 			succ = false;
 		}
 		if ((s = cfg->GetValue((const UTF8Char*)"ForwardPort")) == 0 || !s->ToUInt16(&forwardPort))
 		{
-			console->WriteLine((const UTF8Char*)"Config ForwardPort is not valid");
+			console->WriteLineC(UTF8STRC("Config ForwardPort is not valid"));
 			succ = false;
 		}
 
@@ -102,12 +102,12 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			NEW_CLASS(svr, Net::WebServer::WebListener(sockf, 0, hdlr, listenPort, 120, 4, (const UTF8Char*)"sswr/1.0", false, true));
 			if (!svr->IsError())
 			{
-				console->WriteLine((const UTF8Char*)"HTTP Forwarding started");
+				console->WriteLineC(UTF8STRC("HTTP Forwarding started"));
 				progCtrl->WaitForExit(progCtrl);
 			}
 			else
 			{
-				console->WriteLine((const UTF8Char*)"Error in listening port");
+				console->WriteLineC(UTF8STRC("Error in listening port"));
 			}
 			DEL_CLASS(svr);
 			hdlr->Release();

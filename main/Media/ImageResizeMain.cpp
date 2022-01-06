@@ -22,7 +22,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	//UTF8Char **argv = progCtrl->GetCommandLines(progCtrl, &cmdCnt);
 /*	if (cmdCnt != 4)
 	{
-		console.WriteLine((const UTF8Char*)"Error in parameters, should be ImageResize [srcFile] [destFile] [size]");
+		console.WriteLineC(UTF8STRC("Error in parameters, should be ImageResize [srcFile] [destFile] [size]");
 		return 1;
 	}*/
 
@@ -35,7 +35,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("Error in parsing size: "));
 		sb.Append(argv[3]);
-		console.WriteLine(sb.ToString());
+		console.WriteLineC(sb.ToString(), sb.GetLength());
 		return 1;
 	}*/
 	
@@ -53,14 +53,14 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("Error in opening srcFile: "));
 		sb.Append(srcFile);
-		console.WriteLine(sb.ToString());
+		console.WriteLineC(sb.ToString(), sb.GetLength());
 	}
 	else if ((imgList = (Media::ImageList*)parser.ParseFile(fd, 0, IO::ParserType::ImageList)) == 0)
 	{
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("Error in parsing srcFile: "));
 		sb.Append(srcFile);
-		console.WriteLine(sb.ToString());
+		console.WriteLineC(sb.ToString(), sb.GetLength());
 	}
 	else
 	{
@@ -90,7 +90,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("Error in saving destFile: "));
 				sb.Append(destFile);
-				console.WriteLine(sb.ToString());
+				console.WriteLineC(sb.ToString(), sb.GetLength());
 			}
 			DEL_CLASS(fs);
 			DEL_CLASS(imgList);
@@ -100,7 +100,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Error in resizing image: "));
 			sb.Append(srcFile);
-			console.WriteLine(sb.ToString());
+			console.WriteLineC(sb.ToString(), sb.GetLength());
 		}
 	}
 	DEL_CLASS(fd);
@@ -109,7 +109,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	sb.AppendC(UTF8STRC("Time used = "));
 	Text::SBAppendF64(&sb, t);
 	sb.AppendC(UTF8STRC("s"));
-	console.WriteLine(sb.ToString());
+	console.WriteLineC(sb.ToString(), sb.GetLength());
 
 	return ret;
 }

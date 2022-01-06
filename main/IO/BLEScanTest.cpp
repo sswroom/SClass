@@ -26,7 +26,7 @@ void __stdcall OnScanResult(void *userObj, UInt64 mac, Int32 rssi, const Char *n
 	}
 	sb.AppendC(UTF8STRC(", vendor="));
 	sb.Append((const UTF8Char*)Net::MACInfo::GetMACInfo(mac)->name);
-	console->WriteLine(sb.ToString());
+	console->WriteLineC(sb.ToString(), sb.GetLength());
 }
 
 Int32 MyMain(Core::IProgControl *progCtrl)
@@ -48,12 +48,12 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		sb.AppendC(UTF8STRC(" ("));
 		sb.Append(IO::BTUtil::GetManufacturerName(ctrl->GetManufacturer()));
 		sb.AppendC(UTF8STRC(")"));
-		console->WriteLine(sb.ToString());
+		console->WriteLineC(sb.ToString(), sb.GetLength());
 
 		ctrl->LEScanHandleResult(OnScanResult, 0);
 		if (ctrl->LEScanBegin())
 		{
-			console->WriteLine((const UTF8Char*)"Started scanning");
+			console->WriteLineC(UTF8STRC("Started scanning");
 			Sync::Thread::Sleep(10000);
 			ctrl->LEScanEnd();
 		}
@@ -84,7 +84,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	NEW_CLASS(capturer, IO::BTCapturer());
 	if (capturer->IsError())
 	{
-		console.WriteLine((const UTF8Char*)"Error in initializing Bluetooth");
+		console.WriteLineC(UTF8STRC("Error in initializing Bluetooth"));
 	}
 	else
 	{
@@ -98,17 +98,17 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		{
 			sb.AppendC(UTF8STRC("Error in starting web server at port "));
 			sb.AppendI32(webPort);
-			console.WriteLine(sb.ToString());
+			console.WriteLineC(sb.ToString(), sb.GetLength());
 		}
 		else
 		{
 			if (!capturer->Start())
 			{
-				console.WriteLine((const UTF8Char*)"No BT interface found");
+				console.WriteLineC(UTF8STRC("No BT interface found"));
 			}
 			else
 			{
-				console.WriteLine((const UTF8Char*)"BLEScanTest started");
+				console.WriteLineC(UTF8STRC("BLEScanTest started"));
 				progCtrl->WaitForExit(progCtrl);
 				capturer->StoreStatus();
 				capturer->Stop();

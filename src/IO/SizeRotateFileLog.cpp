@@ -131,7 +131,7 @@ void IO::SizeRotateFileLog::LogAdded(Data::DateTime *time, const WChar *logMsg, 
 		Text::StringBuilder sb;
 		sb.Append(buff);
 		sb.Append(logMsg);
-		log->WriteLine(sb.ToString());
+		log->WriteLineC(sb.ToString(), sb.GetLength());
 	}
 	mut->Unlock();
 }

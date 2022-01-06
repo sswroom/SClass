@@ -30,7 +30,7 @@ Bool Net::WebServer::PrintLogWebResponse::SetStatusCode(Net::WebStatus::StatusCo
 		}
 		sb.AppendC(UTF8STRC("Status Code = "));
 		sb.AppendI32(code);
-		this->writer->WriteLine(sb.ToString());
+		this->writer->WriteLineC(sb.ToString(), sb.GetLength());
 		return true;
 	}
 	return false;
@@ -53,7 +53,7 @@ Bool Net::WebServer::PrintLogWebResponse::AddHeader(const UTF8Char *name, const 
 		sb.Append(name);
 		sb.AppendC(UTF8STRC(": "));
 		sb.Append(value);
-		this->writer->WriteLine(sb.ToString());
+		this->writer->WriteLineC(sb.ToString(), sb.GetLength());
 		return true;
 	}
 	return false;

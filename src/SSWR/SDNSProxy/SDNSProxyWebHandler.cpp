@@ -100,7 +100,7 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::ReqV4Req(SSWR::SDNSProxy::S
 
 	sbOut.AppendC(UTF8STRC("</td><td valign=\"top\">\r\n"));
 
-	if (req->GetQueryValueStr((const UTF8Char*)"qry", sbuff, 128))
+	if (req->GetQueryValueStr(UTF8STRC("qry"), sbuff, 128))
 	{
 		Data::ArrayList<Net::DNSClient::RequestAnswer *> ansList;
 		Net::DNSClient::RequestAnswer *ans;
@@ -200,7 +200,7 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::ReqV6Req(SSWR::SDNSProxy::S
 
 	sbOut.AppendC(UTF8STRC("</td><td valign=\"top\">\r\n"));
 
-	if (req->GetQueryValueStr((const UTF8Char*)"qry", sbuff, 128))
+	if (req->GetQueryValueStr(UTF8STRC("qry"), sbuff, 128))
 	{
 		Data::ArrayList<Net::DNSClient::RequestAnswer *> ansList;
 		Net::DNSClient::RequestAnswer *ans;
@@ -300,7 +300,7 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::ReqOthReq(SSWR::SDNSProxy::
 
 	sbOut.AppendC(UTF8STRC("</td><td valign=\"top\">\r\n"));
 
-	if (req->GetQueryValueStr((const UTF8Char*)"qry", sbuff, 128))
+	if (req->GetQueryValueStr(UTF8STRC("qry"), sbuff, 128))
 	{
 		Data::ArrayList<Net::DNSClient::RequestAnswer *> ansList;
 		Net::DNSClient::RequestAnswer *ans;
@@ -380,7 +380,7 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::TargetReq(SSWR::SDNSProxy::
 	UOSInt j;
 	UInt32 targetIP = 0;
 	OSInt targetIndex = -1;
-	req->GetQueryValueU32((const UTF8Char*)"qry", &targetIP);
+	req->GetQueryValueU32(UTF8STRC("qry"), &targetIP);
 	me->proxy->GetTargetList(&targetList);
 
 	i = 0;
@@ -447,7 +447,7 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::BlacklistReq(SSWR::SDNSProx
 	if (req->GetReqMethod() == Net::WebServer::IWebRequest::RequestMethod::HTTP_POST)
 	{
 		req->ParseHTTPForm();
-		Text::String *blackList = req->GetHTTPFormStr((const UTF8Char*)"blacklist");
+		Text::String *blackList = req->GetHTTPFormStr(UTF8STRC("blacklist"));
 		if (blackList && blackList->v[0] != 0)
 		{
 			me->proxy->AddBlackList(blackList);
@@ -520,7 +520,7 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::ClientReq(SSWR::SDNSProxy::
 	SSWR::SDNSProxy::SDNSProxyCore::ClientInfo *selCli = 0;
 	me->core->GetClientList(&cliList);
 
-	req->GetQueryValueU32((const UTF8Char*)"cliId", &selCliId);
+	req->GetQueryValueU32(UTF8STRC("cliId"), &selCliId);
 
 	i = 0;
 	j = cliList.GetCount();

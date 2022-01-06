@@ -284,7 +284,7 @@ Bool IO::BTDevLog::StoreFile(const UTF8Char *fileName)
 		sb.AppendI32(log->measurePower);
 		sb.AppendChar('\t', 1);
 		sb.AppendU32((UInt32)log->advType);
-		writer->WriteLine(sb.ToString());
+		writer->WriteLineC(sb.ToString(), sb.GetLength());
 		i++;
 	}
 	DEL_CLASS(writer);

@@ -258,7 +258,7 @@ void __stdcall SSWR::AVIRead::AVIRBenchmarkForm::OnSaveClicked(void *userObj)
 		{
 			sb.AppendC(UTF8STRC("-"));
 		}
-		writer->WriteLine(sb.ToString());
+		writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 		Manage::CPUInfo cpu;
 		sb.ClearStr();
@@ -271,7 +271,7 @@ void __stdcall SSWR::AVIRead::AVIRBenchmarkForm::OnSaveClicked(void *userObj)
 		{
 			sb.AppendC(UTF8STRC("-"));
 		}
-		writer->WriteLine(sb.ToString());
+		writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 		Data::ArrayList<IO::SystemInfo::RAMInfo*> ramList;
 		IO::SystemInfo::RAMInfo *ram;
@@ -312,12 +312,12 @@ void __stdcall SSWR::AVIRead::AVIRBenchmarkForm::OnSaveClicked(void *userObj)
 			sb.AppendU32(ram->totalWidth);
 			sb.AppendC(UTF8STRC("\t"));
 			sb.AppendU64(ram->memorySize);
-			writer->WriteLine(sb.ToString());
+			writer->WriteLineC(sb.ToString(), sb.GetLength());
 			i++;
 		}
 		sysInfo.FreeRAMInfo(&ramList);
 
-		writer->WriteLine((const UTF8Char*)"Result:");
+		writer->WriteLineC(UTF8STRC("Result:"));
 		i = 0;
 		j = me->resultList->GetCount();
 		while (i < j)
@@ -343,7 +343,7 @@ void __stdcall SSWR::AVIRead::AVIRBenchmarkForm::OnSaveClicked(void *userObj)
 			sb.AppendUOSInt(result->testSize);
 			sb.AppendC(UTF8STRC("\t"));
 			Text::SBAppendF64(&sb, result->resultRate);
-			writer->WriteLine(sb.ToString());
+			writer->WriteLineC(sb.ToString(), sb.GetLength());
 			i++;
 		}
 		DEL_CLASS(writer);

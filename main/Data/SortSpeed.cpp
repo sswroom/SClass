@@ -87,7 +87,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	sb.AppendC(UTF8STRC(", time = "));
 	Text::SBAppendF64(&sb, t1);
 	sb.AppendC(UTF8STRC("s"));
-	console.WriteLine(sb.ToString());
+	console.WriteLineC(sb.ToString(), sb.GetLength());
 
 /*	clk->Start();
 	MemCopyANC(array2, array1, recordCnt * sizeof(Int32));
@@ -96,7 +96,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	sb.AppendC(UTF8STRC("Memory copy time = "));
 	sb.Append(t1);
 	sb.AppendC(UTF8STRC("s"));
-	console.WriteLine(sb.ToString());
+	console.WriteLineC(sb.ToString(), sb.GetLength());
 
 	NumberOfRec = 128;
 	while (NumberOfRec <= recordCnt)
@@ -153,7 +153,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		sb.AppendC(UTF8STRC(", Sort time = "));
 		Text::SBAppendF64(&sb, t1);
 		sb.AppendC(UTF8STRC("s"));
-		console.Write(sb.ToString());
+		console.WriteStrC(sb.ToString(), sb.GetLength());
 		valid = true;
 		i = 0;
 		while (i < NumberOfRec - 1)
@@ -167,11 +167,11 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		}
 		if (valid)
 		{
-			console.WriteLine((const UTF8Char*)", Result sorted");
+			console.WriteLineC(UTF8STRC(", Result sorted"));
 		}
 		else
 		{
-			console.WriteLine((const UTF8Char*)", Result wrong");
+			console.WriteLineC(UTF8STRC(", Result wrong"));
 		}
 		if (t1 >= 1.0)
 		{
@@ -273,7 +273,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		sb.AppendC(UTF8STRC(", Sort time = "));
 		Text::SBAppendF64(&sb, t1);
 		sb.AppendC(UTF8STRC("s"));
-		console.Write(sb.ToString());
+		console.WriteStrC(sb.ToString(), sb.GetLength());
 		valid = true;
 		i = 0;
 		while (i < NumberOfRec - 1)
@@ -287,11 +287,11 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		}
 		if (valid)
 		{
-			console.WriteLine((const UTF8Char*)", Result sorted");
+			console.WriteLineC(UTF8STRC(", Result sorted"));
 		}
 		else
 		{
-			console.WriteLine((const UTF8Char*)", Result wrong");
+			console.WriteLineC(UTF8STRC(", Result wrong"));
 		}
 		if (t1 >= 1.0)
 		{
@@ -315,7 +315,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		sb.AppendC(UTF8STRC(", Sort time = "));
 		Text::SBAppendF64(&sb, t1);
 		sb.AppendC(UTF8STRC("s"));
-		console.Write(sb.ToString());
+		console.WriteStrC(sb.ToString(), sb.GetLength());
 		valid = true;
 		i = 0;
 		while (i < NumberOfRec - 1)
@@ -329,11 +329,11 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		}
 		if (valid)
 		{
-			console.WriteLine((const UTF8Char*)", Result sorted");
+			console.WriteLineC(UTF8STRC(", Result sorted"));
 		}
 		else
 		{
-			console.WriteLine((const UTF8Char*)", Result wrong");
+			console.WriteLineC(UTF8STRC(", Result wrong"));
 		}
 		if (t1 >= 1.0)
 		{
@@ -355,7 +355,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		sb.AppendC(UTF8STRC(", Sort time = "));
 		Text::SBAppendF64(&sb, t1);
 		sb.AppendC(UTF8STRC("s"));
-		console.Write(sb.ToString());
+		console.WriteStrC(sb.ToString(), sb.GetLength());
 		valid = true;
 		i = 0;
 		while (i < NumberOfRec - 1)
@@ -369,11 +369,11 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		}
 		if (valid)
 		{
-			console.WriteLine((const UTF8Char*)", Result sorted");
+			console.WriteLineC(UTF8STRC(", Result sorted"));
 		}
 		else
 		{
-			console.WriteLine((const UTF8Char*)", Result wrong");
+			console.WriteLineC(UTF8STRC(", Result wrong"));
 		}
 		if (t1 >= 1.0)
 		{
@@ -391,7 +391,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	sb.AppendC(UTF8STRC("Pigeonhole Sort Single Thread Sort time = ");
 	sb.Append(t1);
 	sb.AppendC(UTF8STRC("s");
-	console.WriteLine(sb.ToString());
+	console.WriteLineC(sb.ToString(), sb.GetLength());
 
 	valid = true;
 	i = 0;
@@ -454,7 +454,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	sb.AppendC(UTF8STRC("SortResult.txt writen successfully, time = ");
 	sb.Append(t1);
 	sb.AppendC(UTF8STRC("s");
-	console.WriteLine(sb.ToString());
+	console.WriteLineC(sb.ToString(), sb.GetLength());
 	DEL_CLASS(mstm);*/
 	
 	DEL_CLASS(sort3);

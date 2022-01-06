@@ -305,11 +305,11 @@ Bool Net::RTSPClient::GetOptions(const UTF8Char *url, Data::ArrayList<const UTF8
 	NEW_CLASS(writer, IO::StreamWriter(stm, 65001));
 	writer->WriteStrC(UTF8STRC("OPTIONS "));
 	writer->WriteStr(url);
-	writer->WriteLine((const UTF8Char*)" RTSP/1.0");
+	writer->WriteLineC(UTF8STRC(" RTSP/1.0"));
 	writer->WriteStrC(UTF8STRC("CSeq: "));
 	Text::StrInt32(sbuff, reqId);
 	writer->WriteLine(sbuff);
-	writer->WriteLine((const UTF8Char*)"User-Agent: RTSPClient");
+	writer->WriteLineC(UTF8STRC("User-Agent: RTSPClient"));
 	writer->WriteLine();
 	DEL_CLASS(writer);
 	buff = stm->GetBuff(&buffSize);
@@ -353,11 +353,11 @@ Net::SDPFile *Net::RTSPClient::GetMediaInfo(const UTF8Char *url)
 	NEW_CLASS(writer, Text::UTF8Writer(stm));
 	writer->WriteStrC(UTF8STRC("DESCRIBE "));
 	writer->WriteStr(url);
-	writer->WriteLine((const UTF8Char*)" RTSP/1.0");
+	writer->WriteLineC(UTF8STRC(" RTSP/1.0"));
 	writer->WriteStrC(UTF8STRC("CSeq: "));
 	Text::StrInt32(sbuff, reqId);
 	writer->WriteLine(sbuff);
-	writer->WriteLine((const UTF8Char*)"Content-Type: application/sdp");
+	writer->WriteLineC(UTF8STRC("Content-Type: application/sdp"));
 	writer->WriteLine();
 	DEL_CLASS(writer);
 	buff = stm->GetBuff(&buffSize);
@@ -390,7 +390,7 @@ UTF8Char *Net::RTSPClient::SetupRTP(UTF8Char *sessIdOut, const UTF8Char *url, Ne
 	NEW_CLASS(writer, Text::UTF8Writer(stm));
 	writer->WriteStrC(UTF8STRC("SETUP "));
 	writer->WriteStr(url);
-	writer->WriteLine((const UTF8Char*)" RTSP/1.0");
+	writer->WriteLineC(UTF8STRC(" RTSP/1.0"));
 	writer->WriteStrC(UTF8STRC("CSeq: "));
 	Text::StrInt32(sbuff, reqId);
 	writer->WriteLine(sbuff);
@@ -515,7 +515,7 @@ Bool Net::RTSPClient::Play(const UTF8Char *url, const UTF8Char *sessId)
 	NEW_CLASS(writer, Text::UTF8Writer(stm));
 	writer->WriteStrC(UTF8STRC("PLAY "));
 	writer->WriteStr(url);
-	writer->WriteLine((const UTF8Char*)" RTSP/1.0");
+	writer->WriteLineC(UTF8STRC(" RTSP/1.0"));
 	writer->WriteStrC(UTF8STRC("CSeq: "));
 	Text::StrInt32(sbuff, reqId);
 	writer->WriteLine(sbuff);
@@ -553,7 +553,7 @@ Bool Net::RTSPClient::Close(const UTF8Char *url, const UTF8Char *sessId)
 	NEW_CLASS(writer, Text::UTF8Writer(stm));
 	writer->WriteStrC(UTF8STRC("TEARDOWN "));
 	writer->WriteStr(url);
-	writer->WriteLine((const UTF8Char*)" RTSP/1.0");
+	writer->WriteLineC(UTF8STRC(" RTSP/1.0"));
 	writer->WriteStrC(UTF8STRC("CSeq: "));
 	Text::StrInt32(sbuff, reqId);
 	writer->WriteLine(sbuff);

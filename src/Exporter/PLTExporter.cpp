@@ -72,12 +72,12 @@ Bool Exporter::PLTExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 	NEW_CLASS(writer, Text::UTF8Writer(stm));
 	refTime.SetValue(1899, 12, 30, 0, 0, 0, 0);
 
-	writer->WriteLine((const UTF8Char*)"OziExplorer Track Point File Version 2.0");
-	writer->WriteLine((const UTF8Char*)"WGS 84");
-	writer->WriteLine((const UTF8Char*)"Altitude is in Feet");
-	writer->WriteLine((const UTF8Char*)"Reserved 3");
-	writer->WriteLine((const UTF8Char*)"0,2,255,Ozi Track Log File,1"); //0,<line width>,<line color>,<description>,<track skip value>,<type: 0=normal, 10=closed polygon, 20=alarm zone>,<fill style>,<fill color>
-	writer->WriteLine((const UTF8Char*)"0"); //number of points
+	writer->WriteLineC(UTF8STRC("OziExplorer Track Point File Version 2.0"));
+	writer->WriteLineC(UTF8STRC("WGS 84"));
+	writer->WriteLineC(UTF8STRC("Altitude is in Feet"));
+	writer->WriteLineC(UTF8STRC("Reserved 3"));
+	writer->WriteLineC(UTF8STRC("0,2,255,Ozi Track Log File,1")); //0,<line width>,<line color>,<description>,<track skip value>,<type: 0=normal, 10=closed polygon, 20=alarm zone>,<fill style>,<fill color>
+	writer->WriteLineC(UTF8STRC("0")); //number of points
 	
 	i = 0;
 	j = track->GetTrackCnt();

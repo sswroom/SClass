@@ -34,7 +34,7 @@ UInt32 __stdcall IO::CortexControl::RecvThread(void *userObj)
 				Text::StringBuilder sb;
 				sb.Append(L"Recv: ");
 				sb.AppendHex(&buff[buffSize], recvSize, ' ', Text::StringBuilder::LBT_CRLF);
-				me->errWriter->WriteLine(sb.ToString());
+				me->errWriter->WriteLineC(sb.ToString(), sb.GetLength());
 			}
 			buffSize += recvSize;
 			recvSize = me->protoHdlr->ParseProtocol(me->stm, 0, 0, buff, buffSize);
@@ -239,7 +239,7 @@ Bool IO::CortexControl::GetFWVersion(Int32 *majorVer, Int32 *minorVer)
 		Text::StringBuilder sb;
 		sb.Append(L"Send: ");
 		sb.AppendHex(buff, packetSize, ' ', Text::StringBuilder::LBT_CRLF);
-		this->errWriter->WriteLine(sb.ToString());
+		this->errWriter->WriteLineC(sb.ToString(), sb.GetLength());
 	}
 	this->stm->Write(buff, packetSize);
 	while (!this->sendHasResult)
@@ -276,7 +276,7 @@ Bool IO::CortexControl::ReadDIO(Int32 *dioValues)
 		Text::StringBuilder sb;
 		sb.Append(L"Send: ");
 		sb.AppendHex(buff, packetSize, ' ', Text::StringBuilder::LBT_CRLF);
-		this->errWriter->WriteLine(sb.ToString());
+		this->errWriter->WriteLineC(sb.ToString(), sb.GetLength());
 	}
 	this->stm->Write(buff, packetSize);
 	while (!this->sendHasResult)
@@ -315,7 +315,7 @@ Bool IO::CortexControl::WriteDIO(Int32 outVal, Int32 outMask)
 		Text::StringBuilder sb;
 		sb.Append(L"Send: ");
 		sb.AppendHex(buff, packetSize, ' ', Text::StringBuilder::LBT_CRLF);
-		this->errWriter->WriteLine(sb.ToString());
+		this->errWriter->WriteLineC(sb.ToString(), sb.GetLength());
 	}
 	this->stm->Write(buff, packetSize);
 	while (!this->sendHasResult)
@@ -350,7 +350,7 @@ Bool IO::CortexControl::ReadVin(Int32 *voltage)
 		Text::StringBuilder sb;
 		sb.Append(L"Send: ");
 		sb.AppendHex(buff, packetSize, ' ', Text::StringBuilder::LBT_CRLF);
-		this->errWriter->WriteLine(sb.ToString());
+		this->errWriter->WriteLineC(sb.ToString(), sb.GetLength());
 	}
 	this->stm->Write(buff, packetSize);
 	while (!this->sendHasResult)
@@ -386,7 +386,7 @@ Bool IO::CortexControl::ReadVBatt(Int32 *voltage)
 		Text::StringBuilder sb;
 		sb.Append(L"Send: ");
 		sb.AppendHex(buff, packetSize, ' ', Text::StringBuilder::LBT_CRLF);
-		this->errWriter->WriteLine(sb.ToString());
+		this->errWriter->WriteLineC(sb.ToString(), sb.GetLength());
 	}
 	this->stm->Write(buff, packetSize);
 	while (!this->sendHasResult)
@@ -422,7 +422,7 @@ Bool IO::CortexControl::ReadOdometerCounter(Int32 *odoCount)
 		Text::StringBuilder sb;
 		sb.Append(L"Send: ");
 		sb.AppendHex(buff, packetSize, ' ', Text::StringBuilder::LBT_CRLF);
-		this->errWriter->WriteLine(sb.ToString());
+		this->errWriter->WriteLineC(sb.ToString(), sb.GetLength());
 	}
 	this->stm->Write(buff, packetSize);
 	while (!this->sendHasResult)
@@ -458,7 +458,7 @@ Bool IO::CortexControl::ResetOdometerCounter()
 		Text::StringBuilder sb;
 		sb.Append(L"Send: ");
 		sb.AppendHex(buff, packetSize, ' ', Text::StringBuilder::LBT_CRLF);
-		this->errWriter->WriteLine(sb.ToString());
+		this->errWriter->WriteLineC(sb.ToString(), sb.GetLength());
 	}
 	this->stm->Write(buff, packetSize);
 	while (!this->sendHasResult)
@@ -493,7 +493,7 @@ Bool IO::CortexControl::ReadEnvBrightness(Int32 *brightness)
 		Text::StringBuilder sb;
 		sb.Append(L"Send: ");
 		sb.AppendHex(buff, packetSize, ' ', Text::StringBuilder::LBT_CRLF);
-		this->errWriter->WriteLine(sb.ToString());
+		this->errWriter->WriteLineC(sb.ToString(), sb.GetLength());
 	}
 	this->stm->Write(buff, packetSize);
 	while (!this->sendHasResult)
@@ -529,7 +529,7 @@ Bool IO::CortexControl::ReadTemperature(Int32 *temperature)
 		Text::StringBuilder sb;
 		sb.Append(L"Send: ");
 		sb.AppendHex(buff, packetSize, ' ', Text::StringBuilder::LBT_CRLF);
-		this->errWriter->WriteLine(sb.ToString());
+		this->errWriter->WriteLineC(sb.ToString(), sb.GetLength());
 	}
 	this->stm->Write(buff, packetSize);
 	while (!this->sendHasResult)
@@ -565,7 +565,7 @@ Bool IO::CortexControl::PowerOff()
 		Text::StringBuilder sb;
 		sb.Append(L"Send: ");
 		sb.AppendHex(buff, packetSize, ' ', Text::StringBuilder::LBT_CRLF);
-		this->errWriter->WriteLine(sb.ToString());
+		this->errWriter->WriteLineC(sb.ToString(), sb.GetLength());
 	}
 	this->stm->Write(buff, packetSize);
 	while (!this->sendHasResult)
@@ -602,7 +602,7 @@ Bool IO::CortexControl::HDACodecPower(Bool turnOn)
 		Text::StringBuilder sb;
 		sb.Append(L"Send: ");
 		sb.AppendHex(buff, packetSize, ' ', Text::StringBuilder::LBT_CRLF);
-		this->errWriter->WriteLine(sb.ToString());
+		this->errWriter->WriteLineC(sb.ToString(), sb.GetLength());
 	}
 	this->stm->Write(buff, packetSize);
 	while (!this->sendHasResult)
@@ -637,7 +637,7 @@ Bool IO::CortexControl::SetWatchdogTimeout(UInt8 timeout)
 		Text::StringBuilder sb;
 		sb.Append(L"Send: ");
 		sb.AppendHex(buff, packetSize, ' ', Text::StringBuilder::LBT_CRLF);
-		this->errWriter->WriteLine(sb.ToString());
+		this->errWriter->WriteLineC(sb.ToString(), sb.GetLength());
 	}
 	this->stm->Write(buff, packetSize);
 	while (!this->sendHasResult)

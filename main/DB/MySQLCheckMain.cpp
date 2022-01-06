@@ -15,7 +15,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	IO::ConfigFile *cfg = IO::IniFile::ParseProgConfig(0);
 	if (cfg == 0)
 	{
-		console.WriteLine((const UTF8Char*)"Config file not found\r\n");
+		console.WriteLineC(UTF8STRC("Config file not found\r\n"));
 		return 1;
 	}
 	static const Char *cfgList[] = {
@@ -46,7 +46,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			sb.AppendC(UTF8STRC("Config "));
 			sb.Append((const UTF8Char*)cptr);
 			sb.AppendC(UTF8STRC(" not found"));
-			console.WriteLine(sb.ToString());
+			console.WriteLineC(sb.ToString(), sb.GetLength());
 			DEL_CLASS(cfg);
 			return 2;
 		}
@@ -88,7 +88,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	else
 	{
 		DEL_CLASS(cfg);
-		console.WriteLine((const UTF8Char*)"SMTPType must be PLAIN/SSL/STARTTLS");
+		console.WriteLineC(UTF8STRC("SMTPType must be PLAIN/SSL/STARTTLS"));
 		return 3;
 	}
 
@@ -96,17 +96,17 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	NEW_CLASS(sockf, Net::OSSocketFactory(false));
 	if (!sockf->DNSResolveIP(mysqlServer->v, &addr))
 	{
-		console.WriteLine((const UTF8Char*)"MySQLServer cannot be resolved");
+		console.WriteLineC(UTF8STRC("MySQLServer cannot be resolved"));
 		return 4;
 	}
 	else if (!mysqlPort->ToUInt16(&port))
 	{
-		console.WriteLine((const UTF8Char*)"MySQLPort is not valid");
+		console.WriteLineC(UTF8STRC("MySQLPort is not valid"));
 		return 5;
 	}
 	else if (!smtpPort->ToUInt16(&smtpIPort))
 	{
-		console.WriteLine((const UTF8Char*)"SMTPPort is not valid");
+		console.WriteLineC(UTF8STRC("SMTPPort is not valid"));
 		return 6;
 	}
 	else
@@ -114,7 +114,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		NEW_CLASS(cli, Net::MySQLTCPClient(sockf, &addr, port, mysqlUser, mysqlPassword, 0));
 		if (cli->IsError())
 		{
-			console.WriteLine((const UTF8Char*)"Error in connecting to MySQL server");
+			console.WriteLineC(UTF8STRC("Error in connecting to MySQL server"));
 			DEL_CLASS(cli);
 			retNum = 7;
 		}

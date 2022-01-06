@@ -299,10 +299,10 @@ Bool Net::Email::EmailMessage::WriteToStream(IO::Stream *stm)
 	{
 		header = this->headerList->GetItem(i);
 		stm->Write(header, Text::StrCharCnt(header));
-		stm->Write((const UTF8Char*)"\r\n", 2);
+		stm->Write((const UInt8*)"\r\n", 2);
 		i++;
 	}
-	stm->Write((const UTF8Char*)"\r\n", 2);
+	stm->Write((const UInt8*)"\r\n", 2);
 	stm->Write(this->content, this->contentLen);
 	return true;
 }

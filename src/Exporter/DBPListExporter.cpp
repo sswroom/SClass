@@ -82,15 +82,15 @@ Bool Exporter::DBPListExporter::ExportFile(IO::SeekableStream *stm, const UTF8Ch
 
 	sptr = Text::StrConcat(Text::EncodingFactory::GetInternetName(Text::StrConcat(lineBuff1, (const UTF8Char*)"<?xml version=\"1.0\" encoding=\""), this->codePage), (const UTF8Char*)"\"?>");
 	writer->WriteLine(lineBuff1);
-	writer->WriteLine((const UTF8Char*)"<!DOCTYPE plist PUBLIC \"-//Apple Computer//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">");
-	writer->WriteLine((const UTF8Char*)"<plist version=\"1.0\">");
-	writer->WriteLine((const UTF8Char*)"<array>");
+	writer->WriteLineC(UTF8STRC("<!DOCTYPE plist PUBLIC \"-//Apple Computer//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">"));
+	writer->WriteLineC(UTF8STRC("<plist version=\"1.0\">"));
+	writer->WriteLineC(UTF8STRC("<array>"));
 
 	sptr = lineBuff2;
 	colCnt = r->ColCount();
 	while (r->ReadNext())
 	{
-		writer->WriteLine((const UTF8Char*)"    <dict>");
+		writer->WriteLineC(UTF8STRC("    <dict>"));
 		sptr = lineBuff2;
 		colCnt = r->ColCount();
 		i = 0;
@@ -140,11 +140,11 @@ Bool Exporter::DBPListExporter::ExportFile(IO::SeekableStream *stm, const UTF8Ch
 			default:
 				if (r->GetStr(i, lineBuff2, 65536))
 				{
-					sptr = Text::StrConcat(Text::XML::ToXMLText(Text::StrConcat(lineBuff1, (const UTF8Char*)"        <string>"), lineBuff2), (const UTF8Char*)"</string>");
+					sptr = Text::StrConcatC(Text::XML::ToXMLText(Text::StrConcatC(lineBuff1, UTF8STRC("        <string>")), lineBuff2), UTF8STRC("</string>"));
 				}
 				else
 				{
-					sptr = Text::StrConcat(lineBuff1, (const UTF8Char*)"        <string>(null)</string>");
+					sptr = Text::StrConcatC(lineBuff1, UTF8STRC("        <string>(null)</string>"));
 				}
 				writer->WriteLineC(lineBuff1, (UOSInt)(sptr - lineBuff1));
 				break;
@@ -152,14 +152,14 @@ Bool Exporter::DBPListExporter::ExportFile(IO::SeekableStream *stm, const UTF8Ch
 
 			i++;
 		}
-		writer->WriteLine((const UTF8Char*)"    </dict>");
+		writer->WriteLineC(UTF8STRC("    </dict>"));
 	}
 	
 	MemFree(lineBuff2);
 	MemFree(lineBuff1);
 
-	writer->WriteLine((const UTF8Char*)"</array>");
-	writer->WriteLine((const UTF8Char*)"</plist>");
+	writer->WriteLineC(UTF8STRC("</array>"));
+	writer->WriteLineC(UTF8STRC("</plist>"));
 
 	db->CloseReader(r);
 	DEL_CLASS(writer);

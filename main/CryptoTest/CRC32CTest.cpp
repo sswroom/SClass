@@ -25,7 +25,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	hash->GetValue(hashVal);
 	Text::StrHexBytes(sbuff, hashVal, 4, 0);
 	console.WriteLine(sbuff);
-	console.WriteLine((const UTF8Char*)"8A9136AA");
+	console.WriteLineC(UTF8STRC("8A9136AA");
 	console.WriteLine();
 
 	i = 32;
@@ -38,7 +38,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	hash->GetValue(hashVal);
 	Text::StrHexBytes(sbuff, hashVal, 4, 0);
 	console.WriteLine(sbuff);
-	console.WriteLine((const UTF8Char*)"62A8AB43");
+	console.WriteLineC(UTF8STRC("62A8AB43");
 	console.WriteLine();
 
 	i = 32;
@@ -51,7 +51,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	hash->GetValue(hashVal);
 	Text::StrHexBytes(sbuff, hashVal, 4, 0);
 	console.WriteLine(sbuff);
-	console.WriteLine((const UTF8Char*)"113FDB5C");
+	console.WriteLineC(UTF8STRC("113FDB5C");
 	console.WriteLine();
 
 	DEL_CLASS(hash);

@@ -112,7 +112,7 @@ void __stdcall SSWR::AVIRead::AVIRLogExtractForm::OnExtractClicked(void *userObj
 					{
 						if (Text::StrStartsWith(sb1.ToString() + i + 1, sb2.ToString()))
 						{
-							writer->WriteLine(sb1.ToString());
+							writer->WriteLineC(sb1.ToString(), sb1.GetLength());
 						}
 					}
 					else if (typ == 1)

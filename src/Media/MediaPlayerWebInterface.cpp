@@ -30,7 +30,7 @@ Media::MediaPlayerWebInterface::~MediaPlayerWebInterface()
 
 void Media::MediaPlayerWebInterface::BrowseRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp)
 {
-	Text::String *fname = req->GetQueryValue((const UTF8Char*)"fname");
+	Text::String *fname = req->GetQueryValue(UTF8STRC("fname"));
 	if (this->iface->GetOpenedFile() == 0)
 	{
 		resp->RedirectURL(req, (const UTF8Char*)"/", 0);
@@ -69,19 +69,19 @@ void Media::MediaPlayerWebInterface::BrowseRequest(Net::WebServer::IWebRequest *
 	NEW_CLASS(mstm, IO::MemoryStream((const UTF8Char*)"SP.GPSWeb.GPSWebHandler.LoginFunc"));
 	NEW_CLASS(writer, Text::UTF8Writer(mstm));
 
-	writer->WriteLine((const UTF8Char*)"<html>");
-	writer->WriteLine((const UTF8Char*)"<head><title>HQMP Control</title>");
-	writer->WriteLine((const UTF8Char*)"</head>");
-	writer->WriteLine((const UTF8Char*)"<body>");
-	writer->WriteLine((const UTF8Char*)"<a href=\"/\">Back</a><br/><br/>");
+	writer->WriteLineC(UTF8STRC("<html>"));
+	writer->WriteLineC(UTF8STRC("<head><title>HQMP Control</title>"));
+	writer->WriteLineC(UTF8STRC("</head>"));
+	writer->WriteLineC(UTF8STRC("<body>"));
+	writer->WriteLineC(UTF8STRC("<a href=\"/\">Back</a><br/><br/>"));
 	writer->WriteStrC(UTF8STRC("<b>Current File: </b>"));
 	s = Text::XML::ToNewHTMLText(this->iface->GetOpenedFile()->GetSourceNameObj()->v);
 	writer->WriteStrC(s->v, s->leng);
 	s->Release();
-	writer->WriteLine((const UTF8Char*)"<hr/>");
+	writer->WriteLineC(UTF8STRC("<hr/>"));
 
-	writer->WriteLine((const UTF8Char*)"<table border=\"0\">");
-	writer->WriteLine((const UTF8Char*)"<tr><td>Name</td><td>Size</td><td>MIME Type</td></tr>");
+	writer->WriteLineC(UTF8STRC("<table border=\"0\">"));
+	writer->WriteLineC(UTF8STRC("<tr><td>Name</td><td>Size</td><td>MIME Type</td></tr>"));
 
 	Text::StrConcat(sptr, IO::Path::ALL_FILES);
 	sess = IO::Path::FindFile(sbuff);
@@ -130,17 +130,17 @@ void Media::MediaPlayerWebInterface::BrowseRequest(Net::WebServer::IWebRequest *
 			IO::Path::GetFileExt(sbuff2, vfile->fileName);
 			u8ptr = Net::MIME::GetMIMEFromExt(sbuff2);
 			writer->WriteStr(u8ptr);
-			writer->WriteLine((const UTF8Char*)"</td></tr>");
+			writer->WriteLineC(UTF8STRC("</td></tr>"));
 
 			Text::StrDelNew(vfile->fileName);
 			MemFree(vfile);
 			i++;
 		}
 	}
-	writer->WriteLine((const UTF8Char*)"</table>");
+	writer->WriteLineC(UTF8STRC("</table>"));
 
-	writer->WriteLine((const UTF8Char*)"</body>");
-	writer->WriteLine((const UTF8Char*)"</html>");
+	writer->WriteLineC(UTF8STRC("</body>"));
+	writer->WriteLineC(UTF8STRC("</html>"));
 	DEL_CLASS(writer);
 
 	resp->AddDefHeaders(req);
@@ -213,11 +213,11 @@ void Media::MediaPlayerWebInterface::WebRequest(Net::WebServer::IWebRequest *req
 	NEW_CLASS(mstm, IO::MemoryStream((const UTF8Char*)"SP.GPSWeb.GPSWebHandler.LoginFunc"));
 	NEW_CLASS(writer, Text::UTF8Writer(mstm));
 
-	writer->WriteLine((const UTF8Char*)"<html>");
-	writer->WriteLine((const UTF8Char*)"<head><title>HQMP Control</title>");
-	writer->WriteLine((const UTF8Char*)"</head>");
-	writer->WriteLine((const UTF8Char*)"<body>");
-	writer->WriteLine((const UTF8Char*)"<a href=\"/\">Refresh</a><br/><br/>");
+	writer->WriteLineC(UTF8STRC("<html>"));
+	writer->WriteLineC(UTF8STRC("<head><title>HQMP Control</title>"));
+	writer->WriteLineC(UTF8STRC("</head>"));
+	writer->WriteLineC(UTF8STRC("<body>"));
+	writer->WriteLineC(UTF8STRC("<a href=\"/\">Refresh</a><br/><br/>"));
 	writer->WriteStrC(UTF8STRC("<b>Current File: </b>"));
 	if (this->iface->GetOpenedFile())
 	{
@@ -231,28 +231,28 @@ void Media::MediaPlayerWebInterface::WebRequest(Net::WebServer::IWebRequest *req
 	{
 		writer->WriteStrC(UTF8STRC("-"));
 	}
-	writer->WriteLine((const UTF8Char*)"<br/>");
+	writer->WriteLineC(UTF8STRC("<br/>"));
 
-	writer->WriteLine((const UTF8Char*)"<input type=\"button\" value=\"Stop\" onclick=\"document.location.replace('/stop')\"/>");
-	writer->WriteLine((const UTF8Char*)"<input type=\"button\" value=\"Start\" onclick=\"document.location.replace('/start')\"/>");
-	writer->WriteLine((const UTF8Char*)"<input type=\"button\" value=\"Pause\" onclick=\"document.location.replace('/pause')\"/>");
-	writer->WriteLine((const UTF8Char*)"<br/>");
-	writer->WriteLine((const UTF8Char*)"<a href=\"/backward60\">Backward 1 Minute</a>");
-	writer->WriteLine((const UTF8Char*)"<a href=\"/backward10\">Backward 10 Seconds</a>");
-	writer->WriteLine((const UTF8Char*)"<a href=\"/forward10\">Forward 10 Seconds</a>");
-	writer->WriteLine((const UTF8Char*)"<a href=\"/forward60\">Forward 1 Minute</a>");
-	writer->WriteLine((const UTF8Char*)"<br/>");
-	writer->WriteLine((const UTF8Char*)"<a href=\"/prevchap\">Previous Chapter</a>");
-	writer->WriteLine((const UTF8Char*)"<a href=\"/nextchap\">Next Chapter</a>");
-	writer->WriteLine((const UTF8Char*)"<a href=\"/avofstdec\">A/V Offset Decrease</a>");
-	writer->WriteLine((const UTF8Char*)"<a href=\"/avofstinc\">A/V Offset Increase</a>");
+	writer->WriteLineC(UTF8STRC("<input type=\"button\" value=\"Stop\" onclick=\"document.location.replace('/stop')\"/>"));
+	writer->WriteLineC(UTF8STRC("<input type=\"button\" value=\"Start\" onclick=\"document.location.replace('/start')\"/>"));
+	writer->WriteLineC(UTF8STRC("<input type=\"button\" value=\"Pause\" onclick=\"document.location.replace('/pause')\"/>"));
+	writer->WriteLineC(UTF8STRC("<br/>"));
+	writer->WriteLineC(UTF8STRC("<a href=\"/backward60\">Backward 1 Minute</a>"));
+	writer->WriteLineC(UTF8STRC("<a href=\"/backward10\">Backward 10 Seconds</a>"));
+	writer->WriteLineC(UTF8STRC("<a href=\"/forward10\">Forward 10 Seconds</a>"));
+	writer->WriteLineC(UTF8STRC("<a href=\"/forward60\">Forward 1 Minute</a>"));
+	writer->WriteLineC(UTF8STRC("<br/>"));
+	writer->WriteLineC(UTF8STRC("<a href=\"/prevchap\">Previous Chapter</a>"));
+	writer->WriteLineC(UTF8STRC("<a href=\"/nextchap\">Next Chapter</a>"));
+	writer->WriteLineC(UTF8STRC("<a href=\"/avofstdec\">A/V Offset Decrease</a>"));
+	writer->WriteLineC(UTF8STRC("<a href=\"/avofstinc\">A/V Offset Increase</a>"));
 	{
 		Text::StringBuilderUTF8 sb;
 		Media::VideoRenderer::RendererStatus status;
 		UInt32 currTime;
 		UInt32 v;
 
-		writer->WriteLine((const UTF8Char*)"<hr/>");
+		writer->WriteLineC(UTF8STRC("<hr/>"));
 		NEW_CLASS(status.color, Media::ColorProfile());
 		this->iface->GetVideoRenderer()->GetStatus(&status);
 		sb.AppendC(UTF8STRC("Curr Time: "));
@@ -416,8 +416,8 @@ void Media::MediaPlayerWebInterface::WebRequest(Net::WebServer::IWebRequest *req
 		writer->WriteStrC(sb.ToString(), sb.GetLength());
 	}
 
-	writer->WriteLine((const UTF8Char*)"</body>");
-	writer->WriteLine((const UTF8Char*)"</html>");
+	writer->WriteLineC(UTF8STRC("</body>"));
+	writer->WriteLineC(UTF8STRC("</html>"));
 	DEL_CLASS(writer);
 
 	resp->AddDefHeaders(req);

@@ -2236,7 +2236,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesWeb
 	sb.Append(imgURL);
 	sb.AppendC(UTF8STRC("\t"));
 	sb.Append(srcURL);
-	writer->WriteLine(sb.ToString());
+	writer->WriteLineC(sb.ToString(), sb.GetLength());
 	DEL_CLASS(writer);
 	DEL_CLASS(fs);
 
@@ -2329,7 +2329,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::UpdateSpeciesWebFileOld(OrganSpecies *sp, const
 				sb2.Append(srcURL);
 			}
 		}
-		writer->WriteLine(sb2.ToString());
+		writer->WriteLineC(sb2.ToString(), sb2.GetLength());
 		sb.ClearStr();
 	}
 	DEL_CLASS(reader);
@@ -2726,7 +2726,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::MoveImages(Data::ArrayList<OrganImages*> *imgLi
 				sb.Append(img->GetImgItem()->GetImgURL()->v);
 				sb.AppendC(UTF8STRC("\t"));
 				sb.Append(img->GetImgItem()->GetSrcURL()->v);
-				writer->WriteLine(sb.ToString());
+				writer->WriteLineC(sb.ToString(), sb.GetLength());
 			}
 			i++;
 		}
@@ -4976,13 +4976,13 @@ void SSWR::OrganMgr::OrganEnvDB::ExportLite(const UTF8Char *folder)
 	else
 	{
 		NEW_CLASS(writer, Text::UTF8Writer(fs));
-		writer->WriteLine((const UTF8Char*)"ScreenSize=1200");
-		writer->WriteLine((const UTF8Char*)"MDBFile=OrganWeb.mdb");
-		writer->WriteLine((const UTF8Char*)"ImageDir=Image\\");
-		writer->WriteLine((const UTF8Char*)"SvrPort=8080");
-		writer->WriteLine((const UTF8Char*)"Watermark=sswroom");
-		writer->WriteLine((const UTF8Char*)"CacheDir=Cache\\");
-		writer->WriteLine((const UTF8Char*)"DataDir=Data");
+		writer->WriteLineC(UTF8STRC("ScreenSize=1200"));
+		writer->WriteLineC(UTF8STRC("MDBFile=OrganWeb.mdb"));
+		writer->WriteLineC(UTF8STRC("ImageDir=Image\\"));
+		writer->WriteLineC(UTF8STRC("SvrPort=8080"));
+		writer->WriteLineC(UTF8STRC("Watermark=sswroom"));
+		writer->WriteLineC(UTF8STRC("CacheDir=Cache\\"));
+		writer->WriteLineC(UTF8STRC("DataDir=Data"));
 		DEL_CLASS(writer);
 	}
 	DEL_CLASS(fs);

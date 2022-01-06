@@ -410,7 +410,7 @@ UInt32 __stdcall Media::AudioFilter::DTMFDecoder::CalcThread(void *userObj)
 			sb->Append(maxLoInd * me->frequency / me->sampleCnt);
 			sb->AppendC(UTF8STRC("\t"));
 			sb->Append(maxHiInd * me->frequency / me->sampleCnt);
-			debugWriter->WriteLine(sb->ToString());
+			debugWriter->WriteLineC(sb->ToString(), sb->GetLength());
 #endif
 
 			if (me->currTone != tone && tone != '?')

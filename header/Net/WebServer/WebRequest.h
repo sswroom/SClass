@@ -59,11 +59,11 @@ namespace Net
 
 			virtual Text::String *GetRequestURI();
 			virtual RequestProtocol GetProtocol();
-			virtual Text::String *GetQueryValue(const UTF8Char *name);
-			virtual Bool HasQuery(const UTF8Char *name);
+			virtual Text::String *GetQueryValue(const UTF8Char *name, UOSInt nameLen);
+			virtual Bool HasQuery(const UTF8Char *name, UOSInt nameLen);
 			virtual RequestMethod GetReqMethod();
 			virtual void ParseHTTPForm();
-			virtual Text::String *GetHTTPFormStr(const UTF8Char *name);
+			virtual Text::String *GetHTTPFormStr(const UTF8Char *name, UOSInt nameLen);
 			virtual const UInt8 *GetHTTPFormFile(const UTF8Char *formName, UOSInt index, UTF8Char *fileName, UOSInt fileNameBuffSize, UOSInt *fileSize);
 			virtual void GetRequestURLBase(Text::StringBuilderUTF *sb);
 

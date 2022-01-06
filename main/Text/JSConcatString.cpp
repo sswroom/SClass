@@ -43,7 +43,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("Time = "));
 	Text::SBAppendF64(&sb, t1);
-	console.WriteLine(sb.ToString());
+	console.WriteLineC(sb.ToString(), sb.GetLength());
 	
 	i = 10000;
 	while (i-- > 0)

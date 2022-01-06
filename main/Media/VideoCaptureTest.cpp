@@ -105,7 +105,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("Device Count = "));
 		sb.AppendUOSInt(cnt);
-		console->WriteLine(sb.ToString());
+		console->WriteLineC(sb.ToString(), sb.GetLength());
 		i = 0;
 		while (i < cnt)
 		{
@@ -117,7 +117,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			sb.AppendUOSInt(devInfo->devId);
 			sb.AppendC(UTF8STRC(", Name = "));
 			sb.Append(devInfo->devName);
-			console->WriteLine(sb.ToString());
+			console->WriteLineC(sb.ToString(), sb.GetLength());
 
 			i++;
 		}
@@ -151,9 +151,9 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				sb.AppendC(UTF8STRC("Capture using "));
 				capture->GetSourceName(sbuff);
 				sb.Append(sbuff);
-				console->WriteLine(sb.ToString());
+				console->WriteLineC(sb.ToString(), sb.GetLength());
 
-				console->WriteLine((const UTF8Char*)"Supported Formats:");
+				console->WriteLineC(UTF8STRC("Supported Formats:"));
 				formats = MemAlloc(Media::IVideoCapture::VideoFormat, 128);
 				i = 0;
 				j = 128;
@@ -192,7 +192,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 					sb.AppendC(UTF8STRC(" ("));
 					Text::SBAppendF64(&sb, formats[i].frameRateNorm / (Double)formats[i].frameRateDenorm);
 					sb.AppendC(UTF8STRC(")"));
-					console->WriteLine(sb.ToString());
+					console->WriteLineC(sb.ToString(), sb.GetLength());
 					thisSize = formats[i].info.dispWidth * formats[i].info.dispHeight;
 					if (formats[i].info.fourcc == *(UInt32*)"MJPG")
 					{
@@ -243,7 +243,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 					sb.AppendUOSInt(maxHeight);
 					sb.AppendC(UTF8STRC(", bpp = "));
 					sb.AppendU32(maxBpp);
-					console->WriteLine(sb.ToString());
+					console->WriteLineC(sb.ToString(), sb.GetLength());
 					capture->SetPreferSize(maxWidth, maxHeight, maxFmt, maxBpp, maxRateNumer, maxRateDenom);
 				}
 
@@ -284,33 +284,33 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 					sb.AppendC(UTF8STRC(" ("));
 					Text::SBAppendF64(&sb, frameRateNorm / (Double)frameRateDenorm);
 					sb.AppendC(UTF8STRC(")"));
-					console->WriteLine(sb.ToString());
+					console->WriteLineC(sb.ToString(), sb.GetLength());
 				}
 				else
 				{
-					console->WriteLine((const UTF8Char*)"Error in getting format");
+					console->WriteLineC(UTF8STRC("Error in getting format"));
 				}
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("Frame Delay = "));
 				sb.AppendI32(frameCnt);
-				console->WriteLine(sb.ToString());
+				console->WriteLineC(sb.ToString(), sb.GetLength());
 				if (colorSess)
 				{
-					console->WriteLine((const UTF8Char*)"ColorSess is null");
+					console->WriteLineC(UTF8STRC("ColorSess is null"));
 				}
 				converter = Media::CS::CSConverter::NewConverter(info.fourcc, info.storeBPP, info.pf, info.color, 0, 32, Media::PF_B8G8R8A8, &color, info.yuvType, colorSess);
 				if (converter == 0)
 				{
-					console->WriteLine((const UTF8Char*)"Converter is null");
+					console->WriteLineC(UTF8STRC("Converter is null"));
 				}
 				else if (converter)
 				{
-					console->WriteLine((const UTF8Char*)"Converter is found");
+					console->WriteLineC(UTF8STRC("Converter is found"));
 				}
 				isRunning = capture->Init(CaptureTest, FrameChangeHdlr, 0);
 				if (!isRunning)
 				{
-					console->WriteLine((const UTF8Char*)"Error in initializing capture");
+					console->WriteLineC(UTF8STRC("Error in initializing capture"));
 				}
 				else
 				{
@@ -328,18 +328,18 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 						sb.ClearStr();
 						sb.AppendC(UTF8STRC("Capture device stopped, count = "));
 						sb.AppendI32(frameCnt);
-						console->WriteLine(sb.ToString());
+						console->WriteLineC(sb.ToString(), sb.GetLength());
 					}
 					else
 					{
-						console->WriteLine((const UTF8Char*)"File captured");
+						console->WriteLineC(UTF8STRC("File captured"));
 						succ = true;
 						capture->Stop();
 					}				
 				}
 				else
 				{
-					console->WriteLine((const UTF8Char*)"Error in starting capture");
+					console->WriteLineC(UTF8STRC("Error in starting capture"));
 				}
 
 				SDEL_CLASS(converter);
@@ -359,7 +359,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	}
 	else
 	{
-		console->WriteLine((const UTF8Char*)"No capture device found");
+		console->WriteLineC(UTF8STRC("No capture device found"));
 	}
 	mgr->FreeDeviceList(&devList);
 	colorMgr->DeleteSess(colorSess);

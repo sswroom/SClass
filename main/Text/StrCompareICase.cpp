@@ -31,7 +31,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	sb.AppendOSInt(val);
 	sb.AppendC(UTF8STRC(", t = "));
 	Text::SBAppendF64(&sb, spd1);
-	console.WriteLine(sb.ToString());
+	console.WriteLineC(sb.ToString(), sb.GetLength());
 
 	i = 10000000;
 	clk->Start();
@@ -45,7 +45,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	sb.AppendOSInt(val2);
 	sb.AppendC(UTF8STRC(", t = "));
 	Text::SBAppendF64(&sb, spd2);
-	console.WriteLine(sb.ToString());
+	console.WriteLineC(sb.ToString(), sb.GetLength());
 
 	DEL_CLASS(clk);
 

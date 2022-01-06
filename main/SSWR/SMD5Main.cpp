@@ -74,7 +74,7 @@ private:
 				sb->AppendC(UTF8STRC(")"));
 			}
 			mutUsage.EndUse();
-			console->Write(sb->ToString());
+			console->WriteStrC(sb->ToString(), sb->GetLength());
 		}
 		DEL_CLASS(clk);
 		DEL_CLASS(sb);
@@ -152,7 +152,7 @@ Bool ParseFile(const UTF8Char *fileName)
 		DEL_CLASS(fd);
 		if (fileChk == 0)
 		{
-			console->WriteLine((const UTF8Char*)"Error in parsing the file");
+			console->WriteLineC(UTF8STRC("Error in parsing the file"));
 		}
 		else
 		{
@@ -167,7 +167,7 @@ Bool ParseFile(const UTF8Char *fileName)
 				if (!fileChk->CheckEntryHash(i, hash))
 				{
 					succ = false;
-					console->WriteLine((const UTF8Char*)"File validation failed");
+					console->WriteLineC(UTF8STRC("File validation failed"));
 					break;
 				}
 			}
@@ -199,7 +199,7 @@ Bool ParseFile(const UTF8Char *fileName)
 		}
 		else
 		{
-			console->WriteLine((const UTF8Char*)"Error in calculating MD5");
+			console->WriteLineC(UTF8STRC("Error in calculating MD5"));
 			return false;
 		}
 	}
@@ -221,7 +221,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			IO::Path::PathType pt = IO::Path::GetPathType(cmdLines[1]);
 			if (pt == IO::Path::PathType::Unknown)
 			{
-				console->WriteLine((const UTF8Char*)"File not found");
+				console->WriteLineC(UTF8STRC("File not found"));
 			}
 			else
 			{
@@ -243,7 +243,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("Checking "));
 					sb.Append(&sbuff[i + 1]);
-					console->WriteLine(sb.ToString());
+					console->WriteLineC(sb.ToString(), sb.GetLength());
 					ParseFile(sbuff);
 					console->WriteLine();
 				}
@@ -253,7 +253,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	}
 	if (showHelp)
 	{
-		console->WriteLine((const UTF8Char*)"Usage: SMD5 [File to check]");
+		console->WriteLineC(UTF8STRC("Usage: SMD5 [File to check]"));
 	}
 	DEL_CLASS(console);
 	return 0;

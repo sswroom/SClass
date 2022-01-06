@@ -50,7 +50,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				if (gpioCtrl->IsError() || pin->IsError())
 				{
 					DEL_CLASS(pin);
-					console.WriteLine((const UTF8Char*)"Error in opening GPIO pin");
+					console.WriteLineC(UTF8STRC("Error in opening GPIO pin"));
 				}
 				else
 				{
@@ -59,9 +59,9 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 					threadToStop = false;
 					pin->SetPinOutput(true);
 					Sync::Thread::Create(ThreadFunc, 0);
-					console.WriteLine((const UTF8Char*)"GPIO Sig Gen Running");
+					console.WriteLineC(UTF8STRC("GPIO Sig Gen Running"));
 					progCtrl->WaitForExit(progCtrl);
-					console.WriteLine((const UTF8Char*)"Exiting");
+					console.WriteLineC(UTF8STRC("Exiting"));
 					threadToStop = true;
 					evt->Set();
 					while (threadRunning)
@@ -76,18 +76,18 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			}
 			else
 			{
-				console.WriteLine((const UTF8Char*)"Config GPIOPin not valid");
+				console.WriteLineC(UTF8STRC("Config GPIOPin not valid"));
 			}
 		}
 		else
 		{
-			console.WriteLine((const UTF8Char*)"Config GPIOPin not found");
+			console.WriteLineC(UTF8STRC("Config GPIOPin not found"));
 		}
 		DEL_CLASS(cfg);
 	}
 	else
 	{
-		console.WriteLine((const UTF8Char*)"Config file not found");
+		console.WriteLineC(UTF8STRC("Config file not found"));
 	}
 	return 0;
 }

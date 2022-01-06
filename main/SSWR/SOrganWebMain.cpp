@@ -35,7 +35,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	IO::ConfigFile *cfg = IO::IniFile::ParseProgConfig(0);
 	if (cfg == 0)
 	{
-		console->WriteLine((const UTF8Char*)"Error in loading config file");
+		console->WriteLineC(UTF8STRC("Error in loading config file"));
 	}
 	else
 	{
@@ -47,7 +47,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				ssl =  Net::SSLEngineFactory::Create(sockf, false);
 				if (ssl == 0)
 				{
-					console->WriteLine((const UTF8Char*)"Error in initializing SSL engine");
+					console->WriteLineC(UTF8STRC("Error in initializing SSL engine"));
 				}
 				else
 				{
@@ -55,17 +55,17 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 					Text::String *keyFile = cfg->GetValue((const UTF8Char*)"SSLKey");
 					if (certFile == 0)
 					{
-						console->WriteLine((const UTF8Char*)"SSLCert not found");
+						console->WriteLineC(UTF8STRC("SSLCert not found"));
 						SDEL_CLASS(ssl);
 					}
 					else if (keyFile == 0)
 					{
-						console->WriteLine((const UTF8Char*)"SSLKey not found");
+						console->WriteLineC(UTF8STRC("SSLKey not found"));
 						SDEL_CLASS(ssl);
 					}
 					else if (!ssl->SetServerCerts(certFile->v, keyFile->v))
 					{
-						console->WriteLine((const UTF8Char*)"Error in loading SSL Cert/key");
+						console->WriteLineC(UTF8STRC("Error in loading SSL Cert/key"));
 						SDEL_CLASS(ssl);
 					}
 				}
@@ -102,11 +102,11 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 
 		if (dataHdlr->IsError())
 		{
-			console->WriteLine((const UTF8Char*)"Error in starting server");
+			console->WriteLineC(UTF8STRC("Error in starting server"));
 		}
 		else
 		{
-			console->WriteLine((const UTF8Char*)"SOrganWeb started");
+			console->WriteLineC(UTF8STRC("SOrganWeb started"));
 			progCtrl->WaitForExit(progCtrl);
 		}
 

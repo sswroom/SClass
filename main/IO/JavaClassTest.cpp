@@ -9,12 +9,12 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 {
 	IO::ConsoleWriter console;
 	IO::JavaClass *cls = IO::JavaClass::ParseFile((const UTF8Char*)"Test.class");
-	console.WriteLine((const UTF8Char*)"ParseFile Returned\r\n");
+	console.WriteLineC(UTF8STRC("ParseFile Returned\r\n"));
 	if (cls)
 	{
 		Text::StringBuilderUTF8 sb;
 		cls->FileStructDetail(&sb);
-		console.WriteLine(sb.ToString());
+		console.WriteLineC(sb.ToString(), sb.GetLength());
 	}
 	SDEL_CLASS(cls);
 	return 0;

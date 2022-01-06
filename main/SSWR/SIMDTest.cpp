@@ -30,7 +30,7 @@ void UInt8x4Cmp(UInt8x4 u8x4, const Char *funcName, UInt8 val1, UInt8 val2, UInt
 	}
 	if (!failOnly || !succ)
 	{
-		console->WriteLine(sb.ToString());
+		console->WriteLineC(sb.ToString(), sb.GetLength());
 	}
 }
 
@@ -54,7 +54,7 @@ void UInt8x8Cmp(UInt8x8 u8x8, const Char *funcName, UInt8 val1, UInt8 val2, UInt
 	}
 	if (!failOnly || !succ)
 	{
-		console->WriteLine(sb.ToString());
+		console->WriteLineC(sb.ToString(), sb.GetLength());
 	}
 }
 
@@ -80,7 +80,7 @@ void UInt8x16Cmp(UInt8x16 u8x16, const Char *funcName, UInt8 val1, UInt8 val2, U
 	}
 	if (!failOnly || !succ)
 	{
-		console->WriteLine(sb.ToString());
+		console->WriteLineC(sb.ToString(), sb.GetLength());
 	}
 }
 
@@ -104,7 +104,7 @@ void Int16x4Cmp(Int16x4 i16x4, const Char *funcName, Int16 val1, Int16 val2, Int
 	}
 	if (!failOnly || !succ)
 	{
-		console->WriteLine(sb.ToString());
+		console->WriteLineC(sb.ToString(), sb.GetLength());
 	}
 }
 
@@ -128,7 +128,7 @@ void UInt16x4Cmp(UInt16x4 u16x4, const Char *funcName, UInt16 val1, UInt16 val2,
 	}
 	if (!failOnly || !succ)
 	{
-		console->WriteLine(sb.ToString());
+		console->WriteLineC(sb.ToString(), sb.GetLength());
 	}
 }
 
@@ -152,7 +152,7 @@ void Int16x8Cmp(Int16x8 i16x8, const Char *funcName, Int16 val1, Int16 val2, Int
 	}
 	if (!failOnly || !succ)
 	{
-		console->WriteLine(sb.ToString());
+		console->WriteLineC(sb.ToString(), sb.GetLength());
 	}
 }
 
@@ -176,7 +176,7 @@ void UInt16x8Cmp(UInt16x8 u16x8, const Char *funcName, UInt16 val1, UInt16 val2,
 	}
 	if (!failOnly || !succ)
 	{
-		console->WriteLine(sb.ToString());
+		console->WriteLineC(sb.ToString(), sb.GetLength());
 	}
 }
 
@@ -200,7 +200,7 @@ void Int32x4Cmp(Int32x4 i32x4, const Char *funcName, Int32 val1, Int32 val2, Int
 	}
 	if (!failOnly || !succ)
 	{
-		console->WriteLine(sb.ToString());
+		console->WriteLineC(sb.ToString(), sb.GetLength());
 	}
 }
 
@@ -219,7 +219,7 @@ void CmpResult(Bool result, const Char *funcName)
 			sb.Append((const UTF8Char*)funcName);
 			sb.AppendC(UTF8STRC(" failed"));
 		}
-		console->WriteLine(sb.ToString());
+		console->WriteLineC(sb.ToString(), sb.GetLength());
 	}
 }
 

@@ -77,8 +77,8 @@ Bool Exporter::DBHTMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8Cha
 	lineBuff1 = MemAlloc(UTF8Char, 65536);
 	lineBuff2 = MemAlloc(UTF8Char, 65536);
 
-	writer->WriteLine((const UTF8Char*)"<html>");
-	writer->WriteLine((const UTF8Char*)"<head>");
+	writer->WriteLineC(UTF8STRC("<html>"));
+	writer->WriteLineC(UTF8STRC("<head>"));
 	writer->WriteStrC(UTF8STRC("<title>"));
 	db->GetSourceName(lineBuff1);
 	sptr = lineBuff1;
@@ -86,49 +86,49 @@ Bool Exporter::DBHTMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8Cha
 		sptr = &sptr[i + 1];
 	Text::XML::ToXMLText(lineBuff2, sptr);
 	writer->WriteLine(lineBuff2);
-	writer->WriteLine((const UTF8Char*)"</title>");
-	sptr = Text::StrConcat(Text::EncodingFactory::GetInternetName(Text::StrConcat(lineBuff1, (const UTF8Char*)"<meta http-equiv=\"Content-Type\" content=\"text/html; charset="), this->codePage), (const UTF8Char*)"\">");
+	writer->WriteLineC(UTF8STRC("</title>"));
+	sptr = Text::StrConcatC(Text::EncodingFactory::GetInternetName(Text::StrConcatC(lineBuff1, UTF8STRC("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=")), this->codePage), UTF8STRC("\">"));
 	writer->WriteLineC(lineBuff1, (UOSInt)(sptr - lineBuff1));
-	writer->WriteLine((const UTF8Char*)"</head>");
+	writer->WriteLineC(UTF8STRC("</head>"));
 	db->GetSourceName(lineBuff2);
 	sptr = lineBuff2;
 	if ((i = Text::StrLastIndexOf(sptr, '\\')) != INVALID_INDEX)
 		sptr = &sptr[i + 1];
-	sptr = Text::XML::ToXMLText(Text::StrConcat(lineBuff1, (const UTF8Char*)"<body><h1>"), sptr);
+	sptr = Text::XML::ToXMLText(Text::StrConcatC(lineBuff1, UTF8STRC("<body><h1>")), sptr);
 	writer->WriteLineC(lineBuff1, (UOSInt)(sptr - lineBuff1));
-	writer->WriteLine((const UTF8Char*)"</h1>");
-	writer->WriteLine((const UTF8Char*)"<table border=1 cellspacing=1 cellpadding=0><tr>");
+	writer->WriteLineC(UTF8STRC("</h1>"));
+	writer->WriteLineC(UTF8STRC("<table border=1 cellspacing=1 cellpadding=0><tr>"));
 
 	sptr = lineBuff2;
 	colCnt = r->ColCount();
 	i = 0;
 	while (i < colCnt)
 	{
-		sptr = Text::StrConcat(sptr, (const UTF8Char*)"<th>");
+		sptr = Text::StrConcatC(sptr, UTF8STRC("<th>"));
 		if (r->GetName(i, lineBuff1))
 		{
 			sptr = Text::XML::ToXMLText(sptr, lineBuff1);
 		}
-		sptr = Text::StrConcat(sptr, (const UTF8Char*)"</th>");
+		sptr = Text::StrConcatC(sptr, UTF8STRC("</th>"));
 		i++;
 	}
-	sptr = Text::StrConcat(sptr, (const UTF8Char*)"</tr>");
+	sptr = Text::StrConcatC(sptr, UTF8STRC("</tr>"));
 	writer->WriteLineC(lineBuff2, (UOSInt)(sptr - lineBuff2));
 
 	while (r->ReadNext())
 	{
-		writer->WriteLine((const UTF8Char*)"<tr>");
+		writer->WriteLineC(UTF8STRC("<tr>"));
 		sptr = lineBuff2;
 		colCnt = r->ColCount();
 		i = 0;
 		while (i < colCnt)
 		{
-			sptr = Text::StrConcat(sptr, (const UTF8Char*)"<td>");
+			sptr = Text::StrConcatC(sptr, UTF8STRC("<td>"));
 			if (r->GetStr(i, lineBuff1, 65536))
 			{
 				sptr = Text::XML::ToXMLText(sptr, lineBuff1);
 			}
-			sptr = Text::StrConcat(sptr, (const UTF8Char*)"</td>");
+			sptr = Text::StrConcatC(sptr, UTF8STRC("</td>"));
 			i++;
 		}
 		writer->WriteLineC(lineBuff2, (UOSInt)(sptr - lineBuff2));
@@ -137,8 +137,8 @@ Bool Exporter::DBHTMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8Cha
 	MemFree(lineBuff2);
 	MemFree(lineBuff1);
 
-	writer->WriteLine((const UTF8Char*)"</table>");
-	writer->WriteLine((const UTF8Char*)"</body></html>");
+	writer->WriteLineC(UTF8STRC("</table>"));
+	writer->WriteLineC(UTF8STRC("</body></html>"));
 
 	db->CloseReader(r);
 	DEL_CLASS(writer);

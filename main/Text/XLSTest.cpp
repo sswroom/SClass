@@ -22,7 +22,7 @@ void TestEmpty()
 	if (!exporter.ExportNewFile(fileName, wb, 0))
 	{
 		IO::ConsoleWriter console;
-		console.WriteLine((const UTF8Char*)"Error in writing to file");
+		console.WriteLineC(UTF8STRC("Error in writing to file"));
 	}
 	DEL_CLASS(wb);
 }
@@ -92,7 +92,7 @@ void TestChart()
 	if (!exporter.ExportNewFile(fileName, wb, 0))
 	{
 		IO::ConsoleWriter console;
-		console.WriteLine((const UTF8Char*)"Error in writing to file");
+		console.WriteLineC(UTF8STRC("Error in writing to file"));
 	}
 	DEL_CLASS(wb);
 }
@@ -119,7 +119,7 @@ void TestCols()
 	if (!exporter.ExportNewFile(fileName, wb, 0))
 	{
 		IO::ConsoleWriter console;
-		console.WriteLine((const UTF8Char*)"Error in writing to file");
+		console.WriteLineC(UTF8STRC("Error in writing to file"));
 	}
 	DEL_CLASS(wb);
 }
@@ -145,7 +145,7 @@ void TestColWidth()
 	if (!exporter.ExportNewFile(fileName, wb, 0))
 	{
 		IO::ConsoleWriter console;
-		console.WriteLine((const UTF8Char*)"Error in writing to file");
+		console.WriteLineC(UTF8STRC("Error in writing to file"));
 	}
 	DEL_CLASS(wb);
 }
@@ -177,7 +177,7 @@ void TestBorder()
 	if (!exporter.ExportNewFile(fileName, wb, 0))
 	{
 		IO::ConsoleWriter console;
-		console.WriteLine((const UTF8Char*)"Error in writing to file");
+		console.WriteLineC(UTF8STRC("Error in writing to file"));
 	}
 	DEL_CLASS(wb);
 }

@@ -17,7 +17,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	hash->GetValue(hashVal);
 	Text::StrHexBytes(sbuff, hashVal, 32, 0);
 	console.WriteLine(sbuff);
-	console.WriteLine((const UTF8Char*)"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855");
+	console.WriteLineC(UTF8STRC("e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"));
 	console.WriteLine();
 
 	const UInt8 testBlock[] = "abc";
@@ -25,7 +25,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	hash->GetValue(hashVal);
 	Text::StrHexBytes(sbuff, hashVal, 32, 0);
 	console.WriteLine(sbuff);
-	console.WriteLine((const UTF8Char*)"ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad");
+	console.WriteLineC(UTF8STRC("ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"));
 	console.WriteLine();
 
 	const UInt8 testBlock2[] = "abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq";
@@ -34,7 +34,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	hash->GetValue(hashVal);
 	Text::StrHexBytes(sbuff, hashVal, 32, 0);
 	console.WriteLine(sbuff);
-	console.WriteLine((const UTF8Char*)"248d6a61d20638b8e5c026930c3e6039a33ce45964ff2167f6ecedd419db06c1");
+	console.WriteLineC(UTF8STRC("248d6a61d20638b8e5c026930c3e6039a33ce45964ff2167f6ecedd419db06c1"));
 
 	DEL_CLASS(hash);
 	return 0;

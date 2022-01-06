@@ -20,7 +20,7 @@ void __stdcall ARPHandler(const UInt8 *hwAddr, UInt32 ipv4, void *userData)
 	sb.AppendC(UTF8STRC(", IP = "));
 	Net::SocketUtil::GetIPv4Name(sbuff, ipv4);
 	sb.Append(sbuff);
-	console->WriteLine(sb.ToString());
+	console->WriteLineC(sb.ToString(), sb.GetLength());
 }
 
 Int32 MyMain(Core::IProgControl *progCtrl)
@@ -64,7 +64,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 					sb.Append(sbuff);
 					sb.AppendC(UTF8STRC(", Index = "));
 					sb.AppendUOSInt(connInfo->GetIndex());
-					console->WriteLine(sb.ToString());
+					console->WriteLineC(sb.ToString(), sb.GetLength());
 					connInfo->GetName(sbuff);
 					NEW_CLASS(arp, Net::ARPHandler(sockf, sbuff, hwAddr, ip, ARPHandler, 0, 1));
 				}
@@ -77,15 +77,15 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 
 	if (arp == 0)
 	{
-		console->WriteLine((const UTF8Char*)"No adapter detected");
+		console->WriteLineC(UTF8STRC("No adapter detected"));
 	}
 	else if (arp->IsError())
 	{
-		console->WriteLine((const UTF8Char*)"Error in listening to arp data");
+		console->WriteLineC(UTF8STRC("Error in listening to arp data"));
 	}
 	else
 	{
-		console->WriteLine((const UTF8Char*)"Waiting for data");
+		console->WriteLineC(UTF8STRC("Waiting for data"));
 		progCtrl->WaitForExit(progCtrl);
 		DEL_CLASS(arp);
 	}

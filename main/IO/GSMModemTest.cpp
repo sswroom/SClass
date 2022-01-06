@@ -28,13 +28,13 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("Trying Port "));
 	sb.AppendUOSInt(portNum);
-	console.WriteLine(sb.ToString());
+	console.WriteLineC(sb.ToString(), sb.GetLength());
 
 	IO::SerialPort *port;
 	NEW_CLASS(port, IO::SerialPort(portNum, baudRate, IO::SerialPort::PARITY_NONE, true));
 	if (port->IsError())
 	{
-		console.WriteLine((const UTF8Char*)"Error in opening the port");
+		console.WriteLineC(UTF8STRC("Error in opening the port"));
 	}
 	else
 	{

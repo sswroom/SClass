@@ -374,7 +374,7 @@ void Net::WebServer::CapturerWebHandler::AppendWiFiTable(Text::StringBuilderUTF 
 	sb->AppendC(UTF8STRC(">RSSI</td><td>PHYType</td><td>Frequency</td><td>Manufacturer</td><td>Model</td><td>S/N</td></tr>\r\n"));
 
 	Data::ArrayList<Net::WiFiLogFile::LogFileEntry*> sortList;
-	req->GetQueryValueU32((const UTF8Char*)"sort", &sort);
+	req->GetQueryValueU32(UTF8STRC("sort"), &sort);
 	if (sort == 1)
 	{
 		sortList.AddAll(entryList);
@@ -444,7 +444,7 @@ void Net::WebServer::CapturerWebHandler::AppendBTTable(Text::StringBuilderUTF *s
 	sb->AppendC(UTF8STRC(">RSSI</a></td><td>Measure Power</td><td>TX Power</td><td>In Range</td><td>Connected</td><td>last seen</td><td>Company</td><td>AdvType</td></tr>\r\n"));
 
 	Data::ArrayList<IO::BTScanLog::ScanRecord3*> sortList;
-	req->GetQueryValueU32((const UTF8Char*)"sort", &sort);
+	req->GetQueryValueU32(UTF8STRC("sort"), &sort);
 	if (sort == 1)
 	{
 		sortList.AddAll(entryList);

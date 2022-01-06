@@ -20,12 +20,12 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("Username = "));
 	sb.AppendC(decBuff, decSize);
-	console.WriteLine(sb.ToString());
+	console.WriteLineC(sb.ToString(), sb.GetLength());
 	decSize = enc->DecryptB64(password, decBuff);
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("Password = "));
 	sb.AppendC(decBuff, decSize);
-	console.WriteLine(sb.ToString());
+	console.WriteLineC(sb.ToString(), sb.GetLength());
 	DEL_CLASS(enc);
 	return 0;
 }

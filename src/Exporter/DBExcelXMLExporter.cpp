@@ -78,11 +78,11 @@ Bool Exporter::DBExcelXMLExporter::ExportFile(IO::SeekableStream *stm, const UTF
 
 	sptr = Text::StrConcat(Text::EncodingFactory::GetInternetName(Text::StrConcat(lineBuff1, (const UTF8Char*)"<?xml version=\"1.0\" encoding=\""), this->codePage), (const UTF8Char*)"\"?>");
 	writer->WriteLine(lineBuff1);
-	writer->WriteLine((const UTF8Char*)"<?mso-application progid=\"Excel.Sheet\"?>");
-	writer->WriteLine((const UTF8Char*)"<Workbook xmlns=\"urn:schemas-microsoft-com:office:spreadsheet\"");
-	writer->WriteLine((const UTF8Char*)" xmlns:x=\"urn:schemas-microsoft-com:office:excel\"");
-	writer->WriteLine((const UTF8Char*)" xmlns:ss=\"urn:schemas-microsoft-com:office:spreadsheet\"");
-	writer->WriteLine((const UTF8Char*)" xmlns:html=\"http://www.w3.org/TR/REC-html40\">");
+	writer->WriteLineC(UTF8STRC("<?mso-application progid=\"Excel.Sheet\"?>"));
+	writer->WriteLineC(UTF8STRC("<Workbook xmlns=\"urn:schemas-microsoft-com:office:spreadsheet\""));
+	writer->WriteLineC(UTF8STRC(" xmlns:x=\"urn:schemas-microsoft-com:office:excel\""));
+	writer->WriteLineC(UTF8STRC(" xmlns:ss=\"urn:schemas-microsoft-com:office:spreadsheet\""));
+	writer->WriteLineC(UTF8STRC(" xmlns:html=\"http://www.w3.org/TR/REC-html40\">"));
 
 	Data::ArrayListStrUTF8 *names;
 	NEW_CLASS(names, Data::ArrayListStrUTF8());
@@ -99,9 +99,9 @@ Bool Exporter::DBExcelXMLExporter::ExportFile(IO::SeekableStream *stm, const UTF
 			Text::StrReplace(lineBuff1, '?', '_');
 			Text::StrReplace(lineBuff1, '\\', '_');
 			writer->WriteLineC(lineBuff1, (UOSInt)(sptr - lineBuff1));
-			writer->WriteLine((const UTF8Char*)"  <Table>");
+			writer->WriteLineC(UTF8STRC("  <Table>"));
 
-			writer->WriteLine((const UTF8Char*)"   <Row>");
+			writer->WriteLineC(UTF8STRC("   <Row>"));
 			colCnt = r->ColCount();
 			i = 0;
 			while (i < colCnt)
@@ -113,15 +113,15 @@ Bool Exporter::DBExcelXMLExporter::ExportFile(IO::SeekableStream *stm, const UTF
 				}
 				else
 				{
-					writer->WriteLine((const UTF8Char*)"    <Cell><Data ss:Type=\"String\"></Data></Cell>");
+					writer->WriteLineC(UTF8STRC("    <Cell><Data ss:Type=\"String\"></Data></Cell>"));
 				}
 				i++;
 			}
-			writer->WriteLine((const UTF8Char*)"   </Row>");
+			writer->WriteLineC(UTF8STRC("   </Row>"));
 
 			while (r->ReadNext())
 			{
-				writer->WriteLine((const UTF8Char*)"   <Row>");
+				writer->WriteLineC(UTF8STRC("   <Row>"));
 				colCnt = r->ColCount();
 				i = 0;
 				while (i < colCnt)
@@ -176,16 +176,16 @@ Bool Exporter::DBExcelXMLExporter::ExportFile(IO::SeekableStream *stm, const UTF
 
 					i++;
 				}
-				writer->WriteLine((const UTF8Char*)"   </Row>");
+				writer->WriteLineC(UTF8STRC("   </Row>"));
 			}
 			
-			writer->WriteLine((const UTF8Char*)"  </Table>");
-			writer->WriteLine((const UTF8Char*)" </Worksheet>");
+			writer->WriteLineC(UTF8STRC("  </Table>"));
+			writer->WriteLineC(UTF8STRC(" </Worksheet>"));
 			db->CloseReader(r);
 		}
 		j++;
 	}
-	writer->WriteLine((const UTF8Char*)"</Workbook>");
+	writer->WriteLineC(UTF8STRC("</Workbook>"));
 
 	DEL_CLASS(names);
 

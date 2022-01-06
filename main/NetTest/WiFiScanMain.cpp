@@ -15,7 +15,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	NEW_CLASS(wlan, Net::WirelessLAN());
 	if (wlan->IsError())
 	{
-		console.WriteLine((const UTF8Char*)"Error in initializing WiFi");
+		console.WriteLineC(UTF8STRC("Error in initializing WiFi"));
 	}
 	else
 	{
@@ -39,7 +39,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		i = interfaces.GetCount();
 		if (i <= 0)
 		{
-			console.WriteLine((const UTF8Char*)"No WiFi interface found");
+			console.WriteLineC(UTF8STRC("No WiFi interface found"));
 		}
 		while (i-- > 0)
 		{
@@ -47,14 +47,14 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Using interface "));
 			sb.Append(interface->GetName());
-			console.WriteLine(sb.ToString());
+			console.WriteLineC(sb.ToString(), sb.GetLength());
 
 			if (interface->Scan())
 			{
-				console.WriteLine((const UTF8Char*)"Scan requested, waiting for 5 seconds");
+				console.WriteLineC(UTF8STRC("Scan requested, waiting for 5 seconds"));
 				Sync::Thread::Sleep(5000);
 				interface->GetBSSList(&bssList);
-				console.WriteLine((const UTF8Char*)"Scan result");
+				console.WriteLineC(UTF8STRC("Scan result"));
 				maxSSIDLen = 0;
 				maxManuLen = 0;
 				maxModelLen = 0;
@@ -169,7 +169,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 					buff[6] = macPtr[4];
 					buff[7] = macPtr[5];
 					sb.Append((const UTF8Char*)Net::MACInfo::GetMACInfo(ReadMUInt64(buff))->name);					
-					console.WriteLine(sb.ToString());
+					console.WriteLineC(sb.ToString(), sb.GetLength());
 					DEL_CLASS(bss);
 					j++;
 				}
@@ -177,7 +177,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			}
 			else
 			{
-				console.WriteLine((const UTF8Char*)"Error in scanning");
+				console.WriteLineC(UTF8STRC("Error in scanning"));
 			}			
 			DEL_CLASS(interface);
 		}

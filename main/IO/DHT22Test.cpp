@@ -28,13 +28,13 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	Sync::Thread::SetPriority(Sync::Thread::TP_REALTIME);
 	sb.AppendC(UTF8STRC("Run using GPIO pin "));
 	sb.AppendI32(pinNum);
-	console.WriteLine(sb.ToString());
+	console.WriteLineC(sb.ToString(), sb.GetLength());
 	NEW_CLASS(gpioCtrl, IO::GPIOControl())
 	NEW_CLASS(pin, IO::GPIOPin(gpioCtrl, pinNum));
 	NEW_CLASS(dht22, IO::Device::DHT22(pin));
 	if (gpioCtrl->IsError() || pin->IsError())
 	{
-		console.WriteLine((const UTF8Char*)"Error in opening GPIO, root permission?");
+		console.WriteLineC(UTF8STRC("Error in opening GPIO, root permission?"));
 	}
 	else
 	{
@@ -48,11 +48,11 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				sb.AppendC(UTF8STRC(", RH = "));
 				Text::SBAppendF64(&sb, rh);
 				sb.AppendC(UTF8STRC("%"));
-				console.WriteLine(sb.ToString());
+				console.WriteLineC(sb.ToString(), sb.GetLength());
 			}
 			else
 			{
-				console.WriteLine((const UTF8Char*)"Error in reading from DHT22");
+				console.WriteLineC(UTF8STRC("Error in reading from DHT22"));
 			}
 			Sync::Thread::Sleep(2000);
 		}

@@ -49,12 +49,12 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		}
 		else
 		{
-			console->WriteLine((const UTF8Char*)"Error in loading ADFSCert.crt/ADFSCert.key file");
+			console->WriteLineC(UTF8STRC("Error in loading ADFSCert.crt/ADFSCert.key file"));
 		}
 	}
 	else
 	{
-		console->WriteLine((const UTF8Char*)"Error in initializing SSL Engine");
+		console->WriteLineC(UTF8STRC("Error in initializing SSL Engine"));
 	}
 	if (initSucc)
 	{
@@ -64,13 +64,13 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		NEW_CLASS(listener, Net::WebServer::WebListener(sockf, ssl, logHdlr, 4321, 120, 4, (const UTF8Char*)"ADFSTest/1.0", false, true));
 		if (listener->IsError())
 		{
-			console->WriteLine((const UTF8Char*)"Error in listening to port 4321");
+			console->WriteLineC(UTF8STRC("Error in listening to port 4321"));
 		}
 		else
 		{
-			console->WriteLine((const UTF8Char*)"Listening to port 4321 (https)");
+			console->WriteLineC(UTF8STRC("Listening to port 4321 (https)"));
 			progCtrl->WaitForExit(progCtrl);
-			console->WriteLine((const UTF8Char*)"Server stopping");
+			console->WriteLineC(UTF8STRC("Server stopping"));
 		}
 		logHdlr->Release();
 		DEL_CLASS(listener);

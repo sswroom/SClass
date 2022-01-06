@@ -144,17 +144,17 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	{
 		if (checker->IsValid(mediaFile))
 		{
-			console->WriteLine((const UTF8Char*)"Video file is valid");
+			console->WriteLineC(UTF8STRC("Video file is valid");
 		}
 		else
 		{
-			console->WriteLine((const UTF8Char*)"Video file is not valid");
+			console->WriteLineC(UTF8STRC("Video file is not valid");
 		}
 		DEL_CLASS(mediaFile);
 	}
 	else
 	{
-		console->WriteLine((const UTF8Char*)"Error in parsing file");
+		console->WriteLineC(UTF8STRC("Error in parsing file");
 	}
 	
 

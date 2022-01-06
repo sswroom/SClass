@@ -24,102 +24,102 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("Encryption key: "));
 	sb.AppendHexBuff(key, 16, 0, Text::LineBreakType::None);
-	console.WriteLine(sb.ToString());
+	console.WriteLineC(sb.ToString(), sb.GetLength());
 	console.WriteLine();
 
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("Test vector: "));
 	sb.AppendHexBuff(testVector1, 16, 0, Text::LineBreakType::None);
-	console.WriteLine(sb.ToString());
+	console.WriteLineC(sb.ToString(), sb.GetLength());
 
 	aes->Encrypt(testVector1, 16, cipherText, 0);
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("Cipher text: "));
 	sb.AppendHexBuff(cipherText, 16, 0, Text::LineBreakType::None);
-	console.WriteLine(sb.ToString());
+	console.WriteLineC(sb.ToString(), sb.GetLength());
 
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("Expected:    "));
 	sb.AppendC(UTF8STRC("bd334f1d6e45f25ff712a214571fa5cc"));
-	console.WriteLine(sb.ToString());
+	console.WriteLineC(sb.ToString(), sb.GetLength());
 
 	aes->Decrypt(cipherText, 16, decText, 0);
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("DecryptText: "));
 	sb.AppendHexBuff(decText, 16, 0, Text::LineBreakType::None);
-	console.WriteLine(sb.ToString());
+	console.WriteLineC(sb.ToString(), sb.GetLength());
 	console.WriteLine();
 
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("Test vector: "));
 	sb.AppendHexBuff(testVector2, 16, 0, Text::LineBreakType::None);
-	console.WriteLine(sb.ToString());
+	console.WriteLineC(sb.ToString(), sb.GetLength());
 
 	aes->SetKey(key);
 	aes->Encrypt(testVector2, 16, cipherText, 0);
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("Cipher text: "));
 	sb.AppendHexBuff(cipherText, 16, 0, Text::LineBreakType::None);
-	console.WriteLine(sb.ToString());
+	console.WriteLineC(sb.ToString(), sb.GetLength());
 
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("Expected:    "));
 	sb.AppendC(UTF8STRC("974104846d0ad3ad7734ecb3ecee4eef"));
-	console.WriteLine(sb.ToString());
+	console.WriteLineC(sb.ToString(), sb.GetLength());
 
 	aes->Decrypt(cipherText, 16, decText, 0);
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("DecryptText: "));
 	sb.AppendHexBuff(decText, 16, 0, Text::LineBreakType::None);
-	console.WriteLine(sb.ToString());
+	console.WriteLineC(sb.ToString(), sb.GetLength());
 	console.WriteLine();
 
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("Test vector: "));
 	sb.AppendHexBuff(testVector3, 16, 0, Text::LineBreakType::None);
-	console.WriteLine(sb.ToString());
+	console.WriteLineC(sb.ToString(), sb.GetLength());
 
 	aes->SetKey(key);
 	aes->Encrypt(testVector3, 16, cipherText, 0);
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("Cipher text: "));
 	sb.AppendHexBuff(cipherText, 16, 0, Text::LineBreakType::None);
-	console.WriteLine(sb.ToString());
+	console.WriteLineC(sb.ToString(), sb.GetLength());
 
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("Expected:    "));
 	sb.AppendC(UTF8STRC("ef7afd2270e2e60adce0ba2face6444e"));
-	console.WriteLine(sb.ToString());
+	console.WriteLineC(sb.ToString(), sb.GetLength());
 
 	aes->Decrypt(cipherText, 16, decText, 0);
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("DecryptText: "));
 	sb.AppendHexBuff(decText, 16, 0, Text::LineBreakType::None);
-	console.WriteLine(sb.ToString());
+	console.WriteLineC(sb.ToString(), sb.GetLength());
 	console.WriteLine();
 
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("Test vector: "));
 	sb.AppendHexBuff(testVector4, 16, 0, Text::LineBreakType::None);
-	console.WriteLine(sb.ToString());
+	console.WriteLineC(sb.ToString(), sb.GetLength());
 
 	aes->SetKey(key);
 	aes->Encrypt(testVector4, 16, cipherText, 0);
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("Cipher text: "));
 	sb.AppendHexBuff(cipherText, 16, 0, Text::LineBreakType::None);
-	console.WriteLine(sb.ToString());
+	console.WriteLineC(sb.ToString(), sb.GetLength());
 
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("Expected:    "));
 	sb.AppendC(UTF8STRC("9a4b41ba738d6c72fb16691603c18e0e"));
-	console.WriteLine(sb.ToString());
+	console.WriteLineC(sb.ToString(), sb.GetLength());
 
 	aes->Decrypt(cipherText, 16, decText, 0);
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("DecryptText: "));
 	sb.AppendHexBuff(decText, 16, 0, Text::LineBreakType::None);
-	console.WriteLine(sb.ToString());
+	console.WriteLineC(sb.ToString(), sb.GetLength());
 	console.WriteLine();
 
 	UInt8 *tempBuff = MemAlloc(UInt8, 1048576);
@@ -134,7 +134,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("Encrypt rate = "));
 	Text::SBAppendF64(&sb, 104857600 / t);
-	console.WriteLine(sb.ToString());
+	console.WriteLineC(sb.ToString(), sb.GetLength());
 
 	clk.Start();
 	i = 100;
@@ -146,7 +146,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("Decrypt rate = "));
 	Text::SBAppendF64(&sb, 104857600 / t);
-	console.WriteLine(sb.ToString());
+	console.WriteLineC(sb.ToString(), sb.GetLength());
 	MemFree(tempBuff);
 
 	DEL_CLASS(aes);

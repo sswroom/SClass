@@ -151,7 +151,7 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnSMSSaveClick(void *userObj)
 			writer->WriteStrC(UTF8STRC("Date: "));
 			dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss zzzz");
 			writer->WriteLine(sbuff);
-			writer->WriteLine((const UTF8Char*)"Content: ");
+			writer->WriteLineC(UTF8STRC("Content: "));
 			writer->WriteLineW(smsMsg->GetContent());
 			
 			DEL_CLASS(writer);
@@ -228,7 +228,7 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnSMSSaveAllClick(void *userObj)
 				writer->WriteStrC(UTF8STRC("Date: "));
 				dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss zzzz");
 				writer->WriteLine(sbuff);
-				writer->WriteLine((const UTF8Char*)"Content: ");
+				writer->WriteLineC(UTF8STRC("Content: "));
 				writer->WriteLineW(smsMsg->GetContent());
 				
 				DEL_CLASS(writer);

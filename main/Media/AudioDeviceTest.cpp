@@ -28,7 +28,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		if (renderer->IsPlaying())
 		{
 			UInt32 t;
-			console.WriteLine((const UTF8Char*)"Start Playing");
+			console.WriteLineC(UTF8STRC("Start Playing"));
 			while (true)
 			{
 				t = clk->GetCurrTime();
@@ -38,7 +38,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				}
 				Sync::Thread::Sleep(10000 - (UOSInt)t);
 			}
-			console.WriteLine((const UTF8Char*)"End Playing");
+			console.WriteLineC(UTF8STRC("End Playing"));
 			renderer->Stop();
 		}
 		renderer->BindAudio(0);
@@ -46,7 +46,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	}
 	else
 	{
-		console.WriteLine((const UTF8Char*)"No supported audio device found");
+		console.WriteLineC(UTF8STRC("No supported audio device found"));
 	}
 	DEL_CLASS(sweepFilter);
 	DEL_CLASS(audSrc);

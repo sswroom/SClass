@@ -368,7 +368,7 @@ void IO::ConsoleWriter::FixWrite(const WChar *str, UOSInt displayWidth)
 		while (width < displayWidth)
 		{
 			width++;
-			Write((const UTF8Char*)" ");
+			WriteStrC(UTF8STRC(" ");
 		}
 		return;
 	}
@@ -384,7 +384,7 @@ void IO::ConsoleWriter::FixWrite(const WChar *str, UOSInt displayWidth)
 			width += GetDisplayCharWidth(*str);
 			if (width > displayWidth)
 			{
-				Write((const UTF8Char*)" ", 1);
+				WriteStrC(UTF8STRC(" ", 1);
 				return;
 			}
 			wbuff[0] = str[0];
@@ -411,7 +411,7 @@ void IO::ConsoleWriter::FixWrite(const WChar *str, UOSInt displayWidth)
 		}
 		while (width < displayWidth)
 		{
-			this->Write((const UTF8Char*)".");
+			this->WriteStrC(UTF8STRC(".");
 			width++;
 		}
 	}

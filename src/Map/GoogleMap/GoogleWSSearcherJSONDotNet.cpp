@@ -217,12 +217,12 @@ UTF8Char *Map::GoogleMap::GoogleWSSearcherJSONDotNet::SearchName(UTF8Char *buff,
 							}
 							else
 							{
-								errWriter->WriteLine((const UTF8Char*)"Google JSON empty results");
+								errWriter->WriteLineC(UTF8STRC("Google JSON empty results");
 							}
 						}
 						else
 						{
-							errWriter->WriteLine((const UTF8Char*)"Google JSON results not found");
+							errWriter->WriteLineC(UTF8STRC("Google JSON results not found");
 						}
 					}
 					else
@@ -244,14 +244,14 @@ UTF8Char *Map::GoogleMap::GoogleWSSearcherJSONDotNet::SearchName(UTF8Char *buff,
 				}
 				else
 				{
-					errWriter->WriteLine((const UTF8Char*)"Google JSON invalid status");
+					errWriter->WriteLineC(UTF8STRC("Google JSON invalid status");
 					this->lastIsError = 1;
 				}
 				obj->EndUse();
 			}
 			else
 			{
-				errWriter->WriteLine((const UTF8Char*)"Google non-json Error");
+				errWriter->WriteLineC(UTF8STRC("Google non-json Error");
 				IO::FileStream *fs;
 				UInt8 *buff;
 				OSInt buffSize;
@@ -280,7 +280,7 @@ UTF8Char *Map::GoogleMap::GoogleWSSearcherJSONDotNet::SearchName(UTF8Char *buff,
 		this->lastIsError = 2;
 		sb.AppendC(UTF8STRC("Cannot connect: "));
 		sb.Append(url);
-		errWriter->WriteLine(sb.ToString());
+		errWriter->WriteLineC(sb.ToString(), sb.GetLength());
 	}
 
 	this->lastSrchDate->SetCurrTimeUTC();

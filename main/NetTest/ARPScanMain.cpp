@@ -35,7 +35,7 @@ void __stdcall ARPHandler(const UInt8 *hwAddr, UInt32 ipv4, void *userData)
 		{
 			sb.Append((const UTF8Char*)macEntry->name);
 		}
-		console->WriteLine(sb.ToString());
+		console->WriteLineC(sb.ToString(), sb.GetLength());
 		ipList->SortedInsert(ipv4);
 	}
 }
@@ -57,7 +57,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	Net::ARPInfo::ARPType arpType;
 	Net::ARPInfo *arp;
 	Net::ARPInfo::GetARPInfoList(&arpList);
-	console->WriteLine((const UTF8Char*)"OS ARP:");
+	console->WriteLineC(UTF8STRC("OS ARP:"));
 	i = 0;
 	j = arpList.GetCount();
 	while (i < j)
@@ -80,7 +80,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			{
 				sb.Append((const UTF8Char*)macEntry->name);
 			}
-			console->WriteLine(sb.ToString());
+			console->WriteLineC(sb.ToString(), sb.GetLength());
 			ipList->SortedInsert(arp->GetIPAddress());
 		}
 
@@ -123,7 +123,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 					connInfo->GetName(sbuff);
 					sb.AppendC(UTF8STRC(", Name = "));
 					sb.Append(sbuff);
-					console->WriteLine(sb.ToString());
+					console->WriteLineC(sb.ToString(), sb.GetLength());
 					connInfo->GetName(sbuff);
 					WriteNUInt32(buff, ip);
 					if (buff[0] == 192 && buff[1] == 168)
@@ -131,7 +131,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 						NEW_CLASS(arpHdlr, Net::ARPHandler(sockf, sbuff, hwAddr, ip, ARPHandler, 0, 1));
 						if (arpHdlr->IsError())
 						{
-							console->WriteLine((const UTF8Char*)"Error in listening arp data");
+							console->WriteLineC(UTF8STRC("Error in listening arp data"));
 						}
 						else
 						{
@@ -151,7 +151,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 					}
 					else
 					{
-						console->WriteLine((const UTF8Char*)"To many ip address");
+						console->WriteLineC(UTF8STRC("To many ip address"));
 					}
 				}
 			}

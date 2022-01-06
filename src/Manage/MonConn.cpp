@@ -216,7 +216,7 @@ UInt32 __stdcall Manage::MonConn::ConnRThread(void *conn)
 
 	MemFree(dataBuff);
 	me->ConnRRunning = false;
-	me->msgWriter->WriteLine((const UTF8Char*)"MonConn RThread Stopped");
+	me->msgWriter->WriteLineC(UTF8STRC("MonConn RThread Stopped"));
 	return 0;
 }
 
@@ -271,7 +271,7 @@ UInt32 __stdcall Manage::MonConn::ConnTThread(void *conn)
 	if (me->connREvt)
 		me->connREvt->Set();
 	me->ConnTRunning = false;
-	me->msgWriter->WriteLine((const UTF8Char*)"MonConn TThread Stopped");
+	me->msgWriter->WriteLineC(UTF8STRC("MonConn TThread Stopped"));
 	return 0;
 }
 

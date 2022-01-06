@@ -414,22 +414,22 @@ Net::WebServer::IWebRequest::RequestProtocol Net::WebServer::WebRequest::GetProt
 	return this->reqProto;
 }
 
-Text::String *Net::WebServer::WebRequest::GetQueryValue(const UTF8Char *name)
+Text::String *Net::WebServer::WebRequest::GetQueryValue(const UTF8Char *name, UOSInt nameLen)
 {
 	if (this->queryMap == 0)
 	{
 		this->ParseQuery();
 	}
-	return this->queryMap->Get(name);
+	return this->queryMap->GetC(name, nameLen);
 }
 
-Bool Net::WebServer::WebRequest::HasQuery(const UTF8Char *name)
+Bool Net::WebServer::WebRequest::HasQuery(const UTF8Char *name, UOSInt nameLen)
 {
 	if (this->queryMap == 0)
 	{
 		this->ParseQuery();
 	}
-	Text::String *sptr = this->queryMap->Get(name);
+	Text::String *sptr = this->queryMap->GetC(name, nameLen);
 	return sptr != 0;
 }
 
@@ -514,11 +514,11 @@ void Net::WebServer::WebRequest::ParseHTTPForm()
 	DEL_CLASS(sb);
 }
 
-Text::String *Net::WebServer::WebRequest::GetHTTPFormStr(const UTF8Char *name)
+Text::String *Net::WebServer::WebRequest::GetHTTPFormStr(const UTF8Char *name, UOSInt nameLen)
 {
 	if (this->formMap == 0)
 		return 0;
-	return this->formMap->Get(name);
+	return this->formMap->GetC(name, nameLen);
 }
 
 const UInt8 *Net::WebServer::WebRequest::GetHTTPFormFile(const UTF8Char *formName, UOSInt index, UTF8Char *fileName, UOSInt fileNameBuffSize, UOSInt *fileSize)

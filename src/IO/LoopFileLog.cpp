@@ -162,7 +162,7 @@ void IO::LoopFileLog::LogAdded(Data::DateTime *time, const UTF8Char *logMsg, UOS
 		Text::StringBuilderUTF8 sb;
 		sb.Append(buff);
 		sb.AppendC(logMsg, msgLen);
-		log->WriteLine(sb.ToString());
+		log->WriteLineC(sb.ToString(), sb.GetLength());
 	}
 	mutUsage.EndUse();
 }

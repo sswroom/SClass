@@ -85,7 +85,7 @@ Bool Exporter::MapCSVExporter::ExportFile(IO::SeekableStream *stm, const UTF8Cha
 		UOSInt j = track->GetTrackCnt();
 		Data::DateTime d;
 
-		writer->WriteLine((const UTF8Char*)"INDEX, UTC DATE, UTC TIME, VALID, LATITUDE, N/S, LONGITUDE, E/W, HEIGHT, SPEED, HEADING, NSAT(USED/VIEW)");
+		writer->WriteLineC(UTF8STRC("INDEX, UTC DATE, UTC TIME, VALID, LATITUDE, N/S, LONGITUDE, E/W, HEIGHT, SPEED, HEADING, NSAT(USED/VIEW)"));
 
 		while (i < j)
 		{
@@ -164,7 +164,7 @@ Bool Exporter::MapCSVExporter::ExportFile(IO::SeekableStream *stm, const UTF8Cha
 		UOSInt k;
 		UOSInt l;
 
-		writer->WriteLine((const UTF8Char*)"INDEX, LATITUDE, N/S, LONGITUDE, E/W");
+		writer->WriteLineC(UTF8STRC("INDEX, LATITUDE, N/S, LONGITUDE, E/W"));
 
 		NEW_CLASS(objIds, Data::ArrayListInt64());
 		void *sess = layer->BeginGetObject();

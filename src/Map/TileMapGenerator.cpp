@@ -70,12 +70,12 @@ void Map::TileMapGenerator::AppendDBFile(IO::Writer *writer, Int32 x, Int32 y, U
 		sptr = Text::StrInt32(sptr, xOfst);
 		sptr = Text::StrConcat(sptr, (const UTF8Char*)",");
 		sptr = Text::StrInt32(sptr, yOfst);
-		writer->WriteLine(sbuff2);
+		writer->WriteLineC(sbuff2, (UOSInt)(sptr - sbuff2));
 
 		while ((sptr = reader->ReadLine(sbuff2, 509)) != 0)
 		{
 			reader->GetLastLineBreak(sptr);
-			writer->Write(sbuff2);
+			writer->WriteStr(sbuff2);
 		}
 		DEL_CLASS(reader);
 	}

@@ -199,7 +199,7 @@ UTF8Char *Map::GoogleMap::GoogleSearcher::SearchName(UTF8Char *buff, UOSInt buff
 		else if (status == 602)
 		{
 			this->lastIsError = 1;
-			errWriter->WriteLine((const UTF8Char*)"Google 602 error");
+			errWriter->WriteLineC(UTF8STRC("Google 602 error"));
 			*buff = 0;
 		}
 		else

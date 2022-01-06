@@ -307,7 +307,7 @@ void Net::WebServer::HTTPDirectoryHandler::StatSave(Net::WebServer::HTTPDirector
 				sb.AppendU32(cntList->GetItem(i));
 				sb.AppendChar('\t', 1);
 				sb.Append(nameList->GetItem(i));
-				writer->WriteLine(sb.ToString());
+				writer->WriteLineC(sb.ToString(), sb.GetLength());
 				i++;
 			}
 			DEL_CLASS(writer);
@@ -802,7 +802,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 					sbOut.AppendC((const UTF8Char*)"</form>", 7);
 				}
 
-				s = req->GetQueryValue((const UTF8Char *)"sort");
+				s = req->GetQueryValue(UTF8STRC("sort"));
 				if (s)
 				{
 					sort = s->ToInt32();

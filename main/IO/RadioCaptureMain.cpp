@@ -36,11 +36,11 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	NEW_CLASS(btCapturer, IO::BTCapturer());
 	if (wifiCapturer->IsError())
 	{
-		console.WriteLine((const UTF8Char*)"Error in initializing WiFi");
+		console.WriteLineC(UTF8STRC("Error in initializing WiFi"));
 	}
 	else if (btCapturer->IsError())
 	{
-		console.WriteLine((const UTF8Char*)"Error in initializing Bluetooth");
+		console.WriteLineC(UTF8STRC("Error in initializing Bluetooth"));
 	}
 	else
 	{
@@ -55,21 +55,21 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		{
 			sb.AppendC(UTF8STRC("Error in starting web server at port "));
 			sb.AppendI32(webPort);
-			console.WriteLine(sb.ToString());
+			console.WriteLineC(sb.ToString(), sb.GetLength());
 		}
 		else
 		{
 			if (!wifiCapturer->Start())
 			{
-				console.WriteLine((const UTF8Char*)"No WiFi interface found");
+				console.WriteLineC(UTF8STRC("No WiFi interface found"));
 			}
 			else if (!btCapturer->Start())
 			{
-				console.WriteLine((const UTF8Char*)"No bluetooth interface found");
+				console.WriteLineC(UTF8STRC("No bluetooth interface found"));
 			}
 			else
 			{
-				console.WriteLine((const UTF8Char*)"RadioCapture started");
+				console.WriteLineC(UTF8STRC("RadioCapture started"));
 				progCtrl->WaitForExit(progCtrl);
 				wifiCapturer->StoreStatus();
 				btCapturer->StoreStatus();

@@ -33,10 +33,10 @@ static UInt32 __stdcall SerialViewer(void *userObj)
 		dt->SetCurrTime();
 		sb->ClearStr();
 		sb->AppendDate(dt);
-		console->WriteLine(sb->ToString());
+		console->WriteLineC(sb->ToString(), sb->GetLength());
 		sb->ClearStr();
 		sb->AppendHex(readBuff, readSize, ' ', Text::LineBreakType::CRLF);
-		console->WriteLine(sb->ToString());
+		console->WriteLineC(sb->ToString(), sb->GetLength());
 		console->WriteLine();
 	}
 	DEL_CLASS(dt);
@@ -54,7 +54,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	argv = progCtrl->GetCommandLines(progCtrl, &argc);
 	if (argc <= 1)
 	{
-		console->WriteLine((const UTF8Char*)"Usage: SSwerialViewer [portNo] [baudRate]");
+		console->WriteLineC(UTF8STRC("Usage: SSwerialViewer [portNo] [baudRate]"));
 	}
 	else
 	{
@@ -62,7 +62,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		Text::StrToUInt32(argv[1], &portNo);
 		if (portNo == 0)
 		{
-			console->WriteLine((const UTF8Char*)"PortNo is not correct");
+			console->WriteLineC(UTF8STRC("PortNo is not correct"));
 		}
 		else
 		{
@@ -82,14 +82,14 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			NEW_CLASS(port, IO::SerialPort(portNo, baudRate, IO::SerialPort::PARITY_NONE, false));
 			if (port->IsError())
 			{
-				console->WriteLine((const UTF8Char*)"Error in opening serial port");
+				console->WriteLineC(UTF8STRC("Error in opening serial port"));
 			}
 			else
 			{
-				console->WriteLine((const UTF8Char*)"Running");
+				console->WriteLineC(UTF8STRC("Running"));
 				Sync::Thread::Create(SerialViewer, 0);
 				progCtrl->WaitForExit(progCtrl);
-				console->WriteLine((const UTF8Char*)"Exiting");
+				console->WriteLineC(UTF8STRC("Exiting"));
 				port->Close();
 				while (running)
 				{

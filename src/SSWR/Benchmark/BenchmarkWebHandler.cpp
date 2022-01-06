@@ -189,7 +189,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(SSWR::Benchmark:
 	UTF8Char fileName[512];
 	UTF8Char path[512];
 	UTF8Char *u8ptr;
-	if (req->GetQueryValueStr((const UTF8Char*)"model", fileName, 512))
+	if (req->GetQueryValueStr(UTF8STRC("model"), fileName, 512))
 	{
 		UOSInt fileSize;
 		IO::Path::GetProcessFileName(path);
@@ -222,9 +222,9 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(SSWR::Benchmark:
 		Int32 cpuFamily = 0;
 		Int32 cpuModel = 0;
 		Int32 cpuStepping = 0;
-		req->GetQueryValueI32((const UTF8Char*)"family", &cpuFamily);
-		req->GetQueryValueI32((const UTF8Char*)"modelId", &cpuModel);
-		req->GetQueryValueI32((const UTF8Char*)"stepping", &cpuStepping);
+		req->GetQueryValueI32(UTF8STRC("family"), &cpuFamily);
+		req->GetQueryValueI32(UTF8STRC("modelId"), &cpuModel);
+		req->GetQueryValueI32(UTF8STRC("stepping"), &cpuStepping);
 		if (cpuFamily != 0 && cpuModel != 0 && cpuStepping != 0)
 		{
 			req->GetHeader(fileName, (const UTF8Char*)"Content-Length", 512);
@@ -259,7 +259,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(SSWR::Benchmark:
 		{
 			UOSInt fileSize;
 			const UInt8 *fileBuff;
-			if (req->GetQueryValueStr((const UTF8Char*)"file", fileName, 512))
+			if (req->GetQueryValueStr(UTF8STRC("file"), fileName, 512))
 			{
 				fileBuff = req->GetReqData(&fileSize);
 				Text::StrConcat(fileName, (const UTF8Char*)"cpuinfo");

@@ -24,7 +24,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	NEW_CLASS(core, SSWR::SMonitor::SMonitorSvrCore(console, Media::DrawEngineFactory::CreateDrawEngine()));
 	if (!core->IsError())
 	{
-		console->WriteLine((const UTF8Char*)"SMonitorSvr running");
+		console->WriteLineC(UTF8STRC("SMonitorSvr running"));
 		progCtrl->WaitForExit(progCtrl);
 	}
 	DEL_CLASS(core);

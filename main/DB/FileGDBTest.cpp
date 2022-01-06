@@ -976,7 +976,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				Data::VariObject *obj = r->CreateVariObject();
 				sb.ClearStr();
 				obj->ToString(&sb);
-				console.WriteLine(sb.ToString());
+				console.WriteLineC(sb.ToString(), sb.GetLength());
 				DEL_CLASS(obj);
 			}
 			fileGDB->CloseReader(r);
@@ -1024,7 +1024,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			sb.AppendUOSInt(lamppostList.GetCount());
 			sb.AppendC(UTF8STRC(", CSV count = "));
 			sb.AppendUOSInt(lamppostListCSV.GetCount());
-			console.WriteLine(sb.ToString());
+			console.WriteLineC(sb.ToString(), sb.GetLength());
 			
 /*			if (lamppostList.GetCount() == lamppostListCSV.GetCount())
 			{
@@ -1039,15 +1039,15 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 					lamppost2 = lamppostListCSV.GetItem(i);
 					if (!cls->Equals(lamppost, lamppost2))
 					{
-						console.WriteLine((const UTF8Char*)"Not equals:");
-						console.WriteLine((const UTF8Char*)"FileGDB:");
+						console.WriteLineC(UTF8STRC("Not equals:");
+						console.WriteLineC(UTF8STRC("FileGDB:");
 						sb.ClearStr();
 						Text::StringTool::BuildString(&sb, lamppost, cls);
-						console.WriteLine(sb.ToString());
-						console.WriteLine((const UTF8Char*)"CSV:");
+						console.WriteLineC(sb.ToString(), sb.GetLength());
+						console.WriteLineC(UTF8STRC("CSV:");
 						sb.ClearStr();
 						Text::StringTool::BuildString(&sb, lamppost2, cls);
-						console.WriteLine(sb.ToString());
+						console.WriteLineC(sb.ToString(), sb.GetLength());
 						break;
 					}
 					i++;
@@ -1056,7 +1056,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			}*/
 /*			sb.ClearStr();
 			Text::StringTool::BuildString(&sb, &lamppostList, cls, (const UTF8Char*)"Lamppost");
-			console.WriteLine(sb.ToString());*/
+			console.WriteLineC(sb.ToString(), sb.GetLength());*/
 
 			i = lamppostList.GetCount();
 			while (i-- > 0)
@@ -1081,7 +1081,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			Text::SBAppendF64(&sb, t3);
 /*			sb.AppendC(UTF8STRC(", t4 = "));
 			Text::SBAppendF64(&sb, t4);*/
-			console.WriteLine(sb.ToString());
+			console.WriteLineC(sb.ToString(), sb.GetLength());
 		}
 		DEL_CLASS(cls);
 

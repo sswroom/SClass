@@ -24,7 +24,7 @@ private:
 		MyHandler *me = (MyHandler*)userObj;
 		Sync::MutexUsage mutUsage(me->sseMut);
 		me->sseConns->Remove(resp);
-		console->WriteLine((const UTF8Char*)"Disconnected");
+		console->WriteLineC(UTF8STRC("Disconnected"));
 	}
 
 	static Bool __stdcall SSEHandler(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *subReq, WebServiceHandler *me)
@@ -75,7 +75,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	{
 		if (!Text::StrToUInt16(argv[1], &port))
 		{
-			console->WriteLine((const UTF8Char*)"Error in parsing port number, use default port");
+			console->WriteLineC(UTF8STRC("Error in parsing port number, use default port"));
 			port = 0;
 		}
 	}
@@ -99,7 +99,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		if (ssl == 0 || !ssl->SetServerCerts((const UTF8Char*)"test.crt", (const UTF8Char*)"test.key"))
 		{
 			UTF8Char sbuff[512];
-			console->WriteLine((const UTF8Char*)"Error in initializing SSL");
+			console->WriteLineC(UTF8STRC("Error in initializing SSL"));
 			ssl->GetErrorDetail(sbuff);
 			console->WriteLine(sbuff);
 			succ = false;
@@ -115,7 +115,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("Listening to port "));
 		sb.AppendU16(port);
-		console->WriteLine(sb.ToString());
+		console->WriteLineC(sb.ToString(), sb.GetLength());
 		MyHandler *myHdlr;
 		NEW_CLASS(hdlr, Net::WebServer::HTTPDirectoryHandler((const UTF8Char*)".", true, 0, true));
 		NEW_CLASS(myHdlr, MyHandler());
@@ -127,7 +127,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		}
 		else
 		{
-			console->WriteLine((const UTF8Char*)"Error in listening port");
+			console->WriteLineC(UTF8STRC("Error in listening port"));
 		}
 		DEL_CLASS(svr);
 		hdlr->Release();

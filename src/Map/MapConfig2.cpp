@@ -2368,7 +2368,7 @@ Map::IMapDrawLayer *Map::MapConfig2::GetDrawLayer(const UTF8Char *name, Data::Ar
 	NEW_CLASS(cip, Map::CIPLayer2(name));
 	if (cip->IsError())
 	{
-		errWriter->Write((const UTF8Char*)"Error in loading ");
+		errWriter->WriteStrC(UTF8STRC("Error in loading "));
 		errWriter->WriteLine(name);
 		DEL_CLASS(cip);
 		return 0;

@@ -148,7 +148,7 @@ void Net::SNS::SNSManager::ChannelAddMessage(Net::SNS::SNSManager::ChannelData *
 	{
 		sb.AppendChar('"', 2);
 	}
-	writer->WriteLine(sb.ToString());
+	writer->WriteLineC(sb.ToString(), sb.GetLength());
 	DEL_CLASS(writer);
 	DEL_CLASS(fs);
 

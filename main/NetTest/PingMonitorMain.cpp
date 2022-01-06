@@ -82,7 +82,7 @@ UInt32 __stdcall RecvThread(void *userObj)
 							sb->AppendC(UTF8STRC(", Size = "));
 							sb->AppendUOSInt(ipDataSize);
 							logTool->LogMessageC(sb->ToString(), sb->GetLength(), IO::ILogHandler::LOG_LEVEL_COMMAND);
-//							console->WriteLine(sb->ToString());
+//							console->WriteLineC(sb->ToString(), sb->GetLength());
 						}
 						break;
 					case 2: //IGMP
@@ -130,7 +130,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	NEW_CLASS(console, IO::ConsoleWriter());
 #endif
 	NEW_CLASS(sockf, Net::OSSocketFactory(true));
-	console->WriteLine((const UTF8Char*)"PingMonitor Started");
+	console->WriteLineC(UTF8STRC("PingMonitor Started"));
 	rawSock = sockf->CreateRAWSocket();
 	if (rawSock)
 	{
@@ -157,7 +157,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	}
 	else
 	{
-		console->WriteLine((const UTF8Char*)"Error in creating RAW socket");
+		console->WriteLineC(UTF8STRC("Error in creating RAW socket"));
 	}
 	DEL_CLASS(sockf);
 	DEL_CLASS(console);

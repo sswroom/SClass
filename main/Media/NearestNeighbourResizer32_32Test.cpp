@@ -76,6 +76,6 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	Text::SBAppendF64(&sb, t1);
 	sb.AppendC(UTF8STRC(", t2 = "));
 	Text::SBAppendF64(&sb, t2);
-	console.WriteLine(sb.ToString());
+	console.WriteLineC(sb.ToString(), sb.GetLength());
 	return 0;
 }

@@ -87,7 +87,7 @@ WChar *Map::GoogleMap::GoogleWSSearcherXML::SearchName(WChar *buff, Double lat, 
 					{
 						this->lastIsError = true;
 						errWriter->Write(L"Google respose status invalid: ");
-						errWriter->WriteLine(sb->ToString());
+						errWriter->WriteLineC(sb->ToString(), sb->GetLength());
 					}
 				}
 				else

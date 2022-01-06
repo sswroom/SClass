@@ -133,7 +133,7 @@ Bool IO::SMake::ExecuteCmd(const UTF8Char *cmd)
 	{
 		if (this->cmdWriter)
 		{
-			this->cmdWriter->WriteLine(sbRet.ToString());
+			this->cmdWriter->WriteLineC(sbRet.ToString(), sbRet.GetLength());
 		}
 	}
 	return true;
@@ -149,7 +149,7 @@ Bool IO::SMake::LoadConfigFile(const UTF8Char *cfgFile)
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(UTF8STRC("Loading "));
 		sb.Append(cfgFile);
-		this->messageWriter->WriteLine(sb.ToString());
+		this->messageWriter->WriteLineC(sb.ToString(), sb.GetLength());
 	}
 	NEW_CLASS(fs, IO::FileStream(cfgFile, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (fs->IsError())
@@ -583,7 +583,7 @@ Bool IO::SMake::ParseSource(Data::ArrayListString *objList, Data::ArrayListStrin
 									sb2.Append(debugObj);
 									sb2.AppendC(UTF8STRC(" found in "));
 									sb2.Append(sourceFile);
-									this->messageWriter->WriteLine(sb2.ToString());
+									this->messageWriter->WriteLineC(sb2.ToString(), sb2.GetLength());
 								}
 								if (objList->SortedIndexOf(prog->subItems->GetItem(i)) < 0)
 								{
@@ -604,7 +604,7 @@ Bool IO::SMake::ParseSource(Data::ArrayListString *objList, Data::ArrayListStrin
 								sb2.Append(debugObj);
 								sb2.AppendC(UTF8STRC(" found in "));
 								sb2.Append(sourceFile);
-								this->messageWriter->WriteLine(sb2.ToString());
+								this->messageWriter->WriteLineC(sb2.ToString(), sb2.GetLength());
 							}
 							if (!this->ParseHeader(objList, libList, procList, headerList, &thisTime, prog->name, sourceFile))
 							{
@@ -834,7 +834,7 @@ Bool IO::SMake::CompileProgInternal(IO::SMake::ProgramItem *prog, Bool asmListin
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(UTF8STRC("Compiling Program "));
 		sb.Append(prog->name);
-		this->messageWriter->WriteLine(sb.ToString());
+		this->messageWriter->WriteLineC(sb.ToString(), sb.GetLength());
 	}
 
 	if (!this->ParseProgInternal(&objList, &libList, &procList, 0, &latestTime, &progGroup, prog))
@@ -979,7 +979,7 @@ Bool IO::SMake::CompileProgInternal(IO::SMake::ProgramItem *prog, Bool asmListin
 						dt1.SetTicks(lastTime);
 						sb.AppendDate(&dt1);
 						sb.AppendC(UTF8STRC(", Skip"));
-						this->messageWriter->WriteLine(sb.ToString());
+						this->messageWriter->WriteLineC(sb.ToString(), sb.GetLength());
 					}
 				}
 			}

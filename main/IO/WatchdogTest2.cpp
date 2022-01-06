@@ -40,7 +40,7 @@ UInt32 __stdcall WatchdogThread(void *userObj)
 	{
 		if (i-- > 0)
 		{
-			consoleWriter->WriteLine((const UTF8Char*)"Keep Alive");
+			consoleWriter->WriteLineC(UTF8STRC("Keep Alive"));
 			wd->Keepalive();
 		}
 		if (am2315->ReadTemperature(&tempVal))
@@ -52,7 +52,7 @@ UInt32 __stdcall WatchdogThread(void *userObj)
 				Text::SBAppendF64(sb, tempVal);
 				sb->AppendC(UTF8STRC(", RH = "));
 				Text::SBAppendF64(sb, rhVal);
-				consoleWriter->WriteLine(sb->ToString());
+				consoleWriter->WriteLineC(sb->ToString(), sb->GetLength());
 			}
 			else
 			{
@@ -60,12 +60,12 @@ UInt32 __stdcall WatchdogThread(void *userObj)
 				sb->AppendC(UTF8STRC("AM2315: Temp = "));
 				Text::SBAppendF64(sb, tempVal);
 				sb->AppendC(UTF8STRC(", RH = error"));
-				consoleWriter->WriteLine(sb->ToString());
+				consoleWriter->WriteLineC(sb->ToString(), sb->GetLength());
 			}
 		}
 		else
 		{
-			consoleWriter->WriteLine((const UTF8Char*)"Fail in reading from AM2315");
+			consoleWriter->WriteLineC(UTF8STRC("Fail in reading from AM2315"));
 		}
 		
 		evt->Wait(2000);
@@ -83,7 +83,7 @@ UInt32 __stdcall HTTPThread(void *userObj)
 	httpRunning = true;
 	while (!toStop)
 	{
-		consoleWriter->Write((const UTF8Char*)"Requesting to ");
+		consoleWriter->WriteStrC(UTF8STRC("Requesting to "));
 		consoleWriter->WriteLine(TESTURL);
 		cli = Net::HTTPClient::CreateClient(sockf, ssl, USERAGENT, false, Text::StrStartsWith(TESTURL, (const UTF8Char*)"https://"));
 		cli->Connect(TESTURL, "GET", 0, 0, false);
@@ -94,7 +94,7 @@ UInt32 __stdcall HTTPThread(void *userObj)
 		
 		if (cli->IsError())
 		{
-			consoleWriter->WriteLine((const UTF8Char*)"Error in requesting to server");
+			consoleWriter->WriteLineC(UTF8STRC("Error in requesting to server"));
 		}
 		else
 		{
@@ -103,7 +103,7 @@ UInt32 __stdcall HTTPThread(void *userObj)
 			sb->ClearStr();
 			sb->AppendC(UTF8STRC("Resp Code = "));
 			sb->AppendI32(respCode);
-			consoleWriter->WriteLine(sb->ToString());
+			consoleWriter->WriteLineC(sb->ToString(), sb->GetLength());
 		}
 		DEL_CLASS(cli);
 		httpEvt->Wait(1000);
@@ -143,7 +143,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	IO::I2CChannel *channel = IO::Device::AM2315::CreateDefChannel(1);
 	if (channel == 0)
 	{
-		console.WriteLine((const UTF8Char*)"I2C Bus not found");
+		console.WriteLineC(UTF8STRC("I2C Bus not found"));
 		return 0;
 	}
 	NEW_CLASS(am2315, IO::Device::AM2315(channel, true));
@@ -151,7 +151,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	{
 		DEL_CLASS(am2315);
 		am2315 = 0;
-		console.WriteLine((const UTF8Char*)"AM2315 not found");
+		console.WriteLineC(UTF8STRC("AM2315 not found"));
 		return 0;
 	}
 
@@ -169,7 +169,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	
 	if (wd == 0)
 	{
-		console.WriteLine((const UTF8Char*)"Watchdog not found");
+		console.WriteLineC(UTF8STRC("Watchdog not found"));
 	}
 	else
 	{
@@ -181,25 +181,25 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Timeout = "));
 			sb.AppendI32(timeoutSec);
-			console.WriteLine(sb.ToString());
+			console.WriteLineC(sb.ToString(), sb.GetLength());
 		}
 		else
 		{
-			console.WriteLine((const UTF8Char*)"Error in getting timeout value");
+			console.WriteLineC(UTF8STRC("Error in getting timeout value"));
 		}
 
 		if (wd->Enable())
 		{
-			console.WriteLine((const UTF8Char*)"Watchdog enabled");
+			console.WriteLineC(UTF8STRC("Watchdog enabled"));
 			Sync::Thread::Create(WatchdogThread, 0);
 			Sync::Thread::Create(HTTPThread, 0);
 			while (!running)
 			{
 				Sync::Thread::Sleep(10);
 			}
-			console.WriteLine((const UTF8Char*)"Running");
+			console.WriteLineC(UTF8STRC("Running"));
 			progCtrl->WaitForExit(progCtrl);
-			console.WriteLine((const UTF8Char*)"Exiting");
+			console.WriteLineC(UTF8STRC("Exiting"));
 			toStop = true;
 			evt->Set();
 			httpEvt->Set();
@@ -210,7 +210,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		}
 		else
 		{
-			console.WriteLine((const UTF8Char*)"Error in enabling watchdog");
+			console.WriteLineC(UTF8STRC("Error in enabling watchdog"));
 		}
 		DEL_CLASS(wd);
 	}

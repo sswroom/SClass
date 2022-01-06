@@ -573,7 +573,7 @@ void SSWR::DownloadMonitor::DownMonMainForm::SaveList()
 			sb.AppendI32(file->id);
 			sb.AppendChar('\t', 1);
 			sb.Append(file->dbName);
-			writer->WriteLine(sb.ToString());
+			writer->WriteLineC(sb.ToString(), sb.GetLength());
 		}
 		i++;
 	}

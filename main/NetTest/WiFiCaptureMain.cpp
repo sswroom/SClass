@@ -32,7 +32,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	NEW_CLASS(capturer, Net::WiFiCapturer());
 	if (capturer->IsError())
 	{
-		console.WriteLine((const UTF8Char*)"Error in initializing WiFi");
+		console.WriteLineC(UTF8STRC("Error in initializing WiFi"));
 	}
 	else
 	{
@@ -44,17 +44,17 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		{
 			sb.AppendC(UTF8STRC("Error in starting web server at port "));
 			sb.AppendI32(webPort);
-			console.WriteLine(sb.ToString());
+			console.WriteLineC(sb.ToString(), sb.GetLength());
 		}
 		else
 		{
 			if (!capturer->Start())
 			{
-				console.WriteLine((const UTF8Char*)"No WiFi interface found");
+				console.WriteLineC(UTF8STRC("No WiFi interface found"));
 			}
 			else
 			{
-				console.WriteLine((const UTF8Char*)"WiFiCapture started");
+				console.WriteLineC(UTF8STRC("WiFiCapture started"));
 				progCtrl->WaitForExit(progCtrl);
 				capturer->StoreStatus();
 				capturer->Stop();

@@ -24,7 +24,7 @@ void Net::WebServer::PrintLogWebHandler::WebRequest(IWebRequest *req, IWebRespon
 	sb.Append(req->GetRequestURI());
 	sb.AppendChar(' ', 1);
 	sb.Append((const UTF8Char*)Net::WebServer::IWebRequest::RequestProtocolGetName(req->GetProtocol()));
-	this->writer->WriteLine(sb.ToString());
+	this->writer->WriteLineC(sb.ToString(), sb.GetLength());
 	Data::ArrayList<Text::String*> headers;
 	req->GetHeaderNames(&headers);
 	Text::String *header;
@@ -38,7 +38,7 @@ void Net::WebServer::PrintLogWebHandler::WebRequest(IWebRequest *req, IWebRespon
 		sb.Append(header);
 		sb.AppendC(UTF8STRC(": "));
 		req->GetHeader(&sb, header->v);
-		this->writer->WriteLine(sb.ToString());
+		this->writer->WriteLineC(sb.ToString(), sb.GetLength());
 		i++;
 	}
 	this->writer->WriteLine(sbuff);

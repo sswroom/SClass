@@ -159,10 +159,10 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	NEW_CLASS(writer, Text::UTF8Writer(fs));
 
-	console->WriteLine((const UTF8Char*)"SBench Result:");
-	writer->WriteLine((const UTF8Char*)"SBench Result:");
-	console->WriteLine((const UTF8Char*)"Computer Info:");
-	writer->WriteLine((const UTF8Char*)"Computer Info:");
+	console->WriteLineC(UTF8STRC("SBench Result:"));
+	writer->WriteLineC(UTF8STRC("SBench Result:"));
+	console->WriteLineC(UTF8STRC("Computer Info:"));
+	writer->WriteLineC(UTF8STRC("Computer Info:"));
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("Platform: "));
 	if (sysInfo.GetPlatformName(sbuff))
@@ -173,8 +173,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	{
 		sb.AppendC(UTF8STRC("-"));
 	}
-	console->WriteLine(sb.ToString());
-	writer->WriteLine(sb.ToString());
+	console->WriteLineC(sb.ToString(), sb.GetLength());
+	writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 	{
 		Manage::CPUInfoDetail cpuInfo;
@@ -188,8 +188,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		{
 			sb.AppendC(UTF8STRC("-"));
 		}
-		console->WriteLine(sb.ToString());
-		writer->WriteLine(sb.ToString());
+		console->WriteLineC(sb.ToString(), sb.GetLength());
+		writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 		const Manage::CPUDB::CPUSpec *cpuSpec = 0;
 		sb.ClearStr();
@@ -203,8 +203,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		{
 			sb.AppendC(UTF8STRC("-"));
 		}
-		console->WriteLine(sb.ToString());
-		writer->WriteLine(sb.ToString());
+		console->WriteLineC(sb.ToString(), sb.GetLength());
+		writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("CPU Brand Name: "));
@@ -218,8 +218,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		{
 			sb.AppendC(UTF8STRC("-"));
 		}
-		console->WriteLine(sb.ToString());
-		writer->WriteLine(sb.ToString());
+		console->WriteLineC(sb.ToString(), sb.GetLength());
+		writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 #if defined(CPU_X86_32) || defined(CPU_X86_64)
 		sb.ClearStr();
@@ -229,16 +229,16 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		sb.AppendI32(cpuInfo.GetModelId());
 		sb.AppendC(UTF8STRC(", Stepping = "));
 		sb.AppendI32(cpuInfo.GetStepping());
-		console->WriteLine(sb.ToString());
-		writer->WriteLine(sb.ToString());
+		console->WriteLineC(sb.ToString(), sb.GetLength());
+		writer->WriteLineC(sb.ToString(), sb.GetLength());
 #endif
 	}
 
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("CPU Thread Count: "));
 	sb.AppendUOSInt(threadCnt);
-	console->WriteLine(sb.ToString());
-	writer->WriteLine(sb.ToString());
+	console->WriteLineC(sb.ToString(), sb.GetLength());
+	writer->WriteLineC(sb.ToString(), sb.GetLength());
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("OS: "));
 	if (IO::OS::GetDistro(sbuff))
@@ -254,8 +254,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		sb.AppendC(UTF8STRC(" "));
 		sb.Append(sbuff);
 	}
-	console->WriteLine(sb.ToString());
-	writer->WriteLine(sb.ToString());
+	console->WriteLineC(sb.ToString(), sb.GetLength());
+	writer->WriteLineC(sb.ToString(), sb.GetLength());
 	{
 		Data::DateTime dt;
 		sb.ClearStr();
@@ -263,15 +263,15 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		IO::BuildTime::GetBuildTime(&dt);
 		dt.ToUTCTime();
 		sb.AppendDate(&dt);
-		console->WriteLine(sb.ToString());
-		writer->WriteLine(sb.ToString());
+		console->WriteLineC(sb.ToString(), sb.GetLength());
+		writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 		dt.SetCurrTimeUTC();
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("Benchmark Time: "));
 		sb.AppendDate(&dt);
-		console->WriteLine(sb.ToString());
-		writer->WriteLine(sb.ToString());
+		console->WriteLineC(sb.ToString(), sb.GetLength());
+		writer->WriteLineC(sb.ToString(), sb.GetLength());
 	}
 
 	sb.ClearStr();
@@ -279,16 +279,16 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	memSize = sysInfo.GetTotalMemSize();
 	ByteDisp(sbuff, memSize);
 	sb.Append(sbuff);
-	console->WriteLine(sb.ToString());
-	writer->WriteLine(sb.ToString());
+	console->WriteLineC(sb.ToString(), sb.GetLength());
+	writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("Total Usable Memory Size: "));
 	memSize = sysInfo.GetTotalUsableMemSize();
 	ByteDisp(sbuff, memSize);
 	sb.Append(sbuff);
-	console->WriteLine(sb.ToString());
-	writer->WriteLine(sb.ToString());
+	console->WriteLineC(sb.ToString(), sb.GetLength());
+	writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 	{
 		Data::ArrayList<IO::SystemInfo::RAMInfo*> ramList;
@@ -330,8 +330,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			sb.AppendU32(ram->totalWidth);
 			sb.AppendC(UTF8STRC("\t"));
 			sb.AppendU64(ram->memorySize);
-			console->WriteLine(sb.ToString());
-			writer->WriteLine(sb.ToString());
+			console->WriteLineC(sb.ToString(), sb.GetLength());
+			writer->WriteLineC(sb.ToString(), sb.GetLength());
 			i++;
 		}
 		sysInfo.FreeRAMInfo(&ramList);
@@ -364,16 +364,16 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 					sb.AppendC(UTF8STRC(" "));
 					sb.AppendHex16(edidInfo.productCode);
 					sb.AppendC(UTF8STRC(")"));
-					console->WriteLine(sb.ToString());
-					writer->WriteLine(sb.ToString());
+					console->WriteLineC(sb.ToString(), sb.GetLength());
+					writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("Monitor Manufacture: Year "));
 					sb.AppendI32(edidInfo.yearOfManu);
 					sb.AppendC(UTF8STRC(" Week "));
 					sb.AppendU32(edidInfo.weekOfManu);
-					console->WriteLine(sb.ToString());
-					writer->WriteLine(sb.ToString());
+					console->WriteLineC(sb.ToString(), sb.GetLength());
+					writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("Monitor Size: "));
@@ -383,40 +383,40 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 					sb.AppendC(UTF8STRC(" x "));
 					sb.AppendU32(edidInfo.dispPhysicalH);
 					sb.AppendC(UTF8STRC("cm)"));
-					console->WriteLine(sb.ToString());
-					writer->WriteLine(sb.ToString());
+					console->WriteLineC(sb.ToString(), sb.GetLength());
+					writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("Monitor White: x = "));
 					Text::SBAppendF64(&sb, edidInfo.wx);
 					sb.AppendC(UTF8STRC(", y = "));
 					Text::SBAppendF64(&sb, edidInfo.wy);
-					console->WriteLine(sb.ToString());
-					writer->WriteLine(sb.ToString());
+					console->WriteLineC(sb.ToString(), sb.GetLength());
+					writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("Monitor Red x = "));
 					Text::SBAppendF64(&sb, edidInfo.rx);
 					sb.AppendC(UTF8STRC(", y = "));
 					Text::SBAppendF64(&sb, edidInfo.ry);
-					console->WriteLine(sb.ToString());
-					writer->WriteLine(sb.ToString());
+					console->WriteLineC(sb.ToString(), sb.GetLength());
+					writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("Monitor Green: x = "));
 					Text::SBAppendF64(&sb, edidInfo.gx);
 					sb.AppendC(UTF8STRC(", y = "));
 					Text::SBAppendF64(&sb, edidInfo.gy);
-					console->WriteLine(sb.ToString());
-					writer->WriteLine(sb.ToString());
+					console->WriteLineC(sb.ToString(), sb.GetLength());
+					writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("Monitor Blue: x = "));
 					Text::SBAppendF64(&sb, edidInfo.bx);
 					sb.AppendC(UTF8STRC(", y = "));
 					Text::SBAppendF64(&sb, edidInfo.by);
-					console->WriteLine(sb.ToString());
-					writer->WriteLine(sb.ToString());
+					console->WriteLineC(sb.ToString(), sb.GetLength());
+					writer->WriteLineC(sb.ToString(), sb.GetLength());
 				}
 			}
 			DEL_CLASS(reader);
@@ -427,16 +427,16 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 //-------------------------------------------------------------------------------
 	console->WriteLine();
 	writer->WriteLine();
-	console->WriteLine((const UTF8Char*)"API Performance:");
-	writer->WriteLine((const UTF8Char*)"API Performance:");
+	console->WriteLineC(UTF8STRC("API Performance:"));
+	writer->WriteLineC(UTF8STRC("API Performance:"));
 
 	clk->Start();
 	t = clk->GetTimeDiff();
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("Check Time: "));
 	Text::SBAppendF64(&sb, t);
-	console->WriteLine(sb.ToString());
-	writer->WriteLine(sb.ToString());
+	console->WriteLineC(sb.ToString(), sb.GetLength());
+	writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 	clk->Start();
 	i = 1000;
@@ -448,8 +448,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("GetThreadId: "));
 	Text::SBAppendF64(&sb, t / 1000.0);
-	console->WriteLine(sb.ToString());
-	writer->WriteLine(sb.ToString());
+	console->WriteLineC(sb.ToString(), sb.GetLength());
+	writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 	clk->Start();
 	i = 1000;
@@ -462,8 +462,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("Mutex Lock Unlock: "));
 	Text::SBAppendF64(&sb, t / 1000.0);
-	console->WriteLine(sb.ToString());
-	writer->WriteLine(sb.ToString());
+	console->WriteLineC(sb.ToString(), sb.GetLength());
+	writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 	Int32 tmpVal = 0;
 	clk->Start();
@@ -476,8 +476,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("Interlocked Increment: "));
 	Text::SBAppendF64(&sb, t / 1000.0);
-	console->WriteLine(sb.ToString());
-	writer->WriteLine(sb.ToString());
+	console->WriteLineC(sb.ToString(), sb.GetLength());
+	writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 	clk->Start();
 	i = 1000;
@@ -489,8 +489,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("Event.Set: "));
 	Text::SBAppendF64(&sb, t / 1000.0);
-	console->WriteLine(sb.ToString());
-	writer->WriteLine(sb.ToString());
+	console->WriteLineC(sb.ToString(), sb.GetLength());
+	writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 	mainEvt->Clear();
 	clk->Start();
@@ -499,8 +499,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("Event.Wait(100): "));
 	Text::SBAppendF64(&sb, t);
-	console->WriteLine(sb.ToString());
-	writer->WriteLine(sb.ToString());
+	console->WriteLineC(sb.ToString(), sb.GetLength());
+	writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 #if defined(TEST_THREAD)
 	threadT = 0;
@@ -511,14 +511,14 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("Thread Create: "));
 	Text::SBAppendF64(&sb, threadT);
-	console->WriteLine(sb.ToString());
-	writer->WriteLine(sb.ToString());
+	console->WriteLineC(sb.ToString(), sb.GetLength());
+	writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("Event Wake: "));
 	Text::SBAppendF64(&sb, t);
-	console->WriteLine(sb.ToString());
-	writer->WriteLine(sb.ToString());
+	console->WriteLineC(sb.ToString(), sb.GetLength());
+	writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 	Sync::Thread::Sleep(100);
 	Sync::MutexUsage mutUsage(mut);
@@ -527,8 +527,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("Mutex Lock Release: "));
 	Text::SBAppendF64(&sb, t);
-	console->WriteLine(sb.ToString());
-	writer->WriteLine(sb.ToString());
+	console->WriteLineC(sb.ToString(), sb.GetLength());
+	writer->WriteLineC(sb.ToString(), sb.GetLength());
 #endif
 
 	UInt8 **tmpArr = MemAlloc(UInt8*, 1000);
@@ -553,8 +553,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("MemAlloc: "));
 	Text::SBAppendF64(&sb, t / 1000.0);
-	console->WriteLine(sb.ToString());
-	writer->WriteLine(sb.ToString());
+	console->WriteLineC(sb.ToString(), sb.GetLength());
+	writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 	clk->Start();
 	i = 1000;
@@ -566,8 +566,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("MemFree: "));
 	Text::SBAppendF64(&sb, t / 1000.0);
-	console->WriteLine(sb.ToString());
-	writer->WriteLine(sb.ToString());
+	console->WriteLineC(sb.ToString(), sb.GetLength());
+	writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 	clk->Start();
 	i = 1000;
@@ -579,8 +579,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("MemAllocA: "));
 	Text::SBAppendF64(&sb, t / 1000.0);
-	console->WriteLine(sb.ToString());
-	writer->WriteLine(sb.ToString());
+	console->WriteLineC(sb.ToString(), sb.GetLength());
+	writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 	clk->Start();
 	i = 1000;
@@ -592,16 +592,16 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("MemFreeA: "));
 	Text::SBAppendF64(&sb, t / 1000.0);
-	console->WriteLine(sb.ToString());
-	writer->WriteLine(sb.ToString());
+	console->WriteLineC(sb.ToString(), sb.GetLength());
+	writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 	MemFree(tmpArr);
 
 //-------------------------------------------------------------------------------
 	console->WriteLine();
 	writer->WriteLine();
-	console->WriteLine((const UTF8Char*)"Implementation Performance:");
-	writer->WriteLine((const UTF8Char*)"Implementation Performance:");
+	console->WriteLineC(UTF8STRC("Implementation Performance:"));
+	writer->WriteLineC(UTF8STRC("Implementation Performance:"));
 
 	Int32 i32V;
 	Int64 i64V;
@@ -617,8 +617,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("StrInt32 (UTF8 0 - 99999999): "));
 	Text::SBAppendF64(&sb, t);
-	console->WriteLine(sb.ToString());
-	writer->WriteLine(sb.ToString());
+	console->WriteLineC(sb.ToString(), sb.GetLength());
+	writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 	clk->Start();
 	i32V = 100000000;
@@ -630,8 +630,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("StrInt32 (UTF16 0 - 99999999): "));
 	Text::SBAppendF64(&sb, t);
-	console->WriteLine(sb.ToString());
-	writer->WriteLine(sb.ToString());
+	console->WriteLineC(sb.ToString(), sb.GetLength());
+	writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 	clk->Start();
 	i32V = 100000000;
@@ -643,8 +643,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("StrInt32 (UTF32 0 - 99999999): "));
 	Text::SBAppendF64(&sb, t);
-	console->WriteLine(sb.ToString());
-	writer->WriteLine(sb.ToString());
+	console->WriteLineC(sb.ToString(), sb.GetLength());
+	writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 	clk->Start();
 	i64V = 100100000000LL;
@@ -656,8 +656,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("StrInt64 (UTF8 100000000000 - 100099999999): "));
 	Text::SBAppendF64(&sb, t);
-	console->WriteLine(sb.ToString());
-	writer->WriteLine(sb.ToString());
+	console->WriteLineC(sb.ToString(), sb.GetLength());
+	writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 	clk->Start();
 	i64V = 100100000000LL;
@@ -669,8 +669,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("StrInt64 (UTF16 100000000000 - 100099999999): "));
 	Text::SBAppendF64(&sb, t);
-	console->WriteLine(sb.ToString());
-	writer->WriteLine(sb.ToString());
+	console->WriteLineC(sb.ToString(), sb.GetLength());
+	writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 	clk->Start();
 	i64V = 100100000000LL;
@@ -682,8 +682,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("StrInt64 (UTF32 100000000000 - 100099999999): "));
 	Text::SBAppendF64(&sb, t);
-	console->WriteLine(sb.ToString());
-	writer->WriteLine(sb.ToString());
+	console->WriteLineC(sb.ToString(), sb.GetLength());
+	writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 	clk->Start();
 	i32V = 10000;
@@ -695,8 +695,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("StrDouble (UTF8 PI): "));
 	Text::SBAppendF64(&sb, t / 10000.0);
-	console->WriteLine(sb.ToString());
-	writer->WriteLine(sb.ToString());
+	console->WriteLineC(sb.ToString(), sb.GetLength());
+	writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 	clk->Start();
 	i32V = 10000;
@@ -708,8 +708,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("StrDouble (UTF16 PI): "));
 	Text::SBAppendF64(&sb, t / 10000.0);
-	console->WriteLine(sb.ToString());
-	writer->WriteLine(sb.ToString());
+	console->WriteLineC(sb.ToString(), sb.GetLength());
+	writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 	clk->Start();
 	i32V = 10000;
@@ -721,8 +721,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("StrDouble (UTF32 PI): "));
 	Text::SBAppendF64(&sb, t / 10000.0);
-	console->WriteLine(sb.ToString());
-	writer->WriteLine(sb.ToString());
+	console->WriteLineC(sb.ToString(), sb.GetLength());
+	writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 	{
 		UInt64 maxVal = memSize >> 5;
@@ -745,8 +745,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		sb.AppendU64(maxVal - 1);
 		sb.AppendC(UTF8STRC("): "));
 		Text::SBAppendF64(&sb, t);
-		console->WriteLine(sb.ToString());
-		writer->WriteLine(sb.ToString());
+		console->WriteLineC(sb.ToString(), sb.GetLength());
+		writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 		clk->Start();
 		while ((i = arrList->GetCount()) > 0)
@@ -759,8 +759,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		sb.AppendU64(maxVal);
 		sb.AppendC(UTF8STRC(": "));
 		Text::SBAppendF64(&sb, t);
-		console->WriteLine(sb.ToString());
-		writer->WriteLine(sb.ToString());
+		console->WriteLineC(sb.ToString(), sb.GetLength());
+		writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 		clk->Start();
 		i = 100000;
@@ -772,8 +772,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("ArrayListInt32.SortedInsert(rand) * 100000: "));
 		Text::SBAppendF64(&sb, t);
-		console->WriteLine(sb.ToString());
-		writer->WriteLine(sb.ToString());
+		console->WriteLineC(sb.ToString(), sb.GetLength());
+		writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 		DEL_CLASS(arrList);
 	}
@@ -795,8 +795,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			sb.AppendC(UTF8STRC(": "));
 			Text::StrDoubleFmt(sbuff, t, "#,###.###");
 			sb.Append(sbuff);
-			console->WriteLine(sb.ToString());
-			writer->WriteLine(sb.ToString());
+			console->WriteLineC(sb.ToString(), sb.GetLength());
+			writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 			DEL_CLASS(hash);
 		}
@@ -852,8 +852,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	sb.AppendC(UTF8STRC(", time = "));
 	Text::SBAppendF64(&sb, t);
 	sb.AppendC(UTF8STRC("s"));
-	console->WriteLine(sb.ToString());
-	writer->WriteLine(sb.ToString());
+	console->WriteLineC(sb.ToString(), sb.GetLength());
+	writer->WriteLineC(sb.ToString(), sb.GetLength());
 	DEL_CLASS(rand);
 
 	noOfRec = 128;
@@ -889,8 +889,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		{
 			sb.AppendC(UTF8STRC(", Result wrong"));
 		}
-		console->WriteLine(sb.ToString());
-		writer->WriteLine(sb.ToString());
+		console->WriteLineC(sb.ToString(), sb.GetLength());
+		writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 		if (t >= 1.0)
 		{
@@ -938,8 +938,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			{
 				sb.AppendC(UTF8STRC(", Result wrong"));
 			}
-			console->WriteLine(sb.ToString());
-			writer->WriteLine(sb.ToString());
+			console->WriteLineC(sb.ToString(), sb.GetLength());
+			writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 			if (t >= 1.0)
 			{
@@ -983,8 +983,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		{
 			sb.AppendC(UTF8STRC(", Result wrong"));
 		}
-		console->WriteLine(sb.ToString());
-		writer->WriteLine(sb.ToString());
+		console->WriteLineC(sb.ToString(), sb.GetLength());
+		writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 		if (t >= 1.0)
 		{
@@ -1025,8 +1025,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		{
 			sb.AppendC(UTF8STRC(", Result wrong"));
 		}
-		console->WriteLine(sb.ToString());
-		writer->WriteLine(sb.ToString());
+		console->WriteLineC(sb.ToString(), sb.GetLength());
+		writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 		if (t >= 1.0)
 		{
@@ -1067,8 +1067,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		{
 			sb.AppendC(UTF8STRC(", Result wrong"));
 		}
-		console->WriteLine(sb.ToString());
-		writer->WriteLine(sb.ToString());
+		console->WriteLineC(sb.ToString(), sb.GetLength());
+		writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 		if (t >= 1.0)
 		{
@@ -1116,8 +1116,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			{
 				sb.AppendC(UTF8STRC(", Result wrong");
 			}
-			console->WriteLine(sb.ToString());
-			writer->WriteLine(sb.ToString());
+			console->WriteLineC(sb.ToString(), sb.GetLength());
+			writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 			if (t >= 1.0)
 			{
@@ -1162,8 +1162,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		{
 			sb.AppendC(UTF8STRC(", Result wrong"));
 		}
-		console->WriteLine(sb.ToString());
-		writer->WriteLine(sb.ToString());
+		console->WriteLineC(sb.ToString(), sb.GetLength());
+		writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 		if (t >= 1.0)
 		{
@@ -1180,10 +1180,10 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 #if defined(TEST_MEMORY)
 	console->WriteLine();
 	writer->WriteLine();
-	console->WriteLine((const UTF8Char*)"Memory Performance:");
-	writer->WriteLine((const UTF8Char*)"Memory Performance:");
-	console->WriteLine((const UTF8Char*)"Type\tSize\tData Rate\tLoop Count\tUsed Time");
-	writer->WriteLine((const UTF8Char*)"Type\tSize\tData Rate\tLoop Count\tUsed Time");
+	console->WriteLineC(UTF8STRC("Memory Performance:"));
+	writer->WriteLineC(UTF8STRC("Memory Performance:"));
+	console->WriteLineC(UTF8STRC("Type\tSize\tData Rate\tLoop Count\tUsed Time"));
+	writer->WriteLineC(UTF8STRC("Type\tSize\tData Rate\tLoop Count\tUsed Time"));
 
 	Double oriT;
 	UInt8 *buff1;
@@ -1247,8 +1247,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				sb.AppendUOSInt(loopCnt);
 				sb.AppendC(UTF8STRC("\t"));
 				Text::SBAppendF64(&sb, t);
-				console->WriteLine(sb.ToString());
-				writer->WriteLine(sb.ToString());
+				console->WriteLineC(sb.ToString(), sb.GetLength());
+				writer->WriteLineC(sb.ToString(), sb.GetLength());
 				break;
 			}
 			else
@@ -1287,8 +1287,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				sb.AppendUOSInt(loopCnt);
 				sb.AppendC(UTF8STRC("\t"));
 				Text::SBAppendF64(&sb, t);
-				console->WriteLine(sb.ToString());
-				writer->WriteLine(sb.ToString());
+				console->WriteLineC(sb.ToString(), sb.GetLength());
+				writer->WriteLineC(sb.ToString(), sb.GetLength());
 				break;
 			}
 			else
@@ -1327,8 +1327,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				sb.AppendUOSInt(loopCnt);
 				sb.AppendC(UTF8STRC("\t"));
 				Text::SBAppendF64(&sb, t);
-				console->WriteLine(sb.ToString());
-				writer->WriteLine(sb.ToString());
+				console->WriteLineC(sb.ToString(), sb.GetLength());
+				writer->WriteLineC(sb.ToString(), sb.GetLength());
 				break;
 			}
 			else
@@ -1371,8 +1371,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				sb.AppendUOSInt(loopCnt);
 				sb.AppendC(UTF8STRC("\t"));
 				Text::SBAppendF64(&sb, t);
-				console->WriteLine(sb.ToString());
-				writer->WriteLine(sb.ToString());
+				console->WriteLineC(sb.ToString(), sb.GetLength());
+				writer->WriteLineC(sb.ToString(), sb.GetLength());
 				break;
 			}
 			else
@@ -1415,8 +1415,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				sb.AppendUOSInt(loopCnt);
 				sb.AppendC(UTF8STRC("\t"));
 				Text::SBAppendF64(&sb, t);
-				console->WriteLine(sb.ToString());
-				writer->WriteLine(sb.ToString());
+				console->WriteLineC(sb.ToString(), sb.GetLength());
+				writer->WriteLineC(sb.ToString(), sb.GetLength());
 				break;
 			}
 			else
@@ -1459,8 +1459,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				sb.AppendUOSInt(loopCnt);
 				sb.AppendC(UTF8STRC("\t"));
 				Text::SBAppendF64(&sb, t);
-				console->WriteLine(sb.ToString());
-				writer->WriteLine(sb.ToString());
+				console->WriteLineC(sb.ToString(), sb.GetLength());
+				writer->WriteLineC(sb.ToString(), sb.GetLength());
 				break;
 			}
 			else
@@ -1503,8 +1503,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				sb.AppendUOSInt(loopCnt);
 				sb.AppendC(UTF8STRC("\t"));
 				Text::SBAppendF64(&sb, t);
-				console->WriteLine(sb.ToString());
-				writer->WriteLine(sb.ToString());
+				console->WriteLineC(sb.ToString(), sb.GetLength());
+				writer->WriteLineC(sb.ToString(), sb.GetLength());
 				break;
 			}
 			else
@@ -1533,8 +1533,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 
 		console->WriteLine();
 		writer->WriteLine();
-		console->WriteLine((const UTF8Char*)"Image Performance:");
-		writer->WriteLine((const UTF8Char*)"Image Performance:");
+		console->WriteLineC(UTF8STRC("Image Performance:"));
+		writer->WriteLineC(UTF8STRC("Image Performance:"));
 		imgWidth = 3840;
 		imgHeight = 2160;
 		while (imgWidth * imgHeight * 8 * 4 >= memSize)
@@ -1556,8 +1556,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			sb.AppendUOSInt(imgWidth);
 			sb.AppendC(UTF8STRC(" x "));
 			sb.AppendUOSInt(imgHeight);
-			console->WriteLine(sb.ToString());
-			writer->WriteLine(sb.ToString());
+			console->WriteLineC(sb.ToString(), sb.GetLength());
+			writer->WriteLineC(sb.ToString(), sb.GetLength());
 		}
 		else
 		{
@@ -1575,8 +1575,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			sb.AppendC(UTF8STRC(" "));
 			sb.AppendU32(srcImg->info->storeBPP);
 			sb.AppendC(UTF8STRC(" bpp"));
-			console->WriteLine(sb.ToString());
-			writer->WriteLine(sb.ToString());
+			console->WriteLineC(sb.ToString(), sb.GetLength());
+			writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 			NEW_CLASS(imgList, Media::ImageList((const UTF8Char*)"Temp"));
 #if defined(EXPORT_IMAGE)
@@ -1602,8 +1602,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			sb.AppendC(UTF8STRC(" x "));
 			sb.AppendUOSInt(imgHeight >> 1);
 			sb.AppendC(UTF8STRC(" 64 bpp"));
-			console->WriteLine(sb.ToString());
-			writer->WriteLine(sb.ToString());
+			console->WriteLineC(sb.ToString(), sb.GetLength());
+			writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 			imgList->AddImage(newImg, 0);
 
@@ -1615,10 +1615,10 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				DEL_CLASS(resizer);
 			}*/
 
-			console->WriteLine((const UTF8Char*)"Resizer: NearestNeighbourResizer (64->64)");
-			writer->WriteLine((const UTF8Char*)"Resizer: NearestNeighbourResizer (64->64)");
+			console->WriteLineC(UTF8STRC("Resizer: NearestNeighbourResizer (64->64)"));
+			writer->WriteLineC(UTF8STRC("Resizer: NearestNeighbourResizer (64->64)"));
 			NEW_CLASS(resizer, Media::Resizer::NearestNeighbourResizer64_64());
-			console->WriteLine((const UTF8Char*)"Initialized");
+			console->WriteLineC(UTF8STRC("Initialized"));
 
 			clk->Start();
 			resizer->Resize(srcImg->data, (OSInt)srcImg->GetDataBpl(), Math::UOSInt2Double(imgWidth), Math::UOSInt2Double(imgHeight), 0, 0, newImg->data, (OSInt)newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
@@ -1626,8 +1626,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Resize (1st): t = "));
 			Text::SBAppendF64(&sb, t);
-			console->WriteLine(sb.ToString());
-			writer->WriteLine(sb.ToString());
+			console->WriteLineC(sb.ToString(), sb.GetLength());
+			writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 			if (t * 30 > 10)
 				cnt = 1 + (UInt32)Math::Double2Int32(10 / t);
@@ -1643,8 +1643,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Resize (2nd): t = "));
 			Text::SBAppendF64(&sb, t);
-			console->WriteLine(sb.ToString());
-			writer->WriteLine(sb.ToString());
+			console->WriteLineC(sb.ToString(), sb.GetLength());
+			writer->WriteLineC(sb.ToString(), sb.GetLength());
 			DEL_CLASS(resizer);
 
 #if defined(EXPORT_IMAGE)
@@ -1666,8 +1666,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			sb.AppendC(UTF8STRC(" x "));
 			sb.AppendUOSInt(imgHeight >> 1);
 			sb.AppendC(UTF8STRC(" 64 bpp"));
-			console->WriteLine(sb.ToString());
-			writer->WriteLine(sb.ToString());
+			console->WriteLineC(sb.ToString(), sb.GetLength());
+			writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 			clk->Start();
 			NEW_CLASS(newImg, Media::StaticImage(imgWidth >> 1, imgHeight >> 1, 0, 32, Media::PF_B8G8R8A8, 0, &color, Media::ColorProfile::YUVT_BT709, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
@@ -1680,16 +1680,16 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			sb.AppendC(UTF8STRC(" x "));
 			sb.AppendUOSInt(imgHeight >> 1);
 			sb.AppendC(UTF8STRC(" 32 bpp"));
-			console->WriteLine(sb.ToString());
-			writer->WriteLine(sb.ToString());
+			console->WriteLineC(sb.ToString(), sb.GetLength());
+			writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 			NEW_CLASS(imgList, Media::ImageList((const UTF8Char*)"Temp"));
 			imgList->AddImage(newImg, 0);
 
-			console->WriteLine((const UTF8Char*)"Resizer: LanczosResizer (16->8) H4V3 taps, no alpha");
-			writer->WriteLine((const UTF8Char*)"Resizer: LanczosResizer (16->8) H4V3 taps, no alpha");
+			console->WriteLineC(UTF8STRC("Resizer: LanczosResizer (16->8) H4V3 taps, no alpha"));
+			writer->WriteLineC(UTF8STRC("Resizer: LanczosResizer (16->8) H4V3 taps, no alpha"));
 			NEW_CLASS(resizer, Media::Resizer::LanczosResizer16_C8(4, 3, &color, &color, 0, Media::AT_NO_ALPHA));
-			console->WriteLine((const UTF8Char*)"Initialized");
+			console->WriteLineC(UTF8STRC("Initialized"));
 
 			clk->Start();
 			resizer->Resize(srcImg->data, (OSInt)srcImg->GetDataBpl(), Math::UOSInt2Double(imgWidth), Math::UOSInt2Double(imgHeight), 0, 0, newImg->data, (OSInt)newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
@@ -1697,8 +1697,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Resize (1st): t = "));
 			Text::SBAppendF64(&sb, t);
-			console->WriteLine(sb.ToString());
-			writer->WriteLine(sb.ToString());
+			console->WriteLineC(sb.ToString(), sb.GetLength());
+			writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 			if (t * 30 > 10)
 				cnt = 1 + (UInt32)Math::Double2Int32(10 / t);
@@ -1714,8 +1714,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Resize (2nd): t = "));
 			Text::SBAppendF64(&sb, t);
-			console->WriteLine(sb.ToString());
-			writer->WriteLine(sb.ToString());
+			console->WriteLineC(sb.ToString(), sb.GetLength());
+			writer->WriteLineC(sb.ToString(), sb.GetLength());
 			DEL_CLASS(resizer);
 
 #if defined(EXPORT_IMAGE)
@@ -1726,10 +1726,10 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			DEL_CLASS(efs);
 #endif
 
-			console->WriteLine((const UTF8Char*)"Resizer: LanczosResizer (16->8) H4V3 taps, alpha");
-			writer->WriteLine((const UTF8Char*)"Resizer: LanczosResizer (16->8) H4V3 taps, alpha");
+			console->WriteLineC(UTF8STRC("Resizer: LanczosResizer (16->8) H4V3 taps, alpha"));
+			writer->WriteLineC(UTF8STRC("Resizer: LanczosResizer (16->8) H4V3 taps, alpha"));
 			NEW_CLASS(resizer, Media::Resizer::LanczosResizer16_C8(4, 3, &color, &color, 0, Media::AT_ALPHA));
-			console->WriteLine((const UTF8Char*)"Initialized");
+			console->WriteLineC(UTF8STRC("Initialized"));
 
 			clk->Start();
 			resizer->Resize(srcImg->data, (OSInt)srcImg->GetDataBpl(), Math::UOSInt2Double(imgWidth), Math::UOSInt2Double(imgHeight), 0, 0, newImg->data, (OSInt)newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
@@ -1737,8 +1737,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Resize (1st): t = "));
 			Text::SBAppendF64(&sb, t);
-			console->WriteLine(sb.ToString());
-			writer->WriteLine(sb.ToString());
+			console->WriteLineC(sb.ToString(), sb.GetLength());
+			writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 			if (t * 30 > 10)
 				cnt = 1 + (UInt32)Math::Double2Int32(10 / t);
@@ -1754,8 +1754,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Resize (2nd): t = "));
 			Text::SBAppendF64(&sb, t);
-			console->WriteLine(sb.ToString());
-			writer->WriteLine(sb.ToString());
+			console->WriteLineC(sb.ToString(), sb.GetLength());
+			writer->WriteLineC(sb.ToString(), sb.GetLength());
 			DEL_CLASS(resizer);
 
 #if defined(EXPORT_IMAGE)
@@ -1767,8 +1767,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 #endif
 
 /*			NEW_CLASS(resizer, Media::Resizer::LanczosResizerH16_8(4, 3));
-			console->WriteLine((const UTF8Char*)"Resizer: LanczosResizer (16->8 LQ) H4V3 taps");
-			writer->WriteLine((const UTF8Char*)"Resizer: LanczosResizer (16->8 LQ) H4V3 taps");
+			console->WriteLineC(UTF8STRC("Resizer: LanczosResizer (16->8 LQ) H4V3 taps");
+			writer->WriteLineC(UTF8STRC("Resizer: LanczosResizer (16->8 LQ) H4V3 taps");
 
 			clk->Start();
 			resizer->Resize(srcImg->data, srcImg->GetDataBpl(), Math::OSInt2Double(imgWidth), Math::OSInt2Double(imgHeight), 0, 0, newImg->data, newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
@@ -1776,8 +1776,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Resize (1st): t = ");
 			Text::SBAppendF64(&sb, t);
-			console->WriteLine(sb.ToString());
-			writer->WriteLine(sb.ToString());
+			console->WriteLineC(sb.ToString(), sb.GetLength());
+			writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 			if (t * 30 > 10)
 				cnt = 1 + (Int32)(10 / t);
@@ -1793,8 +1793,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Resize (2nd): t = ");
 			Text::SBAppendF64(&sb, t);
-			console->WriteLine(sb.ToString());
-			writer->WriteLine(sb.ToString());
+			console->WriteLineC(sb.ToString(), sb.GetLength());
+			writer->WriteLineC(sb.ToString(), sb.GetLength());
 			DEL_CLASS(resizer);
 
 			IO::Path::GetProcessFileName(sbuff);
@@ -1803,10 +1803,10 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			exporter.ExportFile(efs, csptr, imgList, 0);
 			DEL_CLASS(efs);*/
 
-			console->WriteLine((const UTF8Char*)"CSConv: CSRGB16_LRGBC");
-			writer->WriteLine((const UTF8Char*)"CSConv: CSRGB16_LRGBC");
+			console->WriteLineC(UTF8STRC("CSConv: CSRGB16_LRGBC"));
+			writer->WriteLineC(UTF8STRC("CSConv: CSRGB16_LRGBC"));
 			NEW_CLASS(csconv, Media::CS::CSRGB16_LRGBC(64, Media::PF_LE_B16G16R16A16, false, &color, &color, 0));
-			console->WriteLine((const UTF8Char*)"Initialized");
+			console->WriteLineC(UTF8STRC("Initialized"));
 
 			clk->Start();
 			csconv->ConvertV2(&srcImg->data, tmpBuff, srcImg->info->dispWidth, srcImg->info->dispHeight, srcImg->info->storeWidth, srcImg->info->storeHeight, (OSInt)srcImg->info->dispWidth << 3, Media::FT_NON_INTERLACE, Media::YCOFST_C_CENTER_LEFT);
@@ -1814,8 +1814,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("CSConv (1st): t = "));
 			Text::SBAppendF64(&sb, t);
-			console->WriteLine(sb.ToString());
-			writer->WriteLine(sb.ToString());
+			console->WriteLineC(sb.ToString(), sb.GetLength());
+			writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 			if (t * 30 > 10)
 				cnt = 1 + (UInt32)Math::Double2Int32(10 / t);
@@ -1831,8 +1831,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("CSConv (2nd): t = "));
 			Text::SBAppendF64(&sb, t);
-			console->WriteLine(sb.ToString());
-			writer->WriteLine(sb.ToString());
+			console->WriteLineC(sb.ToString(), sb.GetLength());
+			writer->WriteLineC(sb.ToString(), sb.GetLength());
 			DEL_CLASS(csconv);
 
 			sb.ClearStr();
@@ -1841,8 +1841,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			sb.AppendC(UTF8STRC(" ("));
 			sb.AppendI32(ReadInt16(tmpBuff));
 			sb.AppendC(UTF8STRC(")"));
-			console->WriteLine(sb.ToString());
-			writer->WriteLine(sb.ToString());
+			console->WriteLineC(sb.ToString(), sb.GetLength());
+			writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("LRGB Second Pixel: "));
@@ -1850,13 +1850,13 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			sb.AppendC(UTF8STRC(" ("));
 			sb.AppendI32(ReadInt16(tmpBuff));
 			sb.AppendC(UTF8STRC(")"));
-			console->WriteLine(sb.ToString());
-			writer->WriteLine(sb.ToString());
+			console->WriteLineC(sb.ToString(), sb.GetLength());
+			writer->WriteLineC(sb.ToString(), sb.GetLength());
 
-			console->WriteLine((const UTF8Char*)"Resizer: LanczosResizer (LR->32) H4V3 taps, alpha");
-			writer->WriteLine((const UTF8Char*)"Resizer: LanczosResizer (LR->32) H4V3 taps, alpha");
+			console->WriteLineC(UTF8STRC("Resizer: LanczosResizer (LR->32) H4V3 taps, alpha"));
+			writer->WriteLineC(UTF8STRC("Resizer: LanczosResizer (LR->32) H4V3 taps, alpha"));
 			NEW_CLASS(resizer, Media::Resizer::LanczosResizerLR_C32(4, 3, &color, 0, Media::AT_ALPHA, 300, Media::PF_B8G8R8A8));
-			console->WriteLine((const UTF8Char*)"Initialized");
+			console->WriteLineC(UTF8STRC("Initialized"));
 
 			clk->Start();
 			resizer->Resize(tmpBuff, (OSInt)imgWidth << 3, Math::UOSInt2Double(imgWidth), Math::UOSInt2Double(imgHeight), 0, 0, newImg->data, (OSInt)newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
@@ -1864,8 +1864,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Resize (1st): t = "));
 			Text::SBAppendF64(&sb, t);
-			console->WriteLine(sb.ToString());
-			writer->WriteLine(sb.ToString());
+			console->WriteLineC(sb.ToString(), sb.GetLength());
+			writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 			if (t * 30 > 10)
 				cnt = 1 + (UInt32)Math::Double2Int32(10 / t);
@@ -1881,8 +1881,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Resize (2nd): t = "));
 			Text::SBAppendF64(&sb, t);
-			console->WriteLine(sb.ToString());
-			writer->WriteLine(sb.ToString());
+			console->WriteLineC(sb.ToString(), sb.GetLength());
+			writer->WriteLineC(sb.ToString(), sb.GetLength());
 			DEL_CLASS(resizer);
 
 #if defined(EXPORT_IMAGE)
@@ -1894,10 +1894,10 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			DEL_CLASS(efs);
 #endif
 
-			console->WriteLine((const UTF8Char*)"Resizer: LanczosResizer (LR->32) H4V3 taps, no alpha");
-			writer->WriteLine((const UTF8Char*)"Resizer: LanczosResizer (LR->32) H4V3 taps, no alpha");
+			console->WriteLineC(UTF8STRC("Resizer: LanczosResizer (LR->32) H4V3 taps, no alpha"));
+			writer->WriteLineC(UTF8STRC("Resizer: LanczosResizer (LR->32) H4V3 taps, no alpha"));
 			NEW_CLASS(resizer, Media::Resizer::LanczosResizerLR_C32(4, 3, &color, 0, Media::AT_NO_ALPHA, 300, Media::PF_B8G8R8A8));
-			console->WriteLine((const UTF8Char*)"Initialized");
+			console->WriteLineC(UTF8STRC("Initialized"));
 
 			clk->Start();
 			resizer->Resize(tmpBuff, (OSInt)imgWidth << 3, Math::UOSInt2Double(imgWidth), Math::UOSInt2Double(imgHeight), 0, 0, newImg->data, (OSInt)newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
@@ -1905,8 +1905,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Resize (1st): t = "));
 			Text::SBAppendF64(&sb, t);
-			console->WriteLine(sb.ToString());
-			writer->WriteLine(sb.ToString());
+			console->WriteLineC(sb.ToString(), sb.GetLength());
+			writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 			if (t * 30 > 10)
 				cnt = 1 + (UInt32)Math::Double2Int32(10 / t);
@@ -1922,8 +1922,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Resize (2nd): t = "));
 			Text::SBAppendF64(&sb, t);
-			console->WriteLine(sb.ToString());
-			writer->WriteLine(sb.ToString());
+			console->WriteLineC(sb.ToString(), sb.GetLength());
+			writer->WriteLineC(sb.ToString(), sb.GetLength());
 			DEL_CLASS(resizer);
 
 #if defined(EXPORT_IMAGE)
@@ -1945,8 +1945,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			sb.AppendUOSInt(imgWidth);
 			sb.AppendC(UTF8STRC(" x "));
 			sb.AppendUOSInt(imgHeight);
-			console->WriteLine(sb.ToString());
-			writer->WriteLine(sb.ToString());
+			console->WriteLineC(sb.ToString(), sb.GetLength());
+			writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 #if defined(EXPORT_IMAGE)
 			IO::Path::GetProcessFileName(sbuff);
@@ -1960,10 +1960,10 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			DEL_CLASS(efs);
 #endif
 
-			console->WriteLine((const UTF8Char*)"Resizer: LanczosResizer (8->8) H4V3 taps, no alpha");
-			writer->WriteLine((const UTF8Char*)"Resizer: LanczosResizer (8->8) H4V3 taps, no alpha");
+			console->WriteLineC(UTF8STRC("Resizer: LanczosResizer (8->8) H4V3 taps, no alpha"));
+			writer->WriteLineC(UTF8STRC("Resizer: LanczosResizer (8->8) H4V3 taps, no alpha"));
 			NEW_CLASS(resizer, Media::Resizer::LanczosResizer8_C8(4, 3, &color, &color, 0, Media::AT_NO_ALPHA));
-			console->WriteLine((const UTF8Char*)"Initialized");
+			console->WriteLineC(UTF8STRC("Initialized"));
 
 			clk->Start();
 			resizer->Resize(srcImg->data, (OSInt)srcImg->GetDataBpl(), Math::UOSInt2Double(imgWidth), Math::UOSInt2Double(imgHeight), 0, 0, newImg->data, (OSInt)newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
@@ -1971,8 +1971,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Resize (1st): t = "));
 			Text::SBAppendF64(&sb, t);
-			console->WriteLine(sb.ToString());
-			writer->WriteLine(sb.ToString());
+			console->WriteLineC(sb.ToString(), sb.GetLength());
+			writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 			if (t * 30 > 10)
 				cnt = 1 + (UInt32)Math::Double2Int32(10 / t);
@@ -1988,8 +1988,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Resize (2nd): t = "));
 			Text::SBAppendF64(&sb, t);
-			console->WriteLine(sb.ToString());
-			writer->WriteLine(sb.ToString());
+			console->WriteLineC(sb.ToString(), sb.GetLength());
+			writer->WriteLineC(sb.ToString(), sb.GetLength());
 			DEL_CLASS(resizer);
 
 #if defined(EXPORT_IMAGE)
@@ -2001,10 +2001,10 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			DEL_CLASS(efs);
 #endif
 
-			console->WriteLine((const UTF8Char*)"Resizer: LanczosResizer (8->8) H4V3 taps, alpha");
-			writer->WriteLine((const UTF8Char*)"Resizer: LanczosResizer (8->8) H4V3 taps, alpha");
+			console->WriteLineC(UTF8STRC("Resizer: LanczosResizer (8->8) H4V3 taps, alpha"));
+			writer->WriteLineC(UTF8STRC("Resizer: LanczosResizer (8->8) H4V3 taps, alpha"));
 			NEW_CLASS(resizer, Media::Resizer::LanczosResizer8_C8(4, 3, &color, &color, 0, Media::AT_ALPHA));
-			console->WriteLine((const UTF8Char*)"Initialized");
+			console->WriteLineC(UTF8STRC("Initialized"));
 
 			clk->Start();
 			resizer->Resize(srcImg->data, (OSInt)srcImg->GetDataBpl(), Math::UOSInt2Double(imgWidth), Math::UOSInt2Double(imgHeight), 0, 0, newImg->data, (OSInt)newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
@@ -2012,8 +2012,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Resize (1st): t = "));
 			Text::SBAppendF64(&sb, t);
-			console->WriteLine(sb.ToString());
-			writer->WriteLine(sb.ToString());
+			console->WriteLineC(sb.ToString(), sb.GetLength());
+			writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 			if (t * 30 > 10)
 				cnt = 1 + (UInt32)Math::Double2Int32(10 / t);
@@ -2029,8 +2029,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Resize (2nd): t = "));
 			Text::SBAppendF64(&sb, t);
-			console->WriteLine(sb.ToString());
-			writer->WriteLine(sb.ToString());
+			console->WriteLineC(sb.ToString(), sb.GetLength());
+			writer->WriteLineC(sb.ToString(), sb.GetLength());
 			DEL_CLASS(resizer);
 
 #if defined(EXPORT_IMAGE)
@@ -2042,10 +2042,10 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			DEL_CLASS(efs);
 #endif
 
-			console->WriteLine((const UTF8Char*)"Resizer: LanczosResizer (8->8 LQ) H4V3 taps");
-			writer->WriteLine((const UTF8Char*)"Resizer: LanczosResizer (8->8 LQ) H4V3 taps");
+			console->WriteLineC(UTF8STRC("Resizer: LanczosResizer (8->8 LQ) H4V3 taps"));
+			writer->WriteLineC(UTF8STRC("Resizer: LanczosResizer (8->8 LQ) H4V3 taps"));
 			NEW_CLASS(resizer, Media::Resizer::LanczosResizerH8_8(4, 3, Media::AT_NO_ALPHA));
-			console->WriteLine((const UTF8Char*)"Initialized");
+			console->WriteLineC(UTF8STRC("Initialized"));
 
 			clk->Start();
 			resizer->Resize(srcImg->data, (OSInt)srcImg->GetDataBpl(), Math::UOSInt2Double(imgWidth), Math::UOSInt2Double(imgHeight), 0, 0, newImg->data, (OSInt)newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
@@ -2053,8 +2053,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Resize (1st): t = "));
 			Text::SBAppendF64(&sb, t);
-			console->WriteLine(sb.ToString());
-			writer->WriteLine(sb.ToString());
+			console->WriteLineC(sb.ToString(), sb.GetLength());
+			writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 			if (t * 30 > 10)
 				cnt = 1 + (UInt32)Math::Double2Int32(10 / t);
@@ -2070,8 +2070,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Resize (2nd): t = "));
 			Text::SBAppendF64(&sb, t);
-			console->WriteLine(sb.ToString());
-			writer->WriteLine(sb.ToString());
+			console->WriteLineC(sb.ToString(), sb.GetLength());
+			writer->WriteLineC(sb.ToString(), sb.GetLength());
 			DEL_CLASS(resizer);
 
 #if defined(EXPORT_IMAGE)
@@ -2083,10 +2083,10 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			DEL_CLASS(efs);
 #endif
 
-			console->WriteLine((const UTF8Char*)"Resizer: NearestNeighbourResizer (32->32)");
-			writer->WriteLine((const UTF8Char*)"Resizer: NearestNeighbourResizer (32->32)");
+			console->WriteLineC(UTF8STRC("Resizer: NearestNeighbourResizer (32->32)"));
+			writer->WriteLineC(UTF8STRC("Resizer: NearestNeighbourResizer (32->32)"));
 			NEW_CLASS(resizer, Media::Resizer::NearestNeighbourResizer32_32());
-			console->WriteLine((const UTF8Char*)"Initialized");
+			console->WriteLineC(UTF8STRC("Initialized"));
 
 			clk->Start();
 			resizer->Resize(srcImg->data, (OSInt)srcImg->GetDataBpl(), Math::UOSInt2Double(imgWidth), Math::UOSInt2Double(imgHeight), 0, 0, newImg->data, (OSInt)newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
@@ -2094,8 +2094,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Resize (1st): t = "));
 			Text::SBAppendF64(&sb, t);
-			console->WriteLine(sb.ToString());
-			writer->WriteLine(sb.ToString());
+			console->WriteLineC(sb.ToString(), sb.GetLength());
+			writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 			if (t * 30 > 10)
 				cnt = 1 + (UInt32)Math::Double2Int32(10 / t);
@@ -2111,8 +2111,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Resize (2nd): t = "));
 			Text::SBAppendF64(&sb, t);
-			console->WriteLine(sb.ToString());
-			writer->WriteLine(sb.ToString());
+			console->WriteLineC(sb.ToString(), sb.GetLength());
+			writer->WriteLineC(sb.ToString(), sb.GetLength());
 			DEL_CLASS(resizer);
 
 #if defined(EXPORT_IMAGE)
@@ -2135,8 +2135,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			sb.AppendC(UTF8STRC(" x "));
 			sb.AppendUOSInt(imgHeight >> 1);
 			sb.AppendC(UTF8STRC(" 32 bpp"));
-			console->WriteLine(sb.ToString());
-			writer->WriteLine(sb.ToString());
+			console->WriteLineC(sb.ToString(), sb.GetLength());
+			writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 			clk->Start();
 			DEL_CLASS(srcImg);
@@ -2148,8 +2148,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			sb.AppendUOSInt(imgWidth);
 			sb.AppendC(UTF8STRC(" x "));
 			sb.AppendUOSInt(imgHeight);
-			console->WriteLine(sb.ToString());
-			writer->WriteLine(sb.ToString());
+			console->WriteLineC(sb.ToString(), sb.GetLength());
+			writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 			MemFreeA(tmpBuff);
 		}
@@ -2158,7 +2158,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	DEL_CLASS(writer);
 
 	console->WriteLine();
-	console->WriteLine((const UTF8Char*)"Do you want to upload result to server? (Y/N)");
+	console->WriteLineC(UTF8STRC("Do you want to upload result to server? (Y/N)"));
 	while (true)
 	{
 		Int32 key = IO::Console::GetKey();
@@ -2170,11 +2170,11 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		{
 			Bool allowRetry = false;
 			UInt64 fileSize;
-			console->WriteLine((const UTF8Char*)"Uploading to server");
+			console->WriteLineC(UTF8STRC("Uploading to server"));
 			fileSize = fs->GetLength();
 			if (fileSize <= 0)
 			{
-				console->WriteLine((const UTF8Char*)"Error in getting file size");
+				console->WriteLineC(UTF8STRC("Error in getting file size"));
 			}
 			else
 			{
@@ -2185,7 +2185,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				fs->SeekFromBeginning(0);
 				if (fileSize != (readSize = fs->Read(txtBuff, fileSize)))
 				{
-					console->WriteLine((const UTF8Char*)"Error in reading result file");
+					console->WriteLineC(UTF8STRC("Error in reading result file"));
 				}
 				else
 				{
@@ -2197,11 +2197,11 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 					cli->Write(txtBuff, fileSize);
 					if (cli->GetRespStatus() == 200)
 					{
-						console->WriteLine((const UTF8Char*)"Upload successfully");
+						console->WriteLineC(UTF8STRC("Upload successfully"));
 					}
 					else
 					{
-						console->WriteLine((const UTF8Char*)"Error in uploading file");
+						console->WriteLineC(UTF8STRC("Error in uploading file"));
 						allowRetry = true;
 					}
 					DEL_CLASS(cli);
@@ -2215,7 +2215,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			}
 			else
 			{
-				console->WriteLine((const UTF8Char*)"Do you want to retry? (y/n)");
+				console->WriteLineC(UTF8STRC("Do you want to retry? (y/n)"));
 			}
 		}
 	}

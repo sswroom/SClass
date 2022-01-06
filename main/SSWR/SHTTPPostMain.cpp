@@ -20,7 +20,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	argv = progCtrl->GetCommandLines(progCtrl, &argc);
 	if (argc <= 2)
 	{
-		console->WriteLine((const UTF8Char*)"Usage: SHTTPPost [URL] [File]");
+		console->WriteLineC(UTF8STRC("Usage: SHTTPPost [URL] [File]"));
 	}
 	else
 	{
@@ -39,7 +39,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			fileBuff = MemAlloc(UInt8, fileSize);
 			if (fs->Read(fileBuff, fileSize) != fileSize)
 			{
-				console->WriteLine((const UTF8Char*)"Error in reading file");
+				console->WriteLineC(UTF8STRC("Error in reading file"));
 				fileSize = 0;
 				MemFree(fileBuff);
 				fileBuff = 0;
@@ -47,7 +47,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		}
 		else
 		{
-			console->WriteLine((const UTF8Char*)"Error in opening file");
+			console->WriteLineC(UTF8STRC("Error in opening file"));
 		}
 		DEL_CLASS(fs);
 
@@ -81,7 +81,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				writeSize = cli->Write(&fileBuff[totalSize], fileSize - totalSize);
 				if (writeSize <= 0)
 				{
-					console->WriteLine((const UTF8Char*)"Error in uploading to server");
+					console->WriteLineC(UTF8STRC("Error in uploading to server"));
 					break;
 				}
 				else
@@ -93,14 +93,14 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			httpStatus = cli->GetRespStatus();
 			if (httpStatus == 0)
 			{
-				console->WriteLine((const UTF8Char*)"Error in requesting to server");
+				console->WriteLineC(UTF8STRC("Error in requesting to server"));
 			}
 			else
 			{
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("Server response "));
 				sb.AppendI32(httpStatus);
-				console->WriteLine(sb.ToString());
+				console->WriteLineC(sb.ToString(), sb.GetLength());
 
 				IO::MemoryStream *mstm;
 				NEW_CLASS(mstm, IO::MemoryStream((const UTF8Char*)"SHTTPGet.mstm"));
@@ -112,7 +112,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				}
 				if (mstm->GetLength() == 0)
 				{
-					console->WriteLine((const UTF8Char*)"Received 0 bytes from server");
+					console->WriteLineC(UTF8STRC("Received 0 bytes from server"));
 				}
 				else
 				{
@@ -141,7 +141,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 					sb.AppendC(UTF8STRC("Received "));
 					sb.AppendU64(mstm->GetLength());
 					sb.AppendC(UTF8STRC(" bytes from server"));
-					console->WriteLine(sb.ToString());
+					console->WriteLineC(sb.ToString(), sb.GetLength());
 
 /*					IO::FileStream *fs;
 					UInt8 *fileBuff;
@@ -163,7 +163,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		}
 		else
 		{
-			console->WriteLine((const UTF8Char*)"Only support http url");
+			console->WriteLineC(UTF8STRC("Only support http url"));
 		}
 		if (fileBuff)
 		{

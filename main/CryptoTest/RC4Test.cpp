@@ -23,7 +23,7 @@ void TestEncode(UInt32 val, UOSInt bitCnt, IO::Writer *writer)
 	sb.AppendU32(val);
 	sb.AppendChar(' ', 9 - sb.GetLength());
 	sb.AppendHexBuff(outBuff, outSize, ' ', Text::LineBreakType::None);
-	writer->WriteLine(sb.ToString());
+	writer->WriteLineC(sb.ToString(), sb.GetLength());
 }
 
 //RFC 6229
@@ -33,7 +33,7 @@ void TestAllForBit(UOSInt bitCnt, IO::Writer *writer)
 	sb.AppendC(UTF8STRC("Key Length: "));
 	sb.AppendUOSInt(bitCnt);
 	sb.AppendC(UTF8STRC(" bits"));
-	writer->WriteLine(sb.ToString());
+	writer->WriteLineC(sb.ToString(), sb.GetLength());
 	TestEncode(0, bitCnt, writer);
 	TestEncode(16, bitCnt, writer);
 	TestEncode(240, bitCnt, writer);
@@ -63,7 +63,7 @@ void TestEncode2(const Char *key, const Char *val, IO::Writer *writer)
 	outSize = rc4.Encrypt((const UInt8*)val, Text::StrCharCnt(val), outBuff, 0);
 	Text::StringBuilderUTF8 sb;
 	sb.AppendHexBuff(outBuff, outSize, ' ', Text::LineBreakType::None);
-	writer->WriteLine(sb.ToString());
+	writer->WriteLineC(sb.ToString(), sb.GetLength());
 }
 
 

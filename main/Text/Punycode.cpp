@@ -12,11 +12,11 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	WChar wbuff[256];
 	IO::ConsoleWriter console;
 	Text::TextEnc::Punycode::Decode(sbuff, (const UTF8Char*)"xn--d9juau41awczczp");
-	console.Write((const UTF8Char*)"UTF8: ");
+	console.WriteStrC(UTF8STRC("UTF8: "));
 	console.WriteLine(sbuff);
 
 	Text::TextEnc::Punycode::Decode(wbuff, L"xn--d9juau41awczczp");
-	console.Write((const UTF8Char*)"WChar: ");
+	console.WriteStrC(UTF8STRC("WChar: "));
 	Text::StrWChar_UTF8(sbuff, wbuff);
 	console.WriteLine(sbuff);
 	return 0;

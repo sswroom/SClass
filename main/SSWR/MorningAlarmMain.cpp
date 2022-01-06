@@ -179,7 +179,7 @@ UInt32 __stdcall PlayThread(void *obj)
 	}
 	if (!ToStop)
 	{
-		console->WriteLine((const UTF8Char*)"Alerting!");
+		console->WriteLineC(UTF8STRC("Alerting!"));
 	}
 	currStm = (UInt32)-1;
 	while (!ToStop)
@@ -284,7 +284,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	{
 		tmpDt->SetAsComputerTime();
 	}
-	console->Write((const UTF8Char*)"Select audio device: ");
+	console->WriteStrC(UTF8STRC("Select audio device: "));
 	irt = IO::ConsoleInput::InputSelect(console, sel, devCnt, &i);
 	if (irt == IO::ConsoleInput::IRT_TAB || irt == IO::ConsoleInput::IRT_ENTER)
 	{
@@ -300,7 +300,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		if (audOut)
 		{
 			Int32 vol = audOut->GetDeviceVolume();
-			console->Write((const UTF8Char*)"Current Volume: ");
+			console->WriteStrC(UTF8STRC("Current Volume: "));
 			irt = IO::ConsoleInput::InputInt32(console, &vol, true);
 
 			if (irt == IO::ConsoleInput::IRT_TAB || irt == IO::ConsoleInput::IRT_ENTER)
@@ -309,21 +309,21 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 
 				NEW_CLASS(startDt, Data::DateTime());
 				startDt->SetCurrTime();
-				sptr = Text::StrConcat(buff, (const UTF8Char*)"Curr Date: ");
+				sptr = Text::StrConcatC(buff, UTF8STRC("Curr Date: "));
 				sptr = startDt->ToString(sptr, "yyyy-MM-dd HH:mm:ss");
-				console->WriteLine(buff);
+				console->WriteLineC(buff, (UOSInt)(sptr - buff));
 
 				startDt->AddHour(8);
-				console->Write((const UTF8Char*)"Input Alarm Time: ");
+				console->WriteStrC(UTF8STRC("Input Alarm Time: "));
 				irt = IO::ConsoleInput::InputDateTime(console, startDt);
 				if (irt == IO::ConsoleInput::IRT_TAB || irt == IO::ConsoleInput::IRT_ENTER)
 				{
-					sptr = Text::StrConcat(buff, (const UTF8Char*)"Alarm Time: ");
+					sptr = Text::StrConcatC(buff, UTF8STRC("Alarm Time: "));
 					sptr = startDt->ToString(sptr, "yyyy-MM-dd HH:mm:ss");
-					console->WriteLine(buff);
+					console->WriteLineC(buff, (UOSInt)(sptr - buff));
 
 					console->SetTextColor(IO::ConsoleWriter::CC_GRAY, IO::ConsoleWriter::CC_DARK_GREEN);
-					console->WriteLine((const UTF8Char*)"Press Ctrl+C to exit");
+					console->WriteLineC(UTF8STRC("Press Ctrl+C to exit"));
 					console->SetTextColor(IO::ConsoleWriter::CC_GRAY, IO::ConsoleWriter::CC_BLACK);
 					Sync::Thread::Create(PlayThread, 0);
 
@@ -342,7 +342,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		}
 		else
 		{
-			console->WriteLine((const UTF8Char*)"Error in creating renderer");
+			console->WriteLineC(UTF8STRC("Error in creating renderer"));
 		}
 		Text::StrDelNew(audioDevice);
 	}

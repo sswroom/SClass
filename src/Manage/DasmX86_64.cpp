@@ -1117,22 +1117,22 @@ Int32 __stdcall DasmX86_64_GetFuncStack(Manage::DasmX86_64::DasmX86_64_Sess* ses
 			sb.AppendHex64(funcAddr);
 			sb.AppendC(UTF8STRC(" "));
 			tmpSess.addrResol->ResolveNameSB(&sb, funcAddr);
-			console.WriteLine(sb.ToString());
+			console.WriteLineC(sb.ToString(), sb.GetLength());
 			buffSize = tmpSess.memReader->ReadMemory(funcAddr, buff, tmpSess.regs.rip - funcAddr);
 			if (buffSize > 0)
 			{
 				sb.ClearStr();
 				sb.AppendHex(buff, buffSize, ' ', Text::LineBreakType::CRLF);
-				console.WriteLine(sb.ToString());
+				console.WriteLineC(sb.ToString(), sb.GetLength());
 			}
 
-			console.WriteLine((const UTF8Char*)"Unknown opcode");
+			console.WriteLineC(UTF8STRC("Unknown opcode"));
 			buffSize = tmpSess.memReader->ReadMemory(tmpSess.regs.rip, buff, 256);
 			if (buffSize > 0)
 			{
 				sb.ClearStr();
 				sb.AppendHex(buff, buffSize, ' ', Text::LineBreakType::CRLF);
-				console.WriteLine(sb.ToString());
+				console.WriteLineC(sb.ToString(), sb.GetLength());
 			}
 			MemFree(buff);
 			return -1;

@@ -53,7 +53,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 
 	if (wd == 0)
 	{
-		console.WriteLine((const UTF8Char*)"Watchdog not found");
+		console.WriteLineC(UTF8STRC("Watchdog not found"));
 	}
 	else
 	{
@@ -65,11 +65,11 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Timeout = "));
 			sb.AppendI64(timeoutSec);
-			console.WriteLine(sb.ToString());
+			console.WriteLineC(sb.ToString(), sb.GetLength());
 		}
 		else
 		{
-			console.WriteLine((const UTF8Char*)"Error in getting timeout value");
+			console.WriteLineC(UTF8STRC("Error in getting timeout value"));
 		}
 
 		if (wd->GetTemperature(&temp))
@@ -77,24 +77,24 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Temperature = "));
 			Text::SBAppendF64(&sb, temp);
-			console.WriteLine(sb.ToString());
+			console.WriteLineC(sb.ToString(), sb.GetLength());
 		}
 		else
 		{
-			console.WriteLine((const UTF8Char*)"Error in getting temperature value");
+			console.WriteLineC(UTF8STRC("Error in getting temperature value"));
 		}
 
 		if (wd->Enable())
 		{
-			console.WriteLine((const UTF8Char*)"Watchdog enabled");
+			console.WriteLineC(UTF8STRC("Watchdog enabled"));
 			Sync::Thread::Create(WatchdogThread, 0);
 			while (!running)
 			{
 				Sync::Thread::Sleep(10);
 			}
-			console.WriteLine((const UTF8Char*)"Running");
+			console.WriteLineC(UTF8STRC("Running"));
 			progCtrl->WaitForExit(progCtrl);
-			console.WriteLine((const UTF8Char*)"Exiting");
+			console.WriteLineC(UTF8STRC("Exiting"));
 			toStop = true;
 			evt->Set();
 			while (running)
@@ -104,7 +104,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		}
 		else
 		{
-			console.WriteLine((const UTF8Char*)"Error in enabling watchdog");
+			console.WriteLineC(UTF8STRC("Error in enabling watchdog"));
 		}
 		DEL_CLASS(wd);
 	}

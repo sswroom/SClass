@@ -168,7 +168,7 @@ void __stdcall SSWR::AVIRead::AVIRLogMergeForm::OnConvertClicked(void *userObj)
 							succ1 = reader1->ReadLine(&sb1, 1024);
 							reader1->GetLastLineBreak(sbuff);
 						}
-						writer->WriteLine(sb1.ToString());
+						writer->WriteLineC(sb1.ToString(), sb1.GetLength());
 						sb1.ClearStr();
 						succ1 = reader1->ReadLine(&sb1, 1024);
 					}
@@ -180,7 +180,7 @@ void __stdcall SSWR::AVIRead::AVIRLogMergeForm::OnConvertClicked(void *userObj)
 							succ2 = reader2->ReadLine(&sb2, 1024);
 							reader2->GetLastLineBreak(sbuff);
 						}
-						writer->WriteLine(sb2.ToString());
+						writer->WriteLineC(sb2.ToString(), sb2.GetLength());
 						sb2.ClearStr();
 						succ2 = reader2->ReadLine(&sb2, 1024);
 					}
@@ -193,7 +193,7 @@ void __stdcall SSWR::AVIRead::AVIRLogMergeForm::OnConvertClicked(void *userObj)
 						succ1 = reader1->ReadLine(&sb1, 1024);
 						reader1->GetLastLineBreak(sbuff);
 					}
-					writer->WriteLine(sb1.ToString());
+					writer->WriteLineC(sb1.ToString(), sb1.GetLength());
 					sb1.ClearStr();
 					succ1 = reader1->ReadLine(&sb1, 1024);
 				}
@@ -205,7 +205,7 @@ void __stdcall SSWR::AVIRead::AVIRLogMergeForm::OnConvertClicked(void *userObj)
 						succ2 = reader2->ReadLine(&sb2, 1024);
 						reader2->GetLastLineBreak(sbuff);
 					}
-					writer->WriteLine(sb2.ToString());
+					writer->WriteLineC(sb2.ToString(), sb2.GetLength());
 					sb2.ClearStr();
 					succ2 = reader2->ReadLine(&sb2, 1024);
 				}

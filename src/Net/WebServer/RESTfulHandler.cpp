@@ -364,15 +364,15 @@ DB::PageRequest *Net::WebServer::RESTfulHandler::ParsePageReq(Net::WebServer::IW
 {
 	UInt32 pageNum = 0;
 	UInt32 pageSize = 20;
-	req->GetQueryValueU32((const UTF8Char*)"page", &pageNum);
-	req->GetQueryValueU32((const UTF8Char*)"size", &pageSize);
+	req->GetQueryValueU32(UTF8STRC("page"), &pageNum);
+	req->GetQueryValueU32(UTF8STRC("size"), &pageSize);
 	if (pageSize <= 0)
 	{
 		pageSize = 20;
 	}
 	DB::PageRequest *page;
 	NEW_CLASS(page, DB::PageRequest(pageNum, pageSize));
-	Text::String *sort = req->GetQueryValue((const UTF8Char *)"sort");
+	Text::String *sort = req->GetQueryValue(UTF8STRC("sort"));
 	if (sort)
 	{
 		Text::StringBuilderUTF8 sb;

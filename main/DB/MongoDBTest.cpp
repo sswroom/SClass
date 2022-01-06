@@ -29,14 +29,14 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	j = mongoDB->GetDatabaseNames(&nameList);
 	if (j <= 0)
 	{
-		console->WriteLine((const UTF8Char*)"Error in getting Database List:");
+		console->WriteLineC(UTF8STRC("Error in getting Database List:"));
 		sb.ClearStr();
 		mongoDB->GetErrorMsg(&sb);
-		console->WriteLine(sb.ToString());
+		console->WriteLineC(sb.ToString(), sb.GetLength());
 	}
 	else
 	{
-		console->WriteLine((const UTF8Char*)"Database List:");
+		console->WriteLineC(UTF8STRC("Database List:"));
 		i = 0;
 		j = nameList.GetCount();
 		while (i < j)
@@ -47,7 +47,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		mongoDB->FreeDatabaseNames(&nameList);
 	}
 	console->WriteLine();
-	console->WriteLine((const UTF8Char*)"Table List:");
+	console->WriteLineC(UTF8STRC("Table List:"));
 	nameList.Clear();
 	mongoDB->GetTableNames(&nameList);
 	i = 0;

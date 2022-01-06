@@ -24,12 +24,12 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		{
 			IO::ConsoleWriter console;
 			Text::StringBuilderUTF8 sb;
-			console.WriteLine((const UTF8Char*)"Original:");
+			console.WriteLineC(UTF8STRC("Original:"));
 			console.WriteLine(buff);
 			console.WriteLine();
-			console.WriteLine((const UTF8Char*)"Parsed:");
+			console.WriteLineC(UTF8STRC("Parsed:"));
 			obj->ToJSONString(&sb);
-			console.WriteLine(sb.ToString());
+			console.WriteLineC(sb.ToString(), sb.GetLength());
 			obj->EndUse();
 		}
 		MemFree(buff);

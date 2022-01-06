@@ -14,7 +14,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	fs->Write((const UInt8*)"Start", 5);
 	DEL_CLASS(fs);
-	console.WriteLine((const UTF8Char*)"SignalTest Started");
+	console.WriteLineC(UTF8STRC("SignalTest Started"));
 	progCtrl->WaitForExit(progCtrl);
 
 	IO::Path::GetProcessFileName(sbuff);

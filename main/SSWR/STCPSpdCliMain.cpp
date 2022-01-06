@@ -144,7 +144,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	argv = progCtrl->GetCommandLines(progCtrl, &argc);
 	if (argc <= 2)
 	{
-		console->WriteLine((const UTF8Char*)"Usage: STCPSpdCli [IP] [Port]");
+		console->WriteLineC(UTF8STRC("Usage: STCPSpdCli [IP] [Port]"));
 	}
 	else
 	{
@@ -187,17 +187,17 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 
 		if (!sockf->DNSResolveIP(argv[1], &addr))
 		{
-			console->WriteLine((const UTF8Char*)"Host is not valid");
+			console->WriteLineC(UTF8STRC("Host is not valid"));
 			valid = false;
 		}
 		if (!Text::StrToUInt16(argv[2], &port))
 		{
-			console->WriteLine((const UTF8Char*)"Port is not a number");
+			console->WriteLineC(UTF8STRC("Port is not a number"));
 			valid = false;
 		}
 		if (port <= 0 || port > 65535)
 		{
-			console->WriteLine((const UTF8Char*)"Port is out of range");
+			console->WriteLineC(UTF8STRC("Port is out of range"));
 			valid = false;
 		}
 
@@ -207,7 +207,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			if (c->IsConnectError())
 			{
 				DEL_CLASS(c);
-				console->WriteLine((const UTF8Char*)"Error in connect to server");
+				console->WriteLineC(UTF8STRC("Error in connect to server"));
 				valid = false;
 			}
 			else
@@ -225,7 +225,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				dispEvt->Set();
 			}
 
-			console->WriteLine((const UTF8Char*)"Running");
+			console->WriteLineC(UTF8STRC("Running"));
 			progCtrl->WaitForExit(progCtrl);
 		}
 

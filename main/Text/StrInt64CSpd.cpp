@@ -60,7 +60,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	Text::SBAppendF64(&sb, t1b);
 	sb.AppendC(UTF8STRC(", t2b = "));
 	Text::SBAppendF64(&sb, t2b);
-	console->WriteLine(sb.ToString());
+	console->WriteLineC(sb.ToString(), sb.GetLength());
 	DEL_CLASS(console);
 	return 0;
 }

@@ -975,7 +975,7 @@ void SSWR::AVIRead::AVIRHQMPForm::EventMenuClicked(UInt16 cmdId)
 			dt.SetCurrTimeUTC();
 			sb.AppendDate(&dt);
 			sb.AppendC(UTF8STRC(" a"));
-			debug.WriteLine(sb.ToString());
+			debug.WriteLineC(sb.ToString(), sb.GetLength());
 			if (this->vbox->IsFullScreen())
 			{
 				this->vbox->SwitchFullScreen(false, false);
@@ -984,7 +984,7 @@ void SSWR::AVIRead::AVIRHQMPForm::EventMenuClicked(UInt16 cmdId)
 			sb.ClearStr();
 			sb.AppendDate(&dt);
 			sb.AppendC(UTF8STRC(" b"));
-			debug.WriteLine(sb.ToString());
+			debug.WriteLineC(sb.ToString(), sb.GetLength());
 			if (this->player->GetVideoSize(&vw, &vh))
 			{
 				UOSInt w1;
@@ -996,20 +996,20 @@ void SSWR::AVIRead::AVIRHQMPForm::EventMenuClicked(UInt16 cmdId)
 				sb.ClearStr();
 				sb.AppendDate(&dt);
 				sb.AppendC(UTF8STRC(" c"));
-				debug.WriteLine(sb.ToString());
+				debug.WriteLineC(sb.ToString(), sb.GetLength());
 				this->vbox->GetSizeP(&w1, &h1);
 				dt.SetCurrTimeUTC();
 				sb.ClearStr();
 				sb.AppendDate(&dt);
 				sb.AppendC(UTF8STRC(" d"));
-				debug.WriteLine(sb.ToString());
+				debug.WriteLineC(sb.ToString(), sb.GetLength());
 				this->GetSizeP(&w2, &h2);
 
 				dt.SetCurrTimeUTC();
 				sb.ClearStr();
 				sb.AppendDate(&dt);
 				sb.AppendC(UTF8STRC(" e"));
-				debug.WriteLine(sb.ToString());
+				debug.WriteLineC(sb.ToString(), sb.GetLength());
 				this->SetFormState(UI::GUIForm::FS_NORMAL);
 				if (w1 == vw && h1 == vh)
 				{
@@ -1017,7 +1017,7 @@ void SSWR::AVIRead::AVIRHQMPForm::EventMenuClicked(UInt16 cmdId)
 					sb.ClearStr();
 					sb.AppendDate(&dt);
 					sb.AppendC(UTF8STRC(" f"));
-					debug.WriteLine(sb.ToString());
+					debug.WriteLineC(sb.ToString(), sb.GetLength());
 					this->vbox->OnSizeChanged(false);
 				}
 				else
@@ -1026,14 +1026,14 @@ void SSWR::AVIRead::AVIRHQMPForm::EventMenuClicked(UInt16 cmdId)
 					sb.ClearStr();
 					sb.AppendDate(&dt);
 					sb.AppendC(UTF8STRC(" g"));
-					debug.WriteLine(sb.ToString());
+					debug.WriteLineC(sb.ToString(), sb.GetLength());
 					this->SetSizeP(w2 - w1 + vw, h2 - h1 + vh);
 				}
 				dt.SetCurrTimeUTC();
 				sb.ClearStr();
 				sb.AppendDate(&dt);
 				sb.AppendC(UTF8STRC(" h"));
-				debug.WriteLine(sb.ToString());
+				debug.WriteLineC(sb.ToString(), sb.GetLength());
 			}
 		}
 		break;

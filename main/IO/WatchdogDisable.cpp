@@ -31,7 +31,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 
 	if (wd == 0)
 	{
-		console.WriteLine((const UTF8Char*)"Watchdog not found");
+		console.WriteLineC(UTF8STRC("Watchdog not found"));
 	}
 	else
 	{
@@ -43,11 +43,11 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Timeout = "));
 			sb.AppendI32(timeoutSec);
-			console.WriteLine(sb.ToString());
+			console.WriteLineC(sb.ToString(), sb.GetLength());
 		}
 		else
 		{
-			console.WriteLine((const UTF8Char*)"Error in getting timeout value");
+			console.WriteLineC(UTF8STRC("Error in getting timeout value"));
 		}
 
 		if (wd->GetTemperature(&temp))
@@ -55,20 +55,20 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Temperature = "));
 			Text::SBAppendF64(&sb, temp);
-			console.WriteLine(sb.ToString());
+			console.WriteLineC(sb.ToString(), sb.GetLength());
 		}
 		else
 		{
-			console.WriteLine((const UTF8Char*)"Error in getting temperature value");
+			console.WriteLineC(UTF8STRC("Error in getting temperature value"));
 		}
 
 		if (wd->Disable())
 		{
-			console.WriteLine((const UTF8Char*)"Watchdog disabled");
+			console.WriteLineC(UTF8STRC("Watchdog disabled"));
 		}
 		else
 		{
-			console.WriteLine((const UTF8Char*)"Error in disabling watchdog");
+			console.WriteLineC(UTF8STRC("Error in disabling watchdog"));
 		}
 		DEL_CLASS(wd);
 	}

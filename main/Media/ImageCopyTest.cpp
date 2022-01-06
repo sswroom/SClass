@@ -34,7 +34,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("t = "));
 	Text::SBAppendF64(&sb, t);
-	console->WriteLine(sb.ToString());
+	console->WriteLineC(sb.ToString(), sb.GetLength());
 	MemFreeA(imgBuff1);
 	MemFreeA(imgBuff2);
 	DEL_CLASS(imgCopy);

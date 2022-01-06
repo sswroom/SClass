@@ -48,13 +48,13 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("Trying Port "));
 	sb.AppendUOSInt(portNum);
-	console->WriteLine(sb.ToString());
+	console->WriteLineC(sb.ToString(), sb.GetLength());
 
 	IO::SerialPort *port;
 	NEW_CLASS(port, IO::SerialPort(portNum, baudRate, IO::SerialPort::PARITY_NONE, true));
 	if (port->IsError())
 	{
-		console->WriteLine((const UTF8Char*)"Error in opening the port");
+		console->WriteLineC(UTF8STRC("Error in opening the port"));
 	}
 	else
 	{
@@ -67,14 +67,14 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		Test::TestModem::GSMModemTest(console, modem, true);
 		Test::TestSIM7000::SIM7000Info(console, modem);
 
-		console->WriteLine((const UTF8Char*)"End Test Begin Connect");
+		console->WriteLineC(UTF8STRC("End Test Begin Connect"));
 		modem->GSMSetFunctionalityFull();
 		modem->GPRSEPSReg();
 		modem->GPRSNetworkReg();
 		modem->GPRSServiceSetAttached(true);
-		console->WriteLine((const UTF8Char*)"GPRS Service Attached");
+		console->WriteLineC(UTF8STRC("GPRS Service Attached"));
 		modem->GPRSSetAPN((const UTF8Char*)"");
-		console->WriteLine((const UTF8Char*)"APN Set");
+		console->WriteLineC(UTF8STRC("APN Set"));
 		Int32 plmn = 0;
 		OSInt i = 30;
 		plmn = modem->GSMGetSIMPLMN();
@@ -83,21 +83,21 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			Sync::Thread::Sleep(1000);
 			plmn = modem->GSMGetSIMPLMN();
 		}
-		console->WriteLine((const UTF8Char*)"PLMN Get");
+		console->WriteLineC(UTF8STRC("PLMN Get"));
 		if (plmn != 0)
 		{
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Connecting to "));
 			sb.AppendI32(plmn);
 			sb.AppendC(UTF8STRC("..."));
-			console->Write(sb.ToString());
+			console->WriteStrC(sb.ToString(), sb.GetLength());
 			if (modem->GSMConnectPLMN(plmn))
 			{
-				console->WriteLine((const UTF8Char*)"OK");
+				console->WriteLineC(UTF8STRC("OK"));
 			}
 			else
 			{
-				console->WriteLine((const UTF8Char*)"Failed");
+				console->WriteLineC(UTF8STRC("Failed"));
 			}
 
 			if (modem->SIMCOMGetUESysInfo(sbuff))
@@ -105,11 +105,11 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("UE Sys Info: "));
 				sb.Append(sbuff);
-				console->WriteLine(sb.ToString());
+				console->WriteLineC(sb.ToString(), sb.GetLength());
 			}
 			else
 			{
-				console->WriteLine((const UTF8Char*)"UE Sys Info: Error in getting the value");
+				console->WriteLineC(UTF8STRC("UE Sys Info: Error in getting the value"));
 			}
 
 			IO::Device::SIM7000SocketFactory *sockf;
@@ -118,24 +118,24 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			{
 				Net::SocketUtil::AddressInfo addr;
 				Bool valid = true;
-				console->WriteLine((const UTF8Char*)"Network started");
+				console->WriteLineC(UTF8STRC("Network started"));
 
 				if (modem->NetGetIFAddr(sbuff))
 				{
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("IF Addr: "));
 					sb.Append(sbuff);
-					console->WriteLine(sb.ToString());
+					console->WriteLineC(sb.ToString(), sb.GetLength());
 				}
 				else
 				{
 					valid = false;
-					console->WriteLine((const UTF8Char*)"IF Addr: Error in getting value");
+					console->WriteLineC(UTF8STRC("IF Addr: Error in getting value"));
 				}
 				
 				if (valid)
 				{
-					console->Write((const UTF8Char*)"Resolving (def) www.google.com: ");
+					console->WriteStrC(UTF8STRC("Resolving (def) www.google.com: "));
 					if (sockf->DNSResolveIPDef("www.google.com", &addr))
 					{
 						Net::SocketUtil::GetAddrName(sbuff, &addr);
@@ -143,7 +143,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 					}
 					else
 					{
-						console->WriteLine((const UTF8Char*)"Error in getting value");
+						console->WriteLineC(UTF8STRC("Error in getting value"));
 					}
 				}
 
@@ -168,19 +168,19 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 							sb.Append(sbuff);
 							i++;
 						}
-						console->WriteLine(sb.ToString());
+						console->WriteLineC(sb.ToString(), sb.GetLength());
 
 					}
 					else
 					{
-						console->WriteLine((const UTF8Char*)"DNS List: Error in getting value");
+						console->WriteLineC(UTF8STRC("DNS List: Error in getting value"));
 					}
 				}
 
 				if (valid)
 				{
 					Net::SocketUtil::SetAddrInfoV4(&addr, 0x08080808);
-					console->WriteLine((const UTF8Char*)"Ping to 8.8.8.8...");
+					console->WriteLineC(UTF8STRC("Ping to 8.8.8.8..."));
 					OSInt i = 4;
 					UInt32 respTime;
 					UInt32 ttl;
@@ -193,12 +193,12 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 							Text::SBAppendF64(&sb, respTime / 1000000.0);
 							sb.AppendC(UTF8STRC("s, TTL = "));
 							sb.AppendU32(ttl);
-							console->WriteLine(sb.ToString());
+							console->WriteLineC(sb.ToString(), sb.GetLength());
 							Sync::Thread::Sleep(1000);
 						}
 						else
 						{
-							console->WriteLine((const UTF8Char*)"Cannot ping");
+							console->WriteLineC(UTF8STRC("Cannot ping"));
 							Sync::Thread::Sleep(1000);
 						}					
 					}
@@ -207,7 +207,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 
 				if (valid)
 				{
-					console->Write((const UTF8Char*)"Resolving www.google.com: ");
+					console->WriteStrC(UTF8STRC("Resolving www.google.com: "));
 					if (sockf->DNSResolveIP("www.google.com", &addr))
 					{
 						Net::SocketUtil::GetAddrName(sbuff, &addr);
@@ -215,7 +215,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 					}
 					else
 					{
-						console->WriteLine((const UTF8Char*)"Error in getting value");
+						console->WriteLineC(UTF8STRC("Error in getting value"));
 					}
 				}
 
@@ -225,13 +225,13 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 					NEW_CLASS(udp, Net::UDPServer(sockf, 0, 0, 0, OnUDPData, 0, 0, 0, 1, false));
 					if (udp->IsError())
 					{
-						console->WriteLine((const UTF8Char*)"Error in listening to UDP port");
+						console->WriteLineC(UTF8STRC("Error in listening to UDP port"));
 					}
 					else
 					{
-						console->WriteLine((const UTF8Char*)"UDP Server started");
+						console->WriteLineC(UTF8STRC("UDP Server started"));
 
-						console->Write((const UTF8Char*)"Resolving (def) my server: ");
+						console->WriteStrC(UTF8STRC("Resolving (def) my server: "));
 						if (sockf->DNSResolveIPDef("sswroom.no-ip.org", &addr))
 						{
 							Net::SocketUtil::GetAddrName(sbuff, &addr);
@@ -239,7 +239,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 						}
 						else
 						{
-							console->WriteLine((const UTF8Char*)"Error in getting value");
+							console->WriteLineC(UTF8STRC("Error in getting value"));
 						}
 						udp->SendTo(&addr, 10107, (const UInt8*)"Testing", 7);
 						Sync::Thread::Sleep(3000);
@@ -255,23 +255,23 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			}
 			else
 			{
-				console->WriteLine((const UTF8Char*)"Network cannot start");
+				console->WriteLineC(UTF8STRC("Network cannot start"));
 			}
 
 /*			if (sockf->NetworkEnd())
 			{
-				console.WriteLine((const UTF8Char*)"Network ended");
+				console.WriteLineC(UTF8STRC("Network ended");
 			}
 			else
 			{
-				console.WriteLine((const UTF8Char*)"Network cannot end");
+				console.WriteLineC(UTF8STRC("Network cannot end");
 			}*/
 
 			DEL_CLASS(sockf);			
 		}
 		else
 		{
-			console->WriteLine((const UTF8Char*)"Error in getting plmn");
+			console->WriteLineC(UTF8STRC("Error in getting plmn"));
 		}
 		
 

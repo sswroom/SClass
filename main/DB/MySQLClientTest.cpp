@@ -419,13 +419,13 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		}
 		else
 		{
-			console.WriteLine((const UTF8Char*)"Error in loading reading table");
+			console.WriteLineC(UTF8STRC("Error in loading reading table"));
 		}
 		DEL_CLASS(db);
 	}
 	else
 	{
-		console.WriteLine((const UTF8Char*)"Error in opening database");
+		console.WriteLineC(UTF8STRC("Error in opening database"));
 	}
 	DEL_CLASS(sockf);
 	return 0;

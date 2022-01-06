@@ -26,7 +26,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	if (ssl == 0)
 	{
 		UTF8Char sbuff[512];
-		console->WriteLine((const UTF8Char*)"Error in initializing SSL");
+		console->WriteLineC(UTF8STRC("Error in initializing SSL"));
 		ssl->GetErrorDetail(sbuff);
 		console->WriteLine(sbuff);
 		succ = false;
@@ -34,7 +34,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	else if (!ssl->SetServerCerts(sslCert, sslKey))
 	{
 		UTF8Char sbuff[512];
-		console->WriteLine((const UTF8Char*)"Error in loading Cert/Key");
+		console->WriteLineC(UTF8STRC("Error in loading Cert/Key"));
 		ssl->GetErrorDetail(sbuff);
 		console->WriteLine(sbuff);
 		succ = false;
@@ -48,12 +48,12 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		NEW_CLASS(svr, Net::WebServer::WebListener(sockf, ssl, hdlr, port, 120, 4, (const UTF8Char*)"sswr/1.0", false, true));
 		if (!svr->IsError())
 		{
-			console->WriteLine((const UTF8Char*)"HTTP Forwarding started");
+			console->WriteLineC(UTF8STRC("HTTP Forwarding started"));
 			progCtrl->WaitForExit(progCtrl);
 		}
 		else
 		{
-			console->WriteLine((const UTF8Char*)"Error in listening port");
+			console->WriteLineC(UTF8STRC("Error in listening port"));
 		}
 		DEL_CLASS(svr);
 		hdlr->Release();

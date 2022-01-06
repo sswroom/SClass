@@ -21,7 +21,7 @@ public:
 
 	void LogAdded(Data::DateTime *logTime, const UTF8Char *logMsg, UOSInt msgLen, LogLevel logLev)
 	{
-		console->WriteLine(logMsg, msgLen);
+		console->WriteLineC(logMsg, msgLen);
 	}
 
 	void LogClosed()
@@ -50,7 +50,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("Listening to port "));
 	sb.AppendI32(port);
-	console->WriteLine(sb.ToString());
+	console->WriteLineC(sb.ToString(), sb.GetLength());
 	NEW_CLASS(sockf, Net::OSSocketFactory(true));
 	NEW_CLASS(log, IO::LogTool());
 	NEW_CLASS(logHdlr, MyLogHandler());
@@ -62,7 +62,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	}
 	else
 	{
-		console->WriteLine((const UTF8Char*)"Error in listening port");
+		console->WriteLineC(UTF8STRC("Error in listening port"));
 	}
 	DEL_CLASS(svr);
 	DEL_CLASS(log);

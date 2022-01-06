@@ -115,7 +115,7 @@ void __stdcall SSWR::AVIRead::AVIRLineCounterForm::OnResultSaveClicked(void *use
 			sb.AppendUOSInt(fi->lineCnt);
 			sb.AppendC(UTF8STRC("\t"));
 			sb.Append(fi->fileName);
-			writer->WriteLine(sb.ToString());
+			writer->WriteLineC(sb.ToString(), sb.GetLength());
 			i++;
 		}
 		DEL_CLASS(writer);

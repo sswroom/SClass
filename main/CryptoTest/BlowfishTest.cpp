@@ -17,27 +17,27 @@ void BFTest(UInt64 key, UInt64 plainText, UInt64 cipherText)
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("Testing Key = "));
 	sb.AppendHex64(key);
-	console->WriteLine(sb.ToString());
+	console->WriteLineC(sb.ToString(), sb.GetLength());
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("OriText = "));
 	sb.AppendHex64(plainText);
-	console->WriteLine(sb.ToString());
+	console->WriteLineC(sb.ToString(), sb.GetLength());
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("ExpText = "));
 	sb.AppendHex64(cipherText);
-	console->WriteLine(sb.ToString());
+	console->WriteLineC(sb.ToString(), sb.GetLength());
 	Crypto::Encrypt::Blowfish bf(keyBuff, 8);
 	bf.Encrypt(plainBuff, 8, cipherBuff, 0);
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("EncText = "));
 	sb.AppendHexBuff(cipherBuff, 8, 0, Text::LineBreakType::None);
-	console->WriteLine(sb.ToString());
+	console->WriteLineC(sb.ToString(), sb.GetLength());
 	bf.SetKey(keyBuff, 8);
 	bf.Decrypt(cipherBuff, 8, plainBuff, 0);
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("DecText = "));
 	sb.AppendHexBuff(plainBuff, 8, 0, Text::LineBreakType::None);
-	console->WriteLine(sb.ToString());
+	console->WriteLineC(sb.ToString(), sb.GetLength());
 	console->WriteLine();	
 }
 

@@ -139,8 +139,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	NEW_CLASS(writer, Text::UTF8Writer(fs));
 
-	console->WriteLine((const UTF8Char*)"Computer Info:");
-	writer->WriteLine((const UTF8Char*)"Computer Info:");
+	console->WriteLineC(UTF8STRC("Computer Info:"));
+	writer->WriteLineC(UTF8STRC("Computer Info:"));
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("OS: "));
 	if (IO::OS::GetDistro(sbuff))
@@ -156,8 +156,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		sb.AppendC(UTF8STRC(" "));
 		sb.Append(sbuff);
 	}
-	console->WriteLine(sb.ToString());
-	writer->WriteLine(sb.ToString());
+	console->WriteLineC(sb.ToString(), sb.GetLength());
+	writer->WriteLineC(sb.ToString(), sb.GetLength());
 	{
 		Data::DateTime dt;
 		sb.ClearStr();
@@ -165,8 +165,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		IO::BuildTime::GetBuildTime(&dt);
 		dt.ToUTCTime();
 		sb.AppendDate(&dt);
-		console->WriteLine(sb.ToString());
-		writer->WriteLine(sb.ToString());
+		console->WriteLineC(sb.ToString(), sb.GetLength());
+		writer->WriteLineC(sb.ToString(), sb.GetLength());
 	}
 
 	sb.ClearStr();
@@ -179,8 +179,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	{
 		sb.AppendC(UTF8STRC("-"));
 	}
-	console->WriteLine(sb.ToString());
-	writer->WriteLine(sb.ToString());
+	console->WriteLineC(sb.ToString(), sb.GetLength());
+	writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("Platform SN: "));
@@ -192,8 +192,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	{
 		sb.AppendC(UTF8STRC("-"));
 	}
-	console->WriteLine(sb.ToString());
-	writer->WriteLine(sb.ToString());
+	console->WriteLineC(sb.ToString(), sb.GetLength());
+	writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 	{
 		Manage::CPUInfoDetail cpuInfo;
@@ -207,8 +207,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		{
 			sb.AppendC(UTF8STRC("-"));
 		}
-		console->WriteLine(sb.ToString());
-		writer->WriteLine(sb.ToString());
+		console->WriteLineC(sb.ToString(), sb.GetLength());
+		writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 		const Manage::CPUDB::CPUSpec *cpuSpec = 0;
 		sb.ClearStr();
@@ -222,8 +222,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		{
 			sb.AppendC(UTF8STRC("-"));
 		}
-		console->WriteLine(sb.ToString());
-		writer->WriteLine(sb.ToString());
+		console->WriteLineC(sb.ToString(), sb.GetLength());
+		writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("CPU Brand Name: "));
@@ -237,8 +237,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		{
 			sb.AppendC(UTF8STRC("-"));
 		}
-		console->WriteLine(sb.ToString());
-		writer->WriteLine(sb.ToString());
+		console->WriteLineC(sb.ToString(), sb.GetLength());
+		writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 #if defined(CPU_X86_32) || defined(CPU_X86_64)
 		sb.ClearStr();
@@ -248,15 +248,15 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		sb.AppendI32(cpuInfo.GetModelId());
 		sb.AppendC(UTF8STRC(", Stepping = "));
 		sb.AppendI32(cpuInfo.GetStepping());
-		console->WriteLine(sb.ToString());
-		writer->WriteLine(sb.ToString());
+		console->WriteLineC(sb.ToString(), sb.GetLength());
+		writer->WriteLineC(sb.ToString(), sb.GetLength());
 #endif
 
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("CPU Thread Count: "));
 		sb.AppendUOSInt(threadCnt);
-		console->WriteLine(sb.ToString());
-		writer->WriteLine(sb.ToString());
+		console->WriteLineC(sb.ToString(), sb.GetLength());
+		writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 		i = 0;
 		while (true)
@@ -271,8 +271,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			sb.AppendUOSInt(i);
 			sb.AppendC(UTF8STRC(": "));
 			Text::SBAppendF64(&sb, temp);
-			console->WriteLine(sb.ToString());
-			writer->WriteLine(sb.ToString());
+			console->WriteLineC(sb.ToString(), sb.GetLength());
+			writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 			i++;
 		}
@@ -283,16 +283,16 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	memSize = sysInfo.GetTotalMemSize();
 	ByteDisp(sbuff, memSize);
 	sb.Append(sbuff);
-	console->WriteLine(sb.ToString());
-	writer->WriteLine(sb.ToString());
+	console->WriteLineC(sb.ToString(), sb.GetLength());
+	writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("Total Usable Memory Size: "));
 	memSize = sysInfo.GetTotalUsableMemSize();
 	ByteDisp(sbuff, memSize);
 	sb.Append(sbuff);
-	console->WriteLine(sb.ToString());
-	writer->WriteLine(sb.ToString());
+	console->WriteLineC(sb.ToString(), sb.GetLength());
+	writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 	{
 		Data::ArrayList<IO::SystemInfo::RAMInfo*> ramList;
@@ -334,8 +334,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			sb.AppendU32(ram->totalWidth);
 			sb.AppendC(UTF8STRC("\t"));
 			sb.AppendU64(ram->memorySize);
-			console->WriteLine(sb.ToString());
-			writer->WriteLine(sb.ToString());
+			console->WriteLineC(sb.ToString(), sb.GetLength());
+			writer->WriteLineC(sb.ToString(), sb.GetLength());
 			i++;
 		}
 		sysInfo.FreeRAMInfo(&ramList);
@@ -368,16 +368,16 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 					sb.AppendC(UTF8STRC(" "));
 					sb.AppendHex16(edidInfo.productCode);
 					sb.AppendC(UTF8STRC(")"));
-					console->WriteLine(sb.ToString());
-					writer->WriteLine(sb.ToString());
+					console->WriteLineC(sb.ToString(), sb.GetLength());
+					writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("Monitor Manufacture: Year "));
 					sb.AppendI32(edidInfo.yearOfManu);
 					sb.AppendC(UTF8STRC(" Week "));
 					sb.AppendU32(edidInfo.weekOfManu);
-					console->WriteLine(sb.ToString());
-					writer->WriteLine(sb.ToString());
+					console->WriteLineC(sb.ToString(), sb.GetLength());
+					writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("Monitor Size: "));
@@ -387,40 +387,40 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 					sb.AppendC(UTF8STRC(" x "));
 					sb.AppendU32(edidInfo.dispPhysicalH);
 					sb.AppendC(UTF8STRC("cm)"));
-					console->WriteLine(sb.ToString());
-					writer->WriteLine(sb.ToString());
+					console->WriteLineC(sb.ToString(), sb.GetLength());
+					writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("Monitor White: x = "));
 					Text::SBAppendF64(&sb, edidInfo.wx);
 					sb.AppendC(UTF8STRC(", y = "));
 					Text::SBAppendF64(&sb, edidInfo.wy);
-					console->WriteLine(sb.ToString());
-					writer->WriteLine(sb.ToString());
+					console->WriteLineC(sb.ToString(), sb.GetLength());
+					writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("Monitor Red x = "));
 					Text::SBAppendF64(&sb, edidInfo.rx);
 					sb.AppendC(UTF8STRC(", y = "));
 					Text::SBAppendF64(&sb, edidInfo.ry);
-					console->WriteLine(sb.ToString());
-					writer->WriteLine(sb.ToString());
+					console->WriteLineC(sb.ToString(), sb.GetLength());
+					writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("Monitor Green: x = "));
 					Text::SBAppendF64(&sb, edidInfo.gx);
 					sb.AppendC(UTF8STRC(", y = "));
 					Text::SBAppendF64(&sb, edidInfo.gy);
-					console->WriteLine(sb.ToString());
-					writer->WriteLine(sb.ToString());
+					console->WriteLineC(sb.ToString(), sb.GetLength());
+					writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("Monitor Blue: x = "));
 					Text::SBAppendF64(&sb, edidInfo.bx);
 					sb.AppendC(UTF8STRC(", y = "));
 					Text::SBAppendF64(&sb, edidInfo.by);
-					console->WriteLine(sb.ToString());
-					writer->WriteLine(sb.ToString());
+					console->WriteLineC(sb.ToString(), sb.GetLength());
+					writer->WriteLineC(sb.ToString(), sb.GetLength());
 				}
 			}
 			DEL_CLASS(reader);
@@ -434,12 +434,12 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	{
 		console->WriteLine();
 		writer->WriteLine();
-		console->WriteLine((const UTF8Char*)"SMBIOS:");
-		writer->WriteLine((const UTF8Char*)"SMBIOS:");
+		console->WriteLineC(UTF8STRC("SMBIOS:"));
+		writer->WriteLineC(UTF8STRC("SMBIOS:"));
 		sb.ClearStr();
 		smbios->ToString(&sb);
-		console->WriteLine(sb.ToString());
-		writer->WriteLine(sb.ToString());
+		console->WriteLineC(sb.ToString(), sb.GetLength());
+		writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 		DEL_CLASS(smbios);
 	}
@@ -449,8 +449,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	{
 		console->WriteLine();
 		writer->WriteLine();
-		console->WriteLine((const UTF8Char*)"Power Info:");
-		writer->WriteLine((const UTF8Char*)"Power Info:");
+		console->WriteLineC(UTF8STRC("Power Info:"));
+		writer->WriteLineC(UTF8STRC("Power Info:"));
 
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("AC Status = "));
@@ -466,58 +466,58 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		{
 			sb.AppendC(UTF8STRC("Unknown"));
 		}
-		console->WriteLine(sb.ToString());
-		writer->WriteLine(sb.ToString());
+		console->WriteLineC(sb.ToString(), sb.GetLength());
+		writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("Has Battery = "));
 		sb.Append(pstatus.hasBattery?(const UTF8Char*)"Yes":(const UTF8Char*)"No");
-		console->WriteLine(sb.ToString());
-		writer->WriteLine(sb.ToString());
+		console->WriteLineC(sb.ToString(), sb.GetLength());
+		writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("Battery Charging = "));
 		sb.Append(pstatus.batteryCharging?(const UTF8Char*)"Yes":(const UTF8Char*)"No");
-		console->WriteLine(sb.ToString());
-		writer->WriteLine(sb.ToString());
+		console->WriteLineC(sb.ToString(), sb.GetLength());
+		writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("Battery Percent = "));
 		sb.AppendU32(pstatus.batteryPercent);
-		console->WriteLine(sb.ToString());
-		writer->WriteLine(sb.ToString());
+		console->WriteLineC(sb.ToString(), sb.GetLength());
+		writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("Time Left (sec.) = "));
 		sb.AppendU32(pstatus.timeLeftSec);
-		console->WriteLine(sb.ToString());
-		writer->WriteLine(sb.ToString());
+		console->WriteLineC(sb.ToString(), sb.GetLength());
+		writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("Battery Voltage = "));
 		Text::SBAppendF64(&sb, pstatus.batteryVoltage);
-		console->WriteLine(sb.ToString());
-		writer->WriteLine(sb.ToString());
+		console->WriteLineC(sb.ToString(), sb.GetLength());
+		writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("Battery Charge Current = "));
 		Text::SBAppendF64(&sb, pstatus.batteryChargeCurrent);
-		console->WriteLine(sb.ToString());
-		writer->WriteLine(sb.ToString());
+		console->WriteLineC(sb.ToString(), sb.GetLength());
+		writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("Battery Temperature = "));
 		Text::SBAppendF64(&sb, pstatus.batteryTemp);
-		console->WriteLine(sb.ToString());
-		writer->WriteLine(sb.ToString());
+		console->WriteLineC(sb.ToString(), sb.GetLength());
+		writer->WriteLineC(sb.ToString(), sb.GetLength());
 	}
 
 //-------------------------------------------------------------------------------
 	{
 		console->WriteLine();
 		writer->WriteLine();
-		console->WriteLine((const UTF8Char*)"Printer Info:");
-		writer->WriteLine((const UTF8Char*)"Printer Info:");
+		console->WriteLineC(UTF8STRC("Printer Info:"));
+		writer->WriteLineC(UTF8STRC("Printer Info:"));
 		Data::ArrayList<const UTF8Char *> printerList;
 		i = 0;
 		j = Media::Printer::GetPrinterCount();
@@ -530,8 +530,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				sb.AppendUOSInt(i);
 				sb.AppendC(UTF8STRC(" = "));
 				sb.Append(sbuff);
-				console->WriteLine(sb.ToString());
-				writer->WriteLine(sb.ToString());
+				console->WriteLineC(sb.ToString(), sb.GetLength());
+				writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 				if (Text::StrEquals(sbuff, (const UTF8Char*)"Bullzip PDF Printer") || Text::StrEquals(sbuff, (const UTF8Char*)"Adobe PDF") || Text::StrEquals(sbuff, (const UTF8Char*)"PDF"))
 				{
@@ -556,14 +556,14 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("Test Printing with "));
 					sb.Append(csptr);
-					console->WriteLine(sb.ToString());
-					writer->WriteLine(sb.ToString());
+					console->WriteLineC(sb.ToString(), sb.GetLength());
+					writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 					NEW_CLASS(printer, Media::Printer(csptr));
 					if (printer->IsError())
 					{
-						console->WriteLine((const UTF8Char*)"Error in opening printer");
-						writer->WriteLine((const UTF8Char*)"Error in opening printer");
+						console->WriteLineC(UTF8STRC("Error in opening printer"));
+						writer->WriteLineC(UTF8STRC("Error in opening printer"));
 					}
 					else
 					{
@@ -576,8 +576,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 						}
 						else
 						{
-							console->WriteLine((const UTF8Char*)"Error in start printing");
-							writer->WriteLine((const UTF8Char*)"Error in start printing");
+							console->WriteLineC(UTF8STRC("Error in start printing"));
+							writer->WriteLineC(UTF8STRC("Error in start printing"));
 						}
 						DEL_CLASS(test);
 					}
@@ -602,8 +602,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		Char fmtName[5];
 		console->WriteLine();
 		writer->WriteLine();
-		console->WriteLine((const UTF8Char*)"Video Capture Info:");
-		writer->WriteLine((const UTF8Char*)"Video Capture Info:");
+		console->WriteLineC(UTF8STRC("Video Capture Info:"));
+		writer->WriteLineC(UTF8STRC("Video Capture Info:"));
 		NEW_CLASS(videoMgr, Media::VideoCaptureMgr());
 		videoMgr->GetDeviceList(&devList);
 		i = 0;
@@ -621,18 +621,18 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				sb.Append(videoMgr->GetDevTypeName(dev->devType));
 				sb.AppendC(UTF8STRC(", "));
 				sb.Append(dev->devName);
-				console->WriteLine(sb.ToString());
-				writer->WriteLine(sb.ToString());
+				console->WriteLineC(sb.ToString(), sb.GetLength());
+				writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 				capture = videoMgr->CreateDevice(dev->devType, dev->devId);
 				if (capture)
 				{
 					sb.ClearStr();
 					capture->GetInfo(&sb);
-					console->WriteLine(sb.ToString());
-					writer->WriteLine(sb.ToString());
-					console->WriteLine((const UTF8Char*)"Format List:");
-					writer->WriteLine((const UTF8Char*)"Format List:");
+					console->WriteLineC(sb.ToString(), sb.GetLength());
+					writer->WriteLineC(sb.ToString(), sb.GetLength());
+					console->WriteLineC(UTF8STRC("Format List:"));
+					writer->WriteLineC(UTF8STRC("Format List:"));
 					k = 0;
 					l = capture->GetSupportedFormats(fmts, 512);
 					while (k < l)
@@ -656,8 +656,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 						sb.AppendUOSInt(fmts[k].info.dispHeight);
 						sb.AppendC(UTF8STRC(", rate = "));
 						Text::SBAppendF64(&sb, fmts[k].frameRateNorm / (Double)fmts[k].frameRateDenorm);
-						console->WriteLine(sb.ToString());
-						writer->WriteLine(sb.ToString());
+						console->WriteLineC(sb.ToString(), sb.GetLength());
+						writer->WriteLineC(sb.ToString(), sb.GetLength());
 						k++;
 					}
 					DEL_CLASS(capture);
@@ -682,8 +682,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		sockf->GetConnInfoList(&connInfoList);
 		console->WriteLine();
 		writer->WriteLine();
-		console->WriteLine((const UTF8Char*)"Network Info:");
-		writer->WriteLine((const UTF8Char*)"Network Info:");
+		console->WriteLineC(UTF8STRC("Network Info:"));
+		writer->WriteLineC(UTF8STRC("Network Info:"));
 		i = 0;
 		j = connInfoList.GetCount();
 		while (i < j)
@@ -693,32 +693,32 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			sb.AppendC(UTF8STRC("Connection "));
 			sb.AppendUOSInt(i);
 			sb.AppendC(UTF8STRC(":"));
-			console->WriteLine(sb.ToString());
-			writer->WriteLine(sb.ToString());
+			console->WriteLineC(sb.ToString(), sb.GetLength());
+			writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 			if (connInfo->GetName(sbuff))
 			{
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("Name: "));
 				sb.Append(sbuff);
-				console->WriteLine(sb.ToString());
-				writer->WriteLine(sb.ToString());
+				console->WriteLineC(sb.ToString(), sb.GetLength());
+				writer->WriteLineC(sb.ToString(), sb.GetLength());
 			}
 			if (connInfo->GetDescription(sbuff))
 			{
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("Description: "));
 				sb.Append(sbuff);
-				console->WriteLine(sb.ToString());
-				writer->WriteLine(sb.ToString());
+				console->WriteLineC(sb.ToString(), sb.GetLength());
+				writer->WriteLineC(sb.ToString(), sb.GetLength());
 			}
 			if (connInfo->GetDNSSuffix(sbuff))
 			{
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("DNS Suffix: "));
 				sb.Append(sbuff);
-				console->WriteLine(sb.ToString());
-				writer->WriteLine(sb.ToString());
+				console->WriteLineC(sb.ToString(), sb.GetLength());
+				writer->WriteLineC(sb.ToString(), sb.GetLength());
 			}
 			k = 0;
 			while (k < 32)
@@ -731,8 +731,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("IPv4 Address: "));
 				sb.Append(sbuff);
-				console->WriteLine(sb.ToString());
-				writer->WriteLine(sb.ToString());
+				console->WriteLineC(sb.ToString(), sb.GetLength());
+				writer->WriteLineC(sb.ToString(), sb.GetLength());
 				k++;
 			}
 			k = 0;
@@ -746,8 +746,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("DNS Address: "));
 				sb.Append(sbuff);
-				console->WriteLine(sb.ToString());
-				writer->WriteLine(sb.ToString());
+				console->WriteLineC(sb.ToString(), sb.GetLength());
+				writer->WriteLineC(sb.ToString(), sb.GetLength());
 				k++;
 			}
 			if ((ipv4 = connInfo->GetDefaultGW()) != 0)
@@ -756,8 +756,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("Default Gateway: "));
 				sb.Append(sbuff);
-				console->WriteLine(sb.ToString());
-				writer->WriteLine(sb.ToString());
+				console->WriteLineC(sb.ToString(), sb.GetLength());
+				writer->WriteLineC(sb.ToString(), sb.GetLength());
 			}
 			if ((k = connInfo->GetPhysicalAddress(mac, 16)) > 0)
 			{
@@ -765,20 +765,20 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("Physical Address: "));
 				sb.Append(sbuff);
-				console->WriteLine(sb.ToString());
-				writer->WriteLine(sb.ToString());
+				console->WriteLineC(sb.ToString(), sb.GetLength());
+				writer->WriteLineC(sb.ToString(), sb.GetLength());
 			}
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("MTU: "));
 			sb.AppendU32(connInfo->GetMTU());
-			console->WriteLine(sb.ToString());
-			writer->WriteLine(sb.ToString());
+			console->WriteLineC(sb.ToString(), sb.GetLength());
+			writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("DHCP Enabled: "));
 			sb.Append(connInfo->IsDhcpEnabled()?(const UTF8Char*)"True":(const UTF8Char*)"False");
-			console->WriteLine(sb.ToString());
-			writer->WriteLine(sb.ToString());
+			console->WriteLineC(sb.ToString(), sb.GetLength());
+			writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 			if (connInfo->IsDhcpEnabled())
 			{
@@ -786,8 +786,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("DHCP Server: "));
 				sb.Append(sbuff);
-				console->WriteLine(sb.ToString());
-				writer->WriteLine(sb.ToString());
+				console->WriteLineC(sb.ToString(), sb.GetLength());
+				writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 				dt = connInfo->GetDhcpLeaseTime();
 				if (dt)
@@ -796,8 +796,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("DHCP Lease Time: "));
 					sb.Append(sbuff);
-					console->WriteLine(sb.ToString());
-					writer->WriteLine(sb.ToString());
+					console->WriteLineC(sb.ToString(), sb.GetLength());
+					writer->WriteLineC(sb.ToString(), sb.GetLength());
 				}
 
 				dt = connInfo->GetDhcpLeaseExpire();
@@ -807,22 +807,22 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("DHCP Lease Time: "));
 					sb.Append(sbuff);
-					console->WriteLine(sb.ToString());
-					writer->WriteLine(sb.ToString());
+					console->WriteLineC(sb.ToString(), sb.GetLength());
+					writer->WriteLineC(sb.ToString(), sb.GetLength());
 				}
 			}
 
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Connection Type: "));
 			sb.Append(Net::ConnectionInfo::GetConnectionTypeName(connInfo->GetConnectionType()));
-			console->WriteLine(sb.ToString());
-			writer->WriteLine(sb.ToString());
+			console->WriteLineC(sb.ToString(), sb.GetLength());
+			writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Connection Status: "));
 			sb.Append(Net::ConnectionInfo::GetConnectionStatusName(connInfo->GetConnectionStatus()));
-			console->WriteLine(sb.ToString());
-			writer->WriteLine(sb.ToString());
+			console->WriteLineC(sb.ToString(), sb.GetLength());
+			writer->WriteLineC(sb.ToString(), sb.GetLength());
 			console->WriteLine();
 			writer->WriteLine();
 
@@ -839,8 +839,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		IO::USBInfo::GetUSBList(&usbList);
 		console->WriteLine();
 		writer->WriteLine();
-		console->WriteLine((const UTF8Char*)"USB Info:");
-		writer->WriteLine((const UTF8Char*)"USB Info:");
+		console->WriteLineC(UTF8STRC("USB Info:"));
+		writer->WriteLineC(UTF8STRC("USB Info:"));
 		i = 0;
 		j = usbList.GetCount();
 		while (i < j)
@@ -856,8 +856,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			sb.AppendHex16(usb->GetRevision());
 			sb.AppendC(UTF8STRC(" Dev:"));
 			sb.Append(usb->GetDispName());
-			console->WriteLine(sb.ToString());
-			writer->WriteLine(sb.ToString());
+			console->WriteLineC(sb.ToString(), sb.GetLength());
+			writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("USB "));
@@ -891,8 +891,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			}
 			sb.AppendC(UTF8STRC(" Vendor = "));
 			sb.Append(IO::DeviceDB::GetUSBVendorName(usb->GetVendorId()));
-			console->WriteLine(sb.ToString());
-			writer->WriteLine(sb.ToString());
+			console->WriteLineC(sb.ToString(), sb.GetLength());
+			writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 			DEL_CLASS(usb);
 			i++;
@@ -906,8 +906,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		IO::PCIInfo::GetPCIList(&pciList);
 		console->WriteLine();
 		writer->WriteLine();
-		console->WriteLine((const UTF8Char*)"PCI Info:");
-		writer->WriteLine((const UTF8Char*)"PCI Info:");
+		console->WriteLineC(UTF8STRC("PCI Info:"));
+		writer->WriteLineC(UTF8STRC("PCI Info:"));
 		i = 0;
 		j = pciList.GetCount();
 		while (i < j)
@@ -921,8 +921,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			sb.AppendHex16(pci->GetProductId());
 			sb.AppendC(UTF8STRC(" Dev:"));
 			sb.Append(pci->GetDispName());
-			console->WriteLine(sb.ToString());
-			writer->WriteLine(sb.ToString());
+			console->WriteLineC(sb.ToString(), sb.GetLength());
+			writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("PCI "));
@@ -954,8 +954,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			}
 			sb.AppendC(UTF8STRC(" Vendor = "));
 			sb.Append(IO::DeviceDB::GetPCIVendorName(pci->GetVendorId()));
-			console->WriteLine(sb.ToString());
-			writer->WriteLine(sb.ToString());
+			console->WriteLineC(sb.ToString(), sb.GetLength());
+			writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 			DEL_CLASS(pci);
 			i++;
@@ -968,8 +968,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		IO::SDCardMgr::GetCardList(&sdList);
 		console->WriteLine();
 		writer->WriteLine();
-		console->WriteLine((const UTF8Char*)"SD Card Info:");
-		writer->WriteLine((const UTF8Char*)"SD Card Info:");
+		console->WriteLineC(UTF8STRC("SD Card Info:"));
+		writer->WriteLineC(UTF8STRC("SD Card Info:"));
 		i = 0;
 		j = sdList.GetCount();
 		while (i < j)
@@ -982,8 +982,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			sb.AppendUOSInt(i);
 			sb.AppendC(UTF8STRC(" - "));
 			sb.Append(sdcard->GetName());
-			console->WriteLine(sb.ToString());
-			writer->WriteLine(sb.ToString());
+			console->WriteLineC(sb.ToString(), sb.GetLength());
+			writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Manufacturer ID (MID): "));
@@ -991,8 +991,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			sb.AppendC(UTF8STRC(" ("));
 			sb.Append(IO::SDCardInfo::GetManufacturerName(sdcard->GetManufacturerID()));
 			sb.AppendC(UTF8STRC(")"));
-			console->WriteLine(sb.ToString());
-			writer->WriteLine(sb.ToString());
+			console->WriteLineC(sb.ToString(), sb.GetLength());
+			writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("OEM ID (OID): "));
@@ -1007,15 +1007,15 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				sb.AppendC(UTF8STRC("0x"));
 				sb.AppendHex16(sdcard->GetOEMID());
 			}
-			console->WriteLine(sb.ToString());
-			writer->WriteLine(sb.ToString());
+			console->WriteLineC(sb.ToString(), sb.GetLength());
+			writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Product Name (PMN): "));
 			sdcard->GetProductName((Char*)oemId);
 			sb.Append(oemId);
-			console->WriteLine(sb.ToString());
-			writer->WriteLine(sb.ToString());
+			console->WriteLineC(sb.ToString(), sb.GetLength());
+			writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Product Revision (PRV): "));
@@ -1023,36 +1023,36 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			sb.AppendI32(oemId[0] >> 4);
 			sb.AppendChar('.', 1);
 			sb.AppendI32(oemId[0] & 15);
-			console->WriteLine(sb.ToString());
-			writer->WriteLine(sb.ToString());
+			console->WriteLineC(sb.ToString(), sb.GetLength());
+			writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Product Serial Number (PSN): 0x"));
 			sb.AppendHex32(sdcard->GetSerialNo());
-			console->WriteLine(sb.ToString());
-			writer->WriteLine(sb.ToString());
+			console->WriteLineC(sb.ToString(), sb.GetLength());
+			writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Manufacturing Date (MDT): "));
 			sb.AppendU32(sdcard->GetManufacturingYear());
 			sb.AppendChar('/', 1);
 			sb.AppendU32(sdcard->GetManufacturingMonth());
-			console->WriteLine(sb.ToString());
-			writer->WriteLine(sb.ToString());
+			console->WriteLineC(sb.ToString(), sb.GetLength());
+			writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Card Capacity: "));
 			sb.AppendI64(sdcard->GetCardCapacity());
 			sb.AppendC(UTF8STRC(" Bytes"));
-			console->WriteLine(sb.ToString());
-			writer->WriteLine(sb.ToString());
+			console->WriteLineC(sb.ToString(), sb.GetLength());
+			writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Card Speed: "));
 			sb.AppendI64(sdcard->GetMaxTranRate());
 			sb.AppendC(UTF8STRC(" bit/s"));
-			console->WriteLine(sb.ToString());
-			writer->WriteLine(sb.ToString());
+			console->WriteLineC(sb.ToString(), sb.GetLength());
+			writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 			console->WriteLine();
 			writer->WriteLine();
@@ -1067,13 +1067,13 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		IO::Sensor *sensor;
 		console->WriteLine();
 		writer->WriteLine();
-		console->WriteLine((const UTF8Char*)"Sensors:");
-		writer->WriteLine((const UTF8Char*)"Sensors:");
+		console->WriteLineC(UTF8STRC("Sensors:"));
+		writer->WriteLineC(UTF8STRC("Sensors:"));
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("Count = "));
 		sb.AppendUOSInt(j = sensorMgr.GetSensorCnt());
-		console->WriteLine(sb.ToString());
-		writer->WriteLine(sb.ToString());
+		console->WriteLineC(sb.ToString(), sb.GetLength());
+		writer->WriteLineC(sb.ToString(), sb.GetLength());
 		i = 0;
 		while (i < j)
 		{
@@ -1097,8 +1097,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				}
 				sb.AppendC(UTF8STRC(", Type = "));
 				sb.Append(IO::Sensor::GetSensorTypeName(sensor->GetSensorType()));
-				console->WriteLine(sb.ToString());
-				writer->WriteLine(sb.ToString());
+				console->WriteLineC(sb.ToString(), sb.GetLength());
+				writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 				switch (sensor->GetSensorType())
 				{
@@ -1122,8 +1122,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 							sb.AppendC(UTF8STRC(", z = "));
 							Text::SBAppendF64(&sb, z);
 							sb.Append(Math::Unit::Acceleration::GetUnitShortName(aunit));
-							console->WriteLine(sb.ToString());
-							writer->WriteLine(sb.ToString());
+							console->WriteLineC(sb.ToString(), sb.GetLength());
+							writer->WriteLineC(sb.ToString(), sb.GetLength());
 						}
 						sensor->DisableSensor();
 					}
@@ -1138,8 +1138,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 							sb.AppendC(UTF8STRC("Pressure = "));
 							Text::SBAppendF64(&sb, pressure);
 							sb.Append(Math::Unit::Pressure::GetUnitShortName(sensor->GetSensorPressure()->GetPressureUnit()));
-							console->WriteLine(sb.ToString());
-							writer->WriteLine(sb.ToString());
+							console->WriteLineC(sb.ToString(), sb.GetLength());
+							writer->WriteLineC(sb.ToString(), sb.GetLength());
 						}
 						sensor->DisableSensor();
 					}
@@ -1164,8 +1164,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 							sb.AppendC(UTF8STRC(", z = "));
 							Text::SBAppendF64(&sb, z);
 							sb.Append(Math::Unit::MagneticField::GetUnitShortName(mfunit));
-							console->WriteLine(sb.ToString());
-							writer->WriteLine(sb.ToString());
+							console->WriteLineC(sb.ToString(), sb.GetLength());
+							writer->WriteLineC(sb.ToString(), sb.GetLength());
 						}
 						sensor->DisableSensor();
 					}
