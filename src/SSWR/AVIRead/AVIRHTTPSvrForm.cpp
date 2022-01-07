@@ -478,7 +478,7 @@ SSWR::AVIRead::AVIRHTTPSvrForm::AVIRHTTPSvrForm(UI::GUIClientControl *parent, UI
 	NEW_CLASS(this->lblLogDir, UI::GUILabel(ui, this->grpParam, (const UTF8Char*)"Log Path"));
 	this->lblLogDir->SetRect(8, 56, 100, 23, false);
 	sbuff[i] = IO::Path::PATH_SEPERATOR;
-	Text::StrConcat(&sbuff[i+1], (const UTF8Char*)"log");
+	Text::StrConcatC(&sbuff[i+1], UTF8STRC("log"));
 	NEW_CLASS(this->txtLogDir, UI::GUITextBox(ui, this->grpParam, sbuff));
 	this->txtLogDir->SetRect(108, 56, 500, 23, false);
 	NEW_CLASS(this->lblSSL, UI::GUILabel(ui, this->grpParam, (const UTF8Char*)"SSL"));

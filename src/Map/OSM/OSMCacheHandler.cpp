@@ -22,7 +22,7 @@ IO::SeekableStream *Map::OSM::OSMCacheHandler::GetTileData(Int32 lev, Int32 xTil
 	IO::Path::CreateDirectory(sbuff);
 	*sptr++ = IO::Path::PATH_SEPERATOR;
 	sptr = Text::StrInt32(sptr, yTile);
-	sptr = Text::StrConcat(sptr, (const UTF8Char*)".png");
+	sptr = Text::StrConcatC(sptr, UTF8STRC(".png"));
 
 	IO::FileStream *fs;
 	Data::DateTime dt;

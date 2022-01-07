@@ -28,7 +28,7 @@ void Media::Batch::BatchSaveJPEG::ImageOutput(Media::ImageList *imgList, const U
 	IO::FileStream *fs;
 	sptr = Text::StrConcat(sbuff, fileId);
 	void *param;
-	Text::StrConcat(Text::StrConcat(sptr, targetId), (const UTF8Char*)".jpg");
+	Text::StrConcatC(Text::StrConcat(sptr, targetId), UTF8STRC(".jpg"));
 	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
 	param = exporter->CreateParam(imgList);
 	exporter->SetParamInt32(param, 0, (Int32)this->quality);

@@ -130,7 +130,7 @@ void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnMTKLogDownloadClicked(void *
 		else
 		{
 			DEL_CLASS(gpsTrk);
-			UI::MessageDialog::ShowDialog((const UTF8Char *)"Error in downloading log data", (const UTF8Char *)"MTK GPS Tracker", me);
+			UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in downloading log data", (const UTF8Char*)"MTK GPS Tracker", me);
 		}
 	}
 }
@@ -139,15 +139,15 @@ void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnMTKLogDeleteClicked(void *us
 {
 	SSWR::AVIRead::AVIRGPSTrackerForm *me = (SSWR::AVIRead::AVIRGPSTrackerForm*)userObj;
 	IO::Device::MTKGPSNMEA *mtk = (IO::Device::MTKGPSNMEA*)me->locSvc;
-	if (UI::MessageDialog::ShowYesNoDialog((const UTF8Char *)"Are you sure to delete GPS log data?", (const UTF8Char *)"MTK GPS Tracker", me))
+	if (UI::MessageDialog::ShowYesNoDialog((const UTF8Char*)"Are you sure to delete GPS log data?", (const UTF8Char*)"MTK GPS Tracker", me))
 	{
 		if (mtk->DelLogData())
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char *)"Log data is deleted", (const UTF8Char *)"MTK GPS Tracker", me);
+			UI::MessageDialog::ShowDialog((const UTF8Char*)"Log data is deleted", (const UTF8Char*)"MTK GPS Tracker", me);
 		}
 		else
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char *)"Error in deleting log data", (const UTF8Char *)"MTK GPS Tracker", me);
+			UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in deleting log data", (const UTF8Char*)"MTK GPS Tracker", me);
 		}
 	}
 }
@@ -162,7 +162,7 @@ void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnMTKTestClicked(void *userObj
 void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnMTKFactoryResetClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRGPSTrackerForm *me = (SSWR::AVIRead::AVIRGPSTrackerForm*)userObj;
-	if (UI::MessageDialog::ShowYesNoDialog((const UTF8Char *)"Are you sure to factory reset the device?", (const UTF8Char *)"Question", me))
+	if (UI::MessageDialog::ShowYesNoDialog((const UTF8Char*)"Are you sure to factory reset the device?", (const UTF8Char*)"Question", me))
 	{
 		IO::Device::MTKGPSNMEA *mtk = (IO::Device::MTKGPSNMEA*)me->locSvc;
 		mtk->FactoryReset();

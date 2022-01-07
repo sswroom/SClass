@@ -40,7 +40,7 @@ void __stdcall Net::TFTPServer::OnCommandPacket(const Net::SocketUtil::AddressIn
 	{
 		WriteMInt16(&repBuff[0], 5);
 		WriteMInt16(&repBuff[2], 0);
-		i = (UOSInt)(Text::StrConcat(&repBuff[4], (const UTF8Char*)"Mode not supported") - repBuff + 1);
+		i = (UOSInt)(Text::StrConcatC(&repBuff[4], UTF8STRC("Mode not supported")) - repBuff + 1);
 		me->svr->SendTo(addr, port, repBuff, i);
 		return;
 	}
@@ -48,7 +48,7 @@ void __stdcall Net::TFTPServer::OnCommandPacket(const Net::SocketUtil::AddressIn
 	{
 		WriteMInt16(&repBuff[0], 5);
 		WriteMInt16(&repBuff[2], 2);
-		i = (UOSInt)(Text::StrConcat(&repBuff[4], (const UTF8Char*)"Access violation") - repBuff + 1);
+		i = (UOSInt)(Text::StrConcatC(&repBuff[4], UTF8STRC("Access violation")) - repBuff + 1);
 		me->svr->SendTo(addr, port, repBuff, i);
 		return;
 	}
@@ -61,7 +61,7 @@ void __stdcall Net::TFTPServer::OnCommandPacket(const Net::SocketUtil::AddressIn
 	{
 		WriteMInt16(&repBuff[0], 5);
 		WriteMInt16(&repBuff[2], 4);
-		i = (UOSInt)(Text::StrConcat(&repBuff[4], (const UTF8Char*)"Already started") - repBuff + 1);
+		i = (UOSInt)(Text::StrConcatC(&repBuff[4], UTF8STRC("Already started")) - repBuff + 1);
 		me->svr->SendTo(addr, port, repBuff, i);
 		return;
 	}
@@ -82,7 +82,7 @@ void __stdcall Net::TFTPServer::OnCommandPacket(const Net::SocketUtil::AddressIn
 				DEL_CLASS(fs);
 				WriteMInt16(&repBuff[0], 5);
 				WriteMInt16(&repBuff[2], 2);
-				i = (UOSInt)(Text::StrConcat(&repBuff[4], (const UTF8Char*)"Cannot open file") - repBuff + 1);
+				i = (UOSInt)(Text::StrConcatC(&repBuff[4], UTF8STRC("Cannot open file")) - repBuff + 1);
 				me->svr->SendTo(addr, port, repBuff, i);
 				return;
 			}
@@ -126,7 +126,7 @@ void __stdcall Net::TFTPServer::OnCommandPacket(const Net::SocketUtil::AddressIn
 		{
 			WriteMInt16(&repBuff[0], 5);
 			WriteMInt16(&repBuff[2], 1);
-			i = (UOSInt)(Text::StrConcat(&repBuff[4], (const UTF8Char*)"File not found") - repBuff + 1);
+			i = (UOSInt)(Text::StrConcatC(&repBuff[4], UTF8STRC("File not found")) - repBuff + 1);
 			me->svr->SendTo(addr, port, repBuff, i);
 			return;
 		}
@@ -137,7 +137,7 @@ void __stdcall Net::TFTPServer::OnCommandPacket(const Net::SocketUtil::AddressIn
 		{
 			WriteMInt16(&repBuff[0], 5);
 			WriteMInt16(&repBuff[2], 6);
-			i = (UOSInt)(Text::StrConcat(&repBuff[4], (const UTF8Char*)"File already exists") - repBuff + 1);
+			i = (UOSInt)(Text::StrConcatC(&repBuff[4], UTF8STRC("File already exists")) - repBuff + 1);
 			me->svr->SendTo(addr, port, repBuff, i);
 			return;
 		}
@@ -145,7 +145,7 @@ void __stdcall Net::TFTPServer::OnCommandPacket(const Net::SocketUtil::AddressIn
 		{
 			WriteMInt16(&repBuff[0], 5);
 			WriteMInt16(&repBuff[2], 6);
-			i = (UOSInt)(Text::StrConcat(&repBuff[4], (const UTF8Char*)"Directory already exists") - repBuff + 1);
+			i = (UOSInt)(Text::StrConcatC(&repBuff[4], UTF8STRC("Directory already exists")) - repBuff + 1);
 			me->svr->SendTo(addr, port, repBuff, i);
 			return;
 		}
@@ -157,7 +157,7 @@ void __stdcall Net::TFTPServer::OnCommandPacket(const Net::SocketUtil::AddressIn
 				DEL_CLASS(fs);
 				WriteMInt16(&repBuff[0], 5);
 				WriteMInt16(&repBuff[2], 2);
-				i = (UOSInt)(Text::StrConcat(&repBuff[4], (const UTF8Char*)"Cannot open file") - repBuff + 1);
+				i = (UOSInt)(Text::StrConcatC(&repBuff[4], UTF8STRC("Cannot open file")) - repBuff + 1);
 				me->svr->SendTo(addr, port, repBuff, i);
 				return;
 			}
@@ -196,7 +196,7 @@ void __stdcall Net::TFTPServer::OnCommandPacket(const Net::SocketUtil::AddressIn
 	{
 		WriteMInt16(&repBuff[0], 5);
 		WriteMInt16(&repBuff[2], 4);
-		i = (UOSInt)(Text::StrConcat(&repBuff[4], (const UTF8Char*)"Unknown opcode") - repBuff + 1);
+		i = (UOSInt)(Text::StrConcatC(&repBuff[4], UTF8STRC("Unknown opcode")) - repBuff + 1);
 		me->svr->SendTo(addr, port, repBuff, i);
 		return;
 	}

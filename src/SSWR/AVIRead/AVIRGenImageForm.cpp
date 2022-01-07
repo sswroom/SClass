@@ -16,7 +16,7 @@ void __stdcall SSWR::AVIRead::AVIRGenImageForm::GenerateClicked(void *userObj)
 	height = Text::StrToUInt32(sbuff);
 	if (width <= 0 || height <= 0)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char *)"Error in parsing output size", (const UTF8Char *)"Error", me);
+		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in parsing output size", (const UTF8Char*)"Error", me);
 		return;
 	}
 
@@ -37,12 +37,12 @@ void __stdcall SSWR::AVIRead::AVIRGenImageForm::GenerateClicked(void *userObj)
 		}
 		else
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char *)"This parameters are not supported", (const UTF8Char *)"Error", me);
+			UI::MessageDialog::ShowDialog((const UTF8Char*)"This parameters are not supported", (const UTF8Char*)"Error", me);
 		}
 	}
 	else
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char *)"Please select a generator", (const UTF8Char *)"Error", me);
+		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please select a generator", (const UTF8Char*)"Error", me);
 	}
 }
 

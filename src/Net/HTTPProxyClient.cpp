@@ -63,9 +63,9 @@ Bool Net::HTTPProxyClient::Connect(const UTF8Char *url, const Char *method, Doub
 			MemCopyNO(urltmp, ptr1, i * sizeof(UTF8Char));
 			urltmp[i] = 0;
 		}
-		cptr = Text::StrConcat(host, (const UTF8Char*)"Host: ");
+		cptr = Text::StrConcatC(host, UTF8STRC("Host: "));
 		cptr = Text::StrConcat(cptr, urltmp);
-		cptr = Text::StrConcat(cptr, (const UTF8Char*)"\r\n");
+		cptr = Text::StrConcatC(cptr, UTF8STRC("\r\n"));
 		i = Text::StrSplit(ptrs, 2, urltmp, ':');
 		if (i == 2)
 		{
@@ -117,23 +117,23 @@ Bool Net::HTTPProxyClient::Connect(const UTF8Char *url, const Char *method, Doub
 			}
 			if (method)
 			{
-				if (Text::StrCompareICase(method, "POST") == 0)
+				if (Text::StrEqualsICase(method, "POST"))
 				{
 					this->canWrite = true;
 					this->writing = false;
-					cptr = Text::StrConcat(dataBuff, (const UTF8Char*)"POST ");
+					cptr = Text::StrConcatC(dataBuff, UTF8STRC("POST "));
 				}
 				else
 				{
-					cptr = Text::StrConcat(dataBuff, (const UTF8Char*)"GET ");
+					cptr = Text::StrConcatC(dataBuff, UTF8STRC("GET "));
 				}
 			}
 			else
 			{
-				cptr = Text::StrConcat(dataBuff, (const UTF8Char*)"GET ");
+				cptr = Text::StrConcatC(dataBuff, UTF8STRC("GET "));
 			}
 			cptr = Text::StrConcat(cptr, url);
-			cptr = Text::StrConcat(cptr, (const UTF8Char*)" HTTP/1.1\r\n");
+			cptr = Text::StrConcatC(cptr, UTF8STRC(" HTTP/1.1\r\n"));
 			cli->Write((UInt8*)dataBuff, (UOSInt)(cptr - dataBuff));
 			cli->Write((UInt8*)host, Text::StrCharCnt(host));
 			return true;
@@ -166,7 +166,7 @@ Bool Net::HTTPProxyClient::SetAuthen(Net::HTTPProxyTCPClient::PasswordType pwdTy
 		*sptr2++ = ':';
 		sptr2 = Text::StrConcat(sptr2, password);
 
-		sptr = Text::StrConcat(buff, (const UTF8Char*)"BASIC ");
+		sptr = Text::StrConcatC(buff, UTF8STRC("BASIC "));
 		Crypto::Encrypt::Base64 b64;
 		sptr = buff + b64.Encrypt(userPwd, (UOSInt)(sptr2 - userPwd), sptr, 0);
 		*sptr = 0;

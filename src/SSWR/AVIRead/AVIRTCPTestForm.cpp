@@ -22,14 +22,14 @@ void __stdcall SSWR::AVIRead::AVIRTCPTestForm::OnStartClicked(void *userObj)
 	me->svrIP = Net::SocketUtil::GetIPAddr(sb.ToString());
 	if (me->svrIP == 0)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char *)"Please enter valid IP", (const UTF8Char *)"Start", me);
+		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter valid IP", (const UTF8Char*)"Start", me);
 		return;
 	}
 	sb.ClearStr();
 	me->txtPort->GetText(&sb);
 	if (!sb.ToUInt16(&me->svrPort) || me->svrPort <= 0 || me->svrPort >= 65536)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char *)"Please enter valid Port", (const UTF8Char *)"Start", me);
+		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter valid Port", (const UTF8Char*)"Start", me);
 		return;
 	}
 	sb.ClearStr();
@@ -37,7 +37,7 @@ void __stdcall SSWR::AVIRead::AVIRTCPTestForm::OnStartClicked(void *userObj)
 	if (!sb.ToUInt32(&me->threadCnt) || me->threadCnt <= 0 || me->threadCnt >= 1000)
 	{
 		me->threadCnt = 0;
-		UI::MessageDialog::ShowDialog((const UTF8Char *)"Please enter valid Concurrent Count", (const UTF8Char *)"Start", me);
+		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter valid Concurrent Count", (const UTF8Char*)"Start", me);
 		return;
 	}
 	sb.ClearStr();
@@ -46,7 +46,7 @@ void __stdcall SSWR::AVIRead::AVIRTCPTestForm::OnStartClicked(void *userObj)
 	{
 		me->threadCnt = 0;
 		me->connLeftCnt = 0;
-		UI::MessageDialog::ShowDialog((const UTF8Char *)"Please enter valid Total Connection Count", (const UTF8Char *)"Start", me);
+		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter valid Total Connection Count", (const UTF8Char*)"Start", me);
 		return;
 	}
 	

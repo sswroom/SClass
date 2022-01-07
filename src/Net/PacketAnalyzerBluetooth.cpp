@@ -1282,7 +1282,7 @@ void Net::PacketAnalyzerBluetooth::AddAdvEvtType(IO::FileAnalyse::FrameDetailHan
 void Net::PacketAnalyzerBluetooth::AddRSSI(IO::FileAnalyse::FrameDetailHandler *frame, UInt32 frameOfst, Int8 rssi)
 {
 	UTF8Char sbuff[16];
-	Text::StrConcat(Text::StrInt16(sbuff, rssi), (const UTF8Char*)"dBm");
+	Text::StrConcatC(Text::StrInt16(sbuff, rssi), UTF8STRC("dBm"));
 	frame->AddField(frameOfst, 1, (const UTF8Char*)"RSSI", sbuff);
 }
 
@@ -1958,7 +1958,7 @@ void Net::PacketAnalyzerBluetooth::AddAdvSID(IO::FileAnalyse::FrameDetailHandler
 void Net::PacketAnalyzerBluetooth::AddTxPower(IO::FileAnalyse::FrameDetailHandler *frame, UInt32 frameOfst, Int8 txPower)
 {
 	UTF8Char sbuff[16];
-	Text::StrConcat(Text::StrInt16(sbuff, txPower), (const UTF8Char*)"dBm");
+	Text::StrConcatC(Text::StrInt16(sbuff, txPower), UTF8STRC("dBm"));
 	frame->AddField(frameOfst, 1, (const UTF8Char*)"TxPower", sbuff);
 }
 

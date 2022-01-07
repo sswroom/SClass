@@ -72,7 +72,7 @@ void SSWR::AVIRead::AVIRMediaForm::UpdateStreamList()
 				}
 				if (this->activeVideo == medSource)
 					*sptr++ = '*';
-				Text::StrConcat(sptr, (const UTF8Char*)"(V)");
+				Text::StrConcatC(sptr, UTF8STRC("(V)"));
 			}
 			else if (mtype == Media::MEDIA_TYPE_AUDIO)
 			{
@@ -82,7 +82,7 @@ void SSWR::AVIRead::AVIRMediaForm::UpdateStreamList()
 				}
 				if (this->activeAudio == medSource)
 					*sptr++ = '*';
-				Text::StrConcat(sptr, (const UTF8Char*)"(A)");
+				Text::StrConcatC(sptr, UTF8STRC("(A)"));
 			}
 			medSource->GetSourceName(sptr);
 			this->lbFiles->AddItem(sbuff, medSource);
@@ -109,10 +109,10 @@ void SSWR::AVIRead::AVIRMediaForm::UpdateChapters()
 				sptr = sbuff;
 				if (j < 9)
 				{
-					sptr = Text::StrConcat(sptr, (const UTF8Char*)"&");
+					sptr = Text::StrConcatC(sptr, UTF8STRC("&"));
 				}
 				sptr = Text::StrInt32(sptr, (Int32)j + 1);
-				sptr = Text::StrConcat(sptr, (const UTF8Char*)" ");
+				sptr = Text::StrConcatC(sptr, UTF8STRC(" "));
 				sptr = Text::StrConcat(sptr, this->currChapters->GetChapterName(j));
 				this->mnuChapters->AddItem(sbuff, (UInt16)(MNU_PB_CHAPTERS + j), UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 				j++;
@@ -314,7 +314,7 @@ SSWR::AVIRead::AVIRMediaForm::AVIRMediaForm(UI::GUIClientControl *parent, UI::GU
 {
 	this->SetFont(0, 8.25, false);
 	UTF8Char sbuff[512];
-	mediaFile->GetSourceNameObj()->ConcatTo(Text::StrConcat(sbuff, (const UTF8Char*)"Media Form - "));
+	mediaFile->GetSourceNameObj()->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("Media Form - ")));
 	this->SetText(sbuff);
 
 	this->core = core;
@@ -637,7 +637,7 @@ void SSWR::AVIRead::AVIRMediaForm::EventMenuClicked(UInt16 cmdId)
 				Text::StringBuilderUTF8 sb;
 				sb.AppendC(UTF8STRC("t="));
 				Text::SBAppendF64(&sb, t);
-				UI::MessageDialog::ShowDialog(sb.ToString(), (const UTF8Char *)"Test", this);
+				UI::MessageDialog::ShowDialog(sb.ToString(), (const UTF8Char*)"Test", this);
 
 				UTF8Char sbuff[512];
 				Media::ImageList *imgList;

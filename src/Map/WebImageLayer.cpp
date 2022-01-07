@@ -576,7 +576,7 @@ UTF8Char *Map::WebImageLayer::GetColumnName(UTF8Char *buff, UOSInt colIndex)
 {
 	if (colIndex > 0)
 		return 0;
-	return Text::StrConcat(buff, (const UTF8Char*)"Name");
+	return Text::StrConcatC(buff, UTF8STRC("Name"));
 }
 
 DB::DBUtil::ColType Map::WebImageLayer::GetColumnType(UOSInt colIndex, UOSInt *colSize)

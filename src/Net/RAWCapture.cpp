@@ -187,7 +187,7 @@ Net::RAWCapture::RAWCapture(Net::SocketFactory *sockf, UInt32 adapterIP, Capture
 			WriteInt32(&buff[12], 65536); //snap len
 			WriteInt16(&buff[16], 2);
 			WriteInt16(&buff[18], 3);
-			Text::StrConcat(&buff[20], (const UTF8Char*)"any");
+			Text::StrConcatC(&buff[20], UTF8STRC("any"));
 			WriteInt16(&buff[24], 9);
 			WriteInt16(&buff[26], 1);
 			WriteInt32(&buff[28], 3);

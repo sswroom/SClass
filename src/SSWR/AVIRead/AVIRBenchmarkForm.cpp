@@ -16,15 +16,15 @@ UTF8Char *SSWR::AVIRead::AVIRBenchmarkForm::ByteDisp(UTF8Char *sbuff, UOSInt byt
 {
 	if (byteSize >= 1048576)
 	{
-		return Text::StrConcat(Text::StrUOSInt(sbuff, byteSize >> 20), (const UTF8Char*)"MB");
+		return Text::StrConcatC(Text::StrUOSInt(sbuff, byteSize >> 20), UTF8STRC("MB"));
 	}
 	else if (byteSize >= 1024)
 	{
-		return Text::StrConcat(Text::StrUOSInt(sbuff, byteSize >> 10), (const UTF8Char*)"KB");
+		return Text::StrConcatC(Text::StrUOSInt(sbuff, byteSize >> 10), UTF8STRC("KB"));
 	}
 	else
 	{
-		return Text::StrConcat(Text::StrUOSInt(sbuff, byteSize), (const UTF8Char*)"B");
+		return Text::StrConcatC(Text::StrUOSInt(sbuff, byteSize), UTF8STRC("B"));
 	}
 }
 
@@ -228,7 +228,7 @@ void __stdcall SSWR::AVIRead::AVIRBenchmarkForm::OnSaveClicked(void *userObj)
 
 	if (me->resultList->GetCount() <= 0)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char *)"No result", (const UTF8Char *)"Error", me);
+		UI::MessageDialog::ShowDialog((const UTF8Char*)"No result", (const UTF8Char*)"Error", me);
 		return;
 	}
 	NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"AVIRead", L"BenchmarkSave", true));
@@ -480,15 +480,15 @@ SSWR::AVIRead::AVIRBenchmarkForm::AVIRBenchmarkForm(UI::GUIClientControl *parent
 		}
 		else if (ram->memorySize >= 1073741824)
 		{
-			Text::StrConcat(Text::StrUInt64(sbuff, ram->memorySize / 1073741824), (const UTF8Char*)"GB");
+			Text::StrConcatC(Text::StrUInt64(sbuff, ram->memorySize / 1073741824), UTF8STRC("GB"));
 		}
 		else if (ram->memorySize >= 1048576)
 		{
-			Text::StrConcat(Text::StrUInt64(sbuff, ram->memorySize / 1073741824), (const UTF8Char*)"MB");
+			Text::StrConcatC(Text::StrUInt64(sbuff, ram->memorySize / 1073741824), UTF8STRC("MB"));
 		}
 		else if (ram->memorySize >= 1024)
 		{
-			Text::StrConcat(Text::StrUInt64(sbuff, ram->memorySize / 1073741824), (const UTF8Char*)"KB");
+			Text::StrConcatC(Text::StrUInt64(sbuff, ram->memorySize / 1073741824), UTF8STRC("KB"));
 		}
 		this->lvRAM->SetSubItem(k, 8, sbuff);
 		i++;

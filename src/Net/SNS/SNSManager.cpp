@@ -191,15 +191,15 @@ void Net::SNS::SNSManager::ChannelAddMessage(Net::SNS::SNSManager::ChannelData *
 				{
 					if (Text::StrEndsWith(sarr[0], (const UTF8Char*)".mp4"))
 					{
-						Text::StrConcat(Text::StrUOSInt(sptr, i), (const UTF8Char*)".mp4");
+						Text::StrConcatC(Text::StrUOSInt(sptr, i), UTF8STRC(".mp4"));
 					}
 					else if (Text::StrEndsWith(sarr[0], (const UTF8Char*)".png"))
 					{
-						Text::StrConcat(Text::StrUOSInt(sptr, i), (const UTF8Char*)".png");
+						Text::StrConcatC(Text::StrUOSInt(sptr, i), UTF8STRC(".png"));
 					}
 					else
 					{
-						Text::StrConcat(Text::StrUOSInt(sptr, i), (const UTF8Char*)".jpg");
+						Text::StrConcatC(Text::StrUOSInt(sptr, i), UTF8STRC(".jpg"));
 					}
 					leng = 0;
 					NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
@@ -256,7 +256,7 @@ void Net::SNS::SNSManager::ChannelAddMessage(Net::SNS::SNSManager::ChannelData *
 				cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, this->userAgent, true, Text::StrStartsWith(sarr[0], (const UTF8Char*)"https://"));
 				if (cli->Connect(sarr[0], "GET", 0, 0, true))
 				{
-					Text::StrConcat(Text::StrUOSInt(sptr, i), (const UTF8Char*)".mp4");
+					Text::StrConcatC(Text::StrUOSInt(sptr, i), UTF8STRC(".mp4"));
 					leng = 0;
 					NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 					while (true)
@@ -457,7 +457,7 @@ Net::SNS::SNSManager::SNSManager(Net::SocketFactory *sockf, Net::SSLEngine *ssl,
 	{
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 	}
-	Text::StrConcat(sptr, IO::Path::ALL_FILES);
+	Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
 	IO::Path::FindFileSession *sess = IO::Path::FindFile(sbuff);
 	if (sess)
 	{
@@ -469,7 +469,7 @@ Net::SNS::SNSManager::SNSManager(Net::SocketFactory *sockf, Net::SSLEngine *ssl,
 			if (pt == IO::Path::PathType::Directory && sptr[0] != '.')
 			{
 				*sptr2++ = IO::Path::PATH_SEPERATOR;
-				Text::StrConcat(sptr2, (const UTF8Char*)"channel.txt");
+				Text::StrConcatC(sptr2, UTF8STRC("channel.txt"));
 				IO::FileStream *fs;
 				Text::UTF8Reader *reader;
 				NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));

@@ -74,7 +74,7 @@ IO::ParsedObject *Parser::FileParser::TILParser::ParseFile(IO::IStreamData *fd, 
 			imgType = ReadInt32(&indexBuff[i + 12]);
 			if (imgType == 0)
 			{
-				srcPtr = Text::StrConcat(srcPtr, (const UTF8Char*)".jpg");
+				srcPtr = Text::StrConcatC(srcPtr, UTF8STRC(".jpg"));
 			}
 			pf->AddData(fd, ReadUInt64(&indexBuff[i + 16]), ReadUInt64(&indexBuff[i + 24]), fileName, timeTicks);
 			i += 32;
@@ -102,7 +102,7 @@ IO::ParsedObject *Parser::FileParser::TILParser::ParseFile(IO::IStreamData *fd, 
 			imgType = ReadInt32(&indexBuff[12]);
 			if (imgType == 0)
 			{
-				srcPtr = Text::StrConcat(srcPtr, (const UTF8Char*)".jpg");
+				srcPtr = Text::StrConcatC(srcPtr, UTF8STRC(".jpg"));
 			}
 			pf->AddData(fd, fileOfst, ReadUInt64(&indexBuff[24]), fileName, timeTicks);
 		}

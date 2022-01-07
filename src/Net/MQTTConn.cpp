@@ -453,7 +453,7 @@ Bool Net::MQTTConn::PublishMessage(Net::SocketFactory *sockf, Net::SSLEngine *ss
 	Bool succ = false;
 	Data::DateTime dt;
 	dt.SetCurrTimeUTC();
-	Text::StrInt64(Text::StrConcat(sbuff, (const UTF8Char*)"sswrMQTT/"), dt.ToTicks());
+	Text::StrInt64(Text::StrConcatC(sbuff, UTF8STRC("sswrMQTT/")), dt.ToTicks());
 	if (cli->SendConnect(4, 30, sbuff, username, password))
 	{
 		succ = (cli->WaitConnAck(30000) == Net::MQTTConn::CS_ACCEPTED);

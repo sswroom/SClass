@@ -379,7 +379,7 @@ void SSWR::AVIReadCE::AVIRCEProcInfoForm::UpdateProcHeapDetail(Int32 heapId)
 		while (i < j)
 		{
 			heap = heapList.GetItem(i);
-			Text::StrHexVal32(Text::StrConcat(sbuff, (const UTF8Char*)"0x"), (Int32)heap->startAddr);
+			Text::StrHexVal32(Text::StrConcatC(sbuff, UTF8STRC("0x")), (Int32)heap->startAddr);
 			k = this->lvDetHeap->AddItem(sbuff, 0, 0);
 			Text::StrInt32(sbuff, (Int32)heap->size);
 			this->lvDetHeap->SetSubItem(k, 1, sbuff);

@@ -108,14 +108,14 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnConvFileClicked(void *userObj
 	i = me->cboSrc->GetSelectedIndex();
 	if (i == INVALID_INDEX)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char *)"Please select source coordinate system", (const UTF8Char *)"Error", me);
+		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please select source coordinate system", (const UTF8Char*)"Error", me);
 		return;
 	}
 
 	i = me->cboDest->GetSelectedIndex();
 	if (i == INVALID_INDEX)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char *)"Please select dest coordinate system", (const UTF8Char *)"Error", me);
+		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please select dest coordinate system", (const UTF8Char*)"Error", me);
 		return;
 	}
 
@@ -142,7 +142,7 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnConvFileClicked(void *userObj
 		DEL_CLASS(fd);
 		if (db == 0)
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char *)"File is not a database file", (const UTF8Char *)"Error", me);
+			UI::MessageDialog::ShowDialog((const UTF8Char*)"File is not a database file", (const UTF8Char*)"Error", me);
 			return;
 		}
 	}
@@ -152,7 +152,7 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnConvFileClicked(void *userObj
 	DB::DBReader *reader = db->GetTableData(0, 0, 0, 0, 0, 0);
 	if (reader == 0)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char *)"Unsupported database format", (const UTF8Char *)"Error", me);
+		UI::MessageDialog::ShowDialog((const UTF8Char*)"Unsupported database format", (const UTF8Char*)"Error", me);
 		DEL_CLASS(db);
 		return;
 	}
@@ -176,7 +176,7 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnConvFileClicked(void *userObj
 	if (xCol == (UOSInt)-1 || yCol == (UOSInt)-1)
 	{
 		DEL_CLASS(db);
-		UI::MessageDialog::ShowDialog((const UTF8Char *)"XY Database column not found", (const UTF8Char *)"Error", me);
+		UI::MessageDialog::ShowDialog((const UTF8Char*)"XY Database column not found", (const UTF8Char*)"Error", me);
 		return;
 	}
 	
@@ -197,7 +197,7 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnConvFileClicked(void *userObj
 		DEL_CLASS(fs);
 		DEL_CLASS(dlg);
 		DEL_CLASS(db);
-		UI::MessageDialog::ShowDialog((const UTF8Char *)"Error in creating output file", (const UTF8Char *)"Error", me);
+		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in creating output file", (const UTF8Char*)"Error", me);
 		return;
 	}
 	Text::StringBuilderUTF8 sb;
@@ -211,7 +211,7 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnConvFileClicked(void *userObj
 		DEL_CLASS(dlg);
 		DEL_CLASS(fs);
 		DEL_CLASS(db);
-		UI::MessageDialog::ShowDialog((const UTF8Char *)"Error in reading source file", (const UTF8Char *)"Error", me);
+		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in reading source file", (const UTF8Char*)"Error", me);
 		return;
 	}
 

@@ -100,7 +100,7 @@ Bool Parser::FileParser::ELFParser::ParseType(ParseEnv *env)
 	case '9':
 		if (constVal)
 		{
-			env->sbuff = Text::StrConcat(env->sbuff, (const UTF8Char*)"const ");
+			env->sbuff = Text::StrConcatC(env->sbuff, UTF8STRC("const "));
 		}
 		while (env->funcName[0] >= '1' && env->funcName[0] <= '9')
 		{
@@ -136,7 +136,7 @@ Bool Parser::FileParser::ELFParser::ParseType(ParseEnv *env)
 		env->funcName++;
 		if (constVal)
 		{
-			env->sbuff = Text::StrConcat(env->sbuff, (const UTF8Char*)"const ");
+			env->sbuff = Text::StrConcatC(env->sbuff, UTF8STRC("const "));
 		}
 		foundName = false;
 		while (true)
@@ -333,9 +333,9 @@ Bool Parser::FileParser::ELFParser::ParseType(ParseEnv *env)
 		env->funcName++;
 		if (constVal)
 		{
-			env->sbuff = Text::StrConcat(env->sbuff, (const UTF8Char*)"const ");
+			env->sbuff = Text::StrConcatC(env->sbuff, UTF8STRC("const "));
 		}
-		env->sbuff = Text::StrConcat(env->sbuff, (const UTF8Char*)"void");
+		env->sbuff = Text::StrConcatC(env->sbuff, UTF8STRC("void"));
 		while (ptrCnt-- > 0)
 		{
 			*env->sbuff++ = '*';
@@ -345,9 +345,9 @@ Bool Parser::FileParser::ELFParser::ParseType(ParseEnv *env)
 		env->funcName++;
 		if (constVal)
 		{
-			env->sbuff = Text::StrConcat(env->sbuff, (const UTF8Char*)"const ");
+			env->sbuff = Text::StrConcatC(env->sbuff, UTF8STRC("const "));
 		}
-		env->sbuff = Text::StrConcat(env->sbuff, (const UTF8Char*)"wchar_t");
+		env->sbuff = Text::StrConcatC(env->sbuff, UTF8STRC("wchar_t"));
 		while (ptrCnt-- > 0)
 		{
 			*env->sbuff++ = '*';
@@ -357,9 +357,9 @@ Bool Parser::FileParser::ELFParser::ParseType(ParseEnv *env)
 		env->funcName++;
 		if (constVal)
 		{
-			env->sbuff = Text::StrConcat(env->sbuff, (const UTF8Char*)"const ");
+			env->sbuff = Text::StrConcatC(env->sbuff, UTF8STRC("const "));
 		}
-		env->sbuff = Text::StrConcat(env->sbuff, (const UTF8Char*)"bool");
+		env->sbuff = Text::StrConcatC(env->sbuff, UTF8STRC("bool"));
 		while (ptrCnt-- > 0)
 		{
 			*env->sbuff++ = '*';
@@ -369,9 +369,9 @@ Bool Parser::FileParser::ELFParser::ParseType(ParseEnv *env)
 		env->funcName++;
 		if (constVal)
 		{
-			env->sbuff = Text::StrConcat(env->sbuff, (const UTF8Char*)"const ");
+			env->sbuff = Text::StrConcatC(env->sbuff, UTF8STRC("const "));
 		}
-		env->sbuff = Text::StrConcat(env->sbuff, (const UTF8Char*)"char");
+		env->sbuff = Text::StrConcatC(env->sbuff, UTF8STRC("char"));
 		while (ptrCnt-- > 0)
 		{
 			*env->sbuff++ = '*';
@@ -381,9 +381,9 @@ Bool Parser::FileParser::ELFParser::ParseType(ParseEnv *env)
 		env->funcName++;
 		if (constVal)
 		{
-			env->sbuff = Text::StrConcat(env->sbuff, (const UTF8Char*)"const ");
+			env->sbuff = Text::StrConcatC(env->sbuff, UTF8STRC("const "));
 		}
-		env->sbuff = Text::StrConcat(env->sbuff, (const UTF8Char*)"short");
+		env->sbuff = Text::StrConcatC(env->sbuff, UTF8STRC("short"));
 		while (ptrCnt-- > 0)
 		{
 			*env->sbuff++ = '*';
@@ -393,9 +393,9 @@ Bool Parser::FileParser::ELFParser::ParseType(ParseEnv *env)
 		env->funcName++;
 		if (constVal)
 		{
-			env->sbuff = Text::StrConcat(env->sbuff, (const UTF8Char*)"const ");
+			env->sbuff = Text::StrConcatC(env->sbuff, UTF8STRC("const "));
 		}
-		env->sbuff = Text::StrConcat(env->sbuff, (const UTF8Char*)"int");
+		env->sbuff = Text::StrConcatC(env->sbuff, UTF8STRC("int"));
 		while (ptrCnt-- > 0)
 		{
 			*env->sbuff++ = '*';
@@ -405,9 +405,9 @@ Bool Parser::FileParser::ELFParser::ParseType(ParseEnv *env)
 		env->funcName++;
 		if (constVal)
 		{
-			env->sbuff = Text::StrConcat(env->sbuff, (const UTF8Char*)"const ");
+			env->sbuff = Text::StrConcatC(env->sbuff, UTF8STRC("const "));
 		}
-		env->sbuff = Text::StrConcat(env->sbuff, (const UTF8Char*)"__int64");
+		env->sbuff = Text::StrConcatC(env->sbuff, UTF8STRC("__int64"));
 		while (ptrCnt-- > 0)
 		{
 			*env->sbuff++ = '*';
@@ -417,9 +417,9 @@ Bool Parser::FileParser::ELFParser::ParseType(ParseEnv *env)
 		env->funcName++;
 		if (constVal)
 		{
-			env->sbuff = Text::StrConcat(env->sbuff, (const UTF8Char*)"const ");
+			env->sbuff = Text::StrConcatC(env->sbuff, UTF8STRC("const "));
 		}
-		env->sbuff = Text::StrConcat(env->sbuff, (const UTF8Char*)"unsigned char");
+		env->sbuff = Text::StrConcatC(env->sbuff, UTF8STRC("unsigned char"));
 		while (ptrCnt-- > 0)
 		{
 			*env->sbuff++ = '*';
@@ -429,9 +429,9 @@ Bool Parser::FileParser::ELFParser::ParseType(ParseEnv *env)
 		env->funcName++;
 		if (constVal)
 		{
-			env->sbuff = Text::StrConcat(env->sbuff, (const UTF8Char*)"const ");
+			env->sbuff = Text::StrConcatC(env->sbuff, UTF8STRC("const "));
 		}
-		env->sbuff = Text::StrConcat(env->sbuff, (const UTF8Char*)"unsigned short");
+		env->sbuff = Text::StrConcatC(env->sbuff, UTF8STRC("unsigned short"));
 		while (ptrCnt-- > 0)
 		{
 			*env->sbuff++ = '*';
@@ -441,9 +441,9 @@ Bool Parser::FileParser::ELFParser::ParseType(ParseEnv *env)
 		env->funcName++;
 		if (constVal)
 		{
-			env->sbuff = Text::StrConcat(env->sbuff, (const UTF8Char*)"const ");
+			env->sbuff = Text::StrConcatC(env->sbuff, UTF8STRC("const "));
 		}
-		env->sbuff = Text::StrConcat(env->sbuff, (const UTF8Char*)"unsigned int");
+		env->sbuff = Text::StrConcatC(env->sbuff, UTF8STRC("unsigned int"));
 		while (ptrCnt-- > 0)
 		{
 			*env->sbuff++ = '*';
@@ -453,9 +453,9 @@ Bool Parser::FileParser::ELFParser::ParseType(ParseEnv *env)
 		env->funcName++;
 		if (constVal)
 		{
-			env->sbuff = Text::StrConcat(env->sbuff, (const UTF8Char*)"const ");
+			env->sbuff = Text::StrConcatC(env->sbuff, UTF8STRC("const "));
 		}
-		env->sbuff = Text::StrConcat(env->sbuff, (const UTF8Char*)"unsigned __int64");
+		env->sbuff = Text::StrConcatC(env->sbuff, UTF8STRC("unsigned __int64"));
 		while (ptrCnt-- > 0)
 		{
 			*env->sbuff++ = '*';
@@ -465,9 +465,9 @@ Bool Parser::FileParser::ELFParser::ParseType(ParseEnv *env)
 		env->funcName++;
 		if (constVal)
 		{
-			env->sbuff = Text::StrConcat(env->sbuff, (const UTF8Char*)"const ");
+			env->sbuff = Text::StrConcatC(env->sbuff, UTF8STRC("const "));
 		}
-		env->sbuff = Text::StrConcat(env->sbuff, (const UTF8Char*)"double");
+		env->sbuff = Text::StrConcatC(env->sbuff, UTF8STRC("double"));
 		while (ptrCnt-- > 0)
 		{
 			*env->sbuff++ = '*';
@@ -667,7 +667,7 @@ IO::ParsedObject *Parser::FileParser::ELFParser::ParseFile(IO::IStreamData *fd, 
 		exef->AddProp((const UTF8Char*)"OS ABI", (const UTF8Char*)"0x11 (CloudABI)");
 		break;
 	default:
-		Text::StrHexByte(Text::StrConcat(sbuff, (const UTF8Char*)"0x"), hdr[7]);
+		Text::StrHexByte(Text::StrConcatC(sbuff, UTF8STRC("0x")), hdr[7]);
 		exef->AddProp((const UTF8Char*)"OS ABI", sbuff);
 		break;
 	}
@@ -765,13 +765,13 @@ IO::ParsedObject *Parser::FileParser::ELFParser::ParseFile(IO::IStreamData *fd, 
 		phCnt = (UInt16)readInt16(&hdr[44]);
 		shSize = (UInt16)readInt16(&hdr[46]);
 		shCnt = (UInt16)readInt16(&hdr[48]);
-		Text::StrHexVal32(Text::StrConcat(sbuff, (const UTF8Char*)"0x"), entryPt);
+		Text::StrHexVal32(Text::StrConcatC(sbuff, UTF8STRC("0x")), entryPt);
 		exef->AddProp((const UTF8Char*)"Entry Point", sbuff);
-		Text::StrHexVal32(Text::StrConcat(sbuff, (const UTF8Char*)"0x"), pht);
+		Text::StrHexVal32(Text::StrConcatC(sbuff, UTF8STRC("0x")), pht);
 		exef->AddProp((const UTF8Char*)"Program Header Table", sbuff);
-		Text::StrHexVal32(Text::StrConcat(sbuff, (const UTF8Char*)"0x"), sht);
+		Text::StrHexVal32(Text::StrConcatC(sbuff, UTF8STRC("0x")), sht);
 		exef->AddProp((const UTF8Char*)"Section Header Table", sbuff);
-		Text::StrHexVal32(Text::StrConcat(sbuff, (const UTF8Char*)"0x"), (UInt32)readInt32(&hdr[36]));
+		Text::StrHexVal32(Text::StrConcatC(sbuff, UTF8STRC("0x")), (UInt32)readInt32(&hdr[36]));
 		exef->AddProp((const UTF8Char*)"Flags", sbuff);
 		Text::StrUInt32(sbuff, (UInt16)readInt16(&hdr[40]));
 		exef->AddProp((const UTF8Char*)"Header Size", sbuff);
@@ -795,9 +795,9 @@ IO::ParsedObject *Parser::FileParser::ELFParser::ParseFile(IO::IStreamData *fd, 
 			j = 0;
 			while ((UOSInt)i < phCnt)
 			{
-				sptr = Text::StrConcat(sbuff, (const UTF8Char*)"Program Header ");
+				sptr = Text::StrConcatC(sbuff, UTF8STRC("Program Header "));
 				sptr = Text::StrUOSInt(sptr, i);
-				sptr = Text::StrConcat(sptr, (const UTF8Char*)" Type");
+				sptr = Text::StrConcatC(sptr, UTF8STRC(" Type"));
 				switch ((UInt32)readInt32(&progHdr[j]))
 				{
 				case 0:
@@ -822,49 +822,49 @@ IO::ParsedObject *Parser::FileParser::ELFParser::ParseFile(IO::IStreamData *fd, 
 					exef->AddProp(sbuff, (const UTF8Char*)"6 (PHdr)");
 					break;
 				default:
-					Text::StrHexVal32(Text::StrConcat(sbuff2, (const UTF8Char*)"0x"), (UInt32)readInt32(&progHdr[j]));
+					Text::StrHexVal32(Text::StrConcatC(sbuff2, UTF8STRC("0x")), (UInt32)readInt32(&progHdr[j]));
 					exef->AddProp(sbuff, sbuff2);
 					break;
 				}
-				sptr = Text::StrConcat(sbuff, (const UTF8Char*)"Program Header ");
+				sptr = Text::StrConcatC(sbuff, UTF8STRC("Program Header "));
 				sptr = Text::StrUOSInt(sptr, i);
-				sptr = Text::StrConcat(sptr, (const UTF8Char*)" Offset");
-				Text::StrHexVal32(Text::StrConcat(sbuff2, (const UTF8Char*)"0x"), (UInt32)readInt32(&progHdr[j + 4]));
+				sptr = Text::StrConcatC(sptr, UTF8STRC(" Offset"));
+				Text::StrHexVal32(Text::StrConcatC(sbuff2, UTF8STRC("0x")), (UInt32)readInt32(&progHdr[j + 4]));
 				exef->AddProp(sbuff, sbuff2);
 
-				sptr = Text::StrConcat(sbuff, (const UTF8Char*)"Program Header ");
+				sptr = Text::StrConcatC(sbuff, UTF8STRC("Program Header "));
 				sptr = Text::StrUOSInt(sptr, i);
-				sptr = Text::StrConcat(sptr, (const UTF8Char*)" Virtual Address");
-				Text::StrHexVal32(Text::StrConcat(sbuff2, (const UTF8Char*)"0x"), (UInt32)readInt32(&progHdr[j + 8]));
+				sptr = Text::StrConcatC(sptr, UTF8STRC(" Virtual Address"));
+				Text::StrHexVal32(Text::StrConcatC(sbuff2, UTF8STRC("0x")), (UInt32)readInt32(&progHdr[j + 8]));
 				exef->AddProp(sbuff, sbuff2);
 
-				sptr = Text::StrConcat(sbuff, (const UTF8Char*)"Program Header ");
+				sptr = Text::StrConcatC(sbuff, UTF8STRC("Program Header "));
 				sptr = Text::StrUOSInt(sptr, i);
-				sptr = Text::StrConcat(sptr, (const UTF8Char*)" Physical Address");
-				Text::StrHexVal32(Text::StrConcat(sbuff2, (const UTF8Char*)"0x"), (UInt32)readInt32(&progHdr[j + 12]));
+				sptr = Text::StrConcatC(sptr, UTF8STRC(" Physical Address"));
+				Text::StrHexVal32(Text::StrConcatC(sbuff2, UTF8STRC("0x")), (UInt32)readInt32(&progHdr[j + 12]));
 				exef->AddProp(sbuff, sbuff2);
 
-				sptr = Text::StrConcat(sbuff, (const UTF8Char*)"Program Header ");
+				sptr = Text::StrConcatC(sbuff, UTF8STRC("Program Header "));
 				sptr = Text::StrUOSInt(sptr, i);
-				sptr = Text::StrConcat(sptr, (const UTF8Char*)" File Size");
+				sptr = Text::StrConcatC(sptr, UTF8STRC(" File Size"));
 				Text::StrUInt32(sbuff2, (UInt32)readInt32(&progHdr[j + 16]));
 				exef->AddProp(sbuff, sbuff2);
 
-				sptr = Text::StrConcat(sbuff, (const UTF8Char*)"Program Header ");
+				sptr = Text::StrConcatC(sbuff, UTF8STRC("Program Header "));
 				sptr = Text::StrUOSInt(sptr, i);
-				sptr = Text::StrConcat(sptr, (const UTF8Char*)" Memory Size");
+				sptr = Text::StrConcatC(sptr, UTF8STRC(" Memory Size"));
 				Text::StrUInt32(sbuff2, (UInt32)readInt32(&progHdr[j + 20]));
 				exef->AddProp(sbuff, sbuff2);
 
-				sptr = Text::StrConcat(sbuff, (const UTF8Char*)"Program Header ");
+				sptr = Text::StrConcatC(sbuff, UTF8STRC("Program Header "));
 				sptr = Text::StrUOSInt(sptr, i);
-				sptr = Text::StrConcat(sptr, (const UTF8Char*)" Flags");
-				Text::StrHexVal32(Text::StrConcat(sbuff2, (const UTF8Char*)"0x"), (UInt32)readInt32(&progHdr[j + 24]));
+				sptr = Text::StrConcatC(sptr, UTF8STRC(" Flags"));
+				Text::StrHexVal32(Text::StrConcatC(sbuff2, UTF8STRC("0x")), (UInt32)readInt32(&progHdr[j + 24]));
 				exef->AddProp(sbuff, sbuff2);
 
-				sptr = Text::StrConcat(sbuff, (const UTF8Char*)"Program Header ");
+				sptr = Text::StrConcatC(sbuff, UTF8STRC("Program Header "));
 				sptr = Text::StrUOSInt(sptr, i);
-				sptr = Text::StrConcat(sptr, (const UTF8Char*)" Align");
+				sptr = Text::StrConcatC(sptr, UTF8STRC(" Align"));
 				Text::StrUInt32(sbuff2, (UInt32)readInt32(&progHdr[j + 28]));
 				exef->AddProp(sbuff, sbuff2);
 
@@ -892,23 +892,23 @@ IO::ParsedObject *Parser::FileParser::ELFParser::ParseFile(IO::IStreamData *fd, 
 			j = 0;
 			while (i < shCnt)
 			{
-				sptr = Text::StrConcat(sbuff, (const UTF8Char*)"Section Header ");
+				sptr = Text::StrConcatC(sbuff, UTF8STRC("Section Header "));
 				sptr = Text::StrUOSInt(sptr, i);
-				sptr = Text::StrConcat(sptr, (const UTF8Char*)" Name Offset");
-				Text::StrHexVal32(Text::StrConcat(sbuff2, (const UTF8Char*)"0x"), (UInt32)readInt32(&secHdr[j + 0]));
+				sptr = Text::StrConcatC(sptr, UTF8STRC(" Name Offset"));
+				Text::StrHexVal32(Text::StrConcatC(sbuff2, UTF8STRC("0x")), (UInt32)readInt32(&secHdr[j + 0]));
 				exef->AddProp(sbuff, sbuff2);
 
 				if (progHdr)
 				{
-					sptr = Text::StrConcat(sbuff, (const UTF8Char*)"Section Header ");
+					sptr = Text::StrConcatC(sbuff, UTF8STRC("Section Header "));
 					sptr = Text::StrUOSInt(sptr, i);
-					sptr = Text::StrConcat(sptr, (const UTF8Char*)" Name Offset");
+					sptr = Text::StrConcatC(sptr, UTF8STRC(" Name Offset"));
 					exef->AddProp(sbuff, &progHdr[readInt32(&secHdr[j + 0])]);
 				}
 
-				sptr = Text::StrConcat(sbuff, (const UTF8Char*)"Section Header ");
+				sptr = Text::StrConcatC(sbuff, UTF8STRC("Section Header "));
 				sptr = Text::StrUOSInt(sptr, i);
-				sptr = Text::StrConcat(sptr, (const UTF8Char*)" Type");
+				sptr = Text::StrConcatC(sptr, UTF8STRC(" Type"));
 				switch ((UInt32)readInt32(&secHdr[j + 4]))
 				{
 				case 0:
@@ -966,56 +966,56 @@ IO::ParsedObject *Parser::FileParser::ELFParser::ParseFile(IO::IStreamData *fd, 
 					exef->AddProp(sbuff, (const UTF8Char*)"19 (Number of defined types)");
 					break;
 				default:
-					Text::StrHexVal32(Text::StrConcat(sbuff2, (const UTF8Char*)"0x"), (UInt32)readInt32(&secHdr[j + 4]));
+					Text::StrHexVal32(Text::StrConcatC(sbuff2, UTF8STRC("0x")), (UInt32)readInt32(&secHdr[j + 4]));
 					exef->AddProp(sbuff, sbuff2);
 					break;
 				}
 
-				sptr = Text::StrConcat(sbuff, (const UTF8Char*)"Section Header ");
+				sptr = Text::StrConcatC(sbuff, UTF8STRC("Section Header "));
 				sptr = Text::StrUOSInt(sptr, i);
-				sptr = Text::StrConcat(sptr, (const UTF8Char*)" Flags");
-				Text::StrHexVal32(Text::StrConcat(sbuff2, (const UTF8Char*)"0x"), (UInt32)readInt32(&secHdr[j + 8]));
+				sptr = Text::StrConcatC(sptr, UTF8STRC(" Flags"));
+				Text::StrHexVal32(Text::StrConcatC(sbuff2, UTF8STRC("0x")), (UInt32)readInt32(&secHdr[j + 8]));
 				exef->AddProp(sbuff, sbuff2);
 
-				sptr = Text::StrConcat(sbuff, (const UTF8Char*)"Section Header ");
+				sptr = Text::StrConcatC(sbuff, UTF8STRC("Section Header "));
 				sptr = Text::StrUOSInt(sptr, i);
-				sptr = Text::StrConcat(sptr, (const UTF8Char*)" Virtual Address");
-				Text::StrHexVal32(Text::StrConcat(sbuff2, (const UTF8Char*)"0x"), (UInt32)readInt32(&secHdr[j + 12]));
+				sptr = Text::StrConcatC(sptr, UTF8STRC(" Virtual Address"));
+				Text::StrHexVal32(Text::StrConcatC(sbuff2, UTF8STRC("0x")), (UInt32)readInt32(&secHdr[j + 12]));
 				exef->AddProp(sbuff, sbuff2);
 
-				sptr = Text::StrConcat(sbuff, (const UTF8Char*)"Section Header ");
+				sptr = Text::StrConcatC(sbuff, UTF8STRC("Section Header "));
 				sptr = Text::StrUOSInt(sptr, i);
-				sptr = Text::StrConcat(sptr, (const UTF8Char*)" Offset");
-				Text::StrHexVal32(Text::StrConcat(sbuff2, (const UTF8Char*)"0x"), (UInt32)readInt32(&secHdr[j + 16]));
+				sptr = Text::StrConcatC(sptr, UTF8STRC(" Offset"));
+				Text::StrHexVal32(Text::StrConcatC(sbuff2, UTF8STRC("0x")), (UInt32)readInt32(&secHdr[j + 16]));
 				exef->AddProp(sbuff, sbuff2);
 
-				sptr = Text::StrConcat(sbuff, (const UTF8Char*)"Section Header ");
+				sptr = Text::StrConcatC(sbuff, UTF8STRC("Section Header "));
 				sptr = Text::StrUOSInt(sptr, i);
-				sptr = Text::StrConcat(sptr, (const UTF8Char*)" Size");
+				sptr = Text::StrConcatC(sptr, UTF8STRC(" Size"));
 				Text::StrUInt32(sbuff2, (UInt32)readInt32(&secHdr[j + 20]));
 				exef->AddProp(sbuff, sbuff2);
 
-				sptr = Text::StrConcat(sbuff, (const UTF8Char*)"Section Header ");
+				sptr = Text::StrConcatC(sbuff, UTF8STRC("Section Header "));
 				sptr = Text::StrUOSInt(sptr, i);
-				sptr = Text::StrConcat(sptr, (const UTF8Char*)" Associated Section");
+				sptr = Text::StrConcatC(sptr, UTF8STRC(" Associated Section"));
 				Text::StrUInt32(sbuff2, (UInt32)readInt32(&secHdr[j + 24]));
 				exef->AddProp(sbuff, sbuff2);
 
-				sptr = Text::StrConcat(sbuff, (const UTF8Char*)"Section Header ");
+				sptr = Text::StrConcatC(sbuff, UTF8STRC("Section Header "));
 				sptr = Text::StrUOSInt(sptr, i);
-				sptr = Text::StrConcat(sptr, (const UTF8Char*)" Extra info");
+				sptr = Text::StrConcatC(sptr, UTF8STRC(" Extra info"));
 				Text::StrUInt32(sbuff2, (UInt32)readInt32(&secHdr[j + 28]));
 				exef->AddProp(sbuff, sbuff2);
 
-				sptr = Text::StrConcat(sbuff, (const UTF8Char*)"Section Header ");
+				sptr = Text::StrConcatC(sbuff, UTF8STRC("Section Header "));
 				sptr = Text::StrUOSInt(sptr, i);
-				sptr = Text::StrConcat(sptr, (const UTF8Char*)" Align");
+				sptr = Text::StrConcatC(sptr, UTF8STRC(" Align"));
 				Text::StrUInt32(sbuff2, (UInt32)readInt32(&secHdr[j + 32]));
 				exef->AddProp(sbuff, sbuff2);
 
-				sptr = Text::StrConcat(sbuff, (const UTF8Char*)"Section Header ");
+				sptr = Text::StrConcatC(sbuff, UTF8STRC("Section Header "));
 				sptr = Text::StrUOSInt(sptr, i);
-				sptr = Text::StrConcat(sptr, (const UTF8Char*)" Entry Size");
+				sptr = Text::StrConcatC(sptr, UTF8STRC(" Entry Size"));
 				Text::StrUInt32(sbuff2, (UInt32)readInt32(&secHdr[j + 36]));
 				exef->AddProp(sbuff, sbuff2);
 
@@ -1046,70 +1046,70 @@ IO::ParsedObject *Parser::FileParser::ELFParser::ParseFile(IO::IStreamData *fd, 
 							}
 							else
 							{
-								Text::StrOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"Symbol "), k);
+								Text::StrOSInt(Text::StrConcatC(sbuff, UTF8STRC("Symbol ")), k);
 								tmpVal = (UInt32)readInt32(&symTab[l]);
 								if (tmpVal == 0)
 								{
-									sptr = Text::StrConcat(sbuff2, (const UTF8Char*)"(null)");
+									sptr = Text::StrConcatC(sbuff2, UTF8STRC("(null)"));
 								}
 								else
 								{
 									sptr = Text::StrConcat(sbuff2, &strTab[tmpVal]);
 								}
-								sptr = Text::StrConcat(sptr, (const UTF8Char*)", addr = 0x");
+								sptr = Text::StrConcatC(sptr, UTF8STRC(", addr = 0x"));
 								sptr = Text::StrHexVal32(sptr, (UInt32)readInt32(&symTab[l + 4]));
-								sptr = Text::StrConcat(sptr, (const UTF8Char*)", size = ");
+								sptr = Text::StrConcatC(sptr, UTF8STRC(", size = "));
 								sptr = Text::StrUInt32(sptr, (UInt32)readInt32(&symTab[l + 8]));
-								sptr = Text::StrConcat(sptr, (const UTF8Char*)", bind = ");
+								sptr = Text::StrConcatC(sptr, UTF8STRC(", bind = "));
 								sptr = Text::StrInt32(sptr, symTab[l + 12] >> 4);
 								switch (symTab[l + 12] >> 4)
 								{
 								case 0:
-									sptr = Text::StrConcat(sptr, (const UTF8Char*)" (Local)");
+									sptr = Text::StrConcatC(sptr, UTF8STRC(" (Local)"));
 									break;
 								case 1:
-									sptr = Text::StrConcat(sptr, (const UTF8Char*)" (Global)");
+									sptr = Text::StrConcatC(sptr, UTF8STRC(" (Global)"));
 									break;
 								case 2:
-									sptr = Text::StrConcat(sptr, (const UTF8Char*)" (Weak)");
+									sptr = Text::StrConcatC(sptr, UTF8STRC(" (Weak)"));
 									break;
 								case 10:
-									sptr = Text::StrConcat(sptr, (const UTF8Char*)" (Lo OS)");
+									sptr = Text::StrConcatC(sptr, UTF8STRC(" (Lo OS)"));
 									break;
 								case 12:
-									sptr = Text::StrConcat(sptr, (const UTF8Char*)" (Hi OS)");
+									sptr = Text::StrConcatC(sptr, UTF8STRC(" (Hi OS)"));
 									break;
 								case 13:
-									sptr = Text::StrConcat(sptr, (const UTF8Char*)" (Lo Proc)");
+									sptr = Text::StrConcatC(sptr, UTF8STRC(" (Lo Proc)"));
 									break;
 								case 15:
-									sptr = Text::StrConcat(sptr, (const UTF8Char*)" (Hi Proc)");
+									sptr = Text::StrConcatC(sptr, UTF8STRC(" (Hi Proc)"));
 									break;
 								}
-								sptr = Text::StrConcat(sptr, (const UTF8Char*)", type = ");
+								sptr = Text::StrConcatC(sptr, UTF8STRC(", type = "));
 								sptr = Text::StrInt32(sptr, symTab[l + 12] & 15);
 								switch (symTab[l + 12] & 15)
 								{
 								case 0:
-									sptr = Text::StrConcat(sptr, (const UTF8Char*)" (No Type)");
+									sptr = Text::StrConcatC(sptr, UTF8STRC(" (No Type)"));
 									break;
 								case 1:
-									sptr = Text::StrConcat(sptr, (const UTF8Char*)" (Object)");
+									sptr = Text::StrConcatC(sptr, UTF8STRC(" (Object)"));
 									break;
 								case 2:
-									sptr = Text::StrConcat(sptr, (const UTF8Char*)" (Function)");
+									sptr = Text::StrConcatC(sptr, UTF8STRC(" (Function)"));
 									break;
 								case 3:
-									sptr = Text::StrConcat(sptr, (const UTF8Char*)" (Section)");
+									sptr = Text::StrConcatC(sptr, UTF8STRC(" (Section)"));
 									break;
 								case 4:
-									sptr = Text::StrConcat(sptr, (const UTF8Char*)" (File)");
+									sptr = Text::StrConcatC(sptr, UTF8STRC(" (File)"));
 									break;
 								case 5:
-									sptr = Text::StrConcat(sptr, (const UTF8Char*)" (Common)");
+									sptr = Text::StrConcatC(sptr, UTF8STRC(" (Common)"));
 									break;
 								case 6:
-									sptr = Text::StrConcat(sptr, (const UTF8Char*)" (TLS)");
+									sptr = Text::StrConcatC(sptr, UTF8STRC(" (TLS)"));
 									break;
 								}
 								exef->AddProp(sbuff, sbuff2);
@@ -1142,13 +1142,13 @@ IO::ParsedObject *Parser::FileParser::ELFParser::ParseFile(IO::IStreamData *fd, 
 		phCnt = (UInt16)readInt16(&hdr[56]);
 		shSize = (UInt16)readInt16(&hdr[58]);
 		shCnt = (UInt16)readInt16(&hdr[60]);
-		Text::StrHexVal64(Text::StrConcat(sbuff, (const UTF8Char*)"0x"), entryPt);
+		Text::StrHexVal64(Text::StrConcatC(sbuff, UTF8STRC("0x")), entryPt);
 		exef->AddProp((const UTF8Char*)"Entry Point", sbuff);
-		Text::StrHexVal64(Text::StrConcat(sbuff, (const UTF8Char*)"0x"), pht);
+		Text::StrHexVal64(Text::StrConcatC(sbuff, UTF8STRC("0x")), pht);
 		exef->AddProp((const UTF8Char*)"Program Header Table", sbuff);
-		Text::StrHexVal64(Text::StrConcat(sbuff, (const UTF8Char*)"0x"), sht);
+		Text::StrHexVal64(Text::StrConcatC(sbuff, UTF8STRC("0x")), sht);
 		exef->AddProp((const UTF8Char*)"Section Header Table", sbuff);
-		Text::StrHexVal32(Text::StrConcat(sbuff, (const UTF8Char*)"0x"), (UInt32)readInt32(&hdr[48]));
+		Text::StrHexVal32(Text::StrConcatC(sbuff, UTF8STRC("0x")), (UInt32)readInt32(&hdr[48]));
 		exef->AddProp((const UTF8Char*)"Flags", sbuff);
 		Text::StrUInt32(sbuff, (UInt16)readInt16(&hdr[52]));
 		exef->AddProp((const UTF8Char*)"Header Size", sbuff);
@@ -1172,9 +1172,9 @@ IO::ParsedObject *Parser::FileParser::ELFParser::ParseFile(IO::IStreamData *fd, 
 			j = 0;
 			while ((UOSInt)i < phCnt)
 			{
-				sptr = Text::StrConcat(sbuff, (const UTF8Char*)"Program Header ");
+				sptr = Text::StrConcatC(sbuff, UTF8STRC("Program Header "));
 				sptr = Text::StrUOSInt(sptr, i);
-				sptr = Text::StrConcat(sptr, (const UTF8Char*)" Type");
+				sptr = Text::StrConcatC(sptr, UTF8STRC(" Type"));
 				switch ((UInt32)readInt32(&progHdr[j]))
 				{
 				case 0:
@@ -1199,50 +1199,50 @@ IO::ParsedObject *Parser::FileParser::ELFParser::ParseFile(IO::IStreamData *fd, 
 					exef->AddProp(sbuff, (const UTF8Char*)"6 (PHdr)");
 					break;
 				default:
-					Text::StrHexVal32(Text::StrConcat(sbuff2, (const UTF8Char*)"0x"), (UInt32)readInt32(&progHdr[j]));
+					Text::StrHexVal32(Text::StrConcatC(sbuff2, UTF8STRC("0x")), (UInt32)readInt32(&progHdr[j]));
 					exef->AddProp(sbuff, sbuff2);
 					break;
 				}
 
-				sptr = Text::StrConcat(sbuff, (const UTF8Char*)"Program Header ");
+				sptr = Text::StrConcatC(sbuff, UTF8STRC("Program Header "));
 				sptr = Text::StrUOSInt(sptr, i);
-				sptr = Text::StrConcat(sptr, (const UTF8Char*)" Flags");
-				Text::StrHexVal32(Text::StrConcat(sbuff2, (const UTF8Char*)"0x"), (UInt32)readInt32(&progHdr[j + 4]));
+				sptr = Text::StrConcatC(sptr, UTF8STRC(" Flags"));
+				Text::StrHexVal32(Text::StrConcatC(sbuff2, UTF8STRC("0x")), (UInt32)readInt32(&progHdr[j + 4]));
 				exef->AddProp(sbuff, sbuff2);
 
-				sptr = Text::StrConcat(sbuff, (const UTF8Char*)"Program Header ");
+				sptr = Text::StrConcatC(sbuff, UTF8STRC("Program Header "));
 				sptr = Text::StrUOSInt(sptr, i);
-				sptr = Text::StrConcat(sptr, (const UTF8Char*)" Offset");
-				Text::StrHexVal64(Text::StrConcat(sbuff2, (const UTF8Char*)"0x"), (UInt64)readInt64(&progHdr[j + 8]));
+				sptr = Text::StrConcatC(sptr, UTF8STRC(" Offset"));
+				Text::StrHexVal64(Text::StrConcatC(sbuff2, UTF8STRC("0x")), (UInt64)readInt64(&progHdr[j + 8]));
 				exef->AddProp(sbuff, sbuff2);
 
-				sptr = Text::StrConcat(sbuff, (const UTF8Char*)"Program Header ");
+				sptr = Text::StrConcatC(sbuff, UTF8STRC("Program Header "));
 				sptr = Text::StrUOSInt(sptr, i);
-				sptr = Text::StrConcat(sptr, (const UTF8Char*)" Virtual Address");
-				Text::StrHexVal64(Text::StrConcat(sbuff2, (const UTF8Char*)"0x"), (UInt64)readInt64(&progHdr[j + 16]));
+				sptr = Text::StrConcatC(sptr, UTF8STRC(" Virtual Address"));
+				Text::StrHexVal64(Text::StrConcatC(sbuff2, UTF8STRC("0x")), (UInt64)readInt64(&progHdr[j + 16]));
 				exef->AddProp(sbuff, sbuff2);
 
-				sptr = Text::StrConcat(sbuff, (const UTF8Char*)"Program Header ");
+				sptr = Text::StrConcatC(sbuff, UTF8STRC("Program Header "));
 				sptr = Text::StrUOSInt(sptr, i);
-				sptr = Text::StrConcat(sptr, (const UTF8Char*)" Physical Address");
-				Text::StrHexVal64(Text::StrConcat(sbuff2, (const UTF8Char*)"0x"), (UInt64)readInt64(&progHdr[j + 24]));
+				sptr = Text::StrConcatC(sptr, UTF8STRC(" Physical Address"));
+				Text::StrHexVal64(Text::StrConcatC(sbuff2, UTF8STRC("0x")), (UInt64)readInt64(&progHdr[j + 24]));
 				exef->AddProp(sbuff, sbuff2);
 
-				sptr = Text::StrConcat(sbuff, (const UTF8Char*)"Program Header ");
+				sptr = Text::StrConcatC(sbuff, UTF8STRC("Program Header "));
 				sptr = Text::StrUOSInt(sptr, i);
-				sptr = Text::StrConcat(sptr, (const UTF8Char*)" File Size");
+				sptr = Text::StrConcatC(sptr, UTF8STRC(" File Size"));
 				Text::StrInt64(sbuff2, readInt64(&progHdr[j + 32]));
 				exef->AddProp(sbuff, sbuff2);
 
-				sptr = Text::StrConcat(sbuff, (const UTF8Char*)"Program Header ");
+				sptr = Text::StrConcatC(sbuff, UTF8STRC("Program Header "));
 				sptr = Text::StrUOSInt(sptr, i);
-				sptr = Text::StrConcat(sptr, (const UTF8Char*)" Memory Size");
+				sptr = Text::StrConcatC(sptr, UTF8STRC(" Memory Size"));
 				Text::StrInt64(sbuff2, readInt32(&progHdr[j + 40]));
 				exef->AddProp(sbuff, sbuff2);
 
-				sptr = Text::StrConcat(sbuff, (const UTF8Char*)"Program Header ");
+				sptr = Text::StrConcatC(sbuff, UTF8STRC("Program Header "));
 				sptr = Text::StrUOSInt(sptr, i);
-				sptr = Text::StrConcat(sptr, (const UTF8Char*)" Align");
+				sptr = Text::StrConcatC(sptr, UTF8STRC(" Align"));
 				Text::StrInt64(sbuff2, readInt64(&progHdr[j + 48]));
 				exef->AddProp(sbuff, sbuff2);
 
@@ -1261,15 +1261,15 @@ IO::ParsedObject *Parser::FileParser::ELFParser::ParseFile(IO::IStreamData *fd, 
 			j = 0;
 			while ((UOSInt)i < shCnt)
 			{
-				sptr = Text::StrConcat(sbuff, (const UTF8Char*)"Section Header ");
+				sptr = Text::StrConcatC(sbuff, UTF8STRC("Section Header "));
 				sptr = Text::StrUOSInt(sptr, i);
-				sptr = Text::StrConcat(sptr, (const UTF8Char*)" Name Offset");
-				Text::StrHexVal32(Text::StrConcat(sbuff2, (const UTF8Char*)"0x"), (UInt32)readInt32(&secHdr[j + 0]));
+				sptr = Text::StrConcatC(sptr, UTF8STRC(" Name Offset"));
+				Text::StrHexVal32(Text::StrConcatC(sbuff2, UTF8STRC("0x")), (UInt32)readInt32(&secHdr[j + 0]));
 				exef->AddProp(sbuff, sbuff2);
 
-				sptr = Text::StrConcat(sbuff, (const UTF8Char*)"Section Header ");
+				sptr = Text::StrConcatC(sbuff, UTF8STRC("Section Header "));
 				sptr = Text::StrUOSInt(sptr, i);
-				sptr = Text::StrConcat(sptr, (const UTF8Char*)" Type");
+				sptr = Text::StrConcatC(sptr, UTF8STRC(" Type"));
 				switch ((UInt32)readInt32(&secHdr[j + 4]))
 				{
 				case 0:
@@ -1327,56 +1327,56 @@ IO::ParsedObject *Parser::FileParser::ELFParser::ParseFile(IO::IStreamData *fd, 
 					exef->AddProp(sbuff, (const UTF8Char*)"19 (Number of defined types)");
 					break;
 				default:
-					Text::StrHexVal32(Text::StrConcat(sbuff2, (const UTF8Char*)"0x"), (UInt32)readInt32(&secHdr[j + 4]));
+					Text::StrHexVal32(Text::StrConcatC(sbuff2, UTF8STRC("0x")), (UInt32)readInt32(&secHdr[j + 4]));
 					exef->AddProp(sbuff, sbuff2);
 					break;
 				}
 
-				sptr = Text::StrConcat(sbuff, (const UTF8Char*)"Section Header ");
+				sptr = Text::StrConcatC(sbuff, UTF8STRC("Section Header "));
 				sptr = Text::StrUOSInt(sptr, i);
-				sptr = Text::StrConcat(sptr, (const UTF8Char*)" Flags");
-				Text::StrHexVal64(Text::StrConcat(sbuff2, (const UTF8Char*)"0x"), (UInt64)readInt64(&secHdr[j + 8]));
+				sptr = Text::StrConcatC(sptr, UTF8STRC(" Flags"));
+				Text::StrHexVal64(Text::StrConcatC(sbuff2, UTF8STRC("0x")), (UInt64)readInt64(&secHdr[j + 8]));
 				exef->AddProp(sbuff, sbuff2);
 
-				sptr = Text::StrConcat(sbuff, (const UTF8Char*)"Section Header ");
+				sptr = Text::StrConcatC(sbuff, UTF8STRC("Section Header "));
 				sptr = Text::StrUOSInt(sptr, i);
-				sptr = Text::StrConcat(sptr, (const UTF8Char*)" Virtual Address");
-				Text::StrHexVal64(Text::StrConcat(sbuff2, (const UTF8Char*)"0x"), (UInt64)readInt64(&secHdr[j + 16]));
+				sptr = Text::StrConcatC(sptr, UTF8STRC(" Virtual Address"));
+				Text::StrHexVal64(Text::StrConcatC(sbuff2, UTF8STRC("0x")), (UInt64)readInt64(&secHdr[j + 16]));
 				exef->AddProp(sbuff, sbuff2);
 
-				sptr = Text::StrConcat(sbuff, (const UTF8Char*)"Section Header ");
+				sptr = Text::StrConcatC(sbuff, UTF8STRC("Section Header "));
 				sptr = Text::StrUOSInt(sptr, i);
-				sptr = Text::StrConcat(sptr, (const UTF8Char*)" Offset");
-				Text::StrHexVal64(Text::StrConcat(sbuff2, (const UTF8Char*)"0x"), (UInt64)readInt64(&secHdr[j + 24]));
+				sptr = Text::StrConcatC(sptr, UTF8STRC(" Offset"));
+				Text::StrHexVal64(Text::StrConcatC(sbuff2, UTF8STRC("0x")), (UInt64)readInt64(&secHdr[j + 24]));
 				exef->AddProp(sbuff, sbuff2);
 
-				sptr = Text::StrConcat(sbuff, (const UTF8Char*)"Section Header ");
+				sptr = Text::StrConcatC(sbuff, UTF8STRC("Section Header "));
 				sptr = Text::StrUOSInt(sptr, i);
-				sptr = Text::StrConcat(sptr, (const UTF8Char*)" Size");
+				sptr = Text::StrConcatC(sptr, UTF8STRC(" Size"));
 				Text::StrUInt64(sbuff2, (UInt64)readInt64(&secHdr[j + 32]));
 				exef->AddProp(sbuff, sbuff2);
 
-				sptr = Text::StrConcat(sbuff, (const UTF8Char*)"Section Header ");
+				sptr = Text::StrConcatC(sbuff, UTF8STRC("Section Header "));
 				sptr = Text::StrUOSInt(sptr, i);
-				sptr = Text::StrConcat(sptr, (const UTF8Char*)" Associated Section");
+				sptr = Text::StrConcatC(sptr, UTF8STRC(" Associated Section"));
 				Text::StrUInt32(sbuff2, (UInt32)readInt32(&secHdr[j + 40]));
 				exef->AddProp(sbuff, sbuff2);
 
-				sptr = Text::StrConcat(sbuff, (const UTF8Char*)"Section Header ");
+				sptr = Text::StrConcatC(sbuff, UTF8STRC("Section Header "));
 				sptr = Text::StrUOSInt(sptr, i);
-				sptr = Text::StrConcat(sptr, (const UTF8Char*)" Extra info");
+				sptr = Text::StrConcatC(sptr, UTF8STRC(" Extra info"));
 				Text::StrUInt32(sbuff2, (UInt32)readInt32(&secHdr[j + 44]));
 				exef->AddProp(sbuff, sbuff2);
 
-				sptr = Text::StrConcat(sbuff, (const UTF8Char*)"Section Header ");
+				sptr = Text::StrConcatC(sbuff, UTF8STRC("Section Header "));
 				sptr = Text::StrUOSInt(sptr, i);
-				sptr = Text::StrConcat(sptr, (const UTF8Char*)" Align");
+				sptr = Text::StrConcatC(sptr, UTF8STRC(" Align"));
 				Text::StrUInt64(sbuff2, (UInt64)readInt64(&secHdr[j + 48]));
 				exef->AddProp(sbuff, sbuff2);
 
-				sptr = Text::StrConcat(sbuff, (const UTF8Char*)"Section Header ");
+				sptr = Text::StrConcatC(sbuff, UTF8STRC("Section Header "));
 				sptr = Text::StrUOSInt(sptr, i);
-				sptr = Text::StrConcat(sptr, (const UTF8Char*)" Entry Size");
+				sptr = Text::StrConcatC(sptr, UTF8STRC(" Entry Size"));
 				Text::StrUInt64(sbuff2, (UInt64)readInt64(&secHdr[j + 56]));
 				exef->AddProp(sbuff, sbuff2);
 

@@ -97,7 +97,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnStartClicked(void *userOb
 		{
 			DEL_CLASS(me->client);
 			me->client = 0;
-			UI::MessageDialog::ShowDialog((const UTF8Char *)"Error in communicating with server", (const UTF8Char *)"Error", me);
+			UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in communicating with server", (const UTF8Char*)"Error", me);
 			return;
 		}
 	}

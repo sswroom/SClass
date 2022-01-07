@@ -154,7 +154,7 @@ DB::DBTool *DB::DBManager::OpenConn(const UTF8Char *connStr, IO::LogTool *log, N
 	DB::DBTool *db;
 	if (Text::StrStartsWith(connStr, (const UTF8Char*)"odbc:"))
 	{
-		if (Text::StrStartsWith(connStr + 5, (const UTF8Char *)"DSN="))
+		if (Text::StrStartsWith(connStr + 5, (const UTF8Char*)"DSN="))
 		{
 			Text::StringBuilderUTF8 sb;
 			const UTF8Char *dsn = 0;
@@ -168,7 +168,7 @@ DB::DBTool *DB::DBManager::OpenConn(const UTF8Char *connStr, IO::LogTool *log, N
 			while (true)
 			{
 				cnt = Text::StrSplit(sarr, 2, sarr[1], ';');
-				if (Text::StrStartsWithICase(sarr[0], (const UTF8Char *)"DSN="))
+				if (Text::StrStartsWithICase(sarr[0], (const UTF8Char*)"DSN="))
 				{
 					SDEL_TEXT(dsn);
 					dsn = Text::StrCopyNew(sarr[0] + 4);
@@ -229,7 +229,7 @@ DB::DBTool *DB::DBManager::OpenConn(const UTF8Char *connStr, IO::LogTool *log, N
 		while (true)
 		{
 			cnt = Text::StrSplit(sarr, 2, sarr[1], ';');
-			if (Text::StrStartsWithICase(sarr[0], (const UTF8Char *)"SERVER="))
+			if (Text::StrStartsWithICase(sarr[0], (const UTF8Char*)"SERVER="))
 			{
 				SDEL_TEXT(server);
 				server = Text::StrCopyNew(sarr[0] + 7);
@@ -324,11 +324,11 @@ DB::DBTool *DB::DBManager::OpenConn(const UTF8Char *connStr, IO::LogTool *log, N
 		while (true)
 		{
 			cnt = Text::StrSplit(sarr, 2, sarr[1], ';');
-			if (Text::StrStartsWithICase(sarr[0], (const UTF8Char *)"SERVER="))
+			if (Text::StrStartsWithICase(sarr[0], (const UTF8Char*)"SERVER="))
 			{
 				Net::SocketUtil::GetIPAddr(sarr[0] + 7, &addr);
 			}
-			else if (Text::StrStartsWithICase(sarr[0], (const UTF8Char *)"PORT="))
+			else if (Text::StrStartsWithICase(sarr[0], (const UTF8Char*)"PORT="))
 			{
 				Text::StrToUInt16(sarr[0] + 5, &port);
 			}

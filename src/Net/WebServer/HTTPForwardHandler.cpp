@@ -135,11 +135,11 @@ Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(Net::WebServer::IWebRequ
 		{
 			if (req->IsSecure())
 			{
-				cli->AddHeader((const UTF8Char *)"X-Forwarded-Proto", (const UTF8Char*)"https");
+				cli->AddHeader((const UTF8Char*)"X-Forwarded-Proto", (const UTF8Char*)"https");
 			}
 			else
 			{
-				cli->AddHeader((const UTF8Char *)"X-Forwarded-Proto", (const UTF8Char*)"http");
+				cli->AddHeader((const UTF8Char*)"X-Forwarded-Proto", (const UTF8Char*)"http");
 			}
 		}
 		if (fwdSsl == 0)

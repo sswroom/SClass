@@ -23,28 +23,28 @@ UInt8 *DDCReader_GetMonitorEDID(void *hMon, UOSInt *edidSizeRet)
 	IO::Path::FindFileSession *sess2;
 	IO::Path::FindFileSession *sess3;
 	IO::Path::PathType pt;
-	sptr = Text::StrConcat(sbuff, (const UTF8Char*)"/sys/devices/pci0000:00/");
-	Text::StrConcat(sptr, IO::Path::ALL_FILES);
+	sptr = Text::StrConcatC(sbuff, UTF8STRC("/sys/devices/pci0000:00/"));
+	Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
 	sess = IO::Path::FindFile(sbuff);
 	if (sess)
 	{
 		while ((sptr2 = IO::Path::FindNextFile(sptr, sess, 0, &pt, 0)) != 0)
 		{
-			Text::StrConcat(sptr2, (const UTF8Char*)"/drm");
+			Text::StrConcatC(sptr2, UTF8STRC("/drm"));
 			if (sptr[0] != '0')
 			{
 
 			}
 			else if (IO::Path::GetPathType(sbuff) == IO::Path::PathType::Directory)
 			{
-				sptr2 = Text::StrConcat(sptr2, (const UTF8Char*)"/drm/card0/");
-				Text::StrConcat(sptr2, (const UTF8Char*)"card0-*");
+				sptr2 = Text::StrConcatC(sptr2, UTF8STRC("/drm/card0/"));
+				Text::StrConcatC(sptr2, UTF8STRC("card0-*"));
 				sess2 = IO::Path::FindFile(sbuff);
 				if (sess2)
 				{
 					while ((sptr3 = IO::Path::FindNextFile(sptr2, sess2, 0, &pt, 0)) != 0)
 					{
-						sptr3 = Text::StrConcat(sptr3, (const UTF8Char*)"/edid");
+						sptr3 = Text::StrConcatC(sptr3, UTF8STRC("/edid"));
 						NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 						if (!fs->IsError())
 						{
@@ -68,7 +68,7 @@ UInt8 *DDCReader_GetMonitorEDID(void *hMon, UOSInt *edidSizeRet)
 			else
 			{
 				*sptr2++ = IO::Path::PATH_SEPERATOR;
-				Text::StrConcat(sptr2, IO::Path::ALL_FILES);
+				Text::StrConcatC(sptr2, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
 				sess2 = IO::Path::FindFile(sbuff);
 				if (sess2)
 				{
@@ -76,14 +76,14 @@ UInt8 *DDCReader_GetMonitorEDID(void *hMon, UOSInt *edidSizeRet)
 					{
 						if (sptr2[0] == '0')
 						{
-							sptr3 = Text::StrConcat(sptr3, (const UTF8Char*)"/drm/card0/");
-							Text::StrConcat(sptr3, (const UTF8Char*)"card0-*");
+							sptr3 = Text::StrConcatC(sptr3, UTF8STRC("/drm/card0/"));
+							Text::StrConcatC(sptr3, UTF8STRC("card0-*"));
 							sess3 = IO::Path::FindFile(sbuff);
 							if (sess3)
 							{
 								while ((sptr4 = IO::Path::FindNextFile(sptr3, sess3, 0, &pt, 0)) != 0)
 								{
-									sptr4 = Text::StrConcat(sptr4, (const UTF8Char*)"/edid");
+									sptr4 = Text::StrConcatC(sptr4, UTF8STRC("/edid"));
 									NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 									if (!fs->IsError())
 									{
@@ -216,28 +216,28 @@ UOSInt Media::DDCReader::CreateDDCReaders(Data::ArrayList<DDCReader*> *readerLis
 	IO::Path::FindFileSession *sess2;
 	IO::Path::FindFileSession *sess3;
 	IO::Path::PathType pt;
-	sptr = Text::StrConcat(sbuff, (const UTF8Char*)"/sys/devices/pci0000:00/");
-	Text::StrConcat(sptr, IO::Path::ALL_FILES);
+	sptr = Text::StrConcatC(sbuff, UTF8STRC("/sys/devices/pci0000:00/"));
+	Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
 	sess = IO::Path::FindFile(sbuff);
 	if (sess)
 	{
 		while ((sptr2 = IO::Path::FindNextFile(sptr, sess, 0, &pt, 0)) != 0)
 		{
-			Text::StrConcat(sptr2, (const UTF8Char*)"/drm");
+			Text::StrConcatC(sptr2, UTF8STRC("/drm"));
 			if (sptr[0] != '0')
 			{
 
 			}
 			else if (IO::Path::GetPathType(sbuff) == IO::Path::PathType::Directory)
 			{
-				sptr2 = Text::StrConcat(sptr2, (const UTF8Char*)"/drm/card0/");
-				Text::StrConcat(sptr2, (const UTF8Char*)"card0-*");
+				sptr2 = Text::StrConcatC(sptr2, UTF8STRC("/drm/card0/"));
+				Text::StrConcatC(sptr2, UTF8STRC("card0-*"));
 				sess2 = IO::Path::FindFile(sbuff);
 				if (sess2)
 				{
 					while ((sptr3 = IO::Path::FindNextFile(sptr2, sess2, 0, &pt, 0)) != 0)
 					{
-						sptr3 = Text::StrConcat(sptr3, (const UTF8Char*)"/edid");
+						sptr3 = Text::StrConcatC(sptr3, UTF8STRC("/edid"));
 						NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 						if (!fs->IsError())
 						{
@@ -257,7 +257,7 @@ UOSInt Media::DDCReader::CreateDDCReaders(Data::ArrayList<DDCReader*> *readerLis
 			else
 			{
 				*sptr2++ = IO::Path::PATH_SEPERATOR;
-				Text::StrConcat(sptr2, IO::Path::ALL_FILES);
+				Text::StrConcatC(sptr2, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
 				sess2 = IO::Path::FindFile(sbuff);
 				if (sess2)
 				{
@@ -265,14 +265,14 @@ UOSInt Media::DDCReader::CreateDDCReaders(Data::ArrayList<DDCReader*> *readerLis
 					{
 						if (sptr2[0] == '0')
 						{
-							sptr3 = Text::StrConcat(sptr3, (const UTF8Char*)"/drm/card0/");
-							Text::StrConcat(sptr3, (const UTF8Char*)"card0-*");
+							sptr3 = Text::StrConcatC(sptr3, UTF8STRC("/drm/card0/"));
+							Text::StrConcatC(sptr3, UTF8STRC("card0-*"));
 							sess3 = IO::Path::FindFile(sbuff);
 							if (sess3)
 							{
 								while ((sptr4 = IO::Path::FindNextFile(sptr3, sess3, 0, &pt, 0)) != 0)
 								{
-									sptr4 = Text::StrConcat(sptr4, (const UTF8Char*)"/edid");
+									sptr4 = Text::StrConcatC(sptr4, UTF8STRC("/edid"));
 									NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 									if (!fs->IsError())
 									{

@@ -28,9 +28,9 @@ void __stdcall Net::MQTTBroker::OnClientEvent(Net::TCPClient *cli, void *userObj
 		{
 			UTF8Char sbuff[256];
 			UTF8Char *sptr;
-			sptr = Text::StrConcat(sbuff, (const UTF8Char*)"Client ");
+			sptr = Text::StrConcatC(sbuff, UTF8STRC("Client "));
 			sptr = cli->GetRemoteName(sptr);
-			sptr = Text::StrConcat(sptr, (const UTF8Char*)" disconnect");
+			sptr = Text::StrConcatC(sptr, UTF8STRC(" disconnect"));
 			me->log->LogMessageC(sbuff, (UOSInt)(sptr - sbuff), IO::ILogHandler::LOG_LEVEL_ACTION);
 		}
 		me->protoHdlr->DeleteStreamData(cli, data->cliData);
@@ -143,13 +143,13 @@ UInt32 __stdcall Net::MQTTBroker::SysInfoThread(void *userObj)
 	NEW_CLASS(dt, Data::DateTime());
 
 	dt->SetCurrTimeUTC();
-	i = (UOSInt)(dt->ToString(Text::StrConcat(sbuff, (const UTF8Char*)"SMQTT "), "yyyyMMdd") - sbuff);
+	i = (UOSInt)(dt->ToString(Text::StrConcatC(sbuff, UTF8STRC("SMQTT ")), "yyyyMMdd") - sbuff);
 	me->UpdateTopic((const UTF8Char*)"$SYS/broker/version", sbuff, i, true);
 	me->sysInfoRunning = true;
 	while (!me->sysInfoToStop)
 	{
 		dt->SetCurrTimeUTC();
-		i = (UOSInt)(Text::StrConcat(Text::StrInt64(sbuff, (dt->ToTicks() - me->infoStartTime) / 1000), (const UTF8Char*)" seconds") - sbuff);
+		i = (UOSInt)(Text::StrConcatC(Text::StrInt64(sbuff, (dt->ToTicks() - me->infoStartTime) / 1000), UTF8STRC(" seconds")) - sbuff);
 		me->UpdateTopic((const UTF8Char*)"$SYS/broker/uptime", sbuff, i, true);
 
 		i = (UOSInt)(Text::StrInt64(sbuff, me->infoTotalRecv) - sbuff);

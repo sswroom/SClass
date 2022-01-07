@@ -536,6 +536,7 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(void *userObj)
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	UTF8Char sbuff2[128];
+	UTF8Char *sptr2;
 	UInt8 *ptrCurr;
 	UInt8 *ptrEnd;
 	OSInt i;
@@ -731,22 +732,22 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(void *userObj)
 									}
 									if (cliCap & Net::MySQLUtil::CLIENT_PLUGIN_AUTH)
 									{
-										ptrCurr = Text::StrConcat(ptrCurr, (const UTF8Char*)"mysql_native_password") + 1;
+										ptrCurr = Text::StrConcatC(ptrCurr, UTF8STRC("mysql_native_password")) + 1;
 									}
 
 									if (cliCap & Net::MySQLUtil::CLIENT_CONNECT_ATTRS)
 									{
 										sptr = sbuff;
-										sptr = Net::MySQLUtil::AppendLenencStr(sptr, (const UTF8Char*)"_client_name");
-										sptr = Net::MySQLUtil::AppendLenencStr(sptr, (const UTF8Char*)"MySQL TCP Client/SSWR");
-										sptr = Net::MySQLUtil::AppendLenencStr(sptr, (const UTF8Char*)"_client_version");
-										sptr = Net::MySQLUtil::AppendLenencStr(sptr, (const UTF8Char*)CLIVERSION);
-										sptr = Net::MySQLUtil::AppendLenencStr(sptr, (const UTF8Char*)"_os");
-										IO::OS::GetDistro(sbuff2);
-										sptr = Net::MySQLUtil::AppendLenencStr(sptr, sbuff2);
-										sptr = Net::MySQLUtil::AppendLenencStr(sptr, (const UTF8Char*)"_os_version");
-										IO::OS::GetVersion(sbuff2);
-										sptr = Net::MySQLUtil::AppendLenencStr(sptr, sbuff2);
+										sptr = Net::MySQLUtil::AppendLenencStrC(sptr, UTF8STRC("_client_name"));
+										sptr = Net::MySQLUtil::AppendLenencStrC(sptr, UTF8STRC("MySQL TCP Client/SSWR"));
+										sptr = Net::MySQLUtil::AppendLenencStrC(sptr, UTF8STRC("_client_version"));
+										sptr = Net::MySQLUtil::AppendLenencStrC(sptr, UTF8STRC(CLIVERSION));
+										sptr = Net::MySQLUtil::AppendLenencStrC(sptr, UTF8STRC("_os"));
+										sptr2 = IO::OS::GetDistro(sbuff2);
+										sptr = Net::MySQLUtil::AppendLenencStrC(sptr, sbuff2, (UOSInt)(sptr2 - sbuff2));
+										sptr = Net::MySQLUtil::AppendLenencStrC(sptr, UTF8STRC("_os_version"));
+										sptr2 = IO::OS::GetVersion(sbuff2);
+										sptr = Net::MySQLUtil::AppendLenencStrC(sptr, sbuff2, (UOSInt)(sptr2 - sbuff2));
 										ptrCurr = Net::MySQLUtil::AppendLenencInt(ptrCurr, (UOSInt)(sptr - sbuff));
 										MemCopyNO(ptrCurr, sbuff, (UOSInt)(sptr - sbuff));
 										ptrCurr += sptr - sbuff;

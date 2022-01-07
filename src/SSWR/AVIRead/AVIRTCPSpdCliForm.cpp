@@ -29,19 +29,19 @@ void __stdcall SSWR::AVIRead::AVIRTCPSpdCliForm::OnConnClick(void *userObj)
 	me->txtHost->GetText(&sb);
 	if (!me->core->GetSocketFactory()->DNSResolveIP(sb.ToString(), &addr))
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char *)"Host is not valid", (const UTF8Char *)"Error", me);
+		UI::MessageDialog::ShowDialog((const UTF8Char*)"Host is not valid", (const UTF8Char*)"Error", me);
 		return;
 	}
 	sb.ClearStr();
 	me->txtPort->GetText(&sb);
 	if (!sb.ToUInt16(&port))
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char *)"Port is not a number", (const UTF8Char *)"Error", me);
+		UI::MessageDialog::ShowDialog((const UTF8Char*)"Port is not a number", (const UTF8Char*)"Error", me);
 		return;
 	}
 	if (port <= 0 || port > 65535)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char *)"Port is out of range", (const UTF8Char *)"Error", me);
+		UI::MessageDialog::ShowDialog((const UTF8Char*)"Port is out of range", (const UTF8Char*)"Error", me);
 		return;
 	}
 	Net::TCPClient *cli;
@@ -49,7 +49,7 @@ void __stdcall SSWR::AVIRead::AVIRTCPSpdCliForm::OnConnClick(void *userObj)
 	if (cli->IsConnectError())
 	{
 		DEL_CLASS(cli);
-		UI::MessageDialog::ShowDialog((const UTF8Char *)"Error in connect to server", (const UTF8Char *)"Error", me);
+		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in connect to server", (const UTF8Char*)"Error", me);
 		return;
 	}
 	else

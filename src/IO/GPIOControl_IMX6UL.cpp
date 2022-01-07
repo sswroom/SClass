@@ -699,7 +699,7 @@ const UTF8Char *IO::GPIOControl::PinModeGetName(UOSInt pinNum, UOSInt pinState)
 		{
 			if (pinState == 3)
 			{
-				return (const UTF8Char *)"Input";
+				return (const UTF8Char*)"Input";
 			}
 		}
 	}

@@ -28,7 +28,7 @@ void __stdcall SSWR::AVIRead::AVIRPerformanceLogForm::OnStartClicked(void *userO
 	}
 	else
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char *)"Error in starting logger", (const UTF8Char *)"Error", me);
+		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in starting logger", (const UTF8Char*)"Error", me);
 	}
 }
 

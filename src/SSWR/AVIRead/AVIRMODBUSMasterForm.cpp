@@ -152,7 +152,7 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnTimerTick(void *userObj)
 				}
 				else
 				{
-					sptr = Text::StrConcat(sbuff, (const UTF8Char*)"-");
+					sptr = Text::StrConcatC(sbuff, UTF8STRC("-"));
 				}
 				break;
 			case IO::MODBUSController::DT_I32:
@@ -173,7 +173,7 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnTimerTick(void *userObj)
 				}
 				else
 				{
-					sptr = Text::StrConcat(sbuff, (const UTF8Char*)"-");
+					sptr = Text::StrConcatC(sbuff, UTF8STRC("-"));
 				}
 				break;
 			case IO::MODBUSController::DT_U16:
@@ -194,7 +194,7 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnTimerTick(void *userObj)
 				}
 				else
 				{
-					sptr = Text::StrConcat(sbuff, (const UTF8Char*)"-");
+					sptr = Text::StrConcatC(sbuff, UTF8STRC("-"));
 				}
 				break;
 			case IO::MODBUSController::DT_IU32:
@@ -215,7 +215,7 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnTimerTick(void *userObj)
 				}
 				else
 				{
-					sptr = Text::StrConcat(sbuff, (const UTF8Char*)"-");
+					sptr = Text::StrConcatC(sbuff, UTF8STRC("-"));
 				}
 				break;
 			case IO::MODBUSController::DT_IU16:
@@ -236,7 +236,7 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnTimerTick(void *userObj)
 				}
 				else
 				{
-					sptr = Text::StrConcat(sbuff, (const UTF8Char*)"-");
+					sptr = Text::StrConcatC(sbuff, UTF8STRC("-"));
 				}
 				break;
 			case IO::MODBUSController::DT_OS16:
@@ -265,11 +265,11 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnTimerTick(void *userObj)
 				}
 				else
 				{
-					sptr = Text::StrConcat(sbuff, (const UTF8Char*)"-");
+					sptr = Text::StrConcatC(sbuff, UTF8STRC("-"));
 				}
 				break;
 			default:
-				sptr = Text::StrConcat(sbuff, (const UTF8Char*)"-");
+				sptr = Text::StrConcatC(sbuff, UTF8STRC("-"));
 				break;
 			}
 			Text::StrConcat(sptr, Math::Unit::UnitBase::GetUnitShortName(entry->vt, entry->unit));

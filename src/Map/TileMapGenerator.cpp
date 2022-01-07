@@ -31,12 +31,12 @@ UTF8Char *Map::TileMapGenerator::GenFileName(UTF8Char *sbuff, Int32 x, Int32 y, 
 	sptr = Text::StrUInt32(sptr, scale);
 	*sptr++ = IO::Path::PATH_SEPERATOR;
 	sptr = Text::StrInt32(sptr, x >> 5);
-	sptr = Text::StrConcat(sptr, (const UTF8Char*)"_");
+	sptr = Text::StrConcatC(sptr, UTF8STRC("_"));
 	sptr = Text::StrInt32(sptr, y >> 5);
 	IO::Path::CreateDirectory(sbuff);
 	*sptr++ = IO::Path::PATH_SEPERATOR;
 	sptr = Text::StrInt32(sptr, x);
-	sptr = Text::StrConcat(sptr, (const UTF8Char*)"_");
+	sptr = Text::StrConcatC(sptr, UTF8STRC("_"));
 	sptr = Text::StrInt32(sptr, y);
 	sptr = Text::StrConcat(sptr, ext);
 	return sptr;
@@ -66,9 +66,9 @@ void Map::TileMapGenerator::AppendDBFile(IO::Writer *writer, Int32 x, Int32 y, U
 	if (!sfs->IsError())
 	{
 		NEW_CLASS(reader, IO::StreamReader(sfs, 65001));
-		sptr = Text::StrConcat(sbuff2, (const UTF8Char*)"3,");
+		sptr = Text::StrConcatC(sbuff2, UTF8STRC("3,"));
 		sptr = Text::StrInt32(sptr, xOfst);
-		sptr = Text::StrConcat(sptr, (const UTF8Char*)",");
+		sptr = Text::StrConcatC(sptr, UTF8STRC(","));
 		sptr = Text::StrInt32(sptr, yOfst);
 		writer->WriteLineC(sbuff2, (UOSInt)(sptr - sbuff2));
 

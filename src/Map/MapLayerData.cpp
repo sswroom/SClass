@@ -23,19 +23,19 @@ Map::MapLayerData::MapLayerData(const UTF8Char *filePath)
 	this->ciuFile = 0;
 	this->blkFile = 0;
 
-	Text::StrConcat(str, (const UTF8Char*)".cip");
+	Text::StrConcatC(str, UTF8STRC(".cip"));
 	NEW_CLASS(this->cipFileObj, FILEBUFFER(fileName));
 	this->cipFile = this->cipFileObj->GetPointer();
 
-	Text::StrConcat(str, (const UTF8Char*)".cix");
+	Text::StrConcatC(str, UTF8STRC(".cix"));
 	NEW_CLASS(this->cixFileObj, FILEBUFFER(fileName));
 	this->cixFile = this->cixFileObj->GetPointer();
 
-	Text::StrConcat(str, (const UTF8Char*)".ciu");
+	Text::StrConcatC(str, UTF8STRC(".ciu"));
 	NEW_CLASS(this->ciuFileObj, FILEBUFFER(fileName));
 	this->ciuFile = this->ciuFileObj->GetPointer();
 
-	Text::StrConcat(str, (const UTF8Char*)".blk");
+	Text::StrConcatC(str, UTF8STRC(".blk"));
 	NEW_CLASS(this->blkFileObj, FILEBUFFER(fileName));
 	this->blkFile = this->blkFileObj->GetPointer();
 }

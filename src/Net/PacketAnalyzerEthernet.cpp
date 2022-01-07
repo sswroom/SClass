@@ -310,7 +310,7 @@ void Net::PacketAnalyzerEthernet::PacketLinuxGetDetail(const UInt8 *packet, UOSI
 		vName = "IEEE802.11";
 		break;
 	}
-	frame->AddUIntName(frameOfst + 2, 2, "Link-Layer Device Type", v, (const UTF8Char *)vName);
+	frame->AddUIntName(frameOfst + 2, 2, "Link-Layer Device Type", v, (const UTF8Char*)vName);
 	UInt16 len = ReadMUInt16(&packet[4]);
 	frame->AddUInt(frameOfst + 4, 2, "Link-Layer Address Length", len);
 	if (len > 0)
@@ -803,7 +803,7 @@ void Net::PacketAnalyzerEthernet::PacketIPDataGetDetail(UInt8 protocol, const UI
 						UInt16 i = 0;
 						while (i < n)
 						{
-							Text::StrConcat(Text::StrUInt16(Text::StrConcat(sbuff, (const UTF8Char*)"Source Address["), i), (const UTF8Char*)"]");
+							Text::StrConcatC(Text::StrUInt16(Text::StrConcatC(sbuff, UTF8STRC("Source Address[")), i), UTF8STRC("]"));
 							frame->AddIPv4(frameOfst + 12 + (UOSInt)i * 4, (const Char*)sbuff, &packet[12 + i * 4]);
 							i++;
 						}
@@ -1423,7 +1423,7 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 					OSInt i = 0;
 					while (i < len)
 					{
-						Text::StrOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"DNS"), i >> 2);
+						Text::StrOSInt(Text::StrConcatC(sbuff, UTF8STRC("DNS")), i >> 2);
 						frame->AddIPv4(frameOfst + (UInt32)(currPtr - packet), (const Char*)sbuff, &currPtr[i]);
 						i += 4;
 					}
@@ -1475,7 +1475,7 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 					i = 0;
 					while (i < len)
 					{
-						Text::StrOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"Parameter Request "), i);
+						Text::StrOSInt(Text::StrConcatC(sbuff, UTF8STRC("Parameter Request ")), i);
 						frame->AddUIntName(frameOfst + (UInt32)(currPtr - packet + i), 1, (const Char*)sbuff, currPtr[i], DHCPOptionGetName(currPtr[i]));
 						i++;
 					}
@@ -1592,11 +1592,11 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 					len = Text::StrCharCnt(&packet[i]);
 					if (optId & 1)
 					{
-						Text::StrOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"Value"), 1 + (optId >> 1));
+						Text::StrOSInt(Text::StrConcatC(sbuff, UTF8STRC("Value")), 1 + (optId >> 1));
 					}
 					else
 					{
-						Text::StrOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"Option"), 1 + (optId >> 1));
+						Text::StrOSInt(Text::StrConcatC(sbuff, UTF8STRC("Option")), 1 + (optId >> 1));
 					}
 					frame->AddField(frameOfst + (UInt32)i, (UInt32)len + 1, sbuff, &packet[i]);
 					i += len + 1;
@@ -1701,7 +1701,7 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 			frame->AddHexBuff(frameOfst + 12, 4, "Reference ID", &packet[12], false);
 			Data::DateTime dt;
 			if (ReadNInt64(&packet[16]) == 0)
-				Text::StrConcat(sbuff, (const UTF8Char*)"0");
+				Text::StrConcatC(sbuff, UTF8STRC("0"));
 			else
 			{
 				Net::NTPServer::ReadTime(&packet[16], &dt);
@@ -1710,7 +1710,7 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 			}
 			frame->AddField(frameOfst + 16, 8, (const UTF8Char*)"Reference Timestamp", sbuff);
 			if (ReadNInt64(&packet[24]) == 0)
-				Text::StrConcat(sbuff, (const UTF8Char*)"0");
+				Text::StrConcatC(sbuff, UTF8STRC("0"));
 			else
 			{
 				Net::NTPServer::ReadTime(&packet[24], &dt);
@@ -1719,7 +1719,7 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 			}
 			frame->AddField(frameOfst + 24, 8, (const UTF8Char*)"Origin Timestamp", sbuff);
 			if (ReadNInt64(&packet[32]) == 0)
-				Text::StrConcat(sbuff, (const UTF8Char*)"0");
+				Text::StrConcatC(sbuff, UTF8STRC("0"));
 			else
 			{
 				Net::NTPServer::ReadTime(&packet[32], &dt);
@@ -1728,7 +1728,7 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 			}
 			frame->AddField(frameOfst + 32, 8, (const UTF8Char*)"Receive Timestamp", sbuff);
 			if (ReadNInt64(&packet[40]) == 0)
-				Text::StrConcat(sbuff, (const UTF8Char*)"0");
+				Text::StrConcatC(sbuff, UTF8STRC("0"));
 			else
 			{
 				Net::NTPServer::ReadTime(&packet[40], &dt);
@@ -1755,7 +1755,7 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 		frame->AddSubfield(frameOfst + 2, 2, (const UTF8Char*)"Response", sbuff);
 		Text::StrUInt16(sbuff, (UInt16)((packet[2] & 0x78) >> 3));
 		frame->AddSubfield(frameOfst + 2, 2, (const UTF8Char*)"OPCODE", sbuff);
-		Text::StrHexByte(Text::StrConcat(sbuff, (const UTF8Char*)"0x"), (UInt8)((ReadMUInt16(&packet[2]) & 0x7F0) >> 4));
+		Text::StrHexByte(Text::StrConcatC(sbuff, UTF8STRC("0x")), (UInt8)((ReadMUInt16(&packet[2]) & 0x7F0) >> 4));
 		frame->AddSubfield(frameOfst + 2, 2, (const UTF8Char*)"NMFLAGS", sbuff);
 		Text::StrUInt16(sbuff, packet[3] & 0xf);
 		frame->AddSubfield(frameOfst + 2, 2, (const UTF8Char*)"RCODE", sbuff);
@@ -1847,14 +1847,14 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 					k = 0;
 					while (k < nName)
 					{
-						Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"Name"), k);
+						Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Name")), k);
 						MemCopyNO(sbuff2, &packet[i + 1 + k * 18], 15);
 						sbuff2[15] = 0;
 						Text::StrRTrim(sbuff2);
 						frame->AddField(frameOfst + (UInt32)i + 1 + (UInt32)k * 18, 15, sbuff, sbuff2);
-						Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"Type"), k);
+						Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Type")), k);
 						frame->AddUIntName(frameOfst + i + 1 + k * 18 + 15, 1, (const Char*)sbuff, packet[i + 1 + k * 18 + 15], Net::NetBIOSUtil::NameTypeGetName(packet[i + 1 + k * 18 + 15]));
-						Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"Flags"), k);
+						Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Flags")), k);
 						frame->AddHex16(frameOfst + i + 1 + k * 18 + 16, (const Char*)sbuff, ReadMUInt16(&packet[i + 1 + k * 18 + 16]));
 						k++;
 					}

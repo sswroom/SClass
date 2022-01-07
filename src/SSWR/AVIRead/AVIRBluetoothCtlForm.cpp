@@ -34,7 +34,7 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothCtlForm::OnStoreListClicked(void *use
 	Data::DateTime dt;
 	IO::BTDevLog btLog;
 	dt.SetCurrTimeUTC();
-	Text::StrConcat(Text::StrInt64(sbuff, dt.ToTicks()), (const UTF8Char*)"bt.txt");
+	Text::StrConcatC(Text::StrInt64(sbuff, dt.ToTicks()), UTF8STRC("bt.txt"));
 	Sync::MutexUsage mutUsage;
 	btLog.AppendList(me->bt->GetPublicMap(&mutUsage));
 	mutUsage.EndUse();

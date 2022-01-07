@@ -307,7 +307,7 @@ void SSWR::DiscDB::DiscDBBurntDiscForm::UpdateType()
 			}
 			else
 			{
-				s = (const UTF8Char *)"";
+				s = (const UTF8Char*)"";
 			}
 			if (sbSeries.Equals(s))
 			{
@@ -376,7 +376,7 @@ UInt64 SSWR::DiscDB::DiscDBBurntDiscForm::SearchSubDir(const UTF8Char *absPath, 
 	sptr = Text::StrConcat(sbuff, absPath);
 	relPath = sptr - i;
 	*sptr++ = IO::Path::PATH_SEPERATOR;
-	Text::StrConcat(sptr, IO::Path::ALL_FILES);
+	Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
 	sess = IO::Path::FindFile(sbuff);
 	if (sess)
 	{
@@ -1114,9 +1114,9 @@ void __stdcall SSWR::DiscDB::DiscDBBurntDiscForm::OnBrandSelChg(void *userObj)
 	while (i < j)
 	{
 		discType = discList.GetItem(i);
-		sptr = Text::StrConcat(sbuff, (const UTF8Char*)"MID: ");
+		sptr = Text::StrConcatC(sbuff, UTF8STRC("MID: "));
 		sptr = Text::StrConcat(sptr, discType->mid);
-		sptr = Text::StrConcat(sptr, (const UTF8Char*)", ");
+		sptr = Text::StrConcatC(sptr, UTF8STRC(", "));
 		sptr = Text::StrConcat(sptr, discType->name);
 		me->lbDVDName->AddItem(sbuff, (void*)discType);
 

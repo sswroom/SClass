@@ -157,7 +157,7 @@ UTF8Char *Text::URLString::GetURLPath(UTF8Char *sbuff, const UTF8Char *url)
 	}
 	else
 	{
-		return Text::StrConcat(sbuff, (const UTF8Char*)"/");
+		return Text::StrConcatC(sbuff, UTF8STRC("/"));
 	}
 }
 
@@ -188,7 +188,7 @@ UTF8Char *Text::URLString::GetURLPathSvr(UTF8Char *sbuff, const UTF8Char *url)
 	}
 	else
 	{
-		return Text::StrConcat(sbuff, (const UTF8Char*)"/");
+		return Text::StrConcatC(sbuff, UTF8STRC("/"));
 	}
 }
 

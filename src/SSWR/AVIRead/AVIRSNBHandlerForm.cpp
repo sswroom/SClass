@@ -28,7 +28,7 @@ void __stdcall SSWR::AVIRead::AVIRSNBHandlerForm::OnTypeSelChg(void *userObj)
 	sptr = IO::Path::AppendPath(sbuff, (const UTF8Char*)"SNBImg");
 	*sptr++ = IO::Path::PATH_SEPERATOR;
 	sptr = Text::StrOSInt(sptr, val);
-	sptr = Text::StrConcat(sptr, (const UTF8Char*)".jpg");
+	sptr = Text::StrConcatC(sptr, UTF8STRC(".jpg"));
 
 	me->pbImage->SetImage(0);
 	SDEL_CLASS(me->simg);

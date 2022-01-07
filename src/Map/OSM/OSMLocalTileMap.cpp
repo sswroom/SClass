@@ -35,7 +35,7 @@
 	{
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 	}
-	Text::StrConcat(sptr, L"*.*");
+	Text::StrConcatC(sptr, UTF8STRC("*.*"));
 	sess = IO::Path::FindFile(sbuff);
 	if (sess)
 	{
@@ -57,7 +57,7 @@
 		maxXBlk = -1;
 		sptr = Text::StrInt32(sptr, this->maxLevel);
 		*sptr++ = IO::Path::PATH_SEPERATOR;
-		Text::StrConcat(sptr, L"*.*");
+		Text::StrConcatC(sptr, UTF8STRC("*.*"));
 		
 		sess = IO::Path::FindFile(sbuff);
 		if (sess)
@@ -87,7 +87,7 @@
 			maxYBlk = -1;
 			sptr = Text::StrInt32(sptr, minXBlk);
 			*sptr++ = IO::Path::PATH_SEPERATOR;
-			Text::StrConcat(sptr, L"*.png");
+			Text::StrConcatC(sptr, UTF8STRC("*.png"));
 
 			sess = IO::Path::FindFile(sbuff);
 			if (sess)
@@ -430,7 +430,7 @@ UTF8Char *Map::OSM::OSMLocalTileMap::GetImageURL(UTF8Char *sbuff, UOSInt level, 
 	Int32 imgX = (Int32)(imgId >> 32);
 	Int32 imgY = (Int32)(imgId & 0xffffffffLL);
 	UTF8Char *sptr;
-	sptr = Text::StrConcat(sbuff, (const UTF8Char*)"file:///");
+	sptr = Text::StrConcatC(sbuff, UTF8STRC("file:///"));
 	sptr = this->pkgFile->GetSourceName(sptr);
 	if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 		*sptr++ = IO::Path::PATH_SEPERATOR;
@@ -439,11 +439,11 @@ UTF8Char *Map::OSM::OSMLocalTileMap::GetImageURL(UTF8Char *sbuff, UOSInt level, 
 		Text::StrReplace(sbuff, '\\', '/');
 	}
 	sptr = Text::StrUOSInt(sptr, level);
-	sptr = Text::StrConcat(sptr, (const UTF8Char*)"/");
+	sptr = Text::StrConcatC(sptr, UTF8STRC("/"));
 	sptr = Text::StrInt32(sptr, imgX);
-	sptr = Text::StrConcat(sptr, (const UTF8Char*)"/");
+	sptr = Text::StrConcatC(sptr, UTF8STRC("/"));
 	sptr = Text::StrInt32(sptr, imgY);
-	sptr = Text::StrConcat(sptr, (const UTF8Char*)".png");
+	sptr = Text::StrConcatC(sptr, UTF8STRC(".png"));
 	return sptr;
 }
 
@@ -476,7 +476,7 @@ UTF8Char *Map::OSM::OSMLocalTileMap::GetImageURL(UTF8Char *sbuff, UOSInt level, 
 	sptr = Text::StrInt32(sptr, imgX);
 	*sptr++ = IO::Path::PATH_SEPERATOR;
 	sptr = Text::StrInt32(sptr, imgY);
-	sptr = Text::StrConcat(sptr, L".png");
+	sptr = Text::StrConcatC(sptr, UTF8STRC(".png"));
 	NEW_CLASS(fd, IO::StmData::FileData(filePath, false));
 	if (fd->GetDataSize() > 0)
 	{
@@ -526,7 +526,7 @@ IO::IStreamData *Map::OSM::OSMLocalTileMap::LoadTileImageData(UOSInt level, Int6
 		if (yPkg)
 		{
 			sptr = Text::StrInt32(u8buff, imgY);
-			sptr = Text::StrConcat(sptr, (const UTF8Char*)".png");
+			sptr = Text::StrConcatC(sptr, UTF8STRC(".png"));
 			fd = yPkg->GetItemStmData((UOSInt)yPkg->GetItemIndex(u8buff));
 			if (fd)
 			{
@@ -550,7 +550,7 @@ IO::IStreamData *Map::OSM::OSMLocalTileMap::LoadTileImageData(UOSInt level, Int6
 	sptr = Text::StrInt32(sptr, imgX);
 	*sptr++ = IO::Path::PATH_SEPERATOR;
 	sptr = Text::StrInt32(sptr, imgY);
-	sptr = Text::StrConcat(sptr, L".png");*/
+	sptr = Text::StrConcatC(sptr, UTF8STRC(".png"));*/
 }
 
 Bool Map::OSM::OSMLocalTileMap::GetTileBounds(UOSInt level, Int32 *minX, Int32 *minY, Int32 *maxX, Int32 *maxY)

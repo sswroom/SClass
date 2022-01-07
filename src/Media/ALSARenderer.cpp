@@ -539,7 +539,7 @@ Media::ALSARenderer::ALSARenderer(const UTF8Char *devName)
 			if (s)
 			{
 				UTF8Char sbuff[32];
-				s->ConcatTo(Text::StrConcat(sbuff, (const UTF8Char*)"hw:"));
+				s->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("hw:")));
 				this->devName = Text::StrCopyNew(sbuff);
 			}
 			DEL_CLASS(cfg);

@@ -441,7 +441,7 @@ SSWR::AVIRead::AVIRCertUtilForm::AVIRCertUtilForm(UI::GUIClientControl *parent, 
 	NEW_CLASS(this->btnSANClear, UI::GUIButton(ui, this, (const UTF8Char*)"Clear"));
 	this->btnSANClear->SetRect(304, 268, 75, 23, false);
 	this->btnSANClear->HandleButtonClick(OnSANClearClicked, this);
-	NEW_CLASS(this->btnCSRGenerate, UI::GUIButton(ui, this, (const UTF8Char *)"Generate CSR"));
+	NEW_CLASS(this->btnCSRGenerate, UI::GUIButton(ui, this, (const UTF8Char*)"Generate CSR"));
 	this->btnCSRGenerate->SetRect(104, 364, 150, 23, false);
 	this->btnCSRGenerate->HandleButtonClick(OnCSRGenerateClicked, this);
 	NEW_CLASS(this->btnSelfSignedCert, UI::GUIButton(ui, this, (const UTF8Char*)"Self-Signed Cert"));

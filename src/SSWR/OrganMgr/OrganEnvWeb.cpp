@@ -487,12 +487,12 @@ UOSInt SSWR::OrganMgr::OrganEnvWeb::GetGroupImages(Data::ArrayList<OrganImageIte
 				r->GetStr(5, &sb);
 				sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
 				r->GetStr(6, &sb);
-				u8ptr = Text::StrConcat(u8buff, sb.ToString());
+				u8ptr = Text::StrConcatC(u8buff, sb.ToString(), sb.GetLength());
 
 				exist = false;
 				if (!exist)
 				{
-					Text::StrConcat(u8ptr, (const UTF8Char*)".jpg");
+					Text::StrConcatC(u8ptr, UTF8STRC(".jpg"));
 					if (IO::Path::GetPathType(u8buff) == IO::Path::PathType::File)
 					{
 						exist = true;
@@ -502,7 +502,7 @@ UOSInt SSWR::OrganMgr::OrganEnvWeb::GetGroupImages(Data::ArrayList<OrganImageIte
 				}
 				if (!exist)
 				{
-					Text::StrConcat(u8ptr, (const UTF8Char*)".tif");
+					Text::StrConcatC(u8ptr, UTF8STRC(".tif"));
 					if (IO::Path::GetPathType(u8buff) == IO::Path::PathType::File)
 					{
 						exist = true;
@@ -512,7 +512,7 @@ UOSInt SSWR::OrganMgr::OrganEnvWeb::GetGroupImages(Data::ArrayList<OrganImageIte
 				}
 				if (!exist)
 				{
-					Text::StrConcat(u8ptr, (const UTF8Char*)".wav");
+					Text::StrConcatC(u8ptr, UTF8STRC(".wav"));
 					if (IO::Path::GetPathType(u8buff) == IO::Path::PathType::File)
 					{
 						exist = true;
@@ -522,7 +522,7 @@ UOSInt SSWR::OrganMgr::OrganEnvWeb::GetGroupImages(Data::ArrayList<OrganImageIte
 				}
 				if (!exist)
 				{
-					Text::StrConcat(u8ptr, (const UTF8Char*)".avi");
+					Text::StrConcatC(u8ptr, UTF8STRC(".avi"));
 					if (IO::Path::GetPathType(u8buff) == IO::Path::PathType::File)
 					{
 						exist = true;
@@ -532,7 +532,7 @@ UOSInt SSWR::OrganMgr::OrganEnvWeb::GetGroupImages(Data::ArrayList<OrganImageIte
 				}
 				if (!exist)
 				{
-					Text::StrConcat(u8ptr, (const UTF8Char*)".mts");
+					Text::StrConcatC(u8ptr, UTF8STRC(".mts"));
 					if (IO::Path::GetPathType(u8buff) == IO::Path::PathType::File)
 					{
 						exist = true;
@@ -542,7 +542,7 @@ UOSInt SSWR::OrganMgr::OrganEnvWeb::GetGroupImages(Data::ArrayList<OrganImageIte
 				}
 				if (!exist)
 				{
-					Text::StrConcat(u8ptr, (const UTF8Char*)".m2ts");
+					Text::StrConcatC(u8ptr, UTF8STRC(".m2ts"));
 					if (IO::Path::GetPathType(u8buff) == IO::Path::PathType::File)
 					{
 						exist = true;
@@ -636,7 +636,7 @@ UOSInt SSWR::OrganMgr::OrganEnvWeb::GetSpeciesImages(Data::ArrayList<OrganImageI
 			webFile = webFiles->GetItem(i);
 
 			NEW_CLASS(imgItem, OrganImageItem(0));
-			Text::StrConcat(Text::StrInt32(Text::StrConcat(sbuff, (const UTF8Char*)"web\\"), webFile->id), (const UTF8Char*)".jpg");
+			Text::StrConcatC(Text::StrInt32(Text::StrConcatC(sbuff, UTF8STRC("web\\")), webFile->id), UTF8STRC(".jpg"));
 			imgItem->SetDispName(sbuff);
 			imgItem->SetIsCoverPhoto(webFile->id == coverWId);
 
@@ -676,7 +676,7 @@ UOSInt SSWR::OrganMgr::OrganEnvWeb::GetSpeciesImages(Data::ArrayList<OrganImageI
 	*sptr++ = IO::Path::PATH_SEPERATOR;
 	sptr = Text::StrConcat(sptr, sp->GetDirName());
 	*sptr++ = IO::Path::PATH_SEPERATOR;
-	Text::StrConcat(sptr, IO::Path::ALL_FILES);
+	Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
 	sess = IO::Path::FindFile(sbuff);
 	if (sess)
 	{
@@ -739,7 +739,7 @@ UOSInt SSWR::OrganMgr::OrganEnvWeb::GetSpeciesImages(Data::ArrayList<OrganImageI
 					newFlags |= 1;
 					i++;
 				}
-				else if (Text::StrEqualsICase(&sptr[i], (const UTF8Char *)".TIF"))
+				else if (Text::StrEqualsICase(&sptr[i], (const UTF8Char*)".TIF"))
 				{
 					Media::EXIFData *exif = ParseTIFExif(sbuff);
 					NEW_CLASS(imgItem, OrganImageItem(this->userId));
@@ -766,7 +766,7 @@ UOSInt SSWR::OrganMgr::OrganEnvWeb::GetSpeciesImages(Data::ArrayList<OrganImageI
 					newFlags |= 1;
 					retCnt++;
 				}
-				else if (Text::StrEqualsICase(&sptr[i], (const UTF8Char *)".PCX") || Text::StrEqualsICase(&sptr[i], (const UTF8Char *)".GIF") || Text::StrEqualsICase(&sptr[i], (const UTF8Char *)".PNG"))
+				else if (Text::StrEqualsICase(&sptr[i], (const UTF8Char*)".PCX") || Text::StrEqualsICase(&sptr[i], (const UTF8Char*)".GIF") || Text::StrEqualsICase(&sptr[i], (const UTF8Char*)".PNG"))
 				{
 					NEW_CLASS(imgItem, OrganImageItem(this->userId));
 					imgItem->SetDispName(sptr);
@@ -778,7 +778,7 @@ UOSInt SSWR::OrganMgr::OrganEnvWeb::GetSpeciesImages(Data::ArrayList<OrganImageI
 					newFlags |= 1;
 					retCnt++;
 				}
-				else if (Text::StrEqualsICase(&sptr[i], (const UTF8Char *)".AVI") || Text::StrEqualsICase(&sptr[i], (const UTF8Char *)".MOV") || Text::StrEqualsICase(&sptr[i], (const UTF8Char *)".MTS") || Text::StrEqualsICase(&sptr[i], (const UTF8Char *)".M2TS"))
+				else if (Text::StrEqualsICase(&sptr[i], (const UTF8Char*)".AVI") || Text::StrEqualsICase(&sptr[i], (const UTF8Char*)".MOV") || Text::StrEqualsICase(&sptr[i], (const UTF8Char*)".MTS") || Text::StrEqualsICase(&sptr[i], (const UTF8Char*)".M2TS"))
 				{
 					NEW_CLASS(imgItem, OrganImageItem(this->userId));
 					imgItem->SetDispName(sptr);
@@ -790,7 +790,7 @@ UOSInt SSWR::OrganMgr::OrganEnvWeb::GetSpeciesImages(Data::ArrayList<OrganImageI
 					newFlags |= 2;
 					retCnt++;
 				}
-				else if (Text::StrEqualsICase(&sptr[i], (const UTF8Char *)".WAV"))
+				else if (Text::StrEqualsICase(&sptr[i], (const UTF8Char*)".WAV"))
 				{
 					NEW_CLASS(imgItem, OrganImageItem(this->userId));
 					imgItem->SetDispName(sptr);
@@ -806,7 +806,7 @@ UOSInt SSWR::OrganMgr::OrganEnvWeb::GetSpeciesImages(Data::ArrayList<OrganImageI
 		}
 		IO::Path::FindFileClose(sess);
 
-		Text::StrConcat(sptr, (const UTF8Char *)"web.txt");
+		Text::StrConcatC(sptr, UTF8STRC("web.txt"));
 		if (IO::Path::GetPathType(sbuff) == IO::Path::PathType::File)
 		{
 			Text::UTF8Reader *reader;
@@ -819,7 +819,7 @@ UOSInt SSWR::OrganMgr::OrganEnvWeb::GetSpeciesImages(Data::ArrayList<OrganImageI
 				if (Text::StrSplit(cols, 4, sbuff2, '\t') == 3)
 				{
 					NEW_CLASS(imgItem, OrganImageItem(0));
-					Text::StrConcat(Text::StrConcat(sptr, (const UTF8Char *)"web\\"), cols[0]);
+					Text::StrConcat(Text::StrConcatC(sptr, UTF8STRC("web\\")), cols[0]);
 					imgItem->SetDispName(sptr);
 					imgItem->SetIsCoverPhoto(false);
 					if (coverName)
@@ -2049,14 +2049,14 @@ SSWR::OrganMgr::OrganEnvWeb::FileStatus SSWR::OrganMgr::OrganEnvWeb::AddSpeciesW
 		{
 			*sptr2++ = IO::Path::PATH_SEPERATOR;
 		}
-		sptr2 = Text::StrConcat(sptr2, (const UTF8Char*)"WebFile");
+		sptr2 = Text::StrConcatC(sptr2, UTF8STRC("WebFile"));
 		*sptr2++ = IO::Path::PATH_SEPERATOR;
 		sptr2 = Text::StrInt32(sptr2, id >> 10);
 		IO::Path::CreateDirectory(sbuff2);
 
 		*sptr2++ = IO::Path::PATH_SEPERATOR;
 		sptr2 = Text::StrInt32(sptr2, id);
-		sptr2 = Text::StrConcat(sptr2, (const UTF8Char*)".jpg");
+		sptr2 = Text::StrConcatC(sptr2, UTF8STRC(".jpg"));
 
 		IO::StreamRecorder *recorder;
 		NEW_CLASS(recorder, IO::StreamRecorder(sbuff2));
@@ -2082,7 +2082,7 @@ SSWR::OrganMgr::OrganEnvWeb::FileStatus SSWR::OrganMgr::OrganEnvWeb::AddSpeciesW
 
 		if (webFileName)
 		{
-			Text::StrConcat(Text::StrInt32(Text::StrConcat(webFileName, (const UTF8Char*)"web\\"), id), (const UTF8Char*)".jpg");
+			Text::StrConcatC(Text::StrInt32(Text::StrConcatC(webFileName, UTF8STRC("web\\")), id), UTF8STRC(".jpg"));
 		}
 	}
 	else
@@ -2144,7 +2144,7 @@ SSWR::OrganMgr::OrganEnvWeb::FileStatus SSWR::OrganMgr::OrganEnvWeb::AddSpeciesW
 	i = Text::StrLastIndexOf(imgURL, '.');
 	if (Text::StrCharCnt(&imgURL[i + 1]) > 4)
 	{
-		Text::StrConcat(Text::StrHexVal32(fileName, crcVal), (const UTF8Char*)".jpg");
+		Text::StrConcatC(Text::StrHexVal32(fileName, crcVal), UTF8STRC(".jpg"));
 	}
 	else
 	{
@@ -2193,7 +2193,7 @@ SSWR::OrganMgr::OrganEnvWeb::FileStatus SSWR::OrganMgr::OrganEnvWeb::AddSpeciesW
 		{
 			fileName[i] = 0;
 		}
-		sptr = Text::StrConcat(sbuff, (const UTF8Char*)"web");
+		sptr = Text::StrConcatC(sbuff, UTF8STRC("web"));
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 		Text::StrConcat(sptr, fileName);
 		sp->SetPhoto(sbuff);
@@ -2201,7 +2201,7 @@ SSWR::OrganMgr::OrganEnvWeb::FileStatus SSWR::OrganMgr::OrganEnvWeb::AddSpeciesW
 	}
 	if (webFileName)
 	{
-		UTF8Char *u8ptr = Text::StrConcat(webFileName, (const UTF8Char*)"web");
+		UTF8Char *u8ptr = Text::StrConcatC(webFileName, UTF8STRC("web"));
 		*u8ptr++ = IO::Path::PATH_SEPERATOR;
 		Text::StrConcat(u8ptr, fileName);
 	}
@@ -2609,7 +2609,7 @@ Bool SSWR::OrganMgr::OrganEnvWeb::MoveImages(Data::ArrayList<OrganImages*> *imgL
 				{
 					moveWeb = true;
 					sptr[0] = IO::Path::PATH_SEPERATOR;
-					Text::StrConcat(sptr + 1, (const UTF8Char*)"web");
+					Text::StrConcatC(sptr + 1, UTF8STRC("web"));
 					IO::Path::CreateDirectory(sbuff);
 				}
 			}
@@ -2655,7 +2655,7 @@ Bool SSWR::OrganMgr::OrganEnvWeb::MoveImages(Data::ArrayList<OrganImages*> *imgL
 		const UTF8Char *name;
 		const UTF8Char *srcDir = 0;
 		sptr[0] = IO::Path::PATH_SEPERATOR;
-		Text::StrConcat(sptr + 1, (const UTF8Char*)"web.txt");
+		Text::StrConcatC(sptr + 1, UTF8STRC("web.txt"));
 		j = i;
 		i = 0;
 		NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::Append, IO::FileShare::DenyAll, IO::FileStream::BufferType::Normal));
@@ -3688,7 +3688,7 @@ void SSWR::OrganMgr::OrganEnvWeb::UpgradeFileStruct(OrganSpecies *sp)
 	*sptr++ = IO::Path::PATH_SEPERATOR;
 	sptr = Text::StrConcat(sptr, sp->GetDirName());
 	*sptr++ = IO::Path::PATH_SEPERATOR;
-	Text::StrConcat(sptr, IO::Path::ALL_FILES);
+	Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
 	sess = IO::Path::FindFile(sbuff);
 	if (sess)
 	{
@@ -3989,7 +3989,7 @@ Media::ImageList *SSWR::OrganMgr::OrganEnvWeb::ParseSpImage(OrganSpecies *sp)
 	*sptr++ = IO::Path::PATH_SEPERATOR;
 	sptr = Text::StrConcat(sptr, sp->GetDirName());
 	*sptr++ = IO::Path::PATH_SEPERATOR;
-	Text::StrConcat(Text::StrConcat(sptr, coverName), (const UTF8Char*)".*");
+	Text::StrConcatC(Text::StrConcat(sptr, coverName), UTF8STRC(".*"));
 	sess = IO::Path::FindFile(sbuff);
 	if (sess)
 	{
@@ -4239,7 +4239,7 @@ SSWR::OrganMgr::OrganGroup *SSWR::OrganMgr::OrganEnvWeb::SearchObject(const UTF8
 	else
 	{
 		sql.AppendCmdC(UTF8STRC("select id, group_type, eng_name, chi_name, description, parent_id, photo_group, photo_species, idKey, flags from groups where eng_name like "));
-		Text::StrConcat(Text::StrConcat(Text::StrConcat(sbuff, (const UTF8Char*)"%"), searchStr), (const UTF8Char*)"%");
+		Text::StrConcatC(Text::StrConcat(Text::StrConcatC(sbuff, UTF8STRC("%")), searchStr), UTF8STRC("%"));
 		sql.AppendStrUTF8(sbuff);
 		sql.AppendCmdC(UTF8STRC(" or chi_name like "));
 		sql.AppendStrUTF8(sbuff);
@@ -4639,7 +4639,7 @@ void SSWR::OrganMgr::OrganEnvWeb::UpgradeDB2()
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 		sptr = sp->dirName->ConcatTo(sptr);
 		*sptr++ = IO::Path::PATH_SEPERATOR;
-		Text::StrConcat(sptr, (const UTF8Char *)"web.txt");
+		Text::StrConcatC(sptr, UTF8STRC("web.txt"));
 		if (IO::Path::GetPathType(sbuff) == IO::Path::PathType::File)
 		{
 			allSucc = true;
@@ -4715,14 +4715,14 @@ void SSWR::OrganMgr::OrganEnvWeb::UpgradeDB2()
 							{
 								*sptr2++ = IO::Path::PATH_SEPERATOR;
 							}
-							sptr2 = Text::StrConcat(sptr2, (const UTF8Char*)"WebFile");
+							sptr2 = Text::StrConcatC(sptr2, UTF8STRC("WebFile"));
 							*sptr2++ = IO::Path::PATH_SEPERATOR;
 							sptr2 = Text::StrInt32(sptr2, id >> 10);
 							IO::Path::CreateDirectory(sbuff2);
 
 							*sptr2++ = IO::Path::PATH_SEPERATOR;
 							sptr2 = Text::StrInt32(sptr2, id);
-							sptr2 = Text::StrConcat(sptr2, (const UTF8Char*)".jpg");
+							sptr2 = Text::StrConcatC(sptr2, UTF8STRC(".jpg"));
 							if (!IO::FileUtil::MoveFile(sbuff, sbuff2, IO::FileUtil::FileExistAction::Fail, 0, 0))
 							{
 								allSucc = false;
@@ -4779,10 +4779,10 @@ void SSWR::OrganMgr::OrganEnvWeb::UpgradeDB2()
 
 			if (allSucc)
 			{
-				Text::StrConcat(sptr, (const UTF8Char *)"web");
+				Text::StrConcatC(sptr, UTF8STRC("web"));
 				if (IO::Path::RemoveDirectory(sbuff))
 				{
-					Text::StrConcat(sptr, (const UTF8Char *)"web.txt");
+					Text::StrConcatC(sptr, UTF8STRC("web.txt"));
 					IO::Path::DeleteFile(sbuff);
 				}
 			}
@@ -4832,13 +4832,13 @@ void SSWR::OrganMgr::OrganEnvWeb::ExportLite(const UTF8Char *folder)
 	DEL_CLASS(fs);
 	if (!valid)
 		return;
-	Text::StrConcatC(sptr, UTF8STRC("Cache");
+	Text::StrConcatC(sptr, UTF8STRC("Cache"));
 	IO::Path::CreateDirectory(sbuff);
 	Exporter::MDBExporter exporter;
-	Text::StrConcatC(sptr, UTF8STRC("OrganWeb.mdb");
+	Text::StrConcatC(sptr, UTF8STRC("OrganWeb.mdb"));
 	exporter.ExportFile(0, sbuff, this->db->GetConn(), 0);
 
-	sptr2 = Text::StrConcatC(sptr, UTF8STRC("Image");
+	sptr2 = Text::StrConcatC(sptr, UTF8STRC("Image"));
 	IO::Path::CreateDirectory(sbuff);
 	*sptr2++ = IO::Path::PATH_SEPERATOR;
 	sptr3 = this->cfgImgDirBase->ConcatTo(sbuff2);
@@ -4852,22 +4852,22 @@ void SSWR::OrganMgr::OrganEnvWeb::ExportLite(const UTF8Char *folder)
 			r->GetStr(0, &sb);
 			if (sb.GetLength() > 0)
 			{
-				Text::StrConcat(sptr2, sb.ToString());
-				Text::StrConcat(sptr3, sb.ToString());
+				Text::StrConcatC(sptr2, sb.ToString(), sb.GetLength());
+				Text::StrConcatC(sptr3, sb.ToString(), sb.GetLength());
 				IO::FileUtil::CopyDir(sbuff2, sbuff, IO::FileUtil::FileExistAction::Fail, 0, 0);
 			}
 		}
 		this->db->CloseReader(r);
 	}
 
-	sptr2 = Text::StrConcatC(sptr, UTF8STRC("Data");
+	sptr2 = Text::StrConcatC(sptr, UTF8STRC("Data"));
 	IO::Path::CreateDirectory(sbuff);
 	*sptr2++ = IO::Path::PATH_SEPERATOR;
-	Text::StrConcat(sptr2, (const UTF8Char*)"DataFile");
+	Text::StrConcatC(sptr2, UTF8STRC("DataFile"));
 
 	sptr3 = this->cfgDataPath->ConcatTo(sbuff2);
 	*sptr3++ = IO::Path::PATH_SEPERATOR;
-	Text::StrConcat(sptr3, (const UTF8Char*)"DataFile");
+	Text::StrConcatC(sptr3, UTF8STRC("DataFile"));
 	IO::FileUtil::CopyDir(sbuff2, sbuff, IO::FileUtil::FileExistAction::Fail, 0, 0);
 
 	r = this->db->ExecuteReaderC(UTF8STRC("select fileType, fileTime, webuser_id, dataFileName from userfile"));
@@ -4880,12 +4880,12 @@ void SSWR::OrganMgr::OrganEnvWeb::ExportLite(const UTF8Char *folder)
 		NEW_CLASS(exporter, Exporter::GUIJPGExporter());
 		NEW_CLASS(resizer, Media::Resizer::LanczosResizerH8_8(4, 3, Media::AT_NO_ALPHA));
 		
-		sptr2 = Text::StrConcat(sptr2, (const UTF8Char*)"UserFile");
+		sptr2 = Text::StrConcatC(sptr2, UTF8STRC("UserFile"));
 		*sptr2++ = IO::Path::PATH_SEPERATOR;
 
 		sptr3 = this->cfgDataPath->ConcatTo(sbuff2);
 		*sptr3++ = IO::Path::PATH_SEPERATOR;
-		sptr3 = Text::StrConcat(sptr3, (const UTF8Char*)"UserFile");
+		sptr3 = Text::StrConcatC(sptr3, UTF8STRC("UserFile"));
 		*sptr3++ = IO::Path::PATH_SEPERATOR;
 
 		while (r->ReadNext())
@@ -4898,14 +4898,14 @@ void SSWR::OrganMgr::OrganEnvWeb::ExportLite(const UTF8Char *folder)
 			r->GetDate(1, &dt);
 			dt.ToString(sptr2, "yyyyMM");
 			sb.Append(sptr2);
-			Text::StrConcat(sptr2, sb.ToString());
+			Text::StrConcatC(sptr2, sb.ToString(), sb.GetLength());
 			IO::Path::CreateDirectory(sbuff);
 
 			sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
 			r->GetStr(3, &sb);
 			
-			Text::StrConcat(sptr2, sb.ToString());
-			Text::StrConcat(sptr3, sb.ToString());
+			Text::StrConcatC(sptr2, sb.ToString(), sb.GetLength());
+			Text::StrConcatC(sptr3, sb.ToString(), sb.GetLength());
 			if (IO::Path::GetPathType(sbuff) == IO::Path::PathType::Unknown)
 			{
 				if (fileType == 1 && Text::StrEndsWithICase(sptr2, (const UTF8Char*)".jpg"))

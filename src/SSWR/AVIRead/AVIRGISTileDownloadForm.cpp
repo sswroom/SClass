@@ -284,7 +284,7 @@ void SSWR::AVIRead::AVIRGISTileDownloadForm::SaveTilesDir(const UTF8Char *folder
 		i = cnt;
 		while (i-- > 0)
 		{
-			Text::StrUOSInt(Text::StrConcat(Text::StrUOSInt(sbuff, cnt - i), (const UTF8Char*)"/"), cnt);
+			Text::StrUOSInt(Text::StrConcatC(Text::StrUOSInt(sbuff, cnt - i), UTF8STRC("/")), cnt);
 			this->txtImages->SetText(sbuff);
 			this->ui->ProcessMessages();
 
@@ -375,7 +375,7 @@ void SSWR::AVIRead::AVIRGISTileDownloadForm::SaveTilesFile(const UTF8Char *fileN
 		i = cnt;
 		while (i-- > 0)
 		{
-			Text::StrUOSInt(Text::StrConcat(Text::StrUOSInt(sbuff, cnt - i), (const UTF8Char*)"/"), cnt);
+			Text::StrUOSInt(Text::StrConcatC(Text::StrUOSInt(sbuff, cnt - i), UTF8STRC("/")), cnt);
 			this->txtImages->SetText(sbuff);
 			this->ui->ProcessMessages();
 

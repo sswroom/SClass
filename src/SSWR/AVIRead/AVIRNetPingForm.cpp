@@ -21,7 +21,7 @@ void __stdcall SSWR::AVIRead::AVIRNetPingForm::OnPingClicked(void *userObj)
 		me->txtTarget->GetText(&sb);
 		if (!me->sockf->DNSResolveIP(sb.ToString(), &addr))
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char *)"Error, target name is not valid", (const UTF8Char *)"Error", me);
+			UI::MessageDialog::ShowDialog((const UTF8Char*)"Error, target name is not valid", (const UTF8Char*)"Error", me);
 			return;
 		}
 		if (me->chkRepeat->IsChecked())

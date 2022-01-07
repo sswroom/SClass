@@ -408,7 +408,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnLogWifiSaveClicked(void
 	sptr = &sbuff[i + 1];
 	dt.SetCurrTime();
 	sptr = dt.ToString(sptr, "yyyyMMddHHmmss");
-	sptr = Text::StrConcat(sptr, (const UTF8Char*)".txt");
+	sptr = Text::StrConcatC(sptr, UTF8STRC(".txt"));
 	IO::FileStream *fs;
 	Text::UTF8Writer *writer;
 	Bool succ = false;
@@ -518,7 +518,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnLogWifiSaveFClicked(voi
 	sptr = &sbuff[i + 1];
 	dt.SetCurrTime();
 	sptr = dt.ToString(sptr, "yyyyMMddHHmmss");
-	sptr = Text::StrConcat(sptr, (const UTF8Char*)".txt");
+	sptr = Text::StrConcatC(sptr, UTF8STRC(".txt"));
 	IO::FileStream *fs;
 	Text::UTF8Writer *writer;
 	Bool succ = false;

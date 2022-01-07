@@ -56,7 +56,7 @@ void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnOKClicked(void *userObj)
 		setting.priority = Text::StrToInt32(sbuff);
 		if (setting.minScale == 0 || setting.maxScale == 0 || (setting.priority == 0 && !Text::StrEquals(sbuff, (const UTF8Char*)"0")))
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char *)"Input value invalid", (const UTF8Char *)"Properties", me);
+			UI::MessageDialog::ShowDialog((const UTF8Char*)"Input value invalid", (const UTF8Char*)"Properties", me);
 			return;
 		}
 		setting.lineType = me->lineType;
@@ -76,7 +76,7 @@ void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnOKClicked(void *userObj)
 		}
 		else
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char *)"Error in storing properties", (const UTF8Char *)"Properties", me);
+			UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in storing properties", (const UTF8Char*)"Properties", me);
 		}
 	}	
 }
@@ -513,7 +513,7 @@ SSWR::AVIRead::AVIRGISPropForm::AVIRGISPropForm(UI::GUIClientControl *parent, UI
 	}
 	else
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char *)"Error in getting layer properties", (const UTF8Char *)"Properties", this);
+		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in getting layer properties", (const UTF8Char*)"Properties", this);
 		this->SetDialogResult(UI::GUIForm::DR_CANCEL);
 	}
 }

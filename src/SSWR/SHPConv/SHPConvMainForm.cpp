@@ -81,17 +81,17 @@ void __stdcall SSWR::SHPConv::SHPConvMainForm::OnRecordsSelChg(void *userObj)
 		Text::StringBuilderUTF8 sb;
 		me->cboSeperator->GetText(&sb);
 
-		sptr = Text::StrConcat(sbuff, (const UTF8Char*)"<%=");
+		sptr = Text::StrConcatC(sbuff, UTF8STRC("<%="));
 		sptr = me->lstRecords->GetItemText(sptr, indices.GetItem(0));
-		sptr = Text::StrConcat(sptr, (const UTF8Char*)"%>");
+		sptr = Text::StrConcatC(sptr, UTF8STRC("%>"));
 		i = 1;
 		j = indices.GetCount();
 		while (i < j)
 		{
-			sptr = Text::StrConcat(sptr, sb.ToString());
-			sptr = Text::StrConcat(sptr, (const UTF8Char*)"<%=");
+			sptr = Text::StrConcatC(sptr, sb.ToString(), sb.GetLength());
+			sptr = Text::StrConcatC(sptr, UTF8STRC("<%="));
 			sptr = me->lstRecords->GetItemText(sptr, indices.GetItem(i));
-			sptr = Text::StrConcat(sptr, (const UTF8Char*)"%>");
+			sptr = Text::StrConcatC(sptr, UTF8STRC("%>"));
 			i++;
 		}
 		me->txtLabel->SetText(sbuff);
@@ -1178,7 +1178,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::LoadShape(const UTF8Char *fileName, Bool u
 		UOSInt i;
 		Text::StrConcat(sbuff, fileName);
 		i = Text::StrLastIndexOf(sbuff, '.');
-		Text::StrConcat(&sbuff[i + 1], (const UTF8Char*)"dbf");
+		Text::StrConcatC(&sbuff[i + 1], UTF8STRC("dbf"));
 
 		NEW_CLASS(fd, IO::StmData::FileData(sbuff, false));
 		NEW_CLASS(dbf, DB::DBFFile(fd, (UInt32)(UOSInt)this->lstLang->GetSelectedItem()));
@@ -1576,9 +1576,9 @@ void SSWR::SHPConv::SHPConvMainForm::ProgressUpdate(UInt64 currCount, UInt64 new
 	}
 	*sptr++ = ' ';
 	sptr = Text::StrUInt64(sptr, currCount);
-	sptr = Text::StrConcat(sptr, (const UTF8Char*)" out of ");
+	sptr = Text::StrConcatC(sptr, UTF8STRC(" out of "));
 	sptr = Text::StrUInt64(sptr, this->totalVal);
-	sptr = Text::StrConcat(sptr, (const UTF8Char*)" (");
+	sptr = Text::StrConcatC(sptr, UTF8STRC(" ("));
 	sptr = Text::StrUInt32(sptr, (UInt32)(currCount * 100 / totalVal));
 	this->lblProgress->SetText(sbuff);
 	this->ui->ProcessMessages();

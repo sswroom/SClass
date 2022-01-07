@@ -38,21 +38,21 @@ Map::SHPData::SHPData(UInt8 *shpHdr, IO::IStreamData *data, UInt32 codePage) : M
 	}
 	if (u8ptr[-4] == '.')
 	{
-		Text::StrConcat(&u8ptr[-3], (const UTF8Char*)"prj");
+		Text::StrConcatC(&u8ptr[-3], UTF8STRC("prj"));
 	}
 	else
 	{
-		Text::StrConcat(u8ptr, (const UTF8Char*)".prj");
+		Text::StrConcatC(u8ptr, UTF8STRC(".prj"));
 	}
 	this->csys = Math::CoordinateSystemManager::ParsePRJFile(u8buff);
 
 	if (u8ptr[-4] == '.')
 	{
-		Text::StrConcat(&u8ptr[-3], (const UTF8Char*)"dbf");
+		Text::StrConcatC(&u8ptr[-3], UTF8STRC("dbf"));
 	}
 	else
 	{
-		Text::StrConcat(u8ptr, (const UTF8Char*)".dbf");
+		Text::StrConcatC(u8ptr, UTF8STRC(".dbf"));
 	}
 
 	if (ReadMInt32(shpHdr) != 9994 || ReadInt32(&shpHdr[28]) != 1000 || (ReadMUInt32(&shpHdr[24]) << 1) != data->GetDataSize())

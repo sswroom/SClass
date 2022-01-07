@@ -140,7 +140,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnStartClicked(void *userObj
 		{
 			DEL_CLASS(me->client);
 			me->client = 0;
-			UI::MessageDialog::ShowDialog((const UTF8Char *)"Error in communicating with server", (const UTF8Char *)"Error", me);
+			UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in communicating with server", (const UTF8Char*)"Error", me);
 			return;
 		}
 	}
@@ -353,7 +353,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnTimerTick(void *userObj)
 		}
 		else
 		{
-			Text::StrUInt64(Text::StrConcat(Text::StrUInt64(Text::StrConcat(sbuff, (const UTF8Char*)"Up: "), me->client->GetTotalUpload()), (const UTF8Char*)", Dn: "), me->client->GetTotalDownload());
+			Text::StrUInt64(Text::StrConcatC(Text::StrUInt64(Text::StrConcatC(sbuff, UTF8STRC("Up: ")), me->client->GetTotalUpload()), UTF8STRC(", Dn: ")), me->client->GetTotalDownload());
 			me->lblStatus->SetText(sbuff);
 		}
 	}

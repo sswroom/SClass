@@ -594,18 +594,18 @@ Bool Net::RTSPClient::Init(Net::RTPCliChannel *rtpChannel)
 
 Bool Net::RTSPClient::Play(Net::RTPCliChannel *rtpChannel)
 {
-	return this->Play(rtpChannel->GetControlURL(), (const UTF8Char *)rtpChannel->GetUserData());
+	return this->Play(rtpChannel->GetControlURL(), (const UTF8Char*)rtpChannel->GetUserData());
 }
 
 Bool Net::RTSPClient::KeepAlive(Net::RTPCliChannel *rtpChannel)
 {
-//	return this->Play(rtpChannel->GetControlURL(), (const UTF8Char *)rtpChannel->GetUserData());
+//	return this->Play(rtpChannel->GetControlURL(), (const UTF8Char*)rtpChannel->GetUserData());
 	return true;
 }
 
 Bool Net::RTSPClient::StopPlay(Net::RTPCliChannel *rtpChannel)
 {
-	return this->Close(rtpChannel->GetControlURL(), (const UTF8Char *)rtpChannel->GetUserData());
+	return this->Close(rtpChannel->GetControlURL(), (const UTF8Char*)rtpChannel->GetUserData());
 }
 
 Bool Net::RTSPClient::Deinit(Net::RTPCliChannel *rtpChannel)

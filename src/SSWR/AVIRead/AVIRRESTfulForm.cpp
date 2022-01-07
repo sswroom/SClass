@@ -215,7 +215,7 @@ SSWR::AVIRead::AVIRRESTfulForm::AVIRRESTfulForm(UI::GUIClientControl *parent, UI
 	IO::Path::GetProcessFileName(sbuff);
 	i = Text::StrLastIndexOf(sbuff, IO::Path::PATH_SEPERATOR);
 	sbuff[i] = IO::Path::PATH_SEPERATOR;
-	Text::StrConcat(&sbuff[i+1], (const UTF8Char*)"log");
+	Text::StrConcatC(&sbuff[i+1], UTF8STRC("log"));
 	NEW_CLASS(this->txtLogDir, UI::GUITextBox(ui, this->grpParam, sbuff));
 	this->txtLogDir->SetRect(108, 32, 500, 23, false);
 	NEW_CLASS(this->lblAllowProxy, UI::GUILabel(ui, this->grpParam, (const UTF8Char*)"Proxy Connection"));

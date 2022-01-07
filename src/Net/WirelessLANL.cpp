@@ -593,7 +593,7 @@ UOSInt Net::WirelessLAN::Interface::GetBSSList(Data::ArrayList<Net::WirelessLAN:
 							bss.phyType = 8;
 						}
 						bss.rssi = Text::StrToInt32(cols[4]);
-						NEW_CLASS(bssInfo, BSSInfo((const UTF8Char *)cols[1], &bss));
+						NEW_CLASS(bssInfo, BSSInfo((const UTF8Char*)cols[1], &bss));
 						bssList->Add(bssInfo);
 						retVal++;
 					}
@@ -1132,7 +1132,7 @@ UOSInt Net::WirelessLAN::GetInterfaces(Data::ArrayList<Net::WirelessLAN::Interfa
 			if (i != INVALID_INDEX)
 			{
 				sb.TrimToLength((UOSInt)i);
-				Text::StrConcat((UTF8Char*)wrq.ifr_ifrn.ifrn_name, sb.ToString());
+				Text::StrConcatC((UTF8Char*)wrq.ifr_ifrn.ifrn_name, sb.ToString(), sb.GetLength());
 //				printf("Trying interface = %s\r\n", sb.ToString());
 				wrq.u.data.pointer = buff;
 				wrq.u.data.flags = 0;

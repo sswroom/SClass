@@ -297,7 +297,7 @@ SSWR::AVIRead::AVIRGISReplayForm::AVIRGISReplayForm(UI::GUIClientControl *parent
 	{
 		if (nameArr->GetItem(i) == 0)
 		{
-			Text::StrInt32(Text::StrConcat(sbuff, (const UTF8Char*)"Track"), (Int32)i);
+			Text::StrInt32(Text::StrConcatC(sbuff, UTF8STRC("Track")), (Int32)i);
 			this->cboName->AddItem(sbuff, 0);
 		}
 		else
@@ -405,7 +405,7 @@ void SSWR::AVIRead::AVIRGISReplayForm::UpdateRecList()
 			dist = coord->CalPLDistance(pl, Math::Unit::Distance::DU_METER);
 		}
 		DEL_CLASS(pl);
-		Text::StrConcat(Text::StrDoubleFmt(Text::StrConcat(sbuff, (const UTF8Char*)"Distance: "), dist, "0.0"), (const UTF8Char*)" m");
+		Text::StrConcatC(Text::StrDoubleFmt(Text::StrConcatC(sbuff, UTF8STRC("Distance: ")), dist, "0.0"), UTF8STRC(" m"));
 		this->lblDist->SetText(sbuff);
 
 		i = 0;

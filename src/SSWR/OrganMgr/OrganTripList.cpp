@@ -21,7 +21,7 @@ UTF8Char *SSWR::OrganMgr::Trip::ToString(UTF8Char *sbuff)
 	dt2.SetUnixTimestamp(this->toDate);
 	dt.ToLocalTime();
 	dt2.ToLocalTime();
-	return dt2.ToString(Text::StrConcat(dt.ToString(sbuff, "yyyy-MM-dd HH:mm"), (const UTF8Char*)" - "), "yyyy-MM-dd HH:mm");
+	return dt2.ToString(Text::StrConcatC(dt.ToString(sbuff, "yyyy-MM-dd HH:mm"), UTF8STRC(" - ")), "yyyy-MM-dd HH:mm");
 }
 
 SSWR::OrganMgr::Location::Location(Int32 id, Int32 parId, const UTF8Char *ename, const UTF8Char *cname, Int32 locType)

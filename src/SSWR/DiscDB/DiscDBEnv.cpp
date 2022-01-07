@@ -393,7 +393,7 @@ UOSInt SSWR::DiscDB::DiscDBEnv::GetBurntFiles(const UTF8Char *discId, Data::Arra
 			file->fileSize = (UInt64)r->GetInt64(2);
 			sb.ClearStr();
 			r->GetStr(3, &sb);
-			Text::StrConcat(file->category, sb.ToString());
+			Text::StrConcatC(file->category, sb.ToString(), sb.GetLength());
 			file->videoId = r->GetInt32(4);
 			fileList->Add(file);
 			ret++;

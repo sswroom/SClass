@@ -182,7 +182,7 @@ SSWR::AVIRead::AVIRIBuddyForm::AVIRIBuddyForm(UI::GUIClientControl *parent, UI::
 		}
 		else
 		{
-			Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"Device "), k);
+			Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Device ")), k);
 			k++;
 			this->buddyList->Add(buddy);
 			this->lbDevice->AddItem(sbuff, buddy);

@@ -4,14 +4,14 @@
 #include "Media/OpenSLESRenderer.h"
 #include "Text/MyString.h"
 
-OSInt Media::AudioDevice::GetDeviceCount()
+UOSInt Media::AudioDevice::GetDeviceCount()
 {
 	return Media::OpenSLESRenderer::GetDeviceCount();
 }
 
-UTF8Char *Media::AudioDevice::GetDeviceName(UTF8Char *buff, OSInt devNo)
+UTF8Char *Media::AudioDevice::GetDeviceName(UTF8Char *buff, UOSInt devNo)
 {
-	return Media::OpenSLESRenderer::GetDeviceName(Text::StrConcat(buff, (const UTF8Char*)"OpenSLES: "), devNo);
+	return Media::OpenSLESRenderer::GetDeviceName(Text::StrConcatC(buff, UTF8STRC("OpenSLES: ")), devNo);
 }
 
 Media::IAudioRenderer *Media::AudioDevice::CreateRenderer(const UTF8Char *devName)

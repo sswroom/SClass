@@ -234,7 +234,7 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 					DEL_CLASS(stm);
 					return 0;
 				}
-				Text::StrConcat(Text::StrConcat(fileName, sarr[1]), (const UTF8Char*)".cip");
+				Text::StrConcatC(Text::StrConcat(fileName, sarr[1]), UTF8STRC(".cip"));
 				Map::IMapDrawLayer *lyr = this->mapMgr->LoadLayer(baseDir, this->parsers, env);
 				if (lyr)
 				{
@@ -261,7 +261,7 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 					return 0;
 				}
 
-				Text::StrConcat(Text::StrConcat(fileName, sarr[1]), (const UTF8Char*)".cip");
+				Text::StrConcatC(Text::StrConcat(fileName, sarr[1]), UTF8STRC(".cip"));
 				Map::IMapDrawLayer *lyr = this->mapMgr->LoadLayer(baseDir, this->parsers, env);
 				if (lyr)
 				{
@@ -289,7 +289,7 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 					DEL_CLASS(stm);
 					return 0;
 				}
-				Text::StrConcat(Text::StrConcat(fileName, sarr[1]), (const UTF8Char*)".cip");
+				Text::StrConcatC(Text::StrConcat(fileName, sarr[1]), UTF8STRC(".cip"));
 				Map::IMapDrawLayer *lyr = this->mapMgr->LoadLayer(baseDir, this->parsers, env);
 				if (lyr)
 				{
@@ -331,7 +331,7 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 					return 0;
 				}
 				OSInt si;
-				Text::StrConcat(Text::StrConcat(fileName, sarr[1]), (const UTF8Char*)".cip");
+				Text::StrConcatC(Text::StrConcat(fileName, sarr[1]), UTF8STRC(".cip"));
 				Map::IMapDrawLayer *lyr = this->mapMgr->LoadLayer(baseDir, this->parsers, env);
 				Text::StrConcat(sbuff3, sbuff2);
 				IO::Path::AppendPath(sbuff3, sarr[4]);
@@ -363,7 +363,7 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 	else if (fd->IsFullFile() && Text::StrStartsWith(sbuff, (const UTF8Char*)"OBJECTID,") && Text::StrEndsWith(sbuff, (const UTF8Char*)","))
 	{
 		fileName = fd->GetFullName()->ConcatTo(u8buff);
-		Text::StrConcat(&fileName[-4], (const UTF8Char*)"_Coord.txt");
+		Text::StrConcatC(&fileName[-4], UTF8STRC("_Coord.txt"));
 		if (IO::Path::GetPathType(u8buff) != IO::Path::PathType::File)
 		{
 			DEL_CLASS(reader);

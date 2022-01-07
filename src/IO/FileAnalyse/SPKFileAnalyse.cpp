@@ -171,7 +171,7 @@ IO::FileAnalyse::SPKFileAnalyse::~SPKFileAnalyse()
 
 const UTF8Char *IO::FileAnalyse::SPKFileAnalyse::GetFormatName()
 {
-	return (const UTF8Char *)"SPK";
+	return (const UTF8Char*)"SPK";
 }
 
 UOSInt IO::FileAnalyse::SPKFileAnalyse::GetFrameCount()
@@ -252,21 +252,21 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::SPKFileAnalyse::GetFrameDetail(UO
 	NEW_CLASS(frame, IO::FileAnalyse::FrameDetail(pack->fileOfst, (UInt32)pack->packSize));
 	if (pack->packType == PT_HEADER)
 	{
-		frame->AddText(0, (const UTF8Char *)"Type=File header");
+		frame->AddText(0, (const UTF8Char*)"Type=File header");
 	}
 	else if (pack->packType == PT_V1DIRECTORY)
 	{
-		frame->AddText(0, (const UTF8Char *)"Type=V1 Directory");
+		frame->AddText(0, (const UTF8Char*)"Type=V1 Directory");
 	}
 	else if (pack->packType == PT_V2DIRECTORY)
 	{
-		frame->AddText(0, (const UTF8Char *)"Type=V2 Directory");
+		frame->AddText(0, (const UTF8Char*)"Type=V2 Directory");
 	}
 	else if (pack->packType == PT_FILE)
 	{
-		frame->AddText(0, (const UTF8Char *)"Type=Data Block");
+		frame->AddText(0, (const UTF8Char*)"Type=Data Block");
 	}
-	Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char *)"Size="), pack->packSize);
+	Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"Size="), pack->packSize);
 	frame->AddText(0, sbuff);
 
 	if (pack->fileName)
@@ -309,9 +309,9 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::SPKFileAnalyse::GetFrameDetail(UO
 				customOfst = 1;
 				while (urlI < urlCnt)
 				{
-					Text::StrUInt16(Text::StrConcat(sbuff, (const UTF8Char *)"-Length"), urlI);
+					Text::StrUInt16(Text::StrConcat(sbuff, (const UTF8Char*)"-Length"), urlI);
 					frame->AddUInt(endOfst + 8 + customOfst, 1, (const Char *)sbuff, packBuff[endOfst + 8 + customOfst]);
-					Text::StrUInt16(Text::StrConcat(sbuff, (const UTF8Char *)"-URL"), urlI);
+					Text::StrUInt16(Text::StrConcat(sbuff, (const UTF8Char*)"-URL"), urlI);
 					frame->AddStrC(endOfst + 8 + customOfst + 1, packBuff[endOfst + 8 + customOfst], (const Char *)sbuff, &packBuff[endOfst + 8 + customOfst + 1]);
 					customOfst += (UOSInt)packBuff[endOfst + 8 + customOfst] + 1;
 					urlI++;
@@ -358,7 +358,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::SPKFileAnalyse::GetFrameDetail(UO
 			sb.AppendC(UTF8STRC("\r\n...\r\n"));
 			this->fd->GetRealData(pack->fileOfst + pack->packSize - 32, 32, buff);
 			sb.AppendHexBuff(buff, 32, ' ', Text::LineBreakType::CRLF);
-			frame->AddField(0, pack->packSize, (const UTF8Char *)"FileData", sb.ToString());
+			frame->AddField(0, pack->packSize, (const UTF8Char*)"FileData", sb.ToString());
 		}
 	}
 	return frame;

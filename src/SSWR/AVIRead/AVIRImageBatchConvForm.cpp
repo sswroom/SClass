@@ -56,7 +56,7 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchConvForm::OnConvertClicked(void *use
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 	}
 
-	Text::StrConcat(sptr, (const UTF8Char*)"*.tif");
+	Text::StrConcatC(sptr, UTF8STRC("*.tif"));
 	void *param;
 	IO::Path::FindFileSession *sess;
 	Bool succ = true;
@@ -76,7 +76,7 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchConvForm::OnConvertClicked(void *use
 			me->txtSubdir->GetText(&sb);
 			if (sb.GetLength() > 0)
 			{
-				sptr2 = Text::StrConcat(sptr2, sb.ToString());
+				sptr2 = Text::StrConcatC(sptr2, sb.ToString(), sb.GetLength());
 				IO::Path::CreateDirectory(sbuff2);
 				*sptr2++ = IO::Path::PATH_SEPERATOR;
 			}

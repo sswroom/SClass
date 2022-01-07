@@ -133,7 +133,7 @@ void __stdcall SSWR::AVIRead::AVIRChineseForm::OnRelatedAddChg(void *userObj)
 				*sptr = 0;
 				sb.Append(sbuff);
 				sb.AppendC(UTF8STRC("\"?"));
-				if (UI::MessageDialog::ShowYesNoDialog(sb.ToString(), (const UTF8Char *)"Add Relation", me))
+				if (UI::MessageDialog::ShowYesNoDialog(sb.ToString(), (const UTF8Char*)"Add Relation", me))
 				{
 					me->chinese->AddRelation(me->currChar, (UInt32)v);
 					me->UpdateRelation();
@@ -311,7 +311,7 @@ void SSWR::AVIRead::AVIRChineseForm::UpdateChar(UInt32 charCode)
 	}
 	else
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char *)"Error in saving char", (const UTF8Char *)"Error", this);
+		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in saving char", (const UTF8Char*)"Error", this);
 	}
 }
 

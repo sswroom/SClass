@@ -747,11 +747,11 @@ Bool Net::OSSocketFactory::IcmpSendEcho2(const Net::SocketUtil::AddressInfo *add
 		UTF8Char *sptr;
 		if (addr->addrType == Net::AddrType::IPv6)
 		{
-			sptr = Text::StrConcat(sbuff, (const UTF8Char*)"ping6 -c 1 ");
+			sptr = Text::StrConcatC(sbuff, UTF8STRC("ping6 -c 1 "));
 		}
 		else
 		{
-			sptr = Text::StrConcat(sbuff, (const UTF8Char*)"ping -c 1 ");
+			sptr = Text::StrConcatC(sbuff, UTF8STRC("ping -c 1 "));
 		}
 		Net::SocketUtil::GetAddrName(sptr, addr);
 		Text::StringBuilderUTF8 sb;

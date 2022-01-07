@@ -79,7 +79,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		{
 			scnSize = 1800;
 		}
-		if ((s = cfg->GetValue((const UTF8Char *)"Unorganized")) != 0)
+		if ((s = cfg->GetValue((const UTF8Char*)"Unorganized")) != 0)
 		{
 			s->ToInt32(&unorganizedGroupId);
 		}

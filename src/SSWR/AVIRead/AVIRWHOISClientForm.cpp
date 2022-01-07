@@ -18,7 +18,7 @@ void __stdcall SSWR::AVIRead::AVIRWHOISClientForm::OnRequestClicked(void *userOb
 	ip = Net::SocketUtil::GetIPAddr(sb.ToString());
 	if (ip == 0)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char *)"Please enter valid IP", (const UTF8Char *)"Request", me);
+		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter valid IP", (const UTF8Char*)"Request", me);
 		return;
 	}
 

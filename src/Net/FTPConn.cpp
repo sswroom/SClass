@@ -272,12 +272,12 @@ Bool Net::FTPConn::ChangePassiveMode(UInt32 *ip, UInt16 *port)
 	Int32 code = WaitForResult();
 	if (code == 227)
 	{
-		if (!Text::StrStartsWith(sbuff, (const UTF8Char *)"Entering Passive Mode ("))
+		if (!Text::StrStartsWith(sbuff, (const UTF8Char*)"Entering Passive Mode ("))
 		{
 			return false;
 		}
 		sptr = &sbuff[23];
-		i = Text::StrIndexOf(sptr, (const UTF8Char *)")");
+		i = Text::StrIndexOf(sptr, (const UTF8Char*)")");
 		if (i == INVALID_INDEX || i == 0)
 			return false;
 		sptr[i] = 0;

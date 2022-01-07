@@ -55,7 +55,7 @@ Media::DrawImage *Media::FrequencyGraph::CreateGraph(Media::DrawEngine *eng, Med
 		j = chartLabels.GetCount();
 		while (j-- > 0)
 		{
-			i = (UOSInt)(Text::StrConcat(Text::StrConcat(sbuff, chartLabels.GetItem(j)), (const UTF8Char*)"kHz") - sbuff);
+			i = (UOSInt)(Text::StrConcatC(Text::StrConcat(sbuff, chartLabels.GetItem(j)), UTF8STRC("kHz")) - sbuff);
 			retImg->GetTextSizeC(f, sbuff, i, sz);
 			iVal = (UInt32)Math::Double2Int32(sz[0]);
 			if (iVal > yAxis)
@@ -72,7 +72,7 @@ Media::DrawImage *Media::FrequencyGraph::CreateGraph(Media::DrawEngine *eng, Med
 		j = chartLabels.GetCount();
 		while (j-- > 0)
 		{
-			i = (UOSInt)(Text::StrConcat(Text::StrConcat(sbuff, chartLabels.GetItem(j)), (const UTF8Char*)"s") - sbuff);
+			i = (UOSInt)(Text::StrConcatC(Text::StrConcat(sbuff, chartLabels.GetItem(j)), UTF8STRC("s")) - sbuff);
 			retImg->GetTextSizeC(f, sbuff, i, sz);
 			iVal = (UInt32)Math::Double2Int32(sz[0]);
 			if (iVal > xAxis)
@@ -260,7 +260,7 @@ Media::DrawImage *Media::FrequencyGraph::CreateGraph(Media::DrawEngine *eng, Med
 		j = chartLabels.GetCount();
 		while (j-- > 0)
 		{
-			i = (UOSInt)(Text::StrConcat(Text::StrConcat(sbuff, chartLabels.GetItem(j)), (const UTF8Char*)"kHz") - sbuff);
+			i = (UOSInt)(Text::StrConcatC(Text::StrConcat(sbuff, chartLabels.GetItem(j)), UTF8STRC("kHz")) - sbuff);
 			retImg->GetTextSizeC(f, sbuff, i, sz);
 			k = (UInt32)Math::Double2Int32(sz[0]);
 			retImg->DrawString(yAxis - Math::UOSInt2Double(k), dfftSize * 0.5 - chartPos.GetItem(j), sbuff, f, b);
@@ -275,7 +275,7 @@ Media::DrawImage *Media::FrequencyGraph::CreateGraph(Media::DrawEngine *eng, Med
 		j = chartLabels.GetCount();
 		while (j-- > 0)
 		{
-			i = (UOSInt)(Text::StrConcat(Text::StrConcat(sbuff, chartLabels.GetItem(j)), (const UTF8Char*)"s") - sbuff);
+			i = (UOSInt)(Text::StrConcatC(Text::StrConcat(sbuff, chartLabels.GetItem(j)), UTF8STRC("s")) - sbuff);
 			retImg->GetTextSizeC(f, sbuff, i, sz);
 			k = (UInt32)Math::Double2Int32(sz[0]);
 			retImg->DrawStringRot(yAxis + 4 + chartPos.GetItem(j) + ihFontSize, ihFontSize + dfftSize * 0.5 + 4, sbuff, f, b, 270.0);

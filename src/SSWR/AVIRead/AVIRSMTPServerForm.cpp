@@ -28,12 +28,12 @@ void __stdcall SSWR::AVIRead::AVIRSMTPServerForm::OnSMTPStartClicked(void *userO
 		me->txtSMTPPort->GetText(&sb);
 		if (!sb.ToUInt16(&port))
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char *)"Please enter valid port number", (const UTF8Char *)"Error", me);
+			UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter valid port number", (const UTF8Char*)"Error", me);
 			return;
 		}
 		if (port == 0 || port > 65535)
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char *)"Please enter valid port number", (const UTF8Char *)"Error", me);
+			UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter valid port number", (const UTF8Char*)"Error", me);
 			return;
 		}
 		if (me->sslCert && me->sslKey)
@@ -43,7 +43,7 @@ void __stdcall SSWR::AVIRead::AVIRSMTPServerForm::OnSMTPStartClicked(void *userO
 			SDEL_CLASS(issuerCert);
 		}
 		Net::Email::SMTPConn::ConnType connType = (Net::Email::SMTPConn::ConnType)(OSInt)me->cboSMTPType->GetSelectedItem();
-		NEW_CLASS(me->smtpSvr, Net::Email::SMTPServer(me->sockf, me->ssl, port, connType, me->log, (const UTF8Char *)"127.0.0.1", (const UTF8Char *)"SSWRSMTP", OnMailReceived, OnMailLogin, me));
+		NEW_CLASS(me->smtpSvr, Net::Email::SMTPServer(me->sockf, me->ssl, port, connType, me->log, (const UTF8Char*)"127.0.0.1", (const UTF8Char*)"SSWRSMTP", OnMailReceived, OnMailLogin, me));
 		if (me->smtpSvr->IsError())
 		{
 			DEL_CLASS(me->smtpSvr);
@@ -68,12 +68,12 @@ void __stdcall SSWR::AVIRead::AVIRSMTPServerForm::OnPOP3StartClicked(void *userO
 		me->txtPOP3Port->GetText(&sb);
 		if (!sb.ToUInt16(&port))
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char *)"Please enter valid port number", (const UTF8Char *)"Error", me);
+			UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter valid port number", (const UTF8Char*)"Error", me);
 			return;
 		}
 		if (port == 0 || port > 65535)
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char *)"Please enter valid port number", (const UTF8Char *)"Error", me);
+			UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter valid port number", (const UTF8Char*)"Error", me);
 			return;
 		}
 		Net::SSLEngine *ssl = 0;
@@ -89,7 +89,7 @@ void __stdcall SSWR::AVIRead::AVIRSMTPServerForm::OnPOP3StartClicked(void *userO
 			ssl->SetServerCertsASN1(me->sslCert, me->sslKey, issuerCert);
 			SDEL_CLASS(issuerCert);
 		}
-		NEW_CLASS(me->pop3Svr, Net::Email::POP3Server(me->core->GetSocketFactory(), ssl, port, me->log, (const UTF8Char *)"Welcome to SSWR POP3 Server", me));
+		NEW_CLASS(me->pop3Svr, Net::Email::POP3Server(me->core->GetSocketFactory(), ssl, port, me->log, (const UTF8Char*)"Welcome to SSWR POP3 Server", me));
 		if (me->pop3Svr->IsError())
 		{
 			DEL_CLASS(me->pop3Svr);
@@ -129,7 +129,7 @@ void __stdcall SSWR::AVIRead::AVIRSMTPServerForm::OnEmailDblClicked(void *userOb
 		}
 		else
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char *)"Error in loading file", (const UTF8Char *)"Error", me);
+			UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in loading file", (const UTF8Char*)"Error", me);
 		}
 	}
 }

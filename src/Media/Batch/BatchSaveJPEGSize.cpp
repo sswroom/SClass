@@ -41,7 +41,7 @@ void Media::Batch::BatchSaveJPEGSize::ImageOutput(Media::ImageList *imgList, con
 	Media::Image *img;
 
 	sptr = Text::StrConcat(sbuff, fileId);
-	Text::StrConcat(Text::StrConcat(sptr, targetId), (const UTF8Char*)".jpg");
+	Text::StrConcatC(Text::StrConcat(sptr, targetId), UTF8STRC(".jpg"));
 
 	img = imgList->GetImage(0, 0);
 	targetSize = (img->info->dispWidth * img->info->dispHeight * img->info->storeBPP >> 3) / this->sizePercent;

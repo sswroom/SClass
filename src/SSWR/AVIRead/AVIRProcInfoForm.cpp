@@ -101,7 +101,7 @@ void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnTimerTick(void *userObj)
 				Text::StrUInt32(sbuff2, procInfo->procId);
 				me->lvSummary->InsertItem(i, sbuff2, procInfo);
 				me->lvSummary->SetSubItem(i, 1, sbuff);
-				Text::StrConcat(Text::StrConcat(Text::StrUInt32(sbuff, procInfo->procId), (const UTF8Char*)" "), procInfo->procName);
+				Text::StrConcat(Text::StrConcatC(Text::StrUInt32(sbuff, procInfo->procId), UTF8STRC(" ")), procInfo->procName);
 				me->lbDetail->InsertItem(i, sbuff, procInfo);
 			}
 
@@ -416,7 +416,7 @@ void SSWR::AVIRead::AVIRProcInfoForm::UpdateProcHeapDetail(UInt32 heapId)
 		while (i < j)
 		{
 			heap = heapList.GetItem(i);
-			Text::StrHexValOS(Text::StrConcat(sbuff, (const UTF8Char*)"0x"), heap->startAddr);
+			Text::StrHexValOS(Text::StrConcatC(sbuff, UTF8STRC("0x")), heap->startAddr);
 			k = this->lvDetHeap->AddItem(sbuff, (void*)heap->startAddr, 0);
 			Text::StrUOSInt(sbuff, heap->size);
 			this->lvDetHeap->SetSubItem(k, 1, sbuff);

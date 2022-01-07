@@ -88,7 +88,7 @@ void __stdcall SSWR::OrganMgr::OrganTripForm::OnAddClicked(void *userObj)
 		t = (Trip*)me->lbTrips->GetItem((UOSInt)k);
 		if (t->fromDate <= itoDate && t->toDate >= ifrDate)
 		{
-			me->env->LocationGet(t->locId)->cname->ConcatTo(Text::StrConcat(Text::StrConcat(sbuff, me->env->GetLang((const UTF8Char*)"TripFormErrorExist")), (const UTF8Char*)": "));
+			me->env->LocationGet(t->locId)->cname->ConcatTo(Text::StrConcatC(Text::StrConcat(sbuff, me->env->GetLang((const UTF8Char*)"TripFormErrorExist")), UTF8STRC(": ")));
 			UI::MessageDialog::ShowDialog(sbuff, me->env->GetLang((const UTF8Char*)"TripFormTitle"), me);
 			return;
 		}

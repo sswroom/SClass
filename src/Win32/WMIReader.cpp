@@ -484,7 +484,7 @@ Text::String *Win32::WMIReader::GetNewStr(UOSInt colIndex)
 				{
 					SAFEARRAY * arr = V_ARRAY(&v);
 					ret = Text::String::New(2 + (arr->cbElements << 1));
-					Text::StrHexBytes(Text::StrConcat(ret->v, (const UTF8Char*)"0x"), (UInt8*)arr->pvData, arr->rgsabound[0].cElements, 0);
+					Text::StrHexBytes(Text::StrConcatC(ret->v, UTF8STRC("0x")), (UInt8*)arr->pvData, arr->rgsabound[0].cElements, 0);
 				}
 				break;
 			case CIM_SINT16:
@@ -575,11 +575,11 @@ UTF8Char *Win32::WMIReader::GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffS
 					SAFEARRAY * arr = V_ARRAY(&v);
 					if (arr->cbElements * 2 + 3 >= buffSize)
 					{
-						buff = Text::StrHexBytes(Text::StrConcat(buff, (const UTF8Char*)"0x"), (UInt8*)arr->pvData, (buffSize - 3) >> 1, 0);
+						buff = Text::StrHexBytes(Text::StrConcatC(buff, UTF8STRC("0x")), (UInt8*)arr->pvData, (buffSize - 3) >> 1, 0);
 					}
 					else
 					{
-						buff = Text::StrHexBytes(Text::StrConcat(buff, (const UTF8Char*)"0x"), (UInt8*)arr->pvData, arr->rgsabound[0].cElements, 0);
+						buff = Text::StrHexBytes(Text::StrConcatC(buff, UTF8STRC("0x")), (UInt8*)arr->pvData, arr->rgsabound[0].cElements, 0);
 					}
 				}
 				break;

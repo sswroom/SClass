@@ -134,7 +134,7 @@ void SSWR::AVIRead::AVIRFileSizePackForm::GenList()
 	maxSize = sb.ToUInt64();
 	if (maxSize <= 0)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char *)"Error in parsing the size", (const UTF8Char *)"Error", this);
+		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in parsing the size", (const UTF8Char*)"Error", this);
 		this->cboMaxSize->Focus();
 		return;
 	}
@@ -144,17 +144,17 @@ void SSWR::AVIRead::AVIRFileSizePackForm::GenList()
 	this->txtDir->GetText(&sb);
 	if (sb.GetLength() == 0)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char *)"Please input directory", (const UTF8Char *)"Error", this);
+		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please input directory", (const UTF8Char*)"Error", this);
 		this->txtDir->Focus();
 		return;
 	}
 	if (IO::Path::GetPathType(sb.ToString()) != IO::Path::PathType::Directory)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char *)"Please input directory", (const UTF8Char *)"Error", this);
+		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please input directory", (const UTF8Char*)"Error", this);
 		this->txtDir->Focus();
 		return;
 	}
-	sptr = Text::StrConcat(sbuff, sb.ToString());
+	sptr = Text::StrConcatC(sbuff, sb.ToString(), sb.GetLength());
 	if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 	{
 		*sptr++ = IO::Path::PATH_SEPERATOR;
@@ -167,7 +167,7 @@ void SSWR::AVIRead::AVIRFileSizePackForm::GenList()
 
 	UInt64 totalFileSize = 0;
 	this->filePath = Text::StrCopyNew(sbuff);
-	Text::StrConcat(sptr, IO::Path::ALL_FILES);
+	Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
 	sess = IO::Path::FindFile(sbuff);
 	if (sess)
 	{

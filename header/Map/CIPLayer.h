@@ -57,12 +57,12 @@ namespace Map
 		virtual void ReleaseNameArr(void *nameArr);
 		virtual WChar *GetString(WChar *buff, void *nameArr, Int64 id, UOSInt strIndex);
 		virtual UOSInt GetColumnCnt();
-		virtual WChar *GetColumnName(WChar *buff, UOSInt colIndex);
+		virtual UTF8Char *GetColumnName(UTF8Char *buff, UOSInt colIndex);
 		virtual DB::DBUtil::ColType GetColumnType(UOSInt colIndex, UOSInt *colSize);
 		virtual Bool GetColumnDef(UOSInt colIndex, DB::ColDef *colDef);
 		virtual Int32 GetBlockSize();
 		virtual UInt32 GetCodePage();
-		virtual void GetBoundsDbl(Double *minX, Double *minY, Double *maxX, Double *maxY);
+		virtual Bool GetBoundsDbl(Double *minX, Double *minY, Double *maxX, Double *maxY);
 
 	private:
 		CIPFileObject *GetFileObject(void *session, Int32 id);

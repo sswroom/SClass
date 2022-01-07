@@ -19,14 +19,14 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(void *userObj)
 		UInt32 portNum = (UInt32)(UOSInt)me->cboSerialPort->GetItem(i);
 		if (portNum == 0)
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char *)"Please select a port", (const UTF8Char *)"Select Serial Port", me);
+			UI::MessageDialog::ShowDialog((const UTF8Char*)"Please select a port", (const UTF8Char*)"Select Serial Port", me);
 			return;
 		}
 		me->txtBaudRate->GetText(sbuff);
 		UInt32 baudRate = Text::StrToUInt32(sbuff);
 		if (baudRate == 0)
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char *)"Please input a valid baud rate", (const UTF8Char *)"Select Serial Port", me);
+			UI::MessageDialog::ShowDialog((const UTF8Char*)"Please input a valid baud rate", (const UTF8Char*)"Select Serial Port", me);
 			return;
 		}
 		IO::SerialPort::ParityType parity = (IO::SerialPort::ParityType)(OSInt)me->cboParity->GetSelectedItem();
@@ -35,7 +35,7 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(void *userObj)
 		if (port->IsError())
 		{
 			DEL_CLASS(port);
-			UI::MessageDialog::ShowDialog((const UTF8Char *)"Error in opening the port", (const UTF8Char *)"Select Serial Port", me);
+			UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in opening the port", (const UTF8Char*)"Select Serial Port", me);
 			return;
 		}
 		me->stm = port;
@@ -49,7 +49,7 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(void *userObj)
 		me->txtSLBaudRate->GetText(&sb);
 		if (!sb.ToUInt32(&baudRate) || baudRate == 0)
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char *)"Please input baud rate", (const UTF8Char *)"Error", me);
+			UI::MessageDialog::ShowDialog((const UTF8Char*)"Please input baud rate", (const UTF8Char*)"Error", me);
 			return;
 		}
 		me->stm = me->siLabDriver->OpenPort((UInt32)(OSInt)me->lvSLPort->GetSelectedItem(), baudRate);
@@ -60,7 +60,7 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(void *userObj)
 		}
 		else
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char *)"Error in opening the port", (const UTF8Char *)"Error", me);
+			UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in opening the port", (const UTF8Char*)"Error", me);
 		}
 	}
 	else if (st == SSWR::AVIRead::AVIRCore::ST_TCPSERVER)
@@ -70,12 +70,12 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(void *userObj)
 		me->txtTCPSvrPort->GetText(&sb);
 		if (!sb.ToUInt16(&port))
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char *)"Port is not a number", (const UTF8Char *)"Error", me);
+			UI::MessageDialog::ShowDialog((const UTF8Char*)"Port is not a number", (const UTF8Char*)"Error", me);
 			return;
 		}
 		if (port <= 0 || port >= 65535)
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char *)"Port is out of range", (const UTF8Char *)"Error", me);
+			UI::MessageDialog::ShowDialog((const UTF8Char*)"Port is out of range", (const UTF8Char*)"Error", me);
 			return;
 		}
 		if (me->chkBoardcast->IsChecked())
@@ -85,7 +85,7 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(void *userObj)
 			if (stm->IsError())
 			{
 				DEL_CLASS(stm);
-				UI::MessageDialog::ShowDialog((const UTF8Char *)"Error in listening to the port", (const UTF8Char *)"Error", me);
+				UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in listening to the port", (const UTF8Char*)"Error", me);
 				return;
 			}
 			else
@@ -102,7 +102,7 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(void *userObj)
 			if (stm->IsError())
 			{
 				DEL_CLASS(stm);
-				UI::MessageDialog::ShowDialog((const UTF8Char *)"Error in listening to the port", (const UTF8Char *)"Error", me);
+				UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in listening to the port", (const UTF8Char*)"Error", me);
 				return;
 			}
 			else
@@ -121,19 +121,19 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(void *userObj)
 		me->txtTCPCliHost->GetText(&sb);
 		if (!me->core->GetSocketFactory()->DNSResolveIP(sb.ToString(), &addr))
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char *)"Host is not valid", (const UTF8Char *)"Error", me);
+			UI::MessageDialog::ShowDialog((const UTF8Char*)"Host is not valid", (const UTF8Char*)"Error", me);
 			return;
 		}
 		sb.ClearStr();
 		me->txtTCPCliPort->GetText(&sb);
 		if (!sb.ToUInt16(&port))
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char *)"Port is not a number", (const UTF8Char *)"Error", me);
+			UI::MessageDialog::ShowDialog((const UTF8Char*)"Port is not a number", (const UTF8Char*)"Error", me);
 			return;
 		}
 		if (port <= 0 || port > 65535)
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char *)"Port is out of range", (const UTF8Char *)"Error", me);
+			UI::MessageDialog::ShowDialog((const UTF8Char*)"Port is out of range", (const UTF8Char*)"Error", me);
 			return;
 		}
 		Net::TCPClient *cli;
@@ -141,7 +141,7 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(void *userObj)
 		if (cli->IsConnectError())
 		{
 			DEL_CLASS(cli);
-			UI::MessageDialog::ShowDialog((const UTF8Char *)"Error in connect to server", (const UTF8Char *)"Error", me);
+			UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in connect to server", (const UTF8Char*)"Error", me);
 			return;
 		}
 		else
@@ -162,7 +162,7 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(void *userObj)
 			if (fs->IsError())
 			{
 				DEL_CLASS(fs);
-				UI::MessageDialog::ShowDialog((const UTF8Char *)"Error in opening the file", (const UTF8Char *)"Open Stream", me);
+				UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in opening the file", (const UTF8Char*)"Open Stream", me);
 			}
 			else
 			{
@@ -314,10 +314,10 @@ SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(UI::GUIClientControl *parent
 	while (i < j)
 	{
 		currPort = ports->GetItem(i);
-		sptr = Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"COM"), currPort);
-		sptr = Text::StrConcat(sptr, (const UTF8Char*)" (");
+		sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("COM")), currPort);
+		sptr = Text::StrConcatC(sptr, UTF8STRC(" ("));
 		sptr = Text::StrConcat(sptr, IO::SerialPort::GetPortTypeName(portTypeList.GetItem(i)));
-		sptr = Text::StrConcat(sptr, (const UTF8Char*)")");
+		sptr = Text::StrConcatC(sptr, UTF8STRC(")"));
 		this->cboSerialPort->AddItem(sbuff, (void*)(OSInt)currPort);
 		i++;
 	}

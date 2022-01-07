@@ -19,7 +19,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPProxyClientForm::OnRequestClicked(void *us
 	sb.ToUInt16(&port);
 	if (port <= 0 || port >= 65536)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char *)"Please enter valid proxy port", (const UTF8Char *)"Request", me);
+		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter valid proxy port", (const UTF8Char*)"Request", me);
 		return;
 	}
 	sb.ClearStr();
@@ -27,7 +27,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPProxyClientForm::OnRequestClicked(void *us
 	ip = me->sockf->DNSResolveIPv4(sb.ToString());
 	if (ip == 0)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char *)"Please enter valid proxy server", (const UTF8Char *)"Request", me);
+		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter valid proxy server", (const UTF8Char*)"Request", me);
 		return;
 	}
 
@@ -35,7 +35,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPProxyClientForm::OnRequestClicked(void *us
 	me->txtURL->GetText(&sb);
 	if (!sb.StartsWith((const UTF8Char*)"http://"))
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char *)"Please enter valid http URL", (const UTF8Char *)"Request", me);
+		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter valid http URL", (const UTF8Char*)"Request", me);
 		return;
 	}
 

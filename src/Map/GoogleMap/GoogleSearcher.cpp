@@ -119,15 +119,15 @@ UTF8Char *Map::GoogleMap::GoogleSearcher::SearchName(UTF8Char *buff, UOSInt buff
 	}
 
 	Net::HTTPClient *cli;
-	urlStart = sptr = Text::StrConcat(url, (const UTF8Char*)"http://maps.google.com");
-	sptr = Text::StrConcat(sptr, (const UTF8Char*)"/maps/geo?q=");
+	urlStart = sptr = Text::StrConcatC(url, UTF8STRC("http://maps.google.com"));
+	sptr = Text::StrConcatC(sptr, UTF8STRC("/maps/geo?q="));
 	sptr = Text::StrDouble(sptr, lat);
-	sptr = Text::StrConcat(sptr, (const UTF8Char*)",");
+	sptr = Text::StrConcatC(sptr, UTF8STRC(","));
 	sptr = Text::StrDouble(sptr, lon);
-	sptr = Text::StrConcat(sptr, (const UTF8Char*)"&output=csv&oe=utf8&sensor=false");
+	sptr = Text::StrConcatC(sptr, UTF8STRC("&output=csv&oe=utf8&sensor=false"));
 	if (this->gooCliId)
 	{
-		sptr = Text::StrConcat(sptr, (const UTF8Char*)"&client=");
+		sptr = Text::StrConcatC(sptr, UTF8STRC("&client="));
 		sptr = this->gooCliId->ConcatTo(sptr);
 
 		UInt8 result[20];
@@ -136,17 +136,17 @@ UTF8Char *Map::GoogleMap::GoogleSearcher::SearchName(UTF8Char *buff, UOSInt buff
 		hmac.Calc(urlStart, (UOSInt)(sptr - urlStart));
 		hmac.GetValue(result);
 		Text::TextBinEnc::Base64Enc b64(Text::TextBinEnc::Base64Enc::Charset::URL, false);
-		sptr = Text::StrConcat(sptr, (const UTF8Char*)"&signature=");
+		sptr = Text::StrConcatC(sptr, UTF8STRC("&signature="));
 		sptr = b64.EncodeBin(sptr, result, 20);
 	}
 	else if (this->gooKey)
 	{
-		sptr = Text::StrConcat(sptr, (const UTF8Char*)"&key=");
+		sptr = Text::StrConcatC(sptr, UTF8STRC("&key="));
 		sptr = this->gooKey->ConcatTo(sptr);
 	}
 	else
 	{
-		sptr = Text::StrConcat(sptr, (const UTF8Char*)"&key=");
+		sptr = Text::StrConcatC(sptr, UTF8STRC("&key="));
 	}
 	cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, url, 0, true);
 	if (!cli->IsError())
@@ -205,9 +205,9 @@ UTF8Char *Map::GoogleMap::GoogleSearcher::SearchName(UTF8Char *buff, UOSInt buff
 		else
 		{
 			this->lastIsError = 1;
-			sptr = Text::StrConcat(url, (const UTF8Char*)"Google ");
+			sptr = Text::StrConcatC(url, UTF8STRC("Google "));
 			sptr = Text::StrInt32(sptr, status);
-			sptr = Text::StrConcat(sptr, (const UTF8Char*)" Error");
+			sptr = Text::StrConcatC(sptr, UTF8STRC(" Error"));
 			errWriter->WriteLineC(url, (UOSInt)(sptr - url));
 			*buff = 0;
 		}

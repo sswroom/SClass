@@ -20,12 +20,12 @@ void __stdcall SSWR::AVIRead::AVIRTCPSpdSvrForm::OnStartClick(void *userObj)
 	me->txtPort->GetText(&sb);
 	if (!sb.ToUInt16(&port))
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char *)"Port is not a number", (const UTF8Char *)"Error", me);
+		UI::MessageDialog::ShowDialog((const UTF8Char*)"Port is not a number", (const UTF8Char*)"Error", me);
 		return;
 	}
 	if (port <= 0 || port > 65535)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char *)"Port is out of range", (const UTF8Char *)"Error", me);
+		UI::MessageDialog::ShowDialog((const UTF8Char*)"Port is out of range", (const UTF8Char*)"Error", me);
 		return;
 	}
 	if (!me->chkMultiThread->IsChecked())
@@ -39,7 +39,7 @@ void __stdcall SSWR::AVIRead::AVIRTCPSpdSvrForm::OnStartClick(void *userObj)
 		SDEL_CLASS(me->cliMgr);
 		me->svr = 0;
 		me->cliMgr = 0;
-		UI::MessageDialog::ShowDialog((const UTF8Char *)"Error in listening to the port", (const UTF8Char *)"Error", me);
+		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in listening to the port", (const UTF8Char*)"Error", me);
 		return;
 	}
 	me->txtPort->SetReadOnly(true);

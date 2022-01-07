@@ -960,14 +960,14 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnSpAddClicked(void *userObj)
 			me->txtSpeciesSName->GetText(&sb);
 			if (me->env->IsSpeciesExist(sb.ToString()))
 			{
-				UI::MessageDialog::ShowDialog((const UTF8Char *)"Species already exist", (const UTF8Char *)"Add Species", me);
+				UI::MessageDialog::ShowDialog((const UTF8Char*)"Species already exist", (const UTF8Char*)"Add Species", me);
 				return;
 			}
 			sb2.AppendC(UTF8STRC("Species already exist in book:\r\n"));
 			if (me->env->IsBookSpeciesExist(sb.ToString(), &sb2))
 			{
 				sb2.AppendC(UTF8STRC("\r\n, continue?"));
-				if (!UI::MessageDialog::ShowYesNoDialog(sb2.ToString(), (const UTF8Char *)"Add Species", me))
+				if (!UI::MessageDialog::ShowYesNoDialog(sb2.ToString(), (const UTF8Char*)"Add Species", me))
 				{
 					return;
 				}
@@ -1036,7 +1036,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnSpRemoveClicked(void *userObj)
 		i = me->lbObj->GetSelectedIndex();
 		if (i != INVALID_INDEX)
 		{
-			if (UI::MessageDialog::ShowYesNoDialog((const UTF8Char *)"Are you sure to remove the species?", (const UTF8Char *)"Remove Species", me))
+			if (UI::MessageDialog::ShowYesNoDialog((const UTF8Char*)"Are you sure to remove the species?", (const UTF8Char*)"Remove Species", me))
 			{
 				OrganSpecies *o = (OrganSpecies*)me->lbObj->GetItem(i);;
 				if (me->env->DelSpecies(o))
@@ -1167,7 +1167,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnSpBookAddClicked(void *userObj)
 	UOSInt i = me->cboSpBook->GetSelectedIndex();
 	if (i == INVALID_INDEX)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char *)"Please select a book to add", (const UTF8Char *)"Add Book", me);
+		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please select a book to add", (const UTF8Char*)"Add Book", me);
 		return;
 	}
 	OrganBook *bk = (OrganBook*)me->cboSpBook->GetItem(i);
@@ -1175,13 +1175,13 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnSpBookAddClicked(void *userObj)
 	me->txtSpBook->GetText(&sb);
 	if (sb.ToString()[0] == 0)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char *)"Please enter display name to add", (const UTF8Char *)"Add Book", me);
+		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter display name to add", (const UTF8Char*)"Add Book", me);
 		return;
 	}
 
 	if (me->env->IsSpeciesBookExist(me->lastSpeciesObj->GetSpeciesId(), bk->GetBookId()))
 	{
-		if (!UI::MessageDialog::ShowYesNoDialog((const UTF8Char *)"The book is already exist. Are you sure to add this book?", (const UTF8Char *)"Question", me))
+		if (!UI::MessageDialog::ShowYesNoDialog((const UTF8Char*)"The book is already exist. Are you sure to add this book?", (const UTF8Char*)"Question", me))
 		{
 			return;
 		}
@@ -2002,7 +2002,7 @@ void SSWR::OrganMgr::OrganMainForm::UpdateImgDir()
 				imgItem = this->imgItems->GetItem(i);
 				if (imgItem->GetIsCoverPhoto())
 				{
-					sptr = Text::StrConcat(sbuff, (const UTF8Char*)"*");
+					sptr = Text::StrConcatC(sbuff, UTF8STRC("*"));
 					if (this->initSelImg == 0)
 					{
 						initSel = i;
@@ -2020,7 +2020,7 @@ void SSWR::OrganMgr::OrganMainForm::UpdateImgDir()
 					dt.SetUnixTimestamp(ts);
 					dt.ToLocalTime();
 
-					sptr = Text::StrConcat(sptr, (const UTF8Char*)" (");
+					sptr = Text::StrConcatC(sptr, UTF8STRC(" ("));
 					sptr = dt.ToString(sptr, "yyyy-MM-dd HH:mm:sszz");
 					
 					UserFileInfo *userFile = imgItem->GetUserFile();
@@ -2031,7 +2031,7 @@ void SSWR::OrganMgr::OrganMainForm::UpdateImgDir()
 					}
 					if (csptr)
 					{
-						sptr = Text::StrConcat(sptr, (const UTF8Char*)", ");
+						sptr = Text::StrConcatC(sptr, UTF8STRC(", "));
 						sptr = Text::StrConcat(sptr, csptr);
 					}
 					else
@@ -2042,7 +2042,7 @@ void SSWR::OrganMgr::OrganMainForm::UpdateImgDir()
 						}
 						else
 						{
-							sptr = Text::StrConcat(sptr, (const UTF8Char*)", ");
+							sptr = Text::StrConcatC(sptr, UTF8STRC(", "));
 							sptr = s->ConcatTo(sptr);
 							if (userFile)
 							{
@@ -2050,16 +2050,16 @@ void SSWR::OrganMgr::OrganMainForm::UpdateImgDir()
 							}
 						}
 					}
-					sptr = Text::StrConcat(sptr, (const UTF8Char*)")");
+					sptr = Text::StrConcatC(sptr, UTF8STRC(")"));
 				}
 				else
 				{
 					Text::String *sURL = imgItem->GetSrcURL();
 					if (sURL)
 					{
-						sptr = Text::StrConcat(sptr, (const UTF8Char*)" (");
+						sptr = Text::StrConcatC(sptr, UTF8STRC(" ("));
 						sptr = sURL->ConcatTo(sptr);
-						sptr = Text::StrConcat(sptr, (const UTF8Char*)")");
+						sptr = Text::StrConcatC(sptr, UTF8STRC(")"));
 					}
 				}
 				UserFileInfo *userFile = imgItem->GetUserFile();
@@ -2067,7 +2067,7 @@ void SSWR::OrganMgr::OrganMainForm::UpdateImgDir()
 				{
 					if (userFile->descript)
 					{
-						sptr = Text::StrConcat(sptr, (const UTF8Char*)" ");
+						sptr = Text::StrConcatC(sptr, UTF8STRC(" "));
 						sptr = userFile->descript->ConcatTo(sptr);
 					}
 				}
@@ -2076,7 +2076,7 @@ void SSWR::OrganMgr::OrganMainForm::UpdateImgDir()
 				{
 					if (wfile->location)
 					{
-						sptr = Text::StrConcat(sptr, (const UTF8Char*)" ");
+						sptr = Text::StrConcatC(sptr, UTF8STRC(" "));
 						sptr = wfile->location->ConcatTo(sptr);
 					}
 				}
@@ -2493,7 +2493,7 @@ SSWR::OrganMgr::OrganSpImgLayer *SSWR::OrganMgr::OrganMainForm::GetImgLayer(UInt
 	stimg->FillColor(mapColor);
 	NEW_CLASS(imgList, Media::ImageList((const UTF8Char*)"PointImage"));
 	imgList->AddImage(stimg, 0);
-	Text::StrHexVal32(Text::StrConcat(sbuff, (const UTF8Char*)"Image"), mapColor);
+	Text::StrHexVal32(Text::StrConcatC(sbuff, UTF8STRC("Image")), mapColor);
 	imgInd = this->mapEnv->AddImage(sbuff, imgList);
 	lyrInd = this->mapEnv->AddLayer(0, lyr, true);
 	this->mapEnv->GetLayerProp(&sett, 0, lyrInd);

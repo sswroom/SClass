@@ -309,14 +309,14 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnUploadClicked(void *userObj)
 	UInt32 baudRate = me->snb->GetBaudRate();
 	if (dongleId == 0 || baudRate == 0)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char *)"Dongle info missing", (const UTF8Char *)"Error", me);
+		UI::MessageDialog::ShowDialog((const UTF8Char*)"Dongle info missing", (const UTF8Char*)"Error", me);
 		return;
 	}
 	Text::StringBuilderUTF8 url;
 	me->txtURL->GetText(&url);
-	if (!url.StartsWith((const UTF8Char *)"http://"))
+	if (!url.StartsWith((const UTF8Char*)"http://"))
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char *)"URL is not valid", (const UTF8Char *)"Error", me);
+		UI::MessageDialog::ShowDialog((const UTF8Char*)"URL is not valid", (const UTF8Char*)"Error", me);
 		return;
 	}
 
@@ -324,7 +324,7 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnUploadClicked(void *userObj)
 	me->txtRemarks->GetText(&remarks);
 	if (remarks.IndexOf('\r') != INVALID_INDEX || remarks.IndexOf('\n') != INVALID_INDEX || remarks.IndexOf('\'') != INVALID_INDEX)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char *)"Remarks contain invalid characters", (const UTF8Char *)"Error", me);
+		UI::MessageDialog::ShowDialog((const UTF8Char*)"Remarks contain invalid characters", (const UTF8Char*)"Error", me);
 		return;
 	}
 	Text::StringBuilderUTF8 sb;
@@ -346,7 +346,7 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnUploadClicked(void *userObj)
 	if (sensors->GetCount() == 0)
 	{
 		me->devMut->UnlockRead();
-		UI::MessageDialog::ShowDialog((const UTF8Char *)"No devices found", (const UTF8Char *)"Error", me);
+		UI::MessageDialog::ShowDialog((const UTF8Char*)"No devices found", (const UTF8Char*)"Error", me);
 		return;
 	}
 	i = 0;
@@ -357,7 +357,7 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnUploadClicked(void *userObj)
 		if (dev->readingTime == 0 || dev->nReading == 0)
 		{
 			me->devMut->UnlockRead();
-			UI::MessageDialog::ShowDialog((const UTF8Char *)"Some devices do not have reading yet", (const UTF8Char *)"Error", me);
+			UI::MessageDialog::ShowDialog((const UTF8Char*)"Some devices do not have reading yet", (const UTF8Char*)"Error", me);
 			return;
 		}
 		if (i > 0)
@@ -384,7 +384,7 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnUploadClicked(void *userObj)
 	cli->AddHeader((const UTF8Char*)"Iot-Program", (const UTF8Char*)"margorpnomis");
 	if (cli->IsError())
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char *)"Some devices do not have reading yet", (const UTF8Char *)"Error", me);
+		UI::MessageDialog::ShowDialog((const UTF8Char*)"Some devices do not have reading yet", (const UTF8Char*)"Error", me);
 		status = -1;
 	}
 	else
@@ -401,14 +401,14 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnUploadClicked(void *userObj)
 	}
 	else if (status == 200)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char *)"Uploaded successfully", (const UTF8Char *)"Upload", me);
+		UI::MessageDialog::ShowDialog((const UTF8Char*)"Uploaded successfully", (const UTF8Char*)"Upload", me);
 	}
 	else
 	{
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("Error, server response "));
 		sb.AppendI32(status);
-		UI::MessageDialog::ShowDialog(sb.ToString(), (const UTF8Char *)"Upload", me);
+		UI::MessageDialog::ShowDialog(sb.ToString(), (const UTF8Char*)"Upload", me);
 	}
 }
 
@@ -416,7 +416,7 @@ void SSWR::AVIRead::AVIRSNBDongleForm::LoadFile()
 {
 	UTF8Char sbuff[512];
 	IO::Path::GetProcessFileName(sbuff);
-	IO::Path::AppendPath(sbuff, (const UTF8Char *)"snb.dat");
+	IO::Path::AppendPath(sbuff, (const UTF8Char*)"snb.dat");
 	IO::FileStream *fs;
 	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (!fs->IsError())
@@ -468,7 +468,7 @@ void SSWR::AVIRead::AVIRSNBDongleForm::SaveFile()
 
 	UTF8Char sbuff[512];
 	IO::Path::GetProcessFileName(sbuff);
-	IO::Path::AppendPath(sbuff, (const UTF8Char *)"snb.dat");
+	IO::Path::AppendPath(sbuff, (const UTF8Char*)"snb.dat");
 	IO::FileStream *fs;
 	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	fs->Write(dataBuff, k);

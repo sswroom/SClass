@@ -15,7 +15,7 @@ void __stdcall UtilUI::TextViewerForm::OnFileDrop(void *userObj, const UTF8Char 
 	UTF8Char sbuff[530];
 	if (me->txtView->LoadFile(files[0]))
 	{
-		Text::StrConcat(Text::StrConcat(sbuff, (const UTF8Char*)"Text Viewer - "), files[0]);
+		Text::StrConcat(Text::StrConcatC(sbuff, UTF8STRC("Text Viewer - ")), files[0]);
 		me->SetText(sbuff);
 	}
 }
@@ -24,7 +24,7 @@ void __stdcall UtilUI::TextViewerForm::OnTextPosUpd(void *userObj, UInt32 textPo
 {
 	UtilUI::TextViewerForm *me = (UtilUI::TextViewerForm*)userObj;
 	UTF8Char sbuff[32];
-	Text::StrUInt32(Text::StrConcat(Text::StrUOSInt(sbuff, (textPosY + 1)), (const UTF8Char*)" : "), textPosX + 1);
+	Text::StrUInt32(Text::StrConcatC(Text::StrUOSInt(sbuff, (textPosY + 1)), UTF8STRC(" : ")), textPosX + 1);
 	me->txtStatus->SetText(sbuff);
 }
 
@@ -95,7 +95,7 @@ void UtilUI::TextViewerForm::EventMenuClicked(UInt16 cmdId)
 		{
 			if (this->txtView->LoadFile(dlg->GetFileName()))
 			{
-				Text::StrConcat(Text::StrConcat(sbuff, (const UTF8Char*)"Text Viewer - "), dlg->GetFileName());
+				Text::StrConcat(Text::StrConcatC(sbuff, UTF8STRC("Text Viewer - ")), dlg->GetFileName());
 				this->SetText(sbuff);
 			}
 		}

@@ -69,7 +69,7 @@ void SSWR::AVIRead::AVIRFontSelector::OnDraw(Media::DrawImage *img)
 		UTF8Char *sptr = this->env->GetFontStyleName(currPos, sbuff);
 		if (sbuff[0] == 0)
 		{
-			sptr = Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"Style "), currPos);
+			sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Style ")), currPos);
 		}
 		if (sbuff[0])
 		{

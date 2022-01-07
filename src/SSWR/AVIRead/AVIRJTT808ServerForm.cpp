@@ -69,9 +69,9 @@ void __stdcall SSWR::AVIRead::AVIRJTT808ServerForm::OnClientEvent(Net::TCPClient
 	{
 		UTF8Char sbuff[256];
 		UTF8Char *sptr;
-		sptr = Text::StrConcat(sbuff, (const UTF8Char*)"Client ");
+		sptr = Text::StrConcatC(sbuff, UTF8STRC("Client "));
 		sptr = cli->GetRemoteName(sptr);
-		sptr = Text::StrConcat(sptr, (const UTF8Char*)" disconnect");
+		sptr = Text::StrConcatC(sptr, UTF8STRC(" disconnect"));
 		me->log->LogMessageC(sbuff, (UOSInt)(sptr - sbuff), IO::ILogHandler::LOG_LEVEL_ACTION);
 
 		me->protoHdlr->DeleteStreamData(cli, data->cliData);
@@ -87,9 +87,9 @@ void __stdcall SSWR::AVIRead::AVIRJTT808ServerForm::OnClientData(Net::TCPClient 
 
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
-	sptr = Text::StrConcat(sbuff, (const UTF8Char*)"Received ");
+	sptr = Text::StrConcatC(sbuff, UTF8STRC("Received "));
 	sptr = Text::StrUOSInt(sptr, size);
-	sptr = Text::StrConcat(sptr, (const UTF8Char*)" bytes");
+	sptr = Text::StrConcatC(sptr, UTF8STRC(" bytes"));
 	me->log->LogMessageC(sbuff, (UOSInt)(sptr - sbuff), IO::ILogHandler::LOG_LEVEL_ACTION);
 
 	MemCopyNO(&data->recvBuff[data->buffSize], buff, size);
@@ -193,13 +193,13 @@ void SSWR::AVIRead::AVIRJTT808ServerForm::DataParsed(IO::Stream *stm, void *stmO
 	UInt8 tmpPacket[64];
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	sptr = Text::StrConcat(sbuff, (const UTF8Char*)"Packet: seq = ");
+	sptr = Text::StrConcatC(sbuff, UTF8STRC("Packet: seq = "));
 	sptr = Text::StrInt32(sptr, seqId);
-	sptr = Text::StrConcat(sptr, (const UTF8Char*)", type = 0x");
+	sptr = Text::StrConcatC(sptr, UTF8STRC(", type = 0x"));
 	sptr = Text::StrHexVal16(sptr, (UInt16)cmdType);
-	sptr = Text::StrConcat(sptr, (const UTF8Char*)", size = ");
+	sptr = Text::StrConcatC(sptr, UTF8STRC(", size = "));
 	sptr = Text::StrUOSInt(sptr, cmdSize);
-	sptr = Text::StrConcat(sptr, (const UTF8Char*)", devId = ");
+	sptr = Text::StrConcatC(sptr, UTF8STRC(", devId = "));
 	sptr = Text::StrHexBytes(sptr, &cmd[5], 6, 0);
 	this->log->LogMessageC(sbuff, (UOSInt)(sptr - sbuff), IO::ILogHandler::LOG_LEVEL_ACTION);
 
@@ -218,11 +218,11 @@ void SSWR::AVIRead::AVIRJTT808ServerForm::DataParsed(IO::Stream *stm, void *stmO
 		this->log->LogMessageC(UTF8STRC("Cmd: Device Logout"), IO::ILogHandler::LOG_LEVEL_ACTION);
 		break;
 	case 0x100: //Login
-		sptr = Text::StrConcat(sbuff, (const UTF8Char*)"Cmd: Login County = ");
+		sptr = Text::StrConcatC(sbuff, UTF8STRC("Cmd: Login County = "));
 		sptr = Text::StrUInt32(sptr, ReadMUInt16(&packetContent[0]));
-		sptr = Text::StrConcat(sptr, (const UTF8Char*)", City = ");
+		sptr = Text::StrConcatC(sptr, UTF8STRC(", City = "));
 		sptr = Text::StrUInt32(sptr, ReadMUInt16(&packetContent[2]));
-		sptr = Text::StrConcat(sptr, (const UTF8Char*)", Make = ");
+		sptr = Text::StrConcatC(sptr, UTF8STRC(", Make = "));
 		i = 5;
 		j = 4;
 		while (i-- > 0)
@@ -232,7 +232,7 @@ void SSWR::AVIRead::AVIRJTT808ServerForm::DataParsed(IO::Stream *stm, void *stmO
 				break;
 			*sptr++ = c;
 		}
-		sptr = Text::StrConcat(sptr, (const UTF8Char*)", Model = ");
+		sptr = Text::StrConcatC(sptr, UTF8STRC(", Model = "));
 		i = 20;
 		j = 9;
 		while (i-- > 0)
@@ -242,7 +242,7 @@ void SSWR::AVIRead::AVIRJTT808ServerForm::DataParsed(IO::Stream *stm, void *stmO
 				break;
 			*sptr++ = c;
 		}
-		sptr = Text::StrConcat(sptr, (const UTF8Char*)", SN = ");
+		sptr = Text::StrConcatC(sptr, UTF8STRC(", SN = "));
 		i = 7;
 		j = 29;
 		while (i-- > 0)
@@ -252,9 +252,9 @@ void SSWR::AVIRead::AVIRJTT808ServerForm::DataParsed(IO::Stream *stm, void *stmO
 				break;
 			*sptr++ = c;
 		}
-		sptr = Text::StrConcat(sptr, (const UTF8Char*)", Color = ");
+		sptr = Text::StrConcatC(sptr, UTF8STRC(", Color = "));
 		sptr = Text::StrUInt32(sptr, packetContent[36]);
-		sptr = Text::StrConcat(sptr, (const UTF8Char*)", License = ");
+		sptr = Text::StrConcatC(sptr, UTF8STRC(", License = "));
 		i = contSize - 37;
 		j = 37;
 		while (i-- > 0)
@@ -288,24 +288,24 @@ void SSWR::AVIRead::AVIRJTT808ServerForm::DataParsed(IO::Stream *stm, void *stmO
 		stm->Write(packet, i);
 		break;
 	case 0x200:
-		sptr = Text::StrConcat(sbuff, (const UTF8Char*)"Cmd: Location: Alert = 0x");
+		sptr = Text::StrConcatC(sbuff, UTF8STRC("Cmd: Location: Alert = 0x"));
 		sptr = Text::StrHexVal32(sptr, ReadMUInt32(&packetContent[0]));
-		sptr = Text::StrConcat(sptr, (const UTF8Char*)", Status = 0x");
+		sptr = Text::StrConcatC(sptr, UTF8STRC(", Status = 0x"));
 		sptr = Text::StrHexVal32(sptr, ReadMUInt32(&packetContent[4]));
-		sptr = Text::StrConcat(sptr, (const UTF8Char*)", Latitude = ");
+		sptr = Text::StrConcatC(sptr, UTF8STRC(", Latitude = "));
 		sptr = Text::StrDouble(sptr, ReadMUInt32(&packetContent[8]) * 0.000001);
-		sptr = Text::StrConcat(sptr, (const UTF8Char*)", Longitude = ");
+		sptr = Text::StrConcatC(sptr, UTF8STRC(", Longitude = "));
 		sptr = Text::StrDouble(sptr, ReadMUInt32(&packetContent[12]) * 0.000001);
-		sptr = Text::StrConcat(sptr, (const UTF8Char*)", Altitude = ");
+		sptr = Text::StrConcatC(sptr, UTF8STRC(", Altitude = "));
 		sptr = Text::StrUInt32(sptr, ReadMUInt16(&packetContent[16]));
-		sptr = Text::StrConcat(sptr, (const UTF8Char*)", Speed = ");
+		sptr = Text::StrConcatC(sptr, UTF8STRC(", Speed = "));
 		sptr = Text::StrDouble(sptr, ReadMUInt16(&packetContent[18]) * 0.1);
-		sptr = Text::StrConcat(sptr, (const UTF8Char*)", Dir = ");
+		sptr = Text::StrConcatC(sptr, UTF8STRC(", Dir = "));
 		sptr = Text::StrUInt32(sptr, ReadMUInt16(&packetContent[20]));
 		{
 			Data::DateTime dt;
 			dt.SetValue((UInt16)(2000 + Data::ByteTool::GetBCD8(packetContent[22])), Data::ByteTool::GetBCD8(packetContent[23]), Data::ByteTool::GetBCD8(packetContent[24]), Data::ByteTool::GetBCD8(packetContent[25]), Data::ByteTool::GetBCD8(packetContent[26]), Data::ByteTool::GetBCD8(packetContent[27]), 0, 32);
-			sptr = Text::StrConcat(sptr, (const UTF8Char*)", Time = ");
+			sptr = Text::StrConcatC(sptr, UTF8STRC(", Time = "));
 			sptr = dt.ToString(sptr);
 		}
 		i = 28;
@@ -316,71 +316,71 @@ void SSWR::AVIRead::AVIRJTT808ServerForm::DataParsed(IO::Stream *stm, void *stmO
 			switch (packetContent[i])
 			{
 			case 1:
-				sptr = Text::StrConcat(sptr, (const UTF8Char*)", Mileage = ");
+				sptr = Text::StrConcatC(sptr, UTF8STRC(", Mileage = "));
 				if (packetContent[i + 1] == 4)
 				{
 					sptr = Text::StrDouble(sptr, ReadMUInt32(&packetContent[i + 2]) * 0.1);
 				}
 				break;
 			case 2:
-				sptr = Text::StrConcat(sptr, (const UTF8Char*)", Fuel Level = ");
+				sptr = Text::StrConcatC(sptr, UTF8STRC(", Fuel Level = "));
 				if (packetContent[i + 1] == 2)
 				{
 					sptr = Text::StrDouble(sptr, ReadMUInt16(&packetContent[i + 2]) * 0.1);
-					sptr = Text::StrConcat(sptr, (const UTF8Char*)"L");
+					sptr = Text::StrConcatC(sptr, UTF8STRC("L"));
 				}
 				break;
 			case 3:
-				sptr = Text::StrConcat(sptr, (const UTF8Char*)", Record Speed = ");
+				sptr = Text::StrConcatC(sptr, UTF8STRC(", Record Speed = "));
 				if (packetContent[i + 1] == 2)
 				{
 					sptr = Text::StrDouble(sptr, ReadMUInt16(&packetContent[i + 2]) * 0.1);
 				}
 				break;
 			case 0x25:
-				sptr = Text::StrConcat(sptr, (const UTF8Char*)", Status2 = ");
+				sptr = Text::StrConcatC(sptr, UTF8STRC(", Status2 = "));
 				if (packetContent[i + 1] == 4)
 				{
-					sptr = Text::StrConcat(sptr, (const UTF8Char*)"0x");
+					sptr = Text::StrConcatC(sptr, UTF8STRC("0x"));
 					sptr = Text::StrHexVal32(sptr, ReadMUInt32(&packetContent[i + 2]));
 				}
 				break;
 			case 0x2A:
-				sptr = Text::StrConcat(sptr, (const UTF8Char*)", IOStatus = ");
+				sptr = Text::StrConcatC(sptr, UTF8STRC(", IOStatus = "));
 				if (packetContent[i + 1] == 2)
 				{
-					sptr = Text::StrConcat(sptr, (const UTF8Char*)"0x");
+					sptr = Text::StrConcatC(sptr, UTF8STRC("0x"));
 					sptr = Text::StrHexVal16(sptr, ReadMUInt16(&packetContent[i + 2]));
 				}
 				break;
 			case 0x2B:
-				sptr = Text::StrConcat(sptr, (const UTF8Char*)", ADC: ");
+				sptr = Text::StrConcatC(sptr, UTF8STRC(", ADC: "));
 				if (packetContent[i + 1] == 4)
 				{
-					sptr = Text::StrConcat(sptr, (const UTF8Char*)"AD0 = ");
+					sptr = Text::StrConcatC(sptr, UTF8STRC("AD0 = "));
 					sptr = Text::StrUInt16(sptr, ReadMUInt16(&packetContent[i + 4]));
-					sptr = Text::StrConcat(sptr, (const UTF8Char*)", AD1 = ");
+					sptr = Text::StrConcatC(sptr, UTF8STRC(", AD1 = "));
 					sptr = Text::StrUInt16(sptr, ReadMUInt16(&packetContent[i + 2]));
 				}
 				break;
 			case 0x30:
-				sptr = Text::StrConcat(sptr, (const UTF8Char*)", GSM RSSI = ");
+				sptr = Text::StrConcatC(sptr, UTF8STRC(", GSM RSSI = "));
 				if (packetContent[i + 1] == 1)
 				{
 					sptr = Text::StrUInt16(sptr, packetContent[i + 2]);
 				}
 				break;
 			case 0x31:
-				sptr = Text::StrConcat(sptr, (const UTF8Char*)", GNSS Cnt = ");
+				sptr = Text::StrConcatC(sptr, UTF8STRC(", GNSS Cnt = "));
 				if (packetContent[i + 1] == 1)
 				{
 					sptr = Text::StrUInt16(sptr, packetContent[i + 2]);
 				}
 				break;
 			default:
-				sptr = Text::StrConcat(sptr, (const UTF8Char*)", Unk Type (0x");
+				sptr = Text::StrConcatC(sptr, UTF8STRC(", Unk Type (0x"));
 				sptr = Text::StrHexByte(sptr, packetContent[i]);
-				sptr = Text::StrConcat(sptr, (const UTF8Char*)")");
+				sptr = Text::StrConcatC(sptr, UTF8STRC(")"));
 				break;
 			}
 			i += (UOSInt)packetContent[i + 1] + 2;
@@ -388,9 +388,9 @@ void SSWR::AVIRead::AVIRJTT808ServerForm::DataParsed(IO::Stream *stm, void *stmO
 		this->log->LogMessageC(sbuff, (UOSInt)(sptr - sbuff), IO::ILogHandler::LOG_LEVEL_ACTION);
 		break;
 	case 0x704:
-		sptr = Text::StrConcat(sbuff, (const UTF8Char*)"Cmd: Batch Upload, Count = ");
+		sptr = Text::StrConcatC(sbuff, UTF8STRC("Cmd: Batch Upload, Count = "));
 		sptr = Text::StrUInt32(sptr, ReadMUInt16(&packetContent[0]));
-		sptr = Text::StrConcat(sptr, (const UTF8Char*)", Buffer Data = ");
+		sptr = Text::StrConcatC(sptr, UTF8STRC(", Buffer Data = "));
 		sptr = Text::StrUInt16(sptr, packetContent[2]);
 		this->log->LogMessageC(sbuff, (UOSInt)(sptr - sbuff), IO::ILogHandler::LOG_LEVEL_ACTION);
 		j = 3;
@@ -398,9 +398,9 @@ void SSWR::AVIRead::AVIRJTT808ServerForm::DataParsed(IO::Stream *stm, void *stmO
 		break;
 
 	case 0x900:
-		sptr = Text::StrConcat(sbuff, (const UTF8Char*)"Cmd: Wrapped Data, type = 0x");
+		sptr = Text::StrConcatC(sbuff, UTF8STRC("Cmd: Wrapped Data, type = 0x"));
 		sptr = Text::StrHexByte(sptr, packetContent[0]);
-		sptr = Text::StrConcat(sptr, (const UTF8Char*)", data = ");
+		sptr = Text::StrConcatC(sptr, UTF8STRC(", data = "));
 		sptr = Text::StrHexBytes(sptr, &packetContent[1], contSize - 1, ' ');
 		this->log->LogMessageC(sbuff, (UOSInt)(sptr - sbuff), IO::ILogHandler::LOG_LEVEL_ACTION);
 		break;
@@ -415,8 +415,8 @@ void SSWR::AVIRead::AVIRJTT808ServerForm::DataSkipped(IO::Stream *stm, void *stm
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
-	sptr = Text::StrConcat(sbuff, (const UTF8Char*)"Data skipped ");
+	sptr = Text::StrConcatC(sbuff, UTF8STRC("Data skipped "));
 	sptr = Text::StrUOSInt(sptr, buffSize);
-	sptr = Text::StrConcat(sptr, (const UTF8Char*)" bytes");
+	sptr = Text::StrConcatC(sptr, UTF8STRC(" bytes"));
 	this->log->LogMessageC(sbuff, (UOSInt)(sptr - sbuff), IO::ILogHandler::LOG_LEVEL_ACTION);
 }

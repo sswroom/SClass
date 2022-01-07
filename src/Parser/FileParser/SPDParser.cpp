@@ -47,17 +47,17 @@ IO::ParsedObject *Parser::FileParser::SPDParser::ParseFile(IO::IStreamData *fd, 
 	{
 		return 0;
 	}
-	Text::StrConcat(&sbuff[i], (const UTF8Char*)".sps");
+	Text::StrConcatC(&sbuff[i], UTF8STRC(".sps"));
 	if (IO::Path::GetPathType(sbuff) != IO::Path::PathType::File)
 	{
 		return 0;
 	}
-	Text::StrConcat(&sbuff[i], (const UTF8Char*)".spi");
+	Text::StrConcatC(&sbuff[i], UTF8STRC(".spi"));
 	if (IO::Path::GetPathType(sbuff) != IO::Path::PathType::File)
 	{
 		return 0;
 	}
-	Text::StrConcat(&sbuff[i], (const UTF8Char*)".spb");
+	Text::StrConcatC(&sbuff[i], UTF8STRC(".spb"));
 	if (IO::Path::GetPathType(sbuff) != IO::Path::PathType::File)
 	{
 		return 0;

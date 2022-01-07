@@ -29,7 +29,7 @@ void __stdcall SSWR::AVIRead::AVIRAccessConnForm::OnOKClicked(void *userObj)
 	me->txtFileName->GetText(&sbFileName);
 	if (sbFileName.GetCharCnt() == 0)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter file name", (const UTF8Char *)"Access Conn", me);
+		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter file name", (const UTF8Char*)"Access Conn", me);
 		return;
 	}
 	NEW_CLASS(me->conn, DB::MDBFileConn(sbFileName.ToString(), me->core->GetLog(), 0, 0, 0));
@@ -42,7 +42,7 @@ void __stdcall SSWR::AVIRead::AVIRAccessConnForm::OnOKClicked(void *userObj)
 		sbFileName.ClearStr();
 		sbFileName.AppendC(UTF8STRC("Error in opening ODBC connection\r\n"));
 		me->conn->GetErrorMsg(&sbFileName);
-		UI::MessageDialog::ShowDialog(sbFileName.ToString(), (const UTF8Char *)"Access Conn", me);
+		UI::MessageDialog::ShowDialog(sbFileName.ToString(), (const UTF8Char*)"Access Conn", me);
 		DEL_CLASS(me->conn);
 	}
 }

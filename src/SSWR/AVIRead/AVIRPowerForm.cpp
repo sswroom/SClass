@@ -11,7 +11,7 @@ void __stdcall SSWR::AVIRead::AVIRPowerForm::OnTimerTick(void *userObj)
 	{
 		if (power.hasBattery)
 		{
-			Text::StrConcat(Text::StrUInt32(sbuff, power.batteryPercent), (const UTF8Char*)"%");
+			Text::StrConcatC(Text::StrUInt32(sbuff, power.batteryPercent), UTF8STRC("%"));
 			me->txtBattery->SetText(sbuff);
 			Text::StrUInt32(sbuff, power.timeLeftSec);
 			me->txtTimeLeft->SetText(sbuff);

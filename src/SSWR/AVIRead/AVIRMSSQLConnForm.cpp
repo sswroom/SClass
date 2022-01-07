@@ -56,27 +56,27 @@ void __stdcall SSWR::AVIRead::AVIRMSSQLConnForm::OnOKClicked(void *userObj)
 
 	if (sbServer.GetCharCnt() == 0)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter server", (const UTF8Char *)"MSSQL Conn", me);
+		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter server", (const UTF8Char*)"MSSQL Conn", me);
 		return;
 	}	
 	if (!sbPort.ToUInt16(&port))
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter valid port number", (const UTF8Char *)"MSSQL Conn", me);
+		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter valid port number", (const UTF8Char*)"MSSQL Conn", me);
 		return;
 	}	
 	if (sbDatabase.GetCharCnt() == 0)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter database", (const UTF8Char *)"MSSQL Conn", me);
+		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter database", (const UTF8Char*)"MSSQL Conn", me);
 		return;
 	}	
 	if (sbUser.GetCharCnt() == 0)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter user", (const UTF8Char *)"MSSQL Conn", me);
+		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter user", (const UTF8Char*)"MSSQL Conn", me);
 		return;
 	}	
 	if (sbPassword.GetCharCnt() == 0)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter password", (const UTF8Char *)"MSSQL Conn", me);
+		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter password", (const UTF8Char*)"MSSQL Conn", me);
 		return;
 	}
 	sbPort.ClearStr();
@@ -90,7 +90,7 @@ void __stdcall SSWR::AVIRead::AVIRMSSQLConnForm::OnOKClicked(void *userObj)
 		sbUser.ClearStr();
 		sbUser.AppendC(UTF8STRC("Error in opening ODBC connection\r\n"));
 		sbUser.AppendC(sbPort.ToString(), sbPort.GetLength());
-		UI::MessageDialog::ShowDialog(sbUser.ToString(), (const UTF8Char *)"MSSQL Conn", me);
+		UI::MessageDialog::ShowDialog(sbUser.ToString(), (const UTF8Char*)"MSSQL Conn", me);
 	}
 }
 
@@ -120,7 +120,7 @@ SSWR::AVIRead::AVIRMSSQLConnForm::AVIRMSSQLConnForm(UI::GUIClientControl *parent
 	this->lblServer->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtServer, UI::GUITextBox(ui, this, (const UTF8Char*)"localhost"));
 	this->txtServer->SetRect(104, 28, 200, 23, false);
-	NEW_CLASS(this->btnPasteJDBC, UI::GUIButton(ui, this, (const UTF8Char *)"Paste from JDBC Str"));
+	NEW_CLASS(this->btnPasteJDBC, UI::GUIButton(ui, this, (const UTF8Char*)"Paste from JDBC Str"));
 	this->btnPasteJDBC->SetRect(304, 28, 150, 23, false);
 	this->btnPasteJDBC->HandleButtonClick(OnPasteJDBCClicked, this);
 	NEW_CLASS(this->lblPort, UI::GUILabel(ui, this, (const UTF8Char*)"Port"));

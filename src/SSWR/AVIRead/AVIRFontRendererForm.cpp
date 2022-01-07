@@ -41,7 +41,7 @@ SSWR::AVIRead::AVIRFontRendererForm::AVIRFontRendererForm(UI::GUIClientControl *
 	UTF32Char j = font->GetMaxChar();
 	while (i <= j)
 	{
-		Text::StrHexVal32V(Text::StrConcat(sbuff, (const UTF8Char*)"0x"), (UInt32)i);
+		Text::StrHexVal32V(Text::StrConcatC(sbuff, UTF8STRC("0x")), (UInt32)i);
 		this->lbChar->AddItem(sbuff, (void*)(OSInt)i);
 		i++;
 	}

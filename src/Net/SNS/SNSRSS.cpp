@@ -128,7 +128,7 @@ Text::String *Net::SNS::SNSRSS::GetName()
 UTF8Char *Net::SNS::SNSRSS::GetDirName(UTF8Char *dirName)
 {
 	UInt8 crcVal[4];
-	dirName = Text::StrConcat(dirName, (const UTF8Char*)"RSS_");
+	dirName = Text::StrConcatC(dirName, UTF8STRC("RSS_"));
 	this->CalcCRC(this->channelId->v, this->channelId->leng, crcVal);
 	dirName = Text::StrHexBytes(dirName, crcVal, 4, 0);
 	return dirName;

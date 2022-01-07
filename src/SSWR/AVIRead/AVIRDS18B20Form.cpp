@@ -55,7 +55,7 @@ SSWR::AVIRead::AVIRDS18B20Form::AVIRDS18B20Form(UI::GUIClientControl *parent, UI
 	this->core = core;
 	NEW_CLASS(this->oneWire, IO::OneWireGPIO(this->pin));
 	NEW_CLASS(this->ds18b20, IO::Device::DS18B20(this->oneWire));
-	this->pin->GetName(Text::StrConcat(sbuff, (const UTF8Char*)"DS18B20 - "));
+	this->pin->GetName(Text::StrConcatC(sbuff, UTF8STRC("DS18B20 - ")));
 	this->SetText(sbuff);
 	this->SetNoResize(true);
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));

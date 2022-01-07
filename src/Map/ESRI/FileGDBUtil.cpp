@@ -86,7 +86,7 @@ Map::ESRI::FileGDBTableInfo *Map::ESRI::FileGDBUtil::ParseFieldDesc(const UInt8 
 			sptr = Text::StrUTF16_UTF8C(sbuff, (const UTF16Char*)&fieldDesc[ofst + 2], srsLen >> 1);
 			*sptr = 0;
 			UOSInt csysLen = (UOSInt)(sptr - sbuff);
-			table->csys = Math::CoordinateSystemManager::ParsePRJBuff((const UTF8Char *)"FileGDB", (Char*)sbuff, &csysLen);
+			table->csys = Math::CoordinateSystemManager::ParsePRJBuff((const UTF8Char*)"FileGDB", (Char*)sbuff, &csysLen);
 			ofst += 2 + srsLen;
 			UInt8 flags = fieldDesc[ofst];
 			ofst += 1;

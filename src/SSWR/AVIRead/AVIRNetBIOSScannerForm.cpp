@@ -52,10 +52,10 @@ void __stdcall SSWR::AVIRead::AVIRNetBIOSScannerForm::OnAnswerSelChg(void *userO
 		while (i < j)
 		{
 			me->lvEntries->AddItem(ans->names[i].nameBuff, 0);
-			Text::StrHexByte(Text::StrConcat(sbuff, (const UTF8Char*)"0x"), ans->names[i].nameType);
+			Text::StrHexByte(Text::StrConcatC(sbuff, UTF8STRC("0x")), ans->names[i].nameType);
 			me->lvEntries->SetSubItem(i, 1, sbuff);
 			me->lvEntries->SetSubItem(i, 2, Net::NetBIOSUtil::NameTypeGetName(ans->names[i].nameType));
-			Text::StrHexVal16(Text::StrConcat(sbuff, (const UTF8Char*)"0x"), ans->names[i].flags);
+			Text::StrHexVal16(Text::StrConcatC(sbuff, UTF8STRC("0x")), ans->names[i].flags);
 			me->lvEntries->SetSubItem(i, 3, sbuff);
 			i++;
 		}
@@ -138,21 +138,21 @@ SSWR::AVIRead::AVIRNetBIOSScannerForm::AVIRNetBIOSScannerForm(UI::GUIClientContr
 	this->lvAnswers->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lvAnswers->SetShowGrid(true);
 	this->lvAnswers->SetFullRowSelect(true);
-	this->lvAnswers->AddColumn((const UTF8Char *)"IP", 100);
-	this->lvAnswers->AddColumn((const UTF8Char *)"Unit ID", 120);
-	this->lvAnswers->AddColumn((const UTF8Char *)"Vendor", 120);
-	this->lvAnswers->AddColumn((const UTF8Char *)"Name", 140);
-	this->lvAnswers->AddColumn((const UTF8Char *)"TTL", 80);
+	this->lvAnswers->AddColumn((const UTF8Char*)"IP", 100);
+	this->lvAnswers->AddColumn((const UTF8Char*)"Unit ID", 120);
+	this->lvAnswers->AddColumn((const UTF8Char*)"Vendor", 120);
+	this->lvAnswers->AddColumn((const UTF8Char*)"Name", 140);
+	this->lvAnswers->AddColumn((const UTF8Char*)"TTL", 80);
 	this->lvAnswers->HandleSelChg(OnAnswerSelChg, this);
 	NEW_CLASS(this->vspAnswers, UI::GUIVSplitter(ui, this, 3, false));
 	NEW_CLASS(this->lvEntries, UI::GUIListView(ui, this, UI::GUIListView::LVSTYLE_TABLE, 4));
 	this->lvEntries->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvEntries->SetShowGrid(true);
 	this->lvEntries->SetFullRowSelect(true);
-	this->lvEntries->AddColumn((const UTF8Char *)"Name", 140);
-	this->lvEntries->AddColumn((const UTF8Char *)"TypeCode", 80);
-	this->lvEntries->AddColumn((const UTF8Char *)"TypeName", 150);
-	this->lvEntries->AddColumn((const UTF8Char *)"Flags", 80);
+	this->lvEntries->AddColumn((const UTF8Char*)"Name", 140);
+	this->lvEntries->AddColumn((const UTF8Char*)"TypeCode", 80);
+	this->lvEntries->AddColumn((const UTF8Char*)"TypeName", 150);
+	this->lvEntries->AddColumn((const UTF8Char*)"Flags", 80);
 
 	Net::SocketFactory *sockf = this->core->GetSocketFactory();
 	NEW_CLASS(this->netbios, Net::NetBIOSScanner(sockf));

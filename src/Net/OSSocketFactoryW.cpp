@@ -813,7 +813,7 @@ Bool Net::OSSocketFactory::LoadHosts(Net::DNSHandler *dnsHdlr)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr = IO::Path::GetOSPath(sbuff);
-	sptr = Text::StrConcat(sptr, (const UTF8Char*)"\\System32\\drivers\\etc\\hosts");
+	sptr = Text::StrConcatC(sptr, UTF8STRC("\\System32\\drivers\\etc\\hosts"));
 	Text::UTF8Reader *reader;
 	IO::FileStream *fs;
 	Net::SocketUtil::AddressInfo addr;

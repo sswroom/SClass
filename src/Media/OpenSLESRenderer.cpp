@@ -607,7 +607,7 @@ void Media::OpenSLESRenderer::SetDeviceVolume(Int32 volume)
 	}*/
 }
 
-void Media::OpenSLESRenderer::SetBufferTime(Int32 ms)
+void Media::OpenSLESRenderer::SetBufferTime(UInt32 ms)
 {
 	this->buffTime = ms;
 }

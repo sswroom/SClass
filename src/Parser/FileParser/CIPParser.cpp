@@ -47,24 +47,24 @@ IO::ParsedObject *Parser::FileParser::CIPParser::ParseFile(IO::IStreamData *fd, 
 	{
 		return 0;
 	}
-	Text::StrConcat(&sbuff[i], (const UTF8Char*)".ciu");
+	Text::StrConcatC(&sbuff[i], UTF8STRC(".ciu"));
 	if (IO::Path::GetPathType(sbuff) != IO::Path::PathType::File)
 	{
 		return 0;
 	}
-	Text::StrConcat(&sbuff[i], (const UTF8Char*)".cix");
+	Text::StrConcatC(&sbuff[i], UTF8STRC(".cix"));
 	if (IO::Path::GetPathType(sbuff) != IO::Path::PathType::File)
 	{
 		return 0;
 	}
-	Text::StrConcat(&sbuff[i], (const UTF8Char*)".blk");
+	Text::StrConcatC(&sbuff[i], UTF8STRC(".blk"));
 	if (IO::Path::GetPathType(sbuff) != IO::Path::PathType::File)
 	{
 		return 0;
 	}
 
 	Map::CIPLayer2 *layer;
-	Text::StrConcat(&sbuff[i], (const UTF8Char*)".cip");
+	Text::StrConcatC(&sbuff[i], UTF8STRC(".cip"));
 	NEW_CLASS(layer, Map::CIPLayer2(sbuff));
 	if (layer->IsError())
 	{

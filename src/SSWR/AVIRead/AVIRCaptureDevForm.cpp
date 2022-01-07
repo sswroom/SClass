@@ -9,13 +9,13 @@ void __stdcall SSWR::AVIRead::AVIRCaptureDevForm::OnOKClick(void *userObj)
 	SSWR::AVIRead::AVIRCaptureDevForm *me = (SSWR::AVIRead::AVIRCaptureDevForm*)userObj;
 	if (me->currCapture == 0)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char *)"Please select a device", (const UTF8Char *)"Select Capture Device", me);
+		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please select a device", (const UTF8Char*)"Select Capture Device", me);
 		return;
 	}
 	CaptureFormat *fmt = (CaptureFormat*)me->cboFormat->GetItem((UOSInt)me->cboFormat->GetSelectedIndex());
 	if (fmt == 0)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char *)"Please select a format", (const UTF8Char *)"Select Capture Device", me);
+		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please select a format", (const UTF8Char*)"Select Capture Device", me);
 		return;
 	}
 

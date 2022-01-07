@@ -33,5 +33,5 @@ const UTF8Char *SSWR::OrganMgr::OrganGroupType::GetEName()
 
 UTF8Char *SSWR::OrganMgr::OrganGroupType::ToString(UTF8Char *sbuff)
 {
-	return Text::StrConcat(Text::StrConcat(Text::StrInt32(sbuff, this->seq), (const UTF8Char*)" "), this->cName);
+	return Text::StrConcat(Text::StrConcatC(Text::StrInt32(sbuff, this->seq), UTF8STRC(" ")), this->cName);
 }

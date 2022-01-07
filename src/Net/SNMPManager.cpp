@@ -207,7 +207,7 @@ Net::SNMPManager::AgentInfo *Net::SNMPManager::AddAgent(const Net::SocketUtil::A
 		UOSInt i = 1;
 		while (true)
 		{
-			Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"1.3.6.1.2.1.2.2.1.6."), i);
+			Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("1.3.6.1.2.1.2.2.1.6.")), i);
 			err = this->cli->V1GetRequest(addr, community, sbuff, &itemList); //sysLocation
 			if (err == Net::SNMPUtil::ES_NOERROR && itemList.GetCount() == 1)
 			{
@@ -354,7 +354,7 @@ Net::SNMPManager::AgentInfo *Net::SNMPManager::AddAgent(const Net::SocketUtil::A
 					i = 0;
 					while (i < slotCnt)
 					{
-						Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"1.3.6.1.4.1.24681.1.4.1.1.1.1.5.2.1.6."), i);
+						Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("1.3.6.1.4.1.24681.1.4.1.1.1.1.5.2.1.6.")), i);
 						err = this->cli->V1GetRequest(addr, community, sbuff, &itemList); //diskTemperature
 						if (err == Net::SNMPUtil::ES_NOERROR && itemList.GetCount() == 1)
 						{
@@ -376,7 +376,7 @@ Net::SNMPManager::AgentInfo *Net::SNMPManager::AddAgent(const Net::SocketUtil::A
 								sb.ClearStr();
 								sb.AppendC(UTF8STRC("Disk "));
 								sb.AppendUOSInt(i);
-								Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"1.3.6.1.4.1.24681.1.4.1.1.1.1.5.2.1.8."), i);
+								Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("1.3.6.1.4.1.24681.1.4.1.1.1.1.5.2.1.8.")), i);
 								err = this->cli->V1GetRequest(addr, community, sbuff, &itemList); //diskModel
 								if (err == Net::SNMPUtil::ES_NOERROR && itemList.GetCount() == 1)
 								{
@@ -389,7 +389,7 @@ Net::SNMPManager::AgentInfo *Net::SNMPManager::AddAgent(const Net::SocketUtil::A
 								}
 								reading->name = Text::StrCopyNew(sb.ToString());
 
-								Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"1.3.6.1.4.1.24681.1.4.1.1.1.1.5.2.1.2."), i);
+								Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("1.3.6.1.4.1.24681.1.4.1.1.1.1.5.2.1.2.")), i);
 								err = this->cli->V1GetRequest(addr, community, sbuff, &itemList); //diskID
 								if (err == Net::SNMPUtil::ES_NOERROR && itemList.GetCount() == 1)
 								{
@@ -454,7 +454,7 @@ Net::SNMPManager::AgentInfo *Net::SNMPManager::AddAgent(const Net::SocketUtil::A
 						i = 0;
 						while (true)
 						{
-							Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"1.3.6.1.4.1.6574.2.1.1.6."), i);
+							Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("1.3.6.1.4.1.6574.2.1.1.6.")), i);
 							err = this->cli->V1GetRequest(addr, community, sbuff, &itemList); //diskTemperature
 							if (err == Net::SNMPUtil::ES_NOERROR && itemList.GetCount() == 1)
 							{
@@ -474,7 +474,7 @@ Net::SNMPManager::AgentInfo *Net::SNMPManager::AddAgent(const Net::SocketUtil::A
 									FreeAllItems(&itemList);
 
 									sb.ClearStr();
-									Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"1.3.6.1.4.1.6574.2.1.1.2."), i);
+									Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("1.3.6.1.4.1.6574.2.1.1.2.")), i);
 									err = this->cli->V1GetRequest(addr, community, sbuff, &itemList); //diskID
 									if (err == Net::SNMPUtil::ES_NOERROR && itemList.GetCount() == 1)
 									{
@@ -498,7 +498,7 @@ Net::SNMPManager::AgentInfo *Net::SNMPManager::AddAgent(const Net::SocketUtil::A
 									}
 									FreeAllItems(&itemList);
 
-									Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"1.3.6.1.4.1.6574.2.1.1.3."), i);
+									Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("1.3.6.1.4.1.6574.2.1.1.3.")), i);
 									err = this->cli->V1GetRequest(addr, community, sbuff, &itemList); //diskModel
 									if (err == Net::SNMPUtil::ES_NOERROR && itemList.GetCount() == 1)
 									{
@@ -549,7 +549,7 @@ Net::SNMPManager::AgentInfo *Net::SNMPManager::AddAgent(const Net::SocketUtil::A
 					i = 1;
 					while (true)
 					{
-						Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"1.3.6.1.4.1.1602.1.11.2.1.1.3."), i);
+						Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("1.3.6.1.4.1.1602.1.11.2.1.1.3.")), i);
 						err = this->cli->V1GetRequest(addr, community, sbuff, &itemList); //
 						if (err == Net::SNMPUtil::ES_NOERROR && itemList.GetCount() == 1)
 						{
@@ -568,7 +568,7 @@ Net::SNMPManager::AgentInfo *Net::SNMPManager::AddAgent(const Net::SocketUtil::A
 								agent->readingList->Add(reading);
 								FreeAllItems(&itemList);
 
-								Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"1.3.6.1.4.1.1602.1.11.2.1.1.2."), i);
+								Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("1.3.6.1.4.1.1602.1.11.2.1.1.2.")), i);
 								err = this->cli->V1GetRequest(addr, community, sbuff, &itemList);
 								if (err == Net::SNMPUtil::ES_NOERROR && itemList.GetCount() == 1)
 								{
@@ -580,7 +580,7 @@ Net::SNMPManager::AgentInfo *Net::SNMPManager::AddAgent(const Net::SocketUtil::A
 								}
 								if (reading->name == 0)
 								{
-									Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"Count "), i);
+									Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Count ")), i);
 									reading->name = Text::StrCopyNew(sbuff);
 								}
 							}
@@ -639,7 +639,7 @@ Net::SNMPManager::AgentInfo *Net::SNMPManager::AddAgent(const Net::SocketUtil::A
 					i = 0;
 					while (true)
 					{
-						Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"1.3.6.1.4.1.3854.1.2.2.1.16.1.5."), i);
+						Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("1.3.6.1.4.1.3854.1.2.2.1.16.1.5.")), i);
 						err = this->cli->V1GetRequest(addr, community, sbuff, &itemList); //
 						if (err == Net::SNMPUtil::ES_NOERROR && itemList.GetCount() == 1)
 						{
@@ -648,7 +648,7 @@ Net::SNMPManager::AgentInfo *Net::SNMPManager::AddAgent(const Net::SocketUtil::A
 							{
 								if (iVal == 1)
 								{
-									Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"1.3.6.1.4.1.3854.1.2.2.1.16.1.14."), i);
+									Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("1.3.6.1.4.1.3854.1.2.2.1.16.1.14.")), i);
 									reading = MemAlloc(ReadingInfo, 1);
 									reading->name = 0;
 									reading->index = i;
@@ -673,7 +673,7 @@ Net::SNMPManager::AgentInfo *Net::SNMPManager::AddAgent(const Net::SocketUtil::A
 									}
 									FreeAllItems(&itemList);
 
-									Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"1.3.6.1.4.1.3854.1.2.2.1.16.1.1."), i);
+									Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("1.3.6.1.4.1.3854.1.2.2.1.16.1.1.")), i);
 									err = this->cli->V1GetRequest(addr, community, sbuff, &itemList);
 									if (err == Net::SNMPUtil::ES_NOERROR && itemList.GetCount() == 1)
 									{
@@ -685,7 +685,7 @@ Net::SNMPManager::AgentInfo *Net::SNMPManager::AddAgent(const Net::SocketUtil::A
 									}
 									if (reading->name == 0)
 									{
-										Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"Temperature"), i + 1);
+										Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Temperature")), i + 1);
 										reading->name = Text::StrCopyNew(sbuff);
 									}
 								}
@@ -703,7 +703,7 @@ Net::SNMPManager::AgentInfo *Net::SNMPManager::AddAgent(const Net::SocketUtil::A
 					i = 0;
 					while (true)
 					{
-						Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"1.3.6.1.4.1.3854.1.2.2.1.17.1.5."), i);
+						Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("1.3.6.1.4.1.3854.1.2.2.1.17.1.5.")), i);
 						err = this->cli->V1GetRequest(addr, community, sbuff, &itemList); //
 						if (err == Net::SNMPUtil::ES_NOERROR && itemList.GetCount() == 1)
 						{
@@ -712,7 +712,7 @@ Net::SNMPManager::AgentInfo *Net::SNMPManager::AddAgent(const Net::SocketUtil::A
 							{
 								if (iVal == 1)
 								{
-									Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"1.3.6.1.4.1.3854.1.2.2.1.17.1.3."), i);
+									Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("1.3.6.1.4.1.3854.1.2.2.1.17.1.3.")), i);
 									reading = MemAlloc(ReadingInfo, 1);
 									reading->name = 0;
 									reading->index = i;
@@ -737,7 +737,7 @@ Net::SNMPManager::AgentInfo *Net::SNMPManager::AddAgent(const Net::SocketUtil::A
 									}
 									FreeAllItems(&itemList);
 
-									Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"1.3.6.1.4.1.3854.1.2.2.1.17.1.1."), i);
+									Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("1.3.6.1.4.1.3854.1.2.2.1.17.1.1.")), i);
 									err = this->cli->V1GetRequest(addr, community, sbuff, &itemList);
 									if (err == Net::SNMPUtil::ES_NOERROR && itemList.GetCount() == 1)
 									{
@@ -749,7 +749,7 @@ Net::SNMPManager::AgentInfo *Net::SNMPManager::AddAgent(const Net::SocketUtil::A
 									}
 									if (reading->name == 0)
 									{
-										Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"Humidity"), i + 1);
+										Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Humidity")), i + 1);
 										reading->name = Text::StrCopyNew(sbuff);
 									}
 								}
@@ -767,7 +767,7 @@ Net::SNMPManager::AgentInfo *Net::SNMPManager::AddAgent(const Net::SocketUtil::A
 					i = 0;
 					while (true)
 					{
-						Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"1.3.6.1.4.1.3854.1.2.2.1.18.1.4."), i);
+						Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("1.3.6.1.4.1.3854.1.2.2.1.18.1.4.")), i);
 						err = this->cli->V1GetRequest(addr, community, sbuff, &itemList); //
 						if (err == Net::SNMPUtil::ES_NOERROR && itemList.GetCount() == 1)
 						{
@@ -776,7 +776,7 @@ Net::SNMPManager::AgentInfo *Net::SNMPManager::AddAgent(const Net::SocketUtil::A
 							{
 								if (iVal == 1)
 								{
-									Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"1.3.6.1.4.1.3854.1.2.2.1.18.1.3."), i);
+									Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("1.3.6.1.4.1.3854.1.2.2.1.18.1.3.")), i);
 									reading = MemAlloc(ReadingInfo, 1);
 									reading->name = 0;
 									reading->index = i;
@@ -801,7 +801,7 @@ Net::SNMPManager::AgentInfo *Net::SNMPManager::AddAgent(const Net::SocketUtil::A
 									}
 									FreeAllItems(&itemList);
 
-									Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"1.3.6.1.4.1.3854.1.2.2.1.18.1.1."), i);
+									Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("1.3.6.1.4.1.3854.1.2.2.1.18.1.1.")), i);
 									err = this->cli->V1GetRequest(addr, community, sbuff, &itemList);
 									if (err == Net::SNMPUtil::ES_NOERROR && itemList.GetCount() == 1)
 									{
@@ -813,7 +813,7 @@ Net::SNMPManager::AgentInfo *Net::SNMPManager::AddAgent(const Net::SocketUtil::A
 									}
 									if (reading->name == 0)
 									{
-										Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"Dry Contact Switch"), i + 1);
+										Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Dry Contact Switch")), i + 1);
 										reading->name = Text::StrCopyNew(sbuff);
 									}
 								}

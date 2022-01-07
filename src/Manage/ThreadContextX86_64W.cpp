@@ -35,187 +35,187 @@ UTF8Char *Manage::ThreadContextX86_64::GetRegister(UOSInt index, UTF8Char *buff,
 	case 0:
 		*(UInt64*)regVal = ctx->Rax;
 		*regBitCount = 64;
-		return Text::StrConcat(buff, (const UTF8Char*)"RAX");
+		return Text::StrConcatC(buff, UTF8STRC("RAX"));
 	case 1:
 		*(UInt64*)regVal = ctx->Rdx;
 		*regBitCount = 64;
-		return Text::StrConcat(buff, (const UTF8Char*)"RDX");
+		return Text::StrConcatC(buff, UTF8STRC("RDX"));
 	case 2:
 		*(UInt64*)regVal = ctx->Rcx;
 		*regBitCount = 64;
-		return Text::StrConcat(buff, (const UTF8Char*)"RCX");
+		return Text::StrConcatC(buff, UTF8STRC("RCX"));
 	case 3:
 		*(UInt64*)regVal = ctx->Rbx;
 		*regBitCount = 64;
-		return Text::StrConcat(buff, (const UTF8Char*)"RBX");
+		return Text::StrConcatC(buff, UTF8STRC("RBX"));
 	case 4:
 		*(UInt64*)regVal = ctx->Rsi;
 		*regBitCount = 64;
-		return Text::StrConcat(buff, (const UTF8Char*)"RSI");
+		return Text::StrConcatC(buff, UTF8STRC("RSI"));
 	case 5:
 		*(UInt64*)regVal = ctx->Rdi;
 		*regBitCount = 64;
-		return Text::StrConcat(buff, (const UTF8Char*)"RDI");
+		return Text::StrConcatC(buff, UTF8STRC("RDI"));
 	case 6:
 		*(UInt64*)regVal = ctx->Rsp;
 		*regBitCount = 64;
-		return Text::StrConcat(buff, (const UTF8Char*)"RSP");
+		return Text::StrConcatC(buff, UTF8STRC("RSP"));
 	case 7:
 		*(UInt64*)regVal = ctx->Rbp;
 		*regBitCount = 64;
-		return Text::StrConcat(buff, (const UTF8Char*)"RBP");
+		return Text::StrConcatC(buff, UTF8STRC("RBP"));
 	case 8:
 		*(UInt64*)regVal = ctx->R8;
 		*regBitCount = 64;
-		return Text::StrConcat(buff, (const UTF8Char*)"R8");
+		return Text::StrConcatC(buff, UTF8STRC("R8"));
 	case 9:
 		*(UInt64*)regVal = ctx->R9;
 		*regBitCount = 64;
-		return Text::StrConcat(buff, (const UTF8Char*)"R9");
+		return Text::StrConcatC(buff, UTF8STRC("R9"));
 	case 10:
 		*(UInt64*)regVal = ctx->R10;
 		*regBitCount = 64;
-		return Text::StrConcat(buff, (const UTF8Char*)"R10");
+		return Text::StrConcatC(buff, UTF8STRC("R10"));
 	case 11:
 		*(UInt64*)regVal = ctx->R11;
 		*regBitCount = 64;
-		return Text::StrConcat(buff, (const UTF8Char*)"R11");
+		return Text::StrConcatC(buff, UTF8STRC("R11"));
 	case 12:
 		*(UInt64*)regVal = ctx->R12;
 		*regBitCount = 64;
-		return Text::StrConcat(buff, (const UTF8Char*)"R12");
+		return Text::StrConcatC(buff, UTF8STRC("R12"));
 	case 13:
 		*(UInt64*)regVal = ctx->R13;
 		*regBitCount = 64;
-		return Text::StrConcat(buff, (const UTF8Char*)"R13");
+		return Text::StrConcatC(buff, UTF8STRC("R13"));
 	case 14:
 		*(UInt64*)regVal = ctx->R14;
 		*regBitCount = 64;
-		return Text::StrConcat(buff, (const UTF8Char*)"R14");
+		return Text::StrConcatC(buff, UTF8STRC("R14"));
 	case 15:
 		*(UInt64*)regVal = ctx->R15;
 		*regBitCount = 64;
-		return Text::StrConcat(buff, (const UTF8Char*)"R15");
+		return Text::StrConcatC(buff, UTF8STRC("R15"));
 	case 16:
 		*(UInt64*)regVal = ctx->Rip;
 		*regBitCount = 64;
-		return Text::StrConcat(buff, (const UTF8Char*)"RIP");
+		return Text::StrConcatC(buff, UTF8STRC("RIP"));
 	case 17:
 		*(UInt32*)regVal = ctx->EFlags;
 		*regBitCount = 32;
-		return Text::StrConcat(buff, (const UTF8Char*)"EFLAGS");
+		return Text::StrConcatC(buff, UTF8STRC("EFLAGS"));
 	case 18:
 		*(UInt16*)regVal = ctx->SegCs;
 		*regBitCount = 16;
-		return Text::StrConcat(buff, (const UTF8Char*)"CS");
+		return Text::StrConcatC(buff, UTF8STRC("CS"));
 	case 19:
 		*(UInt16*)regVal = ctx->SegSs;
 		*regBitCount = 16;
-		return Text::StrConcat(buff, (const UTF8Char*)"SS");
+		return Text::StrConcatC(buff, UTF8STRC("SS"));
 	case 20:
 		*(UInt16*)regVal = ctx->SegDs;
 		*regBitCount = 16;
-		return Text::StrConcat(buff, (const UTF8Char*)"DS");
+		return Text::StrConcatC(buff, UTF8STRC("DS"));
 	case 21:
 		*(UInt16*)regVal = ctx->SegEs;
 		*regBitCount = 16;
-		return Text::StrConcat(buff, (const UTF8Char*)"ES");
+		return Text::StrConcatC(buff, UTF8STRC("ES"));
 	case 22:
 		*(UInt16*)regVal = ctx->SegFs;
 		*regBitCount = 16;
-		return Text::StrConcat(buff, (const UTF8Char*)"FS");
+		return Text::StrConcatC(buff, UTF8STRC("FS"));
 	case 23:
 		*(UInt16*)regVal = ctx->SegGs;
 		*regBitCount = 16;
-		return Text::StrConcat(buff, (const UTF8Char*)"GS");
+		return Text::StrConcatC(buff, UTF8STRC("GS"));
 	case 24:
 		*(UInt64*)regVal = (UInt32)ctx->Dr0;
 		*regBitCount = 64;
-		return Text::StrConcat(buff, (const UTF8Char*)"DR0");
+		return Text::StrConcatC(buff, UTF8STRC("DR0"));
 	case 25:
 		*(UInt64*)regVal = ctx->Dr1;
 		*regBitCount = 64;
-		return Text::StrConcat(buff, (const UTF8Char*)"DR1");
+		return Text::StrConcatC(buff, UTF8STRC("DR1"));
 	case 26:
 		*(UInt64*)regVal = ctx->Dr2;
 		*regBitCount = 64;
-		return Text::StrConcat(buff, (const UTF8Char*)"DR2");
+		return Text::StrConcatC(buff, UTF8STRC("DR2"));
 	case 27:
 		*(UInt64*)regVal = ctx->Dr3;
 		*regBitCount = 64;
-		return Text::StrConcat(buff, (const UTF8Char*)"DR3");
+		return Text::StrConcatC(buff, UTF8STRC("DR3"));
 	case 28:
 		*(UInt64*)regVal = ctx->Dr6;
 		*regBitCount = 64;
-		return Text::StrConcat(buff, (const UTF8Char*)"DR6");
+		return Text::StrConcatC(buff, UTF8STRC("DR6"));
 	case 29:
 		*(UInt64*)regVal = ctx->Dr7;
 		*regBitCount = 64;
-		return Text::StrConcat(buff, (const UTF8Char*)"DR7");
+		return Text::StrConcatC(buff, UTF8STRC("DR7"));
 	case 30:
 		MemCopyNO(regVal, &ctx->Xmm0, 16);
 		*regBitCount = 128;
-		return Text::StrConcat(buff, (const UTF8Char*)"XMM0");
+		return Text::StrConcatC(buff, UTF8STRC("XMM0"));
 	case 31:
 		MemCopyNO(regVal, &ctx->Xmm1, 16);
 		*regBitCount = 128;
-		return Text::StrConcat(buff, (const UTF8Char*)"XMM1");
+		return Text::StrConcatC(buff, UTF8STRC("XMM1"));
 	case 32:
 		MemCopyNO(regVal, &ctx->Xmm2, 16);
 		*regBitCount = 128;
-		return Text::StrConcat(buff, (const UTF8Char*)"XMM2");
+		return Text::StrConcatC(buff, UTF8STRC("XMM2"));
 	case 33:
 		MemCopyNO(regVal, &ctx->Xmm3, 16);
 		*regBitCount = 128;
-		return Text::StrConcat(buff, (const UTF8Char*)"XMM3");
+		return Text::StrConcatC(buff, UTF8STRC("XMM3"));
 	case 34:
 		MemCopyNO(regVal, &ctx->Xmm4, 16);
 		*regBitCount = 128;
-		return Text::StrConcat(buff, (const UTF8Char*)"XMM4");
+		return Text::StrConcatC(buff, UTF8STRC("XMM4"));
 	case 35:
 		MemCopyNO(regVal, &ctx->Xmm5, 16);
 		*regBitCount = 128;
-		return Text::StrConcat(buff, (const UTF8Char*)"XMM5");
+		return Text::StrConcatC(buff, UTF8STRC("XMM5"));
 	case 36:
 		MemCopyNO(regVal, &ctx->Xmm6, 16);
 		*regBitCount = 128;
-		return Text::StrConcat(buff, (const UTF8Char*)"XMM6");
+		return Text::StrConcatC(buff, UTF8STRC("XMM6"));
 	case 37:
 		MemCopyNO(regVal, &ctx->Xmm7, 16);
 		*regBitCount = 128;
-		return Text::StrConcat(buff, (const UTF8Char*)"XMM7");
+		return Text::StrConcatC(buff, UTF8STRC("XMM7"));
 	case 38:
 		MemCopyNO(regVal, &ctx->Xmm8, 16);
 		*regBitCount = 128;
-		return Text::StrConcat(buff, (const UTF8Char*)"XMM8");
+		return Text::StrConcatC(buff, UTF8STRC("XMM8"));
 	case 39:
 		MemCopyNO(regVal, &ctx->Xmm9, 16);
 		*regBitCount = 128;
-		return Text::StrConcat(buff, (const UTF8Char*)"XMM9");
+		return Text::StrConcatC(buff, UTF8STRC("XMM9"));
 	case 40:
 		MemCopyNO(regVal, &ctx->Xmm10, 16);
 		*regBitCount = 128;
-		return Text::StrConcat(buff, (const UTF8Char*)"XMM10");
+		return Text::StrConcatC(buff, UTF8STRC("XMM10"));
 	case 41:
 		MemCopyNO(regVal, &ctx->Xmm11, 16);
 		*regBitCount = 128;
-		return Text::StrConcat(buff, (const UTF8Char*)"XMM11");
+		return Text::StrConcatC(buff, UTF8STRC("XMM11"));
 	case 42:
 		MemCopyNO(regVal, &ctx->Xmm12, 16);
 		*regBitCount = 128;
-		return Text::StrConcat(buff, (const UTF8Char*)"XMM12");
+		return Text::StrConcatC(buff, UTF8STRC("XMM12"));
 	case 43:
 		MemCopyNO(regVal, &ctx->Xmm13, 16);
 		*regBitCount = 128;
-		return Text::StrConcat(buff, (const UTF8Char*)"XMM13");
+		return Text::StrConcatC(buff, UTF8STRC("XMM13"));
 	case 44:
 		MemCopyNO(regVal, &ctx->Xmm14, 16);
 		*regBitCount = 128;
-		return Text::StrConcat(buff, (const UTF8Char*)"XMM14");
+		return Text::StrConcatC(buff, UTF8STRC("XMM14"));
 	case 45:
 		MemCopyNO(regVal, &ctx->Xmm15, 16);
 		*regBitCount = 128;
-		return Text::StrConcat(buff, (const UTF8Char*)"XMM15");
+		return Text::StrConcatC(buff, UTF8STRC("XMM15"));
 	default:
 		return 0;
 	}
@@ -235,7 +235,7 @@ void Manage::ThreadContextX86_64::ToString(Text::StringBuilderUTF *sb)
 	{
 		if ((sptr = this->GetRegister(i, sbuff, regBuff, &bitCnt)) != 0)
 		{
-			sptr = Text::StrConcat(sptr, (const UTF8Char*)" = ");
+			sptr = Text::StrConcatC(sptr, UTF8STRC(" = "));
 			k = bitCnt >> 3;
 			while (k-- > 0)
 			{
@@ -254,12 +254,12 @@ void Manage::ThreadContextX86_64::ToString(Text::StringBuilderUTF *sb)
 			case 37:
 			case 41:
 			case 45:
-				sptr = Text::StrConcat(sptr, (const UTF8Char*)"\r\n");
+				sptr = Text::StrConcatC(sptr, UTF8STRC("\r\n"));
 				break;
 			case 48:
 				break;
 			default:
-				sptr = Text::StrConcat(sptr, (const UTF8Char*)", ");
+				sptr = Text::StrConcatC(sptr, UTF8STRC(", "));
 			}
 
 			sb->Append(sbuff);

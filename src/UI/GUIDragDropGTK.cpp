@@ -46,7 +46,7 @@ UI::GUIDragDataGTK::GUIDragDataGTK(void *widget, void *context, UInt32 time, Boo
 			}
 			else
 			{
-				Text::StrOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"Format "), (OSInt)target);
+				Text::StrOSInt(Text::StrConcatC(sbuff, UTF8STRC("Format ")), (OSInt)target);
 			}
 //			printf("%s\r\n", sbuff);
 			this->targetMap->Put(sbuff, (OSInt)target);

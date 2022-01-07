@@ -25,7 +25,7 @@ SSWR::AVIReadCE::AVIRCEAboutForm::AVIRCEAboutForm(UI::GUIClientControl *parent, 
 	lbl->SetRect(8, 8, 220, 23, false);
 	IO::Path::GetProcessFileName(sbuff);
 	IO::EXEFile::GetFileTime(sbuff, &t);
-	t.ToString(Text::StrConcat(sbuff, (const UTF8Char*)"Build date: "), "yyyy-MM-dd HH:mm:ss");
+	t.ToString(Text::StrConcatC(sbuff, UTF8STRC("Build date: ")), "yyyy-MM-dd HH:mm:ss");
 	NEW_CLASS(lbl, UI::GUILabel(ui, this, sbuff));
 	lbl->SetRect(8, 32, 220, 23, false);
 	NEW_CLASS(btn, UI::GUIButton(ui, this, (const UTF8Char*)"OK"));

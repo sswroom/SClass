@@ -487,7 +487,7 @@ void Media::JPEGFile::WriteJPGBuffer(IO::Stream *stm, const UInt8 *jpgBuff, UOSI
 					iccHdr[0] = 0xff;
 					iccHdr[1] = 0xe2;
 					WriteMInt16(&iccHdr[2], iccLeng + 16);
-					Text::StrConcat((Char*)&iccHdr[4], "ICC_PROFILE");
+					Text::StrConcatC(&iccHdr[4], UTF8STRC("ICC_PROFILE"));
 					iccHdr[16] = 1;
 					iccHdr[17] = 1;
 					stm->Write(iccHdr, 18);

@@ -37,7 +37,7 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnFolderClicked(void *userObj)
 		{
 			*sptr++ = IO::Path::PATH_SEPERATOR;
 		}
-		Text::StrConcat(sptr, IO::Path::ALL_FILES);
+		Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
 		UOSInt fileCnt = 0;
 		IO::Path::FindFileSession *sess = IO::Path::FindFile(sbuff);
 		if (sess)
@@ -113,11 +113,11 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnColorChg(void *userObj, UOSI
 	Double cvalue = Math::UOSInt2Double(me->hsbContr->GetPos());
 	Double gvalue = Math::UOSInt2Double(me->hsbGamma->GetPos());
 	UOSInt hdrLev = me->hsbHDRLev->GetPos();
-	Text::StrConcat(Text::StrDouble(sbuff, bvalue), (const UTF8Char*)"%");
+	Text::StrConcatC(Text::StrDouble(sbuff, bvalue), UTF8STRC("%"));
 	me->lblBrightV->SetText(sbuff);
-	Text::StrConcat(Text::StrDouble(sbuff, cvalue), (const UTF8Char*)"%");
+	Text::StrConcatC(Text::StrDouble(sbuff, cvalue), UTF8STRC("%"));
 	me->lblContrV->SetText(sbuff);
-	Text::StrConcat(Text::StrDouble(sbuff, gvalue), (const UTF8Char*)"%");
+	Text::StrConcatC(Text::StrDouble(sbuff, gvalue), UTF8STRC("%"));
 	me->lblGammaV->SetText(sbuff);
 	Text::StrUOSInt(sbuff, hdrLev);
 	me->lblHDRLevV->SetText(sbuff);

@@ -1,12 +1,14 @@
 ﻿#include "Stdafx.h"
 #include "MyMemory.h"
-#include "Text/StringBuilder.h"
-#include "Text/XMLDOM.h"
 #include "IO/MemoryStream.h"
 #include "IO/FileStream.h"
-#include "Net/TCPClient.h"
-#include "Net/HTTPClient.h"
 #include "Map/MapBar/MapBarRevGeo.h"
+#include "Net/HTTPClient.h"
+#include "Net/TCPClient.h"
+#include "Text/MyStringFloat.h"
+#include "Text/MyStringW.h"
+#include "Text/StringBuilderUTF8.h"
+#include "Text/XMLDOM.h"
 
 Map::MapBar::MapBarRevGeo::MapBarRevGeo(Net::SocketFactory *sockf, IO::Writer *errWriter, Map::MapBar::MapBarAdjuster *adjuster, Int32 imgWidth, Int32 imgHeight)
 {
@@ -21,30 +23,30 @@ Map::MapBar::MapBarRevGeo::~MapBarRevGeo()
 {
 }
 
-WChar *Map::MapBar::MapBarRevGeo::SearchName(WChar *buff, Double lat, Double lon, Int32 lcid)
+UTF8Char *Map::MapBar::MapBarRevGeo::SearchName(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, Int32 lcid)
 {
 	Double srcPt[2];
 	Double destPt[2];
 	srcPt[0] = lat;
 	srcPt[1] = lon;
 	this->adjuster->AdjustPoints(srcPt, destPt, this->imgWidth, this->imgHeight, 1);
-	return SearchNameAdjusted(buff, destPt[0], destPt[1], lcid);
+	return SearchNameAdjusted(buff, buffSize, destPt[0], destPt[1], lcid);
 }
 
-WChar *Map::MapBar::MapBarRevGeo::CacheName(WChar *buff, Double lat, Double lon, Int32 lcid)
+UTF8Char *Map::MapBar::MapBarRevGeo::CacheName(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, Int32 lcid)
 {
-	return SearchName(buff, lat, lon, lcid);
+	return SearchName(buff, buffSize, lat, lon, lcid);
 }
 
-WChar *Map::MapBar::MapBarRevGeo::SearchNameAdjusted(WChar *buff, Double adjLat, Double adjLon, Int32 lcid)
+UTF8Char *Map::MapBar::MapBarRevGeo::SearchNameAdjusted(UTF8Char *buff, UOSInt buffSize, Double adjLat, Double adjLon, Int32 lcid)
 {
-	Text::StringBuilder sb;
+	Text::StringBuilderUTF8 sb;
 	Net::HTTPClient *cli;
-	IO::MemoryStream mstm;
+	IO::MemoryStream mstm((const UTF8Char*)"Map.MapBar.MapBarRevGeo");
 	OSInt readSize;
 	UInt8 *dataBbuff;
 	UInt8 *xmlBuff;
-	OSInt buffSize;
+	UOSInt buffSize;
 	IO::FileStream *fs;
 	Text::XMLDocument *xmlDoc;
 	Text::XMLNode *resultNode;
@@ -54,112 +56,116 @@ WChar *Map::MapBar::MapBarRevGeo::SearchNameAdjusted(WChar *buff, Double adjLat,
 	dataBbuff = MemAlloc(UInt8, 2048);
 
 
-	sb.Append(L"http://geocode.mapbar.com/inverse/getInverseGeocoding.jsp?customer=2&detail=1&road=1&zoom=11&latlon=");
-	sb.Append(adjLon);
-	sb.Append(L",");
-	sb.Append(adjLat);
+	sb.AppendC(UTF8STRC("http://geocode.mapbar.com/inverse/getInverseGeocoding.jsp?customer=2&detail=1&road=1&zoom=11&latlon="));
+	Text::SBAppendF64(&sb, adjLon);
+	sb.AppendC(UTF8STRC(","));
+	Text::SBAppendF64(&sb, adjLat);
 	if (lcid == 0x0C04 || lcid == 0x1004 || lcid == 0x1404 || lcid == 0x0404)
 	{
-		sb.Append(L"&cn=2");
+		sb.AppendC(UTF8STRC("&cn=2"));
 	}
 	else
 	{
-		sb.Append(L"&cn=1");
+		sb.AppendC(UTF8STRC("&cn=1"));
 	}
 
-	NEW_CLASS(cli, Net::HTTPClient(sockf, sb.ToString(), L"GET", false));
+	cli = Net::HTTPClient::CreateConnect(sockf, 0, sb.ToString(), "GET", false);
 	while ((readSize = cli->Read(dataBbuff, 2048)) > 0)
 	{
 		mstm.Write(dataBbuff, readSize);
 	}
 	DEL_CLASS(cli);
 	xmlBuff = mstm.GetBuff(&buffSize);
-	NEW_CLASS(fs, IO::FileStream(L"MapBarRevGeo.xml", IO::FileMode::Create, IO::FileShare::DenyNone));
+	NEW_CLASS(fs, IO::FileStream((const UTF8Char*)"MapBarRevGeo.xml", IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	fs->Write(xmlBuff, buffSize);
 	DEL_CLASS(fs);
 
 	*buff = 0;
 	NEW_CLASS(xmlDoc, Text::XMLDocument());
 	xmlDoc->ParseBuff(&encFact, xmlBuff, buffSize);
-	resultNode = xmlDoc->SearchFirstNode(L"/result");
+	resultNode = xmlDoc->SearchFirstNode((const UTF8Char*)"/result");
 	if (resultNode)
 	{
-		node = resultNode->SearchFirstNode(L"/nation");
+		node = resultNode->SearchFirstNode((const UTF8Char*)"/nation");
 		if (node)
 		{
 			sb.ClearStr();
 			node->GetInnerText(&sb);
-			buff = Text::StrConcat(buff, sb.ToString());
+			buff = Text::StrConcatC(buff, sb.ToString(), sb.GetLength());
 		}
 
-		node = resultNode->SearchFirstNode(L"/province");
+		node = resultNode->SearchFirstNode((const UTF8Char*)"/province");
 		if (node)
 		{
 			sb.ClearStr();
 			node->GetInnerText(&sb);
-			if (Text::StrCompare(sb.ToString(), L"特別行政區") != 0 && Text::StrCompare(sb.ToString(), L"特別行政区") != 0)
+			UTF8Char str1[32];
+			UTF8Char str2[32];
+			Text::StrWChar_UTF8(str1, L"特別行政區");
+			Text::StrWChar_UTF8(str2, L"特別行政区");
+			if (!Text::StrEquals(sb.ToString(), str1) && !Text::StrEquals(sb.ToString(), str2))
 			{
-				buff = Text::StrConcat(buff, sb.ToString());
+				buff = Text::StrConcatC(buff, sb.ToString(), sb.GetLength());
 			}
 		}
 
-		node = resultNode->SearchFirstNode(L"/city");
+		node = resultNode->SearchFirstNode((const UTF8Char*)"/city");
 		if (node)
 		{
 			sb.ClearStr();
 			node->GetInnerText(&sb);
-			buff = Text::StrConcat(buff, sb.ToString());
+			buff = Text::StrConcatC(buff, sb.ToString(), sb.GetLength());
 		}
 
-		node = resultNode->SearchFirstNode(L"/dist");
+		node = resultNode->SearchFirstNode((const UTF8Char*)"/dist");
 		if (node)
 		{
 			sb.ClearStr();
 			node->GetInnerText(&sb);
-			buff = Text::StrConcat(buff, sb.ToString());
+			buff = Text::StrConcatC(buff, sb.ToString(), sb.GetLength());
 		}
 
-		node = resultNode->SearchFirstNode(L"/area");
+		node = resultNode->SearchFirstNode((const UTF8Char*)"/area");
 		if (node)
 		{
 			sb.ClearStr();
 			node->GetInnerText(&sb);
-			buff = Text::StrConcat(buff, sb.ToString());
+			buff = Text::StrConcatC(buff, sb.ToString(), sb.GetLength());
 		}
 
-		node = resultNode->SearchFirstNode(L"/town");
+		node = resultNode->SearchFirstNode((const UTF8Char*)"/town");
 		if (node)
 		{
 			sb.ClearStr();
 			node->GetInnerText(&sb);
-			buff = Text::StrConcat(buff, sb.ToString());
+			buff = Text::StrConcatC(buff, sb.ToString(), sb.GetLength());
 		}
 
-		node = resultNode->SearchFirstNode(L"/village");
+		node = resultNode->SearchFirstNode((const UTF8Char*)"/village");
 		if (node)
 		{
 			sb.ClearStr();
 			node->GetInnerText(&sb);
-			buff = Text::StrConcat(buff, sb.ToString());
+			buff = Text::StrConcatC(buff, sb.ToString(), sb.GetLength());
 		}
 
-		node = resultNode->SearchFirstNode(L"/road/roadname");
+		node = resultNode->SearchFirstNode((const UTF8Char*)"/road/roadname");
 		if (node)
 		{
 			sb.ClearStr();
 			node->GetInnerText(&sb);
-			buff = Text::StrConcat(buff, sb.ToString());
+			buff = Text::StrConcatC(buff, sb.ToString(), sb.GetLength());
 		}
 
-		node = resultNode->SearchFirstNode(L"/poi");
+		node = resultNode->SearchFirstNode((const UTF8Char*)"/poi");
 		if (node)
 		{
 			sb.ClearStr();
 			node->GetInnerText(&sb);
 			if (sb.ToString()[0])
 			{
-				buff = Text::StrConcat(buff, L", 近");
-				buff = Text::StrConcat(buff, sb.ToString());
+				buff = Text::StrWChar_UTF8(buff, L", 近");
+				buff = Text::StrConcatC(buff, sb.ToString(), sb.GetLength());
 			}
 		}
 	}

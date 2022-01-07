@@ -63,7 +63,7 @@ Net::SyslogServer::IPStatus *Net::SyslogServer::GetIPStatus(const Net::SocketUti
 		}
 		sptr = Net::SocketUtil::GetAddrName(sptr, addr);
 		*sptr++ = IO::Path::PATH_SEPERATOR;
-		sptr = Text::StrConcat(sptr, (const UTF8Char*)"Log");
+		sptr = Text::StrConcatC(sptr, UTF8STRC("Log"));
 		NEW_CLASS(status->log, IO::LogTool());
 		status->log->AddFileLog(sbuff, IO::ILogHandler::LOG_TYPE_PER_DAY, IO::ILogHandler::LOG_GROUP_TYPE_PER_MONTH, IO::ILogHandler::LOG_LEVEL_RAW, "yyyy-MM-dd HH:mm:ss.fff", false);
 		this->ipMap->Put(ip, status);

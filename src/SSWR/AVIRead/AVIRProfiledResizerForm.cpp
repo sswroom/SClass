@@ -54,7 +54,7 @@ void __stdcall SSWR::AVIRead::AVIRProfiledResizerForm::OnClickedAddProfile(void 
 	me->txtProfileName->GetText(sbuff);
 	if (sbuff[0] == 0)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char *)"Please enter profile name", (const UTF8Char *)"Error", me);
+		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter profile name", (const UTF8Char*)"Error", me);
 		return;
 	}
 	if (me->radSize->IsSelected())
@@ -64,14 +64,14 @@ void __stdcall SSWR::AVIRead::AVIRProfiledResizerForm::OnClickedAddProfile(void 
 		targetSizeX = Text::StrToUInt32(sbuff2);
 		if (targetSizeX <= 0)
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char *)"Please enter max width", (const UTF8Char *)"Error", me);
+			UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter max width", (const UTF8Char*)"Error", me);
 			return;
 		}
 		me->txtHeight->GetText(sbuff2);
 		targetSizeY = Text::StrToUInt32(sbuff2);
 		if (targetSizeY <= 0)
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char *)"Please enter max height", (const UTF8Char *)"Error", me);
+			UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter max height", (const UTF8Char*)"Error", me);
 			return;
 		}
 	}
@@ -82,20 +82,20 @@ void __stdcall SSWR::AVIRead::AVIRProfiledResizerForm::OnClickedAddProfile(void 
 		targetSizeX = Text::StrToUInt32(sbuff2);
 		if (targetSizeX <= 0)
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char *)"Please enter H-DPI", (const UTF8Char *)"Error", me);
+			UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter H-DPI", (const UTF8Char*)"Error", me);
 			return;
 		}
 		me->txtVDPI->GetText(sbuff2);
 		targetSizeY = Text::StrToUInt32(sbuff2);
 		if (targetSizeY <= 0)
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char *)"Please enter V-DPI", (const UTF8Char *)"Error", me);
+			UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter V-DPI", (const UTF8Char*)"Error", me);
 			return;
 		}
 	}
 	else
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char *)"Please select Size Type", (const UTF8Char *)"Error", me);
+		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please select Size Type", (const UTF8Char*)"Error", me);
 		return;
 	}
 	
@@ -111,7 +111,7 @@ void __stdcall SSWR::AVIRead::AVIRProfiledResizerForm::OnClickedAddProfile(void 
 		outParam = Text::StrToUInt32(sbuff2);
 		if (outParam <= 0 || outParam > 100)
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char *)"Please enter quality", (const UTF8Char *)"Error", me);
+			UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter quality", (const UTF8Char*)"Error", me);
 			return;
 		}
 	}
@@ -122,7 +122,7 @@ void __stdcall SSWR::AVIRead::AVIRProfiledResizerForm::OnClickedAddProfile(void 
 		outParam = Text::StrToUInt32(sbuff2);
 		if (outParam <= 0 || outParam > 300)
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char *)"Please enter size ratio", (const UTF8Char *)"Error", me);
+			UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter size ratio", (const UTF8Char*)"Error", me);
 			return;
 		}
 	}
@@ -133,13 +133,13 @@ void __stdcall SSWR::AVIRead::AVIRProfiledResizerForm::OnClickedAddProfile(void 
 	}
 	else
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char *)"Please select output type", (const UTF8Char *)"Error", me);
+		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please select output type", (const UTF8Char*)"Error", me);
 		return;
 	}
 	me->txtSuffix->GetText(sbuff2);
 	if (sbuff2[0] == 0)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char *)"Please enter suffix", (const UTF8Char *)"Error", me);
+		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter suffix", (const UTF8Char*)"Error", me);
 		return;
 	}
 	me->txtWatermark->GetText(&sb);
@@ -151,7 +151,7 @@ void __stdcall SSWR::AVIRead::AVIRProfiledResizerForm::OnClickedAddProfile(void 
 	}
 	else
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char *)"Error in adding profile", (const UTF8Char *)"Error", me);
+		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in adding profile", (const UTF8Char*)"Error", me);
 		return;
 	}
 }
@@ -175,7 +175,7 @@ void SSWR::AVIRead::AVIRProfiledResizerForm::UpdateProfileDisp()
 	}
 	else
 	{
-		Text::StrConcat(Text::StrConcat(sbuff, (const UTF8Char*)"Profile: "), profile->profileName);
+		Text::StrConcat(Text::StrConcatC(sbuff, UTF8STRC("Profile: ")), profile->profileName);
 		this->lblProfile->SetText(sbuff);
 	}
 }

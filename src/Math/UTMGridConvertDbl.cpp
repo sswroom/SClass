@@ -30,7 +30,7 @@ UTF8Char *Math::UTMGridConvertDbl::WGS84_Grid(UTF8Char *gridStr, Int32 digitCnt,
 
 	if (lat < -80 || lat > 84 || !Math::IsRealNum(lat))
 	{
-		return Text::StrConcat(gridStr, (const UTF8Char*)"Out of area");
+		return Text::StrConcatC(gridStr, UTF8STRC("Out of area"));
 	}
 	Double longTemp = (lon + 180) - (Int32)((lon + 180) / 360) * 360 - 180; // -180.00 .. 179.9;
 

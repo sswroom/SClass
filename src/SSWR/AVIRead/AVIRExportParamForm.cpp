@@ -25,8 +25,8 @@ void __stdcall SSWR::AVIRead::AVIRExportParamForm::OnOKClicked(void *userObj)
 			val = Text::StrToInt32(sbuff);
 			if (!me->exporter->SetParamInt32(me->param, i, val))
 			{
-				Text::StrConcat(Text::StrConcat(Text::StrConcat(sbuff, (const UTF8Char*)"Parameter \""), pi.name), (const UTF8Char *)"\" out of range");
-				UI::MessageDialog::ShowDialog(sbuff, (const UTF8Char *)"Export Parameter", me);
+				Text::StrConcatC(Text::StrConcat(Text::StrConcatC(sbuff, UTF8STRC("Parameter \"")), pi.name), UTF8STRC("\" out of range"));
+				UI::MessageDialog::ShowDialog(sbuff, (const UTF8Char*)"Export Parameter", me);
 				return;
 			}
 		}
@@ -38,8 +38,8 @@ void __stdcall SSWR::AVIRead::AVIRExportParamForm::OnOKClicked(void *userObj)
 			j = ((UI::GUIComboBox *)me->ctrls[i])->GetSelectedIndex();
 			if (!me->exporter->SetParamSel(me->param, i, j))
 			{
-				Text::StrConcat(Text::StrConcat(Text::StrConcat(sbuff, (const UTF8Char *)"Parameter \""), pi.name), (const UTF8Char *)"\" out of range");
-				UI::MessageDialog::ShowDialog(sbuff, (const UTF8Char *)"Export Parameter", me);
+				Text::StrConcatC(Text::StrConcat(Text::StrConcatC(sbuff, UTF8STRC("Parameter \"")), pi.name), UTF8STRC("\" out of range"));
+				UI::MessageDialog::ShowDialog(sbuff, (const UTF8Char*)"Export Parameter", me);
 				return;
 			}
 		}

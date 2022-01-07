@@ -379,7 +379,7 @@ Text::SpreadSheet::Worksheet *Text::SpreadSheet::Workbook::AddWorksheet()
 {
 	UTF8Char sbuff[32];
 	Text::SpreadSheet::Worksheet *ws;
-	Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"Sheet"), this->sheets->GetCount());
+	Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Sheet")), this->sheets->GetCount());
 	NEW_CLASS(ws, Text::SpreadSheet::Worksheet(sbuff));
 	this->sheets->Add(ws);
 	return ws;

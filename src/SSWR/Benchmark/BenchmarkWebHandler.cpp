@@ -145,14 +145,14 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::UploadReq(SSWR::Benchmark::
 				sptr = IO::Path::AppendPath(sbuff, (const UTF8Char*)"Benchmark");
 				IO::Path::CreateDirectory(sbuff);
 				*sptr++ = IO::Path::PATH_SEPERATOR;
-				sptr = Text::StrConcat(sptr, (const UTF8Char*)"SBench_");
+				sptr = Text::StrConcatC(sptr, UTF8STRC("SBench_"));
 				sptrTmp = sptr;
 				sptr = Text::StrConcat(sptr, platform);
 				Text::StrReplace(sptrTmp, '/', '_');
 				Text::StrReplace(sptrTmp, ':', '_');
-				sptr = Text::StrConcat(sptr, (const UTF8Char*)"_");
+				sptr = Text::StrConcatC(sptr, UTF8STRC("_"));
 				sptr = Text::StrInt64(sptr, t);
-				sptr = Text::StrConcat(sptr, (const UTF8Char*)".txt");
+				sptr = Text::StrConcatC(sptr, UTF8STRC(".txt"));
 
 				NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 				if (fs->IsError())
@@ -262,7 +262,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(SSWR::Benchmark:
 			if (req->GetQueryValueStr(UTF8STRC("file"), fileName, 512))
 			{
 				fileBuff = req->GetReqData(&fileSize);
-				Text::StrConcat(fileName, (const UTF8Char*)"cpuinfo");
+				Text::StrConcatC(fileName, UTF8STRC("cpuinfo"));
 			}
 			else
 			{
@@ -293,7 +293,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(SSWR::Benchmark:
 				if (cpuModel)
 				{
 					msg = fileName;
-					Text::StrConcat(Text::StrConcat(fileName, (const UTF8Char*)"Identified as "), cpuModel);
+					Text::StrConcat(Text::StrConcatC(fileName, UTF8STRC("Identified as ")), cpuModel);
 
 					IO::Path::GetProcessFileName(path);
 					u8ptr = IO::Path::AppendPath(path, (const UTF8Char*)"CPUInfo");
@@ -318,7 +318,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(SSWR::Benchmark:
 					u8ptr = IO::Path::AppendPath(path, (const UTF8Char*)"CPUInfo");
 					IO::Path::CreateDirectory(path);
 					*u8ptr++ = IO::Path::PATH_SEPERATOR;
-					u8ptr = Text::StrConcat(u8ptr, (const UTF8Char*)"Unknown_");
+					u8ptr = Text::StrConcatC(u8ptr, UTF8STRC("Unknown_"));
 					u8ptr = Text::StrInt64(u8ptr, dt.ToTicks());
 
 					NEW_CLASS(fs, IO::FileStream(path, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
@@ -356,7 +356,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(SSWR::Benchmark:
 	u8ptr = IO::Path::AppendPath(path, (const UTF8Char*)"CPUInfo");
 	IO::Path::CreateDirectory(path);
 	*u8ptr++ = IO::Path::PATH_SEPERATOR;
-	Text::StrConcat(u8ptr, IO::Path::ALL_FILES);
+	Text::StrConcatC(u8ptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
 	IO::Path::FindFileSession *sess = IO::Path::FindFile(path);
 	if (sess)
 	{

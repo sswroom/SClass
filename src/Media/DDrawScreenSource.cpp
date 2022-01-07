@@ -104,7 +104,7 @@ ctlop2:
 				t2 = clk->GetTimeDiff();
 				t1 = t2 - t1;
 
-				me->captureCb((UInt32)Math::Double2Int(clk->GetTimeDiff() * 1000), frameNum, me->scnABuff, sizeNeeded, Media::IVideoSource::FS_I, me->captureCbData, Media::FT_NON_INTERLACE, frameNum == 0);
+				me->captureCb((UInt32)Math::Double2Int32(clk->GetTimeDiff() * 1000), frameNum, &me->scnABuff, sizeNeeded, Media::IVideoSource::FS_I, me->captureCbData, Media::FT_NON_INTERLACE, (frameNum == 0)?Media::IVideoSource::FF_FORCEDISP:0, Media::YCOFST_C_CENTER_LEFT);
 				frameNum++;
 			}
 			else
@@ -148,7 +148,7 @@ Media::DDrawScreenSource::DDrawScreenSource()
 {
 	this->captureToStop = false;
 	this->captureRunning = false;
-	NEW_CLASS(this->captureEvt, Sync::Event(true, L"Media.DDrawScreenSource.captureEvt"));
+	NEW_CLASS(this->captureEvt, Sync::Event(true, (const UTF8Char*)"Media.DDrawScreenSource.captureEvt"));
 
 	this->ddObj = 0;
 	this->primarySurface = 0;
@@ -208,20 +208,21 @@ Bool Media::DDrawScreenSource::GetVideoInfo(Media::FrameInfo *info, Int32 *frame
 		return false;
 	}
 
-	info->width = ddsd.dwWidth;
-	info->height = ddsd.dwHeight;
+	info->storeWidth = ddsd.dwWidth;
+	info->storeHeight = ddsd.dwHeight;
+	info->dispWidth = info->storeWidth;
+	info->dispHeight = info->storeHeight;
 	info->fourcc = 0;
-	info->bpp = ddsd.ddpfPixelFormat.dwRGBBitCount;
+	info->storeBPP = ddsd.ddpfPixelFormat.dwRGBBitCount;
 	info->byteSize = 0;
-	info->par = 1;
+	info->par2 = 1;
 	info->ftype = Media::FT_NON_INTERLACE;
 	info->atype = Media::AT_NO_ALPHA;
-	info->rgbType = Media::CS::TRANT_sRGB;
-	info->rgbGamma = 2.2;
-	info->yuvType = Media::IColorHandler::YUVT_BT709;
-	if (info->bpp == 32)
+	info->color->SetCommonProfile(Media::ColorProfile::CPT_SRGB);
+	info->yuvType = Media::ColorProfile::YUVT_BT709;
+	if (info->storeBPP == 32)
 	{
-		*maxFrameSize = info->width * info->height << 2;
+		*maxFrameSize = info->storeWidth * info->storeHeight << 2;
 	}
 
 	return true;

@@ -234,7 +234,7 @@ SSWR::AVIRead::AVIRAudioViewerForm::AVIRAudioViewerForm(UI::GUIClientControl *pa
 {
 	UTF8Char sbuff[512];
 	this->SetFont(0, 8.25, false);
-	audSrc->GetSourceName(Text::StrConcat(sbuff, (const UTF8Char*)"Audio Viewer - "));
+	audSrc->GetSourceName(Text::StrConcatC(sbuff, UTF8STRC("Audio Viewer - ")));
 	this->SetText(sbuff);
 
 	this->core = core;

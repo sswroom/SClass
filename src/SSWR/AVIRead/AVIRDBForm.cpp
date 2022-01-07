@@ -217,7 +217,7 @@ SSWR::AVIRead::AVIRDBForm::AVIRDBForm(UI::GUIClientControl *parent, UI::GUICore 
 {
 	UTF8Char sbuff[512];
 	this->SetFont(0, 8.25, false);
-	db->GetSourceNameObj()->ConcatTo(Text::StrConcat(sbuff, (const UTF8Char*)"Database - "));
+	db->GetSourceNameObj()->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("Database - ")));
 	this->SetText(sbuff);
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));

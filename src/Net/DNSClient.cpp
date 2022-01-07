@@ -118,7 +118,7 @@ UOSInt Net::DNSClient::GetByType(Data::ArrayList<RequestAnswer*> *answers, const
 				sptr = Text::StrUInt16(sptr, addr.addr[1]);
 				*sptr++ = '.';
 				sptr = Text::StrUInt16(sptr, addr.addr[0]);
-				sptr = Text::StrConcat(sptr, (const UTF8Char*)".in-addr.arpa");
+				sptr = Text::StrConcatC(sptr, UTF8STRC(".in-addr.arpa"));
 				cptr1 = sbuff;
 			}
 			else if (addr.addrType == Net::AddrType::IPv6)
@@ -132,7 +132,7 @@ UOSInt Net::DNSClient::GetByType(Data::ArrayList<RequestAnswer*> *answers, const
 					*sptr++ = (UTF8Char)MyString_STRhexarr[addr.addr[i] >> 4];
 					*sptr++ = '.';
 				}
-				sptr = Text::StrConcat(sptr, (const UTF8Char*)"ip6.arpa");
+				sptr = Text::StrConcatC(sptr, UTF8STRC("ip6.arpa"));
 				cptr1 = sbuff;
 			}
 			else
@@ -535,7 +535,7 @@ Net::DNSClient::RequestAnswer *Net::DNSClient::ParseAnswer(const UInt8 *buff, UO
 			{
 				if (sptr != sbuff)
 				{
-					sptr = Text::StrConcat(sptr, (const UTF8Char*)", ");
+					sptr = Text::StrConcatC(sptr, UTF8STRC(", "));
 				}
 				sptr = Text::StrConcatC(sptr, &buff[currInd + 1], buff[currInd]);
 				currInd += 1 + (UOSInt)buff[currInd];
@@ -553,62 +553,62 @@ Net::DNSClient::RequestAnswer *Net::DNSClient::ParseAnswer(const UInt8 *buff, UO
 	case 33: // SRV - Server Selection
 		{
 			ans->priority = ReadMUInt16(&buff[i + 10]);
-			sptr = Text::StrConcat(sbuff, (const UTF8Char*)"Weight = ");
+			sptr = Text::StrConcatC(sbuff, UTF8STRC("Weight = "));
 			sptr = Text::StrUInt16(sptr, ReadMUInt16(&buff[i + 12]));
-			sptr = Text::StrConcat(sptr, (const UTF8Char*)", Port = ");
+			sptr = Text::StrConcatC(sptr, UTF8STRC(", Port = "));
 			sptr = Text::StrUInt16(sptr, ReadMUInt16(&buff[i + 14]));
-			sptr = Text::StrConcat(sptr, (const UTF8Char*)", Target = ");
+			sptr = Text::StrConcatC(sptr, UTF8STRC(", Target = "));
 			ParseString(sptr, buff, i + 16, i + 10 + k);
 			ans->rd = Text::StrCopyNew(sbuff);
 		}
 		break;
 	case 48: // DNSKEY - DNS Key record
 		{
-			sptr = Text::StrConcat(sbuff, (const UTF8Char*)"Flags = ");
+			sptr = Text::StrConcatC(sbuff, UTF8STRC("Flags = "));
 			sptr = Text::StrUInt16(sptr, ReadMUInt16(&buff[i + 10]));
-			sptr = Text::StrConcat(sptr, (const UTF8Char*)", Protocol = ");
+			sptr = Text::StrConcatC(sptr, UTF8STRC(", Protocol = "));
 			sptr = Text::StrUInt16(sptr, buff[i + 12]);
-			sptr = Text::StrConcat(sptr, (const UTF8Char*)", Algorithm = ");
+			sptr = Text::StrConcatC(sptr, UTF8STRC(", Algorithm = "));
 			sptr = Text::StrUInt16(sptr, buff[i + 13]);
-			sptr = Text::StrConcat(sptr, (const UTF8Char*)", Public Key = ");
+			sptr = Text::StrConcatC(sptr, UTF8STRC(", Public Key = "));
 			sptr = Text::StrHexBytes(sptr, &buff[i + 14], k - 4, ' ');
 			ans->rd = Text::StrCopyNew(sbuff);
 		}
 		break;
 	case 46: // RRSIG - DNSSEC signature
 		{
-			sptr = Text::StrConcat(sbuff, (const UTF8Char*)"Type Covered = ");
+			sptr = Text::StrConcatC(sbuff, UTF8STRC("Type Covered = "));
 			sptr = Text::StrUInt16(sptr, ReadMUInt16(&buff[i + 10]));
-			sptr = Text::StrConcat(sptr, (const UTF8Char*)", Algorithm = ");
+			sptr = Text::StrConcatC(sptr, UTF8STRC(", Algorithm = "));
 			sptr = Text::StrUInt16(sptr, buff[i + 12]);
-			sptr = Text::StrConcat(sptr, (const UTF8Char*)", Labels = ");
+			sptr = Text::StrConcatC(sptr, UTF8STRC(", Labels = "));
 			sptr = Text::StrUInt16(sptr, buff[i + 13]);
-			sptr = Text::StrConcat(sptr, (const UTF8Char*)", Original TTL = ");
+			sptr = Text::StrConcatC(sptr, UTF8STRC(", Original TTL = "));
 			sptr = Text::StrUInt32(sptr, ReadMUInt32(&buff[i + 14]));
-			sptr = Text::StrConcat(sptr, (const UTF8Char*)", Signature Expiration = ");
+			sptr = Text::StrConcatC(sptr, UTF8STRC(", Signature Expiration = "));
 			sptr = Text::StrUInt32(sptr, ReadMUInt32(&buff[i + 18]));
-			sptr = Text::StrConcat(sptr, (const UTF8Char*)", Signature Inception = ");
+			sptr = Text::StrConcatC(sptr, UTF8STRC(", Signature Inception = "));
 			sptr = Text::StrUInt32(sptr, ReadMUInt32(&buff[i + 22]));
-			sptr = Text::StrConcat(sptr, (const UTF8Char*)", Key Tag = ");
+			sptr = Text::StrConcatC(sptr, UTF8STRC(", Key Tag = "));
 			sptr = Text::StrUInt16(sptr, ReadMUInt16(&buff[i + 26]));
-			sptr = Text::StrConcat(sptr, (const UTF8Char*)", Signer's Name = ");
+			sptr = Text::StrConcatC(sptr, UTF8STRC(", Signer's Name = "));
 			const UInt8 *tmpPtr = &buff[i + 28];
 			while ((*sptr++ = *tmpPtr++) != 0);
 			sptr--;
-			sptr = Text::StrConcat(sptr, (const UTF8Char*)", Signature = ");
+			sptr = Text::StrConcatC(sptr, UTF8STRC(", Signature = "));
 			sptr = Text::StrHexBytes(sptr, tmpPtr, k - (UOSInt)(tmpPtr - &buff[i + 10]), ' ');
 			ans->rd = Text::StrCopyNew(sbuff);
 		}
 		break;
 	case 43: // DS - Delegation signer
 		{
-			sptr = Text::StrConcat(sbuff, (const UTF8Char*)"Key Tag = ");
+			sptr = Text::StrConcatC(sbuff, UTF8STRC("Key Tag = "));
 			sptr = Text::StrUInt16(sptr, ReadMUInt16(&buff[i + 10]));
-			sptr = Text::StrConcat(sptr, (const UTF8Char*)", Algorithm = ");
+			sptr = Text::StrConcatC(sptr, UTF8STRC(", Algorithm = "));
 			sptr = Text::StrUInt16(sptr, buff[i + 12]);
-			sptr = Text::StrConcat(sptr, (const UTF8Char*)", Digest Type = ");
+			sptr = Text::StrConcatC(sptr, UTF8STRC(", Digest Type = "));
 			sptr = Text::StrUInt16(sptr, buff[i + 13]);
-			sptr = Text::StrConcat(sptr, (const UTF8Char*)", Digest = ");
+			sptr = Text::StrConcatC(sptr, UTF8STRC(", Digest = "));
 			sptr = Text::StrHexBytes(sptr, &buff[i + 14], k - 4, ' ');
 			ans->rd = Text::StrCopyNew(sbuff);
 		}

@@ -118,9 +118,9 @@ void Media::VideoRenderer::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, Vid
 			sptr = &sbuff[i + 1];
 			Data::DateTime dt;
 			dt.SetCurrTime();
-			sptr = Text::StrConcat(sptr, (const UTF8Char*)"Snapshot");
+			sptr = Text::StrConcatC(sptr, UTF8STRC("Snapshot"));
 			sptr = dt.ToString(sptr, "yyyyMMdd_HHmmssfff");
-			sptr = Text::StrConcat(sptr, (const UTF8Char*)".png");
+			sptr = Text::StrConcatC(sptr, UTF8STRC(".png"));
 			NEW_CLASS(imgList, Media::ImageList(sbuff));
 			imgList->AddImage(simg, 0);
 			Exporter::PNGExporter exporter;

@@ -138,7 +138,7 @@ void IO::JavaClass::AppendCond(Text::StringBuilderUTF *sb, DecompileEnv *env, UO
 				(ct == CondType::NE && inv && env->stacks->GetItem(index + 1)->Equals((const UTF8Char*)"0")))
 		{
 			sb->AppendChar('!', 1);
-			if (s->IndexOf((const UTF8Char *)" instanceof ") != INVALID_INDEX)
+			if (s->IndexOf((const UTF8Char*)" instanceof ") != INVALID_INDEX)
 			{
 				sb->AppendChar('(', 1);
 				sb->Append(s);
@@ -153,7 +153,7 @@ void IO::JavaClass::AppendCond(Text::StringBuilderUTF *sb, DecompileEnv *env, UO
 		else if ((ct == CondType::EQ && inv && env->stacks->GetItem(index + 1)->Equals((const UTF8Char*)"1")) ||
 				(ct == CondType::NE && !inv && env->stacks->GetItem(index + 1)->Equals((const UTF8Char*)"1")))
 		{
-			if (s->IndexOf((const UTF8Char *)" instanceof ") != INVALID_INDEX || s->ContainChars((const UTF8Char*)"><=|&^"))
+			if (s->IndexOf((const UTF8Char*)" instanceof ") != INVALID_INDEX || s->ContainChars((const UTF8Char*)"><=|&^"))
 			{
 				sb->AppendChar('(', 1);
 				sb->Append(s);
@@ -170,7 +170,7 @@ void IO::JavaClass::AppendCond(Text::StringBuilderUTF *sb, DecompileEnv *env, UO
 		else if ((ct == CondType::EQ && !inv && env->stacks->GetItem(index + 1)->Equals((const UTF8Char*)"1")) ||
 				(ct == CondType::NE && inv && env->stacks->GetItem(index + 1)->Equals((const UTF8Char*)"1")))
 		{
-			if (s->IndexOf((const UTF8Char *)" instanceof ") != INVALID_INDEX || s->ContainChars((const UTF8Char*)"><=|&^"))
+			if (s->IndexOf((const UTF8Char*)" instanceof ") != INVALID_INDEX || s->ContainChars((const UTF8Char*)"><=|&^"))
 			{
 				sb->AppendChar('(', 1);
 				sb->Append(s);

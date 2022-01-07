@@ -32,31 +32,31 @@ SSWR::AVIRead::AVIRAboutForm::AVIRAboutForm(UI::GUIClientControl *parent, UI::GU
 	Data::DateTime t;
 #if defined(CPU_X86_32) || defined(CPU_X86_64)
 	UTF8Char *sptr;
-	sptr = Text::StrConcat(sbuff, (const UTF8Char*)"AVIRead v4 by sswroom");
+	sptr = Text::StrConcatC(sbuff, UTF8STRC("AVIRead v4 by sswroom"));
 	if (CPUBrand == 1)
 	{
-		sptr = Text::StrConcat(sptr, (const UTF8Char*)" (Optimized for Intel CPU)");
+		sptr = Text::StrConcatC(sptr, UTF8STRC(" (Optimized for Intel CPU)"));
 	}
 	else if (CPUBrand == 2)
 	{
-		sptr = Text::StrConcat(sptr, (const UTF8Char*)" (AMD CPU)");
+		sptr = Text::StrConcatC(sptr, UTF8STRC(" (AMD CPU)"));
 	}
 	if (UseAVX)
 	{
-		sptr = Text::StrConcat(sptr, (const UTF8Char*)" (AVX Optimized)");
+		sptr = Text::StrConcatC(sptr, UTF8STRC(" (AVX Optimized)"));
 	}
 #else
-	Text::StrConcat(sbuff, (const UTF8Char*)"AVIRead v4 by sswroom");
+	Text::StrConcatC(sbuff, UTF8STRC("AVIRead v4 by sswroom"));
 #endif
 	NEW_CLASS(lbl, UI::GUILabel(ui, this, sbuff));
 	lbl->SetRect(8, 8, 400, 23, false);
 
-	IO::Path::GetProcessFileName(Text::StrConcat(sbuff, (const UTF8Char*)"Path: "));
+	IO::Path::GetProcessFileName(Text::StrConcatC(sbuff, UTF8STRC("Path: ")));
 	NEW_CLASS(lbl, UI::GUILabel(ui, this, sbuff));
 	lbl->SetRect(8, 32, 400, 23, false);
 
 	IO::BuildTime::GetBuildTime(&t);
-	t.ToString(Text::StrConcat(sbuff, (const UTF8Char*)"Build date: "), "yyyy-MM-dd HH:mm:ss");
+	t.ToString(Text::StrConcatC(sbuff, UTF8STRC("Build date: ")), "yyyy-MM-dd HH:mm:ss");
 	NEW_CLASS(lbl, UI::GUILabel(ui, this, sbuff));
 	lbl->SetRect(8, 56, 400, 23, false);
 

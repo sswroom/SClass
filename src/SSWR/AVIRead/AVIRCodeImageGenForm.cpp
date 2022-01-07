@@ -44,12 +44,12 @@ void __stdcall SSWR::AVIRead::AVIRCodeImageGenForm::OnCodeGenClicked(void *userO
 			}
 			else
 			{
-				UI::MessageDialog::ShowDialog((const UTF8Char *)"Error in generating the code", (const UTF8Char *)"Code Image Generator", me);
+				UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in generating the code", (const UTF8Char*)"Code Image Generator", me);
 			}
 		}
 		else
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char *)"Code size is not valid", (const UTF8Char *)"Code Image Generator", me);
+			UI::MessageDialog::ShowDialog((const UTF8Char*)"Code size is not valid", (const UTF8Char*)"Code Image Generator", me);
 		}
 	}
 }

@@ -70,7 +70,7 @@ SSWR::AVIRead::AVIRIOPinTestForm::AVIRIOPinTestForm(UI::GUIClientControl *parent
 	this->pin = pin;
 	this->core = core;
 	this->isOutput = false;
-	this->pin->GetName(Text::StrConcat(sbuff, (const UTF8Char*)"IO Pin Test - "));
+	this->pin->GetName(Text::StrConcatC(sbuff, UTF8STRC("IO Pin Test - ")));
 	this->SetText(sbuff);
 	this->pin->SetPinOutput(false);
 	this->SetNoResize(true);

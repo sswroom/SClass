@@ -6,9 +6,9 @@ void SSWR::DiscDB::DiscDBDVDTypeForm::ShowStatus()
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
-	sptr = Text::StrConcat(sbuff, (const UTF8Char*)"You are viewing ");
+	sptr = Text::StrConcatC(sbuff, UTF8STRC("You are viewing "));
 	sptr = Text::StrUOSInt(sptr, this->currIndex + 1);
-	sptr = Text::StrConcat(sptr, (const UTF8Char*)" of ");
+	sptr = Text::StrConcatC(sptr, UTF8STRC(" of "));
 	sptr = Text::StrUOSInt(sptr, this->env->GetDVDTypeCount());
 	this->lblDisplay->SetText(sbuff);
 }

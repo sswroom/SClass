@@ -51,7 +51,7 @@ void __stdcall Net::RTPCliChannel::PacketHdlr(const Net::SocketUtil::AddressInfo
 		chData->lastSeqNumHi++;
 	}
 	chData->lastSeqNumLo = seqNum;
-//	Text::StrConcat(Text::StrInt32(sbuff, seqNum), L"\r\n");
+//	Text::StrConcatC(Text::StrInt32(sbuff, seqNum), UTF8STRC("\r\n"));
 //	IO::Console::PrintStrO(sbuff);
 
 	Sync::MutexUsage mutUsage(chData->packMut);
@@ -416,9 +416,9 @@ UInt16 Net::RTPCliChannel::GetPort()
 UTF8Char *Net::RTPCliChannel::GetTransportDesc(UTF8Char *sbuff)
 {
 	UInt16 port = GetPort();
-	sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"RTP/AVP;unicast;client_port=");
+	sbuff = Text::StrConcatC(sbuff, UTF8STRC("RTP/AVP;unicast;client_port="));
 	sbuff = Text::StrInt32(sbuff, port);
-	sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"-");
+	sbuff = Text::StrConcatC(sbuff, UTF8STRC("-"));
 	sbuff = Text::StrInt32(sbuff, port + 1);
 	return sbuff;
 }
@@ -614,7 +614,7 @@ Net::RTPCliChannel *Net::RTPCliChannel::CreateChannel(Net::SocketFactory *sockf,
 			}
 			else
 			{
-				Text::StrConcat(Text::StrConcat(sbuff, ctrlURL), (const UTF8Char*)"/");
+				Text::StrConcatC(Text::StrConcat(sbuff, ctrlURL), UTF8STRC("/"));
 				Text::URLString::AppendURLPath(sbuff, &desc[10]);
 				ch->SetControlURL(sbuff);
 			}

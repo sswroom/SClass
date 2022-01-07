@@ -49,7 +49,7 @@ Net::HTTPMyClient::HTTPMyClient(Net::SocketFactory *sockf, Net::SSLEngine *ssl, 
 	sptr = IO::Path::AppendPath(sbuff, (const UTF8Char*)"HTTPClient_");
 	dt.SetCurrTimeUTC();
 	sptr = Text::StrInt64(sptr, dt.ToTicks());
-	sptr = Text::StrConcat(sptr, (const UTF8Char*)".dat");
+	sptr = Text::StrConcatC(sptr, UTF8STRC(".dat"));
 	NEW_CLASS(this->clsData->fs, IO::FileStream(sbuff, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 #endif
 	this->ssl = ssl;
@@ -599,9 +599,9 @@ Bool Net::HTTPMyClient::Connect(const UTF8Char *url, const Char *method, Double 
 		urltmp[i] = 0;
 	}
 	Text::TextEnc::URIEncoding::URIDecode(urltmp, urltmp);
-	cptr = Text::StrConcat(host, (UTF8Char*)"Host: ");
+	cptr = Text::StrConcatC(host, UTF8STRC("Host: "));
 	cptr = Text::StrConcat(cptr, urltmp);
-	cptr = Text::StrConcat(cptr, (UTF8Char*)"\r\n");
+	cptr = Text::StrConcatC(cptr, UTF8STRC("\r\n"));
 	hostLen = (UOSInt)(cptr - host);
 	if (urltmp[0] == '[')
 	{
@@ -822,41 +822,41 @@ Bool Net::HTTPMyClient::Connect(const UTF8Char *url, const Char *method, Double 
 		{
 			this->canWrite = true;
 			this->writing = false;
-			cptr = Text::StrConcat(dataBuff, (const UTF8Char*)"POST ");
+			cptr = Text::StrConcatC(dataBuff, UTF8STRC("POST "));
 		}
 		else if (Text::StrEquals(method, "PUT"))
 		{
 			this->canWrite = true;
 			this->writing = false;
-			cptr = Text::StrConcat(dataBuff, (const UTF8Char*)"PUT ");
+			cptr = Text::StrConcatC(dataBuff, UTF8STRC("PUT "));
 		}
 		else if (Text::StrEquals(method, "PATCH"))
 		{
 			this->canWrite = true;
 			this->writing = false;
-			cptr = Text::StrConcat(dataBuff, (const UTF8Char*)"PATCH ");
+			cptr = Text::StrConcatC(dataBuff, UTF8STRC("PATCH "));
 		}
 		else if (Text::StrEquals(method, "DELETE"))
 		{
 			this->canWrite = false;
 			this->writing = false;
-			cptr = Text::StrConcat(dataBuff, (const UTF8Char*)"DELETE ");
+			cptr = Text::StrConcatC(dataBuff, UTF8STRC("DELETE "));
 		}
 		else
 		{
 			this->canWrite = false;
 			this->writing = false;
-			cptr = Text::StrConcat(dataBuff, (const UTF8Char*)"GET ");
+			cptr = Text::StrConcatC(dataBuff, UTF8STRC("GET "));
 		}
 	}
 	else
 	{
 		this->canWrite = false;
 		this->writing = false;
-		cptr = Text::StrConcat(dataBuff, (const UTF8Char*)"GET ");
+		cptr = Text::StrConcatC(dataBuff, UTF8STRC("GET "));
 	}
 	cptr = Text::StrConcat(cptr, ptr2);
-	cptr = Text::StrConcat(cptr, (const UTF8Char*)" HTTP/1.1\r\n");
+	cptr = Text::StrConcatC(cptr, UTF8STRC(" HTTP/1.1\r\n"));
 	this->reqMstm->Write(dataBuff, (UOSInt)(cptr - (UTF8Char*)dataBuff));
 	this->reqMstm->Write((UInt8*)host, hostLen);
 

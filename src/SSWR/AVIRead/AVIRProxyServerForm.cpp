@@ -14,7 +14,7 @@ void __stdcall SSWR::AVIRead::AVIRProxyServerForm::OnStartClicked(void *userObj)
 		Int32 port = sb.ToInt32();
 		if (port <= 0 || port >= 65536)
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char *)"Please enter valid port number", (const UTF8Char *)"Start", me);
+			UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter valid port number", (const UTF8Char*)"Start", me);
 			return;
 		}
 		NEW_CLASS(me->svr, Net::ProxyServer(me->sockf, (UInt16)port, me->log));
@@ -22,7 +22,7 @@ void __stdcall SSWR::AVIRead::AVIRProxyServerForm::OnStartClicked(void *userObj)
 		{
 			DEL_CLASS(me->svr);
 			me->svr = 0;
-			UI::MessageDialog::ShowDialog((const UTF8Char *)"Error in starting proxy server. Maybe port is in use.", (const UTF8Char *)"Start", me);
+			UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in starting proxy server. Maybe port is in use.", (const UTF8Char*)"Start", me);
 		}
 		else
 		{

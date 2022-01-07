@@ -50,7 +50,7 @@ void __stdcall SSWR::AVIRead::AVIRFileAnalyseForm::OnTrimPaddingClicked(void *us
 		}
 		else
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char *)"Error in saving the file", (const UTF8Char *)"Error", me);
+			UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in saving the file", (const UTF8Char*)"Error", me);
 		}
 	}
 	DEL_CLASS(dlg);
@@ -79,7 +79,7 @@ void __stdcall SSWR::AVIRead::AVIRFileAnalyseForm::OnTimerTick(void *userObj)
 				if (j == i)
 				{
 					sptr = Text::StrInt32(sbuff, (Int32)j * PER_PAGE);
-					sptr = Text::StrConcat(sptr, (const UTF8Char*)" - ");
+					sptr = Text::StrConcatC(sptr, UTF8STRC(" - "));
 					sptr = Text::StrInt32(sptr, (Int32)(currCnt - 1));
 					me->lbPackList->RemoveItem((UOSInt)j);
 					me->lbPackList->AddItem(sbuff, 0);
@@ -88,7 +88,7 @@ void __stdcall SSWR::AVIRead::AVIRFileAnalyseForm::OnTimerTick(void *userObj)
 				else
 				{
 					sptr = Text::StrInt32(sbuff, (Int32)j * PER_PAGE);
-					sptr = Text::StrConcat(sptr, (const UTF8Char*)" - ");
+					sptr = Text::StrConcatC(sptr, UTF8STRC(" - "));
 					sptr = Text::StrInt32(sptr, (Int32)(j * PER_PAGE + PER_PAGE - 1));
 					me->lbPackList->RemoveItem((UOSInt)j);
 					me->lbPackList->AddItem(sbuff, 0);
@@ -98,14 +98,14 @@ void __stdcall SSWR::AVIRead::AVIRFileAnalyseForm::OnTimerTick(void *userObj)
 			while (++j < i)
 			{
 				sptr = Text::StrInt32(sbuff, (Int32)j * PER_PAGE);
-				sptr = Text::StrConcat(sptr, (const UTF8Char*)" - ");
+				sptr = Text::StrConcatC(sptr, UTF8STRC(" - "));
 				sptr = Text::StrInt32(sptr, (Int32)(j * PER_PAGE + PER_PAGE - 1));
 				me->lbPackList->AddItem(sbuff, 0);
 			}
 			if (j == i)
 			{
 				sptr = Text::StrInt32(sbuff, (Int32)j * PER_PAGE);
-				sptr = Text::StrConcat(sptr, (const UTF8Char*)" - ");
+				sptr = Text::StrConcatC(sptr, UTF8STRC(" - "));
 				sptr = Text::StrInt32(sptr, (Int32)(currCnt - 1));
 				me->lbPackList->AddItem(sbuff, 0);
 				j++;

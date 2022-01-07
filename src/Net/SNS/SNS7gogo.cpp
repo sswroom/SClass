@@ -90,7 +90,7 @@ Text::String *Net::SNS::SNS7gogo::GetName()
 
 UTF8Char *Net::SNS::SNS7gogo::GetDirName(UTF8Char *dirName)
 {
-	dirName = Text::StrConcat(dirName, (const UTF8Char*)"7gogo_");
+	dirName = Text::StrConcatC(dirName, UTF8STRC("7gogo_"));
 	dirName = this->channelId->ConcatTo(dirName);
 	return dirName;
 }

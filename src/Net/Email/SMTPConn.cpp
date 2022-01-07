@@ -258,7 +258,7 @@ Bool Net::Email::SMTPConn::SendEHlo(const UTF8Char *cliName)
 	UTF8Char returnMsg[2048];
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	sptr = Text::StrConcat(Text::StrConcat(Text::StrConcat(sbuff, (const UTF8Char*)"EHLO "), cliName), (const UTF8Char*)"\r\n");
+	sptr = Text::StrConcatC(Text::StrConcat(Text::StrConcatC(sbuff, UTF8STRC("EHLO ")), cliName), UTF8STRC("\r\n"));
 	this->statusChg = false;
 	returnMsg[0] = 0;
 	this->msgRet = returnMsg;

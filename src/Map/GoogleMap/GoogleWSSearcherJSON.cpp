@@ -116,20 +116,20 @@ UTF8Char *Map::GoogleMap::GoogleWSSearcherJSON::SearchName(UTF8Char *buff, UOSIn
 	}
 
 	Net::HTTPClient *cli;
-	urlStart = sptr = Text::StrConcat(url, (const UTF8Char*)"https://maps.googleapis.com");
-	sptr = Text::StrConcat(sptr, (const UTF8Char*)"/maps/api/geocode/json?latlng=");
+	urlStart = sptr = Text::StrConcatC(url, UTF8STRC("https://maps.googleapis.com"));
+	sptr = Text::StrConcatC(sptr, UTF8STRC("/maps/api/geocode/json?latlng="));
 	sptr = Text::StrDouble(sptr, lat);
-	sptr = Text::StrConcat(sptr, (const UTF8Char*)",");
+	sptr = Text::StrConcatC(sptr, UTF8STRC(","));
 	sptr = Text::StrDouble(sptr, lon);
-//	sptr = Text::StrConcat(sptr, L"&sensor=false");
+//	sptr = Text::StrConcatC(sptr, UTF8STRC("&sensor=false"));
 	if (lang)
 	{
-		sptr = Text::StrConcat(sptr, (const UTF8Char*)"&language=");
+		sptr = Text::StrConcatC(sptr, UTF8STRC("&language="));
 		sptr = Text::StrConcat(sptr, lang);
 	}
 	if (this->gooCliId)
 	{
-		sptr = Text::StrConcat(sptr, (const UTF8Char*)"&client=");
+		sptr = Text::StrConcatC(sptr, UTF8STRC("&client="));
 		sptr = this->gooCliId->ConcatTo(sptr);
 
 		UInt8 result[20];
@@ -138,12 +138,12 @@ UTF8Char *Map::GoogleMap::GoogleWSSearcherJSON::SearchName(UTF8Char *buff, UOSIn
 		hmac.Calc(urlStart, (UOSInt)(sptr - urlStart));
 		hmac.GetValue(result);
 		Text::TextBinEnc::Base64Enc b64(Text::TextBinEnc::Base64Enc::Charset::URL, false);
-		sptr = Text::StrConcat(sptr, (const UTF8Char*)"&signature=");
+		sptr = Text::StrConcatC(sptr, UTF8STRC("&signature="));
 		sptr = b64.EncodeBin(sptr, result, 20);
 	}
 	else if (this->gooAPIKey)
 	{
-		sptr = Text::StrConcat(sptr, (const UTF8Char*)"&key=");
+		sptr = Text::StrConcatC(sptr, UTF8STRC("&key="));
 		sptr = this->gooAPIKey->ConcatTo(sptr);
 	}
 
@@ -232,9 +232,9 @@ UTF8Char *Map::GoogleMap::GoogleWSSearcherJSON::SearchName(UTF8Char *buff, UOSIn
 						}
 						else
 						{
-							sptr = Text::StrConcat(url, (const UTF8Char*)"Google JSON Status ");
+							sptr = Text::StrConcatC(url, UTF8STRC("Google JSON Status "));
 							sptr = jstr->GetValue()->ConcatTo(sptr);
-							sptr = Text::StrConcat(sptr, (const UTF8Char*)" Error");
+							sptr = Text::StrConcatC(sptr, UTF8STRC(" Error"));
 							errWriter->WriteLineC(url, (UOSInt)(sptr - url));
 							this->lastIsError = 1;
 						}

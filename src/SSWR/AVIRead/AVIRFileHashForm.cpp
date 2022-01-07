@@ -107,19 +107,19 @@ UInt32 __stdcall SSWR::AVIRead::AVIRFileHashForm::HashThread(void *userObj)
 			chkType = me->currHashType;
 			if (chkType == IO::FileCheck::CheckType::MD5)
 			{
-				Text::StrConcat(Text::StrConcat(sbuff, status->fileName), (const UTF8Char*)".md5");
+				Text::StrConcatC(Text::StrConcat(sbuff, status->fileName), UTF8STRC(".md5"));
 			}
 			else if (chkType == IO::FileCheck::CheckType::CRC32)
 			{
-				Text::StrConcat(Text::StrConcat(sbuff, status->fileName), (const UTF8Char*)".sfv");
+				Text::StrConcatC(Text::StrConcat(sbuff, status->fileName), UTF8STRC(".sfv"));
 			}
 			else if (chkType == IO::FileCheck::CheckType::SHA1)
 			{
-				Text::StrConcat(Text::StrConcat(sbuff, status->fileName), (const UTF8Char*)".sha1");
+				Text::StrConcatC(Text::StrConcat(sbuff, status->fileName), UTF8STRC(".sha1"));
 			}
 			else if (chkType == IO::FileCheck::CheckType::MD4)
 			{
-				Text::StrConcat(Text::StrConcat(sbuff, status->fileName), (const UTF8Char*)".md4");
+				Text::StrConcatC(Text::StrConcat(sbuff, status->fileName), UTF8STRC(".md4"));
 			}
 			if (IO::Path::GetPathType(sbuff) == IO::Path::PathType::Unknown)
 			{

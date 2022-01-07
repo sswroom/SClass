@@ -20,9 +20,9 @@ Bool SSWR::SHPConv::ElevationFilter::IsValid(Double left, Double top, Double rig
 
 UTF8Char *SSWR::SHPConv::ElevationFilter::ToString(UTF8Char *buff)
 {
-	buff = Text::StrConcat(buff, (const UTF8Char*)"Compare column ");
+	buff = Text::StrConcatC(buff, UTF8STRC("Compare column "));
 	buff = Text::StrUOSInt(buff, this->colIndex);
-	buff = Text::StrConcat(buff, (const UTF8Char*)" every ");
+	buff = Text::StrConcatC(buff, UTF8STRC(" every "));
 	buff = Text::StrInt32(buff, this->value);
 	return buff;
 }

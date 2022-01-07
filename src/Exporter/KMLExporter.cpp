@@ -589,7 +589,7 @@ Bool Exporter::KMLExporter::GetParamInfo(UOSInt index, ParamInfo *info)
 {
 	if (index != 0)
 		return false;
-	info->name = (const UTF8Char *)"Default Height";
+	info->name = (const UTF8Char*)"Default Height";
 	info->paramType = IO::FileExporter::ParamType::INT32;
 	info->allowNull = false;
 	return true;

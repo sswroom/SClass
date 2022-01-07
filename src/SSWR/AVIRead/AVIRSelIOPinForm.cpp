@@ -14,7 +14,7 @@ void __stdcall SSWR::AVIRead::AVIRSelIOPinForm::OnOKClick(void *userObj)
 		UInt16 pinNum = (UInt16)(UOSInt)me->cboGPIO->GetItem((UOSInt)i);
 		if (i == INVALID_INDEX)
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char *)"Please select a GPIO", (const UTF8Char *)"Select GPIO", me);
+			UI::MessageDialog::ShowDialog((const UTF8Char*)"Please select a GPIO", (const UTF8Char*)"Select GPIO", me);
 			return;
 		}
 		IO::GPIOPin *pin;
@@ -22,7 +22,7 @@ void __stdcall SSWR::AVIRead::AVIRSelIOPinForm::OnOKClick(void *userObj)
 		if (pin->IsError())
 		{
 			DEL_CLASS(pin);
-			UI::MessageDialog::ShowDialog((const UTF8Char *)"Error in opening the pin", (const UTF8Char *)"Select GPIO", me);
+			UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in opening the pin", (const UTF8Char*)"Select GPIO", me);
 			return;
 		}
 		me->ioPin = pin;
@@ -35,14 +35,14 @@ void __stdcall SSWR::AVIRead::AVIRSelIOPinForm::OnOKClick(void *userObj)
 		UInt16 pinNum = (UInt16)(UOSInt)me->cboVirtualPin->GetItem(i);
 		if (i == INVALID_INDEX)
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char *)"Please select a VirtualPin", (const UTF8Char *)"Select VirtualPin", me);
+			UI::MessageDialog::ShowDialog((const UTF8Char*)"Please select a VirtualPin", (const UTF8Char*)"Select VirtualPin", me);
 			return;
 		}
 		IO::IOPin *pin;
 		pin = me->vioPinMgr->CreatePin(pinNum);
 		if (pin == 0)
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char *)"Error in opening the pin", (const UTF8Char *)"Select VirtualPin", me);
+			UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in opening the pin", (const UTF8Char*)"Select VirtualPin", me);
 			return;
 		}
 		me->ioPin = pin;
@@ -135,7 +135,7 @@ SSWR::AVIRead::AVIRSelIOPinForm::AVIRSelIOPinForm(UI::GUIClientControl *parent, 
 		while (i < j)
 		{
 			currPort = (Int32)i;
-			Text::StrInt32(Text::StrConcat(sbuff, (const UTF8Char*)"GPIO"), currPort);
+			Text::StrInt32(Text::StrConcatC(sbuff, UTF8STRC("GPIO")), currPort);
 			this->cboGPIO->AddItem(sbuff, (void*)(OSInt)currPort);
 			i++;
 		}
@@ -152,7 +152,7 @@ SSWR::AVIRead::AVIRSelIOPinForm::AVIRSelIOPinForm(UI::GUIClientControl *parent, 
 	while (i < j)
 	{
 		currPort = ports->GetItem(i);
-		Text::StrInt32(Text::StrConcat(sbuff, (const UTF8Char*)"VirtualIOPin"), currPort);
+		Text::StrInt32(Text::StrConcatC(sbuff, UTF8STRC("VirtualIOPin")), currPort);
 		this->cboVirtualPin->AddItem(sbuff, (void*)(OSInt)currPort);
 		i++;
 	}

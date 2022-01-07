@@ -104,7 +104,7 @@ void __stdcall SSWR::AVIRead::AVIREDIDViewerForm::OnSaveClicked(void *userObj)
 			*sptr++ = '_';
 			sptr = Text::StrConcat(sptr, info.monitorName);
 		}
-		sptr = Text::StrConcat(sptr, (const UTF8Char*)".dat");
+		sptr = Text::StrConcatC(sptr, UTF8STRC(".dat"));
 
 		NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"AVIRead", L"EDIDSave", true));
 		dlg->SetFileName(sbuff);

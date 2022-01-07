@@ -248,7 +248,7 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::OnMapMouseMove(void *userObj, OSInt x
 	AVIRead::AVIRGISForm *me = (AVIRead::AVIRGISForm*)userObj;
 	me->mapCtrl->ScnXY2MapXY(x, y, &mapX, &mapY);
 
-	Text::StrDouble(Text::StrConcat(Text::StrDouble(sbuff, mapX), (const UTF8Char*)", "), mapY);
+	Text::StrDouble(Text::StrConcatC(Text::StrDouble(sbuff, mapX), UTF8STRC(", ")), mapY);
 	me->txtLatLon->SetText(sbuff);
 	
 	Math::CoordinateSystem *csys = me->env->GetCoordinateSystem();
@@ -310,14 +310,14 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::OnMapScaleChanged(void *userObj, Doub
 	UTF8Char sbuff[32];
 	if (me->scaleChanging)
 	{
-		Text::StrDoubleFmt(Text::StrConcat(sbuff, (const UTF8Char*)"1:"), me->mapCtrl->GetViewScale(), "0.#");
+		Text::StrDoubleFmt(Text::StrConcatC(sbuff, UTF8STRC("1:")), me->mapCtrl->GetViewScale(), "0.#");
 		me->txtScale->SetText(sbuff);
 		return;
 	}
 	me->scaleChanging = true;
 	me->tbScale->SetPos((UOSInt)Math::Double2OSInt(Math::Log10(newScale / MIN_SCALE) * 65536.0 / Math::Log10(MAX_SCALE / (Double)MIN_SCALE)));
 	me->scaleChanging = false;
-	Text::StrDoubleFmt(Text::StrConcat(sbuff, (const UTF8Char*)"1:"), me->mapCtrl->GetViewScale(), "0.#");
+	Text::StrDoubleFmt(Text::StrConcatC(sbuff, UTF8STRC("1:")), me->mapCtrl->GetViewScale(), "0.#");
 	me->txtScale->SetText(sbuff);
 }
 
@@ -468,7 +468,7 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::OnTimerTick(void *userObj)
 void SSWR::AVIRead::AVIRGISForm::UpdateTitle()
 {
 	UTF8Char sbuff[512];
-	this->env->GetSourceNameObj()->ConcatTo(Text::StrConcat(sbuff, (const UTF8Char*)"GISForm - "));
+	this->env->GetSourceNameObj()->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("GISForm - ")));
 	this->SetText(sbuff);
 }
 
@@ -807,7 +807,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 				if (doc == 0)
 				{
 					DEL_CLASS(printer);
-					UI::MessageDialog::ShowDialog((const UTF8Char *)"Error in printing the map", (const UTF8Char *)"GISForm", this);
+					UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in printing the map", (const UTF8Char*)"GISForm", this);
 				}
 				doc->WaitForEnd();
 				printer->EndPrint(doc);
@@ -951,7 +951,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 			UI::GUIMapTreeView::ItemIndex *ind = (UI::GUIMapTreeView::ItemIndex *)this->popNode->GetItemObj();
 			Text::StringBuilderUTF8 sb;
 			sb.Append(((Map::MapEnv::LayerItem*)ind->item)->layer->GetName());
-			UI::MessageDialog::ShowDialog(sb.ToString(), (const UTF8Char *)"Layer Path", this);
+			UI::MessageDialog::ShowDialog(sb.ToString(), (const UTF8Char*)"Layer Path", this);
 		}
 		break;
 	case MNU_LAYER_SEARCH:
@@ -1173,7 +1173,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 						}
 						else
 						{
-							sptr = Text::StrConcat(sbuff, (const UTF8Char*)"MTK_");
+							sptr = Text::StrConcatC(sbuff, UTF8STRC("MTK_"));
 						}
 						dt.ToString(sptr, "yyyyMMdd");
 						trk->SetSourceName(sbuff);
@@ -1184,20 +1184,20 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 					}
 					else
 					{
-						UI::MessageDialog::ShowDialog((const UTF8Char *)"Error in parsing log", (const UTF8Char *)"MTK Tracker", this);
+						UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in parsing log", (const UTF8Char*)"MTK Tracker", this);
 						DEL_CLASS(trk);
 					}
 				}
 				else
 				{
-					UI::MessageDialog::ShowDialog((const UTF8Char *)"MTK Tracker not found", (const UTF8Char *)"MTK Tracker", this);
+					UI::MessageDialog::ShowDialog((const UTF8Char*)"MTK Tracker not found", (const UTF8Char*)"MTK Tracker", this);
 				}
 				DEL_CLASS(mtk);
 			}
 			else
 			{
 				DEL_CLASS(port);
-				UI::MessageDialog::ShowDialog((const UTF8Char *)"MTK GPS Tracker not found", (const UTF8Char *)"MTK Tracker", this);
+				UI::MessageDialog::ShowDialog((const UTF8Char*)"MTK GPS Tracker not found", (const UTF8Char*)"MTK Tracker", this);
 			}
 		}
 		break;
@@ -1307,7 +1307,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 					NEW_CLASS(fd, IO::StmData::FileData(fname, false));
 					if (fd->GetDataSize() == 0)
 					{
-						UI::MessageDialog::ShowDialog((const UTF8Char *)"Error in loading file", (const UTF8Char *)"AVIRead", this);
+						UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in loading file", (const UTF8Char*)"AVIRead", this);
 					}
 					else
 					{

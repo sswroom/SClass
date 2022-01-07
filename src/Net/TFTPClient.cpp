@@ -81,7 +81,7 @@ Bool Net::TFTPClient::SendFile(const UTF8Char *fileName, IO::Stream *stm)
 	packet = MemAlloc(UInt8, blockSize + 4);
 	WriteMInt16(&packet[0], 2);
 	readSize = (UOSInt)(Text::StrConcat(&packet[2], fileName) - packet + 1);
-	readSize = (UOSInt)(Text::StrConcat(&packet[readSize], (const UTF8Char*)"octet") - packet + 1);
+	readSize = (UOSInt)(Text::StrConcatC(&packet[readSize], UTF8STRC("octet")) - packet + 1);
 	this->replyRecv = false;
 	this->replyError = false;
 	this->nextId = 0;
@@ -125,7 +125,7 @@ Bool Net::TFTPClient::RecvFile(const UTF8Char *fileName, IO::Stream *stm)
 	Bool succ = false;
 	WriteMInt16(&packet[0], 1);
 	readSize = (UOSInt)(Text::StrConcat(&packet[2], fileName) - packet + 1);
-	readSize = (UOSInt)(Text::StrConcat(&packet[readSize], (const UTF8Char*)"octet") - packet + 1);
+	readSize = (UOSInt)(Text::StrConcatC(&packet[readSize], UTF8STRC("octet")) - packet + 1);
 	this->replyRecv = false;
 	this->replyError = false;
 	this->recvSize = 0;

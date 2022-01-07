@@ -34,9 +34,9 @@ UInt32 __stdcall Net::UDPServer::DataV4Thread(void *obj)
 					sptr = Text::StrConcat(sbuff, stat->me->msgPrefix);
 				else
 					sptr = sbuff;
-				sptr = Text::StrConcat(sptr, (const UTF8Char*)"Received ");
+				sptr = Text::StrConcatC(sptr, UTF8STRC("Received "));
 				sptr = Text::StrUOSInt(sptr, recvSize);
-				sptr = Text::StrConcat(sptr, (const UTF8Char*)" bytes from ");
+				sptr = Text::StrConcatC(sptr, UTF8STRC(" bytes from "));
 				sptr = Net::SocketUtil::GetAddrName(sptr, &recvAddr, recvPort);
 				stat->me->msgLog->LogMessageC(sbuff, (UOSInt)(sptr - sbuff), IO::ILogHandler::LOG_LEVEL_RAW);
 			}
@@ -53,7 +53,7 @@ UInt32 __stdcall Net::UDPServer::DataV4Thread(void *obj)
 					}
 					sptr = Text::StrConcat(sbuff, stat->me->logPrefix);
 					sptr = logTime.ToString(sptr, "yyyyMMdd");
-					sptr = Text::StrConcat(sptr, (const UTF8Char*)"r.udp");
+					sptr = Text::StrConcatC(sptr, UTF8STRC("r.udp"));
 					NEW_CLASS(stat->me->logFileR, IO::FileStream(sbuff, IO::FileMode::Append, IO::FileShare::DenyWrite, IO::FileStream::BufferType::Normal));
 				}
 
@@ -106,9 +106,9 @@ UInt32 __stdcall Net::UDPServer::DataV6Thread(void *obj)
 					sptr = Text::StrConcat(sbuff, stat->me->msgPrefix);
 				else
 					sptr = sbuff;
-				sptr = Text::StrConcat(sptr, (const UTF8Char*)"Received ");
+				sptr = Text::StrConcatC(sptr, UTF8STRC("Received "));
 				sptr = Text::StrUOSInt(sptr, recvSize);
-				sptr = Text::StrConcat(sptr, (const UTF8Char*)" bytes from ");
+				sptr = Text::StrConcatC(sptr, UTF8STRC(" bytes from "));
 				sptr = Net::SocketUtil::GetAddrName(sptr, &recvAddr, recvPort);
 				stat->me->msgLog->LogMessageC(sbuff, (UOSInt)(sptr - sbuff), IO::ILogHandler::LOG_LEVEL_RAW);
 			}
@@ -125,7 +125,7 @@ UInt32 __stdcall Net::UDPServer::DataV6Thread(void *obj)
 					}
 					sptr = Text::StrConcat(sbuff, stat->me->logPrefix);
 					sptr = logTime.ToString(sptr, "yyyyMMdd");
-					sptr = Text::StrConcat(sptr, (const UTF8Char*)"r.udp");
+					sptr = Text::StrConcatC(sptr, UTF8STRC("r.udp"));
 					NEW_CLASS(stat->me->logFileR, IO::FileStream(sbuff, IO::FileMode::Append, IO::FileShare::DenyWrite, IO::FileStream::BufferType::Normal));
 				}
 
@@ -454,7 +454,7 @@ Bool Net::UDPServer::SendTo(const Net::SocketUtil::AddressInfo *addr, UInt16 por
 
 			sptr = Text::StrConcat(sbuff, this->logPrefix);
 			sptr = logTime.ToString(sptr, "yyyyMMdd");
-			sptr = Text::StrConcat(sptr, (const UTF8Char*)"s.udp");
+			sptr = Text::StrConcatC(sptr, UTF8STRC("s.udp"));
 			NEW_CLASS(this->logFileS, IO::FileStream(sbuff, IO::FileMode::Append, IO::FileShare::DenyWrite, IO::FileStream::BufferType::Normal));
 		}
 
@@ -482,9 +482,9 @@ Bool Net::UDPServer::SendTo(const Net::SocketUtil::AddressInfo *addr, UInt16 por
 		{
 			sptr = sbuff;
 		}
-		sptr = Text::StrConcat(sptr, (const UTF8Char*)"Sending UDP ");
+		sptr = Text::StrConcatC(sptr, UTF8STRC("Sending UDP "));
 		sptr = Text::StrUOSInt(sptr, dataSize);
-		sptr = Text::StrConcat(sptr, (const UTF8Char*)" bytes to ");
+		sptr = Text::StrConcatC(sptr, UTF8STRC(" bytes to "));
 		sptr = Net::SocketUtil::GetAddrName(sptr, addr, port);
 		this->msgLog->LogMessageC(sbuff, (UOSInt)(sptr - sbuff), IO::ILogHandler::LOG_LEVEL_RAW);
 	}
@@ -499,7 +499,7 @@ Bool Net::UDPServer::SendTo(const Net::SocketUtil::AddressInfo *addr, UInt16 por
 			if (this->msgLog)
 			{
 				sptr = Text::StrConcat(sbuff, msgPrefix);
-				sptr = Text::StrConcat(sptr, (const UTF8Char*)"Send UDP data failed");
+				sptr = Text::StrConcatC(sptr, UTF8STRC("Send UDP data failed"));
 				this->msgLog->LogMessageC(sbuff, (UOSInt)(sptr - sbuff), IO::ILogHandler::LOG_LEVEL_ERROR);
 			}
 		}
@@ -515,7 +515,7 @@ Bool Net::UDPServer::SendTo(const Net::SocketUtil::AddressInfo *addr, UInt16 por
 			if (this->msgLog)
 			{
 				sptr = Text::StrConcat(sbuff, msgPrefix);
-				sptr = Text::StrConcat(sptr, (const UTF8Char*)"Send UDP data failed");
+				sptr = Text::StrConcatC(sptr, UTF8STRC("Send UDP data failed"));
 				this->msgLog->LogMessageC(sbuff, (UOSInt)(sptr - sbuff), IO::ILogHandler::LOG_LEVEL_ERROR);
 			}
 		}

@@ -9,7 +9,7 @@
 #include "Net/HTTPClient.h"
 #include "Text/MyString.h"
 
-#define GMAPURL ((const UTF8Char*)"http://mt1.google.com/vt/")
+#define GMAPURL "http://mt1.google.com/vt/"
 
 Map::GoogleMap::GoogleTileMap::GoogleTileMap(const UTF8Char *cacheDir, MapType mapType, Net::SocketFactory *sockf, Net::SSLEngine *ssl)
 {
@@ -219,7 +219,7 @@ Media::ImageList *Map::GoogleMap::GoogleTileMap::LoadTileImage(UOSInt level, Int
 		IO::Path::CreateDirectory(filePathU);
 		*sptru++ = IO::Path::PATH_SEPERATOR;
 		sptru = Text::StrInt32(sptru, imgY);
-		sptru = Text::StrConcat(sptru, (const UTF8Char*)".png");
+		sptru = Text::StrConcatC(sptru, UTF8STRC(".png"));
 		NEW_CLASS(fd, IO::StmData::FileData(filePathU, false));
 		if (fd->GetDataSize() > 0)
 		{
@@ -254,7 +254,7 @@ Media::ImageList *Map::GoogleMap::GoogleTileMap::LoadTileImage(UOSInt level, Int
 		sptru = Text::StrInt32(sptru, imgX);
 		*sptru++ = '/';
 		sptru = Text::StrInt32(sptru, imgY);
-		sptru = Text::StrConcat(sptru, (const UTF8Char*)".png");
+		sptru = Text::StrConcatC(sptru, UTF8STRC(".png"));
 		fd = this->spkg->CreateStreamData(filePathU);
 		if (fd)
 		{
@@ -277,7 +277,7 @@ Media::ImageList *Map::GoogleMap::GoogleTileMap::LoadTileImage(UOSInt level, Int
 		return 0;
 
 	urlSb.ClearStr();
-	urlSb.Append(GMAPURL);
+	urlSb.AppendC(UTF8STRC(GMAPURL));
 	urlSb.AppendC(UTF8STRC("lyrs="));
 	urlSb.AppendChar((UTF32Char)this->mapType, 1);
 	urlSb.AppendC(UTF8STRC("&x="));
@@ -381,14 +381,14 @@ UTF8Char *Map::GoogleMap::GoogleTileMap::GetImageURL(UTF8Char *sbuff, UOSInt lev
 	Int32 imgX = (Int32)(imgId >> 32);
 	Int32 imgY = (Int32)(imgId & 0xffffffffLL);
 	UTF8Char *sptr;
-	sptr = Text::StrConcat(sbuff, GMAPURL);
-	sptr = Text::StrConcat(sptr, (const UTF8Char*)"lyrs=");
+	sptr = Text::StrConcatC(sbuff, UTF8STRC(GMAPURL));
+	sptr = Text::StrConcatC(sptr, UTF8STRC("lyrs="));
 	*sptr++ = (UTF8Char)this->mapType;
-	sptr = Text::StrConcat(sptr, (const UTF8Char*)"&x=");
+	sptr = Text::StrConcatC(sptr, UTF8STRC("&x="));
 	sptr = Text::StrInt32(sptr, imgX);
-	sptr = Text::StrConcat(sptr, (const UTF8Char*)"&y=");
+	sptr = Text::StrConcatC(sptr, UTF8STRC("&y="));
 	sptr = Text::StrInt32(sptr, imgY);
-	sptr = Text::StrConcat(sptr, (const UTF8Char*)"&z=");
+	sptr = Text::StrConcatC(sptr, UTF8STRC("&z="));
 	sptr = Text::StrUOSInt(sptr, level);
 	return sptr;
 }
@@ -433,7 +433,7 @@ IO::IStreamData *Map::GoogleMap::GoogleTileMap::LoadTileImageData(UOSInt level, 
 		IO::Path::CreateDirectory(filePathU);
 		*sptru++ = IO::Path::PATH_SEPERATOR;
 		sptru = Text::StrInt32(sptru, imgY);
-		sptru = Text::StrConcat(sptru, (const UTF8Char*)".png");
+		sptru = Text::StrConcatC(sptru, UTF8STRC(".png"));
 		NEW_CLASS(fd, IO::StmData::FileData(filePathU, false));
 		if (fd->GetDataSize() > 0)
 		{
@@ -464,7 +464,7 @@ IO::IStreamData *Map::GoogleMap::GoogleTileMap::LoadTileImageData(UOSInt level, 
 		sptru = Text::StrInt32(sptru, imgX);
 		*sptru++ = '/';
 		sptru = Text::StrInt32(sptru, imgY);
-		sptru = Text::StrConcat(sptru, (const UTF8Char*)".png");
+		sptru = Text::StrConcatC(sptru, UTF8STRC(".png"));
 		fd = this->spkg->CreateStreamData(filePathU);
 		if (fd)
 		{
@@ -483,7 +483,7 @@ IO::IStreamData *Map::GoogleMap::GoogleTileMap::LoadTileImageData(UOSInt level, 
 		return 0;
 
 	urlSb.ClearStr();
-	urlSb.Append(GMAPURL);
+	urlSb.AppendC(UTF8STRC(GMAPURL));
 	urlSb.AppendC(UTF8STRC("lyrs="));
 	urlSb.AppendChar((UTF32Char)this->mapType, 1);
 	urlSb.AppendC(UTF8STRC("&x="));

@@ -48,7 +48,7 @@ void __stdcall SSWR::AVIRead::AVIRLogFileForm::OnLogsDblClk(void *userObj, UOSIn
 	SSWR::AVIRead::AVIRLogFileForm *me = (SSWR::AVIRead::AVIRLogFileForm *)userObj;
 	Text::StringBuilderUTF8 sb;
 	me->logFile->GetLogDescription(me->logLevel, itemIndex, &sb);
-	UI::MessageDialog::ShowDialog(sb.ToString(), (const UTF8Char *)"Log Detail", me);
+	UI::MessageDialog::ShowDialog(sb.ToString(), (const UTF8Char*)"Log Detail", me);
 }
 
 SSWR::AVIRead::AVIRLogFileForm::AVIRLogFileForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, IO::LogFile *logFile) : UI::GUIForm(parent, 1024, 768, ui)
@@ -58,7 +58,7 @@ SSWR::AVIRead::AVIRLogFileForm::AVIRLogFileForm(UI::GUIClientControl *parent, UI
 	this->logLevel = IO::ILogHandler::LOG_LEVEL_RAW;
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
-	logFile->GetSourceNameObj()->ConcatTo(Text::StrConcat(sbuff, (const UTF8Char*)"LogFile Viewer - "));
+	logFile->GetSourceNameObj()->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("LogFile Viewer - ")));
 	this->SetText(sbuff);
 	this->SetFont(0, 8.25, false);
 

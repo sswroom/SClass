@@ -745,7 +745,7 @@ void SSWR::SMonitor::SMonitorSvrCore::SaveDatas()
 				IO::Path::CreateDirectory(sbuff);
 				*sptr++ = IO::Path::PATH_SEPERATOR;
 				sptr = dt.ToString(sptr, "yyyyMMdd");
-				sptr = Text::StrConcat(sptr, (const UTF8Char*)".rec");
+				sptr = Text::StrConcatC(sptr, UTF8STRC(".rec"));
 
 				NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 				if (fs->IsError())
@@ -807,12 +807,12 @@ void SSWR::SMonitor::SMonitorSvrCore::SavePhoto(Int64 cliId, Int64 photoTime, In
 	*sptr++ = IO::Path::PATH_SEPERATOR;
 	sptr = Text::StrInt64(sptr, cliId);
 	*sptr++ = IO::Path::PATH_SEPERATOR;
-	sptr = Text::StrConcat(sptr, (const UTF8Char*)"Photo");
+	sptr = Text::StrConcatC(sptr, UTF8STRC("Photo"));
 	sptr = dt.ToString(sptr, "yyyyMMdd");
 	IO::Path::CreateDirectory(sbuff);
 	*sptr++ = IO::Path::PATH_SEPERATOR;
 	sptr = Text::StrInt64(sptr, photoTime);
-	sptr = Text::StrConcat(sptr, (const UTF8Char*)".jpg");
+	sptr = Text::StrConcatC(sptr, UTF8STRC(".jpg"));
 	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	fs->Write(photoBuff, photoSize);
 	DEL_CLASS(fs);
@@ -1611,13 +1611,13 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceRecvReading(DeviceInfo *dev, Int64 c
 		{
 			if (ReadInt16(&readings[i].status[6]) != 0)
 			{
-				sptr = Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"reading"), i + 1);
+				sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("reading")), i + 1);
 				sql.AppendCmdC(UTF8STRC(", "));
 				sql.AppendCol(sbuff);
 				sql.AppendCmdC(UTF8STRC(" = "));
 				sql.AppendDbl(readings[i].reading);
 
-				sptr = Text::StrConcat(sptr, (const UTF8Char*)"Status");
+				sptr = Text::StrConcatC(sptr, UTF8STRC("Status"));
 				sql.AppendCmdC(UTF8STRC(", "));
 				sql.AppendCol(sbuff);
 				sql.AppendCmdC(UTF8STRC(" = "));
@@ -2097,7 +2097,7 @@ UOSInt SSWR::SMonitor::SMonitorSvrCore::DeviceQueryRec(Int64 cliId, Int64 startT
 		sptr = Text::StrInt64(sptr, cliId);
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 		sptr = dt.ToString(sptr, "yyyyMMdd");
-		sptr = Text::StrConcat(sptr, (const UTF8Char*)".rec");
+		sptr = Text::StrConcatC(sptr, UTF8STRC(".rec"));
 
 		NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		if (!fs->IsError())

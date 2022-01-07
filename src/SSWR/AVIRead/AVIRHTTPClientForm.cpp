@@ -45,7 +45,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnRequestClicked(void *userObj
 	me->txtURL->GetText(&sb);
 	if (!sb.StartsWith((const UTF8Char*)"http://") && !sb.StartsWith((const UTF8Char*)"https://"))
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char *)"Please enter valid http URL", (const UTF8Char *)"Request", me);
+		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter valid http URL", (const UTF8Char*)"Request", me);
 		return;
 	}
 
@@ -580,7 +580,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 						mstm->Clear();
 						cli->AddHeader((const UTF8Char*)"Accept", (const UTF8Char*)"*/*");
 						cli->AddHeader((const UTF8Char*)"Accept-Charset", (const UTF8Char*)"*");
-						i = (UOSInt)(Text::StrConcat(Text::StrConcat(Text::StrConcat(buff, currUserName), (const UTF8Char*)":"), currPassword) - buff);
+						i = (UOSInt)(Text::StrConcat(Text::StrConcatC(Text::StrConcat(buff, currUserName), UTF8STRC(":")), currPassword) - buff);
 						Text::StringBuilderUTF8 sbAuth;
 						sbAuth.AppendC(UTF8STRC("Basic "));
 						Text::TextBinEnc::Base64Enc b64Enc;
@@ -1049,10 +1049,10 @@ UTF8Char *SSWR::AVIRead::AVIRHTTPClientForm::AppendCookie(UTF8Char *sbuff, const
 				}
 				else
 				{
-					cookiePtr = Text::StrConcat(cookiePtr, (const UTF8Char*)"; ");
+					cookiePtr = Text::StrConcatC(cookiePtr, UTF8STRC("; "));
 					cookiePtr = Text::StrConcat(cookiePtr, cookie->name);
 				}
-				cookiePtr = Text::StrConcat(cookiePtr, (const UTF8Char*)"=");
+				cookiePtr = Text::StrConcatC(cookiePtr, UTF8STRC("="));
 				cookiePtr = Text::StrConcat(cookiePtr, cookie->value);
 			}
 		}

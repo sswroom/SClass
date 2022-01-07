@@ -27,7 +27,7 @@ const UTF8Char *Text::MIMEObj::MailMessage::GetClassName()
 
 const UTF8Char *Text::MIMEObj::MailMessage::GetContentType()
 {
-	return (const UTF8Char *)"message/rfc822";
+	return (const UTF8Char*)"message/rfc822";
 }
 
 UOSInt Text::MIMEObj::MailMessage::WriteStream(IO::Stream *stm)

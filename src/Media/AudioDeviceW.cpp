@@ -29,16 +29,16 @@ UTF8Char *Media::AudioDevice::GetDeviceName(UTF8Char *buff, UOSInt devNo)
 #endif
 	if (devNo < asioCnt)
 	{
-		return Media::ASIOOutRenderer::GetDeviceName(Text::StrConcat(buff, (const UTF8Char*)"ASIO: "), devNo);
+		return Media::ASIOOutRenderer::GetDeviceName(Text::StrConcatC(buff, UTF8STRC("ASIO: ")), devNo);
 	}
 	else if (devNo < asioCnt + woCnt)
 	{
-		return Media::WaveOutRenderer::GetDeviceName(Text::StrConcat(buff, (const UTF8Char*)"WO: "), devNo - asioCnt);
+		return Media::WaveOutRenderer::GetDeviceName(Text::StrConcatC(buff, UTF8STRC("WO: ")), devNo - asioCnt);
 	}
 #if !defined(_WIN32_WCE)
 	else if (devNo < asioCnt + woCnt + ksCnt)
 	{
-		return Media::KSRenderer::GetDeviceName(Text::StrConcat(buff, (const UTF8Char*)"KS: "), devNo - asioCnt - woCnt);
+		return Media::KSRenderer::GetDeviceName(Text::StrConcatC(buff, UTF8STRC("KS: ")), devNo - asioCnt - woCnt);
 	}
 #endif
 	return 0;

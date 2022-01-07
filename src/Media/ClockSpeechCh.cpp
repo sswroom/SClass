@@ -64,9 +64,9 @@ Media::IAudioSource *Media::ClockSpeechCh::GetSpeech(Data::DateTime *time)
 		hour = hour % 10;
 		if (hour)
 		{
-			sptr = Text::StrConcat(sbuff, (const UTF8Char*)"Num");
+			sptr = Text::StrConcatC(sbuff, UTF8STRC("Num"));
 			sptr = Text::StrInt32(sptr, hour);
-			sptr = Text::StrConcat(sptr, (const UTF8Char*)".wav");
+			sptr = Text::StrConcatC(sptr, UTF8STRC(".wav"));
 			AppendWAV(source, parser, sbuff);
 		}
 	}
@@ -76,9 +76,9 @@ Media::IAudioSource *Media::ClockSpeechCh::GetSpeech(Data::DateTime *time)
 	}
 	else
 	{
-		sptr = Text::StrConcat(sbuff, (const UTF8Char*)"Num");
+		sptr = Text::StrConcatC(sbuff, UTF8STRC("Num"));
 		sptr = Text::StrInt32(sptr, hour);
-		sptr = Text::StrConcat(sptr, (const UTF8Char*)".wav");
+		sptr = Text::StrConcatC(sptr, UTF8STRC(".wav"));
 		AppendWAV(source, parser, sbuff);
 	}
 	AppendWAV(source, parser, (const UTF8Char*)"Hour.wav");
@@ -88,27 +88,27 @@ Media::IAudioSource *Media::ClockSpeechCh::GetSpeech(Data::DateTime *time)
 		{
 			if (minute >= 20)
 			{
-				sptr = Text::StrConcat(sbuff, (const UTF8Char*)"Num");
+				sptr = Text::StrConcatC(sbuff, UTF8STRC("Num"));
 				sptr = Text::StrInt32(sptr, minute / 10);
-				sptr = Text::StrConcat(sptr, (const UTF8Char*)".wav");
+				sptr = Text::StrConcatC(sptr, UTF8STRC(".wav"));
 				AppendWAV(source, parser, sbuff);
 			}
 			AppendWAV(source, parser, (const UTF8Char*)"Num10.wav");
 			minute = minute % 10;
 			if (minute)
 			{
-				sptr = Text::StrConcat(sbuff, (const UTF8Char*)"Num");
+				sptr = Text::StrConcatC(sbuff, UTF8STRC("Num"));
 				sptr = Text::StrInt32(sptr, minute);
-				sptr = Text::StrConcat(sptr, (const UTF8Char*)".wav");
+				sptr = Text::StrConcatC(sptr, UTF8STRC(".wav"));
 				AppendWAV(source, parser, sbuff);
 			}
 		}
 		else
 		{
 			AppendWAV(source, parser, (const UTF8Char*)"Num0.wav");
-			sptr = Text::StrConcat(sbuff, (const UTF8Char*)"Num");
+			sptr = Text::StrConcatC(sbuff, UTF8STRC("Num"));
 			sptr = Text::StrInt32(sptr, minute);
-			sptr = Text::StrConcat(sptr, (const UTF8Char*)".wav");
+			sptr = Text::StrConcatC(sptr, UTF8STRC(".wav"));
 			AppendWAV(source, parser, sbuff);
 		}
 		AppendWAV(source, parser, (const UTF8Char*)"Minute.wav");

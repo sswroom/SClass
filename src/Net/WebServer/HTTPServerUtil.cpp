@@ -353,7 +353,7 @@ Bool Net::WebServer::HTTPServerUtil::ResponseFile(Net::WebServer::IWebRequest *r
 		resp->SetStatusCode(Net::WebStatus::SC_PARTIAL_CONTENT);
 		UTF8Char u8buff[128];
 		UTF8Char *u8ptr;
-		u8ptr = Text::StrConcat(u8buff, (const UTF8Char*)"bytes ");
+		u8ptr = Text::StrConcatC(u8buff, UTF8STRC("bytes "));
 		u8ptr = Text::StrUInt64(u8ptr, start);
 		*u8ptr++ = '-';
 		u8ptr = Text::StrUInt64(u8ptr, start + sizeLeft - 1);

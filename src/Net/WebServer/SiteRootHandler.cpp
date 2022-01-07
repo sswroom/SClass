@@ -15,7 +15,7 @@ Net::WebServer::SiteRootHandler::~SiteRootHandler()
 
 Bool Net::WebServer::SiteRootHandler::ProcessRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *subReq)
 {
-	if (Text::StrEquals(subReq, (const UTF8Char *)"/favicon.ico"))
+	if (Text::StrEquals(subReq, (const UTF8Char*)"/favicon.ico"))
 	{
 		if (this->faviconBuff)
 		{

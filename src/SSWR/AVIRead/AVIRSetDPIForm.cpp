@@ -13,18 +13,18 @@ void __stdcall SSWR::AVIRead::AVIRSetDPIForm::OnOKClicked(void *userObj)
 	me->txtDesktopDPI->GetText(&sb);
 	if (!Text::StrToDouble(sb.ToString(), &ddpi))
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char *)"Desktop DPI is not number", (const UTF8Char *)"Error", me);
+		UI::MessageDialog::ShowDialog((const UTF8Char*)"Desktop DPI is not number", (const UTF8Char*)"Error", me);
 		return;
 	}
 	if (ddpi <= 0)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char *)"Desktop DPI is not valid", (const UTF8Char *)"Error", me);
+		UI::MessageDialog::ShowDialog((const UTF8Char*)"Desktop DPI is not valid", (const UTF8Char*)"Error", me);
 		return;
 	}
 	hdpi = Math::UOSInt2Double(me->hsbDPI->GetPos()) * 0.1;
 	if (ddpi > hdpi)
 	{
-		if (!UI::MessageDialog::ShowYesNoDialog((const UTF8Char *)"Are you sure to set larger desktop DPI (reducing object size)?", (const UTF8Char *)"Confirm", me))
+		if (!UI::MessageDialog::ShowYesNoDialog((const UTF8Char*)"Are you sure to set larger desktop DPI (reducing object size)?", (const UTF8Char*)"Confirm", me))
 		{
 			return;
 		}

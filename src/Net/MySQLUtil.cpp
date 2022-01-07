@@ -65,7 +65,7 @@ UInt8 *Net::MySQLUtil::AppendLenencInt(UInt8 *buff, UInt64 val)
 	}
 }
 
-UInt8 *Net::MySQLUtil::AppendLenencStr(UInt8 *buff, const UTF8Char *s)
+UInt8 *Net::MySQLUtil::AppendLenencStrC(UInt8 *buff, const UTF8Char *s, UOSInt len)
 {
 	if (s == 0)
 	{
@@ -74,7 +74,6 @@ UInt8 *Net::MySQLUtil::AppendLenencStr(UInt8 *buff, const UTF8Char *s)
 	}
 	else
 	{
-		UOSInt len = Text::StrCharCnt(s);
 		buff = AppendLenencInt(buff, len);
 		MemCopyNO(buff, s, len);
 		buff += len;

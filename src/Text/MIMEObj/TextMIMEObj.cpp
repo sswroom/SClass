@@ -53,7 +53,7 @@ const UTF8Char *Text::MIMEObj::TextMIMEObj::GetClassName()
 
 const UTF8Char *Text::MIMEObj::TextMIMEObj::GetContentType()
 {
-	return (const UTF8Char *)this->contType;
+	return (const UTF8Char*)this->contType;
 }
 
 UOSInt Text::MIMEObj::TextMIMEObj::WriteStream(IO::Stream *stm)

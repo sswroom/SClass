@@ -73,7 +73,7 @@ namespace Net
 	public:
 		static const UInt8 *ReadLenencInt(const UInt8 *buff, UInt64 *val);
 		static UInt8 *AppendLenencInt(UInt8 *buff, UInt64 val);
-		static UInt8 *AppendLenencStr(UInt8 *buff, const UTF8Char *s);
+		static UInt8 *AppendLenencStrC(UInt8 *buff, const UTF8Char *s, UOSInt len);
 		static MySQLType ColType2MySQLType(DB::DBUtil::ColType colType);
 	};
 }

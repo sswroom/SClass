@@ -387,13 +387,13 @@ SSWR::AVIRead::AVIRDBManagerForm::AVIRDBManagerForm(UI::GUIClientControl *parent
 	this->SetMenu(this->mnuMain);
 
 	NEW_CLASS(this->mnuConn, UI::GUIPopupMenu());
-	this->mnuConn->AddItem((const UTF8Char *)"Remove", MNU_CONN_REMOVE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	this->mnuConn->AddItem((const UTF8Char *)"Copy Conn String", MNU_CONN_COPY_STR, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	this->mnuConn->AddItem((const UTF8Char*)"Remove", MNU_CONN_REMOVE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	this->mnuConn->AddItem((const UTF8Char*)"Copy Conn String", MNU_CONN_COPY_STR, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 
 	NEW_CLASS(this->mnuTable, UI::GUIPopupMenu());
-	this->mnuTable->AddItem((const UTF8Char *)"Copy as Java Entity", MNU_TABLE_JAVA, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	this->mnuTable->AddItem((const UTF8Char *)"Copy as C++ Header", MNU_TABLE_CPP_HEADER, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	this->mnuTable->AddItem((const UTF8Char *)"Copy as C++ Source", MNU_TABLE_CPP_SOURCE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	this->mnuTable->AddItem((const UTF8Char*)"Copy as Java Entity", MNU_TABLE_JAVA, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	this->mnuTable->AddItem((const UTF8Char*)"Copy as C++ Header", MNU_TABLE_CPP_HEADER, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	this->mnuTable->AddItem((const UTF8Char*)"Copy as C++ Source", MNU_TABLE_CPP_SOURCE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	if (DB::DBManager::RestoreConn(DBCONNFILE, this->dbList, this->log, this->core->GetSocketFactory()))
 	{
 		Text::StringBuilderUTF8 sb;

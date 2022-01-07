@@ -118,7 +118,7 @@ Net::WirelessLAN::BSSInfo::BSSInfo(const UTF8Char *ssid, const void *bssEntry)
 	}
 	NEW_CLASS(this->ieList, Data::ArrayList<Net::WirelessLANIE*>());
 
-	const UInt8 *ptrCurr = bss->ulIeOffset + (const UTF8Char *)bssEntry;
+	const UInt8 *ptrCurr = bss->ulIeOffset + (const UTF8Char*)bssEntry;
 	const UInt8 *ptrEnd = ptrCurr + bss->ulIeSize;
 	Net::WirelessLANIE *ie;
 	Text::StringBuilderUTF8 sbTmp;

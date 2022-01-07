@@ -51,7 +51,7 @@ Map::CIPLayer2::CIPLayer2(const UTF8Char *layerName) : Map::IMapDrawLayer(layerN
 	this->layerName = Text::StrCopyNew(fname);
 	NEW_CLASS(mut, Sync::Mutex());
 
-	Text::StrConcat(sptr, (const UTF8Char*)".blk");
+	Text::StrConcatC(sptr, UTF8STRC(".blk"));
 	NEW_CLASS(file, IO::FileStream(fname, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	NEW_CLASS(bstm, IO::BufferedInputStream(file, 65536));
 	if (!file->IsError())
@@ -89,7 +89,7 @@ Map::CIPLayer2::CIPLayer2(const UTF8Char *layerName) : Map::IMapDrawLayer(layerN
 	DEL_CLASS(bstm);
 	DEL_CLASS(file);
 
-	Text::StrConcat(sptr, (const UTF8Char*)".cix");
+	Text::StrConcatC(sptr, UTF8STRC(".cix"));
 	NEW_CLASS(file, IO::FileStream(fname, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
 	if (!file->IsError())
 	{
@@ -104,7 +104,7 @@ Map::CIPLayer2::CIPLayer2(const UTF8Char *layerName) : Map::IMapDrawLayer(layerN
 	missFile = false;
 	if (!IsError())
 	{
-		Text::StrConcat(sptr, (const UTF8Char*)".cip");
+		Text::StrConcatC(sptr, UTF8STRC(".cip"));
 		NEW_CLASS(file, IO::FileStream(fname, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
 		if (!file->IsError())
 		{
@@ -117,7 +117,7 @@ Map::CIPLayer2::CIPLayer2(const UTF8Char *layerName) : Map::IMapDrawLayer(layerN
 		}
 		DEL_CLASS(file);
 
-		Text::StrConcat(sptr, (const UTF8Char*)".ciu");
+		Text::StrConcatC(sptr, UTF8STRC(".ciu"));
 		NEW_CLASS(file, IO::FileStream(fname, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
 		if (!file->IsError())
 		{
@@ -230,7 +230,7 @@ UOSInt Map::CIPLayer2::GetAllObjectIds(Data::ArrayListInt64 *outArr, void **name
 		UTF8Char *sptr;
 		IO::FileStream *cis;
 		sptr = Text::StrConcat(fileName, this->layerName);
-		sptr = Text::StrConcat(sptr, (const UTF8Char*)".ciu");
+		sptr = Text::StrConcatC(sptr, UTF8STRC(".ciu"));
 		NEW_CLASS(cis, IO::FileStream(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		
 		k = 0;
@@ -396,7 +396,7 @@ UOSInt Map::CIPLayer2::GetObjectIds(Data::ArrayListInt64 *outArr, void **nameArr
 		UTF8Char *sptr;
 		IO::FileStream *cis;
 		sptr = Text::StrConcat(fileName, this->layerName);
-		sptr = Text::StrConcat(sptr, (const UTF8Char*)".ciu");
+		sptr = Text::StrConcatC(sptr, UTF8STRC(".ciu"));
 		NEW_CLASS(cis, IO::FileStream(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		
 		while ((UOSInt)k < this->nblks)
@@ -545,7 +545,7 @@ UTF8Char *Map::CIPLayer2::GetColumnName(UTF8Char *buff, UOSInt colIndex)
 {
 	if (colIndex == 0)
 	{
-		return Text::StrConcat(buff, (const UTF8Char*)"NAME");
+		return Text::StrConcatC(buff, UTF8STRC("NAME"));
 	}
 	else
 	{
@@ -723,7 +723,7 @@ void *Map::CIPLayer2::BeginGetObject()
 	UTF8Char *sptr;
 	IO::FileStream *cip;
 	sptr = Text::StrConcat(fileName, this->layerName);
-	sptr = Text::StrConcat(sptr, (const UTF8Char*)".cip");
+	sptr = Text::StrConcatC(sptr, UTF8STRC(".cip"));
 	mut->Lock();
 	if (this->currObjs == 0)
 	{

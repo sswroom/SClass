@@ -23,9 +23,9 @@ void SSWR::AVIRead::AVIRExeForm::ParseSess16(Manage::DasmX86_16::DasmX86_16_Sess
 		{
 //			sptr = Text::StrHexVal32(buff, (sess->regs.CS << 4) + sess->regs.IP);
 			sptr = Text::StrHexVal16(buff, sess->regs.CS);
-			sptr = Text::StrConcat(sptr, (const UTF8Char*)":");
+			sptr = Text::StrConcatC(sptr, UTF8STRC(":"));
 			sptr = Text::StrHexVal16(sptr, sess->regs.IP);
-			sptr = Text::StrConcat(sptr, (const UTF8Char*)" ");
+			sptr = Text::StrConcatC(sptr, UTF8STRC(" "));
 			oriIP = sess->regs.IP;
 			if (oriIP == 0x229)
 			{
@@ -37,7 +37,7 @@ void SSWR::AVIRead::AVIRExeForm::ParseSess16(Manage::DasmX86_16::DasmX86_16_Sess
 				UOSInt sizeLeft = codeSize - sess->regs.IP;
 				if (sizeLeft > 16)
 					sizeLeft = 16;
-				Text::StrHexBytes(Text::StrConcat(&buff[::Text::StrCharCnt(buff)], (const UTF8Char*)"Unknown opcodes: "), &sess->code[oriIP], sizeLeft, ' ');
+				Text::StrHexBytes(Text::StrConcatC(&buff[::Text::StrCharCnt(buff)], UTF8STRC("Unknown opcodes: ")), &sess->code[oriIP], sizeLeft, ' ');
 				codes->Add(Text::StrCopyNew(buff));
 				break;
 			}
@@ -188,7 +188,7 @@ void SSWR::AVIRead::AVIRExeForm::InitSess16()
 		}
 		else
 		{
-			Text::StrHexVal16(Text::StrConcat(Text::StrHexVal16(sbuff, eaddr->segm), (const UTF8Char*)":"), eaddr->addr);
+			Text::StrHexVal16(Text::StrConcatC(Text::StrHexVal16(sbuff, eaddr->segm), UTF8STRC(":")), eaddr->addr);
 			this->lb16BitFuncs->AddItem(sbuff, eaddr);
 			lastAddr = eaddr;
 		}
@@ -303,7 +303,7 @@ SSWR::AVIRead::AVIRExeForm::AVIRExeForm(UI::GUIClientControl *parent, UI::GUICor
 	this->codesList = 0;
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
-	exeFile->GetSourceNameObj()->ConcatTo(Text::StrConcat(sbuff, (const UTF8Char*)"EXE Form - "));
+	exeFile->GetSourceNameObj()->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("EXE Form - ")));
 	this->SetText(sbuff);
 
 	NEW_CLASS(this->tcEXE, UI::GUITabControl(ui, this));

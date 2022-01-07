@@ -134,7 +134,7 @@ UTF8Char *Net::WhoisRecord::GetNetworkName(UTF8Char *buff)
 	while (i < j)
 	{
 		sptr = this->items->GetItem(i);
-		if (Text::StrStartsWithICase(sptr, (const UTF8Char *)"netname:"))
+		if (Text::StrStartsWithICase(sptr, (const UTF8Char*)"netname:"))
 		{
 			Text::StrConcat(buff, &sptr[8]);
 			return Text::StrTrim(buff);

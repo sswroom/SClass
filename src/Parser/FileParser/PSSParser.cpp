@@ -113,7 +113,7 @@ IO::ParsedObject *Parser::FileParser::PSSParser::ParseFile(IO::IStreamData *fd, 
 			sptr = Text::StrConcatC(sbuff, s->v, s->leng - 5);
 			while (true)
 			{
-				Text::StrConcat(Text::StrInt32(sptr, stmId), (const UTF8Char*)".vob");
+				Text::StrConcatC(Text::StrInt32(sptr, stmId), UTF8STRC(".vob"));
 				NEW_CLASS(concatFile, IO::StmData::FileData(sbuff, false));
 				if (concatFile->GetDataSize() <= 0)
 				{

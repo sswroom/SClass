@@ -65,7 +65,7 @@ void __stdcall SSWR::AVIRead::AVIRLineCounterForm::OnCalcClicked(void *userObj)
 		return;
 	}
 	me->ClearResult();
-	UTF8Char *sptr = Text::StrConcat(sbuff, sb.ToString());
+	UTF8Char *sptr = Text::StrConcatC(sbuff, sb.ToString(), sb.GetLength());
 	me->CalcDir(sbuff, sptr);
 	UOSInt i;
 	UOSInt j;
@@ -139,7 +139,7 @@ void SSWR::AVIRead::AVIRLineCounterForm::CalcDir(UTF8Char *pathBuff, UTF8Char *p
 	FileInfo *fi;
 
 	*pathBuffEnd++ = IO::Path::PATH_SEPERATOR;
-	Text::StrConcat(pathBuffEnd, IO::Path::ALL_FILES);
+	Text::StrConcatC(pathBuffEnd, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
 	sess = IO::Path::FindFile(pathBuff);
 	if (sess)
 	{

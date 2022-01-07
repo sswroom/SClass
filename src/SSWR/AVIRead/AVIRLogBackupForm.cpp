@@ -33,12 +33,12 @@ void __stdcall SSWR::AVIRead::AVIRLogBackupForm::OnStartClicked(void *userObj)
 	filePath = me->txtLogDir->GetText(sbuff);
 	if (filePath == sbuff)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char *)"Please enter Log Dir", (const UTF8Char *)"Log Backup", me);
+		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter Log Dir", (const UTF8Char*)"Log Backup", me);
 		return;
 	}
 	if (IO::Path::GetPathType(sbuff) != IO::Path::PathType::Directory)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char *)"Invalid Log Dir", (const UTF8Char *)"Log Backup", me);
+		UI::MessageDialog::ShowDialog((const UTF8Char*)"Invalid Log Dir", (const UTF8Char*)"Log Backup", me);
 		return;
 	}
 	currTime.SetCurrTimeUTC();
@@ -48,7 +48,7 @@ void __stdcall SSWR::AVIRead::AVIRLogBackupForm::OnStartClicked(void *userObj)
 	}
 	sptr = me->txtLogName->GetText(filePath);
 	logNameSize = (UOSInt)(sptr - filePath);
-	Text::StrConcat(sptr, IO::Path::ALL_FILES);
+	Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
 	sess = IO::Path::FindFile(sbuff);
 	if (sess)
 	{
@@ -90,7 +90,7 @@ void __stdcall SSWR::AVIRead::AVIRLogBackupForm::OnStartClicked(void *userObj)
 	{
 		logGrp = logGrpList->GetItem(i);
 		succ = true;
-		Text::StrConcat(Text::StrConcat(filePath, logGrp->logName), (const UTF8Char*)".zip");
+		Text::StrConcatC(Text::StrConcat(filePath, logGrp->logName), UTF8STRC(".zip"));
 
 		NEW_CLASS(zip, IO::MinizZIP(sbuff));
 		k = 0;

@@ -62,7 +62,7 @@ void Net::WebServiceClient::SetSOAPAction(const UTF8Char *soapAction)
 
 Bool Net::WebServiceClient::Request(RequestType rt)
 {
-	const UTF8Char *csptr;
+	Text::String *s;
 	UOSInt i;
 	UOSInt j;
 	ParamInfo *param;
@@ -80,48 +80,48 @@ Bool Net::WebServiceClient::Request(RequestType rt)
 		Text::UTF8Writer *writer;
 		NEW_CLASS(mstm, IO::MemoryStream((const UTF8Char*)"Net.WebServiceClient.Request.S11"));
 		NEW_CLASS(writer, Text::UTF8Writer(mstm));
-		writer->WriteStrC(UTF8STRC("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
-		writer->WriteStrC(UTF8STRC("<soap:Envelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\">");
-		writer->WriteStrC(UTF8STRC("<soap:Body>");
-		writer->WriteStrC(UTF8STRC("<");
-		csptr = Text::XML::ToNewXMLText(this->serviceName);
-		writer->Write(csptr);
-		Text::XML::FreeNewText(csptr);
-		writer->WriteStrC(UTF8STRC(" xmlns=");
-		csptr = Text::XML::ToNewAttrText(this->targetNS);
-		writer->Write(csptr);
-		Text::XML::FreeNewText(csptr);
-		writer->WriteStrC(UTF8STRC(">");
+		writer->WriteStrC(UTF8STRC("<?xml version=\"1.0\" encoding=\"utf-8\"?>"));
+		writer->WriteStrC(UTF8STRC("<soap:Envelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\">"));
+		writer->WriteStrC(UTF8STRC("<soap:Body>"));
+		writer->WriteStrC(UTF8STRC("<"));
+		s = Text::XML::ToNewXMLText(this->serviceName);
+		writer->WriteStrC(s->v, s->leng);
+		s->Release();
+		writer->WriteStrC(UTF8STRC(" xmlns="));
+		s = Text::XML::ToNewAttrText(this->targetNS);
+		writer->WriteStrC(s->v, s->leng);
+		s->Release();
+		writer->WriteStrC(UTF8STRC(">"));
 
 		i = 0;
 		j = this->paramList->GetCount();
 		while (i < j)
 		{
 			param = this->paramList->GetItem(i);
-			writer->WriteStrC(UTF8STRC("<");
-			csptr = Text::XML::ToNewXMLText(param->name);
-			writer->Write(csptr);
-			Text::XML::FreeNewText(csptr);
-			writer->WriteStrC(UTF8STRC(">");
+			writer->WriteStrC(UTF8STRC("<"));
+			s = Text::XML::ToNewXMLText(param->name);
+			writer->WriteStrC(s->v, s->leng);
+			s->Release();
+			writer->WriteStrC(UTF8STRC(">"));
 
-			csptr = Text::XML::ToNewXMLTextLite(param->val);
-			writer->Write(csptr);
-			Text::XML::FreeNewText(csptr);
+			s = Text::XML::ToNewXMLTextLite(param->val);
+			writer->WriteStrC(s->v, s->leng);
+			s->Release();
 			
-			writer->WriteStrC(UTF8STRC("</");
-			csptr = Text::XML::ToNewXMLText(param->name);
-			writer->Write(csptr);
-			Text::XML::FreeNewText(csptr);
-			writer->WriteStrC(UTF8STRC(">");
+			writer->WriteStrC(UTF8STRC("</"));
+			s = Text::XML::ToNewXMLText(param->name);
+			writer->WriteStrC(s->v, s->leng);
+			s->Release();
+			writer->WriteStrC(UTF8STRC(">"));
 			i++;
 		}
-		writer->WriteStrC(UTF8STRC("</");
-		csptr = Text::XML::ToNewXMLText(this->serviceName);
-		writer->Write(csptr);
-		Text::XML::FreeNewText(csptr);
-		writer->WriteStrC(UTF8STRC(">");
-		writer->WriteStrC(UTF8STRC("</soap:Body>");
-		writer->WriteStrC(UTF8STRC("</soap:Envelope>");
+		writer->WriteStrC(UTF8STRC("</"));
+		s = Text::XML::ToNewXMLText(this->serviceName);
+		writer->WriteStrC(s->v, s->leng);
+		s->Release();
+		writer->WriteStrC(UTF8STRC(">"));
+		writer->WriteStrC(UTF8STRC("</soap:Body>"));
+		writer->WriteStrC(UTF8STRC("</soap:Envelope>"));
 		DEL_CLASS(writer);
 
 		cli = Net::HTTPClient::CreateConnect(sockf, this->ssl, this->serviceAddr, "POST", false);
@@ -174,29 +174,29 @@ Bool Net::WebServiceClient::Request(RequestType rt)
 						while (i-- > 0)
 						{
 							node1 = doc->GetChild(i);
-							if (node1->GetNodeType() == Text::XMLNode::NT_ELEMENT && Text::StrEquals(node1->name, (const UTF8Char*)"soap:Envelope"))
+							if (node1->GetNodeType() == Text::XMLNode::NT_ELEMENT && node1->name->Equals((const UTF8Char*)"soap:Envelope"))
 							{
 								i = node1->GetChildCnt();
 								while (i-- > 0)
 								{
 									node2 = node1->GetChild(i);
-									if (node2->GetNodeType() == Text::XMLNode::NT_ELEMENT && Text::StrEquals(node2->name, (const UTF8Char*)"soap:Body"))
+									if (node2->GetNodeType() == Text::XMLNode::NT_ELEMENT && node2->name->Equals((const UTF8Char*)"soap:Body"))
 									{
 										node1 = node2;
-										Text::StrConcat(Text::StrConcat(sbuff, this->serviceName), (const UTF8Char*)"Response");
+										Text::StrConcatC(Text::StrConcat(sbuff, this->serviceName), UTF8STRC("Response"));
 										i = node1->GetChildCnt();
 										while (i-- > 0)
 										{
 											node2 = node1->GetChild(i);
-											if (node2->GetNodeType() == Text::XMLNode::NT_ELEMENT && Text::StrEquals(node2->name, sbuff))
+											if (node2->GetNodeType() == Text::XMLNode::NT_ELEMENT && node2->name->Equals(sbuff))
 											{
 												node1 = node2;
-												Text::StrConcat(Text::StrConcat(sbuff, this->serviceName), (const UTF8Char*)"Result");
+												Text::StrConcatC(Text::StrConcat(sbuff, this->serviceName), UTF8STRC("Result"));
 												i = node1->GetChildCnt();
 												while (i-- > 0)
 												{
 													node2 = node1->GetChild(i);
-													if (node2->GetNodeType() == Text::XMLNode::NT_ELEMENT && Text::StrEquals(node2->name, sbuff))
+													if (node2->GetNodeType() == Text::XMLNode::NT_ELEMENT && node2->name->Equals(sbuff))
 													{
 														sb.ClearStr();
 														node2->GetInnerText(&sb);
@@ -233,48 +233,48 @@ Bool Net::WebServiceClient::Request(RequestType rt)
 		Text::UTF8Writer *writer;
 		NEW_CLASS(mstm, IO::MemoryStream((const UTF8Char*)"Net.WebServiceClient.Request.S11"));
 		NEW_CLASS(writer, Text::UTF8Writer(mstm));
-		writer->WriteStrC(UTF8STRC("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
-		writer->WriteStrC(UTF8STRC("<soap12:Envelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap12=\"http://www.w3.org/2003/05/soap-envelope\">");
-		writer->WriteStrC(UTF8STRC("<soap12:Body>");
-		writer->WriteStrC(UTF8STRC("<");
-		csptr = Text::XML::ToNewXMLText(this->serviceName);
-		writer->Write(csptr);
-		Text::XML::FreeNewText(csptr);
-		writer->WriteStrC(UTF8STRC(" xmlns=");
-		csptr = Text::XML::ToNewAttrText(this->targetNS);
-		writer->Write(csptr);
-		Text::XML::FreeNewText(csptr);
-		writer->WriteStrC(UTF8STRC(">");
+		writer->WriteStrC(UTF8STRC("<?xml version=\"1.0\" encoding=\"utf-8\"?>"));
+		writer->WriteStrC(UTF8STRC("<soap12:Envelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap12=\"http://www.w3.org/2003/05/soap-envelope\">"));
+		writer->WriteStrC(UTF8STRC("<soap12:Body>"));
+		writer->WriteStrC(UTF8STRC("<"));
+		s = Text::XML::ToNewXMLText(this->serviceName);
+		writer->WriteStrC(s->v, s->leng);
+		s->Release();
+		writer->WriteStrC(UTF8STRC(" xmlns="));
+		s = Text::XML::ToNewAttrText(this->targetNS);
+		writer->WriteStrC(s->v, s->leng);
+		s->Release();
+		writer->WriteStrC(UTF8STRC(">"));
 
 		i = 0;
 		j = this->paramList->GetCount();
 		while (i < j)
 		{
 			param = this->paramList->GetItem(i);
-			writer->WriteStrC(UTF8STRC("<");
-			csptr = Text::XML::ToNewXMLText(param->name);
-			writer->Write(csptr);
-			Text::XML::FreeNewText(csptr);
-			writer->WriteStrC(UTF8STRC(">");
+			writer->WriteStrC(UTF8STRC("<"));
+			s = Text::XML::ToNewXMLText(param->name);
+			writer->WriteStrC(s->v, s->leng);
+			s->Release();
+			writer->WriteStrC(UTF8STRC(">"));
 
-			csptr = Text::XML::ToNewXMLTextLite(param->val);
-			writer->Write(csptr);
-			Text::XML::FreeNewText(csptr);
+			s = Text::XML::ToNewXMLTextLite(param->val);
+			writer->WriteStrC(s->v, s->leng);
+			s->Release();
 			
-			writer->WriteStrC(UTF8STRC("</");
-			csptr = Text::XML::ToNewXMLText(param->name);
-			writer->Write(csptr);
-			Text::XML::FreeNewText(csptr);
-			writer->WriteStrC(UTF8STRC(">");
+			writer->WriteStrC(UTF8STRC("</"));
+			s = Text::XML::ToNewXMLText(param->name);
+			writer->WriteStrC(s->v, s->leng);
+			s->Release();
+			writer->WriteStrC(UTF8STRC(">"));
 			i++;
 		}
-		writer->WriteStrC(UTF8STRC("</");
-		csptr = Text::XML::ToNewXMLText(this->serviceName);
-		writer->Write(csptr);
-		Text::XML::FreeNewText(csptr);
-		writer->WriteStrC(UTF8STRC(">");
-		writer->WriteStrC(UTF8STRC("</soap12:Body>");
-		writer->WriteStrC(UTF8STRC("</soap12:Envelope>");
+		writer->WriteStrC(UTF8STRC("</"));
+		s = Text::XML::ToNewXMLText(this->serviceName);
+		writer->WriteStrC(s->v, s->leng);
+		s->Release();
+		writer->WriteStrC(UTF8STRC(">"));
+		writer->WriteStrC(UTF8STRC("</soap12:Body>"));
+		writer->WriteStrC(UTF8STRC("</soap12:Envelope>"));
 		DEL_CLASS(writer);
 
 		cli = Net::HTTPClient::CreateConnect(sockf, this->ssl, this->serviceAddr, "POST", false);
@@ -315,29 +315,29 @@ Bool Net::WebServiceClient::Request(RequestType rt)
 						while (i-- > 0)
 						{
 							node1 = doc->GetChild(i);
-							if (node1->GetNodeType() == Text::XMLNode::NT_ELEMENT && Text::StrEndsWithICase(node1->name, (const UTF8Char*)":Envelope"))
+							if (node1->GetNodeType() == Text::XMLNode::NT_ELEMENT && node1->name->EndsWithICase((const UTF8Char*)":Envelope"))
 							{
 								i = node1->GetChildCnt();
 								while (i-- > 0)
 								{
 									node2 = node1->GetChild(i);
-									if (node2->GetNodeType() == Text::XMLNode::NT_ELEMENT && Text::StrEndsWithICase(node2->name, (const UTF8Char*)":Body"))
+									if (node2->GetNodeType() == Text::XMLNode::NT_ELEMENT && node2->name->EndsWithICase((const UTF8Char*)":Body"))
 									{
 										node1 = node2;
-										Text::StrConcat(Text::StrConcat(sbuff, this->serviceName), (const UTF8Char*)"Response");
+										Text::StrConcatC(Text::StrConcat(sbuff, this->serviceName), UTF8STRC("Response"));
 										i = node1->GetChildCnt();
 										while (i-- > 0)
 										{
 											node2 = node1->GetChild(i);
-											if (node2->GetNodeType() == Text::XMLNode::NT_ELEMENT && Text::StrEquals(node2->name, sbuff))
+											if (node2->GetNodeType() == Text::XMLNode::NT_ELEMENT && node2->name->Equals(sbuff))
 											{
 												node1 = node2;
-												Text::StrConcat(Text::StrConcat(sbuff, this->serviceName), (const UTF8Char*)"Result");
+												Text::StrConcatC(Text::StrConcat(sbuff, this->serviceName), UTF8STRC("Result"));
 												i = node1->GetChildCnt();
 												while (i-- > 0)
 												{
 													node2 = node1->GetChild(i);
-													if (node2->GetNodeType() == Text::XMLNode::NT_ELEMENT && Text::StrEquals(node2->name, sbuff))
+													if (node2->GetNodeType() == Text::XMLNode::NT_ELEMENT && node2->name->Equals(sbuff))
 													{
 														sb.ClearStr();
 														node2->GetInnerText(&sb);

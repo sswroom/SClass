@@ -104,7 +104,7 @@ SSWR::AVIRead::AVIRWebSiteInstagramForm::AVIRWebSiteInstagramForm(UI::GUIClientC
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
-	this->tpUser = this->tcMain->AddTabPage((const UTF8Char *)"User");
+	this->tpUser = this->tcMain->AddTabPage((const UTF8Char*)"User");
 	NEW_CLASS(this->pnlRequest, UI::GUIPanel(ui, this->tpUser));
 	this->pnlRequest->SetRect(0, 0, 100, 31, false);
 	this->pnlRequest->SetDockType(UI::GUIControl::DOCK_TOP);

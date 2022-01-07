@@ -2397,11 +2397,11 @@ Bool Media::EXIFData::ToString(Text::StringBuilderUTF *sb, const UTF8Char *lineP
 						sb->AppendC(UTF8STRC(", Inner "));
 						if (linePrefix)
 						{
-							Text::StrConcat(Text::StrConcat(sbuff, (const UTF8Char*)"  "), linePrefix);
+							Text::StrConcat(Text::StrConcatC(sbuff, UTF8STRC("  ")), linePrefix);
 						}
 						else
 						{
-							Text::StrConcat(sbuff, (const UTF8Char*)"  ");
+							Text::StrConcatC(sbuff, UTF8STRC("  "));
 						}
 						innerExif->ToString(sb, sbuff);
 						DEL_CLASS(innerExif);

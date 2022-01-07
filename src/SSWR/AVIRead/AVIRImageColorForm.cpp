@@ -13,11 +13,11 @@ void __stdcall SSWR::AVIRead::AVIRImageColorForm::OnColorChg(void *userObj, UOSI
 	Double bvalue = Math::UOSInt2Double(me->hsbBright->GetPos()) * 0.1;
 	Double cvalue = Math::UOSInt2Double(me->hsbContr->GetPos());
 	Double gvalue = Math::UOSInt2Double(me->hsbGamma->GetPos());
-	Text::StrConcat(Text::StrDouble(sbuff, bvalue), (const UTF8Char*)"%");
+	Text::StrConcatC(Text::StrDouble(sbuff, bvalue), UTF8STRC("%"));
 	me->lblBrightV->SetText(sbuff);
-	Text::StrConcat(Text::StrDouble(sbuff, cvalue), (const UTF8Char*)"%");
+	Text::StrConcatC(Text::StrDouble(sbuff, cvalue), UTF8STRC("%"));
 	me->lblContrV->SetText(sbuff);
-	Text::StrConcat(Text::StrDouble(sbuff, gvalue), (const UTF8Char*)"%");
+	Text::StrConcatC(Text::StrDouble(sbuff, gvalue), UTF8STRC("%"));
 	me->lblGammaV->SetText(sbuff);
 
 	Media::ColorProfile *color;

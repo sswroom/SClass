@@ -262,7 +262,7 @@ Media::ImageList *Map::OSM::OSMTileMap::LoadTileImage(UOSInt level, Int64 imgId,
 		IO::Path::CreateDirectory(filePathU);
 		*sptru++ = IO::Path::PATH_SEPERATOR;
 		sptru = Text::StrInt32(sptru, imgY);
-		sptru = Text::StrConcat(sptru, (const UTF8Char*)".png");
+		sptru = Text::StrConcatC(sptru, UTF8STRC(".png"));
 		NEW_CLASS(fd, IO::StmData::FileData(filePathU, false));
 		if (fd->GetDataSize() > 0)
 		{
@@ -297,7 +297,7 @@ Media::ImageList *Map::OSM::OSMTileMap::LoadTileImage(UOSInt level, Int64 imgId,
 		sptru = Text::StrInt32(sptru, imgX);
 		*sptru++ = '/';
 		sptru = Text::StrInt32(sptru, imgY);
-		sptru = Text::StrConcat(sptru, (const UTF8Char*)".png");
+		sptru = Text::StrConcatC(sptru, UTF8STRC(".png"));
 		fd = this->spkg->CreateStreamData(filePathU);
 		if (fd)
 		{
@@ -436,11 +436,11 @@ UTF8Char *Map::OSM::OSMTileMap::GetImageURL(UTF8Char *sbuff, UOSInt level, Int64
 	const UTF8Char *thisUrl = this->GetNextURL();
 	sptr = Text::StrConcat(sbuff, thisUrl);
 	sptr = Text::StrUOSInt(sptr, level);
-	sptr = Text::StrConcat(sptr, (const UTF8Char*)"/");
+	sptr = Text::StrConcatC(sptr, UTF8STRC("/"));
 	sptr = Text::StrInt32(sptr, imgX);
-	sptr = Text::StrConcat(sptr, (const UTF8Char*)"/");
+	sptr = Text::StrConcatC(sptr, UTF8STRC("/"));
 	sptr = Text::StrInt32(sptr, imgY);
-	sptr = Text::StrConcat(sptr, (const UTF8Char*)".png");
+	sptr = Text::StrConcatC(sptr, UTF8STRC(".png"));
 	return sptr;
 }
 
@@ -484,7 +484,7 @@ IO::IStreamData *Map::OSM::OSMTileMap::LoadTileImageData(UOSInt level, Int64 img
 		IO::Path::CreateDirectory(filePathU);
 		*sptru++ = IO::Path::PATH_SEPERATOR;
 		sptru = Text::StrInt32(sptru, imgY);
-		sptru = Text::StrConcat(sptru, (const UTF8Char*)".png");
+		sptru = Text::StrConcatC(sptru, UTF8STRC(".png"));
 		NEW_CLASS(fd, IO::StmData::FileData(filePathU, false));
 		if (fd->GetDataSize() > 0)
 		{
@@ -515,7 +515,7 @@ IO::IStreamData *Map::OSM::OSMTileMap::LoadTileImageData(UOSInt level, Int64 img
 		sptru = Text::StrInt32(sptru, imgX);
 		*sptru++ = '/';
 		sptru = Text::StrInt32(sptru, imgY);
-		sptru = Text::StrConcat(sptru, (const UTF8Char*)".png");
+		sptru = Text::StrConcatC(sptru, UTF8STRC(".png"));
 		fd = this->spkg->CreateStreamData(filePathU);
 		if (fd)
 		{

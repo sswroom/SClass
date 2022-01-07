@@ -597,60 +597,60 @@ UTF8Char *Win32::Clipboard::GetFormatName(UInt32 fmtId, UTF8Char *sbuff, UOSInt 
 	switch (fmtId)
 	{
 	case CF_TEXT: //1
-		return Text::StrConcat(sbuff, (const UTF8Char*)"TEXT");
+		return Text::StrConcatC(sbuff, UTF8STRC("TEXT"));
 	case CF_BITMAP: //2
-		return Text::StrConcat(sbuff, (const UTF8Char*)"BITMAP");
+		return Text::StrConcatC(sbuff, UTF8STRC("BITMAP"));
 #if !defined(_WIN32_WCE)
 	case CF_METAFILEPICT: //3
-		return Text::StrConcat(sbuff, (const UTF8Char*)"METAFILEPICT");
+		return Text::StrConcatC(sbuff, UTF8STRC("METAFILEPICT"));
 #endif
 	case CF_SYLK: //4
-		return Text::StrConcat(sbuff, (const UTF8Char*)"SYLK");
+		return Text::StrConcatC(sbuff, UTF8STRC("SYLK"));
 	case CF_DIF: //5
-		return Text::StrConcat(sbuff, (const UTF8Char*)"DIF");
+		return Text::StrConcatC(sbuff, UTF8STRC("DIF"));
 	case CF_TIFF: //6
-		return Text::StrConcat(sbuff, (const UTF8Char*)"TIFF");
+		return Text::StrConcatC(sbuff, UTF8STRC("TIFF"));
 	case CF_OEMTEXT: //7
-		return Text::StrConcat(sbuff, (const UTF8Char*)"OEMTEXT");
+		return Text::StrConcatC(sbuff, UTF8STRC("OEMTEXT"));
 	case CF_DIB: //8
-		return Text::StrConcat(sbuff, (const UTF8Char*)"DIB");
+		return Text::StrConcatC(sbuff, UTF8STRC("DIB"));
 	case CF_PALETTE: //9
-		return Text::StrConcat(sbuff, (const UTF8Char*)"PALETTE");
+		return Text::StrConcatC(sbuff, UTF8STRC("PALETTE"));
 	case CF_PENDATA: //10
-		return Text::StrConcat(sbuff, (const UTF8Char*)"PENDATA");
+		return Text::StrConcatC(sbuff, UTF8STRC("PENDATA"));
 	case CF_RIFF: //11
-		return Text::StrConcat(sbuff, (const UTF8Char*)"RIFF");
+		return Text::StrConcatC(sbuff, UTF8STRC("RIFF"));
 	case CF_WAVE: //12
-		return Text::StrConcat(sbuff, (const UTF8Char*)"WAVE");
+		return Text::StrConcatC(sbuff, UTF8STRC("WAVE"));
 	case CF_UNICODETEXT: //13
-		return Text::StrConcat(sbuff, (const UTF8Char*)"UNICODETEXT");
+		return Text::StrConcatC(sbuff, UTF8STRC("UNICODETEXT"));
 #if !defined(_WIN32_WCE)
 	case CF_ENHMETAFILE: //14
-		return Text::StrConcat(sbuff, (const UTF8Char*)"ENHMETAFILE");
+		return Text::StrConcatC(sbuff, UTF8STRC("ENHMETAFILE"));
 	case CF_HDROP: //15
-		return Text::StrConcat(sbuff, (const UTF8Char*)"HDROP");
+		return Text::StrConcatC(sbuff, UTF8STRC("HDROP"));
 	case CF_LOCALE: //16
-		return Text::StrConcat(sbuff, (const UTF8Char*)"LOCALE");
+		return Text::StrConcatC(sbuff, UTF8STRC("LOCALE"));
 	case CF_DIBV5: //17
-		return Text::StrConcat(sbuff, (const UTF8Char*)"DIBV5");
+		return Text::StrConcatC(sbuff, UTF8STRC("DIBV5"));
 	case CF_OWNERDISPLAY: //0x0080
-		return Text::StrConcat(sbuff, (const UTF8Char*)"OWNERDISPLAY");
+		return Text::StrConcatC(sbuff, UTF8STRC("OWNERDISPLAY"));
 	case CF_DSPTEXT: //0x0081
-		return Text::StrConcat(sbuff, (const UTF8Char*)"DSPTEXT");
+		return Text::StrConcatC(sbuff, UTF8STRC("DSPTEXT"));
 	case CF_DSPBITMAP: //0x0082
-		return Text::StrConcat(sbuff, (const UTF8Char*)"DSPBITMAP");
+		return Text::StrConcatC(sbuff, UTF8STRC("DSPBITMAP"));
 	case CF_DSPMETAFILEPICT: //0x0083
-		return Text::StrConcat(sbuff, (const UTF8Char*)"DSPMETAFILEPICT");
+		return Text::StrConcatC(sbuff, UTF8STRC("DSPMETAFILEPICT"));
 	case CF_DSPENHMETAFILE: //0x008E
-		return Text::StrConcat(sbuff, (const UTF8Char*)"DSPENHMETAFILE");
+		return Text::StrConcatC(sbuff, UTF8STRC("DSPENHMETAFILE"));
 	case CF_PRIVATEFIRST: //0x0200
-		return Text::StrConcat(sbuff, (const UTF8Char*)"PRIVATEFIRST");
+		return Text::StrConcatC(sbuff, UTF8STRC("PRIVATEFIRST"));
 	case CF_PRIVATELAST: //0x02FF
-		return Text::StrConcat(sbuff, (const UTF8Char*)"PRIVATELAST");
+		return Text::StrConcatC(sbuff, UTF8STRC("PRIVATELAST"));
 	case CF_GDIOBJFIRST: //0x0300
-		return Text::StrConcat(sbuff, (const UTF8Char*)"GDIOBJFIRST");
+		return Text::StrConcatC(sbuff, UTF8STRC("GDIOBJFIRST"));
 	case CF_GDIOBJLAST: //0x03FF
-		return Text::StrConcat(sbuff, (const UTF8Char*)"GDIOBJLAST");
+		return Text::StrConcatC(sbuff, UTF8STRC("GDIOBJLAST"));
 #endif
 	default:
 		{

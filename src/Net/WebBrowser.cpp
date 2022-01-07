@@ -81,7 +81,7 @@ IO::IStreamData *Net::WebBrowser::GetData(const UTF8Char *url, Bool forceReload,
 	}
 	if (Text::URLString::GetURIScheme(sbuff, url) == 0)
 		return 0;
-	if (Text::StrCompareICase(sbuff, (const UTF8Char*)"FILE") == 0)
+	if (Text::StrEqualsICase(sbuff, (const UTF8Char*)"FILE"))
 	{
 		Text::URLString::GetURLFilePath(sbuff, url);
 		IO::StmData::FileData *fd;
@@ -92,21 +92,21 @@ IO::IStreamData *Net::WebBrowser::GetData(const UTF8Char *url, Bool forceReload,
 		}
 		return fd;
 	}
-	else if (Text::StrCompareICase(sbuff, (const UTF8Char*)"HTTP") == 0)
+	else if (Text::StrEquals(sbuff, (const UTF8Char*)"HTTP"))
 	{
 		Net::HTTPData *data;
 		GetLocalFileName(sbuff, url);
 		NEW_CLASS(data, Net::HTTPData(this->sockf, this->ssl, this->queue, url, sbuff, forceReload));
 		return data;
 	}
-	else if (Text::StrCompareICase(sbuff, (const UTF8Char*)"HTTPS") == 0)
+	else if (Text::StrEquals(sbuff, (const UTF8Char*)"HTTPS"))
 	{
 		Net::HTTPData *data;
 		GetLocalFileName(sbuff, url);
 		NEW_CLASS(data, Net::HTTPData(this->sockf, this->ssl, this->queue, url, sbuff, forceReload));
 		return data;
 	}
-	else if (Text::StrCompareICase(sbuff, (const UTF8Char*)"FTP") == 0)
+	else if (Text::StrEquals(sbuff, (const UTF8Char*)"FTP"))
 	{
 /*		IO::Stream *stm = Net::URL::OpenStream(url, this->sockf);
 		IO::StmData::StreamDataStream *data;
@@ -115,7 +115,7 @@ IO::IStreamData *Net::WebBrowser::GetData(const UTF8Char *url, Bool forceReload,
 		NEW_CLASS(data, IO::StmData::*/
 		return 0;
 	}
-	else if (Text::StrCompareICase(sbuff, (const UTF8Char*)"DATA") == 0)
+	else if (Text::StrEquals(sbuff, (const UTF8Char*)"DATA"))
 	{
 		IO::StmData::MemoryData2 *fd;
 		WChar c;

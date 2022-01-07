@@ -109,7 +109,7 @@ UTF8Char *Net::HTTPClient::GetRespHeader(const UTF8Char *name, UTF8Char *valueBu
 	UTF8Char *s2;
 	Text::String *s;
 	UOSInt i;
-	s2 = Text::StrConcat(Text::StrConcat(buff, name), (const UTF8Char*)": ");
+	s2 = Text::StrConcatC(Text::StrConcat(buff, name), UTF8STRC(": "));
 	i = this->headers->GetCount();
 	while (i-- > 0)
 	{
@@ -128,7 +128,7 @@ Bool Net::HTTPClient::GetRespHeader(const UTF8Char *name, Text::StringBuilderUTF
 	UTF8Char *s2;
 	Text::String *s;
 	UOSInt i;
-	s2 = Text::StrConcat(Text::StrConcat(buff, name), (const UTF8Char*)": ");
+	s2 = Text::StrConcatC(Text::StrConcat(buff, name), UTF8STRC(": "));
 	i = this->headers->GetCount();
 	while (i-- > 0)
 	{
@@ -267,7 +267,7 @@ UTF8Char *Net::HTTPClient::Date2Str(UTF8Char *sbuff, Data::DateTime *dt)
 	t.SetValue(dt);
 	t.ToUTCTime();
 	Int32 wd = (Int32)t.GetWeekday();
-	return Text::StrConcat(t.ToString(Text::StrConcat(sbuff, (const UTF8Char*)wds[wd]), "dd MMM yyyy HH:mm:ss"), (const UTF8Char*)" GMT");
+	return Text::StrConcatC(t.ToString(Text::StrConcat(sbuff, (const UTF8Char*)wds[wd]), "dd MMM yyyy HH:mm:ss"), UTF8STRC(" GMT"));
 }
 
 Net::HTTPClient *Net::HTTPClient::CreateClient(Net::SocketFactory *sockf, Net::SSLEngine *ssl, const UTF8Char *userAgent, Bool kaConn, Bool isSecure)

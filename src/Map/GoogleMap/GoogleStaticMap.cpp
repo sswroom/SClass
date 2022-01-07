@@ -164,41 +164,41 @@ UOSInt Map::GoogleMap::GoogleStaticMap::GetMap(UInt8 *buff, Double lat, Double l
 	UTF8Char *urlStart;
 	UOSInt retSize = 0;
 	UOSInt thisSize;
-	urlStart = sptr = Text::StrConcat(url, (const UTF8Char*)"http://maps.google.com");
-	sptr = Text::StrConcat(sptr, (const UTF8Char*)"/maps/api/staticmap?format=");
+	urlStart = sptr = Text::StrConcatC(url, UTF8STRC("http://maps.google.com"));
+	sptr = Text::StrConcatC(sptr, UTF8STRC("/maps/api/staticmap?format="));
 	if (format == 1)
 	{
-		sptr = Text::StrConcat(sptr, (const UTF8Char*)"gif");
+		sptr = Text::StrConcatC(sptr, UTF8STRC("gif"));
 	}
 	else if (format == 2)
 	{
-		sptr = Text::StrConcat(sptr, (const UTF8Char*)"jpg");
+		sptr = Text::StrConcatC(sptr, UTF8STRC("jpg"));
 	}
 	else
 	{
-		sptr = Text::StrConcat(sptr, (const UTF8Char*)"png");
+		sptr = Text::StrConcatC(sptr, UTF8STRC("png"));
 	}
-	sptr = Text::StrConcat(sptr, (const UTF8Char*)"&center=");
+	sptr = Text::StrConcatC(sptr, UTF8STRC("&center="));
 	sptr = Text::StrDouble(sptr, lat);
-	sptr = Text::StrConcat(sptr, (const UTF8Char*)",");
+	sptr = Text::StrConcatC(sptr, UTF8STRC(","));
 	sptr = Text::StrDouble(sptr, lon);
-	sptr = Text::StrConcat(sptr, (const UTF8Char*)"&zoom=");
+	sptr = Text::StrConcatC(sptr, UTF8STRC("&zoom="));
 	sptr = Text::StrUInt32(sptr, Map::GoogleMap::GoogleStaticMap::Scale2Level(scale));
-	sptr = Text::StrConcat(sptr, (const UTF8Char*)"&size=");
+	sptr = Text::StrConcatC(sptr, UTF8STRC("&size="));
 	sptr = Text::StrUInt32(sptr, width);
-	sptr = Text::StrConcat(sptr, (const UTF8Char*)"x");
+	sptr = Text::StrConcatC(sptr, UTF8STRC("x"));
 	sptr = Text::StrUInt32(sptr, height);
 	if (marker_lat != 0 || marker_lon != 0)
 	{
-		sptr = Text::StrConcat(sptr, (const UTF8Char*)"&markers=");
+		sptr = Text::StrConcatC(sptr, UTF8STRC("&markers="));
 		sptr = Text::StrDouble(sptr, marker_lat);
-		sptr = Text::StrConcat(sptr, (const UTF8Char*)",");
+		sptr = Text::StrConcatC(sptr, UTF8STRC(","));
 		sptr = Text::StrDouble(sptr, marker_lon);
 	}
 	if (this->gooCliId)
 	{
-		sptr = Text::StrConcat(sptr, (const UTF8Char*)"&sensor=false");
-		sptr = Text::StrConcat(sptr, (const UTF8Char*)"&client=");
+		sptr = Text::StrConcatC(sptr, UTF8STRC("&sensor=false"));
+		sptr = Text::StrConcatC(sptr, UTF8STRC("&client="));
 		sptr = this->gooCliId->ConcatTo(sptr);
 
 		UInt8 result[20];
@@ -207,13 +207,13 @@ UOSInt Map::GoogleMap::GoogleStaticMap::GetMap(UInt8 *buff, Double lat, Double l
 		hmac.Calc(urlStart, (UOSInt)(sptr - urlStart));
 		hmac.GetValue(result);
 		Text::TextBinEnc::Base64Enc b64(Text::TextBinEnc::Base64Enc::Charset::URL, false);
-		sptr = Text::StrConcat(sptr, (const UTF8Char*)"&signature=");
+		sptr = Text::StrConcatC(sptr, UTF8STRC("&signature="));
 		sptr = b64.EncodeBin(sptr, result, 20);
 	}
 	else if (this->gooKey)
 	{
-		sptr = Text::StrConcat(sptr, (const UTF8Char*)"&sensor=false");
-		sptr = Text::StrConcat(sptr, (const UTF8Char*)"&key=");
+		sptr = Text::StrConcatC(sptr, UTF8STRC("&sensor=false"));
+		sptr = Text::StrConcatC(sptr, UTF8STRC("&key="));
 		sptr = this->gooKey->ConcatTo(sptr);
 	}
 

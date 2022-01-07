@@ -19,7 +19,7 @@ void __stdcall SSWR::AVIRead::AVIRWMIForm::OnOKClick(void *userObj)
 		if (db->IsError())
 		{
 			DEL_CLASS(db);
-			UI::MessageDialog::ShowDialog((const UTF8Char *)"Error in opening the namespace", (const UTF8Char *)"Error", me);
+			UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in opening the namespace", (const UTF8Char*)"Error", me);
 		}
 		else
 		{
@@ -49,7 +49,7 @@ void __stdcall SSWR::AVIRead::AVIRWMIForm::OnDblClicked(void *userObj)
 		if (db->IsError())
 		{
 			DEL_CLASS(db);
-			UI::MessageDialog::ShowDialog((const UTF8Char *)"Error in opening the namespace", (const UTF8Char *)"Error", me);
+			UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in opening the namespace", (const UTF8Char*)"Error", me);
 		}
 		else
 		{

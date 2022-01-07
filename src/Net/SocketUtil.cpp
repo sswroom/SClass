@@ -155,7 +155,7 @@ UTF8Char *Net::SocketUtil::GetAddrName(UTF8Char *buff, const AddressInfo *addr, 
 {
 	if (addr->addrType == AddrType::IPv4)
 	{
-		return Text::StrUInt32(Text::StrConcat(GetAddrName(buff, addr), (const UTF8Char*)":"), port);
+		return Text::StrUInt32(Text::StrConcatC(GetAddrName(buff, addr), UTF8STRC(":")), port);
 	}
 	else if (addr->addrType == AddrType::IPv6)
 	{

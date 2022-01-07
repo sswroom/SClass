@@ -937,7 +937,7 @@ UOSInt Net::WebServer::WebConnection::Write(const UInt8 *buff, UOSInt size)
 			{
 				writeSize = 2048;		
 			}
-			sptr = Text::StrConcat(Text::StrHexVal32V(sbuff, (UInt32)size), (const UTF8Char*)"\r\n");
+			sptr = Text::StrConcatC(Text::StrHexVal32V(sbuff, (UInt32)size), UTF8STRC("\r\n"));
 			ohSize = (UOSInt)(sptr - sbuff) + 2;
 			MemCopyNO(sptr, buff, writeSize);
 			buff += writeSize;

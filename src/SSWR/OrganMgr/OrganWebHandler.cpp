@@ -93,7 +93,7 @@ void SSWR::OrganMgr::OrganWebHandler::LoadLangs()
 	IO::Path::GetProcessFileName(sbuff);
 	sptr = IO::Path::AppendPath(sbuff, (const UTF8Char*)"Langs");
 	*sptr++ = IO::Path::PATH_SEPERATOR;
-	Text::StrConcat(sptr, IO::Path::ALL_FILES);
+	Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
 	sess = IO::Path::FindFile(sbuff);
 	if (sess)
 	{
@@ -607,7 +607,7 @@ void SSWR::OrganMgr::OrganWebHandler::LoadUsers()
 						sb.ToLower();
 						sb.Replace((const UTF8Char*)" ", (const UTF8Char*)"_");
 						sb.Replace((const UTF8Char*)".", (const UTF8Char*)"");
-						user->unorganSpId = this->SpeciesAdd((const UTF8Char *)"", user->userName->v, sbSName.ToString(), group->id, (const UTF8Char*)"", sb.ToString(), (const UTF8Char*)"", group->cateId);
+						user->unorganSpId = this->SpeciesAdd((const UTF8Char*)"", user->userName->v, sbSName.ToString(), group->id, (const UTF8Char*)"", sb.ToString(), (const UTF8Char*)"", group->cateId);
 					}
 				}
 			}
@@ -1097,7 +1097,7 @@ Bool SSWR::OrganMgr::OrganWebHandler::UserGPSGetPos(Int32 userId, Data::DateTime
 			{
 				*sptr++ = IO::Path::PATH_SEPERATOR;
 			}
-			sptr = Text::StrConcat(sptr, UTF8STRC("DataFile"));
+			sptr = Text::StrConcatC(sptr, UTF8STRC("DataFile"));
 			*sptr++ = IO::Path::PATH_SEPERATOR;
 			sptr = Text::StrConcat(sptr, dataFile->fileName);
 			NEW_CLASS(fd, IO::StmData::FileData(u8buff, false));
@@ -3460,7 +3460,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpecies(Net::WebServer::IWebR
 		}
 		sptr = species->dirName->ConcatTo(sptr);
 		*sptr++ = IO::Path::PATH_SEPERATOR;
-		Text::StrConcat(sptr, IO::Path::ALL_FILES);
+		Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
 		sess = IO::Path::FindFile(sbuff);
 		if (sess)
 		{
@@ -4517,7 +4517,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 				{
 					NEW_CLASS(fileNameList, Data::ArrayListICaseStrUTF8());
 
-					Text::StrConcat(u8ptr, IO::Path::ALL_FILES);
+					Text::StrConcatC(u8ptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
 					sess = IO::Path::FindFile(u8buff);
 					if (sess)
 					{
@@ -4881,7 +4881,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 				{
 					NEW_CLASS(fileNameList, Data::ArrayListICaseStrUTF8());
 
-					Text::StrConcat(u8ptr, IO::Path::ALL_FILES);
+					Text::StrConcatC(u8ptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
 					sess = IO::Path::FindFile(u8buff);
 					if (sess)
 					{
@@ -5219,7 +5219,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 				Data::ArrayListICaseStrUTF8 *fileNameList;
 				NEW_CLASS(fileNameList, Data::ArrayListICaseStrUTF8());
 
-				Text::StrConcat(u8ptr, IO::Path::ALL_FILES);
+				Text::StrConcatC(u8ptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
 				sess = IO::Path::FindFile(u8buff);
 				if (sess)
 				{
@@ -5872,7 +5872,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoYear(Net::WebServer::IWe
 				locList.Clear();
 			}
 
-			const UTF8Char *locName = (const UTF8Char *)"?";
+			const UTF8Char *locName = (const UTF8Char*)"?";
 			userFile = env.user->userFileObj->GetItem((UOSInt)startIndex);
 			if (userFile->location)
 			{
@@ -6243,12 +6243,12 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoUpload(Net::WebServer::I
 	NEW_CLASS(mstm, IO::MemoryStream((const UTF8Char*)"SSWR::OrganMgr::OrganWebHandler.SvcPhotoUpload"));
 	NEW_CLASS(writer, Text::UTF8Writer(mstm));
 
-	me->WriteHeader(writer, (const UTF8Char *)"Photo Upload", env.user, env.isMobile);
+	me->WriteHeader(writer, (const UTF8Char*)"Photo Upload", env.user, env.isMobile);
 	writer->WriteLineC(UTF8STRC("<table border=\"1\">"));
 	writer->WriteLineC(UTF8STRC("<tr><td>File Name</td><td>File Size</td><td>Image Size</td></tr>"));
 	while (true)
 	{
-		fileCont = req->GetHTTPFormFile((const UTF8Char *)"file", i, fileName, sizeof(fileName), &fileSize);
+		fileCont = req->GetHTTPFormFile((const UTF8Char*)"file", i, fileName, sizeof(fileName), &fileSize);
 		if (fileCont == 0)
 		{
 			break;
@@ -6286,7 +6286,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoUpload(Net::WebServer::I
 			Media::Image *img = imgList->GetImage(0, &imgDelay);
 			if (img)
 			{
-				Text::StrUOSInt(Text::StrConcat(Text::StrUOSInt(sbuff, img->info->dispWidth), (const UTF8Char*)" x "), img->info->dispHeight);
+				Text::StrUOSInt(Text::StrConcatC(Text::StrUOSInt(sbuff, img->info->dispWidth), UTF8STRC(" x ")), img->info->dispHeight);
 				writer->Write(sbuff);
 			}
 			else

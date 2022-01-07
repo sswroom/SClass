@@ -349,7 +349,7 @@ UTF8Char *Map::MapSearch::ConcatNames(UTF8Char *buff, UTF8Char **strArrs, Int32 
 					if (strArrs[2] != 0)
 					{
 						outptr = Text::StrConcat(outptr, strArrs[2]);
-						outptr = Text::StrConcat(outptr, (const UTF8Char*)", ");
+						outptr = Text::StrConcatC(outptr, UTF8STRC(", "));
 					}
 					outptr = Text::StrConcat(outptr, strArrs[0]);
 				}
@@ -359,7 +359,7 @@ UTF8Char *Map::MapSearch::ConcatNames(UTF8Char *buff, UTF8Char **strArrs, Int32 
                 if (strArrs[2] != 0)
 				{
 					outptr = Text::StrConcat(outptr, strArrs[2]);
-					outptr = Text::StrConcat(outptr, (const UTF8Char*)", ");
+					outptr = Text::StrConcatC(outptr, UTF8STRC(", "));
 				}
 				outptr = Text::StrConcat(outptr, strArrs[1]);
 			}
@@ -368,7 +368,7 @@ UTF8Char *Map::MapSearch::ConcatNames(UTF8Char *buff, UTF8Char **strArrs, Int32 
 		{
 			if (strArrs[2] == 0)
 			{
-				outptr = Text::StrConcat(outptr, (const UTF8Char*)"Near ");
+				outptr = Text::StrConcatC(outptr, UTF8STRC("Near "));
 				outptr = Text::StrConcat(outptr, strArrs[3]);
 			}
 			else
@@ -397,7 +397,7 @@ UTF8Char *Map::MapSearch::ConcatNames(UTF8Char *buff, UTF8Char **strArrs, Int32 
 							if (strArrs[2] != 0)
 							{
 								outptr = Text::StrConcat(outptr, strArrs[2]);
-								outptr = Text::StrConcat(outptr, (const UTF8Char*)", ");
+								outptr = Text::StrConcatC(outptr, UTF8STRC(", "));
 							}
 							outptr = Text::StrConcat(outptr, strArrs[0]);
 						}
@@ -407,24 +407,24 @@ UTF8Char *Map::MapSearch::ConcatNames(UTF8Char *buff, UTF8Char **strArrs, Int32 
 						if (strArrs[2] != 0)
 						{
 							outptr = Text::StrConcat(outptr, strArrs[2]);
-							outptr = Text::StrConcat(outptr, (const UTF8Char*)", ");
+							outptr = Text::StrConcatC(outptr, UTF8STRC(", "));
 						}
 						outptr = Text::StrConcat(outptr, strArrs[1]);
 						if (strArrs[0] != 0)
 						{
-							outptr = Text::StrConcat(outptr, (const UTF8Char*)", ");
+							outptr = Text::StrConcatC(outptr, UTF8STRC(", "));
 							outptr = Text::StrConcat(outptr, strArrs[0]);
 						}
 					}
 
 					if (buff[0] == 0)
 					{
-						outptr = Text::StrConcat(outptr, (const UTF8Char*)"Near ");
+						outptr = Text::StrConcatC(outptr, UTF8STRC("Near "));
 						outptr = Text::StrConcat(outptr, strArrs[3]);
 					}
 					else
 					{
-						outptr = Text::StrConcat(outptr, (const UTF8Char*)", Near ");
+						outptr = Text::StrConcatC(outptr, UTF8STRC(", Near "));
 						outptr = Text::StrConcat(outptr, strArrs[3]);
 					}
 				}
@@ -459,7 +459,7 @@ UTF8Char *Map::MapSearch::ConcatNames(UTF8Char *buff, UTF8Char **strArrs, Int32 
 						if (strArrs[5] != 0)
 						{
 							outptr = Text::StrConcat(outptr, strArrs[5]);
-							outptr = Text::StrConcat(outptr, (const UTF8Char*)", ");
+							outptr = Text::StrConcatC(outptr, UTF8STRC(", "));
 						}
 						outptr = Text::StrConcat(outptr, strArrs[2]);
 					}
@@ -469,12 +469,12 @@ UTF8Char *Map::MapSearch::ConcatNames(UTF8Char *buff, UTF8Char **strArrs, Int32 
 					outptr = Text::StrConcat(outptr, strArrs[0]);
 					if (strArrs[5] != 0)
 					{
-						outptr = Text::StrConcat(outptr, (const UTF8Char*)", ");
+						outptr = Text::StrConcatC(outptr, UTF8STRC(", "));
 						outptr = Text::StrConcat(outptr, strArrs[5]);
 					}
 					if (strArrs[2] != 0)
 					{
-						outptr = Text::StrConcat(outptr, (const UTF8Char*)", ");
+						outptr = Text::StrConcatC(outptr, UTF8STRC(", "));
 						outptr = Text::StrConcat(outptr, strArrs[2]);
 					}
 				}
@@ -484,17 +484,17 @@ UTF8Char *Map::MapSearch::ConcatNames(UTF8Char *buff, UTF8Char **strArrs, Int32 
 				if (strArrs[0] != 0)
 				{
 					outptr = Text::StrConcat(outptr, strArrs[0]);
-					outptr = Text::StrConcat(outptr, (const UTF8Char*)", ");
+					outptr = Text::StrConcatC(outptr, UTF8STRC(", "));
 				}
 				outptr = Text::StrConcat(outptr, strArrs[1]);
 				if (strArrs[5] != 0)
 				{
-					outptr = Text::StrConcat(outptr, (const UTF8Char*)", ");
+					outptr = Text::StrConcatC(outptr, UTF8STRC(", "));
 					outptr = Text::StrConcat(outptr, strArrs[5]);
 				}
 				if (strArrs[2] != 0)
 				{
-					outptr = Text::StrConcat(outptr, (const UTF8Char*)", ");
+					outptr = Text::StrConcatC(outptr, UTF8STRC(", "));
 					outptr = Text::StrConcat(outptr, strArrs[2]);
 				}
 			}
@@ -537,7 +537,7 @@ UTF8Char *Map::MapSearch::ConcatNames(UTF8Char *buff, UTF8Char **strArrs, Int32 
 							outptr = Text::StrConcat(outptr, strArrs[0]);
 							if (strArrs[2] != 0)
 							{
-								outptr = Text::StrConcat(outptr, (const UTF8Char*)", ");
+								outptr = Text::StrConcatC(outptr, UTF8STRC(", "));
 								outptr = Text::StrConcat(outptr, strArrs[2]);
 							}
 						}
@@ -547,12 +547,12 @@ UTF8Char *Map::MapSearch::ConcatNames(UTF8Char *buff, UTF8Char **strArrs, Int32 
 						if (strArrs[0] != 0)
 						{
 							outptr = Text::StrConcat(outptr, strArrs[0]);
-							outptr = Text::StrConcat(outptr, (const UTF8Char*)", ");
+							outptr = Text::StrConcatC(outptr, UTF8STRC(", "));
 						}
 						outptr = Text::StrConcat(outptr, strArrs[1]);
 						if (strArrs[2] != 0)
 						{
-							outptr = Text::StrConcat(outptr, (const UTF8Char*)", ");
+							outptr = Text::StrConcatC(outptr, UTF8STRC(", "));
 							outptr = Text::StrConcat(outptr, strArrs[2]);
 						}
 					}
@@ -567,7 +567,7 @@ UTF8Char *Map::MapSearch::ConcatNames(UTF8Char *buff, UTF8Char **strArrs, Int32 
 					}
 					else
 					{
-						outptr = Text::StrConcat(outptr, (const UTF8Char*)", ");
+						outptr = Text::StrConcatC(outptr, UTF8STRC(", "));
 						outptr = Text::StrWChar_UTF8(outptr, tbuff);
 						outptr = Text::StrConcat(outptr, strArrs[3]);
 					}
@@ -585,7 +585,7 @@ UTF8Char *Map::MapSearch::ConcatNames(UTF8Char *buff, UTF8Char **strArrs, Int32 
 			{
 				if (outptr != buff)
 				{
-					outptr = Text::StrConcat(outptr, (const UTF8Char*)", ");
+					outptr = Text::StrConcatC(outptr, UTF8STRC(", "));
 				}
 				outptr = Text::StrConcat(outptr, strArrs[i]);
 			}

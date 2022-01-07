@@ -1101,7 +1101,7 @@ Bool Map::MapLayerReader::IsNull(UOSInt colIndex)
 UTF8Char *Map::MapLayerReader::GetName(UOSInt colIndex, UTF8Char *buff)
 {
 	if (colIndex == 0)
-		return Text::StrConcat(buff, (const UTF8Char*)"Shape");
+		return Text::StrConcatC(buff, UTF8STRC("Shape"));
 	return this->layer->GetColumnName(buff, colIndex - 1);
 }
 

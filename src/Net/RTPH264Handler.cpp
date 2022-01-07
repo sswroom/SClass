@@ -63,7 +63,7 @@ void Net::RTPH264Handler::MediaDataReceived(UInt8 *buff, UOSInt dataSize, UInt32
 {
 	UTF8Char sbuff[32];
 	Sync::MutexUsage mutUsage(mut);
-	Text::StrConcat(Text::StrInt64(Text::StrConcat(sbuff, (const UTF8Char*)"ts: "), ts), (const UTF8Char*)"\r\n");
+	Text::StrConcatC(Text::StrInt64(Text::StrConcatC(sbuff, UTF8STRC("ts: ")), ts), UTF8STRC("\r\n"));
 	IO::Console::PrintStrO(sbuff);
 
 	if (((lastSeq + 1) & 65535) != seqNum)
@@ -326,7 +326,7 @@ Int32 Net::RTPH264Handler::GetPayloadType()
 
 UTF8Char *Net::RTPH264Handler::GetSourceName(UTF8Char *buff)
 {
-	return Text::StrConcat(buff, (const UTF8Char*)"H.264 over RTP");
+	return Text::StrConcatC(buff, UTF8STRC("H.264 over RTP"));
 }
 
 const UTF8Char *Net::RTPH264Handler::GetFilterName()

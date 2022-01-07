@@ -148,7 +148,7 @@ void __stdcall SSWR::AVIRead::AVIRMySQLClientForm::OnTimerTick(void *userObj)
 			i = me->cli->GetAuthPluginData(buff);
 			Text::StrHexBytes(sbuff, buff, i, ' ');
 			me->txtAuthPluginData->SetText(sbuff);
-			Text::StrHexVal32(Text::StrConcat(sbuff, (const UTF8Char*)"0x"), me->cli->GetServerCap());
+			Text::StrHexVal32(Text::StrConcatC(sbuff, UTF8STRC("0x")), me->cli->GetServerCap());
 			me->txtServerCap->SetText(sbuff);
 			Text::StrUInt16(sbuff, me->cli->GetServerCS());
 			me->txtServerCS->SetText(sbuff);

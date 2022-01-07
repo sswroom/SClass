@@ -100,7 +100,7 @@ Bool Net::WebServer::IWebResponse::AddCacheControl(OSInt cacheAge)
 	else
 	{
 		UTF8Char sbuff[256];
-		Text::StrOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"private; max-age="), cacheAge);
+		Text::StrOSInt(Text::StrConcatC(sbuff, UTF8STRC("private; max-age=")), cacheAge);
 		return this->AddHeader((const UTF8Char*)"Cache-Control", sbuff);
 	}
 	return true;
@@ -119,15 +119,15 @@ Bool Net::WebServer::IWebResponse::AddContentDisposition(Bool isAttachment, cons
 	UTF8Char *sptr;
 	if (isAttachment)
 	{
-		sptr = Text::StrConcat(sbuff, (const UTF8Char*)"attachment");
+		sptr = Text::StrConcatC(sbuff, UTF8STRC("attachment"));
 	}
 	else
 	{
-		sptr = Text::StrConcat(sbuff, (const UTF8Char*)"inline");
+		sptr = Text::StrConcatC(sbuff, UTF8STRC("inline"));
 	}
 	if (attFileName)
 	{
-		sptr = Text::StrConcat(sptr, (const UTF8Char*)"; filename=\"");
+		sptr = Text::StrConcatC(sptr, UTF8STRC("; filename=\""));
 		if (browser == Net::BrowserInfo::BT_IE)
 		{
 			sptr = Text::TextEnc::URIEncoding::URIEncode(sptr, attFileName);
@@ -136,7 +136,7 @@ Bool Net::WebServer::IWebResponse::AddContentDisposition(Bool isAttachment, cons
 		{
 			sptr = Text::TextEnc::URIEncoding::URIEncode(sptr, attFileName);
 		}
-		sptr = Text::StrConcat(sptr, (const UTF8Char*)"\"");
+		sptr = Text::StrConcatC(sptr, UTF8STRC("\""));
 	}
 	return this->AddHeader((const UTF8Char*)"Content-Disposition", sbuff);
 }
@@ -184,5 +184,5 @@ UTF8Char *Net::WebServer::IWebResponse::ToTimeString(UTF8Char *buff, Data::DateT
 {
 	static const Char *wdays[] = {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
 	dt->ToUTCTime();
-	return Text::StrConcat(dt->ToString(Text::StrConcat(buff, (const UTF8Char*)wdays[(OSInt)dt->GetWeekday()]), ", dd MMM yyyy HH:mm:ss"), (const UTF8Char*)" GMT");
+	return Text::StrConcatC(dt->ToString(Text::StrConcat(buff, (const UTF8Char*)wdays[(OSInt)dt->GetWeekday()]), ", dd MMM yyyy HH:mm:ss"), UTF8STRC(" GMT"));
 }

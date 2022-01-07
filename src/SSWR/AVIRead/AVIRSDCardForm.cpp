@@ -52,7 +52,7 @@ void __stdcall SSWR::AVIRead::AVIRSDCardForm::OnDevicesSelChg(void *userObj)
 		}
 		else
 		{
-			Text::StrHexVal16(Text::StrConcat(sbuff, (const UTF8Char*)"0x"), sdCard->GetOEMID());
+			Text::StrHexVal16(Text::StrConcatC(sbuff, UTF8STRC("0x")), sdCard->GetOEMID());
 			me->txtOID->SetText(sbuff);
 		}
 		sdCard->GetProductName((Char*)sbuff);
@@ -185,7 +185,7 @@ SSWR::AVIRead::AVIRSDCardForm::AVIRSDCardForm(UI::GUIClientControl *parent, UI::
 	{
 		sdCard = this->sdCardList->GetItem(i);
 		sptr = Text::StrUOSInt(sbuff, i);
-		sptr = Text::StrConcat(sptr, (const UTF8Char*)" - ");
+		sptr = Text::StrConcatC(sptr, UTF8STRC(" - "));
 		sptr = Text::StrConcat(sptr, sdCard->GetName());
 		this->lbDevices->AddItem(sbuff, sdCard);
 		i++;

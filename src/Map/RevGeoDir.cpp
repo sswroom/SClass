@@ -22,7 +22,7 @@ Map::RevGeoDir::RevGeoDir(const UTF8Char *cfgDir, UInt32 defLCID, IO::Writer *er
 	{
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 	}
-	Text::StrConcat(sptr, (const UTF8Char*)"RevGeo_*.*");
+	Text::StrConcatC(sptr, UTF8STRC("RevGeo_*.*"));
 	sess = IO::Path::FindFile(sbuff);
 	if (sess == 0)
 	{

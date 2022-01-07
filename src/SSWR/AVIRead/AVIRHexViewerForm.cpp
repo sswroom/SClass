@@ -145,7 +145,7 @@ void __stdcall SSWR::AVIRead::AVIRHexViewerForm::OnOffsetChg(void *userObj, UInt
 	{
 		UTF32Char c;
 		Text::StrReadChar(buff, &c);
-		Text::StrHexVal32V(Text::StrConcat(sbuff, (const UTF8Char*)"0x"), (UInt32)c);
+		Text::StrHexVal32V(Text::StrConcatC(sbuff, UTF8STRC("0x")), (UInt32)c);
 		me->txtUTF8CharCode->SetText(sbuff);
 	}
 	else
@@ -294,7 +294,7 @@ SSWR::AVIRead::AVIRHexViewerForm::AVIRHexViewerForm(UI::GUIClientControl *parent
 	NEW_CLASS(this->txtUTF8CharCode, UI::GUITextBox(ui, this->tpValues, (const UTF8Char*)""));
 	this->txtUTF8CharCode->SetRect(604, 76, 150, 23, false);
 	this->txtUTF8CharCode->SetReadOnly(true);
-	NEW_CLASS(this->btnFont, UI::GUIButton(ui, this->tpValues, (const UTF8Char *)"Sel Font"));
+	NEW_CLASS(this->btnFont, UI::GUIButton(ui, this->tpValues, (const UTF8Char*)"Sel Font"));
 	this->btnFont->SetRect(4, 124, 75, 23, false);
 	this->btnFont->HandleButtonClick(OnFontClicked, this);
 	NEW_CLASS(this->btnNextUnk, UI::GUIButton(ui, this->tpValues, (const UTF8Char*)"Next Unknown"));

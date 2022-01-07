@@ -125,7 +125,7 @@ void SSWR::AVIRead::AVIRGISFontEditForm::UpdateFontPreview()
 
 	if (this->env->GetFontStyleName(this->fontStyle, sbuff) == 0 || sbuff[0] == 0)
 	{
-		Text::StrInt32(Text::StrConcat(sbuff, (const UTF8Char*)"Style "), (Int32)this->fontStyle);
+		Text::StrInt32(Text::StrConcatC(sbuff, UTF8STRC("Style ")), (Int32)this->fontStyle);
 	}
 
 	b = dimg->NewBrushARGB(this->colorConv->ConvRGB8(0xffc0c0c0));

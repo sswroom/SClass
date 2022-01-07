@@ -25,11 +25,11 @@ void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnStartClicked(void *userObj)
 		me->txtPort->GetText(&sb);
 		if (!sb.ToUInt16(&port))
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char *)"Port is not valid", (const UTF8Char *)"Error", me);
+			UI::MessageDialog::ShowDialog((const UTF8Char*)"Port is not valid", (const UTF8Char*)"Error", me);
 		}
 		else if (port <= 0 || port >= 65536)
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char *)"Port is out of range", (const UTF8Char *)"Error", me);
+			UI::MessageDialog::ShowDialog((const UTF8Char*)"Port is out of range", (const UTF8Char*)"Error", me);
 		}
 		else
 		{
@@ -38,12 +38,12 @@ void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnStartClicked(void *userObj)
 			{
 				if (me->ssl == 0)
 				{
-					UI::MessageDialog::ShowDialog((const UTF8Char *)"Error in initializing SSL engine", (const UTF8Char *)"MQTT Broker", me);
+					UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in initializing SSL engine", (const UTF8Char*)"MQTT Broker", me);
 					return;
 				}
 				if (me->sslCert == 0 || me->sslKey == 0)
 				{
-					UI::MessageDialog::ShowDialog((const UTF8Char *)"Please select SSL Cert/Key to enable SSL", (const UTF8Char *)"MQTT Broker", me);
+					UI::MessageDialog::ShowDialog((const UTF8Char*)"Please select SSL Cert/Key to enable SSL", (const UTF8Char*)"MQTT Broker", me);
 					return;
 				}
 				ssl = me->ssl;
@@ -54,7 +54,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnStartClicked(void *userObj)
 			NEW_CLASS(me->broker, Net::MQTTBroker(me->core->GetSocketFactory(), ssl, port, me->log, true));
 			if (me->broker->IsError())
 			{
-				UI::MessageDialog::ShowDialog((const UTF8Char *)"Error in starting server", (const UTF8Char *)"Error", me);
+				UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in starting server", (const UTF8Char*)"Error", me);
 				DEL_CLASS(me->broker);
 				me->broker = 0;
 			}

@@ -536,7 +536,7 @@ Bool IO::FileAnalyse::JPGFileAnalyse::GetFrameDetail(UOSInt index, Text::StringB
 		else if (Text::StrEquals((Char*)&tagData[4], "http://ns.adobe.com/xap/1.0/"))
 		{
 			sb->AppendC(UTF8STRC("\r\n"));
-			sb->AppendC((const UTF8Char *)&tagData[33], tag->size - 33);
+			sb->AppendC((const UTF8Char*)&tagData[33], tag->size - 33);
 		}
 		MemFree(tagData);
 	}

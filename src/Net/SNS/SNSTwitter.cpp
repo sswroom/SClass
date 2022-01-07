@@ -89,7 +89,7 @@ Text::String *Net::SNS::SNSTwitter::GetName()
 
 UTF8Char *Net::SNS::SNSTwitter::GetDirName(UTF8Char *dirName)
 {
-	dirName = Text::StrConcat(dirName, (const UTF8Char*)"Twitter_");
+	dirName = Text::StrConcatC(dirName, UTF8STRC("Twitter_"));
 	dirName = this->channelId->ConcatTo(dirName);
 	return dirName;
 }

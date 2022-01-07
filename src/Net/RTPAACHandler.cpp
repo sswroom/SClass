@@ -197,7 +197,7 @@ Int32 Net::RTPAACHandler::GetPayloadType()
 
 UTF8Char *Net::RTPAACHandler::GetSourceName(UTF8Char *buff)
 {
-	return Text::StrConcat(buff, (const UTF8Char*)"mpeg4-generic");
+	return Text::StrConcatC(buff, UTF8STRC("mpeg4-generic"));
 }
 
 Bool Net::RTPAACHandler::CanSeek()

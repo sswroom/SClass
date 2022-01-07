@@ -49,7 +49,7 @@ void __stdcall SSWR::AVIRead::AVIRGISCombineForm::OnCombineClick(void *userObj)
 	}
 	else
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char *)"Error in combining layers", (const UTF8Char *)"Combine Layer", me);
+		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in combining layers", (const UTF8Char*)"Combine Layer", me);
 	}
 }
 

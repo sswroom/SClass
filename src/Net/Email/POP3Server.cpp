@@ -179,14 +179,14 @@ void Net::Email::POP3Server::ParseCmd(Net::TCPClient *cli, MailStatus *cliStatus
 	{
 		if (cliStatus->userId == 0)
 		{
-			WriteMessage(cli, false, (const UTF8Char *)"authorization first");
+			WriteMessage(cli, false, (const UTF8Char*)"authorization first");
 		}
 	}
 	else if (Text::StrEquals(cmd, "AUTH"))
 	{
 		if (cliStatus->userId == 0)
 		{
-			WriteMessage(cli, false, (const UTF8Char *)"authorization first");
+			WriteMessage(cli, false, (const UTF8Char*)"authorization first");
 		}
 	}
 	else if (Text::StrEquals(cmd, "QUIT"))
@@ -198,7 +198,7 @@ void Net::Email::POP3Server::ParseCmd(Net::TCPClient *cli, MailStatus *cliStatus
 	{
 		if (cliStatus->userId == 0)
 		{
-			WriteMessage(cli, false, (const UTF8Char *)"authorization first");
+			WriteMessage(cli, false, (const UTF8Char*)"authorization first");
 		}
 		else
 		{
@@ -216,7 +216,7 @@ void Net::Email::POP3Server::ParseCmd(Net::TCPClient *cli, MailStatus *cliStatus
 	{
 		if (cliStatus->userId == 0)
 		{
-			WriteMessage(cli, false, (const UTF8Char *)"authorization first");
+			WriteMessage(cli, false, (const UTF8Char*)"authorization first");
 		}
 		else
 		{
@@ -228,7 +228,7 @@ void Net::Email::POP3Server::ParseCmd(Net::TCPClient *cli, MailStatus *cliStatus
 			{
 				Text::StringBuilderUTF8 sb;
 				Net::Email::MailController::MessageInfo info;
-				WriteMessage(cli, true, (const UTF8Char *)"messages follow");
+				WriteMessage(cli, true, (const UTF8Char*)"messages follow");
 				i = 0;
 				j = unreadList.GetCount();
 				while (i < j)
@@ -248,7 +248,7 @@ void Net::Email::POP3Server::ParseCmd(Net::TCPClient *cli, MailStatus *cliStatus
 			}
 			else
 			{
-				WriteMessage(cli, false, (const UTF8Char *)"authorization first");
+				WriteMessage(cli, false, (const UTF8Char*)"authorization first");
 			}
 		}
 	}
@@ -256,7 +256,7 @@ void Net::Email::POP3Server::ParseCmd(Net::TCPClient *cli, MailStatus *cliStatus
 	{
 		if (cliStatus->userId == 0)
 		{
-			WriteMessage(cli, false, (const UTF8Char *)"authorization first");
+			WriteMessage(cli, false, (const UTF8Char*)"authorization first");
 		}
 		else
 		{
@@ -264,7 +264,7 @@ void Net::Email::POP3Server::ParseCmd(Net::TCPClient *cli, MailStatus *cliStatus
 			msgIndex = Text::StrToUInt32(&cmd[5]);
 			if (msgIndex <= 0)
 			{
-				WriteMessage(cli, false, (const UTF8Char *)"authorization first");
+				WriteMessage(cli, false, (const UTF8Char*)"authorization first");
 			}
 			else
 			{
@@ -279,7 +279,7 @@ void Net::Email::POP3Server::ParseCmd(Net::TCPClient *cli, MailStatus *cliStatus
 				}
 				else
 				{
-					WriteMessage(cli, false, (const UTF8Char *)"no such message");
+					WriteMessage(cli, false, (const UTF8Char*)"no such message");
 				}
 			}
 		}
@@ -288,7 +288,7 @@ void Net::Email::POP3Server::ParseCmd(Net::TCPClient *cli, MailStatus *cliStatus
 	{
 		if (cliStatus->userId == 0)
 		{
-			WriteMessage(cli, false, (const UTF8Char *)"authorization first");
+			WriteMessage(cli, false, (const UTF8Char*)"authorization first");
 		}
 		else
 		{
@@ -296,14 +296,14 @@ void Net::Email::POP3Server::ParseCmd(Net::TCPClient *cli, MailStatus *cliStatus
 			msgIndex = Text::StrToUInt32(&cmd[5]);
 			if (msgIndex <= 0)
 			{
-				WriteMessage(cli, false, (const UTF8Char *)"authorization first");
+				WriteMessage(cli, false, (const UTF8Char*)"authorization first");
 			}
 			else
 			{
 				IO::MemoryStream mstm((const UTF8Char*)"Net.POP3Server.ParseCmd.mstm");
 				if (this->mailCtrl->GetMessageContent(cliStatus->userId, msgIndex - 1, &mstm))
 				{
-					WriteMessage(cli, true, (const UTF8Char *)"Content follows");
+					WriteMessage(cli, true, (const UTF8Char*)"Content follows");
 					UOSInt buffSize;
 					UInt8 *buff;
 					buff = mstm.GetBuff(&buffSize);
@@ -312,11 +312,11 @@ void Net::Email::POP3Server::ParseCmd(Net::TCPClient *cli, MailStatus *cliStatus
 					{
 						this->rawLog->Write(buff, buffSize);
 					}
-					WriteRAW(cli, (const UTF8Char *)"\r\n.\r\n");
+					WriteRAW(cli, (const UTF8Char*)"\r\n.\r\n");
 				}
 				else
 				{
-					WriteMessage(cli, false, (const UTF8Char *)"no such message");
+					WriteMessage(cli, false, (const UTF8Char*)"no such message");
 				}
 			}
 		}
@@ -325,7 +325,7 @@ void Net::Email::POP3Server::ParseCmd(Net::TCPClient *cli, MailStatus *cliStatus
 	{
 		if (cliStatus->userId == 0)
 		{
-			WriteMessage(cli, false, (const UTF8Char *)"authorization first");
+			WriteMessage(cli, false, (const UTF8Char*)"authorization first");
 		}
 		else
 		{
@@ -333,7 +333,7 @@ void Net::Email::POP3Server::ParseCmd(Net::TCPClient *cli, MailStatus *cliStatus
 			msgIndex = Text::StrToUInt32(&cmd[5]);
 			if (msgIndex <= 0)
 			{
-				WriteMessage(cli, false, (const UTF8Char *)"authorization first");
+				WriteMessage(cli, false, (const UTF8Char*)"authorization first");
 			}
 			else
 			{
@@ -341,15 +341,15 @@ void Net::Email::POP3Server::ParseCmd(Net::TCPClient *cli, MailStatus *cliStatus
 				Int32 ret = this->mailCtrl->RemoveMessage(cliStatus->userId, msgIndex - 1);
 				if (ret == 1)
 				{
-					WriteMessage(cli, true, (const UTF8Char *)"message deleted");
+					WriteMessage(cli, true, (const UTF8Char*)"message deleted");
 				}
 				else if (ret == 2)
 				{
-					WriteMessage(cli, false, (const UTF8Char *)"message already deleted");
+					WriteMessage(cli, false, (const UTF8Char*)"message already deleted");
 				}
 				else
 				{
-					WriteMessage(cli, false, (const UTF8Char *)"no such message");
+					WriteMessage(cli, false, (const UTF8Char*)"no such message");
 				}
 			}
 		}
@@ -358,7 +358,7 @@ void Net::Email::POP3Server::ParseCmd(Net::TCPClient *cli, MailStatus *cliStatus
 	{
 		if (cliStatus->userId == 0)
 		{
-			WriteMessage(cli, false, (const UTF8Char *)"authorization first");
+			WriteMessage(cli, false, (const UTF8Char*)"authorization first");
 		}
 		else
 		{
@@ -370,7 +370,7 @@ void Net::Email::POP3Server::ParseCmd(Net::TCPClient *cli, MailStatus *cliStatus
 			{
 				Text::StringBuilderUTF8 sb;
 				Net::Email::MailController::MessageInfo info;
-				WriteMessage(cli, true, (const UTF8Char *)"unique-id listing follows");
+				WriteMessage(cli, true, (const UTF8Char*)"unique-id listing follows");
 				i = 0;
 				j = unreadList.GetCount();
 				while (i < j)
@@ -390,7 +390,7 @@ void Net::Email::POP3Server::ParseCmd(Net::TCPClient *cli, MailStatus *cliStatus
 			}
 			else
 			{
-				WriteMessage(cli, false, (const UTF8Char *)"authorization first");
+				WriteMessage(cli, false, (const UTF8Char*)"authorization first");
 			}
 		}
 	}
@@ -398,7 +398,7 @@ void Net::Email::POP3Server::ParseCmd(Net::TCPClient *cli, MailStatus *cliStatus
 	{
 		if (cliStatus->userId == 0)
 		{
-			WriteMessage(cli, false, (const UTF8Char *)"authorization first");
+			WriteMessage(cli, false, (const UTF8Char*)"authorization first");
 		}
 		else
 		{
@@ -406,7 +406,7 @@ void Net::Email::POP3Server::ParseCmd(Net::TCPClient *cli, MailStatus *cliStatus
 			msgIndex = Text::StrToUInt32(&cmd[5]);
 			if (msgIndex <= 0)
 			{
-				WriteMessage(cli, false, (const UTF8Char *)"authorization first");
+				WriteMessage(cli, false, (const UTF8Char*)"authorization first");
 			}
 			else
 			{
@@ -421,7 +421,7 @@ void Net::Email::POP3Server::ParseCmd(Net::TCPClient *cli, MailStatus *cliStatus
 				}
 				else
 				{
-					WriteMessage(cli, false, (const UTF8Char *)"no such message");
+					WriteMessage(cli, false, (const UTF8Char*)"no such message");
 				}
 			}
 		}
@@ -453,12 +453,12 @@ void Net::Email::POP3Server::ParseCmd(Net::TCPClient *cli, MailStatus *cliStatus
 		}
 		else
 		{
-			WriteMessage(cli, false, (const UTF8Char *)"authorization failed  Check your server settings.");
+			WriteMessage(cli, false, (const UTF8Char*)"authorization failed  Check your server settings.");
 		}
 	}
 	else
 	{
-		WriteMessage(cli, false, (const UTF8Char *)"Unknown command");
+		WriteMessage(cli, false, (const UTF8Char*)"Unknown command");
 	}
 }
 
@@ -471,7 +471,7 @@ Net::Email::POP3Server::POP3Server(Net::SocketFactory *sockf, Net::SSLEngine *ss
 	this->mailCtrl = mailCtrl;
 	NEW_CLASS(this->cliMgr, Net::TCPClientMgr(60, ClientEvent, ClientData, this, 4, ClientTimeout));
 	NEW_CLASS(this->svr, Net::TCPServer(this->sockf, port, log, ConnHdlr, this, 0));
-	NEW_CLASS(this->rawLog, IO::FileStream((const UTF8Char *)"POP3Log.dat", IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(this->rawLog, IO::FileStream((const UTF8Char*)"POP3Log.dat", IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 }
 
 Net::Email::POP3Server::~POP3Server()

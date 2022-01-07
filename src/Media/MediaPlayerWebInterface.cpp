@@ -83,7 +83,7 @@ void Media::MediaPlayerWebInterface::BrowseRequest(Net::WebServer::IWebRequest *
 	writer->WriteLineC(UTF8STRC("<table border=\"0\">"));
 	writer->WriteLineC(UTF8STRC("<tr><td>Name</td><td>Size</td><td>MIME Type</td></tr>"));
 
-	Text::StrConcat(sptr, IO::Path::ALL_FILES);
+	Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
 	sess = IO::Path::FindFile(sbuff);
 	if (sess)
 	{

@@ -43,7 +43,7 @@ SSWR::AVIRead::AVIRRSSItemForm::AVIRRSSItemForm(UI::GUIClientControl *parent, UI
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
-	this->tpInfo = this->tcMain->AddTabPage((const UTF8Char *)"Info");
+	this->tpInfo = this->tcMain->AddTabPage((const UTF8Char*)"Info");
 	NEW_CLASS(this->lvInfo, UI::GUIListView(ui, this->tpInfo, UI::GUIListView::LVSTYLE_TABLE, 2));
 	this->lvInfo->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvInfo->SetFullRowSelect(true);
@@ -52,7 +52,7 @@ SSWR::AVIRead::AVIRRSSItemForm::AVIRRSSItemForm(UI::GUIClientControl *parent, UI
 	this->lvInfo->AddColumn((const UTF8Char*)"Value", 400);
 
 #if defined(_WIN32) || defined(WIN64)
-	this->tpImage = this->tcMain->AddTabPage((const UTF8Char *)"Image");
+	this->tpImage = this->tcMain->AddTabPage((const UTF8Char*)"Image");
 	NEW_CLASS(this->cboImage, UI::GUIComboBox(ui, this->tpImage, false));
 	this->cboImage->SetRect(0, 0, 100, 23, false);
 	this->cboImage->SetDockType(UI::GUIControl::DOCK_TOP);

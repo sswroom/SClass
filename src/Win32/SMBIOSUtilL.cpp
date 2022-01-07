@@ -104,8 +104,8 @@ Win32::SMBIOS *Win32::SMBIOSUtil::GetSMBIOS()
 		UOSInt readSize;
 		IO::MemoryStream *mstm;
 		NEW_CLASS(mstm, IO::MemoryStream((const UTF8Char*)"Win32.SMBIOS.GetSMBIOS.mstm"));
-		sptr = Text::StrConcat(sbuff, (const UTF8Char*)"/sys/firmware/dmi/entries/");
-		Text::StrConcat(sptr, (const UTF8Char*)"*");
+		sptr = Text::StrConcatC(sbuff, UTF8STRC("/sys/firmware/dmi/entries/"));
+		Text::StrConcatC(sptr, UTF8STRC("*"));
 		sess = IO::Path::FindFile(sbuff);
 		if (sess)
 		{
@@ -113,7 +113,7 @@ Win32::SMBIOS *Win32::SMBIOSUtil::GetSMBIOS()
 			{
 				if (sptr[0] != '.')
 				{
-					sptr2 = Text::StrConcat(sptr2, (const UTF8Char*)"/raw");
+					sptr2 = Text::StrConcatC(sptr2, UTF8STRC("/raw"));
 					NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 					if (!fs->IsError())
 					{

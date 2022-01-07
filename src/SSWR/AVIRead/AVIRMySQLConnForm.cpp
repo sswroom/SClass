@@ -24,19 +24,19 @@ void __stdcall SSWR::AVIRead::AVIRMySQLConnForm::OnOKClicked(void *userObj)
 	Net::SocketUtil::AddressInfo addr;
 	if (!sbPort.ToUInt16(&port))
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char *)"Port is not valid", (const UTF8Char *)"MySQL Connection", me);
+		UI::MessageDialog::ShowDialog((const UTF8Char*)"Port is not valid", (const UTF8Char*)"MySQL Connection", me);
 		return;
 	}
 	else if (!sockf->DNSResolveIP(sb.ToString(), &addr))
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char *)"Error in resolving server host", (const UTF8Char *)"MySQL Connection", me);
+		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in resolving server host", (const UTF8Char*)"MySQL Connection", me);
 		return;
 	}
 	NEW_CLASS(conn, Net::MySQLTCPClient(sockf, &addr, port, sb2.ToString(), sb3.ToString(), sb4.ToString()));
 	if (conn->IsError())
 	{
 		DEL_CLASS(conn);
-		UI::MessageDialog::ShowDialog((const UTF8Char *)"Error in opening MySQL connection", (const UTF8Char *)"MySQL Connection", me);
+		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in opening MySQL connection", (const UTF8Char*)"MySQL Connection", me);
 		return;
 	}
 	me->conn = conn;

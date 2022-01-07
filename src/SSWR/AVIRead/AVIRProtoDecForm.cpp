@@ -62,7 +62,7 @@ void __stdcall SSWR::AVIRead::AVIRProtoDecForm::OnLoadClicked(void *userObj)
 		if (me->currFile->IsError())
 		{
 			DEL_CLASS(me->currFile);
-			UI::MessageDialog::ShowDialog((const UTF8Char *)"Error in opening the file", (const UTF8Char *)"Protocol Decoder", me);
+			UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in opening the file", (const UTF8Char*)"Protocol Decoder", me);
 			return;
 		}
 		me->currDec = protoDec;

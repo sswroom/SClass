@@ -142,7 +142,7 @@ SSWR::AVIRead::AVIRSMakeForm::AVIRSMakeForm(UI::GUIClientControl *parent, UI::GU
 	NEW_CLASS(this->lbProgSource, UI::GUIListBox(ui, this->tpProgSource, false));
 	this->lbProgSource->SetDockType(UI::GUIControl::DOCK_FILL);
 
-	this->tpConfig = this->tcMain->AddTabPage((const UTF8Char *)"Config");
+	this->tpConfig = this->tcMain->AddTabPage((const UTF8Char*)"Config");
 	NEW_CLASS(this->lvConfig, UI::GUIListView(ui, this->tpConfig, UI::GUIListView::LVSTYLE_TABLE, 2));
 	this->lvConfig->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvConfig->SetShowGrid(true);

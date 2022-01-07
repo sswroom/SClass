@@ -22,9 +22,9 @@ namespace Net
 		Sync::Mutex *readMut;
 		Sync::Event *readEvt;
 		UInt8 *readBuff;
-		OSInt readBuffSize;
+		UOSInt readBuffSize;
 		Sync::Event *readBuffEvt;
-		OSInt sizeRead;
+		UOSInt sizeRead;
 		UInt32 lastSSRC;
 
 		Int32 fmtFreq;
@@ -33,12 +33,12 @@ namespace Net
 		Bool outRunning;
 		Bool outToStop;
 		Media::IAudioSource *outAudio;
-		UInt32 outIP;
+		Net::SocketUtil::AddressInfo outAddr;
 		UInt32 outPort;
 		Int32 outSSRC;
 
 	private:
-		static void __stdcall UDPData(UInt32 ip, UInt16 port, UInt8 *buff, OSInt dataSize, void *userData);
+		static void __stdcall UDPData(const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData);
 		static UInt32 __stdcall SendThread(void *userObj);
 	public:
 		RTPAudioSession(Net::SocketFactory *sockf, const Char *ip, UInt16 port, IO::LogTool *log);
@@ -49,7 +49,7 @@ namespace Net
 		Bool StartSend(Media::IAudioSource *audSrc, UInt32 destIP, UInt16 destPort, Int32 outSSRC);
 		void StopSend();
 
-		virtual WChar *GetName(WChar *buff);
+		virtual UTF8Char *GetName(UTF8Char *buff);
 		virtual Bool CanSeek();
 		virtual Int32 GetStreamTime(); //ms
 		virtual void GetFormat(Media::AudioFormat *format);
@@ -57,8 +57,8 @@ namespace Net
 		virtual Int32 SeekToTime(Int32 time); //ms, ret actual time
 		virtual Bool Start(Sync::Event *evt, Int32 blkSize);
 		virtual void Stop();
-		virtual OSInt ReadBlock(UInt8 *buff, OSInt blkSize); //ret actual block size
-		virtual OSInt GetMinBlockSize();
+		virtual UOSInt ReadBlock(UInt8 *buff, UOSInt blkSize); //ret actual block size
+		virtual UOSInt GetMinBlockSize();
 	};
 };
 #endif

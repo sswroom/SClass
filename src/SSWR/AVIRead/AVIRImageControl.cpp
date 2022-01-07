@@ -106,7 +106,7 @@ void SSWR::AVIRead::AVIRImageControl::InitDir()
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 	if (sptr2[-1] != IO::Path::PATH_SEPERATOR)
 		*sptr2++ = IO::Path::PATH_SEPERATOR;
-	sptr2 = Text::StrConcat(sptr2, (const UTF8Char*)"Cache");
+	sptr2 = Text::StrConcatC(sptr2, UTF8STRC("Cache"));
 	IO::Path::CreateDirectory(sbuff2);
 	*sptr2++ = IO::Path::PATH_SEPERATOR;
 
@@ -121,7 +121,7 @@ void SSWR::AVIRead::AVIRImageControl::InitDir()
 	IO::FileStream *fs;
 	IO::StmData::FileData *fd;
 	NEW_CLASS(imgSettMap, Data::ICaseStringUTF8Map<ImageSetting*>());
-	Text::StrConcat(sptr, (const UTF8Char*)"Setting.txt");
+	Text::StrConcatC(sptr, UTF8STRC("Setting.txt"));
 	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
 	if (!fs->IsError())
 	{
@@ -168,7 +168,7 @@ void SSWR::AVIRead::AVIRImageControl::InitDir()
 	}
 	DEL_CLASS(fs);
 
-	Text::StrConcat(sptr, IO::Path::ALL_FILES);
+	Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
 	sess = IO::Path::FindFile(sbuff);
 	if (sess)
 	{
@@ -201,7 +201,7 @@ void SSWR::AVIRead::AVIRImageControl::InitDir()
 					if (simg)
 					{
 						Media::StaticImage *simg2;
-						Text::StrConcat(Text::StrConcat(sptr2, sptr), (const UTF8Char*)".png");
+						Text::StrConcatC(Text::StrConcat(sptr2, sptr), UTF8STRC(".png"));
 						simg->To32bpp();
 						simg2 = resizer.ProcessToNew(simg);
 						NEW_CLASS(imgList, Media::ImageList(sptr));
@@ -273,7 +273,7 @@ void SSWR::AVIRead::AVIRImageControl::ExportQueued()
 	sptr = Text::StrConcat(sbuff, this->folderPath);
 	if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 		*sptr++ = IO::Path::PATH_SEPERATOR;
-	sptr = Text::StrConcat(sptr, (const UTF8Char*)"Output");
+	sptr = Text::StrConcatC(sptr, UTF8STRC("Output"));
 	IO::Path::CreateDirectory(sbuff);
 	*sptr++ = IO::Path::PATH_SEPERATOR;
 
@@ -364,9 +364,9 @@ void SSWR::AVIRead::AVIRImageControl::EndFolder()
 	sptr = Text::StrConcat(sbuff, this->folderPath);
 	if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 		*sptr++ = IO::Path::PATH_SEPERATOR;
-	sptr = Text::StrConcat(sptr, (const UTF8Char*)"Cache");
+	sptr = Text::StrConcatC(sptr, UTF8STRC("Cache"));
 	*sptr++ = IO::Path::PATH_SEPERATOR;
-	Text::StrConcat(sptr, (const UTF8Char*)"*.png");
+	Text::StrConcatC(sptr, UTF8STRC("*.png"));
 	sess = IO::Path::FindFile(sbuff);
 	if (sess)
 	{
@@ -469,7 +469,7 @@ Double *SSWR::AVIRead::AVIRImageControl::GetCameraGamma(const UTF8Char *cameraNa
 
 	IO::Path::GetProcessFileName(sbuff);
 	sptr = IO::Path::AppendPath(sbuff, cameraName);
-	Text::StrConcat(sptr, (const UTF8Char*)".gamma");
+	Text::StrConcatC(sptr, UTF8STRC(".gamma"));
 	IO::FileStream *fs;
 	Text::UTF8Reader *reader;
 	Text::StringBuilderUTF8 sb;
@@ -942,7 +942,7 @@ Bool SSWR::AVIRead::AVIRImageControl::SaveSetting()
 	sptr = Text::StrConcat(sbuff, this->folderPath);
 	if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 		*sptr++ = IO::Path::PATH_SEPERATOR;
-	Text::StrConcat(sptr, (const UTF8Char*)"Setting.txt");
+	Text::StrConcatC(sptr, UTF8STRC("Setting.txt"));
 
 	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (fs->IsError())

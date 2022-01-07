@@ -290,7 +290,7 @@ Bool SSWR::AVIRead::AVIRHQMPDSForm::OpenVideo(Media::MediaFile *mf)
 	SDEL_CLASS(this->currFile);
 	SDEL_CLASS(this->playlist);
 	this->currFile = mf;
-	this->currFile->GetSourceNameObj()->ConcatTo(Text::StrConcat(sbuff, (const UTF8Char*)"HQMP3DS - "));
+	this->currFile->GetSourceNameObj()->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("HQMP3DS - ")));
 	this->SetText(sbuff);
 	this->player->LoadMedia(mf);
 	this->currPBC = this->player;
@@ -313,10 +313,10 @@ Bool SSWR::AVIRead::AVIRHQMPDSForm::OpenVideo(Media::MediaFile *mf)
 				sptr = sbuff;
 				if (j < 9)
 				{
-					sptr = Text::StrConcat(sptr, (const UTF8Char*)"&");
+					sptr = Text::StrConcatC(sptr, UTF8STRC("&"));
 				}
 				sptr = Text::StrInt32(sptr, (Int32)j + 1);
-				sptr = Text::StrConcat(sptr, (const UTF8Char*)" ");
+				sptr = Text::StrConcatC(sptr, UTF8STRC(" "));
 				sptr = Text::StrConcat(sptr, this->currChapInfo->GetChapterName(j));
 				this->mnuChapters->AddItem(sbuff, (UInt16)(MNU_PB_CHAPTERS + j), UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 				j++;
@@ -594,7 +594,7 @@ void SSWR::AVIRead::AVIRHQMPDSForm::EventMenuClicked(UInt16 cmdId)
 					IO::ParsedObject *pobj = Net::URL::OpenObject(fname, (const UTF8Char*)"HQMP/1.0", this->core->GetSocketFactory(), this->ssl);
 					if (pobj == 0)
 					{
-						UI::MessageDialog::ShowDialog((const UTF8Char *)"Error in loading file", (const UTF8Char *)"HQMP", this);
+						UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in loading file", (const UTF8Char*)"HQMP", this);
 					}
 					else
 					{

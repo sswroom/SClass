@@ -190,7 +190,7 @@ void SSWR::AVIRead::AVIRImageGRForm::UpdateLayers()
 	j = this->grFilter->GetLayerCount();
 	while (i < j)
 	{
-		Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"Layer "), i + 1);
+		Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Layer ")), i + 1);
 		this->lbLayers->AddItem(sbuff, (void*)i);
 		i++;
 	}

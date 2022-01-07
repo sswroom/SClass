@@ -41,9 +41,9 @@ void Net::OSMGPXDownloader::ItemAdded(Net::RSSItem *item)
 	i = Text::StrLastIndexOf(sbuff, '/');
 	sptr = &sbuff[i + 1];
 	Text::StrConcat(gpxId, sptr);
-	sptr2 = Text::StrConcat(sbuff2, (const UTF8Char*)"http://www.openstreetmap.org/trace/");
+	sptr2 = Text::StrConcatC(sbuff2, UTF8STRC("http://www.openstreetmap.org/trace/"));
 	sptr2 = Text::StrConcat(sptr2, gpxId);
-	sptr2 = Text::StrConcat(sptr2, (const UTF8Char*)"/data");
+	sptr2 = Text::StrConcatC(sptr2, UTF8STRC("/data"));
 
 	sptr = Text::StrConcat(sbuff, this->storeDir);
 	sptr = item->author->ConcatTo(sptr);
@@ -52,9 +52,9 @@ void Net::OSMGPXDownloader::ItemAdded(Net::RSSItem *item)
 	{
 		IO::Path::CreateDirectory(sbuff);
 	}
-	sptr = Text::StrConcat(sptr, (const UTF8Char*)"\\");
+	*sptr++ = IO::Path::PATH_SEPERATOR;
 	sptr = Text::StrConcat(sptr, gpxId);
-	sptr = Text::StrConcat(sptr, (const UTF8Char*)".gpx");
+	sptr = Text::StrConcatC(sptr, UTF8STRC(".gpx"));
 	pt = IO::Path::GetPathType(sbuff);
 	if (pt == IO::Path::PathType::File)
 	{

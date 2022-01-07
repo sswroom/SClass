@@ -44,7 +44,7 @@ Map::SPDLayer::SPDLayer(const UTF8Char *layerName) : Map::IMapDrawLayer(layerNam
 	this->layerName = Text::StrCopyNew(fname);
 	NEW_CLASS(this->mut, Sync::Mutex());
 
-	Text::StrConcat(sptr, (const UTF8Char*)".spb");
+	Text::StrConcatC(sptr, UTF8STRC(".spb"));
 	NEW_CLASS(file, IO::FileStream(fname, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	NEW_CLASS(bstm, IO::BufferedInputStream(file, 65536));
 	if (!file->IsError())
@@ -68,7 +68,7 @@ Map::SPDLayer::SPDLayer(const UTF8Char *layerName) : Map::IMapDrawLayer(layerNam
 	DEL_CLASS(bstm);
 	DEL_CLASS(file);
 
-	Text::StrConcat(sptr, (const UTF8Char*)".spi");
+	Text::StrConcatC(sptr, UTF8STRC(".spi"));
 	NEW_CLASS(file, IO::FileStream(fname, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
 	if (!file->IsError())
 	{
@@ -82,7 +82,7 @@ Map::SPDLayer::SPDLayer(const UTF8Char *layerName) : Map::IMapDrawLayer(layerNam
 	missFile = false;
 	if (!IsError())
 	{
-		Text::StrConcat(sptr, (const UTF8Char*)".spd");
+		Text::StrConcatC(sptr, UTF8STRC(".spd"));
 		NEW_CLASS(file, IO::FileStream(fname, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
 		if (!file->IsError())
 		{
@@ -95,7 +95,7 @@ Map::SPDLayer::SPDLayer(const UTF8Char *layerName) : Map::IMapDrawLayer(layerNam
 		}
 		DEL_CLASS(file);
 
-		Text::StrConcat(sptr, (const UTF8Char*)".sps");
+		Text::StrConcatC(sptr, UTF8STRC(".sps"));
 		NEW_CLASS(file, IO::FileStream(fname, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
 		NEW_CLASS(bstm, IO::BufferedInputStream(file, 65536));
 		if (!file->IsError())
@@ -184,7 +184,7 @@ UOSInt Map::SPDLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, void **nameA
 		UTF8Char *sptr;
 		IO::FileStream *cis;
 		sptr = Text::StrConcat(fileName, this->layerName);
-		sptr = Text::StrConcat(sptr, (const UTF8Char*)".sps");
+		sptr = Text::StrConcatC(sptr, UTF8STRC(".sps"));
 		NEW_CLASS(cis, IO::FileStream(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		
 		while (k < this->nblks)
@@ -319,7 +319,7 @@ UOSInt Map::SPDLayer::GetObjectIds(Data::ArrayListInt64 *outArr, void **nameArr,
 		UTF8Char *sptr;
 		IO::FileStream *cis;
 		sptr = Text::StrConcat(fileName, this->layerName);
-		sptr = Text::StrConcat(sptr, (const UTF8Char*)".sps");
+		sptr = Text::StrConcatC(sptr, UTF8STRC(".sps"));
 		NEW_CLASS(cis, IO::FileStream(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		
 		while ((UOSInt)k < this->nblks)
@@ -434,7 +434,7 @@ UTF8Char *Map::SPDLayer::GetColumnName(UTF8Char *buff, UOSInt colIndex)
 {
 	if (colIndex == 0)
 	{
-		return Text::StrConcat(buff, (const UTF8Char*)"NAME");
+		return Text::StrConcatC(buff, UTF8STRC("NAME"));
 	}
 	else
 	{
@@ -541,7 +541,7 @@ void *Map::SPDLayer::BeginGetObject()
 	IO::FileStream *cip;
 //	this->mut->Lock();
 	sptr = Text::StrConcat(fileName, this->layerName);
-	sptr = Text::StrConcat(sptr, (const UTF8Char*)".spd");
+	sptr = Text::StrConcatC(sptr, UTF8STRC(".spd"));
 	NEW_CLASS(cip, IO::FileStream(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	return cip;
 }

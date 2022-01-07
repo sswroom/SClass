@@ -71,27 +71,27 @@ void __stdcall SSWR::AVIRead::AVIRUDPTestForm::OnSendClicked(void *userObj)
 	Text::StringBuilderUTF8 sb;
 	if (me->udp == 0)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char *)"You should start server first", (const UTF8Char *)"UDP Test", me);
+		UI::MessageDialog::ShowDialog((const UTF8Char*)"You should start server first", (const UTF8Char*)"UDP Test", me);
 		return;
 	}
 	me->txtDestHost->GetText(&sb);
 	if (!me->sockf->DNSResolveIP(sb.ToString(), &addr))
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char *)"Host is not valid", (const UTF8Char *)"UDP Test", me);
+		UI::MessageDialog::ShowDialog((const UTF8Char*)"Host is not valid", (const UTF8Char*)"UDP Test", me);
 		return;
 	}
 	sb.ClearStr();
 	me->txtDestPort->GetText(&sb);
 	if (!sb.ToUInt16(&port) || port <= 0 || port >= 65536)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char *)"Port is not valid", (const UTF8Char *)"UDP Test", me);
+		UI::MessageDialog::ShowDialog((const UTF8Char*)"Port is not valid", (const UTF8Char*)"UDP Test", me);
 		return;
 	}
 	sb.ClearStr();
 	me->txtDestCount->GetText(&sb);
 	if (!sb.ToUInt32(&cnt) || cnt <= 0 || cnt > 10000000)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char *)"Count is not valid", (const UTF8Char *)"UDP Test", me);
+		UI::MessageDialog::ShowDialog((const UTF8Char*)"Count is not valid", (const UTF8Char*)"UDP Test", me);
 		return;
 	}
 	UOSInt i = me->threadCnt;

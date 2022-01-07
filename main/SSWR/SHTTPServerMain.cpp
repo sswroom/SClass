@@ -25,10 +25,10 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	const UTF8Char *path;
 
 #if defined(DEBUGCON)
-	path = (const UTF8Char *)"/";
+	path = (const UTF8Char*)"/";
 	NEW_CLASS(console, IO::DebugWriter());
 #else
-	path = (const UTF8Char *)".";
+	path = (const UTF8Char*)".";
 	NEW_CLASS(console, IO::ConsoleWriter());
 #endif
 

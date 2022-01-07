@@ -67,7 +67,7 @@ UInt32 __stdcall Media::CUPSPrintDocument::PrintThread(void *userObj)
 	IO::Path::GetProcessFileName(fileName);
 	i = Text::StrLastIndexOf(fileName, IO::Path::PATH_SEPERATOR);
 	sptr = &fileName[i + 1];
-	Text::StrConcat(Text::StrInt64(Text::StrConcat(sptr, (const UTF8Char*)"CUPS_"), t), (const UTF8Char*)".tmp");
+	Text::StrConcatC(Text::StrInt64(Text::StrConcatC(sptr, UTF8STRC("CUPS_")), t), UTF8STRC(".tmp"));
 
 	if (me->po == PageOrientation::Landscape)
 	{

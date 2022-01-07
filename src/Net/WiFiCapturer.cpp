@@ -265,10 +265,10 @@ void Net::WiFiCapturer::StoreStatus()
 	IO::Path::GetProcessFileName(sbuff);
 	i = Text::StrLastIndexOf(sbuff, IO::Path::PATH_SEPERATOR);
 	sptr = &sbuff[i + 1];
-	sptr = Text::StrConcat(sptr, (const UTF8Char*)"wifi");
+	sptr = Text::StrConcatC(sptr, UTF8STRC("wifi"));
 	dt.SetCurrTime();
 	sptr = dt.ToString(sptr, "yyyyMMddHHmmss");
-	sptr = Text::StrConcat(sptr, (const UTF8Char*)".txt");
+	sptr = Text::StrConcatC(sptr, UTF8STRC(".txt"));
 
 	Sync::MutexUsage mutUsage(this->logMut);
 	if (this->wifiLog->StoreFile(sbuff))

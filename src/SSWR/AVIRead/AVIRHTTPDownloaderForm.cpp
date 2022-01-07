@@ -18,7 +18,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPDownloaderForm::OnRequestClicked(void *use
 	me->txtDownloadDir->GetText(&sb);
 	if (IO::Path::GetPathType(sb.ToString()) != IO::Path::PathType::Directory)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char *)"Please enter valid download path", (const UTF8Char *)"Request", me);
+		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter valid download path", (const UTF8Char*)"Request", me);
 		return;
 	}
 	SDEL_TEXT(me->downPath);
@@ -36,7 +36,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPDownloaderForm::OnRequestClicked(void *use
 	me->txtURL->GetText(&sb);
 	if (!sb.StartsWith((const UTF8Char*)"http://") && !sb.StartsWith((const UTF8Char*)"https://") )
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char *)"Please enter valid http URL", (const UTF8Char *)"Request", me);
+		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter valid http URL", (const UTF8Char*)"Request", me);
 		return;
 	}
 
@@ -91,7 +91,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPDownloaderForm::ProcessThread(void *user
 			i = Text::StrIndexOf(sptr, '?');
 			if (i == 0)
 			{
-				Text::StrConcat(sptr, (const UTF8Char*)"download.dat");
+				Text::StrConcatC(sptr, UTF8STRC("download.dat"));
 			}
 			else if (i != INVALID_INDEX)
 			{

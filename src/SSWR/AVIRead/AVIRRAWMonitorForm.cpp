@@ -410,15 +410,15 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnMDNSSelChg(void *userObj)
 		const UTF8Char *typeId = Net::DNSClient::TypeGetID(ans->recType);
 		if (typeId)
 		{
-			sptr = Text::StrConcat(sptr, (const UTF8Char*)" (");
+			sptr = Text::StrConcatC(sptr, UTF8STRC(" ("));
 			sptr = Text::StrConcat(sptr, typeId);
-			sptr = Text::StrConcat(sptr, (const UTF8Char*)")");
+			sptr = Text::StrConcatC(sptr, UTF8STRC(")"));
 		}
 		me->txtMDNSType->SetText(sbuff);
 		sptr = Text::StrUInt16(sbuff, ans->recClass & 0x7fff);
 		if (ans->recClass & 0x8000)
 		{
-			sptr = Text::StrConcat(sptr, (const UTF8Char*)", cache flush");
+			sptr = Text::StrConcatC(sptr, UTF8STRC(", cache flush"));
 		}
 		me->txtMDNSClass->SetText(sbuff);
 		Text::StrUInt32(sbuff, ans->ttl);
@@ -467,7 +467,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnDNSClientSelChg(void *userOb
 			sptr = Text::StrInt32(sptr, hourInfo->day);
 			*sptr++ = ' ';
 			sptr = Text::StrInt32(sptr, hourInfo->hour);
-			sptr = Text::StrConcat(sptr, (const UTF8Char*)":00");
+			sptr = Text::StrConcatC(sptr, UTF8STRC(":00"));
 			me->lvDNSClient->AddItem(sbuff, 0);
 			Text::StrUInt64(sbuff, hourInfo->reqCount);
 			me->lvDNSClient->SetSubItem(i, 1, sbuff);
@@ -894,7 +894,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(void *userObj)
 			{
 				if (mac->ipv6Addr.addrType == Net::AddrType::IPv6)
 				{
-					Net::SocketUtil::GetAddrName(Text::StrConcat(Net::SocketUtil::GetIPv4Name(sbuff, mac->ipv4Addr[0]), (const UTF8Char*)", "), &mac->ipv6Addr);
+					Net::SocketUtil::GetAddrName(Text::StrConcatC(Net::SocketUtil::GetIPv4Name(sbuff, mac->ipv4Addr[0]), UTF8STRC(", ")), &mac->ipv6Addr);
 					me->lvDevice->SetSubItem(i, 9, sbuff);
 				}
 				else
@@ -979,7 +979,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(void *userObj)
 						break;
 					if (k > 0)
 					{
-						sptr = Text::StrConcat(sptr, (const UTF8Char*)", ");
+						sptr = Text::StrConcatC(sptr, UTF8STRC(", "));
 					}
 					sptr = Net::SocketUtil::GetIPv4Name(sptr, dhcp->dns[k]);
 					k++;

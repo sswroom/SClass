@@ -172,7 +172,7 @@ IO::ParsedObject *Parser::FileParser::CUEParser::ParseFile(IO::IStreamData *fd, 
 					}
 					else
 					{
-						sptr = Text::StrInt32(Text::StrConcat(sptr, (const UTF8Char*)"Track "), (Int32)i);
+						sptr = Text::StrInt32(Text::StrConcatC(sptr, UTF8STRC("Track ")), (Int32)i);
 					}
 					chapters->AddChapter(stmTime[i], sbuff, artists[i]?artists[i]:artists[0]);
 

@@ -341,7 +341,7 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::WiFiDownloadFunc(Net::WebServ
 
 	Data::DateTime dt;
 	dt.SetCurrTime();
-	Text::StrConcat(dt.ToString(sbuff, "yyyyMMddHHmmss"), (const UTF8Char*)".txt");
+	Text::StrConcatC(dt.ToString(sbuff, "yyyyMMddHHmmss"), UTF8STRC(".txt"));
 	resp->AddDefHeaders(req);
 	resp->AddHeader((const UTF8Char*)"Cache-Control", (const UTF8Char*)"no-cache");
 	resp->AddContentType((const UTF8Char*)"text/plain");
@@ -367,7 +367,7 @@ void Net::WebServer::CapturerWebHandler::AppendWiFiTable(Text::StringBuilderUTF 
 	sb->Append(s);
 	s->Release();
 	sb->AppendC(UTF8STRC(">MAC</a></td><td>Vendor</td><td>SSID</td><td><a href="));
-	Text::StrConcat(sptr, (const UTF8Char*)"?sort=1");
+	Text::StrConcatC(sptr, UTF8STRC("?sort=1"));
 	s = Text::XML::ToNewAttrText(sbuff);
 	sb->Append(s);
 	s->Release();
@@ -437,7 +437,7 @@ void Net::WebServer::CapturerWebHandler::AppendBTTable(Text::StringBuilderUTF *s
 	sb->Append(s);
 	s->Release();
 	sb->AppendC(UTF8STRC(">MAC</a></td><td>Type</td><td>AddrType</td><td>Vendor</td><td>Name</td><td><a href="));
-	Text::StrConcat(sptr, (const UTF8Char*)"?sort=1");
+	Text::StrConcatC(sptr, UTF8STRC("?sort=1"));
 	s = Text::XML::ToNewAttrText(sbuff);
 	sb->Append(s);
 	s->Release();

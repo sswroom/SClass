@@ -72,19 +72,19 @@ void __stdcall SSWR::AVIRead::AVIRFileExForm::OnStartClicked(void *userObj)
 	me->txtStartOfst->GetText(&sb);
 	if (!sb.ToUInt64(&startOfst))
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char *)"Start Offset is not valid", (const UTF8Char *)"Error", me);
+		UI::MessageDialog::ShowDialog((const UTF8Char*)"Start Offset is not valid", (const UTF8Char*)"Error", me);
 		return;
 	}
 	sb.ClearStr();
 	me->txtEndOfst->GetText(&sb);
 	if (!sb.ToUInt64(&endOfst))
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char *)"End Offset is not valid", (const UTF8Char *)"Error", me);
+		UI::MessageDialog::ShowDialog((const UTF8Char*)"End Offset is not valid", (const UTF8Char*)"Error", me);
 		return;
 	}
 	if (startOfst >= endOfst)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char *)"Start Offset is out of range", (const UTF8Char *)"Error", me);
+		UI::MessageDialog::ShowDialog((const UTF8Char*)"Start Offset is out of range", (const UTF8Char*)"Error", me);
 		return;
 	}
 	sb.ClearStr();
@@ -93,14 +93,14 @@ void __stdcall SSWR::AVIRead::AVIRFileExForm::OnStartClicked(void *userObj)
 	if (srcFS->IsError())
 	{
 		DEL_CLASS(srcFS);
-		UI::MessageDialog::ShowDialog((const UTF8Char *)"Error in opening source file", (const UTF8Char *)"Error", me);
+		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in opening source file", (const UTF8Char*)"Error", me);
 		return;
 	}
 	fileSize = srcFS->GetLength();
 	if (endOfst > fileSize)
 	{
 		DEL_CLASS(srcFS);
-		UI::MessageDialog::ShowDialog((const UTF8Char *)"End Offset is out of range", (const UTF8Char *)"Error", me);
+		UI::MessageDialog::ShowDialog((const UTF8Char*)"End Offset is out of range", (const UTF8Char*)"Error", me);
 		return;
 	}
 	sb.ClearStr();
@@ -110,7 +110,7 @@ void __stdcall SSWR::AVIRead::AVIRFileExForm::OnStartClicked(void *userObj)
 	{
 		DEL_CLASS(destFS);
 		DEL_CLASS(srcFS);
-		UI::MessageDialog::ShowDialog((const UTF8Char *)"Error in opening dest file", (const UTF8Char *)"Error", me);
+		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in opening dest file", (const UTF8Char*)"Error", me);
 		return;
 	}
 	srcFS->SeekFromBeginning(startOfst);

@@ -477,7 +477,7 @@ UTF8Char *UI::GUIListBox::GetItemText(UTF8Char *buff, UOSInt index)
 	ItemData *item = this->items->GetItem(index);
 	if (item == 0)
 		return 0;
-	return Text::StrConcat(buff, item->txt->v);
+	return Text::StrConcatC(buff, item->txt->v, item->txt->leng);
 }
 
 WChar *UI::GUIListBox::GetItemText(WChar *buff, UOSInt index)

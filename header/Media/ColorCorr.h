@@ -28,9 +28,9 @@ namespace Media
 		Int32 uncorrTab32Gamma;
 
 	public:
-		ColorCorr(WChar *name);
+		ColorCorr(UTF8Char *name);
 		~ColorCorr();
-		Int32 Save(WChar *name);
+		Int32 Save(UTF8Char *name);
 
 		Double GetRAdd();
 		Double GetRMul();
@@ -49,8 +49,8 @@ namespace Media
 		void SetGVals(Double gadd, Double gmul, Double gpow);
 		void SetBVals(Double badd, Double bmul, Double bpow);
 		void SetGammas(Int32 rgamma, Int32 ggamma, Int32 bgamma);
-		void CorrImage32(UInt8 *src, Int32 sbpl, UInt32 sgamma, UInt8 *dest, Int32 dbpl, Int32 width, Int32 height);
-		void UncorrImage32(UInt8 *src, Int32 sbpl, UInt32 sgamma, UInt8 *dest, Int32 dbpl, Int32 width, Int32 height);
+		void CorrImage32(const UInt8 *src, OSInt sbpl, UInt32 sgamma, UInt8 *dest, OSInt dbpl, UInt32 width, UInt32 height);
+		void UncorrImage32(const UInt8 *src, OSInt sbpl, UInt32 sgamma, UInt8 *dest, OSInt dbpl, UInt32 width, UInt32 height);
 	};
-};
+}
 #endif

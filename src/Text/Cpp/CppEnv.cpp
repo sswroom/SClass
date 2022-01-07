@@ -23,42 +23,42 @@ Bool Text::Cpp::CppEnv::InitVSEnv(Text::VSProject::VisualStudioVersion vsv)
 	switch (vsv)
 	{
 	case Text::VSProject::VSV_VS71:
-		Text::StrConcat(sptr, (const UTF8Char*)"\\Microsoft\\VisualStudio\\7.1\\VCComponents.dat");
+		Text::StrConcatC(sptr, UTF8STRC("\\Microsoft\\VisualStudio\\7.1\\VCComponents.dat"));
 		cfg = IO::IniFile::Parse(sbuff, 0);
 		break;
 	case Text::VSProject::VSV_VS8:
-		Text::StrConcat(sptr, (const UTF8Char*)"\\Microsoft\\VisualStudio\\8.0\\VCComponents.dat");
+		Text::StrConcatC(sptr, UTF8STRC("\\Microsoft\\VisualStudio\\8.0\\VCComponents.dat"));
 		cfg= IO::IniFile::Parse(sbuff, 0);
 		break;
 	case Text::VSProject::VSV_VS9:
-		Text::StrConcat(sptr, (const UTF8Char*)"\\Microsoft\\VisualStudio\\9.0\\VCComponents.dat");
+		Text::StrConcatC(sptr, UTF8STRC("\\Microsoft\\VisualStudio\\9.0\\VCComponents.dat"));
 		if ((cfg = IO::IniFile::Parse(sbuff, 0)) == 0)
 		{
-			Text::StrConcat(sptr, (const UTF8Char*)"\\Microsoft\\VCExpress\\9.0\\VCComponents.dat");
+			Text::StrConcatC(sptr, UTF8STRC("\\Microsoft\\VCExpress\\9.0\\VCComponents.dat"));
 			cfg = IO::IniFile::Parse(sbuff, 0);
 		}
 		break;
 	case Text::VSProject::VSV_VS10:
-		Text::StrConcat(sptr, (const UTF8Char*)"\\Microsoft\\VisualStudio\\10.0\\VCComponents.dat");
+		Text::StrConcatC(sptr, UTF8STRC("\\Microsoft\\VisualStudio\\10.0\\VCComponents.dat"));
 		if ((cfg = IO::IniFile::Parse(sbuff, 0)) == 0)
 		{
-			Text::StrConcat(sptr, (const UTF8Char*)"\\Microsoft\\VCExpress\\10.0\\VCComponents.dat");
+			Text::StrConcatC(sptr, UTF8STRC("\\Microsoft\\VCExpress\\10.0\\VCComponents.dat"));
 			cfg = IO::IniFile::Parse(sbuff, 0);
 		}
 		break;
 	case Text::VSProject::VSV_VS11:
-		Text::StrConcat(sptr, (const UTF8Char*)"\\Microsoft\\VisualStudio\\11.0\\VCComponents.dat");
+		Text::StrConcatC(sptr, UTF8STRC("\\Microsoft\\VisualStudio\\11.0\\VCComponents.dat"));
 		if ((cfg = IO::IniFile::Parse(sbuff, 0)) == 0)
 		{
-			Text::StrConcat(sptr, (const UTF8Char*)"\\Microsoft\\VCExpress\\11.0\\VCComponents.dat");
+			Text::StrConcatC(sptr, UTF8STRC("\\Microsoft\\VCExpress\\11.0\\VCComponents.dat"));
 			cfg = IO::IniFile::Parse(sbuff, 0);
 		}
 		break;
 	case Text::VSProject::VSV_VS12:
-		Text::StrConcat(sptr, (const UTF8Char*)"\\Microsoft\\VisualStudio\\12.0\\VCComponents.dat");
+		Text::StrConcatC(sptr, UTF8STRC("\\Microsoft\\VisualStudio\\12.0\\VCComponents.dat"));
 		if ((cfg = IO::IniFile::Parse(sbuff, 0)) == 0)
 		{
-			Text::StrConcat(sptr, (const UTF8Char*)"\\Microsoft\\VCExpress\\12.0\\VCComponents.dat");
+			Text::StrConcatC(sptr, UTF8STRC("\\Microsoft\\VCExpress\\12.0\\VCComponents.dat"));
 			cfg = IO::IniFile::Parse(sbuff, 0);
 		}
 		break;
@@ -306,42 +306,42 @@ Text::Cpp::CppEnv *Text::Cpp::CppEnv::LoadVSEnv(Text::VSProject::VisualStudioVer
 	switch (vsv)
 	{
 	case Text::VSProject::VSV_VS71:
-		Text::StrConcat(sptr, (const UTF8Char*)"\\Microsoft\\VisualStudio\\7.1\\VCComponents.dat");
+		Text::StrConcatC(sptr, UTF8STRC("\\Microsoft\\VisualStudio\\7.1\\VCComponents.dat"));
 		cfg = IO::IniFile::Parse(sbuff, 0);
 		break;
 	case Text::VSProject::VSV_VS8:
-		Text::StrConcat(sptr, (const UTF8Char*)"\\Microsoft\\VisualStudio\\8.0\\VCComponents.dat");
+		Text::StrConcatC(sptr, UTF8STRC("\\Microsoft\\VisualStudio\\8.0\\VCComponents.dat"));
 		cfg= IO::IniFile::Parse(sbuff, 0);
 		break;
 	case Text::VSProject::VSV_VS9:
-		Text::StrConcat(sptr, (const UTF8Char*)"\\Microsoft\\VisualStudio\\9.0\\VCComponents.dat");
+		Text::StrConcatC(sptr, UTF8STRC("\\Microsoft\\VisualStudio\\9.0\\VCComponents.dat"));
 		if ((cfg = IO::IniFile::Parse(sbuff, 0)) == 0)
 		{
-			Text::StrConcat(sptr, (const UTF8Char*)"\\Microsoft\\VCExpress\\9.0\\VCComponents.dat");
+			Text::StrConcatC(sptr, UTF8STRC("\\Microsoft\\VCExpress\\9.0\\VCComponents.dat"));
 			cfg = IO::IniFile::Parse(sbuff, 0);
 		}
 		break;
 	case Text::VSProject::VSV_VS10:
-		Text::StrConcat(sptr, (const UTF8Char*)"\\Microsoft\\VisualStudio\\10.0\\VCComponents.dat");
+		Text::StrConcatC(sptr, UTF8STRC("\\Microsoft\\VisualStudio\\10.0\\VCComponents.dat"));
 		if ((cfg = IO::IniFile::Parse(sbuff, 0)) == 0)
 		{
-			Text::StrConcat(sptr, (const UTF8Char*)"\\Microsoft\\VCExpress\\10.0\\VCComponents.dat");
+			Text::StrConcatC(sptr, UTF8STRC("\\Microsoft\\VCExpress\\10.0\\VCComponents.dat"));
 			cfg = IO::IniFile::Parse(sbuff, 0);
 		}
 		break;
 	case Text::VSProject::VSV_VS11:
-		Text::StrConcat(sptr, (const UTF8Char*)"\\Microsoft\\VisualStudio\\11.0\\VCComponents.dat");
+		Text::StrConcatC(sptr, UTF8STRC("\\Microsoft\\VisualStudio\\11.0\\VCComponents.dat"));
 		if ((cfg = IO::IniFile::Parse(sbuff, 0)) == 0)
 		{
-			Text::StrConcat(sptr, (const UTF8Char*)"\\Microsoft\\VCExpress\\11.0\\VCComponents.dat");
+			Text::StrConcatC(sptr, UTF8STRC("\\Microsoft\\VCExpress\\11.0\\VCComponents.dat"));
 			cfg = IO::IniFile::Parse(sbuff, 0);
 		}
 		break;
 	case Text::VSProject::VSV_VS12:
-		Text::StrConcat(sptr, (const UTF8Char*)"\\Microsoft\\VisualStudio\\12.0\\VCComponents.dat");
+		Text::StrConcatC(sptr, UTF8STRC("\\Microsoft\\VisualStudio\\12.0\\VCComponents.dat"));
 		if ((cfg = IO::IniFile::Parse(sbuff, 0)) == 0)
 		{
-			Text::StrConcat(sptr, (const UTF8Char*)"\\Microsoft\\VCExpress\\12.0\\VCComponents.dat");
+			Text::StrConcatC(sptr, UTF8STRC("\\Microsoft\\VCExpress\\12.0\\VCComponents.dat"));
 			cfg = IO::IniFile::Parse(sbuff, 0);
 		}
 		break;
@@ -501,17 +501,17 @@ UTF8Char *Text::Cpp::CppEnv::GetVCInstallDir(UTF8Char *sbuff, Text::VSProject::V
 	switch (vsv)
 	{
 	case Text::VSProject::VSV_VS71:
-		return Text::StrConcat(sptr, L"\\Microsoft Visual Studio .NET 2003\\VC7\\");
+		return Text::StrConcatC(sptr, UTF8STRC("\\Microsoft Visual Studio .NET 2003\\VC7\\"));
 	case Text::VSProject::VSV_VS8:
-		return Text::StrConcat(sptr, L"\\Microsoft Visual Studio 8\\VC\\");
+		return Text::StrConcatC(sptr, UTF8STRC("\\Microsoft Visual Studio 8\\VC\\"));
 	case Text::VSProject::VSV_VS9:
-		return Text::StrConcat(sptr, L"\\Microsoft Visual Studio 9.0\\VC\\");
+		return Text::StrConcatC(sptr, UTF8STRC("\\Microsoft Visual Studio 9.0\\VC\\"));
 	case Text::VSProject::VSV_VS10:
-		return Text::StrConcat(sptr, L"\\Microsoft Visual Studio 10.0\\VC\\");
+		return Text::StrConcatC(sptr, UTF8STRC("\\Microsoft Visual Studio 10.0\\VC\\"));
 	case Text::VSProject::VSV_VS11:
-		return Text::StrConcat(sptr, L"\\Microsoft Visual Studio 11.0\\VC\\");
+		return Text::StrConcatC(sptr, UTF8STRC("\\Microsoft Visual Studio 11.0\\VC\\"));
 	case Text::VSProject::VSV_VS12:
-		return Text::StrConcat(sptr, L"\\Microsoft Visual Studio 12.0\\VC\\");
+		return Text::StrConcatC(sptr, UTF8STRC("\\Microsoft Visual Studio 12.0\\VC\\"));
 	default:
 		return 0;
 	}*/
@@ -542,7 +542,7 @@ Bool Text::Cpp::CppEnv::IsCompilerExist(Text::VSProject::VisualStudioVersion vsv
 	sptr = GetVCInstallDir(sbuff, vsv);
 	if (sptr == 0)
 		return false;
-	Text::StrConcat(sptr, (const UTF8Char*)"bin\\ml.exe");
+	Text::StrConcatC(sptr, UTF8STRC("bin\\ml.exe"));
 	return IO::Path::GetPathType(sbuff) == IO::Path::PathType::File;
 }
 
@@ -563,31 +563,31 @@ Text::Cpp::CppEnv::CompilerType Text::Cpp::CppEnv::GetSystemCompiler(WChar *incl
 {
 	WChar *sptr;
 	sptr = IO::Path::GetSystemProgramPath(includePath);
-	Text::StrConcat(sptr, L"\\Microsoft Visual Studio 10.0\\VC\\bin\\ml.exe");
+	Text::StrConcatC(sptr, UTF8STRC("\\Microsoft Visual Studio 10.0\\VC\\bin\\ml.exe"));
 	if (IO::Path::GetPathType(includePath) == IO::Path::PathType::File)
 	{
-		Text::StrConcat(sptr, L"\\Microsoft Visual Studio 10.0\\VC\\include");
+		Text::StrConcatC(sptr, UTF8STRC("\\Microsoft Visual Studio 10.0\\VC\\include"));
 		return Text::Cpp::CppEnv::CT_VS10;
 	}
 
-	Text::StrConcat(sptr, L"\\Microsoft Visual Studio 9.0\\VC\\bin\\ml.exe");
+	Text::StrConcatC(sptr, UTF8STRC("\\Microsoft Visual Studio 9.0\\VC\\bin\\ml.exe"));
 	if (IO::Path::GetPathType(includePath) == IO::Path::PathType::File)
 	{
-		Text::StrConcat(sptr, L"\\Microsoft Visual Studio 9.0\\VC\\include");
+		Text::StrConcatC(sptr, UTF8STRC("\\Microsoft Visual Studio 9.0\\VC\\include"));
 		return Text::Cpp::CppEnv::CT_VS9;
 	}
 
-	Text::StrConcat(sptr, L"\\Microsoft Visual Studio 8\\VC\\bin\\ml.exe");
+	Text::StrConcatC(sptr, UTF8STRC("\\Microsoft Visual Studio 8\\VC\\bin\\ml.exe"));
 	if (IO::Path::GetPathType(includePath) == IO::Path::PathType::File)
 	{
-		Text::StrConcat(sptr, L"\\Microsoft Visual Studio 8\\VC\\include");
+		Text::StrConcatC(sptr, UTF8STRC("\\Microsoft Visual Studio 8\\VC\\include"));
 		return Text::Cpp::CppEnv::CT_VS8;
 	}
 
-	Text::StrConcat(sptr, L"\\Microsoft Visual Studio .NET 2003\\VC7\\bin\\ml.exe");
+	Text::StrConcatC(sptr, UTF8STRC("\\Microsoft Visual Studio .NET 2003\\VC7\\bin\\ml.exe"));
 	if (IO::Path::GetPathType(includePath) == IO::Path::PathType::File)
 	{
-		Text::StrConcat(sptr, L"\\Microsoft Visual Studio .NET 2003\\VC7\\include");
+		Text::StrConcatC(sptr, UTF8STRC("\\Microsoft Visual Studio .NET 2003\\VC7\\include"));
 		return Text::Cpp::CppEnv::CT_VS71;
 	}
 	*includePath = 0;

@@ -14,7 +14,7 @@ void __stdcall SSWR::AVIRead::AVIRGISImageForm::OnOKClick(void *userObj)
 	}
 	else
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char *)"Select an image first", (const UTF8Char *)"Select Image", me);
+		UI::MessageDialog::ShowDialog((const UTF8Char*)"Select an image first", (const UTF8Char*)"Select Image", me);
 	}
 }
 

@@ -166,9 +166,9 @@ Net::WebServer::IWebSession *Net::WebServer::MemoryWebSessionManager::CreateSess
 	if (sess)
 		return sess;
 	Int64 sessId = this->GenSessId(req);
-	sptr = Text::StrConcat(sbuff, (const UTF8Char*)"WebSessId=");
+	sptr = Text::StrConcatC(sbuff, UTF8STRC("WebSessId="));
 	sptr = Text::StrInt64(sptr, sessId);
-	sptr = Text::StrConcat(sptr, (const UTF8Char*)"; Path=");
+	sptr = Text::StrConcatC(sptr, UTF8STRC("; Path="));
 	sptr = Text::StrConcat(sptr, this->path);
 	resp->AddHeader((const UTF8Char*)"Set-Cookie", sbuff);
 	UOSInt i;
@@ -208,10 +208,10 @@ void Net::WebServer::MemoryWebSessionManager::DeleteSession(Net::WebServer::IWeb
 			DEL_CLASS(sess);
 		}
 
-		sptr = Text::StrConcat(sbuff, (const UTF8Char*)"WebSessId=");
-		sptr = Text::StrConcat(sptr, (const UTF8Char*)"; Path=");
+		sptr = Text::StrConcatC(sbuff, UTF8STRC("WebSessId="));
+		sptr = Text::StrConcatC(sptr, UTF8STRC("; Path="));
 		sptr = Text::StrConcat(sptr, this->path);
-		sptr = Text::StrConcat(sptr, (const UTF8Char*)"; Expires=");
+		sptr = Text::StrConcatC(sptr, UTF8STRC("; Expires="));
 		Data::DateTime dt;
 		dt.SetCurrTimeUTC();
 		dt.AddMonth(-12);

@@ -51,14 +51,14 @@ void __stdcall SSWR::AVIRead::AVIRARPPingForm::OnPingClicked(void *userObj)
 		me->txtTarget->GetText(&sb);
 		if (!me->sockf->DNSResolveIP(sb.ToString(), &addr))
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char *)"Error, target name is not valid", (const UTF8Char *)"Error", me);
+			UI::MessageDialog::ShowDialog((const UTF8Char*)"Error, target name is not valid", (const UTF8Char*)"Error", me);
 			return;
 		}
 		SSWR::AVIRead::AVIRARPPingForm::AdapterInfo *adapter;
 		adapter = (SSWR::AVIRead::AVIRARPPingForm::AdapterInfo*)me->cboAdapter->GetSelectedItem();
 		if (adapter == 0)
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char *)"Error, no adapter is selected", (const UTF8Char *)"Error", me);
+			UI::MessageDialog::ShowDialog((const UTF8Char*)"Error, no adapter is selected", (const UTF8Char*)"Error", me);
 			return;
 		}
 		NEW_CLASS(me->arpHdlr, Net::ARPHandler(me->core->GetSocketFactory(), adapter->ifName, adapter->hwAddr, adapter->ipAddr, OnARPHandler, me, 1));

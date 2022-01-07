@@ -751,7 +751,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 					UOSInt fileId;
 					req->ParseHTTPForm();
 					fileId = 0;
-					while ((uplfile = req->GetHTTPFormFile((const UTF8Char *)"uploadfile", fileId, (UTF8Char*)buff, sizeof(buff), &uplSize)) != 0)
+					while ((uplfile = req->GetHTTPFormFile((const UTF8Char*)"uploadfile", fileId, (UTF8Char*)buff, sizeof(buff), &uplSize)) != 0)
 					{
 						Text::StringBuilderUTF8 sbTmp;
 						sbTmp.AppendC(sb.ToString(), sb.GetLength());
@@ -879,8 +879,8 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 					}
 				}
 
-				sptr2 = Text::StrConcat(sbuff, sb.ToString());
-				Text::StrConcat(sptr2, IO::Path::ALL_FILES);
+				sptr2 = Text::StrConcatC(sbuff, sb.ToString(), sb.GetLength());
+				Text::StrConcatC(sptr2, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
 				IO::Path::FindFileSession *sess = IO::Path::FindFile(sbuff);
 				if (sess)
 				{
@@ -1159,7 +1159,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 				stat->updated = true;
 				Text::StrConcat(sbuff, sptr);
 				i = Text::StrLastIndexOf(sbuff, IO::Path::PATH_SEPERATOR);
-				Text::StrConcat(&sbuff[i + 1], (const UTF8Char*)".counts");
+				Text::StrConcatC(&sbuff[i + 1], UTF8STRC(".counts"));
 				stat->statFileName = Text::StrCopyNew(sbuff);
 				this->statMap->Put(stat->reqPath, stat);
 				this->StatLoad(stat);
@@ -1254,7 +1254,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 			resp->SetStatusCode(Net::WebStatus::SC_PARTIAL_CONTENT);
 			UTF8Char u8buff[128];
 			UTF8Char *u8ptr;
-			u8ptr = Text::StrConcat(u8buff, (const UTF8Char*)"bytes ");
+			u8ptr = Text::StrConcatC(u8buff, UTF8STRC("bytes "));
 			u8ptr = Text::StrInt64(u8ptr, start);
 			*u8ptr++ = '-';
 			u8ptr = Text::StrUInt64(u8ptr, (UInt64)start + sizeLeft - 1);
@@ -1388,7 +1388,7 @@ void Net::WebServer::HTTPDirectoryHandler::ExpandPackageFiles(Parser::ParserList
 	{
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 	}
-	Text::StrConcat(sptr, (const UTF8Char*)"*.spk");
+	Text::StrConcatC(sptr, UTF8STRC("*.spk"));
 	sess = IO::Path::FindFile(sbuff);
 	if (sess)
 	{

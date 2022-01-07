@@ -22,7 +22,7 @@ void UI::GUIWindowDragData::LoadData()
 			MemCopyNO(newFmt, &fmt, sizeof(fmt));
 			if (Win32::Clipboard::GetFormatName(fmt.cfFormat, u8buff, 512) == 0)
 			{
-				Text::StrInt32(Text::StrConcat(u8buff, (const UTF8Char*)"Format "), fmt.cfFormat);
+				Text::StrInt32(Text::StrConcatC(u8buff, UTF8STRC("Format ")), fmt.cfFormat);
 			}
 			this->dataMap->Put(u8buff, newFmt);
 		}

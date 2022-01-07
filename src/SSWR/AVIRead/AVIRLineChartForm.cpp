@@ -15,13 +15,13 @@ void __stdcall SSWR::AVIRead::AVIRLineChartForm::OnPlotClicked(void *userObj)
 	Data::DateTime dt;
 	if (me->yCols->GetCount() == 0)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char *)"Please add a data column first", (const UTF8Char *)"Error", me);
+		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please add a data column first", (const UTF8Char*)"Error", me);
 		return;
 	}
 	xCol = (OSInt)me->cboXAxis->GetSelectedItem();
 	if (xCol < 0)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char *)"Current Version does not support integer X-Axis", (const UTF8Char *)"Error", me);
+		UI::MessageDialog::ShowDialog((const UTF8Char*)"Current Version does not support integer X-Axis", (const UTF8Char*)"Error", me);
 		return;
 	}
 
@@ -30,7 +30,7 @@ void __stdcall SSWR::AVIRead::AVIRLineChartForm::OnPlotClicked(void *userObj)
 	DB::DBReader *reader = me->db->GetTableData(me->tableName, 0, 0, 0, 0, 0);
 	if (reader == 0)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char *)"Error in getting database data", (const UTF8Char *)"Error", me);
+		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in getting database data", (const UTF8Char*)"Error", me);
 		return;
 	}
 	colCount = me->yCols->GetCount() + 1;
@@ -245,7 +245,7 @@ void __stdcall SSWR::AVIRead::AVIRLineChartForm::OnYAxisClicked(void *userObj)
 	UOSInt col;
 	if (i == INVALID_INDEX)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char *)"Please select a column first", (const UTF8Char *)"Error", me);
+		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please select a column first", (const UTF8Char*)"Error", me);
 		return;
 	}
 	col = (UOSInt)me->cboYAxis->GetItem(i);

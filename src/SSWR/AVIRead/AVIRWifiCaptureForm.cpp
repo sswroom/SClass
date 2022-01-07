@@ -34,7 +34,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(void *userObj)
 	{
 		if (power.hasBattery)
 		{
-			Text::StrConcat(Text::StrUInt32(sbuff, power.batteryPercent), (const UTF8Char*)"%");
+			Text::StrConcatC(Text::StrUInt32(sbuff, power.batteryPercent), UTF8STRC("%"));
 			me->txtBattery->SetText(sbuff);
 			if (power.batteryPercent <= 15 && me->captureWriter)
 			{
@@ -494,17 +494,17 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnCaptureClicked(void *userOb
 	{
 		if (me->motion == 0)
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char *)"Accelerator not found", (const UTF8Char *)"Error", me);
+			UI::MessageDialog::ShowDialog((const UTF8Char*)"Accelerator not found", (const UTF8Char*)"Error", me);
 			return;
 		}
 		else if (me->locSvc == 0)
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char *)"GPS not connected", (const UTF8Char *)"Error", me);
+			UI::MessageDialog::ShowDialog((const UTF8Char*)"GPS not connected", (const UTF8Char*)"Error", me);
 			return;
 		}
 		else if (me->wlanInterf == 0)
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char *)"Wifi adapter not found", (const UTF8Char *)"Error", me);
+			UI::MessageDialog::ShowDialog((const UTF8Char*)"Wifi adapter not found", (const UTF8Char*)"Error", me);
 			return;
 		}
 
@@ -518,7 +518,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnCaptureClicked(void *userOb
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 		dt.SetCurrTimeUTC();
 		sptr = dt.ToString(sptr, "yyyyMMddHHmmss");
-		sptr = Text::StrConcat(sptr, (const UTF8Char*)".txt");
+		sptr = Text::StrConcatC(sptr, UTF8STRC(".txt"));
 		Sync::MutexUsage mutUsage(me->captureMut);
 		NEW_CLASS(me->captureFS, IO::FileStream(sbuff, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		if (me->captureFS->IsError())
@@ -568,7 +568,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnLogWifiSaveClicked(void *us
 	sptr = &sbuff[i + 1];
 	dt.SetCurrTime();
 	sptr = dt.ToString(sptr, "yyyyMMddHHmmss");
-	sptr = Text::StrConcat(sptr, (const UTF8Char*)".txt");
+	sptr = Text::StrConcatC(sptr, UTF8STRC(".txt"));
 	IO::FileStream *fs;
 	Text::UTF8Writer *writer;
 	Bool succ = false;
@@ -673,7 +673,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnLogWifiSaveFClicked(void *u
 	sptr = &sbuff[i + 1];
 	dt.SetCurrTime();
 	sptr = dt.ToString(sptr, "yyyyMMddHHmmss");
-	sptr = Text::StrConcat(sptr, (const UTF8Char*)".txt");
+	sptr = Text::StrConcatC(sptr, UTF8STRC(".txt"));
 	IO::FileStream *fs;
 	Text::UTF8Writer *writer;
 	Bool succ = false;

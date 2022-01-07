@@ -461,7 +461,7 @@ SSWR::AVIRead::AVIRPackageForm::AVIRPackageForm(UI::GUIClientControl *parent, UI
 {
 	this->SetFont(0, 8.25, false);
 	UTF8Char sbuff[512];
-	packFile->GetSourceNameObj()->ConcatTo(Text::StrConcat(sbuff, (const UTF8Char*)"Package Form - "));
+	packFile->GetSourceNameObj()->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("Package Form - ")));
 	this->SetText(sbuff);
 
 	this->core = core;
@@ -689,7 +689,7 @@ void SSWR::AVIRead::AVIRPackageForm::EventMenuClicked(UInt16 cmdId)
 					{
 						if (!packFile->CopyTo(selIndices.GetItem(j), dlg->GetFolder(), false))
 						{
-							UI::MessageDialog::ShowDialog((const UTF8Char *)"Error in copying", (const UTF8Char *)"Copy To", this);
+							UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in copying", (const UTF8Char*)"Copy To", this);
 							break;
 						}
 						j++;
@@ -712,7 +712,7 @@ void SSWR::AVIRead::AVIRPackageForm::EventMenuClicked(UInt16 cmdId)
 				{
 					if (!packFile->CopyTo(i, dlg->GetFolder(), false))
 					{
-						UI::MessageDialog::ShowDialog((const UTF8Char *)"Error in copying", (const UTF8Char *)"Copy To", this);
+						UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in copying", (const UTF8Char*)"Copy To", this);
 						break;
 					}
 					i++;

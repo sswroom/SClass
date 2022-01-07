@@ -1430,7 +1430,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, Text::Cpp::CppParse
 					{
 						parseStatus = false;
 						sptr[-1] = 0;
-						Text::StrConcat(Text::StrConcat(Text::StrConcat(sbuff, (const UTF8Char*)"Include file "), wordStart), (const UTF8Char*)" not found");
+						Text::StrConcatC(Text::StrConcat(Text::StrConcatC(sbuff, UTF8STRC("Include file ")), wordStart), UTF8STRC(" not found"));
 						sptr[-1] = c;
 						this->LogError(status, sbuff, errMsgs);
 						nextLine = true;
@@ -1472,7 +1472,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, Text::Cpp::CppParse
 					if (u8buff[0] == 0)
 					{
 						parseStatus = false;
-						Text::StrConcat(Text::StrConcat(Text::StrConcat(sbuff, (const UTF8Char*)"Include file "), wordStart), (const UTF8Char*)" not found");
+						Text::StrConcatC(Text::StrConcat(Text::StrConcatC(sbuff, UTF8STRC("Include file ")), wordStart), UTF8STRC(" not found"));
 						this->LogError(status, sbuff, errMsgs);
 					}
 					else
@@ -2550,7 +2550,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, Text::Cpp::CppParse
 					if (sbuff[0] == 0)
 					{
 						parseStatus = false;
-						Text::StrConcat(Text::StrConcat(Text::StrConcat(sbuff, L"Include file "), wordStart), L" not found");
+						Text::StrConcatC(Text::StrConcat(Text::StrConcatC(sbuff, UTF8STRC("Include file ")), wordStart), UTF8STRC(" not found"));
 						errMsgs->Add(Text::StrCopyNew(sbuff));
 					}
 					else
@@ -2579,7 +2579,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, Text::Cpp::CppParse
 					if (sbuff[0] == 0)
 					{
 						parseStatus = false;
-						Text::StrConcat(Text::StrConcat(Text::StrConcat(sbuff, L"Include file "), wordStart), L" not found");
+						Text::StrConcatC(Text::StrConcat(Text::StrConcatC(sbuff, UTF8STRC("Include file ")), wordStart), UTF8STRC(" not found"));
 						errMsgs->Add(Text::StrCopyNew(sbuff));
 					}
 					else
@@ -2617,7 +2617,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, Text::Cpp::CppParse
 
 			if (!parseStatus)
 			{
-				Text::StrConcat(Text::StrConcat(Text::StrInt32(Text::StrConcat(lineBuff, L"Error in parsing line "), status->lineNum), L" in "), status->fileName);
+				Text::StrConcat(Text::StrConcatC(Text::StrInt32(Text::StrConcatC(lineBuff, UTF8STRC("Error in parsing line ")), status->lineNum), UTF8STRC(" in ")), status->fileName);
 				errMsgs->Add(Text::StrCopyNew(lineBuff));
 				break;
 			}
@@ -2636,7 +2636,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, Text::Cpp::CppParse
 		
 		if (status->parseMode != PM_NORMAL && status->parseMode != PM_COMMENTPARA && status->parseMode != PM_SHARPEND)
 		{
-			Text::StrConcat(Text::StrConcat(Text::StrInt32(Text::StrConcat(lineBuff, L"Error in parsing line "), status->lineNum), L" in "), status->fileName);
+			Text::StrConcat(Text::StrConcatC(Text::StrInt32(Text::StrConcatC(lineBuff, UTF8STRC("Error in parsing line ")), status->lineNum), UTF8STRC(" in ")), status->fileName);
 			errMsgs->Add(Text::StrCopyNew(lineBuff));
 			return false;
 		}
@@ -2678,17 +2678,17 @@ Bool Text::Cpp::CppCodeParser::ParseFile(const UTF8Char *fileName, Data::ArrayLi
 		{
 			i = fileStatus->fileName->LastIndexOf(IO::Path::PATH_SEPERATOR);
 			sptr = Text::StrConcat(lineBuff, &fileStatus->fileName->v[i + 1]);
-			sptr = Text::StrConcat(sptr, (const UTF8Char*)" (");
+			sptr = Text::StrConcatC(sptr, UTF8STRC(" ("));
 			sptr = Text::StrOSInt(sptr, fileStatus->lineNum);
-			sptr = Text::StrConcat(sptr, (const UTF8Char*)"): ");
+			sptr = Text::StrConcatC(sptr, UTF8STRC("): "));
 		}
 		else
 		{
 			sptr = lineBuff;
 		}
-		sptr = Text::StrConcat(sptr, (const UTF8Char*)"Cannot open \"");
+		sptr = Text::StrConcatC(sptr, UTF8STRC("Cannot open \""));
 		sptr = Text::StrConcat(sptr, fileName);
-		sptr = Text::StrConcat(sptr, (const UTF8Char*)"\"");
+		sptr = Text::StrConcatC(sptr, UTF8STRC("\""));
 		errMsgs->Add(Text::StrCopyNew(lineBuff));
 		MemFree(lineBuff);
 		DEL_CLASS(fs);
@@ -2712,7 +2712,7 @@ Bool Text::Cpp::CppCodeParser::ParseFile(const UTF8Char *fileName, Data::ArrayLi
 	if (!status->EndParseFile(fileName))
 	{
 		succ = false;
-		Text::StrConcat(Text::StrConcat(lineBuff, fileName), (const UTF8Char*)" File End error");
+		Text::StrConcatC(Text::StrConcat(lineBuff, fileName), UTF8STRC(" File End error"));
 		errMsgs->Add(Text::StrCopyNew(lineBuff));
 	}
 

@@ -51,7 +51,7 @@ void IO::Device::GoProCameraControl::GetMediaList()
 			if (jsBase->GetType() == Text::JSONType::Object)
 			{
 				jsObj = (Text::JSONObject*)jsBase;
-				jsBase2 = jsObj->GetObjectValue((const UTF8Char *)"media");
+				jsBase2 = jsObj->GetObjectValue((const UTF8Char*)"media");
 				if (jsBase2 && jsBase2->GetType() == Text::JSONType::Array)
 				{
 					jsArrDir = (Text::JSONArray*)jsBase2;
@@ -175,7 +175,7 @@ Bool IO::Device::GoProCameraControl::GetInfo(Data::ArrayList<Text::String*> *nam
 		if (jsBase->GetType() == Text::JSONType::Object)
 		{
 			jsObj = (Text::JSONObject*)jsBase;
-			jsBase2 = jsObj->GetObjectValue((const UTF8Char *)"info");
+			jsBase2 = jsObj->GetObjectValue((const UTF8Char*)"info");
 			if (jsBase2 && jsBase->GetType() == Text::JSONType::Object)
 			{
 				jsInfo = (Text::JSONObject*)jsBase2;

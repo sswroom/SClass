@@ -96,7 +96,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSClientForm::OnAnswerSelChg(void *userObj)
 		csptr = Net::DNSClient::TypeGetID(ans->recType);
 		if (csptr)
 		{
-			sptr = Text::StrConcat(sptr, (const UTF8Char*)" (");
+			sptr = Text::StrConcatC(sptr, UTF8STRC(" ("));
 			sptr = Text::StrConcat(sptr, csptr);
 			*sptr++ = ')';
 			*sptr = 0;

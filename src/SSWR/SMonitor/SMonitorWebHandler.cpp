@@ -701,7 +701,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingReq(SSWR::SMonit
 	{
 		req->ParseHTTPForm();
 		Text::String *action = req->GetHTTPFormStr(UTF8STRC("action"));
-		if (action && action->Equals((const UTF8Char *)"reading"))
+		if (action && action->Equals((const UTF8Char*)"reading"))
 		{
 			Text::StringBuilderUTF8 sb;
 			Text::String *s;
@@ -845,7 +845,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceDigitalsReq(SSWR::SMoni
 	{
 		req->ParseHTTPForm();
 		Text::String *action = req->GetHTTPFormStr(UTF8STRC("action"));
-		if (action && action->Equals((const UTF8Char *)"digitals"))
+		if (action && action->Equals((const UTF8Char*)"digitals"))
 		{
 			Text::StringBuilderUTF8 sb;
 			Text::String *s;
@@ -1541,7 +1541,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataReq(SSWR::SMoni
 			}
 			else
 			{
-				Text::StrInt32(Text::StrConcat(Text::StrInt32(Text::StrConcat(sbuff, (const UTF8Char*)"Sensor "), ReadInt16(dev->readings[k].status)), (const UTF8Char*)" Reading "), ReadInt16(&dev->readings[k].status[4]));
+				Text::StrInt32(Text::StrConcatC(Text::StrInt32(Text::StrConcatC(sbuff, UTF8STRC("Sensor ")), ReadInt16(dev->readings[k].status)), UTF8STRC(" Reading ")), ReadInt16(&dev->readings[k].status[4]));
 				WriteJSText(writer, sbuff);
 			}
 			writer->WriteLineC(UTF8STRC(";"));

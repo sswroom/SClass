@@ -328,7 +328,7 @@ SSWR::AVIRead::AVIRCAUtilForm::AVIRCAUtilForm(UI::GUIClientControl *parent, UI::
 	this->lblValidDays->SetRect(4, 340, 100, 23, false);
 	NEW_CLASS(this->txtValidDays, UI::GUITextBox(ui, this, (const UTF8Char*)"365"));
 	this->txtValidDays->SetRect(104, 340, 200, 23, false);
-	NEW_CLASS(this->btnIssue, UI::GUIButton(ui, this, (const UTF8Char *)"Issue"));
+	NEW_CLASS(this->btnIssue, UI::GUIButton(ui, this, (const UTF8Char*)"Issue"));
 	this->btnIssue->SetRect(104, 364, 150, 23, false);
 	this->btnIssue->HandleButtonClick(OnIssueClicked, this);
 

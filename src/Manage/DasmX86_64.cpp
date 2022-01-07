@@ -614,7 +614,7 @@ void DasmX86_64_ParseSIB(Manage::DasmX86_64::DasmX86_64_Sess* sess, UTF8Char *me
 		*memAddr = srcAddr;
 }
 
-void DasmX86_64_ParseAddr32(Manage::DasmX86_64::DasmX86_64_Sess* sess, UTF8Char *memName, Int32 *reg, UInt64 *memAddr)
+UTF8Char *DasmX86_64_ParseAddr32(Manage::DasmX86_64::DasmX86_64_Sess* sess, UTF8Char *memName, Int32 *reg, UInt64 *memAddr)
 {
 	UTF8Char mem[64];
 	UInt8 b = sess->memReader->ReadMemUInt8(sess->regs.rip);
@@ -745,6 +745,7 @@ void DasmX86_64_ParseAddr32(Manage::DasmX86_64::DasmX86_64_Sess* sess, UTF8Char 
 	case 3:
 		break;
 	}
+	return memName;
 }
 
 void DasmX86_64_ParseModR32M8(Manage::DasmX86_64::DasmX86_64_Sess* sess, UTF8Char *memName, Int32 *reg, UInt32 *memVal)

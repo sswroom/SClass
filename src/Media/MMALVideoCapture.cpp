@@ -177,7 +177,7 @@ Media::MMALVideoCapture::~MMALVideoCapture()
 
 UTF8Char *Media::MMALVideoCapture::GetSourceName(UTF8Char *buff)
 {
-	return Text::StrConcat(buff, (const UTF8Char*)"Broadcom VC Camera");
+	return Text::StrConcatC(buff, UTF8STRC("Broadcom VC Camera"));
 }
 
 const UTF8Char *Media::MMALVideoCapture::GetFilterName()

@@ -18,7 +18,7 @@ void __stdcall SSWR::AVIRead::AVIROLEDBForm::OnOKClicked(void *userObj)
 	if (conn->GetConnError() != DB::OLEDBConn::CE_NONE)
 	{
 		DEL_CLASS(conn);
-		UI::MessageDialog::ShowDialog((const UTF8Char *)"Error in opening OLEDB connection", (const UTF8Char *)"OLEDB Connection", me);
+		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in opening OLEDB connection", (const UTF8Char*)"OLEDB Connection", me);
 		return;
 	}
 	me->conn = conn;

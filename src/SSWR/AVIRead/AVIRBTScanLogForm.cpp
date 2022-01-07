@@ -146,7 +146,7 @@ void SSWR::AVIRead::AVIRBTScanLogForm::LogUIUpdate()
 			}
 			else
 			{
-				Text::StrHexVal16(Text::StrConcat(sbuff, (const UTF8Char*)"0x"), log->company);
+				Text::StrHexVal16(Text::StrConcatC(sbuff, UTF8STRC("0x")), log->company);
 				this->lvContent->SetSubItem(l, 3, sbuff);
 			}
 		}

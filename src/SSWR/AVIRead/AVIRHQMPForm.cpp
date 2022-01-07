@@ -435,28 +435,28 @@ void SSWR::AVIRead::AVIRHQMPForm::OnMediaOpened()
 #if defined(_WIN64)
 	if (this->qMode == SSWR::AVIRead::AVIRHQMPForm::QM_HQ)
 	{
-		this->GetOpenedFile()->GetSourceNameObj()->ConcatTo(Text::StrConcat(sbuff, (const UTF8Char*)"HQMP3HQ64 - "));
+		this->GetOpenedFile()->GetSourceNameObj()->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("HQMP3HQ64 - ")));
 	}
 	else if (this->qMode == SSWR::AVIRead::AVIRHQMPForm::QM_UQ)
 	{
-		this->GetOpenedFile()->GetSourceNameObj()->ConcatTo(Text::StrConcat(sbuff, (const UTF8Char*)"HQMP3UQ64 - "));
+		this->GetOpenedFile()->GetSourceNameObj()->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("HQMP3UQ64 - ")));
 	}
 	else
 	{
-		this->GetOpenedFile()->GetSourceNameObj()->ConcatTo(Text::StrConcat(sbuff, (const UTF8Char*)"HQMP3_64 - "));
+		this->GetOpenedFile()->GetSourceNameObj()->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("HQMP3_64 - ")));
 	}
 #else
 	if (this->qMode == SSWR::AVIRead::AVIRHQMPForm::QM_HQ)
 	{
-		this->GetOpenedFile()->GetSourceNameObj()->ConcatTo(Text::StrConcat(sbuff, (const UTF8Char*)"HQMP3HQ - "));
+		this->GetOpenedFile()->GetSourceNameObj()->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("HQMP3HQ - ")));
 	}
 	else if (this->qMode == SSWR::AVIRead::AVIRHQMPForm::QM_UQ)
 	{
-		this->GetOpenedFile()->GetSourceNameObj()->ConcatTo(Text::StrConcat(sbuff, (const UTF8Char*)"HQMP3UQ - "));
+		this->GetOpenedFile()->GetSourceNameObj()->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("HQMP3UQ - ")));
 	}
 	else
 	{
-		this->GetOpenedFile()->GetSourceNameObj()->ConcatTo(Text::StrConcat(sbuff, (const UTF8Char*)"HQMP3 - "));
+		this->GetOpenedFile()->GetSourceNameObj()->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("HQMP3 - ")));
 	}
 #endif
 	this->SetText(sbuff);
@@ -478,10 +478,10 @@ void SSWR::AVIRead::AVIRHQMPForm::OnMediaOpened()
 				sptr = sbuff;
 				if (j < 9)
 				{
-					sptr = Text::StrConcat(sptr, (const UTF8Char*)"&");
+					sptr = Text::StrConcatC(sptr, UTF8STRC("&"));
 				}
 				sptr = Text::StrInt32(sptr, (Int32)j + 1);
-				sptr = Text::StrConcat(sptr, (const UTF8Char*)" ");
+				sptr = Text::StrConcatC(sptr, UTF8STRC(" "));
 				sptr = Text::StrConcat(sptr, this->currChapInfo->GetChapterName(j));
 				this->mnuChapters->AddItem(sbuff, (UInt16)(MNU_PB_CHAPTERS + j), UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 				j++;
@@ -833,7 +833,7 @@ void SSWR::AVIRead::AVIRHQMPForm::EventMenuClicked(UInt16 cmdId)
 					IO::ParsedObject *pobj = Net::URL::OpenObject(fname, 0, this->core->GetSocketFactory(), this->ssl);
 					if (pobj == 0)
 					{
-						UI::MessageDialog::ShowDialog((const UTF8Char *)"Error in loading file", (const UTF8Char *)"HQMP", this);
+						UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in loading file", (const UTF8Char*)"HQMP", this);
 					}
 					else
 					{
@@ -925,7 +925,7 @@ void SSWR::AVIRead::AVIRHQMPForm::EventMenuClicked(UInt16 cmdId)
 			{
 				DEL_CLASS(this->listener);
 				this->listener = 0;
-				UI::MessageDialog::ShowDialog((const UTF8Char *)"Error in listening to the port 8080", (const UTF8Char *)"HQMP Error", this);
+				UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in listening to the port 8080", (const UTF8Char*)"HQMP Error", this);
 			}
 		}
 		break;

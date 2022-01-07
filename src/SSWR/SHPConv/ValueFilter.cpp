@@ -33,25 +33,25 @@ Bool SSWR::SHPConv::ValueFilter::IsValid(Double left, Double top, Double right, 
 
 UTF8Char *SSWR::SHPConv::ValueFilter::ToString(UTF8Char *buff)
 {
-	buff = Text::StrConcat(buff, (const UTF8Char*)"Compare column ");
+	buff = Text::StrConcatC(buff, UTF8STRC("Compare column "));
 	buff = Text::StrUOSInt(buff, this->colIndex);
 	switch (this->compareType)
 	{
 	case 3:
-		buff = Text::StrConcat(buff, (const UTF8Char*)" equal to ");
+		buff = Text::StrConcatC(buff, UTF8STRC(" equal to "));
 		buff = Text::StrConcat(buff, this->value);
 		return buff;
 	case 2:
-		buff = Text::StrConcat(buff, (const UTF8Char*)" not equal to ");
+		buff = Text::StrConcatC(buff, UTF8STRC(" not equal to "));
 		buff = Text::StrConcat(buff, this->value);
 		return buff;
 	case 1:
-		buff = Text::StrConcat(buff, (const UTF8Char*)" starts with ");
+		buff = Text::StrConcatC(buff, UTF8STRC(" starts with "));
 		buff = Text::StrConcat(buff, this->value);
 		return buff;
 	case 0:
 	default:
-		buff = Text::StrConcat(buff, (const UTF8Char*)" not starts with ");
+		buff = Text::StrConcatC(buff, UTF8STRC(" not starts with "));
 		buff = Text::StrConcat(buff, this->value);
 		return buff;
 	}

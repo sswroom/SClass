@@ -19,14 +19,14 @@ void __stdcall SSWR::AVIRead::AVIRMQTTPublishForm::OnPublishClicked(void *userOb
 	me->txtHost->GetText(&sbHost);
 	if (!me->core->GetSocketFactory()->DNSResolveIP(sbHost.ToString(), &addr))
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char *)"Error in parsing host", (const UTF8Char *)"MQTT Publish", me);
+		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in parsing host", (const UTF8Char*)"MQTT Publish", me);
 		return;
 	}
 	sb.ClearStr();
 	me->txtPort->GetText(&sb);
 	if (!sb.ToUInt16(&port))
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char *)"Port is not valid", (const UTF8Char *)"MQTT Publish", me);
+		UI::MessageDialog::ShowDialog((const UTF8Char*)"Port is not valid", (const UTF8Char*)"MQTT Publish", me);
 		return;
 	}
 
@@ -34,7 +34,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTPublishForm::OnPublishClicked(void *userOb
 	me->txtTopic->GetText(&sb);
 	if (sb.GetLength() == 0)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char *)"Please enter topic", (const UTF8Char *)"MQTT Publish", me);
+		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter topic", (const UTF8Char*)"MQTT Publish", me);
 		return;
 	}
 	topic = Text::StrCopyNew(sb.ToString());
@@ -43,7 +43,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTPublishForm::OnPublishClicked(void *userOb
 	if (sb.GetLength() == 0)
 	{
 		SDEL_TEXT(topic);
-		UI::MessageDialog::ShowDialog((const UTF8Char *)"Please enter message", (const UTF8Char *)"MQTT Publish", me);
+		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter message", (const UTF8Char*)"MQTT Publish", me);
 		return;
 	}
 	message = Text::StrCopyNew(sb.ToString());

@@ -82,34 +82,34 @@ public:
 		{
 			return;
 		}
-		sptr = Text::StrConcat(sbuff, (const UTF8Char*)"1,");
+		sptr = Text::StrConcatC(sbuff, UTF8STRC("1,"));
 		sptr = Text::StrToCSVRec(sptr, label);
-		sptr = Text::StrConcat(sptr, (const UTF8Char*)",");
+		sptr = Text::StrConcatC(sptr, UTF8STRC(","));
 		sptr = Text::StrDouble(sptr, x);
-		sptr = Text::StrConcat(sptr, (const UTF8Char*)",");
+		sptr = Text::StrConcatC(sptr, UTF8STRC(","));
 		sptr = Text::StrDouble(sptr, y);
-		sptr = Text::StrConcat(sptr, (const UTF8Char*)",");
+		sptr = Text::StrConcatC(sptr, UTF8STRC(","));
 		sptr = Text::StrDouble(sptr, bounds[0]);
-		sptr = Text::StrConcat(sptr, (const UTF8Char*)",");
+		sptr = Text::StrConcatC(sptr, UTF8STRC(","));
 		sptr = Text::StrDouble(sptr, bounds[1]);
-		sptr = Text::StrConcat(sptr, (const UTF8Char*)",");
+		sptr = Text::StrConcatC(sptr, UTF8STRC(","));
 		sptr = Text::StrDouble(sptr, bounds[2]);
-		sptr = Text::StrConcat(sptr, (const UTF8Char*)",");
+		sptr = Text::StrConcatC(sptr, UTF8STRC(","));
 		sptr = Text::StrDouble(sptr, bounds[3]);
-		sptr = Text::StrConcat(sptr, (const UTF8Char*)",");
+		sptr = Text::StrConcatC(sptr, UTF8STRC(","));
 		sptr = Text::StrDouble(sptr, scaleW);
-		sptr = Text::StrConcat(sptr, (const UTF8Char*)",");
+		sptr = Text::StrConcatC(sptr, UTF8STRC(","));
 		sptr = Text::StrDouble(sptr, scaleH);
-		sptr = Text::StrConcat(sptr, (const UTF8Char*)",");
+		sptr = Text::StrConcatC(sptr, UTF8STRC(","));
 		sptr = Text::StrUInt32(sptr, fontStyle);
-		sptr = Text::StrConcat(sptr, (const UTF8Char*)",");
+		sptr = Text::StrConcatC(sptr, UTF8STRC(","));
 		if (isAlign)
 		{
-			sptr = Text::StrConcat(sptr, (const UTF8Char*)"1");
+			sptr = Text::StrConcatC(sptr, UTF8STRC("1"));
 		}
 		else
 		{
-			sptr = Text::StrConcat(sptr, (const UTF8Char*)"0");
+			sptr = Text::StrConcatC(sptr, UTF8STRC("0"));
 		}
 		this->writer->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
 	}
@@ -123,52 +123,52 @@ public:
 		{
 			return;
 		}
-		sptr = Text::StrConcat(sbuff, (const UTF8Char*)"2,");
+		sptr = Text::StrConcatC(sbuff, UTF8STRC("2,"));
 		sptr = Text::StrToCSVRec(sptr, label);
-		sptr = Text::StrConcat(sptr, (const UTF8Char*)",");
+		sptr = Text::StrConcatC(sptr, UTF8STRC(","));
 		sptr = Text::StrDouble(sptr, (bounds[2] + bounds[0]) * 0.5);
-		sptr = Text::StrConcat(sptr, (const UTF8Char*)",");
+		sptr = Text::StrConcatC(sptr, UTF8STRC(","));
 		sptr = Text::StrDouble(sptr, (bounds[3] + bounds[1]) * 0.5);
-		sptr = Text::StrConcat(sptr, (const UTF8Char*)",");
+		sptr = Text::StrConcatC(sptr, UTF8STRC(","));
 		sptr = Text::StrDouble(sptr, bounds[0]);
-		sptr = Text::StrConcat(sptr, (const UTF8Char*)",");
+		sptr = Text::StrConcatC(sptr, UTF8STRC(","));
 		sptr = Text::StrDouble(sptr, bounds[1]);
-		sptr = Text::StrConcat(sptr, (const UTF8Char*)",");
+		sptr = Text::StrConcatC(sptr, UTF8STRC(","));
 		sptr = Text::StrDouble(sptr, bounds[2]);
-		sptr = Text::StrConcat(sptr, (const UTF8Char*)",");
+		sptr = Text::StrConcatC(sptr, UTF8STRC(","));
 		sptr = Text::StrDouble(sptr, bounds[3]);
-		sptr = Text::StrConcat(sptr, (const UTF8Char*)",");
+		sptr = Text::StrConcatC(sptr, UTF8STRC(","));
 		sptr = Text::StrUOSInt(sptr, nPoints);
-		sptr = Text::StrConcat(sptr, (const UTF8Char*)",");
+		sptr = Text::StrConcatC(sptr, UTF8STRC(","));
 		sptr = Text::StrUInt32(sptr, thisPt);
-		sptr = Text::StrConcat(sptr, (const UTF8Char*)",");
+		sptr = Text::StrConcatC(sptr, UTF8STRC(","));
 		sptr = Text::StrDouble(sptr, scaleN);
-		sptr = Text::StrConcat(sptr, (const UTF8Char*)",");
+		sptr = Text::StrConcatC(sptr, UTF8STRC(","));
 		sptr = Text::StrDouble(sptr, scaleD);
-		sptr = Text::StrConcat(sptr, (const UTF8Char*)",");
+		sptr = Text::StrConcatC(sptr, UTF8STRC(","));
 		sptr = Text::StrUInt32(sptr, fontStyle);
-		sptr = Text::StrConcat(sptr, (const UTF8Char*)",");
+		sptr = Text::StrConcatC(sptr, UTF8STRC(","));
 		if (isAlign)
 		{
-			sptr = Text::StrConcat(sptr, (const UTF8Char*)"1");
+			sptr = Text::StrConcatC(sptr, UTF8STRC("1"));
 		}
 		else
 		{
-			sptr = Text::StrConcat(sptr, (const UTF8Char*)"0");
+			sptr = Text::StrConcatC(sptr, UTF8STRC("0"));
 		}
 		this->writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
 		i = 0;
 		while (i < nPoints)
 		{
-			sptr = Text::StrConcat(sbuff, (const UTF8Char*)",{");
+			sptr = Text::StrConcatC(sbuff, UTF8STRC(",{"));
 			sptr = Text::StrDouble(sptr, mapPts[0]);
-			sptr = Text::StrConcat(sptr, (const UTF8Char*)",");
+			sptr = Text::StrConcatC(sptr, UTF8STRC(","));
 			sptr = Text::StrDouble(sptr, mapPts[1]);
-			sptr = Text::StrConcat(sptr, (const UTF8Char*)",");
+			sptr = Text::StrConcatC(sptr, UTF8STRC(","));
 			sptr = Text::StrInt32(sptr, scnPts[0]);
-			sptr = Text::StrConcat(sptr, (const UTF8Char*)",");
+			sptr = Text::StrConcatC(sptr, UTF8STRC(","));
 			sptr = Text::StrInt32(sptr, scnPts[1]);
-			sptr = Text::StrConcat(sptr, (const UTF8Char*)"}");
+			sptr = Text::StrConcatC(sptr, UTF8STRC("}"));
 			mapPts += 2;
 			scnPts += 2;
 			this->writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
@@ -4203,14 +4203,14 @@ void Map::MapConfig2TGen::LoadLabels(Media::DrawImage *img, Map::MapConfig2TGen:
 		i = Text::StrLastIndexOf(sbuff, IO::Path::PATH_SEPERATOR);
 		UTF8Char *fpath = &sbuff[i + 1];
 		sptr = Text::StrInt32(fpath, xId >> 5);
-		sptr = Text::StrConcat(sptr, (const UTF8Char*)"_");
+		sptr = Text::StrConcatC(sptr, UTF8STRC("_"));
 		sptr = Text::StrInt32(sptr, yId >> 5);
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 		fname = sptr;
 		sptr = Text::StrInt32(sptr, xId);
-		sptr = Text::StrConcat(sptr, (const UTF8Char*)"_");
+		sptr = Text::StrConcatC(sptr, UTF8STRC("_"));
 		sptr = Text::StrInt32(sptr, yId);
-		sptr = Text::StrConcat(sptr, (const UTF8Char*)".db");
+		sptr = Text::StrConcatC(sptr, UTF8STRC(".db"));
 
 		NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::ReadOnly, IO::FileShare::DenyAll, IO::FileStream::BufferType::Normal));
 		if (fs->IsError())

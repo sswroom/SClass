@@ -32,7 +32,7 @@ Map::ESRI::ESRITileMap::ESRITileMap(const UTF8Char *url, const UTF8Char *cacheDi
 	NEW_CLASS(this->levels, Data::ArrayListDbl());
 
 	IO::MemoryStream *mstm;
-	Text::StrConcat(Text::StrConcat(sbuff, url), (const UTF8Char*)"?f=json");
+	Text::StrConcatC(Text::StrConcat(sbuff, url), UTF8STRC("?f=json"));
 	Net::HTTPClient *cli = Net::HTTPClient::CreateConnect(sockf, ssl, sbuff, "GET", true);
 	NEW_CLASS(mstm, IO::MemoryStream((const UTF8Char*)"Map.ESRI.ESRITileMap.ESRITileMap"));
 	while ((readSize = cli->Read(buff, 2048)) > 0)
@@ -465,12 +465,12 @@ Media::ImageList *Map::ESRI::ESRITileMap::LoadTileImage(UOSInt level, Int64 imgI
 	if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 	sptr = Text::StrInt32(sptr, (Int32)level);
-	sptr = Text::StrConcat(sptr, (const UTF8Char*)"\\");
+	sptr = Text::StrConcatC(sptr, UTF8STRC("\\"));
 	sptr = Text::StrInt32(sptr, imgY);
 	IO::Path::CreateDirectory(filePath);
-	sptr = Text::StrConcat(sptr, (const UTF8Char*)"\\");
+	sptr = Text::StrConcatC(sptr, UTF8STRC("\\"));
 	sptr = Text::StrInt32(sptr, imgX);
-	sptr = Text::StrConcat(sptr, (const UTF8Char*)".dat");
+	sptr = Text::StrConcatC(sptr, UTF8STRC(".dat"));
 	NEW_CLASS(fd, IO::StmData::FileData(filePath, false));
 	if (fd->GetDataSize() > 0)
 	{
@@ -492,11 +492,11 @@ Media::ImageList *Map::ESRI::ESRITileMap::LoadTileImage(UOSInt level, Int64 imgI
 		return 0;
 
 	sptr = Text::StrConcat(url, this->url);
-	sptr = Text::StrConcat(sptr, (const UTF8Char*)"/tile/");
+	sptr = Text::StrConcatC(sptr, UTF8STRC("/tile/"));
 	sptr = Text::StrInt32(sptr, (Int32)level);
-	sptr = Text::StrConcat(sptr, (const UTF8Char*)"/");
+	sptr = Text::StrConcatC(sptr, UTF8STRC("/"));
 	sptr = Text::StrInt32(sptr, imgY);
-	sptr = Text::StrConcat(sptr, (const UTF8Char*)"/");
+	sptr = Text::StrConcatC(sptr, UTF8STRC("/"));
 	sptr = Text::StrInt32(sptr, imgX);
 
 	cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, url, "GET", true);
@@ -533,11 +533,11 @@ UTF8Char *Map::ESRI::ESRITileMap::GetImageURL(UTF8Char *sbuff, UOSInt level, Int
 	Int32 imgX = (Int32)(imgId >> 32);
 	Int32 imgY = (Int32)(imgId & 0xffffffffLL);
 	sptr = Text::StrConcat(sbuff, this->url);
-	sptr = Text::StrConcat(sptr, (const UTF8Char*)"/tile/");
+	sptr = Text::StrConcatC(sptr, UTF8STRC("/tile/"));
 	sptr = Text::StrUOSInt(sptr, level);
-	sptr = Text::StrConcat(sptr, (const UTF8Char*)"/");
+	sptr = Text::StrConcatC(sptr, UTF8STRC("/"));
 	sptr = Text::StrInt32(sptr, imgY);
-	sptr = Text::StrConcat(sptr, (const UTF8Char*)"/");
+	sptr = Text::StrConcatC(sptr, UTF8STRC("/"));
 	sptr = Text::StrInt32(sptr, imgX);
 	return sptr;
 }
@@ -598,7 +598,7 @@ IO::IStreamData *Map::ESRI::ESRITileMap::LoadTileImageData(UOSInt level, Int64 i
 	IO::Path::CreateDirectory(filePath);
 	*u8ptr++ = IO::Path::PATH_SEPERATOR;
 	u8ptr = Text::StrInt32(u8ptr, imgX);
-	u8ptr = Text::StrConcat(u8ptr, (const UTF8Char*)".dat");
+	u8ptr = Text::StrConcatC(u8ptr, UTF8STRC(".dat"));
 	NEW_CLASS(fd, IO::StmData::FileData(filePath, false));
 	if (fd->GetDataSize() > 0)
 	{
@@ -616,11 +616,11 @@ IO::IStreamData *Map::ESRI::ESRITileMap::LoadTileImageData(UOSInt level, Int64 i
 		return 0;
 
 	u8ptr = Text::StrConcat(url, this->url);
-	u8ptr = Text::StrConcat(u8ptr, (const UTF8Char*)"/tile/");
+	u8ptr = Text::StrConcatC(u8ptr, UTF8STRC("/tile/"));
 	u8ptr = Text::StrInt32(u8ptr, (Int32)level);
-	u8ptr = Text::StrConcat(u8ptr, (const UTF8Char*)"/");
+	u8ptr = Text::StrConcatC(u8ptr, UTF8STRC("/"));
 	u8ptr = Text::StrInt32(u8ptr, imgY);
-	u8ptr = Text::StrConcat(u8ptr, (const UTF8Char*)"/");
+	u8ptr = Text::StrConcatC(u8ptr, UTF8STRC("/"));
 	u8ptr = Text::StrInt32(u8ptr, imgX);
 
 	cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, url, "GET", true);

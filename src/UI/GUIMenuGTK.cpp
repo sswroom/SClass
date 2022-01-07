@@ -29,402 +29,402 @@ UTF8Char *UI::GUIMenu::ToKeyDisplay(UTF8Char *sbuff, KeyModifier keyModifier, UI
 {
 	if (keyModifier & KM_CONTROL)
 	{
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"Ctrl+");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("Ctrl+"));
 	}
 	if (keyModifier & KM_ALT)
 	{
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"Alt+");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("Alt+"));
 	}
 	if (keyModifier & KM_SHIFT)
 	{
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"Shift+");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("Shift+"));
 	}
 	if (keyModifier & KM_WIN)
 	{
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"Win+");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("Win+"));
 	}
 	switch (shortcutKey)
 	{
 	case UI::GUIControl::GK_BACKSPACE:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"[Backspace]");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("[Backspace]"));
 		break;
 	case UI::GUIControl::GK_TAB:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"[Tab]");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("[Tab]"));
 		break;
 	case UI::GUIControl::GK_CLEAR:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"[Clear]");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("[Clear]"));
 		break;
 	case UI::GUIControl::GK_ENTER:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"[Enter]");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("[Enter]"));
 		break;
 	case UI::GUIControl::GK_SHIFT:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"[Shift]");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("[Shift]"));
 		break;
 	case UI::GUIControl::GK_CONTROL:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"[Ctrl]");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("[Ctrl]"));
 		break;
 	case UI::GUIControl::GK_ALT:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"[Alt]");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("[Alt]"));
 		break;
 	case UI::GUIControl::GK_PAUSE:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"[Pause]");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("[Pause]"));
 		break;
 	case UI::GUIControl::GK_CAPITAL:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"[Caps Lock]");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("[Caps Lock]"));
 		break;
 	case UI::GUIControl::GK_KANA:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"[Kana]");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("[Kana]"));
 		break;
 	case UI::GUIControl::GK_JUNJA:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"[Junja]");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("[Junja]"));
 		break;
 	case UI::GUIControl::GK_FINAL:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"[Final]");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("[Final]"));
 		break;
 	case UI::GUIControl::GK_KANJI:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"[Kanji]");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("[Kanji]"));
 		break;
 	case UI::GUIControl::GK_ESCAPE:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"[ESC]");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("[ESC]"));
 		break;
 	case UI::GUIControl::GK_CONVERT:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"[IME Convert]");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("[IME Convert]"));
 		break;
 	case UI::GUIControl::GK_NONCONVERT:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"[IME Non-convert]");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("[IME Non-convert]"));
 		break;
 	case UI::GUIControl::GK_ACCEPT:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"[Accept]");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("[Accept]"));
 		break;
 	case UI::GUIControl::GK_MODECHANGE:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"[Mode Change]");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("[Mode Change]"));
 		break;
 	case UI::GUIControl::GK_SPACE:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"[Space]");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("[Space]"));
 		break;
 	case UI::GUIControl::GK_PAGEUP:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"[Pg Up]");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("[Pg Up]"));
 		break;
 	case UI::GUIControl::GK_PAGEDOWN:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"[Pg Dn]");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("[Pg Dn]"));
 		break;
 	case UI::GUIControl::GK_END:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"[End]");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("[End]"));
 		break;
 	case UI::GUIControl::GK_HOME:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"[Home]");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("[Home]"));
 		break;
 	case UI::GUIControl::GK_LEFT:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"[Left]");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("[Left]"));
 		break;
 	case UI::GUIControl::GK_UP:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"[Up]");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("[Up]"));
 		break;
 	case UI::GUIControl::GK_RIGHT:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"[Right]");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("[Right]"));
 		break;
 	case UI::GUIControl::GK_DOWN:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"[Down]");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("[Down]"));
 		break;
 	case UI::GUIControl::GK_SELECT:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"[Select]");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("[Select]"));
 		break;
 	case UI::GUIControl::GK_PRINT:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"[Print]");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("[Print]"));
 		break;
 	case UI::GUIControl::GK_EXECUTE:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"[Execute]");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("[Execute]"));
 		break;
 	case UI::GUIControl::GK_PRINTSCREEN:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"[Prt Scn]");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("[Prt Scn]"));
 		break;
 	case UI::GUIControl::GK_INSERT:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"[Insert]");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("[Insert]"));
 		break;
 	case UI::GUIControl::GK_DELETE:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"[Delete]");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("[Delete]"));
 		break;
 	case UI::GUIControl::GK_HELP:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"[Help]");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("[Help]"));
 		break;
 	case UI::GUIControl::GK_0:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"0");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("0"));
 		break;
 	case UI::GUIControl::GK_1:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"1");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("1"));
 		break;
 	case UI::GUIControl::GK_2:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"2");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("2"));
 		break;
 	case UI::GUIControl::GK_3:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"3");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("3"));
 		break;
 	case UI::GUIControl::GK_4:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"4");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("4"));
 		break;
 	case UI::GUIControl::GK_5:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"5");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("5"));
 		break;
 	case UI::GUIControl::GK_6:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"6");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("6"));
 		break;
 	case UI::GUIControl::GK_7:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"7");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("7"));
 		break;
 	case UI::GUIControl::GK_8:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"8");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("8"));
 		break;
 	case UI::GUIControl::GK_9:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"9");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("9"));
 		break;
 	case UI::GUIControl::GK_A:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"A");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("A"));
 		break;
 	case UI::GUIControl::GK_B:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"B");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("B"));
 		break;
 	case UI::GUIControl::GK_C:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"C");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("C"));
 		break;
 	case UI::GUIControl::GK_D:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"D");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("D"));
 		break;
 	case UI::GUIControl::GK_E:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"E");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("E"));
 		break;
 	case UI::GUIControl::GK_F:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"F");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("F"));
 		break;
 	case UI::GUIControl::GK_G:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"G");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("G"));
 		break;
 	case UI::GUIControl::GK_H:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"H");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("H"));
 		break;
 	case UI::GUIControl::GK_I:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"I");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("I"));
 		break;
 	case UI::GUIControl::GK_J:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"J");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("J"));
 		break;
 	case UI::GUIControl::GK_K:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"K");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("K"));
 		break;
 	case UI::GUIControl::GK_L:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"L");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("L"));
 		break;
 	case UI::GUIControl::GK_M:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"M");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("M"));
 		break;
 	case UI::GUIControl::GK_N:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"N");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("N"));
 		break;
 	case UI::GUIControl::GK_O:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"O");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("O"));
 		break;
 	case UI::GUIControl::GK_P:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"P");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("P"));
 		break;
 	case UI::GUIControl::GK_Q:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"Q");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("Q"));
 		break;
 	case UI::GUIControl::GK_R:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"R");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("R"));
 		break;
 	case UI::GUIControl::GK_S:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"S");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("S"));
 		break;
 	case UI::GUIControl::GK_T:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"T");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("T"));
 		break;
 	case UI::GUIControl::GK_U:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"U");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("U"));
 		break;
 	case UI::GUIControl::GK_V:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"V");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("V"));
 		break;
 	case UI::GUIControl::GK_W:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"W");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("W"));
 		break;
 	case UI::GUIControl::GK_X:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"X");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("X"));
 		break;
 	case UI::GUIControl::GK_Y:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"Y");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("Y"));
 		break;
 	case UI::GUIControl::GK_Z:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"Z");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("Z"));
 		break;
 	case UI::GUIControl::GK_LWIN:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"[Left Win]");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("[Left Win]"));
 		break;
 	case UI::GUIControl::GK_RWIN:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"[Right Win]");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("[Right Win]"));
 		break;
 	case UI::GUIControl::GK_APPS:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"[Apps]");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("[Apps]"));
 		break;
 	case UI::GUIControl::GK_SLEEP:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"[Sleep]");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("[Sleep]"));
 		break;
 	case UI::GUIControl::GK_NUMPAD0:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"[Num0]");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("[Num0]"));
 		break;
 	case UI::GUIControl::GK_NUMPAD1:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"[Num1]");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("[Num1]"));
 		break;
 	case UI::GUIControl::GK_NUMPAD2:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"[Num2]");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("[Num2]"));
 		break;
 	case UI::GUIControl::GK_NUMPAD3:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"[Num3]");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("[Num3]"));
 		break;
 	case UI::GUIControl::GK_NUMPAD4:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"[Num4]");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("[Num4]"));
 		break;
 	case UI::GUIControl::GK_NUMPAD5:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"[Num5]");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("[Num5]"));
 		break;
 	case UI::GUIControl::GK_NUMPAD6:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"[Num6]");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("[Num6]"));
 		break;
 	case UI::GUIControl::GK_NUMPAD7:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"[Num7]");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("[Num7]"));
 		break;
 	case UI::GUIControl::GK_NUMPAD8:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"[Num8]");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("[Num8]"));
 		break;
 	case UI::GUIControl::GK_NUMPAD9:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"[Num9]");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("[Num9]"));
 		break;
 	case UI::GUIControl::GK_MULTIPLY:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"*");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("*"));
 		break;
 	case UI::GUIControl::GK_ADD:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"+");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("+"));
 		break;
 	case UI::GUIControl::GK_SEPARATOR:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"|");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("|"));
 		break;
 	case UI::GUIControl::GK_SUBTRACT:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"-");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("-"));
 		break;
 	case UI::GUIControl::GK_DECIMAL:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)".");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("."));
 		break;
 	case UI::GUIControl::GK_DIVIDE:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"/");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("/"));
 		break;
 	case UI::GUIControl::GK_F1:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"F1");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("F1"));
 		break;
 	case UI::GUIControl::GK_F2:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"F2");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("F2"));
 		break;
 	case UI::GUIControl::GK_F3:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"F3");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("F3"));
 		break;
 	case UI::GUIControl::GK_F4:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"F4");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("F4"));
 		break;
 	case UI::GUIControl::GK_F5:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"F5");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("F5"));
 		break;
 	case UI::GUIControl::GK_F6:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"F6");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("F6"));
 		break;
 	case UI::GUIControl::GK_F7:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"F7");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("F7"));
 		break;
 	case UI::GUIControl::GK_F8:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"F8");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("F8"));
 		break;
 	case UI::GUIControl::GK_F9:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"F9");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("F9"));
 		break;
 	case UI::GUIControl::GK_F10:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"F10");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("F10"));
 		break;
 	case UI::GUIControl::GK_F11:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"F11");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("F11"));
 		break;
 	case UI::GUIControl::GK_F12:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"F12");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("F12"));
 		break;
 	case UI::GUIControl::GK_F13:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"F13");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("F13"));
 		break;
 	case UI::GUIControl::GK_F14:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"F14");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("F14"));
 		break;
 	case UI::GUIControl::GK_F15:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"F15");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("F15"));
 		break;
 	case UI::GUIControl::GK_F16:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"F16");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("F16"));
 		break;
 	case UI::GUIControl::GK_F17:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"F17");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("F17"));
 		break;
 	case UI::GUIControl::GK_F18:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"F18");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("F18"));
 		break;
 	case UI::GUIControl::GK_F19:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"F19");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("F19"));
 		break;
 	case UI::GUIControl::GK_F20:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"F20");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("F20"));
 		break;
 	case UI::GUIControl::GK_F21:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"F21");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("F21"));
 		break;
 	case UI::GUIControl::GK_F22:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"F22");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("F22"));
 		break;
 	case UI::GUIControl::GK_F23:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"F23");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("F23"));
 		break;
 	case UI::GUIControl::GK_F24:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"F24");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("F24"));
 		break;
 	case UI::GUIControl::GK_NUMLOCK:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"[Num Lock]");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("[Num Lock]"));
 		break;
 	case UI::GUIControl::GK_SCROLLLOCK:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"[Scroll Lock]");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("[Scroll Lock]"));
 		break;
 	case UI::GUIControl::GK_OEM_1:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"[;]");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("[;]"));
 		break;
 	case UI::GUIControl::GK_OEM_PLUS:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"[+]");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("[+]"));
 		break;
 	case UI::GUIControl::GK_OEM_COMMA:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"[,]");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("[,]"));
 		break;
 	case UI::GUIControl::GK_OEM_MINUS:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"[-]");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("[-]"));
 		break;
 	case UI::GUIControl::GK_OEM_PERIOD:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"[.]");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("[.]"));
 		break;
 	case UI::GUIControl::GK_OEM_2:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"[/]");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("[/]"));
 		break;
 	case UI::GUIControl::GK_OEM_3:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"[-]");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("[-]"));
 		break;
 	case UI::GUIControl::GK_OEM_4:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"'['");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("'['"));
 		break;
 	case UI::GUIControl::GK_OEM_5:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"[\\]");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("[\\]"));
 		break;
 	case UI::GUIControl::GK_OEM_6:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"']'");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("']'"));
 		break;
 	case UI::GUIControl::GK_OEM_7:
-		sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"[']");
+		sbuff = Text::StrConcatC(sbuff, UTF8STRC("[']"));
 		break;
 	case UI::GUIControl::GK_NONE:
 	default:

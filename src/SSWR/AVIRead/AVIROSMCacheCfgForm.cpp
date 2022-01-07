@@ -17,7 +17,7 @@ void __stdcall SSWR::AVIRead::AVIROSMCacheCfgForm::OnOKClick(void *userObj)
 	me->txtHTTPPort->GetText(&sb);
 	if (!sb.ToUInt16(&port) || port <= 0 || port >= 65536)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char *)"Please enter valid HTTP port number", (const UTF8Char *)"Error", me);
+		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter valid HTTP port number", (const UTF8Char*)"Error", me);
 		return;
 	}
 	Map::OSM::OSMCacheHandler *hdlr = 0;
@@ -87,7 +87,7 @@ void __stdcall SSWR::AVIRead::AVIROSMCacheCfgForm::OnOKClick(void *userObj)
 	if (listener->IsError())
 	{
 		DEL_CLASS(listener);
-		UI::MessageDialog::ShowDialog((const UTF8Char *)"Error in listening to the port", (const UTF8Char *)"Error", me);
+		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in listening to the port", (const UTF8Char*)"Error", me);
 		return;
 	}
 

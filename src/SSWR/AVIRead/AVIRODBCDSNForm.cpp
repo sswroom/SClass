@@ -21,7 +21,7 @@ void __stdcall SSWR::AVIRead::AVIRODBCDSNForm::OnOKClicked(void *userObj)
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("Error in opening ODBC connection\r\n"));
 		conn->GetErrorMsg(&sb);
-		UI::MessageDialog::ShowDialog(sb.ToString(), (const UTF8Char *)"ODBC DSN Connection", me);
+		UI::MessageDialog::ShowDialog(sb.ToString(), (const UTF8Char*)"ODBC DSN Connection", me);
 		DEL_CLASS(conn);
 		return;
 	}

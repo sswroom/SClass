@@ -30,11 +30,11 @@ UTF8Char *SSWR::SHPConv::RangeFilter::ToString(UTF8Char *buff)
 {
 	if (this->compareType == 1)
 	{
-		return Text::StrConcat(buff, (const UTF8Char*)"Compare range equal");
+		return Text::StrConcatC(buff, UTF8STRC("Compare range equal"));
 	}
 	else
 	{
-		return Text::StrConcat(buff, (const UTF8Char*)"Compare range not equal");
+		return Text::StrConcatC(buff, UTF8STRC("Compare range not equal"));
 	}
 }
 

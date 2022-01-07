@@ -97,7 +97,7 @@ UTF8Char *SSWR::OrganMgr::OrganSpImgLayer::GetColumnName(UTF8Char *buff, UOSInt 
 {
 	if (colIndex == 0)
 	{
-		return Text::StrConcat(buff, (const UTF8Char*)"Descript");
+		return Text::StrConcatC(buff, UTF8STRC("Descript"));
 	}
 	return 0;
 }

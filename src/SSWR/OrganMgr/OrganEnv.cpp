@@ -171,7 +171,7 @@ SSWR::OrganMgr::OrganEnv::OrganEnv()
 	IO::Path::GetProcessFileName(sbuff);
 	sptr = IO::Path::AppendPath(sbuff, (const UTF8Char*)"Lang");
 	*sptr++ = IO::Path::PATH_SEPERATOR;
-	sptr = Text::StrConcat(sptr, (const UTF8Char*)"zh-hk.txt");
+	sptr = Text::StrConcatC(sptr, UTF8STRC("zh-hk.txt"));
 	this->langFile = IO::IniFile::Parse(sbuff, 65001);
 }
 
@@ -718,10 +718,10 @@ void SSWR::OrganMgr::OrganEnv::ExportWeb(const UTF8Char *exportDir, Bool include
 	{
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 	}
-	Text::StrConcat(sptr, (const UTF8Char*)"indexhd");
+	Text::StrConcatC(sptr, UTF8STRC("indexhd"));
 	IO::Path::CreateDirectory(sbuff);
 
-	Text::StrConcat(sptr, (const UTF8Char*)"indexhd.html");
+	Text::StrConcatC(sptr, UTF8STRC("indexhd.html"));
 
 	Text::UTF8Writer *writer;
 	IO::FileStream *fs;
@@ -897,7 +897,7 @@ void SSWR::OrganMgr::OrganEnv::ExportGroup(OrganGroup *grp, Data::Int32Map<Data:
 	Text::String *s;
 	const UTF8Char *u8ptr;
 	UTF8Char backBuff[64];
-	Text::StrConcat(Text::StrInt32(Text::StrConcat(backBuff, (const UTF8Char*)"../../indexhd/grp"), grp->GetGroupId()), (const UTF8Char*)"/index.html");
+	Text::StrConcatC(Text::StrInt32(Text::StrConcatC(backBuff, UTF8STRC("../../indexhd/grp")), grp->GetGroupId()), UTF8STRC("/index.html"));
 
 	Data::ArrayList<OrganGroup*> *grps;
 	Data::ArrayList<OrganSpecies*> *sps;
@@ -919,9 +919,9 @@ void SSWR::OrganMgr::OrganEnv::ExportGroup(OrganGroup *grp, Data::Int32Map<Data:
 
 				if (fs == 0)
 				{
-					sptr = Text::StrInt32(Text::StrConcat(pathAppend, (const UTF8Char*)"indexhd\\grp"), grp->GetGroupId());
+					sptr = Text::StrInt32(Text::StrConcatC(pathAppend, UTF8STRC("indexhd\\grp")), grp->GetGroupId());
 					IO::Path::CreateDirectory(fullPath);
-					Text::StrConcat(sptr, (const UTF8Char*)"\\index.html");
+					Text::StrConcatC(sptr, UTF8STRC("\\index.html"));
 
 					NEW_CLASS(fs, IO::FileStream(fullPath, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 					NEW_CLASS(writer, Text::UTF8Writer(fs));
@@ -974,9 +974,9 @@ void SSWR::OrganMgr::OrganEnv::ExportGroup(OrganGroup *grp, Data::Int32Map<Data:
 			{
 				if (fs == 0)
 				{
-					sptr = Text::StrInt32(Text::StrConcat(pathAppend, (const UTF8Char*)"indexhd\\grp"), grp->GetGroupId());
+					sptr = Text::StrInt32(Text::StrConcatC(pathAppend, UTF8STRC("indexhd\\grp")), grp->GetGroupId());
 					IO::Path::CreateDirectory(fullPath);
-					Text::StrConcat(sptr, (const UTF8Char*)"\\index.html");
+					Text::StrConcatC(sptr, UTF8STRC("\\index.html"));
 
 					NEW_CLASS(fs, IO::FileStream(fullPath, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 					NEW_CLASS(writer, Text::UTF8Writer(fs));
@@ -1101,7 +1101,7 @@ Bool SSWR::OrganMgr::OrganEnv::ExportSpecies(OrganSpecies *sp, const UTF8Char *b
 	IO::Path::CreateDirectory(fullPath);
 
 	*sptr++ = IO::Path::PATH_SEPERATOR;
-	Text::StrConcat(sptr, (const UTF8Char*)"index.html");
+	Text::StrConcatC(sptr, UTF8STRC("index.html"));
 
 	IO::FileStream *fs;
 	Text::UTF8Writer *writer;

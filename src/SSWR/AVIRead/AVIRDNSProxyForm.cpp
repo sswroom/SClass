@@ -627,13 +627,13 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnClientSelChg(void *userObj)
 		{
 			hInfo = cli->hourInfos->GetItem(i);
 			sptr = Text::StrInt32(sbuff, hInfo->year);
-			sptr = Text::StrConcat(sptr, (const UTF8Char*)"-");
+			sptr = Text::StrConcatC(sptr, UTF8STRC("-"));
 			sptr = Text::StrInt32(sptr, hInfo->month);
-			sptr = Text::StrConcat(sptr, (const UTF8Char*)"-");
+			sptr = Text::StrConcatC(sptr, UTF8STRC("-"));
 			sptr = Text::StrInt32(sptr, hInfo->day);
-			sptr = Text::StrConcat(sptr, (const UTF8Char*)"-");
+			sptr = Text::StrConcatC(sptr, UTF8STRC("-"));
 			sptr = Text::StrInt32(sptr, hInfo->hour);
-			sptr = Text::StrConcat(sptr, (const UTF8Char*)":00");
+			sptr = Text::StrConcatC(sptr, UTF8STRC(":00"));
 			j = me->lvClient->AddItem(sbuff, 0);
 			Text::StrInt64(sbuff, hInfo->reqCount);
 			me->lvClient->SetSubItem(j, 1, sbuff);

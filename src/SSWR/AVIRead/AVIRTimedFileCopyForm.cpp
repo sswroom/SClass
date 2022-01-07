@@ -42,28 +42,28 @@ void __stdcall SSWR::AVIRead::AVIRTimedFileCopyForm::OnStartClicked(void *userOb
 	if (dt1.GetYear() == dt2.GetYear() && dt1.GetMonth() == dt2.GetMonth() && dt1.GetDay() == dt2.GetDay())
 	{
 		sptr = dt1.ToString(sbuff, "yyyyMMdd");
-		Text::StrConcat(sptr, (const UTF8Char*)".zip");
+		Text::StrConcatC(sptr, UTF8STRC(".zip"));
 	}
 	else if (dt1.GetYear() == dt2.GetYear() && dt1.GetMonth() == dt2.GetMonth())
 	{
 		sptr = dt1.ToString(sbuff, "yyyyMMdd");
 		*sptr++ = '-';
 		sptr = dt2.ToString(sptr, "dd");
-		Text::StrConcat(sptr, (const UTF8Char*)".zip");
+		Text::StrConcatC(sptr, UTF8STRC(".zip"));
 	}
 	else if (dt1.GetYear() == dt2.GetYear())
 	{
 		sptr = dt1.ToString(sbuff, "yyyyMMdd");
 		*sptr++ = '-';
 		sptr = dt2.ToString(sptr, "MMdd");
-		Text::StrConcat(sptr, (const UTF8Char*)".zip");
+		Text::StrConcatC(sptr, UTF8STRC(".zip"));
 	}
 	else
 	{
 		sptr = dt1.ToString(sbuff, "yyyyMMdd");
 		*sptr++ = '-';
 		sptr = dt2.ToString(sptr, "yyyyMMdd");
-		Text::StrConcat(sptr, (const UTF8Char*)".zip");
+		Text::StrConcatC(sptr, UTF8STRC(".zip"));
 	}
 	dlg->SetFileName(sbuff);
 	if (dlg->ShowDialog(me->GetHandle()))
@@ -76,7 +76,7 @@ void __stdcall SSWR::AVIRead::AVIRTimedFileCopyForm::OnStartClicked(void *userOb
 			UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in creating zip file", me->GetFormName(), me);
 		}
 		NEW_CLASS(zip, IO::ZIPBuilder(fs));
-		sptr = Text::StrConcat(sbuff, sb.ToString());
+		sptr = Text::StrConcatC(sbuff, sb.ToString(), sb.GetLength());
 		if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 		{
 			*sptr++ = IO::Path::PATH_SEPERATOR;
@@ -99,7 +99,7 @@ Bool SSWR::AVIRead::AVIRTimedFileCopyForm::CopyToZip(IO::ZIPBuilder *zip, const 
 	UOSInt i;
 	Data::DateTime dt(startTime);
 	Data::DateTime modTime;
-	Text::StrConcat(pathEnd, IO::Path::ALL_FILES);
+	Text::StrConcatC(pathEnd, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
 	sess = IO::Path::FindFile(buffStart);
 	if (sess)
 	{
@@ -218,7 +218,7 @@ SSWR::AVIRead::AVIRTimedFileCopyForm::AVIRTimedFileCopyForm(UI::GUIClientControl
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->lblFileDir, UI::GUILabel(ui, this, (const UTF8Char *)"File Dir"));
+	NEW_CLASS(this->lblFileDir, UI::GUILabel(ui, this, (const UTF8Char*)"File Dir"));
 	this->lblFileDir->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtFileDir, UI::GUITextBox(ui, this, (const UTF8Char*)""));
 	this->txtFileDir->SetRect(104, 4, 400, 23, false);

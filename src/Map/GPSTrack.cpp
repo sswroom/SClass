@@ -217,7 +217,7 @@ UTF8Char *Map::GPSTrack::GetString(UTF8Char *buff, UOSInt buffSize, void *nameAr
 		{
 			dt.SetTicks(this->currTimes->GetItem(0));
 			sptr = dt.ToString(buff, "yyyy-MM-dd HH:mm:ss.fff");
-			sptr = Text::StrConcat(sptr, (const UTF8Char*)" - ");
+			sptr = Text::StrConcatC(sptr, UTF8STRC(" - "));
 			dt.SetTicks(this->currTimes->GetItem(this->currTimes->GetCount() - 1));
 			sptr = dt.ToString(sptr, "yyyy-MM-dd HH:mm:ss.fff");
 			return sptr;
@@ -244,7 +244,7 @@ UTF8Char *Map::GPSTrack::GetString(UTF8Char *buff, UOSInt buffSize, void *nameAr
 		{
 			dt.SetTicks(track->records[0].utcTimeTicks);
 			sptr = dt.ToString(buff, "yyyy-MM-dd HH:mm:ss.fff");
-			sptr = Text::StrConcat(sptr, (const UTF8Char*)" - ");
+			sptr = Text::StrConcatC(sptr, UTF8STRC(" - "));
 			dt.SetTicks(track->records[track->nRecords - 1].utcTimeTicks);
 			sptr = dt.ToString(sptr, "yyyy-MM-dd HH:mm:ss.fff");
 			return sptr;
@@ -275,19 +275,19 @@ UTF8Char *Map::GPSTrack::GetColumnName(UTF8Char *buff, UOSInt colIndex)
 {
 	if (colIndex == 0)
 	{
-		return Text::StrConcat(buff, (const UTF8Char*)"Name");
+		return Text::StrConcatC(buff, UTF8STRC("Name"));
 	}
 	else if (colIndex == 1)
 	{
-		return Text::StrConcat(buff, (const UTF8Char*)"Time Range");
+		return Text::StrConcatC(buff, UTF8STRC("Time Range"));
 	}
 	else if (colIndex == 1)
 	{
-		return Text::StrConcat(buff, (const UTF8Char*)"Start Time");
+		return Text::StrConcatC(buff, UTF8STRC("Start Time"));
 	}
 	else if (colIndex == 2)
 	{
-		return Text::StrConcat(buff, (const UTF8Char*)"End Time");
+		return Text::StrConcatC(buff, UTF8STRC("End Time"));
 	}
 	else
 	{

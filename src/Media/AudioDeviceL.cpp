@@ -11,7 +11,7 @@ UOSInt Media::AudioDevice::GetDeviceCount()
 
 UTF8Char *Media::AudioDevice::GetDeviceName(UTF8Char *buff, UOSInt devNo)
 {
-	return Media::ALSARenderer::GetDeviceName(Text::StrConcat(buff, (const UTF8Char*)"ALSA: "), devNo);
+	return Media::ALSARenderer::GetDeviceName(Text::StrConcatC(buff, UTF8STRC("ALSA: ")), devNo);
 }
 
 Media::IAudioRenderer *Media::AudioDevice::CreateRenderer(const UTF8Char *devName)

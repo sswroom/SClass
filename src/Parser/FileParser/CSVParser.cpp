@@ -186,7 +186,7 @@ IO::ParsedObject *Parser::FileParser::CSVParser::ParseFile(IO::IStreamData *fd, 
 				}
 				else
 				{
-					Text::StrConcat(Text::StrConcat(Text::StrConcat(sbuff2, tmpArr2[dateCol]), (const UTF8Char*)" "), tmpArr2[timeCol]);
+					Text::StrConcat(Text::StrConcatC(Text::StrConcat(sbuff2, tmpArr2[dateCol]), UTF8STRC(" ")), tmpArr2[timeCol]);
 					dt.SetValue(sbuff2);
 				}
 				rec.utcTimeTicks = dt.ToTicks();

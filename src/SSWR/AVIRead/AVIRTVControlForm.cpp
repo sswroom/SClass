@@ -26,7 +26,7 @@ void __stdcall SSWR::AVIRead::AVIRTVControlForm::OnStartClick(void *userObj)
 	UInt32 portNum = (UInt32)(UOSInt)me->cboPort->GetItem(i);
 	if (portNum == 0)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char *)"Please select a port", (const UTF8Char *)"TV Control", me);
+		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please select a port", (const UTF8Char*)"TV Control", me);
 		return;
 	}
 
@@ -34,14 +34,14 @@ void __stdcall SSWR::AVIRead::AVIRTVControlForm::OnStartClick(void *userObj)
 	IO::TVControl::TVInfo info;
 	if (!IO::TVControl::GetTVInfo(tvType, &info))
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char *)"Please select a valid TV Type", (const UTF8Char *)"TV Control", me);
+		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please select a valid TV Type", (const UTF8Char*)"TV Control", me);
 		return;
 	}
 	NEW_CLASS(port, IO::SerialPort(portNum, info.defBaudRate, IO::SerialPort::PARITY_NONE, false));
 	if (port->IsError())
 	{
 		DEL_CLASS(port);
-		UI::MessageDialog::ShowDialog((const UTF8Char *)"Error in opening the port", (const UTF8Char *)"TV Control", me);
+		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in opening the port", (const UTF8Char*)"TV Control", me);
 		return;
 	}
 	if (me->chkLogFile->IsChecked())
@@ -237,7 +237,7 @@ SSWR::AVIRead::AVIRTVControlForm::AVIRTVControlForm(UI::GUIClientControl *parent
 	j = ports->GetCount();
 	while (i < j)
 	{
-		Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"COM"), ports->GetItem(i));
+		Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("COM")), ports->GetItem(i));
 		this->cboPort->AddItem(sbuff, (void*)ports->GetItem(i));
 		i++;
 	}

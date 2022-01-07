@@ -545,39 +545,39 @@ void Media::VideoFilter::IVTCFilter::do_IVTC(UInt32 frameTime, UInt32 frameNum, 
 							{
 								UTF8Char sbuff[256];
 								UTF8Char *sptr;
-								sptr = Text::StrConcat(sbuff, (const UTF8Char*)"ScnChg\t");
+								sptr = Text::StrConcatC(sbuff, UTF8STRC("ScnChg\t"));
 								sptr = Text::StrInt32(sptr, frameNum);
-								sptr = Text::StrConcat(sptr, (const UTF8Char*)"\t");
+								sptr = Text::StrConcatC(sptr, UTF8STRC("\t"));
 								sptr = Text::StrOSInt(sptr, iFieldStat.fieldDiff);
-								sptr = Text::StrConcat(sptr, (const UTF8Char*)"\t");
+								sptr = Text::StrConcatC(sptr, UTF8STRC("\t"));
 								sptr = Text::StrOSInt(sptr, iFieldStat.fieldCnt);
-								sptr = Text::StrConcat(sptr, (const UTF8Char*)"\t");
+								sptr = Text::StrConcatC(sptr, UTF8STRC("\t"));
 								sptr = Text::StrOSInt(sptr, iFieldStat.fieldMDiff);
-								sptr = Text::StrConcat(sptr, (const UTF8Char*)"\t");
+								sptr = Text::StrConcatC(sptr, UTF8STRC("\t"));
 								sptr = Text::StrOSInt(sptr, iFieldStat.field2Diff);
-								sptr = Text::StrConcat(sptr, (const UTF8Char*)"\t");
+								sptr = Text::StrConcatC(sptr, UTF8STRC("\t"));
 								sptr = Text::StrOSInt(sptr, iFieldStat.field2Cnt);
-								sptr = Text::StrConcat(sptr, (const UTF8Char*)"\t");
+								sptr = Text::StrConcatC(sptr, UTF8STRC("\t"));
 								sptr = Text::StrOSInt(sptr, iFieldStat.field2MDiff);
-/*								sptr = Text::StrConcat(sptr, (const UTF8Char*)"\t");
+/*								sptr = Text::StrConcatC(sptr, UTF8STRC("\t"));
 								sptr = Text::StrOSInt(sptr, iFieldStat.field3Cnt);
-								sptr = Text::StrConcat(sptr, (const UTF8Char*)"\t");
+								sptr = Text::StrConcatC(sptr, UTF8STRC("\t"));
 								sptr = Text::StrOSInt(sptr, iFieldStat.field4Cnt);*/
-								sptr = Text::StrConcat(sptr, (const UTF8Char*)"\t");
+								sptr = Text::StrConcatC(sptr, UTF8STRC("\t"));
 								sptr = Text::StrOSInt(sptr, pFieldStat.fieldDiff);
-								sptr = Text::StrConcat(sptr, (const UTF8Char*)"\t");
+								sptr = Text::StrConcatC(sptr, UTF8STRC("\t"));
 								sptr = Text::StrOSInt(sptr, pFieldStat.fieldCnt);
-								sptr = Text::StrConcat(sptr, (const UTF8Char*)"\t");
+								sptr = Text::StrConcatC(sptr, UTF8STRC("\t"));
 								sptr = Text::StrOSInt(sptr, pFieldStat.fieldMDiff);
-								sptr = Text::StrConcat(sptr, (const UTF8Char*)"\t");
+								sptr = Text::StrConcatC(sptr, UTF8STRC("\t"));
 								sptr = Text::StrOSInt(sptr, pFieldStat.field2Diff);
-								sptr = Text::StrConcat(sptr, (const UTF8Char*)"\t");
+								sptr = Text::StrConcatC(sptr, UTF8STRC("\t"));
 								sptr = Text::StrOSInt(sptr, pFieldStat.field2Cnt);
-								sptr = Text::StrConcat(sptr, (const UTF8Char*)"\t");
+								sptr = Text::StrConcatC(sptr, UTF8STRC("\t"));
 								sptr = Text::StrOSInt(sptr, pFieldStat.field2MDiff);
-/*								sptr = Text::StrConcat(sptr, (const UTF8Char*)"\t");
+/*								sptr = Text::StrConcatC(sptr, UTF8STRC("\t");
 								sptr = Text::StrOSInt(sptr, pFieldStat.field3Cnt);
-								sptr = Text::StrConcat(sptr, (const UTF8Char*)"\t");
+								sptr = Text::StrConcatC(sptr, UTF8STRC("\t");
 								sptr = Text::StrOSInt(sptr, pFieldStat.field4Cnt);*/
 								this->debugLog->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
 							}
@@ -1116,71 +1116,71 @@ void Media::VideoFilter::IVTCFilter::do_IVTC(UInt32 frameTime, UInt32 frameNum, 
 				{
 					UTF8Char sbuff[256];
 					UTF8Char *sptr;
-					sptr = Text::StrConcat(sbuff, (const UTF8Char*)"IVTC\t");
+					sptr = Text::StrConcatC(sbuff, UTF8STRC("IVTC\t"));
 					sptr = Text::StrInt32(sptr, frameNum);
-					sptr = Text::StrConcat(sptr, (const UTF8Char*)"\t");
+					sptr = Text::StrConcatC(sptr, UTF8STRC("\t"));
 					sptr = Text::StrOSInt(sptr, fieldStat.fieldDiff);
-					sptr = Text::StrConcat(sptr, (const UTF8Char*)"\t");
+					sptr = Text::StrConcatC(sptr, UTF8STRC("\t"));
 					sptr = Text::StrOSInt(sptr, fieldStat.fieldCnt);
-					sptr = Text::StrConcat(sptr, (const UTF8Char*)"\t");
+					sptr = Text::StrConcatC(sptr, UTF8STRC("\t"));
 					sptr = Text::StrOSInt(sptr, fieldStat.fieldMDiff);
-					sptr = Text::StrConcat(sptr, (const UTF8Char*)"\t");
+					sptr = Text::StrConcatC(sptr, UTF8STRC("\t"));
 					sptr = Text::StrOSInt(sptr, fieldStat.field2Diff);
-					sptr = Text::StrConcat(sptr, (const UTF8Char*)"\t");
+					sptr = Text::StrConcatC(sptr, UTF8STRC("\t"));
 					sptr = Text::StrOSInt(sptr, fieldStat.field2Cnt);
-					sptr = Text::StrConcat(sptr, (const UTF8Char*)"\t");
+					sptr = Text::StrConcatC(sptr, UTF8STRC("\t"));
 					sptr = Text::StrOSInt(sptr, fieldStat.field2MDiff);
-					sptr = Text::StrConcat(sptr, (const UTF8Char*)"\t");
+					sptr = Text::StrConcatC(sptr, UTF8STRC("\t"));
 /*					sptr = Text::StrOSInt(sptr, fieldStat.field3Cnt);
-					sptr = Text::StrConcat(sptr, (const UTF8Char*)"\t");
+					sptr = Text::StrConcatC(sptr, UTF8STRC("\t"));
 					sptr = Text::StrOSInt(sptr, fieldStat.field4Cnt);
-					sptr = Text::StrConcat(sptr, (const UTF8Char*)"\t");*/
+					sptr = Text::StrConcatC(sptr, UTF8STRC("\t"));*/
 					sptr = Text::StrInt32(sptr, oddDiff);
-					sptr = Text::StrConcat(sptr, (const UTF8Char*)"\t");
+					sptr = Text::StrConcatC(sptr, UTF8STRC("\t"));
 					sptr = Text::StrInt32(sptr, oddMDiff);
-					sptr = Text::StrConcat(sptr, (const UTF8Char*)"\t");
+					sptr = Text::StrConcatC(sptr, UTF8STRC("\t"));
 					sptr = Text::StrInt32(sptr, evenDiff);
-					sptr = Text::StrConcat(sptr, (const UTF8Char*)"\t");
+					sptr = Text::StrConcatC(sptr, UTF8STRC("\t"));
 					sptr = Text::StrInt32(sptr, evenMDiff);
-					sptr = Text::StrConcat(sptr, (const UTF8Char*)"\t");
+					sptr = Text::StrConcatC(sptr, UTF8STRC("\t"));
 					sptr = Text::StrInt32(sptr, this->ivtcLastSC);
-					sptr = Text::StrConcat(sptr, (const UTF8Char*)"\t");
+					sptr = Text::StrConcatC(sptr, UTF8STRC("\t"));
 					sptr = Text::StrInt32(sptr, this->ivtcLastFieldUsed?1:0);
-					sptr = Text::StrConcat(sptr, (const UTF8Char*)"\t");
+					sptr = Text::StrConcatC(sptr, UTF8STRC("\t"));
 					sptr = Text::StrInt32(sptr, this->ivtcLastOdd);
-					sptr = Text::StrConcat(sptr, (const UTF8Char*)"\t");
+					sptr = Text::StrConcatC(sptr, UTF8STRC("\t"));
 					sptr = Text::StrInt32(sptr, this->ivtcLastEven);
-					sptr = Text::StrConcat(sptr, (const UTF8Char*)"\t");
+					sptr = Text::StrConcatC(sptr, UTF8STRC("\t"));
 					sptr = Text::StrInt32(sptr, outFrameTime);
-					sptr = Text::StrConcat(sptr, (const UTF8Char*)"\t");
+					sptr = Text::StrConcatC(sptr, UTF8STRC("\t"));
 					switch (frameType)
 					{
 					case Media::FT_NON_INTERLACE:
-						sptr = Text::StrConcat(sptr, (const UTF8Char*)"Progressive");
+						sptr = Text::StrConcatC(sptr, UTF8STRC("Progressive"));
 						break;
 					case Media::FT_INTERLACED_TFF:
-						sptr = Text::StrConcat(sptr, (const UTF8Char*)"Interlaced TFF");
+						sptr = Text::StrConcatC(sptr, UTF8STRC("Interlaced TFF"));
 						break;
 					case Media::FT_INTERLACED_BFF:
-						sptr = Text::StrConcat(sptr, (const UTF8Char*)"Interlaced BFF");
+						sptr = Text::StrConcatC(sptr, UTF8STRC("Interlaced BFF"));
 						break;
 					case Media::FT_FIELD_TF:
-						sptr = Text::StrConcat(sptr, (const UTF8Char*)"Top Field");
+						sptr = Text::StrConcatC(sptr, UTF8STRC("Top Field"));
 						break;
 					case Media::FT_FIELD_BF:
-						sptr = Text::StrConcat(sptr, (const UTF8Char*)"Bottom Field");
+						sptr = Text::StrConcatC(sptr, UTF8STRC("Bottom Field"));
 						break;
 					case Media::FT_MERGED_TF:
-						sptr = Text::StrConcat(sptr, (const UTF8Char*)"Merged Top Field");
+						sptr = Text::StrConcatC(sptr, UTF8STRC("Merged Top Field"));
 						break;
 					case Media::FT_MERGED_BF:
-						sptr = Text::StrConcat(sptr, (const UTF8Char*)"Merged Bottom Field");
+						sptr = Text::StrConcatC(sptr, UTF8STRC("Merged Bottom Field"));
 						break;
 					case Media::FT_DISCARD:
-						sptr = Text::StrConcat(sptr, (const UTF8Char*)"Discard");
+						sptr = Text::StrConcatC(sptr, UTF8STRC("Discard"));
 						break;
 					case Media::FT_INTERLACED_NODEINT:
-						sptr = Text::StrConcat(sptr, (const UTF8Char*)"Interlaced (No deinterlace)");
+						sptr = Text::StrConcatC(sptr, UTF8STRC("Interlaced (No deinterlace)"));
 						break;
 					}
 					this->debugLog->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));

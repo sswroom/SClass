@@ -335,8 +335,8 @@ SSWR::AVIRead::AVIRLDAPExplorerForm::AVIRLDAPExplorerForm(UI::GUIClientControl *
 	this->lvValues->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvValues->SetFullRowSelect(true);
 	this->lvValues->SetShowGrid(true);
-	this->lvValues->AddColumn((const UTF8Char *)"Type", 200);
-	this->lvValues->AddColumn((const UTF8Char *)"Value", 500);
+	this->lvValues->AddColumn((const UTF8Char*)"Type", 200);
+	this->lvValues->AddColumn((const UTF8Char*)"Value", 500);
 
 	this->cli = 0;
 	NEW_CLASS(this->dispResults, Data::ArrayList<Net::LDAPClient::SearchResObject*>());

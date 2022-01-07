@@ -22,7 +22,7 @@ void __stdcall SSWR::AVIRead::AVIRGISCSysForm::OnOKClicked(void *userObj)
 		UOSInt i = me->cboProj->GetSelectedIndex();
 		if (i != INVALID_INDEX)
 		{
-			const UTF8Char *projName = (const UTF8Char *)me->cboProj->GetItem(i);
+			const UTF8Char *projName = (const UTF8Char*)me->cboProj->GetItem(i);
 			me->outCSys = Math::CoordinateSystemManager::CreateProjCoordinateSystem(projName, projName);
 			if (me->outCSys)
 			{

@@ -49,7 +49,7 @@ SSWR::AVIRead::AVIRDHT22Form::AVIRDHT22Form(UI::GUIClientControl *parent, UI::GU
 	this->pin = pin;
 	this->core = core;
 	NEW_CLASS(this->dht22, IO::Device::DHT22(this->pin));
-	this->pin->GetName(Text::StrConcat(sbuff, (const UTF8Char*)"DHT22 - "));
+	this->pin->GetName(Text::StrConcatC(sbuff, UTF8STRC("DHT22 - ")));
 	this->SetText(sbuff);
 	this->SetNoResize(true);
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));

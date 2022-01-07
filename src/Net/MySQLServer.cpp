@@ -283,9 +283,9 @@ void __stdcall Net::MySQLServer::OnClientEvent(Net::TCPClient *cli, void *userOb
 		{
 			UTF8Char sbuff[256];
 			UTF8Char *sptr;
-			sptr = Text::StrConcat(sbuff, (const UTF8Char*)"Client ");
+			sptr = Text::StrConcatC(sbuff, UTF8STRC("Client "));
 			sptr = cli->GetRemoteName(sptr);
-			sptr = Text::StrConcat(sptr, (const UTF8Char*)" disconnect");
+			sptr = Text::StrConcatC(sptr, UTF8STRC(" disconnect"));
 			me->log->LogMessageC(sbuff, (UOSInt)(sptr - sbuff), IO::ILogHandler::LOG_LEVEL_ACTION);
 		}
 		me->dbms->SessEnd(data->connId);
@@ -509,9 +509,9 @@ void __stdcall Net::MySQLServer::OnClientData(Net::TCPClient *cli, void *userObj
 				else
 				{
 					UTF8Char *sptr;
-					sptr = Text::StrConcat(&sbuff[7], (const UTF8Char*)"#28000Access denied for user '");
+					sptr = Text::StrConcatC(&sbuff[7], UTF8STRC("#28000Access denied for user '"));
 					sptr = Text::StrConcat(sptr, data->userName);
-					sptr = Text::StrConcat(sptr, (const UTF8Char*)"'@'");
+					sptr = Text::StrConcatC(sptr, UTF8STRC("'@'"));
 					sptr = Net::SocketUtil::GetAddrName(sptr, &addr);
 					*sptr++ = '\'';
 					WriteInt24(sbuff, (sptr - sbuff - 4));
@@ -603,12 +603,12 @@ void __stdcall Net::MySQLServer::OnClientData(Net::TCPClient *cli, void *userObj
 								{
 									r->GetColDef(j, &col);
 									sbuff[3] = seqId++;
-									sptr = Net::MySQLUtil::AppendLenencStr(&sbuff[4], (const UTF8Char*)"def"); //catalog
-									sptr = Net::MySQLUtil::AppendLenencStr(sptr, 0); //schema
-									sptr = Net::MySQLUtil::AppendLenencStr(sptr, 0); //table
-									sptr = Net::MySQLUtil::AppendLenencStr(sptr, 0); //org_table
-									sptr = Net::MySQLUtil::AppendLenencStr(sptr, col.GetColName()->v); //name
-									sptr = Net::MySQLUtil::AppendLenencStr(sptr, 0); //org_name
+									sptr = Net::MySQLUtil::AppendLenencStrC(&sbuff[4], UTF8STRC("def")); //catalog
+									sptr = Net::MySQLUtil::AppendLenencStrC(sptr, 0, 0); //schema
+									sptr = Net::MySQLUtil::AppendLenencStrC(sptr, 0, 0); //table
+									sptr = Net::MySQLUtil::AppendLenencStrC(sptr, 0, 0); //org_table
+									sptr = Net::MySQLUtil::AppendLenencStrC(sptr, col.GetColName()->v, Text::StrCharCnt(col.GetColName()->v)); //name
+									sptr = Net::MySQLUtil::AppendLenencStrC(sptr, 0, 0); //org_name
 
 									sptr = Net::MySQLUtil::AppendLenencInt(sptr, 12);
 									WriteInt16(&sptr[0], data->clientCS);
@@ -694,7 +694,7 @@ void __stdcall Net::MySQLServer::OnClientData(Net::TCPClient *cli, void *userObj
 										{
 											sb.ClearStr();
 											r->GetStr(j, &sb);
-											sptr = Net::MySQLUtil::AppendLenencStr(sptr, sb.ToString());
+											sptr = Net::MySQLUtil::AppendLenencStrC(sptr, sb.ToString(), sb.GetLength());
 										}
 										
 										j++;
@@ -799,7 +799,7 @@ void __stdcall Net::MySQLServer::OnClientConn(Socket *s, void *userObj)
 	me->cliMgr->AddClient(cli, data);
 
 	buff[4] = 10;
-	bptr = Text::StrConcat(Text::StrConcat(&buff[5], (const UTF8Char*)MYSQLVERSION), me->dbms->GetVersion()) + 1;
+	bptr = Text::StrConcat(Text::StrConcatC(&buff[5], UTF8STRC(MYSQLVERSION)), me->dbms->GetVersion()) + 1;
 	WriteInt32(bptr, data->connId);
 	MemCopyNO(&bptr[4], data->authPluginData, 8);
 	bptr += 12;
@@ -814,7 +814,7 @@ void __stdcall Net::MySQLServer::OnClientConn(Socket *s, void *userObj)
 	MemCopyNO(bptr, &data->authPluginData[8], 12);
 	bptr[12] = 0;
 	bptr += 13;
-	bptr = Text::StrConcat(bptr, (const UTF8Char*)"mysql_native_password") + 1;
+	bptr = Text::StrConcatC(bptr, UTF8STRC("mysql_native_password")) + 1;
 	WriteInt32(buff, (Int32)(bptr - buff - 4));
 	cli->Write(buff, (UOSInt)(bptr - buff));
 }

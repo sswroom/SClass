@@ -338,7 +338,7 @@ UTF8Char *Win32::Clipboard::GetFormatName(UInt32 fmtId, UTF8Char *sbuff, UOSInt 
 		GtkClipboard *clipboard = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
 		if (clipboard == 0)
 		{
-			return Text::StrConcat(sbuff, (const UTF8Char*)"Unknown");
+			return Text::StrConcatC(sbuff, UTF8STRC("Unknown"));
 		}
 		GdkAtom *targets;
 		gint nTargets;
@@ -351,27 +351,27 @@ UTF8Char *Win32::Clipboard::GetFormatName(UInt32 fmtId, UTF8Char *sbuff, UOSInt 
 			}
 			else
 			{
-				sbuff = Text::StrConcat(sbuff, (const UTF8Char*)"Unknown");
+				sbuff = Text::StrConcatC(sbuff, UTF8STRC("Unknown"));
 			}
 			g_free(targets);
 			return sbuff;
 		}
 		else
 		{
-			return Text::StrConcat(sbuff, (const UTF8Char*)"Unknown");
+			return Text::StrConcatC(sbuff, UTF8STRC("Unknown"));
 		}
 	}
 	else if (fmtId == 1)
 	{
-		return Text::StrConcat(sbuff, (const UTF8Char*)"TEXT");
+		return Text::StrConcatC(sbuff, UTF8STRC("TEXT"));
 	}
 	else if (fmtId == 2)
 	{
-		return Text::StrConcat(sbuff, (const UTF8Char*)"URIs");
+		return Text::StrConcatC(sbuff, UTF8STRC("URIs"));
 	}
 	else
 	{*/
-	return Text::StrConcat(sbuff, (const UTF8Char*)"Unknown");
+	return Text::StrConcatC(sbuff, UTF8STRC("Unknown"));
 //	}
 }
 

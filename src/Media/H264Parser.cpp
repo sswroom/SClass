@@ -656,25 +656,25 @@ UTF8Char *Media::H264Parser::GetFrameType(UTF8Char *sbuff, const UInt8 *frame, U
 			switch (v)
 			{
 			case 0:
-				return Text::StrConcat(sbuff, (const UTF8Char*)"P");
+				return Text::StrConcatC(sbuff, UTF8STRC("P"));
 			case 1:
-				return Text::StrConcat(sbuff, (const UTF8Char*)"B");
+				return Text::StrConcatC(sbuff, UTF8STRC("B"));
 			case 2:
-				return Text::StrConcat(sbuff, (const UTF8Char*)"I");
+				return Text::StrConcatC(sbuff, UTF8STRC("I"));
 			case 3:
-				return Text::StrConcat(sbuff, (const UTF8Char*)"SP");
+				return Text::StrConcatC(sbuff, UTF8STRC("SP"));
 			case 4:
-				return Text::StrConcat(sbuff, (const UTF8Char*)"SI");
+				return Text::StrConcatC(sbuff, UTF8STRC("SI"));
 			case 5:
-				return Text::StrConcat(sbuff, (const UTF8Char*)"P");
+				return Text::StrConcatC(sbuff, UTF8STRC("P"));
 			case 6:
-				return Text::StrConcat(sbuff, (const UTF8Char*)"B");
+				return Text::StrConcatC(sbuff, UTF8STRC("B"));
 			case 7:
-				return Text::StrConcat(sbuff, (const UTF8Char*)"I");
+				return Text::StrConcatC(sbuff, UTF8STRC("I"));
 			case 8:
-				return Text::StrConcat(sbuff, (const UTF8Char*)"SP");
+				return Text::StrConcatC(sbuff, UTF8STRC("SP"));
 			case 9:
-				return Text::StrConcat(sbuff, (const UTF8Char*)"SI");
+				return Text::StrConcatC(sbuff, UTF8STRC("SI"));
 			default:
 				return 0;
 			}

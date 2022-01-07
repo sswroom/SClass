@@ -4,8 +4,9 @@
 #include "Math/Math.h"
 #include "Media/ColorCorr.h"
 #include "Text/MyString.h"
+#include "Text/MyStringW.h"
 
-Media::ColorCorr::ColorCorr(WChar *name)
+Media::ColorCorr::ColorCorr(UTF8Char *name)
 {
 	Int32 regVal;
 	WChar buff[256];
@@ -29,7 +30,7 @@ Media::ColorCorr::ColorCorr(WChar *name)
 	uncorrTab32Valid = false;
 
 	sptr = Text::StrConcat(buff, L"Color\\");
-	sptr = Text::StrConcat(sptr, name);
+	sptr = Text::StrUTF8_WChar(sptr, name, 0);
 	IO::Registry *reg = IO::Registry::OpenSoftware(IO::Registry::REG_USER_ALL, L"SSWR", buff);
 	radd = reg->GetValueI32(L"RAdd") * 0.0001;
 	gadd = reg->GetValueI32(L"GAdd") * 0.0001;
@@ -68,12 +69,12 @@ Media::ColorCorr::~ColorCorr()
 	}
 }
 
-Int32 Media::ColorCorr::Save(WChar *name)
+Int32 Media::ColorCorr::Save(UTF8Char *name)
 {
 	WChar buff[256];
 	WChar *sptr;
 	sptr = Text::StrConcat(buff, L"Color\\");
-	sptr = Text::StrConcat(sptr, name);
+	sptr = Text::StrUTF8_WChar(sptr, name, 0);
 	IO::Registry *reg = IO::Registry::OpenSoftware(IO::Registry::REG_USER_ALL, L"SSWR", buff);
 	reg->SetValue(L"RAdd", (Int32)(radd * 10000));
 	reg->SetValue(L"GAdd", (Int32)(gadd * 10000));
@@ -191,7 +192,7 @@ void Media::ColorCorr::SetGammas(Int32 rgamma, Int32 ggamma, Int32 bgamma)
 #define iTransfer(val) ((val) <= -cssRGBC1)?(-pow((-(val) + cssRGBK3) / (1 + cssRGBK3), cssRGBC2)):(((val) < cssRGBC1)?((val) / cssRGBK2):(pow(((val) + cssRGBK3) / (1 + cssRGBK3), cssRGBC2)))
 #define fTransfer(val) (((val) < -cssRGBK1)?((-1 - cssRGBK3) * pow(-(val), cssRGBK4) + cssRGBK3):(((val) <= cssRGBK1)?(cssRGBK2 * (val)):((1 + cssRGBK3) * pow((val), cssRGBK4) - cssRGBK3)))
 
-void Media::ColorCorr::CorrImage32(UInt8 *src, Int32 sbpl, UInt32 sgamma, UInt8 *dest, Int32 dbpl, Int32 width, Int32 height)
+void Media::ColorCorr::CorrImage32(const UInt8 *src, OSInt sbpl, UInt32 sgamma, UInt8 *dest, OSInt dbpl, UInt32 width, UInt32 height)
 {
 	Int32 i;
 	if ((Int32)sgamma != this->corrTab32Gamma || !this->corrTab32Valid)
@@ -323,7 +324,7 @@ ci32lop2:
 	}
 #else
 	Int32 *tmpTab = (Int32*)tab;
-	UInt8 *tmpSrc;
+	const UInt8 *tmpSrc;
 	UInt8 *tmpDest;
 	Int32 j;
 	i = height;
@@ -344,6 +345,6 @@ ci32lop2:
 #endif
 }
 
-void Media::ColorCorr::UncorrImage32(UInt8 *src, Int32 sbpl, UInt32 sgamma, UInt8 *dest, Int32 dbpl, Int32 width, Int32 height)
+void Media::ColorCorr::UncorrImage32(const UInt8 *src, OSInt sbpl, UInt32 sgamma, UInt8 *dest, OSInt dbpl, UInt32 width, UInt32 height)
 {
 }

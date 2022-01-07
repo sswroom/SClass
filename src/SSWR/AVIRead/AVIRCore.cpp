@@ -517,7 +517,7 @@ Bool SSWR::AVIRead::AVIRCore::GenFontStylePreview(Media::DrawImage *img, Media::
 		buffSize = (UOSInt)Math::Double2Int32(Math::UOSInt2Double(buffSize) * dpi / 96.0);
 		if ((sptr = env->GetFontStyleName(fontStyle, sbuff)) == 0)
 		{
-			sptr = Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"Style "), fontStyle);
+			sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Style ")), fontStyle);
 		}
 		f = img->NewFontPt(fontName, fontSizePt, bold?((Media::DrawEngine::DrawFontStyle)(Media::DrawEngine::DFS_BOLD | Media::DrawEngine::DFS_ANTIALIAS)):Media::DrawEngine::DFS_ANTIALIAS, this->currCodePage);
 		img->GetTextSizeC(f, sbuff, (UOSInt)(sptr - sbuff), sz);

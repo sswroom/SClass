@@ -412,11 +412,11 @@ UTF8Char *Map::TileMapLayer::GetColumnName(UTF8Char *buff, UOSInt colIndex)
 	switch (colIndex)
 	{
 	case 0:
-		return Text::StrConcat(buff, (const UTF8Char*)"id");
+		return Text::StrConcatC(buff, UTF8STRC("id"));
 	case 1:
-		return Text::StrConcat(buff, (const UTF8Char*)"level");
+		return Text::StrConcatC(buff, UTF8STRC("level"));
 	case 2:
-		return Text::StrConcat(buff, (const UTF8Char*)"url");
+		return Text::StrConcatC(buff, UTF8STRC("url"));
 	}
 	return 0;
 }

@@ -91,7 +91,7 @@ void Net::WebServer::WebRequest::ParseFormStr(Data::FastStringMap<Text::String *
 					charCnt = s->leng + 1;
 					charCnt += Text::StrCharCnt(tmpName);
 					tmpStr = Text::String::New(charCnt);
-					Text::StrConcat(Text::StrConcat(s->ConcatTo(tmpStr->v), (const UTF8Char*)","), tmpName);
+					Text::StrConcat(Text::StrConcatC(s->ConcatTo(tmpStr->v), UTF8STRC(",")), tmpName);
 					formMap->Put(tmpBuff, tmpStr);
 					s->Release();
 				}
@@ -154,7 +154,7 @@ void Net::WebServer::WebRequest::ParseFormStr(Data::FastStringMap<Text::String *
 			charCnt = s->leng + 1;
 			charCnt += Text::StrCharCnt(tmpName);
 			tmpStr = Text::String::New(charCnt);
-			Text::StrConcat(Text::StrConcat(s->ConcatTo(tmpStr->v), (const UTF8Char*)","), tmpName);
+			Text::StrConcat(Text::StrConcatC(s->ConcatTo(tmpStr->v), UTF8STRC(",")), tmpName);
 			formMap->Put(tmpBuff, tmpStr);
 			s->Release();
 		}

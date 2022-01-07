@@ -22,12 +22,12 @@ void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnStartClicked(void *userObj)
 		me->txtPort->GetText(&sb);
 		if (!sb.ToUInt16(&port))
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char *)"Please enter valid port", (const UTF8Char *)"Error", me);
+			UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter valid port", (const UTF8Char*)"Error", me);
 			return;
 		}
 		if (port <= 0 || port > 65535)
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char *)"Please enter valid port", (const UTF8Char *)"Error", me);
+			UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter valid port", (const UTF8Char*)"Error", me);
 			return;
 		}
 		NEW_CLASS(me->svr, Net::UDPServer(me->core->GetSocketFactory(), 0, port, 0, OnUDPPacket, me, me->log, (const UTF8Char*)"UDP: ", 4, me->chkReuseAddr->IsChecked()));
@@ -35,7 +35,7 @@ void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnStartClicked(void *userObj)
 		{
 			DEL_CLASS(me->svr);
 			me->svr = 0;
-			UI::MessageDialog::ShowDialog((const UTF8Char *)"Error in listening to the port", (const UTF8Char *)"Error", me);
+			UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in listening to the port", (const UTF8Char*)"Error", me);
 			return;
 		}
 		me->svr->AddMulticastIP(Net::SocketUtil::GetIPAddr((const UTF8Char*)"239.255.255.250"));
@@ -177,7 +177,7 @@ void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnMulticastClicked(void *userO
 void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnMulticastDoubleClk(void *userObj)
 {
 	SSWR::AVIRead::AVIRUDPCaptureForm *me = (SSWR::AVIRead::AVIRUDPCaptureForm*)userObj;
-	const UTF8Char *ip = (const UTF8Char *)me->lbMulticastCommon->GetSelectedItem();
+	const UTF8Char *ip = (const UTF8Char*)me->lbMulticastCommon->GetSelectedItem();
 	if (ip)
 	{
 		me->txtMulticastCurr->SetText(ip);

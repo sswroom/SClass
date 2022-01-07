@@ -24,7 +24,7 @@ UTF8Char *SSWR::OrganMgr::OrganParentItem::GetItemName(UTF8Char *buff)
 
 UTF8Char *SSWR::OrganMgr::OrganParentItem::GetEngName(UTF8Char *buff)
 {
-	return Text::StrConcat(buff, (const UTF8Char*)"Parent");
+	return Text::StrConcatC(buff, UTF8STRC("Parent"));
 }
 
 SSWR::OrganMgr::OrganGroupItem *SSWR::OrganMgr::OrganParentItem::Clone()

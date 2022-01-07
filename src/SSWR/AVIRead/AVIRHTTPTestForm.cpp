@@ -22,14 +22,14 @@ void __stdcall SSWR::AVIRead::AVIRHTTPTestForm::OnStartClicked(void *userObj)
 	Text::StringBuilderUTF8 sb;
 	if (me->connURLs->GetCount() <= 0)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char *)"Please enter at least 1 URL", (const UTF8Char *)"Start", me);
+		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter at least 1 URL", (const UTF8Char*)"Start", me);
 		return;
 	}
 	me->txtConcurrCnt->GetText(&sb);
 	if (!sb.ToUInt32(&me->threadCnt) || me->threadCnt <= 0 || me->threadCnt >= 1000)
 	{
 		me->threadCnt = 0;
-		UI::MessageDialog::ShowDialog((const UTF8Char *)"Please enter valid Concurrent Count", (const UTF8Char *)"Start", me);
+		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter valid Concurrent Count", (const UTF8Char*)"Start", me);
 		return;
 	}
 	sb.ClearStr();
@@ -38,7 +38,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPTestForm::OnStartClicked(void *userObj)
 	{
 		me->threadCnt = 0;
 		me->connLeftCnt = 0;
-		UI::MessageDialog::ShowDialog((const UTF8Char *)"Please enter valid Total Connection Count", (const UTF8Char *)"Start", me);
+		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter valid Total Connection Count", (const UTF8Char*)"Start", me);
 		return;
 	}
 	me->kaConn = me->chkKAConn->IsChecked();
@@ -51,7 +51,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPTestForm::OnStartClicked(void *userObj)
 		{
 			me->threadCnt = 0;
 			me->connLeftCnt = 0;
-			UI::MessageDialog::ShowDialog((const UTF8Char *)"POST Size must be > 0", (const UTF8Char *)"Start", me);
+			UI::MessageDialog::ShowDialog((const UTF8Char*)"POST Size must be > 0", (const UTF8Char*)"Start", me);
 			return;
 		}
 	}
@@ -85,7 +85,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPTestForm::OnURLAddClicked(void *userObj)
 	Text::StringBuilderUTF8 sb;
 	if (me->threadCurrCnt > 0)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char *)"You cannot add URL while running", (const UTF8Char *)"Add", me);
+		UI::MessageDialog::ShowDialog((const UTF8Char*)"You cannot add URL while running", (const UTF8Char*)"Add", me);
 		return;
 	}
 	me->txtURL->GetText(&sb);
@@ -97,7 +97,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPTestForm::OnURLAddClicked(void *userObj)
 	}
 	else
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char *)"Please enter valid HTTP url", (const UTF8Char *)"Add", me);
+		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter valid HTTP url", (const UTF8Char*)"Add", me);
 		return;
 	}
 }
@@ -107,7 +107,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPTestForm::OnURLClearClicked(void *userObj)
 	SSWR::AVIRead::AVIRHTTPTestForm *me = (SSWR::AVIRead::AVIRHTTPTestForm*)userObj;
 	if (me->threadCurrCnt > 0)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char *)"You cannot add URL while running", (const UTF8Char *)"Add", me);
+		UI::MessageDialog::ShowDialog((const UTF8Char*)"You cannot add URL while running", (const UTF8Char*)"Add", me);
 		return;
 	}
 	me->ClearURLs();
