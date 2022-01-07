@@ -6,12 +6,12 @@ Net::WebServer::PrintLogWebResponse::PrintLogWebResponse(Net::WebServer::IWebRes
 {
 	this->resp = resp;
 	this->writer = writer;
-	this->prefix = SCOPY_TEXT(prefix);
+	this->prefix = Text::String::NewOrNull(prefix);
 }
 
 Net::WebServer::PrintLogWebResponse::~PrintLogWebResponse()
 {
-	SDEL_TEXT(this->prefix);
+	SDEL_STRING(this->prefix);
 }
 
 void Net::WebServer::PrintLogWebResponse::EnableWriteBuffer()
@@ -41,18 +41,18 @@ Int32 Net::WebServer::PrintLogWebResponse::GetStatusCode()
 	return this->resp->GetStatusCode();
 }
 
-Bool Net::WebServer::PrintLogWebResponse::AddHeader(const UTF8Char *name, const UTF8Char *value)
+Bool Net::WebServer::PrintLogWebResponse::AddHeaderC(const UTF8Char *name, UOSInt nameLen, const UTF8Char *value, UOSInt valueLen)
 {
-	if (this->resp->AddHeader(name, value))
+	if (this->resp->AddHeaderC(name, nameLen, value, valueLen))
 	{
 		Text::StringBuilderUTF8 sb;
 		if (this->prefix)
 		{
 			sb.Append(this->prefix);
 		}
-		sb.Append(name);
+		sb.AppendC(name, nameLen);
 		sb.AppendC(UTF8STRC(": "));
-		sb.Append(value);
+		sb.AppendC(value, valueLen);
 		this->writer->WriteLineC(sb.ToString(), sb.GetLength());
 		return true;
 	}

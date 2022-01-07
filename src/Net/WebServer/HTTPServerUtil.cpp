@@ -78,8 +78,8 @@ Bool Net::WebServer::HTTPServerUtil::SendContent(Net::WebServer::IWebRequest *re
 				{
 					if (browser != Net::BrowserInfo::BT_IE && browser != Net::BrowserInfo::BT_SAFARI && os != Manage::OSInfo::OT_IPHONE && os != Manage::OSInfo::OT_IPAD)
 					{
-						resp->AddHeader((const UTF8Char*)"Content-Encoding", (const UTF8Char*)"gzip");
-						resp->AddHeader((const UTF8Char*)"Transfer-Encoding", (const UTF8Char*)"chunked");
+						resp->AddHeaderC(UTF8STRC("Content-Encoding"), UTF8STRC("gzip"));
+						resp->AddHeaderC(UTF8STRC("Transfer-Encoding"), UTF8STRC("chunked"));
 
 						compBuff[0] = 0x1F;
 						compBuff[1] = 0x8B;
@@ -113,8 +113,8 @@ Bool Net::WebServer::HTTPServerUtil::SendContent(Net::WebServer::IWebRequest *re
 				{
 					if (browser != Net::BrowserInfo::BT_IE)
 					{
-						resp->AddHeader((const UTF8Char*)"Content-Encoding", (const UTF8Char*)"deflate");
-						resp->AddHeader((const UTF8Char*)"Transfer-Encoding", (const UTF8Char*)"chunked");
+						resp->AddHeaderC(UTF8STRC("Content-Encoding"), UTF8STRC("deflate"));
+						resp->AddHeaderC(UTF8STRC("Transfer-Encoding"), UTF8STRC("chunked"));
 
 						Data::Compress::DeflateStream dstm(fs, contLeng, 0, Data::Compress::DeflateStream::CompLevel::MaxSpeed, true);
 						UOSInt readSize;
@@ -180,8 +180,8 @@ Bool Net::WebServer::HTTPServerUtil::SendContent(Net::WebServer::IWebRequest *re
 			{
 				if (Text::StrEqualsICase(sarr[i], (const UTF8Char*)"gzip"))
 				{
-					resp->AddHeader((const UTF8Char*)"Content-Encoding", (const UTF8Char*)"gzip");
-					resp->AddHeader((const UTF8Char*)"Transfer-Encoding", (const UTF8Char*)"chunked");
+					resp->AddHeaderC(UTF8STRC("Content-Encoding"), UTF8STRC("gzip"));
+					resp->AddHeaderC(UTF8STRC("Transfer-Encoding"), UTF8STRC("chunked"));
 
 					compBuff[0] = 0x1F;
 					compBuff[1] = 0x8B;
@@ -214,8 +214,8 @@ Bool Net::WebServer::HTTPServerUtil::SendContent(Net::WebServer::IWebRequest *re
 				{
 					if (browser != Net::BrowserInfo::BT_IE)
 					{
-						resp->AddHeader((const UTF8Char*)"Content-Encoding", (const UTF8Char*)"deflate");
-						resp->AddHeader((const UTF8Char*)"Transfer-Encoding", (const UTF8Char*)"chunked");
+						resp->AddHeaderC(UTF8STRC("Content-Encoding"), UTF8STRC("deflate"));
+						resp->AddHeaderC(UTF8STRC("Transfer-Encoding"), UTF8STRC("chunked"));
 
 						IO::MemoryStream mstm((UInt8*)buff, (UOSInt)contLeng, (const UTF8Char*)"Net.HTTPServerUtil.SendContent");
 						Data::Compress::DeflateStream dstm(&mstm, contLeng, 0, Data::Compress::DeflateStream::CompLevel::MaxSpeed, true);
@@ -359,13 +359,14 @@ Bool Net::WebServer::HTTPServerUtil::ResponseFile(Net::WebServer::IWebRequest *r
 		u8ptr = Text::StrUInt64(u8ptr, start + sizeLeft - 1);
 		*u8ptr++ = '/';
 		u8ptr = Text::StrUInt64(u8ptr, fileSize);
-		resp->AddHeader((const UTF8Char*)"Content-Range", u8buff);
+		resp->AddHeaderC(UTF8STRC("Content-Range"), u8buff, (UOSInt)(u8ptr - u8buff));
 	}
 	resp->AddDefHeaders(req);
 	resp->AddCacheControl(cacheAge);
 	resp->AddLastModified(&t);
-	resp->AddContentType(mime = Net::MIME::GetMIMEFromExt(sbuff));
-	resp->AddHeader((const UTF8Char*)"Accept-Ranges", (const UTF8Char*)"bytes");
+	mime = Net::MIME::GetMIMEFromExt(sbuff);
+	resp->AddContentType(mime, Text::StrCharCnt(mime));
+	resp->AddHeaderC(UTF8STRC("Accept-Ranges"), UTF8STRC("bytes"));
 	if (sizeLeft <= 0)
 	{
 		UInt8 buff[BUFFSIZE];

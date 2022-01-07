@@ -33,7 +33,7 @@ void Media::MediaPlayerWebInterface::BrowseRequest(Net::WebServer::IWebRequest *
 	Text::String *fname = req->GetQueryValue(UTF8STRC("fname"));
 	if (this->iface->GetOpenedFile() == 0)
 	{
-		resp->RedirectURL(req, (const UTF8Char*)"/", 0);
+		resp->RedirectURL(req, UTF8STRC("/"), 0);
 		return;
 	}
 	UTF8Char sbuff[1024];
@@ -51,7 +51,7 @@ void Media::MediaPlayerWebInterface::BrowseRequest(Net::WebServer::IWebRequest *
 		if (this->iface->OpenFile(sbuff))
 		{
 			this->iface->PBStart();
-			resp->RedirectURL(req, (const UTF8Char*)"/", 0);
+			resp->RedirectURL(req, UTF8STRC("/"), 0);
 			return;
 		}
 	}
@@ -144,10 +144,10 @@ void Media::MediaPlayerWebInterface::BrowseRequest(Net::WebServer::IWebRequest *
 	DEL_CLASS(writer);
 
 	resp->AddDefHeaders(req);
-	resp->AddHeader((const UTF8Char*)"Cache-Control", (const UTF8Char*)"no-cache");
+	resp->AddHeaderC(UTF8STRC("Cache-Control"), UTF8STRC("no-cache"));
 	buff = mstm->GetBuff(&size);
 	resp->AddContentLength(size);
-	resp->AddContentType((const UTF8Char*)"text/html;charset=UTF-8");
+	resp->AddContentType(UTF8STRC("text/html; charset=UTF-8"));
 	resp->Write(buff, size);
 	DEL_CLASS(mstm);
 }
@@ -421,10 +421,10 @@ void Media::MediaPlayerWebInterface::WebRequest(Net::WebServer::IWebRequest *req
 	DEL_CLASS(writer);
 
 	resp->AddDefHeaders(req);
-	resp->AddHeader((const UTF8Char*)"Cache-Control", (const UTF8Char*)"no-cache");
+	resp->AddHeaderC(UTF8STRC("Cache-Control"), UTF8STRC("no-cache"));
 	buff = mstm->GetBuff(&size);
 	resp->AddContentLength(size);
-	resp->AddContentType((const UTF8Char*)"text/html;charset=UTF-8");
+	resp->AddContentType(UTF8STRC("text/html; charset=UTF-8"));
 	resp->Write(buff, size);
 	DEL_CLASS(mstm);
 }

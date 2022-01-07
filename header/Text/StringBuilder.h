@@ -143,7 +143,7 @@ namespace Text
 		Char *sptr;
 		sptr = dt->ToString(sbuff, "yyyy-MM-dd HH:mm:ss");
 		this->AllocLeng(19);
-		this->buffEnd = Text::StrConcatC(this->buffEnd, (const UTF8Char*)sbuff, (UOSInt)(sptr - sbuff));
+		this->buffEnd = Text::StrConcatC(this->buffEnd, (const T*)sbuff, (UOSInt)(sptr - sbuff));
 		return this;
 	}
 

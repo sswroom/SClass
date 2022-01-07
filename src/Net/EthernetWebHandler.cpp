@@ -154,8 +154,8 @@ Bool __stdcall Net::EthernetWebHandler::DeviceReq(EthernetWebHandler *me, Net::W
 		AppendFooter(&sb);
 
 		resp->AddDefHeaders(req);
-		resp->AddHeader((const UTF8Char*)"Cache-Control", (const UTF8Char*)"no-cache");
-		resp->AddContentType((const UTF8Char*)"text/html");
+		resp->AddHeaderC(UTF8STRC("Cache-Control"), UTF8STRC("no-cache"));
+		resp->AddContentType(UTF8STRC("text/html"));
 		resp->AddContentLength(sb.GetLength());
 		resp->Write(sb.ToString(), sb.GetLength());
 	}
@@ -216,8 +216,8 @@ Bool __stdcall Net::EthernetWebHandler::IPTransferReq(EthernetWebHandler *me, Ne
 		AppendFooter(&sb);
 
 		resp->AddDefHeaders(req);
-		resp->AddHeader((const UTF8Char*)"Cache-Control", (const UTF8Char*)"no-cache");
-		resp->AddContentType((const UTF8Char*)"text/html");
+		resp->AddHeaderC(UTF8STRC("Cache-Control"), UTF8STRC("no-cache"));
+		resp->AddContentType(UTF8STRC("text/html"));
 		resp->AddContentLength(sb.GetLength());
 		resp->Write(sb.ToString(), sb.GetLength());
 	}
@@ -328,8 +328,8 @@ Bool __stdcall Net::EthernetWebHandler::DNSReqv4Req(EthernetWebHandler *me, Net:
 		AppendFooter(&sb);
 
 		resp->AddDefHeaders(req);
-		resp->AddHeader((const UTF8Char*)"Cache-Control", (const UTF8Char*)"no-cache");
-		resp->AddContentType((const UTF8Char*)"text/html");
+		resp->AddHeaderC(UTF8STRC("Cache-Control"), UTF8STRC("no-cache"));
+		resp->AddContentType(UTF8STRC("text/html"));
 		resp->AddContentLength(sb.GetLength());
 		resp->Write(sb.ToString(), sb.GetLength());
 	}
@@ -440,8 +440,8 @@ Bool __stdcall Net::EthernetWebHandler::DNSReqv6Req(EthernetWebHandler *me, Net:
 		AppendFooter(&sb);
 
 		resp->AddDefHeaders(req);
-		resp->AddHeader((const UTF8Char*)"Cache-Control", (const UTF8Char*)"no-cache");
-		resp->AddContentType((const UTF8Char*)"text/html");
+		resp->AddHeaderC(UTF8STRC("Cache-Control"), UTF8STRC("no-cache"));
+		resp->AddContentType(UTF8STRC("text/html"));
 		resp->AddContentLength(sb.GetLength());
 		resp->Write(sb.ToString(), sb.GetLength());
 	}
@@ -552,8 +552,8 @@ Bool __stdcall Net::EthernetWebHandler::DNSReqOthReq(EthernetWebHandler *me, Net
 		AppendFooter(&sb);
 
 		resp->AddDefHeaders(req);
-		resp->AddHeader((const UTF8Char*)"Cache-Control", (const UTF8Char*)"no-cache");
-		resp->AddContentType((const UTF8Char*)"text/html");
+		resp->AddHeaderC(UTF8STRC("Cache-Control"), UTF8STRC("no-cache"));
+		resp->AddContentType(UTF8STRC("text/html"));
 		resp->AddContentLength(sb.GetLength());
 		resp->Write(sb.ToString(), sb.GetLength());
 	}
@@ -641,8 +641,8 @@ Bool __stdcall Net::EthernetWebHandler::DNSTargetReq(EthernetWebHandler *me, Net
 		AppendFooter(&sb);
 
 		resp->AddDefHeaders(req);
-		resp->AddHeader((const UTF8Char*)"Cache-Control", (const UTF8Char*)"no-cache");
-		resp->AddContentType((const UTF8Char*)"text/html");
+		resp->AddHeaderC(UTF8STRC("Cache-Control"), UTF8STRC("no-cache"));
+		resp->AddContentType(UTF8STRC("text/html"));
 		resp->AddContentLength(sb.GetLength());
 		resp->Write(sb.ToString(), sb.GetLength());
 	}
@@ -737,8 +737,8 @@ Bool __stdcall Net::EthernetWebHandler::DNSClientReq(EthernetWebHandler *me, Net
 		AppendFooter(&sb);
 
 		resp->AddDefHeaders(req);
-		resp->AddHeader((const UTF8Char*)"Cache-Control", (const UTF8Char*)"no-cache");
-		resp->AddContentType((const UTF8Char*)"text/html");
+		resp->AddHeaderC(UTF8STRC("Cache-Control"), UTF8STRC("no-cache"));
+		resp->AddContentType(UTF8STRC("text/html"));
 		resp->AddContentLength(sb.GetLength());
 		resp->Write(sb.ToString(), sb.GetLength());
 	}
@@ -851,8 +851,8 @@ Bool __stdcall Net::EthernetWebHandler::DHCPReq(EthernetWebHandler *me, Net::Web
 		AppendFooter(&sb);
 
 		resp->AddDefHeaders(req);
-		resp->AddHeader((const UTF8Char*)"Cache-Control", (const UTF8Char*)"no-cache");
-		resp->AddContentType((const UTF8Char*)"text/html");
+		resp->AddHeaderC(UTF8STRC("Cache-Control"), UTF8STRC("no-cache"));
+		resp->AddContentType(UTF8STRC("text/html"));
 		resp->AddContentLength(sb.GetLength());
 		resp->Write(sb.ToString(), sb.GetLength());
 	}
@@ -934,8 +934,8 @@ Bool __stdcall Net::EthernetWebHandler::IPLogReq(EthernetWebHandler *me, Net::We
 		AppendFooter(&sb);
 
 		resp->AddDefHeaders(req);
-		resp->AddHeader((const UTF8Char*)"Cache-Control", (const UTF8Char*)"no-cache");
-		resp->AddContentType((const UTF8Char*)"text/html");
+		resp->AddHeaderC(UTF8STRC("Cache-Control"), UTF8STRC("no-cache"));
+		resp->AddContentType(UTF8STRC("text/html"));
 		resp->AddContentLength(sb.GetLength());
 		resp->Write(sb.ToString(), sb.GetLength());
 	}

@@ -2405,11 +2405,11 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDown(Net::WebServer::IWe
 			resp->AddContentLength(buffSize);
 			if (userFile->fileType == 3)
 			{
-				resp->AddContentType((const UTF8Char*)"image/png");
+				resp->AddContentType(UTF8STRC("image/png"));
 			}
 			else
 			{
-				resp->AddContentType((const UTF8Char*)"image/jpeg");
+				resp->AddContentType(UTF8STRC("image/jpeg"));
 			}
 			resp->Write(buff, buffSize);
 			DEL_CLASS(fd);
@@ -2859,7 +2859,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroup(Net::WebServer::IWebReq
 
 		me->WriteFooter(writer);
 		me->dataMut->UnlockRead();
-		ResponseMstm(req, resp, mstm, (const UTF8Char*)"text/html");
+		ResponseMstm(req, resp, mstm, UTF8STRC("text/html"));
 
 		DEL_CLASS(writer);
 		DEL_CLASS(mstm);
@@ -2981,7 +2981,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroupMod(Net::WebServer::IWeb
 							sb.AppendC(UTF8STRC("&cateId="));
 							sb.AppendI32(cateId);
 
-							resp->RedirectURL(req, sb.ToString(), 0);
+							resp->RedirectURL(req, sb.ToString(), sb.GetLength(), 0);
 							return true;
 						}
 						else
@@ -3021,7 +3021,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroupMod(Net::WebServer::IWeb
 							sb.AppendC(UTF8STRC("&cateId="));
 							sb.AppendI32(modGroup->cateId);
 
-							resp->RedirectURL(req, sb.ToString(), 0);
+							resp->RedirectURL(req, sb.ToString(), sb.GetLength(), 0);
 							return true;
 						}
 						else
@@ -3047,7 +3047,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroupMod(Net::WebServer::IWeb
 						sb.AppendC(UTF8STRC("&cateId="));
 						sb.AppendI32(cateId);
 
-						resp->RedirectURL(req, sb.ToString(), 0);
+						resp->RedirectURL(req, sb.ToString(), sb.GetLength(), 0);
 						return true;
 					}
 					else
@@ -3169,7 +3169,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroupMod(Net::WebServer::IWeb
 		writer->WriteLineC(UTF8STRC("</table></form>"));
 		me->WriteFooter(writer);
 		me->dataMut->UnlockRead();
-		ResponseMstm(req, resp, mstm, (const UTF8Char*)"text/html");
+		ResponseMstm(req, resp, mstm, UTF8STRC("text/html"));
 
 		DEL_CLASS(writer);
 		DEL_CLASS(mstm);
@@ -3880,7 +3880,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpecies(Net::WebServer::IWebR
 
 		me->WriteFooter(writer);
 		me->dataMut->UnlockRead();
-		ResponseMstm(req, resp, mstm, (const UTF8Char*)"text/html");
+		ResponseMstm(req, resp, mstm, UTF8STRC("text/html"));
 
 		DEL_CLASS(writer);
 		DEL_CLASS(mstm);
@@ -3989,7 +3989,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpeciesMod(Net::WebServer::IW
 							sb.AppendC(UTF8STRC("&cateId="));
 							sb.AppendI32(cateId);
 
-							resp->RedirectURL(req, sb.ToString(), 0);
+							resp->RedirectURL(req, sb.ToString(), sb.GetLength(), 0);
 							return true;
 						}
 						else
@@ -4033,7 +4033,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpeciesMod(Net::WebServer::IW
 							sb.AppendC(UTF8STRC("&cateId="));
 							sb.AppendI32(cateId);
 
-							resp->RedirectURL(req, sb.ToString(), 0);
+							resp->RedirectURL(req, sb.ToString(), sb.GetLength(), 0);
 							return true;
 						}
 						else
@@ -4135,7 +4135,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpeciesMod(Net::WebServer::IW
 		writer->WriteLineC(UTF8STRC("</table></form>"));
 		me->WriteFooter(writer);
 		me->dataMut->UnlockRead();
-		ResponseMstm(req, resp, mstm, (const UTF8Char*)"text/html");
+		ResponseMstm(req, resp, mstm, UTF8STRC("text/html"));
 
 		DEL_CLASS(writer);
 		DEL_CLASS(mstm);
@@ -4350,7 +4350,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcList(Net::WebServer::IWebRequ
 
 		me->WriteFooter(writer);
 		me->dataMut->UnlockRead();
-		ResponseMstm(req, resp, mstm, (const UTF8Char*)"text/html");
+		ResponseMstm(req, resp, mstm, UTF8STRC("text/html"));
 
 		DEL_CLASS(writer);
 		DEL_CLASS(mstm);
@@ -4824,7 +4824,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 
 				me->WriteFooter(writer);
 				me->dataMut->UnlockRead();
-				ResponseMstm(req, resp, mstm, (const UTF8Char*)"text/html");
+				ResponseMstm(req, resp, mstm, UTF8STRC("text/html"));
 
 				DEL_CLASS(writer);
 				DEL_CLASS(mstm);
@@ -5029,7 +5029,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 
 				me->WriteFooter(writer);
 				me->dataMut->UnlockRead();
-				ResponseMstm(req, resp, mstm, (const UTF8Char*)"text/html");
+				ResponseMstm(req, resp, mstm, UTF8STRC("text/html"));
 
 				DEL_CLASS(writer);
 				DEL_CLASS(mstm);
@@ -5199,7 +5199,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 
 					me->WriteFooter(writer);
 					me->dataMut->UnlockRead();
-					ResponseMstm(req, resp, mstm, (const UTF8Char*)"text/html");
+					ResponseMstm(req, resp, mstm, UTF8STRC("text/html"));
 
 					DEL_CLASS(writer);
 					DEL_CLASS(mstm);
@@ -5406,7 +5406,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 
 					me->WriteFooter(writer);
 					me->dataMut->UnlockRead();
-					ResponseMstm(req, resp, mstm, (const UTF8Char*)"text/html");
+					ResponseMstm(req, resp, mstm, UTF8STRC("text/html"));
 
 					DEL_CLASS(writer);
 					DEL_CLASS(mstm);
@@ -5677,7 +5677,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetailD(Net::WebServer::
 
 			me->WriteFooter(writer);
 			me->dataMut->UnlockRead();
-			ResponseMstm(req, resp, mstm, (const UTF8Char*)"text/html");
+			ResponseMstm(req, resp, mstm, UTF8STRC("text/html"));
 
 			DEL_CLASS(writer);
 			DEL_CLASS(mstm);
@@ -5986,7 +5986,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoYear(Net::WebServer::IWe
 		me->dataMut->UnlockRead();
 
 		me->WriteFooter(writer);
-		ResponseMstm(req, resp, mstm, (const UTF8Char*)"text/html");
+		ResponseMstm(req, resp, mstm, UTF8STRC("text/html"));
 
 		DEL_CLASS(writer);
 		DEL_CLASS(mstm);
@@ -6205,7 +6205,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDay(Net::WebServer::IWeb
 		me->dataMut->UnlockRead();
 
 		me->WriteFooter(writer);
-		ResponseMstm(req, resp, mstm, (const UTF8Char*)"text/html");
+		ResponseMstm(req, resp, mstm, UTF8STRC("text/html"));
 
 		DEL_CLASS(writer);
 		DEL_CLASS(mstm);
@@ -6305,7 +6305,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoUpload(Net::WebServer::I
 	writer->WriteLineC(UTF8STRC("</table>"));
 	me->WriteFooter(writer);
 
-	ResponseMstm(req, resp, mstm, (const UTF8Char*)"text/html");
+	ResponseMstm(req, resp, mstm, UTF8STRC("text/html"));
 
 	DEL_CLASS(writer);
 	DEL_CLASS(mstm);
@@ -6354,7 +6354,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoUploadD(Net::WebServer::
 	resp->AddDefHeaders(req);
 	sptr = Text::StrInt32(sbuff, ret);
 	resp->AddContentLength((UOSInt)(sptr - sbuff));
-	resp->AddContentType((const UTF8Char*)"text/plain");
+	resp->AddContentType(UTF8STRC("text/plain"));
 	resp->Write(sbuff, (UOSInt)(sptr - sbuff));
 	return true;
 }
@@ -6546,7 +6546,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSearchInside(Net::WebServer::
 
 		me->WriteFooter(writer);
 		me->dataMut->UnlockRead();
-		ResponseMstm(req, resp, mstm, (const UTF8Char*)"text/html");
+		ResponseMstm(req, resp, mstm, UTF8STRC("text/html"));
 
 		DEL_CLASS(writer);
 		DEL_CLASS(mstm);
@@ -6728,7 +6728,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSearchInsideMoreS(Net::WebSer
 
 		me->WriteFooter(writer);
 		me->dataMut->UnlockRead();
-		ResponseMstm(req, resp, mstm, (const UTF8Char*)"text/html");
+		ResponseMstm(req, resp, mstm, UTF8STRC("text/html"));
 
 		DEL_CLASS(writer);
 		DEL_CLASS(mstm);
@@ -6910,7 +6910,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSearchInsideMoreG(Net::WebSer
 
 		me->WriteFooter(writer);
 		me->dataMut->UnlockRead();
-		ResponseMstm(req, resp, mstm, (const UTF8Char*)"text/html");
+		ResponseMstm(req, resp, mstm, UTF8STRC("text/html"));
 
 		DEL_CLASS(writer);
 		DEL_CLASS(mstm);
@@ -7043,7 +7043,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcBookList(Net::WebServer::IWeb
 
 		me->WriteFooter(writer);
 		me->dataMut->UnlockRead();
-		ResponseMstm(req, resp, mstm, (const UTF8Char*)"text/html");
+		ResponseMstm(req, resp, mstm, UTF8STRC("text/html"));
 
 		DEL_CLASS(writer);
 		DEL_CLASS(mstm);
@@ -7240,7 +7240,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcBook(Net::WebServer::IWebRequ
 
 		me->WriteFooter(writer);
 		me->dataMut->UnlockRead();
-		ResponseMstm(req, resp, mstm, (const UTF8Char*)"text/html");
+		ResponseMstm(req, resp, mstm, UTF8STRC("text/html"));
 
 		DEL_CLASS(writer);
 		DEL_CLASS(mstm);
@@ -7304,7 +7304,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcBookView(Net::WebServer::IWeb
 		me->dataMut->UnlockRead();
 
 		resp->AddDefHeaders(req);
-		resp->AddContentType((const UTF8Char*)"application/pdf");
+		resp->AddContentType(UTF8STRC("application/pdf"));
 		resp->AddContentLength(fileLen);
 		UOSInt readSize;
 		UInt64 sizeLeft = fileLen;
@@ -7343,7 +7343,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcLogin(Net::WebServer::IWebReq
 
 	if (env.user)
 	{
-		resp->RedirectURL(req, (const UTF8Char*)"/", 0);
+		resp->RedirectURL(req, UTF8STRC("/"), 0);
 		return true;
 	}
 	if (req->GetReqMethod() == Net::WebServer::IWebRequest::RequestMethod::HTTP_POST)
@@ -7386,7 +7386,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcLogin(Net::WebServer::IWebReq
 				me->dataMut->UnlockRead();
 
 				me->WriteFooter(writer);
-				ResponseMstm(req, resp, mstm, (const UTF8Char*)"text/html");
+				ResponseMstm(req, resp, mstm, UTF8STRC("text/html"));
 
 				DEL_CLASS(writer);
 				DEL_CLASS(mstm);
@@ -7412,7 +7412,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcLogin(Net::WebServer::IWebReq
 	me->dataMut->UnlockRead();
 
 	me->WriteFooter(writer);
-	ResponseMstm(req, resp, mstm, (const UTF8Char*)"text/html");
+	ResponseMstm(req, resp, mstm, UTF8STRC("text/html"));
 
 	DEL_CLASS(writer);
 	DEL_CLASS(mstm);
@@ -7426,7 +7426,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcLogout(Net::WebServer::IWebRe
 	me->ParseRequestEnv(req, resp, &env, false);
 
 	me->sessMgr->DeleteSession(req, resp);
-	resp->RedirectURL(req, (const UTF8Char*)"/", 0);
+	resp->RedirectURL(req, UTF8STRC("/"), 0);
 	return true;
 }
 
@@ -7478,7 +7478,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcReload(Net::WebServer::IWebRe
 		}
 
 		me->WriteFooter(writer);
-		ResponseMstm(req, resp, mstm, (const UTF8Char*)"text/html");
+		ResponseMstm(req, resp, mstm, UTF8STRC("text/html"));
 
 		DEL_CLASS(writer);
 		DEL_CLASS(mstm);
@@ -7540,7 +7540,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcRestart(Net::WebServer::IWebR
 		}
 
 		me->WriteFooter(writer);
-		ResponseMstm(req, resp, mstm, (const UTF8Char*)"text/html");
+		ResponseMstm(req, resp, mstm, UTF8STRC("text/html"));
 
 		DEL_CLASS(writer);
 		DEL_CLASS(mstm);
@@ -7663,7 +7663,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcIndex(Net::WebServer::IWebReq
 	me->dataMut->UnlockRead();
 
 	me->WriteFooter(writer);
-	ResponseMstm(req, resp, mstm, (const UTF8Char*)"text/html");
+	ResponseMstm(req, resp, mstm, UTF8STRC("text/html"));
 
 	DEL_CLASS(writer);
 	DEL_CLASS(mstm);
@@ -7749,7 +7749,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcCate(Net::WebServer::IWebRequ
 		writer->WriteStr(LangGetValue(lang, (const UTF8Char*)"Back"));
 		writer->WriteLineC(UTF8STRC("</a>"));
 		me->WriteFooter(writer);
-		ResponseMstm(req, resp, mstm, (const UTF8Char*)"text/html");
+		ResponseMstm(req, resp, mstm, UTF8STRC("text/html"));
 
 		DEL_CLASS(writer);
 		DEL_CLASS(mstm);
@@ -7828,7 +7828,7 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhoto(Net::WebServer::IWebRequest 
 						DEL_CLASS(fs);
 						resp->AddDefHeaders(req);
 						resp->AddContentLength(buffSize);
-						resp->AddContentType((const UTF8Char*)"image/jpeg");
+						resp->AddContentType(UTF8STRC("image/jpeg"));
 						resp->Write(buff, buffSize);
 						this->dataMut->UnlockRead();
 						MemFree(buff);
@@ -8050,7 +8050,7 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhoto(Net::WebServer::IWebRequest 
 						exporter.SetParamInt32(param, 0, 95);
 						exporter.ExportFile(mstm, (const UTF8Char*)"", &nimgList, param);
 						exporter.DeleteParam(param);
-						ResponseMstm(req, resp, mstm, (const UTF8Char*)"image/jpeg");
+						ResponseMstm(req, resp, mstm, UTF8STRC("image/jpeg"));
 
 						if (this->cacheDir && imgWidth == PREVIEW_SIZE && imgHeight == PREVIEW_SIZE && mstm->GetLength() > 0)
 						{
@@ -8149,7 +8149,7 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhotoId(Net::WebServer::IWebReques
 				DEL_CLASS(fs);
 				resp->AddDefHeaders(req);
 				resp->AddContentLength(buffSize);
-				resp->AddContentType((const UTF8Char*)"image/jpeg");
+				resp->AddContentType(UTF8STRC("image/jpeg"));
 				resp->AddLastModified(&dt2);
 				resp->Write(buff, buffSize);
 				this->dataMut->UnlockRead();
@@ -8347,7 +8347,7 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhotoId(Net::WebServer::IWebReques
 					}	
 					NEW_CLASS(mstm, IO::MemoryStream((const UTF8Char*)"SSWR::OrganMgr::OrganWebHandler.WebRequest"));
 					gimg->SaveJPG(mstm);
-					ResponseMstm(req, resp, mstm, (const UTF8Char*)"image/jpeg");
+					ResponseMstm(req, resp, mstm, UTF8STRC("image/jpeg"));
 
 					if (this->cacheDir && imgWidth == PREVIEW_SIZE && imgHeight == PREVIEW_SIZE)
 					{
@@ -8376,7 +8376,7 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhotoId(Net::WebServer::IWebReques
 					exporter.SetParamInt32(param, 0, 95);
 					exporter.ExportFile(mstm, (const UTF8Char*)"", &nimgList, param);
 					exporter.DeleteParam(param);
-					ResponseMstm(req, resp, mstm, (const UTF8Char*)"image/jpeg");
+					ResponseMstm(req, resp, mstm, UTF8STRC("image/jpeg"));
 
 					if (this->cacheDir && imgWidth == PREVIEW_SIZE && imgHeight == PREVIEW_SIZE)
 					{
@@ -8455,7 +8455,7 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhotoWId(Net::WebServer::IWebReque
 					DEL_CLASS(fs);
 					resp->AddDefHeaders(req);
 					resp->AddContentLength(buffSize);
-					resp->AddContentType((const UTF8Char*)"image/jpeg");
+					resp->AddContentType(UTF8STRC("image/jpeg"));
 					resp->Write(buff, buffSize);
 					this->dataMut->UnlockRead();
 					MemFree(buff);
@@ -8593,7 +8593,7 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhotoWId(Net::WebServer::IWebReque
 					exporter.SetParamInt32(param, 0, 95);
 					exporter.ExportFile(mstm, (const UTF8Char*)"", &nimgList, param);
 					exporter.DeleteParam(param);
-					ResponseMstm(req, resp, mstm, (const UTF8Char*)"image/jpeg");
+					ResponseMstm(req, resp, mstm, UTF8STRC("image/jpeg"));
 
 					if (this->cacheDir && imgWidth == PREVIEW_SIZE && imgHeight == PREVIEW_SIZE)
 					{
@@ -8635,10 +8635,10 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhotoWId(Net::WebServer::IWebReque
 	}
 }
 
-void SSWR::OrganMgr::OrganWebHandler::ResponseMstm(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, IO::MemoryStream *mstm, const UTF8Char *contType)
+void SSWR::OrganMgr::OrganWebHandler::ResponseMstm(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, IO::MemoryStream *mstm, const UTF8Char *contType, UOSInt len)
 {
 	resp->AddDefHeaders(req);
-	resp->AddContentType(contType);
+	resp->AddContentType(contType, len);
 	mstm->SeekFromBeginning(0);
 	Net::WebServer::HTTPServerUtil::SendContent(req, resp, contType, mstm->GetLength(), mstm);
 }

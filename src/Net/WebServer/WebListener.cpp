@@ -121,11 +121,11 @@ Net::WebServer::WebListener::WebListener(Net::SocketFactory *sockf, Net::SSLEngi
 	this->proxyCliMgr = 0;
 	if (svrName)
 	{
-		this->svrName = Text::StrCopyNew(svrName);
+		this->svrName = Text::String::NewNotNull(svrName);
 	}
 	else
 	{
-		this->svrName = Text::StrCopyNew((const UTF8Char*)"sswr/1.0");
+		this->svrName = Text::String::New(UTF8STRC("sswr/1.0"));
 	}
 	this->status.connCnt = 0;
 	this->status.currConn = 0;
@@ -151,7 +151,7 @@ Net::WebServer::WebListener::~WebListener()
 	DEL_CLASS(this->log);
 	DEL_CLASS(this->accLogMut);
 	DEL_CLASS(this->statusMut);
-	Text::StrDelNew(this->svrName);
+	this->svrName->Release();
 }
 
 Bool Net::WebServer::WebListener::IsError()
@@ -160,7 +160,7 @@ Bool Net::WebServer::WebListener::IsError()
 	return err;
 }
 
-const UTF8Char *Net::WebServer::WebListener::GetServerName()
+Text::String *Net::WebServer::WebListener::GetServerName()
 {
 	return this->svrName;
 }

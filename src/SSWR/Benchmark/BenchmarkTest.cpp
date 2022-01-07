@@ -205,7 +205,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(SSWR::Benchmark:
 
 			resp->SetStatusCode(Net::WebStatus::SC_OK);
 			resp->AddDefHeaders(req);
-			resp->AddContentType((const UTF8Char*)"text/plain");
+			resp->AddContentType(UTF8STRC("text/plain"));
 			resp->AddContentLength(fileSize);
 			resp->Write(fileBuff, fileSize);
 			MemFree(fileBuff);
@@ -248,7 +248,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(SSWR::Benchmark:
 
 				resp->SetStatusCode(Net::WebStatus::SC_OK);
 				resp->AddDefHeaders(req);
-				resp->AddContentType((const UTF8Char*)"text/html; charset=UTF-8");
+				resp->AddContentType(UTF8STRC("text/html; charset=UTF-8"));
 				resp->AddContentLength(2);
 				resp->Write((const UInt8*)"ok", 2);
 				return true;
@@ -431,7 +431,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(SSWR::Benchmark:
 
 	resp->SetStatusCode(Net::WebStatus::SC_OK);
 	resp->AddDefHeaders(req);
-	resp->AddContentType((const UTF8Char*)"text/html; charset=UTF-8");
+	resp->AddContentType(UTF8STRC("text/html; charset=UTF-8"));
 	resp->AddContentLength(sbOut.GetLength());
 	resp->Write(sbOut.ToString(), sbOut.GetLength());
 	return true;

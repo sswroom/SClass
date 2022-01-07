@@ -235,16 +235,16 @@ Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(Net::WebServer::IWebRequ
 					{
 						sb.Append(&sarr[1][urlLen]);
 					}
-					resp->AddHeader(sarr[0], sb.ToString());
+					resp->AddHeaderC(sarr[0], Text::StrCharCnt(sarr[0]), sb.ToString(), sb.GetLength());
 				}
 				else
 				{
-					resp->AddHeader(sarr[0], sarr[1]);
+					resp->AddHeaderC(sarr[0], Text::StrCharCnt(sarr[0]), sarr[1], Text::StrCharCnt(sarr[1]));
 				}
 			}
 			else
 			{
-				resp->AddHeader(sarr[0], sarr[1]);
+				resp->AddHeaderC(sarr[0], Text::StrCharCnt(sarr[0]), sarr[1], Text::StrCharCnt(sarr[1]));
 			}
 		}
 		i++;
@@ -257,8 +257,8 @@ Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(Net::WebServer::IWebRequ
 		sbHeader.Append(this->injHeaders->GetItem(i));
 		if (Text::StrSplit(sarr, 2, sbHeader.ToString(), ':') == 2)
 		{
-			Text::StrTrim(sarr[1]);
-			resp->AddHeader(sarr[0], sarr[1]);
+			UTF8Char *sptr = Text::StrTrim(sarr[1]);
+			resp->AddHeaderC(sarr[0], Text::StrCharCnt(sarr[0]), sarr[1], (UOSInt)(sptr - sarr[1]));
 		}
 		i++;
 	}

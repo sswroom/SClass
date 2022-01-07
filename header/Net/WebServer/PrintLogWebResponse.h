@@ -12,7 +12,7 @@ namespace Net
 		private:
 			Net::WebServer::IWebResponse *resp;
 			IO::Writer *writer;
-			const UTF8Char *prefix;
+			Text::String *prefix;
 
 		public:
 			PrintLogWebResponse(Net::WebServer::IWebResponse *resp, IO::Writer *writer, const UTF8Char *prefix);
@@ -21,7 +21,7 @@ namespace Net
 			virtual void EnableWriteBuffer();
 			virtual Bool SetStatusCode(Net::WebStatus::StatusCode code);
 			virtual Int32 GetStatusCode();
-			virtual Bool AddHeader(const UTF8Char *name, const UTF8Char *value);
+			virtual Bool AddHeaderC(const UTF8Char *name, UOSInt nameLen, const UTF8Char *value, UOSInt valueLen);
 			virtual Bool AddDefHeaders(Net::WebServer::IWebRequest *req);
 			virtual UInt64 GetRespLength();
 			virtual void ShutdownSend();

@@ -23,7 +23,7 @@ void Net::TCPServer::AddLogMsgC(const UTF8Char *msg, UOSInt msgLen, IO::ILogHand
 		if (logPrefix)
 		{
 			UTF8Char buff[1024];
-			UTF8Char *str = Text::StrConcat(buff, this->logPrefix);
+			UTF8Char *str = this->logPrefix->ConcatTo(buff);
 			str = Text::StrConcatC(str, msg, msgLen);
 			log->LogMessageC(buff, (UOSInt)(str - buff), logLev);
 		}
@@ -359,14 +359,7 @@ Net::TCPServer::TCPServer(SocketFactory *socf, UInt16 port, IO::LogTool *log, TC
 	this->log = log;
 	this->svrSocv4 = 0;
 	this->svrSocv6 = 0;
-	if (logPrefix)
-	{
-		this->logPrefix = Text::StrCopyNew(logPrefix);
-	}
-	else
-	{
-		this->logPrefix = 0;
-	}
+	this->logPrefix = Text::String::NewOrNull(logPrefix);
 	this->hdlr = hdlr;
 	this->userObj = userObj;
 	this->threadRunning = 0;
@@ -400,8 +393,7 @@ Net::TCPServer::~TCPServer()
 	{
 		Sync::Thread::Sleep(10);
 	}
-	if (this->logPrefix)
-		Text::StrDelNew(this->logPrefix);
+	SDEL_STRING(this->logPrefix);
 	DEL_CLASS(this->socsEvt);
 }
 

@@ -593,7 +593,7 @@ void Net::WebServer::WebConnection::ProcessResponse()
 				j = httpCli->GetRespHeaderCnt();
 				while (i < j)
 				{
-					httpCli->GetRespHeader(i, sbuffHdr);
+					UTF8Char *hdrPtr = httpCli->GetRespHeader(i, sbuffHdr);
 					if (Text::StrStartsWith(sbuffHdr, (const UTF8Char*)"Content-Length: "))
 					{
 						lengFound = true;
@@ -613,7 +613,7 @@ void Net::WebServer::WebConnection::ProcessResponse()
 						}
 						else
 						{
-							this->AddHeader(sbuffHdr, &sbuffHdr[k + 2]);
+							this->AddHeaderC(sbuffHdr, k, &sbuffHdr[k + 2], (UOSInt)(hdrPtr - &sbuffHdr[k + 2]));
 						}
 					}
 					else
@@ -621,8 +621,8 @@ void Net::WebServer::WebConnection::ProcessResponse()
 					}
 					i++;
 				}
-				this->AddHeader((const UTF8Char*)"Server", this->svr->GetServerName());
-				this->AddHeader((const UTF8Char*)"Proxy-Connection", (const UTF8Char*)"closed");
+				this->AddHeaderS(UTF8STRC("Server"), this->svr->GetServerName());
+				this->AddHeaderC(UTF8STRC("Proxy-Connection"), UTF8STRC("closed"));
 
 				if (lengFound)
 				{
@@ -759,13 +759,13 @@ Int32 Net::WebServer::WebConnection::GetStatusCode()
 	return this->respStatus;
 }
 
-Bool Net::WebServer::WebConnection::AddHeader(const UTF8Char *name, const UTF8Char *value)
+Bool Net::WebServer::WebConnection::AddHeaderC(const UTF8Char *name, UOSInt nameLen, const UTF8Char *value, UOSInt valueLen)
 {
 	if (this->respHeaderSent)
 		return false;
-	this->respHeaders->Append(name);
+	this->respHeaders->AppendC(name, nameLen);
 	this->respHeaders->AppendC(UTF8STRC(": "));
-	this->respHeaders->Append(value);
+	this->respHeaders->AppendC(value, valueLen);
 	this->respHeaders->AppendC(UTF8STRC("\r\n"));
 
 	if (Text::StrEqualsICase(name, (const UTF8Char*)"Transfer-Encoding") && Text::StrEquals(value, (const UTF8Char*)"chunked"))
@@ -781,17 +781,17 @@ Bool Net::WebServer::WebConnection::AddDefHeaders(Net::WebServer::IWebRequest *r
 {
 	Data::DateTime dt;
 	dt.SetCurrTimeUTC();
-	AddTimeHeader((const UTF8Char*)"Date", &dt);
-	AddHeader((const UTF8Char*)"Server", this->svr->GetServerName());
+	AddTimeHeader(UTF8STRC("Date"), &dt);
+	AddHeaderS(UTF8STRC("Server"), this->svr->GetServerName());
 	Text::String *connHdr = req->GetSHeader(UTF8STRC("Connection"));
 	if (this->allowKA && connHdr && connHdr->Equals((const UTF8Char*)"keep-alive"))
 	{
-		AddHeader((const UTF8Char*)"Connection", (const UTF8Char*)"keep-alive");
-		AddHeader((const UTF8Char*)"Keep-Alive", (const UTF8Char*)"timeout=10, max=1000");
+		AddHeaderC(UTF8STRC("Connection"), UTF8STRC("keep-alive"));
+		AddHeaderC(UTF8STRC("Keep-Alive"), UTF8STRC("timeout=10, max=1000"));
 	}
 	else
 	{
-		AddHeader((const UTF8Char*)"Connection", (const UTF8Char*)"close");
+		AddHeaderC(UTF8STRC("Connection"), UTF8STRC("close"));
 	}
 	return false;
 }
@@ -828,7 +828,7 @@ Bool Net::WebServer::WebConnection::ResponseSSE(Int32 timeoutMS, SSEDisconnectHa
 	this->cli->SetTimeout(timeoutMS);
 	this->sseHdlrObj = userObj;
 	this->sseHdlr = hdlr;
-	this->AddContentType((const UTF8Char*)"text/event-stream");
+	this->AddContentType(UTF8STRC("text/event-stream"));
 	if (!this->respHeaderSent)
 	{
 		this->SendHeaders(this->currReq->GetProtocol());

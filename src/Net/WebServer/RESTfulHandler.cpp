@@ -206,7 +206,7 @@ Bool Net::WebServer::RESTfulHandler::ProcessRequest(Net::WebServer::IWebRequest 
 			this->dbCache->FreeTableItem(row);
 			resp->AddDefHeaders(req);
 			resp->AddCacheControl(0);
-			resp->AddContentType((const UTF8Char*)"application/json");
+			resp->AddContentType(UTF8STRC("application/json"));
 			resp->AddContentLength(sb.GetLength());
 			resp->Write(sb.ToString(), sb.GetLength());
 			return true;
@@ -331,7 +331,7 @@ Bool Net::WebServer::RESTfulHandler::ProcessRequest(Net::WebServer::IWebRequest 
 			}
 			resp->AddDefHeaders(req);
 			resp->AddCacheControl(0);
-			resp->AddContentType((const UTF8Char*)"application/json");
+			resp->AddContentType(UTF8STRC("application/json"));
 			resp->AddContentLength(sb.GetLength());
 			resp->Write(sb.ToString(), sb.GetLength());
 			return true;

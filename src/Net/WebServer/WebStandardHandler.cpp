@@ -94,18 +94,19 @@ void Net::WebServer::WebStandardHandler::WebRequest(Net::WebServer::IWebRequest 
 	if (reqMeth == Net::WebServer::IWebRequest::RequestMethod::RTSP_OPTIONS)
 	{
 		UTF8Char sbuff[512];
-		if (req->GetHeader(sbuff, (const UTF8Char*)"CSeq", 512))
+		UTF8Char *sptr;
+		if ((sptr = req->GetHeader(sbuff, (const UTF8Char*)"CSeq", 512)) != 0)
 		{
-			resp->AddHeader((const UTF8Char*)"CSeq", sbuff);
+			resp->AddHeaderC(UTF8STRC("CSeq"), sbuff, (UOSInt)(sptr - sbuff));
 		}
 		resp->AddContentLength(0);
-		resp->AddHeader((const UTF8Char*)"Public", (const UTF8Char*)"DESCRIBE,SETUP,TEARDOWN,PLAY,PAUSE");
+		resp->AddHeaderC(UTF8STRC("Public"), UTF8STRC("DESCRIBE,SETUP,TEARDOWN,PLAY,PAUSE"));
 		resp->SetStatusCode(Net::WebStatus::SC_OK);
 	}
 	else
 	{
 		UTF8Char sbuff[512];
-		Text::URLString::GetURLPathSvr(sbuff, reqURL->v);
+		Text::URLString::GetURLPathSvr(sbuff, reqURL->v, reqURL->leng);
 		if (!this->ProcessRequest(req, resp, sbuff))
 		{
 			resp->SetStatusCode(Net::WebStatus::SC_NOT_FOUND);
@@ -127,7 +128,7 @@ void Net::WebServer::WebStandardHandler::WebRequest(Net::WebServer::IWebRequest 
 				writer->WriteLineC(UTF8STRC(" was not found on this server.</p>"));
 				writer->WriteLineC(UTF8STRC("</body></html>"));
 				DEL_CLASS(writer);
-				resp->AddContentType((const UTF8Char*)"text/html");
+				resp->AddContentType(UTF8STRC("text/html"));
 				mstm->SeekFromBeginning(0);
 				Net::WebServer::HTTPServerUtil::SendContent(req, resp, (const UTF8Char*)"text/html", mstm->GetLength(), mstm);
 				DEL_CLASS(mstm);

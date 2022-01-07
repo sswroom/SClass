@@ -92,8 +92,8 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::IndexFunc(Net::WebServer::IWe
 	sb.AppendC(UTF8STRC("</table></body><html>"));
 
 	resp->AddDefHeaders(req);
-	resp->AddHeader((const UTF8Char*)"Cache-Control", (const UTF8Char*)"no-cache");
-	resp->AddContentType((const UTF8Char*)"text/html");
+	resp->AddHeaderC(UTF8STRC("Cache-Control"), UTF8STRC("no-cache"));
+	resp->AddContentType(UTF8STRC("text/html"));
 	resp->AddContentLength(sb.GetLength());
 	resp->Write(sb.ToString(), sb.GetLength());
 	return true;
@@ -123,8 +123,8 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::BTCurrentFunc(Net::WebServer:
 	sb.AppendC(UTF8STRC("</body><html>"));
 
 	resp->AddDefHeaders(req);
-	resp->AddHeader((const UTF8Char*)"Cache-Control", (const UTF8Char*)"no-cache");
-	resp->AddContentType((const UTF8Char*)"text/html");
+	resp->AddHeaderC(UTF8STRC("Cache-Control"), UTF8STRC("no-cache"));
+	resp->AddContentType(UTF8STRC("text/html"));
 	resp->AddContentLength(sb.GetLength());
 	resp->Write(sb.ToString(), sb.GetLength());
 	return true;
@@ -156,8 +156,8 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::BTDetailFunc(Net::WebServer::
 	sb.AppendC(UTF8STRC("</body><html>"));
 
 	resp->AddDefHeaders(req);
-	resp->AddHeader((const UTF8Char*)"Cache-Control", (const UTF8Char*)"no-cache");
-	resp->AddContentType((const UTF8Char*)"text/html");
+	resp->AddHeaderC(UTF8STRC("Cache-Control"), UTF8STRC("no-cache"));
+	resp->AddContentType(UTF8STRC("text/html"));
 	resp->AddContentLength(sb.GetLength());
 	resp->Write(sb.ToString(), sb.GetLength());
 	return true;
@@ -188,8 +188,8 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::BTDetailPubFunc(Net::WebServe
 	sb.AppendC(UTF8STRC("</body><html>"));
 
 	resp->AddDefHeaders(req);
-	resp->AddHeader((const UTF8Char*)"Cache-Control", (const UTF8Char*)"no-cache");
-	resp->AddContentType((const UTF8Char*)"text/html");
+	resp->AddHeaderC(UTF8STRC("Cache-Control"), UTF8STRC("no-cache"));
+	resp->AddContentType(UTF8STRC("text/html"));
 	resp->AddContentLength(sb.GetLength());
 	resp->Write(sb.ToString(), sb.GetLength());
 	return true;
@@ -225,8 +225,8 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::WiFiCurrentFunc(Net::WebServe
 	sb.AppendC(UTF8STRC("</body><html>"));
 
 	resp->AddDefHeaders(req);
-	resp->AddHeader((const UTF8Char*)"Cache-Control", (const UTF8Char*)"no-cache");
-	resp->AddContentType((const UTF8Char*)"text/html");
+	resp->AddHeaderC(UTF8STRC("Cache-Control"), UTF8STRC("no-cache"));
+	resp->AddContentType(UTF8STRC("text/html"));
 	resp->AddContentLength(sb.GetLength());
 	resp->Write(sb.ToString(), sb.GetLength());
 	return true;
@@ -257,8 +257,8 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::WiFiDetailFunc(Net::WebServer
 	sb.AppendC(UTF8STRC("</body><html>"));
 
 	resp->AddDefHeaders(req);
-	resp->AddHeader((const UTF8Char*)"Cache-Control", (const UTF8Char*)"no-cache");
-	resp->AddContentType((const UTF8Char*)"text/html");
+	resp->AddHeaderC(UTF8STRC("Cache-Control"), UTF8STRC("no-cache"));
+	resp->AddContentType(UTF8STRC("text/html"));
 	resp->AddContentLength(sb.GetLength());
 	resp->Write(sb.ToString(), sb.GetLength());
 	return true;
@@ -343,8 +343,8 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::WiFiDownloadFunc(Net::WebServ
 	dt.SetCurrTime();
 	Text::StrConcatC(dt.ToString(sbuff, "yyyyMMddHHmmss"), UTF8STRC(".txt"));
 	resp->AddDefHeaders(req);
-	resp->AddHeader((const UTF8Char*)"Cache-Control", (const UTF8Char*)"no-cache");
-	resp->AddContentType((const UTF8Char*)"text/plain");
+	resp->AddHeaderC(UTF8STRC("Cache-Control"), UTF8STRC("no-cache"));
+	resp->AddContentType(UTF8STRC("text/plain"));
 	resp->AddContentLength(sb.GetLength());
 	resp->AddContentDisposition(true, sbuff, req->GetBrowser());
 	resp->Write(sb.ToString(), sb.GetLength());

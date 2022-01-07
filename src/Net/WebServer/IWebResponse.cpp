@@ -25,7 +25,7 @@ Bool Net::WebServer::IWebResponse::ResponseError(Net::WebServer::IWebRequest *re
 	if (!this->SetStatusCode(code))
 		return false;
 	this->AddDefHeaders(req);
-	this->AddContentType((const UTF8Char*)"text/html");
+	this->AddContentType(UTF8STRC("text/html"));
 	sb.AppendC(UTF8STRC("<!DOCTYPE HTML PUBLIC \"-//IETF//DTD HTML 2.0//EN\">\r\n"));
 	sb.AppendC(UTF8STRC("<html><head>\r\n"));
 	sb.AppendC(UTF8STRC("<title>"));
@@ -43,12 +43,12 @@ Bool Net::WebServer::IWebResponse::ResponseError(Net::WebServer::IWebRequest *re
 	return true;
 }
 
-Bool Net::WebServer::IWebResponse::RedirectURL(Net::WebServer::IWebRequest *req, const UTF8Char *url, OSInt cacheAge)
+Bool Net::WebServer::IWebResponse::RedirectURL(Net::WebServer::IWebRequest *req, const UTF8Char *url, UOSInt urlLen, OSInt cacheAge)
 {
 	this->AddDefHeaders(req);
 	this->SetStatusCode(Net::WebStatus::SC_MOVED_TEMPORARILY);
 	this->AddCacheControl(cacheAge);
-	this->AddHeader((const UTF8Char*)"Location", url);
+	this->AddHeaderC(UTF8STRC("Location"), url, urlLen);
 	this->AddContentLength(0);
 	return true;
 }
@@ -73,14 +73,19 @@ Bool Net::WebServer::IWebResponse::ResponseText(const UTF8Char *txt, const UTF8C
 	this->AddContentLength(len);
 	if (contentType == 0)
 	{
-		this->AddContentType((const UTF8Char*)"text/plain");
+		this->AddContentType(UTF8STRC("text/plain"));
 	}
 	else
 	{
-		this->AddContentType(contentType);
+		this->AddContentType(contentType, Text::StrCharCnt(contentType));
 	}
 	this->Write(txt, len);
 	return true;
+}
+
+Bool Net::WebServer::IWebResponse::AddHeaderS(const UTF8Char *name, UOSInt nameLen, Text::String *value)
+{
+	return AddHeaderC(name, nameLen, value->v, value->leng);
 }
 
 Bool Net::WebServer::IWebResponse::AddCacheControl(OSInt cacheAge)
@@ -91,26 +96,27 @@ Bool Net::WebServer::IWebResponse::AddCacheControl(OSInt cacheAge)
 	}
 	else if (cacheAge == -1)
 	{
-		return this->AddHeader((const UTF8Char*)"Cache-Control", (const UTF8Char*)"private");
+		return this->AddHeaderC(UTF8STRC("Cache-Control"), UTF8STRC("private"));
 	}
 	else if (cacheAge == 0)
 	{
-		return this->AddHeader((const UTF8Char*)"Cache-Control", (const UTF8Char*)"no-cache");
+		return this->AddHeaderC(UTF8STRC("Cache-Control"), UTF8STRC("no-cache"));
 	}
 	else
 	{
 		UTF8Char sbuff[256];
-		Text::StrOSInt(Text::StrConcatC(sbuff, UTF8STRC("private; max-age=")), cacheAge);
-		return this->AddHeader((const UTF8Char*)"Cache-Control", sbuff);
+		UTF8Char *sptr;
+		sptr = Text::StrOSInt(Text::StrConcatC(sbuff, UTF8STRC("private; max-age=")), cacheAge);
+		return this->AddHeaderC(UTF8STRC("Cache-Control"), sbuff, (UOSInt)(sptr - sbuff));
 	}
 	return true;
 }
 
-Bool Net::WebServer::IWebResponse::AddTimeHeader(const UTF8Char *name, Data::DateTime *dt)
+Bool Net::WebServer::IWebResponse::AddTimeHeader(const UTF8Char *name, UOSInt nameLen, Data::DateTime *dt)
 {
 	UTF8Char sbuff[256];
-	ToTimeString(sbuff, dt);
-	return this->AddHeader(name, sbuff);
+	UTF8Char *sptr = ToTimeString(sbuff, dt);
+	return this->AddHeaderC(name, nameLen, sbuff, (UOSInt)(sptr - sbuff));
 }
 
 Bool Net::WebServer::IWebResponse::AddContentDisposition(Bool isAttachment, const UTF8Char *attFileName, Net::BrowserInfo::BrowserType browser)
@@ -138,51 +144,51 @@ Bool Net::WebServer::IWebResponse::AddContentDisposition(Bool isAttachment, cons
 		}
 		sptr = Text::StrConcatC(sptr, UTF8STRC("\""));
 	}
-	return this->AddHeader((const UTF8Char*)"Content-Disposition", sbuff);
+	return this->AddHeaderC(UTF8STRC("Content-Disposition"), sbuff, (UOSInt)(sptr - sbuff));
 }
 
 Bool Net::WebServer::IWebResponse::AddContentLength(UInt64 contentLeng)
 {
 	UTF8Char sbuff[22];
-	Text::StrUInt64(sbuff, contentLeng);
-	return this->AddHeader((const UTF8Char*)"Content-Length", sbuff);
+	UTF8Char *sptr = Text::StrUInt64(sbuff, contentLeng);
+	return this->AddHeaderC(UTF8STRC("Content-Length"), sbuff, (UOSInt)(sptr - sbuff));
 }
 
-Bool Net::WebServer::IWebResponse::AddContentType(const UTF8Char *contentType)
+Bool Net::WebServer::IWebResponse::AddContentType(const UTF8Char *contentType, UOSInt len)
 {
-	return this->AddHeader((const UTF8Char*)"Content-Type", contentType);
+	return this->AddHeaderC(UTF8STRC("Content-Type"), contentType, len);
 }
 
 Bool Net::WebServer::IWebResponse::AddDate(Data::DateTime *dt)
 {
-	return this->AddTimeHeader((const UTF8Char*)"Date", dt);
+	return this->AddTimeHeader(UTF8STRC("Date"), dt);
 }
 
 Bool Net::WebServer::IWebResponse::AddExpireTime(Data::DateTime *dt)
 {
 	if (dt == 0)
 	{
-		return this->AddHeader((const UTF8Char*)"Expires", (const UTF8Char*)"0");
+		return this->AddHeaderC(UTF8STRC("Expires"), UTF8STRC("0"));
 	}
 	else
 	{
-		return this->AddTimeHeader((const UTF8Char*)"Expires", dt);
+		return this->AddTimeHeader(UTF8STRC("Expires"), dt);
 	}
 }
 
 Bool Net::WebServer::IWebResponse::AddLastModified(Data::DateTime *dt)
 {
-	return this->AddTimeHeader((const UTF8Char*)"Last-Modified", dt);
+	return this->AddTimeHeader(UTF8STRC("Last-Modified"), dt);
 }
 
-Bool Net::WebServer::IWebResponse::AddServer(const UTF8Char *server)
+Bool Net::WebServer::IWebResponse::AddServer(const UTF8Char *server, UOSInt len)
 {
-	return this->AddHeader((const UTF8Char*)"Server", server);
+	return this->AddHeaderC(UTF8STRC("Server"), server, len);
 }
 
 UTF8Char *Net::WebServer::IWebResponse::ToTimeString(UTF8Char *buff, Data::DateTime *dt)
 {
 	static const Char *wdays[] = {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
 	dt->ToUTCTime();
-	return Text::StrConcatC(dt->ToString(Text::StrConcat(buff, (const UTF8Char*)wdays[(OSInt)dt->GetWeekday()]), ", dd MMM yyyy HH:mm:ss"), UTF8STRC(" GMT"));
+	return Text::StrConcatC(dt->ToString(Text::StrConcatC(buff, (const UTF8Char*)wdays[(OSInt)dt->GetWeekday()], 3), ", dd MMM yyyy HH:mm:ss"), UTF8STRC(" GMT"));
 }

@@ -36,7 +36,7 @@ namespace Net
 			Net::SSLEngine *ssl;
 			Net::SocketFactory *sockf;
 			IO::LogTool *log;
-			const UTF8Char *svrName;
+			Text::String *svrName;
 			Bool allowProxy;
 			Bool allowKA;
 			SERVER_STATUS status;
@@ -68,7 +68,7 @@ namespace Net
 			~WebListener();
 
 			Bool IsError();
-			const UTF8Char *GetServerName();
+			Text::String *GetServerName();
 			void SetAccessLog(IO::LogTool *accLog, IO::ILogHandler::LogLevel accLogLev);
 			void SetRequestLog(IReqLogger *reqLog);
 			void LogAccess(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Double time);

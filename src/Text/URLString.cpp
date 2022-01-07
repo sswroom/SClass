@@ -161,11 +161,10 @@ UTF8Char *Text::URLString::GetURLPath(UTF8Char *sbuff, const UTF8Char *url)
 	}
 }
 
-UTF8Char *Text::URLString::GetURLPathSvr(UTF8Char *sbuff, const UTF8Char *url)
+UTF8Char *Text::URLString::GetURLPathSvr(UTF8Char *sbuff, const UTF8Char *url, UOSInt urlLen)
 {
 	UOSInt i;
 	UTF8Char *tmpBuff;
-	UOSInt urlLen = Text::StrCharCnt(url);
 	i = Text::StrIndexOf(url, (const UTF8Char*)"://");
 	if (i != INVALID_INDEX)
 	{

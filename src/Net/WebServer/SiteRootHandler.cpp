@@ -21,7 +21,8 @@ Bool Net::WebServer::SiteRootHandler::ProcessRequest(Net::WebServer::IWebRequest
 		{
 			resp->AddDefHeaders(req);
 			resp->AddContentLength(this->faviconSize);
-			resp->AddContentType(Net::MIME::GetMIMEFromExt((const UTF8Char*)"ico"));
+			const UTF8Char *mime = Net::MIME::GetMIMEFromExt((const UTF8Char*)"ico");
+			resp->AddContentType(mime, Text::StrCharCnt(mime));
 			resp->Write(this->faviconBuff, this->faviconSize);
 			return true;
 		}

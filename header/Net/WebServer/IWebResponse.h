@@ -21,7 +21,7 @@ namespace Net
 			virtual void EnableWriteBuffer() = 0;
 			virtual Bool SetStatusCode(Net::WebStatus::StatusCode code) = 0;
 			virtual Int32 GetStatusCode() = 0;
-			virtual Bool AddHeader(const UTF8Char *name, const UTF8Char *value) = 0;
+			virtual Bool AddHeaderC(const UTF8Char *name, UOSInt nameLen, const UTF8Char *value, UOSInt valueLen) = 0;
 			virtual Bool AddDefHeaders(Net::WebServer::IWebRequest *req) = 0;
 			virtual UInt64 GetRespLength() = 0;
 			virtual void ShutdownSend() = 0;
@@ -30,20 +30,21 @@ namespace Net
 			virtual const UTF8Char *GetRespHeaders() = 0;
 
 			Bool ResponseError(Net::WebServer::IWebRequest *req, Net::WebStatus::StatusCode code);
-			Bool RedirectURL(Net::WebServer::IWebRequest *req, const UTF8Char *url, OSInt cacheAge);
+			Bool RedirectURL(Net::WebServer::IWebRequest *req, const UTF8Char *url, UOSInt urlLen, OSInt cacheAge);
 			Bool ResponseNotModified(Net::WebServer::IWebRequest *req, OSInt cacheAge);
 			Bool ResponseText(const UTF8Char *txt);
 			Bool ResponseText(const UTF8Char *txt, const UTF8Char *contentType);
 
+			Bool AddHeaderS(const UTF8Char *name, UOSInt nameLen, Text::String *value);
 			Bool AddCacheControl(OSInt cacheAge);
-			Bool AddTimeHeader(const UTF8Char *name, Data::DateTime *dt);
+			Bool AddTimeHeader(const UTF8Char *name, UOSInt nameLen, Data::DateTime *dt);
 			Bool AddContentDisposition(Bool isAttachment, const UTF8Char *attFileName, Net::BrowserInfo::BrowserType browser);
 			Bool AddContentLength(UInt64 contentLeng);
-			Bool AddContentType(const UTF8Char *contentType);
+			Bool AddContentType(const UTF8Char *contentType, UOSInt len);
 			Bool AddDate(Data::DateTime *dt);
 			Bool AddExpireTime(Data::DateTime *dt);
 			Bool AddLastModified(Data::DateTime *dt);
-			Bool AddServer(const UTF8Char *server);
+			Bool AddServer(const UTF8Char *server, UOSInt len);
 			static UTF8Char *ToTimeString(UTF8Char *buff, Data::DateTime *dt);
 		};
 	}

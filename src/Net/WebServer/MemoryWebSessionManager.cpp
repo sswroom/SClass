@@ -170,7 +170,7 @@ Net::WebServer::IWebSession *Net::WebServer::MemoryWebSessionManager::CreateSess
 	sptr = Text::StrInt64(sptr, sessId);
 	sptr = Text::StrConcatC(sptr, UTF8STRC("; Path="));
 	sptr = Text::StrConcat(sptr, this->path);
-	resp->AddHeader((const UTF8Char*)"Set-Cookie", sbuff);
+	resp->AddHeaderC(UTF8STRC("Set-Cookie"), sbuff, (UOSInt)(sptr - sbuff));
 	UOSInt i;
 	NEW_CLASS(sess, Net::WebServer::MemoryWebSession(sessId, req->GetBrowser(), req->GetOS()));
 	Sync::MutexUsage mutUsage(this->mut);
@@ -216,7 +216,7 @@ void Net::WebServer::MemoryWebSessionManager::DeleteSession(Net::WebServer::IWeb
 		dt.SetCurrTimeUTC();
 		dt.AddMonth(-12);
 		sptr = resp->ToTimeString(sptr, &dt);
-		resp->AddHeader((const UTF8Char*)"Set-Cookie", sbuff);
+		resp->AddHeaderC(UTF8STRC("Set-Cookie"), sbuff, (UOSInt)(sptr - sbuff));
 	}
 }
 
