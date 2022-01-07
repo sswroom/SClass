@@ -454,7 +454,8 @@ UTF8Char *IO::Path::FindNextFile(UTF8Char *buff, IO::Path::FindFileSession *sess
 	{
 		if (FileNameMatch((const UTF8Char*)ent->d_name, sess->searchPattern->v))
 		{
-			Text::StrConcat(sess->searchDir->ConcatTo(sbuff), (const UTF8Char*)ent->d_name);
+			UOSInt len = Text::StrCharCnt(ent->d_name);
+			Text::StrConcatC(sess->searchDir->ConcatTo(sbuff), (const UTF8Char*)ent->d_name, len);
 #if defined(__USE_LARGEFILE64)
 			struct stat64 s;
 			int status = lstat64((const Char*)sbuff, &s);
@@ -481,7 +482,7 @@ UTF8Char *IO::Path::FindNextFile(UTF8Char *buff, IO::Path::FindFileSession *sess
 				{
 					*fileSize = (UInt64)s.st_size;
 				}
-				return Text::StrConcat(buff, (const UTF8Char*)ent->d_name);
+				return Text::StrConcatC(buff, (const UTF8Char*)ent->d_name, len);
 			}
 		}
 		
