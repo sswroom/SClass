@@ -32,16 +32,16 @@ namespace Net
 
 			typedef struct
 			{
-				const UTF8Char *fileName;
+				Text::String *fileName;
 				Int64 modTime;
 				IO::PackageFile *packageFile;
 			} PackageInfo;
 
 			typedef struct
 			{
-				const UTF8Char *reqPath;
-				const UTF8Char *statFileName;
-				Data::StringUTF8Map<UInt32> *cntMap;
+				Text::String *reqPath;
+				Text::String *statFileName;
+				Data::FastStringMap<UInt32> *cntMap;
 				Bool updated;
 			} StatInfo;
 			
@@ -52,14 +52,14 @@ namespace Net
 			CacheType ctype;
 			Int32 expirePeriod;
 			UInt64 fileCacheSize;
-			const UTF8Char *allowOrigin;
+			Text::String *allowOrigin;
 			Data::BTreeUTF8Map<CacheInfo*> *fileCache;
 			Sync::Mutex *fileCacheMut;
-			Data::StringUTF8Map<StatInfo*> *statMap;
+			Data::FastStringMap<StatInfo*> *statMap;
 			Sync::Mutex *statMut;
 			Int32 fileCacheUsing;
 			Sync::RWMutex *packageMut;
-			Data::StringUTF8Map<PackageInfo*> *packageMap;
+			Data::FastStringMap<PackageInfo*> *packageMap;
 
 			void AddCacheHeader(Net::WebServer::IWebResponse *resp);
 			Bool MIMEToCompress(const UTF8Char *mime);

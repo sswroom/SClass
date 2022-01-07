@@ -14,7 +14,7 @@ void Net::WebServer::IWebRequest::ParseUserAgent()
 	this->uaParsed = true;
 	this->reqBrowser = Net::BrowserInfo::BT_UNKNOWN;
 
-	Text::String *uaHdr = this->GetSHeader((const UTF8Char*)"User-Agent");
+	Text::String *uaHdr = this->GetSHeader(UTF8STRC("User-Agent"));
 	if (uaHdr == 0)
 	{
 		return;

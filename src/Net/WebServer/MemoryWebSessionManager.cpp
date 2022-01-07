@@ -73,7 +73,7 @@ Int64 Net::WebServer::MemoryWebSessionManager::GetSessId(Net::WebServer::IWebReq
 	UOSInt strCnt = 2;
 	Int64 sessId = 0;
 
-	Text::String *cookie = req->GetSHeader((const UTF8Char*)"Cookie");
+	Text::String *cookie = req->GetSHeader(UTF8STRC("Cookie"));
 	if (cookie == 0)
 	{
 		return 0;

@@ -48,8 +48,8 @@ namespace Net
 			WebRequest(const UTF8Char *requestURI, RequestMethod reqMeth, RequestProtocol reqProto, Bool secureConn, const Net::SocketUtil::AddressInfo *cliAddr, UInt16 cliPort, UInt16 svrPort);
 			virtual ~WebRequest();
 
-			void AddHeader(const UTF8Char *name, const UTF8Char *value);
-			virtual Text::String *GetSHeader(const UTF8Char *name);
+			void AddHeaderC(const UTF8Char *name, UOSInt nameLen, const UTF8Char *value, UOSInt valueLen);
+			virtual Text::String *GetSHeader(const UTF8Char *name, UOSInt nameLen);
 			virtual UTF8Char *GetHeader(UTF8Char *sbuff, const UTF8Char *name, UOSInt buffLen);
 			virtual Bool GetHeader(Text::StringBuilderUTF *sb, const UTF8Char *name);
 			virtual UOSInt GetHeaderNames(Data::ArrayList<Text::String*> *names);

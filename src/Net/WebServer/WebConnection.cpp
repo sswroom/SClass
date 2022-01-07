@@ -63,15 +63,12 @@ Net::WebServer::WebConnection::~WebConnection()
 
 void Net::WebServer::WebConnection::ReceivedData(const UInt8 *buff, UOSInt size)
 {
-	UTF8Char sbuff[512];
-	UTF8Char *sbuffTmp;
 	UTF8Char *reqURL;
 	Char *sarr[4];
 	UOSInt i;
 	UOSInt j;
 	UOSInt lineStart;
 	UOSInt strIndex;
-	UOSInt strLen;
 	if (this->proxyMode)
 	{
 		if (this->proxyCli->Write(buff, size) != size)
@@ -139,23 +136,11 @@ void Net::WebServer::WebConnection::ReceivedData(const UInt8 *buff, UOSInt size)
 				{
 					if (Text::StrSplit(sarr, 4, (Char*)&this->dataBuff[lineStart], ' ') == 3)
 					{
-						if (Text::StrCompare(sarr[2], "RTSP/1.0") == 0)
+						if (Text::StrEquals(sarr[2], "RTSP/1.0"))
 						{
 							Net::WebServer::IWebRequest::RequestProtocol reqProto = Net::WebServer::IWebRequest::RequestProtocol::RTSP1_0;
 							Bool secureConn = false;
-							strLen = Text::StrCharCnt(sarr[1]);
-							if (strLen > 511)
-							{
-								sbuffTmp = MemAlloc(UTF8Char, strLen + 1);
-								Text::StrConcat(sbuffTmp, (UTF8Char*)sarr[1]);
-								reqURL = sbuffTmp;
-							}
-							else
-							{
-								sbuffTmp = 0;
-								Text::StrConcat(sbuff, (UTF8Char*)sarr[1]);
-								reqURL = sbuff;
-							}
+							reqURL = (UTF8Char*)sarr[1];
 							this->respHeaders->ClearStr();
 							this->respHeaderSent = false;
 							this->respTranEnc = 0;
@@ -226,10 +211,6 @@ void Net::WebServer::WebConnection::ReceivedData(const UInt8 *buff, UOSInt size)
 
 								this->cli->Close();
 							}
-							if (sbuffTmp)
-							{
-								MemFree(sbuffTmp);
-							}
 						}
 						else
 						{
@@ -260,19 +241,7 @@ void Net::WebServer::WebConnection::ReceivedData(const UInt8 *buff, UOSInt size)
 								this->cli->Close();
 								return;
 							}
-							strLen = Text::StrCharCnt(sarr[1]);
-							if (strLen > 511)
-							{
-								sbuffTmp = MemAlloc(UTF8Char, strLen + 1);
-								Text::StrConcat(sbuffTmp, (UTF8Char*)sarr[1]);
-								reqURL = sbuffTmp;
-							}
-							else
-							{
-								sbuffTmp = 0;
-								Text::StrConcat(sbuff, (UTF8Char*)sarr[1]);
-								reqURL = sbuff;
-							}
+							reqURL = (UTF8Char*)sarr[1];
 							this->respHeaders->ClearStr();
 							this->respHeaderSent = false;
 							this->respTranEnc = 0;
@@ -322,10 +291,6 @@ void Net::WebServer::WebConnection::ReceivedData(const UInt8 *buff, UOSInt size)
 
 								this->cli->Close();
 							}
-							if (sbuffTmp)
-							{
-								MemFree(sbuffTmp);
-							}
 						}
 					}
 					else
@@ -345,16 +310,17 @@ void Net::WebServer::WebConnection::ReceivedData(const UInt8 *buff, UOSInt size)
 					strIndex = Text::StrIndexOf((Char*)&this->dataBuff[lineStart], ':');
 					if (strIndex != INVALID_INDEX)
 					{
-						this->dataBuff[lineStart + (UOSInt)strIndex] = 0;
+						UOSInt nameLen = strIndex;
+						this->dataBuff[lineStart + strIndex] = 0;
 						strIndex++;
-						while (this->dataBuff[lineStart + (UOSInt)strIndex] == ' ')
+						while (this->dataBuff[lineStart + strIndex] == ' ')
 						{
 							strIndex++;
 						}
 						this->dataBuff[i] = 0;
 						if (this->currReq)
 						{
-							this->currReq->AddHeader(&this->dataBuff[lineStart], &this->dataBuff[lineStart + (UOSInt)strIndex]);
+							this->currReq->AddHeaderC(&this->dataBuff[lineStart], nameLen, &this->dataBuff[lineStart + (UOSInt)strIndex], i - lineStart - strIndex);
 						}
 					}
 				}
@@ -749,7 +715,7 @@ void Net::WebServer::WebConnection::ProcessResponse()
 		SDEL_CLASS(this->cstm);
 		if (this->sseHdlr == 0)
 		{
-			Text::String *connHdr = this->currReq->GetSHeader((const UTF8Char*)"Connection");
+			Text::String *connHdr = this->currReq->GetSHeader(UTF8STRC("Connection"));
 			if (this->allowKA && connHdr && connHdr->Equals((const UTF8Char*)"keep-alive"))
 			{
 			}
@@ -817,7 +783,7 @@ Bool Net::WebServer::WebConnection::AddDefHeaders(Net::WebServer::IWebRequest *r
 	dt.SetCurrTimeUTC();
 	AddTimeHeader((const UTF8Char*)"Date", &dt);
 	AddHeader((const UTF8Char*)"Server", this->svr->GetServerName());
-	Text::String *connHdr = req->GetSHeader((const UTF8Char*)"Connection");
+	Text::String *connHdr = req->GetSHeader(UTF8STRC("Connection"));
 	if (this->allowKA && connHdr && connHdr->Equals((const UTF8Char*)"keep-alive"))
 	{
 		AddHeader((const UTF8Char*)"Connection", (const UTF8Char*)"keep-alive");

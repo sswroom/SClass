@@ -140,9 +140,10 @@ namespace Text
 	template <class T> Text::StringBuilder<T> *Text::StringBuilder<T>::AppendDate(Data::DateTime *dt)
 	{
 		Char sbuff[30];
-		dt->ToString(sbuff, "yyyy-MM-dd HH:mm:ss");
+		Char *sptr;
+		sptr = dt->ToString(sbuff, "yyyy-MM-dd HH:mm:ss");
 		this->AllocLeng(19);
-		this->buffEnd = Text::StrConcatASCII(this->buffEnd, sbuff);
+		this->buffEnd = Text::StrConcatC(this->buffEnd, (const UTF8Char*)sbuff, (UOSInt)(sptr - sbuff));
 		return this;
 	}
 

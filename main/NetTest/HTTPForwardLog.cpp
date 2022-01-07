@@ -38,7 +38,7 @@ void __stdcall OnForwardRequest(void *userObj, Net::WebServer::IWebRequest *req,
 		sb.AppendC(UTF8STRC(" Req "));
 		sb.Append(headerName);
 		sb.AppendC(UTF8STRC(": "));
-		sb.Append(req->GetSHeader(headerName->v));
+		sb.Append(req->GetSHeader(headerName->v, headerName->leng));
 		logger->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_RAW);
 		i++;
 	}
