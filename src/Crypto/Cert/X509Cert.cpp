@@ -256,7 +256,7 @@ Bool Crypto::Cert::X509Cert::DomainValid(const UTF8Char *domain)
 	Crypto::Cert::CertExtensions exts;
 	UOSInt i;
 	UOSInt j;
-	const UTF8Char *csptr;
+	Text::String *s;
 	Bool valid = false;
 	Crypto::Cert::CertNames subjNames;
 	MemClear(&subjNames, sizeof(subjNames));
@@ -286,14 +286,14 @@ Bool Crypto::Cert::X509Cert::DomainValid(const UTF8Char *domain)
 			j = exts.subjectAltName->GetCount();
 			while (i < j)
 			{
-				csptr = exts.subjectAltName->GetItem(i);
-				if (csptr[0] == '*' && csptr[1] == '.')
+				s = exts.subjectAltName->GetItem(i);
+				if (s->v[0] == '*' && s->v[1] == '.')
 				{
-					valid = Text::StrEqualsICase(domain, &csptr[2]) || Text::StrEndsWithICase(domain, &csptr[1]);
+					valid = Text::StrEqualsICase(domain, &s->v[2]) || Text::StrEndsWithICase(domain, &s->v[1]);
 				}
 				else
 				{
-					valid = Text::StrEqualsICase(domain, csptr);
+					valid = Text::StrEqualsICase(domain, s->v);
 				}
 				if (valid)
 					break;

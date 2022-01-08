@@ -124,6 +124,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[512];
 	UTF8Char u8buff[128];
+	UTF8Char *sptr;
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
@@ -518,24 +519,24 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		writer->WriteLine();
 		console->WriteLineC(UTF8STRC("Printer Info:"));
 		writer->WriteLineC(UTF8STRC("Printer Info:"));
-		Data::ArrayList<const UTF8Char *> printerList;
+		Data::ArrayList<Text::String *> printerList;
 		i = 0;
 		j = Media::Printer::GetPrinterCount();
 		while (i < j)
 		{
-			if (Media::Printer::GetPrinterName(sbuff, i))
+			if ((sptr = Media::Printer::GetPrinterName(sbuff, i)) != 0)
 			{
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("Printer "));
 				sb.AppendUOSInt(i);
 				sb.AppendC(UTF8STRC(" = "));
-				sb.Append(sbuff);
+				sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 				console->WriteLineC(sb.ToString(), sb.GetLength());
 				writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 				if (Text::StrEquals(sbuff, (const UTF8Char*)"Bullzip PDF Printer") || Text::StrEquals(sbuff, (const UTF8Char*)"Adobe PDF") || Text::StrEquals(sbuff, (const UTF8Char*)"PDF"))
 				{
-					printerList.Add(Text::StrCopyNew(sbuff));
+					printerList.Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
 				}
 			}
 
@@ -544,22 +545,22 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		i = printerList.GetCount();
 		if (i > 0)
 		{
-			const UTF8Char *csptr;
+			Text::String *s;
 			Media::Printer *printer;
 			Media::DrawEngine *deng = Media::DrawEngineFactory::CreateDrawEngine();
 			while (i-- > 0)
 			{
-				csptr = printerList.GetItem(i);
+				s = printerList.GetItem(i);
 
 				if (deng)
 				{
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("Test Printing with "));
-					sb.Append(csptr);
+					sb.Append(s);
 					console->WriteLineC(sb.ToString(), sb.GetLength());
 					writer->WriteLineC(sb.ToString(), sb.GetLength());
 
-					NEW_CLASS(printer, Media::Printer(csptr));
+					NEW_CLASS(printer, Media::Printer(s->v));
 					if (printer->IsError())
 					{
 						console->WriteLineC(UTF8STRC("Error in opening printer"));
@@ -584,7 +585,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 					DEL_CLASS(printer);
 				}
 
-				Text::StrDelNew(csptr);
+				s->Release();
 			}
 			if (deng)
 			{

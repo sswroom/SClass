@@ -55,8 +55,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	names.commonName = (const UTF8Char*)"sswroom.no-ip.org";
 	names.emailAddress = (const UTF8Char*)"sswroom@yahoo.com";
 
-	NEW_CLASS(ext.subjectAltName, Data::ArrayList<const UTF8Char*>());
-	ext.subjectAltName->Add(Text::StrCopyNew((const UTF8Char*)"sswroom.no-ip.org"));
+	NEW_CLASS(ext.subjectAltName, Data::ArrayList<Text::String*>());
+	ext.subjectAltName->Add(Text::String::New(UTF8STRC("sswroom.no-ip.org")));
 	Crypto::Cert::X509CertReq *csr = Crypto::Cert::CertUtil::CertReqCreate(ssl, &names, key, &ext);
 	if (csr)
 	{
@@ -69,7 +69,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	{
 		console.WriteLineC(UTF8STRC("Error in creating csr"));
 	}
-	LIST_FREE_FUNC(ext.subjectAltName, Text::StrDelNew);
+	LIST_FREE_STRING(ext.subjectAltName);
 	DEL_CLASS(ext.subjectAltName);
 	DEL_CLASS(key);
 	SDEL_CLASS(ssl);

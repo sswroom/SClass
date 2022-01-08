@@ -22,13 +22,13 @@ void Crypto::Cert::CertExtensions::FreeExtensions(CertExtensions *ext)
 {
 	if (ext->subjectAltName)
 	{
-		LIST_FREE_FUNC(ext->subjectAltName, Text::StrDelNew);
+		LIST_FREE_STRING(ext->subjectAltName);
 		DEL_CLASS(ext->subjectAltName);
 		ext->subjectAltName = 0;
 	}
 	if (ext->issuerAltName)
 	{
-		LIST_FREE_FUNC(ext->issuerAltName, Text::StrDelNew);
+		LIST_FREE_STRING(ext->issuerAltName);
 		DEL_CLASS(ext->issuerAltName);
 		ext->issuerAltName = 0;
 	}
@@ -772,7 +772,8 @@ Bool Crypto::Cert::X509File::NamesGet(const UInt8 *pdu, const UInt8 *pduEnd, Cer
 
 Bool Crypto::Cert::X509File::ExtensionsGet(const UInt8 *pdu, const UInt8 *pduEnd, CertExtensions *ext)
 {
-	Char sbuff[32];
+	UTF8Char sbuff[32];
+	UTF8Char *sptr;
 	const UInt8 *itemPDU;
 	const UInt8 *oidPDU;
 	const UInt8 *strPDU;
@@ -789,7 +790,7 @@ Bool Crypto::Cert::X509File::ExtensionsGet(const UInt8 *pdu, const UInt8 *pduEnd
 		i++;
 
 		Text::StrUOSInt(sbuff, i);
-		if ((itemPDU = Net::ASN1Util::PDUGetItem(pdu, pduEnd, sbuff, &itemLen, &itemType)) != 0)
+		if ((itemPDU = Net::ASN1Util::PDUGetItem(pdu, pduEnd, (const Char*)sbuff, &itemLen, &itemType)) != 0)
 		{
 			if (itemType == Net::ASN1Util::IT_SEQUENCE)
 			{
@@ -803,27 +804,27 @@ Bool Crypto::Cert::X509File::ExtensionsGet(const UInt8 *pdu, const UInt8 *pduEnd
 						{
 							if (ext->subjectAltName)
 							{
-								LIST_FREE_FUNC(ext->subjectAltName, Text::StrDelNew);
+								LIST_FREE_STRING(ext->subjectAltName);
 								SDEL_CLASS(ext->subjectAltName)
 							}
-							NEW_CLASS(ext->subjectAltName, Data::ArrayList<const UTF8Char*>());
+							NEW_CLASS(ext->subjectAltName, Data::ArrayList<Text::String*>());
 							UOSInt j = 0;
 							UOSInt k = Net::ASN1Util::PDUCountItem(strPDU, strPDU + strLen, "1");
 							while (j < k)
 							{
 								j++;
-								Text::StrUOSInt(Text::StrConcat(sbuff, "1."), j);
-								subItemPDU = Net::ASN1Util::PDUGetItem(strPDU, strPDU + strLen, sbuff, &subItemLen, &itemType);
+								Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("1.")), j);
+								subItemPDU = Net::ASN1Util::PDUGetItem(strPDU, strPDU + strLen, (const Char*)sbuff, &subItemLen, &itemType);
 								if (subItemPDU)
 								{
 									if (itemType == 0x87)
 									{
-										Net::SocketUtil::GetIPv4Name((UTF8Char*)sbuff, ReadNUInt32(subItemPDU));
-										ext->subjectAltName->Add(Text::StrCopyNew((const UTF8Char*)sbuff));
+										sptr = Net::SocketUtil::GetIPv4Name(sbuff, ReadNUInt32(subItemPDU));
+										ext->subjectAltName->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
 									}
 									else
 									{
-										ext->subjectAltName->Add(Text::StrCopyNewC(subItemPDU, subItemLen));
+										ext->subjectAltName->Add(Text::String::New(subItemPDU, subItemLen));
 									}
 								}
 							}

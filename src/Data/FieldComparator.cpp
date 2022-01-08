@@ -5,41 +5,44 @@
 
 Data::FieldComparator::FieldComparator(const UTF8Char *compareConds)
 {
-	NEW_CLASS(this->fieldNames, Data::ArrayList<const UTF8Char*>());
+	NEW_CLASS(this->fieldNames, Data::ArrayList<Text::String*>());
 	NEW_CLASS(this->dirs, Data::ArrayList<Int8>());
 	if (compareConds == 0 || compareConds[0] == 0)
 	{
 		return;
 	}
 	Text::StringBuilderUTF8 sb;
-	UTF8Char *sarr[2];
+	Text::PString sarr[2];
 	UOSInt i = 2;
 	Int8 dir;
 	UOSInt len;
 	sb.Append(compareConds);
-	sarr[1] = sb.ToString();
+	sarr[1].v = sb.ToString();
+	sarr[1].len = sb.GetLength();
 	while (i == 2)
 	{
-		i = Text::StrSplitTrim(sarr, 2, sarr[1], ',');
+		i = Text::StrSplitTrimP(sarr, 2, sarr[1].v, sarr[1].len, ',');
 		dir = 1;
-		len = Text::StrCharCnt(sarr[0]);
-		if (Text::StrEqualsICase(&sarr[0][len - 4], (const UTF8Char*)" ASC"))
+		len = sarr[0].len;
+		if (Text::StrEqualsICase(&sarr[0].v[len - 4], (const UTF8Char*)" ASC"))
 		{
-			sarr[0][len - 4] = 0;
+			sarr[0].v[len - 4] = 0;
+			sarr[0].len -= 4;
 		}
-		else if (Text::StrEqualsICase(&sarr[0][len - 5], (const UTF8Char*)" DESC"))
+		else if (Text::StrEqualsICase(&sarr[0].v[len - 5], (const UTF8Char*)" DESC"))
 		{
-			sarr[0][len - 5] = 0;
+			sarr[0].v[len - 5] = 0;
+			sarr[0].len -= 5;
 			dir = (Int8)-1;
 		}
-		this->fieldNames->Add(Text::StrCopyNew(sarr[0]));
+		this->fieldNames->Add(Text::String::New(sarr[0].v, sarr[0].len));
 		this->dirs->Add(dir);
 	}
 }
 
 Data::FieldComparator::~FieldComparator()
 {
-	LIST_FREE_FUNC(this->fieldNames, Text::StrDelNew);
+	LIST_FREE_STRING(this->fieldNames);
 	DEL_CLASS(this->fieldNames);
 	DEL_CLASS(this->dirs);
 }
@@ -51,8 +54,8 @@ OSInt Data::FieldComparator::Compare(VariObject *a, VariObject *b)
 	OSInt k;
 	while (i < j)
 	{
-		const UTF8Char *fieldName = this->fieldNames->GetItem(i);
-		k = Compare(a->GetItem(fieldName), b->GetItem(fieldName)) * this->dirs->GetItem(i);
+		Text::String *fieldName = this->fieldNames->GetItem(i);
+		k = Compare(a->GetItem(fieldName->v), b->GetItem(fieldName->v)) * this->dirs->GetItem(i);
 		if (k != 0)
 		{
 			return k;
@@ -74,6 +77,7 @@ Bool Data::FieldComparator::ToOrderClause(Text::StringBuilderUTF *sb, DB::DBUtil
 		return false;
 	}
 	UTF8Char sbuff[512];
+	UTF8Char *sptr;
 	UOSInt i = 0;
 	UOSInt j = this->fieldNames->GetCount();
 	while (i < j)
@@ -82,8 +86,8 @@ Bool Data::FieldComparator::ToOrderClause(Text::StringBuilderUTF *sb, DB::DBUtil
 		{
 			sb->AppendC(UTF8STRC(", "));
 		}
-		DB::DBUtil::SDBColUTF8(sbuff, this->fieldNames->GetItem(i), svrType);
-		sb->Append(sbuff);
+		sptr = DB::DBUtil::SDBColUTF8(sbuff, this->fieldNames->GetItem(i)->v, svrType);
+		sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
 		if (this->dirs->GetItem(i) == -1)
 		{
 			sb->AppendC(UTF8STRC(" desc"));

@@ -23,7 +23,7 @@ class ProgressHandler : public IO::IProgressHandler
 {
 private:
 	Sync::Mutex *mut;
-	const UTF8Char *name;
+	Text::String *name;
 	const UTF8Char *fileName;
 	UInt64 currCount;
 	UInt64 lastCount;
@@ -108,7 +108,7 @@ public:
 			Sync::Thread::Sleep(1);
 		}
 		DEL_CLASS(this->evt);
-		SDEL_TEXT(this->name);
+		SDEL_STRING(this->name);
 		this->fileName = 0;
 		DEL_CLASS(mut);
 	}
@@ -117,10 +117,10 @@ public:
 	{
 		UOSInt i;
 		Sync::MutexUsage mutUsage(this->mut);
-		SDEL_TEXT(this->name);
-		this->name = Text::StrCopyNew(name);
-		i = Text::StrLastIndexOf(this->name, IO::Path::PATH_SEPERATOR);
-		this->fileName = &this->name[i + 1];
+		SDEL_STRING(this->name);
+		this->name = Text::String::NewNotNull(name);
+		i = Text::StrLastIndexOf(this->name->v, IO::Path::PATH_SEPERATOR);
+		this->fileName = &this->name->v[i + 1];
 		this->lastCount = 0;
 		mutUsage.EndUse();
 	}
@@ -134,7 +134,7 @@ public:
 	virtual void ProgressEnd()
 	{
 		Sync::MutexUsage mutUsage(this->mut);
-		SDEL_TEXT(this->name);
+		SDEL_STRING(this->name);
 		this->fileName = 0;
 		mutUsage.EndUse();
 	}

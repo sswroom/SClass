@@ -27,8 +27,8 @@ namespace Crypto
 
 		struct CertExtensions
 		{
-			Data::ArrayList<const UTF8Char *> *subjectAltName;
-			Data::ArrayList<const UTF8Char *> *issuerAltName;
+			Data::ArrayList<Text::String *> *subjectAltName;
+			Data::ArrayList<Text::String *> *issuerAltName;
 			Bool useSubjKeyId;
 			UInt8 subjKeyId[20];
 			Bool useAuthKeyId;

@@ -135,25 +135,25 @@ Bool Crypto::Cert::CertUtil::AppendExtensions(Net::ASN1PDUBuilder *builder, cons
 		builder->BeginSequence();
 		UOSInt i = 0;
 		UOSInt j = ext->subjectAltName->GetCount();
-		const UTF8Char *csptr;
+		Text::String *s;
 		Net::SocketUtil::AddressInfo addr;
 		while (i < j)
 		{
-			csptr = ext->subjectAltName->GetItem(i);
-			if (Net::SocketUtil::GetIPAddr(csptr, &addr))
+			s = ext->subjectAltName->GetItem(i);
+			if (Net::SocketUtil::GetIPAddr(s->v, &addr))
 			{
 				if (addr.addrType == Net::AddrType::IPv4)
 				{
 					builder->AppendOther(0x87, addr.addr, 4);
 				}
 			}
-			else if (Text::StringTool::IsEmailAddress(csptr))
+			else if (Text::StringTool::IsEmailAddress(s->v))
 			{
-				builder->AppendOther(0x81, csptr, Text::StrCharCnt(csptr));
+				builder->AppendOther(0x81, s->v, s->leng);
 			}
 			else
 			{
-				builder->AppendOther(0x82, csptr, Text::StrCharCnt(csptr));
+				builder->AppendOther(0x82, s->v, s->leng);
 			}
 			i++;
 		}
@@ -174,25 +174,25 @@ Bool Crypto::Cert::CertUtil::AppendExtensions(Net::ASN1PDUBuilder *builder, cons
 		builder->BeginSequence();
 		UOSInt i = 0;
 		UOSInt j = ext->issuerAltName->GetCount();
-		const UTF8Char *csptr;
+		Text::String *s;
 		Net::SocketUtil::AddressInfo addr;
 		while (i < j)
 		{
-			csptr = ext->issuerAltName->GetItem(i);
-			if (Net::SocketUtil::GetIPAddr(csptr, &addr))
+			s = ext->issuerAltName->GetItem(i);
+			if (Net::SocketUtil::GetIPAddr(s->v, &addr))
 			{
 				if (addr.addrType == Net::AddrType::IPv4)
 				{
 					builder->AppendOther(0x87, addr.addr, 4);
 				}
 			}
-			else if (Text::StringTool::IsEmailAddress(csptr))
+			else if (Text::StringTool::IsEmailAddress(s->v))
 			{
-				builder->AppendOther(0x81, csptr, Text::StrCharCnt(csptr));
+				builder->AppendOther(0x81, s->v, s->leng);
 			}
 			else
 			{
-				builder->AppendOther(0x82, csptr, Text::StrCharCnt(csptr));
+				builder->AppendOther(0x82, s->v, s->leng);
 			}
 			i++;
 		}

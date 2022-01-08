@@ -423,6 +423,7 @@ SSWR::AVIRead::AVIRHTTPTestForm::~AVIRHTTPTestForm()
 	DEL_CLASS(this->connURLs);
 	DEL_CLASS(this->connMut);
 	DEL_CLASS(this->clk);
+	SDEL_CLASS(this->ssl);
 }
 
 void SSWR::AVIRead::AVIRHTTPTestForm::OnMonitorChanged()

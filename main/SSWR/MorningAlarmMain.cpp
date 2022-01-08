@@ -41,7 +41,7 @@ Media::IAudioRenderer *audOut;
 Bool ToStop;
 Bool threadRunning;
 Data::DateTime *startDt;
-const UTF8Char *audioDevice; //L"Realtek HD Audio output"
+Text::String *audioDevice; //L"Realtek HD Audio output"
 IO::ConsoleWriter *console;
 Net::SocketFactory *sockf;
 Net::SSLEngine *ssl;
@@ -260,7 +260,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 {
 	UTF8Char buff[256];
 	UTF8Char *sptr;
-	const UTF8Char **sel;
+	Text::String **sel;
 	ToStop = false;
 	threadRunning = false;
 	UOSInt i;
@@ -274,11 +274,11 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	NEW_CLASS(timeCli, Net::NTPClient(sockf, 14562));
 	NEW_CLASS(tmpDt, Data::DateTime());
 	devCnt = i = Media::AudioDevice::GetDeviceCount();
-	sel = MemAlloc(const UTF8Char*, devCnt);
+	sel = MemAlloc(Text::String*, devCnt);
 	while (i-- > 0)
 	{
-		Media::AudioDevice::GetDeviceName(buff, i);
-		sel[i] = Text::StrCopyNew(buff);
+		sptr = Media::AudioDevice::GetDeviceName(buff, i);
+		sel[i] = Text::String::New(buff, (UOSInt)(sptr - buff));
 	}
 	if (timeCli->GetServerTime(NTPHOST, 123, tmpDt))
 	{
@@ -288,15 +288,15 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	irt = IO::ConsoleInput::InputSelect(console, sel, devCnt, &i);
 	if (irt == IO::ConsoleInput::IRT_TAB || irt == IO::ConsoleInput::IRT_ENTER)
 	{
-		audioDevice = Text::StrCopyNew(sel[i]);
+		audioDevice = sel[i]->Clone();
 		i = devCnt;
 		while (i-- > 0)
 		{
-			Text::StrDelNew(sel[i]);
+			sel[i]->Release();
 		}
 		MemFree(sel);
 
-		audOut = Media::AudioDevice::CreateRenderer(audioDevice);
+		audOut = Media::AudioDevice::CreateRenderer(audioDevice->v);
 		if (audOut)
 		{
 			Int32 vol = audOut->GetDeviceVolume();
@@ -344,14 +344,14 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		{
 			console->WriteLineC(UTF8STRC("Error in creating renderer"));
 		}
-		Text::StrDelNew(audioDevice);
+		audioDevice->Release();
 	}
 	else
 	{
 		i = devCnt;
 		while (i-- > 0)
 		{
-			Text::StrDelNew(sel[i]);
+			sel[i]->Release();
 		}
 		MemFree(sel);
 

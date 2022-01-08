@@ -170,7 +170,7 @@ void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnSANAddClicked(void *userObj)
 	me->txtSAN->GetText(&sb);
 	if (sb.GetLength() > 0)
 	{
-		me->sanList->Add(Text::StrCopyNew(sb.ToString()));
+		me->sanList->Add(Text::String::New(sb.ToString(), sb.GetLength()));
 		me->txtSAN->SetText((const UTF8Char*)"");
 		me->lbSAN->AddItem(sb.ToString(), 0);
 	}
@@ -179,7 +179,7 @@ void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnSANAddClicked(void *userObj)
 void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnSANClearClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRCertUtilForm *me = (SSWR::AVIRead::AVIRCertUtilForm*)userObj;
-	LIST_FREE_FUNC(me->sanList, Text::StrDelNew);
+	LIST_FREE_STRING(me->sanList);
 	me->sanList->Clear();
 	me->lbSAN->ClearItems();
 }
@@ -354,12 +354,12 @@ void SSWR::AVIRead::AVIRCertUtilForm::UpdateExtensions(Crypto::Cert::CertExtensi
 	{
 		UOSInt i = 0;
 		UOSInt j = exts->subjectAltName->GetCount();
-		const UTF8Char *csptr;
+		Text::String *s;
 		while (i < j)
 		{
-			csptr = exts->subjectAltName->GetItem(i);
-			this->sanList->Add(Text::StrCopyNew(csptr));
-			this->lbSAN->AddItem(csptr, 0);
+			s = exts->subjectAltName->GetItem(i);
+			this->sanList->Add(s->Clone());
+			this->lbSAN->AddItem(s, 0);
 			i++;
 		}
 	}
@@ -367,7 +367,7 @@ void SSWR::AVIRead::AVIRCertUtilForm::UpdateExtensions(Crypto::Cert::CertExtensi
 
 void SSWR::AVIRead::AVIRCertUtilForm::ClearExtensions()
 {
-	LIST_FREE_FUNC(this->sanList, Text::StrDelNew);
+	LIST_FREE_STRING(this->sanList);
 	this->sanList->Clear();
 	this->lbSAN->ClearItems();
 }
@@ -379,7 +379,7 @@ SSWR::AVIRead::AVIRCertUtilForm::AVIRCertUtilForm(UI::GUIClientControl *parent, 
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->ssl = Net::SSLEngineFactory::Create(this->core->GetSocketFactory(), true);
-	NEW_CLASS(this->sanList, Data::ArrayList<const UTF8Char*>());
+	NEW_CLASS(this->sanList, Data::ArrayList<Text::String*>());
 	this->key = 0;
 
 	NEW_CLASS(this->lblKey, UI::GUILabel(ui, this, (const UTF8Char*)"Key"));
@@ -453,7 +453,7 @@ SSWR::AVIRead::AVIRCertUtilForm::AVIRCertUtilForm(UI::GUIClientControl *parent, 
 
 SSWR::AVIRead::AVIRCertUtilForm::~AVIRCertUtilForm()
 {
-	LIST_FREE_FUNC(this->sanList, Text::StrDelNew);
+	LIST_FREE_STRING(this->sanList);
 	DEL_CLASS(this->sanList);
 	SDEL_CLASS(this->key);
 	SDEL_CLASS(this->ssl);

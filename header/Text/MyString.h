@@ -152,6 +152,7 @@ namespace Text
 	UOSInt StrSplit(UTF8Char **strs, UOSInt maxStrs, UTF8Char *str, UTF8Char splitChar); //Optimized
 	UOSInt StrSplitP(PString *strs, UOSInt maxStrs, UTF8Char *str, UOSInt strLen, UTF8Char splitChar); //Optimized
 	UOSInt StrSplitTrim(UTF8Char **strs, UOSInt maxStrs, UTF8Char *str, UTF8Char splitChar); //Optimized
+	UOSInt StrSplitTrimP(PString *strs, UOSInt maxStrs, UTF8Char *str, UOSInt strLen, UTF8Char splitChar); //Optimized
 	UOSInt StrSplitLine(UTF8Char **strs, UOSInt maxStrs, UTF8Char *str); //Optimized
 	UOSInt StrSplitWS(UTF8Char **strs, UOSInt maxStrs, UTF8Char *str); //Optimized
 	Bool StrToUInt8(const UTF8Char *intStr, UInt8 *outVal);

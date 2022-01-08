@@ -115,7 +115,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				}
 				else
 				{
-					const UTF8Char *fileName = 0;
+					Text::String *fileName = 0;
 					sb.ClearStr();
 					sb.Append(url);
 					j = sb.IndexOf('?');
@@ -130,11 +130,11 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 					j = Text::StrLastIndexOf(sb.ToString(), '/');
 					if (j != INVALID_INDEX && j >= 8)
 					{
-						fileName = Text::StrCopyNew(sb.ToString() + j + 1);
+						fileName = Text::String::New(sb.ToString() + j + 1, sb.GetLength() - j - 1);
 					}
 					else
 					{
-						fileName = Text::StrCopyNew((const UTF8Char*)"index.html");
+						fileName = Text::String::New(UTF8STRC("index.html"));
 					}
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("Received "));
@@ -152,7 +152,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 					{
 						console->WriteLineC(UTF8STRC("Error in writing to file"));
 					}*/
-					Text::StrDelNew(fileName);
+					fileName->Release();
 				}
 				DEL_CLASS(mstm);
 			}

@@ -270,7 +270,7 @@ IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputBool(IO::ConsoleWriter 
 		return IRT_TAB;
 }
 
-IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputSelect(IO::ConsoleWriter *console, const UTF8Char **names, UOSInt nNames, UOSInt *selection)
+IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputSelect(IO::ConsoleWriter *console, Text::String **names, UOSInt nNames, UOSInt *selection)
 {
 	IO::ConsoleWriter::ConsoleState state;
 	UOSInt i;
@@ -283,7 +283,7 @@ IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputSelect(IO::ConsoleWrite
 	i = nNames;
 	while (i-- > 0)
 	{
-		j = Text::StrCharCnt(names[i]);
+		j = names[i]->leng;
 		if (j > maxStrSize)
 		{
 			maxStrSize = j;
@@ -309,8 +309,8 @@ IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputSelect(IO::ConsoleWrite
 
 	while (true)
 	{
-		console->WriteStr(names[k]);
-		j = (maxStrSize - Text::StrCharCnt(names[k]));
+		console->WriteStrC(names[k]->v, names[k]->leng);
+		j = (maxStrSize - names[k]->leng);
 		while (j-- > 0)
 		{
 			console->WriteStrC(UTF8STRC(" "));
@@ -351,7 +351,7 @@ IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputSelect(IO::ConsoleWrite
 			j = k;
 			while (++j < nNames)
 			{
-				if (names[j][0] == (WChar)i)
+				if (names[j]->v[0] == (UTF8Char)i)
 				{
 					k = j;
 					break;
@@ -362,7 +362,7 @@ IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputSelect(IO::ConsoleWrite
 				j = 0;
 				while (j < k)
 				{
-					if (names[j][0] == (WChar)i)
+					if (names[j]->v[0] == (UTF8Char)i)
 					{
 						k = j;
 						break;
@@ -376,7 +376,7 @@ IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputSelect(IO::ConsoleWrite
 			j = k;
 			while (++j < nNames)
 			{
-				if (names[j][0] == (WChar)i || names[j][0] == (WChar)(i + 32))
+				if (names[j]->v[0] == (UTF8Char)i || names[j]->v[0] == (UTF8Char)(i + 32))
 				{
 					k = j;
 					break;
@@ -387,7 +387,7 @@ IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputSelect(IO::ConsoleWrite
 				j = 0;
 				while (j < k)
 				{
-					if (names[j][0] == (WChar)i || names[j][0] == (WChar)(i + 32))
+					if (names[j]->v[0] == (UTF8Char)i || names[j]->v[0] == (UTF8Char)(i + 32))
 					{
 						k = j;
 						break;
@@ -401,7 +401,7 @@ IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputSelect(IO::ConsoleWrite
 			j = k;
 			while (++j < nNames)
 			{
-				if (names[j][0] == (WChar)i || names[j][0] == (WChar)(i - 32))
+				if (names[j]->v[0] == (UTF8Char)i || names[j]->v[0] == (UTF8Char)(i - 32))
 				{
 					k = j;
 					break;
@@ -412,7 +412,7 @@ IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputSelect(IO::ConsoleWrite
 				j = 0;
 				while (j < k)
 				{
-					if (names[j][0] == (WChar)i || names[j][0] == (WChar)(i - 32))
+					if (names[j]->v[0] == (UTF8Char)i || names[j]->v[0] == (UTF8Char)(i - 32))
 					{
 						k = j;
 						break;

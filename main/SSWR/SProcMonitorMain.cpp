@@ -12,8 +12,8 @@
 
 typedef struct
 {
-	const UTF8Char *progName;
-	const UTF8Char *progPath;
+	Text::String *progName;
+	Text::String *progPath;
 	UOSInt procId;
 } ProgInfo;
 
@@ -32,8 +32,8 @@ Bool SearchProcId(ProgInfo *prog)
 	UOSInt i;
 	Bool ret = false;
 	Manage::Process::ProcessInfo info;
-	i = Text::StrLastIndexOf(prog->progPath, IO::Path::PATH_SEPERATOR);
-	Manage::Process::FindProcSess *sess = Manage::Process::FindProcess(&prog->progPath[i + 1]);
+	i = Text::StrLastIndexOf(prog->progPath->v, IO::Path::PATH_SEPERATOR);
+	Manage::Process::FindProcSess *sess = Manage::Process::FindProcess(&prog->progPath->v[i + 1]);
 	if (sess)
 	{
 		Text::StringBuilderUTF8 sb;
@@ -43,7 +43,7 @@ Bool SearchProcId(ProgInfo *prog)
 			sb.ClearStr();
 			if (proc.GetFilename(&sb))
 			{
-				if (sb.Equals(prog->progPath))
+				if (sb.Equals(prog->progPath->v))
 				{
 					Text::StringBuilderUTF8 sb;
 					prog->procId = info.processId;
@@ -62,15 +62,15 @@ Bool SearchProcId(ProgInfo *prog)
 	return ret;
 }
 
-void AddProg(const UTF8Char *progName, const UTF8Char *progPath)
+void AddProg(const UTF8Char *progName, UOSInt progNameLen, const UTF8Char *progPath, UOSInt progPathLen)
 {
 	ProgInfo *prog;
 	prog = MemAlloc(ProgInfo, 1);
-	prog->progName = Text::StrCopyNew(progName);
+	prog->progName = Text::String::New(progName, progNameLen);
 	prog->procId = 0;
 	if (progPath)
 	{
-		prog->progPath = Text::StrCopyNew(progPath);
+		prog->progPath = Text::String::New(progPath, progPathLen);
 	}
 	else
 	{
@@ -87,7 +87,7 @@ void AddProg(const UTF8Char *progName, const UTF8Char *progPath)
 void LoadProgList()
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sarr[2];
+	Text::PString sarr[2];
 	IO::FileStream *fs;
 	Text::UTF8Reader *reader;
 	Text::StringBuilderUTF8 sb;
@@ -104,15 +104,15 @@ void LoadProgList()
 			sb.ClearStr();
 			if (!reader->ReadLine(&sb, 4096))
 				break;
-			if (Text::StrSplit(sarr, 2, sb.ToString(), ',') == 2)
+			if (Text::StrSplitP(sarr, 2, sb.ToString(), sb.GetLength(), ',') == 2)
 			{
-				if (sarr[1][0])
+				if (sarr[1].len > 0)
 				{
-					AddProg(sarr[0], sarr[1]);
+					AddProg(sarr[0].v, sarr[0].len, sarr[1].v, sarr[1].len);
 				}
 				else
 				{
-					AddProg(sarr[0], sarr[1]);
+					AddProg(sarr[0].v, sarr[0].len, sarr[1].v, sarr[1].len);
 				}
 			}
 		}
@@ -148,7 +148,7 @@ void __stdcall OnTimerTick(void *userObj)
 			{
 				if (!SearchProcId(prog))
 				{
-					Manage::Process proc(prog->progPath);
+					Manage::Process proc(prog->progPath->v);
 					if (proc.IsRunning())
 					{
 						prog->procId = proc.GetProcId();
@@ -213,8 +213,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	while (i-- > 0)
 	{
 		prog = progList->GetItem(i);
-		SDEL_TEXT(prog->progPath);
-		SDEL_TEXT(prog->progName);
+		SDEL_STRING(prog->progPath);
+		SDEL_STRING(prog->progName);
 		MemFree(prog);
 	}
 	DEL_CLASS(progList);

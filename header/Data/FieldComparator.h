@@ -11,7 +11,7 @@ namespace Data
 	class FieldComparator : public Comparator<Data::VariObject*>
 	{
 	private:
-		Data::ArrayList<const UTF8Char*> *fieldNames;
+		Data::ArrayList<Text::String*> *fieldNames;
 		Data::ArrayList<Int8> *dirs;
 	public:
 		FieldComparator(const UTF8Char *compareConds);
