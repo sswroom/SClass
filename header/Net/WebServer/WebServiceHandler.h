@@ -1,7 +1,7 @@
 #ifndef _SM_NET_WEBSERVER_WEBSERVICEHANDLER
 #define _SM_NET_WEBSERVER_WEBSERVICEHANDLER
 #include "Data/Int32Map.h"
-#include "Data/StringUTF8Map.h"
+#include "Data/FastStringMap.h"
 #include "Net/WebServer/WebStandardHandler.h"
 
 namespace Net
@@ -15,11 +15,11 @@ namespace Net
 		private:
 			typedef struct
 			{
-				const UTF8Char *svcPath;
+				Text::String *svcPath;
 				Data::Int32Map<ServiceFunc> *funcs;
 			} ServiceInfo;
 			
-			Data::StringUTF8Map<ServiceInfo *> *services;
+			Data::FastStringMap<ServiceInfo *> *services;
 
 		protected:
 			virtual ~WebServiceHandler();
@@ -27,7 +27,7 @@ namespace Net
 		public:
 			WebServiceHandler();
 
-			void AddService(const UTF8Char *svcPath, Net::WebServer::IWebRequest::RequestMethod reqMeth, ServiceFunc func);
+			void AddService(const UTF8Char *svcPath, UOSInt svcPathLen, Net::WebServer::IWebRequest::RequestMethod reqMeth, ServiceFunc func);
 		};
 	}
 }

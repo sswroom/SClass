@@ -5,14 +5,13 @@
 
 Net::WebServer::WebServiceHandler::~WebServiceHandler()
 {
-	Data::ArrayList<Net::WebServer::WebServiceHandler::ServiceInfo *> *serviceList = this->services->GetValues();
 	Net::WebServer::WebServiceHandler::ServiceInfo *service;
-	UOSInt i = serviceList->GetCount();
+	UOSInt i = this->services->GetCount();
 	while (i-- > 0)
 	{
-		service = serviceList->GetItem(i);
+		service = this->services->GetItem(i);
 		DEL_CLASS(service->funcs);
-		Text::StrDelNew(service->svcPath);
+		service->svcPath->Release();
 		MemFree(service);
 	}
 	DEL_CLASS(this->services);
@@ -64,21 +63,21 @@ Bool Net::WebServer::WebServiceHandler::ProcessRequest(Net::WebServer::IWebReque
 
 Net::WebServer::WebServiceHandler::WebServiceHandler()
 {
-	NEW_CLASS(this->services, Data::StringUTF8Map<Net::WebServer::WebServiceHandler::ServiceInfo*>());
+	NEW_CLASS(this->services, Data::FastStringMap<Net::WebServer::WebServiceHandler::ServiceInfo*>());
 }
 
-void Net::WebServer::WebServiceHandler::AddService(const UTF8Char *svcPath, Net::WebServer::IWebRequest::RequestMethod reqMeth, ServiceFunc func)
+void Net::WebServer::WebServiceHandler::AddService(const UTF8Char *svcPath, UOSInt svcPathLen, Net::WebServer::IWebRequest::RequestMethod reqMeth, ServiceFunc func)
 {
 	Net::WebServer::WebServiceHandler::ServiceInfo *service;
 	if (svcPath[0] != '/')
 		return;
-	service = this->services->Get(svcPath);
+	service = this->services->GetC(svcPath, svcPathLen);
 	if (service == 0)
 	{
 		service = MemAlloc(Net::WebServer::WebServiceHandler::ServiceInfo, 1);
-		service->svcPath = Text::StrCopyNew(svcPath);
+		service->svcPath = Text::String::New(svcPath, svcPathLen);
 		NEW_CLASS(service->funcs, Data::Int32Map<ServiceFunc>());
-		this->services->Put(svcPath, service);
+		this->services->Put(service->svcPath, service);
 	}
 	service->funcs->Put((Int32)reqMeth, func);
 }

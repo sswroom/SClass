@@ -1,6 +1,7 @@
 #ifndef _SM_DATA_DATETIME
 #define _SM_DATA_DATETIME
 #include "Data/IComparable.h"
+#include "Text/MyString.h"
 
 #define DATETIME_TICK_PER_SECOND 1000
 #define DATETIME_TICK_PER_HOUR 3600000
@@ -53,8 +54,8 @@ namespace Data
 	private:
 		TimeValue *GetTimeValue();
 
-		static void SetDate(TimeValue *t, Char **dateStrs);
-		static void SetTime(TimeValue *t, Char **timeStrs);
+		static void SetDate(TimeValue *t, Text::PString *dateStrs);
+		static void SetTime(TimeValue *t, Text::PString *timeStrs);
 		void FixValues();
 	public:
 		DateTime();

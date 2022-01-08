@@ -135,6 +135,7 @@ void Net::SSLEngine::ServerInit(Socket *s, ClientReadyHandler readyHdlr, void *u
 	Sync::MutexUsage mutUsage(this->threadMut);
 	while (!found)
 	{
+		i = 0;
 		while (i < this->currThreadCnt)
 		{
 			if (this->threadSt[i].status == ThreadStatus::Running)

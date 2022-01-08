@@ -185,16 +185,16 @@ namespace SSWR
 			typedef struct
 			{
 				Int32 id;
-				const UTF8Char *chiName;
-				const UTF8Char *engName;
+				Text::String *chiName;
+				Text::String *engName;
 			} GroupTypeInfo;
 
 			typedef struct
 			{
 				Int32 cateId;
-				const UTF8Char *chiName;
-				const UTF8Char *dirName;
-				const UTF8Char *srcDir;
+				Text::String *chiName;
+				Text::String *dirName;
+				Text::String *srcDir;
 				Int32 flags;
 				Data::Int32Map<GroupTypeInfo *> *groupTypes;
 				Data::ArrayList<GroupInfo*> *groups;
@@ -283,7 +283,7 @@ namespace SSWR
 			void WebFilePrevUpdated(WebFileInfo *userFile);
 
 			void CalcGroupCount(GroupInfo *group);
-			void GetGroupSpecies(GroupInfo *group, Data::StringUTF8Map<SpeciesInfo*> *spMap, WebUserInfo *user);
+			void GetGroupSpecies(GroupInfo *group, Data::IMap<Text::String*, SpeciesInfo*> *spMap, WebUserInfo *user);
 			void SearchInGroup(GroupInfo *group, const UTF8Char *searchStr, Data::ArrayListDbl *speciesIndice, Data::ArrayList<SpeciesInfo*> *speciesObjs, Data::ArrayListDbl *groupIndice, Data::ArrayList<GroupInfo*> *groupObjs, WebUserInfo *user);
 			Bool GroupIsAdmin(GroupInfo *group);
 			UTF8Char *PasswordEnc(UTF8Char *buff, const UTF8Char *pwd);
@@ -348,7 +348,7 @@ namespace SSWR
 			void WriteFooter(IO::Writer *writer);
 			void WriteLocator(IO::Writer *writer, GroupInfo *group, CategoryInfo *cate);
 			void WriteLocatorText(IO::Writer *writer, GroupInfo *group, CategoryInfo *cate);
-			void WriteGroupTable(IO::Writer *writer, Data::ArrayList<GroupInfo *> *groupList, UInt32 scnWidth, Bool showSelect);
+			void WriteGroupTable(IO::Writer *writer, Data::ReadingList<GroupInfo *> *groupList, UInt32 scnWidth, Bool showSelect);
 			void WriteSpeciesTable(IO::Writer *writer, Data::ArrayList<SpeciesInfo *> *spList, UInt32 scnWidth, Int32 cateId, Bool showSelect);
 			void WritePickObjs(IO::Writer *writer, RequestEnv *env, const UTF8Char *url);
 

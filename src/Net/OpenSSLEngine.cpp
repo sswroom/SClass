@@ -64,11 +64,11 @@ Net::SSLClient *Net::OpenSSLEngine::CreateClientConn(void *sslObj, Socket *s, co
 	if ((ret = SSL_connect(ssl)) <= 0)
 	{
 		this->sockf->DestroySocket(s);
-		SSL_free(ssl);
 #ifdef SHOW_DEBUG
 		int code = SSL_get_error(ssl, ret);
 		printf("SSL_connect: ret = %d, Error code = %d\r\n", ret, code);
 #endif
+		SSL_free(ssl);
 		if (err)
 			*err = ErrorType::InitSession;
 		return 0;
