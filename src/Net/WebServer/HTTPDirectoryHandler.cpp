@@ -533,7 +533,8 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 	}
 	CacheInfo *cache;
 	Sync::MutexUsage mutUsage(this->fileCacheMut);
-	cache = this->fileCache->Get(subReq);
+	UOSInt subReqLen = Text::StrCharCnt(subReq);
+	cache = this->fileCache->GetC(subReq, subReqLen);
 	if (cache != 0)
 	{
 		Sync::Interlocked::Increment(&this->fileCacheUsing);
@@ -542,14 +543,14 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 		{
 			Net::WebServer::HTTPDirectoryHandler::StatInfo *stat;
 			sb.ClearStr();
-			sb.Append(subReq);
+			sb.AppendC(subReq, subReqLen);
 			i = sb.LastIndexOf('/');
 			sb.TrimToLength(i);
 			Sync::MutexUsage statMutUsage(this->statMut);
 			stat = this->statMap->Get(sb.ToString());
 			if (stat)
 			{
-				sb.Append(&subReq[i + 1]);
+				sb.AppendC(&subReq[i + 1], subReqLen - i - 1);
 				i = sb.IndexOf('?');
 				if (i != INVALID_INDEX)
 				{
@@ -560,7 +561,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("index.html"));
 				}
-				UInt32 cnt = stat->cntMap->Get(sb.ToString());
+				UInt32 cnt = stat->cntMap->GetC(sb.ToString(), sb.GetLength());
 				stat->cntMap->Put(sb.ToString(), cnt + 1);
 				stat->updated = true;
 			}
@@ -614,7 +615,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 		sb.RemoveChars(1);
 	}
 	const UTF8Char *reqTarget = subReq;
-	sb.Append(reqTarget);
+	sb.AppendC(reqTarget, subReqLen);
 	sptr = sb.ToString();
 	UTF8Char *sptr2 = 0;
 	i = Text::StrIndexOf(sptr, '?');
@@ -697,7 +698,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 				{
 					Net::WebServer::HTTPServerUtil::SendContent(req, resp, mime, sizeLeft, cache->buff);
 					Sync::MutexUsage mutUsage(this->fileCacheMut);
-					this->fileCache->Put(subReq, cache);
+					this->fileCache->PutC(subReq, subReqLen, cache);
 					mutUsage.EndUse();
 				}
 				else
@@ -1113,7 +1114,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 		if (this->statMap)
 		{
 			sb2.ClearStr();
-			sb2.Append(subReq);
+			sb2.AppendC(subReq, subReqLen);
 			i = sb2.IndexOf('?');
 			if (i != INVALID_INDEX)
 			{
@@ -1292,7 +1293,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 			{
 				Net::WebServer::HTTPServerUtil::SendContent(req, resp, mime, sizeLeft, cache->buff);
 				Sync::MutexUsage mutUsage(this->fileCacheMut);
-				cache = this->fileCache->Put(subReq, cache);
+				cache = this->fileCache->PutC(subReq, subReqLen, cache);
 				mutUsage.EndUse();
 				if (cache)
 				{

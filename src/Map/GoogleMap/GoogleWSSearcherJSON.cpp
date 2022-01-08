@@ -152,7 +152,7 @@ UTF8Char *Map::GoogleMap::GoogleWSSearcherJSON::SearchName(UTF8Char *buff, UOSIn
 	{
 		if (lang)
 		{
-			cli->AddHeader((const UTF8Char*)"Accept-Language", lang);
+			cli->AddHeaderC(UTF8STRC("Accept-Language"), lang, Text::StrCharCnt(lang));
 		}
 		Int32 status = cli->GetRespStatus();
 		IO::StreamReader *reader;

@@ -37,7 +37,7 @@ Bool Net::SocketFactory::ReloadDNS()
 	return true;
 }
 
-Bool Net::SocketFactory::DNSResolveIP(const Char *host, Net::SocketUtil::AddressInfo *addr)
+Bool Net::SocketFactory::DNSResolveIP(const UTF8Char *host, Net::SocketUtil::AddressInfo *addr)
 {
 	UTF8Char sbuff[256];
 
@@ -45,7 +45,7 @@ Bool Net::SocketFactory::DNSResolveIP(const Char *host, Net::SocketUtil::Address
 		return true;
 
 	Text::TextEnc::Punycode pcode;
-	Text::TextEnc::Punycode::Encode(sbuff, (const UTF8Char*)host);
+	Text::TextEnc::Punycode::Encode(sbuff, host);
 	Sync::MutexUsage mutUsage(this->dnsMut);
 	if (this->dnsHdlr == 0)
 	{

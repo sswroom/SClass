@@ -1238,7 +1238,9 @@ Char *Data::DateTime::ToString(Char *buff, const Char *pattern)
 	TimeValue *tval = this->GetTimeValue();
 	while (*pattern)
 	{
-		if (*pattern == 'y')
+		switch (*pattern)
+		{
+		case 'y':
 		{
 			UInt16 thisVal = tval->year;
 			UInt8 digiCnt = 0;
@@ -1254,8 +1256,9 @@ Char *Data::DateTime::ToString(Char *buff, const Char *pattern)
 				*--src = (Char)((thisVal % 10) + 0x30);
 				thisVal = thisVal / 10;
 			}
+			break;
 		}
-		else if (*pattern == 'm')
+		case 'm':
 		{
 			if (pattern[1] != 'm')
 			{
@@ -1278,8 +1281,9 @@ Char *Data::DateTime::ToString(Char *buff, const Char *pattern)
 				while (*pattern == 'm')
 					pattern++;
 			}
+			break;
 		}
-		else if (*pattern == 's')
+		case 's':
 		{
 			if (pattern[1] != 's')
 			{
@@ -1302,8 +1306,9 @@ Char *Data::DateTime::ToString(Char *buff, const Char *pattern)
 				while (*pattern == 's')
 					pattern++;
 			}
+			break;
 		}
-		else if (*pattern == 'd')
+		case 'd':
 		{
 			if (pattern[1] != 'd')
 			{
@@ -1326,8 +1331,9 @@ Char *Data::DateTime::ToString(Char *buff, const Char *pattern)
 				while (*pattern == 'd')
 					pattern++;
 			}
+			break;
 		}
-		else if (*pattern == 'f')
+		case 'f':
 		{
 			UInt8 digiCnt;
 			UInt16 thisMS;
@@ -1357,8 +1363,9 @@ Char *Data::DateTime::ToString(Char *buff, const Char *pattern)
 				*--src = (Char)((thisMS % 10) + 0x30);
 				thisMS = thisMS / 10;
 			}
+			break;
 		}
-		else if (*pattern == 'F')
+		case 'F':
 		{
 			UInt8 digiCnt;
 			UInt16 thisMS;
@@ -1394,8 +1401,9 @@ Char *Data::DateTime::ToString(Char *buff, const Char *pattern)
 				*--src = (Char)((thisMS % 10) + 0x30);
 				thisMS = thisMS / 10;
 			}
+			break;
 		}
-		else if (*pattern == 'h')
+		case 'h':
 		{
 			UInt8 thisH = tval->hour % 12;
 			if (pattern[1] != 'h')
@@ -1419,8 +1427,9 @@ Char *Data::DateTime::ToString(Char *buff, const Char *pattern)
 				while (*pattern == 'h')
 					pattern++;
 			}
+			break;
 		}
-		else if (*pattern == 'H')
+		case 'H':
 		{
 			if (pattern[1] != 'H')
 			{
@@ -1443,8 +1452,9 @@ Char *Data::DateTime::ToString(Char *buff, const Char *pattern)
 				while (*pattern == 'H')
 					pattern++;
 			}
+			break;
 		}
-		else if (*pattern == 'M')
+		case 'M':
 		{
 			if (pattern[1] != 'M')
 			{
@@ -1665,8 +1675,9 @@ Char *Data::DateTime::ToString(Char *buff, const Char *pattern)
 				while (*pattern == 'M')
 					pattern++;
 			}
+			break;
 		}
-		else if (*pattern == 't')
+		case 't':
 		{
 			if (pattern[1] != 't')
 			{
@@ -1694,8 +1705,9 @@ Char *Data::DateTime::ToString(Char *buff, const Char *pattern)
 				while (*pattern == 't')
 					pattern++;
 			}
+			break;
 		}
-		else if (*pattern == 'z')
+		case 'z':
 		{
 			Int32 hr = this->tzQhr >> 2;
 			Int32 min = (this->tzQhr & 3) * 15;
@@ -1773,8 +1785,9 @@ Char *Data::DateTime::ToString(Char *buff, const Char *pattern)
 				while (*pattern == 'z')
 					pattern++;
 			}
+			break;
 		}
-		else if (*pattern == '\\')
+		case '\\':
 		{
 			if (pattern[1] == 0)
 				*buff++ = *pattern++;
@@ -1783,10 +1796,11 @@ Char *Data::DateTime::ToString(Char *buff, const Char *pattern)
 				pattern++;
 				*buff++ = *pattern++;
 			}
+			break;
 		}
-		else
-		{
+		default:
 			*buff++ = *pattern++;
+			break;
 		}
 	}
 	*buff = 0;

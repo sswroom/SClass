@@ -61,9 +61,6 @@ Net::TCPClient::TCPClient(Net::SocketFactory *sockf, const UTF8Char *name, UInt1
 		this->flags = 12;
 		return;
 	}
-	UTF8Char sbuff[32];
-	sockf->GetRemoteName(sbuff, s);
-	this->SetSourceName(sbuff);
 	this->cliId = sockf->GenSocketId(s);
 }
 

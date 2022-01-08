@@ -79,13 +79,13 @@ UTF32Char MyString_StrHexArrU32[] = {
 	'E','0','E','1','E','2','E','3','E','4','E','5','E','6','E','7','E','8','E','9','E','A','E','B','E','C','E','D','E','E','E','F',
 	'F','0','F','1','F','2','F','3','F','4','F','5','F','6','F','7','F','8','F','9','F','A','F','B','F','C','F','D','F','E','F','F'};
 
-Char *Text::StrConcat(Char *oriStr, const Char *strToJoin)
+UTF8Char *Text::StrConcat(UTF8Char *oriStr, const UTF8Char *strToJoin)
 {
 	while ((*oriStr++ = *strToJoin++) != 0);
 	return oriStr - 1;
 }
 
-Char *Text::StrConcatS(Char *oriStr, const Char *strToJoin, UOSInt buffSize)
+UTF8Char *Text::StrConcatS(UTF8Char *oriStr, const UTF8Char *strToJoin, UOSInt buffSize)
 {
 	if (buffSize <= 1)
 	{
@@ -102,7 +102,7 @@ Char *Text::StrConcatS(Char *oriStr, const Char *strToJoin, UOSInt buffSize)
 	return oriStr - 1;
 }
 
-Char *Text::StrConcatC(Char *oriStr, const Char *strToJoin, UOSInt charCnt)
+UTF8Char *Text::StrConcatC(UTF8Char *oriStr, const UTF8Char *strToJoin, UOSInt charCnt)
 {
 	MemCopyNO(oriStr, strToJoin, charCnt);
 	oriStr[charCnt] = 0;
@@ -115,7 +115,7 @@ UTF8Char *Text::StrConcatASCII(UTF8Char *oriStr, const Char *strToJoin)
 	return oriStr - 1;
 }
 
-Char *Text::StrInt16(Char *oriStr, Int16 val)
+UTF8Char *Text::StrInt16(UTF8Char *oriStr, Int16 val)
 {
 	if (val < 0)
 	{
@@ -124,7 +124,7 @@ Char *Text::StrInt16(Char *oriStr, Int16 val)
 	}
 	if (val < 10)
 	{
-		*oriStr++ = (Char)MyString_StrDigit100U8[val * 2 + 1];
+		*oriStr++ = MyString_StrDigit100U8[val * 2 + 1];
 	}
 	else if (val < 100)
 	{
@@ -134,7 +134,7 @@ Char *Text::StrInt16(Char *oriStr, Int16 val)
 	else if (val < 1000)
 	{
 		WriteNInt16((UInt8*)&oriStr[1], ReadNInt16(&MyString_StrDigit100U8[(val % 100) * 2]));
-		*oriStr = (Char)MyString_StrDigit100U8[(val / 100) * 2 + 1];
+		*oriStr = MyString_StrDigit100U8[(val / 100) * 2 + 1];
 		oriStr += 3;
 	}
 	else if (val < 10000)
@@ -148,18 +148,18 @@ Char *Text::StrInt16(Char *oriStr, Int16 val)
 		WriteNInt16((UInt8*)&oriStr[3], ReadNInt16(&MyString_StrDigit100U8[(val % 100) * 2]));
 		val = val / 100;
 		WriteNInt16((UInt8*)&oriStr[1], ReadNInt16(&MyString_StrDigit100U8[(val % 100) * 2]));
-		*oriStr = (Char)MyString_StrDigit100U8[(val / 100) * 2 + 1];
+		*oriStr = MyString_StrDigit100U8[(val / 100) * 2 + 1];
 		oriStr += 5;
 	}
 	*oriStr = 0;
 	return oriStr;
 }
 
-Char *Text::StrUInt16(Char *oriStr, UInt16 val)
+UTF8Char *Text::StrUInt16(UTF8Char *oriStr, UInt16 val)
 {
 	if (val < 10)
 	{
-		*oriStr++ = (Char)MyString_StrDigit100U8[val * 2 + 1];
+		*oriStr++ = MyString_StrDigit100U8[val * 2 + 1];
 	}
 	else if (val < 100)
 	{
@@ -169,7 +169,7 @@ Char *Text::StrUInt16(Char *oriStr, UInt16 val)
 	else if (val < 1000)
 	{
 		WriteNInt16((UInt8*)&oriStr[1], ReadNInt16(&MyString_StrDigit100U8[(val % 100) * 2]));
-		*oriStr = (Char)MyString_StrDigit100U8[(val / 100) * 2 + 1];
+		*oriStr = MyString_StrDigit100U8[(val / 100) * 2 + 1];
 		oriStr += 3;
 	}
 	else if (val < 10000)
@@ -183,17 +183,17 @@ Char *Text::StrUInt16(Char *oriStr, UInt16 val)
 		WriteNInt16((UInt8*)&oriStr[3], ReadNInt16(&MyString_StrDigit100U8[(val % 100) * 2]));
 		val = val / 100;
 		WriteNInt16((UInt8*)&oriStr[1], ReadNInt16(&MyString_StrDigit100U8[(val % 100) * 2]));
-		*oriStr = (Char)MyString_StrDigit100U8[(val / 100) * 2 + 1];
+		*oriStr = MyString_StrDigit100U8[(val / 100) * 2 + 1];
 		oriStr += 5;
 	}
 	*oriStr = 0;
 	return oriStr;
 }
 
-Char *Text::StrInt32(Char *oriStr, Int32 val)
+UTF8Char *Text::StrInt32(UTF8Char *oriStr, Int32 val)
 {
-	Char buff[10];
-	Char *str;
+	UTF8Char buff[10];
+	UTF8Char *str;
 	if (val < 0)
 	{
 		val = -val;
@@ -245,10 +245,10 @@ Char *Text::StrInt32(Char *oriStr, Int32 val)
 	return oriStr;
 }
 
-Char *Text::StrUInt32(Char *oriStr, UInt32 val)
+UTF8Char *Text::StrUInt32(UTF8Char *oriStr, UInt32 val)
 {
-	Char buff[10];
-	Char *str;
+	UTF8Char buff[10];
+	UTF8Char *str;
 	str = &buff[10];
 	if (val == 0)
 	{
@@ -294,10 +294,10 @@ Char *Text::StrUInt32(Char *oriStr, UInt32 val)
 	return oriStr;
 }
 
-Char *Text::StrInt32S(Char *oriStr, Int32 val, Char seperator, UOSInt sepCnt)
+UTF8Char *Text::StrInt32S(UTF8Char *oriStr, Int32 val, UTF8Char seperator, UOSInt sepCnt)
 {
-	Char buff[20];
-	Char *str;
+	UTF8Char buff[20];
+	UTF8Char *str;
 	UOSInt i;
 	if (val < 0)
 	{
@@ -315,7 +315,7 @@ Char *Text::StrInt32S(Char *oriStr, Int32 val, Char seperator, UOSInt sepCnt)
 			i = sepCnt;
 			*--str = seperator;
 		}
-		*--str = (Char)(0x30 + val % 10);
+		*--str = (UTF8Char)(0x30 + val % 10);
 		val = val / 10;
 		i--;
 	}
@@ -328,10 +328,10 @@ Char *Text::StrInt32S(Char *oriStr, Int32 val, Char seperator, UOSInt sepCnt)
 }
 
 
-Char *Text::StrUInt32S(Char *oriStr, UInt32 val, Char seperator, UOSInt sepCnt)
+UTF8Char *Text::StrUInt32S(UTF8Char *oriStr, UInt32 val, UTF8Char seperator, UOSInt sepCnt)
 {
-	Char buff[20];
-	Char *str;
+	UTF8Char buff[20];
+	UTF8Char *str;
 	UOSInt i;
 	str = &buff[20];
 	if (val == 0)
@@ -344,7 +344,7 @@ Char *Text::StrUInt32S(Char *oriStr, UInt32 val, Char seperator, UOSInt sepCnt)
 			i = sepCnt;
 			*--str = seperator;
 		}
-		*--str = (Char)(0x30 + val % 10);
+		*--str = (UTF8Char)(0x30 + val % 10);
 		val = val / 10;
 		i--;
 	}
@@ -358,10 +358,10 @@ Char *Text::StrUInt32S(Char *oriStr, UInt32 val, Char seperator, UOSInt sepCnt)
 
 #ifdef HAS_INT64
 #if _OSINT_SIZE == 64
-Char *Text::StrInt64(Char *oriStr, Int64 val)
+UTF8Char *Text::StrInt64(UTF8Char *oriStr, Int64 val)
 {
-	Char buff[20];
-	Char *str;
+	UTF8Char buff[20];
+	UTF8Char *str;
 	if (val < 0)
 	{
 		val = -val;
@@ -400,7 +400,7 @@ Char *Text::StrInt64(Char *oriStr, Int64 val)
 		else
 		{
 			str -= 1;
-			*str = (Char)MyString_StrDigit100U8[val * 2 + 1];
+			*str = MyString_StrDigit100U8[val * 2 + 1];
 		}
 #endif
 	}
@@ -412,10 +412,10 @@ Char *Text::StrInt64(Char *oriStr, Int64 val)
 	return oriStr;
 }
 
-Char *Text::StrUInt64(Char *oriStr, UInt64 val)
+UTF8Char *Text::StrUInt64(UTF8Char *oriStr, UInt64 val)
 {
-	Char buff[20];
-	Char *str;
+	UTF8Char buff[20];
+	UTF8Char *str;
 	str = &buff[20];
 	if (val == 0)
 	{
@@ -442,10 +442,10 @@ Char *Text::StrUInt64(Char *oriStr, UInt64 val)
 	return oriStr;
 }
 
-Char *Text::StrInt64S(Char *oriStr, Int64 val, Char seperator, UOSInt sepCnt)
+UTF8Char *Text::StrInt64S(UTF8Char *oriStr, Int64 val, UTF8Char seperator, UOSInt sepCnt)
 {
-	Char buff[40];
-	Char *str;
+	UTF8Char buff[40];
+	UTF8Char *str;
 	UOSInt i;
 	if (val < 0)
 	{
@@ -463,7 +463,7 @@ Char *Text::StrInt64S(Char *oriStr, Int64 val, Char seperator, UOSInt sepCnt)
 			i = sepCnt;
 			*--str = seperator;
 		}
-		*--str = (Char)(0x30 + val % 10);
+		*--str = (UTF8Char)(0x30 + val % 10);
 		val = val / 10;
 		i--;
 	}
@@ -475,10 +475,10 @@ Char *Text::StrInt64S(Char *oriStr, Int64 val, Char seperator, UOSInt sepCnt)
 	return oriStr;
 }
 
-Char *Text::StrUInt64S(Char *oriStr, UInt64 val, Char seperator, UOSInt sepCnt)
+UTF8Char *Text::StrUInt64S(UTF8Char *oriStr, UInt64 val, UTF8Char seperator, UOSInt sepCnt)
 {
-	Char buff[40];
-	Char *str;
+	UTF8Char buff[40];
+	UTF8Char *str;
 	UOSInt i;
 	str = &buff[40];
 	if (val == 0)
@@ -491,7 +491,7 @@ Char *Text::StrUInt64S(Char *oriStr, UInt64 val, Char seperator, UOSInt sepCnt)
 			i = sepCnt;
 			*--str = seperator;
 		}
-		*--str = (Char)(0x30 + val % 10);
+		*--str = (UTF8Char)(0x30 + val % 10);
 		val = val / 10;
 		i--;
 	}
@@ -503,10 +503,10 @@ Char *Text::StrUInt64S(Char *oriStr, UInt64 val, Char seperator, UOSInt sepCnt)
 	return oriStr;
 }
 #else
-Char *Text::StrInt64(Char *oriStr, Int64 val)
+UTF8Char *Text::StrInt64(UTF8Char *oriStr, Int64 val)
 {
-	Char buff[20];
-	Char *str;
+	UTF8Char buff[20];
+	UTF8Char *str;
 	if (val < 0)
 	{
 		val = -val;
@@ -540,7 +540,7 @@ Char *Text::StrInt64(Char *oriStr, Int64 val)
 		else
 		{
 			str -= 1;
-			*str = (Char)MyString_StrDigit100U8[i32Val * 2 + 1];
+			*str = MyString_StrDigit100U8[i32Val * 2 + 1];
 		}
 	}
 	while (str < &buff[20])
@@ -551,10 +551,10 @@ Char *Text::StrInt64(Char *oriStr, Int64 val)
 	return oriStr;
 }
 
-Char *Text::StrUInt64(Char *oriStr, UInt64 val)
+UTF8Char *Text::StrUInt64(UTF8Char *oriStr, UInt64 val)
 {
-	Char buff[20];
-	Char *str;
+	UTF8Char buff[20];
+	UTF8Char *str;
 	str = &buff[20];
 	if (val == 0)
 	{
@@ -583,7 +583,7 @@ Char *Text::StrUInt64(Char *oriStr, UInt64 val)
 		else
 		{
 			str -= 1;
-			*str = (Char)MyString_StrDigit100U8[i32Val * 2 + 1];
+			*str = MyString_StrDigit100U8[i32Val * 2 + 1];
 		}
 	}
 	while (str < &buff[20])
@@ -594,10 +594,10 @@ Char *Text::StrUInt64(Char *oriStr, UInt64 val)
 	return oriStr;
 }
 
-Char *Text::StrInt64S(Char *oriStr, Int64 val, Char seperator, UOSInt sepCnt)
+UTF8Char *Text::StrInt64S(UTF8Char *oriStr, Int64 val, UTF8Char seperator, UOSInt sepCnt)
 {
-	Char buff[40];
-	Char *str;
+	UTF8Char buff[40];
+	UTF8Char *str;
 	UOSInt i;
 	if (val < 0)
 	{
@@ -615,7 +615,7 @@ Char *Text::StrInt64S(Char *oriStr, Int64 val, Char seperator, UOSInt sepCnt)
 			i = sepCnt;
 			*--str = seperator;
 		}
-		*--str = (Char)(0x30 + val % 10);
+		*--str = (UTF8Char)(0x30 + val % 10);
 		val = val / 10;
 		i--;
 	}
@@ -627,10 +627,10 @@ Char *Text::StrInt64S(Char *oriStr, Int64 val, Char seperator, UOSInt sepCnt)
 	return oriStr;
 }
 
-Char *Text::StrUInt64S(Char *oriStr, UInt64 val, Char seperator, UOSInt sepCnt)
+UTF8Char *Text::StrUInt64S(UTF8Char *oriStr, UInt64 val, UTF8Char seperator, UOSInt sepCnt)
 {
-	Char buff[40];
-	Char *str;
+	UTF8Char buff[40];
+	UTF8Char *str;
 	UOSInt i;
 	str = &buff[40];
 	if (val == 0)
@@ -643,7 +643,7 @@ Char *Text::StrUInt64S(Char *oriStr, UInt64 val, Char seperator, UOSInt sepCnt)
 			i = sepCnt;
 			*--str = seperator;
 		}
-		*--str = (Char)(0x30 + val % 10);
+		*--str = (UTF8Char)(0x30 + val % 10);
 		val = val / 10;
 		i--;
 	}
@@ -657,14 +657,14 @@ Char *Text::StrUInt64S(Char *oriStr, UInt64 val, Char seperator, UOSInt sepCnt)
 #endif
 #endif
 
-Char *Text::StrToUpper(Char *oriStr, const Char *strToJoin)
+UTF8Char *Text::StrToUpper(UTF8Char *oriStr, const UTF8Char *strToJoin)
 {
-	Char c;
+	UTF8Char c;
 	while ((c = *strToJoin++) != 0)
 	{
 		if (c >= 'a' && c <= 'z')
 		{
-			*oriStr++ = (Char)(c - 32);
+			*oriStr++ = (UTF8Char)(c - 32);
 		}
 		else
 		{
@@ -675,14 +675,14 @@ Char *Text::StrToUpper(Char *oriStr, const Char *strToJoin)
 	return oriStr;
 }
 
-Char *Text::StrToLower(Char *oriStr, const Char *strToJoin)
+UTF8Char *Text::StrToLower(UTF8Char *oriStr, const UTF8Char *strToJoin)
 {
-	Char c;
+	UTF8Char c;
 	while ((c = *strToJoin++) != 0)
 	{
 		if (c >= 'A' && c <= 'Z')
 		{
-			*oriStr++ = (Char)(c + 32);
+			*oriStr++ = (UTF8Char)(c + 32);
 		}
 		else
 		{
@@ -693,17 +693,17 @@ Char *Text::StrToLower(Char *oriStr, const Char *strToJoin)
 	return oriStr;
 }
 
-Char *Text::StrToCapital(Char *oriStr, const Char *strToJoin)
+UTF8Char *Text::StrToCapital(UTF8Char *oriStr, const UTF8Char *strToJoin)
 {
 	Bool lastLetter = false;
-	Char c;
+	UTF8Char c;
 	while ((c = *strToJoin++) != 0)
 	{
 		if (c >= 'A' && c <= 'Z')
 		{
 			if (lastLetter)
 			{
-				*oriStr++ = (Char)(c + 32);
+				*oriStr++ = (UTF8Char)(c + 32);
 			}
 			else
 			{
@@ -715,7 +715,7 @@ Char *Text::StrToCapital(Char *oriStr, const Char *strToJoin)
 		{
 			if (!lastLetter)
 			{
-				*oriStr++ = (Char)(c - 32);
+				*oriStr++ = (UTF8Char)(c - 32);
 				lastLetter = true;
 			}
 			else
@@ -733,9 +733,9 @@ Char *Text::StrToCapital(Char *oriStr, const Char *strToJoin)
 	return oriStr;
 }
 
-Bool Text::StrEquals(const Char *str1, const Char *str2)
+Bool Text::StrEquals(const UTF8Char *str1, const UTF8Char *str2)
 {
-	Char c;
+	UTF8Char c;
 	while ((c = *str1++) != 0)
 	{
 		if (c != *str2++)
@@ -744,7 +744,7 @@ Bool Text::StrEquals(const Char *str1, const Char *str2)
 	return *str2 == 0;
 }
 
-Bool Text::StrEqualsN(const Char *str1, const Char *str2)
+Bool Text::StrEqualsN(const UTF8Char *str1, const UTF8Char *str2)
 {
 	if (str1 == str2)
 		return true;
@@ -753,20 +753,20 @@ Bool Text::StrEqualsN(const Char *str1, const Char *str2)
 	return StrEquals(str1, str2);
 }
 
-Bool Text::StrEqualsICase(const Char *str1, const Char *str2)
+Bool Text::StrEqualsICase(const UTF8Char *str1, const UTF8Char *str2)
 {
-	Char c1;
-	Char c2;
+	UTF8Char c1;
+	UTF8Char c2;
 	while ((c1 = *str1++) != 0)
 	{
 		c2 = *str2++;
 		if (c1 >= 'a' && c1 <= 'z')
 		{
-			c1 = (Char)(c1 - 0x20);
+			c1 = (UTF8Char)(c1 - 0x20);
 		}
 		if (c2 >= 'a' && c2 <= 'z')
 		{
-			c2 = (Char)(c2 - 0x20);
+			c2 = (UTF8Char)(c2 - 0x20);
 		}
 		if (c1 != c2)
 			return false;
@@ -774,18 +774,18 @@ Bool Text::StrEqualsICase(const Char *str1, const Char *str2)
 	return *str2 == 0;
 }
 
-Bool Text::StrEqualsICase(const Char *str1, const Char *str2, UOSInt str2Len)
+Bool Text::StrEqualsICase(const UTF8Char *str1, const UTF8Char *str2, UOSInt str2Len)
 {
-	Char c1;
-	Char c2;
+	UTF8Char c1;
+	UTF8Char c2;
 	while (str2Len-- > 0)
 	{
 		c1 = *str1++;
 		c2 = *str2++;
 		if (c1 >= 'a' && c1 <= 'z')
-			c1 = (Char)(c1 - 32);
+			c1 = (UTF8Char)(c1 - 32);
 		if (c2 >= 'a' && c2 <= 'z')
-			c2 = (Char)(c2 - 32);
+			c2 = (UTF8Char)(c2 - 32);
 		if (c1 != c2)
 			return false;
 	}
@@ -794,17 +794,17 @@ Bool Text::StrEqualsICase(const Char *str1, const Char *str2, UOSInt str2Len)
 	return false;
 }
 
-UOSInt Text::StrCharCntS(const Char *str, UOSInt maxLen)
+UOSInt Text::StrCharCntS(const UTF8Char *str, UOSInt maxLen)
 {
-	const Char *currPtr = str;
-	const Char *endPtr = str + maxLen;
+	const UTF8Char *currPtr = str;
+	const UTF8Char *endPtr = str + maxLen;
 	while (currPtr < endPtr && *currPtr++);
 	return (UOSInt)(currPtr - str);
 }
 
-Bool Text::StrHasUpperCase(const Char *str)
+Bool Text::StrHasUpperCase(const UTF8Char *str)
 {
-	Char c;
+	UTF8Char c;
 	while ((c = *str++) != 0)
 	{
 		if (c >= 'A' && c <= 'Z')
@@ -815,7 +815,7 @@ Bool Text::StrHasUpperCase(const Char *str)
 	return false;
 }
 
-Char *Text::StrHexVal64V(Char *oriStr, UInt64 val)
+UTF8Char *Text::StrHexVal64V(UTF8Char *oriStr, UInt64 val)
 {
 	UInt32 v1 = (UInt32)((UInt64)val >> 32);
 	UInt32 v2 = (UInt32)(val & 0xffffffff);
@@ -825,215 +825,215 @@ Char *Text::StrHexVal64V(Char *oriStr, UInt64 val)
 	}
 	if ((v1 & 0xfffffff0) == 0)
 	{
-		oriStr[0] = MyString_STRHEXARR[v1 & 0xf];
+		oriStr[0] = (UTF8Char)MyString_STRHEXARR[v1 & 0xf];
 		return StrHexVal32(&oriStr[1], v2);
 	}
 	else if ((v1 & 0xffffff00) == 0)
 	{
-		oriStr[0] = MyString_STRHEXARR[(v1 >> 4) & 0xf];
-		oriStr[1] = MyString_STRHEXARR[v1 & 0xf];
+		oriStr[0] = (UTF8Char)MyString_STRHEXARR[(v1 >> 4) & 0xf];
+		oriStr[1] = (UTF8Char)MyString_STRHEXARR[v1 & 0xf];
 		return StrHexVal32(&oriStr[2], v2);
 	}
 	else if ((v1 & 0xfffff000) == 0)
 	{
-		oriStr[0] = MyString_STRHEXARR[(v1 >> 8) & 0xf];
-		oriStr[1] = MyString_STRHEXARR[(v1 >> 4) & 0xf];
-		oriStr[2] = MyString_STRHEXARR[v1 & 0xf];
+		oriStr[0] = (UTF8Char)MyString_STRHEXARR[(v1 >> 8) & 0xf];
+		oriStr[1] = (UTF8Char)MyString_STRHEXARR[(v1 >> 4) & 0xf];
+		oriStr[2] = (UTF8Char)MyString_STRHEXARR[v1 & 0xf];
 		return StrHexVal32(&oriStr[3], v2);
 	}
 	else if ((v1 & 0xffff0000) == 0)
 	{
-		oriStr[0] = MyString_STRHEXARR[(v1 >> 12) & 0xf];
-		oriStr[1] = MyString_STRHEXARR[(v1 >> 8) & 0xf];
-		oriStr[2] = MyString_STRHEXARR[(v1 >> 4) & 0xf];
-		oriStr[3] = MyString_STRHEXARR[v1 & 0xf];
+		oriStr[0] = (UTF8Char)MyString_STRHEXARR[(v1 >> 12) & 0xf];
+		oriStr[1] = (UTF8Char)MyString_STRHEXARR[(v1 >> 8) & 0xf];
+		oriStr[2] = (UTF8Char)MyString_STRHEXARR[(v1 >> 4) & 0xf];
+		oriStr[3] = (UTF8Char)MyString_STRHEXARR[v1 & 0xf];
 		return StrHexVal32(&oriStr[4], v2);
 	}
 	else if ((v1 & 0xfff00000) == 0)
 	{
-		oriStr[0] = MyString_STRHEXARR[(v1 >> 16) & 0xf];
-		oriStr[1] = MyString_STRHEXARR[(v1 >> 12) & 0xf];
-		oriStr[2] = MyString_STRHEXARR[(v1 >> 8) & 0xf];
-		oriStr[3] = MyString_STRHEXARR[(v1 >> 4) & 0xf];
-		oriStr[4] = MyString_STRHEXARR[v1 & 0xf];
+		oriStr[0] = (UTF8Char)MyString_STRHEXARR[(v1 >> 16) & 0xf];
+		oriStr[1] = (UTF8Char)MyString_STRHEXARR[(v1 >> 12) & 0xf];
+		oriStr[2] = (UTF8Char)MyString_STRHEXARR[(v1 >> 8) & 0xf];
+		oriStr[3] = (UTF8Char)MyString_STRHEXARR[(v1 >> 4) & 0xf];
+		oriStr[4] = (UTF8Char)MyString_STRHEXARR[v1 & 0xf];
 		return StrHexVal32(&oriStr[5], v2);
 	}
 	else if ((v1 & 0xff000000) == 0)
 	{
-		oriStr[0] = MyString_STRHEXARR[(v1 >> 20) & 0xf];
-		oriStr[1] = MyString_STRHEXARR[(v1 >> 16) & 0xf];
-		oriStr[2] = MyString_STRHEXARR[(v1 >> 12) & 0xf];
-		oriStr[3] = MyString_STRHEXARR[(v1 >> 8) & 0xf];
-		oriStr[4] = MyString_STRHEXARR[(v1 >> 4) & 0xf];
-		oriStr[5] = MyString_STRHEXARR[v1 & 0xf];
+		oriStr[0] = (UTF8Char)MyString_STRHEXARR[(v1 >> 20) & 0xf];
+		oriStr[1] = (UTF8Char)MyString_STRHEXARR[(v1 >> 16) & 0xf];
+		oriStr[2] = (UTF8Char)MyString_STRHEXARR[(v1 >> 12) & 0xf];
+		oriStr[3] = (UTF8Char)MyString_STRHEXARR[(v1 >> 8) & 0xf];
+		oriStr[4] = (UTF8Char)MyString_STRHEXARR[(v1 >> 4) & 0xf];
+		oriStr[5] = (UTF8Char)MyString_STRHEXARR[v1 & 0xf];
 		return StrHexVal32(&oriStr[6], v2);
 	}
 	else if ((v1 & 0xf0000000) == 0)
 	{
-		oriStr[0] = MyString_STRHEXARR[(v1 >> 24) & 0xf];
-		oriStr[1] = MyString_STRHEXARR[(v1 >> 20) & 0xf];
-		oriStr[2] = MyString_STRHEXARR[(v1 >> 16) & 0xf];
-		oriStr[3] = MyString_STRHEXARR[(v1 >> 12) & 0xf];
-		oriStr[4] = MyString_STRHEXARR[(v1 >> 8) & 0xf];
-		oriStr[5] = MyString_STRHEXARR[(v1 >> 4) & 0xf];
-		oriStr[6] = MyString_STRHEXARR[v1 & 0xf];
+		oriStr[0] = (UTF8Char)MyString_STRHEXARR[(v1 >> 24) & 0xf];
+		oriStr[1] = (UTF8Char)MyString_STRHEXARR[(v1 >> 20) & 0xf];
+		oriStr[2] = (UTF8Char)MyString_STRHEXARR[(v1 >> 16) & 0xf];
+		oriStr[3] = (UTF8Char)MyString_STRHEXARR[(v1 >> 12) & 0xf];
+		oriStr[4] = (UTF8Char)MyString_STRHEXARR[(v1 >> 8) & 0xf];
+		oriStr[5] = (UTF8Char)MyString_STRHEXARR[(v1 >> 4) & 0xf];
+		oriStr[6] = (UTF8Char)MyString_STRHEXARR[v1 & 0xf];
 		return StrHexVal32(&oriStr[7], v2);
 	}
 	else
 	{
-		oriStr[0] = MyString_STRHEXARR[(v1 >> 28) & 0xf];
-		oriStr[1] = MyString_STRHEXARR[(v1 >> 24) & 0xf];
-		oriStr[2] = MyString_STRHEXARR[(v1 >> 20) & 0xf];
-		oriStr[3] = MyString_STRHEXARR[(v1 >> 16) & 0xf];
-		oriStr[4] = MyString_STRHEXARR[(v1 >> 12) & 0xf];
-		oriStr[5] = MyString_STRHEXARR[(v1 >> 8) & 0xf];
-		oriStr[6] = MyString_STRHEXARR[(v1 >> 4) & 0xf];
-		oriStr[7] = MyString_STRHEXARR[v1 & 0xf];
+		oriStr[0] = (UTF8Char)MyString_STRHEXARR[(v1 >> 28) & 0xf];
+		oriStr[1] = (UTF8Char)MyString_STRHEXARR[(v1 >> 24) & 0xf];
+		oriStr[2] = (UTF8Char)MyString_STRHEXARR[(v1 >> 20) & 0xf];
+		oriStr[3] = (UTF8Char)MyString_STRHEXARR[(v1 >> 16) & 0xf];
+		oriStr[4] = (UTF8Char)MyString_STRHEXARR[(v1 >> 12) & 0xf];
+		oriStr[5] = (UTF8Char)MyString_STRHEXARR[(v1 >> 8) & 0xf];
+		oriStr[6] = (UTF8Char)MyString_STRHEXARR[(v1 >> 4) & 0xf];
+		oriStr[7] = (UTF8Char)MyString_STRHEXARR[v1 & 0xf];
 		return StrHexVal32(&oriStr[8], v2);
 	}
 }
 
-Char *Text::StrHexVal64(Char *oriStr, UInt64 val)
+UTF8Char *Text::StrHexVal64(UTF8Char *oriStr, UInt64 val)
 {
-	Char *tmp = &oriStr[16];
+	UTF8Char *tmp = &oriStr[16];
 	OSInt i = 16;
 	while (i-- > 0)
 	{
-		*--tmp = MyString_STRHEXARR[val & 0xf];
+		*--tmp = (UTF8Char)MyString_STRHEXARR[val & 0xf];
 		val >>= 4;
 	}
 	oriStr[16] = 0;
 	return &oriStr[16];
 }
 
-Char *Text::StrHexVal32V(Char *oriStr, UInt32 val)
+UTF8Char *Text::StrHexVal32V(UTF8Char *oriStr, UInt32 val)
 {
 	if ((val & 0xfffffff0) == 0)
 	{
-		oriStr[0] = MyString_STRHEXARR[val & 0xf];
+		oriStr[0] = (UTF8Char)MyString_STRHEXARR[val & 0xf];
 		oriStr[1] = 0;
 		return &oriStr[1];
 	}
 	else if ((val & 0xffffff00) == 0)
 	{
-		oriStr[0] = MyString_STRHEXARR[(val >> 4) & 0xf];
-		oriStr[1] = MyString_STRHEXARR[val & 0xf];
+		oriStr[0] = (UTF8Char)MyString_STRHEXARR[(val >> 4) & 0xf];
+		oriStr[1] = (UTF8Char)MyString_STRHEXARR[val & 0xf];
 		oriStr[2] = 0;
 		return &oriStr[2];
 	}
 	else if ((val & 0xfffff000) == 0)
 	{
-		oriStr[0] = MyString_STRHEXARR[(val >> 8) & 0xf];
-		oriStr[1] = MyString_STRHEXARR[(val >> 4) & 0xf];
-		oriStr[2] = MyString_STRHEXARR[val & 0xf];
+		oriStr[0] = (UTF8Char)MyString_STRHEXARR[(val >> 8) & 0xf];
+		oriStr[1] = (UTF8Char)MyString_STRHEXARR[(val >> 4) & 0xf];
+		oriStr[2] = (UTF8Char)MyString_STRHEXARR[val & 0xf];
 		oriStr[3] = 0;
 		return &oriStr[3];
 	}
 	else if ((val & 0xffff0000) == 0)
 	{
-		oriStr[0] = MyString_STRHEXARR[(val >> 12) & 0xf];
-		oriStr[1] = MyString_STRHEXARR[(val >> 8) & 0xf];
-		oriStr[2] = MyString_STRHEXARR[(val >> 4) & 0xf];
-		oriStr[3] = MyString_STRHEXARR[val & 0xf];
+		oriStr[0] = (UTF8Char)MyString_STRHEXARR[(val >> 12) & 0xf];
+		oriStr[1] = (UTF8Char)MyString_STRHEXARR[(val >> 8) & 0xf];
+		oriStr[2] = (UTF8Char)MyString_STRHEXARR[(val >> 4) & 0xf];
+		oriStr[3] = (UTF8Char)MyString_STRHEXARR[val & 0xf];
 		oriStr[4] = 0;
 		return &oriStr[4];
 	}
 	else if ((val & 0xfff00000) == 0)
 	{
-		oriStr[0] = MyString_STRHEXARR[(val >> 16) & 0xf];
-		oriStr[1] = MyString_STRHEXARR[(val >> 12) & 0xf];
-		oriStr[2] = MyString_STRHEXARR[(val >> 8) & 0xf];
-		oriStr[3] = MyString_STRHEXARR[(val >> 4) & 0xf];
-		oriStr[4] = MyString_STRHEXARR[val & 0xf];
+		oriStr[0] = (UTF8Char)MyString_STRHEXARR[(val >> 16) & 0xf];
+		oriStr[1] = (UTF8Char)MyString_STRHEXARR[(val >> 12) & 0xf];
+		oriStr[2] = (UTF8Char)MyString_STRHEXARR[(val >> 8) & 0xf];
+		oriStr[3] = (UTF8Char)MyString_STRHEXARR[(val >> 4) & 0xf];
+		oriStr[4] = (UTF8Char)MyString_STRHEXARR[val & 0xf];
 		oriStr[5] = 0;
 		return &oriStr[5];
 	}
 	else if ((val & 0xff000000) == 0)
 	{
-		oriStr[0] = MyString_STRHEXARR[(val >> 20) & 0xf];
-		oriStr[1] = MyString_STRHEXARR[(val >> 16) & 0xf];
-		oriStr[2] = MyString_STRHEXARR[(val >> 12) & 0xf];
-		oriStr[3] = MyString_STRHEXARR[(val >> 8) & 0xf];
-		oriStr[4] = MyString_STRHEXARR[(val >> 4) & 0xf];
-		oriStr[5] = MyString_STRHEXARR[val & 0xf];
+		oriStr[0] = (UTF8Char)MyString_STRHEXARR[(val >> 20) & 0xf];
+		oriStr[1] = (UTF8Char)MyString_STRHEXARR[(val >> 16) & 0xf];
+		oriStr[2] = (UTF8Char)MyString_STRHEXARR[(val >> 12) & 0xf];
+		oriStr[3] = (UTF8Char)MyString_STRHEXARR[(val >> 8) & 0xf];
+		oriStr[4] = (UTF8Char)MyString_STRHEXARR[(val >> 4) & 0xf];
+		oriStr[5] = (UTF8Char)MyString_STRHEXARR[val & 0xf];
 		oriStr[6] = 0;
 		return &oriStr[6];
 	}
 	else if ((val & 0xf0000000) == 0)
 	{
-		oriStr[0] = MyString_STRHEXARR[(val >> 24) & 0xf];
-		oriStr[1] = MyString_STRHEXARR[(val >> 20) & 0xf];
-		oriStr[2] = MyString_STRHEXARR[(val >> 16) & 0xf];
-		oriStr[3] = MyString_STRHEXARR[(val >> 12) & 0xf];
-		oriStr[4] = MyString_STRHEXARR[(val >> 8) & 0xf];
-		oriStr[5] = MyString_STRHEXARR[(val >> 4) & 0xf];
-		oriStr[6] = MyString_STRHEXARR[val & 0xf];
+		oriStr[0] = (UTF8Char)MyString_STRHEXARR[(val >> 24) & 0xf];
+		oriStr[1] = (UTF8Char)MyString_STRHEXARR[(val >> 20) & 0xf];
+		oriStr[2] = (UTF8Char)MyString_STRHEXARR[(val >> 16) & 0xf];
+		oriStr[3] = (UTF8Char)MyString_STRHEXARR[(val >> 12) & 0xf];
+		oriStr[4] = (UTF8Char)MyString_STRHEXARR[(val >> 8) & 0xf];
+		oriStr[5] = (UTF8Char)MyString_STRHEXARR[(val >> 4) & 0xf];
+		oriStr[6] = (UTF8Char)MyString_STRHEXARR[val & 0xf];
 		oriStr[7] = 0;
 		return &oriStr[7];
 	}
 	else
 	{
-		oriStr[0] = MyString_STRHEXARR[(val >> 28) & 0xf];
-		oriStr[1] = MyString_STRHEXARR[(val >> 24) & 0xf];
-		oriStr[2] = MyString_STRHEXARR[(val >> 20) & 0xf];
-		oriStr[3] = MyString_STRHEXARR[(val >> 16) & 0xf];
-		oriStr[4] = MyString_STRHEXARR[(val >> 12) & 0xf];
-		oriStr[5] = MyString_STRHEXARR[(val >> 8) & 0xf];
-		oriStr[6] = MyString_STRHEXARR[(val >> 4) & 0xf];
-		oriStr[7] = MyString_STRHEXARR[val & 0xf];
+		oriStr[0] = (UTF8Char)MyString_STRHEXARR[(val >> 28) & 0xf];
+		oriStr[1] = (UTF8Char)MyString_STRHEXARR[(val >> 24) & 0xf];
+		oriStr[2] = (UTF8Char)MyString_STRHEXARR[(val >> 20) & 0xf];
+		oriStr[3] = (UTF8Char)MyString_STRHEXARR[(val >> 16) & 0xf];
+		oriStr[4] = (UTF8Char)MyString_STRHEXARR[(val >> 12) & 0xf];
+		oriStr[5] = (UTF8Char)MyString_STRHEXARR[(val >> 8) & 0xf];
+		oriStr[6] = (UTF8Char)MyString_STRHEXARR[(val >> 4) & 0xf];
+		oriStr[7] = (UTF8Char)MyString_STRHEXARR[val & 0xf];
 		oriStr[8] = 0;
 		return &oriStr[8];
 	}
 }
 
-Char *Text::StrHexVal32(Char *oriStr, UInt32 val)
+UTF8Char *Text::StrHexVal32(UTF8Char *oriStr, UInt32 val)
 {
-	Char *tmp = &oriStr[8];
+	UTF8Char *tmp = &oriStr[8];
 	UOSInt i = 8;
 	while (i-- > 0)
 	{
-		*--tmp = MyString_STRHEXARR[val & 0xf];
+		*--tmp = (UTF8Char)MyString_STRHEXARR[val & 0xf];
 		val >>= 4;
 	}
 	oriStr[8] = 0;
 	return &oriStr[8];
 }
 
-Char *Text::StrHexVal24(Char *oriStr, UInt32 val)
+UTF8Char *Text::StrHexVal24(UTF8Char *oriStr, UInt32 val)
 {
-	Char *tmp = &oriStr[6];
+	UTF8Char *tmp = &oriStr[6];
 	UInt32 i = 6;
 	while (i-- > 0)
 	{
-		*--tmp = MyString_STRHEXARR[val & 0xf];
+		*--tmp = (UTF8Char)MyString_STRHEXARR[val & 0xf];
 		val >>= 4;
 	}
 	oriStr[6] = 0;
 	return &oriStr[6];
 }
 
-Char *Text::StrHexVal16(Char *oriStr, UInt16 val)
+UTF8Char *Text::StrHexVal16(UTF8Char *oriStr, UInt16 val)
 {
-	Char *tmp = &oriStr[4];
+	UTF8Char *tmp = &oriStr[4];
 	Int32 i = 4;
 	while (i-- > 0)
 	{
-		*--tmp = MyString_STRHEXARR[val & 0xf];
+		*--tmp = (UTF8Char)MyString_STRHEXARR[val & 0xf];
 		val = (UInt16)(val >> 4);
 	}
 	oriStr[4] = 0;
 	return &oriStr[4];
 }
 
-Char *Text::StrHexByte(Char *oriStr, UInt8 val)
+UTF8Char *Text::StrHexByte(UTF8Char *oriStr, UInt8 val)
 {
-	oriStr[0] = MyString_STRHEXARR[val >> 4];
-	oriStr[1] = MyString_STRHEXARR[val & 15];
+	oriStr[0] = (UTF8Char)MyString_STRHEXARR[val >> 4];
+	oriStr[1] = (UTF8Char)MyString_STRHEXARR[val & 15];
 	oriStr[2] = 0;
 	return &oriStr[2];
 }
 
-Char *Text::StrHexBytes(Char *oriStr, const UInt8 *buff, UOSInt buffSize, Char seperator)
+UTF8Char *Text::StrHexBytes(UTF8Char *oriStr, const UInt8 *buff, UOSInt buffSize, UTF8Char seperator)
 {
 	UInt8 val;
 	if (seperator == 0)
@@ -1041,8 +1041,8 @@ Char *Text::StrHexBytes(Char *oriStr, const UInt8 *buff, UOSInt buffSize, Char s
 		while (buffSize-- > 0)
 		{
 			val = *buff++;
-			oriStr[0] = MyString_STRHEXARR[val >> 4];
-			oriStr[1] = MyString_STRHEXARR[val & 15];
+			oriStr[0] = (UTF8Char)MyString_STRHEXARR[val >> 4];
+			oriStr[1] = (UTF8Char)MyString_STRHEXARR[val & 15];
 			oriStr += 2;
 		}
 		oriStr[0] = 0;
@@ -1052,8 +1052,8 @@ Char *Text::StrHexBytes(Char *oriStr, const UInt8 *buff, UOSInt buffSize, Char s
 		while (buffSize-- > 0)
 		{
 			val = *buff++;
-			oriStr[0] = MyString_STRHEXARR[val >> 4];
-			oriStr[1] = MyString_STRHEXARR[val & 15];
+			oriStr[0] = (UTF8Char)MyString_STRHEXARR[val >> 4];
+			oriStr[1] = (UTF8Char)MyString_STRHEXARR[val & 15];
 			oriStr[3] = seperator;
 			oriStr += 3;
 		}
@@ -1062,11 +1062,11 @@ Char *Text::StrHexBytes(Char *oriStr, const UInt8 *buff, UOSInt buffSize, Char s
 	return oriStr;
 }
 
-Int64 Text::StrHex2Int64C(const Char *str)
+Int64 Text::StrHex2Int64C(const UTF8Char *str)
 {
 	OSInt i = 16;
 	Int64 outVal = 0;
-	Char c;
+	UTF8Char c;
 	while (i-- > 0)
 	{
 		c = *str++;
@@ -1092,11 +1092,11 @@ Int64 Text::StrHex2Int64C(const Char *str)
 	return outVal;
 }
 
-Bool Text::StrHex2Int64C(const Char *str, Int64 *outVal)
+Bool Text::StrHex2Int64C(const UTF8Char *str, Int64 *outVal)
 {
 	UOSInt i = 0;
 	Int64 currVal = 0;
-	Char c;
+	UTF8Char c;
 	while (true)
 	{
 		c = *str++;
@@ -1129,11 +1129,11 @@ Bool Text::StrHex2Int64C(const Char *str, Int64 *outVal)
 	}
 }
 
-Bool Text::StrHex2Int64S(const Char *str, Int64 *outVal, Int64 failVal)
+Bool Text::StrHex2Int64S(const UTF8Char *str, Int64 *outVal, Int64 failVal)
 {
 	UOSInt i = 0;
 	Int64 currVal = 0;
-	Char c;
+	UTF8Char c;
 	while (true)
 	{
 		c = *str++;
@@ -1168,11 +1168,11 @@ Bool Text::StrHex2Int64S(const Char *str, Int64 *outVal, Int64 failVal)
 	}
 }
 
-Int32 Text::StrHex2Int32C(const Char *str)
+Int32 Text::StrHex2Int32C(const UTF8Char *str)
 {
 	OSInt i = 8;
 	Int32 outVal = 0;
-	Char c;
+	UTF8Char c;
 	while (i-- > 0)
 	{
 		c = *str++;
@@ -1198,11 +1198,11 @@ Int32 Text::StrHex2Int32C(const Char *str)
 	return outVal;
 }
 
-Int16 Text::StrHex2Int16C(const Char *str)
+Int16 Text::StrHex2Int16C(const UTF8Char *str)
 {
 	UOSInt i = 4;
 	Int32 outVal = 0;
-	Char c;
+	UTF8Char c;
 	while (i-- > 0)
 	{
 		c = *str++;
@@ -1228,10 +1228,10 @@ Int16 Text::StrHex2Int16C(const Char *str)
 	return (Int16)outVal;
 }
 
-UInt8 Text::StrHex2UInt8C(const Char *str)
+UInt8 Text::StrHex2UInt8C(const UTF8Char *str)
 {
 	UInt8 outVal = 0;
-	Char c;
+	UTF8Char c;
 	c = *str++;
 	if (c == 0)
 		return outVal;
@@ -1273,11 +1273,11 @@ UInt8 Text::StrHex2UInt8C(const Char *str)
 	return outVal;
 }
 
-UOSInt Text::StrHex2Bytes(const Char *str, UInt8 *buff)
+UOSInt Text::StrHex2Bytes(const UTF8Char *str, UInt8 *buff)
 {
 	UOSInt outVal = 0;
 	UInt8 tmpVal;
-	Char c;
+	UTF8Char c;
 	while (true)
 	{
 		c = *str++;
@@ -1333,11 +1333,11 @@ UOSInt Text::StrHex2Bytes(const Char *str, UInt8 *buff)
 	return 0;
 }
 
-Int64 Text::StrOct2Int64(const Char *str)
+Int64 Text::StrOct2Int64(const UTF8Char *str)
 {
 	Int32 i = 22;
 	Int32 outVal = 0;
-	Char c;
+	UTF8Char c;
 	while (i-- > 0)
 	{
 		c = *str++;
@@ -1355,10 +1355,10 @@ Int64 Text::StrOct2Int64(const Char *str)
 	return outVal;
 }
 
-UOSInt Text::StrSplit(Char **strs, UOSInt maxStrs, Char *strToSplit, Char splitChar)
+UOSInt Text::StrSplit(UTF8Char **strs, UOSInt maxStrs, UTF8Char *strToSplit, UTF8Char splitChar)
 {
 	UOSInt i = 0;
-	Char c;
+	UTF8Char c;
 	strs[i++] = strToSplit;
 	while (i < maxStrs)
 	{
@@ -1374,12 +1374,37 @@ UOSInt Text::StrSplit(Char **strs, UOSInt maxStrs, Char *strToSplit, Char splitC
 	return i;
 }
 
-UOSInt Text::StrSplitTrim(Char **strs, UOSInt maxStrs, Char *strToSplit, Char splitChar)
+UOSInt Text::StrSplitP(PString *strs, UOSInt maxStrs, UTF8Char *strToSplit, UOSInt strLen, UTF8Char splitChar)
 {
 	UOSInt i = 0;
-	Char c;
-	Char *lastPtr;
-	Char *thisPtr;
+	UTF8Char c;
+	strs[i].v = strToSplit;
+	strs[i].len = strLen;
+	i++;
+	while (i < maxStrs)
+	{
+		c = *strToSplit++;
+		if (c == 0)
+			break;
+		if (c == splitChar)
+		{
+			strs[i].len = strs[i - 1].len;
+			strs[i - 1].len = (UOSInt)(strToSplit - strs[i - 1].v - 1);
+			strs[i].v = strToSplit;
+			strs[i].len -= strs[i - 1].len - 1;
+			strToSplit[-1] = 0;
+			i++;
+		}
+	}
+	return i;
+}
+
+UOSInt Text::StrSplitTrim(UTF8Char **strs, UOSInt maxStrs, UTF8Char *strToSplit, UTF8Char splitChar)
+{
+	UOSInt i = 0;
+	UTF8Char c;
+	UTF8Char *lastPtr;
+	UTF8Char *thisPtr;
 	while (*strToSplit == ' ' || *strToSplit == '\r' || *strToSplit == '\n' || *strToSplit == '\t')
 		strToSplit++;
 	strs[i++] = lastPtr = strToSplit;
@@ -1421,10 +1446,10 @@ UOSInt Text::StrSplitTrim(Char **strs, UOSInt maxStrs, Char *strToSplit, Char sp
 	return i;
 }
 
-UOSInt Text::StrSplitLine(Char **strs, UOSInt maxStrs, Char *strToSplit)
+UOSInt Text::StrSplitLine(UTF8Char **strs, UOSInt maxStrs, UTF8Char *strToSplit)
 {
 	UOSInt i = 0;
-	Char c;
+	UTF8Char c;
 	strs[i++] = strToSplit;
 	while (i < maxStrs)
 	{
@@ -1453,10 +1478,10 @@ UOSInt Text::StrSplitLine(Char **strs, UOSInt maxStrs, Char *strToSplit)
 	return i;
 }
 
-UOSInt Text::StrSplitWS(Char **strs, UOSInt maxStrs, Char *strToSplit)
+UOSInt Text::StrSplitWS(UTF8Char **strs, UOSInt maxStrs, UTF8Char *strToSplit)
 {
 	UOSInt i = 0;
-	Char c;
+	UTF8Char c;
 	while (true)
 	{
 		c = *strToSplit++;
@@ -1496,7 +1521,7 @@ UOSInt Text::StrSplitWS(Char **strs, UOSInt maxStrs, Char *strToSplit)
 	return i;
 }
 
-Bool Text::StrToUInt8(const Char *intStr, UInt8 *outVal)
+Bool Text::StrToUInt8(const UTF8Char *intStr, UInt8 *outVal)
 {
 	UInt32 retVal = 0;
 	while (*intStr)
@@ -1512,7 +1537,7 @@ Bool Text::StrToUInt8(const Char *intStr, UInt8 *outVal)
 	return true;
 }
 
-UInt8 Text::StrToUInt8(const Char *intStr)
+UInt8 Text::StrToUInt8(const UTF8Char *intStr)
 {
 	UInt32 retVal = 0;
 	while (*intStr)
@@ -1527,7 +1552,7 @@ UInt8 Text::StrToUInt8(const Char *intStr)
 	return (UInt8)retVal;
 }
 
-Bool Text::StrToUInt16(const Char *intStr, UInt16 *outVal)
+Bool Text::StrToUInt16(const UTF8Char *intStr, UInt16 *outVal)
 {
 	UInt32 retVal = 0;
 	if (intStr[0] == '0' && intStr[1] == 'x')
@@ -1550,7 +1575,7 @@ Bool Text::StrToUInt16(const Char *intStr, UInt16 *outVal)
 	return true;
 }
 
-Bool Text::StrToUInt16S(const Char *intStr, UInt16 *outVal, UInt16 failVal)
+Bool Text::StrToUInt16S(const UTF8Char *intStr, UInt16 *outVal, UInt16 failVal)
 {
 	UInt32 retVal = 0;
 	if (intStr[0] == '0' && intStr[1] == 'x')
@@ -1579,7 +1604,7 @@ Bool Text::StrToUInt16S(const Char *intStr, UInt16 *outVal, UInt16 failVal)
 	return true;
 }
 
-Bool Text::StrToInt16(const Char *intStr, Int16 *outVal)
+Bool Text::StrToInt16(const UTF8Char *intStr, Int16 *outVal)
 {
 	Bool sign;
 	Int32 retVal = 0;
@@ -1613,7 +1638,7 @@ Bool Text::StrToInt16(const Char *intStr, Int16 *outVal)
 	return true;
 }
 
-Int16 Text::StrToInt16(const Char *intStr)
+Int16 Text::StrToInt16(const UTF8Char *intStr)
 {
 	Bool sign;
 	Int32 retVal = 0;
@@ -1646,7 +1671,7 @@ Int16 Text::StrToInt16(const Char *intStr)
 		return (Int16)retVal;
 }
 
-Bool Text::StrToUInt32(const Char *intStr, UInt32 *outVal)
+Bool Text::StrToUInt32(const UTF8Char *intStr, UInt32 *outVal)
 {
 	UInt32 retVal = 0;
 	if (intStr[0] == '0' && intStr[1] == 'x')
@@ -1667,7 +1692,7 @@ Bool Text::StrToUInt32(const Char *intStr, UInt32 *outVal)
 	return true;
 }
 
-Bool Text::StrToUInt32S(const Char *intStr, UInt32 *outVal, UInt32 failVal)
+Bool Text::StrToUInt32S(const UTF8Char *intStr, UInt32 *outVal, UInt32 failVal)
 {
 	UInt32 retVal = 0;
 	while (*intStr)
@@ -1684,7 +1709,7 @@ Bool Text::StrToUInt32S(const Char *intStr, UInt32 *outVal, UInt32 failVal)
 	return true;
 }
 
-UInt32 Text::StrToUInt32(const Char *intStr)
+UInt32 Text::StrToUInt32(const UTF8Char *intStr)
 {
 	UInt32 retVal = 0;
 	UInt32 newVal;
@@ -1701,7 +1726,7 @@ UInt32 Text::StrToUInt32(const Char *intStr)
 	return retVal;
 }
 
-Bool Text::StrToInt32(const Char *intStr, Int32 *outVal)
+Bool Text::StrToInt32(const UTF8Char *intStr, Int32 *outVal)
 {
 	Bool sign;
 	Int32 retVal = 0;
@@ -1735,7 +1760,7 @@ Bool Text::StrToInt32(const Char *intStr, Int32 *outVal)
 	return true;
 }
 
-Int32 Text::StrToInt32(const Char *intStr)
+Int32 Text::StrToInt32(const UTF8Char *intStr)
 {
 	Bool sign;
 	Int32 retVal = 0;
@@ -1768,7 +1793,7 @@ Int32 Text::StrToInt32(const Char *intStr)
 		return retVal;
 }
 
-Bool Text::StrToInt64(const Char *intStr, Int64 *outVal)
+Bool Text::StrToInt64(const UTF8Char *intStr, Int64 *outVal)
 {
 	Int64 ret = Text::StrToInt64(intStr);
 	if (ret == 0)
@@ -1780,7 +1805,7 @@ Bool Text::StrToInt64(const Char *intStr, Int64 *outVal)
 	return true;
 }
 
-Bool Text::StrToUInt64(const Char *intStr, UInt64 *outVal)
+Bool Text::StrToUInt64(const UTF8Char *intStr, UInt64 *outVal)
 {
 	if (intStr[0] == 0)
 		return false;
@@ -1788,7 +1813,7 @@ Bool Text::StrToUInt64(const Char *intStr, UInt64 *outVal)
 	{
 		return Text::StrHex2UInt64C(intStr + 2, outVal);
 	}
-	Char c;
+	UTF8Char c;
 	UInt64 v = 0;
 	while ((c = *intStr++) != 0)
 	{
@@ -1800,7 +1825,7 @@ Bool Text::StrToUInt64(const Char *intStr, UInt64 *outVal)
 	return true;
 }
 
-Bool Text::StrToUInt64S(const Char *intStr, UInt64 *outVal, UInt64 failVal)
+Bool Text::StrToUInt64S(const UTF8Char *intStr, UInt64 *outVal, UInt64 failVal)
 {
 	if (intStr[0] == 0)
 	{
@@ -1811,7 +1836,7 @@ Bool Text::StrToUInt64S(const Char *intStr, UInt64 *outVal, UInt64 failVal)
 	{
 		return Text::StrHex2UInt64S(intStr + 2, outVal, failVal);
 	}
-	Char c;
+	UTF8Char c;
 	UInt64 v = 0;
 	while ((c = *intStr++) != 0)
 	{
@@ -1826,7 +1851,7 @@ Bool Text::StrToUInt64S(const Char *intStr, UInt64 *outVal, UInt64 failVal)
 	return true;
 }
 
-OSInt Text::StrToOSInt(const Char *str)
+OSInt Text::StrToOSInt(const UTF8Char *str)
 {
 #if _OSINT_SIZE == 64
 	return Text::StrToInt64(str);
@@ -1837,7 +1862,7 @@ OSInt Text::StrToOSInt(const Char *str)
 #endif
 }
 
-Bool Text::StrToOSInt(const Char *intStr, OSInt *outVal)
+Bool Text::StrToOSInt(const UTF8Char *intStr, OSInt *outVal)
 {
 #if _OSINT_SIZE == 64
 	return Text::StrToInt64(intStr, outVal);
@@ -1849,7 +1874,7 @@ Bool Text::StrToOSInt(const Char *intStr, OSInt *outVal)
 }
 
 
-UOSInt Text::StrToUOSInt(const Char *str)
+UOSInt Text::StrToUOSInt(const UTF8Char *str)
 {
 #if _OSINT_SIZE == 64
 	return Text::StrToUInt64(str);
@@ -1860,7 +1885,7 @@ UOSInt Text::StrToUOSInt(const Char *str)
 #endif
 }
 
-Bool Text::StrToUOSInt(const Char *intStr, UOSInt *outVal)
+Bool Text::StrToUOSInt(const UTF8Char *intStr, UOSInt *outVal)
 {
 #if _OSINT_SIZE == 64
 	return Text::StrToUInt64(intStr, outVal);
@@ -1871,7 +1896,7 @@ Bool Text::StrToUOSInt(const Char *intStr, UOSInt *outVal)
 #endif
 }
 
-Bool Text::StrToBool(const Char *str)
+Bool Text::StrToBool(const UTF8Char *str)
 {
 	if (str == 0)
 	{
@@ -1891,11 +1916,11 @@ Bool Text::StrToBool(const Char *str)
 	}
 }
 
-UOSInt Text::StrIndexOf(const Char *str1, const Char *str2)
+UOSInt Text::StrIndexOf(const UTF8Char *str1, const UTF8Char *str2)
 {
-	const Char *ptr = str1;
-	const Char *ptr2;
-	const Char *ptr3;
+	const UTF8Char *ptr = str1;
+	const UTF8Char *ptr2;
+	const UTF8Char *ptr3;
 	Int32 i;
 	while (*ptr)
 	{
@@ -1917,9 +1942,9 @@ UOSInt Text::StrIndexOf(const Char *str1, const Char *str2)
 	return INVALID_INDEX;
 }
 
-UOSInt Text::StrIndexOf(const Char *str1, Char c)
+UOSInt Text::StrIndexOf(const UTF8Char *str1, UTF8Char c)
 {
-	const Char *ptr = str1;
+	const UTF8Char *ptr = str1;
 	while (*ptr)
 		if (*ptr == c)
 			return (UOSInt)(ptr - str1);
@@ -1928,13 +1953,13 @@ UOSInt Text::StrIndexOf(const Char *str1, Char c)
 	return INVALID_INDEX;
 }
 
-UOSInt Text::StrIndexOfICase(const Char *str1, const Char *str2)
+UOSInt Text::StrIndexOfICase(const UTF8Char *str1, const UTF8Char *str2)
 {
-	const Char *ptr = str1;
-	const Char *ptr2;
-	const Char *ptr3;
-	Char c2;
-	Char c3;
+	const UTF8Char *ptr = str1;
+	const UTF8Char *ptr2;
+	const UTF8Char *ptr3;
+	UTF8Char c2;
+	UTF8Char c3;
 	Int32 i;
 	while (*ptr)
 	{
@@ -1948,9 +1973,9 @@ UOSInt Text::StrIndexOfICase(const Char *str1, const Char *str2)
 			if (c2 != c3)
 			{
 				if (c2 >= 'a' && c2 <= 'z')
-					c2 = (Char)(c2 - 32);
+					c2 = (UTF8Char)(c2 - 32);
 				if (c3 >= 'a' && c3 <= 'z')
-					c3 = (Char)(c3 - 32);
+					c3 = (UTF8Char)(c3 - 32);
 				if (c2 != c3)
 				{
 					i = 1;
@@ -1965,11 +1990,11 @@ UOSInt Text::StrIndexOfICase(const Char *str1, const Char *str2)
 	return INVALID_INDEX;
 }
 
-UOSInt Text::StrLastIndexOf(const Char *str1, Char c)
+UOSInt Text::StrLastIndexOf(const UTF8Char *str1, UTF8Char c)
 {
-	const Char *sptr;
-	const Char *cpos = str1 - 1;
-	Char ch;
+	const UTF8Char *sptr;
+	const UTF8Char *cpos = str1 - 1;
+	UTF8Char ch;
 	sptr = str1;
 	while ((ch = *sptr++) != 0)
 	{
@@ -1979,15 +2004,15 @@ UOSInt Text::StrLastIndexOf(const Char *str1, Char c)
 	return (UOSInt)(cpos - str1);
 }
 
-UOSInt Text::StrLastIndexOf(const Char *str1, const Char *str2)
+UOSInt Text::StrLastIndexOf(const UTF8Char *str1, const UTF8Char *str2)
 {
 	UOSInt leng1 = Text::StrCharCnt(str1);
 	UOSInt leng2 = Text::StrCharCnt(str2);
 	if (leng2 > leng1)
 		return INVALID_INDEX;
-	const Char *ptr = str1 + leng1 - leng2;
-	const Char *ptr2;
-	const Char *ptr3;
+	const UTF8Char *ptr = str1 + leng1 - leng2;
+	const UTF8Char *ptr2;
+	const UTF8Char *ptr3;
 	Bool found;
 	while (ptr >= str1)
 	{
@@ -2011,10 +2036,10 @@ UOSInt Text::StrLastIndexOf(const Char *str1, const Char *str2)
 	return INVALID_INDEX;
 }
 
-Bool Text::StrContainChars(const Char *str, const Char *chars)
+Bool Text::StrContainChars(const UTF8Char *str, const UTF8Char *chars)
 {
-	const Char *cptr;
-	Char c;
+	const UTF8Char *cptr;
+	UTF8Char c;
 	while ((c = *str++) != 0)
 	{
 		cptr = chars;
@@ -2033,9 +2058,9 @@ Bool Text::StrContainChars(const Char *str, const Char *chars)
 	return false;
 }
 
-Char *Text::StrRTrim(Char* str1)
+UTF8Char *Text::StrRTrim(UTF8Char* str1)
 {
-	Char *sp = str1;
+	UTF8Char *sp = str1;
 	while (*str1)
 	{
 		if (*str1 != ' ' && *str1 != '\t')
@@ -2048,9 +2073,9 @@ Char *Text::StrRTrim(Char* str1)
 	return sp;
 }
 
-Char *Text::StrLTrim(Char* str1)
+UTF8Char *Text::StrLTrim(UTF8Char* str1)
 {
-	Char *sptr;
+	UTF8Char *sptr;
 	if (str1[0] != ' ' && str1[0] != '\t')
 	{
 		return &str1[Text::StrCharCnt(str1)];
@@ -2064,11 +2089,11 @@ Char *Text::StrLTrim(Char* str1)
 	}
 }
 
-Char *Text::StrTrim(Char* str1)
+UTF8Char *Text::StrTrim(UTF8Char* str1)
 {
-	Char *sptr = str1;
-	Char *sptr2;
-	Char c;
+	UTF8Char *sptr = str1;
+	UTF8Char *sptr2;
+	UTF8Char c;
 	if (str1[0] != ' ' && str1[0] != '\t')
 	{
 		while (*str1++)
@@ -2093,11 +2118,11 @@ Char *Text::StrTrim(Char* str1)
 	}
 }
 
-Char *Text::StrTrimWSCRLF(Char* str1)
+UTF8Char *Text::StrTrimWSCRLF(UTF8Char* str1)
 {
-	Char *sptr = str1;
-	Char *sptr2;
-	Char c;
+	UTF8Char *sptr = str1;
+	UTF8Char *sptr2;
+	UTF8Char c;
 	if (str1[0] != ' ' && str1[0] != '\t' && str1[0] != '\r' && str1[0] != '\n')
 	{
 		while (*str1++)
@@ -2122,10 +2147,10 @@ Char *Text::StrTrimWSCRLF(Char* str1)
 	}
 }
 
-Char *Text::StrRemoveChar(Char *str1, Char c)
+UTF8Char *Text::StrRemoveChar(UTF8Char *str1, UTF8Char c)
 {
-	Char *sp = str1;
-	Char c2;
+	UTF8Char *sp = str1;
+	UTF8Char c2;
 	while (*str1)
 		if ((c2 = *str1++) != c)
 			*sp++ = c2;
@@ -2133,26 +2158,27 @@ Char *Text::StrRemoveChar(Char *str1, Char c)
 	return sp;
 }
 
-const Char *Text::StrCopyNew(const Char *str1)
+const UTF8Char *Text::StrCopyNew(const UTF8Char *str1)
 {
-	Char *s = MemAlloc(Char, Text::StrCharCnt(str1) + 1);
-	Text::StrConcat(s, str1);
+	UOSInt len = Text::StrCharCnt(str1);
+	UTF8Char *s = MemAlloc(UTF8Char, len + 1);
+	Text::StrConcatC(s, str1, len);
 	return s;
 }
 
-const Char *Text::StrCopyNewC(const Char *str1, UOSInt strLen)
+const UTF8Char *Text::StrCopyNewC(const UTF8Char *str1, UOSInt strLen)
 {
-	Char *s = MemAlloc(Char, strLen + 1);
+	UTF8Char *s = MemAlloc(UTF8Char, strLen + 1);
 	Text::StrConcatC(s, str1, strLen);
 	return s;
 }
 
-void Text::StrDelNew(const Char *newStr)
+void Text::StrDelNew(const UTF8Char *newStr)
 {
 	MemFree((void*)newStr);
 }
 
-Bool Text::StrStartsWith(const Char *str1, const Char *str2)
+Bool Text::StrStartsWith(const UTF8Char *str1, const UTF8Char *str2)
 {
 	while (*str2)
 	{
@@ -2162,21 +2188,21 @@ Bool Text::StrStartsWith(const Char *str1, const Char *str2)
 	return true;
 }
 
-Bool Text::StrStartsWithICase(const Char *str1, const Char *str2)
+Bool Text::StrStartsWithICase(const UTF8Char *str1, const UTF8Char *str2)
 {
-	Char c1;
-	Char c2;
+	UTF8Char c1;
+	UTF8Char c2;
 	while (*str2)
 	{
 		c1 = *str1++;
 		c2 = *str2++;
 		if (c1 >= 'a' && c1 <= 'z')
 		{
-			c1 = (Char)(c1 - 32);
+			c1 = (UTF8Char)(c1 - 32);
 		}
 		if (c2 >= 'a' && c2 <= 'z')
 		{
-			c2 = (Char)(c2 - 32);
+			c2 = (UTF8Char)(c2 - 32);
 		}
 		if (c1 != c2)
 			return false;
@@ -2184,10 +2210,10 @@ Bool Text::StrStartsWithICase(const Char *str1, const Char *str2)
 	return true;
 }
 
-Bool Text::StrEndsWith(const Char *str1, const Char *str2)
+Bool Text::StrEndsWith(const UTF8Char *str1, const UTF8Char *str2)
 {
-	const Char *ptr1 = str1;
-	const Char *ptr2 = str2;
+	const UTF8Char *ptr1 = str1;
+	const UTF8Char *ptr2 = str2;
 	while (*ptr1++) ;
 	while (*ptr2++) ;
 	if ((ptr1 - str1) < (ptr2 - str2))
@@ -2202,12 +2228,12 @@ Bool Text::StrEndsWith(const Char *str1, const Char *str2)
 	return true;
 }
 
-Bool Text::StrEndsWithICase(const Char *str1, const Char *str2)
+Bool Text::StrEndsWithICase(const UTF8Char *str1, const UTF8Char *str2)
 {
-	const Char *ptr1 = str1;
-	const Char *ptr2 = str2;
-	Char c1;
-	Char c2;
+	const UTF8Char *ptr1 = str1;
+	const UTF8Char *ptr2 = str2;
+	UTF8Char c1;
+	UTF8Char c2;
 	while (*ptr1++) ;
 	while (*ptr2++) ;
 	if ((ptr1 - str1) < (ptr2 - str2))
@@ -2220,11 +2246,11 @@ Bool Text::StrEndsWithICase(const Char *str1, const Char *str2)
 		c2 = *--ptr2;
 		if (c1 >= 'a' && c1 <= 'z')
 		{
-			c1 = (Char)(c1 - 32);
+			c1 = (UTF8Char)(c1 - 32);
 		}
 		if (c2 >= 'a' && c2 <= 'z')
 		{
-			c2 = (Char)(c2 - 32);
+			c2 = (UTF8Char)(c2 - 32);
 		}
 		if (c2 != c1)
 			return false;
@@ -2232,7 +2258,7 @@ Bool Text::StrEndsWithICase(const Char *str1, const Char *str2)
 	return true;
 }
 
-Bool Text::StrIsInt32(const Char *intStr)
+Bool Text::StrIsInt32(const UTF8Char *intStr)
 {
 	Bool sign;
 	Int32 retVal = 0;
@@ -2267,9 +2293,9 @@ Bool Text::StrIsInt32(const Char *intStr)
 	return true;
 }
 
-UOSInt Text::StrReplace(Char *str1, Char oriC, Char destC)
+UOSInt Text::StrReplace(UTF8Char *str1, UTF8Char oriC, UTF8Char destC)
 {
-	Char c;
+	UTF8Char c;
 	UOSInt chrCnt = 0;
 	while ((c = *str1++) != 0)
 	{
@@ -2282,13 +2308,13 @@ UOSInt Text::StrReplace(Char *str1, Char oriC, Char destC)
 	return chrCnt;
 }
 
-UOSInt Text::StrReplace(Char *str1, const Char *replaceFrom, const Char *replaceTo)
+UOSInt Text::StrReplace(UTF8Char *str1, const UTF8Char *replaceFrom, const UTF8Char *replaceTo)
 {
 	UOSInt cnt;
 	UOSInt fromCharCnt;
 	UOSInt toCharCnt;
 	UOSInt charCnt;
-	Char *sptr;
+	UTF8Char *sptr;
 	charCnt = Text::StrCharCnt(str1);
 	sptr = &str1[charCnt];
 	if ((fromCharCnt = Text::StrCharCnt(replaceFrom)) == 0)
@@ -2318,13 +2344,13 @@ UOSInt Text::StrReplace(Char *str1, const Char *replaceFrom, const Char *replace
 	return cnt;
 }
 
-UOSInt Text::StrReplaceICase(Char *str1, const Char *replaceFrom, const Char *replaceTo)
+UOSInt Text::StrReplaceICase(UTF8Char *str1, const UTF8Char *replaceFrom, const UTF8Char *replaceTo)
 {
 	UOSInt cnt;
 	UOSInt fromCharCnt;
 	UOSInt toCharCnt;
 	UOSInt charCnt;
-	Char *sptr;
+	UTF8Char *sptr;
 	charCnt = Text::StrCharCnt(str1);
 	sptr = &str1[charCnt];
 	if ((fromCharCnt = Text::StrCharCnt(replaceFrom)) == 0)
@@ -2354,9 +2380,9 @@ UOSInt Text::StrReplaceICase(Char *str1, const Char *replaceFrom, const Char *re
 	return cnt;
 }
 
-Char *Text::StrToCSVRec(Char *oriStr, const Char *str1)
+UTF8Char *Text::StrToCSVRec(UTF8Char *oriStr, const UTF8Char *str1)
 {
-	Char c;
+	UTF8Char c;
 	*oriStr++ = '"';
 	while ((c = *str1++) != 0)
 	{
@@ -2375,13 +2401,13 @@ Char *Text::StrToCSVRec(Char *oriStr, const Char *str1)
 	return oriStr;
 }
 
-const Char *Text::StrToNewCSVRec(const Char *str1)
+const UTF8Char *Text::StrToNewCSVRec(const UTF8Char *str1)
 {
 	UOSInt len = 2;
-	Char c;
-	const Char *sptr = str1;
-	Char *sptr2;
-	Char *outPtr;
+	UTF8Char c;
+	const UTF8Char *sptr = str1;
+	UTF8Char *sptr2;
+	UTF8Char *outPtr;
 	while ((c = *sptr++) != 0)
 	{
 		if (c == '"')
@@ -2393,7 +2419,7 @@ const Char *Text::StrToNewCSVRec(const Char *str1)
 			len += 1;
 		}
 	}
-	outPtr = MemAlloc(Char, len + 1);
+	outPtr = MemAlloc(UTF8Char, len + 1);
 	sptr2 = outPtr;
 	*sptr2++ = '"';
 	while ((c = *str1++) != 0)
@@ -2413,13 +2439,13 @@ const Char *Text::StrToNewCSVRec(const Char *str1)
 	return outPtr;
 }
 
-UOSInt Text::StrCSVSplit(Char **strs, UOSInt maxStrs, Char *strToSplit)
+UOSInt Text::StrCSVSplit(UTF8Char **strs, UOSInt maxStrs, UTF8Char *strToSplit)
 {
 	Bool quoted = false;
 	Bool first = true;
 	UOSInt i = 0;
-	Char *strCurr;
-	Char c;
+	UTF8Char *strCurr;
+	UTF8Char c;
 	strs[i++] = strCurr = strToSplit;
 	while (i < maxStrs)
 	{
@@ -2468,11 +2494,11 @@ UOSInt Text::StrCSVSplit(Char **strs, UOSInt maxStrs, Char *strToSplit)
 	return i;
 }
 
-Char *Text::StrCSVJoin(Char *oriStr, const Char **strs, UOSInt nStrs)
+UTF8Char *Text::StrCSVJoin(UTF8Char *oriStr, const UTF8Char **strs, UOSInt nStrs)
 {
 	UOSInt i = 0;
-	const Char *sptr;
-	Char c;
+	const UTF8Char *sptr;
+	UTF8Char c;
 	while (i < nStrs)
 	{
 		if (i)
@@ -2496,20 +2522,20 @@ Char *Text::StrCSVJoin(Char *oriStr, const Char **strs, UOSInt nStrs)
 	return oriStr;
 }
 
-UOSInt Text::StrCountChar(const Char *str1, Char c)
+UOSInt Text::StrCountChar(const UTF8Char *str1, UTF8Char c)
 {
 	UOSInt cnt = 0;
-	Char c2;
+	UTF8Char c2;
 	while ((c2 = *str1++) != 0)
 		if (c2 == c)
 			cnt++;
 	return cnt;
 }
 
-Char *Text::StrRemoveANSIEscapes(Char *str1)
+UTF8Char *Text::StrRemoveANSIEscapes(UTF8Char *str1)
 {
-	Char c;
-	Char *dest = str1;
+	UTF8Char c;
+	UTF8Char *dest = str1;
 	while (true)
 	{
 		c = *str1++;
@@ -2573,21 +2599,22 @@ Char *Text::StrRemoveANSIEscapes(Char *str1)
 	}
 }
 
-const UTF8Char *Text::StrCopyNew(const UTF8Char *str1)
+const Char *Text::StrCopyNew(const Char *str1)
 {
-	UTF8Char *s = MemAlloc(UTF8Char, Text::StrCharCnt(str1) + 1);
-	Text::StrConcat(s, str1);
+	UOSInt len = Text::StrCharCnt(str1);
+	Char *s = MemAlloc(Char, len + 1);
+	Text::StrConcatC(s, str1, len);
 	return s;
 }
 
-const UTF8Char *Text::StrCopyNewC(const UTF8Char *str1, UOSInt strLen)
+const Char *Text::StrCopyNewC(const Char *str1, UOSInt strLen)
 {
-	UTF8Char *s = MemAlloc(UTF8Char, strLen + 1);
+	Char *s = MemAlloc(Char, strLen + 1);
 	Text::StrConcatC(s, str1, strLen);
 	return s;
 }
 
-void Text::StrDelNew(const UTF8Char *newStr)
+void Text::StrDelNew(const Char *newStr)
 {
 	MemFree((void*)newStr);
 }

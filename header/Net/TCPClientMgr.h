@@ -8,6 +8,8 @@
 #include "Net/TCPClient.h"
 #include "Sync/MutexUsage.h"
 
+#define TCP_BUFF_SIZE 2048
+
 namespace Net
 {
 	class TCPClientMgr
@@ -33,7 +35,7 @@ namespace Net
 			Bool timeAlerted;
 			Int64 timeStart;
 			Bool recvDataExist;
-			UInt8 *buff;
+			UInt8 buff[TCP_BUFF_SIZE];
 			UOSInt buffSize;
 			void *readReq;
 		} TCPClientStatus;

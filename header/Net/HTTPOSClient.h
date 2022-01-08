@@ -43,7 +43,7 @@ namespace Net
 		virtual Bool Recover();
 
 		virtual Bool Connect(const UTF8Char *url, const Char *method, Double *timeDNS, Double *timeConn, Bool defHeaders);
-		virtual void AddHeader(const UTF8Char *name, const UTF8Char *value);
+		virtual void AddHeaderC(const UTF8Char *name, UOSInt nameLen, const UTF8Char *value, UOSInt valueLen);
 		virtual void EndRequest(Double *timeReq, Double *timeResp);
 		virtual void SetTimeout(Int32 ms);
 

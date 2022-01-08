@@ -49,9 +49,9 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			}
 			else
 			{
-				cli->AddHeader((const UTF8Char*)"User-Agent", (const UTF8Char*)"Test/1.0");
-				cli->AddHeader((const UTF8Char*)"Accept", (const UTF8Char*)"*/*");
-				cli->AddHeader((const UTF8Char*)"Accept-Charset", (const UTF8Char*)"*");
+				cli->AddHeaderC(UTF8STRC("User-Agent"), UTF8STRC("Test/1.0"));
+				cli->AddHeaderC(UTF8STRC("Accept"), UTF8STRC("*/*"));
+				cli->AddHeaderC(UTF8STRC("Accept-Charset"), UTF8STRC("*"));
 				cli->EndRequest(&respTimeReq, &respTimeResp);
 
 				httpStatus = cli->GetRespStatus();

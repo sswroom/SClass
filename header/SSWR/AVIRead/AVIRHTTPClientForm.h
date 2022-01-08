@@ -112,7 +112,7 @@ namespace SSWR
 			Sync::Event *threadEvt;
 			const UTF8Char *reqURL;
 			const UTF8Char *reqBody;
-			const UTF8Char *reqBodyType;
+			Text::String *reqBodyType;
 			const UTF8Char *reqUserName;
 			const UTF8Char *reqPassword;
 			const UTF8Char *reqHeaders;
@@ -120,7 +120,7 @@ namespace SSWR
 			const Char *reqMeth;
 			Bool reqOSClient;
 			Bool noShutdown;
-			const UTF8Char *userAgent;
+			Text::String *userAgent;
 
 			Bool respChanged;
 			Net::SocketUtil::AddressInfo respSvrAddr;

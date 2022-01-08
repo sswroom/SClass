@@ -168,9 +168,9 @@ Bool Net::HTTPProxyClient::SetAuthen(Net::HTTPProxyTCPClient::PasswordType pwdTy
 
 		sptr = Text::StrConcatC(buff, UTF8STRC("BASIC "));
 		Crypto::Encrypt::Base64 b64;
-		sptr = buff + b64.Encrypt(userPwd, (UOSInt)(sptr2 - userPwd), sptr, 0);
+		sptr = sptr + b64.Encrypt(userPwd, (UOSInt)(sptr2 - userPwd), sptr, 0);
 		*sptr = 0;
-		this->AddHeader((const UTF8Char*)"Proxy-Authorization", (const UTF8Char*)buff);
+		this->AddHeaderC(UTF8STRC("Proxy-Authorization"), (const UTF8Char*)buff, (UOSInt)(sptr - buff));
 		return true;
 	}
 	return false;

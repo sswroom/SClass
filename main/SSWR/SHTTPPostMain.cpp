@@ -71,10 +71,9 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			cli = Net::HTTPClient::CreateConnect(sockf, ssl, url, "POST", false);
 			if (mime)
 			{
-				cli->AddHeader((const UTF8Char*)"Content-Type", mime);
+				cli->AddContentType(mime, Text::StrCharCnt(mime));
 			}
-			Text::StrUOSInt((UTF8Char*)buff, fileSize);
-			cli->AddHeader((const UTF8Char*)"Content-Length", (const UTF8Char*)buff); 
+			cli->AddContentLength(fileSize); 
 
 			while (totalSize < fileSize)
 			{

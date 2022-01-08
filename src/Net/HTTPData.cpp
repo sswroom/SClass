@@ -10,7 +10,6 @@
 UInt32 __stdcall Net::HTTPData::LoadThread(void *userObj)
 {
 	UInt8 buff[2048];
-	UTF8Char u8buff[64];
 	UOSInt readSize;
 
 	HTTPDATAHANDLE *fdh = (HTTPDATAHANDLE*)userObj;
@@ -33,8 +32,7 @@ UInt32 __stdcall Net::HTTPData::LoadThread(void *userObj)
 		{
 			Data::DateTime dt;
 			fs->GetFileTimes(0, 0, &dt);
-			Net::HTTPClient::Date2Str(u8buff, &dt);
-			fdh->cli->AddHeader((const UTF8Char*)"If-Modified-Since", u8buff);
+			fdh->cli->AddTimeHeader(UTF8STRC("If-Modified-Since"), &dt);
 		}
 		DEL_CLASS(fs);
 	}

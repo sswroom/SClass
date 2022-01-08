@@ -46,8 +46,8 @@ UOSInt Net::WebSite::WebSiteTwitterControl::GetChannelItems(Text::String *channe
 #endif
 	Net::HTTPClient *cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, this->userAgent, true, true);
 	cli->Connect(sb.ToString(), "GET", 0, 0, false);
-	cli->AddHeader((const UTF8Char*)"Accept", (const UTF8Char*)"*/*");
-	cli->AddHeader((const UTF8Char*)"Accept-Charset", (const UTF8Char*)"*");
+	cli->AddHeaderC(UTF8STRC("Accept"), UTF8STRC("*/*"));
+	cli->AddHeaderC(UTF8STRC("Accept-Charset"), UTF8STRC("*"));
 	cli->SetTimeout(20000);
 #if defined(VERBOSE)
 	printf("HTTP Status code = %d\r\n", cli->GetRespStatus());

@@ -7,17 +7,18 @@ namespace Data
 	template <class T> class ICaseBTreeUTF8Map : public Data::BTreeUTF8Map<T>
 	{
 	protected:
-		T PutNode(BTreeUTF8Node<T> *node, const UTF8Char *key, UInt32 hash, T val);
-		virtual UInt32 CalHash(const UTF8Char *key);
+		T PutNode(BTreeUTF8Node<T> *node, const UTF8Char *key, UOSInt keyLen, UInt32 hash, T val);
+		virtual UInt32 CalHash(const UTF8Char *key, UOSInt keyLen);
 	public:
 		ICaseBTreeUTF8Map();
 		virtual ~ICaseBTreeUTF8Map();
 
 		virtual T Get(const UTF8Char *key);
+		virtual T GetC(const UTF8Char *key, UOSInt keyLen);
 		virtual T Remove(const UTF8Char *key);
 	};
 
-	template <class T> T ICaseBTreeUTF8Map<T>::PutNode(BTreeUTF8Node<T> *node, const UTF8Char *key, UInt32 hash, T val)
+	template <class T> T ICaseBTreeUTF8Map<T>::PutNode(BTreeUTF8Node<T> *node, const UTF8Char *key, UOSInt keyLen, UInt32 hash, T val)
 	{
 		BTreeUTF8Node<T> *tmpNode;
 		T retVal;
@@ -45,7 +46,7 @@ namespace Data
 			if (node->leftNode == 0)
 			{
 				tmpNode = node;
-				node->leftNode = this->NewNode(key, hash, val);
+				node->leftNode = this->NewNode(key, keyLen, hash, val);
 				node->leftNode->parNode = node;
 				while (node)
 				{
@@ -68,7 +69,7 @@ namespace Data
 			}
 			else
 			{
-				retVal = PutNode(node->leftNode, key, hash, val);
+				retVal = PutNode(node->leftNode, key, keyLen, hash, val);
 /*				Int32 leftLev;
 				Int32 rightLev;
 				if (node->rightNode == 0)
@@ -92,7 +93,7 @@ namespace Data
 			if (node->rightNode == 0)
 			{
 				tmpNode = node;
-				node->rightNode = this->NewNode(key, hash, val);
+				node->rightNode = this->NewNode(key, keyLen, hash, val);
 				node->rightNode->parNode = node;
 				while (node)
 				{
@@ -115,7 +116,7 @@ namespace Data
 			}
 			else
 			{
-				retVal = PutNode(node->rightNode, key, hash, val);
+				retVal = PutNode(node->rightNode, key, keyLen, hash, val);
 /*				Int32 leftLev;
 				Int32 rightLev;
 				if (node->leftNode == 0)
@@ -137,15 +138,11 @@ namespace Data
 
 	}
 
-	template <class T> UInt32 ICaseBTreeUTF8Map<T>::CalHash(const UTF8Char *key)
+	template <class T> UInt32 ICaseBTreeUTF8Map<T>::CalHash(const UTF8Char *key, UOSInt keyLen)
 	{
 		UTF8Char sbuff[256];
 		UOSInt charCnt = (UOSInt)(Text::StrToUpper(sbuff, key) - sbuff);
-		this->crc->Clear();
-		this->crc->Calc((const UInt8*)key, charCnt * sizeof(UTF8Char));
-		UInt8 hash[4];
-		this->crc->GetValue(hash);
-		return ReadMUInt32(hash);
+		return this->crc->CalcDirect(sbuff, charCnt);
 	}
 
 	template <class T> ICaseBTreeUTF8Map<T>::ICaseBTreeUTF8Map() : BTreeUTF8Map<T>()
@@ -158,7 +155,42 @@ namespace Data
 
 	template <class T> T ICaseBTreeUTF8Map<T>::Get(const UTF8Char *key)
 	{
-		UInt32 hash = CalHash(key);
+		UInt32 hash = CalHash(key, Text::StrCharCnt(key));
+		BTreeUTF8Node<T> *node = this->rootNode;
+		while (node)
+		{
+			OSInt i;
+			if (node->nodeHash == hash)
+			{
+				i = Text::StrCompareICase(node->nodeStr, key);
+			}
+			else if (node->nodeHash > hash)
+			{
+				i = 1;
+			}
+			else
+			{
+				i = -1;
+			}
+			if (i > 0)
+			{
+				node = node->leftNode;
+			}
+			else if (i < 0)
+			{
+				node = node->rightNode;
+			}
+			else
+			{
+				return node->nodeVal;
+			}
+		}
+		return 0;
+	}
+
+	template <class T> T ICaseBTreeUTF8Map<T>::GetC(const UTF8Char *key, UOSInt keyLen)
+	{
+		UInt32 hash = CalHash(key, keyLen);
 		BTreeUTF8Node<T> *node = this->rootNode;
 		while (node)
 		{
@@ -203,7 +235,7 @@ namespace Data
 		}
 		else
 		{
-			UInt32 hash = CalHash(key);
+			UInt32 hash = CalHash(key, Text::StrCharCnt(key));
 			BTreeUTF8Node<T> *parNode = 0;
 			BTreeUTF8Node<T> *node = this->rootNode;
 			while (node)

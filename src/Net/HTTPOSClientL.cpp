@@ -20,7 +20,7 @@ struct Net::HTTPOSClient::ClassData
 	CURL *curl;
 	struct curl_slist *headers;
 	Data::ArrayList<Text::String*> *respHeaders;
-	const UTF8Char *userAgent;
+	Text::String *userAgent;
 	IO::MemoryStream *respData;
 	UInt64 contLen;
 };
@@ -83,7 +83,7 @@ Net::HTTPOSClient::HTTPOSClient(Net::SocketFactory *sockf, const UTF8Char *userA
 	{
 		userAgent = (const UTF8Char*)"sswr/1.0";
 	}
-	this->clsData->userAgent = Text::StrCopyNew(userAgent);
+	this->clsData->userAgent = Text::String::NewNotNull(userAgent);
 }
 
 Net::HTTPOSClient::~HTTPOSClient()
@@ -101,7 +101,7 @@ Net::HTTPOSClient::~HTTPOSClient()
 	}
 	if (this->clsData->curl)
 		curl_easy_cleanup(this->clsData->curl);
-	Text::StrDelNew(this->clsData->userAgent);
+	this->clsData->userAgent->Release();
 	DEL_CLASS(this->clsData->respData);
 	MemFree(this->clsData);
 	DEL_CLASS(this->reqMstm);
@@ -398,24 +398,24 @@ Bool Net::HTTPOSClient::Connect(const UTF8Char *url, const Char *method, Double 
 	curl_easy_setopt(this->clsData->curl, CURLOPT_SSL_VERIFYHOST, 0);
 	curl_easy_setopt(this->clsData->curl, CURLOPT_CERTINFO, 1L);
 
-	this->AddHeader((const UTF8Char*)"User-Agent", this->clsData->userAgent);
+	this->AddHeaderC(UTF8STRC("User-Agent"), this->clsData->userAgent->v, this->clsData->userAgent->leng);
 	if (defHeaders)
 	{
-		this->AddHeader((const UTF8Char*)"Accept", (const UTF8Char*)"*/*");
-		this->AddHeader((const UTF8Char*)"Accept-Charset", (const UTF8Char*)"*");
+		this->AddHeaderC(UTF8STRC("Accept"), UTF8STRC("*/*"));
+		this->AddHeaderC(UTF8STRC("Accept-Charset"), UTF8STRC("*"));
 		if (this->kaConn)
 		{
-			this->AddHeader((const UTF8Char*)"Connection", (const UTF8Char*)"keep-alive");
+			this->AddHeaderC(UTF8STRC("Connection"), UTF8STRC("keep-alive"));
 		}
 		else
 		{
-			this->AddHeader((const UTF8Char*)"Connection", (const UTF8Char*)"close");
+			this->AddHeaderC(UTF8STRC("Connection"), UTF8STRC("close"));
 		}
 	}
 	return true;
 }
 
-void Net::HTTPOSClient::AddHeader(const UTF8Char *name, const UTF8Char *value)
+void Net::HTTPOSClient::AddHeaderC(const UTF8Char *name, UOSInt nameLen, const UTF8Char *value, UOSInt valueLen)
 {
 	ClassData *data = (ClassData*)this->clsData;
 	if (data->curl && !writing)
@@ -429,9 +429,9 @@ void Net::HTTPOSClient::AddHeader(const UTF8Char *name, const UTF8Char *value)
 		else
 		{*/
 			Text::StringBuilderUTF8 sb;
-			sb.Append(name);
+			sb.AppendC(name, nameLen);
 			sb.AppendC(UTF8STRC(": "));
-			sb.Append(value);
+			sb.AppendC(value, valueLen);
 			data->headers = curl_slist_append(data->headers, (const Char*)sb.ToString());
 //		}
 	}

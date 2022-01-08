@@ -12,54 +12,57 @@ void Net::WebServer::WebRequest::ParseQuery()
 {
 	UTF8Char *sbuff;
 	UTF8Char *sbuff2;
+	UTF8Char *sptr;
 	Text::String *url = this->GetRequestURI();
 	UOSInt urlLen = url->leng;
-	UTF8Char *strs1[2];
-	UTF8Char *strs2[2];
+	Text::PString strs1[2];
+	Text::PString strs2[2];
 	Text::String *s;
 
 	sbuff = MemAlloc(UTF8Char, urlLen);
-	sbuff2 = MemAlloc(UTF8Char, urlLen);
 	NEW_CLASS(this->queryMap, Data::FastStringMap<Text::String *>());
-	if (this->GetQueryString(sbuff, urlLen))
+	if ((sptr = this->GetQueryString(sbuff, urlLen)) != 0)
 	{
+		sbuff2 = MemAlloc(UTF8Char, urlLen);
 		UOSInt scnt;
 		Bool hasMore;
-		strs1[1] = sbuff;
+		strs1[1].v = sbuff;
+		strs1[1].len = (UOSInt)(sptr - sbuff);
 		hasMore = true;
 		while (hasMore)
 		{
-			hasMore = (Text::StrSplit(strs1, 2, strs1[1], '&') == 2);
+			hasMore = (Text::StrSplitP(strs1, 2, strs1[1].v, strs1[1].len, '&') == 2);
 
-			scnt = Text::StrSplit(strs2, 2, strs1[0], '=');
+			scnt = Text::StrSplitP(strs2, 2, strs1[0].v, strs1[0].len, '=');
 			if (scnt == 2)
 			{
-				Text::TextEnc::URIEncoding::URIDecode(sbuff2, strs2[1]);
+				sptr = Text::TextEnc::URIEncoding::URIDecode(sbuff2, strs2[1].v);
 			}
 			else
 			{
 				sbuff2[0] = 0;
+				sptr = sbuff2;
 			}
-			s = this->queryMap->Get(strs2[0]);
+			s = this->queryMap->GetC(strs2[0].v, strs2[0].len);
 			if (s)
 			{
 				Text::StringBuilderUTF8 sb;
 				sb.Append(s);
 				sb.AppendChar(PARAM_SEPERATOR, 1);
-				sb.Append(sbuff2);
-				s = this->queryMap->Put(strs2[0], Text::String::New(sb.ToString(), sb.GetLength()));
+				sb.AppendC(sbuff2, (UOSInt)(sptr - sbuff2));
+				s = this->queryMap->PutC(strs2[0].v, strs2[0].len, Text::String::New(sb.ToString(), sb.GetLength()));
 			}
 			else
 			{
-				s = this->queryMap->Put(strs2[0], Text::String::NewNotNull(sbuff2));
+				s = this->queryMap->PutC(strs2[0].v, strs2[0].len, Text::String::New(sbuff2, (UOSInt)(sptr - sbuff2)));
 			}
 			if (s)
 			{
 				s->Release();
 			}
 		}
+		MemFree(sbuff2);
 	}
-	MemFree(sbuff2);
 	MemFree(sbuff);
 }
 

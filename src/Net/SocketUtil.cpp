@@ -406,16 +406,16 @@ Bool Net::SocketUtil::GetIPAddr(const UTF8Char *ipName, AddressInfo *addr)
 {
 	UTF8Char sbuff[51];
 	UTF8Char *sarr[9];
-	UTF8Char *sptr;
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
 	Int32 v;
-	sptr = Text::StrConcatS(sbuff,ipName, 51);
-	if ((sptr - sbuff) >= 50)
+	UOSInt len = Text::StrCharCnt(ipName);
+	if (len >= 50)
 	{
 		return false;
 	}
+	Text::StrConcatC(sbuff, ipName, len);
 
 	i = Text::StrSplit(sarr, 9, sbuff, ':');
 	if (i >= 9)

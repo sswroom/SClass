@@ -124,6 +124,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPTestForm::ProcessThread(void *userObj)
 	Double timeReq;
 	Double timeResp;
 	UInt8 buff[2048];
+	UTF8Char *sptr;
 	UOSInt i;
 	UOSInt j;
 	UInt32 cnt;
@@ -139,12 +140,12 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPTestForm::ProcessThread(void *userObj)
 				break;
 			if (cli->Connect(url, status->me->method, &timeDNS, &timeConn, false))
 			{
-				cli->AddHeader((const UTF8Char*)"Connection", (const UTF8Char*)"keep-alive");
+				cli->AddHeaderC(UTF8STRC("Connection"), UTF8STRC("keep-alive"));
 				if (Text::StrEquals(status->me->method, "POST"))
 				{
 					i = status->me->postSize;
-					Text::StrUOSInt(buff, i);
-					cli->AddHeader((const UTF8Char*)"Content-Length", buff);
+					sptr = Text::StrUOSInt(buff, i);
+					cli->AddHeaderC(UTF8STRC("Content-Length"), buff, (UOSInt)(sptr - buff));
 					while (i >= 2048)
 					{
 						j = cli->Write(buff, 2048);
@@ -205,7 +206,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPTestForm::ProcessThread(void *userObj)
 			cli = Net::HTTPClient::CreateClient(status->me->sockf, status->me->ssl, 0, true, Text::StrStartsWith(url, (const UTF8Char*)"https://"));
 			if (cli->Connect(url, "GET", &timeDNS, &timeConn, false))
 			{
-				cli->AddHeader((const UTF8Char*)"Connection", (const UTF8Char*)"keep-alive");
+				cli->AddHeaderC(UTF8STRC("Connection"), UTF8STRC("keep-alive"));
 				cli->EndRequest(&timeReq, &timeResp);
 				if (timeResp >= 0)
 				{

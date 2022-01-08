@@ -25,12 +25,12 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnUserAgentClicked(void *userO
 {
 	SSWR::AVIRead::AVIRHTTPClientForm *me = (SSWR::AVIRead::AVIRHTTPClientForm*)userObj;
 	SSWR::AVIRead::AVIRUserAgentSelForm *frm;
-	NEW_CLASS(frm, SSWR::AVIRead::AVIRUserAgentSelForm(0, me->ui, me->core, me->userAgent));
+	NEW_CLASS(frm, SSWR::AVIRead::AVIRUserAgentSelForm(0, me->ui, me->core, me->userAgent->v));
 	if (frm->ShowDialog(me))
 	{
-		SDEL_TEXT(me->userAgent);
-		me->userAgent = Text::StrCopyNew(frm->GetUserAgent());
-		me->lblUserAgent->SetText(me->userAgent);
+		SDEL_STRING(me->userAgent);
+		me->userAgent = Text::String::NewNotNull(frm->GetUserAgent());
+		me->lblUserAgent->SetText(me->userAgent->v);
 	}
 	DEL_CLASS(frm);
 }
@@ -117,7 +117,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnRequestClicked(void *userObj
 		DEL_CLASS(fs);
 		if (IO::Path::GetFileExt(sbuff, fileName))
 		{
-			me->reqBodyType = Text::StrCopyNew(Net::MIME::GetMIMEFromExt(sbuff));
+			me->reqBodyType = Text::String::NewNotNull(Net::MIME::GetMIMEFromExt(sbuff));
 		}
 		else
 		{
@@ -134,7 +134,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnRequestClicked(void *userObj
 		sbBoundary.AppendI64(dt.ToTicks());
 		sb2.AppendC(UTF8STRC("multipart/form-data; boundary="));
 		sb2.AppendC(sbBoundary.ToString(), sbBoundary.GetLength());
-		me->reqBodyType = Text::StrCopyNew(sb2.ToString());
+		me->reqBodyType = Text::String::New(sb2.ToString(), sb2.GetLength());
 		IO::MemoryStream mstm((const UTF8Char*)"SSWR.AVIRead.AVIRHTTPClientForm.OnRequestClicked.mstm");
 		UOSInt i = 0;
 		UOSInt j = me->params->GetCount();
@@ -240,7 +240,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnRequestClicked(void *userObj
 		DEL_CLASS(json);
 		me->reqBody = Text::StrCopyNew(sb2.ToString());
 		me->reqBodyLen = sb2.GetCharCnt();
-		me->reqBodyType = Text::StrCopyNew((const UTF8Char*)"application/json");
+		me->reqBodyType = Text::String::New(UTF8STRC("application/json"));
 	}
 	else
 	{
@@ -264,7 +264,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnRequestClicked(void *userObj
 		}
 		me->reqBody = Text::StrCopyNew(sb2.ToString());
 		me->reqBodyLen = sb2.GetCharCnt();
-		me->reqBodyType = Text::StrCopyNew((const UTF8Char*)"application/x-www-form-urlencoded");
+		me->reqBodyType = Text::String::New(UTF8STRC("application/x-www-form-urlencoded"));
 	}
 	me->reqURL = Text::StrCopyNew(sb.ToString());
 	me->threadEvt->Set();
@@ -469,7 +469,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 	const UTF8Char *currURL;
 	const UTF8Char *currBody;
 	UOSInt currBodyLen;
-	const UTF8Char *currBodyType;
+	Text::String *currBodyType;
 	const UTF8Char *currUserName;
 	const UTF8Char *currPassword;
 	const UTF8Char *currHeaders;
@@ -477,7 +477,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 	Bool currOSClient;
 	UInt8 buff[4096];
 	UTF8Char *sbuff;
-	UTF8Char *cookiePtr;
+	UTF8Char *sptr;
 	UOSInt i;
 	UOSInt j;
 	me->threadRunning = true;
@@ -504,37 +504,37 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 			me->reqHeaders = 0;
 			
 			Net::HTTPClient *cli;
-			cli = Net::HTTPClient::CreateClient(me->core->GetSocketFactory(), currOSClient?0:me->ssl, me->userAgent, me->noShutdown, Text::StrStartsWith(currURL, (const UTF8Char*)"https://"));
+			cli = Net::HTTPClient::CreateClient(me->core->GetSocketFactory(), currOSClient?0:me->ssl, me->userAgent->v, me->noShutdown, Text::StrStartsWith(currURL, (const UTF8Char*)"https://"));
 //			NEW_CLASS(cli, Net::HTTPOSClient(me->core->GetSocketFactory(), me->userAgent, me->noShutdown));
 			if (cli->Connect(currURL, currMeth, &me->respTimeDNS, &me->respTimeConn, false))
 			{
 				IO::MemoryStream *mstm;
 				const UTF8Char *contType = 0;
 				NEW_CLASS(mstm, IO::MemoryStream((const UTF8Char*)"SSWR.AVIRead.AVIRHTTPClientForm.respData"));
-				cli->AddHeader((const UTF8Char*)"Accept", (const UTF8Char*)"*/*");
-				cli->AddHeader((const UTF8Char*)"Accept-Charset", (const UTF8Char*)"*");
-				cli->AddHeader((const UTF8Char*)"User-Agent", me->userAgent);
+				cli->AddHeaderC(UTF8STRC("Accept"), UTF8STRC("*/*"));
+				cli->AddHeaderC(UTF8STRC("Accept-Charset"), UTF8STRC("*"));
+				cli->AddHeaderC(UTF8STRC("User-Agent"), me->userAgent->v, me->userAgent->leng);
 				if (me->noShutdown)
 				{
-					cli->AddHeader((const UTF8Char*)"Connection", (const UTF8Char*)"keep-alive");
+					cli->AddHeaderC(UTF8STRC("Connection"), UTF8STRC("keep-alive"));
 				}
 				else
 				{
-					cli->AddHeader((const UTF8Char*)"Connection", (const UTF8Char*)"close");
+					cli->AddHeaderC(UTF8STRC("Connection"), UTF8STRC("close"));
 				}
-				cli->AddHeader((const UTF8Char*)"Accept-Encoding", (const UTF8Char*)"gzip, deflate");
+				cli->AddHeaderC(UTF8STRC("Accept-Encoding"), UTF8STRC("gzip, deflate"));
 				
-				cookiePtr = me->AppendCookie(sbuff, currURL);
-				if (cookiePtr)
+				sptr = me->AppendCookie(sbuff, currURL);
+				if (sptr)
 				{
-					cli->AddHeader((const UTF8Char*)"Cookie", sbuff);
+					cli->AddHeaderC(UTF8STRC("Cookie"), sbuff, (UOSInt)(sptr - sbuff));
 				}
 
 				if (!Text::StrEquals(currMeth, "GET") && currBody)
 				{
-					Text::StrUOSInt(sbuff, currBodyLen);
-					cli->AddHeader((const UTF8Char*)"Content-Length", sbuff);
-					cli->AddHeader((const UTF8Char*)"Content-Type", (const UTF8Char*)currBodyType);
+					sptr = Text::StrUOSInt(sbuff, currBodyLen);
+					cli->AddHeaderC(UTF8STRC("Content-Length"), sbuff, (UOSInt)(sptr - sbuff));
+					cli->AddHeaderC(UTF8STRC("Content-Type"), currBodyType->v, currBodyType->leng);
 					cli->Write(currBody, currBodyLen);
 				}
 				if (currHeaders)
@@ -549,7 +549,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 						i = Text::StrSplitLine(sarr, 2, sarr[1]);
 						if (Text::StrSplitTrim(sarr2, 2, sarr[0], ':') == 2)
 						{
-							cli->AddHeader(sarr2[0], sarr2[1]);
+							cli->AddHeaderC(sarr2[0], Text::StrCharCnt(sarr2[0]), sarr2[1], Text::StrCharCnt(sarr2[1]));
 						}
 
 						if (i != 2)
@@ -573,31 +573,31 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 				if (me->respStatus == 401 && currUserName != 0 && currPassword != 0)
 				{
 					DEL_CLASS(cli);
-					cli = Net::HTTPClient::CreateClient(me->core->GetSocketFactory(), me->ssl, me->userAgent, me->noShutdown, Text::StrStartsWith(currURL, (const UTF8Char*)"https://"));
+					cli = Net::HTTPClient::CreateClient(me->core->GetSocketFactory(), me->ssl, me->userAgent->v, me->noShutdown, Text::StrStartsWith(currURL, (const UTF8Char*)"https://"));
 					if (cli->Connect(currURL, currMeth, &me->respTimeDNS, &me->respTimeConn, false))
 					{
 						contType = 0;
 						mstm->Clear();
-						cli->AddHeader((const UTF8Char*)"Accept", (const UTF8Char*)"*/*");
-						cli->AddHeader((const UTF8Char*)"Accept-Charset", (const UTF8Char*)"*");
+						cli->AddHeaderC(UTF8STRC("Accept"), UTF8STRC("*/*"));
+						cli->AddHeaderC(UTF8STRC("Accept-Charset"), UTF8STRC("*"));
 						i = (UOSInt)(Text::StrConcat(Text::StrConcatC(Text::StrConcat(buff, currUserName), UTF8STRC(":")), currPassword) - buff);
 						Text::StringBuilderUTF8 sbAuth;
 						sbAuth.AppendC(UTF8STRC("Basic "));
 						Text::TextBinEnc::Base64Enc b64Enc;
 						b64Enc.EncodeBin(&sbAuth, buff, i);
-						cli->AddHeader((const UTF8Char*)"Authorization", sbAuth.ToString());
+						cli->AddHeaderC(UTF8STRC("Authorization"), sbAuth.ToString(), sbAuth.GetLength());
 						
-						cookiePtr = me->AppendCookie(sbuff, currURL);
-						if (cookiePtr)
+						sptr = me->AppendCookie(sbuff, currURL);
+						if (sptr)
 						{
-							cli->AddHeader((const UTF8Char*)"Cookie", sbuff);
+							cli->AddHeaderC(UTF8STRC("Cookie"), sbuff, (UOSInt)(sptr - sbuff));
 						}
 
 						if (!Text::StrEquals(currMeth, "GET") && currBody)
 						{
-							Text::StrUOSInt(sbuff, currBodyLen);
-							cli->AddHeader((const UTF8Char*)"Content-Length", sbuff);
-							cli->AddHeader((const UTF8Char*)"Content-Type", (const UTF8Char*)currBodyType);
+							sptr = Text::StrUOSInt(sbuff, currBodyLen);
+							cli->AddHeaderC(UTF8STRC("Content-Length"), sbuff, (UOSInt)(sptr - sbuff));
+							cli->AddHeaderC(UTF8STRC("Content-Type"), currBodyType->v, currBodyType->leng);
 							cli->Write(currBody, currBodyLen);
 						}
 						if (currHeaders)
@@ -612,7 +612,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 								i = Text::StrSplitLine(sarr, 2, sarr[1]);
 								if (Text::StrSplitTrim(sarr2, 2, sarr[0], ':') == 2)
 								{
-									cli->AddHeader(sarr2[0], sarr2[1]);
+									cli->AddHeaderC(sarr2[0], Text::StrCharCnt(sarr2[0]), sarr2[1], Text::StrCharCnt(sarr2[1]));
 								}
 
 								if (i != 2)
@@ -703,7 +703,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 				MemFree((UInt8*)currBody);
 				currBody = 0;
 			}
-			SDEL_TEXT(currBodyType);
+			SDEL_STRING(currBodyType);
 			SDEL_TEXT(currUserName);
 			SDEL_TEXT(currPassword);
 			SDEL_TEXT(currHeaders);
@@ -716,7 +716,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 	MemFree(sbuff);
 	SDEL_TEXT(me->reqURL);
 	SDEL_TEXT(me->reqBody);
-	SDEL_TEXT(me->reqBodyType);
+	SDEL_STRING(me->reqBodyType);
 	me->threadToStop = false;
 	me->threadRunning = false;
 	return 0;
@@ -1093,7 +1093,7 @@ SSWR::AVIRead::AVIRHTTPClientForm::AVIRHTTPClientForm(UI::GUIClientControl *pare
 	this->respReqURL = 0;
 	this->respData = 0;
 	this->respCert = 0;
-	this->userAgent = Text::StrCopyNew((const UTF8Char*)"SSWR/1.0");
+	this->userAgent = Text::String::New(UTF8STRC("SSWR/1.0"));
 
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
@@ -1123,7 +1123,7 @@ SSWR::AVIRead::AVIRHTTPClientForm::AVIRHTTPClientForm(UI::GUIClientControl *pare
 	NEW_CLASS(this->btnUserAgent, UI::GUIButton(ui, this->pnlRequest, (const UTF8Char*)"User Agent"));
 	this->btnUserAgent->SetRect(4, 52, 75, 23, false);
 	this->btnUserAgent->HandleButtonClick(OnUserAgentClicked, this);
-	NEW_CLASS(this->lblUserAgent, UI::GUILabel(ui, this->pnlRequest, this->userAgent));
+	NEW_CLASS(this->lblUserAgent, UI::GUILabel(ui, this->pnlRequest, this->userAgent->v));
 	this->lblUserAgent->SetRect(104, 52, 400, 23, false);
 	NEW_CLASS(this->lblUserName, UI::GUILabel(ui, this->pnlRequest, (const UTF8Char*)"UserName"));
 	this->lblUserName->SetRect(4, 76, 100, 23, false);
@@ -1281,7 +1281,7 @@ SSWR::AVIRead::AVIRHTTPClientForm::~AVIRHTTPClientForm()
 	SDEL_CLASS(this->respData);
 	SDEL_TEXT(this->respCert);
 	DEL_CLASS(this->respMut);
-	Text::StrDelNew(this->userAgent);
+	this->userAgent->Release();
 	SDEL_CLASS(this->ssl);
 }
 

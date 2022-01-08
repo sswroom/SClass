@@ -1,7 +1,7 @@
 #ifndef _SM_NET_HTTPMYCLIENT
 #define _SM_NET_HTTPMYCLIENT
 #include "Data/ArrayList.h"
-#include "Data/ArrayListStrUTF8.h"
+#include "Data/ArrayListString.h"
 #include "Data/DateTime.h"
 #include "IO/MemoryStream.h"
 #include "IO/Stream.h"
@@ -22,10 +22,10 @@ namespace Net
 	protected:
 		Net::SSLEngine *ssl;
 		Net::TCPClient *cli;
-		const UTF8Char *cliHost;
+		Text::String *cliHost;
 		IO::MemoryStream *reqMstm;
-		const UTF8Char *userAgent;
-		Data::ArrayListStrUTF8 *reqHeaders;
+		Text::String *userAgent;
+		Data::ArrayListString *reqHeaders;
 
 		Bool writing;
 
@@ -53,7 +53,7 @@ namespace Net
 		virtual Bool Recover();
 
 		virtual Bool Connect(const UTF8Char *url, const Char *method, Double *timeDNS, Double *timeConn, Bool defHeaders);
-		virtual void AddHeader(const UTF8Char *name, const UTF8Char *value);
+		virtual void AddHeaderC(const UTF8Char *name, UOSInt nameLen, const UTF8Char *value, UOSInt valueLen);
 		virtual void EndRequest(Double *timeReq, Double *timeResp);
 		virtual void SetTimeout(Int32 ms);
 

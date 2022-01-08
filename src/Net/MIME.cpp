@@ -96,7 +96,7 @@ const UTF8Char *Net::MIME::GetMIMEFromExt(const UTF8Char *ext)
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
-		l = Text::StrCompareICase((const Char*)ext, mimeList[k].ext);
+		l = Text::StrCompareICase(ext, (const UTF8Char*)mimeList[k].ext);
 		if (l > 0)
 		{
 			i = k + 1;

@@ -13,42 +13,47 @@
 
 Bool Net::WebServer::HTTPServerUtil::MIMEToCompress(const UTF8Char *umime)
 {
-	const Char *mime = (const Char *)umime;
-	if (Text::StrEquals(mime, "text/javascript"))
+	if (Text::StrStartsWith(umime, (const UTF8Char*)"application/"))
 	{
-		return true;
+		if (Text::StrEquals(&umime[12], (const UTF8Char*)"javascript"))
+		{
+			return true;
+		}
+		else if (Text::StrEquals(&umime[12], (const UTF8Char*)"json"))
+		{
+			return true;
+		}
+		else if (Text::StrEquals(&umime[12], (const UTF8Char*)"xml"))
+		{
+			return true;
+		}
+		else if (Text::StrEquals(&umime[12], (const UTF8Char*)"xhtml+xml"))
+		{
+			return true;
+		}
 	}
-	else if (Text::StrEquals(mime, "text/html"))
+	else if (Text::StrStartsWith(umime, (const UTF8Char*)"text/"))
 	{
-		return true;
-	}
-	else if (Text::StrEquals(mime, "text/css"))
-	{
-		return true;
-	}
-	else if (Text::StrEquals(mime, "text/plain"))
-	{
-		return true;
-	}
-	else if (Text::StrEquals(mime, "text/xml"))
-	{
-		return true;
-	}
-	else if (Text::StrEquals(mime, "application/javascript"))
-	{
-		return true;
-	}
-	else if (Text::StrEquals(mime, "application/json"))
-	{
-		return true;
-	}
-	else if (Text::StrEquals(mime, "application/xml"))
-	{
-		return true;
-	}
-	else if (Text::StrEquals(mime, "application/xhtml+xml"))
-	{
-		return true;
+		if (Text::StrEquals(&umime[5], (const UTF8Char*)"javascript"))
+		{
+			return true;
+		}
+		else if (Text::StrEquals(&umime[5], (const UTF8Char*)"html"))
+		{
+			return true;
+		}
+		else if (Text::StrEquals(&umime[5], (const UTF8Char*)"css"))
+		{
+			return true;
+		}
+		else if (Text::StrEquals(&umime[5], (const UTF8Char*)"plain"))
+		{
+			return true;
+		}
+		else if (Text::StrEquals(&umime[5], (const UTF8Char*)"xml"))
+		{
+			return true;
+		}
 	}
 	return false;
 }

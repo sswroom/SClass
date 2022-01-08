@@ -234,20 +234,26 @@ WChar *IO::Path::ReplaceExtW(WChar *fileName, const WChar *ext)
 
 UTF8Char *IO::Path::GetFileExt(UTF8Char *fileBuff, const UTF8Char *path)
 {
-	UOSInt i = Text::StrLastIndexOf(path, '/');
-	if (i != INVALID_INDEX)
+	UOSInt len = Text::StrCharCnt(path);
+	if (len >= 4 && path[len - 4] == '.')
 	{
-		path = &path[i + 1];
+		return Text::StrConcatC(fileBuff, &path[len - 3], 3);
 	}
-	i = Text::StrLastIndexOf(path, '.');
-	if (i != INVALID_INDEX)
+	UOSInt i = len;
+	while (i-- > 0)
 	{
-		return Text::StrConcat(fileBuff, &path[i + 1]);
+		if (path[i] == '.')
+		{
+			return Text::StrConcatC(fileBuff, &path[i + 1], len - i - 1);
+		}
+		else if (path[i] == '/')
+		{
+			*fileBuff = 0;
+			return fileBuff;
+		}
 	}
-	else
-	{
-		return Text::StrConcat(fileBuff, (const UTF8Char*)"");
-	}
+	*fileBuff = 0;
+	return fileBuff;
 }
 
 WChar *IO::Path::GetFileExtW(WChar *fileBuff, const WChar *path)

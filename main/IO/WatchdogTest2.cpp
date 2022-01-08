@@ -15,7 +15,7 @@
 #include "Text/StringBuilderUTF8.h"
 
 #define TESTURL (const UTF8Char*)"http://abc.com/kareq"
-#define USERAGENT (const UTF8Char*)"HTTPClient/1.0"
+#define USERAGENT "HTTPClient/1.0"
 
 IO::Watchdog *wd;
 Bool running;
@@ -85,12 +85,12 @@ UInt32 __stdcall HTTPThread(void *userObj)
 	{
 		consoleWriter->WriteStrC(UTF8STRC("Requesting to "));
 		consoleWriter->WriteLine(TESTURL);
-		cli = Net::HTTPClient::CreateClient(sockf, ssl, USERAGENT, false, Text::StrStartsWith(TESTURL, (const UTF8Char*)"https://"));
+		cli = Net::HTTPClient::CreateClient(sockf, ssl, (const UTF8Char*)USERAGENT, false, Text::StrStartsWith(TESTURL, (const UTF8Char*)"https://"));
 		cli->Connect(TESTURL, "GET", 0, 0, false);
-		cli->AddHeader((const UTF8Char*)"User-Agent", USERAGENT);
-		cli->AddHeader((const UTF8Char*)"Accept", (const UTF8Char*)"*/*");
-		cli->AddHeader((const UTF8Char*)"Accept-Charset", (const UTF8Char*)"*");
-		cli->AddHeader((const UTF8Char*)"Connection", (const UTF8Char*)"close");
+		cli->AddHeaderC(UTF8STRC("User-Agent"), UTF8STRC(USERAGENT));
+		cli->AddHeaderC(UTF8STRC("Accept"), UTF8STRC("*/*"));
+		cli->AddHeaderC(UTF8STRC("Accept-Charset"), UTF8STRC("*"));
+		cli->AddHeaderC(UTF8STRC("Connection"), UTF8STRC("close"));
 		
 		if (cli->IsError())
 		{

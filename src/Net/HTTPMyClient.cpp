@@ -61,9 +61,9 @@ Net::HTTPMyClient::HTTPMyClient(Net::SocketFactory *sockf, Net::SSLEngine *ssl, 
 	this->buffOfst = 0;
 	this->contEnc = 0;
 	this->timeOutMS = 5000;
-	this->userAgent = Text::StrCopyNew(userAgent);
+	this->userAgent = Text::String::NewNotNull(userAgent);
 	this->dataBuff = MemAlloc(UInt8, BUFFSIZE);
-	NEW_CLASS(this->reqHeaders, Data::ArrayListStrUTF8());
+	NEW_CLASS(this->reqHeaders, Data::ArrayListString());
 	NEW_CLASS(this->reqMstm, IO::MemoryStream(1024, (const UTF8Char*)"Net.HTTPMyClient.reqMstm"));
 }
 
@@ -76,7 +76,7 @@ Net::HTTPMyClient::~HTTPMyClient()
 		DEL_CLASS(this->cli);
 		this->cli = 0;
 	}
-	SDEL_TEXT(this->cliHost);
+	SDEL_STRING(this->cliHost);
 	if (this->dataBuff)
 	{
 		MemFree(this->dataBuff);
@@ -85,11 +85,11 @@ Net::HTTPMyClient::~HTTPMyClient()
 	UOSInt i = this->reqHeaders->GetCount();
 	while (i-- > 0)
 	{
-		Text::StrDelNew(this->reqHeaders->GetItem(i));
+		this->reqHeaders->GetItem(i)->Release();
 	}
 	DEL_CLASS(this->reqHeaders);
 	DEL_CLASS(this->reqMstm);
-	Text::StrDelNew(this->userAgent);
+	this->userAgent->Release();
 #if defined(LOGREPLY)
 	DEL_CLASS(this->clsData->fs);
 	MemFree(this->clsData);
@@ -270,7 +270,7 @@ UOSInt Net::HTTPMyClient::ReadRAW(UInt8 *buff, UOSInt size)
 #endif
 			this->buffSize += i;
 		}
-		while (INVALID_INDEX == (i = Text::StrIndexOf((Char*)this->dataBuff, "\r\n")))
+		while (INVALID_INDEX == (i = Text::StrIndexOf((const UTF8Char*)this->dataBuff, (const UTF8Char*)"\r\n")))
 		{
 			if (this->cli == 0)
 			{
@@ -531,6 +531,7 @@ Bool Net::HTTPMyClient::Recover()
 Bool Net::HTTPMyClient::Connect(const UTF8Char *url, const Char *method, Double *timeDNS, Double *timeConn, Bool defHeaders)
 {
 	UTF8Char urltmp[256];
+	UOSInt urltmpLen;
 	UTF8Char svrname[256];
 	UTF8Char host[256];
 
@@ -538,7 +539,7 @@ Bool Net::HTTPMyClient::Connect(const UTF8Char *url, const Char *method, Double 
 	UOSInt hostLen;
 	const UTF8Char *ptr1;
 	const UTF8Char *ptr2;
-	UTF8Char *ptrs[2];
+	Text::PString ptrs[2];
 	UTF8Char *cptr;
 	UInt16 port;
 	Bool secure = false;
@@ -598,9 +599,10 @@ Bool Net::HTTPMyClient::Connect(const UTF8Char *url, const Char *method, Double 
 		MemCopyNO(urltmp, ptr1, i * sizeof(UTF8Char));
 		urltmp[i] = 0;
 	}
-	Text::TextEnc::URIEncoding::URIDecode(urltmp, urltmp);
+	cptr = Text::TextEnc::URIEncoding::URIDecode(urltmp, urltmp);
+	urltmpLen = (UOSInt)(cptr - urltmp);
 	cptr = Text::StrConcatC(host, UTF8STRC("Host: "));
-	cptr = Text::StrConcat(cptr, urltmp);
+	cptr = Text::StrConcatC(cptr, urltmp, urltmpLen);
 	cptr = Text::StrConcatC(cptr, UTF8STRC("\r\n"));
 	hostLen = (UOSInt)(cptr - host);
 	if (urltmp[0] == '[')
@@ -619,6 +621,7 @@ Bool Net::HTTPMyClient::Connect(const UTF8Char *url, const Char *method, Double 
 		{
 			Text::StrToUInt16S(&urltmp[i + 2], &port, 0);
 			urltmp[i + 1] = 0;
+			urltmpLen = i + 1;
 		}
 		else
 		{
@@ -634,11 +637,12 @@ Bool Net::HTTPMyClient::Connect(const UTF8Char *url, const Char *method, Double 
 	}
 	else
 	{
-		i = Text::StrSplit(ptrs, 2, urltmp, ':');
+		i = Text::StrSplitP(ptrs, 2, urltmp, urltmpLen, ':');
 		if (i == 2)
 		{
-			Text::StrToUInt16S(ptrs[1], &port, 0);
-			Text::StrConcat(svrname, ptrs[0]);
+			Text::StrToUInt16S(ptrs[1].v, &port, 0);
+			Text::StrConcatC(svrname, ptrs[0].v, ptrs[0].len);
+			urltmpLen = ptrs[0].len;
 		}
 		else
 		{
@@ -650,14 +654,14 @@ Bool Net::HTTPMyClient::Connect(const UTF8Char *url, const Char *method, Double 
 			{
 				port = 80;
 			}
-			Text::StrConcat(svrname, ptrs[0]);
+			Text::StrConcatC(svrname, ptrs[0].v, ptrs[0].len);
 		}
 	}
 
 	this->clk->Start();
 	if (this->cliHost == 0)
 	{
-		this->cliHost = Text::StrCopyNew(urltmp);
+		this->cliHost = Text::String::New(urltmp, urltmpLen);
 
 		Double t1;
 		Net::SocketUtil::AddressInfo addr;
@@ -688,7 +692,7 @@ Bool Net::HTTPMyClient::Connect(const UTF8Char *url, const Char *method, Double 
 			if (secure)
 			{
 				Net::SSLEngine::ErrorType err;
-				this->cli = this->ssl->Connect(this->cliHost, port, &err);
+				this->cli = this->ssl->Connect(this->cliHost->v, port, &err);
 #ifdef SHOWDEBUG				
 				if (this->cli == 0)
 				{
@@ -742,7 +746,7 @@ Bool Net::HTTPMyClient::Connect(const UTF8Char *url, const Char *method, Double 
 		this->sockf->SetLinger(this->cli->GetSocket(), 0);
 		this->sockf->SetNoDelay(this->cli->GetSocket(), true);
 	}
-	else if (Text::StrEquals(this->cliHost, urltmp))
+	else if (Text::StrEquals(this->cliHost->v, urltmp))
 	{
 		if (this->buffSize > 0)
 		{
@@ -862,60 +866,56 @@ Bool Net::HTTPMyClient::Connect(const UTF8Char *url, const Char *method, Double 
 
 	if (defHeaders)
 	{
-		this->AddHeader((const UTF8Char*)"User-Agent", this->userAgent);
-		this->AddHeader((const UTF8Char*)"Accept", (const UTF8Char*)"*/*");
-		this->AddHeader((const UTF8Char*)"Accept-Charset", (const UTF8Char*)"*");
+		this->AddHeaderC(UTF8STRC("User-Agent"), this->userAgent->v, this->userAgent->leng);
+		this->AddHeaderC(UTF8STRC("Accept"), UTF8STRC("*/*"));
+		this->AddHeaderC(UTF8STRC("Accept-Charset"), UTF8STRC("*"));
 		if (this->kaConn)
 		{
-			this->AddHeader((const UTF8Char*)"Connection", (const UTF8Char*)"keep-alive");
+			this->AddHeaderC(UTF8STRC("Connection"), UTF8STRC("keep-alive"));
 		}
 		else
 		{
-			this->AddHeader((const UTF8Char*)"Connection", (const UTF8Char*)"close");
+			this->AddHeaderC(UTF8STRC("Connection"), UTF8STRC("close"));
 		}
 	}
 	return true;
 }
 
-void Net::HTTPMyClient::AddHeader(const UTF8Char *name, const UTF8Char *value)
+void Net::HTTPMyClient::AddHeaderC(const UTF8Char *name, UOSInt nameLen, const UTF8Char *value, UOSInt valueLen)
 {
 	UInt8 buff[512];
-	Char *sptr;
-	if (this->reqHeaders->SortedIndexOf(name) >= 0)
+	UTF8Char *sptr;
+	if (this->reqHeaders->SortedIndexOfPtr(name) >= 0)
 		return;
 
 	if (this->cli && !this->writing)
 	{
-		UOSInt i;
-		UOSInt j;
-		i = Text::StrCharCnt(name);
-		j = Text::StrCharCnt(value);
-		if (i + j + 5 > 512)
+		if (nameLen + valueLen + 5 > 512)
 		{
 			UInt8 *cbuff;
-			cbuff = MemAlloc(UInt8, i + j + 5);
-			sptr = Text::StrConcatC((Char*)cbuff, (const Char*)name, i);
-			sptr = Text::StrConcatC(sptr, ": ", 2);
-			sptr = Text::StrConcatC(sptr, (const Char*)value, j);
-			sptr = Text::StrConcatC(sptr, "\r\n", 2);
+			cbuff = MemAlloc(UInt8, nameLen + valueLen + 5);
+			sptr = Text::StrConcatC((UTF8Char*)cbuff, name, nameLen);
+			sptr = Text::StrConcatC(sptr, UTF8STRC(": "));
+			sptr = Text::StrConcatC(sptr, value, valueLen);
+			sptr = Text::StrConcatC(sptr, UTF8STRC("\r\n"));
 #ifdef SHOWDEBUG
 			printf("Add Header: %s", cbuff);
 #endif
-			this->reqMstm->Write(cbuff, (UOSInt)(sptr - (Char*)cbuff));
+			this->reqMstm->Write(cbuff, (UOSInt)(sptr - (UTF8Char*)cbuff));
 			MemFree(cbuff);
 		}
 		else
 		{
-			sptr = Text::StrConcatC((Char*)buff, (const Char*)name, i);
-			sptr = Text::StrConcatC(sptr, ": ", 2);
-			sptr = Text::StrConcatC(sptr, (const Char*)value, j);
-			sptr = Text::StrConcatC(sptr, "\r\n", 2);
+			sptr = Text::StrConcatC((UTF8Char*)buff, name, nameLen);
+			sptr = Text::StrConcatC(sptr, UTF8STRC(": "));
+			sptr = Text::StrConcatC(sptr, value, valueLen);
+			sptr = Text::StrConcatC(sptr, UTF8STRC("\r\n"));
 #ifdef SHOWDEBUG
 			printf("Add Header: %s", buff);
 #endif
-			this->reqMstm->Write(buff, (UOSInt)(sptr - (Char*)buff));
+			this->reqMstm->Write(buff, (UOSInt)(sptr - (UTF8Char*)buff));
 		}
-		this->reqHeaders->SortedInsert(Text::StrCopyNew(name));
+		this->reqHeaders->SortedInsert(Text::String::New(name, nameLen));
 	}
 }
 
@@ -1010,14 +1010,14 @@ void Net::HTTPMyClient::EndRequest(Double *timeReq, Double *timeResp)
 		printf("Read buffSize = %d\r\n", (Int32)this->buffSize);
 #endif
 		this->dataBuff[this->buffSize] = 0;
-		if (Text::StrStartsWith((Char*)this->dataBuff, "HTTP/"))
+		if (Text::StrStartsWith((UTF8Char*)this->dataBuff, (const UTF8Char*)"HTTP/"))
 		{
-			Char buff[256];
-			Char *ptrs[3];
-			Char *ptr;
+			UTF8Char buff[256];
+			UTF8Char *ptrs[3];
+			UTF8Char *ptr;
 			Text::String *s;
 			UOSInt i;
-			i = Text::StrIndexOf((Char*)this->dataBuff, "\r\n");
+			i = Text::StrIndexOf((UTF8Char*)this->dataBuff, (const UTF8Char*)"\r\n");
 			MemCopyNO(buff, this->dataBuff, i);
 			buff[i] = 0;
 			Text::StrSplit(ptrs, 3, buff, ' ');
@@ -1031,7 +1031,7 @@ void Net::HTTPMyClient::EndRequest(Double *timeReq, Double *timeResp)
 				this->respStatus = Net::WebStatus::SC_UNKNOWN;
 			}
 
-			ptr = (Char*)&this->dataBuff[i + 2];
+			ptr = (UTF8Char*)&this->dataBuff[i + 2];
 			this->contLeng = 0x7fffffff;
 			this->contRead = 0;
 			Bool header = true;
@@ -1039,7 +1039,7 @@ void Net::HTTPMyClient::EndRequest(Double *timeReq, Double *timeResp)
 			UInt32 keepAliveTO = 0;
 			while (header)
 			{
-				while ((i = Text::StrIndexOf(ptr, "\n")) != INVALID_INDEX && i > 0)
+				while ((i = Text::StrIndexOf(ptr, (const UTF8Char*)"\n")) != INVALID_INDEX && i > 0)
 				{
 					if (i == 1 && ptr[0] == '\r')
 					{
@@ -1049,11 +1049,11 @@ void Net::HTTPMyClient::EndRequest(Double *timeReq, Double *timeResp)
 					}
 					if (ptr[i - 1] == '\r')
 					{
-						s = Text::String::New((const UTF8Char*)ptr, i - 1);
+						s = Text::String::New(ptr, i - 1);
 					}
 					else
 					{
-						s = Text::String::New((const UTF8Char*)ptr, i);
+						s = Text::String::New(ptr, i);
 					}
 #ifdef SHOWDEBUG
 					printf("Read Header: %s\r\n", s->V#pragma endregion);
@@ -1087,7 +1087,7 @@ void Net::HTTPMyClient::EndRequest(Double *timeReq, Double *timeResp)
 				if (i == 0)
 				{
 					ptr = &ptr[1];
-					this->buffSize -= (UOSInt)(ptr - (Char*)this->dataBuff);
+					this->buffSize -= (UOSInt)(ptr - (UTF8Char*)this->dataBuff);
 					MemCopyO(this->dataBuff, ptr, this->buffSize);
 
 					header = false;
@@ -1111,7 +1111,7 @@ void Net::HTTPMyClient::EndRequest(Double *timeReq, Double *timeResp)
 #endif
 					this->buffSize += i;
 					this->dataBuff[this->buffSize] = 0;
-					ptr = (Char*)this->dataBuff;
+					ptr = (UTF8Char*)this->dataBuff;
 				}
 			}
 			if (eventStream && keepAliveTO != 0)

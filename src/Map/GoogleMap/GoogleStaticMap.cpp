@@ -223,7 +223,7 @@ UOSInt Map::GoogleMap::GoogleStaticMap::GetMap(UInt8 *buff, Double lat, Double l
 	{
 		if (lang)
 		{
-			cli->AddHeader((const UTF8Char*)"Accept-Language", lang);
+			cli->AddHeaderC(UTF8STRC("Accept-Language"), lang, Text::StrCharCnt(lang));
 		}
 
 		while ((thisSize = cli->Read(buff, 2048)) > 0)

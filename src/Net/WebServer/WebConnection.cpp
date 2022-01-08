@@ -64,7 +64,7 @@ Net::WebServer::WebConnection::~WebConnection()
 void Net::WebServer::WebConnection::ReceivedData(const UInt8 *buff, UOSInt size)
 {
 	UTF8Char *reqURL;
-	Char *sarr[4];
+	UTF8Char *sarr[4];
 	UOSInt i;
 	UOSInt j;
 	UOSInt lineStart;
@@ -134,9 +134,9 @@ void Net::WebServer::WebConnection::ReceivedData(const UInt8 *buff, UOSInt size)
 				}
 				else if (this->currReq == 0)
 				{
-					if (Text::StrSplit(sarr, 4, (Char*)&this->dataBuff[lineStart], ' ') == 3)
+					if (Text::StrSplit(sarr, 4, (UTF8Char*)&this->dataBuff[lineStart], ' ') == 3)
 					{
-						if (Text::StrEquals(sarr[2], "RTSP/1.0"))
+						if (Text::StrEquals(sarr[2], (const UTF8Char*)"RTSP/1.0"))
 						{
 							Net::WebServer::IWebRequest::RequestProtocol reqProto = Net::WebServer::IWebRequest::RequestProtocol::RTSP1_0;
 							Bool secureConn = false;
@@ -155,47 +155,47 @@ void Net::WebServer::WebConnection::ReceivedData(const UInt8 *buff, UOSInt size)
 								this->currReq = 0;
 							}
 
-							if (Text::StrCompare(sarr[0], "DESCRIBE") == 0)
+							if (Text::StrEquals(sarr[0], (const UTF8Char*)"DESCRIBE"))
 							{
 								NEW_CLASS(this->currReq, WebRequest(reqURL, Net::WebServer::IWebRequest::RequestMethod::RTSP_DESCRIBE, reqProto, secureConn, &cliAddr, cliPort, svrPort));
 							}
-							else if (Text::StrCompare(sarr[0], "ANNOUNCE") == 0)
+							else if (Text::StrEquals(sarr[0], (const UTF8Char*)"ANNOUNCE"))
 							{
 								NEW_CLASS(this->currReq, WebRequest(reqURL, Net::WebServer::IWebRequest::RequestMethod::RTSP_ANNOUNCE, reqProto, secureConn, &cliAddr, cliPort, svrPort));
 							}
-							else if (Text::StrCompare(sarr[0], "GET_PARAMETER") == 0)
+							else if (Text::StrEquals(sarr[0], (const UTF8Char*)"GET_PARAMETER"))
 							{
 								NEW_CLASS(this->currReq, WebRequest(reqURL, Net::WebServer::IWebRequest::RequestMethod::RTSP_GET_PARAMETER, reqProto, secureConn, &cliAddr, cliPort, svrPort));
 							}
-							else if (Text::StrCompare(sarr[0], "OPTIONS") == 0)
+							else if (Text::StrEquals(sarr[0], (const UTF8Char*)"OPTIONS"))
 							{
 								NEW_CLASS(this->currReq, WebRequest(reqURL, Net::WebServer::IWebRequest::RequestMethod::RTSP_OPTIONS, reqProto, secureConn, &cliAddr, cliPort, svrPort));
 							}
-							else if (Text::StrCompare(sarr[0], "PAUSE") == 0)
+							else if (Text::StrEquals(sarr[0], (const UTF8Char*)"PAUSE"))
 							{
 								NEW_CLASS(this->currReq, WebRequest(reqURL, Net::WebServer::IWebRequest::RequestMethod::RTSP_PAUSE, reqProto, secureConn, &cliAddr, cliPort, svrPort));
 							}
-							else if (Text::StrCompare(sarr[0], "PLAY") == 0)
+							else if (Text::StrEquals(sarr[0], (const UTF8Char*)"PLAY"))
 							{
 								NEW_CLASS(this->currReq, WebRequest(reqURL, Net::WebServer::IWebRequest::RequestMethod::RTSP_PLAY, reqProto, secureConn, &cliAddr, cliPort, svrPort));
 							}
-							else if (Text::StrCompare(sarr[0], "RECORD") == 0)
+							else if (Text::StrEquals(sarr[0], (const UTF8Char*)"RECORD"))
 							{
 								NEW_CLASS(this->currReq, WebRequest(reqURL, Net::WebServer::IWebRequest::RequestMethod::RTSP_RECORD, reqProto, secureConn, &cliAddr, cliPort, svrPort));
 							}
-							else if (Text::StrCompare(sarr[0], "REDIRECT") == 0)
+							else if (Text::StrEquals(sarr[0], (const UTF8Char*)"REDIRECT"))
 							{
 								NEW_CLASS(this->currReq, WebRequest(reqURL, Net::WebServer::IWebRequest::RequestMethod::RTSP_REDIRECT, reqProto, secureConn, &cliAddr, cliPort, svrPort));
 							}
-							else if (Text::StrCompare(sarr[0], "SETUP") == 0)
+							else if (Text::StrEquals(sarr[0], (const UTF8Char*)"SETUP"))
 							{
 								NEW_CLASS(this->currReq, WebRequest(reqURL, Net::WebServer::IWebRequest::RequestMethod::RTSP_SETUP, reqProto, secureConn, &cliAddr, cliPort, svrPort));
 							}
-							else if (Text::StrCompare(sarr[0], "SET_PARAMETER") == 0)
+							else if (Text::StrEquals(sarr[0], (const UTF8Char*)"SET_PARAMETER"))
 							{
 								NEW_CLASS(this->currReq, WebRequest(reqURL, Net::WebServer::IWebRequest::RequestMethod::RTSP_SET_PARAMETER, reqProto, secureConn, &cliAddr, cliPort, svrPort));
 							}
-							else if (Text::StrCompare(sarr[0], "TEARDOWN") == 0)
+							else if (Text::StrEquals(sarr[0], (const UTF8Char*)"TEARDOWN"))
 							{
 								NEW_CLASS(this->currReq, WebRequest(reqURL, Net::WebServer::IWebRequest::RequestMethod::RTSP_TEARDOWN, reqProto, secureConn, &cliAddr, cliPort, svrPort));
 							}
@@ -216,15 +216,15 @@ void Net::WebServer::WebConnection::ReceivedData(const UInt8 *buff, UOSInt size)
 						{
 							Net::WebServer::IWebRequest::RequestProtocol reqProto;
 							Bool secureConn = this->cli->IsSSL();
-							if (Text::StrEquals(sarr[2], "HTTP/2"))
+							if (Text::StrEquals(sarr[2], (const UTF8Char*)"HTTP/2"))
 							{
 								reqProto = Net::WebServer::IWebRequest::RequestProtocol::HTTP2_0;
 							}
-							else if (Text::StrEquals(sarr[2], "HTTP/1.1"))
+							else if (Text::StrEquals(sarr[2], (const UTF8Char*)"HTTP/1.1"))
 							{
 								reqProto = Net::WebServer::IWebRequest::RequestProtocol::HTTP1_1;
 							}
-							else if (Text::StrEquals(sarr[2], "HTTP/1.0"))
+							else if (Text::StrEquals(sarr[2], (const UTF8Char*)"HTTP/1.0"))
 							{
 								reqProto = Net::WebServer::IWebRequest::RequestProtocol::HTTP1_0;
 							}
@@ -241,7 +241,7 @@ void Net::WebServer::WebConnection::ReceivedData(const UInt8 *buff, UOSInt size)
 								this->cli->Close();
 								return;
 							}
-							reqURL = (UTF8Char*)sarr[1];
+							reqURL = sarr[1];
 							this->respHeaders->ClearStr();
 							this->respHeaderSent = false;
 							this->respTranEnc = 0;
@@ -256,27 +256,27 @@ void Net::WebServer::WebConnection::ReceivedData(const UInt8 *buff, UOSInt size)
 								this->currReq = 0;
 							}
 
-							if (Text::StrEquals(sarr[0], "GET"))
+							if (Text::StrEquals(sarr[0], (const UTF8Char*)"GET"))
 							{
 								NEW_CLASS(this->currReq, WebRequest(reqURL, Net::WebServer::IWebRequest::RequestMethod::HTTP_GET, reqProto, secureConn, &cliAddr, cliPort, svrPort));
 							}
-							else if (Text::StrEquals(sarr[0], "POST"))
+							else if (Text::StrEquals(sarr[0], (const UTF8Char*)"POST"))
 							{
 								NEW_CLASS(this->currReq, WebRequest(reqURL, Net::WebServer::IWebRequest::RequestMethod::HTTP_POST, reqProto, secureConn, &cliAddr, cliPort, svrPort));
 							}
-							else if (Text::StrEquals(sarr[0], "PUT"))
+							else if (Text::StrEquals(sarr[0], (const UTF8Char*)"PUT"))
 							{
 								NEW_CLASS(this->currReq, WebRequest(reqURL, Net::WebServer::IWebRequest::RequestMethod::HTTP_PUT, reqProto, secureConn, &cliAddr, cliPort, svrPort));
 							}
-							else if (Text::StrEquals(sarr[0], "PATCH"))
+							else if (Text::StrEquals(sarr[0], (const UTF8Char*)"PATCH"))
 							{
 								NEW_CLASS(this->currReq, WebRequest(reqURL, Net::WebServer::IWebRequest::RequestMethod::HTTP_PATCH, reqProto, secureConn, &cliAddr, cliPort, svrPort));
 							}
-							else if (Text::StrEquals(sarr[0], "DELETE"))
+							else if (Text::StrEquals(sarr[0], (const UTF8Char*)"DELETE"))
 							{
 								NEW_CLASS(this->currReq, WebRequest(reqURL, Net::WebServer::IWebRequest::RequestMethod::HTTP_DELETE, reqProto, secureConn, &cliAddr, cliPort, svrPort));
 							}
-							else if (Text::StrEquals(sarr[0], "CONNECT"))
+							else if (Text::StrEquals(sarr[0], (const UTF8Char*)"CONNECT"))
 							{
 								NEW_CLASS(this->currReq, WebRequest(reqURL, Net::WebServer::IWebRequest::RequestMethod::HTTP_CONNECT, reqProto, secureConn, &cliAddr, cliPort, svrPort));
 							}
@@ -307,7 +307,7 @@ void Net::WebServer::WebConnection::ReceivedData(const UInt8 *buff, UOSInt size)
 				}
 				else
 				{
-					strIndex = Text::StrIndexOf((Char*)&this->dataBuff[lineStart], ':');
+					strIndex = Text::StrIndexOf(&this->dataBuff[lineStart], ':');
 					if (strIndex != INVALID_INDEX)
 					{
 						UOSInt nameLen = strIndex;
@@ -418,40 +418,40 @@ Text::String *Net::WebServer::WebConnection::GetRequestURL()
 void Net::WebServer::WebConnection::SendHeaders(Net::WebServer::IWebRequest::RequestProtocol protocol)
 {
 	UInt8 *buff;
-	Char *sptr;
+	UTF8Char *sptr;
 	buff = MemAlloc(UInt8, 256 + (this->respHeaders->GetLength() * 3));
-	sptr = (Char*)buff;
+	sptr = (UTF8Char*)buff;
 	if (protocol == Net::WebServer::IWebRequest::RequestProtocol::HTTP1_0)
 	{
-		sptr = Text::StrConcat(sptr, "HTTP/1.0 ");
+		sptr = Text::StrConcatC(sptr, UTF8STRC("HTTP/1.0 "));
 	}
 	else if (protocol == Net::WebServer::IWebRequest::RequestProtocol::RTSP1_0)
 	{
-		sptr = Text::StrConcat(sptr, "RTSP/1.0 ");
+		sptr = Text::StrConcatC(sptr, UTF8STRC("RTSP/1.0 "));
 	}
 	else
 	{
-		sptr = Text::StrConcat(sptr, "HTTP/1.1 ");
+		sptr = Text::StrConcatC(sptr, UTF8STRC("HTTP/1.1 "));
 	}
 	sptr = Text::StrInt32(sptr, this->respStatus);
 	*sptr++ = ' ';
-	sptr = (Char*)Text::StrConcat((UTF8Char*)sptr, Net::WebStatus::GetCodeName(this->respStatus));
-	sptr = Text::StrConcat(sptr, "\r\n");
+	sptr = Text::StrConcat((UTF8Char*)sptr, Net::WebStatus::GetCodeName(this->respStatus));
+	sptr = Text::StrConcatC(sptr, UTF8STRC("\r\n"));
 
-	sptr = Text::StrConcat(sptr, (Char*)this->respHeaders->ToString());
-	sptr = Text::StrConcat(sptr, "\r\n");
+	sptr = Text::StrConcatC(sptr, this->respHeaders->ToString(), this->respHeaders->GetLength());
+	sptr = Text::StrConcatC(sptr, UTF8STRC("\r\n"));
 
 	if (this->cstm)
 	{
-		this->cstm->Write(buff, (UOSInt)(sptr - (Char*)buff));
+		this->cstm->Write(buff, (UOSInt)(sptr - (UTF8Char*)buff));
 	}
 	else
 	{
-		this->cli->Write(buff, (UOSInt)(sptr - (Char*)buff));
+		this->cli->Write(buff, (UOSInt)(sptr - (UTF8Char*)buff));
 	}
 	if (this->logger)
 	{
-		this->logger(this->loggerObj, (UOSInt)(sptr - (Char*)buff));
+		this->logger(this->loggerObj, (UOSInt)(sptr - (UTF8Char*)buff));
 	}
 	MemFree(buff);
 	this->respHeaderSent = true;
@@ -573,7 +573,7 @@ void Net::WebServer::WebConnection::ProcessResponse()
 					else
 					{
 						Text::String *s2 = this->currReq->GetHeaderValue(i);
-						httpCli->AddHeader(s->v, STR_PTR(s2));
+						httpCli->AddHeaderC(s->v, s->leng, s2->v, s2->leng);
 					}
 					i++;
 				}

@@ -48,7 +48,7 @@ Bool Net::HTTPClient::FormBegin()
 	if (this->canWrite && !this->hasForm)
 	{
 		this->hasForm = true;
-		this->AddContentType((const UTF8Char*)"application/x-www-form-urlencoded");
+		this->AddContentType(UTF8STRC("application/x-www-form-urlencoded"));
 		NEW_CLASS(this->formSb, Text::StringBuilderUTF8());
 		return true;
 	}
@@ -74,23 +74,25 @@ Bool Net::HTTPClient::FormAdd(const UTF8Char *name, const UTF8Char *value)
 	return true;
 }
 
-void Net::HTTPClient::AddTimeHeader(const UTF8Char *name, Data::DateTime *dt)
+void Net::HTTPClient::AddTimeHeader(const UTF8Char *name, UOSInt nameLen, Data::DateTime *dt)
 {
 	UTF8Char sbuff[64];
-	Date2Str(sbuff, dt);
-	this->AddHeader(name, sbuff);
+	UTF8Char *sptr;
+	sptr = Date2Str(sbuff, dt);
+	this->AddHeaderC(name, nameLen, sbuff, (UOSInt)(sptr - sbuff));
 }
 
-void Net::HTTPClient::AddContentType(const UTF8Char *contType)
+void Net::HTTPClient::AddContentType(const UTF8Char *contType, UOSInt len)
 {
-	this->AddHeader((const UTF8Char*)"Content-Type", contType);
+	this->AddHeaderC(UTF8STRC("Content-Type"), contType, len);
 }
 
 void Net::HTTPClient::AddContentLength(UOSInt leng)
 {
 	UTF8Char sbuff[32];
-	Text::StrUOSInt(sbuff, leng);
-	this->AddHeader((const UTF8Char*)"Content-Length", sbuff);
+	UTF8Char *sptr;
+	sptr = Text::StrUOSInt(sbuff, leng);
+	this->AddHeaderC(UTF8STRC("Content-Length"), sbuff, (UOSInt)(sptr - sbuff));
 }
 
 UOSInt Net::HTTPClient::GetRespHeaderCnt()

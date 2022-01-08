@@ -22,7 +22,6 @@ http://man7.org/linux/man-pages/man2/pipe.2.html
 http://man7.org/linux/man-pages/man2/poll.2.html
 */
 
-#define TCP_BUFF_SIZE 2048
 
 struct Net::TCPClientMgr::ClassData
 {
@@ -121,7 +120,6 @@ UInt32 __stdcall Net::TCPClientMgr::ClientThread(void *o)
 					readMutUsage.EndUse();
 					DEL_CLASS(cliStat->lastDataTime);
 					DEL_CLASS(cliStat->readMut);
-					MemFree(cliStat->buff);
 					me->evtHdlr(cliStat->cli, me->userObj, cliStat->cliData, Net::TCPClientMgr::TCP_EVENT_DISCONNECT);
 					MemFree(cliStat);
 					i--;
@@ -214,7 +212,6 @@ UInt32 __stdcall Net::TCPClientMgr::ClientThread(void *o)
 
 								DEL_CLASS(cliStat->lastDataTime);
 								DEL_CLASS(cliStat->readMut);
-								MemFree(cliStat->buff);
 								me->evtHdlr(cliStat->cli, me->userObj, cliStat->cliData, Net::TCPClientMgr::TCP_EVENT_DISCONNECT);
 								MemFree(cliStat);
 							}
@@ -241,7 +238,6 @@ UInt32 __stdcall Net::TCPClientMgr::ClientThread(void *o)
 
 							DEL_CLASS(cliStat->lastDataTime);
 							DEL_CLASS(cliStat->readMut);
-							MemFree(cliStat->buff);
 							me->evtHdlr(cliStat->cli, me->userObj, cliStat->cliData, Net::TCPClientMgr::TCP_EVENT_DISCONNECT);
 							MemFree(cliStat);
 						}
@@ -471,7 +467,6 @@ void Net::TCPClientMgr::AddClient(TCPClient *cli, void *cliData)
 	Net::TCPClientMgr::TCPClientStatus *cliStat = MemAlloc(Net::TCPClientMgr::TCPClientStatus, 1);
 	cliStat->cli = cli;
 	cliStat->cliData = cliData;
-	cliStat->buff = MemAlloc(UInt8, TCP_BUFF_SIZE);
 	NEW_CLASS(cliStat->lastDataTime, Data::DateTime());
 	NEW_CLASS(cliStat->readMut, Sync::Mutex());
 	cliStat->lastDataTime->SetCurrTimeUTC();
@@ -487,7 +482,11 @@ void Net::TCPClientMgr::AddClient(TCPClient *cli, void *cliData)
 	{
 		printf("TCPClientMgr: Duplicate Client Id %llx\r\n", cliId);
 	}
-	this->cliArr->Insert(this->cliIdArr->SortedInsert(cliId), cliStat);
+	else
+	{
+		this->cliIdArr->Insert((UOSInt)~i, cliId);
+		this->cliArr->Insert((UOSInt)~i, cliStat);
+	}
 	readMutUsage.EndUse();
 	mutUsage.EndUse();
 	if (write(((ClassData*)this->clsData)->pipewrfd, "", 1) == -1)

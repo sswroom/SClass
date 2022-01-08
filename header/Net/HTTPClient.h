@@ -40,7 +40,7 @@ namespace Net
 		virtual Bool IsError() = 0;
 
 		virtual Bool Connect(const UTF8Char *url, const Char *method, Double *timeDNS, Double *timeConn, Bool defHeaders) = 0;
-		virtual void AddHeader(const UTF8Char *name, const UTF8Char *value) = 0;
+		virtual void AddHeaderC(const UTF8Char *name, UOSInt nameLen, const UTF8Char *value, UOSInt valueLen) = 0;
 		virtual void EndRequest(Double *timeReq, Double *timeResp) = 0;
 		virtual void SetTimeout(Int32 ms) = 0;
 
@@ -49,8 +49,8 @@ namespace Net
 
 		Bool FormBegin();
 		Bool FormAdd(const UTF8Char *name, const UTF8Char *value);
-		void AddTimeHeader(const UTF8Char *name, Data::DateTime *dt);
-		void AddContentType(const UTF8Char *contType);
+		void AddTimeHeader(const UTF8Char *name, UOSInt nameLen, Data::DateTime *dt);
+		void AddContentType(const UTF8Char *contType, UOSInt len);
 		void AddContentLength(UOSInt leng);
 
 		UOSInt GetRespHeaderCnt();

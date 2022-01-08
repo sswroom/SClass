@@ -167,15 +167,7 @@ namespace Data
 		T o = arr[index];
 		if (i > 0)
 		{
-#if defined(_MSC_VER)
 			MemCopyO(&arr[index], &arr[index + 1], i * sizeof(T));
-#else
-			while (i-- > 0)
-			{
-				arr[index] = arr[index + 1];
-				index++;
-			}
-#endif
 		}
 		this->objCnt--;
 		//arr[objCnt] = (T)0;

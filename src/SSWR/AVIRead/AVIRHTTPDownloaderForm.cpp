@@ -116,7 +116,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPDownloaderForm::ProcessThread(void *user
 						}
 						else
 						{
-							cli->AddHeader(sarr2[0], sarr2[1]);
+							cli->AddHeaderC(sarr2[0], Text::StrCharCnt(sarr2[0]), sarr2[1], Text::StrCharCnt(sarr2[1]));
 						}
 					}
 					if (i == 1)

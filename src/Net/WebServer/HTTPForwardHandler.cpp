@@ -38,6 +38,7 @@ Net::WebServer::HTTPForwardHandler::~HTTPForwardHandler()
 Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *subReq)
 {
 	UInt8 buff[2048];
+	UTF8Char *sptr;
 	if (subReq[0] == 0)
 	{
 		subReq = (const UTF8Char*)"/";
@@ -84,9 +85,9 @@ Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(Net::WebServer::IWebRequ
 	Data::ArrayList<Text::String*> hdrNames;
 	req->GetHeaderNames(&hdrNames);
 
-	const UTF8Char *svrHost = 0;
+	Text::String *svrHost = 0;
 	UInt16 svrPort = 0;
-	const UTF8Char *fwdFor = 0;
+	Text::String *fwdFor = 0;
 	const UTF8Char *fwdPrefix = 0;
 	const UTF8Char *fwdHost = 0;
 	const UTF8Char *fwdProto = 0;
@@ -103,7 +104,7 @@ Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(Net::WebServer::IWebRequ
 			if (req->GetHeader(&sbHeader, hdr->v))
 			{
 				UOSInt k = sbHeader.IndexOf(':');
-				svrHost = Text::StrCopyNew(sbHeader.ToString());
+				svrHost = Text::String::New(sbHeader.ToString(), sbHeader.GetLength());
 				if (k >= 0)
 				{
 					Text::StrToUInt16(sbHeader.ToString() + k + 1, &svrPort);
@@ -115,7 +116,7 @@ Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(Net::WebServer::IWebRequ
 			sbHeader.ClearStr();
 			if (req->GetHeader(&sbHeader, hdr->v))
 			{
-				fwdFor = Text::StrCopyNew(sbHeader.ToString());
+				fwdFor = Text::String::New(sbHeader.ToString(), sbHeader.GetLength());
 			}
 		}
 		else
@@ -123,7 +124,7 @@ Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(Net::WebServer::IWebRequ
 			sbHeader.ClearStr();
 			if (req->GetHeader(&sbHeader, hdr->v))
 			{
-				cli->AddHeader(hdr->v, sbHeader.ToString());
+				cli->AddHeaderC(hdr->v, hdr->leng, sbHeader.ToString(), sbHeader.GetLength());
 			}
 		}
 		i++;
@@ -135,25 +136,25 @@ Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(Net::WebServer::IWebRequ
 		{
 			if (req->IsSecure())
 			{
-				cli->AddHeader((const UTF8Char*)"X-Forwarded-Proto", (const UTF8Char*)"https");
+				cli->AddHeaderC(UTF8STRC("X-Forwarded-Proto"), UTF8STRC("https"));
 			}
 			else
 			{
-				cli->AddHeader((const UTF8Char*)"X-Forwarded-Proto", (const UTF8Char*)"http");
+				cli->AddHeaderC(UTF8STRC("X-Forwarded-Proto"), UTF8STRC("http"));
 			}
 		}
 		if (fwdSsl == 0)
 		{
 			if (req->IsSecure())
 			{
-				cli->AddHeader((const UTF8Char*)"X-Forwarded-Ssl", (const UTF8Char*)"on");
+				cli->AddHeaderC(UTF8STRC("X-Forwarded-Ssl"), UTF8STRC("on"));
 			}
 		}
 		if (fwdHost == 0)
 		{
 			if (svrHost)
 			{
-				cli->AddHeader((const UTF8Char*)"X-Forwarded-Host", svrHost);
+				cli->AddHeaderC(UTF8STRC("X-Forwarded-Host"), svrHost->v, svrHost->leng);
 			}
 		}
 		sbHeader.ClearStr();
@@ -162,30 +163,30 @@ Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(Net::WebServer::IWebRequ
 			sbHeader.Append(fwdFor);
 			sbHeader.AppendChar(',', 1);
 		}
-		Net::SocketUtil::GetAddrName(buff, req->GetClientAddr());
-		sbHeader.Append(buff);
-		cli->AddHeader((const UTF8Char*)"X-Forwarded-For", sbHeader.ToString());
+		sptr = Net::SocketUtil::GetAddrName(buff, req->GetClientAddr());
+		sbHeader.AppendC(buff, (UOSInt)(sptr - buff));
+		cli->AddHeaderC(UTF8STRC("X-Forwarded-For"), sbHeader.ToString(), sbHeader.GetLength());
 
 		if (fwdPort == 0 && svrPort != 0)
 		{
-			Text::StrUInt16(buff, svrPort);
-			cli->AddHeader((const UTF8Char*)"X-Forwarded-Port", buff);
+			sptr = Text::StrUInt16(buff, svrPort);
+			cli->AddHeaderC(UTF8STRC("X-Forwarded-Port"), buff, (UOSInt)(sptr - buff));
 		}
 	}
 	else
 	{
 		if (fwdFor)
 		{
-			cli->AddHeader((const UTF8Char*)"X-Forwarded-For", fwdFor);
+			cli->AddHeaderC(UTF8STRC("X-Forwarded-For"), fwdFor->v, fwdFor->leng);
 		}
 	}
-	SDEL_TEXT(fwdFor);
+	SDEL_STRING(fwdFor);
 	SDEL_TEXT(fwdSsl);
 	SDEL_TEXT(fwdHost);
 	SDEL_TEXT(fwdPort);
 	SDEL_TEXT(fwdProto);
 	SDEL_TEXT(fwdPrefix);
-	SDEL_TEXT(svrHost);
+	SDEL_STRING(svrHost);
 
 	const UInt8 *reqData = req->GetReqData(&i);
 	UTF8Char *sarr[2];

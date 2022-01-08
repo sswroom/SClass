@@ -913,21 +913,21 @@ void Net::UserAgentDB::ParseUserAgent(Net::UserAgentDB::UAEntry *ent, const UTF8
 	ent->userAgent = (const Char *)userAgent;
 
 	UOSInt i;
-	if (Text::StrEquals(ent->userAgent, "Microsoft Windows Network Diagnostics"))
+	if (Text::StrEquals(userAgent, (const UTF8Char*)"Microsoft Windows Network Diagnostics"))
 	{
 		ent->browser = Net::BrowserInfo::BT_WINDIAG;
 		return;
 	}
-	else if (Text::StrStartsWith(ent->userAgent, "West Wind Internet Protocols "))
+	else if (Text::StrStartsWith(userAgent, (const UTF8Char*)"West Wind Internet Protocols "))
 	{
 		ent->browser = Net::BrowserInfo::BT_WESTWIND;
 		ent->browserVer = Text::StrCopyNew(&ent->userAgent[29]);
 		return;
 	}
-	else if (Text::StrStartsWith(ent->userAgent, "Sogou web spider/"))
+	else if (Text::StrStartsWith(userAgent, (const UTF8Char*)"Sogou web spider/"))
 	{
 		ent->browser = Net::BrowserInfo::BT_SOGOUWEB;
-		i = Text::StrIndexOf(ent->userAgent, '(');
+		i = Text::StrIndexOf(userAgent, '(');
 		if (i != INVALID_INDEX)
 		{
 			ent->browserVer = Text::StrCopyNewC(&ent->userAgent[17], i - 17);
@@ -938,10 +938,10 @@ void Net::UserAgentDB::ParseUserAgent(Net::UserAgentDB::UAEntry *ent, const UTF8
 		}
 		return;
 	}
-	else if (Text::StrStartsWith(ent->userAgent, "Sogou Pic Spider/"))
+	else if (Text::StrStartsWith(userAgent, (const UTF8Char*)"Sogou Pic Spider/"))
 	{
 		ent->browser = Net::BrowserInfo::BT_SOGOUPIC;
-		i = Text::StrIndexOf(ent->userAgent, '(');
+		i = Text::StrIndexOf(userAgent, '(');
 		if (i != INVALID_INDEX)
 		{
 			ent->browserVer = Text::StrCopyNewC(&ent->userAgent[17], i - 17);
@@ -952,31 +952,31 @@ void Net::UserAgentDB::ParseUserAgent(Net::UserAgentDB::UAEntry *ent, const UTF8
 		}
 		return;
 	}
-	else if (Text::StrEquals(ent->userAgent, "Nutch Master Test/Dolphin-0.1-Beta"))
+	else if (Text::StrEquals(userAgent, (const UTF8Char*)"Nutch Master Test/Dolphin-0.1-Beta"))
 	{
 		ent->browser = Net::BrowserInfo::BT_NUTCH;
 		ent->browserVer = Text::StrCopyNew("0.1");
 		return;
 	}
-	else if (Text::StrEquals(ent->userAgent, "YisouSpider"))
+	else if (Text::StrEquals(userAgent, (const UTF8Char*)"YisouSpider"))
 	{
 		ent->browser = Net::BrowserInfo::BT_YISOU;
 		return;
 	}
-	else if (Text::StrStartsWith(ent->userAgent, "HTTP Banner Detection"))
+	else if (Text::StrStartsWith(userAgent, (const UTF8Char*)"HTTP Banner Detection"))
 	{
 		ent->browser = Net::BrowserInfo::BT_BANNERDET;
 		return;
 	}
-	else if (Text::StrStartsWith(ent->userAgent, "NetSystemsResearch "))
+	else if (Text::StrStartsWith(userAgent, (const UTF8Char*)"NetSystemsResearch "))
 	{
 		ent->browser = Net::BrowserInfo::BT_NETSYSRES;
 		return;
 	}
-	Char *strs[30];
-	Char *strs2[10];
-	Char *sptr;
-	Char c;
+	UTF8Char *strs[30];
+	UTF8Char *strs2[10];
+	UTF8Char *sptr;
+	UTF8Char c;
 	UOSInt nstrs;
 	UOSInt nstrs2;
 	UOSInt j;
@@ -984,15 +984,15 @@ void Net::UserAgentDB::ParseUserAgent(Net::UserAgentDB::UAEntry *ent, const UTF8
 	Bool bst;
 	Bool lastIsAndroid;
 	UOSInt strLen = Text::StrCharCnt(userAgent);
-	Char *sbuff = MemAlloc(Char, strLen + 1);
-	Text::StrConcat(sbuff, (const Char*)userAgent);
+	UTF8Char *sbuff = MemAlloc(UTF8Char, strLen + 1);
+	Text::StrConcatC(sbuff, userAgent, strLen);
 	if (sbuff[0] == '"' && sbuff[strLen - 1] == '"')
 	{
 		sbuff[strLen - 1] = 0;
 		sbuff[0] = ' ';
 		Text::StrTrim(sbuff);
 	}
-	if (Text::StrEquals(sbuff, "nlpproject.info research"))
+	if (Text::StrEquals(sbuff, (const UTF8Char*)"nlpproject.info research"))
 	{
 		ent->browser = Net::BrowserInfo::BT_NLPPROJECT;
 		MemFree(sbuff);
@@ -1034,82 +1034,82 @@ void Net::UserAgentDB::ParseUserAgent(Net::UserAgentDB::UAEntry *ent, const UTF8
 			lastIsAndroid = false;
 			while (j < nstrs2)
 			{
-				if (Text::StrStartsWith(strs2[j], "MSIE "))
+				if (Text::StrStartsWith(strs2[j], (const UTF8Char*)"MSIE "))
 				{
 					ent->browser = Net::BrowserInfo::BT_IE;
 					SDEL_TEXT(ent->browserVer);
-					ent->browserVer = Text::StrCopyNew(&strs2[j][5]);
+					ent->browserVer = Text::StrCopyNew((const Char*)&strs2[j][5]);
 				}
-				else if (Text::StrStartsWith(strs2[j], "Windows NT "))
+				else if (Text::StrStartsWith(strs2[j], (const UTF8Char*)"Windows NT "))
 				{
 					ent->os = Manage::OSInfo::OT_WINDOWS_NT;
 					SDEL_TEXT(ent->osVer);
-					ent->osVer = Text::StrCopyNew(&strs2[j][11]);
+					ent->osVer = Text::StrCopyNew((const Char*)&strs2[j][11]);
 				}
-				else if (Text::StrEquals(strs2[j], "WOW64"))
+				else if (Text::StrEquals(strs2[j], (const UTF8Char*)"WOW64"))
 				{
 					if (ent->os == Manage::OSInfo::OT_WINDOWS_NT)
 					{
 						ent->os = Manage::OSInfo::OT_WINDOWS_NT64;
 					}
 				}
-				else if (Text::StrEquals(strs2[j], "Win64"))
+				else if (Text::StrEquals(strs2[j], (const UTF8Char*)"Win64"))
 				{
 					if (ent->os == Manage::OSInfo::OT_WINDOWS_NT)
 					{
 						ent->os = Manage::OSInfo::OT_WINDOWS_NT64;
 					}
 				}
-				else if (Text::StrEquals(strs2[j], "iPad"))
+				else if (Text::StrEquals(strs2[j], (const UTF8Char*)"iPad"))
 				{
 					ent->os = Manage::OSInfo::OT_IPAD;
 				}
-				else if (Text::StrEquals(strs2[j], "Linux i686") && ent->os == Manage::OSInfo::OT_UNKNOWN)
+				else if (ent->os == Manage::OSInfo::OT_UNKNOWN && Text::StrEquals(strs2[j], (const UTF8Char*)"Linux i686"))
 				{
 					ent->os = Manage::OSInfo::OT_LINUX_I686;
 				}
-				else if (Text::StrEquals(strs2[j], "Linux x86_64") && ent->os == Manage::OSInfo::OT_UNKNOWN)
+				else if (ent->os == Manage::OSInfo::OT_UNKNOWN && Text::StrEquals(strs2[j], (const UTF8Char*)"Linux x86_64"))
 				{
 					ent->os = Manage::OSInfo::OT_LINUX_X86_64;
 				}
-				else if (Text::StrEquals(strs2[j], "Android"))
+				else if (Text::StrEquals(strs2[j], (const UTF8Char*)"Android"))
 				{
 					ent->os = Manage::OSInfo::OT_ANDROID;
 				}
-				else if (Text::StrEquals(strs2[j], "wv"))
+				else if (Text::StrEquals(strs2[j], (const UTF8Char*)"wv"))
 				{
 					if (ent->os == Manage::OSInfo::OT_ANDROID)
 					{
 						ent->browser = Net::BrowserInfo::BT_ANDROIDWV;
 					}
 				}
-				else if (Text::StrStartsWith(strs2[j], "Android "))
+				else if (Text::StrStartsWith(strs2[j], (const UTF8Char*)"Android "))
 				{
 					ent->os = Manage::OSInfo::OT_ANDROID;
 					SDEL_TEXT(ent->osVer);
-					ent->osVer = Text::StrCopyNew(&strs2[j][8]);
+					ent->osVer = Text::StrCopyNew((const Char*)&strs2[j][8]);
 					lastIsAndroid = true;
 				}
-				else if (Text::StrStartsWith(strs2[j], "CrOS "))
+				else if (Text::StrStartsWith(strs2[j], (const UTF8Char*)"CrOS "))
 				{
 					ent->os = Manage::OSInfo::OT_CHROMEOS;
 					SDEL_TEXT(ent->osVer);
 					k = Text::StrIndexOf(&strs2[j][5], ' ');
-					ent->osVer = Text::StrCopyNew(&strs2[j][6 + k]);
+					ent->osVer = Text::StrCopyNew((const Char*)&strs2[j][6 + k]);
 				}
-				else if (Text::StrEquals(strs2[j], "U") && ent->os == Manage::OSInfo::OT_IPAD)
+				else if (ent->os == Manage::OSInfo::OT_IPAD && Text::StrEquals(strs2[j], (const UTF8Char*)"U"))
 				{
 					ent->os = Manage::OSInfo::OT_ANDROID;
 				}
-				else if (Text::StrEquals(strs2[j], "iPhone"))
+				else if (Text::StrEquals(strs2[j], (const UTF8Char*)"iPhone"))
 				{
 					ent->os = Manage::OSInfo::OT_IPHONE;
 				}
-				else if (Text::StrEquals(strs2[j], "Macintosh"))
+				else if (Text::StrEquals(strs2[j], (const UTF8Char*)"Macintosh"))
 				{
 					ent->os = Manage::OSInfo::OT_MACOS;
 				}
-				else if (Text::StrStartsWith(strs2[j], "CPU OS ") && (ent->os == Manage::OSInfo::OT_IPAD || ent->os == Manage::OSInfo::OT_IPHONE))
+				else if ((ent->os == Manage::OSInfo::OT_IPAD || ent->os == Manage::OSInfo::OT_IPHONE) && Text::StrStartsWith(strs2[j], (const UTF8Char*)"CPU OS "))
 				{
 					SDEL_TEXT(ent->osVer);
 					k = Text::StrIndexOf(&strs2[j][7], ' ');
@@ -1118,9 +1118,9 @@ void Net::UserAgentDB::ParseUserAgent(Net::UserAgentDB::UAEntry *ent, const UTF8
 						strs2[j][k + 7] = 0;
 					}
 					Text::StrReplace(&strs2[j][7], '_', '.');
-					ent->osVer = Text::StrCopyNew(&strs2[j][7]);
+					ent->osVer = Text::StrCopyNew((const Char*)&strs2[j][7]);
 				}
-				else if (Text::StrStartsWith(strs2[j], "CPU iPhone OS ") && ent->os == Manage::OSInfo::OT_IPHONE)
+				else if (ent->os == Manage::OSInfo::OT_IPHONE && Text::StrStartsWith(strs2[j], (const UTF8Char*)"CPU iPhone OS "))
 				{
 					SDEL_TEXT(ent->osVer);
 					k = Text::StrIndexOf(&strs2[j][14], ' ');
@@ -1129,9 +1129,9 @@ void Net::UserAgentDB::ParseUserAgent(Net::UserAgentDB::UAEntry *ent, const UTF8
 						strs2[j][k + 14] = 0;
 					}
 					Text::StrReplace(&strs2[j][14], '_', '.');
-					ent->osVer = Text::StrCopyNew(&strs2[j][14]);
+					ent->osVer = Text::StrCopyNew((const Char*)&strs2[j][14]);
 				}
-				else if (Text::StrStartsWith(strs2[j], "Intel Mac OS X ") && ent->os == Manage::OSInfo::OT_MACOS)
+				else if (ent->os == Manage::OSInfo::OT_MACOS && Text::StrStartsWith(strs2[j], (const UTF8Char*)"Intel Mac OS X "))
 				{
 					SDEL_TEXT(ent->osVer);
 					k = Text::StrIndexOf(&strs2[j][15], ' ');
@@ -1140,305 +1140,305 @@ void Net::UserAgentDB::ParseUserAgent(Net::UserAgentDB::UAEntry *ent, const UTF8
 						strs2[j][k + 15] = 0;
 					}
 					Text::StrReplace(&strs2[j][15], '_', '.');
-					ent->osVer = Text::StrCopyNew(&strs2[j][15]);
+					ent->osVer = Text::StrCopyNew((const Char*)&strs2[j][15]);
 				}
-				else if (Text::StrEquals(strs2[j], "Trident/7.0"))
+				else if (Text::StrEquals(strs2[j], (const UTF8Char*)"Trident/7.0"))
 				{
 					ent->browser = Net::BrowserInfo::BT_IE;
 					SDEL_TEXT(ent->browserVer);
 					ent->browserVer = Text::StrCopyNew("11.0");
 				}
-				else if (Text::StrEquals(strs2[j], "JuziBrowser")) //JuziBrowser
+				else if (Text::StrEquals(strs2[j], (const UTF8Char*)"JuziBrowser")) //JuziBrowser
 				{
 				}
-				else if (Text::StrEquals(strs2[j], "SE 2.X MetaSr 1.0")) //Sugou Browser
+				else if (Text::StrEquals(strs2[j], (const UTF8Char*)"SE 2.X MetaSr 1.0")) //Sugou Browser
 				{
 				}
-				else if (Text::StrEquals(strs2[j], "Indy Library") && ent->browser == Net::BrowserInfo::BT_UNKNOWN)
+				else if (ent->browser == Net::BrowserInfo::BT_UNKNOWN && Text::StrEquals(strs2[j], (const UTF8Char*)"Indy Library"))
 				{
 					ent->browser = Net::BrowserInfo::BT_INDY;
 				}
-				else if (Text::StrStartsWith(strs2[j], "Googlebot/"))
+				else if (Text::StrStartsWith(strs2[j], (const UTF8Char*)"Googlebot/"))
 				{
 					if (ent->os == Manage::OSInfo::OT_ANDROID)
 					{
 						ent->browser = Net::BrowserInfo::BT_GOOGLEBOTS;
 						SDEL_TEXT(ent->browserVer);
-						ent->browserVer = Text::StrCopyNew(&strs2[j][10]);
+						ent->browserVer = Text::StrCopyNew((const Char*)&strs2[j][10]);
 					}
 					else if (ent->os == Manage::OSInfo::OT_UNKNOWN)
 					{
 						ent->browser = Net::BrowserInfo::BT_GOOGLEBOTD;
 						SDEL_TEXT(ent->browserVer);
-						ent->browserVer = Text::StrCopyNew(&strs2[j][10]);
+						ent->browserVer = Text::StrCopyNew((const Char*)&strs2[j][10]);
 					}
 				}
-				else if (Text::StrStartsWith(strs2[j], "Baiduspider-render/") && ent->browser == Net::BrowserInfo::BT_UNKNOWN)
+				else if (ent->browser == Net::BrowserInfo::BT_UNKNOWN && Text::StrStartsWith(strs2[j], (const UTF8Char*)"Baiduspider-render/"))
 				{
 					ent->browser = Net::BrowserInfo::BT_BAIDU;
-					ent->browserVer = Text::StrCopyNew(&strs2[j][19]);
+					ent->browserVer = Text::StrCopyNew((const Char*)&strs2[j][19]);
 				}
-				else if (Text::StrStartsWith(strs2[j], "SemrushBot/") && ent->browser == Net::BrowserInfo::BT_UNKNOWN)
+				else if (ent->browser == Net::BrowserInfo::BT_UNKNOWN && Text::StrStartsWith(strs2[j], (const UTF8Char*)"SemrushBot/"))
 				{
 					ent->browser = Net::BrowserInfo::BT_SEMRUSH;
-					ent->browserVer = Text::StrCopyNew(&strs2[j][11]);
+					ent->browserVer = Text::StrCopyNew((const Char*)&strs2[j][11]);
 				}
-				else if (Text::StrStartsWith(strs2[j], "YandexBot/") && ent->browser == Net::BrowserInfo::BT_UNKNOWN)
+				else if (ent->browser == Net::BrowserInfo::BT_UNKNOWN && Text::StrStartsWith(strs2[j], (const UTF8Char*)"YandexBot/"))
 				{
 					ent->browser = Net::BrowserInfo::BT_YANDEX;
-					ent->browserVer = Text::StrCopyNew(&strs2[j][10]);
+					ent->browserVer = Text::StrCopyNew((const Char*)&strs2[j][10]);
 				}
-				else if (Text::StrStartsWith(strs2[j], "BLEXBot/") && ent->browser == Net::BrowserInfo::BT_UNKNOWN)
+				else if (ent->browser == Net::BrowserInfo::BT_UNKNOWN && Text::StrStartsWith(strs2[j], (const UTF8Char*)"BLEXBot/"))
 				{
 					ent->browser = Net::BrowserInfo::BT_BLEXBOT;
-					ent->browserVer = Text::StrCopyNew(&strs2[j][10]);
+					ent->browserVer = Text::StrCopyNew((const Char*)&strs2[j][10]);
 				}
-				else if (Text::StrStartsWith(strs2[j], "bingbot/") && ent->browser == Net::BrowserInfo::BT_UNKNOWN)
+				else if (ent->browser == Net::BrowserInfo::BT_UNKNOWN && Text::StrStartsWith(strs2[j], (const UTF8Char*)"bingbot/"))
 				{
 					ent->browser = Net::BrowserInfo::BT_BING;
-					ent->browserVer = Text::StrCopyNew(&strs2[j][8]);
+					ent->browserVer = Text::StrCopyNew((const Char*)&strs2[j][8]);
 				}
-				else if (Text::StrStartsWith(strs2[j], "MS Web Services Client Protocol ") && (ent->browser == Net::BrowserInfo::BT_UNKNOWN || ent->browser == Net::BrowserInfo::BT_IE))
+				else if ((ent->browser == Net::BrowserInfo::BT_UNKNOWN || ent->browser == Net::BrowserInfo::BT_IE) && Text::StrStartsWith(strs2[j], (const UTF8Char*)"MS Web Services Client Protocol "))
 				{
 					ent->browser = Net::BrowserInfo::BT_DOTNET;
 					SDEL_TEXT(ent->browserVer);
-					ent->browserVer = Text::StrCopyNew(&strs2[j][32]);
+					ent->browserVer = Text::StrCopyNew((const Char*)&strs2[j][32]);
 				}
-				else if (Text::StrStartsWith(strs2[j], "WinHttp.WinHttpRequest.") && ent->browser == Net::BrowserInfo::BT_UNKNOWN)
+				else if (ent->browser == Net::BrowserInfo::BT_UNKNOWN && Text::StrStartsWith(strs2[j], (const UTF8Char*)"WinHttp.WinHttpRequest."))
 				{
 					ent->browser = Net::BrowserInfo::BT_WINHTTP;
-					ent->browserVer = Text::StrCopyNew(&strs2[j][23]);
+					ent->browserVer = Text::StrCopyNew((const Char*)&strs2[j][23]);
 				}
-				else if (Text::StrStartsWith(strs2[j], "NetcraftSurveyAgent/") && ent->browser == Net::BrowserInfo::BT_UNKNOWN)
+				else if (ent->browser == Net::BrowserInfo::BT_UNKNOWN && Text::StrStartsWith(strs2[j], (const UTF8Char*)"NetcraftSurveyAgent/"))
 				{
 					ent->browser = Net::BrowserInfo::BT_NETCRAFTAG;
-					ent->browserVer = Text::StrCopyNew(&strs2[j][20]);
+					ent->browserVer = Text::StrCopyNew((const Char*)&strs2[j][20]);
 				}
-				else if (Text::StrStartsWith(strs2[j], "AhrefsBot/") && ent->browser == Net::BrowserInfo::BT_UNKNOWN)
+				else if (ent->browser == Net::BrowserInfo::BT_UNKNOWN && Text::StrStartsWith(strs2[j], (const UTF8Char*)"AhrefsBot/"))
 				{
 					ent->browser = Net::BrowserInfo::BT_AHREFSBOT;
-					ent->browserVer = Text::StrCopyNew(&strs2[j][10]);
+					ent->browserVer = Text::StrCopyNew((const Char*)&strs2[j][10]);
 				}
-				else if (Text::StrStartsWith(strs2[j], "MJ12bot/") && ent->browser == Net::BrowserInfo::BT_UNKNOWN)
+				else if (ent->browser == Net::BrowserInfo::BT_UNKNOWN && Text::StrStartsWith(strs2[j], (const UTF8Char*)"MJ12bot/"))
 				{
 					ent->browser = Net::BrowserInfo::BT_MJ12BOT;
 					if (strs2[j][8] == 'v')
 					{
-						ent->browserVer = Text::StrCopyNew(&strs2[j][9]);
+						ent->browserVer = Text::StrCopyNew((const Char*)&strs2[j][9]);
 					}
 					else
 					{
-						ent->browserVer = Text::StrCopyNew(&strs2[j][8]);
+						ent->browserVer = Text::StrCopyNew((const Char*)&strs2[j][8]);
 					}
 				}
-				else if (Text::StrEquals(strs2[j], "Netcraft Web Server Survey") && ent->browser == Net::BrowserInfo::BT_UNKNOWN)
+				else if (ent->browser == Net::BrowserInfo::BT_UNKNOWN && Text::StrEquals(strs2[j], (const UTF8Char*)"Netcraft Web Server Survey"))
 				{
 					ent->browser = Net::BrowserInfo::BT_NETCRAFTWEB;
 				}
-				else if (Text::StrEquals(strs2[j], "Mobile"))
+				else if (Text::StrEquals(strs2[j], (const UTF8Char*)"Mobile"))
 				{
 
 				}
-				else if (Text::StrStartsWith(strs2[j], "rv:"))
+				else if (Text::StrStartsWith(strs2[j], (const UTF8Char*)"rv:"))
 				{
 
 				}
 				else if (lastIsAndroid)
 				{
-					k = Text::StrIndexOf(strs2[j], " Build/");
+					k = Text::StrIndexOf(strs2[j], (const UTF8Char*)" Build/");
 					if (k != INVALID_INDEX)
 					{
 						strs2[j][k] = 0;
 					}
 
-					k = Text::StrIndexOf(strs2[j], " MIUI/");
+					k = Text::StrIndexOf(strs2[j], (const UTF8Char*)" MIUI/");
 					if (k != INVALID_INDEX)
 					{
 						strs2[j][k] = 0;
 					}
 					SDEL_TEXT(ent->devName);
-					if (Text::StrStartsWith(strs2[j], "SAMSUNG SM-"))
+					if (Text::StrStartsWith(strs2[j], (const UTF8Char*)"SAMSUNG SM-"))
 					{
-						ent->devName = Text::StrCopyNew(&strs2[j][8]);
+						ent->devName = Text::StrCopyNew((const Char*)&strs2[j][8]);
 					}
-					else if (Text::StrStartsWith(strs2[j], "HUAWEI "))
+					else if (Text::StrStartsWith(strs2[j], (const UTF8Char*)"HUAWEI "))
 					{
-						ent->devName = Text::StrCopyNew(&strs2[j][7]);
+						ent->devName = Text::StrCopyNew((const Char*)&strs2[j][7]);
 					}
 					else
 					{
-						ent->devName = Text::StrCopyNew(strs2[j]);
+						ent->devName = Text::StrCopyNew((const Char*)strs2[j]);
 					}
 				}
 				j++;
 			}
 		}
-		else if (Text::StrStartsWith(strs[i], "Firefox/") && ent->browser == Net::BrowserInfo::BT_UNKNOWN)
+		else if (ent->browser == Net::BrowserInfo::BT_UNKNOWN && Text::StrStartsWith(strs[i], (const UTF8Char*)"Firefox/"))
 		{
 			ent->browser = Net::BrowserInfo::BT_FIREFOX;
-			ent->browserVer = Text::StrCopyNew(&strs[i][8]);
+			ent->browserVer = Text::StrCopyNew((const Char*)&strs[i][8]);
 		}
-		else if (Text::StrStartsWith(strs[i], "SamsungBrowser/") && (ent->browser == Net::BrowserInfo::BT_UNKNOWN || ent->browser == Net::BrowserInfo::BT_SAFARI))
+		else if ((ent->browser == Net::BrowserInfo::BT_UNKNOWN || ent->browser == Net::BrowserInfo::BT_SAFARI) && Text::StrStartsWith(strs[i], (const UTF8Char*)"SamsungBrowser/"))
 		{
 			ent->browser = Net::BrowserInfo::BT_SAMSUNG;
 			SDEL_TEXT(ent->browserVer);
-			ent->browserVer = Text::StrCopyNew(&strs[i][15]);
+			ent->browserVer = Text::StrCopyNew((const Char*)&strs[i][15]);
 		}
-		else if (Text::StrStartsWith(strs[i], "GSA/") && (ent->browser == Net::BrowserInfo::BT_UNKNOWN || ent->browser == Net::BrowserInfo::BT_SAFARI))
+		else if ((ent->browser == Net::BrowserInfo::BT_UNKNOWN || ent->browser == Net::BrowserInfo::BT_SAFARI) && Text::StrStartsWith(strs[i], (const UTF8Char*)"GSA/"))
 		{
 			ent->browser = Net::BrowserInfo::BT_GSA;
 			SDEL_TEXT(ent->browserVer);
-			ent->browserVer = Text::StrCopyNew(&strs[i][4]);
+			ent->browserVer = Text::StrCopyNew((const Char*)&strs[i][4]);
 		}
-		else if (Text::StrStartsWith(strs[i], "CriOS/") && (ent->browser == Net::BrowserInfo::BT_UNKNOWN || ent->browser == Net::BrowserInfo::BT_SAFARI))
+		else if ((ent->browser == Net::BrowserInfo::BT_UNKNOWN || ent->browser == Net::BrowserInfo::BT_SAFARI) && Text::StrStartsWith(strs[i], (const UTF8Char*)"CriOS/"))
 		{
 			ent->browser = Net::BrowserInfo::BT_CHROME;
 			SDEL_TEXT(ent->browserVer);
-			ent->browserVer = Text::StrCopyNew(&strs[i][6]);
+			ent->browserVer = Text::StrCopyNew((const Char*)&strs[i][6]);
 		}
-		else if (Text::StrStartsWith(strs[i], "Chrome/"))
+		else if (Text::StrStartsWith(strs[i], (const UTF8Char*)"Chrome/"))
 		{
 			if (ent->browser == Net::BrowserInfo::BT_UNKNOWN || ent->browser == Net::BrowserInfo::BT_SAFARI)
 			{
 				ent->browser = Net::BrowserInfo::BT_CHROME;
 				SDEL_TEXT(ent->browserVer);
-				ent->browserVer = Text::StrCopyNew(&strs[i][7]);
+				ent->browserVer = Text::StrCopyNew((const Char*)&strs[i][7]);
 			}
 			else if (ent->browser == Net::BrowserInfo::BT_ANDROIDWV)
 			{
 				SDEL_TEXT(ent->browserVer);
-				ent->browserVer = Text::StrCopyNew(&strs[i][7]);
+				ent->browserVer = Text::StrCopyNew((const Char*)&strs[i][7]);
 			}
 		}
-		else if (Text::StrStartsWith(strs[i], "Edge/") && (ent->browser == Net::BrowserInfo::BT_UNKNOWN || ent->browser == Net::BrowserInfo::BT_CHROME))
+		else if ((ent->browser == Net::BrowserInfo::BT_UNKNOWN || ent->browser == Net::BrowserInfo::BT_CHROME) && Text::StrStartsWith(strs[i], (const UTF8Char*)"Edge/"))
 		{
 			ent->browser = Net::BrowserInfo::BT_EDGE;
 			SDEL_TEXT(ent->browserVer);
-			ent->browserVer = Text::StrCopyNew(&strs[i][5]);
+			ent->browserVer = Text::StrCopyNew((const Char*)&strs[i][5]);
 		}
-		else if (Text::StrStartsWith(strs[i], "Safari/") && ent->browser == Net::BrowserInfo::BT_UNKNOWN)
+		else if (ent->browser == Net::BrowserInfo::BT_UNKNOWN && Text::StrStartsWith(strs[i], (const UTF8Char*)"Safari/"))
 		{
 			ent->browser = Net::BrowserInfo::BT_SAFARI;
-			ent->browserVer = Text::StrCopyNew(&strs[i][7]);
+			ent->browserVer = Text::StrCopyNew((const Char*)&strs[i][7]);
 		}
-		else if (Text::StrStartsWith(strs[i], "UCBrowser/") && ent->browser == Net::BrowserInfo::BT_UNKNOWN)
+		else if (ent->browser == Net::BrowserInfo::BT_UNKNOWN && Text::StrStartsWith(strs[i], (const UTF8Char*)"UCBrowser/"))
 		{
 			ent->browser = Net::BrowserInfo::BT_UCBROWSER;
-			ent->browserVer = Text::StrCopyNew(&strs[i][10]);
+			ent->browserVer = Text::StrCopyNew((const Char*)&strs[i][10]);
 		}
-		else if (Text::StrStartsWith(strs[i], "baidu.sogo.uc.UCBrowser/") && (ent->browser == Net::BrowserInfo::BT_UNKNOWN || ent->browser == Net::BrowserInfo::BT_CHROME))
+		else if ((ent->browser == Net::BrowserInfo::BT_UNKNOWN || ent->browser == Net::BrowserInfo::BT_CHROME) && Text::StrStartsWith(strs[i], (const UTF8Char*)"baidu.sogo.uc.UCBrowser/"))
 		{
 			ent->browser = Net::BrowserInfo::BT_UCBROWSER;
 			SDEL_TEXT(ent->browserVer);
-			ent->browserVer = Text::StrCopyNew(&strs[i][24]);
+			ent->browserVer = Text::StrCopyNew((const Char*)&strs[i][24]);
 		}
-		else if (Text::StrStartsWith(strs[i], "UBrowser/"))
+		else if (Text::StrStartsWith(strs[i], (const UTF8Char*)"UBrowser/"))
 		{
 		}
-		else if (Text::StrStartsWith(strs[i], "baiduboxapp/"))
+		else if (Text::StrStartsWith(strs[i], (const UTF8Char*)"baiduboxapp/"))
 		{
 		}
-		else if (Text::StrStartsWith(strs[i], "Dalvik/") && ent->browser == Net::BrowserInfo::BT_UNKNOWN)
+		else if (ent->browser == Net::BrowserInfo::BT_UNKNOWN && Text::StrStartsWith(strs[i], (const UTF8Char*)"Dalvik/"))
 		{
 			ent->browser = Net::BrowserInfo::BT_DALVIK;
-			ent->browserVer = Text::StrCopyNew(&strs[i][7]);
+			ent->browserVer = Text::StrCopyNew((const Char*)&strs[i][7]);
 		}
-		else if (Text::StrStartsWith(strs[i], "Darwin/") && ent->os == Manage::OSInfo::OT_UNKNOWN)
+		else if (ent->os == Manage::OSInfo::OT_UNKNOWN && Text::StrStartsWith(strs[i], (const UTF8Char*)"Darwin/"))
 		{
 			ent->os = Manage::OSInfo::OT_DARWIN;
-			ent->osVer = Text::StrCopyNew(&strs[i][7]);
+			ent->osVer = Text::StrCopyNew((const Char*)&strs[i][7]);
 		}
-		else if (Text::StrStartsWith(strs[i], "SmartTV/") && ent->os == Manage::OSInfo::OT_UNKNOWN)
+		else if (ent->os == Manage::OSInfo::OT_UNKNOWN && Text::StrStartsWith(strs[i], (const UTF8Char*)"SmartTV/"))
 		{
 			ent->os = Manage::OSInfo::OT_NETCAST;
-			ent->osVer = Text::StrCopyNew(&strs[i][8]);
+			ent->osVer = Text::StrCopyNew((const Char*)&strs[i][8]);
 		}
-		else if (Text::StrStartsWith(strs[i], "CFNetwork/") && ent->browser == Net::BrowserInfo::BT_UNKNOWN)
+		else if (ent->browser == Net::BrowserInfo::BT_UNKNOWN && Text::StrStartsWith(strs[i], (const UTF8Char*)"CFNetwork/"))
 		{
 			ent->browser = Net::BrowserInfo::BT_CFNETWORK;
-			ent->browserVer = Text::StrCopyNew(&strs[i][10]);
+			ent->browserVer = Text::StrCopyNew((const Char*)&strs[i][10]);
 		}
-		else if (Text::StrStartsWith(strs[i], "Version/") && ent->browser == Net::BrowserInfo::BT_UNKNOWN)
+		else if (ent->browser == Net::BrowserInfo::BT_UNKNOWN && Text::StrStartsWith(strs[i], (const UTF8Char*)"Version/"))
 		{
 			ent->browser = Net::BrowserInfo::BT_SAFARI;
-			ent->browserVer = Text::StrCopyNew(&strs[i][8]);
+			ent->browserVer = Text::StrCopyNew((const Char*)&strs[i][8]);
 		}
-		else if (Text::StrStartsWith(strs[i], "masscan/") && ent->browser == Net::BrowserInfo::BT_UNKNOWN)
+		else if (ent->browser == Net::BrowserInfo::BT_UNKNOWN && Text::StrStartsWith(strs[i], (const UTF8Char*)"masscan/"))
 		{
 			ent->browser = Net::BrowserInfo::BT_MASSCAN;
-			ent->browserVer = Text::StrCopyNew(&strs[i][8]);
+			ent->browserVer = Text::StrCopyNew((const Char*)&strs[i][8]);
 		}
-		else if (Text::StrStartsWith(strs[i], "zgrab/") && ent->browser == Net::BrowserInfo::BT_UNKNOWN)
+		else if (ent->browser == Net::BrowserInfo::BT_UNKNOWN && Text::StrStartsWith(strs[i], (const UTF8Char*)"zgrab/"))
 		{
 			ent->browser = Net::BrowserInfo::BT_ZGRAB;
-			ent->browserVer = Text::StrCopyNew(&strs[i][6]);
+			ent->browserVer = Text::StrCopyNew((const Char*)&strs[i][6]);
 		}
-		else if (Text::StrStartsWith(strs[i], "python-requests/") && ent->browser == Net::BrowserInfo::BT_UNKNOWN)
+		else if (ent->browser == Net::BrowserInfo::BT_UNKNOWN && Text::StrStartsWith(strs[i], (const UTF8Char*)"python-requests/"))
 		{
 			ent->browser = Net::BrowserInfo::BT_PYREQUESTS;
-			ent->browserVer = Text::StrCopyNew(&strs[i][16]);
+			ent->browserVer = Text::StrCopyNew((const Char*)&strs[i][16]);
 		}
-		else if (Text::StrStartsWith(strs[i], "Python-urllib/") && ent->browser == Net::BrowserInfo::BT_UNKNOWN)
+		else if (ent->browser == Net::BrowserInfo::BT_UNKNOWN && Text::StrStartsWith(strs[i], (const UTF8Char*)"Python-urllib/"))
 		{
 			ent->browser = Net::BrowserInfo::BT_PYURLLIB;
-			ent->browserVer = Text::StrCopyNew(&strs[i][14]);
+			ent->browserVer = Text::StrCopyNew((const Char*)&strs[i][14]);
 		}
-		else if (Text::StrStartsWith(strs[i], "Wget/") && ent->browser == Net::BrowserInfo::BT_UNKNOWN)
+		else if (ent->browser == Net::BrowserInfo::BT_UNKNOWN && Text::StrStartsWith(strs[i], (const UTF8Char*)"Wget/"))
 		{
 			ent->browser = Net::BrowserInfo::BT_WGET;
-			ent->browserVer = Text::StrCopyNew(&strs[i][5]);
+			ent->browserVer = Text::StrCopyNew((const Char*)&strs[i][5]);
 		}
-		else if (Text::StrStartsWith(strs[i], "Scrapy/") && ent->browser == Net::BrowserInfo::BT_UNKNOWN)
+		else if (ent->browser == Net::BrowserInfo::BT_UNKNOWN && Text::StrStartsWith(strs[i], (const UTF8Char*)"Scrapy/"))
 		{
 			ent->browser = Net::BrowserInfo::BT_SCRAPY;
-			ent->browserVer = Text::StrCopyNew(&strs[i][7]);
+			ent->browserVer = Text::StrCopyNew((const Char*)&strs[i][7]);
 		}
-		else if (Text::StrStartsWith(strs[i], "Go-http-client/") && ent->browser == Net::BrowserInfo::BT_UNKNOWN)
+		else if (ent->browser == Net::BrowserInfo::BT_UNKNOWN && Text::StrStartsWith(strs[i], (const UTF8Char*)"Go-http-client/"))
 		{
 			ent->browser = Net::BrowserInfo::BT_GOHTTP;
-			ent->browserVer = Text::StrCopyNew(&strs[i][15]);
+			ent->browserVer = Text::StrCopyNew((const Char*)&strs[i][15]);
 		}
-		else if (Text::StrStartsWith(strs[i], "Apache-HttpClient/") && ent->browser == Net::BrowserInfo::BT_UNKNOWN)
+		else if (ent->browser == Net::BrowserInfo::BT_UNKNOWN && Text::StrStartsWith(strs[i], (const UTF8Char*)"Apache-HttpClient/"))
 		{
 			ent->browser = Net::BrowserInfo::BT_APACHEHTTP;
-			ent->browserVer = Text::StrCopyNew(&strs[i][18]);
+			ent->browserVer = Text::StrCopyNew((const Char*)&strs[i][18]);
 		}
-		else if (Text::StrStartsWith(strs[i], "WhatsApp/") && ent->browser == Net::BrowserInfo::BT_UNKNOWN)
+		else if (ent->browser == Net::BrowserInfo::BT_UNKNOWN && Text::StrStartsWith(strs[i], (const UTF8Char*)"WhatsApp/"))
 		{
 			ent->browser = Net::BrowserInfo::BT_WHATSAPP;
-			ent->browserVer = Text::StrCopyNew(&strs[i][9]);
+			ent->browserVer = Text::StrCopyNew((const Char*)&strs[i][9]);
 		}
-		else if (Text::StrStartsWith(strs[i], "curl/") && ent->browser == Net::BrowserInfo::BT_UNKNOWN)
+		else if (ent->browser == Net::BrowserInfo::BT_UNKNOWN && Text::StrStartsWith(strs[i], (const UTF8Char*)"curl/"))
 		{
 			ent->browser = Net::BrowserInfo::BT_CURL;
-			ent->browserVer = Text::StrCopyNew(&strs[i][5]);
+			ent->browserVer = Text::StrCopyNew((const Char*)&strs[i][5]);
 		}
-		else if (Text::StrStartsWith(strs[i], "sswr/") && ent->browser == Net::BrowserInfo::BT_UNKNOWN)
+		else if (ent->browser == Net::BrowserInfo::BT_UNKNOWN && Text::StrStartsWith(strs[i], (const UTF8Char*)"sswr/"))
 		{
 			ent->browser = Net::BrowserInfo::BT_SSWR;
-			ent->browserVer = Text::StrCopyNew(&strs[i][5]);
+			ent->browserVer = Text::StrCopyNew((const Char*)&strs[i][5]);
 		}
-		else if (Text::StrStartsWith(strs[i], "facebookexternalhit/") && ent->browser == Net::BrowserInfo::BT_UNKNOWN)
+		else if (ent->browser == Net::BrowserInfo::BT_UNKNOWN && Text::StrStartsWith(strs[i], (const UTF8Char*)"facebookexternalhit/"))
 		{
 			ent->browser = Net::BrowserInfo::BT_FACEBOOK;
-			ent->browserVer = Text::StrCopyNew(&strs[i][20]);
+			ent->browserVer = Text::StrCopyNew((const Char*)&strs[i][20]);
 		}
-		else if (Text::StrStartsWith(strs[i], "NetSeen/") && ent->browser == Net::BrowserInfo::BT_UNKNOWN)
+		else if (ent->browser == Net::BrowserInfo::BT_UNKNOWN && Text::StrStartsWith(strs[i], (const UTF8Char*)"NetSeen/"))
 		{
 			ent->browser = Net::BrowserInfo::BT_NETSEEN;
-			ent->browserVer = Text::StrCopyNew(&strs[i][8]);
+			ent->browserVer = Text::StrCopyNew((const Char*)&strs[i][8]);
 		}
-		else if (Text::StrStartsWith(strs[i], "msnbot/") && ent->browser == Net::BrowserInfo::BT_UNKNOWN)
+		else if (ent->browser == Net::BrowserInfo::BT_UNKNOWN && Text::StrStartsWith(strs[i], (const UTF8Char*)"msnbot/"))
 		{
 			ent->browser = Net::BrowserInfo::BT_MSNBOT;
-			ent->browserVer = Text::StrCopyNew(&strs[i][7]);
+			ent->browserVer = Text::StrCopyNew((const Char*)&strs[i][7]);
 		}
-		else if (Text::StrStartsWith(strs[i], "libwww-perl/") && ent->browser == Net::BrowserInfo::BT_UNKNOWN)
+		else if (ent->browser == Net::BrowserInfo::BT_UNKNOWN && Text::StrStartsWith(strs[i], (const UTF8Char*)"libwww-perl/"))
 		{
 			ent->browser = Net::BrowserInfo::BT_LIBWWW_PERL;
-			ent->browserVer = Text::StrCopyNew(&strs[i][12]);
+			ent->browserVer = Text::StrCopyNew((const Char*)&strs[i][12]);
 		}
-		else if (Text::StrEquals(strs[i], "LBBROWSER"))
+		else if (Text::StrEquals(strs[i], (const UTF8Char*)"LBBROWSER"))
 		{
 		}
 		i++;

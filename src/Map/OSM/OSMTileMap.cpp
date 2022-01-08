@@ -226,6 +226,7 @@ Media::ImageList *Map::OSM::OSMTileMap::LoadTileImage(UOSInt level, Int64 imgId,
 	//WChar filePath[512];
 	UTF8Char filePathU[512];
 	UTF8Char u8buff[64];
+	UTF8Char *sptr;
 	Text::StringBuilderUTF8 urlSb;
 	UTF8Char *sptru;
 	Bool hasTime = false;
@@ -340,8 +341,8 @@ Media::ImageList *Map::OSM::OSMTileMap::LoadTileImage(UOSInt level, Int64 imgId,
 	cli->Connect(urlSb.ToString(), "GET", 0, 0, true);
 	if (hasTime)
 	{
-		Net::HTTPClient::Date2Str(u8buff, &dt);
-		cli->AddHeader((const UTF8Char*)"If-Modified-Since", u8buff);
+		sptr = Net::HTTPClient::Date2Str(u8buff, &dt);
+		cli->AddHeaderC(UTF8STRC("If-Modified-Since"), u8buff, (UOSInt)(sptr - u8buff));
 	}
 	if (cli->GetRespStatus() == 304)
 	{
@@ -449,6 +450,7 @@ IO::IStreamData *Map::OSM::OSMTileMap::LoadTileImageData(UOSInt level, Int64 img
 	UOSInt readSize;
 	UTF8Char filePathU[512];
 	UTF8Char u8buff[64];
+	UTF8Char *sptr;
 	Text::StringBuilderUTF8 urlSb;
 	UTF8Char *sptru;
 	Bool hasTime = false;
@@ -547,8 +549,8 @@ IO::IStreamData *Map::OSM::OSMTileMap::LoadTileImageData(UOSInt level, Int64 img
 	cli->Connect(urlSb.ToString(), "GET", 0, 0, true);
 	if (hasTime)
 	{
-		Net::HTTPClient::Date2Str(u8buff, &dt);
-		cli->AddHeader((const UTF8Char*)"If-Modified-Since", u8buff);
+		sptr = Net::HTTPClient::Date2Str(u8buff, &dt);
+		cli->AddHeaderC(UTF8STRC("If-Modified-Since"), u8buff, (UOSInt)(sptr - u8buff));
 	}
 	if (cli->GetRespStatus() == 304)
 	{

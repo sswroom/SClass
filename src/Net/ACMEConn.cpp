@@ -156,7 +156,7 @@ Net::HTTPClient *Net::ACMEConn::ACMEPost(Text::String *url, const Char *data)
 	cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, url->v, "POST", true);
 	if (cli)
 	{
-		cli->AddContentType((const UTF8Char*)"application/jose+json");
+		cli->AddContentType(UTF8STRC("application/jose+json"));
 		cli->AddContentLength(jwsLen);
 		cli->Write(jws->v, jwsLen);
 	}
