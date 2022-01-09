@@ -476,7 +476,7 @@ Net::DNSClient::RequestAnswer *Net::DNSClient::ParseAnswer(const UInt8 *buff, UO
 	UOSInt k;
 	i = ParseString(sbuff, buff, i, dataSize);
 	ans = MemAlloc(RequestAnswer, 1);
-	ans->name = Text::StrCopyNew(sbuff);
+	ans->name = Text::String::NewNotNull(sbuff);
 	ans->recType = ReadMUInt16(&buff[i]);
 	ans->recClass = ReadMUInt16(&buff[i + 2]);
 	ans->ttl = ReadMUInt32(&buff[i + 4]);
@@ -487,13 +487,13 @@ Net::DNSClient::RequestAnswer *Net::DNSClient::ParseAnswer(const UInt8 *buff, UO
 	case 1: // A - a host address
 		Net::SocketUtil::SetAddrInfoV4(&ans->addr, ReadNUInt32(&buff[i + 10]));
 		Net::SocketUtil::GetAddrName(sbuff, &ans->addr);
-		ans->rd = Text::StrCopyNew(sbuff);
+		ans->rd = Text::String::NewNotNull(sbuff);
 		break;
 	case 2: // NS - an authoritative name server
 	case 5: // CNAME - the canonical name for an alias
 	case 12: // PTR - a domain name pointer
 		ParseString(sbuff, buff, i + 10, i + 10 + k);
-		ans->rd = Text::StrCopyNew(sbuff);
+		ans->rd = Text::String::NewNotNull(sbuff);
 		break;
 	case 6: // SOA - Start of [a zone of] authority
 		{
@@ -517,13 +517,13 @@ Net::DNSClient::RequestAnswer *Net::DNSClient::ParseAnswer(const UInt8 *buff, UO
 				sb.AppendC(UTF8STRC(", DefTTL="));
 				sb.AppendU32(ReadMUInt32(&buff[l + 16]));
 			}
-			ans->rd = Text::StrCopyNew(sb.ToString());
+			ans->rd = Text::String::New(sb.ToString(), sb.GetLength());
 		}
 		break;
 	case 15: // MX - mail exchange
 		ans->priority = ReadMUInt16(&buff[i + 10]);
 		ParseString(sbuff, buff, i + 12, i + 10 + k);
-		ans->rd = Text::StrCopyNew(sbuff);
+		ans->rd = Text::String::NewNotNull(sbuff);
 		break;
 	case 16: // TXT - Text strings
 		{
@@ -540,14 +540,14 @@ Net::DNSClient::RequestAnswer *Net::DNSClient::ParseAnswer(const UInt8 *buff, UO
 				sptr = Text::StrConcatC(sptr, &buff[currInd + 1], buff[currInd]);
 				currInd += 1 + (UOSInt)buff[currInd];
 			}
-			ans->rd = Text::StrCopyNew(sbuff);
+			ans->rd = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 		}
 		break;
 	case 28: // AAAA
 		{
 			Net::SocketUtil::SetAddrInfoV6(&ans->addr, &buff[i + 10], 0);
 			Net::SocketUtil::GetAddrName(sbuff, &ans->addr);
-			ans->rd = Text::StrCopyNew(sbuff);
+			ans->rd = Text::String::NewNotNull(sbuff);
 		}
 		break;
 	case 33: // SRV - Server Selection
@@ -559,7 +559,7 @@ Net::DNSClient::RequestAnswer *Net::DNSClient::ParseAnswer(const UInt8 *buff, UO
 			sptr = Text::StrUInt16(sptr, ReadMUInt16(&buff[i + 14]));
 			sptr = Text::StrConcatC(sptr, UTF8STRC(", Target = "));
 			ParseString(sptr, buff, i + 16, i + 10 + k);
-			ans->rd = Text::StrCopyNew(sbuff);
+			ans->rd = Text::String::NewNotNull(sbuff);
 		}
 		break;
 	case 48: // DNSKEY - DNS Key record
@@ -572,7 +572,7 @@ Net::DNSClient::RequestAnswer *Net::DNSClient::ParseAnswer(const UInt8 *buff, UO
 			sptr = Text::StrUInt16(sptr, buff[i + 13]);
 			sptr = Text::StrConcatC(sptr, UTF8STRC(", Public Key = "));
 			sptr = Text::StrHexBytes(sptr, &buff[i + 14], k - 4, ' ');
-			ans->rd = Text::StrCopyNew(sbuff);
+			ans->rd = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 		}
 		break;
 	case 46: // RRSIG - DNSSEC signature
@@ -597,7 +597,7 @@ Net::DNSClient::RequestAnswer *Net::DNSClient::ParseAnswer(const UInt8 *buff, UO
 			sptr--;
 			sptr = Text::StrConcatC(sptr, UTF8STRC(", Signature = "));
 			sptr = Text::StrHexBytes(sptr, tmpPtr, k - (UOSInt)(tmpPtr - &buff[i + 10]), ' ');
-			ans->rd = Text::StrCopyNew(sbuff);
+			ans->rd = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 		}
 		break;
 	case 43: // DS - Delegation signer
@@ -610,7 +610,7 @@ Net::DNSClient::RequestAnswer *Net::DNSClient::ParseAnswer(const UInt8 *buff, UO
 			sptr = Text::StrUInt16(sptr, buff[i + 13]);
 			sptr = Text::StrConcatC(sptr, UTF8STRC(", Digest = "));
 			sptr = Text::StrHexBytes(sptr, &buff[i + 14], k - 4, ' ');
-			ans->rd = Text::StrCopyNew(sbuff);
+			ans->rd = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 		}
 		break;
 	case 47: // NSEC - Next Secure record
@@ -629,8 +629,8 @@ void Net::DNSClient::FreeAnswers(Data::ArrayList<RequestAnswer*> *answers)
 
 void Net::DNSClient::FreeAnswer(RequestAnswer *ans)
 {
-	Text::StrDelNew(ans->name);
-	SDEL_TEXT(ans->rd);
+	ans->name->Release();;
+	SDEL_STRING(ans->rd);
 	MemFree(ans);
 }
 

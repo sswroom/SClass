@@ -216,7 +216,7 @@ Data::Class *SSWR::AVIRead::AVIRDBForm::CreateTableClass(const UTF8Char *name)
 SSWR::AVIRead::AVIRDBForm::AVIRDBForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, DB::ReadingDB *db, Bool needRelease) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	UTF8Char sbuff[512];
-	this->SetFont(0, 8.25, false);
+	this->SetFont(0, 0, 8.25, false);
 	db->GetSourceNameObj()->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("Database - ")));
 	this->SetText(sbuff);
 	this->core = core;

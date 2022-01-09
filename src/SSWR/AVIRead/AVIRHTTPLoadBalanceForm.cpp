@@ -279,7 +279,7 @@ SSWR::AVIRead::AVIRHTTPLoadBalanceForm::AVIRHTTPLoadBalanceForm(UI::GUIClientCon
 	UOSInt i;
 	this->core = core;
 	this->SetText((const UTF8Char*)"HTTP Load Balance");
-	this->SetFont(0, 8.25, false);
+	this->SetFont(0, 0, 8.25, false);
 	this->ssl = Net::SSLEngineFactory::Create(this->core->GetSocketFactory(), true);
 	this->sslCert = 0;
 	this->sslKey = 0;

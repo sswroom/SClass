@@ -33,19 +33,19 @@ namespace Media
 		{
 		private:
 			UOSInt index;
-			const UTF8Char *name;
+			Text::String *name;
 			Double heightPt;
 			Media::DrawEngine::DrawFontStyle fontStyle;
 			UInt32 codePage;
 
 		public:
-			VectorFontStyle(UOSInt index, const UTF8Char *name, Double heightPt, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 codePage);
+			VectorFontStyle(UOSInt index, const UTF8Char *name, UOSInt nameLen, Double heightPt, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 codePage);
 			virtual ~VectorFontStyle();
 			
 			Bool IsSame(const UTF8Char *name, Double heightPt, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 codePage);
 			UOSInt GetIndex();
 			Double GetHeightPt();
-			const UTF8Char *GetName();
+			Text::String *GetName();
 			Media::DrawEngine::DrawFontStyle GetStyle();
 			UInt32 GetCodePage();
 			Media::DrawFont *CreateDrawFont(Double oriDPI, Media::DrawImage *dimg);
@@ -132,8 +132,8 @@ namespace Media
 
 		virtual DrawPen *NewPenARGB(UInt32 color, Double thick, UInt8 *pattern, UOSInt nPattern);
 		virtual DrawBrush *NewBrushARGB(UInt32 color);
-		virtual DrawFont *NewFontPt(const UTF8Char *name, Double ptSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 codePage);
-		virtual DrawFont *NewFontPx(const UTF8Char *name, Double pxSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 codePage);
+		virtual DrawFont *NewFontPt(const UTF8Char *name, UOSInt nameLen, Double ptSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 codePage);
+		virtual DrawFont *NewFontPx(const UTF8Char *name, UOSInt nameLen, Double pxSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 codePage);
 		virtual DrawFont *CloneFont(Media::DrawFont *f);
 		virtual void DelPen(DrawPen *p);
 		virtual void DelBrush(DrawBrush *b);

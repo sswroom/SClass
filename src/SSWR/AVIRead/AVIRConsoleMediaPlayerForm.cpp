@@ -32,7 +32,7 @@ void __stdcall SSWR::AVIRead::AVIRConsoleMediaPlayerForm::OnRotateChg(void *user
 SSWR::AVIRead::AVIRConsoleMediaPlayerForm::AVIRConsoleMediaPlayerForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 320, 240, ui)
 {
 	this->SetText((const UTF8Char*)"Console Media Player");
-	this->SetFont(0, 8.25, false);
+	this->SetFont(0, 0, 8.25, false);
 
 	this->core = core;
 	this->listener = 0;

@@ -58,7 +58,7 @@ namespace Math
 		} DatumData1;
 		
 	protected:
-		const UTF8Char *csysName;
+		Text::String *csysName;
 		UInt32 srid;
 
 		CoordinateSystem(Text::String *sourceName, UInt32 srid, const UTF8Char *csysName);
@@ -77,7 +77,7 @@ namespace Math
 		virtual IO::ParserType GetParserType();
 
 		virtual Bool Equals(CoordinateSystem *csys);
-		const UTF8Char *GetCSysName();
+		Text::String *GetCSysName();
 		UInt32 GetSRID();
 
 		static void ConvertXYZ(Math::CoordinateSystem *srcCoord, Math::CoordinateSystem *destCoord, Double srcX, Double srcY, Double srcZ, Double *destX, Double *destY, Double *destZ);

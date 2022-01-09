@@ -1072,7 +1072,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(SSWR::SMo
 	}
 	if (readingIndex == (UOSInt)-1)
 	{
-		f = dimg->NewFontPx((const UTF8Char*)"Arial", 12, Media::DrawEngine::DFS_ANTIALIAS, 0);
+		f = dimg->NewFontPx(UTF8STRC("Arial"), 12, Media::DrawEngine::DFS_ANTIALIAS, 0);
 		b = dimg->NewBrushARGB(0xffffffff);
 		dimg->DrawRect(0, 0, Math::UOSInt2Double(dimg->GetWidth()), Math::UOSInt2Double(dimg->GetHeight()), 0, b);
 		dimg->DelBrush(b);
@@ -1433,7 +1433,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(SSWR::SMo
 		}
 		else
 		{
-			f = dimg->NewFontPx((const UTF8Char*)"Arial", 12, Media::DrawEngine::DFS_ANTIALIAS, 0);
+			f = dimg->NewFontPx(UTF8STRC("Arial"), 12, Media::DrawEngine::DFS_ANTIALIAS, 0);
 			b = dimg->NewBrushARGB(0xffffffff);
 			dimg->DrawRect(0, 0, Math::UOSInt2Double(dimg->GetWidth()), Math::UOSInt2Double(dimg->GetHeight()), 0, b);
 			dimg->DelBrush(b);
@@ -1694,7 +1694,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataImgReq(SSWR::SM
 	dev->mut->UnlockRead();
 	if (readingIndex == (UOSInt)-1)
 	{
-		f = dimg->NewFontPx((const UTF8Char*)"Arial", 12, Media::DrawEngine::DFS_ANTIALIAS, 0);
+		f = dimg->NewFontPx(UTF8STRC("Arial"), 12, Media::DrawEngine::DFS_ANTIALIAS, 0);
 		b = dimg->NewBrushARGB(0xffffffff);
 		dimg->DrawRect(0, 0, Math::UOSInt2Double(dimg->GetWidth()), Math::UOSInt2Double(dimg->GetHeight()), 0, b);
 		dimg->DelBrush(b);
@@ -1783,7 +1783,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataImgReq(SSWR::SM
 		}
 		else
 		{
-			f = dimg->NewFontPx((const UTF8Char*)"Arial", 12, Media::DrawEngine::DFS_ANTIALIAS, 0);
+			f = dimg->NewFontPx(UTF8STRC("Arial"), 12, Media::DrawEngine::DFS_ANTIALIAS, 0);
 			b = dimg->NewBrushARGB(0xffffffff);
 			dimg->DrawRect(0, 0, Math::UOSInt2Double(dimg->GetWidth()), Math::UOSInt2Double(dimg->GetHeight()), 0, b);
 			dimg->DelBrush(b);

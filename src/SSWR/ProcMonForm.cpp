@@ -291,7 +291,7 @@ void __stdcall SSWR::ProcMonForm::OnTimerTick(void *userObj)
 SSWR::ProcMonForm::ProcMonForm(UI::GUIClientControl *parent, UI::GUICore *ui) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetText((const UTF8Char*)"Process Monitor");
-	this->SetFont(0, 8.25, false);
+	this->SetFont(0, 0, 8.25, false);
 
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);

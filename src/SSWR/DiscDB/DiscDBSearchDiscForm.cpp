@@ -53,7 +53,7 @@ void __stdcall SSWR::DiscDB::DiscDBSearchDiscForm::OnSearchClicked(void *userObj
 SSWR::DiscDB::DiscDBSearchDiscForm::DiscDBSearchDiscForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::DiscDB::DiscDBEnv *env) : UI::GUIForm(parent, 300, 322, ui)
 {
 	this->SetText((const UTF8Char*)"DVDType");
-	this->SetFont(0, 8.25, false);
+	this->SetFont(0, 0, 8.25, false);
 	this->env = env;
 	this->SetDPI(this->env->GetMonitorHDPI(this->GetHMonitor()), this->env->GetMonitorDDPI(this->GetHMonitor()));
 

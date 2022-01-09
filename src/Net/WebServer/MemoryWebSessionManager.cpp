@@ -98,7 +98,7 @@ Int64 Net::WebServer::MemoryWebSessionManager::GetSessId(Net::WebServer::IWebReq
 
 Net::WebServer::MemoryWebSessionManager::MemoryWebSessionManager(const UTF8Char *path, SessionHandler delHdlr, void *delHdlrObj, Int32 chkInterval, SessionHandler chkHdlr, void *chkHdlrObj) : Net::WebServer::IWebSessionManager(delHdlr, delHdlrObj)
 {
-	this->path = Text::StrCopyNew(path);
+	this->path = Text::String::NewNotNull(path);
 	this->chkInterval = chkInterval;
 	this->chkHdlr = chkHdlr;
 	this->chkHdlrObj = chkHdlrObj;
@@ -137,7 +137,7 @@ Net::WebServer::MemoryWebSessionManager::~MemoryWebSessionManager()
 	DEL_CLASS(mut);
 	DEL_CLASS(sesses);
 	DEL_CLASS(sessIds);
-	Text::StrDelNew(this->path);
+	this->path->Release();
 }
 
 Net::WebServer::IWebSession *Net::WebServer::MemoryWebSessionManager::GetSession(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp)
@@ -169,7 +169,7 @@ Net::WebServer::IWebSession *Net::WebServer::MemoryWebSessionManager::CreateSess
 	sptr = Text::StrConcatC(sbuff, UTF8STRC("WebSessId="));
 	sptr = Text::StrInt64(sptr, sessId);
 	sptr = Text::StrConcatC(sptr, UTF8STRC("; Path="));
-	sptr = Text::StrConcat(sptr, this->path);
+	sptr = this->path->ConcatTo(sptr);
 	resp->AddHeaderC(UTF8STRC("Set-Cookie"), sbuff, (UOSInt)(sptr - sbuff));
 	UOSInt i;
 	NEW_CLASS(sess, Net::WebServer::MemoryWebSession(sessId, req->GetBrowser(), req->GetOS()));
@@ -210,7 +210,7 @@ void Net::WebServer::MemoryWebSessionManager::DeleteSession(Net::WebServer::IWeb
 
 		sptr = Text::StrConcatC(sbuff, UTF8STRC("WebSessId="));
 		sptr = Text::StrConcatC(sptr, UTF8STRC("; Path="));
-		sptr = Text::StrConcat(sptr, this->path);
+		sptr = this->path->ConcatTo(sptr);
 		sptr = Text::StrConcatC(sptr, UTF8STRC("; Expires="));
 		Data::DateTime dt;
 		dt.SetCurrTimeUTC();

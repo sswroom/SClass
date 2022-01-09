@@ -18,14 +18,11 @@ void __stdcall SSWR::AVIRead::AVIRGISFontEditForm::FontNameClicked(void *userObj
 	}
 	if (dlg->ShowDialog(me->hwnd))
 	{
-		if (me->currFontName)
-		{
-			Text::StrDelNew(me->currFontName);
-		}
-		me->currFontName = Text::StrCopyNew(dlg->GetFontName());
+		SDEL_STRING(me->currFontName);
+		me->currFontName = dlg->GetFontName()->Clone();
 		me->currFontSizePt = dlg->GetFontSizePt();
 		me->isBold = dlg->IsBold();
-		me->txtFontName->SetText(me->currFontName);
+		me->txtFontName->SetText(me->currFontName->v);
 		me->UpdateFontPreview();
 	}
 	DEL_CLASS(dlg);
@@ -134,7 +131,7 @@ void SSWR::AVIRead::AVIRGISFontEditForm::UpdateFontPreview()
 
 	if (this->currFontName)
 	{
-		f = dimg->NewFontPt(this->currFontName, this->currFontSizePt, this->isBold?((Media::DrawEngine::DrawFontStyle)(Media::DrawEngine::DFS_BOLD | Media::DrawEngine::DFS_ANTIALIAS)):Media::DrawEngine::DFS_ANTIALIAS, this->core->GetCurrCodePage());
+		f = dimg->NewFontPt(this->currFontName->v, this->currFontName->leng, this->currFontSizePt, this->isBold?((Media::DrawEngine::DrawFontStyle)(Media::DrawEngine::DFS_BOLD | Media::DrawEngine::DFS_ANTIALIAS)):Media::DrawEngine::DFS_ANTIALIAS, this->core->GetCurrCodePage());
 		dimg->GetTextSize(f, sbuff, sz);
 		if (this->currBuffSize > 0)
 		{
@@ -161,7 +158,7 @@ void SSWR::AVIRead::AVIRGISFontEditForm::UpdateFontPreview()
 void SSWR::AVIRead::AVIRGISFontEditForm::UpdateDisplay()
 {
 	UTF8Char sbuff[256];
-	const UTF8Char *fontName;
+	Text::String *fontName;
 	if (env->GetFontStyleName(this->fontStyle, sbuff))
 	{
 		this->txtStyleName->SetText(sbuff);
@@ -171,14 +168,11 @@ void SSWR::AVIRead::AVIRGISFontEditForm::UpdateDisplay()
 		this->txtStyleName->SetText((const UTF8Char*)"");
 	}
 	env->GetFontStyle(this->fontStyle, &fontName, &this->currFontSizePt, &this->isBold, &this->currColor, &this->currBuffSize, &this->currBuffColor);
-	if (this->currFontName)
-	{
-		Text::StrDelNew(this->currFontName);
-	}
+	SDEL_STRING(this->currFontName);
 	if (fontName)
 	{
-		this->currFontName = Text::StrCopyNew(fontName);
-		this->txtFontName->SetText(this->currFontName);
+		this->currFontName = fontName->Clone();
+		this->txtFontName->SetText(this->currFontName->v);
 	}
 	else
 	{
@@ -207,7 +201,7 @@ SSWR::AVIRead::AVIRGISFontEditForm::AVIRGISFontEditForm(UI::GUIClientControl *pa
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->SetText((const UTF8Char*)"Edit Font Style");
-	this->SetFont(0, 8.25, false);
+	this->SetFont(0, 0, 8.25, false);
 
 	NEW_CLASS(this->pbFontPreview, UI::GUIPictureBox(ui, this, eng, false, false));
 	this->pbFontPreview->SetRect(0, 0, 288, 64, false);
@@ -262,11 +256,7 @@ SSWR::AVIRead::AVIRGISFontEditForm::~AVIRGISFontEditForm()
 		DEL_CLASS(this->previewImage);
 		this->previewImage = 0;
 	}
-	if (this->currFontName)
-	{
-		Text::StrDelNew(this->currFontName);
-		this->currFontName = 0;
-	}
+	SDEL_STRING(this->currFontName);
 	DEL_CLASS(this->colorConv);
 	this->colorSess->RemoveHandler(this);
 	this->ClearChildren();

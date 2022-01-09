@@ -27,11 +27,11 @@ void __stdcall SSWR::AVIRead::AVIREncryptForm::OnConvertClicked(void *userObj)
 	}
 	else
 	{
-		buffSize = srcEnc->CalcBinSize(sb.ToString());
+		buffSize = srcEnc->CalcBinSize(sb.ToString(), sb.GetLength());
 		if (buffSize > 0)
 		{
 			decBuff = MemAlloc(UInt8, buffSize);
-			if (srcEnc->DecodeBin(sb.ToString(), decBuff) != buffSize)
+			if (srcEnc->DecodeBin(sb.ToString(), sb.GetLength(), decBuff) != buffSize)
 			{
 				UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in decrypting the text", (const UTF8Char*)"Encrypt", me);
 			}
@@ -53,7 +53,7 @@ void __stdcall SSWR::AVIRead::AVIREncryptForm::OnConvertClicked(void *userObj)
 SSWR::AVIRead::AVIREncryptForm::AVIREncryptForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetText((const UTF8Char*)"Text Encrypt");
-	this->SetFont(0, 8.25, false);
+	this->SetFont(0, 0, 8.25, false);
 
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));

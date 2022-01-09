@@ -13,7 +13,7 @@ namespace Manage
 		static void WriteContext(IO::Writer *writer, IO::Stream *stm, Manage::ThreadContext *context, Manage::AddressResolver *addrResol);
 		static void WriteStackTrace(IO::Writer *writer, Manage::StackTracer *tracer, Manage::AddressResolver *addrResol);
 	public:
-		static Bool LogToFile(const UTF8Char *fileName, UInt32 exCode, const UTF8Char *exName, UOSInt exAddr, Manage::ThreadContext *context);
+		static Bool LogToFile(Text::String *fileName, UInt32 exCode, const UTF8Char *exName, UOSInt exAddr, Manage::ThreadContext *context);
 	};
 }
 

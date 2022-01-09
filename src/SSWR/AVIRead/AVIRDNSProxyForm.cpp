@@ -180,7 +180,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnV4AnsSelChg(void *userObj)
 	{
 		UTF8Char sbuff[16];
 		Data::DateTime t;
-		me->txtV4AnsName->SetText(ans->name);
+		me->txtV4AnsName->SetText(ans->name->v);
 		Text::StrInt32(sbuff, ans->recType);
 		me->txtV4AnsType->SetText(sbuff);
 		Text::StrInt32(sbuff, ans->recClass);
@@ -189,7 +189,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnV4AnsSelChg(void *userObj)
 		me->txtV4AnsTTL->SetText(sbuff);
 		if (ans->rd)
 		{
-			me->txtV4AnsRD->SetText(ans->rd);
+			me->txtV4AnsRD->SetText(ans->rd->v);
 		}
 		else
 		{
@@ -261,7 +261,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnV6AnsSelChg(void *userObj)
 	{
 		UTF8Char sbuff[16];
 		Data::DateTime t;
-		me->txtV6AnsName->SetText(ans->name);
+		me->txtV6AnsName->SetText(ans->name->v);
 		Text::StrInt32(sbuff, ans->recType);
 		me->txtV6AnsType->SetText(sbuff);
 		Text::StrInt32(sbuff, ans->recClass);
@@ -270,7 +270,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnV6AnsSelChg(void *userObj)
 		me->txtV6AnsTTL->SetText(sbuff);
 		if (ans->rd)
 		{
-			me->txtV6AnsRD->SetText(ans->rd);
+			me->txtV6AnsRD->SetText(ans->rd->v);
 		}
 		else
 		{
@@ -342,7 +342,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnOthAnsSelChg(void *userObj)
 	{
 		UTF8Char sbuff[16];
 		Data::DateTime t;
-		me->txtOthAnsName->SetText(ans->name);
+		me->txtOthAnsName->SetText(ans->name->v);
 		Text::StrInt32(sbuff, ans->recType);
 		me->txtOthAnsType->SetText(sbuff);
 		Text::StrInt32(sbuff, ans->recClass);
@@ -351,7 +351,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnOthAnsSelChg(void *userObj)
 		me->txtOthAnsTTL->SetText(sbuff);
 		if (ans->rd)
 		{
-			me->txtOthAnsRD->SetText(ans->rd);
+			me->txtOthAnsRD->SetText(ans->rd->v);
 		}
 		else
 		{
@@ -583,7 +583,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnSAnsSelChg(void *userObj)
 	{
 		UTF8Char sbuff[16];
 		Data::DateTime t;
-		me->txtSAnsName->SetText(ans->name);
+		me->txtSAnsName->SetText(ans->name->v);
 		Text::StrInt32(sbuff, ans->recType);
 		me->txtSAnsType->SetText(sbuff);
 		Text::StrInt32(sbuff, ans->recClass);
@@ -592,7 +592,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnSAnsSelChg(void *userObj)
 		me->txtSAnsTTL->SetText(sbuff);
 		if (ans->rd)
 		{
-			me->txtSAnsRD->SetText(ans->rd);
+			me->txtSAnsRD->SetText(ans->rd->v);
 		}
 		else
 		{
@@ -786,7 +786,7 @@ void SSWR::AVIRead::AVIRDNSProxyForm::UpdateBlackList()
 SSWR::AVIRead::AVIRDNSProxyForm::AVIRDNSProxyForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	UTF8Char sbuff[32];
-	this->SetFont(0, 8.25, 0);
+	this->SetFont(0, 0, 8.25, false);
 	this->SetText((const UTF8Char*)"DNS Proxy");
 
 	this->core = core;

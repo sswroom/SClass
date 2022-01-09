@@ -189,7 +189,7 @@ UOSInt Crypto::JasyptEncryptor::DecryptB64(const UTF8Char *b64Buff, UInt8 *outBu
 	Text::TextBinEnc::Base64Enc b64;
 	UInt8 *tmpBuff = MemAlloc(UInt8, Text::StrCharCnt(b64Buff));
 	UOSInt retSize;
-	retSize = b64.DecodeBin(b64Buff, tmpBuff);
+	retSize = b64.DecodeBin(b64Buff, 128, tmpBuff);
 	retSize = this->Decrypt(tmpBuff, retSize, outBuff);
 	MemFree(tmpBuff);
 	return retSize;

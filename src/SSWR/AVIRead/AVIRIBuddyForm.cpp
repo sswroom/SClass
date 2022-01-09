@@ -117,7 +117,7 @@ void __stdcall SSWR::AVIRead::AVIRIBuddyForm::OnDevChanged(void *userObj)
 SSWR::AVIRead::AVIRIBuddyForm::AVIRIBuddyForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 800, 600, ui)
 {
 	this->SetText((const UTF8Char*)"i-Buddy");
-	this->SetFont(0, 8.25, false);
+	this->SetFont(0, 0, 8.25, false);
 	this->SetNoResize(true);
 	
 	this->core = core;

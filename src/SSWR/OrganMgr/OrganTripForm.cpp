@@ -133,7 +133,7 @@ void __stdcall SSWR::OrganMgr::OrganTripForm::OnLocationClicked(void *userObj)
 
 SSWR::OrganMgr::OrganTripForm::OrganTripForm(UI::GUIClientControl *parent, UI::GUICore *ui, OrganEnv *env) : UI::GUIForm(parent, 640, 300, ui)
 {
-	this->SetFont(0, 10.5, false);
+	this->SetFont(0, 0, 10.5, false);
 	this->env = env;
 	this->locId = 0;
 	this->updating = false;

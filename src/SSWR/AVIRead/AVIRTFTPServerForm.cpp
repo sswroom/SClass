@@ -63,7 +63,7 @@ SSWR::AVIRead::AVIRTFTPServerForm::AVIRTFTPServerForm(UI::GUIClientControl *pare
 	UOSInt i;
 	this->core = core;
 	this->SetText((const UTF8Char*)"TFTP Server");
-	this->SetFont(0, 8.25, false);
+	this->SetFont(0, 0, 8.25, false);
 	this->svr = 0;
 	this->log = 0;
 	this->logger = 0;

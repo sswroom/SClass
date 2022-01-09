@@ -236,8 +236,8 @@ Bool __stdcall Net::EthernetWebHandler::DNSReqv4Req(EthernetWebHandler *me, Net:
 		UOSInt i;
 		UOSInt j;
 		Text::StringBuilderUTF8 sb;
-		Data::ArrayList<const UTF8Char *> nameList;
-		const UTF8Char *name;
+		Data::ArrayList<Text::String *> nameList;
+		Text::String *name;
 		UOSInt nameLen;
 
 		AppendHeader(&sb);
@@ -255,17 +255,17 @@ Bool __stdcall Net::EthernetWebHandler::DNSReqv4Req(EthernetWebHandler *me, Net:
 		while (i < j)
 		{
 			name = nameList.GetItem(i);
-			nameLen = Text::StrCharCnt(name);
+			nameLen = name->leng;
 			sb.AllocLeng(33 + nameLen * 2);
 			if (i > 0)
 			{
-				sb.AppendC((const UTF8Char*)"<br/>\r\n", 7);
+				sb.AppendC(UTF8STRC("<br/>\r\n"));
 			}
-			sb.AppendC((const UTF8Char*)"<a href=\"/dnsreqv4?qry=", 23);
-			sb.AppendC(name, nameLen);
-			sb.AppendC((const UTF8Char*)"\">", 2);
-			sb.AppendC(name, nameLen);
-			sb.AppendC((const UTF8Char*)"</a>", 4);
+			sb.AppendC(UTF8STRC("<a href=\"/dnsreqv4?qry="));
+			sb.Append(name);
+			sb.AppendC(UTF8STRC("\">"));
+			sb.Append(name);
+			sb.AppendC(UTF8STRC("</a>"));
 
 			i++;
 		}
@@ -348,8 +348,8 @@ Bool __stdcall Net::EthernetWebHandler::DNSReqv6Req(EthernetWebHandler *me, Net:
 		UOSInt i;
 		UOSInt j;
 		Text::StringBuilderUTF8 sb;
-		Data::ArrayList<const UTF8Char *> nameList;
-		const UTF8Char *name;
+		Data::ArrayList<Text::String *> nameList;
+		Text::String *name;
 		UOSInt nameLen;
 
 		AppendHeader(&sb);
@@ -367,16 +367,16 @@ Bool __stdcall Net::EthernetWebHandler::DNSReqv6Req(EthernetWebHandler *me, Net:
 		while (i < j)
 		{
 			name = nameList.GetItem(i);
-			nameLen = Text::StrCharCnt(name);
+			nameLen = name->leng;
 			sb.AllocLeng(33 + nameLen * 2);
 			if (i > 0)
 			{
 				sb.AppendC((const UTF8Char*)"<br/>\r\n", 7);
 			}
 			sb.AppendC((const UTF8Char*)"<a href=\"/dnsreqv6?qry=", 23);
-			sb.AppendC(name, nameLen);
+			sb.Append(name);
 			sb.AppendC((const UTF8Char*)"\">", 2);
-			sb.AppendC(name, nameLen);
+			sb.Append(name);
 			sb.AppendC((const UTF8Char*)"</a>", 4);
 
 			i++;
@@ -460,8 +460,8 @@ Bool __stdcall Net::EthernetWebHandler::DNSReqOthReq(EthernetWebHandler *me, Net
 		UOSInt i;
 		UOSInt j;
 		Text::StringBuilderUTF8 sb;
-		Data::ArrayList<const UTF8Char *> nameList;
-		const UTF8Char *name;
+		Data::ArrayList<Text::String *> nameList;
+		Text::String *name;
 		UOSInt nameLen;
 
 		AppendHeader(&sb);
@@ -479,17 +479,17 @@ Bool __stdcall Net::EthernetWebHandler::DNSReqOthReq(EthernetWebHandler *me, Net
 		while (i < j)
 		{
 			name = nameList.GetItem(i);
-			nameLen = Text::StrCharCnt(name);
+			nameLen = name->leng;
 			sb.AllocLeng(33 + nameLen * 2);
 			if (i > 0)
 			{
-				sb.AppendC((const UTF8Char*)"<br/>\r\n", 7);
+				sb.AppendC(UTF8STRC("<br/>\r\n"));
 			}
-			sb.AppendC((const UTF8Char*)"<a href=\"/dnsreqoth?qry=", 24);
-			sb.AppendC(name, nameLen);
-			sb.AppendC((const UTF8Char*)"\">", 2);
-			sb.AppendC(name, nameLen);
-			sb.AppendC((const UTF8Char*)"</a>", 4);
+			sb.AppendC(UTF8STRC("<a href=\"/dnsreqoth?qry="));
+			sb.Append(name);
+			sb.AppendC(UTF8STRC("\">"));
+			sb.Append(name);
+			sb.AppendC(UTF8STRC("</a>"));
 
 			i++;
 		}

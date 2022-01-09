@@ -33,7 +33,7 @@ Net::Email::EmailValidator::Status Net::Email::EmailValidator::Validate(const UT
 		return S_INVALID_FORMAT;
 	}
 
-	const UTF8Char *emailSvr = 0;
+	Text::String *emailSvr = 0;
 	Data::ArrayList<Net::DNSClient::RequestAnswer*> ansList;
 	Net::DNSClient::RequestAnswer *ans;
 	this->dnsClient->GetByEmailDomainName(&ansList, emailDomain);
@@ -44,7 +44,7 @@ Net::Email::EmailValidator::Status Net::Email::EmailValidator::Validate(const UT
 		ans = ansList.GetItem(i);
 		if (ans->recType == 15)
 		{
-			emailSvr = Text::StrCopyNew(ans->rd);
+			emailSvr = ans->rd->Clone();
 			break;
 		}
 		j++;
@@ -55,13 +55,13 @@ Net::Email::EmailValidator::Status Net::Email::EmailValidator::Validate(const UT
 		return S_DOMAIN_NOT_RESOLVED;
 	}
 
-	if (!this->sockf->DNSResolveIP(emailSvr, &addr))
+	if (!this->sockf->DNSResolveIP(emailSvr->v, &addr))
 	{
-		Text::StrDelNew(emailSvr);
+		emailSvr->Release();
 		return S_DOMAIN_NOT_RESOLVED;
 	}
-	NEW_CLASS(conn, Net::Email::SMTPConn(this->sockf, 0, emailSvr, 25, Net::Email::SMTPConn::CT_PLAIN, 0));
-	Text::StrDelNew(emailSvr);
+	NEW_CLASS(conn, Net::Email::SMTPConn(this->sockf, 0, emailSvr->v, 25, Net::Email::SMTPConn::CT_PLAIN, 0));
+	emailSvr->Release();
 	if (conn->IsError())
 	{
 		DEL_CLASS(conn);

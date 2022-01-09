@@ -1378,7 +1378,7 @@ const UTF8Char *SSWR::SHPConv::SHPConvMainForm::GetDBFName(DB::DBFFile *dbf, Dat
 SSWR::SHPConv::SHPConvMainForm::SHPConvMainForm(UI::GUIClientControl *parent, UI::GUICore *ui, Media::DrawEngine *deng, Media::MonitorMgr *monMgr) : UI::GUIForm(parent, 576, 464, ui)
 {
 	this->SetText((const UTF8Char*)"SHPConv");
-	this->SetFont(0, 8.25, false);
+	this->SetFont(0, 0, 8.25, false);
 	this->SetNoResize(true);
 	this->monMgr = monMgr;
 	this->deng = deng;

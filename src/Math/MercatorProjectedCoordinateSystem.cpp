@@ -18,7 +18,7 @@ Math::MercatorProjectedCoordinateSystem::~MercatorProjectedCoordinateSystem()
 Math::CoordinateSystem *Math::MercatorProjectedCoordinateSystem::Clone()
 {
 	Math::CoordinateSystem *csys;
-	NEW_CLASS(csys, Math::MercatorProjectedCoordinateSystem(this->sourceName, this->srid, this->csysName, this->falseEasting, this->falseNorthing, this->centralMeridian, this->latitudeOfOrigin, this->scaleFactor, (Math::GeographicCoordinateSystem*)this->gcs->Clone(), this->unit));
+	NEW_CLASS(csys, Math::MercatorProjectedCoordinateSystem(this->sourceName, this->srid, this->csysName->v, this->falseEasting, this->falseNorthing, this->centralMeridian, this->latitudeOfOrigin, this->scaleFactor, (Math::GeographicCoordinateSystem*)this->gcs->Clone(), this->unit));
 	return csys;
 }
 

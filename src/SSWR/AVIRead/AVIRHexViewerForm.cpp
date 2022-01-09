@@ -201,7 +201,8 @@ void __stdcall SSWR::AVIRead::AVIRHexViewerForm::OnFontClicked(void *userObj)
 	NEW_CLASS(dlg, UI::FontDialog(me->fontName, me->fontHeightPt, me->fontIsBold, false));
 	if (dlg->ShowDialog(me->GetHandle()))
 	{
-		me->SetFont(dlg->GetFontName(), dlg->GetFontSizePt(), dlg->IsBold());
+		Text::String *fontName = dlg->GetFontName();
+		me->SetFont(fontName->v, fontName->leng, dlg->GetFontSizePt(), dlg->IsBold());
 		me->hexView->UpdateFont();
 	}
 	DEL_CLASS(dlg);
@@ -219,7 +220,7 @@ void __stdcall SSWR::AVIRead::AVIRHexViewerForm::OnNextUnkClicked(void *userObj)
 SSWR::AVIRead::AVIRHexViewerForm::AVIRHexViewerForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 800, 600, ui)
 {
 	this->SetText((const UTF8Char*)"Hex Viewer");
-	this->SetFont(0, 8.25, false);
+	this->SetFont(0, 0, 8.25, false);
 	
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));

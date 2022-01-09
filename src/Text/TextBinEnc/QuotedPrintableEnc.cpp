@@ -94,7 +94,7 @@ UOSInt Text::TextBinEnc::QuotedPrintableEnc::EncodeBin(Text::StringBuilderUTF *s
 	return retCnt;
 }
 
-UOSInt Text::TextBinEnc::QuotedPrintableEnc::CalcBinSize(const UTF8Char *sbuff)
+UOSInt Text::TextBinEnc::QuotedPrintableEnc::CalcBinSize(const UTF8Char *sbuff, UOSInt strLen)
 {
 	UOSInt cnt = 0;
 	UTF8Char c;
@@ -118,38 +118,6 @@ UOSInt Text::TextBinEnc::QuotedPrintableEnc::CalcBinSize(const UTF8Char *sbuff)
 		}
 		else
 		{
-			cnt++;
-		}
-	}
-	return cnt;
-}
-
-UOSInt Text::TextBinEnc::QuotedPrintableEnc::DecodeBin(const UTF8Char *b64Str, UInt8 *dataBuff)
-{
-	UOSInt cnt = 0;
-	UTF8Char c;
-	while ((c = *b64Str++) != 0)
-	{
-		if (c == '=')
-		{
-			if (b64Str[0] == '\r' && b64Str[1] == '\n')
-			{
-				b64Str += 2;
-			}
-			else if (b64Str[0] == '\r' || b64Str[0] == '\n')
-			{
-				b64Str += 1;
-			}
-			else
-			{
-				*dataBuff++ = Text::StrHex2UInt8C(b64Str);
-				b64Str += 2;
-				cnt++;
-			}
-		}
-		else
-		{
-			*dataBuff++ = c;
 			cnt++;
 		}
 	}

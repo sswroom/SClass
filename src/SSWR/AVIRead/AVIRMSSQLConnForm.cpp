@@ -102,7 +102,7 @@ void __stdcall SSWR::AVIRead::AVIRMSSQLConnForm::OnCancelClicked(void *userObj)
 
 SSWR::AVIRead::AVIRMSSQLConnForm::AVIRMSSQLConnForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 200, ui)
 {
-	this->SetFont(0, 8.25, false);
+	this->SetFont(0, 0, 8.25, false);
 	this->SetText((const UTF8Char*)"MSSQL Connection");
 	this->SetNoResize(true);
 

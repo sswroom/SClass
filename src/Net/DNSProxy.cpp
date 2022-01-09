@@ -154,7 +154,7 @@ void __stdcall Net::DNSProxy::OnDNSRequest(void *userObj, const UTF8Char *reqNam
 							target = MemAlloc(TargetInfo, 1);
 							target->ip = resIP;
 							NEW_CLASS(target->mut, Sync::Mutex());
-							NEW_CLASS(target->addrList, Data::ArrayListICaseStrUTF8());
+							NEW_CLASS(target->addrList, Data::ArrayListICaseString());
 							me->targetMap->Put(sortIP, target);
 							me->targetUpdated = true;
 						}
@@ -162,7 +162,7 @@ void __stdcall Net::DNSProxy::OnDNSRequest(void *userObj, const UTF8Char *reqNam
 						targetMutUsage.EndUse();
 						if (target->addrList->SortedIndexOf(ans->name) < 0)
 						{
-							target->addrList->SortedInsert(Text::StrCopyNew(ans->name));
+							target->addrList->SortedInsert(ans->name->Clone());
 						}
 						j = i;
 						while (j-- > 0)
@@ -172,7 +172,7 @@ void __stdcall Net::DNSProxy::OnDNSRequest(void *userObj, const UTF8Char *reqNam
 							{
 								if (target->addrList->SortedIndexOf(ans->name) < 0)
 								{
-									target->addrList->SortedInsert(Text::StrCopyNew(ans->name));
+									target->addrList->SortedInsert(ans->name->Clone());
 								}
 							}
 						}
@@ -715,18 +715,13 @@ Net::DNSProxy::~DNSProxy()
 	if (this->targetMap)
 	{
 		TargetInfo *target;
-		UOSInt j;
 		Data::ArrayList<TargetInfo*> *targetList = this->targetMap->GetValues();
 		i = targetList->GetCount();
 		while (i-- > 0)
 		{
 			target = targetList->GetItem(i);
 			DEL_CLASS(target->mut);
-			j = target->addrList->GetCount();
-			while (j-- > 0)
-			{
-				Text::StrDelNew(target->addrList->GetItem(j));
-			}
+			LIST_FREE_STRING(target->addrList);
 			MemFree(target);
 		}
 		DEL_CLASS(this->targetMut);

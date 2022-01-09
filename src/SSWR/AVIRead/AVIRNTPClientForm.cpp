@@ -86,7 +86,7 @@ void __stdcall SSWR::AVIRead::AVIRNTPClientForm::OnSyncTimeClicked(void *userObj
 SSWR::AVIRead::AVIRNTPClientForm::AVIRNTPClientForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 480, 160, ui)
 {
 	this->SetText((const UTF8Char*)"NTP Client");
-	this->SetFont(0, 8.25, false);
+	this->SetFont(0, 0, 8.25, false);
 	this->SetNoResize(true);
 
 	this->core = core;

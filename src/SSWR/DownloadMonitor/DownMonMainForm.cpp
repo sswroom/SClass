@@ -585,7 +585,7 @@ SSWR::DownloadMonitor::DownMonMainForm::DownMonMainForm(UI::GUIClientControl *pa
 {
 	this->core = core;
 	this->SetText((const UTF8Char*)"Download Monitor");
-	this->SetFont(0, 8.25, false);
+	this->SetFont(0, 0, 8.25, false);
 	this->alarmSet = false;
 	this->alarmTime = 0;
 	NEW_CLASS(this->endedMut, Sync::Mutex());

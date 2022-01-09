@@ -9,7 +9,6 @@ namespace Math
 	class GeographicCoordinateSystem : public Math::CoordinateSystem
 	{
 	private:
-		const UTF8Char *csysName;
 		DatumData1 datum;
 		PrimemType primem;
 		UnitType unit;

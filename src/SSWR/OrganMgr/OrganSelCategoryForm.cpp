@@ -25,7 +25,7 @@ void __stdcall SSWR::OrganMgr::OrganSelCategoryForm::OnCancelClicked(void *userO
 SSWR::OrganMgr::OrganSelCategoryForm::OrganSelCategoryForm(UI::GUIClientControl *parent, UI::GUICore *ui, OrganEnv *env) : UI::GUIForm(parent, 374, 262, ui)
 {
 	this->SetNoResize(true);
-	this->SetFont(0, 10.5, false);
+	this->SetFont(0, 0, 10.5, false);
 	this->env = env;
 
 	this->SetText(this->env->GetLang((const UTF8Char*)"SelCategoryTitle"));

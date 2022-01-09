@@ -21,7 +21,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-const UTF8Char *Manage::ExceptionRecorder::fileName;
+Text::String *Manage::ExceptionRecorder::fileName;
 Manage::ExceptionRecorder::ExceptionAction Manage::ExceptionRecorder::exAction;
 Int32 (__stdcall *ExceptionRecorder_Handler)(void *);
 
@@ -114,7 +114,7 @@ Int32 __stdcall Manage::ExceptionRecorder::ExceptionHandler(void *exInfo)
 
 Manage::ExceptionRecorder::ExceptionRecorder(const UTF8Char *fileName, ExceptionAction exAction)
 {
-	Manage::ExceptionRecorder::fileName = Text::StrCopyNew(fileName);
+	Manage::ExceptionRecorder::fileName = Text::String::NewNotNull(fileName);
 	Manage::ExceptionRecorder::exAction = exAction;
 	ExceptionRecorder_Handler = ExceptionHandler;
 
@@ -130,7 +130,7 @@ Manage::ExceptionRecorder::ExceptionRecorder(const UTF8Char *fileName, Exception
 
 Manage::ExceptionRecorder::~ExceptionRecorder()
 {
-	Text::StrDelNew(this->fileName);
+	this->fileName->Release();
 	this->fileName = 0;
 
 	signal(SIGSEGV, SIG_DFL);

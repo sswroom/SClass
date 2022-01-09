@@ -31,7 +31,7 @@ void __stdcall SSWR::AVIRead::AVIRSetAudioForm::OnCancelClick(void *userObj)
 SSWR::AVIRead::AVIRSetAudioForm::AVIRSetAudioForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 456, 272, ui)
 {
 	this->SetText((const UTF8Char*)"Select Audio Device");
-	this->SetFont(0, 8.25, false);
+	this->SetFont(0, 0, 8.25, false);
 	this->SetNoResize(true);
 
 	this->core = core;

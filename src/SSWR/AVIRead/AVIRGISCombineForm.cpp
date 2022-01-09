@@ -64,8 +64,8 @@ SSWR::AVIRead::AVIRGISCombineForm::AVIRGISCombineForm(UI::GUIClientControl *pare
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->layers = layers;
-	SetText((const UTF8Char*)"Combine Layers");
-	SetFont(0, 8.25, false);
+	this->SetText((const UTF8Char*)"Combine Layers");
+	this->SetFont(0, 0, 8.25, false);
 
 	NEW_CLASS(this->selLayers, Data::ArrayList<Map::IMapDrawLayer*>());
 

@@ -56,7 +56,7 @@ void __stdcall SSWR::AVIRead::AVIRCodeImageGenForm::OnCodeGenClicked(void *userO
 
 SSWR::AVIRead::AVIRCodeImageGenForm::AVIRCodeImageGenForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
-	this->SetFont(0, 8.25, false);
+	this->SetFont(0, 0, 8.25, false);
 	this->SetText((const UTF8Char*)"Code Image Generator");
 	this->SetFormState(UI::GUIForm::FS_MAXIMIZED);
 

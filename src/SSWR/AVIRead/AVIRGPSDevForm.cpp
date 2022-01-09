@@ -468,7 +468,7 @@ void SSWR::AVIRead::AVIRGPSDevForm::SendGetUser(Int32 userId)
 
 SSWR::AVIRead::AVIRGPSDevForm::AVIRGPSDevForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
-	this->SetFont(0, 8.25, false);
+	this->SetFont(0, 0, 8.25, false);
 	this->SetText((const UTF8Char*)"GPSDev Viewer");
 
 	this->core = core;

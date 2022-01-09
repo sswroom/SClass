@@ -41,7 +41,7 @@ void __stdcall SSWR::AVIRead::AVIROpenFileForm::OnCancelClicked(void *userObj)
 SSWR::AVIRead::AVIROpenFileForm::AVIROpenFileForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, IO::ParserType t) : UI::GUIForm(parent, 640, 120, ui)
 {
 	this->SetText((const UTF8Char*)"Open File");
-	this->SetFont(0, 8.25, false);
+	this->SetFont(0, 0, 8.25, false);
 	this->SetNoResize(true);
 	this->fileName = 0;
 	this->core = core;

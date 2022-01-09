@@ -180,7 +180,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRTCPSpdCliForm::RecvThread(void *userObj)
 
 SSWR::AVIRead::AVIRTCPSpdCliForm::AVIRTCPSpdCliForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 320, 240, ui)
 {
-	this->SetFont(0, 8.25, false);
+	this->SetFont(0, 0, 8.25, false);
 	this->SetText((const UTF8Char*)"TCP Speed Client");
 	this->SetNoResize(true);
 

@@ -526,7 +526,7 @@ const UInt8 *Net::ASN1Util::PDUGetItemRAW(const UInt8 *pdu, const UInt8 *pduEnd,
 	{
 		*len = 0;
 	}
-	Char sbuff[11];
+	UTF8Char sbuff[11];
 	UInt32 itemLen;
 	UOSInt size;
 	UOSInt cnt;
@@ -535,7 +535,7 @@ const UInt8 *Net::ASN1Util::PDUGetItemRAW(const UInt8 *pdu, const UInt8 *pduEnd,
 	{
 		return 0;
 	}
-	size = Text::StrIndexOf(path, '.');
+	size = Text::StrIndexOf((const UTF8Char *)path, '.');
 	if (size == INVALID_INDEX)
 	{
 		cnt = Text::StrToUOSInt(path);
@@ -543,7 +543,7 @@ const UInt8 *Net::ASN1Util::PDUGetItemRAW(const UInt8 *pdu, const UInt8 *pduEnd,
 	}
 	else if (size > 0 && size < 11)
 	{
-		Text::StrConcatC(sbuff, path, size);
+		Text::StrConcatC(sbuff, (const UTF8Char*)path, size);
 		cnt = Text::StrToUOSInt(sbuff);
 		path += size + 1;
 	}
@@ -758,11 +758,11 @@ Bool Net::ASN1Util::OIDStartsWith(const UInt8 *oid1, UOSInt oid1Len, const UInt8
 	return true;
 }
 
-Bool Net::ASN1Util::OIDEqualsText(const UInt8 *oid, UOSInt oidLen, const Char *oidText)
+Bool Net::ASN1Util::OIDEqualsText(const UInt8 *oidPDU, UOSInt oidPDULen, const UTF8Char *oidText, UOSInt oidTextLen)
 {
 	UInt8 oid2[32];
-	UOSInt oidLen2 = OIDText2PDU(oidText, oid2);
-	return OIDCompare(oid, oidLen, oid2, oidLen2) == 0;
+	UOSInt oidLen2 = OIDText2PDU(oidText, oidTextLen, oid2);
+	return OIDCompare(oidPDU, oidPDULen, oid2, oidLen2) == 0;
 }
 
 void Net::ASN1Util::OIDToString(const UInt8 *pdu, UOSInt pduSize, Text::StringBuilderUTF *sb)
@@ -785,13 +785,12 @@ void Net::ASN1Util::OIDToString(const UInt8 *pdu, UOSInt pduSize, Text::StringBu
 	}
 }
 
-UOSInt Net::ASN1Util::OIDCalcPDUSize(const UTF8Char *oid)
+UOSInt Net::ASN1Util::OIDCalcPDUSize(const UTF8Char *oidText, UOSInt oidTextLen)
 {
 	UInt32 v;
 	UOSInt retSize = 1;
-	UOSInt len = Text::StrCharCnt(oid);
-	UTF8Char *buff = MemAlloc(UTF8Char, len + 1);
-	Text::StrConcatC(buff, oid, len);
+	UTF8Char *buff = MemAlloc(UTF8Char, oidTextLen + 1);
+	Text::StrConcatC(buff, oidText, oidTextLen);
 	UTF8Char *sarr[3];
 	UOSInt i;
 	i = Text::StrSplit(sarr, 3, buff, '.');
@@ -822,14 +821,13 @@ UOSInt Net::ASN1Util::OIDCalcPDUSize(const UTF8Char *oid)
 	return retSize;
 }
 
-UOSInt Net::ASN1Util::OIDText2PDU(const Char *oid, UInt8 *pduBuff)
+UOSInt Net::ASN1Util::OIDText2PDU(const UTF8Char *oidText, UOSInt oidTextLen, UInt8 *pduBuff)
 {
 	UInt32 v;
 	UOSInt retSize = 1;
-	UOSInt len = Text::StrCharCnt(oid);
-	Char *buff = MemAlloc(Char, len + 1);
-	Text::StrConcatC(buff, oid, len);
-	Char *sarr[3];
+	UTF8Char *buff = MemAlloc(UTF8Char, oidTextLen + 1);
+	Text::StrConcatC(buff, oidText, oidTextLen);
+	UTF8Char *sarr[3];
 	UOSInt i;
 	i = Text::StrSplit(sarr, 3, buff, '.');
 	if (i == 1)
@@ -904,11 +902,6 @@ UOSInt Net::ASN1Util::OIDText2PDU(const Char *oid, UInt8 *pduBuff)
 	}
 	MemFree(buff);
 	return retSize;
-}
-
-UOSInt Net::ASN1Util::OIDUText2PDU(const UTF8Char *oid, UInt8 *pduBuff)
-{
-	return OIDText2PDU((const Char*)oid, pduBuff);
 }
 
 void Net::ASN1Util::OIDToCPPCode(const UInt8 *oid, UOSInt oidLen, const UTF8Char *objectName, Text::StringBuilderUTF *sb)

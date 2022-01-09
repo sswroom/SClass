@@ -67,7 +67,7 @@ void __stdcall SSWR::OrganMgr::OrganUserEditForm::OnCancelClicked(void *userObj)
 
 SSWR::OrganMgr::OrganUserEditForm::OrganUserEditForm(UI::GUIClientControl *parent, UI::GUICore *ui, OrganEnv *env, OrganWebUser *user) : UI::GUIForm(parent, 480, 160, ui)
 {
-	this->SetFont(0, 10.5, false);
+	this->SetFont(0, 0, 10.5, false);
 	this->SetNoResize(true);
 
 	this->env = env;

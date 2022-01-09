@@ -4992,7 +4992,7 @@ WChar *Map::MapConfig2TGen::DrawMap(Media::DrawImage *img, Map::MapView *view, B
 					Media::DrawEngine::DrawFontStyle s = Media::DrawEngine::DFS_NORMAL;
 					if (fnt->thick > 0)
 						s = (Media::DrawEngine::DrawFontStyle)(s | Media::DrawEngine::DFS_BOLD);
-					fnt2->font = img->NewFontPt(fnt->fontName, fnt->fontSizePt, s, 0);
+					fnt2->font = img->NewFontPt(fnt->fontName, Text::StrCharCnt(fnt->fontName), fnt->fontSizePt, s, 0);
 					fnt2->other = img->NewBrushARGB(fnt->color);
 				}
 				else if (fnt->fontType == 1)
@@ -5021,11 +5021,11 @@ WChar *Map::MapConfig2TGen::DrawMap(Media::DrawImage *img, Map::MapView *view, B
 						Media::DrawEngine::DrawFontStyle s = Media::DrawEngine::DFS_NORMAL;
 						if (f->thick > 0)
 							s = (Media::DrawEngine::DrawFontStyle)(s | Media::DrawEngine::DFS_BOLD);
-						fnt2->font = img->NewFontPt(f->fontName, f->fontSizePt, s, 0);
+						fnt2->font = img->NewFontPt(f->fontName, Text::StrCharCnt(f->fontName), f->fontSizePt, s, 0);
 					}
 					else
 					{
-						fnt2->font = img->NewFontPt(fnt->fontName, fnt->fontSizePt, Media::DrawEngine::DFS_NORMAL, 0);
+						fnt2->font = img->NewFontPt(fnt->fontName, Text::StrCharCnt(fnt->fontName), fnt->fontSizePt, Media::DrawEngine::DFS_NORMAL, 0);
 					}
 					fnt2->other = img->NewBrushARGB(fnt->color);
 					fnt2->thick = fnt2->thick * img->GetHDPI() / 96.0;

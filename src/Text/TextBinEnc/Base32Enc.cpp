@@ -104,7 +104,7 @@ UOSInt Text::TextBinEnc::Base32Enc::EncodeBin(Text::StringBuilderUTF *sb, const 
 	return outSize;
 }
 
-UOSInt Text::TextBinEnc::Base32Enc::CalcBinSize(const UTF8Char *sbuff)
+UOSInt Text::TextBinEnc::Base32Enc::CalcBinSize(const UTF8Char *sbuff, UOSInt strLen)
 {
 	UOSInt cnt = 0;
 	UTF8Char c;
@@ -132,7 +132,7 @@ UOSInt Text::TextBinEnc::Base32Enc::CalcBinSize(const WChar *sbuff)
 	return cnt * 5 / 8;
 }
 
-UOSInt Text::TextBinEnc::Base32Enc::DecodeBin(const UTF8Char *b64Str, UInt8 *dataBuff)
+UOSInt Text::TextBinEnc::Base32Enc::DecodeBin(const UTF8Char *b64Str, UOSInt strLen, UInt8 *dataBuff)
 {
 	UOSInt decSize = 0;
 	UInt8 b = 0;

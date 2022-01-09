@@ -77,7 +77,7 @@ void __stdcall SSWR::AVIRead::AVIRICCInfoForm::OnBLUTClicked(void *userObj)
 SSWR::AVIRead::AVIRICCInfoForm::AVIRICCInfoForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetText((const UTF8Char*)"ICC Info");
-	this->SetFont(0, 8.25, false);
+	this->SetFont(0, 0, 8.25, false);
 	this->SetNoResize(true);
 
 	this->icc = 0;

@@ -228,7 +228,7 @@ SSWR::AVIRead::AVIRLineCounterForm::AVIRLineCounterForm(UI::GUIClientControl *pa
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->SetText((const UTF8Char*)"Line Counter");
-	this->SetFont(0, 8.25, false);
+	this->SetFont(0, 0, 8.25, false);
 
 	NEW_CLASS(this->extList, Data::ArrayList<const UTF8Char *>());
 	NEW_CLASS(this->resList, Data::ArrayList<FileInfo*>());

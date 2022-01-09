@@ -35,7 +35,7 @@ void __stdcall SSWR::AVIRead::AVIRWIADevForm::OnCancelClick(void *userObj)
 SSWR::AVIRead::AVIRWIADevForm::AVIRWIADevForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 456, 200, ui)
 {
 	this->SetText((const UTF8Char*)"Select WIA Device");
-	this->SetFont(0, 8.25, false);
+	this->SetFont(0, 0, 8.25, false);
 	this->SetNoResize(true);
 
 	this->core = core;

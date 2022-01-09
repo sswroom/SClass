@@ -17,7 +17,15 @@ UI::FontDialog::FontDialog()
 
 UI::FontDialog::FontDialog(const UTF8Char *fontName, Double fontSizePt, Bool isBold, Bool isItalic)
 {
-	this->fontName = SCOPY_TEXT(fontName);
+	this->fontName = Text::String::NewOrNull(fontName);
+	this->fontSizePt = fontSizePt;
+	this->isBold = isBold;
+	this->isItalic = isItalic;
+}
+
+UI::FontDialog::FontDialog(Text::String *fontName, Double fontSizePt, Bool isBold, Bool isItalic)
+{
+	this->fontName = SCOPY_STRING(fontName);
 	this->fontSizePt = fontSizePt;
 	this->isBold = isBold;
 	this->isItalic = isItalic;
@@ -25,7 +33,7 @@ UI::FontDialog::FontDialog(const UTF8Char *fontName, Double fontSizePt, Bool isB
 
 UI::FontDialog::~FontDialog()
 {
-	SDEL_TEXT(this->fontName);
+	SDEL_STRING(this->fontName);
 }
 
 Bool UI::FontDialog::ShowDialog(ControlHandle *ownerHandle)
@@ -55,18 +63,15 @@ Bool UI::FontDialog::ShowDialog(ControlHandle *ownerHandle)
 		{
 			lf.lfItalic = TRUE;
 		}
-		Text::StrUTF8_WChar(lf.lfFaceName, this->fontName, 0);
+		Text::StrUTF8_WChar(lf.lfFaceName, this->fontName->v, 0);
 		cfont.Flags = cfont.Flags | CF_INITTOLOGFONTSTRUCT;
 	}
 
 
 	if (ChooseFontW(&cfont))
 	{
-		if (this->fontName)
-		{
-			Text::StrDelNew(this->fontName);
-		}
-		this->fontName = Text::StrToUTF8New(lf.lfFaceName);
+		SDEL_STRING(this->fontName);;
+		this->fontName = Text::String::NewNotNull(lf.lfFaceName);
 		this->isBold = (lf.lfWeight == FW_BOLD);
 		this->isItalic = lf.lfItalic != FALSE;
 		if (lf.lfHeight < 0)
@@ -85,7 +90,7 @@ Bool UI::FontDialog::ShowDialog(ControlHandle *ownerHandle)
 	}
 }
 
-const UTF8Char *UI::FontDialog::GetFontName()
+Text::String *UI::FontDialog::GetFontName()
 {
 	return this->fontName;
 }

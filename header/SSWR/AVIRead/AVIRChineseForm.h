@@ -24,7 +24,7 @@ namespace SSWR
 			Media::DrawEngine *deng;
 			UInt32 currChar;
 			Media::DrawImage *charImg;
-			const UTF8Char *currFont;
+			Text::String *currFont;
 			UInt32 currRadical;
 
 			UI::GUIMainMenu *mnuMain;

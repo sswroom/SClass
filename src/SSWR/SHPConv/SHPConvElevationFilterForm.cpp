@@ -28,7 +28,7 @@ void __stdcall SSWR::SHPConv::SHPConvElevationFilterForm::OnCancelClicked(void *
 SSWR::SHPConv::SHPConvElevationFilterForm::SHPConvElevationFilterForm(UI::GUIClientControl *parent, UI::GUICore *ui, DB::DBFFile *dbf) : UI::GUIForm(parent, 294, 104, ui)
 {
 	this->SetText((const UTF8Char*)"Elevation Filter");
-	this->SetFont(0, 8.25, false);
+	this->SetFont(0, 0, 8.25, false);
 	this->SetNoResize(true);
 	NEW_CLASS(this->monMgr, Media::MonitorMgr());
 	this->SetDPI(this->monMgr->GetMonitorHDPI(this->GetHMonitor()), this->monMgr->GetMonitorDDPI(this->GetHMonitor()));

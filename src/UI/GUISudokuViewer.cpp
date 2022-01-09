@@ -184,7 +184,7 @@ void UI::GUISudokuViewer::OnDraw(Media::DrawImage *img)
 	img->DrawRect(Math::UOSInt2Double(tlx + i), Math::UOSInt2Double(tly + currPos), Math::UOSInt2Double(j - i - 1), Math::UOSInt2Double(lastPos - currPos - 1), p, 0);
 	img->DelPen(p);
 
-	f = img->NewFontPx((const UTF8Char*)"Arial", Math::UOSInt2Double(blockSize) * 0.5, Media::DrawEngine::DFS_NORMAL, 65001);
+	f = img->NewFontPx(UTF8STRC("Arial"), Math::UOSInt2Double(blockSize) * 0.5, Media::DrawEngine::DFS_NORMAL, 65001);
 	b = img->NewBrushARGB(0xffcccccc);
 	b2 = img->NewBrushARGB(0xff000000);
 	i = 9;

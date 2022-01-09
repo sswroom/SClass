@@ -62,7 +62,7 @@ void SSWR::AVIRead::AVIRGISImageForm::UpdateImages()
 SSWR::AVIRead::AVIRGISImageForm::AVIRGISImageForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Map::MapEnv *env, UOSInt imgIndex) : UI::GUIForm(parent, 456, 405, ui)
 {
 	this->SetText((const UTF8Char*)"Select Image");
-	this->SetFont(0, 8.25, false);
+	this->SetFont(0, 0, 8.25, false);
 
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));

@@ -105,13 +105,13 @@ UTF8Char *Net::HTTPClient::GetRespHeader(UOSInt index, UTF8Char *buff)
 	return this->headers->GetItem(index)->ConcatTo(buff);
 }
 
-UTF8Char *Net::HTTPClient::GetRespHeader(const UTF8Char *name, UTF8Char *valueBuff)
+UTF8Char *Net::HTTPClient::GetRespHeader(const UTF8Char *name, UOSInt nameLen, UTF8Char *valueBuff)
 {
 	UTF8Char buff[256];
 	UTF8Char *s2;
 	Text::String *s;
 	UOSInt i;
-	s2 = Text::StrConcatC(Text::StrConcat(buff, name), UTF8STRC(": "));
+	s2 = Text::StrConcatC(Text::StrConcatC(buff, name, nameLen), UTF8STRC(": "));
 	i = this->headers->GetCount();
 	while (i-- > 0)
 	{
@@ -124,13 +124,13 @@ UTF8Char *Net::HTTPClient::GetRespHeader(const UTF8Char *name, UTF8Char *valueBu
 	return 0;
 }
 
-Bool Net::HTTPClient::GetRespHeader(const UTF8Char *name, Text::StringBuilderUTF *sb)
+Bool Net::HTTPClient::GetRespHeader(const UTF8Char *name, UOSInt nameLen, Text::StringBuilderUTF *sb)
 {
 	UTF8Char buff[256];
 	UTF8Char *s2;
 	Text::String *s;
 	UOSInt i;
-	s2 = Text::StrConcatC(Text::StrConcat(buff, name), UTF8STRC(": "));
+	s2 = Text::StrConcatC(Text::StrConcatC(buff, name, nameLen), UTF8STRC(": "));
 	i = this->headers->GetCount();
 	while (i-- > 0)
 	{
@@ -161,7 +161,7 @@ UInt32 Net::HTTPClient::GetContentCodePage()
 	UTF8Char *sarr[2];
 	UOSInt arrCnt;
 	this->EndRequest(0, 0);
-	if (this->GetRespHeader((const UTF8Char*)"Content-Type", sbuff))
+	if (this->GetRespHeader(UTF8STRC("Content-Type"), sbuff))
 	{
 		sarr[1] = sbuff;
 		arrCnt = 2;
@@ -182,7 +182,7 @@ Bool Net::HTTPClient::GetLastModified(Data::DateTime *dt)
 {
 	UTF8Char sbuff[64];
 	this->EndRequest(0, 0);
-	if (this->GetRespHeader((const UTF8Char*)"Last-Modified", sbuff))
+	if (this->GetRespHeader(UTF8STRC("Last-Modified"), sbuff))
 	{
 		ParseDateStr(dt, sbuff);
 		return true;

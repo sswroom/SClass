@@ -83,7 +83,7 @@ void __stdcall SSWR::AVIReadCE::AVIRCEThreadInfoForm::OnMyStackDblClk(void *user
 
 SSWR::AVIReadCE::AVIRCEThreadInfoForm::AVIRCEThreadInfoForm(UI::GUIClientControl *parent, UI::GUICore *ui, Manage::Process *proc, Manage::SymbolResolver *symbol, Int32 threadId) : UI::GUIForm(parent, 1024, 768, ui)
 {
-	this->SetFont(0, 8.25, false);
+	this->SetFont(0, 0, 8.25, false);
 	this->SetText((const UTF8Char*)"Thread Info");
 	this->SetFormState(UI::GUIForm::FS_MAXIMIZED);
 

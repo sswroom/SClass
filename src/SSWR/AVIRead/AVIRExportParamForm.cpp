@@ -61,7 +61,7 @@ SSWR::AVIRead::AVIRExportParamForm::AVIRExportParamForm(UI::GUIClientControl *pa
 	this->exporter = exporter;
 	this->param = param;
 	this->SetText((const UTF8Char*)"Export Parameters");
-	this->SetFont(0, 8.25, false);
+	this->SetFont(0, 0, 8.25, false);
 
 	UTF8Char sbuff[256];
 	UOSInt cnt = this->exporter->GetParamCnt();

@@ -62,7 +62,7 @@ void __stdcall SSWR::AVIRead::AVIRImageResizeForm::OnCancelClicked(void *userObj
 SSWR::AVIRead::AVIRImageResizeForm::AVIRImageResizeForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Media::Image *srcImg) : UI::GUIForm(parent, 480, 240, ui)
 {
 	this->SetText((const UTF8Char*)"Image Resize");
-	this->SetFont(0, 8.25, false);
+	this->SetFont(0, 0, 8.25, false);
 	this->SetNoResize(true);
 
 	this->core = core;

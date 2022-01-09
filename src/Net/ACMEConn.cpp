@@ -164,7 +164,7 @@ Net::HTTPClient *Net::ACMEConn::ACMEPost(Text::String *url, const Char *data)
 
 	Text::StringBuilderUTF8 sb;
 	cli->GetRespStatus();
-	if (cli->GetRespHeader((const UTF8Char*)"Replay-Nonce", &sb))
+	if (cli->GetRespHeader(UTF8STRC("Replay-Nonce"), &sb))
 	{
 		SDEL_STRING(this->nonce);
 		this->nonce = Text::String::New(sb.ToString(), sb.GetLength());
@@ -410,7 +410,7 @@ Bool Net::ACMEConn::NewNonce()
 	if (cli->GetRespStatus() == Net::WebStatus::SC_NO_CONTENT)
 	{
 		Text::StringBuilderUTF8 sb;
-		if (cli->GetRespHeader((const UTF8Char*)"Replay-Nonce", &sb))
+		if (cli->GetRespHeader(UTF8STRC("Replay-Nonce"), &sb))
 		{
 			SDEL_STRING(this->nonce);
 			this->nonce = Text::String::New(sb.ToString(), sb.GetLength());
@@ -458,7 +458,7 @@ Bool Net::ACMEConn::AccountNew()
 						mstm.Clear();
 						cli->ReadToEnd(&mstm, 4096);
 						sb.ClearStr();
-						if (cli->GetRespStatus() == Net::WebStatus::SC_CREATED && cli->GetRespHeader((const UTF8Char*)"Location", &sb))
+						if (cli->GetRespStatus() == Net::WebStatus::SC_CREATED && cli->GetRespHeader(UTF8STRC("Location"), &sb))
 						{
 							SDEL_STRING(this->accountId);
 							this->accountId = Text::String::New(sb.ToString(), sb.GetLength());
@@ -495,7 +495,7 @@ Bool Net::ACMEConn::AccountRetr()
 	if (cli->GetRespStatus() == Net::WebStatus::SC_OK)
 	{
 		Text::StringBuilderUTF8 sb;
-		if (cli->GetRespHeader((const UTF8Char*)"Location", &sb))
+		if (cli->GetRespHeader(UTF8STRC("Location"), &sb))
 		{
 			SDEL_STRING(this->accountId);
 			this->accountId = Text::String::New(sb.ToString(), sb.GetLength());
@@ -549,7 +549,7 @@ Net::ACMEConn::Order *Net::ACMEConn::OrderNew(const UTF8Char *domainNames)
 		Text::StringBuilderUTF8 sb;
 		IO::MemoryStream mstm((const UTF8Char*)"Net.ACMEConn.OrderNew.mstm");
 		cli->ReadToEnd(&mstm, 2048);
-		cli->GetRespHeader((const UTF8Char*)"Location", &sb);
+		cli->GetRespHeader(UTF8STRC("Location"), &sb);
 		DEL_CLASS(cli);
 
 		const UInt8 *replyBuff = mstm.GetBuff(&i);

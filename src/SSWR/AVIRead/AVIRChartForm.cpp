@@ -27,7 +27,7 @@ void __stdcall SSWR::AVIRead::AVIRChartForm::OnSizeChanged(void *userObj)
 SSWR::AVIRead::AVIRChartForm::AVIRChartForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Data::IChart *chart) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetText((const UTF8Char*)"Chart Form");
-	this->SetFont(0, 8.25, false);
+	this->SetFont(0, 0, 8.25, false);
 	this->chart = chart;
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));

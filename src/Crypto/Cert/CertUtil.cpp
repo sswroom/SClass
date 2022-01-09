@@ -16,7 +16,7 @@ Bool Crypto::Cert::CertUtil::AppendNames(Net::ASN1PDUBuilder *builder, const Cer
 	{
 		builder->BeginSet();
 		builder->BeginSequence();
-		builder->AppendOIDString("2.5.4.6");
+		builder->AppendOIDString(UTF8STRC("2.5.4.6"));
 		builder->AppendPrintableString(names->countryName);
 		builder->EndLevel();
 		builder->EndLevel();
@@ -26,7 +26,7 @@ Bool Crypto::Cert::CertUtil::AppendNames(Net::ASN1PDUBuilder *builder, const Cer
 	{
 		builder->BeginSet();
 		builder->BeginSequence();
-		builder->AppendOIDString("2.5.4.8");
+		builder->AppendOIDString(UTF8STRC("2.5.4.8"));
 		builder->AppendUTF8String(names->stateOrProvinceName);
 		builder->EndLevel();
 		builder->EndLevel();
@@ -36,7 +36,7 @@ Bool Crypto::Cert::CertUtil::AppendNames(Net::ASN1PDUBuilder *builder, const Cer
 	{
 		builder->BeginSet();
 		builder->BeginSequence();
-		builder->AppendOIDString("2.5.4.7");
+		builder->AppendOIDString(UTF8STRC("2.5.4.7"));
 		builder->AppendUTF8String(names->localityName);
 		builder->EndLevel();
 		builder->EndLevel();
@@ -46,7 +46,7 @@ Bool Crypto::Cert::CertUtil::AppendNames(Net::ASN1PDUBuilder *builder, const Cer
 	{
 		builder->BeginSet();
 		builder->BeginSequence();
-		builder->AppendOIDString("2.5.4.10");
+		builder->AppendOIDString(UTF8STRC("2.5.4.10"));
 		builder->AppendUTF8String(names->organizationName);
 		builder->EndLevel();
 		builder->EndLevel();
@@ -56,7 +56,7 @@ Bool Crypto::Cert::CertUtil::AppendNames(Net::ASN1PDUBuilder *builder, const Cer
 	{
 		builder->BeginSet();
 		builder->BeginSequence();
-		builder->AppendOIDString("2.5.4.11");
+		builder->AppendOIDString(UTF8STRC("2.5.4.11"));
 		builder->AppendUTF8String(names->organizationUnitName);
 		builder->EndLevel();
 		builder->EndLevel();
@@ -66,7 +66,7 @@ Bool Crypto::Cert::CertUtil::AppendNames(Net::ASN1PDUBuilder *builder, const Cer
 	{
 		builder->BeginSet();
 		builder->BeginSequence();
-		builder->AppendOIDString("2.5.4.3");
+		builder->AppendOIDString(UTF8STRC("2.5.4.3"));
 		builder->AppendUTF8String(names->commonName);
 		builder->EndLevel();
 		builder->EndLevel();
@@ -76,7 +76,7 @@ Bool Crypto::Cert::CertUtil::AppendNames(Net::ASN1PDUBuilder *builder, const Cer
 	{
 		builder->BeginSet();
 		builder->BeginSequence();
-		builder->AppendOIDString("1.2.840.113549.1.9.1");
+		builder->AppendOIDString(UTF8STRC("1.2.840.113549.1.9.1"));
 		builder->AppendIA5String(names->emailAddress);
 		builder->EndLevel();
 		builder->EndLevel();
@@ -92,7 +92,7 @@ Bool Crypto::Cert::CertUtil::AppendPublicKey(Net::ASN1PDUBuilder *builder, Crypt
 	{
 		builder->BeginSequence();
 		builder->BeginSequence();
-		builder->AppendOIDString("1.2.840.113549.1.1.1");
+		builder->AppendOIDString(UTF8STRC("1.2.840.113549.1.1.1"));
 		builder->AppendNull();
 		builder->EndLevel();
 		Crypto::Cert::X509Key *pubKey = key->CreatePublicKey();
@@ -109,7 +109,7 @@ Bool Crypto::Cert::CertUtil::AppendPublicKey(Net::ASN1PDUBuilder *builder, Crypt
 	{
 		builder->BeginSequence();
 		builder->BeginSequence();
-		builder->AppendOIDString("1.2.840.113549.1.1.1");
+		builder->AppendOIDString(UTF8STRC("1.2.840.113549.1.1.1"));
 		builder->AppendNull();
 		builder->EndLevel();
 		builder->AppendBitStringWith0(key->GetASN1Buff(), key->GetASN1BuffSize());
@@ -130,7 +130,7 @@ Bool Crypto::Cert::CertUtil::AppendExtensions(Net::ASN1PDUBuilder *builder, cons
 			found = true;
 		}
 		builder->BeginSequence();
-		builder->AppendOIDString("2.5.29.17");
+		builder->AppendOIDString(UTF8STRC("2.5.29.17"));
 		builder->BeginOther(Net::ASN1Util::IT_OCTET_STRING);
 		builder->BeginSequence();
 		UOSInt i = 0;
@@ -169,7 +169,7 @@ Bool Crypto::Cert::CertUtil::AppendExtensions(Net::ASN1PDUBuilder *builder, cons
 			found = true;
 		}
 		builder->BeginSequence();
-		builder->AppendOIDString("2.5.29.18");
+		builder->AppendOIDString(UTF8STRC("2.5.29.18"));
 		builder->BeginOther(Net::ASN1Util::IT_OCTET_STRING);
 		builder->BeginSequence();
 		UOSInt i = 0;
@@ -208,7 +208,7 @@ Bool Crypto::Cert::CertUtil::AppendExtensions(Net::ASN1PDUBuilder *builder, cons
 			found = true;
 		}
 		builder->BeginSequence();
-		builder->AppendOIDString("2.5.29.19"); //basicConstraint
+		builder->AppendOIDString(UTF8STRC("2.5.29.19")); //basicConstraint
 		builder->AppendBool(true); // Critical
 		builder->BeginOther(Net::ASN1Util::IT_OCTET_STRING);
 		builder->BeginSequence();
@@ -229,7 +229,7 @@ Bool Crypto::Cert::CertUtil::AppendExtensions(Net::ASN1PDUBuilder *builder, cons
 		buff[0] = 1;
 		buff[1] = 6;
 		builder->BeginSequence();
-		builder->AppendOIDString("2.5.29.15"); //keyUsage
+		builder->AppendOIDString(UTF8STRC("2.5.29.15")); //keyUsage
 		builder->AppendBool(true); // Critical
 		builder->BeginOther(Net::ASN1Util::IT_OCTET_STRING);
 		builder->AppendBitString(buff, 2);
@@ -244,7 +244,7 @@ Bool Crypto::Cert::CertUtil::AppendExtensions(Net::ASN1PDUBuilder *builder, cons
 			found = true;
 		}
 		builder->BeginSequence();
-		builder->AppendOIDString("2.5.29.14");
+		builder->AppendOIDString(UTF8STRC("2.5.29.14"));
 		builder->BeginOther(Net::ASN1Util::IT_OCTET_STRING);
 		builder->AppendOctetString(ext->subjKeyId, 20);
 		builder->EndLevel();
@@ -258,7 +258,7 @@ Bool Crypto::Cert::CertUtil::AppendExtensions(Net::ASN1PDUBuilder *builder, cons
 			found = true;
 		}
 		builder->BeginSequence();
-		builder->AppendOIDString("2.5.29.35");
+		builder->AppendOIDString(UTF8STRC("2.5.29.35"));
 		builder->BeginOther(Net::ASN1Util::IT_OCTET_STRING);
 		builder->BeginSequence();
 		builder->AppendOther(0x80, ext->authKeyId, 20);
@@ -291,7 +291,7 @@ Bool Crypto::Cert::CertUtil::AppendSign(Net::ASN1PDUBuilder *builder, Net::SSLEn
 			return false;
 		}
 		builder->BeginSequence();
-		builder->AppendOIDString("1.2.840.113549.1.1.11");
+		builder->AppendOIDString(UTF8STRC("1.2.840.113549.1.1.11"));
 		builder->AppendNull();
 		builder->EndLevel();
 		builder->AppendBitStringWith0(signData, signLen);
@@ -316,7 +316,7 @@ Crypto::Cert::X509CertReq *Crypto::Cert::CertUtil::CertReqCreate(Net::SSLEngine 
 	if (ext)
 	{
 		builder.BeginSequence();
-		builder.AppendOIDString("1.2.840.113549.1.9.14");
+		builder.AppendOIDString(UTF8STRC("1.2.840.113549.1.9.14"));
 		builder.BeginSet();
 		AppendExtensions(&builder, ext);
 		builder.EndLevel();
@@ -359,7 +359,7 @@ Crypto::Cert::X509Cert *Crypto::Cert::CertUtil::SelfSignedCertCreate(Net::SSLEng
 	builder.AppendOther(Net::ASN1Util::IT_INTEGER, buff, 20);
 
 	builder.BeginSequence();
-	builder.AppendOIDString("1.2.840.113549.1.1.11");
+	builder.AppendOIDString(UTF8STRC("1.2.840.113549.1.1.11"));
 	builder.AppendNull();
 	builder.EndLevel();
 
@@ -429,7 +429,7 @@ Crypto::Cert::X509Cert *Crypto::Cert::CertUtil::IssueCert(Net::SSLEngine *ssl, C
 	builder.AppendOther(Net::ASN1Util::IT_INTEGER, bSerial, 20);
 
 	builder.BeginSequence();
-	builder.AppendOIDString("1.2.840.113549.1.1.11");
+	builder.AppendOIDString(UTF8STRC("1.2.840.113549.1.1.11"));
 	builder.AppendNull();
 	builder.EndLevel();
 

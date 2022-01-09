@@ -171,7 +171,7 @@ void SSWR::AVIRead::AVIRCaptureDevForm::ReleaseFormats()
 SSWR::AVIRead::AVIRCaptureDevForm::AVIRCaptureDevForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 768, 200, ui)
 {
 	this->SetText((const UTF8Char*)"Select Capture Device");
-	this->SetFont(0, 8.25, false);
+	this->SetFont(0, 0, 8.25, false);
 	this->SetNoResize(true);
 
 	this->core = core;

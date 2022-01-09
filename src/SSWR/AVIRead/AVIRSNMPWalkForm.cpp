@@ -10,7 +10,7 @@
 SSWR::AVIRead::AVIRSNMPWalkForm::AVIRSNMPWalkForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, const Net::SocketUtil::AddressInfo *addr, const UTF8Char *community) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	UTF8Char sbuff[128];
-	this->SetFont(0, 8.25, false);
+	this->SetFont(0, 0, 8.25, false);
 	this->SetText((const UTF8Char*)"SNMP Walk");
 
 	this->core = core;

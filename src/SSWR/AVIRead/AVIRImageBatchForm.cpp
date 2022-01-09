@@ -226,7 +226,7 @@ void SSWR::AVIRead::AVIRImageBatchForm::UpdatePreview()
 
 SSWR::AVIRead::AVIRImageBatchForm::AVIRImageBatchForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
-	this->SetFont(0, 8.25, false);
+	this->SetFont(0, 0, 8.25, false);
 	this->SetText((const UTF8Char*)"Image batch tool");
 	this->SetFormState(UI::GUIForm::FS_MAXIMIZED);
 

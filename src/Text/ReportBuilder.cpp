@@ -740,7 +740,7 @@ Media::VectorDocument *Text::ReportBuilder::CreateVDoc(Int32 id, Media::DrawEngi
 	{
 		g = doc->AddGraph(paperSize.GetWidthMM(), paperSize.GetHeightMM(), Math::Unit::Distance::DU_MILLIMETER);
 	}
-	f = g->NewFontPt(this->fontName->v, fontHeightPt, Media::DrawEngine::DFS_NORMAL, 0);
+	f = g->NewFontPt(this->fontName->v, this->fontName->leng, fontHeightPt, Media::DrawEngine::DFS_NORMAL, 0);
 	headerW1 = 0;
 	headerW2 = 0;
 	i = this->headers->GetCount();
@@ -864,7 +864,7 @@ Media::VectorDocument *Text::ReportBuilder::CreateVDoc(Int32 id, Media::DrawEngi
 	l = this->tableContent->GetCount();
 	while (true)
 	{
-		f = g->NewFontPt(this->fontName->v, fontHeightPt, Media::DrawEngine::DFS_NORMAL, 0);
+		f = g->NewFontPt(this->fontName->v, this->fontName->leng, fontHeightPt, Media::DrawEngine::DFS_NORMAL, 0);
 		b = g->NewBrushARGB(0xff000000);
 		p = g->NewPenARGB(0xff000000, 0.2, 0, 0);
 

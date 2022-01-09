@@ -29,7 +29,7 @@ void __stdcall UtilUI::TextGotoDialog::OnCancelClicked(void *userObj)
 UtilUI::TextGotoDialog::TextGotoDialog(UI::GUIClientControl *parent, UI::GUICore *ui, Media::MonitorMgr *monMgr) : UI::GUIForm(parent, 320, 120, ui)
 {
 	this->currLine = 0;
-	this->SetFont(0, 8.25, false);
+	this->SetFont(0, 0, 8.25, false);
 	this->SetText((const UTF8Char*)"Go To Line");
 	this->SetNoResize(true);
 	this->monMgr = monMgr;

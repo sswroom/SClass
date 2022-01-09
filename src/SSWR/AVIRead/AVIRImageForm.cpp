@@ -596,7 +596,7 @@ void SSWR::AVIRead::AVIRImageForm::UpdateInfo()
 
 SSWR::AVIRead::AVIRImageForm::AVIRImageForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Media::ImageList *imgList) : UI::GUIForm(parent, 1024, 768, ui)
 {
-	this->SetFont(0, 8.25, false);
+	this->SetFont(0, 0, 8.25, false);
 	UTF8Char sbuff[512];
 	imgList->GetSourceNameObj()->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("Image Form - ")));
 	this->SetText(sbuff);

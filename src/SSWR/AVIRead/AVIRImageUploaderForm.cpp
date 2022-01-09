@@ -55,7 +55,7 @@ void SSWR::AVIRead::AVIRImageUploaderForm::FreeItem(FileItem *item)
 SSWR::AVIRead::AVIRImageUploaderForm::AVIRImageUploaderForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 480, 240, ui)
 {
 	this->SetText((const UTF8Char*)"Image Uploader");
-	this->SetFont(0, 8.25, false);
+	this->SetFont(0, 0, 8.25, false);
 
 	this->core = core;
 	NEW_CLASS(this->items, Data::ArrayList<FileItem*>());

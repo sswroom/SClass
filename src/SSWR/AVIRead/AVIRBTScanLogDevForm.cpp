@@ -61,7 +61,7 @@ SSWR::AVIRead::AVIRBTScanLogDevForm::AVIRBTScanLogDevForm(UI::GUIClientControl *
 {
 	UTF8Char sbuff[256];
 	UInt8 mac[8];
-	this->SetFont(0, 8.25, false);
+	this->SetFont(0, 0, 8.25, false);
 	this->SetText((const UTF8Char*)"Bluetooth Scan Log Entry");
 
 	this->core = core;

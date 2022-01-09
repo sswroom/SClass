@@ -38,8 +38,8 @@ Bool __stdcall SSWR::AVIRead::AVIRChineseForm::OnCharMouseDown(void *userObj, OS
 	NEW_CLASS(dlg, UI::FontDialog(me->currFont, 12, false, false));
 	if (dlg->ShowDialog(me->GetHandle()) == UI::GUIForm::DR_OK)
 	{
-		SDEL_TEXT(me->currFont);
-		me->currFont = Text::StrCopyNew(dlg->GetFontName());
+		SDEL_STRING(me->currFont);
+		me->currFont = dlg->GetFontName()->Clone();
 		me->UpdateImg();
 	}
 	DEL_CLASS(dlg);
@@ -342,7 +342,7 @@ void SSWR::AVIRead::AVIRChineseForm::UpdateImg()
 		UOSInt len;
 		Double sz[2];
 		b = this->charImg->NewBrushARGB(0xff000000);
-		f = this->charImg->NewFontPx(this->currFont, Math::UOSInt2Double(newH), Media::DrawEngine::DFS_NORMAL, 950);
+		f = this->charImg->NewFontPx(this->currFont->v, this->currFont->leng, Math::UOSInt2Double(newH), Media::DrawEngine::DFS_NORMAL, 950);
 		len = (UOSInt)(Text::StrWriteChar(sbuff, (UTF32Char)this->currChar) - sbuff);
 		sbuff[len] = 0;
 		
@@ -384,14 +384,14 @@ void SSWR::AVIRead::AVIRChineseForm::UpdateRelation()
 SSWR::AVIRead::AVIRChineseForm::AVIRChineseForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetText((const UTF8Char*)"Chinese");
-	this->SetFont(0, 8.25, false);
+	this->SetFont(0, 0, 8.25, false);
 	this->SetNoResize(true);
 
 	this->core = core;
 	this->deng = this->core->GetDrawEngine();
 	this->currChar = 0;
 	this->charImg = 0;
-	this->currFont = Text::StrCopyNew((const UTF8Char*)"MingLiU");
+	this->currFont = Text::String::New(UTF8STRC("MingLiU"));
 	this->currRadical = 0;
 	NEW_CLASS(this->chinese, Text::ChineseInfo());
 
@@ -491,7 +491,7 @@ SSWR::AVIRead::AVIRChineseForm::~AVIRChineseForm()
 		this->deng->DeleteImage(this->charImg);
 		this->charImg = 0;
 	}
-	SDEL_TEXT(this->currFont);
+	SDEL_STRING(this->currFont);
 	DEL_CLASS(this->chinese);
 }
 

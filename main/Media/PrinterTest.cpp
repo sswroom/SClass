@@ -25,7 +25,7 @@ public:
 
 	virtual Bool PrintPage(Media::DrawImage *printPage)
 	{
-		Media::DrawFont *font = printPage->NewFontPt((const UTF8Char*)"Arial", 12, Media::DrawEngine::DFS_NORMAL, 0);
+		Media::DrawFont *font = printPage->NewFontPt(UTF8STRC("Arial"), 12, Media::DrawEngine::DFS_NORMAL, 0);
 		Media::DrawBrush *brush = printPage->NewBrushARGB(0xff000000);
 		printPage->DrawString(100, 100, (const UTF8Char*)"Testing", font, brush);
 		printPage->DelBrush(brush);

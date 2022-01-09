@@ -31,7 +31,7 @@ UInt32 __stdcall Net::UDPServer::DataV4Thread(void *obj)
 			if (stat->me->msgLog)
 			{
 				if (stat->me->msgPrefix)
-					sptr = Text::StrConcat(sbuff, stat->me->msgPrefix);
+					sptr = stat->me->msgPrefix->ConcatTo(sbuff);
 				else
 					sptr = sbuff;
 				sptr = Text::StrConcatC(sptr, UTF8STRC("Received "));
@@ -51,7 +51,7 @@ UInt32 __stdcall Net::UDPServer::DataV4Thread(void *obj)
 						DEL_CLASS(stat->me->logFileR);
 						stat->me->logFileR = 0;
 					}
-					sptr = Text::StrConcat(sbuff, stat->me->logPrefix);
+					sptr = stat->me->logPrefix->ConcatTo(sbuff);
 					sptr = logTime.ToString(sptr, "yyyyMMdd");
 					sptr = Text::StrConcatC(sptr, UTF8STRC("r.udp"));
 					NEW_CLASS(stat->me->logFileR, IO::FileStream(sbuff, IO::FileMode::Append, IO::FileShare::DenyWrite, IO::FileStream::BufferType::Normal));
@@ -103,7 +103,7 @@ UInt32 __stdcall Net::UDPServer::DataV6Thread(void *obj)
 			if (stat->me->msgLog)
 			{
 				if (stat->me->msgPrefix)
-					sptr = Text::StrConcat(sbuff, stat->me->msgPrefix);
+					sptr = stat->me->msgPrefix->ConcatTo(sbuff);
 				else
 					sptr = sbuff;
 				sptr = Text::StrConcatC(sptr, UTF8STRC("Received "));
@@ -123,7 +123,7 @@ UInt32 __stdcall Net::UDPServer::DataV6Thread(void *obj)
 						DEL_CLASS(stat->me->logFileR);
 						stat->me->logFileR = 0;
 					}
-					sptr = Text::StrConcat(sbuff, stat->me->logPrefix);
+					sptr = stat->me->logPrefix->ConcatTo(sbuff);
 					sptr = logTime.ToString(sptr, "yyyyMMdd");
 					sptr = Text::StrConcatC(sptr, UTF8STRC("r.udp"));
 					NEW_CLASS(stat->me->logFileR, IO::FileStream(sbuff, IO::FileMode::Append, IO::FileShare::DenyWrite, IO::FileStream::BufferType::Normal));
@@ -160,7 +160,7 @@ Net::UDPServer::UDPServer(Net::SocketFactory *sockf, Net::SocketUtil::AddressInf
 	UOSInt i;
 
 	this->sockf = sockf;
-	this->logPrefix = SCOPY_TEXT(logPrefix);
+	this->logPrefix = Text::String::NewOrNull(logPrefix);
 	this->hdlr = hdlr;
 	this->userData = userData;
 	this->logFileR = 0;
@@ -168,7 +168,7 @@ Net::UDPServer::UDPServer(Net::SocketFactory *sockf, Net::SocketUtil::AddressInf
 	this->ctrlEvt = 0;
 	NEW_CLASS(this->logFileMut, Sync::Mutex());
 	this->msgLog = msgLog;
-	this->msgPrefix = SCOPY_TEXT(msgPrefix);
+	this->msgPrefix = Text::String::NewOrNull(msgPrefix);
 	this->port = port;
 	Bool succ = false;
 	if (bindAddr == 0)
@@ -413,8 +413,8 @@ Net::UDPServer::~UDPServer()
 	SDEL_CLASS(this->logDateS);
 	SDEL_CLASS(this->logFileS);
 	SDEL_CLASS(this->logFileR);
-	SDEL_TEXT(this->logPrefix);
-	SDEL_TEXT(this->msgPrefix);
+	SDEL_STRING(this->logPrefix);
+	SDEL_STRING(this->msgPrefix);
 	SDEL_CLASS(this->ctrlEvt);
 }
 
@@ -452,7 +452,7 @@ Bool Net::UDPServer::SendTo(const Net::SocketUtil::AddressInfo *addr, UInt16 por
 			}
 			logFileS = 0;
 
-			sptr = Text::StrConcat(sbuff, this->logPrefix);
+			sptr = this->logPrefix->ConcatTo(sbuff);
 			sptr = logTime.ToString(sptr, "yyyyMMdd");
 			sptr = Text::StrConcatC(sptr, UTF8STRC("s.udp"));
 			NEW_CLASS(this->logFileS, IO::FileStream(sbuff, IO::FileMode::Append, IO::FileShare::DenyWrite, IO::FileStream::BufferType::Normal));
@@ -476,7 +476,7 @@ Bool Net::UDPServer::SendTo(const Net::SocketUtil::AddressInfo *addr, UInt16 por
 	{
 		if (msgPrefix)
 		{
-			sptr = Text::StrConcat(sbuff, msgPrefix);
+			sptr = msgPrefix->ConcatTo(sbuff);
 		}
 		else
 		{
@@ -498,7 +498,7 @@ Bool Net::UDPServer::SendTo(const Net::SocketUtil::AddressInfo *addr, UInt16 por
 //			printf("Send error: %d\r\n", errno);
 			if (this->msgLog)
 			{
-				sptr = Text::StrConcat(sbuff, msgPrefix);
+				sptr = msgPrefix->ConcatTo(sbuff);
 				sptr = Text::StrConcatC(sptr, UTF8STRC("Send UDP data failed"));
 				this->msgLog->LogMessageC(sbuff, (UOSInt)(sptr - sbuff), IO::ILogHandler::LOG_LEVEL_ERROR);
 			}
@@ -514,7 +514,7 @@ Bool Net::UDPServer::SendTo(const Net::SocketUtil::AddressInfo *addr, UInt16 por
 		{
 			if (this->msgLog)
 			{
-				sptr = Text::StrConcat(sbuff, msgPrefix);
+				sptr = msgPrefix->ConcatTo(sbuff);
 				sptr = Text::StrConcatC(sptr, UTF8STRC("Send UDP data failed"));
 				this->msgLog->LogMessageC(sbuff, (UOSInt)(sptr - sbuff), IO::ILogHandler::LOG_LEVEL_ERROR);
 			}

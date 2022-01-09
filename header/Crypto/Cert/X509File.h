@@ -91,7 +91,7 @@ namespace Crypto
 			static void AppendRelativeDistinguishedName(const UInt8 *pdu, const UInt8 *pduEnd, Text::StringBuilderUTF *sb, const UTF8Char *varName); // InformationFramework
 			static void AppendAttributeTypeAndDistinguishedValue(const UInt8 *pdu, const UInt8 *pduEnd, Text::StringBuilderUTF *sb, const UTF8Char *varName); // InformationFramework
 
-			static Bool NameGetByOID(const UInt8 *pdu, const UInt8 *pduEnd, const Char *oidText, Text::StringBuilderUTF *sb);
+			static Bool NameGetByOID(const UInt8 *pdu, const UInt8 *pduEnd, const UTF8Char *oidText, UOSInt oidTextLen, Text::StringBuilderUTF *sb);
 			static Bool NameGetCN(const UInt8 *pdu, const UInt8 *pduEnd, Text::StringBuilderUTF *sb);
 			static Bool NamesGet(const UInt8 *pdu, const UInt8 *pduEnd, CertNames *names);
 			static Bool ExtensionsGet(const UInt8 *pdu, const UInt8 *pduEnd, CertExtensions *ext);
@@ -118,7 +118,7 @@ namespace Crypto
 
 			static const UTF8Char *FileTypeGetName(FileType fileType);
 			static const UTF8Char *KeyTypeGetName(KeyType keyType);
-			static const Char *KeyTypeGetOID(KeyType keyType);
+			static Text::CString KeyTypeGetOID(KeyType keyType);
 		};
 	}
 }

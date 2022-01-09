@@ -74,7 +74,7 @@ UI::GUIControl::~GUIControl()
 		UI::GUIDragDropGTK *dragDrop = (UI::GUIDragDropGTK*)this->dropHdlr;
 		DEL_CLASS(dragDrop);
 	}
-	SDEL_TEXT(this->fontName);
+	SDEL_STRING(this->fontName);
 	if (this->hFont)
 	{
 		pango_font_description_free((PangoFontDescription *)this->hFont);
@@ -296,12 +296,12 @@ void UI::GUIControl::SetRect(Double left, Double top, Double width, Double heigh
 	this->SetArea(left, top, left + width, top + height, updateScn);
 }
 
-void UI::GUIControl::SetFont(const UTF8Char *name, Double ptSize, Bool isBold)
+void UI::GUIControl::SetFont(const UTF8Char *name, UOSInt nameLen, Double ptSize, Bool isBold)
 {
-	SDEL_TEXT(this->fontName);
+	SDEL_STRING(this->fontName);
 	if (name)
 	{
-		this->fontName = Text::StrCopyNew(name);
+		this->fontName = Text::String::New(name, nameLen);
 	}
 	this->fontHeightPt = ptSize;
 	this->fontIsBold = isBold;
@@ -313,7 +313,7 @@ void UI::GUIControl::InitFont()
 	PangoFontDescription *font = pango_font_description_new();
 	if (this->fontName)
 	{
-		pango_font_description_set_family(font, (const Char*)this->fontName);
+		pango_font_description_set_family(font, (const Char*)this->fontName->v);
 	}
 	pango_font_description_set_absolute_size(font, this->fontHeightPt * this->hdpi / this->ddpi * PANGO_SCALE / 0.75);
 	if (this->fontIsBold)
@@ -326,7 +326,7 @@ void UI::GUIControl::InitFont()
 #if GDK_VERSION_AFTER(3, 16)
 	Text::CSSBuilder builder(Text::CSSBuilder::PM_SPACE);
 	builder.NewStyle("label", 0);
-	if (this->fontName) builder.AddFontFamily(this->fontName);
+	if (this->fontName) builder.AddFontFamily(this->fontName->v);
 	if (this->fontHeightPt != 0) builder.AddFontSize(this->fontHeightPt * this->hdpi / this->ddpi, Math::Unit::Distance::DU_PIXEL);
 	if (this->fontIsBold) builder.AddFontWeight(Text::CSSBuilder::FONT_WEIGHT_BOLD);
 	GtkWidget *widget = (GtkWidget*)this->hwnd;
@@ -849,12 +849,14 @@ Media::DrawFont *UI::GUIControl::CreateDrawFont(Media::DrawImage *img)
 		Double height = pango_font_description_get_size(fnt) / (Double)PANGO_SCALE;
 
 		Media::DrawFont *font;
-		NEW_CLASS(font, Media::GTKDrawFont((const UTF8Char*)family, height, (OSInt)((style & PANGO_STYLE_ITALIC)?CAIRO_FONT_SLANT_ITALIC:CAIRO_FONT_SLANT_NORMAL), (weight < PANGO_WEIGHT_BOLD)?0:1));
+		Text::String *fntName = Text::String::NewNotNull((const UTF8Char*)family);
+		NEW_CLASS(font, Media::GTKDrawFont(fntName, height, (OSInt)((style & PANGO_STYLE_ITALIC)?CAIRO_FONT_SLANT_ITALIC:CAIRO_FONT_SLANT_NORMAL), (weight < PANGO_WEIGHT_BOLD)?0:1));
+		fntName->Release();
 		return font;
 	}
 	else
 	{
-		return img->NewFontPt(this->fontName, this->fontHeightPt * this->hdpi / this->ddpi, this->fontIsBold?Media::DrawEngine::DFS_BOLD:Media::DrawEngine::DFS_NORMAL, 0);
+		return img->NewFontPt(this->fontName->v, this->fontName->leng, this->fontHeightPt * this->hdpi / this->ddpi, this->fontIsBold?Media::DrawEngine::DFS_BOLD:Media::DrawEngine::DFS_NORMAL, 0);
 	}
 }
 

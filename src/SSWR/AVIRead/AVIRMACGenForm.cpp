@@ -63,7 +63,7 @@ OSInt __stdcall SSWR::AVIRead::AVIRMACGenForm::ListCompare(void *list1, void *li
 
 SSWR::AVIRead::AVIRMACGenForm::AVIRMACGenForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 480, 136, ui)
 {
-	this->SetFont(0, 8.25, false);
+	this->SetFont(0, 0, 8.25, false);
 	this->SetText((const UTF8Char*)"MAC Generator");
 	this->SetNoResize(true);
 

@@ -49,7 +49,7 @@ Media::DrawImage *Media::FrequencyGraph::CreateGraph(Media::DrawEngine *eng, Med
 		minFreq = MemAlloc(Double, fftSize);
 
 		retImg = eng->CreateImage32(32, 32, Media::AT_NO_ALPHA);
-		f = retImg->NewFontPx((const UTF8Char*)"Arial", fontSizePx, Media::DrawEngine::DFS_NORMAL, 0);
+		f = retImg->NewFontPx(UTF8STRC("Arial"), fontSizePx, Media::DrawEngine::DFS_NORMAL, 0);
 		Data::IChart::CalScaleMarkDbl(&chartPos, &chartLabels, 0, fmt.frequency * 0.0005, dfftSize * 0.5, fontSizePx, "0", 1, 0);
 		yAxis = 0;
 		j = chartLabels.GetCount();
@@ -250,7 +250,7 @@ Media::DrawImage *Media::FrequencyGraph::CreateGraph(Media::DrawEngine *eng, Med
 
 		p = retImg->NewPenARGB(0xff000000, 1, 0, 0);
 		b = retImg->NewBrushARGB(0xff000000);
-		f = retImg->NewFontPx((const UTF8Char*)"Arial", fontSizePx, Media::DrawEngine::DFS_ANTIALIAS, 0);
+		f = retImg->NewFontPx(UTF8STRC("Arial"), fontSizePx, Media::DrawEngine::DFS_ANTIALIAS, 0);
 		retImg->DrawLine(yAxis + 3, ihFontSize, yAxis + 3, ihFontSize + dfftSize * 0.5, p);
 		retImg->DrawLine(yAxis + 3, ihFontSize + dfftSize * 0.5, yAxis + 4 + Math::UOSInt2Double(timeRes), ihFontSize + dfftSize * 0.5, p);
 

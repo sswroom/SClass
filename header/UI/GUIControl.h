@@ -229,7 +229,7 @@ namespace UI
 		Bool selfResize;
 		MonitorHandle *currHMon;
 
-		const UTF8Char *fontName;
+		Text::String *fontName;
 		Double fontHeightPt;
 		Bool fontIsBold;
 		Double hdpi;
@@ -262,7 +262,7 @@ namespace UI
 		virtual void SetArea(Double left, Double top, Double right, Double bottom, Bool updateScn);
 		virtual void SetAreaP(OSInt left, OSInt top, OSInt right, OSInt bottom, Bool updateScn);
 		void SetRect(Double left, Double top, Double width, Double height, Bool updateScn);
-		virtual void SetFont(const UTF8Char *name, Double ptSize, Bool isBold);
+		virtual void SetFont(const UTF8Char *name, UOSInt nameLen, Double ptSize, Bool isBold);
 		void InitFont();
 		virtual void SetDockType(DockType dockType);
 		virtual DockType GetDockType();

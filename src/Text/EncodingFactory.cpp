@@ -196,8 +196,8 @@ latin-greek
 Text::EncodingFactory::EncodingFactory()
 {
 	NEW_CLASS(encMap, Data::ICaseStringUTF8Map<Text::EncodingFactory::EncodingInfo*>());
-	OSInt i = (sizeof(encInfo) / sizeof(encInfo[0]));
-	OSInt j;
+	UOSInt i = (sizeof(encInfo) / sizeof(encInfo[0]));
+	UOSInt j;
 	while (i-- > 0)
 	{
 		j = 0;

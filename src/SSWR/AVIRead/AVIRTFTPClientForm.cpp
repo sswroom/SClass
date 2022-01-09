@@ -155,7 +155,7 @@ SSWR::AVIRead::AVIRTFTPClientForm::AVIRTFTPClientForm(UI::GUIClientControl *pare
 {
 	this->core = core;
 	this->SetText((const UTF8Char*)"TFTP Client");
-	this->SetFont(0, 8.25, false);
+	this->SetFont(0, 0, 8.25, false);
 	this->SetNoResize(true);
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 

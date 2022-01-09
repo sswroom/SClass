@@ -5,7 +5,7 @@
 SSWR::SHPConv::SHPConvDBFViewForm::SHPConvDBFViewForm(UI::GUIClientControl *parent, UI::GUICore *ui, DB::DBFFile *dbf, SSWR::SHPConv::IMapEng *eng, const UTF8Char *lbl) : UI::GUIForm(parent, 424, 300, ui)
 {
 	this->SetText((const UTF8Char*)"DBFView");
-	this->SetFont(0, 8.25, false);
+	this->SetFont(0, 0, 8.25, false);
 	NEW_CLASS(this->monMgr, Media::MonitorMgr());
 	this->SetDPI(this->monMgr->GetMonitorHDPI(this->GetHMonitor()), this->monMgr->GetMonitorDDPI(this->GetHMonitor()));
 	

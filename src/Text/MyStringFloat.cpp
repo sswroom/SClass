@@ -7,22 +7,22 @@
 #include "Text/MyStringW.h"
 #include "Text/StringBuilderUTF.h"
 
-Char *Text::StrDouble(Char *oriStr, Double val)
+UTF8Char *Text::StrDouble(UTF8Char *oriStr, Double val)
 {
 	if (val == 0)
 	{
 		if (Math::IsNeg(val))
 		{
-			return Text::StrConcat(oriStr, "-0");
+			return Text::StrConcatC(oriStr, UTF8STRC("-0"));
 		}
 		else
 		{
-			return Text::StrConcat(oriStr, "0");
+			return Text::StrConcatC(oriStr, UTF8STRC("0"));
 		}
 	}
 	else if (Math::IsNAN(val))
 	{
-		return Text::StrConcat(oriStr, "1.#QNAN0");
+		return Text::StrConcatC(oriStr, UTF8STRC("1.#QNAN0"));
 	}
 	else if (val < 0)
 	{
@@ -31,7 +31,7 @@ Char *Text::StrDouble(Char *oriStr, Double val)
 	}
 	if (Math::IsInfinity(val))
 	{
-		return Text::StrConcat(oriStr, "1.#INF00");
+		return Text::StrConcatC(oriStr, UTF8STRC("1.#INF00"));
 	}
 	OSInt i = 7;
 	Int32 ex = -10000 + (Int32)(Math::Log10(val) + 10000);
@@ -42,9 +42,9 @@ Char *Text::StrDouble(Char *oriStr, Double val)
 		val = val * 100.0;
 		iVal = (Int32)val;
 		val = val - iVal;
-		oriStr[0] = (Char)MyString_StrDigit100U8[iVal * 2];
+		oriStr[0] = MyString_StrDigit100U8[iVal * 2];
 		oriStr[1] = '.';
-		oriStr[2] = (Char)MyString_StrDigit100U8[iVal * 2 + 1];
+		oriStr[2] = MyString_StrDigit100U8[iVal * 2 + 1];
 		oriStr += 3;
 		i--;
 
@@ -75,7 +75,7 @@ Char *Text::StrDouble(Char *oriStr, Double val)
 		{
 			oriStr[1] = '+';
 		}
-		Char *tmpStr = oriStr + 13;
+		UTF8Char *tmpStr = oriStr + 13;
 		oriStr += 2;
 		*tmpStr = 0;
 		UInt32 uex = (UInt32)ex;
@@ -135,17 +135,17 @@ Char *Text::StrDouble(Char *oriStr, Double val)
 			val = val * 100.0;
 			iVal = (Int32)val;
 			val = val - iVal;
-			oriStr[0] = (Char)MyString_StrDigit100U8[iVal * 2];
+			oriStr[0] = MyString_StrDigit100U8[iVal * 2];
 			if (val > 1.0e-14)
 			{
 				oriStr[1] = '.';
-				oriStr[2] = (Char)MyString_StrDigit100U8[iVal * 2 + 1];
+				oriStr[2] = MyString_StrDigit100U8[iVal * 2 + 1];
 				oriStr += 3;
 			}
 			else if (MyString_StrDigit100W[iVal * 2 + 1] != '0')
 			{
 				oriStr[1] = '.';
-				oriStr[2] = (Char)MyString_StrDigit100U8[iVal * 2 + 1];
+				oriStr[2] = MyString_StrDigit100U8[iVal * 2 + 1];
 				oriStr += 3;
 			}
 			else
@@ -551,14 +551,14 @@ UTF32Char *Text::StrDouble(UTF32Char *oriStr, Double val)
 	return oriStr;
 }
 
-Char *Text::StrDoubleDP(Char *oriStr, Double val, UOSInt minDP, UOSInt maxDP)
+UTF8Char *Text::StrDoubleDP(UTF8Char *oriStr, Double val, UOSInt minDP, UOSInt maxDP)
 {
-	Char fmt[64];
+	UTF8Char fmt[64];
 	if (maxDP <= 0)
 	{
 		return StrDoubleFmt(oriStr, val, "0");
 	}
-	Char *sptr = Text::StrConcat(fmt, "0.");
+	UTF8Char *sptr = Text::StrConcatC(fmt, UTF8STRC("0."));
 	while (minDP > 0)
 	{
 		*sptr++ = '0';
@@ -571,7 +571,7 @@ Char *Text::StrDoubleDP(Char *oriStr, Double val, UOSInt minDP, UOSInt maxDP)
 		maxDP--;
 	}
 	*sptr = 0;
-	return StrDoubleFmt(oriStr, val, fmt);
+	return StrDoubleFmt(oriStr, val, (const Char*)fmt);
 }
 
 UTF16Char *Text::StrDoubleDP(UTF16Char *oriStr, Double val, UOSInt minDP, UOSInt maxDP)
@@ -677,7 +677,7 @@ Char *MyString_ecvt(Char *buff, Double val, Int32 numDigits, Int32 *digit, Int32
 	return buff;
 }
 
-Char *Text::StrDoubleFmt(Char *oriStr, Double val, const Char *format)
+UTF8Char *Text::StrDoubleFmt(UTF8Char *oriStr, Double val, const Char *format)
 {
 	Char fmtBuff[30];
 	Char *buff;
@@ -793,12 +793,12 @@ Char *Text::StrDoubleFmt(Char *oriStr, Double val, const Char *format)
 			}
 			else
 			{
-				*oriStr++ = c;
+				*oriStr++ = (UTF8Char)c;
 			}
 		}
 		else
 		{
-			*oriStr++ = c;
+			*oriStr++ = (UTF8Char)c;
 		}
 	}
 
@@ -1013,7 +1013,7 @@ Char *Text::StrDoubleFmt(Char *oriStr, Double val, const Char *format)
 					else
 					{
 						buff++;
-						*oriStr++ = c;
+						*oriStr++ = (UTF8Char)c;
 						digit--;
 						if (digit != 0 && (digit % groupCnt) == 0)
 						{
@@ -1043,7 +1043,7 @@ Char *Text::StrDoubleFmt(Char *oriStr, Double val, const Char *format)
 					else
 					{
 						buff++;
-						*oriStr++ = c;
+						*oriStr++ = (UTF8Char)c;
 						digit--;
 					}
 				}
@@ -1083,7 +1083,7 @@ Char *Text::StrDoubleFmt(Char *oriStr, Double val, const Char *format)
 				{
 					buff++;
 					afterDigitZ--;
-					*oriStr++ = c;
+					*oriStr++ = (UTF8Char)c;
 				}
 			}
 			while (afterDigitS > 0)
@@ -1093,7 +1093,7 @@ Char *Text::StrDoubleFmt(Char *oriStr, Double val, const Char *format)
 					break;
 				buff++;
 				afterDigitS--;
-				*oriStr++ = c;
+				*oriStr++ = (UTF8Char)c;
 			}
 		}
 
@@ -1101,7 +1101,7 @@ Char *Text::StrDoubleFmt(Char *oriStr, Double val, const Char *format)
 		{
 			*oriStr++ = '%';
 		}
-		return Text::StrConcat(oriStr, format - 1);
+		return Text::StrConcat(oriStr, (const UTF8Char*)format - 1);
 	}
 }
 
@@ -1962,11 +1962,11 @@ UTF32Char *Text::StrDoubleFmt(UTF32Char *oriStr, Double val, const Char *format)
 	}
 }
 
-Bool Text::StrToDouble(const Char *str1, Double *outVal)
+Bool Text::StrToDouble(const UTF8Char *str1, Double *outVal)
 {
 	Double r = 0.0;
 	Bool neg = false;
-	Char c;
+	UTF8Char c;
 	OSInt n = 0;
 	if (*str1 == '-')
 	{
@@ -2247,7 +2247,7 @@ Bool Text::StrToDouble(const UTF32Char *str1, Double *outVal)
 	return true;
 }
 
-Double Text::StrToDouble(const Char *str1)
+Double Text::StrToDouble(const UTF8Char *str1)
 {
 	Double r;
 	if (Text::StrToDouble(str1, &r))

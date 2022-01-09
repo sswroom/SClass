@@ -150,7 +150,7 @@ Math::CoordinateSystem *Math::PointMappingCoordinateSystem::Clone()
 	UOSInt i;
 	UOSInt j;
 	Double *ptItem;
-	NEW_CLASS(csys, Math::PointMappingCoordinateSystem(this->sourceName, this->srid, this->csysName, this->baseCSys->Clone()));
+	NEW_CLASS(csys, Math::PointMappingCoordinateSystem(this->sourceName, this->srid, this->csysName->v, this->baseCSys->Clone()));
 	i = 0;
 	j = this->mappingList->GetCount();
 	while (i < j)

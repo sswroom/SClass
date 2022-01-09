@@ -1,5 +1,6 @@
 #ifndef _SM_NET_DNSPROXY
 #define _SM_NET_DNSPROXY
+#include "Data/ArrayListICaseString.h"
 #include "Data/ICaseStringUTF8Map.h"
 #include "Net/DNSClient.h"
 #include "Net/DNSServer.h"
@@ -20,7 +21,7 @@ namespace Net
 		{
 			UInt32 ip;
 			Sync::Mutex *mut;
-			Data::ArrayListICaseStrUTF8 *addrList;
+			Data::ArrayListICaseString *addrList;
 		} TargetInfo;
 
 	private:

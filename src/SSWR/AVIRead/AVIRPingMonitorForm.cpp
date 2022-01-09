@@ -216,7 +216,7 @@ void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnTimerTick(void *userObj)
 
 SSWR::AVIRead::AVIRPingMonitorForm::AVIRPingMonitorForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
-	this->SetFont(0, 8.25, false);
+	this->SetFont(0, 0, 8.25, false);
 	this->SetText((const UTF8Char*)"Ping Monitor");
 
 	this->core = core;

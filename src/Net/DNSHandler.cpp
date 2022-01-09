@@ -20,7 +20,7 @@ Net::DNSHandler::~DNSHandler()
 	i = 0;
 	while (i < j)
 	{
-		Text::StrDelNew(arr[i]->domain);
+		arr[i]->domain->Release();
 		if (arr[i]->timeout < 0)
 		{
 //			Net::DNSClient::RequestAnswer *ans;
@@ -43,7 +43,7 @@ Net::DNSHandler::~DNSHandler()
 	i = 0;
 	while (i < j)
 	{
-		Text::StrDelNew(arr[i]->domain);
+		arr[i]->domain->Release();
 		if (arr[i]->timeout < 0)
 		{
 		}
@@ -65,13 +65,14 @@ Net::DNSHandler::~DNSHandler()
 
 Bool Net::DNSHandler::GetByDomainNamev4(Net::SocketUtil::AddressInfo *addr, const UTF8Char *domain)
 {
+	UOSInt domainLen = Text::StrCharCnt(domain);
 	DomainStatus *dnsStat;
 	Double t;
 	UOSInt i;
 	UOSInt j;
 	Net::DNSClient::RequestAnswer *ans;
 	Sync::MutexUsage mutUsage(this->reqv4Mut);
-	dnsStat = this->reqv4Map->Get(domain);
+	dnsStat = this->reqv4Map->GetC(domain, domainLen);
 	if (dnsStat)
 	{
 		if (dnsStat->timeout < 0)
@@ -115,7 +116,7 @@ Bool Net::DNSHandler::GetByDomainNamev4(Net::SocketUtil::AddressInfo *addr, cons
 	mutUsage.EndUse();
 	t = this->clk->GetTimeDiff();
 	dnsStat = MemAlloc(DomainStatus, 1);
-	dnsStat->domain = Text::StrCopyNew(domain);
+	dnsStat->domain = Text::String::New(domain, domainLen);
 	dnsStat->timeout = t;
 	NEW_CLASS(dnsStat->answers, Data::ArrayList<Net::DNSClient::RequestAnswer*>());
 	j = this->dnsCli->GetByType(dnsStat->answers, domain, 1);
@@ -136,11 +137,11 @@ Bool Net::DNSHandler::GetByDomainNamev4(Net::SocketUtil::AddressInfo *addr, cons
 		i++;
 	}
 	mutUsage.BeginUse();
-	dnsStat = this->reqv4Map->Put(domain, dnsStat);
+	dnsStat = this->reqv4Map->PutC(domain, domainLen, dnsStat);
 	mutUsage.EndUse();
 	if (dnsStat)
 	{
-		Text::StrDelNew(dnsStat->domain);
+		dnsStat->domain->Release();
 		this->dnsCli->FreeAnswers(dnsStat->answers);
 		DEL_CLASS(dnsStat->answers);
 		MemFree(dnsStat);
@@ -150,13 +151,14 @@ Bool Net::DNSHandler::GetByDomainNamev4(Net::SocketUtil::AddressInfo *addr, cons
 
 Bool Net::DNSHandler::GetByDomainNamev6(Net::SocketUtil::AddressInfo *addr, const UTF8Char *domain)
 {
+	UOSInt domainLen = Text::StrCharCnt(domain);
 	DomainStatus *dnsStat;
 	Double t;
 	UOSInt i;
 	UOSInt j;
 	Net::DNSClient::RequestAnswer *ans;
 	Sync::MutexUsage mutUsage(this->reqv6Mut);
-	dnsStat = this->reqv6Map->Get(domain);
+	dnsStat = this->reqv6Map->GetC(domain, domainLen);
 	if (dnsStat)
 	{
 		if (dnsStat->timeout < 0)
@@ -200,7 +202,7 @@ Bool Net::DNSHandler::GetByDomainNamev6(Net::SocketUtil::AddressInfo *addr, cons
 	mutUsage.EndUse();
 	t = this->clk->GetTimeDiff();
 	dnsStat = MemAlloc(DomainStatus, 28);
-	dnsStat->domain = Text::StrCopyNew(domain);
+	dnsStat->domain = Text::String::New(domain, domainLen);
 	dnsStat->timeout = t;
 	NEW_CLASS(dnsStat->answers, Data::ArrayList<Net::DNSClient::RequestAnswer*>());
 	j = this->dnsCli->GetByType(dnsStat->answers, domain, 1);
@@ -221,11 +223,11 @@ Bool Net::DNSHandler::GetByDomainNamev6(Net::SocketUtil::AddressInfo *addr, cons
 		i++;
 	}
 	mutUsage.BeginUse();
-	dnsStat = this->reqv6Map->Put(domain, dnsStat);
+	dnsStat = this->reqv6Map->PutC(domain, domainLen, dnsStat);
 	mutUsage.EndUse();
 	if (dnsStat)
 	{
-		Text::StrDelNew(dnsStat->domain);
+		dnsStat->domain->Release();
 		this->dnsCli->FreeAnswers(dnsStat->answers);
 		DEL_CLASS(dnsStat->answers);
 		MemFree(dnsStat);
@@ -236,10 +238,11 @@ Bool Net::DNSHandler::GetByDomainNamev6(Net::SocketUtil::AddressInfo *addr, cons
 Bool Net::DNSHandler::AddHost(const Net::SocketUtil::AddressInfo *addr, const UTF8Char *domain)
 {
 	DomainStatus *dnsStat;
+	UOSInt domainLen = Text::StrCharCnt(domain);
 	if (addr->addrType == Net::AddrType::IPv4)
 	{
 		Sync::MutexUsage mutUsage(this->reqv4Mut);
-		dnsStat = this->reqv4Map->Get(domain);
+		dnsStat = this->reqv4Map->GetC(domain, domainLen);
 		if (dnsStat)
 		{
 			dnsStat->timeout = -1;
@@ -248,11 +251,11 @@ Bool Net::DNSHandler::AddHost(const Net::SocketUtil::AddressInfo *addr, const UT
 		else
 		{
 			dnsStat = MemAlloc(DomainStatus, 1);
-			dnsStat->domain = Text::StrCopyNew(domain);
+			dnsStat->domain = Text::String::New(domain, domainLen);
 			dnsStat->timeout = -1;
 			dnsStat->addr = *addr;
 			NEW_CLASS(dnsStat->answers, Data::ArrayList<Net::DNSClient::RequestAnswer*>());
-			this->reqv4Map->Put(domain, dnsStat);
+			this->reqv4Map->PutC(domain, domainLen, dnsStat);
 		}
 		mutUsage.EndUse();
 		return true;
@@ -260,7 +263,7 @@ Bool Net::DNSHandler::AddHost(const Net::SocketUtil::AddressInfo *addr, const UT
 	else if (addr->addrType == Net::AddrType::IPv6)
 	{
 		Sync::MutexUsage mutUsage(this->reqv6Mut);
-		dnsStat = this->reqv6Map->Get(domain);
+		dnsStat = this->reqv6Map->GetC(domain, domainLen);
 		if (dnsStat)
 		{
 			dnsStat->timeout = -1;
@@ -269,11 +272,11 @@ Bool Net::DNSHandler::AddHost(const Net::SocketUtil::AddressInfo *addr, const UT
 		else
 		{
 			dnsStat = MemAlloc(DomainStatus, 1);
-			dnsStat->domain = Text::StrCopyNew(domain);
+			dnsStat->domain = Text::String::New(domain, domainLen);
 			dnsStat->timeout = -1;
 			dnsStat->addr = *addr;
 			NEW_CLASS(dnsStat->answers, Data::ArrayList<Net::DNSClient::RequestAnswer*>());
-			this->reqv6Map->Put(domain, dnsStat);
+			this->reqv6Map->PutC(domain, domainLen, dnsStat);
 		}
 		mutUsage.EndUse();
 		return true;

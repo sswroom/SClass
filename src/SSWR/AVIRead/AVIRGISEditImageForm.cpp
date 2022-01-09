@@ -791,8 +791,8 @@ SSWR::AVIRead::AVIRGISEditImageForm::AVIRGISEditImageForm(UI::GUIClientControl *
 	this->navi = navi;
 	sb.AppendC(UTF8STRC("Edit Image - "));
 	sb.Append(lyr->GetSourceNameObj());
-	SetText(sb.ToString());
-	SetFont(0, 8.25, false);
+	this->SetText(sb.ToString());
+	this->SetFont(0, 0, 8.25, false);
 	this->currImage = -1;
 	this->downType = 0;
 

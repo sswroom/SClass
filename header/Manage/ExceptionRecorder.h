@@ -22,7 +22,7 @@ namespace Manage
 		} ExceptionAction;
 	private:
 
-		static const UTF8Char *fileName;
+		static Text::String *fileName;
 		static ExceptionAction exAction;
 
 		static const UTF8Char *GetExceptionCodeName(UInt32 exCode);
@@ -31,6 +31,6 @@ namespace Manage
 		ExceptionRecorder(const UTF8Char *fileName, ExceptionAction exAction);
 		~ExceptionRecorder();
 	};
-};
+}
 
 #endif

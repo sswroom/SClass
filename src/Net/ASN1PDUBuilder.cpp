@@ -230,10 +230,10 @@ void Net::ASN1PDUBuilder::AppendOID(const UInt8 *oid, UOSInt len)
 	this->currOffset += len + 2;
 }
 
-void Net::ASN1PDUBuilder::AppendOIDString(const Char *oidStr)
+void Net::ASN1PDUBuilder::AppendOIDString(const UTF8Char *oidStr, UOSInt oidStrLen)
 {
 	UInt8 buff[32];
-	UOSInt buffSize = Net::ASN1Util::OIDText2PDU(oidStr, buff);
+	UOSInt buffSize = Net::ASN1Util::OIDText2PDU(oidStr, oidStrLen, buff);
 	this->AppendOID(buff, buffSize);
 }
 

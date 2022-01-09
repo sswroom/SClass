@@ -21,7 +21,7 @@ void __stdcall SSWR::AVIRead::AVIRAboutForm::OKClicked(void *userObj)
 SSWR::AVIRead::AVIRAboutForm::AVIRAboutForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 480, 144, ui)
 {
 	this->SetText((const UTF8Char*)"About");
-	this->SetFont(0, 8.25, false);
+	this->SetFont(0, 0, 8.25, false);
 	this->SetNoResize(true);
 	
 	this->core = core;

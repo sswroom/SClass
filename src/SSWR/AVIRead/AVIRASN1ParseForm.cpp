@@ -16,9 +16,9 @@ void __stdcall SSWR::AVIRead::AVIRASN1ParseForm::OnParseClicked(void *userObj)
 		return;
 	}
 	Text::TextBinEnc::Base64Enc b64;
-	UOSInt len = b64.CalcBinSize(sb.ToString());
+	UOSInt len = b64.CalcBinSize(sb.ToString(), sb.GetLength());
 	UInt8 *buff = MemAlloc(UInt8, len);
-	if (b64.DecodeBin(sb.ToString(), buff) != len)
+	if (b64.DecodeBin(sb.ToString(), sb.GetLength(), buff) != len)
 	{
 		MemFree(buff);
 		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in decoding Base64 data", (const UTF8Char*)"ASN.1 Parse", me);
@@ -60,7 +60,7 @@ void __stdcall SSWR::AVIRead::AVIRASN1ParseForm::OnParseClicked(void *userObj)
 
 SSWR::AVIRead::AVIRASN1ParseForm::AVIRASN1ParseForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
-	this->SetFont(0, 8.25, false);
+	this->SetFont(0, 0, 8.25, false);
 	this->SetText((const UTF8Char*)"ASN.1 Parse");
 
 	this->core = core;

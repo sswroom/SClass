@@ -55,7 +55,7 @@ void Net::EthernetAnalyzer::MDNSAdd(Net::DNSClient::RequestAnswer *ans)
 	{
 		k = (i + j) >> 1;
 		rans = this->mdnsList->GetItem((UOSInt)k);
-		l = Text::StrCompare(rans->name, ans->name);
+		l = Text::StrCompare(rans->name->v, ans->name->v);
 		if (l < 0)
 		{
 			i = k + 1;
@@ -97,11 +97,11 @@ Net::EthernetAnalyzer::EthernetAnalyzer(IO::Writer *errWriter, AnalyzeType aType
 	NEW_CLASS(this->dnsCliInfoMut, Sync::Mutex());
 	NEW_CLASS(this->dnsCliInfos, Data::UInt32Map<DNSClientInfo*>());
 	NEW_CLASS(this->dnsReqv4Mut, Sync::Mutex());
-	NEW_CLASS(this->dnsReqv4Map, Data::ICaseStringUTF8Map<Net::EthernetAnalyzer::DNSRequestResult*>());
+	NEW_CLASS(this->dnsReqv4Map, Data::ICaseStringMap<Net::EthernetAnalyzer::DNSRequestResult*>());
 	NEW_CLASS(this->dnsReqv6Mut, Sync::Mutex());
-	NEW_CLASS(this->dnsReqv6Map, Data::ICaseStringUTF8Map<Net::EthernetAnalyzer::DNSRequestResult*>());
+	NEW_CLASS(this->dnsReqv6Map, Data::ICaseStringMap<Net::EthernetAnalyzer::DNSRequestResult*>());
 	NEW_CLASS(this->dnsReqOthMut, Sync::Mutex());
-	NEW_CLASS(this->dnsReqOthMap, Data::ICaseStringUTF8Map<Net::EthernetAnalyzer::DNSRequestResult*>());
+	NEW_CLASS(this->dnsReqOthMap, Data::ICaseStringMap<Net::EthernetAnalyzer::DNSRequestResult*>());
 	NEW_CLASS(this->dnsTargetMut, Sync::Mutex());
 	NEW_CLASS(this->dnsTargetMap, Data::UInt32Map<Net::EthernetAnalyzer::DNSTargetInfo*>());
 	NEW_CLASS(this->ipLogMut, Sync::Mutex());
@@ -128,11 +128,11 @@ Net::EthernetAnalyzer::EthernetAnalyzer(IO::Writer *errWriter, AnalyzeType aType
 	NEW_CLASS(this->dnsCliInfoMut, Sync::Mutex());
 	NEW_CLASS(this->dnsCliInfos, Data::UInt32Map<DNSClientInfo*>());
 	NEW_CLASS(this->dnsReqv4Mut, Sync::Mutex());
-	NEW_CLASS(this->dnsReqv4Map, Data::ICaseStringUTF8Map<Net::EthernetAnalyzer::DNSRequestResult*>());
+	NEW_CLASS(this->dnsReqv4Map, Data::ICaseStringMap<Net::EthernetAnalyzer::DNSRequestResult*>());
 	NEW_CLASS(this->dnsReqv6Mut, Sync::Mutex());
-	NEW_CLASS(this->dnsReqv6Map, Data::ICaseStringUTF8Map<Net::EthernetAnalyzer::DNSRequestResult*>());
+	NEW_CLASS(this->dnsReqv6Map, Data::ICaseStringMap<Net::EthernetAnalyzer::DNSRequestResult*>());
 	NEW_CLASS(this->dnsReqOthMut, Sync::Mutex());
-	NEW_CLASS(this->dnsReqOthMap, Data::ICaseStringUTF8Map<Net::EthernetAnalyzer::DNSRequestResult*>());
+	NEW_CLASS(this->dnsReqOthMap, Data::ICaseStringMap<Net::EthernetAnalyzer::DNSRequestResult*>());
 	NEW_CLASS(this->dnsTargetMut, Sync::Mutex());
 	NEW_CLASS(this->dnsTargetMap, Data::UInt32Map<Net::EthernetAnalyzer::DNSTargetInfo*>());
 	NEW_CLASS(this->ipLogMut, Sync::Mutex());
@@ -238,11 +238,7 @@ Net::EthernetAnalyzer::~EthernetAnalyzer()
 	{
 		target = dnsTargetList->GetItem(i);
 		DEL_CLASS(target->mut);
-		j = target->addrList->GetCount();
-		while (j-- > 0)
-		{
-			Text::StrDelNew(target->addrList->GetItem(j));
-		}
+		LIST_FREE_STRING(target->addrList);
 		DEL_CLASS(target->addrList);
 		MemFree(target);
 	}
@@ -341,7 +337,7 @@ UOSInt Net::EthernetAnalyzer::DNSCliGetCount()
 	return this->dnsCliInfos->GetCount();
 }
 
-UOSInt Net::EthernetAnalyzer::DNSReqv4GetList(Data::ArrayList<const UTF8Char *> *reqList)
+UOSInt Net::EthernetAnalyzer::DNSReqv4GetList(Data::ArrayList<Text::String *> *reqList)
 {
 	Sync::MutexUsage mutUsage(this->dnsReqv4Mut);
 	reqList->AddAll(this->dnsReqv4Map->GetKeys());
@@ -375,7 +371,7 @@ Bool Net::EthernetAnalyzer::DNSReqv4GetInfo(const UTF8Char *req, Data::ArrayList
 	}
 }
 
-UOSInt Net::EthernetAnalyzer::DNSReqv6GetList(Data::ArrayList<const UTF8Char *> *reqList)
+UOSInt Net::EthernetAnalyzer::DNSReqv6GetList(Data::ArrayList<Text::String *> *reqList)
 {
 	Sync::MutexUsage mutUsage(this->dnsReqv6Mut);
 	reqList->AddAll(this->dnsReqv6Map->GetKeys());
@@ -409,7 +405,7 @@ Bool Net::EthernetAnalyzer::DNSReqv6GetInfo(const UTF8Char *req, Data::ArrayList
 	}
 }
 
-UOSInt Net::EthernetAnalyzer::DNSReqOthGetList(Data::ArrayList<const UTF8Char *> *reqList)
+UOSInt Net::EthernetAnalyzer::DNSReqOthGetList(Data::ArrayList<Text::String *> *reqList)
 {
 	Sync::MutexUsage mutUsage(this->dnsReqOthMut);
 	reqList->AddAll(this->dnsReqOthMap->GetKeys());
@@ -1147,7 +1143,7 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, UOSInt packetSize, U
 							if (answers.GetCount() > 0)
 							{
 								DNSRequestResult *req;
-								const UTF8Char *reqName;
+								Text::String *reqName;
 								Data::DateTime currTime;
 								currTime.SetCurrTimeUTC();
 								reqName = answers.GetItem(0)->name;
@@ -1203,14 +1199,14 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, UOSInt packetSize, U
 													dnsTarget = MemAlloc(DNSTargetInfo, 1);
 													dnsTarget->ip = resIP;
 													NEW_CLASS(dnsTarget->mut, Sync::Mutex());
-													NEW_CLASS(dnsTarget->addrList, Data::ArrayListICaseStrUTF8());
+													NEW_CLASS(dnsTarget->addrList, Data::ArrayListICaseString());
 													this->dnsTargetMap->Put(sortIP, dnsTarget);
 												}
 												Sync::MutexUsage mutUsage(dnsTarget->mut);
 												dnsTargetMutUsage.EndUse();
 												if (dnsTarget->addrList->SortedIndexOf(answer->name) < 0)
 												{
-													dnsTarget->addrList->SortedInsert(Text::StrCopyNew(answer->name));
+													dnsTarget->addrList->SortedInsert(answer->name->Clone());
 												}
 												j = i;
 												while (j-- > 0)
@@ -1220,7 +1216,7 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, UOSInt packetSize, U
 													{
 														if (dnsTarget->addrList->SortedIndexOf(answer->name) < 0)
 														{
-															dnsTarget->addrList->SortedInsert(Text::StrCopyNew(answer->name));
+															dnsTarget->addrList->SortedInsert(answer->name->Clone());
 														}
 													}
 												}

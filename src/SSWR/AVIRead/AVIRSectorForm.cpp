@@ -21,7 +21,7 @@ SSWR::AVIRead::AVIRSectorForm::AVIRSectorForm(UI::GUIClientControl *parent, UI::
 	this->core = core;
 	data->GetSourceNameObj()->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("Sector Viewer - ")));
 	this->SetText(sbuff);
-	this->SetFont(0, 8.25, false);
+	this->SetFont(0, 0, 8.25, false);
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	NEW_CLASS(this->pnlCtrl, UI::GUIPanel(ui, this));

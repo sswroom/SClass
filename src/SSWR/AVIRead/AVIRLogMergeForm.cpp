@@ -224,7 +224,7 @@ void __stdcall SSWR::AVIRead::AVIRLogMergeForm::OnConvertClicked(void *userObj)
 SSWR::AVIRead::AVIRLogMergeForm::AVIRLogMergeForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 800, 136, ui)
 {
 	this->SetText((const UTF8Char*)"Log Merge");
-	this->SetFont(0, 8.25, false);
+	this->SetFont(0, 0, 8.25, false);
 	this->SetNoResize(true);
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));

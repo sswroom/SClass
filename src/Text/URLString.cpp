@@ -181,7 +181,7 @@ UTF8Char *Text::URLString::GetURLPathSvr(UTF8Char *sbuff, const UTF8Char *url, U
 			sptr = &tmpBuff[i];
 			*sptr = 0;
 		}
-		sptr = Text::StrConcat(sbuff, tmpBuff);
+		sptr = Text::StrConcatC(sbuff, tmpBuff, (UOSInt)(sptr - tmpBuff));
 		MemFree(tmpBuff);
 		return sptr;
 	}

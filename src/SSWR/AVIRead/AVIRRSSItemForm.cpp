@@ -33,7 +33,7 @@ SSWR::AVIRead::AVIRRSSItemForm::AVIRRSSItemForm(UI::GUIClientControl *parent, UI
 	UOSInt j;
 	UTF8Char sbuff[128];
 	this->SetText((const UTF8Char*)"RSS Item");
-	this->SetFont((const UTF8Char*)"MingLiu", 8.25, false);
+	this->SetFont(UTF8STRC("MingLiu"), 8.25, false);
 
 	this->core = core;
 	this->rssItem = rssItem;

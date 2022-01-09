@@ -1,6 +1,8 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRGISPROPFORM
 #define _SM_SSWR_AVIREAD_AVIRGISPROPFORM
 #include "Media/Resizer/LanczosResizer8_C8.h"
+#include "SSWR/AVIRead/AVIRCore.h"
+#include "Text/String.h"
 #include "UI/GUIButton.h"
 #include "UI/GUICheckBox.h"
 #include "UI/GUIComboBox.h"
@@ -9,7 +11,6 @@
 #include "UI/GUILabel.h"
 #include "UI/GUIPictureBox.h"
 #include "UI/GUITextBox.h"
-#include "SSWR/AVIRead/AVIRCore.h"
 
 namespace SSWR
 {
@@ -62,7 +63,7 @@ namespace SSWR
 			UInt32 fillStyle;
 			Int32 fontType;
 			UOSInt fontStyle;
-			const UTF8Char *fontName;
+			Text::String *fontName;
 			Double fontSizePt;
 			UInt32 fontColor;
 			UOSInt imgIndex;

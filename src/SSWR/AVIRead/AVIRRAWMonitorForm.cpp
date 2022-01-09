@@ -405,7 +405,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnMDNSSelChg(void *userObj)
 	UTF8Char *sptr;
 	if (ans)
 	{
-		me->txtMDNSName->SetText(ans->name);
+		me->txtMDNSName->SetText(ans->name->v);
 		sptr = Text::StrUInt16(sbuff, ans->recType);
 		const UTF8Char *typeId = Net::DNSClient::TypeGetID(ans->recType);
 		if (typeId)
@@ -425,7 +425,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnMDNSSelChg(void *userObj)
 		me->txtMDNSTTL->SetText(sbuff);
 		if (ans->rd)
 		{
-			me->txtMDNSResult->SetText(ans->rd);
+			me->txtMDNSResult->SetText(ans->rd->v);
 		}
 		else
 		{
@@ -535,9 +535,9 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(void *userObj)
 	}
 	if (me->analyzer->DNSReqv4GetCount() != me->lbDNSReqv4->GetCount())
 	{
-		Data::ArrayList<const UTF8Char *> nameList;
-		const UTF8Char *selName = (const UTF8Char*)me->lbDNSReqv4->GetSelectedItem();
-		const UTF8Char *csptr;
+		Data::ArrayList<Text::String *> nameList;
+		Text::String *selName = (Text::String*)me->lbDNSReqv4->GetSelectedItem();
+		Text::String *s;
 		UOSInt i;
 		UOSInt j;
 		me->lbDNSReqv4->ClearItems();
@@ -546,9 +546,9 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(void *userObj)
 		j = nameList.GetCount();
 		while (i < j)
 		{
-			csptr = nameList.GetItem(i);
-			me->lbDNSReqv4->AddItem(csptr, (void*)csptr);
-			if (csptr == selName)
+			s = nameList.GetItem(i);
+			me->lbDNSReqv4->AddItem(s, (void*)s);
+			if (s == selName)
 			{
 				me->lbDNSReqv4->SetSelectedIndex(i);
 			}
@@ -557,9 +557,9 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(void *userObj)
 	}
 	if (me->analyzer->DNSReqv6GetCount() != me->lbDNSReqv6->GetCount())
 	{
-		Data::ArrayList<const UTF8Char *> nameList;
-		const UTF8Char *selName = (const UTF8Char*)me->lbDNSReqv6->GetSelectedItem();
-		const UTF8Char *csptr;
+		Data::ArrayList<Text::String *> nameList;
+		Text::String *selName = (Text::String*)me->lbDNSReqv6->GetSelectedItem();
+		Text::String *s;
 		UOSInt i;
 		UOSInt j;
 		me->lbDNSReqv6->ClearItems();
@@ -568,9 +568,9 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(void *userObj)
 		j = nameList.GetCount();
 		while (i < j)
 		{
-			csptr = nameList.GetItem(i);
-			me->lbDNSReqv6->AddItem(csptr, (void*)csptr);
-			if (csptr == selName)
+			s = nameList.GetItem(i);
+			me->lbDNSReqv6->AddItem(s, (void*)s);
+			if (s == selName)
 			{
 				me->lbDNSReqv6->SetSelectedIndex(i);
 			}
@@ -579,9 +579,9 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(void *userObj)
 	}
 	if (me->analyzer->DNSReqOthGetCount() != me->lbDNSReqOth->GetCount())
 	{
-		Data::ArrayList<const UTF8Char *> nameList;
-		const UTF8Char *selName = (const UTF8Char*)me->lbDNSReqOth->GetSelectedItem();
-		const UTF8Char *csptr;
+		Data::ArrayList<Text::String *> nameList;
+		Text::String *selName = (Text::String*)me->lbDNSReqOth->GetSelectedItem();
+		Text::String *s;
 		UOSInt i;
 		UOSInt j;
 		me->lbDNSReqOth->ClearItems();
@@ -590,9 +590,9 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(void *userObj)
 		j = nameList.GetCount();
 		while (i < j)
 		{
-			csptr = nameList.GetItem(i);
-			me->lbDNSReqOth->AddItem(csptr, (void*)csptr);
-			if (csptr == selName)
+			s = nameList.GetItem(i);
+			me->lbDNSReqOth->AddItem(s, (void*)s);
+			if (s == selName)
 			{
 				me->lbDNSReqOth->SetSelectedIndex(i);
 			}
@@ -1068,7 +1068,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnDeviceSelChg(void *userObj)
 
 SSWR::AVIRead::AVIRRAWMonitorForm::AVIRRAWMonitorForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Net::EthernetAnalyzer *analyzer) : UI::GUIForm(parent, 1024, 768, ui)
 {
-	this->SetFont(0, 8.25, false);
+	this->SetFont(0, 0, 8.25, false);
 	this->SetText((const UTF8Char*)"RAW Monitor");
 
 	this->core = core;

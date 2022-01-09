@@ -562,7 +562,7 @@ SSWR::AVIRead::AVIRGISTileDownloadForm::AVIRGISTileDownloadForm(UI::GUIClientCon
 	sb.AppendC(UTF8STRC("Tile Downloader - "));
 	sb.Append(lyr->GetSourceNameObj());
 	this->SetText(sb.ToString());
-	this->SetFont(0, 8.25, false);
+	this->SetFont(0, 0, 8.25, false);
 	this->SetNoResize(true);
 	this->selecting = false;
 	this->isDown = false;

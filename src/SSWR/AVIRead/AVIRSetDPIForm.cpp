@@ -104,7 +104,7 @@ void SSWR::AVIRead::AVIRSetDPIForm::UpdatePreview()
 		gimg->DrawRect(0, 0, Math::UOSInt2Double(w), Math::UOSInt2Double(h), 0, b);
 		gimg->DelBrush(b);
 
-		f = gimg->NewFontPx((const UTF8Char*)"Arial", 12 * Math::UOSInt2Double(v) * 0.1 / ddpi, Media::DrawEngine::DFS_ANTIALIAS, 0);
+		f = gimg->NewFontPx(UTF8STRC("Arial"), 12 * Math::UOSInt2Double(v) * 0.1 / ddpi, Media::DrawEngine::DFS_ANTIALIAS, 0);
 		p = gimg->NewPenARGB(0xff000000, 1, 0, 0);
 		b = gimg->NewBrushARGB(0xff000000);
 		currV = 0;
@@ -141,7 +141,7 @@ void SSWR::AVIRead::AVIRSetDPIForm::UpdatePreview()
 SSWR::AVIRead::AVIRSetDPIForm::AVIRSetDPIForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 174, ui)
 {
 	UTF8Char sbuff[128];
-	this->SetFont(0, 8.25, false);
+	this->SetFont(0, 0, 8.25, false);
 	this->SetText((const UTF8Char*)"Set Monitor DPI");
 
 	this->pimg = 0;

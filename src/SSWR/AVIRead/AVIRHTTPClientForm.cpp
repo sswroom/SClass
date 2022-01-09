@@ -654,7 +654,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 					i++;
 				}
 				Text::StringBuilderUTF8 sb;
-				if (cli->GetRespHeader((const UTF8Char*)"Content-Type", &sb))
+				if (cli->GetRespHeader(UTF8STRC("Content-Type"), &sb))
 				{
 					contType = Text::StrCopyNew(sb.ToString());
 				}
@@ -1064,7 +1064,7 @@ UTF8Char *SSWR::AVIRead::AVIRHTTPClientForm::AppendCookie(UTF8Char *sbuff, const
 
 SSWR::AVIRead::AVIRHTTPClientForm::AVIRHTTPClientForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
-	this->SetFont(0, 8.25, false);
+	this->SetFont(0, 0, 8.25, false);
 	this->SetText((const UTF8Char*)"HTTP Client");
 
 	this->core = core;

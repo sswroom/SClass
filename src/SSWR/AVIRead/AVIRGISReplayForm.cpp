@@ -176,7 +176,7 @@ SSWR::AVIRead::AVIRGISReplayForm::AVIRGISReplayForm(UI::GUIClientControl *parent
 	this->threadToStop = false;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->SetText((const UTF8Char*)"Replay");
-	this->SetFont(0, 8.25, false);
+	this->SetFont(0, 0, 8.25, false);
 
 	UI::GUIPanel *pnl;
 	UI::GUIPanel *pnl2;

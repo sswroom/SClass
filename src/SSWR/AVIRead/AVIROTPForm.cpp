@@ -62,7 +62,7 @@ void __stdcall SSWR::AVIRead::AVIROTPForm::OnNewClicked(void *userObj)
 	UInt8 buff[32];
 	UOSInt keySize;
 	Text::TextBinEnc::Base32Enc b32;
-	keySize = b32.DecodeBin(sbKey.ToString(), buff);
+	keySize = b32.DecodeBin(sbKey.ToString(), sbKey.GetLength(), buff);
 	EntryInfo *entry;
 	entry = MemAlloc(EntryInfo, 1);
 	entry->name = Text::StrCopyNew(sbName.ToString());
@@ -115,7 +115,7 @@ void __stdcall SSWR::AVIRead::AVIROTPForm::OnTimerTick(void *userObj)
 SSWR::AVIRead::AVIROTPForm::AVIROTPForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetText((const UTF8Char*)"One-Time Password (OTP)");
-	this->SetFont(0, 8.25, false);
+	this->SetFont(0, 0, 8.25, false);
 
 	this->core = core;
 	NEW_CLASS(this->entryList, Data::ArrayList<EntryInfo*>());

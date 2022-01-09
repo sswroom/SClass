@@ -136,7 +136,7 @@ SSWR::AVIRead::AVIRGISDistanceForm::AVIRGISDistanceForm(UI::GUIClientControl *pa
 	this->navi = navi;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->SetText((const UTF8Char*)"Distance Tool");
-	this->SetFont(0, 8.25, false);
+	this->SetFont(0, 0, 8.25, false);
 	this->SetNoResize(true);
 	this->SetAlwaysOnTop(true);
 	NEW_CLASS(this->ptList, Data::ArrayList<Double>());

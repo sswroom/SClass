@@ -125,7 +125,7 @@ void SSWR::AVIRead::AVIRARPScanForm::UpdateARPList()
 
 SSWR::AVIRead::AVIRARPScanForm::AVIRARPScanForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
-	this->SetFont(0, 8.25, false);
+	this->SetFont(0, 0, 8.25, false);
 	this->SetText((const UTF8Char*)"ARP Scan");
 
 	this->core = core;

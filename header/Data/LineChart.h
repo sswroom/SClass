@@ -55,10 +55,10 @@ namespace Data
 
 		Data::ArrayList<ChartData*> *yCharts;
 //		Data::ArrayList *dataPos;
-		const UTF8Char *titleBuff;
+		Text::String *titleBuff;
 		UTF8Char *titleLine[3];
 		UOSInt titleLineCnt;
-		const UTF8Char *yUnit;
+		Text::String *yUnit;
 		Int8 timeZoneQHR;
 
 		Double refDbl;
@@ -78,7 +78,7 @@ namespace Data
 		Double lineThick;
 		Double barLength;
 
-		const UTF8Char *fntName;
+		Text::String *fntName;
 		Double fntSizePt;
 
 		Bool hasXRangeDate;

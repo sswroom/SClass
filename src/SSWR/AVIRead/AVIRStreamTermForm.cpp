@@ -255,7 +255,7 @@ void SSWR::AVIRead::AVIRStreamTermForm::UpdateSendDisp()
 SSWR::AVIRead::AVIRStreamTermForm::AVIRStreamTermForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 456, 200, ui)
 {
 	this->SetText((const UTF8Char*)"Stream Terminal");
-	this->SetFont(0, 8.25, false);
+	this->SetFont(0, 0, 8.25, false);
 	
 	this->core = core;
 	this->siLabDriver = this->core->GetSiLabDriver();

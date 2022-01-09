@@ -7,19 +7,19 @@
 
 Math::CoordinateSystem::CoordinateSystem(Text::String *sourceName, UInt32 srid, const UTF8Char *csysName) : IO::ParsedObject(sourceName)
 {
-	this->csysName = Text::StrCopyNew(csysName);
+	this->csysName = Text::String::NewNotNull(csysName);
 	this->srid = srid;
 }
 
 Math::CoordinateSystem::CoordinateSystem(const UTF8Char *sourceName, UInt32 srid, const UTF8Char *csysName) : IO::ParsedObject(sourceName)
 {
-	this->csysName = Text::StrCopyNew(csysName);
+	this->csysName = Text::String::NewNotNull(csysName);
 	this->srid = srid;
 }
 
 Math::CoordinateSystem::~CoordinateSystem()
 {
-	Text::StrDelNew(this->csysName);
+	this->csysName->Release();
 }
 
 IO::ParserType Math::CoordinateSystem::GetParserType()
@@ -52,7 +52,7 @@ Bool Math::CoordinateSystem::Equals(Math::CoordinateSystem *csys)
 	}
 }
 
-const UTF8Char *Math::CoordinateSystem::GetCSysName()
+Text::String *Math::CoordinateSystem::GetCSysName()
 {
 	return this->csysName;
 }

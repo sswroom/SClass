@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/ICaseStringUTF8Map.h"
+#include "Data/ICaseStringMap.h"
 #include "IO/Path.h"
 #include "IO/ParsedObject.h"
 #include "IO/StmData/FileData.h"
@@ -130,7 +130,7 @@ Map::MapEnv::MapEnv(const UTF8Char *fileName, UInt32 bgColor, Math::CoordinateSy
 	NEW_CLASS(this->mapLayers, Data::ArrayList<Map::MapEnv::MapItem*>());
 	NEW_CLASS(this->lineStyles, Data::ArrayList<LineStyle*>());
 	NEW_CLASS(this->fontStyles, Data::ArrayList<FontStyle*>());
-	NEW_CLASS(this->images, Data::ICaseStringUTF8Map<ImageInfo*>());
+	NEW_CLASS(this->images, Data::ICaseStringMap<ImageInfo*>());
 	NEW_CLASS(this->imgList, Data::ArrayList<ImageInfo*>());
 	NEW_CLASS(this->random, Data::RandomOS());
 	this->AddLineStyle();
@@ -151,7 +151,7 @@ Map::MapEnv::~MapEnv()
 	while (i-- > 0)
 	{
 		ImageInfo *imgInfo = imgs->GetItem(i);
-		Text::StrDelNew(imgInfo->fileName);
+		imgInfo->fileName->Release();
 		DEL_CLASS(imgInfo->imgs);
 		MemFree(imgInfo);
 	}
@@ -251,15 +251,8 @@ Bool Map::MapEnv::SetLineStyleName(UOSInt index, const UTF8Char *name)
 	}
 	LineStyle *style;
 	style = (LineStyle*)this->lineStyles->GetItem(index);
-	if (style->name)
-	{
-		Text::StrDelNew(style->name);
-		style->name = 0;
-	}
-	if (name)
-	{
-		style->name = Text::StrCopyNew(name);
-	}
+	SDEL_STRING(style->name);
+	style->name = Text::String::NewOrNull(name);
 	return true;
 }
 
@@ -274,7 +267,7 @@ UTF8Char *Map::MapEnv::GetLineStyleName(UOSInt index, UTF8Char *buff)
 	style = (LineStyle*)this->lineStyles->GetItem(index);
 	if (style->name)
 	{
-		return Text::StrConcat(buff, style->name);
+		return style->name->ConcatTo(buff);
 	}
 	else
 	{
@@ -393,10 +386,7 @@ Bool Map::MapEnv::RemoveLineStyle(UOSInt index)
 		MemFree(layer);
 	}
 	DEL_CLASS(style->layers);
-	if (style->name)
-	{
-		Text::StrDelNew(style->name);
-	}
+	SDEL_STRING(style->name);
 	MemFree(style);
 	return true;
 }
@@ -447,15 +437,8 @@ UOSInt Map::MapEnv::AddFontStyle(const UTF8Char *styleName, const UTF8Char *font
 		return (UOSInt)-1;
 	Sync::MutexUsage mutUsage(this->mut);
 	style = MemAlloc(Map::MapEnv::FontStyle, 1);
-	if (styleName)
-	{
-		style->styleName = Text::StrCopyNew(styleName);
-	}
-	else
-	{
-		style->styleName = 0;
-	}
-	style->fontName = Text::StrCopyNew(fontName);
+	style->styleName = Text::String::NewOrNull(styleName);
+	style->fontName = Text::String::NewNotNull(fontName);
 	style->fontSizePt = fontSizePt;
 	style->bold = bold;
 	style->fontColor = fontColor;
@@ -470,16 +453,8 @@ Bool Map::MapEnv::SetFontStyleName(UOSInt index, const UTF8Char *name)
 	Map::MapEnv::FontStyle *style = this->fontStyles->GetItem(index);
 	if (style == 0)
 		return false;
-	if (style->styleName)
-		Text::StrDelNew(style->styleName);
-	if (name)
-	{
-		style->styleName = Text::StrCopyNew(name);
-	}
-	else
-	{
-		style->styleName = 0;
-	}
+	SDEL_STRING(style->styleName);
+	style->styleName = Text::String::NewOrNull(name);
 	return true;
 }
 
@@ -489,7 +464,7 @@ UTF8Char *Map::MapEnv::GetFontStyleName(UOSInt index, UTF8Char *buff)
 	if (style == 0)
 		return 0;
 	if (style->styleName)
-		return Text::StrConcat(buff, style->styleName);
+		return style->styleName->ConcatTo(buff);
 	return 0;
 }
 
@@ -499,11 +474,8 @@ Bool Map::MapEnv::RemoveFontStyle(UOSInt index)
 	Map::MapEnv::FontStyle *style = this->fontStyles->RemoveAt(index);
 	if (style == 0)
 		return false;
-	if (style->styleName)
-	{
-		Text::StrDelNew(style->styleName);
-	}
-	Text::StrDelNew(style->fontName);
+	SDEL_STRING(style->styleName);
+	style->fontName->Release();
 	MemFree(style);
 	return true;
 }
@@ -513,7 +485,7 @@ UOSInt Map::MapEnv::GetFontStyleCount()
 	return this->fontStyles->GetCount();
 }
 
-Bool Map::MapEnv::GetFontStyle(UOSInt index, const UTF8Char **fontName, Double *fontSizePt, Bool *bold, UInt32 *fontColor, UOSInt *buffSize, UInt32 *buffColor)
+Bool Map::MapEnv::GetFontStyle(UOSInt index, Text::String **fontName, Double *fontSizePt, Bool *bold, UInt32 *fontColor, UOSInt *buffSize, UInt32 *buffColor)
 {
 	Map::MapEnv::FontStyle *style = this->fontStyles->GetItem(index);
 	if (style == 0)
@@ -535,7 +507,7 @@ Bool Map::MapEnv::GetFontStyle(UOSInt index, const UTF8Char **fontName, Double *
 	return true;
 }
 
-Bool Map::MapEnv::ChgFontStyle(UOSInt index, const UTF8Char *fontName, Double fontSizePt, Bool bold, UInt32 fontColor, UOSInt buffSize, UInt32 buffColor)
+Bool Map::MapEnv::ChgFontStyle(UOSInt index, Text::String *fontName, Double fontSizePt, Bool bold, UInt32 fontColor, UOSInt buffSize, UInt32 buffColor)
 {
 	if (fontName == 0)
 		return false;
@@ -543,10 +515,10 @@ Bool Map::MapEnv::ChgFontStyle(UOSInt index, const UTF8Char *fontName, Double fo
 	if (style == 0)
 		return false;
 
-	if (Text::StrCompare(style->fontName, fontName) != 0)
+	if (!style->fontName->Equals(fontName))
 	{
-		Text::StrDelNew(style->fontName);
-		style->fontName = Text::StrCopyNew(fontName);
+		style->fontName->Release();
+		style->fontName = fontName->Clone();
 	}
 	style->fontSizePt = fontSizePt;
 	style->bold = bold;
@@ -756,7 +728,7 @@ void Map::MapEnv::RemoveItem(Map::MapEnv::GroupItem *group, UOSInt index)
 		{
 			DEL_CLASS(lyr->layer);
 		}
-		SDEL_TEXT(lyr->fontName);
+		SDEL_STRING(lyr->fontName);
 		MemFree(lyr);
 	}
 	else if (item->itemType == Map::MapEnv::IT_GROUP)
@@ -951,10 +923,10 @@ Bool Map::MapEnv::SetLayerProp(Map::MapEnv::LayerItem *setting, Map::MapEnv::Gro
 			lyr->fontStyle = setting->fontStyle;
 			if (lyr->fontName != setting->fontName)
 			{
-				SDEL_TEXT(lyr->fontName);
+				SDEL_STRING(lyr->fontName);
 				if (setting->fontName)
 				{
-					lyr->fontName = Text::StrCopyNew(setting->fontName);
+					lyr->fontName = setting->fontName->Clone();
 				}
 			}
 			lyr->fontSizePt = setting->fontSizePt;
@@ -1143,7 +1115,7 @@ OSInt Map::MapEnv::AddImage(const UTF8Char *fileName, Parser::ParserList *parser
 			UOSInt i;
 			imgInfo = MemAlloc(ImageInfo, 1);
 			Media::ImageList *imgList = (Media::ImageList*)pobj;
-			imgInfo->fileName = Text::StrCopyNew(fileName);
+			imgInfo->fileName = Text::String::NewNotNull(fileName);
 			imgInfo->index = this->GetImageCnt();
 			imgInfo->cnt = imgList->GetCount();
 			imgInfo->imgs = imgList;
@@ -1185,7 +1157,7 @@ UOSInt Map::MapEnv::AddImage(const UTF8Char *fileName, Media::ImageList *imgList
 	}
 	UOSInt i;
 	imgInfo = MemAlloc(ImageInfo, 1);
-	imgInfo->fileName = Text::StrCopyNew(fileName);
+	imgInfo->fileName = Text::String::NewNotNull(fileName);
 	imgInfo->index = this->GetImageCnt();
 	imgInfo->cnt = imgList->GetCount();
 	imgInfo->imgs = imgList;
@@ -1203,7 +1175,7 @@ UOSInt Map::MapEnv::AddImage(const UTF8Char *fileName, Media::ImageList *imgList
 			imgInfo->isAni = true;
 		}
 	}
-	this->images->Put(fileName, imgInfo);
+	this->images->Put(imgInfo->fileName, imgInfo);
 	this->imgList->Add(imgInfo);
 	return imgInfo->index;
 }

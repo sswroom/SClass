@@ -189,7 +189,7 @@ SSWR::AVIRead::AVIRRESTfulForm::AVIRRESTfulForm(UI::GUIClientControl *parent, UI
 	UOSInt i;
 	this->core = core;
 	this->SetText((const UTF8Char*)"RESTful Server");
-	this->SetFont(0, 8.25, false);
+	this->SetFont(0, 0, 8.25, false);
 	this->svr = 0;
 	this->log = 0;
 	this->logger = 0;

@@ -134,7 +134,7 @@ SSWR::AVIRead::AVIRLogServerForm::AVIRLogServerForm(UI::GUIClientControl *parent
 {
 	this->core = core;
 	this->SetText((const UTF8Char*)"Log Server");
-	this->SetFont(0, 8.25, false);
+	this->SetFont(0, 0, 8.25, false);
 	this->svr = 0;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 

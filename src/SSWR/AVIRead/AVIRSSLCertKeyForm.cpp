@@ -149,7 +149,7 @@ void SSWR::AVIRead::AVIRSSLCertKeyForm::LoadFile(const UTF8Char *fileName)
 SSWR::AVIRead::AVIRSSLCertKeyForm::AVIRSSLCertKeyForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Net::SSLEngine *ssl, Crypto::Cert::X509Cert *cert, Crypto::Cert::X509File *key) : UI::GUIForm(parent, 456, 200, ui)
 {
 	this->SetText((const UTF8Char*)"SSL Cert/Key");
-	this->SetFont(0, 8.25, false);
+	this->SetFont(0, 0, 8.25, false);
 	this->SetNoResize(true);
 	
 	this->core = core;

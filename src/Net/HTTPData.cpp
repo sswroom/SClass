@@ -39,7 +39,7 @@ UInt32 __stdcall Net::HTTPData::LoadThread(void *userObj)
 	while (fdh->cli->GetRespStatus() == 301)
 	{
 		Text::StringBuilderUTF8 sb;
-		fdh->cli->GetRespHeader((const UTF8Char*)"Location", &sb);
+		fdh->cli->GetRespHeader(UTF8STRC("Location"), &sb);
 		if (sb.GetLength() > 0 && (sb.StartsWith((const UTF8Char*)"http://") || sb.StartsWith((const UTF8Char*)"https://")))
 		{
 			if (fdh->queue)
@@ -106,7 +106,7 @@ UInt32 __stdcall Net::HTTPData::LoadThread(void *userObj)
 		else
 		{
 			Text::StringBuilderUTF8 sb;
-			if (!fdh->cli->GetRespHeader((const UTF8Char*)"Content-Length", &sb))
+			if (!fdh->cli->GetRespHeader(UTF8STRC("Content-Length"), &sb))
 			{
 				Sync::Event *readEvt;
 				void *sess;

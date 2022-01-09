@@ -287,7 +287,7 @@ void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnTimerTick(void *userObj)
 SSWR::AVIRead::AVIRDWQB30Form::AVIRDWQB30Form(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 640, 360, ui)
 {
 	this->SetText((const UTF8Char*)"Denso Wave QB-30");
-	this->SetFont(0, 8.25, false);
+	this->SetFont(0, 0, 8.25, false);
 	this->SetNoResize(true);
 
 	this->core = core;

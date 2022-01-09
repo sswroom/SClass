@@ -201,7 +201,7 @@ void SSWR::AVIRead::AVIRRSSReaderForm::RSSListStore()
 SSWR::AVIRead::AVIRRSSReaderForm::AVIRRSSReaderForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetText((const UTF8Char*)"RSS Reader");
-	this->SetFont((const UTF8Char*)"MingLiu", 8.25, false);
+	this->SetFont(UTF8STRC("MingLiu"), 8.25, false);
 
 	this->core = core;
 	this->ssl = Net::SSLEngineFactory::Create(this->core->GetSocketFactory(), true);

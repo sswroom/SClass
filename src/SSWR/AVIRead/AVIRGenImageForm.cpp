@@ -55,7 +55,7 @@ void __stdcall SSWR::AVIRead::AVIRGenImageForm::CancelClicked(void *userObj)
 SSWR::AVIRead::AVIRGenImageForm::AVIRGenImageForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 350, 296, ui)
 {
 	this->SetText((const UTF8Char*)"Generate Image");
-	this->SetFont(0, 8.25, false);
+	this->SetFont(0, 0, 8.25, false);
 	this->SetNoResize(true);
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));

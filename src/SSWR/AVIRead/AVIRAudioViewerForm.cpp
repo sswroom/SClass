@@ -40,7 +40,7 @@ void SSWR::AVIRead::AVIRAudioViewerForm::UpdateImages()
 		gimg->DrawRect(0, 0, Math::UOSInt2Double(w), Math::UOSInt2Double(h), 0, b);
 		gimg->DelBrush(b);
 		b = gimg->NewBrushARGB(0xffffffff);
-		f = gimg->NewFontPt((const UTF8Char*)"Arial", 10, Media::DrawEngine::DFS_ANTIALIAS, 0);
+		f = gimg->NewFontPt(UTF8STRC("Arial"), 10, Media::DrawEngine::DFS_ANTIALIAS, 0);
 		gimg->DrawString(0, 0, (const UTF8Char*)"Format not supported", f, b);
 		gimg->DelFont(f);
 		gimg->DelBrush(b);
@@ -140,7 +140,7 @@ void SSWR::AVIRead::AVIRAudioViewerForm::UpdateFreqImage()
 		gimg->DrawRect(0, 0, Math::UOSInt2Double(w), Math::UOSInt2Double(h), 0, b);
 		gimg->DelBrush(b);
 		b = gimg->NewBrushARGB(0xffffffff);
-		f = gimg->NewFontPt((const UTF8Char*)"Arial", 10, Media::DrawEngine::DFS_ANTIALIAS, 0);
+		f = gimg->NewFontPt(UTF8STRC("Arial"), 10, Media::DrawEngine::DFS_ANTIALIAS, 0);
 		gimg->DrawString(0, 0, (const UTF8Char*)"Format not supported", f, b);
 		gimg->DelFont(f);
 		gimg->DelBrush(b);
@@ -233,7 +233,7 @@ void SSWR::AVIRead::AVIRAudioViewerForm::UpdateFreqImage()
 SSWR::AVIRead::AVIRAudioViewerForm::AVIRAudioViewerForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Media::IAudioSource *audSrc) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	UTF8Char sbuff[512];
-	this->SetFont(0, 8.25, false);
+	this->SetFont(0, 0, 8.25, false);
 	audSrc->GetSourceName(Text::StrConcatC(sbuff, UTF8STRC("Audio Viewer - ")));
 	this->SetText(sbuff);
 

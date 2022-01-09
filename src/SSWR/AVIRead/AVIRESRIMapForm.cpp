@@ -80,7 +80,7 @@ void __stdcall SSWR::AVIRead::AVIRESRIMapForm::OnOtherChanged(void *userObj)
 SSWR::AVIRead::AVIRESRIMapForm::AVIRESRIMapForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 640, 120, ui)
 {
 	this->SetText((const UTF8Char*)"Add ESRI Map");
-	this->SetFont(0, 8.25, false);
+	this->SetFont(0, 0, 8.25, false);
 	this->SetNoResize(true);
 
 	this->core = core;

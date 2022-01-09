@@ -176,7 +176,9 @@ Text::String *Text::String::Clone()
 
 UTF8Char *Text::String::ConcatTo(UTF8Char *sbuff)
 {
-	return Text::StrConcatC(sbuff, this->v, this->leng);
+	MemCopyNO(sbuff, this->v, this->leng);
+	sbuff[this->leng] = 0;
+	return &sbuff[this->leng];
 }
 
 Bool Text::String::Equals(const UTF8Char *s)

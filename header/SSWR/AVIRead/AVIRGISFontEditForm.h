@@ -26,7 +26,7 @@ namespace SSWR
 			Bool changed;
 			Media::DrawEngine *eng;
 
-			const UTF8Char *currFontName;
+			Text::String *currFontName;
 			Double currFontSizePt;
 			UInt32 currColor;
 			UOSInt currBuffSize;

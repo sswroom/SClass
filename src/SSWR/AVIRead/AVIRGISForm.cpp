@@ -617,7 +617,7 @@ SSWR::AVIRead::AVIRGISForm::AVIRGISForm(UI::GUIClientControl *parent, UI::GUICor
 	NEW_CLASS(this->ta, Text::TextAnalyzer());
 	NEW_CLASS(this->subForms, Data::ArrayList<UI::GUIForm*>());
 	UpdateTitle();
-	SetFont(0, 8.25, false);
+	this->SetFont(0, 0, 8.25, false);
 
 	NEW_CLASS(this->pnlControl, UI::GUIPanel(ui, this));
 	this->pnlControl->SetArea(0, 0, 100, 24, false);

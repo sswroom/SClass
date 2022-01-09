@@ -297,7 +297,7 @@ void __stdcall SSWR::AVIRead::AVIRExeForm::OnResourceDblClk(void *userObj)
 SSWR::AVIRead::AVIRExeForm::AVIRExeForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, IO::EXEFile *exeFile) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	UTF8Char sbuff[512];
-	this->SetFont(0, 8.25, false);
+	this->SetFont(0, 0, 8.25, false);
 	this->exeFile = exeFile;
 	this->parts = 0;
 	this->codesList = 0;

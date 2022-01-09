@@ -32,7 +32,7 @@ void __stdcall SSWR::AVIRead::AVIRMACManagerEntryForm::OnCancelClicked(void *use
 
 SSWR::AVIRead::AVIRMACManagerEntryForm::AVIRMACManagerEntryForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, const UInt8 *mac, const UTF8Char *name) : UI::GUIForm(parent, 480, 104, ui)
 {
-	this->SetFont(0, 8.25, false);
+	this->SetFont(0, 0, 8.25, false);
 	this->SetText((const UTF8Char*)"MAC Entry");
 	this->SetNoResize(true);
 

@@ -2177,9 +2177,9 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 											sb.AppendC(UTF8STRC("\r\n"));
 											sb.Append(dataStr);
 											sb.AppendC(UTF8STRC(":"));
-											dataLen = b64.CalcBinSize(dataStr->v);
+											dataLen = b64.CalcBinSize(dataStr->v, dataStr->leng);
 											dataBuff = MemAlloc(UInt8, dataLen);
-											if (b64.DecodeBin(dataStr->v, dataBuff) == dataLen)
+											if (b64.DecodeBin(dataStr->v, dataStr->leng, dataBuff) == dataLen)
 											{
 												PacketLoRaMACGetDetail(dataBuff, dataLen, &sb);
 											}

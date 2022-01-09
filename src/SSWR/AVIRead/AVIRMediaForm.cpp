@@ -312,7 +312,7 @@ Bool SSWR::AVIRead::AVIRMediaForm::PBIsPlaying()
 
 SSWR::AVIRead::AVIRMediaForm::AVIRMediaForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Media::MediaFile *mediaFile) : UI::GUIForm(parent, 1024, 768, ui)
 {
-	this->SetFont(0, 8.25, false);
+	this->SetFont(0, 0, 8.25, false);
 	UTF8Char sbuff[512];
 	mediaFile->GetSourceNameObj()->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("Media Form - ")));
 	this->SetText(sbuff);

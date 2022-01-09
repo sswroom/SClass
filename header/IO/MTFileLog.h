@@ -28,7 +28,7 @@ namespace IO
 		IO::FileStream *fileStm;
 		const Char *dateFormat;
 		Text::String *fileName;
-		const UTF8Char *extName;
+		Text::String *extName;
 		Bool closed;
 		Bool running;
 

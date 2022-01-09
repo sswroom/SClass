@@ -113,8 +113,8 @@ namespace Media
 
 		virtual DrawPen *NewPenARGB(UInt32 color, Double thick, UInt8 *pattern, UOSInt nPattern) = 0;
 		virtual DrawBrush *NewBrushARGB(UInt32 color) = 0;
-		virtual DrawFont *NewFontPt(const UTF8Char *name, Double ptSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 codePage) = 0; // 72 dpi size
-		virtual DrawFont *NewFontPx(const UTF8Char *name, Double pxSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 codePage) = 0; // Actual size
+		virtual DrawFont *NewFontPt(const UTF8Char *name, UOSInt nameLen, Double ptSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 codePage) = 0; // 72 dpi size
+		virtual DrawFont *NewFontPx(const UTF8Char *name, UOSInt nameLen, Double pxSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 codePage) = 0; // Actual size
 		virtual DrawFont *CloneFont(DrawFont *f) = 0;
 		virtual void DelPen(DrawPen *p) = 0;
 		virtual void DelBrush(DrawBrush *b) = 0;

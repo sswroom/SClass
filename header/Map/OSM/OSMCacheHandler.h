@@ -1,6 +1,6 @@
 #ifndef _SM_MAP_OSM_OSMCACHEHANDLER
 #define _SM_MAP_OSM_OSMCACHEHANDLER
-#include "Data/ArrayListStrUTF8.h"
+#include "Data/ArrayListString.h"
 #include "Data/SyncLinkedList.h"
 #include "IO/FileStream.h"
 #include "Net/SocketFactory.h"
@@ -40,11 +40,11 @@ namespace Map
 			} ThreadStatus;
 
 		private:
-			Data::ArrayListStrUTF8 *urls;
+			Data::ArrayListString *urls;
 			UOSInt urlNext;
 			Sync::Mutex *urlMut;
 
-			const UTF8Char *cacheDir;
+			Text::String *cacheDir;
 			Int32 maxLevel;
 			Net::SocketFactory *sockf;
 			Net::SSLEngine *ssl;
@@ -56,7 +56,7 @@ namespace Map
 			OSMCacheHandler(const UTF8Char *url, const UTF8Char *cacheDir, Int32 maxLevel, Net::SocketFactory *sockf, Net::SSLEngine *ssl);
 			virtual ~OSMCacheHandler();
 
-			void AddAlternateURL(const UTF8Char *url);
+			void AddAlternateURL(const UTF8Char *url, UOSInt len);
 			void GetStatus(CacheStatus *status);
 			void SetIOMut(Sync::Mutex *ioMut);
 

@@ -27,7 +27,7 @@ void __stdcall SSWR::OrganMgr::OrganImageWebForm::OnCancelClicked(void *userObj)
 SSWR::OrganMgr::OrganImageWebForm::OrganImageWebForm(UI::GUIClientControl *parent, UI::GUICore *ui, OrganEnv *env, OrganImageItem *imgItem, SSWR::OrganMgr::WebFileInfo *wfile) : UI::GUIForm(parent, 800, 176, ui)
 {
 	this->SetNoResize(true);
-	this->SetFont(0, 10.5, false);
+	this->SetFont(0, 0, 10.5, false);
 
 	this->env = env;
 	this->srcURL = 0;

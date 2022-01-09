@@ -163,8 +163,8 @@ SSWR::AVIRead::AVIRGISGroupQueryForm::AVIRGISGroupQueryForm(UI::GUIClientControl
 			sb.AppendC(UTF8STRC("Unknown"));
 		}
 	}
-	SetText(sb.ToString());
-	SetFont(0, 8.25, false);
+	this->SetText(sb.ToString());
+	this->SetFont(0, 0, 8.25, false);
 
 	NEW_CLASS(this->txtLayer, UI::GUITextBox(ui, this, (const UTF8Char*)""));
 	this->txtLayer->SetRect(0, 0, 100, 23, false);

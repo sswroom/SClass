@@ -190,7 +190,7 @@ SSWR::AVIRead::AVIRTVControlForm::AVIRTVControlForm(UI::GUIClientControl *parent
 	IO::TVControl::TVInfo tvInfo;
 
 	this->SetText((const UTF8Char*)"TV Control");
-	this->SetFont(0, 8.25, false);
+	this->SetFont(0, 0, 8.25, false);
 	this->SetNoResize(true);
 
 	this->core = core;

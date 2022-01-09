@@ -13,9 +13,24 @@ UI::FontDialog::FontDialog()
 	this->isItalic = false;
 }
 
-UI::FontDialog::FontDialog(const UTF8Char *fontName, Double fontSizePt, Bool isBold, Bool isItalic)
+UI::FontDialog::FontDialog(const UTF8Char *fontName, UOSInt nameLen, Double fontSizePt, Bool isBold, Bool isItalic)
 {
-	this->fontName = SCOPY_TEXT(fontName);
+	if (fontName)
+	{
+		this->fontName = Text::String::New(fontName, nameLen);
+	}
+	else
+	{
+		this->fontName = 0;
+	}
+	this->fontSizePt = fontSizePt;
+	this->isBold = isBold;
+	this->isItalic = isItalic;
+}
+
+UI::FontDialog::FontDialog(Text::String *fontName, Double fontSizePt, Bool isBold, Bool isItalic)
+{
+	this->fontName = SCOPY_STRING(fontName);
 	this->fontSizePt = fontSizePt;
 	this->isBold = isBold;
 	this->isItalic = isItalic;
@@ -23,7 +38,7 @@ UI::FontDialog::FontDialog(const UTF8Char *fontName, Double fontSizePt, Bool isB
 
 UI::FontDialog::~FontDialog()
 {
-	SDEL_TEXT(this->fontName);
+	SDEL_STRING(this->fontName);
 }
 
 Bool UI::FontDialog::ShowDialog(ControlHandle *ownerHandle)
@@ -31,7 +46,7 @@ Bool UI::FontDialog::ShowDialog(ControlHandle *ownerHandle)
 	GtkWidget *dlg = gtk_font_chooser_dialog_new("Select Font", (GtkWindow*)ownerHandle);
 	if (this->fontName)
 	{
-		gtk_font_chooser_set_font((GtkFontChooser*)dlg, (const Char*)this->fontName);
+		gtk_font_chooser_set_font((GtkFontChooser*)dlg, (const Char*)this->fontName->v);
 	}
 
 	Bool ret = false;
@@ -42,8 +57,8 @@ Bool UI::FontDialog::ShowDialog(ControlHandle *ownerHandle)
 		if (fontDesc)
 		{
 			const char *family = pango_font_description_get_family(fontDesc);
-			SDEL_TEXT(this->fontName);
-			this->fontName = Text::StrCopyNew((const UTF8Char*)family);
+			SDEL_STRING(this->fontName);
+			this->fontName = Text::String::NewNotNull((const UTF8Char*)family);
 			this->isBold = pango_font_description_get_weight(fontDesc) >= PANGO_WEIGHT_BOLD;
 			this->isItalic = pango_font_description_get_style(fontDesc) == PANGO_STYLE_ITALIC;
 			this->fontSizePt = pango_font_description_get_size(fontDesc) / (Double)PANGO_SCALE;
@@ -54,7 +69,7 @@ Bool UI::FontDialog::ShowDialog(ControlHandle *ownerHandle)
 	return ret;
 }
 
-const UTF8Char *UI::FontDialog::GetFontName()
+Text::String *UI::FontDialog::GetFontName()
 {
 	return this->fontName;
 }

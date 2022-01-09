@@ -15,7 +15,7 @@ namespace Net
 			Data::ArrayListInt64 *sessIds;
 			Data::ArrayList<Net::WebServer::MemoryWebSession*> *sesses;
 			Sync::Mutex *mut;
-			const UTF8Char *path;
+			Text::String *path;
 
 			Int32 chkInterval;
 			SessionHandler chkHdlr;

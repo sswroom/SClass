@@ -68,7 +68,7 @@ UOSInt Text::TextBinEnc::Radix64Enc::EncodeBin(Text::StringBuilderUTF *sb, const
 	return outSize;
 }
 
-UOSInt Text::TextBinEnc::Radix64Enc::CalcBinSize(const UTF8Char *sbuff)
+UOSInt Text::TextBinEnc::Radix64Enc::CalcBinSize(const UTF8Char *sbuff, UOSInt strLen)
 {
 	UOSInt cnt = 0;
 	UTF8Char c;
@@ -94,53 +94,6 @@ UOSInt Text::TextBinEnc::Radix64Enc::CalcBinSize(const WChar *sbuff)
 		}
 	}
 	return cnt * 3 / 4;
-}
-
-UOSInt Text::TextBinEnc::Radix64Enc::DecodeBin(const UTF8Char *b64Str, UInt8 *dataBuff)
-{
-	UOSInt decSize = 0;
-	UInt8 b = 0;
-	UInt8 b2 = 0;
-	UInt8 code;
-	UTF8Char c;
-	while ((c = *b64Str++) != 0)
-	{
-		if (c < 0x80)
-		{
-			code = decArr[c];
-			if (code != 0xff)
-			{
-				switch (b)
-				{
-				case 0:
-					b2 = (UInt8)(code << 2);
-					b = 1;
-					break;
-				case 1:
-					*dataBuff = (UInt8)(b2 | (code >> 4));
-					b2 = (UInt8)(code << 4);
-					dataBuff++;
-					decSize++;
-					b = 2;
-					break;
-				case 2:
-					*dataBuff = (UInt8)(b2 | (code >> 2));
-					b2 = (UInt8)(code << 6);
-					dataBuff++;
-					decSize++;
-					b = 3;
-					break;
-				case 3:
-					*dataBuff = (UInt8)(b2 | code);
-					dataBuff++;
-					decSize++;
-					b = 0;
-					break;
-				}
-			}
-		}
-	}
-	return decSize;
 }
 
 UOSInt Text::TextBinEnc::Radix64Enc::DecodeBin(const UTF8Char *b64Str, UOSInt len, UInt8 *dataBuff)

@@ -23,7 +23,7 @@ void __stdcall UtilUI::TextSearchForm::OnCloseClicked(void *userObj)
 
 UtilUI::TextSearchForm::TextSearchForm(UI::GUIClientControl *parent, UI::GUICore *ui, Media::MonitorMgr *monMgr, UtilUI::TextViewerForm *mainFrm) : UI::GUIForm(parent, 320, 120, ui)
 {
-	this->SetFont(0, 8.25, false);
+	this->SetFont(0, 0, 8.25, false);
 	this->SetText((const UTF8Char*)"Search");
 	this->SetNoResize(true);
 	this->monMgr = monMgr;

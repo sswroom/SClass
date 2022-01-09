@@ -1539,6 +1539,49 @@ UOSInt Text::StrSplitLine(UTF8Char **strs, UOSInt maxStrs, UTF8Char *strToSplit)
 	return i;
 }
 
+UOSInt Text::StrSplitLineP(PString *strs, UOSInt maxStrs, UTF8Char *strToSplit, UOSInt strLen)
+{
+	UOSInt i = 0;
+	UTF8Char c;
+	strs[i].v = strToSplit;
+	strs[i].len = strLen;
+	i++;
+	while (i < maxStrs)
+	{
+		c = *strToSplit++;
+		if (c == 0)
+			break;
+		if (c == 13)
+		{
+			strToSplit[-1] = 0;
+			strs[i].len = strs[i - 1].len;
+			strs[i - 1].len = (UOSInt)(&strToSplit[-1] - strs[i - 1].v);
+			if (*strToSplit == 10)
+			{
+				strToSplit++;
+				strs[i].v = strToSplit;
+				strs[i].len -= strs[i - 1].len - 2;
+			}
+			else
+			{
+				strs[i].v = strToSplit;
+				strs[i].len -= strs[i - 1].len - 1;
+			}
+			i++;
+		}
+		else if (c == 10)
+		{
+			strToSplit[-1] = 0;
+			strs[i].len = strs[i - 1].len;
+			strs[i - 1].len = (UOSInt)(&strToSplit[-1] - strs[i - 1].v);
+			strs[i].v = strToSplit;
+			strs[i].len -= strs[i - 1].len - 1;
+			i++;
+		}
+	}
+	return i;
+}
+
 UOSInt Text::StrSplitWS(UTF8Char **strs, UOSInt maxStrs, UTF8Char *strToSplit)
 {
 	UOSInt i = 0;

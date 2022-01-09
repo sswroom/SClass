@@ -121,7 +121,7 @@ namespace SSWR
 			Bool GenLinePreview(Media::DrawImage *img, Media::DrawEngine *eng, UOSInt lineThick, UInt32 lineColor, Media::ColorConv *colorConv);
 			Bool GenLineStylePreview(Media::DrawImage *img, Media::DrawEngine *eng, Map::MapEnv *env, UOSInt lineStyle, Media::ColorConv *colorConv);
 			Bool GenFontStylePreview(Media::DrawImage *img, Media::DrawEngine *eng, Map::MapEnv *env, UOSInt fontStyle, Media::ColorConv *colorConv);
-			Bool GenFontPreview(Media::DrawImage *img, Media::DrawEngine *eng, const UTF8Char *fontName, Double fontSizePt, UInt32 fontColor, Media::ColorConv *colorConv);
+			Bool GenFontPreview(Media::DrawImage *img, Media::DrawEngine *eng, const UTF8Char *fontName, UOSInt nameLen, Double fontSizePt, UInt32 fontColor, Media::ColorConv *colorConv);
 			void ShowForm(UI::GUIForm *frm);
 			void CloseAllForm();
 			void SetGISForm(SSWR::AVIRead::AVIRGISForm *frm);

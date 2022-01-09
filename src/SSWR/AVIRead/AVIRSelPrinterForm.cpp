@@ -51,7 +51,7 @@ SSWR::AVIRead::AVIRSelPrinterForm::AVIRSelPrinterForm(UI::GUIClientControl *pare
 	UOSInt j;
 
 	this->SetText((const UTF8Char*)"Select Printer");
-	this->SetFont(0, 8.25, false);
+	this->SetFont(0, 0, 8.25, false);
 	this->SetNoResize(true);
 
 	this->core = core;

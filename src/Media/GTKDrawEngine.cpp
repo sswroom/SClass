@@ -170,13 +170,16 @@ Bool Media::GTKDrawEngine::DeleteImage(DrawImage *img)
 	return true;
 }
 
-Media::GTKDrawFont::GTKDrawFont(const UTF8Char *fontName, Double fontHeight, Media::DrawEngine::DrawFontStyle drawFontStyle)
+Media::GTKDrawFont::GTKDrawFont(const UTF8Char *fontName, UOSInt nameLen, Double fontHeight, Media::DrawEngine::DrawFontStyle drawFontStyle)
 {
 	if (fontName == 0)
 	{
-		fontName = (const UTF8Char*)"sans-serif";
+		this->fontName = Text::String::New(UTF8STRC("sans-serif"));
 	}
-	this->fontName = Text::StrCopyNew(fontName);
+	else
+	{
+		this->fontName = Text::String::New(fontName, nameLen);
+	}
 	this->fontHeight = fontHeight;
 	if (drawFontStyle & Media::DrawEngine::DFS_BOLD)
 	{
@@ -196,13 +199,16 @@ Media::GTKDrawFont::GTKDrawFont(const UTF8Char *fontName, Double fontHeight, Med
 	}
 }
 
-Media::GTKDrawFont::GTKDrawFont(const UTF8Char *fontName, Double fontHeight, OSInt fontSlant, OSInt fontWeight)
+Media::GTKDrawFont::GTKDrawFont(Text::String *fontName, Double fontHeight, OSInt fontSlant, OSInt fontWeight)
 {
 	if (fontName == 0)
 	{
-		fontName = (const UTF8Char*)"sans-serif";
+		this->fontName = Text::String::New(UTF8STRC("sans-serif"));
 	}
-	this->fontName = Text::StrCopyNew(fontName);
+	else
+	{
+		this->fontName = fontName->Clone();
+	}
 	this->fontHeight = fontHeight;
 	this->fontWeight = fontWeight;
 	this->fontSlant = fontSlant;
@@ -210,16 +216,16 @@ Media::GTKDrawFont::GTKDrawFont(const UTF8Char *fontName, Double fontHeight, OSI
 
 Media::GTKDrawFont::~GTKDrawFont()
 {
-	Text::StrDelNew(this->fontName);
+	this->fontName->Release();
 }
 
 void Media::GTKDrawFont::Init(void *cr)
 {
-	cairo_select_font_face((cairo_t*)cr, (const Char*)this->fontName, (cairo_font_slant_t)this->fontSlant, (cairo_font_weight_t)this->fontWeight);
+	cairo_select_font_face((cairo_t*)cr, (const Char*)this->fontName->v, (cairo_font_slant_t)this->fontSlant, (cairo_font_weight_t)this->fontWeight);
 	cairo_set_font_size((cairo_t*)cr, this->fontHeight);
 }
 
-const UTF8Char *Media::GTKDrawFont::GetFontName()
+Text::String *Media::GTKDrawFont::GetFontName()
 {
 	return this->fontName;
 }
@@ -959,24 +965,24 @@ Media::DrawBrush *Media::GTKDrawImage::NewBrushARGB(UInt32 color)
 	return b;
 }
 
-Media::DrawFont *Media::GTKDrawImage::NewFontPt(const UTF8Char *name, Double ptSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 codePage)
+Media::DrawFont *Media::GTKDrawImage::NewFontPt(const UTF8Char *name, UOSInt nameLen, Double ptSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 codePage)
 {
 	Media::GTKDrawFont *f;
-	NEW_CLASS(f, Media::GTKDrawFont(name, ptSize * this->info->hdpi / 72.0, fontStyle));
+	NEW_CLASS(f, Media::GTKDrawFont(name, nameLen, ptSize * this->info->hdpi / 72.0, fontStyle));
 	return f;
 }
 
-Media::DrawFont *Media::GTKDrawImage::NewFontPx(const UTF8Char *name, Double pxSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 codePage)
+Media::DrawFont *Media::GTKDrawImage::NewFontPx(const UTF8Char *name, UOSInt nameLen, Double pxSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 codePage)
 {
 	Media::GTKDrawFont *f;
-	NEW_CLASS(f, Media::GTKDrawFont(name, pxSize, fontStyle));
+	NEW_CLASS(f, Media::GTKDrawFont(name, nameLen, pxSize, fontStyle));
 	return f;
 }
 
 Media::DrawFont *Media::GTKDrawImage::CloneFont(DrawFont *f)
 {
 	Media::GTKDrawFont *fnt = (Media::GTKDrawFont*)f;
-	const UTF8Char *fname = fnt->GetFontName();
+	Text::String *fname = fnt->GetFontName();
 	Double height = fnt->GetHeight();
 	OSInt fontWeight = fnt->GetFontWeight();
 	OSInt fontSlant = fnt->GetFontSlant();

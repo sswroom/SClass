@@ -48,7 +48,7 @@ UInt32 __stdcall SSWR::DataSync::SyncClient::RecvThread(void *userObj)
 		{
 
 			Net::TCPClient *cli;
-			NEW_CLASS(cli, Net::TCPClient(me->sockf, me->cliHost, me->cliPort));
+			NEW_CLASS(cli, Net::TCPClient(me->sockf, me->cliHost->v, me->cliPort));
 			if (cli->IsClosed())
 			{
 				DEL_CLASS(cli);
@@ -137,9 +137,9 @@ Bool SSWR::DataSync::SyncClient::SendLogin()
 	UInt8 packetBuff[512];
 	UOSInt len;
 	WriteInt32(cmdBuff, this->serverId);
-	len = Text::StrCharCnt(this->serverName);
+	len = this->serverName->leng;
 	cmdBuff[4] = (UInt8)(len & 0xff);
-	Text::StrConcat((UTF8Char*)&cmdBuff[5], this->serverName);
+	this->serverName->ConcatTo((UTF8Char*)&cmdBuff[5]);
 	len = this->protoHdlr->BuildPacket(packetBuff, 0, 0, cmdBuff, len + 5, 0);
 	
 	Sync::MutexUsage mutUsage(this->cliMut);
@@ -204,11 +204,11 @@ SSWR::DataSync::SyncClient::SyncClient(Net::SocketFactory *sockf, Int32 serverId
 	this->sockf = sockf;
 	NEW_CLASS(this->protoHdlr, IO::ProtoHdlr::ProtoSyncHandler(this));
 	this->serverId = serverId;
-	this->serverName = Text::StrCopyNew(serverName);
+	this->serverName = Text::String::NewNotNull(serverName);
 	NEW_CLASS(this->cliMut, Sync::Mutex());
 	NEW_CLASS(this->cliKATime, Data::DateTime());
 	this->cli = 0;
-	this->cliHost = Text::StrCopyNew(clientHost);
+	this->cliHost = Text::String::NewNotNull(clientHost);
 	this->cliPort = cliPort;
 	NEW_CLASS(this->dataMgr, SSWR::DataSync::SyncClientDataMgr());
 
@@ -244,8 +244,8 @@ SSWR::DataSync::SyncClient::~SyncClient()
 	DEL_CLASS(this->dataMgr);
 	DEL_CLASS(this->cliKATime);
 	DEL_CLASS(this->cliMut);
-	Text::StrDelNew(this->cliHost);
-	Text::StrDelNew(this->serverName);
+	this->cliHost->Release();
+	this->serverName->Release();
 	DEL_CLASS(this->protoHdlr);
 	DEL_CLASS(this->recvEvt);
 	DEL_CLASS(this->kaEvt);

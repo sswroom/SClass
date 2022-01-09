@@ -168,7 +168,8 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 			}
 			else if (Text::StrStartsWith(sbuff, (const UTF8Char*)"5,"))
 			{
-				const UTF8Char *fontName;
+				Text::String *fontName;
+				const UTF8Char *pfontName;
 				Double fontSize;
 				Bool bold;
 				UInt32 fontColor;
@@ -192,7 +193,7 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 				else
 				{
 					addFont = 2;
-					fontName = sarr[3];
+					pfontName = sarr[3];
 					fontSize = Text::StrToDouble(sarr[4]);
 					bold = false;
 					fontColor = 0;
@@ -220,7 +221,7 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 				}
 				else if (addFont == 2)
 				{
-					env->AddFontStyle(0, fontName, fontSize, bold, fontColor, buffSize, buffColor);
+					env->AddFontStyle(0, pfontName, fontSize, bold, fontColor, buffSize, buffColor);
 				}
 			}
 			else if (Text::StrStartsWith(sbuff, (const UTF8Char*)"6,"))

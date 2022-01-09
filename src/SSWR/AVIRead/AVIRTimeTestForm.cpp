@@ -54,7 +54,7 @@ SSWR::AVIRead::AVIRTimeTestForm::AVIRTimeTestForm(UI::GUIClientControl *parent, 
 {
 	this->core = core;
 	this->SetText((const UTF8Char*)"Timing Test");
-	this->SetFont(0, 8.25, false);
+	this->SetFont(0, 0, 8.25, false);
 	this->SetNoResize(true);
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 

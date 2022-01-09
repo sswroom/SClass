@@ -1,6 +1,6 @@
 #ifndef _SM_NET_ETHERNETANALYZER
 #define _SM_NET_ETHERNETANALYZER
-#include "Data/ICaseStringUTF8Map.h"
+#include "Data/ICaseStringMap.h"
 #include "Data/Int32Map.h"
 #include "Data/Int64Map.h"
 #include "Data/UInt32Map.h"
@@ -96,7 +96,7 @@ namespace Net
 		{
 			UInt32 ip;
 			Sync::Mutex *mut;
-			Data::ArrayListICaseStrUTF8 *addrList;
+			Data::ArrayListICaseString *addrList;
 		} DNSTargetInfo;
 
 		typedef struct
@@ -134,11 +134,11 @@ namespace Net
 		Sync::Mutex *dnsCliInfoMut;
 		Data::UInt32Map<DNSClientInfo*> *dnsCliInfos;
 		Sync::Mutex *dnsReqv4Mut;
-		Data::ICaseStringUTF8Map<DNSRequestResult*> *dnsReqv4Map;
+		Data::ICaseStringMap<DNSRequestResult*> *dnsReqv4Map;
 		Sync::Mutex *dnsReqv6Mut;
-		Data::ICaseStringUTF8Map<DNSRequestResult*> *dnsReqv6Map;
+		Data::ICaseStringMap<DNSRequestResult*> *dnsReqv6Map;
 		Sync::Mutex *dnsReqOthMut;
-		Data::ICaseStringUTF8Map<DNSRequestResult*> *dnsReqOthMap;
+		Data::ICaseStringMap<DNSRequestResult*> *dnsReqOthMap;
 		Sync::Mutex *dnsTargetMut;
 		Data::UInt32Map<DNSTargetInfo*> *dnsTargetMap;
 		Sync::Mutex *ipLogMut;
@@ -177,13 +177,13 @@ namespace Net
 		void UseDNSCli(Sync::MutexUsage *mutUsage);
 		Data::ArrayList<DNSClientInfo*> *DNSCliGetList();
 		UOSInt DNSCliGetCount();
-		UOSInt DNSReqv4GetList(Data::ArrayList<const UTF8Char *> *reqList); //no need release
+		UOSInt DNSReqv4GetList(Data::ArrayList<Text::String *> *reqList); //no need release
 		UOSInt DNSReqv4GetCount();
 		Bool DNSReqv4GetInfo(const UTF8Char *req, Data::ArrayList<Net::DNSClient::RequestAnswer*> *ansList, Data::DateTime *reqTime, UInt32 *ttl);
-		UOSInt DNSReqv6GetList(Data::ArrayList<const UTF8Char *> *reqList); //no need release
+		UOSInt DNSReqv6GetList(Data::ArrayList<Text::String *> *reqList); //no need release
 		UOSInt DNSReqv6GetCount();
 		Bool DNSReqv6GetInfo(const UTF8Char *req, Data::ArrayList<Net::DNSClient::RequestAnswer*> *ansList, Data::DateTime *reqTime, UInt32 *ttl);
-		UOSInt DNSReqOthGetList(Data::ArrayList<const UTF8Char *> *reqList); //no need release
+		UOSInt DNSReqOthGetList(Data::ArrayList<Text::String *> *reqList); //no need release
 		UOSInt DNSReqOthGetCount();
 		Bool DNSReqOthGetInfo(const UTF8Char *req, Data::ArrayList<Net::DNSClient::RequestAnswer*> *ansList, Data::DateTime *reqTime, UInt32 *ttl);
 		UOSInt DNSTargetGetList(Data::ArrayList<DNSTargetInfo *> *targetList); //no need release

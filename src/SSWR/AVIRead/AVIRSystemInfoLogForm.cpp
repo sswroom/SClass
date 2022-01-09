@@ -4,7 +4,7 @@
 SSWR::AVIRead::AVIRSystemInfoLogForm::AVIRSystemInfoLogForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, IO::SystemInfoLog *sysInfo) : UI::GUIForm(parent, 800, 600, ui)
 {
 	this->SetText((const UTF8Char*)"System Info Log");
-	this->SetFont(0, 8.25, false);
+	this->SetFont(0, 0, 8.25, false);
 	
 	this->core = core;
 	this->sysInfo = sysInfo;

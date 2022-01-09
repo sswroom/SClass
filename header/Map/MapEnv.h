@@ -2,7 +2,7 @@
 #define _SM_MAP_MAPENV
 #include "Data/ArrayList.h"
 #include "Data/RandomOS.h"
-#include "Data/StringUTF8Map.h"
+#include "Data/StringMap.h"
 #include "Map/IMapDrawLayer.h"
 #include "Map/MapLayerCollection.h"
 #include "Map/MapView.h"
@@ -52,7 +52,7 @@ namespace Map
 			UInt32 fillStyle;
 			Int32 fontType;
 			UOSInt fontStyle;
-			const UTF8Char *fontName;
+			Text::String *fontName;
 			Double fontSizePt;
 			UInt32 fontColor;
 			Double maxScale;
@@ -72,7 +72,7 @@ namespace Map
 
 		typedef struct
 		{
-			const UTF8Char *fileName;
+			Text::String *fileName;
 			UOSInt index;
 			UOSInt cnt;
 			Bool isAni;
@@ -93,13 +93,13 @@ namespace Map
 		typedef struct
 		{
 			Data::ArrayList<LineStyleLayer*> *layers;
-			const UTF8Char *name;
+			Text::String *name;
 		} LineStyle;
 
 		typedef struct
 		{
-			const UTF8Char *styleName;
-			const UTF8Char *fontName;
+			Text::String *styleName;
+			Text::String *fontName;
 			Double fontSizePt;
 			Bool bold;
 			UInt32 fontColor;
@@ -113,7 +113,7 @@ namespace Map
 		Data::ArrayList<MapItem*> *mapLayers;
 		Data::ArrayList<LineStyle*> *lineStyles;
 		Data::ArrayList<FontStyle*> *fontStyles;
-		Data::StringUTF8Map<ImageInfo*> *images;
+		Data::StringMap<ImageInfo*> *images;
 		Data::ArrayList<ImageInfo*> *imgList;
 		Data::RandomOS *random;
 		UOSInt nStr;
@@ -155,8 +155,8 @@ namespace Map
 		UTF8Char *GetFontStyleName(UOSInt index, UTF8Char *buff);
 		Bool RemoveFontStyle(UOSInt index);
 		UOSInt GetFontStyleCount();
-		Bool GetFontStyle(UOSInt index, const UTF8Char **fontName, Double *fontSizePt, Bool *bold, UInt32 *fontColor, UOSInt *buffSize, UInt32 *buffColor);
-		Bool ChgFontStyle(UOSInt index, const UTF8Char *fontName, Double fontSizePt, Bool bold, UInt32 fontColor, UOSInt buffSize, UInt32 buffColor);
+		Bool GetFontStyle(UOSInt index, Text::String **fontName, Double *fontSizePt, Bool *bold, UInt32 *fontColor, UOSInt *buffSize, UInt32 *buffColor);
+		Bool ChgFontStyle(UOSInt index, Text::String *fontName, Double fontSizePt, Bool bold, UInt32 fontColor, UOSInt buffSize, UInt32 buffColor);
 
 		UOSInt AddLayer(GroupItem *group, Map::IMapDrawLayer *layer, Bool needRelease);
 		Bool ReplaceLayer(GroupItem *group, UOSInt index, Map::IMapDrawLayer *layer, Bool needRelease);

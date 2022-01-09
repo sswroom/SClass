@@ -67,6 +67,12 @@ namespace Text
 		UOSInt len;
 	} PString;
 
+	typedef struct
+	{
+		const UTF8Char *v;
+		UOSInt len;
+	} CString;
+
 	UTF8Char *StrConcat(UTF8Char *oriStr, const UTF8Char *strToJoin);
 	UTF8Char *StrConcatC(UTF8Char *oriStr, const UTF8Char *strToJoin, UOSInt charCnt);
 	UTF8Char *StrConcatS(UTF8Char *oriStr, const UTF8Char *strToJoin, UOSInt buffSize);
@@ -154,6 +160,7 @@ namespace Text
 	UOSInt StrSplitTrim(UTF8Char **strs, UOSInt maxStrs, UTF8Char *str, UTF8Char splitChar); //Optimized
 	UOSInt StrSplitTrimP(PString *strs, UOSInt maxStrs, UTF8Char *str, UOSInt strLen, UTF8Char splitChar); //Optimized
 	UOSInt StrSplitLine(UTF8Char **strs, UOSInt maxStrs, UTF8Char *str); //Optimized
+	UOSInt StrSplitLineP(PString *strs, UOSInt maxStrs, UTF8Char *str, UOSInt strLen); //Optimized
 	UOSInt StrSplitWS(UTF8Char **strs, UOSInt maxStrs, UTF8Char *str); //Optimized
 	Bool StrToUInt8(const UTF8Char *intStr, UInt8 *outVal);
 	UInt8 StrToUInt8(const UTF8Char *intStr);

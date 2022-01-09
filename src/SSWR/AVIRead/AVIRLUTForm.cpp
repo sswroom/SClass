@@ -169,7 +169,7 @@ SSWR::AVIRead::AVIRLUTForm::AVIRLUTForm(UI::GUIClientControl *parent, UI::GUICor
 	this->lut = lut;
 	lut->GetSourceNameObj()->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("LUT Viewer - ")));
 	this->SetText(sbuff);
-	this->SetFont(0, 8.25, false);
+	this->SetFont(0, 0, 8.25, false);
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 

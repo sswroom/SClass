@@ -120,7 +120,7 @@ void __stdcall SSWR::AVIRead::AVIRGISHKTDTonnesForm::OnCancelClicked(void *userO
 SSWR::AVIRead::AVIRGISHKTDTonnesForm::AVIRGISHKTDTonnesForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 144, ui)
 {
 	this->SetText((const UTF8Char*)"Hong Kong Tonnes Sign");
-	this->SetFont(0, 8.25, false);
+	this->SetFont(0, 0, 8.25, false);
 	this->SetNoResize(true);
 
 	this->core = core;

@@ -97,7 +97,7 @@ void SSWR::AVIRead::AVIRUserAgentSelForm::UpdateUAList(Manage::OSInfo::OSType os
 
 SSWR::AVIRead::AVIRUserAgentSelForm::AVIRUserAgentSelForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, const UTF8Char *currUserAgent) : UI::GUIForm(parent, 1024, 768, ui)
 {
-	this->SetFont(0, 8.25, false);
+	this->SetFont(0, 0, 8.25, false);
 	this->SetText((const UTF8Char*)"User Agent Select");
 
 	this->core = core;

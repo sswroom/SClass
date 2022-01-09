@@ -286,7 +286,7 @@ SSWR::OrganMgr::OrganBookForm::OrganBookForm(UI::GUIClientControl *parent, UI::G
 	NEW_CLASS(this->bookList, BookArrayList());
 
 	this->SetText(this->env->GetLang((const UTF8Char*)"BookFormTitle"));
-	this->SetFont(0, 10.5, false);
+	this->SetFont(0, 0, 10.5, false);
 
 	NEW_CLASS(this->pnlBook, UI::GUIPanel(ui, this));
 	this->pnlBook->SetRect(0, 0, 168, 500, false);

@@ -212,8 +212,8 @@ void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnFontModifyClicked(void *userObj
 		UOSInt w;
 		UOSInt h;
 		me->fontType = 1;
-		SDEL_TEXT(me->fontName);
-		me->fontName = Text::StrCopyNew(frm->GetFontName());
+		SDEL_STRING(me->fontName);
+		me->fontName = frm->GetFontName()->Clone();
 		me->fontSizePt = frm->GetFontSizePt();
 		me->fontColor = frm->GetFontColor();
 
@@ -225,7 +225,7 @@ void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnFontModifyClicked(void *userObj
 		Media::DrawImage *dimg = me->eng->CreateImage32(w, h, Media::AT_NO_ALPHA);
 		dimg->SetHDPI(me->GetHDPI() / me->GetDDPI() * 96.0);
 		dimg->SetVDPI(me->GetHDPI() / me->GetDDPI() * 96.0);
-		me->core->GenFontPreview(dimg, me->eng, me->fontName, me->fontSizePt, me->fontColor, me->colorConv);
+		me->core->GenFontPreview(dimg, me->eng, me->fontName->v, me->fontName->leng, me->fontSizePt, me->fontColor, me->colorConv);
 		me->imgFont = dimg->ToStaticImage();
 		me->pbFontStyle->SetImage(me->imgFont);
 		me->eng->DeleteImage(dimg);
@@ -278,7 +278,7 @@ SSWR::AVIRead::AVIRGISPropForm::AVIRGISPropForm(UI::GUIClientControl *parent, UI
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	this->SetText((const UTF8Char*)"Layer Properties");
-	this->SetFont(0, 8.25, false);
+	this->SetFont(0, 0, 8.25, false);
 	this->SetNoResize(true);
 	this->SetSize(512, 320);
 
@@ -422,7 +422,7 @@ SSWR::AVIRead::AVIRGISPropForm::AVIRGISPropForm(UI::GUIClientControl *parent, UI
 		}
 		else if (setting.fontType == 1)
 		{
-			this->core->GenFontPreview(dimg, this->eng, setting.fontName, setting.fontSizePt, setting.fontColor, this->colorConv);
+			this->core->GenFontPreview(dimg, this->eng, setting.fontName->v, setting.fontName->leng, setting.fontSizePt, setting.fontColor, this->colorConv);
 		}
 		this->imgFont = dimg->ToStaticImage();
 		this->pbFontStyle->SetImage(this->imgFont);
@@ -434,7 +434,7 @@ SSWR::AVIRead::AVIRGISPropForm::AVIRGISPropForm(UI::GUIClientControl *parent, UI
 		this->fontStyle = setting.fontStyle;
 		if (setting.fontName)
 		{
-			this->fontName = Text::StrCopyNew(setting.fontName);
+			this->fontName = setting.fontName->Clone();
 		}
 		else
 		{
@@ -530,7 +530,7 @@ SSWR::AVIRead::AVIRGISPropForm::~AVIRGISPropForm()
 		DEL_CLASS(this->imgFont);
 		this->imgFont = 0;
 	}
-	SDEL_TEXT(this->fontName);
+	SDEL_STRING(this->fontName);
 	DEL_CLASS(this->colorConv);
 	this->colorSess->RemoveHandler(this);
 	this->ClearChildren();
@@ -589,7 +589,7 @@ void SSWR::AVIRead::AVIRGISPropForm::RGBParamChanged(const Media::IColorHandler:
 	}
 	else if (this->fontType == 1)
 	{
-		this->core->GenFontPreview(dimg, this->eng, this->fontName, this->fontSizePt, this->fontColor, this->colorConv);
+		this->core->GenFontPreview(dimg, this->eng, this->fontName->v, this->fontName->leng, this->fontSizePt, this->fontColor, this->colorConv);
 	}
 	this->imgFont = dimg->ToStaticImage();
 	this->pbFontStyle->SetImage(this->imgFont);

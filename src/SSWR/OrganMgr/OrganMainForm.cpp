@@ -2509,7 +2509,7 @@ SSWR::OrganMgr::OrganSpImgLayer *SSWR::OrganMgr::OrganMainForm::GetImgLayer(UInt
 SSWR::OrganMgr::OrganMainForm::OrganMainForm(UI::GUICore *ui, UI::GUIClientControl *parent, OrganEnv *env) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	UTF8Char u8buff[512];
-	this->SetFont((const UTF8Char*)"Arial", 10.5, false);
+	this->SetFont(UTF8STRC("Arial"), 10.5, false);
 	this->colorMgr = env->GetColorMgr();
 	this->colorSess = this->colorMgr->CreateSess(this->GetHMonitor());
 	this->env = env;

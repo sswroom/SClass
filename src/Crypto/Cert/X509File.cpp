@@ -621,31 +621,31 @@ void Crypto::Cert::X509File::AppendAttributeTypeAndDistinguishedValue(const UInt
 	{
 		sb->Append(varName);
 		sb->AppendChar('.', 1);
-		if (Net::ASN1Util::OIDEqualsText(typePDU, typeLen, "2.5.4.3"))
+		if (Net::ASN1Util::OIDEqualsText(typePDU, typeLen, UTF8STRC("2.5.4.3")))
 		{
 			sb->AppendC(UTF8STRC("commonName"));
 		}
-		else if (Net::ASN1Util::OIDEqualsText(typePDU, typeLen, "2.5.4.6"))
+		else if (Net::ASN1Util::OIDEqualsText(typePDU, typeLen, UTF8STRC("2.5.4.6")))
 		{
 			sb->AppendC(UTF8STRC("countryName"));
 		}
-		else if (Net::ASN1Util::OIDEqualsText(typePDU, typeLen, "2.5.4.7"))
+		else if (Net::ASN1Util::OIDEqualsText(typePDU, typeLen, UTF8STRC("2.5.4.7")))
 		{
 			sb->AppendC(UTF8STRC("localityName"));
 		}
-		else if (Net::ASN1Util::OIDEqualsText(typePDU, typeLen, "2.5.4.8"))
+		else if (Net::ASN1Util::OIDEqualsText(typePDU, typeLen, UTF8STRC("2.5.4.8")))
 		{
 			sb->AppendC(UTF8STRC("stateOrProvinceName"));
 		}
-		else if (Net::ASN1Util::OIDEqualsText(typePDU, typeLen, "2.5.4.10"))
+		else if (Net::ASN1Util::OIDEqualsText(typePDU, typeLen, UTF8STRC("2.5.4.10")))
 		{
 			sb->AppendC(UTF8STRC("organizationName"));
 		}
-		else if (Net::ASN1Util::OIDEqualsText(typePDU, typeLen, "2.5.4.11"))
+		else if (Net::ASN1Util::OIDEqualsText(typePDU, typeLen, UTF8STRC("2.5.4.11")))
 		{
 			sb->AppendC(UTF8STRC("organizationalUnitName"));
 		}
-		else if (Net::ASN1Util::OIDEqualsText(typePDU, typeLen, "1.2.840.113549.1.9.1"))
+		else if (Net::ASN1Util::OIDEqualsText(typePDU, typeLen, UTF8STRC("1.2.840.113549.1.9.1")))
 		{
 			sb->AppendC(UTF8STRC("emailAddress"));
 		}
@@ -659,7 +659,7 @@ void Crypto::Cert::X509File::AppendAttributeTypeAndDistinguishedValue(const UInt
 	}
 }
 
-Bool Crypto::Cert::X509File::NameGetByOID(const UInt8 *pdu, const UInt8 *pduEnd, const Char *oidText, Text::StringBuilderUTF *sb)
+Bool Crypto::Cert::X509File::NameGetByOID(const UInt8 *pdu, const UInt8 *pduEnd, const UTF8Char *oidText, UOSInt oidTextLen, Text::StringBuilderUTF *sb)
 {
 	Char sbuff[12];
 	const UInt8 *itemPDU;
@@ -680,7 +680,7 @@ Bool Crypto::Cert::X509File::NameGetByOID(const UInt8 *pdu, const UInt8 *pduEnd,
 			if (itemType == Net::ASN1Util::IT_SEQUENCE)
 			{
 				oidPDU = Net::ASN1Util::PDUGetItem(itemPDU, itemPDU + itemLen, "1", &oidLen, &itemType);
-				if (oidPDU != 0 && itemType == Net::ASN1Util::IT_OID && Net::ASN1Util::OIDEqualsText(oidPDU, oidLen, oidText))
+				if (oidPDU != 0 && itemType == Net::ASN1Util::IT_OID && Net::ASN1Util::OIDEqualsText(oidPDU, oidLen, oidText, oidTextLen))
 				{
 					strPDU = Net::ASN1Util::PDUGetItem(itemPDU, itemPDU + itemLen, "2", &oidLen, &itemType);
 					if (strPDU)
@@ -697,7 +697,7 @@ Bool Crypto::Cert::X509File::NameGetByOID(const UInt8 *pdu, const UInt8 *pduEnd,
 
 Bool Crypto::Cert::X509File::NameGetCN(const UInt8 *pdu, const UInt8 *pduEnd, Text::StringBuilderUTF *sb)
 {
-	return NameGetByOID(pdu, pduEnd, "2.5.4.3", sb);
+	return NameGetByOID(pdu, pduEnd, UTF8STRC("2.5.4.3"), sb);
 }
 
 Bool Crypto::Cert::X509File::NamesGet(const UInt8 *pdu, const UInt8 *pduEnd, CertNames *names)
@@ -727,37 +727,37 @@ Bool Crypto::Cert::X509File::NamesGet(const UInt8 *pdu, const UInt8 *pduEnd, Cer
 					strPDU = Net::ASN1Util::PDUGetItem(itemPDU, itemPDU + itemLen, "2", &strLen, &itemType);
 					if (strPDU)
 					{
-						if (Net::ASN1Util::OIDEqualsText(oidPDU, oidLen, "2.5.4.6"))
+						if (Net::ASN1Util::OIDEqualsText(oidPDU, oidLen, UTF8STRC("2.5.4.6")))
 						{
 							SDEL_TEXT(names->countryName);
 							names->countryName = Text::StrCopyNewC(strPDU, strLen);
 						}
-						else if (Net::ASN1Util::OIDEqualsText(oidPDU, oidLen, "2.5.4.8"))
+						else if (Net::ASN1Util::OIDEqualsText(oidPDU, oidLen, UTF8STRC("2.5.4.8")))
 						{
 							SDEL_TEXT(names->stateOrProvinceName);
 							names->stateOrProvinceName = Text::StrCopyNewC(strPDU, strLen);
 						}
-						else if (Net::ASN1Util::OIDEqualsText(oidPDU, oidLen, "2.5.4.7"))
+						else if (Net::ASN1Util::OIDEqualsText(oidPDU, oidLen, UTF8STRC("2.5.4.7")))
 						{
 							SDEL_TEXT(names->localityName);
 							names->localityName = Text::StrCopyNewC(strPDU, strLen);
 						}
-						else if (Net::ASN1Util::OIDEqualsText(oidPDU, oidLen, "2.5.4.10"))
+						else if (Net::ASN1Util::OIDEqualsText(oidPDU, oidLen, UTF8STRC("2.5.4.10")))
 						{
 							SDEL_TEXT(names->organizationName);
 							names->organizationName = Text::StrCopyNewC(strPDU, strLen);
 						}
-						else if (Net::ASN1Util::OIDEqualsText(oidPDU, oidLen, "2.5.4.11"))
+						else if (Net::ASN1Util::OIDEqualsText(oidPDU, oidLen, UTF8STRC("2.5.4.11")))
 						{
 							SDEL_TEXT(names->organizationUnitName);
 							names->organizationUnitName = Text::StrCopyNewC(strPDU, strLen);
 						}
-						else if (Net::ASN1Util::OIDEqualsText(oidPDU, oidLen, "2.5.4.3"))
+						else if (Net::ASN1Util::OIDEqualsText(oidPDU, oidLen, UTF8STRC("2.5.4.3")))
 						{
 							SDEL_TEXT(names->commonName);
 							names->commonName = Text::StrCopyNewC(strPDU, strLen);
 						}
-						else if (Net::ASN1Util::OIDEqualsText(oidPDU, oidLen, "1.2.840.113549.1.9.1"))
+						else if (Net::ASN1Util::OIDEqualsText(oidPDU, oidLen, UTF8STRC("1.2.840.113549.1.9.1")))
 						{
 							SDEL_TEXT(names->emailAddress);
 							names->emailAddress = Text::StrCopyNewC(strPDU, strLen);
@@ -800,7 +800,7 @@ Bool Crypto::Cert::X509File::ExtensionsGet(const UInt8 *pdu, const UInt8 *pduEnd
 					strPDU = Net::ASN1Util::PDUGetItem(itemPDU, itemPDU + itemLen, "2", &strLen, &itemType);
 					if (strPDU && itemType == Net::ASN1Util::IT_OCTET_STRING)
 					{
-						if (Net::ASN1Util::OIDEqualsText(oidPDU, oidLen, "2.5.29.17")) //id-ce-subjectAltName
+						if (Net::ASN1Util::OIDEqualsText(oidPDU, oidLen, UTF8STRC("2.5.29.17"))) //id-ce-subjectAltName
 						{
 							if (ext->subjectAltName)
 							{
@@ -829,7 +829,7 @@ Bool Crypto::Cert::X509File::ExtensionsGet(const UInt8 *pdu, const UInt8 *pduEnd
 								}
 							}
 						}
-						else if (Net::ASN1Util::OIDEqualsText(oidPDU, oidLen, "2.5.29.14")) //id-ce-subjectKeyIdentifier
+						else if (Net::ASN1Util::OIDEqualsText(oidPDU, oidLen, UTF8STRC("2.5.29.14"))) //id-ce-subjectKeyIdentifier
 						{
 							subItemPDU = Net::ASN1Util::PDUGetItem(strPDU, strPDU + strLen, "1", &subItemLen, &itemType);
 							if (subItemPDU && subItemLen == 20)
@@ -838,7 +838,7 @@ Bool Crypto::Cert::X509File::ExtensionsGet(const UInt8 *pdu, const UInt8 *pduEnd
 								MemCopyNO(ext->subjKeyId, subItemPDU, subItemLen);
 							}
 						}
-						else if (Net::ASN1Util::OIDEqualsText(oidPDU, oidLen, "2.5.29.35")) //id-ce-authorityKeyIdentifier
+						else if (Net::ASN1Util::OIDEqualsText(oidPDU, oidLen, UTF8STRC("2.5.29.35"))) //id-ce-authorityKeyIdentifier
 						{
 							subItemPDU = Net::ASN1Util::PDUGetItem(strPDU, strPDU + strLen, "1.1", &subItemLen, &itemType);
 							if (subItemPDU && subItemLen == 20)
@@ -933,7 +933,7 @@ UOSInt Crypto::Cert::X509File::KeyGetLeng(const UInt8 *pdu, const UInt8 *pduEnd,
 
 Crypto::Cert::X509File::KeyType Crypto::Cert::X509File::KeyTypeFromOID(const UInt8 *oid, UOSInt oidLen, Bool pubKey)
 {
-	if (Net::ASN1Util::OIDEqualsText(oid, oidLen, "1.2.840.113549.1.1.1"))
+	if (Net::ASN1Util::OIDEqualsText(oid, oidLen, UTF8STRC("1.2.840.113549.1.1.1")))
 	{
 		if (pubKey)
 		{
@@ -1068,21 +1068,21 @@ const UTF8Char *Crypto::Cert::X509File::KeyTypeGetName(KeyType keyType)
 	}
 }
 
-const Char *Crypto::Cert::X509File::KeyTypeGetOID(KeyType keyType)
+Text::CString Crypto::Cert::X509File::KeyTypeGetOID(KeyType keyType)
 {
 	switch (keyType)
 	{
 	case KeyType::RSA:
-		return "1.2.840.113549.1.1.1";
+		return {UTF8STRC("1.2.840.113549.1.1.1")};
 	case KeyType::DSA:
-		return "1.2.840.10040.4.1";
+		return {UTF8STRC("1.2.840.10040.4.1")};
 	case KeyType::ECDSA:
-		return "1.2.840.10045.2.1";
+		return {UTF8STRC("1.2.840.10045.2.1")};
 	case KeyType::ED25519:
-		return "1.3.101.112";
+		return {UTF8STRC("1.3.101.112")};
 	case KeyType::RSAPublic:
 	case KeyType::Unknown:
 	default:
-		return "1.2.840.113549.1.1.1";
+		return {UTF8STRC("1.2.840.113549.1.1.1")};
 	}
 }

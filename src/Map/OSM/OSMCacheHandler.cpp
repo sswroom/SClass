@@ -11,7 +11,7 @@ IO::SeekableStream *Map::OSM::OSMCacheHandler::GetTileData(Int32 lev, Int32 xTil
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	sptr = Text::StrConcat(sbuff, this->cacheDir);
+	sptr = this->cacheDir->ConcatTo(sbuff);
 	if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 	{
 		*sptr++ = IO::Path::PATH_SEPERATOR;
@@ -39,7 +39,7 @@ IO::SeekableStream *Map::OSM::OSMCacheHandler::GetTileData(Int32 lev, Int32 xTil
 		fs = 0;
 		mutUsage->EndUse();
 
-		const UTF8Char *thisUrl;
+		Text::String *thisUrl;
 		Sync::MutexUsage urlMutUsage(this->urlMut);
 		thisUrl = this->urls->GetItem(this->urlNext);
 		this->urlNext = (this->urlNext + 1) % this->urls->GetCount();
@@ -135,12 +135,12 @@ IO::SeekableStream *Map::OSM::OSMCacheHandler::GetTileData(Int32 lev, Int32 xTil
 
 Map::OSM::OSMCacheHandler::OSMCacheHandler(const UTF8Char *url, const UTF8Char *cacheDir, Int32 maxLevel, Net::SocketFactory *sockf, Net::SSLEngine *ssl)
 {
-	NEW_CLASS(this->urls, Data::ArrayListStrUTF8());
-	this->urls->Add(Text::StrCopyNew(url));
+	NEW_CLASS(this->urls, Data::ArrayListString());
+	this->urls->Add(Text::String::NewNotNull(url));
 	NEW_CLASS(this->urlMut, Sync::Mutex());
 	this->urlNext = 0;
 	this->ioMut = 0;
-	this->cacheDir = Text::StrCopyNew(cacheDir);
+	this->cacheDir = Text::String::NewNotNull(cacheDir);
 	this->maxLevel = maxLevel;
 	this->sockf = sockf;
 	this->ssl = ssl;
@@ -149,23 +149,15 @@ Map::OSM::OSMCacheHandler::OSMCacheHandler(const UTF8Char *url, const UTF8Char *
 
 Map::OSM::OSMCacheHandler::~OSMCacheHandler()
 {
-	UOSInt i;
-	i = this->urls->GetCount();
-	while (i-- > 0)
-	{
-		Text::StrDelNew(this->urls->GetItem(i));
-	}
+	LIST_FREE_STRING(this->urls);
 	DEL_CLASS(this->urls);
 	DEL_CLASS(this->urlMut);
-	if (this->cacheDir)
-	{
-		Text::StrDelNew(this->cacheDir);
-	}
+	SDEL_STRING(this->cacheDir);
 }
 
-void Map::OSM::OSMCacheHandler::AddAlternateURL(const UTF8Char *url)
+void Map::OSM::OSMCacheHandler::AddAlternateURL(const UTF8Char *url, UOSInt len)
 {
-	this->urls->Add(Text::StrCopyNew(url));
+	this->urls->Add(Text::String::New(url, len));
 }
 
 void Map::OSM::OSMCacheHandler::GetStatus(CacheStatus *status)

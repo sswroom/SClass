@@ -24,7 +24,7 @@ UTF8Char *IO::MTFileLog::GetNewName(UTF8Char *buff, Data::DateTime *time)
 			IO::Path::CreateDirectory(buff);
 		}
 		*currName++ = IO::Path::PATH_SEPERATOR;
-		currName = Text::StrConcat(currName, this->extName);
+		currName = this->extName->ConcatTo(currName);
 	}
 	else if (this->groupStyle == IO::ILogHandler::LOG_GROUP_TYPE_PER_MONTH)
 	{
@@ -34,7 +34,7 @@ UTF8Char *IO::MTFileLog::GetNewName(UTF8Char *buff, Data::DateTime *time)
 			IO::Path::CreateDirectory(buff);
 		}
 		*currName++ = IO::Path::PATH_SEPERATOR;
-		currName = Text::StrConcat(currName, this->extName);
+		currName = this->extName->ConcatTo(currName);
 	}
 	else if (this->groupStyle == IO::ILogHandler::LOG_GROUP_TYPE_PER_DAY)
 	{
@@ -44,7 +44,7 @@ UTF8Char *IO::MTFileLog::GetNewName(UTF8Char *buff, Data::DateTime *time)
 			IO::Path::CreateDirectory(buff);
 		}
 		*currName++ = IO::Path::PATH_SEPERATOR;
-		currName = Text::StrConcat(currName, this->extName);
+		currName = this->extName->ConcatTo(currName);
 	}
 	else
 	{
@@ -229,7 +229,7 @@ void IO::MTFileLog::Init(LogType style, LogGroup groupStyle, const Char *dateFor
 	if (this->groupStyle != IO::ILogHandler::LOG_GROUP_TYPE_NO_GROUP)
 	{
 		i = this->fileName->LastIndexOf(IO::Path::PATH_SEPERATOR);
-		this->extName = Text::StrCopyNew(&this->fileName->v[i + 1]);
+		this->extName = Text::String::NewNotNull(&this->fileName->v[i + 1]);
 	}
 	else
 	{
@@ -287,7 +287,7 @@ IO::MTFileLog::~MTFileLog()
 
 	fileName->Release();
 	fileName = 0;
-	SDEL_TEXT(this->extName);
+	SDEL_STRING(this->extName);
 
 	SDEL_CLASS(log);
 	SDEL_CLASS(cstm);

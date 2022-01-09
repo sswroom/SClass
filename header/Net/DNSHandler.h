@@ -12,7 +12,7 @@ namespace Net
 	private:
 		typedef struct
 		{
-			const UTF8Char *domain;
+			Text::String *domain;
 			Double timeout;
 			Data::ArrayList<Net::DNSClient::RequestAnswer*> *answers;
 			Net::SocketUtil::AddressInfo addr;

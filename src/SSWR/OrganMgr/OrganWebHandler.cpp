@@ -8282,7 +8282,7 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhotoId(Net::WebServer::IWebReques
 						Media::DrawFont *f;
 						while (true)
 						{
-							f = gimg->NewFontPx((const UTF8Char*)"Arial", fontSizePx, Media::DrawEngine::DFS_NORMAL, 0);
+							f = gimg->NewFontPx(UTF8STRC("Arial"), fontSizePx, Media::DrawEngine::DFS_NORMAL, 0);
 							if (!gimg->GetTextSizeC(f, user->watermark->v, leng, sz))
 							{
 								gimg->DelFont(f);

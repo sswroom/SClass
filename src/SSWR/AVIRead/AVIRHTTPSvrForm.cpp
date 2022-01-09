@@ -434,7 +434,7 @@ SSWR::AVIRead::AVIRHTTPSvrForm::AVIRHTTPSvrForm(UI::GUIClientControl *parent, UI
 	UOSInt i;
 	this->core = core;
 	this->SetText((const UTF8Char*)"HTTP Server");
-	this->SetFont(0, 8.25, false);
+	this->SetFont(0, 0, 8.25, false);
 	this->ssl = Net::SSLEngineFactory::Create(this->core->GetSocketFactory(), true);
 	this->sslCert = 0;
 	this->sslKey = 0;

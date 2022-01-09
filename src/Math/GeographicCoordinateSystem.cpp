@@ -17,13 +17,12 @@ Angular velocity of the Earth: ��=7.292115 * 10^-5 rad/s
 
 Math::GeographicCoordinateSystem::GeographicCoordinateSystem(Text::String *sourceName, UInt32 srid, const UTF8Char *csysName, const DatumData1 *datum, PrimemType primem, UnitType unit) : Math::CoordinateSystem(sourceName, srid, csysName)
 {
-	this->csysName = Text::StrCopyNew(csysName);
 	this->datum.spheroid.srid = datum->spheroid.srid;
 	this->datum.spheroid.ellipsoid = datum->spheroid.ellipsoid->Clone();
 	this->datum.spheroid.name = Text::StrCopyNew(datum->spheroid.name);
 	this->datum.srid = datum->srid;
 	Double aRatio = Math::Unit::Angle::GetUnitRatio(datum->aunit);
-	this->datum.name = (const Char*)Text::StrCopyNew(datum->name);
+	this->datum.name = Text::StrCopyNew(datum->name);
 	this->datum.x0 = datum->x0;
 	this->datum.y0 = datum->y0;
 	this->datum.z0 = datum->z0;
@@ -41,13 +40,12 @@ Math::GeographicCoordinateSystem::GeographicCoordinateSystem(Text::String *sourc
 
 Math::GeographicCoordinateSystem::GeographicCoordinateSystem(const UTF8Char *sourceName, UInt32 srid, const UTF8Char *csysName, const DatumData1 *datum, PrimemType primem, UnitType unit) : Math::CoordinateSystem(sourceName, srid, csysName)
 {
-	this->csysName = Text::StrCopyNew(csysName);
 	this->datum.spheroid.srid = datum->spheroid.srid;
 	this->datum.spheroid.ellipsoid = datum->spheroid.ellipsoid->Clone();
 	this->datum.spheroid.name = Text::StrCopyNew(datum->spheroid.name);
 	this->datum.srid = datum->srid;
 	Double aRatio = Math::Unit::Angle::GetUnitRatio(datum->aunit);
-	this->datum.name = (const Char*)Text::StrCopyNew(datum->name);
+	this->datum.name = Text::StrCopyNew(datum->name);
 	this->datum.x0 = datum->x0;
 	this->datum.y0 = datum->y0;
 	this->datum.z0 = datum->z0;
@@ -65,7 +63,6 @@ Math::GeographicCoordinateSystem::GeographicCoordinateSystem(const UTF8Char *sou
 
 Math::GeographicCoordinateSystem::~GeographicCoordinateSystem()
 {
-	Text::StrDelNew(this->csysName);
 	Text::StrDelNew(this->datum.name);
 	Text::StrDelNew(this->datum.spheroid.name);
 	DEL_CLASS(this->datum.spheroid.ellipsoid);
@@ -89,7 +86,7 @@ Double Math::GeographicCoordinateSystem::CalPLDistance3D(Math::Polyline3D *pl, M
 Math::CoordinateSystem *Math::GeographicCoordinateSystem::Clone()
 {
 	Math::CoordinateSystem *csys;
-	NEW_CLASS(csys, Math::GeographicCoordinateSystem(this->sourceName, this->srid, this->csysName, &this->datum, this->primem, this->unit));
+	NEW_CLASS(csys, Math::GeographicCoordinateSystem(this->sourceName, this->srid, this->csysName->v, &this->datum, this->primem, this->unit));
 	return csys;
 }
 

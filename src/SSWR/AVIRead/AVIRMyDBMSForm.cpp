@@ -62,7 +62,7 @@ SSWR::AVIRead::AVIRMyDBMSForm::AVIRMyDBMSForm(UI::GUIClientControl *parent, UI::
 {
 	this->core = core;
 	this->SetText((const UTF8Char*)"My DBMS");
-	this->SetFont(0, 8.25, false);
+	this->SetFont(0, 0, 8.25, false);
 	this->svr = 0;
 	this->log = 0;
 	this->logger = 0;

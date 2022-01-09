@@ -2,6 +2,7 @@
 #define _SM_MEDIA_GDIENGINE
 #include "Media/DrawEngine.h"
 #include "Media/ABlend/AlphaBlend8_C8.h"
+#include "Text/String.h"
 
 namespace Media
 {
@@ -27,17 +28,17 @@ namespace Media
 	class GTKDrawFont : public DrawFont
 	{
 	private:
-		const UTF8Char *fontName;
+		Text::String *fontName;
 		Double fontHeight;
 		OSInt fontSlant;
 		OSInt fontWeight;
 	public:
-		GTKDrawFont(const UTF8Char *fontName, Double pxHeight, Media::DrawEngine::DrawFontStyle drawFontStyle);
-		GTKDrawFont(const UTF8Char *fontName, Double pxHeight, OSInt fontSlant, OSInt fontWeight);
+		GTKDrawFont(const UTF8Char *fontName, UOSInt nameLen, Double pxHeight, Media::DrawEngine::DrawFontStyle drawFontStyle);
+		GTKDrawFont(Text::String *fontName, Double pxHeight, OSInt fontSlant, OSInt fontWeight);
 		~GTKDrawFont();
 
 		void Init(void *cr);
-		const UTF8Char *GetFontName();
+		Text::String *GetFontName();
 		Double GetHeight();
 		OSInt GetFontWeight();
 		OSInt GetFontSlant();
@@ -132,8 +133,8 @@ namespace Media
 
 		virtual DrawPen *NewPenARGB(UInt32 color, Double thick, UInt8 *pattern, UOSInt nPattern);
 		virtual DrawBrush *NewBrushARGB(UInt32 color);
-		virtual DrawFont *NewFontPt(const UTF8Char *name, Double ptSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 codePage);
-		virtual DrawFont *NewFontPx(const UTF8Char *name, Double pxSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 codePage);
+		virtual DrawFont *NewFontPt(const UTF8Char *name, UOSInt nameLen, Double ptSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 codePage);
+		virtual DrawFont *NewFontPx(const UTF8Char *name, UOSInt nameLen, Double pxSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 codePage);
 		virtual DrawFont *CloneFont(DrawFont *f);
 		virtual void DelPen(DrawPen *p);
 		virtual void DelBrush(DrawBrush *b);

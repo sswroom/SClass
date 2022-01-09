@@ -18,14 +18,14 @@ UOSInt Text::TextBinEnc::ASN1OIDBinEnc::EncodeBin(Text::StringBuilderUTF *sb, co
 	return sb->GetCharCnt() - size;
 }
 
-UOSInt Text::TextBinEnc::ASN1OIDBinEnc::CalcBinSize(const UTF8Char *sbuff)
+UOSInt Text::TextBinEnc::ASN1OIDBinEnc::CalcBinSize(const UTF8Char *str, UOSInt strLen)
 {
-	return Net::ASN1Util::OIDCalcPDUSize(sbuff);
+	return Net::ASN1Util::OIDCalcPDUSize(str, strLen);
 }
 
-UOSInt Text::TextBinEnc::ASN1OIDBinEnc::DecodeBin(const UTF8Char *sbuff, UInt8 *dataBuff)
+UOSInt Text::TextBinEnc::ASN1OIDBinEnc::DecodeBin(const UTF8Char *str, UOSInt strLen, UInt8 *dataBuff)
 {
-	return Net::ASN1Util::OIDUText2PDU(sbuff, dataBuff);
+	return Net::ASN1Util::OIDText2PDU(str, strLen, dataBuff);
 }
 
 const UTF8Char *Text::TextBinEnc::ASN1OIDBinEnc::GetName()

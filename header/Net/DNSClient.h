@@ -11,11 +11,11 @@ namespace Net
 	public:
 		typedef struct
 		{
-			const UTF8Char *name;
+			Text::String *name;
 			UInt16 recType;
 			UInt16 recClass;
 			UInt32 ttl;
-			const UTF8Char *rd;
+			Text::String *rd;
 			Net::SocketUtil::AddressInfo addr;
 			UInt16 priority;
 		} RequestAnswer;

@@ -98,7 +98,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRTCPSpdSvrForm::RecvThread(void *userObj)
 
 SSWR::AVIRead::AVIRTCPSpdSvrForm::AVIRTCPSpdSvrForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 320, 120, ui)
 {
-	this->SetFont(0, 8.25, false);
+	this->SetFont(0, 0, 8.25, false);
 	this->SetText((const UTF8Char*)"TCP Speed Server");
 
 	this->core = core;

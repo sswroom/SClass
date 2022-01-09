@@ -272,7 +272,7 @@ SSWR::AVIRead::AVIRMySQLClientForm::AVIRMySQLClientForm(UI::GUIClientControl *pa
 {
 	this->core = core;
 	this->SetText((const UTF8Char*)"MySQL Client");
-	this->SetFont(0, 8.25, false);
+	this->SetFont(0, 0, 8.25, false);
 	this->cli = 0;
 
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));

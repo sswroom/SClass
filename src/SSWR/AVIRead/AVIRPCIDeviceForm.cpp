@@ -83,7 +83,7 @@ SSWR::AVIRead::AVIRPCIDeviceForm::AVIRPCIDeviceForm(UI::GUIClientControl *parent
 {
 	this->core = core;
 	this->SetText((const UTF8Char*)"PCI Devices");
-	this->SetFont(0, 8.25, false);
+	this->SetFont(0, 0, 8.25, false);
 
 	NEW_CLASS(this->lbDevices, UI::GUIListBox(ui, this, false));
 	this->lbDevices->SetRect(0, 0, 100, 23, false);

@@ -906,7 +906,7 @@ void SSWR::AVIRead::AVIRHQMPForm::EventMenuClicked(UInt16 cmdId)
 			NEW_CLASS(this->txtDebug, UI::GUITextBox(ui, this->dbgFrm, (const UTF8Char*)"", true));
 			this->txtDebug->SetReadOnly(true);
 			this->txtDebug->SetDockType(UI::GUIControl::DOCK_FILL);
-			this->dbgFrm->SetFont(0, 8.25, false);
+			this->dbgFrm->SetFont(0, 0, 8.25, false);
 			this->dbgFrm->SetText((const UTF8Char*)"Info");
 			this->dbgFrm->Show();
 			this->dbgFrm->HandleFormClosed(OnDebugClosed, this);

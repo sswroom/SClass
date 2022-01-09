@@ -10,20 +10,20 @@ void __stdcall SSWR::AVIRead::AVIRASN1OIDForm::OnConvertClicked(void *userObj)
 	Text::StringBuilderUTF8 sbCPP;
 	Text::StringBuilderUTF8 sb;
 	me->txtSource->GetText(&sb);
-	UTF8Char *lines[2];
-	UTF8Char *sarr[10];
+	Text::PString lines[2];
+	Text::PString sarr[10];
 	UOSInt firstRowCnt;
 	UOSInt rowCnt;
-	UOSInt lineCnt = Text::StrSplitLine(lines, 2, sb.ToString());
+	UOSInt lineCnt = Text::StrSplitLineP(lines, 2, sb.ToString(), sb.GetLength());
 	UOSInt oidCol = 10;
 	UOSInt nameCol;
 	UInt8 oid[32];
 	UOSInt oidLen;
-	firstRowCnt = Text::StrSplitTrim(sarr, 10, lines[0], '\t');
+	firstRowCnt = Text::StrSplitTrimP(sarr, 10, lines[0].v, lines[0].len, '\t');
 	rowCnt = 0;
 	while (rowCnt < firstRowCnt)
 	{
-		oidLen = Net::ASN1Util::OIDUText2PDU(sarr[rowCnt], oid);
+		oidLen = Net::ASN1Util::OIDText2PDU(sarr[rowCnt].v, sarr[rowCnt].len, oid);
 		if (oidLen != 0)
 		{
 			oidCol = rowCnt;
@@ -44,17 +44,17 @@ void __stdcall SSWR::AVIRead::AVIRASN1OIDForm::OnConvertClicked(void *userObj)
 	{
 		nameCol = 0;
 	}
-	Net::ASN1Util::OIDToCPPCode(oid, oidLen, sarr[nameCol], &sbCPP);
+	Net::ASN1Util::OIDToCPPCode(oid, oidLen, sarr[nameCol].v, &sbCPP);
 	while (lineCnt == 2)
 	{
-		lineCnt = Text::StrSplitLine(lines, 2, lines[1]);
-		rowCnt = Text::StrSplitTrim(sarr, 10, lines[0], '\t');
+		lineCnt = Text::StrSplitLineP(lines, 2, lines[1].v, lines[1].len);
+		rowCnt = Text::StrSplitTrimP(sarr, 10, lines[0].v, lines[0].len, '\t');
 		if (rowCnt == firstRowCnt)
 		{
-			oidLen = Net::ASN1Util::OIDUText2PDU(sarr[oidCol], oid);
+			oidLen = Net::ASN1Util::OIDText2PDU(sarr[oidCol].v, sarr[oidCol].len, oid);
 			if (oidLen != 0)
 			{
-				Net::ASN1Util::OIDToCPPCode(oid, oidLen, sarr[nameCol], &sbCPP);
+				Net::ASN1Util::OIDToCPPCode(oid, oidLen, sarr[nameCol].v, &sbCPP);
 			}
 		}
 	}
@@ -64,7 +64,7 @@ void __stdcall SSWR::AVIRead::AVIRASN1OIDForm::OnConvertClicked(void *userObj)
 
 SSWR::AVIRead::AVIRASN1OIDForm::AVIRASN1OIDForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
-	this->SetFont(0, 8.25, false);
+	this->SetFont(0, 0, 8.25, false);
 	this->SetText((const UTF8Char*)"ASN.1 OID");
 
 	this->core = core;

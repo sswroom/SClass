@@ -77,7 +77,7 @@ void __stdcall SSWR::AVIRead::AVIRElectronicScaleForm::OnTimerTick(void *userObj
 				Double fontHeight;
 				Double sz[2];
 				fontHeight = Math::UOSInt2Double(w) / Math::UOSInt2Double(strSize);
-				f = me->dimg->NewFontPx((const UTF8Char*)"Arial", fontHeight, Media::DrawEngine::DFS_NORMAL, 0);
+				f = me->dimg->NewFontPx(UTF8STRC("Arial"), fontHeight, Media::DrawEngine::DFS_NORMAL, 0);
 				me->dimg->GetTextSizeC(f, sbuff, strSize, sz);
 				me->dimg->DelFont(f);
 				if (Math::UOSInt2Double(w) * sz[1] > Math::UOSInt2Double(h) * sz[0]) //w / sz[0] > h / sz[1]
@@ -88,7 +88,7 @@ void __stdcall SSWR::AVIRead::AVIRElectronicScaleForm::OnTimerTick(void *userObj
 				{
 					fontHeight = fontHeight * Math::UOSInt2Double(w) / sz[0];
 				}
-				f = me->dimg->NewFontPx((const UTF8Char*)"Arial", fontHeight, Media::DrawEngine::DFS_NORMAL, 0);
+				f = me->dimg->NewFontPx(UTF8STRC("Arial"), fontHeight, Media::DrawEngine::DFS_NORMAL, 0);
 				b = me->dimg->NewBrushARGB(0xff000000);
 				me->dimg->GetTextSizeC(f, sbuff, strSize, sz);
 				me->dimg->DrawString((Math::UOSInt2Double(w) - sz[0]) * 0.5, (Math::UOSInt2Double(h) - sz[1]) * 0.5, sbuff, f, b);
@@ -204,7 +204,7 @@ void SSWR::AVIRead::AVIRElectronicScaleForm::StopStream()
 SSWR::AVIRead::AVIRElectronicScaleForm::AVIRElectronicScaleForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 456, 200, ui)
 {
 	this->SetText((const UTF8Char*)"Electronic Scale");
-	this->SetFont(0, 8.25, false);
+	this->SetFont(0, 0, 8.25, false);
 	
 	this->core = core;
 	this->eng = this->core->GetDrawEngine();

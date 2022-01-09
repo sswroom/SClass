@@ -453,7 +453,7 @@ Media::DrawImage *Media::CodeImageGen::EAN13CodeImageGen::GenCode(const UTF8Char
 	}
 	dimg->DelPen(p);
 
-	f = dimg->NewFontPx((const UTF8Char*)"Arial", fh, Media::DrawEngine::DFS_NORMAL, 0);
+	f = dimg->NewFontPx(UTF8STRC("Arial"), fh, Media::DrawEngine::DFS_NORMAL, 0);
 	b = dimg->NewBrushARGB(0xff000000);
 	sbuff[0] = *code++;
 	sbuff[1] = 0;
