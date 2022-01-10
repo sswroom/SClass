@@ -159,7 +159,7 @@ void Net::SNS::SNSManager::ChannelAddMessage(Net::SNS::SNSManager::ChannelData *
 		UOSInt k;
 		UOSInt retryCnt;
 		UInt64 leng;
-		UTF8Char *sarr[2];
+		Text::PString sarr[2];
 		Net::HTTPClient *cli;
 		UInt8 *tmpBuff = MemAlloc(UInt8, 65536);
 
@@ -179,21 +179,22 @@ void Net::SNS::SNSManager::ChannelAddMessage(Net::SNS::SNSManager::ChannelData *
 
 		sb.ClearStr();
 		sb.Append(item->imgURL);
-		sarr[1] = sb.ToString();
+		sarr[1].v = sb.ToString();
+		sarr[1].len = sb.GetLength();
 		while (true)
 		{
-			j = Text::StrSplit(sarr, 2, sarr[1], ' ');
+			j = Text::StrSplitP(sarr, 2, sarr[1].v, sarr[1].len, ' ');
 			retryCnt = 0;
 			while (retryCnt < 3)
 			{
-				cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, STR_PTRC(this->userAgent), true, Text::StrStartsWith(sarr[0], (const UTF8Char*)"https://"));
-				if (cli->Connect(sarr[0], "GET", 0, 0, true))
+				cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, STR_PTRC(this->userAgent), true, Text::StrStartsWith(sarr[0].v, (const UTF8Char*)"https://"));
+				if (cli->Connect(sarr[0].v, sarr[0].len, "GET", 0, 0, true))
 				{
-					if (Text::StrEndsWith(sarr[0], (const UTF8Char*)".mp4"))
+					if (Text::StrEquals(&sarr[0].v[sarr[0].len - 4], (const UTF8Char*)".mp4"))
 					{
 						Text::StrConcatC(Text::StrUOSInt(sptr, i), UTF8STRC(".mp4"));
 					}
-					else if (Text::StrEndsWith(sarr[0], (const UTF8Char*)".png"))
+					else if (Text::StrEquals(&sarr[0].v[sarr[0].len - 4], (const UTF8Char*)".png"))
 					{
 						Text::StrConcatC(Text::StrUOSInt(sptr, i), UTF8STRC(".png"));
 					}
@@ -215,13 +216,13 @@ void Net::SNS::SNSManager::ChannelAddMessage(Net::SNS::SNSManager::ChannelData *
 					DEL_CLASS(fs);
 					if (cli->GetContentLength() > 0 && cli->GetContentLength() != leng)
 					{
-						printf("Image download failed: %lld != %lld, url: %s\r\n", cli->GetContentLength(), leng, sarr[0]);
+						printf("Image download failed: %lld != %lld, url: %s\r\n", cli->GetContentLength(), leng, sarr[0].v);
 						IO::Path::DeleteFile(sbuff);
 						retryCnt++;
 					}
 					else if (cli->GetContentLength() == 0 && leng == 0)
 					{
-						printf("Image download failed: HTTP Status = %d, url: %s\r\n", cli->GetRespStatus(), sarr[0]);
+						printf("Image download failed: HTTP Status = %d, url: %s\r\n", cli->GetRespStatus(), sarr[0].v);
 						IO::Path::DeleteFile(sbuff);
 						retryCnt = 5;
 					}
@@ -233,7 +234,7 @@ void Net::SNS::SNSManager::ChannelAddMessage(Net::SNS::SNSManager::ChannelData *
 				}
 				else
 				{
-					printf("Image download failed: Cannot connect to server, url: %s\r\n", sarr[0]);
+					printf("Image download failed: Cannot connect to server, url: %s\r\n", sarr[0].v);
 					retryCnt++;
 				}
 				DEL_CLASS(cli);
@@ -249,12 +250,13 @@ void Net::SNS::SNSManager::ChannelAddMessage(Net::SNS::SNSManager::ChannelData *
 		{
 			sb.ClearStr();
 			sb.Append(item->videoURL);
-			sarr[1] = sb.ToString();
+			sarr[1].v = sb.ToString();
+			sarr[1].len = sb.GetLength();
 			while (true)
 			{
-				j = Text::StrSplit(sarr, 2, sarr[1], ' ');
-				cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, STR_PTRC(this->userAgent), true, Text::StrStartsWith(sarr[0], (const UTF8Char*)"https://"));
-				if (cli->Connect(sarr[0], "GET", 0, 0, true))
+				j = Text::StrSplitP(sarr, 2, sarr[1].v, sarr[1].len, ' ');
+				cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, STR_PTRC(this->userAgent), true, Text::StrStartsWith(sarr[0].v, (const UTF8Char*)"https://"));
+				if (cli->Connect(sarr[0].v, sarr[0].len, "GET", 0, 0, true))
 				{
 					Text::StrConcatC(Text::StrUOSInt(sptr, i), UTF8STRC(".mp4"));
 					leng = 0;
@@ -271,12 +273,12 @@ void Net::SNS::SNSManager::ChannelAddMessage(Net::SNS::SNSManager::ChannelData *
 					DEL_CLASS(fs);
 					if (cli->GetContentLength() > 0 && cli->GetContentLength() != leng)
 					{
-						printf("Video download failed: %lld != %lld, url: %s\r\n", cli->GetContentLength(), leng, sarr[0]);
+						printf("Video download failed: %lld != %lld, url: %s\r\n", cli->GetContentLength(), leng, sarr[0].v);
 						IO::Path::DeleteFile(sbuff);
 					}
 					else if (cli->GetContentLength() == 0 && leng == 0)
 					{
-						printf("Video download failed: HTTP Status = %d, url: %s\r\n", cli->GetRespStatus(), sarr[0]);
+						printf("Video download failed: HTTP Status = %d, url: %s\r\n", cli->GetRespStatus(), sarr[0].v);
 						IO::Path::DeleteFile(sbuff);
 					}
 					else

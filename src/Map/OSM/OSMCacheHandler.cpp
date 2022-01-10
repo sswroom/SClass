@@ -55,7 +55,7 @@ IO::SeekableStream *Map::OSM::OSMCacheHandler::GetTileData(Int32 lev, Int32 xTil
 
 		Net::HTTPClient *cli;
 		cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, UTF8STRC("OSMTileMap/1.0 SSWR/1.0"), true, urlSb.StartsWith((const UTF8Char*)"https://"));
-		cli->Connect(urlSb.ToString(), "GET", 0, 0, true);
+		cli->Connect(urlSb.ToString(), urlSb.GetLength(), "GET", 0, 0, true);
 
 		if (cli->GetRespStatus() == 304)
 		{

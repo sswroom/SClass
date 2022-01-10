@@ -21,15 +21,15 @@ void __stdcall SSWR::AVIRead::AVIRHTTPDownloaderForm::OnRequestClicked(void *use
 		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter valid download path", (const UTF8Char*)"Request", me);
 		return;
 	}
-	SDEL_TEXT(me->downPath);
-	me->downPath = Text::StrCopyNew(sb.ToString());
+	SDEL_STRING(me->downPath);
+	me->downPath = Text::String::New(sb.ToString(), sb.GetLength());
 
 	sb.ClearStr();
 	me->txtHeaders->GetText(&sb);
-	SDEL_TEXT(me->reqHeader);
+	SDEL_STRING(me->reqHeader);
 	if (sb.GetLength() > 0)
 	{
-		me->reqHeader = Text::StrCopyNew(sb.ToString());
+		me->reqHeader = Text::String::New(sb.ToString(), sb.GetLength());
 	}
 
 	sb.ClearStr();
@@ -41,7 +41,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPDownloaderForm::OnRequestClicked(void *use
 	}
 
 
-	me->reqURL = Text::StrCopyNew(sb.ToString());
+	me->reqURL = Text::String::New(sb.ToString(), sb.GetLength());
 	me->threadEvt->Set();
 	while (me->threadRunning && me->reqURL)
 	{
@@ -52,9 +52,9 @@ void __stdcall SSWR::AVIRead::AVIRHTTPDownloaderForm::OnRequestClicked(void *use
 UInt32 __stdcall SSWR::AVIRead::AVIRHTTPDownloaderForm::ProcessThread(void *userObj)
 {
 	SSWR::AVIRead::AVIRHTTPDownloaderForm *me = (SSWR::AVIRead::AVIRHTTPDownloaderForm*)userObj;
-	const UTF8Char *currURL;
-	const UTF8Char *currPath;
-	const UTF8Char *currHeader;
+	Text::String *currURL;
+	Text::String *currPath;
+	Text::String *currHeader;
 	IO::FileStream *fs;
 	UInt8 buff[4096];
 	UTF8Char *sarr[2];
@@ -72,22 +72,22 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPDownloaderForm::ProcessThread(void *user
 			currURL = me->reqURL;
 			if (me->reqHeader)
 			{
-				currHeader = Text::StrCopyNew(me->reqHeader);
+				currHeader = me->reqHeader->Clone();
 			}
 			else
 			{
 				currHeader = 0;
 			}
-			currPath = Text::StrCopyNew(me->downPath);
+			currPath = me->downPath->Clone();
 			me->reqURL = 0;
 
-			sptr = Text::StrConcat(sbuff, currPath);
+			sptr = currPath->ConcatTo(sbuff);
 			if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 			{
 				*sptr++ = IO::Path::PATH_SEPERATOR;
 			}
-			i = Text::StrLastIndexOf(currURL, '/');
-			Text::StrConcat(sptr, &currURL[i + 1]);
+			i = currURL->LastIndexOf('/');
+			Text::StrConcatC(sptr, &currURL->v[i + 1], currURL->leng - i - 1);
 			i = Text::StrIndexOf(sptr, '?');
 			if (i == 0)
 			{
@@ -99,11 +99,11 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPDownloaderForm::ProcessThread(void *user
 			}
 			Net::HTTPClient *cli;
 			NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
-			cli = Net::HTTPClient::CreateClient(me->core->GetSocketFactory(), me->ssl, 0, 0, false, Text::StrStartsWith(currURL, (const UTF8Char*)"https://"));
-			cli->Connect(currURL, "GET", &me->respTimeDNS, &me->respTimeConn, false);
+			cli = Net::HTTPClient::CreateClient(me->core->GetSocketFactory(), me->ssl, 0, 0, false, currURL->StartsWith((const UTF8Char*)"https://"));
+			cli->Connect(currURL->v, currURL->leng, "GET", &me->respTimeDNS, &me->respTimeConn, false);
 			if (currHeader)
 			{
-				Text::StrConcat(sbuff, currHeader);
+				currHeader->ConcatTo(sbuff);
 				sarr[1] = sbuff;
 				while (true)
 				{
@@ -152,13 +152,13 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPDownloaderForm::ProcessThread(void *user
 			DEL_CLASS(fs);
 			me->respChanged = true;
 
-			Text::StrDelNew(currURL);
-			Text::StrDelNew(currPath);
-			SDEL_TEXT(currHeader);
+			currURL->Release();
+			currPath->Release();
+			SDEL_STRING(currHeader);
 		}
 	}
 	MemFree(sbuff);
-	SDEL_TEXT(me->reqURL);
+	SDEL_STRING(me->reqURL);
 	me->threadToStop = false;
 	me->threadRunning = false;
 	return 0;
@@ -382,8 +382,8 @@ SSWR::AVIRead::AVIRHTTPDownloaderForm::~AVIRHTTPDownloaderForm()
 	DEL_CLASS(this->threadEvt);
 	this->ClearHeaders();
 	DEL_CLASS(this->respHeaders);
-	SDEL_TEXT(this->downPath);
-	SDEL_TEXT(this->reqHeader);
+	SDEL_STRING(this->downPath);
+	SDEL_STRING(this->reqHeader);
 	SDEL_CLASS(this->ssl);
 }
 

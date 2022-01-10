@@ -29,7 +29,7 @@ Manage::CPUInfo::CPUInfo()
 		NEW_CLASS(reader, Text::UTF8Reader(fs));
 		while (reader->ReadLine(&sb, 512))
 		{
-			if (sb.StartsWith((const UTF8Char*)"Hardware")) //ARM
+			if (sb.StartsWithC(UTF8STRC("Hardware"))) //ARM
 			{
 				i = sb.IndexOf((const UTF8Char*)": ");
 				if (i != INVALID_INDEX && sysType <= 1)
@@ -80,7 +80,7 @@ Manage::CPUInfo::CPUInfo()
 					this->brand = Manage::CPUVendor::CB_ATMEL;
 				}
 			}
-			else if (sb.StartsWith((const UTF8Char*)"system type")) //MIPS
+			else if (sb.StartsWithC(UTF8STRC("system type"))) //MIPS
 			{
 				if (sb.IndexOf((const UTF8Char*)": Qualcomm Atheros") != INVALID_INDEX)
 				{
@@ -92,22 +92,22 @@ Manage::CPUInfo::CPUInfo()
 				this->clsData = (void*)Text::StrCopyNew(sb.ToString() + i + 2);
 				sysType = 3;
 			}
-			else if (sb.StartsWith((const UTF8Char*)"CPU architecture"))
+			else if (sb.StartsWithC(UTF8STRC("CPU architecture")))
 			{
 				i = sb.IndexOf((const UTF8Char*)": ");
 				this->familyId = Text::StrToInt32(sb.ToString() + i + 2);
 			}
-			else if (sb.StartsWith((const UTF8Char*)"CPU variant"))
+			else if (sb.StartsWithC(UTF8STRC("CPU variant")))
 			{
 				i = sb.IndexOf((const UTF8Char*)": ");
 				this->model = Text::StrToInt32(sb.ToString() + i + 2);
 			}
-			else if (sb.StartsWith((const UTF8Char*)"CPU revision"))
+			else if (sb.StartsWithC(UTF8STRC("CPU revision")))
 			{
 				i = sb.IndexOf((const UTF8Char*)": ");
 				this->steppingId = Text::StrToInt32(sb.ToString() + i + 2);
 			}
-			else if (sb.StartsWith((const UTF8Char*)"model name")) //x86
+			else if (sb.StartsWithC(UTF8STRC("model name"))) //x86
 			{
 				i = sb.IndexOf((const UTF8Char*)": ");
 				if (i != INVALID_INDEX && sysType <= 0)
@@ -118,7 +118,7 @@ Manage::CPUInfo::CPUInfo()
 					sysType = 1;
 				}
 			}
-			else if (sb.StartsWith((const UTF8Char*)"CPU part	:"))
+			else if (sb.StartsWithC(UTF8STRC("CPU part	:")))
 			{
 				cpuPart = Text::StrToInt32(sb.ToString() + 11);
 			}

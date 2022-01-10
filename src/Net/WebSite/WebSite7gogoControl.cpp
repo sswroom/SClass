@@ -136,7 +136,7 @@ OSInt Net::WebSite::WebSite7gogoControl::GetChannelItems(Text::String *channelId
 	Text::XMLReader *reader;
 //	printf("Requesting to URL %s\r\n", sb.ToString());
 	Net::HTTPClient *cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, STR_PTRC(this->userAgent), true, true);
-	cli->Connect(sb.ToString(), "GET", 0, 0, true);
+	cli->Connect(sb.ToString(), sb.GetLength(), "GET", 0, 0, true);
 	NEW_CLASS(reader, Text::XMLReader(this->encFact, cli, Text::XMLReader::PM_HTML));
 	while (reader->ReadNext())
 	{

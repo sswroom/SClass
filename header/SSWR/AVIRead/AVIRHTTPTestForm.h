@@ -36,7 +36,7 @@ namespace SSWR
 			Net::SSLEngine *ssl;
 			ThreadStatus *threadStatus;
 			Sync::Mutex *connMut;
-			Data::ArrayList<const UTF8Char *> *connURLs;
+			Data::ArrayList<Text::String *> *connURLs;
 			const Char *method;
 			UInt32 postSize;
 			UOSInt connCurrIndex;
@@ -85,7 +85,7 @@ namespace SSWR
 			static void __stdcall OnTimerTick(void *userObj);
 			void StopThreads();
 			void ClearURLs();
-			const UTF8Char *GetNextURL();
+			Text::String *GetNextURL();
 		public:
 			AVIRHTTPTestForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRHTTPTestForm();

@@ -529,7 +529,7 @@ Bool Net::HTTPMyClient::Recover()
 	return false;
 }
 
-Bool Net::HTTPMyClient::Connect(const UTF8Char *url, const Char *method, Double *timeDNS, Double *timeConn, Bool defHeaders)
+Bool Net::HTTPMyClient::Connect(const UTF8Char *url, UOSInt urlLen, const Char *method, Double *timeDNS, Double *timeConn, Bool defHeaders)
 {
 	UTF8Char urltmp[256];
 	UOSInt urltmpLen;
@@ -539,22 +539,26 @@ Bool Net::HTTPMyClient::Connect(const UTF8Char *url, const Char *method, Double 
 	UOSInt i;
 	UOSInt hostLen;
 	const UTF8Char *ptr1;
+	UOSInt ptr1Len;
 	const UTF8Char *ptr2;
+	UOSInt ptr2Len;
 	Text::PString ptrs[2];
 	UTF8Char *cptr;
 	UInt16 port;
 	Bool secure = false;
 
-	SDEL_TEXT(this->url);
-	this->url = Text::StrCopyNew(url);
-	if (Text::StrStartsWith(url, (const UTF8Char*)"http://"))
+	SDEL_STRING(this->url);
+	this->url = Text::String::New(url, urlLen);
+	if (Text::StrStartsWithC(url, urlLen, UTF8STRC("http://")))
 	{
 		ptr1 = &url[7];
+		ptr1Len = urlLen - 7;
 		secure = false;
 	}
-	else if (Text::StrStartsWith(url, (const UTF8Char*)"https://"))
+	else if (Text::StrStartsWithC(url, urlLen, UTF8STRC("https://")))
 	{
 		ptr1 = &url[8];
+		ptr1Len = urlLen - 8;
 		secure = true;
 	}
 	else
@@ -592,12 +596,13 @@ Bool Net::HTTPMyClient::Connect(const UTF8Char *url, const Char *method, Double 
 		MemCopyNO(urltmp, ptr1, i * sizeof(UTF8Char));
 		urltmp[i] = 0;
 		ptr2 = &ptr1[i];
+		ptr2Len = ptr1Len - i;
 	}
 	else
 	{
-		i = Text::StrCharCnt(ptr1);
 		ptr2 = 0;
-		MemCopyNO(urltmp, ptr1, i * sizeof(UTF8Char));
+		ptr2Len = 0;
+		MemCopyNO(urltmp, ptr1, ptr1Len * sizeof(UTF8Char));
 		urltmp[i] = 0;
 	}
 	cptr = Text::TextEnc::URIEncoding::URIDecode(urltmp, urltmp);
@@ -814,8 +819,9 @@ Bool Net::HTTPMyClient::Connect(const UTF8Char *url, const Char *method, Double 
 	if (ptr2 == 0)
 	{
 		ptr2 = (const UTF8Char*)"/";
+		ptr2Len = 1;
 	}
-	i = Text::StrCharCnt(ptr2);
+	i = ptr2Len;
 	if ((i + 16) > BUFFSIZE)
 	{
 		MemFree(this->dataBuff);
@@ -860,7 +866,7 @@ Bool Net::HTTPMyClient::Connect(const UTF8Char *url, const Char *method, Double 
 		this->writing = false;
 		cptr = Text::StrConcatC(dataBuff, UTF8STRC("GET "));
 	}
-	cptr = Text::StrConcat(cptr, ptr2);
+	cptr = Text::StrConcatC(cptr, ptr2, ptr2Len);
 	cptr = Text::StrConcatC(cptr, UTF8STRC(" HTTP/1.1\r\n"));
 	this->reqMstm->Write(dataBuff, (UOSInt)(cptr - (UTF8Char*)dataBuff));
 	this->reqMstm->Write((UInt8*)host, hostLen);
@@ -1011,7 +1017,7 @@ void Net::HTTPMyClient::EndRequest(Double *timeReq, Double *timeResp)
 		printf("Read buffSize = %d\r\n", (Int32)this->buffSize);
 #endif
 		this->dataBuff[this->buffSize] = 0;
-		if (Text::StrStartsWith((UTF8Char*)this->dataBuff, (const UTF8Char*)"HTTP/"))
+		if (Text::StrStartsWithC((UTF8Char*)this->dataBuff, this->buffSize, UTF8STRC("HTTP/")))
 		{
 			UTF8Char buff[256];
 			UTF8Char *ptrs[3];
@@ -1068,7 +1074,7 @@ void Net::HTTPMyClient::EndRequest(Double *timeReq, Double *timeResp)
 					}
 					else if (s->StartsWithICase((const UTF8Char*)"Transfer-Encoding: "))
 					{
-						if (Text::StrStartsWith(&s->v[19], (const UTF8Char*)"chunked"))
+						if (Text::StrStartsWithC(&s->v[19], s->leng - 19, UTF8STRC("chunked")))
 						{
 							this->contEnc = 1;
 							this->chunkSizeLeft = 0;

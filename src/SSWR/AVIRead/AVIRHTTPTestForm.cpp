@@ -91,7 +91,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPTestForm::OnURLAddClicked(void *userObj)
 	me->txtURL->GetText(&sb);
 	if (sb.StartsWith((const UTF8Char*)"http://") || sb.StartsWith((const UTF8Char*)"https://"))
 	{
-		me->connURLs->Add(Text::StrCopyNewC(sb.ToString(), sb.GetLength()));
+		me->connURLs->Add(Text::String::New(sb.ToString(), sb.GetLength()));
 		me->lbURL->AddItem(sb.ToString(), 0);
 		me->txtURL->SetText((const UTF8Char*)"");
 	}
@@ -118,7 +118,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPTestForm::ProcessThread(void *userObj)
 	ThreadStatus *status = (ThreadStatus*)userObj;
 	Net::HTTPClient *cli = 0;
 //	UInt8 buff[2048];
-	const UTF8Char *url;
+	Text::String *url;
 	Double timeDNS;
 	Double timeConn;
 	Double timeReq;
@@ -138,7 +138,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPTestForm::ProcessThread(void *userObj)
 			url = status->me->GetNextURL();
 			if (url == 0)
 				break;
-			if (cli->Connect(url, status->me->method, &timeDNS, &timeConn, false))
+			if (cli->Connect(url->v, url->leng, status->me->method, &timeDNS, &timeConn, false))
 			{
 				cli->AddHeaderC(UTF8STRC("Connection"), UTF8STRC("keep-alive"));
 				if (Text::StrEquals(status->me->method, "POST"))
@@ -184,13 +184,13 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPTestForm::ProcessThread(void *userObj)
 				if (cli->IsError())
 				{
 					DEL_CLASS(cli);
-					cli = Net::HTTPClient::CreateClient(status->me->sockf, status->me->ssl, 0, 0, true, Text::StrStartsWith(url, (const UTF8Char*)"https://"));
+					cli = Net::HTTPClient::CreateClient(status->me->sockf, status->me->ssl, 0, 0, true, url->StartsWith((const UTF8Char*)"https://"));
 				}
 			}
 			else
 			{
 				DEL_CLASS(cli);
-				cli = Net::HTTPClient::CreateClient(status->me->sockf, status->me->ssl, 0, 0, true, Text::StrStartsWith(url, (const UTF8Char*)"https://"));
+				cli = Net::HTTPClient::CreateClient(status->me->sockf, status->me->ssl, 0, 0, true, url->StartsWith((const UTF8Char*)"https://"));
 				Sync::Interlocked::Increment(&status->me->failCnt);
 			}
 		}
@@ -203,8 +203,8 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPTestForm::ProcessThread(void *userObj)
 			url = status->me->GetNextURL();
 			if (url == 0)
 				break;
-			cli = Net::HTTPClient::CreateClient(status->me->sockf, status->me->ssl, 0, 0, true, Text::StrStartsWith(url, (const UTF8Char*)"https://"));
-			if (cli->Connect(url, "GET", &timeDNS, &timeConn, false))
+			cli = Net::HTTPClient::CreateClient(status->me->sockf, status->me->ssl, 0, 0, true, url->StartsWith((const UTF8Char*)"https://"));
+			if (cli->Connect(url->v, url->leng, "GET", &timeDNS, &timeConn, false))
 			{
 				cli->AddHeaderC(UTF8STRC("Connection"), UTF8STRC("keep-alive"));
 				cli->EndRequest(&timeReq, &timeResp);
@@ -284,7 +284,7 @@ void SSWR::AVIRead::AVIRHTTPTestForm::ClearURLs()
 	i = this->connURLs->GetCount();
 	while (i-- > 0)
 	{
-		Text::StrDelNew(this->connURLs->RemoveAt(i));
+		this->connURLs->RemoveAt(i)->Release();
 	}
 	if (this->children->GetCount() > 0)
 	{
@@ -292,9 +292,9 @@ void SSWR::AVIRead::AVIRHTTPTestForm::ClearURLs()
 	}
 }
 
-const UTF8Char *SSWR::AVIRead::AVIRHTTPTestForm::GetNextURL()
+Text::String *SSWR::AVIRead::AVIRHTTPTestForm::GetNextURL()
 {
-	const UTF8Char *url;
+	Text::String *url;
 	Sync::MutexUsage mutUsage(this->connMut);
 	if (this->connLeftCnt <= 0)
 	{
@@ -320,7 +320,7 @@ SSWR::AVIRead::AVIRHTTPTestForm::AVIRHTTPTestForm(UI::GUIClientControl *parent, 
 	this->ssl = Net::SSLEngineFactory::Create(this->sockf, true);
 	this->threadStatus = 0;
 	NEW_CLASS(this->connMut, Sync::Mutex());
-	NEW_CLASS(this->connURLs, Data::ArrayList<const UTF8Char*>());
+	NEW_CLASS(this->connURLs, Data::ArrayList<Text::String*>());
 	NEW_CLASS(this->clk, Manage::HiResClock());
 	this->connCurrIndex = 0;
 	this->connLeftCnt = 0;

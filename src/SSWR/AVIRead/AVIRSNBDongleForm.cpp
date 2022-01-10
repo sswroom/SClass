@@ -380,7 +380,7 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnUploadClicked(void *userObj)
 	Int32 status = 0;
 	Net::HTTPClient *cli;
 	cli = Net::HTTPClient::CreateClient(me->core->GetSocketFactory(), me->ssl, 0, 0, false, url.StartsWith((const UTF8Char*)"https://"));
-	cli->Connect(url.ToString(), "POST", 0, 0, false);
+	cli->Connect(url.ToString(), url.GetLength(), "POST", 0, 0, false);
 	cli->AddHeaderC(UTF8STRC("Iot-Program"), UTF8STRC("margorpnomis"));
 	if (cli->IsError())
 	{

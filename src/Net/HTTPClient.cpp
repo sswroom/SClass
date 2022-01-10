@@ -39,7 +39,7 @@ Net::HTTPClient::~HTTPClient()
 		DEL_CLASS(this->headers);
 	}
 	SDEL_CLASS(this->formSb);
-	SDEL_TEXT(this->url);
+	SDEL_STRING(this->url);
 	DEL_CLASS(this->clk);
 }
 
@@ -190,7 +190,7 @@ Bool Net::HTTPClient::GetLastModified(Data::DateTime *dt)
 	return false;
 }
 
-const UTF8Char *Net::HTTPClient::GetURL()
+Text::String *Net::HTTPClient::GetURL()
 {
 	return this->url;
 }
@@ -293,7 +293,7 @@ Net::HTTPClient *Net::HTTPClient::CreateConnect(Net::SocketFactory *sockf, Net::
 		method = "GET";
 	}
 	Net::HTTPClient *cli = Net::HTTPClient::CreateClient(sockf, ssl, 0, 0, kaConn, Text::StrStartsWithICase(url, (const UTF8Char*)"HTTPS://"));
-	cli->Connect(url, method, 0, 0, true);
+	cli->Connect(url, Text::StrCharCnt(url), method, 0, 0, true);
 	return cli;
 }
 

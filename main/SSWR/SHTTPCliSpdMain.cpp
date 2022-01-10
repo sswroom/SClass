@@ -43,7 +43,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			NEW_CLASS(sockf, Net::OSSocketFactory(true));
 			ssl = Net::SSLEngineFactory::Create(sockf, true);
 			cli = Net::HTTPClient::CreateClient(sockf, ssl, UTF8STRC("Test/1.0"), false, Text::StrStartsWith(url, (const UTF8Char*)"https://"));
-			if (!cli->Connect(url, "GET", &respTimeDNS, &respTimeConn, false))
+			if (!cli->Connect(url, Text::StrCharCnt(url), "GET", &respTimeDNS, &respTimeConn, false))
 			{
 				console->WriteLineC(UTF8STRC("Error in requesting to server"));
 			}

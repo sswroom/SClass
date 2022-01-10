@@ -8,13 +8,13 @@
 #include "Text/XMLReader.h"
 #include <stdio.h>
 
-Text::JSONBase *Net::WebSite::WebSiteInstagramControl::ParsePageJSON(const UTF8Char *url)
+Text::JSONBase *Net::WebSite::WebSiteInstagramControl::ParsePageJSON(const UTF8Char *url, UOSInt urlLen)
 {
 	Text::StringBuilderUTF8 sb;
 	Text::JSONBase *baseData = 0;
 	Text::XMLReader *reader;
 	Net::HTTPClient *cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, STR_PTRC(this->userAgent), true, true);
-	cli->Connect(url, "GET", 0, 0, true);
+	cli->Connect(url, urlLen, "GET", 0, 0, true);
 	NEW_CLASS(reader, Text::XMLReader(this->encFact, cli, Text::XMLReader::PM_HTML));
 	while (reader->ReadNext())
 	{
@@ -61,7 +61,7 @@ OSInt Net::WebSite::WebSiteInstagramControl::GetChannelItems(Text::String *chann
 	sb.Append(channelId);
 	sb.AppendChar('/', 1);
 	Net::WebSite::WebSiteInstagramControl::ItemData *item;
-	Text::JSONBase *baseData = this->ParsePageJSON(sb.ToString());
+	Text::JSONBase *baseData = this->ParsePageJSON(sb.ToString(), sb.GetLength());
 	if (baseData)
 	{
 		Text::JSONBase *jsBase;
@@ -245,7 +245,7 @@ OSInt Net::WebSite::WebSiteInstagramControl::GetPageImages(Text::String *shortCo
 	sb.AppendC(UTF8STRC("https://www.instagram.com/p/"));
 	sb.Append(shortCode);
 	sb.AppendChar('/', 1);
-	Text::JSONBase *baseData = this->ParsePageJSON(sb.ToString());
+	Text::JSONBase *baseData = this->ParsePageJSON(sb.ToString(), sb.GetLength());
 	if (baseData)
 	{
 		Text::JSONBase *jsBase;

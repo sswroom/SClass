@@ -55,9 +55,9 @@ namespace SSWR
 			Bool threadRunning;
 			Bool threadToStop;
 			Sync::Event *threadEvt;
-			const UTF8Char *reqURL;
-			const UTF8Char *reqHeader;
-			const UTF8Char *downPath;
+			Text::String *reqURL;
+			Text::String *reqHeader;
+			Text::String *downPath;
 
 			Int64 lastT;
 			UInt64 lastSize;

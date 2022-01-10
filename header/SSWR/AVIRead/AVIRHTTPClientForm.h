@@ -110,7 +110,7 @@ namespace SSWR
 			Bool threadRunning;
 			Bool threadToStop;
 			Sync::Event *threadEvt;
-			const UTF8Char *reqURL;
+			Text::String *reqURL;
 			const UTF8Char *reqBody;
 			Text::String *reqBodyType;
 			const UTF8Char *reqUserName;
@@ -131,7 +131,7 @@ namespace SSWR
 			Double respTimeTotal;
 			UInt64 respSize;
 			Int32 respStatus;
-			const UTF8Char *respReqURL;
+			Text::String *respReqURL;
 			Data::ArrayList<const UTF8Char*> *respHeaders;
 			Sync::Mutex *respMut;
 			const UTF8Char *respContType;

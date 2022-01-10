@@ -48,7 +48,7 @@ namespace SSWR
 			Bool threadRunning;
 			Bool threadToStop;
 			Sync::Event *threadEvt;
-			const UTF8Char *reqURL;
+			Text::String *reqURL;
 			UInt32 proxyIP;
 			UInt16 proxyPort;
 

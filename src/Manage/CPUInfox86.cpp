@@ -124,7 +124,7 @@ Manage::CPUInfo::CPUInfo()
 		NEW_CLASS(reader, Text::UTF8Reader(fs));
 		while (reader->ReadLine(&sb, 512))
 		{
-			if (sb.StartsWith((const UTF8Char*)"model name"))
+			if (sb.StartsWithC(UTF8STRC("model name")))
 			{
 				i = sb.IndexOf((const UTF8Char*)": ");
 				info->cpuName = Text::StrCopyNew(sb.ToString() + i + 2);

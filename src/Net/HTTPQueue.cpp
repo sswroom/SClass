@@ -92,7 +92,7 @@ void Net::HTTPQueue::EndRequest(Net::HTTPClient *cli)
 {
 	UTF8Char sbuff[512];
 	DomainStatus *status;
-	Text::URLString::GetURLDomain(sbuff, cli->GetURL(), 0);
+	Text::URLString::GetURLDomain(sbuff, cli->GetURL()->v, 0);
 
 	Sync::MutexUsage mutUsage(this->statusMut);
 	status = this->statusMap->Get(sbuff);

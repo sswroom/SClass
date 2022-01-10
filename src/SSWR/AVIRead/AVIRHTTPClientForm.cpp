@@ -266,7 +266,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnRequestClicked(void *userObj
 		me->reqBodyLen = sb2.GetCharCnt();
 		me->reqBodyType = Text::String::New(UTF8STRC("application/x-www-form-urlencoded"));
 	}
-	me->reqURL = Text::StrCopyNew(sb.ToString());
+	me->reqURL = Text::String::New(sb.ToString(), sb.GetLength());
 	me->threadEvt->Set();
 	while (me->threadRunning && me->reqURL && !me->respChanged)
 	{
@@ -466,7 +466,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnFileClearClicked(void *userO
 UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 {
 	SSWR::AVIRead::AVIRHTTPClientForm *me = (SSWR::AVIRead::AVIRHTTPClientForm*)userObj;
-	const UTF8Char *currURL;
+	Text::String *currURL;
 	const UTF8Char *currBody;
 	UOSInt currBodyLen;
 	Text::String *currBodyType;
@@ -504,9 +504,9 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 			me->reqHeaders = 0;
 			
 			Net::HTTPClient *cli;
-			cli = Net::HTTPClient::CreateClient(me->core->GetSocketFactory(), currOSClient?0:me->ssl, me->userAgent->v, me->userAgent->leng, me->noShutdown, Text::StrStartsWith(currURL, (const UTF8Char*)"https://"));
+			cli = Net::HTTPClient::CreateClient(me->core->GetSocketFactory(), currOSClient?0:me->ssl, me->userAgent->v, me->userAgent->leng, me->noShutdown, currURL->StartsWith((const UTF8Char*)"https://"));
 //			NEW_CLASS(cli, Net::HTTPOSClient(me->core->GetSocketFactory(), me->userAgent, me->noShutdown));
-			if (cli->Connect(currURL, currMeth, &me->respTimeDNS, &me->respTimeConn, false))
+			if (cli->Connect(currURL->v, currURL->leng, currMeth, &me->respTimeDNS, &me->respTimeConn, false))
 			{
 				IO::MemoryStream *mstm;
 				const UTF8Char *contType = 0;
@@ -524,7 +524,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 				}
 				cli->AddHeaderC(UTF8STRC("Accept-Encoding"), UTF8STRC("gzip, deflate"));
 				
-				sptr = me->AppendCookie(sbuff, currURL);
+				sptr = me->AppendCookie(sbuff, currURL->v);
 				if (sptr)
 				{
 					cli->AddHeaderC(UTF8STRC("Cookie"), sbuff, (UOSInt)(sptr - sbuff));
@@ -573,8 +573,8 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 				if (me->respStatus == 401 && currUserName != 0 && currPassword != 0)
 				{
 					DEL_CLASS(cli);
-					cli = Net::HTTPClient::CreateClient(me->core->GetSocketFactory(), me->ssl, me->userAgent->v, me->userAgent->leng, me->noShutdown, Text::StrStartsWith(currURL, (const UTF8Char*)"https://"));
-					if (cli->Connect(currURL, currMeth, &me->respTimeDNS, &me->respTimeConn, false))
+					cli = Net::HTTPClient::CreateClient(me->core->GetSocketFactory(), me->ssl, me->userAgent->v, me->userAgent->leng, me->noShutdown, currURL->StartsWith((const UTF8Char*)"https://"));
+					if (cli->Connect(currURL->v, currURL->leng, currMeth, &me->respTimeDNS, &me->respTimeConn, false))
 					{
 						contType = 0;
 						mstm->Clear();
@@ -587,7 +587,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 						b64Enc.EncodeBin(&sbAuth, buff, i);
 						cli->AddHeaderC(UTF8STRC("Authorization"), sbAuth.ToString(), sbAuth.GetLength());
 						
-						sptr = me->AppendCookie(sbuff, currURL);
+						sptr = me->AppendCookie(sbuff, currURL->v);
 						if (sptr)
 						{
 							cli->AddHeaderC(UTF8STRC("Cookie"), sbuff, (UOSInt)(sptr - sbuff));
@@ -656,14 +656,14 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 				Text::StringBuilderUTF8 sb;
 				if (cli->GetRespHeader(UTF8STRC("Content-Type"), &sb))
 				{
-					contType = Text::StrCopyNew(sb.ToString());
+					contType = Text::StrCopyNewC(sb.ToString(), sb.GetLength());
 				}
 				me->respSvrAddr = *cli->GetSvrAddr();
 				Sync::MutexUsage respMutUsage(me->respMut);
-				SDEL_TEXT(me->respReqURL)
+				SDEL_STRING(me->respReqURL)
 				SDEL_TEXT(me->respContType);
 				SDEL_CLASS(me->respData);
-				me->respReqURL = Text::StrCopyNew(currURL);
+				me->respReqURL = currURL->Clone();
 				me->respContType = contType;
 				me->respData = mstm;
 				SDEL_TEXT(me->respCert);
@@ -686,10 +686,10 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 				me->respSize = 0;
 				me->respStatus = 0;
 				Sync::MutexUsage mutUsage(me->respMut);
-				SDEL_TEXT(me->respReqURL)
+				SDEL_STRING(me->respReqURL)
 				SDEL_CLASS(me->respData);
 				SDEL_TEXT(me->respContType);
-				me->respReqURL = Text::StrCopyNew(currURL);
+				me->respReqURL = currURL->Clone();
 				SDEL_TEXT(me->respCert);
 				mutUsage.EndUse();
 			}
@@ -697,7 +697,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 			DEL_CLASS(cli);
 			me->respChanged = true;
 
-			Text::StrDelNew(currURL);
+			currURL->Release();
 			if (currBody)
 			{
 				MemFree((UInt8*)currBody);
@@ -714,7 +714,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 		}
 	}
 	MemFree(sbuff);
-	SDEL_TEXT(me->reqURL);
+	SDEL_STRING(me->reqURL);
 	SDEL_TEXT(me->reqBody);
 	SDEL_STRING(me->reqBodyType);
 	me->threadToStop = false;
@@ -731,7 +731,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnTimerTick(void *userObj)
 	UOSInt j;
 	if (me->respChanged)
 	{
-		me->txtReqURL->SetText(me->respReqURL);
+		me->txtReqURL->SetText(me->respReqURL->v);
 		Net::SocketUtil::GetAddrName(sbuff, &me->respSvrAddr);
 		me->txtSvrIP->SetText(sbuff);
 		if (me->respTimeDNS == -1)
@@ -792,7 +792,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnTimerTick(void *userObj)
 			hdr = me->respHeaders->GetItem(i);
 			if (Text::StrStartsWithICase(hdr, (const UTF8Char*)"Set-Cookie: "))
 			{
-				SSWR::AVIRead::AVIRHTTPClientForm::HTTPCookie *cookie = me->SetCookie(&hdr[12], me->respReqURL);
+				SSWR::AVIRead::AVIRHTTPClientForm::HTTPCookie *cookie = me->SetCookie(&hdr[12], me->respReqURL->v);
 				if (cookie)
 				{
 					UOSInt k = me->lvCookie->AddItem(cookie->domain, cookie);
@@ -1009,6 +1009,7 @@ SSWR::AVIRead::AVIRHTTPClientForm::HTTPCookie *SSWR::AVIRead::AVIRHTTPClientForm
 UTF8Char *SSWR::AVIRead::AVIRHTTPClientForm::AppendCookie(UTF8Char *sbuff, const UTF8Char *reqURL)
 {
 	UInt8 buff[4096];
+	UTF8Char *sptr;
 	HTTPCookie *cookie;
 	UOSInt len1;
 	UOSInt len2;
@@ -1016,9 +1017,10 @@ UTF8Char *SSWR::AVIRead::AVIRHTTPClientForm::AppendCookie(UTF8Char *sbuff, const
 	UOSInt j;
 	UTF8Char *cookiePtr = 0;
 	UTF8Char *pathPtr;
-	pathPtr = Text::URLString::GetURLDomain(buff, reqURL, 0) + 1;
+	sptr = Text::URLString::GetURLDomain(buff, reqURL, 0);
+	pathPtr = sptr + 1;
 	Text::URLString::GetURLPath(pathPtr, reqURL);
-	len1 = Text::StrCharCnt(buff);
+	len1 = (UOSInt)(sptr - buff);;
 	Sync::MutexUsage mutUsage(this->cookieMut);
 	i = 0;
 	j = this->cookieList->GetCount();
@@ -1276,7 +1278,7 @@ SSWR::AVIRead::AVIRHTTPClientForm::~AVIRHTTPClientForm()
 	DEL_CLASS(this->cookieMut);
 	this->ClearFiles();
 	DEL_CLASS(this->fileList);
-	SDEL_TEXT(this->respReqURL);
+	SDEL_STRING(this->respReqURL);
 	SDEL_TEXT(this->respContType);
 	SDEL_CLASS(this->respData);
 	SDEL_TEXT(this->respCert);

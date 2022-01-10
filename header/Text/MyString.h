@@ -97,6 +97,7 @@ namespace Text
 
 	Bool StrEquals(const UTF8Char *str1, const UTF8Char *str2);
 	Bool StrEqualsN(const UTF8Char *str1, const UTF8Char *str2);
+	Bool StrEqualsC(const UTF8Char *str1, UOSInt len1, const UTF8Char *str2, UOSInt len2);
 	Bool StrEqualsICase(const UTF8Char *str1, const UTF8Char *str2);
 	Bool StrEqualsICase(const UTF8Char *str1, const UTF8Char *str2, UOSInt str2Len);
 
@@ -202,6 +203,7 @@ namespace Text
 	const UTF8Char *StrCopyNewC(const UTF8Char *str1, UOSInt strLen);
 	void StrDelNew(const UTF8Char *newStr);
 	Bool StrStartsWith(const UTF8Char *str1, const UTF8Char *str2);
+	Bool StrStartsWithC(const UTF8Char *str1, UOSInt len1, const UTF8Char *str2, UOSInt len2);
 	Bool StrStartsWithICase(const UTF8Char *str1, const UTF8Char *str2);
 	Bool StrEndsWith(const UTF8Char *str1, const UTF8Char *str2);
 	Bool StrEndsWithICase(const UTF8Char *str1, const UTF8Char *str2);

@@ -753,6 +753,33 @@ Bool Text::StrEqualsN(const UTF8Char *str1, const UTF8Char *str2)
 	return StrEquals(str1, str2);
 }
 
+Bool Text::StrEqualsC(const UTF8Char *str1, UOSInt len1, const UTF8Char *str2, UOSInt len2)
+{
+	if (len1 != len2)
+	{
+		return false;
+	}
+	while (len2 >= 4)
+	{
+		UInt32 v = ReadNUInt32(str1);
+		if (v != ReadNUInt32(str2))
+		{
+			return false;
+		}
+		str1 += 4;
+		str2 += 4;
+		len2 -= 4;
+	}
+	while (len2-- > 0)
+	{
+		if (*str1 != *str2)
+			return false;
+		str1++;
+		str2++;
+	}
+	return true;
+}
+
 Bool Text::StrEqualsICase(const UTF8Char *str1, const UTF8Char *str2)
 {
 	UTF8Char c1;
@@ -767,8 +794,8 @@ Bool Text::StrEqualsICase(const UTF8Char *str1, const UTF8Char *str2)
 		}
 		else
 		{
-			ic1 = c1 & 0xef;
-			ic2 = c2 & 0xef;
+			ic1 = c1 & 0xdf;
+			ic2 = c2 & 0xdf;
 			if (ic1 == ic2 && ic1 >= 'A' && ic1 <= 'Z')
 			{
 			}
@@ -797,8 +824,8 @@ Bool Text::StrEqualsICase(const UTF8Char *str1, const UTF8Char *str2, UOSInt str
 		}
 		else
 		{
-			ic1 = c1 & 0xef;
-			ic2 = c2 & 0xef;
+			ic1 = c1 & 0xdf;
+			ic2 = c2 & 0xdf;
 			if (ic1 == ic2 && (ic1 >= 'A' && ic1 <= 'Z'))
 			{
 
@@ -1413,7 +1440,7 @@ UOSInt Text::StrSplitP(PString *strs, UOSInt maxStrs, UTF8Char *strToSplit, UOSI
 			strs[i].len = strs[i - 1].len;
 			strs[i - 1].len = (UOSInt)(strToSplit - strs[i - 1].v - 1);
 			strs[i].v = strToSplit;
-			strs[i].len -= strs[i - 1].len - 1;
+			strs[i].len -= strs[i - 1].len + 1;
 			strToSplit[-1] = 0;
 			i++;
 		}
@@ -2315,16 +2342,38 @@ Bool Text::StrStartsWith(const UTF8Char *str1, const UTF8Char *str2)
 	return true;
 }
 
+Bool Text::StrStartsWithC(const UTF8Char *str1, UOSInt len1, const UTF8Char *str2, UOSInt len2)
+{
+	if (len1 < len2)
+	{
+		return false;
+	}
+	while (len2 >= 4)
+	{
+		Int32 v = ReadNInt32(str1);
+		if (v != ReadNInt32(str2))
+			return false;
+		str1 += 4;
+		str2 += 4;
+		len2 -= 4;
+	}
+	while (len2-- > 0)
+	{
+		if (*str1++ != *str2++)
+			return false;
+	}
+	return true;
+}
+
 Bool Text::StrStartsWithICase(const UTF8Char *str1, const UTF8Char *str2)
 {
 	UTF8Char c1;
 	UTF8Char c2;
 	UTF8Char uc1;
 	UTF8Char uc2;
-	while (*str2)
+	while ((c2 = *str2) != 0)
 	{
 		c1 = *str1;
-		c2 = *str2;
 		if (c1 == c2)
 		{
 			str1++;
@@ -2332,8 +2381,8 @@ Bool Text::StrStartsWithICase(const UTF8Char *str1, const UTF8Char *str2)
 		}
 		else
 		{
-			uc1 = c1 & 0xef;
-			uc2 = c2 & 0xef;
+			uc1 = c1 & 0xdf;
+			uc2 = c2 & 0xdf;
 			if (uc1 == uc2 && uc1 >= 'A' && uc1 <= 'Z')
 			{
 				str1++;

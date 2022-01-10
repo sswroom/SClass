@@ -11,46 +11,46 @@
 
 #define BUFFSIZE 2048
 
-Bool Net::WebServer::HTTPServerUtil::MIMEToCompress(const UTF8Char *umime)
+Bool Net::WebServer::HTTPServerUtil::MIMEToCompress(const UTF8Char *umime, UOSInt mimeLen)
 {
-	if (Text::StrStartsWith(umime, (const UTF8Char*)"application/"))
+	if (Text::StrStartsWithC(umime, mimeLen, UTF8STRC("application/")))
 	{
-		if (Text::StrEquals(&umime[12], (const UTF8Char*)"javascript"))
+		if (Text::StrEqualsC(&umime[12], mimeLen - 12, UTF8STRC("javascript")))
 		{
 			return true;
 		}
-		else if (Text::StrEquals(&umime[12], (const UTF8Char*)"json"))
+		else if (Text::StrEqualsC(&umime[12], mimeLen - 12, UTF8STRC("json")))
 		{
 			return true;
 		}
-		else if (Text::StrEquals(&umime[12], (const UTF8Char*)"xml"))
+		else if (Text::StrEqualsC(&umime[12], mimeLen - 12, UTF8STRC("xml")))
 		{
 			return true;
 		}
-		else if (Text::StrEquals(&umime[12], (const UTF8Char*)"xhtml+xml"))
+		else if (Text::StrEqualsC(&umime[12], mimeLen - 12, UTF8STRC("xhtml+xml")))
 		{
 			return true;
 		}
 	}
-	else if (Text::StrStartsWith(umime, (const UTF8Char*)"text/"))
+	else if (Text::StrStartsWithC(umime, mimeLen, UTF8STRC("text/")))
 	{
-		if (Text::StrEquals(&umime[5], (const UTF8Char*)"javascript"))
+		if (Text::StrEqualsC(&umime[5], mimeLen - 5, UTF8STRC("javascript")))
 		{
 			return true;
 		}
-		else if (Text::StrEquals(&umime[5], (const UTF8Char*)"html"))
+		else if (Text::StrEqualsC(&umime[5], mimeLen - 5, UTF8STRC("html")))
 		{
 			return true;
 		}
-		else if (Text::StrEquals(&umime[5], (const UTF8Char*)"css"))
+		else if (Text::StrEqualsC(&umime[5], mimeLen - 5, UTF8STRC("css")))
 		{
 			return true;
 		}
-		else if (Text::StrEquals(&umime[5], (const UTF8Char*)"plain"))
+		else if (Text::StrEqualsC(&umime[5], mimeLen - 5, UTF8STRC("plain")))
 		{
 			return true;
 		}
-		else if (Text::StrEquals(&umime[5], (const UTF8Char*)"xml"))
+		else if (Text::StrEqualsC(&umime[5], mimeLen - 5, UTF8STRC("xml")))
 		{
 			return true;
 		}
@@ -58,7 +58,7 @@ Bool Net::WebServer::HTTPServerUtil::MIMEToCompress(const UTF8Char *umime)
 	return false;
 }
 
-Bool Net::WebServer::HTTPServerUtil::SendContent(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *mime, UInt64 contLeng, IO::Stream *fs)
+Bool Net::WebServer::HTTPServerUtil::SendContent(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *mime, UOSInt mimeLen, UInt64 contLeng, IO::Stream *fs)
 {
 	UOSInt i;
 	UOSInt j;
@@ -67,7 +67,7 @@ Bool Net::WebServer::HTTPServerUtil::SendContent(Net::WebServer::IWebRequest *re
 	Bool succ = true;
 	if (contLeng > 1024)
 	{
-		Bool needComp = MIMEToCompress(mime);
+		Bool needComp = MIMEToCompress(mime, mimeLen);
 		UTF8Char *sarr[10];
 		Text::StringBuilderUTF8 sb;
 
@@ -163,7 +163,7 @@ Bool Net::WebServer::HTTPServerUtil::SendContent(Net::WebServer::IWebRequest *re
 	return succ;
 }
 
-Bool Net::WebServer::HTTPServerUtil::SendContent(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *mime, UInt64 contLeng, const UInt8 *buff)
+Bool Net::WebServer::HTTPServerUtil::SendContent(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *mime, UOSInt mimeLen, UInt64 contLeng, const UInt8 *buff)
 {
 	UOSInt i;
 	UOSInt j;
@@ -172,7 +172,7 @@ Bool Net::WebServer::HTTPServerUtil::SendContent(Net::WebServer::IWebRequest *re
 	Bool contSent = false;
 	if (contLeng > 1024)
 	{
-		Bool needComp = MIMEToCompress(mime);
+		Bool needComp = MIMEToCompress(mime, mimeLen);
 		UTF8Char *sarr[10];
 		Text::StringBuilderUTF8 sb;
 
@@ -250,7 +250,7 @@ Bool Net::WebServer::HTTPServerUtil::ResponseFile(Net::WebServer::IWebRequest *r
 	Text::StringBuilderUTF8 sb2;
 	Data::DateTime t;
 	IO::FileStream *fs;
-	const UTF8Char *mime;
+	Text::CString mime;
 	UInt64 sizeLeft;
 	UInt8 sbuff[32];
 	UTF8Char *sptr;
@@ -370,7 +370,7 @@ Bool Net::WebServer::HTTPServerUtil::ResponseFile(Net::WebServer::IWebRequest *r
 	resp->AddCacheControl(cacheAge);
 	resp->AddLastModified(&t);
 	mime = Net::MIME::GetMIMEFromExt(sbuff);
-	resp->AddContentType(mime, Text::StrCharCnt(mime));
+	resp->AddContentType(mime.v, mime.len);
 	resp->AddHeaderC(UTF8STRC("Accept-Ranges"), UTF8STRC("bytes"));
 	if (sizeLeft <= 0)
 	{
@@ -379,7 +379,7 @@ Bool Net::WebServer::HTTPServerUtil::ResponseFile(Net::WebServer::IWebRequest *r
 		readSize = fs->Read(buff, BUFFSIZE);
 		if (readSize == 0)
 		{
-			Net::WebServer::HTTPServerUtil::SendContent(req, resp, mime, sizeLeft, fs);
+			Net::WebServer::HTTPServerUtil::SendContent(req, resp, mime.v, mime.len, sizeLeft, fs);
 		}
 		else
 		{
@@ -390,12 +390,12 @@ Bool Net::WebServer::HTTPServerUtil::ResponseFile(Net::WebServer::IWebRequest *r
 				readSize = fs->Read(buff, BUFFSIZE);
 			}
 			mstm.SeekFromBeginning(0);
-			Net::WebServer::HTTPServerUtil::SendContent(req, resp, mime, sizeLeft, &mstm);
+			Net::WebServer::HTTPServerUtil::SendContent(req, resp, mime.v, mime.len, sizeLeft, &mstm);
 		}
 	}
 	else
 	{
-		Net::WebServer::HTTPServerUtil::SendContent(req, resp, mime, sizeLeft, fs);
+		Net::WebServer::HTTPServerUtil::SendContent(req, resp, mime.v, mime.len, sizeLeft, fs);
 	}
 	DEL_CLASS(fs);
 	return true;

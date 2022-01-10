@@ -31,7 +31,7 @@ namespace Net
 		Data::ArrayList<Text::String*> *headers;
 
 		Bool kaConn;
-		const UTF8Char *url;
+		Text::String *url;
 
 		HTTPClient(Net::SocketFactory *sockf, Bool kaConn);
 	public:
@@ -39,7 +39,7 @@ namespace Net
 
 		virtual Bool IsError() = 0;
 
-		virtual Bool Connect(const UTF8Char *url, const Char *method, Double *timeDNS, Double *timeConn, Bool defHeaders) = 0;
+		virtual Bool Connect(const UTF8Char *url, UOSInt urlLen, const Char *method, Double *timeDNS, Double *timeConn, Bool defHeaders) = 0;
 		virtual void AddHeaderC(const UTF8Char *name, UOSInt nameLen, const UTF8Char *value, UOSInt valueLen) = 0;
 		virtual void EndRequest(Double *timeReq, Double *timeResp) = 0;
 		virtual void SetTimeout(Int32 ms) = 0;
@@ -62,7 +62,7 @@ namespace Net
 		UInt32 GetContentCodePage();
 		Bool GetLastModified(Data::DateTime *dt);
 
-		const UTF8Char *GetURL();
+		Text::String *GetURL();
 		Net::WebStatus::StatusCode GetRespStatus();
 		const Net::SocketUtil::AddressInfo *GetSvrAddr();
 		Double GetTotalTime();

@@ -186,6 +186,11 @@ Bool Text::String::Equals(const UTF8Char *s)
 	return Text::StrEquals(this->v, s);
 }
 
+Bool Text::String::Equals(const UTF8Char *s, UOSInt len)
+{
+	return Text::StrEqualsC(this->v, this->leng, s, len);
+}
+
 Bool Text::String::Equals(Text::String *s)
 {
 	return this->leng == s->leng && Text::StrEquals(this->v, s->v);
@@ -198,12 +203,17 @@ Bool Text::String::EqualsICase(const UTF8Char *s)
 
 Bool Text::String::StartsWith(Text::String *s)
 {
-	return Text::StrStartsWith(this->v, s->v);
+	return Text::StrStartsWithC(this->v, this->leng, s->v, s->leng);
 }
 
 Bool Text::String::StartsWith(const UTF8Char *s)
 {
 	return Text::StrStartsWith(this->v, s);
+}
+
+Bool Text::String::StartsWith(const UTF8Char *s, UOSInt len)
+{
+	return Text::StrStartsWithC(this->v, this->leng, s, len);
 }
 
 Bool Text::String::StartsWith(UOSInt startIndex, const UTF8Char *s)
@@ -213,6 +223,15 @@ Bool Text::String::StartsWith(UOSInt startIndex, const UTF8Char *s)
 		return false;
 	}
 	return Text::StrStartsWith(&this->v[startIndex], s);
+}
+
+Bool Text::String::StartsWith(UOSInt startIndex, const UTF8Char *s, UOSInt len)
+{
+	if (startIndex > this->leng)
+	{
+		return false;
+	}
+	return Text::StrStartsWithC(&this->v[startIndex], this->leng - startIndex, s, len);
 }
 
 Bool Text::String::StartsWithICase(const UTF8Char *s)

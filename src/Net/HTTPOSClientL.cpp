@@ -188,7 +188,7 @@ Bool Net::HTTPOSClient::Recover()
 	return false;
 }
 
-Bool Net::HTTPOSClient::Connect(const UTF8Char *url, const Char *method, Double *timeDNS, Double *timeConn, Bool defHeaders)
+Bool Net::HTTPOSClient::Connect(const UTF8Char *url, UOSInt urlLen, const Char *method, Double *timeDNS, Double *timeConn, Bool defHeaders)
 {
 	UTF8Char urltmp[256];
 	UTF8Char svrname[256];
@@ -212,8 +212,8 @@ Bool Net::HTTPOSClient::Connect(const UTF8Char *url, const Char *method, Double 
 		return false;
 	}
 
-	SDEL_TEXT(this->url);
-	this->url = Text::StrCopyNew(url);
+	SDEL_STRING(this->url);
+	this->url = Text::String::New(url, urlLen);
 	if (Text::StrStartsWith(url, (const UTF8Char*)"http://"))
 	{
 		ptr1 = &url[7];
@@ -225,7 +225,7 @@ Bool Net::HTTPOSClient::Connect(const UTF8Char *url, const Char *method, Double 
 		}
 		else
 		{
-			i = Text::StrCharCnt(ptr1);
+			i = urlLen - 7;
 			MemCopyNO(urltmp, ptr1, i * sizeof(UTF8Char));
 			urltmp[i] = 0;
 		}
@@ -243,7 +243,7 @@ Bool Net::HTTPOSClient::Connect(const UTF8Char *url, const Char *method, Double 
 		}
 		else
 		{
-			i = Text::StrCharCnt(ptr1);
+			i = urlLen - 8;
 			MemCopyNO(urltmp, ptr1, i * sizeof(UTF8Char));
 			urltmp[i] = 0;
 		}
@@ -522,7 +522,7 @@ void Net::HTTPOSClient::SetTimeout(Int32 ms)
 
 Bool Net::HTTPOSClient::IsSecureConn()
 {
-	if (this->url && Text::StrStartsWith(this->url, (const UTF8Char*)"https://"))
+	if (this->url && this->url->StartsWith((const UTF8Char*)"https://"))
 	{
 		return true;
 	}

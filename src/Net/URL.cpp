@@ -11,30 +11,30 @@ IO::ParsedObject *Net::URL::OpenObject(const UTF8Char *url, const UTF8Char *user
 {
 	IO::ParsedObject *pobj;
 	UTF8Char sbuff[512];
-	if (Text::StrStartsWithICase(url, (const UTF8Char*)"HTTP://"))
+	if (Text::StrStartsWithICase(url, (const UTF8Char*)"http://"))
 	{
 		Net::HTTPClient *cli = Net::HTTPClient::CreateClient(sockf, ssl, userAgent, uaLen, true, false);
-		cli->Connect(url, "GET", 0, 0, true);
+		cli->Connect(url, Text::StrCharCnt(url), "GET", 0, 0, true);
 		return cli;
 	}
-	else if (Text::StrStartsWithICase(url, (const UTF8Char*)"HTTPS://"))
+	else if (Text::StrStartsWithICase(url, (const UTF8Char*)"https://"))
 	{
 		Net::HTTPClient *cli = Net::HTTPClient::CreateClient(sockf, ssl, userAgent, uaLen, true, true);
-		cli->Connect(url, "GET", 0, 0, true);
+		cli->Connect(url, Text::StrCharCnt(url), "GET", 0, 0, true);
 		return cli;
 	}
-	else if (Text::StrStartsWithICase(url, (const UTF8Char*)"FILE:///"))
+	else if (Text::StrStartsWithICase(url, (const UTF8Char*)"file:///"))
 	{
 		Text::URLString::GetURLFilePath(sbuff, url);
 		NEW_CLASS(pobj, IO::FileStream(sbuff, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		return pobj;
 	}
-	else if (Text::StrStartsWithICase(url, (const UTF8Char*)"FTP://"))
+	else if (Text::StrStartsWithICase(url, (const UTF8Char*)"ftp://"))
 	{
 		NEW_CLASS(pobj, Net::FTPClient(url, sockf, true, 0));
 		return pobj;
 	}
-	else if (Text::StrStartsWithICase(url, (const UTF8Char*)"RTSP://"))
+	else if (Text::StrStartsWithICase(url, (const UTF8Char*)"rtsp://"))
 	{
 		pobj = Net::RTSPClient::ParseURL(sockf, url);
 		return pobj;

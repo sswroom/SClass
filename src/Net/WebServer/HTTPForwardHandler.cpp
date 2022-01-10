@@ -74,7 +74,7 @@ Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(Net::WebServer::IWebRequ
 		if (this->reqHdlr) this->reqHdlr(this->reqHdlrObj, req, resp);
 		return true;
 	}
-	if (!cli->Connect(sb.ToString(), req->GetReqMethodStr(), 0, 0, false))
+	if (!cli->Connect(sb.ToString(), sb.GetLength(), req->GetReqMethodStr(), 0, 0, false))
 	{
 		DEL_CLASS(cli);
 		resp->ResponseError(req, Net::WebStatus::SC_NOT_FOUND);

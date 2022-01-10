@@ -30,11 +30,14 @@ namespace Text
 
 		UTF8Char *ConcatTo(UTF8Char *sbuff);
 		Bool Equals(const UTF8Char *s);
+		Bool Equals(const UTF8Char *s, UOSInt len);
 		Bool Equals(Text::String *s);
 		Bool EqualsICase(const UTF8Char *s);
 		Bool StartsWith(Text::String *s);
 		Bool StartsWith(const UTF8Char *s);
+		Bool StartsWith(const UTF8Char *s, UOSInt len);
 		Bool StartsWith(UOSInt startIndex, const UTF8Char *s);
+		Bool StartsWith(UOSInt startIndex, const UTF8Char *s, UOSInt len);
 		Bool StartsWithICase(const UTF8Char *s);
 		Bool EndsWith(UTF8Char c);
 		Bool EndsWith(const UTF8Char *s);

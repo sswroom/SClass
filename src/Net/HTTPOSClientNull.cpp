@@ -55,7 +55,7 @@ Bool Net::HTTPOSClient::Recover()
 	return false;
 }
 
-Bool Net::HTTPOSClient::Connect(const UTF8Char *url, const Char *method, Double *timeDNS, Double *timeConn, Bool defHeaders)
+Bool Net::HTTPOSClient::Connect(const UTF8Char *url, UOSInt urlLen, const Char *method, Double *timeDNS, Double *timeConn, Bool defHeaders)
 {
 	if (timeDNS)
 	{

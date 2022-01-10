@@ -10,9 +10,9 @@ namespace Net
 		class HTTPServerUtil
 		{
 		public:
-			static Bool MIMEToCompress(const UTF8Char *mime);
-			static Bool SendContent(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *mime, UInt64 contLeng, IO::Stream *stm);
-			static Bool SendContent(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *mime, UInt64 contLeng, const UInt8 *buff);
+			static Bool MIMEToCompress(const UTF8Char *mime, UOSInt mimeLen);
+			static Bool SendContent(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *mime, UOSInt mimeLen, UInt64 contLeng, IO::Stream *stm);
+			static Bool SendContent(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *mime, UOSInt mimeLen, UInt64 contLeng, const UInt8 *buff);
 			static Bool ResponseFile(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *fileName, OSInt cacheAge);
 		};
 	}
