@@ -375,7 +375,7 @@ UOSInt Map::OruxDBLayer::GetTableNames(Data::ArrayList<const UTF8Char*> *names)
 	return this->db->GetTableNames(names);
 }
 
-DB::DBReader *Map::OruxDBLayer::GetTableData(const UTF8Char *tableName, Data::ArrayList<const UTF8Char*> *columnNames, UOSInt ofst, UOSInt maxCnt, const UTF8Char *ordering, Data::QueryConditions *condition)
+DB::DBReader *Map::OruxDBLayer::GetTableData(const UTF8Char *tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, const UTF8Char *ordering, Data::QueryConditions *condition)
 {
 	return this->db->GetTableData(tableName, columnNames, ofst, maxCnt, ordering, condition);
 }

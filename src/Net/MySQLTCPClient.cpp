@@ -1317,7 +1317,7 @@ UOSInt Net::MySQLTCPClient::GetTableNames(Data::ArrayList<const UTF8Char*> *name
 	}
 }
 
-DB::DBReader *Net::MySQLTCPClient::GetTableData(const UTF8Char *tableName, Data::ArrayList<const UTF8Char*> *columnNames, UOSInt ofst, UOSInt maxCnt, const UTF8Char *ordering, Data::QueryConditions *condition)
+DB::DBReader *Net::MySQLTCPClient::GetTableData(const UTF8Char *tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, const UTF8Char *ordering, Data::QueryConditions *condition)
 {
 	UTF8Char sbuff[512];
 	Text::StringBuilderUTF8 sb;
@@ -1338,7 +1338,7 @@ DB::DBReader *Net::MySQLTCPClient::GetTableData(const UTF8Char *tableName, Data:
 			{
 				sb.AppendChar(',', 1);
 			}
-			DB::DBUtil::SDBColUTF8(sbuff, columnNames->GetItem(i), DB::DBUtil::ServerType::MySQL);
+			DB::DBUtil::SDBColUTF8(sbuff, columnNames->GetItem(i)->v, DB::DBUtil::ServerType::MySQL);
 			sb.Append(sbuff);
 			i++;
 		}

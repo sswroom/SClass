@@ -34,20 +34,21 @@ namespace Data
 			virtual Bool ToWhereClause(Text::StringBuilderUTF *sb, DB::DBUtil::ServerType svrType, Int8 tzQhr, UOSInt maxDBItem) = 0;
 			virtual Bool IsValid(Data::VariObject *obj) = 0;
 			virtual Bool IsValid(Data::ObjectGetter *getter) = 0;
-			virtual void GetFieldList(Data::ArrayList<const UTF8Char*> *fieldList) = 0;
+			virtual void GetFieldList(Data::ArrayList<Text::String*> *fieldList) = 0;
 		};
 
 		class FieldCondition : public Condition
 		{
 		protected:
-			const UTF8Char *fieldName;
+			Text::String *fieldName;
 		public:
-			FieldCondition(const UTF8Char *fieldName);
+			FieldCondition(const UTF8Char *fieldName, UOSInt nameLen);
+			FieldCondition(Text::String *fieldName);
 			virtual ~FieldCondition();
 
 			virtual Bool IsValid(Data::VariObject *obj);
 			virtual Bool IsValid(Data::ObjectGetter *getter);
-			virtual void GetFieldList(Data::ArrayList<const UTF8Char*> *fieldList);
+			virtual void GetFieldList(Data::ArrayList<Text::String*> *fieldList);
 
 			virtual Bool TestValid(Data::VariItem *item) = 0;
 		};
@@ -69,7 +70,7 @@ namespace Data
 			Int64 t2;
 
 		public:
-			TimeBetweenCondition(const UTF8Char *fieldName, Int64 t1, Int64 t2);
+			TimeBetweenCondition(const UTF8Char *fieldName, UOSInt nameLen, Int64 t1, Int64 t2);
 			virtual ~TimeBetweenCondition();
 
 			virtual ConditionType GetType();
@@ -84,14 +85,14 @@ namespace Data
 			CompareCondition cond;
 
 		public:
-			Int32Condition(const UTF8Char *fieldName, Int32 val, CompareCondition cond);
+			Int32Condition(const UTF8Char *fieldName, UOSInt nameLen, Int32 val, CompareCondition cond);
 			virtual ~Int32Condition();
 
 			virtual ConditionType GetType();
 			virtual Bool ToWhereClause(Text::StringBuilderUTF *sb, DB::DBUtil::ServerType svrType, Int8 tzQhr, UOSInt maxDBItem);
 			virtual Bool TestValid(Data::VariItem *item);
 
-			const UTF8Char *GetFieldName();
+			Text::String *GetFieldName();
 			Int32 GetVal();
 			CompareCondition GetCompareCond();
 		};
@@ -102,7 +103,7 @@ namespace Data
 			Data::ArrayList<Int32> *vals;
 
 		public:
-			Int32InCondition(const UTF8Char *fieldName, Data::ArrayList<Int32> *val);
+			Int32InCondition(const UTF8Char *fieldName, UOSInt nameLen, Data::ArrayList<Int32> *val);
 			virtual ~Int32InCondition();
 
 			virtual ConditionType GetType();
@@ -117,7 +118,7 @@ namespace Data
 			CompareCondition cond;
 
 		public:
-			DoubleCondition(const UTF8Char *fieldName, Double val, CompareCondition cond);
+			DoubleCondition(const UTF8Char *fieldName, UOSInt nameLen, Double val, CompareCondition cond);
 			virtual ~DoubleCondition();
 
 			virtual ConditionType GetType();
@@ -131,7 +132,7 @@ namespace Data
 			Data::ArrayList<const UTF8Char*> *vals;
 
 		public:
-			StringInCondition(const UTF8Char *fieldName, Data::ArrayList<const UTF8Char*> *val);
+			StringInCondition(const UTF8Char *fieldName, UOSInt nameLen, Data::ArrayList<const UTF8Char*> *val);
 			virtual ~StringInCondition();
 
 			virtual ConditionType GetType();
@@ -145,7 +146,7 @@ namespace Data
 			const UTF8Char *val;
 
 		public:
-			StringContainsCondition(const UTF8Char *fieldName, const UTF8Char *val);
+			StringContainsCondition(const UTF8Char *fieldName, UOSInt nameLen, const UTF8Char *val);
 			virtual ~StringContainsCondition();
 
 			virtual ConditionType GetType();
@@ -159,7 +160,7 @@ namespace Data
 			const UTF8Char *val;
 
 		public:
-			StringEqualsCondition(const UTF8Char *fieldName, const UTF8Char *val);
+			StringEqualsCondition(const UTF8Char *fieldName, UOSInt nameLen, const UTF8Char *val);
 			virtual ~StringEqualsCondition();
 
 			virtual ConditionType GetType();
@@ -173,7 +174,7 @@ namespace Data
 			Bool val;
 
 		public:
-			BooleanCondition(const UTF8Char *fieldName, Bool val);
+			BooleanCondition(const UTF8Char *fieldName, UOSInt nameLen, Bool val);
 			virtual ~BooleanCondition();
 
 			virtual ConditionType GetType();
@@ -184,7 +185,7 @@ namespace Data
 		class NotNullCondition : public FieldCondition
 		{
 		public:
-			NotNullCondition(const UTF8Char *fieldName);
+			NotNullCondition(const UTF8Char *fieldName, UOSInt nameLen);
 			virtual ~NotNullCondition();
 
 			virtual ConditionType GetType();
@@ -205,7 +206,7 @@ namespace Data
 			virtual Bool ToWhereClause(Text::StringBuilderUTF *sb, DB::DBUtil::ServerType svrType, Int8 tzQhr, UOSInt maxDBItem);
 			virtual Bool IsValid(Data::VariObject *obj);
 			virtual Bool IsValid(Data::ObjectGetter *getter);
-			virtual void GetFieldList(Data::ArrayList<const UTF8Char*> *fieldList);
+			virtual void GetFieldList(Data::ArrayList<Text::String*> *fieldList);
 
 			QueryConditions *GetConditions();
 		};
@@ -220,7 +221,7 @@ namespace Data
 			virtual Bool ToWhereClause(Text::StringBuilderUTF *sb, DB::DBUtil::ServerType svrType, Int8 tzQhr, UOSInt maxDBItem);
 			virtual Bool IsValid(Data::VariObject *obj);
 			virtual Bool IsValid(Data::ObjectGetter *getter);
-			virtual void GetFieldList(Data::ArrayList<const UTF8Char*> *fieldList);
+			virtual void GetFieldList(Data::ArrayList<Text::String*> *fieldList);
 		};
 
 	private:
@@ -235,20 +236,20 @@ namespace Data
 		UOSInt GetCount();
 		Condition *GetItem(UOSInt index);
 		Data::ArrayList<Condition*> *GetList();
-		void GetFieldList(Data::ArrayList<const UTF8Char*> *fieldList);
+		void GetFieldList(Data::ArrayList<Text::String*> *fieldList);
 
-		QueryConditions *TimeBetween(const UTF8Char *fieldName, Int64 t1, Int64 t2);
+		QueryConditions *TimeBetween(const UTF8Char *fieldName, UOSInt nameLen, Int64 t1, Int64 t2);
 		QueryConditions *Or();
 		QueryConditions *InnerCond(QueryConditions *cond);
-		QueryConditions *Int32Equals(const UTF8Char *fieldName, Int32 val);
-		QueryConditions *Int32In(const UTF8Char *fieldName, Data::ArrayList<Int32> *val);
-		QueryConditions *DoubleGE(const UTF8Char *fieldName, Double val);
-		QueryConditions *DoubleLE(const UTF8Char *fieldName, Double val);
-		QueryConditions *StrIn(const UTF8Char *fieldName, Data::ArrayList<const UTF8Char*> *vals);
-		QueryConditions *StrContains(const UTF8Char *fieldName, const UTF8Char *val);
-		QueryConditions *StrEquals(const UTF8Char *fieldName, const UTF8Char *val);
-		QueryConditions *BoolEquals(const UTF8Char *fieldName, Bool val);
-		QueryConditions *NotNull(const UTF8Char* fieldName);
+		QueryConditions *Int32Equals(const UTF8Char *fieldName, UOSInt nameLen, Int32 val);
+		QueryConditions *Int32In(const UTF8Char *fieldName, UOSInt nameLen, Data::ArrayList<Int32> *val);
+		QueryConditions *DoubleGE(const UTF8Char *fieldName, UOSInt nameLen, Double val);
+		QueryConditions *DoubleLE(const UTF8Char *fieldName, UOSInt nameLen, Double val);
+		QueryConditions *StrIn(const UTF8Char *fieldName, UOSInt nameLen, Data::ArrayList<const UTF8Char*> *vals);
+		QueryConditions *StrContains(const UTF8Char *fieldName, UOSInt nameLen, const UTF8Char *val);
+		QueryConditions *StrEquals(const UTF8Char *fieldName, UOSInt nameLen, const UTF8Char *val);
+		QueryConditions *BoolEquals(const UTF8Char *fieldName, UOSInt nameLen, Bool val);
+		QueryConditions *NotNull(const UTF8Char* fieldName, UOSInt nameLen);
 
 		static const UTF8Char *CompareConditionGetStr(CompareCondition cond);
 		static Bool ObjectValid(Data::VariObject *obj, Data::ArrayList<Condition*> *conditionList);

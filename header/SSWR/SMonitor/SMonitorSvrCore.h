@@ -133,10 +133,10 @@ namespace SSWR
 
 			virtual void LogRequest(Net::WebServer::IWebRequest *req);
 
-			void UserAgentLog(const UTF8Char *userAgent);
+			void UserAgentLog(const UTF8Char *userAgent, UOSInt len);
 			void UserAgentStore();
 			
-			void RefererLog(const UTF8Char *referer);
+			void RefererLog(const UTF8Char *referer, UOSInt len);
 			void RefererStore();
 		};
 	}

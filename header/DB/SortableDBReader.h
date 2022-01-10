@@ -2,6 +2,7 @@
 #define _SM_DB_SORTABLEDBREADER
 #include "DB/DBReader.h"
 #include "DB/ReadingDB.h"
+#include "Text/String.h"
 
 namespace DB
 {
@@ -14,7 +15,7 @@ namespace DB
 
 		Data::VariItem *GetItem(UOSInt colIndex);
 	public:
-		SortableDBReader(DB::ReadingDB *db, const UTF8Char *tableName, Data::ArrayList<const UTF8Char*> *colNames, UOSInt dataOfst, UOSInt maxCnt, const UTF8Char *ordering, Data::QueryConditions *condition);
+		SortableDBReader(DB::ReadingDB *db, const UTF8Char *tableName, Data::ArrayList<Text::String*> *colNames, UOSInt dataOfst, UOSInt maxCnt, const UTF8Char *ordering, Data::QueryConditions *condition);
 		virtual ~SortableDBReader();
 
 		virtual Bool ReadNext();

@@ -15,9 +15,9 @@ UI::FontDialog::FontDialog()
 	this->isItalic = false;
 }
 
-UI::FontDialog::FontDialog(const UTF8Char *fontName, Double fontSizePt, Bool isBold, Bool isItalic)
+UI::FontDialog::FontDialog(const UTF8Char *fontName, UOSInt nameLen, Double fontSizePt, Bool isBold, Bool isItalic)
 {
-	this->fontName = Text::String::NewOrNull(fontName);
+	this->fontName = Text::String::New(fontName, nameLen);
 	this->fontSizePt = fontSizePt;
 	this->isBold = isBold;
 	this->isItalic = isItalic;

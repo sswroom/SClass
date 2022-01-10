@@ -12,7 +12,7 @@ Data::VariItem *DB::SortableDBReader::GetItem(UOSInt colIndex)
 	return obj->GetItem(this->cols->GetItem(colIndex)->GetColName()->v);
 }
 
-DB::SortableDBReader::SortableDBReader(DB::ReadingDB *db, const UTF8Char *tableName, Data::ArrayList<const UTF8Char*> *colNames, UOSInt dataOfst, UOSInt maxCnt, const UTF8Char *ordering, Data::QueryConditions *condition)
+DB::SortableDBReader::SortableDBReader(DB::ReadingDB *db, const UTF8Char *tableName, Data::ArrayList<Text::String*> *colNames, UOSInt dataOfst, UOSInt maxCnt, const UTF8Char *ordering, Data::QueryConditions *condition)
 {
 	this->currIndex = INVALID_INDEX;
 	this->objList = 0;
@@ -60,7 +60,7 @@ DB::SortableDBReader::SortableDBReader(DB::ReadingDB *db, const UTF8Char *tableN
 	}
 	else
 	{
-		Data::ArrayListStrUTF8 dbColNames;
+		Data::ArrayListString dbColNames;
 		i = 0;
 		j = colNames->GetCount();
 		while (i < j)
@@ -73,7 +73,7 @@ DB::SortableDBReader::SortableDBReader(DB::ReadingDB *db, const UTF8Char *tableN
 		}
 		if (condition)
 		{
-			Data::ArrayList<const UTF8Char*> condColNames;
+			Data::ArrayList<Text::String*> condColNames;
 			condition->GetFieldList(&condColNames);
 			i = 0;
 			j = condColNames.GetCount();
@@ -94,14 +94,14 @@ DB::SortableDBReader::SortableDBReader(DB::ReadingDB *db, const UTF8Char *tableN
 
 		NEW_CLASS(this->cols, Data::ArrayList<ColDef*>());
 		NEW_CLASS(this->objList, Data::ArrayList<Data::VariObject*>());
-		Data::StringUTF8Map<DB::ColDef*> tmpCols;
+		Data::StringMap<DB::ColDef*> tmpCols;
 		i = 0;
 		j = r->ColCount();
 		while (i < j)
 		{
 			if (r->GetColDef(i, &colDef))
 			{
-				tmpCols.Put(colDef.GetColName()->v, colDef.Clone());
+				tmpCols.Put(colDef.GetColName(), colDef.Clone());
 			}
 			i++;
 		}

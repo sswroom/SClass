@@ -124,14 +124,14 @@ UOSInt Text::TextBinEnc::CPPTextBinEnc::EncodeBin(Text::StringBuilderUTF *sb, co
 	return ret;
 }
 
-UOSInt Text::TextBinEnc::CPPTextBinEnc::CalcBinSize(const UTF8Char *sbuff)
+UOSInt Text::TextBinEnc::CPPTextBinEnc::CalcBinSize(const UTF8Char *str, UOSInt strLen)
 {
 	Bool isQuote = false;
 	UOSInt ret = 0;
 	UTF8Char c;
 	while (true)
 	{
-		c = *sbuff++;
+		c = *str++;
 		if (c == 0)
 		{
 			if (isQuote)
@@ -154,7 +154,7 @@ UOSInt Text::TextBinEnc::CPPTextBinEnc::CalcBinSize(const UTF8Char *sbuff)
 		}
 		else if (c == '\\')
 		{
-			c = *sbuff++;
+			c = *str++;
 			if (c == 0)
 			{
 				return 0;
@@ -196,14 +196,14 @@ UOSInt Text::TextBinEnc::CPPTextBinEnc::CalcBinSize(const UTF8Char *sbuff)
 	return ret;
 }
 
-UOSInt Text::TextBinEnc::CPPTextBinEnc::DecodeBin(const UTF8Char *sbuff, UInt8 *dataBuff)
+UOSInt Text::TextBinEnc::CPPTextBinEnc::DecodeBin(const UTF8Char *str, UOSInt strlen, UInt8 *dataBuff)
 {
 	Bool isQuote = false;
 	UOSInt ret = 0;
 	UTF8Char c;
 	while (true)
 	{
-		c = *sbuff++;
+		c = *str++;
 		if (c == 0)
 		{
 			if (isQuote)
@@ -226,7 +226,7 @@ UOSInt Text::TextBinEnc::CPPTextBinEnc::DecodeBin(const UTF8Char *sbuff, UInt8 *
 		}
 		else if (c == '\\')
 		{
-			c = *sbuff++;
+			c = *str++;
 			if (c == 0)
 			{
 				return 0;

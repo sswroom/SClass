@@ -199,6 +199,19 @@ void Net::ASN1PDUBuilder::AppendOctetString(const UInt8 *buff, UOSInt len)
 	this->AppendOther(4, buff, len);
 }
 
+void Net::ASN1PDUBuilder::AppendOctetString(Text::String *s)
+{
+	if (s == 0)
+	{
+		this->AllocateSize(2);
+		this->buff[this->currOffset] = 4;
+		this->buff[this->currOffset + 1] = 0;
+		this->currOffset += 2;
+		return;
+	}
+	this->AppendOther(4, s->v, s->leng);
+}
+
 void Net::ASN1PDUBuilder::AppendOctetStringS(const UTF8Char *s)
 {
 	if (s == 0)

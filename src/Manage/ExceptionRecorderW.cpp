@@ -33,7 +33,7 @@
 
 #define STACKDUMPSIZE 4096
 
-const UTF8Char *Manage::ExceptionRecorder::fileName;
+Text::String *Manage::ExceptionRecorder::fileName;
 Manage::ExceptionRecorder::ExceptionAction Manage::ExceptionRecorder::exAction;
 
 #ifndef _WIN32_WCE
@@ -165,7 +165,7 @@ Int32 __stdcall Manage::ExceptionRecorder::ExceptionHandler(void *exInfo)
 
 Manage::ExceptionRecorder::ExceptionRecorder(const UTF8Char *fileName, ExceptionAction exAction)
 {
-	Manage::ExceptionRecorder::fileName = Text::StrCopyNew(fileName);
+	Manage::ExceptionRecorder::fileName = Text::String::NewNotNull(fileName);
 	Manage::ExceptionRecorder::exAction = exAction;
 #ifndef _WIN32_WCE
 	SetUnhandledExceptionFilter((LPTOP_LEVEL_EXCEPTION_FILTER)&ExceptionHandler);
@@ -175,6 +175,6 @@ Manage::ExceptionRecorder::ExceptionRecorder(const UTF8Char *fileName, Exception
 
 Manage::ExceptionRecorder::~ExceptionRecorder()
 {
-	Text::StrDelNew(this->fileName);
+	this->fileName->Release();
 	this->fileName = 0;
 }

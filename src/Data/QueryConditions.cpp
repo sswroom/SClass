@@ -4,35 +4,40 @@
 #include "Text/StringBuilderUTF8.h"
 #include "Text/StringTool.h"
 
-Data::QueryConditions::FieldCondition::FieldCondition(const UTF8Char *fieldName)
+Data::QueryConditions::FieldCondition::FieldCondition(const UTF8Char *fieldName, UOSInt nameLen)
 {
-	this->fieldName = Text::StrCopyNew(fieldName);
+	this->fieldName = Text::String::New(fieldName, nameLen);
+}
+
+Data::QueryConditions::FieldCondition::FieldCondition(Text::String *fieldName)
+{
+	this->fieldName = fieldName->Clone();
 }
 
 Data::QueryConditions::FieldCondition::~FieldCondition()
 {
-	Text::StrDelNew(this->fieldName);
+	this->fieldName->Release();
 }
 
 Bool Data::QueryConditions::FieldCondition::IsValid(Data::VariObject *obj)
 {
-	return this->TestValid(obj->GetItem(this->fieldName));
+	return this->TestValid(obj->GetItem(this->fieldName->v));
 }
 
 Bool Data::QueryConditions::FieldCondition::IsValid(Data::ObjectGetter *getter)
 {
-	Data::VariItem *item = getter->GetNewItem(this->fieldName);
+	Data::VariItem *item = getter->GetNewItem(this->fieldName->v);
 	Bool ret = this->TestValid(item);
 	SDEL_CLASS(item);
 	return ret;
 }
 
-void Data::QueryConditions::FieldCondition::GetFieldList(Data::ArrayList<const UTF8Char*> *fieldList)
+void Data::QueryConditions::FieldCondition::GetFieldList(Data::ArrayList<Text::String*> *fieldList)
 {
 	fieldList->Add(this->fieldName);
 }
 
-Data::QueryConditions::TimeBetweenCondition::TimeBetweenCondition(const UTF8Char *fieldName, Int64 t1, Int64 t2) : FieldCondition(fieldName)
+Data::QueryConditions::TimeBetweenCondition::TimeBetweenCondition(const UTF8Char *fieldName, UOSInt nameLen, Int64 t1, Int64 t2) : FieldCondition(fieldName, nameLen)
 {
 	this->t1 = t1;
 	this->t2 = t2;
@@ -51,7 +56,7 @@ Bool Data::QueryConditions::TimeBetweenCondition::ToWhereClause(Text::StringBuil
 {
 	UTF8Char sbuff[512];
 	Data::DateTime dt;
-	DB::DBUtil::SDBColUTF8(sbuff, this->fieldName, svrType);
+	DB::DBUtil::SDBColUTF8(sbuff, this->fieldName->v, svrType);
 	sb->Append(sbuff);
 	sb->AppendC(UTF8STRC(" between "));
 	dt.SetTicks(this->t1);
@@ -96,7 +101,7 @@ Bool Data::QueryConditions::TimeBetweenCondition::TestValid(Data::VariItem *item
 	}
 }
 
-Data::QueryConditions::Int32Condition::Int32Condition(const UTF8Char *fieldName, Int32 val, CompareCondition cond) : FieldCondition(fieldName)
+Data::QueryConditions::Int32Condition::Int32Condition(const UTF8Char *fieldName, UOSInt nameLen, Int32 val, CompareCondition cond) : FieldCondition(fieldName, nameLen)
 {
 	this->val = val;
 	this->cond = cond;
@@ -114,7 +119,7 @@ Data::QueryConditions::ConditionType Data::QueryConditions::Int32Condition::GetT
 Bool Data::QueryConditions::Int32Condition::ToWhereClause(Text::StringBuilderUTF *sb, DB::DBUtil::ServerType svrType, Int8 tzQhr, UOSInt maxDBItem)
 {
 	UTF8Char sbuff[512];
-	DB::DBUtil::SDBColUTF8(sbuff, this->fieldName, svrType);
+	DB::DBUtil::SDBColUTF8(sbuff, this->fieldName->v, svrType);
 	sb->Append(sbuff);
 	sb->Append(Data::QueryConditions::CompareConditionGetStr(cond));
 	sb->AppendI32(this->val);
@@ -186,7 +191,7 @@ Bool Data::QueryConditions::Int32Condition::TestValid(Data::VariItem *item)
 	return false;
 }
 
-const UTF8Char *Data::QueryConditions::Int32Condition::GetFieldName()
+Text::String *Data::QueryConditions::Int32Condition::GetFieldName()
 {
 	return this->fieldName;
 }
@@ -201,7 +206,7 @@ Data::QueryConditions::CompareCondition Data::QueryConditions::Int32Condition::G
 	return this->cond;
 }
 
-Data::QueryConditions::Int32InCondition::Int32InCondition(const UTF8Char *fieldName, Data::ArrayList<Int32> *val) : FieldCondition(fieldName)
+Data::QueryConditions::Int32InCondition::Int32InCondition(const UTF8Char *fieldName, UOSInt nameLen, Data::ArrayList<Int32> *val) : FieldCondition(fieldName, nameLen)
 {
 	NEW_CLASS(this->vals, Data::ArrayList<Int32>());
 	this->vals->AddAll(val);
@@ -226,7 +231,7 @@ Bool Data::QueryConditions::Int32InCondition::ToWhereClause(Text::StringBuilderU
 	else
 	{
 		UTF8Char sbuff[512];
-		DB::DBUtil::SDBColUTF8(sbuff, this->fieldName, svrType);
+		DB::DBUtil::SDBColUTF8(sbuff, this->fieldName->v, svrType);
 		sb->Append(sbuff);
 		sb->AppendC(UTF8STRC(" in ("));
 		Text::StringTool::Int32Join(sb, this->vals, (const UTF8Char*)", ");
@@ -293,7 +298,7 @@ Bool Data::QueryConditions::Int32InCondition::TestValid(Data::VariItem *item)
 	return false;
 }
 
-Data::QueryConditions::DoubleCondition::DoubleCondition(const UTF8Char *fieldName, Double val, CompareCondition cond) : FieldCondition(fieldName)
+Data::QueryConditions::DoubleCondition::DoubleCondition(const UTF8Char *fieldName, UOSInt nameLen, Double val, CompareCondition cond) : FieldCondition(fieldName, nameLen)
 {
 	this->val = val;
 	this->cond = cond;
@@ -311,7 +316,7 @@ Data::QueryConditions::ConditionType Data::QueryConditions::DoubleCondition::Get
 Bool Data::QueryConditions::DoubleCondition::ToWhereClause(Text::StringBuilderUTF *sb, DB::DBUtil::ServerType svrType, Int8 tzQhr, UOSInt maxDBItem)
 {
 	UTF8Char sbuff[512];
-	DB::DBUtil::SDBColUTF8(sbuff, this->fieldName, svrType);
+	DB::DBUtil::SDBColUTF8(sbuff, this->fieldName->v, svrType);
 	sb->Append(sbuff);
 	sb->Append(Data::QueryConditions::CompareConditionGetStr(cond));
 	Text::SBAppendF64(sb, this->val);
@@ -383,7 +388,7 @@ Bool Data::QueryConditions::DoubleCondition::TestValid(Data::VariItem *item)
 	return false;
 }
 
-Data::QueryConditions::StringInCondition::StringInCondition(const UTF8Char *fieldName, Data::ArrayList<const UTF8Char*> *val) : FieldCondition(fieldName)
+Data::QueryConditions::StringInCondition::StringInCondition(const UTF8Char *fieldName, UOSInt nameLen, Data::ArrayList<const UTF8Char*> *val) : FieldCondition(fieldName, nameLen)
 {
 	NEW_CLASS(this->vals, Data::ArrayList<const UTF8Char*>());
 	UOSInt i = 0;
@@ -420,7 +425,7 @@ Bool Data::QueryConditions::StringInCondition::ToWhereClause(Text::StringBuilder
 		UOSInt thisSize;
 		UOSInt i;
 		UOSInt j;
-		DB::DBUtil::SDBColUTF8(sbuff, this->fieldName, svrType);
+		DB::DBUtil::SDBColUTF8(sbuff, this->fieldName->v, svrType);
 		sb->Append(sbuff);
 		sb->AppendC(UTF8STRC(" in ("));
 		i = 0;
@@ -502,7 +507,7 @@ Bool Data::QueryConditions::StringInCondition::TestValid(Data::VariItem *item)
 	}
 }
 
-Data::QueryConditions::StringContainsCondition::StringContainsCondition(const UTF8Char *fieldName, const UTF8Char *val) : FieldCondition(fieldName)
+Data::QueryConditions::StringContainsCondition::StringContainsCondition(const UTF8Char *fieldName, UOSInt nameLen, const UTF8Char *val) : FieldCondition(fieldName, nameLen)
 {
 	this->val = Text::StrCopyNew(val);
 }
@@ -520,7 +525,7 @@ Data::QueryConditions::ConditionType Data::QueryConditions::StringContainsCondit
 Bool Data::QueryConditions::StringContainsCondition::ToWhereClause(Text::StringBuilderUTF *sb, DB::DBUtil::ServerType svrType, Int8 tzQhr, UOSInt maxDBItem)
 {
 	UTF8Char sbuff[512];
-	DB::DBUtil::SDBColUTF8(sbuff, this->fieldName, svrType);
+	DB::DBUtil::SDBColUTF8(sbuff, this->fieldName->v, svrType);
 	sb->Append(sbuff);
 	sb->AppendC(UTF8STRC(" like "));
 	Text::StringBuilderUTF8 sb2;
@@ -572,7 +577,7 @@ Bool Data::QueryConditions::StringContainsCondition::TestValid(Data::VariItem *i
 	}
 }
 
-Data::QueryConditions::StringEqualsCondition::StringEqualsCondition(const UTF8Char *fieldName, const UTF8Char *val) : FieldCondition(fieldName)
+Data::QueryConditions::StringEqualsCondition::StringEqualsCondition(const UTF8Char *fieldName, UOSInt nameLen, const UTF8Char *val) : FieldCondition(fieldName, nameLen)
 {
 	this->val = Text::StrCopyNew(val);
 }
@@ -590,7 +595,7 @@ Data::QueryConditions::ConditionType Data::QueryConditions::StringEqualsConditio
 Bool Data::QueryConditions::StringEqualsCondition::ToWhereClause(Text::StringBuilderUTF *sb, DB::DBUtil::ServerType svrType, Int8 tzQhr, UOSInt maxDBItem)
 {
 	UTF8Char sbuff[512];
-	DB::DBUtil::SDBColUTF8(sbuff, this->fieldName, svrType);
+	DB::DBUtil::SDBColUTF8(sbuff, this->fieldName->v, svrType);
 	sb->Append(sbuff);
 	sb->AppendC(UTF8STRC(" = "));
 	UOSInt size = DB::DBUtil::SDBStrUTF8Leng(this->val, svrType);
@@ -638,7 +643,7 @@ Bool Data::QueryConditions::StringEqualsCondition::TestValid(Data::VariItem *ite
 	}
 }
 
-Data::QueryConditions::BooleanCondition::BooleanCondition(const UTF8Char *fieldName, Bool val) : FieldCondition(fieldName)
+Data::QueryConditions::BooleanCondition::BooleanCondition(const UTF8Char *fieldName, UOSInt nameLen, Bool val) : FieldCondition(fieldName, nameLen)
 {
 	this->val = val;
 }
@@ -659,7 +664,7 @@ Bool Data::QueryConditions::BooleanCondition::ToWhereClause(Text::StringBuilderU
 		sb->AppendC(UTF8STRC("NOT "));
 	}
 	UTF8Char sbuff[512];
-	DB::DBUtil::SDBColUTF8(sbuff, this->fieldName, svrType);
+	DB::DBUtil::SDBColUTF8(sbuff, this->fieldName->v, svrType);
 	sb->Append(sbuff);
 	return true;
 }
@@ -716,7 +721,7 @@ Bool Data::QueryConditions::BooleanCondition::TestValid(Data::VariItem *item)
 	return bVal == this->val;
 }
 
-Data::QueryConditions::NotNullCondition::NotNullCondition(const UTF8Char *fieldName) : FieldCondition(fieldName)
+Data::QueryConditions::NotNullCondition::NotNullCondition(const UTF8Char *fieldName, UOSInt nameLen) : FieldCondition(fieldName, nameLen)
 {
 }
 
@@ -732,7 +737,7 @@ Data::QueryConditions::ConditionType Data::QueryConditions::NotNullCondition::Ge
 Bool Data::QueryConditions::NotNullCondition::ToWhereClause(Text::StringBuilderUTF *sb, DB::DBUtil::ServerType svrType, Int8 tzQhr, UOSInt maxDBItem)
 {
 	UTF8Char sbuff[512];
-	DB::DBUtil::SDBColUTF8(sbuff, this->fieldName, svrType);
+	DB::DBUtil::SDBColUTF8(sbuff, this->fieldName->v, svrType);
 	sb->Append(sbuff);
 	sb->AppendC(UTF8STRC(" is not null"));
 	return true;
@@ -810,7 +815,7 @@ Bool Data::QueryConditions::InnerCondition::IsValid(Data::ObjectGetter *getter)
 	return this->innerCond->IsValid(getter);
 }
 
-void Data::QueryConditions::InnerCondition::GetFieldList(Data::ArrayList<const UTF8Char*> *fieldList)
+void Data::QueryConditions::InnerCondition::GetFieldList(Data::ArrayList<Text::String*> *fieldList)
 {
 	this->innerCond->GetFieldList(fieldList);	
 }
@@ -849,7 +854,7 @@ Bool Data::QueryConditions::OrCondition::IsValid(Data::ObjectGetter *getter)
 	return true;
 }
 
-void Data::QueryConditions::OrCondition::GetFieldList(Data::ArrayList<const UTF8Char*> *fieldList)
+void Data::QueryConditions::OrCondition::GetFieldList(Data::ArrayList<Text::String*> *fieldList)
 {
 }
 
@@ -987,7 +992,7 @@ Data::ArrayList<Data::QueryConditions::Condition*> *Data::QueryConditions::GetLi
 	return this->conditionList;
 }
 
-void Data::QueryConditions::GetFieldList(Data::ArrayList<const UTF8Char*> *fieldList)
+void Data::QueryConditions::GetFieldList(Data::ArrayList<Text::String*> *fieldList)
 {
 	UOSInt i = 0;
 	UOSInt j = this->conditionList->GetCount();
@@ -998,9 +1003,9 @@ void Data::QueryConditions::GetFieldList(Data::ArrayList<const UTF8Char*> *field
 	}
 }
 
-Data::QueryConditions *Data::QueryConditions::TimeBetween(const UTF8Char *fieldName, Int64 t1, Int64 t2)
+Data::QueryConditions *Data::QueryConditions::TimeBetween(const UTF8Char *fieldName, UOSInt nameLen, Int64 t1, Int64 t2)
 {
-	this->conditionList->Add(NEW_CLASS_D(TimeBetweenCondition(fieldName, t1, t2)));
+	this->conditionList->Add(NEW_CLASS_D(TimeBetweenCondition(fieldName, nameLen, t1, t2)));
 	return this;
 }
 
@@ -1016,57 +1021,57 @@ Data::QueryConditions *Data::QueryConditions::InnerCond(QueryConditions *cond)
 	return this;
 }
 
-Data::QueryConditions *Data::QueryConditions::Int32Equals(const UTF8Char *fieldName, Int32 val)
+Data::QueryConditions *Data::QueryConditions::Int32Equals(const UTF8Char *fieldName, UOSInt nameLen, Int32 val)
 {
-	this->conditionList->Add(NEW_CLASS_D(Int32Condition(fieldName, val, CompareCondition::Equal)));
+	this->conditionList->Add(NEW_CLASS_D(Int32Condition(fieldName, nameLen, val, CompareCondition::Equal)));
 	return this;
 }
 
-Data::QueryConditions *Data::QueryConditions::Int32In(const UTF8Char *fieldName, Data::ArrayList<Int32> *vals)
+Data::QueryConditions *Data::QueryConditions::Int32In(const UTF8Char *fieldName, UOSInt nameLen, Data::ArrayList<Int32> *vals)
 {
-	this->conditionList->Add(NEW_CLASS_D(Int32InCondition(fieldName, vals)));
+	this->conditionList->Add(NEW_CLASS_D(Int32InCondition(fieldName, nameLen, vals)));
 	return this;
 }
 
-Data::QueryConditions *Data::QueryConditions::DoubleGE(const UTF8Char *fieldName, Double val)
+Data::QueryConditions *Data::QueryConditions::DoubleGE(const UTF8Char *fieldName, UOSInt nameLen, Double val)
 {
-	this->conditionList->Add(NEW_CLASS_D(DoubleCondition(fieldName, val, CompareCondition::GreaterOrEqual)));
+	this->conditionList->Add(NEW_CLASS_D(DoubleCondition(fieldName, nameLen, val, CompareCondition::GreaterOrEqual)));
 	return this;
 }
 
-Data::QueryConditions *Data::QueryConditions::DoubleLE(const UTF8Char *fieldName, Double val)
+Data::QueryConditions *Data::QueryConditions::DoubleLE(const UTF8Char *fieldName, UOSInt nameLen, Double val)
 {
-	this->conditionList->Add(NEW_CLASS_D(DoubleCondition(fieldName, val, CompareCondition::GreaterOrEqual)));
+	this->conditionList->Add(NEW_CLASS_D(DoubleCondition(fieldName, nameLen, val, CompareCondition::GreaterOrEqual)));
 	return this;
 }
 
-Data::QueryConditions *Data::QueryConditions::StrIn(const UTF8Char *fieldName, Data::ArrayList<const UTF8Char*> *vals)
+Data::QueryConditions *Data::QueryConditions::StrIn(const UTF8Char *fieldName, UOSInt nameLen, Data::ArrayList<const UTF8Char*> *vals)
 {
-	this->conditionList->Add(NEW_CLASS_D(StringInCondition(fieldName, vals)));
+	this->conditionList->Add(NEW_CLASS_D(StringInCondition(fieldName, nameLen, vals)));
 	return this;
 }
 
-Data::QueryConditions *Data::QueryConditions::StrContains(const UTF8Char *fieldName, const UTF8Char *val)
+Data::QueryConditions *Data::QueryConditions::StrContains(const UTF8Char *fieldName, UOSInt nameLen, const UTF8Char *val)
 {
-	this->conditionList->Add(NEW_CLASS_D(StringContainsCondition(fieldName, val)));
+	this->conditionList->Add(NEW_CLASS_D(StringContainsCondition(fieldName, nameLen, val)));
 	return this;
 }
 
-Data::QueryConditions *Data::QueryConditions::StrEquals(const UTF8Char *fieldName, const UTF8Char *val)
+Data::QueryConditions *Data::QueryConditions::StrEquals(const UTF8Char *fieldName, UOSInt nameLen, const UTF8Char *val)
 {
-	this->conditionList->Add(NEW_CLASS_D(StringEqualsCondition(fieldName, val)));
+	this->conditionList->Add(NEW_CLASS_D(StringEqualsCondition(fieldName, nameLen, val)));
 	return this;
 }
 
-Data::QueryConditions *Data::QueryConditions::BoolEquals(const UTF8Char *fieldName, Bool val)
+Data::QueryConditions *Data::QueryConditions::BoolEquals(const UTF8Char *fieldName, UOSInt nameLen, Bool val)
 {
-	this->conditionList->Add(NEW_CLASS_D(BooleanCondition(fieldName, val)));
+	this->conditionList->Add(NEW_CLASS_D(BooleanCondition(fieldName, nameLen, val)));
 	return this;
 }
 
-Data::QueryConditions *Data::QueryConditions::NotNull(const UTF8Char* fieldName)
+Data::QueryConditions *Data::QueryConditions::NotNull(const UTF8Char* fieldName, UOSInt nameLen)
 {
-	this->conditionList->Add(NEW_CLASS_D(NotNullCondition(fieldName)));
+	this->conditionList->Add(NEW_CLASS_D(NotNullCondition(fieldName, nameLen)));
 	return this;
 }
 

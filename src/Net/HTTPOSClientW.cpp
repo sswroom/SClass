@@ -445,8 +445,8 @@ Bool Net::HTTPOSClient::Connect(const UTF8Char *url, const Char *method, Double 
 	if (data->hRequest)
 	{
 		WinHttpSetStatusCallback(data->hRequest, HTTPOSClient_StatusCb, WINHTTP_CALLBACK_FLAG_SECURE_FAILURE, 0);
-		this->AddHeader((const UTF8Char*)"Accept", (const UTF8Char*)"*/*");
-		this->AddHeader((const UTF8Char*)"Accept-Charset", (const UTF8Char*)"*");
+		this->AddHeaderC(UTF8STRC("Accept"), UTF8STRC("*/*"));
+		this->AddHeaderC(UTF8STRC("Accept-Charset"), UTF8STRC("*"));
 		if (!this->kaConn)
 		{
 			DWORD feature = WINHTTP_DISABLE_KEEP_ALIVE;
@@ -462,7 +462,7 @@ Bool Net::HTTPOSClient::Connect(const UTF8Char *url, const Char *method, Double 
 	return true;
 }
 
-void Net::HTTPOSClient::AddHeader(const UTF8Char *name, const UTF8Char *value)
+void Net::HTTPOSClient::AddHeaderC(const UTF8Char *name, UOSInt nameLen, const UTF8Char *value, UOSInt valueLen)
 {
 	ClassData *data = (ClassData*)this->clsData;
 	if (data->hRequest && !writing)
@@ -476,9 +476,9 @@ void Net::HTTPOSClient::AddHeader(const UTF8Char *name, const UTF8Char *value)
 		else
 		{
 			Text::StringBuilderUTF16 sb;
-			sb.Append(name);
+			sb.AppendC(name, nameLen);
 			sb.AppendC(UTF8STRC(": "));
-			sb.Append(value);
+			sb.AppendC(value, valueLen);
 			WinHttpAddRequestHeaders(data->hRequest, sb.ToString(), (DWORD)sb.GetLength(), WINHTTP_ADDREQ_FLAG_ADD);
 		}
 	}

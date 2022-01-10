@@ -136,7 +136,7 @@ UI::GUIControl::~GUIControl()
 		DeleteObject(hFont);
 		hFont = 0;
 	}
-	SDEL_TEXT(this->fontName);
+	SDEL_STRING(this->fontName);
 	if (this->hbrBackground)
 	{
 		DeleteObject((HBRUSH)this->hbrBackground);
@@ -306,12 +306,12 @@ void UI::GUIControl::SetRect(Double left, Double top, Double width, Double heigh
 	SetArea(left, top, left + width, top + height, updateScn);
 }
 
-void UI::GUIControl::SetFont(const UTF8Char *name, Double ptSize, Bool isBold)
+void UI::GUIControl::SetFont(const UTF8Char *name, UOSInt nameLen, Double ptSize, Bool isBold)
 {
-	SDEL_TEXT(this->fontName);
+	SDEL_STRING(this->fontName);
 	if (name)
 	{
-		this->fontName = Text::StrCopyNew(name);
+		this->fontName = Text::String::New(name, nameLen);
 	}
 	this->fontHeightPt = ptSize;
 	this->fontIsBold = isBold;
@@ -327,7 +327,7 @@ void UI::GUIControl::InitFont()
 	MemClear(&lf, sizeof(LOGFONTW));
 	if (this->fontName)
 	{
-		Text::StrUTF8_WChar(lf.lfFaceName, this->fontName, 0);
+		Text::StrUTF8_WChar(lf.lfFaceName, this->fontName->v, 0);
 	}
 	lf.lfHeight = Math::Double2Int32(this->fontHeightPt * this->hdpi / this->ddpi / -0.75);
 	if (this->fontIsBold)
@@ -789,7 +789,7 @@ Media::DrawFont *UI::GUIControl::CreateDrawFont(Media::DrawImage *img)
 	}
 	else
 	{
-		const WChar *wptr = Text::StrToWCharNew(this->fontName);
+		const WChar *wptr = Text::StrToWCharNew(this->fontName->v);
 		NEW_CLASS(fnt, Media::GDIFont(((Media::GDIImage*)img)->hdcBmp, wptr, this->fontHeightPt * this->hdpi / this->ddpi / 0.75 * 72.0 / img->GetHDPI(), this->fontIsBold?Media::DrawEngine::DFS_BOLD:Media::DrawEngine::DFS_NORMAL, img, 0));
 		Text::StrDelNew(wptr);
 	}

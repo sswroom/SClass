@@ -49,7 +49,7 @@ UOSInt DB::CSVFile::GetTableNames(Data::ArrayList<const UTF8Char*> *names)
 	return 1;
 }
 
-DB::DBReader *DB::CSVFile::GetTableData(const UTF8Char *tableName, Data::ArrayList<const UTF8Char*> *columnName, UOSInt ofst, UOSInt maxCnt, const UTF8Char *ordering, Data::QueryConditions *condition)
+DB::DBReader *DB::CSVFile::GetTableData(const UTF8Char *tableName, Data::ArrayList<Text::String*> *columnName, UOSInt ofst, UOSInt maxCnt, const UTF8Char *ordering, Data::QueryConditions *condition)
 {
 	if (this->stm)
 	{

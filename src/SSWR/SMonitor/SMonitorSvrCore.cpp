@@ -2555,22 +2555,21 @@ Bool SSWR::SMonitor::SMonitorSvrCore::SendCapturePhoto(Int64 cliId)
 
 void SSWR::SMonitor::SMonitorSvrCore::LogRequest(Net::WebServer::IWebRequest *req)
 {
-	Text::StringBuilderUTF8 sb;
-	if (req->GetHeader(&sb, (const UTF8Char*)"User-Agent"))
+	Text::String *s;
+	if ((s = req->GetSHeader(UTF8STRC("User-Agent"))) != 0)
 	{
-		this->UserAgentLog(sb.ToString());
+		this->UserAgentLog(s->v, s->leng);
 	}
 
-	sb.ClearStr();
-	if (req->GetHeader(&sb, (const UTF8Char*)"Referer"))
+	if ((s = req->GetSHeader(UTF8STRC("Referer"))) != 0)
 	{
-		this->RefererLog(sb.ToString());
+		this->RefererLog(s->v, s->leng);
 	}
 }
 
-void SSWR::SMonitor::SMonitorSvrCore::UserAgentLog(const UTF8Char *userAgent)
+void SSWR::SMonitor::SMonitorSvrCore::UserAgentLog(const UTF8Char *userAgent, UOSInt len)
 {
-	this->uaLog->LogStr(userAgent);
+	this->uaLog->LogStr(userAgent, len);
 }
 
 void SSWR::SMonitor::SMonitorSvrCore::UserAgentStore()
@@ -2591,7 +2590,7 @@ void SSWR::SMonitor::SMonitorSvrCore::UserAgentStore()
 	}
 }
 
-void SSWR::SMonitor::SMonitorSvrCore::RefererLog(const UTF8Char *referer)
+void SSWR::SMonitor::SMonitorSvrCore::RefererLog(const UTF8Char *referer, UOSInt len)
 {
 	if (Text::StrStartsWith(referer, (const UTF8Char*)"http://sswroom.no-ip.org"))
 	{
@@ -2601,7 +2600,7 @@ void SSWR::SMonitor::SMonitorSvrCore::RefererLog(const UTF8Char *referer)
 	{
 		return;
 	}
-	this->refererLog->LogStr(referer);
+	this->refererLog->LogStr(referer, len);
 }
 
 void SSWR::SMonitor::SMonitorSvrCore::RefererStore()

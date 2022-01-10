@@ -34,18 +34,20 @@ void __stdcall SSWR::AVIRead::AVIRSNMPClientForm::OnRequestClicked(void *userObj
 	UOSInt i = me->cboCommandType->GetSelectedIndex();
 	Data::ArrayList<Net::SNMPUtil::BindingItem*> itemList;
 	Net::SNMPUtil::ErrorStatus err;
+	Text::String *community = Text::String::New(sbComm.ToString(), sbComm.GetLength());
 	if (i == 0)
 	{
-		err = me->cli->V1GetRequest(&addr, sbComm.ToString(), sbOID.ToString(), &itemList);
+		err = me->cli->V1GetRequest(&addr, community, sbOID.ToString(), sbOID.GetLength(), &itemList);
 	}
 	else if (i == 1)
 	{
-		err = me->cli->V1GetNextRequest(&addr, sbComm.ToString(), sbOID.ToString(), &itemList);
+		err = me->cli->V1GetNextRequest(&addr, community, sbOID.ToString(), sbOID.GetLength(), &itemList);
 	}
 	else
 	{
-		err = me->cli->V1Walk(&addr, sbComm.ToString(), sbOID.ToString(), &itemList);
+		err = me->cli->V1Walk(&addr, community, sbOID.ToString(), sbOID.GetLength(), &itemList);
 	}
+	community->Release();
 	UOSInt j;
 	Text::StringBuilderUTF8 sb;
 	Net::SNMPUtil::BindingItem *item;

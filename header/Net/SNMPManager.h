@@ -12,7 +12,7 @@ namespace Net
 	public:
 		typedef struct
 		{
-			const UTF8Char *name;
+			Text::String *name;
 			UOSInt index;
 			UInt8 objId[64];
 			UOSInt objIdLen;
@@ -26,16 +26,16 @@ namespace Net
 		typedef struct
 		{
 			Net::SocketUtil::AddressInfo addr;
-			const UTF8Char *community;
+			Text::String *community;
 			UInt8 objId[64];
 			UOSInt objIdLen;
-			const UTF8Char *descr;
-			const UTF8Char *contact;
-			const UTF8Char *name;
-			const UTF8Char *location;
-			const UTF8Char *model;
-			const UTF8Char *vendor;
-			const UTF8Char *cpuName;
+			Text::String *descr;
+			Text::String *contact;
+			Text::String *name;
+			Text::String *location;
+			Text::String *model;
+			Text::String *vendor;
+			Text::String *cpuName;
 			UInt8 mac[6];
 			Data::ArrayList<ReadingInfo *> *readingList;
 		} AgentInfo;
@@ -55,8 +55,8 @@ namespace Net
 		void UpdateValues();
 		UOSInt GetAgentList(Data::ArrayList<AgentInfo*> *agentList);
 
-		AgentInfo *AddAgent(const Net::SocketUtil::AddressInfo *addr, const UTF8Char *community);
-		UOSInt AddAgents(const Net::SocketUtil::AddressInfo *addr, const UTF8Char *community, Data::ArrayList<AgentInfo*> *agentList, Bool scanIP);
+		AgentInfo *AddAgent(const Net::SocketUtil::AddressInfo *addr, Text::String *community);
+		UOSInt AddAgents(const Net::SocketUtil::AddressInfo *addr, Text::String *community, Data::ArrayList<AgentInfo*> *agentList, Bool scanIP);
 
 		static void Agent2Record(const AgentInfo *agent, SSWR::SMonitor::ISMonitorCore::DevRecord2 *rec, Int64 *cliId);
 		static Int64 Agent2CliId(const AgentInfo *agent);

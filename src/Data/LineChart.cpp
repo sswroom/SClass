@@ -544,7 +544,7 @@ void Data::LineChart::Plot(Media::DrawImage *img, Double x, Double y, Double wid
 	Bool y2show;
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
-	const UTF8Char *csptr;
+	Text::String *s;
 
 	UOSInt i;
 	UOSInt j;
@@ -1217,9 +1217,9 @@ void Data::LineChart::Plot(Media::DrawImage *img, Double x, Double y, Double wid
 	}
 	
 	Data::ArrayListDbl *locations;
-	Data::ArrayList<const UTF8Char*> *labels;
+	Data::ArrayList<Text::String*> *labels;
 	NEW_CLASS(locations, Data::ArrayListDbl());
-	NEW_CLASS(labels, Data::ArrayList<const UTF8Char*>());
+	NEW_CLASS(labels, Data::ArrayList<Text::String*>());
 	if (xType == Data::IChart::DataType::Integer)
 	{
 		Data::IChart::CalScaleMarkInt(locations, labels, xMinInt, xMaxInt, width - y1Leng - y2Leng - this->pointSize * 2, fntH, 0);
@@ -1261,7 +1261,7 @@ void Data::LineChart::Plot(Media::DrawImage *img, Double x, Double y, Double wid
 	i = labels->GetCount();
 	while (i-- > 0)
 	{
-		Text::StrDelNew(labels->GetItem(i));
+		labels->GetItem(i)->Release();
 	}
 	labels->Clear();
 
@@ -1293,9 +1293,9 @@ void Data::LineChart::Plot(Media::DrawImage *img, Double x, Double y, Double wid
 			img->DrawLine((DRAW_UNIT)(x + y1Leng), (DRAW_UNIT)(y + height - this->pointSize - xLeng - locations->GetItem(i)), (DRAW_UNIT)(x + width - y2Leng), (DRAW_UNIT)(y + height - this->pointSize - xLeng - locations->GetItem(i)), gridPen);
 		}
 		img->DrawLine((DRAW_UNIT)(x + y1Leng), (DRAW_UNIT)(y + height - this->pointSize - xLeng - locations->GetItem(i)), (DRAW_UNIT)(x + y1Leng - barLeng), (DRAW_UNIT)(y + height - this->pointSize - xLeng - locations->GetItem(i)), boundPen);
-		csptr = labels->GetItem(i);
-		img->GetTextSize(fnt, csptr, rcSize);
-		img->DrawString((DRAW_UNIT)(x + y1Leng - barLeng - rcSize[0]), (DRAW_UNIT)(y + height - this->pointSize - xLeng - locations->GetItem(i) - fntH / 2), csptr, fnt, fontBrush);
+		s = labels->GetItem(i);
+		img->GetTextSize(fnt, s->v, rcSize);
+		img->DrawString((DRAW_UNIT)(x + y1Leng - barLeng - rcSize[0]), (DRAW_UNIT)(y + height - this->pointSize - xLeng - locations->GetItem(i) - fntH / 2), s->v, fnt, fontBrush);
 		i++;
 	}
 
@@ -1316,7 +1316,7 @@ void Data::LineChart::Plot(Media::DrawImage *img, Double x, Double y, Double wid
 	i = labels->GetCount();
 	while (i-- > 0)
 	{
-		Text::StrDelNew(labels->GetItem(i));
+		labels->GetItem(i)->Release();
 	}
 	labels->Clear();
 

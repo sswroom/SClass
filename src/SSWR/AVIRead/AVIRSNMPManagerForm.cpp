@@ -34,7 +34,9 @@ void __stdcall SSWR::AVIRead::AVIRSNMPManagerForm::OnAgentAddClicked(void *userO
 	UOSInt j;
 	UOSInt k;
 	Data::ArrayList<Net::SNMPManager::AgentInfo *> agentList;
-	j = me->mgr->AddAgents(&addr, sb.ToString(), &agentList, me->chkAgentScan->IsChecked());
+	Text::String *community = Text::String::New(sb.ToString(), sb.GetLength());
+	j = me->mgr->AddAgents(&addr, community, &agentList, me->chkAgentScan->IsChecked());
+	community->Release();
 	if (j <= 0)
 	{
 		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in Adding Agent", (const UTF8Char*)"SNMP Manager", me);
@@ -58,7 +60,7 @@ void __stdcall SSWR::AVIRead::AVIRSNMPManagerForm::OnAgentAddClicked(void *userO
 				cliId = me->mgr->Agent2CliId(agent);
 				if (agent->name)
 				{
-					me->redir->SendDevName(cliId, agent->name);
+					me->redir->SendDevName(cliId, agent->name->v, agent->name->leng);
 				}
 				if (agent->model)
 				{
@@ -68,16 +70,16 @@ void __stdcall SSWR::AVIRead::AVIRSNMPManagerForm::OnAgentAddClicked(void *userO
 						sbPlatform.Append(agent->vendor);
 						sbPlatform.AppendChar(' ', 1);
 						sbPlatform.Append(agent->model);
-						me->redir->SendDevPlatform(cliId, sbPlatform.ToString());
+						me->redir->SendDevPlatform(cliId, sbPlatform.ToString(), sbPlatform.GetLength());
 					}
 					else
 					{
-						me->redir->SendDevPlatform(cliId, agent->model);
+						me->redir->SendDevPlatform(cliId, agent->model->v, agent->model->leng);
 					}
 				}
 				if (agent->cpuName)
 				{
-					me->redir->SendDevPlatform(cliId, agent->cpuName);
+					me->redir->SendDevPlatform(cliId, agent->cpuName->v, agent->cpuName->leng);
 				}
 				k = 0;
 				l = agent->readingList->GetCount();
@@ -88,7 +90,7 @@ void __stdcall SSWR::AVIRead::AVIRSNMPManagerForm::OnAgentAddClicked(void *userO
 					readingMap.Put((UInt32)reading->index, (UInt16)(currId + 1));
 					if (reading->name)
 					{
-						me->redir->SendDevReadingName(cliId, k, (UInt16)reading->index, currId, reading->name);
+						me->redir->SendDevReadingName(cliId, k, (UInt16)reading->index, currId, reading->name->v, reading->name->leng);
 					}
 					k++;
 				}
@@ -121,7 +123,7 @@ void __stdcall SSWR::AVIRead::AVIRSNMPManagerForm::OnAgentSelChg(void *userObj)
 		me->txtAgentDAddr->SetText(sbuff);
 		if (agent->descr)
 		{
-			me->txtAgentDescr->SetText(agent->descr);
+			me->txtAgentDescr->SetText(agent->descr->v);
 		}
 		else
 		{
@@ -143,7 +145,7 @@ void __stdcall SSWR::AVIRead::AVIRSNMPManagerForm::OnAgentSelChg(void *userObj)
 		}
 		if (agent->name)
 		{
-			me->txtAgentName->SetText(agent->name);
+			me->txtAgentName->SetText(agent->name->v);
 		}
 		else
 		{
@@ -151,7 +153,7 @@ void __stdcall SSWR::AVIRead::AVIRSNMPManagerForm::OnAgentSelChg(void *userObj)
 		}
 		if (agent->contact)
 		{
-			me->txtAgentContact->SetText(agent->contact);
+			me->txtAgentContact->SetText(agent->contact->v);
 		}
 		else
 		{
@@ -159,7 +161,7 @@ void __stdcall SSWR::AVIRead::AVIRSNMPManagerForm::OnAgentSelChg(void *userObj)
 		}
 		if (agent->location)
 		{
-			me->txtAgentLocation->SetText(agent->location);
+			me->txtAgentLocation->SetText(agent->location->v);
 		}
 		else
 		{
@@ -171,7 +173,7 @@ void __stdcall SSWR::AVIRead::AVIRSNMPManagerForm::OnAgentSelChg(void *userObj)
 		me->txtAgentVendor->SetText((const UTF8Char*)ent->name);
 		if (agent->model)
 		{
-			me->txtAgentModel->SetText(agent->model);	
+			me->txtAgentModel->SetText(agent->model->v);	
 		}
 		else
 		{

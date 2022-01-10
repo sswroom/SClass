@@ -529,7 +529,7 @@ UI::GUIForm::GUIForm(UI::GUIClientControl *parent, Double initW, Double initH, U
 	this->undockRight = w;
 	this->undockBottom = h;
 	this->InitControl(((UI::GUICoreWin*)this->ui)->GetHInst(), parent, L"WinForm", (const UTF8Char*)"Form", WS_OVERLAPPED | WS_SYSMENU | WS_MINIMIZEBOX, 0, initX, initY, initW, initH);// | WS_THICKFRAME | WS_MAXIMIZEBOX
-	this->SetFont(0, 0, false);
+	this->SetFont(0, 0, 0, false);
 	SetNoResize(false);
 }
 

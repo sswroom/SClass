@@ -82,12 +82,12 @@ void UI::GUIButton::SetText(const UTF8Char *text)
 	Text::StrDelNew(wptr);
 }
 
-void UI::GUIButton::SetFont(const UTF8Char *name, Double fontHeightPt, Bool isBold)
+void UI::GUIButton::SetFont(const UTF8Char *name, UOSInt nameLen, Double fontHeightPt, Bool isBold)
 {
-	SDEL_TEXT(this->fontName);
+	SDEL_STRING(this->fontName);
 	if (name)
 	{
-		this->fontName = Text::StrCopyNew(name);
+		this->fontName = Text::String::New(name, nameLen);
 	}
 	this->fontHeightPt = fontHeightPt;
 	this->fontIsBold = isBold;

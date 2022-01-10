@@ -7,7 +7,7 @@
 #include "SSWR/AVIRead/AVIRSNMPWalkForm.h"
 #include "UI/MessageDialog.h"
 
-SSWR::AVIRead::AVIRSNMPWalkForm::AVIRSNMPWalkForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, const Net::SocketUtil::AddressInfo *addr, const UTF8Char *community) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRSNMPWalkForm::AVIRSNMPWalkForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, const Net::SocketUtil::AddressInfo *addr, Text::String *community) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	UTF8Char sbuff[128];
 	this->SetFont(0, 0, 8.25, false);
@@ -44,7 +44,7 @@ SSWR::AVIRead::AVIRSNMPWalkForm::AVIRSNMPWalkForm(UI::GUIClientControl *parent, 
 		UOSInt j;
 		Text::StringBuilderUTF8 sb;
 		Net::SNMPUtil::BindingItem *item;
-		err = cli->V1Walk(addr, community, (const UTF8Char*)"1.3.6.1.2.1", &itemList);
+		err = cli->V1Walk(addr, community, UTF8STRC("1.3.6.1.2.1"), &itemList);
 		this->lvResults->ClearItems();
 		if (err != Net::SNMPUtil::ES_NOERROR)
 		{

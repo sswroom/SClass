@@ -1,6 +1,7 @@
 #ifndef _SM_NET_ASN1PDUBUILDER
 #define _SM_NET_ASN1PDUBUILDER
 #include "Data/DateTime.h"
+#include "Text/String.h"
 
 namespace Net
 {
@@ -29,6 +30,7 @@ namespace Net
 		void AppendBitString(const UInt8 *buff, UOSInt len);
 		void AppendBitStringWith0(const UInt8 *buff, UOSInt len);
 		void AppendOctetString(const UInt8 *buff, UOSInt len);
+		void AppendOctetString(Text::String *s);
 		void AppendOctetStringS(const UTF8Char *s);
 		void AppendNull();
 		void AppendOID(const UInt8 *oid, UOSInt len);

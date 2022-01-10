@@ -161,13 +161,14 @@ IO::IStreamData *Net::WebBrowser::GetData(const UTF8Char *url, Bool forceReload,
 			UOSInt textSize;
 			UOSInt binSize;
 			UTF8Char *strTemp;
+			UTF8Char *sptr;
 			UInt8 *binTemp;
 			textSize = Text::StrCharCnt(url + 7);
 			strTemp = MemAlloc(UTF8Char, textSize + 1);
-			Text::TextEnc::URIEncoding::URIDecode(strTemp, url + 7);
-			binSize = b64.CalcBinSize(strTemp);
+			sptr = Text::TextEnc::URIEncoding::URIDecode(strTemp, url + 7);
+			binSize = b64.CalcBinSize(strTemp, (UOSInt)(sptr - strTemp));
 			binTemp = MemAlloc(UInt8, binSize);
-			b64.DecodeBin(strTemp, binTemp);
+			b64.DecodeBin(strTemp, (UOSInt)(sptr - strTemp), binTemp);
 			NEW_CLASS(fd, IO::StmData::MemoryData2(binTemp, binSize));
 			MemFree(binTemp);
 			MemFree(strTemp);

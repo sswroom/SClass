@@ -26,12 +26,12 @@ namespace Net
 
 		Bool IsError();
 
-		Net::SNMPUtil::ErrorStatus V1GetRequest(const Net::SocketUtil::AddressInfo *agentAddr, const UTF8Char *community, const UTF8Char *oidText, UOSInt oidTextLen, Data::ArrayList<Net::SNMPUtil::BindingItem *> *itemList);
-		Net::SNMPUtil::ErrorStatus V1GetRequestPDU(const Net::SocketUtil::AddressInfo *agentAddr, const UTF8Char *community, const UInt8 *oid, UOSInt oidLen, Data::ArrayList<Net::SNMPUtil::BindingItem *> *itemList);
-		Net::SNMPUtil::ErrorStatus V1GetNextRequest(const Net::SocketUtil::AddressInfo *agentAddr, const UTF8Char *community, const UTF8Char *oidText, UOSInt oidTextLen, Data::ArrayList<Net::SNMPUtil::BindingItem *> *itemList);
-		Net::SNMPUtil::ErrorStatus V1GetNextRequestPDU(const Net::SocketUtil::AddressInfo *agentAddr, const UTF8Char *community, const UInt8 *oid, UOSInt oidLen, Data::ArrayList<Net::SNMPUtil::BindingItem *> *itemList);
-		Net::SNMPUtil::ErrorStatus V1Walk(const Net::SocketUtil::AddressInfo *agentAddr, const UTF8Char *community, const UTF8Char *oidText, UOSInt oidTextLen, Data::ArrayList<Net::SNMPUtil::BindingItem *> *itemList);
-		UOSInt V1ScanGetRequest(const Net::SocketUtil::AddressInfo *broadcastAddr, const UTF8Char *community, const UTF8Char *oidText, UOSInt oidTextLen, Data::ArrayList<Net::SocketUtil::AddressInfo *> *addrList, UOSInt timeoutMS, Bool scanIP);
+		Net::SNMPUtil::ErrorStatus V1GetRequest(const Net::SocketUtil::AddressInfo *agentAddr, Text::String *community, const UTF8Char *oidText, UOSInt oidTextLen, Data::ArrayList<Net::SNMPUtil::BindingItem *> *itemList);
+		Net::SNMPUtil::ErrorStatus V1GetRequestPDU(const Net::SocketUtil::AddressInfo *agentAddr, Text::String *community, const UInt8 *oid, UOSInt oidLen, Data::ArrayList<Net::SNMPUtil::BindingItem *> *itemList);
+		Net::SNMPUtil::ErrorStatus V1GetNextRequest(const Net::SocketUtil::AddressInfo *agentAddr, Text::String *community, const UTF8Char *oidText, UOSInt oidTextLen, Data::ArrayList<Net::SNMPUtil::BindingItem *> *itemList);
+		Net::SNMPUtil::ErrorStatus V1GetNextRequestPDU(const Net::SocketUtil::AddressInfo *agentAddr, Text::String *community, const UInt8 *oid, UOSInt oidLen, Data::ArrayList<Net::SNMPUtil::BindingItem *> *itemList);
+		Net::SNMPUtil::ErrorStatus V1Walk(const Net::SocketUtil::AddressInfo *agentAddr, Text::String *community, const UTF8Char *oidText, UOSInt oidTextLen, Data::ArrayList<Net::SNMPUtil::BindingItem *> *itemList);
+		UOSInt V1ScanGetRequest(const Net::SocketUtil::AddressInfo *broadcastAddr, Text::String *community, const UTF8Char *oidText, UOSInt oidTextLen, Data::ArrayList<Net::SocketUtil::AddressInfo *> *addrList, UOSInt timeoutMS, Bool scanIP);
 	};
 }
 #endif

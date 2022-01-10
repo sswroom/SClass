@@ -1015,7 +1015,7 @@ UOSInt DB::ODBCConn::GetTableNames(Data::ArrayList<const UTF8Char*> *names)
 	return this->tableNames->GetCount();
 }
 
-DB::DBReader *DB::ODBCConn::GetTableData(const UTF8Char *name, Data::ArrayList<const UTF8Char*> *columnNames, UOSInt ofst, UOSInt maxCnt, const UTF8Char *ordering, Data::QueryConditions *condition)
+DB::DBReader *DB::ODBCConn::GetTableData(const UTF8Char *name, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, const UTF8Char *ordering, Data::QueryConditions *condition)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -1046,7 +1046,7 @@ DB::DBReader *DB::ODBCConn::GetTableData(const UTF8Char *name, Data::ArrayList<c
 			{
 				sb.AppendC(UTF8STRC(","));
 			}
-			DB::DBUtil::SDBColUTF8(sbuff, columnNames->GetItem(i), this->svrType);
+			DB::DBUtil::SDBColUTF8(sbuff, columnNames->GetItem(i)->v, this->svrType);
 			sb.Append(sbuff);
 			i++;
 		}

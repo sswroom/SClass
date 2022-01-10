@@ -24,17 +24,17 @@ UOSInt Text::TextBinEnc::UCS2TextBinEnc::EncodeBin(Text::StringBuilderUTF *sb, c
 	return buffSize >> 1;
 }
 
-UOSInt Text::TextBinEnc::UCS2TextBinEnc::CalcBinSize(const UTF8Char *sbuff)
+UOSInt Text::TextBinEnc::UCS2TextBinEnc::CalcBinSize(const UTF8Char *str, UOSInt strLen)
 {
-	return Text::StrUTF8_UTF16Cnt(sbuff) << 1;
+	return Text::StrUTF8_UTF16CntC(str, strLen) << 1;
 }
 
-UOSInt Text::TextBinEnc::UCS2TextBinEnc::DecodeBin(const UTF8Char *sbuff, UInt8 *dataBuff)
+UOSInt Text::TextBinEnc::UCS2TextBinEnc::DecodeBin(const UTF8Char *str, UOSInt strLen, UInt8 *dataBuff)
 {
-	UOSInt byteCnt = Text::StrUTF8_UTF16Cnt(sbuff) << 1;
+	UOSInt byteCnt = Text::StrUTF8_UTF16CntC(str, strLen) << 1;
 	if (byteCnt > 0)
 	{
-		Text::StrUTF8_UTF16((UTF16Char*)dataBuff, sbuff, 0);
+		Text::StrUTF8_UTF16C((UTF16Char*)dataBuff, str, strLen, 0);
 	}
 	return byteCnt;
 }

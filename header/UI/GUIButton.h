@@ -23,7 +23,7 @@ namespace UI
 		virtual ~GUIButton();
 
 		virtual void SetText(const UTF8Char *text);
-		virtual void SetFont(const UTF8Char *name, Double fontHeightPt, Bool isBold);
+		virtual void SetFont(const UTF8Char *name, UOSInt nameLen, Double fontHeightPt, Bool isBold);
 
 		virtual const UTF8Char *GetObjectClass();
 		virtual OSInt OnNotify(UInt32 code, void *lParam);
@@ -38,5 +38,5 @@ namespace UI
 		void HandleButtonClick(UIEvent handler, void *userObj);
 		void HandleButtonUpDown(UpDownEvent handler, void *userObj);
 	};
-};
+}
 #endif

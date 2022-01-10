@@ -117,7 +117,7 @@ const UTF8Char *Data::IChart::GetYAxisName()
 	return this->yAxisName;
 }
 
-UOSInt Data::IChart::CalScaleMarkDbl(Data::ArrayListDbl *locations, Data::ArrayList<const UTF8Char*> *labels, Double min, Double max, Double leng, Double minLeng, const Char *dblFormat, Double minDblVal, const UTF8Char *unit)
+UOSInt Data::IChart::CalScaleMarkDbl(Data::ArrayListDbl *locations, Data::ArrayList<Text::String*> *labels, Double min, Double max, Double leng, Double minLeng, const Char *dblFormat, Double minDblVal, const UTF8Char *unit)
 {
 	UOSInt retCnt = 2;
 	UTF8Char sbuff[128];
@@ -131,7 +131,7 @@ UOSInt Data::IChart::CalScaleMarkDbl(Data::ArrayListDbl *locations, Data::ArrayL
 	locations->Add(0);
 	if (unit)
 		sptr = Text::StrConcat(sptr, unit);
-	labels->Add(Text::StrCopyNew(sbuff));
+	labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
 
 	scale = minLeng * (max - min) / leng;
 	lScale = (Int32)(Math::Log10(scale));
@@ -158,7 +158,7 @@ UOSInt Data::IChart::CalScaleMarkDbl(Data::ArrayListDbl *locations, Data::ArrayL
 				locations->Add(pos);
 				if (unit)
 					sptr = Text::StrConcat(sptr, unit);
-				labels->Add(Text::StrCopyNew(sbuff));
+				labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
 				retCnt++;
 			}
 			scale += dScale;
@@ -169,11 +169,11 @@ UOSInt Data::IChart::CalScaleMarkDbl(Data::ArrayListDbl *locations, Data::ArrayL
 	locations->Add(leng);
 	if (unit)
 		sptr = Text::StrConcat(sptr, unit);
-	labels->Add(Text::StrCopyNew(sbuff));
+	labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
 	return retCnt;
 }
 
-UOSInt Data::IChart::CalScaleMarkInt(Data::ArrayListDbl *locations, Data::ArrayList<const UTF8Char*> *labels, Int32 min, Int32 max, Double leng, Double minLeng, const UTF8Char *unit)
+UOSInt Data::IChart::CalScaleMarkInt(Data::ArrayListDbl *locations, Data::ArrayList<Text::String*> *labels, Int32 min, Int32 max, Double leng, Double minLeng, const UTF8Char *unit)
 {
 	UOSInt retCnt = 2;
 	UTF8Char sbuff[64];
@@ -187,7 +187,7 @@ UOSInt Data::IChart::CalScaleMarkInt(Data::ArrayListDbl *locations, Data::ArrayL
 	locations->Add(0);
 	if (unit)
 		sptr = Text::StrConcat(sptr, unit);
-	labels->Add(Text::StrCopyNew(sbuff));
+	labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
 
 	scale = minLeng * (Double)(max - min) / leng;
 	lScale = (Int32)(Math::Log10(scale));
@@ -214,7 +214,7 @@ UOSInt Data::IChart::CalScaleMarkInt(Data::ArrayListDbl *locations, Data::ArrayL
 			locations->Add(pos);
 			if (unit)
 				sptr = Text::StrConcat(sptr, unit);
-			labels->Add(Text::StrCopyNew(sbuff));
+			labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
 			retCnt++;
 		}
 		scale += dScale;
@@ -224,14 +224,15 @@ UOSInt Data::IChart::CalScaleMarkInt(Data::ArrayListDbl *locations, Data::ArrayL
 	locations->Add(leng);
 	if (unit)
 		sptr = Text::StrConcat(sptr, unit);
-	labels->Add(Text::StrCopyNew(sbuff));
+	labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
 	return retCnt;
 }
 
-UOSInt Data::IChart::CalScaleMarkDate(Data::ArrayListDbl *locations, Data::ArrayList<const UTF8Char*> *labels, Data::DateTime *min, Data::DateTime *max, Double leng, Double minLeng, const Char *dateFormat, const Char *timeFormat)
+UOSInt Data::IChart::CalScaleMarkDate(Data::ArrayListDbl *locations, Data::ArrayList<Text::String*> *labels, Data::DateTime *min, Data::DateTime *max, Double leng, Double minLeng, const Char *dateFormat, const Char *timeFormat)
 {
 	UOSInt retCnt = 2;
 	UTF8Char sbuff[64];
+	UTF8Char *sptr;
 	Int64 timeDif;
 	Double scale;
 	Double lScale;
@@ -251,9 +252,9 @@ UOSInt Data::IChart::CalScaleMarkDate(Data::ArrayListDbl *locations, Data::Array
 	timeDif = max->DiffMS(min);
 	if (timeFormat == 0 || Data::DateTime::MS2Days(timeDif) * minLeng / leng >= 1)
 	{
-		min->ToString(sbuff, dateFormat);
+		sptr = min->ToString(sbuff, dateFormat);
 		locations->Add(0);
-		labels->Add(Text::StrCopyNew(sbuff));
+		labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
 
 		scale = Data::DateTime::MS2Days(timeDif) * minLeng / leng;
 		lScale = (Int32)(Math::Log10(scale));
@@ -277,31 +278,31 @@ UOSInt Data::IChart::CalScaleMarkDate(Data::ArrayListDbl *locations, Data::Array
 			pos = (Single)(Data::DateTime::MS2Minutes(currDate.DiffMS(min)) * leng / Data::DateTime::MS2Minutes(max->DiffMS(min)));
 			if ((pos > minLeng) && (pos < leng - minLeng))
 			{
-				currDate.ToString(sbuff, dateFormat);
+				sptr = currDate.ToString(sbuff, dateFormat);
 				locations->Add(pos);
-				labels->Add(Text::StrCopyNew(sbuff));
+				labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
 				retCnt++;
 			}
 			currDate.AddDay(iScale);
 		}
 
-		max->ToString(sbuff, dateFormat);
+		sptr = max->ToString(sbuff, dateFormat);
 		locations->Add(leng);
-		labels->Add(Text::StrCopyNew(sbuff));
+		labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
 	}
 	else if (Data::DateTime::MS2Hours(timeDif) * minLeng / leng >= 1)
 	{
 		if (min->GetMSPassedDate() == 0)
 		{
-			min->ToString(sbuff, dateFormat);
+			sptr = min->ToString(sbuff, dateFormat);
 			locations->Add(0);
-			labels->Add(Text::StrCopyNew(sbuff));
+			labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
 		}
 		else
 		{
-			min->ToString(sbuff, timeFormat);
+			sptr = min->ToString(sbuff, timeFormat);
 			locations->Add(0);
-			labels->Add(Text::StrCopyNew(sbuff));
+			labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
 		}
 		
 		scale = Data::DateTime::MS2Hours(timeDif) * minLeng / leng;
@@ -326,15 +327,15 @@ UOSInt Data::IChart::CalScaleMarkDate(Data::ArrayListDbl *locations, Data::Array
 			{
 				if (currDate.GetMSPassedDate() == 0)
 				{
-					currDate.ToString(sbuff, dateFormat);
+					sptr = currDate.ToString(sbuff, dateFormat);
 					locations->Add(pos);
-					labels->Add(Text::StrCopyNew(sbuff));
+					labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
 				}
 				else
 				{
-					currDate.ToString(sbuff, timeFormat);
+					sptr = currDate.ToString(sbuff, timeFormat);
 					locations->Add(pos);
-					labels->Add(Text::StrCopyNew(sbuff));
+					labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
 				}
 				retCnt++;
 			}
@@ -343,30 +344,30 @@ UOSInt Data::IChart::CalScaleMarkDate(Data::ArrayListDbl *locations, Data::Array
 
 		if (max->GetMSPassedDate() == 0)
 		{
-			max->ToString(sbuff, dateFormat);
+			sptr = max->ToString(sbuff, dateFormat);
 			locations->Add(leng);
-			labels->Add(Text::StrCopyNew(sbuff));
+			labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
 		}
 		else
 		{
-			max->ToString(sbuff, timeFormat);
+			sptr = max->ToString(sbuff, timeFormat);
 			locations->Add(leng);
-			labels->Add(Text::StrCopyNew(sbuff));
+			labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
 		}
 	}
 	else if (!hasSecond || Data::DateTime::MS2Minutes(timeDif) * minLeng / leng >= 1)
 	{
 		if (min->GetMSPassedDate() == 0)
 		{
-			min->ToString(sbuff, dateFormat);
+			sptr = min->ToString(sbuff, dateFormat);
 			locations->Add(0);
-			labels->Add(Text::StrCopyNew(sbuff));
+			labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
 		}
 		else
 		{
-			min->ToString(sbuff, timeFormat);
+			sptr = min->ToString(sbuff, timeFormat);
 			locations->Add(0);
-			labels->Add(Text::StrCopyNew(sbuff));
+			labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
 		}
 
 		scale = Data::DateTime::MS2Minutes(timeDif) * minLeng / leng;
@@ -395,15 +396,15 @@ UOSInt Data::IChart::CalScaleMarkDate(Data::ArrayListDbl *locations, Data::Array
 			{
 				if (currDate.GetMSPassedDate() == 0)
 				{
-					currDate.ToString(sbuff, dateFormat);
+					sptr = currDate.ToString(sbuff, dateFormat);
 					locations->Add(pos);
-					labels->Add(Text::StrCopyNew(sbuff));
+					labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
 				}
 				else
 				{
-					currDate.ToString(sbuff, timeFormat);
+					sptr = currDate.ToString(sbuff, timeFormat);
 					locations->Add(pos);
-					labels->Add(Text::StrCopyNew(sbuff));
+					labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
 				}
 				retCnt++;
 			}
@@ -412,30 +413,30 @@ UOSInt Data::IChart::CalScaleMarkDate(Data::ArrayListDbl *locations, Data::Array
 
 		if (max->GetMSPassedDate() == 0)
 		{
-			max->ToString(sbuff, dateFormat);
+			sptr = max->ToString(sbuff, dateFormat);
 			locations->Add(leng);
-			labels->Add(Text::StrCopyNew(sbuff));
+			labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
 		}
 		else
 		{
-			max->ToString(sbuff, timeFormat);
+			sptr = max->ToString(sbuff, timeFormat);
 			locations->Add(leng);
-			labels->Add(Text::StrCopyNew(sbuff));
+			labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
 		}
 	}
 	else if (Data::DateTime::MS2Seconds(timeDif) >= 1)
 	{
 		if (min->GetMSPassedDate() == 0)
 		{
-			min->ToString(sbuff, dateFormat);
+			sptr = min->ToString(sbuff, dateFormat);
 			locations->Add(0);
-			labels->Add(Text::StrCopyNew(sbuff));
+			labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
 		}
 		else
 		{
-			min->ToString(sbuff, timeFormat);
+			sptr = min->ToString(sbuff, timeFormat);
 			locations->Add(0);
-			labels->Add(Text::StrCopyNew(sbuff));
+			labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
 		}
 
 		scale = Data::DateTime::MS2Seconds(timeDif) * minLeng / leng;
@@ -464,15 +465,15 @@ UOSInt Data::IChart::CalScaleMarkDate(Data::ArrayListDbl *locations, Data::Array
 			{
 				if (currDate.GetMSPassedDate() == 0)
 				{
-					currDate.ToString(sbuff, dateFormat);
+					sptr = currDate.ToString(sbuff, dateFormat);
 					locations->Add(pos);
-					labels->Add(Text::StrCopyNew(sbuff));
+					labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
 				}
 				else
 				{
-					currDate.ToString(sbuff, timeFormat);
+					sptr = currDate.ToString(sbuff, timeFormat);
 					locations->Add(pos);
-					labels->Add(Text::StrCopyNew(sbuff));
+					labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
 				}
 				retCnt++;
 			}
@@ -481,26 +482,26 @@ UOSInt Data::IChart::CalScaleMarkDate(Data::ArrayListDbl *locations, Data::Array
 
 		if (max->GetMSPassedDate() == 0)
 		{
-			max->ToString(sbuff, dateFormat);
+			sptr = max->ToString(sbuff, dateFormat);
 			locations->Add(leng);
-			labels->Add(Text::StrCopyNew(sbuff));
+			labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
 		}
 		else
 		{
-			max->ToString(sbuff, timeFormat);
+			sptr = max->ToString(sbuff, timeFormat);
 			locations->Add(leng);
-			labels->Add(Text::StrCopyNew(sbuff));
+			labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
 		}
 	}
 	else
 	{
-		min->ToString(sbuff, timeFormat);
+		sptr = min->ToString(sbuff, timeFormat);
 		locations->Add(0);
-		labels->Add(Text::StrCopyNew(sbuff));
+		labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
 
-		max->ToString(sbuff, timeFormat);
+		sptr = max->ToString(sbuff, timeFormat);
 		locations->Add(leng);
-		labels->Add(Text::StrCopyNew(sbuff));
+		labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
 	}
 	return retCnt;
 }

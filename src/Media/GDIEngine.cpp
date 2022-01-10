@@ -2278,7 +2278,7 @@ Media::DrawBrush *Media::GDIImage::NewBrushARGB(UInt32 color)
 	return brush;
 }
 
-Media::DrawFont *Media::GDIImage::NewFontPt(const UTF8Char *name, Double ptSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 codePage)
+Media::DrawFont *Media::GDIImage::NewFontPt(const UTF8Char *name, UOSInt nameLen, Double ptSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 codePage)
 {
 	GDIFont *f;
 	const WChar *wptr = Text::StrToWCharNew(name);
@@ -2294,7 +2294,7 @@ Media::DrawFont *Media::GDIImage::NewFontPtW(const WChar *name, Double ptSize, M
 	return f;
 }
 
-Media::DrawFont *Media::GDIImage::NewFontPx(const UTF8Char *name, Double pxSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 codePage)
+Media::DrawFont *Media::GDIImage::NewFontPx(const UTF8Char *name, UOSInt nameLen, Double pxSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 codePage)
 {
 	GDIFont *f;
 	const WChar *wptr = Text::StrToWCharNew(name);
