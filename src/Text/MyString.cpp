@@ -757,19 +757,27 @@ Bool Text::StrEqualsICase(const UTF8Char *str1, const UTF8Char *str2)
 {
 	UTF8Char c1;
 	UTF8Char c2;
+	UTF8Char ic1;
+	UTF8Char ic2;
 	while ((c1 = *str1++) != 0)
 	{
-		c2 = *str2++;
-		if (c1 >= 'a' && c1 <= 'z')
+		c2 = *str2;
+		if (c1 == c2)
 		{
-			c1 = (UTF8Char)(c1 - 0x20);
 		}
-		if (c2 >= 'a' && c2 <= 'z')
+		else
 		{
-			c2 = (UTF8Char)(c2 - 0x20);
+			ic1 = c1 & 0xef;
+			ic2 = c2 & 0xef;
+			if (ic1 == ic2 && ic1 >= 'A' && ic1 <= 'Z')
+			{
+			}
+			else
+			{
+				return false;
+			}
 		}
-		if (c1 != c2)
-			return false;
+		str2++;
 	}
 	return *str2 == 0;
 }
@@ -778,16 +786,30 @@ Bool Text::StrEqualsICase(const UTF8Char *str1, const UTF8Char *str2, UOSInt str
 {
 	UTF8Char c1;
 	UTF8Char c2;
+	UTF8Char ic1;
+	UTF8Char ic2;
 	while (str2Len-- > 0)
 	{
-		c1 = *str1++;
-		c2 = *str2++;
-		if (c1 >= 'a' && c1 <= 'z')
-			c1 = (UTF8Char)(c1 - 32);
-		if (c2 >= 'a' && c2 <= 'z')
-			c2 = (UTF8Char)(c2 - 32);
-		if (c1 != c2)
-			return false;
+		c1 = *str1;
+		c2 = *str2;
+		if (c1 == c2)
+		{
+		}
+		else
+		{
+			ic1 = c1 & 0xef;
+			ic2 = c2 & 0xef;
+			if (ic1 == ic2 && (ic1 >= 'A' && ic1 <= 'Z'))
+			{
+
+			}
+			else
+			{
+				return false;
+			}
+		}
+		str1++;
+		str2++;
 	}
 	if (*str1 == 0)
 		return true;
@@ -2025,22 +2047,23 @@ UOSInt Text::StrIndexOf(const UTF8Char *str1, const UTF8Char *str2)
 	const UTF8Char *ptr = str1;
 	const UTF8Char *ptr2;
 	const UTF8Char *ptr3;
-	Int32 i;
+	UTF8Char c;
 	while (*ptr)
 	{
 		ptr2 = ptr;
 		ptr3 = str2;
-		i = 0;
-		while (*ptr3)
+		while (true)
 		{
-			if (*ptr2++ != *ptr3++)
+			if ((c = *ptr3) == 0)
 			{
-				i = 1;
+				return (UOSInt)(ptr - str1);
+			}
+			else if (*ptr2++ != c)
+			{
 				break;
 			}
+			ptr3++;
 		}
-		if (i == 0)
-			return (UOSInt)(ptr - str1);
 		ptr++;
 	}
 	return INVALID_INDEX;
@@ -2296,20 +2319,28 @@ Bool Text::StrStartsWithICase(const UTF8Char *str1, const UTF8Char *str2)
 {
 	UTF8Char c1;
 	UTF8Char c2;
+	UTF8Char uc1;
+	UTF8Char uc2;
 	while (*str2)
 	{
-		c1 = *str1++;
-		c2 = *str2++;
-		if (c1 >= 'a' && c1 <= 'z')
+		c1 = *str1;
+		c2 = *str2;
+		if (c1 == c2)
 		{
-			c1 = (UTF8Char)(c1 - 32);
+			str1++;
+			str2++;
 		}
-		if (c2 >= 'a' && c2 <= 'z')
+		else
 		{
-			c2 = (UTF8Char)(c2 - 32);
-		}
-		if (c1 != c2)
+			uc1 = c1 & 0xef;
+			uc2 = c2 & 0xef;
+			if (uc1 == uc2 && uc1 >= 'A' && uc1 <= 'Z')
+			{
+				str1++;
+				str2++;
+			}
 			return false;
+		}
 	}
 	return true;
 }

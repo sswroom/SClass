@@ -101,6 +101,7 @@ nodeps:
 @HTTPForwardTest
 @HTTPServerTest
 @HTTPSTest
+@HTTPThroughputTest
 @LogServer
 @MQTTFailover
 @NetRAWCapture
@@ -164,6 +165,7 @@ nodeps:
 @StrInt64CSpd
 @StrInt64WAcc
 @StrInt64WSpd
+@StrRetTest
 @UTF8ReaderTest
 @XLSTest
 
@@ -512,6 +514,9 @@ HTTPServerTest:
 HTTPSTest:
 @HTTPSTest.o
 @ConsoleStartup.o
+HTTPThroughputTest:
+@HTTPThroughputTest.o
+@ConsoleStartup.o
 LogServer:
 @LogServerMain.o
 @ConsoleStartup.o
@@ -751,6 +756,9 @@ StrInt64WAcc:
 StrInt64WSpd:
 @StrInt64WSpd.o
 @ConsoleStartup.o
+StrRetTest:
+@StrRetTest.o
+@ConsoleStartup.o
 UTF8ReaderTest:
 @UTF8ReaderTest.o
 @ConsoleStartup.o
@@ -885,6 +893,7 @@ HTTPForwardLog.o: ../../main/NetTest/HTTPForwardLog.cpp
 HTTPForwardTest.o: ../../main/NetTest/HTTPForwardTest.cpp
 HTTPServerTest.o: ../../main/NetTest/HTTPServerTest.cpp
 HTTPSTest.o: ../../main/NetTest/HTTPSTest.cpp
+HTTPThroughputTest.o: ../../main/NetTest/HTTPThroughputTest.cpp
 LogServerMain.o: ../../main/NetTest/LogServerMain.cpp
 MQTTFailoverTest.o: ../../main/NetTest/MQTTFailoverTest.cpp
 NetRAWCapture.o: ../../main/NetTest/NetRAWCapture.cpp
@@ -963,6 +972,7 @@ StrInt64CAcc.o: ../../main/Text/StrInt64CAcc.cpp
 StrInt64CSpd.o: ../../main/Text/StrInt64CSpd.cpp
 StrInt64WAcc.o: ../../main/Text/StrInt64WAcc.cpp
 StrInt64WSpd.o: ../../main/Text/StrInt64WSpd.cpp
+StrRetTest.o: ../../main/Text/StrRetTest.cpp
 UTF8ReaderTest.o: ../../main/Text/UTF8ReaderTest.cpp
 XLSTest.o: ../../main/Text/XLSTest.cpp
 GUITest1.o: ../../main/UI/GUITest1.cpp
