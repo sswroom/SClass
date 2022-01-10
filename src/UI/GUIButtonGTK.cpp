@@ -95,7 +95,7 @@ void UI::GUIButton::SetText(const UTF8Char *text)
 	Text::StrDelNew(lbl);
 }
 
-void UI::GUIButton::SetFont(const UTF8Char *name, Double fontHeight, Bool isBold)
+void UI::GUIButton::SetFont(const UTF8Char *name, UOSInt nameLen, Double fontHeight, Bool isBold)
 {
 	GtkWidget *widget = gtk_bin_get_child((GtkBin*)this->hwnd);
 #if GDK_VERSION_AFTER(3, 16)
