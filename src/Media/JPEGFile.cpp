@@ -92,7 +92,7 @@ Bool Media::JPEGFile::ParseJPEGHeader(IO::IStreamData *fd, Media::Image *img, Me
 					if (flirMstm == 0 && buff[6] == 0)
 					{
 						flirMaxSegm = buff[7];
-						NEW_CLASS(flirMstm, IO::MemoryStream((const UTF8Char*)"Media.JPEGFile.ParseJPEGHeader.flirMstm"));
+						NEW_CLASS(flirMstm, IO::MemoryStream(UTF8STRC("Media.JPEGFile.ParseJPEGHeader.flirMstm")));
 						flirCurrSegm = buff[6];
 						tagBuff = MemAlloc(UInt8, j);
 						fd->GetRealData(ofst + 4, j, tagBuff);

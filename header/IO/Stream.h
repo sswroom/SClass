@@ -10,6 +10,7 @@ namespace IO
 	public:
 		Stream(Text::String *sourceName);
 		Stream(const UTF8Char *sourceName);
+		Stream(const UTF8Char *sourceName, UOSInt nameLen);
 		virtual ~Stream(){};
 		virtual UOSInt Read(UInt8 *buff, UOSInt size) = 0;
 		virtual UOSInt Write(const UInt8 *buff, UOSInt size) = 0;

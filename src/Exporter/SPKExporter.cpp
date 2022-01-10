@@ -138,7 +138,7 @@ Bool Exporter::SPKExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 			UInt32 j;
 			UOSInt k;
 			NEW_CLASS(spkg, IO::SPackageFile(stm, false));
-			NEW_CLASS(mstm, IO::MemoryStream((const UTF8Char*)"Exporter.SPKExporter.ExportFile.mstm"));
+			NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("Exporter.SPKExporter.ExportFile.mstm")));
 			i = 0;
 			j = 18;
 			while (i < j)

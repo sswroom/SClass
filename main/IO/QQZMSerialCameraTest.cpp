@@ -37,7 +37,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		IO::MemoryStream *mstm;
 		IO::Device::QQZMSerialCamera *camera;
 		NEW_CLASS(camera, IO::Device::QQZMSerialCamera(port, 0, false));
-		NEW_CLASS(mstm, IO::MemoryStream((const UTF8Char*)"QQZMSerialCameraTest.mstm"));
+		NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("QQZMSerialCameraTest.mstm")));
 		if (camera->CapturePhoto(mstm))
 		{
 			console->WriteLineC(UTF8STRC("Capture Image succeeded"));

@@ -108,7 +108,7 @@ void Exporter::TIFFExporter::GenSubExifBuff(IO::SeekableStream *stm, UInt64 buff
 			IO::MemoryStream *mstm;
 			UOSInt buffSize;
 			UInt8 *mbuff;
-			NEW_CLASS(mstm, IO::MemoryStream((const UTF8Char*)"Exporter.TIFFExporter.GenSubExifBuff"));
+			NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("Exporter.TIFFExporter.GenSubExifBuff")));
 			GenSubExifBuff(mstm, currOfst, ((Media::EXIFData*)exifItem->dataBuff));
 			mbuff = mstm->GetBuff(&buffSize);
 			WriteUInt32(&ifd[10 + i * 12], (UInt32)currOfst);
@@ -792,7 +792,7 @@ Bool Exporter::TIFFExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char 
 				IO::MemoryStream *mstm;
 				UOSInt buffSize;
 				UInt8 *mbuff;
-				NEW_CLASS(mstm, IO::MemoryStream((const UTF8Char*)"Exporter.TIFFExporter.ExportFile"));
+				NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("Exporter.TIFFExporter.ExportFile")));
 				GenSubExifBuff(mstm, currOfst, ((Media::EXIFData*)exifItem->dataBuff));
 				mbuff = mstm->GetBuff(&buffSize);
 				WriteUInt32(&ifd[10 + k * 12], (UInt32)currOfst);

@@ -350,8 +350,10 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnWebUpdateClicked(void *
 	Net::WebSite::WebSite48IdolControl *ctrl;
 	Text::EncodingFactory *encFact;
 	const UTF8Char *userAgent = Net::UserAgentDB::FindUserAgent(Manage::OSInfo::OT_WINDOWS_NT64, Net::BrowserInfo::BT_FIREFOX);
+	Text::String *ua = Text::String::NewNotNull(userAgent);
 	NEW_CLASS(encFact, Text::EncodingFactory());
-	NEW_CLASS(ctrl, Net::WebSite::WebSite48IdolControl(me->core->GetSocketFactory(), me->core->GetSSLEngine(), encFact, userAgent));
+	NEW_CLASS(ctrl, Net::WebSite::WebSite48IdolControl(me->core->GetSocketFactory(), me->core->GetSSLEngine(), encFact, ua));
+	ua->Release();
 	while (true)
 	{
 		ctrl->GetTVPageItems(currPage, &pageList);
@@ -470,6 +472,7 @@ void SSWR::DownloadMonitor::DownMonMainForm::LoadList()
 	Net::WebSite::WebSite48IdolControl *ctrl = 0;
 	Text::EncodingFactory *encFact = 0;
 	const UTF8Char *userAgent = Net::UserAgentDB::FindUserAgent(Manage::OSInfo::OT_WINDOWS_NT64, Net::BrowserInfo::BT_FIREFOX);
+	Text::String *ua = Text::String::NewNotNull(userAgent);
 	Text::StringBuilderUTF8 sb2;
 	Bool updated = false;
 
@@ -494,7 +497,7 @@ void SSWR::DownloadMonitor::DownMonMainForm::LoadList()
 					if (ctrl == 0)
 					{
 						NEW_CLASS(encFact, Text::EncodingFactory());
-						NEW_CLASS(ctrl, Net::WebSite::WebSite48IdolControl(this->core->GetSocketFactory(), this->core->GetSSLEngine(), encFact, userAgent));
+						NEW_CLASS(ctrl, Net::WebSite::WebSite48IdolControl(this->core->GetSocketFactory(), this->core->GetSSLEngine(), encFact, ua));
 					}
 					sb2.ClearStr();
 					if (ctrl->GetVideoName(id, &sb2))
@@ -524,6 +527,7 @@ void SSWR::DownloadMonitor::DownMonMainForm::LoadList()
 	}
 	DEL_CLASS(reader);
 	DEL_CLASS(fs);
+	ua->Release();
 	SDEL_CLASS(ctrl);
 	SDEL_CLASS(encFact);
 	

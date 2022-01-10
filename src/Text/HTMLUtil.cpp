@@ -240,8 +240,8 @@ Bool Text::HTMLUtil::HTMLGetText(Text::EncodingFactory *encFact, const UInt8 *bu
 	const UTF8Char *csptr;
 	Text::String *s;
 	UTF8Char c;
-	NEW_CLASS(wmstm, IO::MemoryStream((const UTF8Char*)"Text.HTMLUtil.HTMLGetText.wmstm"));
-	NEW_CLASS(mstm, IO::MemoryStream((UInt8*)buff, buffSize, (const UTF8Char*)"Text.HTMLUtil.HTMLGetText.mstm"));
+	NEW_CLASS(wmstm, IO::MemoryStream(UTF8STRC("Text.HTMLUtil.HTMLGetText.wmstm")));
+	NEW_CLASS(mstm, IO::MemoryStream((UInt8*)buff, buffSize, UTF8STRC("Text.HTMLUtil.HTMLGetText.mstm")));
 	NEW_CLASS(reader, Text::XMLReader(encFact, mstm, Text::XMLReader::PM_HTML));
 	while (reader->ReadNext())
 	{

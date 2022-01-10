@@ -202,7 +202,7 @@ Bool Net::WebServer::HTTPServerUtil::SendContent(Net::WebServer::IWebRequest *re
 					Crypto::Hash::CRC32RIEEE crc;
 					crc.Calc(buff, (UOSInt)contLeng);
 
-					IO::MemoryStream mstm((UInt8*)buff, (UOSInt)contLeng, (const UTF8Char*)"Net.HTTPServerUtil.SendContent");
+					IO::MemoryStream mstm((UInt8*)buff, (UOSInt)contLeng, UTF8STRC("Net.HTTPServerUtil.SendContent"));
 					Data::Compress::DeflateStream dstm(&mstm, contLeng, 0, Data::Compress::DeflateStream::CompLevel::MaxSpeed, true);
 					UOSInt readSize;
 					while ((readSize = dstm.Read(compBuff, BUFFSIZE)) != 0)
@@ -222,7 +222,7 @@ Bool Net::WebServer::HTTPServerUtil::SendContent(Net::WebServer::IWebRequest *re
 						resp->AddHeaderC(UTF8STRC("Content-Encoding"), UTF8STRC("deflate"));
 						resp->AddHeaderC(UTF8STRC("Transfer-Encoding"), UTF8STRC("chunked"));
 
-						IO::MemoryStream mstm((UInt8*)buff, (UOSInt)contLeng, (const UTF8Char*)"Net.HTTPServerUtil.SendContent");
+						IO::MemoryStream mstm((UInt8*)buff, (UOSInt)contLeng, UTF8STRC("Net.HTTPServerUtil.SendContent"));
 						Data::Compress::DeflateStream dstm(&mstm, contLeng, 0, Data::Compress::DeflateStream::CompLevel::MaxSpeed, true);
 						UOSInt readSize;
 						while ((readSize = dstm.Read(compBuff, BUFFSIZE)) != 0)
@@ -383,16 +383,14 @@ Bool Net::WebServer::HTTPServerUtil::ResponseFile(Net::WebServer::IWebRequest *r
 		}
 		else
 		{
-			IO::MemoryStream *mstm;
-			NEW_CLASS(mstm, IO::MemoryStream((const UTF8Char*)"Net.WebServer.HTTPUtil.ResponseFile.mstm"));
+			IO::MemoryStream mstm(UTF8STRC("Net.WebServer.HTTPUtil.ResponseFile.mstm"));
 			while (readSize > 0)
 			{
-				sizeLeft += mstm->Write(buff, readSize);
+				sizeLeft += mstm.Write(buff, readSize);
 				readSize = fs->Read(buff, BUFFSIZE);
 			}
-			mstm->SeekFromBeginning(0);
-			Net::WebServer::HTTPServerUtil::SendContent(req, resp, mime, sizeLeft, mstm);
-			DEL_CLASS(mstm);
+			mstm.SeekFromBeginning(0);
+			Net::WebServer::HTTPServerUtil::SendContent(req, resp, mime, sizeLeft, &mstm);
 		}
 	}
 	else

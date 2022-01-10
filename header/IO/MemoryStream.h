@@ -13,9 +13,9 @@ namespace IO
 		UInt8 *memPtr;
 		const UTF8Char *dbg;
 	public:
-		MemoryStream(const UTF8Char *dbg);
-		MemoryStream(UOSInt capacity, const UTF8Char *dbg);
-		MemoryStream(UInt8 *buff, UOSInt buffSize, const UTF8Char *dbg);
+		MemoryStream(const UTF8Char *dbg, UOSInt dbgLen);
+		MemoryStream(UOSInt capacity, const UTF8Char *dbg, UOSInt dbgLen);
+		MemoryStream(UInt8 *buff, UOSInt buffSize, const UTF8Char *dbg, UOSInt dbgLen);
 		virtual ~MemoryStream();
 
 		UInt8 *GetBuff(UOSInt *buffSize);

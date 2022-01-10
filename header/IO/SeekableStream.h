@@ -13,6 +13,9 @@ namespace IO
 		SeekableStream(const UTF8Char *sourceName) : IO::Stream(sourceName)
 		{};
 
+		SeekableStream(const UTF8Char *sourceName, UOSInt nameLen) : IO::Stream(sourceName, nameLen)
+		{};
+
 		virtual ~SeekableStream(){};
 
 		virtual Bool CanSeek() {return true;}

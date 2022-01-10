@@ -34,11 +34,12 @@ struct Net::HTTPMyClient::ClassData
 
 #define BUFFSIZE 8192
 
-Net::HTTPMyClient::HTTPMyClient(Net::SocketFactory *sockf, Net::SSLEngine *ssl, const UTF8Char *userAgent, Bool kaConn) : Net::HTTPClient(sockf, kaConn)
+Net::HTTPMyClient::HTTPMyClient(Net::SocketFactory *sockf, Net::SSLEngine *ssl, const UTF8Char *userAgent, UOSInt uaLen, Bool kaConn) : Net::HTTPClient(sockf, kaConn)
 {
 	if (userAgent == 0)
 	{
 		userAgent = (const UTF8Char*)"sswr/1.0";
+		uaLen = 8;
 	}
 #if defined(LOGREPLY)
 	UTF8Char sbuff[512];
@@ -61,10 +62,10 @@ Net::HTTPMyClient::HTTPMyClient(Net::SocketFactory *sockf, Net::SSLEngine *ssl, 
 	this->buffOfst = 0;
 	this->contEnc = 0;
 	this->timeOutMS = 5000;
-	this->userAgent = Text::String::NewNotNull(userAgent);
+	this->userAgent = Text::String::New(userAgent, uaLen);
 	this->dataBuff = MemAlloc(UInt8, BUFFSIZE);
 	NEW_CLASS(this->reqHeaders, Data::ArrayListString());
-	NEW_CLASS(this->reqMstm, IO::MemoryStream(1024, (const UTF8Char*)"Net.HTTPMyClient.reqMstm"));
+	NEW_CLASS(this->reqMstm, IO::MemoryStream(1024, UTF8STRC("Net.HTTPMyClient.reqMstm")));
 }
 
 Net::HTTPMyClient::~HTTPMyClient()

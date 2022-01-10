@@ -189,7 +189,7 @@ IO::SPackageFile::SPackageFile(IO::SeekableStream *stm, Bool toRelease)
 	UInt8 hdr[24];
 	this->stm = stm;
 	this->toRelease = toRelease;
-	NEW_CLASS(this->mstm, IO::MemoryStream((const UTF8Char*)"IO.SPackageFile.mstm"));
+	NEW_CLASS(this->mstm, IO::MemoryStream(UTF8STRC("IO.SPackageFile.mstm")));
 	this->currOfst = 24;
 	hdr[0] = 'S';
 	hdr[1] = 'm';
@@ -217,7 +217,7 @@ IO::SPackageFile::SPackageFile(IO::SeekableStream *stm, Bool toRelease, Int32 cu
 	UInt8 hdr[32];
 	this->stm = stm;
 	this->toRelease = toRelease;
-	NEW_CLASS(this->mstm, IO::MemoryStream((const UTF8Char*)"IO.SPackageFile.mstm"));
+	NEW_CLASS(this->mstm, IO::MemoryStream(UTF8STRC("IO.SPackageFile.mstm")));
 	this->currOfst = 32 + customSize;
 	hdr[0] = 'S';
 	hdr[1] = 'm';
@@ -265,7 +265,7 @@ IO::SPackageFile::SPackageFile(const UTF8Char *fileName)
 	this->customType = 0;
 	this->customSize = 0;
 	this->customBuff = 0;
-	NEW_CLASS(this->mstm, IO::MemoryStream((const UTF8Char*)"IO.SPackageFile.mstm"));
+	NEW_CLASS(this->mstm, IO::MemoryStream(UTF8STRC("IO.SPackageFile.mstm")));
 	NEW_CLASS(this->fileMap, Data::BTreeUTF8Map<FileInfo*>());
 	flength = this->stm->GetLength();
 	if (flength >= 16)

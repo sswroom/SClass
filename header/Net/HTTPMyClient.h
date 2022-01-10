@@ -39,7 +39,7 @@ namespace Net
 		Int32 timeOutMS;
 
 	public:
-		HTTPMyClient(Net::SocketFactory *sockf, Net::SSLEngine *ssl, const UTF8Char *userAgent, Bool kaConn);
+		HTTPMyClient(Net::SocketFactory *sockf, Net::SSLEngine *ssl, const UTF8Char *userAgent, UOSInt uaLen, Bool kaConn);
 		virtual ~HTTPMyClient();
 
 		virtual Bool IsError();

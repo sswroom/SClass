@@ -263,8 +263,8 @@ SSWR::AVIRead::AVIRStreamTermForm::AVIRStreamTermForm(UI::GUIClientControl *pare
 	this->threadToStop = false;
 	this->threadRunning = false;
 	this->recvUpdated = false;
-	NEW_CLASS(this->recvBuff, IO::MemoryStream((const UTF8Char*)"SSWR.AVIRead.AVIRStreamTermForm.recvBuff"));
-	NEW_CLASS(this->sendBuff, IO::MemoryStream((const UTF8Char*)"SSWR.AVIRead.AVIRStreamTermForm.sendBuff"));
+	NEW_CLASS(this->recvBuff, IO::MemoryStream(UTF8STRC("SSWR.AVIRead.AVIRStreamTermForm.recvBuff")));
+	NEW_CLASS(this->sendBuff, IO::MemoryStream(UTF8STRC("SSWR.AVIRead.AVIRStreamTermForm.sendBuff")));
 	NEW_CLASS(this->recvMut, Sync::Mutex());
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 

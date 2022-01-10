@@ -21,7 +21,7 @@ Net::RTPH264Handler::RTPH264Handler(Int32 payloadType)
 	this->sps = 0;
 	this->pps = 0;
 	this->firstFrame = false;
-	NEW_CLASS(this->mstm, IO::MemoryStream((const UTF8Char*)"Net.RTPH264Handler.RTPH264Handler"));
+	NEW_CLASS(this->mstm, IO::MemoryStream(UTF8STRC("Net.RTPH264Handler.RTPH264Handler")));
 	NEW_CLASS(this->mut, Sync::Mutex());
 	NEW_CLASS(this->frameInfo, Media::FrameInfo());
 

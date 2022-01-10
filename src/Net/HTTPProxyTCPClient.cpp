@@ -8,7 +8,7 @@
 
 Net::HTTPProxyTCPClient::HTTPProxyTCPClient(Net::SocketFactory *sockf, const UTF8Char *proxyHost, UInt16 proxyPort, PasswordType pt, const UTF8Char *userName, const UTF8Char *pwd, const UTF8Char *destHost, UInt16 destPort) : Net::TCPClient(sockf, (Socket*)0)
 {
-	this->SetSourceName(destHost);
+	this->SetSourceName(destHost, Text::StrCharCnt(destHost));
 
 	Net::SocketUtil::AddressInfo addr;
 	if (!sockf->DNSResolveIP(proxyHost, &addr))

@@ -29,15 +29,15 @@ namespace Net
 			Net::SocketFactory *sockf;
 			Net::SSLEngine *ssl;
 			Text::EncodingFactory *encFact;
-			const UTF8Char *userAgent;
+			Text::String *userAgent;
 
 		public:
-			WebSiteTwitterControl(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, const UTF8Char *userAgent);
+			WebSiteTwitterControl(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, Text::String *userAgent);
 			~WebSiteTwitterControl();
 
 			UOSInt GetChannelItems(Text::String *channelId, UOSInt pageNo, Data::ArrayList<ItemData*> *itemList, ChannelInfo *chInfo);
 			void FreeItems(Data::ArrayList<ItemData*> *itemList);
-			const UTF8Char *GetUserAgent();
+			Text::String *GetUserAgent();
 		};
 	}
 }

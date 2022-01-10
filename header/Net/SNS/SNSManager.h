@@ -8,6 +8,7 @@
 #include "Net/SNS/SNSControl.h"
 #include "Sync/MutexUsage.h"
 #include "Text/EncodingFactory.h"
+#include "Text/String.h"
 
 namespace Net
 {
@@ -27,8 +28,8 @@ namespace Net
 			Net::SocketFactory *sockf;
 			Net::SSLEngine *ssl;
 			Text::EncodingFactory *encFact;
-			const UTF8Char *userAgent;
-			const UTF8Char *dataPath;
+			Text::String *userAgent;
+			Text::String *dataPath;
 			Sync::Mutex *mut;
 			Data::ArrayList<ChannelData*> *channelList;
 			Bool threadToStop;

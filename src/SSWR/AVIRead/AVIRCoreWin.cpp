@@ -111,7 +111,7 @@ void SSWR::AVIRead::AVIRCoreWin::OpenObject(IO::ParsedObject *pobj)
 			IO::Stream *stm = (IO::Stream *)pobj;
 			IO::StmData::MemoryData2 *data;
 			IO::MemoryStream *mstm;
-			NEW_CLASS(mstm, IO::MemoryStream((const UTF8Char*)"SSWR.AVIRead.AVIRCore.OpenObject"));
+			NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SSWR.AVIRead.AVIRCore.OpenObject")));
 			buff = MemAlloc(UInt8, 1048576);
 			while (totalSize < 104857600)
 			{

@@ -178,7 +178,7 @@ Bool Map::TileMapGenerator::GenerateTile(Int64 tileId, UInt32 scale, Map::MapSch
 	if (IO::Path::GetPathType(sbuff2) == IO::Path::PathType::File)
 		return true;
 
-	NEW_CLASS(mstm, IO::MemoryStream(1048576, (const UTF8Char*)"Map.TileMapGenerator.GenerateTile"));
+	NEW_CLASS(mstm, IO::MemoryStream(1048576, UTF8STRC("Map.TileMapGenerator.GenerateTile")));
 	NEW_CLASS(writer, IO::StreamWriter(mstm, 65001));
 	writer->WriteSignature();
 

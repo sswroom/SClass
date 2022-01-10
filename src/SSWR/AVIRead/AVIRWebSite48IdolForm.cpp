@@ -89,7 +89,9 @@ SSWR::AVIRead::AVIRWebSite48IdolForm::AVIRWebSite48IdolForm(UI::GUIClientControl
 	this->core = core;
 	this->ssl = Net::SSLEngineFactory::Create(this->core->GetSocketFactory(), true);
 	const UTF8Char *userAgent = Net::UserAgentDB::FindUserAgent(Manage::OSInfo::OT_WINDOWS_NT64, Net::BrowserInfo::BT_FIREFOX);
-	NEW_CLASS(this->ctrl, Net::WebSite::WebSite48IdolControl(core->GetSocketFactory(), this->ssl, core->GetEncFactory(), userAgent));
+	Text::String *ua = Text::String::NewNotNull(userAgent);
+	NEW_CLASS(this->ctrl, Net::WebSite::WebSite48IdolControl(core->GetSocketFactory(), this->ssl, core->GetEncFactory(), ua));
+	ua->Release();
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));

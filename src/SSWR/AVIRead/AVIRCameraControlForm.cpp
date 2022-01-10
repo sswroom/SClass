@@ -112,7 +112,7 @@ void __stdcall SSWR::AVIRead::AVIRCameraControlForm::OnFilesDblClick(void *userO
 		if (Text::StrEndsWithICase(file->fileName, (const UTF8Char*)".JPG"))
 		{
 			IO::MemoryStream *mstm;
-			NEW_CLASS(mstm, IO::MemoryStream((const UTF8Char*)"SSWR.AVIRead.AVIRCameraControlForm.OnFilesDblClick.mstm"));
+			NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SSWR.AVIRead.AVIRCameraControlForm.OnFilesDblClick.mstm")));
 			if (me->camera->GetFile(file, mstm))
 			{
 				UOSInt size;
@@ -134,7 +134,7 @@ void __stdcall SSWR::AVIRead::AVIRCameraControlForm::OnFilesDblClick(void *userO
 		if (Text::StrEndsWithICase(file->fileName, (const UTF8Char*)".LOG"))
 		{
 			IO::MemoryStream *mstm;
-			NEW_CLASS(mstm, IO::MemoryStream((const UTF8Char*)"SSWR.AVIRead.AVIRCameraControlForm.OnFilesDblClick.mstm2"));
+			NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SSWR.AVIRead.AVIRCameraControlForm.OnFilesDblClick.mstm2")));
 			if (me->camera->GetFile(file, mstm))
 			{
 				mstm->SeekFromBeginning(0);
@@ -167,7 +167,7 @@ void __stdcall SSWR::AVIRead::AVIRCameraControlForm::OnFilesSelChg(void *userObj
 		return;
 	}
 	IO::MemoryStream *mstm;
-	NEW_CLASS(mstm, IO::MemoryStream((const UTF8Char*)"SSWR.AVIRead.AVIROlympusCameraForm.OnFilesSelChg.mstm"));
+	NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SSWR.AVIRead.AVIROlympusCameraForm.OnFilesSelChg.mstm")));
 	if (me->camera->GetThumbnailFile(file, mstm))
 	{
 		UOSInt size;

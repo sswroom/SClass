@@ -144,7 +144,7 @@ IO::ParsedObject *Parser::FileParser::GIFParser::ParseFile(IO::IStreamData *fd, 
 						disposalMethod = 3;
 					}
 
-					NEW_CLASS(mstm, IO::MemoryStream((const UTF8Char*)"Parser.FileParser.GIFParser.ParseFile"));
+					NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("Parser.FileParser.GIFParser.ParseFile")));
 					while (true)
 					{
 						readSize = fd->GetRealData(currOfst, 256, readBlock);

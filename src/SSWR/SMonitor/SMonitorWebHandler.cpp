@@ -65,7 +65,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::IndexReq(SSWR::SMonitor::SMon
 				}
 			}
 		}
-		NEW_CLASS(mstm, IO::MemoryStream((const UTF8Char*)"SSWR.SMonitor.SMonitorWebHandler.IndexReq"));
+		NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SSWR.SMonitor.SMonitorWebHandler.IndexReq")));
 		NEW_CLASS(writer, Text::UTF8Writer(mstm));
 		WriteHeaderBegin(writer);
 		WriteHeaderEnd(writer);
@@ -84,7 +84,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::IndexReq(SSWR::SMonitor::SMon
 	else
 	{
 		Net::WebServer::IWebSession *sess = me->sessMgr->GetSession(req, resp);
-		NEW_CLASS(mstm, IO::MemoryStream((const UTF8Char*)"SSWR.SMonitor.SMonitorWebHandler.IndexReq"));
+		NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SSWR.SMonitor.SMonitorWebHandler.IndexReq")));
 		NEW_CLASS(writer, Text::UTF8Writer(mstm));
 		WriteHeaderBegin(writer);
 		WriteHeaderEnd(writer);
@@ -326,7 +326,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::LoginReq(SSWR::SMonitor::SMon
 		}
 	}
 
-	NEW_CLASS(mstm, IO::MemoryStream((const UTF8Char*)"SSWR.SMonitor.SMonitorWebHandler.LoginReq"));
+	NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SSWR.SMonitor.SMonitorWebHandler.LoginReq")));
 	NEW_CLASS(writer, Text::UTF8Writer(mstm));
 	WriteHeaderBegin(writer);
 	WriteHeaderEnd(writer);
@@ -394,7 +394,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReq(SSWR::SMonitor::SMo
 		}
 	}
 
-	NEW_CLASS(mstm, IO::MemoryStream((const UTF8Char*)"SSWR.SMonitor.SMonitorWebHandler.DeviceReq"));
+	NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SSWR.SMonitor.SMonitorWebHandler.DeviceReq")));
 	NEW_CLASS(writer, Text::UTF8Writer(mstm));
 	WriteHeaderBegin(writer);
 	WriteHeaderEnd(writer);
@@ -601,7 +601,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceEditReq(SSWR::SMonitor:
 		}
 	}
 
-	NEW_CLASS(mstm, IO::MemoryStream((const UTF8Char*)"SSWR.SMonitor.SMonitorWebHandler.DeviceEditReq"));
+	NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SSWR.SMonitor.SMonitorWebHandler.DeviceEditReq")));
 	NEW_CLASS(writer, Text::UTF8Writer(mstm));
 	WriteHeaderBegin(writer);
 	WriteHeaderEnd(writer);
@@ -735,7 +735,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingReq(SSWR::SMonit
 		return resp->RedirectURL(req, UTF8STRC("device"), 0);
 	}
 
-	NEW_CLASS(mstm, IO::MemoryStream((const UTF8Char*)"SSWR.SMonitor.SMonitorWebHandler.DeviceReadingReq"));
+	NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SSWR.SMonitor.SMonitorWebHandler.DeviceReadingReq")));
 	NEW_CLASS(writer, Text::UTF8Writer(mstm));
 	WriteHeaderBegin(writer);
 	WriteHeaderEnd(writer);
@@ -879,7 +879,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceDigitalsReq(SSWR::SMoni
 		return resp->RedirectURL(req, UTF8STRC("device"), 0);
 	}
 
-	NEW_CLASS(mstm, IO::MemoryStream((const UTF8Char*)"SSWR.SMonitor.SMonitorWebHandler.DeviceDigitalsReq"));
+	NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SSWR.SMonitor.SMonitorWebHandler.DeviceDigitalsReq")));
 	NEW_CLASS(writer, Text::UTF8Writer(mstm));
 	WriteHeaderBegin(writer);
 	WriteHeaderEnd(writer);
@@ -1453,7 +1453,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(SSWR::SMo
 	imgList->AddImage(dimg->ToStaticImage(), 0);
 	deng->DeleteImage(dimg);
 
-	NEW_CLASS(mstm, IO::MemoryStream((const UTF8Char*)"SSWR.SMonitor.SMonitorWebHandler.DeviceReadingImgReq"));
+	NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SSWR.SMonitor.SMonitorWebHandler.DeviceReadingImgReq")));
 	NEW_CLASS(exporter, Exporter::GUIPNGExporter());
 	exporter->ExportFile(mstm, (const UTF8Char*)"temp.png", imgList, 0);
 	DEL_CLASS(exporter);
@@ -1499,7 +1499,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataReq(SSWR::SMoni
 	UOSInt l;
 	Data::ArrayList<SSWR::SMonitor::ISMonitorCore::DeviceInfo *> devList;
 	SSWR::SMonitor::ISMonitorCore::DeviceInfo *dev;
-	NEW_CLASS(mstm, IO::MemoryStream((const UTF8Char*)"SSWR.SMonitor.SMonitorWebHandler.DevicePastDataReq"));
+	NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SSWR.SMonitor.SMonitorWebHandler.DevicePastDataReq")));
 	NEW_CLASS(writer, Text::UTF8Writer(mstm));
 	WriteHeaderBegin(writer);
 	writer->WriteLineC(UTF8STRC("<script type=\"text/javascript\">"));
@@ -1802,7 +1802,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataImgReq(SSWR::SM
 	imgList->AddImage(dimg->ToStaticImage(), 0);
 	deng->DeleteImage(dimg);
 
-	NEW_CLASS(mstm, IO::MemoryStream((const UTF8Char*)"SSWR.SMonitor.SMonitorWebHandler.DevicePastDataImgReq"));
+	NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SSWR.SMonitor.SMonitorWebHandler.DevicePastDataImgReq")));
 	NEW_CLASS(exporter, Exporter::GUIPNGExporter());
 	exporter->ExportFile(mstm, (const UTF8Char*)"temp.png", imgList, 0);
 	DEL_CLASS(exporter);
@@ -1870,7 +1870,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserPasswordReq(SSWR::SMonito
 	}
 
 
-	NEW_CLASS(mstm, IO::MemoryStream((const UTF8Char*)"SSWR.SMonitor.SMonitorWebHandler.UserPasswordReq"));
+	NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SSWR.SMonitor.SMonitorWebHandler.UserPasswordReq")));
 	NEW_CLASS(writer, Text::UTF8Writer(mstm));
 	WriteHeaderBegin(writer);
 	WriteHeaderEnd(writer);
@@ -1929,7 +1929,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UsersReq(SSWR::SMonitor::SMon
 	UOSInt i;
 	UOSInt j;
 	me->core->UserGetList(&userList);
-	NEW_CLASS(mstm, IO::MemoryStream((const UTF8Char*)"SSWR.SMonitor.SMonitorWebHandler.UsersReq"));
+	NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SSWR.SMonitor.SMonitorWebHandler.UsersReq")));
 	NEW_CLASS(writer, Text::UTF8Writer(mstm));
 	WriteHeaderBegin(writer);
 	WriteHeaderEnd(writer);
@@ -2013,7 +2013,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserAddReq(SSWR::SMonitor::SM
 		}
 	}
 
-	NEW_CLASS(mstm, IO::MemoryStream((const UTF8Char*)"SSWR.SMonitor.SMonitorWebHandler.UserAddReq"));
+	NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SSWR.SMonitor.SMonitorWebHandler.UserAddReq")));
 	NEW_CLASS(writer, Text::UTF8Writer(mstm));
 	WriteHeaderBegin(writer);
 	WriteHeaderEnd(writer);
@@ -2116,7 +2116,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserAssignReq(SSWR::SMonitor:
 	SSWR::SMonitor::ISMonitorCore::DeviceInfo *dev;
 	me->core->UserGetDevices(sess->GetValueInt32("UserId"), 1, &devList);
 
-	NEW_CLASS(mstm, IO::MemoryStream((const UTF8Char*)"SSWR.SMonitor.SMonitorWebHandler.UserAssignReq"));
+	NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SSWR.SMonitor.SMonitorWebHandler.UserAssignReq")));
 	NEW_CLASS(writer, Text::UTF8Writer(mstm));
 	WriteHeaderBegin(writer);
 	WriteHeaderEnd(writer);

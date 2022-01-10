@@ -66,7 +66,7 @@ void Media::MediaPlayerWebInterface::BrowseRequest(Net::WebServer::IWebRequest *
 	UOSInt size;
 	UInt64 fileSize;
 
-	NEW_CLASS(mstm, IO::MemoryStream((const UTF8Char*)"SP.GPSWeb.GPSWebHandler.LoginFunc"));
+	NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SP.GPSWeb.GPSWebHandler.LoginFunc")));
 	NEW_CLASS(writer, Text::UTF8Writer(mstm));
 
 	writer->WriteLineC(UTF8STRC("<html>"));
@@ -210,7 +210,7 @@ void Media::MediaPlayerWebInterface::WebRequest(Net::WebServer::IWebRequest *req
 	Text::String *s;
 	UOSInt size;
 
-	NEW_CLASS(mstm, IO::MemoryStream((const UTF8Char*)"SP.GPSWeb.GPSWebHandler.LoginFunc"));
+	NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SP.GPSWeb.GPSWebHandler.LoginFunc")));
 	NEW_CLASS(writer, Text::UTF8Writer(mstm));
 
 	writer->WriteLineC(UTF8STRC("<html>"));

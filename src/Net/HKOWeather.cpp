@@ -74,13 +74,13 @@ Net::HKOWeather::WeatherSignal Net::HKOWeather::GetSignalSummary(Net::SocketFact
 	Net::HKOWeather::WeatherSignal signal;
 	UOSInt i;
 
-	cli = Net::HTTPClient::CreateClient(sockf, ssl, (const UTF8Char*)"http://rss.weather.gov.hk/rss/WeatherWarningSummary.xml", "GET", false);
+	cli = Net::HTTPClient::CreateConnect(sockf, ssl, (const UTF8Char*)"http://rss.weather.gov.hk/rss/WeatherWarningSummary.xml", "GET", false);
 	if (cli->IsError())
 	{
 		DEL_CLASS(cli);
 		return Net::HKOWeather::WS_UNKNOWN;
 	}
-	NEW_CLASS(mstm, IO::MemoryStream((const UTF8Char*)"Net.HKOWeather.GetSignalSummary"));
+	NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("Net.HKOWeather.GetSignalSummary")));
 	while ((i = cli->Read(buff, 1024)) > 0)
 	{
 		mstm->Write(buff, i);

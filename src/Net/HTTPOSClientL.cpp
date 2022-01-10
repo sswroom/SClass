@@ -64,13 +64,13 @@ size_t HTTPOSClient_WriteFunc(char *ptr, size_t size, size_t nmemb, void *userda
 	return size * nmemb;
 }
 
-Net::HTTPOSClient::HTTPOSClient(Net::SocketFactory *sockf, const UTF8Char *userAgent, Bool kaConn) : Net::HTTPClient(sockf, kaConn)
+Net::HTTPOSClient::HTTPOSClient(Net::SocketFactory *sockf, const UTF8Char *userAgent, UOSInt uaLen, Bool kaConn) : Net::HTTPClient(sockf, kaConn)
 {
 	this->clsData = MemAlloc(ClassData, 1);
 	this->clsData->curl = curl_easy_init();
 	this->clsData->headers = 0;
 	this->clsData->respHeaders = this->headers;
-	NEW_CLASS(this->clsData->respData, IO::MemoryStream((const UTF8Char*)"Net.HTTPOSClient.respData"));
+	NEW_CLASS(this->clsData->respData, IO::MemoryStream(UTF8STRC("Net.HTTPOSClient.respData")));
 	this->clsData->contLen = 0x7fffffff;
 	this->cliHost = 0;
 	this->writing = false;
@@ -78,12 +78,13 @@ Net::HTTPOSClient::HTTPOSClient(Net::SocketFactory *sockf, const UTF8Char *userA
 	this->buffSize = 0;
 //	this->timeOutMS = 5000;
 	this->dataBuff = MemAlloc(UInt8, BUFFSIZE);
-	NEW_CLASS(this->reqMstm, IO::MemoryStream(1024, (const UTF8Char*)"Net.HTTPMyClient.reqMstm"));
+	NEW_CLASS(this->reqMstm, IO::MemoryStream(1024, UTF8STRC("Net.HTTPMyClient.reqMstm")));
 	if (userAgent == 0)
 	{
 		userAgent = (const UTF8Char*)"sswr/1.0";
+		uaLen = 8;
 	}
-	this->clsData->userAgent = Text::String::NewNotNull(userAgent);
+	this->clsData->userAgent = Text::String::New(userAgent, uaLen);
 }
 
 Net::HTTPOSClient::~HTTPOSClient()

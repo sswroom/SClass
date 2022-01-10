@@ -103,7 +103,7 @@ Win32::SMBIOS *Win32::SMBIOSUtil::GetSMBIOS()
 		IO::Path::FindFileSession *sess;
 		UOSInt readSize;
 		IO::MemoryStream *mstm;
-		NEW_CLASS(mstm, IO::MemoryStream((const UTF8Char*)"Win32.SMBIOS.GetSMBIOS.mstm"));
+		NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("Win32.SMBIOS.GetSMBIOS.mstm")));
 		sptr = Text::StrConcatC(sbuff, UTF8STRC("/sys/firmware/dmi/entries/"));
 		Text::StrConcatC(sptr, UTF8STRC("*"));
 		sess = IO::Path::FindFile(sbuff);

@@ -15,6 +15,7 @@ Text::MIMEObj::UnknownMIMEObj::UnknownMIMEObj(UInt8 *dataBuff, UOSInt buffSize, 
 	UOSInt j;
 	UTF8Char *sarr[2];
 	UTF8Char sbuff[256];
+	UTF8Char *sptr;
 	i = Text::StrSplitTrim(sarr, 2, (UTF8Char*)tmpPtr, ';');
 	while (i == 2)
 	{
@@ -25,13 +26,13 @@ Text::MIMEObj::UnknownMIMEObj::UnknownMIMEObj(UInt8 *dataBuff, UOSInt buffSize, 
 			if (sarr[0][5] == '"' && sarr[0][j - 1] == '"')
 			{
 				sarr[0][j - 1] = 0;
-				Text::MIMEObj::MIMEHeader::ParseHeaderStr(sbuff, &sarr[0][6]);
+				sptr = Text::MIMEObj::MIMEHeader::ParseHeaderStr(sbuff, &sarr[0][6]);
 			}
 			else
 			{
-				Text::MIMEObj::MIMEHeader::ParseHeaderStr(sbuff, &sarr[0][5]);
+				sptr = Text::MIMEObj::MIMEHeader::ParseHeaderStr(sbuff, &sarr[0][5]);
 			}
-			this->SetSourceName(sbuff);
+			this->SetSourceName(sbuff, (UOSInt)(sptr - sbuff));
 		}
 
 	}

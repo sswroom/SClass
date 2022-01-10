@@ -346,7 +346,7 @@ Bool Text::XMLReader::ReadNext()
 		{
 			this->nt = Text::XMLNode::NT_CDATA;
 			this->parseOfst += 9;
-			IO::MemoryStream mstm(128, (const UTF8Char*)"Text.XMLReader.ReadNextType");
+			IO::MemoryStream mstm(128, UTF8STRC("Text.XMLReader.ReadNextType"));
 			while (true)
 			{
 				if (this->parseOfst + 2 >= this->buffSize)
@@ -910,8 +910,8 @@ Bool Text::XMLReader::ReadNext()
 		else
 		{
 			this->nt = Text::XMLNode::NT_ELEMENT;
-			IO::MemoryStream mstm(128, (const UTF8Char*)"Text.XMLReader.ReadNextType");
-			IO::MemoryStream mstmOri(128, (const UTF8Char*)"Text.XMLReader.ReadNextType");
+			IO::MemoryStream mstm(128, UTF8STRC("Text.XMLReader.ReadNextType"));
+			IO::MemoryStream mstmOri(128, UTF8STRC("Text.XMLReader.ReadNextType"));
 			Bool isEqual = false;
 			UTF8Char isQuote = 0;
 			UTF8Char c;
@@ -1382,8 +1382,8 @@ Bool Text::XMLReader::ReadNext()
 	}
 	else
 	{
-		IO::MemoryStream mstm(128, (const UTF8Char*)"Text.XMLReader.ReadNextAny.mstm");
-		IO::MemoryStream mstmOri(128, (const UTF8Char*)"Text.XMLReader.ReadNextAny.mstm");
+		IO::MemoryStream mstm(128, UTF8STRC("Text.XMLReader.ReadNextAny.mstm"));
+		IO::MemoryStream mstmOri(128, UTF8STRC("Text.XMLReader.ReadNextAny.mstm"));
 		UTF8Char c;
 		UInt8 b[1];
 		this->nt = Text::XMLNode::NT_TEXT;

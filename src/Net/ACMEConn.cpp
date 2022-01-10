@@ -283,7 +283,7 @@ Net::ACMEConn::ACMEConn(Net::SocketFactory *sockf, const UTF8Char *serverHost, U
 		IO::MemoryStream *mstm;
 		if (cli->GetRespStatus() == Net::WebStatus::SC_OK)
 		{
-			NEW_CLASS(mstm, IO::MemoryStream((const UTF8Char*)"Net.ACEClient.mstm"));
+			NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("Net.ACEClient.mstm")));
 			while (true)
 			{
 				recvSize = cli->Read(buff, 2048);
@@ -435,7 +435,7 @@ Bool Net::ACMEConn::AccountNew()
 	Bool succ = false;
 	if (cli->GetRespStatus() == Net::WebStatus::SC_BAD_REQUEST)
 	{
-		IO::MemoryStream mstm((const UTF8Char*)"Net.ACMEConn.AccountNew.mstm");
+		IO::MemoryStream mstm(UTF8STRC("Net.ACMEConn.AccountNew.mstm"));
 		cli->ReadToEnd(&mstm, 4096);
 		DEL_CLASS(cli);
 		UOSInt buffSize;
@@ -547,7 +547,7 @@ Net::ACMEConn::Order *Net::ACMEConn::OrderNew(const UTF8Char *domainNames)
 	if (cli->GetRespStatus() == 201)
 	{
 		Text::StringBuilderUTF8 sb;
-		IO::MemoryStream mstm((const UTF8Char*)"Net.ACMEConn.OrderNew.mstm");
+		IO::MemoryStream mstm(UTF8STRC("Net.ACMEConn.OrderNew.mstm"));
 		cli->ReadToEnd(&mstm, 2048);
 		cli->GetRespHeader(UTF8STRC("Location"), &sb);
 		DEL_CLASS(cli);
@@ -573,7 +573,7 @@ Net::ACMEConn::Challenge *Net::ACMEConn::OrderAuthorize(Text::String *authorizeU
 	if (cli)
 	{
 		cli->GetRespStatus();
-		IO::MemoryStream mstm((const UTF8Char*)"Net.ACMEConn.OrderAuthorize.mstm");
+		IO::MemoryStream mstm(UTF8STRC("Net.ACMEConn.OrderAuthorize.mstm"));
 		cli->ReadToEnd(&mstm, 2048);
 		DEL_CLASS(cli);
 
@@ -655,7 +655,7 @@ Net::ACMEConn::Challenge *Net::ACMEConn::ChallengeBegin(Text::String *challURL)
 	{
 		if (cli->GetRespStatus() == Net::WebStatus::SC_OK)
 		{
-			IO::MemoryStream mstm((const UTF8Char*)"Net.ACMEConn.ChallengeBegin.mstm");
+			IO::MemoryStream mstm(UTF8STRC("Net.ACMEConn.ChallengeBegin.mstm"));
 			cli->ReadToEnd(&mstm, 2048);
 			DEL_CLASS(cli);
 			UOSInt i;
@@ -678,7 +678,7 @@ Net::ACMEConn::Challenge *Net::ACMEConn::ChallengeGetStatus(Text::String *challU
 	{
 		if (cli->GetRespStatus() == Net::WebStatus::SC_OK)
 		{
-			IO::MemoryStream mstm((const UTF8Char*)"Net.ACMEConn.ChallengeGetStatus.mstm");
+			IO::MemoryStream mstm(UTF8STRC("Net.ACMEConn.ChallengeGetStatus.mstm"));
 			cli->ReadToEnd(&mstm, 2048);
 			DEL_CLASS(cli);
 			UOSInt i;

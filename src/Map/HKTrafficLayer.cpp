@@ -1025,7 +1025,7 @@ void Map::HKTrafficLayer::ReloadData()
 	stm = this->OpenURLStream();
 	if (stm)
 	{
-		NEW_CLASS(mstm, IO::MemoryStream((const UTF8Char*)"Map.HKTrafficLayer.ReloadData.mstm"));
+		NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("Map.HKTrafficLayer.ReloadData.mstm")));
 		while (true)
 		{
 			readSize = stm->Read(buff, 2048);

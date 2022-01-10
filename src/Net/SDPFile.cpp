@@ -50,7 +50,7 @@ Net::SDPFile::SDPFile(UInt8 *buff, UOSInt buffSize)
 	Data::ArrayListStrUTF8 *currMedia = 0;
 	IO::MemoryStream *mstm;
 	Text::UTF8Reader *reader;
-	NEW_CLASS(mstm, IO::MemoryStream(this->buff, this->buffSize, (const UTF8Char*)"Net.SDPFile.SDPFile"));
+	NEW_CLASS(mstm, IO::MemoryStream(this->buff, this->buffSize, UTF8STRC("Net.SDPFile.SDPFile")));
 	NEW_CLASS(reader, Text::UTF8Reader(mstm));
 	while (reader->ReadLine(sbuff, 255))
 	{
@@ -333,7 +333,7 @@ Bool Net::SDPFile::BuildBuff()
 	IO::MemoryStream *mstm;
 	Text::UTF8Writer *writer;
 	Text::StringBuilderUTF8 sb;
-	NEW_CLASS(mstm, IO::MemoryStream((const UTF8Char*)"Net.SDPFile.BuildBuff"));
+	NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("Net.SDPFile.BuildBuff")));
 	NEW_CLASS(writer, Text::UTF8Writer(mstm));
 	sb.ClearStr();
 

@@ -132,7 +132,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPTestForm::ProcessThread(void *userObj)
 	status->threadRunning = true;
 	if (status->me->kaConn)
 	{
-		cli = Net::HTTPClient::CreateClient(status->me->sockf, status->me->ssl, 0, true, false);
+		cli = Net::HTTPClient::CreateClient(status->me->sockf, status->me->ssl, 0, 0, true, false);
 		while (!status->threadToStop)
 		{
 			url = status->me->GetNextURL();
@@ -184,13 +184,13 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPTestForm::ProcessThread(void *userObj)
 				if (cli->IsError())
 				{
 					DEL_CLASS(cli);
-					cli = Net::HTTPClient::CreateClient(status->me->sockf, status->me->ssl, 0, true, Text::StrStartsWith(url, (const UTF8Char*)"https://"));
+					cli = Net::HTTPClient::CreateClient(status->me->sockf, status->me->ssl, 0, 0, true, Text::StrStartsWith(url, (const UTF8Char*)"https://"));
 				}
 			}
 			else
 			{
 				DEL_CLASS(cli);
-				cli = Net::HTTPClient::CreateClient(status->me->sockf, status->me->ssl, 0, true, Text::StrStartsWith(url, (const UTF8Char*)"https://"));
+				cli = Net::HTTPClient::CreateClient(status->me->sockf, status->me->ssl, 0, 0, true, Text::StrStartsWith(url, (const UTF8Char*)"https://"));
 				Sync::Interlocked::Increment(&status->me->failCnt);
 			}
 		}
@@ -203,7 +203,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPTestForm::ProcessThread(void *userObj)
 			url = status->me->GetNextURL();
 			if (url == 0)
 				break;
-			cli = Net::HTTPClient::CreateClient(status->me->sockf, status->me->ssl, 0, true, Text::StrStartsWith(url, (const UTF8Char*)"https://"));
+			cli = Net::HTTPClient::CreateClient(status->me->sockf, status->me->ssl, 0, 0, true, Text::StrStartsWith(url, (const UTF8Char*)"https://"));
 			if (cli->Connect(url, "GET", &timeDNS, &timeConn, false))
 			{
 				cli->AddHeaderC(UTF8STRC("Connection"), UTF8STRC("keep-alive"));

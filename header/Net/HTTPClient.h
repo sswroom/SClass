@@ -69,7 +69,7 @@ namespace Net
 
 		static void ParseDateStr(Data::DateTime *dt, const UTF8Char *dateStr);
 		static UTF8Char *Date2Str(UTF8Char *sbuff, Data::DateTime *dt);
-		static Net::HTTPClient *CreateClient(Net::SocketFactory *sockf, Net::SSLEngine *ssl, const UTF8Char *userAgent, Bool kaConn, Bool isSecure);
+		static Net::HTTPClient *CreateClient(Net::SocketFactory *sockf, Net::SSLEngine *ssl, const UTF8Char *userAgent, UOSInt uaLen, Bool kaConn, Bool isSecure);
 		static Net::HTTPClient *CreateConnect(Net::SocketFactory *sockf, Net::SSLEngine *ssl, const UTF8Char *url, const Char *method, Bool kaConn);
 		static Bool IsHTTPURL(const UTF8Char *url);
 		static void PrepareSSL(Net::SSLEngine *ssl);

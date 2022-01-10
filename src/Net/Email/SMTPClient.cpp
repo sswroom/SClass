@@ -36,7 +36,7 @@ Bool Net::Email::SMTPClient::Send(Net::Email::EmailMessage *message)
 	{
 		return false;
 	}
-	IO::MemoryStream mstm((const UTF8Char*)"Net.Email.SMTPClient.mstm");
+	IO::MemoryStream mstm(UTF8STRC("Net.Email.SMTPClient.mstm"));
 	if (!message->WriteToStream(&mstm))
 	{
 		return false;

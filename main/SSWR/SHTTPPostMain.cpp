@@ -102,7 +102,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				console->WriteLineC(sb.ToString(), sb.GetLength());
 
 				IO::MemoryStream *mstm;
-				NEW_CLASS(mstm, IO::MemoryStream((const UTF8Char*)"SHTTPGet.mstm"));
+				NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SHTTPGet.mstm")));
 				UOSInt readSize;
 
 				while ((readSize = cli->Read(buff, 2048)) > 0)

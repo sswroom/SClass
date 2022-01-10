@@ -67,7 +67,7 @@ Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(Net::WebServer::IWebRequ
 			kaConn = false;
 		}
 	}
-	Net::HTTPClient *cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, (const UTF8Char*)"sswr/1.0", kaConn, sb.StartsWith((const UTF8Char*)"https://"));
+	Net::HTTPClient *cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, UTF8STRC("sswr/1.0"), kaConn, sb.StartsWith((const UTF8Char*)"https://"));
 	if (cli == 0)
 	{
 		resp->ResponseError(req, Net::WebStatus::SC_NOT_FOUND);

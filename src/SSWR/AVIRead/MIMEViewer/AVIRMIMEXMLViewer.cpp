@@ -26,7 +26,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMIMEXMLViewer::AVIRMIMEXMLViewer(SSWR::AVIRead::A
 	Text::String *s;
 	UOSInt i;
 	UOSInt j;
-	NEW_CLASS(mstm, IO::MemoryStream((UTF8Char*)buff, size, (const UTF8Char*)"SSWR.AVIRead.MIMEViewer.AVIRMIMEXMLViewer.mstm"));
+	NEW_CLASS(mstm, IO::MemoryStream((UTF8Char*)buff, size, UTF8STRC("SSWR.AVIRead.MIMEViewer.AVIRMIMEXMLViewer.mstm")));
 	NEW_CLASS(reader, Text::XMLReader(core->GetEncFactory(), mstm, Text::XMLReader::PM_XML));
 	while (reader->ReadNext())
 	{

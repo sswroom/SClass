@@ -1479,7 +1479,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 			return FS_ERROR;
 		}
 		readBuff = MemAlloc(UInt8, 1048576);
-		NEW_CLASS(mstm, IO::MemoryStream((UOSInt)fs->GetLength(), (const UTF8Char*)"OrganEnv.AddSpeciesFile"));
+		NEW_CLASS(mstm, IO::MemoryStream((UOSInt)fs->GetLength(), UTF8STRC("OrganEnv.AddSpeciesFile")));
 		while (true)
 		{
 			readSize = fs->Read(readBuff, 1048576);
@@ -2055,7 +2055,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesWeb
 	}
 
 	IO::MemoryStream *mstm;
-	NEW_CLASS(mstm, IO::MemoryStream((const UTF8Char*)"SSWR.OrganMgr.OrganEnvDB.AddSpeciesWebFile.mstm"));
+	NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SSWR.OrganMgr.OrganEnvDB.AddSpeciesWebFile.mstm")));
 	while ((i = stm->Read(sbuff2, sizeof(sbuff2))) > 0)
 	{
 		mstm->Write(sbuff2, i);
@@ -2305,7 +2305,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::UpdateSpeciesWebFileOld(OrganSpecies *sp, const
 	}
 
 	Bool found = false;
-	NEW_CLASS(mstm, IO::MemoryStream((const UTF8Char*)"SSWR.OrganMgr.OrganEnv.UpdateSpeciesWebFile.mstm"));
+	NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SSWR.OrganMgr.OrganEnv.UpdateSpeciesWebFile.mstm")));
 	NEW_CLASS(writer, Text::UTF8Writer(mstm));
 	writer->WriteSignature();
 

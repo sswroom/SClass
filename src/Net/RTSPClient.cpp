@@ -30,7 +30,7 @@ UInt32 __stdcall Net::RTSPClient::ControlThread(void *userObj)
 	IO::StreamReader *reader;
 	
 	cliData->threadRunning = true;
-	NEW_CLASS(mstm, IO::MemoryStream((const UTF8Char*)"Net.RTSPCLient.ControlThread"));
+	NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("Net.RTSPCLient.ControlThread")));
 	buffSize = 0;
 	content = false;
 	while (!cliData->threadToStop)
@@ -302,7 +302,7 @@ Bool Net::RTSPClient::GetOptions(const UTF8Char *url, Data::ArrayList<const UTF8
 	Sync::MutexUsage mutUsage(this->cliData->reqMut);
 	Int32 reqId = this->NextRequest();
 
-	NEW_CLASS(stm, IO::MemoryStream((const UTF8Char*)"Net.RTSPClient.GetOptions"));
+	NEW_CLASS(stm, IO::MemoryStream(UTF8STRC("Net.RTSPClient.GetOptions")));
 	NEW_CLASS(writer, IO::StreamWriter(stm, 65001));
 	writer->WriteStrC(UTF8STRC("OPTIONS "));
 	writer->WriteStr(url);
@@ -351,7 +351,7 @@ Net::SDPFile *Net::RTSPClient::GetMediaInfo(const UTF8Char *url)
 	Sync::MutexUsage mutUsage(this->cliData->reqMut);
 	Int32 reqId = this->NextRequest();
 
-	NEW_CLASS(stm, IO::MemoryStream((const UTF8Char*)"Net.RTSPClient.GetMediaInfo"));
+	NEW_CLASS(stm, IO::MemoryStream(UTF8STRC("Net.RTSPClient.GetMediaInfo")));
 	NEW_CLASS(writer, Text::UTF8Writer(stm));
 	writer->WriteStrC(UTF8STRC("DESCRIBE "));
 	writer->WriteStr(url);
@@ -389,7 +389,7 @@ UTF8Char *Net::RTSPClient::SetupRTP(UTF8Char *sessIdOut, const UTF8Char *url, Ne
 	Sync::MutexUsage mutUsage(this->cliData->reqMut);
 	Int32 reqId = this->NextRequest();
 
-	NEW_CLASS(stm, IO::MemoryStream((const UTF8Char*)"Net.RTSPClient.SetupRTP"));
+	NEW_CLASS(stm, IO::MemoryStream(UTF8STRC("Net.RTSPClient.SetupRTP")));
 	NEW_CLASS(writer, Text::UTF8Writer(stm));
 	writer->WriteStrC(UTF8STRC("SETUP "));
 	writer->WriteStr(url);
@@ -515,7 +515,7 @@ Bool Net::RTSPClient::Play(const UTF8Char *url, const UTF8Char *sessId)
 	Sync::MutexUsage mutUsage(this->cliData->reqMut);
 	Int32 reqId = this->NextRequest();
 
-	NEW_CLASS(stm, IO::MemoryStream((const UTF8Char*)"Net.RTSPClient.Play"));
+	NEW_CLASS(stm, IO::MemoryStream(UTF8STRC("Net.RTSPClient.Play")));
 	NEW_CLASS(writer, Text::UTF8Writer(stm));
 	writer->WriteStrC(UTF8STRC("PLAY "));
 	writer->WriteStr(url);
@@ -554,7 +554,7 @@ Bool Net::RTSPClient::Close(const UTF8Char *url, const UTF8Char *sessId)
 	Sync::MutexUsage mutUsage(this->cliData->reqMut);
 	Int32 reqId = this->NextRequest();
 
-	NEW_CLASS(stm, IO::MemoryStream((const UTF8Char*)"Net.RTSPClient.Close"));
+	NEW_CLASS(stm, IO::MemoryStream(UTF8STRC("Net.RTSPClient.Close")));
 	NEW_CLASS(writer, Text::UTF8Writer(stm));
 	writer->WriteStrC(UTF8STRC("TEARDOWN "));
 	writer->WriteStr(url);

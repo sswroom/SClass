@@ -2652,13 +2652,12 @@ IO::ParsedObject *Parser::FileParser::PNGParser::ParseFile(IO::IStreamData *fd, 
 				UOSInt i = Text::StrCharCnt((Char*)chunkData) + 1;
 				if (chunkData[i] == 0)
 				{
-					IO::MemoryStream *mstm;
-					NEW_CLASS(mstm, IO::MemoryStream((const UTF8Char*)"IO.FileAnalyse.PNGFileAnalyse"));
-					Data::Compress::InflateStream cstm(mstm);
+					IO::MemoryStream mstm(UTF8STRC("IO.FileAnalyse.PNGFileAnalyse"));
+					Data::Compress::InflateStream cstm(&mstm);
 					if (cstm.Write(&chunkData[i + 3], size - i - 7) == (size - i - 7))
 					{
 						UOSInt iccSize;
-						UInt8 *iccBuff = mstm->GetBuff(&iccSize);
+						UInt8 *iccBuff = mstm.GetBuff(&iccSize);
 						Media::ICCProfile *icc = Media::ICCProfile::Parse(iccBuff, iccSize);
 						if (icc)
 						{
@@ -2672,7 +2671,6 @@ IO::ParsedObject *Parser::FileParser::PNGParser::ParseFile(IO::IStreamData *fd, 
 							iccpFound = true;
 						}
 					}
-					DEL_CLASS(mstm);
 				}
 			}
 			MemFree(chunkData);
@@ -2775,11 +2773,11 @@ IO::ParsedObject *Parser::FileParser::PNGParser::ParseFile(IO::IStreamData *fd, 
 						imgSize = CalcImageSize(imgW, imgH, bitDepth, colorType, interlaceMeth);
 						if (imgSize)
 						{
-							NEW_CLASS(mstm, IO::MemoryStream(imgSize, (const UTF8Char*)"Parser.FileParser.PNGParser.mstm"));
+							NEW_CLASS(mstm, IO::MemoryStream(imgSize, UTF8STRC("Parser.FileParser.PNGParser.mstm")));
 						}
 						else
 						{
-							NEW_CLASS(mstm, IO::MemoryStream((const UTF8Char*)"Parser.FileParser.PNGParser.mstm"));
+							NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("Parser.FileParser.PNGParser.mstm")));
 						}
 						NEW_CLASS(cstm, Data::Compress::InflateStream(mstm, 2));
 						NEW_CLASS(wcstm, IO::WriteCacheStream(cstm));
@@ -2828,11 +2826,11 @@ IO::ParsedObject *Parser::FileParser::PNGParser::ParseFile(IO::IStreamData *fd, 
 						}
 						if (imgSize)
 						{
-							NEW_CLASS(mstm, IO::MemoryStream(imgSize, (const UTF8Char*)"Parser.FileParser.PNGParser.mstm"));
+							NEW_CLASS(mstm, IO::MemoryStream(imgSize, UTF8STRC("Parser.FileParser.PNGParser.mstm")));
 						}
 						else
 						{
-							NEW_CLASS(mstm, IO::MemoryStream((const UTF8Char*)"Parser.FileParser.PNGParser.mstm"));
+							NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("Parser.FileParser.PNGParser.mstm")));
 						}
 						NEW_CLASS(cstm, Data::Compress::InflateStream(mstm, 2));
 						NEW_CLASS(wcstm, IO::WriteCacheStream(cstm));

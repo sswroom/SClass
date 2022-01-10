@@ -478,8 +478,8 @@ Bool Net::OpenSSLEngine::GenerateCert(const UTF8Char *country, const UTF8Char *c
 		if (pobjCert && pobjKey)
 		{
 			succ = true;
-			pobjCert->SetSourceName((const UTF8Char*)"cert.crt");
-			pobjKey->SetSourceName((const UTF8Char*)"RSAKey.key");
+			pobjCert->SetSourceName(UTF8STRC("cert.crt"));
+			pobjKey->SetSourceName(UTF8STRC("RSAKey.key"));
 			*certASN1 = pobjCert;
 			*keyASN1 = pobjKey;
 		}
@@ -520,7 +520,7 @@ Crypto::Cert::X509Key *Net::OpenSSLEngine::GenerateRSAKey()
 			pobjKey = (Crypto::Cert::X509File*)parser.ParseFile(mdata, 0, IO::ParserType::ASN1Data);
 			if (pobjKey)
 			{
-				pobjKey->SetSourceName((const UTF8Char*)"RSAKey.key");
+				pobjKey->SetSourceName(UTF8STRC("RSAKey.key"));
 			}
 			DEL_CLASS(mdata);
 		}

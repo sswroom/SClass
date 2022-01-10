@@ -158,7 +158,7 @@ UTF8Char *Map::GoogleMap::GoogleWSSearcherJSON::SearchName(UTF8Char *buff, UOSIn
 		IO::StreamReader *reader;
 
 		IO::MemoryStream *mstm;
-		NEW_CLASS(mstm, IO::MemoryStream((const UTF8Char*)"Map.GoogleMap.GoogleWSSearcherJSON.SearchName"));
+		NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("Map.GoogleMap.GoogleWSSearcherJSON.SearchName")));
 		while ((readSize = cli->Read(databuff, 2048)) > 0)
 		{
 			mstm->Write(databuff, readSize);

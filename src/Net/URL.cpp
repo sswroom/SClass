@@ -7,19 +7,19 @@
 #include "Text/MyString.h"
 #include "Text/URLString.h"
 
-IO::ParsedObject *Net::URL::OpenObject(const UTF8Char *url, const UTF8Char *userAgent, Net::SocketFactory *sockf, Net::SSLEngine *ssl)
+IO::ParsedObject *Net::URL::OpenObject(const UTF8Char *url, const UTF8Char *userAgent, UOSInt uaLen, Net::SocketFactory *sockf, Net::SSLEngine *ssl)
 {
 	IO::ParsedObject *pobj;
 	UTF8Char sbuff[512];
 	if (Text::StrStartsWithICase(url, (const UTF8Char*)"HTTP://"))
 	{
-		Net::HTTPClient *cli = Net::HTTPClient::CreateClient(sockf, ssl, userAgent, true, false);
+		Net::HTTPClient *cli = Net::HTTPClient::CreateClient(sockf, ssl, userAgent, uaLen, true, false);
 		cli->Connect(url, "GET", 0, 0, true);
 		return cli;
 	}
 	else if (Text::StrStartsWithICase(url, (const UTF8Char*)"HTTPS://"))
 	{
-		Net::HTTPClient *cli = Net::HTTPClient::CreateClient(sockf, ssl, userAgent, true, true);
+		Net::HTTPClient *cli = Net::HTTPClient::CreateClient(sockf, ssl, userAgent, uaLen, true, true);
 		cli->Connect(url, "GET", 0, 0, true);
 		return cli;
 	}

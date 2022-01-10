@@ -22,10 +22,10 @@ namespace Net
 			Net::SocketFactory *sockf;
 			Net::SSLEngine *ssl;
 			Text::EncodingFactory *encFact;
-			const UTF8Char *userAgent;
+			Text::String *userAgent;
 
 		public:
-			WebSite48IdolControl(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, const UTF8Char *userAgent);
+			WebSite48IdolControl(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, Text::String *userAgent);
 			~WebSite48IdolControl();
 
 			OSInt GetTVPageItems(OSInt pageNo, Data::ArrayList<ItemData*> *itemList);

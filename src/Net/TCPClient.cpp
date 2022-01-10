@@ -64,7 +64,7 @@ Net::TCPClient::TCPClient(Net::SocketFactory *sockf, const UTF8Char *name, UInt1
 	this->cliId = sockf->GenSocketId(s);
 }
 
-Net::TCPClient::TCPClient(Net::SocketFactory *sockf, UInt32 ip, UInt16 port) : IO::Stream((const UTF8Char*)"")
+Net::TCPClient::TCPClient(Net::SocketFactory *sockf, UInt32 ip, UInt16 port) : IO::Stream(UTF8STRC(""))
 {
 	this->currCnt = 0;
 	this->s = 0;
@@ -74,9 +74,10 @@ Net::TCPClient::TCPClient(Net::SocketFactory *sockf, UInt32 ip, UInt16 port) : I
 	this->writeEvent = 0;
 	this->timeoutMS = 0;
 
-	UTF8Char sbuff[32];
-	Net::SocketUtil::GetIPv4Name(sbuff, ip, port);
-	this->SetSourceName(sbuff);
+/*	UTF8Char sbuff[32];
+	UTF8Char *sptr;
+	sptr = Net::SocketUtil::GetIPv4Name(sbuff, ip, port);
+	this->SetSourceName(sbuff, (UOSInt)(sptr - sbuff));*/
 
 	s = sockf->CreateTCPSocketv4();
 
@@ -153,13 +154,14 @@ Net::TCPClient::TCPClient(Net::SocketFactory *sockf, const Net::SocketUtil::Addr
 #ifdef PRINTDEBUG
 	IO::Console::PrintStrO((const UTF8Char*)"TCPClient connected\r\n");
 #endif
-	UTF8Char sbuff[64];
-	sockf->GetRemoteName(sbuff, s);
-	this->SetSourceName(sbuff);
+/*	UTF8Char sbuff[64];
+	UTF8Char *sptr;
+	sptr = sockf->GetRemoteName(sbuff, s);
+	this->SetSourceName(sbuff, (UOSInt)(sptr - sbuff));*/
 	this->cliId = sockf->GenSocketId(s);
 }
 
-Net::TCPClient::TCPClient(Net::SocketFactory *sockf, Socket *s) : IO::Stream((const UTF8Char*)"")
+Net::TCPClient::TCPClient(Net::SocketFactory *sockf, Socket *s) : IO::Stream(UTF8STRC(""))
 {
 	this->sockf = sockf;
 	this->s = s;
@@ -171,10 +173,11 @@ Net::TCPClient::TCPClient(Net::SocketFactory *sockf, Socket *s) : IO::Stream((co
 	if (s)
 	{
 		this->cliId = sockf->GenSocketId(s);
-
+/*
 		UTF8Char sbuff[128];
-		sockf->GetRemoteName(sbuff, s);
-		this->SetSourceName(sbuff);
+		UTF8Char *sptr;
+		sptr = sockf->GetRemoteName(sbuff, s);
+		this->SetSourceName(sbuff, (UOSInt)(sptr - sbuff));*/
 	}
 	else
 	{

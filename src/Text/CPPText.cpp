@@ -195,7 +195,7 @@ void Text::CPPText::FromCPPString(Text::StringBuilderUTF *sb, const UTF8Char *st
 
 Bool Text::CPPText::ParseEnum(Data::ArrayList<const UTF8Char*> *enumEntries, const UTF8Char *cppEnumStr, Text::StringBuilderUTF *sbPrefix)
 {
-	IO::MemoryStream mstm((UInt8*)cppEnumStr, Text::StrCharCnt(cppEnumStr), (const UTF8Char*)"Text.CPPText.ParseEnum");
+	IO::MemoryStream mstm((UInt8*)cppEnumStr, Text::StrCharCnt(cppEnumStr), UTF8STRC("Text.CPPText.ParseEnum"));
 	Text::Cpp::CppReader reader(&mstm);
 	Text::StringBuilderUTF8 sb;
 	if (!reader.NextWord(&sb))

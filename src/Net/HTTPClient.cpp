@@ -16,7 +16,7 @@
 #include "Text/TextEnc/FormEncoding.h"
 #include "Text/TextEnc/URIEncoding.h"
 
-Net::HTTPClient::HTTPClient(Net::SocketFactory *sockf, Bool kaConn) : IO::Stream((const UTF8Char*)"HTTPClient")
+Net::HTTPClient::HTTPClient(Net::SocketFactory *sockf, Bool kaConn) : IO::Stream(UTF8STRC("HTTPClient"))
 {
 	this->sockf = sockf;
 	this->canWrite = false;
@@ -272,16 +272,16 @@ UTF8Char *Net::HTTPClient::Date2Str(UTF8Char *sbuff, Data::DateTime *dt)
 	return Text::StrConcatC(t.ToString(Text::StrConcat(sbuff, (const UTF8Char*)wds[wd]), "dd MMM yyyy HH:mm:ss"), UTF8STRC(" GMT"));
 }
 
-Net::HTTPClient *Net::HTTPClient::CreateClient(Net::SocketFactory *sockf, Net::SSLEngine *ssl, const UTF8Char *userAgent, Bool kaConn, Bool isSecure)
+Net::HTTPClient *Net::HTTPClient::CreateClient(Net::SocketFactory *sockf, Net::SSLEngine *ssl, const UTF8Char *userAgent, UOSInt uaLen, Bool kaConn, Bool isSecure)
 {
 	Net::HTTPClient *cli;
 	if (isSecure && ssl == 0)
 	{
-		NEW_CLASS(cli, Net::HTTPOSClient(sockf, userAgent, kaConn));
+		NEW_CLASS(cli, Net::HTTPOSClient(sockf, userAgent, uaLen, kaConn));
 	}
 	else
 	{
-		NEW_CLASS(cli, Net::HTTPMyClient(sockf, ssl, userAgent, kaConn));
+		NEW_CLASS(cli, Net::HTTPMyClient(sockf, ssl, userAgent, uaLen, kaConn));
 	}
 	return cli;
 }
@@ -292,7 +292,7 @@ Net::HTTPClient *Net::HTTPClient::CreateConnect(Net::SocketFactory *sockf, Net::
 	{
 		method = "GET";
 	}
-	Net::HTTPClient *cli = Net::HTTPClient::CreateClient(sockf, ssl, 0, kaConn, Text::StrStartsWithICase(url, (const UTF8Char*)"HTTPS://"));
+	Net::HTTPClient *cli = Net::HTTPClient::CreateClient(sockf, ssl, 0, 0, kaConn, Text::StrStartsWithICase(url, (const UTF8Char*)"HTTPS://"));
 	cli->Connect(url, method, 0, 0, true);
 	return cli;
 }

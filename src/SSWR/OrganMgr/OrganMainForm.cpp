@@ -3411,7 +3411,7 @@ void SSWR::OrganMgr::OrganMainForm::DropData(UI::GUIDropData *data, OSInt x, OSI
 					{
 						IO::MemoryStream *mstm;
 						Text::UTF8Reader *reader;
-						NEW_CLASS(mstm, IO::MemoryStream(sb.ToString(), sb.GetLength(), (const UTF8Char*)"MainForm.Drop"));
+						NEW_CLASS(mstm, IO::MemoryStream(sb.ToString(), sb.GetLength(), UTF8STRC("MainForm.Drop")));
 						NEW_CLASS(reader, Text::UTF8Reader(mstm));
 						while (reader->ReadLine(sbuff, 511))
 						{

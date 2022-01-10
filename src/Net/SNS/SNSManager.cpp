@@ -53,7 +53,7 @@ Net::SNS::SNSManager::ChannelData *Net::SNS::SNSManager::ChannelInit(Net::SNS::S
 
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	sptr = Text::StrConcat(sbuff, this->dataPath);
+	sptr = this->dataPath->ConcatTo(sbuff);
 	if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 	{
 		*sptr++ = IO::Path::PATH_SEPERATOR;
@@ -86,7 +86,7 @@ void Net::SNS::SNSManager::ChannelAddMessage(Net::SNS::SNSManager::ChannelData *
 	dt.SetTicks(item->msgTime);
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	sptr = Text::StrConcat(sbuff, this->dataPath);
+	sptr = this->dataPath->ConcatTo(sbuff);
 	if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 	{
 		*sptr++ = IO::Path::PATH_SEPERATOR;
@@ -163,7 +163,7 @@ void Net::SNS::SNSManager::ChannelAddMessage(Net::SNS::SNSManager::ChannelData *
 		Net::HTTPClient *cli;
 		UInt8 *tmpBuff = MemAlloc(UInt8, 65536);
 
-		sptr = Text::StrConcat(sbuff, this->dataPath);
+		sptr = this->dataPath->ConcatTo(sbuff);
 		if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 		{
 			*sptr++ = IO::Path::PATH_SEPERATOR;
@@ -186,7 +186,7 @@ void Net::SNS::SNSManager::ChannelAddMessage(Net::SNS::SNSManager::ChannelData *
 			retryCnt = 0;
 			while (retryCnt < 3)
 			{
-				cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, this->userAgent, true, Text::StrStartsWith(sarr[0], (const UTF8Char*)"https://"));
+				cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, STR_PTRC(this->userAgent), true, Text::StrStartsWith(sarr[0], (const UTF8Char*)"https://"));
 				if (cli->Connect(sarr[0], "GET", 0, 0, true))
 				{
 					if (Text::StrEndsWith(sarr[0], (const UTF8Char*)".mp4"))
@@ -253,7 +253,7 @@ void Net::SNS::SNSManager::ChannelAddMessage(Net::SNS::SNSManager::ChannelData *
 			while (true)
 			{
 				j = Text::StrSplit(sarr, 2, sarr[1], ' ');
-				cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, this->userAgent, true, Text::StrStartsWith(sarr[0], (const UTF8Char*)"https://"));
+				cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, STR_PTRC(this->userAgent), true, Text::StrStartsWith(sarr[0], (const UTF8Char*)"https://"));
 				if (cli->Connect(sarr[0], "GET", 0, 0, true))
 				{
 					Text::StrConcatC(Text::StrUOSInt(sptr, i), UTF8STRC(".mp4"));
@@ -301,7 +301,7 @@ void Net::SNS::SNSManager::ChannelStoreCurr(Net::SNS::SNSManager::ChannelData *c
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	sptr = Text::StrConcat(sbuff, this->dataPath);
+	sptr = this->dataPath->ConcatTo(sbuff);
 	if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 	{
 		*sptr++ = IO::Path::PATH_SEPERATOR;
@@ -434,7 +434,7 @@ Net::SNS::SNSManager::SNSManager(Net::SocketFactory *sockf, Net::SSLEngine *ssl,
 	this->sockf = sockf;
 	this->ssl = ssl;
 	this->encFact = encFact;
-	this->userAgent = userAgent?Text::StrCopyNew(userAgent):0;
+	this->userAgent = Text::String::NewOrNull(userAgent);
 	NEW_CLASS(this->mut, Sync::Mutex());
 	NEW_CLASS(this->channelList, Data::ArrayList<Net::SNS::SNSManager::ChannelData*>());
 
@@ -444,14 +444,14 @@ Net::SNS::SNSManager::SNSManager(Net::SocketFactory *sockf, Net::SSLEngine *ssl,
 
 	if (dataPath)
 	{
-		this->dataPath = Text::StrCopyNew(dataPath);
-		sptr = Text::StrConcat(sbuff, dataPath);
+		this->dataPath = Text::String::NewNotNull(dataPath);
+		sptr = this->dataPath->ConcatTo(sbuff);
 	}
 	else
 	{
 		IO::Path::GetProcessFileName(sbuff);
 		sptr = IO::Path::AppendPath(sbuff, (const UTF8Char*)"SNS");
-		this->dataPath = Text::StrCopyNew(sbuff);
+		this->dataPath = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 	}
 	if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 	{
@@ -519,8 +519,8 @@ Net::SNS::SNSManager::~SNSManager()
 		Sync::Thread::Sleep(10);
 	}
 
-	SDEL_TEXT(this->userAgent);
-	Text::StrDelNew(this->dataPath);
+	SDEL_STRING(this->userAgent);
+	this->dataPath->Release();
 	i = this->channelList->GetCount();
 	while (i-- > 0)
 	{
@@ -558,7 +558,7 @@ Net::SNS::SNSControl *Net::SNS::SNSManager::AddChannel(Net::SNS::SNSControl::SNS
 	ctrl = CreateControl(type, channelId);
 	if (ctrl)
 	{
-		sptr = Text::StrConcat(sbuff, this->dataPath);
+		sptr = this->dataPath->ConcatTo(sbuff);
 		if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 		{
 			*sptr++ = IO::Path::PATH_SEPERATOR;

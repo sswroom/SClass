@@ -34,7 +34,7 @@ Map::ESRI::ESRITileMap::ESRITileMap(const UTF8Char *url, const UTF8Char *cacheDi
 	IO::MemoryStream *mstm;
 	Text::StrConcatC(Text::StrConcat(sbuff, url), UTF8STRC("?f=json"));
 	Net::HTTPClient *cli = Net::HTTPClient::CreateConnect(sockf, ssl, sbuff, "GET", true);
-	NEW_CLASS(mstm, IO::MemoryStream((const UTF8Char*)"Map.ESRI.ESRITileMap.ESRITileMap"));
+	NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("Map.ESRI.ESRITileMap.ESRITileMap")));
 	while ((readSize = cli->Read(buff, 2048)) > 0)
 	{
 		mstm->Write(buff, readSize);

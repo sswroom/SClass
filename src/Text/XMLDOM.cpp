@@ -1380,7 +1380,7 @@ Bool Text::XMLDocument::ParseStream(Text::EncodingFactory *encFact, IO::Stream *
 	IO::MemoryStream *mstm;
 	UInt8 *mbuff;
 	UOSInt buffSize;
-	NEW_CLASS(mstm, IO::MemoryStream((const UTF8Char*)"Text.XMLDocument.ParseStream"));
+	NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("Text.XMLDocument.ParseStream")));
 	while ((buffSize = stm->Read(buff, 2048)) > 0)
 	{
 		mstm->Write(buff, buffSize);

@@ -35,18 +35,18 @@ namespace Net
 			Net::SocketFactory *sockf;
 			Net::SSLEngine *ssl;
 			Text::EncodingFactory *encFact;
-			const UTF8Char *userAgent;
+			Text::String *userAgent;
 
 			Text::JSONBase *ParsePageJSON(const UTF8Char *url);
 		public:
-			WebSiteInstagramControl(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, const UTF8Char *userAgent);
+			WebSiteInstagramControl(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, Text::String *userAgent);
 			~WebSiteInstagramControl();
 
 			OSInt GetChannelItems(Text::String *channelId, OSInt pageNo, Data::ArrayList<ItemData*> *itemList, ChannelInfo *chInfo);
 			void FreeItems(Data::ArrayList<ItemData*> *itemList);
 			void FreeChannelInfo(ChannelInfo *chInfo);
 			OSInt GetPageImages(Text::String *shortCode, Data::ArrayList<Text::String*> *imageList, Data::ArrayList<Text::String*> *videoList);
-			const UTF8Char *GetUserAgent();
+			Text::String *GetUserAgent();
 		};
 	}
 }

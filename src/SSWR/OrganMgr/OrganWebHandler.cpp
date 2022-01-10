@@ -2650,7 +2650,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroup(Net::WebServer::IWebReq
 			}
 		}
 
-		NEW_CLASS(mstm, IO::MemoryStream((const UTF8Char*)"SSWR::OrganMgr::OrganWebHandler.SvcGroup"));
+		NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SSWR::OrganMgr::OrganWebHandler.SvcGroup")));
 		NEW_CLASS(writer, Text::UTF8Writer(mstm));
 
 		sb.ClearStr();
@@ -3052,7 +3052,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroupMod(Net::WebServer::IWeb
 			}
 		}
 
-		NEW_CLASS(mstm, IO::MemoryStream((const UTF8Char*)"SSWR::OrganMgr::OrganWebHandler.SvcGroupMod"));
+		NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SSWR::OrganMgr::OrganWebHandler.SvcGroupMod")));
 		NEW_CLASS(writer, Text::UTF8Writer(mstm));
 
 		sb.ClearStr();
@@ -3328,7 +3328,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpecies(Net::WebServer::IWebR
 			}
 		}
 
-		NEW_CLASS(mstm, IO::MemoryStream((const UTF8Char*)"SSWR::OrganMgr::OrganWebHandler.SvcSpecies"));
+		NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SSWR::OrganMgr::OrganWebHandler.SvcSpecies")));
 		NEW_CLASS(writer, Text::UTF8Writer(mstm));
 
 		sb.ClearStr();
@@ -4040,7 +4040,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpeciesMod(Net::WebServer::IW
 			}
 		}
 
-		NEW_CLASS(mstm, IO::MemoryStream((const UTF8Char*)"SSWR::OrganMgr::OrganWebHandler.SvcSpeciesMod"));
+		NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SSWR::OrganMgr::OrganWebHandler.SvcSpeciesMod")));
 		NEW_CLASS(writer, Text::UTF8Writer(mstm));
 
 		sb.ClearStr();
@@ -4187,7 +4187,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcList(Net::WebServer::IWebRequ
 			return true;
 		}
 
-		NEW_CLASS(mstm, IO::MemoryStream((const UTF8Char*)"SSWR::OrganMgr::OrganWebHandler.SvcList"));
+		NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SSWR::OrganMgr::OrganWebHandler.SvcList")));
 		NEW_CLASS(writer, Text::UTF8Writer(mstm));
 
 		sb.ClearStr();
@@ -4463,7 +4463,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 					}
 				}
 
-				NEW_CLASS(mstm, IO::MemoryStream((const UTF8Char*)"SSWR::OrganMgr::OrganWebHandler.SvcPhotoDetail"));
+				NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SSWR::OrganMgr::OrganWebHandler.SvcPhotoDetail")));
 				NEW_CLASS(writer, Text::UTF8Writer(mstm));
 
 				sb.ClearStr();
@@ -4832,7 +4832,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 			wfile = species->wfiles->Get(fileId);
 			if (wfile)
 			{
-				NEW_CLASS(mstm, IO::MemoryStream((const UTF8Char*)"SSWR::OrganMgr::OrganWebHandler.SvcPhotoDetail"));
+				NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SSWR::OrganMgr::OrganWebHandler.SvcPhotoDetail")));
 				NEW_CLASS(writer, Text::UTF8Writer(mstm));
 
 				sb.ClearStr();
@@ -5074,7 +5074,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 
 				if (found)
 				{
-					NEW_CLASS(mstm, IO::MemoryStream((const UTF8Char*)"SSWR::OrganMgr::OrganWebHandler.SvcPhotoDetail"));
+					NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SSWR::OrganMgr::OrganWebHandler.SvcPhotoDetail")));
 					NEW_CLASS(writer, Text::UTF8Writer(mstm));
 
 					sb.ClearStr();
@@ -5231,7 +5231,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 						return true;
 					}
 
-					NEW_CLASS(mstm, IO::MemoryStream((const UTF8Char*)"SSWR::OrganMgr::OrganWebHandler.SvcPhotoDetail"));
+					NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SSWR::OrganMgr::OrganWebHandler.SvcPhotoDetail")));
 					NEW_CLASS(writer, Text::UTF8Writer(mstm));
 
 					sb.ClearStr();
@@ -5452,7 +5452,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetailD(Net::WebServer::
 		if (userFile)
 		{
 			SSWR::OrganMgr::OrganWebHandler::UserFileInfo *userFile2;
-			NEW_CLASS(mstm, IO::MemoryStream((const UTF8Char*)"SSWR::OrganMgr::OrganWebHandler.SvcPhotoDetailD"));
+			NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SSWR::OrganMgr::OrganWebHandler.SvcPhotoDetailD")));
 			NEW_CLASS(writer, Text::UTF8Writer(mstm));
 
 			dt.SetTicks(userFile->captureTimeTicks);
@@ -5691,7 +5691,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoYear(Net::WebServer::IWe
 		UTF8Char sbuff[32];
 		UTF8Char *sptr;
 
-		NEW_CLASS(mstm, IO::MemoryStream((const UTF8Char*)"SSWR::OrganMgr::OrganWebHandler.SvcPhotoYear"));
+		NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SSWR::OrganMgr::OrganWebHandler.SvcPhotoYear")));
 		NEW_CLASS(writer, Text::UTF8Writer(mstm));
 
 		sptr = Text::StrUInt16(Text::StrConcatC(sbuff, UTF8STRC("Year ")), y);
@@ -5993,7 +5993,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDay(Net::WebServer::IWeb
 		UTF8Char *sptr;
 		Text::String *s;
 
-		NEW_CLASS(mstm, IO::MemoryStream((const UTF8Char*)"SSWR::OrganMgr::OrganWebHandler.SvcPhotoDay"));
+		NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SSWR::OrganMgr::OrganWebHandler.SvcPhotoDay")));
 		NEW_CLASS(writer, Text::UTF8Writer(mstm));
 
 		dt.SetTicks(d * 86400000LL);
@@ -6217,7 +6217,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoUpload(Net::WebServer::I
 	Text::String *s;
 	req->ParseHTTPForm();
 
-	NEW_CLASS(mstm, IO::MemoryStream((const UTF8Char*)"SSWR::OrganMgr::OrganWebHandler.SvcPhotoUpload"));
+	NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SSWR::OrganMgr::OrganWebHandler.SvcPhotoUpload")));
 	NEW_CLASS(writer, Text::UTF8Writer(mstm));
 
 	me->WriteHeader(writer, (const UTF8Char*)"Photo Upload", env.user, env.isMobile);
@@ -6377,7 +6377,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSearchInside(Net::WebServer::
 			return true;
 		}
 
-		NEW_CLASS(mstm, IO::MemoryStream((const UTF8Char*)"SSWR::OrganMgr::OrganWebHandler.SvcSearchInside"));
+		NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SSWR::OrganMgr::OrganWebHandler.SvcSearchInside")));
 		NEW_CLASS(writer, Text::UTF8Writer(mstm));
 
 		sb.ClearStr();
@@ -6578,7 +6578,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSearchInsideMoreS(Net::WebSer
 			return true;
 		}
 
-		NEW_CLASS(mstm, IO::MemoryStream((const UTF8Char*)"SSWR::OrganMgr::OrganWebHandler.SvcSearchInsideMoreS"));
+		NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SSWR::OrganMgr::OrganWebHandler.SvcSearchInsideMoreS")));
 		NEW_CLASS(writer, Text::UTF8Writer(mstm));
 
 		sb.ClearStr();
@@ -6760,7 +6760,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSearchInsideMoreG(Net::WebSer
 			return true;
 		}
 
-		NEW_CLASS(mstm, IO::MemoryStream((const UTF8Char*)"SSWR::OrganMgr::OrganWebHandler.SvcSearchInsideMoreG"));
+		NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SSWR::OrganMgr::OrganWebHandler.SvcSearchInsideMoreG")));
 		NEW_CLASS(writer, Text::UTF8Writer(mstm));
 
 		sb.ClearStr();
@@ -6932,7 +6932,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcBookList(Net::WebServer::IWeb
 			return true;
 		}
 
-		NEW_CLASS(mstm, IO::MemoryStream((const UTF8Char*)"SSWR::OrganMgr::OrganWebHandler.SvcBookList"));
+		NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SSWR::OrganMgr::OrganWebHandler.SvcBookList")));
 		NEW_CLASS(writer, Text::UTF8Writer(mstm));
 
 		sb.ClearStr();
@@ -7079,7 +7079,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcBook(Net::WebServer::IWebRequ
 			return true;
 		}
 
-		NEW_CLASS(mstm, IO::MemoryStream((const UTF8Char*)"SSWR::OrganMgr::OrganWebHandler.SvcBook"));
+		NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SSWR::OrganMgr::OrganWebHandler.SvcBook")));
 		NEW_CLASS(writer, Text::UTF8Writer(mstm));
 
 		sb.ClearStr();
@@ -7345,7 +7345,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcLogin(Net::WebServer::IWebReq
 				sess->SetValueInt32("PickObjType", 0);
 				sess->EndUse();
 
-				NEW_CLASS(mstm, IO::MemoryStream((const UTF8Char*)"SSWR::OrganMgr::OrganWebHandler.SvcLogin"));
+				NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SSWR::OrganMgr::OrganWebHandler.SvcLogin")));
 				NEW_CLASS(writer, Text::UTF8Writer(mstm));
 
 				me->dataMut->LockRead();
@@ -7372,7 +7372,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcLogin(Net::WebServer::IWebReq
 		}
 	}
 
-	NEW_CLASS(mstm, IO::MemoryStream((const UTF8Char*)"SSWR::OrganMgr::OrganWebHandler.SvcLogin"));
+	NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SSWR::OrganMgr::OrganWebHandler.SvcLogin")));
 	NEW_CLASS(writer, Text::UTF8Writer(mstm));
 
 	me->dataMut->LockRead();
@@ -7417,7 +7417,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcReload(Net::WebServer::IWebRe
 		IO::Writer *writer;
 		Data::DateTime dt;
 
-		NEW_CLASS(mstm, IO::MemoryStream((const UTF8Char*)"SSWR::OrganMgr::OrganWebHandler.SvcReload"));
+		NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SSWR::OrganMgr::OrganWebHandler.SvcReload")));
 		NEW_CLASS(writer, Text::UTF8Writer(mstm));
 
 		me->WriteHeader(writer, (const UTF8Char*)"Reload", env.user, env.isMobile);
@@ -7479,7 +7479,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcRestart(Net::WebServer::IWebR
 		IO::Writer *writer;
 		Data::DateTime dt;
 
-		NEW_CLASS(mstm, IO::MemoryStream((const UTF8Char*)"SSWR.OrganMgr.OrganWebHandler.SvcRestart"));
+		NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SSWR.OrganMgr.OrganWebHandler.SvcRestart")));
 		NEW_CLASS(writer, Text::UTF8Writer(mstm));
 
 		me->WriteHeader(writer, (const UTF8Char*)"Restart", env.user, env.isMobile);
@@ -7540,7 +7540,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcIndex(Net::WebServer::IWebReq
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
 
-	NEW_CLASS(mstm, IO::MemoryStream((const UTF8Char*)"SSWR::OrganMgr::OrganWebHandler.SvcIndex"));
+	NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SSWR::OrganMgr::OrganWebHandler.SvcIndex")));
 	NEW_CLASS(writer, Text::UTF8Writer(mstm));
 
 	me->WriteHeader(writer, (const UTF8Char*)"Index", env.user, env.isMobile);
@@ -7665,7 +7665,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcCate(Net::WebServer::IWebRequ
 		Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::GroupInfo*> groups;
 		IO::ConfigFile *lang = me->LangGet(req);
 
-		NEW_CLASS(mstm, IO::MemoryStream((const UTF8Char*)"SSWR::OrganMgr::OrganWebHandler.SvcCate"));
+		NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SSWR::OrganMgr::OrganWebHandler.SvcCate")));
 		NEW_CLASS(writer, Text::UTF8Writer(mstm));
 
 		me->WriteHeader(writer, cate->chiName->v, env.user, env.isMobile);
@@ -7995,7 +7995,7 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhoto(Net::WebServer::IWebRequest 
 							}
 						}
 						gimg->DelBrush(b);
-						NEW_CLASS(mstm, IO::MemoryStream((const UTF8Char*)"SSWR::OrganMgr::OrganWebHandler.WebRequest"));
+						NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SSWR::OrganMgr::OrganWebHandler.WebRequest"));
 						gimg->SaveJPG(mstm);
 						buff = mstm->GetBuff(&buffSize);
 						resp->AddDefHeaders(req);
@@ -8018,7 +8018,7 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhoto(Net::WebServer::IWebRequest 
 					{
 						void *param;
 						Media::ImageList nimgList((const UTF8Char*)"Temp");
-						NEW_CLASS(mstm, IO::MemoryStream((const UTF8Char*)"SSWR::OrganMgr::OrganWebHandler.WebRequest"));
+						NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SSWR::OrganMgr::OrganWebHandler.WebRequest")));
 						nimgList.AddImage(dimg, 0);
 						Exporter::GUIJPGExporter exporter;
 						param = exporter.CreateParam(&nimgList);
@@ -8320,7 +8320,7 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhotoId(Net::WebServer::IWebReques
 						}
 						gimg->DelBrush(b);
 					}	
-					NEW_CLASS(mstm, IO::MemoryStream((const UTF8Char*)"SSWR::OrganMgr::OrganWebHandler.WebRequest"));
+					NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SSWR::OrganMgr::OrganWebHandler.WebRequest")));
 					gimg->SaveJPG(mstm);
 					ResponseMstm(req, resp, mstm, UTF8STRC("image/jpeg"));
 
@@ -8344,7 +8344,7 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhotoId(Net::WebServer::IWebReques
 				{
 					void *param;
 					Media::ImageList nimgList((const UTF8Char*)"Temp");
-					NEW_CLASS(mstm, IO::MemoryStream((const UTF8Char*)"SSWR::OrganMgr::OrganWebHandler.WebRequest"));
+					NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SSWR::OrganMgr::OrganWebHandler.WebRequest")));
 					nimgList.AddImage(dimg, 0);
 					Exporter::GUIJPGExporter exporter;
 					param = exporter.CreateParam(&nimgList);
@@ -8561,7 +8561,7 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhotoWId(Net::WebServer::IWebReque
 
 					void *param;
 					Media::ImageList nimgList((const UTF8Char*)"Temp");
-					NEW_CLASS(mstm, IO::MemoryStream((const UTF8Char*)"SSWR::OrganMgr::OrganWebHandler.WebRequest"));
+					NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SSWR::OrganMgr::OrganWebHandler.WebRequest")));
 					nimgList.AddImage(dimg, 0);
 					Exporter::GUIJPGExporter exporter;
 					param = exporter.CreateParam(&nimgList);

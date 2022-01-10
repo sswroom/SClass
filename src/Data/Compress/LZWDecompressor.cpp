@@ -16,7 +16,7 @@ Data::Compress::LZWDecompressor::~LZWDecompressor()
 Bool Data::Compress::LZWDecompressor::Decompress(UInt8 *destBuff, UOSInt *destBuffSize, UInt8 *srcBuff, UOSInt srcBuffSize)
 {
 	IO::MemoryStream *mstm;
-	NEW_CLASS(mstm, IO::MemoryStream(srcBuff, srcBuffSize, (const UTF8Char*)"Data.Compress.LZWDecompressor.Decompress"));
+	NEW_CLASS(mstm, IO::MemoryStream(srcBuff, srcBuffSize, UTF8STRC("Data.Compress.LZWDecompressor.Decompress")));
 	Data::Compress::LZWDecStream lzw(mstm, false, 8, 15, 1);
 	UOSInt writeSize = 0;
 	UOSInt thisSize;

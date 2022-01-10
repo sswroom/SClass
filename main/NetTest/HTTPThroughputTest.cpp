@@ -49,7 +49,7 @@ UInt32 __stdcall ProcessThread(void *userObj)
 	status->threadRunning = true;
 	if (KACONN)
 	{
-		cli = Net::HTTPClient::CreateClient(sockf, ssl, 0, true, false);
+		cli = Net::HTTPClient::CreateClient(sockf, ssl, 0, 0, true, false);
 		while (!status->threadToStop)
 		{
 			url = (const UTF8Char*)URL;
@@ -101,13 +101,13 @@ UInt32 __stdcall ProcessThread(void *userObj)
 				if (cli->IsError())
 				{
 					DEL_CLASS(cli);
-					cli = Net::HTTPClient::CreateClient(sockf, ssl, 0, true, Text::StrStartsWith(url, (const UTF8Char*)"https://"));
+					cli = Net::HTTPClient::CreateClient(sockf, ssl, 0, 0, true, Text::StrStartsWith(url, (const UTF8Char*)"https://"));
 				}
 			}
 			else
 			{
 				DEL_CLASS(cli);
-				cli = Net::HTTPClient::CreateClient(sockf, ssl, 0, true, Text::StrStartsWith(url, (const UTF8Char*)"https://"));
+				cli = Net::HTTPClient::CreateClient(sockf, ssl, 0, 0, true, Text::StrStartsWith(url, (const UTF8Char*)"https://"));
 				Sync::Interlocked::Increment(&failCnt);
 			}
 		}
@@ -120,7 +120,7 @@ UInt32 __stdcall ProcessThread(void *userObj)
 			url = (const UTF8Char*)URL;
 			if (Sync::Interlocked::Decrement(&connLeft) < 0)
 				break;
-			cli = Net::HTTPClient::CreateClient(sockf, ssl, 0, true, Text::StrStartsWith(url, (const UTF8Char*)"https://"));
+			cli = Net::HTTPClient::CreateClient(sockf, ssl, 0, 0, true, Text::StrStartsWith(url, (const UTF8Char*)"https://"));
 			if (cli->Connect(url, "GET", &timeDNS, &timeConn, false))
 			{
 				cli->AddHeaderC(UTF8STRC("Connection"), UTF8STRC("keep-alive"));

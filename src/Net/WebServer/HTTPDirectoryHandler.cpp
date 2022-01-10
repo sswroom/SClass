@@ -1269,16 +1269,14 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 			}
 			else
 			{
-				IO::MemoryStream *mstm;
-				NEW_CLASS(mstm, IO::MemoryStream((const UTF8Char*)"Net.WebServer.HTTPDirectoryHandler.ProcessRequest.mstm"));
+				IO::MemoryStream mstm(UTF8STRC("Net.WebServer.HTTPDirectoryHandler.ProcessRequest.mstm"));
 				while (readSize > 0)
 				{
-					sizeLeft += mstm->Write(buff, readSize);
+					sizeLeft += mstm.Write(buff, readSize);
 					readSize = fs->Read(buff, 2048);
 				}
-				mstm->SeekFromBeginning(0);
-				Net::WebServer::HTTPServerUtil::SendContent(req, resp, mime, sizeLeft, mstm);
-				DEL_CLASS(mstm);
+				mstm.SeekFromBeginning(0);
+				Net::WebServer::HTTPServerUtil::SendContent(req, resp, mime, sizeLeft, &mstm);
 			}
 		}
 		else if (!partial && sizeLeft < this->fileCacheSize)

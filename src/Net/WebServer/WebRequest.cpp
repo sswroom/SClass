@@ -656,7 +656,7 @@ void Net::WebServer::WebRequest::DataStart()
 		if ((OSInt)this->reqDataSize == -1)
 		{
 			this->reqData = MemAlloc(UInt8, 65536);
-			NEW_CLASS(this->chunkMStm, IO::MemoryStream((const UTF8Char*)"Net.WebServer.WebReqeust.chunkMStm"));
+			NEW_CLASS(this->chunkMStm, IO::MemoryStream(UTF8STRC("Net.WebServer.WebReqeust.chunkMStm")));
 		}
 		else
 		{
