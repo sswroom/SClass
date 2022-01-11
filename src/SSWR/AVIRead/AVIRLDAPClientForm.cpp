@@ -24,7 +24,7 @@ void __stdcall SSWR::AVIRead::AVIRLDAPClientForm::OnConnectClicked(void *userObj
 		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter Host", (const UTF8Char*)"LDAP Client", me);
 		return;
 	}
-	if (!sockf->DNSResolveIP(sb.ToString(), &addr))
+	if (!sockf->DNSResolveIP(sb.ToString(), sb.GetLength(), &addr))
 	{
 		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in resolving host", (const UTF8Char*)"LDAP Client", me);
 		return;

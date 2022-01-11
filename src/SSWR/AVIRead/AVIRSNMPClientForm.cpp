@@ -13,7 +13,7 @@ void __stdcall SSWR::AVIRead::AVIRSNMPClientForm::OnRequestClicked(void *userObj
 	Text::StringBuilderUTF8 sbOID;
 	Net::SocketUtil::AddressInfo addr;
 	me->txtAgent->GetText(&sbComm);
-	if (!me->core->GetSocketFactory()->DNSResolveIP(sbComm.ToString(), &addr))
+	if (!me->core->GetSocketFactory()->DNSResolveIP(sbComm.ToString(), sbComm.GetLength(), &addr))
 	{
 		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in resolving Agent Address", (const UTF8Char*)"SNMP Client", me);
 		return;

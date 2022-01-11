@@ -928,7 +928,7 @@ Bool Net::OSSocketFactory::GetDefDNS(Net::SocketUtil::AddressInfo *addr)
 		return false;
 	}
 	Bool ret = false;
-	UTF8Char *sarr[3];
+	Text::PString sarr[3];
 	Text::StringBuilderUTF8 sb;
 	NEW_CLASS(reader, Text::UTF8Reader(fs));
 	while (true)
@@ -944,11 +944,11 @@ Bool Net::OSSocketFactory::GetDefDNS(Net::SocketUtil::AddressInfo *addr)
 		}
 		else
 		{
-			if (Text::StrSplitTrim(sarr, 3, sb.ToString(), ' ') == 2)
+			if (Text::StrSplitTrimP(sarr, 3, sb.ToString(), sb.GetLength(), ' ') == 2)
 			{
-				if (Text::StrEquals(sarr[0], (const UTF8Char*)"nameserver"))
+				if (Text::StrEqualsC(sarr[0].v, sarr[0].len, UTF8STRC("nameserver")))
 				{
-					if (Net::SocketUtil::GetIPAddr(sarr[1], addr))
+					if (Net::SocketUtil::GetIPAddr(sarr[1].v, sarr[1].len, addr))
 					{
 						ret = true;
 						break;
@@ -974,7 +974,7 @@ UOSInt Net::OSSocketFactory::GetDNSList(Data::ArrayList<UInt32> *dnsList)
 		return false;
 	}
 	UOSInt ret = 0;
-	UTF8Char *sarr[3];
+	Text::PString sarr[3];
 	Text::StringBuilderUTF8 sb;
 	Net::SocketUtil::AddressInfo addr;
 	NEW_CLASS(reader, Text::UTF8Reader(fs));
@@ -991,11 +991,11 @@ UOSInt Net::OSSocketFactory::GetDNSList(Data::ArrayList<UInt32> *dnsList)
 		}
 		else
 		{
-			if (Text::StrSplitTrim(sarr, 3, sb.ToString(), ' ') == 2)
+			if (Text::StrSplitTrimP(sarr, 3, sb.ToString(), sb.GetLength(), ' ') == 2)
 			{
-				if (Text::StrEquals(sarr[0], (const UTF8Char*)"nameserver"))
+				if (Text::StrEqualsC(sarr[0].v, sarr[0].len, UTF8STRC("nameserver")))
 				{
-					if (Net::SocketUtil::GetIPAddr(sarr[1], &addr))
+					if (Net::SocketUtil::GetIPAddr(sarr[1].v, sarr[1].len, &addr))
 					{
 						if (addr.addrType == Net::AddrType::IPv4)
 						{
@@ -1039,7 +1039,7 @@ Bool Net::OSSocketFactory::LoadHosts(Net::DNSHandler *dnsHdlr)
 			i = Text::StrSplitWS(sarr, 2, sb.ToString());
 			if (i == 2)
 			{
-				if (Net::SocketUtil::GetIPAddr(sarr[0], &addr))
+				if (Net::SocketUtil::GetIPAddr(sarr[0], Text::StrCharCnt(sarr[0]), &addr))
 				{
 					while (true)
 					{

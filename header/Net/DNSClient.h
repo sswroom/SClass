@@ -44,9 +44,9 @@ namespace Net
 		DNSClient(Net::SocketFactory *sockf, const Net::SocketUtil::AddressInfo *serverAddr);
 		~DNSClient();
 
-		UOSInt GetByEmailDomainName(Data::ArrayList<RequestAnswer*> *answers, const UTF8Char *domain);
-		UOSInt GetByDomainName(Data::ArrayList<RequestAnswer*> *answers, const UTF8Char *domain);
-		UOSInt GetByType(Data::ArrayList<RequestAnswer*> *answers, const UTF8Char *domain, UInt16 type);
+		UOSInt GetByEmailDomainName(Data::ArrayList<RequestAnswer*> *answers, const UTF8Char *domain, UOSInt domainLen);
+		UOSInt GetByDomainName(Data::ArrayList<RequestAnswer*> *answers, const UTF8Char *domain, UOSInt domainLen);
+		UOSInt GetByType(Data::ArrayList<RequestAnswer*> *answers, const UTF8Char *domain, UOSInt domainLen, UInt16 type);
 		UOSInt GetByIPv4Name(Data::ArrayList<RequestAnswer*> *answers, UInt32 ip);
 		UOSInt GetByAddrName(Data::ArrayList<RequestAnswer*> *answers, const Net::SocketUtil::AddressInfo *addr);
 		UOSInt GetServerName(Data::ArrayList<RequestAnswer*> *answers);

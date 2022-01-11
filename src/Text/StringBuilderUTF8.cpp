@@ -21,7 +21,8 @@ Text::StringBuilderUTF *Text::StringBuilderUTF8::Append(Text::String *s)
 	if (s->leng > 0)
 	{
 		this->Text::StringBuilder<UTF8Char>::AllocLeng(s->leng);
-		this->buffEnd = Text::StrConcatC(this->buffEnd, s->v, s->leng);
+		MemCopyNO(this->buffEnd, s->v, s->leng + 1);
+		this->buffEnd += s->leng;
 	}
 	return this;
 }
@@ -46,9 +47,8 @@ Text::StringBuilderUTF *Text::StringBuilderUTF8::AppendC(const UTF8Char *s, UOSI
 	if (charCnt > 0)
 	{
 		this->Text::StringBuilder<UTF8Char>::AllocLeng(charCnt);
-		MemCopyNO(this->buffEnd, s, charCnt);
+		MemCopyNO(this->buffEnd, s, charCnt + 1);
 		this->buffEnd += charCnt;
-		this->buffEnd[0] = 0;
 	}
 	return this;
 }
@@ -207,4 +207,9 @@ Bool Text::StringBuilderUTF8::EqualsC(const UTF8Char *s, UOSInt len)
 Bool Text::StringBuilderUTF8::StartsWithC(const UTF8Char *s, UOSInt len)
 {
 	return Text::StrStartsWithC(this->buff, (UOSInt)(this->buffEnd - this->buff), s, len);
+}
+
+UOSInt Text::StringBuilderUTF8::IndexOfC(const UTF8Char *s, UOSInt len)
+{
+	return Text::StrIndexOfC(this->buff, (UOSInt)(this->buffEnd - this->buff), s, len);
 }

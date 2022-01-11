@@ -74,7 +74,7 @@ void __stdcall SSWR::AVIRead::AVIRGPSDevForm::OnConnClicked(void *userObj)
 		sb.ToUInt16(&port);
 		sb.ClearStr();
 		me->txtHost->GetText(&sb);
-		if (!me->core->GetSocketFactory()->DNSResolveIP(sb.ToString(), &addr) || port <= 0 || port >= 65536)
+		if (!me->core->GetSocketFactory()->DNSResolveIP(sb.ToString(), sb.GetLength(), &addr) || port <= 0 || port >= 65536)
 		{
 
 		}

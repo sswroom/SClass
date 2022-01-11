@@ -15,7 +15,7 @@ void __stdcall SSWR::AVIRead::AVIRTFTPClientForm::OnRecvClick(void *userObj)
 	UInt16 port;
 	Text::StringBuilderUTF8 sb;
 	me->txtHost->GetText(&sb);
-	if (!me->core->GetSocketFactory()->DNSResolveIP(sb.ToString(), &addr))
+	if (!me->core->GetSocketFactory()->DNSResolveIP(sb.ToString(), sb.GetLength(), &addr))
 	{
 		UI::MessageDialog::ShowDialog((const UTF8Char*)"Unknown Host", (const UTF8Char*)"TFTP Client", me);
 		me->txtHost->Focus();
@@ -101,7 +101,7 @@ void __stdcall SSWR::AVIRead::AVIRTFTPClientForm::OnSendClick(void *userObj)
 	UInt16 port;
 	Text::StringBuilderUTF8 sb;
 	me->txtHost->GetText(&sb);
-	if (!me->core->GetSocketFactory()->DNSResolveIP(sb.ToString(), &addr))
+	if (!me->core->GetSocketFactory()->DNSResolveIP(sb.ToString(), sb.GetLength(), &addr))
 	{
 		UI::MessageDialog::ShowDialog((const UTF8Char*)"Unknown Host", (const UTF8Char*)"TFTP Client", me);
 		me->txtHost->Focus();

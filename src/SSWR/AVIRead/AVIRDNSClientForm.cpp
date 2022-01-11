@@ -30,7 +30,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSClientForm::OnRequestClicked(void *userObj)
 		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter request", (const UTF8Char*)"Error", me);
 		return;
 	}
-	reqIP = Net::SocketUtil::GetIPAddr(sb.ToString());
+	reqIP = Net::SocketUtil::GetIPAddr(sb.ToString(), sb.GetLength());
 
 	NEW_CLASS(dnsCli, Net::DNSClient(me->sockf, &dnsAddr));
 	NEW_CLASS(clk, Manage::HiResClock());
@@ -41,7 +41,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSClientForm::OnRequestClicked(void *userObj)
 	{
 		UInt16 reqType = (UInt16)(UOSInt)me->cboRequest->GetSelectedItem();
 		clk->Start();
-		dnsCli->GetByType(me->ansList, sb.ToString(), reqType);
+		dnsCli->GetByType(me->ansList, sb.ToString(), sb.GetLength(), reqType);
 		t = clk->GetTimeDiff();
 	}
 	else

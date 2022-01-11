@@ -94,7 +94,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 
 	Int32 retNum = 0;
 	NEW_CLASS(sockf, Net::OSSocketFactory(false));
-	if (!sockf->DNSResolveIP(mysqlServer->v, &addr))
+	if (!sockf->DNSResolveIP(mysqlServer->v, mysqlServer->leng, &addr))
 	{
 		console.WriteLineC(UTF8STRC("MySQLServer cannot be resolved"));
 		return 4;

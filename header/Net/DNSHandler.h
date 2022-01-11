@@ -29,8 +29,8 @@ namespace Net
 		DNSHandler(Net::SocketFactory *sockf, const Net::SocketUtil::AddressInfo *serverAddr);
 		~DNSHandler();
 	
-		Bool GetByDomainNamev4(Net::SocketUtil::AddressInfo *addr, const UTF8Char *domain);
-		Bool GetByDomainNamev6(Net::SocketUtil::AddressInfo *addr, const UTF8Char *domain);
+		Bool GetByDomainNamev4(Net::SocketUtil::AddressInfo *addr, const UTF8Char *domain, UOSInt domainLen);
+		Bool GetByDomainNamev6(Net::SocketUtil::AddressInfo *addr, const UTF8Char *domain, UOSInt domainLen);
 
 		Bool AddHost(const Net::SocketUtil::AddressInfo *addr, const UTF8Char *domain);
 		void UpdateDNSAddr(const Net::SocketUtil::AddressInfo *serverAddr);

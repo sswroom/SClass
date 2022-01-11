@@ -165,7 +165,7 @@ UTF8Char *Text::URLString::GetURLPathSvr(UTF8Char *sbuff, const UTF8Char *url, U
 {
 	UOSInt i;
 	UTF8Char *tmpBuff;
-	i = Text::StrIndexOf(url, (const UTF8Char*)"://");
+	i = Text::StrIndexOfC(url, urlLen, UTF8STRC("://"));
 	if (i != INVALID_INDEX)
 	{
 		url = &url[i + 3];

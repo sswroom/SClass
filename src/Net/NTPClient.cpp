@@ -47,7 +47,7 @@ Net::NTPClient::~NTPClient()
 Bool Net::NTPClient::GetServerTime(const UTF8Char *host, UInt16 port, Data::DateTime *svrTime)
 {
 	Net::SocketUtil::AddressInfo addr;
-	if (!sockf->DNSResolveIP(host, &addr))
+	if (!sockf->DNSResolveIP(host, Text::StrCharCnt(host), &addr))
 		return false;
 	return GetServerTime(&addr, port, svrTime);
 }

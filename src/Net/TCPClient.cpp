@@ -26,7 +26,7 @@ Net::TCPClient::TCPClient(Net::SocketFactory *sockf, const UTF8Char *name, UInt1
 	this->timeoutMS = 0;
 
 	Net::SocketUtil::AddressInfo addr;
-	if (!sockf->DNSResolveIP(name, &addr))
+	if (!sockf->DNSResolveIP(name, Text::StrCharCnt(name), &addr))
 	{
 		this->flags = 12;
 		return;
@@ -99,7 +99,7 @@ Net::TCPClient::TCPClient(Net::SocketFactory *sockf, UInt32 ip, UInt16 port) : I
 	this->cliId = sockf->GenSocketId(s);
 }
 
-Net::TCPClient::TCPClient(Net::SocketFactory *sockf, const Net::SocketUtil::AddressInfo *addr, UInt16 port) : IO::Stream((const UTF8Char*)"")
+Net::TCPClient::TCPClient(Net::SocketFactory *sockf, const Net::SocketUtil::AddressInfo *addr, UInt16 port) : IO::Stream(UTF8STRC(""))
 {
 	this->currCnt = 0;
 	this->s = 0;

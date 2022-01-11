@@ -23,7 +23,7 @@ namespace Net
 		AddrType aType;
 
 	public:
-		AddressRange(const UTF8Char *addr, Bool scanBoardcast);
+		AddressRange(const UTF8Char *addr, UOSInt addrLen, Bool scanBoardcast);
 		~AddressRange();
 
 		UOSInt GetCount();

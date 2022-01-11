@@ -74,17 +74,17 @@ Net::DNSClient::~DNSClient()
 	DEL_CLASS(this->reqMut);
 }
 
-UOSInt Net::DNSClient::GetByEmailDomainName(Data::ArrayList<RequestAnswer*> *answers, const UTF8Char *domain)
+UOSInt Net::DNSClient::GetByEmailDomainName(Data::ArrayList<RequestAnswer*> *answers, const UTF8Char *domain, UOSInt domainLen)
 {
-	return GetByType(answers, domain, 15);
+	return GetByType(answers, domain, domainLen, 15);
 }
 
-UOSInt Net::DNSClient::GetByDomainName(Data::ArrayList<RequestAnswer*> *answers, const UTF8Char *domain)
+UOSInt Net::DNSClient::GetByDomainName(Data::ArrayList<RequestAnswer*> *answers, const UTF8Char *domain, UOSInt domainLen)
 {
-	return GetByType(answers, domain, 1);
+	return GetByType(answers, domain, domainLen, 1);
 }
 
-UOSInt Net::DNSClient::GetByType(Data::ArrayList<RequestAnswer*> *answers, const UTF8Char *domain, UInt16 reqType)
+UOSInt Net::DNSClient::GetByType(Data::ArrayList<RequestAnswer*> *answers, const UTF8Char *domain, UOSInt domainLen, UInt16 reqType)
 {
 	UOSInt ret = 0;
 	UInt8 buff[512];
@@ -106,7 +106,7 @@ UOSInt Net::DNSClient::GetByType(Data::ArrayList<RequestAnswer*> *answers, const
 	if (reqType == 12)
 	{
 		Net::SocketUtil::AddressInfo addr;
-		if (Net::SocketUtil::GetIPAddr(domain, &addr))
+		if (Net::SocketUtil::GetIPAddr(domain, domainLen, &addr))
 		{
 			if (addr.addrType == Net::AddrType::IPv4)
 			{

@@ -63,9 +63,8 @@ Net::DNSHandler::~DNSHandler()
 	DEL_CLASS(this->dnsCli);
 }
 
-Bool Net::DNSHandler::GetByDomainNamev4(Net::SocketUtil::AddressInfo *addr, const UTF8Char *domain)
+Bool Net::DNSHandler::GetByDomainNamev4(Net::SocketUtil::AddressInfo *addr, const UTF8Char *domain, UOSInt domainLen)
 {
-	UOSInt domainLen = Text::StrCharCnt(domain);
 	DomainStatus *dnsStat;
 	Double t;
 	UOSInt i;
@@ -89,7 +88,7 @@ Bool Net::DNSHandler::GetByDomainNamev4(Net::SocketUtil::AddressInfo *addr, cons
 				Data::ArrayList<Net::DNSClient::RequestAnswer*> ansArr;
 				mutUsage.EndUse();
 
-				j = this->dnsCli->GetByType(&ansArr, domain, 1);
+				j = this->dnsCli->GetByType(&ansArr, domain, domainLen, 1);
 				mutUsage.BeginUse();
 				this->dnsCli->FreeAnswers(dnsStat->answers);
 				dnsStat->answers->Clear();
@@ -119,7 +118,7 @@ Bool Net::DNSHandler::GetByDomainNamev4(Net::SocketUtil::AddressInfo *addr, cons
 	dnsStat->domain = Text::String::New(domain, domainLen);
 	dnsStat->timeout = t;
 	NEW_CLASS(dnsStat->answers, Data::ArrayList<Net::DNSClient::RequestAnswer*>());
-	j = this->dnsCli->GetByType(dnsStat->answers, domain, 1);
+	j = this->dnsCli->GetByType(dnsStat->answers, domain, domainLen, 1);
 
 	Bool succ = false;
 	i = 0;
@@ -149,9 +148,8 @@ Bool Net::DNSHandler::GetByDomainNamev4(Net::SocketUtil::AddressInfo *addr, cons
 	return succ;
 }
 
-Bool Net::DNSHandler::GetByDomainNamev6(Net::SocketUtil::AddressInfo *addr, const UTF8Char *domain)
+Bool Net::DNSHandler::GetByDomainNamev6(Net::SocketUtil::AddressInfo *addr, const UTF8Char *domain, UOSInt domainLen)
 {
-	UOSInt domainLen = Text::StrCharCnt(domain);
 	DomainStatus *dnsStat;
 	Double t;
 	UOSInt i;
@@ -175,7 +173,7 @@ Bool Net::DNSHandler::GetByDomainNamev6(Net::SocketUtil::AddressInfo *addr, cons
 				Data::ArrayList<Net::DNSClient::RequestAnswer*> ansArr;
 				mutUsage.EndUse();
 
-				j = this->dnsCli->GetByType(&ansArr, domain, 28);
+				j = this->dnsCli->GetByType(&ansArr, domain, domainLen, 28);
 				mutUsage.BeginUse();
 				this->dnsCli->FreeAnswers(dnsStat->answers);
 				dnsStat->answers->Clear();
@@ -205,7 +203,7 @@ Bool Net::DNSHandler::GetByDomainNamev6(Net::SocketUtil::AddressInfo *addr, cons
 	dnsStat->domain = Text::String::New(domain, domainLen);
 	dnsStat->timeout = t;
 	NEW_CLASS(dnsStat->answers, Data::ArrayList<Net::DNSClient::RequestAnswer*>());
-	j = this->dnsCli->GetByType(dnsStat->answers, domain, 1);
+	j = this->dnsCli->GetByType(dnsStat->answers, domain, domainLen, 1);
 
 	Bool succ = false;
 	i = 0;

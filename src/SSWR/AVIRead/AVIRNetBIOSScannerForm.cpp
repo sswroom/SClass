@@ -13,7 +13,7 @@ void __stdcall SSWR::AVIRead::AVIRNetBIOSScannerForm::OnRequestClicked(void *use
 	Text::StringBuilderUTF8 sb;
 	Net::SocketUtil::AddressInfo addr;
 	me->txtTargetAddr->GetText(&sb);
-	Net::AddressRange range(sb.ToString(), me->chkTargetScan->IsChecked());
+	Net::AddressRange range(sb.ToString(), sb.GetLength(), me->chkTargetScan->IsChecked());
 	if (range.GetCount() == 0)
 	{
 		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in parsing Target Address", (const UTF8Char*)"NetBIOS Scanner", me);

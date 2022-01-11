@@ -534,6 +534,7 @@ Bool Net::HTTPMyClient::Connect(const UTF8Char *url, UOSInt urlLen, const Char *
 	UTF8Char urltmp[256];
 	UOSInt urltmpLen;
 	UTF8Char svrname[256];
+	UTF8Char *svrnameEnd;
 	UTF8Char host[256];
 
 	UOSInt i;
@@ -622,7 +623,7 @@ Bool Net::HTTPMyClient::Connect(const UTF8Char *url, UOSInt urlLen, const Char *
 			this->canWrite = false;
 			return false;
 		}
-		Text::StrConcatC(svrname, &urltmp[1], i - 1);
+		svrnameEnd = Text::StrConcatC(svrname, &urltmp[1], i - 1);
 		if (urltmp[i + 1] == ':')
 		{
 			Text::StrToUInt16S(&urltmp[i + 2], &port, 0);
@@ -647,7 +648,7 @@ Bool Net::HTTPMyClient::Connect(const UTF8Char *url, UOSInt urlLen, const Char *
 		if (i == 2)
 		{
 			Text::StrToUInt16S(ptrs[1].v, &port, 0);
-			Text::StrConcatC(svrname, ptrs[0].v, ptrs[0].len);
+			svrnameEnd = Text::StrConcatC(svrname, ptrs[0].v, ptrs[0].len);
 			urltmpLen = ptrs[0].len;
 		}
 		else
@@ -660,7 +661,7 @@ Bool Net::HTTPMyClient::Connect(const UTF8Char *url, UOSInt urlLen, const Char *
 			{
 				port = 80;
 			}
-			Text::StrConcatC(svrname, ptrs[0].v, ptrs[0].len);
+			svrnameEnd = Text::StrConcatC(svrname, ptrs[0].v, ptrs[0].len);
 		}
 	}
 
@@ -674,9 +675,9 @@ Bool Net::HTTPMyClient::Connect(const UTF8Char *url, UOSInt urlLen, const Char *
 		if (Text::StrEqualsICase(svrname, (const UTF8Char*)"localhost"))
 		{
 			addr.addrType = Net::AddrType::IPv4;
-			WriteNUInt32(addr.addr, Net::SocketUtil::GetIPAddr((const UTF8Char*)"127.0.0.1"));
+			WriteNUInt32(addr.addr, Net::SocketUtil::GetIPAddr(UTF8STRC("127.0.0.1")));
 		}
-		else if (!sockf->DNSResolveIP(svrname, &addr))
+		else if (!sockf->DNSResolveIP(svrname, (UOSInt)(svrnameEnd - svrname), &addr))
 		{
 			this->cli = 0;
 
@@ -829,25 +830,32 @@ Bool Net::HTTPMyClient::Connect(const UTF8Char *url, UOSInt urlLen, const Char *
 	}
 	if (method)
 	{
-		if (Text::StrEquals(method, "POST"))
+		UOSInt methodLen = Text::StrCharCnt(method);
+		if (Text::StrEqualsC((const UTF8Char*)method, methodLen, UTF8STRC("GET")))
+		{
+			this->canWrite = false;
+			this->writing = false;
+			cptr = Text::StrConcatC(dataBuff, UTF8STRC("GET "));
+		}
+		else if (Text::StrEqualsC((const UTF8Char*)method, methodLen, UTF8STRC("POST")))
 		{
 			this->canWrite = true;
 			this->writing = false;
 			cptr = Text::StrConcatC(dataBuff, UTF8STRC("POST "));
 		}
-		else if (Text::StrEquals(method, "PUT"))
+		else if (Text::StrEqualsC((const UTF8Char*)method, methodLen, UTF8STRC("PUT")))
 		{
 			this->canWrite = true;
 			this->writing = false;
 			cptr = Text::StrConcatC(dataBuff, UTF8STRC("PUT "));
 		}
-		else if (Text::StrEquals(method, "PATCH"))
+		else if (Text::StrEqualsC((const UTF8Char*)method, methodLen, UTF8STRC("PATCH")))
 		{
 			this->canWrite = true;
 			this->writing = false;
 			cptr = Text::StrConcatC(dataBuff, UTF8STRC("PATCH "));
 		}
-		else if (Text::StrEquals(method, "DELETE"))
+		else if (Text::StrEqualsC((const UTF8Char*)method, methodLen, UTF8STRC("DELETE")))
 		{
 			this->canWrite = false;
 			this->writing = false;
@@ -899,17 +907,13 @@ void Net::HTTPMyClient::AddHeaderC(const UTF8Char *name, UOSInt nameLen, const U
 	{
 		if (nameLen + valueLen + 5 > 512)
 		{
-			UInt8 *cbuff;
-			cbuff = MemAlloc(UInt8, nameLen + valueLen + 5);
-			sptr = Text::StrConcatC((UTF8Char*)cbuff, name, nameLen);
-			sptr = Text::StrConcatC(sptr, UTF8STRC(": "));
-			sptr = Text::StrConcatC(sptr, value, valueLen);
-			sptr = Text::StrConcatC(sptr, UTF8STRC("\r\n"));
+			this->reqMstm->Write(name, nameLen);
+			this->reqMstm->Write(UTF8STRC(": "));
+			this->reqMstm->Write(value, valueLen);
+			this->reqMstm->Write(UTF8STRC("\r\n"));
 #ifdef SHOWDEBUG
 			printf("Add Header: %s", cbuff);
 #endif
-			this->reqMstm->Write(cbuff, (UOSInt)(sptr - (UTF8Char*)cbuff));
-			MemFree(cbuff);
 		}
 		else
 		{
@@ -1069,7 +1073,7 @@ void Net::HTTPMyClient::EndRequest(Double *timeReq, Double *timeResp)
 
 					if (s->StartsWithICase((const UTF8Char*)"Content-Length: "))
 					{
-						s->leng = (UOSInt)(Text::StrTrim(&s->v[16]) - s->v);
+						s->leng = (UOSInt)(Text::StrTrimC(&s->v[16], s->leng - 16) - s->v);
 						this->contLeng = Text::StrToUInt64(&s->v[16]);
 					}
 					else if (s->StartsWithICase((const UTF8Char*)"Transfer-Encoding: "))

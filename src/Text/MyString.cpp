@@ -2153,7 +2153,7 @@ UOSInt Text::StrIndexOfC(const UTF8Char *str1, UOSInt len1, const UTF8Char *str2
 		}
 		return INVALID_INDEX;
 	case 3:
-		v2 = ReadNInt16(str2);
+		v2 = ReadNUInt16(str2);
 		v1 = str2[2];
 		while (len1-- > 2)
 		{
@@ -2163,10 +2163,10 @@ UOSInt Text::StrIndexOfC(const UTF8Char *str1, UOSInt len1, const UTF8Char *str2
 		}
 		return INVALID_INDEX;
 	case 4:
-		v3 = ReadNInt32(str2);
+		v3 = ReadNUInt32(str2);
 		while (len1-- > 3)
 		{
-			if (ReadNUInt16(ptr) == v2 && ptr[2] == v1)
+			if (ReadNUInt32(ptr) == v3)
 				return (UOSInt)(ptr - str1);
 			ptr++;
 		}
@@ -2243,6 +2243,16 @@ UOSInt Text::StrLastIndexOf(const UTF8Char *str1, UTF8Char c)
 			cpos = &sptr[-1];
 	}
 	return (UOSInt)(cpos - str1);
+}
+
+UOSInt Text::StrLastIndexOfC(const UTF8Char *str1, UOSInt len1, UTF8Char c)
+{
+	while (len1-- > 0)
+	{
+		if (str1[len1] == c)
+			return len1;
+	}
+	return INVALID_INDEX;
 }
 
 UOSInt Text::StrLastIndexOf(const UTF8Char *str1, const UTF8Char *str2)
@@ -2357,6 +2367,25 @@ UTF8Char *Text::StrTrim(UTF8Char* str1)
 		*sptr2 = 0;
 		return sptr2;
 	}
+}
+
+UTF8Char *Text::StrTrimC(UTF8Char* str1, UOSInt len)
+{
+	while (len > 0 && (str1[len - 1] == ' ' || str1[len - 1] == '\t'))
+	{
+		str1[--len] = 0;
+	}
+	UTF8Char *sptr;
+	UTF8Char c;
+	if (str1[0] == ' ' || str1[0] == '\t')
+	{
+		sptr = str1 + 1;
+		while ((c = *sptr) == ' ' || c == '\t')
+			sptr++;
+		len -= (UOSInt)(sptr - str1);
+		MemCopyO(str1, sptr, len + 1);
+	}
+	return &str1[len];
 }
 
 UTF8Char *Text::StrTrimWSCRLF(UTF8Char* str1)
@@ -2475,7 +2504,10 @@ Bool Text::StrStartsWithICase(const UTF8Char *str1, const UTF8Char *str2)
 				str1++;
 				str2++;
 			}
-			return false;
+			else
+			{
+				return false;
+			}
 		}
 	}
 	return true;
@@ -2497,6 +2529,40 @@ Bool Text::StrEndsWith(const UTF8Char *str1, const UTF8Char *str2)
 			return false;
 	}
 	return true;
+}
+
+Bool Text::StrEndsWithC(const UTF8Char *str1, UOSInt len1, const UTF8Char *str2, UOSInt len2)
+{
+	if (len1 < len2)
+	{
+		return false;
+	}
+	while (len2 >= 4)
+	{
+		len2 -= 4;
+		len1 -= 4;
+		if (ReadNInt32(&str1[len1]) != ReadNInt32(&str2[len2]))
+		{
+			return false;
+		}
+	}
+	if (len2 >= 2)
+	{
+		len2 -= 2;
+		len1 -= 2;
+		if (ReadNInt16(&str1[len1]) != ReadNInt32(&str2[len2]))
+		{
+			return false;
+		}
+	}
+	if (len2 >= 1)
+	{
+		return str1[len1 - 1] == str2[len2 - 1];
+	}
+	else
+	{
+		return true;
+	}
 }
 
 Bool Text::StrEndsWithICase(const UTF8Char *str1, const UTF8Char *str2)

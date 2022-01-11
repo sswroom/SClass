@@ -23,6 +23,7 @@ namespace Text
 		StringBuilderUTF8 *RemoveANSIEscapes();
 		Bool EqualsC(const UTF8Char *s, UOSInt len);
 		Bool StartsWithC(const UTF8Char *s, UOSInt len);
+		UOSInt IndexOfC(const UTF8Char *s, UOSInt len);
  	};
 }
 #endif

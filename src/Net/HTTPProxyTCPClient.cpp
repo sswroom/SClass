@@ -11,7 +11,7 @@ Net::HTTPProxyTCPClient::HTTPProxyTCPClient(Net::SocketFactory *sockf, const UTF
 	this->SetSourceName(destHost, Text::StrCharCnt(destHost));
 
 	Net::SocketUtil::AddressInfo addr;
-	if (!sockf->DNSResolveIP(proxyHost, &addr))
+	if (!sockf->DNSResolveIP(proxyHost, Text::StrCharCnt(proxyHost), &addr))
 	{
 		this->flags |= 12;
 		return;

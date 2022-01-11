@@ -36,7 +36,7 @@ Net::Email::EmailValidator::Status Net::Email::EmailValidator::Validate(const UT
 	Text::String *emailSvr = 0;
 	Data::ArrayList<Net::DNSClient::RequestAnswer*> ansList;
 	Net::DNSClient::RequestAnswer *ans;
-	this->dnsClient->GetByEmailDomainName(&ansList, emailDomain);
+	this->dnsClient->GetByEmailDomainName(&ansList, emailDomain, Text::StrCharCnt(emailDomain));
 	i = 0;
 	j = ansList.GetCount();
 	while (i < j)
@@ -55,7 +55,7 @@ Net::Email::EmailValidator::Status Net::Email::EmailValidator::Validate(const UT
 		return S_DOMAIN_NOT_RESOLVED;
 	}
 
-	if (!this->sockf->DNSResolveIP(emailSvr->v, &addr))
+	if (!this->sockf->DNSResolveIP(emailSvr->v, emailSvr->leng, &addr))
 	{
 		emailSvr->Release();
 		return S_DOMAIN_NOT_RESOLVED;

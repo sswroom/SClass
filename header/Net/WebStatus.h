@@ -1,5 +1,6 @@
 #ifndef _SM_NET_WEBSERVER_WEBSTATUS
 #define _SM_NET_WEBSERVER_WEBSTATUS
+#include "Text/MyString.h"
 
 namespace Net
 {
@@ -58,14 +59,15 @@ namespace Net
 		typedef struct
 		{
 			Int32 code;
-			const Char *name;
+			const UTF8Char *name;
+			UOSInt nameLen;
 		} StatusInfo;
 	private:
 		static StatusInfo statInfo[];
 
 	public:
 		static Bool IsExist(Int32 code);
-		static const UTF8Char *GetCodeName(StatusCode code);
+		static Text::CString GetCodeName(StatusCode code);
 	};
 }
 #endif

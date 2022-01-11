@@ -60,12 +60,14 @@ UInt32 __stdcall Net::NTPServer::CheckThread(void *userObj)
 	Text::StringBuilderUTF8 *sb;
 	Data::DateTime *dt;
 	UTF8Char sbuff[32];
+	UOSInt tsLen;
 	me->threadRunning = true;
+	tsLen = Text::StrCharCnt(me->timeServer);
 	NEW_CLASS(dt, Data::DateTime());
 	NEW_CLASS(sb, Text::StringBuilderUTF8());
 	while (!me->threadToStop)
 	{
-		if (me->sockf->DNSResolveIP(me->timeServer, &addr))
+		if (me->sockf->DNSResolveIP(me->timeServer, tsLen, &addr))
 		{
 			if (me->cli->GetServerTime(&addr, Net::NTPClient::GetDefaultPort(), dt))
 			{

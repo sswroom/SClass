@@ -124,7 +124,7 @@ UOSInt Net::ARPInfo::GetARPInfoList(Data::ArrayList<Net::ARPInfo*> *arpInfoList)
 				if (Text::StrSplitWS(sarr, 7, sb.ToString()) >= 6)
 				{
 					data.ifIndex = indexMap.Get(sarr[5]);
-					data.ipAddr = Net::SocketUtil::GetIPAddr(sarr[0]);
+					data.ipAddr = Net::SocketUtil::GetIPAddr(sarr[0], Text::StrCharCnt(sarr[0]));
 					flags = Text::StrToInt32(sarr[2]);
 					data.arpType = (flags & 4)?ARPT_STATIC:ARPT_DYNAMIC;
 					if (Text::StrSplit(sarr2, 7, sarr[3], ':') == 6)

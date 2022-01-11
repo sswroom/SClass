@@ -301,22 +301,22 @@ void Sync::Event::Set()
 	EventStatus *status = (EventStatus*)this->hand;
 	if (this->isAuto)
 	{
-		Sync::Interlocked::Increment(&status->useCnt);
+		Interlocked_IncrementU32(&status->useCnt);
 		pthread_mutex_lock(&status->mutex);
 		this->isSet = true;
 		pthread_cond_signal(&status->cond);
 		pthread_mutex_unlock(&status->mutex);
-		Sync::Interlocked::Decrement(&status->useCnt);
+		Interlocked_DecrementU32(&status->useCnt);
 	}
 	else
 	{
-		Sync::Interlocked::Increment(&status->useCnt);
+		Interlocked_IncrementU32(&status->useCnt);
 		pthread_mutex_lock(&status->mutex);
 		this->isSet = true;
 		pthread_cond_signal(&status->cond);
 		pthread_cond_broadcast((pthread_cond_t*)this->hand);
 		pthread_mutex_unlock(&status->mutex);
-		Sync::Interlocked::Decrement(&status->useCnt);
+		Interlocked_DecrementU32(&status->useCnt);
 	}
 }
 

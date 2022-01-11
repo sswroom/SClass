@@ -334,7 +334,7 @@ IO::Device::GoProCameraControl *IO::Device::GoProCameraControl::CreateControl(Ne
 	Bool found = false;
 	if (sockf->GetConnInfoList(&connInfoList) == 0)
 		return 0;
-	UInt32 ip = Net::SocketUtil::GetIPAddr((const UTF8Char*)"10.5.5.9");
+	UInt32 ip = Net::SocketUtil::GetIPAddr(UTF8STRC("10.5.5.9"));
 	UOSInt i = connInfoList.GetCount();
 	while (i-- > 0)
 	{

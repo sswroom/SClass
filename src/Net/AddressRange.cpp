@@ -3,7 +3,7 @@
 #include "Net/AddressRange.h"
 #include "Text/MyString.h"
 
-Net::AddressRange::AddressRange(const UTF8Char *addr, Bool scanBoardcast)
+Net::AddressRange::AddressRange(const UTF8Char *addr, UOSInt addrLen, Bool scanBoardcast)
 {
 	this->skipFirst = false;
 	this->skipLast = false;
@@ -22,7 +22,7 @@ Net::AddressRange::AddressRange(const UTF8Char *addr, Bool scanBoardcast)
 		else
 		{
 			Text::StrConcatC(sbuff, addr, i);
-			if (!Net::SocketUtil::GetIPAddr(sbuff, &this->addr1))
+			if (!Net::SocketUtil::GetIPAddr(sbuff, i, &this->addr1))
 			{
 				this->aType = AT_ERROR;
 			}
@@ -60,7 +60,7 @@ Net::AddressRange::AddressRange(const UTF8Char *addr, Bool scanBoardcast)
 		else
 		{
 			Text::StrConcatC(sbuff, addr, i);
-			if (!Net::SocketUtil::GetIPAddr(sbuff, &this->addr1))
+			if (!Net::SocketUtil::GetIPAddr(sbuff, i, &this->addr1))
 			{
 				this->aType = AT_ERROR;
 			}
@@ -89,7 +89,7 @@ Net::AddressRange::AddressRange(const UTF8Char *addr, Bool scanBoardcast)
 		}
 		return;
 	}
-	if (Net::SocketUtil::GetIPAddr(addr, &this->addr1))
+	if (Net::SocketUtil::GetIPAddr(addr, addrLen, &this->addr1))
 	{
 		if (this->addr1.addrType == Net::AddrType::IPv4)
 		{

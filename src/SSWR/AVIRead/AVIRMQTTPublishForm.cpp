@@ -17,7 +17,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTPublishForm::OnPublishClicked(void *userOb
 	const UTF8Char *password = 0;
 	UInt16 port;
 	me->txtHost->GetText(&sbHost);
-	if (!me->core->GetSocketFactory()->DNSResolveIP(sbHost.ToString(), &addr))
+	if (!me->core->GetSocketFactory()->DNSResolveIP(sbHost.ToString(), sbHost.GetLength(), &addr))
 	{
 		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in parsing host", (const UTF8Char*)"MQTT Publish", me);
 		return;

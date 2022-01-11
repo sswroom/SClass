@@ -399,10 +399,10 @@ Bool Net::SocketUtil::GetIPAddr(const WChar *ipName, AddressInfo *addr)
 
 Bool Net::SocketUtil::GetIPAddr(const Char *ipName, AddressInfo *addr)
 {
-	return GetIPAddr((const UTF8Char*)ipName, addr);
+	return GetIPAddr((const UTF8Char*)ipName, Text::StrCharCnt(ipName), addr);
 }
 
-Bool Net::SocketUtil::GetIPAddr(const UTF8Char *ipName, AddressInfo *addr)
+Bool Net::SocketUtil::GetIPAddr(const UTF8Char *ipName, UOSInt ipLen, AddressInfo *addr)
 {
 	UTF8Char sbuff[51];
 	UTF8Char *sarr[9];
@@ -410,12 +410,11 @@ Bool Net::SocketUtil::GetIPAddr(const UTF8Char *ipName, AddressInfo *addr)
 	UOSInt j;
 	UOSInt k;
 	Int32 v;
-	UOSInt len = Text::StrCharCnt(ipName);
-	if (len >= 50)
+	if (ipLen >= 50)
 	{
 		return false;
 	}
-	Text::StrConcatC(sbuff, ipName, len);
+	Text::StrConcatC(sbuff, ipName, ipLen);
 
 	i = Text::StrSplit(sarr, 9, sbuff, ':');
 	if (i >= 9)
@@ -567,14 +566,19 @@ UInt32 Net::SocketUtil::GetIPAddr(const WChar *ipName)
 
 UInt32 Net::SocketUtil::GetIPAddr(const Char *ipName)
 {
-	Char sbuff[32];
-	Char *sarr[4];
+	return GetIPAddr((const UTF8Char*)ipName, Text::StrCharCnt(ipName));
+}
+
+UInt32 Net::SocketUtil::GetIPAddr(const UTF8Char *ipName, UOSInt ipLen)
+{
+	UTF8Char sbuff[32];
+	UTF8Char *sarr[4];
 	UInt8 ip[4];
-	if (Text::StrCharCnt(ipName) > 31)
+	if (ipLen > 31)
 	{
 		return 0;
 	}
-	Text::StrConcat(sbuff, ipName);
+	Text::StrConcatC(sbuff, ipName, ipLen);
 	if (Text::StrSplit(sarr, 4, sbuff, '.') != 4)
 		return 0;
 	ip[0] = (UInt8)Text::StrToInt32(sarr[0]);
@@ -582,11 +586,6 @@ UInt32 Net::SocketUtil::GetIPAddr(const Char *ipName)
 	ip[2] = (UInt8)Text::StrToInt32(sarr[2]);
 	ip[3] = (UInt8)Text::StrToInt32(sarr[3]);
 	return *(UInt32*)ip;
-}
-
-UInt32 Net::SocketUtil::GetIPAddr(const UTF8Char *ipName)
-{
-	return GetIPAddr((const Char*)ipName);
 }
 
 UInt32 Net::SocketUtil::GetDefNetMaskv4(UInt32 ip)

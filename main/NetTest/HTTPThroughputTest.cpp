@@ -45,7 +45,7 @@ UInt32 __stdcall ProcessThread(void *userObj)
 	UOSInt i;
 	UOSInt j;
 	UInt32 cnt;
-	Sync::Interlocked::Increment(&threadCurrCnt);
+	Interlocked_IncrementU32(&threadCurrCnt);
 	status->threadRunning = true;
 	if (KACONN)
 	{
@@ -53,12 +53,12 @@ UInt32 __stdcall ProcessThread(void *userObj)
 		while (!status->threadToStop)
 		{
 			url = {UTF8STRC(URL)};
-			if (Sync::Interlocked::Decrement(&connLeft) < 0)
+			if (Interlocked_DecrementI32(&connLeft) < 0)
 				break;
 			if (cli->Connect(url.v, url.len, METHOD, &timeDNS, &timeConn, false))
 			{
 				cli->AddHeaderC(UTF8STRC("Connection"), UTF8STRC("keep-alive"));
-				if (Text::StrEquals(METHOD, "POST"))
+				if (Text::StrEqualsC(UTF8STRC(METHOD), UTF8STRC("POST")))
 				{
 					i = POSTSIZE;
 					sptr = Text::StrUOSInt(buff, i);
@@ -80,7 +80,7 @@ UInt32 __stdcall ProcessThread(void *userObj)
 				cli->EndRequest(&timeReq, &timeResp);
 				if (timeResp >= 0)
 				{
-					Sync::Interlocked::Increment(&connCnt);
+					Interlocked_IncrementU32(&connCnt);
 					if (timeResp > 0.5)
 					{
 						if (timeConn > 0.5)
@@ -96,7 +96,7 @@ UInt32 __stdcall ProcessThread(void *userObj)
 				}
 				else
 				{
-					Sync::Interlocked::Increment(&failCnt);
+					Interlocked_IncrementU32(&failCnt);
 				}
 				if (cli->IsError())
 				{
@@ -108,7 +108,7 @@ UInt32 __stdcall ProcessThread(void *userObj)
 			{
 				DEL_CLASS(cli);
 				cli = Net::HTTPClient::CreateClient(sockf, ssl, 0, 0, true, Text::StrStartsWithC(url.v, url.len, UTF8STRC("https://")));
-				Sync::Interlocked::Increment(&failCnt);
+				Interlocked_IncrementU32(&failCnt);
 			}
 		}
 		DEL_CLASS(cli);
@@ -143,7 +143,7 @@ UInt32 __stdcall ProcessThread(void *userObj)
 	}
 	status->threadToStop = false;
 	status->threadRunning = false;
-	cnt = Sync::Interlocked::Decrement(&threadCurrCnt);
+	cnt = Interlocked_DecrementU32(&threadCurrCnt);
 	if (cnt == 0)
 	{
 		t = clk->GetTimeDiff();

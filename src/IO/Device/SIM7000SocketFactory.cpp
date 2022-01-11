@@ -580,7 +580,8 @@ UOSInt IO::Device::SIM7000SocketFactory::GetConnInfoList(Data::ArrayList<Net::Co
 {
 	Net::ConnectionInfo *connInfo;
 	UTF8Char sbuff[64];
-	if (this->modem->NetGetIFAddr(sbuff))
+	UTF8Char *sptr;
+	if ((sptr = this->modem->NetGetIFAddr(sbuff)) != 0)
 	{
 		Net::ConnectionInfo::ConnectionEntry ent;
 		ent.index = 0;
@@ -589,7 +590,7 @@ UOSInt IO::Device::SIM7000SocketFactory::GetConnInfoList(Data::ArrayList<Net::Co
 		ent.description = 0;
 		ent.dnsSuffix = 0;
 		NEW_CLASS(ent.ipaddr, Data::ArrayListUInt32());
-		ent.ipaddr->Add(Net::SocketUtil::GetIPAddr(sbuff));
+		ent.ipaddr->Add(Net::SocketUtil::GetIPAddr(sbuff, (UOSInt)(sptr - sbuff)));
 		NEW_CLASS(ent.dnsaddr, Data::ArrayListUInt32());
 		ent.defGW = 0;
 		ent.dhcpSvr = 0;

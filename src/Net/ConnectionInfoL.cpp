@@ -200,11 +200,11 @@ Net::ConnectionInfo::ConnectionInfo(void *info)
 			if (sb.ToString()[0] == '#')
 			{
 			}
-			else if (sb.StartsWith((const UTF8Char*)"nameserver"))
+			else if (sb.StartsWithC(UTF8STRC("nameserver")))
 			{
 				if (Text::StrSplitWS(sarr, 3, sb.ToString()) >= 2)
 				{
-					this->ent.dnsaddr->Add(Net::SocketUtil::GetIPAddr(sarr[1]));
+					this->ent.dnsaddr->Add(Net::SocketUtil::GetIPAddr(sarr[1], Text::StrCharCnt(sarr[1])));
 				}
 			}
 			sb.ClearStr();

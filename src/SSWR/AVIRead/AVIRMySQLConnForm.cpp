@@ -27,7 +27,7 @@ void __stdcall SSWR::AVIRead::AVIRMySQLConnForm::OnOKClicked(void *userObj)
 		UI::MessageDialog::ShowDialog((const UTF8Char*)"Port is not valid", (const UTF8Char*)"MySQL Connection", me);
 		return;
 	}
-	else if (!sockf->DNSResolveIP(sb.ToString(), &addr))
+	else if (!sockf->DNSResolveIP(sb.ToString(), sb.GetLength(), &addr))
 	{
 		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in resolving server host", (const UTF8Char*)"MySQL Connection", me);
 		return;

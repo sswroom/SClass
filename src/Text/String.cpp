@@ -8,6 +8,7 @@
 #include "Text/MyStringW.h"
 #include "Text/String.h"
 
+//#define THREADSAFE
 //#define MEMDEBUG
 
 Text::String Text::String::emptyStr = {0, 1048576, 0};
@@ -157,17 +158,36 @@ Text::String *Text::String::OrEmpty(Text::String *s)
 
 void Text::String::Release()
 {
+#if defined(THREADSAFE)
+#if _OSINT_SIZE == 64
+	Interlocked_DecrementU64(&this->cnt);
+#else
+	Interlocked_DecrementU32(&this->cnt);
+#endif
+	if (this->cnt == 0)
+	{
+		MemFree(this);
+	}
+#else
 	this->cnt--;
 	if (this->cnt == 0)
 	{
 		MemFree(this);
 	}
+#endif
 }
 
 Text::String *Text::String::Clone()
 {
 #if defined(MEMDEBUG)
 	return New(this->v, this->leng);
+#elif defined(THREADSAFE)
+	#if _OSINT_SIZE == 64
+	Interlocked_IncrementU64(&this->cnt);
+	#else
+	Interlocked_IncrementU32(&this->cnt);
+	#endif
+	return this;
 #else
 	this->cnt++;
 	return this;
@@ -234,9 +254,37 @@ Bool Text::String::StartsWith(UOSInt startIndex, const UTF8Char *s, UOSInt len)
 	return Text::StrStartsWithC(&this->v[startIndex], this->leng - startIndex, s, len);
 }
 
-Bool Text::String::StartsWithICase(const UTF8Char *s)
+Bool Text::String::StartsWithICase(const UTF8Char *str2)
 {
-	return Text::StrStartsWithICase(this->v, s);
+	const UTF8Char *str1 = this->v;
+	UTF8Char c1;
+	UTF8Char c2;
+	UTF8Char uc1;
+	UTF8Char uc2;
+	while ((c2 = *str2) != 0)
+	{
+		c1 = *str1;
+		if (c1 == c2)
+		{
+			str1++;
+			str2++;
+		}
+		else
+		{
+			uc1 = c1 & 0xdf;
+			uc2 = c2 & 0xdf;
+			if (uc1 == uc2 && uc1 >= 'A' && uc1 <= 'Z')
+			{
+				str1++;
+				str2++;
+			}
+			else
+			{
+				return false;
+			}
+		}
+	}
+	return true;
 }
 
 Bool Text::String::EndsWith(UTF8Char c)

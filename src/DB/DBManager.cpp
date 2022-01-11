@@ -319,33 +319,34 @@ DB::DBTool *DB::DBManager::OpenConn(const UTF8Char *connStr, IO::LogTool *log, N
 		addr.addrType = Net::AddrType::Unknown;
 		UOSInt cnt;
 		sb.Append(connStr + 9);
-		UTF8Char *sarr[2];
-		sarr[1] = sb.ToString();
+		Text::PString sarr[2];
+		sarr[1].v = sb.ToString();
+		sarr[1].len = sb.GetLength();
 		while (true)
 		{
-			cnt = Text::StrSplit(sarr, 2, sarr[1], ';');
-			if (Text::StrStartsWithICase(sarr[0], (const UTF8Char*)"SERVER="))
+			cnt = Text::StrSplitP(sarr, 2, sarr[1].v, sarr[1].len, ';');
+			if (Text::StrStartsWithICase(sarr[0].v, (const UTF8Char*)"SERVER="))
 			{
-				Net::SocketUtil::GetIPAddr(sarr[0] + 7, &addr);
+				Net::SocketUtil::GetIPAddr(sarr[0].v + 7, sarr[0].len - 7, &addr);
 			}
-			else if (Text::StrStartsWithICase(sarr[0], (const UTF8Char*)"PORT="))
+			else if (Text::StrStartsWithICase(sarr[0].v, (const UTF8Char*)"PORT="))
 			{
-				Text::StrToUInt16(sarr[0] + 5, &port);
+				Text::StrToUInt16(sarr[0].v + 5, &port);
 			}
-			else if (Text::StrStartsWithICase(sarr[0], (const UTF8Char*)"UID="))
+			else if (Text::StrStartsWithICase(sarr[0].v, (const UTF8Char*)"UID="))
 			{
 				SDEL_TEXT(uid);
-				uid = Text::StrCopyNew(sarr[0] + 4);
+				uid = Text::StrCopyNewC(sarr[0].v + 4, sarr[0].len - 4);
 			}
-			else if (Text::StrStartsWithICase(sarr[0], (const UTF8Char*)"PWD="))
+			else if (Text::StrStartsWithICase(sarr[0].v, (const UTF8Char*)"PWD="))
 			{
 				SDEL_TEXT(pwd);
-				pwd = Text::StrCopyNew(sarr[0] + 4);
+				pwd = Text::StrCopyNewC(sarr[0].v + 4, sarr[0].len - 4);
 			}
-			else if (Text::StrStartsWithICase(sarr[0], (const UTF8Char*)"DATABASE="))
+			else if (Text::StrStartsWithICase(sarr[0].v, (const UTF8Char*)"DATABASE="))
 			{
 				SDEL_TEXT(schema);
-				schema = Text::StrCopyNew(sarr[0] + 9);
+				schema = Text::StrCopyNewC(sarr[0].v + 9, sarr[0].len - 9);
 			}
 			if (cnt != 2)
 			{

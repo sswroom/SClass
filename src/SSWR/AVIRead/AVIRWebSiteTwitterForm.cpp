@@ -56,7 +56,7 @@ SSWR::AVIRead::AVIRWebSiteTwitterForm::AVIRWebSiteTwitterForm(UI::GUIClientContr
 
 	this->core = core;
 	this->ssl = Net::SSLEngineFactory::Create(this->core->GetSocketFactory(), true);
-	const UTF8Char *userAgent = 0;//Net::UserAgentDB::FindUserAgent(Manage::OSInfo::OT_WINDOWS_NT64, Net::BrowserInfo::BT_FIREFOX);
+	//const UTF8Char *userAgent = 0;//Net::UserAgentDB::FindUserAgent(Manage::OSInfo::OT_WINDOWS_NT64, Net::BrowserInfo::BT_FIREFOX);
 	NEW_CLASS(this->ctrl, Net::WebSite::WebSiteTwitterControl(core->GetSocketFactory(), this->ssl, core->GetEncFactory(), 0));
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 

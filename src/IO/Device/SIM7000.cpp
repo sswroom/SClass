@@ -46,7 +46,7 @@ Bool __stdcall IO::Device::SIM7000::CheckATCommand(void *userObj, const Char *cm
 			Sync::MutexUsage mutUsage(me->dnsMut);
 			if (me->dnsReq && me->dnsResp)
 			{
-				if (Text::StrEquals(me->dnsReq, sarr[1]) && Net::SocketUtil::GetIPAddr(sarr[2], me->dnsResp))
+				if (Text::StrEquals(me->dnsReq, sarr[1]) && Net::SocketUtil::GetIPAddr(sarr[2], Text::StrCharCnt(sarr[2]), me->dnsResp))
 				{
 					me->dnsResult = true;
 					me->respEvt->Set();
@@ -68,7 +68,7 @@ Bool __stdcall IO::Device::SIM7000::CheckATCommand(void *userObj, const Char *cm
 			if (i != INVALID_INDEX)
 			{
 				sarr[2][i] = 0;
-				me->recvIP = Net::SocketUtil::GetIPAddr(sarr[2]);
+				me->recvIP = Net::SocketUtil::GetIPAddr(sarr[2], i);
 				me->recvPort = 0;
 				Text::StrToUInt16(&sarr[2][i + 1], &me->recvPort);
 			}

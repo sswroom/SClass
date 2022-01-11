@@ -339,7 +339,7 @@ UTF8Char *Net::OpenSSLEngine::GetErrorDetail(UTF8Char *sbuff)
 Net::SSLClient *Net::OpenSSLEngine::Connect(const UTF8Char *hostName, UInt16 port, ErrorType *err)
 {
 	Net::SocketUtil::AddressInfo addr;
-	if (!this->sockf->DNSResolveIP(hostName, &addr))
+	if (!this->sockf->DNSResolveIP(hostName, Text::StrCharCnt(hostName), &addr))
 	{
 		if (err)
 			*err = ErrorType::HostnameNotResolved;

@@ -692,7 +692,7 @@ Bool IO::Path::FileNameMatch(const UTF8Char *path, const UTF8Char *searchPattern
 	UTF8Char sbuff[256];
 	UOSInt i = Text::StrLastIndexOf(path, '/');
 	const UTF8Char *fileName = &path[i + 1];
-	Text::StrConcat(sbuff, searchPattern);
+	UTF8Char *patternEnd = Text::StrConcat(sbuff, searchPattern);
 	Bool isWC = false;
 	UTF8Char *patternStart = 0;
 	UTF8Char *currPattern = sbuff;
@@ -710,7 +710,7 @@ Bool IO::Path::FileNameMatch(const UTF8Char *path, const UTF8Char *searchPattern
 			}
 			else if (patternStart)
 			{
-				return Text::StrCompareICase(fileName, patternStart) == 0;
+				return Text::StrEquals(fileName, patternStart);
 			}
 			else
 			{
@@ -733,7 +733,7 @@ Bool IO::Path::FileNameMatch(const UTF8Char *path, const UTF8Char *searchPattern
 			else if (patternStart)
 			{
 				*currPattern = 0;
-				if (!Text::StrStartsWithICase(fileName, patternStart))
+				if (!Text::StrStartsWith(fileName, patternStart))
 					return false;
 				fileName += currPattern - patternStart;
 				patternStart = 0;

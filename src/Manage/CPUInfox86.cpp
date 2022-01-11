@@ -126,7 +126,7 @@ Manage::CPUInfo::CPUInfo()
 		{
 			if (sb.StartsWithC(UTF8STRC("model name")))
 			{
-				i = sb.IndexOf((const UTF8Char*)": ");
+				i = sb.IndexOfC(UTF8STRC(": "));
 				info->cpuName = Text::StrCopyNew(sb.ToString() + i + 2);
 				break;
 			}

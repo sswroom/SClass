@@ -43,7 +43,7 @@ void __stdcall SSWR::AVIRead::AVIRMySQLClientForm::OnStartClicked(void *userObj)
 		me->txtPort->Focus();
 		return;
 	}
-	if (!me->core->GetSocketFactory()->DNSResolveIP(sbUser.ToString(), &addr))
+	if (!me->core->GetSocketFactory()->DNSResolveIP(sbUser.ToString(), sbUser.GetLength(), &addr))
 	{
 		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in resolving host", (const UTF8Char*)"MySQL Client", me);
 		me->txtHost->Focus();

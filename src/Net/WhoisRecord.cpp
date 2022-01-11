@@ -45,7 +45,7 @@ void Net::WhoisRecord::AddItem(const UTF8Char *item)
 			sb.Append(&item[8]);
 			sb.Trim();
 			sptr = sb.ToString();
-			i = Text::StrIndexOf(sptr, (const UTF8Char*)" - ");
+			i = Text::StrIndexOfC(sptr, sb.GetLength(), UTF8STRC(" - "));
 			if (i == INVALID_INDEX)
 			{
 				i = Text::StrIndexOf(sptr, '/');
@@ -70,8 +70,8 @@ void Net::WhoisRecord::AddItem(const UTF8Char *item)
 			else
 			{
 				sptr[i] = 0;
-				this->startIP = Net::SocketUtil::GetIPAddr(sptr);
-				this->endIP = Net::SocketUtil::GetIPAddr(&sptr[i + 3]);
+				this->startIP = Net::SocketUtil::GetIPAddr(sptr, i);
+				this->endIP = Net::SocketUtil::GetIPAddr(&sptr[i + 3], sb.GetLength() - i - 3);
 			}
 		}
 		else if (Text::StrStartsWithICase(item, (const UTF8Char*)"NetRange:"))
@@ -81,7 +81,7 @@ void Net::WhoisRecord::AddItem(const UTF8Char *item)
 			sb.Append(&item[9]);
 			sb.Trim();
 			sptr = sb.ToString();
-			i = Text::StrIndexOf(sptr, (const UTF8Char*)" - ");
+			i = Text::StrIndexOfC(sptr, sb.GetLength(), UTF8STRC(" - "));
 			if (i == INVALID_INDEX)
 			{
 				if (i != INVALID_INDEX)
@@ -105,8 +105,8 @@ void Net::WhoisRecord::AddItem(const UTF8Char *item)
 			else
 			{
 				sptr[i] = 0;
-				this->startIP = Net::SocketUtil::GetIPAddr(sptr);
-				this->endIP = Net::SocketUtil::GetIPAddr(&sptr[i + 3]);
+				this->startIP = Net::SocketUtil::GetIPAddr(sptr, i);
+				this->endIP = Net::SocketUtil::GetIPAddr(&sptr[i + 3], sb.GetLength() - i - 3);
 			}
 		}
 	}

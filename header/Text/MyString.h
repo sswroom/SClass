@@ -192,11 +192,13 @@ namespace Text
 	UOSInt StrIndexOfC(const UTF8Char *str1, UOSInt len1, const UTF8Char *str2, UOSInt len2);
 	UOSInt StrIndexOfICase(const UTF8Char *str1, const UTF8Char *str2);
 	UOSInt StrLastIndexOf(const UTF8Char *str1, UTF8Char c);
+	UOSInt StrLastIndexOfC(const UTF8Char *str1, UOSInt len1, UTF8Char c);
 	UOSInt StrLastIndexOf(const UTF8Char *str1, const UTF8Char *str2);
 	Bool StrContainChars(const UTF8Char *str, const UTF8Char *chars);
 	UTF8Char *StrRTrim(UTF8Char* str1);
 	UTF8Char *StrLTrim(UTF8Char* str1);
 	UTF8Char *StrTrim(UTF8Char* str1);
+	UTF8Char *StrTrimC(UTF8Char* str1, UOSInt len);
 	UTF8Char *StrTrimWSCRLF(UTF8Char* str1);
 	UTF8Char *StrRemoveChar(UTF8Char *str1, UTF8Char c);
 
@@ -207,6 +209,7 @@ namespace Text
 	Bool StrStartsWithC(const UTF8Char *str1, UOSInt len1, const UTF8Char *str2, UOSInt len2);
 	Bool StrStartsWithICase(const UTF8Char *str1, const UTF8Char *str2);
 	Bool StrEndsWith(const UTF8Char *str1, const UTF8Char *str2);
+	Bool StrEndsWithC(const UTF8Char *str1, UOSInt len1, const UTF8Char *str2, UOSInt len2);
 	Bool StrEndsWithICase(const UTF8Char *str1, const UTF8Char *str2);
 	Bool StrIsInt32(const UTF8Char *str1);
 	UOSInt StrReplace(UTF8Char *str1, UTF8Char oriC, UTF8Char destC);

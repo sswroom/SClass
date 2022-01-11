@@ -110,18 +110,19 @@ SSWR::SDNSProxy::SDNSProxyCore::SDNSProxyCore(IO::ConfigFile *cfg, IO::Writer *c
 		UOSInt j;
 		UInt32 ip;
 		Int32 v;
-		UTF8Char *sarr[2];
+		Text::PString sarr[2];
 		s = cfg->GetValue((const UTF8Char*)"DNS");
 		if (s)
 		{
 			Data::ArrayList<UInt32> dnsList;
 			Text::StringBuilderUTF8 sb;
 			sb.Append(s);
-			sarr[1] = sb.ToString();
+			sarr[1].v = sb.ToString();
+			sarr[1].len = sb.GetLength();
 			while (true)
 			{
-				i = Text::StrSplitTrim(sarr, 2, sarr[1], ',');
-				ip = Net::SocketUtil::GetIPAddr(sarr[0]);
+				i = Text::StrSplitTrimP(sarr, 2, sarr[1].v, sarr[1].len, ',');
+				ip = Net::SocketUtil::GetIPAddr(sarr[0].v, sarr[0].len);
 				if (ip)
 				{
 					dnsList.Add(ip);
@@ -159,13 +160,14 @@ SSWR::SDNSProxy::SDNSProxyCore::SDNSProxyCore(IO::ConfigFile *cfg, IO::Writer *c
 		{
 			Text::StringBuilderUTF8 sb;
 			sb.Append(s);
-			sarr[1] = sb.ToString();
+			sarr[1].v = sb.ToString();
+			sarr[1].len = sb.GetLength();
 			while (true)
 			{
-				i = Text::StrSplitTrim(sarr, 2, sarr[1], ',');
-				if (sarr[0][0])
+				i = Text::StrSplitTrimP(sarr, 2, sarr[1].v, sarr[1].len, ',');
+				if (sarr[0].v[0])
 				{
-					this->proxy->AddBlackList(sarr[0]);
+					this->proxy->AddBlackList(sarr[0].v);
 				}
 				if (i <= 1)
 					break;
