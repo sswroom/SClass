@@ -776,7 +776,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 				sbOut.Append(s);
 				s->Release();
 				sbOut.AppendC(UTF8STRC("</h2>\r\n"));
-				if (!sb2.Equals((const UTF8Char*)"/"))
+				if (!sb2.EqualsC(UTF8STRC("/")))
 				{
 					sbOut.AppendC(UTF8STRC("<a href=\"..\">Up one level</a><br/>\r\n"));
 				}
@@ -908,9 +908,9 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 					Data::DateTime modTime;
 					if (sort == 0)
 					{
-						while (IO::Path::FindNextFile(sptr2, sess, &modTime, &pt, &fileSize))
+						while ((sptr3 = IO::Path::FindNextFile(sptr2, sess, &modTime, &pt, &fileSize)) != 0)
 						{
-							if (Text::StrEquals(sptr2, (const UTF8Char*)".") || Text::StrEquals(sptr2, (const UTF8Char*)".."))
+							if (Text::StrEqualsC(sptr2, (UOSInt)(sptr3 - sptr2), UTF8STRC(".")) || Text::StrEqualsC(sptr2, (UOSInt)(sptr3 - sptr2), UTF8STRC("..")))
 							{
 							}
 							else
@@ -979,7 +979,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 						DirectoryEntry *ent;
 						while ((sptr3 = IO::Path::FindNextFile(sptr2, sess, &modTime, &pt, &fileSize)) != 0)
 						{
-							if (Text::StrEquals(sptr2, (const UTF8Char*)".") || Text::StrEquals(sptr2, (const UTF8Char*)".."))
+							if (Text::StrEqualsC(sptr2, (UOSInt)(sptr3 - sptr2), UTF8STRC(".")) || Text::StrEqualsC(sptr2, (UOSInt)(sptr3 - sptr2), UTF8STRC("..")))
 							{
 							}
 							else
@@ -1166,7 +1166,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 		Bool partial = false;
 		sizeLeft = fs->GetLength();
 		sb2.ClearStr();
-		if (req->GetHeader(&sb2, (const UTF8Char*)"Range"))
+		if (req->GetHeaderC(&sb2, UTF8STRC("Range")))
 		{
 			UInt64 fileSize = sizeLeft;
 			if (!sb2.StartsWith((const UTF8Char*)"bytes="))

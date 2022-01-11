@@ -58,7 +58,7 @@ namespace Net
 
 			virtual Text::String *GetSHeader(const UTF8Char *name, UOSInt nameLen) = 0;
 			virtual UTF8Char *GetHeader(UTF8Char *sbuff, const UTF8Char *name, UOSInt buffLen) = 0;
-			virtual Bool GetHeader(Text::StringBuilderUTF *sb, const UTF8Char *name) = 0;
+			virtual Bool GetHeaderC(Text::StringBuilderUTF *sb, const UTF8Char *name, UOSInt nameLen) = 0;
 			virtual UOSInt GetHeaderNames(Data::ArrayList<Text::String*> *names) = 0;
 			Bool GetRefererDomain(Text::StringBuilderUTF *sb);
 			Bool GetIfModifiedSince(Data::DateTime *dt);

@@ -78,6 +78,7 @@ void SSWR::AVIRead::AVIRHTTPLog::LogRequest(Net::WebServer::IWebRequest *req)
 	this->entries[i].headerName->Clear();
 	this->entries[i].headerVal->Clear();
 	Data::ArrayList<Text::String *> names;
+	Text::String *name;
 	Text::StringBuilderUTF8 sb;
 	req->GetHeaderNames(&names);
 	j = names.GetCount();
@@ -86,7 +87,8 @@ void SSWR::AVIRead::AVIRHTTPLog::LogRequest(Net::WebServer::IWebRequest *req)
 	{
 		this->entries[i].headerName->Add(names.GetItem(k)->Clone());
 		sb.ClearStr();
-		req->GetHeader(&sb, names.GetItem(k)->v);
+		name = names.GetItem(k);
+		req->GetHeaderC(&sb, name->v, name->leng);
 		this->entries[i].headerVal->Add(Text::StrCopyNew(sb.ToString()));
 		k++;
 	}

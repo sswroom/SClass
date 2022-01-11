@@ -202,7 +202,7 @@ void Net::WebServer::WebListener::LogAccess(Net::WebServer::IWebRequest *req, Ne
 		sb.AppendC(UTF8STRC(" \""));
 		if (req->GetBrowser() == Net::BrowserInfo::BT_UNKNOWN)
 		{
-			if (!req->GetHeader(&sb, (const UTF8Char*)"User-Agent"))
+			if (!req->GetHeaderC(&sb, UTF8STRC("User-Agent")))
 			{
 				sb.AppendC(UTF8STRC("Unk Browser"));
 			}

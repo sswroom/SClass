@@ -38,7 +38,7 @@ void Net::WebServer::PrintLogWebHandler::WebRequest(IWebRequest *req, IWebRespon
 		header = headers.GetItem(i);
 		sb.Append(header);
 		sb.AppendC(UTF8STRC(": "));
-		req->GetHeader(&sb, header->v);
+		req->GetHeaderC(&sb, header->v, header->leng);
 		this->writer->WriteLineC(sb.ToString(), sb.GetLength());
 		i++;
 	}

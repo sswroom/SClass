@@ -60,9 +60,9 @@ Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(Net::WebServer::IWebRequ
 	}
 	Bool kaConn = true;
 	Text::StringBuilderUTF8 sbHeader;
-	if (req->GetHeader(&sbHeader, (const UTF8Char*)"Connection"))
+	if (req->GetHeaderC(&sbHeader, UTF8STRC("Connection")))
 	{
-		if (sbHeader.Equals((const UTF8Char*)"close"))
+		if (sbHeader.EqualsC(UTF8STRC("close")))
 		{
 			kaConn = false;
 		}
@@ -101,7 +101,7 @@ Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(Net::WebServer::IWebRequ
 		if (hdr->EqualsICase((const UTF8Char*)"Host"))
 		{
 			sbHeader.ClearStr();
-			if (req->GetHeader(&sbHeader, hdr->v))
+			if (req->GetHeaderC(&sbHeader, hdr->v, hdr->leng))
 			{
 				UOSInt k = sbHeader.IndexOf(':');
 				svrHost = Text::String::New(sbHeader.ToString(), sbHeader.GetLength());
@@ -114,7 +114,7 @@ Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(Net::WebServer::IWebRequ
 		else if (hdr->EqualsICase((const UTF8Char*)"X-Forwarded-For"))
 		{
 			sbHeader.ClearStr();
-			if (req->GetHeader(&sbHeader, hdr->v))
+			if (req->GetHeaderC(&sbHeader, hdr->v, hdr->leng))
 			{
 				fwdFor = Text::String::New(sbHeader.ToString(), sbHeader.GetLength());
 			}
@@ -122,7 +122,7 @@ Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(Net::WebServer::IWebRequ
 		else
 		{
 			sbHeader.ClearStr();
-			if (req->GetHeader(&sbHeader, hdr->v))
+			if (req->GetHeaderC(&sbHeader, hdr->v, hdr->leng))
 			{
 				cli->AddHeaderC(hdr->v, hdr->leng, sbHeader.ToString(), sbHeader.GetLength());
 			}
@@ -226,7 +226,7 @@ Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(Net::WebServer::IWebRequ
 					{
 						sb.AppendC(UTF8STRC("http://"));
 					}
-					req->GetHeader(&sb, (const UTF8Char*)"Host");
+					req->GetHeaderC(&sb, UTF8STRC("Host"));
 					UOSInt urlLen = Text::StrCharCnt(fwdBaseUrl);
 					if (fwdBaseUrl[urlLen - 1] == '/')
 					{

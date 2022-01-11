@@ -197,6 +197,11 @@ Text::StringBuilderUTF8 *Text::StringBuilderUTF8::RemoveANSIEscapes()
 	return this;
 }
 
+Bool Text::StringBuilderUTF8::EqualsC(const UTF8Char *s, UOSInt len)
+{
+	return Text::StrEqualsC(this->buff, (UOSInt)(this->buffEnd - this->buff), s, len);
+}
+
 Bool Text::StringBuilderUTF8::StartsWithC(const UTF8Char *s, UOSInt len)
 {
 	return Text::StrStartsWithC(this->buff, (UOSInt)(this->buffEnd - this->buff), s, len);

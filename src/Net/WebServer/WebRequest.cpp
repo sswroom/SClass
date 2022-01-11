@@ -370,9 +370,9 @@ UTF8Char *Net::WebServer::WebRequest::GetHeader(UTF8Char *sbuff, const UTF8Char 
 	}
 }
 
-Bool Net::WebServer::WebRequest::GetHeader(Text::StringBuilderUTF *sb, const UTF8Char *name)
+Bool Net::WebServer::WebRequest::GetHeaderC(Text::StringBuilderUTF *sb, const UTF8Char *name, UOSInt nameLen)
 {
-	Text::String *hdr = this->headers->Get(name);
+	Text::String *hdr = this->headers->GetC(name, nameLen);
 	if (hdr == 0)
 		return false;
 	sb->Append(hdr);
@@ -454,21 +454,21 @@ void Net::WebServer::WebRequest::ParseHTTPForm()
 
 	Text::StringBuilderUTF8 *sb;
 	NEW_CLASS(sb, Text::StringBuilderUTF8());
-	if (this->GetHeader(sb, (const UTF8Char*)"Content-Type"))
+	if (this->GetHeaderC(sb, UTF8STRC("Content-Type")))
 	{
-		if (Text::StrEquals(sb->ToString(), (const UTF8Char*)"application/x-www-form-urlencoded"))
+		if (Text::StrEqualsC(sb->ToString(), sb->GetLength(), UTF8STRC("application/x-www-form-urlencoded")))
 		{
 			NEW_CLASS(this->formMap, Data::FastStringMap<Text::String *>());
 			ParseFormStr(this->formMap, this->reqData, this->reqDataSize);
 		}
-		else if (Text::StrStartsWith(sb->ToString(), (const UTF8Char*)"multipart/form-data"))
+		else if (Text::StrStartsWithC(sb->ToString(), sb->GetLength(), UTF8STRC("multipart/form-data")))
 		{
 			UTF8Char *sptr = sb->ToString();
 			UOSInt i = Text::StrIndexOf(sptr, (const UTF8Char*)"boundary=");
 			if (i != INVALID_INDEX)
 			{
 				UInt8 *boundary = &sptr[i + 9];
-				UOSInt boundSize = Text::StrCharCnt(&sptr[i + 9]);
+				UOSInt boundSize = sb->GetLength() - i - 9;
 				NEW_CLASS(this->formMap, Data::FastStringMap<Text::String *>());
 				NEW_CLASS(this->formFileList, Data::ArrayList<FormFileInfo *>());
 

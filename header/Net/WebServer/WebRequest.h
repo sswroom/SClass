@@ -51,7 +51,7 @@ namespace Net
 			void AddHeaderC(const UTF8Char *name, UOSInt nameLen, const UTF8Char *value, UOSInt valueLen);
 			virtual Text::String *GetSHeader(const UTF8Char *name, UOSInt nameLen);
 			virtual UTF8Char *GetHeader(UTF8Char *sbuff, const UTF8Char *name, UOSInt buffLen);
-			virtual Bool GetHeader(Text::StringBuilderUTF *sb, const UTF8Char *name);
+			virtual Bool GetHeaderC(Text::StringBuilderUTF *sb, const UTF8Char *name, UOSInt nameLen);
 			virtual UOSInt GetHeaderNames(Data::ArrayList<Text::String*> *names);
 			UOSInt GetHeaderCnt();
 			Text::String *GetHeaderName(UOSInt index);

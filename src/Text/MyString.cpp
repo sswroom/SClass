@@ -770,14 +770,20 @@ Bool Text::StrEqualsC(const UTF8Char *str1, UOSInt len1, const UTF8Char *str2, U
 		str2 += 4;
 		len2 -= 4;
 	}
-	while (len2-- > 0)
+	if (len2 > 2)
 	{
-		if (*str1 != *str2)
-			return false;
-		str1++;
-		str2++;
+		UInt32 v = ReadNUInt32(str1);
+		return v == ReadNUInt32(str2);
 	}
-	return true;
+	else if (len2 > 0)
+	{
+		UInt16 v = ReadNUInt16(str1);
+		return v == ReadNUInt16(str2);
+	}
+	else
+	{
+		return true;
+	}
 }
 
 Bool Text::StrEqualsICase(const UTF8Char *str1, const UTF8Char *str2)

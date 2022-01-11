@@ -71,7 +71,7 @@ Bool Net::WebServer::HTTPServerUtil::SendContent(Net::WebServer::IWebRequest *re
 		UTF8Char *sarr[10];
 		Text::StringBuilderUTF8 sb;
 
-		if (needComp && req->GetHeader(&sb, (const UTF8Char*)"Accept-Encoding"))
+		if (needComp && req->GetHeaderC(&sb, UTF8STRC("Accept-Encoding")))
 		{
 			Net::BrowserInfo::BrowserType browser = req->GetBrowser();
 			Manage::OSInfo::OSType os = req->GetOS();
@@ -176,7 +176,7 @@ Bool Net::WebServer::HTTPServerUtil::SendContent(Net::WebServer::IWebRequest *re
 		UTF8Char *sarr[10];
 		Text::StringBuilderUTF8 sb;
 
-		if (needComp && req->GetHeader(&sb, (const UTF8Char*)"Accept-Encoding"))
+		if (needComp && req->GetHeaderC(&sb, UTF8STRC("Accept-Encoding")))
 		{
 			Net::BrowserInfo::BrowserType browser = req->GetBrowser();
 			j = Text::StrSplitTrim(sarr, 10, sb.ToString(), ',');
@@ -257,7 +257,7 @@ Bool Net::WebServer::HTTPServerUtil::ResponseFile(Net::WebServer::IWebRequest *r
 	NEW_CLASS(fs, IO::FileStream(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
 	fs->GetFileTimes(0, 0, &t);
 
-	if (req->GetHeader(&sb2, (const UTF8Char*)"If-Modified-Since"))
+	if (req->GetHeaderC(&sb2, UTF8STRC("If-Modified-Since")))
 	{
 		Data::DateTime t2;
 		t2.SetValue(sb2.ToString());
@@ -278,10 +278,10 @@ Bool Net::WebServer::HTTPServerUtil::ResponseFile(Net::WebServer::IWebRequest *r
 
 	sizeLeft = fs->GetLength();
 	sb2.ClearStr();
-	if (req->GetHeader(&sb2, (const UTF8Char*)"Range"))
+	if (req->GetHeaderC(&sb2, UTF8STRC("Range")))
 	{
 		UInt64 fileSize = sizeLeft;
-		if (!sb2.StartsWith((const UTF8Char*)"bytes="))
+		if (!sb2.StartsWithC(UTF8STRC("bytes=")))
 		{
 			resp->SetStatusCode(Net::WebStatus::SC_REQUESTED_RANGE_NOT_SATISFIABLE);
 			resp->AddDefHeaders(req);

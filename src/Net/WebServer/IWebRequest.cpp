@@ -68,28 +68,32 @@ Net::WebServer::IWebRequest::~IWebRequest()
 
 Bool Net::WebServer::IWebRequest::GetRefererDomain(Text::StringBuilderUTF *sb)
 {
-	Text::StringBuilderUTF8 hdr;
+	Text::String *hdr;
 	UTF8Char domain[256];
 	UTF8Char *sptr;
-	this->GetHeader(&hdr, (const UTF8Char*)"Referer");
-	sptr = Text::URLString::GetURLDomain(domain, hdr.ToString(), 0);
+	hdr = this->GetSHeader(UTF8STRC("Referer"));
+	if (hdr == 0)
+	{
+		return false;
+	}
+	sptr = Text::URLString::GetURLDomain(domain, hdr->v, 0);
 	if (sptr == 0)
 	{
 		return false;
 	}
 	else
 	{
-		sb->Append(domain);
+		sb->AppendC(domain, (UOSInt)(sptr - domain));
 		return true;
 	}
 }
 
 Bool Net::WebServer::IWebRequest::GetIfModifiedSince(Data::DateTime *dt)
 {
-	Text::StringBuilderUTF8 hdr;
-	if (this->GetHeader(&hdr, (const UTF8Char*)"If-Modified-Since"))
+	Text::String *s = this->GetSHeader(UTF8STRC("If-Modified-Since"));
+	if (s)
 	{
-		if (dt->SetValue(hdr.ToString()))
+		if (dt->SetValue(s->v))
 		{
 			return true;
 		}

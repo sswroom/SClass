@@ -18,9 +18,9 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::UploadReq(SSWR::Benchmark::
 		valid = false;
 	}
 	Text::StringBuilderUTF8 sb;
-	if (req->GetHeader(&sb, (const UTF8Char*)"Content-Type"))
+	if (req->GetHeaderC(&sb, UTF8STRC("Content-Type")))
 	{
-		if (!sb.Equals((const UTF8Char*)"text/plain"))
+		if (!sb.EqualsC(UTF8STRC("text/plain")))
 		{
 			printf("Content-Type invalid\r\n");
 			valid = false;

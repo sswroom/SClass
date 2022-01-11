@@ -6302,7 +6302,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoUploadD(Net::WebServer::
 	}
 
 	Text::StringBuilderUTF8 sb;
-	if (!req->GetHeader(&sb, (const UTF8Char*)"X-FileName"))
+	if (!req->GetHeaderC(&sb, UTF8STRC("X-FileName")))
 	{
 		resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
 		return true;
@@ -9440,7 +9440,7 @@ IO::ConfigFile *SSWR::OrganMgr::OrganWebHandler::LangGet(Net::WebServer::IWebReq
 	UTF8Char *sarr2[2];
 	UOSInt i;
 	Text::Locale::LocaleEntry *ent;
-	if (req->GetHeader(&sb, (const UTF8Char*)"Accept-Language"))
+	if (req->GetHeaderC(&sb, UTF8STRC("Accept-Language")))
 	{
 		sarr[1] = sb.ToString();
 		i = 2;
