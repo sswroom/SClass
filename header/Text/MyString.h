@@ -189,6 +189,7 @@ namespace Text
 	Bool StrToBool(const UTF8Char *str);
 	UOSInt StrIndexOf(const UTF8Char *str1, const UTF8Char *str2);
 	UOSInt StrIndexOf(const UTF8Char *str1, UTF8Char c);
+	UOSInt StrIndexOfC(const UTF8Char *str1, UOSInt len1, const UTF8Char *str2, UOSInt len2);
 	UOSInt StrIndexOfICase(const UTF8Char *str1, const UTF8Char *str2);
 	UOSInt StrLastIndexOf(const UTF8Char *str1, UTF8Char c);
 	UOSInt StrLastIndexOf(const UTF8Char *str1, const UTF8Char *str2);

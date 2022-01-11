@@ -271,7 +271,7 @@ UOSInt Net::HTTPMyClient::ReadRAW(UInt8 *buff, UOSInt size)
 #endif
 			this->buffSize += i;
 		}
-		while (INVALID_INDEX == (i = Text::StrIndexOf((const UTF8Char*)this->dataBuff, (const UTF8Char*)"\r\n")))
+		while (INVALID_INDEX == (i = Text::StrIndexOfC(this->dataBuff, this->buffSize, UTF8STRC("\r\n"))))
 		{
 			if (this->cli == 0)
 			{
@@ -1024,7 +1024,7 @@ void Net::HTTPMyClient::EndRequest(Double *timeReq, Double *timeResp)
 			UTF8Char *ptr;
 			Text::String *s;
 			UOSInt i;
-			i = Text::StrIndexOf((UTF8Char*)this->dataBuff, (const UTF8Char*)"\r\n");
+			i = Text::StrIndexOfC(this->dataBuff, this->buffSize, UTF8STRC("\r\n"));
 			MemCopyNO(buff, this->dataBuff, i);
 			buff[i] = 0;
 			Text::StrSplit(ptrs, 3, buff, ' ');
@@ -1046,7 +1046,7 @@ void Net::HTTPMyClient::EndRequest(Double *timeReq, Double *timeResp)
 			UInt32 keepAliveTO = 0;
 			while (header)
 			{
-				while ((i = Text::StrIndexOf(ptr, (const UTF8Char*)"\n")) != INVALID_INDEX && i > 0)
+				while ((i = Text::StrIndexOf(ptr, '\n')) != INVALID_INDEX && i > 0)
 				{
 					if (i == 1 && ptr[0] == '\r')
 					{

@@ -2113,6 +2113,87 @@ UOSInt Text::StrIndexOf(const UTF8Char *str1, UTF8Char c)
 	return INVALID_INDEX;
 }
 
+UOSInt Text::StrIndexOfC(const UTF8Char *str1, UOSInt len1, const UTF8Char *str2, UOSInt len2)
+{
+	if (len1 < len2)
+	{
+		return INVALID_INDEX;
+	}
+	if (len1 == len2)
+	{
+
+	}
+	const UTF8Char *ptr = str1;
+	const UTF8Char *ptr2;
+	const UTF8Char *ptr3;
+	UTF8Char c;
+	UInt8 v1;
+	UInt16 v2;
+	UInt32 v3;
+	switch (len2)
+	{
+	case 0:
+		return INVALID_INDEX;
+	case 1:
+		v1 = *str2;
+		while (len1-- > 0)
+		{
+			if (*ptr == v1)
+				return (UOSInt)(ptr - str1);
+			ptr++;
+		}
+		return INVALID_INDEX;
+	case 2:
+		v2 = ReadNUInt16(str2);
+		while (len1-- > 1)
+		{
+			if (ReadNUInt16(ptr) == v2)
+				return (UOSInt)(ptr - str1);
+			ptr++;
+		}
+		return INVALID_INDEX;
+	case 3:
+		v2 = ReadNInt16(str2);
+		v1 = str2[2];
+		while (len1-- > 2)
+		{
+			if (ReadNUInt16(ptr) == v2 && ptr[2] == v1)
+				return (UOSInt)(ptr - str1);
+			ptr++;
+		}
+		return INVALID_INDEX;
+	case 4:
+		v3 = ReadNInt32(str2);
+		while (len1-- > 3)
+		{
+			if (ReadNUInt16(ptr) == v2 && ptr[2] == v1)
+				return (UOSInt)(ptr - str1);
+			ptr++;
+		}
+		return INVALID_INDEX;
+	default:
+		while (*ptr)
+		{
+			ptr2 = ptr;
+			ptr3 = str2;
+			while (true)
+			{
+				if ((c = *ptr3) == 0)
+				{
+					return (UOSInt)(ptr - str1);
+				}
+				else if (*ptr2++ != c)
+				{
+					break;
+				}
+				ptr3++;
+			}
+			ptr++;
+		}
+		return INVALID_INDEX;
+	}
+}
+
 UOSInt Text::StrIndexOfICase(const UTF8Char *str1, const UTF8Char *str2)
 {
 	const UTF8Char *ptr = str1;
