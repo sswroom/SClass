@@ -61,7 +61,6 @@ void Media::MediaPlayerWebInterface::BrowseRequest(Net::WebServer::IWebRequest *
 	IO::Path::FindFileSession *sess;
 	UInt8 *buff;
 	Text::String *s;
-	const UTF8Char *u8ptr;
 	UTF8Char *sptr2;
 	UOSInt size;
 	UInt64 fileSize;
@@ -128,8 +127,8 @@ void Media::MediaPlayerWebInterface::BrowseRequest(Net::WebServer::IWebRequest *
 			writer->WriteStrC(UTF8STRC("</td><td>"));
 
 			IO::Path::GetFileExt(sbuff2, vfile->fileName);
-			u8ptr = Net::MIME::GetMIMEFromExt(sbuff2);
-			writer->WriteStr(u8ptr);
+			Text::CString mime = Net::MIME::GetMIMEFromExt(sbuff2);
+			writer->WriteStrC(mime.v, mime.len);
 			writer->WriteLineC(UTF8STRC("</td></tr>"));
 
 			Text::StrDelNew(vfile->fileName);

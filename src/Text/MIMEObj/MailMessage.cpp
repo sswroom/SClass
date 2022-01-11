@@ -34,7 +34,7 @@ UOSInt Text::MIMEObj::MailMessage::WriteStream(IO::Stream *stm)
 {
 	UOSInt i;
 	UOSInt j;
-	const UTF8Char *csptr;
+	Text::String *s;
 	Text::StringBuilderUTF8 sbc;
 	i = 0;
 	j = this->headerName->GetCount();
@@ -42,8 +42,8 @@ UOSInt Text::MIMEObj::MailMessage::WriteStream(IO::Stream *stm)
 	{
 		sbc.Append(this->headerName->GetItem(i));
 		sbc.AppendC(UTF8STRC(": "));
-		csptr = this->headerValue->GetItem(i);
-		sbc.Append(csptr);
+		s = this->headerValue->GetItem(i);
+		sbc.Append(s);
 		sbc.AppendC(UTF8STRC("\r\n"));
 		i++;
 	}
@@ -85,46 +85,46 @@ void Text::MIMEObj::MailMessage::SetContent(Text::IMIMEObj *obj)
 
 Bool Text::MIMEObj::MailMessage::GetDate(Data::DateTime *dt)
 {
-	const UTF8Char *hdr = GetHeader((const UTF8Char*)"Date");
+	Text::String *hdr = GetHeader(UTF8STRC("Date"));
 	if (hdr == 0)
 		return false;
-	dt->SetValue(hdr);
+	dt->SetValue(hdr->v);
 	return true;
 }
 
 UTF8Char *Text::MIMEObj::MailMessage::GetFromAddr(UTF8Char *sbuff)
 {
-	const UTF8Char *hdr = GetHeader((const UTF8Char*)"From");
+	Text::String *hdr = GetHeader(UTF8STRC("From"));
 	if (hdr == 0)
 		return 0;
-	return ParseHeaderStr(sbuff, hdr);
+	return ParseHeaderStr(sbuff, hdr->v);
 }
 
 UTF8Char *Text::MIMEObj::MailMessage::GetSubject(UTF8Char *sbuff)
 {
-	const UTF8Char *hdr = GetHeader((const UTF8Char*)"Subject");
+	Text::String *hdr = GetHeader(UTF8STRC("Subject"));
 	if (hdr == 0)
 		return 0;
-	return ParseHeaderStr(sbuff, hdr);
+	return ParseHeaderStr(sbuff, hdr->v);
 }
 
 UTF8Char *Text::MIMEObj::MailMessage::GetReplyTo(UTF8Char *sbuff)
 {
-	const UTF8Char *hdr = GetHeader((const UTF8Char*)"Reply-To");
+	Text::String *hdr = GetHeader(UTF8STRC("Reply-To"));
 	if (hdr == 0)
 		return 0;
-	return ParseHeaderStr(sbuff, hdr);
+	return ParseHeaderStr(sbuff, hdr->v);
 }
 
 UOSInt Text::MIMEObj::MailMessage::GetRecpList(Data::ArrayList<MailAddress*> *recpList)
 {
 	UOSInt i = 0;
-	const UTF8Char *hdr = GetHeader((const UTF8Char*)"To");
+	Text::String *hdr = GetHeader(UTF8STRC("To"));
 	if (hdr)
-		i += ParseAddrList(hdr, recpList, AT_TO);
-	hdr = GetHeader((const UTF8Char*)"CC");
+		i += ParseAddrList(hdr->v, hdr->leng, recpList, AT_TO);
+	hdr = GetHeader(UTF8STRC("CC"));
 	if (hdr)
-		i += ParseAddrList(hdr, recpList, AT_CC);
+		i += ParseAddrList(hdr->v, hdr->leng, recpList, AT_CC);
 	return i;
 }
 
@@ -199,7 +199,7 @@ Text::IMIMEObj *Text::MIMEObj::MailMessage::GetAttachment(OSInt index, Text::Str
 	UOSInt j;
 	UOSInt k;
 	UOSInt l;
-	const UTF8Char *cptr;
+	Text::String *s;
 	UTF8Char sbuff[512];
 	Text::MIMEObj::MultipartMIMEObj::PartInfo *part;
 	if (this->content == 0)
@@ -214,12 +214,12 @@ Text::IMIMEObj *Text::MIMEObj::MailMessage::GetAttachment(OSInt index, Text::Str
 			while (i < j)
 			{
 				part = mpart->GetPart(i);
-				cptr = part->GetHeader((const UTF8Char*)"Content-Disposition");
-				if (cptr && Text::StrStartsWith(cptr, (const UTF8Char*)"attachment"))
+				s = part->GetHeader(UTF8STRC("Content-Disposition"));
+				if (s && s->StartsWith(UTF8STRC("attachment")))
 				{
 					if (index == 0)
 					{
-						ParseHeaderStr(sbuff, cptr);
+						ParseHeaderStr(sbuff, s->v);
 						k = Text::StrIndexOf(sbuff, (const UTF8Char*)"filename=");
 						if (k != INVALID_INDEX)
 						{
@@ -275,8 +275,7 @@ Text::MIMEObj::MailMessage *Text::MIMEObj::MailMessage::ParseFile(IO::IStreamDat
 	UInt64 fileOfst;
 	Text::MIMEObj::MailMessage *mail;
 	Text::StringBuilderUTF8 sb;
-	UTF8Char *sptr;
-	UTF8Char *sarr[2];
+	Text::PString sarr[2];
 	Bool isFirst = true;
 	Bool found = false;
 	UOSInt i;
@@ -343,13 +342,12 @@ Text::MIMEObj::MailMessage *Text::MIMEObj::MailMessage::ParseFile(IO::IStreamDat
 					}
 					if (buff[i - 1] != ';' || (buff[i + 2] != '\t' && buff[i + 2] != ' '))
 					{
-						sptr = sb.ToString();
-						if (Text::StrSplitTrim(sarr, 2, sptr, ':') == 1)
+						if (Text::StrSplitTrimP(sarr, 2, sb.ToString(), sb.GetLength(), ':') == 1)
 						{
 							lineStart = 0;
 							break;
 						}
-						mail->AddHeader(sarr[0], sarr[1]);
+						mail->AddHeader(sarr[0].v, sarr[0].len, sarr[1].v, sarr[1].len);
 						sb.ClearStr();
 					}
 				}
@@ -388,13 +386,12 @@ Text::MIMEObj::MailMessage *Text::MIMEObj::MailMessage::ParseFile(IO::IStreamDat
 					}
 					if (buff[i - 1] != ';' || (buff[i + 2] != '\t' && buff[i + 2] != ' '))
 					{
-						sptr = sb.ToString();
-						if (Text::StrSplitTrim(sarr, 2, sptr, ':') == 1)
+						if (Text::StrSplitTrimP(sarr, 2, sb.ToString(), sb.GetLength(), ':') == 1)
 						{
 							lineStart = 0;
 							break;
 						}
-						mail->AddHeader(sarr[0], sarr[1]);
+						mail->AddHeader(sarr[0].v, sarr[0].len, sarr[1].v, sarr[1].len);
 						sb.ClearStr();
 					}
 				}
@@ -430,13 +427,14 @@ Text::MIMEObj::MailMessage *Text::MIMEObj::MailMessage::ParseFile(IO::IStreamDat
 	}
 
 	UInt64 contentOfst = fileOfst - buffSize + lineStart;
-	const UTF8Char *contentLen = mail->GetHeader((const UTF8Char*)"Content-Length");
+	Text::String *contentLen = mail->GetHeader(UTF8STRC("Content-Length"));
 	if (contentLen)
 	{
-		if (Text::StrToUInt64(contentLen) == fd->GetDataSize() - contentOfst)
+		if (Text::StrToUInt64(contentLen->v) == fd->GetDataSize() - contentOfst)
 		{
-			IO::IStreamData *data = fd->GetPartialData(contentOfst, Text::StrToUInt64(contentLen));
-			Text::IMIMEObj *obj = Text::IMIMEObj::ParseFromData(data, mail->GetHeader((const UTF8Char*)"Content-Type"));
+			IO::IStreamData *data = fd->GetPartialData(contentOfst, Text::StrToUInt64(contentLen->v));
+			Text::String *contType = mail->GetHeader(UTF8STRC("Content-Type"));
+			Text::IMIMEObj *obj = Text::IMIMEObj::ParseFromData(data, STR_PTRC(contType));
 			DEL_CLASS(data);
 			if (obj)
 			{
@@ -447,7 +445,8 @@ Text::MIMEObj::MailMessage *Text::MIMEObj::MailMessage::ParseFile(IO::IStreamDat
 	else
 	{
 		IO::IStreamData *data = fd->GetPartialData(contentOfst, fd->GetDataSize() - contentOfst);
-		Text::IMIMEObj *obj = Text::IMIMEObj::ParseFromData(data, mail->GetHeader((const UTF8Char*)"Content-Type"));
+		Text::String *contType = mail->GetHeader(UTF8STRC("Content-Type"));
+		Text::IMIMEObj *obj = Text::IMIMEObj::ParseFromData(data, STR_PTRC(contType));
 		DEL_CLASS(data);
 		if (obj)
 		{
@@ -457,10 +456,9 @@ Text::MIMEObj::MailMessage *Text::MIMEObj::MailMessage::ParseFile(IO::IStreamDat
 	return mail;
 }
 
-UOSInt Text::MIMEObj::MailMessage::ParseAddrList(const UTF8Char *hdr, Data::ArrayList<MailAddress*> *recpList, AddressType type)
+UOSInt Text::MIMEObj::MailMessage::ParseAddrList(const UTF8Char *hdr, UOSInt hdrLen, Data::ArrayList<MailAddress*> *recpList, AddressType type)
 {
 	UTF8Char *sbuff;
-	UOSInt hdrLen;
 	UTF8Char *sptr;
 	UTF8Char *ptr1;
 	UTF8Char *ptr2;
@@ -469,7 +467,6 @@ UOSInt Text::MIMEObj::MailMessage::ParseAddrList(const UTF8Char *hdr, Data::Arra
 	Bool isEnd;
 	Bool quoted;
 	MailAddress *addr;
-	hdrLen = Text::StrCharCnt(hdr);
 	sbuff = MemAlloc(UTF8Char, hdrLen + 1);
 	this->ParseHeaderStr(sbuff, hdr);
 

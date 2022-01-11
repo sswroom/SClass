@@ -53,7 +53,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 
 		if (Text::StrStartsWith(url, (const UTF8Char*)"http://") && fileBuff && fileSize > 0)
 		{
-			const UTF8Char *mime = 0;
+			Text::CString mime = {0, 0};
 			i = Text::StrLastIndexOf(file, '.');
 			if (i != INVALID_INDEX)
 			{
@@ -69,9 +69,9 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			NEW_CLASS(sockf, Net::OSSocketFactory(true));
 			ssl = Net::SSLEngineFactory::Create(sockf, true);
 			cli = Net::HTTPClient::CreateConnect(sockf, ssl, url, "POST", false);
-			if (mime)
+			if (mime.v)
 			{
-				cli->AddContentType(mime, Text::StrCharCnt(mime));
+				cli->AddContentType(mime.v, mime.len);
 			}
 			cli->AddContentLength(fileSize); 
 

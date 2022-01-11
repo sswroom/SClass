@@ -42,6 +42,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnRequestClicked(void *userObj
 	UTF8Char *sptr;
 	Text::StringBuilderUTF8 sb;
 	Text::StringBuilderUTF8 sbTmp;
+	Text::CString mime;
 	me->txtURL->GetText(&sb);
 	if (!sb.StartsWith((const UTF8Char*)"http://") && !sb.StartsWith((const UTF8Char*)"https://"))
 	{
@@ -117,7 +118,8 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnRequestClicked(void *userObj
 		DEL_CLASS(fs);
 		if (IO::Path::GetFileExt(sbuff, fileName))
 		{
-			me->reqBodyType = Text::String::NewNotNull(Net::MIME::GetMIMEFromExt(sbuff));
+			mime = Net::MIME::GetMIMEFromExt(sbuff);
+			me->reqBodyType = Text::String::New(mime.v, mime.len);
 		}
 		else
 		{
@@ -191,9 +193,9 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnRequestClicked(void *userObj
 				mstm.Write((const UInt8*)"\"\r\n", 3);
 
 				IO::Path::GetFileExt(sbuff, &csptr[k]);
-				csptr2 = Net::MIME::GetMIMEFromExt(sbuff);
+				mime = Net::MIME::GetMIMEFromExt(sbuff);
 				mstm.Write((const UInt8*)"Content-Type: ", 14);
-				mstm.Write(csptr2, Text::StrCharCnt(csptr2));
+				mstm.Write(mime.v, mime.len);
 				mstm.Write((const UInt8*)"\r\n\r\n", 4);
 
 				ofst = 0;
@@ -360,7 +362,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnViewClicked(void *userObj)
 		Text::IMIMEObj *mimeObj;
 		IO::StmData::MemoryData *md;
 		NEW_CLASS(md, IO::StmData::MemoryData(buff, buffSize));
-		mimeObj = Text::IMIMEObj::ParseFromData(md, me->respContType);
+		mimeObj = Text::IMIMEObj::ParseFromData(md, me->respContType->v, me->respContType->leng);
 		DEL_CLASS(md);
 		if (mimeObj)
 		{
@@ -509,7 +511,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 			if (cli->Connect(currURL->v, currURL->leng, currMeth, &me->respTimeDNS, &me->respTimeConn, false))
 			{
 				IO::MemoryStream *mstm;
-				const UTF8Char *contType = 0;
+				Text::String *contType = 0;
 				NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SSWR.AVIRead.AVIRHTTPClientForm.respData")));
 				cli->AddHeaderC(UTF8STRC("Accept"), UTF8STRC("*/*"));
 				cli->AddHeaderC(UTF8STRC("Accept-Charset"), UTF8STRC("*"));
@@ -656,12 +658,12 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 				Text::StringBuilderUTF8 sb;
 				if (cli->GetRespHeader(UTF8STRC("Content-Type"), &sb))
 				{
-					contType = Text::StrCopyNewC(sb.ToString(), sb.GetLength());
+					contType = Text::String::New(sb.ToString(), sb.GetLength());
 				}
 				me->respSvrAddr = *cli->GetSvrAddr();
 				Sync::MutexUsage respMutUsage(me->respMut);
 				SDEL_STRING(me->respReqURL)
-				SDEL_TEXT(me->respContType);
+				SDEL_STRING(me->respContType);
 				SDEL_CLASS(me->respData);
 				me->respReqURL = currURL->Clone();
 				me->respContType = contType;
@@ -688,7 +690,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 				Sync::MutexUsage mutUsage(me->respMut);
 				SDEL_STRING(me->respReqURL)
 				SDEL_CLASS(me->respData);
-				SDEL_TEXT(me->respContType);
+				SDEL_STRING(me->respContType);
 				me->respReqURL = currURL->Clone();
 				SDEL_TEXT(me->respCert);
 				mutUsage.EndUse();
@@ -1279,7 +1281,7 @@ SSWR::AVIRead::AVIRHTTPClientForm::~AVIRHTTPClientForm()
 	this->ClearFiles();
 	DEL_CLASS(this->fileList);
 	SDEL_STRING(this->respReqURL);
-	SDEL_TEXT(this->respContType);
+	SDEL_STRING(this->respContType);
 	SDEL_CLASS(this->respData);
 	SDEL_TEXT(this->respCert);
 	DEL_CLASS(this->respMut);

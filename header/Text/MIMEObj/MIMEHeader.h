@@ -1,6 +1,7 @@
 #ifndef _SM_TEXT_MIMEOBJ_MIMEHEADER
 #define _SM_TEXT_MIMEOBJ_MIMEHEADER
 #include "Data/ArrayList.h"
+#include "Text/String.h"
 
 namespace Text
 {
@@ -9,18 +10,19 @@ namespace Text
 		class MIMEHeader
 		{
 		protected:
-			Data::ArrayList<const UTF8Char *> *headerName;
-			Data::ArrayList<const UTF8Char *> *headerValue;
+			Data::ArrayList<Text::String *> *headerName;
+			Data::ArrayList<Text::String *> *headerValue;
 
 		public:
 			MIMEHeader();
 			virtual ~MIMEHeader();
 
-			void AddHeader(const UTF8Char *name, const UTF8Char *value);
-			const UTF8Char *GetHeader(const UTF8Char *name);
+			void AddHeader(const UTF8Char *name, UOSInt nameLen, const UTF8Char *value, UOSInt valueLen);
+			void AddHeader(Text::String *name, Text::String *value);
+			Text::String *GetHeader(const UTF8Char *name, UOSInt nameLen);
 			UOSInt GetHeaderCount();
-			const UTF8Char *GetHeaderName(UOSInt index);
-			const UTF8Char *GetHeaderValue(UOSInt index);
+			Text::String *GetHeaderName(UOSInt index);
+			Text::String *GetHeaderValue(UOSInt index);
 
 			static UTF8Char *ParseHeaderStr(UTF8Char *sbuff, const UTF8Char *value);
 		};

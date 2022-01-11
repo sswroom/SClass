@@ -134,7 +134,7 @@ namespace SSWR
 			Text::String *respReqURL;
 			Data::ArrayList<const UTF8Char*> *respHeaders;
 			Sync::Mutex *respMut;
-			const UTF8Char *respContType;
+			Text::String *respContType;
 			IO::MemoryStream *respData;
 			const UTF8Char *respCert;
 			Data::ArrayList<ParamValue*> *params;

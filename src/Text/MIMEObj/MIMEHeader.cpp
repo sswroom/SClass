@@ -8,8 +8,8 @@
 
 Text::MIMEObj::MIMEHeader::MIMEHeader()
 {
-	NEW_CLASS(this->headerName, Data::ArrayList<const UTF8Char *>());
-	NEW_CLASS(this->headerValue, Data::ArrayList<const UTF8Char *>());
+	NEW_CLASS(this->headerName, Data::ArrayList<Text::String *>());
+	NEW_CLASS(this->headerValue, Data::ArrayList<Text::String *>());
 }
 
 Text::MIMEObj::MIMEHeader::~MIMEHeader()
@@ -18,21 +18,27 @@ Text::MIMEObj::MIMEHeader::~MIMEHeader()
 	i = this->headerName->GetCount();
 	while (i-- > 0)
 	{
-		Text::StrDelNew(this->headerName->GetItem(i));
-		Text::StrDelNew(this->headerValue->GetItem(i));
+		this->headerName->GetItem(i)->Release();
+		this->headerValue->GetItem(i)->Release();
 	}
 	DEL_CLASS(this->headerName);
 	DEL_CLASS(this->headerValue);
 }
 
 
-void Text::MIMEObj::MIMEHeader::AddHeader(const UTF8Char *name, const UTF8Char *value)
+void Text::MIMEObj::MIMEHeader::AddHeader(const UTF8Char *name, UOSInt nameLen, const UTF8Char *value, UOSInt valueLen)
 {
-	this->headerName->Add(Text::StrCopyNew(name));
-	this->headerValue->Add(Text::StrCopyNew(value));
+	this->headerName->Add(Text::String::New(name, nameLen));
+	this->headerValue->Add(Text::String::New(value, valueLen));
 }
 
-const UTF8Char *Text::MIMEObj::MIMEHeader::GetHeader(const UTF8Char *name)
+void Text::MIMEObj::MIMEHeader::AddHeader(Text::String *name, Text::String *value)
+{
+	this->headerName->Add(name->Clone());
+	this->headerValue->Add(value->Clone());
+}
+
+Text::String *Text::MIMEObj::MIMEHeader::GetHeader(const UTF8Char *name, UOSInt nameLen)
 {
 	UOSInt i;
 	UOSInt j;
@@ -40,7 +46,7 @@ const UTF8Char *Text::MIMEObj::MIMEHeader::GetHeader(const UTF8Char *name)
 	j = this->headerName->GetCount();
 	while (i < j)
 	{
-		if (Text::StrEquals(name, this->headerName->GetItem(i)))
+		if (this->headerName->GetItem(i)->Equals(name, nameLen))
 			return this->headerValue->GetItem(i);
 		i++;
 	}
@@ -52,12 +58,12 @@ UOSInt Text::MIMEObj::MIMEHeader::GetHeaderCount()
 	return this->headerName->GetCount();
 }
 
-const UTF8Char *Text::MIMEObj::MIMEHeader::GetHeaderName(UOSInt index)
+Text::String *Text::MIMEObj::MIMEHeader::GetHeaderName(UOSInt index)
 {
 	return this->headerName->GetItem(index);
 }
 
-const UTF8Char *Text::MIMEObj::MIMEHeader::GetHeaderValue(UOSInt index)
+Text::String *Text::MIMEObj::MIMEHeader::GetHeaderValue(UOSInt index)
 {
 	return this->headerValue->GetItem(index);
 }

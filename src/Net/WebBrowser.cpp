@@ -75,7 +75,8 @@ IO::IStreamData *Net::WebBrowser::GetData(const UTF8Char *url, Bool forceReload,
 		NEW_CLASS(fd, IO::StmData::FileData(url, false));
 		if (contentType)
 		{
-			Text::StrConcat(contentType, Net::MIME::GetMIMEFromExt(url));
+			Text::CString mime = Net::MIME::GetMIMEFromExt(url);
+			Text::StrConcatC(contentType, mime.v, mime.len);
 		}
 		return fd;
 	}
@@ -88,7 +89,8 @@ IO::IStreamData *Net::WebBrowser::GetData(const UTF8Char *url, Bool forceReload,
 		NEW_CLASS(fd, IO::StmData::FileData(sbuff, false));
 		if (contentType)
 		{
-			Text::StrConcat(contentType, Net::MIME::GetMIMEFromExt(url));
+			Text::CString mime = Net::MIME::GetMIMEFromExt(url);
+			Text::StrConcatC(contentType, mime.v, mime.len);
 		}
 		return fd;
 	}

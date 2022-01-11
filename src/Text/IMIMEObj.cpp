@@ -22,7 +22,7 @@ IO::ParserType Text::IMIMEObj::GetParserType()
 	return IO::ParserType::MIMEObject;
 }
 
-Text::IMIMEObj *Text::IMIMEObj::ParseFromData(IO::IStreamData *data, const UTF8Char *contentType)
+Text::IMIMEObj *Text::IMIMEObj::ParseFromData(IO::IStreamData *data, const UTF8Char *contentType, UOSInt typeLen)
 {
 	Text::IMIMEObj *obj;
 	UOSInt buffSize;
@@ -40,13 +40,13 @@ Text::IMIMEObj *Text::IMIMEObj::ParseFromData(IO::IStreamData *data, const UTF8C
 		MemFree(buff);
 		return obj;
 	}
-	else if (Text::StrStartsWith(contentType, (const UTF8Char*)"message/rfc822"))
+	else if (Text::StrStartsWithC(contentType, typeLen, UTF8STRC("message/rfc822")))
 	{
 		obj = Text::MIMEObj::MailMessage::ParseFile(data);
 		if (obj)
 			return obj;
 	}
-	else if (Text::StrStartsWith(contentType, (const UTF8Char*)"text/plain"))
+	else if (Text::StrStartsWithC(contentType, typeLen, UTF8STRC("text/plain")))
 	{
 		UOSInt i = Text::StrIndexOf(contentType, (const UTF8Char*)"charset=");
 		UInt32 codePage = 0;
@@ -71,7 +71,7 @@ Text::IMIMEObj *Text::IMIMEObj::ParseFromData(IO::IStreamData *data, const UTF8C
 		MemFree(buff);
 		return obj;
 	}
-	else if (Text::StrStartsWith(contentType, (const UTF8Char*)"multipart/mixed;") || Text::StrStartsWith(contentType, (const UTF8Char*)"multipart/related;") || Text::StrStartsWith(contentType, (const UTF8Char*)"multipart/alternative;"))
+	else if (Text::StrStartsWithC(contentType, typeLen, UTF8STRC("multipart/mixed;")) || Text::StrStartsWithC(contentType, typeLen, UTF8STRC("multipart/related;")) || Text::StrStartsWithC(contentType, typeLen, UTF8STRC("multipart/alternative;")))
 	{
 		obj = Text::MIMEObj::MultipartMIMEObj::ParseFile(contentType, data);
 		if (obj)
@@ -87,7 +87,7 @@ Text::IMIMEObj *Text::IMIMEObj::ParseFromData(IO::IStreamData *data, const UTF8C
 
 Text::IMIMEObj *Text::IMIMEObj::ParseFromFile(const UTF8Char *fileName)
 {
-	const UTF8Char *contentType;
+	Text::CString contentType;
 	IO::StmData::FileData *fd;
 	Text::IMIMEObj *obj;
 	UTF8Char sbuff[64];
@@ -100,7 +100,7 @@ Text::IMIMEObj *Text::IMIMEObj::ParseFromFile(const UTF8Char *fileName)
 	}
 	else
 	{
-		obj = ParseFromData(fd, contentType);
+		obj = ParseFromData(fd, contentType.v, contentType.len);
 	}
 	DEL_CLASS(fd);
 	return obj;

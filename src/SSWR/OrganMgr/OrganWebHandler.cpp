@@ -8615,7 +8615,7 @@ void SSWR::OrganMgr::OrganWebHandler::ResponseMstm(Net::WebServer::IWebRequest *
 	resp->AddDefHeaders(req);
 	resp->AddContentType(contType, len);
 	mstm->SeekFromBeginning(0);
-	Net::WebServer::HTTPServerUtil::SendContent(req, resp, contType, mstm->GetLength(), mstm);
+	Net::WebServer::HTTPServerUtil::SendContent(req, resp, contType, len, mstm->GetLength(), mstm);
 }
 
 void SSWR::OrganMgr::OrganWebHandler::WriteHeaderPart1(IO::Writer *writer, const UTF8Char *title, Bool isMobile)

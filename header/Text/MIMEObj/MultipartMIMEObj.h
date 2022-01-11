@@ -43,7 +43,7 @@ namespace Text
 
 			const UTF8Char *GetDefMsg();
 			UOSInt AddPart(Text::IMIMEObj *obj);
-			Bool AddPartHeader(UOSInt partIndex, const UTF8Char *name, const UTF8Char *value);
+			Bool AddPartHeader(UOSInt partIndex, const UTF8Char *name, UOSInt nameLen, const UTF8Char *value, UOSInt valueLen);
 			Text::IMIMEObj *GetPartObj(UOSInt partIndex);
 			PartInfo *GetPart(UOSInt partIndex);
 			UOSInt GetPartCount();

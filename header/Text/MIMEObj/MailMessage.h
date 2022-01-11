@@ -58,7 +58,7 @@ namespace Text
 			static MailMessage *ParseFile(IO::IStreamData *fd);
 
 		private:
-			UOSInt ParseAddrList(const UTF8Char *hdr, Data::ArrayList<MailAddress*> *recpList, AddressType type);
+			UOSInt ParseAddrList(const UTF8Char *hdr, UOSInt hdrLen, Data::ArrayList<MailAddress*> *recpList, AddressType type);
 		};
 	}
 }

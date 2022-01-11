@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
-#include "Data/ArrayListStrUTF8.h"
+#include "Data/ArrayListString.h"
 #include "IO/StmData/MemoryData.h"
 #include "Text/MailBase64Stream.h"
 #include "Text/MyString.h"
@@ -48,11 +48,10 @@ void Text::MIMEObj::MultipartMIMEObj::ParsePart(UInt8 *buff, UOSInt buffSize)
 	UOSInt j;
 	UOSInt k;
 	OSInt si;
-	Data::ArrayListStrUTF8 hdrNames;
-	Data::ArrayListStrUTF8 hdrValues;
+	Data::ArrayListString hdrNames;
+	Data::ArrayListString hdrValues;
 	Text::StringBuilderUTF8 sb;
-	UTF8Char *sptr;
-	UTF8Char *sarr[2];
+	Text::PString sarr[2];
 	Bool found = false;
 	lineStart = 0;
 	i = 0;
@@ -83,14 +82,13 @@ void Text::MIMEObj::MultipartMIMEObj::ParsePart(UInt8 *buff, UOSInt buffSize)
 				}
 				if (buff[i - 1] != ';' || (buff[i + 2] != '\t' && buff[i + 2] != ' '))
 				{
-					sptr = sb.ToString();
-					if (Text::StrSplitTrim(sarr, 2, sptr, ':') == 1)
+					if (Text::StrSplitTrimP(sarr, 2, sb.ToString(), sb.GetLength(), ':') == 1)
 					{
 						lineStart = 0;
 						break;
 					}
-					j = hdrNames.SortedInsert(Text::StrCopyNew(sarr[0]));
-					hdrValues.Insert(j, Text::StrCopyNew(sarr[1]));
+					j = hdrNames.SortedInsert(Text::String::New(sarr[0].v, sarr[0].len));
+					hdrValues.Insert(j, Text::String::New(sarr[1].v, sarr[1].len));
 					sb.ClearStr();
 				}
 			}
@@ -107,42 +105,42 @@ void Text::MIMEObj::MultipartMIMEObj::ParsePart(UInt8 *buff, UOSInt buffSize)
 		i = hdrNames.GetCount();
 		while (i-- > 0)
 		{
-			Text::StrDelNew(hdrNames.GetItem(i));
-			Text::StrDelNew(hdrValues.GetItem(i));
+			hdrNames.GetItem(i)->Release();
+			hdrValues.GetItem(i)->Release();
 		}
 		return;
 	}
 
-	si = hdrNames.SortedIndexOf((const UTF8Char*)"Content-Type");
+	si = hdrNames.SortedIndexOfPtr((const UTF8Char*)"Content-Type");
 	if (si >= 0)
 	{
-		const UTF8Char *contType = hdrValues.GetItem((UOSInt)si);
+		Text::String *contType = hdrValues.GetItem((UOSInt)si);
 		Text::IMIMEObj *obj = 0;
 		IO::StmData::MemoryData *mdata;
-		si = hdrNames.SortedIndexOf((const UTF8Char*)"Content-Transfer-Encoding");
+		si = hdrNames.SortedIndexOfPtr((const UTF8Char*)"Content-Transfer-Encoding");
 		if (si >= 0)
 		{
-			const UTF8Char *tenc = hdrValues.GetItem((UOSInt)si);
-			if (Text::StrEquals(tenc, (const UTF8Char*)"base64"))
+			Text::String *tenc = hdrValues.GetItem((UOSInt)si);
+			if (tenc->Equals(UTF8STRC("base64")))
 			{
 				Text::TextBinEnc::Base64Enc b64;
 				UInt8 *tmpBuff = MemAlloc(UInt8, buffSize - lineStart);
 				j = b64.DecodeBin(&buff[lineStart], buffSize - lineStart, tmpBuff);
 
 				NEW_CLASS(mdata, IO::StmData::MemoryData(tmpBuff, j));
-				obj = Text::IMIMEObj::ParseFromData(mdata, contType);
+				obj = Text::IMIMEObj::ParseFromData(mdata, contType->v, contType->leng);
 				DEL_CLASS(mdata);
 
 				MemFree(tmpBuff);
 			}
-			else if (Text::StrEquals(tenc, (const UTF8Char*)"quoted-printable"))
+			else if (tenc->Equals(UTF8STRC("quoted-printable")))
 			{
 				Text::TextBinEnc::QuotedPrintableEnc qpenc;
 				UInt8 *tmpBuff = MemAlloc(UInt8, buffSize - lineStart);
 				j = qpenc.DecodeBin(&buff[lineStart], buffSize - lineStart, tmpBuff);
 
 				NEW_CLASS(mdata, IO::StmData::MemoryData(tmpBuff, j));
-				obj = Text::IMIMEObj::ParseFromData(mdata, contType);
+				obj = Text::IMIMEObj::ParseFromData(mdata, contType->v, contType->leng);
 				DEL_CLASS(mdata);
 
 				MemFree(tmpBuff);
@@ -156,7 +154,7 @@ void Text::MIMEObj::MultipartMIMEObj::ParsePart(UInt8 *buff, UOSInt buffSize)
 		else
 		{
 			NEW_CLASS(mdata, IO::StmData::MemoryData(&buff[lineStart], buffSize - lineStart));
-			obj = Text::IMIMEObj::ParseFromData(mdata, contType);
+			obj = Text::IMIMEObj::ParseFromData(mdata, contType->v, contType->leng);
 			DEL_CLASS(mdata);
 		}
 
@@ -167,7 +165,9 @@ void Text::MIMEObj::MultipartMIMEObj::ParsePart(UInt8 *buff, UOSInt buffSize)
 			k = hdrNames.GetCount();
 			while (j < k)
 			{
-				this->AddPartHeader(i, hdrNames.GetItem(j), hdrValues.GetItem(j));
+				Text::String *name = hdrNames.GetItem(j);
+				Text::String *value = hdrValues.GetItem(j);
+				this->AddPartHeader(i, name->v, name->leng, value->v, value->leng);
 				j++;
 			}
 		}
@@ -176,8 +176,8 @@ void Text::MIMEObj::MultipartMIMEObj::ParsePart(UInt8 *buff, UOSInt buffSize)
 	i = hdrNames.GetCount();
 	while (i-- > 0)
 	{
-		Text::StrDelNew(hdrNames.GetItem(i));
-		Text::StrDelNew(hdrValues.GetItem(i));
+		hdrNames.GetItem(i)->Release();
+		hdrValues.GetItem(i)->Release();
 	}
 }
 
@@ -258,8 +258,8 @@ UOSInt Text::MIMEObj::MultipartMIMEObj::WriteStream(IO::Stream *stm)
 	UOSInt l;
 	Int32 encType;
 	PartInfo *part;
-	const UTF8Char *hdrName;
-	const UTF8Char *hdrValue;
+	Text::String *hdrName;
+	Text::String *hdrValue;
 	Text::StringBuilderUTF8 sbc;
 	if (this->defMsg)
 	{
@@ -293,9 +293,9 @@ UOSInt Text::MIMEObj::MultipartMIMEObj::WriteStream(IO::Stream *stm)
 			sbc.AppendC(UTF8STRC("\r\n"));
 			stm->Write((const UInt8*)sbc.ToString(), sbc.GetLength());
 			ret += sbc.GetLength();
-			if (Text::StrEquals(hdrName, (const UTF8Char*)"Content-Transfer-Encoding"))
+			if (hdrName->Equals(UTF8STRC("Content-Transfer-Encoding")))
 			{
-				if (Text::StrEquals(hdrValue, (const UTF8Char*)"base64"))
+				if (hdrValue->Equals(UTF8STRC("base64")))
 				{
 					encType = 1;
 				}
@@ -359,12 +359,12 @@ UOSInt Text::MIMEObj::MultipartMIMEObj::AddPart(Text::IMIMEObj *obj)
 	return this->parts->Add(part);
 }
 
-Bool Text::MIMEObj::MultipartMIMEObj::AddPartHeader(UOSInt partIndex, const UTF8Char *name, const UTF8Char *value)
+Bool Text::MIMEObj::MultipartMIMEObj::AddPartHeader(UOSInt partIndex, const UTF8Char *name, UOSInt nameLen, const UTF8Char *value, UOSInt valueLen)
 {
 	PartInfo *part = this->parts->GetItem(partIndex);
 	if (part == 0)
 		return false;
-	part->AddHeader(name, value);
+	part->AddHeader(name, nameLen, value, valueLen);
 	return true;
 }
 
