@@ -254,6 +254,7 @@ Bool Net::WebServer::HTTPServerUtil::ResponseFile(Net::WebServer::IWebRequest *r
 	UInt64 sizeLeft;
 	UInt8 sbuff[32];
 	UTF8Char *sptr;
+	UOSInt nameLen = Text::StrCharCnt(fileName);
 	NEW_CLASS(fs, IO::FileStream(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
 	fs->GetFileTimes(0, 0, &t);
 
@@ -274,7 +275,7 @@ Bool Net::WebServer::HTTPServerUtil::ResponseFile(Net::WebServer::IWebRequest *r
 		}
 	}
 
-	IO::Path::GetFileExt(sbuff, fileName);
+	IO::Path::GetFileExt(sbuff, fileName, nameLen);
 
 	sizeLeft = fs->GetLength();
 	sb2.ClearStr();

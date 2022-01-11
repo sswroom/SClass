@@ -15,7 +15,7 @@
 #define TCP_HEADER_SIZE 20
 #define WRITE_BUFFER_SIZE ((1500 - IP_HEADER_SIZE - TCP_HEADER_SIZE) * 4)
 
-Net::WebServer::WebConnection::WebConnection(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Net::TCPClient *cli, WebListener *svr, IWebHandler *hdlr, Bool allowProxy, Bool allowKA) : Net::WebServer::IWebResponse((const UTF8Char*)"WebConnection")
+Net::WebServer::WebConnection::WebConnection(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Net::TCPClient *cli, WebListener *svr, IWebHandler *hdlr, Bool allowProxy, Bool allowKA) : Net::WebServer::IWebResponse(UTF8STRC("WebConnection"))
 {
 	this->sockf = sockf;
 	this->ssl = ssl;
@@ -63,7 +63,6 @@ Net::WebServer::WebConnection::~WebConnection()
 
 void Net::WebServer::WebConnection::ReceivedData(const UInt8 *buff, UOSInt size)
 {
-	UTF8Char *reqURL;
 	Text::PString sarr[4];
 	UOSInt i;
 	UOSInt j;
@@ -140,7 +139,6 @@ void Net::WebServer::WebConnection::ReceivedData(const UInt8 *buff, UOSInt size)
 						{
 							Net::WebServer::IWebRequest::RequestProtocol reqProto = Net::WebServer::IWebRequest::RequestProtocol::RTSP1_0;
 							Bool secureConn = false;
-							reqURL = (UTF8Char*)sarr[1].v;
 							this->respHeaders->ClearStr();
 							this->respHeaderSent = false;
 							this->respTranEnc = 0;
@@ -157,47 +155,47 @@ void Net::WebServer::WebConnection::ReceivedData(const UInt8 *buff, UOSInt size)
 
 							if (Text::StrEqualsC(sarr[0].v, sarr[0].len, UTF8STRC("DESCRIBE")))
 							{
-								NEW_CLASS(this->currReq, WebRequest(reqURL, Net::WebServer::IWebRequest::RequestMethod::RTSP_DESCRIBE, reqProto, secureConn, &cliAddr, cliPort, svrPort));
+								NEW_CLASS(this->currReq, WebRequest(sarr[1].v, sarr[1].len, Net::WebServer::IWebRequest::RequestMethod::RTSP_DESCRIBE, reqProto, secureConn, &cliAddr, cliPort, svrPort));
 							}
 							else if (Text::StrEqualsC(sarr[0].v, sarr[0].len, UTF8STRC("ANNOUNCE")))
 							{
-								NEW_CLASS(this->currReq, WebRequest(reqURL, Net::WebServer::IWebRequest::RequestMethod::RTSP_ANNOUNCE, reqProto, secureConn, &cliAddr, cliPort, svrPort));
+								NEW_CLASS(this->currReq, WebRequest(sarr[1].v, sarr[1].len, Net::WebServer::IWebRequest::RequestMethod::RTSP_ANNOUNCE, reqProto, secureConn, &cliAddr, cliPort, svrPort));
 							}
 							else if (Text::StrEqualsC(sarr[0].v, sarr[0].len, UTF8STRC("GET_PARAMETER")))
 							{
-								NEW_CLASS(this->currReq, WebRequest(reqURL, Net::WebServer::IWebRequest::RequestMethod::RTSP_GET_PARAMETER, reqProto, secureConn, &cliAddr, cliPort, svrPort));
+								NEW_CLASS(this->currReq, WebRequest(sarr[1].v, sarr[1].len, Net::WebServer::IWebRequest::RequestMethod::RTSP_GET_PARAMETER, reqProto, secureConn, &cliAddr, cliPort, svrPort));
 							}
 							else if (Text::StrEqualsC(sarr[0].v, sarr[0].len, UTF8STRC("OPTIONS")))
 							{
-								NEW_CLASS(this->currReq, WebRequest(reqURL, Net::WebServer::IWebRequest::RequestMethod::RTSP_OPTIONS, reqProto, secureConn, &cliAddr, cliPort, svrPort));
+								NEW_CLASS(this->currReq, WebRequest(sarr[1].v, sarr[1].len, Net::WebServer::IWebRequest::RequestMethod::RTSP_OPTIONS, reqProto, secureConn, &cliAddr, cliPort, svrPort));
 							}
 							else if (Text::StrEqualsC(sarr[0].v, sarr[0].len, UTF8STRC("PAUSE")))
 							{
-								NEW_CLASS(this->currReq, WebRequest(reqURL, Net::WebServer::IWebRequest::RequestMethod::RTSP_PAUSE, reqProto, secureConn, &cliAddr, cliPort, svrPort));
+								NEW_CLASS(this->currReq, WebRequest(sarr[1].v, sarr[1].len, Net::WebServer::IWebRequest::RequestMethod::RTSP_PAUSE, reqProto, secureConn, &cliAddr, cliPort, svrPort));
 							}
 							else if (Text::StrEqualsC(sarr[0].v, sarr[0].len, UTF8STRC("PLAY")))
 							{
-								NEW_CLASS(this->currReq, WebRequest(reqURL, Net::WebServer::IWebRequest::RequestMethod::RTSP_PLAY, reqProto, secureConn, &cliAddr, cliPort, svrPort));
+								NEW_CLASS(this->currReq, WebRequest(sarr[1].v, sarr[1].len, Net::WebServer::IWebRequest::RequestMethod::RTSP_PLAY, reqProto, secureConn, &cliAddr, cliPort, svrPort));
 							}
 							else if (Text::StrEqualsC(sarr[0].v, sarr[0].len, UTF8STRC("RECORD")))
 							{
-								NEW_CLASS(this->currReq, WebRequest(reqURL, Net::WebServer::IWebRequest::RequestMethod::RTSP_RECORD, reqProto, secureConn, &cliAddr, cliPort, svrPort));
+								NEW_CLASS(this->currReq, WebRequest(sarr[1].v, sarr[1].len, Net::WebServer::IWebRequest::RequestMethod::RTSP_RECORD, reqProto, secureConn, &cliAddr, cliPort, svrPort));
 							}
 							else if (Text::StrEqualsC(sarr[0].v, sarr[0].len, UTF8STRC("REDIRECT")))
 							{
-								NEW_CLASS(this->currReq, WebRequest(reqURL, Net::WebServer::IWebRequest::RequestMethod::RTSP_REDIRECT, reqProto, secureConn, &cliAddr, cliPort, svrPort));
+								NEW_CLASS(this->currReq, WebRequest(sarr[1].v, sarr[1].len, Net::WebServer::IWebRequest::RequestMethod::RTSP_REDIRECT, reqProto, secureConn, &cliAddr, cliPort, svrPort));
 							}
 							else if (Text::StrEqualsC(sarr[0].v, sarr[0].len, UTF8STRC("SETUP")))
 							{
-								NEW_CLASS(this->currReq, WebRequest(reqURL, Net::WebServer::IWebRequest::RequestMethod::RTSP_SETUP, reqProto, secureConn, &cliAddr, cliPort, svrPort));
+								NEW_CLASS(this->currReq, WebRequest(sarr[1].v, sarr[1].len, Net::WebServer::IWebRequest::RequestMethod::RTSP_SETUP, reqProto, secureConn, &cliAddr, cliPort, svrPort));
 							}
 							else if (Text::StrEqualsC(sarr[0].v, sarr[0].len, UTF8STRC("SET_PARAMETER")))
 							{
-								NEW_CLASS(this->currReq, WebRequest(reqURL, Net::WebServer::IWebRequest::RequestMethod::RTSP_SET_PARAMETER, reqProto, secureConn, &cliAddr, cliPort, svrPort));
+								NEW_CLASS(this->currReq, WebRequest(sarr[1].v, sarr[1].len, Net::WebServer::IWebRequest::RequestMethod::RTSP_SET_PARAMETER, reqProto, secureConn, &cliAddr, cliPort, svrPort));
 							}
 							else if (Text::StrEqualsC(sarr[0].v, sarr[0].len, UTF8STRC("TEARDOWN")))
 							{
-								NEW_CLASS(this->currReq, WebRequest(reqURL, Net::WebServer::IWebRequest::RequestMethod::RTSP_TEARDOWN, reqProto, secureConn, &cliAddr, cliPort, svrPort));
+								NEW_CLASS(this->currReq, WebRequest(sarr[1].v, sarr[1].len, Net::WebServer::IWebRequest::RequestMethod::RTSP_TEARDOWN, reqProto, secureConn, &cliAddr, cliPort, svrPort));
 							}
 							else
 							{
@@ -241,7 +239,6 @@ void Net::WebServer::WebConnection::ReceivedData(const UInt8 *buff, UOSInt size)
 								this->cli->Close();
 								return;
 							}
-							reqURL = sarr[1].v;
 							this->respHeaders->ClearStr();
 							this->respHeaderSent = false;
 							this->respTranEnc = 0;
@@ -258,27 +255,27 @@ void Net::WebServer::WebConnection::ReceivedData(const UInt8 *buff, UOSInt size)
 
 							if (Text::StrEqualsC(sarr[0].v, sarr[0].len, UTF8STRC("GET")))
 							{
-								NEW_CLASS(this->currReq, WebRequest(reqURL, Net::WebServer::IWebRequest::RequestMethod::HTTP_GET, reqProto, secureConn, &cliAddr, cliPort, svrPort));
+								NEW_CLASS(this->currReq, WebRequest(sarr[1].v, sarr[1].len, Net::WebServer::IWebRequest::RequestMethod::HTTP_GET, reqProto, secureConn, &cliAddr, cliPort, svrPort));
 							}
 							else if (Text::StrEqualsC(sarr[0].v, sarr[0].len, UTF8STRC("POST")))
 							{
-								NEW_CLASS(this->currReq, WebRequest(reqURL, Net::WebServer::IWebRequest::RequestMethod::HTTP_POST, reqProto, secureConn, &cliAddr, cliPort, svrPort));
+								NEW_CLASS(this->currReq, WebRequest(sarr[1].v, sarr[1].len, Net::WebServer::IWebRequest::RequestMethod::HTTP_POST, reqProto, secureConn, &cliAddr, cliPort, svrPort));
 							}
 							else if (Text::StrEqualsC(sarr[0].v, sarr[0].len, UTF8STRC("PUT")))
 							{
-								NEW_CLASS(this->currReq, WebRequest(reqURL, Net::WebServer::IWebRequest::RequestMethod::HTTP_PUT, reqProto, secureConn, &cliAddr, cliPort, svrPort));
+								NEW_CLASS(this->currReq, WebRequest(sarr[1].v, sarr[1].len, Net::WebServer::IWebRequest::RequestMethod::HTTP_PUT, reqProto, secureConn, &cliAddr, cliPort, svrPort));
 							}
 							else if (Text::StrEqualsC(sarr[0].v, sarr[0].len, UTF8STRC("PATCH")))
 							{
-								NEW_CLASS(this->currReq, WebRequest(reqURL, Net::WebServer::IWebRequest::RequestMethod::HTTP_PATCH, reqProto, secureConn, &cliAddr, cliPort, svrPort));
+								NEW_CLASS(this->currReq, WebRequest(sarr[1].v, sarr[1].len, Net::WebServer::IWebRequest::RequestMethod::HTTP_PATCH, reqProto, secureConn, &cliAddr, cliPort, svrPort));
 							}
 							else if (Text::StrEqualsC(sarr[0].v, sarr[0].len, UTF8STRC("DELETE")))
 							{
-								NEW_CLASS(this->currReq, WebRequest(reqURL, Net::WebServer::IWebRequest::RequestMethod::HTTP_DELETE, reqProto, secureConn, &cliAddr, cliPort, svrPort));
+								NEW_CLASS(this->currReq, WebRequest(sarr[1].v, sarr[1].len, Net::WebServer::IWebRequest::RequestMethod::HTTP_DELETE, reqProto, secureConn, &cliAddr, cliPort, svrPort));
 							}
 							else if (Text::StrEqualsC(sarr[0].v, sarr[0].len, UTF8STRC("CONNECT")))
 							{
-								NEW_CLASS(this->currReq, WebRequest(reqURL, Net::WebServer::IWebRequest::RequestMethod::HTTP_CONNECT, reqProto, secureConn, &cliAddr, cliPort, svrPort));
+								NEW_CLASS(this->currReq, WebRequest(sarr[1].v, sarr[1].len, Net::WebServer::IWebRequest::RequestMethod::HTTP_CONNECT, reqProto, secureConn, &cliAddr, cliPort, svrPort));
 							}
 							else
 							{

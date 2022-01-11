@@ -14,7 +14,7 @@ OSInt __stdcall Media::MediaPlayerWebInterface::VideoFileCompare(void *file1, vo
 {
 	VideoFileInfo *vfile1 = (VideoFileInfo*)file1;
 	VideoFileInfo *vfile2 = (VideoFileInfo*)file2;
-	return Text::StrCompare(vfile1->fileName, vfile2->fileName);
+	return Text::StrCompare(vfile1->fileName->v, vfile2->fileName->v);
 }
 
 Media::MediaPlayerWebInterface::MediaPlayerWebInterface(Media::MediaPlayerInterface *iface, Bool autoRelease)
@@ -89,12 +89,12 @@ void Media::MediaPlayerWebInterface::BrowseRequest(Net::WebServer::IWebRequest *
 		Data::ArrayList<VideoFileInfo *> fileList;
 		VideoFileInfo *vfile;
 
-		while (IO::Path::FindNextFile(sptr, sess, 0, &pt, &fileSize))
+		while ((sptr2 = IO::Path::FindNextFile(sptr, sess, 0, &pt, &fileSize)) != 0)
 		{
 			if (pt == IO::Path::PathType::File)
 			{
 				vfile = MemAlloc(VideoFileInfo, 1);
-				vfile->fileName = Text::StrCopyNew(sptr);
+				vfile->fileName = Text::String::New(sptr, (UOSInt)(sptr2 - sptr));
 				vfile->fileSize = fileSize;
 				fileList.Add(vfile);
 			}
@@ -112,13 +112,13 @@ void Media::MediaPlayerWebInterface::BrowseRequest(Net::WebServer::IWebRequest *
 
 			writer->WriteStrC(UTF8STRC("<tr><td>"));
 			writer->WriteStrC(UTF8STRC("<a href=\"/browse?fname="));
-			Text::TextEnc::URIEncoding::URIEncode(sbuff2, vfile->fileName);
+			Text::TextEnc::URIEncoding::URIEncode(sbuff2, vfile->fileName->v);
 			s = Text::XML::ToNewXMLText(sbuff2);
 			writer->WriteStrC(s->v, s->leng);
 			s->Release();
 			writer->WriteStrC(UTF8STRC("\">"));
 
-			s = Text::XML::ToNewHTMLText(vfile->fileName);
+			s = Text::XML::ToNewHTMLText(vfile->fileName->v);
 			writer->WriteStrC(s->v, s->leng);
 			s->Release();
 			writer->WriteStrC(UTF8STRC("</a></td><td>"));
@@ -126,12 +126,12 @@ void Media::MediaPlayerWebInterface::BrowseRequest(Net::WebServer::IWebRequest *
 			writer->WriteStrC(sbuff2, (UOSInt)(sptr2 - sbuff));
 			writer->WriteStrC(UTF8STRC("</td><td>"));
 
-			IO::Path::GetFileExt(sbuff2, vfile->fileName);
+			IO::Path::GetFileExt(sbuff2, vfile->fileName->v, vfile->fileName->leng);
 			Text::CString mime = Net::MIME::GetMIMEFromExt(sbuff2);
 			writer->WriteStrC(mime.v, mime.len);
 			writer->WriteLineC(UTF8STRC("</td></tr>"));
 
-			Text::StrDelNew(vfile->fileName);
+			vfile->fileName->Release();
 			MemFree(vfile);
 			i++;
 		}

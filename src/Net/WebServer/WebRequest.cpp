@@ -291,9 +291,9 @@ const UTF8Char *Net::WebServer::WebRequest::ParseHeaderVal(Char *headerData)
 	return outStr;
 }
 
-Net::WebServer::WebRequest::WebRequest(const UTF8Char *requestURI, RequestMethod reqMeth, RequestProtocol reqProto, Bool secureConn, const Net::SocketUtil::AddressInfo *cliAddr, UInt16 cliPort, UInt16 svrPort)
+Net::WebServer::WebRequest::WebRequest(const UTF8Char *requestURI, UOSInt uriLen, RequestMethod reqMeth, RequestProtocol reqProto, Bool secureConn, const Net::SocketUtil::AddressInfo *cliAddr, UInt16 cliPort, UInt16 svrPort)
 {
-	this->requestURI = Text::String::NewNotNull(requestURI);
+	this->requestURI = Text::String::New(requestURI, uriLen);
 	this->reqMeth = reqMeth;
 	this->reqProto = reqProto;
 	this->secureConn = secureConn;

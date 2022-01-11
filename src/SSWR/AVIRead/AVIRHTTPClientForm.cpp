@@ -108,7 +108,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnRequestClicked(void *userObj
 	}
 	else if (me->fileList->GetCount() == 1 && me->cboPostFormat->GetSelectedIndex() == 2)
 	{
-		const UTF8Char *fileName = me->fileList->GetItem(0);
+		Text::String *fileName = me->fileList->GetItem(0);
 		UTF8Char sbuff[32];
 		IO::FileStream *fs;
 		NEW_CLASS(fs, IO::FileStream(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
@@ -116,7 +116,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnRequestClicked(void *userObj
 		me->reqBody = MemAlloc(UInt8, me->reqBodyLen);
 		fs->Read((UInt8*)me->reqBody, me->reqBodyLen);
 		DEL_CLASS(fs);
-		if (IO::Path::GetFileExt(sbuff, fileName))
+		if (IO::Path::GetFileExt(sbuff, fileName->v, fileName->leng))
 		{
 			mime = Net::MIME::GetMIMEFromExt(sbuff);
 			me->reqBodyType = Text::String::New(mime.v, mime.len);
@@ -142,14 +142,13 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnRequestClicked(void *userObj
 		UOSInt j = me->params->GetCount();
 		UOSInt k;
 		SSWR::AVIRead::AVIRHTTPClientForm::ParamValue *param;
-		const UTF8Char *csptr;
+		Text::String *s;
 		while (i < j)
 		{
 			param = me->params->GetItem(i);
 			mstm.Write((const UInt8*)"--", 2);
 			mstm.Write(sbBoundary.ToString(), sbBoundary.GetCharCnt());
-			csptr = (const UTF8Char*)"\r\nContent-Disposition: form-data; name=\"";
-			mstm.Write(csptr, Text::StrCharCnt(csptr));
+			mstm.Write(UTF8STRC("\r\nContent-Disposition: form-data; name=\""));
 			sptr = Text::TextEnc::FormEncoding::FormEncode(sbuff, param->name);
 			mstm.Write(sbuff, (UOSInt)(sptr - sbuff));
 			mstm.Write((const UInt8*)"\"\r\n\r\n", 5);
@@ -166,19 +165,17 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnRequestClicked(void *userObj
 		j = me->fileList->GetCount();
 		while (i < j)
 		{
-			csptr = me->fileList->GetItem(i);
+			s = me->fileList->GetItem(i);
 			IO::FileStream *fs;
 			UInt64 fileLength;
 			UInt64 ofst;
-			const UTF8Char *csptr2;
-			NEW_CLASS(fs, IO::FileStream(csptr, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+			NEW_CLASS(fs, IO::FileStream(s->v, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 			fileLength = fs->GetLength();
 			if (fileLength > 0 && fileLength < 104857600)
 			{
 				mstm.Write((const UInt8*)"--", 2);
 				mstm.Write(sbBoundary.ToString(), sbBoundary.GetCharCnt());
-				csptr2 = (const UTF8Char*)"\r\nContent-Disposition: form-data; ";
-				mstm.Write(csptr2, Text::StrCharCnt(csptr2));
+				mstm.Write(UTF8STRC("\r\nContent-Disposition: form-data; "));
 				if (sb.GetCharCnt() > 0)
 				{
 					mstm.Write((const UInt8*)"name=\"", 6);
@@ -186,13 +183,13 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnRequestClicked(void *userObj
 					mstm.Write(sbuff, (UOSInt)(sptr - sbuff));
 					mstm.Write((const UInt8*)"\"; ", 3);
 				}
-				k = Text::StrLastIndexOf(csptr, IO::Path::PATH_SEPERATOR);
+				k = s->LastIndexOf(IO::Path::PATH_SEPERATOR);
 				mstm.Write((const UInt8*)"filename=\"", 10);
-				sptr = Text::TextEnc::FormEncoding::FormEncode(sbuff, &csptr[k + 1]);
+				sptr = Text::TextEnc::FormEncoding::FormEncode(sbuff, &s->v[k + 1]);
 				mstm.Write(sbuff, (UOSInt)(sptr - sbuff));
 				mstm.Write((const UInt8*)"\"\r\n", 3);
 
-				IO::Path::GetFileExt(sbuff, &csptr[k]);
+				IO::Path::GetFileExt(sbuff, &s->v[k], s->leng - k);
 				mime = Net::MIME::GetMIMEFromExt(sbuff);
 				mstm.Write((const UInt8*)"Content-Type: ", 14);
 				mstm.Write(mime.v, mime.len);
@@ -440,7 +437,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnFileSelectClicked(void *user
 		while (i < j)
 		{
 			fileName = dlg->GetFileNames(i);
-			me->fileList->Add(Text::StrCopyNew(fileName));
+			me->fileList->Add(Text::String::NewNotNull(fileName));
 			i++;
 		}
 		Text::StringBuilderUTF8 sb;
@@ -870,7 +867,7 @@ void SSWR::AVIRead::AVIRHTTPClientForm::ClearFiles()
 	UOSInt i = this->fileList->GetCount();
 	while (i-- > 0)
 	{
-		Text::StrDelNew(this->fileList->GetItem(i));
+		this->fileList->GetItem(i)->Release();
 	}
 	this->fileList->Clear();
 }
@@ -1092,7 +1089,7 @@ SSWR::AVIRead::AVIRHTTPClientForm::AVIRHTTPClientForm(UI::GUIClientControl *pare
 	NEW_CLASS(this->params, Data::ArrayList<SSWR::AVIRead::AVIRHTTPClientForm::ParamValue*>());
 	NEW_CLASS(this->cookieList, Data::ArrayList<SSWR::AVIRead::AVIRHTTPClientForm::HTTPCookie*>());
 	NEW_CLASS(this->cookieMut, Sync::Mutex());
-	NEW_CLASS(this->fileList, Data::ArrayList<const UTF8Char*>());
+	NEW_CLASS(this->fileList, Data::ArrayList<Text::String*>());
 	this->respContType = 0;
 	this->respReqURL = 0;
 	this->respData = 0;

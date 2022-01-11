@@ -232,19 +232,18 @@ WChar *IO::Path::ReplaceExtW(WChar *fileName, const WChar *ext)
 	return Text::StrConcat(oldExt, ext);
 }
 
-UTF8Char *IO::Path::GetFileExt(UTF8Char *fileBuff, const UTF8Char *path)
+UTF8Char *IO::Path::GetFileExt(UTF8Char *fileBuff, const UTF8Char *path, UOSInt pathLen)
 {
-	UOSInt len = Text::StrCharCnt(path);
-	if (len >= 4 && path[len - 4] == '.')
+	if (pathLen >= 4 && path[pathLen - 4] == '.')
 	{
-		return Text::StrConcatC(fileBuff, &path[len - 3], 3);
+		return Text::StrConcatC(fileBuff, &path[pathLen - 3], 3);
 	}
-	UOSInt i = len;
+	UOSInt i = pathLen;
 	while (i-- > 0)
 	{
 		if (path[i] == '.')
 		{
-			return Text::StrConcatC(fileBuff, &path[i + 1], len - i - 1);
+			return Text::StrConcatC(fileBuff, &path[i + 1], pathLen - i - 1);
 		}
 		else if (path[i] == '/')
 		{
@@ -389,7 +388,7 @@ IO::Path::FindFileSession *IO::Path::FindFile(const UTF8Char *utfPath)
 		searchPattern = utfPath + i + 1;
 		tmpBuff[i + 1] = 0;
 		tmpBuff[i] = '/';
-		searchDir = Text::String::NewNotNull(tmpBuff);
+		searchDir = Text::String::New(tmpBuff, i + 1);
 		MemFree(tmpBuff);
 	}
 	if (dirObj)

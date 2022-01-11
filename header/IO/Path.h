@@ -39,7 +39,7 @@ namespace IO
 		static Bool GetProcessFileName(Text::StringBuilderUTF *sb);
 		static UTF8Char *ReplaceExt(UTF8Char *fileName, const UTF8Char *ext);
 		static WChar *ReplaceExtW(WChar *fileName, const WChar *ext);
-		static UTF8Char *GetFileExt(UTF8Char *fileBuff, const UTF8Char *path);
+		static UTF8Char *GetFileExt(UTF8Char *fileBuff, const UTF8Char *path, UOSInt pathLen);
 		static WChar *GetFileExtW(WChar *fileBuff, const WChar *path);
 		static UTF8Char *AppendPath(UTF8Char *path, const UTF8Char *toAppend);
 		static WChar *AppendPathW(WChar *path, const WChar *toAppend);

@@ -308,22 +308,27 @@ WChar *IO::Path::ReplaceExtW(WChar *fileName, const WChar *ext)
 	return Text::StrConcat(oldExt, ext);
 }
 
-UTF8Char *IO::Path::GetFileExt(UTF8Char *fileBuff, const UTF8Char *path)
+UTF8Char *IO::Path::GetFileExt(UTF8Char *fileBuff, const UTF8Char *path, UOSInt pathLen)
 {
-	UOSInt i = Text::StrLastIndexOf(path, '\\');
-	if (i != INVALID_INDEX)
+	if (pathLen >= 4 && path[pathLen - 4] == '.')
 	{
-		path = &path[i + 1];
+		return Text::StrConcatC(fileBuff, &path[pathLen - 3], 3);
 	}
-	i = Text::StrLastIndexOf(path, '.');
-	if (i != INVALID_INDEX)
+	UOSInt i = pathLen;
+	while (i-- > 0)
 	{
-		return Text::StrConcat(fileBuff, &path[i + 1]);
+		if (path[i] == '.')
+		{
+			return Text::StrConcatC(fileBuff, &path[i + 1], pathLen - i - 1);
+		}
+		else if (path[i] == '\\')
+		{
+			*fileBuff = 0;
+			return fileBuff;
+		}
 	}
-	else
-	{
-		return Text::StrConcat(fileBuff, (const UTF8Char*)"");
-	}
+	*fileBuff = 0;
+	return fileBuff;
 }
 
 WChar *IO::Path::GetFileExtW(WChar *fileBuff, const WChar *path)

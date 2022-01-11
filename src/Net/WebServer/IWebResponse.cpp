@@ -11,7 +11,7 @@ Net::WebServer::IWebResponse::IWebResponse(Text::String *sourceName) : IO::Strea
 {
 }
 
-Net::WebServer::IWebResponse::IWebResponse(const UTF8Char *sourceName) : IO::Stream(sourceName)
+Net::WebServer::IWebResponse::IWebResponse(const UTF8Char *sourceName, UOSInt nameLen) : IO::Stream(sourceName, nameLen)
 {
 }
 

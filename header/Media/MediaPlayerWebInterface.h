@@ -2,6 +2,7 @@
 #define _SM_MEDIA_MEDIAPLAYERWEBINTERFACE
 #include "Media/MediaPlayerInterface.h"
 #include "Net/WebServer/IWebHandler.h"
+#include "Text/String.h"
 
 namespace Media
 {
@@ -10,7 +11,7 @@ namespace Media
 	private:
 		struct VideoFileInfo
 		{
-			const UTF8Char *fileName;
+			Text::String *fileName;
 			UInt64 fileSize;
 		};
 

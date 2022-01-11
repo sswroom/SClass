@@ -221,7 +221,7 @@ void Net::WebServer::HTTPDirectoryHandler::ResponsePackageFile(Net::WebServer::I
 		{
 			sbOut.AppendC(UTF8STRC("<tr><td>"));
 			sbOut.AppendC(UTF8STRC("<a href=\""));
-			packageFile->GetItemName(u8buff, i);
+			sptr = packageFile->GetItemName(u8buff, i);
 			Text::TextEnc::URIEncoding::URIEncode(u8buff2, u8buff);
 			sbOut.Append(u8buff2);
 			if (pot == IO::PackageFile::POT_PACKAGEFILE)
@@ -240,7 +240,7 @@ void Net::WebServer::HTTPDirectoryHandler::ResponsePackageFile(Net::WebServer::I
 			}
 			else
 			{
-				IO::Path::GetFileExt(u8buff2, u8buff);
+				IO::Path::GetFileExt(u8buff2, u8buff, (UOSInt)(sptr - u8buff));
 				Text::CString mime = Net::MIME::GetMIMEFromExt(u8buff2);
 				sbOut.AppendC(mime.v, mime.len);
 				sbOut.AppendC(UTF8STRC("</td><td>"));
@@ -406,7 +406,9 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 	UTF8Char sbuff[1024];
 	UTF8Char sbuff2[1024];
 	UTF8Char *sptr;
+	UOSInt sptrLen;
 	UTF8Char *sptr3;
+	UTF8Char *sptr4;
 	Data::DateTime t;
 	Text::CString mime;
 	UOSInt i;
@@ -468,7 +470,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 						UInt8 *dataBuff = MemAlloc(UInt8, dataLen);
 						stmData->GetRealData(0, dataLen, dataBuff);
 						DEL_CLASS(stmData);
-						IO::Path::GetFileExt(sbuff, sptr);
+						IO::Path::GetFileExt(sbuff, sptr, sb.GetLength() - i - 2);
 						mime = Net::MIME::GetMIMEFromExt(sbuff);
 
 						resp->EnableWriteBuffer();
@@ -618,12 +620,14 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 	const UTF8Char *reqTarget = subReq;
 	sb.AppendC(reqTarget, subReqLen);
 	sptr = sb.ToString();
+	sptrLen = sb.GetLength();
 	UTF8Char *sptr2 = 0;
 	i = Text::StrIndexOf(sptr, '?');
 	if (i != INVALID_INDEX)
 	{
 		sptr2 = &sptr[i + 1];
 		sptr2[-1] = 0;
+		sptrLen = i;
 	}
 	if (IO::Path::PATH_SEPERATOR != '/')
 	{
@@ -659,7 +663,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 			UInt64 sizeLeft;
 			Text::String *hdrVal;
 
-			IO::Path::GetFileExt(sbuff, sptr);
+			IO::Path::GetFileExt(sbuff, sptr, sptrLen);
 			NEW_CLASS(fs, IO::FileStream(sptr, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
 			fs->GetFileTimes(0, 0, &t);
 
@@ -925,8 +929,8 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 								}
 								sbOut.AppendC(UTF8STRC("<tr><td>"));
 								sbOut.AppendC(UTF8STRC("<a href=\""));
-								sptr3 = Text::TextEnc::URIEncoding::URIEncode(sbuff2, sptr2);
-								sbOut.AppendC(sbuff2, (UOSInt)(sptr3 - sbuff2));
+								sptr4 = Text::TextEnc::URIEncoding::URIEncode(sbuff2, sptr2);
+								sbOut.AppendC(sbuff2, (UOSInt)(sptr4 - sbuff2));
 								if (pt == IO::Path::PathType::Directory)
 								{
 									sbOut.AppendChar('/', 1);
@@ -936,8 +940,8 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 								{
 									sbOut.AppendC(UTF8STRC("<font color=\"#ff0000\">"));
 								}
-								sptr3 = Text::XML::ToXMLText(sbuff2, sptr2);
-								sbOut.AppendC(sbuff2, (UOSInt)(sptr3 - sbuff2));
+								sptr4 = Text::XML::ToXMLText(sbuff2, sptr2);
+								sbOut.AppendC(sbuff2, (UOSInt)(sptr4 - sbuff2));
 								if (cnt > 0)
 								{
 									sbOut.AppendC(UTF8STRC("</font>"));
@@ -951,7 +955,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 								}
 								else
 								{
-									IO::Path::GetFileExt(sbuff2, sptr2);
+									IO::Path::GetFileExt(sbuff2, sptr2, (UOSInt)(sptr3 - sptr2));
 									mime = Net::MIME::GetMIMEFromExt(sbuff2);
 									sbOut.AppendC(mime.v, mime.len);
 									sbOut.AppendC(UTF8STRC("</td><td>"));
@@ -1054,7 +1058,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 							}
 							else
 							{
-								IO::Path::GetFileExt(sbuff2, ent->fileName->v);
+								IO::Path::GetFileExt(sbuff2, ent->fileName->v, ent->fileName->leng);
 								mime = Net::MIME::GetMIMEFromExt(sbuff2);
 								sbOut.AppendC(mime.v, mime.len);
 								sbOut.AppendC(UTF8STRC("</td><td>"));
@@ -1149,7 +1153,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 				}
 				NEW_CLASS(stat->cntMap, Data::FastStringMap<UInt32>());
 				stat->updated = true;
-				Text::StrConcat(sbuff, sptr);
+				Text::StrConcatC(sbuff, sptr, sptrLen);
 				i = Text::StrLastIndexOf(sbuff, IO::Path::PATH_SEPERATOR);
 				sptr3 = Text::StrConcatC(&sbuff[i + 1], UTF8STRC(".counts"));
 				stat->statFileName = Text::String::New(sbuff, (UOSInt)(sptr3 - sbuff));
@@ -1161,7 +1165,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 			mutUsage.EndUse();
 		}
 
-		IO::Path::GetFileExt(sbuff, sptr);
+		IO::Path::GetFileExt(sbuff, sptr, sptrLen);
 
 		Bool partial = false;
 		sizeLeft = fs->GetLength();

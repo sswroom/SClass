@@ -140,7 +140,7 @@ namespace SSWR
 			Data::ArrayList<ParamValue*> *params;
 			Data::ArrayList<HTTPCookie *> *cookieList;
 			Sync::Mutex *cookieMut;
-			Data::ArrayList<const UTF8Char*> *fileList;
+			Data::ArrayList<Text::String*> *fileList;
 
 			static void __stdcall OnUserAgentClicked(void *userObj);
 			static void __stdcall OnRequestClicked(void *userObj);

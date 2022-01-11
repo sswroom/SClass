@@ -45,7 +45,7 @@ namespace Net
 			void ParseFormPart(UInt8 *data, UOSInt dataSize, UOSInt startOfst);
 			const UTF8Char *ParseHeaderVal(Char *headerData);
 		public:
-			WebRequest(const UTF8Char *requestURI, RequestMethod reqMeth, RequestProtocol reqProto, Bool secureConn, const Net::SocketUtil::AddressInfo *cliAddr, UInt16 cliPort, UInt16 svrPort);
+			WebRequest(const UTF8Char *requestURI, UOSInt uriLen, RequestMethod reqMeth, RequestProtocol reqProto, Bool secureConn, const Net::SocketUtil::AddressInfo *cliAddr, UInt16 cliPort, UInt16 svrPort);
 			virtual ~WebRequest();
 
 			void AddHeaderC(const UTF8Char *name, UOSInt nameLen, const UTF8Char *value, UOSInt valueLen);
