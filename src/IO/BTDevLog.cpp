@@ -6,15 +6,15 @@
 #include "Text/UTF8Reader.h"
 #include "Text/UTF8Writer.h"
 
-Bool IO::BTDevLog::IsDefaultName(const UTF8Char *name)
+Bool IO::BTDevLog::IsDefaultName(Text::String *name)
 {
-	if (Text::StrCharCnt(name) == 17)
+	if (name->leng == 17)
 	{
-		if (name[2] == '-' &&
-			name[5] == '-' &&
-			name[8] == '-' &&
-			name[11] == '-' &&
-			name[14] == '-')
+		if (name->v[2] == '-' &&
+			name->v[5] == '-' &&
+			name->v[8] == '-' &&
+			name->v[11] == '-' &&
+			name->v[14] == '-')
 		{
 			return true;
 		}
@@ -24,7 +24,7 @@ Bool IO::BTDevLog::IsDefaultName(const UTF8Char *name)
 
 void IO::BTDevLog::FreeDev(DevEntry *dev)
 {
-	SDEL_TEXT(dev->name);
+	SDEL_STRING(dev->name);
 	MemFree(dev);
 }
 
@@ -41,7 +41,7 @@ IO::BTDevLog::~BTDevLog()
 	DEL_CLASS(this->randDevs);
 }
 
-IO::BTDevLog::DevEntry *IO::BTDevLog::AddEntry(UInt64 macInt, const UTF8Char *name, Int8 txPower, Int8 measurePower, IO::BTScanLog::RadioType radioType, IO::BTScanLog::AddressType addrType, UInt16 company, IO::BTScanLog::AdvType advType)
+IO::BTDevLog::DevEntry *IO::BTDevLog::AddEntry(UInt64 macInt, Text::String *name, Int8 txPower, Int8 measurePower, IO::BTScanLog::RadioType radioType, IO::BTScanLog::AddressType addrType, UInt16 company, IO::BTScanLog::AdvType advType)
 {
 	UInt8 mac[8];
 	DevEntry *log;
@@ -73,12 +73,12 @@ IO::BTDevLog::DevEntry *IO::BTDevLog::AddEntry(UInt64 macInt, const UTF8Char *na
 		}
 		if (log->name == 0 && name != 0)
 		{
-			log->name = Text::StrCopyNew(name);
+			log->name = name->Clone();
 		}
 		else if (log->name != 0 && name != 0 && IsDefaultName(log->name) && !IsDefaultName(name))
 		{
-			Text::StrDelNew(log->name);
-			log->name = Text::StrCopyNew(name);
+			log->name->Release();
+			log->name = name->Clone();
 		}
 		return log;
 	}
@@ -91,7 +91,7 @@ IO::BTDevLog::DevEntry *IO::BTDevLog::AddEntry(UInt64 macInt, const UTF8Char *na
 	log->mac[4] = mac[6];
 	log->mac[5] = mac[7];
 	log->macInt = macInt;
-	log->name = SCOPY_TEXT(name);
+	log->name = SCOPY_STRING(name);
 	log->radioType = radioType;
 	log->addrType = addrType;
 	log->txPower = txPower;
@@ -211,7 +211,9 @@ Bool IO::BTDevLog::LoadFile(const UTF8Char *fileName)
 					company = Text::StrHex2UInt16C(sarr[0]);
 				}
 			}
-			this->AddEntry(macInt, name, (Int8)Text::StrToInt32(sarr[2]), measurePower, radioType, addrType, company, (IO::BTScanLog::AdvType)advType);
+			Text::String *nameStr = Text::String::NewOrNull(name);
+			this->AddEntry(macInt, nameStr, (Int8)Text::StrToInt32(sarr[2]), measurePower, radioType, addrType, company, (IO::BTScanLog::AdvType)advType);
+			SDEL_STRING(nameStr);
 		}
 		sb.ClearStr();
 	}

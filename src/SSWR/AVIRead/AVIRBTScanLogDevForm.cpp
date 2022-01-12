@@ -79,7 +79,7 @@ SSWR::AVIRead::AVIRBTScanLogDevForm::AVIRBTScanLogDevForm(UI::GUIClientControl *
 	this->txtMAC->SetReadOnly(true);
 	NEW_CLASS(this->lblName, UI::GUILabel(ui, this->pnlDevInfo, (const UTF8Char*)"Name"));
 	this->lblName->SetRect(4, 28, 100, 23, false);
-	NEW_CLASS(this->txtName, UI::GUITextBox(ui, this->pnlDevInfo, (entry->name?entry->name:(const UTF8Char*)"")));
+	NEW_CLASS(this->txtName, UI::GUITextBox(ui, this->pnlDevInfo, (entry->name?entry->name->v:(const UTF8Char*)"")));
 	this->txtName->SetRect(104, 28, 200, 23, false);
 	this->txtName->SetReadOnly(true);
 	NEW_CLASS(this->btnCSV, UI::GUIButton(ui, this->pnlDevInfo, (const UTF8Char*)"Save CSV"));

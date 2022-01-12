@@ -13,7 +13,7 @@ namespace IO
 		{
 			UInt8 mac[6];
 			UInt64 macInt;
-			const UTF8Char *name;
+			Text::String *name;
 			IO::BTScanLog::RadioType radioType;
 			IO::BTScanLog::AddressType addrType;
 			Int8 txPower;
@@ -25,13 +25,13 @@ namespace IO
 		Data::UInt64Map<DevEntry*> *pubDevs;
 		Data::UInt64Map<DevEntry*> *randDevs;
 
-		static Bool IsDefaultName(const UTF8Char *name);
+		static Bool IsDefaultName(Text::String *name);
 		void FreeDev(DevEntry *dev);
 	public:
 		BTDevLog();
 		~BTDevLog();
 
-		DevEntry *AddEntry(UInt64 macInt, const UTF8Char *name, Int8 txPower, Int8 measurePower, IO::BTScanLog::RadioType radioType, IO::BTScanLog::AddressType addrType, UInt16 company, IO::BTScanLog::AdvType advType);
+		DevEntry *AddEntry(UInt64 macInt, Text::String *name, Int8 txPower, Int8 measurePower, IO::BTScanLog::RadioType radioType, IO::BTScanLog::AddressType addrType, UInt16 company, IO::BTScanLog::AdvType advType);
 		void AppendList(Data::UInt64Map<IO::BTScanLog::ScanRecord3*> *devMap);
 		void ClearList();
 		Bool LoadFile(const UTF8Char *fileName);

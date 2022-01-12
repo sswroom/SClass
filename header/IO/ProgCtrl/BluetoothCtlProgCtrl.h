@@ -6,6 +6,7 @@
 #include "Manage/ProcessExecution.h"
 #include "Sync/Mutex.h"
 #include "Sync/MutexUsage.h"
+#include "Text/String.h"
 
 namespace IO
 {
@@ -19,7 +20,7 @@ namespace IO
 			Data::UInt64Map<IO::BTScanLog::ScanRecord3*> *devMap;
 			Data::UInt64Map<IO::BTScanLog::ScanRecord3*> *randDevMap;
 			Sync::Mutex *lastCmdMut;
-			const UTF8Char *lastCmd;
+			Text::String *lastCmd;
 			IO::BTScanner::RecordHandler recHdlr;
 			void *recHdlrObj;
 			Bool threadRunning;
@@ -29,9 +30,9 @@ namespace IO
 			Bool cmdReady;
 
 			static UInt32 __stdcall ReadThread(void *obj);
-			void SendCmd(const Char *cmd);
+			void SendCmd(const UTF8Char *cmd, UOSInt cmdLen);
 
-			IO::BTScanLog::ScanRecord3 *DeviceGetByStr(const UTF8Char *s);
+			IO::BTScanLog::ScanRecord3 *DeviceGetByStr(const UTF8Char *s, UOSInt len);
 			void DeviceFree(IO::BTScanLog::ScanRecord3 *dev);
 		public:
 			BluetoothCtlProgCtrl();

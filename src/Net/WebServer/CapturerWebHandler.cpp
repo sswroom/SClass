@@ -599,7 +599,7 @@ OSInt __stdcall Net::WebServer::CapturerWebHandler::BTLogRSSICompare(void *obj1,
 		}
 		else
 		{
-			return Text::StrCompare(log1->name, log2->name);
+			return Text::StrCompare(log1->name->v, log2->name->v);
 		}
 	}
 	else if (log1->rssi == 0)

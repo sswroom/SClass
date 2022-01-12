@@ -42,7 +42,7 @@ UInt32 __stdcall IO::RAWBTScanner::RecvThread(void *userObj)
 
 void IO::RAWBTScanner::FreeRec(IO::BTScanLog::ScanRecord3* rec)
 {
-	SDEL_TEXT(rec->name);
+	SDEL_STRING(rec->name);
 	MemFree(rec);
 }
 
@@ -197,7 +197,7 @@ void IO::RAWBTScanner::OnPacket(Int64 timeTicks, const UInt8 *packet, UOSInt pac
 		{
 			dev = MemAlloc(IO::BTScanLog::ScanRecord3, 1);
 			MemCopyNO(dev, &rec, sizeof(IO::BTScanLog::ScanRecord3));
-			dev->name = SCOPY_TEXT(rec.name);
+			dev->name = SCOPY_STRING(rec.name);
 			if (rec.addrType == IO::BTScanLog::AT_RANDOM)
 			{
 				this->randRecMap->Put(dev->macInt, dev);
@@ -214,7 +214,7 @@ void IO::RAWBTScanner::OnPacket(Int64 timeTicks, const UInt8 *packet, UOSInt pac
 		}
 		if (dev->name == 0 && rec.name != 0)
 		{
-			dev->name = Text::StrCopyNew(rec.name);
+			dev->name = rec.name->Clone();
 		}
 		dev->inRange = rec.inRange;
 		dev->connected = rec.connected;
@@ -228,6 +228,6 @@ void IO::RAWBTScanner::OnPacket(Int64 timeTicks, const UInt8 *packet, UOSInt pac
 		
 		if (this->clsData->hdlr)
 			this->clsData->hdlr(&rec, IO::BTScanner::UT_RSSI, this->clsData->hdlrObj);
-		SDEL_TEXT(rec.name);
+		SDEL_STRING(rec.name);
 	}
 }

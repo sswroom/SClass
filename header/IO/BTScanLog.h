@@ -3,6 +3,7 @@
 #include "Data/ArrayListUInt32.h"
 #include "Data/UInt64Map.h"
 #include "IO/ParsedObject.h"
+#include "Text/String.h"
 
 namespace IO
 {
@@ -51,7 +52,7 @@ namespace IO
 			Bool inRange;
 			RadioType radioType;
 			AddressType addrType;
-			const UTF8Char *name;
+			Text::String *name;
 			Int8 rssi;
 			Int8 measurePower;
 			Int8 txPower;
@@ -77,7 +78,7 @@ namespace IO
 			UInt16 company;
 			Int8 measurePower;
 			AdvType lastAdvType;
-			const UTF8Char *name;
+			Text::String *name;
 			Data::ArrayList<LogEntry*> *logs;
 		};
 	private:
@@ -93,7 +94,7 @@ namespace IO
 
 		virtual IO::ParserType GetParserType();
 
-		LogEntry *AddEntry(Int64 timeTicks, UInt64 macInt, RadioType radioType, AddressType addrType, UInt16 company, const UTF8Char *name, Int8 rssi, Int8 txPower, Int8 measurePower, AdvType advType);
+		LogEntry *AddEntry(Int64 timeTicks, UInt64 macInt, RadioType radioType, AddressType addrType, UInt16 company, Text::String *name, Int8 rssi, Int8 txPower, Int8 measurePower, AdvType advType);
 		LogEntry *AddScanRec(const ScanRecord3 *rec);
 		void AddBTRAWPacket(Int64 timeTicks, const UInt8 *buff, UOSInt buffSize);
 		void ClearList();

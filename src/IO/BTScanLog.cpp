@@ -4,7 +4,7 @@
 
 void IO::BTScanLog::FreeDev(DevEntry* dev)
 {
-	SDEL_TEXT(dev->name);
+	SDEL_STRING(dev->name);
 	DEL_CLASS(dev->logs);
 	MemFree(dev);
 }
@@ -36,7 +36,7 @@ IO::ParserType IO::BTScanLog::GetParserType()
 	return IO::ParserType::BTScanLog;
 }
 
-IO::BTScanLog::LogEntry *IO::BTScanLog::AddEntry(Int64 timeTicks, UInt64 macInt, RadioType radioType, AddressType addrType, UInt16 company, const UTF8Char *name, Int8 rssi, Int8 txPower, Int8 measurePower, AdvType advType)
+IO::BTScanLog::LogEntry *IO::BTScanLog::AddEntry(Int64 timeTicks, UInt64 macInt, RadioType radioType, AddressType addrType, UInt16 company, Text::String *name, Int8 rssi, Int8 txPower, Int8 measurePower, AdvType advType)
 {
 	LogEntry *log = MemAlloc(LogEntry, 1);
 	log->macInt = macInt;
@@ -61,7 +61,7 @@ IO::BTScanLog::LogEntry *IO::BTScanLog::AddEntry(Int64 timeTicks, UInt64 macInt,
 		dev->radioType = radioType;
 		dev->addrType = addrType;
 		dev->measurePower = measurePower;
-		dev->name = SCOPY_TEXT(name);
+		dev->name = SCOPY_STRING(name);
 		dev->lastAdvType = advType;
 		NEW_CLASS(dev->logs, Data::ArrayList<LogEntry*>());
 		if (addrType == AT_RANDOM)
@@ -75,7 +75,7 @@ IO::BTScanLog::LogEntry *IO::BTScanLog::AddEntry(Int64 timeTicks, UInt64 macInt,
 	}
 	if (name && dev->name == 0)
 	{
-		dev->name = Text::StrCopyNew(name);
+		dev->name = name->Clone();
 	}
 	if (company && dev->company == 0)
 	{
@@ -100,7 +100,7 @@ void IO::BTScanLog::AddBTRAWPacket(Int64 timeTicks, const UInt8 *buff, UOSInt bu
 	if (ParseBTRAWPacket(&rec, timeTicks, buff, buffSize))
 	{
 		this->AddScanRec(&rec);
-		SDEL_TEXT(rec.name);
+		SDEL_STRING(rec.name);
 		return;
 	}
 }
@@ -353,10 +353,12 @@ Bool IO::BTScanLog::ParseBTRAWPacket(IO::BTScanLog::ScanRecord3 *rec, Int64 time
 void IO::BTScanLog::ParseAdvisement(ScanRecord3 *rec, const UInt8 *buff, UOSInt ofst, UOSInt endOfst)
 {
 	UTF8Char sbuff[256];
+	UTF8Char *sptr;
 	UOSInt i = ofst;
 	UOSInt j;
 
 	sbuff[0] = 0;
+	sptr = sbuff;
 	while (i + 1 < endOfst)
 	{
 		UInt8 optLen = buff[i];
@@ -366,7 +368,7 @@ void IO::BTScanLog::ParseAdvisement(ScanRecord3 *rec, const UInt8 *buff, UOSInt 
 		}
 		if (buff[i + 1] == 8 || buff[i + 1] == 9)
 		{
-			Text::StrConcatC(sbuff, &buff[i + 2], (UOSInt)optLen - 1);
+			sptr = Text::StrConcatC(sbuff, &buff[i + 2], (UOSInt)optLen - 1);
 		}
 		else if (buff[i + 1] == 3) //UUIDs
 		{
@@ -450,7 +452,7 @@ void IO::BTScanLog::ParseAdvisement(ScanRecord3 *rec, const UInt8 *buff, UOSInt 
 	}
 	if (sbuff[0])
 	{
-		rec->name = Text::StrCopyNew(sbuff);
+		rec->name = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 	}
 	else
 	{

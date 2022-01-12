@@ -67,8 +67,9 @@ Text::StringBuilderUTF *Text::StringBuilderUTF8::AppendC(const UTF8Char *s, UOSI
 	if (charCnt > 0)
 	{
 		STRINGBUILDER_ALLOCLENG(charCnt);
-		MemCopyNO(this->buffEnd, s, charCnt + 1);
+		MemCopyNO(this->buffEnd, s, charCnt);
 		this->buffEnd += charCnt;
+		this->buffEnd[0] = 0;
 	}
 	return this;
 }
