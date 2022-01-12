@@ -23,6 +23,8 @@
 #include <icmpapi.h>
 #endif
 
+#include <stdio.h>
+
 struct Net::OSSocketFactory::ClassData
 {
 	Sync::Mutex *socMut;
@@ -221,6 +223,7 @@ Socket *Net::OSSocketFactory::SocketAccept(Socket *socket)
 		s = accept((SOCKET)socket, (sockaddr*)&saddr, &addrlen);
 		if (s == INVALID_SOCKET)
 		{
+			printf("Accept invalid\r\n");
 			return (Socket*)s;
 		}
 		Sync::MutexUsage mutUsage(this->clsData->socMut);
@@ -229,6 +232,7 @@ Socket *Net::OSSocketFactory::SocketAccept(Socket *socket)
 			this->clsData->acceptedSoc->Put((Int32)s, 2);
 			return (Socket*)s;
 		}
+		printf("Accept duplicated\r\n");
 		mutUsage.EndUse();
 	}
 }

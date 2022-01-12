@@ -3,7 +3,7 @@
 #include "Text/MyString.h"
 #include <stdlib.h>
 
-extern "C" OSInt MyString_StrCompare(const Char *str1, const Char *str2)
+extern "C" OSInt MyString_StrCompare(const UTF8Char *str1, const UTF8Char *str2)
 {
 	OSInt i = 0;
 	OSInt j = 0;
@@ -51,12 +51,12 @@ extern "C" OSInt MyString_StrCompare(const Char *str1, const Char *str2)
 	return 0;
 }
 
-extern "C" OSInt MyString_StrCompareICase(const Char *str1, const Char *str2)
+extern "C" OSInt MyString_StrCompareICase(const UTF8Char *str1, const UTF8Char *str2)
 {
 	OSInt i = 0;
 	OSInt j = 0;
-	Char c1;
-	Char c2;
+	UTF8Char c1;
+	UTF8Char c2;
 	while (1)
 	{
 		c1 = *str1;
@@ -327,9 +327,9 @@ extern "C" OSInt MyString_StrCompareICaseUTF32(const UTF32Char *str1, const UTF3
 	return 0;
 }
 
-extern "C" UOSInt MyString_StrCharCnt(const Char *s)
+extern "C" UOSInt MyString_StrCharCnt(const UTF8Char *s)
 {
-	const Char *src = s;
+	const UTF8Char*src = s;
 	while (*src++) ;
 	return src - s - 1;
 }

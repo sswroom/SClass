@@ -7,10 +7,10 @@
 #include "Sync/Thread.h"
 #include <stdio.h>
 
-#define URL "http://127.0.0.1:8080"
+#define URL "http://127.0.0.1:8081"
 #define THREADCNT 10
-#define CONNCNT 100000
-#define KACONN false
+#define CONNCNT 10000
+#define KACONN true
 #define METHOD "GET"
 #define POSTSIZE 1048576
 

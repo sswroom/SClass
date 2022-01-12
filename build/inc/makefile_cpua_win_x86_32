@@ -1,9 +1,15 @@
 
-LIBS_CPUInfo: CPUInfo_CPP.o
+LIBS_X86Util: X86Util.o
 	$(eval CLASS_OBJS += $^ )
 
-MyMemory_CPP.o: $(CLASSDIR)src/MyMemory_32.asm
+MemTool.o: $(CLASSDIR)src/MemToolX86.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+MemTool_CPP.o: $(CLASSDIR)src/MemTool_32.asm
 	$(ASM) $(ASMFLAGS) $(LDFLAGS) -f elf32 -o $@ $< $(ASMSUFFIX)
+
+X86Util.o: $(CLASSDIR)src/Core/X86Util_32.asm
+	$(ASM) $(ASMFLAGS) $(LDFLAGS) -f win32 -o $@ $< $(ASMSUFFIX)
 
 Base64_CPP.o: $(CLASSDIR)src/Crypto/Encrypt/Base64_32.asm
 	$(ASM) $(ASMFLAGS) $(LDFLAGS) -f elf32 -o $@ $< $(ASMSUFFIX)
@@ -32,11 +38,8 @@ LZODecompressor_CPP.o: $(CLASSDIR)src/Data/Compress/LZODecompressor_cpp.cpp
 Benchmark_CPP.o: $(CLASSDIR)src/Manage/Benchmark_32.asm
 	$(ASM) $(ASMFLAGS) $(LDFLAGS) -f elf32 -o $@ $< $(ASMSUFFIX)
 
-CPUInfo.o: $(CLASSDIR)src/Manage/CPUInfox86.cpp LIBS_CPUInfo
+CPUInfo.o: $(CLASSDIR)src/Manage/CPUInfox86.cpp LIBS_X86Util
 	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
-
-CPUInfo_CPP.o: $(CLASSDIR)src/Manage/CPUInfox86_32.asm
-	$(ASM) $(ASMFLAGS) $(LDFLAGS) -f win32 -o $@ $< $(ASMSUFFIX)
 
 Dasm.o: $(CLASSDIR)src/Manage/DasmX86_32.cpp
 	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<

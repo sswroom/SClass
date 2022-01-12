@@ -11,17 +11,14 @@
 Net::WebServer::HTTPFormParser::HTTPFormParser(Net::WebServer::IWebRequest *req, Int32 codePage)
 {
 	Text::StringBuilderUTF8 sb;
-	const UTF8Char *v;
 	NEW_CLASS(this->strNames, Data::ArrayListStrUTF8());
 	NEW_CLASS(this->strValues, Data::ArrayListStrUTF8());
 
-	req->GetHeader(&sb, (const UTF8Char*)"Content-Type");
-	v = sb.ToString();
-	if (v == 0)
+	if (!req->GetHeaderC(&sb, UTF8STRC("Content-Type")))
 	{
 		return;
 	}
-	else if (Text::StrCompare(v, (const UTF8Char*)"application/x-www-form-urlencoded") == 0)
+	else if (Text::StrEqualsC(sb.ToString(), sb.GetLength(), UTF8STRC("application/x-www-form-urlencoded")))
 	{
 		UOSInt buffSize;
 		const UInt8 *buff;
@@ -107,7 +104,7 @@ Net::WebServer::HTTPFormParser::HTTPFormParser(Net::WebServer::IWebRequest *req,
 		if (tmpBuff2)
 			MemFree(tmpBuff2);
 	}
-	else if (Text::StrStartsWith(v, (const UTF8Char*)"multipart/form-data"))
+	else if (Text::StrStartsWithC(sb.ToString(), sb.GetLength(), UTF8STRC("multipart/form-data")))
 	{
 		///////////////////////////////////////////////
 	}

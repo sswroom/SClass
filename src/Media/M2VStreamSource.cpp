@@ -510,7 +510,7 @@ Bool Media::M2VStreamSource::Start()
 	if (this->debugLog)
 	{
 		this->debugMut->Lock();
-		this->debugLog->WriteLineC(UTF8STRC("Start");
+		this->debugLog->WriteLineC(UTF8STRC("Start"));
 		this->debugMut->Unlock();
 	}
 #endif

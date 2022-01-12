@@ -1,5 +1,8 @@
 
-MyMemory_CPP.o: $(CLASSDIR)src/MyMemory_32.asm
+MemTool.o: $(CLASSDIR)src/MemToolX86.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+MemTool_CPP.o: $(CLASSDIR)src/MemTool_32.asm
 	$(ASM) $(ASMFLAGS) $(LDFLAGS) -f elf32 -o $@ $< $(ASMSUFFIX)
 
 Base64_CPP.o: $(CLASSDIR)src/Crypto/Encrypt/Base64_32.asm

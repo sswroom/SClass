@@ -604,7 +604,7 @@ Bool Net::HTTPMyClient::Connect(const UTF8Char *url, UOSInt urlLen, const Char *
 		ptr2 = 0;
 		ptr2Len = 0;
 		MemCopyNO(urltmp, ptr1, ptr1Len * sizeof(UTF8Char));
-		urltmp[i] = 0;
+		urltmp[ptr1Len] = 0;
 	}
 	cptr = Text::TextEnc::URIEncoding::URIDecode(urltmp, urltmp);
 	urltmpLen = (UOSInt)(cptr - urltmp);

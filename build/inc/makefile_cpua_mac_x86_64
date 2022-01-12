@@ -1,8 +1,11 @@
 
+MemTool.o: $(CLASSDIR)src/MemTool.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
 LIBS_Dasm: DasmX86_32.o ThreadContextX86_32.o
 	$(eval CLASS_OBJS += $^ )
 
-MyMemory_CPP.o: $(CLASSDIR)src/MyMemory_SysV64.asm
+MemTool_CPP.o: $(CLASSDIR)src/MemTool_SysV64.asm
 	$(ASM) $(ASMFLAGS) $(LDFLAGS) -f macho64 -o $@ $< $(ASMSUFFIX)
 
 Base64_CPP.o: $(CLASSDIR)src/Crypto/Encrypt/Base64_SysV64.asm

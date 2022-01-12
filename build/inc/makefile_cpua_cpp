@@ -1,5 +1,8 @@
 
-MyMemory_CPP.o: $(CLASSDIR)src/MyMemory_CPP.cpp
+MemTool.o: $(CLASSDIR)src/MemToolX86.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
+MemTool_CPP.o: $(CLASSDIR)src/MemTool_CPP.cpp
 	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
 
 Base64_CPP.o: $(CLASSDIR)src/Crypto/Encrypt/Base64_CPP.cpp

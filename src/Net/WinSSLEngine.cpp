@@ -708,12 +708,12 @@ void WinSSLEngine_HCRYPTKEY_ToString(HCRYPTKEY hKey, Text::StringBuilderUTF *sb)
 			break;
 #if (NTDDI_VERSION >= NTDDI_VISTA) && defined(ALG_TYPE_ECDH)
 		case ALG_TYPE_ECDH:
-			sb->AppendC(UTF8STRC("ECDH");
+			sb->AppendC(UTF8STRC("ECDH"));
 			break;
 #endif
 #if defined(_MSC_VER) && (NTDDI_VERSION >= NTDDI_WIN10_RS1) && defined(ALG_TYPE_THIRDPARTY)
 		case ALG_TYPE_THIRDPARTY:
-			sb->AppendC(UTF8STRC("ThirdParty");
+			sb->AppendC(UTF8STRC("ThirdParty"));
 			break;
 #endif
 		default:

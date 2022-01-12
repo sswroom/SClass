@@ -79,6 +79,9 @@ CRC32.o: $(CLASSDIR)src/Crypto/Hash/CRC32.cpp
 CRC32R.o: $(CLASSDIR)src/Crypto/Hash/CRC32R.cpp
 	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
 
+CRC32RC.o: $(CLASSDIR)src/Crypto/Hash/CRC32RC.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
 DJB2.o: $(CLASSDIR)src/Crypto/Hash/DJB2.cpp
 	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
 
@@ -737,6 +740,9 @@ AddressResolver.o: $(CLASSDIR)src/Manage/AddressResolver.cpp
 	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
 
 CPUDB.o: $(CLASSDIR)src/Manage/CPUDB.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+CPUInst.o: $(CLASSDIR)src/Manage/CPUInst.cpp
 	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
 
 DasmBase.o: $(CLASSDIR)src/Manage/DasmBase.cpp
@@ -2783,6 +2789,9 @@ MailBase64Stream.o: $(CLASSDIR)src/Text/MailBase64Stream.cpp
 	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
 
 MyString.o: $(CLASSDIR)src/Text/MyString.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+MyStringFloat.o: $(CLASSDIR)src/Text/MyStringFloat.cpp
 	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
 
 MyStringW.o: $(CLASSDIR)src/Text/MyStringW.cpp
