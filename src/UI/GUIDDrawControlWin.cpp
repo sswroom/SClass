@@ -1,4 +1,14 @@
 #include "Stdafx.h"
+#if defined(WINVER)
+#undef WINVER
+#endif
+#define WINVER 0x601
+
+#if defined(_WIN32_WINNT)
+#undef _WIN32_WINNT
+#endif
+#define _WIN32_WINNT 0x601
+
 #include "MyMemory.h"
 #include "IO/FileStream.h"
 #include "Manage/HiResClock.h"
@@ -10,16 +20,6 @@
 #include "UI/GUICoreWin.h"
 #include "UI/GUIDDrawControl.h"
 #include "UI/GUIForm.h"
-
-#if defined(WINVER)
-#undef WINVER
-#endif
-#define WINVER 0x601
-
-#if defined(_WIN32_WINNT)
-#undef _WIN32_WINNT
-#endif
-#define _WIN32_WINNT 0x601
 
 #include <windows.h>
 #include <ddraw.h>
@@ -502,7 +502,7 @@ UI::GUIDDrawControl::GUIDDrawControl(GUICore *ui, UI::GUIClientControl *parent, 
 		MONITORINFOEXW monInfo;
 		monInfo.cbSize = sizeof(monInfo);
 		this->currMon = this->GetHMonitor();
-		GetMonitorInfoW((HMONITOR)this->currMon, &monInfo);
+		::GetMonitorInfoW((HMONITOR)this->currMon, &monInfo);
 		this->scnX = monInfo.rcMonitor.left;
 		this->scnY = monInfo.rcMonitor.top;
 		SwitchFullScreen(false, false);
@@ -813,7 +813,7 @@ void UI::GUIDDrawControl::ChangeMonitor(MonitorHandle *hMon)
 	((Media::DDrawManager*)this->surfaceMgr)->ReleaseDD7(this->currMon);
 	this->currMon = hMon;
 	monInfo.cbSize = sizeof(monInfo);
-	GetMonitorInfoW((HMONITOR)this->currMon, &monInfo);
+	::GetMonitorInfoW((HMONITOR)this->currMon, &monInfo);
 	this->scnX = monInfo.rcMonitor.left;
 	this->scnY = monInfo.rcMonitor.top;
 	if (this->currScnMode == SM_WINDOWED_DIR)

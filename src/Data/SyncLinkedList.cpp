@@ -59,6 +59,7 @@ void *Data::SyncLinkedList::Get()
 		{
 			this->lastItem = 0;
 		}
+		mutUsage.EndUse();
 		obj = item->item;
 		MemFree(item);
 	}

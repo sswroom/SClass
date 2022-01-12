@@ -225,6 +225,7 @@ Bool Net::HTTPOSClient::Connect(const UTF8Char *url, UOSInt urlLen, const Char *
 {
 	UTF8Char urltmp[256];
 	UTF8Char svrname[256];
+	UTF8Char *svrnameEnd;
 	Bool https = false;
 
 	UOSInt i;
@@ -313,7 +314,7 @@ Bool Net::HTTPOSClient::Connect(const UTF8Char *url, UOSInt urlLen, const Char *
 			this->canWrite = false;
 			return false;
 		}
-		Text::StrConcatC(svrname, &urltmp[1], i - 1);
+		svrnameEnd = Text::StrConcatC(svrname, &urltmp[1], i - 1);
 		if (urltmp[i + 1] == ':')
 		{
 			port = 0;
@@ -332,12 +333,12 @@ Bool Net::HTTPOSClient::Connect(const UTF8Char *url, UOSInt urlLen, const Char *
 		{
 			port = 0;
 			Text::StrToUInt16(ptrs[1], &port);
-			Text::StrConcat(svrname, ptrs[0]);
+			svrnameEnd = Text::StrConcat(svrname, ptrs[0]);
 		}
 		else
 		{
 			port = defPort;
-			Text::StrConcat(svrname, ptrs[0]);
+			svrnameEnd = Text::StrConcat(svrname, ptrs[0]);
 		}
 	}
 
@@ -348,9 +349,9 @@ Bool Net::HTTPOSClient::Connect(const UTF8Char *url, UOSInt urlLen, const Char *
 		if (Text::StrEqualsICase(svrname, (const UTF8Char*)"localhost"))
 		{
 			this->svrAddr.addrType = Net::AddrType::IPv4;
-			*(UInt32*)this->svrAddr.addr = Net::SocketUtil::GetIPAddr((const UTF8Char*)"127.0.0.1");
+			*(UInt32*)this->svrAddr.addr = Net::SocketUtil::GetIPAddr(UTF8STRC("127.0.0.1"));
 		}
-		else if (!sockf->DNSResolveIP(svrname, &this->svrAddr))
+		else if (!sockf->DNSResolveIP(svrname, (UOSInt)(svrnameEnd - svrname), &this->svrAddr))
 		{
 			this->writing = true;
 			this->canWrite = false;

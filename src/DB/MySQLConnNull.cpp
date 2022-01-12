@@ -36,7 +36,7 @@ DB::DBTool *DB::MySQLConn::CreateDBTool(Net::SocketFactory *sockf, const UTF8Cha
 	Net::MySQLTCPClient *conn;
 	DB::DBTool *db;
 	Net::SocketUtil::AddressInfo addr;
-	if (!sockf->DNSResolveIP(serverName, &addr))
+	if (!sockf->DNSResolveIP(serverName, Text::StrCharCnt(serverName), &addr))
 	{
 		if (log)
 		{

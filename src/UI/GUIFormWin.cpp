@@ -1,4 +1,14 @@
 #include "Stdafx.h"
+#if defined(WINVER)
+#undef WINVER
+#endif
+#define WINVER 0x601
+
+#if defined(_WIN32_WINNT)
+#undef _WIN32_WINNT
+#endif
+#define _WIN32_WINNT 0x601
+
 #include "MyMemory.h"
 #include "Sync/Interlocked.h"
 #include "Text/MyString.h"
@@ -483,7 +493,7 @@ UI::GUIForm::GUIForm(UI::GUIClientControl *parent, Double initW, Double initH, U
 #else
 			MONITORINFOEXW info;
 			info.cbSize = sizeof(info);
-			if (GetMonitorInfoW(hMon, &info))
+			if (::GetMonitorInfoW(hMon, &info))
 			{
 				found = true;
 				w = (info.rcMonitor.right - info.rcMonitor.left) * this->ddpi / this->hdpi;

@@ -13,6 +13,8 @@
 #endif
 #include <signal.h>
 
+//#define THREADSAFE
+
 Int32 mcMemoryCnt = 0;
 Int32 mcInitCnt = 0;
 Int32 mcBusy = 0;
@@ -71,6 +73,7 @@ void MemUnlock()
 	Sync::Mutex_Unlock(&mcMut);
 }
 
+#if defined(THREADSAFE)
 void *MAlloc(UOSInt size)
 {
 	Sync::Mutex_Lock(&mcMut);
@@ -80,22 +83,14 @@ void *MAlloc(UOSInt size)
 	if ((OSInt)ptr == 0)
 	{
 		printf("Out of Memory: size = %d\n", (UInt32)size);
-	}
-	else
-	{
-		Int32 blkId = mcBlockId++;
-		*(Int32*)ptr = blkId;
-//		wprintf(L"MAlloc %d %lx\r\n", blkId, ptr);
-	}
-	Sync::Mutex_Unlock(&mcMut);
-	if (ptr)
-	{
-		return &((UInt8*)ptr)[4];
-	}
-	else
-	{
+		Sync::Mutex_Unlock(&mcMut);
 		return 0;
 	}
+	Int32 blkId = mcBlockId++;
+	*(Int32*)ptr = blkId;
+//		wprintf(L"MAlloc %d %lx\r\n", blkId, ptr);
+	Sync::Mutex_Unlock(&mcMut);
+	return &((UInt8*)ptr)[4];
 }
 
 void *MAllocA(UOSInt size)
@@ -163,7 +158,68 @@ void MemFreeA(void *ptr)
 	free(*(UInt8**)&((UInt8*)ptr)[-8]);
 	Sync::Mutex_Unlock(&mcMut);
 }
+#else
+void *MAlloc(UOSInt size)
+{
+	Interlocked_IncrementI32(&mcMemoryCnt);
 
+	void *ptr = malloc(size + 4);
+	if ((OSInt)ptr == 0)
+	{
+		printf("Out of Memory: size = %d\n", (UInt32)size);
+		return 0;
+	}
+	*(Int32*)ptr = Interlocked_IncrementI32(&mcBlockId);
+	return &((UInt8*)ptr)[4];
+}
+
+void *MAllocA(UOSInt size)
+{
+	Interlocked_IncrementI32(&mcMemoryCnt);
+
+	UInt8 *mptr = (UInt8*)malloc(size + 32);
+	UInt8 *sptr = mptr;
+	if ((OSInt)mptr == 0)
+	{
+		printf("Out of Memory: Asize = %d\n", (UInt32)size);
+		return 0;
+	}
+	mptr += 16;
+	mptr += 16 - (15 & (OSInt)mptr);
+	*(UInt8**)&mptr[-8] = sptr;
+	return mptr;
+}
+
+void *MAllocA64(UOSInt size)
+{
+	Interlocked_IncrementI32(&mcMemoryCnt);
+
+	UInt8 *mptr = (UInt8*)malloc(size + 80);
+	UInt8 *sptr = mptr;
+	if ((OSInt)mptr == 0)
+	{
+		printf("Out of Memory: A64size = %d\n", (UInt32)size);
+		return 0;
+	}
+	mptr += 16;
+	mptr += 64 - (63 & (OSInt)mptr);
+	*(UInt8**)&mptr[-8] = sptr;
+	return mptr;
+}
+
+void MemFree(void *ptr)
+{
+	Interlocked_DecrementI32(&mcMemoryCnt);
+	ptr = &((UInt8*)ptr)[-4];
+	free(ptr);
+}
+
+void MemFreeA(void *ptr)
+{
+	Interlocked_DecrementI32(&mcMemoryCnt);
+	free(*(UInt8**)&((UInt8*)ptr)[-8]);
+}
+#endif
 void MemDeinit()
 {
 	if (Sync::Interlocked::Decrement(&mcInitCnt) == 0)

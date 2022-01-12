@@ -1029,7 +1029,7 @@ Net::SSLClient *Net::WinSSLEngine::Connect(const UTF8Char *hostName, UInt16 port
 
 	Net::SocketUtil::AddressInfo addr;
 	Socket *s;
-	if (!this->sockf->DNSResolveIP(hostName, &addr))
+	if (!this->sockf->DNSResolveIP(hostName, Text::StrCharCnt(hostName), &addr))
 	{
 		if (err)
 			*err = ErrorType::HostnameNotResolved;

@@ -163,6 +163,7 @@ namespace Text
 	UOSInt StrSplitLine(UTF8Char **strs, UOSInt maxStrs, UTF8Char *str); //Optimized
 	UOSInt StrSplitLineP(PString *strs, UOSInt maxStrs, UTF8Char *str, UOSInt strLen); //Optimized
 	UOSInt StrSplitWS(UTF8Char **strs, UOSInt maxStrs, UTF8Char *str); //Optimized
+	UOSInt StrSplitWSP(PString *strs, UOSInt maxStrs, UTF8Char *str, UOSInt strLen); //Optimized
 	Bool StrToUInt8(const UTF8Char *intStr, UInt8 *outVal);
 	UInt8 StrToUInt8(const UTF8Char *intStr);
 	Bool StrToUInt16(const UTF8Char *intStr, UInt16 *outVal);

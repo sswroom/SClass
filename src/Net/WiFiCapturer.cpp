@@ -210,21 +210,21 @@ Bool Net::WiFiCapturer::Start()
 	UOSInt i;
 	const UTF8Char *namePtr;
 	Data::ArrayList<Net::WirelessLAN::Interface*> interfaces;
-	Net::WirelessLAN::Interface *interface;
+	Net::WirelessLAN::Interface *ifObj;
 	wlan->GetInterfaces(&interfaces);
 	i = interfaces.GetCount();
 	Bool found = false;
 	while (i-- > 0)
 	{
-		interface = interfaces.GetItem(i);
-		namePtr = interface->GetName();
+		ifObj = interfaces.GetItem(i);
+		namePtr = ifObj->GetName();
 		if (Text::StrStartsWith(namePtr, (const UTF8Char*)"rai"))
 		{
 
 		}
 		else
 		{
-			this->interf = interface;
+			this->interf = ifObj;
 			Sync::Thread::Create(ScanThread, this);
 			found = true;
 			break;
@@ -234,10 +234,10 @@ Bool Net::WiFiCapturer::Start()
 	i = interfaces.GetCount();
 	while (i-- > 0)
 	{
-		interface = interfaces.GetItem(i);
-		if (interface != this->interf)
+		ifObj = interfaces.GetItem(i);
+		if (ifObj != this->interf)
 		{
-			DEL_CLASS(interface);
+			DEL_CLASS(ifObj);
 		}
 	}			
 	return found;	

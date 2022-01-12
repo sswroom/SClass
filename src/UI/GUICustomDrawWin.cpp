@@ -1,4 +1,14 @@
 #include "Stdafx.h"
+#if defined(WINVER)
+#undef WINVER
+#endif
+#define WINVER 0x601
+
+#if defined(_WIN32_WINNT)
+#undef _WIN32_WINNT
+#endif
+#define _WIN32_WINNT 0x601
+
 #include "MyMemory.h"
 #include "IO/Library.h"
 #include "Math/Ellipse.h"
@@ -12,15 +22,6 @@
 #include "UI/GUICoreWin.h"
 #include "UI/GUICustomDraw.h"
 #include "UI/MessageDialog.h"
-#if defined(WINVER)
-#undef WINVER
-#endif
-#define WINVER 0x601
-
-#if defined(_WIN32_WINNT)
-#undef _WIN32_WINNT
-#endif
-#define _WIN32_WINNT 0x601
 #include <windows.h>
 
 #define CLASSNAME L"CustomDraw"

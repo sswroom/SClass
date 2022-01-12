@@ -30,7 +30,7 @@ Int32 mcInitCnt = 0;
 Int32 mcBusy = 0;
 OSInt mcBreakPt = 0;
 UOSInt mcBreakSize = 0;
-Sync::Mutex *mcMut = 0;
+Sync::MutexData mcMut;
 const UTF8Char *mcLogFile = 0;
 
 void MemPtrChk(void *ptr)
@@ -50,7 +50,7 @@ void MemInit()
 		mcBusy = 0;
 		mcBreakPt = 0;
 		mcBreakSize = 0;
-		mcMut = new Sync::Mutex();
+		Sync::Mutex_Create(&mcMut);
 		MemTool_Init();
 	}
 }
@@ -84,17 +84,17 @@ void MemSetLogFile(const UTF8Char *logFile)
 
 void MemLock()
 {
-	mcMut->Lock();
+	Sync::Mutex_Lock(&mcMut);
 }
 
 void MemUnlock()
 {
-	mcMut->Unlock();
+	Sync::Mutex_Unlock(&mcMut);
 }
 
 void *MAlloc(UOSInt size)
 {
-	mcMut->Lock();
+	Sync::Mutex_Lock(&mcMut);
 	mcMemoryCnt++;
 
 	void *mptr = HeapAlloc(mcHandle, 0, size + 8);
@@ -102,7 +102,7 @@ void *MAlloc(UOSInt size)
 	{
 		DebugBreak();
 	}
-	mcMut->Unlock();
+	Sync::Mutex_Unlock(&mcMut);
 #if defined(HAS_ASM32)
 #if defined(_DEBUG)
 	_asm
@@ -130,7 +130,7 @@ void *MAlloc(UOSInt size)
 
 void *MAllocA(UOSInt size)
 {
-	mcMut->Lock();
+	Sync::Mutex_Lock(&mcMut);
 	mcMemoryCnt++;
 
 	UInt8 *mptr = (UInt8*)HeapAlloc(mcHandle, 0, size + 32);
@@ -139,7 +139,7 @@ void *MAllocA(UOSInt size)
 	{
 		DebugBreak();
 	}
-	mcMut->Unlock();
+	Sync::Mutex_Unlock(&mcMut);
 #if defined(HAS_ASM32)
 #if defined(_DEBUG)
 	_asm
@@ -170,7 +170,7 @@ void *MAllocA(UOSInt size)
 
 void *MAllocA64(UOSInt size)
 {
-	mcMut->Lock();
+	Sync::Mutex_Lock(&mcMut);
 	mcMemoryCnt++;
 
 	UInt8 *mptr = (UInt8*)HeapAlloc(mcHandle, 0, size + 80);
@@ -179,7 +179,7 @@ void *MAllocA64(UOSInt size)
 	{
 		DebugBreak();
 	}
-	mcMut->Unlock();
+	Sync::Mutex_Unlock(&mcMut);
 #if defined(HAS_ASM32)
 #if defined(_DEBUG)
 	_asm
@@ -210,17 +210,17 @@ void *MAllocA64(UOSInt size)
 
 void MemFree(void *ptr)
 {
-	mcMut->Lock();
+	Sync::Mutex_Lock(&mcMut);
 	mcMemoryCnt--;
 
 //	_heapchk();
 	HeapFree(mcHandle, 0, ((UInt8*)ptr) - 8);
-	mcMut->Unlock();
+	Sync::Mutex_Unlock(&mcMut);
 }
 
 void MemFreeA(void *ptr)
 {
-	mcMut->Lock();
+	Sync::Mutex_Lock(&mcMut);
 	mcMemoryCnt--;
 
 //	_heapchk();
@@ -239,7 +239,7 @@ void MemFreeA(void *ptr)
 #endif
 
 	HeapFree(mcHandle, 0, relPtr);
-	mcMut->Unlock();
+	Sync::Mutex_Unlock(&mcMut);
 }
 
 void MemDeinit()
@@ -247,7 +247,7 @@ void MemDeinit()
 	if (Sync::Interlocked::Decrement(&mcInitCnt) == 0)
 	{
 		MemCheckError();
-		delete mcMut;
+		Sync::Mutex_Destroy(&mcMut);
 		if (mcLogFile)
 		{
 			HeapFree(mcIntHandle, 0, (void*)mcLogFile);
@@ -407,14 +407,14 @@ Int32 MemCountBlks()
 
 void MemIncCounter(void *ptr)
 {
-	mcMut->Lock();
+	Sync::Mutex_Lock(&mcMut);
 	mcMemoryCnt++;
-	mcMut->Unlock();
+	Sync::Mutex_Unlock(&mcMut);
 }
 
 void MemDecCounter(void *ptr)
 {
-	mcMut->Lock();
+	Sync::Mutex_Lock(&mcMut);
 	mcMemoryCnt--;
-	mcMut->Unlock();
+	Sync::Mutex_Unlock(&mcMut);
 }

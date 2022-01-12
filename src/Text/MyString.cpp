@@ -1680,6 +1680,56 @@ UOSInt Text::StrSplitWS(UTF8Char **strs, UOSInt maxStrs, UTF8Char *strToSplit)
 	return i;
 }
 
+UOSInt Text::StrSplitWSP(Text::PString *strs, UOSInt maxStrs, UTF8Char *strToSplit, UOSInt strLen)
+{
+	UOSInt i = 0;
+	UTF8Char c;
+	strs[0].v = strToSplit;
+	while (true)
+	{
+		c = *strToSplit++;
+		if (c == 0)
+		{
+			return 0;
+		}
+		if (c != 32 && c != '\t')
+		{
+			strs[0].len = strLen - (strToSplit - strs[0].v - 1);
+			strs[0].v = strToSplit;
+			i = 1;
+			break;
+		}
+	}
+	while (i < maxStrs)
+	{
+		c = *strToSplit++;
+		if (c == 0)
+			break;
+		if (c == 32 || c == '\t')
+		{
+			strToSplit[-1] = 0;
+			strs[i].len = strs[i - 1].len;
+			strs[i - 1].len = (UOSInt)(strToSplit - strs[i - 1].v - 1);
+			while (true)
+			{
+				c = *strToSplit++;
+				if (c == 0)
+				{
+					return i;
+				}
+				if (c != 32 && c != '\t')
+				{
+					strs[i].v = strToSplit - 1;
+					strs[i].len = strs[i].len - (strToSplit - strs[i - 1].v - 1);
+					i++;
+					break;
+				}
+			}
+		}
+	}
+	return i;
+}
+
 Bool Text::StrToUInt8(const UTF8Char *intStr, UInt8 *outVal)
 {
 	UInt32 retVal = 0;

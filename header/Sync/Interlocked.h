@@ -25,12 +25,21 @@ namespace Sync
 
 #if defined(_MSC_VER) || defined(__CYGWIN__) || defined(__MINGW32__)
 #include <windows.h>
+#undef CreateDirectory
+#undef DeleteFile
+#undef FindNextFile
+#undef LoadImage
+#undef RemoveDirectory
+#undef PARITY_NONE
+#undef PARITY_EVEN
+#undef PARITY_ODD
 
 #define Interlocked_IncrementI32(val) InterlockedIncrement((LONG*)val)
 #define Interlocked_IncrementU32(val) InterlockedIncrement((ULONG*)val)
 #define Interlocked_DecrementI32(val) InterlockedDecrement((LONG*)val)
 #define Interlocked_DecrementU32(val) InterlockedDecrement((ULONG*)val)
 #define Interlocked_AddI32(val, aval) (InterlockedExchangeAdd((LONG*)val, (LONG)aval) + aval)
+#define Interlocked_AddU32(val, aval) (InterlockedExchangeAdd((ULONG*)val, (ULONG)aval) + aval)
 #define Interlocked_SubtractI32(val, sval) (InterlockedExchangeAdd((LONG*)val, -sval) - sval)
 
 #if defined(_WIN64)

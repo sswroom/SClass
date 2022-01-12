@@ -69,7 +69,7 @@ Bool Exporter::GUIPNGExporter::ExportFile(IO::SeekableStream *stm, const UTF8Cha
 
 	IO::MemoryStream *mstm;
 	Win32::COMStream *cstm;
-	NEW_CLASS(mstm, IO::MemoryStream((const UTF8Char*)"Exporter.GUIPNGExporter.ExportFile.mstm"));
+	NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("Exporter.GUIPNGExporter.ExportFile.mstm")));
 	NEW_CLASS(cstm, Win32::COMStream(mstm));
 
 	if (param)

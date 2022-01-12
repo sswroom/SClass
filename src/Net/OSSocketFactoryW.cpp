@@ -818,7 +818,7 @@ Bool Net::OSSocketFactory::LoadHosts(Net::DNSHandler *dnsHdlr)
 	IO::FileStream *fs;
 	Net::SocketUtil::AddressInfo addr;
 	UOSInt i;
-	UTF8Char *sarr[2];
+	Text::PString sarr[2];
 	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (fs->IsError())
 	{
@@ -835,15 +835,15 @@ Bool Net::OSSocketFactory::LoadHosts(Net::DNSHandler *dnsHdlr)
 		}
 		else
 		{
-			i = Text::StrSplitWS(sarr, 2, sb.ToString());
+			i = Text::StrSplitWSP(sarr, 2, sb.ToString(), sb.GetLength());
 			if (i == 2)
 			{
-				if (Net::SocketUtil::GetIPAddr(sarr[0], &addr))
+				if (Net::SocketUtil::GetIPAddr(sarr[0].v, sarr[0].len, &addr))
 				{
 					while (true)
 					{
-						i = Text::StrSplitWS(sarr, 2, sarr[1]);
-						dnsHdlr->AddHost(&addr, sarr[0]);
+						i = Text::StrSplitWSP(sarr, 2, sarr[1].v, sarr[1].len);
+						dnsHdlr->AddHost(&addr, sarr[0].v);
 						if (i != 2)
 							break;
 					}
