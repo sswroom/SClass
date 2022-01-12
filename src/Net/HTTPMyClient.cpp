@@ -753,7 +753,7 @@ Bool Net::HTTPMyClient::Connect(const UTF8Char *url, UOSInt urlLen, const Char *
 		this->sockf->SetLinger(this->cli->GetSocket(), 0);
 		this->sockf->SetNoDelay(this->cli->GetSocket(), true);
 	}
-	else if (Text::StrEquals(this->cliHost->v, urltmp))
+	else if (Text::StrEqualsC(this->cliHost->v, this->cliHost->leng, urltmp, urltmpLen))
 	{
 		if (this->buffSize > 0)
 		{
@@ -803,6 +803,8 @@ Bool Net::HTTPMyClient::Connect(const UTF8Char *url, UOSInt urlLen, const Char *
 			MemFree(this->headers->RemoveAt(i));
 		}
 		this->headers->Clear();
+		LIST_FREE_STRING(this->reqHeaders);
+		this->reqHeaders->Clear();
 	}
 	else
 	{
@@ -1074,7 +1076,7 @@ void Net::HTTPMyClient::EndRequest(Double *timeReq, Double *timeResp)
 					if (s->StartsWithICase((const UTF8Char*)"Content-Length: "))
 					{
 						s->leng = (UOSInt)(Text::StrTrimC(&s->v[16], s->leng - 16) - s->v);
-						this->contLeng = Text::StrToUInt64(&s->v[16]);
+						Text::StrToUInt64S(&s->v[16], &this->contLeng, 0);
 					}
 					else if (s->StartsWithICase((const UTF8Char*)"Transfer-Encoding: "))
 					{
