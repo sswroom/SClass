@@ -16,6 +16,8 @@
 #include <dbghelp.h>
 #endif
 
+//#define THREADSAFE
+
 #if defined(__CYGWIN__) || defined(__MINGW32__)
 #define _ReturnAddress() __builtin_return_address(0)
 #elif defined(HAS_INTRIN)
@@ -92,6 +94,7 @@ void MemUnlock()
 	Sync::Mutex_Unlock(&mcMut);
 }
 
+#if defined(THREADSAFE)
 void *MAlloc(UOSInt size)
 {
 	Sync::Mutex_Lock(&mcMut);
@@ -241,7 +244,146 @@ void MemFreeA(void *ptr)
 	HeapFree(mcHandle, 0, relPtr);
 	Sync::Mutex_Unlock(&mcMut);
 }
+#else
+void *MAlloc(UOSInt size)
+{
+	Interlocked_IncrementI32(&mcMemoryCnt);
 
+	void *mptr = HeapAlloc(mcHandle, 0, size + 8);
+	if ((OSInt)mptr == mcBreakPt && (mcBreakSize == 0 || mcBreakSize == size + 8))
+	{
+		DebugBreak();
+	}
+#if defined(HAS_ASM32)
+#if defined(_DEBUG)
+	_asm
+	{
+		mov ebx,mptr
+		mov eax,dword ptr [ebp+4]
+		mov dword ptr [ebx],eax
+	}
+#else
+	_asm
+	{
+		mov ebx,mptr
+		mov eax,dword ptr [esp+12]
+		mov dword ptr [ebx],eax
+	}
+#endif
+#elif defined(HAS_INTRIN)
+	*(OSInt*)mptr = (OSInt)_ReturnAddress();
+#else
+	*(OSInt*)mptr = 0;
+#endif
+
+	return ((UInt8*)mptr) + 8;
+}
+
+void *MAllocA(UOSInt size)
+{
+	Interlocked_IncrementI32(&mcMemoryCnt);
+
+	UInt8 *mptr = (UInt8*)HeapAlloc(mcHandle, 0, size + 32);
+	UInt8 *sptr = mptr;
+	if ((OSInt)mptr == mcBreakPt && (mcBreakSize == 0 || mcBreakSize == size))
+	{
+		DebugBreak();
+	}
+#if defined(HAS_ASM32)
+#if defined(_DEBUG)
+	_asm
+	{
+		mov ebx,mptr
+		mov eax,dword ptr [ebp+4]
+		mov dword ptr [ebx],eax
+	}
+#else
+	_asm
+	{
+		mov ebx,mptr
+		mov eax,dword ptr [esp+12]
+		mov dword ptr [ebx],eax
+	}
+#endif
+#elif defined(HAS_INTRIN)
+	*(OSInt*)mptr = (OSInt)_ReturnAddress();
+#else
+	*(OSInt*)mptr = 0;
+#endif
+
+	mptr += 16;
+	mptr += 16 - (15 & (OSInt)mptr);
+	*(UInt8**)&mptr[-8] = sptr;
+	return mptr;
+}
+
+void *MAllocA64(UOSInt size)
+{
+	Interlocked_IncrementI32(&mcMemoryCnt);
+
+	UInt8 *mptr = (UInt8*)HeapAlloc(mcHandle, 0, size + 80);
+	UInt8 *sptr = mptr;
+	if ((OSInt)mptr == mcBreakPt && (mcBreakSize == 0 || mcBreakSize == size))
+	{
+		DebugBreak();
+	}
+#if defined(HAS_ASM32)
+#if defined(_DEBUG)
+	_asm
+	{
+		mov ebx,mptr
+		mov eax,dword ptr [ebp+4]
+		mov dword ptr [ebx],eax
+	}
+#else
+	_asm
+	{
+		mov ebx,mptr
+		mov eax,dword ptr [esp+12]
+		mov dword ptr [ebx],eax
+	}
+#endif
+#elif defined(HAS_INTRIN)
+	*(OSInt*)mptr = (OSInt)_ReturnAddress();
+#else
+	*(OSInt*)mptr = 0;
+#endif
+
+	mptr += 16;
+	mptr += 64 - (63 & (OSInt)mptr);
+	*(UInt8**)&mptr[-8] = sptr;
+	return mptr;
+}
+
+void MemFree(void *ptr)
+{
+	Interlocked_DecrementI32(&mcMemoryCnt);
+
+//	_heapchk();
+	HeapFree(mcHandle, 0, ((UInt8*)ptr) - 8);
+}
+
+void MemFreeA(void *ptr)
+{
+	Interlocked_DecrementI32(&mcMemoryCnt);
+
+//	_heapchk();
+	UInt8 *relPtr = *(UInt8**)&((UInt8*)ptr)[-8];
+#ifdef _DEBUG
+	OSInt v = ((UInt8*)ptr) - relPtr;
+	if (v > 80 || v < 16)
+	{
+		v = 0;
+	}
+#if defined(HAS_INTRIN)
+	*(UInt8**)&((UInt8*)ptr)[-8] = (UInt8 *)_ReturnAddress();
+#else
+	*(UInt8**)&((UInt8*)ptr)[-8] = 0;
+#endif
+#endif
+	HeapFree(mcHandle, 0, relPtr);
+}
+#endif
 void MemDeinit()
 {
 	if (Sync::Interlocked::Decrement(&mcInitCnt) == 0)
