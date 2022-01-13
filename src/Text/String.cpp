@@ -201,11 +201,6 @@ UTF8Char *Text::String::ConcatTo(UTF8Char *sbuff)
 	return &sbuff[this->leng];
 }
 
-Bool Text::String::Equals(const UTF8Char *s)
-{
-	return Text::StrEquals(this->v, s);
-}
-
 Bool Text::String::Equals(const UTF8Char *s, UOSInt len)
 {
 	return Text::StrEqualsC(this->v, this->leng, s, len);
@@ -216,8 +211,12 @@ Bool Text::String::Equals(Text::String *s)
 	return this->leng == s->leng && Text::StrEquals(this->v, s->v);
 }
 
-Bool Text::String::EqualsICase(const UTF8Char *s)
+Bool Text::String::EqualsICase(const UTF8Char *s, UOSInt len)
 {
+	if (this->leng != len)
+	{
+		return false;
+	}
 	return Text::StrEqualsICase(this->v, s);
 }
 
@@ -226,23 +225,9 @@ Bool Text::String::StartsWith(Text::String *s)
 	return Text::StrStartsWithC(this->v, this->leng, s->v, s->leng);
 }
 
-Bool Text::String::StartsWith(const UTF8Char *s)
-{
-	return Text::StrStartsWith(this->v, s);
-}
-
 Bool Text::String::StartsWith(const UTF8Char *s, UOSInt len)
 {
 	return Text::StrStartsWithC(this->v, this->leng, s, len);
-}
-
-Bool Text::String::StartsWith(UOSInt startIndex, const UTF8Char *s)
-{
-	if (startIndex > this->leng)
-	{
-		return false;
-	}
-	return Text::StrStartsWith(&this->v[startIndex], s);
 }
 
 Bool Text::String::StartsWith(UOSInt startIndex, const UTF8Char *s, UOSInt len)
@@ -292,24 +277,22 @@ Bool Text::String::EndsWith(UTF8Char c)
 	return this->leng > 0 && this->v[this->leng - 1] == c;
 }
 
-Bool Text::String::EndsWith(const UTF8Char *s)
+Bool Text::String::EndsWith(const UTF8Char *s, UOSInt len)
 {
-	UOSInt l = Text::StrCharCnt(s);
-	if (l > this->leng)
+	if (len > this->leng)
 	{
 		return false;
 	}
-	return Text::StrEquals(&this->v[this->leng - l], s);
+	return Text::StrEqualsC(&this->v[this->leng - len], len, s, len);
 }
 
-Bool Text::String::EndsWithICase(const UTF8Char *s)
+Bool Text::String::EndsWithICase(const UTF8Char *s, UOSInt len)
 {
-	UOSInt l = Text::StrCharCnt(s);
-	if (l > this->leng)
+	if (len > this->leng)
 	{
 		return false;
 	}
-	return Text::StrEqualsICase(&this->v[this->leng - l], s);
+	return Text::StrEqualsICase(&this->v[this->leng - len], s);
 }
 
 Bool Text::String::HasUpperCase()
@@ -336,9 +319,9 @@ Text::String *Text::String::ToLower()
 	}
 }
 
-UOSInt Text::String::IndexOf(const UTF8Char *s)
+UOSInt Text::String::IndexOf(const UTF8Char *s, UOSInt len)
 {
-	return Text::StrIndexOf(this->v, s);
+	return Text::StrIndexOfC(this->v, this->leng, s, len);
 }
 
 UOSInt Text::String::IndexOf(UTF8Char c)
@@ -464,7 +447,7 @@ Bool Text::String::ToUInt16S(UInt16 *outVal, UInt16 failVal)
 
 Double Text::String::MatchRating(Text::String *s)
 {
-	if (this->IndexOf(s->v) != INVALID_INDEX)
+	if (this->IndexOf(s->v, s->leng) != INVALID_INDEX)
 	{
 		return Math::UOSInt2Double(s->leng) / Math::UOSInt2Double(this->leng);
 	}
@@ -476,7 +459,7 @@ Double Text::String::MatchRating(Text::String *s)
 
 Double Text::String::MatchRating(const UTF8Char *targetStr, UOSInt strLen)
 {
-	if (this->IndexOf(targetStr) != INVALID_INDEX)
+	if (this->IndexOf(targetStr, strLen) != INVALID_INDEX)
 	{
 		return Math::UOSInt2Double(strLen) / Math::UOSInt2Double(this->leng);
 	}

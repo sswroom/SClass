@@ -528,12 +528,13 @@ const UInt8 *Net::WebServer::WebRequest::GetHTTPFormFile(const UTF8Char *formNam
 {
 	if (this->formFileList == 0)
 		return 0;
+	UOSInt formNameLen = Text::StrCharCnt(formName);
 	UOSInt i = 0;
 	UOSInt j = this->formFileList->GetCount();
 	while (i < j)
 	{
 		FormFileInfo *info = this->formFileList->GetItem(i);
-		if (info->formName->Equals(formName))
+		if (info->formName->Equals(formName, formNameLen))
 		{
 			if (index == 0)
 			{
@@ -631,12 +632,12 @@ Bool Net::WebServer::WebRequest::HasData()
 			return false;
 		}
 		contLeng = this->GetSHeader(UTF8STRC("Connection"));
-		if (contLeng == 0 || !contLeng->Equals((const UTF8Char*)"close"))
+		if (contLeng == 0 || !contLeng->Equals(UTF8STRC("close")))
 		{
 			return false;
 		}
 		contLeng = this->GetSHeader(UTF8STRC("Transfer-Encoding"));
-		if (contLeng == 0 || !contLeng->Equals((const UTF8Char*)"chunked"))
+		if (contLeng == 0 || !contLeng->Equals(UTF8STRC("chunked")))
 		{
 			return false;
 		}

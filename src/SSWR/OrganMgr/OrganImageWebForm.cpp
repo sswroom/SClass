@@ -8,13 +8,13 @@ void __stdcall SSWR::OrganMgr::OrganImageWebForm::OnOKClicked(void *userObj)
 	OrganImageWebForm *me = (OrganImageWebForm *)userObj;
 	Text::StringBuilderUTF8 sb;
 	me->txtSourceURL->GetText(&sb);
-	SDEL_TEXT(me->srcURL);
-	me->srcURL = Text::StrCopyNew(sb.ToString());
+	SDEL_STRING(me->srcURL);
+	me->srcURL = Text::String::New(sb.ToString(), sb.GetLength());
 
 	sb.ClearStr();
 	me->txtLocation->GetText(&sb);
-	SDEL_TEXT(me->location);
-	me->location = Text::StrCopyNew(sb.ToString());
+	SDEL_STRING(me->location);
+	me->location = Text::String::New(sb.ToString(), sb.GetLength());
 	me->SetDialogResult(UI::GUIForm::DR_OK);
 }
 
@@ -69,7 +69,7 @@ SSWR::OrganMgr::OrganImageWebForm::OrganImageWebForm(UI::GUIClientControl *paren
 	this->btnCancel->SetRect(200, 120, 75, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClicked, this);
 
-	if (wfile == 0 || wfile->srcUrl->Equals(wfile->imgUrl) || wfile->srcUrl->Equals((const UTF8Char*)"chrome://browser/content/browser.xhtml"))
+	if (wfile == 0 || wfile->srcUrl->Equals(wfile->imgUrl) || wfile->srcUrl->Equals(UTF8STRC("chrome://browser/content/browser.xhtml")))
 	{
 		this->txtSourceURL->Focus();
 		this->txtSourceURL->SelectAll();
@@ -86,8 +86,8 @@ SSWR::OrganMgr::OrganImageWebForm::OrganImageWebForm(UI::GUIClientControl *paren
 
 SSWR::OrganMgr::OrganImageWebForm::~OrganImageWebForm()
 {
-	SDEL_TEXT(this->srcURL);
-	SDEL_TEXT(this->location);
+	SDEL_STRING(this->srcURL);
+	SDEL_STRING(this->location);
 }
 
 void SSWR::OrganMgr::OrganImageWebForm::OnMonitorChanged()
@@ -95,12 +95,12 @@ void SSWR::OrganMgr::OrganImageWebForm::OnMonitorChanged()
 	this->SetDPI(this->env->GetMonitorHDPI(this->GetHMonitor()), this->env->GetMonitorDDPI(this->GetHMonitor()));
 }
 
-const UTF8Char *SSWR::OrganMgr::OrganImageWebForm::GetSrcURL()
+Text::String *SSWR::OrganMgr::OrganImageWebForm::GetSrcURL()
 {
 	return this->srcURL;
 }
 
-const UTF8Char *SSWR::OrganMgr::OrganImageWebForm::GetLocation()
+Text::String *SSWR::OrganMgr::OrganImageWebForm::GetLocation()
 {
 	return this->location;
 }

@@ -586,7 +586,7 @@ void SSWR::OrganMgr::OrganWebHandler::LoadUsers()
 					while (j-- > 0)
 					{
 						species = group->species->GetItem(j);
-						if (species->sciName->Equals(sbSName.ToString()))
+						if (species->sciName->Equals(sbSName.ToString(), sbSName.GetLength()))
 						{
 							user->unorganSpId = species->speciesId;
 							break;
@@ -930,14 +930,13 @@ void SSWR::OrganMgr::OrganWebHandler::GetGroupSpecies(SSWR::OrganMgr::OrganWebHa
 	}
 }
 
-void SSWR::OrganMgr::OrganWebHandler::SearchInGroup(SSWR::OrganMgr::OrganWebHandler::GroupInfo *group, const UTF8Char *searchStr, Data::ArrayListDbl *speciesIndice, Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::SpeciesInfo*> *speciesObjs, Data::ArrayListDbl *groupIndice, Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::GroupInfo*> *groupObjs, SSWR::OrganMgr::OrganWebHandler::WebUserInfo *user)
+void SSWR::OrganMgr::OrganWebHandler::SearchInGroup(SSWR::OrganMgr::OrganWebHandler::GroupInfo *group, const UTF8Char *searchStr, UOSInt searchStrLen, Data::ArrayListDbl *speciesIndice, Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::SpeciesInfo*> *speciesObjs, Data::ArrayListDbl *groupIndice, Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::GroupInfo*> *groupObjs, SSWR::OrganMgr::OrganWebHandler::WebUserInfo *user)
 {
 	SSWR::OrganMgr::OrganWebHandler::SpeciesInfo *species;
 	SSWR::OrganMgr::OrganWebHandler::BookSpInfo *bookSp;
 	SSWR::OrganMgr::OrganWebHandler::GroupInfo *subGroup;
 	Double rating;
 	Double currRating;
-	UOSInt strLen = Text::StrCharCnt(searchStr);
 	UOSInt i;
 	UOSInt j;
 /*
@@ -951,33 +950,33 @@ e = c
 	{
 		rating = 0;
 		species = group->species->GetItem(i);
-		if (species->sciName->Equals(searchStr) || species->chiName->Equals(searchStr))
+		if (species->sciName->Equals(searchStr, searchStrLen) || species->chiName->Equals(searchStr, searchStrLen))
 		{
 			speciesIndice->Add(1.0);
 			speciesObjs->Add(species);
 		}
 		else
 		{
-			if (rating < (currRating = species->sciName->MatchRating(searchStr, strLen)))
+			if (rating < (currRating = species->sciName->MatchRating(searchStr, searchStrLen)))
 				rating = currRating;
-			if (rating < (currRating = species->chiName->MatchRating(searchStr, strLen)))
+			if (rating < (currRating = species->chiName->MatchRating(searchStr, searchStrLen)))
 				rating = currRating;
-			if (rating < (currRating = species->engName->MatchRating(searchStr, strLen)))
+			if (rating < (currRating = species->engName->MatchRating(searchStr, searchStrLen)))
 				rating = currRating;
-			if (rating < (currRating = species->descript->MatchRating(searchStr, strLen)))
+			if (rating < (currRating = species->descript->MatchRating(searchStr, searchStrLen)))
 				rating = currRating;
 			j = species->books->GetCount();
 			while (j-- > 0)
 			{
 				bookSp = species->books->GetItem(j);
-				if (bookSp->dispName->Equals(searchStr))
+				if (bookSp->dispName->Equals(searchStr, searchStrLen))
 				{
 					rating = 1.0;
 					break;
 				}
 				else
 				{
-					if (rating < (currRating = bookSp->dispName->MatchRating(searchStr, strLen)))
+					if (rating < (currRating = bookSp->dispName->MatchRating(searchStr, searchStrLen)))
 						rating = currRating;
 				}
 			}
@@ -999,16 +998,16 @@ e = c
 		}
 		else
 		{
-			if (subGroup->engName->Equals(searchStr) || subGroup->chiName->Equals(searchStr))
+			if (subGroup->engName->Equals(searchStr, searchStrLen) || subGroup->chiName->Equals(searchStr, searchStrLen))
 			{
 				groupIndice->Add(1.0);
 				groupObjs->Add(subGroup);
 			}
 			else
 			{
-				if (rating < (currRating = subGroup->engName->MatchRating(searchStr, strLen)))
+				if (rating < (currRating = subGroup->engName->MatchRating(searchStr, searchStrLen)))
 					rating = currRating;
-				if (rating < (currRating = subGroup->chiName->MatchRating(searchStr, strLen)))
+				if (rating < (currRating = subGroup->chiName->MatchRating(searchStr, searchStrLen)))
 					rating = currRating;
 				if (rating > 0)
 				{
@@ -1016,7 +1015,7 @@ e = c
 					groupObjs->Insert(j, subGroup);
 				}
 			}
-			SearchInGroup(subGroup, searchStr, speciesIndice, speciesObjs, groupIndice, groupObjs, user);
+			SearchInGroup(subGroup, searchStr, searchStrLen, speciesIndice, speciesObjs, groupIndice, groupObjs, user);
 		}
 	}
 }
@@ -1989,6 +1988,7 @@ Bool SSWR::OrganMgr::OrganWebHandler::SpeciesBookIsExist(const UTF8Char *species
 	Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::BookInfo*> *bookList = this->bookMap->GetValues();
 	SSWR::OrganMgr::OrganWebHandler::BookInfo *book;
 	SSWR::OrganMgr::OrganWebHandler::BookSpInfo *bookSp;
+	UOSInt nameLen = Text::StrCharCnt(speciesName);
 	UOSInt i = 0;
 	UOSInt j = bookList->GetCount();
 	UOSInt k;
@@ -1999,7 +1999,7 @@ Bool SSWR::OrganMgr::OrganWebHandler::SpeciesBookIsExist(const UTF8Char *species
 		while (k-- > 0)
 		{
 			bookSp = book->species->GetItem(k);
-			if (bookSp->dispName && bookSp->dispName->Equals(speciesName))
+			if (bookSp->dispName && bookSp->dispName->Equals(speciesName, nameLen))
 			{
 				bookNameOut->Append(book->title);
 				return true;
@@ -2470,7 +2470,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroup(Net::WebServer::IWebReq
 			Text::String *action = req->GetHTTPFormStr(UTF8STRC("action"));
 			Text::String *s;
 			Int32 itemId;
-			if (action && action->Equals((const UTF8Char*)"pickall"))
+			if (action && action->Equals(UTF8STRC("pickall")))
 			{
 				if (group->groups->GetCount() > 0)
 				{
@@ -2499,7 +2499,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroup(Net::WebServer::IWebReq
 					}
 				}
 			}
-			else if (action && action->Equals((const UTF8Char*)"picksel"))
+			else if (action && action->Equals(UTF8STRC("picksel")))
 			{
 				if (group->groups->GetCount() > 0)
 				{
@@ -2544,7 +2544,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroup(Net::WebServer::IWebReq
 					}
 				}
 			}
-			else if (action && action->Equals((const UTF8Char*)"place"))
+			else if (action && action->Equals(UTF8STRC("place")))
 			{
 				if (env.pickObjType == POT_GROUP && group->species->GetCount() == 0)
 				{
@@ -2601,7 +2601,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroup(Net::WebServer::IWebReq
 					}
 				}
 			}
-			else if (action && action->Equals((const UTF8Char*)"placeall"))
+			else if (action && action->Equals(UTF8STRC("placeall")))
 			{
 				if (env.pickObjType == POT_GROUP && group->species->GetCount() == 0)
 				{
@@ -2644,7 +2644,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroup(Net::WebServer::IWebReq
 					}
 				}
 			}
-			else if (action && action->Equals((const UTF8Char*)"setphoto"))
+			else if (action && action->Equals(UTF8STRC("setphoto")))
 			{
 				me->GroupSetPhotoGroup(group->parentId, group->id);
 			}
@@ -2942,7 +2942,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroupMod(Net::WebServer::IWeb
 			}
 			if (task != 0 && cname != 0 && req->GetHTTPFormInt32(UTF8STRC("groupType"), &groupTypeId) && ename != 0 && descr != 0 && ename->v[0] != 0 && cname->v[0] != 0)
 			{
-				if (task->Equals((const UTF8Char*)"new"))
+				if (task->Equals(UTF8STRC("new")))
 				{
 					sb.ClearStr();
 					Bool found = false;
@@ -2984,7 +2984,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroupMod(Net::WebServer::IWeb
 						me->dataMut->LockRead();
 					}
 				}
-				else if (task->Equals((const UTF8Char*)"modify") && modGroup != 0 && modGroup->cateId == cateId)
+				else if (task->Equals(UTF8STRC("modify")) && modGroup != 0 && modGroup->cateId == cateId)
 				{
 					Bool found = false;
 					i = group->groups->GetCount();
@@ -3024,7 +3024,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroupMod(Net::WebServer::IWeb
 						me->dataMut->LockRead();
 					}
 				}
-				else if (task->Equals((const UTF8Char*)"delete") && modGroup != 0 && modGroup->groups->GetCount() == 0 && modGroup->species->GetCount() == 0)
+				else if (task->Equals(UTF8STRC("delete")) && modGroup != 0 && modGroup->groups->GetCount() == 0 && modGroup->species->GetCount() == 0)
 				{
 					Int32 id = modGroup->id;
 					Int32 cateId = modGroup->cateId;
@@ -3239,7 +3239,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpecies(Net::WebServer::IWebR
 			Text::String *action = req->GetHTTPFormStr(UTF8STRC("action"));
 			Text::String *s;
 			Int32 userfileId;
-			if (action && action->Equals((const UTF8Char*)"pickall"))
+			if (action && action->Equals(UTF8STRC("pickall")))
 			{
 				env.pickObjType = POT_USERFILE;
 				webSess.GetSess()->SetValueInt32("PickObjType", env.pickObjType);
@@ -3252,7 +3252,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpecies(Net::WebServer::IWebR
 					i++;
 				}
 			}
-			else if (action && action->Equals((const UTF8Char*)"picksel"))
+			else if (action && action->Equals(UTF8STRC("picksel")))
 			{
 				env.pickObjType = POT_USERFILE;
 				webSess.GetSess()->SetValueInt32("PickObjType", env.pickObjType);
@@ -3273,7 +3273,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpecies(Net::WebServer::IWebR
 					i++;
 				}
 			}
-			else if (action && action->Equals((const UTF8Char*)"place"))
+			else if (action && action->Equals(UTF8STRC("place")))
 			{
 				if (env.pickObjType == POT_USERFILE)
 				{
@@ -3303,7 +3303,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpecies(Net::WebServer::IWebR
 					}
 				}
 			}
-			else if (action && action->Equals((const UTF8Char*)"placeall"))
+			else if (action && action->Equals(UTF8STRC("placeall")))
 			{
 				if (env.pickObjType == POT_USERFILE)
 				{
@@ -3949,7 +3949,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpeciesMod(Net::WebServer::IW
 			bookIgn = STR_PTR(req->GetHTTPFormStr(UTF8STRC("bookIgn")));
 			if (task != 0 && cname != 0 && sname != 0 && ename != 0 && descr != 0 && cname->v[0] != 0 && sname->v[0] != 0)
 			{
-				if (task->Equals((const UTF8Char*)"new"))
+				if (task->Equals(UTF8STRC("new")))
 				{
 					sb.ClearStr();
 					if (me->spNameMap->Get(sname) != 0)
@@ -3993,7 +3993,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpeciesMod(Net::WebServer::IW
 						me->dataMut->LockRead();
 					}
 				}
-				else if (task->Equals((const UTF8Char*)"modify") && species != 0)
+				else if (task->Equals(UTF8STRC("modify")) && species != 0)
 				{
 					Bool nameChg = !species->sciName->Equals(sname);
 					sb.ClearStr();
@@ -4445,11 +4445,11 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 				{
 					req->ParseHTTPForm();
 					Text::String *action = req->GetHTTPFormStr(UTF8STRC("action"));
-					if (action && action->Equals((const UTF8Char*)"setdefault") && env.user->userType == 0)
+					if (action && action->Equals(UTF8STRC("setdefault")) && env.user->userType == 0)
 					{
 						me->SpeciesSetPhotoId(id, fileId);
 					}
-					else if (action && action->Equals((const UTF8Char*)"setname"))
+					else if (action && action->Equals(UTF8STRC("setname")))
 					{
 						Text::String *desc = req->GetHTTPFormStr(UTF8STRC("descr"));
 						if (desc)
@@ -4457,7 +4457,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 							me->UserfileUpdateDesc(fileId, desc->v);
 						}
 					}
-					else if (action && action->Equals((const UTF8Char*)"rotate"))
+					else if (action && action->Equals(UTF8STRC("rotate")))
 					{
 						me->UserfileUpdateRotType(fileId, (userFile->rotType + 1) & 3);
 					}
@@ -6430,7 +6430,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSearchInside(Net::WebServer::
 		writer->WriteStrC(s->v, s->leng);
 		s->Release();
 		writer->WriteLineC(UTF8STRC("\"<br/>"));
-		me->SearchInGroup(group, sb.ToString(), &speciesIndice, &speciesObjs, &groupIndice, &groupObjs, env.user);
+		me->SearchInGroup(group, sb.ToString(), sb.GetLength(), &speciesIndice, &speciesObjs, &groupIndice, &groupObjs, env.user);
 
 		Bool found = false;
 
@@ -6631,7 +6631,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSearchInsideMoreS(Net::WebSer
 		writer->WriteStrC(s->v, s->leng);
 		s->Release();
 		writer->WriteLineC(UTF8STRC("\"<br/>"));
-		me->SearchInGroup(group, sb.ToString(), &speciesIndice, &speciesObjs, &groupIndice, &groupObjs, env.user);
+		me->SearchInGroup(group, sb.ToString(), sb.GetLength(), &speciesIndice, &speciesObjs, &groupIndice, &groupObjs, env.user);
 
 		Bool found = false;
 
@@ -6813,7 +6813,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSearchInsideMoreG(Net::WebSer
 		writer->WriteStrC(s->v, s->leng);
 		s->Release();
 		writer->WriteLineC(UTF8STRC("\"<br/>"));
-		me->SearchInGroup(group, sb.ToString(), &speciesIndice, &speciesObjs, &groupIndice, &groupObjs, env.user);
+		me->SearchInGroup(group, sb.ToString(), sb.GetLength(), &speciesIndice, &speciesObjs, &groupIndice, &groupObjs, env.user);
 
 		Bool found = false;
 
@@ -7315,6 +7315,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcLogin(Net::WebServer::IWebReq
 	IO::Writer *writer;
 	Data::DateTime dt;
 	UTF8Char sbuff[128];
+	UTF8Char *sptr;
 
 	if (env.user)
 	{
@@ -7328,10 +7329,10 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcLogin(Net::WebServer::IWebReq
 		Text::String *pwd = req->GetHTTPFormStr(UTF8STRC("password"));
 		if (userName && pwd)
 		{
-			me->PasswordEnc(sbuff, pwd->v);
+			sptr = me->PasswordEnc(sbuff, pwd->v);
 			me->dataMut->LockRead();
 			env.user = me->userNameMap->Get(userName);
-			if (env.user && env.user->pwd->Equals(sbuff))
+			if (env.user && env.user->pwd->Equals(sbuff, (UOSInt)(sptr - sbuff)))
 			{
 				me->dataMut->UnlockRead();
 				Net::WebServer::IWebSession *sess = me->sessMgr->CreateSession(req, resp);

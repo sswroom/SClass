@@ -29,23 +29,20 @@ namespace Text
 		String *Clone();
 
 		UTF8Char *ConcatTo(UTF8Char *sbuff);
-		Bool Equals(const UTF8Char *s);
 		Bool Equals(const UTF8Char *s, UOSInt len);
 		Bool Equals(Text::String *s);
-		Bool EqualsICase(const UTF8Char *s);
+		Bool EqualsICase(const UTF8Char *s, UOSInt len);
 		Bool StartsWith(Text::String *s);
-		Bool StartsWith(const UTF8Char *s);
 		Bool StartsWith(const UTF8Char *s, UOSInt len);
-		Bool StartsWith(UOSInt startIndex, const UTF8Char *s);
 		Bool StartsWith(UOSInt startIndex, const UTF8Char *s, UOSInt len);
 		Bool StartsWithICase(const UTF8Char *s);
 		Bool EndsWith(UTF8Char c);
-		Bool EndsWith(const UTF8Char *s);
-		Bool EndsWithICase(const UTF8Char *s);
+		Bool EndsWith(const UTF8Char *s, UOSInt len);
+		Bool EndsWithICase(const UTF8Char *s, UOSInt len);
 		Bool HasUpperCase();
 		Bool ContainChars(const UTF8Char *chars);
 		String *ToLower();
-		UOSInt IndexOf(const UTF8Char *s);
+		UOSInt IndexOf(const UTF8Char *s, UOSInt len);
 		UOSInt IndexOf(UTF8Char c);
 		UOSInt IndexOfICase(const UTF8Char *s);
 		UOSInt LastIndexOf(UTF8Char c);

@@ -213,7 +213,7 @@ void Media::PhotoInfo::ToString(Text::StringBuilderUTF *sb)
 		{
 			sb->Append(this->make);
 		}
-		else if (this->model->StartsWith(this->make->v))
+		else if (this->model->StartsWith(this->make))
 		{
 			sb->Append(this->model);
 		}

@@ -43,11 +43,11 @@ namespace IO
 		Data::FastStringMap<ProgramItem*> *progMap;
 		Data::StringMap<Int64> *fileTimeMap;
 		Sync::Mutex *errorMsgMut;
-		const UTF8Char *errorMsg;
-		const UTF8Char *basePath;
+		Text::String *errorMsg;
+		Text::String *basePath;
 		IO::Writer *messageWriter;
 		IO::Writer *cmdWriter;
-		const UTF8Char *debugObj;
+		Text::String *debugObj;
 		Sync::ParallelTask *tasks;
 
 		void AppendCfgItem(Text::StringBuilderUTF *sb, const UTF8Char *val);
@@ -57,15 +57,15 @@ namespace IO
 		Bool ExecuteCmd(const UTF8Char *cmd);
 		Bool LoadConfigFile(const UTF8Char *cfgFile);
 
-		Bool ParseSource(Data::ArrayListString *objList, Data::ArrayListString *libList, Data::ArrayListString *procList, Data::ArrayListString *headerList, Int64 *latestTime, const UTF8Char *sourceFile);
-		Bool ParseHeader(Data::ArrayListString *objList, Data::ArrayListString *libList, Data::ArrayListString *procList, Data::ArrayListString *headerList, Int64 *latestTime, Text::String *headerFile, const UTF8Char *sourceFile);
+		Bool ParseSource(Data::ArrayListString *objList, Data::ArrayListString *libList, Data::ArrayListString *procList, Data::ArrayListString *headerList, Int64 *latestTime, const UTF8Char *sourceFile, UOSInt sourceFileLen);
+		Bool ParseHeader(Data::ArrayListString *objList, Data::ArrayListString *libList, Data::ArrayListString *procList, Data::ArrayListString *headerList, Int64 *latestTime, Text::String *headerFile, const UTF8Char *sourceFile, UOSInt sourceFileLen);
 		Bool ParseProgInternal(Data::ArrayListString *objList, Data::ArrayListString *libList, Data::ArrayListString *procList, Data::ArrayListString *headerList, Int64 *latestTime, Bool *progGroup, const ProgramItem *prog);
 
 		static void __stdcall CompileTask(void *userObj);
 		void CompileObject(Bool *errorState, const UTF8Char *cmd, UOSInt cmdLeng);
 		Bool CompileProgInternal(ProgramItem *prog, Bool asmListing);
 
-		void SetErrorMsg(const UTF8Char *msg);
+		void SetErrorMsg(const UTF8Char *msg, UOSInt msgLen);
 	public:
 		SMake(const UTF8Char *cfgFile, UOSInt threadCnt, IO::Writer *messageWriter);
 		virtual ~SMake();
@@ -76,7 +76,7 @@ namespace IO
 		Bool GetErrorMsg(Text::StringBuilderUTF *sb);
 		void SetMessageWriter(IO::Writer *messageWriter);
 		void SetCommandWriter(IO::Writer *cmdWriter);
-		void SetDebugObj(const UTF8Char *debugObj);
+		void SetDebugObj(const UTF8Char *debugObj, UOSInt len);
 		void SetThreadCnt(UOSInt threadCnt);
 
 		Data::ArrayList<ConfigItem*> *GetConfigList();

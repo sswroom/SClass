@@ -99,7 +99,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPDownloaderForm::ProcessThread(void *user
 			}
 			Net::HTTPClient *cli;
 			NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
-			cli = Net::HTTPClient::CreateClient(me->core->GetSocketFactory(), me->ssl, 0, 0, false, currURL->StartsWith((const UTF8Char*)"https://"));
+			cli = Net::HTTPClient::CreateClient(me->core->GetSocketFactory(), me->ssl, 0, 0, false, currURL->StartsWith(UTF8STRC("https://")));
 			cli->Connect(currURL->v, currURL->leng, "GET", &me->respTimeDNS, &me->respTimeConn, false);
 			if (currHeader)
 			{

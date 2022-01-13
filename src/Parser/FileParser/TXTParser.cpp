@@ -73,7 +73,7 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 	UOSInt j;
 	UOSInt k;
 	UOSInt l;
-	if (!fd->GetFullName()->EndsWithICase((const UTF8Char*)".TXT"))
+	if (!fd->GetFullName()->EndsWithICase(UTF8STRC(".TXT")))
 	{
 		return 0;
 	}

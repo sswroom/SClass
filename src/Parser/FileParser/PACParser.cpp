@@ -45,7 +45,7 @@ IO::ParsedObject *Parser::FileParser::PACParser::ParseFile(IO::IStreamData *fd, 
 	UTF8Char fileName[256];
 	Text::Encoding enc(932);
 
-	if (!fd->GetFullName()->EndsWithICase((const UTF8Char*)".PAC"))
+	if (!fd->GetFullName()->EndsWithICase(UTF8STRC(".PAC")))
 	{
 		return 0;
 	}

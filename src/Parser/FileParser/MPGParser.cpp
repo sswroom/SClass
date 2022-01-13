@@ -65,10 +65,11 @@ IO::ParsedObject *Parser::FileParser::MPGParser::ParseFile(IO::IStreamData *fd, 
 		if (ReadMInt32(&buff[currOfst]) != 0x000001bb)
 			return 0;
 
-		if (fd->GetFullName()->EndsWithICase((const UTF8Char*)"_1.vob"))
+		if (fd->GetFullName()->EndsWithICase(UTF8STRC("_1.vob")))
 		{
 			UTF8Char sbuff[512];
 			UTF8Char *sptr;
+			UTF8Char *sptr2;
 			if (fd->IsFullFile())
 			{
 				Int32 stmId;
@@ -106,8 +107,8 @@ IO::ParsedObject *Parser::FileParser::MPGParser::ParseFile(IO::IStreamData *fd, 
 				sptr = Text::StrConcat(sbuff, fd->GetShortName()) - 5;
 				while (true)
 				{
-					Text::StrConcatC(Text::StrInt32(sptr, stmId), UTF8STRC(".vob"));
-					ind = pkgFile->GetItemIndex(sbuff);
+					sptr2 = Text::StrConcatC(Text::StrInt32(sptr, stmId), UTF8STRC(".vob"));
+					ind = pkgFile->GetItemIndex(sbuff, (UOSInt)(sptr2 - sbuff));
 					if (ind == INVALID_INDEX)
 					{
 						break;

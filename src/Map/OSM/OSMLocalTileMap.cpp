@@ -149,6 +149,7 @@ Map::OSM::OSMLocalTileMap::OSMLocalTileMap(IO::PackageFile *pkgFile)
 	UInt32 minYBlk;
 	UInt32 maxYBlk;
 	UTF8Char sbuff[512];
+	UTF8Char *sptr;
 	UInt32 currVal;
 	UOSInt i;
 	UOSInt j;
@@ -190,8 +191,8 @@ Map::OSM::OSMLocalTileMap::OSMLocalTileMap(IO::PackageFile *pkgFile)
 		maxXBlk = (UInt32)-1;
 		
 		IO::PackageFile *xPkg;
-		Text::StrUOSInt(sbuff, this->maxLevel);
-		xPkg = pkgFile->GetItemPack((UOSInt)pkgFile->GetItemIndex(sbuff));
+		sptr = Text::StrUOSInt(sbuff, this->maxLevel);
+		xPkg = pkgFile->GetItemPack((UOSInt)pkgFile->GetItemIndex(sbuff, (UOSInt)(sptr - sbuff)));
 		if (xPkg)
 		{
 			i = 0;
@@ -224,8 +225,8 @@ Map::OSM::OSMLocalTileMap::OSMLocalTileMap(IO::PackageFile *pkgFile)
 				maxYBlk = (UInt32)-1;
 
 				IO::PackageFile *yPkg;
-				Text::StrUInt32(sbuff, minXBlk);
-				yPkg = xPkg->GetItemPack((UOSInt)xPkg->GetItemIndex(sbuff));
+				sptr = Text::StrUInt32(sbuff, minXBlk);
+				yPkg = xPkg->GetItemPack((UOSInt)xPkg->GetItemIndex(sbuff, (UOSInt)(sptr - sbuff)));
 				if (yPkg)
 				{
 					i = yPkg->GetCount();
@@ -517,17 +518,17 @@ IO::IStreamData *Map::OSM::OSMLocalTileMap::LoadTileImageData(UOSInt level, Int6
 	IO::PackageFile *xPkg;
 	IO::PackageFile *yPkg;
 	fd = 0;
-	Text::StrUOSInt(u8buff, level);
-	xPkg = this->pkgFile->GetItemPack((UOSInt)this->pkgFile->GetItemIndex(u8buff));
+	sptr = Text::StrUOSInt(u8buff, level);
+	xPkg = this->pkgFile->GetItemPack((UOSInt)this->pkgFile->GetItemIndex(u8buff, (UOSInt)(sptr - u8buff)));
 	if (xPkg)
 	{
-		Text::StrInt32(u8buff, imgX);
-		yPkg = xPkg->GetItemPack((UOSInt)xPkg->GetItemIndex(u8buff));
+		sptr = Text::StrInt32(u8buff, imgX);
+		yPkg = xPkg->GetItemPack((UOSInt)xPkg->GetItemIndex(u8buff, (UOSInt)(sptr - u8buff)));
 		if (yPkg)
 		{
 			sptr = Text::StrInt32(u8buff, imgY);
 			sptr = Text::StrConcatC(sptr, UTF8STRC(".png"));
-			fd = yPkg->GetItemStmData((UOSInt)yPkg->GetItemIndex(u8buff));
+			fd = yPkg->GetItemStmData((UOSInt)yPkg->GetItemIndex(u8buff, (UOSInt)(sptr - u8buff)));
 			if (fd)
 			{
 				if (blockX)

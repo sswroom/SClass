@@ -98,7 +98,7 @@ Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(Net::WebServer::IWebRequ
 	while (i < j)
 	{
 		hdr = hdrNames.GetItem(i);
-		if (hdr->EqualsICase((const UTF8Char*)"Host"))
+		if (hdr->EqualsICase(UTF8STRC("Host")))
 		{
 			sbHeader.ClearStr();
 			if (req->GetHeaderC(&sbHeader, hdr->v, hdr->leng))
@@ -111,7 +111,7 @@ Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(Net::WebServer::IWebRequ
 				}
 			}
 		}
-		else if (hdr->EqualsICase((const UTF8Char*)"X-Forwarded-For"))
+		else if (hdr->EqualsICase(UTF8STRC("X-Forwarded-For")))
 		{
 			sbHeader.ClearStr();
 			if (req->GetHeaderC(&sbHeader, hdr->v, hdr->leng))

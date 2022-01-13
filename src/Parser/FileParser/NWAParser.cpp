@@ -48,7 +48,7 @@ IO::ParsedObject *Parser::FileParser::NWAParser::ParseFile(IO::IStreamData *fd, 
 	UInt32 blockSize;
 	UInt32 restSize;
 	Media::AudioFormat afmt;
-	if (!fd->GetFullName()->EndsWithICase((const UTF8Char*)".NWA"))
+	if (!fd->GetFullName()->EndsWithICase(UTF8STRC(".NWA")))
 		return 0;
 	fd->GetRealData(0, 44, hdrBuff);
 	afmt.formatId = 1;

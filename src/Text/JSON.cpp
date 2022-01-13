@@ -898,7 +898,7 @@ Bool Text::JSONString::Equals(const UTF8Char *s)
 	}
 	else
 	{
-		return this->val->Equals(s);
+		return this->val->Equals(s, Text::StrCharCnt(s));
 	}
 }
 

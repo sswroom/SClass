@@ -85,7 +85,7 @@ Media::VectorGraph::VectorFontStyle::~VectorFontStyle()
 
 Bool Media::VectorGraph::VectorFontStyle::IsSame(const UTF8Char *name, Double heightPt, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 codePage)
 {
-	if (!this->name->Equals(name))
+	if (!this->name->Equals(name, Text::StrCharCnt(name)))
 		return false;
 	if (this->heightPt != heightPt)
 		return false;

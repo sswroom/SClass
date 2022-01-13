@@ -57,7 +57,7 @@ IO::ParsedObject *Parser::FileParser::CUEParser::ParseFile(IO::IStreamData *fd, 
 	UInt32 lastTime;
 	UOSInt i;
 	Bool errorFound = false;
-	if (!fd->GetFullName()->EndsWithICase((const UTF8Char*)".CUE"))
+	if (!fd->GetFullName()->EndsWithICase(UTF8STRC(".CUE")))
 		return 0;
 
 	i = 100;
@@ -73,8 +73,8 @@ IO::ParsedObject *Parser::FileParser::CUEParser::ParseFile(IO::IStreamData *fd, 
 	NEW_CLASS(reader, IO::StreamReader(stm, 0));
 	while (reader->ReadLine(sbuff, 511))
 	{
-		Text::StrTrim(sbuff);
-		if (Text::StrStartsWith(sbuff, (const UTF8Char*)"PERFORMER "))
+		sptr = Text::StrTrim(sbuff);
+		if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("PERFORMER ")))
 		{
 			ReadString(sbuff2, &sbuff[10]);
 			if (artists[currTrack] != 0)
@@ -84,7 +84,7 @@ IO::ParsedObject *Parser::FileParser::CUEParser::ParseFile(IO::IStreamData *fd, 
 			}
 			artists[currTrack] = Text::StrCopyNew(sbuff2);
 		}
-		else if (Text::StrStartsWith(sbuff, (const UTF8Char*)"TITLE "))
+		else if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("TITLE ")))
 		{
 			ReadString(sbuff2, &sbuff[6]);
 			if (titles[currTrack] != 0)
@@ -94,7 +94,7 @@ IO::ParsedObject *Parser::FileParser::CUEParser::ParseFile(IO::IStreamData *fd, 
 			}
 			titles[currTrack] = Text::StrCopyNew(sbuff2);
 		}
-		else if (Text::StrStartsWith(sbuff, (const UTF8Char*)"FILE "))
+		else if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("FILE ")))
 		{
 			ReadString(sbuff2, &sbuff[5]);
 			if (fileName != 0)
@@ -104,7 +104,7 @@ IO::ParsedObject *Parser::FileParser::CUEParser::ParseFile(IO::IStreamData *fd, 
 			}
 			fileName = Text::StrCopyNew(sbuff2);
 		}
-		else if (Text::StrStartsWith(sbuff, (const UTF8Char*)"TRACK "))
+		else if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("TRACK ")))
 		{
 			ReadString(sbuff2, &sbuff[6]);
 			currTrack = Text::StrToUInt32(sbuff2);
@@ -118,7 +118,7 @@ IO::ParsedObject *Parser::FileParser::CUEParser::ParseFile(IO::IStreamData *fd, 
 				maxTrack = currTrack;
 			}
 		}
-		else if (Text::StrStartsWith(sbuff, (const UTF8Char*)"INDEX "))
+		else if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("INDEX ")))
 		{
 			ReadString(sbuff2, &sbuff[6]);
 			i = Text::StrToUInt32(sbuff2);

@@ -23,9 +23,10 @@ void __stdcall SSWR::AVIRead::AVIRCodeProjectForm::OnItemSelected(void *userObj)
 			Text::Cpp::CppCodeParser *parser;
 			Text::CodeFile *file = (Text::CodeFile*)obj;
 			UTF8Char u8buff[512];
+			UTF8Char *sptr;
 			me->proj->GetSourceName(u8buff);
-			IO::Path::AppendPath(u8buff, file->GetFileName()->v);
-			if (Text::StrEndsWithICase(u8buff, (const UTF8Char*)".CPP"))
+			sptr = IO::Path::AppendPath(u8buff, file->GetFileName()->v);
+			if (Text::StrEndsWithICaseC(u8buff, (UOSInt)(sptr - u8buff), UTF8STRC(".CPP")))
 			{
 				Text::StringBuilderUTF8 sb;
 				Data::ArrayListStrUTF8 errMsgs;
@@ -35,7 +36,7 @@ void __stdcall SSWR::AVIRead::AVIRCodeProjectForm::OnItemSelected(void *userObj)
 				env->InitEnvStatus(status);
 				status->AddGlobalDef((const UTF8Char*)"__STDC__", (const UTF8Char*)"0");
 				status->AddGlobalDef((const UTF8Char*)"__cplusplus", (const UTF8Char*)"201103");
-				parser->ParseFile(u8buff, &errMsgs, status);
+				parser->ParseFile(u8buff, (UOSInt)(sptr - u8buff), &errMsgs, status);
 				i = 0;
 				j = errMsgs.GetCount();
 				if (j > 0)
@@ -57,7 +58,7 @@ void __stdcall SSWR::AVIRead::AVIRCodeProjectForm::OnItemSelected(void *userObj)
 				DEL_CLASS(parser);
 				DEL_CLASS(env);
 			}
-			else if (Text::StrEndsWithICase(u8buff, (const UTF8Char*)".C"))
+			else if (Text::StrEndsWithICaseC(u8buff, (UOSInt)(sptr - u8buff), UTF8STRC(".C")))
 			{
 				Text::StringBuilderUTF8 sb;
 				Data::ArrayListStrUTF8 errMsgs;
@@ -66,7 +67,7 @@ void __stdcall SSWR::AVIRead::AVIRCodeProjectForm::OnItemSelected(void *userObj)
 				NEW_CLASS(status, Text::Cpp::CppParseStatus(me->proj->GetSourceNameObj()));
 				env->InitEnvStatus(status);
 				status->AddGlobalDef((const UTF8Char*)"__STDC__", (const UTF8Char*)"1");
-				parser->ParseFile(u8buff, &errMsgs, status);
+				parser->ParseFile(u8buff, (UOSInt)(sptr - u8buff), &errMsgs, status);
 				i = 0;
 				j = errMsgs.GetCount();
 				if (j == 0)

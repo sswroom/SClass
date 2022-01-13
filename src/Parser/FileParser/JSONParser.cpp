@@ -197,7 +197,7 @@ Math::Vector2D *Parser::FileParser::JSONParser::ParseGeomJSON(Text::JSONObject *
 	if (jbase && jbase->GetType() == Text::JSONType::String)
 	{
 		Text::String *sType = ((Text::JSONString*)jbase)->GetValue();
-		if (sType && sType->Equals((const UTF8Char*)"LineString"))
+		if (sType && sType->Equals(UTF8STRC("LineString")))
 		{
 			jbase = obj->GetObjectValue((const UTF8Char*)"coordinates");
 			if (jbase && jbase->GetType() == Text::JSONType::Array)
@@ -308,7 +308,7 @@ Math::Vector2D *Parser::FileParser::JSONParser::ParseGeomJSON(Text::JSONObject *
 				}
 			}
 		}
-		else if (sType && sType->Equals((const UTF8Char*)"Polygon"))
+		else if (sType && sType->Equals(UTF8STRC("Polygon")))
 		{
 			jbase = obj->GetObjectValue((const UTF8Char*)"coordinates");
 			if (jbase && jbase->GetType() == Text::JSONType::Array)

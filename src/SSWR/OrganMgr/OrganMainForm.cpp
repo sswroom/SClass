@@ -647,8 +647,8 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImgDblClicked(void *userObj)
 				{
 					if (wfile)
 					{
-						const UTF8Char *sURL = frm->GetSrcURL();
-						const UTF8Char *location = frm->GetLocation();
+						Text::String *sURL = frm->GetSrcURL();
+						Text::String *location = frm->GetLocation();
 						if (!wfile->srcUrl->Equals(sURL) || !wfile->location->Equals(location))
 						{
 							OrganGroupItem *item = ((OrganGroupItem*)me->lbObj->GetSelectedItem());
@@ -860,7 +860,9 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImageClipboardClicked(void *user
 					if (IO::Path::GetFileSize(fileNameSb.ToString()) > 0)
 					{
 						NEW_CLASS(fs, IO::FileStream(fileNameSb.ToString(), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-						succ = (me->env->AddSpeciesWebFile((OrganSpecies*)gi, urlSb.ToString(), urlSb.ToString(), fs, sbuff) == OrganEnv::FS_SUCCESS);
+						Text::String *url = Text::String::New(urlSb.ToString(), urlSb.GetLength());
+						succ = (me->env->AddSpeciesWebFile((OrganSpecies*)gi, url, url, fs, sbuff) == OrganEnv::FS_SUCCESS);
+						url->Release();
 						DEL_CLASS(fs);
 
 						if (succ)
@@ -3444,7 +3446,11 @@ void SSWR::OrganMgr::OrganMainForm::DropData(UI::GUIDropData *data, OSInt x, OSI
 						IO::Stream *stm = data->GetDataStream(fmtFile);
 						if (stm)
 						{
-							Bool succ = (this->env->AddSpeciesWebFile((OrganSpecies*)gi, sURL.ToString(), iURL.ToString(), stm, sbuff) == OrganEnv::FS_SUCCESS);
+							Text::String *ssurl = Text::String::New(sURL.ToString(), sURL.GetLength());
+							Text::String *siurl = Text::String::New(iURL.ToString(), iURL.GetLength());
+							Bool succ = (this->env->AddSpeciesWebFile((OrganSpecies*)gi, ssurl, siurl, stm, sbuff) == OrganEnv::FS_SUCCESS);
+							ssurl->Release();
+							siurl->Release();
 							DEL_CLASS(stm);
 
 							if (succ)

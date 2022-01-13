@@ -36,7 +36,7 @@ IO::ParsedObject *Parser::FileParser::MIMEFileParser::ParseFile(IO::IStreamData 
 {
 	Text::String *name = fd->GetFullName();
 	Text::IMIMEObj *obj;
-	if (name->EndsWithICase((const UTF8Char*)".eml"))
+	if (name->EndsWithICase(UTF8STRC(".eml")))
 	{
 		obj = Text::MIMEObj::MailMessage::ParseFile(fd);
 		return obj;

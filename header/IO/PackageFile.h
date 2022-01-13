@@ -97,12 +97,12 @@ namespace IO
 		virtual PackObjectType GetItemType(UOSInt index);
 		virtual UTF8Char *GetItemName(UTF8Char *sbuff, UOSInt index);
 		virtual IO::IStreamData *GetItemStmData(UOSInt index); // need release
-		IO::IStreamData *GetItemStmData(const UTF8Char* name);
+		IO::IStreamData *GetItemStmData(const UTF8Char* name, UOSInt nameLen);
 		virtual IO::PackageFile *GetItemPack(UOSInt index); // need release
 		virtual IO::ParsedObject *GetItemPObj(UOSInt index); // no need release
 		virtual Int64 GetItemModTimeTick(UOSInt index);
 		virtual UInt64 GetItemSize(UOSInt index);
-		virtual UOSInt GetItemIndex(const UTF8Char *name);
+		virtual UOSInt GetItemIndex(const UTF8Char *name, UOSInt nameLen);
 		virtual Bool IsCompressed(UOSInt index);
 		virtual Data::Compress::Decompressor::CompressMethod GetItemComp(UOSInt index);
 		virtual PackageFile *Clone();

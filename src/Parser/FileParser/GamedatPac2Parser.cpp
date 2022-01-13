@@ -46,7 +46,7 @@ IO::ParsedObject *Parser::FileParser::GamedatPac2Parser::ParseFile(IO::IStreamDa
 	UTF8Char fileName[256];
 	Text::Encoding enc(932);
 
-	if (!fd->GetFullName()->EndsWithICase((const UTF8Char*)".dat"))
+	if (!fd->GetFullName()->EndsWithICase(UTF8STRC(".dat")))
 	{
 		return 0;
 	}

@@ -545,12 +545,13 @@ Net::SNS::SNSControl *Net::SNS::SNSManager::AddChannel(Net::SNS::SNSControl::SNS
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	Net::SNS::SNSControl *ctrl;
+	UOSInt channelIdLen = Text::StrCharCnt(channelId);
 	UOSInt i = 0;
 	UOSInt j = this->channelList->GetCount();
 	while (i < j)
 	{
 		ctrl = this->channelList->GetItem(i)->ctrl;
-		if (ctrl->GetSNSType() == type && ctrl->GetChannelId()->Equals(channelId))
+		if (ctrl->GetSNSType() == type && ctrl->GetChannelId()->Equals(channelId, channelIdLen))
 		{
 			return 0;
 		}

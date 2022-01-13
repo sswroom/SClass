@@ -121,11 +121,11 @@ Bool Text::HTMLUtil::HTMLWellFormat(Text::EncodingFactory *encFact, IO::Stream *
 			if (thisNT == Text::XMLNode::NT_ELEMENT)
 			{
 				s = reader->GetNodeText();
-				if (s->EqualsICase((const UTF8Char*)"STYLE"))
+				if (s->EqualsICase(UTF8STRC("style")))
 				{
 					elementType = 1;
 				}
-				else if (s->EqualsICase((const UTF8Char*)"SCRIPT"))
+				else if (s->EqualsICase(UTF8STRC("script")))
 				{
 					elementType = 2;
 					i = 0;
@@ -133,9 +133,9 @@ Bool Text::HTMLUtil::HTMLWellFormat(Text::EncodingFactory *encFact, IO::Stream *
 					while (i < j)
 					{
 						attr = reader->GetAttrib(i);
-						if (attr->name->Equals((const UTF8Char*)"type") && attr->value != 0)
+						if (attr->name->Equals(UTF8STRC("type")) && attr->value != 0)
 						{
-							if (attr->value->Equals((const UTF8Char*)"application/ld+json"))
+							if (attr->value->Equals(UTF8STRC("application/ld+json")))
 							{
 								elementType = 3;
 							}
@@ -303,15 +303,15 @@ Bool Text::HTMLUtil::HTMLGetText(Text::EncodingFactory *encFact, const UInt8 *bu
 		else if (nt == Text::XMLNode::NT_ELEMENT)
 		{
 			s = reader->GetNodeText();
-			if (s->EqualsICase((const UTF8Char*)"SCRIPT"))
+			if (s->EqualsICase(UTF8STRC("SCRIPT")))
 			{
 				lastType = 1;
 			}
-			else if (s->EqualsICase((const UTF8Char*)"STYLE"))
+			else if (s->EqualsICase(UTF8STRC("STYLE")))
 			{
 				lastType = 2;
 			}
-			else if (s->EqualsICase((const UTF8Char*)"BR") || s->EqualsICase((const UTF8Char*)"P"))
+			else if (s->EqualsICase(UTF8STRC("BR")) || s->EqualsICase(UTF8STRC("P")))
 			{
 				if (singleLine)
 				{
@@ -327,7 +327,7 @@ Bool Text::HTMLUtil::HTMLGetText(Text::EncodingFactory *encFact, const UInt8 *bu
 				lastIsSpace = true;
 				lastType = 0;
 			}
-			else if (s->EqualsICase((const UTF8Char*)"IMG"))
+			else if (s->EqualsICase(UTF8STRC("IMG")))
 			{
 				if (imgList)
 				{
@@ -337,7 +337,7 @@ Bool Text::HTMLUtil::HTMLGetText(Text::EncodingFactory *encFact, const UInt8 *bu
 					while (i < j)
 					{
 						attr = reader->GetAttrib(i);
-						if (attr->name->EqualsICase((const UTF8Char*)"SRC") && attr->value)
+						if (attr->name->EqualsICase(UTF8STRC("SRC")) && attr->value)
 						{
 							imgList->Add(attr->value->Clone());
 						}

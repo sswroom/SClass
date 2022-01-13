@@ -235,7 +235,7 @@ IO::ParsedObject *Parser::FileParser::SMDLParser::ParseFile(IO::IStreamData *fd,
 	Int32 t;
 	Int32 fileT;
 	s = fd->GetFullName();
-	if (!s->EndsWith((const UTF8Char*)".loc"))
+	if (!s->EndsWith(UTF8STRC(".loc")))
 	{
 		return 0;
 	}

@@ -32,7 +32,7 @@ IO::ParserType Parser::FileParser::UDPParser::GetParserType()
 IO::ParsedObject *Parser::FileParser::UDPParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
 	UInt8 buff[256];
-	if (!fd->GetFullName()->EndsWithICase((const UTF8Char*)"UDP"))
+	if (!fd->GetFullName()->EndsWithICase(UTF8STRC("UDP")))
 		return 0;
 
 	fd->GetRealData(0, 256, buff);

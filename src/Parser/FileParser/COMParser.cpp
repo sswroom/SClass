@@ -33,7 +33,7 @@ IO::ParserType Parser::FileParser::COMParser::GetParserType()
 
 IO::ParsedObject *Parser::FileParser::COMParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
-	if (!fd->GetFullName()->EndsWithICase((const UTF8Char*)".COM"))
+	if (!fd->GetFullName()->EndsWithICase(UTF8STRC(".COM")))
 	{
 		return 0;
 	}

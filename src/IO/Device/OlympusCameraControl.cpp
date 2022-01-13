@@ -25,7 +25,7 @@ void IO::Device::OlympusCameraControl::GetCommandList()
 	{
 		if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT)
 		{
-			if (reader->GetNodeText()->Equals((const UTF8Char*)"oishare"))
+			if (reader->GetNodeText()->Equals(UTF8STRC("oishare")))
 			{
 				while (reader->ReadNext())
 				{
@@ -35,7 +35,7 @@ void IO::Device::OlympusCameraControl::GetCommandList()
 					}
 					else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT)
 					{
-						if (reader->GetNodeText()->Equals((const UTF8Char*)"version"))
+						if (reader->GetNodeText()->Equals(UTF8STRC("version")))
 						{
 							sb.ClearStr();
 							reader->ReadNodeText(&sb);
@@ -43,7 +43,7 @@ void IO::Device::OlympusCameraControl::GetCommandList()
 							SDEL_STRING(this->oiVersion);
 							this->oiVersion = Text::String::New(sb.ToString(), sb.GetLength());
 						}
-						else if (reader->GetNodeText()->Equals((const UTF8Char*)"oitrackversion"))
+						else if (reader->GetNodeText()->Equals(UTF8STRC("oitrackversion")))
 						{
 							sb.ClearStr();
 							reader->ReadNodeText(&sb);
@@ -51,17 +51,17 @@ void IO::Device::OlympusCameraControl::GetCommandList()
 							SDEL_STRING(this->oiTrackVersion);
 							this->oiTrackVersion = Text::String::New(sb.ToString(), sb.GetLength());
 						}
-						else if (reader->GetNodeText()->Equals((const UTF8Char*)"support"))
+						else if (reader->GetNodeText()->Equals(UTF8STRC("support")))
 						{
 							reader->SkipElement();
 						}
-						else if (reader->GetNodeText()->Equals((const UTF8Char*)"cgi"))
+						else if (reader->GetNodeText()->Equals(UTF8STRC("cgi")))
 						{
 							i = reader->GetAttribCount();
 							while (i-- > 0)
 							{
 								attr = reader->GetAttrib(i);
-								if (attr->value && attr->name->Equals((const UTF8Char*)"name"))
+								if (attr->value && attr->name->Equals(UTF8STRC("name")))
 								{
 									j = this->cmdList->SortedIndexOf(attr->value);
 									if (j < 0)
@@ -403,7 +403,7 @@ Bool IO::Device::OlympusCameraControl::GetModel(Text::StringBuilderUTF *sb)
 	{
 		if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT)
 		{
-			if (reader->GetNodeText()->Equals((const UTF8Char*)"caminfo"))
+			if (reader->GetNodeText()->Equals(UTF8STRC("caminfo")))
 			{
 				while (reader->ReadNext())
 				{
@@ -413,7 +413,7 @@ Bool IO::Device::OlympusCameraControl::GetModel(Text::StringBuilderUTF *sb)
 					}
 					else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT)
 					{
-						if (reader->GetNodeText()->Equals((const UTF8Char*)"model"))
+						if (reader->GetNodeText()->Equals(UTF8STRC("model")))
 						{
 							found = true;
 							reader->ReadNodeText(sb);

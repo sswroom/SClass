@@ -125,20 +125,20 @@ void IO::JavaClass::DetailAccessFlags(UInt16 accessFlags, Text::StringBuilderUTF
 
 void IO::JavaClass::AppendCond(Text::StringBuilderUTF *sb, DecompileEnv *env, UOSInt index, CondType ct, Bool inv)
 {
-	if (env->stackTypes->GetItem(index)->Equals((const UTF8Char*)"boolean"))
+	if (env->stackTypes->GetItem(index)->Equals(UTF8STRC("boolean")))
 	{
 		Text::String *s = env->stacks->GetItem(index);
-		if ((ct == CondType::NE && !inv && env->stacks->GetItem(index + 1)->Equals((const UTF8Char*)"0")) ||
-			(ct == CondType::EQ && inv && env->stacks->GetItem(index + 1)->Equals((const UTF8Char*)"0")))
+		if ((ct == CondType::NE && !inv && env->stacks->GetItem(index + 1)->Equals(UTF8STRC("0"))) ||
+			(ct == CondType::EQ && inv && env->stacks->GetItem(index + 1)->Equals(UTF8STRC("0"))))
 		{
 			sb->Append(s);
 			return;	
 		}
-		else if ((ct == CondType::EQ && !inv && env->stacks->GetItem(index + 1)->Equals((const UTF8Char*)"0")) ||
-				(ct == CondType::NE && inv && env->stacks->GetItem(index + 1)->Equals((const UTF8Char*)"0")))
+		else if ((ct == CondType::EQ && !inv && env->stacks->GetItem(index + 1)->Equals(UTF8STRC("0"))) ||
+				(ct == CondType::NE && inv && env->stacks->GetItem(index + 1)->Equals(UTF8STRC("0"))))
 		{
 			sb->AppendChar('!', 1);
-			if (s->IndexOf((const UTF8Char*)" instanceof ") != INVALID_INDEX)
+			if (s->IndexOf(UTF8STRC(" instanceof ")) != INVALID_INDEX)
 			{
 				sb->AppendChar('(', 1);
 				sb->Append(s);
@@ -150,10 +150,10 @@ void IO::JavaClass::AppendCond(Text::StringBuilderUTF *sb, DecompileEnv *env, UO
 			}
 			return;	
 		}
-		else if ((ct == CondType::EQ && inv && env->stacks->GetItem(index + 1)->Equals((const UTF8Char*)"1")) ||
-				(ct == CondType::NE && !inv && env->stacks->GetItem(index + 1)->Equals((const UTF8Char*)"1")))
+		else if ((ct == CondType::EQ && inv && env->stacks->GetItem(index + 1)->Equals(UTF8STRC("1"))) ||
+				(ct == CondType::NE && !inv && env->stacks->GetItem(index + 1)->Equals(UTF8STRC("1"))))
 		{
-			if (s->IndexOf((const UTF8Char*)" instanceof ") != INVALID_INDEX || s->ContainChars((const UTF8Char*)"><=|&^"))
+			if (s->IndexOf(UTF8STRC(" instanceof ")) != INVALID_INDEX || s->ContainChars((const UTF8Char*)"><=|&^"))
 			{
 				sb->AppendChar('(', 1);
 				sb->Append(s);
@@ -167,10 +167,10 @@ void IO::JavaClass::AppendCond(Text::StringBuilderUTF *sb, DecompileEnv *env, UO
 			sb->AppendC(UTF8STRC(" != true"));
 			return;	
 		}
-		else if ((ct == CondType::EQ && !inv && env->stacks->GetItem(index + 1)->Equals((const UTF8Char*)"1")) ||
-				(ct == CondType::NE && inv && env->stacks->GetItem(index + 1)->Equals((const UTF8Char*)"1")))
+		else if ((ct == CondType::EQ && !inv && env->stacks->GetItem(index + 1)->Equals(UTF8STRC("1"))) ||
+				(ct == CondType::NE && inv && env->stacks->GetItem(index + 1)->Equals(UTF8STRC("1"))))
 		{
-			if (s->IndexOf((const UTF8Char*)" instanceof ") != INVALID_INDEX || s->ContainChars((const UTF8Char*)"><=|&^"))
+			if (s->IndexOf(UTF8STRC(" instanceof ")) != INVALID_INDEX || s->ContainChars((const UTF8Char*)"><=|&^"))
 			{
 				sb->AppendChar('(', 1);
 				sb->Append(s);
@@ -6313,7 +6313,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				env->stacks->Pop();
 				env->stacks->Pop();
 
-				if (nameStr->StartsWith((const UTF8Char*)"new ") && env->stacks->GetCount() > 0 && env->stacks->GetItem(env->stacks->GetCount()- 1)->StartsWith(nameStr))
+				if (nameStr->StartsWith(UTF8STRC("new ")) && env->stacks->GetCount() > 0 && env->stacks->GetItem(env->stacks->GetCount()- 1)->StartsWith(nameStr))
 				{
 					Text::String *arrStr = env->stacks->RemoveAt(env->stacks->GetCount()- 1);
 					sbTmp.ClearStr();
@@ -6382,7 +6382,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				env->stacks->Pop();
 				env->stacks->Pop();
 
-				if (nameStr->StartsWith((const UTF8Char*)"new ") && env->stacks->GetCount() > 0 && env->stacks->GetItem(env->stacks->GetCount()- 1)->StartsWith(nameStr))
+				if (nameStr->StartsWith(UTF8STRC("new ")) && env->stacks->GetCount() > 0 && env->stacks->GetItem(env->stacks->GetCount()- 1)->StartsWith(nameStr))
 				{
 					Text::String *arrStr = env->stacks->RemoveAt(env->stacks->GetCount()- 1);
 					sbTmp.ClearStr();
@@ -6963,7 +6963,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				}
 				Text::String *s = env->stacks->RemoveAt(env->stacks->GetCount() - 2);
 				sbTmp.ClearStr();
-				if (env->stacks->GetItem(env->stacks->GetCount() - 1)->Equals((const UTF8Char*)"-1"))
+				if (env->stacks->GetItem(env->stacks->GetCount() - 1)->Equals(UTF8STRC("-1")))
 				{
 					sbTmp.AppendChar('~', 1);
 					sbTmp.Append(s);
@@ -7528,17 +7528,17 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				this->AppendIndent(sb, lev);
 				sb->AppendC(UTF8STRC("return "));
 				Text::String *s = env->stacks->GetItem(env->stacks->GetCount() - 1);
-				if (env->returnType && env->returnType->Equals((const UTF8Char*)"boolean"))
+				if (env->returnType && env->returnType->Equals(UTF8STRC("boolean")))
 				{
-					if (s->Equals((const UTF8Char*)"0"))
+					if (s->Equals(UTF8STRC("0")))
 					{
 						sb->AppendC(UTF8STRC("false"));
 					}
-					else if (s->Equals((const UTF8Char*)"1"))
+					else if (s->Equals(UTF8STRC("1")))
 					{
 						sb->AppendC(UTF8STRC("true"));
 					}
-					else if (s->EndsWith((const UTF8Char*)"?1:0"))
+					else if (s->EndsWith(UTF8STRC("?1:0")))
 					{
 						sb->AppendC(s->v, s->leng - 4);
 					}
@@ -7855,11 +7855,11 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				this->GetConstName(sbuff, nameTypeIndex);
 				if (sbuff[0] == 'Z') //boolean
 				{
-					if (s->Equals((const UTF8Char*)"0"))
+					if (s->Equals(UTF8STRC("0")))
 					{
 						sb->AppendC(UTF8STRC("false"));
 					}
-					else if (s->Equals((const UTF8Char*)"1"))
+					else if (s->Equals(UTF8STRC("1")))
 					{
 						sb->AppendC(UTF8STRC("true"));
 					}
@@ -7950,7 +7950,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				if (Text::StrEquals(sbuff, (const UTF8Char*)"<init>"))
 				{
 					isInit = true;
-					if (env->stacks->GetItem(env->stacks->GetCount() - 1)->Equals((const UTF8Char*)"this"))
+					if (env->stacks->GetItem(env->stacks->GetCount() - 1)->Equals(UTF8STRC("this")))
 					{
 						if (classIndex == this->thisClass)
 						{
@@ -7968,7 +7968,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				}
 				else
 				{
-					if (env->stacks->GetItem(env->stacks->GetCount() - 1)->Equals((const UTF8Char*)"this"))
+					if (env->stacks->GetItem(env->stacks->GetCount() - 1)->Equals(UTF8STRC("this")))
 					{
 						if (classIndex == this->thisClass)
 						{
@@ -8429,13 +8429,13 @@ void IO::JavaClass::DecompileStore(UInt16 index, IO::JavaClass::DecompileEnv *en
 	sb->Append(sbuff);
 	sb->AppendC(UTF8STRC(" = "));
 	Text::String *s = env->stacks->GetItem(env->stacks->GetCount() - 1);
-	if (env->localTypes[index]->Equals((const UTF8Char*)"boolean"))
+	if (env->localTypes[index]->Equals(UTF8STRC("boolean")))
 	{
-		if (s->Equals((const UTF8Char*)"0"))
+		if (s->Equals(UTF8STRC("0")))
 		{
 			sb->AppendC(UTF8STRC("false"));
 		}
-		else if (s->Equals((const UTF8Char*)"1"))
+		else if (s->Equals(UTF8STRC("1")))
 		{
 			sb->AppendC(UTF8STRC("true"));
 		}
@@ -8792,11 +8792,11 @@ UTF8Char *IO::JavaClass::DecompileMethod(UInt16 methodIndex, UTF8Char *nameBuff,
 		paramStr = env->stacks->GetItem(env->stacks->GetCount() - paramCnt + i);
 		if (params[i] == 'Z') //boolean
 		{
-			if (paramStr->Equals((const UTF8Char*)"1"))
+			if (paramStr->Equals(UTF8STRC("1")))
 			{
 				sb->AppendC(UTF8STRC("true"));
 			}
-			else if (paramStr->Equals((const UTF8Char*)"0"))
+			else if (paramStr->Equals(UTF8STRC("0")))
 			{
 				sb->AppendC(UTF8STRC("false"));
 			}

@@ -103,7 +103,7 @@ namespace Net
 		Bool SaveKey(const UTF8Char *fileName);
 
 		static ACMEStatus ACMEStatusFromString(Text::String* status);
-		static const UTF8Char *AuthorizeTypeGetName(AuthorizeType authType);
+		static Text::CString AuthorizeTypeGetName(AuthorizeType authType);
 		static AuthorizeType AuthorizeTypeFromString(Text::String *s);
 	};
 }

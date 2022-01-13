@@ -91,14 +91,14 @@ Bool Text::Cpp::CppParseStatus::BeginParseFile(const UTF8Char *fileName)
 	return true;
 }
 
-Bool Text::Cpp::CppParseStatus::EndParseFile(const UTF8Char *fileName)
+Bool Text::Cpp::CppParseStatus::EndParseFile(const UTF8Char *fileName, UOSInt fileNameLen)
 {
 	FileParseStatus *status;
 	UOSInt i = this->statuses->GetCount() - 1;
 	status = this->statuses->GetItem(i);
 	if (status == 0)
 		return false;
-	if (!status->fileName->Equals(fileName))
+	if (!status->fileName->Equals(fileName, fileNameLen))
 	{
 		return false;
 	}

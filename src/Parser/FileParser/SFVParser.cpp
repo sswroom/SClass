@@ -42,7 +42,7 @@ IO::ParsedObject *Parser::FileParser::SFVParser::ParseFile(IO::IStreamData *fd, 
 	UInt8 chk[8];
 	UOSInt chkSize;
 
-	if (fd->GetFullName()->EndsWithICase((const UTF8Char*)".SFV"))
+	if (fd->GetFullName()->EndsWithICase(UTF8STRC(".SFV")))
 	{
 		ctype = IO::FileCheck::CheckType::CRC32;
 		chkSize = 4;

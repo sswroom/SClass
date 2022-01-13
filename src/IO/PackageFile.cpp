@@ -190,11 +190,12 @@ Bool IO::PackageFile::UpdateCompInfo(const UTF8Char *name, IO::IStreamData *fd, 
 {
 	UOSInt i;
 	IO::PackFileItem *item;
+	UOSInt nameLen = Text::StrCharCnt(name);
 	i = this->items->GetCount();
 	while (i-- > 0)
 	{
 		item = this->items->GetItem(i);
-		if (item->name->Equals(name))
+		if (item->name->Equals(name, nameLen))
 		{
 			if (item->itemType == IO::PackFileItem::PIT_COMPRESSED)
 			{
@@ -448,9 +449,9 @@ IO::IStreamData *IO::PackageFile::GetItemStmData(UOSInt index)
 	return GetPItemStmData(item);
 }
 
-IO::IStreamData *IO::PackageFile::GetItemStmData(const UTF8Char* name)
+IO::IStreamData *IO::PackageFile::GetItemStmData(const UTF8Char* name, UOSInt nameLen)
 {
-	UOSInt index = GetItemIndex(name);
+	UOSInt index = GetItemIndex(name, nameLen);
 	if (index == INVALID_INDEX)
 	{
 		return 0;
@@ -515,7 +516,7 @@ UInt64 IO::PackageFile::GetItemSize(UOSInt index)
 	return 0;
 }
 
-UOSInt IO::PackageFile::GetItemIndex(const UTF8Char *name)
+UOSInt IO::PackageFile::GetItemIndex(const UTF8Char *name, UOSInt nameLen)
 {
 	UOSInt i;
 	IO::PackFileItem *item;
@@ -527,7 +528,7 @@ UOSInt IO::PackageFile::GetItemIndex(const UTF8Char *name)
 		{
 			if (item->name)
 			{
-				if (item->name->EqualsICase(name))
+				if (item->name->EqualsICase(name, nameLen))
 					return i;
 			}
 			if (item->itemType == IO::PackFileItem::PIT_COMPRESSED || item->itemType == IO::PackFileItem::PIT_UNCOMPRESSED)
@@ -537,7 +538,7 @@ UOSInt IO::PackageFile::GetItemIndex(const UTF8Char *name)
 			}
 			else if (item->itemType == IO::PackFileItem::PIT_PARSEDOBJECT)
 			{
-				if (item->pobj->GetSourceNameObj()->EqualsICase(name))
+				if (item->pobj->GetSourceNameObj()->EqualsICase(name, nameLen))
 					return i;
 			}
 		}

@@ -680,7 +680,7 @@ void SSWR::OrganMgr::OrganEnv::SetCurrCategory(Category *currCate)
 	if (currCate)
 	{
 		this->currCate = currCate;
-		this->cateIsFullDir = this->currCate->srcDir->IndexOf((const UTF8Char*)":\\") != INVALID_INDEX;
+		this->cateIsFullDir = this->currCate->srcDir->IndexOf(UTF8STRC(":\\")) != INVALID_INDEX;
 		this->TripReload(this->currCate->cateId);
 		this->LoadGroupTypes();
 	}

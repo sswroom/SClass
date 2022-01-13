@@ -27,13 +27,13 @@ struct Registry_File
 struct Registry_Param
 {
 	Registry_File *reg;
-	const UTF8Char *currCate;
+	Text::CString currCate;
 };
 
 struct IO::Registry::ClassData
 {
 	Registry_File *reg;
-	const UTF8Char *cate;
+	Text::String *cate;
 };
 
 void *IO::Registry::OpenUserType(RegistryUser usr)
@@ -140,7 +140,7 @@ IO::Registry *IO::Registry::OpenSoftware(IO::Registry::RegistryUser usr, const W
 	csptr = Text::StrToUTF8New(appName);
 	sb.Append(csptr);
 	Text::StrDelNew(csptr);
-	param.currCate = sb.ToString();
+	param.currCate = {sb.ToString(), sb.GetLength()};
 	IO::Registry *reg;
 	NEW_CLASS(reg, IO::Registry(&param));
 	return reg;
@@ -159,7 +159,7 @@ IO::Registry *IO::Registry::OpenSoftware(IO::Registry::RegistryUser usr, const W
 	const UTF8Char *csptr = Text::StrToUTF8New(compName);
 	sb.Append(csptr);
 	Text::StrDelNew(csptr);
-	param.currCate = sb.ToString();
+	param.currCate = {sb.ToString(), sb.GetLength()};
 	IO::Registry *reg;
 	NEW_CLASS(reg, IO::Registry(&param));
 	return reg;
@@ -174,7 +174,7 @@ IO::Registry *IO::Registry::OpenLocalHardware()
 	{
 		return 0;
 	}
-	param.currCate = (const UTF8Char*)"Hardware";
+	param.currCate = {UTF8STRC("Hardware")};
 	IO::Registry *reg;
 	NEW_CLASS(reg, IO::Registry(&param));
 	return reg;
@@ -188,7 +188,7 @@ IO::Registry *IO::Registry::OpenLocalSoftware(const WChar *softwareName)
 	{
 		return 0;
 	}
-	param.currCate = (const UTF8Char*)"Software";
+	param.currCate = {UTF8STRC("Software")};
 	IO::Registry *reg;
 	NEW_CLASS(reg, IO::Registry(&param));
 	return reg;
@@ -204,13 +204,13 @@ IO::Registry::Registry(void *hand)
 	Registry_Param *param = (Registry_Param *)hand;
 	this->clsData = MemAlloc(ClassData, 1);
 	this->clsData->reg = param->reg;
-	this->clsData->cate = Text::StrCopyNew(param->currCate);
+	this->clsData->cate = Text::String::New(param->currCate.v, param->currCate.len);
 }
 
 IO::Registry::~Registry()
 {
 	this->CloseInternal(this->clsData->reg);
-	Text::StrDelNew(this->clsData->cate);
+	this->clsData->cate->Release();
 	MemFree(this->clsData);
 }
 
@@ -224,7 +224,7 @@ IO::Registry *IO::Registry::OpenSubReg(const WChar *name)
 	const UTF8Char *csptr = Text::StrToUTF8New(name);
 	sb.Append(csptr);
 	Text::StrDelNew(csptr);
-	param.currCate = sb.ToString();
+	param.currCate = {sb.ToString(), sb.GetLength()};
 	Sync::Interlocked::Increment(&param.reg->useCnt);
 	IO::Registry *reg;
 	NEW_CLASS(reg, IO::Registry(&param));
@@ -244,7 +244,7 @@ WChar *IO::Registry::GetSubReg(WChar *buff, UOSInt index)
 	this->clsData->reg->cfg->GetCateList(&cateList, false);
 	WChar *ret = 0;
 	Text::StringBuilderUTF8 sbSubReg;
-	UOSInt thisCateLen = Text::StrCharCnt(this->clsData->cate);
+	UOSInt thisCateLen = this->clsData->cate->leng;
 	UOSInt i = 0;
 	UOSInt j = cateList.GetCount();
 	UOSInt k;
@@ -294,7 +294,7 @@ void IO::Registry::SetValue(const WChar *name, Int32 value)
 		NEW_CLASS(this->clsData->reg->cfg, IO::ConfigFile());
 	}
 	const UTF8Char *csptr = Text::StrToUTF8New(name);
-	this->clsData->reg->cfg->SetValue(this->clsData->cate, csptr, sb.ToString());
+	this->clsData->reg->cfg->SetValue(this->clsData->cate->v, csptr, sb.ToString());
 	this->clsData->reg->modified = true;
 	Text::StrDelNew(csptr);
 }
@@ -313,7 +313,7 @@ void IO::Registry::SetValue(const WChar *name, const WChar *value)
 		NEW_CLASS(this->clsData->reg->cfg, IO::ConfigFile());
 	}
 	csptr = Text::StrToUTF8New(name);
-	this->clsData->reg->cfg->SetValue(this->clsData->cate, csptr, sb.ToString());
+	this->clsData->reg->cfg->SetValue(this->clsData->cate->v, csptr, sb.ToString());
 	this->clsData->reg->modified = true;
 	Text::StrDelNew(csptr);
 }
@@ -326,7 +326,7 @@ void IO::Registry::DelValue(const WChar *name)
 		return;
 	}
 	const UTF8Char *csptr = Text::StrToUTF8New(name);
-	this->clsData->reg->cfg->RemoveValue(this->clsData->cate, csptr);
+	this->clsData->reg->cfg->RemoveValue(this->clsData->cate->v, csptr);
 	Text::StrDelNew(csptr);
 }
 
@@ -337,10 +337,10 @@ Int32 IO::Registry::GetValueI32(const WChar *name)
 	{
 		return 0;
 	}
-	const UTF8Char *csptr = Text::StrToUTF8New(name);
-	Text::String *csval = this->clsData->reg->cfg->GetValue(this->clsData->cate, csptr);
-	Text::StrDelNew(csptr);
-	if (csval && csval->StartsWith((const UTF8Char*)"dword:"))
+	Text::String *s = Text::String::NewNotNull(name);
+	Text::String *csval = this->clsData->reg->cfg->GetValue(this->clsData->cate, s);
+	s->Release();
+	if (csval && csval->StartsWith(UTF8STRC("dword:")))
 	{
 		return Text::StrHex2Int32C(csval->v + 6);
 	}
@@ -354,10 +354,10 @@ WChar *IO::Registry::GetValueStr(const WChar *name, WChar *buff)
 	{
 		return 0;
 	}
-	const UTF8Char *csptr = Text::StrToUTF8New(name);
-	Text::String *csval = this->clsData->reg->cfg->GetValue(this->clsData->cate, csptr);
-	Text::StrDelNew(csptr);
-	if (csval && csval->StartsWith((const UTF8Char*)"sz:"))
+	Text::String *s = Text::String::NewNotNull(name);
+	Text::String *csval = this->clsData->reg->cfg->GetValue(this->clsData->cate, s);
+	s->Release();
+	if (csval && csval->StartsWith(UTF8STRC("sz:")))
 	{
 		return Text::StrUTF8_WChar(buff, csval->v + 3, 0);
 	}
@@ -371,10 +371,10 @@ Bool IO::Registry::GetValueI32(const WChar *name, Int32 *value)
 	{
 		return false;
 	}
-	const UTF8Char *csptr = Text::StrToUTF8New(name);
-	Text::String *csval = this->clsData->reg->cfg->GetValue(this->clsData->cate, csptr);
-	Text::StrDelNew(csptr);
-	if (csval && csval->StartsWith((const UTF8Char*)"dword:"))
+	Text::String *s = Text::String::NewNotNull(name);
+	Text::String *csval = this->clsData->reg->cfg->GetValue(this->clsData->cate, s);
+	s->Release();
+	if (csval && csval->StartsWith(UTF8STRC("dword:")))
 	{
 		*value = Text::StrHex2Int32C(csval->v + 6);
 		return true;

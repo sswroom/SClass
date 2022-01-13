@@ -40,7 +40,7 @@ namespace Text
 			CppCodeParser(Text::Cpp::CppEnv *env);
 			~CppCodeParser();
 
-			Bool ParseFile(const UTF8Char *fileName, Data::ArrayListStrUTF8 *errMsgs, Text::Cpp::CppParseStatus *parseStatus);
+			Bool ParseFile(const UTF8Char *fileName, UOSInt fileNameLen, Data::ArrayListStrUTF8 *errMsgs, Text::Cpp::CppParseStatus *parseStatus);
 			void FreeErrMsgs(Data::ArrayListStrUTF8 *errMsgs);
 		};
 	}

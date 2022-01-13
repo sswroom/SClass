@@ -72,7 +72,7 @@ namespace Text
 
 			FileParseStatus *GetFileStatus();
 			Bool BeginParseFile(const UTF8Char *fileName);
-			Bool EndParseFile(const UTF8Char *fileName);
+			Bool EndParseFile(const UTF8Char *fileName, UOSInt fileNameLen);
 
 			Bool IsDefined(const UTF8Char *defName);
 			Bool AddGlobalDef(const UTF8Char *defName, const UTF8Char *defVal);

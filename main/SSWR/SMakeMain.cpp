@@ -51,7 +51,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			{
 				if (cmdLines[i][1] == 'D')
 				{
-					smake->SetDebugObj(&cmdLines[i][2]);
+					smake->SetDebugObj(&cmdLines[i][2], Text::StrCharCnt(&cmdLines[i][2]));
 				}
 				else if (cmdLines[i][1] == 'V')
 				{

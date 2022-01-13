@@ -107,7 +107,7 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 		}
 		else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT)
 		{
-			if (reader->GetNodeText()->Equals((const UTF8Char*)"node"))
+			if (reader->GetNodeText()->Equals(UTF8STRC("node")))
 			{
 				id = 0;
 				lat = 0;
@@ -116,15 +116,15 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 				while (i-- > 0)
 				{
 					attr = reader->GetAttrib(i);
-					if (attr->name->Equals((const UTF8Char*)"id") && attr->value)
+					if (attr->name->Equals(UTF8STRC("id")) && attr->value)
 					{
 						id = attr->value->ToInt64();
 					}
-					else if (attr->name->Equals((const UTF8Char*)"lat") && attr->value)
+					else if (attr->name->Equals(UTF8STRC("lat")) && attr->value)
 					{
 						lat = attr->value->ToDouble();
 					}
-					else if (attr->name->Equals((const UTF8Char*)"lon") && attr->value)
+					else if (attr->name->Equals(UTF8STRC("lon")) && attr->value)
 					{
 						lon = attr->value->ToDouble();
 					}
@@ -153,7 +153,7 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 							{
 								break;
 							}
-							else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT && reader->GetNodeText()->Equals((const UTF8Char*)"tag"))
+							else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT && reader->GetNodeText()->Equals(UTF8STRC("tag")))
 							{
 								kName = 0;
 								vName = 0;
@@ -161,237 +161,237 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 								while (i-- > 0)
 								{
 									attr = reader->GetAttrib(i);
-									if (attr->name->Equals((const UTF8Char*)"k"))
+									if (attr->name->Equals(UTF8STRC("k")))
 									{
 										kName = attr->value;
 									}
-									else if (attr->name->Equals((const UTF8Char*)"v"))
+									else if (attr->name->Equals(UTF8STRC("v")))
 									{
 										vName = attr->value;
 									}
 								}
 								if (kName && vName)
 								{
-									if (kName->Equals((const UTF8Char*)"name"))
+									if (kName->Equals(UTF8STRC("name")))
 									{
 										SDEL_STRING(names[0]);
 										names[0] = vName->Clone();
 									}
-									else if (kName->StartsWith((const UTF8Char*)"name:"))
+									else if (kName->StartsWith(UTF8STRC("name:")))
 									{
 									}
-									else if (kName->Equals((const UTF8Char*)"ref"))
+									else if (kName->Equals(UTF8STRC("ref")))
 									{
 									}
-									else if (kName->Equals((const UTF8Char*)"ele"))
+									else if (kName->Equals(UTF8STRC("ele")))
 									{
 										SDEL_STRING(names[1]);
 										names[1] = vName->Clone();
 									}
-									else if (kName->Equals((const UTF8Char*)"display"))
+									else if (kName->Equals(UTF8STRC("display")))
 									{
 									}
-									else if (kName->Equals((const UTF8Char*)"foot"))
+									else if (kName->Equals(UTF8STRC("foot")))
 									{
 									}
-									else if (kName->Equals((const UTF8Char*)"maxtents"))
+									else if (kName->Equals(UTF8STRC("maxtents")))
 									{
 									}
-									else if (kName->Equals((const UTF8Char*)"wikipedia"))
+									else if (kName->Equals(UTF8STRC("wikipedia")))
 									{
 									}
-									else if (kName->Equals((const UTF8Char*)"mineral"))
+									else if (kName->Equals(UTF8STRC("mineral")))
 									{
 									}
-									else if (kName->Equals((const UTF8Char*)"region"))
+									else if (kName->Equals(UTF8STRC("region")))
 									{
 									}
-									else if (kName->Equals((const UTF8Char*)"type"))
+									else if (kName->Equals(UTF8STRC("type")))
 									{
 									}
-									else if (kName->Equals((const UTF8Char*)"platforms"))
+									else if (kName->Equals(UTF8STRC("platforms")))
 									{
 									}
-									else if (kName->Equals((const UTF8Char*)"wheelchair"))
+									else if (kName->Equals(UTF8STRC("wheelchair")))
 									{
 									}
-									else if (kName->Equals((const UTF8Char*)"direction"))
+									else if (kName->Equals(UTF8STRC("direction")))
 									{
 									}
-									else if (kName->Equals((const UTF8Char*)"brand"))
+									else if (kName->Equals(UTF8STRC("brand")))
 									{
 									}
-									else if (kName->Equals((const UTF8Char*)"operator"))
+									else if (kName->Equals(UTF8STRC("operator")))
 									{
 									}
-									else if (kName->Equals((const UTF8Char*)"bicycle"))
+									else if (kName->Equals(UTF8STRC("bicycle")))
 									{
 									}
-									else if (kName->Equals((const UTF8Char*)"crossing"))
+									else if (kName->Equals(UTF8STRC("crossing")))
 									{
 									}
-									else if (kName->Equals((const UTF8Char*)"cuisine"))
+									else if (kName->Equals(UTF8STRC("cuisine")))
 									{
 									}
-									else if (kName->Equals((const UTF8Char*)"website"))
+									else if (kName->Equals(UTF8STRC("website")))
 									{
 									}
-									else if (kName->Equals((const UTF8Char*)"note"))
+									else if (kName->Equals(UTF8STRC("note")))
 									{
 									}
-									else if (kName->Equals((const UTF8Char*)"locked"))
+									else if (kName->Equals(UTF8STRC("locked")))
 									{
 									}
-									else if (kName->Equals((const UTF8Char*)"motorcar"))
+									else if (kName->Equals(UTF8STRC("motorcar")))
 									{
 									}
-									else if (kName->Equals((const UTF8Char*)"motorcycle"))
+									else if (kName->Equals(UTF8STRC("motorcycle")))
 									{
 									}
-									else if (kName->Equals((const UTF8Char*)"access"))
+									else if (kName->Equals(UTF8STRC("access")))
 									{
 									}
-									else if (kName->StartsWith((const UTF8Char*)"seamark:"))
+									else if (kName->StartsWith(UTF8STRC("seamark:")))
 									{
 									}
-									else if (kName->Equals((const UTF8Char*)"source"))
+									else if (kName->Equals(UTF8STRC("source")))
 									{
 									}
-									else if (kName->Equals((const UTF8Char*)"opening_hours"))
+									else if (kName->Equals(UTF8STRC("opening_hours")))
 									{
 									}
-									else if (kName->Equals((const UTF8Char*)"phone"))
+									else if (kName->Equals(UTF8STRC("phone")))
 									{
 									}
-									else if (kName->Equals((const UTF8Char*)"fee"))
+									else if (kName->Equals(UTF8STRC("fee")))
 									{
 									}
-									else if (kName->Equals((const UTF8Char*)"atm"))
+									else if (kName->Equals(UTF8STRC("atm")))
 									{
 									}
-									else if (kName->Equals((const UTF8Char*)"emergency"))
+									else if (kName->Equals(UTF8STRC("emergency")))
 									{
 									}
-									else if (kName->Equals((const UTF8Char*)"denomination"))
+									else if (kName->Equals(UTF8STRC("denomination")))
 									{
 									}
-									else if (kName->Equals((const UTF8Char*)"natual"))
+									else if (kName->Equals(UTF8STRC("natual")))
 									{
 									}
-									else if (kName->StartsWith((const UTF8Char*)"addr:"))
+									else if (kName->StartsWith(UTF8STRC("addr:")))
 									{
 									}
-									else if (kName->Equals((const UTF8Char*)"amenity"))
+									else if (kName->Equals(UTF8STRC("amenity")))
 									{
-										if (vName->Equals((const UTF8Char*)"grave_yard"))
+										if (vName->Equals(UTF8STRC("grave_yard")))
 										{
 											if (elemType == 0)
 											{
 												elemType = 34;
 											}
 										}
-										else if (vName->Equals((const UTF8Char*)"shelter"))
+										else if (vName->Equals(UTF8STRC("shelter")))
 										{
 											if (elemType == 0)
 											{
 												elemType = 36;
 											}
 										}
-										else if (vName->Equals((const UTF8Char*)"toilets"))
+										else if (vName->Equals(UTF8STRC("toilets")))
 										{
 											if (elemType == 0)
 											{
 												elemType = 37;
 											}
 										}
-										else if (vName->Equals((const UTF8Char*)"telephone"))
+										else if (vName->Equals(UTF8STRC("telephone")))
 										{
 											if (elemType == 0)
 											{
 												elemType = 40;
 											}
 										}
-										else if (vName->Equals((const UTF8Char*)"bus_station"))
+										else if (vName->Equals(UTF8STRC("bus_station")))
 										{
 											if (elemType == 0)
 											{
 												elemType = 41;
 											}
 										}
-										else if (vName->Equals((const UTF8Char*)"place_of_worship"))
+										else if (vName->Equals(UTF8STRC("place_of_worship")))
 										{
 											if (elemType == 0)
 											{
 												elemType = 42;
 											}
 										}
-										else if (vName->Equals((const UTF8Char*)"parking"))
+										else if (vName->Equals(UTF8STRC("parking")))
 										{
 											if (elemType == 0)
 											{
 												elemType = 44;
 											}
 										}
-										else if (vName->Equals((const UTF8Char*)"clock"))
+										else if (vName->Equals(UTF8STRC("clock")))
 										{
 											if (elemType == 0)
 											{
 												elemType = 45;
 											}
 										}
-										else if (vName->Equals((const UTF8Char*)"taxi"))
+										else if (vName->Equals(UTF8STRC("taxi")))
 										{
 											if (elemType == 0)
 											{
 												elemType = 46;
 											}
 										}
-										else if (vName->Equals((const UTF8Char*)"bbq"))
+										else if (vName->Equals(UTF8STRC("bbq")))
 										{
 											if (elemType == 0)
 											{
 												elemType = 57;
 											}
 										}
-										else if (vName->Equals((const UTF8Char*)"fast_food"))
+										else if (vName->Equals(UTF8STRC("fast_food")))
 										{
 										}
-										else if (vName->Equals((const UTF8Char*)"bench"))
+										else if (vName->Equals(UTF8STRC("bench")))
 										{
 										}
-										else if (vName->Equals((const UTF8Char*)"waste_basket"))
+										else if (vName->Equals(UTF8STRC("waste_basket")))
 										{
 										}
 									}
-									else if (kName->Equals((const UTF8Char*)"barrier"))
+									else if (kName->Equals(UTF8STRC("barrier")))
 									{
-										if (vName->Equals((const UTF8Char*)"lift_gate"))
+										if (vName->Equals(UTF8STRC("lift_gate")))
 										{
 											if (elemType == 0)
 											{
 												elemType = 33;
 											}
 										}
-										else if (vName->Equals((const UTF8Char*)"gate"))
+										else if (vName->Equals(UTF8STRC("gate")))
 										{
 											if (elemType == 0)
 											{
 												elemType = 47;
 											}
 										}
-										else if (vName->Equals((const UTF8Char*)"bollard"))
+										else if (vName->Equals(UTF8STRC("bollard")))
 										{
 										}
 									}
-									else if (kName->Equals((const UTF8Char*)"building"))
+									else if (kName->Equals(UTF8STRC("building")))
 									{
-										if (vName->Equals((const UTF8Char*)"residential"))
+										if (vName->Equals(UTF8STRC("residential")))
 										{
 										}
 									}
-									else if (kName->Equals((const UTF8Char*)"generator:source"))
+									else if (kName->Equals(UTF8STRC("generator:source")))
 									{
-										if (vName->Equals((const UTF8Char*)"wind"))
+										if (vName->Equals(UTF8STRC("wind")))
 										{
 											if (elemType == 0)
 											{
@@ -399,44 +399,44 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 											}
 										}
 									}
-									else if (kName->Equals((const UTF8Char*)"highway"))
+									else if (kName->Equals(UTF8STRC("highway")))
 									{
-										if (vName->Equals((const UTF8Char*)"motorway_junction"))
+										if (vName->Equals(UTF8STRC("motorway_junction")))
 										{
 											if (elemType == 0)
 											{
 												elemType = 35;
 											}
 										}
-										else if (vName->Equals((const UTF8Char*)"crossing"))
+										else if (vName->Equals(UTF8STRC("crossing")))
 										{
 											if (elemType == 0)
 											{
 												elemType = 48;
 											}
 										}
-										else if (vName->Equals((const UTF8Char*)"traffic_signals"))
+										else if (vName->Equals(UTF8STRC("traffic_signals")))
 										{
 											if (elemType == 0)
 											{
 												elemType = 49;
 											}
 										}
-										else if (vName->Equals((const UTF8Char*)"turning_circle"))
+										else if (vName->Equals(UTF8STRC("turning_circle")))
 										{
 											if (elemType == 0)
 											{
 												elemType = 50;
 											}
 										}
-										else if (vName->Equals((const UTF8Char*)"bus_stop"))
+										else if (vName->Equals(UTF8STRC("bus_stop")))
 										{
 											if (elemType == 0)
 											{
 												elemType = 41;
 											}
 										}
-										else if (vName->Equals((const UTF8Char*)"mini_roundabout"))
+										else if (vName->Equals(UTF8STRC("mini_roundabout")))
 										{
 											if (elemType == 0)
 											{
@@ -444,16 +444,16 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 											}
 										}
 									}
-									else if (kName->Equals((const UTF8Char*)"historic"))
+									else if (kName->Equals(UTF8STRC("historic")))
 									{
-										if (vName->Equals((const UTF8Char*)"mine"))
+										if (vName->Equals(UTF8STRC("mine")))
 										{
 											if (elemType == 0)
 											{
 												elemType = 56;
 											}
 										}
-										else if (vName->Equals((const UTF8Char*)"boundary_stone"))
+										else if (vName->Equals(UTF8STRC("boundary_stone")))
 										{
 											if (elemType == 0)
 											{
@@ -461,16 +461,16 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 											}
 										}
 									}
-									else if (kName->Equals((const UTF8Char*)"information"))
+									else if (kName->Equals(UTF8STRC("information")))
 									{
-										if (vName->Equals((const UTF8Char*)"guidepost"))
+										if (vName->Equals(UTF8STRC("guidepost")))
 										{
 											if (elemType == 0)
 											{
 												elemType = 31;
 											}
 										}
-										else if (vName->Equals((const UTF8Char*)"map"))
+										else if (vName->Equals(UTF8STRC("map")))
 										{
 											if (elemType == 0)
 											{
@@ -478,9 +478,9 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 											}
 										}
 									}
-									else if (kName->Equals((const UTF8Char*)"landuse"))
+									else if (kName->Equals(UTF8STRC("landuse")))
 									{
-										if (vName->Equals((const UTF8Char*)"railway"))
+										if (vName->Equals(UTF8STRC("railway")))
 										{
 											if (elemType == 0)
 											{
@@ -488,9 +488,9 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 											}
 										}
 									}
-									else if (kName->Equals((const UTF8Char*)"leisure"))
+									else if (kName->Equals(UTF8STRC("leisure")))
 									{
-										if (vName->Equals((const UTF8Char*)"marina"))
+										if (vName->Equals(UTF8STRC("marina")))
 										{
 											if (elemType == 0)
 											{
@@ -498,9 +498,9 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 											}
 										}
 									}
-									else if (kName->Equals((const UTF8Char*)"man_made"))
+									else if (kName->Equals(UTF8STRC("man_made")))
 									{
-										if (vName->Equals((const UTF8Char*)"pier"))
+										if (vName->Equals(UTF8STRC("pier")))
 										{
 											if (elemType == 0)
 											{
@@ -508,16 +508,16 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 											}
 										}
 									}
-									else if (kName->Equals((const UTF8Char*)"natural"))
+									else if (kName->Equals(UTF8STRC("natural")))
 									{
-										if (vName->Equals((const UTF8Char*)"peak"))
+										if (vName->Equals(UTF8STRC("peak")))
 										{
 											if (elemType == 0)
 											{
 												elemType = 38;
 											}
 										}
-										else if (vName->Equals((const UTF8Char*)"rock"))
+										else if (vName->Equals(UTF8STRC("rock")))
 										{
 											if (elemType == 0)
 											{
@@ -525,9 +525,9 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 											}
 										}
 									}
-									else if (kName->Equals((const UTF8Char*)"parking"))
+									else if (kName->Equals(UTF8STRC("parking")))
 									{
-										if (vName->Equals((const UTF8Char*)"multi-storey"))
+										if (vName->Equals(UTF8STRC("multi-storey")))
 										{
 											if (elemType == 0)
 											{
@@ -535,23 +535,23 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 											}
 										}
 									}
-									else if (kName->Equals((const UTF8Char*)"place"))
+									else if (kName->Equals(UTF8STRC("place")))
 									{
-										if (vName->Equals((const UTF8Char*)"village"))
+										if (vName->Equals(UTF8STRC("village")))
 										{
 											if (elemType == 0)
 											{
 												elemType = 39;
 											}
 										}
-										else if (vName->Equals((const UTF8Char*)"locality"))
+										else if (vName->Equals(UTF8STRC("locality")))
 										{
 											if (elemType == 0)
 											{
 												elemType = 43;
 											}
 										}
-										else if (vName->Equals((const UTF8Char*)"suburb"))
+										else if (vName->Equals(UTF8STRC("suburb")))
 										{
 											if (elemType == 0)
 											{
@@ -559,9 +559,9 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 											}
 										}
 									}
-									else if (kName->Equals((const UTF8Char*)"power"))
+									else if (kName->Equals(UTF8STRC("power")))
 									{
-										if (vName->Equals((const UTF8Char*)"generator"))
+										if (vName->Equals(UTF8STRC("generator")))
 										{
 											if (elemType == 0)
 											{
@@ -569,22 +569,22 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 											}
 										}
 									}
-									else if (kName->Equals((const UTF8Char*)"railway"))
+									else if (kName->Equals(UTF8STRC("railway")))
 									{
-										if (vName->Equals((const UTF8Char*)"station"))
+										if (vName->Equals(UTF8STRC("station")))
 										{
 											if (elemType == 0)
 											{
 												elemType = 53;
 											}
 										}
-										else if (vName->Equals((const UTF8Char*)"subway_entrance"))
+										else if (vName->Equals(UTF8STRC("subway_entrance")))
 										{
 										}
 									}
-									else if (kName->Equals((const UTF8Char*)"religion"))
+									else if (kName->Equals(UTF8STRC("religion")))
 									{
-										if (vName->Equals((const UTF8Char*)"taoist"))
+										if (vName->Equals(UTF8STRC("taoist")))
 										{
 											if (elemType == 0)
 											{
@@ -592,9 +592,9 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 											}
 										}
 									}
-									else if (kName->Equals((const UTF8Char*)"shop"))
+									else if (kName->Equals(UTF8STRC("shop")))
 									{
-										if (vName->Equals((const UTF8Char*)"supermarket"))
+										if (vName->Equals(UTF8STRC("supermarket")))
 										{
 											if (elemType == 0)
 											{
@@ -602,9 +602,9 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 											}
 										}
 									}
-									else if (kName->Equals((const UTF8Char*)"sport"))
+									else if (kName->Equals(UTF8STRC("sport")))
 									{
-										if (vName->Equals((const UTF8Char*)"swimming"))
+										if (vName->Equals(UTF8STRC("swimming")))
 										{
 											if (elemType == 0)
 											{
@@ -612,19 +612,19 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 											}
 										}
 									}
-									else if (kName->Equals((const UTF8Char*)"tourism"))
+									else if (kName->Equals(UTF8STRC("tourism")))
 									{
-										if (vName->Equals((const UTF8Char*)"information"))
+										if (vName->Equals(UTF8STRC("information")))
 										{
 										}
-										else if (vName->Equals((const UTF8Char*)"viewpoint"))
+										else if (vName->Equals(UTF8STRC("viewpoint")))
 										{
 											if (elemType == 0)
 											{
 												elemType = 51;
 											}
 										}
-										else if (vName->Equals((const UTF8Char*)"camp_site"))
+										else if (vName->Equals(UTF8STRC("camp_site")))
 										{
 											if (elemType == 0)
 											{
@@ -632,9 +632,9 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 											}
 										}
 									}
-									else if (kName->Equals((const UTF8Char*)"traffic_calming"))
+									else if (kName->Equals(UTF8STRC("traffic_calming")))
 									{
-										if (vName->Equals((const UTF8Char*)"rumble_strip"))
+										if (vName->Equals(UTF8STRC("rumble_strip")))
 										{
 										}
 									}
@@ -674,7 +674,7 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 					reader->SkipElement();
 				}
 			}
-			else if (reader->GetNodeText()->Equals((const UTF8Char*)"way"))
+			else if (reader->GetNodeText()->Equals(UTF8STRC("way")))
 			{
 				Int32 elemType = 0;
 				Text::String *names[2] = {0, 0};
@@ -693,13 +693,13 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 					}
 					else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT)
 					{
-						if (reader->GetNodeText()->Equals((const UTF8Char*)"nd"))
+						if (reader->GetNodeText()->Equals(UTF8STRC("nd")))
 						{
 							i = reader->GetAttribCount();
 							while (i-- > 0)
 							{
 								attr = reader->GetAttrib(i);
-								if (attr->name->Equals((const UTF8Char*)"ref"))
+								if (attr->name->Equals(UTF8STRC("ref")))
 								{
 									nodeId = attr->value->ToInt64();
 									node = nodeMap.Get(nodeId);
@@ -717,7 +717,7 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 							}
 							reader->SkipElement();
 						}
-						else if (reader->GetNodeText()->Equals((const UTF8Char*)"tag"))
+						else if (reader->GetNodeText()->Equals(UTF8STRC("tag")))
 						{
 							kName = 0;
 							vName = 0;
@@ -725,118 +725,118 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 							while (i-- > 0)
 							{
 								attr = reader->GetAttrib(i);
-								if (attr->name->Equals((const UTF8Char*)"k"))
+								if (attr->name->Equals(UTF8STRC("k")))
 								{
 									kName = attr->value;
 								}
-								else if (attr->name->Equals((const UTF8Char*)"v"))
+								else if (attr->name->Equals(UTF8STRC("v")))
 								{
 									vName = attr->value;
 								}
 							}
 							if (kName && vName)
 							{
-								if (kName->Equals((const UTF8Char*)"name"))
+								if (kName->Equals(UTF8STRC("name")))
 								{
 									SDEL_STRING(names[0]);
 									names[0] = vName->Clone();
 								}
-								else if (kName->StartsWith((const UTF8Char*)"name:"))
+								else if (kName->StartsWith(UTF8STRC("name:")))
 								{
 								}
-								else if (kName->Equals((const UTF8Char*)"oneway"))
+								else if (kName->Equals(UTF8STRC("oneway")))
 								{
 								}
-								else if (kName->Equals((const UTF8Char*)"bridge"))
+								else if (kName->Equals(UTF8STRC("bridge")))
 								{
 								}
-								else if (kName->Equals((const UTF8Char*)"addr:housenumber"))
+								else if (kName->Equals(UTF8STRC("addr:housenumber")))
 								{
 								}
-								else if (kName->Equals((const UTF8Char*)"building:levels"))
+								else if (kName->Equals(UTF8STRC("building:levels")))
 								{
 								}
-								else if (kName->Equals((const UTF8Char*)"layer"))
+								else if (kName->Equals(UTF8STRC("layer")))
 								{
 								}
-								else if (kName->Equals((const UTF8Char*)"psv"))
+								else if (kName->Equals(UTF8STRC("psv")))
 								{
 								}
-								else if (kName->Equals((const UTF8Char*)"vehicle"))
+								else if (kName->Equals(UTF8STRC("vehicle")))
 								{
 								}
-								else if (kName->Equals((const UTF8Char*)"bicycle"))
+								else if (kName->Equals(UTF8STRC("bicycle")))
 								{
 								}
-								else if (kName->Equals((const UTF8Char*)"foot"))
+								else if (kName->Equals(UTF8STRC("foot")))
 								{
 								}
-								else if (kName->Equals((const UTF8Char*)"surface"))
+								else if (kName->Equals(UTF8STRC("surface")))
 								{
 								}
-								else if (kName->Equals((const UTF8Char*)"segregated"))
+								else if (kName->Equals(UTF8STRC("segregated")))
 								{
 								}
-								else if (kName->Equals((const UTF8Char*)"gauge"))
+								else if (kName->Equals(UTF8STRC("gauge")))
 								{
 								}
-								else if (kName->Equals((const UTF8Char*)"wikipedia"))
+								else if (kName->Equals(UTF8STRC("wikipedia")))
 								{
 								}
-								else if (kName->Equals((const UTF8Char*)"access"))
+								else if (kName->Equals(UTF8STRC("access")))
 								{
 								}
-								else if (kName->Equals((const UTF8Char*)"ref"))
+								else if (kName->Equals(UTF8STRC("ref")))
 								{
 								}
-								else if (kName->Equals((const UTF8Char*)"source"))
+								else if (kName->Equals(UTF8STRC("source")))
 								{
 								}
-								else if (kName->Equals((const UTF8Char*)"parking"))
+								else if (kName->Equals(UTF8STRC("parking")))
 								{
 								}
-								else if (kName->Equals((const UTF8Char*)"emergency"))
+								else if (kName->Equals(UTF8STRC("emergency")))
 								{
 								}
-								else if (kName->Equals((const UTF8Char*)"wheelchair"))
+								else if (kName->Equals(UTF8STRC("wheelchair")))
 								{
 								}
-								else if (kName->Equals((const UTF8Char*)"tunnel"))
+								else if (kName->Equals(UTF8STRC("tunnel")))
 								{
 								}
-								else if (kName->StartsWith((const UTF8Char*)"alt_name"))
+								else if (kName->StartsWith(UTF8STRC("alt_name")))
 								{
 								}
-								else if (kName->Equals((const UTF8Char*)"man_made"))
+								else if (kName->Equals(UTF8STRC("man_made")))
 								{
 								}
-								else if (kName->Equals((const UTF8Char*)"sport"))
+								else if (kName->Equals(UTF8STRC("sport")))
 								{
 								}
-								else if (kName->Equals((const UTF8Char*)"motor_vehicle"))
+								else if (kName->Equals(UTF8STRC("motor_vehicle")))
 								{
 								}
-								else if (kName->Equals((const UTF8Char*)"electrified"))
+								else if (kName->Equals(UTF8STRC("electrified")))
 								{
 								}
-								else if (kName->Equals((const UTF8Char*)"voltage"))
+								else if (kName->Equals(UTF8STRC("voltage")))
 								{
 								}
-								else if (kName->Equals((const UTF8Char*)"width"))
+								else if (kName->Equals(UTF8STRC("width")))
 								{
 								}
-								else if (kName->Equals((const UTF8Char*)"covered"))
+								else if (kName->Equals(UTF8STRC("covered")))
 								{
 								}
-								else if (kName->Equals((const UTF8Char*)"website"))
+								else if (kName->Equals(UTF8STRC("website")))
 								{
 								}
-								else if (kName->Equals((const UTF8Char*)"religion"))
+								else if (kName->Equals(UTF8STRC("religion")))
 								{
 								}
-								else if (kName->Equals((const UTF8Char*)"amenity"))
+								else if (kName->Equals(UTF8STRC("amenity")))
 								{
-									if (vName->Equals((const UTF8Char*)"school"))
+									if (vName->Equals(UTF8STRC("school")))
 									{
 										if (elemType == 0)
 										{
@@ -846,7 +846,7 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 											names[1] = Text::String::New(UTF8STRC("School"));
 										}
 									}
-									else if (vName->Equals((const UTF8Char*)"parking"))
+									else if (vName->Equals(UTF8STRC("parking")))
 									{
 										if (elemType == 0)
 										{
@@ -856,7 +856,7 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 											names[1] = Text::String::New(UTF8STRC("Parking"));
 										}
 									}
-									else if (vName->Equals((const UTF8Char*)"hospital"))
+									else if (vName->Equals(UTF8STRC("hospital")))
 									{
 										if (elemType == 0)
 										{
@@ -866,7 +866,7 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 											names[1] = Text::String::New(UTF8STRC("Hospital"));
 										}
 									}
-									else if (vName->Equals((const UTF8Char*)"college"))
+									else if (vName->Equals(UTF8STRC("college")))
 									{
 										if (elemType == 0)
 										{
@@ -876,7 +876,7 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 											names[1] = Text::String::New(UTF8STRC("College"));
 										}
 									}
-									else if (vName->Equals((const UTF8Char*)"place_of_worship"))
+									else if (vName->Equals(UTF8STRC("place_of_worship")))
 									{
 										if (elemType == 0)
 										{
@@ -886,7 +886,7 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 											names[1] = Text::String::New(UTF8STRC("PlaceOfWorship"));
 										}
 									}
-									else if (vName->Equals((const UTF8Char*)"nursing_home"))
+									else if (vName->Equals(UTF8STRC("nursing_home")))
 									{
 										if (elemType == 0)
 										{
@@ -896,7 +896,7 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 											names[1] = Text::String::New(UTF8STRC("NursingHome"));
 										}
 									}
-									else if (vName->Equals((const UTF8Char*)"community_centre"))
+									else if (vName->Equals(UTF8STRC("community_centre")))
 									{
 										if (elemType == 0)
 										{
@@ -906,7 +906,7 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 											names[1] = Text::String::New(UTF8STRC("CommunityCentre"));
 										}
 									}
-									else if (vName->Equals((const UTF8Char*)"university"))
+									else if (vName->Equals(UTF8STRC("university")))
 									{
 										if (elemType == 0)
 										{
@@ -917,9 +917,9 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 										}
 									}
 								}
-								else if (kName->Equals((const UTF8Char*)"barrier"))
+								else if (kName->Equals(UTF8STRC("barrier")))
 								{
-									if (vName->Equals((const UTF8Char*)"wire_fence"))
+									if (vName->Equals(UTF8STRC("wire_fence")))
 									{
 										if (elemType == 0)
 										{
@@ -927,9 +927,9 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 										}
 									}
 								}
-								else if (kName->Equals((const UTF8Char*)"building"))
+								else if (kName->Equals(UTF8STRC("building")))
 								{
-									if (vName->Equals((const UTF8Char*)"yes"))
+									if (vName->Equals(UTF8STRC("yes")))
 									{
 										if (elemType == 0)
 										{
@@ -939,7 +939,7 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 											names[1] = Text::String::New(UTF8STRC("Building"));
 										}
 									}
-									else if (vName->Equals((const UTF8Char*)"house"))
+									else if (vName->Equals(UTF8STRC("house")))
 									{
 										if (elemType == 0)
 										{
@@ -949,7 +949,7 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 											names[1] = Text::String::New(UTF8STRC("House"));
 										}
 									}
-									else if (vName->Equals((const UTF8Char*)"school"))
+									else if (vName->Equals(UTF8STRC("school")))
 									{
 										if (elemType == 0)
 										{
@@ -959,7 +959,7 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 											names[1] = Text::String::New(UTF8STRC("School"));
 										}
 									}
-									else if (vName->Equals((const UTF8Char*)"apartments"))
+									else if (vName->Equals(UTF8STRC("apartments")))
 									{
 										if (elemType == 0)
 										{
@@ -969,7 +969,7 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 											names[1] = Text::String::New(UTF8STRC("Apartments"));
 										}
 									}
-									else if (vName->Equals((const UTF8Char*)"residential"))
+									else if (vName->Equals(UTF8STRC("residential")))
 									{
 										if (elemType == 0)
 										{
@@ -990,9 +990,9 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 										}
 									}
 								}
-								else if (kName->Equals((const UTF8Char*)"highway"))
+								else if (kName->Equals(UTF8STRC("highway")))
 								{
-									if (vName->Equals((const UTF8Char*)"service"))
+									if (vName->Equals(UTF8STRC("service")))
 									{
 										if (elemType == 0)
 										{
@@ -1001,7 +1001,7 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 											names[1] = Text::String::New(UTF8STRC("Service"));
 										}
 									}
-									else if (vName->Equals((const UTF8Char*)"secondary"))
+									else if (vName->Equals(UTF8STRC("secondary")))
 									{
 										if (elemType == 0)
 										{
@@ -1010,7 +1010,7 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 											names[1] = Text::String::New(UTF8STRC("Secondary"));
 										}
 									}
-									else if (vName->Equals((const UTF8Char*)"footway"))
+									else if (vName->Equals(UTF8STRC("footway")))
 									{
 										if (elemType == 0)
 										{
@@ -1019,7 +1019,7 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 											names[1] = Text::String::New(UTF8STRC("Footway"));
 										}
 									}
-									else if (vName->Equals((const UTF8Char*)"motorway"))
+									else if (vName->Equals(UTF8STRC("motorway")))
 									{
 										if (elemType == 0)
 										{
@@ -1028,7 +1028,7 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 											names[1] = Text::String::New(UTF8STRC("Motorway"));
 										}
 									}
-									else if (vName->Equals((const UTF8Char*)"motorway_link"))
+									else if (vName->Equals(UTF8STRC("motorway_link")))
 									{
 										if (elemType == 0)
 										{
@@ -1037,7 +1037,7 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 											names[1] = Text::String::New(UTF8STRC("MotorwayLink"));
 										}
 									}
-									else if (vName->Equals((const UTF8Char*)"residential"))
+									else if (vName->Equals(UTF8STRC("residential")))
 									{
 										if (elemType == 0)
 										{
@@ -1046,7 +1046,7 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 											names[1] = Text::String::New(UTF8STRC("Residential"));
 										}
 									}
-									else if (vName->Equals((const UTF8Char*)"tertiary"))
+									else if (vName->Equals(UTF8STRC("tertiary")))
 									{
 										if (elemType == 0)
 										{
@@ -1055,7 +1055,7 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 											names[1] = Text::String::New(UTF8STRC("Tertiary"));
 										}
 									}
-									else if (vName->Equals((const UTF8Char*)"path"))
+									else if (vName->Equals(UTF8STRC("path")))
 									{
 										if (elemType == 0)
 										{
@@ -1064,7 +1064,7 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 											names[1] = Text::String::New(UTF8STRC("Path"));
 										}
 									}
-									else if (vName->Equals((const UTF8Char*)"primary"))
+									else if (vName->Equals(UTF8STRC("primary")))
 									{
 										if (elemType == 0)
 										{
@@ -1073,7 +1073,7 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 											names[1] = Text::String::New(UTF8STRC("Primary"));
 										}
 									}
-									else if (vName->Equals((const UTF8Char*)"steps"))
+									else if (vName->Equals(UTF8STRC("steps")))
 									{
 										if (elemType == 0)
 										{
@@ -1082,7 +1082,7 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 											names[1] = Text::String::New(UTF8STRC("Steps"));
 										}
 									}
-									else if (vName->Equals((const UTF8Char*)"cycleway"))
+									else if (vName->Equals(UTF8STRC("cycleway")))
 									{
 										if (elemType == 0)
 										{
@@ -1091,7 +1091,7 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 											names[1] = Text::String::New(UTF8STRC("Cycleway"));
 										}
 									}
-									else if (vName->Equals((const UTF8Char*)"pedestrian"))
+									else if (vName->Equals(UTF8STRC("pedestrian")))
 									{
 										if (elemType == 0)
 										{
@@ -1100,7 +1100,7 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 											names[1] = Text::String::New(UTF8STRC("Pedestrian"));
 										}
 									}
-									else if (vName->Equals((const UTF8Char*)"track"))
+									else if (vName->Equals(UTF8STRC("track")))
 									{
 										if (elemType == 0)
 										{
@@ -1110,9 +1110,9 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 										}
 									}
 								}
-								else if (kName->Equals((const UTF8Char*)"landuse"))
+								else if (kName->Equals(UTF8STRC("landuse")))
 								{
-									if (vName->Equals((const UTF8Char*)"reservoir"))
+									if (vName->Equals(UTF8STRC("reservoir")))
 									{
 										if (elemType == 0)
 										{
@@ -1122,7 +1122,7 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 											names[1] = Text::String::New(UTF8STRC("Reservoir"));
 										}
 									}
-									else if (vName->Equals((const UTF8Char*)"residential"))
+									else if (vName->Equals(UTF8STRC("residential")))
 									{
 										if (elemType == 0)
 										{
@@ -1130,7 +1130,7 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 											isPG = true;
 										}
 									}
-									else if (vName->Equals((const UTF8Char*)"commercial"))
+									else if (vName->Equals(UTF8STRC("commercial")))
 									{
 										if (elemType == 0)
 										{
@@ -1138,7 +1138,7 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 											isPG = true;
 										}
 									}
-									else if (vName->Equals((const UTF8Char*)"industrial"))
+									else if (vName->Equals(UTF8STRC("industrial")))
 									{
 										if (elemType == 0)
 										{
@@ -1147,9 +1147,9 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 										}
 									}
 								}
-								else if (kName->Equals((const UTF8Char*)"leisure"))
+								else if (kName->Equals(UTF8STRC("leisure")))
 								{
-									if (vName->Equals((const UTF8Char*)"sports_centre"))
+									if (vName->Equals(UTF8STRC("sports_centre")))
 									{
 										if (elemType == 0)
 										{
@@ -1157,7 +1157,7 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 											isPG = true;
 										}
 									}
-									else if (vName->Equals((const UTF8Char*)"park"))
+									else if (vName->Equals(UTF8STRC("park")))
 									{
 										if (elemType == 0)
 										{
@@ -1165,7 +1165,7 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 											isPG = true;
 										}
 									}
-									else if (vName->Equals((const UTF8Char*)"pitch"))
+									else if (vName->Equals(UTF8STRC("pitch")))
 									{
 										if (elemType == 0)
 										{
@@ -1175,7 +1175,7 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 											names[1] = Text::String::New(UTF8STRC("Pitch"));
 										}
 									}
-									else if (vName->Equals((const UTF8Char*)"swimming_pool"))
+									else if (vName->Equals(UTF8STRC("swimming_pool")))
 									{
 										if (elemType == 0)
 										{
@@ -1185,7 +1185,7 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 											names[1] = Text::String::New(UTF8STRC("SwimmingPool"));
 										}
 									}
-									else if (vName->Equals((const UTF8Char*)"track"))
+									else if (vName->Equals(UTF8STRC("track")))
 									{
 										if (elemType == 0)
 										{
@@ -1195,7 +1195,7 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 											names[1] = Text::String::New(UTF8STRC("Track"));
 										}
 									}
-									else if (vName->Equals((const UTF8Char*)"stadium"))
+									else if (vName->Equals(UTF8STRC("stadium")))
 									{
 										if (elemType == 0)
 										{
@@ -1206,9 +1206,9 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 										}
 									}
 								}
-								else if (kName->Equals((const UTF8Char*)"natural"))
+								else if (kName->Equals(UTF8STRC("natural")))
 								{
-									if (vName->Equals((const UTF8Char*)"coastline"))
+									if (vName->Equals(UTF8STRC("coastline")))
 									{
 										if (elemType == 0)
 										{
@@ -1216,9 +1216,9 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 										}
 									}
 								}
-								else if (kName->Equals((const UTF8Char*)"power"))
+								else if (kName->Equals(UTF8STRC("power")))
 								{
-									if (vName->Equals((const UTF8Char*)"sub_station"))
+									if (vName->Equals(UTF8STRC("sub_station")))
 									{
 										if (elemType == 0)
 										{
@@ -1229,9 +1229,9 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 										}
 									}
 								}
-								else if (kName->Equals((const UTF8Char*)"railway"))
+								else if (kName->Equals(UTF8STRC("railway")))
 								{
-									if (vName->Equals((const UTF8Char*)"rail"))
+									if (vName->Equals(UTF8STRC("rail")))
 									{
 										if (elemType == 0)
 										{
@@ -1241,9 +1241,9 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 										}
 									}
 								}
-								else if (kName->Equals((const UTF8Char*)"shop"))
+								else if (kName->Equals(UTF8STRC("shop")))
 								{
-									if (vName->Equals((const UTF8Char*)"garden_centre"))
+									if (vName->Equals(UTF8STRC("garden_centre")))
 									{
 										if (elemType == 0)
 										{
@@ -1253,7 +1253,7 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 											names[1] = Text::String::New(UTF8STRC("GardenCentre"));
 										}
 									}
-									else if (vName->Equals((const UTF8Char*)"mall"))
+									else if (vName->Equals(UTF8STRC("mall")))
 									{
 										if (elemType == 0)
 										{
@@ -1264,9 +1264,9 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 										}
 									}
 								}
-								else if (kName->Equals((const UTF8Char*)"waterway"))
+								else if (kName->Equals(UTF8STRC("waterway")))
 								{
-									if (vName->Equals((const UTF8Char*)"stream"))
+									if (vName->Equals(UTF8STRC("stream")))
 									{
 										if (elemType == 0)
 										{
@@ -1275,7 +1275,7 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 											names[1] = Text::String::New(UTF8STRC("Stream"));
 										}
 									}
-									else if (vName->Equals((const UTF8Char*)"weir"))
+									else if (vName->Equals(UTF8STRC("weir")))
 									{
 										if (elemType == 0)
 										{
@@ -1285,7 +1285,7 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 											names[1] = Text::String::New(UTF8STRC("Weir"));
 										}
 									}
-									else if (vName->Equals((const UTF8Char*)"riverbank"))
+									else if (vName->Equals(UTF8STRC("riverbank")))
 									{
 										if (elemType == 0)
 										{
@@ -1357,7 +1357,7 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 				SDEL_STRING(names[0]);
 				SDEL_STRING(names[1]);
 			}
-			else if (reader->GetNodeText()->Equals((const UTF8Char*)"relation"))
+			else if (reader->GetNodeText()->Equals(UTF8STRC("relation")))
 			{
 				reader->SkipElement();
 			}

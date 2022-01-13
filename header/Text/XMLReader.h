@@ -52,7 +52,7 @@ namespace Text
 		Text::String *GetNodeOriText();
 		UOSInt GetAttribCount();
 		Text::XMLAttrib *GetAttrib(UOSInt index);
-		Text::XMLAttrib *GetAttrib(const UTF8Char *name);
+		Text::XMLAttrib *GetAttrib(const UTF8Char *name, UOSInt nameLen);
 
 		Bool ReadNext();
 		Bool ReadNodeText(Text::StringBuilderUTF *sb);

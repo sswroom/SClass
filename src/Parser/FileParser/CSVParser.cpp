@@ -55,7 +55,7 @@ IO::ParsedObject *Parser::FileParser::CSVParser::ParseFile(IO::IStreamData *fd, 
 	UOSInt currCol;
 	Data::ArrayListStrUTF8 *colNames;
 
-	if (!fd->GetFullFileName()->EndsWithICase((const UTF8Char*)".CSV"))
+	if (!fd->GetFullFileName()->EndsWithICase(UTF8STRC(".CSV")))
 		return 0;
 
 	UOSInt i;

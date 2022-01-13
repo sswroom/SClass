@@ -178,11 +178,11 @@ void DB::JavaDBUtil::AppendFieldOrderItem(Text::StringBuilderUTF *sb, Text::Stri
 
 DB::DBTool *DB::JavaDBUtil::OpenJDBC(Text::String *url, Text::String *username, Text::String *password, IO::LogTool *log, Net::SocketFactory *sockf)
 {
-	if (url == 0 || !url->StartsWith((const UTF8Char*)"jdbc:"))
+	if (url == 0 || !url->StartsWith(UTF8STRC("jdbc:")))
 	{
 		return 0;
 	}
-	if (url->StartsWith(5, (const UTF8Char*)"sqlserver://"))
+	if (url->StartsWith(5, UTF8STRC("sqlserver://")))
 	{
 		Text::StringBuilderUTF8 sb;
 		UTF8Char *sarr[2];

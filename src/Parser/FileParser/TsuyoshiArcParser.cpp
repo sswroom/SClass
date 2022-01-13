@@ -48,7 +48,7 @@ IO::ParsedObject *Parser::FileParser::TsuyoshiArcParser::ParseFile(IO::IStreamDa
 	UTF8Char fileName[256];
 	Text::Encoding enc(932);
 
-	if (!fd->GetFullName()->EndsWithICase((const UTF8Char*)".ARC"))
+	if (!fd->GetFullName()->EndsWithICase(UTF8STRC(".ARC")))
 	{
 		return 0;
 	}

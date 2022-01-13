@@ -43,7 +43,7 @@ typedef struct
 IO::ParsedObject *Parser::FileParser::PFS2Parser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
 	Text::String *fileName = fd->GetFullName();
-	if (!fileName->EndsWithICase((const UTF8Char*)".pfs"))
+	if (!fileName->EndsWithICase(UTF8STRC(".pfs")))
 		return 0;
 
 	UInt8 hdr[15];

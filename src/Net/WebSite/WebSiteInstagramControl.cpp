@@ -18,11 +18,11 @@ Text::JSONBase *Net::WebSite::WebSiteInstagramControl::ParsePageJSON(const UTF8C
 	NEW_CLASS(reader, Text::XMLReader(this->encFact, cli, Text::XMLReader::PM_HTML));
 	while (reader->ReadNext())
 	{
-		if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT && reader->GetNodeText()->Equals((const UTF8Char*)"script"))
+		if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT && reader->GetNodeText()->Equals(UTF8STRC("script")))
 		{
 			sb.ClearStr();
 			reader->ReadNodeText(&sb);
-			if (sb.StartsWith((const UTF8Char*)"window._sharedData = "))
+			if (sb.StartsWithC(UTF8STRC("window._sharedData = ")))
 			{
 				if (sb.EndsWith(';'))
 				{
@@ -157,7 +157,7 @@ OSInt Net::WebSite::WebSiteInstagramControl::GetChannelItems(Text::String *chann
 													}
 													if ((jsBase = obj1->GetObjectValue((const UTF8Char*)"__typename")) != 0 && jsBase->GetType() == Text::JSONType::String)
 													{
-														item->moreImages = ((Text::JSONString*)jsBase)->GetValue()->Equals((const UTF8Char*)"GraphSidecar");
+														item->moreImages = ((Text::JSONString*)jsBase)->GetValue()->Equals(UTF8STRC("GraphSidecar"));
 													}
 
 													if ((jsBase = obj1->GetObjectValue((const UTF8Char*)"edge_media_to_caption")) != 0 && jsBase->GetType() == Text::JSONType::Object)

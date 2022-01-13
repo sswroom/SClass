@@ -25,27 +25,27 @@ void Text::XMLReader::FreeCurrent()
 
 Bool Text::XMLReader::IsHTMLSkip()
 {
-	if (this->nodeText->EqualsICase((const UTF8Char*)"META"))
+	if (this->nodeText->EqualsICase(UTF8STRC("META")))
 	{
 		return true;
 	}
-	else if (this->nodeText->EqualsICase((const UTF8Char*)"LINK"))
+	else if (this->nodeText->EqualsICase(UTF8STRC("LINK")))
 	{
 		return true;
 	}
-	else if (this->nodeText->EqualsICase((const UTF8Char*)"IMG"))
+	else if (this->nodeText->EqualsICase(UTF8STRC("IMG")))
 	{
 		return true;
 	}
-	else if (this->nodeText->EqualsICase((const UTF8Char*)"BR"))
+	else if (this->nodeText->EqualsICase(UTF8STRC("BR")))
 	{
 		return true;
 	}
-	else if (this->nodeText->EqualsICase((const UTF8Char*)"HR"))
+	else if (this->nodeText->EqualsICase(UTF8STRC("HR")))
 	{
 		return true;
 	}
-	else if (this->nodeText->EqualsICase((const UTF8Char*)"INPUT"))
+	else if (this->nodeText->EqualsICase(UTF8STRC("INPUT")))
 	{
 		return true;
 	}
@@ -208,14 +208,14 @@ Text::XMLAttrib *Text::XMLReader::GetAttrib(UOSInt index)
 	return this->attrList->GetItem(index);
 }
 
-Text::XMLAttrib *Text::XMLReader::GetAttrib(const UTF8Char *name)
+Text::XMLAttrib *Text::XMLReader::GetAttrib(const UTF8Char *name, UOSInt nameLen)
 {
 	UOSInt i = this->attrList->GetCount();
 	Text::XMLAttrib *attr;
 	while (i-- > 0)
 	{
 		attr = this->attrList->GetItem(i);
-		if (attr->name->Equals(name))
+		if (attr->name->Equals(name, nameLen))
 			return attr;
 	}
 	return 0;
@@ -232,27 +232,27 @@ Bool Text::XMLReader::ReadNext()
 			{
 
 			}
-			else if (this->nodeText->EqualsICase((const UTF8Char*)"LINK"))
+			else if (this->nodeText->EqualsICase(UTF8STRC("LINK")))
 			{
 
 			}
-			else if (this->nodeText->EqualsICase((const UTF8Char*)"IMG"))
+			else if (this->nodeText->EqualsICase(UTF8STRC("IMG")))
 			{
 
 			}
-			else if (this->nodeText->EqualsICase((const UTF8Char*)"BR"))
+			else if (this->nodeText->EqualsICase(UTF8STRC("BR")))
 			{
 
 			}
-			else if (this->nodeText->EqualsICase((const UTF8Char*)"HR"))
+			else if (this->nodeText->EqualsICase(UTF8STRC("HR")))
 			{
 
 			}
-			else if (this->nodeText->EqualsICase((const UTF8Char*)"INPUT"))
+			else if (this->nodeText->EqualsICase(UTF8STRC("INPUT")))
 			{
 
 			}
-			else if (this->nodeText->EqualsICase((const UTF8Char*)"SCRIPT"))
+			else if (this->nodeText->EqualsICase(UTF8STRC("SCRIPT")))
 			{
 				isHTMLScript = true;
 				this->pathList->Add(this->nodeText->Clone());
@@ -729,14 +729,14 @@ Bool Text::XMLReader::ReadNext()
 						this->parseOfst += 2;
 						if (this->nodeText != 0)
 						{
-							if (this->encFact && this->nodeText->Equals((const UTF8Char*)"xml"))
+							if (this->encFact && this->nodeText->Equals(UTF8STRC("xml")))
 							{
 								UOSInt i = this->attrList->GetCount();
 								Text::XMLAttrib *attr;
 								while (i-- > 0)
 								{
 									attr = this->attrList->GetItem(i);
-									if (attr->name->EqualsICase((const UTF8Char*)"ENCODING"))
+									if (attr->name->EqualsICase(UTF8STRC("ENCODING")))
 									{
 										UInt32 cp = this->encFact->GetCodePage(attr->value->v);
 										if (cp && !this->stmEnc)

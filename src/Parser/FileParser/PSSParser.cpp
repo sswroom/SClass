@@ -100,7 +100,7 @@ IO::ParsedObject *Parser::FileParser::PSSParser::ParseFile(IO::IStreamData *fd, 
 	if (*(Int32*)&buff[currOfst] != (Int32)0xbb010000)
 		return 0;
 
-	if (fd->GetFullFileName()->EndsWithICase((const UTF8Char*)"_1.vob"))
+	if (fd->GetFullFileName()->EndsWithICase(UTF8STRC("_1.vob")))
 	{
 		if (fd->IsFullFile())
 		{

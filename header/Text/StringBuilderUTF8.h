@@ -22,8 +22,11 @@ namespace Text
 		StringBuilderUTF8 *AppendToLower(const UTF8Char *s);
 		StringBuilderUTF8 *RemoveANSIEscapes();
 		Bool EqualsC(const UTF8Char *s, UOSInt len);
+		Bool EqualsICaseC(const UTF8Char *s, UOSInt len);
 		Bool StartsWithC(const UTF8Char *s, UOSInt len);
 		UOSInt IndexOfC(const UTF8Char *s, UOSInt len);
+		void TrimC();
+		void TrimC(UOSInt index);
  	};
 }
 #endif

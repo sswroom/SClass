@@ -9,15 +9,16 @@
 #include "Sync/MutexUsage.h"
 #include "Text/UTF8Reader.h"
 
-#define OBJECTPATH ((const UTF8Char*)"obj")
+#define OBJECTPATH "obj"
 
 void IO::SMake::AppendCfgItem(Text::StringBuilderUTF *sb, const UTF8Char *val)
 {
 	UTF8Char sbuff[64];
 	IO::SMake::ConfigItem *cfg;
+	const UTF8Char *valEnd = &val[Text::StrCharCnt(val)];
 	UOSInt i = 0;
 	UOSInt j;
-	while ((j = Text::StrIndexOf(&val[i], (const UTF8Char*)"$(")) != INVALID_INDEX)
+	while ((j = Text::StrIndexOfC(&val[i], (UOSInt)(valEnd - &val[i]), UTF8STRC("$("))) != INVALID_INDEX)
 	{
 		if (j > 0)
 		{
@@ -27,7 +28,7 @@ void IO::SMake::AppendCfgItem(Text::StringBuilderUTF *sb, const UTF8Char *val)
 		j = Text::StrIndexOf(&val[i], ')');
 		if (j == INVALID_INDEX)
 			break;
-		if (Text::StrStartsWith(&val[i + 2], (const UTF8Char*)"shell "))
+		if (Text::StrStartsWithC(&val[i + 2], (UOSInt)(valEnd - &val[i + 1]), UTF8STRC("shell ")))
 		{
 			Text::StringBuilderUTF8 sbCmd;
 			sbCmd.AppendC(&val[i + 8], (UOSInt)j - 8);
@@ -49,28 +50,29 @@ void IO::SMake::AppendCfgItem(Text::StringBuilderUTF *sb, const UTF8Char *val)
 			}
 		}
 	}
-	sb->Append(&val[i]);
+	sb->AppendC(&val[i], (UOSInt)(valEnd - &val[i]));
 }
 
 void IO::SMake::AppendCfgPath(Text::StringBuilderUTF *sb, const UTF8Char *path)
 {
-	if (Text::StrStartsWith(path, (const UTF8Char*)"~/"))
+	UOSInt pathLen = Text::StrCharCnt(path);
+	if (Text::StrStartsWithC(path, pathLen, UTF8STRC("~/")))
 	{
 		Manage::EnvironmentVar env;
 		const UTF8Char *csptr = env.GetValue((const UTF8Char*)"HOME");
 		if (csptr)
 		{
 			sb->Append(csptr);
-			sb->Append(&path[1]);
+			sb->AppendC(&path[1], pathLen - 1);
 		}
 		else
 		{
-			sb->Append(path);
+			sb->AppendC(path, pathLen);
 		}
 	}
 	else
 	{
-		sb->Append(path);
+		sb->AppendC(path, pathLen);
 	}
 }
 
@@ -126,7 +128,7 @@ Bool IO::SMake::ExecuteCmd(const UTF8Char *cmd)
 	Int32 ret = Manage::Process::ExecuteProcess(cmd, &sbRet);
 	if (ret != 0)
 	{
-		this->SetErrorMsg(sbRet.ToString());
+		this->SetErrorMsg(sbRet.ToString(), sbRet.GetLength());
 		return false;
 	}
 	if (sbRet.GetLength() > 0)
@@ -158,7 +160,7 @@ Bool IO::SMake::LoadConfigFile(const UTF8Char *cfgFile)
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(UTF8STRC("Error in opening "));
 		sb.Append(cfgFile);
-		this->SetErrorMsg(sb.ToString());
+		this->SetErrorMsg(sb.ToString(), sb.GetLength());
 		return false;
 	}
 	Text::StringBuilderUTF8 sb;
@@ -179,33 +181,32 @@ Bool IO::SMake::LoadConfigFile(const UTF8Char *cfgFile)
 		}
 		else if (sb.ToString()[0] == '@')
 		{
-			sptr1 = sb.ToString() + 1;
-			Text::StrTrim(sptr1);
 			if (prog)
 			{
-				prog->subItems->Add(Text::String::NewNotNull(sptr1));
+				sb.TrimC(1);
+				prog->subItems->Add(Text::String::New(sb.ToString() + 1, sb.GetLength() - 1));
 			}
 		}
 		else if (sb.ToString()[0] == '!')
 		{
-			sptr1 = sb.ToString() + 1;
-			Text::StrTrim(sptr1);
+			sb.TrimC(1);
 			Bool valid = true;
-			if (Text::StrStartsWith(sptr1, (const UTF8Char*)"?("))
+			sptr1 = sb.ToString() + 1;
+			if (Text::StrStartsWithC(sptr1, sb.GetLength() - 1, UTF8STRC("?(")))
 			{
 				i = Text::StrIndexOf(sptr1, ')');
 				if (i != INVALID_INDEX)
 				{
 					sptr2 = &sptr1[i + 1];
-					Text::StrTrim(sptr2);
 					sb2.ClearStr();
 					sb2.AppendC(&sptr1[2], (UOSInt)i - 2);
+					sb2.TrimC();
 					sptr1 = sb2.ToString();
-					if ((i = Text::StrIndexOf(sptr1, (const UTF8Char*)">=")) != INVALID_INDEX)
+					if ((i = Text::StrIndexOfC(sptr1, sb2.GetLength(), UTF8STRC(">="))) != INVALID_INDEX)
 					{
-						Text::StrTrim(&sptr1[i + 2]);
+						Text::StrTrimC(&sptr1[i + 2], sb2.GetLength() - i - 2);
 						sptr1[i] = 0;
-						Text::StrTrim(sptr1);
+						Text::StrTrimC(sptr1, i);
 						Int32 val1 = 0;
 						Int32 val2 = 0;
 						if (sptr1[0] >= '0' && sptr1[0] <= '9')
@@ -243,7 +244,7 @@ Bool IO::SMake::LoadConfigFile(const UTF8Char *cfgFile)
 					}
 				}
 			}
-			else if (Text::StrStartsWith(sptr1, (const UTF8Char*)"@("))
+			else if (Text::StrStartsWithC(sptr1, sb.GetLength(), UTF8STRC("@(")))
 			{
 				i = Text::StrIndexOf(sptr1, ')');
 				if (i != INVALID_INDEX && i > 1)
@@ -270,9 +271,9 @@ Bool IO::SMake::LoadConfigFile(const UTF8Char *cfgFile)
 		else if (sb.ToString()[0] == '$')
 		{
 			Bool valid = true;
+			sb.TrimC(1);
 			sptr1 = sb.ToString() + 1;
-			Text::StrTrim(sptr1);
-			if (Text::StrStartsWith(sptr1, (const UTF8Char*)"@("))
+			if (Text::StrStartsWithC(sptr1, sb.GetLength() - 1, UTF8STRC("@(")))
 			{
 				i = Text::StrIndexOf(sptr1, ')');
 				if (i != INVALID_INDEX && i > 1)
@@ -314,7 +315,7 @@ Bool IO::SMake::LoadConfigFile(const UTF8Char *cfgFile)
 				}
 			}
 		}
-		else if (sb.StartsWith((const UTF8Char*)"export "))
+		else if (sb.StartsWithC(UTF8STRC("export ")))
 		{
 			cfg = cfgMap->Get(sb.ToString() + 7);
 			if (cfg)
@@ -323,13 +324,13 @@ Bool IO::SMake::LoadConfigFile(const UTF8Char *cfgFile)
 				env.SetValue(cfg->name->v, cfg->value->v);
 			}
 		}
-		else if ((i = Text::StrIndexOf(sb.ToString(), (const UTF8Char*)"+=")) != INVALID_INDEX)
+		else if ((i = sb.IndexOfC(UTF8STRC("+="))) != INVALID_INDEX)
 		{
 			sptr1 = sb.ToString();
 			sptr2 = &sptr1[i + 2];
 			sptr1[i] = 0;
-			Text::StrTrim(sptr1);
-			Text::StrTrim(sptr2);	
+			Text::StrTrimC(sptr1, i);
+			Text::StrTrimC(sptr2, sb.GetLength() - i - 2);
 			cfg = cfgMap->Get(sptr1);
 			if (cfg)
 			{
@@ -360,15 +361,15 @@ Bool IO::SMake::LoadConfigFile(const UTF8Char *cfgFile)
 				cfgMap->Put(cfg->name, cfg);
 			}
 		}
-		else if ((i = Text::StrIndexOf(sb.ToString(), (const UTF8Char*)":")) != INVALID_INDEX)
+		else if ((i = sb.IndexOfC(UTF8STRC(":"))) != INVALID_INDEX)
 		{
 			if (sb.ToString()[i + 1] == '=')
 			{
 				sptr1 = sb.ToString();
 				sptr2 = &sptr1[i + 2];
 				sptr1[i] = 0;
-				Text::StrTrim(sptr1);
-				Text::StrTrim(sptr2);
+				Text::StrTrimC(sptr1, i);
+				Text::StrTrimC(sptr2, sb.GetLength() - i - 2);
 				cfg = cfgMap->Get(sptr1);
 				if (cfg)
 				{
@@ -392,8 +393,8 @@ Bool IO::SMake::LoadConfigFile(const UTF8Char *cfgFile)
 				sptr1 = sb.ToString();
 				sptr2 = &sptr1[i + 1];
 				sptr1[i] = 0;
-				Text::StrTrim(sptr1);
-				Text::StrTrim(sptr2);
+				Text::StrTrimC(sptr1, i);
+				Text::StrTrimC(sptr2, sb.GetLength() - i - 1);
 				if (sptr1[0] == '+')
 				{
 					prog = progMap->Get(sptr1 + 1);
@@ -428,7 +429,7 @@ Bool IO::SMake::LoadConfigFile(const UTF8Char *cfgFile)
 						sb2.AppendC(UTF8STRC("Program Item "));
 						sb2.Append(sptr1);
 						sb2.AppendC(UTF8STRC(" duplicated"));
-						this->SetErrorMsg(sb2.ToString());
+						this->SetErrorMsg(sb2.ToString(), sb2.GetLength());
 					}
 					else
 					{
@@ -450,14 +451,14 @@ Bool IO::SMake::LoadConfigFile(const UTF8Char *cfgFile)
 				}
 			}
 		}
-		else if (Text::StrStartsWith(sb.ToString(), (const UTF8Char*)"include "))
+		else if (sb.StartsWithC(UTF8STRC("include ")))
 		{
 			if (IO::Path::PATH_SEPERATOR != '/')
 			{
 				sb.Replace('/', IO::Path::PATH_SEPERATOR);
 			}
+			sb.TrimC(8);
 			sptr1 = sb.ToString() + 8;
-			Text::StrTrim(sptr1);
 			if (IO::Path::IsSearchPattern(sptr1))
 			{
 				IO::FileFindRecur srch(sptr1);
@@ -493,13 +494,13 @@ Bool IO::SMake::LoadConfigFile(const UTF8Char *cfgFile)
 }
 
 
-Bool IO::SMake::ParseSource(Data::ArrayListString *objList, Data::ArrayListString *libList, Data::ArrayListString *procList, Data::ArrayListString *headerList, Int64 *latestTime, const UTF8Char *sourceFile)
+Bool IO::SMake::ParseSource(Data::ArrayListString *objList, Data::ArrayListString *libList, Data::ArrayListString *procList, Data::ArrayListString *headerList, Int64 *latestTime, const UTF8Char *sourceFile, UOSInt sourceFileLen)
 {
 	IO::FileStream *fs;
 	Text::StringBuilderUTF8 sb;
 	if (IO::Path::PATH_SEPERATOR == '\\')
 	{
-		sb.Append(sourceFile);
+		sb.AppendC(sourceFile, sourceFileLen);
 		sb.Replace('/', '\\');
 		NEW_CLASS(fs, IO::FileStream(sb.ToString(), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 //		printf("Opening %s\r\n", sb.ToString());
@@ -513,9 +514,9 @@ Bool IO::SMake::ParseSource(Data::ArrayListString *objList, Data::ArrayListStrin
 	{
 		Text::StringBuilderUTF8 sb2;
 		sb2.AppendC(UTF8STRC("Error in opening source \""));
-		sb2.Append(sourceFile);
+		sb2.AppendC(sourceFile, sourceFileLen);
 		sb2.AppendC(UTF8STRC("\""));
-		this->SetErrorMsg(sb2.ToString());
+		this->SetErrorMsg(sb2.ToString(), sb2.GetLength());
 		DEL_CLASS(fs);
 		return false;
 	}
@@ -532,11 +533,11 @@ Bool IO::SMake::ParseSource(Data::ArrayListString *objList, Data::ArrayListStrin
 	sb.ClearStr();
 	while (reader->ReadLine(&sb, 1024))
 	{
-		sb.Trim();
-		if (sb.StartsWith((const UTF8Char*)"#include"))
+		sb.TrimC();
+		if (sb.StartsWithC(UTF8STRC("#include")))
 		{
+			sb.TrimC(8);
 			sptr1 = sb.ToString() + 8;
-			Text::StrTrim(sptr1);
 			if (sptr1[0] == '"')
 			{
 				sptr1++;
@@ -564,8 +565,8 @@ Bool IO::SMake::ParseSource(Data::ArrayListString *objList, Data::ArrayListStrin
 							Text::StringBuilderUTF8 sb2;
 							sb2.Append(sptr1);
 							sb2.AppendC(UTF8STRC(" not found in "));
-							sb2.Append(sourceFile);
-							this->SetErrorMsg(sb2.ToString());
+							sb2.AppendC(sourceFile, sourceFileLen);
+							this->SetErrorMsg(sb2.ToString(), sb2.GetLength());
 							DEL_CLASS(reader);
 							DEL_CLASS(fs);
 							return false;
@@ -582,7 +583,7 @@ Bool IO::SMake::ParseSource(Data::ArrayListString *objList, Data::ArrayListStrin
 									Text::StringBuilderUTF8 sb2;
 									sb2.Append(debugObj);
 									sb2.AppendC(UTF8STRC(" found in "));
-									sb2.Append(sourceFile);
+									sb2.AppendC(sourceFile, sourceFileLen);
 									this->messageWriter->WriteLineC(sb2.ToString(), sb2.GetLength());
 								}
 								if (objList->SortedIndexOf(prog->subItems->GetItem(i)) < 0)
@@ -603,10 +604,10 @@ Bool IO::SMake::ParseSource(Data::ArrayListString *objList, Data::ArrayListStrin
 								Text::StringBuilderUTF8 sb2;
 								sb2.Append(debugObj);
 								sb2.AppendC(UTF8STRC(" found in "));
-								sb2.Append(sourceFile);
+								sb2.AppendC(sourceFile, sourceFileLen);
 								this->messageWriter->WriteLineC(sb2.ToString(), sb2.GetLength());
 							}
-							if (!this->ParseHeader(objList, libList, procList, headerList, &thisTime, prog->name, sourceFile))
+							if (!this->ParseHeader(objList, libList, procList, headerList, &thisTime, prog->name, sourceFile, sourceFileLen))
 							{
 								DEL_CLASS(reader);
 								DEL_CLASS(fs);
@@ -618,7 +619,7 @@ Bool IO::SMake::ParseSource(Data::ArrayListString *objList, Data::ArrayListStrin
 							}
 							if (prog->srcFile)
 							{
-								if (!this->ParseSource(objList, libList, procList, headerList, &thisTime, prog->srcFile->v))
+								if (!this->ParseSource(objList, libList, procList, headerList, &thisTime, prog->srcFile->v, prog->srcFile->leng))
 								{
 									DEL_CLASS(reader);
 									DEL_CLASS(fs);
@@ -639,30 +640,32 @@ Bool IO::SMake::ParseSource(Data::ArrayListString *objList, Data::ArrayListStrin
 	return true;
 }
 
-Bool IO::SMake::ParseHeader(Data::ArrayListString *objList, Data::ArrayListString *libList, Data::ArrayListString *procList, Data::ArrayListString *headerList, Int64 *latestTime, Text::String *headerFile, const UTF8Char *sourceFile)
+Bool IO::SMake::ParseHeader(Data::ArrayListString *objList, Data::ArrayListString *libList, Data::ArrayListString *procList, Data::ArrayListString *headerList, Int64 *latestTime, Text::String *headerFile, const UTF8Char *sourceFile, UOSInt sourceFileLen)
 {
 	IO::SMake::ConfigItem *cfg = this->cfgMap->Get((const UTF8Char*)"INCLUDEPATH");
 	if (cfg == 0)
 	{
-		this->SetErrorMsg((const UTF8Char*)"INCLUDEPATH config not found");
+		this->SetErrorMsg(UTF8STRC("INCLUDEPATH config not found"));
 		return false;
 	}
 	Text::StringBuilderUTF8 sb;
 	Text::StringBuilderUTF8 sb2;
-	UTF8Char *sarr[2];
+	Text::PString sarr[2];
 	UTF8Char sbuff[512];
+	UTF8Char *sptr;
 	UOSInt i;
 	sb.Append(cfg->value);
-	sarr[1] = sb.ToString();
+	sarr[1].v = sb.ToString();
+	sarr[1].len = sb.GetLength();
 	i = 2;
 	while (i == 2)
 	{
-		i = Text::StrSplitTrim(sarr, 2, sarr[1], ':');
+		i = Text::StrSplitTrimP(sarr, 2, sarr[1].v, sarr[1].len, ':');
 		sb2.ClearStr();
-		sb2.Append(sarr[0]);
+		sb2.AppendC(sarr[0].v, sarr[0].len);
 		sb2.AppendChar(IO::Path::PATH_SEPERATOR, 1);
 		sb2.Append(headerFile);
-		IO::Path::GetRealPath(sbuff, sb2.ToString());
+		sptr = IO::Path::GetRealPath(sbuff, sb2.ToString());
 
 		if (IO::Path::GetPathType(sbuff) == IO::Path::PathType::File)
 		{
@@ -670,7 +673,7 @@ Bool IO::SMake::ParseHeader(Data::ArrayListString *objList, Data::ArrayListStrin
 			{
 				headerList->SortedInsert(headerFile);
 			}
-			if (this->ParseSource(objList, libList, procList, headerList, latestTime, sbuff))
+			if (this->ParseSource(objList, libList, procList, headerList, latestTime, sbuff, (UOSInt)(sptr - sbuff)))
 			{
 				fileTimeMap->Put(headerFile, *latestTime);
 				return true;
@@ -682,27 +685,28 @@ Bool IO::SMake::ParseHeader(Data::ArrayListString *objList, Data::ArrayListStrin
 		}
 	}
 	sb.ClearStr();
-	sb.Append(sourceFile);
+	sb.AppendC(sourceFile, sourceFileLen);
 	sb.Replace('\\', '/');
 	i = sb.LastIndexOf('/');
 	sb.TrimToLength(i);
 	const UTF8Char *currHeader = headerFile->v;
-	while (Text::StrStartsWith(currHeader, (const UTF8Char*)"../"))
+	const UTF8Char *currHeaderEnd = &headerFile->v[headerFile->leng];
+	while (Text::StrStartsWithC(currHeader, (UOSInt)(currHeaderEnd - currHeader), UTF8STRC("../")))
 	{
 		i = sb.LastIndexOf('/');
 		sb.TrimToLength(i);
 		currHeader = currHeader + 3;
 	}
 	sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
-	sb.Append(currHeader);
-	IO::Path::GetRealPath(sbuff, sb.ToString());
+	sb.AppendC(currHeader, (UOSInt)(currHeaderEnd - currHeader));
+	sptr = IO::Path::GetRealPath(sbuff, sb.ToString());
 	if (IO::Path::GetPathType(sbuff) == IO::Path::PathType::File)
 	{
 		if (headerList && headerList->SortedIndexOf(headerFile) < 0)
 		{
 			headerList->SortedInsert(headerFile);
 		}
-		if (this->ParseSource(objList, libList, procList, headerList, latestTime, sbuff))
+		if (this->ParseSource(objList, libList, procList, headerList, latestTime, sbuff, (UOSInt)(sptr - sbuff)))
 		{
 			fileTimeMap->Put(headerFile, *latestTime);
 			return true;
@@ -718,8 +722,8 @@ Bool IO::SMake::ParseHeader(Data::ArrayListString *objList, Data::ArrayListStrin
 	sb2.AppendC(UTF8STRC("Include file "));
 	sb2.Append(headerFile);
 	sb2.AppendC(UTF8STRC(" not found in "));
-	sb2.Append(sourceFile);
-	this->SetErrorMsg(sb2.ToString());
+	sb2.AppendC(sourceFile, sourceFileLen);
+	this->SetErrorMsg(sb2.ToString(), sb2.GetLength());
 	return false;
 }
 
@@ -735,7 +739,7 @@ Bool IO::SMake::ParseProgInternal(Data::ArrayListString *objList, Data::ArrayLis
 	while (i-- > 0)
 	{
 		subItem = prog->subItems->GetItem(i);
-		if (subItem->EndsWith((const UTF8Char*)".o"))
+		if (subItem->EndsWith(UTF8STRC(".o")))
 		{
 			*progGroup = false;
 		}
@@ -757,11 +761,11 @@ Bool IO::SMake::ParseProgInternal(Data::ArrayListString *objList, Data::ArrayLis
 			sb.AppendC(UTF8STRC("Item "));
 			sb.Append(cfg->value);
 			sb.AppendC(UTF8STRC(" not found"));
-			this->SetErrorMsg(sb.ToString());
+			this->SetErrorMsg(sb.ToString(), sb.GetLength());
 			return false;
 		}
 		objList->SortedInsert(cfg->value);
-		if (!this->ParseSource(objList, libList, procList, headerList, &thisTime, subProg->srcFile->v))
+		if (!this->ParseSource(objList, libList, procList, headerList, &thisTime, subProg->srcFile->v, subProg->srcFile->leng))
 		{
 			return false;
 		}
@@ -780,10 +784,10 @@ Bool IO::SMake::ParseProgInternal(Data::ArrayListString *objList, Data::ArrayLis
 			sb.AppendC(UTF8STRC("Item "));
 			sb.Append(subItem);
 			sb.AppendC(UTF8STRC(" not found"));
-			this->SetErrorMsg(sb.ToString());
+			this->SetErrorMsg(sb.ToString(), sb.GetLength());
 			return false;
 		}
-		if (!this->ParseSource(objList, libList, procList, headerList, &thisTime, subProg->srcFile->v))
+		if (!this->ParseSource(objList, libList, procList, headerList, &thisTime, subProg->srcFile->v, subProg->srcFile->leng))
 		{
 			return false;
 		}
@@ -854,7 +858,7 @@ Bool IO::SMake::CompileProgInternal(IO::SMake::ProgramItem *prog, Bool asmListin
 				sb.AppendC(UTF8STRC("Program "));
 				sb.Append(objList.GetItem(i));
 				sb.AppendC(UTF8STRC(" not found"));
-				this->SetErrorMsg(sb.ToString());
+				this->SetErrorMsg(sb.ToString(), sb.GetLength());
 				return false;
 			}
 			if (!this->CompileProgInternal(subProg, asmListing))
@@ -879,21 +883,21 @@ Bool IO::SMake::CompileProgInternal(IO::SMake::ProgramItem *prog, Bool asmListin
 	Bool errorState = false;
 	if (cppCfg == 0)
 	{
-		this->SetErrorMsg((const UTF8Char*)"CXX config not found");
+		this->SetErrorMsg(UTF8STRC("CXX config not found"));
 		return false;
 	}
 	if (ccCfg == 0)
 	{
-		this->SetErrorMsg((const UTF8Char*)"CC config not found");
+		this->SetErrorMsg(UTF8STRC("CC config not found"));
 		return false;
 	}
 	if (asmCfg == 0)
 	{
-		this->SetErrorMsg((const UTF8Char*)"ASM config not found");
+		this->SetErrorMsg(UTF8STRC("ASM config not found"));
 		return false;
 	}
 	
-	IO::Path::CreateDirectory(OBJECTPATH);
+	IO::Path::CreateDirectory((const UTF8Char*)OBJECTPATH);
 	i = 0;
 	j = objList.GetCount();
 	while (i < j)
@@ -905,7 +909,7 @@ Bool IO::SMake::CompileProgInternal(IO::SMake::ProgramItem *prog, Bool asmListin
 			sb.AppendC(UTF8STRC("Object "));
 			sb.Append(objList.GetItem(i));
 			sb.AppendC(UTF8STRC(" not found"));
-			this->SetErrorMsg(sb.ToString());
+			this->SetErrorMsg(sb.ToString(), sb.GetLength());
 			return false;
 		}
 		if (subProg->srcFile == 0)
@@ -914,7 +918,7 @@ Bool IO::SMake::CompileProgInternal(IO::SMake::ProgramItem *prog, Bool asmListin
 			sb.AppendC(UTF8STRC("Object "));
 			sb.Append(objList.GetItem(i));
 			sb.AppendC(UTF8STRC(" does not have source file"));
-			this->SetErrorMsg(sb.ToString());
+			this->SetErrorMsg(sb.ToString(), sb.GetLength());
 			return false;
 		}
 
@@ -946,7 +950,7 @@ Bool IO::SMake::CompileProgInternal(IO::SMake::ProgramItem *prog, Bool asmListin
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("Source file time cannot get: "));
 				sb.Append(subProg->srcFile);
-				this->SetErrorMsg(sb.ToString());
+				this->SetErrorMsg(sb.ToString(), sb.GetLength());
 				return false;
 			}
 			lastTime = dt1.ToTicks();
@@ -957,7 +961,7 @@ Bool IO::SMake::CompileProgInternal(IO::SMake::ProgramItem *prog, Bool asmListin
 			}
 
 			sb.ClearStr();
-			sb.Append(OBJECTPATH);
+			sb.AppendC(UTF8STRC(OBJECTPATH));
 			sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
 			sb.Append(subProg->name);
 			if (IO::Path::GetFileTime(sb.ToString(), &dt2, 0, 0))
@@ -991,7 +995,7 @@ Bool IO::SMake::CompileProgInternal(IO::SMake::ProgramItem *prog, Bool asmListin
 		
 		if (!updateToDate)
 		{
-			if (subProg->srcFile->EndsWith((const UTF8Char*)".cpp"))
+			if (subProg->srcFile->EndsWith(UTF8STRC(".cpp")))
 			{
 				sb.ClearStr();
 				AppendCfgPath(&sb, cppCfg->value->v);
@@ -1009,14 +1013,14 @@ Bool IO::SMake::CompileProgInternal(IO::SMake::ProgramItem *prog, Bool asmListin
 				if (asmListing)
 				{
 					sb.AppendC(UTF8STRC("-Wa,-adhln="));
-					sb.Append(OBJECTPATH);
+					sb.AppendC(UTF8STRC(OBJECTPATH));
 					sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
 					sb.Append(subProg->name);
 					sb.RemoveChars(1);
 					sb.AppendC(UTF8STRC("s "));
 				}
 				sb.AppendC(UTF8STRC("-c -o "));
-				sb.Append(OBJECTPATH);
+				sb.AppendC(UTF8STRC(OBJECTPATH));
 				sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
 				sb.Append(subProg->name);
 				sb.AppendChar(' ', 1);
@@ -1031,7 +1035,7 @@ Bool IO::SMake::CompileProgInternal(IO::SMake::ProgramItem *prog, Bool asmListin
 
 				this->CompileObject(&errorState, sb.ToString(), sb.GetLength());
 			}
-			else if (subProg->srcFile->EndsWith((const UTF8Char*)".c"))
+			else if (subProg->srcFile->EndsWith(UTF8STRC(".c")))
 			{
 				sb.ClearStr();
 				AppendCfgPath(&sb, ccCfg->value->v);
@@ -1044,14 +1048,14 @@ Bool IO::SMake::CompileProgInternal(IO::SMake::ProgramItem *prog, Bool asmListin
 				if (asmListing)
 				{
 					sb.AppendC(UTF8STRC("-Wa,-adhln="));
-					sb.Append(OBJECTPATH);
+					sb.AppendC(UTF8STRC(OBJECTPATH));
 					sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
 					sb.Append(subProg->name);
 					sb.RemoveChars(1);
 					sb.AppendC(UTF8STRC("s "));
 				}
 				sb.AppendC(UTF8STRC("-c -o "));
-				sb.Append(OBJECTPATH);
+				sb.AppendC(UTF8STRC(OBJECTPATH));
 				sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
 				sb.Append(subProg->name);
 				sb.AppendChar(' ', 1);
@@ -1065,7 +1069,7 @@ Bool IO::SMake::CompileProgInternal(IO::SMake::ProgramItem *prog, Bool asmListin
 				}
 				this->CompileObject(&errorState, sb.ToString(), sb.GetLength());
 			}
-			else if (subProg->srcFile->EndsWith((const UTF8Char*)".asm"))
+			else if (subProg->srcFile->EndsWith(UTF8STRC(".asm")))
 			{
 				sb.ClearStr();
 				AppendCfgPath(&sb, asmCfg->value->v);
@@ -1076,7 +1080,7 @@ Bool IO::SMake::CompileProgInternal(IO::SMake::ProgramItem *prog, Bool asmListin
 					sb.AppendChar(' ', 1);
 				}
 				sb.AppendC(UTF8STRC("-o "));
-				sb.Append(OBJECTPATH);
+				sb.AppendC(UTF8STRC(OBJECTPATH));
 				sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
 				sb.Append(subProg->name);
 				sb.AppendChar(' ', 1);
@@ -1090,7 +1094,7 @@ Bool IO::SMake::CompileProgInternal(IO::SMake::ProgramItem *prog, Bool asmListin
 				}
 				this->CompileObject(&errorState, sb.ToString(), sb.GetLength());
 			}
-			else if (subProg->srcFile->EndsWith((const UTF8Char*)".s"))
+			else if (subProg->srcFile->EndsWith(UTF8STRC(".s")))
 			{
 
 			}
@@ -1100,7 +1104,7 @@ Bool IO::SMake::CompileProgInternal(IO::SMake::ProgramItem *prog, Bool asmListin
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("Unknown source file format "));
 				sb.Append(subProg->srcFile);
-				this->SetErrorMsg(sb.ToString());
+				this->SetErrorMsg(sb.ToString(), sb.GetLength());
 				return false;
 			}
 		}
@@ -1147,7 +1151,7 @@ Bool IO::SMake::CompileProgInternal(IO::SMake::ProgramItem *prog, Bool asmListin
 	while (i < j)
 	{
 		sb.AppendChar(' ', 1);
-		sb.Append(OBJECTPATH);
+		sb.AppendC(UTF8STRC(OBJECTPATH));
 		sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
 		sb.Append(objList.GetItem(i));
 		i++;
@@ -1173,11 +1177,11 @@ Bool IO::SMake::CompileProgInternal(IO::SMake::ProgramItem *prog, Bool asmListin
 	return true;
 }
 
-void IO::SMake::SetErrorMsg(const UTF8Char *msg)
+void IO::SMake::SetErrorMsg(const UTF8Char *msg, UOSInt msgLen)
 {
 	Sync::MutexUsage mutUsage(this->errorMsgMut);
-	SDEL_TEXT(this->errorMsg);
-	this->errorMsg = Text::StrCopyNew(msg);
+	SDEL_STRING(this->errorMsg);
+	this->errorMsg = Text::String::New(msg, msgLen);
 }
 
 IO::SMake::SMake(const UTF8Char *cfgFile, UOSInt threadCnt, IO::Writer *messageWriter) : IO::ParsedObject(cfgFile)
@@ -1192,7 +1196,7 @@ IO::SMake::SMake(const UTF8Char *cfgFile, UOSInt threadCnt, IO::Writer *messageW
 	UTF8Char sbuff[512];
 	if (i != INVALID_INDEX)
 	{
-		this->basePath = Text::StrCopyNewC(cfgFile, i + 1);
+		this->basePath = Text::String::New(cfgFile, i + 1);
 	}
 	else
 	{
@@ -1202,7 +1206,7 @@ IO::SMake::SMake(const UTF8Char *cfgFile, UOSInt threadCnt, IO::Writer *messageW
 			*sptr++ = IO::Path::PATH_SEPERATOR;
 			*sptr = 0;
 		}
-		this->basePath = Text::StrCopyNew(sbuff);
+		this->basePath = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 	}
 	this->messageWriter = messageWriter;
 	this->debugObj = 0;
@@ -1255,9 +1259,9 @@ IO::SMake::~SMake()
 	DEL_CLASS(fileTimeMap);
 	DEL_CLASS(this->tasks);
 	DEL_CLASS(this->errorMsgMut);
-	SDEL_TEXT(this->errorMsg);
-	SDEL_TEXT(this->basePath);
-	SDEL_TEXT(this->debugObj);
+	SDEL_STRING(this->errorMsg);
+	SDEL_STRING(this->basePath);
+	SDEL_STRING(this->debugObj);
 }
 
 IO::ParserType IO::SMake::GetParserType()
@@ -1296,12 +1300,12 @@ void IO::SMake::SetCommandWriter(IO::Writer *cmdWriter)
 	this->cmdWriter = cmdWriter;
 }
 
-void IO::SMake::SetDebugObj(const UTF8Char *debugObj)
+void IO::SMake::SetDebugObj(const UTF8Char *debugObj, UOSInt len)
 {
-	SDEL_TEXT(this->debugObj);
+	SDEL_STRING(this->debugObj);
 	if (debugObj)
 	{
-		this->debugObj = Text::StrCopyNew(debugObj);
+		this->debugObj = Text::String::New(debugObj, len);
 	}
 }
 
@@ -1333,7 +1337,7 @@ Bool IO::SMake::CompileProg(const UTF8Char *progName, Bool asmListing)
 		sb.AppendC(UTF8STRC("Program "));
 		sb.Append(progName);
 		sb.AppendC(UTF8STRC(" not found"));
-		this->SetErrorMsg(sb.ToString());
+		this->SetErrorMsg(sb.ToString(), sb.GetLength());
 		return false;
 	}
 	else
@@ -1351,7 +1355,7 @@ Bool IO::SMake::ParseProg(Data::ArrayListString *objList, Data::ArrayListString 
 		sb.AppendC(UTF8STRC("Program "));
 		sb.AppendC(progName->v, progName->leng);
 		sb.AppendC(UTF8STRC(" not found"));
-		this->SetErrorMsg(sb.ToString());
+		this->SetErrorMsg(sb.ToString(), sb.GetLength());
 		return false;
 	}
 	else
@@ -1365,7 +1369,7 @@ void IO::SMake::CleanFiles()
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
 	IO::Path::PathType pt;
-	sptr = Text::StrConcat(Text::StrConcat(sbuff, this->basePath), OBJECTPATH);
+	sptr = Text::StrConcatC(this->basePath->ConcatTo(sbuff), UTF8STRC(OBJECTPATH));
 	*sptr++ = IO::Path::PATH_SEPERATOR;
 	Text::StrConcatC(sptr, UTF8STRC("*.o"));
 	IO::Path::FindFileSession *sess = IO::Path::FindFile(sbuff);
@@ -1392,11 +1396,11 @@ UOSInt IO::SMake::GetProgList(Data::ArrayList<Text::String*> *progList)
 	while (i < j)
 	{
 		prog = this->progMap->GetKey(i);
-		if (prog->EndsWith((const UTF8Char*)".o"))
+		if (prog->EndsWith(UTF8STRC(".o")))
 		{
 
 		}
-		else if (prog->EndsWith((const UTF8Char*)".h"))
+		else if (prog->EndsWith(UTF8STRC(".h")))
 		{
 
 		}
@@ -1423,7 +1427,7 @@ Bool IO::SMake::IsProgGroup(const UTF8Char *progName)
 	while (i-- > 0)
 	{
 		subItem = prog->subItems->GetItem(i);
-		if (subItem->EndsWith((const UTF8Char*)".o"))
+		if (subItem->EndsWith(UTF8STRC(".o")))
 		{
 			return false;
 		}

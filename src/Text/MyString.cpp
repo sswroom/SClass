@@ -104,7 +104,7 @@ UTF8Char *Text::StrConcatS(UTF8Char *oriStr, const UTF8Char *strToJoin, UOSInt b
 
 UTF8Char *Text::StrConcatC(UTF8Char *oriStr, const UTF8Char *strToJoin, UOSInt charCnt)
 {
-	MemCopyNO(oriStr, strToJoin, charCnt);
+	MemCopyO(oriStr, strToJoin, charCnt);
 	oriStr[charCnt] = 0;
 	return &oriStr[charCnt];
 }
@@ -1694,7 +1694,7 @@ UOSInt Text::StrSplitWSP(Text::PString *strs, UOSInt maxStrs, UTF8Char *strToSpl
 		}
 		if (c != 32 && c != '\t')
 		{
-			strs[0].len = strLen - (strToSplit - strs[0].v - 1);
+			strs[0].len = strLen - (UOSInt)(strToSplit - strs[0].v - 1);
 			strs[0].v = strToSplit;
 			i = 1;
 			break;
@@ -1720,7 +1720,7 @@ UOSInt Text::StrSplitWSP(Text::PString *strs, UOSInt maxStrs, UTF8Char *strToSpl
 				if (c != 32 && c != '\t')
 				{
 					strs[i].v = strToSplit - 1;
-					strs[i].len = strs[i].len - (strToSplit - strs[i - 1].v - 1);
+					strs[i].len = strs[i].len - (UOSInt)(strToSplit - strs[i - 1].v - 1);
 					i++;
 					break;
 				}
@@ -2643,6 +2643,15 @@ Bool Text::StrEndsWithICase(const UTF8Char *str1, const UTF8Char *str2)
 			return false;
 	}
 	return true;
+}
+
+Bool Text::StrEndsWithICaseC(const UTF8Char *str1, UOSInt len1, const UTF8Char *str2, UOSInt len2)
+{
+	if (len1 < len2)
+	{
+		return false;
+	}
+	return Text::StrEqualsICase(&str1[len1 - len2], str2);
 }
 
 Bool Text::StrIsInt32(const UTF8Char *intStr)

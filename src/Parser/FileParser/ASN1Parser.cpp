@@ -39,7 +39,7 @@ IO::ParsedObject *Parser::FileParser::ASN1Parser::ParseFile(IO::IStreamData *fd,
 	UInt8 *buff;
 	UInt64 fsize = fd->GetDataSize();
 	Text::String *fname = fd->GetFullFileName();
-	if (fname->EndsWithICase((const UTF8Char*)".JKS") && fsize <= 65536)
+	if (fname->EndsWithICase(UTF8STRC(".JKS")) && fsize <= 65536)
 	{
 		buff = MemAlloc(UInt8, (UOSInt)fsize);
 		if (fd->GetRealData(0, (UOSInt)fsize, buff) == fsize && Net::ASN1Util::PDUIsValid(buff, buff + (UOSInt)fsize))

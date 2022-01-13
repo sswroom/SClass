@@ -67,7 +67,7 @@ namespace SSWR
 			static void __stdcall OnTimeAddClicked(void *userObj);
 			static void __stdcall OnTimeSubClicked(void *userObj);
 			static void __stdcall OnTimeApplyClicked(void *userObj);
-			void UpdateSelTime(const UTF8Char *camera, Int32 timeAdj);
+			void UpdateSelTime(const UTF8Char *camera, UOSInt cameraLen, Int32 timeAdj);
 		public:
 			OrganTimeAdjForm(UI::GUIClientControl *parent, UI::GUICore *ui, OrganEnv *env, DataFileInfo *dataFile);
 			virtual ~OrganTimeAdjForm();

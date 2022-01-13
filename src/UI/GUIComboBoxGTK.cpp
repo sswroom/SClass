@@ -81,7 +81,7 @@ void UI::GUIComboBox::EventTextChanged()
 			UOSInt j = this->itemTexts->GetCount();
 			while (i < j)
 			{
-				if (this->itemTexts->GetItem(i)->StartsWith(sb.ToString()))
+				if (this->itemTexts->GetItem(i)->StartsWith(sb.ToString(), sb.GetLength()))
 				{
 					this->SetText(this->itemTexts->GetItem(i)->v);
 					//this->SetSelectedIndex(i);
@@ -108,7 +108,7 @@ void UI::GUIComboBox::SetText(const UTF8Char *text)
 		UOSInt i = this->itemTexts->GetCount();
 		while (i-- > 0)
 		{
-			if (this->itemTexts->GetItem(i)->Equals(text))
+			if (this->itemTexts->GetItem(i)->Equals(text, Text::StrCharCnt(text)))
 			{
 				this->SetSelectedIndex(i);
 				return;

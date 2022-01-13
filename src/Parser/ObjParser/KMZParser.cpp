@@ -46,6 +46,7 @@ IO::ParsedObject *Parser::ObjParser::KMZParser::ParseObject(IO::ParsedObject *po
 	IO::PackageFile *pkg = (IO::PackageFile*)pobj;
 	IO::ParserType pt;
 	UTF8Char u8buff[256];
+	UTF8Char *sptr;
 	Data::ArrayList<IO::ParsedObject*> *pobjList;
 	IO::IStreamData *fd;
 	IO::ParsedObject *pobj2;
@@ -56,8 +57,8 @@ IO::ParsedObject *Parser::ObjParser::KMZParser::ParseObject(IO::ParsedObject *po
 	j = pkg->GetCount();
 	while (i < j)
 	{
-		pkg->GetItemName(u8buff, i);
-		if (Text::StrEndsWith(u8buff, (const UTF8Char*)".kml"))
+		sptr = pkg->GetItemName(u8buff, i);
+		if (Text::StrEndsWithC(u8buff, (UOSInt)(sptr - u8buff), UTF8STRC(".kml")))
 		{
 			fd = pkg->GetItemStmData(i);
 			if (fd)
@@ -66,7 +67,7 @@ IO::ParsedObject *Parser::ObjParser::KMZParser::ParseObject(IO::ParsedObject *po
 				DEL_CLASS(fd);
 				if (pobj2)
 				{
-					if (pobj->GetSourceNameObj()->EndsWithICase((const UTF8Char*)".kmz"))
+					if (pobj->GetSourceNameObj()->EndsWithICase(UTF8STRC(".kmz")))
 					{
 						pobj2->SetSourceName(pobj->GetSourceNameObj());
 					}

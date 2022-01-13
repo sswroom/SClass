@@ -87,7 +87,7 @@ void __stdcall SSWR::OrganMgr::OrganTimeAdjForm::OnPictureChg(void *userObj)
 
 		Int32 timeAdj;
 		timeAdj = me->cameraMap->Get(userFile->camera->v);
-		me->UpdateSelTime(userFile->camera->v, timeAdj);
+		me->UpdateSelTime(userFile->camera->v, userFile->camera->leng, timeAdj);
 	}
 }
 
@@ -123,7 +123,7 @@ void __stdcall SSWR::OrganMgr::OrganTimeAdjForm::OnPasteClicked(void *userObj)
 			me->adjLyr->SetTimeAdj(sb.ToString(), timeAdj);
 			me->mapMain->UpdateMap();
 			me->mapMain->Redraw();
-			me->UpdateSelTime(sb.ToString(), timeAdj);
+			me->UpdateSelTime(sb.ToString(), sb.GetLength(), timeAdj);
 		}
 	}
 }
@@ -138,7 +138,7 @@ void __stdcall SSWR::OrganMgr::OrganTimeAdjForm::OnTimeAddClicked(void *userObj)
 	timeAdj = me->cameraMap->Get(sb.ToString());
 	timeAdj++;
 	me->adjLyr->SetTimeAdj(sb.ToString(), timeAdj);
-	me->UpdateSelTime(sb.ToString(), timeAdj);
+	me->UpdateSelTime(sb.ToString(), sb.GetLength(), timeAdj);
 	me->cameraMap->Put(sb.ToString(), timeAdj);
 	Text::StrInt32(sbuff, timeAdj);
 	me->txtTimeAdj->SetText(sbuff);
@@ -156,7 +156,7 @@ void __stdcall SSWR::OrganMgr::OrganTimeAdjForm::OnTimeSubClicked(void *userObj)
 	timeAdj = me->cameraMap->Get(sb.ToString());
 	timeAdj--;
 	me->adjLyr->SetTimeAdj(sb.ToString(), timeAdj);
-	me->UpdateSelTime(sb.ToString(), timeAdj);
+	me->UpdateSelTime(sb.ToString(), sb.GetLength(), timeAdj);
 	me->cameraMap->Put(sb.ToString(), timeAdj);
 	Text::StrInt32(sbuff, timeAdj);
 	me->txtTimeAdj->SetText(sbuff);
@@ -185,7 +185,7 @@ void __stdcall SSWR::OrganMgr::OrganTimeAdjForm::OnTimeApplyClicked(void *userOb
 	while (i < j)
 	{
 		userFile = me->userFileList->GetItem(i);
-		if (userFile->camera && userFile->camera->Equals(sb.ToString()))
+		if (userFile->camera && userFile->camera->Equals(sb.ToString(), sb.GetLength()))
 		{
 			dt.SetTicks(userFile->fileTimeTicks);
 			dt.AddSecond(timeAdj);
@@ -209,10 +209,10 @@ void __stdcall SSWR::OrganMgr::OrganTimeAdjForm::OnTimeApplyClicked(void *userOb
 	UI::MessageDialog::ShowDialog(sb.ToString(), (const UTF8Char*)"Time Adjust", me);
 }
 
-void SSWR::OrganMgr::OrganTimeAdjForm::UpdateSelTime(const UTF8Char *camera, Int32 timeAdj)
+void SSWR::OrganMgr::OrganTimeAdjForm::UpdateSelTime(const UTF8Char *camera, UOSInt cameraLen, Int32 timeAdj)
 {
 	Data::DateTime dt;
-	if (this->selImgCamera && this->selImgCamera->Equals(camera))
+	if (this->selImgCamera && this->selImgCamera->Equals(camera, cameraLen))
 	{
 		Double lat;
 		Double lon;

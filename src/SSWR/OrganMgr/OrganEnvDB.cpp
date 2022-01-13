@@ -1266,7 +1266,7 @@ SSWR::OrganMgr::OrganSpecies *SSWR::OrganMgr::OrganEnvDB::GetSpecies(Int32 speci
 UTF8Char *SSWR::OrganMgr::OrganEnvDB::GetSpeciesDir(OrganSpecies *sp, UTF8Char *sbuff)
 {
 	UTF8Char *sptr;
-	if (this->currCate->srcDir->IndexOf((const UTF8Char*)":\\") != INVALID_INDEX)
+	if (this->currCate->srcDir->IndexOf(UTF8STRC(":\\")) != INVALID_INDEX)
 	{
 		sptr = Text::StrConcatC(sbuff, this->currCate->srcDir->v, this->currCate->srcDir->leng);
 		*sptr++ = IO::Path::PATH_SEPERATOR;
@@ -2007,7 +2007,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 	}
 }
 
-SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesWebFile(OrganSpecies *sp, const UTF8Char *srcURL, const UTF8Char *imgURL, IO::Stream *stm, UTF8Char *webFileName)
+SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesWebFile(OrganSpecies *sp, Text::String *srcURL, Text::String *imgURL, IO::Stream *stm, UTF8Char *webFileName)
 {
 	UTF8Char sbuff2[2048];
 	UTF8Char *sptr2;
@@ -2042,11 +2042,10 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesWeb
 		return SSWR::OrganMgr::OrganEnvDB::FS_ERROR;
 	}
 
-	i = Text::StrCharCnt(imgURL);
 	UInt32 crcVal;
 	UInt8 crcBuff[4];
 	Crypto::Hash::CRC32R crc;
-	crc.Calc(imgURL, i);
+	crc.Calc(imgURL->v, imgURL->leng);
 	crc.GetValue(crcBuff);
 	crcVal = ReadMUInt32(crcBuff);
 	if (crcVal == 0)
@@ -2072,9 +2071,9 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesWeb
 	sql.AppendCmdC(UTF8STRC(", "));
 	sql.AppendInt32((Int32)crcVal);
 	sql.AppendCmdC(UTF8STRC(", "));
-	sql.AppendStrUTF8(imgURL);
+	sql.AppendStr(imgURL);
 	sql.AppendCmdC(UTF8STRC(", "));
-	sql.AppendStrUTF8(srcURL);
+	sql.AppendStr(srcURL);
 	sql.AppendCmdC(UTF8STRC(", "));
 	sql.AppendInt32(0);
 	sql.AppendCmdC(UTF8STRC(", "));
@@ -2095,8 +2094,8 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesWeb
 		wfile = MemAlloc(WebFileInfo, 1);
 		wfile->id = id;
 		wfile->speciesId = sp->GetSpeciesId();
-		wfile->imgUrl = Text::String::NewNotNull(imgURL);
-		wfile->srcUrl = Text::String::NewNotNull(srcURL);
+		wfile->imgUrl = imgURL->Clone();
+		wfile->srcUrl = srcURL->Clone();
 		wfile->location = Text::String::NewEmpty();
 		wfile->crcVal = crcVal;
 		wfile->cropLeft = 0;
@@ -2146,7 +2145,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesWeb
 	return SSWR::OrganMgr::OrganEnvDB::FS_SUCCESS;
 }
 
-SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesWebFileOld(OrganSpecies *sp, const UTF8Char *srcURL, const UTF8Char *imgURL, IO::Stream *stm, UTF8Char *webFileName)
+SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesWebFileOld(OrganSpecies *sp, Text::String *srcURL, Text::String *imgURL, IO::Stream *stm, UTF8Char *webFileName)
 {
 	UTF8Char sbuff[512];
 	UTF8Char fileName[32];
@@ -2187,22 +2186,21 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesWeb
 		return SSWR::OrganMgr::OrganEnvDB::FS_ERROR;
 	}
 
-	i = Text::StrCharCnt(imgURL);
 	UInt32 crcVal;
 	UInt8 crcBuff[4];
 	Crypto::Hash::CRC32R crc;
-	crc.Calc(imgURL, i);
+	crc.Calc(imgURL->v, imgURL->leng);
 	crc.GetValue(crcBuff);
 	crcVal = ReadMUInt32(crcBuff);
 	
-	i = Text::StrLastIndexOf(imgURL, '.');
-	if (Text::StrCharCnt(&imgURL[i + 1]) > 4)
+	i = Text::StrLastIndexOf(imgURL->v, '.');
+	if ((imgURL->leng - i - 1) > 4)
 	{
 		Text::StrConcatC(Text::StrHexVal32(fileName, crcVal), UTF8STRC(".jpg"));
 	}
 	else
 	{
-		Text::StrConcat(Text::StrHexVal32(fileName, crcVal), &imgURL[i]);
+		Text::StrConcatC(Text::StrHexVal32(fileName, crcVal), &imgURL->v[i], imgURL->leng - i);
 	}
 	if (crcVal == 0)
 	{
@@ -2259,21 +2257,21 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesWeb
 	return SSWR::OrganMgr::OrganEnvDB::FS_SUCCESS;
 }
 
-Bool SSWR::OrganMgr::OrganEnvDB::UpdateSpeciesWebFile(OrganSpecies *sp, WebFileInfo *wfile, const UTF8Char *srcURL, const UTF8Char *location)
+Bool SSWR::OrganMgr::OrganEnvDB::UpdateSpeciesWebFile(OrganSpecies *sp, WebFileInfo *wfile, Text::String *srcURL, Text::String *location)
 {
 	DB::SQLBuilder sql(this->db);
 	sql.AppendCmdC(UTF8STRC("update webfile set srcUrl="));
-	sql.AppendStrUTF8(srcURL);
+	sql.AppendStr(srcURL);
 	sql.AppendCmdC(UTF8STRC(", location="));
-	sql.AppendStrUTF8(location);
+	sql.AppendStr(location);
 	sql.AppendCmdC(UTF8STRC(" where id="));
 	sql.AppendInt32(wfile->id);
 	if (this->db->ExecuteNonQueryC(sql.ToString(), sql.GetLength()) >= 0)
 	{
 		SDEL_STRING(wfile->srcUrl);
 		SDEL_STRING(wfile->location);
-		wfile->srcUrl = Text::String::NewNotNull(srcURL);
-		wfile->location = Text::String::NewNotNull(location);
+		wfile->srcUrl = srcURL->Clone();
+		wfile->location = location->Clone();
 		return true;
 	}
 	else
@@ -2672,7 +2670,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::MoveImages(Data::ArrayList<OrganImages*> *imgLi
 			}
 			*sptr2++ = IO::Path::PATH_SEPERATOR;
 			sptr2 = img->GetImgItem()->GetDispName()->ConcatTo(sptr2);
-			if (img->GetImgItem()->GetFullName()->Equals(sbuff))
+			if (img->GetImgItem()->GetFullName()->Equals(sbuff, (UOSInt)(sptr2 - sbuff)))
 			{
 				break;
 			}
@@ -2741,7 +2739,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::MoveImages(Data::ArrayList<OrganImages*> *imgLi
 			*sptr++ = IO::Path::PATH_SEPERATOR;
 			Text::StrConcatC(sptr, UTF8STRC("web.txt"));
 			Data::ArrayList<const UTF8Char *> webLines;
-			UTF8Char *sarr[4];
+			Text::PString sarr[4];
 			Bool found;
 			NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
 			NEW_CLASS(reader, IO::StreamReader(fs, 65001));
@@ -2749,7 +2747,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::MoveImages(Data::ArrayList<OrganImages*> *imgLi
 			while (reader->ReadLine(&sb, 512))
 			{
 				sb2.AppendC(sb.ToString(), sb.GetLength());
-				if (Text::StrSplit(sarr, 4, sb2.ToString(), '\t') == 3)
+				if (Text::StrSplitP(sarr, 4, sb2.ToString(), sb2.GetLength(), '\t') == 3)
 				{
 					found = false;
 					i = j;
@@ -2758,7 +2756,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::MoveImages(Data::ArrayList<OrganImages*> *imgLi
 						img = imgList->GetItem(i);
 						if (img->GetImgItem()->GetFileType() == OrganImageItem::FT_WEB_IMAGE)
 						{
-							if (img->GetImgItem()->GetDispName()->EndsWith(sarr[0]))
+							if (img->GetImgItem()->GetDispName()->EndsWith(sarr[0].v, sarr[0].len))
 							{
 								found = true;
 								break;
@@ -4782,7 +4780,7 @@ void SSWR::OrganMgr::OrganEnvDB::UpgradeDB2()
 						{
 							id = this->db->GetLastIdentity32();
 							
-							if (sp->photoId == 0 && sp->photoWId == 0 && sp->photoName && sp->photoName->StartsWith((const UTF8Char*)"web\\") && Text::StrStartsWith(cols[0], &sp->photoName->v[4]))
+							if (sp->photoId == 0 && sp->photoWId == 0 && sp->photoName && sp->photoName->StartsWith(UTF8STRC("web\\")) && Text::StrStartsWith(cols[0], &sp->photoName->v[4]))
 							{
 								isCover = true;
 							}
@@ -4862,7 +4860,7 @@ void SSWR::OrganMgr::OrganEnvDB::UpgradeDB2()
 			DEL_CLASS(reader);
 			DEL_CLASS(fs);
 
-			if (sp->photoId == 0 && sp->photoWId == 0 && sp->photoName && sp->photoName->StartsWith((const UTF8Char*)"web\\"))
+			if (sp->photoId == 0 && sp->photoWId == 0 && sp->photoName && sp->photoName->StartsWith(UTF8STRC("web\\")))
 			{
 				if (coverFound != 1)
 				{

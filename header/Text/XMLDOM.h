@@ -44,7 +44,7 @@ namespace Text
 		void AddChild(XMLNode *node);
 		UOSInt GetAttribCnt();
 		XMLAttrib *GetAttrib(UOSInt index);
-		XMLAttrib *GetFirstAttrib(const UTF8Char *attrName);
+		XMLAttrib *GetFirstAttrib(const UTF8Char *attrName, UOSInt nameLen);
 
 		UOSInt GetChildCnt();
 		XMLNode *GetChild(UOSInt index);

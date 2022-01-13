@@ -275,33 +275,71 @@ WChar *IO::Path::GetFileExtW(WChar *fileBuff, const WChar *path)
 
 UTF8Char *IO::Path::AppendPath(UTF8Char *path, const UTF8Char *toAppend)
 {
+	UOSInt toAppendLen = Text::StrCharCnt(toAppend);
 	if (toAppend[0] == '/')
-		return Text::StrConcat(path, toAppend);
+		return Text::StrConcatC(path, toAppend, toAppendLen);
 	UOSInt i = Text::StrLastIndexOf(path, '/');
 	UOSInt j = Text::StrCharCnt(path);
 	IO::Path::PathType pt = GetPathType(path);
 	if (pt == PathType::File && i != INVALID_INDEX)
 	{
 		path[i] = 0;
+		j = i;
 		i = Text::StrLastIndexOf(path, '/');
 	}
 	else if (i == j - 1)
 	{
 		path[i] = 0;
+		j = i;
 		i = Text::StrLastIndexOf(path, '/');
 	}
-	while (Text::StrStartsWith(toAppend, (const UTF8Char*)"../"))
+	while (Text::StrStartsWithC(toAppend, toAppendLen, UTF8STRC("../")))
 	{
 		if (i != INVALID_INDEX)
 		{
 			path[i] = 0;
+			j = i;
 			i = Text::StrLastIndexOf(path, '/');
 		}
 		toAppend += 3;
+		toAppendLen -= 3;
 	}
-	j = Text::StrCharCnt(path);
 	path[j] = '/';
-	return Text::StrConcat(&path[j + 1], toAppend);
+	return Text::StrConcatC(&path[j + 1], toAppend, toAppendLen);
+}
+
+UTF8Char *IO::Path::AppendPathC(UTF8Char *path, UTF8Char *pathEnd, const UTF8Char *toAppend, UOSInt toAppendLen)
+{
+	if (toAppend[0] == '/')
+		return Text::StrConcatC(path, toAppend, toAppendLen);
+	UOSInt i = Text::StrLastIndexOf(path, '/');
+	UOSInt j = (UOSInt)(pathEnd - path);
+	IO::Path::PathType pt = GetPathType(path);
+	if (pt == PathType::File && i != INVALID_INDEX)
+	{
+		path[i] = 0;
+		j = i;
+		i = Text::StrLastIndexOf(path, '/');
+	}
+	else if (i == j - 1)
+	{
+		path[i] = 0;
+		j = i;
+		i = Text::StrLastIndexOf(path, '/');
+	}
+	while (Text::StrStartsWithC(toAppend, toAppendLen, UTF8STRC("../")))
+	{
+		if (i != INVALID_INDEX)
+		{
+			path[i] = 0;
+			j = i;
+			i = Text::StrLastIndexOf(path, '/');
+		}
+		toAppend += 3;
+		toAppendLen -= 3;
+	}
+	path[j] = '/';
+	return Text::StrConcatC(&path[j + 1], toAppend, toAppendLen);
 }
 
 WChar *IO::Path::AppendPathW(WChar *path, const WChar *toAppend)
@@ -336,28 +374,30 @@ Bool IO::Path::AppendPath(Text::StringBuilderUTF8 *sb, const UTF8Char *toAppend)
 		sb->Append(toAppend);
 		return true;
 	}
-	UOSInt i = Text::StrLastIndexOf(sb->ToString(), '/');
-	if (GetPathType(sb->ToString()) == PathType::File && i != INVALID_INDEX)
+	UOSInt toAppendLen = Text::StrCharCnt(toAppend);
+	UTF8Char *sptr = sb->ToString();
+	UOSInt i = Text::StrLastIndexOf(sptr, '/');
+	if (GetPathType(sptr) == PathType::File && i != INVALID_INDEX)
 	{
 		sb->RemoveChars(sb->GetLength() - i);
-		i = Text::StrLastIndexOf(sb->ToString(), '/');
+		i = Text::StrLastIndexOf(sptr, '/');
 	}
 	else if (i == sb->GetCharCnt() - 1)
 	{
 		sb->RemoveChars(1);
-		i = Text::StrLastIndexOf(sb->ToString(), '/');
+		i = Text::StrLastIndexOf(sptr, '/');
 	}
-	while (Text::StrStartsWith(toAppend, (const UTF8Char*)"../"))
+	while (Text::StrStartsWithC(toAppend, toAppendLen, UTF8STRC("../")))
 	{
 		if (i != INVALID_INDEX)
 		{
 			sb->RemoveChars(sb->GetLength() - (UOSInt)i);
-			i = Text::StrLastIndexOf(sb->ToString(), '/');
+			i = Text::StrLastIndexOf(sptr, '/');
 		}
 		toAppend += 3;
 	}
 	sb->AppendChar('/', 1);
-	sb->Append(toAppend);
+	sb->AppendC(toAppend, toAppendLen);
 	return true;
 }
 
@@ -692,7 +732,8 @@ Bool IO::Path::FileNameMatch(const UTF8Char *path, const UTF8Char *searchPattern
 	UTF8Char sbuff[256];
 	UOSInt i = Text::StrLastIndexOf(path, '/');
 	const UTF8Char *fileName = &path[i + 1];
-	UTF8Char *patternEnd = Text::StrConcat(sbuff, searchPattern);
+	const UTF8Char *fileNameEnd = &fileName[Text::StrCharCnt(fileName)];
+	Text::StrConcat(sbuff, searchPattern);
 	Bool isWC = false;
 	UTF8Char *patternStart = 0;
 	UTF8Char *currPattern = sbuff;
@@ -706,11 +747,11 @@ Bool IO::Path::FileNameMatch(const UTF8Char *path, const UTF8Char *searchPattern
 			{
 				if (patternStart == 0)
 					return true;
-				return Text::StrEndsWith(fileName, patternStart);
+				return Text::StrEndsWithC(fileName, (UOSInt)(fileNameEnd - fileName), patternStart, (UOSInt)(currPattern - patternStart));
 			}
 			else if (patternStart)
 			{
-				return Text::StrEquals(fileName, patternStart);
+				return Text::StrEqualsC(fileName, (UOSInt)(fileNameEnd - fileName), patternStart, (UOSInt)(currPattern - patternStart));
 			}
 			else
 			{
@@ -724,7 +765,7 @@ Bool IO::Path::FileNameMatch(const UTF8Char *path, const UTF8Char *searchPattern
 				if (patternStart == 0)
 					return false;
 				*currPattern = 0;
-				if ((i = Text::StrIndexOf(fileName, patternStart)) == INVALID_INDEX)
+				if ((i = Text::StrIndexOfC(fileName, (UOSInt)(fileNameEnd - fileName), patternStart, (UOSInt)(currPattern - patternStart))) == INVALID_INDEX)
 					return false;
 				fileName += i + currPattern - patternStart;
 				patternStart = 0;
@@ -733,7 +774,7 @@ Bool IO::Path::FileNameMatch(const UTF8Char *path, const UTF8Char *searchPattern
 			else if (patternStart)
 			{
 				*currPattern = 0;
-				if (!Text::StrStartsWith(fileName, patternStart))
+				if (!Text::StrStartsWithC(fileName, (UOSInt)(fileNameEnd - fileName), patternStart, (UOSInt)(currPattern - patternStart)))
 					return false;
 				fileName += currPattern - patternStart;
 				patternStart = 0;
@@ -973,13 +1014,14 @@ Bool IO::Path::IsSearchPattern(const UTF8Char *path)
 UTF8Char *IO::Path::GetRealPath(UTF8Char *sbuff, const UTF8Char *path)
 {
 	UTF8Char *sptr;
-	if (Text::StrStartsWith(path, (const UTF8Char*)"~/"))
+	UOSInt pathLen = Text::StrCharCnt(path);
+	if (Text::StrStartsWithC(path, pathLen, UTF8STRC("~/")))
 	{
-		sptr = Text::StrConcat(IO::Path::GetUserHome(sbuff), path + 1);
+		sptr = Text::StrConcatC(IO::Path::GetUserHome(sbuff), path + 1, pathLen);
 	}
 	else
 	{
-		sptr = Text::StrConcat(sbuff, path);
+		sptr = Text::StrConcatC(sbuff, path, pathLen);
 	}
 	UTF8Char *sptr2 = sbuff;
 	UOSInt i;
@@ -1025,7 +1067,7 @@ UTF8Char *IO::Path::GetRealPath(UTF8Char *sbuff, const UTF8Char *path)
 				}
 				else
 				{
-					sptr = Text::StrConcat(&sbuff[i + 1], &sptr2[3]);
+					sptr = Text::StrConcatC(&sbuff[i + 1], &sptr2[3], (UOSInt)(sptr - &sptr2[3]));
 					sptr2 = &sbuff[i + 1];
 				}
 			}

@@ -135,7 +135,7 @@ Text::XMLAttrib *Text::XMLNode::GetAttrib(UOSInt index)
 	return this->attribArr->GetItem(index);
 }
 
-Text::XMLAttrib *Text::XMLNode::GetFirstAttrib(const UTF8Char *attrName)
+Text::XMLAttrib *Text::XMLNode::GetFirstAttrib(const UTF8Char *attrName, UOSInt nameLen)
 {
 	if (this->attribArr == 0)
 		return 0;
@@ -145,7 +145,7 @@ Text::XMLAttrib *Text::XMLNode::GetFirstAttrib(const UTF8Char *attrName)
 	while (i < cnt)
 	{
 		attr = this->attribArr->GetItem(i++);
-		if (attr->name->Equals(attrName))
+		if (attr->name->Equals(attrName, nameLen))
 			return attr;
 	}
 	return 0;

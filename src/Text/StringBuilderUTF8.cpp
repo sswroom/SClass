@@ -225,6 +225,15 @@ Bool Text::StringBuilderUTF8::EqualsC(const UTF8Char *s, UOSInt len)
 	return Text::StrEqualsC(this->buff, (UOSInt)(this->buffEnd - this->buff), s, len);
 }
 
+Bool Text::StringBuilderUTF8::EqualsICaseC(const UTF8Char *s, UOSInt len)
+{
+	if ((UOSInt)(this->buffEnd - this->buff) != len)
+	{
+		return false;
+	}
+	return Text::StrEqualsICase(this->buff, s);
+}
+
 Bool Text::StringBuilderUTF8::StartsWithC(const UTF8Char *s, UOSInt len)
 {
 	return Text::StrStartsWithC(this->buff, (UOSInt)(this->buffEnd - this->buff), s, len);
@@ -233,4 +242,14 @@ Bool Text::StringBuilderUTF8::StartsWithC(const UTF8Char *s, UOSInt len)
 UOSInt Text::StringBuilderUTF8::IndexOfC(const UTF8Char *s, UOSInt len)
 {
 	return Text::StrIndexOfC(this->buff, (UOSInt)(this->buffEnd - this->buff), s, len);
+}
+
+void Text::StringBuilderUTF8::TrimC()
+{
+	this->buffEnd = Text::StrTrimC(this->buff, (UOSInt)(this->buffEnd - this->buff));
+}
+
+void Text::StringBuilderUTF8::TrimC(UOSInt index)
+{
+	this->buffEnd = Text::StrTrimC(&this->buff[index], (UOSInt)(this->buffEnd - this->buff) - index);
 }

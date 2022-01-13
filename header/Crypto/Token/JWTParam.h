@@ -24,7 +24,7 @@ namespace Crypto
 			void Clear();
 			void SetIssuer(Text::String *issuer);
 			Text::String *GetIssuer();
-			Bool IsIssuerValid(const UTF8Char *issuer);
+			Bool IsIssuerValid(const UTF8Char *issuer, UOSInt issuerLen);
 			void SetSubject(Text::String *subject);
 			Text::String *GetSubject();
 			void SetAudience(Text::String *audience);

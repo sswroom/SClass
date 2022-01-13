@@ -447,7 +447,7 @@ Bool Net::ACMEConn::AccountNew()
 			{
 				Text::JSONObject *o = (Text::JSONObject*)base;
 				Text::String *s = o->GetObjectString((const UTF8Char*)"type");
-				if (s && s->Equals((const UTF8Char*)"urn:ietf:params:acme:error:accountDoesNotExist"))
+				if (s && s->Equals(UTF8STRC("urn:ietf:params:acme:error:accountDoesNotExist")))
 				{
 					Text::StringBuilderUTF8 sb;
 					sb.AppendC(UTF8STRC("{\"termsOfServiceAgreed\":true"));
@@ -578,8 +578,8 @@ Net::ACMEConn::Challenge *Net::ACMEConn::OrderAuthorize(Text::String *authorizeU
 		cli->ReadToEnd(&mstm, 2048);
 		DEL_CLASS(cli);
 
-		const UTF8Char *sAuthType = AuthorizeTypeGetName(authType);
-		if (sAuthType == 0 || Text::StrEqualsICase(sAuthType, (const UTF8Char*)"UNKNOWN"))
+		Text::CString sAuthType = AuthorizeTypeGetName(authType);
+		if (sAuthType.v == 0 || Text::StrEqualsICase(sAuthType.v, (const UTF8Char*)"UNKNOWN"))
 		{
 			return 0;
 		}
@@ -611,7 +611,7 @@ Net::ACMEConn::Challenge *Net::ACMEConn::OrderAuthorize(Text::String *authorizeU
 				if (json)
 				{
 					s = json->GetString("type");
-					if (s && s->EqualsICase(sAuthType))
+					if (s && s->EqualsICase(sAuthType.v, sAuthType.len))
 					{
 						ret = ChallengeJSON(json);
 						break;
@@ -765,42 +765,42 @@ Net::ACMEConn::ACMEStatus Net::ACMEConn::ACMEStatusFromString(Text::String* stat
 	{
 		return ACMEStatus::Unknown;
 	}
-	if (status->EqualsICase((const UTF8Char*)"pending"))
+	if (status->EqualsICase(UTF8STRC("pending")))
 	{
 		return ACMEStatus::Pending;
 	}
-	else if (status->EqualsICase((const UTF8Char*)"ready"))
+	else if (status->EqualsICase(UTF8STRC("ready")))
 	{
 		return ACMEStatus::Ready;
 	}
-	else if (status->EqualsICase((const UTF8Char*)"processing"))
+	else if (status->EqualsICase(UTF8STRC("processing")))
 	{
 		return ACMEStatus::Processing;
 	}
-	else if (status->EqualsICase((const UTF8Char*)"valid"))
+	else if (status->EqualsICase(UTF8STRC("valid")))
 	{
 		return ACMEStatus::Processing;
 	}
-	else if (status->EqualsICase((const UTF8Char*)"invalid"))
+	else if (status->EqualsICase(UTF8STRC("invalid")))
 	{
 		return ACMEStatus::Processing;
 	}
 	return ACMEStatus::Unknown;
 }
 
-const UTF8Char *Net::ACMEConn::AuthorizeTypeGetName(AuthorizeType authType)
+Text::CString Net::ACMEConn::AuthorizeTypeGetName(AuthorizeType authType)
 {
 	switch (authType)
 	{
 	case AuthorizeType::HTTP_01:
-		return (const UTF8Char*)"http-01";
+		return {UTF8STRC("http-01")};
 	case AuthorizeType::DNS_01:
-		return (const UTF8Char*)"dns-01";
+		return {UTF8STRC("dns-01")};
 	case AuthorizeType::TLS_ALPN_01:
-		return (const UTF8Char*)"tls-alpn-01";
+		return {UTF8STRC("tls-alpn-01")};
 	case AuthorizeType::Unknown:
 	default:
-		return (const UTF8Char*)"Unknown";
+		return {UTF8STRC("Unknown")};
 	}
 }
 
@@ -810,15 +810,15 @@ Net::ACMEConn::AuthorizeType Net::ACMEConn::AuthorizeTypeFromString(Text::String
 	{
 		return AuthorizeType::Unknown;
 	}
-	if (s->EqualsICase((const UTF8Char*)"http-01"))
+	if (s->EqualsICase(UTF8STRC("http-01")))
 	{
 		return AuthorizeType::HTTP_01;
 	}
-	else if (s->EqualsICase((const UTF8Char*)"dns-01"))
+	else if (s->EqualsICase(UTF8STRC("dns-01")))
 	{
 		return AuthorizeType::DNS_01;
 	}
-	else if (s->EqualsICase((const UTF8Char*)"tls-alpn-01"))
+	else if (s->EqualsICase(UTF8STRC("tls-alpn-01")))
 	{
 		return AuthorizeType::TLS_ALPN_01;
 	}

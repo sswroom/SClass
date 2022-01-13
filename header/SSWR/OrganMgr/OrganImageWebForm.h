@@ -15,8 +15,8 @@ namespace SSWR
 		{
 		private:
 			OrganEnv *env;
-			const UTF8Char *srcURL;
-			const UTF8Char *location;
+			Text::String *srcURL;
+			Text::String *location;
 
 			UI::GUILabel *lblId;
 			UI::GUITextBox *txtId;
@@ -39,8 +39,8 @@ namespace SSWR
 
 			virtual void OnMonitorChanged();
 
-			const UTF8Char *GetSrcURL();
-			const UTF8Char *GetLocation();
+			Text::String *GetSrcURL();
+			Text::String *GetLocation();
 		};
 	}
 }

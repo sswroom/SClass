@@ -1107,6 +1107,7 @@ Data::VariItem *Map::ESRI::FileGDBReader::GetNewItem(const UTF8Char *name)
 	UOSInt fieldIndex = INVALID_INDEX;
 	UOSInt i;
 	UOSInt j;
+	UOSInt nameLen = Text::StrCharCnt(name);
 	FileGDBFieldInfo *field;
 	if (this->columnIndices)
 	{
@@ -1115,7 +1116,7 @@ Data::VariItem *Map::ESRI::FileGDBReader::GetNewItem(const UTF8Char *name)
 		{
 			j = this->columnIndices->GetItem(i);
 			field = this->tableInfo->fields->GetItem(j);
-			if (field && field->name->EqualsICase(name))
+			if (field && field->name->EqualsICase(name, nameLen))
 			{
 				fieldIndex = j;
 				colIndex = i;
@@ -1129,7 +1130,7 @@ Data::VariItem *Map::ESRI::FileGDBReader::GetNewItem(const UTF8Char *name)
 		while (i-- > 0)
 		{
 			field = this->tableInfo->fields->GetItem(i);
-			if (field && field->name->EqualsICase(name))
+			if (field && field->name->EqualsICase(name, nameLen))
 			{
 				fieldIndex = i;
 				colIndex = i;

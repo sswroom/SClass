@@ -48,7 +48,7 @@ IO::ParsedObject *Parser::FileParser::TARParser::ParseFile(IO::IStreamData *fd, 
 	UInt64 fileSize;
 	UInt64 itemSize;
 	Int64 t;
-	if (!fd->GetFullName()->EndsWithICase((const UTF8Char*)".TAR"))
+	if (!fd->GetFullName()->EndsWithICase(UTF8STRC(".TAR")))
 	{
 		return 0;
 	}

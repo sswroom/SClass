@@ -116,9 +116,9 @@ UTF8Char *Net::HTTPClient::GetRespHeader(const UTF8Char *name, UOSInt nameLen, U
 	while (i-- > 0)
 	{
 		s = this->headers->GetItem(i);
-		if (s->StartsWith(buff))
+		if (s->StartsWith(buff, (UOSInt)(s2 - buff)))
 		{
-			return Text::StrConcat(valueBuff, &s->v[s2 - buff]);
+			return Text::StrConcatC(valueBuff, &s->v[s2 - buff], s->leng - (UOSInt)(s2 - buff));
 		}
 	}
 	return 0;

@@ -10,55 +10,55 @@ Net::HKOWeather::WeatherSignal Net::HKOWeather::String2Signal(Text::String *text
 {
 	WeatherSignal signal;
 	signal = Net::HKOWeather::WS_NONE;
-	if (textMessage->IndexOf((const UTF8Char*)"Standby Signal, No. 1 Tropical Cyclone Warning Signal") != INVALID_INDEX)
+	if (textMessage->IndexOf(UTF8STRC("Standby Signal, No. 1 Tropical Cyclone Warning Signal")) != INVALID_INDEX)
 	{
 		signal = (Net::HKOWeather::WeatherSignal)(signal | Net::HKOWeather::WS_TYPHOON_1);
 	}
-	else if (textMessage->IndexOf((const UTF8Char*)"Strong Wind Signal, No. 3 Tropical Cyclone Warning Signal") != INVALID_INDEX)
+	else if (textMessage->IndexOf(UTF8STRC("Strong Wind Signal, No. 3 Tropical Cyclone Warning Signal")) != INVALID_INDEX)
 	{
 		signal = (Net::HKOWeather::WeatherSignal)(signal | Net::HKOWeather::WS_TYPHOON_3);
 	}
-	else if (textMessage->IndexOf((const UTF8Char*)"No. 8 Southeast Gale or Storm Signal Tropical Cyclone Warning Signal") != INVALID_INDEX)
+	else if (textMessage->IndexOf(UTF8STRC("No. 8 Southeast Gale or Storm Signal Tropical Cyclone Warning Signal")) != INVALID_INDEX)
 	{
 		signal = (Net::HKOWeather::WeatherSignal)(signal | Net::HKOWeather::WS_TYPHOON_8SE);
 	}
-	else if (textMessage->IndexOf((const UTF8Char*)"No. 8 Northeast Gale or Storm Signal Tropical Cyclone Warning Signal") != INVALID_INDEX)
+	else if (textMessage->IndexOf(UTF8STRC("No. 8 Northeast Gale or Storm Signal Tropical Cyclone Warning Signal")) != INVALID_INDEX)
 	{
 		signal = (Net::HKOWeather::WeatherSignal)(signal | Net::HKOWeather::WS_TYPHOON_8NE);
 	}
-	else if (textMessage->IndexOf((const UTF8Char*)"No. 8 Northwest Gale or Storm Signal Tropical Cyclone Warning Signal") != INVALID_INDEX)
+	else if (textMessage->IndexOf(UTF8STRC("No. 8 Northwest Gale or Storm Signal Tropical Cyclone Warning Signal")) != INVALID_INDEX)
 	{
 		signal = (Net::HKOWeather::WeatherSignal)(signal | Net::HKOWeather::WS_TYPHOON_8NW);
 	}
-	else if (textMessage->IndexOf((const UTF8Char*)"No. 8 Southwest Gale or Storm Signal Tropical Cyclone Warning Signal") != INVALID_INDEX)
+	else if (textMessage->IndexOf(UTF8STRC("No. 8 Southwest Gale or Storm Signal Tropical Cyclone Warning Signal")) != INVALID_INDEX)
 	{
 		signal = (Net::HKOWeather::WeatherSignal)(signal | Net::HKOWeather::WS_TYPHOON_8SW);
 	}
-	else if (textMessage->IndexOf((const UTF8Char*)"Hurricane Signal, No. 10 Tropical Cyclone Warning Signal") != INVALID_INDEX)
+	else if (textMessage->IndexOf(UTF8STRC("Hurricane Signal, No. 10 Tropical Cyclone Warning Signal")) != INVALID_INDEX)
 	{
 		signal = (Net::HKOWeather::WeatherSignal)(signal | Net::HKOWeather::WS_TYPHOON_10);
 	}
-	if (textMessage->IndexOf((const UTF8Char*)"Thunderstorm Warning") != INVALID_INDEX)
+	if (textMessage->IndexOf(UTF8STRC("Thunderstorm Warning")) != INVALID_INDEX)
 	{
 		signal = (Net::HKOWeather::WeatherSignal)(signal | Net::HKOWeather::WS_THUNDERSTORM);
 	}
-	if (textMessage->IndexOf((const UTF8Char*)"Very Hot Weather Warning") != INVALID_INDEX)
+	if (textMessage->IndexOf(UTF8STRC("Very Hot Weather Warning")) != INVALID_INDEX)
 	{
 		signal = (Net::HKOWeather::WeatherSignal)(signal | Net::HKOWeather::WS_VERYHOT);
 	}
-	if (textMessage->IndexOf((const UTF8Char*)"Strong Monsoon Signal") != INVALID_INDEX)
+	if (textMessage->IndexOf(UTF8STRC("Strong Monsoon Signal")) != INVALID_INDEX)
 	{
 		signal = (Net::HKOWeather::WeatherSignal)(signal | Net::HKOWeather::WS_STRONGMONSOON);
 	}
-	if (textMessage->IndexOf((const UTF8Char*)"Cold Weather Warning") != INVALID_INDEX)
+	if (textMessage->IndexOf(UTF8STRC("Cold Weather Warning")) != INVALID_INDEX)
 	{
 		signal = (Net::HKOWeather::WeatherSignal)(signal | Net::HKOWeather::WS_COLD);
 	}
-	if (textMessage->IndexOf((const UTF8Char*)"Red Fire Danger Warning") != INVALID_INDEX)
+	if (textMessage->IndexOf(UTF8STRC("Red Fire Danger Warning")) != INVALID_INDEX)
 	{
 		signal = (Net::HKOWeather::WeatherSignal)(signal | Net::HKOWeather::WS_FIRE_RED);
 	}
-	if (textMessage->IndexOf((const UTF8Char*)"Landslip Warning") != INVALID_INDEX)
+	if (textMessage->IndexOf(UTF8STRC("Landslip Warning")) != INVALID_INDEX)
 	{
 		signal = (Net::HKOWeather::WeatherSignal)(signal | Net::HKOWeather::WS_LANDSLIP);
 	}

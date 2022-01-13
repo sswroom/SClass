@@ -212,6 +212,7 @@ namespace Text
 	Bool StrEndsWith(const UTF8Char *str1, const UTF8Char *str2);
 	Bool StrEndsWithC(const UTF8Char *str1, UOSInt len1, const UTF8Char *str2, UOSInt len2);
 	Bool StrEndsWithICase(const UTF8Char *str1, const UTF8Char *str2);
+	Bool StrEndsWithICaseC(const UTF8Char *str1, UOSInt len1, const UTF8Char *str2, UOSInt len2);
 	Bool StrIsInt32(const UTF8Char *str1);
 	UOSInt StrReplace(UTF8Char *str1, UTF8Char oriC, UTF8Char destC);
 	UOSInt StrReplace(UTF8Char *str1, const UTF8Char *replaceFrom, const UTF8Char *replaceTo);

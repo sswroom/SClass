@@ -45,7 +45,7 @@ IO::ParsedObject *Parser::FileParser::WPTParser::ParseFile(IO::IStreamData *fd, 
 	Math::Point3D *pt;
 	Bool valid;
 
-	if (!fd->GetFullName()->EndsWithICase((const UTF8Char*)"WPT"))
+	if (!fd->GetFullName()->EndsWithICase(UTF8STRC("WPT")))
 		return 0;
 
 	IO::StreamDataStream *stm;

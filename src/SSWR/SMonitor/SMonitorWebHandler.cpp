@@ -302,7 +302,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::LoginReq(SSWR::SMonitor::SMon
 		Text::String *s = req->GetHTTPFormStr(UTF8STRC("action"));
 		Text::String *s2 = req->GetHTTPFormStr(UTF8STRC("user"));
 		Text::String *s3 = req->GetHTTPFormStr(UTF8STRC("pwd"));
-		if (s && s2 && s3 && s->Equals((const UTF8Char*)"login"))
+		if (s && s2 && s3 && s->Equals(UTF8STRC("login")))
 		{
 			if (s2->v[0])
 			{
@@ -575,7 +575,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceEditReq(SSWR::SMonitor:
 	{
 		req->ParseHTTPForm();
 		Text::String *action = req->GetHTTPFormStr(UTF8STRC("action"));
-		if (action && action->Equals((const UTF8Char*)"modify"))
+		if (action && action->Equals(UTF8STRC("modify")))
 		{
 			Text::String *devName = req->GetHTTPFormStr(UTF8STRC("devName"));
 			Int32 flags = 0;
@@ -701,7 +701,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingReq(SSWR::SMonit
 	{
 		req->ParseHTTPForm();
 		Text::String *action = req->GetHTTPFormStr(UTF8STRC("action"));
-		if (action && action->Equals((const UTF8Char*)"reading"))
+		if (action && action->Equals(UTF8STRC("reading")))
 		{
 			Text::StringBuilderUTF8 sb;
 			Text::String *s;
@@ -845,7 +845,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceDigitalsReq(SSWR::SMoni
 	{
 		req->ParseHTTPForm();
 		Text::String *action = req->GetHTTPFormStr(UTF8STRC("action"));
-		if (action && action->Equals((const UTF8Char*)"digitals"))
+		if (action && action->Equals(UTF8STRC("digitals")))
 		{
 			Text::StringBuilderUTF8 sb;
 			Text::String *s;
@@ -1999,7 +1999,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserAddReq(SSWR::SMonitor::SM
 		Text::String *userName;
 		action = req->GetHTTPFormStr(UTF8STRC("action"));
 		userName = req->GetHTTPFormStr(UTF8STRC("username"));
-		if (action && userName && action->Equals((const UTF8Char*)"adduser"))
+		if (action && userName && action->Equals(UTF8STRC("adduser")))
 		{
 			UOSInt len = userName->leng;
 			if (len >= 3 && len < 128)
@@ -2082,7 +2082,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserAssignReq(SSWR::SMonitor:
 		Text::String *devicestr;
 		action = req->GetHTTPFormStr(UTF8STRC("action"));
 		devicestr = req->GetHTTPFormStr(UTF8STRC("device"));
-		if (action && devicestr && action->Equals((const UTF8Char*)"userassign"))
+		if (action && devicestr && action->Equals(UTF8STRC("userassign")))
 		{
 			Data::ArrayListInt64 devIds;
 			UTF8Char *sarr[2];

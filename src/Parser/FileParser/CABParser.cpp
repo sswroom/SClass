@@ -49,6 +49,7 @@ IO::ParsedObject *Parser::FileParser::CABParser::ParseFile(IO::IStreamData *fd, 
 	UInt32 fileOfst;
 	UInt32 nextOfst;
 	UTF8Char fileName[256];
+	UTF8Char *sptr;
 	Text::Encoding enc(932);
 
 	if (fd->GetRealData(0, 32, hdrBuff) != 32)
@@ -69,8 +70,8 @@ IO::ParsedObject *Parser::FileParser::CABParser::ParseFile(IO::IStreamData *fd, 
 		return 0;
 	if (dataOfst - recSize != 273)
 		return 0;
-	enc.UTF8FromBytes(fileName, &hdrBuff[12], 255, 0);
-	if (!fd->GetFullName()->EndsWith(fileName))
+	sptr = enc.UTF8FromBytes(fileName, &hdrBuff[12], 255, 0);
+	if (!fd->GetFullName()->EndsWith(fileName, (UOSInt)(sptr - fileName)))
 	{
 		return 0;
 	}

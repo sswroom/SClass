@@ -523,7 +523,7 @@ void Net::HTTPOSClient::SetTimeout(Int32 ms)
 
 Bool Net::HTTPOSClient::IsSecureConn()
 {
-	if (this->url && this->url->StartsWith((const UTF8Char*)"https://"))
+	if (this->url && this->url->StartsWith(UTF8STRC("https://")))
 	{
 		return true;
 	}

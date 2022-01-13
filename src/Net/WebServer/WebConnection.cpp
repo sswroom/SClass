@@ -559,13 +559,13 @@ void Net::WebServer::WebConnection::ProcessResponse()
 				while (i < j)
 				{
 					s = this->currReq->GetHeaderName(i);
-					if (s->EqualsICase((const UTF8Char*)"Host"))
+					if (s->EqualsICase(UTF8STRC("Host")))
 					{
 					}
-					else if (s->EqualsICase((const UTF8Char*)"Proxy-Connection"))
+					else if (s->EqualsICase(UTF8STRC("Proxy-Connection")))
 					{
 					}
-					else if (s->EqualsICase((const UTF8Char*)"Accept-Encoding"))
+					else if (s->EqualsICase(UTF8STRC("Accept-Encoding")))
 					{
 					}
 					else

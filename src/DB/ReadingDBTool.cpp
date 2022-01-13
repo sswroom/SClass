@@ -941,13 +941,13 @@ DB::TableDef *DB::ReadingDBTool::GetTableDef(const UTF8Char *tableName)
 		UOSInt k;
 		while (r->ReadNext())
 		{
-			r->GetStr(0, buff, sizeof(buff));
+			ptr = r->GetStr(0, buff, sizeof(buff));
 			j = 0;
 			k = tab->GetColCnt();
 			while (j < k)
 			{
 				col = tab->GetCol(j);
-				if (col->GetColName()->Equals(buff))
+				if (col->GetColName()->Equals(buff, (UOSInt)(ptr - buff)))
 				{
 					col->SetPK(true);
 					break;

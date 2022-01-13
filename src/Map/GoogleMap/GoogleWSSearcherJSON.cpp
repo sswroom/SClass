@@ -226,7 +226,7 @@ UTF8Char *Map::GoogleMap::GoogleWSSearcherJSON::SearchName(UTF8Char *buff, UOSIn
 					else
 					{
 						Text::JSONString *jstr = (Text::JSONString*)jobj->GetObjectValue((const UTF8Char*)"status");
-						if (jstr->GetValue()->Equals((const UTF8Char*)"ZERO_RESULTS"))
+						if (jstr->GetValue()->Equals(UTF8STRC("ZERO_RESULTS")))
 						{
 							buff = Text::StrConcatS(buff, (const UTF8Char*)"-", buffSize);
 						}

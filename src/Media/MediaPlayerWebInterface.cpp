@@ -154,52 +154,52 @@ void Media::MediaPlayerWebInterface::BrowseRequest(Net::WebServer::IWebRequest *
 void Media::MediaPlayerWebInterface::WebRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp)
 {
 	Text::String *reqURI = req->GetRequestURI();
-	if (reqURI->Equals((const UTF8Char*)"/browse") || reqURI->StartsWith((const UTF8Char*)"/browse?"))
+	if (reqURI->Equals(UTF8STRC("/browse")) || reqURI->StartsWith(UTF8STRC("/browse?")))
 	{
 		this->BrowseRequest(req, resp);
 		return;
 	}
-	if (reqURI->Equals((const UTF8Char*)"/start"))
+	if (reqURI->Equals(UTF8STRC("/start")))
 	{
 		this->iface->PBStart();
 	}
-	else if (reqURI->Equals((const UTF8Char*)"/stop"))
+	else if (reqURI->Equals(UTF8STRC("/stop")))
 	{
 		this->iface->PBStop();
 	}
-	else if (reqURI->Equals((const UTF8Char*)"/pause"))
+	else if (reqURI->Equals(UTF8STRC("/pause")))
 	{
 		this->iface->PBPause();
 	}
-	else if (reqURI->Equals((const UTF8Char*)"/backward60"))
+	else if (reqURI->Equals(UTF8STRC("/backward60")))
 	{
 		this->iface->PBJumpOfst(-60000);
 	}
-	else if (reqURI->Equals((const UTF8Char*)"/backward10"))
+	else if (reqURI->Equals(UTF8STRC("/backward10")))
 	{
 		this->iface->PBJumpOfst(-10000);
 	}
-	else if (reqURI->Equals((const UTF8Char*)"/forward10"))
+	else if (reqURI->Equals(UTF8STRC("/forward10")))
 	{
 		this->iface->PBJumpOfst(10000);
 	}
-	else if (reqURI->Equals((const UTF8Char*)"/forward60"))
+	else if (reqURI->Equals(UTF8STRC("/forward60")))
 	{
 		this->iface->PBJumpOfst(60000);
 	}
-	else if (reqURI->Equals((const UTF8Char*)"/prevchap"))
+	else if (reqURI->Equals(UTF8STRC("/prevchap")))
 	{
 		this->iface->PBPrevChapter();
 	}
-	else if (reqURI->Equals((const UTF8Char*)"/nextchap"))
+	else if (reqURI->Equals(UTF8STRC("/nextchap")))
 	{
 		this->iface->PBNextChapter();
 	}
-	else if (reqURI->Equals((const UTF8Char*)"/avofstdec"))
+	else if (reqURI->Equals(UTF8STRC("/avofstdec")))
 	{
 		this->iface->PBDecAVOfst();
 	}
-	else if (reqURI->Equals((const UTF8Char*)"/avofstinc"))
+	else if (reqURI->Equals(UTF8STRC("/avofstinc")))
 	{
 		this->iface->PBIncAVOfst();
 	}

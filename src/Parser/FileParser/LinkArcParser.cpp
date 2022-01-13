@@ -47,7 +47,7 @@ IO::ParsedObject *Parser::FileParser::LinkArcParser::ParseFile(IO::IStreamData *
 	UTF8Char fileName[256];
 	Data::DateTime dt;
 
-	if (!fd->GetFullName()->EndsWithICase((const UTF8Char*)".ARC"))
+	if (!fd->GetFullName()->EndsWithICase(UTF8STRC(".ARC")))
 	{
 		return 0;
 	}

@@ -829,6 +829,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, Text::Cpp::CppParse
 	UTF8Char c;
 	UTF8Char *wordStart = 0;
 	UTF8Char *sptr;
+	UTF8Char *sptr2;
 	UTF8Char sbuff[512];
 	UTF8Char u8buff[512];
 	Bool valid;
@@ -837,7 +838,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, Text::Cpp::CppParse
 	Text::Cpp::CppParseStatus::FileParseStatus *fileStatus = status->GetFileStatus();
 
 	fileStatus->lineNum++;
-	if (fileStatus->lineNum == 290 && fileStatus->fileName->EndsWithICase((const UTF8Char*)"winspool.h"))
+	if (fileStatus->lineNum == 290 && fileStatus->fileName->EndsWithICase(UTF8STRC("winspool.h")))
 	{
 		sptr = lineBuff;
 	}
@@ -1423,7 +1424,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, Text::Cpp::CppParse
 				{
 					sptr[-1] = 0;
 					u8buff[0] = 0;
-					this->env->GetIncludeFilePath(u8buff, wordStart, status->GetCurrCodeFile());
+					sptr2 = this->env->GetIncludeFilePath(u8buff, wordStart, status->GetCurrCodeFile());
 					sptr[-1] = c;
 
 					if (u8buff[0] == 0)
@@ -1438,7 +1439,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, Text::Cpp::CppParse
 					}
 					else
 					{
-						if (ParseFile(u8buff, errMsgs, status))
+						if (ParseFile(u8buff, (UOSInt)(sptr2 - u8buff), errMsgs, status))
 						{
 							fileStatus->currMode = Text::Cpp::CppParseStatus::PM_SHARPEND;
 							break;
@@ -1466,7 +1467,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, Text::Cpp::CppParse
 				if (c == '>')
 				{
 					sptr[-1] = 0;
-					this->env->GetIncludeFilePath(u8buff, wordStart, 0);
+					sptr2 = this->env->GetIncludeFilePath(u8buff, wordStart, 0);
 					sptr[-1] = c;
 
 					if (u8buff[0] == 0)
@@ -1477,7 +1478,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, Text::Cpp::CppParse
 					}
 					else
 					{
-						if (ParseFile(u8buff, errMsgs, status))
+						if (ParseFile(u8buff, (UOSInt)(sptr2 - u8buff), errMsgs, status))
 						{
 							fileStatus->currMode = Text::Cpp::CppParseStatus::PM_SHARPEND;
 						}
@@ -2656,7 +2657,7 @@ Text::Cpp::CppCodeParser::~CppCodeParser()
 {
 }
 
-Bool Text::Cpp::CppCodeParser::ParseFile(const UTF8Char *fileName, Data::ArrayListStrUTF8 *errMsgs, Text::Cpp::CppParseStatus *status)
+Bool Text::Cpp::CppCodeParser::ParseFile(const UTF8Char *fileName, UOSInt fileNameLen, Data::ArrayListStrUTF8 *errMsgs, Text::Cpp::CppParseStatus *status)
 {
 	UTF8Char *lineBuff;
 	UTF8Char *sptr;
@@ -2665,11 +2666,6 @@ Bool Text::Cpp::CppCodeParser::ParseFile(const UTF8Char *fileName, Data::ArrayLi
 	IO::FileStream *fs;
 
 	lineBuff = MemAlloc(UTF8Char, 65536);
-	if (Text::StrEquals(fileName, (const UTF8Char*)"C:\\Program Files (x86)\\Microsoft Visual Studio .NET 2003\\Vc7\\include\\ctype.h"))
-	{
-		fs = 0;
-	}
-
 	NEW_CLASS(fs, IO::FileStream(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
 	if (fs->IsError())
 	{
@@ -2677,7 +2673,7 @@ Bool Text::Cpp::CppCodeParser::ParseFile(const UTF8Char *fileName, Data::ArrayLi
 		if (fileStatus)
 		{
 			i = fileStatus->fileName->LastIndexOf(IO::Path::PATH_SEPERATOR);
-			sptr = Text::StrConcat(lineBuff, &fileStatus->fileName->v[i + 1]);
+			sptr = Text::StrConcatC(lineBuff, &fileStatus->fileName->v[i + 1], fileStatus->fileName->leng - i - 1);
 			sptr = Text::StrConcatC(sptr, UTF8STRC(" ("));
 			sptr = Text::StrOSInt(sptr, fileStatus->lineNum);
 			sptr = Text::StrConcatC(sptr, UTF8STRC("): "));
@@ -2687,7 +2683,7 @@ Bool Text::Cpp::CppCodeParser::ParseFile(const UTF8Char *fileName, Data::ArrayLi
 			sptr = lineBuff;
 		}
 		sptr = Text::StrConcatC(sptr, UTF8STRC("Cannot open \""));
-		sptr = Text::StrConcat(sptr, fileName);
+		sptr = Text::StrConcatC(sptr, fileName, fileNameLen);
 		sptr = Text::StrConcatC(sptr, UTF8STRC("\""));
 		errMsgs->Add(Text::StrCopyNew(lineBuff));
 		MemFree(lineBuff);
@@ -2709,11 +2705,11 @@ Bool Text::Cpp::CppCodeParser::ParseFile(const UTF8Char *fileName, Data::ArrayLi
 	}
 	DEL_CLASS(reader);
 	DEL_CLASS(fs);
-	if (!status->EndParseFile(fileName))
+	if (!status->EndParseFile(fileName, fileNameLen))
 	{
 		succ = false;
-		Text::StrConcatC(Text::StrConcat(lineBuff, fileName), UTF8STRC(" File End error"));
-		errMsgs->Add(Text::StrCopyNew(lineBuff));
+		sptr = Text::StrConcatC(Text::StrConcatC(lineBuff, fileName, fileNameLen), UTF8STRC(" File End error"));
+		errMsgs->Add(Text::StrCopyNewC(lineBuff, (UOSInt)(sptr - lineBuff)));
 	}
 
 	MemFree(lineBuff);

@@ -44,9 +44,9 @@ Text::String *Crypto::Token::JWTParam::GetIssuer()
 	return this->iss;
 }
 
-Bool Crypto::Token::JWTParam::IsIssuerValid(const UTF8Char *issuer)
+Bool Crypto::Token::JWTParam::IsIssuerValid(const UTF8Char *issuer, UOSInt issuerLen)
 {
-	return this->iss == 0 || this->iss->Equals(issuer);
+	return this->iss == 0 || this->iss->Equals(issuer, issuerLen);
 }
 
 void Crypto::Token::JWTParam::SetSubject(Text::String *subject)

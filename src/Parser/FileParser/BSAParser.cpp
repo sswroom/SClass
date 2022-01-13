@@ -49,7 +49,7 @@ IO::ParsedObject *Parser::FileParser::BSAParser::ParseFile(IO::IStreamData *fd, 
 	UTF8Char fileName[512];
 	Text::Encoding enc(932);
 
-	if (!fd->GetFullName()->EndsWithICase((const UTF8Char*)".BSA"))
+	if (!fd->GetFullName()->EndsWithICase(UTF8STRC(".BSA")))
 	{
 		return 0;
 	}

@@ -73,7 +73,7 @@ void IO::DirectoryPackage::Init()
 IO::DirectoryPackage::DirectoryPackage(Text::String *dirName) : IO::PackageFile(dirName->v)
 {
 	UTF8Char sbuff[512];
-	if (dirName->StartsWith((const UTF8Char*)"~/"))
+	if (dirName->StartsWith(UTF8STRC("~/")))
 	{
 		Text::StrConcatC(IO::Path::GetUserHome(sbuff), dirName->v + 1, dirName->leng - 1);
 		this->dirName = Text::String::NewNotNull(sbuff);
@@ -200,7 +200,7 @@ UInt64 IO::DirectoryPackage::GetItemSize(UOSInt index)
 	return this->fileSizes->GetItem(index);
 }
 
-UOSInt IO::DirectoryPackage::GetItemIndex(const UTF8Char *name)
+UOSInt IO::DirectoryPackage::GetItemIndex(const UTF8Char *name, UOSInt nameLen)
 {
 	UOSInt j = this->files->GetCount();
 	UOSInt i;
@@ -210,7 +210,7 @@ UOSInt IO::DirectoryPackage::GetItemIndex(const UTF8Char *name)
 		if (fileName)
 		{
 			i = fileName->LastIndexOf(IO::Path::PATH_SEPERATOR);
-			if (Text::StrEquals(&fileName->v[i + 1], name))
+			if (Text::StrEqualsC(&fileName->v[i + 1], fileName->leng - i - 1, name, nameLen))
 			{
 				return j;
 			}

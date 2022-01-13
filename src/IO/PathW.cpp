@@ -487,6 +487,11 @@ UTF8Char *IO::Path::AppendPath(UTF8Char *path, const UTF8Char *toAppend)
 	}
 }
 
+UTF8Char *IO::Path::AppendPathC(UTF8Char *path, UTF8Char *pathEnd, const UTF8Char *toAppend, UOSInt toAppendLen)
+{
+	return Append(path, toAppend);
+}
+
 WChar *IO::Path::AppendPathW(WChar *path, const WChar *toAppend)
 {
 	WChar pathTmp[512];

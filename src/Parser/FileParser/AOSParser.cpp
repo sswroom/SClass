@@ -46,9 +46,10 @@ IO::ParsedObject *Parser::FileParser::AOSParser::ParseFile(IO::IStreamData *fd, 
 	UInt32 fileOfst;
 	UInt32 nextOfst;
 	UTF8Char fileName[256];
+	UTF8Char *sptr;
 	Text::Encoding enc(932);
 
-	if (!fd->GetFullName()->EndsWith((const UTF8Char*)".AOS"))
+	if (!fd->GetFullName()->EndsWith(UTF8STRC(".AOS")))
 	{
 		return 0;
 	}
@@ -62,8 +63,8 @@ IO::ParsedObject *Parser::FileParser::AOSParser::ParseFile(IO::IStreamData *fd, 
 		return 0;
 	if (dataOfst - recSize != 273)
 		return 0;
-	enc.UTF8FromBytes(fileName, &hdrBuff[12], 255, 0);
-	if (!fd->GetFullName()->EndsWith(fileName))
+	sptr = enc.UTF8FromBytes(fileName, &hdrBuff[12], 255, 0);
+	if (!fd->GetFullName()->EndsWith(fileName, (UOSInt)(sptr - fileName)))
 	{
 		return 0;
 	}
