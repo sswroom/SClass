@@ -1,6 +1,7 @@
 #ifndef _SM_TEXT_JSON
 #define _SM_TEXT_JSON
-#include "Data/StringUTF8Map.h"
+#include "Data/ArrayList.h"
+#include "Data/FastStringMap.h"
 #include "Text/StringBuilderUTF.h"
 
 namespace Text
@@ -37,8 +38,8 @@ namespace Text
 		void EndUse();
 		Bool IsString();
 
-		JSONBase *GetValue(const Char *path);
-		Text::String *GetString(const Char *path);
+		JSONBase *GetValue(const UTF8Char *path, UOSInt pathLen);
+		Text::String *GetString(const UTF8Char *path, UOSInt pathLen);
 
 		static JSONBase *ParseJSONStr(const UTF8Char *jsonStr);
 		static JSONBase *ParseJSONStrLen(const UTF8Char *jsonStr, UOSInt strLen);
@@ -163,7 +164,7 @@ namespace Text
 	class JSONObject : public JSONBase
 	{
 	private:
-		Data::StringUTF8Map<Text::JSONBase *> *objVals;
+		Data::FastStringMap<Text::JSONBase *> *objVals;
 	public:
 		JSONObject();
 	private:
@@ -174,10 +175,10 @@ namespace Text
 		virtual void ToJSONString(Text::StringBuilderUTF *sb);
 		virtual Bool Equals(const UTF8Char *s);
 		virtual Bool Identical(JSONBase *obj);
-		void SetObjectValue(const UTF8Char *name, JSONBase *val);
-		JSONBase *GetObjectValue(const UTF8Char *name);
-		void GetObjectNames(Data::ArrayList<const UTF8Char *> *names);
-		Text::String *GetObjectString(const UTF8Char *name);
+		void SetObjectValue(const UTF8Char *name, UOSInt nameLen, JSONBase *val);
+		JSONBase *GetObjectValue(const UTF8Char *name, UOSInt nameLen);
+		void GetObjectNames(Data::ArrayList<Text::String *> *names);
+		Text::String *GetObjectString(const UTF8Char *name, UOSInt nameLen);
 	};
 
 	class JSONArray : public JSONBase

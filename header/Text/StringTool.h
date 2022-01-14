@@ -1,6 +1,7 @@
 #ifndef _SM_TEXT_STRINGTOOL
 #define _SM_TEXT_STRINGTOOL
 #include "Data/NamedClass.h"
+#include "Data/StringMap.h"
 #include "Data/StringUTF8Map.h"
 #include "Text/JSText.h"
 #include "Text/StringBuilderUTF.h"
@@ -12,6 +13,7 @@ namespace Text
 	public:
 		static void BuildString(Text::StringBuilderUTF *sb, Text::String *s);
 		static void BuildString(Text::StringBuilderUTF *sb, const UTF8Char *s);
+		static void BuildString(Text::StringBuilderUTF *sb, Data::StringMap<Text::String*> *map);
 		static void BuildString(Text::StringBuilderUTF *sb, Data::StringUTF8Map<Text::String*> *map);
 		static void BuildString(Text::StringBuilderUTF *sb, Data::StringUTF8Map<const UTF8Char*> *map);
 		static void BuildString(Text::StringBuilderUTF *sb, Data::ReadingList<const UTF8Char*> *list);

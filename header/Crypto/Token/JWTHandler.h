@@ -2,6 +2,7 @@
 #define _SM_CRYPTO_TOKEN_JWTHANDLER
 #include "Crypto/Token/JWSignature.h"
 #include "Crypto/Token/JWTParam.h"
+#include "Data/StringMap.h"
 #include "Data/StringUTF8Map.h"
 #include "Net/SSLEngine.h"
 #include "Text/StringBuilderUTF8.h"
@@ -23,9 +24,9 @@ namespace Crypto
 			~JWTHandler();
 
 			Bool Generate(Text::StringBuilderUTF8 *sb, Data::StringUTF8Map<const UTF8Char*> *payload, JWTParam *param);
-			Data::StringUTF8Map<Text::String*> *Parse(const UTF8Char *token, JWTParam *param);
+			Data::StringMap<Text::String*> *Parse(const UTF8Char *token, JWTParam *param);
 
-			void FreeResult(Data::StringUTF8Map<Text::String*> *result);
+			void FreeResult(Data::StringMap<Text::String*> *result);
 
 			static JWTHandler *CreateHMAC(Net::SSLEngine *ssl, JWSignature::Algorithm alg, const UInt8 *key, UOSInt keyLeng);
 		};

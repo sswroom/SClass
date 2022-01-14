@@ -43,9 +43,9 @@ void __stdcall SSWR::AVIRead::AVIREWDTU01Form::OnMQTTMessage(void *userObj, cons
 			if (baseObj && baseObj->GetType() == Text::JSONType::Object)
 			{
 				obj = (Text::JSONObject*)baseObj;
-				name = obj->GetObjectString((const UTF8Char*)"name");
-				mac = obj->GetObjectString((const UTF8Char*)"mac");
-				rssi = obj->GetObjectString((const UTF8Char*)"rssi");
+				name = obj->GetObjectString(UTF8STRC("name"));
+				mac = obj->GetObjectString(UTF8STRC("mac"));
+				rssi = obj->GetObjectString(UTF8STRC("rssi"));
 				if (mac != 0 && rssi != 0 && mac->leng == 12)
 				{
 					Text::StrHex2Bytes(mac->v, &macBuff[2]);

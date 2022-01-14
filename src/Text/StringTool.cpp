@@ -28,6 +28,33 @@ void Text::StringTool::BuildString(Text::StringBuilderUTF *sb, const UTF8Char *s
 	}
 }
 
+void Text::StringTool::BuildString(Text::StringBuilderUTF *sb, Data::StringMap<Text::String*> *map)
+{
+	if (map == 0)
+	{
+		sb->AppendC(UTF8STRC("null"));
+		return;
+	}
+	sb->AppendChar('{', 1);
+	Data::ArrayList<Text::String *> *keys = map->GetKeys();
+	Data::ArrayList<Text::String *> *vals = map->GetValues();
+	UOSInt i = 0;
+	UOSInt j = keys->GetCount();
+	while (i < j)
+	{
+		if (i > 0)
+		{
+			sb->AppendChar(',', 1);
+			sb->AppendChar(' ', 1);
+		}
+		BuildString(sb, keys->GetItem(i));
+		sb->AppendChar(':', 1);
+		BuildString(sb, vals->GetItem(i));
+		i++;
+	}
+	sb->AppendChar('}', 1);
+}
+
 void Text::StringTool::BuildString(Text::StringBuilderUTF *sb, Data::StringUTF8Map<Text::String*> *map)
 {
 	if (map == 0)

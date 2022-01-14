@@ -34,15 +34,16 @@ Bool Text::JSONBase::IsString()
 	return this->GetType() == JSONType::String;
 }
 
-Text::JSONBase *Text::JSONBase::GetValue(const Char *path)
+Text::JSONBase *Text::JSONBase::GetValue(const UTF8Char *path, UOSInt pathLen)
 {
-	if (Text::StrEquals(path, "this"))
+	if (Text::StrEqualsC(path, pathLen, UTF8STRC("this")))
 	{
 		return this;
 	}
 	Text::StringBuilderUTF8 sb;
-	sb.Append((const UTF8Char*)path);
+	sb.AppendC(path, pathLen);
 	UTF8Char *sptr = sb.ToString();
+	UTF8Char *sptrEnd = sb.GetEndPtr();
 	UOSInt dotIndex;
 	UOSInt brkIndex;
 	Text::JSONBase *json = this;
@@ -54,7 +55,7 @@ Text::JSONBase *Text::JSONBase::GetValue(const Char *path)
 		{
 			if (json->GetType() == JSONType::Object)
 			{
-				return ((Text::JSONObject*)json)->GetObjectValue(sptr);
+				return ((Text::JSONObject*)json)->GetObjectValue(sptr, (UOSInt)(sptrEnd - sptr));
 			}
 			else if (json->GetType() == JSONType::Array)
 			{
@@ -89,7 +90,7 @@ Text::JSONBase *Text::JSONBase::GetValue(const Char *path)
 			sptr[dotIndex] = 0;
 			if (json->GetType() == JSONType::Object)
 			{
-				json = ((Text::JSONObject*)json)->GetObjectValue(sptr);
+				json = ((Text::JSONObject*)json)->GetObjectValue(sptr, dotIndex);
 			}
 			else if (json->GetType() == JSONType::Array)
 			{
@@ -151,9 +152,9 @@ Text::JSONBase *Text::JSONBase::GetValue(const Char *path)
 	return 0;
 }
 
-Text::String *Text::JSONBase::GetString(const Char *path)
+Text::String *Text::JSONBase::GetString(const UTF8Char *path, UOSInt pathLen)
 {
-	Text::JSONBase *json = this->GetValue(path);
+	Text::JSONBase *json = this->GetValue(path, pathLen);
 	if (json && json->IsString())
 	{
 		return ((Text::JSONString*)json)->GetValue();
@@ -532,7 +533,7 @@ Text::JSONBase *Text::JSONBase::ParseJSONStr2(const UTF8Char *jsonStr, const UTF
 					*jsonStrEnd = 0;
 					return 0;
 				}
-				jobj->SetObjectValue(sb.ToString(), obj);
+				jobj->SetObjectValue(sb.ToString(), sb.GetLength(), obj);
 				if (obj)
 				{
 					obj->EndUse();
@@ -974,18 +975,17 @@ Bool Text::JSONBool::GetValue()
 
 Text::JSONObject::JSONObject()
 {
-	NEW_CLASS(this->objVals, Data::StringUTF8Map<Text::JSONBase*>());
+	NEW_CLASS(this->objVals, Data::FastStringMap<Text::JSONBase*>());
 }
 
 Text::JSONObject::~JSONObject()
 {
 	UOSInt i;
 	Text::JSONBase *obj;
-	Data::ArrayList<Text::JSONBase*> *vals = this->objVals->GetValues();
-	i = vals->GetCount();
+	i = this->objVals->GetCount();
 	while (i-- > 0)
 	{
-		obj = vals->GetItem(i);
+		obj = this->objVals->GetItem(i);
 		obj->EndUse();
 	}
 	DEL_CLASS(this->objVals);
@@ -998,11 +998,9 @@ Text::JSONType Text::JSONObject::GetType()
 
 void Text::JSONObject::ToJSONString(Text::StringBuilderUTF *sb)
 {
-	Data::ArrayList<const UTF8Char *> *keys = this->objVals->GetKeys();
-	Data::ArrayList<Text::JSONBase*> *vals = this->objVals->GetValues();
 	Text::JSONBase *obj;
 	UOSInt i = 0;
-	UOSInt j = keys->GetCount();
+	UOSInt j = this->objVals->GetCount();
 	sb->AppendC((const UTF8Char*)"{", 1);
 	i = 0;
 	while (i < j)
@@ -1011,9 +1009,9 @@ void Text::JSONObject::ToJSONString(Text::StringBuilderUTF *sb)
 		{
 			sb->AppendC((const UTF8Char*)", ", 2);
 		}
-		Text::JSText::ToJSTextDQuote(sb, keys->GetItem(i));
+		Text::JSText::ToJSTextDQuote(sb, this->objVals->GetKey(i)->v);
 		sb->AppendC((const UTF8Char*)" : ", 3);
-		obj = vals->GetItem(i);
+		obj = this->objVals->GetItem(i);
 		if (obj)
 		{
 			obj->ToJSONString(sb);
@@ -1038,13 +1036,13 @@ Bool Text::JSONObject::Identical(Text::JSONBase *obj)
 	return this == obj;
 }
 
-void Text::JSONObject::SetObjectValue(const UTF8Char *name, Text::JSONBase *val)
+void Text::JSONObject::SetObjectValue(const UTF8Char *name, UOSInt nameLen, Text::JSONBase *val)
 {
 	if (val)
 	{
 		val->BeginUse();
 	}
-	Text::JSONBase *obj = this->objVals->Get(name);
+	Text::JSONBase *obj = this->objVals->GetC(name, nameLen);
 	if (obj)
 	{
 		obj->EndUse();
@@ -1052,19 +1050,25 @@ void Text::JSONObject::SetObjectValue(const UTF8Char *name, Text::JSONBase *val)
 	this->objVals->Put(name, val);
 }
 
-Text::JSONBase *Text::JSONObject::GetObjectValue(const UTF8Char *name)
+Text::JSONBase *Text::JSONObject::GetObjectValue(const UTF8Char *name, UOSInt nameLen)
 {
-	return this->objVals->Get(name);
+	return this->objVals->GetC(name, nameLen);
 }
 
-void Text::JSONObject::GetObjectNames(Data::ArrayList<const UTF8Char *> *names)
+void Text::JSONObject::GetObjectNames(Data::ArrayList<Text::String *> *names)
 {
-	names->AddAll(this->objVals->GetKeys());
+	UOSInt i = 0;
+	UOSInt j = this->objVals->GetCount();
+	while (i < j)
+	{
+		names->Add(this->objVals->GetKey(i));
+		i++;
+	}
 }
 
-Text::String *Text::JSONObject::GetObjectString(const UTF8Char *name)
+Text::String *Text::JSONObject::GetObjectString(const UTF8Char *name, UOSInt nameLen)
 {
-	Text::JSONBase *baseObj = this->objVals->Get(name);
+	Text::JSONBase *baseObj = this->objVals->GetC(name, nameLen);
 	if (baseObj == 0 || baseObj->GetType() != Text::JSONType::String)
 	{
 		return 0;

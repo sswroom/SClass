@@ -520,13 +520,14 @@ Bool Net::ASN1Util::PDUToString(const UInt8 *pdu, const UInt8 *pduEnd, Text::Str
 	return true;
 }
 
-const UInt8 *Net::ASN1Util::PDUGetItemRAW(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path, UOSInt *len, UOSInt *itemOfst)
+const UInt8 *Net::ASN1Util::PDUGetItemRAW(const UInt8 *pdu, const UInt8 *pduEnd, const Char *cpath, UOSInt *len, UOSInt *itemOfst)
 {
 	if (len)
 	{
 		*len = 0;
 	}
 	UTF8Char sbuff[11];
+	const UTF8Char *path = (const UTF8Char*)cpath;
 	UInt32 itemLen;
 	UOSInt size;
 	UOSInt cnt;
@@ -535,7 +536,7 @@ const UInt8 *Net::ASN1Util::PDUGetItemRAW(const UInt8 *pdu, const UInt8 *pduEnd,
 	{
 		return 0;
 	}
-	size = Text::StrIndexOf((const UTF8Char *)path, '.');
+	size = Text::StrIndexOf(path, '.');
 	if (size == INVALID_INDEX)
 	{
 		cnt = Text::StrToUOSInt(path);
@@ -543,7 +544,7 @@ const UInt8 *Net::ASN1Util::PDUGetItemRAW(const UInt8 *pdu, const UInt8 *pduEnd,
 	}
 	else if (size > 0 && size < 11)
 	{
-		Text::StrConcatC(sbuff, (const UTF8Char*)path, size);
+		Text::StrConcatC(sbuff, path, size);
 		cnt = Text::StrToUOSInt(sbuff);
 		path += size + 1;
 	}
@@ -581,7 +582,7 @@ const UInt8 *Net::ASN1Util::PDUGetItemRAW(const UInt8 *pdu, const UInt8 *pduEnd,
 					*len = itemLen;
 				return pdu;
 			}
-			return PDUGetItemRAW(&pdu[ofst], &pdu[ofst + itemLen], path, len, itemOfst);
+			return PDUGetItemRAW(&pdu[ofst], &pdu[ofst + itemLen], (const Char*)path, len, itemOfst);
 		}
 		pdu += ofst + itemLen;
 	}
@@ -614,9 +615,10 @@ Net::ASN1Util::ItemType Net::ASN1Util::PDUGetItemType(const UInt8 *pdu, const UI
 	return itemType;
 }
 
-UOSInt Net::ASN1Util::PDUCountItem(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path)
+UOSInt Net::ASN1Util::PDUCountItem(const UInt8 *pdu, const UInt8 *pduEnd, const Char *cpath)
 {
-	Char sbuff[11];
+	UTF8Char sbuff[11];
+	const UTF8Char *path = (const UTF8Char*)path;
 	UInt32 len;
 	UOSInt size;
 	UOSInt cnt;
@@ -679,7 +681,7 @@ UOSInt Net::ASN1Util::PDUCountItem(const UInt8 *pdu, const UInt8 *pduEnd, const 
 		cnt--;
 		if (cnt == 0)
 		{
-			return PDUCountItem(pdu + ofst, pdu + ofst + len, path);
+			return PDUCountItem(pdu + ofst, pdu + ofst + len, (const Char*)path);
 		}
 		pdu += ofst + len;
 	}
