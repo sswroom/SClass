@@ -319,27 +319,40 @@ Bool Text::UTF8Reader::ReadLine(Text::StringBuilderUTF *sb, UOSInt maxCharCnt)
 	UOSInt currSize = 0;
 	UOSInt writeSize = 0;
 	UOSInt charSize;
+	UOSInt nextCheckSize = this->buffSize - this->currOfst;
+	if (maxCharCnt < nextCheckSize)
+	{
+		nextCheckSize = maxCharCnt;
+	}
 	while (true)
 	{
-		if (currSize >= maxCharCnt)
+		if (currSize >= nextCheckSize)
 		{
-			sb->AppendC((const UTF8Char*)&this->buff[this->currOfst], currSize);
-			this->currOfst += currSize;
-			return true;
-		}
-		if (this->currOfst + currSize >= this->buffSize)
-		{
-			if (currSize > 0)
+			if (currSize >= maxCharCnt)
 			{
 				sb->AppendC((const UTF8Char*)&this->buff[this->currOfst], currSize);
 				this->currOfst += currSize;
-				maxCharCnt -= currSize;
-				writeSize += currSize;
-				currSize = 0;
-			}
-			this->FillBuffer();
-			if (this->currOfst >= this->buffSize)
 				return true;
+			}
+			else //if (this->currOfst + currSize >= this->buffSize)
+			{
+				if (currSize > 0)
+				{
+					sb->AppendC((const UTF8Char*)&this->buff[this->currOfst], currSize);
+					this->currOfst += currSize;
+					maxCharCnt -= currSize;
+					writeSize += currSize;
+					currSize = 0;
+				}
+				this->FillBuffer();
+				if (this->currOfst >= this->buffSize)
+					return true;
+				nextCheckSize = this->buffSize - this->currOfst;
+				if (maxCharCnt < nextCheckSize)
+				{
+					nextCheckSize = maxCharCnt;
+				}
+			}
 		}
 
 		UTF8Char c = this->buff[this->currOfst + currSize];
@@ -392,7 +405,7 @@ Bool Text::UTF8Reader::ReadLine(Text::StringBuilderUTF *sb, UOSInt maxCharCnt)
 				charSize = 6;
 			}
 
-			if (maxCharCnt - currSize < charSize)
+			if (maxCharCnt < currSize + charSize)
 			{
 				sb->AppendC((const UTF8Char*)&this->buff[this->currOfst], currSize);
 				this->currOfst += currSize;
@@ -433,27 +446,40 @@ UTF8Char *Text::UTF8Reader::ReadLine(UTF8Char *u8buff, UOSInt maxCharCnt)
 	UOSInt currSize = 0;
 	UOSInt writeSize = 0;
 	UOSInt charSize;
+	UOSInt nextCheckSize = this->buffSize - this->currOfst;
+	if (maxCharCnt < nextCheckSize)
+	{
+		nextCheckSize = maxCharCnt;
+	}
 	while (true)
 	{
-		if (currSize >= maxCharCnt)
+		if (currSize >= nextCheckSize)
 		{
-			u8buff = Text::StrConcatC(u8buff, (const UTF8Char*)&this->buff[this->currOfst], currSize);
-			this->currOfst += currSize;
-			return u8buff;
-		}
-		if (this->currOfst + currSize >= this->buffSize)
-		{
-			if (currSize > 0)
+			if (currSize >= maxCharCnt)
 			{
 				u8buff = Text::StrConcatC(u8buff, (const UTF8Char*)&this->buff[this->currOfst], currSize);
 				this->currOfst += currSize;
-				maxCharCnt -= currSize;
-				writeSize += currSize;
-				currSize = 0;
-			}
-			this->FillBuffer();
-			if (this->currOfst >= this->buffSize)
 				return u8buff;
+			}
+			else //if (this->currOfst + currSize >= this->buffSize)
+			{
+				if (currSize > 0)
+				{
+					u8buff = Text::StrConcatC(u8buff, (const UTF8Char*)&this->buff[this->currOfst], currSize);
+					this->currOfst += currSize;
+					maxCharCnt -= currSize;
+					writeSize += currSize;
+					currSize = 0;
+				}
+				this->FillBuffer();
+				if (this->currOfst >= this->buffSize)
+					return u8buff;
+			}
+			nextCheckSize = this->buffSize - this->currOfst;
+			if (maxCharCnt < nextCheckSize)
+			{
+				nextCheckSize = maxCharCnt;
+			}
 		}
 
 		UTF8Char c = this->buff[this->currOfst + currSize];
@@ -538,18 +564,19 @@ UTF8Char *Text::UTF8Reader::ReadLine(UTF8Char *u8buff, UOSInt maxCharCnt)
 
 UTF8Char *Text::UTF8Reader::GetLastLineBreak(UTF8Char *buff)
 {
-	if (this->lineBreak == 1)
+	switch (this->lineBreak)
 	{
+	case 1:
 		*buff++ = 13;
-	}
-	else if (this->lineBreak == 2)
-	{
+		break;
+	case 2:
 		*buff++ = 10;
-	}
-	else if (this->lineBreak == 3)
-	{
-		*buff++ = 13;
-		*buff++ = 10;
+		break;
+	case 3:
+		buff[0] = 13;
+		buff[1] = 10;
+		buff += 2;
+		break;
 	}
 	*buff = 0;
 	return buff;
@@ -557,17 +584,17 @@ UTF8Char *Text::UTF8Reader::GetLastLineBreak(UTF8Char *buff)
 
 Bool Text::UTF8Reader::GetLastLineBreak(Text::StringBuilderUTF *sb)
 {
-	if (this->lineBreak == 1)
+	switch (this->lineBreak)
 	{
+	case 1:
 		sb->AppendChar('\r', 1);
-	}
-	else if (this->lineBreak == 2)
-	{
+		return true;
+	case 2:
 		sb->AppendChar('\n', 1);
-	}
-	else if (this->lineBreak == 2)
-	{
-		sb->AppendC((const UTF8Char*)"\r\n", 2);
+		return true;
+	case 3:
+		sb->AppendC(UTF8STRC("\r\n"));
+		return true;
 	}
 	return true;
 }

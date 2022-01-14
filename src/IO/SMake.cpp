@@ -33,7 +33,7 @@ void IO::SMake::AppendCfgItem(Text::StringBuilderUTF *sb, const UTF8Char *val)
 			Text::StringBuilderUTF8 sbCmd;
 			sbCmd.AppendC(&val[i + 8], (UOSInt)j - 8);
 			i += j + 1;
-			Manage::Process::ExecuteProcess(sbCmd.ToString(), sb);
+			Manage::Process::ExecuteProcess(sbCmd.ToString(), sbCmd.GetLength(), sb);
 			while (sb->EndsWith('\r') || sb->EndsWith('\n'))
 			{
 				sb->RemoveChars(1);
@@ -98,7 +98,7 @@ void IO::SMake::AppendCfg(Text::StringBuilderUTF *sb, const UTF8Char *compileCfg
 			}
 			sb2.ClearStr();
 			sb2.AppendC(compileCfg, (UOSInt)i);
-			Manage::Process::ExecuteProcess(sb2.ToString(), sb);
+			Manage::Process::ExecuteProcess(sb2.ToString(), sb2.GetLength(), sb);
 			while (sb->EndsWith('\r') || sb->EndsWith('\n'))
 			{
 				sb->RemoveChars(1);
@@ -118,14 +118,14 @@ void IO::SMake::AppendCfg(Text::StringBuilderUTF *sb, const UTF8Char *compileCfg
 	}
 }
 
-Bool IO::SMake::ExecuteCmd(const UTF8Char *cmd)
+Bool IO::SMake::ExecuteCmd(const UTF8Char *cmd, UOSInt cmdLen)
 {
 	if (this->cmdWriter)
 	{
-		this->cmdWriter->WriteLine(cmd);
+		this->cmdWriter->WriteLineC(cmd, cmdLen);
 	}
 	Text::StringBuilderUTF8 sbRet;
-	Int32 ret = Manage::Process::ExecuteProcess(cmd, &sbRet);
+	Int32 ret = Manage::Process::ExecuteProcess(cmd, cmdLen, &sbRet);
 	if (ret != 0)
 	{
 		this->SetErrorMsg(sbRet.ToString(), sbRet.GetLength());
@@ -166,7 +166,9 @@ Bool IO::SMake::LoadConfigFile(const UTF8Char *cfgFile)
 	Text::StringBuilderUTF8 sb;
 	Text::StringBuilderUTF8 sb2;
 	UTF8Char *sptr1;
+	UTF8Char *sptr1End;
 	UTF8Char *sptr2;
+	UTF8Char *sptr2End;
 	UOSInt i;
 	IO::SMake::ConfigItem *cfg;
 	IO::SMake::ProgramItem *prog = 0;
@@ -393,21 +395,21 @@ Bool IO::SMake::LoadConfigFile(const UTF8Char *cfgFile)
 				sptr1 = sb.ToString();
 				sptr2 = &sptr1[i + 1];
 				sptr1[i] = 0;
-				Text::StrTrimC(sptr1, i);
-				Text::StrTrimC(sptr2, sb.GetLength() - i - 1);
+				sptr1End = Text::StrTrimC(sptr1, i);
+				sptr2End = Text::StrTrimC(sptr2, sb.GetLength() - i - 1);
 				if (sptr1[0] == '+')
 				{
-					prog = progMap->Get(sptr1 + 1);
+					prog = progMap->GetC(sptr1 + 1, (UOSInt)(sptr1End - sptr1 - 1));
 					if (prog)
 					{
 					}
 					else
 					{
 						prog = MemAlloc(IO::SMake::ProgramItem, 1);
-						prog->name = Text::String::NewNotNull(sptr1 + 1);
+						prog->name = Text::String::New(sptr1 + 1, (UOSInt)(sptr1End - sptr1 - 1));
 						if (sptr2[0])
 						{
-							prog->srcFile = Text::String::NewNotNull(sptr2);
+							prog->srcFile = Text::String::New(sptr2, (UOSInt)(sptr2End - sptr2));
 						}
 						else
 						{
@@ -421,23 +423,23 @@ Bool IO::SMake::LoadConfigFile(const UTF8Char *cfgFile)
 				}
 				else
 				{
-					prog = progMap->Get(sptr1);
+					prog = progMap->GetC(sptr1, (UOSInt)(sptr1End - sptr1));
 					if (prog)
 					{
 						ret = false;
 						sb2.ClearStr();
 						sb2.AppendC(UTF8STRC("Program Item "));
-						sb2.Append(sptr1);
+						sb2.AppendC(sptr1, (UOSInt)(sptr1End - sptr1));
 						sb2.AppendC(UTF8STRC(" duplicated"));
 						this->SetErrorMsg(sb2.ToString(), sb2.GetLength());
 					}
 					else
 					{
 						prog = MemAlloc(IO::SMake::ProgramItem, 1);
-						prog->name = Text::String::NewNotNull(sptr1);
+						prog->name = Text::String::New(sptr1, (UOSInt)(sptr1End - sptr1));
 						if (sptr2[0])
 						{
-							prog->srcFile = Text::String::NewNotNull(sptr2);
+							prog->srcFile = Text::String::New(sptr2, (UOSInt)(sptr2End - sptr2));
 						}
 						else
 						{
@@ -446,7 +448,7 @@ Bool IO::SMake::LoadConfigFile(const UTF8Char *cfgFile)
 						NEW_CLASS(prog->subItems, Data::ArrayList<Text::String*>());
 						NEW_CLASS(prog->libs, Data::ArrayList<Text::String*>());
 						prog->compileCfg = 0;
-						progMap->Put(sptr1, prog);
+						progMap->Put(prog->name, prog);
 					}
 				}
 			}
@@ -547,7 +549,7 @@ Bool IO::SMake::ParseSource(Data::ArrayListString *objList, Data::ArrayListStrin
 					sptr1[i] = 0;
 					if (procList->SortedIndexOfPtr(sptr1) >= 0)
 					{
-						thisTime = fileTimeMap->Get(sptr1);
+						thisTime = fileTimeMap->GetC(sptr1, i);
 						if (thisTime && thisTime > lastTime)
 						{
 							lastTime = thisTime;
@@ -803,7 +805,7 @@ Bool IO::SMake::ParseProgInternal(Data::ArrayListString *objList, Data::ArrayLis
 void IO::SMake::CompileTask(void *userObj)
 {
 	CompileReq *req = (CompileReq *)userObj;
-	if (!req->me->ExecuteCmd(req->cmd->v))
+	if (!req->me->ExecuteCmd(req->cmd->v, req->cmd->leng))
 	{
 		req->errorState[0] = true;
 	}
@@ -944,7 +946,7 @@ Bool IO::SMake::CompileProgInternal(IO::SMake::ProgramItem *prog, Bool asmListin
 		{
 			sb.ClearStr();
 			sb.Append(this->basePath);
-			IO::Path::AppendPath(&sb, subProg->srcFile->v);
+			IO::Path::AppendPath(&sb, subProg->srcFile->v, subProg->srcFile->leng);
 			if (!IO::Path::GetFileTime(sb.ToString(), &dt1, 0, 0))
 			{
 				sb.ClearStr();
@@ -1170,7 +1172,7 @@ Bool IO::SMake::CompileProgInternal(IO::SMake::ProgramItem *prog, Bool asmListin
 		AppendCfg(&sb, libList.GetItem(i)->v);
 		i++;
 	}
-	if (!this->ExecuteCmd(sb.ToString()))
+	if (!this->ExecuteCmd(sb.ToString(), sb.GetLength()))
 	{
 		return false;
 	}
@@ -1188,7 +1190,7 @@ IO::SMake::SMake(const UTF8Char *cfgFile, UOSInt threadCnt, IO::Writer *messageW
 {
 	NEW_CLASS(this->cfgMap, Data::StringMap<IO::SMake::ConfigItem*>());
 	NEW_CLASS(this->progMap, Data::FastStringMap<IO::SMake::ProgramItem*>());
-	NEW_CLASS(this->fileTimeMap, Data::StringMap<Int64>());
+	NEW_CLASS(this->fileTimeMap, Data::FastStringMap<Int64>());
 	NEW_CLASS(this->tasks, Sync::ParallelTask(threadCnt, false));
 	NEW_CLASS(this->errorMsgMut, Sync::Mutex());
 	this->errorMsg = 0;

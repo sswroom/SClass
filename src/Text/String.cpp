@@ -347,22 +347,22 @@ UOSInt Text::String::LastIndexOf(UTF8Char c)
 
 OSInt Text::String::CompareTo(String *s)
 {
-	return Text::StrCompare(this->v, s->v);
+	return MyString_StrCompare(this->v, s->v);
 }
 
 OSInt Text::String::CompareTo(const UTF8Char *s)
 {
-	return Text::StrCompare(this->v, s);
+	return MyString_StrCompare(this->v, s);
 }
 
 OSInt Text::String::CompareToICase(Text::String *s)
 {
-	return Text::StrCompareICase(this->v, s->v);
+	return MyString_StrCompareICase(this->v, s->v);
 }
 
 OSInt Text::String::CompareToICase(const UTF8Char *s)
 {
-	return Text::StrCompareICase(this->v, s);
+	return MyString_StrCompareICase(this->v, s);
 }
 
 Int32 Text::String::ToInt32()

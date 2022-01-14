@@ -103,7 +103,14 @@ void __stdcall SSWR::AVIRead::AVIRSMTPServerForm::OnLogFileClicked(void *userObj
 	SSWR::AVIRead::AVIRSMTPServerForm *me = (SSWR::AVIRead::AVIRSMTPServerForm*)userObj;
 	Text::StringBuilderUTF8 sb;
 	IO::Path::GetProcessFileName(&sb);
-	IO::Path::AppendPath(&sb, (const UTF8Char*)"log\\SMTP");
+	if (IO::Path::PATH_SEPERATOR == '\\')
+	{
+		IO::Path::AppendPath(&sb, UTF8STRC("log\\SMTP"));
+	}
+	else
+	{
+		IO::Path::AppendPath(&sb, UTF8STRC("log/SMTP"));
+	}
 	me->log->AddFileLog(sb.ToString(), IO::ILogHandler::LOG_TYPE_PER_DAY, IO::ILogHandler::LOG_GROUP_TYPE_PER_MONTH, IO::ILogHandler::LOG_LEVEL_COMMAND, "yyyy-MM-dd HH:mm:ss.fff", false);
 	me->btnLogFile->SetEnabled(false);
 }
@@ -156,7 +163,7 @@ UTF8Char *__stdcall SSWR::AVIRead::AVIRSMTPServerForm::OnMailReceived(UTF8Char *
 	UOSInt j;
 	sb.ClearStr();
 	IO::Path::GetProcessFileName(&sb);
-	IO::Path::AppendPath(&sb, (const UTF8Char*)"SMTP");
+	IO::Path::AppendPath(&sb, UTF8STRC("SMTP"));
 	sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
 	sb.AppendI64(id);
 	sb.AppendC(UTF8STRC(".eml"));
@@ -355,7 +362,7 @@ SSWR::AVIRead::AVIRSMTPServerForm::AVIRSMTPServerForm(UI::GUIClientControl *pare
 	this->mailChanged = false;
 	Text::StringBuilderUTF8 sb;
 	IO::Path::GetProcessFileName(&sb);
-	IO::Path::AppendPath(&sb, (const UTF8Char*)"SMTP");
+	IO::Path::AppendPath(&sb, UTF8STRC("SMTP"));
 	IO::Path::CreateDirectory(sb.ToString());
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 

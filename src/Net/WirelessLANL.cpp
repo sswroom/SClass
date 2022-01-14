@@ -248,7 +248,7 @@ Net::WirelessLAN::Interface::Interface(const UTF8Char *name, void *id, INTERFACE
 	{
 		this->clsData = 0;
 	}
-	this->name = Text::StrCopyNew(name);
+	this->name = Text::String::NewNotNull(name);
 	this->id = (void*)(OSInt)(socket(AF_INET, SOCK_DGRAM, 0) + 1);
 	this->state = state;
 }
@@ -260,11 +260,11 @@ Net::WirelessLAN::Interface::~Interface()
 		PrivCommands *cmds = (PrivCommands*)this->clsData;
 		MemFree(cmds);
 	}
-	Text::StrDelNew(this->name);
+	this->name->Release();
 	close(-1 + (int)(OSInt)this->id);
 }
 
-const UTF8Char *Net::WirelessLAN::Interface::GetName()
+Text::String *Net::WirelessLAN::Interface::GetName()
 {
 	return this->name;
 }
@@ -276,10 +276,10 @@ Bool Net::WirelessLAN::Interface::Scan()
 	if (this->clsData != 0)
 	{
 		PrivCommands *cmds = (PrivCommands*)this->clsData;
-		Char sbuff[16];
+		UTF8Char sbuff[16];
 //		return true;
-		Text::StrConcat((UTF8Char*)wrq.ifr_ifrn.ifrn_name, this->name);
-		wrq.u.data.length = (UInt16)(Text::StrConcat(sbuff, "SiteSurvey=1") - sbuff + 1);
+		this->name->ConcatTo((UTF8Char*)wrq.ifr_ifrn.ifrn_name);
+		wrq.u.data.length = (UInt16)(Text::StrConcatC(sbuff, UTF8STRC("SiteSurvey=1")) - sbuff + 1);
 		wrq.u.data.pointer = sbuff;
 		wrq.u.data.flags = 0;
 		Sync::MutexUsage mutUsage(cmds->mut);
@@ -291,14 +291,14 @@ Bool Net::WirelessLAN::Interface::Scan()
 	}
 
 	MemClear(&wrq, sizeof(wrq));
-	Text::StrConcat((UTF8Char*)wrq.ifr_ifrn.ifrn_name, this->name);
+	this->name->ConcatTo((UTF8Char*)wrq.ifr_ifrn.ifrn_name);
 	wrq.u.data.pointer = NULL;
 	wrq.u.data.flags = 0;
 	wrq.u.data.length = 0;
 	ret = ioctl(-1 + (int)(OSInt)this->id, SIOCSIWSCAN, &wrq);
 	if (ret < 0)
 	{
-		printf("SIOCSIWSCAN name = %s, ret = %d, errno = %d\r\n", this->name, ret, errno);
+		printf("SIOCSIWSCAN name = %s, ret = %d, errno = %d\r\n", this->name->v, ret, errno);
 		if (errno == 14)
 		{
 			this->Reopen();
@@ -342,7 +342,7 @@ UOSInt Net::WirelessLAN::Interface::GetBSSList(Data::ArrayList<Net::WirelessLAN:
 	UInt8 *buff;
 	UOSInt buffSize = IW_SCAN_MAX_DATA;
 	NEW_CLASS(bss.ieList, Data::ArrayList<Net::WirelessLANIE*>());
-	Text::StrConcat((UTF8Char*)wrq.ifr_ifrn.ifrn_name, this->name);
+	this->name->ConcatTo((UTF8Char*)wrq.ifr_ifrn.ifrn_name);
 	if (this->clsData)
 	{
 		PrivCommands *cmds = (PrivCommands*)this->clsData;
@@ -359,16 +359,16 @@ UOSInt Net::WirelessLAN::Interface::GetBSSList(Data::ArrayList<Net::WirelessLAN:
 		{
 			UOSInt lineCnt = 2;
 			UOSInt colCnt;
-			Char *lines[2];
-			Char *cols[11];
-			Char *macs[6];
+			UTF8Char *lines[2];
+			UTF8Char *cols[11];
+			UTF8Char *macs[6];
 			UOSInt ui;
 			UOSInt channelInd = INVALID_INDEX;
 			UOSInt ssidInd = INVALID_INDEX;
 			UOSInt bssidInd = INVALID_INDEX;
 			buff[wrq.u.data.length] = 0;
 //			printf("%s\r\n", buff);
-			lineCnt = Text::StrSplitLine(lines, 2, (Char*)buff);
+			lineCnt = Text::StrSplitLine(lines, 2, buff);
 			if (lines[0][0] == 0 && lineCnt == 2)
 			{
 				lineCnt = Text::StrSplitLine(lines, 2, lines[1]);
@@ -379,11 +379,12 @@ UOSInt Net::WirelessLAN::Interface::GetBSSList(Data::ArrayList<Net::WirelessLAN:
 				lineCnt = Text::StrSplitLine(lines, 2, lines[1]);
 				if (channelInd == INVALID_INDEX)
 				{
-					bssidInd = Text::StrIndexOf(lines[0], ':') - 2;
+					bssidInd = Text::StrIndexOf(lines[0], ':');
 					if (bssidInd == INVALID_INDEX)
 					{
 						continue;
 					}
+					bssidInd -= 2;
 					lines[0][bssidInd - 1] = 0;
 					colCnt = Text::StrSplitWS(cols, 11, lines[0]);
 					ssidInd = (UOSInt)(cols[colCnt - 1] - lines[0]);
@@ -432,7 +433,8 @@ UOSInt Net::WirelessLAN::Interface::GetBSSList(Data::ArrayList<Net::WirelessLAN:
 							bss.ouis[ui][1] = 0;
 							bss.ouis[ui][2] = 0;
 						}
-						if (Text::StrStartsWith(cols[5], "11b"))
+						UOSInt colLen = Text::StrCharCnt(cols[5]);
+						if (Text::StrStartsWithC(cols[5], colLen, UTF8STRC("11b")))
 						{
 							switch (Text::StrToInt32(cols[0]))
 							{
@@ -480,7 +482,7 @@ UOSInt Net::WirelessLAN::Interface::GetBSSList(Data::ArrayList<Net::WirelessLAN:
 								break;
 							}
 						}
-						else if (Text::StrStartsWith(cols[5], "11a"))
+						else if (Text::StrStartsWithC(cols[5], colLen, UTF8STRC("11a")))
 						{
 							switch (Text::StrToInt32(cols[0]))
 							{
@@ -580,15 +582,15 @@ UOSInt Net::WirelessLAN::Interface::GetBSSList(Data::ArrayList<Net::WirelessLAN:
 							}
 						}
 						bss.phyType = 0;
-						if (Text::StrEquals(cols[5], "11b/g"))
+						if (Text::StrEqualsC(cols[5], colLen, UTF8STRC("11b/g")))
 						{
 							bss.phyType = 6;
 						}
-						else if (Text::StrEquals(cols[5], "11b/g/n"))
+						else if (Text::StrEqualsC(cols[5], colLen, UTF8STRC("11b/g/n")))
 						{
 							bss.phyType = 7;
 						}
-						else if (Text::StrEquals(cols[5], "11a/n"))
+						else if (Text::StrEqualsC(cols[5], colLen, UTF8STRC("11a/n")))
 						{
 							bss.phyType = 8;
 						}
@@ -1092,7 +1094,7 @@ UOSInt Net::WirelessLAN::GetInterfaces(Data::ArrayList<Net::WirelessLAN::Interfa
 		sb.ClearStr();
 		while (reader->ReadLine(&sb, 1024))
 		{
-			sb.Trim();
+			sb.TrimC();
 			i = sb.IndexOf(':');
 			if (i != INVALID_INDEX)
 			{
@@ -1127,7 +1129,7 @@ UOSInt Net::WirelessLAN::GetInterfaces(Data::ArrayList<Net::WirelessLAN::Interfa
 		sb.ClearStr();
 		while (reader->ReadLine(&sb, 1024))
 		{
-			sb.Trim();
+			sb.TrimC();
 			i = sb.IndexOf(':');
 			if (i != INVALID_INDEX)
 			{

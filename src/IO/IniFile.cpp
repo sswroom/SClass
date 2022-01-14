@@ -61,7 +61,7 @@ IO::ConfigFile *IO::IniFile::ParseReader(IO::StreamReader *reader)
 		{
 			if (valueEnd - buff < 128)
 			{
-				cateEnd = Text::StrConcatC(cate, &buff[1], valueEnd - buff - 2);
+				cateEnd = Text::StrConcatC(cate, &buff[1], (UOSInt)(valueEnd - buff - 2));
 			}
 		}
 		else

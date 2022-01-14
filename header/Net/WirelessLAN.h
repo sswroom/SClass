@@ -85,7 +85,7 @@ namespace Net
 		{
 		private:
 			void *clsData;
-			const UTF8Char *name;
+			Text::String *name;
 			void *id;
 			INTERFACE_STATE state;
 
@@ -94,7 +94,7 @@ namespace Net
 			Interface(const UTF8Char *name, void *id, INTERFACE_STATE state, void *clsData);
 			~Interface();
 
-			const UTF8Char *GetName();
+			Text::String *GetName();
 			Bool Scan();
 			UOSInt GetNetworks(Data::ArrayList<Net::WirelessLAN::Network*> *networkList);
 			UOSInt GetBSSList(Data::ArrayList<Net::WirelessLAN::BSSInfo*> *bssList);

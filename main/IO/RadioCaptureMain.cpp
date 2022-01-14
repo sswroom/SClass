@@ -22,6 +22,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	UInt16 webPort = 8080;
 	Manage::ExceptionRecorder *exHdlr;
 	UTF8Char sbuff[512];
+	UTF8Char *sptr;
 	
 	UOSInt argc;
 	UTF8Char **argv = progCtrl->GetCommandLines(progCtrl, &argc);
@@ -29,8 +30,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	{
 		Text::StrToUInt16(argv[1], &webPort);
 	}
-	IO::Path::GetProcessFileName(sbuff);
-	IO::Path::AppendPath(sbuff, (const UTF8Char*)"Error.txt");
+	sptr = IO::Path::GetProcessFileName(sbuff);
+	IO::Path::AppendPathC(sbuff, sptr, UTF8STRC("Error.txt"));
 	NEW_CLASS(exHdlr, Manage::ExceptionRecorder(sbuff, Manage::ExceptionRecorder::EA_RESTART));
 	NEW_CLASS(wifiCapturer, Net::WiFiCapturer());
 	NEW_CLASS(btCapturer, IO::BTCapturer());

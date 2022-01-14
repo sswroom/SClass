@@ -1258,7 +1258,7 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(IO::Writer *writer, Media::Draw
 					NEW_CLASS(benchhdlr, SSWR::Benchmark::BenchmarkWebHandler());
 					sb.ClearStr();
 					IO::Path::GetProcessFileName(&sb);
-					IO::Path::AppendPath(&sb, (const UTF8Char*)"files");
+					IO::Path::AppendPath(&sb, UTF8STRC("files"));
 					NEW_CLASS(fileshdlr, Net::WebServer::HTTPDirectoryHandler(sb.ToString(), false, 0, false));
 					shdlr->HandlePath((const UTF8Char*)"/files", fileshdlr, true);
 					hdlr->HandlePath((const UTF8Char*)"/monitor", shdlr, true);

@@ -41,7 +41,7 @@ namespace IO
 	private:
 		Data::StringMap<ConfigItem*> *cfgMap;
 		Data::FastStringMap<ProgramItem*> *progMap;
-		Data::StringMap<Int64> *fileTimeMap;
+		Data::FastStringMap<Int64> *fileTimeMap;
 		Sync::Mutex *errorMsgMut;
 		Text::String *errorMsg;
 		Text::String *basePath;
@@ -54,7 +54,7 @@ namespace IO
 		void AppendCfgPath(Text::StringBuilderUTF *sb, const UTF8Char *path);
 		void AppendCfg(Text::StringBuilderUTF *sb, const UTF8Char *compileCfg);
 
-		Bool ExecuteCmd(const UTF8Char *cmd);
+		Bool ExecuteCmd(const UTF8Char *cmd, UOSInt cmdLen);
 		Bool LoadConfigFile(const UTF8Char *cfgFile);
 
 		Bool ParseSource(Data::ArrayListString *objList, Data::ArrayListString *libList, Data::ArrayListString *procList, Data::ArrayListString *headerList, Int64 *latestTime, const UTF8Char *sourceFile, UOSInt sourceFileLen);

@@ -366,15 +366,14 @@ WChar *IO::Path::AppendPathW(WChar *path, const WChar *toAppend)
 	return Text::StrConcat(&path[j + 1], toAppend);
 }
 
-Bool IO::Path::AppendPath(Text::StringBuilderUTF8 *sb, const UTF8Char *toAppend)
+Bool IO::Path::AppendPath(Text::StringBuilderUTF8 *sb, const UTF8Char *toAppend, UOSInt toAppendLen)
 {
 	if (toAppend[0] == '/')
 	{
 		sb->ClearStr();
-		sb->Append(toAppend);
+		sb->AppendC(toAppend, toAppendLen);
 		return true;
 	}
-	UOSInt toAppendLen = Text::StrCharCnt(toAppend);
 	UTF8Char *sptr = sb->ToString();
 	UOSInt i = Text::StrLastIndexOf(sptr, '/');
 	if (GetPathType(sptr) == PathType::File && i != INVALID_INDEX)
@@ -395,6 +394,7 @@ Bool IO::Path::AppendPath(Text::StringBuilderUTF8 *sb, const UTF8Char *toAppend)
 			i = Text::StrLastIndexOf(sptr, '/');
 		}
 		toAppend += 3;
+		toAppendLen -= 3;
 	}
 	sb->AppendChar('/', 1);
 	sb->AppendC(toAppend, toAppendLen);

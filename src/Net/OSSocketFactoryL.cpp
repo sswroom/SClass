@@ -753,10 +753,10 @@ Bool Net::OSSocketFactory::IcmpSendEcho2(const Net::SocketUtil::AddressInfo *add
 		{
 			sptr = Text::StrConcatC(sbuff, UTF8STRC("ping -c 1 "));
 		}
-		Net::SocketUtil::GetAddrName(sptr, addr);
+		sptr = Net::SocketUtil::GetAddrName(sptr, addr);
 		Text::StringBuilderUTF8 sb;
 		Int32 ret;
-		ret = Manage::Process::ExecuteProcess(sbuff, &sb);
+		ret = Manage::Process::ExecuteProcess(sbuff, (UOSInt)(sptr - sbuff), &sb);
 		if (ret == 0)
 		{
 			UTF8Char *sarr[4];

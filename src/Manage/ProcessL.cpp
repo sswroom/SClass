@@ -993,7 +993,7 @@ Int32 Manage::Process::ExecuteProcess(Text::String *cmd, Text::StringBuilderUTF 
 	return ret;
 }
 
-Int32 Manage::Process::ExecuteProcess(const UTF8Char *cmd, Text::StringBuilderUTF *result)
+Int32 Manage::Process::ExecuteProcess(const UTF8Char *cmd, UOSInt cmdLen, Text::StringBuilderUTF *result)
 {
 	UTF8Char progName[64];
 	UTF8Char *progBuff = 0;
@@ -1001,7 +1001,6 @@ Int32 Manage::Process::ExecuteProcess(const UTF8Char *cmd, Text::StringBuilderUT
 	Data::ArrayList<UTF8Char *> args;
 	Bool argStart = false;
 
-	UOSInt cmdLen = Text::StrCharCnt(cmd);
 	UTF8Char *pptr;
 	if (cmdLen >= 64)
 	{
@@ -1099,9 +1098,9 @@ Int32 Manage::Process::ExecuteProcess(const UTF8Char *cmd, Text::StringBuilderUT
 
 Int32 Manage::Process::ExecuteProcessW(const WChar *cmd, Text::StringBuilderUTF *result)
 {
-	const UTF8Char *u8ptr = Text::StrToUTF8New(cmd);
-	Int32 ret = ExecuteProcess(u8ptr, result);
-	Text::StrDelNew(u8ptr);
+	Text::String *s = Text::String::NewNotNull(cmd);
+	Int32 ret = ExecuteProcess(s->v, s->leng, result);
+	s->Release();
 	return ret;
 }
 
@@ -1115,7 +1114,7 @@ Bool Manage::Process::OpenPath(const UTF8Char *path)
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("xdg-open "));
 	sb.Append(path);
-	Int32 ret = ExecuteProcess(sb.ToString(), &sb);
+	Int32 ret = ExecuteProcess(sb.ToString(), sb.GetLength(), &sb);
 	return ret == 0;
 }
 
@@ -1123,10 +1122,10 @@ Bool Manage::Process::OpenPathW(const WChar *path)
 {
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("xdg-open "));
-	const UTF8Char *csptr = Text::StrToUTF8New(path);
-	sb.Append(csptr);
-	Text::StrDelNew(csptr);
-	Int32 ret = ExecuteProcess(sb.ToString(), &sb);
+	Text::String *s = Text::String::NewNotNull(path);
+	sb.Append(s);
+	s->Release();
+	Int32 ret = ExecuteProcess(sb.ToString(), sb.GetLength(), &sb);
 	return ret == 0;
 }
 

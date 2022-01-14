@@ -10,7 +10,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	IO::ConsoleWriter console;
 	Text::StringBuilderUTF8 sb;
 	console.WriteLineC(UTF8STRC("Start Execute"));
-	Manage::Process::ExecuteProcess((const UTF8Char*)"getprop", &sb);
+	Manage::Process::ExecuteProcess(UTF8STRC("getprop"), &sb);
 	console.WriteLineC(UTF8STRC("End Execute"));
 	console.WriteLineC(sb.ToString(), sb.GetLength());
 	return 0;
