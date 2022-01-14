@@ -43,21 +43,25 @@ IO::ConfigFile *IO::IniFile::ParseProgConfig(UInt32 codePage)
 IO::ConfigFile *IO::IniFile::ParseReader(IO::StreamReader *reader)
 {
 	UTF8Char cate[128];
+	UTF8Char *cateEnd;
 	UTF8Char buff[1024];
 	UTF8Char *name;
+	UTF8Char *nameEnd;
 	UTF8Char *value;
+	UTF8Char *valueEnd;
 	UTF8Char *src;
 	UTF8Char lbrk[3];
 	IO::ConfigFile *cfg;
 	NEW_CLASS(cfg, IO::ConfigFile());
 	cate[0] = 0;
-	while ((name = reader->ReadLine(buff, 1023)) != 0)
+	cateEnd = cate;
+	while ((valueEnd = reader->ReadLine(buff, 1023)) != 0)
 	{
-		if (buff[0] == '[' && name[-1] == ']')
+		if (buff[0] == '[' && valueEnd[-1] == ']')
 		{
-			if (name - buff < 128)
+			if (valueEnd - buff < 128)
 			{
-				Text::StrConcat(cate, &buff[1])[-1] = 0;
+				cateEnd = Text::StrConcatC(cate, &buff[1], valueEnd - buff - 2);
 			}
 		}
 		else
@@ -73,26 +77,27 @@ IO::ConfigFile *IO::IniFile::ParseReader(IO::StreamReader *reader)
 			}
 			if (*src == '=')
 			{
-				*src++ = 0;
-				Text::StrTrim(name);
+				*src = 0;
+				nameEnd = Text::StrTrimC(name, (UOSInt)(src - name));
+				src++;
 				value = src;
 				if (reader->GetLastLineBreak(lbrk) == lbrk)
 				{
 					Text::StringBuilderUTF8 sb;
-					sb.Append(value);
-					while (reader->ReadLine(src, 1023 - (UOSInt)(src - buff)))
+					sb.AppendC(value, (UOSInt)(valueEnd - value));
+					while ((valueEnd = reader->ReadLine(src, 1023 - (UOSInt)(src - buff))) != 0)
 					{
-						sb.Append(src);
+						sb.AppendC(src, (UOSInt)(valueEnd - src));
 						if (reader->GetLastLineBreak(lbrk) != lbrk)
 							break;
 					}
 					sb.Trim();
-					cfg->SetValue(cate, name, sb.ToString());
+					cfg->SetValue(cate, (UOSInt)(cateEnd - cate), name, (UOSInt)(nameEnd - name), sb.ToString(), sb.GetLength());
 				}
 				else
 				{
 					Text::StrTrim(value);
-					cfg->SetValue(cate, name, value);
+					cfg->SetValue(cate, (UOSInt)(cateEnd - cate), name, (UOSInt)(nameEnd - name), value, (UOSInt)(valueEnd - value));
 				}
 			}
 		}

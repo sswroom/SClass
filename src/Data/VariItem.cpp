@@ -474,7 +474,7 @@ void Data::VariItem::GetAsString(Text::StringBuilderUTF *sb)
 	{
 	case ItemType::Unknown:
 	case ItemType::Null:
-		sb->AppendC((const UTF8Char*)"null", 4);
+		sb->AppendC(UTF8STRC("null"));
 		return;
 	case ItemType::F32:
 		Text::SBAppendF32(sb, this->val.f32);
@@ -509,11 +509,11 @@ void Data::VariItem::GetAsString(Text::StringBuilderUTF *sb)
 	case ItemType::BOOL:
 		if (this->val.boolean)
 		{
-			sb->AppendC((const UTF8Char*)"true", 4);
+			sb->AppendC(UTF8STRC("true"));
 		}
 		else
 		{
-			sb->AppendC((const UTF8Char*)"false", 5);
+			sb->AppendC(UTF8STRC("false"));
 		}
 		break;
 	case ItemType::Str:
@@ -979,7 +979,10 @@ void Data::VariItem::ToString(Text::StringBuilderUTF *sb)
 		sb->AppendU64(this->val.u64);
 		return;
 	case ItemType::BOOL:
-		sb->Append(this->val.boolean?(const UTF8Char*)"true":(const UTF8Char*)"false");
+		if (this->val.boolean)
+			sb->AppendC(UTF8STRC("true"));
+		else
+			sb->AppendC(UTF8STRC("false"));
 		break;
 	case ItemType::Str:
 		s = Text::JSText::ToNewJSTextDQuote(this->val.str->v);

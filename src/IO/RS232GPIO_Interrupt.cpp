@@ -106,7 +106,7 @@ void __stdcall IO::RS232GPIO::IntHdlr(void *userObj)
 	}
 }
 
-IO::RS232GPIO::RS232GPIO(IO::GPIOControl *gpio, UOSInt rxdPin, UOSInt txdPin, Int32 baudRate) : IO::Stream((const UTF8Char*)"RS-232")
+IO::RS232GPIO::RS232GPIO(IO::GPIOControl *gpio, UOSInt rxdPin, UOSInt txdPin, UInt32 baudRate) : IO::Stream(UTF8STRC("RS-232"))
 {
 	this->running = false;
 	this->toStop = false;
@@ -133,7 +133,7 @@ IO::RS232GPIO::~RS232GPIO()
 	this->gpio->UnhandleInterrupt(IntHdlr, this);
 }
 
-OSInt IO::RS232GPIO::Read(UInt8 *buff, OSInt size)
+UOSInt IO::RS232GPIO::Read(UInt8 *buff, UOSInt size)
 {
 	Manage::HiResClock clk;
 	clk.Start();
@@ -185,10 +185,10 @@ OSInt IO::RS232GPIO::Read(UInt8 *buff, OSInt size)
 	return buffSize;
 }
 
-OSInt IO::RS232GPIO::Write(const UInt8 *buff, OSInt size)
+UOSInt IO::RS232GPIO::Write(const UInt8 *buff, UOSInt size)
 {
 	UInt32 t = 1000000 / this->baudRate;
-	OSInt ret = size;
+	UOSInt ret = size;
 	UInt8 v;
 	while (size-- > 0)
 	{
@@ -229,7 +229,7 @@ Bool IO::RS232GPIO::HasData()
 	return this->readBuffStart != this->readBuffEnd;
 }
 
-void *IO::RS232GPIO::BeginRead(UInt8 *buff, OSInt size, Sync::Event *evt)
+void *IO::RS232GPIO::BeginRead(UInt8 *buff, UOSInt size, Sync::Event *evt)
 {
 	void *ret = (void*)Read(buff, size);
 	if (ret)
@@ -239,16 +239,16 @@ void *IO::RS232GPIO::BeginRead(UInt8 *buff, OSInt size, Sync::Event *evt)
 	return ret;
 }
 
-Int32 IO::RS232GPIO::EndRead(void *reqData)
+UOSInt IO::RS232GPIO::EndRead(void *reqData, Bool toWait)
 {
-	return (Int32)(OSInt)reqData;
+	return (UOSInt)reqData;
 }
 
 void IO::RS232GPIO::CancelRead(void *reqData)
 {
 }
 
-void *IO::RS232GPIO::BeginWrite(const UInt8 *buff, OSInt size, Sync::Event *evt)
+void *IO::RS232GPIO::BeginWrite(const UInt8 *buff, UOSInt size, Sync::Event *evt)
 {
 	void *ret = (void*)Write(buff, size);
 	if (ret)
@@ -258,9 +258,9 @@ void *IO::RS232GPIO::BeginWrite(const UInt8 *buff, OSInt size, Sync::Event *evt)
 	return ret;
 }
 
-Int32 IO::RS232GPIO::EndWrite(void *reqData)
+UOSInt IO::RS232GPIO::EndWrite(void *reqData, Bool toWait)
 {
-	return (Int32)(OSInt)reqData;
+	return (UOSInt)reqData;
 }
 
 void IO::RS232GPIO::CancelWrite(void *reqData)

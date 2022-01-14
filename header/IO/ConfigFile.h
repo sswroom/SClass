@@ -15,18 +15,18 @@ namespace IO
 		virtual ~ConfigFile();
 
 		virtual Text::String *GetValue(Text::String *name);
-		virtual Text::String *GetValue(const UTF8Char *name);
+		virtual Text::String *GetValue(const UTF8Char *name, UOSInt nameLen);
 		virtual Text::String *GetValue(Text::String *category, Text::String *name);
-		virtual Text::String *GetValue(const UTF8Char *category, const UTF8Char *name);
+		virtual Text::String *GetValue(const UTF8Char *category, UOSInt categoryLen, const UTF8Char *name, UOSInt nameLen);
 		Bool SetValue(Text::String *category, Text::String *name, Text::String *value);
-		Bool SetValue(const UTF8Char *category, const UTF8Char *name, const UTF8Char *value);
-		Bool RemoveValue(const UTF8Char *category, const UTF8Char *name);
+		Bool SetValue(const UTF8Char *category, UOSInt categoryLen, const UTF8Char *name, UOSInt nameLen, const UTF8Char *value, UOSInt valueLen);
+		Bool RemoveValue(const UTF8Char *category, UOSInt categoryLen, const UTF8Char *name, UOSInt nameLen);
 		UOSInt GetCateCount();
 		UOSInt GetCateList(Data::ArrayList<Text::String *> *cateList, Bool withEmpty);
 		UOSInt GetKeys(Text::String *category, Data::ArrayList<Text::String *> *keyList);
-		UOSInt GetKeys(const UTF8Char *category, Data::ArrayList<Text::String *> *keyList);
-		Bool HasCategory(const UTF8Char *category);
-		IO::ConfigFile *CloneCate(const UTF8Char *category);
+		UOSInt GetKeys(const UTF8Char *category, UOSInt categoryLen, Data::ArrayList<Text::String *> *keyList);
+		Bool HasCategory(const UTF8Char *category, UOSInt categoryLen);
+		IO::ConfigFile *CloneCate(const UTF8Char *category, UOSInt categoryLen);
 	};
 }
 #endif

@@ -27,7 +27,7 @@ typedef struct
 } OVERLAPPED;
 #endif
 
-IO::SiLabSerialPort::SiLabSerialPort(void *handle, IO::SiLabDriver *driver) : IO::Stream((const UTF8Char*)"SiLabSerialPort")
+IO::SiLabSerialPort::SiLabSerialPort(void *handle, IO::SiLabDriver *driver) : IO::Stream(UTF8STRC("SiLabSerialPort"))
 {
 	this->driver = driver;
 	this->handle = handle;

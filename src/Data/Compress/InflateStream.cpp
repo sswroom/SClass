@@ -7,7 +7,7 @@
 
 #define BUFFSIZE 1048576
 
-Data::Compress::InflateStream::InflateStream(IO::Stream *outStm, UOSInt headerSize) : IO::Stream((const UTF8Char*)"InflateStream")
+Data::Compress::InflateStream::InflateStream(IO::Stream *outStm, UOSInt headerSize) : IO::Stream(UTF8STRC("InflateStream"))
 {
 	this->outStm = outStm;
 	this->writeBuff = MemAlloc(UInt8, BUFFSIZE);
@@ -22,7 +22,7 @@ Data::Compress::InflateStream::InflateStream(IO::Stream *outStm, UOSInt headerSi
 	mz_inflateInit2(mzstm, -MZ_DEFAULT_WINDOW_BITS);
 }
 
-Data::Compress::InflateStream::InflateStream(IO::Stream *outStm) : IO::Stream((const UTF8Char*)"InflateStream")
+Data::Compress::InflateStream::InflateStream(IO::Stream *outStm) : IO::Stream(UTF8STRC("InflateStream"))
 {
 	this->outStm = outStm;
 	this->writeBuff = MemAlloc(UInt8, BUFFSIZE);

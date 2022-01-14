@@ -68,12 +68,12 @@ Bool SSWR::OrganMgr::OrganLocationForm::ToSave()
 
 	if (this->txtEName->GetText(sbuff) == sbuff)
 	{
-		Bool ret = UI::MessageDialog::ShowYesNoDialog(this->env->GetLang((const UTF8Char*)"LocationQuestionEName"), this->env->GetLang((const UTF8Char*)"LocationQuestion"), this);
+		Bool ret = UI::MessageDialog::ShowYesNoDialog(this->env->GetLang(UTF8STRC("LocationQuestionEName")), this->env->GetLang(UTF8STRC("LocationQuestion")), this);
 		return !ret;
 	}
 	if (this->txtCName->GetText(sbuff2) == sbuff2)
 	{
-		Bool ret = UI::MessageDialog::ShowYesNoDialog(this->env->GetLang((const UTF8Char*)"LocationQuestionCName"), this->env->GetLang((const UTF8Char*)"LocationQuestion"), this);
+		Bool ret = UI::MessageDialog::ShowYesNoDialog(this->env->GetLang(UTF8STRC("LocationQuestionCName")), this->env->GetLang(UTF8STRC("LocationQuestion")), this);
 		return !ret;
 	}
 
@@ -87,7 +87,7 @@ Bool SSWR::OrganMgr::OrganLocationForm::ToSave()
 	}
 	else
 	{
-		Bool ret = UI::MessageDialog::ShowYesNoDialog(this->env->GetLang((const UTF8Char*)"LocationQuestionError"), this->env->GetLang((const UTF8Char*)"LocationQuestion"), this);
+		Bool ret = UI::MessageDialog::ShowYesNoDialog(this->env->GetLang(UTF8STRC("LocationQuestionError")), this->env->GetLang(UTF8STRC("LocationQuestion")), this);
 		return !ret;
 	}
 }
@@ -171,12 +171,12 @@ void __stdcall SSWR::OrganMgr::OrganLocationForm::OnAddClicked(void *userObj)
 	UTF8Char sbuff2[256];
 	if (me->txtEName->GetText(sbuff) == sbuff)
 	{
-		UI::MessageDialog::ShowDialog(me->env->GetLang((const UTF8Char*)"LocationInputEName"), me->env->GetLang((const UTF8Char*)"LocationTitle"), me);
+		UI::MessageDialog::ShowDialog(me->env->GetLang(UTF8STRC("LocationInputEName")), me->env->GetLang(UTF8STRC("LocationTitle")), me);
 		return;
 	}
 	if (me->txtCName->GetText(sbuff2) == sbuff2)
 	{
-		UI::MessageDialog::ShowDialog(me->env->GetLang((const UTF8Char*)"LocationInputCName"), me->env->GetLang((const UTF8Char*)"LocationTitle"), me);
+		UI::MessageDialog::ShowDialog(me->env->GetLang(UTF8STRC("LocationInputCName")), me->env->GetLang(UTF8STRC("LocationTitle")), me);
 		return;
 	}
 	Location *parLoc = me->GetParentLoc();
@@ -199,7 +199,7 @@ void __stdcall SSWR::OrganMgr::OrganLocationForm::OnAddClicked(void *userObj)
 	}
 	else
 	{
-		UI::MessageDialog::ShowDialog(me->env->GetLang((const UTF8Char*)"LocationAddError"), me->env->GetLang((const UTF8Char*)"LocationTitle"), me);
+		UI::MessageDialog::ShowDialog(me->env->GetLang(UTF8STRC("LocationAddError")), me->env->GetLang(UTF8STRC("LocationTitle")), me);
 		return;
 	}
 }
@@ -213,7 +213,7 @@ void __stdcall SSWR::OrganMgr::OrganLocationForm::OnOkClicked(void *userObj)
 	{
 		if (me->lbSublocations->GetCount() > 0)
 		{
-			UI::MessageDialog::ShowDialog(me->env->GetLang((const UTF8Char*)"LocationSelectLocation"), me->env->GetLang((const UTF8Char*)"LocationTitle"), me);
+			UI::MessageDialog::ShowDialog(me->env->GetLang(UTF8STRC("LocationSelectLocation")), me->env->GetLang(UTF8STRC("LocationTitle")), me);
 			return;
 		}
 		else
@@ -221,7 +221,7 @@ void __stdcall SSWR::OrganMgr::OrganLocationForm::OnOkClicked(void *userObj)
 			Location *o = me->GetParentLoc();
 			if (o == 0)
 			{
-				UI::MessageDialog::ShowDialog(me->env->GetLang((const UTF8Char*)"LocationSelectLocation"), me->env->GetLang((const UTF8Char*)"LocationTitle"), me);
+				UI::MessageDialog::ShowDialog(me->env->GetLang(UTF8STRC("LocationSelectLocation")), me->env->GetLang(UTF8STRC("LocationTitle")), me);
 				return;
 			}
 			else
@@ -239,7 +239,7 @@ void __stdcall SSWR::OrganMgr::OrganLocationForm::OnOkClicked(void *userObj)
 		}
 		else if (me->lbSublocations->GetCount() > 0)
 		{
-			UI::MessageDialog::ShowDialog(me->env->GetLang((const UTF8Char*)"LocationSelectLocation"), me->env->GetLang((const UTF8Char*)"LocationTitle"), me);
+			UI::MessageDialog::ShowDialog(me->env->GetLang(UTF8STRC("LocationSelectLocation")), me->env->GetLang(UTF8STRC("LocationTitle")), me);
 			return;
 		}
 		else
@@ -247,7 +247,7 @@ void __stdcall SSWR::OrganMgr::OrganLocationForm::OnOkClicked(void *userObj)
 			l = me->GetParentLoc();
 			if (l == 0)
 			{
-				UI::MessageDialog::ShowDialog(me->env->GetLang((const UTF8Char*)"LocationSelectLocation"), me->env->GetLang((const UTF8Char*)"LocationTitle"), me);
+				UI::MessageDialog::ShowDialog(me->env->GetLang(UTF8STRC("LocationSelectLocation")), me->env->GetLang(UTF8STRC("LocationTitle")), me);
 				return;
 			}
 			else
@@ -284,7 +284,7 @@ SSWR::OrganMgr::OrganLocationForm::OrganLocationForm(UI::GUIClientControl *paren
 	this->currLocInd = 0;
 	this->selVal = 0;
 
-	this->SetText(this->env->GetLang((const UTF8Char*)"LocationTitle"));
+	this->SetText(this->env->GetLang(UTF8STRC("LocationTitle")));
 
 	NEW_CLASS(this->lbLocation, UI::GUIListBox(ui, this, false));
 	this->lbLocation->SetRect(0, 0, 96, 100, false);
@@ -297,11 +297,11 @@ SSWR::OrganMgr::OrganLocationForm::OrganLocationForm(UI::GUIClientControl *paren
 	this->lbSublocations->HandleDoubleClicked(OnSubLocDblClk, this);
 	NEW_CLASS(this->pnlLocation, UI::GUIPanel(ui, this));
 	this->pnlLocation->SetDockType(UI::GUIControl::DOCK_FILL);
-	NEW_CLASS(this->lblID, UI::GUILabel(ui, this->pnlLocation, this->env->GetLang((const UTF8Char*)"LocationId")));
+	NEW_CLASS(this->lblID, UI::GUILabel(ui, this->pnlLocation, this->env->GetLang(UTF8STRC("LocationId"))));
 	this->lblID->SetRect(11, 16, 80, 23, false);
-	NEW_CLASS(this->lblEName, UI::GUILabel(ui, this->pnlLocation, this->env->GetLang((const UTF8Char*)"LocationEName")));
+	NEW_CLASS(this->lblEName, UI::GUILabel(ui, this->pnlLocation, this->env->GetLang(UTF8STRC("LocationEName"))));
 	this->lblEName->SetRect(11, 48, 80, 23, false);
-	NEW_CLASS(this->lblCName, UI::GUILabel(ui, this->pnlLocation, this->env->GetLang((const UTF8Char*)"LocationCName")));
+	NEW_CLASS(this->lblCName, UI::GUILabel(ui, this->pnlLocation, this->env->GetLang(UTF8STRC("LocationCName"))));
 	this->lblCName->SetRect(11, 80, 80, 23, false);
 	NEW_CLASS(this->txtID, UI::GUITextBox(ui, this->pnlLocation, (const UTF8Char*)""));	
 	this->txtID->SetRect(99, 16, 88, 23, false);
@@ -310,20 +310,20 @@ SSWR::OrganMgr::OrganLocationForm::OrganLocationForm(UI::GUIClientControl *paren
 	this->txtEName->SetRect(99, 48, 96, 23, false);
 	NEW_CLASS(this->txtCName, UI::GUITextBox(ui, this->pnlLocation, (const UTF8Char*)""));	
 	this->txtCName->SetRect(99, 80, 96, 23, false);
-	NEW_CLASS(this->btnAdd, UI::GUIButton(ui, this->pnlLocation, this->env->GetLang((const UTF8Char*)"LocationAdd")));
+	NEW_CLASS(this->btnAdd, UI::GUIButton(ui, this->pnlLocation, this->env->GetLang(UTF8STRC("LocationAdd"))));
 	this->btnAdd->SetRect(99, 120, 75, 23, false);
 	this->btnAdd->HandleButtonClick(OnAddClicked, this);
-	NEW_CLASS(this->btnOk, UI::GUIButton(ui, this->pnlLocation, this->env->GetLang((const UTF8Char*)"LocationOk")));
+	NEW_CLASS(this->btnOk, UI::GUIButton(ui, this->pnlLocation, this->env->GetLang(UTF8STRC("LocationOk"))));
 	this->btnOk->SetRect(41, 368, 75, 23, false);
 	this->btnOk->HandleButtonClick(OnOkClicked, this);
-	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this->pnlLocation, this->env->GetLang((const UTF8Char*)"LocationCancel")));
+	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this->pnlLocation, this->env->GetLang(UTF8STRC("LocationCancel"))));
 	this->btnCancel->SetRect(131, 368, 75, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClicked, this);
 
 	if (selMode == SM_NONE)
 	{
 		this->btnOk->SetVisible(false);
-		this->btnCancel->SetText(this->env->GetLang((const UTF8Char*)"LocationClose"));
+		this->btnCancel->SetText(this->env->GetLang(UTF8STRC("LocationClose")));
 	}
 
 	if (initId > 0)

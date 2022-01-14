@@ -103,24 +103,24 @@ void __stdcall SSWR::OrganMgr::OrganBookForm::OnBookAddClicked(void *userObj)
 	me->txtBookURL->GetText(&sb4);
 	if (sb.GetLength() <= 0)
 	{
-		UI::MessageDialog::ShowDialog(me->env->GetLang((const UTF8Char*)"BookFormInputAuthor"), (const UTF8Char*)"Error", me);
+		UI::MessageDialog::ShowDialog(me->env->GetLang(UTF8STRC("BookFormInputAuthor")), (const UTF8Char*)"Error", me);
 		return;
 	}
 	if (sb2.GetLength() <= 0)
 	{
-		UI::MessageDialog::ShowDialog(me->env->GetLang((const UTF8Char*)"BookFormInputName"), (const UTF8Char*)"Error", me);
+		UI::MessageDialog::ShowDialog(me->env->GetLang(UTF8STRC("BookFormInputName")), (const UTF8Char*)"Error", me);
 		return;
 	}
 	if (sb3.GetLength() <= 0)
 	{
-		UI::MessageDialog::ShowDialog(me->env->GetLang((const UTF8Char*)"BookFormInputSource"), (const UTF8Char*)"Error", me);
+		UI::MessageDialog::ShowDialog(me->env->GetLang(UTF8STRC("BookFormInputSource")), (const UTF8Char*)"Error", me);
 		return;
 	}
 	Data::DateTime publishDate;
 	me->dtpBookPublish->GetSelectedTime(&publishDate);
 	if (!me->env->NewBook(sb2.ToString(), sb.ToString(), sb3.ToString(), &publishDate, sb4.ToString()))
 	{
-		UI::MessageDialog::ShowDialog(me->env->GetLang((const UTF8Char*)"BookFormDBError"), (const UTF8Char*)"Error", me);
+		UI::MessageDialog::ShowDialog(me->env->GetLang(UTF8STRC("BookFormDBError")), (const UTF8Char*)"Error", me);
 		return;
 	}
 
@@ -285,7 +285,7 @@ SSWR::OrganMgr::OrganBookForm::OrganBookForm(UI::GUIClientControl *parent, UI::G
 	this->changed = false;
 	NEW_CLASS(this->bookList, BookArrayList());
 
-	this->SetText(this->env->GetLang((const UTF8Char*)"BookFormTitle"));
+	this->SetText(this->env->GetLang(UTF8STRC("BookFormTitle")));
 	this->SetFont(0, 0, 10.5, false);
 
 	NEW_CLASS(this->pnlBook, UI::GUIPanel(ui, this));
@@ -299,46 +299,46 @@ SSWR::OrganMgr::OrganBookForm::OrganBookForm(UI::GUIClientControl *parent, UI::G
 	this->lvBook->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvBook->SetShowGrid(true);
 	this->lvBook->SetFullRowSelect(true);
-	this->lvBook->AddColumn(this->env->GetLang((const UTF8Char*)"BookFormColDate"), 60);
-	this->lvBook->AddColumn(this->env->GetLang((const UTF8Char*)"BookFormColAuthor"), 120);
-	this->lvBook->AddColumn(this->env->GetLang((const UTF8Char*)"BookFormColName"), 400);
-	this->lvBook->AddColumn(this->env->GetLang((const UTF8Char*)"BookFormColSource"), 60);
-	NEW_CLASS(this->btnBookPaste, UI::GUIButton(ui, this->pnlBookDet, this->env->GetLang((const UTF8Char*)"BookFormBookPaste")));
+	this->lvBook->AddColumn(this->env->GetLang(UTF8STRC("BookFormColDate")), 60);
+	this->lvBook->AddColumn(this->env->GetLang(UTF8STRC("BookFormColAuthor")), 120);
+	this->lvBook->AddColumn(this->env->GetLang(UTF8STRC("BookFormColName")), 400);
+	this->lvBook->AddColumn(this->env->GetLang(UTF8STRC("BookFormColSource")), 60);
+	NEW_CLASS(this->btnBookPaste, UI::GUIButton(ui, this->pnlBookDet, this->env->GetLang(UTF8STRC("BookFormBookPaste"))));
 	this->btnBookPaste->SetRect(88, 0, 75, 23, false);
 	this->btnBookPaste->HandleButtonClick(OnBookPasteClicked, this);
-	NEW_CLASS(this->lblBookPublish, UI::GUILabel(ui, this->pnlBookDet, this->env->GetLang((const UTF8Char*)"BookFormBookPublish")));
+	NEW_CLASS(this->lblBookPublish, UI::GUILabel(ui, this->pnlBookDet, this->env->GetLang(UTF8STRC("BookFormBookPublish"))));
 	this->lblBookPublish->SetRect(0, 0, 70, 23, false);
 	NEW_CLASS(this->dtpBookPublish, UI::GUIDateTimePicker(ui, this->pnlBookDet, UI::GUIDateTimePicker::ST_CALENDAR));
 	this->dtpBookPublish->SetRect(0, 24, 88, 19, false);
 	this->dtpBookPublish->SetFormat("yyyy/MM/dd");
 	this->dtpBookPublish->HandleDateChange(OnBookPublishChg, this);
-	NEW_CLASS(this->lblBookAuthor, UI::GUILabel(ui, this->pnlBookDet, this->env->GetLang((const UTF8Char*)"BookFormBookAuthor")));
+	NEW_CLASS(this->lblBookAuthor, UI::GUILabel(ui, this->pnlBookDet, this->env->GetLang(UTF8STRC("BookFormBookAuthor"))));
 	this->lblBookAuthor->SetRect(0, 48, 100, 23, false);
 	NEW_CLASS(this->txtBookAuthor, UI::GUITextBox(ui, this->pnlBookDet, (const UTF8Char*)""));
 	this->txtBookAuthor->SetRect(0, 72, 168, 19, false);
-	NEW_CLASS(this->lblBookTitle, UI::GUILabel(ui, this->pnlBookDet, this->env->GetLang((const UTF8Char*)"BookFormBookTitle")));
+	NEW_CLASS(this->lblBookTitle, UI::GUILabel(ui, this->pnlBookDet, this->env->GetLang(UTF8STRC("BookFormBookTitle"))));
 	this->lblBookTitle->SetRect(0, 96, 100, 23, false);
 	NEW_CLASS(this->txtBookTitle, UI::GUITextBox(ui, this->pnlBookDet, (const UTF8Char*)""));
 	this->txtBookTitle->SetRect(0, 120, 168, 19, false);
-	NEW_CLASS(this->lblBookSource, UI::GUILabel(ui, this->pnlBookDet, this->env->GetLang((const UTF8Char*)"BookFormBookSource")));
+	NEW_CLASS(this->lblBookSource, UI::GUILabel(ui, this->pnlBookDet, this->env->GetLang(UTF8STRC("BookFormBookSource"))));
 	this->lblBookSource->SetRect(0, 144, 100, 23, false);
 	NEW_CLASS(this->txtBookSource, UI::GUITextBox(ui, this->pnlBookDet, (const UTF8Char*)""));
 	this->txtBookSource->SetRect(0, 168, 168, 19, false);
-	NEW_CLASS(this->lblBookURL, UI::GUILabel(ui, this->pnlBookDet, this->env->GetLang((const UTF8Char*)"BookFormBookURL")));
+	NEW_CLASS(this->lblBookURL, UI::GUILabel(ui, this->pnlBookDet, this->env->GetLang(UTF8STRC("BookFormBookURL"))));
 	this->lblBookURL->SetRect(0, 192, 100, 23, false);
 	NEW_CLASS(this->txtBookURL, UI::GUITextBox(ui, this->pnlBookDet, (const UTF8Char*)""));
 	this->txtBookURL->SetRect(0, 216, 168, 19, false);
-	NEW_CLASS(this->lblBookGroup, UI::GUILabel(ui, this->pnlBookDet, this->env->GetLang((const UTF8Char*)"BookFormBookGroup")));
+	NEW_CLASS(this->lblBookGroup, UI::GUILabel(ui, this->pnlBookDet, this->env->GetLang(UTF8STRC("BookFormBookGroup"))));
 	this->lblBookGroup->SetRect(0, 240, 100, 23, false);
 	NEW_CLASS(this->txtBookGroup, UI::GUITextBox(ui, this->pnlBookDet, (const UTF8Char*)""));
 	this->txtBookGroup->SetRect(0, 264, 168, 19, false);
-	NEW_CLASS(this->btnBookAdd, UI::GUIButton(ui, this->pnlBookDet, this->env->GetLang((const UTF8Char*)"BookFormBookAdd")));
+	NEW_CLASS(this->btnBookAdd, UI::GUIButton(ui, this->pnlBookDet, this->env->GetLang(UTF8STRC("BookFormBookAdd"))));
 	this->btnBookAdd->SetRect(16, 288, 75, 23, false);
 	this->btnBookAdd->HandleButtonClick(OnBookAddClicked, this);
 	NEW_CLASS(this->tcBook, UI::GUITabControl(ui, this->pnlBook));
 	this->tcBook->SetDockType(UI::GUIControl::DOCK_FILL);
-	this->tpBookRef = this->tcBook->AddTabPage(this->env->GetLang((const UTF8Char*)"BookFormTabRef"));
-	this->tpBookAuthor = this->tcBook->AddTabPage(this->env->GetLang((const UTF8Char*)"BookFormTabAuthor"));
+	this->tpBookRef = this->tcBook->AddTabPage(this->env->GetLang(UTF8STRC("BookFormTabRef")));
+	this->tpBookAuthor = this->tcBook->AddTabPage(this->env->GetLang(UTF8STRC("BookFormTabAuthor")));
 
 	this->env->GetBooksAll(this->bookList);
 	this->bookList->Sort();

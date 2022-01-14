@@ -290,11 +290,11 @@ SSWR::OrganMgr::OrganEnv::ErrorType SSWR::OrganMgr::OrganEnv::GetErrorType()
 	return this->errType;
 }
 
-const UTF8Char *SSWR::OrganMgr::OrganEnv::GetLang(const UTF8Char *name)
+const UTF8Char *SSWR::OrganMgr::OrganEnv::GetLang(const UTF8Char *name, UOSInt nameLen)
 {
 	if (this->langFile == 0)
 		return name;
-	Text::String *ret = this->langFile->GetValue(name);
+	Text::String *ret = this->langFile->GetValue(name, nameLen);
 	if (ret == 0)
 		return name;
 	return ret->v;

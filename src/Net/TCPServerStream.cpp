@@ -27,7 +27,7 @@ void __stdcall Net::TCPServerStream::ConnHandler(Socket *s, void *userObj)
 	me->readEvt->Set();
 }
 
-Net::TCPServerStream::TCPServerStream(Net::SocketFactory *sockf, UInt16 port, IO::LogTool *log) : IO::Stream((const UTF8Char*)"Net.TCPBoardcastSream")
+Net::TCPServerStream::TCPServerStream(Net::SocketFactory *sockf, UInt16 port, IO::LogTool *log) : IO::Stream(UTF8STRC("Net.TCPBoardcastSream"))
 {
 	this->sockf = sockf;
 	this->log = log;

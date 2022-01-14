@@ -173,24 +173,24 @@ SSWR::DiscDB::DiscDBEnv::DiscDBEnv()
 	if (cfg)
 	{
 		Text::String *s;
-		if ((s = cfg->GetValue((const UTF8Char*)"DSN")) != 0)
+		if ((s = cfg->GetValue(UTF8STRC("DSN"))) != 0)
 		{
 			this->db = DB::ODBCConn::CreateDBTool(s->v,
-				Text::String::OrEmpty(cfg->GetValue((const UTF8Char*)"UID"))->v,
-				Text::String::OrEmpty(cfg->GetValue((const UTF8Char*)"PWD"))->v,
-				Text::String::OrEmpty(cfg->GetValue((const UTF8Char*)"Schema"))->v,
+				Text::String::OrEmpty(cfg->GetValue(UTF8STRC("UID")))->v,
+				Text::String::OrEmpty(cfg->GetValue(UTF8STRC("PWD")))->v,
+				Text::String::OrEmpty(cfg->GetValue(UTF8STRC("Schema")))->v,
 				this->log, (const UTF8Char*)"DB: ");
 		}
-		else if ((s = cfg->GetValue((const UTF8Char*)"MySQLServer")) != 0)
+		else if ((s = cfg->GetValue(UTF8STRC("MySQLServer"))) != 0)
 		{
 			this->db = Net::MySQLTCPClient::CreateDBTool(this->sockf,
 				s->v,
-				Text::String::OrEmpty(cfg->GetValue((const UTF8Char*)"MySQLDB"))->v,
-				Text::String::OrEmpty(cfg->GetValue((const UTF8Char*)"UID"))->v,
-				Text::String::OrEmpty(cfg->GetValue((const UTF8Char*)"PWD"))->v,
+				Text::String::OrEmpty(cfg->GetValue(UTF8STRC("MySQLDB")))->v,
+				Text::String::OrEmpty(cfg->GetValue(UTF8STRC("UID")))->v,
+				Text::String::OrEmpty(cfg->GetValue(UTF8STRC("PWD")))->v,
 				this->log, (const UTF8Char*)"DB: ");
 		}
-		else if ((s = cfg->GetValue((const UTF8Char*)"MDBFile")) != 0)
+		else if ((s = cfg->GetValue(UTF8STRC("MDBFile"))) != 0)
 		{
 			this->db = DB::MDBFileConn::CreateDBTool(s->v, this->log, (const UTF8Char*)"DB: ");
 		}

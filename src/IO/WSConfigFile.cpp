@@ -18,7 +18,7 @@ IO::ConfigFile *IO::WSConfigFile::Parse(const UTF8Char *fileName)
 	}
 	Text::StringBuilderUTF8 sb;
 	UOSInt i;
-	UTF8Char *sarr[2];
+	Text::PString sarr[2];
 	NEW_CLASS(reader, Text::UTF8Reader(fs));
 	NEW_CLASS(cfg, IO::ConfigFile());
 	while (reader->ReadLine(&sb, 4096))
@@ -29,9 +29,9 @@ IO::ConfigFile *IO::WSConfigFile::Parse(const UTF8Char *fileName)
 			sb.RemoveChars(sb.GetLength() - i);
 		}
 		sb.TrimWSCRLF();
-		if (Text::StrSplitWS(sarr, 2, sb.ToString()) == 2)
+		if (Text::StrSplitWSP(sarr, 2, sb.ToString(), sb.GetLength()) == 2)
 		{
-			cfg->SetValue(0, sarr[0], sarr[1]);
+			cfg->SetValue(0, 0, sarr[0].v, sarr[0].len, sarr[1].v, sarr[1].len);
 		}
 	}
 	DEL_CLASS(reader);

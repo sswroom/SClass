@@ -39,21 +39,23 @@ IO::ConfigFile *IO::UnixConfigFile::ParseReader(Text::UTF8Reader *reader)
 {
 	UTF8Char buff[1024];
 	UTF8Char *name;
+	UTF8Char *nameEnd;
 	UTF8Char *value;
+	UTF8Char *valueEnd;
 	UTF8Char *src;
 	UTF8Char c;
 	IO::ConfigFile *cfg;
 	UOSInt i;
 	NEW_CLASS(cfg, IO::ConfigFile());
-	while ((name = reader->ReadLine(buff, 1023)) != 0)
+	while ((valueEnd = reader->ReadLine(buff, 1023)) != 0)
 	{
-		while (name > buff)
+		while (valueEnd > buff)
 		{
-			if (name[-1] != ' ' && name[-1] != '\t')
+			if (valueEnd[-1] != ' ' && valueEnd[-1] != '\t')
 			{
 				break;
 			}
-			*--name = 0;
+			*--valueEnd = 0;
 		}
 		i = 0;
 		while (true)
@@ -77,6 +79,7 @@ IO::ConfigFile *IO::UnixConfigFile::ParseReader(Text::UTF8Reader *reader)
 			}
 			if (*src == '=')
 			{
+				nameEnd = src;
 				*src++ = 0;
 				
 				if (src[0] == '\"')
@@ -88,14 +91,15 @@ IO::ConfigFile *IO::UnixConfigFile::ParseReader(Text::UTF8Reader *reader)
 						if (c == '\"')
 						{
 							src[-1] = 0;
-							cfg->SetValue(0, name, value);
+							valueEnd = &src[-1];
+							cfg->SetValue(0, 0, name, (UOSInt)(nameEnd - name), value, (UOSInt)(valueEnd - value));
 							break;
 						}
 					}
 				}
 				else
 				{
-					cfg->SetValue(0, name, src);
+					cfg->SetValue(0, 0, name, (UOSInt)(nameEnd - name), src, (UOSInt)(valueEnd - src));
 				}
 			}
 		}

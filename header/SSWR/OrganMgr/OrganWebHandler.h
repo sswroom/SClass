@@ -356,7 +356,7 @@ namespace SSWR
 			static Bool __stdcall OnSessionCheck(Net::WebServer::IWebSession* sess, void *userObj);
 
 			IO::ConfigFile *LangGet(Net::WebServer::IWebRequest *req);
-			static const UTF8Char *LangGetValue(IO::ConfigFile *lang, const UTF8Char *name);
+			static const UTF8Char *LangGetValue(IO::ConfigFile *lang, const UTF8Char *name, UOSInt nameLen);
 		public:
 			OrganWebHandler(Net::SocketFactory *sockf, Net::SSLEngine *ssl, IO::LogTool *log, DB::DBTool *db, Text::String *imageDir, UInt16 port, Text::String *cacheDir, Text::String *dataDir, UInt32 scnSize, Text::String *reloadPwd, Int32 unorganizedGroupId, Media::DrawEngine *eng);
 			virtual ~OrganWebHandler();

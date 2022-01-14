@@ -11,7 +11,7 @@ extern "C"
 	UInt8 SerialPort_Read();
 };
 
-IO::SerialPort::SerialPort(UOSInt portNum, UInt32 baudRate, IO::SerialPort::ParityType parity, Bool flowCtrl) : IO::Stream((const UTF8Char*)"SerialPort")
+IO::SerialPort::SerialPort(UOSInt portNum, UInt32 baudRate, IO::SerialPort::ParityType parity, Bool flowCtrl) : IO::Stream(UTF8STRC("SerialPort"))
 {
 	this->handle = 0;
 	this->rdEvt = 0;

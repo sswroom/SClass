@@ -305,7 +305,7 @@ Bool IO::SerialPort::ResetPort(UOSInt portNum)
 	return false;
 }
 
-IO::SerialPort::SerialPort(UOSInt portNum, UInt32 baudRate, ParityType parity, Bool flowCtrl) : IO::Stream((const UTF8Char*)"SerialPort")
+IO::SerialPort::SerialPort(UOSInt portNum, UInt32 baudRate, ParityType parity, Bool flowCtrl) : IO::Stream(UTF8STRC("SerialPort"))
 {
 	this->handle = 0;
 	this->rdEvt = 0;

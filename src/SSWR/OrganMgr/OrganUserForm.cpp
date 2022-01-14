@@ -59,24 +59,24 @@ SSWR::OrganMgr::OrganUserForm::OrganUserForm(UI::GUIClientControl *parent, UI::G
 	this->env = env;
 	NEW_CLASS(this->userList, Data::ArrayList<OrganWebUser*>());
 
-	this->SetText(this->env->GetLang((const UTF8Char*)"UserFormTitle"));
+	this->SetText(this->env->GetLang(UTF8STRC("UserFormTitle")));
 
 	NEW_CLASS(this->pnlCtrl, UI::GUIPanel(ui, this));
 	this->pnlCtrl->SetRect(0, 0, 100, 32, false);
 	this->pnlCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->btnAdd, UI::GUIButton(ui, this->pnlCtrl, this->env->GetLang((const UTF8Char*)"UserFormAdd")));
+	NEW_CLASS(this->btnAdd, UI::GUIButton(ui, this->pnlCtrl, this->env->GetLang(UTF8STRC("UserFormAdd"))));
 	this->btnAdd->SetRect(4, 4, 75, 23, false);
 	this->btnAdd->HandleButtonClick(OnAddClicked, this);
-	NEW_CLASS(this->btnModify, UI::GUIButton(ui, this->pnlCtrl, this->env->GetLang((const UTF8Char*)"UserFormModify")));
+	NEW_CLASS(this->btnModify, UI::GUIButton(ui, this->pnlCtrl, this->env->GetLang(UTF8STRC("UserFormModify"))));
 	this->btnModify->SetRect(84, 4, 75, 23, false);
 	this->btnModify->HandleButtonClick(OnModifyClicked, this);
 	NEW_CLASS(this->lvUser, UI::GUIListView(ui, this, UI::GUIListView::LVSTYLE_TABLE, 3));
 	this->lvUser->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvUser->SetShowGrid(true);
 	this->lvUser->SetFullRowSelect(true);
-	this->lvUser->AddColumn(this->env->GetLang((const UTF8Char*)"UserFormColId"), 60);
-	this->lvUser->AddColumn(this->env->GetLang((const UTF8Char*)"UserFormColUserName"), 200);
-	this->lvUser->AddColumn(this->env->GetLang((const UTF8Char*)"UserFormColWatermark"), 200);
+	this->lvUser->AddColumn(this->env->GetLang(UTF8STRC("UserFormColId")), 60);
+	this->lvUser->AddColumn(this->env->GetLang(UTF8STRC("UserFormColUserName")), 200);
+	this->lvUser->AddColumn(this->env->GetLang(UTF8STRC("UserFormColWatermark")), 200);
 	this->UpdateUserList();
 	this->SetDPI(this->env->GetMonitorHDPI(this->GetHMonitor()), this->env->GetMonitorDDPI(this->GetHMonitor()));
 }

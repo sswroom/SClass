@@ -293,29 +293,29 @@ void IO::Registry::SetValue(const WChar *name, Int32 value)
 	{
 		NEW_CLASS(this->clsData->reg->cfg, IO::ConfigFile());
 	}
-	const UTF8Char *csptr = Text::StrToUTF8New(name);
-	this->clsData->reg->cfg->SetValue(this->clsData->cate->v, csptr, sb.ToString());
+	Text::String *s = Text::String::NewNotNull(name);
+	this->clsData->reg->cfg->SetValue(this->clsData->cate->v, this->clsData->cate->leng, s->v, s->leng, sb.ToString(), sb.GetLength());
 	this->clsData->reg->modified = true;
-	Text::StrDelNew(csptr);
+	s->Release();
 }
 
 void IO::Registry::SetValue(const WChar *name, const WChar *value)
 {
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("sz:"));
-	const UTF8Char *csptr = Text::StrToUTF8New(value);
-	sb.Append(csptr);
-	Text::StrDelNew(csptr);
+	Text::String *s = Text::String::NewNotNull(value);
+	sb.Append(s);
+	s->Release();
 
 	Sync::MutexUsage mutUsage(this->clsData->reg->mut);
 	if (this->clsData->reg->cfg == 0)
 	{
 		NEW_CLASS(this->clsData->reg->cfg, IO::ConfigFile());
 	}
-	csptr = Text::StrToUTF8New(name);
-	this->clsData->reg->cfg->SetValue(this->clsData->cate->v, csptr, sb.ToString());
+	s = Text::String::NewNotNull(name);
+	this->clsData->reg->cfg->SetValue(this->clsData->cate->v, this->clsData->cate->leng, s->v, s->leng, sb.ToString(), sb.GetLength());
 	this->clsData->reg->modified = true;
-	Text::StrDelNew(csptr);
+	s->Release();
 }
 
 void IO::Registry::DelValue(const WChar *name)
@@ -325,9 +325,9 @@ void IO::Registry::DelValue(const WChar *name)
 	{
 		return;
 	}
-	const UTF8Char *csptr = Text::StrToUTF8New(name);
-	this->clsData->reg->cfg->RemoveValue(this->clsData->cate->v, csptr);
-	Text::StrDelNew(csptr);
+	Text::String *s = Text::String::NewNotNull(name);
+	this->clsData->reg->cfg->RemoveValue(this->clsData->cate->v, this->clsData->cate->leng, s->v, s->leng);
+	s->Release();
 }
 
 Int32 IO::Registry::GetValueI32(const WChar *name)

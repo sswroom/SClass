@@ -2774,7 +2774,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroup(Net::WebServer::IWebReq
 		}
 		if (!found)
 		{
-			writer->WriteLine(LangGetValue(lang, (const UTF8Char*)"NoItems"));
+			writer->WriteLine(LangGetValue(lang, UTF8STRC("NoItems")));
 			writer->WriteLineC(UTF8STRC("<hr/>"));
 		}
 		if (!notAdmin)
@@ -2802,7 +2802,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroup(Net::WebServer::IWebReq
 		sb.AppendC(UTF8STRC("&amp;cateId="));
 		sb.AppendI32(group->cateId);
 		sb.AppendC(UTF8STRC("\">"));
-		sb.Append(LangGetValue(lang, (const UTF8Char*)"ListAll"));
+		sb.Append(LangGetValue(lang, UTF8STRC("ListAll")));
 		sb.AppendC(UTF8STRC("</a><br/>"));
 		writer->WriteLineC(sb.ToString(), sb.GetCharCnt());
 
@@ -2812,7 +2812,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroup(Net::WebServer::IWebReq
 		sb.AppendC(UTF8STRC("&amp;cateId="));
 		sb.AppendI32(group->cateId);
 		sb.AppendC(UTF8STRC("\">"));
-		sb.Append(LangGetValue(lang, (const UTF8Char*)"ListImage"));
+		sb.Append(LangGetValue(lang, UTF8STRC("ListImage")));
 		sb.AppendC(UTF8STRC("</a><br/>"));
 		writer->WriteLineC(sb.ToString(), sb.GetLength());
 
@@ -2826,7 +2826,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroup(Net::WebServer::IWebReq
 			writer->WriteStrC(s->v, s->leng);
 			s->Release();
 			writer->WriteStrC(UTF8STRC(">"));
-			writer->WriteStr(LangGetValue(lang, (const UTF8Char*)"Back"));
+			writer->WriteStr(LangGetValue(lang, UTF8STRC("Back")));
 			writer->WriteStrC(UTF8STRC("</a>"));
 		}
 		else
@@ -2838,7 +2838,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroup(Net::WebServer::IWebReq
 			sb.AppendI32(group->cateId);
 			writer->WriteStrC(sb.ToString(), sb.GetCharCnt());
 			writer->WriteStrC(UTF8STRC("\">"));
-			writer->WriteStr(LangGetValue(lang, (const UTF8Char*)"Back"));
+			writer->WriteStr(LangGetValue(lang, UTF8STRC("Back")));
 			writer->WriteStrC(UTF8STRC("</a>"));
 		}
 		if (env.user != 0 && env.user->userType == 0)
@@ -3155,7 +3155,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroupMod(Net::WebServer::IWeb
 		sb.AppendI32(group->cateId);
 		writer->WriteStrC(sb.ToString(), sb.GetLength());
 		writer->WriteStrC(UTF8STRC("\">"));
-		writer->WriteStr(LangGetValue(lang, (const UTF8Char*)"Back"));
+		writer->WriteStr(LangGetValue(lang, UTF8STRC("Back")));
 		writer->WriteStrC(UTF8STRC("</a>"));
 		writer->WriteLineC(UTF8STRC("</td></tr>"));
 		writer->WriteLineC(UTF8STRC("</table></form>"));
@@ -3395,7 +3395,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpecies(Net::WebServer::IWebR
 		{
 			Data::DateTime dt;
 			writer->WriteLineC(UTF8STRC("<br/><br/>"));
-			writer->WriteStr(LangGetValue(lang, (const UTF8Char*)"Document"));
+			writer->WriteStr(LangGetValue(lang, UTF8STRC("Document")));
 			writer->WriteLineC(UTF8STRC(":<br/>"));
 			writer->WriteLineC(UTF8STRC("<table border=\"0\">"));
 			i = 0;
@@ -3868,7 +3868,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpecies(Net::WebServer::IWebR
 		sb.AppendI32(group->cateId);
 		writer->WriteStrC(sb.ToString(), sb.GetLength());
 		writer->WriteStrC(UTF8STRC("\">"));
-		writer->WriteStr(LangGetValue(lang, (const UTF8Char*)"Back"));
+		writer->WriteStr(LangGetValue(lang, UTF8STRC("Back")));
 		writer->WriteStrC(UTF8STRC("</a>"));
 
 		me->WriteFooter(writer);
@@ -4122,7 +4122,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpeciesMod(Net::WebServer::IW
 		sb.AppendI32(group->cateId);
 		writer->WriteStrC(sb.ToString(), sb.GetLength());
 		writer->WriteStrC(UTF8STRC("\">"));
-		writer->WriteStr(LangGetValue(lang, (const UTF8Char*)"Back"));
+		writer->WriteStr(LangGetValue(lang, UTF8STRC("Back")));
 		writer->WriteStrC(UTF8STRC("</a>"));
 		writer->WriteLineC(UTF8STRC("</td></tr>"));
 		writer->WriteLineC(UTF8STRC("</table></form>"));
@@ -4271,9 +4271,9 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcList(Net::WebServer::IWebRequ
 				sb.AppendC(UTF8STRC("&amp;page="));
 				sb.AppendU32(page - 1);
 				sb.AppendC(UTF8STRC("\">&lt;"));
-				sb.Append(LangGetValue(lang, (const UTF8Char*)"Previous"));
+				sb.Append(LangGetValue(lang, UTF8STRC("Previous")));
 				sb.AppendUOSInt(perPage);
-				sb.Append(LangGetValue(lang, (const UTF8Char*)"Items"));
+				sb.Append(LangGetValue(lang, UTF8STRC("Items")));
 				sb.AppendC(UTF8STRC("</a>"));
 				writer->WriteLineC(sb.ToString(), sb.GetLength());
 			}
@@ -4287,9 +4287,9 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcList(Net::WebServer::IWebRequ
 				sb.AppendC(UTF8STRC("&amp;page="));
 				sb.AppendU32(page + 1);
 				sb.AppendC(UTF8STRC("\">"));
-				sb.Append(LangGetValue(lang, (const UTF8Char*)"Next"));
+				sb.Append(LangGetValue(lang, UTF8STRC("Next")));
 				sb.AppendUOSInt(perPage);
-				sb.Append(LangGetValue(lang, (const UTF8Char*)"Items"));
+				sb.Append(LangGetValue(lang, UTF8STRC("Items")));
 				sb.AppendC(UTF8STRC("&gt;</a>"));
 				writer->WriteLineC(sb.ToString(), sb.GetLength());
 			}
@@ -4306,9 +4306,9 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcList(Net::WebServer::IWebRequ
 				sb.AppendC(UTF8STRC("&page="));
 				sb.AppendU32(page - 1);
 				sb.AppendC(UTF8STRC("\">&lt;"));
-				sb.Append(LangGetValue(lang, (const UTF8Char*)"Previous"));
+				sb.Append(LangGetValue(lang, UTF8STRC("Previous")));
 				sb.AppendUOSInt(perPage);
-				sb.Append(LangGetValue(lang, (const UTF8Char*)"Items"));
+				sb.Append(LangGetValue(lang, UTF8STRC("Items")));
 				sb.AppendC(UTF8STRC("</a>"));
 				writer->WriteLineC(sb.ToString(), sb.GetLength());
 			}
@@ -4322,9 +4322,9 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcList(Net::WebServer::IWebRequ
 				sb.AppendC(UTF8STRC("&page="));
 				sb.AppendU32(page + 1);
 				sb.AppendC(UTF8STRC("\">"));
-				sb.Append(LangGetValue(lang, (const UTF8Char*)"Next"));
+				sb.Append(LangGetValue(lang, UTF8STRC("Next")));
 				sb.AppendUOSInt(perPage);
-				sb.Append(LangGetValue(lang, (const UTF8Char*)"Items"));
+				sb.Append(LangGetValue(lang, UTF8STRC("Items")));
 				sb.AppendC(UTF8STRC("&gt;</a>"));
 				writer->WriteLineC(sb.ToString(), sb.GetLength());
 			}
@@ -4338,7 +4338,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcList(Net::WebServer::IWebRequ
 		sb.AppendI32(group->cateId);
 		writer->WriteStrC(sb.ToString(), sb.GetLength());
 		writer->WriteStrC(UTF8STRC("\">"));
-		writer->WriteStr(LangGetValue(lang, (const UTF8Char*)"Back"));
+		writer->WriteStr(LangGetValue(lang, UTF8STRC("Back")));
 		writer->WriteStrC(UTF8STRC("</a>"));
 
 		me->WriteFooter(writer);
@@ -4681,7 +4681,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 							}
 						}
 						writer->WriteStrC(UTF8STRC("<b>"));
-						writer->WriteStr(LangGetValue(lang, (const UTF8Char*)"PhotoSpec"));
+						writer->WriteStr(LangGetValue(lang, UTF8STRC("PhotoSpec")));
 						writer->WriteStrC(UTF8STRC("</b> "));
 						writer->WriteStrC(sb.ToString(), sb.GetLength());
 						writer->WriteStrC(UTF8STRC("<br/>"));
@@ -4692,7 +4692,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 						dt.SetTicks(userFile->captureTimeTicks);
 						dt.ToLocalTime();
 						writer->WriteStrC(UTF8STRC("<b>"));
-						writer->WriteStr(LangGetValue(lang, (const UTF8Char*)"PhotoDate"));
+						writer->WriteStr(LangGetValue(lang, UTF8STRC("PhotoDate")));
 						writer->WriteStrC(UTF8STRC("</b> "));
 						u8ptr2 = dt.ToString(u8buff2, "yyyy-MM-dd HH:mm:ss zzzz");
 						writer->WriteStrC(u8buff2, (UOSInt)(u8ptr2 - u8buff2));
@@ -4725,7 +4725,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 					{
 						sb.ClearStr();
 						writer->WriteStrC(UTF8STRC("<b>"));
-						writer->WriteStr(LangGetValue(lang, (const UTF8Char*)"PhotoSpec"));
+						writer->WriteStr(LangGetValue(lang, UTF8STRC("PhotoSpec")));
 						writer->WriteStrC(UTF8STRC("</b> "));
 						info->ToString(&sb);
 						writer->WriteStrC(sb.ToString(), sb.GetLength());
@@ -4734,7 +4734,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 						dt.SetTicks(userFile->captureTimeTicks);
 						dt.ToLocalTime();
 						writer->WriteStrC(UTF8STRC("<b>"));
-						writer->WriteStr(LangGetValue(lang, (const UTF8Char*)"PhotoDate"));
+						writer->WriteStr(LangGetValue(lang, UTF8STRC("PhotoDate")));
 						writer->WriteStrC(UTF8STRC("</b> "));
 						u8ptr2 = dt.ToString(u8buff2, "yyyy-MM-dd HH:mm:ss zzzz");
 						writer->WriteStrC(u8buff2, (UOSInt)(u8ptr2 - u8buff2));
@@ -4758,7 +4758,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 					sb.Append(s);
 					s->Release();
 					sb.AppendC(UTF8STRC(">"));
-					sb.Append(LangGetValue(lang, (const UTF8Char*)"Download"));
+					sb.Append(LangGetValue(lang, UTF8STRC("Download")));
 					sb.AppendC(UTF8STRC("</a>"));
 					writer->WriteLineC(sb.ToString(), sb.GetLength());
 
@@ -4804,7 +4804,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 				sb.Append(s);
 				s->Release();
 				sb.AppendC(UTF8STRC(">"));
-				sb.Append(LangGetValue(lang, (const UTF8Char*)"Back"));
+				sb.Append(LangGetValue(lang, UTF8STRC("Back")));
 				sb.AppendC(UTF8STRC("</a>"));
 				writer->WriteLineC(sb.ToString(), sb.GetLength());
 				writer->WriteLineC(UTF8STRC("</td></tr>"));
@@ -5005,7 +5005,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 				sb.AppendC(UTF8STRC("<a href="));
 				sb.Append(s);
 				s->Release();
-				sb.Append(LangGetValue(lang, (const UTF8Char*)"Back"));
+				sb.Append(LangGetValue(lang, UTF8STRC("Back")));
 				sb.AppendC(UTF8STRC("</a>"));
 				writer->WriteLineC(sb.ToString(), sb.GetLength());
 				writer->WriteLineC(UTF8STRC("</td></tr>"));
@@ -5175,7 +5175,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 					sb.AppendC(UTF8STRC("<a href="));
 					sb.Append(s);
 					s->Release();
-					sb.Append(LangGetValue(lang, (const UTF8Char*)"Back"));
+					sb.Append(LangGetValue(lang, UTF8STRC("Back")));
 					sb.AppendC(UTF8STRC("</a>"));
 					writer->WriteLineC(sb.ToString(), sb.GetLength());
 					writer->WriteLineC(UTF8STRC("</td></tr>"));
@@ -5351,7 +5351,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 						Data::DateTime dt;
 						sb.ClearStr();
 						writer->WriteStrC(UTF8STRC("<b>"));
-						writer->WriteStr(LangGetValue(lang, (const UTF8Char*)"PhotoSpec"));
+						writer->WriteStr(LangGetValue(lang, UTF8STRC("PhotoSpec")));
 						writer->WriteStrC(UTF8STRC("</b> "));
 						info->ToString(&sb);
 						writer->WriteStrC(sb.ToString(), sb.GetLength());
@@ -5359,7 +5359,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 						if (info->GetPhotoDate(&dt))
 						{
 							writer->WriteStrC(UTF8STRC("<b>"));
-							writer->WriteStr(LangGetValue(lang, (const UTF8Char*)"PhotoDate"));
+							writer->WriteStr(LangGetValue(lang, UTF8STRC("PhotoDate")));
 							writer->WriteStrC(UTF8STRC("</b> "));
 							u8ptr2 = dt.ToString(u8buff2, "yyyy-MM-dd HH:mm:ss zzzz");
 							writer->WriteStrC(u8buff2, (UOSInt)(u8ptr2 - u8buff2));
@@ -5378,7 +5378,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 					sb.AppendC(UTF8STRC("<a href="));
 					sb.Append(s);
 					s->Release();
-					sb.Append(LangGetValue(lang, (const UTF8Char*)"Back"));
+					sb.Append(LangGetValue(lang, UTF8STRC("Back")));
 					sb.AppendC(UTF8STRC("</a>"));
 					writer->WriteLineC(sb.ToString(), sb.GetLength());
 					writer->WriteLineC(UTF8STRC("</td></tr>"));
@@ -5576,7 +5576,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetailD(Net::WebServer::
 						}
 					}
 					writer->WriteStrC(UTF8STRC("<b>"));
-					writer->WriteStr(LangGetValue(lang, (const UTF8Char*)"PhotoSpec"));
+					writer->WriteStr(LangGetValue(lang, UTF8STRC("PhotoSpec")));
 					writer->WriteStrC(UTF8STRC("</b> "));
 					writer->WriteStrC(sb.ToString(), sb.GetLength());
 					writer->WriteStrC(UTF8STRC("<br/>"));
@@ -5587,7 +5587,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetailD(Net::WebServer::
 					dt.SetTicks(userFile->captureTimeTicks);
 					dt.ToLocalTime();
 					writer->WriteStrC(UTF8STRC("<b>"));
-					writer->WriteStr(LangGetValue(lang, (const UTF8Char*)"PhotoDate"));
+					writer->WriteStr(LangGetValue(lang, UTF8STRC("PhotoDate")));
 					writer->WriteStrC(UTF8STRC("</b> "));
 					u8ptr2 = dt.ToString(u8buff2, "yyyy-MM-dd HH:mm:ss zzzz");
 					writer->WriteStrC(u8buff2, (UOSInt)(u8ptr2 - u8buff2));
@@ -5619,7 +5619,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetailD(Net::WebServer::
 				{
 					sb.ClearStr();
 					writer->WriteStrC(UTF8STRC("<b>"));
-					writer->WriteStr(LangGetValue(lang, (const UTF8Char*)"PhotoSpec"));
+					writer->WriteStr(LangGetValue(lang, UTF8STRC("PhotoSpec")));
 					writer->WriteStrC(UTF8STRC("</b> "));
 					info->ToString(&sb);
 					writer->WriteStrC(sb.ToString(), sb.GetLength());
@@ -5628,7 +5628,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetailD(Net::WebServer::
 					dt.SetTicks(userFile->captureTimeTicks);
 					dt.ToLocalTime();
 					writer->WriteStrC(UTF8STRC("<b>"));
-					writer->WriteStr(LangGetValue(lang, (const UTF8Char*)"PhotoDate"));
+					writer->WriteStr(LangGetValue(lang, UTF8STRC("PhotoDate")));
 					writer->WriteStrC(UTF8STRC("</b> "));
 					u8ptr2 = dt.ToString(u8buff2, "yyyy-MM-dd HH:mm:ss zzzz");
 					writer->WriteStrC(u8buff2, (UOSInt)(u8ptr2 - u8buff2));
@@ -5645,7 +5645,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetailD(Net::WebServer::
 			sb.AppendC(UTF8STRC("<a href="));
 			sb.Append(s);
 			s->Release();
-			sb.Append(LangGetValue(lang, (const UTF8Char*)"Back"));
+			sb.Append(LangGetValue(lang, UTF8STRC("Back")));
 			sb.AppendC(UTF8STRC("</a>"));
 			writer->WriteLineC(sb.ToString(), sb.GetLength());
 			writer->WriteLineC(UTF8STRC("</td></tr>"));
@@ -6518,7 +6518,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSearchInside(Net::WebServer::
 		sb.AppendI32(group->cateId);
 		writer->WriteStrC(sb.ToString(), sb.GetLength());
 		writer->WriteStrC(UTF8STRC("\">"));
-		writer->WriteStr(LangGetValue(lang, (const UTF8Char*)"Back"));
+		writer->WriteStr(LangGetValue(lang, UTF8STRC("Back")));
 		writer->WriteStrC(UTF8STRC("</a>"));
 
 		me->WriteFooter(writer);
@@ -6700,7 +6700,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSearchInsideMoreS(Net::WebSer
 		sb.AppendI32(group->cateId);
 		writer->WriteStrC(sb.ToString(), sb.GetLength());
 		writer->WriteStrC(UTF8STRC("\">"));
-		writer->WriteStr(LangGetValue(lang, (const UTF8Char*)"Back"));
+		writer->WriteStr(LangGetValue(lang, UTF8STRC("Back")));
 		writer->WriteStrC(UTF8STRC("</a>"));
 
 		me->WriteFooter(writer);
@@ -6882,7 +6882,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSearchInsideMoreG(Net::WebSer
 		sb.AppendI32(group->cateId);
 		writer->WriteStrC(sb.ToString(), sb.GetLength());
 		writer->WriteStrC(UTF8STRC("\">"));
-		writer->WriteStr(LangGetValue(lang, (const UTF8Char*)"Back"));
+		writer->WriteStr(LangGetValue(lang, UTF8STRC("Back")));
 		writer->WriteStrC(UTF8STRC("</a>"));
 
 		me->WriteFooter(writer);
@@ -7015,7 +7015,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcBookList(Net::WebServer::IWeb
 		writer->WriteStrC(s->v, s->leng);
 		s->Release();
 		writer->WriteStrC(UTF8STRC(">"));
-		writer->WriteStr(LangGetValue(lang, (const UTF8Char*)"Back"));
+		writer->WriteStr(LangGetValue(lang, UTF8STRC("Back")));
 		writer->WriteStrC(UTF8STRC("</a>"));
 
 		me->WriteFooter(writer);
@@ -7170,9 +7170,9 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcBook(Net::WebServer::IWebRequ
 			sb.AppendC(UTF8STRC("&amp;page="));
 			sb.AppendU32(pageNo - 1);
 			sb.AppendC(UTF8STRC("\">&lt;"));
-			sb.Append(LangGetValue(lang, (const UTF8Char*)"Previous"));
+			sb.Append(LangGetValue(lang, UTF8STRC("Previous")));
 			sb.AppendU32(perPage);
-			sb.Append(LangGetValue(lang, (const UTF8Char*)"Items"));
+			sb.Append(LangGetValue(lang, UTF8STRC("Items")));
 			sb.AppendC(UTF8STRC("</a>"));
 			writer->WriteLineC(sb.ToString(), sb.GetLength());
 		}
@@ -7186,9 +7186,9 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcBook(Net::WebServer::IWebRequ
 			sb.AppendC(UTF8STRC("&amp;page="));
 			sb.AppendU32(pageNo + 1);
 			sb.AppendC(UTF8STRC("\">"));
-			sb.Append(LangGetValue(lang, (const UTF8Char*)"Next"));
+			sb.Append(LangGetValue(lang, UTF8STRC("Next")));
 			sb.AppendU32(perPage);
-			sb.Append(LangGetValue(lang, (const UTF8Char*)"Items"));
+			sb.Append(LangGetValue(lang, UTF8STRC("Items")));
 			sb.AppendC(UTF8STRC("&gt;</a>"));
 			writer->WriteLineC(sb.ToString(), sb.GetLength());
 		}
@@ -7722,7 +7722,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcCate(Net::WebServer::IWebRequ
 		me->WriteGroupTable(writer, &groups, env.scnWidth, false);
 		writer->WriteLineC(UTF8STRC("<hr/>"));
 		writer->WriteStrC(UTF8STRC("<a href=\"/\">"));
-		writer->WriteStr(LangGetValue(lang, (const UTF8Char*)"Back"));
+		writer->WriteStr(LangGetValue(lang, UTF8STRC("Back")));
 		writer->WriteLineC(UTF8STRC("</a>"));
 		me->WriteFooter(writer);
 		ResponseMstm(req, resp, mstm, UTF8STRC("text/html"));
@@ -9464,11 +9464,11 @@ IO::ConfigFile *SSWR::OrganMgr::OrganWebHandler::LangGet(Net::WebServer::IWebReq
 	return this->langMap->GetValues()->GetItem(0);
 }
 
-const UTF8Char *SSWR::OrganMgr::OrganWebHandler::LangGetValue(IO::ConfigFile *lang, const UTF8Char *name)
+const UTF8Char *SSWR::OrganMgr::OrganWebHandler::LangGetValue(IO::ConfigFile *lang, const UTF8Char *name, UOSInt nameLen)
 {
 	if (lang == 0)
 		return name;
-	Text::String *s = lang->GetValue(name);
+	Text::String *s = lang->GetValue(name, nameLen);
 	if (s)
 		return s->v;
 	return name;

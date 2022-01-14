@@ -617,7 +617,7 @@ int SoftwareSerial::peek()
 
 SoftwareSerial *RS232GPIO_Serial;
 
-IO::RS232GPIO::RS232GPIO(IO::GPIOControl *gpio, UOSInt rxdPin, UOSInt txdPin, Int32 baudRate) : IO::Stream((const UTF8Char*)"RS-232")
+IO::RS232GPIO::RS232GPIO(IO::GPIOControl *gpio, UOSInt rxdPin, UOSInt txdPin, Int32 baudRate) : IO::Stream(UTF8STRC("RS-232"))
 {
 	this->running = false;
 	this->toStop = false;

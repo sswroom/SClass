@@ -39,7 +39,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	}
 	else
 	{
-		if ((s = cfg->GetValue((const UTF8Char*)"SSLEnable")) != 0)
+		if ((s = cfg->GetValue(UTF8STRC("SSLEnable"))) != 0)
 		{
 			Int32 sslEnable = s->ToInt32();
 			if (sslEnable)
@@ -51,8 +51,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				}
 				else
 				{
-					Text::String *certFile = cfg->GetValue((const UTF8Char*)"SSLCert");
-					Text::String *keyFile = cfg->GetValue((const UTF8Char*)"SSLKey");
+					Text::String *certFile = cfg->GetValue(UTF8STRC("SSLCert"));
+					Text::String *keyFile = cfg->GetValue(UTF8STRC("SSLKey"));
 					if (certFile == 0)
 					{
 						console->WriteLineC(UTF8STRC("SSLCert not found"));
@@ -71,7 +71,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				}
 			}
 		}
-		if ((s = cfg->GetValue((const UTF8Char*)"ScreenSize")) != 0)
+		if ((s = cfg->GetValue(UTF8STRC("ScreenSize"))) != 0)
 		{
 			scnSize = s->ToUInt32();
 		}
@@ -79,25 +79,25 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		{
 			scnSize = 1800;
 		}
-		if ((s = cfg->GetValue((const UTF8Char*)"Unorganized")) != 0)
+		if ((s = cfg->GetValue(UTF8STRC("Unorganized"))) != 0)
 		{
 			s->ToInt32(&unorganizedGroupId);
 		}
-		if (cfg->GetValue((const UTF8Char*)"MDBFile"))
+		if (cfg->GetValue(UTF8STRC("MDBFile")))
 		{
-			db = DB::MDBFileConn::CreateDBTool(cfg->GetValue((const UTF8Char*)"MDBFile"), log, (const UTF8Char*)"DB: ");
+			db = DB::MDBFileConn::CreateDBTool(cfg->GetValue(UTF8STRC("MDBFile")), log, (const UTF8Char*)"DB: ");
 		}
-		else if (cfg->GetValue((const UTF8Char*)"MySQLServer"))
+		else if (cfg->GetValue(UTF8STRC("MySQLServer")))
 		{
-			db = Net::MySQLTCPClient::CreateDBTool(sockf, cfg->GetValue((const UTF8Char*)"MySQLServer"), cfg->GetValue((const UTF8Char*)"MySQLDB"), cfg->GetValue((const UTF8Char*)"MySQLUID"), cfg->GetValue((const UTF8Char*)"MySQLPwd"), log, (const UTF8Char*)"DB: ");
+			db = Net::MySQLTCPClient::CreateDBTool(sockf, cfg->GetValue(UTF8STRC("MySQLServer")), cfg->GetValue(UTF8STRC("MySQLDB")), cfg->GetValue(UTF8STRC("MySQLUID")), cfg->GetValue(UTF8STRC("MySQLPwd")), log, (const UTF8Char*)"DB: ");
 		}
 		else
 		{
-			db = DB::ODBCConn::CreateDBTool(cfg->GetValue((const UTF8Char*)"DBDSN"), cfg->GetValue((const UTF8Char*)"DBUID"), cfg->GetValue((const UTF8Char*)"DBPwd"), cfg->GetValue((const UTF8Char*)"DBSchema"), log, (const UTF8Char*)"DB: ");
+			db = DB::ODBCConn::CreateDBTool(cfg->GetValue(UTF8STRC("DBDSN")), cfg->GetValue(UTF8STRC("DBUID")), cfg->GetValue(UTF8STRC("DBPwd")), cfg->GetValue(UTF8STRC("DBSchema")), log, (const UTF8Char*)"DB: ");
 		}
 		UInt16 port;
-		cfg->GetValue((const UTF8Char*)"SvrPort")->ToUInt16S(&port, 0);
-		NEW_CLASS(dataHdlr, SSWR::OrganMgr::OrganWebHandler(sockf, ssl, log, db, cfg->GetValue((const UTF8Char*)"ImageDir"), port, cfg->GetValue((const UTF8Char*)"CacheDir"), cfg->GetValue((const UTF8Char*)"DataDir"), scnSize, cfg->GetValue((const UTF8Char*)"ReloadPwd"), unorganizedGroupId, Media::DrawEngineFactory::CreateDrawEngine()));
+		cfg->GetValue(UTF8STRC("SvrPort"))->ToUInt16S(&port, 0);
+		NEW_CLASS(dataHdlr, SSWR::OrganMgr::OrganWebHandler(sockf, ssl, log, db, cfg->GetValue(UTF8STRC("ImageDir")), port, cfg->GetValue(UTF8STRC("CacheDir")), cfg->GetValue(UTF8STRC("DataDir")), scnSize, cfg->GetValue(UTF8STRC("ReloadPwd")), unorganizedGroupId, Media::DrawEngineFactory::CreateDrawEngine()));
 		DEL_CLASS(cfg);
 
 		if (dataHdlr->IsError())

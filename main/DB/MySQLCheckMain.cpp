@@ -40,11 +40,12 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	while (i < j)
 	{
 		cptr = cfgList[i];
-		if (cfg->GetValue((const UTF8Char*)cptr) == 0)
+		UOSInt len = Text::StrCharCnt(cptr);
+		if (cfg->GetValue((const UTF8Char*)cptr, len) == 0)
 		{
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Config "));
-			sb.Append((const UTF8Char*)cptr);
+			sb.AppendC((const UTF8Char*)cptr, len);
 			sb.AppendC(UTF8STRC(" not found"));
 			console.WriteLineC(sb.ToString(), sb.GetLength());
 			DEL_CLASS(cfg);
@@ -53,18 +54,18 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		i++;
 	}
 
-	Text::String *mysqlServer = cfg->GetValue((const UTF8Char*)"MySQLServer");
-	Text::String *mysqlPort = cfg->GetValue((const UTF8Char*)"MySQLPort");
-	Text::String *mysqlUser = cfg->GetValue((const UTF8Char*)"MySQLUser");
-	Text::String *mysqlPassword = cfg->GetValue((const UTF8Char*)"MySQLPassword");
-	Text::String *mysqlSchemas = cfg->GetValue((const UTF8Char*)"MySQLSchemas");
-	Text::String *smtpHost = cfg->GetValue((const UTF8Char*)"SMTPHost");
-	Text::String *smtpPort = cfg->GetValue((const UTF8Char*)"SMTPPort");
-	Text::String *smtpType = cfg->GetValue((const UTF8Char*)"SMTPType");
-	Text::String *smtpFrom = cfg->GetValue((const UTF8Char*)"SMTPFrom");
-	Text::String *smtpTo = cfg->GetValue((const UTF8Char*)"SMTPTo");
-	Text::String *smtpUser = cfg->GetValue((const UTF8Char*)"SMTPUser");
-	Text::String *smtpPassword = cfg->GetValue((const UTF8Char*)"SMTPPassword");
+	Text::String *mysqlServer = cfg->GetValue(UTF8STRC("MySQLServer"));
+	Text::String *mysqlPort = cfg->GetValue(UTF8STRC("MySQLPort"));
+	Text::String *mysqlUser = cfg->GetValue(UTF8STRC("MySQLUser"));
+	Text::String *mysqlPassword = cfg->GetValue(UTF8STRC("MySQLPassword"));
+	Text::String *mysqlSchemas = cfg->GetValue(UTF8STRC("MySQLSchemas"));
+	Text::String *smtpHost = cfg->GetValue(UTF8STRC("SMTPHost"));
+	Text::String *smtpPort = cfg->GetValue(UTF8STRC("SMTPPort"));
+	Text::String *smtpType = cfg->GetValue(UTF8STRC("SMTPType"));
+	Text::String *smtpFrom = cfg->GetValue(UTF8STRC("SMTPFrom"));
+	Text::String *smtpTo = cfg->GetValue(UTF8STRC("SMTPTo"));
+	Text::String *smtpUser = cfg->GetValue(UTF8STRC("SMTPUser"));
+	Text::String *smtpPassword = cfg->GetValue(UTF8STRC("SMTPPassword"));
 	Net::SocketFactory *sockf;
 	Net::MySQLTCPClient *cli;
 	DB::MySQLMaintance *mysql;
@@ -122,7 +123,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		{
 			Text::StringBuilderUTF8 sbMsg;
 			sbMsg.AppendC(UTF8STRC("ServerName = "));
-			sbMsg.Append(cfg->GetValue((const UTF8Char*)"ServerName"));
+			sbMsg.Append(cfg->GetValue(UTF8STRC("ServerName")));
 			sbMsg.AppendC(UTF8STRC("\r\n"));
 			sbMsg.AppendC(UTF8STRC("MySQL Check detail:\r\n"));
 			NEW_CLASS(mysql, DB::MySQLMaintance(cli, true));

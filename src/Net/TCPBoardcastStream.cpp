@@ -112,7 +112,7 @@ void __stdcall Net::TCPBoardcastStream::ClientTimeout(Net::TCPClient *cli, void 
 	}
 }
 
-Net::TCPBoardcastStream::TCPBoardcastStream(Net::SocketFactory *sockf, UInt16 port, IO::LogTool *log) : IO::Stream((const UTF8Char*)"Net.TCPBoardcastSream")
+Net::TCPBoardcastStream::TCPBoardcastStream(Net::SocketFactory *sockf, UInt16 port, IO::LogTool *log) : IO::Stream(UTF8STRC("Net.TCPBoardcastSream"))
 {
 	this->sockf = sockf;
 	this->log = log;
