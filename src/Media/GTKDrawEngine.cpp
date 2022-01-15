@@ -630,8 +630,8 @@ Bool Media::GTKDrawImage::DrawStringRot(Double centX, Double centY, const UTF8Ch
 	cairo_text_extents_t extents;
 	font->Init(this->cr);
 	brush->Init(this->cr);
-	Double cVal = Math::Cos(angleR);
-	Double sVal = Math::Sin(angleR);
+	Double cVal = Math_Cos(angleR);
+	Double sVal = Math_Sin(angleR);
 	Double dist = font->GetHeight() * 0.8 + 1;
 	cairo_text_extents((cairo_t *)this->cr, (const Char*)str, &extents);
 	cairo_move_to((cairo_t *)this->cr, centX - dist * sVal + Math::OSInt2Double(this->left), centY + dist * cVal + Math::OSInt2Double(this->top));

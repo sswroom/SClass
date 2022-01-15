@@ -284,7 +284,7 @@ fftfclop:						;{
 	fmulp
 	fst qword [esp+8]			;Double kthMul = -2 * Math::PI / 4.0;
 	fsin
-	fstp qword [esp+0]			;nextSin = Math::Sin(kthMul);
+	fstp qword [esp+0]			;nextSin = Math_Sin(kthMul);
 	mov edi,dword [esp+44]		;sampleCount << 1
 	shl edi,1
 	
@@ -302,9 +302,9 @@ fftfclop2:						;{
 	movsd xmm0,[esp+0]
 	cvtsi2sd xmm5,eax
 	mulsd xmm5,xmm0
-	mulsd xmm5,xmm0				;	csin[0] = -2.0 * Math::Sin(kthMul) * Math::Sin(kthMul);
+	mulsd xmm5,xmm0				;	csin[0] = -2.0 * Math_Sin(kthMul) * Math_Sin(kthMul);
 	unpcklpd xmm5,xmm1			;	csin[1] = nextSin;
-								;	nextSin = Math::Sin(kthMul);
+								;	nextSin = Math_Sin(kthMul);
 
 	mov eax,1
 	pxor xmm4,xmm4				;	csin1[1] = 0.0;
@@ -433,8 +433,8 @@ fftfcrstart:
 	fcos
 	fstp qword [esp]
 	fsin
-	fstp qword [esp+8]		;csin[0] = Math::Cos(kthMul);
-	movupd xmm5,[esp]		;csin[1] = Math::Sin(kthMul);
+	fstp qword [esp+8]		;csin[0] = Math_Cos(kthMul);
+	movupd xmm5,[esp]		;csin[1] = Math_Sin(kthMul);
 	jmp fftfcrlop0b
 	
 	align 16

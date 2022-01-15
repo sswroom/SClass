@@ -2711,8 +2711,10 @@ UOSInt Text::StrReplace(UTF8Char *str1, const UTF8Char *replaceFrom, const UTF8C
 	UOSInt toCharCnt;
 	UOSInt charCnt;
 	UTF8Char *sptr;
+	UTF8Char *strEnd;
 	charCnt = Text::StrCharCnt(str1);
 	sptr = &str1[charCnt];
+	strEnd = sptr;
 	if ((fromCharCnt = Text::StrCharCnt(replaceFrom)) == 0)
 		return 0;
 	toCharCnt = Text::StrCharCnt(replaceTo);
@@ -2721,13 +2723,14 @@ UOSInt Text::StrReplace(UTF8Char *str1, const UTF8Char *replaceFrom, const UTF8C
 	sptr -= fromCharCnt;
 	while (sptr >= str1)
 	{
-		if (Text::StrStartsWith(sptr, replaceFrom))
+		if (Text::StrStartsWithC(sptr, (UOSInt)(strEnd - sptr), replaceFrom, fromCharCnt))
 		{
 			if (fromCharCnt != toCharCnt)
 			{
-				MemCopyO(&sptr[toCharCnt], &sptr[fromCharCnt], (charCnt - (UOSInt)(sptr - str1) - fromCharCnt + 1) * sizeof(Char));
+				MemCopyO(&sptr[toCharCnt], &sptr[fromCharCnt], (charCnt - (UOSInt)(sptr - str1) - fromCharCnt + 1) * sizeof(UTF8Char));
+				strEnd = strEnd + toCharCnt - fromCharCnt;
 			}
-			MemCopyNO(sptr, replaceTo, toCharCnt * sizeof(Char));
+			MemCopyNO(sptr, replaceTo, toCharCnt * sizeof(UTF8Char));
 			sptr -= fromCharCnt;
 			cnt++;
 			charCnt = charCnt + toCharCnt - fromCharCnt;
@@ -2873,6 +2876,63 @@ UOSInt Text::StrCSVSplit(UTF8Char **strs, UOSInt maxStrs, UTF8Char *strToSplit)
 		{
 			*strCurr = 0;
 			strs[i++] = strCurr = strToSplit;
+			first = true;
+		}
+		else
+		{
+			if (c == ' ' && first)
+			{
+			}
+			else
+			{
+				*strCurr++ = c;
+				first = false;
+			}
+		}
+	}
+	return i;
+}
+
+UOSInt Text::StrCSVSplitP(Text::PString *strs, UOSInt maxStrs, UTF8Char *strToSplit)
+{
+	Bool quoted = false;
+	Bool first = true;
+	UOSInt i = 0;
+	UTF8Char *strCurr;
+	UTF8Char c;
+	strs[i++].v = strCurr = strToSplit;
+	while (i < maxStrs)
+	{
+		c = *strToSplit++;
+		if (c == 0)
+		{
+			*strCurr = 0;
+			strs[i - 1].len = (UOSInt)(strCurr - strs[i - 1].v);
+			break;
+		}
+		if (c == '"')
+		{
+			if (!quoted)
+			{
+				quoted = true;
+				first = false;
+			}
+			else if (*strToSplit == '"')
+			{
+				strToSplit++;
+				*strCurr++ = '"';
+				first = false;
+			}
+			else
+			{
+				quoted = false;
+			}
+		}
+		else if (c == ',' && !quoted)
+		{
+			*strCurr = 0;
+			strs[i - 1].len = (UOSInt)(strCurr - strs[i - 1].v);
+			strs[i++].v = strCurr = strToSplit;
 			first = true;
 		}
 		else

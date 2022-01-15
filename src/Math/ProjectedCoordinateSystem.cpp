@@ -37,7 +37,7 @@ Double Math::ProjectedCoordinateSystem::CalSurfaceDistanceXY(Double x1, Double y
 {
 	Double xDiff = x2 - x1;
 	Double yDiff = y2 - y1;
-	Double d = Math::Sqrt(xDiff * xDiff + yDiff * yDiff);
+	Double d = Math_Sqrt(xDiff * xDiff + yDiff * yDiff);
 	if (unit != Math::Unit::Distance::DU_METER)
 	{
 		d = Math::Unit::Distance::Convert(Math::Unit::Distance::DU_METER, unit, d);
@@ -108,7 +108,7 @@ Double Math::ProjectedCoordinateSystem::CalPLDistance3D(Math::Polyline3D *pl, Ma
 			if (hasLast)
 			{
 				dist = CalSurfaceDistanceXY(lastX, lastY, points[(j << 1)], points[(j << 1) + 1], unit);
-				dist = Math::Sqrt(dist * dist + (alts[j] - lastH) * (alts[j] - lastH));
+				dist = Math_Sqrt(dist * dist + (alts[j] - lastH) * (alts[j] - lastH));
 				totalDist += dist;
 			}
 			hasLast = true;

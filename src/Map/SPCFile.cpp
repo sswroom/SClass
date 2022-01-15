@@ -107,9 +107,9 @@ void Map::SPCFile::DrawChars(Media::DrawImage *img, const WChar *str1, Int32 scn
 	else
 		absH = (UInt16)scaleH;
 
-	Double degD = Math::ArcTan(scaleH / (Double)scaleW);
+	Double degD = Math_ArcTan(scaleH / (Double)scaleW);
 
-	Int32 deg = (Int32) (Math::ArcTan(scaleH / (Double)scaleW) * 1800 / PI);
+	Int32 deg = (Int32) (Math_ArcTan(scaleH / (Double)scaleW) * 1800 / PI);
 	while (deg < 0)
 		deg += 3600;
 
@@ -335,14 +335,14 @@ void Map::SPCFile::GetCharsSize(Media::DrawImage *img, Int32 *size, const WChar 
 		scaleW = -scaleW;
 		scaleH = -scaleH;
 	}
-	Double degD = Math::ArcTan(scaleH / (Double)scaleW);
+	Double degD = Math_ArcTan(scaleH / (Double)scaleW);
 	Double xPos = szTmp[0];
 	Double yPos = szTmp[1];
 	Double sVal;
 	Double cVal;
-	Double xs = ((xPos * 0.5) * (sVal = Math::Sin(degD)));
+	Double xs = ((xPos * 0.5) * (sVal = Math_Sin(degD)));
 	Double ys = ((yPos * 0.5) * sVal);
-	Double xc = ((xPos * 0.5) * (cVal = Math::Cos(degD)));
+	Double xc = ((xPos * 0.5) * (cVal = Math_Cos(degD)));
 	Double yc = ((yPos * 0.5) * cVal);
 
 	pt[0] = -xc - ys;

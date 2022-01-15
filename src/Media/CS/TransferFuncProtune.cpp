@@ -13,10 +13,10 @@ Media::CS::TransferFuncProtune::~TransferFuncProtune()
 
 Double Media::CS::TransferFuncProtune::ForwardTransfer(Double linearVal)
 {
-	return Math::Log10(linearVal * 112.0 + 1.0) / Math::Log10(113.0);
+	return Math_Log10(linearVal * 112.0 + 1.0) / Math_Log10(113.0);
 }
 
 Double Media::CS::TransferFuncProtune::InverseTransfer(Double gammaVal)
 {
-	return (Math::Pow(113.0, gammaVal) - 1.0) / 112.0;
+	return (Math_Pow(113.0, gammaVal) - 1.0) / 112.0;
 }

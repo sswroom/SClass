@@ -34,9 +34,9 @@ UTF8Char *Text::StrDouble(UTF8Char *oriStr, Double val)
 		return Text::StrConcatC(oriStr, UTF8STRC("1.#INF00"));
 	}
 	OSInt i = 7;
-	Int32 ex = -10000 + (Int32)(Math::Log10(val) + 10000);
+	Int32 ex = -10000 + (Int32)(Math_Log10(val) + 10000);
 	Int32 iVal;
-	val = val * Math::Pow(10.0, -ex - 1) + 5.0e-15;
+	val = val * Math_Pow(10.0, -ex - 1) + 5.0e-15;
 	if (ex >= 16 || ex <= -4)
 	{
 		val = val * 100.0;
@@ -214,9 +214,9 @@ UTF16Char *Text::StrDouble(UTF16Char *oriStr, Double val)
 		return Text::StrConcatASCII(oriStr, "1.#INF00");
 	}
 	OSInt i = 7;
-	Int32 ex = -10000 + (Int32)(Math::Log10(val) + 10000);
+	Int32 ex = -10000 + (Int32)(Math_Log10(val) + 10000);
 	Int32 iVal;
-	val = val * Math::Pow(10.0, -ex - 1) + 5.0e-15;
+	val = val * Math_Pow(10.0, -ex - 1) + 5.0e-15;
 	if (ex >= 16 || ex <= -4)
 	{
 		val = val * 100.0;
@@ -398,9 +398,9 @@ UTF32Char *Text::StrDouble(UTF32Char *oriStr, Double val)
 		return Text::StrConcatASCII(oriStr, "1.#INF00");
 	}
 	OSInt i = 7;
-	Int32 ex = -10000 + (Int32)(Math::Log10(val) + 10000);
+	Int32 ex = -10000 + (Int32)(Math_Log10(val) + 10000);
 	Int32 iVal;
-	val = val * Math::Pow(10.0, -ex - 1) + 5.0e-15;
+	val = val * Math_Pow(10.0, -ex - 1) + 5.0e-15;
 	if (ex >= 16 || ex <= -4)
 	{
 		val = val * 100.0;
@@ -639,8 +639,8 @@ Char *MyString_ecvt(Char *buff, Double val, Int32 numDigits, Int32 *digit, Int32
 	}
 	else
 	{
-		ex = -10000 + (Int32)(Math::Log10(val) + 10000);
-		val = val * Math::Pow(10.0, -ex - 1);
+		ex = -10000 + (Int32)(Math_Log10(val) + 10000);
+		val = val * Math_Pow(10.0, -ex - 1);
 	}
 	*digit = ex + 1;
 	if (numDigits & 1)
@@ -1991,7 +1991,7 @@ Bool Text::StrToDouble(const UTF8Char *str1, Double *outVal)
 			f = (f * 10.0) + (c - '0');
             n++;
         }
-		r += f / Math::Pow(10.0, Math::OSInt2Double(n));
+		r += f / Math_Pow(10.0, Math::OSInt2Double(n));
     }
 	else if (c == 0)
 	{
@@ -2038,11 +2038,11 @@ Bool Text::StrToDouble(const UTF8Char *str1, Double *outVal)
 		}
 		if (eneg)
 		{
-			r = r * Math::Pow(10.0, -expV);
+			r = r * Math_Pow(10.0, -expV);
 		}
 		else
 		{
-			r = r * Math::Pow(10.0, expV);
+			r = r * Math_Pow(10.0, expV);
 		}
 	}
 	if (c != 0)
@@ -2086,7 +2086,7 @@ Bool Text::StrToDouble(const UTF16Char *str1, Double *outVal)
 			f = (f * 10.0) + (c - '0');
             n++;
         }
-		r += f / Math::Pow(10.0, Math::OSInt2Double(n));
+		r += f / Math_Pow(10.0, Math::OSInt2Double(n));
     }
 	else if (c == 0)
 	{
@@ -2133,11 +2133,11 @@ Bool Text::StrToDouble(const UTF16Char *str1, Double *outVal)
 		}
 		if (eneg)
 		{
-			r = r * Math::Pow(10.0, -expV);
+			r = r * Math_Pow(10.0, -expV);
 		}
 		else
 		{
-			r = r * Math::Pow(10.0, expV);
+			r = r * Math_Pow(10.0, expV);
 		}
 	}
 	if (c != 0)
@@ -2181,7 +2181,7 @@ Bool Text::StrToDouble(const UTF32Char *str1, Double *outVal)
 			f = (f * 10.0) + (c - '0');
             n++;
         }
-		r += f / Math::Pow(10.0, Math::OSInt2Double(n));
+		r += f / Math_Pow(10.0, Math::OSInt2Double(n));
     }
 	else if (c == 0)
 	{
@@ -2228,11 +2228,11 @@ Bool Text::StrToDouble(const UTF32Char *str1, Double *outVal)
 		}
 		if (eneg)
 		{
-			r = r * Math::Pow(10.0, -expV);
+			r = r * Math_Pow(10.0, -expV);
 		}
 		else
 		{
-			r = r * Math::Pow(10.0, expV);
+			r = r * Math_Pow(10.0, expV);
 		}
 	}
 	if (c != 0)

@@ -33,7 +33,7 @@ void Math::Mercator1SPProjectedCoordinateSystem::ToGeographicCoordinate(Double p
 	Double rLon0 = this->centralMeridian * PI / 180;
 	Double a = ellipsoid->GetSemiMajorAxis();
 	*geoX = ((projX - this->falseEasting) / a + rLon0) * 180.0 / Math::PI;
-	*geoY = (Math::ArcTan(Math::Exp((projY - this->falseNorthing) / a)) - Math::PI * 0.25) * 2 * 180.0 / Math::PI;
+	*geoY = (Math_ArcTan(Math_Exp((projY - this->falseNorthing) / a)) - Math::PI * 0.25) * 2 * 180.0 / Math::PI;
 }
 
 void Math::Mercator1SPProjectedCoordinateSystem::FromGeographicCoordinate(Double geoX, Double geoY, Double *projX, Double *projY)
@@ -45,5 +45,5 @@ void Math::Mercator1SPProjectedCoordinateSystem::FromGeographicCoordinate(Double
 	Double a = ellipsoid->GetSemiMajorAxis();
 	Double dlon = rLon - rLon0;
 	*projX = this->falseEasting + dlon * a;
-	*projY = this->falseNorthing + a * Math::Ln(Math::Tan(Math::PI * 0.25 + rLat * 0.5));
+	*projY = this->falseNorthing + a * Math_Ln(Math_Tan(Math::PI * 0.25 + rLat * 0.5));
 }

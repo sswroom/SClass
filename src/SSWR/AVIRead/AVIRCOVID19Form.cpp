@@ -210,8 +210,7 @@ Bool SSWR::AVIRead::AVIRCOVID19Form::LoadCSV(IO::SeekableStream *stm)
 			NEW_CLASS(country->records, Data::Int64Map<SSWR::AVIRead::AVIRCOVID19Form::DailyRecord *>());
 			this->countries->Put(country->isoCode, country);
 		}
-		r->GetStr(colDate, sbuff, sizeof(sbuff));
-		dt.SetValue(sbuff);
+		r->GetDate(colDate, &dt);
 		t = dt.ToTicks();
 		if (country->records->Get(t) == 0)
 		{

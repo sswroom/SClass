@@ -76,7 +76,7 @@ void Media::CS::CSYUV_RGB8::SetupRGB13_8()
 	{
 		thisV = this->frFunc->ForwardTransfer(this->irFunc->InverseTransfer(i / 32767.0 * 4.0) * rMul);
 		
-		tmpV = (rBright - 1.0 + Math::Pow(thisV, rGammaVal) * rContr) * 255.0;
+		tmpV = (rBright - 1.0 + Math_Pow(thisV, rGammaVal) * rContr) * 255.0;
 		if (tmpV < 0)
 			rgbGammaCorr[i] = 0;
 		else if (tmpV > 255)
@@ -85,7 +85,7 @@ void Media::CS::CSYUV_RGB8::SetupRGB13_8()
 			rgbGammaCorr[i] = (UInt8)Math::Double2Int32(tmpV);
 
 		thisV = this->fgFunc->ForwardTransfer(this->igFunc->InverseTransfer(i / 32767.0 * 4.0) * gMul);
-		tmpV = (gBright - 1.0 + Math::Pow(thisV, gGammaVal) * gContr) * 255.0;
+		tmpV = (gBright - 1.0 + Math_Pow(thisV, gGammaVal) * gContr) * 255.0;
 		if (tmpV < 0)
 			rgbGammaCorr[i+65536] = 0;
 		else if (tmpV > 255)
@@ -94,7 +94,7 @@ void Media::CS::CSYUV_RGB8::SetupRGB13_8()
 			rgbGammaCorr[i+65536] = (UInt8)Math::Double2Int32(tmpV);
 
 		thisV = this->fbFunc->ForwardTransfer(this->ibFunc->InverseTransfer(i / 32767.0 * 4.0) * bMul);
-		tmpV = (bBright - 1.0 + Math::Pow(thisV, bGammaVal) * bContr) * 255.0;
+		tmpV = (bBright - 1.0 + Math_Pow(thisV, bGammaVal) * bContr) * 255.0;
 		if (tmpV < 0)
 			rgbGammaCorr[i+131072] = 0;
 		else if (tmpV > 255)
@@ -106,7 +106,7 @@ void Media::CS::CSYUV_RGB8::SetupRGB13_8()
 	while (i-- > 32768)
 	{
 		thisV = this->frFunc->ForwardTransfer(this->irFunc->InverseTransfer((i - 65536) / 32767.0 * 4.0) * rMul);
-		tmpV = (rBright - 1.0 + Math::Pow(thisV, rGammaVal) * rContr) * 255.0;
+		tmpV = (rBright - 1.0 + Math_Pow(thisV, rGammaVal) * rContr) * 255.0;
 		if (tmpV < 0)
 			rgbGammaCorr[i] = 0;
 		else if (tmpV > 255)
@@ -115,7 +115,7 @@ void Media::CS::CSYUV_RGB8::SetupRGB13_8()
 			rgbGammaCorr[i] = (UInt8)Math::Double2Int32(tmpV);
 
 		thisV = this->fgFunc->ForwardTransfer(this->igFunc->InverseTransfer((i - 65536) / 32767.0 * 4.0) * gMul);
-		tmpV = (gBright - 1.0 + Math::Pow(thisV, gGammaVal) * gContr) * 255.0;
+		tmpV = (gBright - 1.0 + Math_Pow(thisV, gGammaVal) * gContr) * 255.0;
 		if (tmpV < 0)
 			rgbGammaCorr[i+65536] = 0;
 		else if (tmpV > 255)
@@ -124,7 +124,7 @@ void Media::CS::CSYUV_RGB8::SetupRGB13_8()
 			rgbGammaCorr[i+65536] = (UInt8)Math::Double2Int32(tmpV);
 
 		thisV = this->fbFunc->ForwardTransfer(this->ibFunc->InverseTransfer((i - 65536) / 32767.0 * 4.0) * bMul);
-		tmpV = (bBright - 1.0 + Math::Pow(thisV, bGammaVal) * bContr) * 255.0;
+		tmpV = (bBright - 1.0 + Math_Pow(thisV, bGammaVal) * bContr) * 255.0;
 		if (tmpV < 0)
 			rgbGammaCorr[i+131072] = 0;
 		else if (tmpV > 255)
@@ -170,7 +170,7 @@ void Media::CS::CSYUV_RGB8::SetupYUV_RGB13()
 		i = 256;
 		while (i--)
 		{
-			y = (Int32)(0x7fff * (Math::Pow(sumy[i] * currSum, this->yuvParam.YGamma) * this->yuvParam.Contrast + this->yuvParam.Brightness - 1) / 4.0);
+			y = (Int32)(0x7fff * (Math_Pow(sumy[i] * currSum, this->yuvParam.YGamma) * this->yuvParam.Contrast + this->yuvParam.Brightness - 1) / 4.0);
 			if (y < -0x8000)
 				y = 0x8000;
 			else if (y > 0x7fff)
@@ -241,11 +241,11 @@ void Media::CS::CSYUV_RGB8::SetupYUV_RGB13()
 				i = 0;
 
 			if (i > 128)
-				c = Math::Pow(sumc[i - 128] * currSum, this->yuvParam.CGamma) * 16383;
+				c = Math_Pow(sumc[i - 128] * currSum, this->yuvParam.CGamma) * 16383;
 			else if (i == 128)
 				c = 0;
 			else
-				c = Math::Pow(sumc[-i + 128] * currSum, this->yuvParam.CGamma) * (-16383);
+				c = Math_Pow(sumc[-i + 128] * currSum, this->yuvParam.CGamma) * (-16383);
 
 			Int32 v2r8;
 			Int32 u2g8;

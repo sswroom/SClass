@@ -38,7 +38,7 @@ void SSWR::AVIRead::AVIREDIDViewerForm::UpdateEDIDDisp()
 			sb.AppendC(UTF8STRC(" x "));
 			sb.AppendU32(info.dispPhysicalH);
 			sb.AppendC(UTF8STRC(" ("));
-			Text::SBAppendF64(&sb, Math::Unit::Distance::Convert(Math::Unit::Distance::DU_CENTIMETER, Math::Unit::Distance::DU_INCH, Math::Sqrt(info.dispPhysicalW * info.dispPhysicalW + info.dispPhysicalH * info.dispPhysicalH)));
+			Text::SBAppendF64(&sb, Math::Unit::Distance::Convert(Math::Unit::Distance::DU_CENTIMETER, Math::Unit::Distance::DU_INCH, Math_Sqrt(info.dispPhysicalW * info.dispPhysicalW + info.dispPhysicalH * info.dispPhysicalH)));
 			sb.AppendC(UTF8STRC("\")"));
 			if (info.monitorName[0])
 			{

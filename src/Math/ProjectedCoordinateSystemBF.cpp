@@ -107,7 +107,7 @@ Double Math::ProjectedCoordinateSystem::CalPLDistance3D(Math::Polyline3D *pl, Ma
 			if (hasLast)
 			{
 				dist = CalSurfaceDistanceXY(lastX, lastY, points[(j << 1)], points[(j << 1) + 1], unit);
-				dist = Math::Sqrt(dist * dist + (alts[j] - lastH) * (alts[j] - lastH));
+				dist = Math_Sqrt(dist * dist + (alts[j] - lastH) * (alts[j] - lastH));
 				totalDist += dist;
 			}
 			hasLast = true;
@@ -151,13 +151,13 @@ void Math::ProjectedCoordinateSystem::ToGeographicCoordinate(Double projX, Doubl
 		if (tmpV < 0.00001)
 			break;
 	}
-	Double sLat = Math::Sin(rLatL);
-	Double tLat = Math::Tan(rLatL);
+	Double sLat = Math_Sin(rLatL);
+	Double tLat = Math_Tan(rLatL);
 	Double tLat2 = tLat * tLat;
 	Double tLat4 = tLat2 * tLat2;
-	Double secLat = 1 / Math::Cos(rLatL);
+	Double secLat = 1 / Math_Cos(rLatL);
 	Double tmp = 1 - e2 * sLat * sLat;
-	Double v = aF / Math::Sqrt(tmp);
+	Double v = aF / Math_Sqrt(tmp);
 	Double v3 = v * v * v;
 	Double v5 = v3 * v * v;
 	Double v7 = v5 * v * v;
@@ -173,8 +173,8 @@ void Math::ProjectedCoordinateSystem::ToGeographicCoordinate(Double projX, Doubl
 	Double ser12a = secLat / (5040 * v5 * v * v) * (61 + 662 * tLat2 + 1320 * tLat4 + 720 * tLat4 * tLat2);
 
 	Double eDiff = projX - this->falseEasting;
-	Double outX = (this->centralMeridian * PI / 180.0) + ser10 * eDiff - ser11 * Math::Pow(eDiff, 3) + ser12 * Math::Pow(eDiff, 5) - ser12a * Math::Pow(eDiff, 7);
-	Double outY = rLatL - ser7 * Math::Pow(eDiff, 2) + ser8 * Math::Pow(eDiff, 4) - ser9 * Math::Pow(eDiff, 6);
+	Double outX = (this->centralMeridian * PI / 180.0) + ser10 * eDiff - ser11 * Math_Pow(eDiff, 3) + ser12 * Math_Pow(eDiff, 5) - ser12a * Math_Pow(eDiff, 7);
+	Double outY = rLatL - ser7 * Math_Pow(eDiff, 2) + ser8 * Math_Pow(eDiff, 4) - ser9 * Math_Pow(eDiff, 6);
 
 	*geoX = (outX * 180.0 / PI);
 	*geoY = (outY * 180.0 / PI);
@@ -185,17 +185,17 @@ void Math::ProjectedCoordinateSystem::FromGeographicCoordinate(Double geoX, Doub
 	Double rLat = geoY * PI / 180.0;
 	Double rLon = geoX * PI / 180.0;
 	Double rLon0 = this->centralMeridian * PI / 180;
-	Double sLat = Math::Sin(rLat);
+	Double sLat = Math_Sin(rLat);
 	Double a = gcs->GetSemiMajorAxis();
 	Double e = gcs->GetEccentricity();
 	Double e2 = e * e;
 	Double tmp = 1 - e2 * sLat * sLat;
-	Double v = a * this->scaleFactor / Math::Sqrt(tmp);
+	Double v = a * this->scaleFactor / Math_Sqrt(tmp);
 	Double p = v * (1 - e2) / tmp;
 	Double nb2 = v / p - 1;
 	Double m = this->CalcM(rLat);
-	Double cLat = Math::Cos(rLat);
-	Double tLat = Math::Tan(rLat);
+	Double cLat = Math_Cos(rLat);
+	Double tLat = Math_Tan(rLat);
 	Double tLat2 = tLat * tLat;
 	Double tLat4 = tLat2 * tLat2;
 	Double cLat3 = cLat * cLat * cLat;
@@ -226,9 +226,9 @@ Double Math::ProjectedCoordinateSystem::CalcM(Double rLat)
 	Double rLat0 = this->latitudeOfOrigin * PI / 180;
 	Double m;
 	m = (1 + n + 1.25 * n2 + 1.25 * n3) * (rLat - rLat0);
-	m = m - (3 * n + 3 * n2  + 2.625 * n3) * Math::Sin(rLat - rLat0) * Math::Cos(rLat + rLat0);
-	m = m + (1.875 * n2 + 1.875 * n3) * Math::Sin(2 * (rLat - rLat0)) * Math::Cos(2 * (rLat + rLat0));
-	m = m - 35 / 24 * n3 * Math::Sin(3 * (rLat - rLat0)) * Math::Cos(3 * (rLat + rLat0));
+	m = m - (3 * n + 3 * n2  + 2.625 * n3) * Math_Sin(rLat - rLat0) * Math_Cos(rLat + rLat0);
+	m = m + (1.875 * n2 + 1.875 * n3) * Math_Sin(2 * (rLat - rLat0)) * Math_Cos(2 * (rLat + rLat0));
+	m = m - 35 / 24 * n3 * Math_Sin(3 * (rLat - rLat0)) * Math_Cos(3 * (rLat + rLat0));
 	m = m * b * this->scaleFactor;
 	return m;
 }*/

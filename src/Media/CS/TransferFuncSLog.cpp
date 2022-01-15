@@ -15,10 +15,10 @@ Media::CS::TransferFuncSLog::~TransferFuncSLog()
 
 Double Media::CS::TransferFuncSLog::ForwardTransfer(Double linearVal)
 {
-	return (0.432699 * Math::Log10(linearVal + 0.037584) + 0.616596) + 0.03;
+	return (0.432699 * Math_Log10(linearVal + 0.037584) + 0.616596) + 0.03;
 }
 
 Double Media::CS::TransferFuncSLog::InverseTransfer(Double gammaVal)
 {
-	return Math::Pow(10, ((gammaVal - 0.616596 - 0.03) / 0.432699)) - 0.037584;
+	return Math_Pow(10, ((gammaVal - 0.616596 - 0.03) / 0.432699)) - 0.037584;
 }

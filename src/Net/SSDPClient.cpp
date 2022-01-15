@@ -12,6 +12,7 @@ void __stdcall Net::SSDPClient::OnPacketRecv(const Net::SocketUtil::AddressInfo 
 		if (addr->addrType == Net::AddrType::IPv4)
 		{
 			const UTF8Char *time = 0;
+			UOSInt timeLen = 0;
 			const UTF8Char *location = 0;
 			const UTF8Char *opt = 0;
 			const UTF8Char *server = 0;
@@ -20,35 +21,37 @@ void __stdcall Net::SSDPClient::OnPacketRecv(const Net::SocketUtil::AddressInfo 
 			const UTF8Char *userAgent = 0;
 			Text::StringBuilderUTF8 sb;
 			sb.AppendC(buff, dataSize);
-			UTF8Char *sarr[2];
+			Text::PString sarr[2];
 			UOSInt lineCnt;
-			sarr[1] = sb.ToString();
+			sarr[1].v = sb.ToString();
+			sarr[1].len = sb.GetLength();
 			while (true)
 			{
-				lineCnt = Text::StrSplitLine(sarr, 2, sarr[1]);
-				if (Text::StrStartsWithICase(sarr[0], (const UTF8Char*)"DATE: "))
+				lineCnt = Text::StrSplitLineP(sarr, 2, sarr[1].v, sarr[1].len);
+				if (Text::StrStartsWithICase(sarr[0].v, (const UTF8Char*)"DATE: "))
 				{
-					time = &sarr[0][6];
+					time = &sarr[0].v[6];
+					timeLen = sarr[0].len - 6;
 				}
-				else if (Text::StrStartsWithICase(sarr[0], (const UTF8Char*)"LOCATION: "))
+				else if (Text::StrStartsWithICase(sarr[0].v, (const UTF8Char*)"LOCATION: "))
 				{
-					location = &sarr[0][10];
+					location = &sarr[0].v[10];
 				}
-				else if (Text::StrStartsWithICase(sarr[0], (const UTF8Char*)"OPT: "))
+				else if (Text::StrStartsWithICase(sarr[0].v, (const UTF8Char*)"OPT: "))
 				{
-					opt = &sarr[0][5];
+					opt = &sarr[0].v[5];
 				}
-				else if (Text::StrStartsWithICase(sarr[0], (const UTF8Char*)"ST: "))
+				else if (Text::StrStartsWithICase(sarr[0].v, (const UTF8Char*)"ST: "))
 				{
-					st = &sarr[0][4];
+					st = &sarr[0].v[4];
 				}
-				else if (Text::StrStartsWithICase(sarr[0], (const UTF8Char*)"USN: "))
+				else if (Text::StrStartsWithICase(sarr[0].v, (const UTF8Char*)"USN: "))
 				{
-					usn = &sarr[0][5];
+					usn = &sarr[0].v[5];
 				}
-				else if (Text::StrStartsWithICase(sarr[0], (const UTF8Char*)"X-USER-AGENT: "))
+				else if (Text::StrStartsWithICase(sarr[0].v, (const UTF8Char*)"X-USER-AGENT: "))
 				{
-					userAgent = &sarr[0][14];
+					userAgent = &sarr[0].v[14];
 				}
 
 				if (lineCnt != 2)
@@ -86,7 +89,7 @@ void __stdcall Net::SSDPClient::OnPacketRecv(const Net::SocketUtil::AddressInfo 
 					if (time)
 					{
 						Data::DateTime dt;
-						dt.SetValue(time);
+						dt.SetValue(time, timeLen);
 						svc->time = dt.ToTicks();
 					}
 					else

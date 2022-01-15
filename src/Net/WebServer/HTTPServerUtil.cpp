@@ -261,7 +261,7 @@ Bool Net::WebServer::HTTPServerUtil::ResponseFile(Net::WebServer::IWebRequest *r
 	if (req->GetHeaderC(&sb2, UTF8STRC("If-Modified-Since")))
 	{
 		Data::DateTime t2;
-		t2.SetValue(sb2.ToString());
+		t2.SetValue(sb2.ToString(), sb2.GetLength());
 		t2.AddMS(t.GetMS());
 		if (t2.DiffMS(&t) == 0)
 		{

@@ -563,7 +563,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(const UTF8Char *sourceFile, con
 							if (currX < xMin) xMin = currX;
 							if (currY > yMax) yMax = currY;
 							if (currY < yMin) yMin = currY;
-//							rLen += Math::Sqrt((currX - lastX) * (currX - lastX) + (currY - lastY) * (currY - lastY));
+//							rLen += Math_Sqrt((currX - lastX) * (currX - lastX) + (currY - lastY) * (currY - lastY));
 //							lastX = currX;
 //							lastY = currY;
 							i += 1;
@@ -1209,7 +1209,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::LoadShape(const UTF8Char *fileName, Bool u
 		else
 		{
 			Double tVal = (yMax - yMin) * (xMax - xMin) / Math::UOSInt2Double(dbRecCnt);
-			retV = (Int32)(Math::Sqrt(tVal) * 500000);
+			retV = (Int32)(Math_Sqrt(tVal) * 500000);
 			if (retV < 5000)
 			{
 				retV = 5000;

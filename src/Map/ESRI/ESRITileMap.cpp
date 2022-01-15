@@ -220,7 +220,7 @@ UOSInt Map::ESRI::ESRITileMap::GetNearestLevel(Double scale)
 {
 	if (this->isMercatorProj)
 	{
-		Int32 level = Math::Double2Int32(Math::Log10(204094080000.0 / scale / Math::UOSInt2Double(this->tileWidth)) / Math::Log10(2));
+		Int32 level = Math::Double2Int32(Math_Log10(204094080000.0 / scale / Math::UOSInt2Double(this->tileWidth)) / Math_Log10(2));
 		if (level < 0)
 			level = 0;
 		else if (level >= (Int32)GetLevelCount())
@@ -233,13 +233,13 @@ UOSInt Map::ESRI::ESRITileMap::GetNearestLevel(Double scale)
 		Double minDiff;
 		UOSInt minInd;
 		UOSInt i;
-		Double logResol = Math::Log10(scale / 566928000.0);
+		Double logResol = Math_Log10(scale / 566928000.0);
 		minInd = 0;
 		minDiff = 100000.0;
 		i = this->levels->GetCount();
 		while (i-- > 0)
 		{
-			ldiff = Math::Log10(this->levels->GetItem(i)) - logResol;
+			ldiff = Math_Log10(this->levels->GetItem(i)) - logResol;
 			if (ldiff < 0)
 				ldiff = -ldiff;
 			if (ldiff < minDiff)
@@ -654,7 +654,7 @@ Int32 Map::ESRI::ESRITileMap::Lon2TileX(Double lon, UOSInt level)
 
 Int32 Map::ESRI::ESRITileMap::Lat2TileY(Double lat, UOSInt level)
 {
-	return (Int32)((1.0 - Math::Ln( Math::Tan(lat * Math::PI / 180.0) + 1.0 / Math::Cos(lat * Math::PI / 180.0)) / Math::PI) / 2.0 * (1 << level));
+	return (Int32)((1.0 - Math_Ln( Math_Tan(lat * Math::PI / 180.0) + 1.0 / Math_Cos(lat * Math::PI / 180.0)) / Math::PI) / 2.0 * (1 << level));
 }
 
 Double Map::ESRI::ESRITileMap::TileX2Lon(Int32 x, UOSInt level)
@@ -665,7 +665,7 @@ Double Map::ESRI::ESRITileMap::TileX2Lon(Int32 x, UOSInt level)
 Double Map::ESRI::ESRITileMap::TileY2Lat(Int32 y, UOSInt level)
 {
 	Double n = Math::PI - 2.0 * Math::PI * y / (1 << level);
-	return 180.0 / Math::PI * Math::ArcTan(0.5 * (Math::Exp(n) - Math::Exp(-n)));
+	return 180.0 / Math::PI * Math_ArcTan(0.5 * (Math_Exp(n) - Math_Exp(-n)));
 }
 
 Double Map::ESRI::ESRITileMap::WebMercatorX2Lon(Double x)
@@ -678,7 +678,7 @@ Double Map::ESRI::ESRITileMap::WebMercatorX2Lon(Double x)
 
 Double Map::ESRI::ESRITileMap::WebMercatorY2Lat(Double y)
 {
-	return (1.5707963267948966 - (2.0 * Math::ArcTan(Math::Exp((-1.0 * y) / 6378137.0)))) * 57.295779513082323;
+	return (1.5707963267948966 - (2.0 * Math_ArcTan(Math_Exp((-1.0 * y) / 6378137.0)))) * 57.295779513082323;
 }
 
 Double Map::ESRI::ESRITileMap::Lon2WebMercatorX(Double lon)
@@ -689,5 +689,5 @@ Double Map::ESRI::ESRITileMap::Lon2WebMercatorX(Double lon)
 Double Map::ESRI::ESRITileMap::Lat2WebMercatorY(Double lat)
 {
 	Double a = lat * 0.017453292519943295;
-	return 3189068.5 * Math::Log10((1.0 + Math::Sin(a)) / (1.0 - Math::Sin(a)));
+	return 3189068.5 * Math_Log10((1.0 + Math_Sin(a)) / (1.0 - Math_Sin(a)));
 }

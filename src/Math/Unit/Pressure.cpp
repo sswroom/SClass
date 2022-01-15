@@ -121,7 +121,7 @@ Double Math::Unit::Pressure::VapourPressureAntoine(PressureUnit outputUnit, Math
 	default:
 		return 0;
 	}
-	return Convert(PU_TORR, outputUnit, Math::Pow(10, valA - valB / (valC + deg)));
+	return Convert(PU_TORR, outputUnit, Math_Pow(10, valA - valB / (valC + deg)));
 }
 
 Double Math::Unit::Pressure::WaterVapourPressureTetens(PressureUnit outputUnit, Math::Unit::Temperature::TemperatureUnit tempUnit, Double tempValue)
@@ -130,11 +130,11 @@ Double Math::Unit::Pressure::WaterVapourPressureTetens(PressureUnit outputUnit, 
 	Double v;
 	if (deg < 0)
 	{
-		v = 0.61078 * Math::Exp((21.875 * deg) / (deg + 265.5));
+		v = 0.61078 * Math_Exp((21.875 * deg) / (deg + 265.5));
 	}
 	else
 	{
-		v = 0.61078 * Math::Exp((17.27 * deg) / (deg + 237.3));
+		v = 0.61078 * Math_Exp((17.27 * deg) / (deg + 237.3));
 	}
 	return Convert(PU_KPASCAL, outputUnit, v);
 }
@@ -145,11 +145,11 @@ Double Math::Unit::Pressure::WaterVapourPressureBuck(PressureUnit outputUnit, Ma
 	Double v;
 	if (deg < 0)
 	{
-		v = 0.61115 * Math::Exp((23.036 - deg / 333.7) * (deg / (279.82 + deg)));
+		v = 0.61115 * Math_Exp((23.036 - deg / 333.7) * (deg / (279.82 + deg)));
 	}
 	else
 	{
-		v = 0.61121 * Math::Exp((18.678 - deg / 234.5) * (deg / (257.14 + deg)));
+		v = 0.61121 * Math_Exp((18.678 - deg / 234.5) * (deg / (257.14 + deg)));
 	}
 	return Convert(PU_KPASCAL, outputUnit, v);
 }

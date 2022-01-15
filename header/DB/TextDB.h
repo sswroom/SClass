@@ -2,6 +2,7 @@
 #define _SM_DB_TEXTDB
 #include "Data/StringUTF8Map.h"
 #include "DB/ReadingDB.h"
+#include "Text/String.h"
 
 namespace DB
 {
@@ -12,7 +13,7 @@ namespace DB
 		{
 			const UTF8Char *name;
 			Data::ArrayList<const UTF8Char *> *colList;
-			Data::ArrayList<const UTF8Char **> *valList;
+			Data::ArrayList<Text::String **> *valList;
 		} DBData;
 
 	private:

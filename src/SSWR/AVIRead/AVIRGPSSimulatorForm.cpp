@@ -95,7 +95,7 @@ void __stdcall SSWR::AVIRead::AVIRGPSSimulatorForm::OnTimerTick(void *userObj)
 		{
 			Double destX = me->points->GetItem(0);
 			Double destY = me->points->GetItem(1);
-			Double dir = Math::ArcTan2(destY - me->currY, destX - me->currX);
+			Double dir = Math_ArcTan2(destY - me->currY, destX - me->currX);
 			Double dist = me->wgs84->CalSurfaceDistanceXY(me->currX, me->currY, destX, destY, Math::Unit::Distance::DU_METER);
 			Double maxDist = me->speed / 3.6;
 			if (dist < maxDist)

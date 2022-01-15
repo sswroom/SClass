@@ -382,7 +382,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("Monitor Size: "));
-					Text::SBAppendF64(&sb, Math::Unit::Distance::Convert(Math::Unit::Distance::DU_CENTIMETER, Math::Unit::Distance::DU_INCH, Math::Sqrt(edidInfo.dispPhysicalW * edidInfo.dispPhysicalW + edidInfo.dispPhysicalH * edidInfo.dispPhysicalH)));
+					Text::SBAppendF64(&sb, Math::Unit::Distance::Convert(Math::Unit::Distance::DU_CENTIMETER, Math::Unit::Distance::DU_INCH, Math_Sqrt(edidInfo.dispPhysicalW * edidInfo.dispPhysicalW + edidInfo.dispPhysicalH * edidInfo.dispPhysicalH)));
 					sb.AppendC(UTF8STRC("\" ("));
 					sb.AppendU32(edidInfo.dispPhysicalW);
 					sb.AppendC(UTF8STRC(" x "));

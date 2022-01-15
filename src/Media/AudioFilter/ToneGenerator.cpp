@@ -229,7 +229,7 @@ Double Media::AudioFilter::ToneGenerator::GetToneFreq(ToneType tone)
 		v = 0;
 		break;
 	}
-	return 440.0 * Math::Pow(2, v / 12.0);
+	return 440.0 * Math_Pow(2, v / 12.0);
 }
 
 const WChar *Media::AudioFilter::ToneGenerator::GetToneName(ToneType tone)

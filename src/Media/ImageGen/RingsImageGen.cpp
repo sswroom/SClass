@@ -53,7 +53,7 @@ Media::Image *Media::ImageGen::RingsImageGen::GenerateImage(Media::ColorProfile 
 		{
 			dx = (dwidth * 0.5) - Math::UOSInt2Double(i) - 0.5;
 			dy = (dheight * 0.5) - Math::UOSInt2Double(j) - 0.5;
-			v = 0.5 + Math::Sin((dx * dx + dy * dy) / (d / 2)) * 0.5;
+			v = 0.5 + Math_Sin((dx * dx + dy * dy) / (d / 2)) * 0.5;
 			c[0] = (UInt16)Math::Double2Int32(bfunc->ForwardTransfer(v) * 65535.0);
 			c[1] = (UInt16)Math::Double2Int32(gfunc->ForwardTransfer(v) * 65535.0);
 			c[2] = (UInt16)Math::Double2Int32(rfunc->ForwardTransfer(v) * 65535.0);

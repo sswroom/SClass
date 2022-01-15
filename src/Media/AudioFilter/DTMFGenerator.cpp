@@ -48,7 +48,7 @@ UOSInt Media::AudioFilter::DTMFGenerator::ReadBlock(UInt8 *buff, UOSInt blkSize)
 		Int32 ivCh;
 		while (i < readSize)
 		{
-			v = (Math::Sin(this->freq1Curr) + Math::Sin(this->freq2Curr)) * 0.5;
+			v = (Math_Sin(this->freq1Curr) + Math_Sin(this->freq2Curr)) * 0.5;
 			this->freq1Curr += this->freq1Step;
 			this->freq2Curr += this->freq2Step;
 
@@ -178,7 +178,7 @@ UOSInt Media::AudioFilter::DTMFGenerator::ReadBlock(UInt8 *buff, UOSInt blkSize)
 					this->tonesCurrSample += (UInt32)sampleLeft;
 					while (sampleLeft-- > 0)
 					{
-						v = (Math::Sin(freq1Curr) + Math::Sin(freq2Curr)) * 0.5;
+						v = (Math_Sin(freq1Curr) + Math_Sin(freq2Curr)) * 0.5;
 						freq1Curr += freq1Step;
 						freq2Curr += freq2Step;
 
@@ -224,7 +224,7 @@ UOSInt Media::AudioFilter::DTMFGenerator::ReadBlock(UInt8 *buff, UOSInt blkSize)
 		Int32 ivCh;
 		while (i < readSize)
 		{
-			v = (Math::Sin(this->freq1Curr) + Math::Sin(this->freq2Curr)) * 0.5;
+			v = (Math_Sin(this->freq1Curr) + Math_Sin(this->freq2Curr)) * 0.5;
 			this->freq1Curr += this->freq1Step;
 			this->freq2Curr += this->freq2Step;
 

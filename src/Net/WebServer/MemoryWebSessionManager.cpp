@@ -69,7 +69,7 @@ UInt32 __stdcall Net::WebServer::MemoryWebSessionManager::CheckThread(void *user
 Int64 Net::WebServer::MemoryWebSessionManager::GetSessId(Net::WebServer::IWebRequest *req)
 {
 	UTF8Char *sbuff;
-	UTF8Char *strs[2];
+	Text::PString strs[2];
 	UOSInt strCnt = 2;
 	Int64 sessId = 0;
 
@@ -81,13 +81,14 @@ Int64 Net::WebServer::MemoryWebSessionManager::GetSessId(Net::WebServer::IWebReq
 	sbuff = MemAlloc(UTF8Char, cookie->leng + 1);
 	cookie->ConcatTo(sbuff);
 
-	strs[1] = sbuff;
+	strs[1].v = sbuff;
+	strs[1].len = cookie->leng;
 	while (strCnt >= 2)
 	{
-		strCnt = Text::StrSplitTrim(strs, 2, strs[1], ';');
-		if (Text::StrStartsWith(strs[0], (const UTF8Char*)"WebSessId="))
+		strCnt = Text::StrSplitTrimP(strs, 2, strs[1].v, strs[1].len, ';');
+		if (Text::StrStartsWithC(strs[0].v, strs[0].len, UTF8STRC("WebSessId=")))
 		{
-			sessId = Text::StrToInt64(&strs[0][10]);
+			sessId = Text::StrToInt64(&strs[0].v[10]);
 			break;
 		}
 	}

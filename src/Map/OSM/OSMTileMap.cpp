@@ -128,7 +128,7 @@ Double Map::OSM::OSMTileMap::GetLevelScale(UOSInt index)
 
 UOSInt Map::OSM::OSMTileMap::GetNearestLevel(Double scale)
 {
-	Int32 level = Math::Double2Int32(Math::Log10(204094080000.0 / scale / Math::UOSInt2Double(this->tileWidth)) / Math::Log10(2));
+	Int32 level = Math::Double2Int32(Math_Log10(204094080000.0 / scale / Math::UOSInt2Double(this->tileWidth)) / Math_Log10(2));
 	if (level < 0)
 		level = 0;
 	else if (level >= (Int32)GetLevelCount())
@@ -637,7 +637,7 @@ Int32 Map::OSM::OSMTileMap::Lon2TileX(Double lon, UOSInt level)
 
 Int32 Map::OSM::OSMTileMap::Lat2TileY(Double lat, UOSInt level)
 {
-	return (Int32)((1.0 - Math::Ln( Math::Tan(lat * Math::PI / 180.0) + 1.0 / Math::Cos(lat * Math::PI / 180.0)) / Math::PI) / 2.0 * (1 << level));
+	return (Int32)((1.0 - Math_Ln( Math_Tan(lat * Math::PI / 180.0) + 1.0 / Math_Cos(lat * Math::PI / 180.0)) / Math::PI) / 2.0 * (1 << level));
 }
 
 Int32 Map::OSM::OSMTileMap::Lon2TileXR(Double lon, UOSInt level)
@@ -647,7 +647,7 @@ Int32 Map::OSM::OSMTileMap::Lon2TileXR(Double lon, UOSInt level)
 
 Int32 Map::OSM::OSMTileMap::Lat2TileYR(Double lat, UOSInt level)
 {
-	return Math::Double2Int32((1.0 - Math::Ln( Math::Tan(lat * Math::PI / 180.0) + 1.0 / Math::Cos(lat * Math::PI / 180.0)) / Math::PI) / 2.0 * (1 << level));
+	return Math::Double2Int32((1.0 - Math_Ln( Math_Tan(lat * Math::PI / 180.0) + 1.0 / Math_Cos(lat * Math::PI / 180.0)) / Math::PI) / 2.0 * (1 << level));
 }
 
 Double Map::OSM::OSMTileMap::TileX2Lon(Int32 x, UOSInt level)
@@ -658,5 +658,5 @@ Double Map::OSM::OSMTileMap::TileX2Lon(Int32 x, UOSInt level)
 Double Map::OSM::OSMTileMap::TileY2Lat(Int32 y, UOSInt level)
 {
 	Double n = Math::PI - 2.0 * Math::PI * y / (1 << level);
-	return 180.0 / Math::PI * Math::ArcTan(0.5 * (Math::Exp(n) - Math::Exp(-n)));
+	return 180.0 / Math::PI * Math_ArcTan(0.5 * (Math_Exp(n) - Math_Exp(-n)));
 }

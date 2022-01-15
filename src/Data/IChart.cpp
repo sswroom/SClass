@@ -134,14 +134,14 @@ UOSInt Data::IChart::CalScaleMarkDbl(Data::ArrayListDbl *locations, Data::ArrayL
 	labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
 
 	scale = minLeng * (max - min) / leng;
-	lScale = (Int32)(Math::Log10(scale));
-	dScale = Math::Pow(10, lScale);
+	lScale = (Int32)(Math_Log10(scale));
+	dScale = Math_Pow(10, lScale);
 	if (scale / dScale <= 2)
-		dScale = Math::Pow(10, lScale) * 2;
+		dScale = Math_Pow(10, lScale) * 2;
 	else if (scale / dScale <= 5)
-		dScale = Math::Pow(10, lScale) * 5;
+		dScale = Math_Pow(10, lScale) * 5;
 	else
-		dScale = Math::Pow(10, lScale) * 10;
+		dScale = Math_Pow(10, lScale) * 10;
 
 	if (dScale <= 0 || lScale <= -10)
 	{
@@ -190,18 +190,18 @@ UOSInt Data::IChart::CalScaleMarkInt(Data::ArrayListDbl *locations, Data::ArrayL
 	labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
 
 	scale = minLeng * (Double)(max - min) / leng;
-	lScale = (Int32)(Math::Log10(scale));
+	lScale = (Int32)(Math_Log10(scale));
 	if (scale < 1)
 		dScale = 1;
 	else
 	{
-		dScale = Math::Pow(10, lScale);
+		dScale = Math_Pow(10, lScale);
 		if (scale / dScale <= 2)
-			dScale = Math::Pow(10, lScale) * 2;
+			dScale = Math_Pow(10, lScale) * 2;
 		else if (scale / dScale <= 5)
-			dScale = Math::Pow(10, lScale) * 5;
+			dScale = Math_Pow(10, lScale) * 5;
 		else
-			dScale = Math::Pow(10, lScale) * 10;
+			dScale = Math_Pow(10, lScale) * 10;
 	}
 
 	scale = (((Int32)(min / dScale)) + 1) * dScale;
@@ -257,14 +257,14 @@ UOSInt Data::IChart::CalScaleMarkDate(Data::ArrayListDbl *locations, Data::Array
 		labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
 
 		scale = Data::DateTime::MS2Days(timeDif) * minLeng / leng;
-		lScale = (Int32)(Math::Log10(scale));
-		iScale = Math::Double2Int32(Math::Pow(10, lScale));
+		lScale = (Int32)(Math_Log10(scale));
+		iScale = Math::Double2Int32(Math_Pow(10, lScale));
 		if (scale / iScale <= 2)
-			iScale = Math::Double2Int32(Math::Pow(10, lScale) * 2);
+			iScale = Math::Double2Int32(Math_Pow(10, lScale) * 2);
 		else if (scale / iScale <= 5)
-			iScale = Math::Double2Int32(Math::Pow(10, lScale) * 5);
+			iScale = Math::Double2Int32(Math_Pow(10, lScale) * 5);
 		else
-			iScale = Math::Double2Int32(Math::Pow(10, lScale) * 10);
+			iScale = Math::Double2Int32(Math_Pow(10, lScale) * 10);
 
 		currDate = min;
 		currDate.ClearTime();

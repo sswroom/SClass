@@ -86,7 +86,7 @@ Double Map::GoogleMap::GoogleTileMap::GetLevelScale(OSInt index)
 
 UOSInt Map::GoogleMap::GoogleTileMap::GetNearestLevel(Double scale)
 {
-	Int32 level = Math::Double2Int32(Math::Log10(204094080000.0 / scale / this->tileWidth) / Math::Log10(2));
+	Int32 level = Math::Double2Int32(Math_Log10(204094080000.0 / scale / this->tileWidth) / Math_Log10(2));
 	if (level < 0)
 		level = 0;
 	else if ((UOSInt)level >= GetLevelCount())

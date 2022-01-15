@@ -41,7 +41,7 @@ extern "C" void FFTCalc_FFT2Freq(Double *freq, Double *complexIn, OSInt sampleCn
 	{
 		f = complexIn[j * 2];
 		f2 = complexIn[j * 2 + 1];
-		freq[j] = Math::Sqrt(f * f + f2 * f2);
+		freq[j] = Math_Sqrt(f * f + f2 * f2);
 		j++;
 	}
 }
@@ -131,14 +131,14 @@ extern "C" OSInt FFTCalc_Forward(Double *complexData, OSInt sampleCount)
 		i += 2;
 	}
 
-	nextSin = Math::Sin(kthMul);
+	nextSin = Math_Sin(kthMul);
 	while (thisSampleCount <= sampleCount)
 	{
 		csin1[0] = 1.0;
 		csin1[1] = 0.0;
 		csin[1] = nextSin;
 		kthMul = kthMul * 0.5;
-		csin[0] = nextSin = Math::Sin(kthMul);
+		csin[0] = nextSin = Math_Sin(kthMul);
 		csin[0] = -2.0 * csin[0] * csin[0];
 
 		groupCurr = 0;
@@ -208,9 +208,9 @@ extern "C" OSInt FFTCalc_Forward(Double *complexData, OSInt sampleCount)
 	{
 		const UOSInt jump = step << 1;
 		const Double delta = pi / step;
-		const Double sine = Math::Sin(delta * .5);
+		const Double sine = Math_Sin(delta * .5);
 		const Double multiplier0 = -2. * sine * sine;
-		const Double multiplier1 = Math::Sin(delta);
+		const Double multiplier1 = Math_Sin(delta);
 		Double factor0 = 1.0;
 		Double factor1 = 0.0;
 		OSInt group = 0;
@@ -278,8 +278,8 @@ extern "C" OSInt FFTCalc_Forward(Double *complexData, OSInt sampleCount)
 		even[1] = complexData[i * 2 + 1];
 		odd[0] = complexData[(i + j) * 2];
 		odd[1] = complexData[(i + j) * 2 + 1];
-		rv = Math::Cos(kth);
-		iv = Math::Sin(kth);
+		rv = Math_Cos(kth);
+		iv = Math_Sin(kth);
 		wk[0] = rv * odd[0] - iv * odd[1];
 		wk[1] = rv * odd[1] + iv * odd[0];
 		complexData[i * 2] = even[0] + wk[0];

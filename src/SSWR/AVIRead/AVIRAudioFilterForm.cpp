@@ -128,8 +128,8 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnStartClicked(void *userObj)
 			me->nChannels = nChannel;
 			me->sampleBuff = MemAlloc(UInt8, (FFTSAMPLE + FFTAVG - 1) * (UOSInt)me->nChannels * (UOSInt)(me->bitCount >> 3));
 			me->volBooster->SetEnabled(me->chkVolBoost->IsChecked());
-			me->volBooster->SetBGLevel(Math::Pow(10, Math::OSInt2Double((OSInt)me->tbVolBoostBG->GetPos() - 192) / 20.0));
-			me->dtmfGen->SetVolume(Math::Pow(10, Math::OSInt2Double((OSInt)me->tbDTMFVol->GetPos() - 960) / 20.0));
+			me->volBooster->SetBGLevel(Math_Pow(10, Math::OSInt2Double((OSInt)me->tbVolBoostBG->GetPos() - 192) / 20.0));
+			me->dtmfGen->SetVolume(Math_Pow(10, Math::OSInt2Double((OSInt)me->tbDTMFVol->GetPos() - 960) / 20.0));
 			me->audioAmp->SetLevel(Math::UOSInt2Double(me->tbAmplifierVol->GetPos()) * 0.01);
 			if (me->radOutputDevice->IsSelected())
 			{
@@ -221,7 +221,7 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnVolBoostBGChg(void *userObj
 	UTF8Char sbuff[16];
 	if (me->volBooster)
 	{
-		me->volBooster->SetBGLevel(Math::Pow(10, Math::OSInt2Double((OSInt)scrollPos - 192) / 20.0));
+		me->volBooster->SetBGLevel(Math_Pow(10, Math::OSInt2Double((OSInt)scrollPos - 192) / 20.0));
 	}
 	Text::StrConcatC(Text::StrOSInt(sbuff, (OSInt)scrollPos - 192), UTF8STRC("dB"));
 	me->lblVolBoostBGVol->SetText(sbuff);
@@ -501,7 +501,7 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnDTMFVolChg(void *userObj, U
 	me->lblDTMFVolV->SetText(sb.ToString());
 	if (me->dtmfGen)
 	{
-		me->dtmfGen->SetVolume(Math::Pow(10, Math::OSInt2Double((OSInt)scrollPos - 960) / 200.0));
+		me->dtmfGen->SetVolume(Math_Pow(10, Math::OSInt2Double((OSInt)scrollPos - 960) / 200.0));
 	}
 }
 
@@ -516,7 +516,7 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnDTMFTonesClicked(void *user
 	UInt32 signalTime;
 	UInt32 breakTime;
 	Double vol;
-	vol = Math::Pow(10, Math::OSInt2Double((OSInt)me->tbDTMFTonesVol->GetPos() - 960) / 200.0);
+	vol = Math_Pow(10, Math::OSInt2Double((OSInt)me->tbDTMFTonesVol->GetPos() - 960) / 200.0);
 	me->txtDTMFSignalTime->GetText(&sb);
 	if (!sb.ToUInt32(&signalTime))
 	{
@@ -560,8 +560,8 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnLevelTimerTick(void *userOb
 	if (me->audioLevel)
 	{
 		Double v[2];
-		v[0] = Math::Log10(me->audioLevel->GetLevel(0)) * 20;
-		v[1] = Math::Log10(me->audioLevel->GetLevel(1)) * 20;
+		v[0] = Math_Log10(me->audioLevel->GetLevel(0)) * 20;
+		v[1] = Math_Log10(me->audioLevel->GetLevel(1)) * 20;
 		me->rlcVolLevel->AddSample(v);
 	}
 	if (me->audioRipper)
@@ -749,7 +749,7 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnLevelTimerTick(void *userOb
 						if (rVal < 0)
 							rVal = -rVal;
 						thisX = Math::UOSInt2Double(j * w) / (Double)(FFTSAMPLE / 2 - 1);
-						thisY = -Math::Log10(rVal / (FFTSAMPLE * 0.5)) * Math::UOSInt2Double(h) / 7.0;
+						thisY = -Math_Log10(rVal / (FFTSAMPLE * 0.5)) * Math::UOSInt2Double(h) / 7.0;
 						if (lastX >= 0)
 						{
 							img->DrawLine(lastX, lastY, thisX, thisY, p);
@@ -878,7 +878,7 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnSweepVolChg(void *userObj, 
 	me->lblSweepVolV->SetText(sb.ToString());
 	if (me->sweepFilter)
 	{
-		me->sweepFilter->SetVolume(Math::Pow(10, Math::OSInt2Double((OSInt)scrollPos - 960) / 200.0));
+		me->sweepFilter->SetVolume(Math_Pow(10, Math::OSInt2Double((OSInt)scrollPos - 960) / 200.0));
 	}
 }
 

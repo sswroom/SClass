@@ -25,8 +25,8 @@ Math::Vector2D::VectorType Math::PieArea::GetVectorType()
 void Math::PieArea::GetCenter(Double *x, Double *y)
 {
 	Double a = (this->arcAngle1 + this->arcAngle2) * 0.5;
-	*x = this->cx + r * Math::Sin(a) * 0.5;
-	*y = this->cy - r * Math::Cos(a) * 0.5;
+	*x = this->cx + r * Math_Sin(a) * 0.5;
+	*y = this->cy - r * Math_Cos(a) * 0.5;
 }
 
 Math::Vector2D *Math::PieArea::Clone()

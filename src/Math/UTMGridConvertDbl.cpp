@@ -39,8 +39,8 @@ UTF8Char *Math::UTMGridConvertDbl::WGS84_Grid(UTF8Char *gridStr, Int32 digitCnt,
 	Double longOriginRad;
 	Int32 zoneNumber;
 	
-	Double sinLat = Math::Sin(latRad);
-	Double cosLat = Math::Cos(latRad);
+	Double sinLat = Math_Sin(latRad);
+	Double cosLat = Math_Cos(latRad);
 	Double tanLat = sinLat / cosLat;
 	Double e2 = this->eccentricity * this->eccentricity;
 	Double e4 = e2 * e2;
@@ -69,15 +69,15 @@ UTF8Char *Math::UTMGridConvertDbl::WGS84_Grid(UTF8Char *gridStr, Int32 digitCnt,
 
 	eccPrimeSquared = e2 / (1 - e2);
 
-	n = this->radius / Math::Sqrt(1 - e2 * sinLat * sinLat);
+	n = this->radius / Math_Sqrt(1 - e2 * sinLat * sinLat);
 	t = tanLat * tanLat;
 	c = eccPrimeSquared * cosLat * cosLat;
 	a = cosLat * (longRad - longOriginRad);
 
 	m = this->radius * ((1 - e2 / 4 - 3 * e4 / 64 - 5 * e6 / 256) * latRad
-		- (3 * e2 / 8 + 3 * e4 / 32 + 45 * e6 / 1024) * Math::Sin(2 * latRad)
-		+ (15 * e4 / 256 + 45 * e6 / 1024) * Math::Sin(4 * latRad)
-		- (35 * e6 / 3072) * Math::Sin(6 * latRad));
+		- (3 * e2 / 8 + 3 * e4 / 32 + 45 * e6 / 1024) * Math_Sin(2 * latRad)
+		+ (15 * e4 / 256 + 45 * e6 / 1024) * Math_Sin(4 * latRad)
+		- (35 * e6 / 3072) * Math_Sin(6 * latRad));
 
 	Double utmEasting = (k0 * n * (a + (1 - t + c) * a * a * a/6
 		+ (5 - 18 * t + t * t + 72 * c - 58 * eccPrimeSquared) * a * a * a * a * a / 120)
@@ -238,29 +238,29 @@ Bool Math::UTMGridConvertDbl::Grid_WGS84(Double *latOut, Double *lonOut, const U
 	
 	Double longOrigin = (zoneNumber - 1) * 6 - 180 + 3;
 	Double eccPrimeSquared = e2 / (1 - e2);
-	Double e1 = (1 - Math::Sqrt(1 - e2)) / (1 + Math::Sqrt(1 - e2));
+	Double e1 = (1 - Math_Sqrt(1 - e2)) / (1 + Math_Sqrt(1 - e2));
 	i = 10;
 	while (i-- > 0)
 	{
 		Double m = northing / k0;
 		Double mu = m / (this->radius * (1 - e2 / 4 - 3 * e2 * e2 / 64 - 5 * e2 * e2 * e2 / 256));
 
-		Double phi1Rad = mu + (3 * e1 / 2 - 27 * e1 * e1 * e1 / 32) * Math::Sin(2 * mu)
-			+ (21 * e1 * e1 / 16 - 55 * e1 * e1 * e1 * e1 / 32) * Math::Sin(4 * mu)
-			+ (151 * e1 * e1 * e1 / 96) * Math::Sin(6 * mu);
+		Double phi1Rad = mu + (3 * e1 / 2 - 27 * e1 * e1 * e1 / 32) * Math_Sin(2 * mu)
+			+ (21 * e1 * e1 / 16 - 55 * e1 * e1 * e1 * e1 / 32) * Math_Sin(4 * mu)
+			+ (151 * e1 * e1 * e1 / 96) * Math_Sin(6 * mu);
 //		phi1 = phi1Rad * rad2deg;
 
-		n1 = this->radius / Math::Sqrt(1 - e2 * Math::Sin(phi1Rad) * Math::Sin(phi1Rad));
-		t1 = Math::Tan(phi1Rad) * Math::Tan(phi1Rad);
-		c1 = eccPrimeSquared * Math::Cos(phi1Rad) * Math::Cos(phi1Rad);
-		r1 = this->radius * (1 - e2) / Math::Pow(1 - e2 * Math::Sin(phi1Rad) * Math::Sin(phi1Rad), 1.5);
+		n1 = this->radius / Math_Sqrt(1 - e2 * Math_Sin(phi1Rad) * Math_Sin(phi1Rad));
+		t1 = Math_Tan(phi1Rad) * Math_Tan(phi1Rad);
+		c1 = eccPrimeSquared * Math_Cos(phi1Rad) * Math_Cos(phi1Rad);
+		r1 = this->radius * (1 - e2) / Math_Pow(1 - e2 * Math_Sin(phi1Rad) * Math_Sin(phi1Rad), 1.5);
 		d = (easting - 500000.0) / (n1 * k0);
 
-		lat = phi1Rad - (n1 * Math::Tan(phi1Rad) / r1) * (d * d / 2 - (5 + 3 * t1 + 10 * c1 - 4 * c1 * c1 - 9 * eccPrimeSquared) * d * d * d * d / 24
+		lat = phi1Rad - (n1 * Math_Tan(phi1Rad) / r1) * (d * d / 2 - (5 + 3 * t1 + 10 * c1 - 4 * c1 * c1 - 9 * eccPrimeSquared) * d * d * d * d / 24
 			+ (61 + 90 * t1 + 298 * c1 + 45 * t1 * t1 - 252 * eccPrimeSquared - 3 * c1 * c1) * d * d * d * d * d * d / 720);
 		lat = lat * rad2deg;
 
-		lon = (d - (1 + 2 * t1 + c1) * d * d * d / 6 + (5 - 2 * c1 + 28 * t1 - 3 * c1 * c1 + 8 * eccPrimeSquared + 24 * t1 * t1) * d *d * d * d * d / 120) / Math::Cos(phi1Rad);
+		lon = (d - (1 + 2 * t1 + c1) * d * d * d / 6 + (5 - 2 * c1 + 28 * t1 - 3 * c1 * c1 + 8 * eccPrimeSquared + 24 * t1 * t1) * d *d * d * d * d / 120) / Math_Cos(phi1Rad);
 		lon = longOrigin + lon * rad2deg;
 		
 		if (latZone == (UInt32)(((Int32)lat) >> 3) + 12)
@@ -294,27 +294,27 @@ Bool Math::UTMGridConvertDbl::Grid_WGS84(Double *latOut, Double *lonOut, Int32 l
 	
 	Double longOrigin = (lonZone - 1) * 6 - 180 + 3;
 	Double eccPrimeSquared = e2 / (1 - e2);
-	Double e1 = (1 - Math::Sqrt(1 - e2)) / (1 + Math::Sqrt(1 - e2));
+	Double e1 = (1 - Math_Sqrt(1 - e2)) / (1 + Math_Sqrt(1 - e2));
 
 	Double m = northing / k0;
 	Double mu = m / (this->radius * (1 - e2 / 4 - 3 * e2 * e2 / 64 - 5 * e2 * e2 * e2 / 256));
 
-	Double phi1Rad = mu + (3 * e1 / 2 - 27 * e1 * e1 * e1 / 32) * Math::Sin(2 * mu)
-		+ (21 * e1 * e1 / 16 - 55 * e1 * e1 * e1 * e1 / 32) * Math::Sin(4 * mu)
-		+ (151 * e1 * e1 * e1 / 96) * Math::Sin(6 * mu);
+	Double phi1Rad = mu + (3 * e1 / 2 - 27 * e1 * e1 * e1 / 32) * Math_Sin(2 * mu)
+		+ (21 * e1 * e1 / 16 - 55 * e1 * e1 * e1 * e1 / 32) * Math_Sin(4 * mu)
+		+ (151 * e1 * e1 * e1 / 96) * Math_Sin(6 * mu);
 //		phi1 = phi1Rad * rad2deg;
 
-	n1 = this->radius / Math::Sqrt(1 - e2 * Math::Sin(phi1Rad) * Math::Sin(phi1Rad));
-	t1 = Math::Tan(phi1Rad) * Math::Tan(phi1Rad);
-	c1 = eccPrimeSquared * Math::Cos(phi1Rad) * Math::Cos(phi1Rad);
-	r1 = this->radius * (1 - e2) / Math::Pow(1 - e2 * Math::Sin(phi1Rad) * Math::Sin(phi1Rad), 1.5);
+	n1 = this->radius / Math_Sqrt(1 - e2 * Math_Sin(phi1Rad) * Math_Sin(phi1Rad));
+	t1 = Math_Tan(phi1Rad) * Math_Tan(phi1Rad);
+	c1 = eccPrimeSquared * Math_Cos(phi1Rad) * Math_Cos(phi1Rad);
+	r1 = this->radius * (1 - e2) / Math_Pow(1 - e2 * Math_Sin(phi1Rad) * Math_Sin(phi1Rad), 1.5);
 	d = (easting - 500000.0) / (n1 * k0);
 
-	lat = phi1Rad - (n1 * Math::Tan(phi1Rad) / r1) * (d * d / 2 - (5 + 3 * t1 + 10 * c1 - 4 * c1 * c1 - 9 * eccPrimeSquared) * d * d * d * d / 24
+	lat = phi1Rad - (n1 * Math_Tan(phi1Rad) / r1) * (d * d / 2 - (5 + 3 * t1 + 10 * c1 - 4 * c1 * c1 - 9 * eccPrimeSquared) * d * d * d * d / 24
 		+ (61 + 90 * t1 + 298 * c1 + 45 * t1 * t1 - 252 * eccPrimeSquared - 3 * c1 * c1) * d * d * d * d * d * d / 720);
 	lat = lat * rad2deg;
 
-	lon = (d - (1 + 2 * t1 + c1) * d * d * d / 6 + (5 - 2 * c1 + 28 * t1 - 3 * c1 * c1 + 8 * eccPrimeSquared + 24 * t1 * t1) * d *d * d * d * d / 120) / Math::Cos(phi1Rad);
+	lon = (d - (1 + 2 * t1 + c1) * d * d * d / 6 + (5 - 2 * c1 + 28 * t1 - 3 * c1 * c1 + 8 * eccPrimeSquared + 24 * t1 * t1) * d *d * d * d * d / 120) / Math_Cos(phi1Rad);
 	lon = longOrigin + lon * rad2deg;
 	
 	*latOut = lat;
@@ -341,8 +341,8 @@ Double Math::ProjectionConvertDbl::CalMeridian(Double latRad)
 	e4 = e2 * e2;
 
 	meridianDist = (latRad - e2 / 4 - 4 * e4 / 64) * latRad;
-	meridianDist -= (e2 + e4 / 4) * 3 / 8 * Math::Sin(2 * latRad);
-	meridianDist += e4 * 15 / 256 * Math::Sin(4 * latRad);
+	meridianDist -= (e2 + e4 / 4) * 3 / 8 * Math_Sin(2 * latRad);
+	meridianDist += e4 * 15 / 256 * Math_Sin(4 * latRad);
 	meridianDist *= this->majorEllipsoid;
 	return meridianDist;
 }
@@ -358,8 +358,8 @@ WChar *Math::ProjectionConvertDbl::CalGrid(WChar *gridStr, Int32 digits, Double 
 
 	Double latRad = latDegree * Math::PI / 180.0;
 	Double lonRad = lonDegree * Math::PI / 180.0;
-	Double sinLat = Math::Sin(latRad);
-	Double cosLat = Math::Cos(latRad);
+	Double sinLat = Math_Sin(latRad);
+	Double cosLat = Math_Cos(latRad);
 	Double tanLat = sinLat / cosLat;
 	Double tanLat2 = tanLat * tanLat;
 	Double cosLat2 = cosLat * cosLat;
@@ -385,13 +385,13 @@ WChar *Math::ProjectionConvertDbl::CalGrid(WChar *gridStr, Int32 digits, Double 
 	this->originLongitude = merid;
 
 	Double mtmp1 = k3 * (1 + n1 + 1.25 * (n2 + n3));
-	Double mtmp2 = Math::Sin(k3) * Math::Cos(k4) * (3 * (n1 + n2 + 0.875 * n3));
-	Double mtmp3 = Math::Sin(2 * k3) * Math::Cos(2 * k4) * (1.875 * (n2 + n3));
-	Double mtmp4 = Math::Sin(3 * k3) * Math::Cos(3 * k4) * 35 / 24 * n3;
+	Double mtmp2 = Math_Sin(k3) * Math_Cos(k4) * (3 * (n1 + n2 + 0.875 * n3));
+	Double mtmp3 = Math_Sin(2 * k3) * Math_Cos(2 * k4) * (1.875 * (n2 + n3));
+	Double mtmp4 = Math_Sin(3 * k3) * Math_Cos(3 * k4) * 35 / 24 * n3;
 	Double m = b1 * (mtmp1 - mtmp2 + mtmp3 - mtmp4);
 
 	Double temp = 1 - e2 * sinLat * sinLat;
-	Double v = a1 / Math::Sqrt(temp);
+	Double v = a1 / Math_Sqrt(temp);
 	Double r = v * (1 - e2) / temp;
 	Double h2 = v / r - 1.0;
 

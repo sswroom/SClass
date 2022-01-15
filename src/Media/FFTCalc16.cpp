@@ -9,7 +9,7 @@ Media::FFTCalc16::FFTCalc16(UInt32 nPoints, UInt32 sampleRate)
 	UInt32 i;
 	this->nPoints = nPoints;
 	this->sampleRate = sampleRate;
-	this->sqrtNPoints = Math::Sqrt(nPoints);
+	this->sqrtNPoints = Math_Sqrt(nPoints);
 
 	logPoints = 0;
 	i = nPoints - 1;

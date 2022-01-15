@@ -30,7 +30,7 @@ Bool Math::Ellipsoid::GetX(Double y, Double z, Double *x1, Double *x2)
 	Double tmp = 1 - (y * y) / (radiusY * radiusY) - (z * z) / (radiusZ * radiusZ);
 	if (tmp < 0)
 		return false;
-	tmp = Math::Sqrt(tmp * radiusX * radiusX);
+	tmp = Math_Sqrt(tmp * radiusX * radiusX);
 	*x1 = tmp;
 	*x2 = -tmp;
 	return true;
@@ -41,7 +41,7 @@ Bool Math::Ellipsoid::GetY(Double x, Double z, Double *y1, Double *y2)
 	Double tmp = 1 - (x * x) / (radiusX * radiusX) - (z * z) / (radiusZ * radiusZ);
 	if (tmp < 0)
 		return false;
-	tmp = Math::Sqrt(tmp * radiusY * radiusY);
+	tmp = Math_Sqrt(tmp * radiusY * radiusY);
 	*y1 = tmp;
 	*y2 = -tmp;
 	return true;
@@ -52,7 +52,7 @@ Bool Math::Ellipsoid::GetZ(Double x, Double y, Double *z1, Double *z2)
 	Double tmp = 1 - (x * x) / (radiusX * radiusX) - (y * y) / (radiusY * radiusY);
 	if (tmp < 0)
 		return false;
-	tmp = Math::Sqrt(tmp * radiusZ * radiusZ);
+	tmp = Math_Sqrt(tmp * radiusZ * radiusZ);
 	*z1 = tmp;
 	*z2 = -tmp;
 	return true;
@@ -68,28 +68,28 @@ Double Math::Ellipsoid::GetSurfaceArea()
 	Double modularAngle;
 	if (radiusX > radiusZ)
 	{
-		modularAngle = Math::ArcCos(radiusZ / radiusX);
+		modularAngle = Math_ArcCos(radiusZ / radiusX);
 	}
 	else
 	{
-		modularAngle = Math::ArcCos(radiusX / radiusZ);
+		modularAngle = Math_ArcCos(radiusX / radiusZ);
 	}
 
 	if (radiusX == radiusY)
 	{
 		if (radiusX > radiusZ)
 		{
-			return 2 * Math::PI * (radiusX * radiusX + Math::ArcTanh(Math::Sin(modularAngle)) * radiusZ * radiusZ / Math::Sin(modularAngle));
+			return 2 * Math::PI * (radiusX * radiusX + Math::ArcTanh(Math_Sin(modularAngle)) * radiusZ * radiusZ / Math_Sin(modularAngle));
 		}
 		else
 		{
-			return 2 * Math::PI * (radiusX * radiusX + modularAngle * radiusZ * radiusZ / Math::Tan(modularAngle));
+			return 2 * Math::PI * (radiusX * radiusX + modularAngle * radiusZ * radiusZ / Math_Tan(modularAngle));
 		}
 	}
 	else
 	{
 		//approximate formula
 		Double p = 1.6075;
-		return Math::Pow((Math::Pow(radiusX * radiusY, p) + Math::Pow(radiusX * radiusZ, p) + Math::Pow(radiusY * radiusZ, p)) / 3, 1 / p) * 4 * Math::PI;
+		return Math_Pow((Math_Pow(radiusX * radiusY, p) + Math_Pow(radiusX * radiusZ, p) + Math_Pow(radiusY * radiusZ, p)) / 3, 1 / p) * 4 * Math::PI;
 	}
 }

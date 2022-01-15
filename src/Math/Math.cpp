@@ -6,12 +6,12 @@ extern "C" const Double Math_PI = 3.14159265358979324;
 extern "C" const Double Math_E = 2.71828182845904523;
 const Double Math::PI = Math_PI;
 
-Double Math::Math_Log10(Double val)
+Double Math_MyLog10(Double val)
 {
-    return Math::Math_Ln(val) / 2.302585092994;
+    return Math_Ln(val) / 2.302585092994;
 }
 
-Double Math::Math_Ln(Double val)
+Double Math_MyLn(Double val)
 {
     if (val < 0)
         return 0;
@@ -40,7 +40,7 @@ Double Math::Math_Ln(Double val)
     return tmp + total * 2;
 }
 
-Double Math::Math_Exp(Double val)
+Double Math_MyExp(Double val)
 {
     Double total = 1;
     Double lastVal = 1;
@@ -73,7 +73,7 @@ Double Math::Math_Exp(Double val)
     }
 }
 
-Double Math::Math_Pow(Double x, Double y)
+Double Math_MyPow(Double x, Double y)
 {
     return Math_Exp(y * Math_Ln(x));
 }

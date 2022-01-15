@@ -189,7 +189,7 @@ Map::IMapDrawLayer *Map::HKTDVehRestrict::CreateTonnesSignLayer()
 						{
 							diffX = points[i * 2 - 2] - points[i * 2];
 							diffY = points[i * 2 - 1] - points[i * 2 + 1];
-							dist = Math::Sqrt(diffX * diffX + diffY * diffY);
+							dist = Math_Sqrt(diffX * diffX + diffY * diffY);
 							if (dist > location)
 							{
 								ptX = points[i * 2 - 2] + (points[i * 2] - points[i * 2 - 2]) * location / dist;

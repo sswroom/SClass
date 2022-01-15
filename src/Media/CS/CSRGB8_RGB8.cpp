@@ -122,9 +122,9 @@ void Media::CS::CSRGB8_RGB8::UpdateRGBTable()
 		Double rv = frFunc->ForwardTransfer(irFunc->InverseTransfer(dV) * rMul);
 		Double gv = fgFunc->ForwardTransfer(igFunc->InverseTransfer(dV) * gMul);
 		Double bv = fbFunc->ForwardTransfer(ibFunc->InverseTransfer(dV) * bMul);
-		this->rgbTable[i + 512] = Math::SDouble2UInt8((rBright - 1.0 + Math::Pow(rv, rGammaVal) * rContr) * 255.0);
-		this->rgbTable[i + 256] = Math::SDouble2UInt8((gBright - 1.0 + Math::Pow(gv, gGammaVal) * gContr) * 255.0);
-		this->rgbTable[i + 0] = Math::SDouble2UInt8((bBright - 1.0 + Math::Pow(bv, bGammaVal) * bContr) * 255.0);
+		this->rgbTable[i + 512] = Math::SDouble2UInt8((rBright - 1.0 + Math_Pow(rv, rGammaVal) * rContr) * 255.0);
+		this->rgbTable[i + 256] = Math::SDouble2UInt8((gBright - 1.0 + Math_Pow(gv, gGammaVal) * gContr) * 255.0);
+		this->rgbTable[i + 0] = Math::SDouble2UInt8((bBright - 1.0 + Math_Pow(bv, bGammaVal) * bContr) * 255.0);
 	}
 	DEL_CLASS(irFunc);
 	DEL_CLASS(igFunc);

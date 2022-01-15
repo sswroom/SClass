@@ -348,9 +348,9 @@ UInt32 Media::ColorConv::ConvARGB(Media::ColorProfile *srcColor, Media::ColorPro
 	vec1.Set(srFunc->InverseTransfer(buff[2] / 255.0), sgFunc->InverseTransfer(buff[1] / 255.0), sbFunc->InverseTransfer(buff[0] / 255.0));
 	mat1.Multiply(&vec1, &vec2);
 
-	Double rv = (rBright - 1.0 + Math::Pow(drFunc->ForwardTransfer(vec2.val[0] * rMul), rGammaVal) * rContr) * 255.0;
-	Double gv = (gBright - 1.0 + Math::Pow(dgFunc->ForwardTransfer(vec2.val[1] * gMul), gGammaVal) * gContr) * 255.0;
-	Double bv = (bBright - 1.0 + Math::Pow(dbFunc->ForwardTransfer(vec2.val[2] * bMul), bGammaVal) * bContr) * 255.0;
+	Double rv = (rBright - 1.0 + Math_Pow(drFunc->ForwardTransfer(vec2.val[0] * rMul), rGammaVal) * rContr) * 255.0;
+	Double gv = (gBright - 1.0 + Math_Pow(dgFunc->ForwardTransfer(vec2.val[1] * gMul), gGammaVal) * gContr) * 255.0;
+	Double bv = (bBright - 1.0 + Math_Pow(dbFunc->ForwardTransfer(vec2.val[2] * bMul), bGammaVal) * bContr) * 255.0;
 	if (rv > 255.0)
 		buff[2] = 255;
 	else if (rv < 0)

@@ -22,19 +22,19 @@ Media::CS::TransferFuncBT709::~TransferFuncBT709()
 Double Media::CS::TransferFuncBT709::ForwardTransfer(Double linearVal)
 {
 	if (linearVal <= -csBT709K1)
-		return (-1 - csBT709K3) * Math::Pow(-linearVal, csBT709K4) + csBT709K3;
+		return (-1 - csBT709K3) * Math_Pow(-linearVal, csBT709K4) + csBT709K3;
 	else if (linearVal < csBT709K1)
 		return csBT709K2 * linearVal;
 	else
-		return (1 + csBT709K3) * Math::Pow(linearVal, csBT709K4) - csBT709K3;
+		return (1 + csBT709K3) * Math_Pow(linearVal, csBT709K4) - csBT709K3;
 }
 
 Double Media::CS::TransferFuncBT709::InverseTransfer(Double gammaVal)
 {
 	if (gammaVal <= -csBT709C1)
-		return -Math::Pow((-gammaVal + csBT709K3) / (1 + csBT709K3), csBT709C2);
+		return -Math_Pow((-gammaVal + csBT709K3) / (1 + csBT709K3), csBT709C2);
 	else if (gammaVal < csBT709C1)
 		return gammaVal / csBT709K2;
 	else
-		return Math::Pow((gammaVal + csBT709K3) / (1 + csBT709K3), csBT709C2);
+		return Math_Pow((gammaVal + csBT709K3) / (1 + csBT709K3), csBT709C2);
 }

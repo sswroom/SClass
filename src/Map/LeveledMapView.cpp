@@ -51,13 +51,13 @@ void Map::LeveledMapView::SetMapScale(Double scale)
 	Double minDiff;
 	UOSInt minInd;
 	UOSInt i;
-	Double logResol = Math::Log10(scale);
+	Double logResol = Math_Log10(scale);
 	minInd = 0;
 	minDiff = 100000.0;
 	i = this->scales->GetCount();
 	while (i-- > 0)
 	{
-		ldiff = Math::Log10(this->scales->GetItem(i)) - logResol;
+		ldiff = Math_Log10(this->scales->GetItem(i)) - logResol;
 		if (ldiff < 0)
 			ldiff = -ldiff;
 		if (ldiff < minDiff)

@@ -274,7 +274,7 @@ Map::ShortestPathFinder::ShortestPathFinder(Map::IMapDrawLayer *layer, Bool toRe
 				{
 					xDiff = points[k * 2 - 2] - points[k * 2];
 					yDiff = points[k * 2 - 1] - points[k * 2 + 1];
-					dist += Math::Sqrt(xDiff * xDiff + yDiff * yDiff);
+					dist += Math_Sqrt(xDiff * xDiff + yDiff * yDiff);
 					k++;
 				}
 				fromId = this->CoordToId(points[0], points[1]);

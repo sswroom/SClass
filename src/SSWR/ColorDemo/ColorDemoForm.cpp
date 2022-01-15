@@ -43,7 +43,7 @@ void __stdcall SSWR::ColorDemo::ColorDemoForm::OnValueChanged(void *userObj, Int
 	WChar sbuff[32];
 	Double v = (scrollPos - 400) * 0.01;
 	Text::StrDouble(sbuff, v);
-	me->currValue = Math::Pow(2, v);
+	me->currValue = Math_Pow(2, v);
 	me->lblValue->SetText(sbuff);
 
 	if (me->currImage)

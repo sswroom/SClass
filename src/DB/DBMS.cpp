@@ -242,7 +242,7 @@ namespace DB
 				return DET_ERROR;
 			if (row[colIndex] == 0)
 				return DET_NULL;
-			if (outVal->SetValue(row[colIndex]->v))
+			if (outVal->SetValue(row[colIndex]->v, row[colIndex]->leng))
 				return DET_OK;
 			else
 				return DET_ERROR;

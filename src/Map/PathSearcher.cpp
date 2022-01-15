@@ -154,7 +154,7 @@ Double Map::PathSearcher::CalNodeDistance(Math::ShortestPath::PathNode *node1, M
 	Map::PathSearcher::PointNode *n2 = (Map::PathSearcher::PointNode*)node2;
 	Double xDiff = n1->x - n2->x;
 	Double yDiff = n1->y - n2->y;
-	return Math::Sqrt(xDiff * xDiff + yDiff * yDiff); //Math::Geometry::SphereDistDeg(n1->y, n1->x, n2->y, n2->x, Math::Geometry::RADIUS_METER_EARTH_WGS1984);
+	return Math_Sqrt(xDiff * xDiff + yDiff * yDiff); //Math::Geometry::SphereDistDeg(n1->y, n1->x, n2->y, n2->x, Math::Geometry::RADIUS_METER_EARTH_WGS1984);
 }
 
 Bool Map::PathSearcher::PathValid(PathNode *lastNode, PathNode *currNode, PathNode *nextNode)
@@ -172,8 +172,8 @@ Bool Map::PathSearcher::PathValid(PathNode *lastNode, PathNode *currNode, PathNo
 		return true;
 	if (nextPoint->x == currPoint->x && nextPoint->y == currPoint->y)
 		return true;
-	angle1 = Math::ArcTan2(lastPoint->y - currPoint->y, lastPoint->x - currPoint->x);
-	angle2 = Math::ArcTan2(currPoint->y - nextPoint->y, currPoint->x - nextPoint->x);
+	angle1 = Math_ArcTan2(lastPoint->y - currPoint->y, lastPoint->x - currPoint->x);
+	angle2 = Math_ArcTan2(currPoint->y - nextPoint->y, currPoint->x - nextPoint->x);
 	angle1 = angle1 - angle2;
 	if (angle1 < 0)
 	{

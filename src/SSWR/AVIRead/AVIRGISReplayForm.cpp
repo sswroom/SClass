@@ -122,7 +122,7 @@ void __stdcall SSWR::AVIRead::AVIRGISReplayForm::OnLbRecordChg(void *userObj)
 			}
 			else
 			{
-				me->navi->ShowMarkerDir(recs[i].lat, recs[i].lon, Math::ArcTan2(recs[i - 1].lat - recs[i].lat, recs[i].lon - recs[i - 1].lon) + Math::PI * 0.5, Math::Unit::Angle::AU_RADIAN);
+				me->navi->ShowMarkerDir(recs[i].lat, recs[i].lon, Math_ArcTan2(recs[i - 1].lat - recs[i].lat, recs[i].lon - recs[i - 1].lon) + Math::PI * 0.5, Math::Unit::Angle::AU_RADIAN);
 			}
 		}
 		else

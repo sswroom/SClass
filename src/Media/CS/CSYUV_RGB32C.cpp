@@ -220,7 +220,7 @@ void Media::CS::CSYUV_RGB32C::SetupYUV_RGB13()
 		i = 256;
 		while (i--)
 		{
-			y = Math::Double2Int32(0x7fff * (Math::Pow(i / 255.0, this->yuvParam.YGamma) * this->yuvParam.Contrast + this->yuvParam.Brightness - 1) / 4.0);
+			y = Math::Double2Int32(0x7fff * (Math_Pow(i / 255.0, this->yuvParam.YGamma) * this->yuvParam.Contrast + this->yuvParam.Brightness - 1) / 4.0);
 			if (y < -0x8000)
 				y = 0x8000;
 			else if (y > 0x7fff)
@@ -235,7 +235,7 @@ void Media::CS::CSYUV_RGB32C::SetupYUV_RGB13()
 		i = 256;
 		while (i--)
 		{
-			y = Math::Double2Int32(0x7fff * (Math::Pow((i - 16) / 219.0, this->yuvParam.YGamma) * this->yuvParam.Contrast + this->yuvParam.Brightness - 1) / 4.0);
+			y = Math::Double2Int32(0x7fff * (Math_Pow((i - 16) / 219.0, this->yuvParam.YGamma) * this->yuvParam.Contrast + this->yuvParam.Brightness - 1) / 4.0);
 			if (y < -0x8000)
 				y = 0x8000;
 			else if (y > 0x7fff)
@@ -252,20 +252,20 @@ void Media::CS::CSYUV_RGB32C::SetupYUV_RGB13()
 		if (fullRange)
 		{
 			if (i > 128)
-				c = Math::Pow((i - 128) / 127.0, this->yuvParam.CGamma) * 16383;
+				c = Math_Pow((i - 128) / 127.0, this->yuvParam.CGamma) * 16383;
 			else if (i == 128)
 				c = 0;
 			else
-				c = Math::Pow((-i + 128) / 127.0, this->yuvParam.CGamma) * (-16383);
+				c = Math_Pow((-i + 128) / 127.0, this->yuvParam.CGamma) * (-16383);
 		}
 		else
 		{
 			if (i > 128)
-				c = Math::Pow((i - 128) / 112.0, this->yuvParam.CGamma) * 16383;
+				c = Math_Pow((i - 128) / 112.0, this->yuvParam.CGamma) * 16383;
 			else if (i == 128)
 				c = 0;
 			else
-				c = Math::Pow((-i + 128) / 112.0, this->yuvParam.CGamma) * (-16383);
+				c = Math_Pow((-i + 128) / 112.0, this->yuvParam.CGamma) * (-16383);
 		}
 
 		Int32 v2r8;
@@ -351,7 +351,7 @@ void Media::CS::CSYUV_RGB32C::SetupYUV14_RGB13()
 		i = 256;
 		while (i--)
 		{
-			y = Math::Double2Int32(0x7fff * (Math::Pow(i / 255.0, this->yuvParam.YGamma) * this->yuvParam.Contrast + this->yuvParam.Brightness - 1) / 4.0);
+			y = Math::Double2Int32(0x7fff * (Math_Pow(i / 255.0, this->yuvParam.YGamma) * this->yuvParam.Contrast + this->yuvParam.Brightness - 1) / 4.0);
 			if (y < -0x8000)
 				y = 0x8000;
 			else if (y > 0x7fff)
@@ -366,7 +366,7 @@ void Media::CS::CSYUV_RGB32C::SetupYUV14_RGB13()
 		i = 256;
 		while (i--)
 		{
-			y = Math::Double2Int32(0x7fff * (Math::Pow((i - 16) / 219.0, this->yuvParam.YGamma) * this->yuvParam.Contrast + this->yuvParam.Brightness - 1) / 4.0);
+			y = Math::Double2Int32(0x7fff * (Math_Pow((i - 16) / 219.0, this->yuvParam.YGamma) * this->yuvParam.Contrast + this->yuvParam.Brightness - 1) / 4.0);
 			if (y < -0x8000)
 				y = 0x8000;
 			else if (y > 0x7fff)
@@ -383,24 +383,24 @@ void Media::CS::CSYUV_RGB32C::SetupYUV14_RGB13()
 		if (fullRange)
 		{
 			if (i >= 32768)
-				c = Math::Pow((-i + 8192 + 65536) / 8160.0, this->yuvParam.CGamma) * (-16383);
+				c = Math_Pow((-i + 8192 + 65536) / 8160.0, this->yuvParam.CGamma) * (-16383);
 			else if (i > 8192)
-				c = Math::Pow((i - 8192) / 8160.0, this->yuvParam.CGamma) * 16383;
+				c = Math_Pow((i - 8192) / 8160.0, this->yuvParam.CGamma) * 16383;
 			else if (i == 8192)
 				c = 0;
 			else
-				c = Math::Pow((-i + 8192) / 8160.0, this->yuvParam.CGamma) * (-16383);
+				c = Math_Pow((-i + 8192) / 8160.0, this->yuvParam.CGamma) * (-16383);
 		}
 		else
 		{
 			if (i >= 32768)
-				c = Math::Pow((-i + 8192 + 65536) / 7168.0, this->yuvParam.CGamma) * (-16383);
+				c = Math_Pow((-i + 8192 + 65536) / 7168.0, this->yuvParam.CGamma) * (-16383);
 			else if (i > 8192)
-				c = Math::Pow((i - 8192) / 7168.0, this->yuvParam.CGamma) * 16383;
+				c = Math_Pow((i - 8192) / 7168.0, this->yuvParam.CGamma) * 16383;
 			else if (i == 8192)
 				c = 0;
 			else
-				c = Math::Pow((-i + 8192) / 7168.0, this->yuvParam.CGamma) * (-16383);
+				c = Math_Pow((-i + 8192) / 7168.0, this->yuvParam.CGamma) * (-16383);
 		}
 
 		Int32 v2r8;

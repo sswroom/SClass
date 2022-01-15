@@ -19,11 +19,11 @@ Double Media::CS::TransferFuncHLG::ForwardTransfer(Double linearVal)
 {
 	if (linearVal <= (1 / 12.0))
 	{
-		return Math::Sqrt(3 * linearVal);
+		return Math_Sqrt(3 * linearVal);
 	}
 	else
 	{
-		return csHLGc + csHLGa * Math::Ln(12 * linearVal - csHLGb);
+		return csHLGc + csHLGa * Math_Ln(12 * linearVal - csHLGb);
 	}
 }
 
@@ -35,6 +35,6 @@ Double Media::CS::TransferFuncHLG::InverseTransfer(Double gammaVal)
 	}
 	else
 	{
-		return (Math::Exp((gammaVal - csHLGc) / csHLGa) + csHLGb) / 12.0;
+		return (Math_Exp((gammaVal - csHLGc) / csHLGa) + csHLGb) / 12.0;
 	}
 }

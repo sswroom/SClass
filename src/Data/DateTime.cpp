@@ -221,11 +221,11 @@ Data::DateTime::DateTime(UInt16 year, UInt8 month, UInt8 day, UInt8 hour, UInt8 
 	t->ms = ms;
 }
 
-Data::DateTime::DateTime(const UTF8Char *dateStr)
+Data::DateTime::DateTime(const UTF8Char *dateStr, UOSInt strLen)
 {
 	this->timeType = TimeType::None;
 	this->tzQhr = 0;
-	SetValue(dateStr);
+	SetValue(dateStr, strLen);
 }
 
 Data::DateTime::DateTime(Data::DateTime *dt)
@@ -416,10 +416,10 @@ void Data::DateTime::SetValueNoFix(UInt16 year, UInt8 month, UInt8 day, UInt8 ho
 
 Bool Data::DateTime::SetValue(const Char *dateStr)
 {
-	return this->SetValue((const UTF8Char*)dateStr);
+	return this->SetValue((const UTF8Char*)dateStr, Text::StrCharCnt(dateStr));
 }
 
-Bool Data::DateTime::SetValue(const UTF8Char *dateStr)
+Bool Data::DateTime::SetValue(const UTF8Char *dateStr, UOSInt dateStrLen)
 {
 	TimeValue *tval = this->GetTimeValue();
 	UTF8Char buff[32];
@@ -429,11 +429,12 @@ Bool Data::DateTime::SetValue(const UTF8Char *dateStr)
 	Bool succ = true;
 	if (dateStr[3] == ',' && Text::StrIndexOf(&dateStr[4], ',') == INVALID_INDEX)
 	{
+		const UTF8Char *startPtr = dateStr;
 		dateStr += 4;
 		while (*dateStr == ' ')
 			dateStr++;
+		dateStrLen -= (UOSInt)(dateStr - startPtr);
 	}
-	UOSInt dateStrLen = Text::StrCharCnt(dateStr);
 	Text::StrConcatC(buff, dateStr, dateStrLen);
 	nStrs = Text::StrSplitTrimP(strs2, 5, buff, dateStrLen, ' ');
 	if (nStrs == 1)
@@ -913,24 +914,32 @@ Data::DateTime *Data::DateTime::AddMinute(OSInt val)
 
 Data::DateTime *Data::DateTime::AddSecond(OSInt val)
 {
-	TimeValue *tval = this->GetTimeValue();
-	OSInt minutes = val / 60;
-	OSInt outSec;
-	outSec = val - minutes * 60 + tval->second;
-	while (outSec < 0)
+	if (this->timeType == TimeType::Time)
 	{
-		outSec += 60;
-		minutes--;
+		TimeValue *tval = this->GetTimeValue();
+		OSInt minutes = val / 60;
+		OSInt outSec;
+		outSec = val - minutes * 60 + tval->second;
+		while (outSec < 0)
+		{
+			outSec += 60;
+			minutes--;
+		}
+		while (outSec >= 60)
+		{
+			outSec -= 60;
+			minutes++;
+		}
+		tval->second = (UInt8)outSec;
+		if (minutes)
+			AddMinute(minutes);
+		return this;
 	}
-	while (outSec >= 60)
+	else
 	{
-		outSec -= 60;
-		minutes++;
+		this->val.ticks += (Int64)val * 1000;
+		return this;
 	}
-	tval->second = (UInt8)outSec;
-	if (minutes)
-		AddMinute(minutes);
-	return this;
 }
 
 Data::DateTime *Data::DateTime::AddMS(OSInt val)

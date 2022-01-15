@@ -1024,7 +1024,7 @@ Double Media::StaticImage::CalcPSNR(Media::StaticImage *simg)
 //			printf("sum = 0\r\n");
 			return 0;
 		}
-		return 20 * Math::Log10(65535) - 10 * Math::Log10((Double)sum / Math::UOSInt2Double(this->info->dispWidth * this->info->dispHeight * 3));
+		return 20 * Math_Log10(65535) - 10 * Math_Log10((Double)sum / Math::UOSInt2Double(this->info->dispWidth * this->info->dispHeight * 3));
 	}
 	else if (this->info->pf == Media::PF_B8G8R8A8)
 	{
@@ -1056,7 +1056,7 @@ Double Media::StaticImage::CalcPSNR(Media::StaticImage *simg)
 		}
 		if (sum == 0)
 			return 0;
-		return 20 * Math::Log10(255) - 10 * Math::Log10((Double)sum / Math::UOSInt2Double(this->info->dispWidth * this->info->dispHeight * 3));
+		return 20 * Math_Log10(255) - 10 * Math_Log10((Double)sum / Math::UOSInt2Double(this->info->dispWidth * this->info->dispHeight * 3));
 	}
 	else
 	{

@@ -39,7 +39,7 @@ Math::EarthEllipsoid::EarthEllipsoid(Double semiMajorAxis, Double inverseFlatten
 	this->inverseFlattening = inverseFlattening;
 	this->semiMinorAxis = this->semiMajorAxis * (1.0 - 1.0 / this->inverseFlattening);
 	Double f = 1 - GetSemiMinorAxis() / this->semiMajorAxis;
-	this->eccentricity = Math::Sqrt(2 * f - f * f);
+	this->eccentricity = Math_Sqrt(2 * f - f * f);
 }
 
 Math::EarthEllipsoid::EarthEllipsoid(EarthEllipsoidType eet)
@@ -50,7 +50,7 @@ Math::EarthEllipsoid::EarthEllipsoid(EarthEllipsoidType eet)
 	this->inverseFlattening = info->inverseFlattening;
 	this->semiMinorAxis = this->semiMajorAxis * (1.0 - 1.0 / this->inverseFlattening);
 	Double f = 1 - GetSemiMinorAxis() / this->semiMajorAxis;
-	this->eccentricity = Math::Sqrt(2 * f - f * f);
+	this->eccentricity = Math_Sqrt(2 * f - f * f);
 }
 
 Math::EarthEllipsoid::EarthEllipsoid()
@@ -61,7 +61,7 @@ Math::EarthEllipsoid::EarthEllipsoid()
 	this->inverseFlattening = info->inverseFlattening;
 	this->semiMinorAxis = this->semiMajorAxis * (1.0 - 1.0 / this->inverseFlattening);
 	Double f = 1 - GetSemiMinorAxis() / this->semiMajorAxis;
-	this->eccentricity = Math::Sqrt(2 * f - f * f);
+	this->eccentricity = Math_Sqrt(2 * f - f * f);
 }
 
 Math::EarthEllipsoid::~EarthEllipsoid()
@@ -83,11 +83,11 @@ Double Math::EarthEllipsoid::CalSurfaceDistance(Double dLat1, Double dLon1, Doub
 	rLat2 = dLat2 * Math::PI / 180.0;
 	rLon2 = dLon2 * Math::PI / 180.0;
 	Double y = (rLat1 + rLat2) * 0.5;
-	Double tmpV = this->eccentricity * Math::Sin(y);
-	r = this->semiMajorAxis * (1 - this->eccentricity * this->eccentricity) / Math::Pow(1 - tmpV * tmpV, 1.5);
-	Double cLat1 = Math::Cos(rLat1);
-	Double cLat2 = Math::Cos(rLat2);
-	Double d = Math::ArcCos(cLat1 * Math::Cos(rLon1) * cLat2 * Math::Cos(rLon2) + cLat1 * Math::Sin(rLon1) * cLat2 * Math::Sin(rLon2) + Math::Sin(rLat1) * Math::Sin(rLat2)) * r;
+	Double tmpV = this->eccentricity * Math_Sin(y);
+	r = this->semiMajorAxis * (1 - this->eccentricity * this->eccentricity) / Math_Pow(1 - tmpV * tmpV, 1.5);
+	Double cLat1 = Math_Cos(rLat1);
+	Double cLat2 = Math_Cos(rLat2);
+	Double d = Math_ArcCos(cLat1 * Math_Cos(rLon1) * cLat2 * Math_Cos(rLon2) + cLat1 * Math_Sin(rLon1) * cLat2 * Math_Sin(rLon2) + Math_Sin(rLat1) * Math_Sin(rLat2)) * r;
 	if (d > 0 || d < 0)
 	{
 		if (unit != Math::Unit::Distance::DU_METER)
@@ -165,7 +165,7 @@ Double Math::EarthEllipsoid::CalPLDistance3D(Math::Polyline3D *pl, Math::Unit::D
 			if (hasLast)
 			{
 				dist = CalSurfaceDistance(lastY, lastX, points[(j << 1) + 1], points[(j << 1)], unit);
-				dist = Math::Sqrt(dist * dist + (alts[j] - lastH) * (alts[j] - lastH));
+				dist = Math_Sqrt(dist * dist + (alts[j] - lastH) * (alts[j] - lastH));
 				totalDist += dist;
 			}
 			hasLast = true;
@@ -204,7 +204,7 @@ Double Math::EarthEllipsoid::CalLonByDist(Double lat, Double lon, Double distM)
 {
 	Double rlat = lat * Math::PI / 180.0;
 	Double r = CalRadiusAtLat(lat);
-	Double diff = Math::ArcTan2(Math::Sin(distM / r) * Math::Cos(rlat), Math::Cos(distM / r));
+	Double diff = Math_ArcTan2(Math_Sin(distM / r) * Math_Cos(rlat), Math_Cos(distM / r));
 	return lon + diff * 180.0 / Math::PI;
 }
 
@@ -218,8 +218,8 @@ Double Math::EarthEllipsoid::CalLatByDist(Double lat, Double distM)
 Double Math::EarthEllipsoid::CalRadiusAtLat(Double lat)
 {
 	Double rlat = lat * Math::PI / 180.0;
-	Double ec = Math::Cos(rlat) * this->eccentricity;
-	return this->semiMajorAxis / Math::Sqrt(1.0 - ec * ec);
+	Double ec = Math_Cos(rlat) * this->eccentricity;
+	return this->semiMajorAxis / Math_Sqrt(1.0 - ec * ec);
 }
 
 Bool Math::EarthEllipsoid::Equals(Math::EarthEllipsoid *ellipsoid)
@@ -264,12 +264,12 @@ void Math::EarthEllipsoid::ToCartesianCoord(Double dLat, Double dLon, Double h, 
 {
 	Double rLat = dLat * PI / 180.0;
 	Double rLon = dLon * PI / 180.0;
-	Double cLat = Math::Cos(rLat);
-	Double sLat = Math::Sin(rLat);
-	Double cLon = Math::Cos(rLon);
-	Double sLon = Math::Sin(rLon);
+	Double cLat = Math_Cos(rLat);
+	Double sLat = Math_Sin(rLat);
+	Double cLon = Math_Cos(rLon);
+	Double sLon = Math_Sin(rLon);
 	Double e2 = this->eccentricity * this->eccentricity;
-	Double v = this->semiMajorAxis / Math::Sqrt(1 - e2 * sLat * sLat);
+	Double v = this->semiMajorAxis / Math_Sqrt(1 - e2 * sLat * sLat);
 	*x = (v + h) * cLat * cLon;
 	*y = (v + h) * cLat * sLon;
 	*z = ((1 - e2) * v + h) * sLat;
@@ -278,25 +278,25 @@ void Math::EarthEllipsoid::ToCartesianCoord(Double dLat, Double dLon, Double h, 
 void Math::EarthEllipsoid::FromCartesianCoord(Double x, Double y, Double z, Double *dLat, Double *dLon, Double *h)
 {
 	Double e2 = this->eccentricity * this->eccentricity;
-	Double rLon = Math::ArcTan2(y, x);
-	Double p = Math::Sqrt(x * x + y * y);
-	Double rLat = Math::ArcTan2(z, p * (1 - e2));
+	Double rLon = Math_ArcTan2(y, x);
+	Double p = Math_Sqrt(x * x + y * y);
+	Double rLat = Math_ArcTan2(z, p * (1 - e2));
 	Double sLat;
 	Double thisLat;
 	Double v;
 	OSInt i = 10;
 	while (i-- > 0)
 	{
-		sLat = Math::Sin(rLat);
-		v = this->semiMajorAxis / Math::Sqrt(1 - e2 * sLat * sLat);
-		thisLat = Math::ArcTan2(z + e2 * v * sLat, p);
+		sLat = Math_Sin(rLat);
+		v = this->semiMajorAxis / Math_Sqrt(1 - e2 * sLat * sLat);
+		thisLat = Math_ArcTan2(z + e2 * v * sLat, p);
 		if (thisLat == rLat)
 			break;
 		rLat = thisLat;
 	}
 	*dLat = rLat * 180 / PI;
 	*dLon = rLon * 180 / PI;
-	*h = p / Math::Cos(rLat) - v;
+	*h = p / Math_Cos(rLat) - v;
 }
 
 const Math::EarthEllipsoid::EarthEllipsoidInfo *Math::EarthEllipsoid::GetEarthInfo(EarthEllipsoidType eet)

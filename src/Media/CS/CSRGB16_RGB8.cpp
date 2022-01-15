@@ -121,9 +121,9 @@ void Media::CS::CSRGB16_RGB8::UpdateRGBTable()
 		Double rv = frFunc->ForwardTransfer(irFunc->InverseTransfer(dv) * rMul);
 		Double gv = fgFunc->ForwardTransfer(igFunc->InverseTransfer(dv) * gMul);
 		Double bv = fbFunc->ForwardTransfer(ibFunc->InverseTransfer(dv) * bMul);
-		Double rV = (rBright - 1.0 + Math::Pow(rv, rGammaVal) * rContr) * 255.0;
-		Double gV = (gBright - 1.0 + Math::Pow(gv, gGammaVal) * gContr) * 255.0;
-		Double bV = (bBright - 1.0 + Math::Pow(bv, bGammaVal) * bContr) * 255.0;
+		Double rV = (rBright - 1.0 + Math_Pow(rv, rGammaVal) * rContr) * 255.0;
+		Double gV = (gBright - 1.0 + Math_Pow(gv, gGammaVal) * gContr) * 255.0;
+		Double bV = (bBright - 1.0 + Math_Pow(bv, bGammaVal) * bContr) * 255.0;
 		if (rV > 255.0)
 			this->rgbTable[i + 131072] = 255;
 		else if (rV < 0)

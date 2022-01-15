@@ -36,5 +36,5 @@ Double Media::ImageCmp::ImagePSNR::CompareImage(Media::Image *oriImage, Media::I
 	{
 		nBits = 14;
 	}
-	return 20 * Math::Log10((Math::Pow(2, nBits) - 1) / Math::Sqrt(val));
+	return 20 * Math_Log10((Math_Pow(2, nBits) - 1) / Math_Sqrt(val));
 }

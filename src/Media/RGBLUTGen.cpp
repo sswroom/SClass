@@ -586,9 +586,9 @@ void Media::RGBLUTGen::GenLRGB_BGRA8(UInt8 *rgbTable, Media::ColorProfile *destP
 			gv = 0;
 		if (bv < 0)
 			bv = 0;
-		Double rV = (rBright - 1.0 + Math::Pow(rv, rGammaVal) * rContr) * 255.0;
-		Double gV = (gBright - 1.0 + Math::Pow(gv, gGammaVal) * gContr) * 255.0;
-		Double bV = (bBright - 1.0 + Math::Pow(bv, bGammaVal) * bContr) * 255.0;
+		Double rV = (rBright - 1.0 + Math_Pow(rv, rGammaVal) * rContr) * 255.0;
+		Double gV = (gBright - 1.0 + Math_Pow(gv, gGammaVal) * gContr) * 255.0;
+		Double bV = (bBright - 1.0 + Math_Pow(bv, bGammaVal) * bContr) * 255.0;
 		if (i > 32767)
 			rgbTable[i + 196608] = 0;
 		else if (i > ibitVal)
@@ -792,9 +792,9 @@ void Media::RGBLUTGen::GenLRGB_RGB16(UInt8 *rgbTable, Media::ColorProfile *destP
 			gv = 0;
 		if (bv < 0)
 			bv = 0;
-		Double rV = (rBright - 1.0 + Math::Pow(rv, rGammaVal) * rContr) * 31.0;
-		Double gV = (gBright - 1.0 + Math::Pow(gv, gGammaVal) * gContr) * 63.0;
-		Double bV = (bBright - 1.0 + Math::Pow(bv, bGammaVal) * bContr) * 31.0;
+		Double rV = (rBright - 1.0 + Math_Pow(rv, rGammaVal) * rContr) * 31.0;
+		Double gV = (gBright - 1.0 + Math_Pow(gv, gGammaVal) * gContr) * 63.0;
+		Double bV = (bBright - 1.0 + Math_Pow(bv, bGammaVal) * bContr) * 31.0;
 		if (rV > 31.0)
 			*(UInt16*)&rgbTable[i * 2 + 262144] = 31 << 11;
 		else if (rV < 0)
@@ -992,9 +992,9 @@ void Media::RGBLUTGen::GenLRGB_A2B10G10R10(UInt8 *rgbTable, Media::ColorProfile 
 			gv = 0;
 		if (bv < 0)
 			bv = 0;
-		Double rV = (rBright - 1.0 + Math::Pow(rv, rGammaVal) * rContr) * 1023.0;
-		Double gV = (gBright - 1.0 + Math::Pow(gv, gGammaVal) * gContr) * 1023.0;
-		Double bV = (bBright - 1.0 + Math::Pow(bv, bGammaVal) * bContr) * 1023.0;
+		Double rV = (rBright - 1.0 + Math_Pow(rv, rGammaVal) * rContr) * 1023.0;
+		Double gV = (gBright - 1.0 + Math_Pow(gv, gGammaVal) * gContr) * 1023.0;
+		Double bV = (bBright - 1.0 + Math_Pow(bv, bGammaVal) * bContr) * 1023.0;
 		if (rV > 1023.0)
 			*(Int32*)&rgbTable[i * 4 + 524288] = 1023;
 		else if (rV < 0)
@@ -1192,9 +1192,9 @@ void Media::RGBLUTGen::GenLARGB_A2B10G10R10(UInt8 *rgbTable, Media::ColorProfile
 			gv = 0;
 		if (bv < 0)
 			bv = 0;
-		Double rV = (rBright - 1.0 + Math::Pow(rv, rGammaVal) * rContr) * 1023.0;
-		Double gV = (gBright - 1.0 + Math::Pow(gv, gGammaVal) * gContr) * 1023.0;
-		Double bV = (bBright - 1.0 + Math::Pow(bv, bGammaVal) * bContr) * 1023.0;
+		Double rV = (rBright - 1.0 + Math_Pow(rv, rGammaVal) * rContr) * 1023.0;
+		Double gV = (gBright - 1.0 + Math_Pow(gv, gGammaVal) * gContr) * 1023.0;
+		Double bV = (bBright - 1.0 + Math_Pow(bv, bGammaVal) * bContr) * 1023.0;
 		if (i > 32767)
 			WriteUInt32(&rgbTable[i * 4 + 786432], 0);
 		else if (i > ibitVal)
@@ -1398,9 +1398,9 @@ void Media::RGBLUTGen::GenLARGB_B8G8R8A8(UInt8 *rgbTable, Media::ColorProfile *d
 			gv = 0;
 		if (bv < 0)
 			bv = 0;
-		Double rV = (rBright - 1.0 + Math::Pow(rv, rGammaVal) * rContr) * 255.0;
-		Double gV = (gBright - 1.0 + Math::Pow(gv, gGammaVal) * gContr) * 255.0;
-		Double bV = (bBright - 1.0 + Math::Pow(bv, bGammaVal) * bContr) * 255.0;
+		Double rV = (rBright - 1.0 + Math_Pow(rv, rGammaVal) * rContr) * 255.0;
+		Double gV = (gBright - 1.0 + Math_Pow(gv, gGammaVal) * gContr) * 255.0;
+		Double bV = (bBright - 1.0 + Math_Pow(bv, bGammaVal) * bContr) * 255.0;
 		if (i > 32767)
 			WriteUInt32(&rgbTable[i * 4 + 786432], 0);
 		else if (i > ibitVal)

@@ -297,7 +297,7 @@ public:
 		{
 			return 0;
 		}
-		return Text::StrConcatS(buff, this->currRow[colIndex]->v, buffSize);
+		return this->currRow[colIndex]->ConcatToS(buff, buffSize);
 	}
 
 	virtual DateErrType GetDate(UOSInt colIndex, Data::DateTime *outVal)
@@ -314,7 +314,7 @@ public:
 		{
 			return DET_NULL;
 		}
-		if (outVal->SetValue(this->currRow[colIndex]->v))
+		if (outVal->SetValue(this->currRow[colIndex]->v, this->currRow[colIndex]->leng))
 		{
 			return DET_OK;
 		}

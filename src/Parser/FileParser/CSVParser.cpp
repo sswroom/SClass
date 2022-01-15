@@ -48,9 +48,10 @@ IO::ParsedObject *Parser::FileParser::CSVParser::ParseFile(IO::IStreamData *fd, 
 {
 	UTF8Char sbuff[1024];
 	UTF8Char sbuff2[64];
+	UTF8Char *sptr2;
 	UTF8Char *tmpArr[2];
 	const UTF8Char **tmpcArr2;
-	UTF8Char **tmpArr2;
+	Text::PString *tmpArr2;
 	UOSInt colCnt;
 	UOSInt currCol;
 	Data::ArrayListStrUTF8 *colNames;
@@ -175,40 +176,40 @@ IO::ParsedObject *Parser::FileParser::CSVParser::ParseFile(IO::IStreamData *fd, 
 		NEW_CLASS(track, Map::GPSTrack(fd->GetFullName(), altCol != INVALID_INDEX, this->codePage, 0));
 		track->SetTrackName(fd->GetShortName());
 		
-		tmpArr2 = MemAlloc(UTF8Char*, currCol + 1);
+		tmpArr2 = MemAlloc(Text::PString, currCol + 1);
 		while (reader->ReadLine(sbuff, 1024))
 		{
-			if ((UOSInt)currCol == Text::StrCSVSplit(tmpArr2, currCol + 1, sbuff))
+			if ((UOSInt)currCol == Text::StrCSVSplitP(tmpArr2, currCol + 1, sbuff))
 			{
 				if (dtCol != INVALID_INDEX)
 				{
-					dt.SetValue(tmpArr2[dtCol]);
+					dt.SetValue(tmpArr2[dtCol].v, tmpArr2[dtCol].len);
 				}
 				else
 				{
-					Text::StrConcat(Text::StrConcatC(Text::StrConcat(sbuff2, tmpArr2[dateCol]), UTF8STRC(" ")), tmpArr2[timeCol]);
-					dt.SetValue(sbuff2);
+					sptr2 = Text::StrConcatC(Text::StrConcatC(Text::StrConcatC(sbuff2, tmpArr2[dateCol].v, tmpArr2[dateCol].len), UTF8STRC(" ")), tmpArr2[timeCol].v, tmpArr2[timeCol].len);
+					dt.SetValue(sbuff2, (UOSInt)(sptr2 - sbuff2));
 				}
 				rec.utcTimeTicks = dt.ToTicks();
-				rec.lat = Text::StrToDouble(tmpArr2[latCol]);
-				rec.lon = Text::StrToDouble(tmpArr2[lonCol]);
+				rec.lat = Text::StrToDouble(tmpArr2[latCol].v);
+				rec.lon = Text::StrToDouble(tmpArr2[lonCol].v);
 				if (latDirCol != INVALID_INDEX)
 				{
-					if (tmpArr2[latDirCol][0] == 'S')
+					if (tmpArr2[latDirCol].v[0] == 'S')
 						rec.lat = -rec.lat;
 				}
 				if (lonDirCol != INVALID_INDEX)
 				{
-					if (tmpArr2[lonDirCol][0] == 'W')
+					if (tmpArr2[lonDirCol].v[0] == 'W')
 						rec.lon = -rec.lon;
 				}
 				if (validCol != INVALID_INDEX)
 				{
-					if (Text::StrCompareICase(tmpArr2[validCol], (const UTF8Char*)"DGPS"))
+					if (Text::StrEqualsICase(tmpArr2[validCol].v, (const UTF8Char*)"DGPS"))
 					{
 						rec.valid = 2;
 					}
-					else if (Text::StrCompareICase(tmpArr2[validCol], (const UTF8Char*)"SPS"))
+					else if (Text::StrEqualsICase(tmpArr2[validCol].v, (const UTF8Char*)"SPS"))
 					{
 						rec.valid = 1;
 					}
@@ -223,12 +224,12 @@ IO::ParsedObject *Parser::FileParser::CSVParser::ParseFile(IO::IStreamData *fd, 
 				}
 				if (altCol != INVALID_INDEX)
 				{
-					i = Text::StrIndexOf(tmpArr2[altCol], (const UTF8Char*)" ");
+					i = Text::StrIndexOf(tmpArr2[altCol].v, ' ');
 					if (i != INVALID_INDEX)
 					{
-						tmpArr2[altCol][i] = 0;
+						tmpArr2[altCol].v[i] = 0;
 					}
-					rec.altitude = Text::StrToDouble(tmpArr2[altCol]);
+					rec.altitude = Text::StrToDouble(tmpArr2[altCol].v);
 				}
 				else
 				{
@@ -236,12 +237,12 @@ IO::ParsedObject *Parser::FileParser::CSVParser::ParseFile(IO::IStreamData *fd, 
 				}
 				if (speedCol != INVALID_INDEX)
 				{
-					i = Text::StrIndexOf(tmpArr2[speedCol], (const UTF8Char*)" ");
+					i = Text::StrIndexOf(tmpArr2[speedCol].v, ' ');
 					if (i != INVALID_INDEX)
 					{
-						tmpArr2[speedCol][i] = 0;
+						tmpArr2[speedCol].v[i] = 0;
 					}
-					rec.speed = Text::StrToDouble(tmpArr2[speedCol]) / 1.852;
+					rec.speed = Text::StrToDouble(tmpArr2[speedCol].v) / 1.852;
 				}
 				else
 				{
@@ -249,7 +250,7 @@ IO::ParsedObject *Parser::FileParser::CSVParser::ParseFile(IO::IStreamData *fd, 
 				}
 				if (headingCol != INVALID_INDEX)
 				{
-					rec.heading = Text::StrToDouble(tmpArr2[headingCol]);
+					rec.heading = Text::StrToDouble(tmpArr2[headingCol].v);
 				}
 				else
 				{
@@ -257,14 +258,14 @@ IO::ParsedObject *Parser::FileParser::CSVParser::ParseFile(IO::IStreamData *fd, 
 				}
 				if (nSateCol != INVALID_INDEX)
 				{
-					i = Text::StrIndexOf(tmpArr2[nSateCol], (const UTF8Char*)"/");
+					i = Text::StrIndexOf(tmpArr2[nSateCol].v, '/');
 					if (i != INVALID_INDEX)
 					{
-						tmpArr2[nSateCol][i] = 0;
-						Text::StrTrim(tmpArr2[nSateCol]);
-						Text::StrTrim(&tmpArr2[nSateCol][i + 1]);
-						rec.nSateUsed = Text::StrToInt32(tmpArr2[nSateCol]);
-						rec.nSateView = Text::StrToInt32(&tmpArr2[nSateCol][i + 1]);
+						tmpArr2[nSateCol].v[i] = 0;
+						Text::StrTrimC(tmpArr2[nSateCol].v, i);
+						Text::StrTrimC(&tmpArr2[nSateCol].v[i + 1], tmpArr2[nSateCol].len - i - 1);
+						rec.nSateUsed = Text::StrToInt32(tmpArr2[nSateCol].v);
+						rec.nSateView = Text::StrToInt32(&tmpArr2[nSateCol].v[i + 1]);
 					}
 					else
 					{
@@ -307,13 +308,13 @@ IO::ParsedObject *Parser::FileParser::CSVParser::ParseFile(IO::IStreamData *fd, 
 		Math::CoordinateSystem *csys;
 		NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_POINT, fd->GetFullName(), currCol, tmpcArr2, csys = Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84), nameCol, 0));
 		
-		tmpArr2 = (UTF8Char**)tmpcArr2;
+		UTF8Char **tmpUArr2 = (UTF8Char**)tmpcArr2;
 		while (reader->ReadLine(sbuff, 1024))
 		{
-			if ((UOSInt)currCol == Text::StrCSVSplit(tmpArr2, currCol + 1, sbuff))
+			if ((UOSInt)currCol == Text::StrCSVSplit(tmpUArr2, currCol + 1, sbuff))
 			{
-				NEW_CLASS(pt, Math::Point(csys->GetSRID(), Text::StrToDouble(tmpArr2[lonCol]), Text::StrToDouble(tmpArr2[latCol])));
-				lyr->AddVector(pt, (const UTF8Char**)tmpArr2);
+				NEW_CLASS(pt, Math::Point(csys->GetSRID(), Text::StrToDouble(tmpUArr2[lonCol]), Text::StrToDouble(tmpUArr2[latCol])));
+				lyr->AddVector(pt, (const UTF8Char**)tmpUArr2);
 			}
 		}		
 

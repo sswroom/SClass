@@ -60,5 +60,5 @@ Double Math::Unit::Speed::Convert(SpeedUnit fromUnit, SpeedUnit toUnit, Double f
 
 Double Math::Unit::Speed::CalcDryAirSpeed(Double temperatureK, SpeedUnit unit)
 {
-	return Convert(Math::Unit::Speed::SU_METER_PER_SECOND, unit, 20.05 * Math::Sqrt(temperatureK));
+	return Convert(Math::Unit::Speed::SU_METER_PER_SECOND, unit, 20.05 * Math_Sqrt(temperatureK));
 }

@@ -29,6 +29,7 @@ namespace Text
 		String *Clone();
 
 		UTF8Char *ConcatTo(UTF8Char *sbuff);
+		UTF8Char *ConcatToS(UTF8Char *sbuff, UOSInt buffSize);
 		Bool Equals(const UTF8Char *s, UOSInt len);
 		Bool Equals(Text::String *s);
 		Bool EqualsICase(const UTF8Char *s, UOSInt len);

@@ -236,7 +236,7 @@ Double Media::ImageList::GetThermoValue(Double x, Double y)
 		Double O = -7800; ///////////////
 		Double R = 16030.829102; ////////////////////
 		Double F = 1.25; //////////////////////////////
-		Double T = B / Math::Ln(R / (v - O) + F);*/
+		Double T = B / Math_Ln(R / (v - O) + F);*/
 		////////////////////////////////////////
 		return v;
 	}

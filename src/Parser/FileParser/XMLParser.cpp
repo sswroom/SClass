@@ -2076,14 +2076,14 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLContainer(Text::XMLRe
 									{
 										sb.ClearStr();
 										reader->ReadNodeText(&sb);
-										dt.SetValue(sb.ToString());
+										dt.SetValue(sb.ToString(), sb.GetLength());
 										timeStart = dt.ToUnixTimestamp();
 									}
 									else if (reader->GetNodeText()->EqualsICase(UTF8STRC("END")))
 									{
 										sb.ClearStr();
 										reader->ReadNodeText(&sb);
-										dt.SetValue(sb.ToString());
+										dt.SetValue(sb.ToString(), sb.GetLength());
 										timeEnd = dt.ToUnixTimestamp();
 									}
 									else
@@ -2250,14 +2250,14 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLContainer(Text::XMLRe
 									{
 										sb.ClearStr();
 										reader->ReadNodeText(&sb);
-										dt.SetValue(sb.ToString());
+										dt.SetValue(sb.ToString(), sb.GetLength());
 										timeStart = dt.ToUnixTimestamp();
 									}
 									else if (reader->GetNodeText()->EqualsICase(UTF8STRC("END")))
 									{
 										sb.ClearStr();
 										reader->ReadNodeText(&sb);
-										dt.SetValue(sb.ToString());
+										dt.SetValue(sb.ToString(), sb.GetLength());
 										timeEnd = dt.ToUnixTimestamp();
 									}
 									else
@@ -2406,8 +2406,8 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLContainer(Text::XMLRe
 
 void Parser::FileParser::XMLParser::ParseKMLPlacemarkTrack(Text::XMLReader *reader, Map::GPSTrack *lyr, Data::StringMap<KMLStyle*> *styles)
 {
-	Data::ArrayList<const UTF8Char*> timeList;
-	Data::ArrayList<const UTF8Char*> coordList;
+	Data::ArrayList<Text::String*> timeList;
+	Data::ArrayList<Text::String*> coordList;
 	Bool lastTrack = false;
 	while (reader->ReadNext())
 	{
@@ -2447,13 +2447,13 @@ void Parser::FileParser::XMLParser::ParseKMLPlacemarkTrack(Text::XMLReader *read
 								{
 									sb.ClearStr();
 									reader->ReadNodeText(&sb);
-									timeList.Add(Text::StrCopyNew(sb.ToString()));
+									timeList.Add(Text::String::New(sb.ToString(), sb.GetLength()));
 								}
 								else if (reader->GetNodeText()->EqualsICase(UTF8STRC("GX:COORD")))
 								{
 									sb.ClearStr();
 									reader->ReadNodeText(&sb);
-									coordList.Add(Text::StrCopyNew(sb.ToString()));
+									coordList.Add(Text::String::New(sb.ToString(), sb.GetLength()));
 								}
 								else if (reader->GetNodeText()->EqualsICase(UTF8STRC("EXTENDEDDATA")))
 								{
@@ -2470,10 +2470,11 @@ void Parser::FileParser::XMLParser::ParseKMLPlacemarkTrack(Text::XMLReader *read
 										UOSInt j = timeList.GetCount();
 										while (i < j)
 										{
-											dt.SetValue(timeList.GetItem(i)); 
+											Text::String *s = timeList.GetItem(i);
+											dt.SetValue(s->v, s->leng); 
 											rec.utcTimeTicks = dt.ToTicks();
 											
-											Text::StrConcat(sbuff, coordList.GetItem(i));
+											coordList.GetItem(i)->ConcatTo(sbuff);
 											if (Text::StrSplit(strs, 4, sbuff, ' ') == 3)
 											{
 												rec.lon = Text::StrToDouble(strs[0]);
@@ -2481,8 +2482,8 @@ void Parser::FileParser::XMLParser::ParseKMLPlacemarkTrack(Text::XMLReader *read
 												rec.altitude = Text::StrToDouble(strs[2]);
 												lyr->AddRecord(&rec);
 											}
-											Text::StrDelNew(timeList.GetItem(i));
-											Text::StrDelNew(coordList.GetItem(i));
+											timeList.GetItem(i)->Release();
+											coordList.GetItem(i)->Release();
 											i++;
 										}
 										timeList.Clear();
@@ -2493,12 +2494,12 @@ void Parser::FileParser::XMLParser::ParseKMLPlacemarkTrack(Text::XMLReader *read
 										UOSInt i = timeList.GetCount();
 										while (i-- > 0)
 										{
-											Text::StrDelNew(timeList.GetItem(i));
+											timeList.GetItem(i)->Release();
 										}
 										i = coordList.GetCount();
 										while (i-- > 0)
 										{
-											Text::StrDelNew(coordList.GetItem(i));
+											coordList.GetItem(i)->Release();
 										}
 										timeList.Clear();
 										coordList.Clear();
@@ -2652,10 +2653,11 @@ void Parser::FileParser::XMLParser::ParseKMLPlacemarkTrack(Text::XMLReader *read
 							UOSInt j = timeList.GetCount();
 							while (i < j)
 							{
-								dt.SetValue(timeList.GetItem(i)); 
+								Text::String *s = timeList.GetItem(i);
+								dt.SetValue(s->v, s->leng);
 								rec.utcTimeTicks = dt.ToTicks();
 								
-								Text::StrConcat(sbuff, coordList.GetItem(i));
+								coordList.GetItem(i)->ConcatTo(sbuff);
 								if (Text::StrSplit(strs, 4, sbuff, ' ') == 3)
 								{
 									rec.lon = Text::StrToDouble(strs[0]);
@@ -2663,8 +2665,8 @@ void Parser::FileParser::XMLParser::ParseKMLPlacemarkTrack(Text::XMLReader *read
 									rec.altitude = Text::StrToDouble(strs[2]);
 									lyr->AddRecord(&rec);
 								}
-								Text::StrDelNew(timeList.GetItem(i));
-								Text::StrDelNew(coordList.GetItem(i));
+								timeList.GetItem(i)->Release();
+								coordList.GetItem(i)->Release();
 								i++;
 							}
 							timeList.Clear();
@@ -2675,12 +2677,12 @@ void Parser::FileParser::XMLParser::ParseKMLPlacemarkTrack(Text::XMLReader *read
 							UOSInt i = timeList.GetCount();
 							while (i-- > 0)
 							{
-								Text::StrDelNew(timeList.GetItem(i));
+								timeList.GetItem(i)->Release();
 							}
 							i = coordList.GetCount();
 							while (i-- > 0)
 							{
-								Text::StrDelNew(coordList.GetItem(i));
+								coordList.GetItem(i)->Release();
 							}
 							timeList.Clear();
 							coordList.Clear();
@@ -2713,13 +2715,13 @@ void Parser::FileParser::XMLParser::ParseKMLPlacemarkTrack(Text::XMLReader *read
 						{
 							sb.ClearStr();
 							reader->ReadNodeText(&sb);
-							timeList.Add(Text::StrCopyNew(sb.ToString()));
+							timeList.Add(Text::String::New(sb.ToString(), sb.GetLength()));
 						}
 						else if (reader->GetNodeText()->EqualsICase(UTF8STRC("GX:COORD")))
 						{
 							sb.ClearStr();
 							reader->ReadNodeText(&sb);
-							coordList.Add(Text::StrCopyNew(sb.ToString()));
+							coordList.Add(Text::String::New(sb.ToString(), sb.GetLength()));
 						}
 						else
 						{
@@ -2744,10 +2746,11 @@ void Parser::FileParser::XMLParser::ParseKMLPlacemarkTrack(Text::XMLReader *read
 					UOSInt j = timeList.GetCount();
 					while (i < j)
 					{
-						dt.SetValue(timeList.GetItem(i)); 
+						Text::String *s = timeList.GetItem(i);
+						dt.SetValue(s->v, s->leng); 
 						rec.utcTimeTicks = dt.ToTicks();
 						
-						Text::StrConcat(sbuff, coordList.GetItem(i));
+						coordList.GetItem(i)->ConcatTo(sbuff);
 						if (Text::StrSplit(strs, 4, sbuff, ' ') == 3)
 						{
 							rec.lon = Text::StrToDouble(strs[0]);
@@ -2755,8 +2758,8 @@ void Parser::FileParser::XMLParser::ParseKMLPlacemarkTrack(Text::XMLReader *read
 							rec.altitude = Text::StrToDouble(strs[2]);
 							lyr->AddRecord(&rec);
 						}
-						Text::StrDelNew(timeList.GetItem(i));
-						Text::StrDelNew(coordList.GetItem(i));
+						timeList.GetItem(i)->Release();
+						coordList.GetItem(i)->Release();
 						i++;
 					}
 				}
@@ -2765,12 +2768,12 @@ void Parser::FileParser::XMLParser::ParseKMLPlacemarkTrack(Text::XMLReader *read
 					UOSInt i = timeList.GetCount();
 					while (i-- > 0)
 					{
-						Text::StrDelNew(timeList.GetItem(i));
+						timeList.GetItem(i)->Release();
 					}
 					i = coordList.GetCount();
 					while (i-- > 0)
 					{
-						Text::StrDelNew(coordList.GetItem(i));
+						coordList.GetItem(i)->Release();
 					}
 				}
 				timeList.Clear();
@@ -3293,7 +3296,7 @@ Bool Parser::FileParser::XMLParser::ParseGPXPoint(Text::XMLReader *reader, Map::
 			{
 				reader->ReadNodeText(&sb);
 				Data::DateTime dt;
-				dt.SetValue(sb.ToString());
+				dt.SetValue(sb.ToString(), sb.GetLength());
 				sb.ClearStr();
 				rec->utcTimeTicks = dt.ToTicks();
 			}

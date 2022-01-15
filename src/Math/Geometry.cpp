@@ -8,8 +8,8 @@
 
 void Math::Geometry::RotateACW(Int32 *ptOut, Int32 *ptIn, UOSInt nPoint, Double centX, Double centY, Double angleRad)
 {
-	Double sd = Math::Sin(angleRad);
-	Double cd = Math::Cos(angleRad);
+	Double sd = Math_Sin(angleRad);
+	Double cd = Math_Cos(angleRad);
 
 	while (nPoint-- > 0)
 	{
@@ -24,8 +24,8 @@ void Math::Geometry::RotateACW(Int32 *ptOut, Int32 *ptIn, UOSInt nPoint, Double 
 
 void Math::Geometry::RotateACW(Double *ptOut, Double *ptIn, UOSInt nPoint, Double centX, Double centY, Double angleRad)
 {
-	Double sd = Math::Sin(angleRad);
-	Double cd = Math::Cos(angleRad);
+	Double sd = Math_Sin(angleRad);
+	Double cd = Math_Cos(angleRad);
 
 	while (nPoint-- > 0)
 	{
@@ -780,10 +780,10 @@ Double Math::Geometry::SphereDistDeg(Double lat1, Double lon1, Double lat2, Doub
 	rLat2 = lat2 * scale;
 	rLon2 = lon2 * scale;
 
-	tmpV = Math::Cos(rLat1) * Math::Cos(rLon1) * Math::Cos(rLat2) * Math::Cos(rLon2) + Math::Cos(rLat1) * Math::Sin(rLon1) * Math::Cos(rLat2) * Math::Sin(rLon2) + Math::Sin(rLat1) * Math::Sin(rLat2);
+	tmpV = Math_Cos(rLat1) * Math_Cos(rLon1) * Math_Cos(rLat2) * Math_Cos(rLon2) + Math_Cos(rLat1) * Math_Sin(rLon1) * Math_Cos(rLat2) * Math_Sin(rLon2) + Math_Sin(rLat1) * Math_Sin(rLat2);
 	if (tmpV >= 1)
 		return 0;
-	return Math::ArcCos(tmpV) * radius;
+	return Math_ArcCos(tmpV) * radius;
 }
 
 void Math::Geometry::GetPolygonCenter(UOSInt nParts, UOSInt nPoints, UInt32 *parts, Int32 *points, Int32 *outPtX, Int32 *outPtY)

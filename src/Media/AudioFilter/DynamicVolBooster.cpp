@@ -92,8 +92,8 @@ UOSInt Media::AudioFilter::DynamicVolBooster::ReadBlock(UInt8 *buff, UOSInt blkS
 		if (this->bitCount == 16)
 		{
 			Sync::MutexUsage mutUsage(this->mut);
-			Double log32 = Math::Log10(this->bgLevel * 32768);
-			Double log32768 = Math::Log10(32768);
+			Double log32 = Math_Log10(this->bgLevel * 32768);
+			Double log32768 = Math_Log10(32768);
 			Int32 noiseVol = Math::Double2Int32(this->bgLevel * 32768);
 			UOSInt i = 0;
 			UOSInt j;
@@ -146,7 +146,7 @@ UOSInt Media::AudioFilter::DynamicVolBooster::ReadBlock(UInt8 *buff, UOSInt blkS
 				{
 					if (thisVol > noiseVol)
 					{
-						currSample = Math::Double2Int32(*(Int16*)&buff[i + j * 2] * 32767 / (thisVol * log32768 / Math::Log10(thisVol)));
+						currSample = Math::Double2Int32(*(Int16*)&buff[i + j * 2] * 32767 / (thisVol * log32768 / Math_Log10(thisVol)));
 					}
 					else
 					{
@@ -171,8 +171,8 @@ UOSInt Media::AudioFilter::DynamicVolBooster::ReadBlock(UInt8 *buff, UOSInt blkS
 		else if (this->bitCount == 8)
 		{
 			Sync::MutexUsage mutUsage(this->mut);
-			Double log32 = Math::Log10(this->bgLevel * 128);
-			Double log32768 = Math::Log10(128);
+			Double log32 = Math_Log10(this->bgLevel * 128);
+			Double log32768 = Math_Log10(128);
 			Int32 noiseVol = Math::Double2Int32(this->bgLevel * 128);
 			UOSInt i = 0;
 			UOSInt j;
@@ -225,7 +225,7 @@ UOSInt Media::AudioFilter::DynamicVolBooster::ReadBlock(UInt8 *buff, UOSInt blkS
 				{
 					if (thisVol > noiseVol)
 					{
-						currSample = Math::Double2Int32((buff[i + j] - 128) * 127 / (thisVol * log32768 / Math::Log10(thisVol)));
+						currSample = Math::Double2Int32((buff[i + j] - 128) * 127 / (thisVol * log32768 / Math_Log10(thisVol)));
 					}
 					else
 					{

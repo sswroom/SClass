@@ -910,9 +910,9 @@ void UtilUI::ColorDialog::GenMainImageInner(UInt8 *imgPtr, UOSInt startIndex, UO
 			rgbv.val[0] = dispRTran->ForwardTransfer(rgbv2.val[0] * rMul);
 			rgbv.val[1] = dispGTran->ForwardTransfer(rgbv2.val[1] * gMul);
 			rgbv.val[2] = dispBTran->ForwardTransfer(rgbv2.val[2] * bMul);
-			imgPtr[0] = Math::SDouble2UInt8((bBright - 1.0 + Math::Pow(rgbv.val[2], bGammaVal) * bContr) * 255.0);
-			imgPtr[1] = Math::SDouble2UInt8((gBright - 1.0 + Math::Pow(rgbv.val[1], gGammaVal) * gContr) * 255.0);
-			imgPtr[2] = Math::SDouble2UInt8((rBright - 1.0 + Math::Pow(rgbv.val[0], rGammaVal) * rContr) * 255.0);
+			imgPtr[0] = Math::SDouble2UInt8((bBright - 1.0 + Math_Pow(rgbv.val[2], bGammaVal) * bContr) * 255.0);
+			imgPtr[1] = Math::SDouble2UInt8((gBright - 1.0 + Math_Pow(rgbv.val[1], gGammaVal) * gContr) * 255.0);
+			imgPtr[2] = Math::SDouble2UInt8((rBright - 1.0 + Math_Pow(rgbv.val[0], rGammaVal) * rContr) * 255.0);
 			imgPtr[3] = 255;
 
 			imgPtr += 4;
@@ -1110,9 +1110,9 @@ void UtilUI::ColorDialog::GenSubImage()
 		Int32 rV;
 		Int32 gV;
 		Int32 bV;
-		rV = Math::Double2Int32((rBright - 1.0 + Math::Pow(rgbv.val[0], rGammaVal) * rContr) * 255.0);
-		gV = Math::Double2Int32((gBright - 1.0 + Math::Pow(rgbv.val[1], gGammaVal) * gContr) * 255.0);
-		bV = Math::Double2Int32((bBright - 1.0 + Math::Pow(rgbv.val[2], bGammaVal) * bContr) * 255.0);
+		rV = Math::Double2Int32((rBright - 1.0 + Math_Pow(rgbv.val[0], rGammaVal) * rContr) * 255.0);
+		gV = Math::Double2Int32((gBright - 1.0 + Math_Pow(rgbv.val[1], gGammaVal) * gContr) * 255.0);
+		bV = Math::Double2Int32((bBright - 1.0 + Math_Pow(rgbv.val[2], bGammaVal) * bContr) * 255.0);
 		if (bV > 255)
 			c[0] = 255;
 		else if (bV < 0)
@@ -1288,9 +1288,9 @@ void UtilUI::ColorDialog::UpdateColor()
 	Int32 rV;
 	Int32 gV;
 	Int32 bV;
-	rV = Math::Double2Int32((rBright - 1.0 + Math::Pow(rgbv3.val[0], rGammaVal) * rContr) * 255.0);
-	gV = Math::Double2Int32((gBright - 1.0 + Math::Pow(rgbv3.val[1], gGammaVal) * gContr) * 255.0);
-	bV = Math::Double2Int32((bBright - 1.0 + Math::Pow(rgbv3.val[2], bGammaVal) * bContr) * 255.0);
+	rV = Math::Double2Int32((rBright - 1.0 + Math_Pow(rgbv3.val[0], rGammaVal) * rContr) * 255.0);
+	gV = Math::Double2Int32((gBright - 1.0 + Math_Pow(rgbv3.val[1], gGammaVal) * gContr) * 255.0);
+	bV = Math::Double2Int32((bBright - 1.0 + Math_Pow(rgbv3.val[2], bGammaVal) * bContr) * 255.0);
 	if (bV > 255)
 		c[0] = 255;
 	else if (bV < 0)

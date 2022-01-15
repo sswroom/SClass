@@ -6,103 +6,43 @@
 
 #include <math.h>
 
+Double Math_MyLog10(Double val);
+Double Math_MyLn(Double val);
+Double Math_MyExp(Double val);
+Double Math_MyPow(Double x, Double y);
+
+#if defined(FPUBUG)
+#define Math_Log10(val) Math_MyLog10(val)
+#define Math_Ln(val) Math_MyLn(val)
+#define Math_Exp(val) Math_MyExp(val)
+#define Math_Pow(x, y) Math_MyPow(x, y)
+#else
+#define Math_Log10(val) log10(val)
+#define Math_Ln(val) log(val)
+#define Math_Exp(val) exp(val)
+#define Math_Pow(x, y) pow(x, y)
+#endif
+
+#define Math_Sin(val) sin(val)
+#define Math_Cos(val) cos(val)
+#define Math_Tan(val) tan(val)
+#define Math_ArcSin(val) asin(val)
+#define Math_ArcCos(val) acos(val)
+#define Math_ArcTan(val) atan(val)
+#define Math_ArcTan2(valY, valX) atan2(valY, valX)
+#define Math_Abs(val) (((val) < 0)?(-val):(val))
+#define Math_Sqrt(val) sqrt(val)
+
+#define Math_Sinh(val) (0.5 * (Math_Exp(val) - Math_Exp(-val)))
+#define Math_Cosh(val) (0.5 * (Math_Exp(val) + Math_Exp(-val)))
+#define Math_Tanh(val) (0.5 * ((Math_Exp(val * 2) - 1) / (Math_Exp(val * 2) + 1))
+#define Math_ArcSinh(val) (Math_Ln(val + Math_Sqrt(val * val + 1)))
+#define Math_ArcCosh(val) (Math_Ln(val + Math_Sqrt(val - 1) * Math_Sqrt(val + 1)))
+#define Math_ArcTanh(val) (0.5 * Math_Ln((1 + val) / (1 - val)))
+
 namespace Math
 {
 	extern const Double PI;
-	Double Math_Log10(Double val);
-	Double Math_Ln(Double val);
-	Double Math_Exp(Double val);
-	Double Math_Pow(Double x, Double y);
-
-#if defined(FPUBUG)
-	FORCEINLINE Double Sin(Double val)
-	{
-		return sin(val);
-	}
-
-	FORCEINLINE Double Cos(Double val)
-	{
-		return cos(val);
-	}
-
-	FORCEINLINE Double Tan(Double val)
-	{
-		return tan(val);
-	}
-
-	FORCEINLINE Double ArcSin(Double val)
-	{
-		return asin(val);
-	}
-
-	FORCEINLINE Double ArcCos(Double val)
-	{
-		return acos(val);
-	}
-
-	FORCEINLINE Double ArcTan(Double val)
-	{
-		return atan(val);
-	}
-
-	FORCEINLINE Double ArcTan2(Double valY, Double valX)
-	{
-		return atan2(valY, valX);
-	}
-
-	FORCEINLINE Double Sinh(Double val)
-	{
-		return 0.5 * (Math_Exp(val) - Math_Exp(-val));
-	}
-
-	FORCEINLINE Double Cosh(Double val)
-	{
-		return 0.5 * (Math_Exp(val) + Math_Exp(-val));
-	}
-
-	FORCEINLINE Double Tanh(Double val)
-	{
-		val = val * 2;
-		return (Math_Exp(val) - 1) / (Math_Exp(val) + 1);
-	}
-
-	FORCEINLINE Double ArcSinh(Double val)
-	{
-		return Math_Ln(val + sqrt(val * val + 1));
-	}
-
-	FORCEINLINE Double ArcCosh(Double val)
-	{
-		return Math_Ln(val + sqrt(val - 1) * sqrt(val + 1));
-	}
-
-	FORCEINLINE Double ArcTanh(Double val)
-	{
-		return 0.5 * Math_Ln((1 + val) / (1 - val));
-	}
-
-	FORCEINLINE Double Log10(Double val)
-	{
-		return Math_Log10(val);
-	}
-
-	FORCEINLINE Double Ln(Double val)
-	{
-		return Math_Ln(val);
-	}
-
-	FORCEINLINE Double Exp(Double val)
-	{
-		return Math_Exp(val);
-	}
-
-	FORCEINLINE Double Abs(Double val)
-	{
-		if (val < 0)
-			return -val;
-		else
-			return val;
-	}
 
 	FORCEINLINE Bool IsPrime(Int32 val)
 	{
@@ -122,135 +62,6 @@ namespace Math
 		}
 		return true;
 	}
-
-	FORCEINLINE Double Pow(Double x, Double y)
-	{
-		return Math_Pow(x, y);
-	}
-
-	FORCEINLINE Double Sqrt(Double val)
-	{
-		return sqrt(val);
-	}
-#else
-	FORCEINLINE Double Sin(Double val)
-	{
-		return sin(val);
-	}
-
-	FORCEINLINE Double Cos(Double val)
-	{
-		return cos(val);
-	}
-
-	FORCEINLINE Double Tan(Double val)
-	{
-		return tan(val);
-	}
-
-	FORCEINLINE Double ArcSin(Double val)
-	{
-		return asin(val);
-	}
-
-	FORCEINLINE Double ArcCos(Double val)
-	{
-		return acos(val);
-	}
-
-	FORCEINLINE Double ArcTan(Double val)
-	{
-		return atan(val);
-	}
-
-	FORCEINLINE Double ArcTan2(Double valY, Double valX)
-	{
-		return atan2(valY, valX);
-	}
-
-	FORCEINLINE Double Sinh(Double val)
-	{
-		return 0.5 * (exp(val) - exp(-val));
-	}
-
-	FORCEINLINE Double Cosh(Double val)
-	{
-		return 0.5 * (exp(val) + exp(-val));
-	}
-
-	FORCEINLINE Double Tanh(Double val)
-	{
-		val = val * 2;
-		return (exp(val) - 1) / (exp(val) + 1);
-	}
-
-	FORCEINLINE Double ArcSinh(Double val)
-	{
-		return log(val + sqrt(val * val + 1));
-	}
-
-	FORCEINLINE Double ArcCosh(Double val)
-	{
-		return log(val + sqrt(val - 1) * sqrt(val + 1));
-	}
-
-	FORCEINLINE Double ArcTanh(Double val)
-	{
-		return 0.5 * log((1 + val) / (1 - val));
-	}
-
-	FORCEINLINE Double Log10(Double val)
-	{
-		return log10(val);
-	}
-
-	FORCEINLINE Double Ln(Double val)
-	{
-		return log(val);
-	}
-
-	FORCEINLINE Double Exp(Double val)
-	{
-		return exp(val);
-	}
-
-	FORCEINLINE Double Abs(Double val)
-	{
-		if (val < 0)
-			return -val;
-		else
-			return val;
-	}
-
-	FORCEINLINE Bool IsPrime(Int32 val)
-	{
-		if (val <= 0)
-			return false;
-		if (val <= 3)
-			return true;
-		if ((val & 1) == 0)
-			return false;
-		Int32 rt = (Int32)sqrt((double)val);
-		Int32 i = 3;
-		while (i <= rt)
-		{
-			if ((val % i) == 0)
-				return false;
-			i += 2;
-		}
-		return true;
-	}
-
-	FORCEINLINE Double Pow(Double x, Double y)
-	{
-		return pow(x, y);
-	}
-
-	FORCEINLINE Double Sqrt(Double val)
-	{
-		return sqrt(val);
-	}
-#endif
 
 	FORCEINLINE Int32 Double2Int32(Double val)
 	{

@@ -14,7 +14,7 @@ Media::CS::TransferFuncLogSqrt10::~TransferFuncLogSqrt10()
 Double Media::CS::TransferFuncLogSqrt10::ForwardTransfer(Double linearVal)
 {
 	if (linearVal >= 0.0031622776601683793319988935444327)
-		return 1.0 + Math::Log10(linearVal) * 0.4;
+		return 1.0 + Math_Log10(linearVal) * 0.4;
 	else
 		return 0;
 }
@@ -22,7 +22,7 @@ Double Media::CS::TransferFuncLogSqrt10::ForwardTransfer(Double linearVal)
 Double Media::CS::TransferFuncLogSqrt10::InverseTransfer(Double gammaVal)
 {
 	if (gammaVal > 0)
-		return Math::Pow(10, (gammaVal - 1.0) * 2.5);
+		return Math_Pow(10, (gammaVal - 1.0) * 2.5);
 	else
 		return 0;
 }

@@ -202,6 +202,23 @@ UTF8Char *Text::String::ConcatTo(UTF8Char *sbuff)
 	return &sbuff[this->leng];
 }
 
+UTF8Char *Text::String::ConcatToS(UTF8Char *sbuff, UOSInt buffSize)
+{
+	if (buffSize > this->leng)
+	{
+		MemCopyNO(sbuff, this->v, this->leng);
+		sbuff[this->leng] = 0;
+		return &sbuff[this->leng];
+	}
+	else
+	{
+		buffSize--;
+		MemCopyNO(sbuff, this->v, buffSize);
+		sbuff[buffSize] = 0;
+		return &sbuff[buffSize];
+	}
+}
+
 Bool Text::String::Equals(const UTF8Char *s, UOSInt len)
 {
 	return Text::StrEqualsC(this->v, this->leng, s, len);

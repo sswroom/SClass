@@ -120,28 +120,28 @@ Net::RSSItem::RSSItem(Text::XMLNode *itemNode)
 				sb->ClearStr();
 				node->GetInnerText(sb);
 				SDEL_CLASS(this->pubDate);
-				NEW_CLASS(this->pubDate, Data::DateTime(sb->ToString()));
+				NEW_CLASS(this->pubDate, Data::DateTime(sb->ToString(), sb->GetLength()));
 			}
 			else if (node->name->EqualsICase(UTF8STRC("dc:date")))
 			{
 				sb->ClearStr();
 				node->GetInnerText(sb);
 				SDEL_CLASS(this->pubDate);
-				NEW_CLASS(this->pubDate, Data::DateTime(sb->ToString()));
+				NEW_CLASS(this->pubDate, Data::DateTime(sb->ToString(), sb->GetLength()));
 			}
 			else if (node->name->EqualsICase(UTF8STRC("published")))
 			{
 				sb->ClearStr();
 				node->GetInnerText(sb);
 				SDEL_CLASS(this->pubDate);
-				NEW_CLASS(this->pubDate, Data::DateTime(sb->ToString()));
+				NEW_CLASS(this->pubDate, Data::DateTime(sb->ToString(), sb->GetLength()));
 			}
 			else if (node->name->EqualsICase(UTF8STRC("updated")))
 			{
 				sb->ClearStr();
 				node->GetInnerText(sb);
 				SDEL_CLASS(this->pubDate);
-				NEW_CLASS(this->pubDate, Data::DateTime(sb->ToString()));
+				NEW_CLASS(this->pubDate, Data::DateTime(sb->ToString(), sb->GetLength()));
 			}
 			else if (node->name->EqualsICase(UTF8STRC("objectId")))
 			{
@@ -364,7 +364,7 @@ Net::RSS::RSS(const UTF8Char *url, Text::String *userAgent, Net::SocketFactory *
 								node3->GetInnerText(sb);
 								SDEL_CLASS(this->pubDate);
 								NEW_CLASS(this->pubDate, Data::DateTime());
-								this->pubDate->SetValue(sb->ToString());
+								this->pubDate->SetValue(sb->ToString(), sb->GetLength());
 							}
 							else if (node3->name->EqualsICase(UTF8STRC("lastBuildDate")))
 							{
@@ -372,7 +372,7 @@ Net::RSS::RSS(const UTF8Char *url, Text::String *userAgent, Net::SocketFactory *
 								node3->GetInnerText(sb);
 								SDEL_CLASS(this->lastBuildDate);
 								NEW_CLASS(this->lastBuildDate, Data::DateTime());
-								this->lastBuildDate->SetValue(sb->ToString());
+								this->lastBuildDate->SetValue(sb->ToString(), sb->GetLength());
 							}
 							else if (node3->name->EqualsICase(UTF8STRC("item")))
 							{
@@ -470,7 +470,7 @@ Net::RSS::RSS(const UTF8Char *url, Text::String *userAgent, Net::SocketFactory *
 								node3->GetInnerText(sb);
 								SDEL_CLASS(this->pubDate);
 								NEW_CLASS(this->pubDate, Data::DateTime());
-								this->pubDate->SetValue(sb->ToString());
+								this->pubDate->SetValue(sb->ToString(), sb->GetLength());
 							}
 							else if (node3->name->EqualsICase(UTF8STRC("lastBuildDate")))
 							{
@@ -478,7 +478,7 @@ Net::RSS::RSS(const UTF8Char *url, Text::String *userAgent, Net::SocketFactory *
 								node3->GetInnerText(sb);
 								SDEL_CLASS(this->lastBuildDate);
 								NEW_CLASS(this->lastBuildDate, Data::DateTime());
-								this->lastBuildDate->SetValue(sb->ToString());
+								this->lastBuildDate->SetValue(sb->ToString(), sb->GetLength());
 							}
 						}
 						k++;
@@ -607,7 +607,7 @@ Net::RSS::RSS(const UTF8Char *url, Text::String *userAgent, Net::SocketFactory *
 						node2->GetInnerText(sb);
 						SDEL_CLASS(this->pubDate);
 						NEW_CLASS(this->pubDate, Data::DateTime());
-						this->pubDate->SetValue(sb->ToString());
+						this->pubDate->SetValue(sb->ToString(), sb->GetLength());
 					}
 					else if (node2->name->EqualsICase(UTF8STRC("lastBuildDate")))
 					{
@@ -615,7 +615,7 @@ Net::RSS::RSS(const UTF8Char *url, Text::String *userAgent, Net::SocketFactory *
 						node2->GetInnerText(sb);
 						SDEL_CLASS(this->lastBuildDate);
 						NEW_CLASS(this->lastBuildDate, Data::DateTime());
-						this->lastBuildDate->SetValue(sb->ToString());
+						this->lastBuildDate->SetValue(sb->ToString(), sb->GetLength());
 					}
 					else if (node2->name->EqualsICase(UTF8STRC("entry")))
 					{

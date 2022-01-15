@@ -2001,7 +2001,10 @@ DB::DBReader::DateErrType DB::ODBCReader::GetDate(UOSInt colIndex, Data::DateTim
 	case DB::DBUtil::CT_Char:
 	case DB::DBUtil::CT_VarChar:
 	case DB::DBUtil::CT_UUID:
-		outVal->SetValue(((Text::StringBuilderUTF8*)this->colDatas[colIndex].colData)->ToString());
+		{
+			Text::StringBuilderUTF8 *sb = (Text::StringBuilderUTF8*)this->colDatas[colIndex].colData;
+			outVal->SetValue(sb->ToString(), sb->GetLength());
+		}
 		return DB::DBReader::DET_OK;
 	case DB::DBUtil::CT_Double:
 	case DB::DBUtil::CT_Float:

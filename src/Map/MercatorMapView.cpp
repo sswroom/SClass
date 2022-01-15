@@ -37,7 +37,7 @@ void Map::MercatorMapView::SetCenterXY(Double mapX, Double mapY)
 
 void Map::MercatorMapView::SetMapScale(Double scale)
 {
-	OSInt level = (OSInt)(Math::Log10(204094080000.0 / scale / Math::UOSInt2Double(this->tileSize)) / Math::Log10(2));
+	OSInt level = (OSInt)(Math_Log10(204094080000.0 / scale / Math::UOSInt2Double(this->tileSize)) / Math_Log10(2));
 	if (level < 0)
 		level = 0;
 	else if (level >= (OSInt)this->maxLevel)
@@ -271,7 +271,7 @@ Double Map::MercatorMapView::Lon2PixelX(Double lon)
 
 Double Map::MercatorMapView::Lat2PixelY(Double lat)
 {
-	return ((1.0 - Math::Ln( Math::Tan(lat * Math::PI / 180.0) + 1.0 / Math::Cos(lat * Math::PI / 180.0)) / Math::PI) / 2.0 * (1 << this->level)) * Math::UOSInt2Double(this->tileSize);
+	return ((1.0 - Math_Ln( Math_Tan(lat * Math::PI / 180.0) + 1.0 / Math_Cos(lat * Math::PI / 180.0)) / Math::PI) / 2.0 * (1 << this->level)) * Math::UOSInt2Double(this->tileSize);
 }
 
 Double Map::MercatorMapView::PixelX2Lon(Double x)
@@ -282,5 +282,5 @@ Double Map::MercatorMapView::PixelX2Lon(Double x)
 Double Map::MercatorMapView::PixelY2Lat(Double y)
 {
 	Double n = Math::PI - 2.0 * Math::PI * y / Math::UOSInt2Double(this->tileSize) / (1 << level);
-	return 180.0 / Math::PI * Math::ArcTan(0.5 * (Math::Exp(n) - Math::Exp(-n)));
+	return 180.0 / Math::PI * Math_ArcTan(0.5 * (Math_Exp(n) - Math_Exp(-n)));
 }

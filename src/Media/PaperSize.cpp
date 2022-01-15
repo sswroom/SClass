@@ -7,62 +7,62 @@
 
 Media::PaperSize::PaperSize(PaperType pType)
 {
-	Double sqr2 = Math::Sqrt(2);
+	Double sqr2 = Math_Sqrt(2);
 	this->pType = pType;
 	switch (pType)
 	{
 	case PT_4A0:
-		this->widthMM = Math::Sqrt(4000000 / sqr2);
+		this->widthMM = Math_Sqrt(4000000 / sqr2);
 		this->heightMM = this->widthMM * sqr2;
 		break;
 	case PT_2A0:
-		this->widthMM = Math::Sqrt(2000000 / sqr2);
+		this->widthMM = Math_Sqrt(2000000 / sqr2);
 		this->heightMM = this->widthMM * sqr2;
 		break;
 	case PT_A0:
-		this->widthMM = Math::Sqrt(1000000 / sqr2);
+		this->widthMM = Math_Sqrt(1000000 / sqr2);
 		this->heightMM = this->widthMM * sqr2;
 		break;
 	case PT_A1:
-		this->widthMM = Math::Sqrt(500000 / sqr2);
+		this->widthMM = Math_Sqrt(500000 / sqr2);
 		this->heightMM = this->widthMM * sqr2;
 		break;
 	case PT_A2:
-		this->widthMM = Math::Sqrt(250000 / sqr2);
+		this->widthMM = Math_Sqrt(250000 / sqr2);
 		this->heightMM = this->widthMM * sqr2;
 		break;
 	case PT_A3:
-		this->widthMM = Math::Sqrt(125000 / sqr2);
+		this->widthMM = Math_Sqrt(125000 / sqr2);
 		this->heightMM = this->widthMM * sqr2;
 		break;
 	default:
 	case PT_DEFAULT:
 	case PT_A4:
-		this->widthMM = Math::Sqrt(62500 / sqr2);
+		this->widthMM = Math_Sqrt(62500 / sqr2);
 		this->heightMM = this->widthMM * sqr2;
 		break;
 	case PT_A5:
-		this->widthMM = Math::Sqrt(31250 / sqr2);
+		this->widthMM = Math_Sqrt(31250 / sqr2);
 		this->heightMM = this->widthMM * sqr2;
 		break;
 	case PT_A6:
-		this->widthMM = Math::Sqrt(15625 / sqr2);
+		this->widthMM = Math_Sqrt(15625 / sqr2);
 		this->heightMM = this->widthMM * sqr2;
 		break;
 	case PT_A7:
-		this->widthMM = Math::Sqrt(7812.5 / sqr2);
+		this->widthMM = Math_Sqrt(7812.5 / sqr2);
 		this->heightMM = this->widthMM * sqr2;
 		break;
 	case PT_A8:
-		this->widthMM = Math::Sqrt(3906.25 / sqr2);
+		this->widthMM = Math_Sqrt(3906.25 / sqr2);
 		this->heightMM = this->widthMM * sqr2;
 		break;
 	case PT_A9:
-		this->widthMM = Math::Sqrt(1953.125 / sqr2);
+		this->widthMM = Math_Sqrt(1953.125 / sqr2);
 		this->heightMM = this->widthMM * sqr2;
 		break;
 	case PT_A10:
-		this->widthMM = Math::Sqrt(976.5625 / sqr2);
+		this->widthMM = Math_Sqrt(976.5625 / sqr2);
 		this->heightMM = this->widthMM * sqr2;
 		break;
 	case PT_B0:
@@ -110,47 +110,47 @@ Media::PaperSize::PaperSize(PaperType pType)
 		this->heightMM = this->widthMM * sqr2;
 		break;
 	case PT_C0:
-		this->heightMM = 1000 / Math::Pow(2, -3.0 / 8.0) + 0.2;
+		this->heightMM = 1000 / Math_Pow(2, -3.0 / 8.0) + 0.2;
 		this->widthMM = this->heightMM / sqr2;
 		break;
 	case PT_C1:
-		this->heightMM = 1000 / Math::Pow(2, 1.0 / 8.0) + 0.2;
+		this->heightMM = 1000 / Math_Pow(2, 1.0 / 8.0) + 0.2;
 		this->widthMM = this->heightMM / sqr2;
 		break;
 	case PT_C2:
-		this->heightMM = 1000 / Math::Pow(2, 5.0 / 8.0) + 0.2;
+		this->heightMM = 1000 / Math_Pow(2, 5.0 / 8.0) + 0.2;
 		this->widthMM = this->heightMM / sqr2;
 		break;
 	case PT_C3:
-		this->heightMM = 1000 / Math::Pow(2, 9.0 / 8.0) + 0.2;
+		this->heightMM = 1000 / Math_Pow(2, 9.0 / 8.0) + 0.2;
 		this->widthMM = this->heightMM / sqr2;
 		break;
 	case PT_C4:
-		this->heightMM = 1000 / Math::Pow(2, 13.0 / 8.0) + 0.2;
+		this->heightMM = 1000 / Math_Pow(2, 13.0 / 8.0) + 0.2;
 		this->widthMM = this->heightMM / sqr2;
 		break;
 	case PT_C5:
-		this->heightMM = 1000 / Math::Pow(2, 17.0 / 8.0) + 0.2;
+		this->heightMM = 1000 / Math_Pow(2, 17.0 / 8.0) + 0.2;
 		this->widthMM = this->heightMM / sqr2;
 		break;
 	case PT_C6:
-		this->heightMM = 1000 / Math::Pow(2, 21.0 / 8.0) + 0.2;
+		this->heightMM = 1000 / Math_Pow(2, 21.0 / 8.0) + 0.2;
 		this->widthMM = this->heightMM / sqr2;
 		break;
 	case PT_C7:
-		this->heightMM = 1000 / Math::Pow(2, 25.0 / 8.0) + 0.2;
+		this->heightMM = 1000 / Math_Pow(2, 25.0 / 8.0) + 0.2;
 		this->widthMM = this->heightMM / sqr2;
 		break;
 	case PT_C8:
-		this->heightMM = 1000 / Math::Pow(2, 29.0 / 8.0) + 0.2;
+		this->heightMM = 1000 / Math_Pow(2, 29.0 / 8.0) + 0.2;
 		this->widthMM = this->heightMM / sqr2;
 		break;
 	case PT_C9:
-		this->heightMM = 1000 / Math::Pow(2, 33.0 / 8.0) + 0.2;
+		this->heightMM = 1000 / Math_Pow(2, 33.0 / 8.0) + 0.2;
 		this->widthMM = this->heightMM / sqr2;
 		break;
 	case PT_C10:
-		this->heightMM = 1000 / Math::Pow(2, 37.0 / 8.0) + 0.2;
+		this->heightMM = 1000 / Math_Pow(2, 37.0 / 8.0) + 0.2;
 		this->widthMM = this->heightMM / sqr2;
 		break;
 	case PT_LETTER:

@@ -21,9 +21,9 @@ void Math::DistanceMeasurement::FromXYZ(Double x, Double y, Double z, Double *hA
 	Double xDiff = x - this->instX;
 	Double yDiff = y - this->instY;
 	Double zDiff = z - this->instZ;
-	*dist = Math::Sqrt(xDiff * xDiff + yDiff * yDiff + zDiff * zDiff);
-	*vAngle = Math::ArcCos(zDiff / *dist);
-	Double hAngleV = Math::ArcTan2(xDiff, yDiff) + this->hAngleAdj;
+	*dist = Math_Sqrt(xDiff * xDiff + yDiff * yDiff + zDiff * zDiff);
+	*vAngle = Math_ArcCos(zDiff / *dist);
+	Double hAngleV = Math_ArcTan2(xDiff, yDiff) + this->hAngleAdj;
 	while (hAngleV < 0)
 	{
 		hAngleV += Math::PI + Math::PI;
@@ -36,10 +36,10 @@ void Math::DistanceMeasurement::ToXYZ(Double hAngle, Double vAngle, Double dist,
 	if (this->csys == 0)
 	{
 		hAngle = hAngle - this->hAngleAdj;
-		Double hDist = Math::Sin(vAngle) * dist;
-		*z = Math::Cos(vAngle) * dist + this->instZ;
-		*x = Math::Sin(hAngle) * hDist + this->instX;
-		*y = Math::Cos(hAngle) * hDist + this->instY;
+		Double hDist = Math_Sin(vAngle) * dist;
+		*z = Math_Cos(vAngle) * dist + this->instZ;
+		*x = Math_Sin(hAngle) * hDist + this->instX;
+		*y = Math_Cos(hAngle) * hDist + this->instY;
 	}
 	else
 	{
@@ -62,12 +62,12 @@ void Math::DistanceMeasurement::ToXYZ(Double hAngle, Double vAngle, Double dist,
 		lat = lat * Math::PI / 180.0;
 		lon = lon * Math::PI / 180.0;
 
-		dZ = cZ + Math::Cos(hAngle) * Math::Sin(vAngle + lat) * dist;
-		rDist = dist * Math::Cos(hAngle) * Math::Cos(vAngle + lat);
-		rhDist = dist * Math::Sin(hAngle) * Math::Cos(vAngle + lat);
+		dZ = cZ + Math_Cos(hAngle) * Math_Sin(vAngle + lat) * dist;
+		rDist = dist * Math_Cos(hAngle) * Math_Cos(vAngle + lat);
+		rhDist = dist * Math_Sin(hAngle) * Math_Cos(vAngle + lat);
 		
-		dX = cX + rDist * Math::Cos(lon) - rhDist * Math::Sin(lon);
-		dY = cY + rDist * Math::Sin(lon) + rhDist * Math::Cos(lon);
+		dX = cX + rDist * Math_Cos(lon) - rhDist * Math_Sin(lon);
+		dY = cY + rDist * Math_Sin(lon) + rhDist * Math_Cos(lon);
 		gsys->FromCartesianCoord(dX, dY, dZ, &lat, &lon, &h);
 		this->csys->FromGeographicCoordinate(lon, lat, x, y);
 		*z = h;

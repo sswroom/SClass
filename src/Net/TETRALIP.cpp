@@ -41,7 +41,7 @@ Bool Net::TETRALIP::ParseProtocol(UInt8 *buff, OSInt buffSize, Data::DateTime *r
 		}
 		else
 		{
-			record->speed = 16 * Math::Pow(1.038, ispd - 13) / 1.852;
+			record->speed = 16 * Math_Pow(1.038, ispd - 13) / 1.852;
 		}
 		record->heading = (((buff[7] << 3) | (buff[8] >> 5)) & 0xf) * 22.5;
 		record->nSateUsed = -1;
@@ -249,7 +249,7 @@ Bool Net::TETRALIP::ParseProtocol(UInt8 *buff, OSInt buffSize, Data::DateTime *r
 			}
 			else
 			{
-				record->speed = 16 * Math::Pow(1.038, ispd - 13) / 1.852;
+				record->speed = 16 * Math_Pow(1.038, ispd - 13) / 1.852;
 			}
 			record->heading = idir * 360.0 / 256.0;
 			record->nSateUsed = -1;

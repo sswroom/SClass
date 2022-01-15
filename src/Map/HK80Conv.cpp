@@ -41,7 +41,7 @@ Double Map::HK80Conv::getLatp(Double M)
 		Double tryLat = (maxLat + minLat) / 2.0;
 		Double tryM = calcM(tryLat);
 
-		if (Math::Abs(M - tryM) < 0.000005)
+		if (Math_Abs(M - tryM) < 0.000005)
 		{
 			latp = tryLat;
 			isSuccess = true;

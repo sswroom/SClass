@@ -188,7 +188,7 @@ void Media::ColorCorr::SetGammas(Int32 rgamma, Int32 ggamma, Int32 bgamma)
 	this->uncorrTab32Valid = false;
 }
 
-#define pow(a,b) Math::Pow(a, b)
+#define pow(a,b) Math_Pow(a, b)
 #define iTransfer(val) ((val) <= -cssRGBC1)?(-pow((-(val) + cssRGBK3) / (1 + cssRGBK3), cssRGBC2)):(((val) < cssRGBC1)?((val) / cssRGBK2):(pow(((val) + cssRGBK3) / (1 + cssRGBK3), cssRGBC2)))
 #define fTransfer(val) (((val) < -cssRGBK1)?((-1 - cssRGBK3) * pow(-(val), cssRGBK4) + cssRGBK3):(((val) <= cssRGBK1)?(cssRGBK2 * (val)):((1 + cssRGBK3) * pow((val), cssRGBK4) - cssRGBK3)))
 

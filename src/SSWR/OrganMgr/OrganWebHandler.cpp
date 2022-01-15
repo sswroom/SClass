@@ -7011,7 +7011,10 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcBookList(Net::WebServer::IWeb
 		writer->WriteLineC(UTF8STRC("</table>"));
 		writer->WriteLineC(UTF8STRC("<br/>"));
 		writer->WriteStrC(UTF8STRC("<a href="));
-		s = Text::XML::ToNewAttrText(cate->dirName->v);
+		sb.ClearStr();
+		sb.AppendC(UTF8STRC("cate.html?cateName="));
+		sb.Append(cate->dirName);
+		s = Text::XML::ToNewAttrText(sb.ToString());
 		writer->WriteStrC(s->v, s->leng);
 		s->Release();
 		writer->WriteStrC(UTF8STRC(">"));

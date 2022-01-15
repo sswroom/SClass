@@ -248,7 +248,7 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char 
 								{
 									Data::DateTime dt;
 									dt.ToLocalTime();
-									dt.SetValue(cell->cellValue->v);
+									dt.SetValue(cell->cellValue->v, cell->cellValue->leng);
 									Text::SBAppendF64(&sb, Text::XLSUtil::Date2Number(&dt));
 								}
 								break;

@@ -670,7 +670,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 			if ((hdrVal = req->GetSHeader(UTF8STRC("If-Modified-Since"))) != 0)
 			{
 				Data::DateTime t2;
-				t2.SetValue(hdrVal->v);
+				t2.SetValue(hdrVal->v, hdrVal->leng);
 				t2.AddMS(t.GetMS());
 				if (t2.DiffMS(&t) == 0)
 				{
@@ -1104,7 +1104,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 		if ((hdrVal = req->GetSHeader(UTF8STRC("If-Modified-Since"))) != 0)
 		{
 			Data::DateTime t2;
-			t2.SetValue(hdrVal->v);
+			t2.SetValue(hdrVal->v, hdrVal->leng);
 			t2.AddMS(t.GetMS());
 			if (t2.DiffMS(&t) == 0)
 			{

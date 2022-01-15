@@ -205,7 +205,7 @@ void SSWR::AVIRead::AVIRAudioViewerForm::UpdateFreqImage()
 				rVal = freqData[j];
 
 				thisX = Math::UOSInt2Double(j * w) / (Double)(FFTSAMPLE / 2 - 1);
-				thisY = -Math::Log10(rVal / (FFTSAMPLE * 0.5)) * Math::UOSInt2Double(h) / 7.0;
+				thisY = -Math_Log10(rVal / (FFTSAMPLE * 0.5)) * Math::UOSInt2Double(h) / 7.0;
 				if (lastX >= 0)
 				{
 					gimg->DrawLine(lastX, lastY, thisX, thisY, p);

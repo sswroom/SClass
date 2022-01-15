@@ -194,9 +194,9 @@ void Map::MapConfig2::DrawChars(Media::DrawImage *img, const UTF8Char *str1, Dou
 	else
 		absH = (UInt16)scaleH;
 
-	Double degD = Math::ArcTan2(scaleH, scaleW);
+	Double degD = Math_ArcTan2(scaleH, scaleW);
 
-/*	Int32 deg = Math::Double2Int32(Math::ArcTan2(scaleH, scaleW) * 1800 / PI);
+/*	Int32 deg = Math::Double2Int32(Math_ArcTan2(scaleH, scaleW) * 1800 / PI);
 	while (deg < 0)
 		deg += 3600;*/
 
@@ -223,9 +223,9 @@ void Map::MapConfig2::DrawChars(Media::DrawImage *img, const UTF8Char *str1, Dou
 		{
 			xPos = size[0] + font->fontSizePt;
 			yPos = size[1] + font->fontSizePt;
-			Double xs = ((xPos * 0.5) * (sVal = Math::Sin(degD)));
+			Double xs = ((xPos * 0.5) * (sVal = Math_Sin(degD)));
 			Double ys = ((yPos * 0.5) * sVal);
-			Double xc = ((xPos * 0.5) * (cVal = Math::Cos(degD)));
+			Double xc = ((xPos * 0.5) * (cVal = Math_Cos(degD)));
 			Double yc = ((yPos * 0.5) * cVal);
 
 			pt[0] = scnPosX - xc - ys;
@@ -255,9 +255,9 @@ void Map::MapConfig2::DrawChars(Media::DrawImage *img, const UTF8Char *str1, Dou
 		{
 			xPos = size[0] + font->fontSizePt;
 			yPos = size[1] + font->fontSizePt;
-			Int32 xs = (Int32) ((xPos * 0.5) * (sVal = Math::Sin(degD)));
+			Int32 xs = (Int32) ((xPos * 0.5) * (sVal = Math_Sin(degD)));
 			Int32 ys = (Int32) ((yPos * 0.5) * sVal);
-			Int32 xc = (Int32) ((xPos * 0.5) * (cVal = Math::Cos(degD)));
+			Int32 xc = (Int32) ((xPos * 0.5) * (cVal = Math_Cos(degD)));
 			Int32 yc = (Int32) ((yPos * 0.5) * cVal);
 
 			pt[0] = scnPosX - xc - ys;
@@ -768,7 +768,7 @@ void Map::MapConfig2::DrawCharsLA(Media::DrawImage *img, const UTF8Char *str1, D
 		lastY = currY = startY;
 		j = startInd;
 
-		angle = angleOfst - Math::ArcTan2((mapPts[(j << 1) + 1] - mapPts[(j << 1) + 3]), (mapPts[(j << 1) + 2] - mapPts[(j << 1) + 0]));
+		angle = angleOfst - Math_ArcTan2((mapPts[(j << 1) + 1] - mapPts[(j << 1) + 3]), (mapPts[(j << 1) + 2] - mapPts[(j << 1) + 0]));
 		angleDegree = angle * 180.0 / PI;
 		while (angleDegree < 0)
 		{
@@ -884,7 +884,7 @@ void Map::MapConfig2::DrawCharsLA(Media::DrawImage *img, const UTF8Char *str1, D
 						}
 					}
 
-					angle = angleOfst - Math::ArcTan2((mapPts[(j << 1) + 1] - mapPts[(j << 1) + 3]), (mapPts[(j << 1) + 2] - mapPts[(j << 1) + 0]));
+					angle = angleOfst - Math_ArcTan2((mapPts[(j << 1) + 1] - mapPts[(j << 1) + 3]), (mapPts[(j << 1) + 2] - mapPts[(j << 1) + 0]));
 					angleDegree = angle * 180.0 / PI;
 					while (angleDegree < 0)
 					{
@@ -1794,12 +1794,12 @@ void Map::MapConfig2::DrawCharsL(Media::DrawImage *img, const UTF8Char *str1, Do
 
 				if (axDiff > ayDiff)
 				{
-					startX = centX + (startX * Math::Sqrt(yDiff) / Math::Sqrt(xDiff));
+					startX = centX + (startX * Math_Sqrt(yDiff) / Math_Sqrt(xDiff));
 					startY = scnPts[(j << 1) + 1] + (scnPts[(j << 1) + 3] - scnPts[(j << 1) + 1]) * (startX - scnPts[(j << 1)]) / (scnPts[(j << 1) + 2] - scnPts[(j << 1)]);
 				}
 				else
 				{
-					startY = centY + (startY * Math::Sqrt(yDiff) / Math::Sqrt(xDiff));
+					startY = centY + (startY * Math_Sqrt(yDiff) / Math_Sqrt(xDiff));
 					startX = scnPts[(j << 1) + 0] + (scnPts[(j << 1) + 2] - scnPts[(j << 1) + 0]) * (startY - scnPts[(j << 1) + 1]) / (scnPts[(j << 1) + 3] - scnPts[(j << 1) + 1]);
 				}
 				break;
@@ -1841,12 +1841,12 @@ void Map::MapConfig2::DrawCharsL(Media::DrawImage *img, const UTF8Char *str1, Do
 
 				if (axDiff > ayDiff)
 				{
-					startX = centX + (startX * Math::Sqrt(yDiff) / Math::Sqrt(xDiff));
+					startX = centX + (startX * Math_Sqrt(yDiff) / Math_Sqrt(xDiff));
 					startY = scnPts[(j << 1) + 1] + (scnPts[(j << 1) + 3] - scnPts[(j << 1) + 1]) * (startX - scnPts[(j << 1)]) / (scnPts[(j << 1) + 2] - scnPts[(j << 1)]);
 				}
 				else
 				{
-					startY = centY + (startY * Math::Sqrt(yDiff) / Math::Sqrt(xDiff));
+					startY = centY + (startY * Math_Sqrt(yDiff) / Math_Sqrt(xDiff));
 					startX = scnPts[(j << 1) + 0] + (scnPts[(j << 1) + 2] - scnPts[(j << 1) + 0]) * (startY - scnPts[(j << 1) + 1]) / (scnPts[(j << 1) + 3] - scnPts[(j << 1) + 1]);
 				}
 				break;
@@ -1889,10 +1889,10 @@ void Map::MapConfig2::DrawCharsL(Media::DrawImage *img, const UTF8Char *str1, Do
 		j = startInd;
 		UOSInt lastInd = j;
 
-		angle = angleOfst - Math::ArcTan2((mapPts[(j << 1) + 1] - mapPts[(j << 1) + 3]), (mapPts[(j << 1) + 2] - mapPts[(j << 1) + 0]));
+		angle = angleOfst - Math_ArcTan2((mapPts[(j << 1) + 1] - mapPts[(j << 1) + 3]), (mapPts[(j << 1) + 2] - mapPts[(j << 1) + 0]));
 		angleDegree = angle * 180.0 / PI;
-		cosAngle = Math::Cos(angle);
-		sinAngle = Math::Sin(angle);
+		cosAngle = Math_Cos(angle);
+		sinAngle = Math_Sin(angle);
 		lastAngle = angleDegree;
 
 		Text::StrReadChar(lbl, &nextChar);
@@ -1972,11 +1972,11 @@ void Map::MapConfig2::DrawCharsL(Media::DrawImage *img, const UTF8Char *str1, Do
 							{
 								if ((scnPts[(j << 1) + 0] < scnPts[(j << 1) + 2]) ^ (nextX > 0))
 								{
-									currX = currX - nextX * Math::Sqrt(yDiff) / Math::Sqrt(xDiff);
+									currX = currX - nextX * Math_Sqrt(yDiff) / Math_Sqrt(xDiff);
 								}
 								else
 								{
-									currX = currX + nextX * Math::Sqrt(yDiff) / Math::Sqrt(xDiff);
+									currX = currX + nextX * Math_Sqrt(yDiff) / Math_Sqrt(xDiff);
 								}
 								if (((currX > scnPts[(j << 1)]) ^ (currX > scnPts[(j << 1) + 2])) || (currX == scnPts[(j << 1)]) || (currX == scnPts[(j << 1) + 2]))
 								{
@@ -1991,11 +1991,11 @@ void Map::MapConfig2::DrawCharsL(Media::DrawImage *img, const UTF8Char *str1, Do
 							{
 								if ((scnPts[(j << 1) + 1] < scnPts[(j << 1) + 3]) ^ (nextY > 0))
 								{
-									currY = currY - (nextY * Math::Sqrt(yDiff) / Math::Sqrt(xDiff));
+									currY = currY - (nextY * Math_Sqrt(yDiff) / Math_Sqrt(xDiff));
 								}
 								else
 								{
-									currY = currY + (nextY * Math::Sqrt(yDiff) / Math::Sqrt(xDiff));
+									currY = currY + (nextY * Math_Sqrt(yDiff) / Math_Sqrt(xDiff));
 								}
 								if (((currY > scnPts[(j << 1) + 1]) ^ (currY > scnPts[(j << 1) + 3])) || (currY == scnPts[(j << 1) + 1]) || (currY == scnPts[(j << 1) + 3]))
 								{
@@ -2051,11 +2051,11 @@ void Map::MapConfig2::DrawCharsL(Media::DrawImage *img, const UTF8Char *str1, Do
 							{
 								if ((scnPts[(j << 1) + 0] < scnPts[(j << 1) + 2]) ^ (nextX > 0))
 								{
-									currX = currX + (nextX * Math::Sqrt(yDiff) / Math::Sqrt(xDiff));
+									currX = currX + (nextX * Math_Sqrt(yDiff) / Math_Sqrt(xDiff));
 								}
 								else
 								{
-									currX = currX - (nextX * Math::Sqrt(yDiff) / Math::Sqrt(xDiff));
+									currX = currX - (nextX * Math_Sqrt(yDiff) / Math_Sqrt(xDiff));
 								}
 								if (((currX > scnPts[(j << 1)]) ^ (currX > scnPts[(j << 1) + 2])) || (currX == scnPts[(j << 1)]) || (currX == scnPts[(j << 1) + 2]))
 								{
@@ -2070,11 +2070,11 @@ void Map::MapConfig2::DrawCharsL(Media::DrawImage *img, const UTF8Char *str1, Do
 							{
 								if ((scnPts[(j << 1) + 1] < scnPts[(j << 1) + 3]) ^ (nextY > 0))
 								{
-									currY = currY + (nextY * Math::Sqrt(yDiff) / Math::Sqrt(xDiff));
+									currY = currY + (nextY * Math_Sqrt(yDiff) / Math_Sqrt(xDiff));
 								}
 								else
 								{
-									currY = currY - (nextY * Math::Sqrt(yDiff) / Math::Sqrt(xDiff));
+									currY = currY - (nextY * Math_Sqrt(yDiff) / Math_Sqrt(xDiff));
 								}
 								if (((currY > scnPts[(j << 1) + 1]) ^ (currY > scnPts[(j << 1) + 3])) || (currY == scnPts[(j << 1) + 1]) || (currY == scnPts[(j << 1) + 3]))
 								{
@@ -2099,10 +2099,10 @@ void Map::MapConfig2::DrawCharsL(Media::DrawImage *img, const UTF8Char *str1, Do
 				if (j != lastInd)
 				{
 					lastInd = j;
-					angle = angleOfst - Math::ArcTan2((mapPts[(j << 1) + 1] - mapPts[(j << 1) + 3]), (mapPts[(j << 1) + 2] - mapPts[(j << 1) + 0]));
+					angle = angleOfst - Math_ArcTan2((mapPts[(j << 1) + 1] - mapPts[(j << 1) + 3]), (mapPts[(j << 1) + 2] - mapPts[(j << 1) + 0]));
 					angleDegree = angle * 180.0 / PI;
-					cosAngle = Math::Cos(angle);
-					sinAngle = Math::Sin(angle);
+					cosAngle = Math_Cos(angle);
+					sinAngle = Math_Sin(angle);
 				}
 			}
 
@@ -2117,8 +2117,8 @@ void Map::MapConfig2::DrawCharsL(Media::DrawImage *img, const UTF8Char *str1, Do
 			}
 			if (angleDiff >= 150 && angleDiff <= 210)
 			{
-				Double lsa = Math::Sin(lastAngle * PI / 180.0);
-				Double lca = Math::Cos(lastAngle * PI / 180.0);
+				Double lsa = Math_Sin(lastAngle * PI / 180.0);
+				Double lca = Math_Cos(lastAngle * PI / 180.0);
 				currX = lastX + (dist * lca);
 				currY = lastY - (dist * lsa);
 
@@ -2307,14 +2307,14 @@ void Map::MapConfig2::GetCharsSize(Media::DrawImage *img, Double *size, const UT
 		scaleW = -scaleW;
 		scaleH = -scaleH;
 	}
-	Double degD = Math::ArcTan2(scaleH, scaleW);
+	Double degD = Math_ArcTan2(scaleH, scaleW);
 	Double xPos = szTmp[0] + xSizeAdd;
 	Double yPos = szTmp[1] + ySizeAdd;
 	Double sVal;
 	Double cVal;
-	Double xs = ((xPos * 0.5) * (sVal = Math::Sin(degD)));
+	Double xs = ((xPos * 0.5) * (sVal = Math_Sin(degD)));
 	Double ys = ((yPos * 0.5) * sVal);
-	Double xc = ((xPos * 0.5) * (cVal = Math::Cos(degD)));
+	Double xc = ((xPos * 0.5) * (cVal = Math_Cos(degD)));
 	Double yc = ((yPos * 0.5) * cVal);
 
 	pt[0] = -xc - ys;

@@ -18,7 +18,7 @@ extern "C"
 Double Media::CS::CSNV12_LRGBC::lanczos3_weight(Double phase)
 {
 	Double ret;
-	Double aphase = Math::Abs(phase);
+	Double aphase = Math_Abs(phase);
 	
 	if(aphase < DBL_EPSILON)
 	{
@@ -30,7 +30,7 @@ Double Media::CS::CSNV12_LRGBC::lanczos3_weight(Double phase)
 		return 0.0;
 	}
 
-	ret = Math::Sin(Math::PI * phase) * Math::Sin(Math::PI * phase / LANCZOS_NTAP * 2) / (Math::PI * Math::PI * phase * phase / LANCZOS_NTAP * 2);
+	ret = Math_Sin(Math::PI * phase) * Math_Sin(Math::PI * phase / LANCZOS_NTAP * 2) / (Math::PI * Math::PI * phase * phase / LANCZOS_NTAP * 2);
 
 	return ret;
 }

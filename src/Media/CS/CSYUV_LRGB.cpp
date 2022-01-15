@@ -68,7 +68,7 @@ void Media::CS::CSYUV_LRGB::SetupYUV_RGB13()
 	i = 256;
 	while (i--)
 	{
-		y = Math::Double2Int32(0x7fff * (Math::Pow((i - 16) / 219.0, this->yuvParam.YGamma) * this->yuvParam.Contrast + this->yuvParam.Brightness - 1) / 4.0);
+		y = Math::Double2Int32(0x7fff * (Math_Pow((i - 16) / 219.0, this->yuvParam.YGamma) * this->yuvParam.Contrast + this->yuvParam.Brightness - 1) / 4.0);
 		if (y < -0x8000)
 			y = 0x8000;
 		else if (y > 0x7fff)
@@ -85,11 +85,11 @@ void Media::CS::CSYUV_LRGB::SetupYUV_RGB13()
 			i = 0;
 
 		if (i > 128)
-			c = Math::Pow((i - 128) / 112.0, this->yuvParam.CGamma) * 16383;
+			c = Math_Pow((i - 128) / 112.0, this->yuvParam.CGamma) * 16383;
 		else if (i == 128)
 			c = 0;
 		else
-			c = Math::Pow((-i + 128) / 112.0, this->yuvParam.CGamma) * (-16383);
+			c = Math_Pow((-i + 128) / 112.0, this->yuvParam.CGamma) * (-16383);
 
 		Int32 v2r8;
 		Int32 u2g8;

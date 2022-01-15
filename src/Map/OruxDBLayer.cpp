@@ -74,8 +74,8 @@ void Map::OruxDBLayer::AddLayer(UInt32 layerId, Double mapXMin, Double mapYMin, 
 		lyr->mapYMin = mapYMin;
 		lyr->mapXMax = mapXMax;
 		lyr->mapYMax = mapYMax;
-		lyr->projYMin = (1.0 - Math::Ln( Math::Tan(mapYMin * Math::PI / 180.0) + 1.0 / Math::Cos(mapYMin * Math::PI / 180.0)) / Math::PI) / 2.0;
-		lyr->projYMax = (1.0 - Math::Ln( Math::Tan(mapYMax * Math::PI / 180.0) + 1.0 / Math::Cos(mapYMax * Math::PI / 180.0)) / Math::PI) / 2.0;
+		lyr->projYMin = (1.0 - Math_Ln( Math_Tan(mapYMin * Math::PI / 180.0) + 1.0 / Math_Cos(mapYMin * Math::PI / 180.0)) / Math::PI) / 2.0;
+		lyr->projYMax = (1.0 - Math_Ln( Math_Tan(mapYMax * Math::PI / 180.0) + 1.0 / Math_Cos(mapYMax * Math::PI / 180.0)) / Math::PI) / 2.0;
 		lyr->maxX = maxX;
 		lyr->maxY = maxY;
 		this->layerMap->Put(layerId, lyr);
@@ -95,7 +95,7 @@ void Map::OruxDBLayer::SetCurrLayer(UInt32 level)
 
 void Map::OruxDBLayer::SetCurrScale(Double scale)
 {
-	Int32 level = Math::Double2Int32(Math::Log10(204094080000.0 / scale / this->tileSize) / Math::Log10(2));
+	Int32 level = Math::Double2Int32(Math_Log10(204094080000.0 / scale / this->tileSize) / Math_Log10(2));
 	if (level < 0)
 		level = 0;
 	else if ((UInt32)level >= this->layerMap->GetCount())
@@ -353,9 +353,9 @@ Math::Vector2D *Map::OruxDBLayer::GetVectorById(void *session, Int64 id)
 		projY1 = lyr->projYMax - (lyr->projYMax - lyr->projYMin) * y / lyr->maxY;
 		projY2 = projY1 - (lyr->projYMax - lyr->projYMin) / lyr->maxY;
 		n = Math::PI - 2.0 * Math::PI * projY1;
-		y1 = 180.0 / Math::PI * Math::ArcTan(0.5 * (Math::Exp(n) - Math::Exp(-n)));
+		y1 = 180.0 / Math::PI * Math_ArcTan(0.5 * (Math_Exp(n) - Math_Exp(-n)));
 		n = Math::PI - 2.0 * Math::PI * projY2;
-		y2 = 180.0 / Math::PI * Math::ArcTan(0.5 * (Math::Exp(n) - Math::Exp(-n)));
+		y2 = 180.0 / Math::PI * Math_ArcTan(0.5 * (Math_Exp(n) - Math_Exp(-n)));
 		NEW_CLASS(vimg, Math::VectorImage(4326, shImg, x1, y2, x1 + (lyr->mapXMax - lyr->mapXMin) / lyr->maxX, y1, false, (const UTF8Char*)0, 0, 0));
 		DEL_CLASS(shImg);
 		return vimg;

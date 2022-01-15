@@ -39,14 +39,14 @@ void Map::ProjectionCoord::Geo2Project(Double latDeg, Double lonDeg, Double h, D
 /*	Double latRad = latDeg * Math::PI / 180;
 	Double lonRad = lonDeg * Math::PI / 180;
 
-	Double clat = Math::Cos(latRad);
-	Double clon = Math::Cos(lonRad);
-	Double slat = Math::Sin(latRad);
-	Double slon = Math::Sin(lonRad);
+	Double clat = Math_Cos(latRad);
+	Double clon = Math_Cos(lonRad);
+	Double slat = Math_Sin(latRad);
+	Double slon = Math_Sin(lonRad);
 	
-	Double angular = Math::ArcCos(this->pr / this->r);
-	Double tmp = slat * Math::Sin(angular);
-	Double N = this->r / Math::Sqrt(1 - tmp * tmp);
+	Double angular = Math_ArcCos(this->pr / this->r);
+	Double tmp = slat * Math_Sin(angular);
+	Double N = this->r / Math_Sqrt(1 - tmp * tmp);
 	*x = (N + h) * clat * clon + falseEasting;
 	*y = (N + h) * clat * slon + falseNorthing;
 	*z = (this->pr * this->pr / (this->r * this->r) * N + h) * slat;*/

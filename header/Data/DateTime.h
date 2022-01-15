@@ -62,7 +62,7 @@ namespace Data
 		DateTime(Int64 ticks);
 		DateTime(UInt16 year, UInt8 month, UInt8 day, UInt8 hour, UInt8 minute, UInt8 second);
 		DateTime(UInt16 year, UInt8 month, UInt8 day, UInt8 hour, UInt8 minute, UInt8 second, UInt16 ms);
-		DateTime(const UTF8Char *dateStr);
+		DateTime(const UTF8Char *dateStr, UOSInt strLen);
 		DateTime(Data::DateTime *dt);
 		~DateTime();
 
@@ -74,7 +74,7 @@ namespace Data
 		void SetValue(UInt16 year, OSInt month, OSInt day, OSInt hour, OSInt minute, OSInt second, OSInt ms);
 		void SetValueNoFix(UInt16 year, UInt8 month, UInt8 day, UInt8 hour, UInt8 minute, UInt8 second, UInt16 ms, Int8 tzQhr);
 		Bool SetValue(const Char *dateStr);
-		Bool SetValue(const UTF8Char *dateStr);
+		Bool SetValue(const UTF8Char *dateStr, UOSInt strLen);
 		void SetValueSYSTEMTIME(void *sysTime);
 		void SetValueFILETIME(void *fileTime);
 		void SetValueVariTime(Double variTime);

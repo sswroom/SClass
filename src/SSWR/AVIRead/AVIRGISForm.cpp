@@ -315,7 +315,7 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::OnMapScaleChanged(void *userObj, Doub
 		return;
 	}
 	me->scaleChanging = true;
-	me->tbScale->SetPos((UOSInt)Math::Double2OSInt(Math::Log10(newScale / MIN_SCALE) * 65536.0 / Math::Log10(MAX_SCALE / (Double)MIN_SCALE)));
+	me->tbScale->SetPos((UOSInt)Math::Double2OSInt(Math_Log10(newScale / MIN_SCALE) * 65536.0 / Math_Log10(MAX_SCALE / (Double)MIN_SCALE)));
 	me->scaleChanging = false;
 	Text::StrDoubleFmt(Text::StrConcatC(sbuff, UTF8STRC("1:")), me->mapCtrl->GetViewScale(), "0.#");
 	me->txtScale->SetText(sbuff);
@@ -334,7 +334,7 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::OnScaleScrolled(void *userObj, UOSInt
 	if (me->scaleChanging)
 		return;
 	me->scaleChanging = true;
-	Int32 scale = Math::Double2Int32(Math::Pow(10, Math::Log10((MAX_SCALE / (Double)MIN_SCALE)) * Math::UOSInt2Double(newVal) / 65536.0) * MIN_SCALE);
+	Int32 scale = Math::Double2Int32(Math_Pow(10, Math_Log10((MAX_SCALE / (Double)MIN_SCALE)) * Math::UOSInt2Double(newVal) / 65536.0) * MIN_SCALE);
 	me->mapCtrl->SetMapScale(scale);
 	me->scaleChanging = false;
 }

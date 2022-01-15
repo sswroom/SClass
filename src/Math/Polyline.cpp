@@ -78,7 +78,7 @@ void Math::Polyline::GetCenter(Double *x, Double *y)
 		{
 			thisX = this->pointArr[(i << 1)];
 			thisY = this->pointArr[(i << 1) + 1];
-			currLength += Math::Sqrt((thisX - lastX) * (thisX - lastX) + (thisY - lastY) * (thisY - lastY));
+			currLength += Math_Sqrt((thisX - lastX) * (thisX - lastX) + (thisY - lastY) * (thisY - lastY));
 			lastX = thisX;
 			lastY = thisY;
 		}
@@ -112,7 +112,7 @@ void Math::Polyline::GetCenter(Double *x, Double *y)
 		i++;
 		thisX = this->pointArr[(i << 1)];
 		thisY = this->pointArr[(i << 1) + 1];
-		currLength = Math::Sqrt((thisX - lastX) * (thisX - lastX) + (thisY - lastY) * (thisY - lastY));
+		currLength = Math_Sqrt((thisX - lastX) * (thisX - lastX) + (thisY - lastY) * (thisY - lastY));
 		if (currLength >= maxLength)
 		{
 			*x = lastX + (thisX - lastX) * maxLength / currLength;
@@ -850,9 +850,9 @@ Math::Polygon *Math::Polyline::CreatePolygonByDist(Double dist)
 	UOSInt i;
 	NEW_CLASS(outPoints, Data::ArrayListDbl());
 
-	deg = Math::ArcTan2(this->pointArr[2] - this->pointArr[0], this->pointArr[3] - this->pointArr[1]);
-	lastPtX = -Math::Cos(deg) * dist + this->pointArr[0];
-	lastPtY = Math::Sin(deg) * dist + this->pointArr[1];
+	deg = Math_ArcTan2(this->pointArr[2] - this->pointArr[0], this->pointArr[3] - this->pointArr[1]);
+	lastPtX = -Math_Cos(deg) * dist + this->pointArr[0];
+	lastPtY = Math_Sin(deg) * dist + this->pointArr[1];
 
 	outPoints->Add(lastPtX);
 	outPoints->Add(lastPtY);
@@ -860,9 +860,9 @@ Math::Polygon *Math::Polyline::CreatePolygonByDist(Double dist)
 	i = 2;
 	while (i < this->nPoint)
 	{
-		deg = Math::ArcTan2(this->pointArr[(i << 1) + 0] - this->pointArr[(i << 1) - 2], this->pointArr[(i << 1) + 1] - this->pointArr[(i << 1) - 1]);
-		nextPtX = -Math::Cos(deg) * dist + this->pointArr[(i << 1) - 2];
-		nextPtY = Math::Sin(deg) * dist + this->pointArr[(i << 1) - 1];
+		deg = Math_ArcTan2(this->pointArr[(i << 1) + 0] - this->pointArr[(i << 1) - 2], this->pointArr[(i << 1) + 1] - this->pointArr[(i << 1) - 1]);
+		nextPtX = -Math_Cos(deg) * dist + this->pointArr[(i << 1) - 2];
+		nextPtY = Math_Sin(deg) * dist + this->pointArr[(i << 1) - 1];
 
 		t1 = (this->pointArr[(i << 1) - 3] - this->pointArr[(i << 1) - 1]) / (this->pointArr[(i << 1) - 4] - this->pointArr[(i << 1) - 2]);
 		t2 = (this->pointArr[(i << 1) - 1] - this->pointArr[(i << 1) + 1]) / (this->pointArr[(i << 1) - 2] - this->pointArr[(i << 1) + 0]);
@@ -894,15 +894,15 @@ Math::Polygon *Math::Polyline::CreatePolygonByDist(Double dist)
 		i += 1;
 	}
 
-	deg = Math::ArcTan2(this->pointArr[(this->nPoint << 1) - 2] - this->pointArr[(this->nPoint << 1) - 4], this->pointArr[(this->nPoint << 1) - 1] - this->pointArr[(this->nPoint << 1) - 3]);
-	lastPtX = -Math::Cos(deg) * dist + this->pointArr[(this->nPoint << 1) - 2];
-	lastPtY = Math::Sin(deg) * dist + this->pointArr[(this->nPoint << 1) - 1];
+	deg = Math_ArcTan2(this->pointArr[(this->nPoint << 1) - 2] - this->pointArr[(this->nPoint << 1) - 4], this->pointArr[(this->nPoint << 1) - 1] - this->pointArr[(this->nPoint << 1) - 3]);
+	lastPtX = -Math_Cos(deg) * dist + this->pointArr[(this->nPoint << 1) - 2];
+	lastPtY = Math_Sin(deg) * dist + this->pointArr[(this->nPoint << 1) - 1];
 
 	outPoints->Add(lastPtX);
 	outPoints->Add(lastPtY);
 
-	lastPtX = Math::Cos(deg) * dist + this->pointArr[(this->nPoint << 1) - 2];
-	lastPtY = -Math::Sin(deg) * dist + this->pointArr[(this->nPoint << 1) - 1];
+	lastPtX = Math_Cos(deg) * dist + this->pointArr[(this->nPoint << 1) - 2];
+	lastPtY = -Math_Sin(deg) * dist + this->pointArr[(this->nPoint << 1) - 1];
 
 	outPoints->Add(lastPtX);
 	outPoints->Add(lastPtY);
@@ -911,9 +911,9 @@ Math::Polygon *Math::Polyline::CreatePolygonByDist(Double dist)
 	while (i > 2)
 	{
 		i -= 1;
-		deg = Math::ArcTan2(this->pointArr[(i << 1) - 4] - this->pointArr[(i << 1) - 2], this->pointArr[(i << 1) - 3] - this->pointArr[(i << 1) - 1]);
-		nextPtX = -Math::Cos(deg) * dist + this->pointArr[(i << 1) - 4];
-		nextPtY = Math::Sin(deg) * dist + this->pointArr[(i << 1) - 3];
+		deg = Math_ArcTan2(this->pointArr[(i << 1) - 4] - this->pointArr[(i << 1) - 2], this->pointArr[(i << 1) - 3] - this->pointArr[(i << 1) - 1]);
+		nextPtX = -Math_Cos(deg) * dist + this->pointArr[(i << 1) - 4];
+		nextPtY = Math_Sin(deg) * dist + this->pointArr[(i << 1) - 3];
 
 		t2 = (this->pointArr[(i << 1) - 3] - this->pointArr[(i << 1) - 1]) / (this->pointArr[(i << 1) - 4] - this->pointArr[(i << 1) - 2]);
 		t1 = (this->pointArr[(i << 1) - 1] - this->pointArr[(i << 1) + 1]) / (this->pointArr[(i << 1) - 2] - this->pointArr[(i << 1) + 0]);
@@ -946,10 +946,10 @@ Math::Polygon *Math::Polyline::CreatePolygonByDist(Double dist)
 		lastPtX = thisPtX;
 		lastPtY = thisPtY;
 	}
-	deg = Math::ArcTan2(this->pointArr[2] - this->pointArr[0], this->pointArr[3] - this->pointArr[1]);
+	deg = Math_ArcTan2(this->pointArr[2] - this->pointArr[0], this->pointArr[3] - this->pointArr[1]);
 
-	lastPtX = Math::Cos(deg) * dist + this->pointArr[0];
-	lastPtY = -Math::Sin(deg) * dist + this->pointArr[1];
+	lastPtX = Math_Cos(deg) * dist + this->pointArr[0];
+	lastPtY = -Math_Sin(deg) * dist + this->pointArr[1];
 
 	outPoints->Add(lastPtX);
 	outPoints->Add(lastPtY);

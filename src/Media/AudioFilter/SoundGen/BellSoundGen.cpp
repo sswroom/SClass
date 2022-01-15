@@ -88,7 +88,7 @@ void Media::AudioFilter::SoundGen::BellSoundGen::GenSignals(Double *buff, UOSInt
 		k = paramCnt;
 		while (k-- > 0)
 		{
-			buff[i] += norVol * Math::Sin(t * Math::PI * 2 * params[k * 3]) * Math::Pow(10, t * params[k * 3 + 1]) * params[k * 3 + 2];
+			buff[i] += norVol * Math_Sin(t * Math::PI * 2 * params[k * 3]) * Math_Pow(10, t * params[k * 3 + 1]) * params[k * 3 + 2];
 		}
 
 		i++;

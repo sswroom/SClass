@@ -447,8 +447,8 @@ void UI::GUIMapControl::DrawScnObjects(Media::DrawImage *img, Double xOfst, Doub
 			Double dir2 = Math::PI * 0.75;
 			Double dir1 = this->markerDir + dir2 + dirAdj;
 			dir2 = this->markerDir - dir2 + dirAdj;
-			img->DrawLine(x + ptAdd * Math::Cos(dir1), y + ptAdd * Math::Sin(dir1), x, y, p);
-			img->DrawLine(x + ptAdd * Math::Cos(dir2), y + ptAdd * Math::Sin(dir2), x, y, p);
+			img->DrawLine(x + ptAdd * Math_Cos(dir1), y + ptAdd * Math_Sin(dir1), x, y, p);
+			img->DrawLine(x + ptAdd * Math_Cos(dir2), y + ptAdd * Math_Sin(dir2), x, y, p);
 		}
 		else
 		{
@@ -628,7 +628,7 @@ void UI::GUIMapControl::DrawScnObjects(Media::DrawImage *img, Double xOfst, Doub
 
 				HBRUSH hbr = CreateSolidBrush(0xffffff);
 				SelectObject(hdcBmp, hbr);
-				Pie(hdcBmp, Math::Double2Int32(x1 + xOfst), Math::Double2Int32(y1 + yOfst), Math::Double2Int32(x2 + xOfst), Math::Double2Int32(y2 + yOfst), Math::Double2Int32(cx + r * Math::Sin(a2)), Math::Double2Int32(cy - r * Math::Cos(a2)), Math::Double2Int32(cx + r * Math::Sin(a1)), Math::Double2Int32(cy - r * Math::Cos(a1)));
+				Pie(hdcBmp, Math::Double2Int32(x1 + xOfst), Math::Double2Int32(y1 + yOfst), Math::Double2Int32(x2 + xOfst), Math::Double2Int32(y2 + yOfst), Math::Double2Int32(cx + r * Math_Sin(a2)), Math::Double2Int32(cy - r * Math_Cos(a2)), Math::Double2Int32(cx + r * Math_Sin(a1)), Math::Double2Int32(cy - r * Math_Cos(a1)));
 				DeleteObject(hbr);
 
 
@@ -652,7 +652,7 @@ void UI::GUIMapControl::DrawScnObjects(Media::DrawImage *img, Double xOfst, Doub
 				HPEN p = CreatePen(PS_SOLID, 3, 0x0000ff);
 				HGDIOBJ lastPen = SelectObject(hdc, p);
 				SelectObject(hdc, GetStockObject(HOLLOW_BRUSH));
-				Pie(hdc, Math::Double2Int32(x1 + xOfst), Math::Double2Int32(y1 + yOfst), Math::Double2Int32(x2 + xOfst), Math::Double2Int32(y2 + yOfst), Math::Double2Int32(cx + r * Math::Sin(a2)), Math::Double2Int32(cy - r * Math::Cos(a2)), Math::Double2Int32(cx + r * Math::Sin(a1)), Math::Double2Int32(cy - r * Math::Cos(a1)));
+				Pie(hdc, Math::Double2Int32(x1 + xOfst), Math::Double2Int32(y1 + yOfst), Math::Double2Int32(x2 + xOfst), Math::Double2Int32(y2 + yOfst), Math::Double2Int32(cx + r * Math_Sin(a2)), Math::Double2Int32(cy - r * Math_Cos(a2)), Math::Double2Int32(cx + r * Math_Sin(a1)), Math::Double2Int32(cy - r * Math_Cos(a1)));
 				SelectObject(hdc, lastPen);
 				DeleteObject(p);
 

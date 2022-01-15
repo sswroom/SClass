@@ -21,7 +21,7 @@ Double Media::CS::TransferFuncParam1::ForwardTransfer(Double linearVal)
 	}
 	else
 	{
-		return (Math::Pow(linearVal - this->param->params[5], 1 / this->param->params[0]) - this->param->params[2]) / this->param->params[1];
+		return (Math_Pow(linearVal - this->param->params[5], 1 / this->param->params[0]) - this->param->params[2]) / this->param->params[1];
 	}
 }
 
@@ -33,6 +33,6 @@ Double Media::CS::TransferFuncParam1::InverseTransfer(Double gammaVal)
 	}
 	else
 	{
-		return Math::Pow(gammaVal * this->param->params[1] + this->param->params[2], this->param->params[0]) + this->param->params[5];
+		return Math_Pow(gammaVal * this->param->params[1] + this->param->params[2], this->param->params[0]) + this->param->params[5];
 	}
 }

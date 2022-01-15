@@ -220,6 +220,7 @@ namespace Text
 	UTF8Char *StrToCSVRec(UTF8Char *oriStr, const UTF8Char *str1);
 	const UTF8Char *StrToNewCSVRec(const UTF8Char *str1);
 	UOSInt StrCSVSplit(UTF8Char **strs, UOSInt maxStrs, UTF8Char *strToSplit);
+	UOSInt StrCSVSplitP(Text::PString *strs, UOSInt maxStrs, UTF8Char *strToSplit);
 	UTF8Char *StrCSVJoin(UTF8Char *oriStr, const UTF8Char **strs, UOSInt nStrs);
 	UOSInt StrCountChar(const UTF8Char *str1, UTF8Char c);
 	UTF8Char *StrRemoveANSIEscapes(UTF8Char *str1);

@@ -65,7 +65,7 @@ void Math::FFTCalc::BuildSampleWin()
 		dk = Math::UOSInt2Double(k);
 		while (j < sampleCount)
 		{
-			this->sampleWindow[j] = (a0 - a1 * Math::Cos(Math::UOSInt2Double(j) * pi2 / dk));
+			this->sampleWindow[j] = (a0 - a1 * Math_Cos(Math::UOSInt2Double(j) * pi2 / dk));
 			j++;
 		}
 		break;
@@ -81,7 +81,7 @@ void Math::FFTCalc::BuildSampleWin()
 		while (j < sampleCount)
 		{
 			dj = Math::UOSInt2Double(j);
-			this->sampleWindow[j] = (a0 - a1 * Math::Cos(dj * pi2 / dk) + a2 * Math::Cos(2 * pi2 * dj / dk));
+			this->sampleWindow[j] = (a0 - a1 * Math_Cos(dj * pi2 / dk) + a2 * Math_Cos(2 * pi2 * dj / dk));
 			j++;
 		}
 		break;
@@ -98,7 +98,7 @@ void Math::FFTCalc::BuildSampleWin()
 		while (j < sampleCount)
 		{
 			dj = Math::UOSInt2Double(j);
-			this->sampleWindow[j] = (a0 - a1 * Math::Cos(dj * pi2 / dk) + a2 * Math::Cos(2 * pi2 * dj / dk) - a3 * Math::Cos(3 * pi2 * dj / dk));
+			this->sampleWindow[j] = (a0 - a1 * Math_Cos(dj * pi2 / dk) + a2 * Math_Cos(2 * pi2 * dj / dk) - a3 * Math_Cos(3 * pi2 * dj / dk));
 			j++;
 		}
 		break;
@@ -115,7 +115,7 @@ void Math::FFTCalc::BuildSampleWin()
 		while (j < sampleCount)
 		{
 			dj = Math::UOSInt2Double(j);
-			this->sampleWindow[j] = (a0 - a1 * Math::Cos(dj * pi2 / dk) + a2 * Math::Cos(2 * pi2 * dj / dk) - a3 * Math::Cos(3 * pi2 * dj / dk));
+			this->sampleWindow[j] = (a0 - a1 * Math_Cos(dj * pi2 / dk) + a2 * Math_Cos(2 * pi2 * dj / dk) - a3 * Math_Cos(3 * pi2 * dj / dk));
 			j++;
 		}
 		break;
@@ -133,7 +133,7 @@ void Math::FFTCalc::BuildSampleWin()
 		while (j < sampleCount)
 		{
 			dj = Math::UOSInt2Double(j);
-			this->sampleWindow[j] = (a0 - a1 * Math::Cos(dj * pi2 * invK) + a2 * Math::Cos(2 * pi2 * dj * invK) - a3 * Math::Cos(3 * pi2 * dj * invK));
+			this->sampleWindow[j] = (a0 - a1 * Math_Cos(dj * pi2 * invK) + a2 * Math_Cos(2 * pi2 * dj * invK) - a3 * Math_Cos(3 * pi2 * dj * invK));
 			j++;
 		}
 		break;
@@ -151,7 +151,7 @@ void Math::FFTCalc::BuildSampleWin()
 		while (j < sampleCount)
 		{
 			dj = Math::UOSInt2Double(j);
-			this->sampleWindow[j] = (a0 - a1 * Math::Cos(dj * pi2 / dk) + a2 * Math::Cos(2 * pi2 * dj / dk) - a3 * Math::Cos(3 * pi2 * dj / dk) + a4 * Math::Cos(4 * pi2 * dj / dk));
+			this->sampleWindow[j] = (a0 - a1 * Math_Cos(dj * pi2 / dk) + a2 * Math_Cos(2 * pi2 * dj / dk) - a3 * Math_Cos(3 * pi2 * dj / dk) + a4 * Math_Cos(4 * pi2 * dj / dk));
 			j++;
 		}
 		break;

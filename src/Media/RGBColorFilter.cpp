@@ -203,7 +203,7 @@ void Media::RGBColorFilter::SetParameter(Double brightness, Double contrast, Dou
 					j = (UInt32)(lVal * gammaCntM1);
 					lVal = this->gammaParam[j] + (this->gammaParam[j + 1] - this->gammaParam[j]) * (lVal - Math::UOSInt2Double(j) * (1.0 / gammaCntM1)) * gammaCntM1;
 				}
-				v = Math::Double2Int32((Math::Pow(lVal, this->gamma) * this->contrast + this->brightness) * 8192);
+				v = Math::Double2Int32((Math_Pow(lVal, this->gamma) * this->contrast + this->brightness) * 8192);
 				srcLUT32[i] = v;
 				if (v >= 32768)
 					v = 32767;
@@ -216,7 +216,7 @@ void Media::RGBColorFilter::SetParameter(Double brightness, Double contrast, Dou
 			while (i-- > 0)
 			{
 				lVal = rtFunc->InverseTransfer(Math::UOSInt2Double(i) * tmp);
-				v = Math::Double2Int32((Math::Pow(lVal, this->gamma) * this->contrast + this->brightness) * 8192);
+				v = Math::Double2Int32((Math_Pow(lVal, this->gamma) * this->contrast + this->brightness) * 8192);
 				srcLUT32[i] = v;
 				if (v >= 32768)
 					v = 32767;
@@ -270,7 +270,7 @@ void Media::RGBColorFilter::SetParameter(Double brightness, Double contrast, Dou
 					j = (Int32)(lVal * gammaCntM1);
 					lVal = this->gammaParam[j] + (this->gammaParam[j + 1] - this->gammaParam[j]) * (lVal - Math::OSInt2Double(j) * (1.0 / gammaCntM1)) * gammaCntM1;
 				}
-				v = Math::Double2Int32((Math::Pow(lVal, this->gamma) * this->contrast + this->brightness) * 8192);
+				v = Math::Double2Int32((Math_Pow(lVal, this->gamma) * this->contrast + this->brightness) * 8192);
 				srcLUT32[i] = v;
 				if (v >= 32768)
 					v = 32767;
@@ -282,7 +282,7 @@ void Media::RGBColorFilter::SetParameter(Double brightness, Double contrast, Dou
 			i = 65536;
 			while (i-- > 0)
 			{
-				v = Math::Double2Int32((Math::Pow(rtFunc->InverseTransfer(Math::UOSInt2Double(i) * tmp), this->gamma) * this->contrast + this->brightness) * 8192);
+				v = Math::Double2Int32((Math_Pow(rtFunc->InverseTransfer(Math::UOSInt2Double(i) * tmp), this->gamma) * this->contrast + this->brightness) * 8192);
 				srcLUT32[i] = v;
 				if (v >= 32768)
 					v = 32767;

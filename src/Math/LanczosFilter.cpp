@@ -6,7 +6,7 @@
 Double Math::LanczosFilter::Weight(Double phase, UOSInt nTap)
 {
 	Double ret;
-	Double aphase = Math::Abs(phase);
+	Double aphase = Math_Abs(phase);
 	
 	if(aphase < DBL_EPSILON)
 	{
@@ -18,7 +18,7 @@ Double Math::LanczosFilter::Weight(Double phase, UOSInt nTap)
 		return 0.0;
 	}
 
-	ret = Math::Sin(Math::PI * phase) * Math::Sin(Math::PI * phase / dnTap * 2) / (Math::PI * Math::PI * phase * phase / dnTap * 2);
+	ret = Math_Sin(Math::PI * phase) * Math_Sin(Math::PI * phase / dnTap * 2) / (Math::PI * Math::PI * phase * phase / dnTap * 2);
 
 	return ret;
 }

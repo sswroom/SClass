@@ -11,7 +11,7 @@ class TextDBReader : public DB::DBReader
 private:
 	DB::TextDB::DBData *data;
 	UOSInt index;
-	const UTF8Char **row;
+	Text::String **row;
 public:
 	TextDBReader(DB::TextDB::DBData *data)
 	{
@@ -54,7 +54,7 @@ public:
 			return 0;
 		if (this->row[colIndex] == 0)
 			return 0;
-		return Text::StrToInt32(this->row[colIndex]);
+		return this->row[colIndex]->ToInt32();
 	}
 
 	virtual Int64 GetInt64(UOSInt colIndex)
@@ -65,7 +65,7 @@ public:
 			return 0;
 		if (this->row[colIndex] == 0)
 			return 0;
-		return Text::StrToInt64(this->row[colIndex]);
+		return this->row[colIndex]->ToInt64();
 	}
 
 	virtual WChar *GetStr(UOSInt colIndex, WChar *buff)
@@ -76,7 +76,7 @@ public:
 			return 0;
 		if (this->row[colIndex] == 0)
 			return 0;
-		return Text::StrUTF8_WChar(buff, this->row[colIndex], 0);
+		return Text::StrUTF8_WChar(buff, this->row[colIndex]->v, 0);
 	}
 
 	virtual Bool GetStr(UOSInt colIndex, Text::StringBuilderUTF *sb)
@@ -99,7 +99,7 @@ public:
 			return 0;
 		if (this->row[colIndex] == 0)
 			return 0;
-		return Text::String::NewNotNull(this->row[colIndex]);
+		return this->row[colIndex]->Clone();
 	}
 
 	virtual UTF8Char *GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSize)
@@ -110,7 +110,7 @@ public:
 			return 0;
 		if (this->row[colIndex] == 0)
 			return 0;
-		return Text::StrConcatS(buff, this->row[colIndex], buffSize);
+		return Text::StrConcatS(buff, this->row[colIndex]->v, buffSize);
 	}
 
 	virtual DateErrType GetDate(UOSInt colIndex, Data::DateTime *outVal)
@@ -121,7 +121,7 @@ public:
 			return DET_NULL;
 		if (this->row[colIndex] == 0)
 			return DET_NULL;
-		return outVal->SetValue(this->row[colIndex])?DET_OK:DET_ERROR;
+		return outVal->SetValue(this->row[colIndex]->v, this->row[colIndex]->leng)?DET_OK:DET_ERROR;
 	}
 
 	virtual Double GetDbl(UOSInt colIndex)
@@ -132,7 +132,7 @@ public:
 			return 0;
 		if (this->row[colIndex] == 0)
 			return 0;
-		return Text::StrToDouble(this->row[colIndex]);
+		return this->row[colIndex]->ToDouble();
 	}
 
 	virtual Bool GetBool(UOSInt colIndex)
@@ -143,11 +143,11 @@ public:
 			return false;
 		if (this->row[colIndex] == 0)
 			return false;
-		if (Text::StrEqualsICase(this->row[colIndex], (const UTF8Char*)"TRUE"))
+		if (this->row[colIndex]->EqualsICase(UTF8STRC("TRUE")))
 			return true;
-		else if (Text::StrEqualsICase(this->row[colIndex], (const UTF8Char*)"FALSE"))
+		else if (this->row[colIndex]->EqualsICase(UTF8STRC("FALSE")))
 			return false;
-		return Text::StrToInt32(this->row[colIndex]) != 0;
+		return this->row[colIndex]->ToInt32() != 0;
 	}
 
 	virtual UOSInt GetBinarySize(UOSInt colIndex)
@@ -158,7 +158,7 @@ public:
 			return 0;
 		if (this->row[colIndex] == 0)
 			return 0;
-		return Text::StrCharCnt(this->row[colIndex]);
+		return this->row[colIndex]->leng;
 	}
 
 	virtual UOSInt GetBinary(UOSInt colIndex, UInt8 *buff)
@@ -169,8 +169,8 @@ public:
 			return 0;
 		if (this->row[colIndex] == 0)
 			return 0;
-		UOSInt len = Text::StrCharCnt(this->row[colIndex]);
-		MemCopyNO(buff, this->row[colIndex], len);
+		UOSInt len = this->row[colIndex]->leng;
+		MemCopyNO(buff, this->row[colIndex]->v, len);
 		return len;
 	}
 
@@ -249,7 +249,7 @@ DB::TextDB::~TextDB()
 	UOSInt k;
 	Data::ArrayList<DBData*> *dbList = this->dbMap->GetValues();
 	DBData *data;
-	const UTF8Char **vals;
+	Text::String **vals;
 	k = dbList->GetCount();
 	while (k-- > 0)
 	{
@@ -261,7 +261,7 @@ DB::TextDB::~TextDB()
 			j = data->colList->GetCount();
 			while (j-- > 0)
 			{
-				SDEL_TEXT(vals[j]);
+				SDEL_STRING(vals[j]);
 			}
 			MemFree(vals);
 		}
@@ -345,7 +345,7 @@ Bool DB::TextDB::AddTable(const UTF8Char *tableName, Data::ArrayList<const UTF8C
 		data->colList->Add(Text::StrCopyNew(colList->GetItem(i)));
 		i++;
 	}
-	NEW_CLASS(data->valList, Data::ArrayList<const UTF8Char**>());
+	NEW_CLASS(data->valList, Data::ArrayList<Text::String**>());
 	this->dbMap->Put(tableName, data);
 	this->currDB = data;
 	return true;
@@ -362,19 +362,11 @@ Bool DB::TextDB::AddTableData(Data::ArrayList<const UTF8Char*> *valList)
 	UOSInt i = 0;
 	UOSInt j = valList->GetCount();
 	const UTF8Char *csptr;
-	const UTF8Char **vals = MemAlloc(const UTF8Char*, j);
+	Text::String **vals = MemAlloc(Text::String*, j);
 	while (i < j)
 	{
 		csptr = valList->GetItem(i);
-		if (csptr)
-		{
-			vals[i] = Text::StrCopyNew(csptr);
-		}
-		else
-		{
-			vals[i] = 0;
-		}
-		
+		vals[i] = Text::String::NewOrNull(csptr);		
 		i++;
 	}
 	this->currDB->valList->Add(vals);

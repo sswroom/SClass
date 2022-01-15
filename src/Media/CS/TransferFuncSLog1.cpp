@@ -17,7 +17,7 @@ Double Media::CS::TransferFuncSLog1::ForwardTransfer(Double linearVal)
 {
 	if (linearVal >= 0)
 	{
-		return (0.432699 * Math::Log10(linearVal + 0.037584) + 0.616596) + 0.03;
+		return (0.432699 * Math_Log10(linearVal + 0.037584) + 0.616596) + 0.03;
 	}
 	else
 	{
@@ -29,7 +29,7 @@ Double Media::CS::TransferFuncSLog1::InverseTransfer(Double gammaVal)
 {
 	if (gammaVal >= 0.030001222851889303)
 	{
-		return Math::Pow(10, ((gammaVal - 0.616596 - 0.03) / 0.432699)) - 0.037584;
+		return Math_Pow(10, ((gammaVal - 0.616596 - 0.03) / 0.432699)) - 0.037584;
 	}
 	else
 	{

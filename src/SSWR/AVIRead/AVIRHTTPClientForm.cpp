@@ -876,7 +876,7 @@ SSWR::AVIRead::AVIRHTTPClientForm::HTTPCookie *SSWR::AVIRead::AVIRHTTPClientForm
 {
 	UTF8Char domain[512];
 	UTF8Char path[512];
-	UTF8Char *sarr[2];
+	Text::PString sarr[2];
 	UTF8Char *cookieValue;
 	UOSInt cnt;
 	UOSInt i;
@@ -884,11 +884,11 @@ SSWR::AVIRead::AVIRHTTPClientForm::HTTPCookie *SSWR::AVIRead::AVIRHTTPClientForm
 	Int64 expiryTime = 0;
 	Bool valid = true;
 	path[0] = 0;
-	Text::URLString::GetURLDomain(domain, reqURL, 0);
+	UTF8Char *domainEnd = Text::URLString::GetURLDomain(domain, reqURL, 0);
 	Text::StringBuilderUTF8 sb;
 	sb.Append(cookieStr);
-	cnt = Text::StrSplitTrim(sarr, 2, sb.ToString(), ';');
-	cookieValue = sarr[0];
+	cnt = Text::StrSplitTrimP(sarr, 2, sb.ToString(), sb.GetLength(), ';');
+	cookieValue = sarr[0].v;
 	i = Text::StrIndexOf(cookieValue, '=');
 	if (i == INVALID_INDEX)
 	{
@@ -896,49 +896,49 @@ SSWR::AVIRead::AVIRHTTPClientForm::HTTPCookie *SSWR::AVIRead::AVIRHTTPClientForm
 	}
 	while (cnt == 2)
 	{
-		cnt = Text::StrSplitTrim(sarr, 2, sarr[1], ';');
-		if (Text::StrEquals(sarr[0], (const UTF8Char*)"Secure"))
+		cnt = Text::StrSplitTrimP(sarr, 2, sarr[1].v, sarr[1].len, ';');
+		if (Text::StrEqualsC(sarr[0].v, sarr[0].len, UTF8STRC("Secure")))
 		{
 			secure = true;
 		}
-		else if (Text::StrEquals(sarr[0], (const UTF8Char*)"HttpOnly"))
+		else if (Text::StrEqualsC(sarr[0].v, sarr[0].len, UTF8STRC("HttpOnly")))
 		{
 
 		}
-		else if (Text::StrStartsWith(sarr[0], (const UTF8Char*)"SameSite="))
+		else if (Text::StrStartsWithC(sarr[0].v, sarr[0].len, UTF8STRC("SameSite=")))
 		{
 
 		}
-		else if (Text::StrStartsWith(sarr[0], (const UTF8Char*)"Expires="))
+		else if (Text::StrStartsWithC(sarr[0].v, sarr[0].len, UTF8STRC("Expires=")))
 		{
 			Data::DateTime dt;
-			dt.SetValue(&sarr[0][8]);
+			dt.SetValue(&sarr[0].v[8], sarr[0].len - 8);
 			expiryTime = dt.ToTicks();
 		}
-		else if (Text::StrStartsWith(sarr[0], (const UTF8Char*)"Max-Age="))
+		else if (Text::StrStartsWithC(sarr[0].v, sarr[0].len, UTF8STRC("Max-Age=")))
 		{
 			Data::DateTime dt;
 			dt.SetCurrTimeUTC();
-			dt.AddSecond(Text::StrToOSInt(&sarr[0][8]));
+			dt.AddSecond(Text::StrToOSInt(&sarr[0].v[8]));
 			expiryTime = dt.ToTicks();
 		}
-		else if (Text::StrStartsWith(sarr[0], (const UTF8Char*)"Domain="))
+		else if (Text::StrStartsWithC(sarr[0].v, sarr[0].len, UTF8STRC("Domain=")))
 		{
-			if (Text::StrEqualsICase(domain, &sarr[0][7]))
+			if (Text::StrEqualsICase(domain, &sarr[0].v[7]))
 			{
 
 			}
 			else
 			{
-				UOSInt len1 = Text::StrCharCnt(domain);
-				UOSInt len2 = Text::StrCharCnt(&sarr[0][7]);
-				if (len1 > len2 && len2 > 0 && domain[len1 - len2 - 1] == '.' && Text::StrEquals(&domain[len1 - len2], &sarr[0][7]))
+				UOSInt len1 = (UOSInt)(domainEnd - domain);
+				UOSInt len2 = sarr[0].len - 7;
+				if (len1 > len2 && len2 > 0 && domain[len1 - len2 - 1] == '.' && Text::StrEquals(&domain[len1 - len2], &sarr[0].v[7]))
 				{
-					Text::StrConcat(domain, &sarr[0][7]);
+					Text::StrConcatC(domain, &sarr[0].v[7], len2);
 				}
-				else if (len1 + 1 == len2 && sarr[0][7] == '.' && Text::StrEquals(domain, &sarr[0][8]))
+				else if (len1 + 1 == len2 && sarr[0].v[7] == '.' && Text::StrEqualsC(domain, len1, &sarr[0].v[8], len2 - 1))
 				{
-					Text::StrConcat(domain, &sarr[0][7]);
+					Text::StrConcatC(domain, &sarr[0].v[7], len2);
 				}
 				else
 				{
@@ -946,9 +946,9 @@ SSWR::AVIRead::AVIRHTTPClientForm::HTTPCookie *SSWR::AVIRead::AVIRHTTPClientForm
 				}
 			}
 		}
-		else if (Text::StrStartsWith(sarr[0], (const UTF8Char*)"Path="))
+		else if (Text::StrStartsWithC(sarr[0].v, sarr[0].len, UTF8STRC("Path=")))
 		{
-			Text::StrConcat(path, &sarr[0][5]);
+			Text::StrConcatC(path, &sarr[0].v[5], sarr[0].len - 5);
 		}
 	}
 	if (valid)

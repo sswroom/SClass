@@ -554,7 +554,7 @@ Data::DateTime *Data::VariItem::GetAsNewDate()
 	{
 		NEW_CLASS(date, Data::DateTime());
 		date->ToLocalTime();
-		if (date->SetValue(this->val.str->v))
+		if (date->SetValue(this->val.str->v, this->val.str->leng))
 		{
 			return date;
 		}

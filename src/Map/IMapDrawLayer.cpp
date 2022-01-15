@@ -229,7 +229,7 @@ Int32 Map::IMapDrawLayer::CalBlockSize()
 		Double tVal = (yMax - yMin) * (xMax - xMin) / Math::UOSInt2Double(idList->GetCount());
 		if (xMax > 180)
 		{
-			blkSize = Math::Double2Int32(Math::Sqrt(tVal) * 3);
+			blkSize = Math::Double2Int32(Math_Sqrt(tVal) * 3);
 			if (blkSize < 5000)
 			{
 				blkSize = 5000;
@@ -241,7 +241,7 @@ Int32 Map::IMapDrawLayer::CalBlockSize()
 		}
 		else
 		{
-			blkSize = Math::Double2Int32(Math::Sqrt(tVal) * 500000);
+			blkSize = Math::Double2Int32(Math_Sqrt(tVal) * 500000);
 			if (blkSize < 5000)
 			{
 				blkSize = 5000;
@@ -544,7 +544,7 @@ OSInt Map::IMapDrawLayer::GetNearObjects(void *session, Data::ArrayList<ObjectIn
 			objInfo->objId = objIds->GetItem(i);
 			objInfo->objX = currPtX;
 			objInfo->objY = currPtY;
-			objInfo->objDist = Math::Sqrt(dist);
+			objInfo->objDist = Math_Sqrt(dist);
 			objList->Add(objInfo);
 			ret++;
 		}
@@ -571,7 +571,7 @@ OSInt Map::IMapDrawLayer::GetNearObjects(void *session, Data::ArrayList<ObjectIn
 		objInfo->objId = nearObjId;
 		objInfo->objX = nearPtX;
 		objInfo->objY = nearPtY;
-		objInfo->objDist = Math::Sqrt(minDist);
+		objInfo->objDist = Math_Sqrt(minDist);
 		objList->Add(objInfo);
 		ret++;
 	}
@@ -1037,10 +1037,11 @@ UTF8Char *Map::MapLayerReader::GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt bu
 DB::DBReader::DateErrType Map::MapLayerReader::GetDate(UOSInt colIndex, Data::DateTime *outVal)
 {
 	UTF8Char sbuff[256];
+	UTF8Char *sptr;
 	if (colIndex <= 0)
 		return DB::DBReader::DET_ERROR;
-	this->layer->GetString(sbuff, sizeof(sbuff), this->nameArr, this->GetCurrObjId(), colIndex - 1);
-	outVal->SetValue(sbuff);
+	sptr = this->layer->GetString(sbuff, sizeof(sbuff), this->nameArr, this->GetCurrObjId(), colIndex - 1);
+	outVal->SetValue(sbuff, (UOSInt)(sptr - sbuff));
 	return DB::DBReader::DET_OK;
 }
 

@@ -22,19 +22,19 @@ Media::CS::TransferFuncSRGB::~TransferFuncSRGB()
 Double Media::CS::TransferFuncSRGB::ForwardTransfer(Double linearVal)
 {
 	if (linearVal < -cssRGBK1)
-		return (-1 - cssRGBK3) * Math::Pow(-linearVal, cssRGBK4) + cssRGBK3;
+		return (-1 - cssRGBK3) * Math_Pow(-linearVal, cssRGBK4) + cssRGBK3;
 	else if (linearVal <= cssRGBK1)
 		return cssRGBK2 * linearVal;
 	else
-		return (1 + cssRGBK3) * Math::Pow(linearVal, cssRGBK4) - cssRGBK3;
+		return (1 + cssRGBK3) * Math_Pow(linearVal, cssRGBK4) - cssRGBK3;
 }
 
 Double Media::CS::TransferFuncSRGB::InverseTransfer(Double gammaVal)
 {
 	if (gammaVal <= -cssRGBC1)
-		return -Math::Pow((-gammaVal + cssRGBK3) / (1 + cssRGBK3), cssRGBC2);
+		return -Math_Pow((-gammaVal + cssRGBK3) / (1 + cssRGBK3), cssRGBC2);
 	else if (gammaVal < cssRGBC1)
 		return gammaVal / cssRGBK2;
 	else
-		return Math::Pow((gammaVal + cssRGBK3) / (1 + cssRGBK3), cssRGBC2);
+		return Math_Pow((gammaVal + cssRGBK3) / (1 + cssRGBK3), cssRGBC2);
 }

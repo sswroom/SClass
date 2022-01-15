@@ -22,19 +22,19 @@ Media::CS::TransferFuncBT2100::~TransferFuncBT2100()
 
 Double Media::CS::TransferFuncBT2100::ForwardTransfer(Double linearVal)
 {
-	Double vTmp = Math::Pow(linearVal / csBT2100Rate, csBT2100m1);
+	Double vTmp = Math_Pow(linearVal / csBT2100Rate, csBT2100m1);
 	Double v1 = csBT2100c1 + csBT2100c2 * vTmp;
 	Double v2 = 1 + csBT2100c3 * vTmp;
-	return Math::Pow(v1 / v2, csBT2100m2);
+	return Math_Pow(v1 / v2, csBT2100m2);
 }
 
 Double Media::CS::TransferFuncBT2100::InverseTransfer(Double gammaVal)
 {
-	Double vTmp = Math::Pow(gammaVal, 1 / csBT2100m2);
+	Double vTmp = Math_Pow(gammaVal, 1 / csBT2100m2);
 	Double v1 = vTmp - csBT2100c1;
 	Double v2 = csBT2100c2 - csBT2100c3 * vTmp;
 	if (v1 < 0)
 		v1 = 0;
 
-	return csBT2100Rate * Math::Pow(v1 / v2, 1 / csBT2100m1);
+	return csBT2100Rate * Math_Pow(v1 / v2, 1 / csBT2100m1);
 }

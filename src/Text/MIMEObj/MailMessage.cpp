@@ -88,7 +88,7 @@ Bool Text::MIMEObj::MailMessage::GetDate(Data::DateTime *dt)
 	Text::String *hdr = GetHeader(UTF8STRC("Date"));
 	if (hdr == 0)
 		return false;
-	dt->SetValue(hdr->v);
+	dt->SetValue(hdr->v, hdr->leng);
 	return true;
 }
 
