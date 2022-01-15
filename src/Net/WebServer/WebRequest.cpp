@@ -73,6 +73,7 @@ void Net::WebServer::WebRequest::ParseFormStr(Data::FastStringMap<Text::String *
 	UInt8 b2;
 	Text::String *tmpStr;
 	UTF8Char *tmpName;
+	UOSInt tmpNameLen;
 	Text::String *s;
 	UOSInt buffPos;
 	UOSInt charCnt;
@@ -88,19 +89,20 @@ void Net::WebServer::WebRequest::ParseFormStr(Data::FastStringMap<Text::String *
 			if (tmpName)
 			{
 				tmpBuff[buffPos] = 0;
-				s = formMap->Get(tmpBuff);
+				s = formMap->GetC(tmpBuff, buffPos);
 				if (s)
 				{
 					charCnt = s->leng + 1;
-					charCnt += Text::StrCharCnt(tmpName);
+					tmpNameLen = Text::StrCharCnt(tmpName);;
+					charCnt += tmpNameLen;
 					tmpStr = Text::String::New(charCnt);
-					Text::StrConcat(Text::StrConcatC(s->ConcatTo(tmpStr->v), UTF8STRC(",")), tmpName);
-					formMap->Put(tmpBuff, tmpStr);
+					Text::StrConcatC(Text::StrConcatC(s->ConcatTo(tmpStr->v), UTF8STRC(",")), tmpName, tmpNameLen);
+					formMap->PutC(tmpBuff, buffPos, tmpStr);
 					s->Release();
 				}
 				else
 				{
-					formMap->Put(tmpBuff, Text::String::NewNotNull(tmpName));
+					formMap->PutC(tmpBuff, buffPos, Text::String::NewNotNull(tmpName));
 				}
 				tmpName = 0;
 				buffPos = 0;
@@ -151,19 +153,20 @@ void Net::WebServer::WebRequest::ParseFormStr(Data::FastStringMap<Text::String *
 	if (tmpName)
 	{
 		tmpBuff[buffPos] = 0;
-		s = formMap->Get(tmpBuff);
+		s = formMap->GetC(tmpBuff, buffPos);
 		if (s)
 		{
 			charCnt = s->leng + 1;
-			charCnt += Text::StrCharCnt(tmpName);
+			tmpNameLen = Text::StrCharCnt(tmpName);
+			charCnt += tmpNameLen;
 			tmpStr = Text::String::New(charCnt);
-			Text::StrConcat(Text::StrConcatC(s->ConcatTo(tmpStr->v), UTF8STRC(",")), tmpName);
-			formMap->Put(tmpBuff, tmpStr);
+			Text::StrConcatC(Text::StrConcatC(s->ConcatTo(tmpStr->v), UTF8STRC(",")), tmpName, tmpNameLen);
+			formMap->PutC(tmpBuff, buffPos, tmpStr);
 			s->Release();
 		}
 		else
 		{
-			formMap->Put(tmpBuff, Text::String::NewNotNull(tmpName));
+			formMap->PutC(tmpBuff, buffPos, Text::String::NewNotNull(tmpName));
 		}
 		tmpName = 0;
 		buffPos = 0;

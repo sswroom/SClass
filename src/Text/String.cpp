@@ -439,6 +439,23 @@ OSInt Text::String::CompareToFast(const UTF8Char *s, UOSInt len)
 	return defRet;
 }
 
+void Text::String::RTrim()
+{
+	while (this->leng > 0)
+	{
+		UTF8Char c = this->v[this->leng - 1];
+		if (c == ' ' || c == '\t')
+		{
+			this->leng--;
+		}
+		else
+		{
+			break;
+		}
+	}
+	this->v[this->leng] = 0;
+}
+
 Int32 Text::String::ToInt32()
 {
 	return Text::StrToInt32(this->v);

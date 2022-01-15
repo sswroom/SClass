@@ -52,6 +52,7 @@ namespace Text
 		OSInt CompareToICase(Text::String *s);
 		OSInt CompareToICase(const UTF8Char *s);
 		OSInt CompareToFast(const UTF8Char *s, UOSInt len);
+		void RTrim();
 
 		Int32 ToInt32();
 		UInt32 ToUInt32();

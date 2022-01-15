@@ -14,6 +14,7 @@
 DB::DBFFile::DBFFile(IO::IStreamData *stmData, UInt32 codePage) : DB::ReadingDB(stmData->GetFullName())
 {
 	UTF8Char u8buff[256];
+	UTF8Char *sptr;
 	UInt8 buff[32];
 	UOSInt currColOfst;
 	UOSInt i;
@@ -38,9 +39,9 @@ DB::DBFFile::DBFFile(IO::IStreamData *stmData, UInt32 codePage) : DB::ReadingDB(
 	{
 		this->stmData->GetRealData(currOfst, 32, buff);
 		currOfst += 32;
-		cols[i].name = MemAlloc(UTF8Char, enc->CountUTF8Chars(buff, 11) + 1);
-		*enc->UTF8FromBytes(cols[i].name, buff, 11, 0) = 0;
-		Text::StrRTrim(cols[i].name);
+		cols[i].name = Text::String::New(enc->CountUTF8Chars(buff, 11));
+		*enc->UTF8FromBytes(cols[i].name->v, buff, 11, 0) = 0;
+		cols[i].name->RTrim();
 		cols[i].type = *(Int32*)&buff[11];
 		cols[i].colSize = buff[16];
 		cols[i].colDP = buff[17];
@@ -50,13 +51,14 @@ DB::DBFFile::DBFFile(IO::IStreamData *stmData, UInt32 codePage) : DB::ReadingDB(
 	}
 
 	this->name = 0;
-	Text::StrConcat(u8buff, this->stmData->GetShortName());
+	sptr = Text::StrConcat(u8buff, this->stmData->GetShortName());
 	i = Text::StrLastIndexOf(u8buff, '.');
 	if (i != INVALID_INDEX)
 	{
 		u8buff[i] = 0;
+		sptr = &u8buff[i];
 	}
-	this->name = Text::StrCopyNew(u8buff);
+	this->name = Text::StrCopyNewC(u8buff, (UOSInt)(sptr - u8buff));
 }
 
 DB::DBFFile::~DBFFile()
@@ -152,7 +154,7 @@ OSInt DB::DBFFile::GetColIndex(const UTF8Char *name)
 	UOSInt i = this->colCnt;
 	while (i-- > 0)
 	{
-		if (Text::StrCompareICase(name, this->cols[i].name) == 0)
+		if (Text::StrCompareICase(name, this->cols[i].name->v) == 0)
 			return (OSInt)i;
 	}
 	return -1;
@@ -196,7 +198,7 @@ UTF8Char *DB::DBFFile::GetColumnName(UOSInt colIndex, UTF8Char *buff)
 {
 	if (colIndex >= this->colCnt)
 		return 0;
-	return Text::StrConcat(buff, this->cols[colIndex].name);
+	return this->cols[colIndex].name->ConcatTo(buff);
 }
 
 DB::DBUtil::ColType DB::DBFFile::GetColumnType(UOSInt colIndex, UOSInt *colSize)
@@ -767,7 +769,7 @@ UTF8Char *DB::DBFReader::GetName(UOSInt colIndex, UTF8Char *buff)
 {
 	if (colIndex >= this->colCnt)
 		return 0;
-	return Text::StrConcat(buff, this->cols[colIndex].name);
+	return this->cols[colIndex].name->ConcatTo(buff);
 }
 
 DB::DBUtil::ColType DB::DBFReader::GetColType(UOSInt colIndex, UOSInt *colSize)

@@ -27,7 +27,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::OnSessCheck(Net::WebServer::I
 //	SSWR::SMonitor::SMonitorWebHandler *me = (SSWR::SMonitor::SMonitorWebHandler*)userObj;
 	Data::DateTime dt;
 	dt.SetCurrTimeUTC();
-	Int64 t = dt.ToTicks() - sess->GetValueInt64("LastSessTime");
+	Int64 t = dt.ToTicks() - sess->GetValueInt64(UTF8STRC("LastSessTime"));
 	if (t > 900000)
 	{
 		return true;
@@ -96,8 +96,8 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::IndexReq(SSWR::SMonitor::SMon
 		Int32 userType;
 		if (sess)
 		{
-			userId = sess->GetValueInt32("UserId");
-			userType = sess->GetValueInt32("UserType");
+			userId = sess->GetValueInt32(UTF8STRC("UserId"));
+			userType = sess->GetValueInt32(UTF8STRC("UserType"));
 		}
 		else
 		{
@@ -310,9 +310,9 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::LoginReq(SSWR::SMonitor::SMon
 				if (login != 0)
 				{
 					sess = me->sessMgr->CreateSession(req, resp);
-					sess->SetValueInt32("UserId", login->userId);
-					sess->SetValueInt32("LoginId", login->loginId);
-					sess->SetValueInt32("UserType", login->userType);
+					sess->SetValueInt32(UTF8STRC("UserId"), login->userId);
+					sess->SetValueInt32(UTF8STRC("LoginId"), login->loginId);
+					sess->SetValueInt32(UTF8STRC("UserType"), login->userType);
 					sess->EndUse();
 					me->core->UserFreeLogin(login);
 
@@ -388,7 +388,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReq(SSWR::SMonitor::SMo
 	}
 	if (req->GetQueryValueI64(UTF8STRC("photo"), &devId))
 	{
-		if (me->core->UserHasDevice(sess->GetValueInt32("UserId"), sess->GetValueInt32("UserType"), devId))
+		if (me->core->UserHasDevice(sess->GetValueInt32(UTF8STRC("UserId")), sess->GetValueInt32(UTF8STRC("UserType")), devId))
 		{
 			me->core->SendCapturePhoto(devId);
 		}
@@ -406,7 +406,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReq(SSWR::SMonitor::SMo
 	Data::ArrayList<ISMonitorCore::DeviceInfo *> devList;
 	ISMonitorCore::DeviceInfo *dev;
 	Data::DateTime dt;
-	me->core->UserGetDevices(sess->GetValueInt32("UserId"), sess->GetValueInt32("UserType"), &devList);
+	me->core->UserGetDevices(sess->GetValueInt32(UTF8STRC("UserId")), sess->GetValueInt32(UTF8STRC("UserType")), &devList);
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
@@ -565,7 +565,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceEditReq(SSWR::SMonitor:
 		sess->EndUse();
 		return resp->RedirectURL(req, UTF8STRC("device"), 0);
 	}
-	if (!me->core->UserHasDevice(sess->GetValueInt32("UserId"), sess->GetValueInt32("UserType"), cliId))
+	if (!me->core->UserHasDevice(sess->GetValueInt32(UTF8STRC("UserId")), sess->GetValueInt32(UTF8STRC("UserType")), cliId))
 	{
 		sess->EndUse();
 		return resp->RedirectURL(req, UTF8STRC("device"), 0);
@@ -690,7 +690,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingReq(SSWR::SMonit
 		sess->EndUse();
 		return resp->RedirectURL(req, UTF8STRC("device"), 0);
 	}
-	if (!me->core->UserHasDevice(sess->GetValueInt32("UserId"), sess->GetValueInt32("UserType"), cliId))
+	if (!me->core->UserHasDevice(sess->GetValueInt32(UTF8STRC("UserId")), sess->GetValueInt32(UTF8STRC("UserType")), cliId))
 	{
 		sess->EndUse();
 		return resp->RedirectURL(req, UTF8STRC("device"), 0);
@@ -834,7 +834,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceDigitalsReq(SSWR::SMoni
 		sess->EndUse();
 		return resp->RedirectURL(req, UTF8STRC("device"), 0);
 	}
-	if (!me->core->UserHasDevice(sess->GetValueInt32("UserId"), sess->GetValueInt32("UserType"), cliId))
+	if (!me->core->UserHasDevice(sess->GetValueInt32(UTF8STRC("UserId")), sess->GetValueInt32(UTF8STRC("UserType")), cliId))
 	{
 		sess->EndUse();
 		return resp->RedirectURL(req, UTF8STRC("device"), 0);
@@ -993,8 +993,8 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(SSWR::SMo
 	Net::WebServer::IWebSession *sess = me->sessMgr->GetSession(req, resp);
 	if (sess)
 	{
-		userId = sess->GetValueInt32("UserId");
-		userType = sess->GetValueInt32("UserType");
+		userId = sess->GetValueInt32(UTF8STRC("UserId"));
+		userType = sess->GetValueInt32(UTF8STRC("UserType"));
 		sess->EndUse();
 	}
 
@@ -1489,8 +1489,8 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataReq(SSWR::SMoni
 	Net::WebServer::IWebSession *sess = me->sessMgr->GetSession(req, resp);
 	if (sess)
 	{
-		userId = sess->GetValueInt32("UserId");
-		userType = sess->GetValueInt32("UserType");
+		userId = sess->GetValueInt32(UTF8STRC("UserId"));
+		userType = sess->GetValueInt32(UTF8STRC("UserType"));
 	}
 
 	UOSInt i;
@@ -1653,8 +1653,8 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataImgReq(SSWR::SM
 	Net::WebServer::IWebSession *sess = me->sessMgr->GetSession(req, resp);
 	if (sess)
 	{
-		userId = sess->GetValueInt32("UserId");
-		userType = sess->GetValueInt32("UserType");
+		userId = sess->GetValueInt32(UTF8STRC("UserId"));
+		userType = sess->GetValueInt32(UTF8STRC("UserType"));
 		sess->EndUse();
 	}
 
@@ -1857,7 +1857,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserPasswordReq(SSWR::SMonito
 			}
 			else
 			{
-				if (me->core->UserSetPassword(sess->GetValueInt32("UserId"), pwd->v))
+				if (me->core->UserSetPassword(sess->GetValueInt32(UTF8STRC("UserId")), pwd->v))
 				{
 					msg = (const UTF8Char*)"Password is changed successfully";
 				}
@@ -1918,7 +1918,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UsersReq(SSWR::SMonitor::SMon
 	{
 		return resp->RedirectURL(req, UTF8STRC("index"), 0);
 	}
-	if (sess->GetValueInt32("UserType") != 1)
+	if (sess->GetValueInt32(UTF8STRC("UserType")) != 1)
 	{
 		sess->EndUse();
 		return resp->RedirectURL(req, UTF8STRC("index"), 0);
@@ -1986,7 +1986,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserAddReq(SSWR::SMonitor::SM
 	{
 		return resp->RedirectURL(req, UTF8STRC("index"), 0);
 	}
-	if (sess->GetValueInt32("UserType") != 1)
+	if (sess->GetValueInt32(UTF8STRC("UserType")) != 1)
 	{
 		sess->EndUse();
 		return resp->RedirectURL(req, UTF8STRC("index"), 0);
@@ -2069,7 +2069,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserAssignReq(SSWR::SMonitor:
 	{
 		return resp->RedirectURL(req, UTF8STRC("index"), 0);
 	}
-	if (sess->GetValueInt32("UserType") != 1)
+	if (sess->GetValueInt32(UTF8STRC("UserType")) != 1)
 	{
 		sess->EndUse();
 		return resp->RedirectURL(req, UTF8STRC("index"), 0);
@@ -2114,7 +2114,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserAssignReq(SSWR::SMonitor:
 
 	Data::ArrayList<SSWR::SMonitor::ISMonitorCore::DeviceInfo *> devList;
 	SSWR::SMonitor::ISMonitorCore::DeviceInfo *dev;
-	me->core->UserGetDevices(sess->GetValueInt32("UserId"), 1, &devList);
+	me->core->UserGetDevices(sess->GetValueInt32(UTF8STRC("UserId")), 1, &devList);
 
 	NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SSWR.SMonitor.SMonitorWebHandler.UserAssignReq")));
 	NEW_CLASS(writer, Text::UTF8Writer(mstm));
@@ -2205,8 +2205,8 @@ void __stdcall SSWR::SMonitor::SMonitorWebHandler::WriteMenu(IO::Writer *writer,
 	{
 		Data::DateTime dt;
 		dt.SetCurrTimeUTC();
-		sess->SetValueInt64("LastSessTime", dt.ToTicks());
-		userType = sess->GetValueInt32("UserType");
+		sess->SetValueInt64(UTF8STRC("LastSessTime"), dt.ToTicks());
+		userType = sess->GetValueInt32(UTF8STRC("UserType"));
 	}
 	if (userType == 0)
 	{

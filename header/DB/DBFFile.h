@@ -15,7 +15,7 @@ namespace DB
 	public:
 		typedef struct
 		{
-			UTF8Char *name;
+			Text::String *name;
 			Int32 type;
 			UOSInt colOfst;
 			UOSInt colSize;

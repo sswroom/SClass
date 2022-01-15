@@ -2282,10 +2282,10 @@ Net::WebServer::IWebSession *SSWR::OrganMgr::OrganWebHandler::ParseRequestEnv(Ne
 	if (sess)
 	{
 		Data::DateTime *t;
-		env->user = (SSWR::OrganMgr::OrganWebHandler::WebUserInfo*)sess->GetValuePtr("User");
-		env->pickObjType = (SSWR::OrganMgr::OrganWebHandler::PickObjType)sess->GetValueInt32("PickObjType");
-		env->pickObjs = (Data::ArrayListInt32*)sess->GetValuePtr("PickObjs");
-		t = (Data::DateTime*)sess->GetValuePtr("LastUseTime");
+		env->user = (SSWR::OrganMgr::OrganWebHandler::WebUserInfo*)sess->GetValuePtr(UTF8STRC("User"));
+		env->pickObjType = (SSWR::OrganMgr::OrganWebHandler::PickObjType)sess->GetValueInt32(UTF8STRC("PickObjType"));
+		env->pickObjs = (Data::ArrayListInt32*)sess->GetValuePtr(UTF8STRC("PickObjs"));
+		t = (Data::DateTime*)sess->GetValuePtr(UTF8STRC("LastUseTime"));
 		t->SetCurrTimeUTC();
 		if (keepSess)
 		{
@@ -2475,7 +2475,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroup(Net::WebServer::IWebReq
 				if (group->groups->GetCount() > 0)
 				{
 					env.pickObjType = POT_GROUP;
-					webSess.GetSess()->SetValueInt32("PickObjType", env.pickObjType);
+					webSess.GetSess()->SetValueInt32(UTF8STRC("PickObjType"), env.pickObjType);
 					env.pickObjs->Clear();
 					i = 0;
 					j = group->groups->GetCount();
@@ -2488,7 +2488,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroup(Net::WebServer::IWebReq
 				else if (group->species->GetCount() > 0)
 				{
 					env.pickObjType = POT_SPECIES;
-					webSess.GetSess()->SetValueInt32("PickObjType", env.pickObjType);
+					webSess.GetSess()->SetValueInt32(UTF8STRC("PickObjType"), env.pickObjType);
 					env.pickObjs->Clear();
 					i = 0;
 					j = group->species->GetCount();
@@ -2504,7 +2504,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroup(Net::WebServer::IWebReq
 				if (group->groups->GetCount() > 0)
 				{
 					env.pickObjType = POT_GROUP;
-					webSess.GetSess()->SetValueInt32("PickObjType", env.pickObjType);
+					webSess.GetSess()->SetValueInt32(UTF8STRC("PickObjType"), env.pickObjType);
 					env.pickObjs->Clear();
 					i = 0;
 					j = group->groups->GetCount();
@@ -2525,7 +2525,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroup(Net::WebServer::IWebReq
 				else if (group->species->GetCount() > 0)
 				{
 					env.pickObjType = POT_SPECIES;
-					webSess.GetSess()->SetValueInt32("PickObjType", env.pickObjType);
+					webSess.GetSess()->SetValueInt32(UTF8STRC("PickObjType"), env.pickObjType);
 					env.pickObjs->Clear();
 					i = 0;
 					j = group->species->GetCount();
@@ -2570,7 +2570,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroup(Net::WebServer::IWebReq
 					if (env.pickObjs->GetCount() == 0)
 					{
 						env.pickObjType = POT_UNKNOWN;
-						webSess.GetSess()->SetValueInt32("PickObjType", env.pickObjType);
+						webSess.GetSess()->SetValueInt32(UTF8STRC("PickObjType"), env.pickObjType);
 					}
 				}
 				else if (env.pickObjType == POT_SPECIES && group->groups->GetCount() == 0)
@@ -2597,7 +2597,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroup(Net::WebServer::IWebReq
 					if (env.pickObjs->GetCount() == 0)
 					{
 						env.pickObjType = POT_UNKNOWN;
-						webSess.GetSess()->SetValueInt32("PickObjType", env.pickObjType);
+						webSess.GetSess()->SetValueInt32(UTF8STRC("PickObjType"), env.pickObjType);
 					}
 				}
 			}
@@ -2620,7 +2620,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroup(Net::WebServer::IWebReq
 					if (env.pickObjs->GetCount() == 0)
 					{
 						env.pickObjType = POT_UNKNOWN;
-						webSess.GetSess()->SetValueInt32("PickObjType", env.pickObjType);
+						webSess.GetSess()->SetValueInt32(UTF8STRC("PickObjType"), env.pickObjType);
 					}
 				}
 				else if (env.pickObjType == POT_SPECIES && group->groups->GetCount() == 0)
@@ -2640,7 +2640,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroup(Net::WebServer::IWebReq
 					if (env.pickObjs->GetCount() == 0)
 					{
 						env.pickObjType = POT_UNKNOWN;
-						webSess.GetSess()->SetValueInt32("PickObjType", env.pickObjType);
+						webSess.GetSess()->SetValueInt32(UTF8STRC("PickObjType"), env.pickObjType);
 					}
 				}
 			}
@@ -3242,7 +3242,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpecies(Net::WebServer::IWebR
 			if (action && action->Equals(UTF8STRC("pickall")))
 			{
 				env.pickObjType = POT_USERFILE;
-				webSess.GetSess()->SetValueInt32("PickObjType", env.pickObjType);
+				webSess.GetSess()->SetValueInt32(UTF8STRC("PickObjType"), env.pickObjType);
 				env.pickObjs->Clear();
 				i = 0;
 				j = species->files->GetCount();
@@ -3255,7 +3255,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpecies(Net::WebServer::IWebR
 			else if (action && action->Equals(UTF8STRC("picksel")))
 			{
 				env.pickObjType = POT_USERFILE;
-				webSess.GetSess()->SetValueInt32("PickObjType", env.pickObjType);
+				webSess.GetSess()->SetValueInt32(UTF8STRC("PickObjType"), env.pickObjType);
 				env.pickObjs->Clear();
 				i = 0;
 				j = species->files->GetCount();
@@ -3299,7 +3299,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpecies(Net::WebServer::IWebR
 					if (env.pickObjs->GetCount() == 0)
 					{
 						env.pickObjType = POT_UNKNOWN;
-						webSess.GetSess()->SetValueInt32("PickObjType", env.pickObjType);
+						webSess.GetSess()->SetValueInt32(UTF8STRC("PickObjType"), env.pickObjType);
 					}
 				}
 			}
@@ -3322,7 +3322,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpecies(Net::WebServer::IWebR
 					if (env.pickObjs->GetCount() == 0)
 					{
 						env.pickObjType = POT_UNKNOWN;
-						webSess.GetSess()->SetValueInt32("PickObjType", env.pickObjType);
+						webSess.GetSess()->SetValueInt32(UTF8STRC("PickObjType"), env.pickObjType);
 					}
 				}
 			}
@@ -7343,10 +7343,10 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcLogin(Net::WebServer::IWebReq
 				Data::ArrayListInt32 *pickObjs;
 				NEW_CLASS(t, Data::DateTime());
 				NEW_CLASS(pickObjs, Data::ArrayListInt32());
-				sess->SetValuePtr("LastUseTime", t);
-				sess->SetValuePtr("User", env.user);
-				sess->SetValuePtr("PickObjs", pickObjs);
-				sess->SetValueInt32("PickObjType", 0);
+				sess->SetValuePtr(UTF8STRC("LastUseTime"), t);
+				sess->SetValuePtr(UTF8STRC("User"), env.user);
+				sess->SetValuePtr(UTF8STRC("PickObjs"), pickObjs);
+				sess->SetValueInt32(UTF8STRC("PickObjType"), 0);
 				sess->EndUse();
 
 				NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SSWR::OrganMgr::OrganWebHandler.SvcLogin")));
@@ -9418,8 +9418,8 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::OnSessionDel(Net::WebServer::IWe
 {
 	Data::DateTime *t;
 	Data::ArrayListInt32 *pickObjs;
-	t = (Data::DateTime *)sess->GetValuePtr("LastUseTime");
-	pickObjs = (Data::ArrayListInt32*)sess->GetValuePtr("PickObjs");
+	t = (Data::DateTime *)sess->GetValuePtr(UTF8STRC("LastUseTime"));
+	pickObjs = (Data::ArrayListInt32*)sess->GetValuePtr(UTF8STRC("PickObjs"));
 	DEL_CLASS(t);
 	DEL_CLASS(pickObjs);
 	return false;
@@ -9429,7 +9429,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::OnSessionCheck(Net::WebServer::I
 {
 	Data::DateTime *t;
 	Data::DateTime currTime;
-	t = (Data::DateTime*)sess->GetValuePtr("LastUseTime");
+	t = (Data::DateTime*)sess->GetValuePtr(UTF8STRC("LastUseTime"));
 	currTime.SetCurrTimeUTC();
 	if (currTime.DiffMS(t) >= 1800000)
 		return true;
