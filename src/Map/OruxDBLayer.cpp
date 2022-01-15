@@ -95,7 +95,7 @@ void Map::OruxDBLayer::SetCurrLayer(UInt32 level)
 
 void Map::OruxDBLayer::SetCurrScale(Double scale)
 {
-	Int32 level = Math::Double2Int32(Math_Log10(204094080000.0 / scale / this->tileSize) / Math_Log10(2));
+	Int32 level = Double2Int32(Math_Log10(204094080000.0 / scale / this->tileSize) / Math_Log10(2));
 	if (level < 0)
 		level = 0;
 	else if ((UInt32)level >= this->layerMap->GetCount())

@@ -611,7 +611,7 @@ OSInt Math::TSPHReader::GetRowChanged()
 
 Int32 Math::TSPHReader::GetInt32(UOSInt colIndex)
 {
-	return Math::Double2Int32(GetDbl(colIndex));
+	return Double2Int32(GetDbl(colIndex));
 }
 
 Int64 Math::TSPHReader::GetInt64(UOSInt colIndex)

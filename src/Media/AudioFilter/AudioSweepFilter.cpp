@@ -74,7 +74,7 @@ UOSInt Media::AudioFilter::AudioSweepFilter::ReadBlock(UInt8 *buff, UOSInt blkSi
 			t += freq / this->format.frequency * 2 * Math::PI;
 			v = Math_Sin(t);
 
-			iv = Math::Double2Int32(v * 32767 * this->vol);
+			iv = Double2Int32(v * 32767 * this->vol);
 			k = this->format.nChannels;
 			while (k-- > 0)
 			{

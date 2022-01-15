@@ -359,6 +359,18 @@ typedef WChar UTF16Char;
 typedef UInt32 UTF32Char;
 #endif
 
+#define Double2Int32(val) (((val) < 0)?(Int32)(val - 0.5):(Int32)(val + 0.5))
+#define Double2Int64(val) (((val) < 0)?(Int64)(val - 0.5):(Int64)(val + 0.5))
+#if _OSINT_SIZE == 64
+#define Double2OSInt(val) (OSInt)Double2Int64(val)
+#else
+#define Double2OSInt(val) (OSInt)Double2Int32(val)
+#endif
+#define OSInt2Double(val) ((Double)(val))
+#define UOSInt2Double(val) ((Double)(val))
+#define Int64_Double(val) ((Double)(val))
+#define UInt64_Double(val) ((Double)(val))
+
 #define ROR32(x, n) ((x >> n) | (x << (32 - n)))
 #define ROR64(x, n) ((x >> n) | (x << (64 - n)))
 #define INVALID_INDEX ((UOSInt)-1)

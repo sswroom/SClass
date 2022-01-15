@@ -43,8 +43,8 @@ void Media::DeinterlaceLR::SetupInterpolationParameter(UOSInt source_length, UOS
 	Double *work;
 	Double  sum;
 	Double  pos;
-	Double dslen = Math::UOSInt2Double(source_length);
-	Double drlen = Math::UOSInt2Double(result_length);
+	Double dslen = UOSInt2Double(source_length);
+	Double drlen = UOSInt2Double(result_length);
 
 	out->length = result_length;
 	out->tap = LANCZOS_NTAP;
@@ -79,8 +79,8 @@ void Media::DeinterlaceLR::SetupInterpolationParameter(UOSInt source_length, UOS
 		j = 0;
 		while (j < out->tap)
 		{
-			UInt16 v1 = (UInt16)(0xffff & Math::Double2Int32((work[j] / sum) * 32767.0));
-			UInt16 v2 = (UInt16)(0xffff & Math::Double2Int32((work[j + 1] / sum) * 32767.0));
+			UInt16 v1 = (UInt16)(0xffff & Double2Int32((work[j] / sum) * 32767.0));
+			UInt16 v2 = (UInt16)(0xffff & Double2Int32((work[j + 1] / sum) * 32767.0));
 			UInt16 *tmpPtr = (UInt16*)&out->weight[i * out->tap + j];
 			tmpPtr[0] = v1;
 			tmpPtr[1] = v2;

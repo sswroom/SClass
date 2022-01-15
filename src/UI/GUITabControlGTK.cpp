@@ -71,7 +71,7 @@ UI::GUITabPage *UI::GUITabControl::AddTabPage(Text::String *tabName)
 	UOSInt w;
 	UOSInt h;
 	this->GetTabPageRect(&x, &y, &w, &h);
-	tp->SetRect(0, 0, Math::UOSInt2Double(w), Math::UOSInt2Double(h), false);
+	tp->SetRect(0, 0, UOSInt2Double(w), UOSInt2Double(h), false);
 	tp->SetDPI(this->hdpi, this->ddpi);
 	tp->Show();
 	this->tabPages->Add(tp);
@@ -93,7 +93,7 @@ UI::GUITabPage *UI::GUITabControl::AddTabPage(const UTF8Char *tabName)
 	UOSInt w;
 	UOSInt h;
 	this->GetTabPageRect(&x, &y, &w, &h);
-	tp->SetRect(0, 0, Math::UOSInt2Double(w), Math::UOSInt2Double(h), false);
+	tp->SetRect(0, 0, UOSInt2Double(w), UOSInt2Double(h), false);
 	tp->SetDPI(this->hdpi, this->ddpi);
 	tp->Show();
 	this->tabPages->Add(tp);

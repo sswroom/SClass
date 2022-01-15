@@ -145,7 +145,7 @@ OSInt Net::WebSite::WebSiteInstagramControl::GetChannelItems(Text::String *chann
 													}
 													if ((jsBase = obj1->GetObjectValue(UTF8STRC("taken_at_timestamp"))) != 0 && jsBase->GetType() == Text::JSONType::Number)
 													{
-														item->recTime = Math::Double2Int64(((Text::JSONNumber*)jsBase)->GetValue()) * 1000;
+														item->recTime = Double2Int64(((Text::JSONNumber*)jsBase)->GetValue()) * 1000;
 													}
 													if ((jsBase = obj1->GetObjectValue(UTF8STRC("display_url"))) != 0 && jsBase->GetType() == Text::JSONType::String)
 													{

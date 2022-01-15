@@ -221,12 +221,12 @@ Media::VectorGraph::~VectorGraph()
 
 UOSInt Media::VectorGraph::GetWidth()
 {
-	return (UOSInt)Math::Double2Int32(this->width);
+	return (UOSInt)Double2Int32(this->width);
 }
 
 UOSInt Media::VectorGraph::GetHeight()
 {
-	return (UOSInt)Math::Double2Int32(this->height);
+	return (UOSInt)Double2Int32(this->height);
 }
 
 UInt32 Media::VectorGraph::GetBitCount()
@@ -449,7 +449,7 @@ Bool Media::VectorGraph::DrawStringB(Double tlx, Double tly, Text::String *str, 
 {
 	VectorStyles *style;
 	Math::VectorString *vstr;
-	NEW_CLASS(vstr, Math::VectorString(this->srid, str, tlx, tly, 0, Math::UOSInt2Double(buffSize), this->align));
+	NEW_CLASS(vstr, Math::VectorString(this->srid, str, tlx, tly, 0, UOSInt2Double(buffSize), this->align));
 	style = MemAlloc(VectorStyles, 1);
 	style->pen = 0;
 	style->brush = (VectorBrushStyle*)b;
@@ -463,7 +463,7 @@ Bool Media::VectorGraph::DrawStringB(Double tlx, Double tly, const UTF8Char *str
 {
 	VectorStyles *style;
 	Math::VectorString *vstr;
-	NEW_CLASS(vstr, Math::VectorString(this->srid, str, tlx, tly, 0, Math::UOSInt2Double(buffSize), this->align));
+	NEW_CLASS(vstr, Math::VectorString(this->srid, str, tlx, tly, 0, UOSInt2Double(buffSize), this->align));
 	style = MemAlloc(VectorStyles, 1);
 	style->pen = 0;
 	style->brush = (VectorBrushStyle*)b;
@@ -477,7 +477,7 @@ Bool Media::VectorGraph::DrawStringRotB(Double centX, Double centY, Text::String
 {
 	VectorStyles *style;
 	Math::VectorString *vstr;
-	NEW_CLASS(vstr, Math::VectorString(this->srid, str, centX, centY, angleDegree, Math::UOSInt2Double(buffSize), this->align));
+	NEW_CLASS(vstr, Math::VectorString(this->srid, str, centX, centY, angleDegree, UOSInt2Double(buffSize), this->align));
 	style = MemAlloc(VectorStyles, 1);
 	style->pen = 0;
 	style->brush = (VectorBrushStyle*)b;
@@ -491,7 +491,7 @@ Bool Media::VectorGraph::DrawStringRotB(Double centX, Double centY, const UTF8Ch
 {
 	VectorStyles *style;
 	Math::VectorString *vstr;
-	NEW_CLASS(vstr, Math::VectorString(this->srid, str, centX, centY, angleDegree, Math::UOSInt2Double(buffSize), this->align));
+	NEW_CLASS(vstr, Math::VectorString(this->srid, str, centX, centY, angleDegree, UOSInt2Double(buffSize), this->align));
 	style = MemAlloc(VectorStyles, 1);
 	style->pen = 0;
 	style->brush = (VectorBrushStyle*)b;
@@ -511,7 +511,7 @@ Bool Media::VectorGraph::DrawImagePt(DrawImage *img, Double tlx, Double tly)
 	NEW_CLASS(imgList, Media::ImageList((const UTF8Char*)"VectorGraphImage"));
 	imgList->AddImage(stImg = img->ToStaticImage(), 0);
 	NEW_CLASS(simg, Media::SharedImage(imgList, false));
-	NEW_CLASS(vimg, Math::VectorImage(this->srid, simg, tlx, tly, tlx + Math::UOSInt2Double(stImg->info->dispWidth) * this->GetHDPI() / stImg->info->hdpi, tly + Math::UOSInt2Double(stImg->info->dispHeight) * stImg->info->par2 * this->GetVDPI() / stImg->info->vdpi, true, (const UTF8Char*)0, 0, 0));
+	NEW_CLASS(vimg, Math::VectorImage(this->srid, simg, tlx, tly, tlx + UOSInt2Double(stImg->info->dispWidth) * this->GetHDPI() / stImg->info->hdpi, tly + UOSInt2Double(stImg->info->dispHeight) * stImg->info->par2 * this->GetVDPI() / stImg->info->vdpi, true, (const UTF8Char*)0, 0, 0));
 	style = MemAlloc(VectorStyles, 1);
 	style->pen = 0;
 	style->brush = 0;
@@ -531,7 +531,7 @@ Bool Media::VectorGraph::DrawImagePt2(Media::StaticImage *img, Double tlx, Doubl
 	NEW_CLASS(imgList, Media::ImageList((const UTF8Char*)"VectorGraphImage"));
 	imgList->AddImage(img->CreateStaticImage(), 0);
 	NEW_CLASS(simg, Media::SharedImage(imgList, false));
-	NEW_CLASS(vimg, Math::VectorImage(this->srid, simg, tlx, tly, tlx + Math::UOSInt2Double(img->info->dispWidth) * this->GetHDPI() / img->info->hdpi, tly + Math::UOSInt2Double(img->info->dispHeight) * img->info->par2 * this->GetVDPI() / img->info->vdpi, true, (const UTF8Char*)0, 0, 0));
+	NEW_CLASS(vimg, Math::VectorImage(this->srid, simg, tlx, tly, tlx + UOSInt2Double(img->info->dispWidth) * this->GetHDPI() / img->info->hdpi, tly + UOSInt2Double(img->info->dispHeight) * img->info->par2 * this->GetVDPI() / img->info->vdpi, true, (const UTF8Char*)0, 0, 0));
 	style = MemAlloc(VectorStyles, 1);
 	style->pen = 0;
 	style->brush = 0;
@@ -552,7 +552,7 @@ Bool Media::VectorGraph::DrawImagePt3(DrawImage *img, Double destX, Double destY
 	NEW_CLASS(imgList, Media::ImageList((const UTF8Char*)"VectorGraphImage"));
 	imgList->AddImage(stImg = img->ToStaticImage(), 0);
 	NEW_CLASS(simg, Media::SharedImage(imgList, false));
-	NEW_CLASS(vimg, Math::VectorImage(this->srid, simg, destX, destY, destX + Math::UOSInt2Double(stImg->info->dispWidth) * this->GetHDPI() / stImg->info->hdpi, destY + Math::UOSInt2Double(stImg->info->dispHeight) * stImg->info->par2 * this->GetVDPI() / stImg->info->vdpi, true, (const UTF8Char*)0, 0, 0));
+	NEW_CLASS(vimg, Math::VectorImage(this->srid, simg, destX, destY, destX + UOSInt2Double(stImg->info->dispWidth) * this->GetHDPI() / stImg->info->hdpi, destY + UOSInt2Double(stImg->info->dispHeight) * stImg->info->par2 * this->GetVDPI() / stImg->info->vdpi, true, (const UTF8Char*)0, 0, 0));
 	style = MemAlloc(VectorStyles, 1);
 	style->pen = 0;
 	style->brush = 0;
@@ -769,7 +769,7 @@ Double Media::VectorGraph::GetVisibleHeightMM()
 void Media::VectorGraph::DrawTo(Media::DrawImage *dimg, UInt32 *imgDurMS)
 {
 	UInt32 imgTimeMS = 0;
-	Double scale = (Math::UOSInt2Double(dimg->GetWidth()) / this->width + Math::UOSInt2Double(dimg->GetHeight()) / this->height) * 0.5;
+	Double scale = (UOSInt2Double(dimg->GetWidth()) / this->width + UOSInt2Double(dimg->GetHeight()) / this->height) * 0.5;
 	Double dpi = this->GetHDPI();
 	Media::DrawEngine::DrawPos currAlign = Media::DrawEngine::DRAW_POS_TOPLEFT;
 	Media::DrawEngine::DrawPos align;
@@ -890,18 +890,18 @@ void Media::VectorGraph::DrawTo(Media::DrawImage *dimg, UInt32 *imgDurMS)
 				}
 				else
 				{
-					dimg->DrawStringB(x * scale, y * scale, vstr->GetString(), f, b, (UOSInt)Math::Double2Int32(vstr->GetBuffSize() * scale));
+					dimg->DrawStringB(x * scale, y * scale, vstr->GetString(), f, b, (UOSInt)Double2Int32(vstr->GetBuffSize() * scale));
 				}
 			}
 			else
 			{
 				if (vstr->GetBuffSize() == 0)
 				{
-					dimg->DrawStringRot(x * scale, y * scale, vstr->GetString(), f, b, Math::Double2Int32(vstr->GetAngleDegree()));
+					dimg->DrawStringRot(x * scale, y * scale, vstr->GetString(), f, b, Double2Int32(vstr->GetAngleDegree()));
 				}
 				else
 				{
-					dimg->DrawStringRotB(x * scale, y * scale, vstr->GetString(), f, b, Math::Double2Int32(vstr->GetAngleDegree()), (UOSInt)Math::Double2Int32(vstr->GetBuffSize() * scale));
+					dimg->DrawStringRotB(x * scale, y * scale, vstr->GetString(), f, b, Double2Int32(vstr->GetAngleDegree()), (UOSInt)Double2Int32(vstr->GetBuffSize() * scale));
 				}
 			}
 		}

@@ -60,7 +60,7 @@ UInt32 __stdcall Net::WiFiCapturer::ScanThread(void *userObj)
 				imac = ReadMUInt64(mac);
 				if (maxRSSI < bss->GetRSSI() && bss->GetRSSI() < 0)
 				{
-					maxRSSI = Math::Double2Int32(bss->GetRSSI());
+					maxRSSI = Double2Int32(bss->GetRSSI());
 					maxIMAC = imac;
 				}
 				Sync::MutexUsage mutUsage(me->logMut);
@@ -94,7 +94,7 @@ UInt32 __stdcall Net::WiFiCapturer::ScanThread(void *userObj)
 						Bool found = false;
 						Int32 minRSSI;
 						UOSInt minIndex;
-						Int32 rssi1 = Math::Double2Int32(bss->GetRSSI());
+						Int32 rssi1 = Double2Int32(bss->GetRSSI());
 						minRSSI = 0;
 						minIndex = 0;
 						k = 0;

@@ -104,9 +104,9 @@ void UI::GUIControl::GetSize(Double *width, Double *height)
 void UI::GUIControl::GetSizeP(OSInt *width, OSInt *height)
 {
 	if (width)
-		*width = Math::Double2Int32((this->lxPos2 - this->lxPos) * this->hdpi / this->ddpi);
+		*width = Double2Int32((this->lxPos2 - this->lxPos) * this->hdpi / this->ddpi);
 	if (height)
-		*height = Math::Double2Int32((this->lyPos2 - this->lyPos) * this->hdpi / this->ddpi);
+		*height = Double2Int32((this->lyPos2 - this->lyPos) * this->hdpi / this->ddpi);
 //	printf("Control.GetSizeP %ld, %ld\r\n", (Int32)*width, (Int32)*height);
 }
 
@@ -118,9 +118,9 @@ void UI::GUIControl::SetPosition(Double x, Double y)
 void UI::GUIControl::GetPositionP(OSInt *x, OSInt *y)
 {
 	if (x)
-		*x = Math::Double2Int32(this->lxPos * this->hdpi / this->ddpi);
+		*x = Double2Int32(this->lxPos * this->hdpi / this->ddpi);
 	if (y)
-		*y = Math::Double2Int32(this->lyPos * this->hdpi / this->ddpi);
+		*y = Double2Int32(this->lyPos * this->hdpi / this->ddpi);
 }
 
 void UI::GUIControl::GetScreenPosP(OSInt *x, OSInt *y)
@@ -145,9 +145,9 @@ void UI::GUIControl::SetArea(Double left, Double top, Double right, Double botto
 /*	if (this->parent)
 	{
 		void *container = this->parent->GetContainer();
-		gtk_fixed_move((GtkFixed*)container, (GtkWidget*)this->hwnd, Math::Double2Int32((left + xOfst) * this->hdpi / this->ddpi), Math::Double2Int32((top + yOfst) * this->hdpi / this->ddpi));
+		gtk_fixed_move((GtkFixed*)container, (GtkWidget*)this->hwnd, Double2Int32((left + xOfst) * this->hdpi / this->ddpi), Double2Int32((top + yOfst) * this->hdpi / this->ddpi));
 	}
-	gtk_widget_set_size_request((GtkWidget*)this->hwnd, Math::Double2Int32((right - left) * this->hdpi / this->ddpi), Math::Double2Int32((bottom - top) * this->hdpi / this->ddpi));
+	gtk_widget_set_size_request((GtkWidget*)this->hwnd, Double2Int32((right - left) * this->hdpi / this->ddpi), Double2Int32((bottom - top) * this->hdpi / this->ddpi));
 
 	gint outW;
 	gint outH;
@@ -189,7 +189,7 @@ void UI::GUIControl::SetAreaP(OSInt left, OSInt top, OSInt right, OSInt bottom, 
 /*	if (this->parent)
 	{
 		void *container = this->parent->GetContainer();
-		gtk_fixed_move((GtkFixed*)container, (GtkWidget*)this->hwnd, Math::Double2Int32(left + xOfst * this->hdpi / this->ddpi), Math::Double2Int32(top + yOfst * this->hdpi / this->ddpi));
+		gtk_fixed_move((GtkFixed*)container, (GtkWidget*)this->hwnd, Double2Int32(left + xOfst * this->hdpi / this->ddpi), Double2Int32(top + yOfst * this->hdpi / this->ddpi));
 	}
 	gtk_widget_set_size_request((GtkWidget*)this->hwnd, right - left, bottom - top);
 

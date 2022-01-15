@@ -7,11 +7,11 @@ Int64 Map::ShortestPathFinder::CoordToId(Double x, Double y)
 {
 	if (cu == CU_DEGREE)
 	{
-		return (Math::Double2Int64(x * 1000000.0) << 32) | (UInt32)Math::Double2Int32(y * 1000000.0);
+		return (Double2Int64(x * 1000000.0) << 32) | (UInt32)Double2Int32(y * 1000000.0);
 	}
 	else
 	{
-		return (Math::Double2Int64(x * 10.0) << 32) | (UInt32)Math::Double2Int32(y * 10.0);
+		return (Double2Int64(x * 10.0) << 32) | (UInt32)Double2Int32(y * 10.0);
 	}
 }
 

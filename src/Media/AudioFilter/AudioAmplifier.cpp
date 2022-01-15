@@ -63,7 +63,7 @@ UOSInt Media::AudioFilter::AudioAmplifier::ReadBlock(UInt8 *buff, UOSInt blkSize
 	Double thisVol = this->level;
 	if (thisVol != 1.0)
 	{
-		Int32 iVol = Math::Double2Int32(thisVol * 65536.0);
+		Int32 iVol = Double2Int32(thisVol * 65536.0);
 		if (this->bitCount == 16)
 		{
 			AudioUtil_Amplify16(buff, readSize, iVol);

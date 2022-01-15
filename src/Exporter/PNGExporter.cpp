@@ -1567,7 +1567,7 @@ Bool Exporter::PNGExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 			{
 				WriteMInt32(&hdr[0], 4);
 				*(Int32*)&hdr[4] = *(Int32*)"gAMA";
-				WriteMInt32(&hdr[8], Math::Double2Int32(100000.0 / img->info->color->rtransfer->GetGamma()));
+				WriteMInt32(&hdr[8], Double2Int32(100000.0 / img->info->color->rtransfer->GetGamma()));
 				crc.Clear();
 				crc.Calc(&hdr[4], 8);
 				crc.GetValue(&hdr[12]);
@@ -1588,14 +1588,14 @@ Bool Exporter::PNGExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 			{
 				WriteMInt32(&hdr[0], 32);
 				*(Int32*)&hdr[4] = *(Int32*)"cHRM";
-				WriteMInt32(&hdr[8], Math::Double2Int32(100000.0 * img->info->color->primaries.wx));
-				WriteMInt32(&hdr[12], Math::Double2Int32(100000.0 * img->info->color->primaries.wy));
-				WriteMInt32(&hdr[16], Math::Double2Int32(100000.0 * img->info->color->primaries.rx));
-				WriteMInt32(&hdr[20], Math::Double2Int32(100000.0 * img->info->color->primaries.ry));
-				WriteMInt32(&hdr[24], Math::Double2Int32(100000.0 * img->info->color->primaries.gx));
-				WriteMInt32(&hdr[28], Math::Double2Int32(100000.0 * img->info->color->primaries.gy));
-				WriteMInt32(&hdr[32], Math::Double2Int32(100000.0 * img->info->color->primaries.bx));
-				WriteMInt32(&hdr[36], Math::Double2Int32(100000.0 * img->info->color->primaries.by));
+				WriteMInt32(&hdr[8], Double2Int32(100000.0 * img->info->color->primaries.wx));
+				WriteMInt32(&hdr[12], Double2Int32(100000.0 * img->info->color->primaries.wy));
+				WriteMInt32(&hdr[16], Double2Int32(100000.0 * img->info->color->primaries.rx));
+				WriteMInt32(&hdr[20], Double2Int32(100000.0 * img->info->color->primaries.ry));
+				WriteMInt32(&hdr[24], Double2Int32(100000.0 * img->info->color->primaries.gx));
+				WriteMInt32(&hdr[28], Double2Int32(100000.0 * img->info->color->primaries.gy));
+				WriteMInt32(&hdr[32], Double2Int32(100000.0 * img->info->color->primaries.bx));
+				WriteMInt32(&hdr[36], Double2Int32(100000.0 * img->info->color->primaries.by));
 				crc.Clear();
 				crc.Calc(&hdr[4], 36);
 				crc.GetValue(&hdr[40]);
@@ -1606,8 +1606,8 @@ Bool Exporter::PNGExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 
 	if (img->info->hdpi != 72.0 || img->info->vdpi != 72.0)
 	{
-		Int32 hVal = Math::Double2Int32(1.0 / Math::Unit::Distance::Convert(Math::Unit::Distance::DU_INCH, Math::Unit::Distance::DU_METER, 1.0 / img->info->hdpi));
-		Int32 vVal = Math::Double2Int32(1.0 / Math::Unit::Distance::Convert(Math::Unit::Distance::DU_INCH, Math::Unit::Distance::DU_METER, 1.0 / img->info->vdpi));
+		Int32 hVal = Double2Int32(1.0 / Math::Unit::Distance::Convert(Math::Unit::Distance::DU_INCH, Math::Unit::Distance::DU_METER, 1.0 / img->info->hdpi));
+		Int32 vVal = Double2Int32(1.0 / Math::Unit::Distance::Convert(Math::Unit::Distance::DU_INCH, Math::Unit::Distance::DU_METER, 1.0 / img->info->vdpi));
 		WriteMInt32(&hdr[0], 9);
 		*(Int32*)&hdr[4] = *(Int32*)"pHYs";
 		WriteMInt32(&hdr[8], hVal);

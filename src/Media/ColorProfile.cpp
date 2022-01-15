@@ -727,25 +727,25 @@ Int32 Media::ColorProfile::XYZToRGB32(Double a, Double X, Double Y, Double Z)
 	B = btrant->ForwardTransfer(B);
 
 	outVal = 0;
-	iVal = Math::Double2Int32(B * 255.0);
+	iVal = Double2Int32(B * 255.0);
 	if (iVal < 0)
 		iVal = 0;
 	else if (iVal > 255)
 		iVal = 255;
 	outVal |= iVal;
-	iVal = Math::Double2Int32(G * 255.0);
+	iVal = Double2Int32(G * 255.0);
 	if (iVal < 0)
 		iVal = 0;
 	else if (iVal > 255)
 		iVal = 255;
 	outVal |= iVal << 8;
-	iVal = Math::Double2Int32(R * 255.0);
+	iVal = Double2Int32(R * 255.0);
 	if (iVal < 0)
 		iVal = 0;
 	else if (iVal > 255)
 		iVal = 255;
 	outVal |= iVal << 16;
-	iVal = Math::Double2Int32(a * 255.0);
+	iVal = Double2Int32(a * 255.0);
 	if (iVal < 0)
 		iVal = 0;
 	else if (iVal > 255)

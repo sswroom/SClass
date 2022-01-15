@@ -95,7 +95,7 @@ Bool IO::Device::SDM120M::ReadRelayPulseWidth(Int32 *ms)
 	Double dval;
 	if (this->ReadHoldingFloat(0x000A, &dval))
 	{
-		*ms = Math::Double2Int32(dval);
+		*ms = Double2Int32(dval);
 		return true;
 	}
 	return false;
@@ -106,7 +106,7 @@ Bool IO::Device::SDM120M::ReadParityStop(Int32 *parity)
 	Double dval;
 	if (this->ReadHoldingFloat(0x0012, &dval))
 	{
-		*parity = Math::Double2Int32(dval);
+		*parity = Double2Int32(dval);
 		return true;
 	}
 	return false;
@@ -117,7 +117,7 @@ Bool IO::Device::SDM120M::ReadNetworkNode(Int32 *addr)
 	Double dval;
 	if (this->ReadHoldingFloat(0x0014, &dval))
 	{
-		*addr = Math::Double2Int32(dval);
+		*addr = Double2Int32(dval);
 		return true;
 	}
 	return false;
@@ -128,7 +128,7 @@ Bool IO::Device::SDM120M::ReadBaudRate(Int32 *baudRate)
 	Double brId = 0;
 	if (this->ReadHoldingFloat(0x001C, &brId))
 	{
-		switch (Math::Double2Int32(brId))
+		switch (Double2Int32(brId))
 		{
 		case 0:
 			*baudRate = 2400;

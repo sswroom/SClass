@@ -82,9 +82,9 @@ void Media::RGBLUTGen::GenRGB8_LRGB(UInt16 *rgbTable, Media::ColorProfile *srcPr
 	i = 256;
 	while (i-- > 0)
 	{
-		rgbTable[i] = (UInt16)Math::Double2Int32(irFunc->InverseTransfer(Math::UOSInt2Double(i) / 255.0) * maxRGBVal);
-		rgbTable[i + 256] = (UInt16)Math::Double2Int32(igFunc->InverseTransfer(Math::UOSInt2Double(i) / 255.0) * maxRGBVal);
-		rgbTable[i + 512] = (UInt16)Math::Double2Int32(ibFunc->InverseTransfer(Math::UOSInt2Double(i) / 255.0) * maxRGBVal);
+		rgbTable[i] = (UInt16)Double2Int32(irFunc->InverseTransfer(UOSInt2Double(i) / 255.0) * maxRGBVal);
+		rgbTable[i + 256] = (UInt16)Double2Int32(igFunc->InverseTransfer(UOSInt2Double(i) / 255.0) * maxRGBVal);
+		rgbTable[i + 512] = (UInt16)Double2Int32(ibFunc->InverseTransfer(UOSInt2Double(i) / 255.0) * maxRGBVal);
 	}
 	DEL_CLASS(irFunc);
 	DEL_CLASS(igFunc);
@@ -217,32 +217,32 @@ void Media::RGBLUTGen::GenRGBA8_LRGBC(Int64 *rgbTable, Media::ColorProfile *srcP
 	i = 256;
 	while (i-- > 0)
 	{
-		thisV = irFunc->InverseTransfer(Math::UOSInt2Double(i) / 255.0) * maxRGBVal;
+		thisV = irFunc->InverseTransfer(UOSInt2Double(i) / 255.0) * maxRGBVal;
 		v[2] = Math::SDouble2Int16(thisV * mat1.vec[0].val[0]);
 		v[1] = Math::SDouble2Int16(thisV * mat1.vec[1].val[0]);
 		v[0] = Math::SDouble2Int16(thisV * mat1.vec[2].val[0]);
 		v[3] = 0;
 		rgbTable[i] = *(Int64*)&v[0];
 
-		thisV = igFunc->InverseTransfer(Math::UOSInt2Double(i) / 255.0) * maxRGBVal;
+		thisV = igFunc->InverseTransfer(UOSInt2Double(i) / 255.0) * maxRGBVal;
 		v[2] = Math::SDouble2Int16(thisV * mat1.vec[0].val[1]);
 		v[1] = Math::SDouble2Int16(thisV * mat1.vec[1].val[1]);
 		v[0] = Math::SDouble2Int16(thisV * mat1.vec[2].val[1]);
 		v[3] = 0;
 		rgbTable[i + 256] = *(Int64*)&v[0];
 
-		thisV = ibFunc->InverseTransfer(Math::UOSInt2Double(i) / 255.0) * maxRGBVal;
+		thisV = ibFunc->InverseTransfer(UOSInt2Double(i) / 255.0) * maxRGBVal;
 		v[2] = Math::SDouble2Int16(thisV * mat1.vec[0].val[2]);
 		v[1] = Math::SDouble2Int16(thisV * mat1.vec[1].val[2]);
 		v[0] = Math::SDouble2Int16(thisV * mat1.vec[2].val[2]);
 		v[3] = 0;
 		rgbTable[i + 512] = *(Int64*)&v[0];
 
-		cV = Math::UOSInt2Double(i) / 255.0 * maxRGBVal;
+		cV = UOSInt2Double(i) / 255.0 * maxRGBVal;
 		v[0] = 0;
 		v[1] = 0;
 		v[2] = 0;
-		v[3] = (Int16)Math::Double2Int32(cV);
+		v[3] = (Int16)Double2Int32(cV);
 		rgbTable[i + 768] = *(Int64*)&v[0];
 	}
 	DEL_CLASS(irFunc);
@@ -380,32 +380,32 @@ void Media::RGBLUTGen::GenRGB16_LRGBC(Int64 *rgbTable, Media::ColorProfile *srcP
 	i = 65536;
 	while (i-- > 0)
 	{
-		thisV = irFunc->InverseTransfer(Math::UOSInt2Double(i) / 65535.0) * maxRGBVal;
+		thisV = irFunc->InverseTransfer(UOSInt2Double(i) / 65535.0) * maxRGBVal;
 		v[2] = Math::SDouble2Int16(thisV * mat1.vec[0].val[0]);
 		v[1] = Math::SDouble2Int16(thisV * mat1.vec[1].val[0]);
 		v[0] = Math::SDouble2Int16(thisV * mat1.vec[2].val[0]);
 		v[3] = 0;
 		rgbTable[i] = *(Int64*)&v[0];
 
-		thisV = igFunc->InverseTransfer(Math::UOSInt2Double(i) / 65535.0) * maxRGBVal;
+		thisV = igFunc->InverseTransfer(UOSInt2Double(i) / 65535.0) * maxRGBVal;
 		v[2] = Math::SDouble2Int16(thisV * mat1.vec[0].val[1]);
 		v[1] = Math::SDouble2Int16(thisV * mat1.vec[1].val[1]);
 		v[0] = Math::SDouble2Int16(thisV * mat1.vec[2].val[1]);
 		v[3] = 0;
 		rgbTable[i + 65536] = *(Int64*)&v[0];
 
-		thisV = ibFunc->InverseTransfer(Math::UOSInt2Double(i) / 65535.0) * maxRGBVal;
+		thisV = ibFunc->InverseTransfer(UOSInt2Double(i) / 65535.0) * maxRGBVal;
 		v[2] = Math::SDouble2Int16(thisV * mat1.vec[0].val[2]);
 		v[1] = Math::SDouble2Int16(thisV * mat1.vec[1].val[2]);
 		v[0] = Math::SDouble2Int16(thisV * mat1.vec[2].val[2]);
 		v[3] = 0;
 		rgbTable[i + 131072] = *(Int64*)&v[0];
 
-		cV = Math::UOSInt2Double(i) / 255.0 * maxRGBVal;
+		cV = UOSInt2Double(i) / 255.0 * maxRGBVal;
 		v[0] = 0;
 		v[1] = 0;
 		v[2] = 0;
-		v[3] = (Int16)Math::Double2Int32(cV);
+		v[3] = (Int16)Double2Int32(cV);
 		rgbTable[i + 196608] = *(Int64*)&v[0];
 	}
 	DEL_CLASS(ibFunc);
@@ -600,19 +600,19 @@ void Media::RGBLUTGen::GenLRGB_BGRA8(UInt8 *rgbTable, Media::ColorProfile *destP
 		else if (rV < 0)
 			rgbTable[i + 131072] = 0;
 		else
-			rgbTable[i + 131072] = (UInt8)Math::Double2Int32(rV);
+			rgbTable[i + 131072] = (UInt8)Double2Int32(rV);
 		if (gV > 255.0)
 			rgbTable[i + 65536] = 255;
 		else if (gV < 0)
 			rgbTable[i + 65536] = 0;
 		else
-			rgbTable[i + 65536] = (UInt8)Math::Double2Int32(gV);
+			rgbTable[i + 65536] = (UInt8)Double2Int32(gV);
 		if (bV > 255.0)
 			rgbTable[i + 0] = 255;
 		else if (bV < 0)
 			rgbTable[i + 0] = 0;
 		else
-			rgbTable[i + 0] = (UInt8)Math::Double2Int32(bV);
+			rgbTable[i + 0] = (UInt8)Double2Int32(bV);
 	}
 	DEL_CLASS(frFunc);
 	DEL_CLASS(fgFunc);
@@ -800,19 +800,19 @@ void Media::RGBLUTGen::GenLRGB_RGB16(UInt8 *rgbTable, Media::ColorProfile *destP
 		else if (rV < 0)
 			*(UInt16*)&rgbTable[i * 2 + 262144] = 0;
 		else
-			*(UInt16*)&rgbTable[i * 2 + 262144] = (UInt16)(((UInt16)Math::Double2Int32(rV)) << 11);
+			*(UInt16*)&rgbTable[i * 2 + 262144] = (UInt16)(((UInt16)Double2Int32(rV)) << 11);
 		if (gV > 63.0)
 			*(UInt16*)&rgbTable[i * 2 + 131072] = 63 << 5;
 		else if (gV < 0)
 			*(UInt16*)&rgbTable[i * 2 + 131072] = 0;
 		else
-			*(UInt16*)&rgbTable[i * 2 + 131072] = (UInt16)(((UInt16)Math::Double2Int32(gV)) << 5);
+			*(UInt16*)&rgbTable[i * 2 + 131072] = (UInt16)(((UInt16)Double2Int32(gV)) << 5);
 		if (bV > 31.0)
 			*(UInt16*)&rgbTable[i * 2 + 0] = 31;
 		else if (bV < 0)
 			*(UInt16*)&rgbTable[i * 2 + 0] = 0;
 		else
-			*(UInt16*)&rgbTable[i * 2 + 0] = (UInt16)Math::Double2Int32(bV);
+			*(UInt16*)&rgbTable[i * 2 + 0] = (UInt16)Double2Int32(bV);
 	}
 	DEL_CLASS(frFunc);
 	DEL_CLASS(fgFunc);
@@ -1000,19 +1000,19 @@ void Media::RGBLUTGen::GenLRGB_A2B10G10R10(UInt8 *rgbTable, Media::ColorProfile 
 		else if (rV < 0)
 			*(Int32*)&rgbTable[i * 4 + 524288] = 0;
 		else
-			*(Int32*)&rgbTable[i * 4 + 524288] = Math::Double2Int32(rV);
+			*(Int32*)&rgbTable[i * 4 + 524288] = Double2Int32(rV);
 		if (gV > 1023.0)
 			*(Int32*)&rgbTable[i * 4 + 262144] = ((Int32)1023) << 10;
 		else if (gV < 0)
 			*(Int32*)&rgbTable[i * 4 + 262144] = 0;
 		else
-			*(Int32*)&rgbTable[i * 4 + 262144] = Math::Double2Int32(gV) << 10;
+			*(Int32*)&rgbTable[i * 4 + 262144] = Double2Int32(gV) << 10;
 		if (bV > 1023.0)
 			*(UInt32*)&rgbTable[i * 4 + 0] = 0xc0000000 | (((Int32)1023) << 20);
 		else if (bV < 0)
 			*(UInt32*)&rgbTable[i * 4 + 0] = 0xc0000000;
 		else
-			*(UInt32*)&rgbTable[i * 4 + 0] = 0xc0000000 | (UInt32)(Math::Double2Int32(bV) << 20);
+			*(UInt32*)&rgbTable[i * 4 + 0] = 0xc0000000 | (UInt32)(Double2Int32(bV) << 20);
 	}
 	DEL_CLASS(frFunc);
 	DEL_CLASS(fgFunc);
@@ -1206,19 +1206,19 @@ void Media::RGBLUTGen::GenLARGB_A2B10G10R10(UInt8 *rgbTable, Media::ColorProfile
 		else if (rV < 0)
 			WriteUInt32(&rgbTable[i * 4 + 524288], 0);
 		else
-			WriteInt32(&rgbTable[i * 4 + 524288], Math::Double2Int32(rV));
+			WriteInt32(&rgbTable[i * 4 + 524288], Double2Int32(rV));
 		if (gV > 1023.0)
 			WriteInt32(&rgbTable[i * 4 + 262144], ((Int32)1023) << 10);
 		else if (gV < 0)
 			WriteInt32(&rgbTable[i * 4 + 262144], 0);
 		else
-			WriteInt32(&rgbTable[i * 4 + 262144], Math::Double2Int32(gV) << 10);
+			WriteInt32(&rgbTable[i * 4 + 262144], Double2Int32(gV) << 10);
 		if (bV > 1023.0)
 			WriteInt32(&rgbTable[i * 4 + 0], ((Int32)1023) << 20);
 		else if (bV < 0)
 			WriteInt32(&rgbTable[i * 4 + 0], 0);
 		else
-			WriteInt32(&rgbTable[i * 4 + 0], Math::Double2Int32(bV) << 20);
+			WriteInt32(&rgbTable[i * 4 + 0], Double2Int32(bV) << 20);
 	}
 	DEL_CLASS(frFunc);
 	DEL_CLASS(fgFunc);
@@ -1412,19 +1412,19 @@ void Media::RGBLUTGen::GenLARGB_B8G8R8A8(UInt8 *rgbTable, Media::ColorProfile *d
 		else if (rV < 0)
 			WriteInt32(&rgbTable[i * 4 + 524288], 0);
 		else
-			WriteInt32(&rgbTable[i * 4 + 524288], Math::Double2Int32(rV) << 16);
+			WriteInt32(&rgbTable[i * 4 + 524288], Double2Int32(rV) << 16);
 		if (gV > 255.0)
 			WriteInt32(&rgbTable[i * 4 + 262144], 0xff00);
 		else if (gV < 0)
 			WriteInt32(&rgbTable[i * 4 + 262144], 0);
 		else
-			WriteInt32(&rgbTable[i * 4 + 262144], Math::Double2Int32(gV) << 8);
+			WriteInt32(&rgbTable[i * 4 + 262144], Double2Int32(gV) << 8);
 		if (bV > 255.0)
 			WriteInt32(&rgbTable[i * 4 + 0], 0xff);
 		else if (bV < 0)
 			WriteInt32(&rgbTable[i * 4 + 0], 0);
 		else
-			WriteInt32(&rgbTable[i * 4 + 0], Math::Double2Int32(bV));
+			WriteInt32(&rgbTable[i * 4 + 0], Double2Int32(bV));
 	}
 	DEL_CLASS(frFunc);
 	DEL_CLASS(fgFunc);

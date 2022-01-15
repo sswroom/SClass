@@ -92,7 +92,7 @@ void Media::CS::CSRGB8_LRGBC::UpdateRGBTable()
 	i = 256;
 	while (i--)
 	{
-		dV = Math::OSInt2Double(i) / 255.0;
+		dV = OSInt2Double(i) / 255.0;
 		thisV = rtFunc->InverseTransfer(dV);
 		v[2] = (UInt16)Math::SDouble2Int16(thisV * 16383.0 * mat1.vec[0].val[0]);
 		v[1] = (UInt16)Math::SDouble2Int16(thisV * 16383.0 * mat1.vec[1].val[0]);

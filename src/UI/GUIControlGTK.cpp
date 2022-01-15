@@ -139,7 +139,7 @@ void UI::GUIControl::SetSize(Double width, Double height)
 
 void UI::GUIControl::SetSizeP(UOSInt width, UOSInt height)
 {
-	this->SetArea(this->lxPos, this->lyPos, this->lxPos + Math::UOSInt2Double(width) * this->ddpi / this->hdpi, this->lyPos + Math::UOSInt2Double(height) * this->ddpi / this->hdpi, true);
+	this->SetArea(this->lxPos, this->lyPos, this->lxPos + UOSInt2Double(width) * this->ddpi / this->hdpi, this->lyPos + UOSInt2Double(height) * this->ddpi / this->hdpi, true);
 }
 
 void UI::GUIControl::GetSize(Double *width, Double *height)
@@ -154,9 +154,9 @@ void UI::GUIControl::GetSize(Double *width, Double *height)
 void UI::GUIControl::GetSizeP(UOSInt *width, UOSInt *height)
 {
 	if (width)
-		*width = (UInt32)Math::Double2Int32((this->lxPos2 - this->lxPos) * this->hdpi / this->ddpi);
+		*width = (UInt32)Double2Int32((this->lxPos2 - this->lxPos) * this->hdpi / this->ddpi);
 	if (height)
-		*height = (UInt32)Math::Double2Int32((this->lyPos2 - this->lyPos) * this->hdpi / this->ddpi);
+		*height = (UInt32)Double2Int32((this->lyPos2 - this->lyPos) * this->hdpi / this->ddpi);
 //	printf("Control.GetSizeP %ld, %ld\r\n", (Int32)*width, (Int32)*height);
 }
 
@@ -168,9 +168,9 @@ void UI::GUIControl::SetPosition(Double x, Double y)
 void UI::GUIControl::GetPositionP(OSInt *x, OSInt *y)
 {
 	if (x)
-		*x = Math::Double2Int32(this->lxPos * this->hdpi / this->ddpi);
+		*x = Double2Int32(this->lxPos * this->hdpi / this->ddpi);
 	if (y)
-		*y = Math::Double2Int32(this->lyPos * this->hdpi / this->ddpi);
+		*y = Double2Int32(this->lyPos * this->hdpi / this->ddpi);
 }
 
 void UI::GUIControl::GetScreenPosP(OSInt *x, OSInt *y)
@@ -199,7 +199,7 @@ void UI::GUIControl::SetArea(Double left, Double top, Double right, Double botto
 	if (this->parent)
 	{
 		void *container = this->parent->GetContainer();
-		gtk_fixed_move((GtkFixed*)container, (GtkWidget*)this->hwnd, Math::Double2Int32((left + xOfst) * this->hdpi / this->ddpi), Math::Double2Int32((top + yOfst) * this->hdpi / this->ddpi));
+		gtk_fixed_move((GtkFixed*)container, (GtkWidget*)this->hwnd, Double2Int32((left + xOfst) * this->hdpi / this->ddpi), Double2Int32((top + yOfst) * this->hdpi / this->ddpi));
 	}
 	if ((right - left) < 0)
 	{
@@ -209,7 +209,7 @@ void UI::GUIControl::SetArea(Double left, Double top, Double right, Double botto
 	{
 		bottom = top;
 	}
-	gtk_widget_set_size_request((GtkWidget*)this->hwnd, Math::Double2Int32((right - left) * this->hdpi / this->ddpi), Math::Double2Int32((bottom - top) * this->hdpi / this->ddpi));
+	gtk_widget_set_size_request((GtkWidget*)this->hwnd, Double2Int32((right - left) * this->hdpi / this->ddpi), Double2Int32((bottom - top) * this->hdpi / this->ddpi));
 
 	gint outW;
 	gint outH;
@@ -241,7 +241,7 @@ void UI::GUIControl::SetArea(Double left, Double top, Double right, Double botto
 
 void UI::GUIControl::SetAreaP(OSInt left, OSInt top, OSInt right, OSInt bottom, Bool updateScn)
 {
-	if (Math::OSInt2Double(left) == this->lxPos && Math::OSInt2Double(top) == this->lyPos && Math::OSInt2Double(right) == this->lxPos2 && Math::OSInt2Double(bottom) == this->lyPos2)
+	if (OSInt2Double(left) == this->lxPos && OSInt2Double(top) == this->lyPos && OSInt2Double(right) == this->lxPos2 && OSInt2Double(bottom) == this->lyPos2)
 		return;
 	Double xOfst = 0;
 	Double yOfst = 0;
@@ -249,14 +249,14 @@ void UI::GUIControl::SetAreaP(OSInt left, OSInt top, OSInt right, OSInt bottom, 
 	{
 		this->parent->GetClientOfst(&xOfst, &yOfst);
 	}
-	this->lxPos = Math::OSInt2Double(left) * this->ddpi / this->hdpi;
-	this->lyPos = Math::OSInt2Double(top) * this->ddpi / this->hdpi;
+	this->lxPos = OSInt2Double(left) * this->ddpi / this->hdpi;
+	this->lyPos = OSInt2Double(top) * this->ddpi / this->hdpi;
 	this->selfResize = true;
 
 	if (this->parent)
 	{
 		void *container = this->parent->GetContainer();
-		gtk_fixed_move((GtkFixed*)container, (GtkWidget*)this->hwnd, Math::Double2Int32(Math::OSInt2Double(left) + xOfst * this->hdpi / this->ddpi), Math::Double2Int32(Math::OSInt2Double(top) + yOfst * this->hdpi / this->ddpi));
+		gtk_fixed_move((GtkFixed*)container, (GtkWidget*)this->hwnd, Double2Int32(OSInt2Double(left) + xOfst * this->hdpi / this->ddpi), Double2Int32(OSInt2Double(top) + yOfst * this->hdpi / this->ddpi));
 	}
 	if ((right - left) < 0)
 	{
@@ -273,19 +273,19 @@ void UI::GUIControl::SetAreaP(OSInt left, OSInt top, OSInt right, OSInt bottom, 
 	gtk_widget_get_size_request((GtkWidget*)this->hwnd, &outW, &outH);
 	if (outW == -1)
 	{
-		this->lxPos2 = Math::OSInt2Double(right) * this->ddpi / this->hdpi;
+		this->lxPos2 = OSInt2Double(right) * this->ddpi / this->hdpi;
 	}
 	else
 	{
-		this->lxPos2 = Math::OSInt2Double(left + outW) * this->ddpi / this->hdpi;
+		this->lxPos2 = OSInt2Double(left + outW) * this->ddpi / this->hdpi;
 	}
 	if (outH == -1)
 	{
-		this->lyPos2 = Math::OSInt2Double(bottom) * this->ddpi / this->hdpi;
+		this->lyPos2 = OSInt2Double(bottom) * this->ddpi / this->hdpi;
 	}
 	else
 	{
-		this->lyPos2 = Math::OSInt2Double(top + outH) * this->ddpi / this->hdpi;
+		this->lyPos2 = OSInt2Double(top + outH) * this->ddpi / this->hdpi;
 	}
 	this->selfResize = false;
 	this->OnSizeChanged(updateScn);
@@ -523,7 +523,7 @@ void UI::GUIControl::UpdatePos(Bool redraw)
 		Double yOfst = 0;
 		this->parent->GetClientOfst(&xOfst, &yOfst);
 		void *container = this->parent->GetContainer();
-		gtk_fixed_move((GtkFixed*)container, (GtkWidget*)this->hwnd, Math::Double2Int32((this->lxPos + xOfst) * this->hdpi / this->ddpi), Math::Double2Int32((this->lyPos + yOfst) * this->hdpi / this->ddpi));
+		gtk_fixed_move((GtkFixed*)container, (GtkWidget*)this->hwnd, Double2Int32((this->lxPos + xOfst) * this->hdpi / this->ddpi), Double2Int32((this->lyPos + yOfst) * this->hdpi / this->ddpi));
 		if (this->lxPos2 < this->lxPos)
 		{
 			this->lxPos2 = this->lxPos;
@@ -532,7 +532,7 @@ void UI::GUIControl::UpdatePos(Bool redraw)
 		{
 			this->lyPos2 = this->lyPos;
 		}
-		gtk_widget_set_size_request((GtkWidget*)this->hwnd, Math::Double2Int32((this->lxPos2 - this->lxPos) * this->hdpi / this->ddpi), Math::Double2Int32((this->lyPos2 - this->lyPos) * this->hdpi / this->ddpi));
+		gtk_widget_set_size_request((GtkWidget*)this->hwnd, Double2Int32((this->lxPos2 - this->lxPos) * this->hdpi / this->ddpi), Double2Int32((this->lyPos2 - this->lyPos) * this->hdpi / this->ddpi));
 	}
 	else if (isForm)
 	{
@@ -555,8 +555,8 @@ void UI::GUIControl::UpdatePos(Bool redraw)
 				newW = maxW;
 			if (newH > maxH)
 				newH = maxH;
-			newX = (Math::OSInt2Double(winX + winX + (OSInt)winW) - newW) * 0.5;
-			newY = (Math::OSInt2Double(winY + winY + (OSInt)winH) - newH) * 0.5;
+			newX = (OSInt2Double(winX + winX + (OSInt)winW) - newW) * 0.5;
+			newY = (OSInt2Double(winY + winY + (OSInt)winH) - newH) * 0.5;
 			if (newY < monInfo->GetTop())
 			{
 				newY = monInfo->GetTop();
@@ -571,24 +571,24 @@ void UI::GUIControl::UpdatePos(Bool redraw)
 				newW = maxX;
 			if (newH > maxY)
 				newH = maxY;
-			newX = (Math::OSInt2Double(winX + winX + (OSInt)winW) - newW) * 0.5;
-			newY = (Math::OSInt2Double(winY + winY + (OSInt)winH) - newH) * 0.5;
+			newX = (OSInt2Double(winX + winX + (OSInt)winW) - newW) * 0.5;
+			newY = (OSInt2Double(winY + winY + (OSInt)winH) - newH) * 0.5;
 			if (newY < 0)
 			{
 				newY = 0;
 			}
 		}
 
-		gtk_window_move((GtkWindow*)this->hwnd, Math::Double2Int32(newX), Math::Double2Int32(newY));
+		gtk_window_move((GtkWindow*)this->hwnd, Double2Int32(newX), Double2Int32(newY));
 		if (gtk_window_get_resizable((GtkWindow*)this->hwnd))
 		{
-			gtk_window_resize((GtkWindow*)this->hwnd, Math::Double2Int32(newW), Math::Double2Int32(newH));
+			gtk_window_resize((GtkWindow*)this->hwnd, Double2Int32(newW), Double2Int32(newH));
 		}
 		else
 		{
 			gtk_window_set_resizable((GtkWindow*)this->hwnd, true);
-			gtk_window_set_default_size((GtkWindow*)this->hwnd, Math::Double2Int32(newW), Math::Double2Int32(newH));
-			gtk_window_resize((GtkWindow*)this->hwnd, Math::Double2Int32(newW), Math::Double2Int32(newH));
+			gtk_window_set_default_size((GtkWindow*)this->hwnd, Double2Int32(newW), Double2Int32(newH));
+			gtk_window_resize((GtkWindow*)this->hwnd, Double2Int32(newW), Double2Int32(newH));
 			g_idle_add(GUIControl_SetNoResize, this->hwnd);
 		}
 	}

@@ -767,7 +767,7 @@ void Data::DateTime::SetValueVariTime(Double variTime)
 	this->tzQhr = 0;
 	OSInt d = (OSInt)variTime;
 	this->AddDay(d);
-	variTime = (variTime - Math::OSInt2Double(d)) * 24;
+	variTime = (variTime - OSInt2Double(d)) * 24;
 	tval->hour = (UInt8)variTime;
 	variTime = (variTime - tval->hour) * 60;
 	tval->minute = (UInt8)variTime;

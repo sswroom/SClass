@@ -56,7 +56,7 @@ void TestChart()
 	UOSInt j = 20;
 	while (i < j)
 	{
-		dataSheet->SetCellDouble(0, i + 1, numStyle, 112.0 + Math::UOSInt2Double(i) * 0.1);
+		dataSheet->SetCellDouble(0, i + 1, numStyle, 112.0 + UOSInt2Double(i) * 0.1);
 		
 		sbuff2[0] = (UTF8Char)('A' + i);
 		sbuff2[1] = 0;
@@ -77,7 +77,7 @@ void TestChart()
 			{
 				if (i != 5)
 				{
-					dataSheet->SetCellDouble(rowNum, i + 1, numStyle, Math::UOSInt2Double(i) * 0.1);
+					dataSheet->SetCellDouble(rowNum, i + 1, numStyle, UOSInt2Double(i) * 0.1);
 				}
 				i++;
 			}
@@ -110,7 +110,7 @@ void TestCols()
 	UOSInt j = 2000;
 	while (i < j)
 	{
-		sheet->SetCellDouble(0, i + 1, numStyle, 112.0 + Math::UOSInt2Double(i) * 0.1);
+		sheet->SetCellDouble(0, i + 1, numStyle, 112.0 + UOSInt2Double(i) * 0.1);
 
 		i++;
 	}

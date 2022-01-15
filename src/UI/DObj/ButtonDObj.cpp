@@ -161,8 +161,8 @@ void UI::DObj::ButtonDObj::DrawObject(Media::DrawImage *dimg)
 //			OSInt w = bmpS1->GetWidth();
 //			OSInt h = bmpS1->GetHeight();
 			OSInt pxCnt = bmpS1->GetWidth() * bmpS1->GetHeight();
-			OSInt a1 = Math::Double2Int32(this->alpha * 32767);
-			OSInt a2 = Math::Double2Int32((1 - this->alpha) * 32767);
+			OSInt a1 = Double2Int32(this->alpha * 32767);
+			OSInt a2 = Double2Int32((1 - this->alpha) * 32767);
 			if ((((OSInt)ptrD) & 15) != 0 || (pxCnt & 3) != 0)
 			{
 				_asm
@@ -260,25 +260,25 @@ bdolop2:
 				i = lineBytes;
 				while (i-- > 0)
 				{
-					*ptrD++ = (UInt8)Math::Double2Int32(a1 * (*ptrS1++) + a2 * (*ptrS2++));
+					*ptrD++ = (UInt8)Double2Int32(a1 * (*ptrS1++) + a2 * (*ptrS2++));
 				}
 			}
 #endif
-			dimg->DrawImagePt(bmpTmp, Math::OSInt2Double(left), Math::OSInt2Double(top));
+			dimg->DrawImagePt(bmpTmp, OSInt2Double(left), OSInt2Double(top));
 			this->deng->DeleteImage(bmpTmp);
 		}
 		else
 		{
-			dimg->DrawImagePt(this->bmpUnclick, Math::OSInt2Double(left), Math::OSInt2Double(top));
+			dimg->DrawImagePt(this->bmpUnclick, OSInt2Double(left), OSInt2Double(top));
 		}
 	}
 	else if (this->bmpUnclick)
 	{
-		dimg->DrawImagePt(this->bmpUnclick, Math::OSInt2Double(left), Math::OSInt2Double(top));
+		dimg->DrawImagePt(this->bmpUnclick, OSInt2Double(left), OSInt2Double(top));
 	}
 	else if (this->bmpClicked)
 	{
-		dimg->DrawImagePt(this->bmpClicked, Math::OSInt2Double(left), Math::OSInt2Double(top));
+		dimg->DrawImagePt(this->bmpClicked, OSInt2Double(left), OSInt2Double(top));
 	}
 }
 

@@ -48,21 +48,21 @@ UI::GUIHScrollBar::~GUIHScrollBar()
 void UI::GUIHScrollBar::InitScrollBar(UOSInt minVal, UOSInt maxVal, UOSInt currVal, UOSInt largeChg)
 {
 	GtkAdjustment *adj = gtk_range_get_adjustment((GtkRange*)this->hwnd);
-	gtk_adjustment_configure(adj, Math::UOSInt2Double(currVal), Math::UOSInt2Double(minVal), Math::UOSInt2Double(maxVal), 1, Math::UOSInt2Double(largeChg), Math::UOSInt2Double(largeChg));
+	gtk_adjustment_configure(adj, UOSInt2Double(currVal), UOSInt2Double(minVal), UOSInt2Double(maxVal), 1, UOSInt2Double(largeChg), UOSInt2Double(largeChg));
 	this->EventPosChanged();
 }
 
 void UI::GUIHScrollBar::SetPos(UOSInt pos)
 {
 	GtkAdjustment *adj = gtk_range_get_adjustment((GtkRange*)this->hwnd);
-	gtk_adjustment_set_value(adj, Math::UOSInt2Double(pos));
+	gtk_adjustment_set_value(adj, UOSInt2Double(pos));
 	this->EventPosChanged();
 }
 
 UOSInt UI::GUIHScrollBar::GetPos()
 {
 	GtkAdjustment *adj = gtk_range_get_adjustment((GtkRange*)this->hwnd);
-	return (UOSInt)Math::Double2OSInt(gtk_adjustment_get_value(adj));
+	return (UOSInt)Double2OSInt(gtk_adjustment_get_value(adj));
 }
 
 void UI::GUIHScrollBar::SetArea(Double left, Double top, Double right, Double bottom, Bool updateScn)
@@ -82,7 +82,7 @@ void UI::GUIHScrollBar::SetArea(Double left, Double top, Double right, Double bo
 	if (this->parent)
 	{
 		void *container = this->parent->GetContainer();
-		gtk_fixed_move((GtkFixed*)container, (GtkWidget*)this->hwnd, Math::Double2Int32((left + xOfst) * this->hdpi / this->ddpi), Math::Double2Int32((top + yOfst) * this->hdpi / this->ddpi));
+		gtk_fixed_move((GtkFixed*)container, (GtkWidget*)this->hwnd, Double2Int32((left + xOfst) * this->hdpi / this->ddpi), Double2Int32((top + yOfst) * this->hdpi / this->ddpi));
 	}
 	if (right < left)
 	{
@@ -92,7 +92,7 @@ void UI::GUIHScrollBar::SetArea(Double left, Double top, Double right, Double bo
 	{
 		bottom = top;
 	}
-	gtk_widget_set_size_request((GtkWidget*)this->hwnd, Math::Double2Int32((right - left) * this->hdpi / this->ddpi), Math::Double2Int32((bottom - top) * this->hdpi / this->ddpi));
+	gtk_widget_set_size_request((GtkWidget*)this->hwnd, Double2Int32((right - left) * this->hdpi / this->ddpi), Double2Int32((bottom - top) * this->hdpi / this->ddpi));
 
 	gint outW;
 	gint outH;
@@ -119,7 +119,7 @@ void UI::GUIHScrollBar::SetArea(Double left, Double top, Double right, Double bo
 
 void UI::GUIHScrollBar::SetAreaP(OSInt left, OSInt top, OSInt right, OSInt bottom, Bool updateScn)
 {
-	if (Math::OSInt2Double(left) == this->lxPos && Math::OSInt2Double(top) == this->lyPos && Math::OSInt2Double(right) == this->lxPos2 && Math::OSInt2Double(bottom) == this->lyPos2)
+	if (OSInt2Double(left) == this->lxPos && OSInt2Double(top) == this->lyPos && OSInt2Double(right) == this->lxPos2 && OSInt2Double(bottom) == this->lyPos2)
 		return;
 	Double xOfst = 0;
 	Double yOfst = 0;
@@ -127,14 +127,14 @@ void UI::GUIHScrollBar::SetAreaP(OSInt left, OSInt top, OSInt right, OSInt botto
 	{
 		this->parent->GetClientOfst(&xOfst, &yOfst);
 	}
-	this->lxPos = Math::OSInt2Double(left) * this->ddpi / this->hdpi;
-	this->lyPos = Math::OSInt2Double(top) * this->ddpi / this->hdpi;
+	this->lxPos = OSInt2Double(left) * this->ddpi / this->hdpi;
+	this->lyPos = OSInt2Double(top) * this->ddpi / this->hdpi;
 	this->selfResize = true;
 
 	if (this->parent)
 	{
 		void *container = this->parent->GetContainer();
-		gtk_fixed_move((GtkFixed*)container, (GtkWidget*)this->hwnd, Math::Double2Int32(Math::OSInt2Double(left) + xOfst * this->hdpi / this->ddpi), Math::Double2Int32(Math::OSInt2Double(top) + yOfst * this->hdpi / this->ddpi));
+		gtk_fixed_move((GtkFixed*)container, (GtkWidget*)this->hwnd, Double2Int32(OSInt2Double(left) + xOfst * this->hdpi / this->ddpi), Double2Int32(OSInt2Double(top) + yOfst * this->hdpi / this->ddpi));
 	}
 	if (right < left)
 	{
@@ -151,19 +151,19 @@ void UI::GUIHScrollBar::SetAreaP(OSInt left, OSInt top, OSInt right, OSInt botto
 	gtk_widget_get_size_request((GtkWidget*)this->hwnd, &outW, &outH);
 	if (outW == -1)
 	{
-		this->lxPos2 = Math::OSInt2Double(right) * this->ddpi / this->hdpi;
+		this->lxPos2 = OSInt2Double(right) * this->ddpi / this->hdpi;
 	}
 	else
 	{
-		this->lxPos2 = Math::OSInt2Double(left + outW) * this->ddpi / this->hdpi;
+		this->lxPos2 = OSInt2Double(left + outW) * this->ddpi / this->hdpi;
 	}
 	if (outH == -1)
 	{
-		this->lyPos2 = Math::OSInt2Double(bottom) * this->ddpi / this->hdpi;
+		this->lyPos2 = OSInt2Double(bottom) * this->ddpi / this->hdpi;
 	}
 	else
 	{
-		this->lyPos2 = Math::OSInt2Double(top + outH) * this->ddpi / this->hdpi;
+		this->lyPos2 = OSInt2Double(top + outH) * this->ddpi / this->hdpi;
 	}
 	this->selfResize = false;
 	this->OnSizeChanged(updateScn);
@@ -198,10 +198,10 @@ void UI::GUIHScrollBar::UpdatePos(Bool redraw)
 		Double xOfst = 0;
 		Double yOfst = 0;
 		this->parent->GetClientOfst(&xOfst, &yOfst);
-		newSize = Math::Double2Int32((this->lyPos2 - this->lyPos) * this->hdpi / this->ddpi);
+		newSize = Double2Int32((this->lyPos2 - this->lyPos) * this->hdpi / this->ddpi);
 		if (newSize < minSize)
 			newSize = minSize;
-		MoveWindow((HWND)hwnd, Math::Double2Int32((this->lxPos + xOfst) * this->hdpi / this->ddpi), Math::Double2Int32((this->lyPos + yOfst) * this->hdpi / this->ddpi), Math::Double2Int32((this->lxPos2 - this->lxPos) * this->hdpi / this->ddpi), newSize, redraw?TRUE:FALSE);
+		MoveWindow((HWND)hwnd, Double2Int32((this->lxPos + xOfst) * this->hdpi / this->ddpi), Double2Int32((this->lyPos + yOfst) * this->hdpi / this->ddpi), Double2Int32((this->lxPos2 - this->lxPos) * this->hdpi / this->ddpi), newSize, redraw?TRUE:FALSE);
 	}
 	else
 	{
@@ -221,10 +221,10 @@ void UI::GUIHScrollBar::UpdatePos(Bool redraw)
 		{
 			newY = 0;
 		}
-		newSize = Math::Double2Int32(newH);
+		newSize = Double2Int32(newH);
 		if (newSize < minSize)
 			newSize = minSize;
-		MoveWindow((HWND)this->hwnd, Math::Double2Int32(newX), Math::Double2Int32(newY), Math::Double2Int32(newW), newSize, redraw?TRUE:FALSE);
+		MoveWindow((HWND)this->hwnd, Double2Int32(newX), Double2Int32(newY), Double2Int32(newW), newSize, redraw?TRUE:FALSE);
 	}*/
 }
 

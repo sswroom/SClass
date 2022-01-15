@@ -154,7 +154,7 @@ void Media::LUT::GetValueUInt8(UInt32 *inputVals, UInt8 *outVals)
 			}
 			else
 			{
-				outVals[i] = (UInt8)Math::Double2Int32(v);
+				outVals[i] = (UInt8)Double2Int32(v);
 			}
 			i++;
 		}
@@ -214,7 +214,7 @@ void Media::LUT::GetValueUInt16(UInt32 *inputVals, UInt16 *outVals)
 			}
 			else
 			{
-				outVals[i] = (UInt16)Math::Double2Int32(v);
+				outVals[i] = (UInt16)Double2Int32(v);
 			}
 			i++;
 		}

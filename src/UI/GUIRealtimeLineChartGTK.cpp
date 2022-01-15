@@ -75,7 +75,7 @@ void UI::GUIRealtimeLineChart::OnPaint(Media::DrawImage *dimg)
 	this->valueChanged = false;
 	img = this->eng->CreateImage32(dimg->GetWidth(), dimg->GetHeight(), Media::AT_NO_ALPHA);
 	b = img->NewBrushARGB(this->bgColor);
-	img->DrawRect(0, 0, Math::UOSInt2Double(img->GetWidth()), Math::UOSInt2Double(img->GetHeight()), 0, b);
+	img->DrawRect(0, 0, UOSInt2Double(img->GetWidth()), UOSInt2Double(img->GetHeight()), 0, b);
 	img->DelBrush(b);
 
 	Sync::MutexUsage mutUsage(this->chartMut);
@@ -101,7 +101,7 @@ void UI::GUIRealtimeLineChart::OnPaint(Media::DrawImage *dimg)
 	if (pw < 1)
 		pw = 1;
 	f = img->NewFontPt(UTF8STRC("Arial"), 9.0, Media::DrawEngine::DFS_ANTIALIAS, 0);
-	p = img->NewPenARGB(this->fontColor, Math::Double2Int32(pw), 0, 0);
+	p = img->NewPenARGB(this->fontColor, Double2Int32(pw), 0, 0);
 	b = img->NewBrushARGB(this->fontColor);
 	sptr = Text::StrDoubleFmt(sbuff, this->chartMax, "0.##");
 	if (this->unit)
@@ -115,8 +115,8 @@ void UI::GUIRealtimeLineChart::OnPaint(Media::DrawImage *dimg)
 	img->GetTextSizeC(f, sbuff, (UOSInt)(sptr - sbuff), sz);
 	if (sz[0] > strWidth)
 		strWidth = sz[0];
-	img->DrawString(0, Math::UOSInt2Double(dimg->GetHeight()) - sz[1], sbuff, f, b);
-	img->DrawLine(strWidth, 0, strWidth, Math::UOSInt2Double(dimg->GetHeight()), p);
+	img->DrawString(0, UOSInt2Double(dimg->GetHeight()) - sz[1], sbuff, f, b);
+	img->DrawLine(strWidth, 0, strWidth, UOSInt2Double(dimg->GetHeight()), p);
 	img->DelBrush(b);
 	img->DelPen(p);
 	img->DelFont(f);
@@ -127,13 +127,13 @@ void UI::GUIRealtimeLineChart::OnPaint(Media::DrawImage *dimg)
 	{
 		lastX = -1;
 		lastY = -1;
-		p = img->NewPenARGB(this->lineColor[k], Math::Double2Int32(pw), 0, 0);
+		p = img->NewPenARGB(this->lineColor[k], Double2Int32(pw), 0, 0);
 		i = k + this->chartOfst * this->lineCnt;
 		l = 0;
 		while (l < this->sampleCnt)
 		{
-			thisX = Math::UOSInt2Double(l) * (Math::UOSInt2Double(dimg->GetWidth()) - strWidth - 1) / Math::UOSInt2Double(this->sampleCnt);
-			thisY = Math::UOSInt2Double(dimg->GetHeight()) - 1 - ((this->chartVal[i] - this->chartMin) * (Math::UOSInt2Double(dimg->GetHeight()) - 1) / (this->chartMax - this->chartMin));
+			thisX = UOSInt2Double(l) * (UOSInt2Double(dimg->GetWidth()) - strWidth - 1) / UOSInt2Double(this->sampleCnt);
+			thisY = UOSInt2Double(dimg->GetHeight()) - 1 - ((this->chartVal[i] - this->chartMin) * (UOSInt2Double(dimg->GetHeight()) - 1) / (this->chartMax - this->chartMin));
 			if (lastX > 0)
 			{
 				img->DrawLine(lastX + strWidth + 1, lastY, thisX + strWidth + 1, thisY, p);

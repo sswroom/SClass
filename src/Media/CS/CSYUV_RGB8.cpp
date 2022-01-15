@@ -82,7 +82,7 @@ void Media::CS::CSYUV_RGB8::SetupRGB13_8()
 		else if (tmpV > 255)
 			rgbGammaCorr[i] = 255;
 		else
-			rgbGammaCorr[i] = (UInt8)Math::Double2Int32(tmpV);
+			rgbGammaCorr[i] = (UInt8)Double2Int32(tmpV);
 
 		thisV = this->fgFunc->ForwardTransfer(this->igFunc->InverseTransfer(i / 32767.0 * 4.0) * gMul);
 		tmpV = (gBright - 1.0 + Math_Pow(thisV, gGammaVal) * gContr) * 255.0;
@@ -91,7 +91,7 @@ void Media::CS::CSYUV_RGB8::SetupRGB13_8()
 		else if (tmpV > 255)
 			rgbGammaCorr[i+65536] = 255;
 		else
-			rgbGammaCorr[i+65536] = (UInt8)Math::Double2Int32(tmpV);
+			rgbGammaCorr[i+65536] = (UInt8)Double2Int32(tmpV);
 
 		thisV = this->fbFunc->ForwardTransfer(this->ibFunc->InverseTransfer(i / 32767.0 * 4.0) * bMul);
 		tmpV = (bBright - 1.0 + Math_Pow(thisV, bGammaVal) * bContr) * 255.0;
@@ -100,7 +100,7 @@ void Media::CS::CSYUV_RGB8::SetupRGB13_8()
 		else if (tmpV > 255)
 			rgbGammaCorr[i+131072] = 255;
 		else
-			rgbGammaCorr[i+131072] = (UInt8)Math::Double2Int32(tmpV);
+			rgbGammaCorr[i+131072] = (UInt8)Double2Int32(tmpV);
 	}
 	i = 65536;
 	while (i-- > 32768)
@@ -112,7 +112,7 @@ void Media::CS::CSYUV_RGB8::SetupRGB13_8()
 		else if (tmpV > 255)
 			rgbGammaCorr[i] = 255;
 		else
-			rgbGammaCorr[i] = (UInt8)Math::Double2Int32(tmpV);
+			rgbGammaCorr[i] = (UInt8)Double2Int32(tmpV);
 
 		thisV = this->fgFunc->ForwardTransfer(this->igFunc->InverseTransfer((i - 65536) / 32767.0 * 4.0) * gMul);
 		tmpV = (gBright - 1.0 + Math_Pow(thisV, gGammaVal) * gContr) * 255.0;
@@ -121,7 +121,7 @@ void Media::CS::CSYUV_RGB8::SetupRGB13_8()
 		else if (tmpV > 255)
 			rgbGammaCorr[i+65536] = 255;
 		else
-			rgbGammaCorr[i+65536] = (UInt8)Math::Double2Int32(tmpV);
+			rgbGammaCorr[i+65536] = (UInt8)Double2Int32(tmpV);
 
 		thisV = this->fbFunc->ForwardTransfer(this->ibFunc->InverseTransfer((i - 65536) / 32767.0 * 4.0) * bMul);
 		tmpV = (bBright - 1.0 + Math_Pow(thisV, bGammaVal) * bContr) * 255.0;
@@ -130,7 +130,7 @@ void Media::CS::CSYUV_RGB8::SetupRGB13_8()
 		else if (tmpV > 255)
 			rgbGammaCorr[i+131072] = 255;
 		else
-			rgbGammaCorr[i+131072] = (UInt8)Math::Double2Int32(tmpV);
+			rgbGammaCorr[i+131072] = (UInt8)Double2Int32(tmpV);
 	}
 }
 
@@ -251,10 +251,10 @@ void Media::CS::CSYUV_RGB8::SetupYUV_RGB13()
 			Int32 u2g8;
 			Int32 v2g8;
 			Int32 u2b8;
-			v2r8 = Math::Double2Int32((Kc1 * c * this->yuvParam.Saturation * this->yuvParam.RMul + this->yuvParam.RAdd) / 4.0);
-			u2g8 = Math::Double2Int32((Kc3 * c * this->yuvParam.Saturation * this->yuvParam.GMul + this->yuvParam.GAdd) / 4.0);
-			v2g8 = Math::Double2Int32((Kc2 * c * this->yuvParam.Saturation * this->yuvParam.GMul) / 4.0);
-			u2b8 = Math::Double2Int32((Kc4 * c * this->yuvParam.Saturation * this->yuvParam.BMul + this->yuvParam.BAdd) / 4.0);
+			v2r8 = Double2Int32((Kc1 * c * this->yuvParam.Saturation * this->yuvParam.RMul + this->yuvParam.RAdd) / 4.0);
+			u2g8 = Double2Int32((Kc3 * c * this->yuvParam.Saturation * this->yuvParam.GMul + this->yuvParam.GAdd) / 4.0);
+			v2g8 = Double2Int32((Kc2 * c * this->yuvParam.Saturation * this->yuvParam.GMul) / 4.0);
+			u2b8 = Double2Int32((Kc4 * c * this->yuvParam.Saturation * this->yuvParam.BMul + this->yuvParam.BAdd) / 4.0);
 			if (v2r8 < -0x8000)
 				v2r8 = 0x8000;
 			else if (v2r8 > 0x7fff)

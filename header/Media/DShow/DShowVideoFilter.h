@@ -250,7 +250,7 @@ namespace Media
 					Int32 t;
 					if (this->clk)
 					{
-						t = Math::Double2Int32(clk->GetTimeDiff() * 1000);
+						t = Double2Int32(clk->GetTimeDiff() * 1000);
 					}
 					else
 					{

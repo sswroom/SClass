@@ -80,7 +80,7 @@ UInt32 __stdcall Media::CUPSPrintDocument::PrintThread(void *userObj)
 		paperHeight = Math::Unit::Distance::Convert(Math::Unit::Distance::DU_MILLIMETER, Math::Unit::Distance::DU_INCH, me->paperHeight);
 	}
 
-	cairo_surface_t *surface = cairo_ps_surface_create((const Char*)fileName, Math::Double2Int32(paperWidth * 72.0), Math::Double2Int32(paperHeight * 72.0));
+	cairo_surface_t *surface = cairo_ps_surface_create((const Char*)fileName, Double2Int32(paperWidth * 72.0), Double2Int32(paperHeight * 72.0));
 	cairo_t *cr = cairo_create(surface);
 
 	i = 1;
@@ -96,10 +96,10 @@ UInt32 __stdcall Media::CUPSPrintDocument::PrintThread(void *userObj)
 			paperWidth = Math::Unit::Distance::Convert(Math::Unit::Distance::DU_MILLIMETER, Math::Unit::Distance::DU_INCH, me->paperWidth);
 			paperHeight = Math::Unit::Distance::Convert(Math::Unit::Distance::DU_MILLIMETER, Math::Unit::Distance::DU_INCH, me->paperHeight);
 		}
-		cairo_ps_surface_set_size(surface, Math::Double2Int32(paperWidth * 72.0), Math::Double2Int32(paperHeight * 72.0));
+		cairo_ps_surface_set_size(surface, Double2Int32(paperWidth * 72.0), Double2Int32(paperHeight * 72.0));
 
 //		wprintf(L"Printing page size: %lf, %lf\r\n", paperWidth, paperHeight);
-		img = me->eng->CreateImageScn(cr, 0, 0, Math::Double2Int32(paperWidth * 72.0), Math::Double2Int32(paperHeight * 72.0));
+		img = me->eng->CreateImageScn(cr, 0, 0, Double2Int32(paperWidth * 72.0), Double2Int32(paperHeight * 72.0));
 		img->SetHDPI(72.0);
 		img->SetVDPI(72.0);
 		hasMorePage = me->hdlr->PrintPage(img);

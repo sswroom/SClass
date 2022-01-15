@@ -169,7 +169,7 @@ Bool Exporter::MEVExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 		}
 		*(Int32*)&buff[8] = 0;
 		WriteUInt32(&buff[12], AddString(strArr, fontName, stmPos + 8));
-		*(Int32*)&buff[16] = Math::Double2Int32(fontSize / 0.75);
+		*(Int32*)&buff[16] = Double2Int32(fontSize / 0.75);
 		*(Int32*)&buff[20] = bold?1:0;
 		WriteUInt32(&buff[24], fontColor);
 		WriteUInt32(&buff[28], (UInt32)buffSize);
@@ -391,8 +391,8 @@ void Exporter::MEVExporter::WriteGroupItems(Map::MapEnv *env, Map::MapEnv::Group
 			*(UInt32*)&buff[16] = layer->GetCodePage();
 			WriteUInt32(&buff[24], (UInt32)setting.labelCol);
 			*(Int32*)&buff[28] = setting.flags;
-			*(Int32*)&buff[32] = Math::Double2Int32(setting.minScale);
-			*(Int32*)&buff[36] = Math::Double2Int32(setting.maxScale);
+			*(Int32*)&buff[32] = Double2Int32(setting.minScale);
+			*(Int32*)&buff[36] = Double2Int32(setting.maxScale);
 			*(Int32*)&buff[40] = setting.priority;
 			*(Int32*)&buff[44] = (Int32)setting.fontStyle;
 			if (ltype == Map::DRAW_LAYER_POINT || ltype == Map::DRAW_LAYER_POINT3D)

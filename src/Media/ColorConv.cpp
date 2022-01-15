@@ -356,19 +356,19 @@ UInt32 Media::ColorConv::ConvARGB(Media::ColorProfile *srcColor, Media::ColorPro
 	else if (rv < 0)
 		buff[2] = 0;
 	else
-		buff[2] = (UInt8)Math::Double2Int32(rv);
+		buff[2] = (UInt8)Double2Int32(rv);
 	if (gv > 255.0)
 		buff[1] = 255;
 	else if (gv < 0)
 		buff[1] = 0;
 	else
-		buff[1] = (UInt8)Math::Double2Int32(gv);
+		buff[1] = (UInt8)Double2Int32(gv);
 	if (bv > 255.0)
 		buff[0] = 255;
 	else if (bv < 0)
 		buff[0] = 0;
 	else
-		buff[0] = (UInt8)Math::Double2Int32(bv);
+		buff[0] = (UInt8)Double2Int32(bv);
 
 	DEL_CLASS(srFunc);
 	DEL_CLASS(sgFunc);

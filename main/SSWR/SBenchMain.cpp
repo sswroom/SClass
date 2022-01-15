@@ -1621,7 +1621,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			console->WriteLineC(UTF8STRC("Initialized"));
 
 			clk->Start();
-			resizer->Resize(srcImg->data, (OSInt)srcImg->GetDataBpl(), Math::UOSInt2Double(imgWidth), Math::UOSInt2Double(imgHeight), 0, 0, newImg->data, (OSInt)newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
+			resizer->Resize(srcImg->data, (OSInt)srcImg->GetDataBpl(), UOSInt2Double(imgWidth), UOSInt2Double(imgHeight), 0, 0, newImg->data, (OSInt)newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
 			t = clk->GetTimeDiff();
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Resize (1st): t = "));
@@ -1630,16 +1630,16 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 			if (t * 30 > 10)
-				cnt = 1 + (UInt32)Math::Double2Int32(10 / t);
+				cnt = 1 + (UInt32)Double2Int32(10 / t);
 			else
 				cnt = 30;
 			clk->Start();
 			i = cnt;
 			while (i-- > 0)
 			{
-				resizer->Resize(srcImg->data, (OSInt)srcImg->GetDataBpl(), Math::UOSInt2Double(imgWidth), Math::UOSInt2Double(imgHeight), 0, 0, newImg->data, (OSInt)newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
+				resizer->Resize(srcImg->data, (OSInt)srcImg->GetDataBpl(), UOSInt2Double(imgWidth), UOSInt2Double(imgHeight), 0, 0, newImg->data, (OSInt)newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
 			}
-			t = clk->GetTimeDiff() / Math::UOSInt2Double(cnt);
+			t = clk->GetTimeDiff() / UOSInt2Double(cnt);
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Resize (2nd): t = "));
 			Text::SBAppendF64(&sb, t);
@@ -1692,7 +1692,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			console->WriteLineC(UTF8STRC("Initialized"));
 
 			clk->Start();
-			resizer->Resize(srcImg->data, (OSInt)srcImg->GetDataBpl(), Math::UOSInt2Double(imgWidth), Math::UOSInt2Double(imgHeight), 0, 0, newImg->data, (OSInt)newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
+			resizer->Resize(srcImg->data, (OSInt)srcImg->GetDataBpl(), UOSInt2Double(imgWidth), UOSInt2Double(imgHeight), 0, 0, newImg->data, (OSInt)newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
 			t = clk->GetTimeDiff();
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Resize (1st): t = "));
@@ -1701,16 +1701,16 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 			if (t * 30 > 10)
-				cnt = 1 + (UInt32)Math::Double2Int32(10 / t);
+				cnt = 1 + (UInt32)Double2Int32(10 / t);
 			else
 				cnt = 30;
 			clk->Start();
 			i = cnt;
 			while (i-- > 0)
 			{
-				resizer->Resize(srcImg->data, (OSInt)srcImg->GetDataBpl(), Math::UOSInt2Double(imgWidth), Math::UOSInt2Double(imgHeight), 0, 0, newImg->data, (OSInt)newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
+				resizer->Resize(srcImg->data, (OSInt)srcImg->GetDataBpl(), UOSInt2Double(imgWidth), UOSInt2Double(imgHeight), 0, 0, newImg->data, (OSInt)newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
 			}
-			t = clk->GetTimeDiff() / Math::UOSInt2Double(cnt);
+			t = clk->GetTimeDiff() / UOSInt2Double(cnt);
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Resize (2nd): t = "));
 			Text::SBAppendF64(&sb, t);
@@ -1732,7 +1732,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			console->WriteLineC(UTF8STRC("Initialized"));
 
 			clk->Start();
-			resizer->Resize(srcImg->data, (OSInt)srcImg->GetDataBpl(), Math::UOSInt2Double(imgWidth), Math::UOSInt2Double(imgHeight), 0, 0, newImg->data, (OSInt)newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
+			resizer->Resize(srcImg->data, (OSInt)srcImg->GetDataBpl(), UOSInt2Double(imgWidth), UOSInt2Double(imgHeight), 0, 0, newImg->data, (OSInt)newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
 			t = clk->GetTimeDiff();
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Resize (1st): t = "));
@@ -1741,16 +1741,16 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 			if (t * 30 > 10)
-				cnt = 1 + (UInt32)Math::Double2Int32(10 / t);
+				cnt = 1 + (UInt32)Double2Int32(10 / t);
 			else
 				cnt = 30;
 			clk->Start();
 			i = cnt;
 			while (i-- > 0)
 			{
-				resizer->Resize(srcImg->data, (OSInt)srcImg->GetDataBpl(), Math::UOSInt2Double(imgWidth), Math::UOSInt2Double(imgHeight), 0, 0, newImg->data, (OSInt)newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
+				resizer->Resize(srcImg->data, (OSInt)srcImg->GetDataBpl(), UOSInt2Double(imgWidth), UOSInt2Double(imgHeight), 0, 0, newImg->data, (OSInt)newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
 			}
-			t = clk->GetTimeDiff() / Math::UOSInt2Double(cnt);
+			t = clk->GetTimeDiff() / UOSInt2Double(cnt);
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Resize (2nd): t = "));
 			Text::SBAppendF64(&sb, t);
@@ -1771,7 +1771,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			writer->WriteLineC(UTF8STRC("Resizer: LanczosResizer (16->8 LQ) H4V3 taps");
 
 			clk->Start();
-			resizer->Resize(srcImg->data, srcImg->GetDataBpl(), Math::OSInt2Double(imgWidth), Math::OSInt2Double(imgHeight), 0, 0, newImg->data, newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
+			resizer->Resize(srcImg->data, srcImg->GetDataBpl(), OSInt2Double(imgWidth), OSInt2Double(imgHeight), 0, 0, newImg->data, newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
 			t = clk->GetTimeDiff();
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Resize (1st): t = ");
@@ -1787,9 +1787,9 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			i = cnt;
 			while (i-- > 0)
 			{
-				resizer->Resize(srcImg->data, srcImg->GetDataBpl(), Math::OSInt2Double(imgWidth), Math::OSInt2Double(imgHeight), 0, 0, newImg->data, newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
+				resizer->Resize(srcImg->data, srcImg->GetDataBpl(), OSInt2Double(imgWidth), OSInt2Double(imgHeight), 0, 0, newImg->data, newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
 			}
-			t = clk->GetTimeDiff() / Math::OSInt2Double(cnt);
+			t = clk->GetTimeDiff() / OSInt2Double(cnt);
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Resize (2nd): t = ");
 			Text::SBAppendF64(&sb, t);
@@ -1818,7 +1818,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 			if (t * 30 > 10)
-				cnt = 1 + (UInt32)Math::Double2Int32(10 / t);
+				cnt = 1 + (UInt32)Double2Int32(10 / t);
 			else
 				cnt = 30;
 			clk->Start();
@@ -1827,7 +1827,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			{
 				csconv->ConvertV2(&srcImg->data, tmpBuff, srcImg->info->dispWidth, srcImg->info->dispHeight, srcImg->info->storeWidth, srcImg->info->storeHeight, (OSInt)srcImg->info->dispWidth << 3, Media::FT_NON_INTERLACE, Media::YCOFST_C_CENTER_LEFT);
 			}
-			t = clk->GetTimeDiff() / Math::UOSInt2Double(cnt);
+			t = clk->GetTimeDiff() / UOSInt2Double(cnt);
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("CSConv (2nd): t = "));
 			Text::SBAppendF64(&sb, t);
@@ -1859,7 +1859,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			console->WriteLineC(UTF8STRC("Initialized"));
 
 			clk->Start();
-			resizer->Resize(tmpBuff, (OSInt)imgWidth << 3, Math::UOSInt2Double(imgWidth), Math::UOSInt2Double(imgHeight), 0, 0, newImg->data, (OSInt)newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
+			resizer->Resize(tmpBuff, (OSInt)imgWidth << 3, UOSInt2Double(imgWidth), UOSInt2Double(imgHeight), 0, 0, newImg->data, (OSInt)newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
 			t = clk->GetTimeDiff();
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Resize (1st): t = "));
@@ -1868,16 +1868,16 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 			if (t * 30 > 10)
-				cnt = 1 + (UInt32)Math::Double2Int32(10 / t);
+				cnt = 1 + (UInt32)Double2Int32(10 / t);
 			else
 				cnt = 30;
 			clk->Start();
 			i = cnt;
 			while (i-- > 0)
 			{
-				resizer->Resize(tmpBuff, (OSInt)imgWidth << 3, Math::UOSInt2Double(imgWidth), Math::UOSInt2Double(imgHeight), 0, 0, newImg->data, (OSInt)newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
+				resizer->Resize(tmpBuff, (OSInt)imgWidth << 3, UOSInt2Double(imgWidth), UOSInt2Double(imgHeight), 0, 0, newImg->data, (OSInt)newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
 			}
-			t = clk->GetTimeDiff() / Math::UOSInt2Double(cnt);
+			t = clk->GetTimeDiff() / UOSInt2Double(cnt);
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Resize (2nd): t = "));
 			Text::SBAppendF64(&sb, t);
@@ -1900,7 +1900,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			console->WriteLineC(UTF8STRC("Initialized"));
 
 			clk->Start();
-			resizer->Resize(tmpBuff, (OSInt)imgWidth << 3, Math::UOSInt2Double(imgWidth), Math::UOSInt2Double(imgHeight), 0, 0, newImg->data, (OSInt)newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
+			resizer->Resize(tmpBuff, (OSInt)imgWidth << 3, UOSInt2Double(imgWidth), UOSInt2Double(imgHeight), 0, 0, newImg->data, (OSInt)newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
 			t = clk->GetTimeDiff();
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Resize (1st): t = "));
@@ -1909,16 +1909,16 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 			if (t * 30 > 10)
-				cnt = 1 + (UInt32)Math::Double2Int32(10 / t);
+				cnt = 1 + (UInt32)Double2Int32(10 / t);
 			else
 				cnt = 30;
 			clk->Start();
 			i = cnt;
 			while (i-- > 0)
 			{
-				resizer->Resize(tmpBuff, (OSInt)imgWidth << 3, Math::UOSInt2Double(imgWidth), Math::UOSInt2Double(imgHeight), 0, 0, newImg->data, (OSInt)newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
+				resizer->Resize(tmpBuff, (OSInt)imgWidth << 3, UOSInt2Double(imgWidth), UOSInt2Double(imgHeight), 0, 0, newImg->data, (OSInt)newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
 			}
-			t = clk->GetTimeDiff() / Math::UOSInt2Double(cnt);
+			t = clk->GetTimeDiff() / UOSInt2Double(cnt);
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Resize (2nd): t = "));
 			Text::SBAppendF64(&sb, t);
@@ -1966,7 +1966,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			console->WriteLineC(UTF8STRC("Initialized"));
 
 			clk->Start();
-			resizer->Resize(srcImg->data, (OSInt)srcImg->GetDataBpl(), Math::UOSInt2Double(imgWidth), Math::UOSInt2Double(imgHeight), 0, 0, newImg->data, (OSInt)newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
+			resizer->Resize(srcImg->data, (OSInt)srcImg->GetDataBpl(), UOSInt2Double(imgWidth), UOSInt2Double(imgHeight), 0, 0, newImg->data, (OSInt)newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
 			t = clk->GetTimeDiff();
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Resize (1st): t = "));
@@ -1975,16 +1975,16 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 			if (t * 30 > 10)
-				cnt = 1 + (UInt32)Math::Double2Int32(10 / t);
+				cnt = 1 + (UInt32)Double2Int32(10 / t);
 			else
 				cnt = 30;
 			clk->Start();
 			i = cnt;
 			while (i-- > 0)
 			{
-				resizer->Resize(srcImg->data, (OSInt)srcImg->GetDataBpl(), Math::UOSInt2Double(imgWidth), Math::UOSInt2Double(imgHeight), 0, 0, newImg->data, (OSInt)newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
+				resizer->Resize(srcImg->data, (OSInt)srcImg->GetDataBpl(), UOSInt2Double(imgWidth), UOSInt2Double(imgHeight), 0, 0, newImg->data, (OSInt)newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
 			}
-			t = clk->GetTimeDiff() / Math::UOSInt2Double(cnt);
+			t = clk->GetTimeDiff() / UOSInt2Double(cnt);
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Resize (2nd): t = "));
 			Text::SBAppendF64(&sb, t);
@@ -2007,7 +2007,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			console->WriteLineC(UTF8STRC("Initialized"));
 
 			clk->Start();
-			resizer->Resize(srcImg->data, (OSInt)srcImg->GetDataBpl(), Math::UOSInt2Double(imgWidth), Math::UOSInt2Double(imgHeight), 0, 0, newImg->data, (OSInt)newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
+			resizer->Resize(srcImg->data, (OSInt)srcImg->GetDataBpl(), UOSInt2Double(imgWidth), UOSInt2Double(imgHeight), 0, 0, newImg->data, (OSInt)newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
 			t = clk->GetTimeDiff();
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Resize (1st): t = "));
@@ -2016,16 +2016,16 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 			if (t * 30 > 10)
-				cnt = 1 + (UInt32)Math::Double2Int32(10 / t);
+				cnt = 1 + (UInt32)Double2Int32(10 / t);
 			else
 				cnt = 30;
 			clk->Start();
 			i = cnt;
 			while (i-- > 0)
 			{
-				resizer->Resize(srcImg->data, (OSInt)srcImg->GetDataBpl(), Math::UOSInt2Double(imgWidth), Math::UOSInt2Double(imgHeight), 0, 0, newImg->data, (OSInt)newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
+				resizer->Resize(srcImg->data, (OSInt)srcImg->GetDataBpl(), UOSInt2Double(imgWidth), UOSInt2Double(imgHeight), 0, 0, newImg->data, (OSInt)newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
 			}
-			t = clk->GetTimeDiff() / Math::UOSInt2Double(cnt);
+			t = clk->GetTimeDiff() / UOSInt2Double(cnt);
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Resize (2nd): t = "));
 			Text::SBAppendF64(&sb, t);
@@ -2048,7 +2048,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			console->WriteLineC(UTF8STRC("Initialized"));
 
 			clk->Start();
-			resizer->Resize(srcImg->data, (OSInt)srcImg->GetDataBpl(), Math::UOSInt2Double(imgWidth), Math::UOSInt2Double(imgHeight), 0, 0, newImg->data, (OSInt)newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
+			resizer->Resize(srcImg->data, (OSInt)srcImg->GetDataBpl(), UOSInt2Double(imgWidth), UOSInt2Double(imgHeight), 0, 0, newImg->data, (OSInt)newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
 			t = clk->GetTimeDiff();
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Resize (1st): t = "));
@@ -2057,16 +2057,16 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 			if (t * 30 > 10)
-				cnt = 1 + (UInt32)Math::Double2Int32(10 / t);
+				cnt = 1 + (UInt32)Double2Int32(10 / t);
 			else
 				cnt = 30;
 			clk->Start();
 			i = cnt;
 			while (i-- > 0)
 			{
-				resizer->Resize(srcImg->data, (OSInt)srcImg->GetDataBpl(), Math::UOSInt2Double(imgWidth), Math::UOSInt2Double(imgHeight), 0, 0, newImg->data, (OSInt)newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
+				resizer->Resize(srcImg->data, (OSInt)srcImg->GetDataBpl(), UOSInt2Double(imgWidth), UOSInt2Double(imgHeight), 0, 0, newImg->data, (OSInt)newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
 			}
-			t = clk->GetTimeDiff() / Math::UOSInt2Double(cnt);
+			t = clk->GetTimeDiff() / UOSInt2Double(cnt);
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Resize (2nd): t = "));
 			Text::SBAppendF64(&sb, t);
@@ -2089,7 +2089,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			console->WriteLineC(UTF8STRC("Initialized"));
 
 			clk->Start();
-			resizer->Resize(srcImg->data, (OSInt)srcImg->GetDataBpl(), Math::UOSInt2Double(imgWidth), Math::UOSInt2Double(imgHeight), 0, 0, newImg->data, (OSInt)newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
+			resizer->Resize(srcImg->data, (OSInt)srcImg->GetDataBpl(), UOSInt2Double(imgWidth), UOSInt2Double(imgHeight), 0, 0, newImg->data, (OSInt)newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
 			t = clk->GetTimeDiff();
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Resize (1st): t = "));
@@ -2098,16 +2098,16 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 			if (t * 30 > 10)
-				cnt = 1 + (UInt32)Math::Double2Int32(10 / t);
+				cnt = 1 + (UInt32)Double2Int32(10 / t);
 			else
 				cnt = 30;
 			clk->Start();
 			i = cnt;
 			while (i-- > 0)
 			{
-				resizer->Resize(srcImg->data, (OSInt)srcImg->GetDataBpl(), Math::UOSInt2Double(imgWidth), Math::UOSInt2Double(imgHeight), 0, 0, newImg->data, (OSInt)newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
+				resizer->Resize(srcImg->data, (OSInt)srcImg->GetDataBpl(), UOSInt2Double(imgWidth), UOSInt2Double(imgHeight), 0, 0, newImg->data, (OSInt)newImg->GetDataBpl(), imgWidth >> 1, imgHeight >> 1);
 			}
-			t = clk->GetTimeDiff() / Math::UOSInt2Double(cnt);
+			t = clk->GetTimeDiff() / UOSInt2Double(cnt);
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Resize (2nd): t = "));
 			Text::SBAppendF64(&sb, t);

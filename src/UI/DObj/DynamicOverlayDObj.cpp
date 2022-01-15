@@ -98,25 +98,25 @@ void UI::DObj::DynamicOverlayDObj::DrawObject(Media::DrawImage *dimg)
 				i = lineBytes;
 				while (i-- > 0)
 				{
-					*ptrD++ = (UInt8)Math::Double2Int32(a1 * (*ptrS1++) + a2 * (*ptrS2++));
+					*ptrD++ = (UInt8)Double2Int32(a1 * (*ptrS1++) + a2 * (*ptrS2++));
 				}
 			}
 
-			dimg->DrawImagePt(bmpTmp, Math::OSInt2Double(left), Math::OSInt2Double(top));
+			dimg->DrawImagePt(bmpTmp, OSInt2Double(left), OSInt2Double(top));
 			this->deng->DeleteImage(bmpTmp);
 		}
 		else
 		{
-			dimg->DrawImagePt(this->bmp1, Math::OSInt2Double(left), Math::OSInt2Double(top));
+			dimg->DrawImagePt(this->bmp1, OSInt2Double(left), OSInt2Double(top));
 		}
 	}
 	else if (this->bmp1)
 	{
-		dimg->DrawImagePt(this->bmp1, Math::OSInt2Double(left), Math::OSInt2Double(top));
+		dimg->DrawImagePt(this->bmp1, OSInt2Double(left), OSInt2Double(top));
 	}
 	else if (this->bmp2)
 	{
-		dimg->DrawImagePt(this->bmp2, Math::OSInt2Double(left), Math::OSInt2Double(top));
+		dimg->DrawImagePt(this->bmp2, OSInt2Double(left), OSInt2Double(top));
 	}
 }
 

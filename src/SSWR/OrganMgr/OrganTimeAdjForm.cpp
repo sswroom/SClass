@@ -52,7 +52,7 @@ void __stdcall SSWR::OrganMgr::OrganTimeAdjForm::OnTimerTick(void *userObj)
 void __stdcall SSWR::OrganMgr::OrganTimeAdjForm::OnMapScaleScroll(void *userObj, UOSInt newVal)
 {
 	OrganTimeAdjForm *me = (OrganTimeAdjForm*)userObj;
-	me->mapMain->SetMapScale(Math::Double2Int32(me->mapTile->GetLevelScale(newVal)));
+	me->mapMain->SetMapScale(Double2Int32(me->mapTile->GetLevelScale(newVal)));
 }
 
 void __stdcall SSWR::OrganMgr::OrganTimeAdjForm::OnTrackChg(void *userObj)

@@ -139,16 +139,16 @@ void UI::GUISudokuViewer::OnDraw(Media::DrawImage *img)
 		size = h;
 		tly = 0;
 		tlx = (w - h) >> 1;
-		img->DrawRect(0, 0, Math::UOSInt2Double(tlx), Math::UOSInt2Double(h), 0, b3);
-		img->DrawRect(Math::UOSInt2Double(tlx + size), 0, Math::UOSInt2Double(w - tlx - size), Math::UOSInt2Double(h), 0, b3);
+		img->DrawRect(0, 0, UOSInt2Double(tlx), UOSInt2Double(h), 0, b3);
+		img->DrawRect(UOSInt2Double(tlx + size), 0, UOSInt2Double(w - tlx - size), UOSInt2Double(h), 0, b3);
 	}
 	else
 	{
 		size = w;
 		tlx = 0;
 		tly = (h - w) >> 1;
-		img->DrawRect(0, 0, Math::UOSInt2Double(w), Math::UOSInt2Double(tly), 0, b3);
-		img->DrawRect(0, Math::UOSInt2Double(tly + size), Math::UOSInt2Double(w), Math::UOSInt2Double(h - tly - size), 0, b3);
+		img->DrawRect(0, 0, UOSInt2Double(w), UOSInt2Double(tly), 0, b3);
+		img->DrawRect(0, UOSInt2Double(tly + size), UOSInt2Double(w), UOSInt2Double(h - tly - size), 0, b3);
 	}
 	blockSize = (size / 9) - 2;
 
@@ -167,10 +167,10 @@ void UI::GUISudokuViewer::OnDraw(Media::DrawImage *img)
 	while (i-- > 0)
 	{
 		currPos = MulDivUOS(size, i, 9);
-		img->DrawLine(Math::UOSInt2Double(tlx + lastPos - 1), Math::UOSInt2Double(tly), Math::UOSInt2Double(tlx + lastPos - 1), Math::UOSInt2Double(tly + size), p);
-		img->DrawLine(Math::UOSInt2Double(tlx), Math::UOSInt2Double(tly + lastPos - 1), Math::UOSInt2Double(tlx + size), Math::UOSInt2Double(tly + lastPos - 1), p);
-		img->DrawLine(Math::UOSInt2Double(tlx + currPos), Math::UOSInt2Double(tly), Math::UOSInt2Double(tlx + currPos), Math::UOSInt2Double(tly + size), p);
-		img->DrawLine(Math::UOSInt2Double(tlx), Math::UOSInt2Double(tly + currPos), Math::UOSInt2Double(tlx + size), Math::UOSInt2Double(tly + currPos), p);
+		img->DrawLine(UOSInt2Double(tlx + lastPos - 1), UOSInt2Double(tly), UOSInt2Double(tlx + lastPos - 1), UOSInt2Double(tly + size), p);
+		img->DrawLine(UOSInt2Double(tlx), UOSInt2Double(tly + lastPos - 1), UOSInt2Double(tlx + size), UOSInt2Double(tly + lastPos - 1), p);
+		img->DrawLine(UOSInt2Double(tlx + currPos), UOSInt2Double(tly), UOSInt2Double(tlx + currPos), UOSInt2Double(tly + size), p);
+		img->DrawLine(UOSInt2Double(tlx), UOSInt2Double(tly + currPos), UOSInt2Double(tlx + size), UOSInt2Double(tly + currPos), p);
 
 		lastPos = currPos;
 	}
@@ -181,10 +181,10 @@ void UI::GUISudokuViewer::OnDraw(Media::DrawImage *img)
 	j = MulDivUOS(size, this->selX + 1, 9);
 	currPos = MulDivUOS(size, this->selY, 9);
 	lastPos = MulDivUOS(size, this->selY + 1, 9);
-	img->DrawRect(Math::UOSInt2Double(tlx + i), Math::UOSInt2Double(tly + currPos), Math::UOSInt2Double(j - i - 1), Math::UOSInt2Double(lastPos - currPos - 1), p, 0);
+	img->DrawRect(UOSInt2Double(tlx + i), UOSInt2Double(tly + currPos), UOSInt2Double(j - i - 1), UOSInt2Double(lastPos - currPos - 1), p, 0);
 	img->DelPen(p);
 
-	f = img->NewFontPx(UTF8STRC("Arial"), Math::UOSInt2Double(blockSize) * 0.5, Media::DrawEngine::DFS_NORMAL, 65001);
+	f = img->NewFontPx(UTF8STRC("Arial"), UOSInt2Double(blockSize) * 0.5, Media::DrawEngine::DFS_NORMAL, 65001);
 	b = img->NewBrushARGB(0xffcccccc);
 	b2 = img->NewBrushARGB(0xff000000);
 	i = 9;
@@ -212,18 +212,18 @@ void UI::GUISudokuViewer::OnDraw(Media::DrawImage *img)
 				ch[0] = (UTF8Char)(val + 0x30);
 				if (isDefault)
 				{
-					img->DrawRect(Math::UOSInt2Double(x), Math::UOSInt2Double(y), Math::UOSInt2Double(x2 - x), Math::UOSInt2Double(y2 - y), 0, b);
+					img->DrawRect(UOSInt2Double(x), UOSInt2Double(y), UOSInt2Double(x2 - x), UOSInt2Double(y2 - y), 0, b);
 				}
 				else
 				{
-					img->DrawRect(Math::UOSInt2Double(x), Math::UOSInt2Double(y), Math::UOSInt2Double(x2 - x), Math::UOSInt2Double(y2 - y), 0, b3);
+					img->DrawRect(UOSInt2Double(x), UOSInt2Double(y), UOSInt2Double(x2 - x), UOSInt2Double(y2 - y), 0, b3);
 				}
 				img->GetTextSizeC(f, ch, 1, sz);
-				img->DrawString(Math::UOSInt2Double(x) + (Math::UOSInt2Double(x2 - x) - sz[0]) * 0.5, Math::UOSInt2Double(y) + (Math::UOSInt2Double(y2 - y) - sz[1]) * 0.5, ch, f, b2);
+				img->DrawString(UOSInt2Double(x) + (UOSInt2Double(x2 - x) - sz[0]) * 0.5, UOSInt2Double(y) + (UOSInt2Double(y2 - y) - sz[1]) * 0.5, ch, f, b2);
 			}
 			else
 			{
-				img->DrawRect(Math::UOSInt2Double(x), Math::UOSInt2Double(y), Math::UOSInt2Double(x2 - x), Math::UOSInt2Double(y2 - y), 0, b3);
+				img->DrawRect(UOSInt2Double(x), UOSInt2Double(y), UOSInt2Double(x2 - x), UOSInt2Double(y2 - y), 0, b3);
 			}
 		}
 	}

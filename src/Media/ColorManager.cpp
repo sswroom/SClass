@@ -264,33 +264,33 @@ Bool Media::MonitorColorManager::Save()
 			reg = reg2;
 		}
 
-		reg->SetValue(L"MonRB", Math::Double2Int32(this->rgb->MonRBright * 1000.0));
-		reg->SetValue(L"MonRC", Math::Double2Int32(this->rgb->MonRContr * 1000.0));
-		reg->SetValue(L"MonRG", Math::Double2Int32(this->rgb->MonRGamma * 1000.0));
+		reg->SetValue(L"MonRB", Double2Int32(this->rgb->MonRBright * 1000.0));
+		reg->SetValue(L"MonRC", Double2Int32(this->rgb->MonRContr * 1000.0));
+		reg->SetValue(L"MonRG", Double2Int32(this->rgb->MonRGamma * 1000.0));
 		
-		reg->SetValue(L"MonGB", Math::Double2Int32(this->rgb->MonGBright * 1000.0));
-		reg->SetValue(L"MonGC", Math::Double2Int32(this->rgb->MonGContr * 1000.0));
-		reg->SetValue(L"MonGG", Math::Double2Int32(this->rgb->MonGGamma * 1000.0));
+		reg->SetValue(L"MonGB", Double2Int32(this->rgb->MonGBright * 1000.0));
+		reg->SetValue(L"MonGC", Double2Int32(this->rgb->MonGContr * 1000.0));
+		reg->SetValue(L"MonGG", Double2Int32(this->rgb->MonGGamma * 1000.0));
 
-		reg->SetValue(L"MonBB", Math::Double2Int32(this->rgb->MonBBright * 1000.0));
-		reg->SetValue(L"MonBC", Math::Double2Int32(this->rgb->MonBContr * 1000.0));
-		reg->SetValue(L"MonBG", Math::Double2Int32(this->rgb->MonBGamma * 1000.0));
+		reg->SetValue(L"MonBB", Double2Int32(this->rgb->MonBBright * 1000.0));
+		reg->SetValue(L"MonBC", Double2Int32(this->rgb->MonBContr * 1000.0));
+		reg->SetValue(L"MonBG", Double2Int32(this->rgb->MonBGamma * 1000.0));
 
-		reg->SetValue(L"MonBright", Math::Double2Int32(this->rgb->MonVBrightness * 1000.0));
-		reg->SetValue(L"MonPBright", Math::Double2Int32(this->rgb->MonPBrightness * 1000.0));
-		reg->SetValue(L"MonRBright", Math::Double2Int32(this->rgb->MonRBrightness * 1000.0));
-		reg->SetValue(L"MonGBright", Math::Double2Int32(this->rgb->MonGBrightness * 1000.0));
-		reg->SetValue(L"MonBBright", Math::Double2Int32(this->rgb->MonBBrightness * 1000.0));
+		reg->SetValue(L"MonBright", Double2Int32(this->rgb->MonVBrightness * 1000.0));
+		reg->SetValue(L"MonPBright", Double2Int32(this->rgb->MonPBrightness * 1000.0));
+		reg->SetValue(L"MonRBright", Double2Int32(this->rgb->MonRBrightness * 1000.0));
+		reg->SetValue(L"MonGBright", Double2Int32(this->rgb->MonGBrightness * 1000.0));
+		reg->SetValue(L"MonBBright", Double2Int32(this->rgb->MonBBrightness * 1000.0));
 
 		reg->SetValue(L"MonTransfer", (Int32)this->rgb->monProfile->GetRTranParam()->GetTranType());
-		reg->SetValue(L"MonRX", Math::Double2Int32(this->rgb->monProfile->GetPrimaries()->rx * 1000000000.0));
-		reg->SetValue(L"MonRY", Math::Double2Int32(this->rgb->monProfile->GetPrimaries()->ry * 1000000000.0));
-		reg->SetValue(L"MonGX", Math::Double2Int32(this->rgb->monProfile->GetPrimaries()->gx * 1000000000.0));
-		reg->SetValue(L"MonGY", Math::Double2Int32(this->rgb->monProfile->GetPrimaries()->gy * 1000000000.0));
-		reg->SetValue(L"MonBX", Math::Double2Int32(this->rgb->monProfile->GetPrimaries()->bx * 1000000000.0));
-		reg->SetValue(L"MonBY", Math::Double2Int32(this->rgb->monProfile->GetPrimaries()->by * 1000000000.0));
-		reg->SetValue(L"MonWX", Math::Double2Int32(this->rgb->monProfile->GetPrimaries()->wx * 1000000000.0));
-		reg->SetValue(L"MonWY", Math::Double2Int32(this->rgb->monProfile->GetPrimaries()->wy * 1000000000.0));
+		reg->SetValue(L"MonRX", Double2Int32(this->rgb->monProfile->GetPrimaries()->rx * 1000000000.0));
+		reg->SetValue(L"MonRY", Double2Int32(this->rgb->monProfile->GetPrimaries()->ry * 1000000000.0));
+		reg->SetValue(L"MonGX", Double2Int32(this->rgb->monProfile->GetPrimaries()->gx * 1000000000.0));
+		reg->SetValue(L"MonGY", Double2Int32(this->rgb->monProfile->GetPrimaries()->gy * 1000000000.0));
+		reg->SetValue(L"MonBX", Double2Int32(this->rgb->monProfile->GetPrimaries()->bx * 1000000000.0));
+		reg->SetValue(L"MonBY", Double2Int32(this->rgb->monProfile->GetPrimaries()->by * 1000000000.0));
+		reg->SetValue(L"MonWX", Double2Int32(this->rgb->monProfile->GetPrimaries()->wx * 1000000000.0));
+		reg->SetValue(L"MonWY", Double2Int32(this->rgb->monProfile->GetPrimaries()->wy * 1000000000.0));
 
 		reg->SetValue(L"MonProfileType", (Int32)this->rgb->monProfileType);
 		if (this->monProfileFile)
@@ -299,13 +299,13 @@ Bool Media::MonitorColorManager::Save()
 			reg->SetValue(L"MonProfileFile", wptr);
 			Text::StrDelNew(wptr);
 		}
-		reg->SetValue(L"MonLuminance", Math::Double2Int32(this->rgb->monLuminance * 10.0));
+		reg->SetValue(L"MonLuminance", Double2Int32(this->rgb->monLuminance * 10.0));
 
-		reg->SetValue(L"Brightness", Math::Double2Int32(this->yuv.Brightness * 1000.0));
-		reg->SetValue(L"Contrast", Math::Double2Int32(this->yuv.Contrast * 1000.0));
-		reg->SetValue(L"Saturation", Math::Double2Int32(this->yuv.Saturation * 1000.0));
-		reg->SetValue(L"YGamma", Math::Double2Int32(this->yuv.YGamma * 1000.0));
-		reg->SetValue(L"CGamma", Math::Double2Int32(this->yuv.CGamma * 1000.0));
+		reg->SetValue(L"Brightness", Double2Int32(this->yuv.Brightness * 1000.0));
+		reg->SetValue(L"Contrast", Double2Int32(this->yuv.Contrast * 1000.0));
+		reg->SetValue(L"Saturation", Double2Int32(this->yuv.Saturation * 1000.0));
+		reg->SetValue(L"YGamma", Double2Int32(this->yuv.YGamma * 1000.0));
+		reg->SetValue(L"CGamma", Double2Int32(this->yuv.CGamma * 1000.0));
 		reg->SetValue(L"Color10Bit", this->color10Bit?1:0);
 
 		IO::Registry::CloseRegistry(regBase);

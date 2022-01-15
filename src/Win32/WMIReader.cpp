@@ -177,10 +177,10 @@ Int32 Win32::WMIReader::GetInt32(UOSInt colIndex)
 				ret = (Int32)(V_UI8(&v) & 0xffffffff);
 				break;
 			case CIM_REAL32:
-				ret = Math::Double2Int32(V_R4(&v));
+				ret = Double2Int32(V_R4(&v));
 				break;
 			case CIM_REAL64:
-				ret = Math::Double2Int32(V_R8(&v));
+				ret = Double2Int32(V_R8(&v));
 				break;
 			case CIM_BOOLEAN:
 				ret = V_BOOL(&v);
@@ -246,10 +246,10 @@ Int64 Win32::WMIReader::GetInt64(UOSInt colIndex)
 				ret = (Int64)V_UI8(&v);
 				break;
 			case CIM_REAL32:
-				ret = Math::Double2Int32(V_R4(&v));
+				ret = Double2Int32(V_R4(&v));
 				break;
 			case CIM_REAL64:
-				ret = Math::Double2Int32(V_R8(&v));
+				ret = Double2Int32(V_R8(&v));
 				break;
 			case CIM_BOOLEAN:
 				ret = V_BOOL(&v);

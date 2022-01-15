@@ -156,7 +156,7 @@ Media::StaticImage *Media::SharedImage::GetPrevImage(Double width, Double height
 	while (i-- > 0)
 	{
 		currImg = this->imgStatus->prevList->GetItem(i);
-		if (Math::UOSInt2Double(currImg->info->dispWidth) >= width && Math::UOSInt2Double(currImg->info->dispHeight) >= height)
+		if (UOSInt2Double(currImg->info->dispWidth) >= width && UOSInt2Double(currImg->info->dispHeight) >= height)
 		{
 			if (minImg == 0 || minWidth > currImg->info->dispWidth)
 			{

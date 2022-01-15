@@ -347,7 +347,7 @@ Double Media::Resizer::LanczosResizerLR_C32_CPU::GetHAvgTime()
 	if (this->hTotCount <= 0)
 		return 0;
 	else
-		return this->hTotTime / Math::UOSInt2Double(this->hTotCount);
+		return this->hTotTime / UOSInt2Double(this->hTotCount);
 }
 
 Double Media::Resizer::LanczosResizerLR_C32_CPU::GetVAvgTime()
@@ -355,5 +355,5 @@ Double Media::Resizer::LanczosResizerLR_C32_CPU::GetVAvgTime()
 	if (this->vTotCount <= 0)
 		return 0;
 	else
-		return this->vTotTime / Math::UOSInt2Double(this->vTotCount);
+		return this->vTotTime / UOSInt2Double(this->vTotCount);
 }

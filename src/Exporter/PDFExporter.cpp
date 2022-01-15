@@ -105,9 +105,9 @@ Bool Exporter::PDFExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 		sb.AppendOSInt(objPos.GetCount());
 		sb.AppendC(UTF8STRC(" 0 obj\r"));
 		sb.AppendC(UTF8STRC("<</Type/Page/MediaBox [0 0 "));
-		sb.AppendI32(Math::Double2Int32(Math::Unit::Distance::Convert(Math::Unit::Distance::DU_MILLIMETER, Math::Unit::Distance::DU_INCH, g->GetVisibleWidthMM()) * 72.0));
+		sb.AppendI32(Double2Int32(Math::Unit::Distance::Convert(Math::Unit::Distance::DU_MILLIMETER, Math::Unit::Distance::DU_INCH, g->GetVisibleWidthMM()) * 72.0));
 		sb.AppendC(UTF8STRC(" "));
-		sb.AppendI32(Math::Double2Int32(Math::Unit::Distance::Convert(Math::Unit::Distance::DU_MILLIMETER, Math::Unit::Distance::DU_INCH, g->GetVisibleHeightMM()) * 72.0));
+		sb.AppendI32(Double2Int32(Math::Unit::Distance::Convert(Math::Unit::Distance::DU_MILLIMETER, Math::Unit::Distance::DU_INCH, g->GetVisibleHeightMM()) * 72.0));
 		sb.AppendC(UTF8STRC("]\r"));
 		sb.AppendC(UTF8STRC("/Parent 2 0 R\r"));
 		sb.AppendC(UTF8STRC("/Contents "));

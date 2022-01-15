@@ -106,7 +106,7 @@ IO::ParsedObject *Parser::FileParser::PLTParser::ParseFile(IO::IStreamData *fd, 
 				dval = Text::StrToDouble(tmpArr[4]);
 				tval = dval - (Int32)dval;
 				dt.AddDay((Int32)dval);
-				dt.AddMS(Math::Double2Int32(tval * 86400000));
+				dt.AddMS(Double2Int32(tval * 86400000));
 				rec.utcTimeTicks = dt.ToTicks();
 				track->AddRecord(&rec);
 			}

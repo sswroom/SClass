@@ -178,7 +178,7 @@ void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnTimerCPUTick(void *userObj)
 			t = me->clk->GetAndRestart();
 			if (t > 0)
 			{
-				v[0] = (Double)(kernelTime.DiffMS(me->lastKernelTime) + userTime.DiffMS(me->lastUserTime)) / t / 10.0 / Math::UOSInt2Double(me->threadCnt);
+				v[0] = (Double)(kernelTime.DiffMS(me->lastKernelTime) + userTime.DiffMS(me->lastUserTime)) / t / 10.0 / UOSInt2Double(me->threadCnt);
 				me->rlcDetChartCPU->AddSample(v);
 				me->lastKernelTime->SetValue(&kernelTime);
 				me->lastUserTime->SetValue(&userTime);
@@ -190,11 +190,11 @@ void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnTimerCPUTick(void *userObj)
 		UOSInt pageFile;
 		if (proc.GetMemoryInfo(0, &workingSet, &pagePool, &nonPagePool, &pageFile))
 		{
-			v[0] = Math::UOSInt2Double(pagePool);
-			v[1] = Math::UOSInt2Double(nonPagePool);
+			v[0] = UOSInt2Double(pagePool);
+			v[1] = UOSInt2Double(nonPagePool);
 			me->rlcDetChartPage->AddSample(v);
-			v[0] = Math::UOSInt2Double(workingSet);
-			v[1] = Math::UOSInt2Double(pageFile);
+			v[0] = UOSInt2Double(workingSet);
+			v[1] = UOSInt2Double(pageFile);
 			me->rlcDetChartWS->AddSample(v);
 		}
 		v[0] = proc.GetGDIObjCount();

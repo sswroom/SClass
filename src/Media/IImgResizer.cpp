@@ -52,7 +52,7 @@ void Media::IImgResizer::SetSrcRefLuminance(Double srcRefLuminance)
 Media::StaticImage *Media::IImgResizer::ProcessToNew(Media::StaticImage *srcImage)
 {
 	this->SetSrcRefLuminance(Media::CS::TransferFunc::GetRefLuminance(srcImage->info->color->rtransfer));
-	return ProcessToNewPartial(srcImage, 0, 0, Math::UOSInt2Double(srcImage->info->dispWidth), Math::UOSInt2Double(srcImage->info->dispHeight));
+	return ProcessToNewPartial(srcImage, 0, 0, UOSInt2Double(srcImage->info->dispWidth), UOSInt2Double(srcImage->info->dispHeight));
 }
 
 void Media::IImgResizer::CalOutputSize(Media::FrameInfo *srcInfo, UOSInt targetWidth, UOSInt targetHeight, Media::FrameInfo *destInfo, Media::IImgResizer::ResizeAspectRatio rar)
@@ -64,44 +64,44 @@ void Media::IImgResizer::CalOutputSize(Media::FrameInfo *srcInfo, UOSInt targetW
 		destInfo->dispHeight = targetHeight;
 		destInfo->storeWidth = destInfo->dispWidth;
 		destInfo->storeHeight = destInfo->dispHeight;
-		destInfo->par2 = srcInfo->par2 * Math::UOSInt2Double(srcInfo->dispHeight) / Math::UOSInt2Double(srcInfo->dispWidth) * Math::UOSInt2Double(destInfo->dispWidth) / Math::UOSInt2Double(destInfo->dispHeight);
-		destInfo->hdpi = srcInfo->hdpi * Math::UOSInt2Double(targetWidth) / Math::UOSInt2Double(srcInfo->dispWidth);
-		destInfo->vdpi = srcInfo->vdpi * Math::UOSInt2Double(targetHeight) / Math::UOSInt2Double(srcInfo->dispHeight);
+		destInfo->par2 = srcInfo->par2 * UOSInt2Double(srcInfo->dispHeight) / UOSInt2Double(srcInfo->dispWidth) * UOSInt2Double(destInfo->dispWidth) / UOSInt2Double(destInfo->dispHeight);
+		destInfo->hdpi = srcInfo->hdpi * UOSInt2Double(targetWidth) / UOSInt2Double(srcInfo->dispWidth);
+		destInfo->vdpi = srcInfo->vdpi * UOSInt2Double(targetHeight) / UOSInt2Double(srcInfo->dispHeight);
 	}
 	else if (rar == Media::IImgResizer::RAR_KEEPAR)
 	{
 		if (targetWidth * srcInfo->dispHeight > targetHeight * srcInfo->dispWidth)
 		{
 			destInfo->dispHeight = targetHeight;
-			destInfo->dispWidth = (UOSInt)Math::Double2Int32((Double)targetHeight * (Double)srcInfo->dispWidth / (Double)srcInfo->dispHeight);
+			destInfo->dispWidth = (UOSInt)Double2Int32((Double)targetHeight * (Double)srcInfo->dispWidth / (Double)srcInfo->dispHeight);
 		}
 		else
 		{
 			destInfo->dispWidth = targetWidth;
-			destInfo->dispHeight = (UOSInt)Math::Double2Int32((Double)targetWidth * (Double)srcInfo->dispHeight / (Double)srcInfo->dispWidth);
+			destInfo->dispHeight = (UOSInt)Double2Int32((Double)targetWidth * (Double)srcInfo->dispHeight / (Double)srcInfo->dispWidth);
 		}
 		destInfo->storeWidth = destInfo->dispWidth;
 		destInfo->storeHeight = destInfo->dispHeight;
-		destInfo->par2 = srcInfo->par2 * Math::UOSInt2Double(srcInfo->dispHeight) / Math::UOSInt2Double(srcInfo->dispWidth) * Math::UOSInt2Double(destInfo->dispWidth) / Math::UOSInt2Double(destInfo->dispHeight);
-		destInfo->hdpi = srcInfo->hdpi * Math::UOSInt2Double(targetWidth) / Math::UOSInt2Double(srcInfo->dispWidth);
-		destInfo->vdpi = srcInfo->vdpi * Math::UOSInt2Double(targetHeight) / Math::UOSInt2Double(srcInfo->dispHeight);
+		destInfo->par2 = srcInfo->par2 * UOSInt2Double(srcInfo->dispHeight) / UOSInt2Double(srcInfo->dispWidth) * UOSInt2Double(destInfo->dispWidth) / UOSInt2Double(destInfo->dispHeight);
+		destInfo->hdpi = srcInfo->hdpi * UOSInt2Double(targetWidth) / UOSInt2Double(srcInfo->dispWidth);
+		destInfo->vdpi = srcInfo->vdpi * UOSInt2Double(targetHeight) / UOSInt2Double(srcInfo->dispHeight);
 	}
 	else
 	{
-		if (Math::UOSInt2Double(targetWidth) * Math::UOSInt2Double(srcInfo->dispHeight) * srcInfo->par2 > Math::UOSInt2Double(targetHeight) * Math::UOSInt2Double(srcInfo->dispWidth))
+		if (UOSInt2Double(targetWidth) * UOSInt2Double(srcInfo->dispHeight) * srcInfo->par2 > UOSInt2Double(targetHeight) * UOSInt2Double(srcInfo->dispWidth))
 		{
 			destInfo->dispHeight = targetHeight;
-			destInfo->dispWidth = (UOSInt)Math::Double2Int32(Math::UOSInt2Double(targetHeight) / srcInfo->par2 * Math::UOSInt2Double(srcInfo->dispWidth) / Math::UOSInt2Double(srcInfo->dispHeight));
+			destInfo->dispWidth = (UOSInt)Double2Int32(UOSInt2Double(targetHeight) / srcInfo->par2 * UOSInt2Double(srcInfo->dispWidth) / UOSInt2Double(srcInfo->dispHeight));
 		}
 		else
 		{
 			destInfo->dispWidth = targetWidth;
-			destInfo->dispHeight = (UOSInt)Math::Double2Int32(Math::UOSInt2Double(targetWidth) * Math::UOSInt2Double(srcInfo->dispHeight) * srcInfo->par2 / Math::UOSInt2Double(srcInfo->dispWidth));
+			destInfo->dispHeight = (UOSInt)Double2Int32(UOSInt2Double(targetWidth) * UOSInt2Double(srcInfo->dispHeight) * srcInfo->par2 / UOSInt2Double(srcInfo->dispWidth));
 		}
 		destInfo->storeWidth = destInfo->dispWidth;
 		destInfo->storeHeight = destInfo->dispHeight;
-		destInfo->par2 = srcInfo->par2 * Math::UOSInt2Double(srcInfo->dispHeight) / Math::UOSInt2Double(srcInfo->dispWidth) * Math::UOSInt2Double(destInfo->dispWidth) / Math::UOSInt2Double(destInfo->dispHeight);
-		destInfo->hdpi = srcInfo->hdpi * Math::UOSInt2Double(targetWidth) / Math::UOSInt2Double(srcInfo->dispWidth);
-		destInfo->vdpi = srcInfo->vdpi * Math::UOSInt2Double(targetHeight) / Math::UOSInt2Double(srcInfo->dispHeight);
+		destInfo->par2 = srcInfo->par2 * UOSInt2Double(srcInfo->dispHeight) / UOSInt2Double(srcInfo->dispWidth) * UOSInt2Double(destInfo->dispWidth) / UOSInt2Double(destInfo->dispHeight);
+		destInfo->hdpi = srcInfo->hdpi * UOSInt2Double(targetWidth) / UOSInt2Double(srcInfo->dispWidth);
+		destInfo->vdpi = srcInfo->vdpi * UOSInt2Double(targetHeight) / UOSInt2Double(srcInfo->dispHeight);
 	}
 }

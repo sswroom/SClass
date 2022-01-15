@@ -40,7 +40,7 @@ Bool __stdcall UtilUI::ColorDialog::OnSubDown(void *userObj, OSInt x, OSInt y, U
 		{
 			y = (OSInt)h - 2;
 		}
-		newV = Math::OSInt2Double(y - 1) / (Double)(h - 3);
+		newV = OSInt2Double(y - 1) / (Double)(h - 3);
 		if (me->mainZ != newV)
 		{
 			me->mainZ = newV;
@@ -68,7 +68,7 @@ Bool __stdcall UtilUI::ColorDialog::OnSubMove(void *userObj, OSInt x, OSInt y, U
 		{
 			y = (OSInt)h - 2;
 		}
-		newV = Math::OSInt2Double(y - 1) / (Double)(h - 3);
+		newV = OSInt2Double(y - 1) / (Double)(h - 3);
 		if (me->mainZ != newV)
 		{
 			me->mainZ = newV;
@@ -100,7 +100,7 @@ Bool __stdcall UtilUI::ColorDialog::OnSubUp(void *userObj, OSInt x, OSInt y, UI:
 			{
 				y = (OSInt)h - 2;
 			}
-			newV = Math::OSInt2Double(y - 1) / (Double)(h - 3);
+			newV = OSInt2Double(y - 1) / (Double)(h - 3);
 			if (me->mainZ != newV)
 			{
 				me->mainZ = newV;
@@ -141,8 +141,8 @@ Bool __stdcall UtilUI::ColorDialog::OnMainDown(void *userObj, OSInt x, OSInt y, 
 		{
 			y = (OSInt)h - 2;
 		}
-		newV1 = Math::OSInt2Double(x - 1) / (Double)(w - 3);
-		newV2 = Math::OSInt2Double(y - 1) / (Double)(h - 3);
+		newV1 = OSInt2Double(x - 1) / (Double)(w - 3);
+		newV2 = OSInt2Double(y - 1) / (Double)(h - 3);
 		if (me->mainX != newV1 || me->mainY != newV2)
 		{
 			me->mainX = newV1;
@@ -180,8 +180,8 @@ Bool __stdcall UtilUI::ColorDialog::OnMainMove(void *userObj, OSInt x, OSInt y, 
 		{
 			y = (OSInt)h - 2;
 		}
-		newV1 = Math::OSInt2Double(x - 1) / (Double)(w - 3);
-		newV2 = Math::OSInt2Double(y - 1) / (Double)(h - 3);
+		newV1 = OSInt2Double(x - 1) / (Double)(w - 3);
+		newV2 = OSInt2Double(y - 1) / (Double)(h - 3);
 		if (me->mainX != newV1 || me->mainY != newV2)
 		{
 			me->mainX = newV1;
@@ -223,8 +223,8 @@ Bool __stdcall UtilUI::ColorDialog::OnMainUp(void *userObj, OSInt x, OSInt y, UI
 			{
 				y = (OSInt)h - 2;
 			}
-			newV1 = Math::OSInt2Double(x - 1) / (Double)(w - 3);
-			newV2 = Math::OSInt2Double(y - 1) / (Double)(h - 3);
+			newV1 = OSInt2Double(x - 1) / (Double)(w - 3);
+			newV2 = OSInt2Double(y - 1) / (Double)(h - 3);
 			if (me->mainX != newV1 || me->mainY != newV2)
 			{
 				me->mainX = newV1;
@@ -897,11 +897,11 @@ void UtilUI::ColorDialog::GenMainImageInner(UInt8 *imgPtr, UOSInt startIndex, UO
 	i = startIndex;
 	while (i < endIndex)
 	{
-		v3 = Math::UOSInt2Double(i) * v3R;
+		v3 = UOSInt2Double(i) * v3R;
 		j = 0;
 		while (j < w)
 		{
-			v2 = Math::UOSInt2Double(j) * v2R;
+			v2 = UOSInt2Double(j) * v2R;
 			XYZ2RGB(v2, v3, v1, &rgbv.val[0], &rgbv.val[1], &rgbv.val[2]);
 			rgbv.val[0] = srcRTran->InverseTransfer(rgbv.val[0]);
 			rgbv.val[1] = srcGTran->InverseTransfer(rgbv.val[1]);
@@ -1098,7 +1098,7 @@ void UtilUI::ColorDialog::GenSubImage()
 	i = 0;
 	while (i < h)
 	{
-		v1 = Math::UOSInt2Double(i) * v1R;
+		v1 = UOSInt2Double(i) * v1R;
 		this->XYZ2RGB(v2, v3, v1, &rgbv.val[0], &rgbv.val[1], &rgbv.val[2]);
 		rgbv.val[0] = srcRTran->InverseTransfer(rgbv.val[0]);
 		rgbv.val[1] = srcGTran->InverseTransfer(rgbv.val[1]);
@@ -1110,9 +1110,9 @@ void UtilUI::ColorDialog::GenSubImage()
 		Int32 rV;
 		Int32 gV;
 		Int32 bV;
-		rV = Math::Double2Int32((rBright - 1.0 + Math_Pow(rgbv.val[0], rGammaVal) * rContr) * 255.0);
-		gV = Math::Double2Int32((gBright - 1.0 + Math_Pow(rgbv.val[1], gGammaVal) * gContr) * 255.0);
-		bV = Math::Double2Int32((bBright - 1.0 + Math_Pow(rgbv.val[2], bGammaVal) * bContr) * 255.0);
+		rV = Double2Int32((rBright - 1.0 + Math_Pow(rgbv.val[0], rGammaVal) * rContr) * 255.0);
+		gV = Double2Int32((gBright - 1.0 + Math_Pow(rgbv.val[1], gGammaVal) * gContr) * 255.0);
+		bV = Double2Int32((bBright - 1.0 + Math_Pow(rgbv.val[2], bGammaVal) * bContr) * 255.0);
 		if (bV > 255)
 			c[0] = 255;
 		else if (bV < 0)
@@ -1288,9 +1288,9 @@ void UtilUI::ColorDialog::UpdateColor()
 	Int32 rV;
 	Int32 gV;
 	Int32 bV;
-	rV = Math::Double2Int32((rBright - 1.0 + Math_Pow(rgbv3.val[0], rGammaVal) * rContr) * 255.0);
-	gV = Math::Double2Int32((gBright - 1.0 + Math_Pow(rgbv3.val[1], gGammaVal) * gContr) * 255.0);
-	bV = Math::Double2Int32((bBright - 1.0 + Math_Pow(rgbv3.val[2], bGammaVal) * bContr) * 255.0);
+	rV = Double2Int32((rBright - 1.0 + Math_Pow(rgbv3.val[0], rGammaVal) * rContr) * 255.0);
+	gV = Double2Int32((gBright - 1.0 + Math_Pow(rgbv3.val[1], gGammaVal) * gContr) * 255.0);
+	bV = Double2Int32((bBright - 1.0 + Math_Pow(rgbv3.val[2], bGammaVal) * bContr) * 255.0);
 	if (bV > 255)
 		c[0] = 255;
 	else if (bV < 0)
@@ -1318,9 +1318,9 @@ void UtilUI::ColorDialog::UpdateColor()
 	rgbv.val[1] = srcGTran->ForwardTransfer(rgbv.val[1]);
 	rgbv.val[2] = srcBTran->ForwardTransfer(rgbv.val[2]);
 
-	rV = Math::Double2Int32(rgbv.val[0] * 255.0);
-	gV = Math::Double2Int32(rgbv.val[1] * 255.0);
-	bV = Math::Double2Int32(rgbv.val[2] * 255.0);
+	rV = Double2Int32(rgbv.val[0] * 255.0);
+	gV = Double2Int32(rgbv.val[1] * 255.0);
+	bV = Double2Int32(rgbv.val[2] * 255.0);
 	if (rV > 255)
 		rV = 255;
 	else if (rV < 0)
@@ -1350,9 +1350,9 @@ void UtilUI::ColorDialog::UpdateColor()
 	}
 
 	RGB2YIQ(rgbv.val[0], rgbv.val[1], rgbv.val[2], &rgbv2.val[0], &rgbv2.val[1], &rgbv2.val[2]);
-	rV = Math::Double2Int32(rgbv2.val[0] * 255.0);
-	gV = Math::Double2Int32(rgbv2.val[1] * 255.0);
-	bV = Math::Double2Int32(rgbv2.val[2] * 255.0);
+	rV = Double2Int32(rgbv2.val[0] * 255.0);
+	gV = Double2Int32(rgbv2.val[1] * 255.0);
+	bV = Double2Int32(rgbv2.val[2] * 255.0);
 	if (rV > 255)
 		rV = 255;
 	else if (rV < 0)
@@ -1382,9 +1382,9 @@ void UtilUI::ColorDialog::UpdateColor()
 	}
 
 	RGB2HSV(rgbv.val[0], rgbv.val[1], rgbv.val[2], &rgbv2.val[0], &rgbv2.val[1], &rgbv2.val[2]);
-	rV = Math::Double2Int32(rgbv2.val[0] * 255.0);
-	gV = Math::Double2Int32(rgbv2.val[1] * 255.0);
-	bV = Math::Double2Int32(rgbv2.val[2] * 255.0);
+	rV = Double2Int32(rgbv2.val[0] * 255.0);
+	gV = Double2Int32(rgbv2.val[1] * 255.0);
+	bV = Double2Int32(rgbv2.val[2] * 255.0);
 	if (rV > 255)
 		rV = 255;
 	else if (rV < 0)
@@ -1650,25 +1650,25 @@ UInt32 UtilUI::ColorDialog::GetColor32()
 	else if (this->aVal < 0)
 		a = 0;
 	else
-		a = (UInt32)Math::Double2Int32(this->aVal * 255.0);
+		a = (UInt32)Double2Int32(this->aVal * 255.0);
 	if (this->rVal > 1.0)
 		r = 255;
 	else if (this->rVal < 0)
 		r = 0;
 	else
-		r = (UInt32)Math::Double2Int32(this->rVal * 255.0);
+		r = (UInt32)Double2Int32(this->rVal * 255.0);
 	if (this->gVal > 1.0)
 		g = 255;
 	else if (this->gVal < 0)
 		g = 0;
 	else
-		g = (UInt32)Math::Double2Int32(this->gVal * 255.0);
+		g = (UInt32)Double2Int32(this->gVal * 255.0);
 	if (this->bVal > 1.0)
 		b = 255;
 	else if (this->bVal < 0)
 		b = 0;
 	else
-		b = (UInt32)Math::Double2Int32(this->bVal * 255.0);
+		b = (UInt32)Double2Int32(this->bVal * 255.0);
 	return (a << 24) | (r << 16) | (g << 8) | (b);
 }
 

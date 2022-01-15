@@ -34,7 +34,7 @@ gboolean GUIHSplitter_OnMouseDown(GtkWidget *widget, GdkEvent *event, gpointer d
 		}
 		if (btn == UI::GUIControl::MBTN_LEFT)
 		{
-			me->EventMouseDown(btn, Math::Double2OSInt(evt->x), Math::Double2OSInt(evt->y));
+			me->EventMouseDown(btn, Double2OSInt(evt->x), Double2OSInt(evt->y));
 		}
 	}
 	return false;
@@ -68,7 +68,7 @@ gboolean GUIHSplitter_OnMouseUp(GtkWidget *widget, GdkEvent *event, gpointer dat
 		}
 		if (btn == UI::GUIControl::MBTN_LEFT)
 		{
-			me->EventMouseUp(btn, Math::Double2OSInt(evt->x), Math::Double2OSInt(evt->y));
+			me->EventMouseUp(btn, Double2OSInt(evt->x), Double2OSInt(evt->y));
 		}
 	}
 	return false;

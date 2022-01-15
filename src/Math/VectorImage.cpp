@@ -384,27 +384,27 @@ void Math::VectorImage::GetScreenBounds(UOSInt scnWidth, UOSInt scnHeight, Doubl
 
 	if (this->sizeX == 0 && this->sizeY == 0)
 	{
-		sizeX = Math::UOSInt2Double(simg->info->dispWidth) * hdpi / simg->info->hdpi;
-		sizeY = Math::UOSInt2Double(simg->info->dispHeight) * vdpi / simg->info->vdpi;
+		sizeX = UOSInt2Double(simg->info->dispWidth) * hdpi / simg->info->hdpi;
+		sizeY = UOSInt2Double(simg->info->dispHeight) * vdpi / simg->info->vdpi;
 	}
 	else if (this->sizeX == 0)
 	{
-		sizeY = Math::UOSInt2Double(scnHeight) * this->sizeY;
-		sizeX = Math::UOSInt2Double(scnHeight) * this->sizeY * Math::UOSInt2Double(simg->info->dispWidth) / Math::UOSInt2Double(simg->info->dispHeight);
+		sizeY = UOSInt2Double(scnHeight) * this->sizeY;
+		sizeX = UOSInt2Double(scnHeight) * this->sizeY * UOSInt2Double(simg->info->dispWidth) / UOSInt2Double(simg->info->dispHeight);
 	}
 	else if (this->sizeY == 0)
 	{
-		sizeX = Math::UOSInt2Double(scnWidth) * this->sizeX;
-		sizeY = Math::UOSInt2Double(scnWidth) * this->sizeX * Math::UOSInt2Double(simg->info->dispHeight) / Math::UOSInt2Double(simg->info->dispWidth);
+		sizeX = UOSInt2Double(scnWidth) * this->sizeX;
+		sizeY = UOSInt2Double(scnWidth) * this->sizeX * UOSInt2Double(simg->info->dispHeight) / UOSInt2Double(simg->info->dispWidth);
 	}
 	else
 	{
-		sizeX = Math::UOSInt2Double(scnWidth) * this->sizeX;
-		sizeY = Math::UOSInt2Double(scnHeight) * this->sizeY;
+		sizeX = UOSInt2Double(scnWidth) * this->sizeX;
+		sizeY = UOSInt2Double(scnHeight) * this->sizeY;
 	}
 
-	scnX = Math::UOSInt2Double(scnWidth) * this->x1 - sizeX * this->x2;
-	scnY = Math::UOSInt2Double(scnHeight) * (1 - this->y1) - sizeY * (1 - this->y2);
+	scnX = UOSInt2Double(scnWidth) * this->x1 - sizeX * this->x2;
+	scnY = UOSInt2Double(scnHeight) * (1 - this->y1) - sizeY * (1 - this->y2);
 	*x1 = scnX;
 	*y1 = scnY;
 	*x2 = scnX + sizeX;

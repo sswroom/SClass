@@ -174,7 +174,7 @@ Bool Map::DrawMapRenderer::AddLabel(MapLabels *labels, UOSInt maxLabel, UOSInt *
 					scnX = scnX * scnX + scnY * scnY;
 
 					labels[i].currSize = scnX;
-					labels[i].totalSize = Math::UOSInt2Double(nPoints);
+					labels[i].totalSize = UOSInt2Double(nPoints);
 					labels[i].nPoints = 0;
 					labels[i].layerType = recType;
 					labels[i].points = 0;
@@ -642,8 +642,8 @@ Bool Map::DrawMapRenderer::AddLabel(MapLabels *labels, UOSInt maxLabel, UOSInt *
 				labels[i].scaleH = 0;
 				labels[i].priority = priority;
 
-				labels[i].currSize = Math::UOSInt2Double(outPtCnt);
-				labels[i].totalSize = Math::UOSInt2Double(outPtCnt);
+				labels[i].currSize = UOSInt2Double(outPtCnt);
+				labels[i].totalSize = UOSInt2Double(outPtCnt);
 				labels[i].nPoints = outPtCnt;
 				labels[i].layerType = recType;
 				if (labels[i].points)
@@ -748,7 +748,7 @@ void Map::DrawMapRenderer::DrawLabels(Map::DrawMapRenderer::DrawEnv *denv)
 				}
 				if (overlapped)
 				{
-					tlx = scnPtX + 1 + Math::OSInt2Double(denv->labels[i].xOfst >> 1);
+					tlx = scnPtX + 1 + OSInt2Double(denv->labels[i].xOfst >> 1);
 					brx = tlx + szThis[0];
 					tly = scnPtY - (szThis[1] * 0.5);
 					bry = tly + szThis[1];
@@ -757,7 +757,7 @@ void Map::DrawMapRenderer::DrawLabels(Map::DrawMapRenderer::DrawEnv *denv)
 				}
 				if (overlapped)
 				{
-					tlx = scnPtX - szThis[0] - 1 - Math::OSInt2Double(denv->labels[i].xOfst >> 1);
+					tlx = scnPtX - szThis[0] - 1 - OSInt2Double(denv->labels[i].xOfst >> 1);
 					brx = tlx + szThis[0];
 					tly = scnPtY - (szThis[1] * 0.5);
 					bry = tly + szThis[1];
@@ -768,7 +768,7 @@ void Map::DrawMapRenderer::DrawLabels(Map::DrawMapRenderer::DrawEnv *denv)
 				{
 					tlx = scnPtX - (szThis[0] * 0.5);
 					brx = tlx + szThis[0];
-					tly = scnPtY - szThis[1] - 1 - Math::OSInt2Double(denv->labels[i].yOfst >> 1);
+					tly = scnPtY - szThis[1] - 1 - OSInt2Double(denv->labels[i].yOfst >> 1);
 					bry = tly + szThis[1];
 
 					overlapped = LabelOverlapped(denv->objBounds, currPt, tlx, tly, brx, bry);
@@ -777,7 +777,7 @@ void Map::DrawMapRenderer::DrawLabels(Map::DrawMapRenderer::DrawEnv *denv)
 				{
 					tlx = scnPtX - (szThis[0] * 0.5);
 					brx = tlx + szThis[0];
-					tly = scnPtY + 1 + Math::OSInt2Double(denv->labels[i].yOfst >> 1);
+					tly = scnPtY + 1 + OSInt2Double(denv->labels[i].yOfst >> 1);
 					bry = tly + szThis[1];
 
 					overlapped = LabelOverlapped(denv->objBounds, currPt, tlx, tly, brx, bry);
@@ -987,7 +987,7 @@ void Map::DrawMapRenderer::DrawLabels(Map::DrawMapRenderer::DrawEnv *denv)
 
 				if (xDiff > yDiff)
 				{
-					scnPtX = Math::OSInt2Double((maxX + minX) >> 1);
+					scnPtX = OSInt2Double((maxX + minX) >> 1);
 					k = 0;
 					while (k < denv->labels[i].nPoints - 1)
 					{
@@ -1009,7 +1009,7 @@ void Map::DrawMapRenderer::DrawLabels(Map::DrawMapRenderer::DrawEnv *denv)
 				}
 				else
 				{
-					scnPtY = Math::OSInt2Double((maxY + minY) >> 1);
+					scnPtY = OSInt2Double((maxY + minY) >> 1);
 					k = 0;
 					while (k < denv->labels[i].nPoints - 1)
 					{
@@ -1041,7 +1041,7 @@ void Map::DrawMapRenderer::DrawLabels(Map::DrawMapRenderer::DrawEnv *denv)
 					denv->labels[i].scaleH = 0;
 				}
 				GetCharsSize(denv, szThis, denv->labels[i].label, denv->labels[i].fontStyle, denv->labels[i].scaleW, denv->labels[i].scaleH);
-				if (Math::OSInt2Double(xDiff) < szThis[0] && Math::OSInt2Double(yDiff) < szThis[1])
+				if (OSInt2Double(xDiff) < szThis[0] && OSInt2Double(yDiff) < szThis[1])
 				{
 					tlx = scnPtX - (szThis[0] * 0.5);
 					brx = tlx + szThis[0];
@@ -1084,23 +1084,23 @@ void Map::DrawMapRenderer::DrawLabels(Map::DrawMapRenderer::DrawEnv *denv)
 							{
 								if (scnDiff < 0)
 								{
-									scnPtX += Math::OSInt2Double(scnDiff) - 1;
-									if (scnPtX <= Math::OSInt2Double(minX))
+									scnPtX += OSInt2Double(scnDiff) - 1;
+									if (scnPtX <= OSInt2Double(minX))
 									{
 										scnDiff = -scnDiff;
-										scnPtX = Math::OSInt2Double(((minX + maxX) >> 1) + scnDiff + 1);
+										scnPtX = OSInt2Double(((minX + maxX) >> 1) + scnDiff + 1);
 									}
 								}
 								else
 								{
-									scnPtX += Math::OSInt2Double(scnDiff) + 1;
-									if (scnPtX >= Math::OSInt2Double(maxX))
+									scnPtX += OSInt2Double(scnDiff) + 1;
+									if (scnPtX >= OSInt2Double(maxX))
 									{
 										scnDiff = scnDiff >> 1;
 										if (scnDiff < 30)
 											break;
 										scnDiff = -scnDiff;
-										scnPtX = Math::OSInt2Double(((minX + maxX) >> 1) + scnDiff - 1);
+										scnPtX = OSInt2Double(((minX + maxX) >> 1) + scnDiff - 1);
 									}
 								}
 
@@ -1127,23 +1127,23 @@ void Map::DrawMapRenderer::DrawLabels(Map::DrawMapRenderer::DrawEnv *denv)
 							{
 								if (scnDiff < 0)
 								{
-									scnPtY += Math::OSInt2Double(scnDiff - 1);
-									if (scnPtY <= Math::OSInt2Double(minY))
+									scnPtY += OSInt2Double(scnDiff - 1);
+									if (scnPtY <= OSInt2Double(minY))
 									{
 										scnDiff = -scnDiff;
-										scnPtY = Math::OSInt2Double(((minY + maxY) >> 1) + scnDiff + 1);
+										scnPtY = OSInt2Double(((minY + maxY) >> 1) + scnDiff + 1);
 									}
 								}
 								else
 								{
-									scnPtY += Math::OSInt2Double(scnDiff + 1);
-									if (scnPtY >= Math::OSInt2Double(maxY))
+									scnPtY += OSInt2Double(scnDiff + 1);
+									if (scnPtY >= OSInt2Double(maxY))
 									{
 										scnDiff = scnDiff >> 1;
 										if (scnDiff < 30)
 											break;
 										scnDiff = -scnDiff;
-										scnPtY = Math::OSInt2Double(((minY + maxY) >> 1) + scnDiff - 1);
+										scnPtY = OSInt2Double(((minY + maxY) >> 1) + scnDiff - 1);
 									}
 								}
 
@@ -1191,12 +1191,12 @@ void Map::DrawMapRenderer::DrawLabels(Map::DrawMapRenderer::DrawEnv *denv)
 						{
 							n = 0;
 							tmpV = thisPts[--m];
-							if (Math::OSInt2Double(tmpV - LBLMINDIST) < bry && Math::OSInt2Double(tmpV + LBLMINDIST) > tly)
+							if (OSInt2Double(tmpV - LBLMINDIST) < bry && OSInt2Double(tmpV + LBLMINDIST) > tly)
 							{
 								n++;
 							}
 							tmpV = thisPts[--m];
-							if (Math::OSInt2Double(tmpV - LBLMINDIST) < brx && Math::OSInt2Double(tmpV + LBLMINDIST) > tlx)
+							if (OSInt2Double(tmpV - LBLMINDIST) < brx && OSInt2Double(tmpV + LBLMINDIST) > tlx)
 							{
 								n++;
 							}
@@ -1238,8 +1238,8 @@ void Map::DrawMapRenderer::DrawLabels(Map::DrawMapRenderer::DrawEnv *denv)
 								currPt++;
 							}
 
-							thisPts[thisCnt++] = Math::Double2Int32((tlx + brx) * 0.5);
-							thisPts[thisCnt++] = Math::Double2Int32((tly + bry) * 0.5);
+							thisPts[thisCnt++] = Double2Int32((tlx + brx) * 0.5);
+							thisPts[thisCnt++] = Double2Int32((tly + bry) * 0.5);
 						}
 						j = (thisCnt < 10);
 					}
@@ -1488,12 +1488,12 @@ void Map::DrawMapRenderer::DrawLayers(Map::DrawMapRenderer::DrawEnv *denv, Map::
 							if (layer.layer->HasIconStyle())
 							{
 								pimg = layer.layer->GetIconStyleImg()->GetImage(0, &imgDurMS);
-								spotX = Math::OSInt2Double(layer.layer->GetIconStyleSpotX());
-								spotY = Math::OSInt2Double(layer.layer->GetIconStyleSpotY());
+								spotX = OSInt2Double(layer.layer->GetIconStyleSpotX());
+								spotY = OSInt2Double(layer.layer->GetIconStyleSpotY());
 								if (pimg != 0 && (spotX == -1 || spotY == -1))
 								{
-									spotX = Math::UOSInt2Double(pimg->info->dispWidth) * 0.5;
-									spotY = Math::UOSInt2Double(pimg->info->dispHeight) * 0.5;
+									spotX = UOSInt2Double(pimg->info->dispWidth) * 0.5;
+									spotY = UOSInt2Double(pimg->info->dispHeight) * 0.5;
 								}
 							}
 							if (pimg == 0)
@@ -1501,8 +1501,8 @@ void Map::DrawMapRenderer::DrawLayers(Map::DrawMapRenderer::DrawEnv *denv, Map::
 								pimg = denv->env->GetImage(layer.imgIndex, &imgDurMS);
 								if (pimg)
 								{
-									spotX = Math::UOSInt2Double(pimg->info->dispWidth) * 0.5;
-									spotY = Math::UOSInt2Double(pimg->info->dispHeight) * 0.5;
+									spotX = UOSInt2Double(pimg->info->dispWidth) * 0.5;
+									spotY = UOSInt2Double(pimg->info->dispHeight) * 0.5;
 								}
 								else
 								{
@@ -1517,7 +1517,7 @@ void Map::DrawMapRenderer::DrawLayers(Map::DrawMapRenderer::DrawEnv *denv, Map::
 								{
 									if (pimg)
 									{
-										DrawLabel(denv, layer.layer, layer.fontStyle, layer.labelCol, layer.priority, layer.flags, (UOSInt)Math::Double2Int32(Math::UOSInt2Double(pimg->info->dispWidth) * denv->img->GetHDPI() / pimg->info->hdpi), (UOSInt)Math::Double2Int32(Math::UOSInt2Double(pimg->info->dispHeight) * denv->img->GetVDPI() / pimg->info->vdpi), layerType, layer.fontType);
+										DrawLabel(denv, layer.layer, layer.fontStyle, layer.labelCol, layer.priority, layer.flags, (UOSInt)Double2Int32(UOSInt2Double(pimg->info->dispWidth) * denv->img->GetHDPI() / pimg->info->hdpi), (UOSInt)Double2Int32(UOSInt2Double(pimg->info->dispHeight) * denv->img->GetVDPI() / pimg->info->vdpi), layerType, layer.fontType);
 									}
 									else
 									{
@@ -1534,7 +1534,7 @@ void Map::DrawMapRenderer::DrawLayers(Map::DrawMapRenderer::DrawEnv *denv, Map::
 								denv->layerFontColor->Add(b);
 								if (pimg)
 								{
-									DrawLabel(denv, layer.layer, fs, layer.labelCol, layer.priority, layer.flags, (UOSInt)Math::Double2Int32(Math::UOSInt2Double(pimg->info->dispWidth) * denv->img->GetHDPI() / pimg->info->hdpi), (UOSInt)Math::Double2Int32(Math::UOSInt2Double(pimg->info->dispHeight) * denv->img->GetVDPI() / pimg->info->vdpi), layerType, layer.fontType);
+									DrawLabel(denv, layer.layer, fs, layer.labelCol, layer.priority, layer.flags, (UOSInt)Double2Int32(UOSInt2Double(pimg->info->dispWidth) * denv->img->GetHDPI() / pimg->info->hdpi), (UOSInt)Double2Int32(UOSInt2Double(pimg->info->dispHeight) * denv->img->GetVDPI() / pimg->info->vdpi), layerType, layer.fontType);
 								}
 								else
 								{
@@ -1647,7 +1647,7 @@ void Map::DrawMapRenderer::DrawPLLayer(Map::DrawMapRenderer::DrawEnv *denv, Map:
 				color = lineColor;
 				npattern = 0;
 			}
-			p = denv->img->NewPenARGB(this->colorConv->ConvRGB8(color), Math::UOSInt2Double(thick) * denv->img->GetHDPI() / 96.0, pattern, npattern);
+			p = denv->img->NewPenARGB(this->colorConv->ConvRGB8(color), UOSInt2Double(thick) * denv->img->GetHDPI() / 96.0, pattern, npattern);
 			//pen = CreatePen(img, lyrs->style, 0, osSize);
 			this->mapSch->SetDrawType(layer, Map::MapScheduler::MSDT_POLYLINE, p, 0, 0, 0.0, 0.0, &denv->isLayerEmpty);
 
@@ -1679,7 +1679,7 @@ void Map::DrawMapRenderer::DrawPLLayer(Map::DrawMapRenderer::DrawEnv *denv, Map:
 			{
 				while (denv->env->GetLineStyleLayer(lineStyle, layerId++, &color, &thick, &pattern, &npattern))
 				{
-					p = denv->img->NewPenARGB(this->colorConv->ConvRGB8(color), Math::UOSInt2Double(thick) * denv->img->GetHDPI() / 96.0, pattern, npattern);
+					p = denv->img->NewPenARGB(this->colorConv->ConvRGB8(color), UOSInt2Double(thick) * denv->img->GetHDPI() / 96.0, pattern, npattern);
 					mapSch->DrawNextType(p, 0);
 				}
 			}
@@ -1704,7 +1704,7 @@ void Map::DrawMapRenderer::DrawPLLayer(Map::DrawMapRenderer::DrawEnv *denv, Map:
 				color = lineColor;
 				npattern = 0;
 			}
-			p = denv->img->NewPenARGB(this->colorConv->ConvRGB8(color), Math::UOSInt2Double(thick) * denv->img->GetHDPI() / 96.0, pattern, npattern);
+			p = denv->img->NewPenARGB(this->colorConv->ConvRGB8(color), UOSInt2Double(thick) * denv->img->GetHDPI() / 96.0, pattern, npattern);
 			//pen = CreatePen(img, lyrs->style, 0, osSize);
 			this->mapSch->SetDrawType(layer, Map::MapScheduler::MSDT_POLYLINE, p, 0, 0, 0.0, 0.0, &denv->isLayerEmpty);
 
@@ -1731,7 +1731,7 @@ void Map::DrawMapRenderer::DrawPLLayer(Map::DrawMapRenderer::DrawEnv *denv, Map:
 			{
 				while (denv->env->GetLineStyleLayer(lineStyle, layerId++, &color, &thick, &pattern, &npattern))
 				{
-					p = denv->img->NewPenARGB(this->colorConv->ConvRGB8(color), Math::UOSInt2Double(thick) * denv->img->GetHDPI() / 96.0, pattern, npattern);
+					p = denv->img->NewPenARGB(this->colorConv->ConvRGB8(color), UOSInt2Double(thick) * denv->img->GetHDPI() / 96.0, pattern, npattern);
 					mapSch->DrawNextType(p, 0);
 				}
 			}
@@ -1776,7 +1776,7 @@ void Map::DrawMapRenderer::DrawPGLayer(Map::DrawMapRenderer::DrawEnv *denv, Map:
 			UOSInt npattern;
 			Bool found;
 			found = denv->env->GetLineStyleLayer(lineStyle, layerId++, &color, &thick, &pattern, &npattern);
-			p = denv->img->NewPenARGB(this->colorConv->ConvRGB8(color), Math::UOSInt2Double(thick) * denv->img->GetHDPI() / 96.0, pattern, npattern);
+			p = denv->img->NewPenARGB(this->colorConv->ConvRGB8(color), UOSInt2Double(thick) * denv->img->GetHDPI() / 96.0, pattern, npattern);
 			b = denv->img->NewBrushARGB(this->colorConv->ConvRGB8(fillStyle));
 			this->mapSch->SetDrawType(layer, Map::MapScheduler::MSDT_POLYGON, p, b, 0, 0.0, 0.0, &denv->isLayerEmpty);
 
@@ -1805,7 +1805,7 @@ void Map::DrawMapRenderer::DrawPGLayer(Map::DrawMapRenderer::DrawEnv *denv, Map:
 			{
 				while (denv->env->GetLineStyleLayer(lineStyle, layerId++, &color, &thick, &pattern, &npattern))
 				{
-					p = denv->img->NewPenARGB(this->colorConv->ConvRGB8(color), Math::UOSInt2Double(thick) * denv->img->GetHDPI() / 96.0, pattern, npattern);
+					p = denv->img->NewPenARGB(this->colorConv->ConvRGB8(color), UOSInt2Double(thick) * denv->img->GetHDPI() / 96.0, pattern, npattern);
 					mapSch->DrawNextType(p, 0);
 				}
 			}
@@ -1824,7 +1824,7 @@ void Map::DrawMapRenderer::DrawPGLayer(Map::DrawMapRenderer::DrawEnv *denv, Map:
 			UOSInt npattern;
 			Bool found;
 			found = denv->env->GetLineStyleLayer(lineStyle, layerId++, &color, &thick, &pattern, &npattern);
-			p = denv->img->NewPenARGB(this->colorConv->ConvRGB8(color), Math::UOSInt2Double(thick) * denv->img->GetHDPI() / 96.0, pattern, npattern);
+			p = denv->img->NewPenARGB(this->colorConv->ConvRGB8(color), UOSInt2Double(thick) * denv->img->GetHDPI() / 96.0, pattern, npattern);
 			b = denv->img->NewBrushARGB(this->colorConv->ConvRGB8(fillStyle));
 			this->mapSch->SetDrawType(layer, Map::MapScheduler::MSDT_POLYGON, p, b, 0, 0.0, 0.0, &denv->isLayerEmpty);
 
@@ -1848,7 +1848,7 @@ void Map::DrawMapRenderer::DrawPGLayer(Map::DrawMapRenderer::DrawEnv *denv, Map:
 			{
 				while (denv->env->GetLineStyleLayer(lineStyle, layerId++, &color, &thick, &pattern, &npattern))
 				{
-					p = denv->img->NewPenARGB(this->colorConv->ConvRGB8(color), Math::UOSInt2Double(thick) * denv->img->GetHDPI() / 96.0, pattern, npattern);
+					p = denv->img->NewPenARGB(this->colorConv->ConvRGB8(color), UOSInt2Double(thick) * denv->img->GetHDPI() / 96.0, pattern, npattern);
 					mapSch->DrawNextType(p, 0);
 				}
 			}
@@ -1877,12 +1877,12 @@ void Map::DrawMapRenderer::DrawPTLayer(Map::DrawMapRenderer::DrawEnv *denv, Map:
 	if (layer->HasIconStyle())
 	{
 		img = layer->GetIconStyleImg()->GetImage(0, &imgTimeMS);
-		spotX = Math::OSInt2Double(layer->GetIconStyleSpotX());
-		spotY = Math::OSInt2Double(layer->GetIconStyleSpotY());
+		spotX = OSInt2Double(layer->GetIconStyleSpotX());
+		spotY = OSInt2Double(layer->GetIconStyleSpotY());
 		if (img != 0 && (spotX == -1 || spotY == -1))
 		{
-			spotX = Math::UOSInt2Double(img->info->dispWidth) * 0.5;
-			spotY = Math::UOSInt2Double(img->info->dispHeight) * 0.5;
+			spotX = UOSInt2Double(img->info->dispWidth) * 0.5;
+			spotY = UOSInt2Double(img->info->dispHeight) * 0.5;
 		}
 	}
 	if (img == 0)
@@ -1890,8 +1890,8 @@ void Map::DrawMapRenderer::DrawPTLayer(Map::DrawMapRenderer::DrawEnv *denv, Map:
 		img = denv->env->GetImage(imgIndex, &imgTimeMS);
 		if (img == 0)
 			return;
-		spotX = Math::UOSInt2Double(img->info->dispWidth) * 0.5;
-		spotY = Math::UOSInt2Double(img->info->dispHeight) * 0.5;
+		spotX = UOSInt2Double(img->info->dispWidth) * 0.5;
+		spotY = UOSInt2Double(img->info->dispHeight) * 0.5;
 	}
 	if (imgTimeMS != 0)
 	{
@@ -1920,8 +1920,8 @@ void Map::DrawMapRenderer::DrawPTLayer(Map::DrawMapRenderer::DrawEnv *denv, Map:
 		Media::DrawImage *dimg;
 		if (this->drawType == Map::DrawMapRenderer::DT_PIXELDRAW)
 		{
-			UInt32 newW = (UInt32)Math::Double2Int32(Math::UOSInt2Double(img->info->dispWidth) * denv->img->GetHDPI() / img->info->hdpi);
-			UInt32 newH = (UInt32)Math::Double2Int32(Math::UOSInt2Double(img->info->dispHeight) * denv->img->GetVDPI() / img->info->vdpi);
+			UInt32 newW = (UInt32)Double2Int32(UOSInt2Double(img->info->dispWidth) * denv->img->GetHDPI() / img->info->hdpi);
+			UInt32 newH = (UInt32)Double2Int32(UOSInt2Double(img->info->dispHeight) * denv->img->GetVDPI() / img->info->vdpi);
 			if (newW > img->info->dispWidth || newH > img->info->dispHeight)
 			{
 				this->resizer->SetTargetWidth(newW);
@@ -1983,8 +1983,8 @@ void Map::DrawMapRenderer::DrawPTLayer(Map::DrawMapRenderer::DrawEnv *denv, Map:
 		Media::DrawImage *dimg;
 		if (this->drawType == Map::DrawMapRenderer::DT_PIXELDRAW)
 		{
-			UInt32 newW = (UInt32)Math::Double2Int32(Math::UOSInt2Double(img->info->dispWidth) * denv->img->GetHDPI() / img->info->hdpi);
-			UInt32 newH = (UInt32)Math::Double2Int32(Math::UOSInt2Double(img->info->dispHeight) * denv->img->GetVDPI() / img->info->vdpi);
+			UInt32 newW = (UInt32)Double2Int32(UOSInt2Double(img->info->dispWidth) * denv->img->GetHDPI() / img->info->hdpi);
+			UInt32 newH = (UInt32)Double2Int32(UOSInt2Double(img->info->dispHeight) * denv->img->GetVDPI() / img->info->vdpi);
 			if (newW > img->info->dispWidth || newH > img->info->dispHeight)
 			{
 				this->resizer->SetTargetWidth(newW);
@@ -2306,15 +2306,15 @@ void Map::DrawMapRenderer::DrawImageObject(DrawEnv *denv, Media::StaticImage *im
 
 	imgW = denv->img->GetWidth();
 	imgH = denv->img->GetHeight();
-	dimgW = Math::UOSInt2Double(imgW);
-	dimgH = Math::UOSInt2Double(imgH);
+	dimgW = UOSInt2Double(imgW);
+	dimgH = UOSInt2Double(imgH);
 
 	if (img != 0 && scnX1 < scnX2 && scnY1 < scnY2)
 	{
 		if (this->drawType == DT_VECTORDRAW)
 		{
-			img->info->hdpi = Math::UOSInt2Double(img->info->dispWidth) * denv->img->GetHDPI() / (scnX2 - scnX1);
-			img->info->vdpi = Math::UOSInt2Double(img->info->dispHeight) * denv->img->GetVDPI() / (scnY2 - scnY1);
+			img->info->hdpi = UOSInt2Double(img->info->dispWidth) * denv->img->GetHDPI() / (scnX2 - scnX1);
+			img->info->vdpi = UOSInt2Double(img->info->dispHeight) * denv->img->GetVDPI() / (scnY2 - scnY1);
 			denv->img->DrawImagePt2(img, scnX1, scnY1);
 		}
 		else
@@ -2324,8 +2324,8 @@ void Map::DrawMapRenderer::DrawImageObject(DrawEnv *denv, Media::StaticImage *im
 			if (dimgW > drawW || dimgH > drawH)
 			{
 				img->To32bpp();
-				this->resizer->SetTargetWidth((UOSInt)(Math::Double2Int32(scnX2) - Math::Double2Int32(scnX1)));
-				this->resizer->SetTargetHeight((UOSInt)(Math::Double2Int32(scnY2) - Math::Double2Int32(scnY1)));
+				this->resizer->SetTargetWidth((UOSInt)(Double2Int32(scnX2) - Double2Int32(scnX1)));
+				this->resizer->SetTargetHeight((UOSInt)(Double2Int32(scnY2) - Double2Int32(scnY1)));
 				this->resizer->SetResizeAspectRatio(Media::IImgResizer::RAR_IGNOREAR);
 				Media::StaticImage *newImg = this->resizer->ProcessToNew(img);
 				if (newImg)
@@ -2342,8 +2342,8 @@ void Map::DrawMapRenderer::DrawImageObject(DrawEnv *denv, Media::StaticImage *im
 			}
 			else
 			{
-				cimgX2 = Math::UOSInt2Double(img->info->dispWidth);
-				cimgY2 = Math::UOSInt2Double(img->info->dispHeight);
+				cimgX2 = UOSInt2Double(img->info->dispWidth);
+				cimgY2 = UOSInt2Double(img->info->dispHeight);
 				cimgX = 0;
 				cimgY = 0;
 				if (scnX1 < 0)
@@ -2368,7 +2368,7 @@ void Map::DrawMapRenderer::DrawImageObject(DrawEnv *denv, Media::StaticImage *im
 				}
 				if (cimgX == cimgX2)
 				{
-					if (cimgX2 >= Math::UOSInt2Double(img->info->dispWidth))
+					if (cimgX2 >= UOSInt2Double(img->info->dispWidth))
 					{
 						cimgX = cimgX2 - 1;
 					}
@@ -2379,7 +2379,7 @@ void Map::DrawMapRenderer::DrawImageObject(DrawEnv *denv, Media::StaticImage *im
 				}
 				if (cimgY == cimgY2)
 				{
-					if (cimgY2 >= Math::UOSInt2Double(img->info->dispHeight))
+					if (cimgY2 >= UOSInt2Double(img->info->dispHeight))
 					{
 						cimgY = cimgY2 - 1;
 					}
@@ -2389,8 +2389,8 @@ void Map::DrawMapRenderer::DrawImageObject(DrawEnv *denv, Media::StaticImage *im
 					}
 				}
 
-				this->resizer->SetTargetWidth((UOSInt)(Math::Double2Int32(scnX2) - Math::Double2Int32(scnX1)));
-				this->resizer->SetTargetHeight((UOSInt)(Math::Double2Int32(scnY2) - Math::Double2Int32(scnY1)));
+				this->resizer->SetTargetWidth((UOSInt)(Double2Int32(scnX2) - Double2Int32(scnX1)));
+				this->resizer->SetTargetHeight((UOSInt)(Double2Int32(scnY2) - Double2Int32(scnY1)));
 				this->resizer->SetResizeAspectRatio(Media::IImgResizer::RAR_IGNOREAR);
 				img->To32bpp();
 				Media::StaticImage *newImg = 0;
@@ -2426,8 +2426,8 @@ void Map::DrawMapRenderer::GetCharsSize(DrawEnv *denv, Double *size, const UTF8C
 
 	if (scaleH == 0)
 	{
-		size[0] = (szTmp[0] + Math::UOSInt2Double(denv->fontStyles[fontStyle].buffSize << 1));
-		size[1] = (szTmp[1] + Math::UOSInt2Double(denv->fontStyles[fontStyle].buffSize << 1));
+		size[0] = (szTmp[0] + UOSInt2Double(denv->fontStyles[fontStyle].buffSize << 1));
+		size[1] = (szTmp[1] + UOSInt2Double(denv->fontStyles[fontStyle].buffSize << 1));
 
 		return;
 	}
@@ -2443,8 +2443,8 @@ void Map::DrawMapRenderer::GetCharsSize(DrawEnv *denv, Double *size, const UTF8C
 	Double degD = Math_ArcTan2(scaleH, scaleW);
 	Double xPos;
 	Double yPos;
-	xPos = szTmp[0] + Math::UOSInt2Double(denv->fontStyles[fontStyle].buffSize << 1);
-	yPos = szTmp[1] + Math::UOSInt2Double(denv->fontStyles[fontStyle].buffSize << 1);
+	xPos = szTmp[0] + UOSInt2Double(denv->fontStyles[fontStyle].buffSize << 1);
+	yPos = szTmp[1] + UOSInt2Double(denv->fontStyles[fontStyle].buffSize << 1);
 	Double sVal;
 	Double cVal;
 	Double xs = (xPos * 0.5 * (sVal = Math_Sin(degD)));
@@ -2515,7 +2515,7 @@ void Map::DrawMapRenderer::DrawChars(DrawEnv *denv, const UTF8Char *str1, Double
 
 		if (font && font->buffSize > 0)
 		{
-			denv->img->DrawStringB(scnPosX - (size[0] * 0.5), scnPosY - (size[1] * 0.5), str1, font->font, font->buffBrush, (UOSInt)Math::Double2Int32(Math::UOSInt2Double(font->buffSize) * denv->img->GetHDPI() / 96.0));
+			denv->img->DrawStringB(scnPosX - (size[0] * 0.5), scnPosY - (size[1] * 0.5), str1, font->font, font->buffBrush, (UOSInt)Double2Int32(UOSInt2Double(font->buffSize) * denv->img->GetHDPI() / 96.0));
 			denv->img->DrawString(scnPosX - (size[0] * 0.5), scnPosY - (size[1] * 0.5), str1, df, db);
 		}
 		else
@@ -2553,7 +2553,7 @@ void Map::DrawMapRenderer::DrawChars(DrawEnv *denv, const UTF8Char *str1, Double
 		Double tmp;
 		Int32 type;
 		Double szThis[2];
-		Double dlblSize = Math::UOSInt2Double(lblSize);
+		Double dlblSize = UOSInt2Double(lblSize);
 		denv->img->GetTextSizeC(df, str1, lblSize, szThis);
 
 		if ((szThis[0] * absH) < (szThis[1] * dlblSize * scaleW))
@@ -2608,7 +2608,7 @@ void Map::DrawMapRenderer::DrawChars(DrawEnv *denv, const UTF8Char *str1, Double
 					UTF8Char l[2];
 					l[0] = lbl[0];
 					l[1] = 0;
-					denv->img->DrawStringB(startX + currX - (szThis[0] * 0.5), startY + currY, l, font->font, font->buffBrush, (UOSInt)Math::Double2Int32(Math::UOSInt2Double(font->buffSize) * denv->img->GetHDPI() / 96.0));
+					denv->img->DrawStringB(startX + currX - (szThis[0] * 0.5), startY + currY, l, font->font, font->buffBrush, (UOSInt)Double2Int32(UOSInt2Double(font->buffSize) * denv->img->GetHDPI() / 96.0));
 
 					currY += szThis[1];
 
@@ -2620,7 +2620,7 @@ void Map::DrawMapRenderer::DrawChars(DrawEnv *denv, const UTF8Char *str1, Double
 					UTF8Char l[2];
 					l[0] = lbl[0];
 					l[1] = 0;
-					denv->img->DrawStringB(startX + currX, startY + currY, l, font->font, font->buffBrush, (UOSInt)Math::Double2Int32(Math::UOSInt2Double(font->buffSize) * denv->img->GetHDPI() / 96.0));
+					denv->img->DrawStringB(startX + currX, startY + currY, l, font->font, font->buffBrush, (UOSInt)Double2Int32(UOSInt2Double(font->buffSize) * denv->img->GetHDPI() / 96.0));
 
 					currX += szThis[0];
 					if (scaleW)
@@ -3609,7 +3609,7 @@ void Map::DrawMapRenderer::DrawCharsLA(DrawEnv *denv, const UTF8Char *str1, Doub
 	j = startInd;
 
 	angle = angleOfst - Math_ArcTan2((mapPts[(j << 1) + 1] - mapPts[(j << 1) + 3]), (mapPts[(j << 1) + 2] - mapPts[(j << 1) + 0]));
-	angleDegree = Math::Double2Int32(angle * 180.0 / Math::PI);
+	angleDegree = Double2Int32(angle * 180.0 / Math::PI);
 	while (angleDegree < 0)
 	{
 		angleDegree += 360;
@@ -3725,7 +3725,7 @@ void Map::DrawMapRenderer::DrawCharsLA(DrawEnv *denv, const UTF8Char *str1, Doub
 				}
 
 				angle = angleOfst - Math_ArcTan2((mapPts[(j << 1) + 1] - mapPts[(j << 1) + 3]), (mapPts[(j << 1) + 2] - mapPts[(j << 1) + 0]));
-				angleDegree = Math::Double2Int32(angle * 180.0 / Math::PI);
+				angleDegree = Double2Int32(angle * 180.0 / Math::PI);
 				while (angleDegree < 0)
 				{
 					angleDegree += 360;
@@ -3815,7 +3815,7 @@ void Map::DrawMapRenderer::DrawCharsLA(DrawEnv *denv, const UTF8Char *str1, Doub
 		{
 			if (font && font->buffSize > 0)
 			{
-				denv->img->DrawStringB(currX, currY, lbl, df, font->buffBrush, (UInt32)Math::Double2Int32(Math::UOSInt2Double(font->buffSize) * denv->img->GetHDPI() / 96.0));
+				denv->img->DrawStringB(currX, currY, lbl, df, font->buffBrush, (UInt32)Double2Int32(UOSInt2Double(font->buffSize) * denv->img->GetHDPI() / 96.0));
 			}
 			denv->img->DrawString(currX, currY, lbl, df, db);
 		}
@@ -3823,7 +3823,7 @@ void Map::DrawMapRenderer::DrawCharsLA(DrawEnv *denv, const UTF8Char *str1, Doub
 		{
 			if (font && font->buffSize > 0)
 			{
-				denv->img->DrawStringB(currX, currY, lbl, df, font->buffBrush, (UInt32)Math::Double2Int32(Math::UOSInt2Double(font->buffSize) * denv->img->GetHDPI() / 96.0));
+				denv->img->DrawStringB(currX, currY, lbl, df, font->buffBrush, (UInt32)Double2Int32(UOSInt2Double(font->buffSize) * denv->img->GetHDPI() / 96.0));
 			}
 			denv->img->DrawString(currX, currY, lbl, df, db);
 		}

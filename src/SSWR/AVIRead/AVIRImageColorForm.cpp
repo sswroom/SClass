@@ -10,9 +10,9 @@ void __stdcall SSWR::AVIRead::AVIRImageColorForm::OnColorChg(void *userObj, UOSI
 	SSWR::AVIRead::AVIRImageColorForm *me = (SSWR::AVIRead::AVIRImageColorForm*)userObj;
 	UTF8Char sbuff[256];
 
-	Double bvalue = Math::UOSInt2Double(me->hsbBright->GetPos()) * 0.1;
-	Double cvalue = Math::UOSInt2Double(me->hsbContr->GetPos());
-	Double gvalue = Math::UOSInt2Double(me->hsbGamma->GetPos());
+	Double bvalue = UOSInt2Double(me->hsbBright->GetPos()) * 0.1;
+	Double cvalue = UOSInt2Double(me->hsbContr->GetPos());
+	Double gvalue = UOSInt2Double(me->hsbGamma->GetPos());
 	Text::StrConcatC(Text::StrDouble(sbuff, bvalue), UTF8STRC("%"));
 	me->lblBrightV->SetText(sbuff);
 	Text::StrConcatC(Text::StrDouble(sbuff, cvalue), UTF8STRC("%"));

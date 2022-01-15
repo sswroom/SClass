@@ -307,10 +307,10 @@ UOSInt Map::CIPLayer::GetObjectIds(Data::ArrayListInt64 *outArr, void **nameArr,
 	Int32 topBlk;
 	Int32 bottomBlk;
 	Manage::HiResClock clk;
-	x1 = Math::Double2Int32(x1 * 200000.0 / mapRate);
-	y1 = Math::Double2Int32(y1 * 200000.0 / mapRate);
-	x2 = Math::Double2Int32(x2 * 200000.0 / mapRate);
-	y2 = Math::Double2Int32(y2 * 200000.0 / mapRate);
+	x1 = Double2Int32(x1 * 200000.0 / mapRate);
+	y1 = Double2Int32(y1 * 200000.0 / mapRate);
+	x2 = Double2Int32(x2 * 200000.0 / mapRate);
+	y2 = Double2Int32(y2 * 200000.0 / mapRate);
 	clk.Start();
 	if (x1 > x2)
 	{
@@ -500,7 +500,7 @@ UOSInt Map::CIPLayer::GetObjectIds(Data::ArrayListInt64 *outArr, void **nameArr,
 	{
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(UTF8STRC("GetObjectIds too slow: time = "));
-		sb.AppendI32(Math::Double2Int32(t * 1000));
+		sb.AppendI32(Double2Int32(t * 1000));
 		sb.AppendC(UTF8STRC("ms, layer = "));
 		sb.Append(this->layerName);
 		if (nameArr)
@@ -515,7 +515,7 @@ UOSInt Map::CIPLayer::GetObjectIds(Data::ArrayListInt64 *outArr, void **nameArr,
 
 UOSInt Map::CIPLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void **nameArr, Double x1, Double y1, Double x2, Double y2, Bool keepEmpty)
 {
-	return GetObjectIds(outArr, nameArr, 200000.0, Math::Double2Int32(x1 * 200000), Math::Double2Int32(y1 * 200000), Math::Double2Int32(x2 * 200000), Math::Double2Int32(y2 * 200000), keepEmpty);
+	return GetObjectIds(outArr, nameArr, 200000.0, Double2Int32(x1 * 200000), Double2Int32(y1 * 200000), Double2Int32(x2 * 200000), Double2Int32(y2 * 200000), keepEmpty);
 }
 
 Int64 Map::CIPLayer::GetObjectIdMax()

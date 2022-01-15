@@ -39,7 +39,7 @@ UI::DObj::TextDObj::TextDObj(Media::DrawEngine *deng, const WChar *txt, const WC
 	{
 		Media::DrawImage *dimg = this->deng->CreateImage32(width, height, Media::AT_NO_ALPHA);
 		Media::DrawFont *f = dimg->NewFontH(this->fontName, this->fontSize, (Media::DrawEngine::DrawFontStyle)(fontStyle | Media::DrawEngine::DFS_ANTIALIAS), codePage);
-		Media::DrawImageTool::SplitString(dimg, this->txt, this->lines, f, Math::OSInt2Double(width));
+		Media::DrawImageTool::SplitString(dimg, this->txt, this->lines, f, OSInt2Double(width));
 		dimg->DelFont(f);
 		this->deng->DeleteImage(dimg);
 	}
@@ -82,23 +82,23 @@ void UI::DObj::TextDObj::DrawObject(Media::DrawImage *dimg)
 	Int32 linePerPage = (Int32)(this->height / this->lineHeight);
 	Int32 currLine = this->currPage * linePerPage;
 	OSInt j = this->lines->GetCount();
-	Double currPos = Math::OSInt2Double(top);
+	Double currPos = OSInt2Double(top);
 	Double endPos = top + this->height - this->lineHeight;
 	while (currPos <= endPos && currLine < j)
 	{
 		if (this->talign == TA_LEFT)
 		{
-			dimg->DrawString(Math::OSInt2Double(left), currPos, this->lines->GetItem(currLine), f, b);
+			dimg->DrawString(OSInt2Double(left), currPos, this->lines->GetItem(currLine), f, b);
 		}
 		else if (this->talign == TA_CENTER)
 		{
 			dimg->GetTextSize(f, this->lines->GetItem(currLine), -1, sz);
-			dimg->DrawString(Math::OSInt2Double(left) + (this->width - sz[0]) * 0.5, currPos, this->lines->GetItem(currLine), f, b);
+			dimg->DrawString(OSInt2Double(left) + (this->width - sz[0]) * 0.5, currPos, this->lines->GetItem(currLine), f, b);
 		}
 		else if (this->talign == TA_RIGHT)
 		{
 			dimg->GetTextSize(f, this->lines->GetItem(currLine), -1, sz);
-			dimg->DrawString(Math::OSInt2Double(left + width) - sz[0], currPos, this->lines->GetItem(currLine), f, b);
+			dimg->DrawString(OSInt2Double(left + width) - sz[0], currPos, this->lines->GetItem(currLine), f, b);
 		}
 		currLine++;
 		currPos += this->lineHeight;

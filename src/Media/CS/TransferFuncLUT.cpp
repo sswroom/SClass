@@ -32,7 +32,7 @@ Media::CS::TransferFuncLUT::TransferFuncLUT(Media::LUT *lut) : Media::CS::Transf
 			k = (UInt16)(thisV | (thisV << 8));
 			if (k > j)
 			{
-				currV = Math::UOSInt2Double(i - 1) * destMul;
+				currV = UOSInt2Double(i - 1) * destMul;
 				valAdd = 1 / (Double)(k - j) * destMul;
 				while (j < k)
 				{
@@ -76,7 +76,7 @@ Media::CS::TransferFuncLUT::TransferFuncLUT(Media::LUT *lut) : Media::CS::Transf
 			k = thisV;
 			if (k > j)
 			{
-				currV = Math::UOSInt2Double(i - 1) * destMul;
+				currV = UOSInt2Double(i - 1) * destMul;
 				valAdd = 1 / (Double)(k - j) * destMul;
 				while (j < k)
 				{
@@ -119,7 +119,7 @@ Media::CS::TransferFuncLUT::TransferFuncLUT(Media::LUT *lut) : Media::CS::Transf
 			k = (UInt32)(thisV * 65535.0);
 			if (k > j)
 			{
-				currV = Math::UOSInt2Double(i - 1) * destMul;
+				currV = UOSInt2Double(i - 1) * destMul;
 				valAdd = 1 / (thisV - lastV) * destMul;
 				while (j < k)
 				{
@@ -181,17 +181,17 @@ Double Media::CS::TransferFuncLUT::InverseTransfer(Double gammaVal)
 	{
 		Double v1 = this->invLUT[0];
 		Double v2 = this->invLUT[1];
-		return (v2 - v1) * gammaVal * Math::UOSInt2Double(this->srcCnt - 1);
+		return (v2 - v1) * gammaVal * UOSInt2Double(this->srcCnt - 1);
 	}
 	else if (gammaVal >= 1.0)
 	{
 		Double v1 = this->invLUT[this->srcCnt - 2];
 		Double v2 = this->invLUT[this->srcCnt - 1];
-		return v2 + (v2 - v1) * (gammaVal - 1.0) * Math::UOSInt2Double(this->srcCnt - 1);
+		return v2 + (v2 - v1) * (gammaVal - 1.0) * UOSInt2Double(this->srcCnt - 1);
 	}
 	else
 	{
-		Double v = gammaVal * Math::UOSInt2Double(this->srcCnt - 1);
+		Double v = gammaVal * UOSInt2Double(this->srcCnt - 1);
 		Int32 iv = (Int32)v;
 		Double v1 = this->invLUT[iv];
 		Double v2 = this->invLUT[iv + 1];

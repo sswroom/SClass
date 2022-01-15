@@ -169,8 +169,8 @@ UI::GUIForm::GUIForm(GUIClientControl *parent, Double initW, Double initH, GUICo
 		initX = (rect.x * 96.0 / this->hdpi) + ((w - initW) * 0.5);
 		initY = (rect.y * 96.0 / this->hdpi) + ((h - initH) * 0.5);
 	}
-	gtk_window_move((GtkWindow*)this->hwnd, Math::Double2Int32(initX), Math::Double2Int32(initY));
-	gtk_window_set_default_size((GtkWindow*)this->hwnd, Math::Double2Int32(initW * this->hdpi / 96.0), Math::Double2Int32(initH * this->hdpi / 96.0));
+	gtk_window_move((GtkWindow*)this->hwnd, Double2Int32(initX), Double2Int32(initY));
+	gtk_window_set_default_size((GtkWindow*)this->hwnd, Double2Int32(initW * this->hdpi / 96.0), Double2Int32(initH * this->hdpi / 96.0));
 	g_signal_connect((GtkWindow*)this->hwnd, "draw", G_CALLBACK(GUIForm_Draw), this);
 	this->lxPos = initX;
 	this->lyPos = initY;
@@ -340,7 +340,7 @@ void UI::GUIForm::SetNoResize(Bool noResize)
 		{
 			this->lyPos2 = this->lyPos;
 		}
-		gtk_widget_set_size_request((GtkWidget*)this->hwnd, Math::Double2Int32((this->lxPos2 - this->lxPos) * this->hdpi / 96.0), Math::Double2Int32((this->lyPos2 - this->lyPos) * this->hdpi / 96.0));*/
+		gtk_widget_set_size_request((GtkWidget*)this->hwnd, Double2Int32((this->lxPos2 - this->lxPos) * this->hdpi / 96.0), Double2Int32((this->lyPos2 - this->lyPos) * this->hdpi / 96.0));*/
 		g_idle_add(GUIForm_SetNoResize, this->hwnd);
 	}
 	else

@@ -58,7 +58,7 @@ void UI::GUIPictureList::OnDraw(Media::DrawImage *img)
 				if (i == this->selectedIndex)
 				{
 					Media::DrawBrush *b = img->NewBrushARGB(0xffff4040);
-					img->DrawRect(0, Math::OSInt2Double(ofst), Math::UOSInt2Double(w), Math::UOSInt2Double(this->iconHeight + ICONPADDING), 0, b);
+					img->DrawRect(0, OSInt2Double(ofst), UOSInt2Double(w), UOSInt2Double(this->iconHeight + ICONPADDING), 0, b);
 					img->DelBrush(b);
 				}
 				gimg = this->imgList->GetItem(i);
@@ -66,7 +66,7 @@ void UI::GUIPictureList::OnDraw(Media::DrawImage *img)
 				y = (OSInt)((this->iconHeight + ICONPADDING - gimg->GetHeight()) >> 1) + ofst;
 				gimg->SetHDPI(img->GetHDPI());
 				gimg->SetVDPI(img->GetVDPI());
-				img->DrawImagePt(gimg, Math::OSInt2Double(x), Math::OSInt2Double(y));
+				img->DrawImagePt(gimg, OSInt2Double(x), OSInt2Double(y));
 			}
 			ofst += (OSInt)this->iconHeight + 10;
 			if (ofst > (OSInt)h)
@@ -92,7 +92,7 @@ void UI::GUIPictureList::OnDraw(Media::DrawImage *img)
 					if (i + k == this->selectedIndex)
 					{
 						Media::DrawBrush *b = img->NewBrushARGB(0xffff4040);
-						img->DrawRect(Math::UOSInt2Double((this->iconWidth + ICONPADDING) * k), Math::OSInt2Double(ofst), Math::UOSInt2Double(this->iconWidth + ICONPADDING), Math::UOSInt2Double(this->iconHeight + ICONPADDING), 0, b);
+						img->DrawRect(UOSInt2Double((this->iconWidth + ICONPADDING) * k), OSInt2Double(ofst), UOSInt2Double(this->iconWidth + ICONPADDING), UOSInt2Double(this->iconHeight + ICONPADDING), 0, b);
 						img->DelBrush(b);
 					}
 					gimg = this->imgList->GetItem(i + k);
@@ -100,7 +100,7 @@ void UI::GUIPictureList::OnDraw(Media::DrawImage *img)
 					y = (Int32)((OSInt)((this->iconHeight + ICONPADDING - gimg->GetHeight()) >> 1) + ofst);
 					gimg->SetHDPI(img->GetHDPI());
 					gimg->SetVDPI(img->GetVDPI());
-					img->DrawImagePt(gimg, Math::OSInt2Double(x), Math::OSInt2Double(y));
+					img->DrawImagePt(gimg, OSInt2Double(x), OSInt2Double(y));
 					k++;
 					if (i + k >= j)
 						break;
@@ -118,7 +118,7 @@ void UI::GUIPictureList::OnDraw(Media::DrawImage *img)
 	if (this->hasBorder)
 	{
 		Media::DrawPen *p = img->NewPenARGB(0xff000000, 1, 0, 0);
-		img->DrawRect(0, 0, Math::UOSInt2Double(w - 1), Math::UOSInt2Double(h - 1), p, 0);
+		img->DrawRect(0, 0, UOSInt2Double(w - 1), UOSInt2Double(h - 1), p, 0);
 		img->DelPen(p);
 	}
 }

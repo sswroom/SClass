@@ -23,6 +23,6 @@ void Text::XLSUtil::Number2Date(Data::DateTime *dt, Double v)
 	Int8 tz;
 	dt->ToLocalTime();
 	tz = dt->GetTimeZoneQHR();
-	dt->SetTicks((days - 25569) * 86400000LL + Math::Double2OSInt((v - days) * 86400000));
+	dt->SetTicks((days - 25569) * 86400000LL + Double2OSInt((v - days) * 86400000));
 	dt->SetTimeZoneQHR(tz);
 }

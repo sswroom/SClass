@@ -433,11 +433,11 @@ Bool Media::MediaPlayer::GetVideoSize(UOSInt *w, UOSInt *h)
 		}
 		if (info.par2 > 1)
 		{
-			vh = (UInt32)Math::Double2Int32(Math::UOSInt2Double(vh) * info.par2);
+			vh = (UInt32)Double2Int32(UOSInt2Double(vh) * info.par2);
 		}
 		else
 		{
-			vw = (UInt32)Math::Double2Int32(Math::UOSInt2Double(vw) / info.par2);
+			vw = (UInt32)Double2Int32(UOSInt2Double(vw) / info.par2);
 		}
 		*w = vw;
 		*h = vh;

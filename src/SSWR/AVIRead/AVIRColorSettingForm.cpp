@@ -152,11 +152,11 @@ void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnCalRedBChg(void *userObj, 
 {
 	UTF8Char sbuff[32];
 	SSWR::AVIRead::AVIRColorSettingForm *me = (SSWR::AVIRead::AVIRColorSettingForm*)userObj;
-	Text::StrConcatC(Text::StrDouble(sbuff, Math::UOSInt2Double(newPos) * 0.1), UTF8STRC("%"));
+	Text::StrConcatC(Text::StrDouble(sbuff, UOSInt2Double(newPos) * 0.1), UTF8STRC("%"));
 	me->lblCalRedBV->SetText(sbuff);
 	if (me->inited)
 	{
-		me->monColor->SetRMonBright(Math::UOSInt2Double(newPos) * 0.001);
+		me->monColor->SetRMonBright(UOSInt2Double(newPos) * 0.001);
 	}
 }
 
@@ -164,11 +164,11 @@ void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnCalRedCChg(void *userObj, 
 {
 	UTF8Char sbuff[32];
 	SSWR::AVIRead::AVIRColorSettingForm *me = (SSWR::AVIRead::AVIRColorSettingForm*)userObj;
-	Text::StrConcatC(Text::StrDouble(sbuff, Math::UOSInt2Double(newPos) * 0.1), UTF8STRC("%"));
+	Text::StrConcatC(Text::StrDouble(sbuff, UOSInt2Double(newPos) * 0.1), UTF8STRC("%"));
 	me->lblCalRedCV->SetText(sbuff);
 	if (me->inited)
 	{
-		me->monColor->SetRMonContr(Math::UOSInt2Double(newPos) * 0.001);
+		me->monColor->SetRMonContr(UOSInt2Double(newPos) * 0.001);
 	}
 }
 
@@ -176,7 +176,7 @@ void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnCalRedGChg(void *userObj, 
 {
 	UTF8Char sbuff[32];
 	SSWR::AVIRead::AVIRColorSettingForm *me = (SSWR::AVIRead::AVIRColorSettingForm*)userObj;
-	Double v = Math::UOSInt2Double(newPos) * 0.001;
+	Double v = UOSInt2Double(newPos) * 0.001;
 	Text::StrDouble(sbuff, v);
 	me->lblCalRedGV->SetText(sbuff);
 	if (me->inited)
@@ -189,11 +189,11 @@ void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnCalGreenBChg(void *userObj
 {
 	UTF8Char sbuff[32];
 	SSWR::AVIRead::AVIRColorSettingForm *me = (SSWR::AVIRead::AVIRColorSettingForm*)userObj;
-	Text::StrConcatC(Text::StrDouble(sbuff, Math::UOSInt2Double(newPos) * 0.1), UTF8STRC("%"));
+	Text::StrConcatC(Text::StrDouble(sbuff, UOSInt2Double(newPos) * 0.1), UTF8STRC("%"));
 	me->lblCalGreenBV->SetText(sbuff);
 	if (me->inited)
 	{
-		me->monColor->SetGMonBright(Math::UOSInt2Double(newPos) * 0.001);
+		me->monColor->SetGMonBright(UOSInt2Double(newPos) * 0.001);
 	}
 }
 
@@ -201,11 +201,11 @@ void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnCalGreenCChg(void *userObj
 {
 	UTF8Char sbuff[32];
 	SSWR::AVIRead::AVIRColorSettingForm *me = (SSWR::AVIRead::AVIRColorSettingForm*)userObj;
-	Text::StrConcatC(Text::StrDouble(sbuff, Math::UOSInt2Double(newPos) * 0.1), UTF8STRC("%"));
+	Text::StrConcatC(Text::StrDouble(sbuff, UOSInt2Double(newPos) * 0.1), UTF8STRC("%"));
 	me->lblCalGreenCV->SetText(sbuff);
 	if (me->inited)
 	{
-		me->monColor->SetGMonContr(Math::UOSInt2Double(newPos) * 0.001);
+		me->monColor->SetGMonContr(UOSInt2Double(newPos) * 0.001);
 	}
 }
 
@@ -213,7 +213,7 @@ void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnCalGreenGChg(void *userObj
 {
 	UTF8Char sbuff[32];
 	SSWR::AVIRead::AVIRColorSettingForm *me = (SSWR::AVIRead::AVIRColorSettingForm*)userObj;
-	Double v = Math::UOSInt2Double(newPos) * 0.001;
+	Double v = UOSInt2Double(newPos) * 0.001;
 	Text::StrDouble(sbuff, v);
 	me->lblCalGreenGV->SetText(sbuff);
 	if (me->inited)
@@ -226,11 +226,11 @@ void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnCalBlueBChg(void *userObj,
 {
 	UTF8Char sbuff[32];
 	SSWR::AVIRead::AVIRColorSettingForm *me = (SSWR::AVIRead::AVIRColorSettingForm*)userObj;
-	Text::StrConcatC(Text::StrDouble(sbuff, Math::UOSInt2Double(newPos) * 0.1), UTF8STRC("%"));
+	Text::StrConcatC(Text::StrDouble(sbuff, UOSInt2Double(newPos) * 0.1), UTF8STRC("%"));
 	me->lblCalBlueBV->SetText(sbuff);
 	if (me->inited)
 	{
-		me->monColor->SetBMonBright(Math::UOSInt2Double(newPos) * 0.001);
+		me->monColor->SetBMonBright(UOSInt2Double(newPos) * 0.001);
 	}
 }
 
@@ -238,11 +238,11 @@ void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnCalBlueCChg(void *userObj,
 {
 	UTF8Char sbuff[32];
 	SSWR::AVIRead::AVIRColorSettingForm *me = (SSWR::AVIRead::AVIRColorSettingForm*)userObj;
-	Text::StrConcatC(Text::StrDouble(sbuff, Math::UOSInt2Double(newPos) * 0.1), UTF8STRC("%"));
+	Text::StrConcatC(Text::StrDouble(sbuff, UOSInt2Double(newPos) * 0.1), UTF8STRC("%"));
 	me->lblCalBlueCV->SetText(sbuff);
 	if (me->inited)
 	{
-		me->monColor->SetBMonContr(Math::UOSInt2Double(newPos) * 0.001);
+		me->monColor->SetBMonContr(UOSInt2Double(newPos) * 0.001);
 	}
 }
 
@@ -250,7 +250,7 @@ void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnCalBlueGChg(void *userObj,
 {
 	UTF8Char sbuff[32];
 	SSWR::AVIRead::AVIRColorSettingForm *me = (SSWR::AVIRead::AVIRColorSettingForm*)userObj;
-	Double v = Math::UOSInt2Double(newPos) * 0.001;
+	Double v = UOSInt2Double(newPos) * 0.001;
 	Text::StrDouble(sbuff, v);
 	me->lblCalBlueGV->SetText(sbuff);
 	if (me->inited)
@@ -263,11 +263,11 @@ void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnMonVBrigChg(void *userObj,
 {
 	UTF8Char sbuff[32];
 	SSWR::AVIRead::AVIRColorSettingForm *me = (SSWR::AVIRead::AVIRColorSettingForm*)userObj;
-	Text::StrConcatC(Text::StrDouble(sbuff, Math::UOSInt2Double(newPos) * 0.1), UTF8STRC("%"));
+	Text::StrConcatC(Text::StrDouble(sbuff, UOSInt2Double(newPos) * 0.1), UTF8STRC("%"));
 	me->lblMonVBrigV->SetText(sbuff);
 	if (me->inited)
 	{
-		me->monColor->SetMonVBright(Math::UOSInt2Double(newPos) * 0.001);
+		me->monColor->SetMonVBright(UOSInt2Double(newPos) * 0.001);
 	}
 }
 
@@ -275,11 +275,11 @@ void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnMonPBrigChg(void *userObj,
 {
 	UTF8Char sbuff[32];
 	SSWR::AVIRead::AVIRColorSettingForm *me = (SSWR::AVIRead::AVIRColorSettingForm*)userObj;
-	Text::StrConcatC(Text::StrDouble(sbuff, Math::UOSInt2Double(newPos) * 0.1), UTF8STRC("%"));
+	Text::StrConcatC(Text::StrDouble(sbuff, UOSInt2Double(newPos) * 0.1), UTF8STRC("%"));
 	me->lblMonPBrigV->SetText(sbuff);
 	if (me->inited)
 	{
-		me->monColor->SetMonPBright(Math::UOSInt2Double(newPos) * 0.001);
+		me->monColor->SetMonPBright(UOSInt2Double(newPos) * 0.001);
 	}
 }
 
@@ -287,11 +287,11 @@ void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnMonRBrigChg(void *userObj,
 {
 	UTF8Char sbuff[32];
 	SSWR::AVIRead::AVIRColorSettingForm *me = (SSWR::AVIRead::AVIRColorSettingForm*)userObj;
-	Text::StrConcatC(Text::StrDouble(sbuff, Math::UOSInt2Double(newPos) * 0.1), UTF8STRC("%"));
+	Text::StrConcatC(Text::StrDouble(sbuff, UOSInt2Double(newPos) * 0.1), UTF8STRC("%"));
 	me->lblMonRBrigV->SetText(sbuff);
 	if (me->inited)
 	{
-		me->monColor->SetMonRBright(Math::UOSInt2Double(newPos) * 0.001);
+		me->monColor->SetMonRBright(UOSInt2Double(newPos) * 0.001);
 	}
 }
 
@@ -299,11 +299,11 @@ void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnMonGBrigChg(void *userObj,
 {
 	UTF8Char sbuff[32];
 	SSWR::AVIRead::AVIRColorSettingForm *me = (SSWR::AVIRead::AVIRColorSettingForm*)userObj;
-	Text::StrConcatC(Text::StrDouble(sbuff, Math::UOSInt2Double(newPos) * 0.1), UTF8STRC("%"));
+	Text::StrConcatC(Text::StrDouble(sbuff, UOSInt2Double(newPos) * 0.1), UTF8STRC("%"));
 	me->lblMonGBrigV->SetText(sbuff);
 	if (me->inited)
 	{
-		me->monColor->SetMonGBright(Math::UOSInt2Double(newPos) * 0.001);
+		me->monColor->SetMonGBright(UOSInt2Double(newPos) * 0.001);
 	}
 }
 
@@ -311,11 +311,11 @@ void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnMonBBrigChg(void *userObj,
 {
 	UTF8Char sbuff[32];
 	SSWR::AVIRead::AVIRColorSettingForm *me = (SSWR::AVIRead::AVIRColorSettingForm*)userObj;
-	Text::StrConcatC(Text::StrDouble(sbuff, Math::UOSInt2Double(newPos) * 0.1), UTF8STRC("%"));
+	Text::StrConcatC(Text::StrDouble(sbuff, UOSInt2Double(newPos) * 0.1), UTF8STRC("%"));
 	me->lblMonBBrigV->SetText(sbuff);
 	if (me->inited)
 	{
-		me->monColor->SetMonBBright(Math::UOSInt2Double(newPos) * 0.001);
+		me->monColor->SetMonBBright(UOSInt2Double(newPos) * 0.001);
 	}
 }
 
@@ -323,7 +323,7 @@ void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnYUVBrigChg(void *userObj, 
 {
 	UTF8Char sbuff[32];
 	SSWR::AVIRead::AVIRColorSettingForm *me = (SSWR::AVIRead::AVIRColorSettingForm*)userObj;
-	Double v = Math::UOSInt2Double(newPos) * 0.001;
+	Double v = UOSInt2Double(newPos) * 0.001;
 	Text::StrDouble(sbuff, v);
 	me->lblYUVBrigV->SetText(sbuff);
 	if (me->inited)
@@ -336,7 +336,7 @@ void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnYUVContChg(void *userObj, 
 {
 	UTF8Char sbuff[32];
 	SSWR::AVIRead::AVIRColorSettingForm *me = (SSWR::AVIRead::AVIRColorSettingForm*)userObj;
-	Double v = Math::UOSInt2Double(newPos) * 0.001;
+	Double v = UOSInt2Double(newPos) * 0.001;
 	Text::StrDouble(sbuff, v);
 	me->lblYUVContV->SetText(sbuff);
 	if (me->inited)
@@ -349,7 +349,7 @@ void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnYUVSatChg(void *userObj, U
 {
 	UTF8Char sbuff[32];
 	SSWR::AVIRead::AVIRColorSettingForm *me = (SSWR::AVIRead::AVIRColorSettingForm*)userObj;
-	Double v = Math::UOSInt2Double(newPos) * 0.001;
+	Double v = UOSInt2Double(newPos) * 0.001;
 	Text::StrDouble(sbuff, v);
 	me->lblYUVSatV->SetText(sbuff);
 	if (me->inited)
@@ -362,7 +362,7 @@ void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnYUVYGammaChg(void *userObj
 {
 	UTF8Char sbuff[32];
 	SSWR::AVIRead::AVIRColorSettingForm *me = (SSWR::AVIRead::AVIRColorSettingForm*)userObj;
-	Double v = Math::UOSInt2Double(newPos) * 0.001;
+	Double v = UOSInt2Double(newPos) * 0.001;
 	Text::StrDouble(sbuff, v);
 	me->lblYUVYGammaV->SetText(sbuff);
 	if (me->inited)
@@ -375,7 +375,7 @@ void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnYUVCGammaChg(void *userObj
 {
 	UTF8Char sbuff[32];
 	SSWR::AVIRead::AVIRColorSettingForm *me = (SSWR::AVIRead::AVIRColorSettingForm*)userObj;
-	Double v = Math::UOSInt2Double(newPos) * 0.001;
+	Double v = UOSInt2Double(newPos) * 0.001;
 	Text::StrDouble(sbuff, v);
 	me->lblYUVCGammaV->SetText(sbuff);
 	if (me->inited)
@@ -791,27 +791,27 @@ SSWR::AVIRead::AVIRColorSettingForm::AVIRColorSettingForm(UI::GUIClientControl *
 	this->SetCancelButton(this->btnCancel);
 
 
-	this->hsbCalRedB->SetPos((UOSInt)Math::Double2OSInt(rgbParam->MonRBright  * 1000));
-	this->hsbCalRedC->SetPos((UOSInt)Math::Double2OSInt(rgbParam->MonRContr * 1000));
-	this->hsbCalRedG->SetPos((UOSInt)Math::Double2OSInt(rgbParam->MonRGamma * 1000));
-	this->hsbCalGreenB->SetPos((UOSInt)Math::Double2OSInt(rgbParam->MonGBright  * 1000));
-	this->hsbCalGreenC->SetPos((UOSInt)Math::Double2OSInt(rgbParam->MonGContr * 1000));
-	this->hsbCalGreenG->SetPos((UOSInt)Math::Double2OSInt(rgbParam->MonGGamma * 1000));
-	this->hsbCalBlueB->SetPos((UOSInt)Math::Double2OSInt(rgbParam->MonBBright  * 1000));
-	this->hsbCalBlueC->SetPos((UOSInt)Math::Double2OSInt(rgbParam->MonBContr * 1000));
-	this->hsbCalBlueG->SetPos((UOSInt)Math::Double2OSInt(rgbParam->MonBGamma * 1000));
+	this->hsbCalRedB->SetPos((UOSInt)Double2OSInt(rgbParam->MonRBright  * 1000));
+	this->hsbCalRedC->SetPos((UOSInt)Double2OSInt(rgbParam->MonRContr * 1000));
+	this->hsbCalRedG->SetPos((UOSInt)Double2OSInt(rgbParam->MonRGamma * 1000));
+	this->hsbCalGreenB->SetPos((UOSInt)Double2OSInt(rgbParam->MonGBright  * 1000));
+	this->hsbCalGreenC->SetPos((UOSInt)Double2OSInt(rgbParam->MonGContr * 1000));
+	this->hsbCalGreenG->SetPos((UOSInt)Double2OSInt(rgbParam->MonGGamma * 1000));
+	this->hsbCalBlueB->SetPos((UOSInt)Double2OSInt(rgbParam->MonBBright  * 1000));
+	this->hsbCalBlueC->SetPos((UOSInt)Double2OSInt(rgbParam->MonBContr * 1000));
+	this->hsbCalBlueG->SetPos((UOSInt)Double2OSInt(rgbParam->MonBGamma * 1000));
 
-	this->hsbMonVBrig->SetPos((UOSInt)Math::Double2OSInt(rgbParam->MonVBrightness * 1000));
-	this->hsbMonPBrig->SetPos((UOSInt)Math::Double2OSInt(rgbParam->MonPBrightness * 1000));
-	this->hsbMonRBrig->SetPos((UOSInt)Math::Double2OSInt(rgbParam->MonRBrightness * 1000));
-	this->hsbMonGBrig->SetPos((UOSInt)Math::Double2OSInt(rgbParam->MonGBrightness * 1000));
-	this->hsbMonBBrig->SetPos((UOSInt)Math::Double2OSInt(rgbParam->MonBBrightness * 1000));
+	this->hsbMonVBrig->SetPos((UOSInt)Double2OSInt(rgbParam->MonVBrightness * 1000));
+	this->hsbMonPBrig->SetPos((UOSInt)Double2OSInt(rgbParam->MonPBrightness * 1000));
+	this->hsbMonRBrig->SetPos((UOSInt)Double2OSInt(rgbParam->MonRBrightness * 1000));
+	this->hsbMonGBrig->SetPos((UOSInt)Double2OSInt(rgbParam->MonGBrightness * 1000));
+	this->hsbMonBBrig->SetPos((UOSInt)Double2OSInt(rgbParam->MonBBrightness * 1000));
 
-	this->hsbYUVBrig->SetPos((UOSInt)Math::Double2OSInt(yuvParam->Brightness * 1000));
-	this->hsbYUVCont->SetPos((UOSInt)Math::Double2OSInt(yuvParam->Contrast * 1000));
-	this->hsbYUVSat->SetPos((UOSInt)Math::Double2OSInt(yuvParam->Saturation * 1000));
-	this->hsbYUVYGamma->SetPos((UOSInt)Math::Double2OSInt(yuvParam->YGamma * 1000));
-	this->hsbYUVCGamma->SetPos((UOSInt)Math::Double2OSInt(yuvParam->CGamma * 1000));
+	this->hsbYUVBrig->SetPos((UOSInt)Double2OSInt(yuvParam->Brightness * 1000));
+	this->hsbYUVCont->SetPos((UOSInt)Double2OSInt(yuvParam->Contrast * 1000));
+	this->hsbYUVSat->SetPos((UOSInt)Double2OSInt(yuvParam->Saturation * 1000));
+	this->hsbYUVYGamma->SetPos((UOSInt)Double2OSInt(yuvParam->YGamma * 1000));
+	this->hsbYUVCGamma->SetPos((UOSInt)Double2OSInt(yuvParam->CGamma * 1000));
 	switch (this->colorMgr->GetDefYUVType())
 	{
 	default:

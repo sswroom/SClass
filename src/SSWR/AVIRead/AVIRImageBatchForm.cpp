@@ -94,9 +94,9 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnImageChanged(void *userObj, 
 			me->previewImage = me->resizer->ProcessToNew(img);
 			me->filteredImage = me->previewImage->CreateStaticImage();
 			me->initPos = true;
-			me->hsbBright->SetPos((UOSInt)Math::Double2OSInt(setting->brightness * 1000));
-			me->hsbContr->SetPos((UOSInt)Math::Double2OSInt(setting->contrast * 100));
-			me->hsbGamma->SetPos((UOSInt)Math::Double2OSInt(setting->gamma * 100));
+			me->hsbBright->SetPos((UOSInt)Double2OSInt(setting->brightness * 1000));
+			me->hsbContr->SetPos((UOSInt)Double2OSInt(setting->contrast * 100));
+			me->hsbGamma->SetPos((UOSInt)Double2OSInt(setting->gamma * 100));
 			me->hsbHDRLev->SetPos((setting->flags & 240) >> 4);
 			me->initPos = false;
 			me->UpdatePreview();
@@ -109,9 +109,9 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnColorChg(void *userObj, UOSI
 	SSWR::AVIRead::AVIRImageBatchForm *me = (SSWR::AVIRead::AVIRImageBatchForm*)userObj;
 	UTF8Char sbuff[256];
 
-	Double bvalue = Math::UOSInt2Double(me->hsbBright->GetPos()) * 0.1;
-	Double cvalue = Math::UOSInt2Double(me->hsbContr->GetPos());
-	Double gvalue = Math::UOSInt2Double(me->hsbGamma->GetPos());
+	Double bvalue = UOSInt2Double(me->hsbBright->GetPos()) * 0.1;
+	Double cvalue = UOSInt2Double(me->hsbContr->GetPos());
+	Double gvalue = UOSInt2Double(me->hsbGamma->GetPos());
 	UOSInt hdrLev = me->hsbHDRLev->GetPos();
 	Text::StrConcatC(Text::StrDouble(sbuff, bvalue), UTF8STRC("%"));
 	me->lblBrightV->SetText(sbuff);
@@ -215,9 +215,9 @@ void SSWR::AVIRead::AVIRImageBatchForm::UpdatePreview()
 	{
 		SSWR::AVIRead::AVIRImageControl::ImageSetting setting;
 
-		setting.brightness = Math::UOSInt2Double(this->hsbBright->GetPos()) * 0.001;
-		setting.contrast = Math::UOSInt2Double(this->hsbContr->GetPos()) * 0.01;
-		setting.gamma = Math::UOSInt2Double(this->hsbGamma->GetPos()) * 0.01;
+		setting.brightness = UOSInt2Double(this->hsbBright->GetPos()) * 0.001;
+		setting.contrast = UOSInt2Double(this->hsbContr->GetPos()) * 0.01;
+		setting.gamma = UOSInt2Double(this->hsbGamma->GetPos()) * 0.01;
 		setting.flags = (Int32)(this->hsbHDRLev->GetPos() << 4);
 		this->icMain->ApplySetting(this->previewImage, this->filteredImage, &setting);
 		this->pbMain->SetImage(this->filteredImage, true);

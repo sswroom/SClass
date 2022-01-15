@@ -199,8 +199,8 @@ Double Media::ImageList::GetThermoValue(Double x, Double y)
 	{
 		return 0;
 	}
-	OSInt xOfst = Math::Double2Int32(x * Math::UOSInt2Double(this->thermoWidth));
-	OSInt yOfst = Math::Double2Int32(y * Math::UOSInt2Double(this->thermoHeight));
+	OSInt xOfst = Double2Int32(x * UOSInt2Double(this->thermoWidth));
+	OSInt yOfst = Double2Int32(y * UOSInt2Double(this->thermoHeight));
 	if (xOfst < 0)
 		xOfst = 0;
 	else if (xOfst >= (OSInt)this->thermoWidth)

@@ -71,20 +71,20 @@ void UI::DObj::DownButtonDObj::DrawObject(Media::DrawImage *dimg)
 	{
 		if (this->isMouseDown)
 		{
-			dimg->DrawImagePt(this->bmpClicked, Math::OSInt2Double(left), Math::OSInt2Double(top));
+			dimg->DrawImagePt(this->bmpClicked, OSInt2Double(left), OSInt2Double(top));
 		}
 		else
 		{
-			dimg->DrawImagePt(this->bmpUnclick, Math::OSInt2Double(left), Math::OSInt2Double(top));
+			dimg->DrawImagePt(this->bmpUnclick, OSInt2Double(left), OSInt2Double(top));
 		}
 	}
 	else if (this->bmpUnclick)
 	{
-		dimg->DrawImagePt(this->bmpUnclick, Math::OSInt2Double(left), Math::OSInt2Double(top));
+		dimg->DrawImagePt(this->bmpUnclick, OSInt2Double(left), OSInt2Double(top));
 	}
 	else if (this->bmpClicked)
 	{
-		dimg->DrawImagePt(this->bmpClicked, Math::OSInt2Double(left), Math::OSInt2Double(top));
+		dimg->DrawImagePt(this->bmpClicked, OSInt2Double(left), OSInt2Double(top));
 	}
 	this->updated = false;
 }

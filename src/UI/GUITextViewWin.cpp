@@ -109,7 +109,7 @@ OSInt __stdcall UI::GUITextView::TFVWndProc(void *hWnd, UInt32 msg, UInt32 wPara
 		RegisterHotKey((HWND)hWnd, HK_SLINEHOME, MOD_SHIFT, VK_HOME);
 		RegisterHotKey((HWND)hWnd, HK_SLINEEND, MOD_SHIFT, VK_END);
 
-		CreateCaret((HWND)hWnd, 0, 2, Math::Double2Int32(me->pageLineHeight));
+		CreateCaret((HWND)hWnd, 0, 2, Double2Int32(me->pageLineHeight));
 		me->UpdateCaretPos();
 		ShowCaret((HWND)hWnd); 
 		break;
@@ -429,9 +429,9 @@ void UI::GUITextView::UpdateScrollBar()
 	SCROLLINFO si;
 	si.cbSize = sizeof(si);
 	si.fMask = SIF_PAGE;
-	si.nPage = (UINT)Math::Double2Int32((rc.bottom - rc.top) / sz[1]);
+	si.nPage = (UINT)Double2Int32((rc.bottom - rc.top) / sz[1]);
 	this->pageLineCnt = si.nPage;
-	this->pageLineHeight = Math::Double2Int32(sz[1]);
+	this->pageLineHeight = Double2Int32(sz[1]);
 	SetScrollInfo((HWND)this->hwnd, SB_VERT, &si, TRUE);
 
 	si.nPage = (UINT)(rc.right - rc.left);
@@ -501,8 +501,8 @@ void UI::GUITextView::GetDrawSize(WChar *str, UOSInt strLen, UOSInt *width, UOSI
 		Double sz[2];
 		Media::DrawFont *fnt = this->CreateDrawFont(this->drawBuff);
 		((Media::GDIImage*)this->drawBuff)->GetTextSize(fnt, str, (OSInt)strLen, sz);
-		*width = (UOSInt)Math::Double2OSInt(sz[0]);
-		*height = (UOSInt)Math::Double2OSInt(sz[1]);
+		*width = (UOSInt)Double2OSInt(sz[0]);
+		*height = (UOSInt)Double2OSInt(sz[1]);
 		this->drawBuff->DelFont(fnt);
 	}
 	else

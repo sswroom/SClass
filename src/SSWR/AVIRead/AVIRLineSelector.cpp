@@ -20,15 +20,15 @@ void SSWR::AVIRead::AVIRLineSelector::OnDraw(Media::DrawImage *img)
 	UOSInt h = img->GetHeight();
 	Double hdpi = this->GetHDPI();
 	Double ddpi = this->GetDDPI();
-	UInt32 itemH = (UInt32)Math::Double2Int32(22 * hdpi / ddpi);
-	UInt32 itemTH = (UInt32)Math::Double2Int32(24 * hdpi / ddpi);
-	UInt32 itemL = (UInt32)Math::Double2Int32(5 * hdpi / ddpi);
-	UInt32 itemW = (UInt32)Math::Double2Int32(120 * hdpi / ddpi);
+	UInt32 itemH = (UInt32)Double2Int32(22 * hdpi / ddpi);
+	UInt32 itemTH = (UInt32)Double2Int32(24 * hdpi / ddpi);
+	UInt32 itemL = (UInt32)Double2Int32(5 * hdpi / ddpi);
+	UInt32 itemW = (UInt32)Double2Int32(120 * hdpi / ddpi);
 	Media::DrawEngine *deng = this->core->GetDrawEngine();
 	Media::DrawImage *tmpBmp;
 	if (w >= itemW)
 	{
-		tmpBmp = deng->CreateImage32((UInt32)Math::Double2Int32(110 * hdpi / ddpi), itemH, Media::AT_NO_ALPHA);
+		tmpBmp = deng->CreateImage32((UInt32)Double2Int32(110 * hdpi / ddpi), itemH, Media::AT_NO_ALPHA);
 	}
 	else if (w >= 10)
 	{
@@ -48,38 +48,38 @@ void SSWR::AVIRead::AVIRLineSelector::OnDraw(Media::DrawImage *img)
 		if (currPos == defVal)
 		{
 			Media::DrawBrush *bDef = img->NewBrushARGB(this->colorConv->ConvRGB8(0xffffffc0));
-			img->DrawRect(0, Math::UOSInt2Double(i), Math::UOSInt2Double(w), Math::UOSInt2Double(itemTH), 0, bDef);
+			img->DrawRect(0, UOSInt2Double(i), UOSInt2Double(w), UOSInt2Double(itemTH), 0, bDef);
 			img->DelBrush(bDef);
 		}
 		else
 		{
-			img->DrawRect(0, Math::UOSInt2Double(i), Math::UOSInt2Double(w), itemTH, 0, bWhite);
+			img->DrawRect(0, UOSInt2Double(i), UOSInt2Double(w), itemTH, 0, bWhite);
 		}
 		this->core->GenLineStylePreview(tmpBmp, deng, this->env, currPos, this->colorConv);
 		if (currPos == this->currLineStyle)
 		{
 			Media::DrawBrush *bRed = img->NewBrushARGB(this->colorConv->ConvRGB8(0xffff0000));
-			img->DrawRect(0, Math::UOSInt2Double(i), itemW, itemTH, 0, bRed);
+			img->DrawRect(0, UOSInt2Double(i), itemW, itemTH, 0, bRed);
 			img->DelBrush(bRed);
 		}
 		if (w >= itemW)
 		{
-			img->DrawImagePt(tmpBmp, itemL, Math::UOSInt2Double(i + 1));
+			img->DrawImagePt(tmpBmp, itemL, UOSInt2Double(i + 1));
 		}
 		else if (w >= 10)
 		{
-			img->DrawImagePt(tmpBmp, 5, Math::UOSInt2Double(i + 1));
+			img->DrawImagePt(tmpBmp, 5, UOSInt2Double(i + 1));
 		}
 		else
 		{
-			img->DrawImagePt(tmpBmp, 0, Math::UOSInt2Double(i + 1));
+			img->DrawImagePt(tmpBmp, 0, UOSInt2Double(i + 1));
 		}
 		sbuff[0] = 0;
 		this->env->GetLineStyleName(currPos, sbuff);
 		if (sbuff[0])
 		{
 			Media::DrawFont *fnt = this->CreateDrawFont(img);
-			img->DrawString(itemW, Math::UOSInt2Double(i + 1), sbuff, fnt, bBlack);
+			img->DrawString(itemW, UOSInt2Double(i + 1), sbuff, fnt, bBlack);
 			img->DelFont(fnt);
 		}
 
@@ -88,7 +88,7 @@ void SSWR::AVIRead::AVIRLineSelector::OnDraw(Media::DrawImage *img)
 	}
 	if (i < h)
 	{
-		img->DrawRect(0, Math::UOSInt2Double(i), Math::UOSInt2Double(w), Math::UOSInt2Double(h - i), 0, bWhite);
+		img->DrawRect(0, UOSInt2Double(i), UOSInt2Double(w), UOSInt2Double(h - i), 0, bWhite);
 	}
 	img->DelBrush(bWhite);
 	img->DelBrush(bBlack);
@@ -97,7 +97,7 @@ void SSWR::AVIRead::AVIRLineSelector::OnDraw(Media::DrawImage *img)
 
 void SSWR::AVIRead::AVIRLineSelector::OnMouseDown(OSInt scrollY, Int32 xPos, Int32 yPos, UI::GUIClientControl::MouseButton btn, KeyButton keys)
 {
-	OSInt i = scrollY + (yPos / Math::Double2Int32(24 * this->GetHDPI() / this->GetDDPI()));
+	OSInt i = scrollY + (yPos / Double2Int32(24 * this->GetHDPI() / this->GetDDPI()));
 	if (i >= (OSInt)this->env->GetLineStyleCount())
 	{
 		i = -1;

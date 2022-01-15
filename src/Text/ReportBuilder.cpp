@@ -809,7 +809,7 @@ Media::VectorDocument *Text::ReportBuilder::CreateVDoc(Int32 id, Media::DrawEngi
 
 					if (iconSt->dimg)
 					{
-						colCurrX[icon->col] += fontHeightPt / Math::UOSInt2Double(iconSt->dimg->GetHeight()) * Math::UOSInt2Double(iconSt->dimg->GetWidth());
+						colCurrX[icon->col] += fontHeightPt / UOSInt2Double(iconSt->dimg->GetHeight()) * UOSInt2Double(iconSt->dimg->GetWidth());
 					}
 				}
 			}
@@ -965,8 +965,8 @@ Media::VectorDocument *Text::ReportBuilder::CreateVDoc(Int32 id, Media::DrawEngi
 							iconSt = iconStatus.Get(icon->fileName);
 							if (iconSt && iconSt->dimg)
 							{
-								Double w = fontHeightMM * Math::UOSInt2Double(iconSt->dimg->GetWidth()) / Math::UOSInt2Double(iconSt->dimg->GetHeight());
-								Double dpi = Math::UOSInt2Double(iconSt->dimg->GetHeight()) / Math::Unit::Distance::Convert(Math::Unit::Distance::DU_MILLIMETER, Math::Unit::Distance::DU_INCH, fontHeightMM);
+								Double w = fontHeightMM * UOSInt2Double(iconSt->dimg->GetWidth()) / UOSInt2Double(iconSt->dimg->GetHeight());
+								Double dpi = UOSInt2Double(iconSt->dimg->GetHeight()) / Math::Unit::Distance::Convert(Math::Unit::Distance::DU_MILLIMETER, Math::Unit::Distance::DU_INCH, fontHeightMM);
 								iconSt->dimg->SetHDPI(dpi);
 								iconSt->dimg->SetVDPI(dpi);
 								g->DrawImagePt(iconSt->dimg, colCurrX[icon->col], currY);

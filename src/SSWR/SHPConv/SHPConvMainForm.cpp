@@ -500,8 +500,8 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(const UTF8Char *sourceFile, con
 						fs->Read(&buff[16], 16);
 						currX = ReadDouble(&buff[16]);
 						currY = ReadDouble(&buff[24]);
-						WriteInt32(&buff[0], Math::Double2Int32(currX));
-						WriteInt32(&buff[4], Math::Double2Int32(currY));
+						WriteInt32(&buff[0], Double2Int32(currX));
+						WriteInt32(&buff[4], Double2Int32(currY));
 						cip->Write(buff, 8);
 						cipPos += 8;
 						xMin = currX;
@@ -514,8 +514,8 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(const UTF8Char *sourceFile, con
 							fs->Read(&buff[16], 16);
 							currX = ReadDouble(&buff[16]);
 							currY = ReadDouble(&buff[24]);
-							WriteInt32(&buff[0], Math::Double2Int32(currX));
-							WriteInt32(&buff[4], Math::Double2Int32(currY));
+							WriteInt32(&buff[0], Double2Int32(currX));
+							WriteInt32(&buff[4], Double2Int32(currY));
 							cip->Write(buff, 8);
 							cipPos += 8;
 
@@ -533,8 +533,8 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(const UTF8Char *sourceFile, con
 						fs->Read(&buff[16], 16);
 						currX = ReadDouble(&buff[16]);
 						currY = ReadDouble(&buff[24]);
-						WriteInt32(&buff[0], Math::Double2Int32(currX * LATSCALE));
-						WriteInt32(&buff[4], Math::Double2Int32(currY * LATSCALE));
+						WriteInt32(&buff[0], Double2Int32(currX * LATSCALE));
+						WriteInt32(&buff[4], Double2Int32(currY * LATSCALE));
 						cip->Write(buff, 8);
 						cipPos += 8;
 						xMin = currX;
@@ -551,8 +551,8 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(const UTF8Char *sourceFile, con
 							fs->Read(&buff[16], 16);
 							currX = ReadDouble(&buff[16]);
 							currY = ReadDouble(&buff[24]);
-							WriteInt32(&buff[0], Math::Double2Int32(currX * LATSCALE));
-							WriteInt32(&buff[4], Math::Double2Int32(currY * LATSCALE));
+							WriteInt32(&buff[0], Double2Int32(currX * LATSCALE));
+							WriteInt32(&buff[4], Double2Int32(currY * LATSCALE));
 							cip->Write(buff, 8);
 							cipPos += 8;
 							if (i == nPoints >> 1)
@@ -574,17 +574,17 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(const UTF8Char *sourceFile, con
 
 					if (isGrid80)
 					{
-						left = Math::Double2Int32(xMin) / blkScale;
-						right = Math::Double2Int32(xMax) / blkScale;
-						top = Math::Double2Int32(yMin) / blkScale;
-						bottom = Math::Double2Int32(yMax) / blkScale;
+						left = Double2Int32(xMin) / blkScale;
+						right = Double2Int32(xMax) / blkScale;
+						top = Double2Int32(yMin) / blkScale;
+						bottom = Double2Int32(yMax) / blkScale;
 					}
 					else
 					{
-						left = Math::Double2Int32(xMin * LATSCALE) / blkScale;
-						right = Math::Double2Int32(xMax * LATSCALE) / blkScale;
-						top = Math::Double2Int32(yMin * LATSCALE) / blkScale;
-						bottom = Math::Double2Int32(yMax * LATSCALE) / blkScale;
+						left = Double2Int32(xMin * LATSCALE) / blkScale;
+						right = Double2Int32(xMax * LATSCALE) / blkScale;
+						top = Double2Int32(yMin * LATSCALE) / blkScale;
+						bottom = Double2Int32(yMax * LATSCALE) / blkScale;
 					}
 
 					si = top;
@@ -892,25 +892,25 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(const UTF8Char *sourceFile, con
 
 					if (isGrid80)
 					{
-						WriteInt32(&buff[0], Math::Double2Int32(currX));
-						WriteInt32(&buff[4], Math::Double2Int32(currY));
+						WriteInt32(&buff[0], Double2Int32(currX));
+						WriteInt32(&buff[4], Double2Int32(currY));
 						cip->Write(buff, 8);
 
-						left = Math::Double2Int32(currX) / blkScale;
-						right = 1 + Math::Double2Int32(currX) / blkScale;
-						top = Math::Double2Int32(currY) / blkScale;
-						bottom = 1 + Math::Double2Int32(currY) / blkScale;
+						left = Double2Int32(currX) / blkScale;
+						right = 1 + Double2Int32(currX) / blkScale;
+						top = Double2Int32(currY) / blkScale;
+						bottom = 1 + Double2Int32(currY) / blkScale;
 					}
 					else
 					{
-						WriteInt32(&buff[0], Math::Double2Int32(currX * LATSCALE));
-						WriteInt32(&buff[4], Math::Double2Int32(currY * LATSCALE));
+						WriteInt32(&buff[0], Double2Int32(currX * LATSCALE));
+						WriteInt32(&buff[4], Double2Int32(currY * LATSCALE));
 						cip->Write(buff, 8);
 
-						left = Math::Double2Int32(currX * LATSCALE) / blkScale;
-						right = 1 + Math::Double2Int32(currX * LATSCALE) / blkScale;
-						top = Math::Double2Int32(currY * LATSCALE) / blkScale;
-						bottom = 1 + Math::Double2Int32(currY * LATSCALE) / blkScale;
+						left = Double2Int32(currX * LATSCALE) / blkScale;
+						right = 1 + Double2Int32(currX * LATSCALE) / blkScale;
+						top = Double2Int32(currY * LATSCALE) / blkScale;
+						bottom = 1 + Double2Int32(currY * LATSCALE) / blkScale;
 					}
 					cipPos += 8;
 
@@ -1208,7 +1208,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::LoadShape(const UTF8Char *fileName, Bool u
 		}
 		else
 		{
-			Double tVal = (yMax - yMin) * (xMax - xMin) / Math::UOSInt2Double(dbRecCnt);
+			Double tVal = (yMax - yMin) * (xMax - xMin) / UOSInt2Double(dbRecCnt);
 			retV = (Int32)(Math_Sqrt(tVal) * 500000);
 			if (retV < 5000)
 			{
@@ -1350,14 +1350,14 @@ const UTF8Char *SSWR::SHPConv::SHPConvMainForm::GetDBFName(DB::DBFFile *dbf, Dat
 			{
 				dbf->GetRecord(sbuff, currRec, col);
 				Text::StrTrim(sbuff);
-				output.AppendI32(Math::Double2Int32(Text::StrToDouble(sbuff)));
+				output.AppendI32(Double2Int32(Text::StrToDouble(sbuff)));
 				output.Append(dbCols->GetItem(i));
 			}
 			else if (shpType == 3)
 			{
 				dbf->GetRecord(sbuff, currRec, col);
 				Text::StrTrim(sbuff);
-				output.AppendI32(Math::Double2Int32(Text::StrToDouble(sbuff)));
+				output.AppendI32(Double2Int32(Text::StrToDouble(sbuff)));
 				output.Append(dbCols->GetItem(i));
 			}
 			else

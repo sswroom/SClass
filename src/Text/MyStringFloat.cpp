@@ -1991,7 +1991,7 @@ Bool Text::StrToDouble(const UTF8Char *str1, Double *outVal)
 			f = (f * 10.0) + (c - '0');
             n++;
         }
-		r += f / Math_Pow(10.0, Math::OSInt2Double(n));
+		r += f / Math_Pow(10.0, OSInt2Double(n));
     }
 	else if (c == 0)
 	{
@@ -2086,7 +2086,7 @@ Bool Text::StrToDouble(const UTF16Char *str1, Double *outVal)
 			f = (f * 10.0) + (c - '0');
             n++;
         }
-		r += f / Math_Pow(10.0, Math::OSInt2Double(n));
+		r += f / Math_Pow(10.0, OSInt2Double(n));
     }
 	else if (c == 0)
 	{
@@ -2181,7 +2181,7 @@ Bool Text::StrToDouble(const UTF32Char *str1, Double *outVal)
 			f = (f * 10.0) + (c - '0');
             n++;
         }
-		r += f / Math_Pow(10.0, Math::OSInt2Double(n));
+		r += f / Math_Pow(10.0, OSInt2Double(n));
     }
 	else if (c == 0)
 	{

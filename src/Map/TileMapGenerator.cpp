@@ -16,7 +16,7 @@
 void Map::TileMapGenerator::InitMapView(Map::MapView *view, Int32 x, Int32 y, UInt32 scale)
 {
 	view->UpdateSize((this->imgSize * this->osSize), (this->imgSize * this->osSize));
-	view->SetDPI((Math::UOSInt2Double(this->osSize) * 96.0), 96.0);
+	view->SetDPI((UOSInt2Double(this->osSize) * 96.0), 96.0);
 	view->SetCenterXY((x + 0.5) * this->imgSize * scale / 2000 / 283464, (y + 0.5) * this->imgSize * scale / 2000 / 283464);
 }
 
@@ -116,8 +116,8 @@ Bool Map::TileMapGenerator::GenerateDBFile(Int32 x, Int32 y, UInt32 scale, Map::
 	params.dbStream = 0;
 
 	dimg2 = geng->CreateImage32(16, 16, Media::AT_NO_ALPHA);
-	dimg2->SetHDPI(96.0 * Math::UOSInt2Double(this->osSize));
-	dimg2->SetVDPI(96.0 * Math::UOSInt2Double(this->osSize));
+	dimg2->SetHDPI(96.0 * UOSInt2Double(this->osSize));
+	dimg2->SetVDPI(96.0 * UOSInt2Double(this->osSize));
 	mcfg->DrawMap(dimg2, &view, &isLayerEmpty, mapSch, resizer, sbuff, &params);
 	mutUsage.BeginUse();
 	this->dbGenList->RemoveAt((UOSInt)this->dbGenList->SortedIndexOf(id));
@@ -212,8 +212,8 @@ Bool Map::TileMapGenerator::GenerateTile(Int64 tileId, UInt32 scale, Map::MapSch
 	else
 	{
 		dimg2 = this->geng->CreateImage32((this->imgSize * this->osSize), (this->imgSize * this->osSize), Media::AT_NO_ALPHA);
-		dimg2->SetHDPI(96.0 * Math::UOSInt2Double(this->osSize));
-		dimg2->SetVDPI(96.0 * Math::UOSInt2Double(this->osSize));
+		dimg2->SetHDPI(96.0 * UOSInt2Double(this->osSize));
+		dimg2->SetVDPI(96.0 * UOSInt2Double(this->osSize));
 		mcfg->DrawMap(dimg2, &view, &isLayerEmpty, mapSch, resizer, 0, &params);
 		
 		Bool revOrder;

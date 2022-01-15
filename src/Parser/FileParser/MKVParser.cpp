@@ -733,7 +733,7 @@ Bool Parser::FileParser::MKVParser::ReadAudio(MKVStatus *status, UInt64 dataSize
 				valid = false;
 			if (elementSize == 8)
 			{
-				audioFmt->frequency = (UInt32)Math::Double2Int32(ReadMDouble(buff));
+				audioFmt->frequency = (UInt32)Double2Int32(ReadMDouble(buff));
 			}
 			else
 			{

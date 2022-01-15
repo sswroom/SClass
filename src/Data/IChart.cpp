@@ -210,7 +210,7 @@ UOSInt Data::IChart::CalScaleMarkInt(Data::ArrayListDbl *locations, Data::ArrayL
 		pos = (Single)((scale - min) * leng / (Single)(max - min));
 		if ((pos > minLeng) && (pos < leng - minLeng))
 		{
-			sptr = Text::StrInt32(sbuff, Math::Double2Int32(scale));
+			sptr = Text::StrInt32(sbuff, Double2Int32(scale));
 			locations->Add(pos);
 			if (unit)
 				sptr = Text::StrConcat(sptr, unit);
@@ -258,13 +258,13 @@ UOSInt Data::IChart::CalScaleMarkDate(Data::ArrayListDbl *locations, Data::Array
 
 		scale = Data::DateTime::MS2Days(timeDif) * minLeng / leng;
 		lScale = (Int32)(Math_Log10(scale));
-		iScale = Math::Double2Int32(Math_Pow(10, lScale));
+		iScale = Double2Int32(Math_Pow(10, lScale));
 		if (scale / iScale <= 2)
-			iScale = Math::Double2Int32(Math_Pow(10, lScale) * 2);
+			iScale = Double2Int32(Math_Pow(10, lScale) * 2);
 		else if (scale / iScale <= 5)
-			iScale = Math::Double2Int32(Math_Pow(10, lScale) * 5);
+			iScale = Double2Int32(Math_Pow(10, lScale) * 5);
 		else
-			iScale = Math::Double2Int32(Math_Pow(10, lScale) * 10);
+			iScale = Double2Int32(Math_Pow(10, lScale) * 10);
 
 		currDate = min;
 		currDate.ClearTime();

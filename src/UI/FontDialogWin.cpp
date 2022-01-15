@@ -50,7 +50,7 @@ Bool UI::FontDialog::ShowDialog(ControlHandle *ownerHandle)
 	ZeroMemory(&lf, sizeof(LOGFONT));
 	if (this->fontName)
 	{
-		lf.lfHeight = -Math::Double2Int32(this->fontSizePt * 96.0 / 72.0);
+		lf.lfHeight = -Double2Int32(this->fontSizePt * 96.0 / 72.0);
 		if (this->isBold)
 		{
 			lf.lfWeight = FW_BOLD;

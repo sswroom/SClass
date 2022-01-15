@@ -151,11 +151,11 @@ void UI::GUIHScrollBar::SetArea(Double left, Double top, Double right, Double bo
 	this->lxPos = left;
 	this->lyPos = top;
 	Int32 minSize = GetSystemMetrics(SM_CYHSCROLL) + 1;
-	Int32 newSize = Math::Double2Int32((bottom - top) * this->hdpi / this->ddpi);
+	Int32 newSize = Double2Int32((bottom - top) * this->hdpi / this->ddpi);
 	if (newSize < minSize)
 		newSize = minSize;
 	this->selfResize = true;
-	MoveWindow((HWND)hwnd, Math::Double2Int32((left + xOfst) * this->hdpi / this->ddpi), Math::Double2Int32((top + yOfst) * this->hdpi / this->ddpi), Math::Double2Int32((right - left) * this->hdpi / this->ddpi), newSize, updateScn?TRUE:FALSE);
+	MoveWindow((HWND)hwnd, Double2Int32((left + xOfst) * this->hdpi / this->ddpi), Double2Int32((top + yOfst) * this->hdpi / this->ddpi), Double2Int32((right - left) * this->hdpi / this->ddpi), newSize, updateScn?TRUE:FALSE);
 	RECT rect;
 	GetWindowRect((HWND)hwnd, &rect);
 	this->lxPos2 = left + (rect.right - rect.left) * this->ddpi / this->hdpi;
@@ -172,18 +172,18 @@ void UI::GUIHScrollBar::SetAreaP(OSInt left, OSInt top, OSInt right, OSInt botto
 	{
 		this->parent->GetClientOfst(&xOfst, &yOfst);
 	}
-	this->lxPos = Math::OSInt2Double(left) * this->ddpi / this->hdpi;
-	this->lyPos = Math::OSInt2Double(top) * this->ddpi / this->hdpi;
+	this->lxPos = OSInt2Double(left) * this->ddpi / this->hdpi;
+	this->lyPos = OSInt2Double(top) * this->ddpi / this->hdpi;
 	Int32 minSize = GetSystemMetrics(SM_CYHSCROLL) + 1;
 	Int32 newSize = (Int32)(bottom - top);
 	if (newSize < minSize)
 		newSize = minSize;
 	this->selfResize = true;
-	MoveWindow((HWND)hwnd, Math::Double2Int32(Math::OSInt2Double(left) + xOfst * this->hdpi / this->ddpi), Math::Double2Int32(Math::OSInt2Double(top) + yOfst * this->hdpi / this->ddpi), (int)(right - left), newSize, updateScn?TRUE:FALSE);
+	MoveWindow((HWND)hwnd, Double2Int32(OSInt2Double(left) + xOfst * this->hdpi / this->ddpi), Double2Int32(OSInt2Double(top) + yOfst * this->hdpi / this->ddpi), (int)(right - left), newSize, updateScn?TRUE:FALSE);
 	RECT rect;
 	GetWindowRect((HWND)hwnd, &rect);
-	this->lxPos2 = Math::OSInt2Double(left + rect.right - rect.left) * this->ddpi / this->hdpi;
-	this->lyPos2 = Math::OSInt2Double(top + rect.bottom - rect.top) * this->ddpi / this->hdpi;
+	this->lxPos2 = OSInt2Double(left + rect.right - rect.left) * this->ddpi / this->hdpi;
+	this->lyPos2 = OSInt2Double(top + rect.bottom - rect.top) * this->ddpi / this->hdpi;
 	this->selfResize = false;
 	this->OnSizeChanged(updateScn);
 }
@@ -220,10 +220,10 @@ void UI::GUIHScrollBar::UpdatePos(Bool redraw)
 		Double xOfst = 0;
 		Double yOfst = 0;
 		this->parent->GetClientOfst(&xOfst, &yOfst);
-		newSize = Math::Double2Int32((this->lyPos2 - this->lyPos) * this->hdpi / this->ddpi);
+		newSize = Double2Int32((this->lyPos2 - this->lyPos) * this->hdpi / this->ddpi);
 		if (newSize < minSize)
 			newSize = minSize;
-		MoveWindow((HWND)hwnd, Math::Double2Int32((this->lxPos + xOfst) * this->hdpi / this->ddpi), Math::Double2Int32((this->lyPos + yOfst) * this->hdpi / this->ddpi), Math::Double2Int32((this->lxPos2 - this->lxPos) * this->hdpi / this->ddpi), newSize, redraw?TRUE:FALSE);
+		MoveWindow((HWND)hwnd, Double2Int32((this->lxPos + xOfst) * this->hdpi / this->ddpi), Double2Int32((this->lyPos + yOfst) * this->hdpi / this->ddpi), Double2Int32((this->lxPos2 - this->lxPos) * this->hdpi / this->ddpi), newSize, redraw?TRUE:FALSE);
 	}
 	else
 	{
@@ -243,10 +243,10 @@ void UI::GUIHScrollBar::UpdatePos(Bool redraw)
 		{
 			newY = 0;
 		}
-		newSize = Math::Double2Int32(newH);
+		newSize = Double2Int32(newH);
 		if (newSize < minSize)
 			newSize = minSize;
-		MoveWindow((HWND)this->hwnd, Math::Double2Int32(newX), Math::Double2Int32(newY), Math::Double2Int32(newW), newSize, redraw?TRUE:FALSE);
+		MoveWindow((HWND)this->hwnd, Double2Int32(newX), Double2Int32(newY), Double2Int32(newW), newSize, redraw?TRUE:FALSE);
 	}
 }
 

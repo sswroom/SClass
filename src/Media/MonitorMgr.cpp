@@ -185,7 +185,7 @@ void Media::MonitorMgr::SetMonitorHDPI(MonitorHandle *hMonitor, Double monitorHD
 		Text::StrDelNew(wptr);
 		if (reg2)
 		{
-			reg2->SetValue(L"MonitorHDPI", Math::Double2Int32(monitorHDPI * 10));
+			reg2->SetValue(L"MonitorHDPI", Double2Int32(monitorHDPI * 10));
 			if (monDesc)
 			{
 				wptr = Text::StrToWCharNew(monDesc);
@@ -264,7 +264,7 @@ void Media::MonitorMgr::SetMonitorDDPI(MonitorHandle *hMonitor, Double monitorDD
 		Text::StrDelNew(wptr);
 		if (reg2)
 		{
-			reg2->SetValue(L"MonitorDDPI", Math::Double2Int32(monitorDDPI * 10));
+			reg2->SetValue(L"MonitorDDPI", Double2Int32(monitorDDPI * 10));
 			if (monDesc)
 			{
 				wptr = Text::StrToWCharNew(monDesc);

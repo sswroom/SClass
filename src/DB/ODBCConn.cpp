@@ -1698,7 +1698,7 @@ Int32 DB::ODBCReader::GetInt32(UOSInt colIndex)
 		return Text::StrToInt32(((Text::StringBuilderUTF8*)this->colDatas[colIndex].colData)->ToString());
 	case DB::DBUtil::CT_Double:
 	case DB::DBUtil::CT_Float:
-		return Math::Double2Int32(*(Double*)&this->colDatas[colIndex].dataVal);
+		return Double2Int32(*(Double*)&this->colDatas[colIndex].dataVal);
 	case DB::DBUtil::CT_Int16:
 	case DB::DBUtil::CT_UInt16:
 	case DB::DBUtil::CT_Int32:

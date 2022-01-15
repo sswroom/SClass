@@ -115,10 +115,10 @@ Map::ESRI::ESRITileMap::ESRITileMap(const UTF8Char *url, const UTF8Char *cacheDi
 					Text::JSONObject *tinfo = (Text::JSONObject*)o;
 					v = tinfo->GetObjectValue(UTF8STRC("rows"));
 					if (v != 0 && v->GetType() == Text::JSONType::Number)
-						this->tileHeight = (UOSInt)Math::Double2Int32(((Text::JSONNumber*)v)->GetValue());
+						this->tileHeight = (UOSInt)Double2Int32(((Text::JSONNumber*)v)->GetValue());
 					v = tinfo->GetObjectValue(UTF8STRC("cols"));
 					if (v != 0 && v->GetType() == Text::JSONType::Number)
-						this->tileWidth = (UOSInt)Math::Double2Int32(((Text::JSONNumber*)v)->GetValue());
+						this->tileWidth = (UOSInt)Double2Int32(((Text::JSONNumber*)v)->GetValue());
 					v = tinfo->GetObjectValue(UTF8STRC("origin"));
 					if (v != 0 && v->GetType() == Text::JSONType::Object)
 					{
@@ -204,7 +204,7 @@ Double Map::ESRI::ESRITileMap::GetLevelScale(UOSInt index)
 {
 	if (this->isMercatorProj)
 	{
-		return 204094080000.0 / Math::UOSInt2Double(this->tileWidth) / (1 << index);
+		return 204094080000.0 / UOSInt2Double(this->tileWidth) / (1 << index);
 	}
 	else
 	{
@@ -220,7 +220,7 @@ UOSInt Map::ESRI::ESRITileMap::GetNearestLevel(Double scale)
 {
 	if (this->isMercatorProj)
 	{
-		Int32 level = Math::Double2Int32(Math_Log10(204094080000.0 / scale / Math::UOSInt2Double(this->tileWidth)) / Math_Log10(2));
+		Int32 level = Double2Int32(Math_Log10(204094080000.0 / scale / UOSInt2Double(this->tileWidth)) / Math_Log10(2));
 		if (level < 0)
 			level = 0;
 		else if (level >= (Int32)GetLevelCount())
@@ -382,10 +382,10 @@ UOSInt Map::ESRI::ESRITileMap::GetImageIDs(UOSInt level, Double x1, Double y1, D
 			return 0;
 		if (y1 == y2)
 			return 0;
-		Int32 pixX1 = (Int32)((x1 - this->oriX) / resol / Math::UOSInt2Double(this->tileWidth));
-		Int32 pixX2 = (Int32)((x2 - this->oriX) / resol / Math::UOSInt2Double(this->tileWidth));
-		Int32 pixY1 = (Int32)((this->oriY - y1) / resol / Math::UOSInt2Double(this->tileHeight));
-		Int32 pixY2 = (Int32)((this->oriY - y2) / resol / Math::UOSInt2Double(this->tileHeight));
+		Int32 pixX1 = (Int32)((x1 - this->oriX) / resol / UOSInt2Double(this->tileWidth));
+		Int32 pixX2 = (Int32)((x2 - this->oriX) / resol / UOSInt2Double(this->tileWidth));
+		Int32 pixY1 = (Int32)((this->oriY - y1) / resol / UOSInt2Double(this->tileHeight));
+		Int32 pixY2 = (Int32)((this->oriY - y2) / resol / UOSInt2Double(this->tileHeight));
 		if (pixX1 > pixX2)
 		{
 			i = pixX1;
@@ -447,10 +447,10 @@ Media::ImageList *Map::ESRI::ESRITileMap::LoadTileImage(UOSInt level, Int64 imgI
 		Double resol = this->levels->GetItem(level);
 		if (resol == 0)
 			return 0;
-		Double x1 = imgX * Math::UOSInt2Double(this->tileWidth) * resol + this->oriX;
-		Double y1 = this->oriY - imgY * Math::UOSInt2Double(this->tileHeight) * resol;
-		Double x2 = x1 + Math::UOSInt2Double(this->tileWidth) * resol;
-		Double y2 = y1 - Math::UOSInt2Double(this->tileHeight) * resol;
+		Double x1 = imgX * UOSInt2Double(this->tileWidth) * resol + this->oriX;
+		Double y1 = this->oriY - imgY * UOSInt2Double(this->tileHeight) * resol;
+		Double x2 = x1 + UOSInt2Double(this->tileWidth) * resol;
+		Double y2 = y1 - UOSInt2Double(this->tileHeight) * resol;
 
 		if (x1 > this->maxX || x2 < this->minX || y1 < minY || y2 > maxY)
 			return 0;
@@ -575,10 +575,10 @@ IO::IStreamData *Map::ESRI::ESRITileMap::LoadTileImageData(UOSInt level, Int64 i
 		Double resol = this->levels->GetItem(level);
 		if (resol == 0)
 			return 0;
-		Double x1 = imgX * Math::UOSInt2Double(this->tileWidth) * resol + this->oriX;
-		Double y1 = this->oriY - imgY * Math::UOSInt2Double(this->tileHeight) * resol;
-		Double x2 = x1 + Math::UOSInt2Double(this->tileWidth) * resol;
-		Double y2 = y1 - Math::UOSInt2Double(this->tileHeight) * resol;
+		Double x1 = imgX * UOSInt2Double(this->tileWidth) * resol + this->oriX;
+		Double y1 = this->oriY - imgY * UOSInt2Double(this->tileHeight) * resol;
+		Double x2 = x1 + UOSInt2Double(this->tileWidth) * resol;
+		Double y2 = y1 - UOSInt2Double(this->tileHeight) * resol;
 
 		if (x1 > this->maxX || x2 < this->minX || y1 < minY || y2 > maxY)
 			return 0;
@@ -672,7 +672,7 @@ Double Map::ESRI::ESRITileMap::WebMercatorX2Lon(Double x)
 {
 	x = x / 6378137.0;
 	Double w2 = x * 57.295779513082323;\
-	Double w3 = Math::Fix((x + 180.0) / 360.0);
+	Double w3 = Math_Fix((x + 180.0) / 360.0);
 	return w2 - (w3 * 360.0);
 }
 

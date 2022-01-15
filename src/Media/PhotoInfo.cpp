@@ -251,15 +251,15 @@ void Media::PhotoInfo::ToString(Text::StringBuilderUTF *sb)
 		else if (this->expTime < 0.3)
 		{
 			sb->AppendC(UTF8STRC("1/"));
-			sb->AppendI32(Math::Double2Int32(1.0 / this->expTime));
+			sb->AppendI32(Double2Int32(1.0 / this->expTime));
 		}
 		else
 		{
 			Double invExp = 1.0 / this->expTime;
-			if (invExp == Math::Double2Int32(invExp))
+			if (invExp == Double2Int32(invExp))
 			{
 				sb->AppendC(UTF8STRC("1/"));
-				sb->AppendI32(Math::Double2Int32(invExp));
+				sb->AppendI32(Double2Int32(invExp));
 			}
 			else
 			{

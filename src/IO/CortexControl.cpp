@@ -247,7 +247,7 @@ Bool IO::CortexControl::GetFWVersion(Int32 *majorVer, Int32 *minorVer)
 		t = clk.GetTimeDiff();
 		if (t > 2)
 			break;
-		this->sendEvt->Wait((UInt32)Math::Double2Int32((2 - t) * 1000));
+		this->sendEvt->Wait((UInt32)Double2Int32((2 - t) * 1000));
 	}
 	if (this->sendHasResult)
 	{
@@ -284,7 +284,7 @@ Bool IO::CortexControl::ReadDIO(Int32 *dioValues)
 		t = clk.GetTimeDiff();
 		if (t > 2)
 			break;
-		this->sendEvt->Wait((UInt32)Math::Double2Int32((2 - t) * 1000));
+		this->sendEvt->Wait((UInt32)Double2Int32((2 - t) * 1000));
 	}
 	if (this->sendHasResult)
 	{
@@ -323,7 +323,7 @@ Bool IO::CortexControl::WriteDIO(Int32 outVal, Int32 outMask)
 		t = clk.GetTimeDiff();
 		if (t > 2)
 			break;
-		this->sendEvt->Wait(Math::Double2Int32((2 - t) * 1000));
+		this->sendEvt->Wait(Double2Int32((2 - t) * 1000));
 	}
 	if (this->sendHasResult)
 	{
@@ -358,7 +358,7 @@ Bool IO::CortexControl::ReadVin(Int32 *voltage)
 		t = clk.GetTimeDiff();
 		if (t > 2)
 			break;
-		this->sendEvt->Wait(Math::Double2Int32((2 - t) * 1000));
+		this->sendEvt->Wait(Double2Int32((2 - t) * 1000));
 	}
 	if (this->sendHasResult)
 	{
@@ -394,7 +394,7 @@ Bool IO::CortexControl::ReadVBatt(Int32 *voltage)
 		t = clk.GetTimeDiff();
 		if (t > 2)
 			break;
-		this->sendEvt->Wait(Math::Double2Int32((2 - t) * 1000));
+		this->sendEvt->Wait(Double2Int32((2 - t) * 1000));
 	}
 	if (this->sendHasResult)
 	{
@@ -430,7 +430,7 @@ Bool IO::CortexControl::ReadOdometerCounter(Int32 *odoCount)
 		t = clk.GetTimeDiff();
 		if (t > 2)
 			break;
-		this->sendEvt->Wait(Math::Double2Int32((2 - t) * 1000));
+		this->sendEvt->Wait(Double2Int32((2 - t) * 1000));
 	}
 	if (this->sendHasResult)
 	{
@@ -466,7 +466,7 @@ Bool IO::CortexControl::ResetOdometerCounter()
 		t = clk.GetTimeDiff();
 		if (t > 2)
 			break;
-		this->sendEvt->Wait(Math::Double2Int32((2 - t) * 1000));
+		this->sendEvt->Wait(Double2Int32((2 - t) * 1000));
 	}
 	if (this->sendHasResult)
 	{
@@ -501,7 +501,7 @@ Bool IO::CortexControl::ReadEnvBrightness(Int32 *brightness)
 		t = clk.GetTimeDiff();
 		if (t > 2)
 			break;
-		this->sendEvt->Wait(Math::Double2Int32((2 - t) * 1000));
+		this->sendEvt->Wait(Double2Int32((2 - t) * 1000));
 	}
 	if (this->sendHasResult)
 	{
@@ -537,7 +537,7 @@ Bool IO::CortexControl::ReadTemperature(Int32 *temperature)
 		t = clk.GetTimeDiff();
 		if (t > 2)
 			break;
-		this->sendEvt->Wait(Math::Double2Int32((2 - t) * 1000));
+		this->sendEvt->Wait(Double2Int32((2 - t) * 1000));
 	}
 	if (this->sendHasResult)
 	{
@@ -573,7 +573,7 @@ Bool IO::CortexControl::PowerOff()
 		t = clk.GetTimeDiff();
 		if (t > 2)
 			break;
-		this->sendEvt->Wait(Math::Double2Int32((2 - t) * 1000));
+		this->sendEvt->Wait(Double2Int32((2 - t) * 1000));
 	}
 	if (this->sendHasResult)
 	{
@@ -610,7 +610,7 @@ Bool IO::CortexControl::HDACodecPower(Bool turnOn)
 		t = clk.GetTimeDiff();
 		if (t > 2)
 			break;
-		this->sendEvt->Wait(Math::Double2Int32((2 - t) * 1000));
+		this->sendEvt->Wait(Double2Int32((2 - t) * 1000));
 	}
 	if (this->sendHasResult)
 	{
@@ -645,7 +645,7 @@ Bool IO::CortexControl::SetWatchdogTimeout(UInt8 timeout)
 		t = clk.GetTimeDiff();
 		if (t > 2)
 			break;
-		this->sendEvt->Wait(Math::Double2Int32((2 - t) * 1000));
+		this->sendEvt->Wait(Double2Int32((2 - t) * 1000));
 	}
 	if (this->sendHasResult)
 	{

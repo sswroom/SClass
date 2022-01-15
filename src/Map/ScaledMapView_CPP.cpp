@@ -12,8 +12,8 @@ extern "C" Bool ScaledMapView_IMapXYToScnXY(const Int32 *srcArr, Int32 *destArr,
 	Int32 thisY;
 	while (nPoints-- > 0)
 	{
-		*destArr++ = thisX = Math::Double2Int32((*srcArr++ * rRate - dleft) * xmul + ofstX);
-		*destArr++ = thisY = Math::Double2Int32((dbottom - *srcArr++ * rRate) * ymul + ofstY);
+		*destArr++ = thisX = Double2Int32((*srcArr++ * rRate - dleft) * xmul + ofstX);
+		*destArr++ = thisY = Double2Int32((dbottom - *srcArr++ * rRate) * ymul + ofstY);
 		if (iminX == 0 && imaxX == 0)
 		{
 			iminX = imaxX = thisX;

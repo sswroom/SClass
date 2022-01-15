@@ -735,7 +735,7 @@ Media::IMediaSource *Parser::FileParser::QTParser::ParseStblAtom(IO::IStreamData
 				{
 					afmt.nChannels = (UInt16)ReadMUInt32(&buff[56]);
 					afmt.bitpersample = (UInt16)ReadMUInt32(&buff[64]);
-					afmt.frequency = (UInt32)Math::Double2Int32(ReadMDouble(&buff[48]));
+					afmt.frequency = (UInt32)Double2Int32(ReadMDouble(&buff[48]));
 					afmt.bitRate = 0;
 					bofst = 80;
 				}

@@ -37,7 +37,7 @@ UInt32 Media::RefClock::GetCurrTime()
 
 		QueryPerformanceFrequency(&liFreq);
 		QueryPerformanceCounter(&liClk);
-		thisTime = this->refStartTime + (UInt32)(Math::Double2Int32((Double)(liClk.QuadPart - refStart) * 1000.0 / (Double)liFreq.QuadPart));
+		thisTime = this->refStartTime + (UInt32)(Double2Int32((Double)(liClk.QuadPart - refStart) * 1000.0 / (Double)liFreq.QuadPart));
 		return thisTime;
 	}
 	else

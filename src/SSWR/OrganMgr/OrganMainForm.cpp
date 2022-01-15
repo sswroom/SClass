@@ -508,11 +508,11 @@ Bool __stdcall SSWR::OrganMgr::OrganMainForm::OnImgMouseUp(void *userObj, OSInt 
 			Media::Image *img = me->dispImage->GetImage(0, 0);
 			if (me->dispImageUF)
 			{
-				me->env->UpdateUserFileCrop(me->dispImageUF, ptX1, ptY1, Math::UOSInt2Double(img->info->dispWidth) - ptX2, Math::UOSInt2Double(img->info->dispHeight) - ptY2);
+				me->env->UpdateUserFileCrop(me->dispImageUF, ptX1, ptY1, UOSInt2Double(img->info->dispWidth) - ptX2, UOSInt2Double(img->info->dispHeight) - ptY2);
 			}
 			else if (me->dispImageWF)
 			{
-				me->env->UpdateWebFileCrop(me->dispImageWF, ptX1, ptY1, Math::UOSInt2Double(img->info->dispWidth) - ptX2, Math::UOSInt2Double(img->info->dispHeight) - ptY2);
+				me->env->UpdateWebFileCrop(me->dispImageWF, ptX1, ptY1, UOSInt2Double(img->info->dispWidth) - ptX2, UOSInt2Double(img->info->dispHeight) - ptY2);
 			}
 		}
 
@@ -551,21 +551,21 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImgDraw(void *userObj, UInt8 *im
 			{
 				Media::Image *img = me->dispImage->GetImage(0, 0);
 				me->pbImg->Image2ScnPos(me->dispImageUF->cropLeft, me->dispImageUF->cropTop, &x1, &y1);
-				me->pbImg->Image2ScnPos(Math::UOSInt2Double(img->info->dispWidth) - me->dispImageUF->cropRight, Math::UOSInt2Double(img->info->dispHeight) - me->dispImageUF->cropBottom, &x2, &y2);
-				if (x2 < 0 || x1 >= Math::UOSInt2Double(w) || y2 < 0 || y1 >= Math::UOSInt2Double(h))
+				me->pbImg->Image2ScnPos(UOSInt2Double(img->info->dispWidth) - me->dispImageUF->cropRight, UOSInt2Double(img->info->dispHeight) - me->dispImageUF->cropBottom, &x2, &y2);
+				if (x2 < 0 || x1 >= UOSInt2Double(w) || y2 < 0 || y1 >= UOSInt2Double(h))
 				{
 
 				}
-				else if (x1 < 0 || x2 >= Math::UOSInt2Double(w) || y1 < 0 || y2 >= Math::UOSInt2Double(h))
+				else if (x1 < 0 || x2 >= UOSInt2Double(w) || y1 < 0 || y2 >= UOSInt2Double(h))
 				{
-					Media::ImageUtil::DrawHLineNA32(imgPtr, w, h, bpl, Math::Double2OSInt(y1), Math::Double2OSInt(x1), Math::Double2OSInt(x2), 0xff4040ff);
-					Media::ImageUtil::DrawHLineNA32(imgPtr, w, h, bpl, Math::Double2OSInt(y2), Math::Double2OSInt(x1), Math::Double2OSInt(x2), 0xff4040ff);
-					Media::ImageUtil::DrawVLineNA32(imgPtr, w, h, bpl, Math::Double2OSInt(x1), Math::Double2OSInt(y1), Math::Double2OSInt(y2), 0xff4040ff);
-					Media::ImageUtil::DrawVLineNA32(imgPtr, w, h, bpl, Math::Double2OSInt(x2), Math::Double2OSInt(y1), Math::Double2OSInt(y2), 0xff4040ff);
+					Media::ImageUtil::DrawHLineNA32(imgPtr, w, h, bpl, Double2OSInt(y1), Double2OSInt(x1), Double2OSInt(x2), 0xff4040ff);
+					Media::ImageUtil::DrawHLineNA32(imgPtr, w, h, bpl, Double2OSInt(y2), Double2OSInt(x1), Double2OSInt(x2), 0xff4040ff);
+					Media::ImageUtil::DrawVLineNA32(imgPtr, w, h, bpl, Double2OSInt(x1), Double2OSInt(y1), Double2OSInt(y2), 0xff4040ff);
+					Media::ImageUtil::DrawVLineNA32(imgPtr, w, h, bpl, Double2OSInt(x2), Double2OSInt(y1), Double2OSInt(y2), 0xff4040ff);
 				}
 				else
 				{
-					ImageUtil_DrawRectNA32(imgPtr + bpl * (UInt32)Math::Double2Int32(y1) + (UInt32)Math::Double2Int32(x1) * 4, (UInt32)Math::Double2Int32(x2 - x1), (UInt32)Math::Double2Int32(y2 - y1), bpl, 0xff4040ff);
+					ImageUtil_DrawRectNA32(imgPtr + bpl * (UInt32)Double2Int32(y1) + (UInt32)Double2Int32(x1) * 4, (UInt32)Double2Int32(x2 - x1), (UInt32)Double2Int32(y2 - y1), bpl, 0xff4040ff);
 				}
 			}
 		}
@@ -575,21 +575,21 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImgDraw(void *userObj, UInt8 *im
 			{
 				Media::Image *img = me->dispImage->GetImage(0, 0);
 				me->pbImg->Image2ScnPos(me->dispImageWF->cropLeft, me->dispImageWF->cropTop, &x1, &y1);
-				me->pbImg->Image2ScnPos(Math::UOSInt2Double(img->info->dispWidth) - me->dispImageWF->cropRight, Math::UOSInt2Double(img->info->dispHeight) - me->dispImageWF->cropBottom, &x2, &y2);
-				if (x2 < 0 || x1 >= Math::UOSInt2Double(w) || y2 < 0 || y1 >= Math::UOSInt2Double(h))
+				me->pbImg->Image2ScnPos(UOSInt2Double(img->info->dispWidth) - me->dispImageWF->cropRight, UOSInt2Double(img->info->dispHeight) - me->dispImageWF->cropBottom, &x2, &y2);
+				if (x2 < 0 || x1 >= UOSInt2Double(w) || y2 < 0 || y1 >= UOSInt2Double(h))
 				{
 
 				}
-				else if (x1 < 0 || x2 >= Math::UOSInt2Double(w) || y1 < 0 || y2 >= Math::UOSInt2Double(h))
+				else if (x1 < 0 || x2 >= UOSInt2Double(w) || y1 < 0 || y2 >= UOSInt2Double(h))
 				{
-					Media::ImageUtil::DrawHLineNA32(imgPtr, w, h, bpl, Math::Double2OSInt(y1), Math::Double2OSInt(x1), Math::Double2OSInt(x2), 0xff4040ff);
-					Media::ImageUtil::DrawHLineNA32(imgPtr, w, h, bpl, Math::Double2OSInt(y2), Math::Double2OSInt(x1), Math::Double2OSInt(x2), 0xff4040ff);
-					Media::ImageUtil::DrawVLineNA32(imgPtr, w, h, bpl, Math::Double2OSInt(x1), Math::Double2OSInt(y1), Math::Double2OSInt(y2), 0xff4040ff);
-					Media::ImageUtil::DrawVLineNA32(imgPtr, w, h, bpl, Math::Double2OSInt(x2), Math::Double2OSInt(y1), Math::Double2OSInt(y2), 0xff4040ff);
+					Media::ImageUtil::DrawHLineNA32(imgPtr, w, h, bpl, Double2OSInt(y1), Double2OSInt(x1), Double2OSInt(x2), 0xff4040ff);
+					Media::ImageUtil::DrawHLineNA32(imgPtr, w, h, bpl, Double2OSInt(y2), Double2OSInt(x1), Double2OSInt(x2), 0xff4040ff);
+					Media::ImageUtil::DrawVLineNA32(imgPtr, w, h, bpl, Double2OSInt(x1), Double2OSInt(y1), Double2OSInt(y2), 0xff4040ff);
+					Media::ImageUtil::DrawVLineNA32(imgPtr, w, h, bpl, Double2OSInt(x2), Double2OSInt(y1), Double2OSInt(y2), 0xff4040ff);
 				}
 				else
 				{
-					ImageUtil_DrawRectNA32(imgPtr + bpl * (UInt32)Math::Double2Int32(y1) + (UInt32)Math::Double2Int32(x1) * 4, (UInt32)Math::Double2Int32(x2 - x1), (UInt32)Math::Double2Int32(y2 - y1), bpl, 0xff4040ff);
+					ImageUtil_DrawRectNA32(imgPtr + bpl * (UInt32)Double2Int32(y1) + (UInt32)Double2Int32(x1) * 4, (UInt32)Double2Int32(x2 - x1), (UInt32)Double2Int32(y2 - y1), bpl, 0xff4040ff);
 				}
 			}
 		}
@@ -1580,7 +1580,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnTimerTick(void *userObj)
 void __stdcall SSWR::OrganMgr::OrganMainForm::OnMapScaleScroll(void *userObj, UOSInt newVal)
 {
 	OrganMainForm *me = (OrganMainForm*)userObj;
-	me->mcMap->SetMapScale(Math::Double2Int32(me->mapTile->GetLevelScale(newVal)));
+	me->mcMap->SetMapScale(Double2Int32(me->mapTile->GetLevelScale(newVal)));
 }
 
 void __stdcall SSWR::OrganMgr::OrganMainForm::OnTileUpdated(void *userObj)
@@ -1674,7 +1674,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnMapDraw(void *userObj, Media::Dr
 		UOSInt scnW;
 		UOSInt scnH;
 		me->mcMap->GetSizeP(&scnW, &scnH);
-		dimg->DrawImagePt(me->mapCurrImage, Math::OSInt2Double(xOfst), Math::OSInt2Double(yOfst + (OSInt)(scnH - me->mapCurrImage->GetHeight())));
+		dimg->DrawImagePt(me->mapCurrImage, OSInt2Double(xOfst), OSInt2Double(yOfst + (OSInt)(scnH - me->mapCurrImage->GetHeight())));
 		//BitBlt((HDC)hdc, 0, scnH - me->mapCurrImage->info->dispHeight, me->mapCurrImage->info->dispWidth, me->mapCurrImage->info->dispHeight, (HDC)me->mapCurrImage->GetHDC(), 0, 0, SRCCOPY);
 	}
 }

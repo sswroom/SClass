@@ -79,8 +79,8 @@ UTF8Char *Map::AssistedRReverseGeocoder::SearchName(UTF8Char *buff, UOSInt buffS
 	if (i < 0)
 		return 0;
 	lang = this->langMaps->GetItem(i)->lang;
-	Int32 xind = Math::Double2Int32(lon * 5000);
-	Int32 yind = Math::Double2Int32(lat * 5000);
+	Int32 xind = Double2Int32(lon * 5000);
+	Int32 yind = Double2Int32(lat * 5000);
 
 	mut->Lock();
 	NEW_CLASS(sql, DB::SQLBuilder(this->conn));
@@ -162,8 +162,8 @@ UTF8Char *Map::AssistedRReverseGeocoder::CacheName(UTF8Char *buff, UOSInt buffSi
 	if (i < 0)
 		return 0;
 	lang = this->langMaps->GetItem(i)->lang;
-	Int32 xind = Math::Double2Int32(lon * 5000);
-	Int32 yind = Math::Double2Int32(lat * 5000);
+	Int32 xind = Double2Int32(lon * 5000);
+	Int32 yind = Double2Int32(lat * 5000);
 
 	mut->Lock();
 	NEW_CLASS(sql, DB::SQLBuilder(this->conn));

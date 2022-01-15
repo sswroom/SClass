@@ -65,7 +65,7 @@ Bool UI::DObj::OverlayDObj::IsChanged()
 		if (this->imgList->GetCount() <= 1)
 			return false;
 		Double t = clk->GetTimeDiff();
-		OSInt i = Math::Double2Int32((t - this->startTime) * 1000 / this->frameDelay);
+		OSInt i = Double2Int32((t - this->startTime) * 1000 / this->frameDelay);
 		while (i >= (OSInt)this->imgList->GetCount())
 		{
 			i -= this->imgList->GetCount();
@@ -88,7 +88,7 @@ void UI::DObj::OverlayDObj::DrawObject(Media::DrawImage *dimg)
 		OSInt left;
 		OSInt top;
 		GetCurrPos(&left, &top);
-		dimg->DrawImagePt(this->bmp, Math::OSInt2Double(left), Math::OSInt2Double(top));
+		dimg->DrawImagePt(this->bmp, OSInt2Double(left), OSInt2Double(top));
 	}
 	else if (this->imgList)
 	{
@@ -100,7 +100,7 @@ void UI::DObj::OverlayDObj::DrawObject(Media::DrawImage *dimg)
 		else
 		{
 			Double t = clk->GetTimeDiff();
-			frameNum = Math::Double2Int32((t - this->startTime) * 1000 / this->frameDelay);
+			frameNum = Double2Int32((t - this->startTime) * 1000 / this->frameDelay);
 			while (frameNum >= (OSInt)this->imgList->GetCount())
 			{
 				frameNum -= this->imgList->GetCount();
@@ -114,7 +114,7 @@ void UI::DObj::OverlayDObj::DrawObject(Media::DrawImage *dimg)
 		GetCurrPos(&left, &top);
 		if (img)
 		{
-			dimg->DrawImagePt2(img, Math::OSInt2Double(left), Math::OSInt2Double(top));
+			dimg->DrawImagePt2(img, OSInt2Double(left), OSInt2Double(top));
 		}
 		else
 		{

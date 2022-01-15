@@ -254,10 +254,10 @@ void UI::GUIComboBox::GetSize(Double *width, Double *height)
 
 void UI::GUIComboBox::SetArea(Double left, Double top, Double right, Double bottom, Bool updateScn)
 {
-	this->SetAreaP(Math::Double2Int32(left * this->hdpi / this->ddpi),
-		Math::Double2Int32(top * this->hdpi / this->ddpi),
-		Math::Double2Int32(right * this->hdpi / this->ddpi),
-		Math::Double2Int32(bottom * this->hdpi / this->ddpi), updateScn);
+	this->SetAreaP(Double2Int32(left * this->hdpi / this->ddpi),
+		Double2Int32(top * this->hdpi / this->ddpi),
+		Double2Int32(right * this->hdpi / this->ddpi),
+		Double2Int32(bottom * this->hdpi / this->ddpi), updateScn);
 }
 
 const UTF8Char *UI::GUIComboBox::GetObjectClass()

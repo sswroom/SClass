@@ -231,11 +231,11 @@ void UI::GUIVideoBoxDD::OnMouseUp(OSInt x, OSInt y, MouseButton button)
 			OSInt xType;
 			OSInt yType;
 			Double dpi = this->GetHDPI();
-			if (Math::OSInt2Double(xDiff) >= dpi)
+			if (OSInt2Double(xDiff) >= dpi)
 			{
 				xType = 1;
 			}
-			else if (Math::OSInt2Double(xDiff) <= -dpi)
+			else if (OSInt2Double(xDiff) <= -dpi)
 			{
 				xType = -1;
 			}
@@ -243,11 +243,11 @@ void UI::GUIVideoBoxDD::OnMouseUp(OSInt x, OSInt y, MouseButton button)
 			{
 				xType = 0;
 			}
-			if (Math::OSInt2Double(yDiff) >= dpi)
+			if (OSInt2Double(yDiff) >= dpi)
 			{
 				yType = 1;
 			}
-			else if (Math::OSInt2Double(yDiff) <= -dpi)
+			else if (OSInt2Double(yDiff) <= -dpi)
 			{
 				yType = -1;
 			}

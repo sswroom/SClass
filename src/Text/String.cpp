@@ -523,7 +523,7 @@ Double Text::String::MatchRating(Text::String *s)
 {
 	if (this->IndexOf(s->v, s->leng) != INVALID_INDEX)
 	{
-		return Math::UOSInt2Double(s->leng) / Math::UOSInt2Double(this->leng);
+		return UOSInt2Double(s->leng) / UOSInt2Double(this->leng);
 	}
 	else
 	{
@@ -535,7 +535,7 @@ Double Text::String::MatchRating(const UTF8Char *targetStr, UOSInt strLen)
 {
 	if (this->IndexOf(targetStr, strLen) != INVALID_INDEX)
 	{
-		return Math::UOSInt2Double(strLen) / Math::UOSInt2Double(this->leng);
+		return UOSInt2Double(strLen) / UOSInt2Double(this->leng);
 	}
 	else
 	{

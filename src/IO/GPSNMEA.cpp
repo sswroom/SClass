@@ -100,7 +100,7 @@ IO::GPSNMEA::ParseStatus IO::GPSNMEA::ParseNMEALine(UTF8Char *line, Map::GPSTrac
 			t3 = t2 / 100;
 
 			Data::DateTime dt;
-			dt.SetValue((UInt16)((d % 100) + 2000), d2 % 100, d3, t3, t2 % 100, it % 100, Math::Double2Int32((t - it) * 1000));
+			dt.SetValue((UInt16)((d % 100) + 2000), d2 % 100, d3, t3, t2 % 100, it % 100, Double2Int32((t - it) * 1000));
 			record->utcTimeTicks = dt.ToTicks();
 
 			if ((sarr[4][0] == 'N' || sarr[4][0] == 'S') && (sarr[6][0] == 'E' || sarr[6][0] == 'W'))

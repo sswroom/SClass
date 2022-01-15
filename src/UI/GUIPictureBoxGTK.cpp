@@ -42,7 +42,7 @@ gboolean GUIPictureBox_ButtonPress(GtkWidget *widget, GdkEvent  *event, gpointer
 				btn = UI::GUIControl::MBTN_X2;
 				break;
 		}
-		me->EventButtonDown(Math::Double2Int32(evt->x), Math::Double2Int32(evt->y), btn);
+		me->EventButtonDown(Double2Int32(evt->x), Double2Int32(evt->y), btn);
 	}
 	return false;
 }
@@ -73,7 +73,7 @@ gboolean GUIPictureBox_ButtonRelease(GtkWidget *widget, GdkEvent  *event, gpoint
 				btn = UI::GUIControl::MBTN_X2;
 				break;
 		}
-		me->EventButtonUp(Math::Double2Int32(evt->x), Math::Double2Int32(evt->y), btn);
+		me->EventButtonUp(Double2Int32(evt->x), Double2Int32(evt->y), btn);
 	}
 	return false;
 }
@@ -82,7 +82,7 @@ gboolean GUIPictureBox_OnMouseMove(GtkWidget *widget, GdkEvent *event, gpointer 
 {
 	UI::GUIPictureBox *me = (UI::GUIPictureBox*)data;
 	GdkEventMotion *evt = (GdkEventMotion*)event;
-	me->EventMouseMove(Math::Double2Int32(evt->x), Math::Double2Int32(evt->y));
+	me->EventMouseMove(Double2Int32(evt->x), Double2Int32(evt->y));
 	return false;
 }
 /*OSInt __stdcall UI::GUIPictureBox::PBWndProc(void *hWnd, UInt32 msg, UInt32 wParam, OSInt lParam)

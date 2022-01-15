@@ -328,7 +328,7 @@ void SSWR::AVIRead::AVIRMQTTSubscribeForm::UpdateTopicChart()
 		{
 			Media::DrawBrush *b;
 			b = this->dispImg->NewBrushARGB(0xffffffff);
-			this->dispImg->DrawRect(0, 0, Math::UOSInt2Double(w), Math::UOSInt2Double(h), 0, b);
+			this->dispImg->DrawRect(0, 0, UOSInt2Double(w), UOSInt2Double(h), 0, b);
 			this->dispImg->DelBrush(b);
 		}
 		else
@@ -340,7 +340,7 @@ void SSWR::AVIRead::AVIRMQTTSubscribeForm::UpdateTopicChart()
 				NEW_CLASS(chart, Data::LineChart(0));
 				chart->AddXDataDate(this->currTopic->dateList, recvCnt);
 				chart->AddYData(this->currTopic->topic, this->currTopic->valueList, recvCnt, 0xFFFF0000, Data::LineChart::LS_LINE);
-				chart->Plot(this->dispImg, 0, 0, Math::UOSInt2Double(w), Math::UOSInt2Double(h));
+				chart->Plot(this->dispImg, 0, 0, UOSInt2Double(w), UOSInt2Double(h));
 				DEL_CLASS(chart);
 			}
 			else
@@ -365,7 +365,7 @@ void SSWR::AVIRead::AVIRMQTTSubscribeForm::UpdateTopicChart()
 				NEW_CLASS(chart, Data::LineChart(0));
 				chart->AddXDataDate(this->currTopic->dateList, 256);
 				chart->AddYData(this->currTopic->topic, this->currTopic->valueList, 256, 0xFFFF0000, Data::LineChart::LS_LINE);
-				chart->Plot(this->dispImg, 0, 0, Math::UOSInt2Double(w), Math::UOSInt2Double(h));
+				chart->Plot(this->dispImg, 0, 0, UOSInt2Double(w), UOSInt2Double(h));
 				DEL_CLASS(chart);
 				MemFree(dateList);
 				MemFree(valueList);

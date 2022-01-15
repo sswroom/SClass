@@ -39,8 +39,8 @@ UTF8Char *Map::AssistedReverseGeocoder::SearchName(UTF8Char *buff, UOSInt buffSi
 	if (this->conn == 0)
 		return 0;
 
-	Int32 keyx = Math::Double2Int32(lon * 5000);
-	Int32 keyy = Math::Double2Int32(lat * 5000);
+	Int32 keyx = Double2Int32(lon * 5000);
+	Int32 keyy = Double2Int32(lat * 5000);
 	if (keyx == 0 && keyy == 0)
 		return 0;
 
@@ -118,8 +118,8 @@ UTF8Char *Map::AssistedReverseGeocoder::CacheName(UTF8Char *buff, UOSInt buffSiz
 	if (this->conn == 0)
 		return 0;
 
-	Int32 keyx = Math::Double2Int32(lon * 5000);
-	Int32 keyy = Math::Double2Int32(lat * 5000);
+	Int32 keyx = Double2Int32(lon * 5000);
+	Int32 keyy = Double2Int32(lat * 5000);
 
 	Sync::MutexUsage mutUsage(mut);
 	NEW_CLASS(sql, DB::SQLBuilder(this->conn));

@@ -87,7 +87,7 @@ Bool Net::NTPClient::GetServerTime(const Net::SocketUtil::AddressInfo *addr, UIn
 	this->resultTime = 0;
 	if (hasResult)
 	{
-		svrTime->AddMS(Math::Double2Int32(clk.GetTimeDiff() * 500));
+		svrTime->AddMS(Double2Int32(clk.GetTimeDiff() * 500));
 	}
 	mutUsage.EndUse();
 	return hasResult;

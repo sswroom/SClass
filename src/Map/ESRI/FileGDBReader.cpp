@@ -255,9 +255,9 @@ Int32 Map::ESRI::FileGDBReader::GetInt32(UOSInt colIndex)
 	case 1:
 		return ReadInt32(&this->rowData[this->fieldOfst[fieldIndex]]);
 	case 2:
-		return Math::Double2Int32(ReadFloat(&this->rowData[this->fieldOfst[fieldIndex]]));
+		return Double2Int32(ReadFloat(&this->rowData[this->fieldOfst[fieldIndex]]));
 	case 3:
-		return Math::Double2Int32(ReadDouble(&this->rowData[this->fieldOfst[fieldIndex]]));
+		return Double2Int32(ReadDouble(&this->rowData[this->fieldOfst[fieldIndex]]));
 	case 5:
 		return (Int32)ReadDouble(&this->rowData[this->fieldOfst[fieldIndex]]);
 	case 6:
@@ -285,9 +285,9 @@ Int64 Map::ESRI::FileGDBReader::GetInt64(UOSInt colIndex)
 	case 1:
 		return ReadInt32(&this->rowData[this->fieldOfst[fieldIndex]]);
 	case 2:
-		return Math::Double2Int64(ReadFloat(&this->rowData[this->fieldOfst[fieldIndex]]));
+		return Double2Int64(ReadFloat(&this->rowData[this->fieldOfst[fieldIndex]]));
 	case 3:
-		return Math::Double2Int64(ReadDouble(&this->rowData[this->fieldOfst[fieldIndex]]));
+		return Double2Int64(ReadDouble(&this->rowData[this->fieldOfst[fieldIndex]]));
 	case 5:
 		return (Int64)ReadDouble(&this->rowData[this->fieldOfst[fieldIndex]]);
 	case 6:
@@ -676,18 +676,18 @@ Math::Vector2D *Map::ESRI::FileGDBReader::GetVector(UOSInt colIndex)
 	case 11: //SHPT_POINTZM
 	case 21: //SHPT_POINTM
 		ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, &v);
-		x = Math::UInt64_Double(v - 1) / this->tableInfo->xyScale + this->tableInfo->xOrigin;
+		x = UInt64_Double(v - 1) / this->tableInfo->xyScale + this->tableInfo->xOrigin;
 		ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, &v);
-		y = Math::UInt64_Double(v - 1) / this->tableInfo->xyScale + this->tableInfo->yOrigin;
+		y = UInt64_Double(v - 1) / this->tableInfo->xyScale + this->tableInfo->yOrigin;
 		if (this->tableInfo->geometryFlags & 0x80)
 		{
 			ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, &v);
-			z = Math::UInt64_Double(v - 1) / this->tableInfo->zScale + this->tableInfo->zOrigin;
+			z = UInt64_Double(v - 1) / this->tableInfo->zScale + this->tableInfo->zOrigin;
 		}
 		if (this->tableInfo->geometryFlags & 0x40)
 		{
 			ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, ofst, &v);
-			//m = Math::UInt64_Double(v - 1) / this->tableInfo->mScale + this->tableInfo->mOrigin;
+			//m = UInt64_Double(v - 1) / this->tableInfo->mScale + this->tableInfo->mOrigin;
 		}
 		srid = 0;
 		if (this->tableInfo->csys)
@@ -765,10 +765,10 @@ Math::Vector2D *Map::ESRI::FileGDBReader::GetVector(UOSInt colIndex)
 			{
 				ofst = Map::ESRI::FileGDBUtil::ReadVarInt(this->rowData, ofst, &iv);
 				dx -= (OSInt)iv;
-				x = Math::Int64_Double(dx) / this->tableInfo->xyScale + this->tableInfo->xOrigin;
+				x = Int64_Double(dx) / this->tableInfo->xyScale + this->tableInfo->xOrigin;
 				ofst = Map::ESRI::FileGDBUtil::ReadVarInt(this->rowData, ofst, &iv);
 				dy -= (OSInt)iv;
-				y = Math::Int64_Double(dy) / this->tableInfo->xyScale + this->tableInfo->yOrigin;
+				y = Int64_Double(dy) / this->tableInfo->xyScale + this->tableInfo->yOrigin;
 				points[i * 2] = x;
 				points[i * 2 + 1] = y;
 				i++;
@@ -781,7 +781,7 @@ Math::Vector2D *Map::ESRI::FileGDBReader::GetVector(UOSInt colIndex)
 				{
 					ofst = Map::ESRI::FileGDBUtil::ReadVarInt(this->rowData, ofst, &iv);
 					dx -= iv;
-					z = Math::Int64_Double(dx) / this->tableInfo->zScale + this->tableInfo->zOrigin;
+					z = Int64_Double(dx) / this->tableInfo->zScale + this->tableInfo->zOrigin;
 					altitiudes[i] = z;
 					i++;
 				}
@@ -794,7 +794,7 @@ Math::Vector2D *Map::ESRI::FileGDBReader::GetVector(UOSInt colIndex)
 				{
 					ofst = Map::ESRI::FileGDBUtil::ReadVarInt(this->rowData, ofst, &iv);
 					dx -= iv;
-					//m = Math::Int64_Double(dx) / this->tableInfo->mScale + this->tableInfo->mOrigin;
+					//m = Int64_Double(dx) / this->tableInfo->mScale + this->tableInfo->mOrigin;
 					i++;
 				}
 			}
@@ -847,10 +847,10 @@ Math::Vector2D *Map::ESRI::FileGDBReader::GetVector(UOSInt colIndex)
 			{
 				ofst = Map::ESRI::FileGDBUtil::ReadVarInt(this->rowData, ofst, &iv);
 				dx += (OSInt)iv;
-				x = Math::Int64_Double(dx) / this->tableInfo->xyScale + this->tableInfo->xOrigin;
+				x = Int64_Double(dx) / this->tableInfo->xyScale + this->tableInfo->xOrigin;
 				ofst = Map::ESRI::FileGDBUtil::ReadVarInt(this->rowData, ofst, &iv);
 				dy += (OSInt)iv;
-				y = Math::Int64_Double(dy) / this->tableInfo->xyScale + this->tableInfo->yOrigin;
+				y = Int64_Double(dy) / this->tableInfo->xyScale + this->tableInfo->yOrigin;
 				points[i * 2] = x;
 				points[i * 2 + 1] = y;
 				i++;
@@ -863,7 +863,7 @@ Math::Vector2D *Map::ESRI::FileGDBReader::GetVector(UOSInt colIndex)
 				{
 					ofst = Map::ESRI::FileGDBUtil::ReadVarInt(this->rowData, ofst, &iv);
 					dx += iv;
-					z = Math::Int64_Double(dx) / this->tableInfo->zScale + this->tableInfo->zOrigin;
+					z = Int64_Double(dx) / this->tableInfo->zScale + this->tableInfo->zOrigin;
 					i++;
 				}
 			}
@@ -875,7 +875,7 @@ Math::Vector2D *Map::ESRI::FileGDBReader::GetVector(UOSInt colIndex)
 				{
 					ofst = Map::ESRI::FileGDBUtil::ReadVarInt(this->rowData, ofst, &iv);
 					dx += iv;
-					//m = Math::Int64_Double(dx) / this->tableInfo->mScale + this->tableInfo->mOrigin;
+					//m = Int64_Double(dx) / this->tableInfo->mScale + this->tableInfo->mOrigin;
 					i++;
 				}
 			}
@@ -955,10 +955,10 @@ Math::Vector2D *Map::ESRI::FileGDBReader::GetVector(UOSInt colIndex)
 				{
 					ofst = Map::ESRI::FileGDBUtil::ReadVarInt(this->rowData, ofst, &iv);
 					dx -= iv;
-					x = Math::OSInt2Double(dx) / this->tableInfo->xyScale + this->tableInfo->xOrigin;
+					x = OSInt2Double(dx) / this->tableInfo->xyScale + this->tableInfo->xOrigin;
 					ofst = Map::ESRI::FileGDBUtil::ReadVarInt(this->rowData, ofst, &iv);
 					dy -= iv;
-					y = Math::OSInt2Double(dy) / this->tableInfo->xyScale + this->tableInfo->yOrigin;
+					y = OSInt2Double(dy) / this->tableInfo->xyScale + this->tableInfo->yOrigin;
 					points[j * 2] = x;
 					points[j * 2 + 1] = y;
 					j++;
@@ -971,7 +971,7 @@ Math::Vector2D *Map::ESRI::FileGDBReader::GetVector(UOSInt colIndex)
 					{
 						ofst = Map::ESRI::FileGDBUtil::ReadVarInt(this->rowData, ofst, &iv);
 						dx -= iv;
-						z = Math::OSInt2Double(dx) / this->tableInfo->zScale + this->tableInfo->zOrigin;
+						z = OSInt2Double(dx) / this->tableInfo->zScale + this->tableInfo->zOrigin;
 						altitiudes[j] = z;
 						j++;
 					}
@@ -984,7 +984,7 @@ Math::Vector2D *Map::ESRI::FileGDBReader::GetVector(UOSInt colIndex)
 					{
 						ofst = Map::ESRI::FileGDBUtil::ReadVarInt(this->rowData, ofst, &iv);
 						dx -= iv;
-						//m = Math::OSInt2Double(dx) / this->tableInfo->mScale + this->tableInfo->mOrigin;
+						//m = OSInt2Double(dx) / this->tableInfo->mScale + this->tableInfo->mOrigin;
 					}
 				}
 				i++;

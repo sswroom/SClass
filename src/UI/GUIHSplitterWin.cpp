@@ -215,7 +215,7 @@ void UI::GUIHSplitter::CalDragRange()
 	min = 0;
 	Double maxD;
 	this->parent->GetClientSize(&maxD, 0);
-	max = Math::Double2Int32(maxD * this->hdpi / 96.0);
+	max = Double2Int32(maxD * this->hdpi / 96.0);
 
 	i = this->parent->GetChildCount();
 	if (this->isRight)

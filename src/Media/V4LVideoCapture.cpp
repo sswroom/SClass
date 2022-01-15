@@ -56,7 +56,7 @@ UInt32 __stdcall Media::V4LVideoCapture::PlayThread(void *userObj)
 		{
 			if (me->cb)
 			{
-				me->cb((UInt32)Math::Double2Int32(t * 1000), frameNum, (UInt8**)&buf.m.userptr, buf.bytesused, Media::IVideoSource::FS_I, me->userData, me->frameInfo.ftype, Media::IVideoSource::FF_REALTIME, me->frameInfo.ycOfst);
+				me->cb((UInt32)Double2Int32(t * 1000), frameNum, (UInt8**)&buf.m.userptr, buf.bytesused, Media::IVideoSource::FS_I, me->userData, me->frameInfo.ftype, Media::IVideoSource::FF_REALTIME, me->frameInfo.ycOfst);
 			}
 			frameNum++;
 			ioctl(me->fd, VIDIOC_QBUF, &buf);

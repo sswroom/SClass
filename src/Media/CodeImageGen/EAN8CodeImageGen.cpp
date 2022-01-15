@@ -273,7 +273,7 @@ Media::DrawImage *Media::CodeImageGen::EAN8CodeImageGen::GenCode(const UTF8Char 
 	UOSInt h = codeWidth * 70;
 	UOSInt y = h - codeWidth;
 	Double y2;
-	Double fh = 12.0 * Math::UOSInt2Double(codeWidth);
+	Double fh = 12.0 * UOSInt2Double(codeWidth);
 
 	Media::DrawImage *dimg = eng->CreateImage32((4 + 67) * codeWidth, h, Media::AT_NO_ALPHA);
 	Media::DrawBrush *b;
@@ -298,10 +298,10 @@ Media::DrawImage *Media::CodeImageGen::EAN8CodeImageGen::GenCode(const UTF8Char 
 			case 34:
 			case 64:
 			case 66:
-				y2 = Math::UOSInt2Double(y) - fh * 0.5;
+				y2 = UOSInt2Double(y) - fh * 0.5;
 				break;
 			default:
-				y2 = Math::UOSInt2Double(y) - fh;
+				y2 = UOSInt2Double(y) - fh;
 				break;
 			}
 
@@ -328,7 +328,7 @@ Media::DrawImage *Media::CodeImageGen::EAN8CodeImageGen::GenCode(const UTF8Char 
 	while (j-- > 0)
 	{
 		sbuff[0] = *code++;
-		dimg->DrawString((Double)i, Math::UOSInt2Double(y) - fh, sbuff, f, b);
+		dimg->DrawString((Double)i, UOSInt2Double(y) - fh, sbuff, f, b);
 		i += 7 * codeWidth;
 	}
 	i += 5 * codeWidth;
@@ -336,7 +336,7 @@ Media::DrawImage *Media::CodeImageGen::EAN8CodeImageGen::GenCode(const UTF8Char 
 	while (j-- > 0)
 	{
 		sbuff[0] = *code++;
-		dimg->DrawString((Double)i, Math::UOSInt2Double(y) - fh, sbuff, f, b);
+		dimg->DrawString((Double)i, UOSInt2Double(y) - fh, sbuff, f, b);
 		i += 7 * codeWidth;
 	}
 	dimg->DelBrush(b);

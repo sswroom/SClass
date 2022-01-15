@@ -118,7 +118,7 @@ void Media::CS::CSRGB8_RGB8::UpdateRGBTable()
 	i = 256;
 	while (i-- > 0)
 	{
-		Double dV = Math::OSInt2Double(i) / 255.0;
+		Double dV = OSInt2Double(i) / 255.0;
 		Double rv = frFunc->ForwardTransfer(irFunc->InverseTransfer(dV) * rMul);
 		Double gv = fgFunc->ForwardTransfer(igFunc->InverseTransfer(dV) * gMul);
 		Double bv = fbFunc->ForwardTransfer(ibFunc->InverseTransfer(dV) * bMul);

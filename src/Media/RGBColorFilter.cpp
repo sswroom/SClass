@@ -193,17 +193,17 @@ void Media::RGBColorFilter::SetParameter(Double brightness, Double contrast, Dou
 		UOSInt j;
 		if (this->gammaParam != 0 && this->gammaCnt > 0)
 		{
-			Double gammaCntM1 = Math::UOSInt2Double(this->gammaCnt - 1);
+			Double gammaCntM1 = UOSInt2Double(this->gammaCnt - 1);
 			i = 256;
 			while (i-- > 0)
 			{
-				lVal = rtFunc->InverseTransfer(Math::UOSInt2Double(i) * tmp);
+				lVal = rtFunc->InverseTransfer(UOSInt2Double(i) * tmp);
 				if (lVal >= 0 && lVal < 1)
 				{
 					j = (UInt32)(lVal * gammaCntM1);
-					lVal = this->gammaParam[j] + (this->gammaParam[j + 1] - this->gammaParam[j]) * (lVal - Math::UOSInt2Double(j) * (1.0 / gammaCntM1)) * gammaCntM1;
+					lVal = this->gammaParam[j] + (this->gammaParam[j + 1] - this->gammaParam[j]) * (lVal - UOSInt2Double(j) * (1.0 / gammaCntM1)) * gammaCntM1;
 				}
-				v = Math::Double2Int32((Math_Pow(lVal, this->gamma) * this->contrast + this->brightness) * 8192);
+				v = Double2Int32((Math_Pow(lVal, this->gamma) * this->contrast + this->brightness) * 8192);
 				srcLUT32[i] = v;
 				if (v >= 32768)
 					v = 32767;
@@ -215,8 +215,8 @@ void Media::RGBColorFilter::SetParameter(Double brightness, Double contrast, Dou
 			i = 256;
 			while (i-- > 0)
 			{
-				lVal = rtFunc->InverseTransfer(Math::UOSInt2Double(i) * tmp);
-				v = Math::Double2Int32((Math_Pow(lVal, this->gamma) * this->contrast + this->brightness) * 8192);
+				lVal = rtFunc->InverseTransfer(UOSInt2Double(i) * tmp);
+				v = Double2Int32((Math_Pow(lVal, this->gamma) * this->contrast + this->brightness) * 8192);
 				srcLUT32[i] = v;
 				if (v >= 32768)
 					v = 32767;
@@ -227,7 +227,7 @@ void Media::RGBColorFilter::SetParameter(Double brightness, Double contrast, Dou
 		i = 65536;
 		while (i-- > 32768)
 		{
-			v = Math::Double2Int32(rtFunc->ForwardTransfer(Math::OSInt2Double((OSInt)i - 65536) * tmpD) * 255.0);
+			v = Double2Int32(rtFunc->ForwardTransfer(OSInt2Double((OSInt)i - 65536) * tmpD) * 255.0);
 			if (v >= 256)
 				v = 255;
 			else if (v < 0)
@@ -237,7 +237,7 @@ void Media::RGBColorFilter::SetParameter(Double brightness, Double contrast, Dou
 		i = 32768;
 		while (i-- > 0)
 		{
-			v = Math::Double2Int32(rtFunc->ForwardTransfer(Math::UOSInt2Double(i) * tmpD) * 255.0);
+			v = Double2Int32(rtFunc->ForwardTransfer(UOSInt2Double(i) * tmpD) * 255.0);
 			if (v >= 256)
 				v = 255;
 			else if (v < 0)
@@ -260,17 +260,17 @@ void Media::RGBColorFilter::SetParameter(Double brightness, Double contrast, Dou
 		OSInt j;
 		if (this->gammaParam != 0 && this->gammaCnt > 0)
 		{
-			Double gammaCntM1 = Math::UOSInt2Double(this->gammaCnt - 1);
+			Double gammaCntM1 = UOSInt2Double(this->gammaCnt - 1);
 			i = 65536;
 			while (i-- > 0)
 			{
-				lVal = rtFunc->InverseTransfer(Math::UOSInt2Double(i) * tmp);
+				lVal = rtFunc->InverseTransfer(UOSInt2Double(i) * tmp);
 				if (lVal >= 0 && lVal < 1)
 				{
 					j = (Int32)(lVal * gammaCntM1);
-					lVal = this->gammaParam[j] + (this->gammaParam[j + 1] - this->gammaParam[j]) * (lVal - Math::OSInt2Double(j) * (1.0 / gammaCntM1)) * gammaCntM1;
+					lVal = this->gammaParam[j] + (this->gammaParam[j + 1] - this->gammaParam[j]) * (lVal - OSInt2Double(j) * (1.0 / gammaCntM1)) * gammaCntM1;
 				}
-				v = Math::Double2Int32((Math_Pow(lVal, this->gamma) * this->contrast + this->brightness) * 8192);
+				v = Double2Int32((Math_Pow(lVal, this->gamma) * this->contrast + this->brightness) * 8192);
 				srcLUT32[i] = v;
 				if (v >= 32768)
 					v = 32767;
@@ -282,7 +282,7 @@ void Media::RGBColorFilter::SetParameter(Double brightness, Double contrast, Dou
 			i = 65536;
 			while (i-- > 0)
 			{
-				v = Math::Double2Int32((Math_Pow(rtFunc->InverseTransfer(Math::UOSInt2Double(i) * tmp), this->gamma) * this->contrast + this->brightness) * 8192);
+				v = Double2Int32((Math_Pow(rtFunc->InverseTransfer(UOSInt2Double(i) * tmp), this->gamma) * this->contrast + this->brightness) * 8192);
 				srcLUT32[i] = v;
 				if (v >= 32768)
 					v = 32767;
@@ -293,12 +293,12 @@ void Media::RGBColorFilter::SetParameter(Double brightness, Double contrast, Dou
 		i = 65536;
 		while (i-- > 32768)
 		{
-			destLUT[i] = Math::SDouble2UInt16(rtFunc->ForwardTransfer(Math::OSInt2Double((OSInt)i - 65536) * tmpD) * 65535.0);
+			destLUT[i] = Math::SDouble2UInt16(rtFunc->ForwardTransfer(OSInt2Double((OSInt)i - 65536) * tmpD) * 65535.0);
 		}
 		i = 32768;
 		while (i-- > 0)
 		{
-			destLUT[i] = Math::SDouble2UInt16(rtFunc->ForwardTransfer(Math::UOSInt2Double(i) * tmpD) * 65535.0);
+			destLUT[i] = Math::SDouble2UInt16(rtFunc->ForwardTransfer(UOSInt2Double(i) * tmpD) * 65535.0);
 		}
 	}
 	DEL_CLASS(rtFunc);

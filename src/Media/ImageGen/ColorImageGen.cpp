@@ -40,9 +40,9 @@ Media::Image *Media::ImageGen::ColorImageGen::GenerateImage(Media::ColorProfile 
 	k = 0;
 
 	imgPtr = (Int64*)imgPtr2;
-	c[0] = (UInt16)Math::Double2Int32(bfunc->ForwardTransfer(0) * 65535.0);
-	c[1] = (UInt16)Math::Double2Int32(gfunc->ForwardTransfer(0) * 65535.0);
-	c[2] = (UInt16)Math::Double2Int32(rfunc->ForwardTransfer(1) * 65535.0);
+	c[0] = (UInt16)Double2Int32(bfunc->ForwardTransfer(0) * 65535.0);
+	c[1] = (UInt16)Double2Int32(gfunc->ForwardTransfer(0) * 65535.0);
+	c[2] = (UInt16)Double2Int32(rfunc->ForwardTransfer(1) * 65535.0);
 	c[3] = 65535;
 	i = 0;
 	j = (width * 1) >> 3;
@@ -52,9 +52,9 @@ Media::Image *Media::ImageGen::ColorImageGen::GenerateImage(Media::ColorProfile 
 		i++;
 	}
 
-	c[0] = (UInt16)Math::Double2Int32(bfunc->ForwardTransfer(0) * 65535.0);
-	c[1] = (UInt16)Math::Double2Int32(gfunc->ForwardTransfer(0.125) * 65535.0);
-	c[2] = (UInt16)Math::Double2Int32(rfunc->ForwardTransfer(0.875) * 65535.0);
+	c[0] = (UInt16)Double2Int32(bfunc->ForwardTransfer(0) * 65535.0);
+	c[1] = (UInt16)Double2Int32(gfunc->ForwardTransfer(0.125) * 65535.0);
+	c[2] = (UInt16)Double2Int32(rfunc->ForwardTransfer(0.875) * 65535.0);
 	c[3] = 65535;
 	j = (width * 2) >> 3;
 	while (i < j)
@@ -63,9 +63,9 @@ Media::Image *Media::ImageGen::ColorImageGen::GenerateImage(Media::ColorProfile 
 		i++;
 	}
 
-	c[0] = (UInt16)Math::Double2Int32(bfunc->ForwardTransfer(0) * 65535.0);
-	c[1] = (UInt16)Math::Double2Int32(gfunc->ForwardTransfer(0.25) * 65535.0);
-	c[2] = (UInt16)Math::Double2Int32(rfunc->ForwardTransfer(0.75) * 65535.0);
+	c[0] = (UInt16)Double2Int32(bfunc->ForwardTransfer(0) * 65535.0);
+	c[1] = (UInt16)Double2Int32(gfunc->ForwardTransfer(0.25) * 65535.0);
+	c[2] = (UInt16)Double2Int32(rfunc->ForwardTransfer(0.75) * 65535.0);
 	c[3] = 65535;
 	j = (width * 3) >> 3;
 	while (i < j)
@@ -74,9 +74,9 @@ Media::Image *Media::ImageGen::ColorImageGen::GenerateImage(Media::ColorProfile 
 		i++;
 	}
 
-	c[0] = (UInt16)Math::Double2Int32(bfunc->ForwardTransfer(0) * 65535.0);
-	c[1] = (UInt16)Math::Double2Int32(gfunc->ForwardTransfer(0.375) * 65535.0);
-	c[2] = (UInt16)Math::Double2Int32(rfunc->ForwardTransfer(0.625) * 65535.0);
+	c[0] = (UInt16)Double2Int32(bfunc->ForwardTransfer(0) * 65535.0);
+	c[1] = (UInt16)Double2Int32(gfunc->ForwardTransfer(0.375) * 65535.0);
+	c[2] = (UInt16)Double2Int32(rfunc->ForwardTransfer(0.625) * 65535.0);
 	c[3] = 65535;
 	j = (width * 4) >> 3;
 	while (i < j)
@@ -85,9 +85,9 @@ Media::Image *Media::ImageGen::ColorImageGen::GenerateImage(Media::ColorProfile 
 		i++;
 	}
 
-	c[0] = (UInt16)Math::Double2Int32(bfunc->ForwardTransfer(0) * 65535.0);
-	c[1] = (UInt16)Math::Double2Int32(gfunc->ForwardTransfer(0.5) * 65535.0);
-	c[2] = (UInt16)Math::Double2Int32(rfunc->ForwardTransfer(0.5) * 65535.0);
+	c[0] = (UInt16)Double2Int32(bfunc->ForwardTransfer(0) * 65535.0);
+	c[1] = (UInt16)Double2Int32(gfunc->ForwardTransfer(0.5) * 65535.0);
+	c[2] = (UInt16)Double2Int32(rfunc->ForwardTransfer(0.5) * 65535.0);
 	c[3] = 65535;
 	j = (width * 5) >> 3;
 	while (i < j)
@@ -96,9 +96,9 @@ Media::Image *Media::ImageGen::ColorImageGen::GenerateImage(Media::ColorProfile 
 		i++;
 	}
 
-	c[0] = (UInt16)Math::Double2Int32(bfunc->ForwardTransfer(0) * 65535.0);
-	c[1] = (UInt16)Math::Double2Int32(gfunc->ForwardTransfer(0.625) * 65535.0);
-	c[2] = (UInt16)Math::Double2Int32(rfunc->ForwardTransfer(0.375) * 65535.0);
+	c[0] = (UInt16)Double2Int32(bfunc->ForwardTransfer(0) * 65535.0);
+	c[1] = (UInt16)Double2Int32(gfunc->ForwardTransfer(0.625) * 65535.0);
+	c[2] = (UInt16)Double2Int32(rfunc->ForwardTransfer(0.375) * 65535.0);
 	c[3] = 65535;
 	j = (width * 6) >> 3;
 	while (i < j)
@@ -107,9 +107,9 @@ Media::Image *Media::ImageGen::ColorImageGen::GenerateImage(Media::ColorProfile 
 		i++;
 	}
 
-	c[0] = (UInt16)Math::Double2Int32(bfunc->ForwardTransfer(0) * 65535.0);
-	c[1] = (UInt16)Math::Double2Int32(gfunc->ForwardTransfer(0.75) * 65535.0);
-	c[2] = (UInt16)Math::Double2Int32(rfunc->ForwardTransfer(0.25) * 65535.0);
+	c[0] = (UInt16)Double2Int32(bfunc->ForwardTransfer(0) * 65535.0);
+	c[1] = (UInt16)Double2Int32(gfunc->ForwardTransfer(0.75) * 65535.0);
+	c[2] = (UInt16)Double2Int32(rfunc->ForwardTransfer(0.25) * 65535.0);
 	c[3] = 65535;
 	j = (width * 7) >> 3;
 	while (i < j)
@@ -118,9 +118,9 @@ Media::Image *Media::ImageGen::ColorImageGen::GenerateImage(Media::ColorProfile 
 		i++;
 	}
 
-	c[0] = (UInt16)Math::Double2Int32(bfunc->ForwardTransfer(0) * 65535.0);
-	c[1] = (UInt16)Math::Double2Int32(gfunc->ForwardTransfer(0.875) * 65535.0);
-	c[2] = (UInt16)Math::Double2Int32(rfunc->ForwardTransfer(0.125) * 65535.0);
+	c[0] = (UInt16)Double2Int32(bfunc->ForwardTransfer(0) * 65535.0);
+	c[1] = (UInt16)Double2Int32(gfunc->ForwardTransfer(0.875) * 65535.0);
+	c[2] = (UInt16)Double2Int32(rfunc->ForwardTransfer(0.125) * 65535.0);
 	c[3] = 65535;
 	j = width;
 	while (i < j)
@@ -140,9 +140,9 @@ Media::Image *Media::ImageGen::ColorImageGen::GenerateImage(Media::ColorProfile 
 	}
 
 	imgPtr = (Int64*)imgPtr2;
-	c[0] = (UInt16)Math::Double2Int32(bfunc->ForwardTransfer(0) * 65535.0);
-	c[1] = (UInt16)Math::Double2Int32(gfunc->ForwardTransfer(1) * 65535.0);
-	c[2] = (UInt16)Math::Double2Int32(rfunc->ForwardTransfer(0) * 65535.0);
+	c[0] = (UInt16)Double2Int32(bfunc->ForwardTransfer(0) * 65535.0);
+	c[1] = (UInt16)Double2Int32(gfunc->ForwardTransfer(1) * 65535.0);
+	c[2] = (UInt16)Double2Int32(rfunc->ForwardTransfer(0) * 65535.0);
 	c[3] = 65535;
 	i = 0;
 	j = (width * 1) >> 3;
@@ -152,9 +152,9 @@ Media::Image *Media::ImageGen::ColorImageGen::GenerateImage(Media::ColorProfile 
 		i++;
 	}
 
-	c[0] = (UInt16)Math::Double2Int32(bfunc->ForwardTransfer(0.125) * 65535.0);
-	c[1] = (UInt16)Math::Double2Int32(gfunc->ForwardTransfer(0.875) * 65535.0);
-	c[2] = (UInt16)Math::Double2Int32(rfunc->ForwardTransfer(0) * 65535.0);
+	c[0] = (UInt16)Double2Int32(bfunc->ForwardTransfer(0.125) * 65535.0);
+	c[1] = (UInt16)Double2Int32(gfunc->ForwardTransfer(0.875) * 65535.0);
+	c[2] = (UInt16)Double2Int32(rfunc->ForwardTransfer(0) * 65535.0);
 	c[3] = 65535;
 	j = (width * 2) >> 3;
 	while (i < j)
@@ -163,9 +163,9 @@ Media::Image *Media::ImageGen::ColorImageGen::GenerateImage(Media::ColorProfile 
 		i++;
 	}
 
-	c[0] = (UInt16)Math::Double2Int32(bfunc->ForwardTransfer(0.25) * 65535.0);
-	c[1] = (UInt16)Math::Double2Int32(gfunc->ForwardTransfer(0.75) * 65535.0);
-	c[2] = (UInt16)Math::Double2Int32(rfunc->ForwardTransfer(0) * 65535.0);
+	c[0] = (UInt16)Double2Int32(bfunc->ForwardTransfer(0.25) * 65535.0);
+	c[1] = (UInt16)Double2Int32(gfunc->ForwardTransfer(0.75) * 65535.0);
+	c[2] = (UInt16)Double2Int32(rfunc->ForwardTransfer(0) * 65535.0);
 	c[3] = 65535;
 	j = (width * 3) >> 3;
 	while (i < j)
@@ -174,9 +174,9 @@ Media::Image *Media::ImageGen::ColorImageGen::GenerateImage(Media::ColorProfile 
 		i++;
 	}
 
-	c[0] = (UInt16)Math::Double2Int32(bfunc->ForwardTransfer(0.375) * 65535.0);
-	c[1] = (UInt16)Math::Double2Int32(gfunc->ForwardTransfer(0.625) * 65535.0);
-	c[2] = (UInt16)Math::Double2Int32(rfunc->ForwardTransfer(0) * 65535.0);
+	c[0] = (UInt16)Double2Int32(bfunc->ForwardTransfer(0.375) * 65535.0);
+	c[1] = (UInt16)Double2Int32(gfunc->ForwardTransfer(0.625) * 65535.0);
+	c[2] = (UInt16)Double2Int32(rfunc->ForwardTransfer(0) * 65535.0);
 	c[3] = 65535;
 	j = (width * 4) >> 3;
 	while (i < j)
@@ -185,9 +185,9 @@ Media::Image *Media::ImageGen::ColorImageGen::GenerateImage(Media::ColorProfile 
 		i++;
 	}
 
-	c[0] = (UInt16)Math::Double2Int32(bfunc->ForwardTransfer(0.5) * 65535.0);
-	c[1] = (UInt16)Math::Double2Int32(gfunc->ForwardTransfer(0.5) * 65535.0);
-	c[2] = (UInt16)Math::Double2Int32(rfunc->ForwardTransfer(0) * 65535.0);
+	c[0] = (UInt16)Double2Int32(bfunc->ForwardTransfer(0.5) * 65535.0);
+	c[1] = (UInt16)Double2Int32(gfunc->ForwardTransfer(0.5) * 65535.0);
+	c[2] = (UInt16)Double2Int32(rfunc->ForwardTransfer(0) * 65535.0);
 	c[3] = 65535;
 	j = (width * 5) >> 3;
 	while (i < j)
@@ -196,9 +196,9 @@ Media::Image *Media::ImageGen::ColorImageGen::GenerateImage(Media::ColorProfile 
 		i++;
 	}
 
-	c[0] = (UInt16)Math::Double2Int32(bfunc->ForwardTransfer(0.625) * 65535.0);
-	c[1] = (UInt16)Math::Double2Int32(gfunc->ForwardTransfer(0.375) * 65535.0);
-	c[2] = (UInt16)Math::Double2Int32(rfunc->ForwardTransfer(0) * 65535.0);
+	c[0] = (UInt16)Double2Int32(bfunc->ForwardTransfer(0.625) * 65535.0);
+	c[1] = (UInt16)Double2Int32(gfunc->ForwardTransfer(0.375) * 65535.0);
+	c[2] = (UInt16)Double2Int32(rfunc->ForwardTransfer(0) * 65535.0);
 	c[3] = 65535;
 	j = (width * 6) >> 3;
 	while (i < j)
@@ -207,9 +207,9 @@ Media::Image *Media::ImageGen::ColorImageGen::GenerateImage(Media::ColorProfile 
 		i++;
 	}
 
-	c[0] = (UInt16)Math::Double2Int32(bfunc->ForwardTransfer(0.75) * 65535.0);
-	c[1] = (UInt16)Math::Double2Int32(gfunc->ForwardTransfer(0.25) * 65535.0);
-	c[2] = (UInt16)Math::Double2Int32(rfunc->ForwardTransfer(0) * 65535.0);
+	c[0] = (UInt16)Double2Int32(bfunc->ForwardTransfer(0.75) * 65535.0);
+	c[1] = (UInt16)Double2Int32(gfunc->ForwardTransfer(0.25) * 65535.0);
+	c[2] = (UInt16)Double2Int32(rfunc->ForwardTransfer(0) * 65535.0);
 	c[3] = 65535;
 	j = (width * 7) >> 3;
 	while (i < j)
@@ -218,9 +218,9 @@ Media::Image *Media::ImageGen::ColorImageGen::GenerateImage(Media::ColorProfile 
 		i++;
 	}
 
-	c[0] = (UInt16)Math::Double2Int32(bfunc->ForwardTransfer(0.875) * 65535.0);
-	c[1] = (UInt16)Math::Double2Int32(gfunc->ForwardTransfer(0.125) * 65535.0);
-	c[2] = (UInt16)Math::Double2Int32(rfunc->ForwardTransfer(0) * 65535.0);
+	c[0] = (UInt16)Double2Int32(bfunc->ForwardTransfer(0.875) * 65535.0);
+	c[1] = (UInt16)Double2Int32(gfunc->ForwardTransfer(0.125) * 65535.0);
+	c[2] = (UInt16)Double2Int32(rfunc->ForwardTransfer(0) * 65535.0);
 	c[3] = 65535;
 	j = width;
 	while (i < j)
@@ -240,9 +240,9 @@ Media::Image *Media::ImageGen::ColorImageGen::GenerateImage(Media::ColorProfile 
 	}
 
 	imgPtr = (Int64*)imgPtr2;
-	c[0] = (UInt16)Math::Double2Int32(bfunc->ForwardTransfer(1) * 65535.0);
-	c[1] = (UInt16)Math::Double2Int32(gfunc->ForwardTransfer(0) * 65535.0);
-	c[2] = (UInt16)Math::Double2Int32(rfunc->ForwardTransfer(0) * 65535.0);
+	c[0] = (UInt16)Double2Int32(bfunc->ForwardTransfer(1) * 65535.0);
+	c[1] = (UInt16)Double2Int32(gfunc->ForwardTransfer(0) * 65535.0);
+	c[2] = (UInt16)Double2Int32(rfunc->ForwardTransfer(0) * 65535.0);
 	c[3] = 65535;
 	i = 0;
 	j = (width * 1) >> 3;
@@ -252,9 +252,9 @@ Media::Image *Media::ImageGen::ColorImageGen::GenerateImage(Media::ColorProfile 
 		i++;
 	}
 
-	c[0] = (UInt16)Math::Double2Int32(bfunc->ForwardTransfer(0.875) * 65535.0);
-	c[1] = (UInt16)Math::Double2Int32(gfunc->ForwardTransfer(0) * 65535.0);
-	c[2] = (UInt16)Math::Double2Int32(rfunc->ForwardTransfer(0.125) * 65535.0);
+	c[0] = (UInt16)Double2Int32(bfunc->ForwardTransfer(0.875) * 65535.0);
+	c[1] = (UInt16)Double2Int32(gfunc->ForwardTransfer(0) * 65535.0);
+	c[2] = (UInt16)Double2Int32(rfunc->ForwardTransfer(0.125) * 65535.0);
 	c[3] = 65535;
 	j = (width * 2) >> 3;
 	while (i < j)
@@ -263,9 +263,9 @@ Media::Image *Media::ImageGen::ColorImageGen::GenerateImage(Media::ColorProfile 
 		i++;
 	}
 
-	c[0] = (UInt16)Math::Double2Int32(bfunc->ForwardTransfer(0.75) * 65535.0);
-	c[1] = (UInt16)Math::Double2Int32(gfunc->ForwardTransfer(0) * 65535.0);
-	c[2] = (UInt16)Math::Double2Int32(rfunc->ForwardTransfer(0.25) * 65535.0);
+	c[0] = (UInt16)Double2Int32(bfunc->ForwardTransfer(0.75) * 65535.0);
+	c[1] = (UInt16)Double2Int32(gfunc->ForwardTransfer(0) * 65535.0);
+	c[2] = (UInt16)Double2Int32(rfunc->ForwardTransfer(0.25) * 65535.0);
 	c[3] = 65535;
 	j = (width * 3) >> 3;
 	while (i < j)
@@ -274,9 +274,9 @@ Media::Image *Media::ImageGen::ColorImageGen::GenerateImage(Media::ColorProfile 
 		i++;
 	}
 
-	c[0] = (UInt16)Math::Double2Int32(bfunc->ForwardTransfer(0.625) * 65535.0);
-	c[1] = (UInt16)Math::Double2Int32(gfunc->ForwardTransfer(0) * 65535.0);
-	c[2] = (UInt16)Math::Double2Int32(rfunc->ForwardTransfer(0.375) * 65535.0);
+	c[0] = (UInt16)Double2Int32(bfunc->ForwardTransfer(0.625) * 65535.0);
+	c[1] = (UInt16)Double2Int32(gfunc->ForwardTransfer(0) * 65535.0);
+	c[2] = (UInt16)Double2Int32(rfunc->ForwardTransfer(0.375) * 65535.0);
 	c[3] = 65535;
 	j = (width * 4) >> 3;
 	while (i < j)
@@ -285,9 +285,9 @@ Media::Image *Media::ImageGen::ColorImageGen::GenerateImage(Media::ColorProfile 
 		i++;
 	}
 
-	c[0] = (UInt16)Math::Double2Int32(bfunc->ForwardTransfer(0.5) * 65535.0);
-	c[1] = (UInt16)Math::Double2Int32(gfunc->ForwardTransfer(0) * 65535.0);
-	c[2] = (UInt16)Math::Double2Int32(rfunc->ForwardTransfer(0.5) * 65535.0);
+	c[0] = (UInt16)Double2Int32(bfunc->ForwardTransfer(0.5) * 65535.0);
+	c[1] = (UInt16)Double2Int32(gfunc->ForwardTransfer(0) * 65535.0);
+	c[2] = (UInt16)Double2Int32(rfunc->ForwardTransfer(0.5) * 65535.0);
 	c[3] = 65535;
 	j = (width * 5) >> 3;
 	while (i < j)
@@ -296,9 +296,9 @@ Media::Image *Media::ImageGen::ColorImageGen::GenerateImage(Media::ColorProfile 
 		i++;
 	}
 
-	c[0] = (UInt16)Math::Double2Int32(bfunc->ForwardTransfer(0.375) * 65535.0);
-	c[1] = (UInt16)Math::Double2Int32(gfunc->ForwardTransfer(0) * 65535.0);
-	c[2] = (UInt16)Math::Double2Int32(rfunc->ForwardTransfer(0.625) * 65535.0);
+	c[0] = (UInt16)Double2Int32(bfunc->ForwardTransfer(0.375) * 65535.0);
+	c[1] = (UInt16)Double2Int32(gfunc->ForwardTransfer(0) * 65535.0);
+	c[2] = (UInt16)Double2Int32(rfunc->ForwardTransfer(0.625) * 65535.0);
 	c[3] = 65535;
 	j = (width * 6) >> 3;
 	while (i < j)
@@ -307,9 +307,9 @@ Media::Image *Media::ImageGen::ColorImageGen::GenerateImage(Media::ColorProfile 
 		i++;
 	}
 
-	c[0] = (UInt16)Math::Double2Int32(bfunc->ForwardTransfer(0.25) * 65535.0);
-	c[1] = (UInt16)Math::Double2Int32(gfunc->ForwardTransfer(0) * 65535.0);
-	c[2] = (UInt16)Math::Double2Int32(rfunc->ForwardTransfer(0.75) * 65535.0);
+	c[0] = (UInt16)Double2Int32(bfunc->ForwardTransfer(0.25) * 65535.0);
+	c[1] = (UInt16)Double2Int32(gfunc->ForwardTransfer(0) * 65535.0);
+	c[2] = (UInt16)Double2Int32(rfunc->ForwardTransfer(0.75) * 65535.0);
 	c[3] = 65535;
 	j = (width * 7) >> 3;
 	while (i < j)
@@ -318,9 +318,9 @@ Media::Image *Media::ImageGen::ColorImageGen::GenerateImage(Media::ColorProfile 
 		i++;
 	}
 
-	c[0] = (UInt16)Math::Double2Int32(bfunc->ForwardTransfer(0.125) * 65535.0);
-	c[1] = (UInt16)Math::Double2Int32(gfunc->ForwardTransfer(0) * 65535.0);
-	c[2] = (UInt16)Math::Double2Int32(rfunc->ForwardTransfer(0.875) * 65535.0);
+	c[0] = (UInt16)Double2Int32(bfunc->ForwardTransfer(0.125) * 65535.0);
+	c[1] = (UInt16)Double2Int32(gfunc->ForwardTransfer(0) * 65535.0);
+	c[2] = (UInt16)Double2Int32(rfunc->ForwardTransfer(0.875) * 65535.0);
 	c[3] = 65535;
 	j = width;
 	while (i < j)
@@ -340,9 +340,9 @@ Media::Image *Media::ImageGen::ColorImageGen::GenerateImage(Media::ColorProfile 
 	}
 
 	imgPtr = (Int64*)imgPtr2;
-	c[0] = (UInt16)Math::Double2Int32(bfunc->ForwardTransfer(0) * 65535.0);
-	c[1] = (UInt16)Math::Double2Int32(gfunc->ForwardTransfer(0) * 65535.0);
-	c[2] = (UInt16)Math::Double2Int32(rfunc->ForwardTransfer(0) * 65535.0);
+	c[0] = (UInt16)Double2Int32(bfunc->ForwardTransfer(0) * 65535.0);
+	c[1] = (UInt16)Double2Int32(gfunc->ForwardTransfer(0) * 65535.0);
+	c[2] = (UInt16)Double2Int32(rfunc->ForwardTransfer(0) * 65535.0);
 	c[3] = 65535;
 	i = 0;
 	j = (width * 1) >> 3;
@@ -352,9 +352,9 @@ Media::Image *Media::ImageGen::ColorImageGen::GenerateImage(Media::ColorProfile 
 		i++;
 	}
 
-	c[0] = (UInt16)Math::Double2Int32(bfunc->ForwardTransfer(0.125) * 65535.0);
-	c[1] = (UInt16)Math::Double2Int32(gfunc->ForwardTransfer(0.125) * 65535.0);
-	c[2] = (UInt16)Math::Double2Int32(rfunc->ForwardTransfer(0.125) * 65535.0);
+	c[0] = (UInt16)Double2Int32(bfunc->ForwardTransfer(0.125) * 65535.0);
+	c[1] = (UInt16)Double2Int32(gfunc->ForwardTransfer(0.125) * 65535.0);
+	c[2] = (UInt16)Double2Int32(rfunc->ForwardTransfer(0.125) * 65535.0);
 	c[3] = 65535;
 	j = (width * 2) >> 3;
 	while (i < j)
@@ -363,9 +363,9 @@ Media::Image *Media::ImageGen::ColorImageGen::GenerateImage(Media::ColorProfile 
 		i++;
 	}
 
-	c[0] = (UInt16)Math::Double2Int32(bfunc->ForwardTransfer(0.25) * 65535.0);
-	c[1] = (UInt16)Math::Double2Int32(gfunc->ForwardTransfer(0.25) * 65535.0);
-	c[2] = (UInt16)Math::Double2Int32(rfunc->ForwardTransfer(0.25) * 65535.0);
+	c[0] = (UInt16)Double2Int32(bfunc->ForwardTransfer(0.25) * 65535.0);
+	c[1] = (UInt16)Double2Int32(gfunc->ForwardTransfer(0.25) * 65535.0);
+	c[2] = (UInt16)Double2Int32(rfunc->ForwardTransfer(0.25) * 65535.0);
 	c[3] = 65535;
 	j = (width * 3) >> 3;
 	while (i < j)
@@ -374,9 +374,9 @@ Media::Image *Media::ImageGen::ColorImageGen::GenerateImage(Media::ColorProfile 
 		i++;
 	}
 
-	c[0] = (UInt16)Math::Double2Int32(bfunc->ForwardTransfer(0.375) * 65535.0);
-	c[1] = (UInt16)Math::Double2Int32(gfunc->ForwardTransfer(0.375) * 65535.0);
-	c[2] = (UInt16)Math::Double2Int32(rfunc->ForwardTransfer(0.375) * 65535.0);
+	c[0] = (UInt16)Double2Int32(bfunc->ForwardTransfer(0.375) * 65535.0);
+	c[1] = (UInt16)Double2Int32(gfunc->ForwardTransfer(0.375) * 65535.0);
+	c[2] = (UInt16)Double2Int32(rfunc->ForwardTransfer(0.375) * 65535.0);
 	c[3] = 65535;
 	j = (width * 4) >> 3;
 	while (i < j)
@@ -385,9 +385,9 @@ Media::Image *Media::ImageGen::ColorImageGen::GenerateImage(Media::ColorProfile 
 		i++;
 	}
 
-	c[0] = (UInt16)Math::Double2Int32(bfunc->ForwardTransfer(0.5) * 65535.0);
-	c[1] = (UInt16)Math::Double2Int32(gfunc->ForwardTransfer(0.5) * 65535.0);
-	c[2] = (UInt16)Math::Double2Int32(rfunc->ForwardTransfer(0.5) * 65535.0);
+	c[0] = (UInt16)Double2Int32(bfunc->ForwardTransfer(0.5) * 65535.0);
+	c[1] = (UInt16)Double2Int32(gfunc->ForwardTransfer(0.5) * 65535.0);
+	c[2] = (UInt16)Double2Int32(rfunc->ForwardTransfer(0.5) * 65535.0);
 	c[3] = 65535;
 	j = (width * 5) >> 3;
 	while (i < j)
@@ -396,9 +396,9 @@ Media::Image *Media::ImageGen::ColorImageGen::GenerateImage(Media::ColorProfile 
 		i++;
 	}
 
-	c[0] = (UInt16)Math::Double2Int32(bfunc->ForwardTransfer(0.625) * 65535.0);
-	c[1] = (UInt16)Math::Double2Int32(gfunc->ForwardTransfer(0.625) * 65535.0);
-	c[2] = (UInt16)Math::Double2Int32(rfunc->ForwardTransfer(0.625) * 65535.0);
+	c[0] = (UInt16)Double2Int32(bfunc->ForwardTransfer(0.625) * 65535.0);
+	c[1] = (UInt16)Double2Int32(gfunc->ForwardTransfer(0.625) * 65535.0);
+	c[2] = (UInt16)Double2Int32(rfunc->ForwardTransfer(0.625) * 65535.0);
 	c[3] = 65535;
 	j = (width * 6) >> 3;
 	while (i < j)
@@ -407,9 +407,9 @@ Media::Image *Media::ImageGen::ColorImageGen::GenerateImage(Media::ColorProfile 
 		i++;
 	}
 
-	c[0] = (UInt16)Math::Double2Int32(bfunc->ForwardTransfer(0.75) * 65535.0);
-	c[1] = (UInt16)Math::Double2Int32(gfunc->ForwardTransfer(0.75) * 65535.0);
-	c[2] = (UInt16)Math::Double2Int32(rfunc->ForwardTransfer(0.75) * 65535.0);
+	c[0] = (UInt16)Double2Int32(bfunc->ForwardTransfer(0.75) * 65535.0);
+	c[1] = (UInt16)Double2Int32(gfunc->ForwardTransfer(0.75) * 65535.0);
+	c[2] = (UInt16)Double2Int32(rfunc->ForwardTransfer(0.75) * 65535.0);
 	c[3] = 65535;
 	j = (width * 7) >> 3;
 	while (i < j)
@@ -418,9 +418,9 @@ Media::Image *Media::ImageGen::ColorImageGen::GenerateImage(Media::ColorProfile 
 		i++;
 	}
 
-	c[0] = (UInt16)Math::Double2Int32(bfunc->ForwardTransfer(0.875) * 65535.0);
-	c[1] = (UInt16)Math::Double2Int32(gfunc->ForwardTransfer(0.875) * 65535.0);
-	c[2] = (UInt16)Math::Double2Int32(rfunc->ForwardTransfer(0.875) * 65535.0);
+	c[0] = (UInt16)Double2Int32(bfunc->ForwardTransfer(0.875) * 65535.0);
+	c[1] = (UInt16)Double2Int32(gfunc->ForwardTransfer(0.875) * 65535.0);
+	c[2] = (UInt16)Double2Int32(rfunc->ForwardTransfer(0.875) * 65535.0);
 	c[3] = 65535;
 	j = width;
 	while (i < j)

@@ -297,7 +297,7 @@ void UI::GUIComboBox::SetArea(Double left, Double top, Double right, Double bott
 	}
 	this->lxPos = left;
 	this->lyPos = top;
-	MoveWindow((HWND)hwnd, (int)((left + xOfst) * this->hdpi / this->ddpi), (int)((top + yOfst) * this->hdpi / this->ddpi), (int)((right - left) * this->hdpi / this->ddpi), (int)((bottom - top + Math::UOSInt2Double(itemHeight * this->minVisible)) * this->hdpi / this->ddpi), updateScn?TRUE:FALSE);
+	MoveWindow((HWND)hwnd, (int)((left + xOfst) * this->hdpi / this->ddpi), (int)((top + yOfst) * this->hdpi / this->ddpi), (int)((right - left) * this->hdpi / this->ddpi), (int)((bottom - top + UOSInt2Double(itemHeight * this->minVisible)) * this->hdpi / this->ddpi), updateScn?TRUE:FALSE);
 	this->lxPos2 = left + right - left;
 	this->lyPos2 = top + bottom - top;
 	this->OnSizeChanged(updateScn);
@@ -342,7 +342,7 @@ void UI::GUIComboBox::UpdatePos(Bool redraw)
 	{
 		this->parent->GetClientOfst(&xOfst, &yOfst);
 	}
-	MoveWindow((HWND)hwnd, (int)((this->lxPos + xOfst) * this->hdpi / this->ddpi), (int)((this->lyPos + yOfst) * this->hdpi / this->ddpi), (int)((this->lxPos2 - this->lxPos) * this->hdpi / this->ddpi), (int)((this->lyPos2 - this->lyPos + Math::UOSInt2Double(itemHeight * this->minVisible)) * this->hdpi / this->ddpi), redraw?TRUE:FALSE);
+	MoveWindow((HWND)hwnd, (int)((this->lxPos + xOfst) * this->hdpi / this->ddpi), (int)((this->lyPos + yOfst) * this->hdpi / this->ddpi), (int)((this->lxPos2 - this->lxPos) * this->hdpi / this->ddpi), (int)((this->lyPos2 - this->lyPos + UOSInt2Double(itemHeight * this->minVisible)) * this->hdpi / this->ddpi), redraw?TRUE:FALSE);
 }
 
 void UI::GUIComboBox::SetAutoComplete(Bool autoComplete)

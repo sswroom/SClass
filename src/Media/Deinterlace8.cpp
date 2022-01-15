@@ -571,8 +571,8 @@ void Media::Deinterlace8::SetupInterpolationParameter(UOSInt source_length, UOSI
 	i = 0;
 	while (i < result_length)
 	{
-		pos = (i+0.5) * Math::UOSInt2Double(source_length);
-		pos = pos / Math::UOSInt2Double(result_length) + offsetCorr;
+		pos = (i+0.5) * UOSInt2Double(source_length);
+		pos = pos / UOSInt2Double(result_length) + offsetCorr;
 		n = (Int32)floor(pos - (LANCZOS_NTAP / 2 - 0.5));//2.5);
 		pos = (n+0.5-pos);
 		sum = 0;
@@ -594,8 +594,8 @@ void Media::Deinterlace8::SetupInterpolationParameter(UOSInt source_length, UOSI
 		j = 0;
 		while (j < out->tap)
 		{
-			UInt16 v1 = (UInt16)(0xffff & Math::Double2Int32((work[j] / sum) * 32767.0));
-			UInt16 v2 = (UInt16)(0xffff & Math::Double2Int32((work[j + 1] / sum) * 32767.0));
+			UInt16 v1 = (UInt16)(0xffff & Double2Int32((work[j] / sum) * 32767.0));
+			UInt16 v2 = (UInt16)(0xffff & Double2Int32((work[j + 1] / sum) * 32767.0));
 			UInt16 *tmpPtr = (UInt16*)&out->weight[i * out->tap + j];
 			tmpPtr[0] = v1;
 			tmpPtr[1] = v2;

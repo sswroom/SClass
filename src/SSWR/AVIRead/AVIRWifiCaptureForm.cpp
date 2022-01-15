@@ -189,7 +189,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(void *userObj)
 						me->lvCurrWifi->SetSubItem(k, 11, csptr);
 					if (maxRSSI < bss->GetRSSI())
 					{
-						maxRSSI = Math::Double2Int32(bss->GetRSSI());
+						maxRSSI = Double2Int32(bss->GetRSSI());
 						maxIMAC = imac;
 					}
 
@@ -335,7 +335,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(void *userObj)
 						}
 					}
 
-					WriteInt16(id, Math::Double2Int32(bss->GetFreq() / 1000000.0));
+					WriteInt16(id, Double2Int32(bss->GetFreq() / 1000000.0));
 					bsss = me->bssMap->Get(ReadUInt64(id));
 					if (bsss == 0)
 					{
@@ -382,7 +382,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(void *userObj)
 							Bool found = false;
 							Int32 minRSSI;
 							UOSInt minIndex;
-							Int32 rssi1 = Math::Double2Int32(bss->GetRSSI());
+							Int32 rssi1 = Double2Int32(bss->GetRSSI());
 							minRSSI = 0;
 							minIndex = 0;
 							k = 0;

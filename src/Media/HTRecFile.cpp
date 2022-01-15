@@ -82,19 +82,19 @@ Int32 Media::HTRecFile::HTRecReader::GetInt32(UOSInt colIndex)
 			}
 			else if (currRow == 9)
 			{
-				return Math::Double2Int32(this->file->GetTempAlarmL());
+				return Double2Int32(this->file->GetTempAlarmL());
 			}
 			else if (currRow == 10)
 			{
-				return Math::Double2Int32(this->file->GetTempAlarmH());
+				return Double2Int32(this->file->GetTempAlarmH());
 			}
 			else if (currRow == 11)
 			{
-				return Math::Double2Int32(this->file->GetHumiAlarmL());
+				return Double2Int32(this->file->GetHumiAlarmL());
 			}
 			else if (currRow == 12)
 			{
-				return Math::Double2Int32(this->file->GetHumiAlarmH());
+				return Double2Int32(this->file->GetHumiAlarmH());
 			}
 			else if (currRow == 15)
 			{
@@ -122,11 +122,11 @@ Int32 Media::HTRecFile::HTRecReader::GetInt32(UOSInt colIndex)
 		}
 		else if (colIndex == 2)
 		{
-			return Math::Double2Int32(GetDbl(colIndex));
+			return Double2Int32(GetDbl(colIndex));
 		}
 		else if (colIndex == 3)
 		{
-			return Math::Double2Int32(GetDbl(colIndex));
+			return Double2Int32(GetDbl(colIndex));
 		}
 		else
 		{
@@ -358,7 +358,7 @@ Double Media::HTRecFile::HTRecReader::GetDbl(UOSInt colIndex)
 		}
 		else if (currRow == 5)
 		{
-			return Math::UOSInt2Double(this->file->GetTotalRec());
+			return UOSInt2Double(this->file->GetTotalRec());
 		}
 		else if (currRow == 6)
 		{
@@ -382,7 +382,7 @@ Double Media::HTRecFile::HTRecReader::GetDbl(UOSInt colIndex)
 		}
 		else if (currRow == 15)
 		{
-			return Math::UOSInt2Double(this->file->GetRecCount());
+			return UOSInt2Double(this->file->GetRecCount());
 		}
 
 		return 0;
@@ -393,7 +393,7 @@ Double Media::HTRecFile::HTRecReader::GetDbl(UOSInt colIndex)
 			return 0;
 		if (colIndex == 0)
 		{
-			return Math::UOSInt2Double(currRow + 1);
+			return UOSInt2Double(currRow + 1);
 		}
 		else if (colIndex == 1)
 		{

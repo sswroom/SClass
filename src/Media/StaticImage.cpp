@@ -801,7 +801,7 @@ Bool Media::StaticImage::MultiplyAlpha(Double alpha)
 		}
 		else if (this->info->atype == Media::AT_NO_ALPHA)
 		{
-			Int32 i32a = Math::Double2Int32(alpha * 255);
+			Int32 i32a = Double2Int32(alpha * 255);
 			UInt8 a;
 			if (i32a < 0)
 				a = 0;
@@ -826,7 +826,7 @@ Bool Media::StaticImage::MultiplyAlpha(Double alpha)
 			UOSInt i = 256;
 			while (i-- > 0)
 			{
-				i32a = Math::Double2Int32(alpha * Math::UOSInt2Double(i));
+				i32a = Double2Int32(alpha * UOSInt2Double(i));
 				if (i32a < 0)
 					atable[i] = 0;
 				else if (i32a > 255)
@@ -864,7 +864,7 @@ Bool Media::StaticImage::Resize(Media::IImgResizer *resizer, UOSInt newWidth, UO
 	if (this->To32bpp())
 	{
 		UInt8 *outBuff = MemAllocA(UInt8, (newWidth * newHeight << 2) + 4);
-		resizer->Resize((UInt8*)this->data, (OSInt)this->info->storeWidth << 2, Math::UOSInt2Double(this->info->dispWidth), Math::UOSInt2Double(this->info->dispHeight), 0, 0, outBuff, (OSInt)newWidth << 2, newWidth, newHeight);
+		resizer->Resize((UInt8*)this->data, (OSInt)this->info->storeWidth << 2, UOSInt2Double(this->info->dispWidth), UOSInt2Double(this->info->dispHeight), 0, 0, outBuff, (OSInt)newWidth << 2, newWidth, newHeight);
 		MemFreeA(this->data);
 		this->data = outBuff;
 		this->info->dispWidth = newWidth;
@@ -1024,7 +1024,7 @@ Double Media::StaticImage::CalcPSNR(Media::StaticImage *simg)
 //			printf("sum = 0\r\n");
 			return 0;
 		}
-		return 20 * Math_Log10(65535) - 10 * Math_Log10((Double)sum / Math::UOSInt2Double(this->info->dispWidth * this->info->dispHeight * 3));
+		return 20 * Math_Log10(65535) - 10 * Math_Log10((Double)sum / UOSInt2Double(this->info->dispWidth * this->info->dispHeight * 3));
 	}
 	else if (this->info->pf == Media::PF_B8G8R8A8)
 	{
@@ -1056,7 +1056,7 @@ Double Media::StaticImage::CalcPSNR(Media::StaticImage *simg)
 		}
 		if (sum == 0)
 			return 0;
-		return 20 * Math_Log10(255) - 10 * Math_Log10((Double)sum / Math::UOSInt2Double(this->info->dispWidth * this->info->dispHeight * 3));
+		return 20 * Math_Log10(255) - 10 * Math_Log10((Double)sum / UOSInt2Double(this->info->dispWidth * this->info->dispHeight * 3));
 	}
 	else
 	{

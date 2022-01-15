@@ -313,10 +313,10 @@ UOSInt Map::CIPLayer2::GetAllObjectIds(Data::ArrayListInt64 *outArr, void **name
 
 UOSInt Map::CIPLayer2::GetObjectIds(Data::ArrayListInt64 *outArr, void **nameArr, Double mapRate, Int32 x1, Int32 y1, Int32 x2, Int32 y2, Bool keepEmpty)
 {
-	x1 = Math::Double2Int32(x1 * 200000.0 / mapRate);
-	y1 = Math::Double2Int32(y1 * 200000.0 / mapRate);
-	x2 = Math::Double2Int32(x2 * 200000.0 / mapRate);
-	y2 = Math::Double2Int32(y2 * 200000.0 / mapRate);
+	x1 = Double2Int32(x1 * 200000.0 / mapRate);
+	y1 = Double2Int32(y1 * 200000.0 / mapRate);
+	x2 = Double2Int32(x2 * 200000.0 / mapRate);
+	y2 = Double2Int32(y2 * 200000.0 / mapRate);
 	Int32 leftBlk;
 	Int32 rightBlk;
 	Int32 topBlk;
@@ -496,7 +496,7 @@ UOSInt Map::CIPLayer2::GetObjectIds(Data::ArrayListInt64 *outArr, void **nameArr
 
 UOSInt Map::CIPLayer2::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void **nameArr, Double x1, Double y1, Double x2, Double y2, Bool keepEmpty)
 {
-	return GetObjectIds(outArr, nameArr, 200000.0, Math::Double2Int32(x1 * 200000), Math::Double2Int32(y1 * 200000), Math::Double2Int32(x2 * 200000), Math::Double2Int32(y2 * 200000), keepEmpty);
+	return GetObjectIds(outArr, nameArr, 200000.0, Double2Int32(x1 * 200000), Double2Int32(y1 * 200000), Double2Int32(x2 * 200000), Double2Int32(y2 * 200000), keepEmpty);
 }
 
 Int64 Map::CIPLayer2::GetObjectIdMax()

@@ -178,7 +178,7 @@ Bool UI::GUIListView::AddColumn(const UTF8Char *columnName, Double colWidth)
 
 	GtkCellRenderer *renderer = gtk_cell_renderer_text_new();
 	GtkTreeViewColumn *col = gtk_tree_view_column_new_with_attributes((const Char*)columnName, renderer, "text", this->colCnt, (void*)0);
-	gtk_tree_view_column_set_fixed_width(col, Math::Double2Int32(colWidth * this->hdpi / this->ddpi));
+	gtk_tree_view_column_set_fixed_width(col, Double2Int32(colWidth * this->hdpi / this->ddpi));
 	gtk_tree_view_column_set_resizable(col, true);
 	gtk_tree_view_append_column((GtkTreeView*)data->treeView, col);
 	data->colSizes[this->colCnt] = colWidth;
@@ -196,7 +196,7 @@ Bool UI::GUIListView::AddColumn(const WChar *columnName, Double colWidth)
 	const UTF8Char *lbl = Text::StrToUTF8New(columnName);
 	GtkTreeViewColumn *col = gtk_tree_view_column_new_with_attributes((const Char*)lbl, renderer, "text", this->colCnt, (void*)0);
 	Text::StrDelNew(lbl);
-	gtk_tree_view_column_set_fixed_width(col, Math::Double2Int32(colWidth * this->hdpi / this->ddpi));
+	gtk_tree_view_column_set_fixed_width(col, Double2Int32(colWidth * this->hdpi / this->ddpi));
 	gtk_tree_view_column_set_resizable(col, true);
 	gtk_tree_view_append_column((GtkTreeView*)data->treeView, col);
 	data->colSizes[this->colCnt] = colWidth;
@@ -212,7 +212,7 @@ Bool UI::GUIListView::SetColumnWidth(UOSInt index, Double colWidth)
 	GtkTreeViewColumn *col = gtk_tree_view_get_column((GtkTreeView*)data->treeView, (gint)index);
 	if (col == 0)
 		return false;
-	gtk_tree_view_column_set_fixed_width(col, Math::Double2Int32(colWidth * this->hdpi / this->ddpi));
+	gtk_tree_view_column_set_fixed_width(col, Double2Int32(colWidth * this->hdpi / this->ddpi));
 	data->colSizes[index] = colWidth;
 	return true;
 }
@@ -653,7 +653,7 @@ void UI::GUIListView::SetDPI(Double hdpi, Double ddpi)
 		GtkTreeViewColumn *col = gtk_tree_view_get_column((GtkTreeView*)data->treeView, (gint)i);
 		if (col)
 		{
-			gtk_tree_view_column_set_fixed_width(col, Math::Double2Int32(data->colSizes[i] * this->hdpi / this->ddpi));
+			gtk_tree_view_column_set_fixed_width(col, Double2Int32(data->colSizes[i] * this->hdpi / this->ddpi));
 		}
 		i++;
 	}

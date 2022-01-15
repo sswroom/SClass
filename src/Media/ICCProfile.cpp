@@ -1583,7 +1583,7 @@ Media::CS::TransferType Media::ICCProfile::FindTransferType(UOSInt colorCount, U
 		diffSqrSum[i] = 0;
 	}
 
-	Double mulVal = 1.0 / Math::UOSInt2Double(colorCount - 1);
+	Double mulVal = 1.0 / UOSInt2Double(colorCount - 1);
 	Double colVal = 1.0 / 65535.0;
 	Double v;
 	Double tv;
@@ -1595,7 +1595,7 @@ Media::CS::TransferType Media::ICCProfile::FindTransferType(UOSInt colorCount, U
 		i = tranCnt;
 		while (i-- > 0)
 		{
-			tv = funcs[i]->InverseTransfer(Math::UOSInt2Double(j) * mulVal);
+			tv = funcs[i]->InverseTransfer(UOSInt2Double(j) * mulVal);
 			diffSqrSum[i] += (tv - v) * (tv - v);
 		}
 		j++;

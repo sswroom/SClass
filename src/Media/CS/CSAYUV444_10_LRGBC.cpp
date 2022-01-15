@@ -170,7 +170,7 @@ void Media::CS::CSAYUV444_10_LRGBC::SetupYUV_RGB13()
 		i = 65536;
 		while (i--)
 		{
-			y = Math::Double2Int32(0x7fff * (Math_Pow(i / 1023.0, this->yuvParam.YGamma) * this->yuvParam.Contrast + this->yuvParam.Brightness - 1) / 4.0);
+			y = Double2Int32(0x7fff * (Math_Pow(i / 1023.0, this->yuvParam.YGamma) * this->yuvParam.Contrast + this->yuvParam.Brightness - 1) / 4.0);
 			if (y < -0x8000)
 				y = 0x8000;
 			else if (y > 0x7fff)
@@ -185,7 +185,7 @@ void Media::CS::CSAYUV444_10_LRGBC::SetupYUV_RGB13()
 		i = 65536;
 		while (i--)
 		{
-			y = Math::Double2Int32(0x7fff * (Math_Pow((i - 64) / 876.0, this->yuvParam.YGamma) * this->yuvParam.Contrast + this->yuvParam.Brightness - 1) / 4.0);
+			y = Double2Int32(0x7fff * (Math_Pow((i - 64) / 876.0, this->yuvParam.YGamma) * this->yuvParam.Contrast + this->yuvParam.Brightness - 1) / 4.0);
 			if (y < -0x8000)
 				y = 0x8000;
 			else if (y > 0x7fff)
@@ -225,10 +225,10 @@ void Media::CS::CSAYUV444_10_LRGBC::SetupYUV_RGB13()
 		Int32 u2g8;
 		Int32 v2g8;
 		Int32 u2b8;
-		v2r8 = Math::Double2Int32((Kc1 * c * this->yuvParam.Saturation * this->yuvParam.RMul + this->yuvParam.RAdd) / 4.0);
-		u2g8 = Math::Double2Int32((Kc3 * c * this->yuvParam.Saturation * this->yuvParam.GMul + this->yuvParam.GAdd) / 4.0);
-		v2g8 = Math::Double2Int32((Kc2 * c * this->yuvParam.Saturation * this->yuvParam.GMul) / 4.0);
-		u2b8 = Math::Double2Int32((Kc4 * c * this->yuvParam.Saturation * this->yuvParam.BMul + this->yuvParam.BAdd) / 4.0);
+		v2r8 = Double2Int32((Kc1 * c * this->yuvParam.Saturation * this->yuvParam.RMul + this->yuvParam.RAdd) / 4.0);
+		u2g8 = Double2Int32((Kc3 * c * this->yuvParam.Saturation * this->yuvParam.GMul + this->yuvParam.GAdd) / 4.0);
+		v2g8 = Double2Int32((Kc2 * c * this->yuvParam.Saturation * this->yuvParam.GMul) / 4.0);
+		u2b8 = Double2Int32((Kc4 * c * this->yuvParam.Saturation * this->yuvParam.BMul + this->yuvParam.BAdd) / 4.0);
 		if (v2r8 < -0x8000)
 			v2r8 = 0x8000;
 		else if (v2r8 > 0x7fff)

@@ -32,7 +32,7 @@ void Media::Resizer::LanczosResizer8_C8::setup_interpolation_parameter(UOSInt nT
 	Double *work;
 	Double  sum;
 	Double  pos;
-	Double dnTap = Math::UOSInt2Double(nTap);
+	Double dnTap = UOSInt2Double(nTap);
 
 	out->length = result_length;
 	out->tap = nTap;
@@ -45,10 +45,10 @@ void Media::Resizer::LanczosResizer8_C8::setup_interpolation_parameter(UOSInt nT
 	i = 0;
 	while (i < result_length)
 	{
-		pos = (Math::UOSInt2Double(i) + 0.5) * source_length;
-		pos = pos / Math::UOSInt2Double(result_length) + offsetCorr;
+		pos = (UOSInt2Double(i) + 0.5) * source_length;
+		pos = pos / UOSInt2Double(result_length) + offsetCorr;
 		n = (OSInt)floor(pos - (dnTap / 2 - 0.5));//2.5);
-		pos = (Math::OSInt2Double(n) + 0.5 - pos);
+		pos = (OSInt2Double(n) + 0.5 - pos);
 		sum = 0;
 		for(j = 0; j < out->tap; j++)
 		{
@@ -68,8 +68,8 @@ void Media::Resizer::LanczosResizer8_C8::setup_interpolation_parameter(UOSInt nT
 		j = 0;
 		while (j < out->tap)
 		{
-			UInt16 v1 = (UInt16)(0xffff & Math::Double2Int32((work[j] / sum) * 32767.0));
-			UInt16 v2 = (UInt16)(0xffff & Math::Double2Int32((work[j + 1] / sum) * 32767.0));
+			UInt16 v1 = (UInt16)(0xffff & Double2Int32((work[j] / sum) * 32767.0));
+			UInt16 v2 = (UInt16)(0xffff & Double2Int32((work[j + 1] / sum) * 32767.0));
 			UInt16 *tmpPtr = (UInt16*)&out->weight[i * out->tap + j];
 			tmpPtr[0] = v1;
 			tmpPtr[1] = v2;
@@ -96,11 +96,11 @@ void Media::Resizer::LanczosResizer8_C8::setup_decimation_parameter(UOSInt nTap,
 	Double *work;
 	Double  sum;
 	Double  pos, phase;
-	Double dnTap = Math::UOSInt2Double(nTap);
-	Double rLength = Math::UOSInt2Double(result_length);
+	Double dnTap = UOSInt2Double(nTap);
+	Double rLength = UOSInt2Double(result_length);
 
 	out->length = result_length;
-	out->tap = (UOSInt)Math::Fix((dnTap * (source_length) + (rLength - 1)) / rLength);
+	out->tap = (UOSInt)Math_Fix((dnTap * (source_length) + (rLength - 1)) / rLength);
 	ttap = out->tap;
 	out->tap += out->tap & 1;
 
@@ -112,15 +112,15 @@ void Media::Resizer::LanczosResizer8_C8::setup_decimation_parameter(UOSInt nTap,
 	i = 0;
 	while (i < result_length)
 	{
-		pos = (Math::UOSInt2Double(i) - Math::Fix(dnTap / 2) + 0.5) * source_length / rLength + 0.5;
+		pos = (UOSInt2Double(i) - Math_Fix(dnTap / 2) + 0.5) * source_length / rLength + 0.5;
 		n = (OSInt)floor(pos + offsetCorr);
 		sum = 0;
 		j = 0;
 		while (j < ttap)
 		{
-			phase = (Math::OSInt2Double(n) + 0.5)*rLength;
+			phase = (OSInt2Double(n) + 0.5)*rLength;
 			phase /= source_length;
-			phase -= (Math::UOSInt2Double(i)+0.5);
+			phase -= (UOSInt2Double(i)+0.5);
 			if(n < 0){
 				out->index[i * out->tap + j] = 0;
 			}else if(n >= source_max_pos){
@@ -142,8 +142,8 @@ void Media::Resizer::LanczosResizer8_C8::setup_decimation_parameter(UOSInt nTap,
 		j = 0;
 		while (j < ttap)
 		{
-			UInt16 v1 = (UInt16)(0xffff & Math::Double2Int32((work[j] / sum) * 32767.0));
-			UInt16 v2 = (UInt16)(0xffff & Math::Double2Int32((work[j + 1] / sum) * 32767.0));
+			UInt16 v1 = (UInt16)(0xffff & Double2Int32((work[j] / sum) * 32767.0));
+			UInt16 v2 = (UInt16)(0xffff & Double2Int32((work[j + 1] / sum) * 32767.0));
 			UInt16 *tmpPtr = (UInt16*)&out->weight[i * out->tap + j];
 			tmpPtr[0] = v1;
 			tmpPtr[1] = v2;
@@ -182,10 +182,10 @@ void Media::Resizer::LanczosResizer8_C8::setup_interpolation_parameter_h(UOSInt 
 	i = 0;
 	while (i < result_length)
 	{
-		pos = (Math::UOSInt2Double(i) + 0.5) * source_length;
-		pos = pos / Math::UOSInt2Double(result_length) + offsetCorr;
-		n = (OSInt)Math::Fix(pos - (Math::UOSInt2Double(nTap / 2) - 0.5));//2.5);
-		pos = (Math::OSInt2Double(n) + 0.5 - pos);
+		pos = (UOSInt2Double(i) + 0.5) * source_length;
+		pos = pos / UOSInt2Double(result_length) + offsetCorr;
+		n = (OSInt)Math_Fix(pos - (UOSInt2Double(nTap / 2) - 0.5));//2.5);
+		pos = (OSInt2Double(n) + 0.5 - pos);
 		sum = 0;
 		if (out->tap == 6 && (result_length & 1) == 0)
 		{
@@ -252,8 +252,8 @@ void Media::Resizer::LanczosResizer8_C8::setup_interpolation_parameter_h(UOSInt 
 					work[3] = sum;
 				}
 			}
-			v1 = (UInt16)(0xffff & Math::Double2Int32((work[0] / sum) * 32767.0));
-			v2 = (UInt16)(0xffff & Math::Double2Int32((work[2] / sum) * 32767.0));
+			v1 = (UInt16)(0xffff & Double2Int32((work[0] / sum) * 32767.0));
+			v2 = (UInt16)(0xffff & Double2Int32((work[2] / sum) * 32767.0));
 			tmpPtr = (UInt16*)&out->weight[i * out->tap];
 			tmpPtr[0] = v1;
 			tmpPtr[1] = v2;
@@ -264,8 +264,8 @@ void Media::Resizer::LanczosResizer8_C8::setup_interpolation_parameter_h(UOSInt 
 			tmpPtr[6] = v1;
 			tmpPtr[7] = v2;
 
-			v1 = (UInt16)(0xffff & Math::Double2Int32((work[1] / sum) * 32767.0));
-			v2 = (UInt16)(0xffff & Math::Double2Int32((work[3] / sum) * 32767.0));
+			v1 = (UInt16)(0xffff & Double2Int32((work[1] / sum) * 32767.0));
+			v2 = (UInt16)(0xffff & Double2Int32((work[3] / sum) * 32767.0));
 			tmpPtr += 8;
 			tmpPtr[0] = v1;
 			tmpPtr[1] = v2;
@@ -276,8 +276,8 @@ void Media::Resizer::LanczosResizer8_C8::setup_interpolation_parameter_h(UOSInt 
 			tmpPtr[6] = v1;
 			tmpPtr[7] = v2;
 
-			v1 = (UInt16)(0xffff & Math::Double2Int32((work[4] / sum) * 32767.0));
-			v2 = (UInt16)(0xffff & Math::Double2Int32((work[5] / sum) * 32767.0));
+			v1 = (UInt16)(0xffff & Double2Int32((work[4] / sum) * 32767.0));
+			v2 = (UInt16)(0xffff & Double2Int32((work[5] / sum) * 32767.0));
 			tmpPtr += 8;
 			tmpPtr[0] = v1;
 			tmpPtr[1] = v2;
@@ -336,8 +336,8 @@ void Media::Resizer::LanczosResizer8_C8::setup_interpolation_parameter_h(UOSInt 
 					{
 						work[j - 2] += work[j] - sum;
 						work[j] = sum;
-						v1 = (UInt16)(0xffff & Math::Double2Int32((work[j - 2] / sum) * 32767.0));
-						v2 = (UInt16)(0xffff & Math::Double2Int32((work[j - 1] / sum) * 32767.0));
+						v1 = (UInt16)(0xffff & Double2Int32((work[j - 2] / sum) * 32767.0));
+						v2 = (UInt16)(0xffff & Double2Int32((work[j - 1] / sum) * 32767.0));
 						tmpPtr = (UInt16*)&out->weight[i * out->tap + j - 2];
 						tmpPtr[0] = v1;
 						tmpPtr[1] = v2;
@@ -365,8 +365,8 @@ void Media::Resizer::LanczosResizer8_C8::setup_interpolation_parameter_h(UOSInt 
 						work[j + 1] = sum;
 					}
 				}
-				v1 = (UInt16)(0xffff & Math::Double2Int32((work[j] / sum) * 32767.0));
-				v2 = (UInt16)(0xffff & Math::Double2Int32((work[j + 1] / sum) * 32767.0));
+				v1 = (UInt16)(0xffff & Double2Int32((work[j] / sum) * 32767.0));
+				v2 = (UInt16)(0xffff & Double2Int32((work[j + 1] / sum) * 32767.0));
 				tmpPtr = (UInt16*)&out->weight[i * out->tap + j];
 				tmpPtr[0] = v1;
 				tmpPtr[1] = v2;
@@ -400,10 +400,10 @@ void Media::Resizer::LanczosResizer8_C8::setup_decimation_parameter_h(UOSInt nTa
 	Double phase2;
 	OSInt ind1;
 	OSInt ind2;
-	Double rLength = Math::UOSInt2Double(result_length);
+	Double rLength = UOSInt2Double(result_length);
 
 	out->length = result_length;
-	out->tap = (UOSInt)Math::Fix((Math::UOSInt2Double(nTap) * (source_length) + (rLength - 1)) / rLength);
+	out->tap = (UOSInt)Math_Fix((UOSInt2Double(nTap) * (source_length) + (rLength - 1)) / rLength);
 	ttap = out->tap;
 	out->tap += out->tap & 1;
 
@@ -415,9 +415,9 @@ void Media::Resizer::LanczosResizer8_C8::setup_decimation_parameter_h(UOSInt nTa
 	i = 0;
 	while (i < result_length)
 	{
-		di = Math::UOSInt2Double(i);
-		pos = (di - Math::UOSInt2Double(nTap / 2) + 0.5) * source_length / rLength + 0.5;
-		dn = Math::Fix(pos + offsetCorr);
+		di = UOSInt2Double(i);
+		pos = (di - UOSInt2Double(nTap / 2) + 0.5) * source_length / rLength + 0.5;
+		dn = Math_Fix(pos + offsetCorr);
 		n = (Int32)dn;
 		sum = 0;
 		if (ttap & 1)
@@ -425,7 +425,7 @@ void Media::Resizer::LanczosResizer8_C8::setup_decimation_parameter_h(UOSInt nTa
 			j = 0;
 			while (j < ttap - 1)
 			{
-				dn = Math::OSInt2Double(n);
+				dn = OSInt2Double(n);
 				phase = ((dn + 0.5) * rLength / source_length) - (di + 0.5);
 				phase2 = ((dn + 1.5) * rLength / source_length) - (di + 0.5);
 				if (n < 0)
@@ -490,7 +490,7 @@ void Media::Resizer::LanczosResizer8_C8::setup_decimation_parameter_h(UOSInt nTa
 			j = 0;
 			while (j < out->tap)
 			{
-				dn = Math::OSInt2Double(n);
+				dn = OSInt2Double(n);
 				phase = ((dn + 0.5) * rLength / source_length) - (di + 0.5);
 				phase2 = ((dn + 1.5) * rLength / source_length) - (di + 0.5);
 				if (n < 0)
@@ -524,8 +524,8 @@ void Media::Resizer::LanczosResizer8_C8::setup_decimation_parameter_h(UOSInt nTa
 				j += 2;
 			}
 
-			UInt16 v1 = (UInt16)(0xffff & Math::Double2Int32((work[0] / sum) * 32767.0));
-			UInt16 v2 = (UInt16)(0xffff & Math::Double2Int32((work[2] / sum) * 32767.0));
+			UInt16 v1 = (UInt16)(0xffff & Double2Int32((work[0] / sum) * 32767.0));
+			UInt16 v2 = (UInt16)(0xffff & Double2Int32((work[2] / sum) * 32767.0));
 			UInt16 *tmpPtr = (UInt16*)&out->weight[i * out->tap];
 			tmpPtr[0] = v1;
 			tmpPtr[1] = v2;
@@ -536,8 +536,8 @@ void Media::Resizer::LanczosResizer8_C8::setup_decimation_parameter_h(UOSInt nTa
 			tmpPtr[6] = v1;
 			tmpPtr[7] = v2;
 
-			v1 = (UInt16)(0xffff & Math::Double2Int32((work[1] / sum) * 32767.0));
-			v2 = (UInt16)(0xffff & Math::Double2Int32((work[3] / sum) * 32767.0));
+			v1 = (UInt16)(0xffff & Double2Int32((work[1] / sum) * 32767.0));
+			v2 = (UInt16)(0xffff & Double2Int32((work[3] / sum) * 32767.0));
 			tmpPtr += 8;
 			tmpPtr[0] = v1;
 			tmpPtr[1] = v2;
@@ -548,8 +548,8 @@ void Media::Resizer::LanczosResizer8_C8::setup_decimation_parameter_h(UOSInt nTa
 			tmpPtr[6] = v1;
 			tmpPtr[7] = v2;
 
-			v1 = (UInt16)(0xffff & Math::Double2Int32((work[4] / sum) * 32767.0));
-			v2 = (UInt16)(0xffff & Math::Double2Int32((work[5] / sum) * 32767.0));
+			v1 = (UInt16)(0xffff & Double2Int32((work[4] / sum) * 32767.0));
+			v2 = (UInt16)(0xffff & Double2Int32((work[5] / sum) * 32767.0));
 			tmpPtr += 8;
 			tmpPtr[0] = v1;
 			tmpPtr[1] = v2;
@@ -565,7 +565,7 @@ void Media::Resizer::LanczosResizer8_C8::setup_decimation_parameter_h(UOSInt nTa
 			j = 0;
 			while (j < ttap)
 			{
-				dn = Math::OSInt2Double(n);
+				dn = OSInt2Double(n);
 				phase = ((dn + 0.5) * rLength / source_length) - (di + 0.5);
 				phase2 = ((dn + 1.5) * rLength / source_length) - (di + 0.5);
 				if (n < 0)
@@ -602,8 +602,8 @@ void Media::Resizer::LanczosResizer8_C8::setup_decimation_parameter_h(UOSInt nTa
 		j = 0;
 		while (j < ttap)
 		{
-			UInt16 v1 = (UInt16)(0xffff & Math::Double2Int32((work[j] / sum) * 32767.0));
-			UInt16 v2 = (UInt16)(0xffff & Math::Double2Int32((work[j + 1] / sum) * 32767.0));
+			UInt16 v1 = (UInt16)(0xffff & Double2Int32((work[j] / sum) * 32767.0));
+			UInt16 v2 = (UInt16)(0xffff & Double2Int32((work[j + 1] / sum) * 32767.0));
 			UInt16 *tmpPtr = (UInt16*)&out->weight[i * out->tap + j];
 			tmpPtr[0] = v1;
 			tmpPtr[1] = v2;
@@ -934,8 +934,8 @@ void Media::Resizer::LanczosResizer8_C8::Resize(UInt8 *src, OSInt sbpl, Double s
 	h = yOfst + sheight;
 	siWidth = (OSInt)w;
 	siHeight = (OSInt)h;
-	w -= Math::OSInt2Double(siWidth);
-	h -= Math::OSInt2Double(siHeight);
+	w -= OSInt2Double(siWidth);
+	h -= OSInt2Double(siHeight);
 	if (w > 0)
 		siWidth++;
 	if (h > 0)
@@ -954,7 +954,7 @@ void Media::Resizer::LanczosResizer8_C8::Resize(UInt8 *src, OSInt sbpl, Double s
 		{
 			DestoryHori();
 
-			if (swidth > Math::UOSInt2Double(dwidth))
+			if (swidth > UOSInt2Double(dwidth))
 			{
 				setup_decimation_parameter_h(this->hnTap, swidth, siWidth, dwidth, &prm, 8, xOfst);
 			}
@@ -975,7 +975,7 @@ void Media::Resizer::LanczosResizer8_C8::Resize(UInt8 *src, OSInt sbpl, Double s
 			DestoryVert();
 			vsStep = (OSInt)hdSize * 8;
 
-			if (sheight > Math::UOSInt2Double(dheight))
+			if (sheight > UOSInt2Double(dheight))
 			{
 				setup_decimation_parameter(this->vnTap, sheight, siHeight, dheight, &prm, vsStep, yOfst);
 			}
@@ -1027,7 +1027,7 @@ void Media::Resizer::LanczosResizer8_C8::Resize(UInt8 *src, OSInt sbpl, Double s
 		{
 			DestoryHori();
 
-			if (swidth > Math::UOSInt2Double(dwidth))
+			if (swidth > UOSInt2Double(dwidth))
 			{
 				setup_decimation_parameter_h(this->hnTap, swidth, siWidth, dwidth, &prm, 8, xOfst);
 			}
@@ -1067,12 +1067,12 @@ void Media::Resizer::LanczosResizer8_C8::Resize(UInt8 *src, OSInt sbpl, Double s
 	else if (siHeight != (OSInt)dheight)
 	{
 		Sync::MutexUsage mutUsage(mut);
-		if (vsSize != sheight || vdSize != dheight || vsStep != Math::Double2Int32(swidth) * 8 || vsOfst != yOfst)
+		if (vsSize != sheight || vdSize != dheight || vsStep != Double2Int32(swidth) * 8 || vsOfst != yOfst)
 		{
 			DestoryVert();
 			vsStep = siWidth * 8;
 
-			if (sheight > Math::UOSInt2Double(dheight))
+			if (sheight > UOSInt2Double(dheight))
 			{
 				setup_decimation_parameter(this->vnTap, sheight, siHeight, dheight, &prm, vsStep, yOfst);
 			}
@@ -1138,13 +1138,13 @@ Bool Media::Resizer::LanczosResizer8_C8::Resize(Media::StaticImage *srcImg, Medi
 	SetSrcProfile(srcImg->info->color);
 	if (srcImg->info->fourcc == destImg->info->fourcc)
 	{
-		Resize(srcImg->data, (OSInt)srcImg->GetDataBpl(), Math::UOSInt2Double(srcImg->info->dispWidth), Math::UOSInt2Double(srcImg->info->dispHeight), 0, 0, destImg->data, (OSInt)destImg->GetDataBpl(), destImg->info->dispWidth, destImg->info->dispHeight);
+		Resize(srcImg->data, (OSInt)srcImg->GetDataBpl(), UOSInt2Double(srcImg->info->dispWidth), UOSInt2Double(srcImg->info->dispHeight), 0, 0, destImg->data, (OSInt)destImg->GetDataBpl(), destImg->info->dispWidth, destImg->info->dispHeight);
 		return true;
 	}
 	else
 	{
 		OSInt dbpl = (OSInt)destImg->GetDataBpl();
-		Resize(srcImg->data, (OSInt)srcImg->GetDataBpl(), Math::UOSInt2Double(srcImg->info->dispWidth), Math::UOSInt2Double(srcImg->info->dispHeight), 0, 0, destImg->data + (OSInt)(destImg->info->storeHeight - 1) * dbpl, -dbpl, destImg->info->dispWidth, destImg->info->dispHeight);
+		Resize(srcImg->data, (OSInt)srcImg->GetDataBpl(), UOSInt2Double(srcImg->info->dispWidth), UOSInt2Double(srcImg->info->dispHeight), 0, 0, destImg->data + (OSInt)(destImg->info->storeHeight - 1) * dbpl, -dbpl, destImg->info->dispWidth, destImg->info->dispHeight);
 		return true;
 	}
 }
@@ -1209,11 +1209,11 @@ Media::StaticImage *Media::Resizer::LanczosResizer8_C8::ProcessToNewPartial(Medi
 	UOSInt targetHeight = this->targetHeight;
 	if (targetWidth == 0)
 	{
-		targetWidth = (UOSInt)Math::Double2Int32(srcX2 - srcX1);
+		targetWidth = (UOSInt)Double2Int32(srcX2 - srcX1);
 	}
 	if (targetHeight == 0)
 	{
-		targetHeight = (UOSInt)Math::Double2Int32(srcY2 - srcY1);
+		targetHeight = (UOSInt)Double2Int32(srcY2 - srcY1);
 	}
 	CalOutputSize(srcImage->info, targetWidth, targetHeight, &destInfo, this->rar);
 	this->SetSrcProfile(srcImage->info->color);

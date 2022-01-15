@@ -773,7 +773,7 @@ Bool Net::OSSocketFactory::IcmpSendEcho2(const Net::SocketUtil::AddressInfo *add
 					if (Text::StrSplitWS(sarr, 4, sarr[1]) == 4)
 					{
 						*ttl = Text::StrToUInt32(&sarr[1][4]);
-						*respTime_us = (UInt32)Math::Double2Int32(Text::StrToDouble(&sarr[2][5]) * 1000.0);
+						*respTime_us = (UInt32)Double2Int32(Text::StrToDouble(&sarr[2][5]) * 1000.0);
 						return true;
 					}
 					else

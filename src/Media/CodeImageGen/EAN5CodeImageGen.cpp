@@ -302,7 +302,7 @@ Media::DrawImage *Media::CodeImageGen::EAN5CodeImageGen::GenCode(const UTF8Char 
 
 	UOSInt h = codeWidth * 70;
 	UOSInt y = h - codeWidth;
-	Double fh = 12.0 * Math::UOSInt2Double(codeWidth);
+	Double fh = 12.0 * UOSInt2Double(codeWidth);
 
 	Media::DrawImage *dimg = eng->CreateImage32((4 + 48) * codeWidth, h, Media::AT_NO_ALPHA);
 	Media::DrawBrush *b;
@@ -322,7 +322,7 @@ Media::DrawImage *Media::CodeImageGen::EAN5CodeImageGen::GenCode(const UTF8Char 
 			k = codeWidth;
 			while (k-- > 0)
 			{
-				dimg->DrawLine((Double)j, Math::UOSInt2Double(codeWidth) + fh, (Double)j, (Double)y, p);
+				dimg->DrawLine((Double)j, UOSInt2Double(codeWidth) + fh, (Double)j, (Double)y, p);
 				j++;
 			}
 		}

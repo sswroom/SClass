@@ -2076,8 +2076,8 @@ Bool Media::EXIFData::GetGeoBounds(UOSInt imgW, UOSInt imgH, UInt32 *srid, Doubl
 	*minY = coord->CalLatByDist(mapY, (imgH - imgY) * mppY);*/
 	*minX = mapX - imgX * mppX;
 	*maxY = mapY + imgY * mppY;
-	*maxX = mapX + (Math::UOSInt2Double(imgW) - imgX) * mppX;
-	*minY = mapY - (Math::UOSInt2Double(imgH) - imgY) * mppY;
+	*maxX = mapX + (UOSInt2Double(imgW) - imgX) * mppX;
+	*minY = mapY - (UOSInt2Double(imgH) - imgY) * mppY;
 
 //	DEL_CLASS(coord);
 	return true;

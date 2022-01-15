@@ -15,8 +15,8 @@ void Math::Geometry::RotateACW(Int32 *ptOut, Int32 *ptIn, UOSInt nPoint, Double 
 	{
 		Double x = ptIn[0] - centX;
 		Double y = ptIn[1] - centY;
-		ptOut[0] = Math::Double2Int32(centX + x * cd + y * sd);
-		ptOut[1] = Math::Double2Int32(centY - x * sd + y * cd);
+		ptOut[0] = Double2Int32(centX + x * cd + y * sd);
+		ptOut[1] = Double2Int32(centY - x * sd + y * cd);
 		ptOut += 2;
 		ptIn += 2;
 	}
@@ -693,10 +693,10 @@ void Math::Geometry::PtNearPline(Int32 *points, UOSInt nPoints, OSInt ptX, OSInt
 		}
 		else
 		{
-			calX = (calBase = (calW * calW)) * Math::OSInt2Double(ptX);
+			calX = (calBase = (calW * calW)) * OSInt2Double(ptX);
 			calBase += calH * calH;
 			calX += calH * calH * (points[(i << 1) + 0]);
-			calX += (Math::OSInt2Double(ptY) - (Double)points[(i << 1) + 1]) * calH * calW;
+			calX += (OSInt2Double(ptY) - (Double)points[(i << 1) + 1]) * calH * calW;
 			calX /= calBase;
 		}
 
@@ -739,8 +739,8 @@ void Math::Geometry::PtNearPline(Int32 *points, UOSInt nPoints, OSInt ptX, OSInt
 				continue;
 		}
 
-		calH = Math::OSInt2Double(ptY) - calY;
-		calW = Math::OSInt2Double(ptX) - calX;
+		calH = OSInt2Double(ptY) - calY;
+		calW = OSInt2Double(ptX) - calX;
 		calBase = calW * calW + calH * calH;
 		if (calBase < dist)
 		{
@@ -753,8 +753,8 @@ void Math::Geometry::PtNearPline(Int32 *points, UOSInt nPoints, OSInt ptX, OSInt
 	i = nPoints;
 	while (i-- > 0)
 	{
-		calH = Math::OSInt2Double(ptY) - (Double)points[(i << 1) + 1];
-		calW = Math::OSInt2Double(ptX) - (Double)points[(i << 1)];
+		calH = OSInt2Double(ptY) - (Double)points[(i << 1) + 1];
+		calW = OSInt2Double(ptX) - (Double)points[(i << 1)];
 		calBase = calW * calW + calH * calH;
 		if (calBase < dist)
 		{

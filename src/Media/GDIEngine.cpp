@@ -598,7 +598,7 @@ Media::GDIFont::GDIFont(void *hdc, const Char *fontName, Double ptSize, Media::D
 	LOGFONTW lf;
 	ZeroMemory(&lf, sizeof(LOGFONT));
 	//this->pxSize = MulDiv(size, GetDeviceCaps((HDC)hdc, LOGPIXELSY), 72);
-	this->pxSize = Math::Double2Int32(ptSize * img->GetHDPI() / 72.0);
+	this->pxSize = Double2Int32(ptSize * img->GetHDPI() / 72.0);
 	lf.lfHeight = -this->pxSize;
 	if (style & Media::DrawEngine::DFS_BOLD)
 	{
@@ -649,7 +649,7 @@ Media::GDIFont::GDIFont(void *hdc, const WChar *fontName, Double ptSize, Media::
 //	EnumFontsW((HDC)hdc, 0, FontFunc, (LPARAM)this);
 	ZeroMemory(&lf, sizeof(LOGFONT));
 	//this->pxSize = MulDiv(size, GetDeviceCaps((HDC)hdc, LOGPIXELSY), 72);
-	this->pxSize = Math::Double2Int32(ptSize * img->GetHDPI() / 72.0);
+	this->pxSize = Double2Int32(ptSize * img->GetHDPI() / 72.0);
 	lf.lfHeight = -this->pxSize;
 	if (style & Media::DrawEngine::DFS_BOLD)
 	{
@@ -832,8 +832,8 @@ Bool Media::GDIImage::DrawLine(Double x1, Double y1, Double x2, Double y2, DrawP
 	}
 	if (p && (((GDIPen*)p)->oriColor & 0xff000000))
 	{
-		MoveToEx((HDC)this->hdcBmp, Math::Double2Int32(x1), Math::Double2Int32(y1), 0);
-		LineTo((HDC)this->hdcBmp, Math::Double2Int32(x2), Math::Double2Int32(y2));
+		MoveToEx((HDC)this->hdcBmp, Double2Int32(x1), Double2Int32(y1), 0);
+		LineTo((HDC)this->hdcBmp, Double2Int32(x2), Double2Int32(y2));
 	}
 	return true;
 }
@@ -968,13 +968,13 @@ Bool Media::GDIImage::DrawPolyPolygonI(Int32 *points, UInt32 *pointCnt, UOSInt n
 			{
 				j = pointCnt[i];
 
-				PolygonAccel(this->hdcBmp, points, j, left, top, width, height, Math::Double2Int32(penWidth));
+				PolygonAccel(this->hdcBmp, points, j, left, top, width, height, Double2Int32(penWidth));
 
 				points += j << 1;
 				i++;
 			}
 #else
-			PolyPolygonAccel((HDC)this->hdcBmp, points, pointCnt, nPointCnt, left, top, (OSInt)width, (OSInt)height, Math::Double2Int32(penWidth));
+			PolyPolygonAccel((HDC)this->hdcBmp, points, pointCnt, nPointCnt, left, top, (OSInt)width, (OSInt)height, Double2Int32(penWidth));
 #endif
 		}
 		else if (this->bmpBits && (((GDIBrush*)b)->oriColor & 0xff000000) == 0xff000000)
@@ -1091,7 +1091,7 @@ Bool Media::GDIImage::DrawPolyline(Double *points, UOSInt nPoints, DrawPen *p)
 	Int32 *ipts = MemAlloc(Int32, i);
 	while (i-- > 0)
 	{
-		ipts[i] = Math::Double2Int32(points[i]);
+		ipts[i] = Double2Int32(points[i]);
 	}
 	ret = DrawPolylineI(ipts, nPoints, p);
 	MemFree(ipts);
@@ -1105,7 +1105,7 @@ Bool Media::GDIImage::DrawPolygon(Double *points, UOSInt nPoints, DrawPen *p, Dr
 	Int32 *ipts = MemAlloc(Int32, i);
 	while (i-- > 0)
 	{
-		ipts[i] = Math::Double2Int32(points[i]);
+		ipts[i] = Double2Int32(points[i]);
 	}
 	ret = DrawPolygonI(ipts, nPoints, p, b);
 	MemFree(ipts);
@@ -1125,7 +1125,7 @@ Bool Media::GDIImage::DrawPolyPolygon(Double *points, UInt32 *pointCnt, UOSInt n
 	Int32 *ipts = MemAlloc(Int32, i);
 	while (i-- > 0)
 	{
-		ipts[i] = Math::Double2Int32(points[i]);
+		ipts[i] = Double2Int32(points[i]);
 	}
 	ret = DrawPolyPolygonI(ipts, pointCnt, nPointCnt, p, b);
 	MemFree(ipts);
@@ -1139,10 +1139,10 @@ Bool Media::GDIImage::DrawRect(Double x, Double y, Double w, Double h, DrawPen *
 		GDIBrush *brush = (GDIBrush*)b;
 		if (this->bmpBits)
 		{
-			OSInt ix = Math::Double2Int32(x);
-			OSInt iy = Math::Double2Int32(y);
-			OSInt iw = Math::Double2Int32(w);
-			OSInt ih = Math::Double2Int32(h);
+			OSInt ix = Double2Int32(x);
+			OSInt iy = Double2Int32(y);
+			OSInt iw = Double2Int32(w);
+			OSInt ih = Double2Int32(h);
 			if (ix < 0)
 			{
 				iw += ix;
@@ -1176,10 +1176,10 @@ Bool Media::GDIImage::DrawRect(Double x, Double y, Double w, Double h, DrawPen *
 		else
 		{
 			RECT rc;
-			rc.left = Math::Double2Int32(x);
-			rc.top = Math::Double2Int32(y);
-			rc.right = Math::Double2Int32(x + w);
-			rc.bottom = Math::Double2Int32(y + h);
+			rc.left = Double2Int32(x);
+			rc.top = Double2Int32(y);
+			rc.right = Double2Int32(x + w);
+			rc.bottom = Double2Int32(y + h);
 			Int32 i = 10;
 			
 			while (FillRect((HDC)this->hdcBmp, &rc, (HBRUSH)brush->hbrush) == 0)
@@ -1201,10 +1201,10 @@ Bool Media::GDIImage::DrawRect(Double x, Double y, Double w, Double h, DrawPen *
 		GDIPen *pen = (GDIPen*)p;
 		if (this->bmpBits && (pen->oriColor & 0xff000000) == 0xff000000)
 		{
-			OSInt ix = Math::Double2Int32(x);
-			OSInt iy = Math::Double2Int32(y);
-			OSInt iw = Math::Double2Int32(w);
-			OSInt ih = Math::Double2Int32(h);
+			OSInt ix = Double2Int32(x);
+			OSInt iy = Double2Int32(y);
+			OSInt iw = Double2Int32(w);
+			OSInt ih = Double2Int32(h);
 			if (ix >= 0 && iy >= 0 && iw + ix < (OSInt)this->width && ih + iy < (OSInt)this->height)
 			{
 				ImageUtil_DrawRectNA32((this->height - iy - ih - 1) * this->width * 4 + ix * 4 + (UInt8*)this->bmpBits, iw + 1, ih + 1, this->width << 2, pen->oriColor);
@@ -1217,10 +1217,10 @@ Bool Media::GDIImage::DrawRect(Double x, Double y, Double w, Double h, DrawPen *
 					GDIPen *pen = (GDIPen*)(this->currPen = p);
 					SelectObject((HDC)this->hdcBmp, (HPEN)pen->hpen);
 				}
-				pts[4].x = pts[1].x = pts[0].x = Math::Double2Int32(x);
-				pts[4].y = pts[3].y = pts[0].y = Math::Double2Int32(y);
-				pts[3].x = pts[2].x = Math::Double2Int32(x + w);
-				pts[2].y = pts[1].y = Math::Double2Int32(y + h);
+				pts[4].x = pts[1].x = pts[0].x = Double2Int32(x);
+				pts[4].y = pts[3].y = pts[0].y = Double2Int32(y);
+				pts[3].x = pts[2].x = Double2Int32(x + w);
+				pts[2].y = pts[1].y = Double2Int32(y + h);
 				Polyline((HDC)this->hdcBmp, pts, 5);
 			}
 		}
@@ -1232,10 +1232,10 @@ Bool Media::GDIImage::DrawRect(Double x, Double y, Double w, Double h, DrawPen *
 				GDIPen *pen = (GDIPen*)(this->currPen = p);
 				SelectObject((HDC)this->hdcBmp, (HPEN)pen->hpen);
 			}
-			pts[4].x = pts[1].x = pts[0].x = Math::Double2Int32(x);
-			pts[4].y = pts[3].y = pts[0].y = Math::Double2Int32(y);
-			pts[3].x = pts[2].x = Math::Double2Int32(x + w);
-			pts[2].y = pts[1].y = Math::Double2Int32(y + h);
+			pts[4].x = pts[1].x = pts[0].x = Double2Int32(x);
+			pts[4].y = pts[3].y = pts[0].y = Double2Int32(y);
+			pts[3].x = pts[2].x = Double2Int32(x + w);
+			pts[2].y = pts[1].y = Double2Int32(y + h);
 			Polyline((HDC)this->hdcBmp, pts, 5);
 		}
 	}
@@ -1259,7 +1259,7 @@ Bool Media::GDIImage::DrawEllipse(Double tlx, Double tly, Double w, Double h, Dr
 				SelectObject((HDC)this->hdcBmp, GetStockObject(NULL_BRUSH));
 				this->currBrush = 0;
 
-				Ellipse((HDC)this->hdcBmp, Math::Double2Int32(tlx), Math::Double2Int32(tly), Math::Double2Int32(tlx + w), Math::Double2Int32(tly + h));
+				Ellipse((HDC)this->hdcBmp, Double2Int32(tlx), Double2Int32(tly), Double2Int32(tlx + w), Double2Int32(tly + h));
 			}
 		}
 		else
@@ -1282,7 +1282,7 @@ Bool Media::GDIImage::DrawEllipse(Double tlx, Double tly, Double w, Double h, Dr
 				GDIBrush *brush = (GDIBrush*)b;
 				SelectObject((HDC)this->hdcBmp, brush->hbrush);
 			}
-			Ellipse((HDC)this->hdcBmp, Math::Double2Int32(tlx), Math::Double2Int32(tly), Math::Double2Int32(tlx + w), Math::Double2Int32(tly + h));
+			Ellipse((HDC)this->hdcBmp, Double2Int32(tlx), Double2Int32(tly), Double2Int32(tlx + w), Double2Int32(tly + h));
 		}
 	}
 	else
@@ -1315,7 +1315,7 @@ Bool Media::GDIImage::DrawEllipse(Double tlx, Double tly, Double w, Double h, Dr
 		{
 			SelectObject((HDC)tmpImg->hdcBmp, GetStockObject(NULL_BRUSH));
 		}
-		Ellipse((HDC)tmpImg->hdcBmp, Math::Double2Int32(tlx), Math::Double2Int32(tly), Math::Double2Int32(tlx + w), Math::Double2Int32(tly + h));
+		Ellipse((HDC)tmpImg->hdcBmp, Double2Int32(tlx), Double2Int32(tly), Double2Int32(tlx + w), Double2Int32(tly + h));
 		ImageUtil_ImageMask2ABlend32(imgPtr, imgPtr2, imgW, imgH, imgW << 2, imgW << 2, c1, c2);
 		
 		eng->DeleteImage(tmpImg);
@@ -1362,9 +1362,9 @@ Bool Media::GDIImage::DrawStringW(Double tlx, Double tly, const WChar *str, Draw
 			sz[1] = 0;
 		}
 #ifdef _WIN32_WCE
-		ExtTextOut((HDC)this->hdcBmp, Math::Double2Int32(tlx), Math::Double2Int32(tly - (sz[1] * 0.5)), 0, 0, str, (Int32)(src - str - 1), 0);
+		ExtTextOut((HDC)this->hdcBmp, Double2Int32(tlx), Double2Int32(tly - (sz[1] * 0.5)), 0, 0, str, (Int32)(src - str - 1), 0);
 #else
-		TextOutW((HDC)this->hdcBmp, Math::Double2Int32(tlx), Math::Double2Int32(tly - (sz[1] * 0.5)), str, (Int32)(src - str - 1));
+		TextOutW((HDC)this->hdcBmp, Double2Int32(tlx), Double2Int32(tly - (sz[1] * 0.5)), str, (Int32)(src - str - 1));
 #endif
 	}
 	else
@@ -1403,7 +1403,7 @@ Bool Media::GDIImage::DrawStringW(Double tlx, Double tly, const WChar *str, Draw
 		{
 			y = tly - sz[1] * 0.5;
 		}
-		this->DrawImagePt(tmpImg, Math::Double2Int32(x), Math::Double2Int32(y));
+		this->DrawImagePt(tmpImg, Double2Int32(x), Double2Int32(y));
 		this->eng->DeleteImage(tmpImg);
 	}
 	return true;
@@ -1456,13 +1456,13 @@ Bool Media::GDIImage::DrawStringRotW(Double centX, Double centY, const WChar *st
 		lf.lfQuality = ANTIALIASED_QUALITY;
 	}
 	Text::StrConcat(lf.lfFaceName, font->GetNameW());
-	lf.lfEscapement = Math::Double2Int32(angleDegree * 10.0);
+	lf.lfEscapement = Double2Int32(angleDegree * 10.0);
 	hfont = CreateFontIndirectW(&lf);
 
 	Int32 bnds[8];
 	OSInt px;
 	OSInt py;
-	GetStringBoundRotW(bnds, Math::Double2Int32(centX), Math::Double2Int32(centY), str, f, angleDegree, &px, &py);
+	GetStringBoundRotW(bnds, Double2Int32(centX), Double2Int32(centY), str, f, angleDegree, &px, &py);
 	HGDIOBJ ofont = SelectObject((HDC)this->hdcBmp, (HFONT)hfont);
 	TextOutW((HDC)this->hdcBmp, (int)px, (int)py, str, (Int32)(src - str - 1));
 	SelectObject((HDC)this->hdcBmp, ofont);
@@ -1488,8 +1488,8 @@ Bool Media::GDIImage::DrawStringB(Double dx, Double dy, const UTF8Char *str1, Dr
 
 Bool Media::GDIImage::DrawStringBW(Double dx, Double dy, const WChar *str1, DrawFont *f, DrawBrush *b, UOSInt buffSize)
 {
-	OSInt px = Math::Double2Int32(dx);
-	OSInt py = Math::Double2Int32(dy);
+	OSInt px = Double2Int32(dx);
+	OSInt py = Double2Int32(dy);
 	GDIBrush *brush = (GDIBrush*)b;
 	const WChar *src = str1;
 	while (*src++);
@@ -1653,7 +1653,7 @@ Bool Media::GDIImage::DrawStringBW(Double dx, Double dy, const WChar *str1, Draw
 					ImageUtil_ImageColorReplace32((UInt8*)pbits, (UInt8*)pbits, swidth, sheight, bpl, bpl, color);
 					gimg->SetHDPI(this->GetHDPI());
 					gimg->SetVDPI(this->GetVDPI());
-					this->DrawImagePt(gimg, Math::OSInt2Double(px - sx), Math::OSInt2Double(py - sy));
+					this->DrawImagePt(gimg, OSInt2Double(px - sx), OSInt2Double(py - sy));
 				}
 			}
 		}
@@ -1681,8 +1681,8 @@ Bool Media::GDIImage::DrawStringRotB(Double dx, Double dy, const UTF8Char *str1,
 
 Bool Media::GDIImage::DrawStringRotBW(Double dx, Double dy, const WChar *str1, DrawFont *f, DrawBrush *b, Double angleDegree, UOSInt buffSize)
 {
-	OSInt px = Math::Double2Int32(dx);
-	OSInt py = Math::Double2Int32(dy);
+	OSInt px = Double2Int32(dx);
+	OSInt py = Double2Int32(dy);
 	GDIBrush *brush = (GDIBrush*)b;
 	const WChar *src = str1;
 	while (*src++);
@@ -1817,7 +1817,7 @@ Bool Media::GDIImage::DrawStringRotBW(Double dx, Double dy, const WChar *str1, D
 				lf.lfQuality = ANTIALIASED_QUALITY;
 			}
 			Text::StrConcat(lf.lfFaceName, font->GetNameW());
-			lf.lfEscapement = Math::Double2Int32(angleDegree * 10);
+			lf.lfEscapement = Double2Int32(angleDegree * 10);
 			hfont = CreateFontIndirectW(&lf);
 
 			HGDIOBJ ofont = SelectObject((HDC)gimg->hdcBmp, (HFONT)hfont);
@@ -1861,14 +1861,14 @@ Bool Media::GDIImage::DrawImagePt(DrawImage *img, Double tlx, Double tly)
 	GDIImage *image = (GDIImage *)img;
 	if (this->hBmp == 0)
 	{
-		return this->DrawImageRect(img, Math::Double2Int32(tlx), Math::Double2Int32(tly), Math::Double2Int32(tlx + image->GetWidth() * this->info->hdpi / image->GetHDPI()), Math::Double2Int32(tly + image->GetHeight() * this->info->vdpi / image->GetVDPI()));
+		return this->DrawImageRect(img, Double2Int32(tlx), Double2Int32(tly), Double2Int32(tlx + image->GetWidth() * this->info->hdpi / image->GetHDPI()), Double2Int32(tly + image->GetHeight() * this->info->vdpi / image->GetVDPI()));
 	}
 	if (image->info->atype == Media::AT_NO_ALPHA)
 	{
 		if (this->IsOffScreen())
 		{
-			Int32 x = Math::Double2Int32(tlx);
-			Int32 y = Math::Double2Int32(tly);
+			Int32 x = Double2Int32(tlx);
+			Int32 y = Double2Int32(tly);
 			Int32 sx = 0;
 			Int32 sy = 0;
 			OSInt w = image->width;
@@ -1901,7 +1901,7 @@ Bool Media::GDIImage::DrawImagePt(DrawImage *img, Double tlx, Double tly)
 		}
 		else
 		{
-			BitBlt((HDC)this->hdcBmp, Math::Double2Int32(tlx), Math::Double2Int32(tly), (int)image->width, (int)image->height, (HDC)image->hdcBmp, 0, 0, SRCCOPY);
+			BitBlt((HDC)this->hdcBmp, Double2Int32(tlx), Double2Int32(tly), (int)image->width, (int)image->height, (HDC)image->hdcBmp, 0, 0, SRCCOPY);
 		}
 	}
 	else
@@ -1918,24 +1918,24 @@ Bool Media::GDIImage::DrawImagePt(DrawImage *img, Double tlx, Double tly)
 
 			if (tlx < 0)
 			{
-				w += Math::Double2Int32(tlx);
-				sbits -= Math::Double2Int32(tlx) << 2;
+				w += Double2Int32(tlx);
+				sbits -= Double2Int32(tlx) << 2;
 				tlx = 0;
 			}
 			if (tly < 0)
 			{
-				h += Math::Double2Int32(tly);
+				h += Double2Int32(tly);
 				tly = 0;
 			}
 
 			if (tlx + w > this->width)
 			{
-				w = this->width - Math::Double2Int32(tlx);
+				w = this->width - Double2Int32(tlx);
 			}
 			if (tly + h > this->height)
 			{
-				sbits += (h - (this->height - Math::Double2Int32(tly))) * sbpl;
-				h = this->height - Math::Double2Int32(tly);
+				sbits += (h - (this->height - Double2Int32(tly))) * sbpl;
+				h = this->height - Double2Int32(tly);
 			}
 			if (w > 0 && h > 0)
 			{
@@ -1954,7 +1954,7 @@ Bool Media::GDIImage::DrawImagePt(DrawImage *img, Double tlx, Double tly)
 				bf.AlphaFormat = AC_SRC_ALPHA;
 				bf.BlendOp = AC_SRC_OVER;
 				bf.BlendFlags = 0;
-				AlphaBlend((HDC)this->hdcBmp, Math::Double2Int32(tlx), Math::Double2Int32(tly), (int)image->width, (int)image->height, (HDC)image->hdcBmp, 0, 0, (int)image->width, (int)image->height, bf);
+				AlphaBlend((HDC)this->hdcBmp, Double2Int32(tlx), Double2Int32(tly), (int)image->width, (int)image->height, (HDC)image->hdcBmp, 0, 0, (int)image->width, (int)image->height, bf);
 			}
 			else
 			{
@@ -1963,7 +1963,7 @@ Bool Media::GDIImage::DrawImagePt(DrawImage *img, Double tlx, Double tly)
 				bf.AlphaFormat = AC_SRC_ALPHA;
 				bf.BlendOp = AC_SRC_OVER;
 				bf.BlendFlags = 0;
-				AlphaBlend((HDC)this->hdcBmp, Math::Double2Int32(tlx), Math::Double2Int32(tly), (int)image->width, (int)image->height, (HDC)image->hdcBmp, 0, 0, (int)image->width, (int)image->height, bf);
+				AlphaBlend((HDC)this->hdcBmp, Double2Int32(tlx), Double2Int32(tly), (int)image->width, (int)image->height, (HDC)image->hdcBmp, 0, 0, (int)image->width, (int)image->height, bf);
 			}
 		}
 #elif (!defined(_WIN32_WCE) || (_WIN32_WCE >= 0x0500))
@@ -1974,7 +1974,7 @@ Bool Media::GDIImage::DrawImagePt(DrawImage *img, Double tlx, Double tly)
 			bf.AlphaFormat = AC_SRC_ALPHA;
 			bf.BlendOp = AC_SRC_OVER;
 			bf.BlendFlags = 0;
-			AlphaBlend((HDC)this->hdcBmp, Math::Double2Int32(tlx), Math::Double2Int32(tly), (int)image->width, (int)image->height, (HDC)image->hdcBmp, 0, 0, (int)image->width, (int)image->height, bf);
+			AlphaBlend((HDC)this->hdcBmp, Double2Int32(tlx), Double2Int32(tly), (int)image->width, (int)image->height, (HDC)image->hdcBmp, 0, 0, (int)image->width, (int)image->height, bf);
 		}
 		else
 		{
@@ -1983,10 +1983,10 @@ Bool Media::GDIImage::DrawImagePt(DrawImage *img, Double tlx, Double tly)
 			bf.AlphaFormat = AC_SRC_ALPHA;
 			bf.BlendOp = AC_SRC_OVER;
 			bf.BlendFlags = 0;
-			AlphaBlend((HDC)this->hdcBmp, Math::Double2Int32(tlx), Math::Double2Int32(tly), (int)image->width, (int)image->height, (HDC)image->hdcBmp, 0, 0, (int)image->width, (int)image->height, bf);
+			AlphaBlend((HDC)this->hdcBmp, Double2Int32(tlx), Double2Int32(tly), (int)image->width, (int)image->height, (HDC)image->hdcBmp, 0, 0, (int)image->width, (int)image->height, bf);
 		}
 #else
-		BitBlt((HDC)this->hdcBmp, Math::Double2Int32(tlx), Math::Double2Int32(tly), (int)image->width, (int)image->height, (HDC)image->hdcBmp, 0, 0, SRCCOPY);
+		BitBlt((HDC)this->hdcBmp, Double2Int32(tlx), Double2Int32(tly), (int)image->width, (int)image->height, (HDC)image->hdcBmp, 0, 0, SRCCOPY);
 #endif
 	}
 	return true;
@@ -2000,8 +2000,8 @@ Bool Media::GDIImage::DrawImagePt2(Media::StaticImage *img, Double tlx, Double t
 		simg->To32bpp();
 		if (simg->info->atype == Media::AT_NO_ALPHA)
 		{
-			Int32 x = Math::Double2Int32(tlx);
-			Int32 y = Math::Double2Int32(tly);
+			Int32 x = Double2Int32(tlx);
+			Int32 y = Double2Int32(tly);
 			Int32 sx = 0;
 			Int32 sy = 0;
 			OSInt w = simg->info->dispWidth;
@@ -2043,31 +2043,31 @@ Bool Media::GDIImage::DrawImagePt2(Media::StaticImage *img, Double tlx, Double t
 
 			if (tlx < 0)
 			{
-				w += Math::Double2Int32(tlx);
-				sbits -= Math::Double2Int32(tlx) << 2;
+				w += Double2Int32(tlx);
+				sbits -= Double2Int32(tlx) << 2;
 				tlx = 0;
 			}
 			if (tly < 0)
 			{
-				h += Math::Double2Int32(tly);
-				sbits -= Math::Double2Int32(tly) * sbpl;
+				h += Double2Int32(tly);
+				sbits -= Double2Int32(tly) * sbpl;
 				tly = 0;
 			}
 
 			if (tlx + w > this->width)
 			{
-				w = this->width - Math::Double2Int32(tlx);
+				w = this->width - Double2Int32(tlx);
 			}
 			if (tly + h > this->height)
 			{
-				h = this->height - Math::Double2Int32(tly);
+				h = this->height - Double2Int32(tly);
 			}
 			if (w > 0 && h > 0)
 			{
 				this->eng->iab->SetSourceProfile(simg->info->color);
 				this->eng->iab->SetDestProfile(this->info->color);
 				this->eng->iab->SetOutputProfile(this->info->color);
-				this->eng->iab->Blend(dbits + (this->height - Math::Double2Int32(tly) - 1) * dbpl + (Math::Double2Int32(tlx) * 4), -dbpl, sbits, sbpl, w, h, simg->info->atype);
+				this->eng->iab->Blend(dbits + (this->height - Double2Int32(tly) - 1) * dbpl + (Double2Int32(tlx) * 4), -dbpl, sbits, sbpl, w, h, simg->info->atype);
 			}
 		}
 		return true;
@@ -2090,18 +2090,18 @@ Bool Media::GDIImage::DrawImagePt3(DrawImage *img, Double destX, Double destY, D
 	GDIImage *image = (GDIImage *)img;
 	if (this->hBmp == 0)
 	{
-		return this->DrawImageRect(img, Math::Double2Int32(destX), Math::Double2Int32(destY), Math::Double2Int32(destX + srcW * this->info->hdpi / image->GetHDPI()), Math::Double2Int32(destY + srcH * this->info->vdpi / image->GetVDPI()));
+		return this->DrawImageRect(img, Double2Int32(destX), Double2Int32(destY), Double2Int32(destX + srcW * this->info->hdpi / image->GetHDPI()), Double2Int32(destY + srcH * this->info->vdpi / image->GetVDPI()));
 	}
 	if (image->info->atype == Media::AT_NO_ALPHA)
 	{
 		if (this->IsOffScreen())
 		{
-			Int32 x = Math::Double2Int32(destX);
-			Int32 y = Math::Double2Int32(destY);
-			Int32 sx = Math::Double2Int32(srcX);
-			Int32 sy = Math::Double2Int32(srcY);
-			OSInt w = Math::Double2Int32(srcW);
-			OSInt h = Math::Double2Int32(srcH);
+			Int32 x = Double2Int32(destX);
+			Int32 y = Double2Int32(destY);
+			Int32 sx = Double2Int32(srcX);
+			Int32 sy = Double2Int32(srcY);
+			OSInt w = Double2Int32(srcW);
+			OSInt h = Double2Int32(srcH);
 			OSInt bpl = this->width << 2;
 			if (x < 0)
 			{
@@ -2130,7 +2130,7 @@ Bool Media::GDIImage::DrawImagePt3(DrawImage *img, Double destX, Double destY, D
 		}
 		else
 		{
-			BitBlt((HDC)this->hdcBmp, Math::Double2Int32(destX), Math::Double2Int32(destY), Math::Double2Int32(srcW), Math::Double2Int32(srcH), (HDC)image->hdcBmp, Math::Double2Int32(srcX), Math::Double2Int32(srcY), SRCCOPY);
+			BitBlt((HDC)this->hdcBmp, Double2Int32(destX), Double2Int32(destY), Double2Int32(srcW), Double2Int32(srcH), (HDC)image->hdcBmp, Double2Int32(srcX), Double2Int32(srcY), SRCCOPY);
 		}
 	}
 	else
@@ -2138,12 +2138,12 @@ Bool Media::GDIImage::DrawImagePt3(DrawImage *img, Double destX, Double destY, D
 #if !defined(_WIN32_WCE)
 		if (this->IsOffScreen())
 		{
-			Int32 x = Math::Double2Int32(destX);
-			Int32 y = Math::Double2Int32(destY);
-			Int32 sx = Math::Double2Int32(srcX);
-			Int32 sy = Math::Double2Int32(srcY);
-			OSInt w = Math::Double2Int32(srcW);
-			OSInt h = Math::Double2Int32(srcH);
+			Int32 x = Double2Int32(destX);
+			Int32 y = Double2Int32(destY);
+			Int32 sx = Double2Int32(srcX);
+			Int32 sy = Double2Int32(srcY);
+			OSInt w = Double2Int32(srcW);
+			OSInt h = Double2Int32(srcH);
 			UInt8 *dbits = (UInt8*)this->bmpBits;
 			UInt8 *sbits = (UInt8*)image->bmpBits;
 			OSInt dbpl = this->width << 2;
@@ -2187,7 +2187,7 @@ Bool Media::GDIImage::DrawImagePt3(DrawImage *img, Double destX, Double destY, D
 				bf.AlphaFormat = AC_SRC_ALPHA;
 				bf.BlendOp = AC_SRC_OVER;
 				bf.BlendFlags = 0;
-				AlphaBlend((HDC)this->hdcBmp, Math::Double2Int32(destX), Math::Double2Int32(destY), Math::Double2Int32(srcW), Math::Double2Int32(srcH), (HDC)image->hdcBmp, Math::Double2Int32(srcX), Math::Double2Int32(srcY), Math::Double2Int32(srcW), Math::Double2Int32(srcH), bf);
+				AlphaBlend((HDC)this->hdcBmp, Double2Int32(destX), Double2Int32(destY), Double2Int32(srcW), Double2Int32(srcH), (HDC)image->hdcBmp, Double2Int32(srcX), Double2Int32(srcY), Double2Int32(srcW), Double2Int32(srcH), bf);
 			}
 			else
 			{
@@ -2196,7 +2196,7 @@ Bool Media::GDIImage::DrawImagePt3(DrawImage *img, Double destX, Double destY, D
 				bf.AlphaFormat = AC_SRC_ALPHA;
 				bf.BlendOp = AC_SRC_OVER;
 				bf.BlendFlags = 0;
-				AlphaBlend((HDC)this->hdcBmp, Math::Double2Int32(destX), Math::Double2Int32(destY), Math::Double2Int32(srcW), Math::Double2Int32(srcH), (HDC)image->hdcBmp, Math::Double2Int32(srcX), Math::Double2Int32(srcY), Math::Double2Int32(srcW), Math::Double2Int32(srcH), bf);
+				AlphaBlend((HDC)this->hdcBmp, Double2Int32(destX), Double2Int32(destY), Double2Int32(srcW), Double2Int32(srcH), (HDC)image->hdcBmp, Double2Int32(srcX), Double2Int32(srcY), Double2Int32(srcW), Double2Int32(srcH), bf);
 			}
 		}
 #elif (!defined(_WIN32_WCE) || (_WIN32_WCE >= 0x0500))
@@ -2207,7 +2207,7 @@ Bool Media::GDIImage::DrawImagePt3(DrawImage *img, Double destX, Double destY, D
 			bf.AlphaFormat = AC_SRC_ALPHA;
 			bf.BlendOp = AC_SRC_OVER;
 			bf.BlendFlags = 0;
-			AlphaBlend((HDC)this->hdcBmp, Math::Double2Int32(destX), Math::Double2Int32(destY), Math::Double2Int32(srcW), Math::Double2Int32(srcH), (HDC)image->hdcBmp, Math::Double2Int32(srcX), Math::Double2Int32(srcY), Math::Double2Int32(srcW), Math::Double2Int32(srcH), bf);
+			AlphaBlend((HDC)this->hdcBmp, Double2Int32(destX), Double2Int32(destY), Double2Int32(srcW), Double2Int32(srcH), (HDC)image->hdcBmp, Double2Int32(srcX), Double2Int32(srcY), Double2Int32(srcW), Double2Int32(srcH), bf);
 		}
 		else
 		{
@@ -2216,10 +2216,10 @@ Bool Media::GDIImage::DrawImagePt3(DrawImage *img, Double destX, Double destY, D
 			bf.AlphaFormat = AC_SRC_ALPHA;
 			bf.BlendOp = AC_SRC_OVER;
 			bf.BlendFlags = 0;
-			AlphaBlend((HDC)this->hdcBmp, Math::Double2Int32(destX), Math::Double2Int32(destY), Math::Double2Int32(srcW), Math::Double2Int32(srcH), (HDC)image->hdcBmp, Math::Double2Int32(srcX), Math::Double2Int32(srcY), Math::Double2Int32(srcW), Math::Double2Int32(srcH), bf);
+			AlphaBlend((HDC)this->hdcBmp, Double2Int32(destX), Double2Int32(destY), Double2Int32(srcW), Double2Int32(srcH), (HDC)image->hdcBmp, Double2Int32(srcX), Double2Int32(srcY), Double2Int32(srcW), Double2Int32(srcH), bf);
 		}
 #else
-		BitBlt((HDC)this->hdcBmp, Math::Double2Int32(destX), Math::Double2Int32(destY), Math::Double2Int32(srcW), Math::Double2Int32(srcH), (HDC)image->hdcBmp, Math::Double2Int32(srcX), Math::Double2Int32(srcY), SRCCOPY);
+		BitBlt((HDC)this->hdcBmp, Double2Int32(destX), Double2Int32(destY), Double2Int32(srcW), Double2Int32(srcH), (HDC)image->hdcBmp, Double2Int32(srcX), Double2Int32(srcY), SRCCOPY);
 #endif
 	}
 	return true;
@@ -2240,14 +2240,14 @@ Media::DrawPen *Media::GDIImage::NewPenARGB(UInt32 color, Double thick, UInt8 *p
 	DWORD *dwPattern = 0;
 	if (nPattern == 0)
 	{
-		hpen = CreatePen(PS_SOLID, Math::Double2Int32(thick), GDIEGetCol(color));
+		hpen = CreatePen(PS_SOLID, Double2Int32(thick), GDIEGetCol(color));
 	}
 	else
 	{
 #ifdef _WIN32_WCE
 		LOGPEN lp;
 		lp.lopnStyle = PS_DASH;
-		lp.lopnWidth.x = Math::Double2Int32(thick);
+		lp.lopnWidth.x = Double2Int32(thick);
 		lp.lopnWidth.y = lp.lopnWidth.x;
 		lp.lopnColor = GDIEGetCol(color);
 		hpen = CreatePenIndirect(&lp);
@@ -2262,7 +2262,7 @@ Media::DrawPen *Media::GDIImage::NewPenARGB(UInt32 color, Double thick, UInt8 *p
 		{
 			dwPattern[i] = pattern[i];
 		}
-		hpen = ExtCreatePen(PS_GEOMETRIC | PS_USERSTYLE | PS_ENDCAP_ROUND, Math::Double2Int32(thick), &lb, (UInt32)nPattern, dwPattern);
+		hpen = ExtCreatePen(PS_GEOMETRIC | PS_USERSTYLE | PS_ENDCAP_ROUND, Double2Int32(thick), &lb, (UInt32)nPattern, dwPattern);
 #endif
 	}
 	GDIPen *pen;
@@ -2385,7 +2385,7 @@ Bool Media::GDIImage::GetTextSize(DrawFont *fnt, const WChar *txt, OSInt txtLen,
 
 	if (isCJK)
 	{
-		sz[0] = Math::OSInt2Double((((GDIFont*)fnt)->pxSize + 1) * txtLen);
+		sz[0] = OSInt2Double((((GDIFont*)fnt)->pxSize + 1) * txtLen);
 		sz[1] = ((GDIFont*)fnt)->pxSize + 2;
 	}
 	else
@@ -2447,57 +2447,57 @@ void Media::GDIImage::GetStringBoundW(Int32 *pos, OSInt centX, OSInt centY, cons
 	}
 	else if (strAlign == Media::DrawEngine::DRAW_POS_TOPCENTER)
 	{
-		pos[0] = (Int32)centX - Math::Double2Int32(sz[0] * 0.5);
+		pos[0] = (Int32)centX - Double2Int32(sz[0] * 0.5);
 		pos[1] = (Int32)centY;
 	}
 	else if (strAlign == Media::DrawEngine::DRAW_POS_TOPRIGHT)
 	{
-		pos[0] = (Int32)centX - Math::Double2Int32(sz[0]);
+		pos[0] = (Int32)centX - Double2Int32(sz[0]);
 		pos[1] = (Int32)centY;
 	}
 	else if (strAlign == Media::DrawEngine::DRAW_POS_CENTERLEFT)
 	{
 		pos[0] = (Int32)centX;
-		pos[1] = (Int32)centY - Math::Double2Int32(sz[1] * 0.5);
+		pos[1] = (Int32)centY - Double2Int32(sz[1] * 0.5);
 		isCenter = true;
 	}
 	else if (strAlign == Media::DrawEngine::DRAW_POS_CENTER)
 	{
-		pos[0] = (Int32)centX - Math::Double2Int32(sz[0] * 0.5);
-		pos[1] = (Int32)centY - Math::Double2Int32(sz[1] * 0.5);
+		pos[0] = (Int32)centX - Double2Int32(sz[0] * 0.5);
+		pos[1] = (Int32)centY - Double2Int32(sz[1] * 0.5);
 		isCenter = true;
 	}
 	else if (strAlign == Media::DrawEngine::DRAW_POS_CENTERRIGHT)
 	{
-		pos[0] = (Int32)centX - Math::Double2Int32(sz[0]);
-		pos[1] = (Int32)centY - Math::Double2Int32(sz[1] * 0.5);
+		pos[0] = (Int32)centX - Double2Int32(sz[0]);
+		pos[1] = (Int32)centY - Double2Int32(sz[1] * 0.5);
 		isCenter = true;
 	}
 	else if (strAlign == Media::DrawEngine::DRAW_POS_BOTTOMLEFT)
 	{
 		pos[0] = (Int32)centX;
-		pos[1] = (Int32)centY - Math::Double2Int32(sz[1]);
+		pos[1] = (Int32)centY - Double2Int32(sz[1]);
 	}
 	else if (strAlign == Media::DrawEngine::DRAW_POS_BOTTOMCENTER)
 	{
-		pos[0] = (Int32)centX - Math::Double2Int32(sz[0] * 0.5);
-		pos[1] = (Int32)centY - Math::Double2Int32(sz[1]);
+		pos[0] = (Int32)centX - Double2Int32(sz[0] * 0.5);
+		pos[1] = (Int32)centY - Double2Int32(sz[1]);
 	}
 	else if (strAlign == Media::DrawEngine::DRAW_POS_BOTTOMRIGHT)
 	{
-		pos[0] = (Int32)centX - Math::Double2Int32(sz[0]);
-		pos[1] = (Int32)centY - Math::Double2Int32(sz[1]);
+		pos[0] = (Int32)centX - Double2Int32(sz[0]);
+		pos[1] = (Int32)centY - Double2Int32(sz[1]);
 	}
-	pos[2] = pos[0] + Math::Double2Int32(sz[0]);
+	pos[2] = pos[0] + Double2Int32(sz[0]);
 	pos[3] = pos[1];
-	pos[4] = pos[0] + Math::Double2Int32(sz[0]);
-	pos[5] = pos[1] + Math::Double2Int32(sz[1]);
+	pos[4] = pos[0] + Double2Int32(sz[0]);
+	pos[5] = pos[1] + Double2Int32(sz[1]);
 	pos[6] = pos[0];
-	pos[7] = pos[1] + Math::Double2Int32(sz[1]);
+	pos[7] = pos[1] + Double2Int32(sz[1]);
 	if (isCenter)
 	{
 		*drawX = centX;
-		*drawY = centY - Math::Double2Int32(sz[1] * 0.5);
+		*drawY = centY - Double2Int32(sz[1] * 0.5);
 	}
 	else
 	{
@@ -2578,30 +2578,30 @@ void Media::GDIImage::GetStringBoundRotW(Int32 *pos, Double centX, Double centY,
 		pts[8] = centX;
 		pts[9] = centY - sz[1] * 0.5;
 		Math::Geometry::RotateACW(pts, pts, 5, centX, centY, angleDegree * Math::PI / 180.0);
-		pos[0] = Math::Double2Int32(pts[0]);
-		pos[1] = Math::Double2Int32(pts[1]);
-		pos[2] = Math::Double2Int32(pts[2]);
-		pos[3] = Math::Double2Int32(pts[3]);
-		pos[4] = Math::Double2Int32(pts[4]);
-		pos[5] = Math::Double2Int32(pts[5]);
-		pos[6] = Math::Double2Int32(pts[6]);
-		pos[7] = Math::Double2Int32(pts[7]);
-		*drawX = Math::Double2Int32(pts[8]);
-		*drawY = Math::Double2Int32(pts[9]);
+		pos[0] = Double2Int32(pts[0]);
+		pos[1] = Double2Int32(pts[1]);
+		pos[2] = Double2Int32(pts[2]);
+		pos[3] = Double2Int32(pts[3]);
+		pos[4] = Double2Int32(pts[4]);
+		pos[5] = Double2Int32(pts[5]);
+		pos[6] = Double2Int32(pts[6]);
+		pos[7] = Double2Int32(pts[7]);
+		*drawX = Double2Int32(pts[8]);
+		*drawY = Double2Int32(pts[9]);
 	}
 	else
 	{
 		Math::Geometry::RotateACW(pts, pts, 4, centX, centY, angleDegree * Math::PI / 180.0);
-		pos[0] = Math::Double2Int32(pts[0]);
-		pos[1] = Math::Double2Int32(pts[1]);
-		pos[2] = Math::Double2Int32(pts[2]);
-		pos[3] = Math::Double2Int32(pts[3]);
-		pos[4] = Math::Double2Int32(pts[4]);
-		pos[5] = Math::Double2Int32(pts[5]);
-		pos[6] = Math::Double2Int32(pts[6]);
-		pos[7] = Math::Double2Int32(pts[7]);
-		*drawX = Math::Double2Int32(centX);
-		*drawY = Math::Double2Int32(centY);
+		pos[0] = Double2Int32(pts[0]);
+		pos[1] = Double2Int32(pts[1]);
+		pos[2] = Double2Int32(pts[2]);
+		pos[3] = Double2Int32(pts[3]);
+		pos[4] = Double2Int32(pts[4]);
+		pos[5] = Double2Int32(pts[5]);
+		pos[6] = Double2Int32(pts[6]);
+		pos[7] = Double2Int32(pts[7]);
+		*drawX = Double2Int32(centX);
+		*drawY = Double2Int32(centY);
 	}
 }
 
@@ -3008,7 +3008,7 @@ Bool Media::GDIImage::DrawRectN(OSInt oriX, OSInt oriY, OSInt oriW, OSInt oriH, 
 	{
 		if (p != 0)
 		{
-			DrawRect(Math::OSInt2Double(oriX), Math::OSInt2Double(oriY), Math::OSInt2Double(oriW), Math::OSInt2Double(oriH), p, 0);
+			DrawRect(OSInt2Double(oriX), OSInt2Double(oriY), OSInt2Double(oriW), OSInt2Double(oriH), p, 0);
 		}
 		return true;
 	}
@@ -3055,7 +3055,7 @@ Bool Media::GDIImage::DrawRectN(OSInt oriX, OSInt oriY, OSInt oriW, OSInt oriH, 
 	}
 	if (p)
 	{
-		DrawRect(Math::OSInt2Double(oriX), Math::OSInt2Double(oriY), Math::OSInt2Double(oriW), Math::OSInt2Double(oriH), p, 0);
+		DrawRect(OSInt2Double(oriX), OSInt2Double(oriY), OSInt2Double(oriW), OSInt2Double(oriH), p, 0);
 	}
 	return true;
 }
@@ -3084,7 +3084,7 @@ void Media::GDIImage::MulImageAlpha(Double val)
 	}
 	if (this->info->storeBPP == 32 && this->bmpBits && this->info->pf == Media::PF_B8G8R8A8)
 	{
-		ImageUtil_ImageAlphaMul32((UInt8*)this->bmpBits, this->width, this->height, this->width << 2, (UInt32)Math::Double2Int32(val * 65536.0));
+		ImageUtil_ImageAlphaMul32((UInt8*)this->bmpBits, this->width, this->height, this->width << 2, (UInt32)Double2Int32(val * 65536.0));
 	}
 }
 

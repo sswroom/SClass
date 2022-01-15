@@ -60,10 +60,10 @@ void Media::CS::CSNV12_LRGBC::SetupInterpolationParameter(UOSInt source_length, 
 	i = 0;
 	while (i < result_length)
 	{
-		pos = ((Math::UOSInt2Double(i) + 0.5) * Math::UOSInt2Double(source_length));
-		pos /= Math::UOSInt2Double(result_length);
-		n = (OSInt)Math::Fix(pos - (LANCZOS_NTAP / 2 - 0.5));//2.5);
-		pos = (Math::OSInt2Double(n) + 0.5 - pos);
+		pos = ((UOSInt2Double(i) + 0.5) * UOSInt2Double(source_length));
+		pos /= UOSInt2Double(result_length);
+		n = (OSInt)Math_Fix(pos - (LANCZOS_NTAP / 2 - 0.5));//2.5);
+		pos = (OSInt2Double(n) + 0.5 - pos);
 		sum = 0;
 #if LANCZOS_NTAP == 4
 		ind = (Int32*)&out->weight[i * 6];
@@ -85,8 +85,8 @@ void Media::CS::CSNV12_LRGBC::SetupInterpolationParameter(UOSInt source_length, 
 		j = 0;
 		while (j < out->tap)
 		{
-			UInt16 v1 = (UInt16)(0xffff & Math::Double2Int32((work[j] / sum) * 32767.0));
-			UInt16 v2 = (UInt16)(0xffff & Math::Double2Int32((work[j + 1] / sum) * 32767.0));
+			UInt16 v1 = (UInt16)(0xffff & Double2Int32((work[j] / sum) * 32767.0));
+			UInt16 v2 = (UInt16)(0xffff & Double2Int32((work[j + 1] / sum) * 32767.0));
 			UInt16 *tmpPtr = (UInt16*)&out->weight[i * 6 + j + 2];
 			tmpPtr[0] = v1;
 			tmpPtr[1] = v2;
@@ -117,8 +117,8 @@ void Media::CS::CSNV12_LRGBC::SetupInterpolationParameter(UOSInt source_length, 
 		j = 0;
 		while (j < out->tap)
 		{
-			UInt16 v1 = (UInt16)(0xffff & Math::Double2Int32((work[j] / sum) * 32767.0));
-			UInt16 v2 = (UInt16)(0xffff & Math::Double2Int32((work[j + 1] / sum) * 32767.0));
+			UInt16 v1 = (UInt16)(0xffff & Double2Int32((work[j] / sum) * 32767.0));
+			UInt16 v2 = (UInt16)(0xffff & Double2Int32((work[j + 1] / sum) * 32767.0));
 			UInt16 *tmpPtr = (UInt16*)&out->weight[i * out->tap + j];
 			tmpPtr[0] = v1;
 			tmpPtr[1] = v2;

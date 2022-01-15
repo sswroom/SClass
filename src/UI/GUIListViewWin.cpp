@@ -144,7 +144,7 @@ Bool UI::GUIListView::AddColumn(const WChar *columnName, Double colWidth)
 	LVCOLUMNW col;
 	col.mask = LVCF_TEXT | LVCF_WIDTH;
 	col.pszText = (LPWSTR)columnName;
-	col.cx = Math::Double2Int32(colWidth * this->hdpi / this->ddpi);
+	col.cx = Double2Int32(colWidth * this->hdpi / this->ddpi);
 
 	OSInt ret = SendMessage((HWND)this->hwnd, LVM_INSERTCOLUMNW, this->colCnt, (LPARAM)&col);
 	if (ret != -1)
@@ -159,7 +159,7 @@ Bool UI::GUIListView::SetColumnWidth(UOSInt index, Double colWidth)
 {
 	LVCOLUMNW col;
 	col.mask = LVCF_WIDTH;
-	col.cx = Math::Double2Int32(colWidth * this->hdpi / this->ddpi);
+	col.cx = Double2Int32(colWidth * this->hdpi / this->ddpi);
 
 	OSInt ret = SendMessage((HWND)this->hwnd, LVM_SETCOLUMNW, index, (LPARAM)&col);
 	if (ret != -1)
@@ -633,7 +633,7 @@ void UI::GUIListView::SetDPI(Double hdpi, Double ddpi)
 		ret = SendMessage((HWND)this->hwnd, LVM_GETCOLUMNW, i, (LPARAM)&col);
 		if (ret != 0)
 		{
-			col.cx = Math::Double2Int32(col.cx * ratio);
+			col.cx = Double2Int32(col.cx * ratio);
 			ret = SendMessage((HWND)this->hwnd, LVM_SETCOLUMNW, i, (LPARAM)&col);
 		}
 		i++;

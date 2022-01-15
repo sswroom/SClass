@@ -24,11 +24,11 @@ void UI::DObj::RollingTextDObj::UpdateBGImg()
 		OSInt j;
 		Double currY;
 
-		Media::DrawImageTool::SplitString(dimg, this->txt, &lines, f, Math::OSInt2Double(this->width));
+		Media::DrawImageTool::SplitString(dimg, this->txt, &lines, f, OSInt2Double(this->width));
 		dimg->DelFont(f);
 		this->deng->DeleteImage(dimg);
 
-		this->dimg = this->deng->CreateImage32(this->width, Math::Double2Int32(this->lineHeight * lines.GetCount()), Media::AT_NO_ALPHA);
+		this->dimg = this->deng->CreateImage32(this->width, Double2Int32(this->lineHeight * lines.GetCount()), Media::AT_NO_ALPHA);
 		f = this->dimg->NewFontH(this->fontName, this->fontSize, Media::DrawEngine::DFS_ANTIALIAS, this->codePage);
 		b = this->dimg->NewBrushARGB(0xffffffff);
 		currY = 0;
@@ -250,11 +250,11 @@ Bool UI::DObj::RollingTextDObj::IsChanged()
 	currTime.SetCurrTimeUTC();
 	Int64 t = currTime.DiffMS(this->startTime);
 	OSInt h = this->dimg->GetHeight();
-	OSInt currPos = Math::Double2Int32(t * this->rollSpeed * 0.001);
+	OSInt currPos = Double2Int32(t * this->rollSpeed * 0.001);
 	while (currPos >= h)
 	{
 		currPos -= h;
-		this->startTime->AddMS(Math::Double2Int32(h / this->rollSpeed * 1000.0));
+		this->startTime->AddMS(Double2Int32(h / this->rollSpeed * 1000.0));
 	}
 	if (currPos != this->lastRollPos)
 	{
@@ -280,29 +280,29 @@ void UI::DObj::RollingTextDObj::DrawObject(Media::DrawImage *dimg)
 	UOSInt h = this->dimg->GetHeight();
 	if (h <= this->height)
 	{
-		dimg->DrawImagePt(this->dimg, Math::OSInt2Double(left), Math::OSInt2Double(top));
+		dimg->DrawImagePt(this->dimg, OSInt2Double(left), OSInt2Double(top));
 	}
 	else
 	{
 		Data::DateTime currTime;
 		currTime.SetCurrTimeUTC();
 		Int64 t = currTime.DiffMS(this->startTime);
-		OSInt currPos = Math::Double2Int32(t * this->rollSpeed * 0.001);
+		OSInt currPos = Double2Int32(t * this->rollSpeed * 0.001);
 		while (currPos >= (OSInt)h)
 		{
 			currPos -= h;
-			this->startTime->AddMS(Math::Double2Int32(h / this->rollSpeed * 1000.0));
+			this->startTime->AddMS(Double2Int32(h / this->rollSpeed * 1000.0));
 		}
 		this->lastRollPos = currPos;
 
 		if ((h - currPos) >= this->height)
 		{
-			dimg->DrawImagePt3(this->dimg, Math::OSInt2Double(left), Math::OSInt2Double(top), 0, Math::OSInt2Double(currPos), Math::OSInt2Double(this->width), Math::OSInt2Double(this->height));
+			dimg->DrawImagePt3(this->dimg, OSInt2Double(left), OSInt2Double(top), 0, OSInt2Double(currPos), OSInt2Double(this->width), OSInt2Double(this->height));
 		}
 		else
 		{
-			dimg->DrawImagePt3(this->dimg, Math::OSInt2Double(left), Math::OSInt2Double(top), 0, Math::OSInt2Double(currPos), Math::OSInt2Double(this->width), Math::OSInt2Double(h - currPos));
-			dimg->DrawImagePt3(this->dimg, Math::OSInt2Double(left), Math::OSInt2Double(top + h - currPos), 0, 0, Math::OSInt2Double(this->width), Math::OSInt2Double(this->height - h + currPos));
+			dimg->DrawImagePt3(this->dimg, OSInt2Double(left), OSInt2Double(top), 0, OSInt2Double(currPos), OSInt2Double(this->width), OSInt2Double(h - currPos));
+			dimg->DrawImagePt3(this->dimg, OSInt2Double(left), OSInt2Double(top + h - currPos), 0, 0, OSInt2Double(this->width), OSInt2Double(this->height - h + currPos));
 		}
 	}
 }

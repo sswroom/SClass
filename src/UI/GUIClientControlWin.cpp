@@ -68,10 +68,10 @@ Bool UI::GUIClientControl::MyEraseBkg(void *hdc)
 		hbr = ((HBRUSH)COLOR_BTNSHADOW);
 	}
 	RECT rc;
-	rc.left = Math::Double2Int32(this->undockLeft * this->hdpi / this->ddpi);
-	rc.top = Math::Double2Int32(this->undockTop * this->hdpi / this->ddpi);
-	rc.right = Math::Double2Int32(this->undockRight * this->hdpi / this->ddpi);
-	rc.bottom = Math::Double2Int32(this->undockBottom * this->hdpi / this->ddpi);
+	rc.left = Double2Int32(this->undockLeft * this->hdpi / this->ddpi);
+	rc.top = Double2Int32(this->undockTop * this->hdpi / this->ddpi);
+	rc.right = Double2Int32(this->undockRight * this->hdpi / this->ddpi);
+	rc.bottom = Double2Int32(this->undockBottom * this->hdpi / this->ddpi);
 	FillRect((HDC)hdc, &rc, (HBRUSH)hbr);
 	return true;
 }

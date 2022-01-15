@@ -181,35 +181,35 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::FileHandler(void *userObj, const UTF8
 					Double hsY;
 					if (stimg->info->par2 > 1)
 					{
-						hsX = Math::OSInt2Double(stimg->GetHotSpotX());
-						hsY = Math::OSInt2Double(stimg->GetHotSpotY()) * stimg->info->par2;
-						calcImgW = Math::UOSInt2Double(stimg->info->dispWidth);
-						calcImgH = Math::UOSInt2Double(stimg->info->dispHeight) * stimg->info->par2;
+						hsX = OSInt2Double(stimg->GetHotSpotX());
+						hsY = OSInt2Double(stimg->GetHotSpotY()) * stimg->info->par2;
+						calcImgW = UOSInt2Double(stimg->info->dispWidth);
+						calcImgH = UOSInt2Double(stimg->info->dispHeight) * stimg->info->par2;
 					}
 					else
 					{
-						hsX = Math::OSInt2Double(stimg->GetHotSpotX()) / stimg->info->par2;
-						hsY = Math::OSInt2Double(stimg->GetHotSpotY());
-						calcImgW = Math::UOSInt2Double(stimg->info->dispWidth) / stimg->info->par2;
-						calcImgH = Math::UOSInt2Double(stimg->info->dispHeight);
+						hsX = OSInt2Double(stimg->GetHotSpotX()) / stimg->info->par2;
+						hsY = OSInt2Double(stimg->GetHotSpotY());
+						calcImgW = UOSInt2Double(stimg->info->dispWidth) / stimg->info->par2;
+						calcImgH = UOSInt2Double(stimg->info->dispHeight);
 					}
-					me->mapCtrl->ScnXYD2MapXY(Math::OSInt2Double(mousePosX) - hsX, Math::OSInt2Double(mousePosY) - hsY, &x1, &y1);
-					me->mapCtrl->ScnXYD2MapXY(Math::OSInt2Double(mousePosX) + calcImgW - hsX, Math::OSInt2Double(mousePosY) + calcImgH - hsY, &x2, &y2);
+					me->mapCtrl->ScnXYD2MapXY(OSInt2Double(mousePosX) - hsX, OSInt2Double(mousePosY) - hsY, &x1, &y1);
+					me->mapCtrl->ScnXYD2MapXY(OSInt2Double(mousePosX) + calcImgW - hsX, OSInt2Double(mousePosY) + calcImgH - hsY, &x2, &y2);
 				}
 				else
 				{
 					if (stimg->info->par2 > 1)
 					{
-						calcImgW = Math::UOSInt2Double(stimg->info->dispWidth);
-						calcImgH = Math::UOSInt2Double(stimg->info->dispHeight) * stimg->info->par2;
+						calcImgW = UOSInt2Double(stimg->info->dispWidth);
+						calcImgH = UOSInt2Double(stimg->info->dispHeight) * stimg->info->par2;
 					}
 					else
 					{
-						calcImgW = Math::UOSInt2Double(stimg->info->dispWidth) / stimg->info->par2;
-						calcImgH = Math::UOSInt2Double(stimg->info->dispHeight);
+						calcImgW = UOSInt2Double(stimg->info->dispWidth) / stimg->info->par2;
+						calcImgH = UOSInt2Double(stimg->info->dispHeight);
 					}
-					me->mapCtrl->ScnXYD2MapXY(Math::OSInt2Double(mousePosX) - calcImgW * 0.5, Math::OSInt2Double(mousePosY) - calcImgH * 0.5, &x1, &y1);
-					me->mapCtrl->ScnXYD2MapXY(Math::OSInt2Double(mousePosX) + calcImgW * 0.5, Math::OSInt2Double(mousePosY) + calcImgH * 0.5, &x2, &y2);
+					me->mapCtrl->ScnXYD2MapXY(OSInt2Double(mousePosX) - calcImgW * 0.5, OSInt2Double(mousePosY) - calcImgH * 0.5, &x1, &y1);
+					me->mapCtrl->ScnXYD2MapXY(OSInt2Double(mousePosX) + calcImgW * 0.5, OSInt2Double(mousePosY) + calcImgH * 0.5, &x2, &y2);
 				}
 				NEW_CLASS(simg, Media::SharedImage((Media::ImageList*)pobj, true));
 				NEW_CLASS(vimg, Math::VectorImage(me->env->GetSRID(), simg, x1, y1, x2, y2, x2 - x1, y1 - y2, false, files[i], 0, 0));
@@ -315,7 +315,7 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::OnMapScaleChanged(void *userObj, Doub
 		return;
 	}
 	me->scaleChanging = true;
-	me->tbScale->SetPos((UOSInt)Math::Double2OSInt(Math_Log10(newScale / MIN_SCALE) * 65536.0 / Math_Log10(MAX_SCALE / (Double)MIN_SCALE)));
+	me->tbScale->SetPos((UOSInt)Double2OSInt(Math_Log10(newScale / MIN_SCALE) * 65536.0 / Math_Log10(MAX_SCALE / (Double)MIN_SCALE)));
 	me->scaleChanging = false;
 	Text::StrDoubleFmt(Text::StrConcatC(sbuff, UTF8STRC("1:")), me->mapCtrl->GetViewScale(), "0.#");
 	me->txtScale->SetText(sbuff);
@@ -334,7 +334,7 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::OnScaleScrolled(void *userObj, UOSInt
 	if (me->scaleChanging)
 		return;
 	me->scaleChanging = true;
-	Int32 scale = Math::Double2Int32(Math_Pow(10, Math_Log10((MAX_SCALE / (Double)MIN_SCALE)) * Math::UOSInt2Double(newVal) / 65536.0) * MIN_SCALE);
+	Int32 scale = Double2Int32(Math_Pow(10, Math_Log10((MAX_SCALE / (Double)MIN_SCALE)) * UOSInt2Double(newVal) / 65536.0) * MIN_SCALE);
 	me->mapCtrl->SetMapScale(scale);
 	me->scaleChanging = false;
 }

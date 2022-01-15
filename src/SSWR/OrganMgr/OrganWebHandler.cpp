@@ -7973,10 +7973,10 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhoto(Net::WebServer::IWebRequest 
 							}
 							if (sz[0] <= dimg->info->dispWidth && sz[1] <= dimg->info->dispHeight)
 							{
-								xRand = Math::Double2Int32(dimg->info->dispWidth - sz[0]);
-								yRand = Math::Double2Int32(dimg->info->dispHeight - sz[1]);
-								iWidth = Math::Double2Int32(sz[0]);
-								iHeight = Math::Double2Int32(sz[1]);
+								xRand = Double2Int32(dimg->info->dispWidth - sz[0]);
+								yRand = Double2Int32(dimg->info->dispHeight - sz[1]);
+								iWidth = Double2Int32(sz[0]);
+								iHeight = Double2Int32(sz[1]);
 								gimg2 = this->eng->CreateImage32(iWidth, iHeight, Media::AT_NO_ALPHA);
 								gimg2->DrawString(0, 0, this->watermark, f, b);
 								gimg2->SetAlphaType(Media::AT_ALPHA);
@@ -7986,7 +7986,7 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhoto(Net::WebServer::IWebRequest 
 									Int32 col = (this->random->NextInt30() & 0xffffff) | 0x5f808080;
 									ImageUtil_ColorReplace32(bits, iWidth, iHeight, col);
 								}
-								gimg->DrawImagePt(gimg2, Math::Double2Int32(this->random->NextDouble() * xRand), Math::Double2Int32(this->random->NextDouble() * yRand));
+								gimg->DrawImagePt(gimg2, Double2Int32(this->random->NextDouble() * xRand), Double2Int32(this->random->NextDouble() * yRand));
 								this->eng->DeleteImage(gimg2);
 								gimg->DelFont(f);
 								break;
@@ -8209,27 +8209,27 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhotoId(Net::WebServer::IWebReques
 					resizerLR->SetTargetHeight(imgHeight);
 					Double x1 = userFile->cropLeft;
 					Double y1 = userFile->cropTop;
-					Double x2 = Math::UOSInt2Double(lrimg->info->dispWidth) - userFile->cropRight;
-					Double y2 = Math::UOSInt2Double(lrimg->info->dispHeight) - userFile->cropBottom;
+					Double x2 = UOSInt2Double(lrimg->info->dispWidth) - userFile->cropRight;
+					Double y2 = UOSInt2Double(lrimg->info->dispHeight) - userFile->cropBottom;
 					if (userFile->cropLeft < 0)
 					{
 						x1 = 0;
-						x2 = Math::UOSInt2Double(lrimg->info->dispWidth) - userFile->cropRight - userFile->cropLeft;
+						x2 = UOSInt2Double(lrimg->info->dispWidth) - userFile->cropRight - userFile->cropLeft;
 					}
 					else if (userFile->cropRight < 0)
 					{
 						x1 = userFile->cropLeft + userFile->cropRight;
-						x2 = Math::UOSInt2Double(lrimg->info->dispWidth);
+						x2 = UOSInt2Double(lrimg->info->dispWidth);
 					}
 					if (userFile->cropTop < 0)
 					{
 						y1 = 0;
-						y2 = Math::UOSInt2Double(lrimg->info->dispHeight) - userFile->cropBottom - userFile->cropTop;
+						y2 = UOSInt2Double(lrimg->info->dispHeight) - userFile->cropBottom - userFile->cropTop;
 					}
 					else if (userFile->cropBottom < 0)
 					{
 						y1 = userFile->cropBottom + userFile->cropTop;
-						y2 = Math::UOSInt2Double(lrimg->info->dispHeight);
+						y2 = UOSInt2Double(lrimg->info->dispHeight);
 					}
 					dimg = resizerLR->ProcessToNewPartial(lrimg, x1, y1, x2, y2);
 					mutUsage.EndUse();
@@ -8292,12 +8292,12 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhotoId(Net::WebServer::IWebReques
 								gimg->DelFont(f);
 								break;
 							}
-							if (sz[0] <= Math::UOSInt2Double(dimg->info->dispWidth) && sz[1] <= Math::UOSInt2Double(dimg->info->dispHeight))
+							if (sz[0] <= UOSInt2Double(dimg->info->dispWidth) && sz[1] <= UOSInt2Double(dimg->info->dispHeight))
 							{
-								xRand = Math::Double2Int32(Math::UOSInt2Double(dimg->info->dispWidth) - sz[0]);
-								yRand = Math::Double2Int32(Math::UOSInt2Double(dimg->info->dispHeight) - sz[1]);
-								iWidth = (UInt32)Math::Double2Int32(sz[0]);
-								iHeight = (UInt32)Math::Double2Int32(sz[1]);
+								xRand = Double2Int32(UOSInt2Double(dimg->info->dispWidth) - sz[0]);
+								yRand = Double2Int32(UOSInt2Double(dimg->info->dispHeight) - sz[1]);
+								iWidth = (UInt32)Double2Int32(sz[0]);
+								iHeight = (UInt32)Double2Int32(sz[1]);
 								gimg2 = this->eng->CreateImage32(iWidth, iHeight, Media::AT_NO_ALPHA);
 								gimg2->DrawString(0, 0, user->watermark->v, f, b);
 								gimg2->SetAlphaType(Media::AT_ALPHA);
@@ -8310,7 +8310,7 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhotoId(Net::WebServer::IWebReques
 										ImageUtil_ColorReplace32(bits, iWidth, iHeight, col);
 									}
 								}
-								gimg->DrawImagePt(gimg2, Math::Double2Int32(this->random->NextDouble() * xRand), Math::Double2Int32(this->random->NextDouble() * yRand));
+								gimg->DrawImagePt(gimg2, Double2Int32(this->random->NextDouble() * xRand), Double2Int32(this->random->NextDouble() * yRand));
 								this->eng->DeleteImage(gimg2);
 								gimg->DelFont(f);
 								break;
@@ -8503,27 +8503,27 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhotoWId(Net::WebServer::IWebReque
 						resizerLR->SetTargetHeight(imgHeight);
 						Double x1 = wfile->cropLeft;
 						Double y1 = wfile->cropTop;
-						Double x2 = Math::UOSInt2Double(lrimg->info->dispWidth) - wfile->cropRight;
-						Double y2 = Math::UOSInt2Double(lrimg->info->dispHeight) - wfile->cropBottom;
+						Double x2 = UOSInt2Double(lrimg->info->dispWidth) - wfile->cropRight;
+						Double y2 = UOSInt2Double(lrimg->info->dispHeight) - wfile->cropBottom;
 						if (wfile->cropLeft < 0)
 						{
 							x1 = 0;
-							x2 = Math::UOSInt2Double(lrimg->info->dispWidth) - wfile->cropRight - wfile->cropLeft;
+							x2 = UOSInt2Double(lrimg->info->dispWidth) - wfile->cropRight - wfile->cropLeft;
 						}
 						else if (wfile->cropRight < 0)
 						{
 							x1 = wfile->cropLeft + wfile->cropRight;
-							x2 = Math::UOSInt2Double(lrimg->info->dispWidth);
+							x2 = UOSInt2Double(lrimg->info->dispWidth);
 						}
 						if (wfile->cropTop < 0)
 						{
 							y1 = 0;
-							y2 = Math::UOSInt2Double(lrimg->info->dispHeight) - wfile->cropBottom - wfile->cropTop;
+							y2 = UOSInt2Double(lrimg->info->dispHeight) - wfile->cropBottom - wfile->cropTop;
 						}
 						else if (wfile->cropBottom < 0)
 						{
 							y1 = wfile->cropBottom + wfile->cropTop;
-							y2 = Math::UOSInt2Double(lrimg->info->dispHeight);
+							y2 = UOSInt2Double(lrimg->info->dispHeight);
 						}
 						dimg = resizerLR->ProcessToNewPartial(lrimg, x1, y1, x2, y2);
 						mutUsage.EndUse();

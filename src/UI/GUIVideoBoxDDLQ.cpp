@@ -245,7 +245,7 @@ void UI::GUIVideoBoxDDLQ::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, Vide
 		}
 		vbuff->destBuff = MemAllocA(UInt8, vbuff->destSize << 2);
 	}
-	tstat->resizer->Resize(srcBuff + (cropDY * srcWidth << 2) + (this->cropLeft << 2), (OSInt)srcWidth << 2, Math::UOSInt2Double(cropWidth), Math::UOSInt2Double(cropHeight), 0, 0, vbuff->destBuff, (OSInt)vbuff->destW << 2, vbuff->destW, vbuff->destH);
+	tstat->resizer->Resize(srcBuff + (cropDY * srcWidth << 2) + (this->cropLeft << 2), (OSInt)srcWidth << 2, UOSInt2Double(cropWidth), UOSInt2Double(cropHeight), 0, 0, vbuff->destBuff, (OSInt)vbuff->destW << 2, vbuff->destW, vbuff->destH);
 	tstat->hTime = ((Media::Resizer::LanczosResizerH8_8*)tstat->resizer)->GetHAvgTime();
 	tstat->vTime = ((Media::Resizer::LanczosResizerH8_8*)tstat->resizer)->GetVAvgTime();
 
@@ -270,7 +270,7 @@ void UI::GUIVideoBoxDDLQ::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, Vide
 			}
 			vbuff2->destBuff = MemAllocA(UInt8, vbuff2->destSize << 2);
 		}
-		tstat->resizer->Resize(tstat->diBuff + (cropDY * srcWidth << 2) + (this->cropLeft << 2), (OSInt)srcWidth << 2, Math::UOSInt2Double(cropWidth), Math::UOSInt2Double(cropHeight), 0, 0, vbuff2->destBuff, (OSInt)vbuff2->destW << 2, vbuff2->destW, vbuff2->destH);
+		tstat->resizer->Resize(tstat->diBuff + (cropDY * srcWidth << 2) + (this->cropLeft << 2), (OSInt)srcWidth << 2, UOSInt2Double(cropWidth), UOSInt2Double(cropHeight), 0, 0, vbuff2->destBuff, (OSInt)vbuff2->destW << 2, vbuff2->destW, vbuff2->destH);
 		vbuff2->frameNum = vbuff->frameNum;
 		vbuff2->frameTime = vbuff->frameTime + 17;
 		Sync::MutexUsage mutUsage(this->buffMut);

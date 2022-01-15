@@ -925,7 +925,7 @@ void UI::GUITextFileView::EventLineUp()
 	UOSInt textYPos;
 	if (this->caretY > 0)
 	{
-		this->GetTextPos((Int32)this->caretDispX, (Int32)this->caretDispY - Math::Double2Int32(this->pageLineHeight - 2), &textXPos, &textYPos);
+		this->GetTextPos((Int32)this->caretDispX, (Int32)this->caretDispY - Double2Int32(this->pageLineHeight - 2), &textXPos, &textYPos);
 		this->caretX = textXPos;
 		this->caretY = textYPos;
 		this->UpdateCaretSel(false);
@@ -939,7 +939,7 @@ void UI::GUITextFileView::EventLineDown()
 {
 	UInt32 textXPos;
 	UOSInt textYPos;
-	this->GetTextPos(this->caretDispX, this->caretDispY + Math::Double2Int32(this->pageLineHeight + 3), &textXPos, &textYPos);
+	this->GetTextPos(this->caretDispX, this->caretDispY + Double2Int32(this->pageLineHeight + 3), &textXPos, &textYPos);
 	this->caretX = textXPos;
 	this->caretY = textYPos;
 	this->UpdateCaretSel(false);
@@ -1107,7 +1107,7 @@ void UI::GUITextFileView::EventMouseMove(OSInt scnX, OSInt scnY)
 	{
 		OSInt lineOfst;
 		Bool needRedraw = false;
-		lineOfst = Math::Double2OSInt(Math::OSInt2Double(scnX) / this->pageLineHeight);
+		lineOfst = Double2OSInt(OSInt2Double(scnX) / this->pageLineHeight);
 		if (lineOfst < 0)
 		{
 			this->SetScrollVPos((UOSInt)(this->GetScrollVPos() + lineOfst), false);
@@ -1192,7 +1192,7 @@ void UI::GUITextFileView::DrawImage(Media::DrawImage *dimg)
 	yPos = (UOSInt)this->GetScrollVPos();
 
 	Media::DrawBrush *bgBrush = dimg->NewBrushARGB(this->bgColor);
-	dimg->DrawRect(0, 0, Math::UOSInt2Double(dimg->GetWidth()), Math::UOSInt2Double(dimg->GetHeight()), 0, bgBrush);
+	dimg->DrawRect(0, 0, UOSInt2Double(dimg->GetWidth()), UOSInt2Double(dimg->GetHeight()), 0, bgBrush);
 	dimg->DelBrush(bgBrush);
 
 	Sync::MutexUsage mutUsage(this->mut);
@@ -1216,7 +1216,7 @@ void UI::GUITextFileView::DrawImage(Media::DrawImage *dimg)
 	Media::DrawFont *fnt = this->CreateDrawFont(dimg);
 	Text::StrUOSInt(u8buff, this->pageLineCnt + yPos);
 	dimg->GetTextSize(fnt, u8buff, sz);
-	this->dispLineNumW = (UInt32)Math::Double2Int32(sz[0]) + 8;
+	this->dispLineNumW = (UInt32)Double2Int32(sz[0]) + 8;
 
 	UInt32 selTopX;
 	UOSInt selTopY;
@@ -1299,15 +1299,15 @@ void UI::GUITextFileView::DrawImage(Media::DrawImage *dimg)
 				Double szThis[2];
 				csptr = Text::StrToUTF8New(line);
 				dimg->GetTextSize(fnt, csptr, szWhole);
-				if (maxScnWidth < (UOSInt)Math::Double2OSInt(szWhole[0] + sz[0] + 8))
+				if (maxScnWidth < (UOSInt)Double2OSInt(szWhole[0] + sz[0] + 8))
 				{
-					maxScnWidth = (UOSInt)Math::Double2OSInt(szWhole[0] + sz[0] + 8);
+					maxScnWidth = (UOSInt)Double2OSInt(szWhole[0] + sz[0] + 8);
 				}
 
-				Double drawTop = Math::UOSInt2Double(i) * sz[1];
-				Double drawLeft = sz[0] + 8 - Math::UOSInt2Double(xPos);
+				Double drawTop = UOSInt2Double(i) * sz[1];
+				Double drawLeft = sz[0] + 8 - UOSInt2Double(xPos);
 				Text::StrUOSInt(u8buff, i + yPos + 1);
-				dimg->DrawString(-Math::UOSInt2Double(xPos), drawTop, u8buff, fnt, lineNumBrush);
+				dimg->DrawString(-UOSInt2Double(xPos), drawTop, u8buff, fnt, lineNumBrush);
 
 				if (i + yPos > selTopY && i + yPos < selBottomY)
 				{
@@ -1501,7 +1501,7 @@ void UI::GUITextFileView::UpdateCaretPos()
 	}
 
 	this->caretDispX = (Int32)(xPos - xScr);
-	this->caretDispY = (Int32)(Math::UOSInt2Double(this->caretY - yPos) * this->pageLineHeight);
+	this->caretDispY = (Int32)(UOSInt2Double(this->caretY - yPos) * this->pageLineHeight);
 	this->SetCaretPos(this->caretDispX, this->caretDispY);
 }
 
@@ -1561,7 +1561,7 @@ const UTF8Char *UI::GUITextFileView::GetFileName()
 
 void UI::GUITextFileView::GetTextPos(OSInt scnPosX, OSInt scnPosY, UInt32 *textPosX, UOSInt *textPosY)
 {
-	OSInt textY = (OSInt)(Math::OSInt2Double(this->GetScrollVPos()) + Math::OSInt2Double(scnPosY) / this->pageLineHeight);
+	OSInt textY = (OSInt)(OSInt2Double(this->GetScrollVPos()) + OSInt2Double(scnPosY) / this->pageLineHeight);
 	Int32 drawX;
 	UInt32 textX = 0;
 	if (textY >= (OSInt)this->lineOfsts->GetCount() - 1)

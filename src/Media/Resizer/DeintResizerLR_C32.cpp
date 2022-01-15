@@ -123,14 +123,14 @@ void Media::Resizer::DeintResizerLR_C32::DeintResize(Media::IDeintResizer::Deint
 
 	if (dType == Media::IDeintResizer::DT_TOP_FIELD)
 	{
-		if (swidth != Math::UOSInt2Double(dwidth))
+		if (swidth != UOSInt2Double(dwidth))
 		{
 			Sync::MutexUsage mutUsage(mut);
 			if (this->hsSize != swidth || this->hdSize != dwidth)
 			{
 				DestoryHori();
 
-				if (swidth > Math::UOSInt2Double(dwidth))
+				if (swidth > UOSInt2Double(dwidth))
 				{
 					setup_decimation_parameter_h(this->hnTap, swidth, (UInt32)siWidth, dwidth, &prm, 8, 0);
 				}
@@ -150,7 +150,7 @@ void Media::Resizer::DeintResizerLR_C32::DeintResize(Media::IDeintResizer::Deint
 			{
 				DestoryVertO();
 
-				if (sheight > Math::UOSInt2Double(dheight))
+				if (sheight > UOSInt2Double(dheight))
 				{
 					setup_decimation_parameter(this->vnTap, sheight, (UInt32)siHeight, dheight, &prm, (OSInt)dwidth << 3, 0.25);
 				}
@@ -177,7 +177,7 @@ void Media::Resizer::DeintResizerLR_C32::DeintResize(Media::IDeintResizer::Deint
 			{
 				DestoryVertO();
 
-				if (sheight > Math::UOSInt2Double(dheight))
+				if (sheight > UOSInt2Double(dheight))
 				{
 					setup_decimation_parameter(this->vnTap, sheight, (UInt32)siHeight, dheight, &prm, sstep, 0.25);
 				}
@@ -199,14 +199,14 @@ void Media::Resizer::DeintResizerLR_C32::DeintResize(Media::IDeintResizer::Deint
 	}
 	else if (dType == Media::IDeintResizer::DT_BOTTOM_FIELD)
 	{
-		if (swidth != Math::UOSInt2Double(dwidth))
+		if (swidth != UOSInt2Double(dwidth))
 		{
 			Sync::MutexUsage mutUsage(mut);
 			if (this->hsSize != swidth || this->hdSize != dwidth)
 			{
 				DestoryHori();
 
-				if (swidth > Math::UOSInt2Double(dwidth))
+				if (swidth > UOSInt2Double(dwidth))
 				{
 					setup_decimation_parameter_h(this->hnTap, swidth, (UInt32)siWidth, dwidth, &prm, 8, 0);
 				}
@@ -226,7 +226,7 @@ void Media::Resizer::DeintResizerLR_C32::DeintResize(Media::IDeintResizer::Deint
 			{
 				DestoryVertE();
 
-				if (sheight > Math::UOSInt2Double(dheight))
+				if (sheight > UOSInt2Double(dheight))
 				{
 					setup_decimation_parameter(this->vnTap, sheight, (UInt32)siHeight, dheight, &prm, (OSInt)dwidth << 3, -0.25);
 				}
@@ -253,7 +253,7 @@ void Media::Resizer::DeintResizerLR_C32::DeintResize(Media::IDeintResizer::Deint
 			{
 				DestoryVertE();
 
-				if (sheight > Math::UOSInt2Double(dheight))
+				if (sheight > UOSInt2Double(dheight))
 				{
 					setup_decimation_parameter(this->vnTap, sheight, (UInt32)siHeight, dheight, &prm, sstep, -0.25);
 				}
@@ -275,14 +275,14 @@ void Media::Resizer::DeintResizerLR_C32::DeintResize(Media::IDeintResizer::Deint
 	}
 	else
 	{
-		if (swidth != Math::UOSInt2Double(dwidth) && sheight != Math::UOSInt2Double(dheight))
+		if (swidth != UOSInt2Double(dwidth) && sheight != UOSInt2Double(dheight))
 		{
 			Sync::MutexUsage mutUsage(mut);
 			if (this->hsSize != swidth || this->hdSize != dwidth)
 			{
 				DestoryHori();
 
-				if (swidth > Math::UOSInt2Double(dwidth))
+				if (swidth > UOSInt2Double(dwidth))
 				{
 					setup_decimation_parameter_h(this->hnTap, swidth, (UInt32)siWidth, dwidth, &prm, 8, 0);
 				}
@@ -302,7 +302,7 @@ void Media::Resizer::DeintResizerLR_C32::DeintResize(Media::IDeintResizer::Deint
 			{
 				DestoryVert();
 
-				if (sheight > Math::UOSInt2Double(dheight))
+				if (sheight > UOSInt2Double(dheight))
 				{
 					setup_decimation_parameter(this->vnTap, sheight, (UInt32)siHeight, dheight, &prm, (OSInt)dwidth << 3, 0);
 				}
@@ -322,14 +322,14 @@ void Media::Resizer::DeintResizerLR_C32::DeintResize(Media::IDeintResizer::Deint
 			action->DoHorizontalVerticalFilter(src, dest, dwidth, (UInt32)siHeight, dheight, hFilter, vFilter, sstep, dstep, this->Media::IImgResizer::srcAlphaType);
 			mutUsage.EndUse();
 		}
-		else if (swidth != Math::UOSInt2Double(dwidth))
+		else if (swidth != UOSInt2Double(dwidth))
 		{
 			Sync::MutexUsage mutUsage(mut);
 			if (hsSize != swidth || hdSize != dwidth)
 			{
 				DestoryHori();
 
-				if (swidth > Math::UOSInt2Double(dwidth))
+				if (swidth > UOSInt2Double(dwidth))
 				{
 					setup_decimation_parameter_h(this->hnTap, swidth, (UInt32)siWidth, dwidth, &prm, 8, 0);
 				}
@@ -348,14 +348,14 @@ void Media::Resizer::DeintResizerLR_C32::DeintResize(Media::IDeintResizer::Deint
 			action->DoHorizontalFilterCollapse(src, dest, dwidth, dheight, hFilter, sstep, dstep, this->Media::IImgResizer::srcAlphaType);
 			mutUsage.EndUse();
 		}
-		else if (sheight != Math::UOSInt2Double(dheight))
+		else if (sheight != UOSInt2Double(dheight))
 		{
 			Sync::MutexUsage mutUsage(mut);
 			if (vsSize != sheight || vdSize != dheight || vsStep != (OSInt)sbpl)
 			{
 				DestoryVert();
 
-				if (sheight > Math::UOSInt2Double(dheight))
+				if (sheight > UOSInt2Double(dheight))
 				{
 					setup_decimation_parameter(this->vnTap, sheight, (UInt32)siHeight, dheight, &prm, sstep, 0);
 				}

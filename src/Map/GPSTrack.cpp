@@ -1275,19 +1275,19 @@ Int32 Map::GPSDataReader::GetInt32(UOSInt colIndex)
 		return 0;
 	if (colIndex == 2)
 	{
-		return Math::Double2Int32(this->currRec->lat);
+		return Double2Int32(this->currRec->lat);
 	}
 	else if (colIndex == 3)
 	{
-		return Math::Double2Int32(this->currRec->lon);
+		return Double2Int32(this->currRec->lon);
 	}
 	else if (colIndex == 4)
 	{
-		return Math::Double2Int32(this->currRec->speed);
+		return Double2Int32(this->currRec->speed);
 	}
 	else if (colIndex == 5)
 	{
-		return Math::Double2Int32(this->currRec->heading);
+		return Double2Int32(this->currRec->heading);
 	}
 	else if (colIndex == 6)
 	{
@@ -1303,7 +1303,7 @@ Int32 Map::GPSDataReader::GetInt32(UOSInt colIndex)
 	}
 	else if (colIndex == 9)
 	{
-		return Math::Double2Int32(this->currRec->altitude);
+		return Double2Int32(this->currRec->altitude);
 	}
 	return 0;
 }

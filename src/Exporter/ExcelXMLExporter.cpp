@@ -455,7 +455,7 @@ Bool Exporter::ExcelXMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8C
 							sb.AppendC(UTF8STRC("\""));
 						}
 						sb.AppendC(UTF8STRC(" ss:AutoFitWidth=\"0\" ss:Width=\""));
-						Text::SBAppendF64(&sb, Math::Double2Int32(lastColWidth * 4) * 0.25);
+						Text::SBAppendF64(&sb, Double2Int32(lastColWidth * 4) * 0.25);
 						sb.AppendC(UTF8STRC("\""));
 						if (lastColIndex + 1 != k)
 						{
@@ -491,7 +491,7 @@ Bool Exporter::ExcelXMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8C
 					sb.AppendC(UTF8STRC("\""));
 				}
 				sb.AppendC(UTF8STRC(" ss:AutoFitWidth=\"0\" ss:Width=\""));
-				Text::SBAppendF64(&sb, Math::Double2Int32(lastColWidth * 4) * 0.25);
+				Text::SBAppendF64(&sb, Double2Int32(lastColWidth * 4) * 0.25);
 				sb.AppendC(UTF8STRC("\""));
 				if (lastColIndex + 1 != l)
 				{

@@ -83,7 +83,7 @@ UOSInt Media::AudioFilter::SoundGenerator::ReadBlock(UInt8 *buff, UOSInt blkSize
 				}
 				else
 				{
-					WriteInt16(&buff[l], Math::Double2Int32(v2));
+					WriteInt16(&buff[l], Double2Int32(v2));
 				}
 				l += 2;
 			}
@@ -116,7 +116,7 @@ UOSInt Media::AudioFilter::SoundGenerator::ReadBlock(UInt8 *buff, UOSInt blkSize
 				}
 				else
 				{
-					buff[l] = (UInt8)Math::Double2Int32(v2);
+					buff[l] = (UInt8)Double2Int32(v2);
 				}
 				l += 1;
 			}

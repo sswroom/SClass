@@ -90,7 +90,7 @@ UOSInt Media::LPCMConverter::ConvertF32_I16(UInt8 *destBuff, const UInt8 *srcBuf
     UOSInt i = srcSize / 4;
     while (i-- > 0)
     {
-        Int32 v = Math::Double2Int32(ReadFloat(srcBuff) * 32767.0);
+        Int32 v = Double2Int32(ReadFloat(srcBuff) * 32767.0);
         Int16 v16 = SI32ToI16(v);
         WriteInt16(destBuff, v16);
 

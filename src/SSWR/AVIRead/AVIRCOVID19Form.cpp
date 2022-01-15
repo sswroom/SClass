@@ -98,7 +98,7 @@ void __stdcall SSWR::AVIRead::AVIRCOVID19Form::OnNewCasesSizeChanged(void *userO
 	}
 	chart->AddXDataDate(dates, j);
 	chart->AddYData((const UTF8Char*)"New Cases", counts, j, 0xffff0000, Data::LineChart::LS_LINE);
-	chart->Plot(dimg, 0, 0, Math::UOSInt2Double(w), Math::UOSInt2Double(h));
+	chart->Plot(dimg, 0, 0, UOSInt2Double(w), UOSInt2Double(h));
 	MemFree(counts);
 	MemFree(dates);
 	DEL_CLASS(chart);

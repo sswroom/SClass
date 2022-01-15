@@ -17,7 +17,7 @@ void UI::GUITrackBar::EventScrolled()
 {
 	UOSInt i;
 	UOSInt pos;
-	pos = (UOSInt)Math::Double2OSInt(gtk_range_get_value((GtkRange*)this->hwnd));
+	pos = (UOSInt)Double2OSInt(gtk_range_get_value((GtkRange*)this->hwnd));
 	i = this->scrollHandlers->GetCount();
 	while (i-- > 0)
 	{
@@ -34,9 +34,9 @@ UI::GUITrackBar::GUITrackBar(UI::GUICore *ui, UI::GUIClientControl *parent, UOSI
 	{
 		maxVal = minVal + 1;
 	}
-	this->hwnd = (ControlHandle*)gtk_scale_new_with_range(GTK_ORIENTATION_HORIZONTAL, Math::UOSInt2Double(minVal), Math::UOSInt2Double(maxVal), 1);
+	this->hwnd = (ControlHandle*)gtk_scale_new_with_range(GTK_ORIENTATION_HORIZONTAL, UOSInt2Double(minVal), UOSInt2Double(maxVal), 1);
 	gtk_scale_set_draw_value((GtkScale*)this->hwnd, false);
-	gtk_range_set_value((GtkRange*)this->hwnd, Math::UOSInt2Double(currVal));
+	gtk_range_set_value((GtkRange*)this->hwnd, UOSInt2Double(currVal));
 	g_signal_connect((GtkRange*)this->hwnd, "value-changed", G_CALLBACK(GUITrackBar_ValueChanged), this);
 	parent->AddChild(this);
 	this->Show();
@@ -60,17 +60,17 @@ OSInt UI::GUITrackBar::OnNotify(UInt32 code, void *lParam)
 
 void UI::GUITrackBar::SetPos(UOSInt pos)
 {
-	gtk_range_set_value((GtkRange*)this->hwnd, Math::UOSInt2Double(pos));
+	gtk_range_set_value((GtkRange*)this->hwnd, UOSInt2Double(pos));
 }
 
 void UI::GUITrackBar::SetRange(UOSInt minVal, UOSInt maxVal)
 {
-	gtk_range_set_range((GtkRange*)this->hwnd, Math::UOSInt2Double(minVal), Math::UOSInt2Double(maxVal));
+	gtk_range_set_range((GtkRange*)this->hwnd, UOSInt2Double(minVal), UOSInt2Double(maxVal));
 }
 
 UOSInt UI::GUITrackBar::GetPos()
 {
-	return (UOSInt)Math::Double2OSInt(gtk_range_get_value((GtkRange*)this->hwnd));
+	return (UOSInt)Double2OSInt(gtk_range_get_value((GtkRange*)this->hwnd));
 }
 
 void UI::GUITrackBar::HandleScrolled(ScrollEvent hdlr, void *userObj)

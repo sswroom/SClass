@@ -640,10 +640,10 @@ Bool Exporter::TIFFExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char 
 		newExif->AddUInt32(278, 1, ibuff); //RowsPerStrip
 		stripCnt = 1;
 
-		ibuff[0] = (UInt32)Math::Double2Int32(img->info->hdpi * 100);
+		ibuff[0] = (UInt32)Double2Int32(img->info->hdpi * 100);
 		ibuff[1] = 100;
 		newExif->AddRational(282, 1, ibuff); //XResolution
-		ibuff[0] = (UInt32)Math::Double2Int32(img->info->vdpi * 100);
+		ibuff[0] = (UInt32)Double2Int32(img->info->vdpi * 100);
 		ibuff[1] = 100;
 		newExif->AddRational(283, 1, ibuff); //YResolution
 		sibuff[0] = 2;

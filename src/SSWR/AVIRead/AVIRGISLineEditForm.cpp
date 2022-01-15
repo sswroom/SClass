@@ -33,7 +33,7 @@ void SSWR::AVIRead::AVIRGISLineEditForm::UpdatePreview()
 	Media::DrawPen *p;
 	Media::DrawBrush *b;
 	b = this->prevImage->NewBrushARGB(Media::ColorConv::ConvARGB(&srcProfile, &destProfile, this->colorSess, 0xffc0c0c0));
-	this->prevImage->DrawRect(0, 0, Math::UOSInt2Double(w), Math::UOSInt2Double(h), 0, b);
+	this->prevImage->DrawRect(0, 0, UOSInt2Double(w), UOSInt2Double(h), 0, b);
 	this->prevImage->DelBrush(b);
 
 	UOSInt i;
@@ -45,13 +45,13 @@ void SSWR::AVIRead::AVIRGISLineEditForm::UpdatePreview()
 	while (i < j)
 	{
 		lyr = this->lineLayers->GetItem(i);
-		t = Math::Double2Int32(Math::UOSInt2Double(lyr->thick) * dpi / 96.0);
+		t = Double2Int32(UOSInt2Double(lyr->thick) * dpi / 96.0);
 		if (t <= 0)
 		{
 			t = 1;
 		}
 		p = this->prevImage->NewPenARGB(Media::ColorConv::ConvARGB(&srcProfile, &destProfile, this->colorSess, lyr->color), t, lyr->pattern, lyr->nPattern);
-		this->prevImage->DrawLine(0, Math::UOSInt2Double(h >> 1), Math::UOSInt2Double(w), Math::UOSInt2Double(h >> 1), p);
+		this->prevImage->DrawLine(0, UOSInt2Double(h >> 1), UOSInt2Double(w), UOSInt2Double(h >> 1), p);
 		this->prevImage->DelPen(p);
 		i++;
 	}

@@ -282,13 +282,13 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateResult(DB::DBReader *r)
 	if (k > 0)
 	{
 		this->lvTableResult->GetSize(&w, &h);
-		w -= 20 + Math::UOSInt2Double(j) * 6;
+		w -= 20 + UOSInt2Double(j) * 6;
 		if (w < 0)
 			w = 0;
 		i = 0;
 		while (i < j)
 		{
-			this->lvTableResult->SetColumnWidth(i, (Math::UOSInt2Double(colSize[i]) * w / Math::UOSInt2Double(k) + 6));
+			this->lvTableResult->SetColumnWidth(i, (UOSInt2Double(colSize[i]) * w / UOSInt2Double(k) + 6));
 			i++;
 		}
 	}

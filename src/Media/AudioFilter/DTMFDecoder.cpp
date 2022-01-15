@@ -62,16 +62,16 @@ UInt32 __stdcall Media::AudioFilter::DTMFDecoder::CalcThread(void *userObj)
 	Int32 hiFreq;
 	Int32 loFreq;
 	WChar tone;
-	Double dSampleCnt = Math::UOSInt2Double(me->sampleCnt);
+	Double dSampleCnt = UOSInt2Double(me->sampleCnt);
 	Double dFreq = dSampleCnt / (Double)me->frequency;
-	ind697 = (UInt32)Math::Double2Int32(697.0 * dFreq);
-	ind770 = (UInt32)Math::Double2Int32(770.0 * dFreq);
-	ind852 = (UInt32)Math::Double2Int32(852.0 * dFreq);
-	ind941 = (UInt32)Math::Double2Int32(941.0 * dFreq);
-	ind1209 = (UInt32)Math::Double2Int32(1209.0 * dFreq);
-	ind1336 = (UInt32)Math::Double2Int32(1336.0 * dFreq);
-	ind1477 = (UInt32)Math::Double2Int32(1477.0 * dFreq);
-	ind1633 = (UInt32)Math::Double2Int32(1633.0 * dFreq);
+	ind697 = (UInt32)Double2Int32(697.0 * dFreq);
+	ind770 = (UInt32)Double2Int32(770.0 * dFreq);
+	ind852 = (UInt32)Double2Int32(852.0 * dFreq);
+	ind941 = (UInt32)Double2Int32(941.0 * dFreq);
+	ind1209 = (UInt32)Double2Int32(1209.0 * dFreq);
+	ind1336 = (UInt32)Double2Int32(1336.0 * dFreq);
+	ind1477 = (UInt32)Double2Int32(1477.0 * dFreq);
+	ind1633 = (UInt32)Double2Int32(1633.0 * dFreq);
 	maxAbsVolD = 0;
 	minAbsVolD = 0;
 	maxAbsVol = 0;
@@ -168,8 +168,8 @@ UInt32 __stdcall Media::AudioFilter::DTMFDecoder::CalcThread(void *userObj)
 				}
 				i++;
 			}
-			maxLo = maxLo / Math::UOSInt2Double(me->sampleCnt);
-			maxHi = maxHi / Math::UOSInt2Double(me->sampleCnt);
+			maxLo = maxLo / UOSInt2Double(me->sampleCnt);
+			maxHi = maxHi / UOSInt2Double(me->sampleCnt);
 
 			if (maxLo > 0.04)
 			{
@@ -239,7 +239,7 @@ UInt32 __stdcall Media::AudioFilter::DTMFDecoder::CalcThread(void *userObj)
 				}
 				else
 				{
-					Int32 lowLev = Math::Double2Int32(maxAbsVolD * 0.1 * 32768.0);
+					Int32 lowLev = Double2Int32(maxAbsVolD * 0.1 * 32768.0);
 					Bool isStart = true;
 					Bool isLow = true;
 					OSInt lowCnt = 0;
@@ -288,7 +288,7 @@ UInt32 __stdcall Media::AudioFilter::DTMFDecoder::CalcThread(void *userObj)
 						}
 						i += align;
 					}
-					if (Math::OSInt2Double(lowCnt) > Math::UOSInt2Double(j / align) * 0.3)
+					if (OSInt2Double(lowCnt) > UOSInt2Double(j / align) * 0.3)
 					{
 						valid = false;
 					}

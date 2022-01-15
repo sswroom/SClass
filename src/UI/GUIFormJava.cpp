@@ -231,7 +231,7 @@ UI::GUIForm::GUIForm(GUIClientControl *parent, Double initW, Double initH, GUICo
 	mid = env->GetMethodID(cls, "setBounds", "(IIII)V");
 	if (mid)
 	{
-		env->CallVoidMethod((jobject)this->hwnd, mid, Math::Double2Int32(initX), Math::Double2Int32(initY), Math::Double2Int32(initW * this->hdpi / 96.0), Math::Double2Int32(initH * this->hdpi / 96.0));
+		env->CallVoidMethod((jobject)this->hwnd, mid, Double2Int32(initX), Double2Int32(initY), Double2Int32(initW * this->hdpi / 96.0), Double2Int32(initH * this->hdpi / 96.0));
 	}
 	//	g_signal_connect((GtkWindow*)this->hwnd, "draw", G_CALLBACK(GUIForm_Draw), this);
 	this->lxPos = initX;
@@ -395,7 +395,7 @@ void UI::GUIForm::SetNoResize(Bool noResize)
 	env->CallVoidMethod((jobject)this->hwnd, mid, !noResize);
 	if (noResize)
 	{
-	//	gtk_widget_set_size_request((GtkWidget*)this->hwnd, Math::Double2Int32((this->lxPos2 - this->lxPos)* this->hdpi / 96.0), Math::Double2Int32((this->lyPos2 - this->lyPos) * this->hdpi / 96.0));
+	//	gtk_widget_set_size_request((GtkWidget*)this->hwnd, Double2Int32((this->lxPos2 - this->lxPos)* this->hdpi / 96.0), Double2Int32((this->lyPos2 - this->lyPos) * this->hdpi / 96.0));
 	}
 }
 

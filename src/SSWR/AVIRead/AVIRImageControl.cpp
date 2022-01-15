@@ -77,7 +77,7 @@ void __stdcall SSWR::AVIRead::AVIRImageControl::OnTimerTick(void *userObj)
 		UOSInt scnW;
 		UOSInt scnH;
 		me->GetSizeP(&scnW, &scnH);
-		me->SetVScrollBar(0, totalHeight, (UOSInt)Math::Double2OSInt(Math::UOSInt2Double(scnH) / me->GetHDPI() * me->GetDDPI()));
+		me->SetVScrollBar(0, totalHeight, (UOSInt)Double2OSInt(UOSInt2Double(scnH) / me->GetHDPI() * me->GetDDPI()));
 		me->imgUpdated = true;
 	}
 
@@ -675,10 +675,10 @@ void SSWR::AVIRead::AVIRImageControl::OnDraw(Media::DrawImage *dimg)
 
 	Double hdpi = this->GetHDPI();
 	Double ddpi = this->GetDDPI();
-	UInt32 itemTH = (UInt32)Math::Double2Int32((20 + 12 + 12 + this->previewSize) * hdpi / ddpi);
-	UInt32 itemBH = (UInt32)Math::Double2Int32((20 + 12 + this->previewSize) * hdpi / ddpi);
-	UInt32 itemH = (UInt32)Math::Double2Int32((20 + this->previewSize) * hdpi / ddpi);
-	UInt32 scrPos = (UInt32)Math::Double2Int32(Math::UOSInt2Double(this->GetVScrollPos()) * hdpi / ddpi);
+	UInt32 itemTH = (UInt32)Double2Int32((20 + 12 + 12 + this->previewSize) * hdpi / ddpi);
+	UInt32 itemBH = (UInt32)Double2Int32((20 + 12 + this->previewSize) * hdpi / ddpi);
+	UInt32 itemH = (UInt32)Double2Int32((20 + this->previewSize) * hdpi / ddpi);
+	UInt32 scrPos = (UInt32)Double2Int32(UOSInt2Double(this->GetVScrollPos()) * hdpi / ddpi);
 
 	Sync::MutexUsage mutUsage(this->imgMut);
 	imgList = this->imgMap->GetValues();
@@ -689,7 +689,7 @@ void SSWR::AVIRead::AVIRImageControl::OnDraw(Media::DrawImage *dimg)
 		status->setting.flags &= ~8;
 	}
 	i = this->GetVScrollPos() / (20 + 12 + 12 + this->previewSize);
-	j = (UInt32)Math::Double2Int32(Math::UOSInt2Double(this->GetVScrollPos()) + Math::UOSInt2Double(scnH) * ddpi / hdpi) / (20 + 12 + 12 + this->previewSize);
+	j = (UInt32)Double2Int32(UOSInt2Double(this->GetVScrollPos()) + UOSInt2Double(scnH) * ddpi / hdpi) / (20 + 12 + 12 + this->previewSize);
 
 	if (imgList->GetCount() > 0)
 	{
@@ -710,22 +710,22 @@ void SSWR::AVIRead::AVIRImageControl::OnDraw(Media::DrawImage *dimg)
 				status->previewImg = this->deng->LoadImage(status->cacheFile);
 				if (status->previewImg)
 				{
-					status->previewImg2 = this->deng->CreateImage32((UInt32)Math::Double2Int32(Math::UOSInt2Double(status->previewImg->GetWidth()) * hdpi / ddpi), (UInt32)Math::Double2Int32(Math::UOSInt2Double(status->previewImg->GetHeight()) * hdpi / ddpi), Media::AT_NO_ALPHA);
+					status->previewImg2 = this->deng->CreateImage32((UInt32)Double2Int32(UOSInt2Double(status->previewImg->GetWidth()) * hdpi / ddpi), (UInt32)Double2Int32(UOSInt2Double(status->previewImg->GetHeight()) * hdpi / ddpi), Media::AT_NO_ALPHA);
 					this->UpdateImgPreview(status);
 				}
 			}
 			else if (status->previewImg2 == 0)
 			{
-				status->previewImg2 = this->deng->CreateImage32((UInt32)Math::Double2Int32(Math::UOSInt2Double(status->previewImg->GetWidth()) * hdpi / ddpi), (UInt32)Math::Double2Int32(Math::UOSInt2Double(status->previewImg->GetHeight()) * hdpi / ddpi), Media::AT_NO_ALPHA);
+				status->previewImg2 = this->deng->CreateImage32((UInt32)Double2Int32(UOSInt2Double(status->previewImg->GetWidth()) * hdpi / ddpi), (UInt32)Double2Int32(UOSInt2Double(status->previewImg->GetHeight()) * hdpi / ddpi), Media::AT_NO_ALPHA);
 				this->UpdateImgPreview(status);
 			}
-			dimg->DrawRect(0, Math::OSInt2Double((OSInt)(i * itemTH - scrPos)), Math::UOSInt2Double(scnW), itemBH, 0, barr[status->setting.flags & 3]);
-			dimg->DrawRect(0, Math::OSInt2Double((OSInt)(i * itemTH - scrPos + itemBH)), Math::UOSInt2Double(scnW), itemTH - itemBH, 0, barr[4]);
+			dimg->DrawRect(0, OSInt2Double((OSInt)(i * itemTH - scrPos)), UOSInt2Double(scnW), itemBH, 0, barr[status->setting.flags & 3]);
+			dimg->DrawRect(0, OSInt2Double((OSInt)(i * itemTH - scrPos + itemBH)), UOSInt2Double(scnW), itemTH - itemBH, 0, barr[4]);
 			if (status->previewImg2)
 			{
 				status->previewImg2->SetHDPI(dimg->GetHDPI());
 				status->previewImg2->SetVDPI(dimg->GetVDPI());
-				dimg->DrawImagePt(status->previewImg2, Math::UOSInt2Double((scnW - status->previewImg2->GetWidth()) >> 1), Math::OSInt2Double((OSInt)(i * itemTH - scrPos + ((itemH - status->previewImg2->GetHeight()) >> 1))));
+				dimg->DrawImagePt(status->previewImg2, UOSInt2Double((scnW - status->previewImg2->GetWidth()) >> 1), OSInt2Double((OSInt)(i * itemTH - scrPos + ((itemH - status->previewImg2->GetHeight()) >> 1))));
 			}
 			if (status->fileName)
 			{
@@ -734,14 +734,14 @@ void SSWR::AVIRead::AVIRImageControl::OnDraw(Media::DrawImage *dimg)
 				strLen = Text::StrCharCnt(sb.ToString());
 				if (f && dimg->GetTextSizeC(f, sb.ToString(), strLen, strSz))
 				{
-					dimg->DrawString((Math::UOSInt2Double(scnW) - strSz[0]) * 0.5, Math::UOSInt2Double(i * itemTH - scrPos + itemH), sb.ToString(), f, b);
+					dimg->DrawString((UOSInt2Double(scnW) - strSz[0]) * 0.5, UOSInt2Double(i * itemTH - scrPos + itemH), sb.ToString(), f, b);
 				}
 			}
 			i++;
 		}
 		if ((j + 1) * itemTH - scrPos < scnH)
 		{
-			dimg->DrawRect(0, Math::UOSInt2Double((j + 1) * itemTH - scrPos), Math::UOSInt2Double(scnW), Math::UOSInt2Double(scnH) - Math::UOSInt2Double((j + 1) * itemTH - scrPos), 0, barr[4]);
+			dimg->DrawRect(0, UOSInt2Double((j + 1) * itemTH - scrPos), UOSInt2Double(scnW), UOSInt2Double(scnH) - UOSInt2Double((j + 1) * itemTH - scrPos), 0, barr[4]);
 		}
 		dimg->DelBrush(b);
 		dimg->DelFont(f);
@@ -782,8 +782,8 @@ void SSWR::AVIRead::AVIRImageControl::OnMouseDown(OSInt scrollY, Int32 xPos, Int
 		UOSInt j;
 		Double hdpi = this->GetHDPI();
 		Double ddpi = this->GetDDPI();
-		Int32 scrPos = Math::Double2Int32(Math::OSInt2Double(scrollY) * hdpi / ddpi);
-		UOSInt clickIndex = (UInt32)((scrPos + yPos) / Math::Double2Int32((20 + 12 + 12 + this->previewSize) * hdpi / ddpi));
+		Int32 scrPos = Double2Int32(OSInt2Double(scrollY) * hdpi / ddpi);
+		UOSInt clickIndex = (UInt32)((scrPos + yPos) / Double2Int32((20 + 12 + 12 + this->previewSize) * hdpi / ddpi));
 		if (keys & UI::GUICustomDrawVScroll::KBTN_CONTROL)
 		{
 			Sync::MutexUsage mutUsage(this->imgMut);
@@ -1105,7 +1105,7 @@ void SSWR::AVIRead::AVIRImageControl::UpdateImgPreview(SSWR::AVIRead::AVIRImageC
 	this->filter->SetParameter((img->setting.brightness - 1.0) * img->setting.contrast, img->setting.contrast, img->setting.gamma, srcImg->GetColorProfile(), srcImg->GetBitCount(), srcImg->GetPixelFormat(), (img->setting.flags & 240) >> 4);
 	this->filter->SetGammaCorr(gammaParam, gammaCnt);
 	this->filter->ProcessImage(sptr, tmpBuff, sWidth, sHeight, sbpl, sbpl, srev ^ drev);
-	this->dispResizer->Resize(tmpBuff, (OSInt)sbpl, Math::UOSInt2Double(sWidth), Math::UOSInt2Double(sHeight), 0, 0, dptr, (OSInt)dbpl, dWidth, dHeight);
+	this->dispResizer->Resize(tmpBuff, (OSInt)sbpl, UOSInt2Double(sWidth), UOSInt2Double(sHeight), 0, 0, dptr, (OSInt)dbpl, dWidth, dHeight);
 	mutUsage.EndUse();
 	MemFreeA(tmpBuff);
 	srcImg->GetImgBitsEnd(false);

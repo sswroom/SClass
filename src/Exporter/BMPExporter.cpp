@@ -171,27 +171,27 @@ Bool Exporter::BMPExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 			xyzVec.val[0] = primaries->rx;
 			xyzVec.val[1] = primaries->ry;
 			xyzVec.val[2] = 1.0 - primaries->rx - primaries->ry;
-			WriteInt32(&buff[74], Math::Double2Int32(xyzVec.val[0] * 0x40000000));
-			WriteInt32(&buff[78], Math::Double2Int32(xyzVec.val[1] * 0x40000000));
-			WriteInt32(&buff[82], Math::Double2Int32(xyzVec.val[2] * 0x40000000));
+			WriteInt32(&buff[74], Double2Int32(xyzVec.val[0] * 0x40000000));
+			WriteInt32(&buff[78], Double2Int32(xyzVec.val[1] * 0x40000000));
+			WriteInt32(&buff[82], Double2Int32(xyzVec.val[2] * 0x40000000));
 
 			xyzVec.val[0] = primaries->gx;
 			xyzVec.val[1] = primaries->gy;
 			xyzVec.val[2] = 1.0 - primaries->gx - primaries->gy;
-			WriteInt32(&buff[86], Math::Double2Int32(xyzVec.val[0] * 0x40000000));
-			WriteInt32(&buff[90], Math::Double2Int32(xyzVec.val[1] * 0x40000000));
-			WriteInt32(&buff[94], Math::Double2Int32(xyzVec.val[2] * 0x40000000));
+			WriteInt32(&buff[86], Double2Int32(xyzVec.val[0] * 0x40000000));
+			WriteInt32(&buff[90], Double2Int32(xyzVec.val[1] * 0x40000000));
+			WriteInt32(&buff[94], Double2Int32(xyzVec.val[2] * 0x40000000));
 
 			xyzVec.val[0] = primaries->bx;
 			xyzVec.val[1] = primaries->by;
 			xyzVec.val[2] = 1.0 - primaries->bx - primaries->by;
-			WriteInt32(&buff[98], Math::Double2Int32(xyzVec.val[0] * 0x40000000));
-			WriteInt32(&buff[102], Math::Double2Int32(xyzVec.val[1] * 0x40000000));
-			WriteInt32(&buff[106], Math::Double2Int32(xyzVec.val[2] * 0x40000000));
+			WriteInt32(&buff[98], Double2Int32(xyzVec.val[0] * 0x40000000));
+			WriteInt32(&buff[102], Double2Int32(xyzVec.val[1] * 0x40000000));
+			WriteInt32(&buff[106], Double2Int32(xyzVec.val[2] * 0x40000000));
 
-			WriteInt32(&buff[110], Math::Double2Int32(img->info->color->rtransfer->GetGamma() * 65536));
-			WriteInt32(&buff[114], Math::Double2Int32(img->info->color->gtransfer->GetGamma() * 65536));
-			WriteInt32(&buff[118], Math::Double2Int32(img->info->color->btransfer->GetGamma() * 65536));
+			WriteInt32(&buff[110], Double2Int32(img->info->color->rtransfer->GetGamma() * 65536));
+			WriteInt32(&buff[114], Double2Int32(img->info->color->gtransfer->GetGamma() * 65536));
+			WriteInt32(&buff[118], Double2Int32(img->info->color->btransfer->GetGamma() * 65536));
 
 			WriteInt32(&buff[122], 8); //LCS_GM_ABS_COLORIMETRIC
 			WriteInt32(&buff[126], 0);
@@ -211,8 +211,8 @@ Bool Exporter::BMPExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 	WriteUInt32(&buff[28], img->info->storeBPP);
 	WriteInt32(&buff[30], (img->info->pf == Media::PF_LE_R5G6B5 || img->info->pf == Media::PF_LE_A2B10G10R10)?3:0);
 	WriteInt32(&buff[34], 0);
-	WriteInt32(&buff[38], Math::Double2Int32(Math::Unit::Distance::Convert(Math::Unit::Distance::DU_METER, Math::Unit::Distance::DU_INCH, img->info->hdpi)));
-	WriteInt32(&buff[42], Math::Double2Int32(Math::Unit::Distance::Convert(Math::Unit::Distance::DU_METER, Math::Unit::Distance::DU_INCH, img->info->vdpi)));
+	WriteInt32(&buff[38], Double2Int32(Math::Unit::Distance::Convert(Math::Unit::Distance::DU_METER, Math::Unit::Distance::DU_INCH, img->info->hdpi)));
+	WriteInt32(&buff[42], Double2Int32(Math::Unit::Distance::Convert(Math::Unit::Distance::DU_METER, Math::Unit::Distance::DU_INCH, img->info->vdpi)));
 	if (img->info->storeBPP <= 8)
 	{
 		WriteInt32(&buff[46], 1 << img->info->storeBPP);

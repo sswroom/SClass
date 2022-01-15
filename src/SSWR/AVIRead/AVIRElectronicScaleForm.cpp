@@ -71,27 +71,27 @@ void __stdcall SSWR::AVIRead::AVIRElectronicScaleForm::OnTimerTick(void *userObj
 				Media::DrawBrush *b;
 				Media::DrawFont *f;
 				b = me->dimg->NewBrushARGB(0xffffffff);
-				me->dimg->DrawRect(0, 0, Math::UOSInt2Double(w), Math::UOSInt2Double(h), 0, b);
+				me->dimg->DrawRect(0, 0, UOSInt2Double(w), UOSInt2Double(h), 0, b);
 				me->dimg->DelBrush(b);
 
 				Double fontHeight;
 				Double sz[2];
-				fontHeight = Math::UOSInt2Double(w) / Math::UOSInt2Double(strSize);
+				fontHeight = UOSInt2Double(w) / UOSInt2Double(strSize);
 				f = me->dimg->NewFontPx(UTF8STRC("Arial"), fontHeight, Media::DrawEngine::DFS_NORMAL, 0);
 				me->dimg->GetTextSizeC(f, sbuff, strSize, sz);
 				me->dimg->DelFont(f);
-				if (Math::UOSInt2Double(w) * sz[1] > Math::UOSInt2Double(h) * sz[0]) //w / sz[0] > h / sz[1]
+				if (UOSInt2Double(w) * sz[1] > UOSInt2Double(h) * sz[0]) //w / sz[0] > h / sz[1]
 				{
-					fontHeight = fontHeight * Math::UOSInt2Double(h) / sz[1];
+					fontHeight = fontHeight * UOSInt2Double(h) / sz[1];
 				}
 				else
 				{
-					fontHeight = fontHeight * Math::UOSInt2Double(w) / sz[0];
+					fontHeight = fontHeight * UOSInt2Double(w) / sz[0];
 				}
 				f = me->dimg->NewFontPx(UTF8STRC("Arial"), fontHeight, Media::DrawEngine::DFS_NORMAL, 0);
 				b = me->dimg->NewBrushARGB(0xff000000);
 				me->dimg->GetTextSizeC(f, sbuff, strSize, sz);
-				me->dimg->DrawString((Math::UOSInt2Double(w) - sz[0]) * 0.5, (Math::UOSInt2Double(h) - sz[1]) * 0.5, sbuff, f, b);
+				me->dimg->DrawString((UOSInt2Double(w) - sz[0]) * 0.5, (UOSInt2Double(h) - sz[1]) * 0.5, sbuff, f, b);
 				me->dimg->DelFont(f);
 				me->dimg->DelBrush(b);
 

@@ -477,7 +477,7 @@ void Media::VideoFilter::IVTCFilter::do_IVTC(UInt32 frameTime, UInt32 frameNum, 
 					}
 				}
 
-				Double pixelCnt = Math::UOSInt2Double(this->videoInfo->dispWidth * this->videoInfo->dispHeight);
+				Double pixelCnt = UOSInt2Double(this->videoInfo->dispWidth * this->videoInfo->dispHeight);
 				Double oddDDiff = oddDiff / pixelCnt;
 				Double evenDDiff = evenDiff / pixelCnt;
 				
@@ -1059,7 +1059,7 @@ void Media::VideoFilter::IVTCFilter::do_IVTC(UInt32 frameTime, UInt32 frameNum, 
 				{
 					needDI = true;
 				}
-				else if (Math::UOSInt2Double(fieldStat.fieldCnt * 2) > pixelCnt)
+				else if (UOSInt2Double(fieldStat.fieldCnt * 2) > pixelCnt)
 				{
 					needDI = true;	
 				}

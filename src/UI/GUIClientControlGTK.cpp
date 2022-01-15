@@ -36,9 +36,9 @@ void UI::GUIClientControl::InitContainer()
 	}
 	if (!Text::StrEquals(this->GetObjectClass(), (const UTF8Char*)"WinForm"))
 	{
-		gtk_widget_set_size_request(data->scrolledWin, Math::Double2Int32(outW * this->hdpi / this->ddpi), Math::Double2Int32(outH * this->hdpi / this->ddpi));
+		gtk_widget_set_size_request(data->scrolledWin, Double2Int32(outW * this->hdpi / this->ddpi), Double2Int32(outH * this->hdpi / this->ddpi));
 	}
-	gtk_widget_set_size_request(data->container, Math::Double2Int32(outW * this->hdpi / this->ddpi), Math::Double2Int32(outH * this->hdpi / this->ddpi));
+	gtk_widget_set_size_request(data->container, Double2Int32(outW * this->hdpi / this->ddpi), Double2Int32(outH * this->hdpi / this->ddpi));
 
 	gtk_widget_show(data->container);
 	gtk_widget_show(data->vbox);

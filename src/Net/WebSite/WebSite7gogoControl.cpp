@@ -23,12 +23,12 @@ Net::WebSite::WebSite7gogoControl::ItemData *Net::WebSite::WebSite7gogoControl::
 	if ((jsBase = postObj->GetObjectValue(UTF8STRC("postId"))) != 0 && jsBase->GetType() == Text::JSONType::Number)
 	{
 		num1 = (Text::JSONNumber*)jsBase;
-		item->id = Math::Double2Int64(num1->GetValue());
+		item->id = Double2Int64(num1->GetValue());
 	}
 	if ((jsBase = postObj->GetObjectValue(UTF8STRC("time"))) != 0 && jsBase->GetType() == Text::JSONType::Number)
 	{
 		num1 = (Text::JSONNumber*)jsBase;
-		item->recTime = Math::Double2Int64(num1->GetValue()) * 1000;
+		item->recTime = Double2Int64(num1->GetValue()) * 1000;
 	}
 	if ((jsBase = postObj->GetObjectValue(UTF8STRC("body"))) != 0 && jsBase->GetType() == Text::JSONType::Array)
 	{
@@ -44,7 +44,7 @@ Net::WebSite::WebSite7gogoControl::ItemData *Net::WebSite::WebSite7gogoControl::
 				if ((jsBase = obj1->GetObjectValue(UTF8STRC("bodyType"))) != 0 && jsBase->GetType() == Text::JSONType::Number)
 				{
 					num1 = (Text::JSONNumber*)jsBase;
-					bodyType = Math::Double2Int32(num1->GetValue());
+					bodyType = Double2Int32(num1->GetValue());
 					if (bodyType == 1)
 					{
 						if ((jsBase = obj1->GetObjectValue(UTF8STRC("text"))) != 0 && jsBase->GetType() == Text::JSONType::String)
@@ -194,7 +194,7 @@ OSInt Net::WebSite::WebSite7gogoControl::GetChannelItems(Text::String *channelId
 								if ((jsBase = obj1->GetObjectValue(UTF8STRC("editDate"))) != 0 && jsBase->GetType() == Text::JSONType::Number)
 								{
 									num1 = (Text::JSONNumber*)jsBase;
-									chInfo->editDate = Math::Double2Int64(num1->GetValue()) * 1000;
+									chInfo->editDate = Double2Int64(num1->GetValue()) * 1000;
 								}
 								if ((jsBase = obj1->GetObjectValue(UTF8STRC("screenName"))) != 0 && jsBase->GetType() == Text::JSONType::String)
 								{

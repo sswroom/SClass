@@ -83,7 +83,7 @@ gboolean GUIDDrawControl_OnMouseDown(GtkWidget *widget, GdkEvent *event, gpointe
 				btn = UI::GUIControl::MBTN_X2;
 				break;
 		}
-		me->OnMouseDown(Math::Double2Int32(evt->x), Math::Double2Int32(evt->y), btn);
+		me->OnMouseDown(Double2Int32(evt->x), Double2Int32(evt->y), btn);
 	}
 	else if (evt->type == GDK_DOUBLE_BUTTON_PRESS)
 	{
@@ -107,7 +107,7 @@ gboolean GUIDDrawControl_OnMouseDown(GtkWidget *widget, GdkEvent *event, gpointe
 				btn = UI::GUIControl::MBTN_X2;
 				break;
 		}
-		me->OnMouseDblClick(Math::Double2Int32(evt->x), Math::Double2Int32(evt->y), btn);
+		me->OnMouseDblClick(Double2Int32(evt->x), Double2Int32(evt->y), btn);
 	}
 	return false;
 }
@@ -138,7 +138,7 @@ gboolean GUIDDrawControl_OnMouseUp(GtkWidget *widget, GdkEvent *event, gpointer 
 				btn = UI::GUIControl::MBTN_X2;
 				break;
 		}
-		me->OnMouseUp(Math::Double2Int32(evt->x), Math::Double2Int32(evt->y), btn);
+		me->OnMouseUp(Double2Int32(evt->x), Double2Int32(evt->y), btn);
 	}
 	return false;
 }
@@ -147,7 +147,7 @@ gboolean GUIDDrawControl_OnMouseMove(GtkWidget *widget, GdkEvent *event, gpointe
 {
 	UI::GUIDDrawControl *me = (UI::GUIDDrawControl*)data;
 	GdkEventMotion *evt = (GdkEventMotion*)event;
-	me->OnMouseMove(Math::Double2Int32(evt->x), Math::Double2Int32(evt->y));
+	me->OnMouseMove(Double2Int32(evt->x), Double2Int32(evt->y));
 	return false;
 }
 
@@ -158,7 +158,7 @@ gboolean GUIDDrawControl_OnMouseWheel(GtkWidget *widget, GdkEvent *event, gpoint
 	Int32 scrollY = 0;
 	if (evt->direction == GDK_SCROLL_SMOOTH)
 	{
-		scrollY = Math::Double2Int32(-evt->delta_y);
+		scrollY = Double2Int32(-evt->delta_y);
 	}
 	else if (evt->direction == GDK_SCROLL_UP)
 	{
@@ -168,7 +168,7 @@ gboolean GUIDDrawControl_OnMouseWheel(GtkWidget *widget, GdkEvent *event, gpoint
 	{
 		scrollY = 1;
 	}
-	me->OnMouseWheel(Math::Double2Int32(evt->x), Math::Double2Int32(evt->y), scrollY);
+	me->OnMouseWheel(Double2Int32(evt->x), Double2Int32(evt->y), scrollY);
 	return true;
 }
 

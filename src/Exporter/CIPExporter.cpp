@@ -157,7 +157,7 @@ Bool Exporter::CIPExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 		j = dobj->nPoint << 1;
 		while (j-- > 0)
 		{
-			ptArr[j] = Math::Double2Int32(dobj->pointArr[j] * 200000.0);
+			ptArr[j] = Double2Int32(dobj->pointArr[j] * 200000.0);
 		}
 		stm->Write((UInt8*)&dobj->nPoint, 4);
 		stm->Write((UInt8*)ptArr, 8 * dobj->nPoint);

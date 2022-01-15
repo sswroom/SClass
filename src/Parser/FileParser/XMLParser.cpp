@@ -2598,7 +2598,7 @@ void Parser::FileParser::XMLParser::ParseKMLPlacemarkTrack(Text::XMLReader *read
 																		reader->ReadNodeText(&sb);
 																		if (j < recCnt)
 																		{
-																			recs[j].nSateUsed = Math::Double2Int32(Text::StrToDouble(sb.ToString()));
+																			recs[j].nSateUsed = Double2Int32(Text::StrToDouble(sb.ToString()));
 																		}
 																		j++;
 																	}

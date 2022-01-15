@@ -121,12 +121,12 @@ void UI::GUICoreJava::GetDesktopSize(OSInt *w, OSInt *h)
 	if (w)
 	{
 		mid = env->GetMethodID(cls, "getWidth", "()D");
-		*w = Math::Double2Int32(env->CallDoubleMethod(size, mid));
+		*w = Double2Int32(env->CallDoubleMethod(size, mid));
 	}
 	if (h)
 	{
 		mid = env->GetMethodID(cls, "getHeight", "()D");
-		*h = Math::Double2Int32(env->CallDoubleMethod(size, mid));
+		*h = Double2Int32(env->CallDoubleMethod(size, mid));
 	}
 }
 
@@ -145,12 +145,12 @@ void UI::GUICoreJava::GetCursorPos(OSInt *x, OSInt *y)
 	if (x)
 	{
 		mid = env->GetMethodID(cls, "getX", "()D");
-		*x = Math::Double2Int32(env->CallDoubleMethod(loc, mid));
+		*x = Double2Int32(env->CallDoubleMethod(loc, mid));
 	}
 	if (x)
 	{
 		mid = env->GetMethodID(cls, "getY", "()D");
-		*y = Math::Double2Int32(env->CallDoubleMethod(loc, mid));
+		*y = Double2Int32(env->CallDoubleMethod(loc, mid));
 	}
 }
 

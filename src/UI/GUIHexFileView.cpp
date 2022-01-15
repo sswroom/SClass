@@ -140,7 +140,7 @@ void UI::GUIHexFileView::EventMouseDown(OSInt scnX, OSInt scnY, MouseButton btn)
 	if (btn == MBTN_LEFT)
 	{
 		UInt64 ofst;
-		this->GetTextPos(Math::OSInt2Double(scnX), Math::OSInt2Double(scnY), &ofst);
+		this->GetTextPos(OSInt2Double(scnX), OSInt2Double(scnY), &ofst);
 		this->GoToOffset(ofst);
 	}
 }
@@ -172,7 +172,7 @@ void UI::GUIHexFileView::EventTimerTick()
 void UI::GUIHexFileView::DrawImage(Media::DrawImage *dimg)
 {
 	Media::DrawBrush *b = dimg->NewBrushARGB(this->bgColor);
-	dimg->DrawRect(0, 0, Math::UOSInt2Double(dimg->GetWidth()), Math::UOSInt2Double(dimg->GetHeight()), 0, b);
+	dimg->DrawRect(0, 0, UOSInt2Double(dimg->GetWidth()), UOSInt2Double(dimg->GetHeight()), 0, b);
 	dimg->DelBrush(b);
 	OSInt vPos = this->GetScrollVPos();
 	if (this->fileSize > 0)
@@ -190,7 +190,7 @@ void UI::GUIHexFileView::DrawImage(Media::DrawImage *dimg)
 		Double currY = 0;
 		Double currX;
 		Double hHeight = this->pageLineHeight * 0.5;
-		Double dHeight = Math::UOSInt2Double(dimg->GetHeight());
+		Double dHeight = UOSInt2Double(dimg->GetHeight());
 		UOSInt i;
 		UOSInt j;
 		UTF8Char c;
@@ -303,12 +303,12 @@ void UI::GUIHexFileView::DrawImage(Media::DrawImage *dimg)
 
 			if (k < 16)
 			{
-				currX += hHeight * 3 * Math::UOSInt2Double(16 - k);
+				currX += hHeight * 3 * UOSInt2Double(16 - k);
 			}
 			j = textSkip;
 			if (textSkip > 0)
 			{
-				currX += hHeight * Math::UOSInt2Double(textSkip);
+				currX += hHeight * UOSInt2Double(textSkip);
 				textPtr += textSkip;
 				textSkip = 0;
 			}
@@ -326,7 +326,7 @@ void UI::GUIHexFileView::DrawImage(Media::DrawImage *dimg)
 						Text::StrWriteChar(sbuff, wc)[0] = 0;
 						dimg->DrawString(currX, currY, sbuff, f, textBrush);
 					}
-					currX += hHeight * Math::OSInt2Double(textPtr2 - textPtr);
+					currX += hHeight * OSInt2Double(textPtr2 - textPtr);
 					j += (UOSInt)(textPtr2 - textPtr);
 					textPtr = textPtr2;
 				}
@@ -360,7 +360,7 @@ void UI::GUIHexFileView::DrawImage(Media::DrawImage *dimg)
 void UI::GUIHexFileView::UpdateCaretPos()
 {
 	OSInt posV = this->GetScrollVPos();
-	Double currY = this->pageLineHeight * Math::OSInt2Double((OSInt)(this->currOfst >> 4) - posV);
+	Double currY = this->pageLineHeight * OSInt2Double((OSInt)(this->currOfst >> 4) - posV);
 	Double currX;
 	UOSInt charCnt;
 	if (this->fileSize < 0x100000000)
@@ -372,8 +372,8 @@ void UI::GUIHexFileView::UpdateCaretPos()
 		charCnt = 17;
 	}
 	charCnt += (UOSInt)(this->currOfst & 15) * 3;
-	currX = Math::UOSInt2Double(charCnt) * this->pageLineHeight * 0.5;
-	this->SetCaretPos(Math::Double2OSInt(currX), Math::Double2OSInt(currY));
+	currX = UOSInt2Double(charCnt) * this->pageLineHeight * 0.5;
+	this->SetCaretPos(Double2OSInt(currX), Double2OSInt(currY));
 }
 
 Bool UI::GUIHexFileView::LoadFile(const UTF8Char *fileName, Bool dynamicSize)
@@ -433,16 +433,16 @@ void UI::GUIHexFileView::GetTextPos(Double scnPosX, Double scnPosY, UInt64 *byte
 
 	OSInt vPos = this->GetScrollVPos();
 	UInt64 ofst;
-	vPos = (OSInt)(Math::OSInt2Double(vPos) + scnPosY / this->pageLineHeight);
+	vPos = (OSInt)(OSInt2Double(vPos) + scnPosY / this->pageLineHeight);
 	if (vPos < 0)
 	{
 		vPos = 0;
 	}
-	if (scnPosX < Math::UOSInt2Double(addrLen) * this->pageLineHeight * 0.5)
+	if (scnPosX < UOSInt2Double(addrLen) * this->pageLineHeight * 0.5)
 	{
 		ofst = (UOSInt)vPos * 16;
 	}
-	else if (scnPosX >= Math::UOSInt2Double(addrLen + 48) * this->pageLineHeight * 0.5)
+	else if (scnPosX >= UOSInt2Double(addrLen + 48) * this->pageLineHeight * 0.5)
 	{
 		ofst = (UOSInt)vPos * 16 + 15;
 	}

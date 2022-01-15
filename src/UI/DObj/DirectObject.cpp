@@ -46,16 +46,16 @@ void UI::DObj::DirectObject::GetCurrPos(OSInt *left, OSInt *top)
 		{
 			if (this->currMoveType == MT_CONSTANT)
 			{
-				*left = this->left + Math::Double2Int32((this->destX - this->left) * dur / this->moveDur);
-				*top = this->top + Math::Double2Int32((this->destY - this->top) * dur / this->moveDur);
+				*left = this->left + Double2Int32((this->destX - this->left) * dur / this->moveDur);
+				*top = this->top + Double2Int32((this->destY - this->top) * dur / this->moveDur);
 			}
 			else if (this->currMoveType == MT_ACC)
 			{
 				Double aX = (this->destX - this->left) / this->moveDur / this->moveDur;
 				Double aY = (this->destY - this->top) / this->moveDur / this->moveDur;
 				Double currDur = dur;
-				*left = this->left + Math::Double2Int32(aX * currDur * currDur);
-				*top = this->top + Math::Double2Int32(aY * currDur * currDur);
+				*left = this->left + Double2Int32(aX * currDur * currDur);
+				*top = this->top + Double2Int32(aY * currDur * currDur);
 			}
 			else if (this->currMoveType == MT_ACCDEACC)
 			{
@@ -65,13 +65,13 @@ void UI::DObj::DirectObject::GetCurrPos(OSInt *left, OSInt *top)
 				if (currDur > this->moveDur * 0.5)
 				{
 					currDur = this->moveDur - currDur;
-					*left = this->destX - Math::Double2Int32(aX * currDur * currDur);
-					*top = this->destY - Math::Double2Int32(aY * currDur * currDur);
+					*left = this->destX - Double2Int32(aX * currDur * currDur);
+					*top = this->destY - Double2Int32(aY * currDur * currDur);
 				}
 				else
 				{
-					*left = this->left + Math::Double2Int32(aX * currDur * currDur);
-					*top = this->top + Math::Double2Int32(aY * currDur * currDur);
+					*left = this->left + Double2Int32(aX * currDur * currDur);
+					*top = this->top + Double2Int32(aY * currDur * currDur);
 				}
 			}
 		}

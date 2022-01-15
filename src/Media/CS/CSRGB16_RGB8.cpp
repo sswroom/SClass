@@ -117,7 +117,7 @@ void Media::CS::CSRGB16_RGB8::UpdateRGBTable()
 	i = 65536;
 	while (i-- > 0)
 	{
-		Double dv = Math::OSInt2Double(i) / 65535.0;
+		Double dv = OSInt2Double(i) / 65535.0;
 		Double rv = frFunc->ForwardTransfer(irFunc->InverseTransfer(dv) * rMul);
 		Double gv = fgFunc->ForwardTransfer(igFunc->InverseTransfer(dv) * gMul);
 		Double bv = fbFunc->ForwardTransfer(ibFunc->InverseTransfer(dv) * bMul);
@@ -129,19 +129,19 @@ void Media::CS::CSRGB16_RGB8::UpdateRGBTable()
 		else if (rV < 0)
 			this->rgbTable[i + 131072] = 0;
 		else
-			this->rgbTable[i + 131072] = (UInt8)Math::Double2Int32(rV);
+			this->rgbTable[i + 131072] = (UInt8)Double2Int32(rV);
 		if (gV > 255.0)
 			this->rgbTable[i + 65536] = 255;
 		else if (gV < 0)
 			this->rgbTable[i + 65536] = 0;
 		else
-			this->rgbTable[i + 65536] = (UInt8)Math::Double2Int32(gV);
+			this->rgbTable[i + 65536] = (UInt8)Double2Int32(gV);
 		if (bV > 255.0)
 			this->rgbTable[i + 0] = 255;
 		else if (bV < 0)
 			this->rgbTable[i + 0] = 0;
 		else
-			this->rgbTable[i + 0] = (UInt8)Math::Double2Int32(bV);
+			this->rgbTable[i + 0] = (UInt8)Double2Int32(bV);
 	}
 	DEL_CLASS(irFunc);
 	DEL_CLASS(igFunc);

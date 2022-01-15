@@ -982,13 +982,13 @@ Int32 DB::OLEDBReader::GetInt32(UOSInt colIndex)
 	case DBTYPE_R4:
 		if (*valLen == 4)
 		{
-			return Math::Double2Int32(ReadFloat(val));
+			return Double2Int32(ReadFloat(val));
 		}
 		return 0;
 	case DBTYPE_R8:
 		if (*valLen == 8)
 		{
-			return Math::Double2Int32(ReadDouble(val));
+			return Double2Int32(ReadDouble(val));
 		}
 		return 0;
 	case DBTYPE_UI1:
@@ -1062,13 +1062,13 @@ Int64 DB::OLEDBReader::GetInt64(UOSInt colIndex)
 	case DBTYPE_R4:
 		if (*valLen == 4)
 		{
-			return Math::Double2Int64(ReadFloat(val));
+			return Double2Int64(ReadFloat(val));
 		}
 		return 0;
 	case DBTYPE_R8:
 		if (*valLen == 8)
 		{
-			return Math::Double2Int64(ReadDouble(val));
+			return Double2Int64(ReadDouble(val));
 		}
 		return 0;
 	case DBTYPE_UI1:

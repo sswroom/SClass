@@ -171,8 +171,8 @@ void UI::GUIVSplitter::DrawXorBar(void *hdc, Int32 x, Int32 y)
 	UOSInt w;
 	UOSInt h;
 	this->parent->GetClientOfst(&lcliOfstX, &lcliOfstY);
-	cliOfstX = Math::Double2Int32(lcliOfstX * this->hdpi / 96.0);
-	cliOfstY = Math::Double2Int32(lcliOfstY * this->hdpi / 96.0);
+	cliOfstX = Double2Int32(lcliOfstX * this->hdpi / 96.0);
+	cliOfstY = Double2Int32(lcliOfstY * this->hdpi / 96.0);
 	this->GetPositionP(&posX, &posY);
 	this->GetSizeP(&w, &h);
 	drawY = posY + y - this->dragY;
@@ -212,7 +212,7 @@ void UI::GUIVSplitter::CalDragRange()
 	min = 0;
 	Double maxD;
 	this->parent->GetClientSize(&maxD, 0);
-	max = Math::Double2Int32(maxD * this->hdpi / 96.0);
+	max = Double2Int32(maxD * this->hdpi / 96.0);
 
 	i = this->parent->GetChildCount();
 	if (this->isBottom)

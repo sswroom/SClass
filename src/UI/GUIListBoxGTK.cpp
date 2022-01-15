@@ -36,7 +36,7 @@ gboolean GUIListBox_ButtonPress(GtkWidget *widget, GdkEvent *event, gpointer dat
 	}
 	else if (event->button.button == 3)
 	{
-		me->EventRightClick(Math::Double2OSInt(event->button.x), Math::Double2OSInt(event->button.y));
+		me->EventRightClick(Double2OSInt(event->button.x), Double2OSInt(event->button.y));
 	}
 	return false;
 }
@@ -398,7 +398,7 @@ void UI::GUIListBox::SetSelectedIndex(UOSInt index)
 
 	int h = gtk_widget_get_allocated_height(data->listbox);
 	Double itemH = h / (Double)this->items->GetCount();
-	Double targetTop = itemH * Math::UOSInt2Double(index);
+	Double targetTop = itemH * UOSInt2Double(index);
 	Double targetBottom = targetTop + itemH;
 	GtkAdjustment *adj = gtk_scrolled_window_get_vadjustment((GtkScrolledWindow*)this->hwnd);
 	Double pageSize = gtk_adjustment_get_page_size(adj);

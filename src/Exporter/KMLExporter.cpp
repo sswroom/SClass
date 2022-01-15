@@ -425,7 +425,7 @@ Bool Exporter::KMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 					if (img->HasSrcAlpha())
 					{
 						sb.AppendC(UTF8STRC("<color>"));
-						sb.AppendHex32(((UInt32)Math::Double2Int32(img->GetSrcAlpha() * 255.0) << 24) | 0xffffff);
+						sb.AppendHex32(((UInt32)Double2Int32(img->GetSrcAlpha() * 255.0) << 24) | 0xffffff);
 						sb.AppendC(UTF8STRC("</color>"));
 					}
 					if (img->HasZIndex())
@@ -503,7 +503,7 @@ Bool Exporter::KMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 					if (img->HasSrcAlpha())
 					{
 						sb.AppendC(UTF8STRC("<color>"));
-						sb.AppendHex32(((UInt32)Math::Double2Int32(img->GetSrcAlpha() * 255.0) << 24) | 0xffffff);
+						sb.AppendHex32(((UInt32)Double2Int32(img->GetSrcAlpha() * 255.0) << 24) | 0xffffff);
 						sb.AppendC(UTF8STRC("</color>"));
 					}
 					if (img->HasZIndex())

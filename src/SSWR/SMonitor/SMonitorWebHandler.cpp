@@ -1074,7 +1074,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(SSWR::SMo
 	{
 		f = dimg->NewFontPx(UTF8STRC("Arial"), 12, Media::DrawEngine::DFS_ANTIALIAS, 0);
 		b = dimg->NewBrushARGB(0xffffffff);
-		dimg->DrawRect(0, 0, Math::UOSInt2Double(dimg->GetWidth()), Math::UOSInt2Double(dimg->GetHeight()), 0, b);
+		dimg->DrawRect(0, 0, UOSInt2Double(dimg->GetWidth()), UOSInt2Double(dimg->GetHeight()), 0, b);
 		dimg->DelBrush(b);
 		b = dimg->NewBrushARGB(0xff000000);
 		dimg->DrawString(0, 0, (const UTF8Char*)"Sensor not found", f, b);
@@ -1428,14 +1428,14 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(SSWR::SMo
 			chart->SetFontHeightPt(10);
 			chart->SetTimeZoneQHR(32);
 			chart->SetTimeFormat("HH:mm");
-			chart->Plot(dimg, 0, 0, Math::UOSInt2Double(dimg->GetWidth()), Math::UOSInt2Double(dimg->GetHeight()));
+			chart->Plot(dimg, 0, 0, UOSInt2Double(dimg->GetWidth()), UOSInt2Double(dimg->GetHeight()));
 			DEL_CLASS(chart);
 		}
 		else
 		{
 			f = dimg->NewFontPx(UTF8STRC("Arial"), 12, Media::DrawEngine::DFS_ANTIALIAS, 0);
 			b = dimg->NewBrushARGB(0xffffffff);
-			dimg->DrawRect(0, 0, Math::UOSInt2Double(dimg->GetWidth()), Math::UOSInt2Double(dimg->GetHeight()), 0, b);
+			dimg->DrawRect(0, 0, UOSInt2Double(dimg->GetWidth()), UOSInt2Double(dimg->GetHeight()), 0, b);
 			dimg->DelBrush(b);
 			b = dimg->NewBrushARGB(0xff000000);
 			dimg->DrawString(0, 0, sb.ToString(), f, b);
@@ -1696,7 +1696,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataImgReq(SSWR::SM
 	{
 		f = dimg->NewFontPx(UTF8STRC("Arial"), 12, Media::DrawEngine::DFS_ANTIALIAS, 0);
 		b = dimg->NewBrushARGB(0xffffffff);
-		dimg->DrawRect(0, 0, Math::UOSInt2Double(dimg->GetWidth()), Math::UOSInt2Double(dimg->GetHeight()), 0, b);
+		dimg->DrawRect(0, 0, UOSInt2Double(dimg->GetWidth()), UOSInt2Double(dimg->GetHeight()), 0, b);
 		dimg->DelBrush(b);
 		b = dimg->NewBrushARGB(0xff000000);
 		dimg->DrawString(0, 0, (const UTF8Char*)"Sensor not found", f, b);
@@ -1778,14 +1778,14 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataImgReq(SSWR::SM
 			chart->SetFontHeightPt(10);
 			chart->SetTimeZoneQHR(32);
 			chart->SetTimeFormat("HH:mm");
-			chart->Plot(dimg, 0, 0, Math::UOSInt2Double(dimg->GetWidth()), Math::UOSInt2Double(dimg->GetHeight()));
+			chart->Plot(dimg, 0, 0, UOSInt2Double(dimg->GetWidth()), UOSInt2Double(dimg->GetHeight()));
 			DEL_CLASS(chart);
 		}
 		else
 		{
 			f = dimg->NewFontPx(UTF8STRC("Arial"), 12, Media::DrawEngine::DFS_ANTIALIAS, 0);
 			b = dimg->NewBrushARGB(0xffffffff);
-			dimg->DrawRect(0, 0, Math::UOSInt2Double(dimg->GetWidth()), Math::UOSInt2Double(dimg->GetHeight()), 0, b);
+			dimg->DrawRect(0, 0, UOSInt2Double(dimg->GetWidth()), UOSInt2Double(dimg->GetHeight()), 0, b);
 			dimg->DelBrush(b);
 			b = dimg->NewBrushARGB(0xff000000);
 			dimg->DrawString(0, 0, sb.ToString(), f, b);

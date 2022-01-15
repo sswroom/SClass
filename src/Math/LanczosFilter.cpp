@@ -12,7 +12,7 @@ Double Math::LanczosFilter::Weight(Double phase, UOSInt nTap)
 	{
 		return 1.0;
 	}
-	Double dnTap = Math::UOSInt2Double(nTap);
+	Double dnTap = UOSInt2Double(nTap);
 
 	if ((aphase * 2) >= dnTap){
 		return 0.0;

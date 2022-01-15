@@ -458,22 +458,22 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::FGDBFileAnalyse::GetFrameDetail(U
 						case 21:
 							ofst2 = Map::ESRI::FileGDBUtil::ReadVarUInt(tagData, ofst, &v);
 							frame->AddUInt(ofst, ofst2 - ofst, "X_Raw", v);
-							frame->AddFloat(ofst, ofst2 - ofst, "X", Math::UOSInt2Double(v - 1) / this->tableInfo->xyScale + this->tableInfo->xOrigin);
+							frame->AddFloat(ofst, ofst2 - ofst, "X", UOSInt2Double(v - 1) / this->tableInfo->xyScale + this->tableInfo->xOrigin);
 							ofst = ofst2;
 							ofst2 = Map::ESRI::FileGDBUtil::ReadVarUInt(tagData, ofst, &v);
 							frame->AddUInt(ofst, ofst2 - ofst, "Y_Raw", v);
-							frame->AddFloat(ofst, ofst2 - ofst, "Y", Math::UOSInt2Double(v - 1) / this->tableInfo->xyScale + this->tableInfo->yOrigin);
+							frame->AddFloat(ofst, ofst2 - ofst, "Y", UOSInt2Double(v - 1) / this->tableInfo->xyScale + this->tableInfo->yOrigin);
 							ofst = ofst2;
 							if (this->tableInfo->geometryFlags & 0x80)
 							{
 								ofst2 = Map::ESRI::FileGDBUtil::ReadVarUInt(tagData, ofst, &v);
-								frame->AddFloat(ofst, ofst2 - ofst, "Z", Math::UOSInt2Double(v - 1) / this->tableInfo->zScale + this->tableInfo->zOrigin);
+								frame->AddFloat(ofst, ofst2 - ofst, "Z", UOSInt2Double(v - 1) / this->tableInfo->zScale + this->tableInfo->zOrigin);
 								ofst = ofst2;
 							}
 							if (this->tableInfo->geometryFlags & 0x40)
 							{
 								ofst2 = Map::ESRI::FileGDBUtil::ReadVarUInt(tagData, ofst, &v);
-								frame->AddFloat(ofst, ofst2 - ofst, "M", Math::UOSInt2Double(v - 1) / this->tableInfo->mScale + this->tableInfo->mOrigin);
+								frame->AddFloat(ofst, ofst2 - ofst, "M", UOSInt2Double(v - 1) / this->tableInfo->mScale + this->tableInfo->mOrigin);
 								ofst = ofst2;
 							}
 							break;
@@ -505,19 +505,19 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::FGDBFileAnalyse::GetFrameDetail(U
 								Double yMin;
 								ofst2 = Map::ESRI::FileGDBUtil::ReadVarUInt(tagData, ofst, &v);
 								frame->AddUInt(ofst, ofst2 - ofst, "XMin_RAW", v);
-								frame->AddFloat(ofst, ofst2 - ofst, "XMin", xMin = Math::UOSInt2Double(v) / this->tableInfo->xyScale + this->tableInfo->xOrigin);
+								frame->AddFloat(ofst, ofst2 - ofst, "XMin", xMin = UOSInt2Double(v) / this->tableInfo->xyScale + this->tableInfo->xOrigin);
 								ofst = ofst2;
 								ofst2 = Map::ESRI::FileGDBUtil::ReadVarUInt(tagData, ofst, &v);
 								frame->AddUInt(ofst, ofst2 - ofst, "YMin_RAW", v);
-								frame->AddFloat(ofst, ofst2 - ofst, "YMin", yMin = Math::UOSInt2Double(v) / this->tableInfo->xyScale + this->tableInfo->yOrigin);
+								frame->AddFloat(ofst, ofst2 - ofst, "YMin", yMin = UOSInt2Double(v) / this->tableInfo->xyScale + this->tableInfo->yOrigin);
 								ofst = ofst2;
 								ofst2 = Map::ESRI::FileGDBUtil::ReadVarUInt(tagData, ofst, &v);
 								frame->AddUInt(ofst, ofst2 - ofst, "XMax_RAW", v);
-								frame->AddFloat(ofst, ofst2 - ofst, "XMax", Math::UOSInt2Double(v) / this->tableInfo->xyScale + xMin);
+								frame->AddFloat(ofst, ofst2 - ofst, "XMax", UOSInt2Double(v) / this->tableInfo->xyScale + xMin);
 								ofst = ofst2;
 								ofst2 = Map::ESRI::FileGDBUtil::ReadVarUInt(tagData, ofst, &v);
 								frame->AddUInt(ofst, ofst2 - ofst, "YMax_RAW", v);
-								frame->AddFloat(ofst, ofst2 - ofst, "YMax", Math::UOSInt2Double(v) / this->tableInfo->xyScale + yMin);
+								frame->AddFloat(ofst, ofst2 - ofst, "YMax", UOSInt2Double(v) / this->tableInfo->xyScale + yMin);
 								ofst = ofst2;
 								UOSInt tmpI = 1;
 								while (tmpI < nParts)
@@ -535,11 +535,11 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::FGDBFileAnalyse::GetFrameDetail(U
 								{
 									ofst2 = Map::ESRI::FileGDBUtil::ReadVarInt(tagData, ofst, &iv);
 									dx += diffMul * iv;
-									frame->AddFloat(ofst, ofst2 - ofst, "X", Math::OSInt2Double(dx) / this->tableInfo->xyScale + this->tableInfo->xOrigin);
+									frame->AddFloat(ofst, ofst2 - ofst, "X", OSInt2Double(dx) / this->tableInfo->xyScale + this->tableInfo->xOrigin);
 									ofst = ofst2;
 									ofst2 = Map::ESRI::FileGDBUtil::ReadVarInt(tagData, ofst, &iv);
 									dy += diffMul * iv;
-									frame->AddFloat(ofst, ofst2 - ofst, "Y", Math::OSInt2Double(dy) / this->tableInfo->xyScale + this->tableInfo->yOrigin);
+									frame->AddFloat(ofst, ofst2 - ofst, "Y", OSInt2Double(dy) / this->tableInfo->xyScale + this->tableInfo->yOrigin);
 									ofst = ofst2;
 									tmpI++;
 								}
@@ -551,7 +551,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::FGDBFileAnalyse::GetFrameDetail(U
 									{
 										ofst2 = Map::ESRI::FileGDBUtil::ReadVarInt(tagData, ofst, &iv);
 										dx += diffMul * iv;
-										frame->AddFloat(ofst, ofst2 - ofst, "Z", Math::OSInt2Double(dx) / this->tableInfo->zScale + this->tableInfo->zOrigin);
+										frame->AddFloat(ofst, ofst2 - ofst, "Z", OSInt2Double(dx) / this->tableInfo->zScale + this->tableInfo->zOrigin);
 										ofst = ofst2;
 										tmpI++;
 									}
@@ -564,7 +564,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::FGDBFileAnalyse::GetFrameDetail(U
 									{
 										ofst2 = Map::ESRI::FileGDBUtil::ReadVarInt(tagData, ofst, &iv);
 										dx += diffMul * iv;
-										frame->AddFloat(ofst, ofst2 - ofst, "M", Math::OSInt2Double(dx) / this->tableInfo->mScale + this->tableInfo->mOrigin);
+										frame->AddFloat(ofst, ofst2 - ofst, "M", OSInt2Double(dx) / this->tableInfo->mScale + this->tableInfo->mOrigin);
 										ofst = ofst2;
 										tmpI++;
 									}
@@ -598,19 +598,19 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::FGDBFileAnalyse::GetFrameDetail(U
 								Double yMin;
 								ofst2 = Map::ESRI::FileGDBUtil::ReadVarUInt(tagData, ofst, &v);
 								frame->AddUInt(ofst, ofst2 - ofst, "XMin_RAW", v);
-								frame->AddFloat(ofst, ofst2 - ofst, "XMin", xMin = Math::UOSInt2Double(v) / this->tableInfo->xyScale + this->tableInfo->xOrigin);
+								frame->AddFloat(ofst, ofst2 - ofst, "XMin", xMin = UOSInt2Double(v) / this->tableInfo->xyScale + this->tableInfo->xOrigin);
 								ofst = ofst2;
 								ofst2 = Map::ESRI::FileGDBUtil::ReadVarUInt(tagData, ofst, &v);
 								frame->AddUInt(ofst, ofst2 - ofst, "YMin_RAW", v);
-								frame->AddFloat(ofst, ofst2 - ofst, "YMin", yMin = Math::UOSInt2Double(v) / this->tableInfo->xyScale + this->tableInfo->yOrigin);
+								frame->AddFloat(ofst, ofst2 - ofst, "YMin", yMin = UOSInt2Double(v) / this->tableInfo->xyScale + this->tableInfo->yOrigin);
 								ofst = ofst2;
 								ofst2 = Map::ESRI::FileGDBUtil::ReadVarUInt(tagData, ofst, &v);
 								frame->AddUInt(ofst, ofst2 - ofst, "XMax_RAW", v);
-								frame->AddFloat(ofst, ofst2 - ofst, "XMax", Math::UOSInt2Double(v) / this->tableInfo->xyScale + xMin);
+								frame->AddFloat(ofst, ofst2 - ofst, "XMax", UOSInt2Double(v) / this->tableInfo->xyScale + xMin);
 								ofst = ofst2;
 								ofst2 = Map::ESRI::FileGDBUtil::ReadVarUInt(tagData, ofst, &v);
 								frame->AddUInt(ofst, ofst2 - ofst, "YMax_RAW", v);
-								frame->AddFloat(ofst, ofst2 - ofst, "YMax", Math::UOSInt2Double(v) / this->tableInfo->xyScale + yMin);
+								frame->AddFloat(ofst, ofst2 - ofst, "YMax", UOSInt2Double(v) / this->tableInfo->xyScale + yMin);
 								ofst = ofst2;
 								UInt64 *parts = MemAlloc(UInt64, nParts);
 								parts[nParts - 1] = nPoints;
@@ -636,12 +636,12 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::FGDBFileAnalyse::GetFrameDetail(U
 										ofst2 = Map::ESRI::FileGDBUtil::ReadVarInt(tagData, ofst, &iv);
 										frame->AddInt(ofst, ofst2 - ofst, "X_RAW", iv);
 										dx -= iv;
-										frame->AddFloat(ofst, ofst2 - ofst, "X", Math::OSInt2Double(dx) / this->tableInfo->xyScale + this->tableInfo->xOrigin);
+										frame->AddFloat(ofst, ofst2 - ofst, "X", OSInt2Double(dx) / this->tableInfo->xyScale + this->tableInfo->xOrigin);
 										ofst = ofst2;
 										ofst2 = Map::ESRI::FileGDBUtil::ReadVarInt(tagData, ofst, &iv);
 										frame->AddInt(ofst, ofst2 - ofst, "Y_RAW", iv);
 										dy -= iv;
-										frame->AddFloat(ofst, ofst2 - ofst, "Y", Math::OSInt2Double(dy) / this->tableInfo->xyScale + this->tableInfo->yOrigin);
+										frame->AddFloat(ofst, ofst2 - ofst, "Y", OSInt2Double(dy) / this->tableInfo->xyScale + this->tableInfo->yOrigin);
 										ofst = ofst2;
 									}
 									if (geometryType & 0x80000000)
@@ -652,7 +652,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::FGDBFileAnalyse::GetFrameDetail(U
 										{
 											ofst2 = Map::ESRI::FileGDBUtil::ReadVarInt(tagData, ofst, &iv);
 											dx -= iv;
-											frame->AddFloat(ofst, ofst2 - ofst, "Z", Math::OSInt2Double(dx) / this->tableInfo->zScale + this->tableInfo->zOrigin);
+											frame->AddFloat(ofst, ofst2 - ofst, "Z", OSInt2Double(dx) / this->tableInfo->zScale + this->tableInfo->zOrigin);
 											ofst = ofst2;
 										}
 									}
@@ -664,7 +664,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::FGDBFileAnalyse::GetFrameDetail(U
 										{
 											ofst2 = Map::ESRI::FileGDBUtil::ReadVarInt(tagData, ofst, &iv);
 											dx -= iv;
-											frame->AddFloat(ofst, ofst2 - ofst, "M", Math::OSInt2Double(dx) / this->tableInfo->mScale + this->tableInfo->mOrigin);
+											frame->AddFloat(ofst, ofst2 - ofst, "M", OSInt2Double(dx) / this->tableInfo->mScale + this->tableInfo->mOrigin);
 											ofst = ofst2;
 										}
 									}

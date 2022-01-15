@@ -225,12 +225,12 @@ Bool Math::UTMGridConvertDbl::Grid_WGS84(Double *latOut, Double *lonOut, const U
 	{
 		return false;
 	}
-	easting += Math::UOSInt2Double((eastZone - (((zoneNumber + 2) % 3) << 3) + 1) * 100000);
+	easting += UOSInt2Double((eastZone - (((zoneNumber + 2) % 3) << 3) + 1) * 100000);
 	if ((zoneNumber & 1) == 0)
 	{
 		northZone = (northZone + 15) % 20;
 	}
-	northing += Math::UOSInt2Double(northZone * 100000);
+	northing += UOSInt2Double(northZone * 100000);
 	if (latZone < 12)
 	{
 		northing -= 10000000.0;

@@ -46,8 +46,8 @@ Bool __stdcall SSWR::AVIRead::AVIRImageForm::OnImageMouseMove(void *userObj, OSI
 		UInt8 pixel[16];
 		Text::StringBuilderUTF8 sb;
 		me->pbImage->Scn2ImagePos(scnX, scnY, &imgX, &imgY);
-		OSInt xPos = Math::Double2Int32(imgX);
-		OSInt yPos = Math::Double2Int32(imgY);
+		OSInt xPos = Double2Int32(imgX);
+		OSInt yPos = Double2Int32(imgY);
 		if (xPos < 0)
 			xPos = 0;
 		else if ((UOSInt)xPos >= me->currImg->info->dispWidth)
@@ -526,7 +526,7 @@ Bool __stdcall SSWR::AVIRead::AVIRImageForm::OnImageMouseMove(void *userObj, OSI
 		if (me->imgList && me->imgList->HasThermoImage())
 		{
 			sb.AppendC(UTF8STRC(", T = "));
-			Text::SBAppendF64(&sb, me->imgList->GetThermoValue(imgX / Math::UOSInt2Double(me->currImg->info->dispWidth), imgY / Math::UOSInt2Double(me->currImg->info->dispHeight)));
+			Text::SBAppendF64(&sb, me->imgList->GetThermoValue(imgX / UOSInt2Double(me->currImg->info->dispWidth), imgY / UOSInt2Double(me->currImg->info->dispHeight)));
 		}
 		sb.AppendC(UTF8STRC(", RGB("));
 		Text::SBAppendF64(&sb, dR);

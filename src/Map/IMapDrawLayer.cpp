@@ -226,10 +226,10 @@ Int32 Map::IMapDrawLayer::CalBlockSize()
 		NEW_CLASS(idList, Data::ArrayListInt64());
 		this->GetAllObjectIds(idList, 0);
 		
-		Double tVal = (yMax - yMin) * (xMax - xMin) / Math::UOSInt2Double(idList->GetCount());
+		Double tVal = (yMax - yMin) * (xMax - xMin) / UOSInt2Double(idList->GetCount());
 		if (xMax > 180)
 		{
-			blkSize = Math::Double2Int32(Math_Sqrt(tVal) * 3);
+			blkSize = Double2Int32(Math_Sqrt(tVal) * 3);
 			if (blkSize < 5000)
 			{
 				blkSize = 5000;
@@ -241,7 +241,7 @@ Int32 Map::IMapDrawLayer::CalBlockSize()
 		}
 		else
 		{
-			blkSize = Math::Double2Int32(Math_Sqrt(tVal) * 500000);
+			blkSize = Double2Int32(Math_Sqrt(tVal) * 500000);
 			if (blkSize < 5000)
 			{
 				blkSize = 5000;
@@ -325,8 +325,8 @@ UTF8Char *Map::IMapDrawLayer::GetPLLabelLatLon(UTF8Char *buff, UOSInt buffSize, 
 	NEW_CLASS(arr, Data::ArrayListInt64());
 	Int32 blkSize = this->CalBlockSize();
 
-	Int32 xBlk = Math::Double2Int32(lon * 200000.0 / blkSize);
-	Int32 yBlk = Math::Double2Int32(lat * 200000.0 / blkSize);
+	Int32 xBlk = Double2Int32(lon * 200000.0 / blkSize);
+	Int32 yBlk = Double2Int32(lat * 200000.0 / blkSize);
 	GetObjectIds(arr, &names, 200000.0, (xBlk - 1) * blkSize, (yBlk - 1) * blkSize, (xBlk + 2) * blkSize - 1, (yBlk + 2) * blkSize - 1, false);
 	lastId = -1;
 	i = arr->GetCount();

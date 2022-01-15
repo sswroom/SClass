@@ -224,8 +224,8 @@ Bool Media::StaticDrawImage::DrawImagePt2(Media::StaticImage *img, Double tlx, D
 		img->To32bpp();
 		if (img->info->atype == Media::AT_NO_ALPHA)
 		{
-			Int32 x = Math::Double2Int32(tlx);
-			Int32 y = Math::Double2Int32(tly);
+			Int32 x = Double2Int32(tlx);
+			Int32 y = Double2Int32(tly);
 			Int32 sx = 0;
 			Int32 sy = 0;
 			OSInt w = img->info->dispWidth;
@@ -267,31 +267,31 @@ Bool Media::StaticDrawImage::DrawImagePt2(Media::StaticImage *img, Double tlx, D
 
 			if (tlx < 0)
 			{
-				w += Math::Double2Int32(tlx);
-				sbits -= Math::Double2Int32(tlx) << 2;
+				w += Double2Int32(tlx);
+				sbits -= Double2Int32(tlx) << 2;
 				tlx = 0;
 			}
 			if (tly < 0)
 			{
-				h += Math::Double2Int32(tly);
-				sbits -= Math::Double2Int32(tly) * sbpl;
+				h += Double2Int32(tly);
+				sbits -= Double2Int32(tly) * sbpl;
 				tly = 0;
 			}
 
 			if (tlx + w > this->info->dispWidth)
 			{
-				w = this->info->dispWidth - Math::Double2Int32(tlx);
+				w = this->info->dispWidth - Double2Int32(tlx);
 			}
 			if (tly + h > this->info->dispHeight)
 			{
-				h = this->info->dispHeight - Math::Double2Int32(tly);
+				h = this->info->dispHeight - Double2Int32(tly);
 			}
 			if (w > 0 && h > 0)
 			{
 				this->eng->iab32->SetSourceProfile(img->info->color);
 				this->eng->iab32->SetDestProfile(this->info->color);
 				this->eng->iab32->SetOutputProfile(this->info->color);
-				this->eng->iab32->Blend(dbits + Math::Double2Int32(tly) * dbpl + (Math::Double2Int32(tlx) * 4), dbpl, sbits, sbpl, w, h, img->info->atype);
+				this->eng->iab32->Blend(dbits + Double2Int32(tly) * dbpl + (Double2Int32(tlx) * 4), dbpl, sbits, sbpl, w, h, img->info->atype);
 			}
 		}
 		return true;
@@ -311,12 +311,12 @@ Bool Media::StaticDrawImage::DrawImagePt3(DrawImage *img, Double destX, Double d
 		simg->To32bpp();
 		if (simg->info->atype == Media::AT_NO_ALPHA)
 		{
-			Int32 x = Math::Double2Int32(destX);
-			Int32 y = Math::Double2Int32(destY);
-			Int32 sx = Math::Double2Int32(srcX);
-			Int32 sy = Math::Double2Int32(srcY);
-			OSInt w = Math::Double2Int32(srcW);
-			OSInt h = Math::Double2Int32(srcH);
+			Int32 x = Double2Int32(destX);
+			Int32 y = Double2Int32(destY);
+			Int32 sx = Double2Int32(srcX);
+			Int32 sy = Double2Int32(srcY);
+			OSInt w = Double2Int32(srcW);
+			OSInt h = Double2Int32(srcH);
 			OSInt bpl = this->info->storeWidth << 2;
 			if (x < 0)
 			{
@@ -345,12 +345,12 @@ Bool Media::StaticDrawImage::DrawImagePt3(DrawImage *img, Double destX, Double d
 		}
 		else
 		{
-			Int32 x = Math::Double2Int32(destX);
-			Int32 y = Math::Double2Int32(destY);
-			Int32 sx = Math::Double2Int32(srcX);
-			Int32 sy = Math::Double2Int32(srcY);
-			OSInt w = Math::Double2Int32(srcW);
-			OSInt h = Math::Double2Int32(srcH);
+			Int32 x = Double2Int32(destX);
+			Int32 y = Double2Int32(destY);
+			Int32 sx = Double2Int32(srcX);
+			Int32 sy = Double2Int32(srcY);
+			OSInt w = Double2Int32(srcW);
+			OSInt h = Double2Int32(srcH);
 			UInt8 *dbits = (UInt8*)this->data;
 			UInt8 *sbits = (UInt8*)simg->data;
 			OSInt dbpl = this->info->storeWidth << 2;

@@ -52,7 +52,7 @@ UOSInt Media::AudioFilter::DTMFGenerator::ReadBlock(UInt8 *buff, UOSInt blkSize)
 			this->freq1Curr += this->freq1Step;
 			this->freq2Curr += this->freq2Step;
 
-			iv = Math::Double2Int32(v * 32767 * this->vol);
+			iv = Double2Int32(v * 32767 * this->vol);
 			j = this->format.nChannels;
 			while (j-- > 0)
 			{
@@ -182,7 +182,7 @@ UOSInt Media::AudioFilter::DTMFGenerator::ReadBlock(UInt8 *buff, UOSInt blkSize)
 						freq1Curr += freq1Step;
 						freq2Curr += freq2Step;
 
-						iv = Math::Double2Int32(v * 32767 * this->tonesVol);
+						iv = Double2Int32(v * 32767 * this->tonesVol);
 						j = this->format.nChannels;
 						while (j-- > 0)
 						{
@@ -228,7 +228,7 @@ UOSInt Media::AudioFilter::DTMFGenerator::ReadBlock(UInt8 *buff, UOSInt blkSize)
 			this->freq1Curr += this->freq1Step;
 			this->freq2Curr += this->freq2Step;
 
-			iv = Math::Double2Int32(v * 127 * this->vol);
+			iv = Double2Int32(v * 127 * this->vol);
 			j = this->format.nChannels;
 			while (j-- > 0)
 			{

@@ -71,7 +71,7 @@ public:
 		Double hdpi = printPage->GetHDPI();
 		Double vdpi = printPage->GetVDPI();
 		Media::DrawPen *p = printPage->NewPenARGB(0xff000000, 1, 0, 0);
-		printPage->DrawRect(hdpi * 0.5, vdpi * 0.5, Math::UOSInt2Double(w) - hdpi, Math::UOSInt2Double(h) - vdpi, p, 0);
+		printPage->DrawRect(hdpi * 0.5, vdpi * 0.5, UOSInt2Double(w) - hdpi, UOSInt2Double(h) - vdpi, p, 0);
 		printPage->DelPen(p);
 
 		if (this->pageId == 0)

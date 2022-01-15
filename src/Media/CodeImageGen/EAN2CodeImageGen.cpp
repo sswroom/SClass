@@ -282,7 +282,7 @@ Media::DrawImage *Media::CodeImageGen::EAN2CodeImageGen::GenCode(const UTF8Char 
 
 	UOSInt h = codeWidth * 70;
 	UOSInt y = h - codeWidth;
-	Double fh = 12.0 * Math::UOSInt2Double(codeWidth);
+	Double fh = 12.0 * UOSInt2Double(codeWidth);
 
 	Media::DrawImage *dimg = eng->CreateImage32((4 + 21) * codeWidth, h, Media::AT_NO_ALPHA);
 	Media::DrawBrush *b;
@@ -318,9 +318,9 @@ Media::DrawImage *Media::CodeImageGen::EAN2CodeImageGen::GenCode(const UTF8Char 
 	b = dimg->NewBrushARGB(0xff000000);
 	sbuff[0] = *code++;
 	sbuff[1] = 0;
-	dimg->DrawString((Double)(2 + 5) * Math::UOSInt2Double(codeWidth), (Double)codeWidth, sbuff, f, b);
+	dimg->DrawString((Double)(2 + 5) * UOSInt2Double(codeWidth), (Double)codeWidth, sbuff, f, b);
 	sbuff[0] = *code++;
-	dimg->DrawString((Double)(2 + 5 + 7 + 2) * Math::UOSInt2Double(codeWidth), (Double)codeWidth, sbuff, f, b);
+	dimg->DrawString((Double)(2 + 5 + 7 + 2) * UOSInt2Double(codeWidth), (Double)codeWidth, sbuff, f, b);
 
 	dimg->DelBrush(b);
 	dimg->DelFont(f);

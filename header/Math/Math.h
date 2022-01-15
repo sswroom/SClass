@@ -39,6 +39,7 @@ Double Math_MyPow(Double x, Double y);
 #define Math_ArcSinh(val) (Math_Ln(val + Math_Sqrt(val * val + 1)))
 #define Math_ArcCosh(val) (Math_Ln(val + Math_Sqrt(val - 1) * Math_Sqrt(val + 1)))
 #define Math_ArcTanh(val) (0.5 * Math_Ln((1 + val) / (1 - val)))
+#define Math_Fix(val) floor(val)
 
 namespace Math
 {
@@ -63,69 +64,6 @@ namespace Math
 		return true;
 	}
 
-	FORCEINLINE Int32 Double2Int32(Double val)
-	{
-	#ifdef HAS_ASM32
-		Int32 iv;
-		_asm
-		{
-			fld val
-			fistp iv
-			mov eax,iv
-		}
-	#else
-		if (val < 0)
-		{
-			return (Int32)(val - 0.5);
-		}
-		else
-		{
-			return (Int32)(val + 0.5);
-		}
-	#endif
-	}
-
-	FORCEINLINE Int64 Double2Int64(Double val)
-	{
-		if (val < 0)
-		{
-			return (Int64)(val - 0.5);
-		}
-		else
-		{
-			return (Int64)(val + 0.5);
-		}
-	}
-
-	FORCEINLINE OSInt Double2OSInt(Double val)
-	{
-#if _OSINT_SIZE == 64
-		return Double2Int64(val);
-#else
-		return Double2Int32(val);
-#endif
-	}
-
-	FORCEINLINE Double OSInt2Double(OSInt val)
-	{
-		return (Double)val;
-	}
-
-	FORCEINLINE Double UOSInt2Double(UOSInt val)
-	{
-		return (Double)val;
-	}
-
-	FORCEINLINE Double Int64_Double(Int64 val)
-	{
-		return (Double)val;
-	}
-
-	FORCEINLINE Double UInt64_Double(UInt64 val)
-	{
-		return (Double)val;
-	}
-
 	FORCEINLINE Int32 SDouble2Int32(Double val)
 	{
 		if (val < -2147483648.0)
@@ -133,7 +71,7 @@ namespace Math
 		else if (val > 2147483647.0)
 			return 2147483647;
 		else
-			return Math::Double2Int32(val);
+			return Double2Int32(val);
 	}
 
 	FORCEINLINE Int32 SDouble2Int24(Double val)
@@ -143,7 +81,7 @@ namespace Math
 		else if (val > 8388607.0)
 			return 8388607;
 		else
-			return Math::Double2Int32(val);
+			return Double2Int32(val);
 	}
 	
 	FORCEINLINE Int16 SDouble2Int16(Double val)
@@ -153,7 +91,7 @@ namespace Math
 		else if (val > 32767.0)
 			return 32767;
 		else
-			return (Int16)Math::Double2Int32(val);
+			return (Int16)Double2Int32(val);
 	}
 
 	FORCEINLINE UInt16 SDouble2UInt16(Double val)
@@ -163,7 +101,7 @@ namespace Math
 		else if (val > 65535.0)
 			return 65535;
 		else
-			return (UInt16)Math::Double2Int32(val);
+			return (UInt16)Double2Int32(val);
 	}
 
 	FORCEINLINE UInt8 SDouble2UInt8(Double val)
@@ -173,7 +111,7 @@ namespace Math
 		else if (val < 0.0)
 			return 0;
 		else
-			return (UInt8)Math::Double2Int32(val);
+			return (UInt8)Double2Int32(val);
 	}
 
 	FORCEINLINE UInt8 SInt32_UInt8(Int32 val)
@@ -184,11 +122,6 @@ namespace Math
 			return 0;
 		else
 			return (UInt8)val;
-	}
-
-	FORCEINLINE Double Fix(Double val)
-	{
-		return floor(val);
 	}
 
 	FORCEINLINE Bool IsNAN(Double val)

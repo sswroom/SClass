@@ -94,7 +94,7 @@ UOSInt Media::AudioFilter::DynamicVolBooster::ReadBlock(UInt8 *buff, UOSInt blkS
 			Sync::MutexUsage mutUsage(this->mut);
 			Double log32 = Math_Log10(this->bgLevel * 32768);
 			Double log32768 = Math_Log10(32768);
-			Int32 noiseVol = Math::Double2Int32(this->bgLevel * 32768);
+			Int32 noiseVol = Double2Int32(this->bgLevel * 32768);
 			UOSInt i = 0;
 			UOSInt j;
 			Int32 currSample;
@@ -146,11 +146,11 @@ UOSInt Media::AudioFilter::DynamicVolBooster::ReadBlock(UInt8 *buff, UOSInt blkS
 				{
 					if (thisVol > noiseVol)
 					{
-						currSample = Math::Double2Int32(*(Int16*)&buff[i + j * 2] * 32767 / (thisVol * log32768 / Math_Log10(thisVol)));
+						currSample = Double2Int32(*(Int16*)&buff[i + j * 2] * 32767 / (thisVol * log32768 / Math_Log10(thisVol)));
 					}
 					else
 					{
-						currSample = Math::Double2Int32(*(Int16*)&buff[i + j * 2] * 32767 / (noiseVol * log32768 / log32));
+						currSample = Double2Int32(*(Int16*)&buff[i + j * 2] * 32767 / (noiseVol * log32768 / log32));
 					}
 					if (currSample > 32767)
 					{
@@ -173,7 +173,7 @@ UOSInt Media::AudioFilter::DynamicVolBooster::ReadBlock(UInt8 *buff, UOSInt blkS
 			Sync::MutexUsage mutUsage(this->mut);
 			Double log32 = Math_Log10(this->bgLevel * 128);
 			Double log32768 = Math_Log10(128);
-			Int32 noiseVol = Math::Double2Int32(this->bgLevel * 128);
+			Int32 noiseVol = Double2Int32(this->bgLevel * 128);
 			UOSInt i = 0;
 			UOSInt j;
 			Int32 currSample;
@@ -225,11 +225,11 @@ UOSInt Media::AudioFilter::DynamicVolBooster::ReadBlock(UInt8 *buff, UOSInt blkS
 				{
 					if (thisVol > noiseVol)
 					{
-						currSample = Math::Double2Int32((buff[i + j] - 128) * 127 / (thisVol * log32768 / Math_Log10(thisVol)));
+						currSample = Double2Int32((buff[i + j] - 128) * 127 / (thisVol * log32768 / Math_Log10(thisVol)));
 					}
 					else
 					{
-						currSample = Math::Double2Int32((buff[i + j] - 128) * 127 / (noiseVol * log32768 / log32));
+						currSample = Double2Int32((buff[i + j] - 128) * 127 / (noiseVol * log32768 / log32));
 					}
 					if (currSample > 127)
 					{
