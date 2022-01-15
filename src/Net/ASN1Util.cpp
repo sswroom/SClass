@@ -618,7 +618,7 @@ Net::ASN1Util::ItemType Net::ASN1Util::PDUGetItemType(const UInt8 *pdu, const UI
 UOSInt Net::ASN1Util::PDUCountItem(const UInt8 *pdu, const UInt8 *pduEnd, const Char *cpath)
 {
 	UTF8Char sbuff[11];
-	const UTF8Char *path = (const UTF8Char*)path;
+	const UTF8Char *path = (const UTF8Char*)cpath;
 	UInt32 len;
 	UOSInt size;
 	UOSInt cnt;

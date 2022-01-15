@@ -848,6 +848,10 @@ Media::DrawFont *UI::GUIControl::CreateDrawFont(Media::DrawImage *img)
 		PangoWeight weight = pango_font_description_get_weight(fnt);
 		Double height = pango_font_description_get_size(fnt) / (Double)PANGO_SCALE;
 
+		if (family == 0)
+		{
+			family = "Arial";
+		}
 		Media::DrawFont *font;
 		Text::String *fntName = Text::String::NewNotNull((const UTF8Char*)family);
 		NEW_CLASS(font, Media::GTKDrawFont(fntName, height, (OSInt)((style & PANGO_STYLE_ITALIC)?CAIRO_FONT_SLANT_ITALIC:CAIRO_FONT_SLANT_NORMAL), (weight < PANGO_WEIGHT_BOLD)?0:1));

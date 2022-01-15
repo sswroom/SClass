@@ -33,7 +33,7 @@ namespace Data
 		virtual UOSInt GetCount();
 		virtual T GetItem(UOSInt index);
 		Text::String *GetKey(UOSInt index);
-		virtual OSInt IndexOf(UInt32 hash, const UTF8Char *s);
+		virtual OSInt IndexOf(UInt32 hash, const UTF8Char *s, UOSInt len);
 		OSInt IndexOf(Text::String *s);
 
 		virtual T Put(Text::String *key, T val);
@@ -146,7 +146,7 @@ namespace Data
 		return this->items[index].s;
 	}
 
-	template <class T> OSInt FastStringMap<T>::IndexOf(UInt32 hash, const UTF8Char *s)
+	template <class T> OSInt FastStringMap<T>::IndexOf(UInt32 hash, const UTF8Char *s, UOSInt len)
 	{
 		OSInt i;
 		OSInt j;
@@ -159,7 +159,7 @@ namespace Data
 			k = (i + j) >> 1;
 			if (this->items[k].hash == hash)
 			{
-				l = this->items[k].s->CompareTo(s);
+				l = this->items[k].s->CompareToFast(s, len);
 				if (l > 0)
 				{
 					j = k - 1;
@@ -188,13 +188,13 @@ namespace Data
 	template <class T> OSInt FastStringMap<T>::IndexOf(Text::String *s)
 	{
 		UInt32 hash = this->crc->CalcDirect(s->v, s->leng);
-		return IndexOf(hash, s->v);
+		return IndexOf(hash, s->v, s->leng);
 	}
 
 	template <class T> T FastStringMap<T>::Put(Text::String *key, T val)
 	{
 		UInt32 hash = this->crc->CalcDirect(key->v, key->leng);
-		OSInt index = this->IndexOf(hash, key->v);
+		OSInt index = this->IndexOf(hash, key->v, key->leng);
 		if (index < 0)
 		{
 			this->Insert((UOSInt)~index, hash, key->Clone(), val);
@@ -212,7 +212,7 @@ namespace Data
 	{
 		UOSInt len = Text::StrCharCnt(key);
 		UInt32 hash = this->crc->CalcDirect(key, len);
-		OSInt index = this->IndexOf(hash, key);
+		OSInt index = this->IndexOf(hash, key, len);
 		if (index < 0)
 		{
 			this->Insert((UOSInt)~index, hash, Text::String::New(key, len), val);
@@ -229,7 +229,7 @@ namespace Data
 	template <class T> T FastStringMap<T>::PutC(const UTF8Char *key, UOSInt keyLen, T val)
 	{
 		UInt32 hash = this->crc->CalcDirect(key, keyLen);
-		OSInt index = this->IndexOf(hash, key);
+		OSInt index = this->IndexOf(hash, key, keyLen);
 		if (index < 0)
 		{
 			this->Insert((UOSInt)~index, hash, Text::String::New(key, keyLen), val);
@@ -246,7 +246,7 @@ namespace Data
 	template <class T> T FastStringMap<T>::Get(Text::String *key)
 	{
 		UInt32 hash = this->crc->CalcDirect(key->v, key->leng);
-		OSInt index = this->IndexOf(hash, key->v);
+		OSInt index = this->IndexOf(hash, key->v, key->leng);
 		if (index >= 0)
 		{
 			return this->items[index].val;
@@ -258,7 +258,7 @@ namespace Data
 	{
 		UOSInt len = Text::StrCharCnt(key);
 		UInt32 hash = this->crc->CalcDirect(key, len);
-		OSInt index = this->IndexOf(hash, key);
+		OSInt index = this->IndexOf(hash, key, len);
 		if (index >= 0)
 		{
 			return this->items[index].val;
@@ -269,7 +269,7 @@ namespace Data
 	template <class T> T FastStringMap<T>::GetC(const UTF8Char *key, UOSInt keyLen)
 	{
 		UInt32 hash = this->crc->CalcDirect(key, keyLen);
-		OSInt index = this->IndexOf(hash, key);
+		OSInt index = this->IndexOf(hash, key, keyLen);
 		if (index >= 0)
 		{
 			return this->items[index].val;
@@ -280,7 +280,7 @@ namespace Data
 	template <class T> T FastStringMap<T>::Remove(Text::String *key)
 	{
 		UInt32 hash = this->crc->CalcDirect(key->v, key->leng);
-		OSInt index = this->IndexOf(hash, key->v);
+		OSInt index = this->IndexOf(hash, key->v, key->leng);
 		if (index >= 0)
 		{
 			T oldVal = this->items[index].val;
@@ -299,7 +299,7 @@ namespace Data
 	{
 		UOSInt len = Text::StrCharCnt(key);
 		UInt32 hash = this->crc->CalcDirect(key, len);
-		OSInt index = this->IndexOf(hash, key);
+		OSInt index = this->IndexOf(hash, key, len);
 		if (index >= 0)
 		{
 			T oldVal = this->items[index].val;
@@ -317,7 +317,7 @@ namespace Data
 	template <class T> T FastStringMap<T>::RemoveC(const UTF8Char *key, UOSInt keyLen)
 	{
 		UInt32 hash = this->crc->CalcDirect(key, keyLen);
-		OSInt index = this->IndexOf(hash, key);
+		OSInt index = this->IndexOf(hash, key, keyLen);
 		if (index >= 0)
 		{
 			T oldVal = this->items[index].val;

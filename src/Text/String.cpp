@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "MemTool.h"
 #include "MyMemory.h"
+#include "Data/ByteTool.h"
 #include "Math/Math.h"
 #include "Sync/Interlocked.h"
 #include "Text/MyString.h"
@@ -363,6 +364,62 @@ OSInt Text::String::CompareToICase(Text::String *s)
 OSInt Text::String::CompareToICase(const UTF8Char *s)
 {
 	return MyString_StrCompareICase(this->v, s);
+}
+
+OSInt Text::String::CompareToFast(const UTF8Char *s, UOSInt len)
+{
+	const UTF8Char *s0 = this->v;
+	OSInt defRet;
+	if (this->leng > len)
+	{
+		defRet = 1;
+	}
+	else if (this->leng == len)
+	{
+		defRet = 0;
+	}
+	else
+	{
+		defRet = -1;
+		len = this->leng;
+	}
+	UInt32 v1;
+	UInt32 v2;
+	UTF8Char c1;
+	UTF8Char c2;
+	while (len >= 4)
+	{
+		v1 = ReadMUInt32(s0);
+		v2 = ReadMUInt32(s);
+		if (v1 > v2)
+		{
+			return 1;
+		}
+		else if (v1 < v2)
+		{
+			return -1;
+		}
+		len -= 4;
+		s0 += 4;
+		s += 4;
+	}
+	while (len > 0)
+	{
+		c1 = *s0;
+		c2 = *s;
+		if (c1 > c2)
+		{
+			return 1;
+		}
+		else if (c1 < c2)
+		{
+			return -1;
+		}
+		len--;
+		s0++;
+		s++;
+	}
+	return defRet;
 }
 
 Int32 Text::String::ToInt32()

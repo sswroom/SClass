@@ -1,11 +1,11 @@
 #include "Stdafx.h"
 #include "IO/FileStream.h"
 #include "IO/Path.h"
-#include "IO/StreamReader.h"
 #include "IO/StreamWriter.h"
 #include "SSWR/AVIRead/AVIRLineCounterForm.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
+#include "Text/UTF8Reader.h"
 #include "UI/FileDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRLineCounterForm::OnExtensionsAddClicked(void *userObj)
@@ -18,12 +18,12 @@ void __stdcall SSWR::AVIRead::AVIRLineCounterForm::OnExtensionsAddClicked(void *
 	UOSInt i = me->extList->GetCount();
 	while (i-- > 0)
 	{
-		if (Text::StrEqualsICase(me->extList->GetItem(i), sb.ToString()))
+		if (me->extList->GetItem(i)->EqualsICase(sb.ToString(), sb.GetLength()))
 		{
 			return;
 		}
 	}
-	me->extList->Add(Text::StrCopyNew(sb.ToString()));
+	me->extList->Add(Text::String::New(sb.ToString(), sb.GetLength()));
 	me->lbExtensions->AddItem(sb.ToString(), 0);
 }
 
@@ -33,7 +33,7 @@ void __stdcall SSWR::AVIRead::AVIRLineCounterForm::OnExtensionsRemoveClicked(voi
 	UOSInt i = me->lbExtensions->GetSelectedIndex();
 	if (i != INVALID_INDEX)
 	{
-		Text::StrDelNew(me->extList->RemoveAt(i));
+		me->extList->RemoveAt(i)->Release();
 		me->lbExtensions->RemoveItem(i);
 	}
 }
@@ -131,7 +131,7 @@ void SSWR::AVIRead::AVIRLineCounterForm::CalcDir(UTF8Char *pathBuff, UTF8Char *p
 	IO::Path::FindFileSession *sess;
 	Text::StringBuilderUTF8 sb;
 	IO::FileStream *fs;
-	IO::StreamReader *reader;
+	Text::UTF8Reader *reader;
 	UOSInt lineCnt;
 	UOSInt i;
 	UOSInt j;
@@ -159,7 +159,7 @@ void SSWR::AVIRead::AVIRLineCounterForm::CalcDir(UTF8Char *pathBuff, UTF8Char *p
 				j = this->extList->GetCount();
 				while (j-- > 0)
 				{
-					if (Text::StrEqualsICase(&pathBuffEnd[i], this->extList->GetItem(j)))
+					if (this->extList->GetItem(j)->EqualsICase(&pathBuffEnd[i], (UOSInt)(sptr - &pathBuffEnd[i])))
 					{
 						found = true;
 						break;
@@ -169,7 +169,7 @@ void SSWR::AVIRead::AVIRLineCounterForm::CalcDir(UTF8Char *pathBuff, UTF8Char *p
 				{
 					lineCnt = 0;
 					NEW_CLASS(fs, IO::FileStream(pathBuff, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-					NEW_CLASS(reader, IO::StreamReader(fs, 65001));
+					NEW_CLASS(reader, Text::UTF8Reader(fs));
 					while (true)
 					{
 						sb.ClearStr();
@@ -187,7 +187,7 @@ void SSWR::AVIRead::AVIRLineCounterForm::CalcDir(UTF8Char *pathBuff, UTF8Char *p
 
 					fi = MemAlloc(FileInfo, 1);
 					fi->lineCnt = lineCnt;
-					fi->fileName = Text::StrCopyNew(pathBuff);
+					fi->fileName = Text::String::New(pathBuff, (UOSInt)(sptr - pathBuff));
 					this->resList->Add(fi);
 				}
 			}
@@ -199,11 +199,11 @@ void SSWR::AVIRead::AVIRLineCounterForm::CalcDir(UTF8Char *pathBuff, UTF8Char *p
 void SSWR::AVIRead::AVIRLineCounterForm::ClearExts()
 {
 	UOSInt i;
-	this->lbExtensions->ClearItems();
+	if (this->lbExtensions) this->lbExtensions->ClearItems();
 	i = this->extList->GetCount();
 	while (i-- > 0)
 	{
-		Text::StrDelNew(this->extList->GetItem(i));
+		this->extList->GetItem(i)->Release();
 	}
 	this->extList->Clear();
 }
@@ -212,12 +212,12 @@ void SSWR::AVIRead::AVIRLineCounterForm::ClearResult()
 {
 	UOSInt i;
 	FileInfo *fi;
-	this->lvResult->ClearItems();
+	if (this->lvResult) this->lvResult->ClearItems();
 	i = this->resList->GetCount();
 	while (i-- > 0)
 	{
 		fi = this->resList->GetItem(i);
-		Text::StrDelNew(fi->fileName);
+		fi->fileName->Release();
 		MemFree(fi);
 	}
 	this->resList->Clear();
@@ -230,7 +230,7 @@ SSWR::AVIRead::AVIRLineCounterForm::AVIRLineCounterForm(UI::GUIClientControl *pa
 	this->SetText((const UTF8Char*)"Line Counter");
 	this->SetFont(0, 0, 8.25, false);
 
-	NEW_CLASS(this->extList, Data::ArrayList<const UTF8Char *>());
+	NEW_CLASS(this->extList, Data::ArrayList<Text::String *>());
 	NEW_CLASS(this->resList, Data::ArrayList<FileInfo*>());
 
 	NEW_CLASS(this->pnlConfig, UI::GUIPanel(ui, this));
@@ -279,6 +279,8 @@ SSWR::AVIRead::AVIRLineCounterForm::AVIRLineCounterForm(UI::GUIClientControl *pa
 
 SSWR::AVIRead::AVIRLineCounterForm::~AVIRLineCounterForm()
 {
+	this->lvResult = 0;
+	this->lbExtensions = 0;
 	this->ClearExts();
 	this->ClearResult();
 	DEL_CLASS(this->extList);

@@ -208,7 +208,7 @@ Bool Net::WiFiCapturer::Start()
 	this->threadToStop = false;
 	SDEL_CLASS(this->interf);
 	UOSInt i;
-	const UTF8Char *namePtr;
+	Text::String *namePtr;
 	Data::ArrayList<Net::WirelessLAN::Interface*> interfaces;
 	Net::WirelessLAN::Interface *ifObj;
 	wlan->GetInterfaces(&interfaces);
@@ -218,7 +218,7 @@ Bool Net::WiFiCapturer::Start()
 	{
 		ifObj = interfaces.GetItem(i);
 		namePtr = ifObj->GetName();
-		if (Text::StrStartsWith(namePtr, (const UTF8Char*)"rai"))
+		if (namePtr->StartsWith(UTF8STRC("rai")))
 		{
 
 		}

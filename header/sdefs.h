@@ -267,6 +267,7 @@ UOSInt __inline MulDivUOS(UOSInt x, UOSInt y, UOSInt z)
 	}
 }
 #elif defined(HAS_GCCASM64)
+/*
 Int32 __inline BSWAP32(Int32 v)
 {
 	asm("bswapl %0" : "=r" (v) : "0" (v));
@@ -283,7 +284,11 @@ Int64 __inline BSWAP64(Int64 v)
 {
 	asm("bswapq %0" : "=r" (v) : "0" (v));
     return v;
-}
+}*/
+
+#define BSWAP32(v) (Int32)__builtin_bswap32((UInt32)(v))
+#define BSWAPU32(v) __builtin_bswap32(v)
+#define BSWAP64(v) (Int64)__builtin_bswap64((UInt64)(v))
 
 Int32 __inline MulDiv32(Int32 x, Int32 y, Int32 z)
 {
@@ -303,6 +308,30 @@ OSInt __inline MulDivOS(OSInt x, OSInt y, OSInt z)
 UOSInt __inline MulDivUOS(UOSInt x, UOSInt y, UOSInt z)
 {
 	 return (UOSInt)(((unsigned __int128)x * (unsigned __int128)y) / z);
+}
+#elif defined(HAS_GCCASM32)
+#define BSWAP32(v) (Int32)__builtin_bswap32((UInt32)(v))
+#define BSWAPU32(v) __builtin_bswap32(v)
+#define BSWAP64(v) (Int64)__builtin_bswap64((UInt64)(v))
+
+Int32 __inline MulDiv32(Int32 x, Int32 y, Int32 z)
+{
+	return (Int32)(((Int64)x * (Int64)y) / z);
+}
+
+UInt32 __inline MulDivU32(UInt32 x, UInt32 y, UInt32 z)
+{
+	return (UInt32)(((UInt64)x * (UInt64)y) / z);
+}
+
+OSInt __inline MulDivOS(OSInt x, OSInt y, OSInt z)
+{
+	return (Int32)(((Int64)x * (Int64)y) / z);
+}
+
+UOSInt __inline MulDivUOS(UOSInt x, UOSInt y, UOSInt z)
+{
+	 return (UInt32)(((UInt64)x * (UInt64)y) / z);
 }
 #else
 #define BSWAP32(x) \

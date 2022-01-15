@@ -358,15 +358,14 @@ Bool Text::UTF8Reader::ReadLine(Text::StringBuilderUTF *sb, UOSInt maxCharCnt)
 		UTF8Char c = this->buff[this->currOfst + currSize];
 		if ((c & 0x80) == 0)
 		{
-			if (c == 10)
+			switch (c)
 			{
+			case 10:
 				sb->AppendC((const UTF8Char*)&this->buff[this->currOfst], currSize);
 				this->currOfst += currSize + 1;
 				this->lineBreak = 2;
 				return true;
-			}
-			else if (c == 13)
-			{
+			case 13:
 				sb->AppendC((const UTF8Char*)&this->buff[this->currOfst], currSize);
 				this->currOfst += currSize + 1;
 				if (this->currOfst < this->buffSize && this->buff[this->currOfst] == 10)
@@ -379,8 +378,10 @@ Bool Text::UTF8Reader::ReadLine(Text::StringBuilderUTF *sb, UOSInt maxCharCnt)
 					this->lineBreak = 1;
 				}
 				return true;
+			default:
+				currSize += 1;
+				break;
 			}
-			currSize += 1;
 		}
 		else
 		{

@@ -18,7 +18,7 @@ namespace SSWR
 		private:
 			typedef struct
 			{
-				const UTF8Char *fileName;
+				Text::String *fileName;
 				UOSInt lineCnt;
 			} FileInfo;
 		private:
@@ -40,7 +40,7 @@ namespace SSWR
 			UI::GUIListView *lvResult;
 
 			SSWR::AVIRead::AVIRCore *core;
-			Data::ArrayList<const UTF8Char *> *extList;
+			Data::ArrayList<Text::String *> *extList;
 			Data::ArrayList<FileInfo *> *resList;
 
 			static void __stdcall OnExtensionsAddClicked(void *userObj);
