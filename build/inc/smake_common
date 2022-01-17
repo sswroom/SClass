@@ -14,6 +14,14 @@ mcu:
 @MCU_SIM7000
 
 test:
+@TestBlowfish
+@TestCRC32C
+@TestCRC32R
+@TestRC4
+@TestSHA3_224
+@TestSHA3_256
+@TestSHA3_384
+@TestSHA3_512
 @TestSHA224
 @TestSHA256
 @TestSHA384
@@ -36,9 +44,6 @@ nodeps:
 @AES192Test
 @AES256Test
 @BcryptTest
-@BlowfishTest
-@CRC32CTest
-@CRC32RTest
 @CSRTest
 @HOTPTest
 @JasyptEncryptorTest
@@ -46,11 +51,6 @@ nodeps:
 @MD5Test
 @PBKDF2Test
 @RC2Test
-@RC4Test
-@SHA3_224Test
-@SHA3_256Test
-@SHA3_384Test
-@SHA3_512Test
 @X509Test
 @DateTimeTest
 @Float16Test
@@ -217,15 +217,6 @@ AES256Test:
 BcryptTest:
 @BcryptTest.o
 @ConsoleStartup.o
-BlowfishTest:
-@BlowfishTest.o
-@ConsoleStartup.o
-CRC32CTest:
-@CRC32CTest.o
-@ConsoleStartup.o
-CRC32RTest:
-@CRC32RTestMain.o
-@ConsoleStartup.o
 CSRTest:
 @CSRTest.o
 @ConsoleStartup.o
@@ -246,21 +237,6 @@ PBKDF2Test:
 @ConsoleStartup.o
 RC2Test:
 @RC2Test.o
-@ConsoleStartup.o
-RC4Test:
-@RC4Test.o
-@ConsoleStartup.o
-SHA3_224Test:
-@SHA3_224Test.o
-@ConsoleStartup.o
-SHA3_256Test:
-@SHA3_256Test.o
-@ConsoleStartup.o
-SHA3_384Test:
-@SHA3_384Test.o
-@ConsoleStartup.o
-SHA3_512Test:
-@SHA3_512Test.o
 @ConsoleStartup.o
 X509Test:
 @X509Test.o
@@ -658,6 +634,30 @@ ThreadSleepusTest:
 @ConsoleStartup.o
 
 #Test
+TestBlowfish:
+@TestBlowfish.o
+@ConsoleStartup.o
+TestCRC32C:
+@TestCRC32C.o
+@ConsoleStartup.o
+TestCRC32R:
+@TestCRC32R.o
+@ConsoleStartup.o
+TestRC4:
+@TestRC4.o
+@ConsoleStartup.o
+TestSHA3_224:
+@TestSHA3_224.o
+@ConsoleStartup.o
+TestSHA3_256:
+@TestSHA3_256.o
+@ConsoleStartup.o
+TestSHA3_384:
+@TestSHA3_384.o
+@ConsoleStartup.o
+TestSHA3_512:
+@TestSHA3_512.o
+@ConsoleStartup.o
 TestSHA224:
 @TestSHA224.o
 @ConsoleStartup.o
@@ -811,9 +811,6 @@ AES128Test.o: ../../main/CryptoTest/AES128Test.cpp
 AES192Test.o: ../../main/CryptoTest/AES192Test.cpp
 AES256Test.o: ../../main/CryptoTest/AES256Test.cpp
 BcryptTest.o: ../../main/CryptoTest/BcryptTest.cpp
-BlowfishTest.o: ../../main/CryptoTest/BlowfishTest.cpp
-CRC32CTest.o: ../../main/CryptoTest/CRC32CTest.cpp
-CRC32RTestMain.o: ../../main/CryptoTest/CRC32R.cpp
 CSRTest.o: ../../main/CryptoTest/CSRTest.cpp
 HOTPTest.o: ../../main/CryptoTest/HOTPTest.cpp
 JasyptEncryptorTest.o: ../../main/CryptoTest/JasyptEncryptorTest.cpp
@@ -821,11 +818,6 @@ JWTTest.o: ../../main/CryptoTest/JWTTest.cpp
 MD5TestMain.o: ../../main/CryptoTest/MD5.cpp
 PBKDF2Test.o: ../../main/CryptoTest/PBKDF2Test.cpp
 RC2Test.o: ../../main/CryptoTest/RC2Test.cpp
-RC4Test.o: ../../main/CryptoTest/RC4Test.cpp
-SHA3_224Test.o: ../../main/CryptoTest/SHA3_224Test.cpp
-SHA3_256Test.o: ../../main/CryptoTest/SHA3_256Test.cpp
-SHA3_384Test.o: ../../main/CryptoTest/SHA3_384Test.cpp
-SHA3_512Test.o: ../../main/CryptoTest/SHA3_512Test.cpp
 X509Test.o: ../../main/CryptoTest/X509Test.cpp
 DateTimeTest.o: ../../main/Data/DateTimeTest.cpp
 Float16Test.o: ../../main/Data/Float16Test.cpp
@@ -950,6 +942,14 @@ SSerialViewerMain.o: ../../main/SSWR/SSerialViewerMain.cpp
 STCPSpdCliMain.o: ../../main/SSWR/STCPSpdCliMain.cpp
 EventTest.o: ../../main/Sync/EventTest.cpp
 ThreadSleepusTest.o: ../../main/Sync/ThreadSleepusTest.cpp
+TestBlowfish.o: ../../main/Test/Crypto/TestBlowfish.cpp
+TestCRC32C.o: ../../main/Test/Crypto/TestCRC32C.cpp
+TestCRC32R.o: ../../main/Test/Crypto/TestCRC32R.cpp
+TestRC4.o: ../../main/Test/Crypto/TestRC4.cpp
+TestSHA3_224.o: ../../main/Test/Crypto/TestSHA3_224.cpp
+TestSHA3_256.o: ../../main/Test/Crypto/TestSHA3_256.cpp
+TestSHA3_384.o: ../../main/Test/Crypto/TestSHA3_384.cpp
+TestSHA3_512.o: ../../main/Test/Crypto/TestSHA3_512.cpp
 TestSHA224.o: ../../main/Test/Crypto/TestSHA224.cpp
 TestSHA256.o: ../../main/Test/Crypto/TestSHA256.cpp
 TestSHA384.o: ../../main/Test/Crypto/TestSHA384.cpp

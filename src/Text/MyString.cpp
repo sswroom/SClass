@@ -770,18 +770,15 @@ Bool Text::StrEqualsC(const UTF8Char *str1, UOSInt len1, const UTF8Char *str2, U
 		str2 += 4;
 		len2 -= 4;
 	}
-	if (len2 > 2)
+	switch (len2)
 	{
-		UInt32 v = ReadNUInt32(str1);
-		return v == ReadNUInt32(str2);
-	}
-	else if (len2 > 0)
-	{
-		UInt16 v = ReadNUInt16(str1);
-		return v == ReadNUInt16(str2);
-	}
-	else
-	{
+	case 3:
+		return ReadNUInt16(str1) == ReadNUInt16(str2) && str1[2] == str2[2];
+	case 2:
+		return ReadNUInt16(str1) == ReadNUInt16(str2);
+	case 1:
+		return str1[0] == str2[0];
+	default:
 		return true;
 	}
 }

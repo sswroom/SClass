@@ -55,24 +55,37 @@ void TestAllForBit(UOSInt bitCnt, IO::Writer *writer)
 	writer->WriteLine();
 }
 
-void TestEncode2(const Char *key, const Char *val, IO::Writer *writer)
+Bool TestEncode2(const UTF8Char *key, UOSInt keyLen, const UTF8Char *val, UOSInt valLen, const UTF8Char *expRes, UOSInt expResLen)
 {
-	Crypto::Encrypt::RC4Cipher rc4((const UInt8 *)key, Text::StrCharCnt(key));
+	Crypto::Encrypt::RC4Cipher rc4(key, keyLen);
 	UInt8 outBuff[16];
 	UOSInt outSize;
-	outSize = rc4.Encrypt((const UInt8*)val, Text::StrCharCnt(val), outBuff, 0);
-	Text::StringBuilderUTF8 sb;
-	sb.AppendHexBuff(outBuff, outSize, ' ', Text::LineBreakType::None);
-	writer->WriteLineC(sb.ToString(), sb.GetLength());
+	UInt8 decBuff[16];
+	UOSInt decSize;
+	UTF8Char sbuff[33];
+	UTF8Char *sptr;
+	outSize = rc4.Encrypt(val, valLen, outBuff, 0);
+	sptr = Text::StrHexBytes(sbuff, outBuff, outSize, 0);
+	if (!Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), expRes, expResLen))
+	{
+		return false;
+	}
+	rc4.SetKey(key, keyLen);
+	decSize = rc4.Decrypt(outBuff, outSize, decBuff, 0);
+	if (!Text::StrEqualsC(decBuff, decSize, val, valLen))
+	{
+		return false;
+	}
+
+	return true;
 }
 
 
 Int32 MyMain(Core::IProgControl *progCtrl)
 {
-	IO::ConsoleWriter console;
 	//TestAllForBit(40, &console);
-	TestEncode2("Key", "Plaintext", &console);
-	TestEncode2("Wiki", "pedia", &console);
-	TestEncode2("Secret", "Attack at dawn", &console);
+	if (!TestEncode2(UTF8STRC("Key"), UTF8STRC("Plaintext"), UTF8STRC("BBF316E8D940AF0AD3"))) return 1;
+	if (!TestEncode2(UTF8STRC("Wiki"), UTF8STRC("pedia"), UTF8STRC("1021BF0420"))) return 1;
+	if (!TestEncode2(UTF8STRC("Secret"), UTF8STRC("Attack at dawn"), UTF8STRC("45A01F645FC35B383552544B9BF5"))) return 1;
 	return 0;
 }
