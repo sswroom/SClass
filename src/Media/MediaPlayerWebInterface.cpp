@@ -8,7 +8,7 @@
 #include "Text/MyStringFloat.h"
 #include "Text/UTF8Writer.h"
 #include "Text/XML.h"
-#include "Text/TextEnc/URIEncoding.h"
+#include "Text/TextBinEnc/URIEncoding.h"
 
 OSInt __stdcall Media::MediaPlayerWebInterface::VideoFileCompare(void *file1, void *file2)
 {
@@ -112,7 +112,7 @@ void Media::MediaPlayerWebInterface::BrowseRequest(Net::WebServer::IWebRequest *
 
 			writer->WriteStrC(UTF8STRC("<tr><td>"));
 			writer->WriteStrC(UTF8STRC("<a href=\"/browse?fname="));
-			Text::TextEnc::URIEncoding::URIEncode(sbuff2, vfile->fileName->v);
+			Text::TextBinEnc::URIEncoding::URIEncode(sbuff2, vfile->fileName->v);
 			s = Text::XML::ToNewXMLText(sbuff2);
 			writer->WriteStrC(s->v, s->leng);
 			s->Release();

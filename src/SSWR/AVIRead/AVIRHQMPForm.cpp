@@ -20,7 +20,6 @@
 #include "Text/StringBuilderUTF8.h"
 #include "Text/UTF8Writer.h"
 #include "Text/XML.h"
-#include "Text/TextEnc/URIEncoding.h"
 #include "UI/GUIVideoBoxDDLQ.h"
 #include "UI/MessageDialog.h"
 

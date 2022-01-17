@@ -351,21 +351,26 @@ WChar *IO::Path::GetFileExtW(WChar *fileBuff, const WChar *path)
 
 UTF8Char *IO::Path::AppendPath(UTF8Char *path, const UTF8Char *toAppend)
 {
+	return AppendPathC(path, &path[Text::StrCharCnt(path)], toAppend, Text::StrCharCnt(toAppend));
+}
+
+UTF8Char *IO::Path::AppendPathC(UTF8Char *path, UTF8Char *pathEnd, const UTF8Char *toAppend, UOSInt toAppendLen)
+{
 	UTF8Char pathTmp[512];
 	UTF8Char *lastSep;
 	UTF8Char *firstSep;
-	UTF8Char *pathArr[5];
+	Text::PString pathArr[5];
 	UOSInt pathCnt;
 	UOSInt j;
 	UInt32 i;
 	Int32 k;
 	if (toAppend[1] == ':' && toAppend[2] == '\\')
 	{
-		return Text::StrConcat(path, toAppend);
+		return Text::StrConcatC(path, toAppend, toAppendLen);
 	}
 	else if (toAppend[0] == '\\' && toAppend[1] == '\\')
 	{
-		return Text::StrConcat(path, toAppend);
+		return Text::StrConcatC(path, toAppend, toAppendLen);
 	}
 	if (path[0] == '\\' && path[1] == '\\')
 	{
@@ -380,6 +385,7 @@ UTF8Char *IO::Path::AppendPath(UTF8Char *path, const UTF8Char *toAppend)
 		firstSep = &path[2];
 		path[2] = '\\';
 		path[3] = 0;
+		pathEnd = &path[3];
 	}
 	else
 	{
@@ -387,7 +393,7 @@ UTF8Char *IO::Path::AppendPath(UTF8Char *path, const UTF8Char *toAppend)
 	}
 	if (toAppend[0] == '\\')
 	{
-		return Text::StrConcat(firstSep, toAppend);
+		return Text::StrConcatC(firstSep, toAppend, toAppendLen);
 	}
 	lastSep = &path[Text::StrLastIndexOf(path, '\\')];
 	if (lastSep < path)
@@ -404,7 +410,7 @@ UTF8Char *IO::Path::AppendPath(UTF8Char *path, const UTF8Char *toAppend)
 		}
 		else if (IO::Path::GetPathType(path) == PathType::Directory)
 		{
-			lastSep = &path[Text::StrCharCnt(path)];
+			lastSep = pathEnd;
 			*lastSep = '\\';
 			lastSep[1] = 0;
 		}
@@ -412,8 +418,8 @@ UTF8Char *IO::Path::AppendPath(UTF8Char *path, const UTF8Char *toAppend)
 		{
 		}
 	}
-	Text::StrConcat(pathTmp, toAppend);
-	pathCnt = Text::StrSplit(pathArr, 5, pathTmp, '\\');
+	Text::StrConcatC(pathTmp, toAppend, toAppendLen);
+	pathCnt = Text::StrSplitP(pathArr, 5, pathTmp, toAppendLen, '\\');
 	while (true)
 	{
 		if (pathCnt == 5)
@@ -428,10 +434,10 @@ UTF8Char *IO::Path::AppendPath(UTF8Char *path, const UTF8Char *toAppend)
 		i = 0;
 		while (i < j)
 		{
-			if (pathArr[i][0] == '.')
+			if (pathArr[i].v[0] == '.')
 			{
 				k = 1;
-				while (pathArr[i][k] == '.')
+				while (pathArr[i].v[k] == '.')
 				{
 					if (lastSep > firstSep)
 					{
@@ -453,13 +459,13 @@ UTF8Char *IO::Path::AppendPath(UTF8Char *path, const UTF8Char *toAppend)
 			{
 				if (lastSep[0] == '\\')
 				{
-					lastSep = Text::StrConcat(&lastSep[1], pathArr[i]);
+					lastSep = Text::StrConcatC(&lastSep[1], pathArr[i].v, pathArr[i].len);
 					lastSep[0] = '\\';
 					lastSep[1] = 0;
 				}
 				else
 				{
-					lastSep = Text::StrConcat(lastSep, pathArr[i]);
+					lastSep = Text::StrConcatC(lastSep, pathArr[i].v, pathArr[i].len);
 					lastSep[0] = '\\';
 					lastSep[1] = 0;
 				}
@@ -469,7 +475,7 @@ UTF8Char *IO::Path::AppendPath(UTF8Char *path, const UTF8Char *toAppend)
 
 		if (pathCnt == 5)
 		{
-			pathCnt = Text::StrSplit(pathArr, 5, pathArr[4], '\\');
+			pathCnt = Text::StrSplitP(pathArr, 5, pathArr[4].v, pathArr[4].len, '\\');
 		}
 		else
 		{
@@ -485,11 +491,6 @@ UTF8Char *IO::Path::AppendPath(UTF8Char *path, const UTF8Char *toAppend)
 	{
 		return &lastSep[Text::StrCharCnt(lastSep)];
 	}
-}
-
-UTF8Char *IO::Path::AppendPathC(UTF8Char *path, UTF8Char *pathEnd, const UTF8Char *toAppend, UOSInt toAppendLen)
-{
-	return Append(path, toAppend);
 }
 
 WChar *IO::Path::AppendPathW(WChar *path, const WChar *toAppend)
@@ -630,12 +631,12 @@ WChar *IO::Path::AppendPathW(WChar *path, const WChar *toAppend)
 	}
 }
 
-Bool IO::Path::AppendPath(Text::StringBuilderUTF8 *sb, const UTF8Char *toAppend)
+Bool IO::Path::AppendPath(Text::StringBuilderUTF8 *sb, const UTF8Char *toAppend, UOSInt toAppendLen)
 {
 	UTF8Char pathTmp[512];
 	UTF8Char *lastSep;
 	UTF8Char *firstSep;
-	UTF8Char *pathArr[5];
+	Text::PString pathArr[5];
 	UOSInt pathCnt;
 	UOSInt j;
 	UInt32 i;
@@ -643,16 +644,17 @@ Bool IO::Path::AppendPath(Text::StringBuilderUTF8 *sb, const UTF8Char *toAppend)
 	if (toAppend[1] == ':' && toAppend[2] == '\\')
 	{
 		sb->ClearStr();
-		sb->Append(toAppend);
+		sb->AppendC(toAppend, toAppendLen);
 		return true;
 	}
 	else if (toAppend[0] == '\\' && toAppend[1] == '\\')
 	{
 		sb->ClearStr();
-		sb->Append(toAppend);
+		sb->AppendC(toAppend, toAppendLen);
 		return true;
 	}
 	UTF8Char *path = sb->ToString();
+	UTF8Char *pathEnd = sb->GetEndPtr();
 	if (path[0] == '\\' && path[1] == '\\')
 	{
 		firstSep = &path[2 + Text::StrIndexOf(&path[2], '\\')];
@@ -666,6 +668,7 @@ Bool IO::Path::AppendPath(Text::StringBuilderUTF8 *sb, const UTF8Char *toAppend)
 		firstSep = &path[2];
 		path[2] = '\\';
 		path[3] = 0;
+		pathEnd = &path[3];
 	}
 	else
 	{
@@ -674,7 +677,7 @@ Bool IO::Path::AppendPath(Text::StringBuilderUTF8 *sb, const UTF8Char *toAppend)
 	if (toAppend[0] == '\\')
 	{
 		sb->SetEndPtr(firstSep);
-		sb->Append(toAppend);
+		sb->AppendC(toAppend, toAppendLen);
 		return true;
 	}
 	lastSep = &path[Text::StrLastIndexOf(path, '\\')];
@@ -692,7 +695,7 @@ Bool IO::Path::AppendPath(Text::StringBuilderUTF8 *sb, const UTF8Char *toAppend)
 		}
 		else if (IO::Path::GetPathType(path) == PathType::Directory)
 		{
-			lastSep = &path[Text::StrCharCnt(path)];
+			lastSep = pathEnd;
 			*lastSep = '\\';
 			lastSep[1] = 0;
 		}
@@ -701,8 +704,8 @@ Bool IO::Path::AppendPath(Text::StringBuilderUTF8 *sb, const UTF8Char *toAppend)
 		}
 	}
 
-	Text::StrConcat(pathTmp, toAppend);
-	pathCnt = Text::StrSplit(pathArr, 5, pathTmp, '\\');
+	Text::StrConcatC(pathTmp, toAppend, toAppendLen);
+	pathCnt = Text::StrSplitP(pathArr, 5, pathTmp, toAppendLen, '\\');
 	while (true)
 	{
 		if (pathCnt == 5)
@@ -717,10 +720,10 @@ Bool IO::Path::AppendPath(Text::StringBuilderUTF8 *sb, const UTF8Char *toAppend)
 		i = 0;
 		while (i < j)
 		{
-			if (pathArr[i][0] == '.')
+			if (pathArr[i].v[0] == '.')
 			{
 				k = 1;
-				while (pathArr[i][k] == '.')
+				while (pathArr[i].v[k] == '.')
 				{
 					if (lastSep > firstSep)
 					{
@@ -743,14 +746,14 @@ Bool IO::Path::AppendPath(Text::StringBuilderUTF8 *sb, const UTF8Char *toAppend)
 				if (lastSep[0] == '\\')
 				{
 					sb->SetEndPtr(&lastSep[1]);
-					sb->Append(pathArr[i]);
+					sb->AppendC(pathArr[i].v, pathArr[i].len);
 					sb->AppendC(UTF8STRC("\\"));
 					lastSep = sb->GetEndPtr() - 1;
 				}
 				else
 				{
 					sb->SetEndPtr(lastSep);
-					sb->Append(pathArr[i]);
+					sb->AppendC(pathArr[i].v, pathArr[i].len);
 					sb->AppendC(UTF8STRC("\\"));
 					lastSep = sb->GetEndPtr() - 1;
 				}
@@ -760,7 +763,7 @@ Bool IO::Path::AppendPath(Text::StringBuilderUTF8 *sb, const UTF8Char *toAppend)
 
 		if (pathCnt == 5)
 		{
-			pathCnt = Text::StrSplit(pathArr, 5, pathArr[4], '\\');
+			pathCnt = Text::StrSplitP(pathArr, 5, pathArr[4].v, pathArr[4].len, '\\');
 		}
 		else
 		{

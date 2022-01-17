@@ -11,7 +11,7 @@
 #include "Text/MyString.h"
 #include "Text/URLString.h"
 #include "Text/TextBinEnc/Base64Enc.h"
-#include "Text/TextEnc/URIEncoding.h"
+#include "Text/TextBinEnc/URIEncoding.h"
 
 UTF8Char *Net::WebBrowser::GetLocalFileName(UTF8Char *sbuff, const UTF8Char *url)
 {
@@ -167,7 +167,7 @@ IO::IStreamData *Net::WebBrowser::GetData(const UTF8Char *url, Bool forceReload,
 			UInt8 *binTemp;
 			textSize = Text::StrCharCnt(url + 7);
 			strTemp = MemAlloc(UTF8Char, textSize + 1);
-			sptr = Text::TextEnc::URIEncoding::URIDecode(strTemp, url + 7);
+			sptr = Text::TextBinEnc::URIEncoding::URIDecode(strTemp, url + 7);
 			binSize = b64.CalcBinSize(strTemp, (UOSInt)(sptr - strTemp));
 			binTemp = MemAlloc(UInt8, binSize);
 			b64.DecodeBin(strTemp, (UOSInt)(sptr - strTemp), binTemp);

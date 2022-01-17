@@ -5,8 +5,6 @@
 #include "Sync/MutexUsage.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
-#include "Text/TextEnc/FormEncoding.h"
-#include "Text/TextEnc/URIEncoding.h"
 
 void __stdcall Net::WebServer::WebListener::ClientReady(Net::TCPClient *cli, void *userObj)
 {

@@ -17,7 +17,7 @@
 #include "Text/MyStringFloat.h"
 #include "Text/URLString.h"
 #include "Text/TextBinEnc/Base64Enc.h"
-#include "Text/TextEnc/FormEncoding.h"
+#include "Text/TextBinEnc/FormEncoding.h"
 #include "UI/FileDialog.h"
 #include "UI/MessageDialog.h"
 
@@ -93,10 +93,10 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnRequestClicked(void *userObj
 				{
 					sb2.AppendChar('&', 1);
 				}
-				Text::TextEnc::FormEncoding::FormEncode(sbuff, param->name);
+				Text::TextBinEnc::FormEncoding::FormEncode(sbuff, param->name);
 				sb2.Append(sbuff);
 				sb2.AppendChar('=', 1);
-				Text::TextEnc::FormEncoding::FormEncode(sbuff, param->value);
+				Text::TextBinEnc::FormEncoding::FormEncode(sbuff, param->value);
 				sb2.Append(sbuff);
 				i++;
 			}
@@ -149,7 +149,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnRequestClicked(void *userObj
 			mstm.Write((const UInt8*)"--", 2);
 			mstm.Write(sbBoundary.ToString(), sbBoundary.GetCharCnt());
 			mstm.Write(UTF8STRC("\r\nContent-Disposition: form-data; name=\""));
-			sptr = Text::TextEnc::FormEncoding::FormEncode(sbuff, param->name);
+			sptr = Text::TextBinEnc::FormEncoding::FormEncode(sbuff, param->name);
 			mstm.Write(sbuff, (UOSInt)(sptr - sbuff));
 			mstm.Write((const UInt8*)"\"\r\n\r\n", 5);
 			mstm.Write(param->value, Text::StrCharCnt(param->value));
@@ -179,13 +179,13 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnRequestClicked(void *userObj
 				if (sb.GetCharCnt() > 0)
 				{
 					mstm.Write((const UInt8*)"name=\"", 6);
-					sptr = Text::TextEnc::FormEncoding::FormEncode(sbuff, sb2.ToString());
+					sptr = Text::TextBinEnc::FormEncoding::FormEncode(sbuff, sb2.ToString());
 					mstm.Write(sbuff, (UOSInt)(sptr - sbuff));
 					mstm.Write((const UInt8*)"\"; ", 3);
 				}
 				k = s->LastIndexOf(IO::Path::PATH_SEPERATOR);
 				mstm.Write((const UInt8*)"filename=\"", 10);
-				sptr = Text::TextEnc::FormEncoding::FormEncode(sbuff, &s->v[k + 1]);
+				sptr = Text::TextBinEnc::FormEncoding::FormEncode(sbuff, &s->v[k + 1]);
 				mstm.Write(sbuff, (UOSInt)(sptr - sbuff));
 				mstm.Write((const UInt8*)"\"\r\n", 3);
 
@@ -254,10 +254,10 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnRequestClicked(void *userObj
 			{
 				sb2.AppendChar('&', 1);
 			}
-			Text::TextEnc::FormEncoding::FormEncode(sbuff, param->name);
+			Text::TextBinEnc::FormEncoding::FormEncode(sbuff, param->name);
 			sb2.Append(sbuff);
 			sb2.AppendChar('=', 1);
-			Text::TextEnc::FormEncoding::FormEncode(sbuff, param->value);
+			Text::TextBinEnc::FormEncoding::FormEncode(sbuff, param->value);
 			sb2.Append(sbuff);
 			i++;
 		}
@@ -396,14 +396,14 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnDataStrClicked(void *userObj
 			if (eqInd != INVALID_INDEX)
 			{
 				sptr[eqInd] = 0;
-				Text::TextEnc::FormEncoding::FormDecode(sbuff, sptr);
+				Text::TextBinEnc::FormEncoding::FormDecode(sbuff, sptr);
 				param->name = Text::StrCopyNew(sbuff);
-				Text::TextEnc::FormEncoding::FormDecode(sbuff, &sptr[eqInd + 1]);
+				Text::TextBinEnc::FormEncoding::FormDecode(sbuff, &sptr[eqInd + 1]);
 				param->value = Text::StrCopyNew(sbuff);
 			}
 			else
 			{
-				Text::TextEnc::FormEncoding::FormDecode(sbuff, sptr);
+				Text::TextBinEnc::FormEncoding::FormDecode(sbuff, sptr);
 				param->name = Text::StrCopyNew(sbuff);
 				param->value = Text::StrCopyNew((const UTF8Char*)"");
 			}

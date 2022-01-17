@@ -8,8 +8,6 @@
 #include "Sync/Thread.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
-#include "Text/TextEnc/FormEncoding.h"
-#include "Text/TextEnc/URIEncoding.h"
 
 #define IP_HEADER_SIZE 20
 #define TCP_HEADER_SIZE 20

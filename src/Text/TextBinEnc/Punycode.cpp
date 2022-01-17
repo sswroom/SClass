@@ -3,7 +3,7 @@
 #include "Text/Encoding.h"
 #include "Text/MyString.h"
 #include "Text/MyStringW.h"
-#include "Text/TextEnc/Punycode.h"
+#include "Text/TextBinEnc/Punycode.h"
 
 #define BASE 36
 #define TMIN 1
@@ -11,7 +11,7 @@
 #define SKEW 38
 #define DAMP 700
 
-UOSInt Text::TextEnc::Punycode::Adapt(UOSInt delta, UOSInt numPoints, Bool firstTime)
+UOSInt Text::TextBinEnc::Punycode::Adapt(UOSInt delta, UOSInt numPoints, Bool firstTime)
 {
 	UOSInt k;
 
@@ -28,12 +28,12 @@ UOSInt Text::TextEnc::Punycode::Adapt(UOSInt delta, UOSInt numPoints, Bool first
 	return k + (BASE - TMIN + 1) * delta / (delta + SKEW);
 }
 
-UTF8Char *Text::TextEnc::Punycode::Encode(UTF8Char *buff, const UTF8Char *strToEnc)
+UTF8Char *Text::TextBinEnc::Punycode::Encode(UTF8Char *buff, const UTF8Char *strToEnc)
 {
 	return Text::StrConcat(buff, strToEnc);
 }
 
-UTF8Char *Text::TextEnc::Punycode::Encode(UTF8Char *buff, const WChar *strToEnc)
+UTF8Char *Text::TextBinEnc::Punycode::Encode(UTF8Char *buff, const WChar *strToEnc)
 {
 /*	const WChar *srcPtr;
 	WChar c;
@@ -109,7 +109,7 @@ UTF8Char *Text::TextEnc::Punycode::Encode(UTF8Char *buff, const WChar *strToEnc)
 	return Text::StrWChar_UTF8(buff, strToEnc);
 }
 
-WChar *Text::TextEnc::Punycode::Encode(WChar *buff, const WChar *strToEnc)
+WChar *Text::TextBinEnc::Punycode::Encode(WChar *buff, const WChar *strToEnc)
 {
 /*	const WChar *srcPtr;
 	WChar c;
@@ -185,7 +185,7 @@ WChar *Text::TextEnc::Punycode::Encode(WChar *buff, const WChar *strToEnc)
 	return Text::StrConcat(buff, strToEnc);
 }
 
-UTF8Char *Text::TextEnc::Punycode::Decode(UTF8Char *buff, const UTF8Char *strToDec)
+UTF8Char *Text::TextBinEnc::Punycode::Decode(UTF8Char *buff, const UTF8Char *strToDec)
 {
 	while (*strToDec)
 	{
@@ -345,7 +345,7 @@ UTF8Char *Text::TextEnc::Punycode::Decode(UTF8Char *buff, const UTF8Char *strToD
 	return buff;
 }
 
-WChar *Text::TextEnc::Punycode::Decode(WChar *buff, const UTF8Char *strToDec)
+WChar *Text::TextBinEnc::Punycode::Decode(WChar *buff, const UTF8Char *strToDec)
 {
 	while (*strToDec)
 	{
@@ -451,7 +451,7 @@ WChar *Text::TextEnc::Punycode::Decode(WChar *buff, const UTF8Char *strToDec)
 	return buff;
 }
 
-WChar *Text::TextEnc::Punycode::Decode(WChar *buff, const WChar *strToDec)
+WChar *Text::TextBinEnc::Punycode::Decode(WChar *buff, const WChar *strToDec)
 {
 	while (*strToDec)
 	{
@@ -557,25 +557,37 @@ WChar *Text::TextEnc::Punycode::Decode(WChar *buff, const WChar *strToDec)
 	return buff;
 }
 
-Text::TextEnc::Punycode::Punycode()
+Text::TextBinEnc::Punycode::Punycode()
 {
 }
 
-Text::TextEnc::Punycode::~Punycode()
+Text::TextBinEnc::Punycode::~Punycode()
 {
 }
 
-UTF8Char *Text::TextEnc::Punycode::EncodeString(UTF8Char *buff, const WChar *strToEnc)
+UTF8Char *Text::TextBinEnc::Punycode::EncodeString(UTF8Char *buff, const WChar *strToEnc)
 {
 	return Encode(buff, strToEnc);
 }
 
-UTF8Char *Text::TextEnc::Punycode::EncodeString(UTF8Char *buff, const UTF8Char *strToEnc)
+UOSInt Text::TextBinEnc::Punycode::EncodeBin(Text::StringBuilderUTF *sb, const UInt8 *dataBuff, UOSInt buffSize)
 {
-	return Encode(buff, strToEnc);
+	sb->AppendC(dataBuff, buffSize);
+	return buffSize;
 }
 
-UTF8Char *Text::TextEnc::Punycode::DecodeString(UTF8Char *buff, const UTF8Char *strToDec)
+UOSInt Text::TextBinEnc::Punycode::CalcBinSize(const UTF8Char *str, UOSInt strLen)
 {
-	return Decode(buff, strToDec);
+	UTF8Char buff[256];
+	return (UOSInt)(Decode(buff, str) - buff);
+}
+
+UOSInt Text::TextBinEnc::Punycode::DecodeBin(const UTF8Char *str, UOSInt strLen, UInt8 *dataBuff)
+{
+	return (UOSInt)(Decode(dataBuff, str) - dataBuff);
+}
+
+Text::CString Text::TextBinEnc::Punycode::GetName()
+{
+	return {UTF8STRC("Punycode")};
 }

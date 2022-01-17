@@ -1109,7 +1109,7 @@ UTF8Char *Text::StrHexBytes(UTF8Char *oriStr, const UInt8 *buff, UOSInt buffSize
 			val = *buff++;
 			oriStr[0] = (UTF8Char)MyString_STRHEXARR[val >> 4];
 			oriStr[1] = (UTF8Char)MyString_STRHEXARR[val & 15];
-			oriStr[3] = seperator;
+			oriStr[2] = seperator;
 			oriStr += 3;
 		}
 		*--oriStr = 0;

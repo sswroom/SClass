@@ -10,7 +10,7 @@ Text::TextBinEnc::ANSITextBinEnc::~ANSITextBinEnc()
 {
 }
 
-const UTF8Char *Text::TextBinEnc::ANSITextBinEnc::GetName()
+Text::CString Text::TextBinEnc::ANSITextBinEnc::GetName()
 {
-	return (const UTF8Char*)"ANSI Text";
+	return {UTF8STRC("ANSI Text")};
 }

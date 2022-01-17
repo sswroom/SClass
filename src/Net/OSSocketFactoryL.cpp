@@ -14,7 +14,7 @@
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
 #include "Text/UTF8Reader.h"
-#include "Text/TextEnc/Punycode.h"
+#include "Text/TextBinEnc/Punycode.h"
 #include <fcntl.h>
 #include <unistd.h>
 #include <netdb.h>

@@ -15,8 +15,7 @@
 #include "Text/MyStringW.h"
 #include "Text/StringBuilderUTF8.h"
 #include "Text/StringBuilderUTF16.h"
-#include "Text/TextEnc/FormEncoding.h"
-#include "Text/TextEnc/URIEncoding.h"
+#include "Text/TextBinEnc/URIEncoding.h"
 #include <windows.h>
 #include <winhttp.h>
 #include <stdio.h>
@@ -268,7 +267,7 @@ Bool Net::HTTPOSClient::Connect(const UTF8Char *url, UOSInt urlLen, const Char *
 			MemCopyNO(urltmp, ptr1, i * sizeof(UTF8Char));
 			urltmp[i] = 0;
 		}
-		Text::TextEnc::URIEncoding::URIDecode(urltmp, urltmp);
+		Text::TextBinEnc::URIEncoding::URIDecode(urltmp, urltmp);
 		defPort = 80;
 	}
 	else if (Text::StrStartsWith(url, (const UTF8Char*)"https://"))
@@ -288,7 +287,7 @@ Bool Net::HTTPOSClient::Connect(const UTF8Char *url, UOSInt urlLen, const Char *
 			MemCopyNO(urltmp, ptr1, i * sizeof(UTF8Char));
 			urltmp[i] = 0;
 		}
-		Text::TextEnc::URIEncoding::URIDecode(urltmp, urltmp);
+		Text::TextBinEnc::URIEncoding::URIDecode(urltmp, urltmp);
 		defPort = 443;
 		https = true;
 	}
@@ -588,7 +587,7 @@ void Net::HTTPOSClient::EndRequest(Double *timeReq, Double *timeResp)
 								s = Text::String::NewNotNull(wptr);
 								this->headers->Add(s);
 
-								if (s->StartsWith((const UTF8Char*)"Content-Length: "))
+								if (s->StartsWith(UTF8STRC("Content-Length: ")))
 								{
 									this->contLeng = Text::StrToUInt64(&s->v[16]);
 								}

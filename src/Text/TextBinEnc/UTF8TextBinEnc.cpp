@@ -10,7 +10,7 @@ Text::TextBinEnc::UTF8TextBinEnc::~UTF8TextBinEnc()
 {
 }
 
-const UTF8Char *Text::TextBinEnc::UTF8TextBinEnc::GetName()
+Text::CString Text::TextBinEnc::UTF8TextBinEnc::GetName()
 {
-	return (const UTF8Char*)"UTF-8 Text";
+	return {UTF8STRC("UTF-8 Text")};
 }

@@ -3,7 +3,7 @@
 #include "IO/Path.h"
 #include "Text/MyString.h"
 #include "Text/MyStringW.h"
-#include "Text/TextEnc/URIEncoding.h"
+#include "Text/TextBinEnc/URIEncoding.h"
 #include "Text/URLString.h"
 
 UTF8Char *Text::URLString::GetURLFilePath(UTF8Char *sbuff, const UTF8Char *url)
@@ -12,13 +12,13 @@ UTF8Char *Text::URLString::GetURLFilePath(UTF8Char *sbuff, const UTF8Char *url)
 		return 0;
 	if (IO::Path::PATH_SEPERATOR == '\\')
 	{
-		UTF8Char *sptr = Text::TextEnc::URIEncoding::URIDecode(sbuff, &url[8]);
+		UTF8Char *sptr = Text::TextBinEnc::URIEncoding::URIDecode(sbuff, &url[8]);
 		Text::StrReplace(sbuff, '/', '\\');
 		return sptr;
 	}
 	else
 	{
-		return Text::TextEnc::URIEncoding::URIDecode(sbuff, &url[7]);
+		return Text::TextBinEnc::URIEncoding::URIDecode(sbuff, &url[7]);
 	}
 }
 
@@ -138,7 +138,7 @@ UTF8Char *Text::URLString::GetURLPath(UTF8Char *sbuff, const UTF8Char *url)
 	if (i != INVALID_INDEX)
 	{
 		tmpBuff = MemAlloc(UTF8Char, urlLen + 1);
-		UTF8Char *sptr = Text::TextEnc::URIEncoding::URIDecode(tmpBuff, &url[i]);
+		UTF8Char *sptr = Text::TextBinEnc::URIEncoding::URIDecode(tmpBuff, &url[i]);
 		i = Text::StrIndexOf(tmpBuff, '?');
 		if (i != INVALID_INDEX)
 		{
@@ -174,7 +174,7 @@ UTF8Char *Text::URLString::GetURLPathSvr(UTF8Char *sbuff, const UTF8Char *url, U
 	if (i != INVALID_INDEX)
 	{
 		tmpBuff = MemAlloc(UTF8Char, urlLen + 1);
-		UTF8Char *sptr = Text::TextEnc::URIEncoding::URIDecode(tmpBuff, &url[i]);
+		UTF8Char *sptr = Text::TextBinEnc::URIEncoding::URIDecode(tmpBuff, &url[i]);
 		i = Text::StrIndexOf(tmpBuff, '?');
 		if (i != INVALID_INDEX)
 		{

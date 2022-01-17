@@ -13,8 +13,7 @@
 #include "Text/EncodingFactory.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
-#include "Text/TextEnc/FormEncoding.h"
-#include "Text/TextEnc/URIEncoding.h"
+#include "Text/TextBinEnc/URIEncoding.h"
 
 Net::HTTPClient::HTTPClient(Net::SocketFactory *sockf, Bool kaConn) : IO::Stream(UTF8STRC("HTTPClient"))
 {
@@ -62,13 +61,13 @@ Bool Net::HTTPClient::FormAdd(const UTF8Char *name, const UTF8Char *value)
 		return false;
 	}
 	UTF8Char sbuff[256];
-	Text::TextEnc::URIEncoding::URIEncode(sbuff, name);
+	Text::TextBinEnc::URIEncoding::URIEncode(sbuff, name);
 	if (this->formSb->GetLength() > 0)
 	{
 		this->formSb->AppendChar('&', 1);
 	}
 	this->formSb->Append(sbuff);
-	Text::TextEnc::URIEncoding::URIEncode(sbuff, value);
+	Text::TextBinEnc::URIEncoding::URIEncode(sbuff, value);
 	this->formSb->AppendChar('=', 1);
 	this->formSb->Append(sbuff);
 	return true;

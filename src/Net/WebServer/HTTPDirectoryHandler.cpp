@@ -17,7 +17,7 @@
 #include "Text/UTF8Reader.h"
 #include "Text/UTF8Writer.h"
 #include "Text/XML.h"
-#include "Text/TextEnc/URIEncoding.h"
+#include "Text/TextBinEnc/URIEncoding.h"
 
 typedef struct
 {
@@ -188,7 +188,7 @@ void Net::WebServer::HTTPDirectoryHandler::ResponsePackageFile(Net::WebServer::I
 	Text::String *s;
 
 	sbOut.AppendC(UTF8STRC("<html><head><title>Index of "));
-	Text::TextEnc::URIEncoding::URIDecode(u8buff, sptr);
+	Text::TextBinEnc::URIEncoding::URIDecode(u8buff, sptr);
 	s = Text::XML::ToNewHTMLText(u8buff);
 	sbOut.Append(s);
 	sbOut.AppendC(UTF8STRC("</title></head>\r\n<body>\r\n"));
@@ -222,7 +222,7 @@ void Net::WebServer::HTTPDirectoryHandler::ResponsePackageFile(Net::WebServer::I
 			sbOut.AppendC(UTF8STRC("<tr><td>"));
 			sbOut.AppendC(UTF8STRC("<a href=\""));
 			sptr = packageFile->GetItemName(u8buff, i);
-			Text::TextEnc::URIEncoding::URIEncode(u8buff2, u8buff);
+			Text::TextBinEnc::URIEncoding::URIEncode(u8buff2, u8buff);
 			sbOut.Append(u8buff2);
 			if (pot == IO::PackageFile::POT_PACKAGEFILE)
 			{
@@ -772,7 +772,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 				Bool isRoot = false;
 				Text::String *s;
 				sbOut.AppendC(UTF8STRC("<html><head><title>Index of "));
-				Text::TextEnc::URIEncoding::URIDecode(sbuff, sb2.ToString());
+				Text::TextBinEnc::URIEncoding::URIDecode(sbuff, sb2.ToString());
 				s = Text::XML::ToNewHTMLText(sbuff);
 				sbOut.Append(s);
 				sbOut.AppendC(UTF8STRC("</title></head>\r\n<body>\r\n"));
@@ -849,7 +849,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 							package = this->packageMap->GetItem(i);
 							sbOut.AppendC(UTF8STRC("<tr><td>"));
 							sbOut.AppendC(UTF8STRC("<a href=\""));
-							sptr2 = Text::TextEnc::URIEncoding::URIEncode(sbuff2, package->fileName->v);
+							sptr2 = Text::TextBinEnc::URIEncoding::URIEncode(sbuff2, package->fileName->v);
 							sbOut.AppendC(sbuff2, (UOSInt)(sptr2 - sbuff2));
 							sbOut.AppendChar('/', 1);
 							sbOut.AppendC(UTF8STRC("\">"));
@@ -929,7 +929,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 								}
 								sbOut.AppendC(UTF8STRC("<tr><td>"));
 								sbOut.AppendC(UTF8STRC("<a href=\""));
-								sptr4 = Text::TextEnc::URIEncoding::URIEncode(sbuff2, sptr2);
+								sptr4 = Text::TextBinEnc::URIEncoding::URIEncode(sbuff2, sptr2);
 								sbOut.AppendC(sbuff2, (UOSInt)(sptr4 - sbuff2));
 								if (pt == IO::Path::PathType::Directory)
 								{
@@ -1032,7 +1032,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 							ent = entList.GetItem(i);
 							sbOut.AppendC(UTF8STRC("<tr><td>"));
 							sbOut.AppendC(UTF8STRC("<a href=\""));
-							sptr3 = Text::TextEnc::URIEncoding::URIEncode(sbuff2, ent->fileName->v);
+							sptr3 = Text::TextBinEnc::URIEncoding::URIEncode(sbuff2, ent->fileName->v);
 							sbOut.AppendC(sbuff2, (UOSInt)(sptr3 - sbuff2));
 							if (ent->pt == IO::Path::PathType::Directory)
 							{

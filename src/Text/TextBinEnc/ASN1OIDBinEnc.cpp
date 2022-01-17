@@ -28,7 +28,7 @@ UOSInt Text::TextBinEnc::ASN1OIDBinEnc::DecodeBin(const UTF8Char *str, UOSInt st
 	return Net::ASN1Util::OIDText2PDU(str, strLen, dataBuff);
 }
 
-const UTF8Char *Text::TextBinEnc::ASN1OIDBinEnc::GetName()
+Text::CString Text::TextBinEnc::ASN1OIDBinEnc::GetName()
 {
-	return (const UTF8Char*)"SNMP OID";
+	return {UTF8STRC("SNMP OID")};
 }

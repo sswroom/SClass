@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Text/Encoding.h"
 #include "Text/MyString.h"
-#include "Text/TextEnc/FormEncoding.h"
+#include "Text/TextBinEnc/FormEncoding.h"
 
 static UInt8 URIAllow[] = {
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -22,11 +22,12 @@ static UInt8 URIAllow[] = {
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
-void Text::TextEnc::FormEncoding::FormEncode(Text::StringBuilderUTF *sb, const UTF8Char *uri)
+void Text::TextBinEnc::FormEncoding::FormEncode(Text::StringBuilderUTF *sb, const UTF8Char *uri, UOSInt uriLen)
 {
 	UInt8 b;
-	while ((b = *uri++) != 0)
+	while (uriLen-- > 0)
 	{
+		b = *uri++;
 		if (URIAllow[b])
 		{
 			sb->AppendChar(b, 1);
@@ -46,7 +47,7 @@ void Text::TextEnc::FormEncoding::FormEncode(Text::StringBuilderUTF *sb, const U
 	}
 }
 
-UTF8Char *Text::TextEnc::FormEncoding::FormEncode(UTF8Char *buff, const UTF8Char *uri)
+UTF8Char *Text::TextBinEnc::FormEncoding::FormEncode(UTF8Char *buff, const UTF8Char *uri)
 {
 	const UTF8Char *src;
 	UInt8 b;
@@ -79,7 +80,7 @@ UTF8Char *Text::TextEnc::FormEncoding::FormEncode(UTF8Char *buff, const UTF8Char
 	return dest;
 }
 
-UTF8Char *Text::TextEnc::FormEncoding::FormDecode(UTF8Char *buff, const UTF8Char *uri)
+UTF8Char *Text::TextBinEnc::FormEncoding::FormDecode(UTF8Char *buff, const UTF8Char *uri)
 {
 	UInt8 *dest;
 	UInt8 v;
@@ -152,20 +153,121 @@ UTF8Char *Text::TextEnc::FormEncoding::FormDecode(UTF8Char *buff, const UTF8Char
 	return dest;
 }
 
-Text::TextEnc::FormEncoding::FormEncoding()
+Text::TextBinEnc::FormEncoding::FormEncoding()
 {
 }
 
-Text::TextEnc::FormEncoding::~FormEncoding()
+Text::TextBinEnc::FormEncoding::~FormEncoding()
 {
 }
 
-UTF8Char *Text::TextEnc::FormEncoding::EncodeString(UTF8Char *buff, const UTF8Char *strToEnc)
+UOSInt Text::TextBinEnc::FormEncoding::EncodeBin(Text::StringBuilderUTF *sb, const UInt8 *dataBuff, UOSInt buffSize)
 {
-	return FormEncode(buff, strToEnc);
+	UOSInt initLen = sb->GetCharCnt();
+	FormEncode(sb, dataBuff, buffSize);
+	return sb->GetCharCnt() - initLen;
 }
 
-UTF8Char *Text::TextEnc::FormEncoding::DecodeString(UTF8Char *buff, const UTF8Char *strToDec)
+UOSInt Text::TextBinEnc::FormEncoding::CalcBinSize(const UTF8Char *str, UOSInt strLen)
 {
-	return FormDecode(buff, strToDec);
+	UInt8 v;
+	UTF8Char c;
+	UOSInt retSize = 0;
+
+	while (strLen-- > 0)
+	{
+		c = *str++;
+		if (c == '+')
+		{
+		}
+		else if (c == '%' && strLen >= 2)
+		{
+			c = str[0];
+			if ((c >= 0x30 && c <= 0x39) || (c >= 0x41 && c <= 0x46) || (c >= 0x61 && c <= 0x66))
+			{
+				c = str[1];
+				if ((c >= 0x30 && c <= 0x39) || (c >= 0x41 && c <= 0x46) || (c >= 0x61 && c <= 0x66))
+				{
+					strLen -= 2;
+					str += 2;
+				}
+			}
+		}
+		retSize++;
+	}
+	return retSize;
+}
+
+UOSInt Text::TextBinEnc::FormEncoding::DecodeBin(const UTF8Char *str, UOSInt strLen, UInt8 *dataBuff)
+{
+	UInt8 v;
+	UTF8Char c;
+	UOSInt retSize = 0;
+
+	while (strLen-- > 0)
+	{
+		c = *str++;
+		if (c == '+')
+		{
+			*dataBuff++ = ' ';
+		}
+		else if (c == '%' && strLen >= 2)
+		{
+			c = str[0];
+			if (c >= 0x30 && c <= 0x39)
+			{
+				v = (UInt8)(c - 0x30);
+			}
+			else if (c >= 0x41 && c <= 0x46)
+			{
+				v = (UInt8)(c - 0x37);
+			}
+			else if (c >= 0x61 && c <= 0x66)
+			{
+				v = (UInt8)(c - 0x57);
+			}
+			else
+			{
+				*dataBuff++ = '%';
+				c = 0;
+			}
+			if (c)
+			{
+				c = str[1];
+				if (c >= 0x30 && c <= 0x39)
+				{
+					*dataBuff++ = (UInt8)((v << 4) + (c - 0x30));
+					str += 2;
+					strLen -= 2;
+				}
+				else if (c >= 0x41 && c <= 0x46)
+				{
+					*dataBuff++ = (UInt8)((v << 4) + (c - 0x37));
+					str += 2;
+					strLen -= 2;
+				}
+				else if (c >= 0x61 && c <= 0x66)
+				{
+					*dataBuff++ = (UInt8)((v << 4) + (c - 0x57));
+					str += 2;
+					strLen -= 2;
+				}
+				else
+				{
+					*dataBuff++ = '%';
+				}
+			}
+		}
+		else
+		{
+			*dataBuff++ = (UInt8)c;
+		}
+		retSize++;
+	}
+	return retSize;
+}
+
+Text::CString Text::TextBinEnc::FormEncoding::GetName()
+{
+	return {UTF8STRC("Form Encoding")};
 }

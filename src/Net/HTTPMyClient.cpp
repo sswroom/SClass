@@ -12,8 +12,7 @@
 #include "Text/EncodingFactory.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
-#include "Text/TextEnc/FormEncoding.h"
-#include "Text/TextEnc/URIEncoding.h"
+#include "Text/TextBinEnc/URIEncoding.h"
 
 //#define LOGREPLY
 //#define SHOWDEBUG
@@ -606,7 +605,7 @@ Bool Net::HTTPMyClient::Connect(const UTF8Char *url, UOSInt urlLen, const Char *
 		MemCopyNO(urltmp, ptr1, ptr1Len * sizeof(UTF8Char));
 		urltmp[ptr1Len] = 0;
 	}
-	cptr = Text::TextEnc::URIEncoding::URIDecode(urltmp, urltmp);
+	cptr = Text::TextBinEnc::URIEncoding::URIDecode(urltmp, urltmp);
 	urltmpLen = (UOSInt)(cptr - urltmp);
 	cptr = Text::StrConcatC(host, UTF8STRC("Host: "));
 	cptr = Text::StrConcatC(cptr, urltmp, urltmpLen);

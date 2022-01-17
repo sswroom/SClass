@@ -1004,7 +1004,7 @@ Int32 Manage::Process::ExecuteProcess(Text::String *cmd, Text::StringBuilderUTF 
 	return ret;
 }
 
-Int32 Manage::Process::ExecuteProcess(const UTF8Char *cmd, Text::StringBuilderUTF *result)
+Int32 Manage::Process::ExecuteProcess(const UTF8Char *cmd, UOSInt cmdLen, Text::StringBuilderUTF *result)
 {
 	const WChar *wptr = Text::StrToWCharNew(cmd);
 	Int32 ret = ExecuteProcessW(wptr, result);

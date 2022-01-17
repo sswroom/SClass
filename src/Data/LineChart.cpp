@@ -1267,11 +1267,11 @@ void Data::LineChart::Plot(Media::DrawImage *img, Double x, Double y, Double wid
 
 	if (yAxis1Type == Data::IChart::DataType::Integer)
 	{
-		Data::IChart::CalScaleMarkInt(locations, labels, y1MinInt, y1MaxInt, height - xLeng - fntH / 2 - this->pointSize * 2, fntH, this->yUnit->v);
+		Data::IChart::CalScaleMarkInt(locations, labels, y1MinInt, y1MaxInt, height - xLeng - fntH / 2 - this->pointSize * 2, fntH, STR_PTR(this->yUnit));
 	}
 	else if (yAxis1Type == Data::IChart::DataType::DOUBLE)
 	{
-		Data::IChart::CalScaleMarkDbl(locations, labels, y1MinDbl, y1MaxDbl, height - xLeng - fntH / 2 - this->pointSize * 2, fntH, dblFormat, minDblVal, this->yUnit->v);
+		Data::IChart::CalScaleMarkDbl(locations, labels, y1MinDbl, y1MaxDbl, height - xLeng - fntH / 2 - this->pointSize * 2, fntH, dblFormat, minDblVal, STR_PTR(this->yUnit));
 	}
 	else if (yAxis1Type == Data::IChart::DataType::DateTicks)
 	{

@@ -4,7 +4,7 @@
 #include "Crypto/TOTP.h"
 #include "Data/DateTime.h"
 #include "Text/TextBinEnc/Base32Enc.h"
-#include "Text/TextEnc/URIEncoding.h"
+#include "Text/TextBinEnc/URIEncoding.h"
 
 //RFC 6238
 Crypto::TOTP::TOTP(const UInt8 *key, UOSInt keySize) : OTP(6)
@@ -56,7 +56,7 @@ void Crypto::TOTP::GenURI(Text::StringBuilderUTF *sb, const UTF8Char *name)
 {
 	UTF8Char sbuff[512];
 	sb->AppendC(UTF8STRC("otpauth://totp/"));
-	Text::TextEnc::URIEncoding::URIEncode(sbuff, name);
+	Text::TextBinEnc::URIEncoding::URIEncode(sbuff, name);
 	sb->Append(sbuff);
 	sb->AppendC(UTF8STRC("?secret="));
 	Text::TextBinEnc::Base32Enc b32;

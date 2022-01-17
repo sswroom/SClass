@@ -1,12 +1,12 @@
 #ifndef _SM_TEXT_TEXTENC_PUNYCODE
 #define _SM_TEXT_TEXTENC_PUNYCODE
-#include "Text/TextEncoding.h"
+#include "Text/TextBinEnc/ITextBinEnc.h"
 
 namespace Text
 {
-	namespace TextEnc
+	namespace TextBinEnc
 	{
-		class Punycode : public Text::TextEncoding
+		class Punycode : public Text::TextBinEnc::ITextBinEnc
 		{
 		private:
 			static UOSInt Adapt(UOSInt delta, UOSInt numPoints, Bool firstTime);
@@ -21,8 +21,10 @@ namespace Text
 			Punycode();
 			virtual ~Punycode();
 			UTF8Char *EncodeString(UTF8Char *buff, const WChar *strToEnc);
-			virtual UTF8Char *EncodeString(UTF8Char *buff, const UTF8Char *strToEnc);
-			virtual UTF8Char *DecodeString(UTF8Char *buff, const UTF8Char *strToDec);
+			virtual UOSInt EncodeBin(Text::StringBuilderUTF *sb, const UInt8 *dataBuff, UOSInt buffSize);
+			virtual UOSInt CalcBinSize(const UTF8Char *str, UOSInt strLen);
+			virtual UOSInt DecodeBin(const UTF8Char *str, UOSInt strLen, UInt8 *dataBuff);
+			virtual Text::CString GetName();
 		};
 	}
 }

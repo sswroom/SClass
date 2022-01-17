@@ -3778,9 +3778,13 @@ Text/TextBinEnc/CPPByteArrBinEnc.h: ../../src/Text/TextBinEnc/CPPByteArrBinEnc.c
 @CPPByteArrBinEnc.o
 Text/TextBinEnc/CPPTextBinEnc.h: ../../src/Text/TextBinEnc/CPPTextBinEnc.cpp
 @CPPTextBinEnc.o
+Text/TextBinEnc/FormEncoding.h: ../../src/Text/TextBinEnc/FormEncoding.cpp
+@FormEncoding.o
 Text/TextBinEnc/HexTextBinEnc.h: ../../src/Text/TextBinEnc/HexTextBinEnc.cpp
 @HexTextBinEnc.o
 Text/TextBinEnc/ITextBinEnc.h:
+Text/TextBinEnc/Punycode.h: ../../src/Text/TextBinEnc/Punycode.cpp
+@Punycode.o
 Text/TextBinEnc/QuotedPrintableEnc.h: ../../src/Text/TextBinEnc/QuotedPrintableEnc.cpp
 @QuotedPrintableEnc.o
 Text/TextBinEnc/Radix64Enc.h: ../../src/Text/TextBinEnc/Radix64Enc.cpp
@@ -3789,14 +3793,10 @@ Text/TextBinEnc/TextBinEncList.h: ../../src/Text/TextBinEnc/TextBinEncList.cpp
 @TextBinEncList.o
 Text/TextBinEnc/UCS2TextBinEnc.h: ../../src/Text/TextBinEnc/UCS2TextBinEnc.cpp
 @UCS2TextBinEnc.o
+Text/TextBinEnc/URIEncoding.h: ../../src/Text/TextBinEnc/URIEncoding.cpp
+@URIEncoding.o
 Text/TextBinEnc/UTF8TextBinEnc.h: ../../src/Text/TextBinEnc/UTF8TextBinEnc.cpp
 @UTF8TextBinEnc.o
-Text/TextEnc/FormEncoding.h: ../../src/Text/TextEnc/FormEncoding.cpp
-@FormEncoding.o
-Text/TextEnc/Punycode.h: ../../src/Text/TextEnc/Punycode.cpp
-@Punycode.o
-Text/TextEnc/URIEncoding.h: ../../src/Text/TextEnc/URIEncoding.cpp
-@URIEncoding.o
 
 adl_defines.h:
 adl_sdk.h:
@@ -5148,15 +5148,15 @@ Base64Enc.o: ../../src/Text/TextBinEnc/Base64Enc.cpp
 CodePageTextBinEnc.o: ../../src/Text/TextBinEnc/CodePageTextBinEnc.cpp
 CPPByteArrBinEnc.o: ../../src/Text/TextBinEnc/CPPByteArrBinEnc.cpp
 CPPTextBinEnc.o: ../../src/Text/TextBinEnc/CPPTextBinEnc.cpp
+FormEncoding.o: ../../src/Text/TextBinEnc/FormEncoding.cpp
 HexTextBinEnc.o: ../../src/Text/TextBinEnc/HexTextBinEnc.cpp
+Punycode.o: ../../src/Text/TextBinEnc/Punycode.cpp
 QuotedPrintableEnc.o: ../../src/Text/TextBinEnc/QuotedPrintableEnc.cpp
 Radix64Enc.o: ../../src/Text/TextBinEnc/Radix64Enc.cpp
 TextBinEncList.o: ../../src/Text/TextBinEnc/TextBinEncList.cpp
 UCS2TextBinEnc.o: ../../src/Text/TextBinEnc/UCS2TextBinEnc.cpp
+URIEncoding.o: ../../src/Text/TextBinEnc/URIEncoding.cpp
 UTF8TextBinEnc.o: ../../src/Text/TextBinEnc/UTF8TextBinEnc.cpp
-FormEncoding.o: ../../src/Text/TextEnc/FormEncoding.cpp
-Punycode.o: ../../src/Text/TextEnc/Punycode.cpp
-URIEncoding.o: ../../src/Text/TextEnc/URIEncoding.cpp
 ListBoxLogger.o: ../../src/UI/ListBoxLogger.cpp
 GUIHexFileView.o: ../../src/UI/GUIHexFileView.cpp
 GUIMapControl.o: ../../src/UI/GUIMapControl.cpp

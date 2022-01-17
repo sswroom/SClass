@@ -202,9 +202,9 @@ UOSInt Text::TextBinEnc::Base32Enc::DecodeBin(const UTF8Char *b64Str, UOSInt str
 	return decSize;
 }
 
-const UTF8Char *Text::TextBinEnc::Base32Enc::GetName()
+Text::CString Text::TextBinEnc::Base32Enc::GetName()
 {
-	return (const UTF8Char*)"Base32";
+	return {UTF8STRC("Base32")};
 }
 
 Bool Text::TextBinEnc::Base32Enc::IsValid(const UTF8Char *b32Str)

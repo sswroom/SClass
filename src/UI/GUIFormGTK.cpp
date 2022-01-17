@@ -3,7 +3,7 @@
 #include "Math/Math.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
-#include "Text/TextEnc/URIEncoding.h"
+#include "Text/TextBinEnc/URIEncoding.h"
 #include "UI/GUIForm.h"
 #include "UI/GUITimer.h"
 #include <gtk/gtk.h>
@@ -47,7 +47,7 @@ void GUIForm_OnFileDrop(GtkWidget *widget, GdkDragContext *context, gint x, gint
 			j = Text::StrCharCnt(sarr[0]);
 			if (sarr[0][j - 1] == '\r')
 				sarr[0][j - 1] = 0;
-			Text::TextEnc::URIEncoding::URIDecode(sbuff, &sarr[0][7]);
+			Text::TextBinEnc::URIEncoding::URIDecode(sbuff, &sarr[0][7]);
 			files.Add(Text::StrCopyNew(sbuff));
 		}
 		if (i <= 1)

@@ -7,7 +7,7 @@ namespace Net
 	class GoogleQRCode
 	{
 	private:
-		const UTF8Char *dataStr;
+		Text::String *dataStr;
 		UOSInt width;
 		UOSInt height;		
 	public:

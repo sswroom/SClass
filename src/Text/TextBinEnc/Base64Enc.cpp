@@ -283,8 +283,10 @@ UOSInt Text::TextBinEnc::Base64Enc::DecodeBin(const UTF8Char *b64Str, UOSInt str
 	UInt8 b2 = 0;
 	UInt8 code;
 	UTF8Char c;
-	while ((c = *b64Str++) != 0)
+	const UTF8Char *endPtr = b64Str + strLen;
+	while (b64Str < endPtr)
 	{
+		c = *b64Str++;
 		if (c < 0x80)
 		{
 			code = decArr[c];
@@ -370,7 +372,7 @@ UOSInt Text::TextBinEnc::Base64Enc::DecodeBin(const WChar *b64Str, UInt8 *dataBu
 	return decSize;
 }
 
-const UTF8Char *Text::TextBinEnc::Base64Enc::GetName()
+Text::CString Text::TextBinEnc::Base64Enc::GetName()
 {
-	return (const UTF8Char*)"Base64";
+	return {UTF8STRC("Base64")};
 }

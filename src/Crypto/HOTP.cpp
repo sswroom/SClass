@@ -5,7 +5,7 @@
 #include "Crypto/Hash/SHA1.h"
 #include "Data/ByteTool.h"
 #include "Text/TextBinEnc/Base32Enc.h"
-#include "Text/TextEnc/URIEncoding.h"
+#include "Text/TextBinEnc/URIEncoding.h"
 
 //RFC 4226
 Crypto::HOTP::HOTP(const UInt8 *key, UOSInt keySize, UInt64 counter) : OTP(6)
@@ -84,7 +84,7 @@ void Crypto::HOTP::GenURI(Text::StringBuilderUTF *sb, const UTF8Char *name)
 {
 	UTF8Char sbuff[512];
 	sb->AppendC(UTF8STRC("otpauth://hotp/"));
-	Text::TextEnc::URIEncoding::URIEncode(sbuff, name);
+	Text::TextBinEnc::URIEncoding::URIEncode(sbuff, name);
 	sb->Append(sbuff);
 	sb->AppendC(UTF8STRC("?secret="));
 	Text::TextBinEnc::Base32Enc b32;

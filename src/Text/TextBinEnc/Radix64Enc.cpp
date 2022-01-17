@@ -191,7 +191,7 @@ UOSInt Text::TextBinEnc::Radix64Enc::DecodeBin(const WChar *b64Str, UInt8 *dataB
 	return decSize;
 }
 
-const UTF8Char *Text::TextBinEnc::Radix64Enc::GetName()
+Text::CString Text::TextBinEnc::Radix64Enc::GetName()
 {
-	return (const UTF8Char*)"Radix64";
+	return {UTF8STRC("Radix64")};
 }

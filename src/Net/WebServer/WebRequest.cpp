@@ -3,8 +3,7 @@
 #include "Net/WebServer/WebRequest.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
-#include "Text/TextEnc/FormEncoding.h"
-#include "Text/TextEnc/URIEncoding.h"
+#include "Text/TextBinEnc/URIEncoding.h"
 
 #define MAX_DATA_SIZE 104857600
 
@@ -36,7 +35,7 @@ void Net::WebServer::WebRequest::ParseQuery()
 			scnt = Text::StrSplitP(strs2, 2, strs1[0].v, strs1[0].len, '=');
 			if (scnt == 2)
 			{
-				sptr = Text::TextEnc::URIEncoding::URIDecode(sbuff2, strs2[1].v);
+				sptr = Text::TextBinEnc::URIEncoding::URIDecode(sbuff2, strs2[1].v);
 			}
 			else
 			{
@@ -74,6 +73,7 @@ void Net::WebServer::WebRequest::ParseFormStr(Data::FastStringMap<Text::String *
 	Text::String *tmpStr;
 	UTF8Char *tmpName;
 	UOSInt tmpNameLen;
+	UOSInt nameLen = 0;
 	Text::String *s;
 	UOSInt buffPos;
 	UOSInt charCnt;
@@ -89,20 +89,20 @@ void Net::WebServer::WebRequest::ParseFormStr(Data::FastStringMap<Text::String *
 			if (tmpName)
 			{
 				tmpBuff[buffPos] = 0;
-				s = formMap->GetC(tmpBuff, buffPos);
+				s = formMap->GetC(tmpBuff, nameLen);
 				if (s)
 				{
 					charCnt = s->leng + 1;
-					tmpNameLen = Text::StrCharCnt(tmpName);;
+					tmpNameLen = (UOSInt)(&tmpBuff[buffPos] - tmpName);
 					charCnt += tmpNameLen;
 					tmpStr = Text::String::New(charCnt);
 					Text::StrConcatC(Text::StrConcatC(s->ConcatTo(tmpStr->v), UTF8STRC(",")), tmpName, tmpNameLen);
-					formMap->PutC(tmpBuff, buffPos, tmpStr);
+					formMap->PutC(tmpBuff, nameLen, tmpStr);
 					s->Release();
 				}
 				else
 				{
-					formMap->PutC(tmpBuff, buffPos, Text::String::NewNotNull(tmpName));
+					formMap->PutC(tmpBuff, nameLen, Text::String::New(tmpName, (UOSInt)(&tmpBuff[buffPos] - tmpName)));
 				}
 				tmpName = 0;
 				buffPos = 0;
@@ -111,6 +111,7 @@ void Net::WebServer::WebRequest::ParseFormStr(Data::FastStringMap<Text::String *
 		else if (b == '=' && tmpName == 0 && buffPos > 0)
 		{
 			tmpBuff[buffPos] = 0;
+			nameLen = buffPos;
 			buffPos++;
 			tmpName = &tmpBuff[buffPos];
 		}
@@ -153,20 +154,20 @@ void Net::WebServer::WebRequest::ParseFormStr(Data::FastStringMap<Text::String *
 	if (tmpName)
 	{
 		tmpBuff[buffPos] = 0;
-		s = formMap->GetC(tmpBuff, buffPos);
+		s = formMap->GetC(tmpBuff, nameLen);
 		if (s)
 		{
 			charCnt = s->leng + 1;
-			tmpNameLen = Text::StrCharCnt(tmpName);
+			tmpNameLen = (UOSInt)(&tmpBuff[buffPos] - tmpName);
 			charCnt += tmpNameLen;
 			tmpStr = Text::String::New(charCnt);
 			Text::StrConcatC(Text::StrConcatC(s->ConcatTo(tmpStr->v), UTF8STRC(",")), tmpName, tmpNameLen);
-			formMap->PutC(tmpBuff, buffPos, tmpStr);
+			formMap->PutC(tmpBuff, nameLen, tmpStr);
 			s->Release();
 		}
 		else
 		{
-			formMap->PutC(tmpBuff, buffPos, Text::String::NewNotNull(tmpName));
+			formMap->PutC(tmpBuff, nameLen, Text::String::New(tmpName, (UOSInt)(&tmpBuff[buffPos] - tmpName)));
 		}
 		tmpName = 0;
 		buffPos = 0;

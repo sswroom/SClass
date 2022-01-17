@@ -79,7 +79,7 @@ UOSInt Text::TextBinEnc::HexTextBinEnc::DecodeBin(const UTF8Char *str, UOSInt st
 	return cnt;
 }
 
-const UTF8Char *Text::TextBinEnc::HexTextBinEnc::GetName()
+Text::CString Text::TextBinEnc::HexTextBinEnc::GetName()
 {
-	return (const UTF8Char*)"Hex";
+	return {UTF8STRC("Hex")};
 }

@@ -34,7 +34,7 @@ UOSInt Text::TextBinEnc::CodePageTextBinEnc::DecodeBin(const UTF8Char *str, UOSI
 	return this->enc->UTF8ToBytesC(dataBuff, str, strLen);
 }
 
-const UTF8Char *Text::TextBinEnc::CodePageTextBinEnc::GetName()
+Text::CString Text::TextBinEnc::CodePageTextBinEnc::GetName()
 {
-	return (const UTF8Char*)"Code Page Encoding";
+	return {UTF8STRC("Code Page Encoding")};
 }

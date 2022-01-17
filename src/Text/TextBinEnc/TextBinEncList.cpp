@@ -5,10 +5,13 @@
 #include "Text/TextBinEnc/Base64Enc.h"
 #include "Text/TextBinEnc/CPPByteArrBinEnc.h"
 #include "Text/TextBinEnc/CPPTextBinEnc.h"
+#include "Text/TextBinEnc/FormEncoding.h"
 #include "Text/TextBinEnc/HexTextBinEnc.h"
+#include "Text/TextBinEnc/Punycode.h"
 #include "Text/TextBinEnc/QuotedPrintableEnc.h"
 #include "Text/TextBinEnc/TextBinEncList.h"
 #include "Text/TextBinEnc/UCS2TextBinEnc.h"
+#include "Text/TextBinEnc/URIEncoding.h"
 #include "Text/TextBinEnc/UTF8TextBinEnc.h"
 
 Text::TextBinEnc::TextBinEncList::TextBinEncList()

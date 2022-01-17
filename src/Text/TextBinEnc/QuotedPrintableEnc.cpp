@@ -160,7 +160,7 @@ UOSInt Text::TextBinEnc::QuotedPrintableEnc::DecodeBin(const UTF8Char *b64Str, U
 	return cnt;
 }
 
-const UTF8Char *Text::TextBinEnc::QuotedPrintableEnc::GetName()
+Text::CString Text::TextBinEnc::QuotedPrintableEnc::GetName()
 {
-	return (const UTF8Char*)"QuotedPrintable";
+	return {UTF8STRC("QuotedPrintable")};
 }

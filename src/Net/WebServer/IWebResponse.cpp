@@ -5,7 +5,7 @@
 #include "Net/WebServer/IWebResponse.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
-#include "Text/TextEnc/URIEncoding.h"
+#include "Text/TextBinEnc/URIEncoding.h"
 
 Net::WebServer::IWebResponse::IWebResponse(Text::String *sourceName) : IO::Stream(sourceName)
 {
@@ -137,11 +137,11 @@ Bool Net::WebServer::IWebResponse::AddContentDisposition(Bool isAttachment, cons
 		sptr = Text::StrConcatC(sptr, UTF8STRC("; filename=\""));
 		if (browser == Net::BrowserInfo::BT_IE)
 		{
-			sptr = Text::TextEnc::URIEncoding::URIEncode(sptr, attFileName);
+			sptr = Text::TextBinEnc::URIEncoding::URIEncode(sptr, attFileName);
 		}
 		else
 		{
-			sptr = Text::TextEnc::URIEncoding::URIEncode(sptr, attFileName);
+			sptr = Text::TextBinEnc::URIEncoding::URIEncode(sptr, attFileName);
 		}
 		sptr = Text::StrConcatC(sptr, UTF8STRC("\""));
 	}

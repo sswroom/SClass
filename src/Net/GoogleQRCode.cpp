@@ -2,18 +2,18 @@
 #include "MyMemory.h"
 #include "Net/GoogleQRCode.h"
 #include "Text/MyString.h"
-#include "Text/TextEnc/FormEncoding.h"
+#include "Text/TextBinEnc/FormEncoding.h"
 
 Net::GoogleQRCode::GoogleQRCode(UOSInt width, UOSInt height, const UTF8Char *dataStr)
 {
 	this->width = width;
 	this->height = height;
-	this->dataStr = Text::StrCopyNew(dataStr);
+	this->dataStr = Text::String::NewNotNull(dataStr);
 }
 
 Net::GoogleQRCode::~GoogleQRCode()
 {
-	Text::StrDelNew(this->dataStr);
+	this->dataStr->Release();
 }
 
 void Net::GoogleQRCode::GetImageURL(Text::StringBuilderUTF *sb)
@@ -23,5 +23,5 @@ void Net::GoogleQRCode::GetImageURL(Text::StringBuilderUTF *sb)
 	sb->AppendChar('x', 1);
 	sb->AppendUOSInt(this->height);
 	sb->AppendC(UTF8STRC("&chl="));
-	Text::TextEnc::FormEncoding::FormEncode(sb, dataStr);
+	Text::TextBinEnc::FormEncoding::FormEncode(sb, dataStr->v, dataStr->leng);
 }

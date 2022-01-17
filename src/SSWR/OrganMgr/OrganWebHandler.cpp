@@ -36,7 +36,7 @@
 #include "Text/UTF8Reader.h"
 #include "Text/UTF8Writer.h"
 #include "Text/XML.h"
-#include "Text/TextEnc/URIEncoding.h"
+#include "Text/TextBinEnc/URIEncoding.h"
 
 #define SP_PER_PAGE_DESKTOP 100
 #define SP_PER_PAGE_MOBILE 90
@@ -3746,7 +3746,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpecies(Net::WebServer::IWebR
 			j = fileNameList->GetCount();
 			while (i < j)
 			{
-				Text::TextEnc::URIEncoding::URIEncode(sbuff2, fileNameList->GetItem(i)->v);
+				Text::TextBinEnc::URIEncoding::URIEncode(sbuff2, fileNameList->GetItem(i)->v);
 				if (currColumn == 0)
 				{
 					writer->WriteLineC(UTF8STRC("<tr>"));
@@ -4536,7 +4536,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 						sb.AppendC(UTF8STRC("&cateId="));
 						sb.AppendI32(species->cateId);
 						sb.AppendC(UTF8STRC("&file="));
-						Text::TextEnc::URIEncoding::URIEncode(u8buff2, fileNameList->GetItem(0)->v);
+						Text::TextBinEnc::URIEncoding::URIEncode(u8buff2, fileNameList->GetItem(0)->v);
 						sb.Append(u8buff2);
 					}
 					else
@@ -4569,7 +4569,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 						{
 							sb.ClearStr();
 							sb.Append(u8buff2);
-							Text::TextEnc::URIEncoding::URIEncode(u8buff2, sb.ToString());
+							Text::TextBinEnc::URIEncoding::URIEncode(u8buff2, sb.ToString());
 							sb.ClearStr();
 							sb.AppendC(UTF8STRC("photodetail.html?id="));
 							sb.AppendI32(species->speciesId);
@@ -4896,7 +4896,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 						sb.AppendC(UTF8STRC("&cateId="));
 						sb.AppendI32(species->cateId);
 						sb.AppendC(UTF8STRC("&file="));
-						Text::TextEnc::URIEncoding::URIEncode(u8buff2, fileNameList->GetItem(0)->v);
+						Text::TextBinEnc::URIEncoding::URIEncode(u8buff2, fileNameList->GetItem(0)->v);
 						sb.Append(u8buff2);
 					}
 					else
@@ -4929,7 +4929,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 						{
 							sb.ClearStr();
 							sb.Append(u8buff2);
-							Text::TextEnc::URIEncoding::URIEncode(u8buff2, sb.ToString());
+							Text::TextBinEnc::URIEncoding::URIEncode(u8buff2, sb.ToString());
 							sb.ClearStr();
 							sb.AppendC(UTF8STRC("photodetail.html?id="));
 							sb.AppendI32(species->speciesId);
@@ -5109,7 +5109,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 						i = Text::StrLastIndexOf(u8buff, '.');
 						if (i != INVALID_INDEX)
 							u8buff[i] = 0;
-						Text::TextEnc::URIEncoding::URIEncode(u8buff2, u8buff);
+						Text::TextBinEnc::URIEncoding::URIEncode(u8buff2, u8buff);
 						sb.Append(u8buff2);
 					}
 					else
@@ -5260,7 +5260,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 						sb.AppendC(UTF8STRC("&cateId="));
 						sb.AppendI32(species->cateId);
 						sb.AppendC(UTF8STRC("&file="));
-						Text::TextEnc::URIEncoding::URIEncode(u8buff2, fileNameList->GetItem(i + 1)->v);
+						Text::TextBinEnc::URIEncoding::URIEncode(u8buff2, fileNameList->GetItem(i + 1)->v);
 						sb.Append(u8buff2);
 					}
 					else
@@ -5293,7 +5293,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 						{
 							sb.ClearStr();
 							sb.Append(u8buff2);
-							Text::TextEnc::URIEncoding::URIEncode(u8buff2, sb.ToString());
+							Text::TextBinEnc::URIEncoding::URIEncode(u8buff2, sb.ToString());
 							sb.ClearStr();
 							sb.AppendC(UTF8STRC("photodetail.html?id="));
 							sb.AppendI32(species->speciesId);
@@ -6453,7 +6453,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSearchInside(Net::WebServer::
 			me->WriteSpeciesTable(writer, &speciesList, env.scnWidth, group->cateId, false);
 			if (j > 0)
 			{
-				Text::TextEnc::URIEncoding::URIEncode(sbuff, searchStr->v);
+				Text::TextBinEnc::URIEncoding::URIEncode(sbuff, searchStr->v);
 				writer->WriteStrC(UTF8STRC("<a href="));
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("searchinsidemores.html?id="));
@@ -6489,7 +6489,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSearchInside(Net::WebServer::
 			me->WriteGroupTable(writer, &groupList, env.scnWidth, false);
 			if (j > 0)
 			{
-				Text::TextEnc::URIEncoding::URIEncode(sbuff, searchStr->v);
+				Text::TextBinEnc::URIEncoding::URIEncode(sbuff, searchStr->v);
 				writer->WriteStrC(UTF8STRC("<a href="));
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("searchinsidemoreg.html?id="));
@@ -6651,7 +6651,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSearchInsideMoreS(Net::WebSer
 			me->WriteSpeciesTable(writer, &speciesList, env.scnWidth, group->cateId, false);
 			if (pageNo > 0)
 			{
-				Text::TextEnc::URIEncoding::URIEncode(sbuff, searchStr->v);
+				Text::TextBinEnc::URIEncoding::URIEncode(sbuff, searchStr->v);
 				writer->WriteStrC(UTF8STRC("<a href="));
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("searchinsidemores.html?id="));
@@ -6669,7 +6669,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSearchInsideMoreS(Net::WebSer
 			}
 			if (i > 0)
 			{
-				Text::TextEnc::URIEncoding::URIEncode(sbuff, searchStr->v);
+				Text::TextBinEnc::URIEncoding::URIEncode(sbuff, searchStr->v);
 				writer->WriteStrC(UTF8STRC(" <a href="));
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("searchinsidemores.html?id="));
@@ -6833,7 +6833,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSearchInsideMoreG(Net::WebSer
 			me->WriteGroupTable(writer, &groupList, env.scnWidth, false);
 			if (pageNo > 0)
 			{
-				Text::TextEnc::URIEncoding::URIEncode(sbuff, STR_PTR(searchStr));
+				Text::TextBinEnc::URIEncoding::URIEncode(sbuff, STR_PTR(searchStr));
 				writer->WriteStrC(UTF8STRC("<a href="));
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("searchinsidemoreg.html?id="));
@@ -6851,7 +6851,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSearchInsideMoreG(Net::WebSer
 			}
 			if (i > 0)
 			{
-				Text::TextEnc::URIEncoding::URIEncode(sbuff, STR_PTR(searchStr));
+				Text::TextBinEnc::URIEncoding::URIEncode(sbuff, STR_PTR(searchStr));
 				writer->WriteStrC(UTF8STRC(" <a href="));
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("searchinsidemoreg.html?id="));
@@ -8896,7 +8896,7 @@ void SSWR::OrganMgr::OrganWebHandler::WriteGroupTable(IO::Writer *writer, Data::
 						sb.AppendC(UTF8STRC("&height="));
 						sb.AppendI32(PREVIEW_SIZE);
 						sb.AppendC(UTF8STRC("&file="));
-						Text::TextEnc::URIEncoding::URIEncode(sbuff, group->photoSpObj->photo->v);
+						Text::TextBinEnc::URIEncoding::URIEncode(sbuff, group->photoSpObj->photo->v);
 						sb.Append(sbuff);
 						s = Text::XML::ToNewAttrText(sb.ToString());
 						writer->WriteStrC(s->v, s->leng);
@@ -9091,7 +9091,7 @@ void SSWR::OrganMgr::OrganWebHandler::WriteSpeciesTable(IO::Writer *writer, Data
 				sb.AppendC(UTF8STRC("&height="));
 				sb.AppendI32(PREVIEW_SIZE);
 				sb.AppendC(UTF8STRC("&file="));
-				Text::TextEnc::URIEncoding::URIEncode(sbuff, sp->photo->v);
+				Text::TextBinEnc::URIEncoding::URIEncode(sbuff, sp->photo->v);
 				sb.Append(sbuff);
 				s = Text::XML::ToNewAttrText(sb.ToString());
 				writer->WriteStrC(s->v, s->leng);

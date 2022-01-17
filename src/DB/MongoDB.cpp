@@ -5,7 +5,7 @@
 #include "Sync/Interlocked.h"
 #include "Text/MyString.h"
 #include "Text/MyStringW.h"
-#include "Text/TextEnc/URIEncoding.h"
+#include "Text/TextBinEnc/URIEncoding.h"
 #if defined(__FreeBSD__)
 #include <bson.h>
 #include <mongoc.h>
@@ -173,12 +173,12 @@ void DB::MongoDB::BuildURL(Text::StringBuilderUTF *out, const UTF8Char *userName
 	out->AppendC(UTF8STRC("mongodb://"));
 	if (userName)
 	{
-		Text::TextEnc::URIEncoding::URIEncode(sbuff, userName);
+		Text::TextBinEnc::URIEncoding::URIEncode(sbuff, userName);
 		out->Append(sbuff);
 		if (password)
 		{
 			out->AppendChar(':', 1);
-			Text::TextEnc::URIEncoding::URIEncode(sbuff, password);
+			Text::TextBinEnc::URIEncoding::URIEncode(sbuff, password);
 			out->Append(sbuff);
 		}
 		out->AppendChar('@', 1);

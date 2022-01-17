@@ -10,7 +10,7 @@
 #include "Net/SocketFactory.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
-#include "Text/TextEnc/URIEncoding.h"
+#include "Text/TextBinEnc/URIEncoding.h"
 #include <curl/curl.h>
 
 #define BUFFSIZE 2048
@@ -230,7 +230,7 @@ Bool Net::HTTPOSClient::Connect(const UTF8Char *url, UOSInt urlLen, const Char *
 			MemCopyNO(urltmp, ptr1, i * sizeof(UTF8Char));
 			urltmp[i] = 0;
 		}
-		Text::TextEnc::URIEncoding::URIDecode(urltmp, urltmp);
+		Text::TextBinEnc::URIEncoding::URIDecode(urltmp, urltmp);
 		defPort = 80;
 	}
 	else if (Text::StrStartsWith(url, (const UTF8Char*)"https://"))
@@ -248,7 +248,7 @@ Bool Net::HTTPOSClient::Connect(const UTF8Char *url, UOSInt urlLen, const Char *
 			MemCopyNO(urltmp, ptr1, i * sizeof(UTF8Char));
 			urltmp[i] = 0;
 		}
-		Text::TextEnc::URIEncoding::URIDecode(urltmp, urltmp);
+		Text::TextBinEnc::URIEncoding::URIDecode(urltmp, urltmp);
 		defPort = 443;
 	}
 	else
