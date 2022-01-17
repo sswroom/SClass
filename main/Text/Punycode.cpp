@@ -12,7 +12,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	UTF8Char *sptr;
 	WChar wbuff[256];
 	IO::ConsoleWriter console;
-	sptr = Text::TextBinEnc::Punycode::Decode(sbuff, (const UTF8Char*)"xn--d9juau41awczczp");
+	sptr = Text::TextBinEnc::Punycode::Decode(sbuff, UTF8STRC("xn--d9juau41awczczp"));
 	console.WriteStrC(UTF8STRC("UTF8: "));
 	console.WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
 

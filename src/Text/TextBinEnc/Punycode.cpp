@@ -185,15 +185,18 @@ WChar *Text::TextBinEnc::Punycode::Encode(WChar *buff, const WChar *strToEnc)
 	return Text::StrConcat(buff, strToEnc);
 }
 
-UTF8Char *Text::TextBinEnc::Punycode::Decode(UTF8Char *buff, const UTF8Char *strToDec)
+UTF8Char *Text::TextBinEnc::Punycode::Decode(UTF8Char *buff, const UTF8Char *strToDec, UOSInt strLen)
 {
-	while (*strToDec)
+	UTF8Char c;
+	UTF32Char tmpBuff[128];
+	while (strLen > 0)
 	{
 		if ((strToDec[0] == 'X' || strToDec[0] == 'x') && (strToDec[1] == 'n' || strToDec[1] == 'N') && strToDec[2] == '-' && strToDec[3] == '-')
 		{
 			strToDec += 4;
+			strLen -= 4;
 			const UTF8Char *sptr;
-			UTF8Char c;
+			const UTF8Char *sptrEnd;
 
 			UOSInt n = 128;//initial_n
 			UOSInt i = 0;
@@ -202,7 +205,8 @@ UTF8Char *Text::TextBinEnc::Punycode::Decode(UTF8Char *buff, const UTF8Char *str
 			UOSInt destSize = 0;
 			UOSInt lastMinus = 0;
 			sptr = strToDec;
-			while (true)
+			sptrEnd = strToDec + strLen;
+			while (sptr < sptrEnd)
 			{
 				c = *sptr;
 				if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9'))
@@ -223,7 +227,7 @@ UTF8Char *Text::TextBinEnc::Punycode::Decode(UTF8Char *buff, const UTF8Char *str
 				sptr = &strToDec[lastMinus];
 				while (strToDec < sptr)
 				{
-					buff[destSize] = *strToDec++;
+					tmpBuff[destSize] = *strToDec++;
 					destSize++;
 				}
 				strToDec = sptr + 1;
@@ -231,7 +235,7 @@ UTF8Char *Text::TextBinEnc::Punycode::Decode(UTF8Char *buff, const UTF8Char *str
 			UOSInt digit;
 			UOSInt t;
 			UOSInt out = destSize;
-			while (true)
+			while (sptrEnd > strToDec)
 			{
 				c = *strToDec;
 				if ((c < 'a' || c > 'z') && (c < 'A' || c > 'Z') && (c < '0' || c > '9'))
@@ -274,71 +278,28 @@ UTF8Char *Text::TextBinEnc::Punycode::Decode(UTF8Char *buff, const UTF8Char *str
 				n += i / (out + 1);
 				i %= (out + 1);
 
-				MemCopyO(&buff[i + 1], &buff[i], (destSize - i) * sizeof(UTF8Char));
-				////////////////////////////////
-				if (n < 0x80)
-				{
-					buff[i] = (UTF8Char)n;
-					destSize++;
-					i++;
-					out++;
-				}
-				else if (n < 0x800)
-				{
-					buff[i] = (UTF8Char)(0xc0 | (n >> 6));
-					buff[i + 1] = (UTF8Char)(0x80 | (n & 0x3f));
-					destSize += 2;
-					i += 2;
-					out += 2;
-				}
-				else if (n < 0x10000)
-				{
-					buff[i] = (UTF8Char)(0xe0 | (n >> 12));
-					buff[i + 1] = (UTF8Char)(0x80 | ((n >> 6) & 0x3f));
-					buff[i + 2] = (UTF8Char)(0x80 | (n & 0x3f));
-					destSize += 3;
-					i += 3;
-					out += 3;
-				}
-				else if (n < 0x200000)
-				{
-					buff[i] = (UTF8Char)(0xf0 | (n >> 18));
-					buff[i + 1] = (UTF8Char)(0x80 | ((n >> 12) & 0x3f));
-					buff[i + 2] = (UTF8Char)(0x80 | ((n >> 6) & 0x3f));
-					buff[i + 3] = (UTF8Char)(0x80 | (n & 0x3f));
-					destSize += 4;
-					i += 4;
-					out += 4;
-				}
-				else if (n < 0x4000000)
-				{
-					buff[i] = (UTF8Char)(0xf8 | (n >> 24));
-					buff[i + 1] = (UTF8Char)(0x80 | ((n >> 18) & 0x3f));
-					buff[i + 2] = (UTF8Char)(0x80 | ((n >> 12) & 0x3f));
-					buff[i + 3] = (UTF8Char)(0x80 | ((n >> 6) & 0x3f));
-					buff[i + 4] = (UTF8Char)(0x80 | (n & 0x3f));
-					destSize += 5;
-					i += 5;
-					out += 5;
-				}
-				else
-				{
-					buff[i] = (UTF8Char)(0xfc | (n >> 30));
-					buff[i + 1] = (UTF8Char)(0x80 | ((n >> 24) & 0x3f));
-					buff[i + 2] = (UTF8Char)(0x80 | ((n >> 18) & 0x3f));
-					buff[i + 3] = (UTF8Char)(0x80 | ((n >> 12) & 0x3f));
-					buff[i + 4] = (UTF8Char)(0x80 | ((n >> 6) & 0x3f));
-					buff[i + 5] = (UTF8Char)(0x80 | (n & 0x3f));
-					destSize += 6;
-					i += 6;
-					out += 6;
-				}
+				MemCopyO(&tmpBuff[i + 1], &tmpBuff[i], (destSize - i) * sizeof(UTF32Char));
+				tmpBuff[i] = (UTF32Char)n;
+				destSize++;
+				i++;
+				out++;
 			}
-			buff += destSize;
+			buff = Text::StrUTF32_UTF8C(buff, tmpBuff, destSize);
+			strLen = (UOSInt)(sptrEnd - strToDec);
 		}
 		else
 		{
-			*buff++ = *strToDec++;
+			while (strLen > 0)
+			{
+				c = *strToDec++;
+				*buff++ = c;
+				strLen--;
+
+				if (c == '.')
+				{
+					break;
+				}
+			}
 		}
 	}
 	*buff = 0;
@@ -579,12 +540,12 @@ UOSInt Text::TextBinEnc::Punycode::EncodeBin(Text::StringBuilderUTF *sb, const U
 UOSInt Text::TextBinEnc::Punycode::CalcBinSize(const UTF8Char *str, UOSInt strLen)
 {
 	UTF8Char buff[256];
-	return (UOSInt)(Decode(buff, str) - buff);
+	return (UOSInt)(Decode(buff, str, strLen) - buff);
 }
 
 UOSInt Text::TextBinEnc::Punycode::DecodeBin(const UTF8Char *str, UOSInt strLen, UInt8 *dataBuff)
 {
-	return (UOSInt)(Decode(dataBuff, str) - dataBuff);
+	return (UOSInt)(Decode(dataBuff, str, strLen) - dataBuff);
 }
 
 Text::CString Text::TextBinEnc::Punycode::GetName()

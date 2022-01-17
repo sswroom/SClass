@@ -14,7 +14,7 @@ namespace Text
 			static UTF8Char *Encode(UTF8Char *buff, const UTF8Char *strToEnc);
 			static UTF8Char *Encode(UTF8Char *buff, const WChar *strToEnc);
 			static WChar *Encode(WChar *buff, const WChar *strToEnc);
-			static UTF8Char *Decode(UTF8Char *buff, const UTF8Char *strToDec);
+			static UTF8Char *Decode(UTF8Char *buff, const UTF8Char *strToDec, UOSInt strLen);
 			static WChar *Decode(WChar *buff, const UTF8Char *strToDec);
 			static WChar *Decode(WChar *buff, const WChar *strToDec);
 			
