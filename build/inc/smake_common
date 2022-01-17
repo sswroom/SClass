@@ -13,7 +13,11 @@ mcu:
 @MCU_SerialEcho
 @MCU_SIM7000
 
+test:
+@TestPunycode
+
 nodeps:
+@test
 @AES128Test
 @AES192Test
 @AES256Test
@@ -665,6 +669,11 @@ ThreadSleepusTest:
 @ThreadSleepusTest.o
 @ConsoleStartup.o
 
+#Test
+TestPunycode:
+@TestPunycode.o
+@ConsoleStartup.o
+
 #Text
 ConcatStringSB:
 @ConcatStringSB.o
@@ -942,6 +951,7 @@ SSerialViewerMain.o: ../../main/SSWR/SSerialViewerMain.cpp
 STCPSpdCliMain.o: ../../main/SSWR/STCPSpdCliMain.cpp
 EventTest.o: ../../main/Sync/EventTest.cpp
 ThreadSleepusTest.o: ../../main/Sync/ThreadSleepusTest.cpp
+TestPunycode.o: ../../main/Test/Text/TestPunycode.cpp
 ConcatStringSB.o: ../../main/Text/ConcatStringSB.cpp
 DocTest.o: ../../main/Text/DocTest.cpp
 JSConcatString.o: ../../main/Text/JSConcatString.cpp

@@ -822,7 +822,7 @@ void IO::SMake::CompileObject(Bool *errorState, const UTF8Char *cmd, UOSInt cmdL
 	this->tasks->AddTask(CompileTask, req);
 }
 
-Bool IO::SMake::CompileProgInternal(IO::SMake::ProgramItem *prog, Bool asmListing)
+Bool IO::SMake::CompileProgInternal(IO::SMake::ProgramItem *prog, Bool asmListing, Bool enableTest)
 {
 	Data::ArrayListString libList;
 	Data::ArrayListString objList;
@@ -841,6 +841,15 @@ Bool IO::SMake::CompileProgInternal(IO::SMake::ProgramItem *prog, Bool asmListin
 		sb.AppendC(UTF8STRC("Compiling Program "));
 		sb.Append(prog->name);
 		this->messageWriter->WriteLineC(sb.ToString(), sb.GetLength());
+	}
+
+	if (!enableTest && prog->name->Equals(UTF8STRC("test")))
+	{
+		IO::SMake::ConfigItem *testCfg = cfgMap->Get((const UTF8Char*)"ENABLE_TEST");
+		if (testCfg && testCfg->value->Equals(UTF8STRC("1")))
+		{
+			enableTest = true;
+		}
 	}
 
 	if (!this->ParseProgInternal(&objList, &libList, &procList, 0, &latestTime, &progGroup, prog))
@@ -863,7 +872,7 @@ Bool IO::SMake::CompileProgInternal(IO::SMake::ProgramItem *prog, Bool asmListin
 				this->SetErrorMsg(sb.ToString(), sb.GetLength());
 				return false;
 			}
-			if (!this->CompileProgInternal(subProg, asmListing))
+			if (!this->CompileProgInternal(subProg, asmListing, enableTest))
 			{
 				return false;
 			}
@@ -1130,52 +1139,84 @@ Bool IO::SMake::CompileProgInternal(IO::SMake::ProgramItem *prog, Bool asmListin
 	{
 		sb.Append(postfixItem->value);
 	}
+	Bool skipLink = false;
 	if (IO::Path::GetFileTime(sb.ToString(), &dt2, 0, 0))
 	{
 		thisTime = dt2.ToTicks();
 		if (thisTime >= latestTime)
 		{
-			return true;
+			skipLink = true;
 		}
 	}
 
-	sb.ClearStr();
-	AppendCfgPath(&sb, cppCfg->value->v);
-	sb.AppendChar(' ', 1);
-	sb.AppendC(UTF8STRC("-o bin/"));
-	sb.Append(prog->name);
-	if (postfixItem)
+	if (!skipLink)
 	{
-		sb.Append(postfixItem->value);
-	}
-	i = 0;
-	j = objList.GetCount();
-	while (i < j)
-	{
+		sb.ClearStr();
+		AppendCfgPath(&sb, cppCfg->value->v);
 		sb.AppendChar(' ', 1);
-		sb.AppendC(UTF8STRC(OBJECTPATH));
+		sb.AppendC(UTF8STRC("-o bin/"));
+		sb.Append(prog->name);
+		if (postfixItem)
+		{
+			sb.Append(postfixItem->value);
+		}
+		i = 0;
+		j = objList.GetCount();
+		while (i < j)
+		{
+			sb.AppendChar(' ', 1);
+			sb.AppendC(UTF8STRC(OBJECTPATH));
+			sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
+			sb.Append(objList.GetItem(i));
+			i++;
+		}
+		if (libsCfg)
+		{
+			sb.AppendChar(' ', 1);
+			sb.Append(libsCfg->value);
+		}
+		i = 0;
+		j = libList.GetCount();
+		while (i < j)
+		{
+	//		printf("Libs: %s\r\n", libList.GetItem(i));
+			sb.AppendChar(' ', 1);
+			AppendCfg(&sb, libList.GetItem(i)->v);
+			i++;
+		}
+		if (!this->ExecuteCmd(sb.ToString(), sb.GetLength()))
+		{
+			return false;
+		}
+	}
+
+	if (enableTest)
+	{
+		if (this->cmdWriter)
+		{
+			sb.ClearStr();
+			sb.AppendC(UTF8STRC("Testing "));
+			sb.Append(prog->name);
+			this->cmdWriter->WriteLineC(sb.ToString(), sb.GetLength());
+		}
+		sb.ClearStr();
+		sb.Append(this->basePath);
+		sb.AppendC(UTF8STRC("bin"));
 		sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
-		sb.Append(objList.GetItem(i));
-		i++;
+		sb.Append(prog->name);
+
+		Text::StringBuilderUTF8 sbRet;
+		Int32 ret = Manage::Process::ExecuteProcess(sb.ToString(), sb.GetLength(), &sbRet);
+		if (ret != 0)
+		{
+			sb.ClearStr();
+			sb.AppendC(UTF8STRC("Test failed: "));
+			sb.Append(prog->name);
+			this->SetErrorMsg(sb.ToString(), sb.GetLength());
+			return false;
+		}
 	}
-	if (libsCfg)
-	{
-		sb.AppendChar(' ', 1);
-		sb.Append(libsCfg->value);
-	}
-	i = 0;
-	j = libList.GetCount();
-	while (i < j)
-	{
-//		printf("Libs: %s\r\n", libList.GetItem(i));
-		sb.AppendChar(' ', 1);
-		AppendCfg(&sb, libList.GetItem(i)->v);
-		i++;
-	}
-	if (!this->ExecuteCmd(sb.ToString(), sb.GetLength()))
-	{
-		return false;
-	}
+
 	return true;
 }
 
@@ -1344,7 +1385,7 @@ Bool IO::SMake::CompileProg(const UTF8Char *progName, Bool asmListing)
 	}
 	else
 	{
-		return this->CompileProgInternal(prog, asmListing);
+		return this->CompileProgInternal(prog, asmListing, false);
 	}
 }
 

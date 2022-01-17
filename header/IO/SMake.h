@@ -63,7 +63,7 @@ namespace IO
 
 		static void __stdcall CompileTask(void *userObj);
 		void CompileObject(Bool *errorState, const UTF8Char *cmd, UOSInt cmdLeng);
-		Bool CompileProgInternal(ProgramItem *prog, Bool asmListing);
+		Bool CompileProgInternal(ProgramItem *prog, Bool asmListing, Bool enableTest);
 
 		void SetErrorMsg(const UTF8Char *msg, UOSInt msgLen);
 	public:
