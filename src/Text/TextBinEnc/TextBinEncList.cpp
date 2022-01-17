@@ -12,7 +12,9 @@
 #include "Text/TextBinEnc/TextBinEncList.h"
 #include "Text/TextBinEnc/UCS2TextBinEnc.h"
 #include "Text/TextBinEnc/URIEncoding.h"
+#include "Text/TextBinEnc/UTF8LCaseTextBinEnc.h"
 #include "Text/TextBinEnc/UTF8TextBinEnc.h"
+#include "Text/TextBinEnc/UTF8UCaseTextBinEnc.h"
 
 Text::TextBinEnc::TextBinEncList::TextBinEncList()
 {
@@ -23,6 +25,10 @@ Text::TextBinEnc::TextBinEncList::TextBinEncList()
 	NEW_CLASS(enc, Text::TextBinEnc::ANSITextBinEnc());
 	this->encList->Add(enc);
 	NEW_CLASS(enc, Text::TextBinEnc::UTF8TextBinEnc());
+	this->encList->Add(enc);
+	NEW_CLASS(enc, Text::TextBinEnc::UTF8LCaseTextBinEnc());
+	this->encList->Add(enc);
+	NEW_CLASS(enc, Text::TextBinEnc::UTF8UCaseTextBinEnc());
 	this->encList->Add(enc);
 	NEW_CLASS(enc, Text::TextBinEnc::CPPByteArrBinEnc());
 	this->encList->Add(enc);
@@ -35,6 +41,12 @@ Text::TextBinEnc::TextBinEncList::TextBinEncList()
 	NEW_CLASS(enc, Text::TextBinEnc::UCS2TextBinEnc());
 	this->encList->Add(enc);
 	NEW_CLASS(enc, Text::TextBinEnc::ASN1OIDBinEnc());
+	this->encList->Add(enc);
+	NEW_CLASS(enc, Text::TextBinEnc::FormEncoding());
+	this->encList->Add(enc);
+	NEW_CLASS(enc, Text::TextBinEnc::URIEncoding());
+	this->encList->Add(enc);
+	NEW_CLASS(enc, Text::TextBinEnc::Punycode());
 	this->encList->Add(enc);
 }
 

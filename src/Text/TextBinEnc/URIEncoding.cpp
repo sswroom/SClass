@@ -115,6 +115,14 @@ UTF8Char *Text::TextBinEnc::URIEncoding::URIDecode(UTF8Char *buff, const UTF8Cha
 	return dest;
 }
 
+Text::TextBinEnc::URIEncoding::URIEncoding()
+{
+}
+
+Text::TextBinEnc::URIEncoding::~URIEncoding()
+{
+}
+
 UOSInt Text::TextBinEnc::URIEncoding::EncodeBin(Text::StringBuilderUTF *sb, const UInt8 *dataBuff, UOSInt buffSize)
 {
 	UInt8 b;

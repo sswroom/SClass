@@ -14,7 +14,21 @@ mcu:
 @MCU_SIM7000
 
 test:
+@TestSHA224
+@TestSHA256
+@TestSHA384
+@TestSHA512
 @TestPunycode
+@TestStrCompareICase
+@TestStrConcat
+@TestStrConcatF
+@TestStrConcatSW
+@TestStrConcatW
+@TestStrHex32
+@TestStrInt32C
+@TestStrInt32W
+@TestStrInt64C
+@TestStrInt64W
 
 nodeps:
 @test
@@ -37,10 +51,6 @@ nodeps:
 @SHA3_256Test
 @SHA3_384Test
 @SHA3_512Test
-@SHA224Test
-@SHA256Test
-@SHA384Test
-@SHA512Test
 @X509Test
 @DateTimeTest
 @Float16Test
@@ -150,24 +160,14 @@ nodeps:
 @StrCharCntWSpd
 @StrCompareICase
 @StrCompareICaseW
-@StrConcatAcc
 @StrConcatSpd
-@StrConcatFAcc
 @StrConcatFSpd
-@StrConcatSWAcc
 @StrConcatSWSpd
-@StrConcatWAcc
 @StrConcatWSpd
-@StrHex32Acc
-@StrHex64Acc
 @StringBuilderTest
-@StrInt32CAcc
 @StrInt32CSpd
-@StrInt32WAcc
 @StrInt32WSpd
-@StrInt64CAcc
 @StrInt64CSpd
-@StrInt64WAcc
 @StrInt64WSpd
 @StrRetTest
 @UTF8ReaderTest
@@ -261,18 +261,6 @@ SHA3_384Test:
 @ConsoleStartup.o
 SHA3_512Test:
 @SHA3_512Test.o
-@ConsoleStartup.o
-SHA224Test:
-@SHA224Test.o
-@ConsoleStartup.o
-SHA256Test:
-@SHA256Test.o
-@ConsoleStartup.o
-SHA384Test:
-@SHA384Test.o
-@ConsoleStartup.o
-SHA512Test:
-@SHA512Test.o
 @ConsoleStartup.o
 X509Test:
 @X509Test.o
@@ -670,8 +658,53 @@ ThreadSleepusTest:
 @ConsoleStartup.o
 
 #Test
+TestSHA224:
+@TestSHA224.o
+@ConsoleStartup.o
+TestSHA256:
+@TestSHA256.o
+@ConsoleStartup.o
+TestSHA384:
+@TestSHA384.o
+@ConsoleStartup.o
+TestSHA512:
+@TestSHA512.o
+@ConsoleStartup.o
 TestPunycode:
 @TestPunycode.o
+@ConsoleStartup.o
+TestStrCompareICase:
+@TestStrCompareICase.o
+@ConsoleStartup.o
+TestStrConcat:
+@TestStrConcat.o
+@ConsoleStartup.o
+TestStrConcatF:
+@TestStrConcatF.o
+@ConsoleStartup.o
+TestStrConcatSW:
+@TestStrConcatSW.o
+@ConsoleStartup.o
+TestStrConcatW:
+@TestStrConcatW.o
+@ConsoleStartup.o
+TestStrHex32:
+@TestStrHex32.o
+@ConsoleStartup.o
+TestStrHex64:
+@TestStrHex64.o
+@ConsoleStartup.o
+TestStrInt32C:
+@TestStrInt32C.o
+@ConsoleStartup.o
+TestStrInt32W:
+@TestStrInt32W.o
+@ConsoleStartup.o
+TestStrInt64C:
+@TestStrInt64C.o
+@ConsoleStartup.o
+TestStrInt64W:
+@TestStrInt64W.o
 @ConsoleStartup.o
 
 #Text
@@ -708,59 +741,29 @@ StrCompareICase:
 StrCompareICaseW:
 @StrCompareICaseW.o
 @ConsoleStartup.o
-StrConcatAcc:
-@StrConcatAcc.o
-@ConsoleStartup.o
 StrConcatSpd:
 @StrConcatSpd.o
-@ConsoleStartup.o
-StrConcatFAcc:
-@StrConcatFAcc.o
 @ConsoleStartup.o
 StrConcatFSpd:
 @StrConcatFSpd.o
 @ConsoleStartup.o
-StrConcatSWAcc:
-@StrConcatSWAcc.o
-@ConsoleStartup.o
 StrConcatSWSpd:
 @StrConcatSWSpd.o
-@ConsoleStartup.o
-StrConcatWAcc:
-@StrConcatWAcc.o
 @ConsoleStartup.o
 StrConcatWSpd:
 @StrConcatWSpd.o
 @ConsoleStartup.o
-StrHex32Acc:
-@StrHex32Acc.o
-@ConsoleStartup.o
-StrHex64Acc:
-@StrHex64Acc.o
-@ConsoleStartup.o
 StringBuilderTest:
 @StringBuilderTest.o
-@ConsoleStartup.o
-StrInt32CAcc:
-@StrInt32CAcc.o
 @ConsoleStartup.o
 StrInt32CSpd:
 @StrInt32CSpd.o
 @ConsoleStartup.o
-StrInt32WAcc:
-@StrInt32WAcc.o
-@ConsoleStartup.o
 StrInt32WSpd:
 @StrInt32WSpd.o
 @ConsoleStartup.o
-StrInt64CAcc:
-@StrInt64CAcc.o
-@ConsoleStartup.o
 StrInt64CSpd:
 @StrInt64CSpd.o
-@ConsoleStartup.o
-StrInt64WAcc:
-@StrInt64WAcc.o
 @ConsoleStartup.o
 StrInt64WSpd:
 @StrInt64WSpd.o
@@ -823,10 +826,6 @@ SHA3_224Test.o: ../../main/CryptoTest/SHA3_224Test.cpp
 SHA3_256Test.o: ../../main/CryptoTest/SHA3_256Test.cpp
 SHA3_384Test.o: ../../main/CryptoTest/SHA3_384Test.cpp
 SHA3_512Test.o: ../../main/CryptoTest/SHA3_512Test.cpp
-SHA224Test.o: ../../main/CryptoTest/SHA224Test.cpp
-SHA256Test.o: ../../main/CryptoTest/SHA256Test.cpp
-SHA384Test.o: ../../main/CryptoTest/SHA384Test.cpp
-SHA512Test.o: ../../main/CryptoTest/SHA512Test.cpp
 X509Test.o: ../../main/CryptoTest/X509Test.cpp
 DateTimeTest.o: ../../main/Data/DateTimeTest.cpp
 Float16Test.o: ../../main/Data/Float16Test.cpp
@@ -951,7 +950,22 @@ SSerialViewerMain.o: ../../main/SSWR/SSerialViewerMain.cpp
 STCPSpdCliMain.o: ../../main/SSWR/STCPSpdCliMain.cpp
 EventTest.o: ../../main/Sync/EventTest.cpp
 ThreadSleepusTest.o: ../../main/Sync/ThreadSleepusTest.cpp
+TestSHA224.o: ../../main/Test/Crypto/TestSHA224.cpp
+TestSHA256.o: ../../main/Test/Crypto/TestSHA256.cpp
+TestSHA384.o: ../../main/Test/Crypto/TestSHA384.cpp
+TestSHA512.o: ../../main/Test/Crypto/TestSHA512.cpp
 TestPunycode.o: ../../main/Test/Text/TestPunycode.cpp
+TestStrCompareICase.o: ../../main/Test/Text/TestStrCompareICase.cpp
+TestStrConcat.o: ../../main/Test/Text/TestStrConcat.cpp
+TestStrConcatF.o: ../../main/Test/Text/TestStrConcatF.cpp
+TestStrConcatSW.o: ../../main/Test/Text/TestStrConcatSW.cpp
+TestStrConcatW.o: ../../main/Test/Text/TestStrConcatW.cpp
+TestStrHex32.o: ../../main/Test/Text/TestStrHex32.cpp
+TestStrHex64.o: ../../main/Test/Text/TestStrHex64.cpp
+TestStrInt32C.o: ../../main/Test/Text/TestStrInt32C.cpp
+TestStrInt32W.o: ../../main/Test/Text/TestStrInt32W.cpp
+TestStrInt64C.o: ../../main/Test/Text/TestStrInt64C.cpp
+TestStrInt64W.o: ../../main/Test/Text/TestStrInt64W.cpp
 ConcatStringSB.o: ../../main/Text/ConcatStringSB.cpp
 DocTest.o: ../../main/Text/DocTest.cpp
 JSConcatString.o: ../../main/Text/JSConcatString.cpp
@@ -963,24 +977,14 @@ StrCharCntSpd.o: ../../main/Text/StrCharCntSpd.cpp
 StrCharCntWSpd.o: ../../main/Text/StrCharCntWSpd.cpp
 StrCompareICase.o: ../../main/Text/StrCompareICase.cpp
 StrCompareICaseW.o: ../../main/Text/StrCompareICaseW.cpp
-StrConcatAcc.o: ../../main/Text/StrConcatAcc.cpp
 StrConcatSpd.o: ../../main/Text/StrConcatSpd.cpp
-StrConcatFAcc.o: ../../main/Text/StrConcatFAcc.cpp
 StrConcatFSpd.o: ../../main/Text/StrConcatFSpd.cpp
-StrConcatSWAcc.o: ../../main/Text/StrConcatSWAcc.cpp
 StrConcatSWSpd.o: ../../main/Text/StrConcatSWSpd.cpp
-StrConcatWAcc.o: ../../main/Text/StrConcatWAcc.cpp
 StrConcatWSpd.o: ../../main/Text/StrConcatWSpd.cpp
-StrHex32Acc.o: ../../main/Text/StrHex32Acc.cpp
-StrHex64Acc.o: ../../main/Text/StrHex64Acc.cpp
 StringBuilderTest.o: ../../main/Text/StringBuilderTest.cpp
-StrInt32CAcc.o: ../../main/Text/StrInt32CAcc.cpp
 StrInt32CSpd.o: ../../main/Text/StrInt32CSpd.cpp
-StrInt32WAcc.o: ../../main/Text/StrInt32WAcc.cpp
 StrInt32WSpd.o: ../../main/Text/StrInt32WSpd.cpp
-StrInt64CAcc.o: ../../main/Text/StrInt64CAcc.cpp
 StrInt64CSpd.o: ../../main/Text/StrInt64CSpd.cpp
-StrInt64WAcc.o: ../../main/Text/StrInt64WAcc.cpp
 StrInt64WSpd.o: ../../main/Text/StrInt64WSpd.cpp
 StrRetTest.o: ../../main/Text/StrRetTest.cpp
 UTF8ReaderTest.o: ../../main/Text/UTF8ReaderTest.cpp
@@ -3805,8 +3809,12 @@ Text/TextBinEnc/UCS2TextBinEnc.h: ../../src/Text/TextBinEnc/UCS2TextBinEnc.cpp
 @UCS2TextBinEnc.o
 Text/TextBinEnc/URIEncoding.h: ../../src/Text/TextBinEnc/URIEncoding.cpp
 @URIEncoding.o
+Text/TextBinEnc/UTF8LCaseTextBinEnc.h: ../../src/Text/TextBinEnc/UTF8LCaseTextBinEnc.cpp
+@UTF8LCaseTextBinEnc.o
 Text/TextBinEnc/UTF8TextBinEnc.h: ../../src/Text/TextBinEnc/UTF8TextBinEnc.cpp
 @UTF8TextBinEnc.o
+Text/TextBinEnc/UTF8UCaseTextBinEnc.h: ../../src/Text/TextBinEnc/UTF8UCaseTextBinEnc.cpp
+@UTF8UCaseTextBinEnc.o
 
 adl_defines.h:
 adl_sdk.h:
@@ -5166,7 +5174,9 @@ Radix64Enc.o: ../../src/Text/TextBinEnc/Radix64Enc.cpp
 TextBinEncList.o: ../../src/Text/TextBinEnc/TextBinEncList.cpp
 UCS2TextBinEnc.o: ../../src/Text/TextBinEnc/UCS2TextBinEnc.cpp
 URIEncoding.o: ../../src/Text/TextBinEnc/URIEncoding.cpp
+UTF8LCaseTextBinEnc.o: ../../src/Text/TextBinEnc/UTF8LCaseTextBinEnc.cpp
 UTF8TextBinEnc.o: ../../src/Text/TextBinEnc/UTF8TextBinEnc.cpp
+UTF8UCaseTextBinEnc.o: ../../src/Text/TextBinEnc/UTF8UCaseTextBinEnc.cpp
 ListBoxLogger.o: ../../src/UI/ListBoxLogger.cpp
 GUIHexFileView.o: ../../src/UI/GUIHexFileView.cpp
 GUIMapControl.o: ../../src/UI/GUIMapControl.cpp
