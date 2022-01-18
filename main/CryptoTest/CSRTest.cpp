@@ -47,13 +47,13 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	Crypto::Cert::CertExtensions ext;
 	MemClear(&names, sizeof(names));
 	MemClear(&ext, sizeof(ext));
-	names.countryName = (const UTF8Char*)"HK";
-	names.stateOrProvinceName = (const UTF8Char*)"Hong Kong";
-	names.localityName = (const UTF8Char*)"Hong Kong";
-	names.organizationName = (const UTF8Char*)"Simon Software Working Room";
-	names.organizationUnitName = (const UTF8Char*)"sswr";
-	names.commonName = (const UTF8Char*)"sswroom.no-ip.org";
-	names.emailAddress = (const UTF8Char*)"sswroom@yahoo.com";
+	names.countryName = Text::String::New(UTF8STRC("HK"));
+	names.stateOrProvinceName = Text::String::New(UTF8STRC("Hong Kong"));
+	names.localityName = Text::String::New(UTF8STRC("Hong Kong"));
+	names.organizationName = Text::String::New(UTF8STRC("Simon Software Working Room"));
+	names.organizationUnitName = Text::String::New(UTF8STRC("sswr"));
+	names.commonName = Text::String::New(UTF8STRC("sswroom.no-ip.org"));
+	names.emailAddress = Text::String::New(UTF8STRC("sswroom@yahoo.com"));
 
 	NEW_CLASS(ext.subjectAltName, Data::ArrayList<Text::String*>());
 	ext.subjectAltName->Add(Text::String::New(UTF8STRC("sswroom.no-ip.org")));
@@ -71,6 +71,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	}
 	LIST_FREE_STRING(ext.subjectAltName);
 	DEL_CLASS(ext.subjectAltName);
+	Crypto::Cert::CertNames::FreeNames(&names);
 	DEL_CLASS(key);
 	SDEL_CLASS(ssl);
 	DEL_CLASS(sockf);

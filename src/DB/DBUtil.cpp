@@ -1606,21 +1606,22 @@ UOSInt DB::DBUtil::SDBTrimLeng(const UTF8Char *val, DB::DBUtil::ServerType svrTy
 DB::DBUtil::ColType DB::DBUtil::ParseColType(DB::DBUtil::ServerType svrType, const UTF8Char *tName, UOSInt *colSize)
 {
 	UTF8Char typeName[64];
+	UOSInt typeNameLen;
 	UOSInt tmp;
 	UOSInt i;
 	if (colSize == 0)
 	{
 		colSize = &tmp;
 	}
-	Text::StrConcat(typeName, tName);
+	typeNameLen = (UOSInt)(Text::StrConcat(typeName, tName) - typeName);
 
 	if (svrType == DB::DBUtil::ServerType::MySQL)
 	{
-		if (Text::StrStartsWith(typeName, (const UTF8Char*)"varchar"))
+		if (Text::StrStartsWithC(typeName, typeNameLen, UTF8STRC("varchar")))
 		{
 			if (typeName[7] == '(')
 			{
-				i = Text::StrIndexOf(typeName, (const UTF8Char*)")");
+				i = Text::StrIndexOf(typeName, ')');
 				if (i != INVALID_INDEX)
 				{
 					typeName[i] = 0;
@@ -1638,11 +1639,11 @@ DB::DBUtil::ColType DB::DBUtil::ParseColType(DB::DBUtil::ServerType svrType, con
 			}
 			return DB::DBUtil::CT_VarChar;
 		}
-		else if (Text::StrStartsWith(typeName, (const UTF8Char*)"char"))
+		else if (Text::StrStartsWithC(typeName, typeNameLen, UTF8STRC("char")))
 		{
 			if (typeName[4] == '(')
 			{
-				i = Text::StrIndexOf(typeName, (const UTF8Char*)")");
+				i = Text::StrIndexOf(typeName, ')');
 				if (i != INVALID_INDEX)
 				{
 					typeName[i] = 0;
@@ -1660,9 +1661,9 @@ DB::DBUtil::ColType DB::DBUtil::ParseColType(DB::DBUtil::ServerType svrType, con
 			}
 			return DB::DBUtil::CT_Char;
 		}
-		else if (Text::StrStartsWith(typeName, (const UTF8Char*)"bigint"))
+		else if (Text::StrStartsWithC(typeName, typeNameLen, UTF8STRC("bigint")))
 		{
-			if (Text::StrIndexOf(typeName, (const UTF8Char*)"unsigned") == INVALID_INDEX)
+			if (Text::StrIndexOfC(typeName, typeNameLen, UTF8STRC("unsigned")) == INVALID_INDEX)
 			{
 				*colSize = 21;
 				return DB::DBUtil::CT_Int64;
@@ -1673,9 +1674,9 @@ DB::DBUtil::ColType DB::DBUtil::ParseColType(DB::DBUtil::ServerType svrType, con
 				return DB::DBUtil::CT_UInt64;
 			}
 		}
-		else if (Text::StrStartsWith(typeName, (const UTF8Char*)"int"))
+		else if (Text::StrStartsWithC(typeName, typeNameLen, UTF8STRC("int")))
 		{
-			if (Text::StrIndexOf(typeName, (const UTF8Char*)"unsigned") == INVALID_INDEX)
+			if (Text::StrIndexOfC(typeName, typeNameLen, UTF8STRC("unsigned")) == INVALID_INDEX)
 			{
 				*colSize = 11;
 				return DB::DBUtil::CT_Int32;
@@ -1686,9 +1687,9 @@ DB::DBUtil::ColType DB::DBUtil::ParseColType(DB::DBUtil::ServerType svrType, con
 				return DB::DBUtil::CT_UInt32;
 			}
 		}
-		else if (Text::StrStartsWith(typeName, (const UTF8Char*)"smallint"))
+		else if (Text::StrStartsWithC(typeName, typeNameLen, UTF8STRC("smallint")))
 		{
-			if (Text::StrIndexOf(typeName, (const UTF8Char*)"unsigned") == INVALID_INDEX)
+			if (Text::StrIndexOfC(typeName, typeNameLen, UTF8STRC("unsigned")) == INVALID_INDEX)
 			{
 				*colSize = 6;
 				return DB::DBUtil::CT_Int16;
@@ -1699,52 +1700,52 @@ DB::DBUtil::ColType DB::DBUtil::ParseColType(DB::DBUtil::ServerType svrType, con
 				return DB::DBUtil::CT_UInt16;
 			}
 		}
-		else if (Text::StrStartsWith(typeName, (const UTF8Char*)"datetime"))
+		else if (Text::StrStartsWithC(typeName, typeNameLen, UTF8STRC("datetime")))
 		{
 			*colSize = 8;
 			return DB::DBUtil::CT_DateTime2;
 		}
-		else if (Text::StrStartsWith(typeName, (const UTF8Char*)"timestamp"))
+		else if (Text::StrStartsWithC(typeName, typeNameLen, UTF8STRC("timestamp")))
 		{
 			*colSize = 8;
 			return DB::DBUtil::CT_DateTime2;
 		}
-		else if (Text::StrStartsWith(typeName, (const UTF8Char*)"double"))
+		else if (Text::StrStartsWithC(typeName, typeNameLen, UTF8STRC("double")))
 		{
 			*colSize = 8;
 			return DB::DBUtil::CT_Double;
 		}
-		else if (Text::StrStartsWith(typeName, (const UTF8Char*)"float"))
+		else if (Text::StrStartsWithC(typeName, typeNameLen, UTF8STRC("float")))
 		{
 			*colSize = 4;
 			return DB::DBUtil::CT_Float;
 		}
-		else if (Text::StrStartsWith(typeName, (const UTF8Char*)"longtext"))
+		else if (Text::StrStartsWithC(typeName, typeNameLen, UTF8STRC("longtext")))
 		{
 			*colSize = 0xffffffff;
 			return DB::DBUtil::CT_VarChar;
 		}
-		else if (Text::StrStartsWith(typeName, (const UTF8Char*)"text"))
+		else if (Text::StrStartsWithC(typeName, typeNameLen, UTF8STRC("text")))
 		{
 			*colSize = 65535;
 			return DB::DBUtil::CT_VarChar;
 		}
-		else if (Text::StrCompare(typeName, (const UTF8Char*)"tinyint(1) unsigned") == 0)
+		else if (Text::StrEqualsC(typeName, typeNameLen, UTF8STRC("tinyint(1) unsigned")))
 		{
 			*colSize = 1;
 			return DB::DBUtil::CT_Bool;
 		}
-		else if (Text::StrCompare(typeName, (const UTF8Char*)"tinyint(1)") == 0)
+		else if (Text::StrEqualsC(typeName, typeNameLen, UTF8STRC("tinyint(1)")))
 		{
 			*colSize = 1;
 			return DB::DBUtil::CT_Bool;
 		}
-		else if (Text::StrCompare(typeName, (const UTF8Char*)"tinyint(3) unsigned") == 0)
+		else if (Text::StrEqualsC(typeName, typeNameLen, UTF8STRC("tinyint(3) unsigned")))
 		{
 			*colSize = 3;
 			return DB::DBUtil::CT_Byte;
 		}
-		else if (Text::StrCompare(typeName, (const UTF8Char*)"bit(1)") == 0)
+		else if (Text::StrEqualsC(typeName, typeNameLen, UTF8STRC("bit(1)")))
 		{
 			*colSize = 1;
 			return DB::DBUtil::CT_Bool;
@@ -1758,80 +1759,80 @@ DB::DBUtil::ColType DB::DBUtil::ParseColType(DB::DBUtil::ServerType svrType, con
 	else if (svrType == DB::DBUtil::ServerType::MSSQL)
 	{
 		*colSize = 0;
-		if (Text::StrEquals(typeName, (const UTF8Char*)"varchar"))
+		if (Text::StrEqualsC(typeName, typeNameLen, UTF8STRC("varchar")))
 		{
 			return DB::DBUtil::CT_VarChar;
 		}
-		else if (Text::StrEquals(typeName, (const UTF8Char*)"text"))
+		else if (Text::StrEqualsC(typeName, typeNameLen, UTF8STRC("text")))
 		{
 			return DB::DBUtil::CT_VarChar;
 		}
-		else if (Text::StrStartsWith(typeName, (const UTF8Char*)"char"))
+		else if (Text::StrStartsWithC(typeName, typeNameLen, UTF8STRC("char")))
 		{
 			return DB::DBUtil::CT_Char;
 		}
-		else if (Text::StrStartsWith(typeName, (const UTF8Char*)"int"))
+		else if (Text::StrStartsWithC(typeName, typeNameLen, UTF8STRC("int")))
 		{
 			return DB::DBUtil::CT_Int32;
 		}
-		else if (Text::StrEquals(typeName, (const UTF8Char*)"datetime"))
+		else if (Text::StrEqualsC(typeName, typeNameLen, UTF8STRC("datetime")))
 		{
 			return DB::DBUtil::CT_DateTime;
 		}
-		else if (Text::StrEquals(typeName, (const UTF8Char*)"datetime2"))
+		else if (Text::StrEqualsC(typeName, typeNameLen, UTF8STRC("datetime2")))
 		{
 			return DB::DBUtil::CT_DateTime2;
 		}
-		else if (Text::StrEquals(typeName, (const UTF8Char*)"float"))
+		else if (Text::StrEqualsC(typeName, typeNameLen, UTF8STRC("float")))
 		{
 			return DB::DBUtil::CT_Double;
 		}
-		else if (Text::StrEquals(typeName, (const UTF8Char*)"bit"))
+		else if (Text::StrEqualsC(typeName, typeNameLen, UTF8STRC("bit")))
 		{
 			return DB::DBUtil::CT_Bool;
 		}
-		else if (Text::StrEquals(typeName, (const UTF8Char*)"bigint"))
+		else if (Text::StrEqualsC(typeName, typeNameLen, UTF8STRC("bigint")))
 		{
 			return DB::DBUtil::CT_Int64;
 		}
-		else if (Text::StrEquals(typeName, (const UTF8Char*)"smallint"))
+		else if (Text::StrEqualsC(typeName, typeNameLen, UTF8STRC("smallint")))
 		{
 			return DB::DBUtil::CT_Int64;
 		}
-		else if (Text::StrEquals(typeName, (const UTF8Char*)"nvarchar"))
+		else if (Text::StrEqualsC(typeName, typeNameLen, UTF8STRC("nvarchar")))
 		{
 			return DB::DBUtil::CT_NVarChar;
 		}
-		else if (Text::StrEquals(typeName, (const UTF8Char*)"ntext"))
+		else if (Text::StrEqualsC(typeName, typeNameLen, UTF8STRC("ntext")))
 		{
 			return DB::DBUtil::CT_NVarChar;
 		}
-		else if (Text::StrEquals(typeName, (const UTF8Char*)"nchar"))
+		else if (Text::StrEqualsC(typeName, typeNameLen, UTF8STRC("nchar")))
 		{
 			return DB::DBUtil::CT_NChar;
 		}
-		else if (Text::StrEquals(typeName, (const UTF8Char*)"numeric"))
+		else if (Text::StrEqualsC(typeName, typeNameLen, UTF8STRC("numeric")))
 		{
 			return DB::DBUtil::CT_Double;
 		}
-		else if (Text::StrEquals(typeName, (const UTF8Char*)"geometry"))
+		else if (Text::StrEqualsC(typeName, typeNameLen, UTF8STRC("geometry")))
 		{
 			return DB::DBUtil::CT_Vector;
 		}
-		else if (Text::StrEquals(typeName, (const UTF8Char*)"date"))
+		else if (Text::StrEqualsC(typeName, typeNameLen, UTF8STRC("date")))
 		{
 			return DB::DBUtil::CT_DateTime;
 		}
-		else if (Text::StrEquals(typeName, (const UTF8Char*)"sysname"))
+		else if (Text::StrEqualsC(typeName, typeNameLen, UTF8STRC("sysname")))
 		{
 			*colSize = 128;
 			return DB::DBUtil::CT_NVarChar;
 		}
-		else if (Text::StrEquals(typeName, (const UTF8Char*)"varbinary"))
+		else if (Text::StrEqualsC(typeName, typeNameLen, UTF8STRC("varbinary")))
 		{
 			return DB::DBUtil::CT_Binary;
 		}
-		else if (Text::StrEquals(typeName, (const UTF8Char*)"image"))
+		else if (Text::StrEqualsC(typeName, typeNameLen, UTF8STRC("image")))
 		{
 			*colSize = 0x7fffffff;
 			return DB::DBUtil::CT_Binary;
@@ -1843,37 +1844,37 @@ DB::DBUtil::ColType DB::DBUtil::ParseColType(DB::DBUtil::ServerType svrType, con
 	}
 	else if (svrType == DB::DBUtil::ServerType::SQLite)
 	{
-		if (Text::StrEqualsICase(typeName, (const UTF8Char*)"INTEGER"))
+		if (Text::StrEqualsICaseC(typeName, typeNameLen, UTF8STRC("INTEGER")))
 		{
 			*colSize = 4;
 			return DB::DBUtil::CT_Int32;
 		}
-		else if (Text::StrEqualsICase(typeName, (const UTF8Char*)"INT"))
+		else if (Text::StrEqualsICaseC(typeName, typeNameLen, UTF8STRC("INT")))
 		{
 			*colSize = 4;
 			return DB::DBUtil::CT_Int32;
 		}
-		else if (Text::StrEqualsICase(typeName, (const UTF8Char*)"REAL"))
+		else if (Text::StrEqualsICaseC(typeName, typeNameLen, UTF8STRC("REAL")))
 		{
 			*colSize = 8;
 			return DB::DBUtil::CT_Double;
 		}
-		else if (Text::StrEqualsICase(typeName, (const UTF8Char*)"BLOB"))
+		else if (Text::StrEqualsICaseC(typeName, typeNameLen, UTF8STRC("BLOB")))
 		{
 			*colSize = 2147483647;
 			return DB::DBUtil::CT_Binary;
 		}
-		else if (Text::StrEqualsICase(typeName, (const UTF8Char*)"TEXT"))
+		else if (Text::StrEqualsICaseC(typeName, typeNameLen, UTF8STRC("TEXT")))
 		{
 			*colSize = 2147483647;
 			return DB::DBUtil::CT_VarChar;
 		}
-		else if (Text::StrEqualsICase(typeName, (const UTF8Char*)"VARCHAR"))
+		else if (Text::StrEqualsICaseC(typeName, typeNameLen, UTF8STRC("VARCHAR")))
 		{
 			*colSize = 2147483647;
 			return DB::DBUtil::CT_VarChar;
 		}
-		else if (Text::StrEqualsICase(typeName, (const UTF8Char*)"BOOLEAN"))
+		else if (Text::StrEqualsICaseC(typeName, typeNameLen, UTF8STRC("BOOLEAN")))
 		{
 			*colSize = 1;
 			return DB::DBUtil::CT_Byte;

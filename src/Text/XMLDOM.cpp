@@ -734,13 +734,13 @@ UTF8Char *Text::XMLDocument::ParseNode(XMLNode *parentNode, UTF8Char *xmlStart, 
 					if (c == quoted)
 					{
 						xmlValEn = currPtr;
-						if (Text::StrEqualsICase((const UTF8Char*)"ENCODING", xmlNameSt, (UOSInt)(xmlNameEn - xmlNameSt)))
+						if (Text::StrEqualsICaseC(UTF8STRC("ENCODING"), xmlNameSt, (UOSInt)(xmlNameEn - xmlNameSt)))
 						{
 							SDEL_STRING(this->encoding);
 							this->encoding = Text::String::New((UOSInt)(xmlValEn - xmlValSt));
 							Text::XML::ParseStr(this->encoding, xmlValSt, xmlValEn);
 						}
-						else if (Text::StrEqualsICase((const UTF8Char*)"VERSION", xmlNameSt, (UOSInt)(xmlNameEn - xmlNameSt)))
+						else if (Text::StrEqualsICaseC(UTF8STRC("VERSION"), xmlNameSt, (UOSInt)(xmlNameEn - xmlNameSt)))
 						{
 							SDEL_STRING(this->version);
 							this->version = Text::String::New((UOSInt)(xmlValEn - xmlValSt));
@@ -794,13 +794,13 @@ UTF8Char *Text::XMLDocument::ParseNode(XMLNode *parentNode, UTF8Char *xmlStart, 
 					if (xmlValSt)
 					{
 						xmlValEn = currPtr;
-						if (Text::StrEqualsICase((const UTF8Char*)"ENCODING", xmlNameSt, (UOSInt)(xmlNameEn - xmlNameSt)))
+						if (Text::StrEqualsICaseC(UTF8STRC("ENCODING"), xmlNameSt, (UOSInt)(xmlNameEn - xmlNameSt)))
 						{
 							SDEL_STRING(this->encoding);
 							this->encoding = Text::String::New((UOSInt)(xmlValEn - xmlValSt));
 							Text::XML::ParseStr(this->encoding, xmlValSt, xmlValEn);
 						}
-						else if (Text::StrEqualsICase((const UTF8Char*)"VERSION", xmlNameSt, (UOSInt)(xmlNameEn - xmlNameSt)))
+						else if (Text::StrEqualsICaseC(UTF8STRC("VERSION"), xmlNameSt, (UOSInt)(xmlNameEn - xmlNameSt)))
 						{
 							SDEL_STRING(this->version);
 							this->version = Text::String::New((UOSInt)(xmlValEn - xmlValSt));
@@ -1231,7 +1231,7 @@ Bool Text::XMLDocument::ParseBuff(Text::EncodingFactory *encFact, const UInt8 *b
 				if (quoted)
 				{
 					attValEnd = currPos;
-					if (Text::StrEqualsICase("ENCODING", (Char*)attName, (UOSInt)(attNameEnd - attName)))
+					if (Text::StrEqualsICaseC(UTF8STRC("ENCODING"), attName, (UOSInt)(attNameEnd - attName)))
 					{
 						src = attVal;
 						dest = sbuff;
@@ -1276,7 +1276,7 @@ Bool Text::XMLDocument::ParseBuff(Text::EncodingFactory *encFact, const UInt8 *b
 				if (attVal)
 				{
 					attValEnd = currPos;
-					if (Text::StrEqualsICase("ENCODING", (Char*)attName, (UOSInt)(attNameEnd - attName)))
+					if (Text::StrEqualsICaseC(UTF8STRC("ENCODING"), attName, (UOSInt)(attNameEnd - attName)))
 					{
 						src = attVal;
 						dest = sbuff;

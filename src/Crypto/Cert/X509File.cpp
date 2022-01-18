@@ -9,13 +9,13 @@
 
 void Crypto::Cert::CertNames::FreeNames(CertNames *names)
 {
-	SDEL_TEXT(names->countryName);
-	SDEL_TEXT(names->stateOrProvinceName);
-	SDEL_TEXT(names->localityName);
-	SDEL_TEXT(names->organizationName);
-	SDEL_TEXT(names->organizationUnitName);
-	SDEL_TEXT(names->commonName);
-	SDEL_TEXT(names->emailAddress);
+	SDEL_STRING(names->countryName);
+	SDEL_STRING(names->stateOrProvinceName);
+	SDEL_STRING(names->localityName);
+	SDEL_STRING(names->organizationName);
+	SDEL_STRING(names->organizationUnitName);
+	SDEL_STRING(names->commonName);
+	SDEL_STRING(names->emailAddress);
 }
 
 void Crypto::Cert::CertExtensions::FreeExtensions(CertExtensions *ext)
@@ -729,38 +729,38 @@ Bool Crypto::Cert::X509File::NamesGet(const UInt8 *pdu, const UInt8 *pduEnd, Cer
 					{
 						if (Net::ASN1Util::OIDEqualsText(oidPDU, oidLen, UTF8STRC("2.5.4.6")))
 						{
-							SDEL_TEXT(names->countryName);
-							names->countryName = Text::StrCopyNewC(strPDU, strLen);
+							SDEL_STRING(names->countryName);
+							names->countryName = Text::String::New(strPDU, strLen);
 						}
 						else if (Net::ASN1Util::OIDEqualsText(oidPDU, oidLen, UTF8STRC("2.5.4.8")))
 						{
-							SDEL_TEXT(names->stateOrProvinceName);
-							names->stateOrProvinceName = Text::StrCopyNewC(strPDU, strLen);
+							SDEL_STRING(names->stateOrProvinceName);
+							names->stateOrProvinceName = Text::String::New(strPDU, strLen);
 						}
 						else if (Net::ASN1Util::OIDEqualsText(oidPDU, oidLen, UTF8STRC("2.5.4.7")))
 						{
-							SDEL_TEXT(names->localityName);
-							names->localityName = Text::StrCopyNewC(strPDU, strLen);
+							SDEL_STRING(names->localityName);
+							names->localityName = Text::String::New(strPDU, strLen);
 						}
 						else if (Net::ASN1Util::OIDEqualsText(oidPDU, oidLen, UTF8STRC("2.5.4.10")))
 						{
-							SDEL_TEXT(names->organizationName);
-							names->organizationName = Text::StrCopyNewC(strPDU, strLen);
+							SDEL_STRING(names->organizationName);
+							names->organizationName = Text::String::New(strPDU, strLen);
 						}
 						else if (Net::ASN1Util::OIDEqualsText(oidPDU, oidLen, UTF8STRC("2.5.4.11")))
 						{
-							SDEL_TEXT(names->organizationUnitName);
-							names->organizationUnitName = Text::StrCopyNewC(strPDU, strLen);
+							SDEL_STRING(names->organizationUnitName);
+							names->organizationUnitName = Text::String::New(strPDU, strLen);
 						}
 						else if (Net::ASN1Util::OIDEqualsText(oidPDU, oidLen, UTF8STRC("2.5.4.3")))
 						{
-							SDEL_TEXT(names->commonName);
-							names->commonName = Text::StrCopyNewC(strPDU, strLen);
+							SDEL_STRING(names->commonName);
+							names->commonName = Text::String::New(strPDU, strLen);
 						}
 						else if (Net::ASN1Util::OIDEqualsText(oidPDU, oidLen, UTF8STRC("1.2.840.113549.1.9.1")))
 						{
-							SDEL_TEXT(names->emailAddress);
-							names->emailAddress = Text::StrCopyNewC(strPDU, strLen);
+							SDEL_STRING(names->emailAddress);
+							names->emailAddress = Text::String::New(strPDU, strLen);
 						}
 					}
 				}

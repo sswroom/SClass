@@ -265,36 +265,36 @@ Bool SSWR::AVIRead::AVIRCertUtilForm::GetNames(Crypto::Cert::CertNames *names)
 		{
 			return false;
 		}
-		SDEL_TEXT(names->countryName);
-		names->countryName = Text::StrCopyNew(sb.ToString());
+		SDEL_STRING(names->countryName);
+		names->countryName = Text::String::New(sb.ToString(), sb.GetLength());
 	}
 	sb.ClearStr();
 	this->txtStateOrProvinceName->GetText(&sb);
 	if (sb.GetLength() != 0)
 	{
-		SDEL_TEXT(names->stateOrProvinceName);
-		names->stateOrProvinceName = Text::StrCopyNew(sb.ToString());
+		SDEL_STRING(names->stateOrProvinceName);
+		names->stateOrProvinceName = Text::String::New(sb.ToString(), sb.GetLength());
 	}
 	sb.ClearStr();
 	this->txtLocalityName->GetText(&sb);
 	if (sb.GetLength() != 0)
 	{
-		SDEL_TEXT(names->localityName);
-		names->localityName = Text::StrCopyNew(sb.ToString());
+		SDEL_STRING(names->localityName);
+		names->localityName = Text::String::New(sb.ToString(), sb.GetLength());
 	}
 	sb.ClearStr();
 	this->txtOrganizationName->GetText(&sb);
 	if (sb.GetLength() != 0)
 	{
-		SDEL_TEXT(names->organizationName);
-		names->organizationName = Text::StrCopyNew(sb.ToString());
+		SDEL_STRING(names->organizationName);
+		names->organizationName = Text::String::New(sb.ToString(), sb.GetLength());
 	}
 	sb.ClearStr();
 	this->txtOrganizationUnitName->GetText(&sb);
 	if (sb.GetLength() != 0)
 	{
-		SDEL_TEXT(names->organizationUnitName);
-		names->organizationUnitName = Text::StrCopyNew(sb.ToString());
+		SDEL_STRING(names->organizationUnitName);
+		names->organizationUnitName = Text::String::New(sb.ToString(), sb.GetLength());
 	}
 	sb.ClearStr();
 	this->txtCommonName->GetText(&sb);
@@ -302,8 +302,8 @@ Bool SSWR::AVIRead::AVIRCertUtilForm::GetNames(Crypto::Cert::CertNames *names)
 	{
 		return false;
 	}
-	SDEL_TEXT(names->commonName);
-	names->commonName = Text::StrCopyNew(sb.ToString());
+	SDEL_STRING(names->commonName);
+	names->commonName = Text::String::New(sb.ToString(), sb.GetLength());
 
 	sb.ClearStr();
 	this->txtEmailAddress->GetText(&sb);
@@ -313,8 +313,8 @@ Bool SSWR::AVIRead::AVIRCertUtilForm::GetNames(Crypto::Cert::CertNames *names)
 		{
 			return false;
 		}
-		SDEL_TEXT(names->emailAddress);
-		names->emailAddress = Text::StrCopyNew(sb.ToString());
+		SDEL_STRING(names->emailAddress);
+		names->emailAddress = Text::String::New(sb.ToString(), sb.GetLength());
 	}
 	return true;
 }
@@ -338,13 +338,13 @@ void SSWR::AVIRead::AVIRCertUtilForm::UpdateKeyDetail()
 
 void SSWR::AVIRead::AVIRCertUtilForm::UpdateNames(Crypto::Cert::CertNames *names)
 {
-	this->txtCountryName->SetText(Text::StringTool::Null2Empty(names->countryName));
-	this->txtStateOrProvinceName->SetText(Text::StringTool::Null2Empty(names->stateOrProvinceName));
-	this->txtLocalityName->SetText(Text::StringTool::Null2Empty(names->localityName));
-	this->txtOrganizationName->SetText(Text::StringTool::Null2Empty(names->organizationName));
-	this->txtOrganizationUnitName->SetText(Text::StringTool::Null2Empty(names->organizationUnitName));
-	this->txtCommonName->SetText(Text::StringTool::Null2Empty(names->commonName));
-	this->txtEmailAddress->SetText(Text::StringTool::Null2Empty(names->emailAddress));
+	this->txtCountryName->SetText(Text::String::OrEmpty(names->countryName)->v);
+	this->txtStateOrProvinceName->SetText(Text::String::OrEmpty(names->stateOrProvinceName)->v);
+	this->txtLocalityName->SetText(Text::String::OrEmpty(names->localityName)->v);
+	this->txtOrganizationName->SetText(Text::String::OrEmpty(names->organizationName)->v);
+	this->txtOrganizationUnitName->SetText(Text::String::OrEmpty(names->organizationUnitName)->v);
+	this->txtCommonName->SetText(Text::String::OrEmpty(names->commonName)->v);
+	this->txtEmailAddress->SetText(Text::String::OrEmpty(names->emailAddress)->v);
 }
 
 void SSWR::AVIRead::AVIRCertUtilForm::UpdateExtensions(Crypto::Cert::CertExtensions *exts)

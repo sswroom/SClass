@@ -14,13 +14,13 @@ namespace Crypto
 	{
 		struct CertNames
 		{
-			const UTF8Char *countryName;
-			const UTF8Char *stateOrProvinceName;
-			const UTF8Char *localityName;
-			const UTF8Char *organizationName;
-			const UTF8Char *organizationUnitName;
-			const UTF8Char *commonName;
-			const UTF8Char *emailAddress;
+			Text::String *countryName;
+			Text::String *stateOrProvinceName;
+			Text::String *localityName;
+			Text::String *organizationName;
+			Text::String *organizationUnitName;
+			Text::String *commonName;
+			Text::String *emailAddress;
 
 			static void FreeNames(CertNames *names);
 		};

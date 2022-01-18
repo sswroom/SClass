@@ -286,19 +286,19 @@ void Net::ASN1PDUBuilder::AppendChoice(UInt32 v)
 	}
 }
 
-void Net::ASN1PDUBuilder::AppendPrintableString(const UTF8Char *s)
+void Net::ASN1PDUBuilder::AppendPrintableString(Text::String *s)
 {
-	this->AppendOther(0x13, s, Text::StrCharCnt(s));
+	this->AppendOther(0x13, s->v, s->leng);
 }
 
-void Net::ASN1PDUBuilder::AppendUTF8String(const UTF8Char *s)
+void Net::ASN1PDUBuilder::AppendUTF8String(Text::String *s)
 {
-	this->AppendOther(0x0C, s, Text::StrCharCnt(s));
+	this->AppendOther(0x0C, s->v, s->leng);
 }
 
-void Net::ASN1PDUBuilder::AppendIA5String(const UTF8Char *s)
+void Net::ASN1PDUBuilder::AppendIA5String(Text::String *s)
 {
-	this->AppendOther(0x16, s, Text::StrCharCnt(s));
+	this->AppendOther(0x16, s->v, s->leng);
 }
 
 void Net::ASN1PDUBuilder::AppendUTCTime(Data::DateTime *t)

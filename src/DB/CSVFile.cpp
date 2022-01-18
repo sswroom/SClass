@@ -701,8 +701,9 @@ Double DB::CSVReader::GetDbl(UOSInt colIndex)
 Bool DB::CSVReader::GetBool(UOSInt colIndex)
 {
 	UTF8Char buff[20];
-	this->GetStr(colIndex, buff, sizeof(buff));
-	if (Text::StrEqualsICase(buff, (const UTF8Char*)"TRUE"))
+	UTF8Char *sptr;
+	sptr = this->GetStr(colIndex, buff, sizeof(buff));
+	if (Text::StrEqualsICaseC(buff, (UOSInt)(sptr - buff), UTF8STRC("TRUE")))
 		return true;
 	return Text::StrToInt32(buff) != 0;
 }

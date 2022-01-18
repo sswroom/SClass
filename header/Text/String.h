@@ -33,6 +33,7 @@ namespace Text
 		Bool Equals(const UTF8Char *s, UOSInt len);
 		Bool Equals(Text::String *s);
 		Bool EqualsICase(const UTF8Char *s, UOSInt len);
+		Bool EqualsICase(Text::String *s);
 		Bool StartsWith(Text::String *s);
 		Bool StartsWith(const UTF8Char *s, UOSInt len);
 		Bool StartsWith(UOSInt startIndex, const UTF8Char *s, UOSInt len);

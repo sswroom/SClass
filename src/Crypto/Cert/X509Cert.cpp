@@ -251,7 +251,7 @@ Bool Crypto::Cert::X509Cert::GetNotAfter(Data::DateTime *dt)
 	return false;
 }
 
-Bool Crypto::Cert::X509Cert::DomainValid(const UTF8Char *domain)
+Bool Crypto::Cert::X509Cert::DomainValid(const UTF8Char *domain, UOSInt domainLen)
 {
 	Crypto::Cert::CertExtensions exts;
 	UOSInt i;
@@ -262,13 +262,13 @@ Bool Crypto::Cert::X509Cert::DomainValid(const UTF8Char *domain)
 	MemClear(&subjNames, sizeof(subjNames));
 	if (this->GetSubjNames(&subjNames))
 	{
-		if (subjNames.commonName[0] == '*' && subjNames.commonName[1] == '.')
+		if (subjNames.commonName->v[0] == '*' && subjNames.commonName->v[1] == '.')
 		{
-			valid = Text::StrEqualsICase(domain, &subjNames.commonName[2]) || Text::StrEndsWithICase(domain, &subjNames.commonName[1]);
+			valid = Text::StrEqualsICaseC(domain, domainLen, &subjNames.commonName->v[2], subjNames.commonName->leng - 2) || Text::StrEndsWithICaseC(domain, domainLen, &subjNames.commonName->v[1], subjNames.commonName->leng - 1);
 		}
 		else
 		{
-			valid = Text::StrEqualsICase(domain, subjNames.commonName);
+			valid = Text::StrEqualsICaseC(domain, domainLen, subjNames.commonName->v, subjNames.commonName->leng);
 		}
 		Crypto::Cert::CertNames::FreeNames(&subjNames);
 		if (valid)
@@ -289,11 +289,11 @@ Bool Crypto::Cert::X509Cert::DomainValid(const UTF8Char *domain)
 				s = exts.subjectAltName->GetItem(i);
 				if (s->v[0] == '*' && s->v[1] == '.')
 				{
-					valid = Text::StrEqualsICase(domain, &s->v[2]) || Text::StrEndsWithICase(domain, &s->v[1]);
+					valid = Text::StrEqualsICaseC(domain, domainLen, &s->v[2], s->leng - 2) || Text::StrEndsWithICaseC(domain, domainLen, &s->v[1], s->leng - 1);
 				}
 				else
 				{
-					valid = Text::StrEqualsICase(domain, s->v);
+					valid = Text::StrEqualsICaseC(domain, domainLen, s->v, s->leng);
 				}
 				if (valid)
 					break;
@@ -318,7 +318,7 @@ Bool Crypto::Cert::X509Cert::IsSelfSigned()
 	Bool ret = false;
 	if (this->GetIssueNames(&issueNames) && this->GetSubjNames(&subjNames))
 	{
-		ret = Text::StrEquals(issueNames.commonName, subjNames.commonName);
+		ret = issueNames.commonName->Equals(subjNames.commonName);
 	}
 	Crypto::Cert::CertNames::FreeNames(&subjNames);
 	Crypto::Cert::CertNames::FreeNames(&issueNames);

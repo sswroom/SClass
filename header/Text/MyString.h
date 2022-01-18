@@ -99,7 +99,7 @@ namespace Text
 	Bool StrEqualsN(const UTF8Char *str1, const UTF8Char *str2);
 	Bool StrEqualsC(const UTF8Char *str1, UOSInt len1, const UTF8Char *str2, UOSInt len2);
 	Bool StrEqualsICase(const UTF8Char *str1, const UTF8Char *str2);
-	Bool StrEqualsICase(const UTF8Char *str1, const UTF8Char *str2, UOSInt str2Len);
+	Bool StrEqualsICaseC(const UTF8Char *str1, UOSInt str1Len, const UTF8Char *str2, UOSInt str2Len);
 
 	FORCEINLINE OSInt StrCompare(const UTF8Char *str1, const UTF8Char *str2) { return MyString_StrCompare(str1, str2); }
 	FORCEINLINE OSInt StrCompareICase(const UTF8Char *str1, const UTF8Char *str2) { return MyString_StrCompareICase(str1, str2); }
@@ -209,6 +209,7 @@ namespace Text
 	Bool StrStartsWith(const UTF8Char *str1, const UTF8Char *str2);
 	Bool StrStartsWithC(const UTF8Char *str1, UOSInt len1, const UTF8Char *str2, UOSInt len2);
 	Bool StrStartsWithICase(const UTF8Char *str1, const UTF8Char *str2);
+	Bool StrStartsWithICaseC(const UTF8Char *str1, UOSInt len1, const UTF8Char *str2, UOSInt len2);
 	Bool StrEndsWith(const UTF8Char *str1, const UTF8Char *str2);
 	Bool StrEndsWithC(const UTF8Char *str1, UOSInt len1, const UTF8Char *str2, UOSInt len2);
 	Bool StrEndsWithICase(const UTF8Char *str1, const UTF8Char *str2);
@@ -246,7 +247,7 @@ namespace Text
 	FORCEINLINE Bool StrEquals(const Char *str1, const Char *str2) { return StrEquals((const UTF8Char*)str1, (const UTF8Char*)str2); }
 	FORCEINLINE Bool StrEqualsN(const Char *str1, const Char *str2) { return StrEqualsN((const UTF8Char*)str1, (const UTF8Char*)str2); }
 	FORCEINLINE Bool StrEqualsICase(const Char *str1, const Char *str2) { return StrEqualsICase((const UTF8Char*)str1, (const UTF8Char*)str2); }
-	FORCEINLINE Bool StrEqualsICase(const Char *str1, const Char *str2, UOSInt str2Len) { return StrEqualsICase((const UTF8Char*)str1, (const UTF8Char*)str2, str2Len); }
+	FORCEINLINE Bool StrEqualsICaseC(const Char *str1, UOSInt str1Len, const Char *str2, UOSInt str2Len) { return StrEqualsICaseC((const UTF8Char*)str1, str1Len, (const UTF8Char*)str2, str2Len); }
 	FORCEINLINE OSInt StrCompare(const Char *str1, const Char *str2) { return MyString_StrCompare((const UTF8Char*)str1, (const UTF8Char*)str2); }
 	FORCEINLINE OSInt StrCompareICase(const Char *str1, const Char *str2) { return MyString_StrCompareICase((const UTF8Char*)str1, (const UTF8Char*)str2); }
 	FORCEINLINE UOSInt StrCharCnt(const Char *str) { return MyString_StrCharCnt((const UTF8Char*)str); }

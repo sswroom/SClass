@@ -226,16 +226,17 @@ Bool Text::String::Equals(const UTF8Char *s, UOSInt len)
 
 Bool Text::String::Equals(Text::String *s)
 {
-	return this->leng == s->leng && Text::StrEquals(this->v, s->v);
+	return Text::StrEqualsC(this->v, this->leng, s->v, s->leng);
 }
 
 Bool Text::String::EqualsICase(const UTF8Char *s, UOSInt len)
 {
-	if (this->leng != len)
-	{
-		return false;
-	}
-	return Text::StrEqualsICase(this->v, s);
+	return Text::StrEqualsICaseC(this->v, this->leng, s, len);
+}
+
+Bool Text::String::EqualsICase(Text::String *s)
+{
+	return Text::StrEqualsICaseC(this->v, this->leng, s->v, s->leng);
 }
 
 Bool Text::String::StartsWith(Text::String *s)
@@ -310,7 +311,7 @@ Bool Text::String::EndsWithICase(const UTF8Char *s, UOSInt len)
 	{
 		return false;
 	}
-	return Text::StrEqualsICase(&this->v[this->leng - len], s);
+	return Text::StrEqualsICaseC(&this->v[this->leng - len], len, s, len);
 }
 
 Bool Text::String::HasUpperCase()

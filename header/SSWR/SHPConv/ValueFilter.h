@@ -10,7 +10,7 @@ namespace SSWR
 		{
 		private:
 			UOSInt colIndex;
-			const UTF8Char *value;
+			Text::String *value;
 			Int32 compareType;
 
 		public:

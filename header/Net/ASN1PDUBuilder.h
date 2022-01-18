@@ -36,9 +36,9 @@ namespace Net
 		void AppendOID(const UInt8 *oid, UOSInt len);
 		void AppendOIDString(const UTF8Char *oidStr, UOSInt oidStrLen);
 		void AppendChoice(UInt32 v);
-		void AppendPrintableString(const UTF8Char *s);
-		void AppendUTF8String(const UTF8Char *s);
-		void AppendIA5String(const UTF8Char *s);
+		void AppendPrintableString(Text::String *s);
+		void AppendUTF8String(Text::String *s);
+		void AppendIA5String(Text::String *s);
 		void AppendUTCTime(Data::DateTime *t);
 		void AppendOther(UInt8 type, const UInt8 *buff, UOSInt buffSize);
 		void AppendOtherWith0(UInt8 type, const UInt8 *buff, UOSInt buffSize);

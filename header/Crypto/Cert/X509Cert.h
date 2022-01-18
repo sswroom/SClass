@@ -33,7 +33,7 @@ namespace Crypto
 			Bool GetKeyId(UInt8 *keyId);
 			Bool GetNotBefore(Data::DateTime *dt);
 			Bool GetNotAfter(Data::DateTime *dt);
-			Bool DomainValid(const UTF8Char *domain);
+			Bool DomainValid(const UTF8Char *domain, UOSInt domainLen);
 			Bool IsSelfSigned();
 		};
 	}

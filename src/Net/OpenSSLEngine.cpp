@@ -84,6 +84,7 @@ Net::SSLClient *Net::OpenSSLEngine::CreateClientConn(void *sslObj, Socket *s, co
 				*err = ErrorType::CertNotFound;
 			return 0;
 		}
+		UOSInt hostNameLen = Text::StrCharCnt(hostName);
 		UInt8 certBuff[4096];
 		UInt8 *certPtr = certBuff;
 		Int32 certLen = i2d_X509(cert, &certPtr);
@@ -120,7 +121,7 @@ Net::SSLClient *Net::OpenSSLEngine::CreateClientConn(void *sslObj, Socket *s, co
 				*err = ErrorType::InvalidPeriod;
 			return 0;
 		}
-		if (!svrCert->DomainValid(hostName))
+		if (!svrCert->DomainValid(hostName, hostNameLen))
 		{
 			DEL_CLASS(svrCert);
 			this->sockf->DestroySocket(s);

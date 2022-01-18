@@ -47,7 +47,7 @@ void __stdcall SSWR::AVIRead::AVIRCAUtilForm::OnFileDrop(void *userObj, const UT
 						{
 							SDEL_CLASS(me->caCert);
 							me->caCert = cert;
-							me->txtCACert->SetText(names.commonName);
+							me->txtCACert->SetText(names.commonName->v);
 							Crypto::Cert::CertNames::FreeNames(&names);
 							if (me->key)
 							{
@@ -72,7 +72,7 @@ void __stdcall SSWR::AVIRead::AVIRCAUtilForm::OnFileDrop(void *userObj, const UT
 							SDEL_CLASS(me->csr);
 							me->csr = csr;
 							me->UpdateNames(&names);
-							me->txtCSR->SetText(names.commonName);
+							me->txtCSR->SetText(names.commonName->v);
 							Crypto::Cert::CertNames::FreeNames(&names);
 
 							me->lbSAN->ClearItems();
@@ -240,13 +240,13 @@ void SSWR::AVIRead::AVIRCAUtilForm::UpdateKeyDetail()
 
 void SSWR::AVIRead::AVIRCAUtilForm::UpdateNames(Crypto::Cert::CertNames *names)
 {
-	this->txtCountryName->SetText(Text::StringTool::Null2Empty(names->countryName));
-	this->txtStateOrProvinceName->SetText(Text::StringTool::Null2Empty(names->stateOrProvinceName));
-	this->txtLocalityName->SetText(Text::StringTool::Null2Empty(names->localityName));
-	this->txtOrganizationName->SetText(Text::StringTool::Null2Empty(names->organizationName));
-	this->txtOrganizationUnitName->SetText(Text::StringTool::Null2Empty(names->organizationUnitName));
-	this->txtCommonName->SetText(Text::StringTool::Null2Empty(names->commonName));
-	this->txtEmailAddress->SetText(Text::StringTool::Null2Empty(names->emailAddress));
+	this->txtCountryName->SetText(Text::String::OrEmpty(names->countryName)->v);
+	this->txtStateOrProvinceName->SetText(Text::String::OrEmpty(names->stateOrProvinceName)->v);
+	this->txtLocalityName->SetText(Text::String::OrEmpty(names->localityName)->v);
+	this->txtOrganizationName->SetText(Text::String::OrEmpty(names->organizationName)->v);
+	this->txtOrganizationUnitName->SetText(Text::String::OrEmpty(names->organizationUnitName)->v);
+	this->txtCommonName->SetText(Text::String::OrEmpty(names->commonName)->v);
+	this->txtEmailAddress->SetText(Text::String::OrEmpty(names->emailAddress)->v);
 }
 
 SSWR::AVIRead::AVIRCAUtilForm::AVIRCAUtilForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
