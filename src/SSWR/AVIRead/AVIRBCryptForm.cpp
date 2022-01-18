@@ -25,7 +25,7 @@ void __stdcall SSWR::AVIRead::AVIRBCryptForm::OnGenHashClicked(void *userObj)
 	}
 	sbCost.ClearStr();
 	Crypto::Hash::Bcrypt bcrypt;
-	bcrypt.GenHash(&sbCost, cost, sbPassword.ToString());
+	bcrypt.GenHash(&sbCost, cost, sbPassword.ToString(), sbPassword.GetLength());
 	me->txtGenHash->SetText(sbCost.ToString());
 }
 
@@ -37,7 +37,7 @@ void __stdcall SSWR::AVIRead::AVIRBCryptForm::OnCheckClicked(void *userObj)
 	me->txtCheckHash->GetText(&sbHash);
 	me->txtCheckPassword->GetText(&sbPassword);
 	Crypto::Hash::Bcrypt bcrypt;
-	if (bcrypt.Matches(sbHash.ToString(), sbPassword.ToString()))
+	if (bcrypt.Matches(sbHash.ToString(), sbHash.GetLength(), sbPassword.ToString(), sbPassword.GetLength()))
 	{
 		me->txtCheckResult->SetText((const UTF8Char*)"Valid");
 	}
