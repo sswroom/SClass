@@ -561,19 +561,17 @@ void Crypto::Encrypt::Blowfish::SetKey(const UInt8 *key, UOSInt keySize)
 	this->ExpandKey(0, key, keySize);
 }
 
-void Crypto::Encrypt::Blowfish::EksBlowfishSetup(UInt32 cost, const UInt8 *salt, const UTF8Char *password)
+void Crypto::Encrypt::Blowfish::EksBlowfishSetup(UInt32 cost, const UInt8 *salt, const UTF8Char *password, UOSInt pwdLen)
 {
 	UOSInt i;
-	UOSInt k;
 
 	this->Init();
 
-	k = Text::StrCharCnt(password);
-	this->ExpandKey(salt, password, k + 1);
+	this->ExpandKey(salt, password, pwdLen + 1);
 	i = ((UOSInt)1) << cost;
 	while (i-- > 0)
 	{
-		this->Key(password, k + 1);
+		this->Key(password, pwdLen + 1);
 		this->Key(salt, 16);
 	}
 }

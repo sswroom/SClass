@@ -3,25 +3,23 @@
 #include "Core/Core.h"
 #include "Crypto/Cert/X509PrivKey.h"
 #include "Crypto/Token/JWTHandler.h"
-#include "IO/ConsoleWriter.h"
 #include "IO/FileStream.h"
 #include "IO/Path.h"
 #include "Net/OSSocketFactory.h"
 #include "Net/SSLEngineFactory.h"
 #include "Parser/FileParser/X509Parser.h"
 #include "Text/StringBuilderUTF8.h"
-#include "Text/StringTool.h"
 
 Int32 MyMain(Core::IProgControl *progCtrl)
 {
 	UTF8Char sbuff[512];
-	IO::ConsoleWriter console;
+	UTF8Char *sptr;
 	Text::StringBuilderUTF8 sb;
 	Crypto::Token::JWTHandler *jwt;
 	Net::SocketFactory *sockf;
 	NEW_CLASS(sockf, Net::OSSocketFactory(false));
 	Net::SSLEngine *ssl = Net::SSLEngineFactory::Create(sockf, true);
-	NEW_CLASS(jwt, Crypto::Token::JWTHandler(ssl, Crypto::Token::JWSignature::Algorithm::HS256, (const UInt8*)"your-256-bit-secret", 19));
+	NEW_CLASS(jwt, Crypto::Token::JWTHandler(ssl, Crypto::Token::JWSignature::Algorithm::HS256, UTF8STRC("your-256-bit-secret")));
 
 	Crypto::Token::JWTParam param;
 	Text::String *s = Text::String::New(UTF8STRC("1234567890"));
@@ -31,25 +29,46 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	Data::StringUTF8Map<const UTF8Char*> payload;
 	payload.Put((const UTF8Char*)"name", (const UTF8Char*)"John Doe");
 	jwt->Generate(&sb, &payload, &param);
-	console.WriteLineC(sb.ToString(), sb.GetLength());
-	console.WriteLineC(UTF8STRC("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiSm9obiBEb2UiLCJzdWIiOiIxMjM0NTY3ODkwIiwiaWF0IjoxNTE2MjM5MDIyfQ.3uGPWYtY_HtIcBGz4eUmTtcjZ4HnJZK9Z2uhx0Ks4n8"));
+	if (!sb.EqualsC(UTF8STRC("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiSm9obiBEb2UiLCJzdWIiOiIxMjM0NTY3ODkwIiwiaWF0IjoxNTE2MjM5MDIyfQ.3uGPWYtY_HtIcBGz4eUmTtcjZ4HnJZK9Z2uhx0Ks4n8")))
+	{
+		DEL_CLASS(jwt);
+		SDEL_CLASS(ssl);
+		DEL_CLASS(sockf);
+		return 1;	
+	}
 	
 	Data::StringMap<Text::String*> *result = jwt->Parse((const UTF8Char*)"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiSm9obiBEb2UiLCJzdWIiOiIxMjM0NTY3ODkwIiwiaWF0IjoxNTE2MjM5MDIyfQ.3uGPWYtY_HtIcBGz4eUmTtcjZ4HnJZK9Z2uhx0Ks4n8", &param);
-	sb.ClearStr();
-	sb.AppendC(UTF8STRC("Payload = "));
-	Text::StringTool::BuildString(&sb, result);
-	console.WriteLineC(sb.ToString(), sb.GetLength());
-	sb.ClearStr();
-	sb.AppendC(UTF8STRC("Params = "));
-	param.ToString(&sb);
-	console.WriteLineC(sb.ToString(), sb.GetLength());
-
+	s = result->Get((const UTF8Char*)"name");
+	if (s == 0 || !s->Equals(UTF8STRC("John Doe")))
+	{
+		jwt->FreeResult(result);
+		DEL_CLASS(jwt);
+		SDEL_CLASS(ssl);
+		DEL_CLASS(sockf);
+		return 1;
+	}
+	s = param.GetSubject();
+	if (s == 0 || !s->Equals(UTF8STRC("1234567890")))
+	{
+		jwt->FreeResult(result);
+		DEL_CLASS(jwt);
+		SDEL_CLASS(ssl);
+		DEL_CLASS(sockf);
+		return 1;
+	}
+	if (param.GetIssuedAt() != 1516239022)
+	{
+		jwt->FreeResult(result);
+		DEL_CLASS(jwt);
+		SDEL_CLASS(ssl);
+		DEL_CLASS(sockf);
+		return 1;
+	}
 	jwt->FreeResult(result);
-
 	DEL_CLASS(jwt);
 
 	IO::Path::GetProcessFileName(sbuff);
-	IO::Path::AppendPath(sbuff, (const UTF8Char*)"jwtrsa.key");
+	sptr = IO::Path::AppendPath(sbuff, (const UTF8Char*)"jwtrsa.key");
 	if (IO::Path::GetPathType(sbuff) == IO::Path::PathType::File)
 	{
 		UInt8 keyBuff[4096];
@@ -57,17 +76,21 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		keySize = IO::FileStream::LoadFile(sbuff, keyBuff, 4096);
 		if (keySize == 0)
 		{
-			console.WriteLineC(UTF8STRC("Error in loading jwtrsa.key file"));
+			SDEL_CLASS(ssl);
+			DEL_CLASS(sockf);
+			return 1;
 		}
 		else
 		{
 			Crypto::Cert::X509Key *key = 0;
-			Text::String *s = Text::String::NewNotNull(sbuff);
+			Text::String *s = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 			Crypto::Cert::X509File *x509 = Parser::FileParser::X509Parser::ParseBuff(keyBuff, keySize, s);
 			s->Release();
 			if (x509 == 0)
 			{
-				console.WriteLineC(UTF8STRC("Error in parsing jwtrsa.key file"));
+				SDEL_CLASS(ssl);
+				DEL_CLASS(sockf);
+				return 1;
 			}
 			else
 			{
@@ -82,7 +105,10 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				}
 				if (key == 0)
 				{
-					console.WriteLineC(UTF8STRC("jwtrsa.key is not a key file"));
+					DEL_CLASS(x509);
+					SDEL_CLASS(ssl);
+					DEL_CLASS(sockf);
+					return 1;
 				}
 				DEL_CLASS(x509);
 			}
@@ -90,14 +116,6 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			{
 				NEW_CLASS(jwt, Crypto::Token::JWTHandler(ssl, Crypto::Token::JWSignature::Algorithm::RS256, key->GetASN1Buff(), key->GetASN1BuffSize()));
 				Data::StringMap<Text::String*> *result = jwt->Parse((const UTF8Char*)"eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0.NHVaYe26MbtOYhSKkoKYdFVomg4i8ZJd8_-RU8VNbftc4TSMb4bXP3l3YlNWACwyXPGffz5aXHc6lty1Y2t4SWRqGteragsVdZufDn5BlnJl9pdR_kdVFUsra2rWKEofkZeIC4yWytE58sMIihvo9H1ScmmVwBcQP6XETqYd0aSHp1gOa9RdUPDvoXQ5oqygTqVtxaDr6wUFKrKItgBMzWIdNZ6y7O9E0DhEPTbE9rfBo6KTFsHAZnMg4k68CDp2woYIaXbmYTWcvbzIuHO7_37GT79XdIwkm95QJ7hYC9RiwrV7mesbY4PAahERJawntho0my942XheVLmGwLMBkQ", &param);
-				sb.ClearStr();
-				sb.AppendC(UTF8STRC("Payload = "));
-				Text::StringTool::BuildString(&sb, result);
-				console.WriteLineC(sb.ToString(), sb.GetLength());
-				sb.ClearStr();
-				sb.AppendC(UTF8STRC("Params = "));
-				param.ToString(&sb);
-				console.WriteLineC(sb.ToString(), sb.GetLength());
 				jwt->FreeResult(result);
 
 				DEL_CLASS(jwt);

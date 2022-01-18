@@ -23,32 +23,7 @@
 #define ReadMUInt64(uint8Ptr) ((((UInt64)ReadMUInt32(uint8Ptr)) << 32) | ReadMUInt32(&(uint8Ptr)[4]))
 #define WriteInt64(uint8Ptr, val) *(Int64*)(uint8Ptr) = (val)
 #define WriteUInt64(uint8Ptr, val) *(UInt64*)(uint8Ptr) = (val)
-
-FORCEINLINE void WriteMInt64(UInt8 *addr, Int64 val)
-{
-#ifdef HAS_ASM32
-	_asm
-	{
-		mov eax,dword ptr val
-		mov edx,dword ptr val[4]
-		mov ecx,addr
-		bswap eax
-		bswap edx
-		mov dword ptr [ecx],edx
-		mov dword ptr [ecx + 4],eax
-	}
-#else
-	addr[0] = (UInt8)((val >> 56) & 0xff);
-	addr[1] = (UInt8)((val >> 48) & 0xff);
-	addr[2] = (UInt8)((val >> 40) & 0xff);
-	addr[3] = (UInt8)((val >> 32) & 0xff);
-	addr[4] = (UInt8)((val >> 24) & 0xff);
-	addr[5] = (UInt8)((val >> 16) & 0xff);
-	addr[6] = (UInt8)((val >> 8) & 0xff);
-	addr[7] = (UInt8)(val & 0xff);
-#endif
-}
-
+#define WriteMInt64(uint8Ptr, val) *(Int64*)(uint8Ptr) = BSWAP64(val)
 #define WriteMUInt64(uint8Ptr, val) WriteMInt64(uint8Ptr, (Int64)val)
 
 #define ReadInt32(uint8Ptr) (*(Int32*)(uint8Ptr))
@@ -57,23 +32,7 @@ FORCEINLINE void WriteMInt64(UInt8 *addr, Int64 val)
 #define ReadMUInt32(uint8Ptr) ((UInt32)BSWAP32(ReadInt32(uint8Ptr)))
 #define WriteInt32(uint8Ptr, val) *(Int32*)(uint8Ptr) = (val)
 #define WriteUInt32(uint8Ptr, val) *(UInt32*)(uint8Ptr) = (val)
-FORCEINLINE void WriteMInt32(UInt8 *addr, Int32 val)
-{
-#ifdef HAS_ASM32
-	_asm
-	{
-		mov eax,val
-		mov edx,addr
-		bswap eax
-		mov dword ptr [edx],eax
-	}
-#else
-	addr[0] = (UInt8)((val >> 24) & 0xff);
-	addr[1] = (UInt8)((val >> 16) & 0xff);
-	addr[2] = (UInt8)((val >> 8) & 0xff);
-	addr[3] = (UInt8)(val & 0xff);
-#endif
-}
+#define WriteMInt32(uint8Ptr, val) *(Int32*)(uint8Ptr) = BSWAP32(val)
 
 #define ReadInt16(uint8Ptr) (*(Int16*)(uint8Ptr))
 #define ReadUInt16(uint8Ptr) (*(UInt16*)(uint8Ptr))

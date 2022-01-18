@@ -32,7 +32,7 @@ namespace Crypto
 			virtual UOSInt DecryptBlock(const UInt8 *inBlock, UInt8 *outBlock, void *decParam);
 
 			void SetKey(const UInt8 *key, UOSInt keySize);
-			void EksBlowfishSetup(UInt32 cost, const UInt8 *salt, const UTF8Char *password);
+			void EksBlowfishSetup(UInt32 cost, const UInt8 *salt, const UTF8Char *password, UOSInt pwdLen);
 			void EncryptBlk(UInt32 *lr);
 		};
 	}
