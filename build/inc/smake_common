@@ -33,6 +33,10 @@ test:
 @TestSHA256
 @TestSHA384
 @TestSHA512
+@TestDateTime
+@TestFastStringMap
+@TestFloat16
+@TestFloat
 @TestPunycode
 @TestStrCompareICase
 @TestStrConcat
@@ -52,10 +56,7 @@ nodeps:
 @JasyptEncryptorTest
 @RC2Test
 @X509Test
-@DateTimeTest
-@Float16Test
 @SortSpeed
-@StringMapTest
 @DBDataFileTest
 @FileGDBTest
 @MDBFileTest
@@ -96,7 +97,6 @@ nodeps:
 @ExecuteProcess2
 @HiResClock
 @OruxMapTest
-@FloatTest
 @LanczosFilterTest
 @GUIExportJPG
 @ImageCopy
@@ -222,17 +222,8 @@ X509Test:
 @ConsoleStartup.o
 
 #Data
-DateTimeTest:
-@DateTimeTest.o
-@ConsoleStartup.o
-Float16Test:
-@Float16Test.o
-@ConsoleStartup.o
 SortSpeed:
 @SortSpeed.o
-@ConsoleStartup.o
-StringMapTest:
-@StringMapTest.o
 @ConsoleStartup.o
 
 #DB
@@ -369,9 +360,6 @@ OruxMapTest:
 @ConsoleStartup.o
 
 #Math
-FloatTest:
-@FloatTest.o
-@ConsoleStartup.o
 LanczosFilterTest:
 @LanczosFilterTest.o
 @ConsoleStartup.o
@@ -670,6 +658,18 @@ TestSHA384:
 TestSHA512:
 @TestSHA512.o
 @ConsoleStartup.o
+TestDateTime:
+@TestDateTime.o
+@ConsoleStartup.o
+TestFastStringMap:
+@TestFastStringMap.o
+@ConsoleStartup.o
+TestFloat16:
+@TestFloat16.o
+@ConsoleStartup.o
+TestFloat:
+@TestFloat.o
+@ConsoleStartup.o
 TestPunycode:
 @TestPunycode.o
 @ConsoleStartup.o
@@ -812,10 +812,7 @@ HOTPTest.o: ../../main/CryptoTest/HOTPTest.cpp
 JasyptEncryptorTest.o: ../../main/CryptoTest/JasyptEncryptorTest.cpp
 RC2Test.o: ../../main/CryptoTest/RC2Test.cpp
 X509Test.o: ../../main/CryptoTest/X509Test.cpp
-DateTimeTest.o: ../../main/Data/DateTimeTest.cpp
-Float16Test.o: ../../main/Data/Float16Test.cpp
 SortSpeed.o: ../../main/Data/SortSpeed.cpp
-StringMapTest.o: ../../main/Data/StringMapTest.cpp
 DBDataFileTest.o: ../../main/DB/DBDataFileTest.cpp
 FileGDBTest.o: ../../main/DB/FileGDBTest.cpp
 MDBFileTest.o: ../../main/DB/MDBFileTest.cpp
@@ -857,7 +854,6 @@ ExecuteProcess.o: ../../main/Manage/ExecuteProcess.cpp
 ExecuteProcess2.o: ../../main/Manage/ExecuteProcess2.cpp
 HiResClockMain.o: ../../main/Manage/HiResClock.cpp
 OruxMapTest.o: ../../main/Map/OruxMapTest.cpp
-FloatTest.o: ../../main/Math/FloatTest.cpp
 LanczosFilterTest.o: ../../main/Math/LanczosFilterTest.cpp
 MCU_Console.o: ../../main/MCU/MCU_Console.cpp
 MCU_Distance.o: ../../main/MCU/MCU_Distance.cpp
@@ -954,6 +950,10 @@ TestSHA224.o: ../../main/Test/Crypto/TestSHA224.cpp
 TestSHA256.o: ../../main/Test/Crypto/TestSHA256.cpp
 TestSHA384.o: ../../main/Test/Crypto/TestSHA384.cpp
 TestSHA512.o: ../../main/Test/Crypto/TestSHA512.cpp
+TestDateTime.o: ../../main/Test/Data/TestDateTime.cpp
+TestFastStringMap.o: ../../main/Test/Data/TestFastStringMap.cpp
+TestFloat16.o: ../../main/Test/Data/TestFloat16.cpp
+TestFloat.o: ../../main/Test/Math/TestFloat.cpp
 TestPunycode.o: ../../main/Test/Text/TestPunycode.cpp
 TestStrCompareICase.o: ../../main/Test/Text/TestStrCompareICase.cpp
 TestStrConcat.o: ../../main/Test/Text/TestStrConcat.cpp

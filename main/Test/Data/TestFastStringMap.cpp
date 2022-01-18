@@ -34,13 +34,10 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	while (val < DATACNT)
 	{
 		sptr = Text::StrUInt32(Text::StrConcatC(sbuff, UTF8STRC("Text")), val);
-		s = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
-		val2 = map.Get(s);
-		s->Release();
+		val2 = map.GetC(sbuff, (UOSInt)(sptr - sbuff));
 		if (val != val2)
 		{
-			printf("Get value error: %s returns %d\r\n", sbuff, val2);
-			break;
+			return 1;
 		}
 		val++;
 	}

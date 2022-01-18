@@ -124,6 +124,19 @@ namespace Math
 			return (UInt8)val;
 	}
 
+	FORCEINLINE Bool NearlyEquals(Double val1, Double val2, Double diffRatio)
+	{
+		Double aval1 = Math_Abs(val1);
+		Double aval2 = Math_Abs(val2);
+		Double diffV;
+		if (aval1 > aval2)
+			diffV = aval1 * diffRatio;
+		else
+			diffV = aval2 * diffRatio;
+		Double diff = val1 - val2;
+		return diff >= -diffV && diff <= diffV;
+	}
+
 	FORCEINLINE Bool IsNAN(Double val)
 	{
 		return (0x7fffffffffffffffLL == *(Int64*)&val) || (0xffffffffffffffffLL == *(UInt64*)&val);
@@ -131,7 +144,7 @@ namespace Math
 
 	FORCEINLINE Bool IsInfinity(Double val)
 	{
-		return 0x7ff0000000000000LL == *(Int64*)&val;
+		return (0x7ff0000000000000LL == *(UInt64*)&val) || (0xfff0000000000000LL == *(UInt64*)&val);
 	}
 
 	FORCEINLINE Bool IsNeg(Double val)
