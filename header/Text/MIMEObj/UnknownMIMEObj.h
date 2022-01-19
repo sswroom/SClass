@@ -11,14 +11,14 @@ namespace Text
 		private:
 			UInt8 *dataBuff;
 			UOSInt buffSize;
-			const UTF8Char *contType;
+			Text::String *contType;
 
 		public:
 			UnknownMIMEObj(UInt8 *dataBuff, UOSInt buffSize, const UTF8Char *contentType);
 			virtual ~UnknownMIMEObj();
 
 			virtual const UTF8Char *GetClassName();
-			virtual const UTF8Char *GetContentType();
+			virtual Text::CString GetContentType();
 			virtual UOSInt WriteStream(IO::Stream *stm);
 			virtual IMIMEObj *Clone();
 

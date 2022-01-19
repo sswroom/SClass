@@ -8,9 +8,9 @@ namespace Text
 	class MailCreator
 	{
 	private:
-		const UTF8Char *from;
-		const UTF8Char *replyTo;
-		const UTF8Char *subject;
+		Text::String *from;
+		Text::String *replyTo;
+		Text::String *subject;
 		Text::StringBuilderUTF8 *toVals;
 		Text::StringBuilderUTF8 *ccVals;
 		Text::IMIMEObj *content;

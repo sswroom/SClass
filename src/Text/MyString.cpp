@@ -2684,19 +2684,44 @@ Bool Text::StrStartsWithC(const UTF8Char *str1, UOSInt len1, const UTF8Char *str
 	{
 		return false;
 	}
-	while (len2 >= 4)
+#if _OSINT_SIZE == 64
+	while (len2 >= 8)
 	{
-		Int32 v = ReadNInt32(str1);
-		if (v != ReadNInt32(str2))
+		if (ReadNUInt64(str1) != ReadNUInt64(str2))
+			return false;
+		str1 += 8;
+		str2 += 8;
+		len2 -= 8;
+	}
+	if (len2 >= 4)
+	{
+		if (ReadNUInt32(str1) != ReadNUInt32(str2))
 			return false;
 		str1 += 4;
 		str2 += 4;
 		len2 -= 4;
 	}
-	while (len2-- > 0)
+#else
+	while (len2 >= 4)
 	{
-		if (*str1++ != *str2++)
+		if (ReadNUInt32(str1) != ReadNUInt32(str2))
 			return false;
+		str1 += 4;
+		str2 += 4;
+		len2 -= 4;
+	}
+#endif
+	if (len2 >= 2)
+	{
+		if (ReadNUInt16(str1) != ReadNInt32(str2))
+			return false;
+		str1 += 2;
+		str2 += 2;
+		len2 -= 2;
+	}
+	if (len2 > 0)
+	{
+		return *str1 == *str2;
 	}
 	return true;
 }
@@ -2735,32 +2760,40 @@ Bool Text::StrStartsWithICase(const UTF8Char *str1, const UTF8Char *str2)
 
 Bool Text::StrStartsWithICaseC(const UTF8Char *str1, UOSInt len1, const UTF8Char *str2, UOSInt len2)
 {
-	UTF8Char c1;
-	UTF8Char c2;
-	UTF8Char uc1;
-	UTF8Char uc2;
-	while ((c2 = *str2) != 0)
+	if (len1 < len2)
 	{
-		c1 = *str1;
-		if (c1 == c2)
-		{
-			str1++;
-			str2++;
-		}
-		else
-		{
-			uc1 = c1 & 0xdf;
-			uc2 = c2 & 0xdf;
-			if (uc1 == uc2 && uc1 >= 'A' && uc1 <= 'Z')
-			{
-				str1++;
-				str2++;
-			}
-			else
-			{
-				return false;
-			}
-		}
+		return false;
+	}
+	while (len2 >= 4)
+	{
+		UInt32 v1 = ReadNUInt32(str1);
+		UInt32 v2 = ReadNUInt32(str2);
+		if (MyString_StrUpperArr[v1 & 0xff] != MyString_StrUpperArr[v2 & 0xff])
+			return false;
+		if (MyString_StrUpperArr[(v1 >> 8) & 0xff] != MyString_StrUpperArr[(v2 >> 8) & 0xff])
+			return false;
+		if (MyString_StrUpperArr[(v1 >> 16) & 0xff] != MyString_StrUpperArr[(v2 >> 16) & 0xff])
+			return false;
+		if (MyString_StrUpperArr[(v1 >> 24)] != MyString_StrUpperArr[(v2 >> 24)])
+			return false;
+		str1 += 4;
+		str2 += 4;
+		len2 -= 4;
+	}
+	if (len2 >= 2)
+	{
+		UInt16 v1 = ReadNUInt16(str1);
+		UInt16 v2 = ReadNUInt16(str2);
+		if (MyString_StrUpperArr[v1 & 0xff] != MyString_StrUpperArr[v2 & 0xff] ||
+			MyString_StrUpperArr[(v1 >> 8)] != MyString_StrUpperArr[(v2 >> 8)])
+			return false;
+		str1 += 2;
+		str2 += 2;
+		len2 -= 2;
+	}
+	if (len2 > 0)
+	{
+		return MyString_StrUpperArr[*str1] == MyString_StrUpperArr[*str2];
 	}
 	return true;
 }

@@ -8,29 +8,29 @@ Text::MIMEObj::UnknownMIMEObj::UnknownMIMEObj(UInt8 *dataBuff, UOSInt buffSize, 
 {
 	this->buffSize = buffSize;
 	this->dataBuff = MemAlloc(UInt8, buffSize);
-	this->contType = Text::StrCopyNew(contentType);
+	this->contType = Text::String::NewNotNull(contentType);
 	MemCopyNO(this->dataBuff, dataBuff, buffSize);
-	const UTF8Char *tmpPtr = Text::StrCopyNew(contentType);
+	const UTF8Char *tmpPtr = Text::StrCopyNewC(contentType, this->contType->leng);
 	UOSInt i;
 	UOSInt j;
-	UTF8Char *sarr[2];
+	Text::PString sarr[2];
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
-	i = Text::StrSplitTrim(sarr, 2, (UTF8Char*)tmpPtr, ';');
+	i = Text::StrSplitTrimP(sarr, 2, (UTF8Char*)tmpPtr, this->contType->leng, ';');
 	while (i == 2)
 	{
-		i = Text::StrSplitTrim(sarr, 2, sarr[1], ';');
-		if (Text::StrStartsWith(sarr[0], (const UTF8Char*)"name="))
+		i = Text::StrSplitTrimP(sarr, 2, sarr[1].v, sarr[1].len, ';');
+		if (Text::StrStartsWithC(sarr[0].v, sarr[0].len, UTF8STRC("name=")))
 		{
-			j = Text::StrCharCnt(sarr[0]);
-			if (sarr[0][5] == '"' && sarr[0][j - 1] == '"')
+			j = sarr[0].len;
+			if (sarr[0].v[5] == '"' && sarr[0].v[j - 1] == '"')
 			{
-				sarr[0][j - 1] = 0;
-				sptr = Text::MIMEObj::MIMEHeader::ParseHeaderStr(sbuff, &sarr[0][6]);
+				sarr[0].v[j - 1] = 0;
+				sptr = Text::MIMEObj::MIMEHeader::ParseHeaderStr(sbuff, &sarr[0].v[6]);
 			}
 			else
 			{
-				sptr = Text::MIMEObj::MIMEHeader::ParseHeaderStr(sbuff, &sarr[0][5]);
+				sptr = Text::MIMEObj::MIMEHeader::ParseHeaderStr(sbuff, &sarr[0].v[5]);
 			}
 			this->SetSourceName(sbuff, (UOSInt)(sptr - sbuff));
 		}
@@ -42,7 +42,7 @@ Text::MIMEObj::UnknownMIMEObj::UnknownMIMEObj(UInt8 *dataBuff, UOSInt buffSize, 
 Text::MIMEObj::UnknownMIMEObj::~UnknownMIMEObj()
 {
 	MemFree(this->dataBuff);
-	Text::StrDelNew(this->contType);
+	this->contType->Release();
 }
 
 const UTF8Char *Text::MIMEObj::UnknownMIMEObj::GetClassName()
@@ -50,9 +50,9 @@ const UTF8Char *Text::MIMEObj::UnknownMIMEObj::GetClassName()
 	return (const UTF8Char*)"UnknownMIMEObj";
 }
 
-const UTF8Char *Text::MIMEObj::UnknownMIMEObj::GetContentType()
+Text::CString Text::MIMEObj::UnknownMIMEObj::GetContentType()
 {
-	return this->contType;
+	return {this->contType->v, this->contType->leng};
 }
 
 UOSInt Text::MIMEObj::UnknownMIMEObj::WriteStream(IO::Stream *stm)
@@ -63,7 +63,7 @@ UOSInt Text::MIMEObj::UnknownMIMEObj::WriteStream(IO::Stream *stm)
 Text::IMIMEObj *Text::MIMEObj::UnknownMIMEObj::Clone()
 {
 	Text::MIMEObj::UnknownMIMEObj *newObj;
-	NEW_CLASS(newObj, Text::MIMEObj::UnknownMIMEObj(this->dataBuff, this->buffSize, this->contType));
+	NEW_CLASS(newObj, Text::MIMEObj::UnknownMIMEObj(this->dataBuff, this->buffSize, this->contType->v));
 	return newObj;
 }
 

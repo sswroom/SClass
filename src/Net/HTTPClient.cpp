@@ -157,20 +157,22 @@ UInt64 Net::HTTPClient::GetContentLength()
 UInt32 Net::HTTPClient::GetContentCodePage()
 {
 	UTF8Char sbuff[256];
-	UTF8Char *sarr[2];
+	UTF8Char *sptr;
+	Text::PString sarr[2];
 	UOSInt arrCnt;
 	this->EndRequest(0, 0);
-	if (this->GetRespHeader(UTF8STRC("Content-Type"), sbuff))
+	if ((sptr = this->GetRespHeader(UTF8STRC("Content-Type"), sbuff)) != 0)
 	{
-		sarr[1] = sbuff;
+		sarr[1].v = sbuff;
+		sarr[1].len = (UOSInt)(sptr - sbuff);
 		arrCnt = 2;
 		while (arrCnt > 1)
 		{
-			arrCnt = Text::StrSplit(sarr, 2, sarr[1], ';');
-			if (Text::StrStartsWith(sarr[0], (const UTF8Char*)"charset="))
+			arrCnt = Text::StrSplitP(sarr, 2, sarr[1].v, sarr[1].len, ';');
+			if (Text::StrStartsWithC(sarr[0].v, sarr[0].len, UTF8STRC("charset=")))
 			{
 				Text::EncodingFactory encFact;
-				return encFact.GetCodePage(&sarr[0][8]);
+				return encFact.GetCodePage(&sarr[0].v[8]);
 			}
 		}
 	}
@@ -213,49 +215,50 @@ const Net::SocketUtil::AddressInfo *Net::HTTPClient::GetSvrAddr()
 void Net::HTTPClient::ParseDateStr(Data::DateTime *dt, const UTF8Char *dateStr)
 {
 	UTF8Char *tmps;
-	UTF8Char *ptrs[6];
-	UTF8Char *ptrs2[3];
-	UTF8Char *ptrs3[3];
+	Text::PString ptrs[6];
+	Text::PString ptrs2[3];
+	Text::PString ptrs3[3];
 	UTF8Char sbuff[64];
+	UTF8Char *sptr;
 	UOSInt i;
 	UOSInt j;
 	if ((i = Text::StrIndexOf(dateStr, (const UTF8Char*)", ")) != INVALID_INDEX)
 	{
-		Text::StrConcat(sbuff, &dateStr[i + 2]);
+		sptr = Text::StrConcat(sbuff, &dateStr[i + 2]);
 		tmps = sbuff;
 		if (Text::StrIndexOf(tmps, '-') == INVALID_INDEX)
 		{
-			i = Text::StrSplit(ptrs, 6, tmps, ' ');
+			i = Text::StrSplitP(ptrs, 6, tmps, (UOSInt)(sptr - sbuff), ' ');
 			if (i >= 4)
 			{
-				j = Text::StrSplit(ptrs2, 3, ptrs[3], ':');
+				j = Text::StrSplitP(ptrs2, 3, ptrs[3].v, ptrs[3].len, ':');
 				if (j == 3)
 				{
-					dt->SetValue((UInt16)Text::StrToUInt32(ptrs[2]), Data::DateTime::ParseMonthStr(ptrs[1]), Text::StrToInt32(ptrs[0]), Text::StrToInt32(ptrs2[0]), Text::StrToInt32(ptrs2[1]), Text::StrToInt32(ptrs2[2]), 0);
+					dt->SetValue((UInt16)Text::StrToUInt32(ptrs[2].v), Data::DateTime::ParseMonthStr(ptrs[1].v, ptrs[1].len), Text::StrToInt32(ptrs[0].v), Text::StrToInt32(ptrs2[0].v), Text::StrToInt32(ptrs2[1].v), Text::StrToInt32(ptrs2[2].v), 0);
 				}
 			}
 		}
 		else
 		{
-			i = Text::StrSplit(ptrs, 6, tmps, ' ');
+			i = Text::StrSplitP(ptrs, 6, tmps, (UOSInt)(sptr - sbuff), ' ');
 			if (i >= 2)
 			{
-				Text::StrSplit(ptrs2, 3, ptrs[1], ':');
-				Text::StrSplit(ptrs3, 3, ptrs[0], '-');
-				dt->SetValue((UInt16)(Text::StrToUInt32(ptrs3[2]) + (UInt32)((dt->GetYear() / 100) * 100)), Data::DateTime::ParseMonthStr(ptrs3[1]), Text::StrToInt32(ptrs3[0]), Text::StrToInt32(ptrs2[0]), Text::StrToInt32(ptrs2[1]), Text::StrToInt32(ptrs2[2]), 0);
+				Text::StrSplitP(ptrs2, 3, ptrs[1].v, ptrs[1].len, ':');
+				Text::StrSplitP(ptrs3, 3, ptrs[0].v, ptrs[0].len, '-');
+				dt->SetValue((UInt16)(Text::StrToUInt32(ptrs3[2].v) + (UInt32)((dt->GetYear() / 100) * 100)), Data::DateTime::ParseMonthStr(ptrs3[1].v, ptrs3[1].len), Text::StrToInt32(ptrs3[0].v), Text::StrToInt32(ptrs2[0].v), Text::StrToInt32(ptrs2[1].v), Text::StrToInt32(ptrs2[2].v), 0);
 			}
 		}
 	}
 	else
 	{
-		Text::StrConcat(sbuff, dateStr);
-		i = Text::StrSplit(ptrs, 6, sbuff, ' ');
+		sptr = Text::StrConcat(sbuff, dateStr);
+		i = Text::StrSplitP(ptrs, 6, sbuff, (UOSInt)(sptr - sbuff), ' ');
 		if (i > 3)
 		{
-			j = Text::StrSplit(ptrs2, 3, ptrs[i - 2], ':');
+			j = Text::StrSplitP(ptrs2, 3, ptrs[i - 2].v, ptrs[i - 2].len, ':');
 			if (j == 3)
 			{
-				dt->SetValue((UInt16)Text::StrToUInt32(ptrs[i - 1]), Data::DateTime::ParseMonthStr(ptrs[1]), Text::StrToInt32(ptrs[i - 3]), Text::StrToInt32(ptrs2[0]), Text::StrToInt32(ptrs2[1]), Text::StrToInt32(ptrs2[2]), 0);
+				dt->SetValue((UInt16)Text::StrToUInt32(ptrs[i - 1].v), Data::DateTime::ParseMonthStr(ptrs[1].v, ptrs[1].len), Text::StrToInt32(ptrs[i - 3].v), Text::StrToInt32(ptrs2[0].v), Text::StrToInt32(ptrs2[1].v), Text::StrToInt32(ptrs2[2].v), 0);
 			}
 		}
 	}
@@ -291,8 +294,9 @@ Net::HTTPClient *Net::HTTPClient::CreateConnect(Net::SocketFactory *sockf, Net::
 	{
 		method = "GET";
 	}
-	Net::HTTPClient *cli = Net::HTTPClient::CreateClient(sockf, ssl, 0, 0, kaConn, Text::StrStartsWithICase(url, (const UTF8Char*)"HTTPS://"));
-	cli->Connect(url, Text::StrCharCnt(url), method, 0, 0, true);
+	UOSInt urlLen = Text::StrCharCnt(url);
+	Net::HTTPClient *cli = Net::HTTPClient::CreateClient(sockf, ssl, 0, 0, kaConn, Text::StrStartsWithICaseC(url, urlLen, UTF8STRC("HTTPS://")));
+	cli->Connect(url, urlLen, method, 0, 0, true);
 	return cli;
 }
 
@@ -302,7 +306,8 @@ Bool Net::HTTPClient::IsHTTPURL(const UTF8Char *url)
 	{
 		return false;
 	}
-	return Text::StrStartsWith(url, (const UTF8Char*)"http://") || Text::StrStartsWith(url, (const UTF8Char*)"https://");
+	UOSInt urlLen = Text::StrCharCnt(url);
+	return Text::StrStartsWithC(url, urlLen, UTF8STRC("http://")) || Text::StrStartsWithC(url, urlLen, UTF8STRC("https://"));
 }
 
 void Net::HTTPClient::PrepareSSL(Net::SSLEngine *ssl)

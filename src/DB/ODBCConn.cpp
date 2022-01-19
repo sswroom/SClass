@@ -36,19 +36,20 @@ void DB::ODBCConn::UpdateConnInfo()
 	ret = SQLGetInfoA(connHand, SQL_DRIVER_NAME, buff, sizeof(buff), &buffSize);
 	if (ret == SQL_SUCCESS || SQL_SUCCESS_WITH_INFO)
 	{
-		if (buffSize == 0)
+		if (buffSize <= 0)
 		{
 			buff[0] = 0;
+			buffSize = 0;
 		}
 	
 		if (log)
 		{
 			Text::StringBuilderUTF8 sb;
 			sb.AppendC(UTF8STRC("Driver is "));
-			sb.Append((const UTF8Char*)buff);
+			sb.AppendC((const UTF8Char*)buff, (UOSInt)buffSize);
 			log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_ACTION);
 		}
-//		Text::StrToLower(buff);
+//		Text::StrToLowerC(buff, buff);
 		if (Text::StrStartsWith(buff, "myodbc"))
 		{
 			this->svrType = DB::DBUtil::ServerType::MySQL;

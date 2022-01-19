@@ -48,8 +48,22 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	{
 		return 1;
 	}
-	// Text::StrToLowerC
-	// Text::StrToUpperC
+	if (!Text::StrStartsWithICase((const UTF8Char*)"aBcDe1FgHiJk", (const UTF8Char*)"AbCdE1"))
+	{
+		return 1;
+	}
+	if (Text::StrStartsWithICase((const UTF8Char*)"aBcDe1FgHiJk", (const UTF8Char*)"AbCdE2"))
+	{
+		return 1;
+	}
+	if (!Text::StrStartsWithICaseC(UTF8STRC("aBcDe1FgHiJk"), UTF8STRC("AbCdE1")))
+	{
+		return 1;
+	}
+	if (Text::StrStartsWithICaseC(UTF8STRC("aBcDe1FgHiJk"), UTF8STRC("AbCdE2")))
+	{
+		return 1;
+	}
 	// Text::StrStartsWithICase
 	// Text::STrEndsWithICase
 	// Text::StrIndexOfICase

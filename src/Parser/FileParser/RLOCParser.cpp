@@ -202,21 +202,22 @@ IO::ParsedObject *Parser::FileParser::RLOCParser::ParseFile(IO::IStreamData *fd,
 	Map::GPSTrack::GPSRecord rec;
 	UInt8 buff[384];
 	UTF8Char u8buff[256];
+	UTF8Char *sptr;
 	UOSInt i;
 	UOSInt currPos;
 	UInt64 fileSize;
 	Int32 devId;
 	Text::String *s = fd->GetFullName();
 	i = s->LastIndexOf(IO::Path::PATH_SEPERATOR);
-	Text::StrConcat(u8buff, &s->v[i + 1]);
-	if (!Text::StrStartsWithICase(u8buff, (const UTF8Char*)"LOC"))
+	sptr = Text::StrConcatC(u8buff, &s->v[i + 1], s->leng - i - 1);
+	if (!Text::StrStartsWithICaseC(u8buff, (UOSInt)(sptr - u8buff), UTF8STRC("LOC")))
 	{
 		return 0;
 	}
-	i = Text::StrIndexOf(u8buff, (const UTF8Char*)"_");
+	i = Text::StrIndexOf(u8buff, '_');
 	if (i == INVALID_INDEX)
 	{
-		i = Text::StrIndexOf(u8buff, (const UTF8Char*)".");
+		i = Text::StrIndexOf(u8buff, '.');
 		if (i == INVALID_INDEX)
 			return 0;
 		u8buff[i] = 0;

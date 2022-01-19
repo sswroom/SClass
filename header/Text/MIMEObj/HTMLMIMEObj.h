@@ -13,7 +13,7 @@ namespace Text
 			UInt8 *textBuff;
 			OSInt buffSize;
 			Int32 codePage;
-			const UTF8Char *contType;
+			Text::String *contType;
 
 			void BuildContentType();
 		public:
@@ -21,7 +21,7 @@ namespace Text
 			virtual ~HTMLMIMEObj();
 
 			virtual const UTF8Char *GetClassName();
-			virtual const UTF8Char *GetContentType();
+			virtual Text::CString GetContentType();
 			virtual UOSInt WriteStream(IO::Stream *stm);
 			virtual IMIMEObj *Clone();
 

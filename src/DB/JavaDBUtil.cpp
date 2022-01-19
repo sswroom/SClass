@@ -242,7 +242,7 @@ Bool DB::JavaDBUtil::ToJavaEntity(Text::StringBuilderUTF *sb, Text::String *tabl
 	if (Text::StrHasUpperCase(&tableName->v[i + 1]))
 	{
 		clsName = Text::String::New(&tableName->v[i + 1], tableName->leng - i - 1);
-		Text::StrToLower(clsName->v, clsName->v);
+		Text::StrToLowerC(clsName->v, clsName->v, clsName->leng);
 		Text::JavaText::ToJavaName(sb, clsName->v, true);
 		clsName->Release();
 	}

@@ -145,8 +145,7 @@ namespace Data
 		static void Ticks2TimeValue(Int64 ticks, TimeValue *t, Int8 tzQr);
 
 		static Bool IsYearLeap(UInt16 year);
-		static UInt8 ParseMonthStr(const Char *month);
-		static UInt8 ParseMonthStr(const UTF8Char *month);
+		static UInt8 ParseMonthStr(const UTF8Char *month, UOSInt monthLen);
 		static Double MS2Days(Int64 ms);
 		static Double MS2Hours(Int64 ms);
 		static Double MS2Minutes(Int64 ms);

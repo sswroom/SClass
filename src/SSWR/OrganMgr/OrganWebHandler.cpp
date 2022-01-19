@@ -1040,8 +1040,7 @@ UTF8Char *SSWR::OrganMgr::OrganWebHandler::PasswordEnc(UTF8Char *buff, const UTF
 	Crypto::Hash::MD5 md5;
 	md5.Calc(pwd, strLen);
 	md5.GetValue(md5Val);
-	Text::StrHexBytes(buff, md5Val, 16, 0);
-	return Text::StrToUpper(buff, buff);
+	return Text::StrHexBytes(buff, md5Val, 16, 0);
 }
 
 Bool SSWR::OrganMgr::OrganWebHandler::BookFileExist(BookInfo *book)
@@ -5039,8 +5038,8 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 
 				Text::StrConcatC(u8ptr, UTF8STRC("web.txt"));
 
-				Text::StrConcatC(Text::StrConcat(u8buff2, &fileName[4]), UTF8STRC("."));
-				Text::StrToUpper(u8buff2, u8buff2);
+				u8ptr2 = Text::StrConcatC(Text::StrConcat(u8buff2, &fileName[4]), UTF8STRC("."));
+				Text::StrToUpperC(u8buff2, u8buff2, (UOSInt)(u8ptr2 - u8buff2));
 				NEW_CLASS(fs, IO::FileStream(u8buff, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
 				NEW_CLASS(reader, Text::UTF8Reader(fs));
 				sb.ClearStr();
@@ -5058,8 +5057,8 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 						}
 						else
 						{
-							Text::StrToUpper(sarr[0].v, sarr[0].v);
-							if (Text::StrStartsWith(sarr[0].v, u8buff2))
+							Text::StrToUpperC(sarr[0].v, sarr[0].v, sarr[0].len);
+							if (Text::StrStartsWithC(sarr[0].v, sarr[0].len, u8buff2, (UOSInt)(u8ptr2 - u8buff2)))
 							{
 								found = true;
 								foundNext = false;

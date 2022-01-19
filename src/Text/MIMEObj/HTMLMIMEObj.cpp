@@ -13,7 +13,7 @@ void Text::MIMEObj::HTMLMIMEObj::BuildContentType()
 	sbc.AppendC(UTF8STRC("text/html; charset="));
 	Text::EncodingFactory::GetInternetName(u8buff, this->codePage);
 	sbc.Append(u8buff);
-	this->contType = Text::StrCopyNew(sbc.ToString());
+	this->contType = Text::String::New(sbc.ToString(), sbc.GetLength());
 }
 
 Text::MIMEObj::HTMLMIMEObj::HTMLMIMEObj(UInt8 *textBuff, OSInt buffSize, Int32 codePage) : Text::IMIMEObj((const UTF8Char*)"text/html")
@@ -29,7 +29,7 @@ Text::MIMEObj::HTMLMIMEObj::HTMLMIMEObj(UInt8 *textBuff, OSInt buffSize, Int32 c
 Text::MIMEObj::HTMLMIMEObj::~HTMLMIMEObj()
 {
 	MemFree(this->textBuff);
-	Text::StrDelNew(this->contType);
+	this->contType->Release();
 }
 
 const UTF8Char *Text::MIMEObj::HTMLMIMEObj::GetClassName()
@@ -37,9 +37,9 @@ const UTF8Char *Text::MIMEObj::HTMLMIMEObj::GetClassName()
 	return (const UTF8Char*)"HTMLMIMEObj";
 }
 
-const UTF8Char *Text::MIMEObj::HTMLMIMEObj::GetContentType()
+Text::CString Text::MIMEObj::HTMLMIMEObj::GetContentType()
 {
-	return this->contType;
+	return {this->contType->v, this->contType->leng};
 }
 
 UOSInt Text::MIMEObj::HTMLMIMEObj::WriteStream(IO::Stream *stm)

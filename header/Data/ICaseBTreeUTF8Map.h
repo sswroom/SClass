@@ -141,7 +141,7 @@ namespace Data
 	template <class T> UInt32 ICaseBTreeUTF8Map<T>::CalHash(const UTF8Char *key, UOSInt keyLen)
 	{
 		UTF8Char sbuff[256];
-		UOSInt charCnt = (UOSInt)(Text::StrToUpper(sbuff, key) - sbuff);
+		UOSInt charCnt = (UOSInt)(Text::StrToUpperC(sbuff, key, keyLen) - sbuff);
 		return this->crc->CalcDirect(sbuff, charCnt);
 	}
 

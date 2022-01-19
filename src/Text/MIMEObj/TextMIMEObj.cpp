@@ -14,7 +14,7 @@ void Text::MIMEObj::TextMIMEObj::BuildContentType()
 	sbc.AppendC(UTF8STRC("text/plain; charset="));
 	Text::EncodingFactory::GetInternetName(u8buff, this->codePage);
 	sbc.Append(u8buff);
-	this->contType = Text::StrCopyNew(sbc.ToString());
+	this->contType = Text::String::New(sbc.ToString(), sbc.GetLength());
 }
 
 Text::MIMEObj::TextMIMEObj::TextMIMEObj(UInt8 *textBuff, UOSInt buffSize, UInt32 codePage) : Text::IMIMEObj((const UTF8Char*)"text/plain")
@@ -43,7 +43,7 @@ Text::MIMEObj::TextMIMEObj::TextMIMEObj(const WChar *txt, UInt32 codePage) : Tex
 Text::MIMEObj::TextMIMEObj::~TextMIMEObj()
 {
 	MemFree(this->textBuff);
-	Text::StrDelNew(this->contType);
+	this->contType->Release();
 }
 
 const UTF8Char *Text::MIMEObj::TextMIMEObj::GetClassName()
@@ -51,9 +51,9 @@ const UTF8Char *Text::MIMEObj::TextMIMEObj::GetClassName()
 	return (const UTF8Char*)"TextMIMEObj";
 }
 
-const UTF8Char *Text::MIMEObj::TextMIMEObj::GetContentType()
+Text::CString Text::MIMEObj::TextMIMEObj::GetContentType()
 {
-	return (const UTF8Char*)this->contType;
+	return {this->contType->v, this->contType->leng};
 }
 
 UOSInt Text::MIMEObj::TextMIMEObj::WriteStream(IO::Stream *stm)

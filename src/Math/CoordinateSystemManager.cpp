@@ -880,7 +880,7 @@ Math::CoordinateSystem *Math::CoordinateSystemManager::ParsePRJBuff(const UTF8Ch
 Bool Math::CoordinateSystemManager::ParsePRJString(UTF8Char *prjBuff, UOSInt *strSize)
 {
 	UOSInt i;
-	Char c;
+	UTF8Char c;
 	if (prjBuff[0] != '\"')
 		return false;
 	i = 1;

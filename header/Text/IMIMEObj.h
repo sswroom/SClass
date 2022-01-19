@@ -3,6 +3,7 @@
 #include "IO/IStreamData.h"
 #include "IO/ParsedObject.h"
 #include "IO/Stream.h"
+#include "Text/MyString.h"
 
 namespace Text
 {
@@ -14,7 +15,7 @@ namespace Text
 		virtual ~IMIMEObj();
 
 		virtual const UTF8Char *GetClassName() = 0;
-		virtual const UTF8Char *GetContentType() = 0;
+		virtual Text::CString GetContentType() = 0;
 		virtual UOSInt WriteStream(IO::Stream *stm) = 0;
 		virtual IMIMEObj *Clone() = 0;
 

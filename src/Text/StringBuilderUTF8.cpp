@@ -202,7 +202,7 @@ Text::StringBuilderUTF8 *Text::StringBuilderUTF8::AppendToUpper(const UTF8Char *
 {
 	UOSInt len = Text::StrCharCnt(s);
 	STRINGBUILDER_ALLOCLENG(len);
-	this->buffEnd = Text::StrToUpper(this->buffEnd, s);
+	this->buffEnd = Text::StrToUpperC(this->buffEnd, s, len);
 	return this;
 }
 
@@ -210,7 +210,7 @@ Text::StringBuilderUTF8 *Text::StringBuilderUTF8::AppendToLower(const UTF8Char *
 {
 	UOSInt len = Text::StrCharCnt(s);
 	STRINGBUILDER_ALLOCLENG(len);
-	this->buffEnd = Text::StrToLower(this->buffEnd, s);
+	this->buffEnd = Text::StrToLowerC(this->buffEnd, s, len);
 	return this;
 }
 

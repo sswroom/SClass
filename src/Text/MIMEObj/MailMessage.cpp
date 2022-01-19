@@ -25,9 +25,9 @@ const UTF8Char *Text::MIMEObj::MailMessage::GetClassName()
 	return (const UTF8Char*)"MailMessage";
 }
 
-const UTF8Char *Text::MIMEObj::MailMessage::GetContentType()
+Text::CString Text::MIMEObj::MailMessage::GetContentType()
 {
-	return (const UTF8Char*)"message/rfc822";
+	return {UTF8STRC("message/rfc822")};
 }
 
 UOSInt Text::MIMEObj::MailMessage::WriteStream(IO::Stream *stm)
@@ -151,7 +151,8 @@ Text::MIMEObj::TextMIMEObj *Text::MIMEObj::MailMessage::GetContentText()
 		return (Text::MIMEObj::TextMIMEObj*)this->content;
 	if (Text::StrEquals(this->content->GetClassName(), (const UTF8Char*)"MultipartMIMEObj"))
 	{
-		if (Text::StrStartsWith(this->content->GetContentType(), (const UTF8Char*)"multipart/mixed"))
+		Text::CString contType = this->content->GetContentType();
+		if (Text::StrStartsWithC(contType.v, contType.len, UTF8STRC("multipart/mixed")))
 		{
 			Text::MIMEObj::MultipartMIMEObj *mpart = (Text::MIMEObj::MultipartMIMEObj*)this->content;
 			Text::IMIMEObj *obj = mpart->GetPartObj(0);
@@ -172,7 +173,8 @@ Text::IMIMEObj *Text::MIMEObj::MailMessage::GetContentMajor()
 	if (this->content == 0)
 		return 0;
 	Text::IMIMEObj *obj = content;
-	if (Text::StrEquals(obj->GetClassName(), (const UTF8Char*)"MultipartMIMEObj") && Text::StrStartsWith(obj->GetContentType(), (const UTF8Char*)"multipart/mixed"))
+	Text::CString contType = obj->GetContentType();
+	if (Text::StrEquals(obj->GetClassName(), (const UTF8Char*)"MultipartMIMEObj") && Text::StrStartsWithC(contType.v, contType.len, UTF8STRC("multipart/mixed")))
 	{
 		obj = ((Text::MIMEObj::MultipartMIMEObj*)obj)->GetPartObj(0);
 	}
@@ -182,9 +184,10 @@ Text::IMIMEObj *Text::MIMEObj::MailMessage::GetContentMajor()
 		return obj;
 	if (Text::StrEquals(obj->GetClassName(), (const UTF8Char*)"MultipartMIMEObj"))
 	{
-		if (Text::StrStartsWith(obj->GetContentType(), (const UTF8Char*)"multipart/related"))
+		contType = obj->GetContentType();
+		if (Text::StrStartsWithC(contType.v, contType.len, UTF8STRC("multipart/related")))
 			return obj;
-		if (Text::StrStartsWith(obj->GetContentType(), (const UTF8Char*)"multipart/alternative"))
+		if (Text::StrStartsWithC(contType.v, contType.len, UTF8STRC("multipart/alternative")))
 		{
 			Text::MIMEObj::MultipartMIMEObj *mpart = (Text::MIMEObj::MultipartMIMEObj*)obj;
 			return mpart->GetPartObj(mpart->GetPartCount() - 1);
@@ -206,7 +209,8 @@ Text::IMIMEObj *Text::MIMEObj::MailMessage::GetAttachment(OSInt index, Text::Str
 		return 0;
 	if (Text::StrEquals(this->content->GetClassName(), (const UTF8Char*)"MultipartMIMEObj"))
 	{
-		if (Text::StrStartsWith(this->content->GetContentType(), (const UTF8Char*)"multipart/mixed"))
+		Text::CString contType = this->content->GetContentType();
+		if (Text::StrStartsWithC(contType.v, contType.len, UTF8STRC("multipart/mixed")))
 		{
 			Text::MIMEObj::MultipartMIMEObj *mpart = (Text::MIMEObj::MultipartMIMEObj*)this->content;
 			i = 0;

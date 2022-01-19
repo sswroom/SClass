@@ -179,8 +179,8 @@ void SSWR::AVIRead::AVIRAsmConvForm::ConvAsm()
 		{
 			Bool skipLine = false;
 			lineStart[j] = 0;
-			Text::StrToLower(lineStart, lineStart);
-			if (Text::StrEquals(lineStart, (const UTF8Char*)"align") && c != 0)
+			Text::StrToLowerC(lineStart, lineStart, j);
+			if (Text::StrEqualsC(lineStart, j, UTF8STRC("align")) && c != 0)
 			{
 				destSb.AppendChar('\t', allTabCnt);
 				destSb.AppendC(UTF8STRC("\"\t"));
@@ -189,23 +189,23 @@ void SSWR::AVIRead::AVIRAsmConvForm::ConvAsm()
 			}
 			else if (c == 0)
 			{
-				if (Text::StrCompareICase(lineStart, (const UTF8Char*)"_asm") == 0)
+				if (Text::StrEqualsICaseC(lineStart, j, UTF8STRC("_asm")))
 				{
 					allTabCnt = thisTabCnt;
 					destSb.AppendChar('\t', allTabCnt);
 					destSb.AppendC(UTF8STRC("asm("));
 				}
-				else if (Text::StrCompareICase(lineStart, (const UTF8Char*)"stosd") == 0)
+				else if (Text::StrEqualsICaseC(lineStart, j, UTF8STRC("stosd")) == 0)
 				{
 					destSb.AppendChar('\t', allTabCnt);
 					destSb.AppendC(UTF8STRC("\"\t"));
 					destSb.AppendC(UTF8STRC("stosl"));
 				}
-				else if (Text::StrEquals(lineStart, (const UTF8Char*)"{") == 0)
+				else if (Text::StrEqualsC(lineStart, j, UTF8STRC("{")) == 0)
 				{
 					skipLine = true;
 				}
-				else if (Text::StrEquals(lineStart, (const UTF8Char*)"}") == 0)
+				else if (Text::StrEqualsC(lineStart, j, UTF8STRC("}")) == 0)
 				{
 					destSb.AppendChar('\t', allTabCnt);
 					destSb.AppendC(UTF8STRC(");\r\n"));

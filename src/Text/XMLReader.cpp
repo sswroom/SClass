@@ -305,7 +305,7 @@ Bool Text::XMLReader::ReadNext()
 	if (this->readBuff[this->parseOfst] == '<')
 	{
 		UOSInt lenLeft = this->buffSize - this->parseOfst;
-		if (lenLeft >= 4 && Text::StrStartsWith(&this->readBuff[this->parseOfst], (const UTF8Char*)"<!--"))
+		if (Text::StrStartsWithC(&this->readBuff[this->parseOfst], lenLeft, UTF8STRC("<!--")))
 		{
 			this->nt = Text::XMLNode::NT_COMMENT;
 			this->parseOfst += 4;
@@ -333,7 +333,7 @@ Bool Text::XMLReader::ReadNext()
 					}
 					this->buffSize += readSize;
 				}
-				if (Text::StrStartsWith(&this->readBuff[this->parseOfst], (const UTF8Char*)"-->"))
+				if (Text::StrStartsWithC(&this->readBuff[this->parseOfst], this->buffSize - this->parseOfst, UTF8STRC("-->")))
 				{
 					this->parseOfst += 3;
 					this->nodeText = Text::String::New(sb.ToString(), sb.GetLength());
@@ -342,7 +342,7 @@ Bool Text::XMLReader::ReadNext()
 				sb.AppendChar(this->readBuff[this->parseOfst++], 1);
 			}
 		}
-		else if (lenLeft >= 9 && Text::StrStartsWith(&this->readBuff[this->parseOfst], (const UTF8Char*)"<![CDATA["))
+		else if (Text::StrStartsWithC(&this->readBuff[this->parseOfst], lenLeft, UTF8STRC("<![CDATA[")))
 		{
 			this->nt = Text::XMLNode::NT_CDATA;
 			this->parseOfst += 9;
@@ -370,7 +370,7 @@ Bool Text::XMLReader::ReadNext()
 					}
 					this->buffSize += readSize;
 				}
-				if (Text::StrStartsWith(&this->readBuff[this->parseOfst], (const UTF8Char*)"]]>"))
+				if (Text::StrStartsWithC(&this->readBuff[this->parseOfst], this->buffSize - this->parseOfst, UTF8STRC("]]>")))
 				{
 					this->parseOfst += 3;
 					UOSInt size;
@@ -383,7 +383,7 @@ Bool Text::XMLReader::ReadNext()
 		}
 		else if (lenLeft >= 2 && this->readBuff[this->parseOfst + 1] == '!')
 		{
-			if (lenLeft >= 10 && Text::StrStartsWithICase(&this->readBuff[this->parseOfst + 2], (const UTF8Char*)"DOCTYPE "))
+			if (lenLeft >= 10 && Text::StrStartsWithICaseC(&this->readBuff[this->parseOfst + 2], lenLeft - 2, UTF8STRC("DOCTYPE ")))
 			{
 				this->nt = Text::XMLNode::NT_DOCTYPE;
 				Text::StringBuilderUTF8 sb;
@@ -417,12 +417,12 @@ Bool Text::XMLReader::ReadNext()
 							UOSInt l = this->buffSize - this->parseOfst;
 							if (l >= 4 && this->readBuff[this->parseOfst + 3] == ';')
 							{
-								if (Text::StrStartsWith(&this->readBuff[this->parseOfst], (const UTF8Char*)"&lt;"))
+								if (Text::StrStartsWithC(&this->readBuff[this->parseOfst], l, UTF8STRC("&lt;")))
 								{
 									sb.AppendChar('<', 1);
 									this->parseOfst += 3;
 								}
-								else if (Text::StrStartsWith(&this->readBuff[this->parseOfst], (const UTF8Char*)"&gt;"))
+								else if (Text::StrStartsWithC(&this->readBuff[this->parseOfst], l, UTF8STRC("&gt;")))
 								{
 									sb.AppendChar('>', 1);
 									this->parseOfst += 3;
@@ -435,7 +435,7 @@ Bool Text::XMLReader::ReadNext()
 							}
 							else if (l >= 5 && this->readBuff[this->parseOfst + 4] == ';')
 							{
-								if (Text::StrStartsWith(&this->readBuff[this->parseOfst], (const UTF8Char*)"&amp;"))
+								if (Text::StrStartsWithC(&this->readBuff[this->parseOfst], l, UTF8STRC("&amp;")))
 								{
 									sb.AppendChar('&', 1);
 									this->parseOfst += 4;
@@ -453,12 +453,12 @@ Bool Text::XMLReader::ReadNext()
 							}
 							else if (l >= 6 && this->readBuff[this->parseOfst + 5] == ';')
 							{
-								if (Text::StrStartsWith(&this->readBuff[this->parseOfst], (const UTF8Char*)"&quot;"))
+								if (Text::StrStartsWithC(&this->readBuff[this->parseOfst], l, UTF8STRC("&quot;")))
 								{
 									sb.AppendChar('"', 1);
 									this->parseOfst += 5;
 								}
-								else if (Text::StrStartsWith(&this->readBuff[this->parseOfst], (const UTF8Char*)"&apos;"))
+								else if (Text::StrStartsWithC(&this->readBuff[this->parseOfst], l, UTF8STRC("&apos;")))
 								{
 									sb.AppendChar('\'', 1);
 									this->parseOfst += 5;
@@ -614,12 +614,12 @@ Bool Text::XMLReader::ReadNext()
 						UOSInt l = this->buffSize - this->parseOfst;
 						if (l >= 4 && this->readBuff[this->parseOfst + 3] == ';')
 						{
-							if (Text::StrStartsWith(&this->readBuff[this->parseOfst], (const UTF8Char*)"&lt;"))
+							if (Text::StrStartsWithC(&this->readBuff[this->parseOfst], l, UTF8STRC("&lt;")))
 							{
 								sb.AppendChar('<', 1);
 								this->parseOfst += 3;
 							}
-							else if (Text::StrStartsWith(&this->readBuff[this->parseOfst], (const UTF8Char*)"&gt;"))
+							else if (Text::StrStartsWithC(&this->readBuff[this->parseOfst], l, UTF8STRC("&gt;")))
 							{
 								sb.AppendChar('>', 1);
 								this->parseOfst += 3;
@@ -632,7 +632,7 @@ Bool Text::XMLReader::ReadNext()
 						}
 						else if (l >= 5 && this->readBuff[this->parseOfst + 4] == ';')
 						{
-							if (Text::StrStartsWith(&this->readBuff[this->parseOfst], (const UTF8Char*)"&amp;"))
+							if (Text::StrStartsWithC(&this->readBuff[this->parseOfst], l, UTF8STRC("&amp;")))
 							{
 								sb.AppendChar('&', 1);
 								this->parseOfst += 4;
@@ -650,12 +650,12 @@ Bool Text::XMLReader::ReadNext()
 						}
 						else if (l >= 6 && this->readBuff[this->parseOfst + 5] == ';')
 						{
-							if (Text::StrStartsWith(&this->readBuff[this->parseOfst], (const UTF8Char*)"&quot;"))
+							if (Text::StrStartsWithC(&this->readBuff[this->parseOfst], l, UTF8STRC("&quot;")))
 							{
 								sb.AppendChar('"', 1);
 								this->parseOfst += 5;
 							}
-							else if (Text::StrStartsWith(&this->readBuff[this->parseOfst], (const UTF8Char*)"&apos;"))
+							else if (Text::StrStartsWithC(&this->readBuff[this->parseOfst], l, UTF8STRC("&apos;")))
 							{
 								sb.AppendChar('\'', 1);
 								this->parseOfst += 5;
@@ -998,12 +998,12 @@ Bool Text::XMLReader::ReadNext()
 							{
 								this->parseOfst += 3;
 							}
-							else if (Text::StrStartsWith(&this->readBuff[this->parseOfst], (const UTF8Char*)"&lt;"))
+							else if (Text::StrStartsWithC(&this->readBuff[this->parseOfst], l, UTF8STRC("&lt;")))
 							{
 								mstm.Write((const UInt8*)"<", 1);
 								this->parseOfst += 3;
 							}
-							else if (Text::StrStartsWith(&this->readBuff[this->parseOfst], (const UTF8Char*)"&gt;"))
+							else if (Text::StrStartsWithC(&this->readBuff[this->parseOfst], l, UTF8STRC("&gt;")))
 							{
 								mstm.Write((const UInt8*)">", 1);
 								this->parseOfst += 3;
@@ -1031,7 +1031,7 @@ Bool Text::XMLReader::ReadNext()
 							{
 								this->parseOfst += 4;
 							}
-							else if (Text::StrStartsWith(&this->readBuff[this->parseOfst], (const UTF8Char*)"&amp;"))
+							else if (Text::StrStartsWithC(&this->readBuff[this->parseOfst], l, UTF8STRC("&amp;")))
 							{
 								mstm.Write((const UInt8*)"&", 1);
 								this->parseOfst += 4;
@@ -1066,12 +1066,12 @@ Bool Text::XMLReader::ReadNext()
 							{
 								this->parseOfst += 5;
 							}
-							else if (Text::StrStartsWith(&this->readBuff[this->parseOfst], (const UTF8Char*)"&quot;"))
+							else if (Text::StrStartsWithC(&this->readBuff[this->parseOfst], l, UTF8STRC("&quot;")))
 							{
 								mstm.Write((const UInt8*)"\"", 1);
 								this->parseOfst += 5;
 							}
-							else if (Text::StrStartsWith(&this->readBuff[this->parseOfst], (const UTF8Char*)"&apos;"))
+							else if (Text::StrStartsWithC(&this->readBuff[this->parseOfst], l, UTF8STRC("&apos;")))
 							{
 								mstm.Write((const UInt8*)"\'", 1);
 								this->parseOfst += 5;
@@ -1426,7 +1426,7 @@ Bool Text::XMLReader::ReadNext()
 			c = this->readBuff[this->parseOfst];
 			if (c == '<')
 			{
-				if (isHTMLScript && !Text::StrStartsWith(&this->readBuff[this->parseOfst + 1], (const UTF8Char*)"/script>"))
+				if (isHTMLScript && !Text::StrStartsWithC(&this->readBuff[this->parseOfst + 1], (this->buffSize - this->parseOfst - 1), UTF8STRC("/script>")))
 				{
 					b[0] = c;
 					mstm.Write(b, 1);
@@ -1465,13 +1465,13 @@ Bool Text::XMLReader::ReadNext()
 				UOSInt l = this->buffSize - this->parseOfst;
 				if (l >= 4 && this->readBuff[this->parseOfst + 3] == ';')
 				{
-					if (Text::StrStartsWith(&this->readBuff[this->parseOfst], (const UTF8Char*)"&lt;"))
+					if (Text::StrStartsWithC(&this->readBuff[this->parseOfst], l, UTF8STRC("&lt;")))
 					{
 						mstm.Write((const UInt8*)"<", 1);
 						mstmOri.Write(&this->readBuff[this->parseOfst], 4);
 						this->parseOfst += 3;
 					}
-					else if (Text::StrStartsWith(&this->readBuff[this->parseOfst], (const UTF8Char*)"&gt;"))
+					else if (Text::StrStartsWithC(&this->readBuff[this->parseOfst], l, UTF8STRC("&gt;")))
 					{
 						mstm.Write((const UInt8*)">", 1);
 						mstmOri.Write(&this->readBuff[this->parseOfst], 4);
@@ -1498,7 +1498,7 @@ Bool Text::XMLReader::ReadNext()
 				}
 				else if (l >= 5 && this->readBuff[this->parseOfst + 4] == ';')
 				{
-					if (Text::StrStartsWith(&this->readBuff[this->parseOfst], (const UTF8Char*)"&amp;"))
+					if (Text::StrStartsWithC(&this->readBuff[this->parseOfst], l, UTF8STRC("&amp;")))
 					{
 						mstm.Write((const UInt8*)"&", 1);
 						mstmOri.Write(&this->readBuff[this->parseOfst], 5);
@@ -1532,13 +1532,13 @@ Bool Text::XMLReader::ReadNext()
 				}
 				else if (l >= 6 && this->readBuff[this->parseOfst + 5] == ';')
 				{
-					if (Text::StrStartsWith(&this->readBuff[this->parseOfst], (const UTF8Char*)"&quot;"))
+					if (Text::StrStartsWithC(&this->readBuff[this->parseOfst], l, UTF8STRC("&quot;")))
 					{
 						mstm.Write((const UInt8*)"\"", 1);
 						mstmOri.Write(&this->readBuff[this->parseOfst], 6);
 						this->parseOfst += 5;
 					}
-					else if (Text::StrStartsWith(&this->readBuff[this->parseOfst], (const UTF8Char*)"&apos;"))
+					else if (Text::StrStartsWithC(&this->readBuff[this->parseOfst], l, UTF8STRC("&apos;")))
 					{
 						mstm.Write((const UInt8*)"\'", 1);
 						mstmOri.Write(&this->readBuff[this->parseOfst], 6);

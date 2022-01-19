@@ -68,7 +68,7 @@ UTF8Char *Net::SocketUtil::GetAddrName(UTF8Char *buff, const Net::SocketUtil::Ad
 			buff = Text::StrUInt32(buff, zid);
 		}
 		*buff = 0;
-		Text::StrToLower(oriBuff, oriBuff);
+		Text::StrToLowerC(oriBuff, oriBuff, (UOSInt)(buff - oriBuff));
 		return buff;
 	}
 	else

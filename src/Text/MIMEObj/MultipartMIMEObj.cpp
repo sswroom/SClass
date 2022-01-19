@@ -181,9 +181,24 @@ void Text::MIMEObj::MultipartMIMEObj::ParsePart(UInt8 *buff, UOSInt buffSize)
 	}
 }
 
-Text::MIMEObj::MultipartMIMEObj::MultipartMIMEObj(const UTF8Char *contentType, const UTF8Char *defMsg, const UTF8Char *boundary) : Text::IMIMEObj((const UTF8Char*)"multipart/mixed")
+Text::MIMEObj::MultipartMIMEObj::MultipartMIMEObj(Text::String *contentType, const UTF8Char *defMsg, const UTF8Char *boundary) : Text::IMIMEObj((const UTF8Char*)"multipart/mixed")
 {
-	this->contentType = Text::StrCopyNew(contentType);
+	this->contentType = contentType->Clone();
+	if (defMsg)
+	{
+		this->defMsg = Text::StrCopyNew(defMsg);
+	}
+	else
+	{
+		this->defMsg = 0;
+	}
+	this->boundary = Text::StrCopyNew(boundary);
+	NEW_CLASS(parts, Data::ArrayList<PartInfo*>());
+}
+
+Text::MIMEObj::MultipartMIMEObj::MultipartMIMEObj(const UTF8Char *contentType, UOSInt contTypeLen, const UTF8Char *defMsg, const UTF8Char *boundary) : Text::IMIMEObj((const UTF8Char*)"multipart/mixed")
+{
+	this->contentType = Text::String::New(contentType, contTypeLen);
 	if (defMsg)
 	{
 		this->defMsg = Text::StrCopyNew(defMsg);
@@ -210,7 +225,7 @@ Text::MIMEObj::MultipartMIMEObj::MultipartMIMEObj(const UTF8Char *contentType, c
 	sbc.AppendC(UTF8STRC(";\r\n\tboundary=\""));
 	sbc.Append(this->boundary);
 	sbc.AppendC(UTF8STRC("\""));
-	this->contentType = Text::StrCopyNew(sbc.ToString());
+	this->contentType = Text::String::New(sbc.ToString(), sbc.GetLength());
 	if (defMsg)
 	{
 		this->defMsg = Text::StrCopyNew(defMsg);
@@ -226,7 +241,7 @@ Text::MIMEObj::MultipartMIMEObj::~MultipartMIMEObj()
 {
 	UOSInt i;
 	PartInfo *part;
-	Text::StrDelNew(this->contentType);
+	this->contentType->Release();
 	SDEL_TEXT(this->defMsg);
 	Text::StrDelNew(this->boundary);
 	i = this->parts->GetCount();
@@ -243,9 +258,9 @@ const UTF8Char *Text::MIMEObj::MultipartMIMEObj::GetClassName()
 	return (const UTF8Char*)"MultipartMIMEObj";
 }
 
-const UTF8Char *Text::MIMEObj::MultipartMIMEObj::GetContentType()
+Text::CString Text::MIMEObj::MultipartMIMEObj::GetContentType()
 {
-	return this->contentType;
+	return {this->contentType->v, this->contentType->leng};
 }
 
 UOSInt Text::MIMEObj::MultipartMIMEObj::WriteStream(IO::Stream *stm)
@@ -389,15 +404,16 @@ UOSInt Text::MIMEObj::MultipartMIMEObj::GetPartCount()
 Text::MIMEObj::MultipartMIMEObj *Text::MIMEObj::MultipartMIMEObj::ParseFile(const UTF8Char *contentType, IO::IStreamData *data)
 {
 	UOSInt j;
-	if (Text::StrStartsWith(contentType, (const UTF8Char*)"multipart/mixed;"))
+	UOSInt contTypeLen = Text::StrCharCnt(contentType);
+	if (Text::StrStartsWithC(contentType, contTypeLen, UTF8STRC("multipart/mixed;")))
 	{
 		j = 16;
 	}
-	else if (Text::StrStartsWith(contentType, (const UTF8Char*)"multipart/related;"))
+	else if (Text::StrStartsWithC(contentType, contTypeLen, UTF8STRC("multipart/related;")))
 	{
 		j = 18;
 	}
-	else if (Text::StrStartsWith(contentType, (const UTF8Char*)"multipart/alternative;"))
+	else if (Text::StrStartsWithC(contentType, contTypeLen, UTF8STRC("multipart/alternative;")))
 	{
 		j = 22;
 	}
@@ -406,13 +422,13 @@ Text::MIMEObj::MultipartMIMEObj *Text::MIMEObj::MultipartMIMEObj::ParseFile(cons
 		return 0;
 	}
 
-	UOSInt i = Text::StrCharCnt(contentType);
+	UOSInt i;
 	UOSInt k;
 	while (contentType[j] == '\r' || contentType[j] == '\n' || contentType[j] == '\t' || contentType[j] == ' ')
 	{
 		j++;
 	}
-	if (Text::StrStartsWith(&contentType[j], (const UTF8Char*)"boundary="))
+	if (Text::StrStartsWithC(&contentType[j], contTypeLen - j, UTF8STRC("boundary=")))
 	{
 		Text::StringBuilderUTF8 boundary;
 		Text::MIMEObj::MultipartMIMEObj *obj;
@@ -442,13 +458,13 @@ Text::MIMEObj::MultipartMIMEObj *Text::MIMEObj::MultipartMIMEObj::ParseFile(cons
 		k = Text::StrIndexOf(buff, boundary.ToString());
 		if (k == INVALID_INDEX)
 		{
-			NEW_CLASS(obj, Text::MIMEObj::MultipartMIMEObj(contentType, 0, boundary.ToString()));
+			NEW_CLASS(obj, Text::MIMEObj::MultipartMIMEObj(contentType, contTypeLen, 0, boundary.ToString()));
 			i = 0;
 		}
 		else
 		{
 			buff[k] = 0;
-			NEW_CLASS(obj, Text::MIMEObj::MultipartMIMEObj(contentType, buff, boundary.ToString()));
+			NEW_CLASS(obj, Text::MIMEObj::MultipartMIMEObj(contentType, contTypeLen, buff, boundary.ToString()));
 			i = k + boundary.GetLength();
 			if (buff[i] == '\r' && buff[i + 1] == '\n')
 			{

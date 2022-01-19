@@ -152,9 +152,10 @@ DB::DBTool *DB::DBManager::OpenConn(Text::String *connStr, IO::LogTool *log, Net
 DB::DBTool *DB::DBManager::OpenConn(const UTF8Char *connStr, IO::LogTool *log, Net::SocketFactory *sockf)
 {
 	DB::DBTool *db;
-	if (Text::StrStartsWith(connStr, (const UTF8Char*)"odbc:"))
+	UOSInt connStrLen = Text::StrCharCnt(connStr);
+	if (Text::StrStartsWithC(connStr, connStrLen, UTF8STRC("odbc:")))
 	{
-		if (Text::StrStartsWith(connStr + 5, (const UTF8Char*)"DSN="))
+		if (Text::StrStartsWithC(connStr + 5, connStrLen - 5, UTF8STRC("DSN=")))
 		{
 			Text::StringBuilderUTF8 sb;
 			const UTF8Char *dsn = 0;
@@ -163,30 +164,31 @@ DB::DBTool *DB::DBManager::OpenConn(const UTF8Char *connStr, IO::LogTool *log, N
 			const UTF8Char *schema = 0;
 			UOSInt cnt;
 			sb.Append(connStr + 5);
-			UTF8Char *sarr[2];
-			sarr[1] = sb.ToString();
+			Text::PString sarr[2];
+			sarr[1].v = sb.ToString();
+			sarr[1].len = sb.GetLength();
 			while (true)
 			{
-				cnt = Text::StrSplit(sarr, 2, sarr[1], ';');
-				if (Text::StrStartsWithICase(sarr[0], (const UTF8Char*)"DSN="))
+				cnt = Text::StrSplitP(sarr, 2, sarr[1].v, sarr[1].len, ';');
+				if (Text::StrStartsWithICaseC(sarr[0].v, sarr[0].len, UTF8STRC("DSN=")))
 				{
 					SDEL_TEXT(dsn);
-					dsn = Text::StrCopyNew(sarr[0] + 4);
+					dsn = Text::StrCopyNewC(sarr[0].v + 4, sarr[0].len - 4);
 				}
-				else if (Text::StrStartsWithICase(sarr[0], (const UTF8Char*)"UID="))
+				else if (Text::StrStartsWithICaseC(sarr[0].v, sarr[0].len, UTF8STRC("UID=")))
 				{
 					SDEL_TEXT(uid);
-					uid = Text::StrCopyNew(sarr[0] + 4);
+					uid = Text::StrCopyNewC(sarr[0].v + 4, sarr[0].len - 4);
 				}
-				else if (Text::StrStartsWithICase(sarr[0], (const UTF8Char*)"PWD="))
+				else if (Text::StrStartsWithICaseC(sarr[0].v, sarr[0].len, UTF8STRC("PWD=")))
 				{
 					SDEL_TEXT(pwd);
-					pwd = Text::StrCopyNew(sarr[0] + 4);
+					pwd = Text::StrCopyNewC(sarr[0].v + 4, sarr[0].len - 4);
 				}
-				else if (Text::StrStartsWithICase(sarr[0], (const UTF8Char*)"SCHEMA="))
+				else if (Text::StrStartsWithICaseC(sarr[0].v, sarr[0].len, UTF8STRC("SCHEMA=")))
 				{
 					SDEL_TEXT(schema);
-					schema = Text::StrCopyNew(sarr[0] + 7);
+					schema = Text::StrCopyNewC(sarr[0].v + 7, sarr[0].len - 7);
 				}
 				if (cnt != 2)
 				{
@@ -215,7 +217,7 @@ DB::DBTool *DB::DBManager::OpenConn(const UTF8Char *connStr, IO::LogTool *log, N
 			DEL_CLASS(conn);
 		}
 	}
-	else if (Text::StrStartsWith(connStr, (const UTF8Char*)"mysql:"))
+	else if (Text::StrStartsWithC(connStr, connStrLen, UTF8STRC("mysql:")))
 	{
 		Text::StringBuilderUTF8 sb;
 		const UTF8Char *server = 0;
@@ -224,30 +226,31 @@ DB::DBTool *DB::DBManager::OpenConn(const UTF8Char *connStr, IO::LogTool *log, N
 		const UTF8Char *schema = 0;
 		UOSInt cnt;
 		sb.Append(connStr + 6);
-		UTF8Char *sarr[2];
-		sarr[1] = sb.ToString();
+		Text::PString sarr[2];
+		sarr[1].v = sb.ToString();
+		sarr[1].len = sb.GetLength();
 		while (true)
 		{
-			cnt = Text::StrSplit(sarr, 2, sarr[1], ';');
-			if (Text::StrStartsWithICase(sarr[0], (const UTF8Char*)"SERVER="))
+			cnt = Text::StrSplitP(sarr, 2, sarr[1].v, sarr[1].len, ';');
+			if (Text::StrStartsWithICaseC(sarr[0].v, sarr[0].len, UTF8STRC("SERVER=")))
 			{
 				SDEL_TEXT(server);
-				server = Text::StrCopyNew(sarr[0] + 7);
+				server = Text::StrCopyNewC(sarr[0].v + 7, sarr[0].len - 7);
 			}
-			else if (Text::StrStartsWithICase(sarr[0], (const UTF8Char*)"UID="))
+			else if (Text::StrStartsWithICaseC(sarr[0].v, sarr[0].len, UTF8STRC("UID=")))
 			{
 				SDEL_TEXT(uid);
-				uid = Text::StrCopyNew(sarr[0] + 4);
+				uid = Text::StrCopyNewC(sarr[0].v + 4, sarr[0].len - 4);
 			}
-			else if (Text::StrStartsWithICase(sarr[0], (const UTF8Char*)"PWD="))
+			else if (Text::StrStartsWithICaseC(sarr[0].v, sarr[0].len, UTF8STRC("PWD=")))
 			{
 				SDEL_TEXT(pwd);
-				pwd = Text::StrCopyNew(sarr[0] + 4);
+				pwd = Text::StrCopyNewC(sarr[0].v + 4, sarr[0].len - 4);
 			}
-			else if (Text::StrStartsWithICase(sarr[0], (const UTF8Char*)"DATABASE="))
+			else if (Text::StrStartsWithICaseC(sarr[0].v, sarr[0].len, UTF8STRC("DATABASE=")))
 			{
 				SDEL_TEXT(schema);
-				schema = Text::StrCopyNew(sarr[0] + 9);
+				schema = Text::StrCopyNewC(sarr[0].v + 9, sarr[0].len - 9);
 			}
 			if (cnt != 2)
 			{
@@ -264,9 +267,9 @@ DB::DBTool *DB::DBManager::OpenConn(const UTF8Char *connStr, IO::LogTool *log, N
 			return db;
 		}
 	}
-	else if (Text::StrStartsWith(connStr, (const UTF8Char*)"sqlite:"))
+	else if (Text::StrStartsWithC(connStr, connStrLen, UTF8STRC("sqlite:")))
 	{
-		if (Text::StrStartsWithICase(connStr + 7, (const UTF8Char*)"FILE="))
+		if (Text::StrStartsWithICaseC(connStr + 7, connStrLen - 7, UTF8STRC("FILE=")))
 		{
 			db = DB::SQLiteFile::CreateDBTool(connStr + 12, log, DBPREFIX);
 			if (db)
@@ -275,9 +278,9 @@ DB::DBTool *DB::DBManager::OpenConn(const UTF8Char *connStr, IO::LogTool *log, N
 			}
 		}
 	}
-	else if (Text::StrStartsWith(connStr, (const UTF8Char*)"wmi:"))
+	else if (Text::StrStartsWithC(connStr, connStrLen, UTF8STRC("wmi:")))
 	{
-		if (Text::StrStartsWithICase(connStr + 4, (const UTF8Char*)"NS="))
+		if (Text::StrStartsWithICaseC(connStr + 4, connStrLen, UTF8STRC("NS=")))
 		{
 			const WChar *ns = Text::StrToWCharNew(connStr + 7);
 			Win32::WMIQuery *wmi;
@@ -293,7 +296,7 @@ DB::DBTool *DB::DBManager::OpenConn(const UTF8Char *connStr, IO::LogTool *log, N
 			}
 		}
 	}
-	else if (Text::StrStartsWith(connStr, (const UTF8Char*)"oledb:"))
+	else if (Text::StrStartsWithC(connStr, connStrLen, UTF8STRC("oledb:")))
 	{
 		const WChar *cstr = Text::StrToWCharNew(connStr + 6);
 		DB::OLEDBConn *oledb;
@@ -308,7 +311,7 @@ DB::DBTool *DB::DBManager::OpenConn(const UTF8Char *connStr, IO::LogTool *log, N
 			return db;
 		}
 	}
-	else if (Text::StrStartsWith(connStr, (const UTF8Char*)"mysqltcp:"))
+	else if (Text::StrStartsWithC(connStr, connStrLen, UTF8STRC("mysqltcp:")))
 	{
 		Text::StringBuilderUTF8 sb;
 		Net::SocketUtil::AddressInfo addr;
@@ -325,25 +328,25 @@ DB::DBTool *DB::DBManager::OpenConn(const UTF8Char *connStr, IO::LogTool *log, N
 		while (true)
 		{
 			cnt = Text::StrSplitP(sarr, 2, sarr[1].v, sarr[1].len, ';');
-			if (Text::StrStartsWithICase(sarr[0].v, (const UTF8Char*)"SERVER="))
+			if (Text::StrStartsWithICaseC(sarr[0].v, sarr[0].len, UTF8STRC("SERVER=")))
 			{
 				Net::SocketUtil::GetIPAddr(sarr[0].v + 7, sarr[0].len - 7, &addr);
 			}
-			else if (Text::StrStartsWithICase(sarr[0].v, (const UTF8Char*)"PORT="))
+			else if (Text::StrStartsWithICaseC(sarr[0].v, sarr[0].len, UTF8STRC("PORT=")))
 			{
 				Text::StrToUInt16(sarr[0].v + 5, &port);
 			}
-			else if (Text::StrStartsWithICase(sarr[0].v, (const UTF8Char*)"UID="))
+			else if (Text::StrStartsWithICaseC(sarr[0].v, sarr[0].len, UTF8STRC("UID=")))
 			{
 				SDEL_TEXT(uid);
 				uid = Text::StrCopyNewC(sarr[0].v + 4, sarr[0].len - 4);
 			}
-			else if (Text::StrStartsWithICase(sarr[0].v, (const UTF8Char*)"PWD="))
+			else if (Text::StrStartsWithICaseC(sarr[0].v, sarr[0].len, UTF8STRC("PWD=")))
 			{
 				SDEL_TEXT(pwd);
 				pwd = Text::StrCopyNewC(sarr[0].v + 4, sarr[0].len - 4);
 			}
-			else if (Text::StrStartsWithICase(sarr[0].v, (const UTF8Char*)"DATABASE="))
+			else if (Text::StrStartsWithICaseC(sarr[0].v, sarr[0].len, UTF8STRC("DATABASE=")))
 			{
 				SDEL_TEXT(schema);
 				schema = Text::StrCopyNewC(sarr[0].v + 9, sarr[0].len - 9);

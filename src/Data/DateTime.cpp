@@ -553,19 +553,19 @@ Bool Data::DateTime::SetValue(const UTF8Char *dateStr, UOSInt dateStrLen)
 		if (len1 == 3 && len2 <= 2 && len3 == 4)
 		{
 			Text::StrToUInt16(strs2[2].v, &tval->year);
-			tval->month = Data::DateTime::ParseMonthStr(strs2[0].v);
+			tval->month = Data::DateTime::ParseMonthStr(strs2[0].v, strs2[0].len);
 			tval->day = Text::StrToUInt8(strs2[1].v);
 		}
 		else if (len1 <= 2 && len2 == 3 && len3 == 4)
 		{
 			Text::StrToUInt16(strs2[2].v, &tval->year);
-			tval->month = Data::DateTime::ParseMonthStr(strs2[1].v);
+			tval->month = Data::DateTime::ParseMonthStr(strs2[1].v, strs2[1].len);
 			tval->day = Text::StrToUInt8(strs2[0].v);
 		}
 		else if (len1 == 3 && len2 <= 2 && len4 == 4)
 		{
 			Text::StrToUInt16(strs2[3].v, &tval->year);
-			tval->month = Data::DateTime::ParseMonthStr(strs2[0].v);
+			tval->month = Data::DateTime::ParseMonthStr(strs2[0].v, strs2[0].len);
 			tval->day = Text::StrToUInt8(strs2[1].v);
 			timeStr = strs2[2].v;
 			timeStrLen = strs2[2].len;
@@ -685,7 +685,7 @@ Bool Data::DateTime::SetValue(const UTF8Char *dateStr, UOSInt dateStrLen)
 							i = Text::StrToUInt32(strs2[j].v);
 							if (i <= 0)
 							{
-								i = ParseMonthStr(strs2[j].v);
+								i = ParseMonthStr(strs2[j].v, strs2[j].len);
 								if (i > 0)
 								{
 									tval->month = (UInt8)i;
@@ -2233,62 +2233,59 @@ Bool Data::DateTime::IsYearLeap(UInt16 year)
 	return ((year & 3) == 0) && ((year % 100) != 0 || (year % 400) == 0);
 }
 
-UInt8 Data::DateTime::ParseMonthStr(const Char *month)
+UInt8 Data::DateTime::ParseMonthStr(const UTF8Char *month, UOSInt monthLen)
 {
-	if (Text::StrStartsWithICase(month, "JAN"))
+	if (monthLen < 3)
+		return 0;
+	if (Text::StrStartsWithICaseC(month, monthLen, UTF8STRC("JAN")))
 	{
 		return 1;
 	}
-	else if (Text::StrStartsWithICase(month, "FEB"))
+	else if (Text::StrStartsWithICaseC(month, monthLen, UTF8STRC("FEB")))
 	{
 		return 2;
 	}
-	else if (Text::StrStartsWithICase(month, "MAR"))
+	else if (Text::StrStartsWithICaseC(month, monthLen, UTF8STRC("MAR")))
 	{
 		return 3;
 	}
-	else if (Text::StrStartsWithICase(month, "APR"))
+	else if (Text::StrStartsWithICaseC(month, monthLen, UTF8STRC("APR")))
 	{
 		return 4;
 	}
-	else if (Text::StrStartsWithICase(month, "MAY"))
+	else if (Text::StrStartsWithICaseC(month, monthLen, UTF8STRC("MAY")))
 	{
 		return 5;
 	}
-	else if (Text::StrStartsWithICase(month, "JUN"))
+	else if (Text::StrStartsWithICaseC(month, monthLen, UTF8STRC("JUN")))
 	{
 		return 6;
 	}
-	else if (Text::StrStartsWithICase(month, "JUL"))
+	else if (Text::StrStartsWithICaseC(month, monthLen, UTF8STRC("JUL")))
 	{
 		return 7;
 	}
-	else if (Text::StrStartsWithICase(month, "AUG"))
+	else if (Text::StrStartsWithICaseC(month, monthLen, UTF8STRC("AUG")))
 	{
 		return 8;
 	}
-	else if (Text::StrStartsWithICase(month, "SEP"))
+	else if (Text::StrStartsWithICaseC(month, monthLen, UTF8STRC("SEP")))
 	{
 		return 9;
 	}
-	else if (Text::StrStartsWithICase(month, "OCT"))
+	else if (Text::StrStartsWithICaseC(month, monthLen, UTF8STRC("OCT")))
 	{
 		return 10;
 	}
-	else if (Text::StrStartsWithICase(month, "NOV"))
+	else if (Text::StrStartsWithICaseC(month, monthLen, UTF8STRC("NOV")))
 	{
 		return 11;
 	}
-	else if (Text::StrStartsWithICase(month, "DEC"))
+	else if (Text::StrStartsWithICaseC(month, monthLen, UTF8STRC("DEC")))
 	{
 		return 12;
 	}
 	return 0;
-}
-
-UInt8 Data::DateTime::ParseMonthStr(const UTF8Char *month)
-{
-	return ParseMonthStr((const Char*)month);
 }
 
 Double Data::DateTime::MS2Days(Int64 ms)

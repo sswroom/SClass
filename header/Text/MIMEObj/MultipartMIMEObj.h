@@ -25,19 +25,20 @@ namespace Text
 				PartInfo *Clone();
 			};
 		private:
-			const UTF8Char *contentType;
+			Text::String *contentType;
 			const UTF8Char *boundary;
 			const UTF8Char *defMsg;
 			Data::ArrayList<PartInfo*> *parts;
 
 			void ParsePart(UInt8 *buff, UOSInt buffSize);
-			MultipartMIMEObj(const UTF8Char *contentType, const UTF8Char *defMsg, const UTF8Char *boundary);
+			MultipartMIMEObj(Text::String *contentType, const UTF8Char *defMsg, const UTF8Char *boundary);
+			MultipartMIMEObj(const UTF8Char *contentType, UOSInt contTypeLen, const UTF8Char *defMsg, const UTF8Char *boundary);
 		public:
 			MultipartMIMEObj(const UTF8Char *contentType, const UTF8Char *defMsg);
 			virtual ~MultipartMIMEObj();
 
 			virtual const UTF8Char *GetClassName();
-			virtual const UTF8Char *GetContentType();
+			virtual Text::CString GetContentType();
 			virtual UOSInt WriteStream(IO::Stream *stm);
 			virtual IMIMEObj *Clone();
 

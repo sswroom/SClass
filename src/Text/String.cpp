@@ -329,7 +329,7 @@ Text::String *Text::String::ToLower()
 	if (this->HasUpperCase())
 	{
 		Text::String *s = Text::String::New(this->leng);
-		Text::StrToLower(s->v, this->v);
+		Text::StrToLowerC(s->v, this->v, this->leng);
 		return s;
 	}
 	else

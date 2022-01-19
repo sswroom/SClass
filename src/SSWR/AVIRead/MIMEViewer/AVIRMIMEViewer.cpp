@@ -44,28 +44,28 @@ SSWR::AVIRead::MIMEViewer::AVIRMIMEViewer *SSWR::AVIRead::MIMEViewer::AVIRMIMEVi
 	}
 	else
 	{
-		const UTF8Char *contType = obj->GetContentType();
-		if (Text::StrStartsWith(contType, (const UTF8Char*)"image/jpeg") || Text::StrStartsWith(contType, (const UTF8Char*)"image/png") || Text::StrStartsWith(contType, (const UTF8Char*)"image/jpg"))
+		Text::CString contType = obj->GetContentType();
+		if (Text::StrStartsWithC(contType.v, contType.len, UTF8STRC("image/jpeg")) || Text::StrStartsWithC(contType.v, contType.len, UTF8STRC("image/png")) || Text::StrStartsWithC(contType.v, contType.len, UTF8STRC("image/jpg")))
 		{
 			NEW_CLASS(viewer, SSWR::AVIRead::MIMEViewer::AVIRMIMEImageViewer(core, ui, ctrl, sess, (Text::MIMEObj::UnknownMIMEObj*)obj));
 			return viewer;
 		}
-		else if (Text::StrStartsWith(contType, (const UTF8Char*)"text/xml"))
+		else if (Text::StrStartsWithC(contType.v, contType.len, UTF8STRC("text/xml")))
 		{
 			NEW_CLASS(viewer, SSWR::AVIRead::MIMEViewer::AVIRMIMEXMLViewer(core, ui, ctrl, sess, (Text::MIMEObj::UnknownMIMEObj*)obj));
 			return viewer;
 		}
-		else if (Text::StrStartsWith(contType, (const UTF8Char*)"application/json"))
+		else if (Text::StrStartsWithC(contType.v, contType.len, UTF8STRC("application/json")))
 		{
 			NEW_CLASS(viewer, SSWR::AVIRead::MIMEViewer::AVIRMIMEJSONViewer(core, ui, ctrl, sess, (Text::MIMEObj::UnknownMIMEObj*)obj));
 			return viewer;
 		}
-		else if (Text::StrStartsWith(contType, (const UTF8Char*)"text/json"))
+		else if (Text::StrStartsWithC(contType.v, contType.len, UTF8STRC("text/json")))
 		{
 			NEW_CLASS(viewer, SSWR::AVIRead::MIMEViewer::AVIRMIMEJSONViewer(core, ui, ctrl, sess, (Text::MIMEObj::UnknownMIMEObj*)obj));
 			return viewer;
 		}
-		else if (Text::StrStartsWith(contType, (const UTF8Char*)"text/html"))
+		else if (Text::StrStartsWithC(contType.v, contType.len, UTF8STRC("text/html")))
 		{
 			NEW_CLASS(viewer, SSWR::AVIRead::MIMEViewer::AVIRMIMEHTMLViewer(core, ui, ctrl, sess, (Text::MIMEObj::UnknownMIMEObj*)obj));
 			return viewer;

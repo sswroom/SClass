@@ -121,8 +121,8 @@ Map::ESRI::FileGDBDir *Map::ESRI::FileGDBDir::OpenDir(IO::PackageFile *pkg)
 		if (id > 1 && sb.GetLength() > 0 && fmt == 0)
 		{
 			FileGDBTable *innerTable;
-			Text::StrConcatC(Text::StrHexVal32(Text::StrConcatC(sbuff, UTF8STRC("a")), (UInt32)id), UTF8STRC(".gdbtable"));
-			sptr = Text::StrToLower(sbuff, sbuff);
+			sptr = Text::StrConcatC(Text::StrHexVal32(Text::StrConcatC(sbuff, UTF8STRC("a")), (UInt32)id), UTF8STRC(".gdbtable"));
+			sptr = Text::StrToLowerC(sbuff, sbuff, (UOSInt)(sptr - sbuff));
 			fd = pkg->GetItemStmData(sbuff, (UOSInt)(sptr - sbuff));
 			if (fd)
 			{
