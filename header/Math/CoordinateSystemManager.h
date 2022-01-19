@@ -162,11 +162,11 @@ namespace Math
 		static Math::GeographicCoordinateSystem *SRCreateGeogCSys(UInt32 epsgId);
 
 		static Math::CoordinateSystem *CreateFromName(const UTF8Char *name);
-		static Math::CoordinateSystem *ParsePRJBuff(const UTF8Char *sourceName, Char *prjBuff, UOSInt *parsedSize);
+		static Math::CoordinateSystem *ParsePRJBuff(const UTF8Char *sourceName, UTF8Char *prjBuff, UOSInt buffSize, UOSInt *parsedSize);
 
 		static const Math::CoordinateSystemManager::DatumInfo *GetDatumInfo(UInt32 srid);
 		static const Math::CoordinateSystemManager::DatumInfo *GetDatumInfoByName(const UTF8Char *name);
-		static void FillDatumData(Math::GeographicCoordinateSystem::DatumData1 *data, const DatumInfo *datum, const Char *name, Math::EarthEllipsoid *ee, const SpheroidInfo *spheroid);
+		static void FillDatumData(Math::GeographicCoordinateSystem::DatumData1 *data, const DatumInfo *datum, const UTF8Char *name, Math::EarthEllipsoid *ee, const SpheroidInfo *spheroid);
 
 		static Math::ProjectedCoordinateSystem *CreateProjCoordinateSystemDefName(ProjCoordSysType pcst);
 		static Math::ProjectedCoordinateSystem *CreateProjCoordinateSystem(const UTF8Char *sourceNmae, const UTF8Char *projName);
@@ -179,7 +179,7 @@ namespace Math
 		static UOSInt GetGeogCoordinateSystems(Data::ArrayList<GeoCoordSysType> *csysList);
 		static const GeographicCSysInfo *GetGeogCoordinateSystemInfo(const UTF8Char *geoName);
 	private:
-		static Bool ParsePRJString(Char *prjBuff, UOSInt *strSize);
+		static Bool ParsePRJString(UTF8Char *prjBuff, UOSInt *strSize);
 	public:
 		static const UTF8Char *GeoCoordSysTypeGetName(GeoCoordSysType gcst);
 		static const UTF8Char *ProjCoordSysTypeGetName(ProjCoordSysType pcst);

@@ -955,10 +955,11 @@ void Text::JSONBool::ToJSONString(Text::StringBuilderUTF *sb)
 
 Bool Text::JSONBool::Equals(const UTF8Char *s)
 {
+	UOSInt len = Text::StrCharCnt(s);
 	if  (this->val)
-		return Text::StrEqualsICase(s, (const UTF8Char*)"true");
+		return Text::StrEqualsICaseC(s, len, UTF8STRC("true"));
 	else
-		return Text::StrEqualsICase(s, (const UTF8Char*)"false");
+		return Text::StrEqualsICaseC(s, len, UTF8STRC("false"));
 }
 
 Bool Text::JSONBool::Identical(Text::JSONBase *obj)

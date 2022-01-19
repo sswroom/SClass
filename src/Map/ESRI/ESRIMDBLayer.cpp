@@ -60,6 +60,7 @@ Data::Int32Map<const UTF8Char **> *Map::ESRI::ESRIMDBLayer::ReadNameArr()
 void Map::ESRI::ESRIMDBLayer::Init(DB::SharedDBConn *conn, UInt32 srid, const UTF8Char *tableName)
 {
 	UTF8Char sbuff[256];
+	UTF8Char *sptr;
 	UInt8 *buff = 0; 
 	UOSInt buffSize = 0;
 	UOSInt currSize;
@@ -91,12 +92,12 @@ void Map::ESRI::ESRIMDBLayer::Init(DB::SharedDBConn *conn, UInt32 srid, const UT
 		while (i < j)
 		{
 			sbuff[0] = 0;
-			r->GetName(i, sbuff);
-			if (Text::StrEqualsICase(sbuff, (const UTF8Char*)"SHAPE"))
+			sptr = r->GetName(i, sbuff);
+			if (Text::StrEqualsICaseC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("SHAPE")))
 			{
 				this->shapeCol = i;
 			}
-			else if (Text::StrEqualsICase(sbuff, (const UTF8Char*)"OBJECTID"))
+			else if (Text::StrEqualsICaseC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("OBJECTID")))
 			{
 				this->objIdCol = i;
 			}

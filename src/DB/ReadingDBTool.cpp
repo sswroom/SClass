@@ -806,10 +806,10 @@ DB::TableDef *DB::ReadingDBTool::GetTableDef(const UTF8Char *tableName)
 			{
 				r->GetStr(0, buff, sizeof(buff));
 				NEW_CLASS(col, DB::ColDef(buff));
-				r->GetStr(2, buff, sizeof(buff));
-				col->SetNotNull(Text::StrEqualsICase(buff, (const UTF8Char*)"NO"));
-				r->GetStr(3, buff, sizeof(buff));
-				col->SetPK(Text::StrEqualsICase(buff, (const UTF8Char*)"PRI"));
+				ptr = r->GetStr(2, buff, sizeof(buff));
+				col->SetNotNull(Text::StrEqualsICaseC(buff, (UOSInt)(ptr - buff), UTF8STRC("NO")));
+				ptr = r->GetStr(3, buff, sizeof(buff));
+				col->SetPK(Text::StrEqualsICaseC(buff, (UOSInt)(ptr - buff), UTF8STRC("PRI")));
 				if (r->GetStr(4, buff, sizeof(buff)))
 				{
 					col->SetDefVal(buff);

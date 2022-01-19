@@ -594,17 +594,17 @@ void Net::WebServer::WebConnection::ProcessResponse()
 					if (k != INVALID_INDEX)
 					{
 						sbuffHdr[k] = 0;
-						if (Text::StrEqualsICase(sbuffHdr, (const UTF8Char*)"Content-Length"))
+						if (Text::StrEqualsICaseC(sbuffHdr, (UOSInt)(hdrPtr - sbuffHdr), UTF8STRC("Content-Length")))
 						{
 							lengFound = true;
 						}
-						if (Text::StrEqualsICase(sbuffHdr, (const UTF8Char*)"Server"))
+						if (Text::StrEqualsICaseC(sbuffHdr, (UOSInt)(hdrPtr - sbuffHdr), UTF8STRC("Server")))
 						{
 						}
-						else if (Text::StrEqualsICase(sbuffHdr, (const UTF8Char*)"Connection"))
+						else if (Text::StrEqualsICaseC(sbuffHdr, (UOSInt)(hdrPtr - sbuffHdr), UTF8STRC("Connection")))
 						{
 						}
-						else if (Text::StrEqualsICase(sbuffHdr, (const UTF8Char*)"Transfer-Encoding"))
+						else if (Text::StrEqualsICaseC(sbuffHdr, (UOSInt)(hdrPtr - sbuffHdr), UTF8STRC("Transfer-Encoding")))
 						{
 						}
 						else
@@ -764,7 +764,7 @@ Bool Net::WebServer::WebConnection::AddHeaderC(const UTF8Char *name, UOSInt name
 	this->respHeaders->AppendC(value, valueLen);
 	this->respHeaders->AppendC(UTF8STRC("\r\n"));
 
-	if (Text::StrEqualsICase(name, (const UTF8Char*)"Transfer-Encoding") && Text::StrEqualsC(value, valueLen, UTF8STRC("chunked")))
+	if (Text::StrEqualsICaseC(name, nameLen, UTF8STRC("Transfer-Encoding")) && Text::StrEqualsC(value, valueLen, UTF8STRC("chunked")))
 	{
 		this->respTranEnc = 1;
 		this->cli->SetNoDelay(false);

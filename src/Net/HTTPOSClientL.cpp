@@ -305,7 +305,7 @@ Bool Net::HTTPOSClient::Connect(const UTF8Char *url, UOSInt urlLen, const Char *
 	if (this->cliHost == 0)
 	{
 		this->cliHost = Text::StrCopyNew(urltmp);
-		if (Text::StrEqualsICase(svrname, (const UTF8Char*)"localhost"))
+		if (Text::StrEqualsICaseC(svrname, (UOSInt)(svrnameEnd- svrname), UTF8STRC("localhost")))
 		{
 			this->svrAddr.addrType = Net::AddrType::IPv4;
 			WriteNUInt32(this->svrAddr.addr, Net::SocketUtil::GetIPAddr(UTF8STRC("127.0.0.1")));
@@ -365,10 +365,37 @@ Bool Net::HTTPOSClient::Connect(const UTF8Char *url, UOSInt urlLen, const Char *
 		return false;
 	}
 
-	if (method && (Text::StrEqualsICase(method, "POST") || Text::StrEqualsICase(method, "PUT") || Text::StrEqualsICase(method, "PATCH")))
+	if (method)
 	{
-		this->canWrite = true;
-		this->writing = false;
+		UOSInt methodLen = Text::StrCharCnt(method);
+		if (Text::StrEqualsICaseC((const UTF8Char*)method, methodLen, UTF8STRC("POST")))
+		{
+			this->canWrite = true;
+			this->writing = false;
+		}
+		else if (Text::StrEqualsICaseC((const UTF8Char*)method, methodLen, UTF8STRC("PUT")))
+		{
+			this->canWrite = true;
+			this->writing = false;
+			curl_easy_setopt(this->clsData->curl, CURLOPT_CUSTOMREQUEST, "PUT");
+		}
+		else if (Text::StrEqualsICaseC((const UTF8Char*)method, methodLen, UTF8STRC("PATCH")))
+		{
+			this->canWrite = true;
+			this->writing = false;
+			curl_easy_setopt(this->clsData->curl, CURLOPT_CUSTOMREQUEST, UTF8STRC("PATCH"));
+		}
+		else if (Text::StrEqualsICaseC((const UTF8Char*)method, methodLen, UTF8STRC("DELETE")))
+		{
+			curl_easy_setopt(this->clsData->curl, CURLOPT_CUSTOMREQUEST, UTF8STRC("DELETE"));
+			this->canWrite = false;
+			this->writing = false;
+		}
+		else
+		{
+			this->canWrite = false;
+			this->writing = false;
+		}
 	}
 	else
 	{
@@ -377,22 +404,6 @@ Bool Net::HTTPOSClient::Connect(const UTF8Char *url, UOSInt urlLen, const Char *
 	}
 	if (method)
 	{
-		if (Text::StrEqualsICase(method, "POST"))
-		{
-
-		}
-		else if (Text::StrEqualsICase(method, "PUT"))
-		{
-			curl_easy_setopt(this->clsData->curl, CURLOPT_CUSTOMREQUEST, "PUT");
-		}
-		else if (Text::StrEqualsICase(method, "PATCH"))
-		{
-			curl_easy_setopt(this->clsData->curl, CURLOPT_CUSTOMREQUEST, "PATCH");
-		}
-		else if (Text::StrEqualsICase(method, "DELETE"))
-		{
-			curl_easy_setopt(this->clsData->curl, CURLOPT_CUSTOMREQUEST, "DELETE");
-		}
 	}
 	//curl_easy_setopt(data->curl, CURLOPT_VERBOSE, 1);
 	curl_easy_setopt(this->clsData->curl, CURLOPT_URL, url);

@@ -266,7 +266,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::FGDBFileAnalyse::GetFrameDetail(U
 					*sptr = 0;
 					frame->AddField(ofst + 2, srsLen, (const UTF8Char*)"SRS", sbuff);
 					UOSInt csysLen = (UOSInt)(sptr - sbuff);
-					Math::CoordinateSystem *csys = Math::CoordinateSystemManager::ParsePRJBuff(this->fd->GetFullName()->v, (Char*)sbuff, &csysLen);
+					Math::CoordinateSystem *csys = Math::CoordinateSystemManager::ParsePRJBuff(this->fd->GetFullName()->v, sbuff, csysLen, &csysLen);
 					if (csys)
 					{
 						Text::StringBuilderUTF8 sb;

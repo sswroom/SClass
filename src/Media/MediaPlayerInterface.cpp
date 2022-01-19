@@ -55,6 +55,7 @@ Bool Media::MediaPlayerInterface::OpenFile(const UTF8Char *fileName)
 Bool Media::MediaPlayerInterface::OpenVideo(Media::MediaFile *mf)
 {
 	UTF8Char sbuff[1024];
+	UTF8Char *sptr;
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
@@ -98,25 +99,25 @@ Bool Media::MediaPlayerInterface::OpenVideo(Media::MediaFile *mf)
 				sess = IO::Path::FindFile(sbuff);
 				if (sess)
 				{
-					while (IO::Path::FindNextFile(&sbuff[i + 1], sess, 0, &pt, &fileSize))
+					while ((sptr = IO::Path::FindNextFile(&sbuff[i + 1], sess, 0, &pt, &fileSize)) != 0)
 					{
 						j = Text::StrLastIndexOf(&sbuff[i + 1], '.');
 						if (j != INVALID_INDEX)
 						{
 							Bool audFile = false;
-							if (Text::StrEqualsICase(&sbuff[i + j + 2], (const UTF8Char*)"m4a"))
+							if (Text::StrEqualsICaseC(&sbuff[i + j + 2], (UOSInt)(sptr - &sbuff[i + j + 2]), UTF8STRC("m4a")))
 							{
 								audFile = true;
 							}
-							else if (Text::StrEqualsICase(&sbuff[i + j + 2], (const UTF8Char*)"aac"))
+							else if (Text::StrEqualsICaseC(&sbuff[i + j + 2], (UOSInt)(sptr - &sbuff[i + j + 2]), UTF8STRC("aac")))
 							{
 								audFile = true;
 							}
-							else if (Text::StrEqualsICase(&sbuff[i + j + 2], (const UTF8Char*)"ac3"))
+							else if (Text::StrEqualsICaseC(&sbuff[i + j + 2], (UOSInt)(sptr - &sbuff[i + j + 2]), UTF8STRC("ac3")))
 							{
 								audFile = true;
 							}
-							else if (Text::StrEqualsICase(&sbuff[i + j + 2], (const UTF8Char*)"wav"))
+							else if (Text::StrEqualsICaseC(&sbuff[i + j + 2], (UOSInt)(sptr - &sbuff[i + j + 2]), UTF8STRC("wav")))
 							{
 								audFile = true;
 							}

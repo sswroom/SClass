@@ -35,15 +35,16 @@ void SSWR::AVIRead::AVIRXMLWalkForm::LoadFile(const UTF8Char *fileName)
 	IO::FileStream *fs;
 	Text::XMLReader *reader;
 	Text::XMLReader::ParseMode mode;
+	UOSInt fileNameLen = Text::StrCharCnt(fileName);
 	UOSInt i;
 	this->lvXML->ClearItems();
 	this->txtFile->SetText(fileName);
 	i = Text::StrLastIndexOf(fileName, '.');
-	if (Text::StrEqualsICase(&fileName[i + 1], (const UTF8Char*)"html"))
+	if (Text::StrEqualsICaseC(&fileName[i + 1], fileNameLen - i - 1, UTF8STRC("html")))
 	{
 		mode = Text::XMLReader::PM_HTML;
 	}
-	else if (Text::StrEqualsICase(&fileName[i + 1], (const UTF8Char*)"htm"))
+	else if (Text::StrEqualsICaseC(&fileName[i + 1], fileNameLen - i - 1, UTF8STRC("htm")))
 	{
 		mode = Text::XMLReader::PM_HTML;
 	}

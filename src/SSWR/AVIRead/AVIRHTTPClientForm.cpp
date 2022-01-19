@@ -70,7 +70,8 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnRequestClicked(void *userObj
 	me->noShutdown = me->chkNoShutdown->IsChecked();
 	me->reqMeth = (const Char*)me->cboMethod->GetSelectedItem();
 	me->reqOSClient = me->chkOSClient->IsChecked();
-	if (Text::StrEqualsICase(me->reqMeth, "GET") || Text::StrEqualsICase(me->reqMeth, "DELETE"))
+	UOSInt methodLen = Text::StrCharCnt(me->reqMeth);
+	if (Text::StrEqualsICaseC((const UTF8Char*)me->reqMeth, methodLen, UTF8STRC("GET")) || Text::StrEqualsICaseC((const UTF8Char*)me->reqMeth, methodLen, UTF8STRC("DELETE")))
 	{
 		UOSInt i = 0;
 		UOSInt j = me->params->GetCount();
@@ -924,7 +925,7 @@ SSWR::AVIRead::AVIRHTTPClientForm::HTTPCookie *SSWR::AVIRead::AVIRHTTPClientForm
 		}
 		else if (Text::StrStartsWithC(sarr[0].v, sarr[0].len, UTF8STRC("Domain=")))
 		{
-			if (Text::StrEqualsICase(domain, &sarr[0].v[7]))
+			if (Text::StrEqualsICaseC(domain, (UOSInt)(domainEnd - domain), &sarr[0].v[7], sarr[0].len - 7))
 			{
 
 			}

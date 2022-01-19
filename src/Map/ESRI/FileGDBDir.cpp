@@ -8,11 +8,12 @@
 
 Map::ESRI::FileGDBTable *Map::ESRI::FileGDBDir::GetTable(const UTF8Char *name)
 {
+	UOSInt nameLen = Text::StrCharCnt(name);
 	UOSInt i = this->tables->GetCount();
 	while (i-- > 0)
 	{
 		FileGDBTable *table = this->tables->GetItem(i);
-		if (Text::StrEqualsICase(table->GetName(), name))
+		if (table->GetName()->EqualsICase(name, nameLen))
 		{
 			return table;
 		}
@@ -42,7 +43,7 @@ UOSInt Map::ESRI::FileGDBDir::GetTableNames(Data::ArrayList<const UTF8Char*> *na
 	UOSInt j = this->tables->GetCount();
 	while (i < j)
 	{
-		names->Add(this->tables->GetItem(i)->GetName());
+		names->Add(this->tables->GetItem(i)->GetName()->v);
 		i++;
 	}
 	return j;

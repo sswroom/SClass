@@ -170,7 +170,6 @@ UOSInt Text::TextBinEnc::FormEncoding::EncodeBin(Text::StringBuilderUTF *sb, con
 
 UOSInt Text::TextBinEnc::FormEncoding::CalcBinSize(const UTF8Char *str, UOSInt strLen)
 {
-	UInt8 v;
 	UTF8Char c;
 	UOSInt retSize = 0;
 

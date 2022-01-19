@@ -579,7 +579,7 @@ Net::ACMEConn::Challenge *Net::ACMEConn::OrderAuthorize(Text::String *authorizeU
 		DEL_CLASS(cli);
 
 		Text::CString sAuthType = AuthorizeTypeGetName(authType);
-		if (sAuthType.v == 0 || Text::StrEqualsICase(sAuthType.v, (const UTF8Char*)"UNKNOWN"))
+		if (sAuthType.v == 0 || Text::StrEqualsICaseC(sAuthType.v, sAuthType.len, UTF8STRC("UNKNOWN")))
 		{
 			return 0;
 		}

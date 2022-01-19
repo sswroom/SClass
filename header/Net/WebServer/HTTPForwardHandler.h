@@ -19,7 +19,7 @@ namespace Net
 
 			typedef void (__stdcall *ReqHandler)(void *userObj, Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp);
 		private:
-			Data::ArrayList<const UTF8Char *> *forwardAddrs;
+			Data::ArrayList<Text::String *> *forwardAddrs;
 			Data::ArrayList<Text::String *> *injHeaders;
 			UOSInt nextURL;
 			Sync::Mutex *mut;
@@ -29,7 +29,7 @@ namespace Net
 			ReqHandler reqHdlr;
 			void *reqHdlrObj;
 
-			virtual const UTF8Char *GetNextURL(Net::WebServer::IWebRequest *req);
+			virtual Text::String *GetNextURL(Net::WebServer::IWebRequest *req);
 		public:
 			HTTPForwardHandler(Net::SocketFactory *sockf, Net::SSLEngine *ssl, const UTF8Char *forwardURL, ForwardType fwdType);
 		protected:

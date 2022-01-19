@@ -49,13 +49,13 @@ SSWR::OrganMgr::OrganEnvWeb::OrganEnvWeb() : OrganEnv()
 		this->errType = ERR_CONFIG;
 		return;
 	}
-	this->cfgDSN = cfg->GetValue((const UTF8Char*)"DBDSN");
-	this->cfgUID = cfg->GetValue((const UTF8Char*)"DBUID");
-	this->cfgPassword = cfg->GetValue((const UTF8Char*)"DBPwd");
-	this->cfgImgDirBase = cfg->GetValue((const UTF8Char*)"ImageDir");
-	this->cfgDataPath = cfg->GetValue((const UTF8Char*)"DataDir");
-	this->cfgCacheDir = cfg->GetValue((const UTF8Char*)"CacheDir");
-	Text::String *userId = cfg->GetValue((const UTF8Char*)"WebUser");
+	this->cfgDSN = cfg->GetValue(UTF8STRC("DBDSN"));
+	this->cfgUID = cfg->GetValue(UTF8STRC("DBUID"));
+	this->cfgPassword = cfg->GetValue(UTF8STRC("DBPwd"));
+	this->cfgImgDirBase = cfg->GetValue(UTF8STRC("ImageDir"));
+	this->cfgDataPath = cfg->GetValue(UTF8STRC("DataDir"));
+	this->cfgCacheDir = cfg->GetValue(UTF8STRC("CacheDir"));
+	Text::String *userId = cfg->GetValue(UTF8STRC("WebUser"));
 
 	if (this->cfgImgDirBase == 0 || this->cfgImgDirBase->leng == 0 || this->cfgDataPath == 0 || this->cfgDataPath->v[0] == 0 || this->cfgCacheDir == 0 || this->cfgCacheDir->v[0] == 0)
 	{
@@ -564,6 +564,7 @@ UOSInt SSWR::OrganMgr::OrganEnvWeb::GetSpeciesImages(Data::ArrayList<OrganImageI
 	UTF8Char sbuff[512];
 	UTF8Char sbuff2[512];
 	UTF8Char *sptr;
+	UTF8Char *sptr2;
 	UTF8Char *cols[4];
 	Int32 newFlags = 0;
 	const UTF8Char *coverName = sp->GetPhoto();
@@ -693,7 +694,7 @@ UOSInt SSWR::OrganMgr::OrganEnvWeb::GetSpeciesImages(Data::ArrayList<OrganImageI
 			ImageSetting *imgSet;
 		*/
 
-		while (IO::Path::FindNextFile(sptr, sess, 0, &pt, 0))
+		while ((sptr2 = IO::Path::FindNextFile(sptr, sess, 0, &pt, 0)) != 0)
 		{
 			if (pt == IO::Path::PathType::File)
 			{
@@ -711,7 +712,7 @@ UOSInt SSWR::OrganMgr::OrganEnvWeb::GetSpeciesImages(Data::ArrayList<OrganImageI
 				{
 
 				}
-				else if (Text::StrEqualsICase(&sptr[i], (const UTF8Char*)".JPG"))
+				else if (Text::StrEqualsICaseC(&sptr[i], (UOSInt)(sptr2 - &sptr[i]), UTF8STRC(".JPG")))
 				{
 					Media::EXIFData *exif = ParseJPGExif(sbuff);
 					NEW_CLASS(imgItem, OrganImageItem(this->userId));
@@ -739,7 +740,7 @@ UOSInt SSWR::OrganMgr::OrganEnvWeb::GetSpeciesImages(Data::ArrayList<OrganImageI
 					newFlags |= 1;
 					i++;
 				}
-				else if (Text::StrEqualsICase(&sptr[i], (const UTF8Char*)".TIF"))
+				else if (Text::StrEqualsICaseC(&sptr[i], (UOSInt)(sptr2 - &sptr[i]), UTF8STRC(".TIF")))
 				{
 					Media::EXIFData *exif = ParseTIFExif(sbuff);
 					NEW_CLASS(imgItem, OrganImageItem(this->userId));
@@ -766,7 +767,7 @@ UOSInt SSWR::OrganMgr::OrganEnvWeb::GetSpeciesImages(Data::ArrayList<OrganImageI
 					newFlags |= 1;
 					retCnt++;
 				}
-				else if (Text::StrEqualsICase(&sptr[i], (const UTF8Char*)".PCX") || Text::StrEqualsICase(&sptr[i], (const UTF8Char*)".GIF") || Text::StrEqualsICase(&sptr[i], (const UTF8Char*)".PNG"))
+				else if (Text::StrEqualsICaseC(&sptr[i], (UOSInt)(sptr2 - &sptr[i]), UTF8STRC(".PCX")) || Text::StrEqualsICaseC(&sptr[i], (UOSInt)(sptr2 - &sptr[i]), UTF8STRC(".GIF")) || Text::StrEqualsICaseC(&sptr[i], (UOSInt)(sptr2 - &sptr[i]), UTF8STRC(".PNG")))
 				{
 					NEW_CLASS(imgItem, OrganImageItem(this->userId));
 					imgItem->SetDispName(sptr);
@@ -778,7 +779,7 @@ UOSInt SSWR::OrganMgr::OrganEnvWeb::GetSpeciesImages(Data::ArrayList<OrganImageI
 					newFlags |= 1;
 					retCnt++;
 				}
-				else if (Text::StrEqualsICase(&sptr[i], (const UTF8Char*)".AVI") || Text::StrEqualsICase(&sptr[i], (const UTF8Char*)".MOV") || Text::StrEqualsICase(&sptr[i], (const UTF8Char*)".MTS") || Text::StrEqualsICase(&sptr[i], (const UTF8Char*)".M2TS"))
+				else if (Text::StrEqualsICaseC(&sptr[i], (UOSInt)(sptr2 - &sptr[i]), UTF8STRC(".AVI")) || Text::StrEqualsICaseC(&sptr[i], (UOSInt)(sptr2 - &sptr[i]), UTF8STRC(".MOV")) || Text::StrEqualsICaseC(&sptr[i], (UOSInt)(sptr2 - &sptr[i]), UTF8STRC(".MTS")) || Text::StrEqualsICaseC(&sptr[i], (UOSInt)(sptr2 - &sptr[i]), UTF8STRC(".M2TS")))
 				{
 					NEW_CLASS(imgItem, OrganImageItem(this->userId));
 					imgItem->SetDispName(sptr);
@@ -790,7 +791,7 @@ UOSInt SSWR::OrganMgr::OrganEnvWeb::GetSpeciesImages(Data::ArrayList<OrganImageI
 					newFlags |= 2;
 					retCnt++;
 				}
-				else if (Text::StrEqualsICase(&sptr[i], (const UTF8Char*)".WAV"))
+				else if (Text::StrEqualsICaseC(&sptr[i], (UOSInt)(sptr2 - &sptr[i]), UTF8STRC(".WAV")))
 				{
 					NEW_CLASS(imgItem, OrganImageItem(this->userId));
 					imgItem->SetDispName(sptr);
@@ -1227,7 +1228,7 @@ SSWR::OrganMgr::OrganSpecies *SSWR::OrganMgr::OrganEnvWeb::GetSpecies(Int32 spec
 UTF8Char *SSWR::OrganMgr::OrganEnvWeb::GetSpeciesDir(OrganSpecies *sp, UTF8Char *sbuff)
 {
 	UTF8Char *sptr;
-	if (this->currCate->srcDir->IndexOf((const UTF8Char*)":\\") != INVALID_INDEX)
+	if (this->currCate->srcDir->IndexOf(UTF8STRC(":\\")) != INVALID_INDEX)
 	{
 		sptr = this->currCate->srcDir->ConcatTo(sbuff);
 		*sptr++ = IO::Path::PATH_SEPERATOR;
@@ -1384,41 +1385,42 @@ SSWR::OrganMgr::OrganEnvWeb::FileStatus SSWR::OrganMgr::OrganEnvWeb::AddSpeciesF
 	UOSInt i;
 	UOSInt j;
 	Int32 fileType = 0;
+	UOSInt fileNameLen = Text::StrCharCnt(fileName);
 	i = Text::StrLastIndexOf(fileName, IO::Path::PATH_SEPERATOR);
 	j = Text::StrLastIndexOf(&fileName[i + 1], '.');
 	if (j == INVALID_INDEX)
 	{
 		return FS_NOTSUPPORT;
 	}
-	if (Text::StrEqualsICase(&fileName[i + j + 2], (const UTF8Char*)"JPG"))
+	if (Text::StrEqualsICaseC(&fileName[i + j + 2], fileNameLen - i - j - 2, UTF8STRC("JPG")))
 	{
 		fileType = 1;
 	}
-	else if (Text::StrEqualsICase(&fileName[i + j + 2], (const UTF8Char*)"TIF"))
+	else if (Text::StrEqualsICaseC(&fileName[i + j + 2], fileNameLen - i - j - 2, UTF8STRC("TIF")))
 	{
 		fileType = 1;
 	}
-	else if (Text::StrEqualsICase(&fileName[i + j + 2], (const UTF8Char*)"PCX"))
+	else if (Text::StrEqualsICaseC(&fileName[i + j + 2], fileNameLen - i - j - 2, UTF8STRC("PCX")))
 	{
 		fileType = 1;
 	}
-	else if (Text::StrEqualsICase(&fileName[i + j + 2], (const UTF8Char*)"GIF"))
+	else if (Text::StrEqualsICaseC(&fileName[i + j + 2], fileNameLen - i - j - 2, UTF8STRC("GIF")))
 	{
 		fileType = 1;
 	}
-	else if (Text::StrEqualsICase(&fileName[i + j + 2], (const UTF8Char*)"PNG"))
+	else if (Text::StrEqualsICaseC(&fileName[i + j + 2], fileNameLen - i - j - 2, UTF8STRC("PNG")))
 	{
 		fileType = 1;
 	}
-	else if (Text::StrEqualsICase(&fileName[i + j + 2], (const UTF8Char*)"AVI"))
+	else if (Text::StrEqualsICaseC(&fileName[i + j + 2], fileNameLen - i - j - 2, UTF8STRC("AVI")))
 	{
 		fileType = 2;
 	}
-	else if (Text::StrEqualsICase(&fileName[i + j + 2], (const UTF8Char*)"MOV"))
+	else if (Text::StrEqualsICaseC(&fileName[i + j + 2], fileNameLen - i - j - 2, UTF8STRC("MOV")))
 	{
 		fileType = 2;
 	}
-	else if (Text::StrEqualsICase(&fileName[i + j + 2], (const UTF8Char*)"WAV"))
+	else if (Text::StrEqualsICaseC(&fileName[i + j + 2], fileNameLen - i - j - 2, UTF8STRC("WAV")))
 	{
 		fileType = 3;
 	}
@@ -1439,7 +1441,7 @@ SSWR::OrganMgr::OrganEnvWeb::FileStatus SSWR::OrganMgr::OrganEnvWeb::AddSpeciesF
 			return FS_ERROR;
 		}
 		readBuff = MemAlloc(UInt8, 1048576);
-		NEW_CLASS(mstm, IO::MemoryStream((Int32)fs->GetLength(), (const UTF8Char*)"OrganEnv.AddSpeciesFile"));
+		NEW_CLASS(mstm, IO::MemoryStream((Int32)fs->GetLength(), UTF8STRC("OrganEnv.AddSpeciesFile")));
 		while (true)
 		{
 			readSize = fs->Read(readBuff, 1048576);
@@ -1971,6 +1973,7 @@ SSWR::OrganMgr::OrganEnvWeb::FileStatus SSWR::OrganMgr::OrganEnvWeb::AddSpeciesW
 	OrganImageItem *imgItem;
 	WebFileInfo *wfile;
 	SpeciesInfo *spInfo;
+	UOSInt imgURLLen = Text::StrCharCnt(imgURL);
 	NEW_CLASS(imgItems, Data::ArrayList<OrganImageItem*>());
 	this->GetSpeciesImages(imgItems, sp);
 	i = imgItems->GetCount();
@@ -1980,7 +1983,7 @@ SSWR::OrganMgr::OrganEnvWeb::FileStatus SSWR::OrganMgr::OrganEnvWeb::AddSpeciesW
 		imgItem = imgItems->GetItem(i);
 		if (imgItem->GetFileType() == OrganImageItem::FT_WEB_IMAGE || imgItem->GetFileType() == OrganImageItem::FT_WEBFILE)
 		{
-			if (imgItem->GetImgURL()->Equals(imgURL))
+			if (imgItem->GetImgURL()->Equals(imgURL, imgURLLen))
 			{
 				found = true;
 			}
@@ -2110,6 +2113,7 @@ SSWR::OrganMgr::OrganEnvWeb::FileStatus SSWR::OrganMgr::OrganEnvWeb::AddSpeciesW
 	UOSInt i;
 	Data::ArrayList<OrganImageItem*> *imgItems;
 	OrganImageItem *imgItem;
+	UOSInt imgURLLen = Text::StrCharCnt(imgURL);
 	NEW_CLASS(imgItems, Data::ArrayList<OrganImageItem*>());
 	this->GetSpeciesImages(imgItems, sp);
 	i = imgItems->GetCount();
@@ -2119,7 +2123,7 @@ SSWR::OrganMgr::OrganEnvWeb::FileStatus SSWR::OrganMgr::OrganEnvWeb::AddSpeciesW
 		imgItem = imgItems->GetItem(i);
 		if (imgItem->GetFileType() == OrganImageItem::FT_WEB_IMAGE || imgItem->GetFileType() == OrganImageItem::FT_WEBFILE)
 		{
-			if (imgItem->GetImgURL()->Equals(imgURL))
+			if (imgItem->GetImgURL()->Equals(imgURL, imgURLLen))
 			{
 				found = true;
 			}
@@ -2254,7 +2258,7 @@ Bool SSWR::OrganMgr::OrganEnvWeb::UpdateSpeciesWebFileOld(OrganSpecies *sp, cons
 	}
 
 	Bool found = false;
-	NEW_CLASS(mstm, IO::MemoryStream((const UTF8Char*)"SSWR.OrganMgr.OrganEnv.UpdateSpeciesWebFile.mstm"));
+	NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SSWR.OrganMgr.OrganEnv.UpdateSpeciesWebFile.mstm")));
 	NEW_CLASS(writer, Text::UTF8Writer(mstm));
 	writer->WriteSignature();
 
@@ -2621,7 +2625,7 @@ Bool SSWR::OrganMgr::OrganEnvWeb::MoveImages(Data::ArrayList<OrganImages*> *imgL
 			}
 			*sptr2++ = IO::Path::PATH_SEPERATOR;
 			sptr2 = img->GetImgItem()->GetDispName()->ConcatTo(sptr2);
-			if (img->GetImgItem()->GetFullName()->Equals(sbuff))
+			if (img->GetImgItem()->GetFullName()->Equals(sbuff, (UOSInt)(sptr2 - sbuff)))
 			{
 				break;
 			}
@@ -2689,7 +2693,7 @@ Bool SSWR::OrganMgr::OrganEnvWeb::MoveImages(Data::ArrayList<OrganImages*> *imgL
 			*sptr++ = IO::Path::PATH_SEPERATOR;
 			Text::StrConcatC(sptr, UTF8STRC("web.txt"));
 			Data::ArrayList<Text::String *> webLines;
-			UTF8Char *sarr[4];
+			Text::PString sarr[4];
 			Bool found;
 			NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
 			NEW_CLASS(reader, IO::StreamReader(fs, 65001));
@@ -2697,7 +2701,7 @@ Bool SSWR::OrganMgr::OrganEnvWeb::MoveImages(Data::ArrayList<OrganImages*> *imgL
 			while (reader->ReadLine(&sb, 512))
 			{
 				sb2.AppendC(sb.ToString(), sb.GetLength());
-				if (Text::StrSplit(sarr, 4, sb2.ToString(), '\t') == 3)
+				if (Text::StrSplitP(sarr, 4, sb2.ToString(), sb2.GetLength(), '\t') == 3)
 				{
 					found = false;
 					i = j;
@@ -2706,7 +2710,7 @@ Bool SSWR::OrganMgr::OrganEnvWeb::MoveImages(Data::ArrayList<OrganImages*> *imgL
 						img = imgList->GetItem(i);
 						if (img->GetImgItem()->GetFileType() == OrganImageItem::FT_WEB_IMAGE)
 						{
-							if (img->GetImgItem()->GetDispName()->EndsWith(sarr[0]))
+							if (img->GetImgItem()->GetDispName()->EndsWith(sarr[0].v, sarr[0].len))
 							{
 								found = true;
 								break;
@@ -3660,6 +3664,7 @@ void SSWR::OrganMgr::OrganEnvWeb::UpgradeFileStruct(OrganSpecies *sp)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
+	UTF8Char *sptr2;
 	Int32 newFlags = 0;
 	const UTF8Char *coverName = sp->GetPhoto();
 	IO::Path::FindFileSession *sess;
@@ -3692,7 +3697,7 @@ void SSWR::OrganMgr::OrganEnvWeb::UpgradeFileStruct(OrganSpecies *sp)
 	sess = IO::Path::FindFile(sbuff);
 	if (sess)
 	{
-		while (IO::Path::FindNextFile(sptr, sess, 0, &pt, 0))
+		while ((sptr2 = IO::Path::FindNextFile(sptr, sess, 0, &pt, 0)) != 0)
 		{
 			if (pt == IO::Path::PathType::File)
 			{
@@ -3710,7 +3715,7 @@ void SSWR::OrganMgr::OrganEnvWeb::UpgradeFileStruct(OrganSpecies *sp)
 				{
 
 				}
-				else if (Text::StrEqualsICase(&sptr[i], (const UTF8Char*)".JPG") || Text::StrEqualsICase(&sptr[i], (const UTF8Char*)".PCX") || Text::StrEqualsICase(&sptr[i], (const UTF8Char*)".WAV"))
+				else if (Text::StrEqualsICaseC(&sptr[i], (UOSInt)(sptr2 - &sptr[i]), UTF8STRC(".JPG")) || Text::StrEqualsICaseC(&sptr[i], (UOSInt)(sptr2 - &sptr[i]), UTF8STRC(".PCX")) || Text::StrEqualsICaseC(&sptr[i], (UOSInt)(sptr2 - &sptr[i]), UTF8STRC(".WAV")))
 				{
 					Int32 fileId = 0;
 					this->AddSpeciesFile(sp, sbuff, isCoverPhoto, true, &fileId);
@@ -3993,7 +3998,7 @@ Media::ImageList *SSWR::OrganMgr::OrganEnvWeb::ParseSpImage(OrganSpecies *sp)
 	sess = IO::Path::FindFile(sbuff);
 	if (sess)
 	{
-		if (IO::Path::FindNextFile(sptr, sess, 0, &pt, 0))
+		if ((sptr2 = IO::Path::FindNextFile(sptr, sess, 0, &pt, 0)) != 0)
 		{
 			if (pt == IO::Path::PathType::File)
 			{
@@ -4002,22 +4007,22 @@ Media::ImageList *SSWR::OrganMgr::OrganEnvWeb::ParseSpImage(OrganSpecies *sp)
 				{
 
 				}
-				else if (Text::StrEqualsICase(&sptr[i], (const UTF8Char*)".JPG"))
+				else if (Text::StrEqualsICaseC(&sptr[i], (UOSInt)(sptr2 - &sptr[i]), UTF8STRC(".JPG")))
 				{
 					NEW_CLASS(fd, IO::StmData::FileData(sbuff, false));
 					pobj = this->parsers->ParseFile(fd, 0);
 					DEL_CLASS(fd);
 				}
-				else if (Text::StrEqualsICase(&sptr[i], (const UTF8Char*)".TIF"))
+				else if (Text::StrEqualsICaseC(&sptr[i], (UOSInt)(sptr2 - &sptr[i]), UTF8STRC(".TIF")))
 				{
 					NEW_CLASS(fd, IO::StmData::FileData(sbuff, false));
 					pobj = this->parsers->ParseFile(fd, 0);
 					DEL_CLASS(fd);
 				}
-				else if (Text::StrEqualsICase(&sptr[i], (const UTF8Char*)".AVI"))
+				else if (Text::StrEqualsICaseC(&sptr[i], (UOSInt)(sptr2 - &sptr[i]), UTF8STRC(".AVI")))
 				{
 				}
-				else if (Text::StrEqualsICase(&sptr[i], (const UTF8Char*)".WAV"))
+				else if (Text::StrEqualsICaseC(&sptr[i], (UOSInt)(sptr2 - &sptr[i]), UTF8STRC(".WAV")))
 				{
 				}
 			}
@@ -4689,7 +4694,7 @@ void SSWR::OrganMgr::OrganEnvWeb::UpgradeDB2()
 						{
 							id = this->db->GetLastIdentity32();
 							
-							if (sp->photoId == 0 && sp->photoWId == 0 && sp->photoName && sp->photoName->StartsWith((const UTF8Char*)"web\\") && Text::StrStartsWith(cols[0], &sp->photoName->v[4]))
+							if (sp->photoId == 0 && sp->photoWId == 0 && sp->photoName && sp->photoName->StartsWith(UTF8STRC("web\\")) && Text::StrStartsWith(cols[0], &sp->photoName->v[4]))
 							{
 								isCover = true;
 							}
@@ -4769,7 +4774,7 @@ void SSWR::OrganMgr::OrganEnvWeb::UpgradeDB2()
 			DEL_CLASS(reader);
 			DEL_CLASS(fs);
 
-			if (sp->photoId == 0 && sp->photoWId == 0 && sp->photoName && sp->photoName->StartsWith((const UTF8Char*)"web\\"))
+			if (sp->photoId == 0 && sp->photoWId == 0 && sp->photoName && sp->photoName->StartsWith(UTF8STRC("web\\")))
 			{
 				if (coverFound != 1)
 				{

@@ -68,18 +68,18 @@ Bool Net::WebServer::HTTPServerUtil::SendContent(Net::WebServer::IWebRequest *re
 	if (contLeng > 1024)
 	{
 		Bool needComp = MIMEToCompress(mime, mimeLen);
-		UTF8Char *sarr[10];
+		Text::PString sarr[10];
 		Text::StringBuilderUTF8 sb;
 
 		if (needComp && req->GetHeaderC(&sb, UTF8STRC("Accept-Encoding")))
 		{
 			Net::BrowserInfo::BrowserType browser = req->GetBrowser();
 			Manage::OSInfo::OSType os = req->GetOS();
-			j = Text::StrSplitTrim(sarr, 10, sb.ToString(), ',');
+			j = Text::StrSplitTrimP(sarr, 10, sb.ToString(), sb.GetLength(), ',');
 			i = 0;
 			while (i < j)
 			{
-				if (Text::StrEqualsICase(sarr[i], (const UTF8Char*)"gzip"))
+				if (Text::StrEqualsICaseC(sarr[i].v, sarr[i].len, UTF8STRC("gzip")))
 				{
 					if (browser != Net::BrowserInfo::BT_IE && browser != Net::BrowserInfo::BT_SAFARI && os != Manage::OSInfo::OT_IPHONE && os != Manage::OSInfo::OT_IPAD)
 					{
@@ -114,7 +114,7 @@ Bool Net::WebServer::HTTPServerUtil::SendContent(Net::WebServer::IWebRequest *re
 						break;
 					}
 				}
-				else if (Text::StrEqualsICase(sarr[i], (const UTF8Char*)"deflate"))
+				else if (Text::StrEqualsICaseC(sarr[i].v, sarr[i].len, UTF8STRC("deflate")))
 				{
 					if (browser != Net::BrowserInfo::BT_IE)
 					{
@@ -173,17 +173,17 @@ Bool Net::WebServer::HTTPServerUtil::SendContent(Net::WebServer::IWebRequest *re
 	if (contLeng > 1024)
 	{
 		Bool needComp = MIMEToCompress(mime, mimeLen);
-		UTF8Char *sarr[10];
+		Text::PString sarr[10];
 		Text::StringBuilderUTF8 sb;
 
 		if (needComp && req->GetHeaderC(&sb, UTF8STRC("Accept-Encoding")))
 		{
 			Net::BrowserInfo::BrowserType browser = req->GetBrowser();
-			j = Text::StrSplitTrim(sarr, 10, sb.ToString(), ',');
+			j = Text::StrSplitTrimP(sarr, 10, sb.ToString(), sb.GetLength(), ',');
 			i = 0;
 			while (i < j)
 			{
-				if (Text::StrEqualsICase(sarr[i], (const UTF8Char*)"gzip"))
+				if (Text::StrEqualsICaseC(sarr[i].v, sarr[i].len, UTF8STRC("gzip")))
 				{
 					resp->AddHeaderC(UTF8STRC("Content-Encoding"), UTF8STRC("gzip"));
 					resp->AddHeaderC(UTF8STRC("Transfer-Encoding"), UTF8STRC("chunked"));
@@ -215,7 +215,7 @@ Bool Net::WebServer::HTTPServerUtil::SendContent(Net::WebServer::IWebRequest *re
 					contSent = true;
 					break;
 				}
-				else if (Text::StrEqualsICase(sarr[i], (const UTF8Char*)"deflate"))
+				else if (Text::StrEqualsICaseC(sarr[i].v, sarr[i].len, UTF8STRC("deflate")))
 				{
 					if (browser != Net::BrowserInfo::BT_IE)
 					{

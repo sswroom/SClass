@@ -34,12 +34,13 @@ IO::ParserType Parser::FileParser::SPDParser::GetParserType()
 IO::ParsedObject *Parser::FileParser::SPDParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
 	UTF8Char sbuff[1024];
+	UTF8Char *sptr;
 	UOSInt i;
 	if (!fd->IsFullFile())
 		return 0;
-	fd->GetFullFileName()->ConcatTo(sbuff);
+	sptr = fd->GetFullFileName()->ConcatTo(sbuff);
 	i = Text::StrLastIndexOf(sbuff, '.');
-	if (i == INVALID_INDEX || !Text::StrEqualsICase(&sbuff[i], (const UTF8Char*)".SPD"))
+	if (i == INVALID_INDEX || !Text::StrEqualsICaseC(&sbuff[i], (UOSInt)(sptr - &sbuff[i]), UTF8STRC(".SPD")))
 	{
 		return 0;
 	}

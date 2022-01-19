@@ -738,46 +738,47 @@ Bool DB::DBMS::SysVarExist(DB::DBMS::SessionInfo *sess, const UTF8Char *varName,
 	return false;
 }
 
-const UTF8Char *DB::DBMS::SysVarGet(Text::StringBuilderUTF *sb, DB::DBMS::SessionInfo *sess, const UTF8Char *varName)
+const UTF8Char *DB::DBMS::SysVarGet(Text::StringBuilderUTF *sb, DB::DBMS::SessionInfo *sess, const UTF8Char *varName, UOSInt nameLen)
 {
 	Bool isGlobal = false;
-	if (Text::StrStartsWithICase(varName, (const UTF8Char*)"GLOBAL."))
+	if (Text::StrStartsWithICaseC(varName, nameLen, UTF8STRC("GLOBAL.")))
 	{
 		isGlobal = true;
 		varName += 7;
+		nameLen -= 7;
 	}
 
-	if (Text::StrEqualsICase(varName, (const UTF8Char*)"autocommit"))
+	if (Text::StrEqualsICaseC(varName, nameLen, UTF8STRC("autocommit")))
 	{
-		sb->Append(sess->autoCommit?(const UTF8Char*)"1":(const UTF8Char*)"0");
+		sb->AppendChar(sess->autoCommit?'1':'0', 1);
 		return varName + 10;
 	}
-	else if (Text::StrEqualsICase(varName, (const UTF8Char*)"auto_increment_increment"))
+	else if (Text::StrEqualsICaseC(varName, nameLen, UTF8STRC("auto_increment_increment")))
 	{
 		sb->AppendI32(sess->autoIncInc);
 		return varName + 24;
 	}
-	else if (Text::StrEqualsICase(varName, (const UTF8Char*)"character_set_server"))
+	else if (Text::StrEqualsICaseC(varName, nameLen, UTF8STRC("character_set_server")))
 	{
 		sb->AppendC(UTF8STRC("utf8mb4"));
 		return varName + 20;
 	}
-	else if (Text::StrEqualsICase(varName, (const UTF8Char*)"collation_server"))
+	else if (Text::StrEqualsICaseC(varName, nameLen, UTF8STRC("collation_server")))
 	{
 		sb->AppendC(UTF8STRC("utf8mb4_0900_ai_ci"));
 		return varName + 16;
 	}
-	else if (Text::StrEqualsICase(varName, (const UTF8Char*)"lower_case_table_names"))
+	else if (Text::StrEqualsICaseC(varName, nameLen, UTF8STRC("lower_case_table_names")))
 	{
 		sb->AppendI32(1);
 		return varName + 22;
 	}
-	else if (Text::StrEqualsICase(varName, (const UTF8Char*)"max_allowed_packet"))
+	else if (Text::StrEqualsICaseC(varName, nameLen, UTF8STRC("max_allowed_packet")))
 	{
 		sb->AppendU32(sess->params.clientMaxPacketSize);
 		return varName + 18;
 	}
-	else if (Text::StrEqualsICase(varName, (const UTF8Char*)"sql_mode"))
+	else if (Text::StrEqualsICaseC(varName, nameLen, UTF8STRC("sql_mode")))
 	{
 		Bool found = false;
 		if (sess->sqlModes & SQLM_ALLOW_INVALID_DATES)
@@ -896,7 +897,7 @@ const UTF8Char *DB::DBMS::SysVarGet(Text::StringBuilderUTF *sb, DB::DBMS::Sessio
 		}
 		return varName + 8;
 	}
-	else if (Text::StrEqualsICase(varName, (const UTF8Char*)"system_time_zone") || Text::StrEqualsICase(varName, (const UTF8Char*)"time_zone"))
+	else if (Text::StrEqualsICaseC(varName, nameLen, UTF8STRC("system_time_zone")) || Text::StrEqualsICaseC(varName, nameLen, UTF8STRC("time_zone")))
 	{
 		Data::DateTime dt;
 		dt.SetCurrTime();
@@ -933,48 +934,49 @@ void DB::DBMS::SysVarColumn(DB::DBMSReader *reader, UOSInt colIndex, const UTF8C
 		Text::StrConcat(Text::StrConcatC(sbuff, UTF8STRC("@@")), varName);
 		colName = sbuff;
 	}
+	UOSInt varNameLen = Text::StrCharCnt(varName);
 	
-	if (Text::StrEqualsICase(varName, (const UTF8Char*)"autocommit"))
+	if (Text::StrEqualsICaseC(varName, varNameLen, UTF8STRC("autocommit")))
 	{
 		reader->SetColumn(colIndex, colName, DB::DBUtil::CT_Bool);
 		return;
 	}
-	else if (Text::StrEqualsICase(varName, (const UTF8Char*)"auto_increment_increment"))
+	else if (Text::StrEqualsICaseC(varName, varNameLen, UTF8STRC("auto_increment_increment")))
 	{
 		reader->SetColumn(colIndex, colName, DB::DBUtil::CT_Int32);
 		return;
 	}
-	else if (Text::StrEqualsICase(varName, (const UTF8Char*)"character_set_server"))
+	else if (Text::StrEqualsICaseC(varName, varNameLen, UTF8STRC("character_set_server")))
 	{
 		reader->SetColumn(colIndex, colName, DB::DBUtil::CT_VarChar);
 		return;
 	}
-	else if (Text::StrEqualsICase(varName, (const UTF8Char*)"collation_server"))
+	else if (Text::StrEqualsICaseC(varName, varNameLen, UTF8STRC("collation_server")))
 	{
 		reader->SetColumn(colIndex, colName, DB::DBUtil::CT_VarChar);
 		return;
 	}
-	else if (Text::StrEqualsICase(varName, (const UTF8Char*)"lower_case_table_names"))
+	else if (Text::StrEqualsICaseC(varName, varNameLen, UTF8STRC("lower_case_table_names")))
 	{
 		reader->SetColumn(colIndex, colName, DB::DBUtil::CT_Int32);
 		return;
 	}
-	else if (Text::StrEqualsICase(varName, (const UTF8Char*)"max_allowed_packet"))
+	else if (Text::StrEqualsICaseC(varName, varNameLen, UTF8STRC("max_allowed_packet")))
 	{
 		reader->SetColumn(colIndex, colName, DB::DBUtil::CT_Int32);
 		return;
 	}
-	else if (Text::StrEqualsICase(varName, (const UTF8Char*)"sql_mode"))
+	else if (Text::StrEqualsICaseC(varName, varNameLen, UTF8STRC("sql_mode")))
 	{
 		reader->SetColumn(colIndex, colName, DB::DBUtil::CT_VarChar);
 		return;
 	}
-	else if (Text::StrEqualsICase(varName, (const UTF8Char*)"system_time_zone"))
+	else if (Text::StrEqualsICaseC(varName, varNameLen, UTF8STRC("system_time_zone")))
 	{
 		reader->SetColumn(colIndex, colName, DB::DBUtil::CT_VarChar);
 		return;
 	}
-	else if (Text::StrEqualsICase(varName, (const UTF8Char*)"time_zone"))
+	else if (Text::StrEqualsICaseC(varName, varNameLen, UTF8STRC("time_zone")))
 	{
 		reader->SetColumn(colIndex, colName, DB::DBUtil::CT_VarChar);
 		return;
@@ -984,7 +986,8 @@ void DB::DBMS::SysVarColumn(DB::DBMSReader *reader, UOSInt colIndex, const UTF8C
 
 Bool DB::DBMS::SysVarSet(DB::DBMS::SessionInfo *sess, Bool isGlobal, const UTF8Char *varName, Text::String *val)
 {
-	if (Text::StrEqualsICase(varName, (const UTF8Char*)"autocommit"))
+	UOSInt varNameLen = Text::StrCharCnt(varName);
+	if (Text::StrEqualsICaseC(varName, varNameLen, UTF8STRC("autocommit")))
 	{
 		Bool v;
 		if (val == 0)
@@ -1005,7 +1008,7 @@ Bool DB::DBMS::SysVarSet(DB::DBMS::SessionInfo *sess, Bool isGlobal, const UTF8C
 		}
 		return true;
 	}
-	else if (Text::StrEqualsICase(varName, (const UTF8Char*)"auto_increment_incremnt"))
+	else if (Text::StrEqualsICaseC(varName, varNameLen, UTF8STRC("auto_increment_incremnt")))
 	{
 		Int32 v;
 		if (val == 0)
@@ -1035,113 +1038,114 @@ Bool DB::DBMS::SysVarSet(DB::DBMS::SessionInfo *sess, Bool isGlobal, const UTF8C
 		}
 		return true;
 	}
-	else if (Text::StrEqualsICase(varName, (const UTF8Char*)"character_set_server"))
+	else if (Text::StrEqualsICaseC(varName, varNameLen, UTF8STRC("character_set_server")))
 	{
 	}
-	else if (Text::StrEqualsICase(varName, (const UTF8Char*)"collation_server"))
+	else if (Text::StrEqualsICaseC(varName, varNameLen, UTF8STRC("collation_server")))
 	{
 	}
-	else if (Text::StrEqualsICase(varName, (const UTF8Char*)"lower_case_table_names"))
+	else if (Text::StrEqualsICaseC(varName, varNameLen, UTF8STRC("lower_case_table_names")))
 	{
 	}
-	else if (Text::StrEqualsICase(varName, (const UTF8Char*)"max_allowed_packet"))
+	else if (Text::StrEqualsICaseC(varName, varNameLen, UTF8STRC("max_allowed_packet")))
 	{
 	}
-	else if (Text::StrEqualsICase(varName, (const UTF8Char*)"sql_mode"))
+	else if (Text::StrEqualsICaseC(varName, varNameLen, UTF8STRC("sql_mode")))
 	{
 		SQLMODE sqlMode = (SQLMODE)0;
 		Text::StringBuilderUTF8 sb;
-		UTF8Char *sarr[2];
+		Text::PString sarr[2];
 		UOSInt i;
 		sb.Append(val);
-		sarr[1] = sb.ToString();
+		sarr[1].v = sb.ToString();
+		sarr[1].len = sb.GetLength();
 		i = 2;
 		while (i == 2)
 		{
-			i = Text::StrSplitTrim(sarr, 2, sarr[1], ',');
-			if (Text::StrEqualsICase(sarr[0], (const UTF8Char*)"ALLOW_INVALID_DATES"))
+			i = Text::StrSplitTrimP(sarr, 2, sarr[1].v, sarr[1].len, ',');
+			if (Text::StrEqualsICaseC(sarr[0].v, sarr[0].len, UTF8STRC("ALLOW_INVALID_DATES")))
 			{
 				sqlMode = (SQLMODE)(sqlMode | SQLM_ALLOW_INVALID_DATES);
 			}
-			if (Text::StrEqualsICase(sarr[0], (const UTF8Char*)"ANSI_QUOTES"))
+			if (Text::StrEqualsICaseC(sarr[0].v, sarr[0].len, UTF8STRC("ANSI_QUOTES")))
 			{
 				sqlMode = (SQLMODE)(sqlMode | SQLM_ANSI_QUOTES);
 			}
-			if (Text::StrEqualsICase(sarr[0], (const UTF8Char*)"ERROR_FOR_DIVISION_BY_ZERO"))
+			if (Text::StrEqualsICaseC(sarr[0].v, sarr[0].len, UTF8STRC("ERROR_FOR_DIVISION_BY_ZERO")))
 			{
 				sqlMode = (SQLMODE)(sqlMode | SQLM_ERROR_FOR_DIVISION_BY_ZERO);
 			}
-			if (Text::StrEqualsICase(sarr[0], (const UTF8Char*)"HIGH_NOT_PRECEDENCE"))
+			if (Text::StrEqualsICaseC(sarr[0].v, sarr[0].len, UTF8STRC("HIGH_NOT_PRECEDENCE")))
 			{
 				sqlMode = (SQLMODE)(sqlMode | SQLM_HIGH_NOT_PRECEDENCE);
 			}
-			if (Text::StrEqualsICase(sarr[0], (const UTF8Char*)"IGNORE_SPACE"))
+			if (Text::StrEqualsICaseC(sarr[0].v, sarr[0].len, UTF8STRC("IGNORE_SPACE")))
 			{
 				sqlMode = (SQLMODE)(sqlMode | SQLM_IGNORE_SPACE);
 			}
-			if (Text::StrEqualsICase(sarr[0], (const UTF8Char*)"NO_AUTO_VALUE_ON_ZERO"))
+			if (Text::StrEqualsICaseC(sarr[0].v, sarr[0].len, UTF8STRC("NO_AUTO_VALUE_ON_ZERO")))
 			{
 				sqlMode = (SQLMODE)(sqlMode | SQLM_NO_AUTO_VALUE_ON_ZERO);
 			}
-			if (Text::StrEqualsICase(sarr[0], (const UTF8Char*)"NO_BACKSLASH_ESCAPES"))
+			if (Text::StrEqualsICaseC(sarr[0].v, sarr[0].len, UTF8STRC("NO_BACKSLASH_ESCAPES")))
 			{
 				sqlMode = (SQLMODE)(sqlMode | SQLM_NO_BACKSLASH_ESCAPES);
 			}
-			if (Text::StrEqualsICase(sarr[0], (const UTF8Char*)"NO_DIR_IN_CREATE"))
+			if (Text::StrEqualsICaseC(sarr[0].v, sarr[0].len, UTF8STRC("NO_DIR_IN_CREATE")))
 			{
 				sqlMode = (SQLMODE)(sqlMode | SQLM_NO_DIR_IN_CREATE);
 			}
-			if (Text::StrEqualsICase(sarr[0], (const UTF8Char*)"NO_ENGINE_SUBSTITUTION"))
+			if (Text::StrEqualsICaseC(sarr[0].v, sarr[0].len, UTF8STRC("NO_ENGINE_SUBSTITUTION")))
 			{
 				sqlMode = (SQLMODE)(sqlMode | SQLM_NO_ENGINE_SUBSTITUTION);
 			}
-			if (Text::StrEqualsICase(sarr[0], (const UTF8Char*)"NO_UNSIGNED_SUBTRACTION"))
+			if (Text::StrEqualsICaseC(sarr[0].v, sarr[0].len, UTF8STRC("NO_UNSIGNED_SUBTRACTION")))
 			{
 				sqlMode = (SQLMODE)(sqlMode | SQLM_NO_UNSIGNED_SUBTRACTION);
 			}
-			if (Text::StrEqualsICase(sarr[0], (const UTF8Char*)"NO_ZERO_DATE"))
+			if (Text::StrEqualsICaseC(sarr[0].v, sarr[0].len, UTF8STRC("NO_ZERO_DATE")))
 			{
 				sqlMode = (SQLMODE)(sqlMode | SQLM_NO_ZERO_DATE);
 			}
-			if (Text::StrEqualsICase(sarr[0], (const UTF8Char*)"NO_ZERO_IN_DATE"))
+			if (Text::StrEqualsICaseC(sarr[0].v, sarr[0].len, UTF8STRC("NO_ZERO_IN_DATE")))
 			{
 				sqlMode = (SQLMODE)(sqlMode | SQLM_NO_ZERO_IN_DATE);
 			}
-			if (Text::StrEqualsICase(sarr[0], (const UTF8Char*)"ONLY_FULL_GROUP_BY"))
+			if (Text::StrEqualsICaseC(sarr[0].v, sarr[0].len, UTF8STRC("ONLY_FULL_GROUP_BY")))
 			{
 				sqlMode = (SQLMODE)(sqlMode | SQLM_ONLY_FULL_GROUP_BY);
 			}
-			if (Text::StrEqualsICase(sarr[0], (const UTF8Char*)"PAD_CHAR_TO_FULL_LENGTH"))
+			if (Text::StrEqualsICaseC(sarr[0].v, sarr[0].len, UTF8STRC("PAD_CHAR_TO_FULL_LENGTH")))
 			{
 				sqlMode = (SQLMODE)(sqlMode | SQLM_PAD_CHAR_TO_FULL_LENGTH);
 			}
-			if (Text::StrEqualsICase(sarr[0], (const UTF8Char*)"PIPES_AS_CONCAT"))
+			if (Text::StrEqualsICaseC(sarr[0].v, sarr[0].len, UTF8STRC("PIPES_AS_CONCAT")))
 			{
 				sqlMode = (SQLMODE)(sqlMode | SQLM_PIPES_AS_CONCAT);
 			}
-			if (Text::StrEqualsICase(sarr[0], (const UTF8Char*)"REAL_AS_FLOAT"))
+			if (Text::StrEqualsICaseC(sarr[0].v, sarr[0].len, UTF8STRC("REAL_AS_FLOAT")))
 			{
 				sqlMode = (SQLMODE)(sqlMode | SQLM_REAL_AS_FLOAT);
 			}
-			if (Text::StrEqualsICase(sarr[0], (const UTF8Char*)"STRICT_ALL_TABLES"))
+			if (Text::StrEqualsICaseC(sarr[0].v, sarr[0].len, UTF8STRC("STRICT_ALL_TABLES")))
 			{
 				sqlMode = (SQLMODE)(sqlMode | SQLM_STRICT_ALL_TABLES);
 			}
-			if (Text::StrEqualsICase(sarr[0], (const UTF8Char*)"STRICT_TRANS_TABLES"))
+			if (Text::StrEqualsICaseC(sarr[0].v, sarr[0].len, UTF8STRC("STRICT_TRANS_TABLES")))
 			{
 				sqlMode = (SQLMODE)(sqlMode | SQLM_STRICT_TRANS_TABLES);
 			}
-			if (Text::StrEqualsICase(sarr[0], (const UTF8Char*)"TIME_TRUNCATE_FRACTIONAL"))
+			if (Text::StrEqualsICaseC(sarr[0].v, sarr[0].len, UTF8STRC("TIME_TRUNCATE_FRACTIONAL")))
 			{
 				sqlMode = (SQLMODE)(sqlMode | SQLM_TIME_TRUNCATE_FRACTIONAL);
 			}
 		}
 		sess->sqlModes = sqlMode;
 	}
-	else if (Text::StrEqualsICase(varName, (const UTF8Char*)"system_time_zone"))
+	else if (Text::StrEqualsICaseC(varName, varNameLen, UTF8STRC("system_time_zone")))
 	{
 	}
-	else if (Text::StrEqualsICase(varName, (const UTF8Char*)"time_zone"))
+	else if (Text::StrEqualsICaseC(varName, varNameLen, UTF8STRC("time_zone")))
 	{
 	}
 	return false;
@@ -1236,7 +1240,7 @@ Text::String *DB::DBMS::Evals(const UTF8Char **valPtr, DB::DBMS::SessionInfo *se
 		{
 			this->SysVarColumn(reader, colIndex, sb2.ToString(), colName);
 		}
-		if (this->SysVarGet(&sb, sess, sb2.ToString()) == 0)
+		if (this->SysVarGet(&sb, sess, sb2.ToString(), sb2.GetLength()) == 0)
 		{
 			*valid = false;
 
@@ -2267,12 +2271,12 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql)
 					if (c == '.')
 					{
 						*namePtr = 0;
-						if (Text::StrEqualsICase(nameBuff, (const UTF8Char*)"GLOBAL"))
+						if (Text::StrEqualsICaseC(nameBuff, (UOSInt)(namePtr - nameBuff), UTF8STRC("GLOBAL")))
 						{
 							isGlobal = true;
 							namePtr = nameBuff;
 						}
-						else if (Text::StrEqualsICase(nameBuff, (const UTF8Char*)"SESSION"))
+						else if (Text::StrEqualsICaseC(nameBuff, (UOSInt)(namePtr - nameBuff), UTF8STRC("SESSION")))
 						{
 							namePtr = nameBuff;
 						}
@@ -2290,7 +2294,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql)
 							Text::StringBuilderUTF8 sb;
 							sb.AppendC(UTF8STRC("#00000Unsupported syntax 'FROM'"));
 							SDEL_TEXT(sess->lastError);
-							sess->lastError = Text::StrCopyNew(sb.ToString());
+							sess->lastError = Text::StrCopyNewC(sb.ToString(), sb.GetLength());
 							return 0;
 						}
 					}
@@ -2898,7 +2902,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql)
 				{
 					row[0] = Text::String::NewNotNull((const UTF8Char*)sysVarList[i]);
 					sb.ClearStr();
-					SysVarGet(&sb, sess, row[0]->v);
+					SysVarGet(&sb, sess, row[0]->v, row[0]->leng);
 					row[1] = Text::String::New(sb.ToString(), sb.GetLength());
 					reader->AddRow(row);
 					i++;
@@ -2939,7 +2943,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql)
 							{
 								sb.ClearStr();
 								row[0] = Text::String::NewNotNull((const UTF8Char*)sysVarList[i]);
-								SysVarGet(&sb, sess, row[0]->v);
+								SysVarGet(&sb, sess, row[0]->v, row[0]->leng);
 								row[1] = Text::String::New(sb.ToString(), sb.GetLength());
 								reader->AddRow(row);
 							}

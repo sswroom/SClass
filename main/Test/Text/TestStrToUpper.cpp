@@ -18,6 +18,16 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	{
 		return 1;
 	}
+	sptr = Text::StrToUpperC(sbuff, UTF8STRC("aBcDe1FgHiJk"));
+	if (!Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("ABCDE1FGHIJK")))
+	{
+		return 1;
+	}
+	sptr = Text::StrToLowerC(sbuff, UTF8STRC("aBcDe1FgHiJk"));
+	if (!Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("abcde1fghijk")))
+	{
+		return 1;
+	}
 	if (!Text::StrEqualsICase((const UTF8Char*)"aBcDe1FgHiJk", (const UTF8Char*)"AbCdE1fGhIjK"))
 	{
 		return 1;
@@ -38,7 +48,6 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	{
 		return 1;
 	}
-	// Text::StrEqualsICaseC
 	// Text::StrToLowerC
 	// Text::StrToUpperC
 	// Text::StrStartsWithICase

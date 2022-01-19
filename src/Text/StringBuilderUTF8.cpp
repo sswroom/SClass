@@ -231,7 +231,7 @@ Bool Text::StringBuilderUTF8::EqualsICaseC(const UTF8Char *s, UOSInt len)
 	{
 		return false;
 	}
-	return Text::StrEqualsICase(this->buff, s);
+	return Text::StrEqualsICaseC(this->buff, len, s, len);
 }
 
 Bool Text::StringBuilderUTF8::StartsWithC(const UTF8Char *s, UOSInt len)

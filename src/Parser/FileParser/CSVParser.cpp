@@ -205,11 +205,11 @@ IO::ParsedObject *Parser::FileParser::CSVParser::ParseFile(IO::IStreamData *fd, 
 				}
 				if (validCol != INVALID_INDEX)
 				{
-					if (Text::StrEqualsICase(tmpArr2[validCol].v, (const UTF8Char*)"DGPS"))
+					if (Text::StrEqualsICaseC(tmpArr2[validCol].v, tmpArr2[validCol].len, UTF8STRC("DGPS")))
 					{
 						rec.valid = 2;
 					}
-					else if (Text::StrEqualsICase(tmpArr2[validCol].v, (const UTF8Char*)"SPS"))
+					else if (Text::StrEqualsICaseC(tmpArr2[validCol].v, tmpArr2[validCol].len, UTF8STRC("SPS")))
 					{
 						rec.valid = 1;
 					}

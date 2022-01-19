@@ -83,43 +83,45 @@ IO::ParserType Parser::FileParser::XMLParser::GetParserType()
 
 IO::ParsedObject *Parser::FileParser::XMLParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
-	UTF8Char u8buff[512];
+	UTF8Char sbuff[512];
+	UTF8Char *sptr;
 	UOSInt i;
 	UOSInt j;
 	Bool valid = false;
 
-	fd->GetFullName()->ConcatTo(u8buff);
-	i = Text::StrLastIndexOf(u8buff, '.');
-	j = Text::StrIndexOf(&u8buff[i + 1], '?');
+	sptr = fd->GetFullName()->ConcatTo(sbuff);
+	i = Text::StrLastIndexOf(sbuff, '.');
+	j = Text::StrIndexOf(&sbuff[i + 1], '?');
 	if (j != INVALID_INDEX)
 	{
-		u8buff[i + j + 1] = 0;
+		sbuff[i + j + 1] = 0;
+		sptr = &sbuff[i + j + 1];
 	}
 	if (i == INVALID_INDEX)
 	{
 
 	}
-	else if (Text::StrEqualsICase(&u8buff[i], (const UTF8Char*)".XML"))
+	else if (Text::StrEqualsICaseC(&sbuff[i], (UOSInt)(sptr - &sbuff[i]), UTF8STRC(".XML")))
 	{
 		valid = true;
 	}
-	else if (Text::StrEqualsICase(&u8buff[i], (const UTF8Char*)".GPX"))
+	else if (Text::StrEqualsICaseC(&sbuff[i], (UOSInt)(sptr - &sbuff[i]), UTF8STRC(".GPX")))
 	{
 		valid = true;
 	}
-	else if (Text::StrEqualsICase(&u8buff[i], (const UTF8Char*)".KML"))
+	else if (Text::StrEqualsICaseC(&sbuff[i], (UOSInt)(sptr - &sbuff[i]), UTF8STRC(".KML")))
 	{
 		valid = true;
 	}
-	else if (Text::StrEqualsICase(&u8buff[i], (const UTF8Char*)".OSM"))
+	else if (Text::StrEqualsICaseC(&sbuff[i], (UOSInt)(sptr - &sbuff[i]), UTF8STRC(".OSM")))
 	{
 		valid = true;
 	}
-	else if (Text::StrEqualsICase(&u8buff[i], (const UTF8Char*)".VCPROJ"))
+	else if (Text::StrEqualsICaseC(&sbuff[i], (UOSInt)(sptr - &sbuff[i]), UTF8STRC(".VCPROJ")))
 	{
 		valid = true;
 	}
-	else if (Text::StrEqualsICase(&u8buff[i], (const UTF8Char*)".GML"))
+	else if (Text::StrEqualsICaseC(&sbuff[i], (UOSInt)(sptr - &sbuff[i]), UTF8STRC(".GML")))
 	{
 		valid = true;
 	}
@@ -321,13 +323,13 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 							node1 = nodeResult[j]->GetChild(k);
 							if (node1->GetNodeType() == Text::XMLNode::NT_ELEMENT)
 							{
-								if (Text::StrEqualsICase(node1->name, (const UTF8Char*)"RTEPT"))
+								if (Text::StrEqualsICaseC(node1->name->v, node1->name->leng, UTF8STRC("RTEPT")))
 								{
 									Map::GPSTrack::GPSRecord rec;
 									ParseGPXPoint(node1, &rec);
 									track->AddRecord(&rec);
 								}
-								else if (Text::StrEqualsICase(node1->name, (const UTF8Char*)"NAME"))
+								else if (Text::StrEqualsICaseC(node1->name->v, node1->name->leng, UTF8STRC("NAME")))
 								{
 									Text::StringBuilderUTF8 sb;
 									node1->GetInnerText(&sb);

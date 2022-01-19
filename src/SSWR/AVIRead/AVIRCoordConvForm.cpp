@@ -160,13 +160,13 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnConvFileClicked(void *userObj
 	colCnt = i;
 	while (i-- > 0)
 	{
-		if (reader->GetName(i, sbuff))
+		if ((sptr = reader->GetName(i, sbuff)) != 0)
 		{
-			if (Text::StrEqualsICase(sbuff, (const UTF8Char*)"MAPX"))
+			if (Text::StrEqualsICaseC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("MAPX")))
 			{
 				xCol = i;
 			}
-			else if (Text::StrEqualsICase(sbuff, (const UTF8Char*)"MAPY"))
+			else if (Text::StrEqualsICaseC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("MAPY")))
 			{
 				yCol = i;
 			}

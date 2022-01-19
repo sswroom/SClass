@@ -24,12 +24,12 @@ Data::FieldComparator::FieldComparator(const UTF8Char *compareConds)
 		i = Text::StrSplitTrimP(sarr, 2, sarr[1].v, sarr[1].len, ',');
 		dir = 1;
 		len = sarr[0].len;
-		if (Text::StrEqualsICase(&sarr[0].v[len - 4], (const UTF8Char*)" ASC"))
+		if (Text::StrEqualsICaseC(&sarr[0].v[len - 4], 4, UTF8STRC(" ASC")))
 		{
 			sarr[0].v[len - 4] = 0;
 			sarr[0].len -= 4;
 		}
-		else if (Text::StrEqualsICase(&sarr[0].v[len - 5], (const UTF8Char*)" DESC"))
+		else if (Text::StrEqualsICaseC(&sarr[0].v[len - 5], 5, UTF8STRC(" DESC")))
 		{
 			sarr[0].v[len - 5] = 0;
 			sarr[0].len -= 5;

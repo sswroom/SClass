@@ -5,7 +5,7 @@
 
 Map::ESRI::FileGDBTable::FileGDBTable(const UTF8Char *tableName, IO::IStreamData *fd)
 {
-	this->tableName = Text::StrCopyNew(tableName);
+	this->tableName = Text::String::NewNotNull(tableName);
 	this->fd = fd->GetPartialData(0, fd->GetDataSize());
 	this->tableInfo = 0;
 	this->dataOfst = 0;
@@ -33,7 +33,7 @@ Map::ESRI::FileGDBTable::FileGDBTable(const UTF8Char *tableName, IO::IStreamData
 Map::ESRI::FileGDBTable::~FileGDBTable()
 {
 	DEL_CLASS(this->fd);
-	Text::StrDelNew(this->tableName);
+	this->tableName->Release();
 	if (this->tableInfo)
 	{
 		Map::ESRI::FileGDBUtil::FreeTableInfo(this->tableInfo);
@@ -46,7 +46,7 @@ Bool Map::ESRI::FileGDBTable::IsError()
 	return this->tableInfo == 0;
 }
 
-const UTF8Char *Map::ESRI::FileGDBTable::GetName()
+Text::String *Map::ESRI::FileGDBTable::GetName()
 {
 	return this->tableName;
 }

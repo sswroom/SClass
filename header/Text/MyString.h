@@ -92,7 +92,9 @@ namespace Text
 #endif
 
 	UTF8Char *StrToUpper(UTF8Char *oriStr, const UTF8Char *strToProc);
+	UTF8Char *StrToUpperC(UTF8Char *oriStr, const UTF8Char *strToProc, UOSInt strLen);
 	UTF8Char *StrToLower(UTF8Char *oriStr, const UTF8Char *strToProc);
+	UTF8Char *StrToLowerC(UTF8Char *oriStr, const UTF8Char *strToProc, UOSInt strLen);
 	UTF8Char *StrToCapital(UTF8Char *oriStr, const UTF8Char *strToProc);
 
 	Bool StrEquals(const UTF8Char *str1, const UTF8Char *str2);

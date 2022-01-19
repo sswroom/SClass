@@ -4,7 +4,7 @@
 #include "Sync/MutexUsage.h"
 #include "Text/StringBuilderUTF8.h"
 
-const UTF8Char *Net::WebServer::HTTPForwardHandler::GetNextURL(Net::WebServer::IWebRequest *req)
+Text::String *Net::WebServer::HTTPForwardHandler::GetNextURL(Net::WebServer::IWebRequest *req)
 {
 	Sync::MutexUsage mutUsage(this->mut);
 	UOSInt i = this->nextURL;
@@ -19,16 +19,16 @@ Net::WebServer::HTTPForwardHandler::HTTPForwardHandler(Net::SocketFactory *sockf
 	this->fwdType = fwdType;
 	this->reqHdlr = 0;
 	this->reqHdlrObj = 0;
-	NEW_CLASS(this->forwardAddrs, Data::ArrayList<const UTF8Char*>());
+	NEW_CLASS(this->forwardAddrs, Data::ArrayList<Text::String*>());
 	NEW_CLASS(this->injHeaders, Data::ArrayList<Text::String*>());
-	this->forwardAddrs->Add(Text::StrCopyNew(forwardURL));
+	this->forwardAddrs->Add(Text::String::NewNotNull(forwardURL));
 	this->nextURL = 0;
 	NEW_CLASS(this->mut, Sync::Mutex());
 }
 
 Net::WebServer::HTTPForwardHandler::~HTTPForwardHandler()
 {
-	LIST_FREE_FUNC(this->forwardAddrs, Text::StrDelNew);
+	LIST_FREE_STRING(this->forwardAddrs);
 	DEL_CLASS(this->forwardAddrs);
 	LIST_FREE_FUNC(this->injHeaders, STR_REL);
 	DEL_CLASS(this->injHeaders);
@@ -44,7 +44,7 @@ Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(Net::WebServer::IWebRequ
 		subReq = (const UTF8Char*)"/";
 	}
 	Text::StringBuilderUTF8 sb;
-	const UTF8Char *fwdBaseUrl = this->GetNextURL(req);
+	Text::String *fwdBaseUrl = this->GetNextURL(req);
 	sb.Append(fwdBaseUrl);
 	if (sb.EndsWith('/'))
 	{
@@ -189,7 +189,7 @@ Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(Net::WebServer::IWebRequ
 	SDEL_STRING(svrHost);
 
 	const UInt8 *reqData = req->GetReqData(&i);
-	UTF8Char *sarr[2];
+	Text::PString sarr[2];
 	if (reqData)
 	{
 		cli->Write(reqData, i);
@@ -210,12 +210,12 @@ Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(Net::WebServer::IWebRequ
 		hdr = cli->GetRespHeader(i);
 		sbHeader.ClearStr();
 		sbHeader.Append(hdr);
-		if (Text::StrSplit(sarr, 2, sbHeader.ToString(), ':') == 2)
+		if (Text::StrSplitP(sarr, 2, sbHeader.ToString(), sbHeader.GetLength(), ':') == 2)
 		{
-			Text::StrTrim(sarr[1]);
-			if (this->fwdType == ForwardType::Transparent && Text::StrEqualsICase(sarr[0], (const UTF8Char*)"LOCATION"))
+			sarr[1].len = (UOSInt)(Text::StrTrimC(sarr[1].v, sarr[1].len) - sarr[1].v);
+			if (this->fwdType == ForwardType::Transparent && Text::StrEqualsICaseC(sarr[0].v, sarr[0].len, UTF8STRC("LOCATION")))
 			{
-				if (Text::StrStartsWith(sarr[1], fwdBaseUrl))
+				if (Text::StrStartsWithC(sarr[1].v, sarr[1].len, fwdBaseUrl->v, fwdBaseUrl->leng))
 				{
 					sb.ClearStr();
 					if (req->IsSecure())
@@ -227,25 +227,25 @@ Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(Net::WebServer::IWebRequ
 						sb.AppendC(UTF8STRC("http://"));
 					}
 					req->GetHeaderC(&sb, UTF8STRC("Host"));
-					UOSInt urlLen = Text::StrCharCnt(fwdBaseUrl);
-					if (fwdBaseUrl[urlLen - 1] == '/')
+					UOSInt urlLen = fwdBaseUrl->leng;
+					if (fwdBaseUrl->v[urlLen - 1] == '/')
 					{
-						sb.Append(&sarr[1][urlLen - 1]);
+						sb.AppendC(&sarr[1].v[urlLen - 1], sarr[1].len - urlLen - 1);
 					}
 					else
 					{
-						sb.Append(&sarr[1][urlLen]);
+						sb.AppendC(&sarr[1].v[urlLen], sarr[1].len - urlLen);
 					}
-					resp->AddHeaderC(sarr[0], Text::StrCharCnt(sarr[0]), sb.ToString(), sb.GetLength());
+					resp->AddHeaderC(sarr[0].v, sarr[0].len, sb.ToString(), sb.GetLength());
 				}
 				else
 				{
-					resp->AddHeaderC(sarr[0], Text::StrCharCnt(sarr[0]), sarr[1], Text::StrCharCnt(sarr[1]));
+					resp->AddHeaderC(sarr[0].v, sarr[0].len, sarr[1].v, sarr[1].len);
 				}
 			}
 			else
 			{
-				resp->AddHeaderC(sarr[0], Text::StrCharCnt(sarr[0]), sarr[1], Text::StrCharCnt(sarr[1]));
+				resp->AddHeaderC(sarr[0].v, sarr[0].len, sarr[1].v, sarr[1].len);
 			}
 		}
 		i++;
@@ -256,10 +256,11 @@ Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(Net::WebServer::IWebRequ
 	{
 		sbHeader.ClearStr();
 		sbHeader.Append(this->injHeaders->GetItem(i));
-		if (Text::StrSplit(sarr, 2, sbHeader.ToString(), ':') == 2)
+		if (Text::StrSplitP(sarr, 2, sbHeader.ToString(), sbHeader.GetLength(), ':') == 2)
 		{
-			UTF8Char *sptr = Text::StrTrim(sarr[1]);
-			resp->AddHeaderC(sarr[0], Text::StrCharCnt(sarr[0]), sarr[1], (UOSInt)(sptr - sarr[1]));
+			UTF8Char *sptr = Text::StrTrimC(sarr[1].v, sarr[1].len);
+			sarr[1].len = (UOSInt)(sptr - sarr[1].v);
+			resp->AddHeaderC(sarr[0].v, sarr[0].len, sarr[1].v, sarr[1].len);
 		}
 		i++;
 	}
@@ -288,7 +289,7 @@ Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(Net::WebServer::IWebRequ
 void Net::WebServer::HTTPForwardHandler::AddForwardURL(const UTF8Char *url)
 {
 	Sync::MutexUsage mutUsage(this->mut);
-	this->forwardAddrs->Add(Text::StrCopyNew(url));
+	this->forwardAddrs->Add(Text::String::NewNotNull(url));
 }
 
 void Net::WebServer::HTTPForwardHandler::AddInjectHeader(Text::String *header)

@@ -161,7 +161,7 @@ Math::CoordinateSystem *Math::CoordinateSystemManager::ParsePRJFile(const UTF8Ch
 	if (buffSize == 511)
 		return 0;
 
-	return ParsePRJBuff(fileName, (Char*)buff, &buffSize);
+	return ParsePRJBuff(fileName, buff, buffSize, &buffSize);
 }
 
 const Math::CoordinateSystemManager::SpatialRefInfo *Math::CoordinateSystemManager::SRGetSpatialRef(UInt32 epsgId)
@@ -432,7 +432,7 @@ Math::GeographicCoordinateSystem *Math::CoordinateSystemManager::SRCreateGeogCSy
 	Text::StrUInt32(Text::StrConcatC(sbuff, UTF8STRC("EPSG:")), epsgId);
 	Math::EarthEllipsoid ellipsoid(spheroid->eet);
 	Math::GeographicCoordinateSystem::DatumData1 data;
-	FillDatumData(&data, datum, datum->datumName, &ellipsoid, spheroid);
+	FillDatumData(&data, datum, (const UTF8Char*)datum->datumName, &ellipsoid, spheroid);
 	NEW_CLASS(csys, Math::GeographicCoordinateSystem(sbuff, epsgId, (const UTF8Char*)geogcs->name, &data, geogcs->primem, geogcs->unit));
 	return csys;
 }
@@ -456,7 +456,7 @@ Math::CoordinateSystem *Math::CoordinateSystemManager::CreateFromName(const UTF8
 	return 0;
 }
 
-Math::CoordinateSystem *Math::CoordinateSystemManager::ParsePRJBuff(const UTF8Char *sourceName, Char *prjBuff, UOSInt *parsedSize)
+Math::CoordinateSystem *Math::CoordinateSystemManager::ParsePRJBuff(const UTF8Char *sourceName, UTF8Char *prjBuff, UOSInt buffSize, UOSInt *parsedSize)
 {
 	UOSInt i;
 	UOSInt j;
@@ -470,9 +470,9 @@ Math::CoordinateSystem *Math::CoordinateSystemManager::ParsePRJBuff(const UTF8Ch
 	Math::GeographicCoordinateSystem *gcs = 0;
 	Math::GeographicCoordinateSystem::PrimemType primem = Math::GeographicCoordinateSystem::PT_GREENWICH;
 	Math::GeographicCoordinateSystem::UnitType unit = Math::GeographicCoordinateSystem::UT_DEGREE;
-	Char c;
+	UTF8Char c;
 	UInt32 srid = 0;
-	if (Text::StrStartsWith(prjBuff, "GEOGCS["))
+	if (Text::StrStartsWithC(prjBuff, buffSize, UTF8STRC("GEOGCS[")))
 	{
 		i = 7;
 		if (!ParsePRJString(&prjBuff[i], &j))
@@ -491,7 +491,7 @@ Math::CoordinateSystem *Math::CoordinateSystemManager::ParsePRJBuff(const UTF8Ch
 			else if (c == ',')
 			{
 				i++;
-				if (Text::StrStartsWith(&prjBuff[i], "DATUM["))
+				if (Text::StrStartsWithC(&prjBuff[i], buffSize - i, UTF8STRC("DATUM[")))
 				{
 					i += 6;
 					if (!ParsePRJString(&prjBuff[i], &j))
@@ -513,7 +513,7 @@ Math::CoordinateSystem *Math::CoordinateSystemManager::ParsePRJBuff(const UTF8Ch
 						else if (c == ',')
 						{
 							i++;
-							if (Text::StrStartsWith(&prjBuff[i], "SPHEROID["))
+							if (Text::StrStartsWithC(&prjBuff[i], buffSize - i, UTF8STRC("SPHEROID[")))
 							{
 								i += 9;
 								if (!ParsePRJString(&prjBuff[i], &j))
@@ -567,7 +567,7 @@ Math::CoordinateSystem *Math::CoordinateSystemManager::ParsePRJBuff(const UTF8Ch
 					}
 					i++;
 				}
-				else if (Text::StrStartsWith(&prjBuff[i], "PRIMEM["))
+				else if (Text::StrStartsWithC(&prjBuff[i], buffSize - i, UTF8STRC("PRIMEM[")))
 				{
 					i += 7;
 					if (!ParsePRJString(&prjBuff[i], &j))
@@ -586,7 +586,7 @@ Math::CoordinateSystem *Math::CoordinateSystemManager::ParsePRJBuff(const UTF8Ch
 					}
 					i++;
 				}
-				else if (Text::StrStartsWith(&prjBuff[i], "UNIT["))
+				else if (Text::StrStartsWithC(&prjBuff[i], buffSize - i, UTF8STRC("UNIT[")))
 				{
 					i += 5;
 					if (!ParsePRJString(&prjBuff[i], &j))
@@ -668,7 +668,7 @@ Math::CoordinateSystem *Math::CoordinateSystemManager::ParsePRJBuff(const UTF8Ch
 			return csys;
 		}
 	}
-	else if (Text::StrStartsWith(prjBuff, "PROJCS["))
+	else if (Text::StrStartsWithC(prjBuff, buffSize, UTF8STRC("PROJCS[")))
 	{
 		Math::CoordinateSystem::CoordinateSystemType cst = Math::CoordinateSystem::CoordinateSystemType::Geographic;
 		Double falseEasting = -1;
@@ -677,6 +677,7 @@ Math::CoordinateSystem *Math::CoordinateSystemManager::ParsePRJBuff(const UTF8Ch
 		Double scaleFactor = -1;
 		Double latitudeOfOrigin = -1;
 		UOSInt nOfst;
+		UOSInt nLen;
 		UOSInt vOfst;
 		Bool commaFound;
 
@@ -697,26 +698,26 @@ Math::CoordinateSystem *Math::CoordinateSystemManager::ParsePRJBuff(const UTF8Ch
 			else if (c == ',')
 			{
 				i++;
-				if (Text::StrStartsWith(&prjBuff[i], "GEOGCS["))
+				if (Text::StrStartsWithC(&prjBuff[i], buffSize - i, UTF8STRC("GEOGCS[")))
 				{
-					gcs = (Math::GeographicCoordinateSystem *)ParsePRJBuff(sourceName, &prjBuff[i], &j);
+					gcs = (Math::GeographicCoordinateSystem *)ParsePRJBuff(sourceName, &prjBuff[i], buffSize - i, &j);
 					if (gcs == 0)
 						return 0;
 					i += j;
 				}
-				else if (Text::StrStartsWith(&prjBuff[i], "PROJECTION["))
+				else if (Text::StrStartsWithC(&prjBuff[i], buffSize - i, UTF8STRC("PROJECTION[")))
 				{
-					if (Text::StrStartsWith(&prjBuff[i + 11], "\"Transverse_Mercator\"]"))
+					if (Text::StrStartsWithC(&prjBuff[i + 11], buffSize - i - 11, UTF8STRC("\"Transverse_Mercator\"]")))
 					{
 						i += 33;
 						cst = Math::CoordinateSystem::CoordinateSystemType::MercatorProjected;
 					}
-					else if (Text::StrStartsWith(&prjBuff[i + 11], "\"Mercator_1SP\"]"))
+					else if (Text::StrStartsWithC(&prjBuff[i + 11], buffSize - i - 11, UTF8STRC("\"Mercator_1SP\"]")))
 					{
 						i += 26;
 						cst = Math::CoordinateSystem::CoordinateSystemType::Mercator1SPProjected;
 					}
-					else if (Text::StrStartsWith(&prjBuff[i + 11], "\"Gauss_Kruger\"]"))
+					else if (Text::StrStartsWithC(&prjBuff[i + 11], buffSize - i - 11, UTF8STRC("\"Gauss_Kruger\"]")))
 					{
 						i += 26;
 						cst = Math::CoordinateSystem::CoordinateSystemType::GausskrugerProjected;
@@ -727,7 +728,7 @@ Math::CoordinateSystem *Math::CoordinateSystemManager::ParsePRJBuff(const UTF8Ch
 						return 0;
 					}
 				}
-				else if (Text::StrStartsWith(&prjBuff[i], "PARAMETER["))
+				else if (Text::StrStartsWithC(&prjBuff[i], buffSize - i, UTF8STRC("PARAMETER[")))
 				{
 					i += 10;
 					if (!ParsePRJString(&prjBuff[i], &j))
@@ -736,6 +737,7 @@ Math::CoordinateSystem *Math::CoordinateSystemManager::ParsePRJBuff(const UTF8Ch
 						return 0;
 					}
 					nOfst = i + 1;
+					nLen = j - 2;
 					prjBuff[i + j - 1] = 0;
 					i += j;
 					if (prjBuff[i] != ',')
@@ -757,23 +759,23 @@ Math::CoordinateSystem *Math::CoordinateSystemManager::ParsePRJBuff(const UTF8Ch
 						{
 							prjBuff[i] = 0;
 							i++;
-							if (Text::StrEqualsICase(&prjBuff[nOfst], "False_Easting"))
+							if (Text::StrEqualsICaseC(&prjBuff[nOfst], nLen, UTF8STRC("False_Easting")))
 							{
 								falseEasting = Text::StrToDouble(&prjBuff[vOfst]);
 							}
-							else if (Text::StrEqualsICase(&prjBuff[nOfst], "False_Northing"))
+							else if (Text::StrEqualsICaseC(&prjBuff[nOfst], nLen, UTF8STRC("False_Northing")))
 							{
 								falseNorthing = Text::StrToDouble(&prjBuff[vOfst]);
 							}
-							else if (Text::StrEqualsICase(&prjBuff[nOfst], "Central_Meridian"))
+							else if (Text::StrEqualsICaseC(&prjBuff[nOfst], nLen, UTF8STRC("Central_Meridian")))
 							{
 								centralMeridian = Text::StrToDouble(&prjBuff[vOfst]);
 							}
-							else if (Text::StrEqualsICase(&prjBuff[nOfst], "Scale_Factor"))
+							else if (Text::StrEqualsICaseC(&prjBuff[nOfst], nLen, UTF8STRC("Scale_Factor")))
 							{
 								scaleFactor = Text::StrToDouble(&prjBuff[vOfst]);
 							}
-							else if (Text::StrEqualsICase(&prjBuff[nOfst], "Latitude_Of_Origin"))
+							else if (Text::StrEqualsICaseC(&prjBuff[nOfst], nLen, UTF8STRC("Latitude_Of_Origin")))
 							{
 								latitudeOfOrigin = Text::StrToDouble(&prjBuff[vOfst]);
 							}
@@ -790,7 +792,7 @@ Math::CoordinateSystem *Math::CoordinateSystemManager::ParsePRJBuff(const UTF8Ch
 						}
 					}
 				}
-				else if (Text::StrStartsWith(&prjBuff[i], "UNIT["))
+				else if (Text::StrStartsWithC(&prjBuff[i], buffSize - i, UTF8STRC("UNIT[")))
 				{
 					i += 5;
 					if (!ParsePRJString(&prjBuff[i], &j))
@@ -875,7 +877,7 @@ Math::CoordinateSystem *Math::CoordinateSystemManager::ParsePRJBuff(const UTF8Ch
 	return 0;
 }
 
-Bool Math::CoordinateSystemManager::ParsePRJString(Char *prjBuff, UOSInt *strSize)
+Bool Math::CoordinateSystemManager::ParsePRJString(UTF8Char *prjBuff, UOSInt *strSize)
 {
 	UOSInt i;
 	Char c;
@@ -927,7 +929,7 @@ const Math::CoordinateSystemManager::DatumInfo *Math::CoordinateSystemManager::G
 	return 0;
 }
 
-void Math::CoordinateSystemManager::FillDatumData(Math::GeographicCoordinateSystem::DatumData1 *data, const Math::CoordinateSystemManager::DatumInfo *datum, const Char *name, Math::EarthEllipsoid *ee, const SpheroidInfo *spheroid)
+void Math::CoordinateSystemManager::FillDatumData(Math::GeographicCoordinateSystem::DatumData1 *data, const Math::CoordinateSystemManager::DatumInfo *datum, const UTF8Char *name, Math::EarthEllipsoid *ee, const SpheroidInfo *spheroid)
 {
 	if (datum)
 	{
@@ -960,8 +962,8 @@ void Math::CoordinateSystemManager::FillDatumData(Math::GeographicCoordinateSyst
 		data->srid = 0;
 		data->spheroid.ellipsoid = ee;
 		data->spheroid.srid = 0;
-		data->spheroid.name = name;
-		data->name = name;
+		data->spheroid.name = (const Char*)name;
+		data->name = (const Char*)name;
 		data->x0 = 0;
 		data->y0 = 0;
 		data->z0 = 0;

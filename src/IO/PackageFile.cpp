@@ -533,7 +533,8 @@ UOSInt IO::PackageFile::GetItemIndex(const UTF8Char *name, UOSInt nameLen)
 			}
 			if (item->itemType == IO::PackFileItem::PIT_COMPRESSED || item->itemType == IO::PackFileItem::PIT_UNCOMPRESSED)
 			{
-				if (Text::StrEqualsICase(item->fd->GetShortName(), name))
+				const UTF8Char *shName = item->fd->GetShortName();
+				if (Text::StrEqualsICaseC(shName, Text::StrCharCnt(shName), name, nameLen))
 					return i;
 			}
 			else if (item->itemType == IO::PackFileItem::PIT_PARSEDOBJECT)

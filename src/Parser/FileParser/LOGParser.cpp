@@ -42,6 +42,7 @@ IO::ParserType Parser::FileParser::LOGParser::GetParserType()
 IO::ParsedObject *Parser::FileParser::LOGParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
 	UTF8Char sbuff[512];
+	UTF8Char *sptr;
 //	WChar baseDir[256];
 //	WChar sbuff2[256];
 //	WChar sbuff3[256];
@@ -51,9 +52,9 @@ IO::ParsedObject *Parser::FileParser::LOGParser::ParseFile(IO::IStreamData *fd, 
 	UOSInt i;
 //	OSInt j;
 //	OSInt k;
-	fd->GetFullName()->ConcatTo(sbuff);
+	sptr = fd->GetFullName()->ConcatTo(sbuff);
 	i = Text::StrLastIndexOf(sbuff, '.');
-	if (i == INVALID_INDEX || !Text::StrEqualsICase(&sbuff[i], (const UTF8Char*)".LOG"))
+	if (i == INVALID_INDEX || !Text::StrEqualsICaseC(&sbuff[i], (UOSInt)(sptr - &sbuff[i]), UTF8STRC(".LOG")))
 	{
 		return 0;
 	}
@@ -61,13 +62,13 @@ IO::ParsedObject *Parser::FileParser::LOGParser::ParseFile(IO::IStreamData *fd, 
 	IO::StreamReader *reader;
 	NEW_CLASS(stm, IO::StreamDataStream(fd));
 	NEW_CLASS(reader, IO::StreamReader(stm, this->codePage));
-	if (reader->ReadLine(sbuff, 255) == 0)
+	if ((sptr = reader->ReadLine(sbuff, 255)) == 0)
 	{
 		DEL_CLASS(reader);
 		DEL_CLASS(stm);
 		return 0;
 	}
-	UOSInt strLen = Text::StrCharCnt(sbuff);
+	UOSInt strLen = (UOSInt)(sptr - sbuff);
 	if (strLen >= 43 && sbuff[2] == ':' && sbuff[5] == ':' && sbuff[8] == ' ' && Text::StrEquals(&sbuff[9], (const UTF8Char*)"MSG start UDP server successfully!"))
 	{
 		IO::UDPLog *log = 0;

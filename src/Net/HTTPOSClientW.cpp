@@ -345,7 +345,7 @@ Bool Net::HTTPOSClient::Connect(const UTF8Char *url, UOSInt urlLen, const Char *
 	if (this->cliHost == 0)
 	{
 		this->cliHost = Text::StrCopyNew(urltmp);
-		if (Text::StrEqualsICase(svrname, (const UTF8Char*)"localhost"))
+		if (Text::StrEqualsICasC(svrname, (UOSInt)(svrnameEnd - svrname), UTF8STRC("localhost")))
 		{
 			this->svrAddr.addrType = Net::AddrType::IPv4;
 			*(UInt32*)this->svrAddr.addr = Net::SocketUtil::GetIPAddr(UTF8STRC("127.0.0.1"));

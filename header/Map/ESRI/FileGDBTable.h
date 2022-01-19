@@ -11,7 +11,7 @@ namespace Map
 		class FileGDBTable
 		{
 		private:
-			const UTF8Char *tableName;
+			Text::String *tableName;
 			IO::IStreamData *fd;
 			UInt64 dataOfst;
 			FileGDBTableInfo *tableInfo;
@@ -20,7 +20,7 @@ namespace Map
 			~FileGDBTable();
 
 			Bool IsError();
-			const UTF8Char *GetName();
+			Text::String *GetName();
 			DB::DBReader *OpenReader(Data::ArrayList<Text::String*> *columnNames, UOSInt dataOfst, UOSInt maxCnt, const UTF8Char *ordering, Data::QueryConditions *conditions);	
 		};
 	}

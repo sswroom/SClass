@@ -84,6 +84,7 @@ IO::ParsedObject *Parser::FileParser::MDBParser::ParseFile(IO::IStreamData *fd, 
 	NEW_CLASS(shpTables, Data::ArrayListStrUTF8());
 	NEW_CLASS(colDef, DB::ColDef((const UTF8Char*)""));
 	UTF8Char sbuff[128];
+	UTF8Char *sptr;
 	mdb->GetTableNames(tableNames);
 	
 	Bool hasSpRef = false;
@@ -92,7 +93,7 @@ IO::ParsedObject *Parser::FileParser::MDBParser::ParseFile(IO::IStreamData *fd, 
 	{
 		const UTF8Char *tableName = tableNames->GetItem(i);
 		DB::DBReader *rdr = mdb->GetTableData(tableName, 0, 0, 0, 0, 0);
-		if (tableName && Text::StrEqualsICase(tableName, (const UTF8Char*)"GDB_SpatialRefs"))
+		if (tableName && Text::StrEqualsICaseC(tableName, Text::StrCharCnt(tableName), UTF8STRC("GDB_SpatialRefs")))
 		{
 			hasSpRef = true;
 		}
@@ -141,13 +142,13 @@ IO::ParsedObject *Parser::FileParser::MDBParser::ParseFile(IO::IStreamData *fd, 
 			{
 				if (rdr->ColCount() >= 2)
 				{
-					if (rdr->GetName(1, sbuff) && Text::StrEqualsICase(sbuff, (const UTF8Char*)"SRTEXT"))
+					if ((sptr = rdr->GetName(1, sbuff)) != 0 && Text::StrEqualsICaseC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("SRTEXT")))
 					{
 						if (rdr->ReadNext())
 						{
 							Text::StringBuilderUTF8 sb;
 							rdr->GetStr(1, &sb);
-							csys = Math::CoordinateSystemManager::ParsePRJBuff(fd->GetFullFileName()->v, (Char*)sb.ToString(), 0);
+							csys = Math::CoordinateSystemManager::ParsePRJBuff(fd->GetFullFileName()->v, sb.ToString(), sb.GetLength(), 0);
 							if (csys)
 							{
 								srid = csys->GetSRID();

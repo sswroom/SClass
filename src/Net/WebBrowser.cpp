@@ -67,6 +67,7 @@ Net::WebBrowser::~WebBrowser()
 IO::IStreamData *Net::WebBrowser::GetData(const UTF8Char *url, Bool forceReload, UTF8Char *contentType)
 {
 	UTF8Char sbuff[512];
+	UTF8Char *sptr;
 	IO::Path::PathType pt = IO::Path::GetPathType(url);
 	/////////////////////////////////////////////
 	if (pt == IO::Path::PathType::File)
@@ -80,9 +81,9 @@ IO::IStreamData *Net::WebBrowser::GetData(const UTF8Char *url, Bool forceReload,
 		}
 		return fd;
 	}
-	if (Text::URLString::GetURIScheme(sbuff, url) == 0)
+	if ((sptr = Text::URLString::GetURIScheme(sbuff, url)) == 0)
 		return 0;
-	if (Text::StrEqualsICase(sbuff, (const UTF8Char*)"FILE"))
+	if (Text::StrEqualsICaseC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("FILE")))
 	{
 		Text::URLString::GetURLFilePath(sbuff, url);
 		IO::StmData::FileData *fd;
@@ -94,21 +95,21 @@ IO::IStreamData *Net::WebBrowser::GetData(const UTF8Char *url, Bool forceReload,
 		}
 		return fd;
 	}
-	else if (Text::StrEquals(sbuff, (const UTF8Char*)"HTTP"))
+	else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("HTTP")))
 	{
 		Net::HTTPData *data;
 		GetLocalFileName(sbuff, url);
 		NEW_CLASS(data, Net::HTTPData(this->sockf, this->ssl, this->queue, url, sbuff, forceReload));
 		return data;
 	}
-	else if (Text::StrEquals(sbuff, (const UTF8Char*)"HTTPS"))
+	else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("HTTPS")))
 	{
 		Net::HTTPData *data;
 		GetLocalFileName(sbuff, url);
 		NEW_CLASS(data, Net::HTTPData(this->sockf, this->ssl, this->queue, url, sbuff, forceReload));
 		return data;
 	}
-	else if (Text::StrEquals(sbuff, (const UTF8Char*)"FTP"))
+	else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("FTP")))
 	{
 /*		IO::Stream *stm = Net::URL::OpenStream(url, this->sockf);
 		IO::StmData::StreamDataStream *data;
@@ -117,7 +118,7 @@ IO::IStreamData *Net::WebBrowser::GetData(const UTF8Char *url, Bool forceReload,
 		NEW_CLASS(data, IO::StmData::*/
 		return 0;
 	}
-	else if (Text::StrEquals(sbuff, (const UTF8Char*)"DATA"))
+	else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("DATA")))
 	{
 		IO::StmData::MemoryData2 *fd;
 		WChar c;

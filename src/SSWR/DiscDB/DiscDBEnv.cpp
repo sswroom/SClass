@@ -99,9 +99,7 @@ void SSWR::DiscDB::DiscDBEnv::LoadDB()
 			sb.ClearStr();
 			r->GetStr(0, &sb);
 			discType->discTypeId = Text::StrCopyNew(sb.ToString());
-			sb.ClearStr();
-			r->GetStr(1, &sb);
-			discType->brand = Text::StrCopyNew(sb.ToString());
+			discType->brand = r->GetNewStr(1);
 			sb.ClearStr();
 			r->GetStr(2, &sb);
 			discType->name = Text::StrCopyNew(sb.ToString());
@@ -263,7 +261,7 @@ SSWR::DiscDB::DiscDBEnv::~DiscDBEnv()
 	{
 		discType = discTypeList->GetItem(i);
 		Text::StrDelNew(discType->discTypeId);
-		Text::StrDelNew(discType->brand);
+		discType->brand->Release();
 		Text::StrDelNew(discType->name);
 		Text::StrDelNew(discType->dvdType);
 		Text::StrDelNew(discType->madeIn);
@@ -501,7 +499,7 @@ UOSInt SSWR::DiscDB::DiscDBEnv::GetDiscTypes(Data::ArrayList<DiscTypeInfo*> *dis
 	return this->discTypeMap->GetCount();
 }
 
-UOSInt SSWR::DiscDB::DiscDBEnv::GetDiscTypesByBrand(Data::ArrayList<const DiscTypeInfo*> *discTypeList, const UTF8Char *brand)
+UOSInt SSWR::DiscDB::DiscDBEnv::GetDiscTypesByBrand(Data::ArrayList<const DiscTypeInfo*> *discTypeList, const UTF8Char *brand, UOSInt brandLen)
 {
 	UOSInt ret;
 	UOSInt i;
@@ -514,7 +512,7 @@ UOSInt SSWR::DiscDB::DiscDBEnv::GetDiscTypesByBrand(Data::ArrayList<const DiscTy
 	while (i < j)
 	{
 		discType = myDiscTypes->GetItem(i);
-		if (Text::StrEqualsICase(discType->brand, brand))
+		if (discType->brand->EqualsICase(brand, brandLen))
 		{
 			discTypeList->Add(discType);
 			ret++;

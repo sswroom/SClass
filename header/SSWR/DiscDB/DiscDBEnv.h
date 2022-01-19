@@ -53,7 +53,7 @@ namespace SSWR
 			typedef struct
 			{
 				const UTF8Char *discTypeId;
-				const UTF8Char *brand;
+				Text::String *brand;
 				const UTF8Char *name;
 				Double speed;
 				const UTF8Char *dvdType;
@@ -110,7 +110,7 @@ namespace SSWR
 			UOSInt GetCategories(Data::ArrayList<CategoryInfo*> *cateList);
 			const DiscTypeInfo *GetDiscType(const UTF8Char *discTypeId);
 			UOSInt GetDiscTypes(Data::ArrayList<DiscTypeInfo*> *discTypeList);
-			UOSInt GetDiscTypesByBrand(Data::ArrayList<const DiscTypeInfo*> *discTypeList, const UTF8Char *brand);
+			UOSInt GetDiscTypesByBrand(Data::ArrayList<const DiscTypeInfo*> *discTypeList, const UTF8Char *brand, UOSInt brandLen);
 			Int32 NewDVDVideo(const UTF8Char *anime, const UTF8Char *series, const UTF8Char *volume, const UTF8Char *dvdType);
 			UOSInt GetDVDVideos(Data::ArrayList<DVDVideoInfo*> *dvdVideoList);
 			const DVDVideoInfo *GetDVDVideo(Int32 videoId);

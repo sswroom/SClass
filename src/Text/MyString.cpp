@@ -714,20 +714,134 @@ UTF8Char *Text::StrToUpper(UTF8Char *oriStr, const UTF8Char *strToJoin)
 	return oriStr;
 }
 
+UTF8Char *Text::StrToUpperC(UTF8Char *oriStr, const UTF8Char *strToJoin, UOSInt strLen)
+{
+#if _OSINT_SIZE == 64
+	while (strLen >= 8)
+	{
+		UInt64 v = ReadUInt64(strToJoin);
+		oriStr[0] = MyString_StrUpperArr[v & 0xff];
+		oriStr[1] = MyString_StrUpperArr[(v >> 8) & 0xff];
+		oriStr[2] = MyString_StrUpperArr[(v >> 16) & 0xff];
+		oriStr[3] = MyString_StrUpperArr[(v >> 24) & 0xff];
+		oriStr[4] = MyString_StrUpperArr[(v >> 32) & 0xff];
+		oriStr[5] = MyString_StrUpperArr[(v >> 40) & 0xff];
+		oriStr[6] = MyString_StrUpperArr[(v >> 48) & 0xff];
+		oriStr[7] = MyString_StrUpperArr[(v >> 56)];
+		strToJoin += 8;
+		oriStr += 8;
+		strLen -= 8;
+	}
+	if (strLen >= 4)
+	{
+		UInt32 v = ReadUInt32(strToJoin);
+		oriStr[0] = MyString_StrUpperArr[v & 0xff];
+		oriStr[1] = MyString_StrUpperArr[(v >> 8) & 0xff];
+		oriStr[2] = MyString_StrUpperArr[(v >> 16) & 0xff];
+		oriStr[3] = MyString_StrUpperArr[(v >> 24)];
+		strToJoin += 4;
+		oriStr += 4;
+		strLen -= 4;
+	}
+#else
+	while (strLen >= 4)
+	{
+		UInt32 v = ReadUInt32(strToJoin);
+		oriStr[0] = MyString_StrUpperArr[v & 0xff];
+		oriStr[1] = MyString_StrUpperArr[(v >> 8) & 0xff];
+		oriStr[2] = MyString_StrUpperArr[(v >> 16) & 0xff];
+		oriStr[3] = MyString_StrUpperArr[(v >> 24)];
+		strToJoin += 4;
+		oriStr += 4;
+		strLen -= 4;
+
+	}
+#endif
+	if (strLen >= 2)
+	{
+		UInt16 v = ReadUInt16(strToJoin);
+		oriStr[0] = MyString_StrUpperArr[v & 0xff];
+		oriStr[1] = MyString_StrUpperArr[(v >> 8)];
+		strToJoin += 2;
+		oriStr += 2;
+		strLen -= 2;
+	}
+	if (strLen > 0)
+	{
+		oriStr[0] = MyString_StrUpperArr[*strToJoin++];
+		oriStr++;
+	}
+	*oriStr = 0;
+	return oriStr;
+}
+
 UTF8Char *Text::StrToLower(UTF8Char *oriStr, const UTF8Char *strToJoin)
 {
 	UTF8Char c;
 	while ((c = *strToJoin++) != 0)
 	{
-/*		if (c >= 'A' && c <= 'Z')
-		{
-			*oriStr++ = (UTF8Char)(c + 32);
-		}
-		else
-		{
-			*oriStr++ = c;
-		}*/
 		*oriStr++ = MyString_StrLowerArr[c];
+	}
+	*oriStr = 0;
+	return oriStr;
+}
+
+UTF8Char *Text::StrToLowerC(UTF8Char *oriStr, const UTF8Char *strToJoin, UOSInt strLen)
+{
+#if _OSINT_SIZE == 64
+	while (strLen >= 8)
+	{
+		UInt64 v = ReadUInt64(strToJoin);
+		oriStr[0] = MyString_StrLowerArr[v & 0xff];
+		oriStr[1] = MyString_StrLowerArr[(v >> 8) & 0xff];
+		oriStr[2] = MyString_StrLowerArr[(v >> 16) & 0xff];
+		oriStr[3] = MyString_StrLowerArr[(v >> 24) & 0xff];
+		oriStr[4] = MyString_StrLowerArr[(v >> 32) & 0xff];
+		oriStr[5] = MyString_StrLowerArr[(v >> 40) & 0xff];
+		oriStr[6] = MyString_StrLowerArr[(v >> 48) & 0xff];
+		oriStr[7] = MyString_StrLowerArr[(v >> 56)];
+		strToJoin += 8;
+		oriStr += 8;
+		strLen -= 8;
+	}
+	if (strLen >= 4)
+	{
+		UInt32 v = ReadUInt32(strToJoin);
+		oriStr[0] = MyString_StrLowerArr[v & 0xff];
+		oriStr[1] = MyString_StrLowerArr[(v >> 8) & 0xff];
+		oriStr[2] = MyString_StrLowerArr[(v >> 16) & 0xff];
+		oriStr[3] = MyString_StrLowerArr[(v >> 24)];
+		strToJoin += 4;
+		oriStr += 4;
+		strLen -= 4;
+	}
+#else
+	while (strLen >= 4)
+	{
+		UInt32 v = ReadUInt32(strToJoin);
+		oriStr[0] = MyString_StrLowerArr[v & 0xff];
+		oriStr[1] = MyString_StrLowerArr[(v >> 8) & 0xff];
+		oriStr[2] = MyString_StrLowerArr[(v >> 16) & 0xff];
+		oriStr[3] = MyString_StrLowerArr[(v >> 24)];
+		strToJoin += 4;
+		oriStr += 4;
+		strLen -= 4;
+
+	}
+#endif
+	if (strLen >= 2)
+	{
+		UInt16 v = ReadUInt16(strToJoin);
+		oriStr[0] = MyString_StrLowerArr[v & 0xff];
+		oriStr[1] = MyString_StrLowerArr[(v >> 8)];
+		strToJoin += 2;
+		oriStr += 2;
+		strLen -= 2;
+	}
+	if (strLen > 0)
+	{
+		oriStr[0] = MyString_StrLowerArr[*strToJoin++];
+		oriStr++;
 	}
 	*oriStr = 0;
 	return oriStr;
@@ -799,6 +913,30 @@ Bool Text::StrEqualsC(const UTF8Char *str1, UOSInt len1, const UTF8Char *str2, U
 	{
 		return false;
 	}
+#if _OSINT_SIZE == 64
+	while (len2 >= 8)
+	{
+		UInt64 v = ReadNUInt64(str1);
+		if (v != ReadNUInt64(str2))
+		{
+			return false;
+		}
+		str1 += 8;
+		str2 += 8;
+		len2 -= 8;
+	}
+	if (len2 >= 4)
+	{
+		UInt32 v = ReadNUInt32(str1);
+		if (v != ReadNUInt32(str2))
+		{
+			return false;
+		}
+		str1 += 4;
+		str2 += 4;
+		len2 -= 4;
+	}
+#else
 	while (len2 >= 4)
 	{
 		UInt32 v = ReadNUInt32(str1);
@@ -810,6 +948,7 @@ Bool Text::StrEqualsC(const UTF8Char *str1, UOSInt len1, const UTF8Char *str2, U
 		str2 += 4;
 		len2 -= 4;
 	}
+#endif
 	switch (len2)
 	{
 	case 3:
@@ -2714,7 +2853,7 @@ Bool Text::StrEndsWithICaseC(const UTF8Char *str1, UOSInt len1, const UTF8Char *
 	{
 		return false;
 	}
-	return Text::StrEqualsICase(&str1[len1 - len2], str2);
+	return Text::StrEqualsICaseC(&str1[len1 - len2], len2, str2, len2);
 }
 
 Bool Text::StrIsInt32(const UTF8Char *intStr)

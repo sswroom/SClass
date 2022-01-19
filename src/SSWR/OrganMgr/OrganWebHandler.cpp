@@ -1339,35 +1339,36 @@ Int32 SSWR::OrganMgr::OrganWebHandler::UserfileAdd(Int32 userId, Int32 spId, con
 	{
 		return 0;
 	}
-	if (Text::StrEqualsICase(&fileName[i + 1], (const UTF8Char*)"JPG"))
+	UOSInt fileNameLen = Text::StrCharCnt(&fileName[i + 1]);
+	if (Text::StrEqualsICaseC(&fileName[i + 1], fileNameLen, UTF8STRC("JPG")))
 	{
 		fileType = 1;
 	}
-	else if (Text::StrEqualsICase(&fileName[i + 1], (const UTF8Char*)"TIF"))
+	else if (Text::StrEqualsICaseC(&fileName[i + 1], fileNameLen, UTF8STRC("TIF")))
 	{
 		fileType = 1;
 	}
-	else if (Text::StrEqualsICase(&fileName[i + 1], (const UTF8Char*)"PCX"))
+	else if (Text::StrEqualsICaseC(&fileName[i + 1], fileNameLen, UTF8STRC("PCX")))
 	{
 		fileType = 1;
 	}
-	else if (Text::StrEqualsICase(&fileName[i + 1], (const UTF8Char*)"GIF"))
+	else if (Text::StrEqualsICaseC(&fileName[i + 1], fileNameLen, UTF8STRC("GIF")))
 	{
 		fileType = 1;
 	}
-	else if (Text::StrEqualsICase(&fileName[i + 1], (const UTF8Char*)"PNG"))
+	else if (Text::StrEqualsICaseC(&fileName[i + 1], fileNameLen, UTF8STRC("PNG")))
 	{
 		fileType = 1;
 	}
-	else if (Text::StrEqualsICase(&fileName[i + 1], (const UTF8Char*)"AVI"))
+	else if (Text::StrEqualsICaseC(&fileName[i + 1], fileNameLen, UTF8STRC("AVI")))
 	{
 		fileType = 2;
 	}
-	else if (Text::StrEqualsICase(&fileName[i + 1], (const UTF8Char*)"MOV"))
+	else if (Text::StrEqualsICaseC(&fileName[i + 1], fileNameLen, UTF8STRC("MOV")))
 	{
 		fileType = 2;
 	}
-	else if (Text::StrEqualsICase(&fileName[i + 1], (const UTF8Char*)"WAV"))
+	else if (Text::StrEqualsICaseC(&fileName[i + 1], fileNameLen, UTF8STRC("WAV")))
 	{
 		fileType = 3;
 	}

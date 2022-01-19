@@ -40,7 +40,7 @@ void SSWR::DiscDB::DiscDBBurntDiscForm::UpdateBrand()
 	while (i < j)
 	{
 		dType = dTypeList.GetItem(i);
-		Text::StrToUpper(sbuff, dType->brand);
+		Text::StrToUpperC(sbuff, dType->brand->v, dType->brand->leng);
 		k = brandList.SortedIndexOf(sbuff);
 		if (k < 0)
 		{
@@ -1106,7 +1106,7 @@ void __stdcall SSWR::DiscDB::DiscDBBurntDiscForm::OnBrandSelChg(void *userObj)
 	UTF8Char *sptr;
 	UOSInt i;
 	UOSInt j;
-	me->env->GetDiscTypesByBrand(&discList, s->v);
+	me->env->GetDiscTypesByBrand(&discList, s->v, s->leng);
 	s->Release();
 	me->lbDVDName->ClearItems();
 	i = 0;
@@ -1486,6 +1486,7 @@ SSWR::DiscDB::DiscDBBurntDiscForm::DiscDBBurntDiscForm(UI::GUIClientControl *par
 	if (reg)
 	{
 		UTF8Char sbuff[64];
+		UTF8Char *sptr;
 		WChar wbuff[64];
 		if (reg->GetValueStr(L"DiscType", wbuff))
 		{
@@ -1498,9 +1499,9 @@ SSWR::DiscDB::DiscDBBurntDiscForm::DiscDBBurntDiscForm(UI::GUIClientControl *par
 				i = this->lbBrand->GetCount();
 				while (i-- > 0)
 				{
-					if (this->lbBrand->GetItemText(sbuff, i))
+					if ((sptr = this->lbBrand->GetItemText(sbuff, i)) != 0)
 					{
-						if (Text::StrEquals(sbuff, discType->brand))
+						if (discType->brand->Equals(sbuff, (UOSInt)(sptr - sbuff)))
 						{
 							this->lbBrand->SetSelectedIndex(i);
 							break;

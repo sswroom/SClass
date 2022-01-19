@@ -377,22 +377,23 @@ DB::PageRequest *Net::WebServer::RESTfulHandler::ParsePageReq(Net::WebServer::IW
 	{
 		Text::StringBuilderUTF8 sb;
 		sb.Append(sort);
-		UTF8Char *sarr[2];
+		Text::PString sarr[2];
 		UOSInt i;
 		UOSInt j;
 		Bool desc;
-		sarr[1] = sb.ToString();
+		sarr[1].v = sb.ToString();
+		sarr[1].len = sb.GetLength();
 		while (true)
 		{
-			i = Text::StrSplit(sarr, 2, sarr[1], Net::WebServer::IWebRequest::PARAM_SEPERATOR);
-			j = Text::StrIndexOf(sarr[0], ',');
+			i = Text::StrSplitP(sarr, 2, sarr[1].v, sarr[1].len, Net::WebServer::IWebRequest::PARAM_SEPERATOR);
+			j = Text::StrIndexOf(sarr[0].v, ',');
 			desc = false;
 			if (j != INVALID_INDEX)
 			{
-				sarr[0][j] = 0;
-				desc = Text::StrEqualsICase(&sarr[0][j + 1], (const UTF8Char*)"DESC");
+				sarr[0].v[j] = 0;
+				desc = Text::StrEqualsICaseC(&sarr[0].v[j + 1], sarr[0].len - j - 1, UTF8STRC("DESC"));
 			}
-			page->Sort(sarr[0], desc);
+			page->Sort(sarr[0].v, desc);
 			if (i != 2)
 			{
 				break;

@@ -4890,6 +4890,7 @@ void SSWR::OrganMgr::OrganEnvDB::UpgradeFileStruct(OrganSpecies *sp)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
+	UTF8Char *sptr2;
 	const UTF8Char *coverName = sp->GetPhoto();
 	IO::Path::FindFileSession *sess;
 	Bool isCoverPhoto;
@@ -4918,7 +4919,7 @@ void SSWR::OrganMgr::OrganEnvDB::UpgradeFileStruct(OrganSpecies *sp)
 	sess = IO::Path::FindFile(sbuff);
 	if (sess)
 	{
-		while (IO::Path::FindNextFile(sptr, sess, 0, &pt, 0))
+		while ((sptr2 = IO::Path::FindNextFile(sptr, sess, 0, &pt, 0)) != 0)
 		{
 			if (pt == IO::Path::PathType::File)
 			{
@@ -4936,7 +4937,7 @@ void SSWR::OrganMgr::OrganEnvDB::UpgradeFileStruct(OrganSpecies *sp)
 				{
 
 				}
-				else if (Text::StrEqualsICase(&sptr[i], (const UTF8Char*)".JPG") || Text::StrEqualsICase(&sptr[i], (const UTF8Char*)".PCX") || Text::StrEqualsICase(&sptr[i], (const UTF8Char*)".WAV"))
+				else if (Text::StrEqualsICaseC(&sptr[i], (UOSInt)(sptr2 - &sptr[i]), UTF8STRC(".JPG")) || Text::StrEqualsICaseC(&sptr[i], (UOSInt)(sptr2 - &sptr[i]), UTF8STRC(".PCX")) || Text::StrEqualsICaseC(&sptr[i], (UOSInt)(sptr2 - &sptr[i]), UTF8STRC(".WAV")))
 				{
 					Int32 fileId = 0;
 					this->AddSpeciesFile(sp, sbuff, isCoverPhoto, true, &fileId);
