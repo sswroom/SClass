@@ -116,23 +116,22 @@ void __stdcall Net::Email::SMTPServer::ClientData(Net::TCPClient *cli, void *use
 		if (cliStatus->buff[i] == '\r')
 		{
 			cliStatus->buff[i] = 0;
-			if (j < cliStatus->buffSize && cliStatus->buff[j] == '\n')
+			if (i + 1 < cliStatus->buffSize && cliStatus->buff[i + 1] == '\n')
 			{
-				me->ParseCmd(cli, cliStatus, (Char*)&cliStatus->buff[j], Text::LineBreakType::CRLF);
-				j = i + 1;
-				j++;
+				me->ParseCmd(cli, cliStatus, &cliStatus->buff[j], i - j, Text::LineBreakType::CRLF);
+				j = i + 2;
 				i++;
 			}
 			else
 			{
-				me->ParseCmd(cli, cliStatus, (Char*)&cliStatus->buff[j], Text::LineBreakType::CR);
+				me->ParseCmd(cli, cliStatus, &cliStatus->buff[j], i - j, Text::LineBreakType::CR);
 				j = i + 1;
 			}
 		}
 		else if (cliStatus->buff[i] == '\n')
 		{
 			cliStatus->buff[i] = 0;
-			me->ParseCmd(cli, cliStatus, (Char*)&cliStatus->buff[j], Text::LineBreakType::LF);
+			me->ParseCmd(cli, cliStatus, &cliStatus->buff[j], i - j, Text::LineBreakType::LF);
 			j = i + 1;
 		}
 		i++;
@@ -220,24 +219,23 @@ UOSInt Net::Email::SMTPServer::WriteMessage(Net::TCPClient *cli, Int32 statusCod
 	return strLen;
 }*/
 
-void Net::Email::SMTPServer::ParseCmd(Net::TCPClient *cli, Net::Email::SMTPServer::MailStatus *cliStatus, Char *cmd, Text::LineBreakType lbt)
+void Net::Email::SMTPServer::ParseCmd(Net::TCPClient *cli, Net::Email::SMTPServer::MailStatus *cliStatus, const UTF8Char *cmd, UOSInt cmdLen, Text::LineBreakType lbt)
 {
 	if (cliStatus->loginMode)
 	{
 		if (cliStatus->loginMode == 1)
 		{
 			Bool succ = false;
-			UOSInt len = Text::StrCharCnt(cmd);
-			UInt8 *decBuff = MemAlloc(UInt8, len);
+			UInt8 *decBuff = MemAlloc(UInt8, cmdLen);
 			const UTF8Char *userName;
 			const UTF8Char *pwd;
 			Crypto::Encrypt::Base64 b64;
-			len = b64.Decrypt((UInt8*)cmd, len, decBuff, 0);
-			decBuff[len] = 0;
+			cmdLen = b64.Decrypt(cmd, cmdLen, decBuff, 0);
+			decBuff[cmdLen] = 0;
 			userName = (const UTF8Char*)&decBuff[1];
 			pwd = userName;
 			while (*pwd++);
-			if (pwd < (const UTF8Char*)(decBuff + len))
+			if (pwd < (const UTF8Char*)(decBuff + cmdLen))
 			{
 				succ = this->loginHdlr(this->mailObj, userName, pwd);
 			}
@@ -257,13 +255,12 @@ void Net::Email::SMTPServer::ParseCmd(Net::TCPClient *cli, Net::Email::SMTPServe
 		}
 		else if (cliStatus->loginMode == 2)
 		{
-			UOSInt len = Text::StrCharCnt(cmd);
-			UInt8 *decBuff = MemAlloc(UInt8, len);
+			UInt8 *decBuff = MemAlloc(UInt8, cmdLen);
 			Crypto::Encrypt::Base64 b64;
-			len = b64.Decrypt((UInt8*)cmd, len, decBuff, 0);
-			decBuff[len] = 0;
+			cmdLen = b64.Decrypt(cmd, cmdLen, decBuff, 0);
+			decBuff[cmdLen] = 0;
 			SDEL_TEXT(cliStatus->userName);
-			cliStatus->userName = Text::StrCopyNew((const UTF8Char*)decBuff);
+			cliStatus->userName = Text::StrCopyNewC(decBuff, cmdLen);
 			MemFree(decBuff);
 			cliStatus->loginMode = 3;
 			WriteMessage(cli, 334, (const UTF8Char*)"UGFzc3dvcmQ6");
@@ -271,11 +268,10 @@ void Net::Email::SMTPServer::ParseCmd(Net::TCPClient *cli, Net::Email::SMTPServe
 		else if (cliStatus->loginMode == 3)
 		{
 			Bool succ = false;
-			UOSInt len = Text::StrCharCnt(cmd);
-			UInt8 *decBuff = MemAlloc(UInt8, len);
+			UInt8 *decBuff = MemAlloc(UInt8, cmdLen);
 			Crypto::Encrypt::Base64 b64;
-			len = b64.Decrypt((UInt8*)cmd, len, decBuff, 0);
-			decBuff[len] = 0;
+			cmdLen = b64.Decrypt(cmd, cmdLen, decBuff, 0);
+			decBuff[cmdLen] = 0;
 			succ = this->loginHdlr(this->mailObj, cliStatus->userName, (UTF8Char*)decBuff);
 			MemFree(decBuff);
 			cliStatus->loginMode = 0;
@@ -296,7 +292,7 @@ void Net::Email::SMTPServer::ParseCmd(Net::TCPClient *cli, Net::Email::SMTPServe
 	}
 	else if (cliStatus->dataMode)
 	{
-		if (Text::StrEquals(cmd, "."))
+		if (Text::StrEqualsC(cmd, cmdLen, UTF8STRC(".")))
 		{
 			UTF8Char sbuff[256];
 			cliStatus->dataMode = false;
@@ -321,22 +317,22 @@ void Net::Email::SMTPServer::ParseCmd(Net::TCPClient *cli, Net::Email::SMTPServe
 			{
 				if (cliStatus->lastLBT == Text::LineBreakType::CRLF)
 				{
-					cliStatus->dataStm->Write((UInt8*)"\r\n", 2);
+					cliStatus->dataStm->Write(UTF8STRC("\r\n"));
 				}
 				else if (cliStatus->lastLBT == Text::LineBreakType::CR)
 				{
-					cliStatus->dataStm->Write((UInt8*)"\r", 1);
+					cliStatus->dataStm->Write(UTF8STRC("\r"));
 				}
 				else if (cliStatus->lastLBT == Text::LineBreakType::LF)
 				{
-					cliStatus->dataStm->Write((UInt8*)"\n", 1);
+					cliStatus->dataStm->Write(UTF8STRC("\n"));
 				}
 			}
-			cliStatus->dataStm->Write((UInt8*)cmd, Text::StrCharCnt(cmd));
+			cliStatus->dataStm->Write(cmd, cmdLen);
 			cliStatus->lastLBT = lbt;
 		}
 	}
-	else if (Text::StrEquals(cmd, "DATA"))
+	else if (Text::StrEqualsC(cmd, cmdLen, UTF8STRC("DATA")))
 	{
 		if (cliStatus->cliName != 0 && cliStatus->mailFrom != 0 && cliStatus->rcptTo->GetCount() > 0)
 		{
@@ -345,12 +341,12 @@ void Net::Email::SMTPServer::ParseCmd(Net::TCPClient *cli, Net::Email::SMTPServe
 			WriteMessage(cli, 354, (const UTF8Char*)"End data with <CR><LF>.<CR><LF>");
 		}
 	}
-	else if (Text::StrEquals(cmd, "QUIT"))
+	else if (Text::StrEqualsC(cmd, cmdLen, UTF8STRC("QUIT")))
 	{
 		WriteMessage(cli, 221, (const UTF8Char*)"Bye");
 		cli->ShutdownSend();
 	}
-	else if (Text::StrEquals(cmd, "STARTTLS"))
+	else if (Text::StrEqualsC(cmd, cmdLen, UTF8STRC("STARTTLS")))
 	{
 		if (!cli->IsSSL() && this->connType == Net::Email::SMTPConn::CT_STARTTLS)
 		{
@@ -358,26 +354,26 @@ void Net::Email::SMTPServer::ParseCmd(Net::TCPClient *cli, Net::Email::SMTPServe
 			this->ssl->ServerInit(cli->RemoveSocket(), ClientReady, this);;
 		}
 	}
-	else if (Text::StrStartsWith(cmd, "HELO "))
+	else if (Text::StrStartsWithC(cmd, cmdLen, UTF8STRC("HELO ")))
 	{
 		if (cliStatus->cliName)
 		{
 			Text::StrDelNew(cliStatus->cliName);
 		}
-		cliStatus->cliName = Text::StrCopyNew(&cmd[5]);
+		cliStatus->cliName = Text::StrCopyNewC(&cmd[5], cmdLen - 5);
 		Text::StringBuilderUTF8 sb;
 		sb.Append(this->domain);
 		sb.AppendC(UTF8STRC(" Hello "));
 		sb.Append((UTF8Char*)cliStatus->cliName);
 		WriteMessage(cli, 250, sb.ToString());
 	}
-	else if (Text::StrStartsWith(cmd, "EHLO "))
+	else if (Text::StrStartsWithC(cmd, cmdLen, UTF8STRC("EHLO ")))
 	{
 		if (cliStatus->cliName)
 		{
 			Text::StrDelNew(cliStatus->cliName);
 		}
-		cliStatus->cliName = Text::StrCopyNew(&cmd[5]);
+		cliStatus->cliName = Text::StrCopyNewC(&cmd[5], cmdLen - 5);
 		Text::StringBuilderUTF8 sb;
 		sb.Append(this->domain);
 		sb.AppendC(UTF8STRC(" Hello "));
@@ -395,7 +391,7 @@ void Net::Email::SMTPServer::ParseCmd(Net::TCPClient *cli, Net::Email::SMTPServe
 		sb.AppendC(UTF8STRC("\r\nOK"));
 		WriteMessage(cli, 250, sb.ToString());
 	}
-	else if (Text::StrStartsWith(cmd, "MAIL FROM:"))
+	else if (Text::StrStartsWithC(cmd, cmdLen, UTF8STRC("MAIL FROM:")))
 	{
 		if (cliStatus->mailFrom)
 		{
@@ -404,41 +400,40 @@ void Net::Email::SMTPServer::ParseCmd(Net::TCPClient *cli, Net::Email::SMTPServe
 		cliStatus->mailFrom = Text::StrCopyNew((const UTF8Char*)cmd);
 		WriteMessage(cli, 250, (const UTF8Char*)"Ok");
 	}
-	else if (Text::StrStartsWith(cmd, "RCPT TO:"))
+	else if (Text::StrStartsWithC(cmd, cmdLen, UTF8STRC("RCPT TO:")))
 	{
 		cliStatus->rcptTo->Add(Text::StrCopyNew((const UTF8Char*)cmd));
 		WriteMessage(cli, 250, (const UTF8Char*)"Ok");
 	}
-	else if (Text::StrStartsWith(cmd, "AUTH "))
+	else if (Text::StrStartsWithC(cmd, cmdLen, UTF8STRC("AUTH ")))
 	{
-		if (Text::StrEquals(&cmd[5], "PLAIN"))
+		if (Text::StrEqualsC(&cmd[5], cmdLen - 5, UTF8STRC("PLAIN")))
 		{
 			cliStatus->loginMode = 1;
 			WriteMessage(cli, 334, (const UTF8Char*)"");
 		}
-		else if (Text::StrEquals(&cmd[5], "LOGIN"))
+		else if (Text::StrEqualsC(&cmd[5], cmdLen - 5, UTF8STRC("LOGIN")))
 		{
 			cliStatus->loginMode = 2;
 			WriteMessage(cli, 334, (const UTF8Char*)"VXNlcm5hbWU6");
 		}
-		else if (Text::StrEquals(&cmd[5], "CRAM-MD5"))
+		else if (Text::StrEqualsC(&cmd[5], cmdLen - 5, UTF8STRC("CRAM-MD5")))
 		{
 			WriteMessage(cli, 504, (const UTF8Char*)"Unrecognized authentication type.");
 		}
-		else if (Text::StrStartsWithICase(&cmd[5], "PLAIN "))
+		else if (Text::StrStartsWithICaseC(&cmd[5], cmdLen - 5, UTF8STRC("PLAIN ")))
 		{
 			Bool succ = false;
-			UOSInt len = Text::StrCharCnt(cmd);
-			UInt8 *decBuff = MemAlloc(UInt8, len - 10);
+			UInt8 *decBuff = MemAlloc(UInt8, cmdLen - 10);
 			const UTF8Char *userName;
 			const UTF8Char *pwd;
 			Crypto::Encrypt::Base64 b64;
-			len = b64.Decrypt((UInt8*)&cmd[11], len - 11, decBuff, 0);
-			decBuff[len] = 0;
+			cmdLen = b64.Decrypt((UInt8*)&cmd[11], cmdLen - 11, decBuff, 0);
+			decBuff[cmdLen] = 0;
 			userName = (const UTF8Char*)&decBuff[1];
 			pwd = userName;
 			while (*pwd++);
-			if (pwd < (const UTF8Char*)(decBuff + len))
+			if (pwd < (const UTF8Char*)(decBuff + cmdLen))
 			{
 				succ = this->loginHdlr(this->mailObj, userName, pwd);
 			}
@@ -455,13 +450,12 @@ void Net::Email::SMTPServer::ParseCmd(Net::TCPClient *cli, Net::Email::SMTPServe
 				WriteMessage(cli, 535, (const UTF8Char*)"authentication failed (#5.7.1)");
 			}
 		}
-		else if (Text::StrStartsWithICase(&cmd[5], "LOGIN "))
+		else if (Text::StrStartsWithICaseC(&cmd[5], cmdLen - 5, UTF8STRC("LOGIN ")))
 		{
-			UOSInt len = Text::StrCharCnt(cmd);
-			UInt8 *decBuff = MemAlloc(UInt8, len - 10);
+			UInt8 *decBuff = MemAlloc(UInt8, cmdLen - 10);
 			Crypto::Encrypt::Base64 b64;
-			len = b64.Decrypt((UInt8*)&cmd[11], len - 11, decBuff, 0);
-			decBuff[len] = 0;
+			cmdLen = b64.Decrypt((UInt8*)&cmd[11], cmdLen - 11, decBuff, 0);
+			decBuff[cmdLen] = 0;
 			SDEL_TEXT(cliStatus->userName);
 			cliStatus->userName = Text::StrCopyNew((UTF8Char*)&decBuff[1]);
 			cliStatus->loginMode = 3;
@@ -482,7 +476,7 @@ Net::Email::SMTPServer::SMTPServer(Net::SocketFactory *sockf, Net::SSLEngine *ss
 	this->ssl = ssl;
 	this->connType = connType;
 	this->log = log;
-	this->domain = Text::StrCopyNew(domain);
+	this->domain = Text::String::NewNotNull(domain);
 	this->serverName = Text::StrCopyNew(serverName);
 	this->mailHdlr = mailHdlr;
 	this->mailObj = userObj;
@@ -498,7 +492,7 @@ Net::Email::SMTPServer::~SMTPServer()
 	DEL_CLASS(this->svr);
 	DEL_CLASS(this->cliMgr);
 	DEL_CLASS(this->rawLog);
-	Text::StrDelNew(this->domain);
+	this->domain->Release();
 	Text::StrDelNew(this->serverName);
 }
 

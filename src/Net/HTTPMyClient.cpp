@@ -1072,12 +1072,12 @@ void Net::HTTPMyClient::EndRequest(Double *timeReq, Double *timeResp)
 #endif
 					this->headers->Add(s);
 
-					if (s->StartsWithICase((const UTF8Char*)"Content-Length: "))
+					if (s->StartsWithICase(UTF8STRC("Content-Length: ")))
 					{
 						s->leng = (UOSInt)(Text::StrTrimC(&s->v[16], s->leng - 16) - s->v);
 						Text::StrToUInt64S(&s->v[16], &this->contLeng, 0);
 					}
-					else if (s->StartsWithICase((const UTF8Char*)"Transfer-Encoding: "))
+					else if (s->StartsWithICase(UTF8STRC("Transfer-Encoding: ")))
 					{
 						if (Text::StrStartsWithC(&s->v[19], s->leng - 19, UTF8STRC("chunked")))
 						{
@@ -1085,11 +1085,11 @@ void Net::HTTPMyClient::EndRequest(Double *timeReq, Double *timeResp)
 							this->chunkSizeLeft = 0;
 						}
 					}
-					else if (s->StartsWithICase((const UTF8Char*)"Content-Type: text/event-stream"))
+					else if (s->StartsWithICase(UTF8STRC("Content-Type: text/event-stream")))
 					{
 						eventStream = true;
 					}
-					else if (s->StartsWithICase((const UTF8Char*)"Keep-Alive: timeout="))
+					else if (s->StartsWithICase(UTF8STRC("Keep-Alive: timeout=")))
 					{
 						keepAliveTO = Text::StrToUInt32(&s->v[20]);
 					}

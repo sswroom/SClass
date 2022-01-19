@@ -18,7 +18,7 @@ namespace Map
 			DB::DBConn *currDB;
 			DB::DBConn *lastDB;
 			Map::DrawLayerType layerType;
-			Data::ArrayListStrUTF8 *colNames;
+			Data::ArrayListString *colNames;
 			Double minX;
 			Double minY;
 			Double maxX;

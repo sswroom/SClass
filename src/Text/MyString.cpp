@@ -2713,7 +2713,7 @@ Bool Text::StrStartsWithC(const UTF8Char *str1, UOSInt len1, const UTF8Char *str
 #endif
 	if (len2 >= 2)
 	{
-		if (ReadNUInt16(str1) != ReadNInt32(str2))
+		if (ReadNUInt16(str1) != ReadNUInt16(str2))
 			return false;
 		str1 += 2;
 		str2 += 2;

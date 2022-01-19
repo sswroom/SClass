@@ -8,6 +8,7 @@ Map::RevGeoDir::RevGeoDir(const UTF8Char *cfgDir, UInt32 defLCID, IO::Writer *er
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
+	UTF8Char *sptr2;
 	Data::DateTime modTime;
 	IO::Path::FindFileSession *sess;
 	IO::Path::PathType pt;
@@ -28,12 +29,12 @@ Map::RevGeoDir::RevGeoDir(const UTF8Char *cfgDir, UInt32 defLCID, IO::Writer *er
 	{
 		return;
 	}
-	while (IO::Path::FindNextFile(sptr, sess, &modTime, &pt, 0))
+	while ((sptr2 = IO::Path::FindNextFile(sptr, sess, &modTime, &pt, 0)) != 0)
 	{
-		if (Text::StrStartsWithICase(sptr, (const UTF8Char*)"REVGEO_"))
+		if (Text::StrStartsWithICaseC(sptr, (UOSInt)(sptr2 - sptr), UTF8STRC("REVGEO_")))
 		{
 			errWriter->WriteStrC(UTF8STRC("Loading search file "));
-			errWriter->WriteStr(sptr);
+			errWriter->WriteStrC(sptr, (UOSInt)(sptr2 - sptr));
 			errWriter->WriteStrC(UTF8STRC("..."));
 			
 			Map::RevGeoCfg *revGeo;
@@ -42,7 +43,7 @@ Map::RevGeoDir::RevGeoDir(const UTF8Char *cfgDir, UInt32 defLCID, IO::Writer *er
 			NEW_CLASS(revGeo, Map::RevGeoCfg(sbuff, this->mapSrchMgr));
 			file = MemAlloc(RevGeoFile, 1);
 			file->cfg = revGeo;
-			i = Text::StrIndexOf(sptr, (const UTF8Char*)".");
+			i = Text::StrIndexOf(sptr, '.');
 			if (i != INVALID_INDEX && i >= 7)
 			{
 				sptr[i] = 0;

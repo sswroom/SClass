@@ -236,19 +236,19 @@ void SSWR::AVIRead::AVIRAsmConvForm::ConvAsm()
 						if (i2 != INVALID_INDEX)
 						{
 							sarr[j][i2] = 0;
-							if (Text::StrStartsWithICase(sarr[j], (const UTF8Char*)"BYTE"))
+							if (Text::StrStartsWithICaseC(sarr[j], i2, UTF8STRC("BYTE")))
 							{
 								destSb.AppendC(UTF8STRC("b"));
 							}
-							else if (Text::StrStartsWithICase(sarr[j], (const UTF8Char*)"WORD"))
+							else if (Text::StrStartsWithICaseC(sarr[j], i2, UTF8STRC("WORD")))
 							{
 								destSb.AppendC(UTF8STRC("w"));
 							}
-							else if (Text::StrStartsWithICase(sarr[j], (const UTF8Char*)"DWORD"))
+							else if (Text::StrStartsWithICaseC(sarr[j], i2, UTF8STRC("DWORD")))
 							{
 								destSb.AppendC(UTF8STRC("l"));
 							}
-							else if (Text::StrStartsWithICase(sarr[j], (const UTF8Char*)"QWORD") && lineStart[0] != 'f' && lineStart[0] != 'F')
+							else if (Text::StrStartsWithICaseC(sarr[j], i2, UTF8STRC("QWORD")) && lineStart[0] != 'f' && lineStart[0] != 'F')
 							{
 								destSb.AppendC(UTF8STRC("q"));
 							}

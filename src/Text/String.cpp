@@ -258,37 +258,9 @@ Bool Text::String::StartsWith(UOSInt startIndex, const UTF8Char *s, UOSInt len)
 	return Text::StrStartsWithC(&this->v[startIndex], this->leng - startIndex, s, len);
 }
 
-Bool Text::String::StartsWithICase(const UTF8Char *str2)
+Bool Text::String::StartsWithICase(const UTF8Char *str2, UOSInt len)
 {
-	const UTF8Char *str1 = this->v;
-	UTF8Char c1;
-	UTF8Char c2;
-	UTF8Char uc1;
-	UTF8Char uc2;
-	while ((c2 = *str2) != 0)
-	{
-		c1 = *str1;
-		if (c1 == c2)
-		{
-			str1++;
-			str2++;
-		}
-		else
-		{
-			uc1 = c1 & 0xdf;
-			uc2 = c2 & 0xdf;
-			if (uc1 == uc2 && uc1 >= 'A' && uc1 <= 'Z')
-			{
-				str1++;
-				str2++;
-			}
-			else
-			{
-				return false;
-			}
-		}
-	}
-	return true;
+	return Text::StrStartsWithICaseC(this->v, this->leng, str2, len);
 }
 
 Bool Text::String::EndsWith(UTF8Char c)

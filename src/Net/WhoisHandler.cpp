@@ -12,36 +12,36 @@ Net::WhoisHandler::WhoisHandler(Net::SocketFactory *sockf)
 	WhoisRecord *rec;
 
 	NEW_CLASS(rec, WhoisRecord(Net::SocketUtil::GetIPAddr(UTF8STRC("10.0.0.1"))));
-	rec->AddItem((const UTF8Char*)"inetnum: 10.0.0.0 - 10.255.255.225");
-	rec->AddItem((const UTF8Char*)"netname: LAN A");
-	rec->AddItem((const UTF8Char*)"country: UN");
+	rec->AddItem(UTF8STRC("inetnum: 10.0.0.0 - 10.255.255.225"));
+	rec->AddItem(UTF8STRC("netname: LAN A"));
+	rec->AddItem(UTF8STRC("country: UN"));
 	this->recordList->Add(rec);
 
 	NEW_CLASS(rec, WhoisRecord(Net::SocketUtil::GetIPAddr(UTF8STRC("127.0.0.1"))));
-	rec->AddItem((const UTF8Char*)"inetnum: 127.0.0.0 - 127.255.255.225");
-	rec->AddItem((const UTF8Char*)"netname: localhost");
-	rec->AddItem((const UTF8Char*)"country: UN");
+	rec->AddItem(UTF8STRC("inetnum: 127.0.0.0 - 127.255.255.225"));
+	rec->AddItem(UTF8STRC("netname: localhost"));
+	rec->AddItem(UTF8STRC("country: UN"));
 	this->recordList->Add(rec);
 
 	NEW_CLASS(rec, WhoisRecord(Net::SocketUtil::GetIPAddr(UTF8STRC("172.16.0.1"))));
-	rec->AddItem((const UTF8Char*)"inetnum: 172.16.0.0 - 172.31.255.225");
-	rec->AddItem((const UTF8Char*)"netname: LAN B");
-	rec->AddItem((const UTF8Char*)"country: UN");
+	rec->AddItem(UTF8STRC("inetnum: 172.16.0.0 - 172.31.255.225"));
+	rec->AddItem(UTF8STRC("netname: LAN B"));
+	rec->AddItem(UTF8STRC("country: UN"));
 	this->recordList->Add(rec);
 
 	NEW_CLASS(rec, WhoisRecord(Net::SocketUtil::GetIPAddr(UTF8STRC("192.168.0.1"))));
-	rec->AddItem((const UTF8Char*)"inetnum: 192.168.0.0 - 192.168.255.225");
-	rec->AddItem((const UTF8Char*)"netname: LAN C");
-	rec->AddItem((const UTF8Char*)"country: UN");
+	rec->AddItem(UTF8STRC("inetnum: 192.168.0.0 - 192.168.255.225"));
+	rec->AddItem(UTF8STRC("netname: LAN C"));
+	rec->AddItem(UTF8STRC("country: UN"));
 	this->recordList->Add(rec);
 
 	NEW_CLASS(rec, WhoisRecord(Net::SocketUtil::GetIPAddr(UTF8STRC("224.0.0.1"))));
-	rec->AddItem((const UTF8Char*)"NetRange: 224.0.0.0 - 239.255.255.255");
-	rec->AddItem((const UTF8Char*)"CIDR: 224.0.0.0/4");
-	rec->AddItem((const UTF8Char*)"NetName: MCAST-NET");
-	rec->AddItem((const UTF8Char*)"NetHandle: NET-224-0-0-0-1");
-	rec->AddItem((const UTF8Char*)"NetType: IANA Special Use");
-	rec->AddItem((const UTF8Char*)"Country: US");
+	rec->AddItem(UTF8STRC("NetRange: 224.0.0.0 - 239.255.255.255"));
+	rec->AddItem(UTF8STRC("CIDR: 224.0.0.0/4"));
+	rec->AddItem(UTF8STRC("NetName: MCAST-NET"));
+	rec->AddItem(UTF8STRC("NetHandle: NET-224-0-0-0-1"));
+	rec->AddItem(UTF8STRC("NetType: IANA Special Use"));
+	rec->AddItem(UTF8STRC("Country: US"));
 	this->recordList->Add(rec);
 }
 

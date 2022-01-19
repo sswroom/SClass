@@ -16,6 +16,7 @@ void __stdcall SSWR::AVIRead::AVIRLogBackupForm::OnStartClicked(void *userObj)
 	UOSInt nameSize;
 	Int32 logTime;
 	UTF8Char *filePath;
+	UTF8Char *filePathEnd;
 	UTF8Char *sptr;
 	IO::Path::FindFileSession *sess;
 	Data::DateTime currTime;
@@ -52,14 +53,13 @@ void __stdcall SSWR::AVIRead::AVIRLogBackupForm::OnStartClicked(void *userObj)
 	sess = IO::Path::FindFile(sbuff);
 	if (sess)
 	{
-		while (IO::Path::FindNextFile(filePath, sess, 0, 0, 0))
+		while ((filePathEnd = IO::Path::FindNextFile(filePath, sess, 0, 0, 0)) != 0)
 		{
-			Text::StrConcatS(sbuff2, filePath, 63);
-			nameSize = Text::StrCharCnt(sbuff2);
+			nameSize = (UOSInt)(Text::StrConcatS(sbuff2, filePath, 63) - sbuff2);
 			if (nameSize >= logNameSize + 6)
 			{
 				sbuff2[logNameSize + 6] = 0;
-				if (Text::StrEndsWithICase(filePath, (const UTF8Char*)".zip") || Text::StrEndsWithICase(filePath, (const UTF8Char*)".rar"))
+				if (Text::StrEndsWithICaseC(filePath, (UOSInt)(filePathEnd - filePath), UTF8STRC(".zip")) || Text::StrEndsWithICaseC(filePath, (UOSInt)(filePathEnd - filePath), UTF8STRC(".rar")))
 				{
 				}
 				else

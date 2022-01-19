@@ -113,9 +113,9 @@ Win32::Clipboard::FilePasteType Win32::Clipboard::GetDataFiles(Data::ArrayList<c
 								sb.ClearStr();
 								sb.AppendC((const UTF8Char*)&rawdata[i], (UOSInt)j);
 								i += j + 1;
-								if (sb.StartsWith((const UTF8Char*)"file:///"))
+								if (sb.StartsWithC(UTF8STRC("file:///")))
 								{
-									Text::URLString::GetURLFilePath(sbuff, sb.ToString());
+									Text::URLString::GetURLFilePath(sbuff, sb.ToString(), sb.GetLength());
 									fileNames->Add(Text::StrCopyNew(sbuff));
 								}
 								else
@@ -127,9 +127,9 @@ Win32::Clipboard::FilePasteType Win32::Clipboard::GetDataFiles(Data::ArrayList<c
 							{
 								sb.ClearStr();
 								sb.AppendC((const UTF8Char*)&rawdata[i], (UInt32)leng - i);
-								if (sb.StartsWith((const UTF8Char*)"file:///"))
+								if (sb.StartsWithC(UTF8STRC("file:///")))
 								{
-									Text::URLString::GetURLFilePath(sbuff, sb.ToString());
+									Text::URLString::GetURLFilePath(sbuff, sb.ToString(), sb.GetLength());
 									fileNames->Add(Text::StrCopyNew(sbuff));
 								}
 								else

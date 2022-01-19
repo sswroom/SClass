@@ -37,7 +37,7 @@ namespace Text
 		Bool StartsWith(Text::String *s);
 		Bool StartsWith(const UTF8Char *s, UOSInt len);
 		Bool StartsWith(UOSInt startIndex, const UTF8Char *s, UOSInt len);
-		Bool StartsWithICase(const UTF8Char *s);
+		Bool StartsWithICase(const UTF8Char *s, UOSInt len);
 		Bool EndsWith(UTF8Char c);
 		Bool EndsWith(const UTF8Char *s, UOSInt len);
 		Bool EndsWithICase(const UTF8Char *s, UOSInt len);

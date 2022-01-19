@@ -547,12 +547,12 @@ void __stdcall Net::MySQLServer::OnClientData(Net::TCPClient *cli, void *userObj
 				{
 				case 3:
 					{
-						const UTF8Char *sql = Text::StrCopyNewC(&data->buff[i + 5], packetSize - 1);
+						Text::String *sql = Text::String::New(&data->buff[i + 5], packetSize - 1);
 					#if defined(VERBOSE)
-						printf("COM_QUERY: query_text = %s\r\n", sql);
+						printf("COM_QUERY: query_text = %s\r\n", sql->v);
 					#endif
 						
-						DB::DBReader *r = me->dbms->ExecuteReader(data->connId, sql);
+						DB::DBReader *r = me->dbms->ExecuteReader(data->connId, sql->v, sql->leng);
 						if (r)
 						{
 							if (r->GetRowChanged() != -1)
@@ -736,7 +736,7 @@ void __stdcall Net::MySQLServer::OnClientData(Net::TCPClient *cli, void *userObj
 							printf("COM_QUERY failure\r\n");
 							#endif
 						}
-						Text::StrDelNew(sql);
+						sql->Release();
 					}
 					break;
 				}

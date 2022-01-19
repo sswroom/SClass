@@ -22,7 +22,8 @@ UInt32 __stdcall SSWR::AVIRead::AVIRPackageForm::ProcessThread(void *userObj)
 {
 	SSWR::AVIRead::AVIRPackageForm *me = (SSWR::AVIRead::AVIRPackageForm*)userObj;
 	UTF8Char sbuff[512];
-	const UTF8Char *fname = 0;
+	Text::String *fname = 0;
+	const UTF8Char *fileName = 0;
 	ActionType atype = AT_COPY;
 	UOSInt i;
 	UOSInt j;
@@ -66,15 +67,20 @@ UInt32 __stdcall SSWR::AVIRead::AVIRPackageForm::ProcessThread(void *userObj)
 		mutUsage.EndUse();
 		if (found)
 		{
-			if (Text::StrStartsWith(fname, (const UTF8Char*)"file:///"))
+		
+			if (fname->StartsWith(UTF8STRC("file:///")))
 			{
-				Text::URLString::GetURLFilePath(sbuff, fname);
-				fname = sbuff;
+				Text::URLString::GetURLFilePath(sbuff, fname->v, fname->leng);
+				fileName = sbuff;
+			}
+			else
+			{
+				fileName = fname->v;
 			}
 			lastFound = true;
 			if (atype == AT_COPY)
 			{
-				found = me->packFile->CopyFrom(fname, me, &me->statusBNT);
+				found = me->packFile->CopyFrom(fileName, me, &me->statusBNT);
 				mutUsage.BeginUse();
 				i = me->fileNames->GetCount();
 				while (i-- > 0)
@@ -97,7 +103,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRPackageForm::ProcessThread(void *userObj)
 			}
 			else if (atype == AT_MOVE)
 			{
-				found = me->packFile->MoveFrom(fname, me, &me->statusBNT);
+				found = me->packFile->MoveFrom(fileName, me, &me->statusBNT);
 				mutUsage.BeginUse();
 				i = me->fileNames->GetCount();
 				while (i-- > 0)
@@ -120,7 +126,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRPackageForm::ProcessThread(void *userObj)
 			}
 			else if (atype == AT_RETRYCOPY)
 			{
-				found = me->packFile->RetryCopyFrom(fname, me, &me->statusBNT);
+				found = me->packFile->RetryCopyFrom(fileName, me, &me->statusBNT);
 				mutUsage.BeginUse();
 				i = me->fileNames->GetCount();
 				while (i-- > 0)
@@ -143,7 +149,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRPackageForm::ProcessThread(void *userObj)
 			}
 			else if (atype == AT_RETRYMOVE)
 			{
-				found = me->packFile->RetryCopyFrom(fname, me, &me->statusBNT);
+				found = me->packFile->RetryCopyFrom(fileName, me, &me->statusBNT);
 				mutUsage.BeginUse();
 				i = me->fileNames->GetCount();
 				while (i-- > 0)
@@ -189,7 +195,7 @@ void __stdcall SSWR::AVIRead::AVIRPackageForm::OnTimerTick(void *userObj)
 		UOSInt j;
 		UOSInt k;
 		OSInt scrVPos = me->lvStatus->GetScrollVPos();
-		const UTF8Char *fname;
+		Text::String *fname;
 		me->statusChg = false;
 		me->lvStatus->ClearItems();
 		Sync::MutexUsage mutUsage(me->fileMut);
@@ -198,8 +204,8 @@ void __stdcall SSWR::AVIRead::AVIRPackageForm::OnTimerTick(void *userObj)
 		while (i < j)
 		{
 			fname = me->fileNames->GetItem(i);
-			k = Text::StrLastIndexOf(fname, IO::Path::PATH_SEPERATOR);
-			k = me->lvStatus->AddItem(&fname[k + 1], (void*)fname);
+			k = fname->LastIndexOf(IO::Path::PATH_SEPERATOR);
+			k = me->lvStatus->AddItem(&fname[k + 1], (void*)fname->v);
 			switch (me->fileAction->GetItem(i))
 			{
 			case AT_COPY:
@@ -470,7 +476,7 @@ SSWR::AVIRead::AVIRPackageForm::AVIRPackageForm(UI::GUIClientControl *parent, UI
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	NEW_CLASS(this->threadEvt, Sync::Event(true, (const UTF8Char*)"SSWR.AVIRead.AVIRPackageForm.threadEvt"));
 	NEW_CLASS(this->fileMut, Sync::Mutex());
-	NEW_CLASS(this->fileNames, Data::ArrayList<const UTF8Char *>());
+	NEW_CLASS(this->fileNames, Data::ArrayList<Text::String *>());
 	NEW_CLASS(this->fileAction, Data::ArrayList<ActionType>());
 	this->threadRunning = false;
 	this->threadToStop = false;
@@ -601,7 +607,6 @@ SSWR::AVIRead::AVIRPackageForm::AVIRPackageForm(UI::GUIClientControl *parent, UI
 
 SSWR::AVIRead::AVIRPackageForm::~AVIRPackageForm()
 {
-	UOSInt i;
 	this->threadToStop = true;
 	this->threadEvt->Set();
 	while (this->threadRunning)
@@ -609,11 +614,7 @@ SSWR::AVIRead::AVIRPackageForm::~AVIRPackageForm()
 		Sync::Thread::Sleep(10);
 	}
 	DEL_CLASS(this->packFile);
-	i = this->fileNames->GetCount();
-	while (i-- > 0)
-	{
-		Text::StrDelNew(this->fileNames->GetItem(i));
-	}
+	LIST_FREE_STRING(this->fileNames);
 	DEL_CLASS(this->fileMut);
 	DEL_CLASS(this->fileAction);
 	DEL_CLASS(this->fileNames);
@@ -647,7 +648,7 @@ void SSWR::AVIRead::AVIRPackageForm::EventMenuClicked(UInt16 cmdId)
 				j = fileNames.GetCount();
 				while (i < j)
 				{
-					this->fileNames->Add(Text::StrCopyNew(fileNames.GetItem(i)));
+					this->fileNames->Add(Text::String::NewNotNull(fileNames.GetItem(i)));
 					this->fileAction->Add(AT_MOVE);
 					i++;
 				}
@@ -662,7 +663,7 @@ void SSWR::AVIRead::AVIRPackageForm::EventMenuClicked(UInt16 cmdId)
 				j = fileNames.GetCount();
 				while (i < j)
 				{
-					this->fileNames->Add(Text::StrCopyNew(fileNames.GetItem(i)));
+					this->fileNames->Add(Text::String::NewNotNull(fileNames.GetItem(i)));
 					this->fileAction->Add(AT_COPY);
 					i++;
 				}

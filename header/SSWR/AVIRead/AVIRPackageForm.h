@@ -2,6 +2,7 @@
 #define _SM_SSWR_AVIREAD_AVIRPACKAGEFORM
 #include "IO/PackageFile.h"
 #include "SSWR/AVIRead/AVIRCore.h"
+#include "Text/String.h"
 #include "UI/GUIForm.h"
 #include "UI/GUILabel.h"
 #include "UI/GUIListView.h"
@@ -76,7 +77,7 @@ namespace SSWR
 			IO::ActiveStreamReader::BottleNeckType statusDispBNT;
 
 			Sync::Mutex *fileMut;
-			Data::ArrayList<const UTF8Char *> *fileNames;
+			Data::ArrayList<Text::String *> *fileNames;
 			Data::ArrayList<ActionType> *fileAction;
 			Bool statusChg;
 			Bool threadRunning;

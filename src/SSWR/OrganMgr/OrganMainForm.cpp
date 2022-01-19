@@ -818,6 +818,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImageClipboardClicked(void *user
 				Win32::Clipboard *clipboard;
 				NEW_CLASS(clipboard, Win32::Clipboard(me->hwnd));
 				UTF8Char sbuff[512];
+				UTF8Char *sptr;
 				UOSInt i;
 				UOSInt j;
 				UInt32 fmt;
@@ -882,26 +883,28 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImageClipboardClicked(void *user
 						Bool chg = false;
 						Bool firstPhoto = me->lbImage->GetCount() == 0;
 						SDEL_STRING(me->initSelImg);
-						UTF8Char *sarr[2];
-						sarr[1] = sb.ToString();
+						Text::PString sarr[2];
+						sarr[1].v = sb.ToString();
+						sarr[1].len = sb.GetLength();
 						printf("HDROP: %s\r\n", sb.ToString());
 						j = 2;
 						while (j == 2)
 						{
-							j = Text::StrSplitLine(sarr, 2, sarr[1]);
+							j = Text::StrSplitLineP(sarr, 2, sarr[1].v, sarr[1].len);
 							OrganEnv::FileStatus fs;
-							if (Text::StrStartsWith(sarr[0], (const UTF8Char*)"file://"))
+							if (Text::StrStartsWithC(sarr[0].v, sarr[0].len, UTF8STRC("file://")))
 							{
-								Text::URLString::GetURLFilePath(sbuff, sarr[0]);
-								sarr[0] = sbuff;
+								sptr = Text::URLString::GetURLFilePath(sbuff, sarr[0].v, sarr[0].len);
+								sarr[0].v = sbuff;
+								sarr[0].len = (UOSInt)(sptr - sbuff);
 							}
-							fs = me->env->AddSpeciesFile((OrganSpecies*)gi, sarr[0], firstPhoto, false, 0);
+							fs = me->env->AddSpeciesFile((OrganSpecies*)gi, sarr[0].v, firstPhoto, false, 0);
 							if (fs == OrganEnv::FS_SUCCESS)
 							{
 								if (!chg)
 								{
-									UOSInt tmp = Text::StrLastIndexOf(sarr[0], IO::Path::PATH_SEPERATOR);
-									me->initSelImg = Text::String::NewNotNull(&sarr[0][tmp + 1]);
+									UOSInt tmp = Text::StrLastIndexOf(sarr[0].v, IO::Path::PATH_SEPERATOR);
+									me->initSelImg = Text::String::New(&sarr[0].v[tmp + 1], sarr[0].len - tmp - 1);
 								}
 								chg = true;
 								firstPhoto = false;
@@ -914,11 +917,11 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImageClipboardClicked(void *user
 								UOSInt i;
 								const UTF8Char *csptr;
 								Text::StringBuilderUTF8 sb;
-								i = Text::StrLastIndexOf(sarr[0], IO::Path::PATH_SEPERATOR);
+								i = Text::StrLastIndexOf(sarr[0].v, IO::Path::PATH_SEPERATOR);
 								csptr = Text::StrToUTF8New(L"不能複製檔案: ");
 								sb.Append(csptr);
 								Text::StrDelNew(csptr);
-								sb.Append(&sarr[0][i + 1]);
+								sb.Append(&sarr[0].v[i + 1]);
 								csptr = Text::StrToUTF8New(L", 要繼續?");
 								sb.Append(csptr);
 								Text::StrDelNew(csptr);
@@ -3341,6 +3344,7 @@ UI::GUIDropHandler::DragEffect SSWR::OrganMgr::OrganMainForm::DragEnter(UI::GUID
 void SSWR::OrganMgr::OrganMainForm::DropData(UI::GUIDropData *data, OSInt x, OSInt y)
 {
 	UTF8Char sbuff[512];
+	UTF8Char *sptr;
 	if (this->inputMode == IM_SPECIES)
 	{
 		UOSInt i = this->lbObj->GetSelectedIndex();
@@ -3476,26 +3480,28 @@ void SSWR::OrganMgr::OrganMainForm::DropData(UI::GUIDropData *data, OSInt x, OSI
 					sb.ClearStr();
 					if (data->GetDataText(fmtHDrop, &sb))
 					{
-						UTF8Char *sarr[2];
-						sarr[1] = sb.ToString();
+						Text::PString sarr[2];
+						sarr[1].v = sb.ToString();
+						sarr[1].len = sb.GetLength();
 						printf("HDROP: %s\r\n", sb.ToString());
 						j = 2;
 						while (j == 2)
 						{
-							j = Text::StrSplitLine(sarr, 2, sarr[1]);
+							j = Text::StrSplitLineP(sarr, 2, sarr[1].v, sarr[1].len);
 							OrganEnv::FileStatus fs;
-							if (Text::StrStartsWith(sarr[0], (const UTF8Char*)"file://"))
+							if (Text::StrStartsWithC(sarr[0].v, sarr[0].len, UTF8STRC("file://")))
 							{
-								Text::URLString::GetURLFilePath(sbuff, sarr[0]);
-								sarr[0] = sbuff;
+								sptr = Text::URLString::GetURLFilePath(sbuff, sarr[0].v, sarr[0].len);
+								sarr[0].v = sbuff;
+								sarr[0].len = (UOSInt)(sptr - sbuff);
 							}
-							fs = this->env->AddSpeciesFile((OrganSpecies*)gi, sarr[0], firstPhoto, false, 0);
+							fs = this->env->AddSpeciesFile((OrganSpecies*)gi, sarr[0].v, firstPhoto, false, 0);
 							if (fs == OrganEnv::FS_SUCCESS)
 							{
 								if (!chg)
 								{
-									UOSInt tmp = Text::StrLastIndexOf(sarr[0], IO::Path::PATH_SEPERATOR);
-									this->initSelImg = Text::String::NewNotNull(&sarr[0][tmp + 1]);
+									UOSInt tmp = Text::StrLastIndexOf(sarr[0].v, IO::Path::PATH_SEPERATOR);
+									this->initSelImg = Text::String::New(&sarr[0].v[tmp + 1], sarr[0].len - tmp - 1);
 								}
 								chg = true;
 								firstPhoto = false;
@@ -3506,23 +3512,23 @@ void SSWR::OrganMgr::OrganMainForm::DropData(UI::GUIDropData *data, OSInt x, OSI
 							else
 							{
 								UOSInt i;
-								const UTF8Char *csptr;
+								Text::String *s;
 								Text::StringBuilderUTF8 sb;
-								i = Text::StrLastIndexOf(sarr[0], IO::Path::PATH_SEPERATOR);
-								csptr = Text::StrToUTF8New(L"不能複製檔案: ");
-								sb.Append(csptr);
-								Text::StrDelNew(csptr);
-								sb.Append(&sarr[0][i + 1]);
-								csptr = Text::StrToUTF8New(L", 要繼續?");
-								sb.Append(csptr);
-								Text::StrDelNew(csptr);
-								csptr = Text::StrToUTF8New(L"錯誤");
-								if (!UI::MessageDialog::ShowYesNoDialog(sb.ToString(), csptr, this))
+								i = Text::StrLastIndexOf(sarr[0].v, IO::Path::PATH_SEPERATOR);
+								s = Text::String::NewNotNull(L"不能複製檔案: ");
+								sb.Append(s);
+								s->Release();
+								sb.AppendC(&sarr[0].v[i + 1], sarr[0].len - i - 1);
+								s = Text::String::NewNotNull(L", 要繼續?");
+								sb.Append(s);
+								s->Release();
+								s = Text::String::NewNotNull(L"錯誤");
+								if (!UI::MessageDialog::ShowYesNoDialog(sb.ToString(), s->v, this))
 								{
-									Text::StrDelNew(csptr);
+									s->Release();
 									break;
 								}
-								Text::StrDelNew(csptr);
+								s->Release();
 							}
 						}
 

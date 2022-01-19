@@ -3460,7 +3460,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpecies(Net::WebServer::IWebR
 			{
 				if (pt == IO::Path::PathType::File)
 				{
-					if (Text::StrEndsWithICase(sptr, (const UTF8Char*)".JPG") || Text::StrEndsWithICase(sptr, (const UTF8Char*)".PCX") || Text::StrEndsWith(sptr, (const UTF8Char*)".TIF"))
+					if (Text::StrEndsWithICaseC(sptr, (UOSInt)(sptr2 - sptr), UTF8STRC(".JPG")) || Text::StrEndsWithICaseC(sptr, (UOSInt)(sptr2 - sptr), UTF8STRC(".PCX")) || Text::StrEndsWithICaseC(sptr, (UOSInt)(sptr2 - sptr), UTF8STRC(".TIF")))
 					{
 						sptr2[-4] = 0;
 						fileNameList->SortedInsert(Text::String::New(sptr, (UOSInt)(sptr2 - sptr - 4)));
@@ -4519,7 +4519,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 						{
 							if (pt == IO::Path::PathType::File)
 							{
-								if (Text::StrEndsWithICase(u8ptr, (const UTF8Char*)".JPG") || Text::StrEndsWithICase(u8ptr, (const UTF8Char*)".PCX") || Text::StrEndsWith(u8ptr, (const UTF8Char*)".TIF"))
+								if (Text::StrEndsWithICaseC(u8ptr, (UOSInt)(u8ptr2 - u8ptr), UTF8STRC(".JPG")) || Text::StrEndsWithICaseC(u8ptr, (UOSInt)(u8ptr2 - u8ptr), UTF8STRC(".PCX")) || Text::StrEndsWithICaseC(u8ptr, (UOSInt)(u8ptr2 - u8ptr), UTF8STRC(".TIF")))
 								{
 									u8ptr2[-4] = 0;
 									fileNameList->SortedInsert(Text::String::New(u8ptr, (UOSInt)(u8ptr2 - u8ptr - 4)));
@@ -4879,7 +4879,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 						{
 							if (pt == IO::Path::PathType::File)
 							{
-								if (Text::StrEndsWithICase(u8ptr, (const UTF8Char*)".JPG") || Text::StrEndsWithICase(u8ptr, (const UTF8Char*)".PCX") || Text::StrEndsWith(u8ptr, (const UTF8Char*)".TIF"))
+								if (Text::StrEndsWithICaseC(u8ptr, (UOSInt)(u8ptr2 - u8ptr), UTF8STRC(".JPG")) || Text::StrEndsWithICaseC(u8ptr, (UOSInt)(u8ptr2 - u8ptr), UTF8STRC(".PCX")) || Text::StrEndsWithICaseC(u8ptr, (UOSInt)(u8ptr2 - u8ptr), UTF8STRC(".TIF")))
 								{
 									u8ptr2[-4] = 0;
 									fileNameList->SortedInsert(Text::String::New(u8ptr, (UOSInt)(u8ptr2 - u8ptr - 4)));
@@ -5212,7 +5212,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 					{
 						if (pt == IO::Path::PathType::File)
 						{
-							if (Text::StrEndsWithICase(u8ptr, (const UTF8Char*)".JPG") || Text::StrEndsWithICase(u8ptr, (const UTF8Char*)".PCX") || Text::StrEndsWith(u8ptr, (const UTF8Char*)".TIF"))
+							if (Text::StrEndsWithICaseC(u8ptr, (UOSInt)(u8ptr2 - u8ptr), UTF8STRC(".JPG")) || Text::StrEndsWithICaseC(u8ptr, (UOSInt)(u8ptr2 - u8ptr), UTF8STRC(".PCX")) || Text::StrEndsWithICaseC(u8ptr, (UOSInt)(u8ptr2 - u8ptr), UTF8STRC(".TIF")))
 							{
 								u8ptr2[-4] = 0;
 								fileNameList->SortedInsert(Text::String::New(u8ptr, (UOSInt)(u8ptr2 - u8ptr - 4)));
@@ -7757,6 +7757,7 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhoto(Net::WebServer::IWebRequest 
 	SSWR::OrganMgr::OrganWebHandler::SpeciesInfo *sp;
 	UTF8Char u8buff[512];
 	UTF8Char u8buff2[512];
+	UTF8Char *sptr2;
 	IO::FileStream *fs;
 	Text::UTF8Reader *reader;
 	Int32 rotateType = 0;
@@ -7828,21 +7829,21 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhoto(Net::WebServer::IWebRequest 
 			NEW_CLASS(fs, IO::FileStream(sb.ToString(), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
 			if (!fs->IsError())
 			{
-				UTF8Char *sarr[3];
+				Text::PString sarr[3];
 				sb.ClearStr();
 				sb.Append(fileName);
 				sb.AppendC(UTF8STRC("."));
 
 				NEW_CLASS(reader, Text::UTF8Reader(fs));
-				while (reader->ReadLine(u8buff2, 511))
+				while ((sptr2 = reader->ReadLine(u8buff2, 511)) != 0)
 				{
-					if (Text::StrSplit(sarr, 3, u8buff2, '\t') == 2)
+					if (Text::StrSplitP(sarr, 3, u8buff2, (UOSInt)(sptr2 - u8buff2), '\t') == 2)
 					{
-						if (Text::StrStartsWithICase(sarr[0], sb.ToString()))
+						if (Text::StrStartsWithICaseC(sarr[0].v, sarr[0].len, sb.ToString(), sb.GetLength()))
 						{
-							if (sarr[1][0] == 'R')
+							if (sarr[1].v[0] == 'R')
 							{
-								rotateType = Text::StrToInt32(&sarr[1][1]);
+								rotateType = Text::StrToInt32(&sarr[1].v[1]);
 								break;
 							}
 						}

@@ -123,7 +123,7 @@ Map::FileGDBLayer::FileGDBLayer(DB::SharedReadingDB *conn, const UTF8Char *sourc
 		j = this->colNames->GetCount();
 		while (j-- > 0)
 		{
-			if (Text::StrEndsWithICase(this->colNames->GetItem(j)->v, (const UTF8Char*)"NAME"))
+			if (this->colNames->GetItem(j)->EndsWithICase(UTF8STRC("NAME")))
 			{
 				nameCol = j;
 			}
@@ -380,7 +380,7 @@ UOSInt Map::FileGDBLayer::GetTableNames(Data::ArrayList<const UTF8Char*> *names)
 	return 1;
 }
 
-DB::DBReader *Map::FileGDBLayer::GetTableData(const UTF8Char *tableName, Data::ArrayList<const UTF8Char*> *columnNames, UOSInt ofst, UOSInt maxCnt, const UTF8Char *ordering, Data::QueryConditions *condition)
+DB::DBReader *Map::FileGDBLayer::GetTableData(const UTF8Char *tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, const UTF8Char *ordering, Data::QueryConditions *condition)
 {
 	Sync::MutexUsage *mutUsage;
 	NEW_CLASS(mutUsage, Sync::MutexUsage());

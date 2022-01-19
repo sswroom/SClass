@@ -132,7 +132,7 @@ namespace DB
 		Bool UserAdd(Int32 userId, const UTF8Char *userName, const UTF8Char *password, const UTF8Char *host);
 		Int32 UserLoginMySQL(Int32 sessId, const UTF8Char *userName, const UInt8 *randomData, const UInt8 *passHash, const Net::SocketUtil::AddressInfo *addr, const SessionParam *param, const UTF8Char *database);
 
-		DB::DBReader *ExecuteReader(Int32 sessId, const UTF8Char *sql);
+		DB::DBReader *ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt sqlLen);
 		void CloseReader(DB::DBReader *r);
 		UTF8Char *GetErrMessage(Int32 sessId, UTF8Char *msgBuff);
 

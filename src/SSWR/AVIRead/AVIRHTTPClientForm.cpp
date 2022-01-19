@@ -288,12 +288,11 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnSaveClicked(void *userObj)
 		UOSInt i = me->respHeaders->GetCount();
 		while (i-- > 0)
 		{
-			const UTF8Char *csptr = me->respHeaders->GetItem(i);
-			if (Text::StrStartsWithICase(csptr, (const UTF8Char*)"Content-Disposition: "))
+			Text::String *hdr = me->respHeaders->GetItem(i);
+			if (hdr->StartsWithICase(UTF8STRC("Content-Disposition: ")))
 			{
-				csptr = csptr + 21;
 				Text::StringBuilderUTF8 sb;
-				sb.Append(csptr);
+				sb.AppendC(hdr->v + 21, hdr->leng - 21);
 				UTF8Char *sarr[2];
 				UOSInt j;
 				sarr[1] = sb.ToString();
@@ -649,8 +648,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 				j = cli->GetRespHeaderCnt();
 				while (i < j)
 				{
-					cli->GetRespHeader(i, sbuff);
-					me->respHeaders->Add(Text::StrCopyNew(sbuff));
+					me->respHeaders->Add(cli->GetRespHeader(i)->Clone());
 					i++;
 				}
 				Text::StringBuilderUTF8 sb;
@@ -725,7 +723,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnTimerTick(void *userObj)
 {
 	SSWR::AVIRead::AVIRHTTPClientForm *me = (SSWR::AVIRead::AVIRHTTPClientForm*)userObj;
-	const UTF8Char *hdr;
+	Text::String *hdr;
 	UTF8Char sbuff[64];
 	UOSInt i;
 	UOSInt j;
@@ -790,9 +788,9 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnTimerTick(void *userObj)
 		while (i < j)
 		{
 			hdr = me->respHeaders->GetItem(i);
-			if (Text::StrStartsWithICase(hdr, (const UTF8Char*)"Set-Cookie: "))
+			if (hdr->StartsWithICase(UTF8STRC("Set-Cookie: ")))
 			{
-				SSWR::AVIRead::AVIRHTTPClientForm::HTTPCookie *cookie = me->SetCookie(&hdr[12], me->respReqURL->v);
+				SSWR::AVIRead::AVIRHTTPClientForm::HTTPCookie *cookie = me->SetCookie(&hdr->v[12], me->respReqURL->v);
 				if (cookie)
 				{
 					UOSInt k = me->lvCookie->AddItem(cookie->domain, cookie);
@@ -822,12 +820,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnTimerTick(void *userObj)
 
 void SSWR::AVIRead::AVIRHTTPClientForm::ClearHeaders()
 {
-	UOSInt i;
-	i = this->respHeaders->GetCount();
-	while (i-- > 0)
-	{
-		Text::StrDelNew(this->respHeaders->RemoveAt(i));
-	}
+	LIST_FREE_STRING(this->respHeaders);
 }
 
 void SSWR::AVIRead::AVIRHTTPClientForm::ClearParams()
@@ -1085,7 +1078,7 @@ SSWR::AVIRead::AVIRHTTPClientForm::AVIRHTTPClientForm(UI::GUIClientControl *pare
 	this->reqPassword = 0;
 	this->reqHeaders = 0;
 	NEW_CLASS(this->threadEvt, Sync::Event(true, (const UTF8Char*)"SSWR.AVIRead.AVIRHTTPClientForm.threadEvt"));
-	NEW_CLASS(this->respHeaders, Data::ArrayList<const UTF8Char *>());
+	NEW_CLASS(this->respHeaders, Data::ArrayList<Text::String *>());
 	NEW_CLASS(this->respMut, Sync::Mutex());
 	NEW_CLASS(this->params, Data::ArrayList<SSWR::AVIRead::AVIRHTTPClientForm::ParamValue*>());
 	NEW_CLASS(this->cookieList, Data::ArrayList<SSWR::AVIRead::AVIRHTTPClientForm::HTTPCookie*>());

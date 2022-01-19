@@ -4956,6 +4956,7 @@ void SSWR::OrganMgr::OrganEnvDB::ExportLite(const UTF8Char *folder)
 	UTF8Char sbuff2[512];
 	UTF8Char *sptr;
 	UTF8Char *sptr2;
+	UTF8Char *sptr2End;
 	UTF8Char *sptr3;
 	IO::FileStream *fs;
 	Text::UTF8Writer *writer;
@@ -5059,11 +5060,11 @@ void SSWR::OrganMgr::OrganEnvDB::ExportLite(const UTF8Char *folder)
 			sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
 			r->GetStr(3, &sb);
 			
-			Text::StrConcatC(sptr2, sb.ToString(), sb.GetLength());
+			sptr2End = Text::StrConcatC(sptr2, sb.ToString(), sb.GetLength());
 			Text::StrConcatC(sptr3, sb.ToString(), sb.GetLength());
 			if (IO::Path::GetPathType(sbuff) == IO::Path::PathType::Unknown)
 			{
-				if (fileType == 1 && Text::StrEndsWithICase(sptr2, (const UTF8Char*)".jpg"))
+				if (fileType == 1 && Text::StrEndsWithICaseC(sptr2, (UOSInt)(sptr2End - sptr2), UTF8STRC(".jpg")))
 				{
 					IO::FileStream *fs;
 					IO::StmData::FileData *fd;

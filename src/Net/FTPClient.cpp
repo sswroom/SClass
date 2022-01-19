@@ -13,7 +13,7 @@ Net::FTPClient::FTPClient(const UTF8Char *url, Net::SocketFactory *sockf, Bool p
 	UTF8Char *host = 0;
 	UTF8Char *port = 0;
 	UTF8Char c;
-	Text::StrConcat(sbuff, url);
+	sptr = Text::StrConcat(sbuff, url);
 	this->userName = 0;
 	this->password = 0;
 	this->host = 0;
@@ -22,8 +22,7 @@ Net::FTPClient::FTPClient(const UTF8Char *url, Net::SocketFactory *sockf, Bool p
 	this->cli2 = 0;
 	this->codePage = codePage;
 
-	sptr = sbuff;
-	if (!Text::StrStartsWithICase(sbuff, (const UTF8Char*)"FTP://"))
+	if (!Text::StrStartsWithICaseC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("FTP://")))
 		return;
 	sptr = &sbuff[6];
 	host = sptr;
@@ -35,7 +34,7 @@ Net::FTPClient::FTPClient(const UTF8Char *url, Net::SocketFactory *sockf, Bool p
 			sptr[-1] = 0;
 			if (userName == 0)
 			{
-				this->userName = Text::StrCopyNew((const UTF8Char*)"Annonymous");
+				this->userName = Text::StrCopyNewC(UTF8STRC("Annonymous"));
 				this->password = 0;
 			}
 			else

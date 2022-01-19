@@ -139,9 +139,9 @@ public:
 	}
 };
 
-Bool ParseFile(const UTF8Char *fileName)
+Bool ParseFile(const UTF8Char *fileName, UOSInt fileNameLen)
 {
-	if (Text::StrEndsWithICase(fileName, (const UTF8Char*)".MD5"))
+	if (Text::StrEndsWithICaseC(fileName, fileNameLen, UTF8STRC(".MD5")))
 	{
 		Parser::FileParser::MD5Parser parser;
 		Bool succ = true;
@@ -209,6 +209,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 {
 	UOSInt cmdCnt;
 	UTF8Char sbuff[512];
+	UTF8Char *sptr;
 	UTF8Char **cmdLines = progCtrl->GetCommandLines(progCtrl, &cmdCnt);
 	NEW_CLASS(console, IO::ConsoleWriter());
 	showHelp = true;
@@ -225,7 +226,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			}
 			else
 			{
-				ParseFile(cmdLines[1]);
+				ParseFile(cmdLines[1], Text::StrCharCnt(cmdLines[1]));
 			}
 		}
 		else
@@ -238,13 +239,13 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			sess = IO::Path::FindFile(sbuff);
 			if (sess)
 			{
-				while (IO::Path::FindNextFile(&sbuff[i + 1], sess, 0, &pt, 0))
+				while (sptr = IO::Path::FindNextFile(&sbuff[i + 1], sess, 0, &pt, 0))
 				{
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("Checking "));
 					sb.Append(&sbuff[i + 1]);
 					console->WriteLineC(sb.ToString(), sb.GetLength());
-					ParseFile(sbuff);
+					ParseFile(sbuff, (UOSInt)(sptr - sbuff));
 					console->WriteLine();
 				}
 				IO::Path::FindFileClose(sess);

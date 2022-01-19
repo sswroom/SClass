@@ -6,7 +6,7 @@ namespace Text
 	class URLString
 	{
 	public:
-		static UTF8Char *GetURLFilePath(UTF8Char *sbuff, const UTF8Char *url);
+		static UTF8Char *GetURLFilePath(UTF8Char *sbuff, const UTF8Char *url, UOSInt urlLen);
 		static UTF8Char *GetURLDomain(UTF8Char *sbuff, const UTF8Char *url, UInt16 *port);
 
 		static UTF8Char *GetURIScheme(UTF8Char *sbuff, const UTF8Char *url);

@@ -85,7 +85,7 @@ IO::IStreamData *Net::WebBrowser::GetData(const UTF8Char *url, Bool forceReload,
 		return 0;
 	if (Text::StrEqualsICaseC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("FILE")))
 	{
-		Text::URLString::GetURLFilePath(sbuff, url);
+		Text::URLString::GetURLFilePath(sbuff, url, Text::StrCharCnt(url));
 		IO::StmData::FileData *fd;
 		NEW_CLASS(fd, IO::StmData::FileData(sbuff, false));
 		if (contentType)

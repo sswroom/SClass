@@ -132,7 +132,7 @@ namespace SSWR
 			UInt64 respSize;
 			Int32 respStatus;
 			Text::String *respReqURL;
-			Data::ArrayList<const UTF8Char*> *respHeaders;
+			Data::ArrayList<Text::String*> *respHeaders;
 			Sync::Mutex *respMut;
 			Text::String *respContType;
 			IO::MemoryStream *respData;

@@ -53,20 +53,19 @@ IO::ParsedObject *Parser::FileParser::SPREDParser::ParseFile(IO::IStreamData *fd
 	UInt64 fileSize;
 	Int32 cmdType;
 	UInt32 cmdSize;
-
-	sptr = fd->GetFullName()->v;
-	i = Text::StrLastIndexOf(sptr, IO::Path::PATH_SEPERATOR);
-	Text::StrConcat(u8buff, &sptr[i + 1]);
-	if (!Text::StrStartsWithICase(u8buff, (const UTF8Char*)"RED"))
+	Text::String *s = fd->GetFullName();
+	i = Text::StrLastIndexOf(s->v, IO::Path::PATH_SEPERATOR);
+	sptr = Text::StrConcatC(u8buff, &s->v[i + 1], s->leng - i - 1);
+	if (!Text::StrStartsWithICaseC(u8buff, (UOSInt)(sptr - u8buff), UTF8STRC("RED")))
 	{
 		return 0;
 	}
-	i = Text::StrIndexOf(u8buff, (const UTF8Char*)".");
+	i = Text::StrIndexOf(u8buff, '.');
 	if (i == INVALID_INDEX)
 		return 0;
 	if (u8buff[i - 1] != 's' && u8buff[i - 1] != 'S')
 		return 0;
-	if (Text::StrCompareICase(&u8buff[i + 1], (const UTF8Char*)"DAT") != 0)
+	if (!Text::StrEqualsICaseC(&u8buff[i + 1], (UOSInt)(sptr - &u8buff[i + 1]), UTF8STRC("DAT")))
 		return 0;
 
 	fileSize = fd->GetDataSize();

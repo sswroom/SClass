@@ -8,6 +8,7 @@
 #include "Net/TCPClientMgr.h"
 #include "Net/Email/SMTPConn.h"
 #include "Text/MyString.h"
+#include "Text/String.h"
 
 namespace Net
 {
@@ -20,7 +21,7 @@ namespace Net
 			{
 				UInt8 *buff;
 				UOSInt buffSize;
-				const Char *cliName;
+				const UTF8Char *cliName;
 				const UTF8Char *mailFrom;
 				Data::ArrayList<const UTF8Char *> *rcptTo;
 				Bool dataMode;
@@ -40,7 +41,7 @@ namespace Net
 			Net::TCPServer *svr;
 			Net::TCPClientMgr *cliMgr;
 			IO::LogTool *log;
-			const UTF8Char *domain;
+			Text::String *domain;
 			const UTF8Char *serverName;
 
 			MailHandler mailHdlr;
@@ -56,7 +57,7 @@ namespace Net
 			static void __stdcall ClientTimeout(Net::TCPClient *cli, void *userObj, void *cliData);
 			UOSInt WriteMessage(Net::TCPClient *cli, Int32 statusCode, const UTF8Char *msg);
 			//static OSInt WriteMessage(Net::TCPClient *cli, Int32 statusCode, const Char *msg);
-			void ParseCmd(Net::TCPClient *cli, MailStatus *cliStatus, Char *cmd, Text::LineBreakType lbt);
+			void ParseCmd(Net::TCPClient *cli, MailStatus *cliStatus, const UTF8Char *cmd, UOSInt cmdLen, Text::LineBreakType lbt);
 		public:
 			SMTPServer(Net::SocketFactory *sockf, Net::SSLEngine *ssl, UInt16 port, Net::Email::SMTPConn::ConnType connType, IO::LogTool *log, const UTF8Char *domain, const UTF8Char *serverName, MailHandler mailHdlr, LoginHandler loginHdlr, void *userObj);
 			~SMTPServer();

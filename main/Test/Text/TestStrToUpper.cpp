@@ -64,7 +64,6 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	{
 		return 1;
 	}
-	// Text::StrStartsWithICase
 	// Text::STrEndsWithICase
 	// Text::StrIndexOfICase
 	// Text::StrReplaceICase

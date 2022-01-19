@@ -89,6 +89,7 @@ Bool SSWR::DownloadMonitor::DownMonCore::FFMPEGMuxAAC(const UTF8Char *videoFile,
 Bool SSWR::DownloadMonitor::DownMonCore::ExtractZIP(const UTF8Char *zipFile, const UTF8Char *mp4File)
 {
 	UTF8Char sbuff[512];
+	UTF8Char *sptr;
 	IO::StmData::FileData *fd;
 	IO::PackageFile *pkgFile;
 	Bool valid = false;
@@ -100,8 +101,8 @@ Bool SSWR::DownloadMonitor::DownMonCore::ExtractZIP(const UTF8Char *zipFile, con
 		if (pkgFile->GetCount() == 1)
 		{
 			sbuff[0] = 0;
-			pkgFile->GetItemName(sbuff, 0);
-			if (Text::StrEndsWithICase(sbuff, (const UTF8Char*)".MP4") && pkgFile->GetItemType(0) == IO::PackageFile::POT_STREAMDATA)
+			sptr = pkgFile->GetItemName(sbuff, 0);
+			if (Text::StrEndsWithICaseC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC(".MP4")) && pkgFile->GetItemType(0) == IO::PackageFile::POT_STREAMDATA)
 			{
 				valid = pkgFile->CopyTo(0, mp4File, true);
 			}
@@ -156,10 +157,10 @@ void SSWR::DownloadMonitor::DownMonCore::ProcessDir(Text::String *downPath, Text
 		Data::DateTime modTime;
 		IO::ActiveStreamReader::BottleNeckType bnt;
 
-		while (IO::Path::FindNextFile(sptr, sess, &modTime, &pt, &fileSize))
+		while ((sptr2 = IO::Path::FindNextFile(sptr, sess, &modTime, &pt, &fileSize)) != 0)
 		{
 //			printf("File: %s\r\n", sptr);
-			if (Text::StrEndsWithICase(sptr, (const UTF8Char*)" - DASH.MP4"))
+			if (Text::StrEndsWithICaseC(sptr, (UOSInt)(sptr2 - sptr), UTF8STRC(" - DASH.MP4")))
 			{
 				sptr2 = Text::StrConcat(sbuff2, sbuff);
 				Text::StrConcatC(sptr2, UTF8STRC(".part"));
@@ -214,7 +215,7 @@ void SSWR::DownloadMonitor::DownMonCore::ProcessDir(Text::String *downPath, Text
 					}
 				}
 			}
-			else if (Text::StrEndsWithICase(sptr, (const UTF8Char*)" - DASH.WEBM"))
+			else if (Text::StrEndsWithICaseC(sptr, (UOSInt)(sptr2 - sptr), UTF8STRC(" - DASH.WEBM")))
 			{
 				sptr2 = Text::StrConcat(sbuff2, sbuff);
 				Text::StrConcatC(sptr2, UTF8STRC(".part"));
@@ -278,7 +279,7 @@ void SSWR::DownloadMonitor::DownMonCore::ProcessDir(Text::String *downPath, Text
 					}
 				}
 			}
-			else if (Text::StrEndsWithICase(sptr, (const UTF8Char*)".MP4"))
+			else if (Text::StrEndsWithICaseC(sptr, (UOSInt)(sptr2 - sptr), UTF8STRC(".MP4")))
 			{
 //				printf("MP4 found: %s\r\n", sptr);
 				sptr2 = Text::StrConcat(sbuff2, sbuff);
@@ -318,7 +319,7 @@ void SSWR::DownloadMonitor::DownMonCore::ProcessDir(Text::String *downPath, Text
 					this->chkStatus = CS_CHECKING;
 				}
 			}
-			else if (Text::StrEndsWithICase(sptr, (const UTF8Char*)".ZIP"))
+			else if (Text::StrEndsWithICaseC(sptr, (UOSInt)(sptr2 - sptr), UTF8STRC(".ZIP")))
 			{
 				sptr2 = Text::StrConcat(sbuff2, sbuff);
 				Text::StrConcatC(sptr2, UTF8STRC(".part"));
@@ -376,9 +377,9 @@ void SSWR::DownloadMonitor::DownMonCore::ProcessDir(Text::String *downPath, Text
 					this->chkStatus = CS_CHECKING;
 				}
 			}
-			else if (Text::StrEndsWithICase(sptr, (const UTF8Char*)".RAR"))
+			else if (Text::StrEndsWithICaseC(sptr, (UOSInt)(sptr2 - sptr), UTF8STRC(".RAR")))
 			{
-				if (Text::StrIndexOf(sptr, (const UTF8Char*)".part") != INVALID_INDEX)
+				if (Text::StrIndexOfC(sptr, (UOSInt)(sptr2 - sptr), UTF8STRC(".part")) != INVALID_INDEX)
 				{
 
 				}

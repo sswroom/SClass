@@ -219,13 +219,14 @@ Bool __stdcall SSWR::AVIRead::AVIRImageViewerForm::OnMouseMove(void *userObj, OS
 
 Bool SSWR::AVIRead::AVIRImageViewerForm::IsImageFileName(const UTF8Char *fileName)
 {
-	if (Text::StrEndsWithICase(fileName, (const UTF8Char*)".jpg")) return true;
-	if (Text::StrEndsWithICase(fileName, (const UTF8Char*)".png")) return true;
-	if (Text::StrEndsWithICase(fileName, (const UTF8Char*)".tif")) return true;
-	if (Text::StrEndsWithICase(fileName, (const UTF8Char*)".bmp")) return true;
-	if (Text::StrEndsWithICase(fileName, (const UTF8Char*)".gif")) return true;
-	if (Text::StrEndsWithICase(fileName, (const UTF8Char*)".ico")) return true;
-	if (Text::StrEndsWithICase(fileName, (const UTF8Char*)".pcx")) return true;
+	UOSInt fileNameLen = Text::StrCharCnt(fileName);
+	if (Text::StrEndsWithICaseC(fileName, fileNameLen, UTF8STRC(".jpg"))) return true;
+	if (Text::StrEndsWithICaseC(fileName, fileNameLen, UTF8STRC(".png"))) return true;
+	if (Text::StrEndsWithICaseC(fileName, fileNameLen, UTF8STRC(".tif"))) return true;
+	if (Text::StrEndsWithICaseC(fileName, fileNameLen, UTF8STRC(".bmp"))) return true;
+	if (Text::StrEndsWithICaseC(fileName, fileNameLen, UTF8STRC(".gif"))) return true;
+	if (Text::StrEndsWithICaseC(fileName, fileNameLen, UTF8STRC(".ico"))) return true;
+	if (Text::StrEndsWithICaseC(fileName, fileNameLen, UTF8STRC(".pcx"))) return true;
 	return false;
 }
 

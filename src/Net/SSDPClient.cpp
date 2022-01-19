@@ -28,28 +28,28 @@ void __stdcall Net::SSDPClient::OnPacketRecv(const Net::SocketUtil::AddressInfo 
 			while (true)
 			{
 				lineCnt = Text::StrSplitLineP(sarr, 2, sarr[1].v, sarr[1].len);
-				if (Text::StrStartsWithICase(sarr[0].v, (const UTF8Char*)"DATE: "))
+				if (Text::StrStartsWithICaseC(sarr[0].v, sarr[0].len, UTF8STRC("DATE: ")))
 				{
 					time = &sarr[0].v[6];
 					timeLen = sarr[0].len - 6;
 				}
-				else if (Text::StrStartsWithICase(sarr[0].v, (const UTF8Char*)"LOCATION: "))
+				else if (Text::StrStartsWithICaseC(sarr[0].v, sarr[0].len, UTF8STRC("LOCATION: ")))
 				{
 					location = &sarr[0].v[10];
 				}
-				else if (Text::StrStartsWithICase(sarr[0].v, (const UTF8Char*)"OPT: "))
+				else if (Text::StrStartsWithICaseC(sarr[0].v, sarr[0].len, UTF8STRC("OPT: ")))
 				{
 					opt = &sarr[0].v[5];
 				}
-				else if (Text::StrStartsWithICase(sarr[0].v, (const UTF8Char*)"ST: "))
+				else if (Text::StrStartsWithICaseC(sarr[0].v, sarr[0].len, UTF8STRC("ST: ")))
 				{
 					st = &sarr[0].v[4];
 				}
-				else if (Text::StrStartsWithICase(sarr[0].v, (const UTF8Char*)"USN: "))
+				else if (Text::StrStartsWithICaseC(sarr[0].v, sarr[0].len, UTF8STRC("USN: ")))
 				{
 					usn = &sarr[0].v[5];
 				}
-				else if (Text::StrStartsWithICase(sarr[0].v, (const UTF8Char*)"X-USER-AGENT: "))
+				else if (Text::StrStartsWithICaseC(sarr[0].v, sarr[0].len, UTF8STRC("X-USER-AGENT: ")))
 				{
 					userAgent = &sarr[0].v[14];
 				}

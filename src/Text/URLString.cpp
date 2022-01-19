@@ -6,9 +6,9 @@
 #include "Text/TextBinEnc/URIEncoding.h"
 #include "Text/URLString.h"
 
-UTF8Char *Text::URLString::GetURLFilePath(UTF8Char *sbuff, const UTF8Char *url)
+UTF8Char *Text::URLString::GetURLFilePath(UTF8Char *sbuff, const UTF8Char *url, UOSInt urlLen)
 {
-	if (!Text::StrStartsWithICase(url, (const UTF8Char*)"FILE:///"))
+	if (!Text::StrStartsWithICaseC(url, urlLen, UTF8STRC("FILE:///")))
 		return 0;
 	if (IO::Path::PATH_SEPERATOR == '\\')
 	{

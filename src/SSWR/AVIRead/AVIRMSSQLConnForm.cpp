@@ -14,25 +14,25 @@ void __stdcall SSWR::AVIRead::AVIRMSSQLConnForm::OnPasteJDBCClicked(void *userOb
 	{
 		if (sb.StartsWith((const UTF8Char*)"jdbc:sqlserver://"))
 		{
-			UTF8Char *sarr[2];
-			UTF8Char *sarr2[2];
-			UOSInt i = Text::StrSplit(sarr, 2, sb.ToString() + 17, ';');
-			if (Text::StrSplit(sarr2, 2, sarr[0], ':') == 2)
+			Text::PString sarr[2];
+			Text::PString sarr2[2];
+			UOSInt i = Text::StrSplitP(sarr, 2, sb.ToString() + 17, sb.GetLength() - 17, ';');
+			if (Text::StrSplitP(sarr2, 2, sarr[0].v, sarr[0].len, ':') == 2)
 			{
-				me->txtServer->SetText(sarr2[0]);
-				me->txtPort->SetText(sarr2[1]);
+				me->txtServer->SetText(sarr2[0].v);
+				me->txtPort->SetText(sarr2[1].v);
 			}
 			else
 			{
-				me->txtServer->SetText(sarr2[0]);
+				me->txtServer->SetText(sarr2[0].v);
 				me->txtPort->SetText((const UTF8Char*)"1433");
 			}
 			while (i == 2)
 			{
-				i = Text::StrSplit(sarr, 2, sarr[1], ';');
-				if (Text::StrStartsWithICase(sarr[0], (const UTF8Char*)"DATABASENAME="))
+				i = Text::StrSplitP(sarr, 2, sarr[1].v, sarr[1].len, ';');
+				if (Text::StrStartsWithICaseC(sarr[0].v, sarr[0].len, UTF8STRC("DATABASENAME=")))
 				{
-					me->txtDatabase->SetText(sarr[0] + 13);
+					me->txtDatabase->SetText(sarr[0].v + 13);
 				}
 			}
 		}

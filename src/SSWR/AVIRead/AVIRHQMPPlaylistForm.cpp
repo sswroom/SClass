@@ -120,7 +120,7 @@ Bool SSWR::AVIRead::AVIRHQMPPlaylistForm::AddFolder(UTF8Char *folderBuff, UTF8Ch
 			if (pt == IO::Path::PathType::File)
 			{
 				Bool toSkip = false;
-				if (Text::StrEndsWithICase(folderBuffEnd, (const UTF8Char*)".vob"))
+				if (Text::StrEndsWithICaseC(folderBuffEnd, (UOSInt)(sptr - folderBuffEnd), UTF8STRC(".vob")))
 				{
 					if (sptr[-6] == '_' && sptr[-5] >= '2' && sptr[-5] <= '9')
 					{

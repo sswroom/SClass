@@ -67,7 +67,7 @@ void Map::ESRI::ESRIMDBLayer::Init(DB::SharedDBConn *conn, UInt32 srid, const UT
 	conn->UseObject();
 	this->conn = conn;
 	NEW_CLASS(this->objects, Data::Int32Map<Math::Vector2D*>());
-	NEW_CLASS(this->colNames, Data::ArrayListStrUTF8());
+	NEW_CLASS(this->colNames, Data::ArrayListString());
 	this->tableName = Text::StrCopyNew(tableName);
 	this->currDB = 0;
 	this->lastDB = 0;
@@ -101,13 +101,13 @@ void Map::ESRI::ESRIMDBLayer::Init(DB::SharedDBConn *conn, UInt32 srid, const UT
 			{
 				this->objIdCol = i;
 			}
-			this->colNames->Add(Text::StrCopyNew(sbuff));
+			this->colNames->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
 			i++;
 		}
 		j = this->colNames->GetCount();
 		while (j-- > 0)
 		{
-			if (Text::StrEndsWithICase(this->colNames->GetItem(j), (const UTF8Char*)"NAME"))
+			if (this->colNames->GetItem(j)->EndsWithICase(UTF8STRC("NAME")))
 			{
 				nameCol = j;
 			}
@@ -217,11 +217,7 @@ Map::ESRI::ESRIMDBLayer::~ESRIMDBLayer()
 	UOSInt i;
 
 	this->conn->UnuseObject();
-	i = this->colNames->GetCount();
-	while (i-- > 0)
-	{
-		Text::StrDelNew(this->colNames->RemoveAt(i));
-	}
+	LIST_FREE_STRING(this->colNames);
 	DEL_CLASS(this->colNames);
 	Data::ArrayList<Math::Vector2D*> *vecList = this->objects->GetValues();
 	Math::Vector2D *vec;
@@ -335,10 +331,10 @@ UOSInt Map::ESRI::ESRIMDBLayer::GetColumnCnt()
 
 UTF8Char *Map::ESRI::ESRIMDBLayer::GetColumnName(UTF8Char *buff, UOSInt colIndex)
 {
-	const UTF8Char *colName = this->colNames->GetItem(colIndex);
+	Text::String *colName = this->colNames->GetItem(colIndex);
 	if (colName)
 	{
-		return Text::StrConcat(buff, colName);
+		return colName->ConcatTo(buff);
 	}
 	return 0;
 }

@@ -332,8 +332,8 @@ Map::SHPData::SHPData(UInt8 *shpHdr, IO::IStreamData *data, UInt32 codePage) : M
 			i = this->dbf->GetColCount();
 			while (i-- > 0)
 			{
-				this->dbf->GetColumnName(i, u8buff);
-				if (Text::StrEndsWithICase(u8buff, (const UTF8Char*)"NAME"))
+				u8ptr = this->dbf->GetColumnName(i, u8buff);
+				if (Text::StrEndsWithICaseC(u8buff, (UOSInt)(u8ptr - u8buff), UTF8STRC("NAME")))
 				{
 					nameCol = i;
 				}
@@ -604,6 +604,11 @@ Math::Vector2D *Map::SHPData::GetVectorById(void *session, Int64 id)
 	Map::SHPData::RecHdr *rec;
 	UOSInt nPoint;
 
+	UInt32 srid = 0;
+	if (this->csys)
+	{
+		srid = this->csys->GetSRID();
+	}
 	if (this->layerType == Map::DRAW_LAYER_POINT)
 	{
 		Math::Point *pt;
@@ -611,7 +616,7 @@ Math::Vector2D *Map::SHPData::GetVectorById(void *session, Int64 id)
 		{
 			return 0;
 		}
-		NEW_CLASS(pt, Math::Point(this->csys->GetSRID(), this->ptX->GetItem((UOSInt)id), this->ptY->GetItem((UOSInt)id)));
+		NEW_CLASS(pt, Math::Point(srid, this->ptX->GetItem((UOSInt)id), this->ptY->GetItem((UOSInt)id)));
 		return pt;
 	}
 	else if (this->layerType == Map::DRAW_LAYER_POINT3D)
@@ -621,7 +626,7 @@ Math::Vector2D *Map::SHPData::GetVectorById(void *session, Int64 id)
 		{
 			return 0;
 		}
-		NEW_CLASS(pt, Math::Point3D(this->csys->GetSRID(), this->ptX->GetItem((UOSInt)id), this->ptY->GetItem((UOSInt)id), this->ptZ->GetItem((UOSInt)id)));
+		NEW_CLASS(pt, Math::Point3D(srid, this->ptX->GetItem((UOSInt)id), this->ptY->GetItem((UOSInt)id), this->ptZ->GetItem((UOSInt)id)));
 		return pt;
 	}
 	else if (this->layerType == Map::DRAW_LAYER_POLYGON)
@@ -630,7 +635,7 @@ Math::Vector2D *Map::SHPData::GetVectorById(void *session, Int64 id)
 		rec = (Map::SHPData::RecHdr*)this->recs->GetItem((UOSInt)id);
 		if (rec == 0)
 			return 0;
-		NEW_CLASS(pg, Math::Polygon(this->csys->GetSRID(), rec->nPtOfst, rec->nPoint));
+		NEW_CLASS(pg, Math::Polygon(srid, rec->nPtOfst, rec->nPoint));
 		shpData->GetRealData(rec->ofst, rec->nPtOfst << 2, (UInt8*)pg->GetPtOfstList(&nPoint));
 		shpData->GetRealData(rec->ofst + (rec->nPtOfst << 2), rec->nPoint << 4, (UInt8*)pg->GetPointList(&nPoint));
 		return pg;
@@ -641,7 +646,7 @@ Math::Vector2D *Map::SHPData::GetVectorById(void *session, Int64 id)
 		rec = (Map::SHPData::RecHdr*)this->recs->GetItem((UOSInt)id);
 		if (rec == 0)
 			return 0;
-		NEW_CLASS(pl, Math::Polyline(this->csys->GetSRID(), rec->nPtOfst, rec->nPoint));
+		NEW_CLASS(pl, Math::Polyline(srid, rec->nPtOfst, rec->nPoint));
 		shpData->GetRealData(rec->ofst, rec->nPtOfst << 2, (UInt8*)pl->GetPtOfstList(&nPoint));
 		shpData->GetRealData(rec->ofst + (rec->nPtOfst << 2), rec->nPoint << 4, (UInt8*)pl->GetPointList(&nPoint));
 		return pl;
@@ -652,7 +657,7 @@ Math::Vector2D *Map::SHPData::GetVectorById(void *session, Int64 id)
 		rec = (Map::SHPData::RecHdr*)this->recs->GetItem((UOSInt)id);
 		if (rec == 0)
 			return 0;
-		NEW_CLASS(pl, Math::Polyline3D(this->csys->GetSRID(), rec->nPtOfst, rec->nPoint));
+		NEW_CLASS(pl, Math::Polyline3D(srid, rec->nPtOfst, rec->nPoint));
 		shpData->GetRealData(rec->ofst, rec->nPtOfst << 2, (UInt8*)pl->GetPtOfstList(&nPoint));
 		shpData->GetRealData(rec->ofst + (rec->nPtOfst << 2), rec->nPoint << 4, (UInt8*)pl->GetPointList(&nPoint));
 		shpData->GetRealData(rec->ofst + (rec->nPtOfst << 2) + (rec->nPoint << 4) + 16, rec->nPoint << 3, (UInt8*)pl->GetAltitudeList(&nPoint));

@@ -1963,11 +1963,12 @@ Int32 DB::DBMS::UserLoginMySQL(Int32 sessId, const UTF8Char *userName, const UIn
 	return userId;
 }
 
-DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql)
+DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt sqlLen)
 {
 	const UTF8Char *sptr1;
 	const UTF8Char *sptr2;
 	const UTF8Char *sptr3;
+	const UTF8Char *sqlEnd = sql + sqlLen;
 	UOSInt i;
 	UOSInt j;
 	UTF8Char nameBuff[128];
@@ -1980,7 +1981,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql)
 	}
 	sptr1 = sql;
 	while (Text::CharUtil::PtrIsWS(&sptr1));
-	if (Text::StrStartsWithICase(sptr1, (const UTF8Char*)"SELECT") && Text::CharUtil::IsWS(sptr1 + 6))
+	if (Text::StrStartsWithICaseC(sptr1, (UOSInt)(sqlEnd - sptr1), UTF8STRC("SELECT")) && Text::CharUtil::IsWS(sptr1 + 6))
 	{
 		sptr1 += 6;
 		Data::ArrayList<DB::DBMS::SQLColumn*> cols;
@@ -2004,7 +2005,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql)
 
 				Text::StringBuilderUTF8 sb;
 				sb.AppendC(UTF8STRC("#42000You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '"));
-				sb.Append(sptr2);
+				sb.AppendC(sptr2, (UOSInt)(sqlEnd - sptr2));
 				sb.AppendC(UTF8STRC("' at line 1"));
 				SDEL_TEXT(sess->lastError);
 				sess->lastError = Text::StrCopyNew(sb.ToString());
@@ -2027,7 +2028,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql)
 					sptr1++;
 				}
 			}
-			else if (Text::StrStartsWithICase(sptr1, (const UTF8Char*)"AS") && Text::CharUtil::IsWS(sptr1 + 2))
+			else if (Text::StrStartsWithICaseC(sptr1, (UOSInt)(sqlEnd - sptr1), UTF8STRC("AS")) && Text::CharUtil::IsWS(sptr1 + 2))
 			{
 				sptr1 += 2;
 				while (Text::CharUtil::PtrIsWS(&sptr1));
@@ -2045,7 +2046,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql)
 
 					Text::StringBuilderUTF8 sb;
 					sb.AppendC(UTF8STRC("#42000You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '"));
-					sb.Append(sptr3);
+					sb.AppendC(sptr3, (UOSInt)(sqlEnd - sptr3));
 					sb.AppendC(UTF8STRC("' at line 1"));
 					SDEL_TEXT(sess->lastError);
 					sess->lastError = Text::StrCopyNew(sb.ToString());
@@ -2068,7 +2069,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql)
 						sptr1++;
 					}
 				}
-				else if (Text::StrStartsWithICase(sptr1, (const UTF8Char*)"FROM") && Text::CharUtil::IsWS(sptr1 + 4))
+				else if (Text::StrStartsWithICaseC(sptr1, (UOSInt)(sqlEnd - sptr1), UTF8STRC("FROM")) && Text::CharUtil::IsWS(sptr1 + 4))
 				{
 					hasFrom = true;
 					sptr1 += 4;
@@ -2087,14 +2088,14 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql)
 
 					Text::StringBuilderUTF8 sb;
 					sb.AppendC(UTF8STRC("#42000You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '"));
-					sb.Append(sptr1);
+					sb.AppendC(sptr1, (UOSInt)(sqlEnd - sptr1));
 					sb.AppendC(UTF8STRC("' at line 1"));
 					SDEL_TEXT(sess->lastError);
 					sess->lastError = Text::StrCopyNew(sb.ToString());
 					return 0;
 				}
 			}
-			else if (Text::StrStartsWithICase(sptr1, (const UTF8Char*)"FROM") && Text::CharUtil::IsWS(sptr1 + 4))
+			else if (Text::StrStartsWithICaseC(sptr1, (UOSInt)(sqlEnd - sptr1), UTF8STRC("FROM")) && Text::CharUtil::IsWS(sptr1 + 4))
 			{
 				hasFrom = true;
 				sptr1 += 4;
@@ -2139,7 +2140,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql)
 						sptr1++;
 					}
 				}
-				else if (Text::StrStartsWithICase(sptr1, (const UTF8Char*)"FROM") && Text::CharUtil::IsWS(sptr1 + 4))
+				else if (Text::StrStartsWithICaseC(sptr1, (UOSInt)(sqlEnd - sptr1), UTF8STRC("FROM")) && Text::CharUtil::IsWS(sptr1 + 4))
 				{
 					hasFrom = true;
 					sptr1 += 4;
@@ -2158,7 +2159,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql)
 
 					Text::StringBuilderUTF8 sb;
 					sb.AppendC(UTF8STRC("#42000You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '"));
-					sb.Append(sptr1);
+					sb.AppendC(sptr1, (UOSInt)(sqlEnd - sptr1));
 					sb.AppendC(UTF8STRC("' at line 1"));
 					SDEL_TEXT(sess->lastError);
 					sess->lastError = Text::StrCopyNew(sb.ToString());
@@ -2247,7 +2248,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql)
 			}
 		}
 	}
-	else if (Text::StrStartsWithICase(sptr1, (const UTF8Char*)"SET") && Text::CharUtil::IsWS(sptr1 + 3))
+	else if (Text::StrStartsWithICaseC(sptr1, (UOSInt)(sqlEnd - sptr1), UTF8STRC("SET")) && Text::CharUtil::IsWS(sptr1 + 3))
 	{
 		sptr1 += 3;
 
@@ -2847,11 +2848,11 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql)
 			}
 		}
 	}
-	else if (Text::StrStartsWithICase(sptr1, (const UTF8Char*)"SHOW") && Text::CharUtil::IsWS(sptr1 + 4))
+	else if (Text::StrStartsWithICaseC(sptr1, (UOSInt)(sqlEnd - sptr1), UTF8STRC("SHOW")) && Text::CharUtil::IsWS(sptr1 + 4))
 	{
 		sptr1 += 4;
 		while (Text::CharUtil::PtrIsWS(&sptr1));
-		if (Text::StrStartsWithICase(sptr1, (const UTF8Char*)"ENGINES") && (Text::CharUtil::IsWS(sptr1 + 7) || sptr1[7] == 0))
+		if (Text::StrStartsWithICaseC(sptr1, (UOSInt)(sqlEnd - sptr1), UTF8STRC("ENGINES")) && (Text::CharUtil::IsWS(sptr1 + 7) || sptr1[7] == 0))
 		{
 			////////////////////////
 			Text::StringBuilderUTF8 sb;
@@ -2861,7 +2862,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql)
 			SDEL_TEXT(sess->lastError);
 			sess->lastError = Text::StrCopyNew(sb.ToString());
 		}
-		else if (Text::StrStartsWithICase(sptr1, (const UTF8Char*)"CHARSET") && (Text::CharUtil::IsWS(sptr1 + 7) || sptr1[7] == 0))
+		else if (Text::StrStartsWithICaseC(sptr1, (UOSInt)(sqlEnd - sptr1), UTF8STRC("CHARSET")) && (Text::CharUtil::IsWS(sptr1 + 7) || sptr1[7] == 0))
 		{
 			////////////////////////
 			Text::StringBuilderUTF8 sb;
@@ -2871,7 +2872,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql)
 			SDEL_TEXT(sess->lastError);
 			sess->lastError = Text::StrCopyNew(sb.ToString());
 		}
-		else if (Text::StrStartsWithICase(sptr1, (const UTF8Char*)"COLLATION") && (Text::CharUtil::IsWS(sptr1 + 9) || sptr1[9] == 0))
+		else if (Text::StrStartsWithICaseC(sptr1, (UOSInt)(sqlEnd - sptr1), UTF8STRC("COLLATION")) && (Text::CharUtil::IsWS(sptr1 + 9) || sptr1[9] == 0))
 		{
 			////////////////////////
 			Text::StringBuilderUTF8 sb;
@@ -2881,7 +2882,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql)
 			SDEL_TEXT(sess->lastError);
 			sess->lastError = Text::StrCopyNew(sb.ToString());
 		}
-		else if (Text::StrStartsWithICase(sptr1, (const UTF8Char*)"VARIABLES") && (Text::CharUtil::IsWS(sptr1 + 9) || sptr1[9] == 0))
+		else if (Text::StrStartsWithICaseC(sptr1, (UOSInt)(sqlEnd - sptr1), UTF8STRC("VARIABLES")) && (Text::CharUtil::IsWS(sptr1 + 9) || sptr1[9] == 0))
 		{
 			sptr1 += 9;
 			while (Text::CharUtil::PtrIsWS(&sptr1));
@@ -2909,7 +2910,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql)
 				}
 				return reader;
 			}
-			else if (Text::StrStartsWithICase(sptr1, (const UTF8Char*)"LIKE") && Text::CharUtil::IsWS(sptr1 + 4))
+			else if (Text::StrStartsWithICaseC(sptr1, (UOSInt)(sqlEnd - sptr1), UTF8STRC("LIKE")) && Text::CharUtil::IsWS(sptr1 + 4))
 			{
 				sptr1 += 4;
 				while (Text::CharUtil::PtrIsWS(&sptr1));

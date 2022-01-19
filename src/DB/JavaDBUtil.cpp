@@ -185,32 +185,33 @@ DB::DBTool *DB::JavaDBUtil::OpenJDBC(Text::String *url, Text::String *username, 
 	if (url->StartsWith(5, UTF8STRC("sqlserver://")))
 	{
 		Text::StringBuilderUTF8 sb;
-		UTF8Char *sarr[2];
-		UTF8Char *sarr2[2];
+		Text::PString sarr[2];
+		Text::PString sarr2[2];
 		UOSInt scnt;
 		UOSInt scnt2;
 		UInt16 port = 1433;
 		const UTF8Char *dbName = 0;
 		sb.AppendC(&url->v[17], url->leng - 17);
-		sarr[1] = sb.ToString();
-		scnt = Text::StrSplit(sarr, 2, sarr[1], ';');
-		scnt2 = Text::StrSplit(sarr2, 2, sarr[0], ':');
+		sarr[1].v = sb.ToString();
+		sarr[1].len = sb.GetLength();
+		scnt = Text::StrSplitP(sarr, 2, sarr[1].v, sarr[1].len, ';');
+		scnt2 = Text::StrSplitP(sarr2, 2, sarr[0].v, sarr[0].len, ':');
 		if (scnt2 == 2)
 		{
-			if (!Text::StrToUInt16(sarr2[1], &port))
+			if (!Text::StrToUInt16(sarr2[1].v, &port))
 			{
 				return 0;
 			}
 		}
 		while (scnt == 2)
 		{
-			scnt = Text::StrSplit(sarr, 2, sarr[1], ';');
-			if (Text::StrStartsWithICase(sarr[0], (const UTF8Char*)"databaseName="))
+			scnt = Text::StrSplitP(sarr, 2, sarr[1].v, sarr[1].len, ';');
+			if (Text::StrStartsWithICaseC(sarr[0].v, sarr[0].len, UTF8STRC("databaseName=")))
 			{
-				dbName = &sarr[0][13];
+				dbName = &sarr[0].v[13];
 			}
 		}
-		return MSSQLConn::CreateDBToolTCP(sarr2[0], port, dbName, STR_PTR(username), STR_PTR(password), log, LOGPREFIX);
+		return MSSQLConn::CreateDBToolTCP(sarr2[0].v, port, dbName, STR_PTR(username), STR_PTR(password), log, LOGPREFIX);
 	}
 	return 0;
 }

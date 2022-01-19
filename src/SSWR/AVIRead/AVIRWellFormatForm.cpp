@@ -15,14 +15,14 @@ void SSWR::AVIRead::AVIRWellFormatForm::AddFilters(IO::IFileSelector *selector)
 	selector->AddFilter((const UTF8Char*)"*.xml", (const UTF8Char*)"XML File");
 }
 
-Bool SSWR::AVIRead::AVIRWellFormatForm::ParseFile(const UTF8Char *fileName, Text::StringBuilderUTF *output)
+Bool SSWR::AVIRead::AVIRWellFormatForm::ParseFile(const UTF8Char *fileName, UOSInt fileNameLen, Text::StringBuilderUTF *output)
 {
 	Bool succ = false;
 	IO::FileStream *fs;
 	UInt64 fileLen;
 	UInt8 *buff;
 
-	if (Text::StrEndsWithICase(fileName, (const UTF8Char*)".json"))
+	if (Text::StrEndsWithICaseC(fileName, fileNameLen, UTF8STRC(".json")))
 	{
 		NEW_CLASS(fs, IO::FileStream(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		fileLen = fs->GetLength();
@@ -37,7 +37,7 @@ Bool SSWR::AVIRead::AVIRWellFormatForm::ParseFile(const UTF8Char *fileName, Text
 		}
 		DEL_CLASS(fs);
 	}
-	else if (Text::StrEndsWithICase(fileName, (const UTF8Char*)".html") || Text::StrEndsWithICase(fileName, (const UTF8Char*)".htm"))
+	else if (Text::StrEndsWithICaseC(fileName, fileNameLen, UTF8STRC(".html")) || Text::StrEndsWithICaseC(fileName, fileNameLen, UTF8STRC(".htm")))
 	{
 		NEW_CLASS(fs, IO::FileStream(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		fileLen = fs->GetLength();
@@ -47,7 +47,7 @@ Bool SSWR::AVIRead::AVIRWellFormatForm::ParseFile(const UTF8Char *fileName, Text
 		}
 		DEL_CLASS(fs);
 	}
-	else if (Text::StrEndsWithICase(fileName, (const UTF8Char*)".xml"))
+	else if (Text::StrEndsWithICaseC(fileName, fileNameLen, UTF8STRC(".xml")))
 	{
 		NEW_CLASS(fs, IO::FileStream(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		fileLen = fs->GetLength();
@@ -57,7 +57,7 @@ Bool SSWR::AVIRead::AVIRWellFormatForm::ParseFile(const UTF8Char *fileName, Text
 		}
 		DEL_CLASS(fs);
 	}
-	else if (Text::StrEndsWithICase(fileName, (const UTF8Char*)".js"))
+	else if (Text::StrEndsWithICaseC(fileName, fileNameLen, UTF8STRC(".js")))
 	{
 
 	}
@@ -94,7 +94,7 @@ void __stdcall SSWR::AVIRead::AVIRWellFormatForm::OnParseToTextClicked(void *use
 	{
 		return;
 	}
-	if (me->ParseFile(sbFile.ToString(), &sbOutput))
+	if (me->ParseFile(sbFile.ToString(), sbFile.GetLength(), &sbOutput))
 	{
 		me->txtOutput->SetText(sbOutput.ToString());
 	}
@@ -110,7 +110,7 @@ void __stdcall SSWR::AVIRead::AVIRWellFormatForm::OnParseToFileClicked(void *use
 	{
 		return;
 	}
-	if (me->ParseFile(sbFile.ToString(), &sbOutput))
+	if (me->ParseFile(sbFile.ToString(), sbFile.GetLength(), &sbOutput))
 	{
 		UI::FileDialog *dlg;
 		NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"AVIRead", L"WellFormatParse", true));

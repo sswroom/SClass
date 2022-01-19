@@ -134,9 +134,9 @@ Bool Net::HTTPClient::GetRespHeader(const UTF8Char *name, UOSInt nameLen, Text::
 	while (i-- > 0)
 	{
 		s = this->headers->GetItem(i);
-		if (s->StartsWithICase(buff))
+		if (s->StartsWithICase(buff, (UOSInt)(s2 - buff)))
 		{
-			sb->Append(&s->v[s2-buff]);
+			sb->AppendC(&s->v[s2-buff], s->leng - (UOSInt)(s2 - buff));
 			return true;
 		}
 	}

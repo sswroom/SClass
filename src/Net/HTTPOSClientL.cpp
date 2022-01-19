@@ -49,7 +49,7 @@ size_t HTTPOSClient_HeaderFunc(char *buffer, size_t size, size_t nitems, void *u
 			break;
 		}
 	}
-	if (hdr->StartsWithICase((const UTF8Char*)"Content-Length: "))
+	if (hdr->StartsWithICase(UTF8STRC("Content-Length: ")))
 	{
 		data->contLen = Text::StrToUInt64(&hdr->v[16]);
 	}
