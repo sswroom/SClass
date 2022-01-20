@@ -53,7 +53,7 @@ IO::ParsedObject *Parser::FileParser::LOGParser::ParseFile(IO::IStreamData *fd, 
 //	OSInt j;
 //	OSInt k;
 	sptr = fd->GetFullName()->ConcatTo(sbuff);
-	i = Text::StrLastIndexOf(sbuff, '.');
+	i = Text::StrLastIndexOfChar(sbuff, '.');
 	if (i == INVALID_INDEX || !Text::StrEqualsICaseC(&sbuff[i], (UOSInt)(sptr - &sbuff[i]), UTF8STRC(".LOG")))
 	{
 		return 0;

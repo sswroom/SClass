@@ -205,6 +205,7 @@ UOSInt IO::SDCardMgr::GetCardList(Data::ArrayList<IO::SDCardInfo*> *cardList)
 {
 	Text::StringBuilderUTF16 sb;
 	UTF8Char sbuff[512];
+	UTF8Char *sptr;
 	UOSInt ret = 0;
 	IO::SDCardInfo *sdcard;
 	Win32::WMIQuery qry(L"ROOT\\CIMV2");
@@ -213,13 +214,13 @@ UOSInt IO::SDCardMgr::GetCardList(Data::ArrayList<IO::SDCardInfo*> *cardList)
 	{
 		Bool valid = true;
 		sbuff[0] = 0;
-		r->GetName(11, sbuff);
-		if (!Text::StrEquals(sbuff, (const UTF8Char*)"DeviceID"))
+		sptr = r->GetName(11, sbuff);
+		if (!Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("DeviceID")))
 		{
 			valid = false;
 		}
-		r->GetName(31, sbuff);
-		if (!Text::StrEquals(sbuff, (const UTF8Char*)"PNPDeviceID"))
+		sptr = r->GetName(31, sbuff);
+		if (!Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("PNPDeviceID")))
 		{
 			valid = false;
 		}
@@ -270,7 +271,7 @@ UOSInt IO::SDCardMgr::GetCardList(Data::ArrayList<IO::SDCardInfo*> *cardList)
 					{
 						while ((sptr3 = IO::Path::FindNextFile(sptr2, sess2, 0, &pt, 0)) != 0)
 						{
-							if (sptr2[0] != '.' && pt != IO::Path::PathType::File && (sptr3 - sptr2) <= 15 && Text::StrIndexOf(sptr2, ':') != INVALID_INDEX)
+							if (sptr2[0] != '.' && pt != IO::Path::PathType::File && (sptr3 - sptr2) <= 15 && Text::StrIndexOfChar(sptr2, ':') != INVALID_INDEX)
 							{
 								Bool valid = true;
 								Text::StrConcat(nameBuff, sptr2);

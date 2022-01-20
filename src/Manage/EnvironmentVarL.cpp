@@ -17,7 +17,7 @@ Manage::EnvironmentVar::EnvironmentVar()
 	i = 0;
 	while (environ[i])
 	{
-		j = Text::StrIndexOf(environ[i], '=');
+		j = Text::StrIndexOfChar(environ[i], '=');
 		if (j != INVALID_INDEX && j > 0)
 		{
 			Text::StrConcatC(sbuff, (const UTF8Char*)environ[i], j);

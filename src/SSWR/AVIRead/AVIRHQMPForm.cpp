@@ -363,7 +363,7 @@ void __stdcall SSWR::AVIRead::AVIRHQMPForm::OnTimerTick(void *userObj)
 		UTF8Char *u8ptr;
 		Int32 partNum;
 		me->GetOpenedFile()->GetSourceName(u8buff);
-		i = Text::StrLastIndexOf(u8buff, '.');
+		i = Text::StrLastIndexOfChar(u8buff, '.');
 		j = Text::StrIndexOfICase(u8buff, (const UTF8Char*)"part");
 		if (i > j && i != INVALID_INDEX && j != INVALID_INDEX)
 		{
@@ -822,7 +822,7 @@ void SSWR::AVIRead::AVIRHQMPForm::EventMenuClicked(UInt16 cmdId)
 			if (dlg->ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
 				const UTF8Char *fname = dlg->GetFileName();
-				UOSInt i = Text::StrIndexOf(fname, ':');
+				UOSInt i = Text::StrIndexOfChar(fname, ':');
 				if (i == 1 || i == INVALID_INDEX)
 				{
 					this->OpenFile(dlg->GetFileName());

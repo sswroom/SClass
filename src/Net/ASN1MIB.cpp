@@ -537,7 +537,7 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 									}
 									else if (Text::StrStartsWith(sptr, (const UTF8Char*)"WITH SYNTAX") || Text::StrStartsWith(sptr, (const UTF8Char*)"WITH COMPONENTS"))
 									{
-										if (Text::StrIndexOf(sptr, (const UTF8Char*)"{") != INVALID_INDEX)
+										if (Text::StrIndexOfChar(sptr, '{') != INVALID_INDEX)
 										{
 											OSInt nextEndIndex = BranketEnd(&currObj->typeVal[brkEndIndex], 0);
 											while (nextEndIndex < 0)
@@ -680,7 +680,7 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 						else
 						{
 							currObj->typeVal = Text::StrCopyNew(sb.ToString());
-							i = Text::StrIndexOf(currObj->typeVal, '{');
+							i = Text::StrIndexOfChar(currObj->typeVal, '{');
 							if (i != INVALID_INDEX)
 							{
 								if (Text::StrCountChar(currObj->typeVal, '{') <= Text::StrCountChar(currObj->typeVal, '}'))
@@ -969,7 +969,7 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 							{
 								UTF8Char sbuff[512];
 								Text::StrConcat(sbuff, module->moduleFileName);
-								j = Text::StrLastIndexOf(sbuff, IO::Path::PATH_SEPERATOR);
+								j = Text::StrLastIndexOfChar(sbuff, IO::Path::PATH_SEPERATOR);
 								Text::StrConcat(&sbuff[j + 1], sb.ToString());
 								succ = LoadFileInner(sbuff, errMessage, false);
 								if (!succ)
@@ -992,7 +992,7 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 								UOSInt ui;
 								impCnt = Text::StrSplitTrim(impSarr, 2, impSarr[1], ',');
 
-								i = Text::StrIndexOf(impSarr[0], '{');
+								i = Text::StrIndexOfChar(impSarr[0], '{');
 								if (i != INVALID_INDEX && Text::StrEndsWith(impSarr[0], (const UTF8Char*)"}"))
 								{
 									impSarr[0][i] = 0;
@@ -1232,7 +1232,7 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 							objIsEqual = false;
 							objBrkType = 0;
 
-							if (Text::StrIndexOf(obj->typeVal, (const UTF8Char*)"{") != INVALID_INDEX)
+							if (Text::StrIndexOfChar(obj->typeVal, '{') != INVALID_INDEX)
 							{
 								UOSInt startCnt = Text::StrCountChar(obj->typeVal, '{');
 								UOSInt endCnt = Text::StrCountChar(obj->typeVal, '}');
@@ -1245,7 +1245,7 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 									objIsEqual = true;
 								}
 							}
-							else if ((i = Text::StrIndexOf(obj->typeVal, (const UTF8Char*)"(")) != INVALID_INDEX)
+							else if ((i = Text::StrIndexOfChar(obj->typeVal, '(')) != INVALID_INDEX)
 							{
 								UOSInt startCnt = Text::StrCountChar(obj->typeVal, '(');
 								UOSInt endCnt = Text::StrCountChar(obj->typeVal, ')');
@@ -1534,7 +1534,7 @@ Bool Net::ASN1MIB::ApplyModuleOID(ModuleInfo *module, ObjectInfo *obj, Text::Str
 		if (Text::StrStartsWith(obj->typeName, (const UTF8Char*)"OCTET STRING")) valid = false;
 
 		if (Text::StrEquals(obj->typeVal, (const UTF8Char*)"Imported Value")) valid = false;
-		if (Text::StrIndexOf(obj->typeVal, (const UTF8Char*)",") != INVALID_INDEX) valid = false;
+		if (Text::StrIndexOfChar(obj->typeVal, ',') != INVALID_INDEX) valid = false;
 		if (Text::StrIndexOf(obj->typeVal, (const UTF8Char*)"...") != INVALID_INDEX) valid = false;
 	}
 	obj->parsed = true;

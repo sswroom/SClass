@@ -42,7 +42,7 @@ void Media::MediaPlayerWebInterface::BrowseRequest(Net::WebServer::IWebRequest *
 	UOSInt i;
 	UOSInt j;
 	this->iface->GetOpenedFile()->GetSourceNameObj()->ConcatTo(sbuff);
-	i = Text::StrLastIndexOf(sbuff, IO::Path::PATH_SEPERATOR);
+	i = Text::StrLastIndexOfChar(sbuff, IO::Path::PATH_SEPERATOR);
 	sptr = &sbuff[i + 1];
 
 	if (fname)

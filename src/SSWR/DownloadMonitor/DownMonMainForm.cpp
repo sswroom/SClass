@@ -198,7 +198,7 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnPasteHTMLClicked(void *
 						if (j != INVALID_INDEX)
 						{
 							linePtr = &linePtr[j + 5];
-							j = Text::StrIndexOf(linePtr, '\"');
+							j = Text::StrIndexOfChar(linePtr, '\"');
 							if (j != INVALID_INDEX)
 							{
 								linePtr[j] = 0;
@@ -213,7 +213,7 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnPasteHTMLClicked(void *
 						if (i == 2 && j != INVALID_INDEX)
 						{
 							UTF8Char *linePtr = &sarr[0].v[j + 9];
-							j = Text::StrIndexOf(linePtr, '\"');
+							j = Text::StrIndexOfChar(linePtr, '\"');
 							if (j != INVALID_INDEX)
 							{
 								linePtr[j] = 0;

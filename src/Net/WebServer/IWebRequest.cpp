@@ -122,7 +122,7 @@ UTF8Char *Net::WebServer::IWebRequest::GetRequestPath(UTF8Char *sbuff, UOSInt ma
 UTF8Char *Net::WebServer::IWebRequest::GetQueryString(UTF8Char *sbuff, UOSInt maxLeng)
 {
 	const UTF8Char *uri = this->GetRequestURI()->v;
-	UOSInt i = Text::StrIndexOf(uri, '?');
+	UOSInt i = Text::StrIndexOfChar(uri, '?');
 	if (i == INVALID_INDEX)
 		return 0;
 	uri = &uri[i + 1];

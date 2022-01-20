@@ -92,7 +92,7 @@ IO::FileCheck *IO::FileCheck::CreateCheck(const UTF8Char *path, IO::FileCheck::C
 			reader->ReadStream(&bnt);
 			if (fileSize == readSess.readSize)
 			{
-				UOSInt i = Text::StrLastIndexOf(path, IO::Path::PATH_SEPERATOR);
+				UOSInt i = Text::StrLastIndexOfChar(path, IO::Path::PATH_SEPERATOR);
 				hash->GetValue(hashBuff);
 				fchk->AddEntry(&path[i + 1], hashBuff);
 			}
@@ -127,7 +127,7 @@ IO::FileCheck *IO::FileCheck::CreateCheck(const UTF8Char *path, IO::FileCheck::C
 			sbuff[i - 1] = 0;
 			sbuff[i] = 0;
 		}
-		i = Text::StrLastIndexOf(sbuff, IO::Path::PATH_SEPERATOR);
+		i = Text::StrLastIndexOfChar(sbuff, IO::Path::PATH_SEPERATOR);
 		if (i < 2)
 		{
 			if (CheckDir(sbuff, &sbuff[i], hash, fchk, progress, skipError))
@@ -394,7 +394,7 @@ Bool IO::FileCheck::CheckEntryHash(UOSInt index, UInt8 *hashVal)
 	if (fileName == 0)
 		return false;
 	sptr = this->sourceName->ConcatTo(sbuff);
-	i = Text::StrLastIndexOf(sbuff, IO::Path::PATH_SEPERATOR);
+	i = Text::StrLastIndexOfChar(sbuff, IO::Path::PATH_SEPERATOR);
 	if (i == INVALID_INDEX)
 		return false;
 	sptr = &sbuff[i];

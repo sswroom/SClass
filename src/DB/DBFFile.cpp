@@ -52,7 +52,7 @@ DB::DBFFile::DBFFile(IO::IStreamData *stmData, UInt32 codePage) : DB::ReadingDB(
 
 	this->name = 0;
 	sptr = Text::StrConcat(u8buff, this->stmData->GetShortName());
-	i = Text::StrLastIndexOf(u8buff, '.');
+	i = Text::StrLastIndexOfChar(u8buff, '.');
 	if (i != INVALID_INDEX)
 	{
 		u8buff[i] = 0;

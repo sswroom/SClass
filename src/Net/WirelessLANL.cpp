@@ -379,7 +379,7 @@ UOSInt Net::WirelessLAN::Interface::GetBSSList(Data::ArrayList<Net::WirelessLAN:
 				lineCnt = Text::StrSplitLine(lines, 2, lines[1]);
 				if (channelInd == INVALID_INDEX)
 				{
-					bssidInd = Text::StrIndexOf(lines[0], ':');
+					bssidInd = Text::StrIndexOfChar(lines[0], ':');
 					if (bssidInd == INVALID_INDEX)
 					{
 						continue;

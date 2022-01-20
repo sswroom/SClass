@@ -180,7 +180,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnCliCertClicked(void *userO
 		SDEL_CLASS(me->cliCert);
 		me->cliCert = (Crypto::Cert::X509Cert*)x509;
 		const UTF8Char *csptr = dlg->GetFileName();
-		UOSInt i = Text::StrLastIndexOf(csptr, IO::Path::PATH_SEPERATOR);
+		UOSInt i = Text::StrLastIndexOfChar(csptr, IO::Path::PATH_SEPERATOR);
 		me->lblCliCert->SetText(csptr + i + 1);
 	}
 	DEL_CLASS(dlg);
@@ -213,7 +213,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnCliKeyClicked(void *userOb
 		SDEL_CLASS(me->cliKey);
 		me->cliKey = (Crypto::Cert::X509File*)asn1;
 		const UTF8Char *csptr = dlg->GetFileName();
-		UOSInt i = Text::StrLastIndexOf(csptr, IO::Path::PATH_SEPERATOR);
+		UOSInt i = Text::StrLastIndexOfChar(csptr, IO::Path::PATH_SEPERATOR);
 		me->lblCliKey->SetText(csptr + i + 1);
 	}
 	DEL_CLASS(dlg);

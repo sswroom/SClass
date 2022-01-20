@@ -405,7 +405,7 @@ void Manage::MonConn::StartTCPPort(UInt16 portNum)
 void Manage::MonConn::StartUDPPort(UInt16 portNum)
 {
 	UOSInt procId = Manage::Process::GetCurrProcId();
-	UInt8 buff[4];
+	UInt8 buff[6];
 	WriteUInt32(&buff[0], (UInt32)procId);
 	WriteUInt16(&buff[4], portNum);
 	AddCommand(buff, 6, 3);

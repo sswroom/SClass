@@ -317,7 +317,7 @@ UOSInt Text::String::IndexOf(const UTF8Char *s, UOSInt len)
 
 UOSInt Text::String::IndexOf(UTF8Char c)
 {
-	return Text::StrIndexOf(this->v, c);
+	return Text::StrIndexOfChar(this->v, c);
 }
 
 UOSInt Text::String::IndexOfICase(const UTF8Char *s)

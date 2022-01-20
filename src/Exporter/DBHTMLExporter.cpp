@@ -83,7 +83,7 @@ Bool Exporter::DBHTMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8Cha
 	writer->WriteStrC(UTF8STRC("<title>"));
 	db->GetSourceName(lineBuff1);
 	sptr = lineBuff1;
-	if ((i = Text::StrLastIndexOf(sptr, '\\')) != INVALID_INDEX)
+	if ((i = Text::StrLastIndexOfChar(sptr, '\\')) != INVALID_INDEX)
 		sptr = &sptr[i + 1];
 	sptr2 = Text::XML::ToXMLText(lineBuff2, sptr);
 	writer->WriteLineC(lineBuff2, (UOSInt)(sptr2 - lineBuff2));
@@ -93,7 +93,7 @@ Bool Exporter::DBHTMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8Cha
 	writer->WriteLineC(UTF8STRC("</head>"));
 	db->GetSourceName(lineBuff2);
 	sptr = lineBuff2;
-	if ((i = Text::StrLastIndexOf(sptr, '\\')) != INVALID_INDEX)
+	if ((i = Text::StrLastIndexOfChar(sptr, '\\')) != INVALID_INDEX)
 		sptr = &sptr[i + 1];
 	sptr = Text::XML::ToXMLText(Text::StrConcatC(lineBuff1, UTF8STRC("<body><h1>")), sptr);
 	writer->WriteLineC(lineBuff1, (UOSInt)(sptr - lineBuff1));

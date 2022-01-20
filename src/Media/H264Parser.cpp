@@ -394,9 +394,8 @@ Bool Media::H264Parser::GetFrameInfo(const UInt8 *frame, UOSInt frameSize, Media
 						k = 16;
 						while (k-- > 0)
 						{
-							if (nextScale != 0)
+							if (nextScale != 0 && ParseSVari(reader, &stemp))
 							{
-								ParseSVari(reader, &stemp);
 								nextScale = (lastScale + (UInt32)stemp + 256) & 255;
 							}
 							if (nextScale)
@@ -413,9 +412,8 @@ Bool Media::H264Parser::GetFrameInfo(const UInt8 *frame, UOSInt frameSize, Media
 						k = 64;
 						while (k-- > 0)
 						{
-							if (nextScale != 0)
+							if (nextScale != 0 && ParseSVari(reader, &stemp))
 							{
-								ParseSVari(reader, &stemp);
 								nextScale = (lastScale + (UInt32)stemp + 256) & 255;
 							}
 							if (nextScale)

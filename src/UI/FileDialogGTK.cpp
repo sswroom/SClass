@@ -191,7 +191,7 @@ Bool UI::FileDialog::ShowDialog(ControlHandle *ownerHandle)
 		Text::StrReplace(&fname2[2], ':', '_');
 		Text::StrConcat(fnameBuff, fname2);
 
-		UOSInt i = Text::StrLastIndexOf(fname2, IO::Path::PATH_SEPERATOR);
+		UOSInt i = Text::StrLastIndexOfChar(fname2, IO::Path::PATH_SEPERATOR);
 		if (i != INVALID_INDEX)
 		{
 			fname2[i] = 0;
@@ -245,7 +245,7 @@ Bool UI::FileDialog::ShowDialog(ControlHandle *ownerHandle)
 				}
 				else if (c == 'N')
 				{
-					i = Text::StrLastIndexOf(initFileName, '.');
+					i = Text::StrLastIndexOfChar(initFileName, '.');
 					if (i == INVALID_INDEX)
 					{
 						sptr = Text::StrConcat(sptr, initFileName);
@@ -257,7 +257,7 @@ Bool UI::FileDialog::ShowDialog(ControlHandle *ownerHandle)
 				}
 				else if (c == 'x')
 				{
-					i = Text::StrLastIndexOf(initFileName, '.');
+					i = Text::StrLastIndexOfChar(initFileName, '.');
 					if (i != INVALID_INDEX)
 					{
 						sptr = Text::StrConcat(sptr, &initFileName[i]);
@@ -369,7 +369,7 @@ Bool UI::FileDialog::ShowDialog(ControlHandle *ownerHandle)
 	const UTF8Char *csptr;
 	if (fnameBuff)
 	{
-		si = Text::StrLastIndexOf(fnameBuff, IO::Path::PATH_SEPERATOR);
+		si = Text::StrLastIndexOfChar(fnameBuff, IO::Path::PATH_SEPERATOR);
 		if (si == INVALID_INDEX)
 		{
 			csptr = Text::StrToUTF8New(initDir);
@@ -484,7 +484,7 @@ Bool UI::FileDialog::ShowDialog(ControlHandle *ownerHandle)
 				}
 				else
 				{
-					i = Text::StrLastIndexOf(initFileName, '.');
+					i = Text::StrLastIndexOfChar(initFileName, '.');
 					if (i == INVALID_INDEX)
 					{
 						Text::StrConcat(sptr, currPtr);

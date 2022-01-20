@@ -67,7 +67,7 @@ UInt32 __stdcall Media::Batch::BatchLoader::ThreadProc(void *userObj)
 						mutUsage.EndUse();
 						
 						Text::StrConcat(sbuff, fileName);
-						i = Text::StrLastIndexOf(sbuff, '.');
+						i = Text::StrLastIndexOfChar(sbuff, '.');
 						if (i != INVALID_INDEX)
 						{
 							sbuff[i] = 0;

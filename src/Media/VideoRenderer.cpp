@@ -114,7 +114,7 @@ void Media::VideoRenderer::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, Vid
 			csconv->ConvertV2(&vbuff->srcBuff, simg->data, info->dispWidth, info->dispHeight, info->storeWidth, info->storeHeight, (OSInt)simg->GetDataBpl(), vbuff->frameType, vbuff->ycOfst);
 			ImageUtil_ImageFillAlpha32(simg->data, info->dispWidth, info->dispHeight, simg->GetDataBpl(), 0xff);
 			this->video->GetSourceName(sbuff);
-			i = Text::StrLastIndexOf(sbuff, IO::Path::PATH_SEPERATOR);
+			i = Text::StrLastIndexOfChar(sbuff, IO::Path::PATH_SEPERATOR);
 			sptr = &sbuff[i + 1];
 			Data::DateTime dt;
 			dt.SetCurrTime();

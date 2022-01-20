@@ -146,14 +146,14 @@ Bool IO::Device::MTKGPSNMEA::IsLogEnabled()
 	if (result == 0)
 		return false;
 	result->ConcatTo(sbuff);
-	UOSInt i = Text::StrIndexOf(sbuff, '*');
+	UOSInt i = Text::StrIndexOfChar(sbuff, '*');
 	if (i == INVALID_INDEX)
 	{
 		result->Release();
 		return false;
 	}
 	sbuff[i] = 0;
-	i = Text::StrLastIndexOf(sbuff, ',');
+	i = Text::StrLastIndexOfChar(sbuff, ',');
 	i = Text::StrToUInt32(&sbuff[i + 1]);
 	result->Release();
 	return (i & 2) != 0;
@@ -409,14 +409,14 @@ IO::Device::MTKGPSNMEA::LogFormat IO::Device::MTKGPSNMEA::GetLogFormat()
 	if (result == 0)
 		return LF_UNKNOWN;
 	result->ConcatTo(sbuff);
-	UOSInt i = Text::StrIndexOf(sbuff, '*');
+	UOSInt i = Text::StrIndexOfChar(sbuff, '*');
 	if (i == INVALID_INDEX)
 	{
 		result->Release();
 		return LF_UNKNOWN;
 	}
 	sbuff[i] = 0;
-	i = Text::StrLastIndexOf(sbuff, ',');
+	i = Text::StrLastIndexOfChar(sbuff, ',');
 	i = (UInt32)Text::StrHex2Int32C(&sbuff[i + 1]);
 	result->Release();
 	return (LogFormat)i;
@@ -431,14 +431,14 @@ UInt32 IO::Device::MTKGPSNMEA::GetLogInterval()
 	if (result == 0)
 		return 0;
 	result->ConcatTo(sbuff);
-	UOSInt i = Text::StrIndexOf(sbuff, '*');
+	UOSInt i = Text::StrIndexOfChar(sbuff, '*');
 	if (i == INVALID_INDEX)
 	{
 		result->Release();
 		return 0;
 	}
 	sbuff[i] = 0;
-	i = Text::StrLastIndexOf(sbuff, ',');
+	i = Text::StrLastIndexOfChar(sbuff, ',');
 	i = Text::StrToUInt32(&sbuff[i + 1]);
 	result->Release();
 	return (UInt32)i / 10;
@@ -453,14 +453,14 @@ UInt32 IO::Device::MTKGPSNMEA::GetLogDistance()
 	if (result == 0)
 		return 0;
 	result->ConcatTo(sbuff);
-	UOSInt i = Text::StrIndexOf(sbuff, '*');
+	UOSInt i = Text::StrIndexOfChar(sbuff, '*');
 	if (i == INVALID_INDEX)
 	{
 		result->Release();
 		return 0;
 	}
 	sbuff[i] = 0;
-	i = Text::StrLastIndexOf(sbuff, ',');
+	i = Text::StrLastIndexOfChar(sbuff, ',');
 	i = Text::StrToUInt32(&sbuff[i + 1]);
 	result->Release();
 	return (UInt32)i / 10;
@@ -476,14 +476,14 @@ IO::Device::MTKGPSNMEA::LogMode IO::Device::MTKGPSNMEA::GetLogMode()
 	if (result == 0)
 		return LM_UNKNOWN;
 	result->ConcatTo(sbuff);
-	UOSInt i = Text::StrIndexOf(sbuff, '*');
+	UOSInt i = Text::StrIndexOfChar(sbuff, '*');
 	if (i == INVALID_INDEX)
 	{
 		result->Release();
 		return LM_UNKNOWN;
 	}
 	sbuff[i] = 0;
-	i = Text::StrLastIndexOf(sbuff, ',');
+	i = Text::StrLastIndexOfChar(sbuff, ',');
 	i = Text::StrToUInt32(&sbuff[i + 1]);
 	result->Release();
 	if (i == 1)
@@ -506,14 +506,14 @@ UOSInt IO::Device::MTKGPSNMEA::GetLogSize()
 	if (result == 0)
 		return 0;
 	result->ConcatTo(sbuff);
-	UOSInt i = Text::StrIndexOf(sbuff, '*');
+	UOSInt i = Text::StrIndexOfChar(sbuff, '*');
 	if (i == INVALID_INDEX)
 	{
 		result->Release();
 		return 0;
 	}
 	sbuff[i] = 0;
-	i = Text::StrLastIndexOf(sbuff, ',');
+	i = Text::StrLastIndexOfChar(sbuff, ',');
 	i = (UInt32)Text::StrHex2Int32C(&sbuff[i + 1]);
 	result->Release();
 	return i;

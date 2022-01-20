@@ -7,9 +7,10 @@ Bool Net::Email::EmailTemplate::ParseTemplate(const UTF8Char *tpl, Text::StringB
 	UOSInt i;
 	const UTF8Char *paramName;
 	const UTF8Char *param;
+	Text::String *s;
 	while (true)
 	{
-		i = Text::StrIndexOf(tpl, '[');
+		i = Text::StrIndexOfChar(tpl, '[');
 		if (i == INVALID_INDEX)
 		{
 			sb->Append(tpl);
@@ -27,7 +28,7 @@ Bool Net::Email::EmailTemplate::ParseTemplate(const UTF8Char *tpl, Text::StringB
 		}
 		else
 		{
-			i = Text::StrIndexOf(tpl, ']');
+			i = Text::StrIndexOfChar(tpl, ']');
 			if (i == INVALID_INDEX)
 			{
 				return false;
@@ -48,15 +49,15 @@ Bool Net::Email::EmailTemplate::ParseTemplate(const UTF8Char *tpl, Text::StringB
 			}
 			if (tpl[1] == '@')
 			{
-				param = Text::XML::ToNewAttrText(param);
-				sb->Append(param);
-				Text::XML::FreeNewText(param);
+				s = Text::XML::ToNewAttrText(param);
+				sb->Append(s);
+				s->Release();
 			}
 			else if (tpl[1] == '#')
 			{
-				param = Text::XML::ToNewHTMLText(param);
-				sb->Append(param);
-				Text::XML::FreeNewText(param);
+				s = Text::XML::ToNewHTMLText(param);
+				sb->Append(s);
+				s->Release();
 			}
 			else
 			{

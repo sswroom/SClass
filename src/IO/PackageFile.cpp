@@ -764,7 +764,7 @@ Bool IO::PackageFile::CopyTo(UOSInt index, const UTF8Char *destPath, Bool fullFi
 
 IO::IStreamData *IO::PackageFile::OpenStreamData(const UTF8Char *fileName)
 {
-	if (Text::StrIndexOf(fileName, ':') != INVALID_INDEX)
+	if (Text::StrIndexOfChar(fileName, ':') != INVALID_INDEX)
 	{
 		return 0;
 	}

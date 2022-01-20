@@ -928,7 +928,7 @@ void Net::UserAgentDB::ParseUserAgent(Net::UserAgentDB::UAEntry *ent, const UTF8
 	else if (Text::StrStartsWithC(userAgent, uaLen, UTF8STRC("Sogou web spider/")))
 	{
 		ent->browser = Net::BrowserInfo::BT_SOGOUWEB;
-		i = Text::StrIndexOf(userAgent, '(');
+		i = Text::StrIndexOfChar(userAgent, '(');
 		if (i != INVALID_INDEX)
 		{
 			ent->browserVer = Text::StrCopyNewC(&ent->userAgent[17], i - 17);
@@ -942,7 +942,7 @@ void Net::UserAgentDB::ParseUserAgent(Net::UserAgentDB::UAEntry *ent, const UTF8
 	else if (Text::StrStartsWithC(userAgent, uaLen, UTF8STRC("Sogou Pic Spider/")))
 	{
 		ent->browser = Net::BrowserInfo::BT_SOGOUPIC;
-		i = Text::StrIndexOf(userAgent, '(');
+		i = Text::StrIndexOfChar(userAgent, '(');
 		if (i != INVALID_INDEX)
 		{
 			ent->browserVer = Text::StrCopyNewC(&ent->userAgent[17], i - 17);
@@ -1098,7 +1098,7 @@ void Net::UserAgentDB::ParseUserAgent(Net::UserAgentDB::UAEntry *ent, const UTF8
 				{
 					ent->os = Manage::OSInfo::OT_CHROMEOS;
 					SDEL_TEXT(ent->osVer);
-					k = Text::StrIndexOf(&strs2[j].v[5], ' ');
+					k = Text::StrIndexOfChar(&strs2[j].v[5], ' ');
 					ent->osVer = Text::StrCopyNewC((const Char*)&strs2[j].v[6 + k], strs2[j].len - k - 6);
 				}
 				else if (ent->os == Manage::OSInfo::OT_IPAD && Text::StrEqualsC(strs2[j].v, strs2[j].len, UTF8STRC("U")))
@@ -1116,7 +1116,7 @@ void Net::UserAgentDB::ParseUserAgent(Net::UserAgentDB::UAEntry *ent, const UTF8
 				else if ((ent->os == Manage::OSInfo::OT_IPAD || ent->os == Manage::OSInfo::OT_IPHONE) && Text::StrStartsWithC(strs2[j].v, strs2[j].len, UTF8STRC("CPU OS ")))
 				{
 					SDEL_TEXT(ent->osVer);
-					k = Text::StrIndexOf(&strs2[j].v[7], ' ');
+					k = Text::StrIndexOfChar(&strs2[j].v[7], ' ');
 					if (k != INVALID_INDEX)
 					{
 						strs2[j].v[k + 7] = 0;
@@ -1128,7 +1128,7 @@ void Net::UserAgentDB::ParseUserAgent(Net::UserAgentDB::UAEntry *ent, const UTF8
 				else if (ent->os == Manage::OSInfo::OT_IPHONE && Text::StrStartsWithC(strs2[j].v, strs2[j].len, UTF8STRC("CPU iPhone OS ")))
 				{
 					SDEL_TEXT(ent->osVer);
-					k = Text::StrIndexOf(&strs2[j].v[14], ' ');
+					k = Text::StrIndexOfChar(&strs2[j].v[14], ' ');
 					if (k != INVALID_INDEX)
 					{
 						strs2[j].v[k + 14] = 0;
@@ -1140,7 +1140,7 @@ void Net::UserAgentDB::ParseUserAgent(Net::UserAgentDB::UAEntry *ent, const UTF8
 				else if (ent->os == Manage::OSInfo::OT_MACOS && Text::StrStartsWithC(strs2[j].v, strs2[j].len, UTF8STRC("Intel Mac OS X ")))
 				{
 					SDEL_TEXT(ent->osVer);
-					k = Text::StrIndexOf(&strs2[j].v[15], ' ');
+					k = Text::StrIndexOfChar(&strs2[j].v[15], ' ');
 					if (k != INVALID_INDEX)
 					{
 						strs2[j].v[k + 15] = 0;

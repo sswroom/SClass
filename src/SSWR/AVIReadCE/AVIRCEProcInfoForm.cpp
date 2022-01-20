@@ -311,7 +311,7 @@ void SSWR::AVIReadCE::AVIRCEProcInfoForm::UpdateProcThreads()
 			if (this->currProcRes)
 			{
 				this->currProcRes->ResolveName(sbuff, addr);
-				l = Text::StrLastIndexOf(sbuff, '\\');
+				l = Text::StrLastIndexOfChar(sbuff, '\\');
 				this->lvDetThread->SetSubItem(k, 2, &sbuff[l + 1]);
 			}
 			DEL_CLASS(t);

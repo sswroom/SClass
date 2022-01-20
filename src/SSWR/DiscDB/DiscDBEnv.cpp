@@ -676,7 +676,7 @@ Bool SSWR::DiscDB::DiscDBEnv::AddMD5(IO::IStreamData *fd)
 		sql.AppendCmdC(UTF8STRC(" where DiscID = "));
 		sql.AppendStrUTF8(sbDiscId.ToString());
 		const UTF8Char *fileName = fileChk->GetEntryName(i);
-		k = Text::StrIndexOf(&fileName[1], '\\');
+		k = Text::StrIndexOfChar(&fileName[1], '\\');
 		if (nameMap.GetIndex(&fileName[k + 2]) >= 0)
 		{
 			sql.AppendCmdC(UTF8STRC(" and FileID = "));

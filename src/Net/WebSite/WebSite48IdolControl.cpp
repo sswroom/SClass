@@ -235,7 +235,7 @@ Bool Net::WebSite::WebSite48IdolControl::GetDownloadLink(Int32 videoId, Int32 li
 				{
 					if (linkId == 0)
 					{
-						UOSInt i = Text::StrIndexOf(&attr->value->v[13], '\'');
+						UOSInt i = Text::StrIndexOfChar(&attr->value->v[13], '\'');
 						if (i != INVALID_INDEX)
 						{
 							link->AppendC(&attr->value->v[13], i);

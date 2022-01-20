@@ -303,11 +303,11 @@ Bool IO::SerialPort::ResetPort(UOSInt portNum)
 		}
 		sbuff2[si] = 0;
 		IO::Path::AppendPath(sbuff, sbuff2);
-		i = Text::StrLastIndexOf(sbuff, '/');
+		i = Text::StrLastIndexOfChar(sbuff, '/');
 		if (i == INVALID_INDEX)
 			return false;
 		sbuff[i] = 0;
-		i = Text::StrLastIndexOf(sbuff, '/');
+		i = Text::StrLastIndexOfChar(sbuff, '/');
 		if (i == INVALID_INDEX)
 			return false;
 		sptr = &sbuff[i + 1];

@@ -44,7 +44,7 @@ void __stdcall Net::TFTPServer::OnCommandPacket(const Net::SocketUtil::AddressIn
 		me->svr->SendTo(addr, port, repBuff, i);
 		return;
 	}
-	if (Text::StrIndexOf(fileName, IO::Path::PATH_SEPERATOR) != INVALID_INDEX)
+	if (Text::StrIndexOfChar(fileName, IO::Path::PATH_SEPERATOR) != INVALID_INDEX)
 	{
 		WriteMInt16(&repBuff[0], 5);
 		WriteMInt16(&repBuff[2], 2);
@@ -247,7 +247,7 @@ void __stdcall Net::TFTPServer::OnDataPacket(const Net::SocketUtil::AddressInfo 
 						Text::StringBuilderUTF8 sb;
 						UOSInt i;
 						sb.AppendC(UTF8STRC("End receiving "));
-						i = Text::StrLastIndexOf(sess->fileName, IO::Path::PATH_SEPERATOR);
+						i = Text::StrLastIndexOfChar(sess->fileName, IO::Path::PATH_SEPERATOR);
 						sb.Append(&sess->fileName[i + 1]);
 						sb.AppendC(UTF8STRC(" to "));
 						Net::SocketUtil::GetAddrName(repBuff, addr, port);
@@ -278,7 +278,7 @@ void __stdcall Net::TFTPServer::OnDataPacket(const Net::SocketUtil::AddressInfo 
 						Text::StringBuilderUTF8 sb;
 						UOSInt i;
 						sb.AppendC(UTF8STRC("End sending "));
-						i = Text::StrLastIndexOf(sess->fileName, IO::Path::PATH_SEPERATOR);
+						i = Text::StrLastIndexOfChar(sess->fileName, IO::Path::PATH_SEPERATOR);
 						sb.Append(&sess->fileName[i + 1]);
 						sb.AppendC(UTF8STRC(" to "));
 						Net::SocketUtil::GetAddrName(repBuff, addr, port);

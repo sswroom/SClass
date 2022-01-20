@@ -263,7 +263,7 @@ void Net::WiFiCapturer::StoreStatus()
 	Data::DateTime dt;
 	UOSInt i;
 	IO::Path::GetProcessFileName(sbuff);
-	i = Text::StrLastIndexOf(sbuff, IO::Path::PATH_SEPERATOR);
+	i = Text::StrLastIndexOfChar(sbuff, IO::Path::PATH_SEPERATOR);
 	sptr = &sbuff[i + 1];
 	sptr = Text::StrConcatC(sptr, UTF8STRC("wifi"));
 	dt.SetCurrTime();

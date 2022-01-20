@@ -235,7 +235,7 @@ Bool Net::MIBReader::ReadWord(Text::StringBuilderUTF *sb, Bool move)
 		UOSInt i;
 		while (true)
 		{
-			i = Text::StrIndexOf(&sptr[this->currOfst + 1], '"');
+			i = Text::StrIndexOfChar(&sptr[this->currOfst + 1], '"');
 			if (i != INVALID_INDEX)
 			{
 				break;

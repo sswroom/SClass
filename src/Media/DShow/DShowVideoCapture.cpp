@@ -148,14 +148,14 @@ Bool Media::DShow::DShowVideoCapture::GetVideoInfo(Media::FrameInfo *info, UInt3
 				info->yuvType = Media::ColorProfile::YUVT_UNKNOWN;
 				info->ycOfst = Media::YCOFST_C_TOP_LEFT;
 
-				if ((::Double2Int32(1000000000 / (Double)format->AvgTimePerFrame) % 100) == 0)
+				if ((Double2Int32(1000000000 / (Double)format->AvgTimePerFrame) % 100) == 0)
 				{
-					*frameRateNorm = (UInt32)::Double2Int32(10000000 / (Double)format->AvgTimePerFrame);
+					*frameRateNorm = (UInt32)Double2Int32(10000000 / (Double)format->AvgTimePerFrame);
 					*frameRateDenorm = 1;
 				}
-				else if ((::Double2Int32(1001000000 / (Double)format->AvgTimePerFrame) % 100) == 0)
+				else if ((Double2Int32(1001000000 / (Double)format->AvgTimePerFrame) % 100) == 0)
 				{
-					*frameRateNorm = (UInt32)::Double2Int32(10010000000 / (Double)format->AvgTimePerFrame);
+					*frameRateNorm = (UInt32)Double2Int32(10010000000 / (Double)format->AvgTimePerFrame);
 					*frameRateDenorm = 1001;
 				}
 				else
@@ -441,14 +441,14 @@ UOSInt Media::DShow::DShowVideoCapture::GetSupportedFormats(VideoFormat *fmtArr,
 			{
 				VIDEOINFOHEADER *format = (VIDEOINFOHEADER *)mediaType->pbFormat;
 
-				if ((::Double2Int32(1000000000 / (Double)format->AvgTimePerFrame) % 100) == 0)
+				if ((Double2Int32(1000000000 / (Double)format->AvgTimePerFrame) % 100) == 0)
 				{
-					fmtArr[outCnt].frameRateNorm = (UInt32)::Double2Int32(10000000 / (Double)format->AvgTimePerFrame);
+					fmtArr[outCnt].frameRateNorm = (UInt32)Double2Int32(10000000 / (Double)format->AvgTimePerFrame);
 					fmtArr[outCnt].frameRateDenorm = 1;
 				}
-				else if ((::Double2Int32(1001000000 / (Double)format->AvgTimePerFrame) % 100) == 0)
+				else if ((Double2Int32(1001000000 / (Double)format->AvgTimePerFrame) % 100) == 0)
 				{
-					fmtArr[outCnt].frameRateNorm = (UInt32)::Double2Int32(10010000000 / (Double)format->AvgTimePerFrame);
+					fmtArr[outCnt].frameRateNorm = (UInt32)Double2Int32(10010000000 / (Double)format->AvgTimePerFrame);
 					fmtArr[outCnt].frameRateDenorm = 1001;
 				}
 				else

@@ -536,7 +536,7 @@ const UInt8 *Net::ASN1Util::PDUGetItemRAW(const UInt8 *pdu, const UInt8 *pduEnd,
 	{
 		return 0;
 	}
-	size = Text::StrIndexOf(path, '.');
+	size = Text::StrIndexOfChar(path, '.');
 	if (size == INVALID_INDEX)
 	{
 		cnt = Text::StrToUOSInt(path);
@@ -643,7 +643,7 @@ UOSInt Net::ASN1Util::PDUCountItem(const UInt8 *pdu, const UInt8 *pduEnd, const 
 		}
 		return cnt;
 	}
-	size = Text::StrIndexOf(path, '.');
+	size = Text::StrIndexOfChar(path, '.');
 	if (size == INVALID_INDEX)
 	{
 		cnt = Text::StrToUOSInt(path);

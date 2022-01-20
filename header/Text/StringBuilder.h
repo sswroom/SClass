@@ -526,12 +526,12 @@ namespace Text
 
 	template<class T> UOSInt Text::StringBuilder<T>::IndexOf(T c)
 	{
-		return Text::StrIndexOf(this->buff, c);
+		return Text::StrIndexOfChar(this->buff, c);
 	}
 
 	template<class T> UOSInt Text::StringBuilder<T>::LastIndexOf(T c)
 	{
-		return Text::StrLastIndexOf(this->buff, c);
+		return Text::StrLastIndexOfChar(this->buff, c);
 	}
 
 	template<class T> Bool Text::StringBuilder<T>::Equals(const T *s)

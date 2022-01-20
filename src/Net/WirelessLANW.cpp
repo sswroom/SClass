@@ -321,7 +321,7 @@ Net::WirelessLANIE *Net::WirelessLAN::BSSInfo::GetIE(UOSInt index)
 Net::WirelessLAN::Interface::Interface(const UTF8Char *name, void *id, INTERFACE_STATE state, void *clsData)
 {
 	this->clsData = clsData;
-	this->name = Text::StrCopyNew(name);
+	this->name = Text::String::NewNotNull(name);
 	this->id = MemAlloc(GUID, 1);
 	MemCopyNO(this->id, id, sizeof(GUID));
 	this->state = state;
@@ -330,10 +330,10 @@ Net::WirelessLAN::Interface::Interface(const UTF8Char *name, void *id, INTERFACE
 Net::WirelessLAN::Interface::~Interface()
 {
 	MemFree(this->id);
-	Text::StrDelNew(this->name);
+	this->name->Release();
 }
 
-const UTF8Char *Net::WirelessLAN::Interface::GetName()
+Text::String *Net::WirelessLAN::Interface::GetName()
 {
 	return this->name;
 }

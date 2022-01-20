@@ -277,7 +277,7 @@ Bool Net::FTPConn::ChangePassiveMode(UInt32 *ip, UInt16 *port)
 			return false;
 		}
 		sptr = &sbuff[23];
-		i = Text::StrIndexOf(sptr, (const UTF8Char*)")");
+		i = Text::StrIndexOfChar(sptr, ')');
 		if (i == INVALID_INDEX || i == 0)
 			return false;
 		sptr[i] = 0;

@@ -981,7 +981,7 @@ const UTF8Char *Manage::CPUDB::ParseCPUInfo(IO::Stream *stm)
 	else if (sbSysType.StartsWith((const UTF8Char*)"Qualcomm Atheros "))
 	{
 		const Manage::CPUDB::CPUSpec *cpu = 0;
-		i = Text::StrIndexOf(sbSysType.ToString() + 17, ' ');
+		i = Text::StrIndexOfChar(sbSysType.ToString() + 17, ' ');
 		if (i != INVALID_INDEX)
 		{
 			sbSysType.ToString()[17 + i] = 0;

@@ -126,7 +126,7 @@ Text::IMIMEObj *Text::MailCreator::ParseContentHTML(UInt8 *buff, UOSInt buffSize
 					UOSInt tmpI;
 					found = false;
 					sptr = Text::StrConcat(sbuff, htmlPath);
-					l = Text::StrLastIndexOf(sbuff, IO::Path::PATH_SEPERATOR );
+					l = Text::StrLastIndexOfChar(sbuff, IO::Path::PATH_SEPERATOR );
 					sptr = &sbuff[l + 1];
 					tmpI = i;
 					if (buff[i] == '/' || buff[i] == '\\')
@@ -462,7 +462,7 @@ Text::MIMEObj::MailMessage *Text::MailCreator::CreateMail()
 			obj = this->attachObj->GetItem(i);
 			fname = this->attachName->GetItem(i);
 			k = mpart->AddPart(obj->Clone());
-			l = Text::StrLastIndexOf(fname, '\\');
+			l = Text::StrLastIndexOfChar(fname, '\\');
 			sbc.ClearStr();
 			contType = obj->GetContentType();
 			sbc.AppendC(contType.v, contType.len);

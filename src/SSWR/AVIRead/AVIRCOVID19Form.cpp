@@ -134,6 +134,7 @@ void SSWR::AVIRead::AVIRCOVID19Form::ClearRecords()
 Bool SSWR::AVIRead::AVIRCOVID19Form::LoadCSV(IO::SeekableStream *stm)
 {
 	UTF8Char sbuff[256];
+	UTF8Char *sptr;
 	DB::CSVFile *csv;
 	UOSInt colIsoCode = (UOSInt)-1;
 	UOSInt colLocation = (UOSInt)-1;
@@ -155,29 +156,29 @@ Bool SSWR::AVIRead::AVIRCOVID19Form::LoadCSV(IO::SeekableStream *stm)
 	i = r->ColCount();
 	while (i-- > 0)
 	{
-		if (r->GetName(i, sbuff))
+		if ((sptr = r->GetName(i, sbuff)) != 0)
 		{
-			if (Text::StrEquals(sbuff, (const UTF8Char*)"iso_code"))
+			if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("iso_code")))
 			{
 				colIsoCode = i;
 			}
-			else if (Text::StrEquals(sbuff, (const UTF8Char*)"location"))
+			else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("location")))
 			{
 				colLocation = i;
 			}
-			else if (Text::StrEquals(sbuff, (const UTF8Char*)"date"))
+			else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("date")))
 			{
 				colDate = i;
 			}
-			else if (Text::StrEquals(sbuff, (const UTF8Char*)"total_cases"))
+			else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("total_cases")))
 			{
 				colTotalCases = i;
 			}
-			else if (Text::StrEquals(sbuff, (const UTF8Char*)"total_deaths"))
+			else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("total_deaths")))
 			{
 				colTotalDeath = i;
 			}
-			else if (Text::StrEquals(sbuff, (const UTF8Char*)"population"))
+			else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("population")))
 			{
 				colPopulation = i;
 			}

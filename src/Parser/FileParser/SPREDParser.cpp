@@ -54,13 +54,13 @@ IO::ParsedObject *Parser::FileParser::SPREDParser::ParseFile(IO::IStreamData *fd
 	Int32 cmdType;
 	UInt32 cmdSize;
 	Text::String *s = fd->GetFullName();
-	i = Text::StrLastIndexOf(s->v, IO::Path::PATH_SEPERATOR);
+	i = Text::StrLastIndexOfChar(s->v, IO::Path::PATH_SEPERATOR);
 	sptr = Text::StrConcatC(u8buff, &s->v[i + 1], s->leng - i - 1);
 	if (!Text::StrStartsWithICaseC(u8buff, (UOSInt)(sptr - u8buff), UTF8STRC("RED")))
 	{
 		return 0;
 	}
-	i = Text::StrIndexOf(u8buff, '.');
+	i = Text::StrIndexOfChar(u8buff, '.');
 	if (i == INVALID_INDEX)
 		return 0;
 	if (u8buff[i - 1] != 's' && u8buff[i - 1] != 'S')

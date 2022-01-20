@@ -357,7 +357,9 @@ void SSWR::AVIRead::AVIRImageViewerForm::OnMonitorChanged()
 void SSWR::AVIRead::AVIRImageViewerForm::SetImage(Media::ImageList *imgList, Bool sameDir)
 {
 	UTF8Char sbuff[512];
+	UTF8Char *sptr;
 	UTF8Char sbuff2[512];
+	UTF8Char *sptr2;
 	UOSInt i;
 	UOSInt j;
 	this->pbImage->SetImage(0, false);
@@ -387,8 +389,8 @@ void SSWR::AVIRead::AVIRImageViewerForm::SetImage(Media::ImageList *imgList, Boo
 		if (!sameDir)
 		{
 			this->fileIndex = INVALID_INDEX;
-			this->imgList->GetSourceName(sbuff);
-			i = Text::StrLastIndexOf(sbuff, IO::Path::PATH_SEPERATOR);
+			sptr = this->imgList->GetSourceName(sbuff);
+			i = Text::StrLastIndexOfChar(sbuff, IO::Path::PATH_SEPERATOR);
 			if (i != INVALID_INDEX)
 			{
 				sbuff[i] = 0;
@@ -397,8 +399,8 @@ void SSWR::AVIRead::AVIRImageViewerForm::SetImage(Media::ImageList *imgList, Boo
 				j = this->pkgFile->GetCount();
 				while (j-- > 0)
 				{
-					this->pkgFile->GetItemName(sbuff2, j);
-					if (Text::StrEquals(&sbuff[i + 1], sbuff2))
+					sptr2 = this->pkgFile->GetItemName(sbuff2, j);
+					if (Text::StrEqualsC(&sbuff[i + 1], (UOSInt)(sptr - &sbuff[i + 1]), sbuff2, (UOSInt)(sptr2 - sbuff2)))
 					{
 						this->fileIndex = j;
 						break;

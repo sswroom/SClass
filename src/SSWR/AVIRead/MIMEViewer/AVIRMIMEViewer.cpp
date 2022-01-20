@@ -26,18 +26,18 @@ SSWR::AVIRead::MIMEViewer::AVIRMIMEViewer *SSWR::AVIRead::MIMEViewer::AVIRMIMEVi
 	{
 		return 0;
 	}
-	const UTF8Char *clsName = obj->GetClassName();
-	if (Text::StrEquals(clsName, (const UTF8Char*)"MailMessage"))
+	Text::CString clsName = obj->GetClassName();
+	if (clsName.Equals(UTF8STRC("MailMessage")))
 	{
 		NEW_CLASS(viewer, SSWR::AVIRead::MIMEViewer::AVIRMailViewer(core, ui, ctrl, sess, (Text::MIMEObj::MailMessage*)obj));
 		return viewer;
 	}
-	else if (Text::StrEquals(clsName, (const UTF8Char*)"TextMIMEObj"))
+	else if (clsName.Equals(UTF8STRC("TextMIMEObj")))
 	{
 		NEW_CLASS(viewer, SSWR::AVIRead::MIMEViewer::AVIRMIMETextViewer(core, ui, ctrl, sess, (Text::MIMEObj::TextMIMEObj*)obj));
 		return viewer;
 	}
-	else if (Text::StrEquals(clsName, (const UTF8Char*)"MultipartMIMEObj"))
+	else if (clsName.Equals(UTF8STRC("MultipartMIMEObj")))
 	{
 		NEW_CLASS(viewer, SSWR::AVIRead::MIMEViewer::AVIRMultipartViewer(core, ui, ctrl, sess, (Text::MIMEObj::MultipartMIMEObj*)obj));
 		return viewer;
@@ -45,27 +45,27 @@ SSWR::AVIRead::MIMEViewer::AVIRMIMEViewer *SSWR::AVIRead::MIMEViewer::AVIRMIMEVi
 	else
 	{
 		Text::CString contType = obj->GetContentType();
-		if (Text::StrStartsWithC(contType.v, contType.len, UTF8STRC("image/jpeg")) || Text::StrStartsWithC(contType.v, contType.len, UTF8STRC("image/png")) || Text::StrStartsWithC(contType.v, contType.len, UTF8STRC("image/jpg")))
+		if (contType.StartsWith(UTF8STRC("image/jpeg")) || contType.StartsWith(UTF8STRC("image/png")) || contType.StartsWith(UTF8STRC("image/jpg")))
 		{
 			NEW_CLASS(viewer, SSWR::AVIRead::MIMEViewer::AVIRMIMEImageViewer(core, ui, ctrl, sess, (Text::MIMEObj::UnknownMIMEObj*)obj));
 			return viewer;
 		}
-		else if (Text::StrStartsWithC(contType.v, contType.len, UTF8STRC("text/xml")))
+		else if (contType.StartsWith(UTF8STRC("text/xml")))
 		{
 			NEW_CLASS(viewer, SSWR::AVIRead::MIMEViewer::AVIRMIMEXMLViewer(core, ui, ctrl, sess, (Text::MIMEObj::UnknownMIMEObj*)obj));
 			return viewer;
 		}
-		else if (Text::StrStartsWithC(contType.v, contType.len, UTF8STRC("application/json")))
+		else if (contType.StartsWith(UTF8STRC("application/json")))
 		{
 			NEW_CLASS(viewer, SSWR::AVIRead::MIMEViewer::AVIRMIMEJSONViewer(core, ui, ctrl, sess, (Text::MIMEObj::UnknownMIMEObj*)obj));
 			return viewer;
 		}
-		else if (Text::StrStartsWithC(contType.v, contType.len, UTF8STRC("text/json")))
+		else if (contType.StartsWith(UTF8STRC("text/json")))
 		{
 			NEW_CLASS(viewer, SSWR::AVIRead::MIMEViewer::AVIRMIMEJSONViewer(core, ui, ctrl, sess, (Text::MIMEObj::UnknownMIMEObj*)obj));
 			return viewer;
 		}
-		else if (Text::StrStartsWithC(contType.v, contType.len, UTF8STRC("text/html")))
+		else if (contType.StartsWith(UTF8STRC("text/html")))
 		{
 			NEW_CLASS(viewer, SSWR::AVIRead::MIMEViewer::AVIRMIMEHTMLViewer(core, ui, ctrl, sess, (Text::MIMEObj::UnknownMIMEObj*)obj));
 			return viewer;

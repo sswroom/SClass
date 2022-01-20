@@ -302,7 +302,7 @@ void Net::WebServer::WebConnection::ReceivedData(const UInt8 *buff, UOSInt size)
 				}
 				else
 				{
-					strIndex = Text::StrIndexOf(&this->dataBuff[lineStart], ':');
+					strIndex = Text::StrIndexOfChar(&this->dataBuff[lineStart], ':');
 					if (strIndex != INVALID_INDEX)
 					{
 						UOSInt nameLen = strIndex;
@@ -469,7 +469,7 @@ void Net::WebServer::WebConnection::ProcessResponse()
 		UTF8Char sbuff[512];
 		UOSInt i;
 		reqURI->ConcatTo(sbuff);
-		i = Text::StrIndexOf(sbuff, ':');
+		i = Text::StrIndexOfChar(sbuff, ':');
 		if (i == INVALID_INDEX || i == 0)
 		{
 			this->respStatus = Net::WebStatus::SC_BAD_REQUEST;
@@ -590,7 +590,7 @@ void Net::WebServer::WebConnection::ProcessResponse()
 				while (i < j)
 				{
 					UTF8Char *hdrPtr = httpCli->GetRespHeader(i, sbuffHdr);
-					k = Text::StrIndexOf(sbuffHdr, (const UTF8Char*)": ");
+					k = Text::StrIndexOfC(sbuffHdr, (UOSInt)(hdrPtr - sbuffHdr), UTF8STRC(": "));
 					if (k != INVALID_INDEX)
 					{
 						sbuffHdr[k] = 0;

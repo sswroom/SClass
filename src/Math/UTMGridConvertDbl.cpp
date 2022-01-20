@@ -197,9 +197,9 @@ Bool Math::UTMGridConvertDbl::Grid_WGS84(Double *latOut, Double *lonOut, const U
 			break;
 		zoneNumber = zoneNumber * 10 + (UInt32)(ch - 0x30);
 	}
-	latZone = Text::StrIndexOf(letters, ch);
-	eastZone = Text::StrIndexOf(letters, *grid++);
-	northZone = Text::StrIndexOf(letters, *grid++);;
+	latZone = Text::StrIndexOfChar(letters, ch);
+	eastZone = Text::StrIndexOfChar(letters, *grid++);
+	northZone = Text::StrIndexOfChar(letters, *grid++);;
 	if (latZone == INVALID_INDEX || eastZone == INVALID_INDEX || northZone == INVALID_INDEX)
 		return false;
 

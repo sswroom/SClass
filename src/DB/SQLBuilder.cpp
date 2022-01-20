@@ -116,7 +116,7 @@ void DB::SQLBuilder::AppendTableName(DB::TableDef *table)
 		sb->AppendChar('.', 1);
 	}
 	name = table->GetTableName();
-	UOSInt i = Text::StrIndexOf(name, '.');
+	UOSInt i = Text::StrIndexOfChar(name, '.');
 	if (i != INVALID_INDEX)
 	{
 		const UTF8Char *catalog = Text::StrCopyNewC(name, i);

@@ -313,7 +313,7 @@ SSWR::AVIRead::AVIRHTTPLoadBalanceForm::AVIRHTTPLoadBalanceForm(UI::GUIClientCon
 	NEW_CLASS(this->lblLogDir, UI::GUILabel(ui, this->grpParam, (const UTF8Char*)"Log Path"));
 	this->lblLogDir->SetRect(8, 32, 100, 23, false);
 	IO::Path::GetProcessFileName(sbuff);
-	i = Text::StrLastIndexOf(sbuff, IO::Path::PATH_SEPERATOR);
+	i = Text::StrLastIndexOfChar(sbuff, IO::Path::PATH_SEPERATOR);
 	Text::StrConcatC(&sbuff[i + 1], UTF8STRC("log"));
 	NEW_CLASS(this->txtLogDir, UI::GUITextBox(ui, this->grpParam, sbuff));
 	this->txtLogDir->SetRect(108, 32, 500, 23, false);

@@ -467,7 +467,7 @@ void Net::WebServer::WebRequest::ParseHTTPForm()
 		else if (Text::StrStartsWithC(sb->ToString(), sb->GetLength(), UTF8STRC("multipart/form-data")))
 		{
 			UTF8Char *sptr = sb->ToString();
-			UOSInt i = Text::StrIndexOf(sptr, (const UTF8Char*)"boundary=");
+			UOSInt i = Text::StrIndexOfC(sptr, sb->GetLength(), UTF8STRC("boundary="));
 			if (i != INVALID_INDEX)
 			{
 				UInt8 *boundary = &sptr[i + 9];

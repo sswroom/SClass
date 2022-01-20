@@ -170,7 +170,7 @@ UTF8Char *Map::GoogleMap::GoogleSearcher::SearchName(UTF8Char *buff, UOSInt buff
 			sptr = buff;
 			if (*ptrs[2] == '"')
 			{
-				i = Text::StrIndexOf(&ptrs[2][1], '"');
+				i = Text::StrIndexOfChar(&ptrs[2][1], '"');
 				if (i != INVALID_INDEX)
 				{
 					if (i < buffSize)

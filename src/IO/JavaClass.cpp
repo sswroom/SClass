@@ -3991,7 +3991,7 @@ void IO::JavaClass::MethodFree(MethodInfo *method)
 
 void IO::JavaClass::AppendCodeClassName(Text::StringBuilderUTF *sb, const UTF8Char *className, Data::ArrayListStrUTF8 *importList, const UTF8Char *packageName)
 {
-	UOSInt i = Text::StrLastIndexOf(className, '.');
+	UOSInt i = Text::StrLastIndexOfChar(className, '.');
 	if (i == INVALID_INDEX)
 	{
 		sb->Append(className);
@@ -4747,7 +4747,7 @@ const UTF8Char *IO::JavaClass::AppendCodeType2String(Text::StringBuilderUTF *sb,
 			{
 				sptr[tmpIndex] = 0;
 			}
-			i = Text::StrLastIndexOf(sptr, '.');
+			i = Text::StrLastIndexOfChar(sptr, '.');
 			if (i == INVALID_INDEX)
 			{
 				if (subcls != INVALID_INDEX)

@@ -280,7 +280,7 @@ Bool Net::SocketUtil::GetIPAddr(const WChar *ipName, AddressInfo *addr)
 		addr->addrType = AddrType::IPv4;
 		return true;
 	}
-	j = Text::StrIndexOf(sarr[i - 1], '%');
+	j = Text::StrIndexOfChar(sarr[i - 1], '%');
 	if (j != INVALID_INDEX)
 	{
 		if (Text::StrToInt32(&sarr[i - 1][j + 1], &v))
@@ -433,7 +433,7 @@ Bool Net::SocketUtil::GetIPAddr(const UTF8Char *ipName, UOSInt ipLen, AddressInf
 		addr->addrType = AddrType::IPv4;
 		return true;
 	}
-	j = Text::StrIndexOf(sarr[i - 1], '%');
+	j = Text::StrIndexOfChar(sarr[i - 1], '%');
 	if (j != INVALID_INDEX)
 	{
 		if (Text::StrToInt32(&sarr[i - 1][j + 1], &v))

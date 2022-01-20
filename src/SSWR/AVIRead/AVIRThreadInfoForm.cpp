@@ -109,7 +109,7 @@ void __stdcall SSWR::AVIRead::AVIRThreadInfoForm::OnMyStackDblClk(void *userObj,
 	if (sb.StartsWith((const UTF8Char*)"call 0x"))
 	{
 		Text::StrConcatS(sbuff, sb.ToString() + 7, 17);
-		i = Text::StrIndexOf(sbuff, ' ');
+		i = Text::StrIndexOfChar(sbuff, ' ');
 		if (i != INVALID_INDEX && i > 0)
 		{
 			sbuff[i] = 0;
@@ -204,7 +204,7 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(UI::GUIClientControl *pare
 	Text::StrHexVal64(sbuff, startAddr);
 	this->txtStartAddr->SetText(sbuff);
 	symbol->ResolveName(sbuff, startAddr);
-	i = Text::StrLastIndexOf(sbuff, '\\');
+	i = Text::StrLastIndexOfChar(sbuff, '\\');
 	this->txtStartName->SetText(&sbuff[i + 1]);
 
 	if (thread->IsCurrThread())
@@ -225,7 +225,7 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(UI::GUIClientControl *pare
 			Text::StrHexVal64(sbuff, currAddr);
 			i = this->lvStack->AddItem(sbuff, 0, 0);
 			symbol->ResolveName(sbuff, currAddr);
-			j = Text::StrLastIndexOf(sbuff, '\\');
+			j = Text::StrLastIndexOfChar(sbuff, '\\');
 			this->lvStack->SetSubItem(i, 1, &sbuff[j + 1]);
 			if (!tracer->GoToNextLevel())
 				break;
@@ -282,7 +282,7 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(UI::GUIClientControl *pare
 				sb.AppendHex32(eip);
 				sb.AppendC(UTF8STRC(" "));
 				symbol->ResolveName(sbuff, eip);
-				i  = Text::StrLastIndexOf(sbuff, '\\');
+				i  = Text::StrLastIndexOfChar(sbuff, '\\');
 				sb.Append(&sbuff[i + 1]);
 				i = this->lbMyStack->AddItem(sb.ToString(), 0);
 				sb.ClearStr();
@@ -379,7 +379,7 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(UI::GUIClientControl *pare
 				sb.AppendHex64(rip);
 				sb.AppendC(UTF8STRC(" "));
 				symbol->ResolveName(sbuff, rip);
-				i  = Text::StrLastIndexOf(sbuff, '\\');
+				i  = Text::StrLastIndexOfChar(sbuff, '\\');
 				sb.Append(&sbuff[i + 1]);
 				i = this->lbMyStack->AddItem(sb.ToString(), 0);
 				sb.ClearStr();

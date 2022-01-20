@@ -125,7 +125,7 @@ UInt32 __stdcall Net::RTSPClient::ControlThread(void *userObj)
 						else if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("Session: ")))
 						{
 							SDEL_TEXT(cliData->reqStrs);
-							k = Text::StrIndexOf(&sbuff[9], ';');
+							k = Text::StrIndexOfChar(&sbuff[9], ';');
 							if (k != INVALID_INDEX)
 							{
 								sbuff[9 + k] = 0;

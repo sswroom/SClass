@@ -687,7 +687,7 @@ SSWR::DiscDB::DiscDBBurntDiscForm::MovieCols *SSWR::DiscDB::DiscDBBurntDiscForm:
 	{
 		Text::StrConcat(mainTitle, &mainTitle[i + 1]);
 	}
-	i = Text::StrLastIndexOf(mainTitle, L".");
+	i = Text::StrLastIndexOfChar(mainTitle, '.');
 	if ((i != INVALID_INDEX && i == Text::StrCharCnt(mainTitle) - 4) || Text::StrEndsWithICase(mainTitle, L".TS"))
 	{
 		mainTitle[i] = 0;
@@ -870,7 +870,7 @@ void __stdcall SSWR::DiscDB::DiscDBBurntDiscForm::OnBrowseClicked(void *userObj)
 	NEW_CLASS(ofd, UI::FileDialog(L"SSWR", L"DVDDB", L"Browse", true));
 	if (ofd->ShowDialog(me->GetHandle()))
 	{
-		UOSInt i = Text::StrLastIndexOf(ofd->GetFileName(), IO::Path::PATH_SEPERATOR);
+		UOSInt i = Text::StrLastIndexOfChar(ofd->GetFileName(), IO::Path::PATH_SEPERATOR);
 		Text::StringBuilderUTF8 sbBasePath;
 		if (i != INVALID_INDEX)
 		{
@@ -886,7 +886,7 @@ void __stdcall SSWR::DiscDB::DiscDBBurntDiscForm::OnBrowseClicked(void *userObj)
 		me->selectedFile = 0;
 		me->pnlFile->SetEnabled(false);
 		me->SearchSubDir(sbBasePath.ToString(), (const UTF8Char*)"", 50000000000LL);
-		i = Text::StrLastIndexOf(sbBasePath.ToString(), IO::Path::PATH_SEPERATOR);
+		i = Text::StrLastIndexOfChar(sbBasePath.ToString(), IO::Path::PATH_SEPERATOR);
 		me->txtDiscId->SetText(sbBasePath.ToString() + i + 1);
 	}
 	DEL_CLASS(ofd);

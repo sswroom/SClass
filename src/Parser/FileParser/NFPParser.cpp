@@ -51,7 +51,7 @@ IO::ParsedObject *Parser::FileParser::NFPParser::ParseFile(IO::IStreamData *fd, 
 	UTF8Char sbuff[13];
 
 	fd->GetRealData(0, 64, hdr);
-	if (!Text::StrEquals((const Char*)hdr, "NFP2.0 (c)NOBORI 1997-2002"))
+	if (!Text::StrStartsWithC(hdr, 64, UTF8STRC("NFP2.0 (c)NOBORI 1997-2002")))
 		return 0;
 
 	fileCnt = ReadUInt32(&hdr[52]);

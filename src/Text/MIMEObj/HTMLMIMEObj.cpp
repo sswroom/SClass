@@ -32,9 +32,9 @@ Text::MIMEObj::HTMLMIMEObj::~HTMLMIMEObj()
 	this->contType->Release();
 }
 
-const UTF8Char *Text::MIMEObj::HTMLMIMEObj::GetClassName()
+Text::CString Text::MIMEObj::HTMLMIMEObj::GetClassName()
 {
-	return (const UTF8Char*)"HTMLMIMEObj";
+	return {UTF8STRC("HTMLMIMEObj")};
 }
 
 Text::CString Text::MIMEObj::HTMLMIMEObj::GetContentType()

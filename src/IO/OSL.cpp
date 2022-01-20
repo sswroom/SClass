@@ -72,7 +72,7 @@ UTF8Char *IO::OS::GetDistro(UTF8Char *sbuff)
 		i = INVALID_INDEX;
 		while (true)
 		{
-			j = Text::StrIndexOf(&line[i + 1], ' ');
+			j = Text::StrIndexOfChar(&line[i + 1], ' ');
 			if (j != INVALID_INDEX)
 			{
 				i = i + j + 1;
@@ -250,13 +250,13 @@ UTF8Char *IO::OS::GetVersion(UTF8Char *sbuff)
 		i = INVALID_INDEX;
 		while (true)
 		{
-			j = Text::StrIndexOf(&line[i + 1], ' ');
+			j = Text::StrIndexOfChar(&line[i + 1], ' ');
 			if (j != INVALID_INDEX)
 			{
 				i = i + j + 1;
 				if (line[i + 1] >= 0x30 && line[i + 1] <= 0x39 && line[i + 2] == '.')
 				{
-					j = Text::StrIndexOf(&line[i + 1], ' ');
+					j = Text::StrIndexOfChar(&line[i + 1], ' ');
 					if (j != INVALID_INDEX)
 					{
 						line[i + 1 + j] = 0;

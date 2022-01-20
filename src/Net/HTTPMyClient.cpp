@@ -590,7 +590,7 @@ Bool Net::HTTPMyClient::Connect(const UTF8Char *url, UOSInt urlLen, const Char *
 #ifdef SHOWDEBUG
 	printf("Request URL: %s %s\r\n", method, url);
 #endif
-	i = Text::StrIndexOf(ptr1, '/');
+	i = Text::StrIndexOfChar(ptr1, '/');
 	if (i != INVALID_INDEX)
 	{
 		MemCopyNO(urltmp, ptr1, i * sizeof(UTF8Char));
@@ -613,7 +613,7 @@ Bool Net::HTTPMyClient::Connect(const UTF8Char *url, UOSInt urlLen, const Char *
 	hostLen = (UOSInt)(cptr - host);
 	if (urltmp[0] == '[')
 	{
-		i = Text::StrIndexOf(urltmp, ']');
+		i = Text::StrIndexOfChar(urltmp, ']');
 		if (i == INVALID_INDEX)
 		{
 			this->cli = 0;
@@ -1051,7 +1051,7 @@ void Net::HTTPMyClient::EndRequest(Double *timeReq, Double *timeResp)
 			UInt32 keepAliveTO = 0;
 			while (header)
 			{
-				while ((i = Text::StrIndexOf(ptr, '\n')) != INVALID_INDEX && i > 0)
+				while ((i = Text::StrIndexOfChar(ptr, '\n')) != INVALID_INDEX && i > 0)
 				{
 					if (i == 1 && ptr[0] == '\r')
 					{

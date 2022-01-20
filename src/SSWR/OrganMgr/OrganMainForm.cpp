@@ -903,7 +903,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImageClipboardClicked(void *user
 							{
 								if (!chg)
 								{
-									UOSInt tmp = Text::StrLastIndexOf(sarr[0].v, IO::Path::PATH_SEPERATOR);
+									UOSInt tmp = Text::StrLastIndexOfChar(sarr[0].v, IO::Path::PATH_SEPERATOR);
 									me->initSelImg = Text::String::New(&sarr[0].v[tmp + 1], sarr[0].len - tmp - 1);
 								}
 								chg = true;
@@ -917,7 +917,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImageClipboardClicked(void *user
 								UOSInt i;
 								const UTF8Char *csptr;
 								Text::StringBuilderUTF8 sb;
-								i = Text::StrLastIndexOf(sarr[0].v, IO::Path::PATH_SEPERATOR);
+								i = Text::StrLastIndexOfChar(sarr[0].v, IO::Path::PATH_SEPERATOR);
 								csptr = Text::StrToUTF8New(L"不能複製檔案: ");
 								sb.Append(csptr);
 								Text::StrDelNew(csptr);
@@ -2269,7 +2269,7 @@ Bool SSWR::OrganMgr::OrganMainForm::ToSaveSpecies()
 			{
 				this->env->GetSpeciesDir(this->lastSpeciesObj, u8buff2);
 				Text::StrConcat(u8buff, u8buff2);
-				i = Text::StrLastIndexOf(u8buff2, IO::Path::PATH_SEPERATOR);
+				i = Text::StrLastIndexOfChar(u8buff2, IO::Path::PATH_SEPERATOR);
 				this->txtSpeciesDName->GetText(&u8buff2[i + 1]);
 				
 				if (IO::Path::GetPathType(u8buff) == IO::Path::PathType::Directory)
@@ -3364,43 +3364,44 @@ void SSWR::OrganMgr::OrganMainForm::DropData(UI::GUIDropData *data, OSInt x, OSI
 				{
 					name = data->GetName(j);
 					printf("Drag Drop: %s\r\n", name);
-					if (Text::StrEquals(name, (const UTF8Char*)"HTML Format"))
+					UOSInt nameLen = Text::StrCharCnt(name);
+					if (Text::StrEqualsC(name, nameLen, UTF8STRC("HTML Format")))
 					{
 						fmtSURL = name;
 					}
-					else if (Text::StrEquals(name, (const UTF8Char*)"application/x-moz-file-promise-url"))
+					else if (Text::StrEqualsC(name, nameLen, UTF8STRC("application/x-moz-file-promise-url")))
 					{
 						fmtIURL = name;
 					}
-					else if (Text::StrEquals(name, (const UTF8Char*)"text/url-list"))
+					else if (Text::StrEqualsC(name, nameLen, UTF8STRC("text/url-list")))
 					{
 						fmtIURL = name;
 					}
-					else if (Text::StrEquals(name, (const UTF8Char*)"text/x-moz-url-data"))
+					else if (Text::StrEqualsC(name, nameLen, UTF8STRC("text/x-moz-url-data")))
 					{
 						fmtIURL = name;
 					}
-					else if (Text::StrEquals(name, (const UTF8Char*)"text/x-moz-url-desc"))
+					else if (Text::StrEqualsC(name, nameLen, UTF8STRC("text/x-moz-url-desc")))
 					{
 						fmtIURL = name;
 					}
-					else if (Text::StrEquals(name, (const UTF8Char*)"UniformResourceLocatorW"))
+					else if (Text::StrEqualsC(name, nameLen, UTF8STRC("UniformResourceLocatorW")))
 					{
 						fmtIURL = name;
 					}
-					else if (Text::StrEquals(name, (const UTF8Char*)"text/x-moz-url"))
+					else if (Text::StrEqualsC(name, nameLen, UTF8STRC("text/x-moz-url")))
 					{
 						fmtIURL = name;
 					}
-					else if (Text::StrEquals(name, (const UTF8Char*)"FileContents"))
+					else if (Text::StrEqualsC(name, nameLen, UTF8STRC("FileContents")))
 					{
 						fmtFile = name;
 					}
-					else if (Text::StrEquals(name, (const UTF8Char*)"HDROP"))
+					else if (Text::StrEqualsC(name, nameLen, UTF8STRC("HDROP")))
 					{
 						fmtHDrop = name;
 					}
-					else if (Text::StrEquals(name, (const UTF8Char*)"text/uri-list"))
+					else if (Text::StrEqualsC(name, nameLen, UTF8STRC("text/uri-list")))
 					{
 						fmtHDrop = name;
 					}
@@ -3501,7 +3502,7 @@ void SSWR::OrganMgr::OrganMainForm::DropData(UI::GUIDropData *data, OSInt x, OSI
 							{
 								if (!chg)
 								{
-									UOSInt tmp = Text::StrLastIndexOf(sarr[0].v, IO::Path::PATH_SEPERATOR);
+									UOSInt tmp = Text::StrLastIndexOfChar(sarr[0].v, IO::Path::PATH_SEPERATOR);
 									this->initSelImg = Text::String::New(&sarr[0].v[tmp + 1], sarr[0].len - tmp - 1);
 								}
 								chg = true;
@@ -3515,7 +3516,7 @@ void SSWR::OrganMgr::OrganMainForm::DropData(UI::GUIDropData *data, OSInt x, OSI
 								UOSInt i;
 								Text::String *s;
 								Text::StringBuilderUTF8 sb;
-								i = Text::StrLastIndexOf(sarr[0].v, IO::Path::PATH_SEPERATOR);
+								i = Text::StrLastIndexOfChar(sarr[0].v, IO::Path::PATH_SEPERATOR);
 								s = Text::String::NewNotNull(L"不能複製檔案: ");
 								sb.Append(s);
 								s->Release();

@@ -14,12 +14,12 @@ IO::Device::WavecomModemController::~WavecomModemController()
 UTF8Char *IO::Device::WavecomModemController::GetSIMCardID(UTF8Char *cardID)
 {
 	UTF8Char sbuff[256];
-	UTF8Char *sptr = this->SendStringCommand(sbuff, "AT+CCID", 3000);
+	UTF8Char *sptr = this->SendStringCommand(sbuff, UTF8STRC("AT+CCID"), 3000);
 	if (sptr == 0)
 		return 0;
 	if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("+CCID: \"")))
 	{
-		UOSInt i = Text::StrIndexOf(&sbuff[8], '\"');
+		UOSInt i = Text::StrIndexOfChar(&sbuff[8], '\"');
 		if (i != INVALID_INDEX)
 		{
 			sbuff[i + 8] = 0;
@@ -36,7 +36,7 @@ UTF8Char *IO::Device::WavecomModemController::GetSIMCardID(UTF8Char *cardID)
 UTF8Char *IO::Device::WavecomModemController::GetCapabilityList(UTF8Char *capList)
 {
 	UTF8Char sbuff[256];
-	UTF8Char *sptr = this->SendStringCommand(sbuff, "AT+GCAP", 3000);
+	UTF8Char *sptr = this->SendStringCommand(sbuff, UTF8STRC("AT+GCAP"), 3000);
 	if (sptr == 0)
 		return 0;
 	if (Text::StrStartsWith(sbuff, (const UTF8Char*)"+GCAP: "))
@@ -51,20 +51,20 @@ UTF8Char *IO::Device::WavecomModemController::GetCapabilityList(UTF8Char *capLis
 
 Bool IO::Device::WavecomModemController::StopGSMStack()
 {
-	return this->SendBoolCommand("AT+CPOF");
+	return this->SendBoolCommandC(UTF8STRC("AT+CPOF"));
 }
 
 Bool IO::Device::WavecomModemController::StopModule()
 {
-	return this->SendBoolCommand("AT+CPOF=1");
+	return this->SendBoolCommandC(UTF8STRC("AT+CPOF=1"));
 }
 
 Bool IO::Device::WavecomModemController::WavecomStopGSMStack()
 {
-	return this->SendBoolCommand("AT+CFUN=0");
+	return this->SendBoolCommandC(UTF8STRC("AT+CFUN=0"));
 }
 
 Bool IO::Device::WavecomModemController::WavecomReset()
 {
-	return this->SendBoolCommand("AT+CFUN=1");
+	return this->SendBoolCommandC(UTF8STRC("AT+CFUN=1"));
 }

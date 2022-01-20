@@ -96,7 +96,7 @@
 				{
 					if (pt == IO::Path::PathType::File)
 					{
-						i = Text::StrIndexOf(sptr, '.');
+						i = Text::StrIndexOfChar(sptr, '.');
 						if (i != INVALID_INDEX)
 						{
 							sptr[i] = 0;
@@ -235,7 +235,7 @@ Map::OSM::OSMLocalTileMap::OSMLocalTileMap(IO::PackageFile *pkgFile)
 						if (yPkg->GetItemType(i) == IO::PackageFile::POT_STREAMDATA)
 						{
 							yPkg->GetItemName(sbuff, i);
-							j = Text::StrIndexOf(sbuff, '.');
+							j = Text::StrIndexOfChar(sbuff, '.');
 							if (j != INVALID_INDEX)
 							{
 								sbuff[j] = 0;

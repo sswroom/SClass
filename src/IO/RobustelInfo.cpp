@@ -16,6 +16,7 @@ Text::String *IO::RobustelInfo::GetCellID()
 Bool IO::RobustelInfo::GetRSSI(Int8 *val)
 {
 	UTF8Char sbuff[32];
+	UTF8Char *sptr;
 	Int16 ival;
 	Text::String *s = IO::RobustelStatus::GetStatus("cellular.status.csq");
 	if (s)
@@ -24,8 +25,8 @@ Bool IO::RobustelInfo::GetRSSI(Int8 *val)
 		UOSInt i = s->IndexOf('(');
 		if (s >= 0)
 		{
-			Text::StrConcat(sbuff, &s->v[i + 1]);
-			i = Text::StrIndexOf(sbuff, (const UTF8Char*)"dBm");
+			sptr = Text::StrConcatC(sbuff, &s->v[i + 1], s->leng - i - 1);
+			i = Text::StrIndexOfC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("dBm"));
 			if (i != INVALID_INDEX)
 			{
 				sbuff[i] = 0;
@@ -49,7 +50,7 @@ Bool IO::RobustelInfo::GetRSRP(Int8 *val)
 	if (s)
 	{
 		Bool succ = false;
-		UOSInt i = s->IndexOf((const UTF8Char*)" dB");
+		UOSInt i = s->IndexOf(UTF8STRC(" dB"));
 		if (i != INVALID_INDEX)
 		{
 			s->v[i] = 0;
@@ -72,7 +73,7 @@ Bool IO::RobustelInfo::GetRSRQ(Int8 *val)
 	if (s)
 	{
 		Bool succ = false;
-		UOSInt i = s->IndexOf((const UTF8Char*)" dB");
+		UOSInt i = s->IndexOf(UTF8STRC(" dB"));
 		if (i != INVALID_INDEX)
 		{
 			s->v[i] = 0;

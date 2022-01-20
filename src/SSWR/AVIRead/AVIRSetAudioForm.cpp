@@ -8,8 +8,9 @@ void __stdcall SSWR::AVIRead::AVIRSetAudioForm::OnOKClick(void *userObj)
 {
 	SSWR::AVIRead::AVIRSetAudioForm *me = (SSWR::AVIRead::AVIRSetAudioForm*)userObj;
 	UTF8Char sbuff[256];
-	me->lbDevice->GetSelectedItemText(sbuff);
-	if (Text::StrEquals(sbuff, (const UTF8Char*)"Default"))
+	UTF8Char *sptr;
+	sptr = me->lbDevice->GetSelectedItemText(sbuff);
+	if (sptr == 0 || Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("Default")))
 	{
 		me->core->SetAudioDeviceList(0);
 	}

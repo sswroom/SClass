@@ -17,7 +17,7 @@ namespace Text
 			UnknownMIMEObj(UInt8 *dataBuff, UOSInt buffSize, const UTF8Char *contentType);
 			virtual ~UnknownMIMEObj();
 
-			virtual const UTF8Char *GetClassName();
+			virtual Text::CString GetClassName();
 			virtual Text::CString GetContentType();
 			virtual UOSInt WriteStream(IO::Stream *stm);
 			virtual IMIMEObj *Clone();

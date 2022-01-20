@@ -105,9 +105,9 @@ Bool Exporter::OruxMapExporter::ExportFile(IO::SeekableStream *stm, const UTF8Ch
 	Double maxLon;
 	Double boundsXY[4];
 	Bool succ;
-	i = Text::StrLastIndexOf(fileName, IO::Path::PATH_SEPERATOR);
+	i = Text::StrLastIndexOfChar(fileName, IO::Path::PATH_SEPERATOR);
 	Text::StrConcat(fileName2, &fileName[i + 1]);
-	i = Text::StrLastIndexOf(fileName2, '.');
+	i = Text::StrLastIndexOfChar(fileName2, '.');
 	if (i != INVALID_INDEX)
 	{
 		fileName2[i] = 0;

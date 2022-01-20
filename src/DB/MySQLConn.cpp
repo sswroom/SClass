@@ -303,7 +303,7 @@ DB::DBReader *DB::MySQLConn::GetTableData(const UTF8Char *tableName, Data::Array
 	UOSInt j;
 	while (true)
 	{
-		j = Text::StrIndexOf(&tableName[i], '.');
+		j = Text::StrIndexOfChar(&tableName[i], '.');
 		if (j == INVALID_INDEX)
 		{
 			DB::DBUtil::SDBColUTF8(sbuff, &tableName[i], DB::DBUtil::ServerType::MySQL);

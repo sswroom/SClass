@@ -304,7 +304,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnSaveClicked(void *userObj)
 					{
 						if (sarr[0].v[9] == '\"')
 						{
-							j = Text::StrIndexOf(&sarr[0].v[10], '\"');
+							j = Text::StrIndexOfChar(&sarr[0].v[10], '\"');
 							if (j != INVALID_INDEX)
 							{
 								sarr[0].v[10 + j] = 0;
@@ -387,12 +387,12 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnDataStrClicked(void *userObj
 		UOSInt i;
 		while (true)
 		{
-			spInd = Text::StrIndexOf(sptr, '&');
+			spInd = Text::StrIndexOfChar(sptr, '&');
 			if (spInd != INVALID_INDEX)
 			{
 				sptr[spInd] = 0;
 			}
-			eqInd = Text::StrIndexOf(sptr, '=');
+			eqInd = Text::StrIndexOfChar(sptr, '=');
 			param = MemAlloc(SSWR::AVIRead::AVIRHTTPClientForm::ParamValue, 1);
 			if (eqInd != INVALID_INDEX)
 			{
@@ -886,7 +886,7 @@ SSWR::AVIRead::AVIRHTTPClientForm::HTTPCookie *SSWR::AVIRead::AVIRHTTPClientForm
 	sb.Append(cookieStr);
 	cnt = Text::StrSplitTrimP(sarr, 2, sb.ToString(), sb.GetLength(), ';');
 	cookieValue = sarr[0].v;
-	i = Text::StrIndexOf(cookieValue, '=');
+	i = Text::StrIndexOfChar(cookieValue, '=');
 	if (i == INVALID_INDEX)
 	{
 		return 0;

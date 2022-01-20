@@ -44,7 +44,7 @@ IO::ParsedObject *Parser::FileParser::PLTParser::ParseFile(IO::IStreamData *fd, 
 	Map::GPSTrack *track = 0;
 	Bool valid;
 
-/*	UOSInt i = Text::StrLastIndexOf(fd->GetFullName(), '.');
+/*	UOSInt i = Text::StrLastIndexOfChar(fd->GetFullName(), '.');
 	if (i == INVALID_INDEX)
 		return 0;
 	if (Text::StrCompareICase(&(fd->GetFullName())[i + 1], L"PLT") != 0)

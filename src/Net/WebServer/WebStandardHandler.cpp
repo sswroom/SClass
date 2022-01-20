@@ -155,7 +155,7 @@ void Net::WebServer::WebStandardHandler::HandlePath(const UTF8Char *absolutePath
 		}
 		return;
 	}
-	UOSInt i = Text::StrIndexOf(&absolutePath[1], '/');
+	UOSInt i = Text::StrIndexOfChar(&absolutePath[1], '/');
 	UTF8Char *sbuff;
 	if (i == INVALID_INDEX)
 	{

@@ -221,7 +221,7 @@ void SSWR::AVIReadCE::AVIRCoreCE::SaveData(UI::GUIForm *ownerForm, IO::ParsedObj
 		}
 		if (pobj->GetSourceName(sbuff1))
 		{
-			if ((i = Text::StrLastIndexOf(sbuff1, '.')) != INVALID_INDEX)
+			if ((i = Text::StrLastIndexOfChar(sbuff1, '.')) != INVALID_INDEX)
 			{
 				sbuff1[i] = 0;
 			}

@@ -14,6 +14,7 @@ Map::HKTDVehRestrict::HKTDVehRestrict(Map::IMapDrawLayer *routeLyr, DB::DBTool *
 	if (sess)
 	{
 		UTF8Char sbuff[512];
+		UTF8Char *sptr;
 		void *nameArr;
 		Data::ArrayListInt64 idArr;
 		UOSInt colCnt;
@@ -28,9 +29,9 @@ Map::HKTDVehRestrict::HKTDVehRestrict(Map::IMapDrawLayer *routeLyr, DB::DBTool *
 		i = 0;
 		while (i < colCnt)
 		{
-			if (routeLyr->GetColumnName(sbuff, i))
+			if ((sptr = routeLyr->GetColumnName(sbuff, i)) != 0)
 			{
-				if (Text::StrEquals(sbuff, (const UTF8Char*)"ROUTE_ID"))
+				if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("ROUTE_ID")))
 				{
 					idCol = (OSInt)i;
 					break;
@@ -110,6 +111,7 @@ Map::IMapDrawLayer *Map::HKTDVehRestrict::CreateTonnesSignLayer()
 	if (r)
 	{
 		UTF8Char sbuff[256];
+		UTF8Char *sptr;
 		UTF8Char sbuff2[64];
 		OSInt roadRouteIdCol = -1;
 		OSInt locationCol = -1;
@@ -123,25 +125,25 @@ Map::IMapDrawLayer *Map::HKTDVehRestrict::CreateTonnesSignLayer()
 		j = r->ColCount();
 		while (i < j)
 		{
-			if (r->GetName(i, sbuff))
+			if ((sptr = r->GetName(i, sbuff)) != 0)
 			{
-				if (Text::StrEquals(sbuff, (const UTF8Char*)"ROAD_ROUTE_ID"))
+				if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("ROAD_ROUTE_ID")))
 				{
 					roadRouteIdCol = (OSInt)i;
 				}
-				else if (Text::StrEquals(sbuff, (const UTF8Char*)"LOCATION"))
+				else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("LOCATION")))
 				{
 					locationCol = (OSInt)i;
 				}
-				else if (Text::StrEquals(sbuff, (const UTF8Char*)"VR_ID"))
+				else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("VR_ID")))
 				{
 					vrIdCol = (OSInt)i;
 				}
-				else if (Text::StrEquals(sbuff, (const UTF8Char*)"MAX_WEIGHT"))
+				else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("MAX_WEIGHT")))
 				{
 					maxWeightCol = (OSInt)i;
 				}
-				else if (Text::StrEquals(sbuff, (const UTF8Char*)"REMARKS"))
+				else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("REMARKS")))
 				{
 					remarksCol = (OSInt)i;
 				}

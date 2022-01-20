@@ -29,9 +29,9 @@ Cond table
 1110	-
 */
 
-Bool DasmARM64_IsEndFunc(const UTF8Char *funcName)
+Bool DasmARM64_IsEndFunc(const UTF8Char *funcName, UOSInt nameLen)
 {
-	if (Text::StrIndexOf(funcName, (const UTF8Char*)"(exit+0)") != INVALID_INDEX)
+	if (Text::StrIndexOfC(funcName, nameLen, UTF8STRC("(exit+0)")) != INVALID_INDEX)
 	{
 		return true;
 	}
@@ -2055,7 +2055,7 @@ Bool DasmARM64_E1(Manage::DasmARM64::DasmARM64_Sess *sess)
 					{
 						sess->sbuff = sptr;
 					}
-					if (DasmARM64_IsEndFunc(sptr))
+					if (DasmARM64_IsEndFunc(sptr, (UOSInt)(sess->sbuff - sptr)))
 					{
 						sess->endType = Manage::DasmARM64::ET_EXIT;
 						sess->retAddr = *regPtrs;
@@ -2938,7 +2938,7 @@ Bool DasmARM64_EB(Manage::DasmARM64::DasmARM64_Sess *sess)
 		{
 			sess->sbuff = sptr;
 		}
-		if (DasmARM64_IsEndFunc(sptr))
+		if (DasmARM64_IsEndFunc(sptr, (UOSInt)(sess->sbuff - sptr)))
 		{
 			sess->endType = Manage::DasmARM64::ET_EXIT;
 			sess->retAddr = sess->regs.PC + addr + 4;

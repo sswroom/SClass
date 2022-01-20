@@ -106,7 +106,7 @@ VOID SvcInit( DWORD dwArgc, LPWSTR *lpszArgv)
 
 	UOSInt i;
 	IO::Path::GetProcessFileName(sbuff);
-	i = Text::StrLastIndexOf(sbuff, '\\');
+	i = Text::StrLastIndexOfChar(sbuff, '\\');
 	if (i != INVALID_INDEX)
 	{
 		sbuff[i] = 0;

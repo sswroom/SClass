@@ -1135,7 +1135,7 @@ Bool Manage::Process::IsAlreadyStarted()
 	IO::Path::GetProcessFileNameW(sbuff);
 	Manage::Process::ProcessInfo info;
 
-	i = Text::StrLastIndexOf(sbuff, IO::Path::PATH_SEPERATOR);
+	i = Text::StrLastIndexOfChar(sbuff, IO::Path::PATH_SEPERATOR);
 	if (i != INVALID_INDEX)
 	{
 		sess = Manage::Process::FindProcessW(&sbuff[i + 1]);

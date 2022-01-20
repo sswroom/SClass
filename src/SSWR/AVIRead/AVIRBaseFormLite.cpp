@@ -803,7 +803,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 			if (frm->ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
 				const UTF8Char *fname = frm->GetFileName();
-				UOSInt i = Text::StrIndexOf(fname, ':');
+				UOSInt i = Text::StrIndexOfChar(fname, ':');
 				if (i == INVALID_INDEX || i == 1)
 				{
 					if (IO::Path::GetPathType(fname) == IO::Path::PathType::Directory)

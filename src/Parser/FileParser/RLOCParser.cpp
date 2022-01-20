@@ -214,10 +214,10 @@ IO::ParsedObject *Parser::FileParser::RLOCParser::ParseFile(IO::IStreamData *fd,
 	{
 		return 0;
 	}
-	i = Text::StrIndexOf(u8buff, '_');
+	i = Text::StrIndexOfChar(u8buff, '_');
 	if (i == INVALID_INDEX)
 	{
-		i = Text::StrIndexOf(u8buff, '.');
+		i = Text::StrIndexOfChar(u8buff, '.');
 		if (i == INVALID_INDEX)
 			return 0;
 		u8buff[i] = 0;

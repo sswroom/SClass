@@ -65,7 +65,7 @@ void SSWR::MapReplay::MapReplayForm::UpdateList()
 		{
 			Map::IMapDrawLayer *layer = (Map::IMapDrawLayer*)item;
 			name = layer->GetName();
-			this->lbLayers->AddItem(&name[Text::StrLastIndexOf(name, '\\') + 1], layer);
+			this->lbLayers->AddItem(&name[Text::StrLastIndexOfChar(name, '\\') + 1], layer);
 		}
 		i++;
 	}

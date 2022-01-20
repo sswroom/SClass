@@ -45,9 +45,9 @@ Text::MIMEObj::UnknownMIMEObj::~UnknownMIMEObj()
 	this->contType->Release();
 }
 
-const UTF8Char *Text::MIMEObj::UnknownMIMEObj::GetClassName()
+Text::CString Text::MIMEObj::UnknownMIMEObj::GetClassName()
 {
-	return (const UTF8Char*)"UnknownMIMEObj";
+	return {UTF8STRC("UnknownMIMEObj")};
 }
 
 Text::CString Text::MIMEObj::UnknownMIMEObj::GetContentType()

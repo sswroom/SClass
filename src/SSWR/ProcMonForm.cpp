@@ -41,7 +41,7 @@ Bool SSWR::ProcMonForm::SearchProcId(SSWR::ProcMonForm::ProgInfo *prog)
 	UOSInt i;
 	Bool ret = false;
 	Manage::Process::ProcessInfo info;
-	i = Text::StrLastIndexOf(prog->progPath, IO::Path::PATH_SEPERATOR);
+	i = Text::StrLastIndexOfChar(prog->progPath, IO::Path::PATH_SEPERATOR);
 	Manage::Process::FindProcSess *sess = Manage::Process::FindProcess(&prog->progPath[i + 1]);
 	if (sess)
 	{

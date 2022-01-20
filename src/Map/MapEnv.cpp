@@ -537,7 +537,7 @@ UOSInt Map::MapEnv::AddLayer(Map::MapEnv::GroupItem *group, Map::IMapDrawLayer *
 		UTF8Char *sptr;
 		Map::MapLayerCollection *layerColl = (Map::MapLayerCollection*)layer;
 		layerColl->GetName()->ConcatTo(sbuff);
-		sptr = &sbuff[Text::StrLastIndexOf(sbuff, '\\') + 1];
+		sptr = &sbuff[Text::StrLastIndexOfChar(sbuff, '\\') + 1];
 		Map::MapEnv::GroupItem *grp = this->AddGroup(group, sptr);
 
 		Map::IMapDrawLayer *layer;

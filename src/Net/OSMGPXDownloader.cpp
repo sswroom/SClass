@@ -38,7 +38,7 @@ void Net::OSMGPXDownloader::ItemAdded(Net::RSSItem *item)
 	IO::Path::PathType pt;
 
 	item->link->ConcatTo(sbuff);
-	i = Text::StrLastIndexOf(sbuff, '/');
+	i = Text::StrLastIndexOfChar(sbuff, '/');
 	sptr = &sbuff[i + 1];
 	Text::StrConcat(gpxId, sptr);
 	sptr2 = Text::StrConcatC(sbuff2, UTF8STRC("http://www.openstreetmap.org/trace/"));

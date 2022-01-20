@@ -571,7 +571,7 @@ Bool Text::XMLNode::SearchEqual(UOSInt level, Data::ArrayList<UTF8Char*> *reqArr
 				if (SearchEval(level, reqArr, currPathArr, n, src + 1, dest, &rightSB) == false)
 					return false;
 
-				return Text::StrEquals(leftSB.ToString(), rightSB.ToString());
+				return Text::StrEqualsC(leftSB.ToString(), leftSB.GetLength(), rightSB.ToString(), rightSB.GetLength());
 			}
 			else if (*src == 0)
 			{

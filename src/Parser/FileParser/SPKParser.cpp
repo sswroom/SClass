@@ -150,7 +150,7 @@ IO::ParsedObject *Parser::FileParser::SPKParser::ParseFile(IO::IStreamData *fd, 
 				pf2 = pf;
 				while (true)
 				{
-					if ((k = Text::StrIndexOf(sptr, '/')) != INVALID_INDEX)
+					if ((k = Text::StrIndexOfChar(sptr, '/')) != INVALID_INDEX)
 					{
 						sptr[k] = 0;
 						*srcPtr2++ = IO::Path::PATH_SEPERATOR;
@@ -164,7 +164,7 @@ IO::ParsedObject *Parser::FileParser::SPKParser::ParseFile(IO::IStreamData *fd, 
 						pf2 = pf3;
 						sptr = &sptr[k + 1];
 					}
-					else if ((l = Text::StrIndexOf(sptr, '\\')) != INVALID_INDEX)
+					else if ((l = Text::StrIndexOfChar(sptr, '\\')) != INVALID_INDEX)
 					{
 						sptr[l] = 0;
 						*srcPtr2++ = IO::Path::PATH_SEPERATOR;
@@ -215,7 +215,7 @@ IO::ParsedObject *Parser::FileParser::SPKParser::ParseFile(IO::IStreamData *fd, 
 				pf2 = pf;
 				while (true)
 				{
-					if ((k = Text::StrIndexOf(sptr, '/')) != INVALID_INDEX)
+					if ((k = Text::StrIndexOfChar(sptr, '/')) != INVALID_INDEX)
 					{
 						sptr[k] = 0;
 						*srcPtr2++ = (UTF8Char)IO::Path::PATH_SEPERATOR;
@@ -229,7 +229,7 @@ IO::ParsedObject *Parser::FileParser::SPKParser::ParseFile(IO::IStreamData *fd, 
 						pf2 = pf3;
 						sptr = &sptr[k + 1];
 					}
-					else if ((l = Text::StrIndexOf(sptr, '\\')) != INVALID_INDEX)
+					else if ((l = Text::StrIndexOfChar(sptr, '\\')) != INVALID_INDEX)
 					{
 						sptr[l] = 0;
 						*srcPtr2++ = (UTF8Char)IO::Path::PATH_SEPERATOR;

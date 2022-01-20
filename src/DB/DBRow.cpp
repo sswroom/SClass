@@ -763,6 +763,7 @@ void DB::DBRow::ToString(Text::StringBuilderUTF *sb)
 					sb->AppendChar('\"', 1);
 					break;
 				case DT_BINARY:
+					k = 0;
 					buff = this->GetFieldBinary(field, &k);
 					strLen = DB::DBUtil::SDBBinLeng(buff, k, table->GetSvrType());
 					if (strLen < sizeof(sbuff) - 1)
@@ -821,7 +822,7 @@ void DB::DBRow::ToString(Text::StringBuilderUTF *sb)
 void DB::DBRow::AppendTableName(Text::StringBuilderUTF *sb)
 {
 	const UTF8Char *tableName = this->table->GetTableName();
-	UOSInt i = Text::StrIndexOf(tableName, '.');
+	UOSInt i = Text::StrIndexOfChar(tableName, '.');
 	if (i != INVALID_INDEX)
 	{
 		tableName = tableName + i + 1;

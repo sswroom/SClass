@@ -108,7 +108,7 @@ Bool SSWR::AVIRead::AVIRTimedFileCopyForm::CopyToZip(IO::ZIPBuilder *zip, const 
 			if (pt == IO::Path::PathType::File)
 			{
 				succ = false;
-				i = Text::StrIndexOf(pathEnd, '.');
+				i = Text::StrIndexOfChar(pathEnd, '.');
 				if (i != INVALID_INDEX && i >= 8)
 				{
 					pathEnd[i] = 0;

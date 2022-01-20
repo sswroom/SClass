@@ -207,7 +207,7 @@ IO::ParsedObject *Parser::FileParser::ZIPParser::ParseFile(IO::IStreamData *fd, 
 				sb.Append(fd->GetFullName());
 				while (true)
 				{
-					i = Text::StrIndexOf(sptr, '/');
+					i = Text::StrIndexOfChar(sptr, '/');
 					if (i != INVALID_INDEX)
 					{
 						sptr[i] = 0;
@@ -253,7 +253,7 @@ IO::ParsedObject *Parser::FileParser::ZIPParser::ParseFile(IO::IStreamData *fd, 
 				sb.Append(fd->GetFullName());
 				while (true)
 				{
-					i = Text::StrIndexOf(sptr, '/');
+					i = Text::StrIndexOfChar(sptr, '/');
 					if (i != INVALID_INDEX)
 					{
 						sptr[i] = 0;
@@ -353,8 +353,8 @@ IO::ParsedObject *Parser::FileParser::ZIPParser::ParseFile(IO::IStreamData *fd, 
 		ui = pf->GetCount();
 		while (ui-- > 0)
 		{
-			pf->GetItemName(sbuff, ui);
-			if (Text::StrEquals(sbuff, (const UTF8Char*)"doc.kml") && pf->GetItemType(ui) == IO::PackageFile::POT_STREAMDATA)
+			sptr = pf->GetItemName(sbuff, ui);
+			if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("doc.kml")) && pf->GetItemType(ui) == IO::PackageFile::POT_STREAMDATA)
 			{
 				IO::IStreamData *stmData = pf->GetItemStmData((UOSInt)0);
 				Parser::FileParser::XMLParser xmlParser;

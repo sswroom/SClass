@@ -35,7 +35,7 @@ namespace Text
 			MailMessage();
 			virtual ~MailMessage();
 
-			virtual const UTF8Char *GetClassName();
+			virtual Text::CString GetClassName();
 			virtual Text::CString GetContentType();
 			virtual UOSInt WriteStream(IO::Stream *stm);
 			virtual IMIMEObj *Clone();

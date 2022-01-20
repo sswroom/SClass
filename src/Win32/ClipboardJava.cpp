@@ -146,7 +146,7 @@ Win32::Clipboard::FilePasteType Win32::Clipboard::GetDataFiles(Data::ArrayList<c
 						Text::StringBuilderUTF8 sb;
 						while (true)
 						{
-							j = Text::StrIndexOf((const UTF8Char*)&rawdata[i], 10);
+							j = Text::StrIndexOfChar((const UTF8Char*)&rawdata[i], 10);
 							if (j != INVALID_INDEX)
 							{
 								sb.ClearStr();

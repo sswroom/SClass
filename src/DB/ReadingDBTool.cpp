@@ -861,7 +861,7 @@ DB::TableDef *DB::ReadingDBTool::GetTableDef(const UTF8Char *tableName)
 		DB::DBReader *r = 0;
 		UOSInt ind;
 		ptr = Text::StrConcatC(buff, UTF8STRC("exec sp_columns "));
-		ind = Text::StrIndexOf(tableName, '.');
+		ind = Text::StrIndexOfChar(tableName, '.');
 		if (ind != INVALID_INDEX)
 		{
 			ptr = this->DBStrUTF8(ptr, &tableName[ind + 1]);

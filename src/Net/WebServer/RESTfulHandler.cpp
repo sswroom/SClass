@@ -161,7 +161,7 @@ Bool Net::WebServer::RESTfulHandler::ProcessRequest(Net::WebServer::IWebRequest 
 
 	if (req->GetReqMethod() == Net::WebServer::IWebRequest::RequestMethod::HTTP_GET)
 	{
-		UOSInt i = Text::StrIndexOf(&subReq[1], '/');
+		UOSInt i = Text::StrIndexOfChar(&subReq[1], '/');
 		if (i != INVALID_INDEX)
 		{
 			DB::DBRow *row;
@@ -386,7 +386,7 @@ DB::PageRequest *Net::WebServer::RESTfulHandler::ParsePageReq(Net::WebServer::IW
 		while (true)
 		{
 			i = Text::StrSplitP(sarr, 2, sarr[1].v, sarr[1].len, Net::WebServer::IWebRequest::PARAM_SEPERATOR);
-			j = Text::StrIndexOf(sarr[0].v, ',');
+			j = Text::StrIndexOfChar(sarr[0].v, ',');
 			desc = false;
 			if (j != INVALID_INDEX)
 			{

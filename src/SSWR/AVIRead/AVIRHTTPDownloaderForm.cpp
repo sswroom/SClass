@@ -88,7 +88,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPDownloaderForm::ProcessThread(void *user
 			}
 			i = currURL->LastIndexOf('/');
 			Text::StrConcatC(sptr, &currURL->v[i + 1], currURL->leng - i - 1);
-			i = Text::StrIndexOf(sptr, '?');
+			i = Text::StrIndexOfChar(sptr, '?');
 			if (i == 0)
 			{
 				Text::StrConcatC(sptr, UTF8STRC("download.dat"));
@@ -360,7 +360,7 @@ SSWR::AVIRead::AVIRHTTPDownloaderForm::AVIRHTTPDownloaderForm(UI::GUIClientContr
 	UTF8Char sbuff[512];
 	UOSInt i;
 	IO::Path::GetProcessFileName(sbuff);
-	i = Text::StrLastIndexOf(sbuff, IO::Path::PATH_SEPERATOR);
+	i = Text::StrLastIndexOfChar(sbuff, IO::Path::PATH_SEPERATOR);
 	if (i != INVALID_INDEX)
 		sbuff[i] = 0;
 	this->txtDownloadDir->SetText(sbuff);

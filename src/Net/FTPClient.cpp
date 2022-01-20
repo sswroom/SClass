@@ -66,7 +66,7 @@ Net::FTPClient::FTPClient(const UTF8Char *url, Net::SocketFactory *sockf, Bool p
 			if (this->conn->IsLogged())
 			{
 				Text::StrConcat(sbuff, this->path);
-				UOSInt i = Text::StrLastIndexOf(sbuff, '/');
+				UOSInt i = Text::StrLastIndexOfChar(sbuff, '/');
 				Bool dirOk;
 				if (i == INVALID_INDEX || i == 0)
 				{

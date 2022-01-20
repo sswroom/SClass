@@ -9,7 +9,7 @@ IO::ParsedObject *IO::FileParser::ParseFilePath(const UTF8Char *filePath)
 {
 	IO::PackageFile *pkg = 0;
 	IO::StmData::FileData *fd;
-	UOSInt i = Text::StrLastIndexOf(filePath, IO::Path::PATH_SEPERATOR);
+	UOSInt i = Text::StrLastIndexOfChar(filePath, IO::Path::PATH_SEPERATOR);
 	if (i != INVALID_INDEX)
 	{
 		const UTF8Char *dir = Text::StrCopyNewC(filePath, i);

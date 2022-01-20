@@ -158,7 +158,7 @@ UOSInt Net::Email::SMTPServer::WriteMessage(Net::TCPClient *cli, Int32 statusCod
 	UOSInt j;
 	while (true)
 	{
-		j = Text::StrIndexOf(&msg[i], '\r');
+		j = Text::StrIndexOfChar(&msg[i], '\r');
 		if (j != INVALID_INDEX)
 		{
 			sb.AppendI32(statusCode);
@@ -194,7 +194,7 @@ UOSInt Net::Email::SMTPServer::WriteMessage(Net::TCPClient *cli, Int32 statusCod
 	UOSInt j;
 	while (true)
 	{
-		j = Text::StrIndexOf(&msg[i], '\r');
+		j = Text::StrIndexOfChar(&msg[i], '\r');
 		if (j != INVALID_INDEX)
 		{
 			sb.Append(statusCode);

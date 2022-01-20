@@ -50,7 +50,7 @@ IO::ParsedObject *Parser::FileParser::SZSParser::ParseFile(IO::IStreamData *fd, 
 	UInt64 fileLen = fd->GetDataSize();
 
 	fd->GetRealData(0, 16, hdr);
-	if (!Text::StrEquals((Char*)hdr, "SZS100__"))
+	if (!Text::StrStartsWithC(hdr, 16, UTF8STRC("SZS100__")))
 		return 0;
 	fileCnt = ReadInt32(&hdr[12]);
 	if (fileCnt <= 0)

@@ -427,7 +427,7 @@ Bool Data::DateTime::SetValue(const UTF8Char *dateStr, UOSInt dateStrLen)
 	Text::PString strs[3];
 	UOSInt nStrs;
 	Bool succ = true;
-	if (dateStr[3] == ',' && Text::StrIndexOf(&dateStr[4], ',') == INVALID_INDEX)
+	if (dateStr[3] == ',' && Text::StrIndexOfChar(&dateStr[4], ',') == INVALID_INDEX)
 	{
 		const UTF8Char *startPtr = dateStr;
 		dateStr += 4;
@@ -461,10 +461,10 @@ Bool Data::DateTime::SetValue(const UTF8Char *dateStr, UOSInt dateStrLen)
 			SetCurrTime();
 			dateSucc = false;
 		}
-		UOSInt i = Text::StrIndexOf(strs2[1].v, '-');
+		UOSInt i = Text::StrIndexOfChar(strs2[1].v, '-');
 		if (i == INVALID_INDEX)
 		{
-			i = Text::StrIndexOf(strs2[1].v, '+');
+			i = Text::StrIndexOfChar(strs2[1].v, '+');
 		}
 		if (i != INVALID_INDEX)
 		{
@@ -666,7 +666,7 @@ Bool Data::DateTime::SetValue(const UTF8Char *dateStr, UOSInt dateStrLen)
 				}
 				else
 				{
-					i = Text::StrIndexOf(strs2[j].v, '/');
+					i = Text::StrIndexOfChar(strs2[j].v, '/');
 					if (i != INVALID_INDEX && i > 0)
 					{
 						if (Text::StrSplitP(strs, 3, strs2[0].v, strs2[0].len, '/') == 3)

@@ -509,12 +509,12 @@ Bool Data::QueryConditions::StringInCondition::TestValid(Data::VariItem *item)
 
 Data::QueryConditions::StringContainsCondition::StringContainsCondition(const UTF8Char *fieldName, UOSInt nameLen, const UTF8Char *val) : FieldCondition(fieldName, nameLen)
 {
-	this->val = Text::StrCopyNew(val);
+	this->val = Text::String::NewNotNull(val);
 }
 
 Data::QueryConditions::StringContainsCondition::~StringContainsCondition()
 {
-	Text::StrDelNew(this->val);
+	this->val->Release();
 }
 
 Data::QueryConditions::ConditionType Data::QueryConditions::StringContainsCondition::GetType()
@@ -554,7 +554,7 @@ Bool Data::QueryConditions::StringContainsCondition::TestValid(Data::VariItem *i
 	switch (item->GetItemType())
 	{
 	case Data::VariItem::ItemType::Str:
-		return Text::StrIndexOf(item->GetItemValue().str->v, this->val) != INVALID_INDEX;
+		return item->GetItemValue().str->IndexOf(this->val->v, this->val->leng) != INVALID_INDEX;
 	case Data::VariItem::ItemType::F32:
 	case Data::VariItem::ItemType::F64:
 	case Data::VariItem::ItemType::I8:

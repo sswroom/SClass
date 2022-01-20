@@ -45,14 +45,15 @@ IO::ParsedObject *Parser::ObjParser::ITMParser::ParseObject(IO::ParsedObject *po
 	IO::PackageFile *pkg = (IO::PackageFile*)pobj;
 	IO::ParserType pt;
 	UTF8Char sbuff[512];
+	UTF8Char *sptr;
 	UOSInt i;
 	UOSInt j;
 	i = 0;
 	j = pkg->GetCount();
 	while (i < j)
 	{
-		pkg->GetItemName(sbuff, i);
-		if (Text::StrEquals(sbuff, (const UTF8Char*)"ituser.poi"))
+		sptr = pkg->GetItemName(sbuff, i);
+		if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("ituser.poi")))
 		{
 			if (pkg->GetItemType(i) == IO::PackageFile::POT_STREAMDATA)
 			{

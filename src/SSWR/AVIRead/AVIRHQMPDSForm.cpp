@@ -584,7 +584,7 @@ void SSWR::AVIRead::AVIRHQMPDSForm::EventMenuClicked(UInt16 cmdId)
 			if (dlg->ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
 				const UTF8Char *fname = dlg->GetFileName();
-				UOSInt i = Text::StrIndexOf(fname, ':');
+				UOSInt i = Text::StrIndexOfChar(fname, ':');
 				if (i == 1 || i == INVALID_INDEX)
 				{
 					this->OpenFile(dlg->GetFileName());

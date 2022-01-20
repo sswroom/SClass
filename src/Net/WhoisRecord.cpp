@@ -43,7 +43,7 @@ void Net::WhoisRecord::AddItem(const UTF8Char *item, UOSInt itemLen)
 			i = Text::StrIndexOfC(sptr, sb.GetLength(), UTF8STRC(" - "));
 			if (i == INVALID_INDEX)
 			{
-				i = Text::StrIndexOf(sptr, '/');
+				i = Text::StrIndexOfChar(sptr, '/');
 				if (i != INVALID_INDEX)
 				{
 					*(Int32*)ip = 0;

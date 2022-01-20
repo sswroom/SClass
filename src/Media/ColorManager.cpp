@@ -666,7 +666,7 @@ void Media::MonitorColorManager::SetOSProfile()
 			Text::StrConcat(sbuff2, dev.DeviceName);
 			if (EnumDisplayDevicesW(sbuff2, 0, &dev, 0) != 0)
 			{
-				j = Text::StrIndexOf(dev.DeviceID, '\\');
+				j = Text::StrIndexOfChar(dev.DeviceID, '\\');
 				if (Text::StrStartsWith(&dev.DeviceID[j + 1], wprofileName))
 				{
 					HDC hdc = CreateDCW(L"DISPLAY", sbuff2, 0, 0);

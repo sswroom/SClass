@@ -232,7 +232,7 @@ DB::DBUtil::ServerType DB::OLEDBConn::GetSvrType()
 		if (i != INVALID_INDEX)
 		{
 			Text::StringBuilderUTF8 sb;
-			UOSInt j = Text::StrIndexOf(&data->connStr[i + 9], ';');
+			UOSInt j = Text::StrIndexOfChar(&data->connStr[i + 9], ';');
 			if (j != INVALID_INDEX)
 			{
 				const WChar *wptr = Text::StrCopyNewC(&data->connStr[i + 9], (UOSInt)j);

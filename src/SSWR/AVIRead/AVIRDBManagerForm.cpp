@@ -537,7 +537,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::EventMenuClicked(UInt16 cmdId)
 			Data::Class *cls = this->CreateTableClass(sbuff);
 			if (cls)
 			{
-				UOSInt i = Text::StrLastIndexOf(sbuff, '.');
+				UOSInt i = Text::StrLastIndexOfChar(sbuff, '.');
 				DB::DBUtil::DB2FieldName(sbuff2, &sbuff[i + 1]);
 				sbuff2[0] = Text::CharUtil::ToUpper(sbuff2[0]);
 				Text::StringBuilderUTF8 sb;
@@ -553,7 +553,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::EventMenuClicked(UInt16 cmdId)
 			Data::Class *cls = this->CreateTableClass(sbuff);
 			if (cls)
 			{
-				UOSInt i = Text::StrLastIndexOf(sbuff, '.');
+				UOSInt i = Text::StrLastIndexOfChar(sbuff, '.');
 				DB::DBUtil::DB2FieldName(sbuff2, &sbuff[i + 1]);
 				sbuff2[0] = Text::CharUtil::ToUpper(sbuff2[0]);
 				Text::StringBuilderUTF8 sb;

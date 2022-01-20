@@ -84,6 +84,7 @@ void SSWR::OrganMgr::OrganWebHandler::LoadLangs()
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
+	UTF8Char *sptr2;
 	IO::Path::FindFileSession *sess;
 	UInt32 langId;
 	IO::Path::PathType pt;
@@ -97,13 +98,13 @@ void SSWR::OrganMgr::OrganWebHandler::LoadLangs()
 	sess = IO::Path::FindFile(sbuff);
 	if (sess)
 	{
-		while (IO::Path::FindNextFile(sptr, sess, 0, &pt, 0))
+		while ((sptr2 = IO::Path::FindNextFile(sptr, sess, 0, &pt, 0)) != 0)
 		{
 			if (pt == IO::Path::PathType::File)
 			{
 //				printf("Found file %s\r\n", sptr);
-				i = Text::StrCharCnt(sptr);
-				if (i > 4 && Text::StrEquals(&sptr[i - 4], (const UTF8Char*)".txt"))
+				i = (UOSInt)(sptr2 - sptr);
+				if (i > 4 && Text::StrEqualsC(&sptr[i - 4], 4, UTF8STRC(".txt")))
 				{
 					sptr[i - 4] = 0;
 					langId = Text::StrToUInt32(sptr);
@@ -1333,7 +1334,7 @@ Int32 SSWR::OrganMgr::OrganWebHandler::UserfileAdd(Int32 userId, Int32 spId, con
 	UOSInt j;
 	UOSInt i;
 	Int32 fileType = 0;
-	i = Text::StrLastIndexOf(fileName, '.');
+	i = Text::StrLastIndexOfChar(fileName, '.');
 	if (i == INVALID_INDEX)
 	{
 		return 0;
@@ -1507,7 +1508,7 @@ Int32 SSWR::OrganMgr::OrganWebHandler::UserfileAdd(Int32 userId, Int32 spId, con
 				sptr = Text::StrInt64(sptr, ticks);
 				sptr = Text::StrConcatC(sptr, UTF8STRC("_"));
 				sptr = Text::StrHexVal32(sptr, crcVal);
-				i = Text::StrLastIndexOf(fileName, '.');
+				i = Text::StrLastIndexOfChar(fileName, '.');
 				if (i != INVALID_INDEX)
 				{
 					sptr = Text::StrConcat(sptr, &fileName[i]);
@@ -1712,7 +1713,7 @@ Int32 SSWR::OrganMgr::OrganWebHandler::UserfileAdd(Int32 userId, Int32 spId, con
 				sptr = Text::StrInt64(sptr, ticks);
 				sptr = Text::StrConcatC(sptr, UTF8STRC("_"));
 				sptr = Text::StrHexVal32(sptr, crcVal);
-				i = Text::StrLastIndexOf(fileName, '.');
+				i = Text::StrLastIndexOfChar(fileName, '.');
 				if (i != INVALID_INDEX)
 				{
 					sptr = Text::StrConcat(sptr, &fileName[i]);
@@ -3489,7 +3490,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpecies(Net::WebServer::IWebR
 					sptr2 = Text::StrConcatC(sptr, UTF8STRC("web"));
 					*sptr2++ = IO::Path::PATH_SEPERATOR;
 					sptr2 = Text::StrConcatC(sptr2, sarr[0].v, sarr[0].len);
-					i = Text::StrLastIndexOf(sptr, '.');
+					i = Text::StrLastIndexOfChar(sptr, '.');
 					if (i != INVALID_INDEX)
 					{
 						sptr[i] = 0;
@@ -4555,7 +4556,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 								u8ptr2 = Text::StrConcatC(u8buff2, UTF8STRC("web"));
 								*u8ptr2++ = IO::Path::PATH_SEPERATOR;
 								Text::StrConcatC(u8ptr2, sarr[0].v, sarr[0].len);
-								i = Text::StrLastIndexOf(u8buff2, '.');
+								i = Text::StrLastIndexOfChar(u8buff2, '.');
 								if (i != INVALID_INDEX)
 									u8buff2[i] = 0;
 								break;
@@ -4915,7 +4916,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 								u8ptr2 = Text::StrConcatC(u8buff2, UTF8STRC("web"));
 								*u8ptr2++ = IO::Path::PATH_SEPERATOR;
 								Text::StrConcatC(u8ptr2, sarr[0].v, sarr[0].len);
-								i = Text::StrLastIndexOf(u8buff2, '.');
+								i = Text::StrLastIndexOfChar(u8buff2, '.');
 								if (i != INVALID_INDEX)
 									u8buff2[i] = 0;
 								break;
@@ -5106,7 +5107,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 						u8ptr2 = Text::StrConcatC(u8buff, UTF8STRC("web"));
 						*u8ptr2++ = IO::Path::PATH_SEPERATOR;
 						Text::StrConcat(u8ptr2, u8buff2);
-						i = Text::StrLastIndexOf(u8buff, '.');
+						i = Text::StrLastIndexOfChar(u8buff, '.');
 						if (i != INVALID_INDEX)
 							u8buff[i] = 0;
 						Text::TextBinEnc::URIEncoding::URIEncode(u8buff2, u8buff);
@@ -5279,7 +5280,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 								u8ptr2 = Text::StrConcatC(u8buff2, UTF8STRC("web"));
 								*u8ptr2++ = IO::Path::PATH_SEPERATOR;
 								Text::StrConcatC(u8ptr2, sarr[0].v, sarr[0].len);
-								i = Text::StrLastIndexOf(u8buff2, '.');
+								i = Text::StrLastIndexOfChar(u8buff2, '.');
 								if (i != INVALID_INDEX)
 									u8buff2[i] = 0;
 								break;

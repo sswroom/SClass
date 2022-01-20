@@ -54,7 +54,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		if (Text::StrStartsWith(url, (const UTF8Char*)"http://") && fileBuff && fileSize > 0)
 		{
 			Text::CString mime = {0, 0};
-			i = Text::StrLastIndexOf(file, '.');
+			i = Text::StrLastIndexOfChar(file, '.');
 			if (i != INVALID_INDEX)
 			{
 				mime = Net::MIME::GetMIMEFromExt(&file[i + 1]);
@@ -127,7 +127,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 					{
 						sb.TrimToLength(sb.GetLength() - 1);
 					}
-					j = Text::StrLastIndexOf(sb.ToString(), '/');
+					j = Text::StrLastIndexOfChar(sb.ToString(), '/');
 					if (j != INVALID_INDEX && j >= 8)
 					{
 						fileName = Text::String::New(sb.ToString() + j + 1, sb.GetLength() - j - 1);

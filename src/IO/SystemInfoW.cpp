@@ -191,6 +191,7 @@ UOSInt IO::SystemInfo::GetRAMInfo(Data::ArrayList<RAMInfo*> *ramList)
 	Win32::WMIQuery *db;
 	RAMInfo *ram;
 	UTF8Char sbuff[128];
+	UTF8Char *sptr;
 	DB::DBReader *r;
 	Win32::SMBIOS *smbios = Win32::SMBIOSUtil::GetSMBIOS();
 	if (smbios)
@@ -283,33 +284,33 @@ UOSInt IO::SystemInfo::GetRAMInfo(Data::ArrayList<RAMInfo*> *ramList)
 		i = r->ColCount();
 		while (i-- > 0)
 		{
-			if (r->GetName(i, sbuff))
+			if ((sptr = r->GetName(i, sbuff)) != 0)
 			{
-				if (Text::StrEquals(sbuff, (const UTF8Char*)"DeviceLocator"))
+				if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("DeviceLocator")))
 				{
 					devLocCol = i;
 				}
-				else if (Text::StrEquals(sbuff, (const UTF8Char*)"Manufacturer"))
+				else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("Manufacturer")))
 				{
 					manuCol = i;
 				}
-				else if (Text::StrEquals(sbuff, (const UTF8Char*)"PartNumber"))
+				else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("PartNumber")))
 				{
 					partNoCol = i;
 				}
-				else if (Text::StrEquals(sbuff, (const UTF8Char*)"SerialNumber"))
+				else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("SerialNumber")))
 				{
 					snCol = i;
 				}
-				else if (Text::StrEquals(sbuff, (const UTF8Char*)"Speed"))
+				else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("Speed")))
 				{
 					spdCol = i;
 				}
-				else if (Text::StrEquals(sbuff, (const UTF8Char*)"DataWidth"))
+				else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("DataWidth")))
 				{
 					dataWCol = i;
 				}
-				else if (Text::StrEquals(sbuff, (const UTF8Char*)"TotalWidth"))
+				else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("TotalWidth")))
 				{
 					totalWCol = i;
 				}

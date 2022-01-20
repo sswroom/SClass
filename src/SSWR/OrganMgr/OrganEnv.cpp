@@ -328,7 +328,7 @@ Bool SSWR::OrganMgr::OrganEnv::SetSpeciesImg(OrganSpecies *sp, OrganImageItem *i
 	else
 	{
 		img->GetDispName()->ConcatTo(sbuff);
-		i = Text::StrLastIndexOf(sbuff, '.');
+		i = Text::StrLastIndexOfChar(sbuff, '.');
 		if (i != INVALID_INDEX)
 		{
 			sbuff[i] = 0;

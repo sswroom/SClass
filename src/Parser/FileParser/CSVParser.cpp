@@ -224,7 +224,7 @@ IO::ParsedObject *Parser::FileParser::CSVParser::ParseFile(IO::IStreamData *fd, 
 				}
 				if (altCol != INVALID_INDEX)
 				{
-					i = Text::StrIndexOf(tmpArr2[altCol].v, ' ');
+					i = Text::StrIndexOfChar(tmpArr2[altCol].v, ' ');
 					if (i != INVALID_INDEX)
 					{
 						tmpArr2[altCol].v[i] = 0;
@@ -237,7 +237,7 @@ IO::ParsedObject *Parser::FileParser::CSVParser::ParseFile(IO::IStreamData *fd, 
 				}
 				if (speedCol != INVALID_INDEX)
 				{
-					i = Text::StrIndexOf(tmpArr2[speedCol].v, ' ');
+					i = Text::StrIndexOfChar(tmpArr2[speedCol].v, ' ');
 					if (i != INVALID_INDEX)
 					{
 						tmpArr2[speedCol].v[i] = 0;
@@ -258,7 +258,7 @@ IO::ParsedObject *Parser::FileParser::CSVParser::ParseFile(IO::IStreamData *fd, 
 				}
 				if (nSateCol != INVALID_INDEX)
 				{
-					i = Text::StrIndexOf(tmpArr2[nSateCol].v, '/');
+					i = Text::StrIndexOfChar(tmpArr2[nSateCol].v, '/');
 					if (i != INVALID_INDEX)
 					{
 						tmpArr2[nSateCol].v[i] = 0;

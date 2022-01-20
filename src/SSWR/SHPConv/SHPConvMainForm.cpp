@@ -1177,7 +1177,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::LoadShape(const UTF8Char *fileName, Bool u
 		DB::DBFFile *dbf;
 		UOSInt i;
 		Text::StrConcat(sbuff, fileName);
-		i = Text::StrLastIndexOf(sbuff, '.');
+		i = Text::StrLastIndexOfChar(sbuff, '.');
 		Text::StrConcatC(&sbuff[i + 1], UTF8STRC("dbf"));
 
 		NEW_CLASS(fd, IO::StmData::FileData(sbuff, false));

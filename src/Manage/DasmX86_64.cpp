@@ -14,21 +14,21 @@
 
 static const UTF8Char *DasmX86_64_Segms[] = {(const UTF8Char*)"cs:", (const UTF8Char*)"ds:", (const UTF8Char*)"es:", (const UTF8Char*)"fs:", (const UTF8Char*)"gs:", (const UTF8Char*)"ss:"};
 
-Bool DasmX86_64_IsEndFunc(const UTF8Char *funcName)
+Bool DasmX86_64_IsEndFunc(const UTF8Char *funcName, UOSInt nameLen)
 {
-	if (Text::StrEndsWith(funcName, (const UTF8Char*)"ExitThread"))
+	if (Text::StrEndsWithC(funcName, nameLen, UTF8STRC("ExitThread")))
 	{
 		return true;
 	}
-	else if (Text::StrEndsWith(funcName, (const UTF8Char*)"ExitProcess"))
+	else if (Text::StrEndsWithC(funcName, nameLen, UTF8STRC("ExitProcess")))
 	{
 		return true;
 	}
-	else if (Text::StrEndsWith(funcName, (const UTF8Char*)"RtlExitUserThread"))
+	else if (Text::StrEndsWithC(funcName, nameLen, UTF8STRC("RtlExitUserThread")))
 	{
 		return true;
 	}
-	else if (Text::StrIndexOf(funcName, (const UTF8Char*)"(exit+0)") != INVALID_INDEX)
+	else if (Text::StrIndexOfC(funcName, nameLen, UTF8STRC("(exit+0)")) != INVALID_INDEX)
 	{
 		return true;
 	}
@@ -6843,7 +6843,7 @@ Bool __stdcall DasmX86_64_e8(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 		{
 			sess->sbuff = sptr;
 		}
-		if (DasmX86_64_IsEndFunc(sptr))
+		if (DasmX86_64_IsEndFunc(sptr, (UOSInt)(sess->sbuff - sptr)))
 		{
 			sess->endType = Manage::DasmX86_64::ET_EXIT;
 			sess->retAddr = sess->regs.rip;
@@ -7327,7 +7327,7 @@ Bool __stdcall DasmX86_64_ff(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 			{
 				sess->sbuff = sptr;
 			}
-			if (DasmX86_64_IsEndFunc(sptr))
+			if (DasmX86_64_IsEndFunc(sptr, (UOSInt)(sess->sbuff - sptr)))
 			{
 				sess->endType = Manage::DasmX86_64::ET_EXIT;
 				sess->retAddr = sess->regs.rip;

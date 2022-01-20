@@ -32,14 +32,14 @@ UTF8Char *Text::URLString::GetURLDomain(UTF8Char *sbuff, const UTF8Char *url, UI
 	{
 		url = &url[i + 3];
 	}
-	k = Text::StrIndexOf(url, '@');
-	i = Text::StrIndexOf(url, '/');
+	k = Text::StrIndexOfChar(url, '@');
+	i = Text::StrIndexOfChar(url, '/');
 	if (k != INVALID_INDEX && i != INVALID_INDEX && k < i)
 	{
 		url = &url[k + 1];
 		i -= k + 1;
 	}
-	j = Text::StrIndexOf(url, ':');
+	j = Text::StrIndexOfChar(url, ':');
 	if (i != INVALID_INDEX && j != INVALID_INDEX && j < i)
 	{
 		if (port)
@@ -93,7 +93,7 @@ UTF8Char *Text::URLString::GetURLDomain(UTF8Char *sbuff, const UTF8Char *url, UI
 
 UTF8Char *Text::URLString::GetURIScheme(UTF8Char *sbuff, const UTF8Char *url)
 {
-	UOSInt i = Text::StrIndexOf(url, ':');
+	UOSInt i = Text::StrIndexOfChar(url, ':');
 	if (i == INVALID_INDEX)
 	{
 		return 0;
@@ -111,7 +111,7 @@ UTF8Char *Text::URLString::GetURLHost(UTF8Char *sbuff, const UTF8Char *url)
 	{
 		url = &url[i + 3];
 	}
-	i = Text::StrIndexOf(url, '/');
+	i = Text::StrIndexOfChar(url, '/');
 	if (i != INVALID_INDEX)
 	{
 		MemCopyNO(sbuff, url, sizeof(UTF8Char) * i);
@@ -134,18 +134,18 @@ UTF8Char *Text::URLString::GetURLPath(UTF8Char *sbuff, const UTF8Char *url)
 	{
 		url = &url[i + 3];
 	}
-	i = Text::StrIndexOf(url, '/');
+	i = Text::StrIndexOfChar(url, '/');
 	if (i != INVALID_INDEX)
 	{
 		tmpBuff = MemAlloc(UTF8Char, urlLen + 1);
 		UTF8Char *sptr = Text::TextBinEnc::URIEncoding::URIDecode(tmpBuff, &url[i]);
-		i = Text::StrIndexOf(tmpBuff, '?');
+		i = Text::StrIndexOfChar(tmpBuff, '?');
 		if (i != INVALID_INDEX)
 		{
 			sptr = &tmpBuff[i];
 			*sptr = 0;
 		}
-		i = Text::StrIndexOf(tmpBuff, '#');
+		i = Text::StrIndexOfChar(tmpBuff, '#');
 		if (i != INVALID_INDEX)
 		{
 			sptr = &tmpBuff[i];
@@ -170,12 +170,12 @@ UTF8Char *Text::URLString::GetURLPathSvr(UTF8Char *sbuff, const UTF8Char *url, U
 	{
 		url = &url[i + 3];
 	}
-	i = Text::StrIndexOf(url, '/');
+	i = Text::StrIndexOfChar(url, '/');
 	if (i != INVALID_INDEX)
 	{
 		tmpBuff = MemAlloc(UTF8Char, urlLen + 1);
 		UTF8Char *sptr = Text::TextBinEnc::URIEncoding::URIDecode(tmpBuff, &url[i]);
-		i = Text::StrIndexOf(tmpBuff, '?');
+		i = Text::StrIndexOfChar(tmpBuff, '?');
 		if (i != INVALID_INDEX)
 		{
 			sptr = &tmpBuff[i];
@@ -218,7 +218,7 @@ UTF8Char *Text::URLString::AppendURLPath(UTF8Char *sbuff, const UTF8Char *path)
 	sbuff = &sbuff[3];
 	if (path[0] == '/')
 	{
-		i = Text::StrIndexOf(sbuff, (const UTF8Char*)"/");
+		i = Text::StrIndexOfChar(sbuff, '/');
 		if (i == INVALID_INDEX)
 		{
 			return Text::StrConcat(&sbuff[Text::StrCharCnt(sbuff)], path);
@@ -232,14 +232,14 @@ UTF8Char *Text::URLString::AppendURLPath(UTF8Char *sbuff, const UTF8Char *path)
 	{
 		while (path[0] == '.' && path[1] == '.' && path[2] == '/')
 		{
-			i = Text::StrLastIndexOf(sbuff, '/');
+			i = Text::StrLastIndexOfChar(sbuff, '/');
 			if (i != INVALID_INDEX)
 			{
 				sbuff[i] = 0;
 			}
 			path = &path[3];
 		}
-		i = Text::StrLastIndexOf(sbuff, '/');
+		i = Text::StrLastIndexOfChar(sbuff, '/');
 		if (i == INVALID_INDEX)
 		{
 			return Text::StrConcat(&sbuff[Text::StrCharCnt(sbuff)], path);

@@ -91,7 +91,7 @@ IO::ParsedObject *Parser::FileParser::TARParser::ParseFile(IO::IStreamData *fd, 
 				sb.Append(fd->GetFullName());
 				while (true)
 				{
-					i = Text::StrIndexOf(sptr, '/');
+					i = Text::StrIndexOfChar(sptr, '/');
 					if (i != INVALID_INDEX)
 					{
 						sptr[i] = 0;
@@ -133,7 +133,7 @@ IO::ParsedObject *Parser::FileParser::TARParser::ParseFile(IO::IStreamData *fd, 
 		sb.Append(fd->GetFullName());
 		while (true)
 		{
-			i = Text::StrIndexOf(sptr, '/');
+			i = Text::StrIndexOfChar(sptr, '/');
 			if (i != INVALID_INDEX)
 			{
 				sptr[i] = 0;

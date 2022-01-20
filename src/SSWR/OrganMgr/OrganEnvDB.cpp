@@ -747,7 +747,7 @@ UOSInt SSWR::OrganMgr::OrganEnvDB::GetSpeciesImages(Data::ArrayList<OrganImageIt
 					isCoverPhoto = false;
 				}
 
-				i = Text::StrLastIndexOf(sptr, '.');
+				i = Text::StrLastIndexOfChar(sptr, '.');
 				if (i == INVALID_INDEX)
 				{
 
@@ -1424,8 +1424,8 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 	UOSInt i;
 	UOSInt j;
 	Int32 fileType = 0;
-	i = Text::StrLastIndexOf(fileName, IO::Path::PATH_SEPERATOR);
-	j = Text::StrLastIndexOf(&fileName[i + 1], '.');
+	i = Text::StrLastIndexOfChar(fileName, IO::Path::PATH_SEPERATOR);
+	j = Text::StrLastIndexOfChar(&fileName[i + 1], '.');
 	if (j == INVALID_INDEX)
 	{
 		return FS_NOTSUPPORT;
@@ -1623,7 +1623,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 				sptr = Text::StrInt64(sptr, ticks);
 				sptr = Text::StrConcatC(sptr, UTF8STRC("_"));
 				sptr = Text::StrHexVal32(sptr, crcVal);
-				j = Text::StrLastIndexOf(&fileName[i + 1], '.');
+				j = Text::StrLastIndexOfChar(&fileName[i + 1], '.');
 				sptr = Text::StrConcat(sptr, &fileName[i + j + 1]);
 				Bool succ;
 				if (moveFile)
@@ -1848,7 +1848,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 				sptr = Text::StrInt64(sptr, ticks);
 				sptr = Text::StrConcatC(sptr, UTF8STRC("_"));
 				sptr = Text::StrHexVal32(sptr, crcVal);
-				j = Text::StrLastIndexOf(&fileName[i + 1], '.');
+				j = Text::StrLastIndexOfChar(&fileName[i + 1], '.');
 				sptr = Text::StrConcat(sptr, &fileName[i + j + 1]);
 				Bool succ;
 				if (moveFile)
@@ -2193,7 +2193,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesWeb
 	crc.GetValue(crcBuff);
 	crcVal = ReadMUInt32(crcBuff);
 	
-	i = Text::StrLastIndexOf(imgURL->v, '.');
+	i = Text::StrLastIndexOfChar(imgURL->v, '.');
 	if ((imgURL->leng - i - 1) > 4)
 	{
 		Text::StrConcatC(Text::StrHexVal32(fileName, crcVal), UTF8STRC(".jpg"));
@@ -2240,7 +2240,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesWeb
 
 	if (firstPhoto)
 	{
-		i = Text::StrLastIndexOf(fileName, '.');
+		i = Text::StrLastIndexOfChar(fileName, '.');
 		fileName[i] = 0;
 		sptr = Text::StrConcatC(sbuff, UTF8STRC("web"));
 		*sptr++ = IO::Path::PATH_SEPERATOR;
@@ -2289,13 +2289,15 @@ Bool SSWR::OrganMgr::OrganEnvDB::UpdateSpeciesWebFileOld(OrganSpecies *sp, const
 	sptr = Text::StrConcatC(sptr, UTF8STRC("web"));
 	Text::StrConcatC(sptr, UTF8STRC(".txt"));
 
+	UOSInt webFileNameLen = Text::StrCharCnt(webFileName);
+	UOSInt srcURLLen = Text::StrCharCnt(srcURL);
 	IO::MemoryStream *mstm;
 	IO::FileStream *fs;
 	Text::UTF8Writer *writer;
-	IO::StreamReader *reader;
+	Text::UTF8Reader *reader;
 	Text::StringBuilderUTF8 sb;
 	Text::StringBuilderUTF8 sb2;
-	UTF8Char *sarr[3];
+	Text::PString sarr[3];
 
 	if (Text::StrStartsWith(webFileName, (const UTF8Char*)"web") && webFileName[3] == IO::Path::PATH_SEPERATOR)
 	{
@@ -2308,23 +2310,23 @@ Bool SSWR::OrganMgr::OrganEnvDB::UpdateSpeciesWebFileOld(OrganSpecies *sp, const
 	writer->WriteSignature();
 
 	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	NEW_CLASS(reader, IO::StreamReader(fs, 65001));
+	NEW_CLASS(reader, Text::UTF8Reader(fs));
 	sb.ClearStr();
 	while (reader->ReadLine(&sb, 4095))
 	{
 		sb2.ClearStr();
 		sb2.AppendC(sb.ToString(), sb.GetLength());
-		if (Text::StrSplit(sarr, 3, sb.ToString(), '\t') == 3)
+		if (Text::StrSplitP(sarr, 3, sb.ToString(), sb.GetLength(), '\t') == 3)
 		{
-			if (Text::StrEquals(sarr[0], webFileName))
+			if (Text::StrEqualsC(sarr[0].v, sarr[0].len, webFileName, webFileNameLen))
 			{
 				found = true;
 				sb2.ClearStr();
-				sb2.Append(sarr[0]);
+				sb2.AppendC(sarr[0].v, sarr[0].len);
 				sb2.AppendC(UTF8STRC("\t"));
-				sb2.Append(sarr[1]);
+				sb2.AppendC(sarr[1].v, sarr[1].len);
 				sb2.AppendC(UTF8STRC("\t"));
-				sb2.Append(srcURL);
+				sb2.AppendC(srcURL, srcURLLen);
 			}
 		}
 		writer->WriteLineC(sb2.ToString(), sb2.GetLength());
@@ -2717,7 +2719,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::MoveImages(Data::ArrayList<OrganImages*> *imgLi
 			{
 				srcDir = img->GetSrcImgDir();
 				name = img->GetImgItem()->GetDispName()->v;
-				name = &name[Text::StrLastIndexOf(name, IO::Path::PATH_SEPERATOR) + 1];
+				name = &name[Text::StrLastIndexOfChar(name, IO::Path::PATH_SEPERATOR) + 1];
 				sb.ClearStr();
 				sb.Append(name);
 				sb.AppendC(UTF8STRC("\t"));
@@ -3096,7 +3098,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::AddDataFile(const UTF8Char *fileName)
 	UOSInt k;
 	UOSInt l;
 
-	i = Text::StrLastIndexOf(fileName, IO::Path::PATH_SEPERATOR);
+	i = Text::StrLastIndexOfChar(fileName, IO::Path::PATH_SEPERATOR);
 	oriFileName = &fileName[i + 1];
 
 
@@ -3192,7 +3194,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::AddDataFile(const UTF8Char *fileName)
 		sptr = Text::StrInt32(sptr, this->userId);
 		sptr = Text::StrConcatC(sptr, UTF8STRC("_"));
 		sptr = Text::StrInt64(sptr, startDT.ToTicks());
-		i = Text::StrLastIndexOf(fileName, '.');
+		i = Text::StrLastIndexOfChar(fileName, '.');
 		if (i != INVALID_INDEX)
 		{
 			Text::StrConcat(sptr, &fileName[i]);
@@ -4029,7 +4031,7 @@ Media::ImageList *SSWR::OrganMgr::OrganEnvDB::ParseSpImage(OrganSpecies *sp)
 		{
 			if (pt == IO::Path::PathType::File)
 			{
-				i = Text::StrLastIndexOf(sptr, '.');
+				i = Text::StrLastIndexOfChar(sptr, '.');
 				if (i == INVALID_INDEX)
 				{
 
@@ -4219,9 +4221,12 @@ Media::ImageList *SSWR::OrganMgr::OrganEnvDB::ParseWebImage(WebFileInfo *wfile)
 SSWR::OrganMgr::OrganGroup *SSWR::OrganMgr::OrganEnvDB::SearchObject(const UTF8Char *searchStr, UTF8Char *resultStr, UOSInt resultStrBuffSize, Int32 *parentId)
 {
 	OrganGroup *foundGroup = 0;
+	UOSInt searchStrLen = Text::StrCharCnt(searchStr);
 	Bool found = false;
 	UTF8Char sbuff[256];
+	UTF8Char *sptr;
 	UTF8Char sbuff2[256];
+	UTF8Char *sptr2;
 	Int32 photoGroup;
 	Int32 photoSpecies;
 	DB::DBReader *r;
@@ -4271,11 +4276,11 @@ SSWR::OrganMgr::OrganGroup *SSWR::OrganMgr::OrganEnvDB::SearchObject(const UTF8C
 	else
 	{
 		sql.AppendCmdC(UTF8STRC("select id, group_type, eng_name, chi_name, description, parent_id, photo_group, photo_species, idKey, flags from groups where eng_name like "));
-		Text::StrConcatC(Text::StrConcat(Text::StrConcatC(sbuff, UTF8STRC("%")), searchStr), UTF8STRC("%"));
+		Text::StrConcatC(Text::StrConcatC(Text::StrConcatC(sbuff, UTF8STRC("%")), searchStr, searchStrLen), UTF8STRC("%"));
 		sql.AppendStrUTF8(sbuff);
 		sql.AppendCmdC(UTF8STRC(" or chi_name like "));
 		sql.AppendStrUTF8(sbuff);
-		Text::StrConcat(resultStr, searchStr);
+		Text::StrConcatC(resultStr, searchStr, searchStrLen);
 	}
 	r = this->db->ExecuteReaderC(sql.ToString(), sql.GetLength());
 	if (r)
@@ -4293,8 +4298,8 @@ SSWR::OrganMgr::OrganGroup *SSWR::OrganMgr::OrganEnvDB::SearchObject(const UTF8C
 			if (!r->IsNull(7))
 				photoSpecies = r->GetInt32(7);
 
-			r->GetStr(2, sbuff, sizeof(sbuff));//engName
-			r->GetStr(3, sbuff2, sizeof(sbuff2));//chiName
+			sptr = r->GetStr(2, sbuff, sizeof(sbuff));//engName
+			sptr2 = r->GetStr(3, sbuff2, sizeof(sbuff2));//chiName
 			NEW_CLASS(foundGroup, OrganGroup());
 			foundGroup->SetGroupId(r->GetInt32(0));
 			foundGroup->SetCName(sbuff2);
@@ -4313,16 +4318,16 @@ SSWR::OrganMgr::OrganGroup *SSWR::OrganMgr::OrganEnvDB::SearchObject(const UTF8C
 
 			*parentId = r->GetInt32(5);
 
-			if (Text::StrEquals(sbuff, searchStr) || Text::StrEquals(sbuff2, searchStr))
+			if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), searchStr, searchStrLen) || Text::StrEqualsC(sbuff2, (UOSInt)(sptr2 - sbuff2), searchStr, searchStrLen))
 			{
 			}
 			else
 			{
 				while (r->ReadNext())
 				{
-					r->GetStr(2, sbuff, sizeof(sbuff));//engName
-					r->GetStr(3, sbuff2, sizeof(sbuff2));//chiName
-					if (Text::StrEquals(sbuff, searchStr) || Text::StrEquals(sbuff2, searchStr))
+					sptr = r->GetStr(2, sbuff, sizeof(sbuff));//engName
+					sptr2 = r->GetStr(3, sbuff2, sizeof(sbuff2));//chiName
+					if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), searchStr, searchStrLen) || Text::StrEqualsC(sbuff2, (UOSInt)(sptr2 - sbuff2), searchStr, searchStrLen))
 					{
 						photoGroup = -1;
 						if (!r->IsNull(6))
@@ -4932,7 +4937,7 @@ void SSWR::OrganMgr::OrganEnvDB::UpgradeFileStruct(OrganSpecies *sp)
 					isCoverPhoto = false;
 				}
 
-				i = Text::StrLastIndexOf(sptr, '.');
+				i = Text::StrLastIndexOfChar(sptr, '.');
 				if (i == INVALID_INDEX)
 				{
 

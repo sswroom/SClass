@@ -1038,7 +1038,7 @@ DB::DBReader *DB::ODBCConn::GetTableData(const UTF8Char *name, Data::ArrayList<T
 	i = 0;
 	while (true)
 	{
-		j = Text::StrIndexOf(&name[i], '.');
+		j = Text::StrIndexOfChar(&name[i], '.');
 		if (j == INVALID_INDEX)
 		{
 			DB::DBUtil::SDBColUTF8(sbuff, &name[i], this->svrType);

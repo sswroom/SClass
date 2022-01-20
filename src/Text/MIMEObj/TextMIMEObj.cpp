@@ -46,9 +46,9 @@ Text::MIMEObj::TextMIMEObj::~TextMIMEObj()
 	this->contType->Release();
 }
 
-const UTF8Char *Text::MIMEObj::TextMIMEObj::GetClassName()
+Text::CString Text::MIMEObj::TextMIMEObj::GetClassName()
 {
-	return (const UTF8Char*)"TextMIMEObj";
+	return {UTF8STRC("TextMIMEObj")};
 }
 
 Text::CString Text::MIMEObj::TextMIMEObj::GetContentType()

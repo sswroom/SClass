@@ -120,7 +120,7 @@ public:
 		Sync::MutexUsage mutUsage(this->mut);
 		SDEL_STRING(this->name);
 		this->name = Text::String::NewNotNull(name);
-		i = Text::StrLastIndexOf(this->name->v, IO::Path::PATH_SEPERATOR);
+		i = Text::StrLastIndexOfChar(this->name->v, IO::Path::PATH_SEPERATOR);
 		this->fileName = &this->name->v[i + 1];
 		this->lastCount = 0;
 	}
@@ -215,8 +215,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	showHelp = true;
 	if (cmdCnt == 2)
 	{
-		UOSInt i = Text::StrIndexOf(cmdLines[1], '*');
-		UOSInt j = Text::StrIndexOf(cmdLines[1], '?');
+		UOSInt i = Text::StrIndexOfChar(cmdLines[1], '*');
+		UOSInt j = Text::StrIndexOfChar(cmdLines[1], '?');
 		if (i == INVALID_INDEX && j == INVALID_INDEX)
 		{
 			IO::Path::PathType pt = IO::Path::GetPathType(cmdLines[1]);
@@ -235,11 +235,11 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			Text::StringBuilderUTF8 sb;
 			IO::Path::PathType pt;
 			Text::StrConcat(sbuff, cmdLines[1]);
-			i = Text::StrLastIndexOf(sbuff, IO::Path::PATH_SEPERATOR);
+			i = Text::StrLastIndexOfChar(sbuff, IO::Path::PATH_SEPERATOR);
 			sess = IO::Path::FindFile(sbuff);
 			if (sess)
 			{
-				while (sptr = IO::Path::FindNextFile(&sbuff[i + 1], sess, 0, &pt, 0))
+				while ((sptr = IO::Path::FindNextFile(&sbuff[i + 1], sess, 0, &pt, 0)) != 0)
 				{
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("Checking "));

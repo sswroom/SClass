@@ -82,9 +82,9 @@ Text::VSProject::VSProject(const UTF8Char *name, VisualStudioVersion ver) : Text
 {
 	UTF8Char sbuff[512];
 	UOSInt i;
-	i = Text::StrLastIndexOf(name, IO::Path::PATH_SEPERATOR);
+	i = Text::StrLastIndexOfChar(name, IO::Path::PATH_SEPERATOR);
 	Text::StrConcat(sbuff, &name[i + 1]);
-	i = Text::StrLastIndexOf(sbuff, '.');
+	i = Text::StrLastIndexOfChar(sbuff, '.');
 	if (i != INVALID_INDEX)
 	{
 		sbuff[i] = 0;

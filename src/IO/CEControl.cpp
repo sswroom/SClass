@@ -165,7 +165,7 @@ Bool IO::CEControl::CreateDirectory(const WChar *ceDir)
 	if (IsDirectoryExist(ceDir))
 		return true;
 	Text::StrConcat(sbuff, ceDir);
-	UOSInt i = Text::StrLastIndexOf(sbuff, '\\');
+	UOSInt i = Text::StrLastIndexOfChar(sbuff, '\\');
 	if (i == INVALID_INDEX)
 		return CeCreateDirectory(sbuff, 0) != 0;
 	if (sbuff[i - 1] != ':')

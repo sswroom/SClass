@@ -20,14 +20,14 @@ Net::Email::EmailValidator::Status Net::Email::EmailValidator::Validate(const UT
 	Net::SocketUtil::AddressInfo addr;
 	Net::Email::SMTPConn *conn;
 	const UTF8Char *emailDomain;
-	UOSInt i = Text::StrIndexOf(emailAddr, '@');
+	UOSInt i = Text::StrIndexOfChar(emailAddr, '@');
 	UOSInt j;
 	if (i == INVALID_INDEX || i == 0)
 	{
 		return S_INVALID_FORMAT;
 	}
 	emailDomain = &emailAddr[i + 1];
-	i = Text::StrIndexOf(emailDomain, '@');
+	i = Text::StrIndexOfChar(emailDomain, '@');
 	if (i != INVALID_INDEX)
 	{
 		return S_INVALID_FORMAT;

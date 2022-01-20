@@ -126,7 +126,7 @@ Bool Text::Cpp::CppReader::ReadWord(Text::StringBuilderUTF *sb, Bool move)
 			this->currOfst += 2;
 		return true;
 	}
-	else if (Text::StrIndexOf((const UTF8Char*)"=><+*-/^!!%", sptr[this->currOfst]) != INVALID_INDEX)
+	else if (Text::StrIndexOfChar((const UTF8Char*)"=><+*-/^!!%", sptr[this->currOfst]) != INVALID_INDEX)
 	{
 		if (sptr[this->currOfst + 1] == '=')
 		{
@@ -143,7 +143,7 @@ Bool Text::Cpp::CppReader::ReadWord(Text::StringBuilderUTF *sb, Bool move)
 			return true;
 		}
 	}
-	else if (Text::StrIndexOf((const UTF8Char*)"{}[](),;", sptr[this->currOfst]) != INVALID_INDEX)
+	else if (Text::StrIndexOfChar((const UTF8Char*)"{}[](),;", sptr[this->currOfst]) != INVALID_INDEX)
 	{
 		sb->AppendChar(sptr[this->currOfst], 1);
 		if (move)

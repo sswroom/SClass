@@ -257,7 +257,7 @@ Bool IO::DirectoryPackage::CopyFrom(const UTF8Char *fileName, IO::IProgressHandl
 		{
 			*sptr++ = IO::Path::PATH_SEPERATOR;
 		}
-		i = Text::StrLastIndexOf(fileName, IO::Path::PATH_SEPERATOR);
+		i = Text::StrLastIndexOfChar(fileName, IO::Path::PATH_SEPERATOR);
 		Text::StrConcat(sptr, &fileName[i + 1]);
 		ret = IO::FileUtil::CopyFile(fileName, sbuff, IO::FileUtil::FileExistAction::Fail, progHdlr, bnt);
 		if (ret)
@@ -275,7 +275,7 @@ Bool IO::DirectoryPackage::CopyFrom(const UTF8Char *fileName, IO::IProgressHandl
 		{
 			*sptr++ = IO::Path::PATH_SEPERATOR;
 		}
-		i = Text::StrLastIndexOf(fileName, IO::Path::PATH_SEPERATOR);
+		i = Text::StrLastIndexOfChar(fileName, IO::Path::PATH_SEPERATOR);
 		Text::StrConcat(sptr, &fileName[i + 1]);
 		ret = IO::FileUtil::CopyDir(fileName, sbuff, IO::FileUtil::FileExistAction::Fail, progHdlr, bnt);
 		if (ret)
@@ -301,7 +301,7 @@ Bool IO::DirectoryPackage::MoveFrom(const UTF8Char *fileName, IO::IProgressHandl
 		{
 			*sptr++ = IO::Path::PATH_SEPERATOR;
 		}
-		i = Text::StrLastIndexOf(fileName, IO::Path::PATH_SEPERATOR);
+		i = Text::StrLastIndexOfChar(fileName, IO::Path::PATH_SEPERATOR);
 		Text::StrConcat(sptr, &fileName[i + 1]);
 		ret = IO::FileUtil::MoveFile(fileName, sbuff, IO::FileUtil::FileExistAction::Fail, progHdlr, bnt);
 		if (ret)
@@ -319,7 +319,7 @@ Bool IO::DirectoryPackage::MoveFrom(const UTF8Char *fileName, IO::IProgressHandl
 		{
 			*sptr++ = IO::Path::PATH_SEPERATOR;
 		}
-		i = Text::StrLastIndexOf(fileName, IO::Path::PATH_SEPERATOR);
+		i = Text::StrLastIndexOfChar(fileName, IO::Path::PATH_SEPERATOR);
 		Text::StrConcat(sptr, &fileName[i + 1]);
 		ret = IO::FileUtil::MoveDir(fileName, sbuff, IO::FileUtil::FileExistAction::Fail, progHdlr, bnt);
 		if (ret)
@@ -345,7 +345,7 @@ Bool IO::DirectoryPackage::RetryCopyFrom(const UTF8Char *fileName, IO::IProgress
 		{
 			*sptr++ = IO::Path::PATH_SEPERATOR;
 		}
-		i = Text::StrLastIndexOf(fileName, IO::Path::PATH_SEPERATOR);
+		i = Text::StrLastIndexOfChar(fileName, IO::Path::PATH_SEPERATOR);
 		Text::StrConcat(sptr, &fileName[i + 1]);
 		ret = IO::FileUtil::CopyFile(fileName, sbuff, IO::FileUtil::FileExistAction::Continue, progHdlr, bnt);
 		if (ret)
@@ -363,7 +363,7 @@ Bool IO::DirectoryPackage::RetryCopyFrom(const UTF8Char *fileName, IO::IProgress
 		{
 			*sptr++ = IO::Path::PATH_SEPERATOR;
 		}
-		i = Text::StrLastIndexOf(fileName, IO::Path::PATH_SEPERATOR);
+		i = Text::StrLastIndexOfChar(fileName, IO::Path::PATH_SEPERATOR);
 		Text::StrConcat(sptr, &fileName[i + 1]);
 		ret = IO::FileUtil::CopyDir(fileName, sbuff, IO::FileUtil::FileExistAction::Continue, progHdlr, bnt);
 		if (ret)
@@ -389,7 +389,7 @@ Bool IO::DirectoryPackage::RetryMoveFrom(const UTF8Char *fileName, IO::IProgress
 		{
 			*sptr++ = IO::Path::PATH_SEPERATOR;
 		}
-		i = Text::StrLastIndexOf(fileName, IO::Path::PATH_SEPERATOR);
+		i = Text::StrLastIndexOfChar(fileName, IO::Path::PATH_SEPERATOR);
 		Text::StrConcat(sptr, &fileName[i + 1]);
 		ret = IO::FileUtil::MoveFile(fileName, sbuff, IO::FileUtil::FileExistAction::Continue, progHdlr, bnt);
 		if (ret)
@@ -407,7 +407,7 @@ Bool IO::DirectoryPackage::RetryMoveFrom(const UTF8Char *fileName, IO::IProgress
 		{
 			*sptr++ = IO::Path::PATH_SEPERATOR;
 		}
-		i = Text::StrLastIndexOf(fileName, IO::Path::PATH_SEPERATOR);
+		i = Text::StrLastIndexOfChar(fileName, IO::Path::PATH_SEPERATOR);
 		Text::StrConcat(sptr, &fileName[i + 1]);
 		ret = IO::FileUtil::MoveDir(fileName, sbuff, IO::FileUtil::FileExistAction::Continue, progHdlr, bnt);
 		if (ret)

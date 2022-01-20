@@ -103,14 +103,14 @@ Bool IO::MinizZIP::AddFile(const UTF8Char *sourceFile)
 		Char sbuff[512];
 		UOSInt i;
 		this->enc->UTF8ToBytes((UInt8*)sbuff, sourceFile);
-		i = Text::StrLastIndexOf(sbuff, (Char)IO::Path::PATH_SEPERATOR);
+		i = Text::StrLastIndexOfChar(sbuff, (Char)IO::Path::PATH_SEPERATOR);
 		return mz_zip_writer_add_file(zip, &sbuff[i + 1], sbuff, 0, 0, MZ_BEST_COMPRESSION) != MZ_FALSE;
 	}
 	else if (pt == IO::Path::PathType::Directory)
 	{
 		UTF8Char sbuff[512];
 		Text::StrConcat(sbuff, sourceFile);
-		UOSInt i = Text::StrLastIndexOf(sbuff, IO::Path::PATH_SEPERATOR);
+		UOSInt i = Text::StrLastIndexOfChar(sbuff, IO::Path::PATH_SEPERATOR);
 		return this->AddDir(&sbuff[i + 1], sbuff);
 	}
 	return false;

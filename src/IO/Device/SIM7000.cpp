@@ -33,13 +33,13 @@ Bool __stdcall IO::Device::SIM7000::CheckATCommand(void *userObj, const UTF8Char
 		{
 			if (sarr[1][0] == '"')
 			{
-				i = Text::StrIndexOf(&sarr[1][1], '"');
+				i = Text::StrIndexOfChar(&sarr[1][1], '"');
 				sarr[1][i + 1] = 0;
 				sarr[1]++;
 			}
 			if (sarr[2][0] == '"')
 			{
-				i = Text::StrIndexOf(&sarr[2][1], '"');
+				i = Text::StrIndexOfChar(&sarr[2][1], '"');
 				sarr[2][i + 1] = 0;
 				sarr[2]++;
 			}
@@ -64,7 +64,7 @@ Bool __stdcall IO::Device::SIM7000::CheckATCommand(void *userObj, const UTF8Char
 		{
 			me->recvIndex = Text::StrToUInt32(sarr[0]);
 			me->recvSize = Text::StrToUInt32(sarr[1]);
-			i = Text::StrIndexOf(sarr[2], ':');
+			i = Text::StrIndexOfChar(sarr[2], ':');
 			if (i != INVALID_INDEX)
 			{
 				sarr[2][i] = 0;

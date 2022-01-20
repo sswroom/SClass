@@ -219,7 +219,7 @@ Bool Net::HTTPOSClient::Connect(const UTF8Char *url, UOSInt urlLen, const Char *
 	if (Text::StrStartsWithC(url, urlLen, UTF8STRC("http://")))
 	{
 		ptr1 = &url[7];
-		i = Text::StrIndexOf(ptr1, '/');
+		i = Text::StrIndexOfChar(ptr1, '/');
 		if (i != INVALID_INDEX)
 		{
 			MemCopyNO(urltmp, ptr1, i * sizeof(UTF8Char));
@@ -237,7 +237,7 @@ Bool Net::HTTPOSClient::Connect(const UTF8Char *url, UOSInt urlLen, const Char *
 	else if (Text::StrStartsWithC(url, urlLen, UTF8STRC("https://")))
 	{
 		ptr1 = &url[8];
-		i = Text::StrIndexOf(ptr1, '/');
+		i = Text::StrIndexOfChar(ptr1, '/');
 		if (i != INVALID_INDEX)
 		{
 			MemCopyNO(urltmp, ptr1, i * sizeof(UTF8Char));
@@ -267,7 +267,7 @@ Bool Net::HTTPOSClient::Connect(const UTF8Char *url, UOSInt urlLen, const Char *
 
 	if (urltmp[0] == '[')
 	{
-		i = Text::StrIndexOf(urltmp, ']');
+		i = Text::StrIndexOfChar(urltmp, ']');
 		if (i == INVALID_INDEX)
 		{
 			this->writing = true;

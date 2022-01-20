@@ -373,7 +373,7 @@ UTF8Char *Map::MapSearch::ConcatNames(UTF8Char *buff, UTF8Char **strArrs, Int32 
 			}
 			else
 			{
-				i = Text::StrIndexOf(strArrs[2], ' ');
+				i = Text::StrIndexOfChar(strArrs[2], ' ');
 				if (i != INVALID_INDEX)
 					Text::StrConcatC(sbufftmp, strArrs[2], (UOSInt)i);
 				else
@@ -513,7 +513,7 @@ UTF8Char *Map::MapSearch::ConcatNames(UTF8Char *buff, UTF8Char **strArrs, Int32 
 			{
 				Text::StrConcat(sbufftmp, strArrs[2]);
 				Text::StrSplit(stmp, 2, sbufftmp, ' ');
-				i = Text::StrIndexOf(sbufftmp, '-');
+				i = Text::StrIndexOfChar(sbufftmp, '-');
 				if (i != INVALID_INDEX)
 				{
 					Text::StrConcat(sbufftmp, &sbufftmp[i + 1]);

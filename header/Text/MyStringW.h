@@ -183,13 +183,13 @@ namespace Text
 	Bool StrToBool(const UTF16Char *str);
 	Bool StrToBool(const UTF32Char *str);
 	UOSInt StrIndexOf(const UTF16Char *str1, const UTF16Char *str2);
-	UOSInt StrIndexOf(const UTF16Char *str1, UTF16Char c);
+	UOSInt StrIndexOfChar(const UTF16Char *str1, UTF16Char c);
 	UOSInt StrIndexOf(const UTF32Char *str1, const UTF32Char *str2);
-	UOSInt StrIndexOf(const UTF32Char *str1, UTF32Char c);
+	UOSInt StrIndexOfChar(const UTF32Char *str1, UTF32Char c);
 	UOSInt StrIndexOfICase(const UTF16Char *str1, const UTF16Char *str2);
 	UOSInt StrIndexOfICase(const UTF32Char *str1, const UTF32Char *str2);
-	UOSInt StrLastIndexOf(const UTF16Char *str1, UTF16Char c);
-	UOSInt StrLastIndexOf(const UTF32Char *str1, UTF32Char c);
+	UOSInt StrLastIndexOfChar(const UTF16Char *str1, UTF16Char c);
+	UOSInt StrLastIndexOfChar(const UTF32Char *str1, UTF32Char c);
 	UOSInt StrLastIndexOf(const UTF16Char *str1, const UTF16Char *str2);
 	UOSInt StrLastIndexOf(const UTF32Char *str1, const UTF32Char *str2);
 	UTF16Char *StrRTrim(UTF16Char* str1);

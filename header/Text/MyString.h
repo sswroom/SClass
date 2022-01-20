@@ -81,13 +81,6 @@ namespace Text
 		}
 	} PString;
 
-
-	typedef struct
-	{
-		const UTF8Char *v;
-		UOSInt len;
-	} CString;
-
 	UTF8Char *StrConcat(UTF8Char *oriStr, const UTF8Char *strToJoin);
 	UTF8Char *StrConcatC(UTF8Char *oriStr, const UTF8Char *strToJoin, UOSInt charCnt);
 	UTF8Char *StrConcatS(UTF8Char *oriStr, const UTF8Char *strToJoin, UOSInt buffSize);
@@ -206,10 +199,10 @@ namespace Text
 	Bool StrToUOSInt(const UTF8Char *intStr, UOSInt *outVal);
 	Bool StrToBool(const UTF8Char *str);
 	UOSInt StrIndexOf(const UTF8Char *str1, const UTF8Char *str2);
-	UOSInt StrIndexOf(const UTF8Char *str1, UTF8Char c);
+	UOSInt StrIndexOfChar(const UTF8Char *str1, UTF8Char c);
 	UOSInt StrIndexOfC(const UTF8Char *str1, UOSInt len1, const UTF8Char *str2, UOSInt len2);
 	UOSInt StrIndexOfICase(const UTF8Char *str1, const UTF8Char *str2);
-	UOSInt StrLastIndexOf(const UTF8Char *str1, UTF8Char c);
+	UOSInt StrLastIndexOfChar(const UTF8Char *str1, UTF8Char c);
 	UOSInt StrLastIndexOfC(const UTF8Char *str1, UOSInt len1, UTF8Char c);
 	UOSInt StrLastIndexOf(const UTF8Char *str1, const UTF8Char *str2);
 	Bool StrContainChars(const UTF8Char *str, const UTF8Char *chars);
@@ -340,9 +333,9 @@ namespace Text
 	FORCEINLINE Bool StrToBool(const Char *str) { return StrToBool((const UTF8Char*)str); };
 
 	FORCEINLINE UOSInt StrIndexOf(const Char *str1, const Char *str2) { return StrIndexOf((const UTF8Char*)str1, (const UTF8Char*)str2); }
-	FORCEINLINE UOSInt StrIndexOf(const Char *str1, Char c) { return StrIndexOf((const UTF8Char*)str1, (UTF8Char)c); }
+	FORCEINLINE UOSInt StrIndexOfChar(const Char *str1, Char c) { return StrIndexOfChar((const UTF8Char*)str1, (UTF8Char)c); }
 	FORCEINLINE UOSInt StrIndexOfICase(const Char *str1, const Char *str2) { return StrIndexOfICase((const UTF8Char*)str1, (const UTF8Char*)str2); };
-	FORCEINLINE UOSInt StrLastIndexOf(const Char *str1, Char c) { return StrLastIndexOf((const UTF8Char*)str1, (UTF8Char)c); }
+	FORCEINLINE UOSInt StrLastIndexOfChar(const Char *str1, Char c) { return StrLastIndexOfChar((const UTF8Char*)str1, (UTF8Char)c); }
 	FORCEINLINE UOSInt StrLastIndexOf(const Char *str1, const Char *str2) { return StrLastIndexOf((const UTF8Char*)str1, (const UTF8Char *)str2); }
 	FORCEINLINE Bool StrContainChars(const Char *str, const Char *chars) { return StrContainChars((const UTF8Char*)str, (const UTF8Char*)chars); }
 	FORCEINLINE Char *StrRTrim(Char* str1) { return (Char*)StrRTrim((UTF8Char*)str1); };
@@ -368,5 +361,23 @@ namespace Text
 	FORCEINLINE Char *StrCSVJoin(Char *oriStr, const Char **strs, UOSInt nStrs) { return (Char*)StrCSVJoin((UTF8Char*)oriStr, (const UTF8Char**)strs, nStrs); };
 	FORCEINLINE UOSInt StrCountChar(const Char *str1, Char c) { return StrCountChar((const UTF8Char*)str1, (UTF8Char)c); };
 	FORCEINLINE Char *StrRemoveANSIEscapes(Char *str1) { return (Char*)StrRemoveANSIEscapes((UTF8Char*)str1); };
+
+
+
+	typedef struct
+	{
+		const UTF8Char *v;
+		UOSInt len;
+
+		FORCEINLINE Bool Equals(const UTF8Char *s, UOSInt len)
+		{
+			return Text::StrEqualsC(v, this->len, s, len);
+		}
+
+		FORCEINLINE Bool StartsWith(const UTF8Char *s, UOSInt len)
+		{
+			return Text::StrStartsWithC(v, this->len, s, len);
+		}
+	} CString;
 }
 #endif

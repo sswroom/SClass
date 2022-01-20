@@ -80,6 +80,7 @@ UOSInt IO::PCIInfo::GetPCIList(Data::ArrayList<PCIInfo*> *pciList)
 	ClassData clsData;
 	UInt32 id;
 	UTF8Char sbuff[512];
+	UTF8Char *sptr;
 	UOSInt ret = 0;
 	Win32::WMIQuery qry(L"ROOT\\CIMV2");
 	DB::DBReader *r = qry.GetTableData((const UTF8Char*)"CIM_LogicalDevice", 0, 0, 0, 0, 0);
@@ -92,12 +93,12 @@ UOSInt IO::PCIInfo::GetPCIList(Data::ArrayList<PCIInfo*> *pciList)
 		while (i < j)
 		{
 			sbuff[0] = 0;
-			r->GetName(i, sbuff);
-			if (Text::StrEquals(sbuff, (const UTF8Char*)"Description"))
+			sptr = r->GetName(i, sbuff);
+			if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("Description")))
 			{
 				descCol = i;
 			}
-			else if (Text::StrEquals(sbuff, (const UTF8Char*)"DeviceID"))
+			else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("DeviceID")))
 			{
 				devIdCol = i;
 			}

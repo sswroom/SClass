@@ -68,7 +68,7 @@ Bool Parser::FileParser::ELFParser::ParseType(ParseEnv *env)
 	UOSInt i;
 	UTF8Char c;
 	Bool foundName;
-	UTF8Char *clsName;
+	UTF8Char *clsName = 0;
 	while (true)
 	{
 		c = env->funcName[0];
@@ -183,7 +183,7 @@ Bool Parser::FileParser::ELFParser::ParseType(ParseEnv *env)
 					*env->sbuff = 0;
 					clsName = Text::StrConcat(env->sbuff + 1, clsName);
 					*env->sbuff = '.';
-					i = Text::StrIndexOf(env->sbuff, '<');
+					i = Text::StrIndexOfChar(env->sbuff, '<');
 					if (i != INVALID_INDEX)
 					{
 						env->sbuff[i] = 0;
@@ -216,7 +216,7 @@ Bool Parser::FileParser::ELFParser::ParseType(ParseEnv *env)
 					clsName = Text::StrConcat(env->sbuff + 2, clsName);
 					env->sbuff[0] = '.';
 					env->sbuff[1] = '~';
-					i = Text::StrIndexOf(env->sbuff, '<');
+					i = Text::StrIndexOfChar(env->sbuff, '<');
 					if (i != INVALID_INDEX)
 					{
 						env->sbuff[i] = 0;

@@ -65,7 +65,7 @@ UInt32 __stdcall Media::CUPSPrintDocument::PrintThread(void *userObj)
 	dt.SetCurrTimeUTC();
 	t = dt.ToTicks();
 	IO::Path::GetProcessFileName(fileName);
-	i = Text::StrLastIndexOf(fileName, IO::Path::PATH_SEPERATOR);
+	i = Text::StrLastIndexOfChar(fileName, IO::Path::PATH_SEPERATOR);
 	sptr = &fileName[i + 1];
 	Text::StrConcatC(Text::StrInt64(Text::StrConcatC(sptr, UTF8STRC("CUPS_")), t), UTF8STRC(".tmp"));
 

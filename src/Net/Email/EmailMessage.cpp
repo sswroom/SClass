@@ -315,7 +315,7 @@ Bool Net::Email::EmailMessage::GenerateMessageID(Text::StringBuilderUTF *sb, con
 	UInt8 crcVal[4];
 	Crypto::Hash::CRC32R crc;
 	UOSInt i;
-	i = Text::StrIndexOf(mailFrom, '@');
+	i = Text::StrIndexOfChar(mailFrom, '@');
 	crc.Calc((UInt8*)mailFrom, i);
 	crc.GetValue((UInt8*)&crcVal);
 	sb->AppendHex32(ReadMUInt32(crcVal));

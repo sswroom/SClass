@@ -1300,7 +1300,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 			if (frm->ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
 				const UTF8Char *fname = frm->GetFileName();
-				UOSInt i = Text::StrIndexOf(fname, ':');
+				UOSInt i = Text::StrIndexOfChar(fname, ':');
 				if (i == INVALID_INDEX || i == 1)
 				{
 					IO::StmData::FileData *fd;
@@ -1350,11 +1350,11 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 				if (!reader->ReadLine(&sb, 4096))
 					break;
 				sptr = sb.ToString();
-				i = Text::StrIndexOf(sptr, (const UTF8Char*)"=\"");
+				i = Text::StrIndexOfC(sptr, sb.GetLength(), UTF8STRC("=\""));
 				if (i != INVALID_INDEX)
 				{
 					sptr = sptr + i + 2;
-					i = Text::StrIndexOf(sptr, ',');
+					i = Text::StrIndexOfChar(sptr, ',');
 					if (i == 4)
 					{
 						sptr[i] = 0;
@@ -1525,7 +1525,7 @@ void SSWR::AVIRead::AVIRGISForm::AddLayers(::Data::ArrayList<Map::IMapDrawLayer*
 	WChar sbuff[512];
 	WChar *sptr;
 	lyrColl->GetSourceName(sbuff);
-	sptr = &sbuff[Text::StrLastIndexOf(sbuff, '\\') + 1];
+	sptr = &sbuff[Text::StrLastIndexOfChar(sbuff, '\\') + 1];
 	void *grp = this->env->AddGroup(0, sptr);
 
 	Map::IMapDrawLayer *layer;

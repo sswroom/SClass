@@ -10,7 +10,7 @@ IO::SearchSess::SearchSess(const UTF8Char *searchName)
 	NEW_CLASS(this->modTime, Data::DateTime());
 	this->nameBuff = MemAlloc(UTF8Char, 256);
 	Text::StrConcat(this->nameBuff, searchName);
-	i = Text::StrLastIndexOf(this->nameBuff, IO::Path::PATH_SEPERATOR);
+	i = Text::StrLastIndexOfChar(this->nameBuff, IO::Path::PATH_SEPERATOR);
 	this->nameStart = &this->nameBuff[i + 1];
 	this->sess = IO::Path::FindFile(this->nameBuff);
 }

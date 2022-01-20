@@ -8,7 +8,7 @@ Net::AddressRange::AddressRange(const UTF8Char *addr, UOSInt addrLen, Bool scanB
 	this->skipFirst = false;
 	this->skipLast = false;
 	UTF8Char sbuff[64];
-	UOSInt i = Text::StrIndexOf(addr, '/');
+	UOSInt i = Text::StrIndexOfChar(addr, '/');
 	if (i != INVALID_INDEX)
 	{
 		if (!Text::StrToUInt8(&addr[i + 1], &this->param))
@@ -46,7 +46,7 @@ Net::AddressRange::AddressRange(const UTF8Char *addr, UOSInt addrLen, Bool scanB
 		return;
 	}
 
-	i = Text::StrIndexOf(addr, '-');
+	i = Text::StrIndexOfChar(addr, '-');
 	if (i != INVALID_INDEX)
 	{
 		if (!Text::StrToUInt8(&addr[i + 1], &this->param))

@@ -73,7 +73,7 @@ UTF8Char *Manage::SymbolResolver::ResolveName(UTF8Char *buff, UInt64 address)
 		if (((UInt64)address) >= (UInt64)this->modBaseAddrs->GetItem(i) && ((UInt64)address) < (UInt64)(this->modBaseAddrs->GetItem(i) + this->modSizes->GetItem(i)))
 		{
 			name = this->modNames->GetItem(i);
-			j = Text::StrLastIndexOf(name, '\\');
+			j = Text::StrLastIndexOfChar(name, '\\');
 			buff = Text::StrConcat(buff, &name[j + 1]);
 			found = true;
 			break;
@@ -126,7 +126,7 @@ UTF8Char *Manage::SymbolResolver::ResolveName(UTF8Char *buff, UInt64 address)
 	line.SizeOfStruct = sizeof(line);
 	if (SymGetLineFromAddr64(this->proc->GetHandle(), address, (DWORD*)&displacement, &line))
 	{
-		UOSInt i = Text::StrLastIndexOf(line.FileName, '\\');
+		UOSInt i = Text::StrLastIndexOfChar(line.FileName, '\\');
 		buff = Text::StrConcatC(buff, UTF8STRC(" "));
 		buff = Text::StrConcat(buff, (const UTF8Char*)&line.FileName[i + 1]);
 		buff = Text::StrConcatC(buff, UTF8STRC("("));

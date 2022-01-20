@@ -632,18 +632,6 @@ UTF32Char *Text::StrInt64(UTF32Char *oriStr, Int64 val)
 	}
 	else
 	{
-#if 0
-		while (val)
-		{
-			str -= 2;
-			WriteNInt64(str, ReadNInt64(&MyString_StrDigit100U32[(val % 100) * 2]));
-			val = val / 100;
-		}
-		if (*str == '0')
-		{
-			str++;
-		}
-#else
 		while (val >= 100)
 		{
 			str -= 2;
@@ -660,7 +648,6 @@ UTF32Char *Text::StrInt64(UTF32Char *oriStr, Int64 val)
 			str -= 1;
 			*str = MyString_StrDigit100U32[val * 2 + 1];
 		}
-#endif
 	}
 	while (str < &buff[20])
 	{
@@ -2794,7 +2781,7 @@ UOSInt Text::StrIndexOf(const UTF16Char *str1, const UTF16Char *str2)
 	return INVALID_INDEX;
 }
 
-UOSInt Text::StrIndexOf(const UTF16Char *str1, UTF16Char c)
+UOSInt Text::StrIndexOfChar(const UTF16Char *str1, UTF16Char c)
 {
 	const UTF16Char *ptr = str1;
 	while (*ptr)
@@ -2831,7 +2818,7 @@ UOSInt Text::StrIndexOf(const UTF32Char *str1, const UTF32Char *str2)
 	return INVALID_INDEX;
 }
 
-UOSInt Text::StrIndexOf(const UTF32Char *str1, UTF32Char c)
+UOSInt Text::StrIndexOfChar(const UTF32Char *str1, UTF32Char c)
 {
 	const UTF32Char *ptr = str1;
 	while (*ptr)
@@ -2916,7 +2903,7 @@ UOSInt Text::StrIndexOfICase(const UTF32Char *str1, const UTF32Char *str2)
 	return INVALID_INDEX;
 }
 
-UOSInt Text::StrLastIndexOf(const UTF16Char *str1, UTF16Char c)
+UOSInt Text::StrLastIndexOfChar(const UTF16Char *str1, UTF16Char c)
 {
 	const UTF16Char *sptr;
 	const UTF16Char *cpos = str1 - 1;
@@ -2930,7 +2917,7 @@ UOSInt Text::StrLastIndexOf(const UTF16Char *str1, UTF16Char c)
 	return (UOSInt)(cpos - str1);
 }
 
-UOSInt Text::StrLastIndexOf(const UTF32Char *str1, UTF32Char c)
+UOSInt Text::StrLastIndexOfChar(const UTF32Char *str1, UTF32Char c)
 {
 	const UTF32Char *sptr;
 	const UTF32Char *cpos = str1 - 1;

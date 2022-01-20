@@ -74,7 +74,7 @@ void Data::IChart::SetDblFormat(const Char *format)
 		Text::StrDelNew(this->dblFormat);
 	}
 	this->dblFormat = Text::StrCopyNew(format);
-	UOSInt i = Text::StrIndexOf(format, ".");
+	UOSInt i = Text::StrIndexOfChar(format, '.');
 	if (i == INVALID_INDEX)
 	{
 		this->minDblVal = 1.0;
@@ -243,7 +243,7 @@ UOSInt Data::IChart::CalScaleMarkDate(Data::ArrayListDbl *locations, Data::Array
 	Bool hasSecond = true;
 	if (timeFormat)
 	{
-		if (Text::StrIndexOf(timeFormat, 's') == INVALID_INDEX)
+		if (Text::StrIndexOfChar(timeFormat, 's') == INVALID_INDEX)
 		{
 			hasSecond = false;
 		}

@@ -146,7 +146,7 @@ void Net::WebServer::HTTPDirectoryHandler::ResponsePackageFile(Net::WebServer::I
 	sb2.ClearStr();
 	sb2.Append(req->GetRequestURI());
 	sptr = sb2.ToString();
-	i = Text::StrIndexOf(sptr, '?');
+	i = Text::StrIndexOfChar(sptr, '?');
 	if (i != INVALID_INDEX)
 	{
 		sptr[i] = 0;
@@ -424,7 +424,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 	}
 	if (this->packageMap)
 	{
-		i = Text::StrIndexOf(subReq, '?');
+		i = Text::StrIndexOfChar(subReq, '?');
 		if (i != INVALID_INDEX)
 		{
 			sb.ClearStr();
@@ -434,7 +434,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 		{
 			sb.Append(subReq);
 		}
-		i = Text::StrIndexOf(&sb.ToString()[1], '/');
+		i = Text::StrIndexOfChar(&sb.ToString()[1], '/');
 		if (i != INVALID_INDEX)
 		{
 			sb.ToString()[i + 1] = 0;
@@ -576,7 +576,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 		t.SetTicks(cache->t);
 		t.ToLocalTime();
 		resp->AddLastModified(&t);
-		i = Text::StrIndexOf(subReq, '?');
+		i = Text::StrIndexOfChar(subReq, '?');
 		if (i != INVALID_INDEX)
 		{
 			Text::StringBuilderUTF8 sbc;
@@ -587,7 +587,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 			}
 			else
 			{
-				i = Text::StrLastIndexOf(sbc.ToString(), '.');
+				i = Text::StrLastIndexOfChar(sbc.ToString(), '.');
 				mime = Net::MIME::GetMIMEFromExt(sbc.ToString() + i + 1);
 			}
 		}
@@ -599,7 +599,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 			}
 			else
 			{
-				i = Text::StrLastIndexOf(subReq, '.');
+				i = Text::StrLastIndexOfChar(subReq, '.');
 				mime = Net::MIME::GetMIMEFromExt(subReq + i + 1);
 			}
 		}
@@ -622,7 +622,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 	sptr = sb.ToString();
 	sptrLen = sb.GetLength();
 	UTF8Char *sptr2 = 0;
-	i = Text::StrIndexOf(sptr, '?');
+	i = Text::StrIndexOfChar(sptr, '?');
 	if (i != INVALID_INDEX)
 	{
 		sptr2 = &sptr[i + 1];
@@ -1154,7 +1154,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 				NEW_CLASS(stat->cntMap, Data::FastStringMap<UInt32>());
 				stat->updated = true;
 				Text::StrConcatC(sbuff, sptr, sptrLen);
-				i = Text::StrLastIndexOf(sbuff, IO::Path::PATH_SEPERATOR);
+				i = Text::StrLastIndexOfChar(sbuff, IO::Path::PATH_SEPERATOR);
 				sptr3 = Text::StrConcatC(&sbuff[i + 1], UTF8STRC(".counts"));
 				stat->statFileName = Text::String::New(sbuff, (UOSInt)(sptr3 - sbuff));
 				this->statMap->Put(stat->reqPath, stat);
@@ -1403,7 +1403,7 @@ void Net::WebServer::HTTPDirectoryHandler::ExpandPackageFiles(Parser::ParserList
 					package = MemAlloc(PackageInfo, 1);
 					package->packageFile = pf;
 					package->modTime = dt.ToTicks();
-					i = Text::StrLastIndexOf(sptr, '.');
+					i = Text::StrLastIndexOfChar(sptr, '.');
 					if (i != INVALID_INDEX)
 					{
 						sptr[i] = 0;

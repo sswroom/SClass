@@ -14,7 +14,7 @@ namespace Text
 	public:
 		virtual ~IMIMEObj();
 
-		virtual const UTF8Char *GetClassName() = 0;
+		virtual Text::CString GetClassName() = 0;
 		virtual Text::CString GetContentType() = 0;
 		virtual UOSInt WriteStream(IO::Stream *stm) = 0;
 		virtual IMIMEObj *Clone() = 0;

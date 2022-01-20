@@ -39,7 +39,7 @@ void SSWR::AVIRead::AVIRXMLWalkForm::LoadFile(const UTF8Char *fileName)
 	UOSInt i;
 	this->lvXML->ClearItems();
 	this->txtFile->SetText(fileName);
-	i = Text::StrLastIndexOf(fileName, '.');
+	i = Text::StrLastIndexOfChar(fileName, '.');
 	if (Text::StrEqualsICaseC(&fileName[i + 1], fileNameLen - i - 1, UTF8STRC("html")))
 	{
 		mode = Text::XMLReader::PM_HTML;

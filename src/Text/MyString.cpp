@@ -2322,7 +2322,7 @@ UOSInt Text::StrIndexOf(const UTF8Char *str1, const UTF8Char *str2)
 	return INVALID_INDEX;
 }
 
-UOSInt Text::StrIndexOf(const UTF8Char *str1, UTF8Char c)
+UOSInt Text::StrIndexOfChar(const UTF8Char *str1, UTF8Char c)
 {
 	const UTF8Char *ptr = str1;
 	while (*ptr)
@@ -2451,7 +2451,7 @@ UOSInt Text::StrIndexOfICase(const UTF8Char *str1, const UTF8Char *str2)
 	return INVALID_INDEX;
 }
 
-UOSInt Text::StrLastIndexOf(const UTF8Char *str1, UTF8Char c)
+UOSInt Text::StrLastIndexOfChar(const UTF8Char *str1, UTF8Char c)
 {
 	const UTF8Char *sptr;
 	const UTF8Char *cpos = str1 - 1;

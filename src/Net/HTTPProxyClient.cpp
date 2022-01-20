@@ -51,7 +51,7 @@ Bool Net::HTTPProxyClient::Connect(const UTF8Char *url, UOSInt urlLen, const Cha
 	if (Text::StrStartsWithC(url, urlLen, UTF8STRC("http://")))
 	{
 		ptr1 = &url[7];
-		i = Text::StrIndexOf(ptr1, '/');
+		i = Text::StrIndexOfChar(ptr1, '/');
 		if (i != INVALID_INDEX)
 		{
 			MemCopyNO(urltmp, ptr1, i * sizeof(UTF8Char));

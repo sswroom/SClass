@@ -25,7 +25,7 @@ void IO::SMake::AppendCfgItem(Text::StringBuilderUTF *sb, const UTF8Char *val)
 			sb->AppendC(&val[i], (UOSInt)j);
 			i += j;
 		}
-		j = Text::StrIndexOf(&val[i], ')');
+		j = Text::StrIndexOfChar(&val[i], ')');
 		if (j == INVALID_INDEX)
 			break;
 		if (Text::StrStartsWithC(&val[i + 2], (UOSInt)(valEnd - &val[i + 1]), UTF8STRC("shell ")))
@@ -78,7 +78,7 @@ void IO::SMake::AppendCfgPath(Text::StringBuilderUTF *sb, const UTF8Char *path)
 
 void IO::SMake::AppendCfg(Text::StringBuilderUTF *sb, const UTF8Char *compileCfg)
 {
-	UOSInt i = Text::StrIndexOf(compileCfg, '`');
+	UOSInt i = Text::StrIndexOfChar(compileCfg, '`');
 	if (i != INVALID_INDEX)
 	{
 		Text::StringBuilderUTF8 sb2;
@@ -90,7 +90,7 @@ void IO::SMake::AppendCfg(Text::StringBuilderUTF *sb, const UTF8Char *compileCfg
 				compileCfg += i;
 			}
 			compileCfg++;
-			i = Text::StrIndexOf(compileCfg, '`');
+			i = Text::StrIndexOfChar(compileCfg, '`');
 			if (i == INVALID_INDEX)
 			{
 				sb->Append(compileCfg);
@@ -104,7 +104,7 @@ void IO::SMake::AppendCfg(Text::StringBuilderUTF *sb, const UTF8Char *compileCfg
 				sb->RemoveChars(1);
 			}
 			compileCfg += i + 1;
-			i = Text::StrIndexOf(compileCfg, '`');
+			i = Text::StrIndexOfChar(compileCfg, '`');
 			if (i == INVALID_INDEX)
 			{
 				sb->Append(compileCfg);
@@ -196,7 +196,7 @@ Bool IO::SMake::LoadConfigFile(const UTF8Char *cfgFile)
 			sptr1 = sb.ToString() + 1;
 			if (Text::StrStartsWithC(sptr1, sb.GetLength() - 1, UTF8STRC("?(")))
 			{
-				i = Text::StrIndexOf(sptr1, ')');
+				i = Text::StrIndexOfChar(sptr1, ')');
 				if (i != INVALID_INDEX)
 				{
 					sptr2 = &sptr1[i + 1];
@@ -248,7 +248,7 @@ Bool IO::SMake::LoadConfigFile(const UTF8Char *cfgFile)
 			}
 			else if (Text::StrStartsWithC(sptr1, sb.GetLength(), UTF8STRC("@(")))
 			{
-				i = Text::StrIndexOf(sptr1, ')');
+				i = Text::StrIndexOfChar(sptr1, ')');
 				if (i != INVALID_INDEX && i > 1)
 				{
 					Text::StringBuilderUTF8 result;
@@ -277,7 +277,7 @@ Bool IO::SMake::LoadConfigFile(const UTF8Char *cfgFile)
 			sptr1 = sb.ToString() + 1;
 			if (Text::StrStartsWithC(sptr1, sb.GetLength() - 1, UTF8STRC("@(")))
 			{
-				i = Text::StrIndexOf(sptr1, ')');
+				i = Text::StrIndexOfChar(sptr1, ')');
 				if (i != INVALID_INDEX && i > 1)
 				{
 					Text::StringBuilderUTF8 result;
@@ -543,7 +543,7 @@ Bool IO::SMake::ParseSource(Data::ArrayListString *objList, Data::ArrayListStrin
 			if (sptr1[0] == '"')
 			{
 				sptr1++;
-				i = Text::StrIndexOf(sptr1, '"');
+				i = Text::StrIndexOfChar(sptr1, '"');
 				if (i != INVALID_INDEX)
 				{
 					sptr1[i] = 0;
@@ -1235,7 +1235,7 @@ IO::SMake::SMake(const UTF8Char *cfgFile, UOSInt threadCnt, IO::Writer *messageW
 	NEW_CLASS(this->tasks, Sync::ParallelTask(threadCnt, false));
 	NEW_CLASS(this->errorMsgMut, Sync::Mutex());
 	this->errorMsg = 0;
-	UOSInt i = Text::StrLastIndexOf(cfgFile, IO::Path::PATH_SEPERATOR);
+	UOSInt i = Text::StrLastIndexOfChar(cfgFile, IO::Path::PATH_SEPERATOR);
 	UTF8Char sbuff[512];
 	if (i != INVALID_INDEX)
 	{

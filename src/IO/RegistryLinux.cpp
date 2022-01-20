@@ -253,7 +253,7 @@ WChar *IO::Registry::GetSubReg(WChar *buff, UOSInt index)
 		cate = cateList.GetItem(i);
 		if (cate->StartsWith(this->clsData->cate) && cate->v[thisCateLen] == '\\')
 		{
-			k = Text::StrIndexOf(&cate->v[thisCateLen + 1], '\\');
+			k = Text::StrIndexOfChar(&cate->v[thisCateLen + 1], '\\');
 			sbSubReg.ClearStr();
 			if (k != INVALID_INDEX)
 			{

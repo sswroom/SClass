@@ -45,7 +45,7 @@ Bool DB::DBModel::LoadDatabase(DB::DBTool *db, const UTF8Char *dbName)
 			}
 			sb.Append(tableName = table->GetTableName());
 			this->tableMap->Put(sb.ToString(), table);
-			j = Text::StrIndexOf(tableName, '.');
+			j = Text::StrIndexOfChar(tableName, '.');
 			this->tableMap->Put(tableName + j + 1, table);
 		}
 	}

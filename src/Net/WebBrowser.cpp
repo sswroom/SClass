@@ -34,8 +34,8 @@ UTF8Char *Net::WebBrowser::GetLocalFileName(UTF8Char *sbuff, const UTF8Char *url
 		IO::Path::CreateDirectory(buff);
 		sptr = sptr2;
 		*sptr++ = IO::Path::PATH_SEPERATOR;
-		url = &url[Text::StrIndexOf(url, ':') + 3];
-		url = &url[Text::StrIndexOf(url, '/')];
+		url = &url[Text::StrIndexOfChar(url, ':') + 3];
+		url = &url[Text::StrIndexOfChar(url, '/')];
 		this->hash->Clear();
 		this->hash->Calc((UInt8*)url, Text::StrCharCnt(url));
 		this->hash->GetValue(hashResult);

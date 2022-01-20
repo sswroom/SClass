@@ -43,7 +43,7 @@ Map::RevGeoDir::RevGeoDir(const UTF8Char *cfgDir, UInt32 defLCID, IO::Writer *er
 			NEW_CLASS(revGeo, Map::RevGeoCfg(sbuff, this->mapSrchMgr));
 			file = MemAlloc(RevGeoFile, 1);
 			file->cfg = revGeo;
-			i = Text::StrIndexOf(sptr, '.');
+			i = Text::StrIndexOfChar(sptr, '.');
 			if (i != INVALID_INDEX && i >= 7)
 			{
 				sptr[i] = 0;

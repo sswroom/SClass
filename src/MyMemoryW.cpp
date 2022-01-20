@@ -507,7 +507,7 @@ Int32 MemCheckError()
 						{
 							sptr = Text::StrConcatC(sptr, UTF8STRC(" "));
 							cptr = line.FileName;
-							i = Text::StrLastIndexOf(cptr, '\\');
+							i = Text::StrLastIndexOfChar(cptr, '\\');
 							cptr = &cptr[i + 1];
 							while ((*sptr++ = (UTF8Char)*cptr++) != 0);
 							sptr = Text::StrConcatC(sptr - 1, UTF8STRC("("));

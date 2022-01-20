@@ -66,7 +66,7 @@ Net::WhoisRecord *Net::WhoisClient::RequestIP(UInt32 ip, UInt32 whoisIP, const C
 		}
 		else
 		{
-			i = Text::StrIndexOf(sbuff, '#');
+			i = Text::StrIndexOfChar(sbuff, '#');
 			if (i != INVALID_INDEX)
 			{
 				sbuff[i] = 0;

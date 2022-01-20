@@ -90,8 +90,8 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseFile(IO::IStreamData *fd, 
 	Bool valid = false;
 
 	sptr = fd->GetFullName()->ConcatTo(sbuff);
-	i = Text::StrLastIndexOf(sbuff, '.');
-	j = Text::StrIndexOf(&sbuff[i + 1], '?');
+	i = Text::StrLastIndexOfChar(sbuff, '.');
+	j = Text::StrIndexOfChar(&sbuff[i + 1], '?');
 	if (j != INVALID_INDEX)
 	{
 		sbuff[i + j + 1] = 0;
@@ -191,10 +191,10 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 /*		UOSInt i;
 		UOSInt j;
 		const UTF8Char *shortName;
-		i = Text::StrLastIndexOf(fileName, IO::Path::PATH_SEPERATOR);
+		i = Text::StrLastIndexOfChar(fileName, IO::Path::PATH_SEPERATOR);
 		if (IO::Path::PATH_SEPERATOR == '\\')
 		{
-			j = Text::StrLastIndexOf(fileName, '/');
+			j = Text::StrLastIndexOfChar(fileName, '/');
 			if (i == INVALID_INDEX || (j != INVALID_INDEX && j > i))
 			{
 				i = j;
@@ -238,10 +238,10 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 		UOSInt i;
 		UOSInt j;
 		const UTF8Char *shortName;
-		i = Text::StrLastIndexOf(fileName, IO::Path::PATH_SEPERATOR);
+		i = Text::StrLastIndexOfChar(fileName, IO::Path::PATH_SEPERATOR);
 		if (IO::Path::PATH_SEPERATOR == '\\')
 		{
-			j = Text::StrLastIndexOf(fileName, '/');
+			j = Text::StrLastIndexOfChar(fileName, '/');
 			if (i == INVALID_INDEX || (j != INVALID_INDEX && j > i))
 			{
 				i = j;
@@ -1106,10 +1106,10 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 		UOSInt i;
 		UOSInt j;
 		const UTF8Char *shortName;
-		i = Text::StrLastIndexOf(fileName, IO::Path::PATH_SEPERATOR);
+		i = Text::StrLastIndexOfChar(fileName, IO::Path::PATH_SEPERATOR);
 		if (IO::Path::PATH_SEPERATOR == '\\')
 		{
-			j = Text::StrLastIndexOf(fileName, '/');
+			j = Text::StrLastIndexOfChar(fileName, '/');
 			if (i == INVALID_INDEX || (j != INVALID_INDEX && j > i))
 			{
 				i = j;
@@ -1117,7 +1117,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 		}
 		shortName = &fileName[i + 1];
 		Text::StringBuilderUTF8 sbTableName;
-		i = Text::StrIndexOf(shortName, '.');
+		i = Text::StrIndexOfChar(shortName, '.');
 		if (i != INVALID_INDEX && i > 0)
 		{
 			sbTableName.AppendC(shortName, i);
@@ -1619,12 +1619,12 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLContainer(Text::XMLRe
 	Text::StringBuilderUTF8 containerNameSb;
 	containerNameSb.Append(sourceName);
 	Map::IMapDrawLayer *lyr;
-	i = Text::StrLastIndexOf(containerNameSb.ToString(), '/');
+	i = Text::StrLastIndexOfChar(containerNameSb.ToString(), '/');
 	if (i != INVALID_INDEX)
 	{
 		containerNameSb.SetSubstr(i + 1);
 	}
-	i = Text::StrLastIndexOf(containerNameSb.ToString(), '\\');
+	i = Text::StrLastIndexOfChar(containerNameSb.ToString(), '\\');
 	if (i != INVALID_INDEX)
 	{
 		containerNameSb.SetSubstr(i + 1);

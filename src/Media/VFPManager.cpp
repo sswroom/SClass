@@ -27,7 +27,7 @@ Media::VFPManager::VFPManager()
 	{
 		if (reg->GetValueStr(sbuff, sbuff2))
 		{
-			j = Text::StrLastIndexOf(sbuff2, '\\');
+			j = Text::StrLastIndexOfChar(sbuff2, '\\');
 			sptr = &sbuff2[j + 1];
 			if (Text::StrCompareICase(sptr, L"DVD2AVI.vfp") == 0)
 			{

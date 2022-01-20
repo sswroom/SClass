@@ -226,7 +226,7 @@ void Net::HTTPClient::ParseDateStr(Data::DateTime *dt, const UTF8Char *dateStr)
 	{
 		sptr = Text::StrConcat(sbuff, &dateStr[i + 2]);
 		tmps = sbuff;
-		if (Text::StrIndexOf(tmps, '-') == INVALID_INDEX)
+		if (Text::StrIndexOfChar(tmps, '-') == INVALID_INDEX)
 		{
 			i = Text::StrSplitP(ptrs, 6, tmps, (UOSInt)(sptr - sbuff), ' ');
 			if (i >= 4)

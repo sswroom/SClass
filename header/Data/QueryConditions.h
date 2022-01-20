@@ -143,7 +143,7 @@ namespace Data
 		class StringContainsCondition : public FieldCondition
 		{
 		private:
-			const UTF8Char *val;
+			Text::String *val;
 
 		public:
 			StringContainsCondition(const UTF8Char *fieldName, UOSInt nameLen, const UTF8Char *val);

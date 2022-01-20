@@ -404,7 +404,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnLogWifiSaveClicked(void
 	UOSInt k;
 	Data::DateTime dt;
 	IO::Path::GetProcessFileName(sbuff);
-	i = Text::StrLastIndexOf(sbuff, IO::Path::PATH_SEPERATOR);
+	i = Text::StrLastIndexOfChar(sbuff, IO::Path::PATH_SEPERATOR);
 	sptr = &sbuff[i + 1];
 	dt.SetCurrTime();
 	sptr = dt.ToString(sptr, "yyyyMMddHHmmss");
@@ -514,7 +514,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnLogWifiSaveFClicked(voi
 	UInt8 macBuff[8];
 	Data::DateTime dt;
 	IO::Path::GetProcessFileName(sbuff);
-	i = Text::StrLastIndexOf(sbuff, IO::Path::PATH_SEPERATOR);
+	i = Text::StrLastIndexOfChar(sbuff, IO::Path::PATH_SEPERATOR);
 	sptr = &sbuff[i + 1];
 	dt.SetCurrTime();
 	sptr = dt.ToString(sptr, "yyyyMMddHHmmss");

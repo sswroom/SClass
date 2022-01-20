@@ -470,7 +470,7 @@ SSWR::AVIRead::AVIRHTTPSvrForm::AVIRHTTPSvrForm(UI::GUIClientControl *parent, UI
 	NEW_CLASS(this->lblDocDir, UI::GUILabel(ui, this->grpParam, (const UTF8Char*)"Doc Path"));
 	this->lblDocDir->SetRect(8, 32, 100, 23, false);
 	IO::Path::GetProcessFileName(sbuff);
-	i = Text::StrLastIndexOf(sbuff, IO::Path::PATH_SEPERATOR);
+	i = Text::StrLastIndexOfChar(sbuff, IO::Path::PATH_SEPERATOR);
 	if (i != INVALID_INDEX)
 	{
 		sbuff[i] = 0;

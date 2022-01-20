@@ -49,8 +49,8 @@ Text::JSONBase *Text::JSONBase::GetValue(const UTF8Char *path, UOSInt pathLen)
 	Text::JSONBase *json = this;
 	while (json)
 	{
-		dotIndex = Text::StrIndexOf(sptr, '.');
-		brkIndex = Text::StrIndexOf(sptr, '[');
+		dotIndex = Text::StrIndexOfChar(sptr, '.');
+		brkIndex = Text::StrIndexOfChar(sptr, '[');
 		if (dotIndex == INVALID_INDEX && brkIndex == INVALID_INDEX)
 		{
 			if (json->GetType() == JSONType::Object)
@@ -114,7 +114,7 @@ Text::JSONBase *Text::JSONBase::GetValue(const UTF8Char *path, UOSInt pathLen)
 				{
 					return 0;
 				}
-				dotIndex = Text::StrIndexOf(sptr, ']');
+				dotIndex = Text::StrIndexOfChar(sptr, ']');
 				if (dotIndex == INVALID_INDEX)
 				{
 					return 0;

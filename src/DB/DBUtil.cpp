@@ -1621,7 +1621,7 @@ DB::DBUtil::ColType DB::DBUtil::ParseColType(DB::DBUtil::ServerType svrType, con
 		{
 			if (typeName[7] == '(')
 			{
-				i = Text::StrIndexOf(typeName, ')');
+				i = Text::StrIndexOfChar(typeName, ')');
 				if (i != INVALID_INDEX)
 				{
 					typeName[i] = 0;
@@ -1643,7 +1643,7 @@ DB::DBUtil::ColType DB::DBUtil::ParseColType(DB::DBUtil::ServerType svrType, con
 		{
 			if (typeName[4] == '(')
 			{
-				i = Text::StrIndexOf(typeName, ')');
+				i = Text::StrIndexOfChar(typeName, ')');
 				if (i != INVALID_INDEX)
 				{
 					typeName[i] = 0;

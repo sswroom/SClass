@@ -80,7 +80,7 @@ SSWR::AVIRead::AVIRTFTPServerForm::AVIRTFTPServerForm(UI::GUIClientControl *pare
 	NEW_CLASS(this->lblFilePath, UI::GUILabel(ui, this->tpControl, (const UTF8Char*)"File Path"));
 	this->lblFilePath->SetRect(8, 32, 100, 23, false);
 	IO::Path::GetProcessFileName(sbuff);
-	i = Text::StrLastIndexOf(sbuff, IO::Path::PATH_SEPERATOR);
+	i = Text::StrLastIndexOfChar(sbuff, IO::Path::PATH_SEPERATOR);
 	if (i != INVALID_INDEX)
 	{
 		sbuff[i] = 0;

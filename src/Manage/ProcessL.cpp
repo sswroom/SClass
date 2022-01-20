@@ -96,7 +96,7 @@ Manage::Process::Process(const UTF8Char *ccmdLine)
 	pid_t pid = fork();
 	if (pid == 0)
 	{
-		UOSInt i = Text::StrLastIndexOf(progName, IO::Path::PATH_SEPERATOR);
+		UOSInt i = Text::StrLastIndexOfChar(progName, IO::Path::PATH_SEPERATOR);
 		if (i != INVALID_INDEX)
 		{
 			progName[i] = 0;
@@ -157,7 +157,7 @@ Manage::Process::Process(const WChar *cmdLine)
 	pid_t pid = fork();
 	if (pid == 0)
 	{
-		UOSInt i = Text::StrLastIndexOf(progName, IO::Path::PATH_SEPERATOR);
+		UOSInt i = Text::StrLastIndexOfChar(progName, IO::Path::PATH_SEPERATOR);
 		if (i != INVALID_INDEX)
 		{
 			progName[i] = 0;

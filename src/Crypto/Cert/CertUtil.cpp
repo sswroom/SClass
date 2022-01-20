@@ -512,7 +512,7 @@ Crypto::Cert::X509Cert *Crypto::Cert::CertUtil::FindIssuer(Crypto::Cert::X509Cer
 		return 0;
 	}
 	cert->GetSourceNameObj()->ConcatTo(sbuff);
-	UOSInt i = Text::StrLastIndexOf(sbuff, IO::Path::PATH_SEPERATOR);
+	UOSInt i = Text::StrLastIndexOfChar(sbuff, IO::Path::PATH_SEPERATOR);
 	if (i == INVALID_INDEX)
 	{
 		Crypto::Cert::CertExtensions::FreeExtensions(&ext);

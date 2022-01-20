@@ -56,7 +56,7 @@ void Net::UDPSimulator::Run()
 					sarr[2] = &sarr[1][i + j + 21];
 
 					port = 0;
-					i = Text::StrIndexOf(sarr[2], ':');
+					i = Text::StrIndexOfChar(sarr[2], ':');
 					if (i != INVALID_INDEX)
 					{
 						sarr[2][i] = 0;

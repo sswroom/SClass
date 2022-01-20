@@ -14,7 +14,7 @@ void __stdcall SSWR::AVIRead::AVIRNetRAWCaptureForm::OnAutoGenClicked(void *user
 	UOSInt i;
 	Data::DateTime dt;
 	IO::Path::GetProcessFileName(sbuff);
-	i = Text::StrLastIndexOf(sbuff, IO::Path::PATH_SEPERATOR);
+	i = Text::StrLastIndexOfChar(sbuff, IO::Path::PATH_SEPERATOR);
 	sptr = &sbuff[i + 1];
 	dt.SetCurrTimeUTC();
 	sptr = Text::StrInt64(sptr, dt.ToTicks());

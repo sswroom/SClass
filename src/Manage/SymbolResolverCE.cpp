@@ -66,7 +66,7 @@ UTF8Char *Manage::SymbolResolver::ResolveName(UTF8Char *buff, UInt64 address)
 		if (((UInt64)address) >= (UInt64)this->modBaseAddrs->GetItem(i) && ((UInt64)address) < (UInt64)(this->modBaseAddrs->GetItem(i) + this->modSizes->GetItem(i)))
 		{
 			name = this->modNames->GetItem(i);
-			j = Text::StrLastIndexOf(name, '\\');
+			j = Text::StrLastIndexOfChar(name, '\\');
 			buff = Text::StrConcat(buff, &name[j + 1]);
 			found = true;
 			break;

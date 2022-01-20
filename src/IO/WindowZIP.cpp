@@ -163,7 +163,7 @@ OSInt IO::WindowZIP::GetFileList(Data::ArrayList<const WChar *> *fileList)
 					{
 						if (SUCCEEDED(item->get_Path(&fname)))
 						{
-							k = Text::StrLastIndexOf(fname, '\\');
+							k = Text::StrLastIndexOfChar(fname, '\\');
 							fileList->Add(Text::StrCopyNew(&fname[k + 1]));
 							retCnt++;
 						}

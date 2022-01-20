@@ -20,9 +20,9 @@ Text::MIMEObj::MailMessage::~MailMessage()
 	SDEL_CLASS(this->content);
 }
 
-const UTF8Char *Text::MIMEObj::MailMessage::GetClassName()
+Text::CString Text::MIMEObj::MailMessage::GetClassName()
 {
-	return (const UTF8Char*)"MailMessage";
+	return {UTF8STRC("MailMessage")};
 }
 
 Text::CString Text::MIMEObj::MailMessage::GetContentType()
@@ -147,18 +147,19 @@ Text::MIMEObj::TextMIMEObj *Text::MIMEObj::MailMessage::GetContentText()
 {
 	if (this->content == 0)
 		return 0;
-	if (Text::StrEquals(this->content->GetClassName(), (const UTF8Char*)"TextMIMEObj"))
+	Text::CString clsName = this->content->GetClassName();
+	if (clsName.Equals(UTF8STRC("TextMIMEObj")))
 		return (Text::MIMEObj::TextMIMEObj*)this->content;
-	if (Text::StrEquals(this->content->GetClassName(), (const UTF8Char*)"MultipartMIMEObj"))
+	if (clsName.Equals(UTF8STRC("MultipartMIMEObj")))
 	{
 		Text::CString contType = this->content->GetContentType();
-		if (Text::StrStartsWithC(contType.v, contType.len, UTF8STRC("multipart/mixed")))
+		if (contType.StartsWith(UTF8STRC("multipart/mixed")))
 		{
 			Text::MIMEObj::MultipartMIMEObj *mpart = (Text::MIMEObj::MultipartMIMEObj*)this->content;
 			Text::IMIMEObj *obj = mpart->GetPartObj(0);
 			if (obj)
 			{
-				if (Text::StrEquals(obj->GetClassName(), (const UTF8Char*)"TextMIMEObj"))
+				if (clsName.Equals(UTF8STRC("TextMIMEObj")))
 				{
 					return (Text::MIMEObj::TextMIMEObj*)obj;
 				}
@@ -174,20 +175,22 @@ Text::IMIMEObj *Text::MIMEObj::MailMessage::GetContentMajor()
 		return 0;
 	Text::IMIMEObj *obj = content;
 	Text::CString contType = obj->GetContentType();
-	if (Text::StrEquals(obj->GetClassName(), (const UTF8Char*)"MultipartMIMEObj") && Text::StrStartsWithC(contType.v, contType.len, UTF8STRC("multipart/mixed")))
+	Text::CString clsName = obj->GetClassName();
+	if (clsName.Equals(UTF8STRC("MultipartMIMEObj")) && contType.StartsWith(UTF8STRC("multipart/mixed")))
 	{
 		obj = ((Text::MIMEObj::MultipartMIMEObj*)obj)->GetPartObj(0);
+		clsName = obj->GetClassName();
 	}
-	if (Text::StrEquals(obj->GetClassName(), (const UTF8Char*)"TextMIMEObj"))
+	if (clsName.Equals(UTF8STRC("TextMIMEObj")))
 		return obj;
-	if (Text::StrEquals(obj->GetClassName(), (const UTF8Char*)"HTMLMIMEObj"))
+	if (clsName.Equals(UTF8STRC("HTMLMIMEObj")))
 		return obj;
-	if (Text::StrEquals(obj->GetClassName(), (const UTF8Char*)"MultipartMIMEObj"))
+	if (clsName.Equals(UTF8STRC("MultipartMIMEObj")))
 	{
 		contType = obj->GetContentType();
-		if (Text::StrStartsWithC(contType.v, contType.len, UTF8STRC("multipart/related")))
+		if (contType.StartsWith(UTF8STRC("multipart/related")))
 			return obj;
-		if (Text::StrStartsWithC(contType.v, contType.len, UTF8STRC("multipart/alternative")))
+		if (contType.StartsWith(UTF8STRC("multipart/alternative")))
 		{
 			Text::MIMEObj::MultipartMIMEObj *mpart = (Text::MIMEObj::MultipartMIMEObj*)obj;
 			return mpart->GetPartObj(mpart->GetPartCount() - 1);
@@ -204,10 +207,11 @@ Text::IMIMEObj *Text::MIMEObj::MailMessage::GetAttachment(OSInt index, Text::Str
 	UOSInt l;
 	Text::String *s;
 	UTF8Char sbuff[512];
+	UTF8Char *sptr;
 	Text::MIMEObj::MultipartMIMEObj::PartInfo *part;
 	if (this->content == 0)
 		return 0;
-	if (Text::StrEquals(this->content->GetClassName(), (const UTF8Char*)"MultipartMIMEObj"))
+	if (this->content->GetClassName().Equals(UTF8STRC("MultipartMIMEObj")))
 	{
 		Text::CString contType = this->content->GetContentType();
 		if (Text::StrStartsWithC(contType.v, contType.len, UTF8STRC("multipart/mixed")))
@@ -223,13 +227,13 @@ Text::IMIMEObj *Text::MIMEObj::MailMessage::GetAttachment(OSInt index, Text::Str
 				{
 					if (index == 0)
 					{
-						ParseHeaderStr(sbuff, s->v);
-						k = Text::StrIndexOf(sbuff, (const UTF8Char*)"filename=");
+						sptr = ParseHeaderStr(sbuff, s->v);
+						k = Text::StrIndexOfC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("filename="));
 						if (k != INVALID_INDEX)
 						{
 							if (sbuff[k + 9] == '\"')
 							{
-								l = Text::StrIndexOf(&sbuff[k + 10], '\"');
+								l = Text::StrIndexOfChar(&sbuff[k + 10], '\"');
 								if (l != INVALID_INDEX)
 								{
 									name->AppendC(&sbuff[k + 10], l);
@@ -241,7 +245,7 @@ Text::IMIMEObj *Text::MIMEObj::MailMessage::GetAttachment(OSInt index, Text::Str
 							}
 							else
 							{
-								l = Text::StrIndexOf(&sbuff[k + 9], ' ');
+								l = Text::StrIndexOfChar(&sbuff[k + 9], ' ');
 								if (l != INVALID_INDEX)
 								{
 									name->AppendC(&sbuff[k + 9], l);

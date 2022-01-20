@@ -269,16 +269,16 @@ IO::ParsedObject *Parser::FileParser::GLOCParser::ParseFile(IO::IStreamData *fd,
 	UInt32 idevId;
 	Text::String *name = fd->GetFullName();
 	sptr = name->v;
-	i = Text::StrLastIndexOf(sptr, IO::Path::PATH_SEPERATOR);
+	i = Text::StrLastIndexOfChar(sptr, IO::Path::PATH_SEPERATOR);
 	sptr2 = Text::StrConcatC(u8buff, &sptr[i + 1], name->leng - i - 1);
 	if (!Text::StrStartsWithICaseC(u8buff, (UOSInt)(sptr2 - u8buff), UTF8STRC("GLOC")))
 	{
 		return 0;
 	}
-	i = Text::StrIndexOf(u8buff, '_');
+	i = Text::StrIndexOfChar(u8buff, '_');
 	if (i == INVALID_INDEX)
 	{
-		i = Text::StrIndexOf(u8buff, '.');
+		i = Text::StrIndexOfChar(u8buff, '.');
 		if (i == INVALID_INDEX)
 			return 0;
 		u8buff[i] = 0;
