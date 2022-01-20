@@ -21,7 +21,7 @@ UInt32 __stdcall IO::ATCommandChannel::CmdThread(void *userObj)
 	UOSInt buffSize = 0;
 	UOSInt i;
 	UOSInt cmdStart;
-	Char *cmdResult;
+	Text::String *cmdResult;
 	me->threadRunning = true;
 	me->cmdEvt->Set();
 	while (!me->threadToStop)
@@ -49,17 +49,17 @@ UInt32 __stdcall IO::ATCommandChannel::CmdThread(void *userObj)
 					}
 					else
 					{
-						cmdResult = MemAlloc(Char, i - cmdStart + 1);
-						MemCopyNO(cmdResult, &readBuff[cmdStart], i - cmdStart);
-						cmdResult[i - cmdStart] = 0;
+						cmdResult = Text::String::New(i - cmdStart);
+						MemCopyNO(cmdResult->v, &readBuff[cmdStart], i - cmdStart);
+						cmdResult->v[i - cmdStart] = 0;
 						if (me->log)
 						{
-							me->log->LogMessageC((const UTF8Char*)cmdResult, (i - cmdStart), IO::ILogHandler::LOG_LEVEL_RAW);
+							me->log->LogMessageC(cmdResult->v, (i - cmdStart), IO::ILogHandler::LOG_LEVEL_RAW);
 						}
 
-						if (me->cmdHdlr && me->cmdHdlr(me->cmdHdlrObj, cmdResult))
+						if (me->cmdHdlr && me->cmdHdlr(me->cmdHdlrObj, cmdResult->v, i - cmdStart))
 						{
-							MemFree(cmdResult);
+							cmdResult->Release();
 						}
 						else
 						{
@@ -105,13 +105,13 @@ UInt32 __stdcall IO::ATCommandChannel::CmdThread(void *userObj)
 
 void IO::ATCommandChannel::ClearResults()
 {
-	const Char *cmdRes;
+	Text::String *cmdRes;
 	while (this->cmdResults->GetCount() > 0)
 	{
 		Sync::MutexUsage mutUsage(this->cmdResultMut);
 		cmdRes = this->cmdResults->RemoveAt(0);
 		mutUsage.EndUse();
-		MemFree((void*)cmdRes);
+		cmdRes->Release();
 	}
 }
 
@@ -122,7 +122,7 @@ IO::ATCommandChannel::ATCommandChannel(IO::Stream *stm, Bool needRelease)
 	NEW_CLASS(this->cmdMut, Sync::Mutex());
 	NEW_CLASS(this->cmdEvt, Sync::Event(true, (const UTF8Char*)"IO.ATCommandChannel.cmdEvt"));
 	NEW_CLASS(this->cmdResultMut, Sync::Mutex());
-	NEW_CLASS(this->cmdResults, Data::ArrayList<const Char *>());
+	NEW_CLASS(this->cmdResults, Data::ArrayList<Text::String *>());
 	this->evtHdlr = 0;
 	this->evtHdlrObj = 0;
 	this->cmdHdlr = 0;
@@ -162,19 +162,18 @@ IO::Stream *IO::ATCommandChannel::GetStream()
 	return this->stm;
 }
 
-UOSInt IO::ATCommandChannel::SendATCommand(Data::ArrayList<const Char *> *retArr, const Char *atCmd, Int32 timeoutMS)
+UOSInt IO::ATCommandChannel::SendATCommand(Data::ArrayList<Text::String *> *retArr, const UTF8Char *atCmd, UOSInt atCmdLen, Int32 timeoutMS)
 {
 	Data::DateTime dt;
 	Data::DateTime dt2;
-	UOSInt i = Text::StrCharCnt(atCmd);
 	UOSInt retSize = 0;
 //	Bool cmdBegin = false;
 	Bool cmdEnd = false;
-	const Char *cmdRes;
+	Text::String *cmdRes;
 	Sync::MutexUsage mutUsage;
 	if (!this->UseCmd(&mutUsage))
 		return 0;
-	this->CmdSend((UInt8*)atCmd, i);
+	this->CmdSend((UInt8*)atCmd, atCmdLen);
 	this->CmdSend((UInt8*)"\r", 1);
 	
 	dt.SetCurrTimeUTC();
@@ -185,17 +184,17 @@ UOSInt IO::ATCommandChannel::SendATCommand(Data::ArrayList<const Char *> *retArr
 			dt.SetCurrTimeUTC();
 			retArr->Add(cmdRes);
 			retSize++;
-			if (Text::StrCompare(cmdRes, "OK") == 0)
+			if (cmdRes->Equals(UTF8STRC("OK")))
 			{
 				cmdEnd = true;
 				break;
 			}
-			if (Text::StrCompare(cmdRes, "ERROR") == 0)
+			if (cmdRes->Equals(UTF8STRC("ERROR")))
 			{
 				cmdEnd = true;
 				break;
 			}
-			if (Text::StrStartsWith(cmdRes, "+CME ERROR"))
+			if (cmdRes->StartsWith(UTF8STRC("+CME ERROR")))
 			{
 				cmdEnd = true;
 				break;
@@ -211,23 +210,21 @@ UOSInt IO::ATCommandChannel::SendATCommand(Data::ArrayList<const Char *> *retArr
 	return retSize;
 }
 
-UOSInt IO::ATCommandChannel::SendATCommands(Data::ArrayList<const Char *> *retArr, const Char *atCmd, const Char *atCmdSub, Int32 timeoutMS)
+UOSInt IO::ATCommandChannel::SendATCommands(Data::ArrayList<Text::String *> *retArr, const UTF8Char *atCmd, UOSInt atCmdLen, const UTF8Char *atCmdSub, Int32 timeoutMS)
 {
 	Data::DateTime dt;
 	Data::DateTime dt2;
-	UOSInt i = Text::StrCharCnt(atCmd);
 	UOSInt retSize = 0;
 //	Bool cmdBegin = false;
 	Bool cmdEnd = false;
-	const Char *cmdRes;
+	Text::String *cmdRes;
 	Sync::MutexUsage mutUsage;
 	if (!this->UseCmd(&mutUsage))
 		return 0;
-	this->CmdSend((UInt8*)atCmd, i);
+	this->CmdSend((UInt8*)atCmd, atCmdLen);
 	this->CmdSend((UInt8*)"\r", 1);
 	Sync::Thread::Sleep(1000);
-	i = Text::StrCharCnt(atCmdSub);
-	this->CmdSend((UInt8*)atCmdSub, i);
+	this->CmdSend((UInt8*)atCmdSub, Text::StrCharCnt(atCmdSub));
 	this->CmdSend((UInt8*)"\x1a", 1);
 	
 	dt.SetCurrTimeUTC();
@@ -238,17 +235,17 @@ UOSInt IO::ATCommandChannel::SendATCommands(Data::ArrayList<const Char *> *retAr
 			dt.SetCurrTimeUTC();
 			retArr->Add(cmdRes);
 			retSize++;
-			if (Text::StrCompare(cmdRes, "OK") == 0)
+			if (cmdRes->Equals(UTF8STRC("OK")))
 			{
 				cmdEnd = true;
 				break;
 			}
-			if (Text::StrCompare(cmdRes, "ERROR") == 0)
+			if (cmdRes->Equals(UTF8STRC("ERROR")))
 			{
 				cmdEnd = true;
 				break;
 			}
-			if (Text::StrStartsWith(cmdRes, "+CME ERROR"))
+			if (cmdRes->StartsWith(UTF8STRC("+CME ERROR")))
 			{
 				cmdEnd = true;
 				break;
@@ -263,19 +260,18 @@ UOSInt IO::ATCommandChannel::SendATCommands(Data::ArrayList<const Char *> *retAr
 	return retSize;
 }
 
-UOSInt IO::ATCommandChannel::SendDialCommand(Data::ArrayList<const Char *> *retArr, const Char *atCmd, Int32 timeoutMS)
+UOSInt IO::ATCommandChannel::SendDialCommand(Data::ArrayList<Text::String *> *retArr, const UTF8Char *atCmd, UOSInt atCmdLen, Int32 timeoutMS)
 {
 	Data::DateTime dt;
 	Data::DateTime dt2;
-	UOSInt i = Text::StrCharCnt(atCmd);
 	UOSInt retSize = 0;
 //	Bool cmdBegin = false;
 	Bool cmdEnd = false;
-	const Char *cmdRes;
+	Text::String *cmdRes;
 	Sync::MutexUsage mutUsage;
 	if (!this->UseCmd(&mutUsage))
 		return 0;
-	this->CmdSend((UInt8*)atCmd, i);
+	this->CmdSend((UInt8*)atCmd, atCmdLen);
 	this->CmdSend((UInt8*)"\r", 1);
 	
 	dt.SetCurrTimeUTC();
@@ -286,37 +282,37 @@ UOSInt IO::ATCommandChannel::SendDialCommand(Data::ArrayList<const Char *> *retA
 			dt.SetCurrTimeUTC();
 			retArr->Add(cmdRes);
 			retSize++;
-			if (Text::StrEquals(cmdRes, "NO DIALTONE"))
+			if (cmdRes->Equals(UTF8STRC("NO DIALTONE")))
 			{
 				cmdEnd = true;
 				break;
 			}
-			if (Text::StrEquals(cmdRes, "VCON"))
+			if (cmdRes->Equals(UTF8STRC("VCON")))
 			{
 				cmdEnd = true;
 				break;
 			}
-			if (Text::StrEquals(cmdRes, "BUSY"))
+			if (cmdRes->Equals(UTF8STRC("BUSY")))
 			{
 				cmdEnd = true;
 				break;
 			}
-			if (Text::StrEquals(cmdRes, "NO CARRIER"))
+			if (cmdRes->Equals(UTF8STRC("NO CARRIER")))
 			{
 				cmdEnd = true;
 				break;
 			}
-			if (Text::StrEquals(cmdRes, "OK"))
+			if (cmdRes->Equals(UTF8STRC("OK")))
 			{
 				cmdEnd = true;
 				break;
 			}
-			if (Text::StrEquals(cmdRes, "ERROR"))
+			if (cmdRes->Equals(UTF8STRC("ERROR")))
 			{
 				cmdEnd = true;
 				break;
 			}
-			if (Text::StrStartsWith(cmdRes, "+CME ERROR"))
+			if (cmdRes->StartsWith(UTF8STRC("+CME ERROR")))
 			{
 				cmdEnd = true;
 				break;
@@ -345,9 +341,9 @@ UOSInt IO::ATCommandChannel::CmdSend(const UInt8 *data, UOSInt dataSize)
 	return this->stm->Write(data, dataSize);
 }
 
-const Char *IO::ATCommandChannel::CmdGetNextResult(UOSInt timeoutMS)
+Text::String *IO::ATCommandChannel::CmdGetNextResult(UOSInt timeoutMS)
 {
-	const Char *cmdRes = 0;
+	Text::String *cmdRes = 0;
 	this->cmdEvt->Clear();
 	if (this->cmdResults->GetCount() > 0)
 	{

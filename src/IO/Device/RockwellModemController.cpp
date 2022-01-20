@@ -13,23 +13,23 @@ IO::Device::RockwellModemController::~RockwellModemController()
 
 UTF8Char *IO::Device::RockwellModemController::VoiceGetManufacturer(UTF8Char *manu)
 {
-	return this->SendStringCommand(manu, "AT#MFR?", 3000);
+	return this->SendStringCommand(manu, UTF8STRC("AT#MFR?"), 3000);
 }
 
 UTF8Char *IO::Device::RockwellModemController::VoiceGetModel(UTF8Char *model)
 {
-	return this->SendStringCommand(model, "AT#MDL?", 3000);
+	return this->SendStringCommand(model, UTF8STRC("AT#MDL?"), 3000);
 }
 
 UTF8Char *IO::Device::RockwellModemController::VoiceGetRevision(UTF8Char *ver)
 {
-	return this->SendStringCommand(ver, "AT#REV?", 3000);
+	return this->SendStringCommand(ver, UTF8STRC("AT#REV?"), 3000);
 }
 
 Bool IO::Device::RockwellModemController::VoiceGetBaudRate(Int32 *baudRate)
 {
 	UTF8Char sbuff[128];
-	if (this->SendStringCommand(sbuff, "AT#BDR?", 3000) == 0)
+	if (this->SendStringCommand(sbuff, UTF8STRC("AT#BDR?"), 3000) == 0)
 		return false;
 	Int32 v;
 	if (!Text::StrToInt32(sbuff, &v))
@@ -40,15 +40,16 @@ Bool IO::Device::RockwellModemController::VoiceGetBaudRate(Int32 *baudRate)
 
 Bool IO::Device::RockwellModemController::VoiceSetBaudRate(Int32 baudRate)
 {
-	Char sbuff[32];
-	Text::StrInt32(Text::StrConcat(sbuff, "AT#BDR="), baudRate / 2400);
-	return this->SendBoolCommand(sbuff);
+	UTF8Char sbuff[32];
+	UTF8Char *sptr;
+	sptr = Text::StrInt32(Text::StrConcatC(sbuff, UTF8STRC("AT#BDR=")), baudRate / 2400);
+	return this->SendBoolCommandC(sbuff, (UOSInt)(sptr - sbuff));
 }
 
 Bool IO::Device::RockwellModemController::VoiceGetCallerIDType(CallerIDType *callerIDType)
 {
 	UTF8Char sbuff[128];
-	if (this->SendStringCommand(sbuff, "AT#CID?", 3000) == 0)
+	if (this->SendStringCommand(sbuff, UTF8STRC("AT#CID?"), 3000) == 0)
 		return false;
 	Int32 v;
 	if (!Text::StrToInt32(sbuff, &v))
@@ -62,11 +63,11 @@ Bool IO::Device::RockwellModemController::VoiceSetCallerIDType(CallerIDType call
 	switch (callerIDType)
 	{
 	case CIDT_DISABLE:
-		return this->SendBoolCommand("AT#CID=0");
+		return this->SendBoolCommandC(UTF8STRC("AT#CID=0"));
 	case CIDT_FORMATED:
-		return this->SendBoolCommand("AT#CID=1");
+		return this->SendBoolCommandC(UTF8STRC("AT#CID=1"));
 	case CIDT_UNFORMATED:
-		return this->SendBoolCommand("AT#CID=2");
+		return this->SendBoolCommandC(UTF8STRC("AT#CID=2"));
 	default:
 		return false;
 	}
@@ -75,7 +76,7 @@ Bool IO::Device::RockwellModemController::VoiceSetCallerIDType(CallerIDType call
 Bool IO::Device::RockwellModemController::VoiceGetType(VoiceType *voiceType)
 {
 	UTF8Char sbuff[128];
-	if (this->SendStringCommand(sbuff, "AT#CLS?", 3000) == 0)
+	if (this->SendStringCommand(sbuff, UTF8STRC("AT#CLS?"), 3000) == 0)
 		return false;
 	Int32 v;
 	if (!Text::StrToInt32(sbuff, &v))
@@ -89,13 +90,13 @@ Bool IO::Device::RockwellModemController::VoiceSetType(VoiceType voiceType)
 	switch (voiceType)
 	{
 	case VT_DATA:
-		return this->SendBoolCommand("AT#CLS=0");
+		return this->SendBoolCommandC(UTF8STRC("AT#CLS=0"));
 	case VT_CLASS1FAX:
-		return this->SendBoolCommand("AT#CLS=1");
+		return this->SendBoolCommandC(UTF8STRC("AT#CLS=1"));
 	case VT_CLASS2FAX:
-		return this->SendBoolCommand("AT#CLS=2");
+		return this->SendBoolCommandC(UTF8STRC("AT#CLS=2"));
 	case VT_VOICE:
-		return this->SendBoolCommand("AT#CLS=8");
+		return this->SendBoolCommandC(UTF8STRC("AT#CLS=8"));
 	default:
 		return false;
 	}
@@ -104,7 +105,7 @@ Bool IO::Device::RockwellModemController::VoiceSetType(VoiceType voiceType)
 Bool IO::Device::RockwellModemController::VoiceGetBufferSize(Int32 *buffSize)
 {
 	UTF8Char sbuff[128];
-	if (this->SendStringCommand(sbuff, "AT#VBQ?", 3000) == 0)
+	if (this->SendStringCommand(sbuff, UTF8STRC("AT#VBQ?"), 3000) == 0)
 		return false;
 	return Text::StrToInt32(sbuff, buffSize);
 }
@@ -112,22 +113,23 @@ Bool IO::Device::RockwellModemController::VoiceGetBufferSize(Int32 *buffSize)
 Bool IO::Device::RockwellModemController::VoiceGetBitsPerSample(Int32 *bps)
 {
 	UTF8Char sbuff[128];
-	if (this->SendStringCommand(sbuff, "AT#VBS?", 3000) == 0)
+	if (this->SendStringCommand(sbuff, UTF8STRC("AT#VBS?"), 3000) == 0)
 		return false;
 	return Text::StrToInt32(sbuff, bps);
 }
 
 Bool IO::Device::RockwellModemController::VoiceSetBitsPerSample(Int32 bps)
 {
-	Char sbuff[32];
-	Text::StrInt32(Text::StrConcat(sbuff, "AT#VBS="), bps);
-	return this->SendBoolCommand(sbuff);
+	UTF8Char sbuff[32];
+	UTF8Char *sptr;
+	sptr = Text::StrInt32(Text::StrConcatC(sbuff, UTF8STRC("AT#VBS=")), bps);
+	return this->SendBoolCommandC(sbuff, (UOSInt)(sptr - sbuff));
 }
 
 Bool IO::Device::RockwellModemController::VoiceGetToneDur(Int32 *durMS)
 {
 	UTF8Char sbuff[128];
-	if (this->SendStringCommand(sbuff, "AT#VBS?", 3000) == 0)
+	if (this->SendStringCommand(sbuff, UTF8STRC("AT#VBS?"), 3000) == 0)
 		return false;
 	Int32 v;
 	if (!Text::StrToInt32(sbuff, &v))
@@ -138,20 +140,21 @@ Bool IO::Device::RockwellModemController::VoiceGetToneDur(Int32 *durMS)
 
 Bool IO::Device::RockwellModemController::VoiceSetToneDur(Int32 durMS)
 {
-	Char sbuff[32];
-	Text::StrInt32(Text::StrConcat(sbuff, "AT#VBT="), durMS / 100);
-	return this->SendBoolCommand(sbuff);
+	UTF8Char sbuff[32];
+	UTF8Char *sptr;
+	sptr = Text::StrInt32(Text::StrConcatC(sbuff, UTF8STRC("AT#VBT=")), durMS / 100);
+	return this->SendBoolCommandC(sbuff, (UOSInt)(sptr - sbuff));
 }
 
 UTF8Char *IO::Device::RockwellModemController::VoiceGetCompression(UTF8Char *comp)
 {
-	return this->SendStringCommand(comp, "AT#VCI?", 3000);
+	return this->SendStringCommand(comp, UTF8STRC("AT#VCI?"), 3000);
 }
 
 Bool IO::Device::RockwellModemController::VoiceGetVoiceLineType(VoiceLineType *voiceLineType)
 {
 	UTF8Char sbuff[128];
-	if (this->SendStringCommand(sbuff, "AT#VLS?", 3000) == 0)
+	if (this->SendStringCommand(sbuff, UTF8STRC("AT#VLS?"), 3000) == 0)
 		return false;
 	Int32 v;
 	if (!Text::StrToInt32(sbuff, &v))
@@ -162,23 +165,26 @@ Bool IO::Device::RockwellModemController::VoiceGetVoiceLineType(VoiceLineType *v
 
 Bool IO::Device::RockwellModemController::VoiceSetVoiceLineType(VoiceLineType voiceLineType)
 {
-	Char sbuff[32];
-	Text::StrInt32(Text::StrConcat(sbuff, "AT#VLS="), (Int32)voiceLineType);
-	return this->SendBoolCommand(sbuff);
+	UTF8Char sbuff[32];
+	UTF8Char *sptr;
+	sptr = Text::StrInt32(Text::StrConcatC(sbuff, UTF8STRC("AT#VLS=")), (Int32)voiceLineType);
+	return this->SendBoolCommandC(sbuff, (UOSInt)(sptr - sbuff));
 }
 
-IO::ModemController::DialResult IO::Device::RockwellModemController::VoiceToneDial(Char *phoneNum)
+IO::ModemController::DialResult IO::Device::RockwellModemController::VoiceToneDial(const UTF8Char *phoneNum)
 {
-	Char sbuff[32];
-	Text::StrConcat(Text::StrConcat(sbuff, "ATDT"), phoneNum);
-	return this->SendDialCommand(sbuff);
+	UTF8Char sbuff[32];
+	UTF8Char *sptr;
+	sptr = Text::StrConcat(Text::StrConcatC(sbuff, UTF8STRC("ATDT")), phoneNum);
+	return this->SendDialCommand(sbuff, (UOSInt)(sptr - sbuff));
 }
 
-IO::ModemController::DialResult IO::Device::RockwellModemController::VoicePulseDial(Char *phoneNum)
+IO::ModemController::DialResult IO::Device::RockwellModemController::VoicePulseDial(const UTF8Char *phoneNum)
 {
-	Char sbuff[32];
-	Text::StrConcat(Text::StrConcat(sbuff, "ATDP"), phoneNum);
-	return this->SendDialCommand(sbuff);
+	UTF8Char sbuff[32];
+	UTF8Char *sptr;
+	sptr = Text::StrConcat(Text::StrConcatC(sbuff, UTF8STRC("ATDP")), phoneNum);
+	return this->SendDialCommand(sbuff, (UOSInt)(sptr - sbuff));
 }
 
 UTF8Char *IO::Device::RockwellModemController::GetVoiceTypeString(UTF8Char *buff, VoiceType voiceType)

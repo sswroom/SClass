@@ -83,13 +83,13 @@ Bool DB::ColDef::GetDefVal(DB::SQLBuilder *sql)
 {
 	if (this->defVal == 0)
 		return false;
-	if (Text::StrStartsWith(this->defVal->v, (const UTF8Char*)"b'"))
+	if (this->defVal->StartsWith(UTF8STRC("b'")))
 	{
-		sql->AppendBool(Text::StrEquals(this->defVal->v, (const UTF8Char*)"b'1'"));
+		sql->AppendBool(this->defVal->Equals(UTF8STRC("b'1'")));
 	}
 	else
 	{
-		sql->AppendStrUTF8(this->defVal->v);
+		sql->AppendStr(this->defVal);
 	}
 	return true;
 }

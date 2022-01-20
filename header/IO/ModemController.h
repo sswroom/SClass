@@ -22,20 +22,20 @@ namespace IO
 	protected:
 		IO::ATCommandChannel *channel;
 		Bool needRelease;
-		Data::ArrayList<const Char *> *cmdResults;
+		Data::ArrayList<Text::String *> *cmdResults;
 		Sync::Mutex *cmdMut;
 
 	protected:
 		void ClearCmdResult();
 		Bool IsCmdSucceed();
 
-		UTF8Char *SendStringCommand(UTF8Char *buff, const Char *cmd, Int32 timeoutMS);
-		Bool SendStringCommand(Data::ArrayList<const Char*> *resList, const Char *cmd, Int32 timeoutMS);
-		UTF8Char *SendStringCommandDirect(UTF8Char *buff, const Char *cmd, Int32 timeoutMS);
-		Bool SendStringListCommand(Text::StringBuilderUTF *sb, const Char *cmd);
-		Bool SendBoolCommand(const Char *cmd);
-		Bool SendBoolCommand(const Char *cmd, Int32 timeoutMS);
-		DialResult SendDialCommand(const Char *cmd);
+		UTF8Char *SendStringCommand(UTF8Char *buff, const UTF8Char *cmd, UOSInt cmdLen, Int32 timeoutMS);
+		Bool SendStringCommand(Data::ArrayList<Text::String*> *resList, const UTF8Char *cmd, UOSInt cmdLen, Int32 timeoutMS);
+		UTF8Char *SendStringCommandDirect(UTF8Char *buff, const UTF8Char *cmd, UOSInt cmdLen, Int32 timeoutMS);
+		Bool SendStringListCommand(Text::StringBuilderUTF *sb, const UTF8Char *cmd, UOSInt cmdLen);
+		Bool SendBoolCommandC(const UTF8Char *cmd, UOSInt cmdLen);
+		Bool SendBoolCommandC(const UTF8Char *cmd, UOSInt cmdLen, Int32 timeoutMS);
+		DialResult SendDialCommand(const UTF8Char *cmd, UOSInt cmdLen);
 
 	public:
 		ModemController(IO::ATCommandChannel *channel, Bool needRelease);

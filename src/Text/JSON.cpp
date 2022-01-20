@@ -165,15 +165,14 @@ Text::String *Text::JSONBase::GetString(const UTF8Char *path, UOSInt pathLen)
 Text::JSONBase *Text::JSONBase::ParseJSONStr(const UTF8Char *jsonStr)
 {
 	const UTF8Char *endPtr;
-	return ParseJSONStr2(jsonStr, &endPtr);
+	return ParseJSONStr2(jsonStr, &jsonStr[Text::StrCharCnt(jsonStr)], &endPtr);
 }
 
 Text::JSONBase *Text::JSONBase::ParseJSONStrLen(const UTF8Char *jsonStr, UOSInt strLen)
 {
 	UTF8Char *s = MemAlloc(UTF8Char, strLen + 1);
-	Text::StrConcatC(s, jsonStr, strLen);
 	const UTF8Char *endPtr;
-	Text::JSONBase *ret = ParseJSONStr2(s, &endPtr);
+	Text::JSONBase *ret = ParseJSONStr2(s, Text::StrConcatC(s, jsonStr, strLen), &endPtr);
 	MemFree(s);
 	return ret;
 }
@@ -475,14 +474,14 @@ const UTF8Char *Text::JSONBase::ParseJSNumber(const UTF8Char *jsonStr, Double *v
 }
 
 
-Text::JSONBase *Text::JSONBase::ParseJSONStr2(const UTF8Char *jsonStr, const UTF8Char **jsonStrEnd)
+Text::JSONBase *Text::JSONBase::ParseJSONStr2(const UTF8Char *jsonStr, const UTF8Char *jsonStrEnd, const UTF8Char **jsonStrEndOut)
 {
 	UTF8Char c;
 	jsonStr = ClearWS(jsonStr);
 	c = *jsonStr;
 	if (c == 0)
 	{
-		*jsonStrEnd = 0;
+		*jsonStrEndOut = 0;
 		return 0;
 	}
 	else if (c == '{')
@@ -497,7 +496,7 @@ Text::JSONBase *Text::JSONBase::ParseJSONStr2(const UTF8Char *jsonStr, const UTF
 		if (c == '}')
 		{
 			jsonStr++;
-			*jsonStrEnd = jsonStr;
+			*jsonStrEndOut = jsonStr;
 			return jobj;
 		}
 		while (true)
@@ -511,7 +510,7 @@ Text::JSONBase *Text::JSONBase::ParseJSONStr2(const UTF8Char *jsonStr, const UTF
 				jsonStr = ParseJSString(jsonStr, &sb);
 				if (jsonStr == 0)
 				{
-					*jsonStrEnd = 0;
+					*jsonStrEndOut = 0;
 					jobj->EndUse();
 					return 0;
 				}
@@ -519,18 +518,18 @@ Text::JSONBase *Text::JSONBase::ParseJSONStr2(const UTF8Char *jsonStr, const UTF
 				c = *jsonStr;
 				if (c != ':')
 				{
-					*jsonStrEnd = 0;
+					*jsonStrEndOut = 0;
 					jobj->EndUse();
 					return 0;
 				}
 				jsonStr++;
 				jsonStr = ClearWS(jsonStr);
 
-				obj = ParseJSONStr2(jsonStr, &jsonStr);
+				obj = ParseJSONStr2(jsonStr, jsonStrEnd, &jsonStr);
 				if (jsonStr == 0)
 				{
 					jobj->EndUse();
-					*jsonStrEnd = 0;
+					*jsonStrEndOut = 0;
 					return 0;
 				}
 				jobj->SetObjectValue(sb.ToString(), sb.GetLength(), obj);
@@ -543,7 +542,7 @@ Text::JSONBase *Text::JSONBase::ParseJSONStr2(const UTF8Char *jsonStr, const UTF
 				if (c == '}')
 				{
 					jsonStr++;
-					*jsonStrEnd = jsonStr;
+					*jsonStrEndOut = jsonStr;
 					return jobj;
 				}
 				else if (c == ',')
@@ -553,13 +552,13 @@ Text::JSONBase *Text::JSONBase::ParseJSONStr2(const UTF8Char *jsonStr, const UTF
 				else
 				{
 					jobj->EndUse();
-					*jsonStrEnd = 0;
+					*jsonStrEndOut = 0;
 					return 0;
 				}
 			}
 			else
 			{
-				*jsonStrEnd = 0;
+				*jsonStrEndOut = 0;
 				jobj->EndUse();
 				return 0;
 			}
@@ -576,7 +575,7 @@ Text::JSONBase *Text::JSONBase::ParseJSONStr2(const UTF8Char *jsonStr, const UTF
 		if (*jsonStr == ']')
 		{
 			jsonStr++;
-			*jsonStrEnd = jsonStr;
+			*jsonStrEndOut = jsonStr;
 			return arr;
 		}
 		while (true)
@@ -585,16 +584,16 @@ Text::JSONBase *Text::JSONBase::ParseJSONStr2(const UTF8Char *jsonStr, const UTF
 			if (c == 0)
 			{
 				arr->EndUse();
-				*jsonStrEnd = 0;
+				*jsonStrEndOut = 0;
 				return 0;
 			}
 			else
 			{
-				obj = ParseJSONStr2(jsonStr, &jsonStr);
+				obj = ParseJSONStr2(jsonStr, jsonStrEnd, &jsonStr);
 				if (jsonStr == 0)
 				{
 					arr->EndUse();
-					*jsonStrEnd = 0;
+					*jsonStrEndOut = 0;
 					return 0;
 				}
 				arr->AddArrayValue(obj);
@@ -607,7 +606,7 @@ Text::JSONBase *Text::JSONBase::ParseJSONStr2(const UTF8Char *jsonStr, const UTF
 				if (c == ']')
 				{
 					jsonStr++;
-					*jsonStrEnd = jsonStr;
+					*jsonStrEndOut = jsonStr;
 					return arr;
 				}
 				else if (c == ',')
@@ -617,7 +616,7 @@ Text::JSONBase *Text::JSONBase::ParseJSONStr2(const UTF8Char *jsonStr, const UTF
 				else
 				{
 					arr->EndUse();
-					*jsonStrEnd = 0;
+					*jsonStrEndOut = 0;
 					return 0;
 				}
 			}
@@ -631,11 +630,11 @@ Text::JSONBase *Text::JSONBase::ParseJSONStr2(const UTF8Char *jsonStr, const UTF
 		endPtr = ParseJSString(jsonStr, &sb);
 		if (endPtr == 0)
 		{
-			*jsonStrEnd = 0;
+			*jsonStrEndOut = 0;
 			return 0;
 		}
 		Text::JSONString *s;
-		*jsonStrEnd = endPtr;
+		*jsonStrEndOut = endPtr;
 		NEW_CLASS(s, Text::JSONString(sb.ToString(), sb.GetLength()));
 		return s;
 	}
@@ -645,65 +644,65 @@ Text::JSONBase *Text::JSONBase::ParseJSONStr2(const UTF8Char *jsonStr, const UTF
 		jsonStr = ParseJSNumber(jsonStr, &val);
 		if (jsonStr == 0)
 		{
-			*jsonStrEnd = 0;
+			*jsonStrEndOut = 0;
 			return 0;
 		}
 		else 
 		{
 			Text::JSONNumber *num;
 			NEW_CLASS(num, Text::JSONNumber(val));
-			*jsonStrEnd = jsonStr;
+			*jsonStrEndOut = jsonStr;
 			return num;
 		}
 	}
 	else if (c == 't')
 	{
-		if (Text::StrStartsWith(jsonStr, (const UTF8Char*)"true"))
+		if (Text::StrStartsWithC(jsonStr, (UOSInt)(jsonStrEnd - jsonStr), UTF8STRC("true")))
 		{
 			Text::JSONBool *b;
-			*jsonStrEnd = &jsonStr[4];
+			*jsonStrEndOut = &jsonStr[4];
 			NEW_CLASS(b, Text::JSONBool(true));
 			return b;
 		}
 		else
 		{
-			*jsonStrEnd = 0;
+			*jsonStrEndOut = 0;
 			return 0;
 		}
 	}
 	else if (c == 'f')
 	{
-		if (Text::StrStartsWith(jsonStr, (const UTF8Char*)"false"))
+		if (Text::StrStartsWithC(jsonStr, (UOSInt)(jsonStrEnd - jsonStr), UTF8STRC("false")))
 		{
 			Text::JSONBool *b;
-			*jsonStrEnd = &jsonStr[5];
+			*jsonStrEndOut = &jsonStr[5];
 			NEW_CLASS(b, Text::JSONBool(false));
 			return b;
 		}
 		else
 		{
-			*jsonStrEnd = 0;
+			*jsonStrEndOut = 0;
 			return 0;
 		}
 	}
 	else if (c == 'n')
 	{
-		if (Text::StrStartsWith(jsonStr, (const UTF8Char*)"null"))
+		if (Text::StrStartsWithC(jsonStr, (UOSInt)(jsonStrEnd - jsonStr), UTF8STRC("null")))
 		{
 			Text::JSONNull *n;
-			*jsonStrEnd = &jsonStr[4];
+			*jsonStrEndOut = &jsonStr[4];
 			NEW_CLASS(n, Text::JSONNull());
 			return n;
 		}
 		else
 		{
-			*jsonStrEnd = 0;
+			*jsonStrEndOut = 0;
 			return 0;
 		}
 	}
 	else
 	{
-		*jsonStrEnd = 0;
+		*jsonStrEndOut = 0;
 		return 0;
 	}
 }

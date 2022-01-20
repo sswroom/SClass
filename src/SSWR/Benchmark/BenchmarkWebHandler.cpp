@@ -189,6 +189,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(SSWR::Benchmark:
 	UTF8Char fileName[512];
 	UTF8Char path[512];
 	UTF8Char *u8ptr;
+	UTF8Char *u8ptr2;
 	if (req->GetQueryValueStr(UTF8STRC("model"), fileName, 512))
 	{
 		UOSInt fileSize;
@@ -361,11 +362,11 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(SSWR::Benchmark:
 	if (sess)
 	{
 		IO::Path::PathType pt;
-		while (IO::Path::FindNextFile(u8ptr, sess, 0, &pt, 0))
+		while ((u8ptr2 = IO::Path::FindNextFile(u8ptr, sess, 0, &pt, 0)) != 0)
 		{
 			if (pt == IO::Path::PathType::File)
 			{
-				if (Text::StrStartsWith(u8ptr, (const UTF8Char*)"Unknown"))
+				if (Text::StrStartsWithC(u8ptr, (UOSInt)(u8ptr2 - u8ptr), UTF8STRC("Unknown")))
 				{
 					sbOut.AppendC(UTF8STRC("<tr><td>"));
 					sbOut.AppendC(UTF8STRC("<a href=\"cpuinfo?model="));

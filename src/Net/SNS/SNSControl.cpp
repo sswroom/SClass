@@ -22,19 +22,20 @@ const UTF8Char *Net::SNS::SNSControl::SNSTypeGetName(Net::SNS::SNSControl::SNSTy
 
 Net::SNS::SNSControl::SNSType Net::SNS::SNSControl::SNSTypeFromName(const UTF8Char *name)
 {
-	if (Text::StrEquals(name, (const UTF8Char*)"RSS"))
+	UOSInt nameLen = Text::StrCharCnt(name);
+	if (Text::StrEqualsC(name, nameLen, UTF8STRC("RSS")))
 	{
 		return ST_RSS;
 	}
-	else if (Text::StrEquals(name, (const UTF8Char*)"Twitter"))
+	else if (Text::StrEqualsC(name, nameLen, UTF8STRC("Twitter")))
 	{
 		return ST_TWITTER;
 	}
-	else if (Text::StrEquals(name, (const UTF8Char*)"7gogo"))
+	else if (Text::StrEqualsC(name, nameLen, UTF8STRC("7gogo")))
 	{
 		return ST_7GOGO;
 	}
-	else if (Text::StrEquals(name, (const UTF8Char*)"Instagram"))
+	else if (Text::StrEqualsC(name, nameLen, UTF8STRC("Instagram")))
 	{
 		return ST_INSTAGRAM;
 	}

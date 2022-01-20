@@ -35,6 +35,7 @@ IO::ParsedObject *Parser::ObjParser::DBITParser::ParseObject(IO::ParsedObject *p
 	DB::ReadingDB *db;
 	DB::DBReader *r;
 	UTF8Char sbuff[512];
+	UTF8Char *sptr;
 	Bool valid = false;
 	if (pobj->GetParserType() != IO::ParserType::ReadingDB)
 		return 0;
@@ -43,20 +44,20 @@ IO::ParsedObject *Parser::ObjParser::DBITParser::ParseObject(IO::ParsedObject *p
 	if (r)
 	{
 		valid = true;
-		r->GetName(0, sbuff);
-		if (!Text::StrEquals(sbuff, (const UTF8Char*)"fUserType"))
+		sptr = r->GetName(0, sbuff);
+		if (sptr == 0 || !Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("fUserType")))
 			valid = false;
-		r->GetName(1, sbuff);
-		if (!Text::StrEquals(sbuff, (const UTF8Char*)"fDBType"))
+		sptr = r->GetName(1, sbuff);
+		if (sptr == 0 || !Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("fDBType")))
 			valid = false;
-		r->GetName(2, sbuff);
-		if (!Text::StrEquals(sbuff, (const UTF8Char*)"fObjNo"))
+		sptr = r->GetName(2, sbuff);
+		if (sptr == 0 || !Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("fObjNo")))
 			valid = false;
-		r->GetName(3, sbuff);
-		if (!Text::StrEquals(sbuff, (const UTF8Char*)"fObjFreeNo"))
+		sptr = r->GetName(3, sbuff);
+		if (sptr == 0 || !Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("fObjFreeNo")))
 			valid = false;
-		r->GetName(4, sbuff);
-		if (!Text::StrEquals(sbuff, (const UTF8Char*)"fTypeName"))
+		sptr = r->GetName(4, sbuff);
+		if (sptr == 0 || !Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("fTypeName")))
 			valid = false;
 		db->CloseReader(r);
 	}

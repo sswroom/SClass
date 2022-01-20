@@ -20,9 +20,9 @@ namespace Net
 				UInt8 *buff;
 				UOSInt buffSize;
 				Int32 userId;
-				const Char *cliName;
-				const Char *userName;
-				Data::ArrayList<const Char *> *rcptTo;
+				const UTF8Char *cliName;
+				const UTF8Char *userName;
+				Data::ArrayList<const UTF8Char *> *rcptTo;
 				Bool dataMode;
 				IO::MemoryStream *dataStm;
 			} MailStatus;
@@ -34,7 +34,7 @@ namespace Net
 			Net::TCPServer *svr;
 			Net::TCPClientMgr *cliMgr;
 			IO::LogTool *log;
-			const UTF8Char *greeting;
+			Text::String *greeting;
 
 			Net::Email::MailController *mailCtrl;
 			IO::FileStream *rawLog;
@@ -44,10 +44,10 @@ namespace Net
 			static void __stdcall ClientEvent(Net::TCPClient *cli, void *userObj, void *cliData, Net::TCPClientMgr::TCPEventType evtType);
 			static void __stdcall ClientData(Net::TCPClient *cli, void *userObj, void *cliData, const UInt8 *buff, UOSInt size);
 			static void __stdcall ClientTimeout(Net::TCPClient *cli, void *userObj, void *cliData);
-			UOSInt WriteMessage(Net::TCPClient *cli, Bool success, const UTF8Char *msg);
+			UOSInt WriteMessage(Net::TCPClient *cli, Bool success, const UTF8Char *msg, UOSInt msgLen);
 			UOSInt WriteRAW(Net::TCPClient *cli, const UTF8Char *msg);
 			//static OSInt WriteMessage(Net::TCPClient *cli, Int32 statusCode, const Char *msg);
-			void ParseCmd(Net::TCPClient *cli, MailStatus *cliStatus, Char *cmd);
+			void ParseCmd(Net::TCPClient *cli, MailStatus *cliStatus, const UTF8Char *cmd, UOSInt cmdLen);
 		public:
 			POP3Server(Net::SocketFactory *sockf, Net::SSLEngine *ssl, UInt16 port, IO::LogTool *log, const UTF8Char *greeting, Net::Email::MailController *mailCtrl);
 			~POP3Server();

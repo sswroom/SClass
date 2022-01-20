@@ -200,7 +200,7 @@ namespace IO
 
 		// Phonebook Commands
 		UTF8Char *PBGetCharset(UTF8Char *cs);
-		Bool PBSetCharset(const Char *cs);
+		Bool PBSetCharset(const UTF8Char *cs, UOSInt csLen);
 		Bool PBSetStorage(PBStorage storage);
 		Bool PBGetStorage(PBStorage *storage, Int32 *usedEntry, Int32 *freeEntry);
 		Bool PBGetStorageStatus(Int32 *startEntry, Int32 *endEntry, Int32 *maxNumberLen, Int32 *maxTextLen);

@@ -17,14 +17,15 @@ UTF8Char *IO::Device::WavecomModemController::GetSIMCardID(UTF8Char *cardID)
 	UTF8Char *sptr = this->SendStringCommand(sbuff, "AT+CCID", 3000);
 	if (sptr == 0)
 		return 0;
-	if (Text::StrStartsWith(sbuff, (const UTF8Char*)"+CCID: \""))
+	if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("+CCID: \"")))
 	{
 		UOSInt i = Text::StrIndexOf(&sbuff[8], '\"');
 		if (i != INVALID_INDEX)
 		{
 			sbuff[i + 8] = 0;
+			sptr = &sbuff[i + 8];
 		}
-		return Text::StrConcat(cardID, &sbuff[8]);
+		return Text::StrConcatC(cardID, &sbuff[8], (UOSInt)(sptr - &sbuff[8]));
 	}
 	else
 	{

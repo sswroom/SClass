@@ -7,16 +7,15 @@
 #include "Text/StringTool.h"
 #include "Text/TextBinEnc/Base64Enc.h"
 
-UOSInt Net::Email::EmailMessage::GetHeaderIndex(const Char *name)
+UOSInt Net::Email::EmailMessage::GetHeaderIndex(const UTF8Char *name, UOSInt nameLen)
 {
-	UOSInt len = Text::StrCharCnt(name);
-	const UTF8Char *header;
+	Text::String *header;
 	UOSInt i = 0;
 	UOSInt j = this->headerList->GetCount();
 	while (i < j)
 	{
 		header = this->headerList->GetItem(i);
-		if (Text::StrStartsWith(header, (const UTF8Char*)"name") && header[len] == ':' && header[len + 1] == ' ')
+		if (header->StartsWith(name, nameLen) && header->v[nameLen] == ':' && header->v[nameLen + 1] == ' ')
 		{
 			return i;
 		}
@@ -25,22 +24,22 @@ UOSInt Net::Email::EmailMessage::GetHeaderIndex(const Char *name)
 	return INVALID_INDEX;
 }
 
-Bool Net::Email::EmailMessage::SetHeader(const Char *name, const UTF8Char *val)
+Bool Net::Email::EmailMessage::SetHeader(const UTF8Char *name, UOSInt nameLen, const UTF8Char *val)
 {
 	Text::StringBuilderUTF8 sb;
-	sb.Append((const UTF8Char*)name);
+	sb.AppendC(name, nameLen);
 	sb.AppendChar(':', 1);
 	sb.AppendChar(' ', 1);
 	sb.Append(val);
-	UOSInt i = this->GetHeaderIndex(name);
+	UOSInt i = this->GetHeaderIndex(name, nameLen);
 	if (i == INVALID_INDEX)
 	{
-		this->headerList->Add(Text::StrCopyNew(sb.ToString()));
+		this->headerList->Add(Text::String::New(sb.ToString(), sb.GetLength()));
 	}
 	else
 	{
-		Text::StrDelNew(this->headerList->GetItem(i));
-		this->headerList->SetItem(i, Text::StrCopyNew(sb.ToString()));
+		this->headerList->GetItem(i)->Release();
+		this->headerList->SetItem(i, Text::String::New(sb.ToString(), sb.GetLength()));
 	}
 	return true;
 }
@@ -58,7 +57,7 @@ Net::Email::EmailMessage::EmailMessage()
 {
 	this->fromAddr = 0;
 	NEW_CLASS(this->recpList, Data::ArrayList<const UTF8Char*>());
-	NEW_CLASS(this->headerList, Data::ArrayList<const UTF8Char*>());
+	NEW_CLASS(this->headerList, Data::ArrayList<Text::String*>());
 	this->content = 0;
 	this->contentLen = 0;
 }
@@ -68,7 +67,7 @@ Net::Email::EmailMessage::~EmailMessage()
 	SDEL_TEXT(this->fromAddr);
 	LIST_FREE_FUNC(this->recpList, Text::StrDelNew);
 	DEL_CLASS(this->recpList);
-	LIST_FREE_FUNC(this->headerList, Text::StrDelNew);
+	LIST_FREE_STRING(this->headerList);
 	DEL_CLASS(this->headerList);
 	if (this->content)
 	{
@@ -82,18 +81,18 @@ Bool Net::Email::EmailMessage::SetSubject(const UTF8Char *subject)
 	{
 		Text::StringBuilderUTF8 sb;
 		this->AppendUTF8Header(&sb, subject);
-		this->SetHeader("Subject", sb.ToString());
+		this->SetHeader(UTF8STRC("Subject"), sb.ToString());
 	}
 	else
 	{
-		this->SetHeader("Subject", subject);
+		this->SetHeader(UTF8STRC("Subject"), subject);
 	}
 	return true;
 }
 
 Bool Net::Email::EmailMessage::SetContent(const UTF8Char *content, const Char *contentType)
 {
-	this->SetHeader("Content-Type", (const UTF8Char*)contentType);
+	this->SetHeader(UTF8STRC("Content-Type"), (const UTF8Char*)contentType);
 	UOSInt contentLen = Text::StrCharCnt(content);
 	if (this->content)
 		MemFree(this->content);
@@ -135,7 +134,7 @@ Bool Net::Email::EmailMessage::SetSentDate(Data::DateTime *dt)
 		break;
 	};
 	dt->ToString(sptr, "dd MMM yyyy HH:mm:ss zzz");
-	return this->SetHeader("Date", sbuff);
+	return this->SetHeader(UTF8STRC("Date"), sbuff);
 }
 
 Bool Net::Email::EmailMessage::SetMessageId(const UTF8Char *msgId)
@@ -144,7 +143,7 @@ Bool Net::Email::EmailMessage::SetMessageId(const UTF8Char *msgId)
 	sb.AppendChar('<', 1);
 	sb.Append(msgId);
 	sb.AppendChar('>', 1);
-	return this->SetHeader("Message-ID", sb.ToString());
+	return this->SetHeader(UTF8STRC("Message-ID"), sb.ToString());
 }
 
 Bool Net::Email::EmailMessage::SetFrom(const UTF8Char *name, const UTF8Char *addr)
@@ -167,7 +166,7 @@ Bool Net::Email::EmailMessage::SetFrom(const UTF8Char *name, const UTF8Char *add
 	sb.AppendChar('<', 1);
 	sb.Append(addr);
 	sb.AppendChar('>', 1);
-	this->SetHeader("From", sb.ToString());
+	this->SetHeader(UTF8STRC("From"), sb.ToString());
 	SDEL_TEXT(this->fromAddr);
 	this->fromAddr = Text::StrCopyNew(addr);
 	return true;
@@ -175,7 +174,7 @@ Bool Net::Email::EmailMessage::SetFrom(const UTF8Char *name, const UTF8Char *add
 
 Bool Net::Email::EmailMessage::AddTo(const UTF8Char *name, const UTF8Char *addr)
 {
-	UOSInt i = this->GetHeaderIndex("To");
+	UOSInt i = this->GetHeaderIndex(UTF8STRC("To"));
 	Text::StringBuilderUTF8 sb;
 	if (i != INVALID_INDEX)
 	{
@@ -199,7 +198,7 @@ Bool Net::Email::EmailMessage::AddTo(const UTF8Char *name, const UTF8Char *addr)
 	sb.AppendChar('<', 1);
 	sb.Append(addr);
 	sb.AppendChar('>', 1);
-	this->SetHeader("To", sb.ToString());
+	this->SetHeader(UTF8STRC("To"), sb.ToString());
 	this->recpList->Add(Text::StrCopyNew(addr));
 	return true;
 }
@@ -232,7 +231,7 @@ Bool Net::Email::EmailMessage::AddToList(const UTF8Char *addrs)
 
 Bool Net::Email::EmailMessage::AddCc(const UTF8Char *name, const UTF8Char *addr)
 {
-	UOSInt i = this->GetHeaderIndex("Cc");
+	UOSInt i = this->GetHeaderIndex(UTF8STRC("Cc"));
 	Text::StringBuilderUTF8 sb;
 	if (i != INVALID_INDEX)
 	{
@@ -256,7 +255,7 @@ Bool Net::Email::EmailMessage::AddCc(const UTF8Char *name, const UTF8Char *addr)
 	sb.AppendChar('<', 1);
 	sb.Append(addr);
 	sb.AppendChar('>', 1);
-	this->SetHeader("Cc", sb.ToString());
+	this->SetHeader(UTF8STRC("Cc"), sb.ToString());
 	this->recpList->Add(Text::StrCopyNew(addr));
 	return true;
 }
@@ -292,13 +291,13 @@ Bool Net::Email::EmailMessage::WriteToStream(IO::Stream *stm)
 	{
 		return false;
 	}
-	const UTF8Char *header;
+	Text::String *header;
 	UOSInt i = 0;
 	UOSInt j = this->headerList->GetCount();
 	while (i < j)
 	{
 		header = this->headerList->GetItem(i);
-		stm->Write(header, Text::StrCharCnt(header));
+		stm->Write(header->v, header->leng);
 		stm->Write((const UInt8*)"\r\n", 2);
 		i++;
 	}

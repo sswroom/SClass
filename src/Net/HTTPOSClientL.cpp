@@ -28,14 +28,15 @@ struct Net::HTTPOSClient::ClassData
 size_t HTTPOSClient_HeaderFunc(char *buffer, size_t size, size_t nitems, void *userdata)
 {
 	Net::HTTPOSClient::ClassData *data = (Net::HTTPOSClient::ClassData*)userdata;
-	if (Text::StrStartsWith(buffer, "HTTP/"))
+	UOSInt len = (UOSInt)(size * nitems);
+	if (Text::StrStartsWithC((const UTF8Char*)buffer, len, UTF8STRC("HTTP/")))
 	{
-		return size * nitems;
+		return len;
 	}
-	Text::String *hdr = Text::String::New(size * nitems);
-	MemCopyNO(hdr->v, buffer, size * nitems);
-	hdr->v[size * nitems] = 0;
-	UOSInt i = size * nitems;
+	Text::String *hdr = Text::String::New(len);
+	MemCopyNO(hdr->v, buffer, len);
+	hdr->v[len] = 0;
+	UOSInt i = len;
 	while (i > 0)
 	{
 		if (hdr->v[i - 1] == 13 || hdr->v[i - 1] == 10)
@@ -54,7 +55,7 @@ size_t HTTPOSClient_HeaderFunc(char *buffer, size_t size, size_t nitems, void *u
 		data->contLen = Text::StrToUInt64(&hdr->v[16]);
 	}
 	data->respHeaders->Add(hdr);
-	return size * nitems;
+	return len;
 }
 
 size_t HTTPOSClient_WriteFunc(char *ptr, size_t size, size_t nmemb, void *userdata)
@@ -215,7 +216,7 @@ Bool Net::HTTPOSClient::Connect(const UTF8Char *url, UOSInt urlLen, const Char *
 
 	SDEL_STRING(this->url);
 	this->url = Text::String::New(url, urlLen);
-	if (Text::StrStartsWith(url, (const UTF8Char*)"http://"))
+	if (Text::StrStartsWithC(url, urlLen, UTF8STRC("http://")))
 	{
 		ptr1 = &url[7];
 		i = Text::StrIndexOf(ptr1, '/');
@@ -233,7 +234,7 @@ Bool Net::HTTPOSClient::Connect(const UTF8Char *url, UOSInt urlLen, const Char *
 		Text::TextBinEnc::URIEncoding::URIDecode(urltmp, urltmp);
 		defPort = 80;
 	}
-	else if (Text::StrStartsWith(url, (const UTF8Char*)"https://"))
+	else if (Text::StrStartsWithC(url, urlLen, UTF8STRC("https://")))
 	{
 		ptr1 = &url[8];
 		i = Text::StrIndexOf(ptr1, '/');

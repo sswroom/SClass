@@ -293,26 +293,27 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnSaveClicked(void *userObj)
 			{
 				Text::StringBuilderUTF8 sb;
 				sb.AppendC(hdr->v + 21, hdr->leng - 21);
-				UTF8Char *sarr[2];
+				Text::PString sarr[2];
 				UOSInt j;
-				sarr[1] = sb.ToString();
+				sarr[1].v = sb.ToString();
+				sarr[1].len = sb.GetLength();
 				while (true)
 				{
-					j = Text::StrSplitTrim(sarr, 2, sarr[1], ';');
-					if (Text::StrStartsWith(sarr[0], (const UTF8Char*)"filename="))
+					j = Text::StrSplitTrimP(sarr, 2, sarr[1].v, sarr[1].len, ';');
+					if (Text::StrStartsWithC(sarr[0].v, sarr[0].len, UTF8STRC("filename=")))
 					{
-						if (sarr[0][9] == '\"')
+						if (sarr[0].v[9] == '\"')
 						{
-							j = Text::StrIndexOf(&sarr[0][10], '\"');
+							j = Text::StrIndexOf(&sarr[0].v[10], '\"');
 							if (j != INVALID_INDEX)
 							{
-								sarr[0][10 + j] = 0;
+								sarr[0].v[10 + j] = 0;
 							}
-							dlg->SetFileName(&sarr[0][10]);
+							dlg->SetFileName(&sarr[0].v[10]);
 						}
 						else
 						{
-							dlg->SetFileName(&sarr[0][9]);
+							dlg->SetFileName(&sarr[0].v[9]);
 						}
 						break;
 					}
@@ -796,7 +797,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnTimerTick(void *userObj)
 					UOSInt k = me->lvCookie->AddItem(cookie->domain, cookie);
 					if (cookie->path)
 					{
-						me->lvCookie->SetSubItem(k, 1, cookie->path);
+						me->lvCookie->SetSubItem(k, 1, cookie->path->v);
 					}
 					me->lvCookie->SetSubItem(k, 2, cookie->name);
 					me->lvCookie->SetSubItem(k, 3, cookie->value);
@@ -849,7 +850,7 @@ void SSWR::AVIRead::AVIRHTTPClientForm::ClearCookie()
 		Text::StrDelNew(cookie->name);
 		Text::StrDelNew(cookie->value);
 		Text::StrDelNew(cookie->domain);
-		SDEL_TEXT(cookie->path);
+		SDEL_STRING(cookie->path);
 		MemFree(cookie);
 	}
 	this->cookieList->Clear();
@@ -870,6 +871,7 @@ SSWR::AVIRead::AVIRHTTPClientForm::HTTPCookie *SSWR::AVIRead::AVIRHTTPClientForm
 {
 	UTF8Char domain[512];
 	UTF8Char path[512];
+	UTF8Char *pathEnd;
 	Text::PString sarr[2];
 	UTF8Char *cookieValue;
 	UOSInt cnt;
@@ -878,6 +880,7 @@ SSWR::AVIRead::AVIRHTTPClientForm::HTTPCookie *SSWR::AVIRead::AVIRHTTPClientForm
 	Int64 expiryTime = 0;
 	Bool valid = true;
 	path[0] = 0;
+	pathEnd = path;
 	UTF8Char *domainEnd = Text::URLString::GetURLDomain(domain, reqURL, 0);
 	Text::StringBuilderUTF8 sb;
 	sb.Append(cookieStr);
@@ -942,7 +945,7 @@ SSWR::AVIRead::AVIRHTTPClientForm::HTTPCookie *SSWR::AVIRead::AVIRHTTPClientForm
 		}
 		else if (Text::StrStartsWithC(sarr[0].v, sarr[0].len, UTF8STRC("Path=")))
 		{
-			Text::StrConcatC(path, &sarr[0].v[5], sarr[0].len - 5);
+			pathEnd = Text::StrConcatC(path, &sarr[0].v[5], sarr[0].len - 5);
 		}
 	}
 	if (valid)
@@ -961,7 +964,7 @@ SSWR::AVIRead::AVIRHTTPClientForm::HTTPCookie *SSWR::AVIRead::AVIRHTTPClientForm
 			}
 			else
 			{
-				eq = eq && Text::StrEquals(cookie->path, path);
+				eq = eq && cookie->path->Equals(path, (UOSInt)(pathEnd - path));
 			}
 			if (eq)
 			{
@@ -978,7 +981,7 @@ SSWR::AVIRead::AVIRHTTPClientForm::HTTPCookie *SSWR::AVIRead::AVIRHTTPClientForm
 		cookie->domain = Text::StrCopyNew(domain);
 		if (path[0])
 		{
-			cookie->path = Text::StrCopyNew(path);
+			cookie->path = Text::String::New(path, (UOSInt)(pathEnd - path));
 		}
 		else
 		{
@@ -1010,9 +1013,10 @@ UTF8Char *SSWR::AVIRead::AVIRHTTPClientForm::AppendCookie(UTF8Char *sbuff, const
 	UOSInt j;
 	UTF8Char *cookiePtr = 0;
 	UTF8Char *pathPtr;
+	UTF8Char *pathPtrEnd;
 	sptr = Text::URLString::GetURLDomain(buff, reqURL, 0);
 	pathPtr = sptr + 1;
-	Text::URLString::GetURLPath(pathPtr, reqURL);
+	pathPtrEnd = Text::URLString::GetURLPath(pathPtr, reqURL);
 	len1 = (UOSInt)(sptr - buff);;
 	Sync::MutexUsage mutUsage(this->cookieMut);
 	i = 0;
@@ -1036,7 +1040,7 @@ UTF8Char *SSWR::AVIRead::AVIRHTTPClientForm::AppendCookie(UTF8Char *sbuff, const
 		}
 		if (valid)
 		{
-			if (cookie->path == 0 || Text::StrStartsWith(pathPtr, cookie->path))
+			if (cookie->path == 0 || Text::StrStartsWithC(pathPtr, (UOSInt)(pathPtrEnd - pathPtr), cookie->path->v, cookie->path->leng))
 			{
 				if (cookiePtr == 0)
 				{

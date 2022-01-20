@@ -255,24 +255,29 @@ void IO::JavaClass::AppendLineNum(Text::StringBuilderUTF *sb, DecompileEnv *env,
 const UInt8 *IO::JavaClass::DetailAttribute(const UInt8 *attr, UOSInt lev, Text::StringBuilderUTF *sb)
 {
 	UTF8Char sbuff[256];
+	UTF8Char *sptr;
 	UInt32 len = ReadMUInt32(&attr[2]);
 	UInt16 nameIndex = ReadMUInt16(&attr[0]);
 	this->AppendIndent(sb, lev);
 	sb->AppendC(UTF8STRC("Attr Name Index = "));
 	sb->AppendU16(nameIndex);
 	sbuff[0] = 0;
-	if (this->GetConstName(sbuff, nameIndex))
+	if ((sptr = this->GetConstName(sbuff, nameIndex)) != 0)
 	{
 		sb->AppendC(UTF8STRC(" ("));
-		sb->Append(sbuff);
+		sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
 		sb->AppendChar(')', 1);
+	}
+	else
+	{
+		sptr = sbuff;
 	}
 	sb->AppendC(UTF8STRC("\r\n"));
 	this->AppendIndent(sb, lev);
 	sb->AppendC(UTF8STRC("Attr Length = "));
 	sb->AppendU32(len);
 	sb->AppendC(UTF8STRC("\r\n"));
-	if (Text::StrEquals(sbuff, (const UTF8Char*)"ConstantValue"))
+	if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("ConstantValue")))
 	{
 		UInt16 i = ReadMUInt16(&attr[6]);
 		this->AppendIndent(sb, lev);
@@ -281,7 +286,7 @@ const UInt8 *IO::JavaClass::DetailAttribute(const UInt8 *attr, UOSInt lev, Text:
 		this->DetailConstVal(i, sb, true);
 		sb->AppendC(UTF8STRC("\r\n"));
 	}
-	else if (Text::StrEquals(sbuff, (const UTF8Char*)"Code"))
+	else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("Code")))
 	{
 		const UInt8 *ptr;
 		UInt32 codeLen = ReadMUInt32(&attr[10]);
@@ -351,7 +356,7 @@ const UInt8 *IO::JavaClass::DetailAttribute(const UInt8 *attr, UOSInt lev, Text:
 			i++;
 		}
 	}
-	else if (Text::StrEquals(sbuff, (const UTF8Char*)"Exceptions"))
+	else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("Exceptions")))
 	{
 		UInt16 number_of_exceptions = ReadMUInt16(&attr[6]);
 		UInt16 i = 0;
@@ -372,7 +377,7 @@ const UInt8 *IO::JavaClass::DetailAttribute(const UInt8 *attr, UOSInt lev, Text:
 			ptr += 2;
 		}
 	}
-	else if (Text::StrEquals(sbuff, (const UTF8Char*)"InnerClasses"))
+	else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("InnerClasses")))
 	{
 		UInt16 number_of_classes = ReadMUInt16(&attr[6]);
 		UInt16 i = 0;
@@ -420,7 +425,7 @@ const UInt8 *IO::JavaClass::DetailAttribute(const UInt8 *attr, UOSInt lev, Text:
 			ptr += 8;
 		}
 	}
-	else if (Text::StrEquals(sbuff, (const UTF8Char*)"EnclosingMethod"))
+	else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("EnclosingMethod")))
 	{
 		UInt16 clsIndex;
 		const UInt8 *ptr = &attr[6];
@@ -441,7 +446,7 @@ const UInt8 *IO::JavaClass::DetailAttribute(const UInt8 *attr, UOSInt lev, Text:
 		}
 		sb->AppendC(UTF8STRC("\r\n"));
 	}
-	else if (Text::StrEquals(sbuff, (const UTF8Char*)"LineNumberTable"))
+	else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("LineNumberTable")))
 	{
 		UInt16 line_number_table_length = ReadMUInt16(&attr[6]);
 		UInt16 i = 0;
@@ -462,7 +467,7 @@ const UInt8 *IO::JavaClass::DetailAttribute(const UInt8 *attr, UOSInt lev, Text:
 			ptr += 4;
 		}
 	}
-	else if (Text::StrEquals(sbuff, (const UTF8Char*)"LocalVariableTable"))
+	else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("LocalVariableTable")))
 	{
 		UInt16 local_variable_table_length = ReadMUInt16(&attr[6]);
 		UInt16 i = 0;
@@ -496,7 +501,7 @@ const UInt8 *IO::JavaClass::DetailAttribute(const UInt8 *attr, UOSInt lev, Text:
 			ptr += 10;
 		}
 	}
-	else if (Text::StrEquals(sbuff, (const UTF8Char*)"LocalVariableTypeTable"))
+	else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("LocalVariableTypeTable")))
 	{
 		UInt16 local_variable_type_table_length = ReadMUInt16(&attr[6]);
 		UInt16 i = 0;
@@ -530,7 +535,7 @@ const UInt8 *IO::JavaClass::DetailAttribute(const UInt8 *attr, UOSInt lev, Text:
 			ptr += 10;
 		}
 	}
-	else if (Text::StrEquals(sbuff, (const UTF8Char*)"Signature"))
+	else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("Signature")))
 	{
 		UInt16 snameIndex = ReadMUInt16(&attr[6]);
 		this->AppendIndent(sb, lev);
@@ -539,7 +544,7 @@ const UInt8 *IO::JavaClass::DetailAttribute(const UInt8 *attr, UOSInt lev, Text:
 		this->DetailName(snameIndex, sb, true);
 		sb->AppendC(UTF8STRC("\r\n"));
 	}
-	else if (Text::StrEquals(sbuff, (const UTF8Char*)"SourceFile"))
+	else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("SourceFile")))
 	{
 		UInt16 snameIndex = ReadMUInt16(&attr[6]);
 		this->AppendIndent(sb, lev);
@@ -548,7 +553,7 @@ const UInt8 *IO::JavaClass::DetailAttribute(const UInt8 *attr, UOSInt lev, Text:
 		this->DetailName(snameIndex, sb, true);
 		sb->AppendC(UTF8STRC("\r\n"));
 	}
-	else if (Text::StrEquals(sbuff, (const UTF8Char*)"RuntimeVisibleAnnotations"))
+	else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("RuntimeVisibleAnnotations")))
 	{
 		UInt16 num_annotations = ReadMUInt16(&attr[6]);
 		UInt16 i = 0;
@@ -569,7 +574,7 @@ const UInt8 *IO::JavaClass::DetailAttribute(const UInt8 *attr, UOSInt lev, Text:
 			i++;
 		}
 	}
-	else if (Text::StrEquals(sbuff, (const UTF8Char*)"StackMapTable"))
+	else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("StackMapTable")))
 	{
 		UInt16 number_of_entries = ReadMUInt16(&attr[6]);
 		UInt16 i = 0;
@@ -3832,6 +3837,7 @@ Bool IO::JavaClass::MethodParse(MethodInfo *method, const UInt8 *methodBuff)
 	method->maxLocals = 0;
 	method->signatureIndex = 0;
 	UTF8Char sbuff[256];
+	UTF8Char *sptr;
 	UInt16 attrCnt = ReadMUInt16(&methodBuff[6]);
 	UInt16 i;
 	const UInt8 *ptr = &methodBuff[8];
@@ -3842,9 +3848,9 @@ Bool IO::JavaClass::MethodParse(MethodInfo *method, const UInt8 *methodBuff)
 		UInt16 nameIndex = ReadMUInt16(&ptr[0]);
 		UInt16 j;
 		sbuff[0] = 0;
-		if (this->GetConstName(sbuff, nameIndex))
+		if ((sptr = this->GetConstName(sbuff, nameIndex)) != 0)
 		{
-			if (Text::StrEquals(sbuff, (const UTF8Char*)"Code"))
+			if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("Code")))
 			{
 				UInt32 codeLen = ReadMUInt32(&ptr[10]);
 				const UInt8 *ptr2;
@@ -3874,9 +3880,9 @@ Bool IO::JavaClass::MethodParse(MethodInfo *method, const UInt8 *methodBuff)
 					UInt32 len = ReadMUInt32(&ptr2[2]);
 					UInt16 nameIndex = ReadMUInt16(&ptr2[0]);
 					sbuff[0] = 0;
-					if (this->GetConstName(sbuff, nameIndex))
+					if ((sptr = this->GetConstName(sbuff, nameIndex)) != 0)
 					{
-						if (Text::StrEquals(sbuff, (const UTF8Char*)"LocalVariableTable"))
+						if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("LocalVariableTable")))
 						{
 							const UInt8 *lvTable = &ptr2[6];
 							UOSInt local_variable_table_length = ReadMUInt16(lvTable);
@@ -3898,7 +3904,7 @@ Bool IO::JavaClass::MethodParse(MethodInfo *method, const UInt8 *methodBuff)
 								}
 							}
 						}
-						else if (Text::StrEquals(sbuff, (const UTF8Char*)"LocalVariableTypeTable"))
+						else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("LocalVariableTypeTable")))
 						{
 							const UInt8 *lvtTable = &ptr2[6];
 							UOSInt local_variable_type_table_length = ReadMUInt16(lvtTable);
@@ -3920,7 +3926,7 @@ Bool IO::JavaClass::MethodParse(MethodInfo *method, const UInt8 *methodBuff)
 								}
 							}
 						}
-						else if (Text::StrEquals(sbuff, (const UTF8Char*)"LineNumberTable"))
+						else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("LineNumberTable")))
 						{
 							UInt16 line_number_table_length = ReadMUInt16(&ptr2[6]);
 							UInt16 k = 0;
@@ -3940,7 +3946,7 @@ Bool IO::JavaClass::MethodParse(MethodInfo *method, const UInt8 *methodBuff)
 					j++;
 				}
 			}
-			else if (Text::StrEquals(sbuff, (const UTF8Char*)"Exceptions"))
+			else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("Exceptions")))
 			{
 				UInt16 exCnt = ReadMUInt16(&ptr[6]);
 				UInt16 j = 0;
@@ -3950,7 +3956,7 @@ Bool IO::JavaClass::MethodParse(MethodInfo *method, const UInt8 *methodBuff)
 					j++;
 				}
 			}
-			else if (Text::StrEquals(sbuff, (const UTF8Char*)"Signature"))
+			else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("Signature")))
 			{
 				if (len == 2)
 				{
@@ -4226,6 +4232,7 @@ void IO::JavaClass::AppendCodeClassContent(Text::StringBuilderUTF *sb, UOSInt le
 void IO::JavaClass::AppendCodeField(Text::StringBuilderUTF *sb, UOSInt index, Data::ArrayListStrUTF8 *importList, const UTF8Char *packageName)
 {
 	UTF8Char sbuff[256];
+	UTF8Char *sptr;
 	Text::StringBuilderUTF8 sbValue;
 	UInt8 *ptr = this->fields[index];
 	UInt16 accessFlags = ReadMUInt16(ptr);
@@ -4243,9 +4250,9 @@ void IO::JavaClass::AppendCodeField(Text::StringBuilderUTF *sb, UOSInt index, Da
 		UInt32 len = ReadMUInt32(&ptr[2]);
 		UInt16 nameIndex = ReadMUInt16(&ptr[0]);
 		sbuff[0] = 0;
-		if (this->GetConstName(sbuff, nameIndex))
+		if ((sptr = this->GetConstName(sbuff, nameIndex)) != 0)
 		{
-			if (Text::StrEquals(sbuff, (const UTF8Char*)"ConstantValue"))
+			if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("ConstantValue")))
 			{
 				nameIndex = ReadMUInt16(&ptr[6]);
 				if (nameIndex > 0 && nameIndex < this->constPoolCnt && this->constPool[nameIndex] != 0)
@@ -4306,7 +4313,7 @@ void IO::JavaClass::AppendCodeField(Text::StringBuilderUTF *sb, UOSInt index, Da
 					}
 				}
 			}
-			else if (Text::StrEquals(sbuff, (const UTF8Char*)"Signature"))
+			else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("Signature")))
 			{
 				if (len == 2)
 				{
@@ -4366,6 +4373,7 @@ void IO::JavaClass::AppendCodeMethod(Text::StringBuilderUTF *sb, UOSInt index, U
 {
 	Text::StringBuilderUTF8 sbTmp;
 	UTF8Char sbuff[256];
+	UTF8Char *sptr;
 	UInt8 *ptr = this->methods[index];
 	UInt16 i;
 	UOSInt j;
@@ -4382,9 +4390,9 @@ void IO::JavaClass::AppendCodeMethod(Text::StringBuilderUTF *sb, UOSInt index, U
 		UInt16 nameIndex = ReadMUInt16(&ptr[0]);
 		UInt16 j;
 		sbuff[0] = 0;
-		if (this->GetConstName(sbuff, nameIndex))
+		if ((sptr = this->GetConstName(sbuff, nameIndex)) != 0)
 		{
-			if (Text::StrEquals(sbuff, (const UTF8Char*)"RuntimeVisibleAnnotations"))
+			if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("RuntimeVisibleAnnotations")))
 			{
 				UInt16 num_annotations = ReadMUInt16(&ptr[6]);
 				const UInt8 *annptr = &ptr[8];
@@ -4481,9 +4489,9 @@ void IO::JavaClass::AppendCodeMethod(Text::StringBuilderUTF *sb, UOSInt index, U
 			UInt32 len = ReadMUInt32(&ptr[2]);
 			UInt16 nameIndex = ReadMUInt16(&ptr[0]);
 			sbuff[0] = 0;
-			if (this->GetConstName(sbuff, nameIndex))
+			if ((sptr = this->GetConstName(sbuff, nameIndex)) != 0)
 			{
-				if (Text::StrEquals(sbuff, (const UTF8Char*)"Code"))
+				if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("Code")))
 				{
 					UInt32 codeLen = ReadMUInt32(&ptr[10]);
 					this->DetailCode(&ptr[14], codeLen, (lev + 1), sb);
@@ -4505,9 +4513,9 @@ void IO::JavaClass::AppendCodeMethod(Text::StringBuilderUTF *sb, UOSInt index, U
 			UInt32 len = ReadMUInt32(&ptr[2]);
 			UInt16 nameIndex = ReadMUInt16(&ptr[0]);
 			sbuff[0] = 0;
-			if (this->GetConstName(sbuff, nameIndex))
+			if ((sptr = this->GetConstName(sbuff, nameIndex)))
 			{
-				if (Text::StrEquals(sbuff, (const UTF8Char*)"Code"))
+				if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("Code")))
 				{
 					this->AppendCodeMethodCodes(sb, lev + 1, importList ,packageName, ptr, typeBuff, &method);
 				}
@@ -5176,6 +5184,7 @@ void IO::JavaClass::Init(const UInt8 *buff, UOSInt buffSize)
 		return ;
 	}
 	UTF8Char sbuff[256];
+	UTF8Char *sptr;
 	UInt16 attributes_count = ReadMUInt16(&this->fileBuff[ofst]);
 	ofst += 2;
 	this->attrCnt = attributes_count;
@@ -5193,9 +5202,9 @@ void IO::JavaClass::Init(const UInt8 *buff, UOSInt buffSize)
 			}
 			UInt32 len = ReadMUInt32(&this->fileBuff[ofst + 2]);
 			UInt16 nameIndex = ReadMUInt16(&this->fileBuff[ofst + 0]);
-			if (this->GetConstName(sbuff, nameIndex))
+			if ((sptr = this->GetConstName(sbuff, nameIndex)) != 0)
 			{
-				if (Text::StrEquals(sbuff, (const UTF8Char*)"Signature") && len == 2)
+				if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("Signature")) && len == 2)
 				{
 					this->signatureIndex = ReadMUInt16(&this->fileBuff[ofst + 6]);
 				}
@@ -5608,6 +5617,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 	UInt16 classIndex;
 	UInt16 val;
 	UTF8Char sbuff[512];
+	UTF8Char *sptr;
 	UTF8Char typeBuff[128];
 	while (codePtr < codeEnd)
 	{
@@ -7929,7 +7939,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			val = ReadMUInt16(&codePtr[1]);
 			sbTmp.ClearStr();
 			typeBuff[0] = 0;
-			if (this->DecompileMethod(val, sbuff, &classIndex, typeBuff, env, &sbTmp) == 0)
+			if ((sptr = this->DecompileMethod(val, sbuff, &classIndex, typeBuff, env, &sbTmp)) == 0)
 			{
 				this->AppendIndent(sb, lev);
 				sb->AppendC(sbTmp.ToString(), sbTmp.GetLength());
@@ -7947,7 +7957,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			{
 				Bool isInit = false;
 				sbTmp2.ClearStr();
-				if (Text::StrEquals(sbuff, (const UTF8Char*)"<init>"))
+				if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("<init>")))
 				{
 					isInit = true;
 					if (env->stacks->GetItem(env->stacks->GetCount() - 1)->Equals(UTF8STRC("this")))

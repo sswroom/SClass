@@ -30,10 +30,10 @@
 
 void DB::ODBCConn::UpdateConnInfo()
 {
-	Char buff[256];
+	UTF8Char buff[256];
 	Int16 buffSize;
 	SQLRETURN ret;
-	ret = SQLGetInfoA(connHand, SQL_DRIVER_NAME, buff, sizeof(buff), &buffSize);
+	ret = SQLGetInfoA(connHand, SQL_DRIVER_NAME, (Char*)buff, sizeof(buff), &buffSize);
 	if (ret == SQL_SUCCESS || SQL_SUCCESS_WITH_INFO)
 	{
 		if (buffSize <= 0)
@@ -50,43 +50,43 @@ void DB::ODBCConn::UpdateConnInfo()
 			log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_ACTION);
 		}
 //		Text::StrToLowerC(buff, buff);
-		if (Text::StrStartsWith(buff, "myodbc"))
+		if (Text::StrStartsWithC(buff, (UOSInt)buffSize, UTF8STRC("myodbc")))
 		{
 			this->svrType = DB::DBUtil::ServerType::MySQL;
 		}
-		else if (Text::StrStartsWith(buff, "libmyodbc"))
+		else if (Text::StrStartsWithC(buff, (UOSInt)buffSize, UTF8STRC("libmyodbc")))
 		{
 			this->svrType = DB::DBUtil::ServerType::MySQL;
 		}
-		else if (Text::StrStartsWith(buff, "SQLSVR"))
+		else if (Text::StrStartsWithC(buff, (UOSInt)buffSize, UTF8STRC("SQLSVR")))
 		{
 			this->svrType = DB::DBUtil::ServerType::MSSQL;
 		}
-		else if (Text::StrStartsWith(buff, "SQLSRV"))
+		else if (Text::StrStartsWithC(buff, (UOSInt)buffSize, UTF8STRC("SQLSRV")))
 		{
 			this->svrType = DB::DBUtil::ServerType::MSSQL;
 		}
-		else if (Text::StrStartsWith(buff, "SQORA"))
+		else if (Text::StrStartsWithC(buff, (UOSInt)buffSize, UTF8STRC("SQORA")))
 		{
 			this->svrType = DB::DBUtil::ServerType::Oracle;
 		}
-		else if (Text::StrStartsWithICase(buff, "sqlncli"))
+		else if (Text::StrStartsWithICaseC(buff, (UOSInt)buffSize, UTF8STRC("sqlncli")))
 		{
 			this->svrType = DB::DBUtil::ServerType::MSSQL;
 		}
-		else if (Text::StrIndexOf(buff, "sqlite") != INVALID_INDEX)
+		else if (Text::StrIndexOfC(buff, (UOSInt)buffSize, UTF8STRC("sqlite")) != INVALID_INDEX)
 		{
 			this->svrType = DB::DBUtil::ServerType::SQLite;
 		}
-		else if (Text::StrIndexOf(buff, "odbcjt32") != INVALID_INDEX)
+		else if (Text::StrIndexOfC(buff, (UOSInt)buffSize, UTF8STRC("odbcjt32")) != INVALID_INDEX)
 		{
 			this->svrType = DB::DBUtil::ServerType::Access;
 		}
-		else if (Text::StrStartsWith(buff, "ACEODBC"))
+		else if (Text::StrStartsWithC(buff, (UOSInt)buffSize, UTF8STRC("ACEODBC")))
 		{
 			this->svrType = DB::DBUtil::ServerType::Access;
 		}
-		else if (Text::StrIndexOf(buff, "msodbcsql") != INVALID_INDEX)
+		else if (Text::StrIndexOfC(buff, (UOSInt)buffSize, UTF8STRC("msodbcsql")) != INVALID_INDEX)
 		{
 			this->svrType = DB::DBUtil::ServerType::MSSQL;
 		}
@@ -746,47 +746,34 @@ void DB::ODBCConn::GetErrorMsg(Text::StringBuilderUTF *str)
 		{
 			str->AppendC(UTF8STRC("["));
 			state[5] = 0;
-			const UTF8Char *csptr = Text::StrToUTF8New((const UTF16Char*)state);
-			str->Append(csptr);
-			Text::StrDelNew(csptr);
+			Text::String *s = Text::String::NewNotNull((const UTF16Char*)state);
+			str->Append(s);
 			str->AppendC(UTF8STRC("]"));
 
-#if _WCHAR_SIZE == 4
-			const UTF8Char *sptr = Text::StrToUTF8New(state);
-			if (Text::StrEquals(sptr, (const UTF8Char*)"23000"))
+			if (s->Equals(UTF8STRC("23000")))
 				this->lastStmtState = 3;
-			else if (Text::StrEquals(sptr, (const UTF8Char*)"42000"))
+			else if (s->Equals(UTF8STRC("42000")))
 				this->lastStmtState = 3;
-			else if (Text::StrEquals(sptr, (const UTF8Char*)"HY000"))
+			else if (s->Equals(UTF8STRC("HY000")))
 				this->lastStmtState = 3;
 			else
 				this->lastStmtState = 2;
-			Text::StrDelNew(sptr);
-#else
-			if (Text::StrEquals((const WChar*)state, L"23000"))
-				this->lastStmtState = 3;
-			else if (Text::StrEquals((const WChar*)state, L"42000"))
-				this->lastStmtState = 3;
-			else if (Text::StrEquals((const WChar*)state, L"HY000"))
-				this->lastStmtState = 3;
-			else
-				this->lastStmtState = 2;
-#endif
+			s->Release();
 
 			if (msgSize > 255)
 			{
 				SQLWCHAR *tmpMsg = MemAlloc(SQLWCHAR, (UInt16)(msgSize + 1));
 				ret = SQLGetDiagRecW(SQL_HANDLE_STMT, this->lastStmtHand, (SQLSMALLINT)recNumber, state, (SQLINTEGER*)&errCode, tmpMsg, (SQLSMALLINT)(msgSize + 1), &msgSize);
-				csptr = Text::StrToUTF8New((const UTF16Char*)tmpMsg);
-				str->Append(csptr);
-				Text::StrDelNew(csptr);
+				s = Text::String::NewNotNull((const UTF16Char*)tmpMsg);
+				str->Append(s);
+				s->Release();
 				MemFree(tmpMsg);
 			}
 			else
 			{
-				csptr = Text::StrToUTF8New((const UTF16Char*)msg);
-				str->Append(csptr);
-				Text::StrDelNew(csptr);
+				s = Text::String::NewNotNull((const UTF16Char*)msg);
+				str->Append(s);
+				s->Release();
 			}
 			recNumber++;
 		}
@@ -814,27 +801,17 @@ Bool DB::ODBCConn::IsLastDataError()
 	SQLRETURN ret = SQLGetDiagRecW(SQL_HANDLE_STMT, this->lastStmtHand, (SQLSMALLINT)recNumber, state, (SQLINTEGER*)&errCode, msg, sizeof(msg) / sizeof(msg[0]), &msgSize);
 	if (ret == SQL_SUCCESS || ret == SQL_SUCCESS_WITH_INFO)
 	{
-#if _WCHAR_SIZE == 4
 		state[5] = 0;
-		const UTF8Char *sptr = Text::StrToUTF8New(state);
+		Text::String *s = Text::String::New(state, 5);
 		Bool ret = false;
-		if (Text::StrEquals(sptr, (const UTF8Char*)"23000"))
+		if (s->Equals(UTF8STRC("23000")))
 			ret = true;
-		else if (Text::StrEquals(sptr, (const UTF8Char*)"42000"))
+		else if (s->Equals(UTF8STRC("42000")))
 			ret = true;
-		else if (Text::StrEquals(sptr, (const UTF8Char*)"HY000"))
+		else if (s->Equals(UTF8STRC("HY000")))
 			ret = true;
-		Text::StrDelNew(sptr);
+		s->Release();
 		return ret;
-#else
-		state[5] = 0;
-		if (Text::StrEquals((const WChar*)state, L"23000"))
-			return true;
-		if (Text::StrEquals((const WChar*)state, L"42000"))
-			return true;
-		if (Text::StrEquals((const WChar*)state, L"HY000"))
-			return true;
-#endif
 	}
 	return false;
 }
@@ -982,7 +959,8 @@ UOSInt DB::ODBCConn::GetTableNames(Data::ArrayList<const UTF8Char*> *names)
 	}
 	else
 	{
-		WChar sbuff[256];
+		UTF8Char sbuff[256];
+		UTF8Char *sptr;
 //		ShowTablesCmd(sbuff);
 //		DB::ReadingDB::DBReader *rdr = this->ExecuteReader(sbuff);
 		DB::DBReader *rdr = this->GetTablesInfo();
@@ -992,14 +970,18 @@ UOSInt DB::ODBCConn::GetTableNames(Data::ArrayList<const UTF8Char*> *names)
 			sbuff[0] = 0;
 			while (rdr->ReadNext())
 			{
-				rdr->GetStr(2, sbuff);
-				if (Text::StrStartsWith(sbuff, L"~sq_"))
+				sptr = rdr->GetStr(2, sbuff, sizeof(sbuff));
+				if (sptr == 0)
+				{
+					sptr = sbuff;
+				}
+				if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("~sq_")))
 				{
 
 				}
 				else
 				{
-					this->tableNames->Add(Text::StrToUTF8New(sbuff));
+					this->tableNames->Add(Text::StrCopyNewC(sbuff, (UOSInt)(sptr - sbuff)));
 				}
 			}
 			this->CloseReader(rdr);

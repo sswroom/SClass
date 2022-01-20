@@ -8,7 +8,8 @@
 
 Net::HTTPProxyTCPClient::HTTPProxyTCPClient(Net::SocketFactory *sockf, const UTF8Char *proxyHost, UInt16 proxyPort, PasswordType pt, const UTF8Char *userName, const UTF8Char *pwd, const UTF8Char *destHost, UInt16 destPort) : Net::TCPClient(sockf, (Socket*)0)
 {
-	this->SetSourceName(destHost, Text::StrCharCnt(destHost));
+	UOSInt destHostLen = Text::StrCharCnt(destHost);
+	this->SetSourceName(destHost, destHostLen);
 
 	Net::SocketUtil::AddressInfo addr;
 	if (!sockf->DNSResolveIP(proxyHost, Text::StrCharCnt(proxyHost), &addr))
@@ -47,32 +48,33 @@ Net::HTTPProxyTCPClient::HTTPProxyTCPClient(Net::SocketFactory *sockf, const UTF
 		return;
 	}
 	
-	Char reqBuff[512];
-	Char userPwd[256];
-	Char *sptr = Text::StrConcat(reqBuff, "CONNECT ");
-	Char *sptr2;
-	while ((*sptr++ = (Char)*destHost++) != 0);
-	sptr[-1] = ':';
-	sptr = Text::StrInt32(sptr, destPort);
-	sptr = Text::StrConcat(sptr, " HTTP/1.1\r\n");
+	UTF8Char reqBuff[512];
+	UTF8Char userPwd[256];
+	UTF8Char *sptr = Text::StrConcatC(reqBuff, UTF8STRC("CONNECT "));
+	UTF8Char *sptr2;
+	UOSInt respSize;
+	sptr = Text::StrConcatC(sptr, destHost, destHostLen);
+	*sptr++ = ':';
+	sptr = Text::StrUInt16(sptr, destPort);
+	sptr = Text::StrConcatC(sptr, UTF8STRC(" HTTP/1.1\r\n"));
 	if (pt == PWDT_BASIC)
 	{
-		sptr2 = (Char*)Text::StrConcat((UTF8Char*)userPwd, userName);
+		sptr2 = Text::StrConcat(userPwd, userName);
 		*sptr2++ = ':';
-		sptr2 = (Char*)Text::StrConcat((UTF8Char*)sptr2, pwd);
+		sptr2 = Text::StrConcat(sptr2, pwd);
 
-		sptr = Text::StrConcat(sptr, "Proxy-Authorization: Basic ");
+		sptr = Text::StrConcatC(sptr, UTF8STRC("Proxy-Authorization: Basic "));
 		Crypto::Encrypt::Base64 b64;
 		sptr = sptr + b64.Encrypt((UInt8*)userPwd, (UOSInt)(sptr2 - userPwd), (UInt8*)sptr, 0);
-		sptr = Text::StrConcat(sptr, "\r\n");
+		sptr = Text::StrConcatC(sptr, UTF8STRC("\r\n"));
 	}
-	sptr = Text::StrConcat(sptr, "\r\n");
+	sptr = Text::StrConcatC(sptr, UTF8STRC("\r\n"));
 	this->Write((UInt8*)reqBuff, (UOSInt)(sptr - reqBuff));
 	this->SetTimeout(4000);
-	this->Read((UInt8*)reqBuff, 512);
+	respSize = this->Read((UInt8*)reqBuff, 512);
 	this->SetTimeout(-1);
 
-	if (Text::StrStartsWith(reqBuff, "HTTP/1.1 200"))
+	if (Text::StrStartsWithC(reqBuff, respSize, UTF8STRC("HTTP/1.1 200")))
 	{
 
 	}

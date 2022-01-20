@@ -57,11 +57,11 @@ IO::FileAnalyse::MDBFileAnalyse::MDBFileAnalyse(IO::IStreamData *fd)
 	{
 		return;
 	}
-	if (Text::StrEquals((const UTF8Char*)"Standard Jet DB", &buff[4]))
+	if (Text::StrStartsWithC(&buff[4], 252, UTF8STRC("Standard Jet DB")))
 	{
 		this->fileFormat = 0;
 	}
-	else if (Text::StrEquals((const UTF8Char*)"Standard ACE DB", &buff[4]))
+	else if (Text::StrStartsWithC(&buff[4], 252, UTF8STRC("Standard ACE DB")))
 	{
 		this->fileFormat = 1;
 	}

@@ -759,21 +759,24 @@ Bool Net::OSSocketFactory::IcmpSendEcho2(const Net::SocketUtil::AddressInfo *add
 		ret = Manage::Process::ExecuteProcess(sbuff, (UOSInt)(sptr - sbuff), &sb);
 		if (ret == 0)
 		{
-			UTF8Char *sarr[4];
-			UOSInt i = Text::StrSplitLine(sarr, 3, sb.ToString());
+			Text::PString sarr[4];
+			UOSInt i = Text::StrSplitLineP(sarr, 3, sb.ToString(), sb.GetLength());
 			if (i == 3)
 			{
-				i = Text::StrIndexOf(sarr[1], (const UTF8Char*)": ");
+				i = Text::StrIndexOfC(sarr[1].v, sarr[1].len, UTF8STRC(": "));
+				UTF8Char *linePtr = sarr[1].v;
+				UOSInt lineLen = sarr[1].len;
 				if (i != INVALID_INDEX)
 				{
-					sarr[1] = &sarr[1][i + 2];
+					linePtr = &sarr[1].v[i + 2];
+					lineLen = sarr[1].len - i - 2;
 				}
-				if (Text::StrStartsWith(sarr[1], (const UTF8Char*)"icmp_seq="))
+				if (Text::StrStartsWithC(linePtr, lineLen, UTF8STRC("icmp_seq=")))
 				{
-					if (Text::StrSplitWS(sarr, 4, sarr[1]) == 4)
+					if (Text::StrSplitWSP(sarr, 4, linePtr, lineLen) == 4)
 					{
-						*ttl = Text::StrToUInt32(&sarr[1][4]);
-						*respTime_us = (UInt32)Double2Int32(Text::StrToDouble(&sarr[2][5]) * 1000.0);
+						*ttl = Text::StrToUInt32(&sarr[1].v[4]);
+						*respTime_us = (UInt32)Double2Int32(Text::StrToDouble(&sarr[2].v[5]) * 1000.0);
 						return true;
 					}
 					else

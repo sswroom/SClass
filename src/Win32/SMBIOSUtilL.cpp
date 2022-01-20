@@ -20,9 +20,9 @@ Win32::SMBIOS *Win32::SMBIOSUtil::GetSMBIOS()
 	{
 		buffSize = fs->Read(buffTmp, 128);
 		DEL_CLASS(fs);
-		if (Text::StrStartsWith(buffTmp, (const UTF8Char*)"_SM_"))
+		if (Text::StrStartsWithC(buffTmp, buffSize, UTF8STRC("_SM_")))
 		{
-			if (Text::StrStartsWith(&buffTmp[16], (const UTF8Char*)"_DMI_") && buffSize >= 30)
+			if (buffSize >= 30 && Text::StrStartsWithC(&buffTmp[16], buffSize - 16, UTF8STRC("_DMI_")))
 			{
 				UInt32 ofst = 0;//ReadUInt32(&buffTmp[0x18]);
 				buffSize = ReadUInt16(&buffTmp[0x16]);
@@ -42,7 +42,7 @@ Win32::SMBIOS *Win32::SMBIOSUtil::GetSMBIOS()
 				DEL_CLASS(fs);
 			}
 		}
-		else if (Text::StrStartsWith(buffTmp, (const UTF8Char*)"_SM3_"))
+		else if (Text::StrStartsWithC(buffTmp, buffSize, UTF8STRC("_SM3_")))
 		{
 			if (buffSize >= 24)
 			{
@@ -63,7 +63,7 @@ Win32::SMBIOS *Win32::SMBIOSUtil::GetSMBIOS()
 				DEL_CLASS(fs);
 			}
 		}
-		else if (Text::StrStartsWith(buffTmp, (const UTF8Char*)"_DMI_"))
+		else if (Text::StrStartsWithC(buffTmp, buffSize, UTF8STRC("_DMI_")))
 		{
 			if (buffSize >= 16)
 			{

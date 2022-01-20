@@ -515,7 +515,7 @@ IO::ParsedObject *Parser::FileParser::EXEParser::ParseFile(IO::IStreamData *fd, 
 							sb.AppendC(UTF8STRC("Section "));
 							sb.AppendUOSInt(i);
 							sb.AppendC(UTF8STRC(" Name"));
-							Text::StrConcatC(sbuff, &sectionHeaders[sOfst], 8);
+							sptr = Text::StrConcatS(sbuff, &sectionHeaders[sOfst], 9);
 							exef->AddProp(sb.ToString(), sbuff);
 
 							if (virtSize < dataSize)
@@ -528,24 +528,24 @@ IO::ParsedObject *Parser::FileParser::EXEParser::ParseFile(IO::IStreamData *fd, 
 							}
 
 							fd->GetRealData(dataAddr, readSize, &exeImage[virtAddr]);
-							if (Text::StrEquals(sbuff, (const UTF8Char*)".text"))
+							if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC(".text")))
 							{
 							}
-							else if (Text::StrEquals(sbuff, (const UTF8Char*)".rdata"))
+							else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC(".rdata")))
 							{
 							}
-							else if (Text::StrEquals(sbuff, (const UTF8Char*)".data"))
+							else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC(".data")))
 							{
 							}
-							else if (Text::StrEquals(sbuff, (const UTF8Char*)".pdata"))
+							else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC(".pdata")))
 							{
 							}
-							else if (Text::StrEquals(sbuff, (const UTF8Char*)".rsrc"))
+							else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC(".rsrc")))
 							{
 								ParseResource(exef, 0, sbuff, sbuff, &exeImage[virtAddr], 0, exeImage);
 								sbuff[0] = 0;
 							}
-							else if (Text::StrEquals(sbuff, (const UTF8Char*)".reloc"))
+							else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC(".reloc")))
 							{
 							}
 

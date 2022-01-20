@@ -6,13 +6,13 @@
 
 void IO::ModemController::ClearCmdResult()
 {
-	const Char *val;
+	Text::String *val;
 	UOSInt i;
 	i = cmdResults->GetCount();
 	while (i-- > 0)
 	{
 		val = cmdResults->RemoveAt(i);
-		MemFree((void*)val);
+		val->Release();
 	}
 }
 
@@ -21,21 +21,21 @@ Bool IO::ModemController::IsCmdSucceed()
 	UOSInt i = this->cmdResults->GetCount();
 	if (i <= 0)
 		return false;
-	return Text::StrCompare(this->cmdResults->GetItem(i - 1), "OK") == 0;
+	return this->cmdResults->GetItem(i - 1)->Equals(UTF8STRC("OK"));
 }
 
-UTF8Char *IO::ModemController::SendStringCommand(UTF8Char *buff, const Char *cmd, Int32 timeoutMS)
+UTF8Char *IO::ModemController::SendStringCommand(UTF8Char *buff, const UTF8Char *cmd, UOSInt cmdLen, Int32 timeoutMS)
 {
 	Sync::MutexUsage mutUsage(this->cmdMut);
-	this->channel->SendATCommand(this->cmdResults, cmd, timeoutMS);
+	this->channel->SendATCommand(this->cmdResults, cmd, cmdLen, timeoutMS);
 	UOSInt i = this->cmdResults->GetCount();
 	UOSInt j;
-	const Char *val;
+	Text::String *val;
 //	printf("SendStringCommand, count = %d\r\n", i);
 	if (i > 1)
 	{
 		val = this->cmdResults->GetItem(i - 1);
-		if (Text::StrCompare(val, "OK") == 0)
+		if (val->Equals(UTF8STRC("OK")) == 0)
 		{
 			j = i - 2;
 			UTF8Char *sptr = buff;
@@ -43,10 +43,10 @@ UTF8Char *IO::ModemController::SendStringCommand(UTF8Char *buff, const Char *cmd
 			while (j >= 0)
 			{
 				val = this->cmdResults->GetItem(j);
-				if (val[0] != 0)
+				if (val->v[0] != 0)
 				{
 //					printf("SendStringCommand, Str = %s\r\n", val);
-					sptr = Text::StrConcat(buff, (const UTF8Char*)val);
+					sptr = val->ConcatTo(buff);
 					break;
 				}
 				else
@@ -72,25 +72,25 @@ UTF8Char *IO::ModemController::SendStringCommand(UTF8Char *buff, const Char *cmd
 	}
 }
 
-Bool IO::ModemController::SendStringCommand(Data::ArrayList<const Char*> *resList, const Char *cmd, Int32 timeoutMS)
+Bool IO::ModemController::SendStringCommand(Data::ArrayList<Text::String*> *resList, const UTF8Char *cmd, UOSInt cmdLen, Int32 timeoutMS)
 {
 	Sync::MutexUsage mutUsage(this->cmdMut);
-	this->channel->SendATCommand(this->cmdResults, cmd, timeoutMS);
+	this->channel->SendATCommand(this->cmdResults, cmd, cmdLen, timeoutMS);
 	UOSInt i = this->cmdResults->GetCount();
 	UOSInt j;
-	const Char *val;
+	Text::String *val;
 	if (i > 1)
 	{
 		val = this->cmdResults->GetItem(i - 1);
-		if (Text::StrCompare(val, "OK") == 0)
+		if (val->Equals(UTF8STRC("OK")))
 		{
 			j = 0;
 			while (j < i - 1)
 			{
 				val = this->cmdResults->GetItem(j);
-				if (val[0] != 0)
+				if (val->v[0] != 0)
 				{
-					resList->Add(Text::StrCopyNew(val));
+					resList->Add(val->Clone());
 				}
 				j++;
 			}
@@ -111,28 +111,28 @@ Bool IO::ModemController::SendStringCommand(Data::ArrayList<const Char*> *resLis
 	}
 }
 
-UTF8Char *IO::ModemController::SendStringCommandDirect(UTF8Char *buff, const Char *cmd, Int32 timeoutMS)
+UTF8Char *IO::ModemController::SendStringCommandDirect(UTF8Char *buff, const UTF8Char *cmd, UOSInt cmdLen, Int32 timeoutMS)
 {
 	Sync::MutexUsage mutUsage(this->cmdMut);
-	this->channel->SendATCommand(this->cmdResults, cmd, timeoutMS);
+	this->channel->SendATCommand(this->cmdResults, cmd, cmdLen, timeoutMS);
 	UOSInt i = this->cmdResults->GetCount();
 	UOSInt j;
-	const Char *val;
+	Text::String *val;
 	j = 0;
 	while (j < i - 1)
 	{
 		val = this->cmdResults->GetItem(j);
-		if (Text::StrStartsWith(val, cmd))
+		if (val->StartsWith(cmd, cmdLen))
 		{
 			val = this->cmdResults->GetItem(j + 1);
-			if (Text::StrEquals(val, "ERROR"))
+			if (val->Equals(UTF8STRC("ERROR")))
 			{
 				ClearCmdResult();
 				return 0;
 			}
-			else if (val[0] != 0)
+			else if (val->v[0] != 0)
 			{
-				UTF8Char *sptr = Text::StrConcat(buff, (const UTF8Char*)val);
+				UTF8Char *sptr = val->ConcatTo(buff);
 				ClearCmdResult();
 				return sptr;
 			}
@@ -143,22 +143,22 @@ UTF8Char *IO::ModemController::SendStringCommandDirect(UTF8Char *buff, const Cha
 	return 0;
 }
 
-Bool IO::ModemController::SendStringListCommand(Text::StringBuilderUTF *sb, const Char *cmd)
+Bool IO::ModemController::SendStringListCommand(Text::StringBuilderUTF *sb, const UTF8Char *cmd, UOSInt cmdLen)
 {
 	Sync::MutexUsage mutUsage(this->cmdMut);
-	this->channel->SendATCommand(this->cmdResults, cmd, 3000);
+	this->channel->SendATCommand(this->cmdResults, cmd, cmdLen, 3000);
 	UOSInt i = this->cmdResults->GetCount();
 	UOSInt j;
-	const Char *val;
+	Text::String *val;
 	if (i > 1)
 	{
 		val = this->cmdResults->GetItem(i - 1);
-		if (Text::StrCompare(val, "OK") == 0)
+		if (val->Equals(UTF8STRC("OK")))
 		{
 			j = 1;
 			while (j < i - 1)
 			{
-				sb->Append((const UTF8Char*)this->cmdResults->GetItem(j));
+				sb->Append(this->cmdResults->GetItem(j));
 				sb->AppendC(UTF8STRC("\r\n"));
 				j++;
 			}
@@ -179,46 +179,46 @@ Bool IO::ModemController::SendStringListCommand(Text::StringBuilderUTF *sb, cons
 	}
 }
 
-Bool IO::ModemController::SendBoolCommand(const Char *cmd)
+Bool IO::ModemController::SendBoolCommandC(const UTF8Char *cmd, UOSInt cmdLen)
 {
-	return SendBoolCommand(cmd, 3000);
+	return SendBoolCommandC(cmd, cmdLen, 3000);
 }
 
-Bool IO::ModemController::SendBoolCommand(const Char *cmd, Int32 timeoutMS)
+Bool IO::ModemController::SendBoolCommandC(const UTF8Char *cmd, UOSInt cmdLen, Int32 timeoutMS)
 {
 	Bool isSucc;
 	Sync::MutexUsage mutUsage(this->cmdMut);
-	this->channel->SendATCommand(this->cmdResults, cmd, timeoutMS);
+	this->channel->SendATCommand(this->cmdResults, cmd, cmdLen, timeoutMS);
 	isSucc = this->IsCmdSucceed();
 	ClearCmdResult();
 	return isSucc;
 }
 
-IO::ModemController::DialResult IO::ModemController::SendDialCommand(const Char *cmd)
+IO::ModemController::DialResult IO::ModemController::SendDialCommand(const UTF8Char *cmd, UOSInt cmdLen)
 {
 	Sync::MutexUsage mutUsage(this->cmdMut);
-	this->channel->SendDialCommand(this->cmdResults, cmd, 30000);
+	this->channel->SendDialCommand(this->cmdResults, cmd, cmdLen, 30000);
 	UOSInt i = this->cmdResults->GetCount();
-	const Char *val;
+	Text::String *val;
 	if (i >= 1)
 	{
 		val = this->cmdResults->GetItem(i - 1);
-		if (Text::StrCompare(val, "VCON") == 0)
+		if (val->Equals(UTF8STRC("VCON")))
 		{
 			ClearCmdResult();
 			return DR_CONNECT;
 		}
-		else if (Text::StrCompare(val, "NO DIALTONE") == 0)
+		else if (val->Equals(UTF8STRC("NO DIALTONE")))
 		{
 			ClearCmdResult();
 			return DR_NO_DIALTONE;
 		}
-		else if (Text::StrCompare(val, "NO CARRIER") == 0)
+		else if (val->Equals(UTF8STRC("NO CARRIER")))
 		{
 			ClearCmdResult();
 			return DR_NO_CARRIER;
 		}
-		else if (Text::StrCompare(val, "BUSY") == 0)
+		else if (val->Equals(UTF8STRC("BUSY")))
 		{
 			ClearCmdResult();
 			return DR_BUSY;
@@ -240,7 +240,7 @@ IO::ModemController::ModemController(IO::ATCommandChannel *channel, Bool needRel
 {
 	this->channel = channel;
 	this->needRelease = needRelease;
-	NEW_CLASS(cmdResults, Data::ArrayList<const Char*>());
+	NEW_CLASS(cmdResults, Data::ArrayList<Text::String*>());
 	NEW_CLASS(cmdMut, Sync::Mutex());
 }
 
@@ -261,14 +261,14 @@ IO::ATCommandChannel *IO::ModemController::GetChannel()
 
 Bool IO::ModemController::HangUp()
 {
-	return this->SendBoolCommand("ATH");
+	return this->SendBoolCommandC(UTF8STRC("ATH"));
 }
 
 Bool IO::ModemController::ResetModem()
 {
 	Bool isSucc;
 	Sync::MutexUsage mutUsage(this->cmdMut);
-	this->channel->SendATCommand(this->cmdResults, "ATZ", 3000);
+	this->channel->SendATCommand(this->cmdResults, UTF8STRC("ATZ"), 3000);
 	isSucc = this->IsCmdSucceed();
 	ClearCmdResult();
 	return isSucc;
@@ -278,10 +278,10 @@ Bool IO::ModemController::SetEcho(Bool showEcho)
 {
 	if (showEcho)
 	{
-		return this->SendBoolCommand("ATE1");
+		return this->SendBoolCommandC(UTF8STRC("ATE1"));
 	}
 	else
 	{
-		return this->SendBoolCommand("ATE0");
+		return this->SendBoolCommandC(UTF8STRC("ATE0"));
 	}
 }

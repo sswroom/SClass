@@ -21,18 +21,18 @@ UTF8Char *Text::Cpp::CppCodeParser::RemoveSpace(UTF8Char *sptr)
 	return sptr - 1;
 }
 
-void Text::Cpp::CppCodeParser::LogError(Text::Cpp::CppParseStatus *status, const UTF8Char *errMsg, Data::ArrayListStrUTF8 *errMsgs)
+void Text::Cpp::CppCodeParser::LogError(Text::Cpp::CppParseStatus *status, const UTF8Char *errMsg, UOSInt msgLen, Data::ArrayListStrUTF8 *errMsgs)
 {
 	Text::StringBuilderUTF8 sb;
 	Text::Cpp::CppParseStatus::FileParseStatus *fileStatus = status->GetFileStatus();
 	Text::String *fname = fileStatus->fileName;
 	UOSInt i = fname->LastIndexOf('\\');
-	sb.Append(&fname->v[i + 1]);
+	sb.AppendC(&fname->v[i + 1], fname->leng - i - 1);
 	sb.AppendC(UTF8STRC(" ("));
 	sb.AppendI32(fileStatus->lineNum);
 	sb.AppendC(UTF8STRC("): "));
-	sb.Append(errMsg);
-	errMsgs->Add(Text::StrCopyNew(sb.ToString()));
+	sb.AppendC(errMsg, msgLen);
+	errMsgs->Add(Text::StrCopyNewC(sb.ToString(), sb.GetLength()));
 }
 
 Bool Text::Cpp::CppCodeParser::ParseSharpIfParam(const UTF8Char *cond, Text::Cpp::CppParseStatus *status, Data::ArrayListStrUTF8 *errMsgs, Data::ArrayList<const UTF8Char *> *codePhases, UOSInt cpIndex)
@@ -188,7 +188,7 @@ Bool Text::Cpp::CppCodeParser::ParseSharpIfParam(const UTF8Char *cond, Text::Cpp
 				sb.AppendC(UTF8STRC("Unknown symbol '"));
 				sb.AppendChar(c, 1);
 				sb.AppendC(UTF8STRC("'"));
-				this->LogError(status, sb.ToString(), errMsgs);
+				this->LogError(status, sb.ToString(), sb.GetLength(), errMsgs);
 				succ = false;
 			}
 		}
@@ -286,7 +286,7 @@ Bool Text::Cpp::CppCodeParser::EvalSharpIfVal(Data::ArrayList<const UTF8Char *> 
 		else
 		{
 			debugSB.AppendC(UTF8STRC(": invalid defined syntex"));
-			this->LogError(status, debugSB.ToString(), errMsgs);
+			this->LogError(status, debugSB.ToString(), debugSB.GetLength(), errMsgs);
 			return false;
 		}
 	}
@@ -319,7 +319,7 @@ Bool Text::Cpp::CppCodeParser::EvalSharpIfVal(Data::ArrayList<const UTF8Char *> 
 		else
 		{
 			debugSB.AppendC(UTF8STRC(": invalid __has_feature syntex"));
-			this->LogError(status, debugSB.ToString(), errMsgs);
+			this->LogError(status, debugSB.ToString(), debugSB.GetLength(), errMsgs);
 			return false;
 		}
 	}
@@ -338,7 +338,7 @@ Bool Text::Cpp::CppCodeParser::EvalSharpIfVal(Data::ArrayList<const UTF8Char *> 
 			{
 				debugSB.Append(phase);
 			}
-			this->LogError(status, debugSB.ToString(), errMsgs);
+			this->LogError(status, debugSB.ToString(), debugSB.GetLength(), errMsgs);
 			return false;
 		}
 		Text::StrDelNew(codePhases->RemoveAt(cpIndex));
@@ -365,7 +365,7 @@ Bool Text::Cpp::CppCodeParser::EvalSharpIfVal(Data::ArrayList<const UTF8Char *> 
 		{
 			debugSB.AppendC(UTF8STRC(": unknown syntex "));
 			debugSB.Append(phase);
-			this->LogError(status, debugSB.ToString(), errMsgs);
+			this->LogError(status, debugSB.ToString(), debugSB.GetLength(), errMsgs);
 			Text::StrDelNew(phase);
 			return false;
 		}
@@ -416,7 +416,7 @@ Bool Text::Cpp::CppCodeParser::EvalSharpIfVal(Data::ArrayList<const UTF8Char *> 
 			{
 				debugSB.AppendC(UTF8STRC(": macro not supported "));
 				debugSB.Append(phase);
-				this->LogError(status, debugSB.ToString(), errMsgs);
+				this->LogError(status, debugSB.ToString(), debugSB.GetLength(), errMsgs);
 				Text::StrDelNew(phase);
 				return false;
 			}
@@ -434,7 +434,7 @@ Bool Text::Cpp::CppCodeParser::EvalSharpIfVal(Data::ArrayList<const UTF8Char *> 
 	{
 		debugSB.AppendC(UTF8STRC(": unknown syntex "));
 		debugSB.Append(phase);
-		this->LogError(status, debugSB.ToString(), errMsgs);
+		this->LogError(status, debugSB.ToString(),debugSB.GetLength(), errMsgs);
 		Text::StrDelNew(phase);
 //		return false;
 		val = 0;
@@ -745,7 +745,7 @@ Bool Text::Cpp::CppCodeParser::EvalSharpIfVal(Data::ArrayList<const UTF8Char *> 
 		{
 			debugSB.AppendC(UTF8STRC(": unknown syntex "));
 			debugSB.Append(phase);
-			this->LogError(status, debugSB.ToString(), errMsgs);
+			this->LogError(status, debugSB.ToString(), debugSB.GetLength(), errMsgs);
 			return false;
 		}
 	}
@@ -814,7 +814,7 @@ Bool Text::Cpp::CppCodeParser::EvalSharpIf(const UTF8Char *cond, Text::Cpp::CppP
 		}
 		else
 		{
-			this->LogError(status, (const UTF8Char*)"#if empty condition", errMsgs);
+			this->LogError(status, UTF8STRC("#if empty condition"), errMsgs);
 			succ = false;
 		}
 	}
@@ -956,14 +956,14 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, Text::Cpp::CppParse
 							}
 							else if (c == '/' && *sptr == '/')
 							{
-								this->LogError(status, (const UTF8Char*)"Missing parameter in #include", errMsgs);
+								this->LogError(status, UTF8STRC("Missing parameter in #include"), errMsgs);
 								parseStatus = false;
 								nextLine = true;
 								break;
 							}
 							else
 							{
-								this->LogError(status, (const UTF8Char*)"Unknown parameter in #include", errMsgs);
+								this->LogError(status, UTF8STRC("Unknown parameter in #include"), errMsgs);
 								parseStatus = false;
 								nextLine = true;
 								break;
@@ -999,7 +999,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, Text::Cpp::CppParse
 							}
 							else
 							{
-								this->LogError(status, (const UTF8Char*)"Unknown parameter in #pragma", errMsgs);
+								this->LogError(status, UTF8STRC("Unknown parameter in #pragma"), errMsgs);
 								parseStatus = false;
 								nextLine = true;
 								break;
@@ -1023,7 +1023,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, Text::Cpp::CppParse
 						}
 						else if (c == '/' && *sptr == '/')
 						{
-							this->LogError(status, (const UTF8Char*)"Unknown parameter in #ifndef", errMsgs);
+							this->LogError(status, UTF8STRC("Unknown parameter in #ifndef"), errMsgs);
 							parseStatus = false;
 							nextLine = true;
 							break;
@@ -1037,7 +1037,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, Text::Cpp::CppParse
 						}
 						else
 						{
-							this->LogError(status, (const UTF8Char*)"Unknown parameter in #ifndef", errMsgs);
+							this->LogError(status, UTF8STRC("Unknown parameter in #ifndef"), errMsgs);
 							parseStatus = false;
 							nextLine = true;
 							break;
@@ -1055,7 +1055,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, Text::Cpp::CppParse
 						}
 						else if (c == '/' && *sptr == '/')
 						{
-							this->LogError(status, (const UTF8Char*)"Unknown parameter in #ifdef", errMsgs);
+							this->LogError(status, UTF8STRC("Unknown parameter in #ifdef"), errMsgs);
 							parseStatus = false;
 							nextLine = true;
 							break;
@@ -1069,7 +1069,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, Text::Cpp::CppParse
 						}
 						else
 						{
-							this->LogError(status, (const UTF8Char*)"Unknown parameter in #ifdef", errMsgs);
+							this->LogError(status, UTF8STRC("Unknown parameter in #ifdef"), errMsgs);
 							parseStatus = false;
 							nextLine = true;
 							break;
@@ -1087,7 +1087,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, Text::Cpp::CppParse
 						}
 						else if (c == '/' && *sptr == '/')
 						{
-							this->LogError(status, (const UTF8Char*)"Unknown parameter in #if", errMsgs);
+							this->LogError(status, UTF8STRC("Unknown parameter in #if"), errMsgs);
 							parseStatus = false;
 							nextLine = true;
 							break;
@@ -1101,7 +1101,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, Text::Cpp::CppParse
 						}
 						else
 						{
-							this->LogError(status, (const UTF8Char*)"Unknown parameter in #if", errMsgs);
+							this->LogError(status, UTF8STRC("Unknown parameter in #if"), errMsgs);
 							parseStatus = false;
 							nextLine = true;
 							break;
@@ -1131,7 +1131,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, Text::Cpp::CppParse
 						}
 						else
 						{
-							this->LogError(status, (const UTF8Char*)"Unknown parameter in #elif", errMsgs);
+							this->LogError(status, UTF8STRC("Unknown parameter in #elif"), errMsgs);
 							parseStatus = false;
 							nextLine = true;
 							break;
@@ -1160,7 +1160,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, Text::Cpp::CppParse
 						}
 						else
 						{
-							this->LogError(status, (const UTF8Char*)"Unknown parameter in #define", errMsgs);
+							this->LogError(status, UTF8STRC("Unknown parameter in #define"), errMsgs);
 							parseStatus = false;
 							nextLine = true;
 							break;
@@ -1191,7 +1191,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, Text::Cpp::CppParse
 							}
 							else
 							{
-								this->LogError(status, (const UTF8Char*)"Unknown parameter in #undef", errMsgs);
+								this->LogError(status, UTF8STRC("Unknown parameter in #undef"), errMsgs);
 								parseStatus = false;
 								nextLine = true;
 								break;
@@ -1208,7 +1208,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, Text::Cpp::CppParse
 						i = fileStatus->ifValid->GetCount();
 						if (i == 0)
 						{
-							this->LogError(status, (const UTF8Char*)"Corresponding #if not found in #else", errMsgs);
+							this->LogError(status, UTF8STRC("Corresponding #if not found in #else"), errMsgs);
 							parseStatus = false;
 							nextLine = true;
 							break;
@@ -1252,7 +1252,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, Text::Cpp::CppParse
 							}
 							else
 							{
-								this->LogError(status, (const UTF8Char*)"Unknown parameter in #else", errMsgs);
+								this->LogError(status, UTF8STRC("Unknown parameter in #else"), errMsgs);
 								parseStatus = false;
 								nextLine = true;
 								break;
@@ -1264,7 +1264,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, Text::Cpp::CppParse
 						i = fileStatus->ifValid->GetCount();
 						if (i == 0)
 						{
-							this->LogError(status, (const UTF8Char*)"Corresponding #if not found in #endif", errMsgs);
+							this->LogError(status, UTF8STRC("Corresponding #if not found in #endif"), errMsgs);
 							parseStatus = false;
 							nextLine = true;
 							break;
@@ -1295,7 +1295,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, Text::Cpp::CppParse
 							}
 							else
 							{
-								this->LogError(status, (const UTF8Char*)"Unknown parameter in #endif", errMsgs);
+								this->LogError(status, UTF8STRC("Unknown parameter in #endif"), errMsgs);
 								parseStatus = false;
 								nextLine = true;
 								break;
@@ -1326,7 +1326,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, Text::Cpp::CppParse
 							}
 							else
 							{
-								this->LogError(status, (const UTF8Char*)"Unknown parameter in #error", errMsgs);
+								this->LogError(status, UTF8STRC("Unknown parameter in #error"), errMsgs);
 								parseStatus = false;
 								nextLine = true;
 								break;
@@ -1340,7 +1340,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, Text::Cpp::CppParse
 					}
 					else
 					{
-						this->LogError(status, (const UTF8Char*)"Unknown '#' type", errMsgs);
+						this->LogError(status, UTF8STRC("Unknown '#' type"), errMsgs);
 						sptr[-1] = c;
 						parseStatus = false;
 						nextLine = true;
@@ -1364,14 +1364,14 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, Text::Cpp::CppParse
 					}
 					else if (c == '/' && *sptr == '/')
 					{
-						this->LogError(status, (const UTF8Char*)"Unknown '#' type", errMsgs);
+						this->LogError(status, UTF8STRC("Unknown '#' type"), errMsgs);
 						parseStatus = false;
 						nextLine = true;
 						break;
 					}
 					else
 					{
-						this->LogError(status, (const UTF8Char*)"Unknown '#' type", errMsgs);
+						this->LogError(status, UTF8STRC("Unknown '#' type"), errMsgs);
 						parseStatus = false;
 						nextLine = true;
 						break;
@@ -1410,7 +1410,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, Text::Cpp::CppParse
 				}
 				else
 				{
-					this->LogError(status, (const UTF8Char*)"Unknown #include parameter", errMsgs);
+					this->LogError(status, UTF8STRC("Unknown #include parameter"), errMsgs);
 					parseStatus = false;
 					nextLine = true;
 					break;
@@ -1431,9 +1431,9 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, Text::Cpp::CppParse
 					{
 						parseStatus = false;
 						sptr[-1] = 0;
-						Text::StrConcatC(Text::StrConcat(Text::StrConcatC(sbuff, UTF8STRC("Include file ")), wordStart), UTF8STRC(" not found"));
+						sptr2 = Text::StrConcatC(Text::StrConcat(Text::StrConcatC(sbuff, UTF8STRC("Include file ")), wordStart), UTF8STRC(" not found"));
 						sptr[-1] = c;
-						this->LogError(status, sbuff, errMsgs);
+						this->LogError(status, sbuff, (UOSInt)(sptr2 - sbuff), errMsgs);
 						nextLine = true;
 						break;
 					}
@@ -1473,8 +1473,8 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, Text::Cpp::CppParse
 					if (u8buff[0] == 0)
 					{
 						parseStatus = false;
-						Text::StrConcatC(Text::StrConcat(Text::StrConcatC(sbuff, UTF8STRC("Include file ")), wordStart), UTF8STRC(" not found"));
-						this->LogError(status, sbuff, errMsgs);
+						sptr2 = Text::StrConcatC(Text::StrConcat(Text::StrConcatC(sbuff, UTF8STRC("Include file ")), wordStart), UTF8STRC(" not found"));
+						this->LogError(status, sbuff, (UOSInt)(sptr2 - sbuff), errMsgs);
 					}
 					else
 					{
@@ -1546,7 +1546,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, Text::Cpp::CppParse
 				{
 					nextLine = true;
 					parseStatus = false;
-					this->LogError(status, (const UTF8Char*)"Parameters not found in #ifndef", errMsgs);
+					this->LogError(status, UTF8STRC("Parameters not found in #ifndef"), errMsgs);
 					break;
 				}
 				else if (c == '/' && *sptr == '*')
@@ -1577,7 +1577,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, Text::Cpp::CppParse
 				{
 					nextLine = true;
 					parseStatus = false;
-					this->LogError(status, (const UTF8Char*)"Parameters not found in #ifndef", errMsgs);
+					this->LogError(status, UTF8STRC("Parameters not found in #ifndef"), errMsgs);
 					break;
 				}
 			}
@@ -1600,7 +1600,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, Text::Cpp::CppParse
 				{
 					nextLine = true;
 					parseStatus = false;
-					this->LogError(status, (const UTF8Char*)"Parameters not found in #ifdef", errMsgs);
+					this->LogError(status, UTF8STRC("Parameters not found in #ifdef"), errMsgs);
 					break;
 				}
 				else if (c == '/' && *sptr == '*')
@@ -1631,7 +1631,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, Text::Cpp::CppParse
 				{
 					nextLine = true;
 					parseStatus = false;
-					this->LogError(status, (const UTF8Char*)"Parameters not found in #ifdef", errMsgs);
+					this->LogError(status, UTF8STRC("Parameters not found in #ifdef"), errMsgs);
 					break;
 				}
 			}
@@ -1659,7 +1659,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, Text::Cpp::CppParse
 						{
 							nextLine = true;
 							parseStatus = false;
-							this->LogError(status, (const UTF8Char*)"Parameters not found in #if", errMsgs);
+							this->LogError(status, UTF8STRC("Parameters not found in #if"), errMsgs);
 							break;
 						}
 					}
@@ -1748,7 +1748,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, Text::Cpp::CppParse
 					{
 						nextLine = true;
 						parseStatus = false;
-						this->LogError(status, (const UTF8Char*)"Parameters not found in #if", errMsgs);
+						this->LogError(status, UTF8STRC("Parameters not found in #if"), errMsgs);
 						break;
 					}
 				}
@@ -1882,7 +1882,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, Text::Cpp::CppParse
 									else
 									{
 										parseStatus = false;
-										this->LogError(status, (const UTF8Char*)"Define already exist", errMsgs);
+										this->LogError(status, UTF8STRC("Define already exist"), errMsgs);
 										nextLine = true;
 										break;
 									}
@@ -1928,7 +1928,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, Text::Cpp::CppParse
 									else
 									{
 										parseStatus = false;
-										this->LogError(status, (const UTF8Char*)"Syntax error in define", errMsgs);
+										this->LogError(status, UTF8STRC("Syntax error in define"), errMsgs);
 										nextLine = true;
 										break;
 									}
@@ -1953,7 +1953,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, Text::Cpp::CppParse
 										else
 										{
 											parseStatus = false;
-											this->LogError(status, (const UTF8Char*)"Define already exist", errMsgs);
+											this->LogError(status, UTF8STRC("Define already exist"), errMsgs);
 											nextLine = true;
 											break;
 										}
@@ -1970,7 +1970,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, Text::Cpp::CppParse
 					else if (fileStatus->modeStatus == 0)
 					{
 						parseStatus = false;
-						this->LogError(status, (const UTF8Char*)"No parameters in #define", errMsgs);
+						this->LogError(status, UTF8STRC("No parameters in #define"), errMsgs);
 					}
 					else
 					{
@@ -2086,7 +2086,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, Text::Cpp::CppParse
 					}
 					else
 					{
-						this->LogError(status, (const UTF8Char*)"#undef parameter error", errMsgs);
+						this->LogError(status, UTF8STRC("#undef parameter error"), errMsgs);
 						nextLine = true;
 						parseStatus = false;
 					}
@@ -2199,7 +2199,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, Text::Cpp::CppParse
 					}
 					else
 					{
-						this->LogError(status, (const UTF8Char*)"'#' is not at beginning of line", errMsgs);
+						this->LogError(status, UTF8STRC("'#' is not at beginning of line"), errMsgs);
 						nextLine = true;
 					}
 					break;
@@ -2254,7 +2254,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, Text::Cpp::CppParse
 			}
 			break;
 		default:
-			this->LogError(status, (const UTF8Char*)"Unknown status", errMsgs);
+			this->LogError(status, UTF8STRC("Unknown status"), errMsgs);
 			parseStatus = false;
 			nextLine = true;
 			break;
@@ -2266,7 +2266,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, Text::Cpp::CppParse
 	}
 	else if (parseStatus && fileStatus->currMode != Text::Cpp::CppParseStatus::PM_NORMAL && fileStatus->currMode != Text::Cpp::CppParseStatus::PM_COMMENTPARA && fileStatus->currMode != Text::Cpp::CppParseStatus::PM_DEFINE && fileStatus->currMode != Text::Cpp::CppParseStatus::PM_IF && fileStatus->currMode != Text::Cpp::CppParseStatus::PM_ELIF)
 	{
-		this->LogError(status, (const UTF8Char*)"Status error in line end", errMsgs);
+		this->LogError(status, UTF8STRC("Status error in line end"), errMsgs);
 		parseStatus = false;
 	}
 	if (fileStatus->currMode == Text::Cpp::CppParseStatus::PM_NORMAL)
@@ -2282,370 +2282,6 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, Text::Cpp::CppParse
 		return false;
 	}
 	return parseStatus;
-
-	/*
-
-	///////////////////////////////////////////////////
-	if (status->parseMode == PM_COMMENTPARA)
-	{
-	}
-	////////////////////////////////////////////////////
-
-	sptr = RemoveSpace(sptr);
-	c = *sptr;
-	if (c == 0)
-		return true;
-	if (c == '#')
-	{
-		sptr = RemoveSpace(sptr + 1);
-		if (Text::StrStartsWith(sptr, L"include"))
-		{
-			sptr = RemoveSpace(sptr + 7);
-			c = *sptr++;
-			if (c == '<')
-			{
-				i = Text::StrIndexOf(sptr, L">");
-				if (i == INVALID_INDEX)
-					return false;
-				sptr[i] = 0;
-				sptr = env->GetIncludeFilePath(sbuff, sptr);
-				if (sptr)
-				{
-					return this->ParseFile(sbuff, errMsgs);
-				}
-				else
-				{
-					return false;
-				}
-			}
-			else if (c == '"')
-			{
-				i = Text::StrIndexOf(sptr, L"\"");
-				if (i == INVALID_INDEX)
-					return false;
-				sptr[i] = 0;
-				sptr = env->GetIncludeFilePath(sbuff, sptr);
-				if (sptr)
-				{
-					return this->ParseFile(sbuff, errMsgs);
-				}
-				else
-				{
-
-					return false;
-				}
-			}
-			else
-			{
-				return false;
-			}
-		}
-		else if (Text::StrStartsWith(sptr, L"pragma"))
-		{
-			///////////////////////////////////////////////////
-			return true;
-		}
-		else if (Text::StrStartsWith(sptr, L"ifndef"))
-		{
-			if (sptr[6] != ' ' && sptr[6] != '\t')
-				return false;
-			///////////////////////////////////////////////////
-			return true;
-		}
-		else if (Text::StrStartsWith(sptr, L"ifdef"))
-		{
-			if (sptr[5] != ' ' && sptr[5] != '\t')
-				return false;
-			sptr = RemoveSpace(sptr + 5);
-			
-			///////////////////////////////////////////////////
-			return true;
-		}
-		else if (Text::StrStartsWith(sptr, L"if"))
-		{
-			///////////////////////////////////////////////////
-			return true;
-		}
-		else if (Text::StrStartsWith(sptr, L"else"))
-		{
-			///////////////////////////////////////////////////
-			return true;
-		}
-		else if (Text::StrStartsWith(sptr, L"elif"))
-		{
-			///////////////////////////////////////////////////
-			return true;
-		}
-		else if (Text::StrStartsWith(sptr, L"endif"))
-		{
-			///////////////////////////////////////////////////
-			return true;
-		}
-		else if (Text::StrStartsWith(sptr, L"define"))
-		{
-			if (sptr[6] != ' ' && sptr[6] != '\t')
-				return false;
-			sptr = RemoveSpace(sptr + 6);
-			///////////////////////////////////////////////////
-			return true;
-		}
-		else if (Text::StrStartsWith(sptr, L"undef"))
-		{
-			
-			///////////////////////////////////////////////////
-			return true;
-		}
-		else if (Text::StrStartsWith(sptr, L"error"))
-		{
-			///////////////////////////////////////////////////
-			return true; //////////////////////////////
-		}
-		else
-		{
-			////////////////////////////////////////////////////
-			return false;
-		}
-	}
-	else
-	{
-		while (c = *sptr++)
-		{
-			switch (status->parseMode)
-			{
-			case PM_NORMAL:
-				if (c == ' ' || c == '\t')
-				{
-					break;
-				}
-				else if (c == '/' && *sptr == '*')
-				{
-					status->parseMode = PM_COMMENTPARA;
-					sptr++;
-					break;
-				}
-				else if (c == '/' && *sptr == '/')
-				{
-					nextLine = true;
-					break;
-				}
-				else if (c == '#')
-				{
-					status->parseMode = PM_SHARP;
-					break;
-				}
-				else
-				{
-					parseStatus = false;
-					break;
-				}
-			case PM_COMMENTPARA:
-				if (c == '*' && *sptr == '/')
-				{
-					status->parseMode = PM_NORMAL;
-					sptr++;
-					break;
-				}
-				else
-				{
-					break;
-				}
-			case PM_SHARP:
-				if (wordStart)
-				{
-					if (c >= 'A' && c <= 'Z')
-						break;
-					if (c >= 'a' && c <= 'z')
-						break;
-					if (c == ' ' || c == '\t' || c == '\"' || c == '<')
-					{
-						sptr[-1] = 0;
-						if (Text::StrCompare(wordStart, L"include") == 0)
-						{
-							sptr[-1] = c;
-							if (c == '\"')
-							{
-								wordStart = sptr;
-								status->parseMode = PM_INCLUDEQUOTE;
-								break;
-							}
-							else if (c == '<')
-							{
-								wordStart = sptr;
-								status->parseMode = PM_INCLUDEARROW;
-								break;
-							}
-							else
-							{
-								wordStart = 0;
-								status->parseMode = PM_INCLUDE;
-								break;
-							}
-						}
-						else if (Text::StrCompare(wordStart, L"pragma") == 0)
-						{
-							sptr[-1] = c;
-							status->parseMode = PM_PRAGMA;
-							wordStart = 0;
-							break;
-						}
-						else
-						{
-							sptr[-1] = c;
-							parseStatus = false;
-							break;
-						}
-					}
-					else
-					{
-						parseStatus = false;
-						break;
-					}
-				}
-				else
-				{
-					if (c == ' ' || c == '\t')
-					{
-						break;
-					}
-					else if ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z'))
-					{
-						wordStart = sptr - 1;
-						break;
-					}
-					else
-					{
-						parseStatus = false;
-						break;
-					}
-				}
-			case PM_INCLUDE:
-				if (c == ' ' || c == '\t')
-				{
-					break;
-				}
-				else if (c == '\"')
-				{
-					wordStart = sptr;
-					status->parseMode = PM_INCLUDEQUOTE;
-					break;
-				}
-				else if (c == '<')
-				{
-					wordStart = sptr;
-					status->parseMode = PM_INCLUDEARROW;
-					break;
-				}
-				else
-				{
-					parseStatus = false;
-					break;
-				}
-			case PM_INCLUDEQUOTE:
-				if (c == '\"')
-				{
-					sptr[-1] = 0;
-					sbuff[0] = 0;
-					this->env->GetIncludeFilePath(sbuff, wordStart);
-					sptr[-1] = c;
-
-					if (sbuff[0] == 0)
-					{
-						parseStatus = false;
-						Text::StrConcatC(Text::StrConcat(Text::StrConcatC(sbuff, UTF8STRC("Include file ")), wordStart), UTF8STRC(" not found"));
-						errMsgs->Add(Text::StrCopyNew(sbuff));
-					}
-					else
-					{
-						if (ParseFile(sbuff, errMsgs))
-						{
-							status->parseMode = PM_SHARPEND;
-						}
-						else
-						{
-							parseStatus = false;
-						}
-					}
-				}
-				else
-				{
-					break;
-				}
-			case PM_INCLUDEARROW:
-				if (c == '>')
-				{
-					sptr[-1] = 0;
-					this->env->GetIncludeFilePath(sbuff, wordStart);
-					sptr[-1] = c;
-
-					if (sbuff[0] == 0)
-					{
-						parseStatus = false;
-						Text::StrConcatC(Text::StrConcat(Text::StrConcatC(sbuff, UTF8STRC("Include file ")), wordStart), UTF8STRC(" not found"));
-						errMsgs->Add(Text::StrCopyNew(sbuff));
-					}
-					else
-					{
-						if (ParseFile(sbuff, errMsgs))
-						{
-							status->parseMode = PM_SHARPEND;
-						}
-						else
-						{
-							parseStatus = false;
-						}
-					}
-				}
-				else
-				{
-					break;
-				}
-			case PM_PRAGMA:
-				if (wordStart)
-					break;
-				else if (c == ' ' || c == '\t')
-				{
-					break;
-				}
-				else
-				{
-					wordStart = sptr - 1;
-				}
-				break;
-			default:
-				parseStatus = false;
-				break;
-			}
-
-			if (!parseStatus)
-			{
-				Text::StrConcat(Text::StrConcatC(Text::StrInt32(Text::StrConcatC(lineBuff, UTF8STRC("Error in parsing line ")), status->lineNum), UTF8STRC(" in ")), status->fileName);
-				errMsgs->Add(Text::StrCopyNew(lineBuff));
-				break;
-			}
-			else if (nextLine)
-			{
-				break;
-			}
-		}
-		if (status->parseMode == PM_PRAGMA)
-		{
-			if (wordStart)
-			{
-				status->parseMode = PM_NORMAL;
-			}
-		}
-		
-		if (status->parseMode != PM_NORMAL && status->parseMode != PM_COMMENTPARA && status->parseMode != PM_SHARPEND)
-		{
-			Text::StrConcat(Text::StrConcatC(Text::StrInt32(Text::StrConcatC(lineBuff, UTF8STRC("Error in parsing line ")), status->lineNum), UTF8STRC(" in ")), status->fileName);
-			errMsgs->Add(Text::StrCopyNew(lineBuff));
-			return false;
-		}
-		else
-		{
-			return true;
-		}
-	}*/
 }
 
 Text::Cpp::CppCodeParser::CppCodeParser(Text::Cpp::CppEnv *env)

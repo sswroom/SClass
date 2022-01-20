@@ -37,7 +37,7 @@ namespace Text
 		static void ParseStr(UTF8Char *out, const UTF8Char *xmlStart, const UTF8Char *xmlEnd);
 		static void ParseStr(WChar *out, const WChar *xmlStart, const WChar *xmlEnd);
 
-		static Bool HTMLAppendCharRef(const UTF8Char *chrRef, OSInt refSize, IO::Stream *stm);
+		static Bool HTMLAppendCharRef(const UTF8Char *chrRef, UOSInt refSize, IO::Stream *stm);
 	};
 }
 #endif

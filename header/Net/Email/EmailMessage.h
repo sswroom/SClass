@@ -3,6 +3,7 @@
 #include "Data/ArrayList.h"
 #include "Data/DateTime.h"
 #include "IO/Stream.h"
+#include "Text/String.h"
 #include "Text/StringBuilderUTF.h"
 
 namespace Net
@@ -14,12 +15,12 @@ namespace Net
 		private:
 			const UTF8Char *fromAddr;
 			Data::ArrayList<const UTF8Char*> *recpList;
-			Data::ArrayList<const UTF8Char*> *headerList;
+			Data::ArrayList<Text::String*> *headerList;
 			UInt8 *content;
 			UOSInt contentLen;
 
-			UOSInt GetHeaderIndex(const Char *name);
-			Bool SetHeader(const Char *name, const UTF8Char *val);
+			UOSInt GetHeaderIndex(const UTF8Char *name, UOSInt nameLen);
+			Bool SetHeader(const UTF8Char *name, UOSInt nameLen, const UTF8Char *val);
 			Bool AppendUTF8Header(Text::StringBuilderUTF *sb, const UTF8Char *val);
 		public:
 			EmailMessage();

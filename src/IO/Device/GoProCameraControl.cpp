@@ -307,7 +307,8 @@ Bool IO::Device::GoProCameraControl::GetThumbnailFile(IO::CameraControl::FileInf
 	UInt64 totalSize = 0;
 	UTF8Char *sptr;
 	Net::HTTPClient *cli;
-	if (!Text::StrStartsWith(file->fileName, (const UTF8Char*)"GOPR"))
+	UOSInt nameLen = Text::StrCharCnt(file->fileName);
+	if (!Text::StrStartsWithC(file->fileName, nameLen, UTF8STRC("GOPR")))
 	{
 		return false;
 	}
@@ -316,7 +317,7 @@ Bool IO::Device::GoProCameraControl::GetThumbnailFile(IO::CameraControl::FileInf
 	sptr = Text::StrConcatC(sptr, UTF8STRC(":8080/gp/gpMediaMetadata?p="));
 	sptr = Text::StrConcat(sptr, file->filePath);
 	sptr = Text::StrConcatC(sptr, UTF8STRC("/"));
-	sptr = Text::StrConcat(sptr, file->fileName);
+	sptr = Text::StrConcatC(sptr, file->fileName, nameLen);
 	cli = Net::HTTPClient::CreateConnect(this->sockf, 0, sbuff, "GET", true);
 	while ((readSize = cli->Read(sbuff, 2048)) > 0)
 	{

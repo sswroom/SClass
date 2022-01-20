@@ -45,14 +45,14 @@ namespace IO
 			Sync::Mutex *cmdMut;
 			Sync::Event *cmdEvt;
 
-			Data::SyncArrayList<const UTF8Char *> *cmdWResults;
+			Data::SyncArrayList<Text::String *> *cmdWResults;
 
 			const UTF8Char *firmwareRel;
 			const UTF8Char *firmwareBuild;
 			const UTF8Char *productMode;
 			const UTF8Char *sdkVer;
 		private:
-			virtual void ParseUnknownCmd(const UTF8Char *cmd);
+			virtual void ParseUnknownCmd(const UTF8Char *cmd, UOSInt cmdLen);
 		public:
 			MTKGPSNMEA(IO::Stream *stm, Bool relStm);
 			virtual ~MTKGPSNMEA();
@@ -84,7 +84,7 @@ namespace IO
 			UInt32 GetLogSpeed();
 			LogMode GetLogMode();
 			UOSInt GetLogSize(); //Bytes
-			const UTF8Char *SendMTKCommand(const UInt8 *cmdBuff, UOSInt cmdSize, const UTF8Char *resultStart, Int32 timeoutMS);
+			Text::String *SendMTKCommand(const UInt8 *cmdBuff, UOSInt cmdSize, const UTF8Char *resultStart, UOSInt resultStartLen, Int32 timeoutMS);
 
 			const UTF8Char *GetFirmwareRel();
 			const UTF8Char *GetFirmwareBuild();

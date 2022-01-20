@@ -474,7 +474,7 @@ void SSWR::AVIRead::AVIRSMTPServerForm::OnMonitorChanged()
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 }
 
-Bool SSWR::AVIRead::AVIRSMTPServerForm::Login(const Char *user, const Char *pwd, Int32 *userId)
+Bool SSWR::AVIRead::AVIRSMTPServerForm::Login(const UTF8Char *user, const UTF8Char *pwd, Int32 *userId)
 {
 	*userId = 1;
 	return true;

@@ -16,6 +16,7 @@ void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnOKClicked(void *userObj)
 	SSWR::AVIRead::AVIRGISPropForm *me = (SSWR::AVIRead::AVIRGISPropForm*)userObj;
 	Map::MapEnv::LayerItem setting;
 	UTF8Char sbuff[16];
+	UTF8Char *sptr;
 	if (me->env->GetLayerProp(&setting, me->group, me->index))
 	{
 		setting.labelCol = (UOSInt)me->cboColName->GetSelectedIndex();
@@ -52,9 +53,9 @@ void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnOKClicked(void *userObj)
 		setting.minScale = Text::StrToDouble(sbuff);
 		me->txtMaxScale->GetText(sbuff);
 		setting.maxScale = Text::StrToDouble(sbuff);
-		me->txtPriority->GetText(sbuff);
+		sptr = me->txtPriority->GetText(sbuff);
 		setting.priority = Text::StrToInt32(sbuff);
-		if (setting.minScale == 0 || setting.maxScale == 0 || (setting.priority == 0 && !Text::StrEquals(sbuff, (const UTF8Char*)"0")))
+		if (setting.minScale == 0 || setting.maxScale == 0 || (setting.priority == 0 && !Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("0"))))
 		{
 			UI::MessageDialog::ShowDialog((const UTF8Char*)"Input value invalid", (const UTF8Char*)"Properties", me);
 			return;

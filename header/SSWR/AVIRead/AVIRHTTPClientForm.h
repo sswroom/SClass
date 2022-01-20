@@ -34,7 +34,7 @@ namespace SSWR
 				const UTF8Char *name;
 				const UTF8Char *value;
 				const UTF8Char *domain;
-				const UTF8Char *path;
+				Text::String *path;
 				Int64 expireTime;
 				Bool secure;
 			} HTTPCookie;

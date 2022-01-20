@@ -88,14 +88,16 @@ IO::DirectoryPackage::DirectoryPackage(Text::String *dirName) : IO::PackageFile(
 IO::DirectoryPackage::DirectoryPackage(const UTF8Char *dirName) : IO::PackageFile(dirName)
 {
 	UTF8Char sbuff[512];
-	if (Text::StrStartsWith(dirName, (const UTF8Char*)"~/"))
+	UTF8Char *sptr;
+	UOSInt nameLen = Text::StrCharCnt(dirName);
+	if (Text::StrStartsWithC(dirName, nameLen, UTF8STRC("~/")))
 	{
-		Text::StrConcat(IO::Path::GetUserHome(sbuff), dirName + 1);
-		this->dirName = Text::String::NewNotNull(sbuff);
+		sptr = Text::StrConcatC(IO::Path::GetUserHome(sbuff), dirName + 1, nameLen - 1);
+		this->dirName = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 	}
 	else
 	{
-		this->dirName = Text::String::NewNotNull(dirName);
+		this->dirName = Text::String::New(dirName, nameLen);
 	}
 	this->Init();
 }

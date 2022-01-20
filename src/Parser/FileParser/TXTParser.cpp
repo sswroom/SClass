@@ -69,6 +69,7 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 	UTF8Char u8buff[512];
 	UTF8Char *fileName;
 	UTF8Char *sarr[20];
+	UTF8Char *sptr;
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
@@ -81,13 +82,13 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 	IO::StreamReader *reader;
 	NEW_CLASS(stm, IO::StreamDataStream(fd));
 	NEW_CLASS(reader, IO::StreamReader(stm, this->codePage));
-	if (reader->ReadLine(sbuff, 255) == 0)
+	if ((sptr = reader->ReadLine(sbuff, 255)) == 0)
 	{
 		DEL_CLASS(reader);
 		DEL_CLASS(stm);
 		return 0;
 	}
-	if (Text::StrStartsWith(sbuff, (const UTF8Char*)"1,") && Text::StrCountChar(sbuff, ',') == 4 && this->parsers != 0 && this->mapMgr != 0)
+	if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("1,")) && Text::StrCountChar(sbuff, ',') == 4 && this->parsers != 0 && this->mapMgr != 0)
 	{
 		Map::MapEnv *env;
 		Map::MapEnv::GroupItem *currGroup = 0;
@@ -103,9 +104,9 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 		env->SetNString(Text::StrToUInt32(sarr[4]));
 		fileName = baseDir;
 
-		while (reader->ReadLine(sbuff, 255))
+		while ((sptr = reader->ReadLine(sbuff, 255)) != 0)
 		{
-			if (Text::StrStartsWith(sbuff, (const UTF8Char*)"2,"))
+			if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("2,")))
 			{
 				if (Text::StrSplitTrim(sarr, 10, sbuff, ',') != 2)
 				{
@@ -118,7 +119,7 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 				fd->GetFullFileName()->ConcatTo(baseDir);
 				fileName = IO::Path::AppendPath(baseDir, sarr[1]);
 			}
-			else if (Text::StrStartsWith(sbuff, (const UTF8Char*)"3,"))
+			else if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("3,")))
 			{
 				UInt8 *pattern;
 				if ((i = Text::StrSplitTrim(sarr, 10, sbuff, ',')) < 5)
@@ -154,7 +155,7 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 					pattern = 0;
 				}
 			}
-			else if (Text::StrStartsWith(sbuff, (const UTF8Char*)"13,"))
+			else if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("13,")))
 			{
 				if (Text::StrSplitTrim(sarr, 10, sbuff, ',') != 3)
 				{
@@ -166,7 +167,7 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 				}
 				env->SetLineStyleName(Text::StrToUInt32(sarr[1]), sarr[2]);
 			}
-			else if (Text::StrStartsWith(sbuff, (const UTF8Char*)"5,"))
+			else if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("5,")))
 			{
 				Text::String *fontName;
 				const UTF8Char *pfontName;
@@ -224,7 +225,7 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 					env->AddFontStyle(0, pfontName, fontSize, bold, fontColor, buffSize, buffColor);
 				}
 			}
-			else if (Text::StrStartsWith(sbuff, (const UTF8Char*)"6,"))
+			else if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("6,")))
 			{
 				Map::MapEnv::LayerItem setting;
 				if (Text::StrSplitTrim(sarr, 10, sbuff, ',') != 5)
@@ -250,7 +251,7 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 					}
 				}
 			}
-			else if (Text::StrStartsWith(sbuff, (const UTF8Char*)"7,"))
+			else if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("7,")))
 			{
 				Map::MapEnv::LayerItem setting;
 				if (Text::StrSplitTrim(sarr, 10, sbuff, ',') != 6)
@@ -279,7 +280,7 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 				}
 
 			}
-			else if (Text::StrStartsWith(sbuff, (const UTF8Char*)"9,"))
+			else if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("9,")))
 			{
 				Map::MapEnv::LayerItem setting;
 				if (Text::StrSplitTrim(sarr, 10, sbuff, ',') != 7)
@@ -320,7 +321,7 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 					}
 				}
 			}
-			else if (Text::StrStartsWith(sbuff, (const UTF8Char*)"10,"))
+			else if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("10,")))
 			{
 				Map::MapEnv::LayerItem setting;
 				if (Text::StrSplitTrim(sarr, 10, sbuff, ',') != 5)
@@ -350,7 +351,7 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 					}
 				}
 			}
-			else if (Text::StrStartsWith(sbuff, (const UTF8Char*)"15,"))
+			else if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("15,")))
 			{
 				currGroup = env->AddGroup(0, &sbuff[3]);
 			}
@@ -361,7 +362,7 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 		DEL_CLASS(stm);
 		return env;
 	}
-	else if (fd->IsFullFile() && Text::StrStartsWith(sbuff, (const UTF8Char*)"OBJECTID,") && Text::StrEndsWith(sbuff, (const UTF8Char*)","))
+	else if (fd->IsFullFile() && Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("OBJECTID,")) && Text::StrEndsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC(",")))
 	{
 		fileName = fd->GetFullName()->ConcatTo(u8buff);
 		Text::StrConcatC(&fileName[-4], UTF8STRC("_Coord.txt"));

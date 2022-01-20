@@ -38,11 +38,11 @@ Bool Net::MQTTUtil::TopicValid(const UTF8Char *topic)
 	return true;
 }
 
-Bool Net::MQTTUtil::TopicMatch(const UTF8Char *topic, const UTF8Char *subscribeTopic)
+Bool Net::MQTTUtil::TopicMatch(const UTF8Char *topic, UOSInt topicLen, const UTF8Char *subscribeTopic)
 {
 	if (subscribeTopic[0] == '#' && subscribeTopic[1] == 0)
 	{
-		if (!Text::StrStartsWith(topic, (const UTF8Char*)"$SYS/"))
+		if (!Text::StrStartsWithC(topic, topicLen, UTF8STRC("$SYS/")))
 		{
 			return true;
 		}
@@ -59,11 +59,12 @@ Bool Net::MQTTUtil::TopicMatch(const UTF8Char *topic, const UTF8Char *subscribeT
 		{
 			sb.ClearStr();
 			sb.AppendC(subscribeTopic, (UOSInt)i);
-			if (!Text::StrStartsWith(topic, sb.ToString()))
+			if (!Text::StrStartsWithC(topic, topicLen, sb.ToString(), sb.GetLength()))
 			{
 				return false;
 			}
 			topic += i;
+			topicLen -= i;
 			subscribeTopic += i;
 		}
 		i = Text::StrIndexOf(topic, '/');
@@ -77,6 +78,7 @@ Bool Net::MQTTUtil::TopicMatch(const UTF8Char *topic, const UTF8Char *subscribeT
 		}
 		subscribeTopic++;
 		topic += i;
+		topicLen -= i;
 	}
 	i = Text::StrIndexOf(subscribeTopic, '#');
 	if (i == INVALID_INDEX)
@@ -90,7 +92,7 @@ Bool Net::MQTTUtil::TopicMatch(const UTF8Char *topic, const UTF8Char *subscribeT
 
 	sb.ClearStr();
 	sb.AppendC(subscribeTopic, (UOSInt)i);
-	if (!Text::StrStartsWith(topic, sb.ToString()))
+	if (!Text::StrStartsWithC(topic, topicLen, sb.ToString(), sb.GetLength()))
 	{
 		return false;
 	}

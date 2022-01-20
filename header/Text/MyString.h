@@ -65,7 +65,22 @@ namespace Text
 	{
 		UTF8Char *v;
 		UOSInt len;
+
+		void operator =(UTF8Char *v)
+		{
+			this->v = v;
+			if (v)
+			{
+				while (*v++)
+				this->len = (UOSInt)(v - this->v - 1);
+			}
+			else
+			{
+				this->len = 0;
+			}
+		}
 	} PString;
+
 
 	typedef struct
 	{

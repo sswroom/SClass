@@ -806,7 +806,8 @@ void Net::LDAPClient::SearchResObjectFree(Net::LDAPClient::SearchResObject *obj)
 
 void Net::LDAPClient::SearchResDisplay(const UTF8Char *type, const UTF8Char *value, Text::StringBuilderUTF *sb)
 {
-	if (Text::StrEquals(type, (const UTF8Char*)"objectGUID") || Text::StrEndsWith(type, (const UTF8Char*)"Guid"))
+	UOSInt typeLen = Text::StrCharCnt(type);
+	if (Text::StrEqualsC(type, typeLen, UTF8STRC("objectGUID")) || Text::StrEndsWithC(type, typeLen, UTF8STRC("Guid")))
 	{
 		sb->AppendHex32(ReadUInt32(&value[0]));
 		sb->AppendChar('-', 1);
@@ -818,11 +819,11 @@ void Net::LDAPClient::SearchResDisplay(const UTF8Char *type, const UTF8Char *val
 		sb->AppendChar('-', 1);
 		sb->AppendHexBuff(&value[10], 6, 0, Text::LineBreakType::None);
 	}
-	else if (Text::StrEquals(type, (const UTF8Char*)"dSASignature"))
+	else if (Text::StrEqualsC(type, typeLen, UTF8STRC("dSASignature")))
 	{
 		sb->AppendHexBuff(value, 40, 0, Text::LineBreakType::None);
 	}
-	else if (Text::StrEquals(type, (const UTF8Char*)"objectSid"))
+	else if (Text::StrEqualsC(type, typeLen, UTF8STRC("objectSid")))
 	{
 		sb->AppendC(UTF8STRC("S-"));
 		sb->AppendU16(value[0]);

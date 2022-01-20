@@ -238,6 +238,7 @@ Bool Text::HTMLUtil::HTMLGetText(Text::EncodingFactory *encFact, const UInt8 *bu
 	Int32 lastType = 0;
 	Bool lastIsSpace = true;
 	const UTF8Char *csptr;
+	const UTF8Char *csptrEnd;
 	Text::String *s;
 	UTF8Char c;
 	NEW_CLASS(wmstm, IO::MemoryStream(UTF8STRC("Text.HTMLUtil.HTMLGetText.wmstm")));
@@ -250,7 +251,9 @@ Bool Text::HTMLUtil::HTMLGetText(Text::EncodingFactory *encFact, const UInt8 *bu
 		{
 			if (lastType == 0)
 			{
-				csptr = reader->GetNodeText()->v;
+				s = reader->GetNodeText();
+				csptr = s->v;
+				csptrEnd = &s->v[s->leng];
 				while (true)
 				{
 					c = *csptr;
@@ -268,7 +271,7 @@ Bool Text::HTMLUtil::HTMLGetText(Text::EncodingFactory *encFact, const UInt8 *bu
 					}
 					else if (c == '&')
 					{
-						if (Text::StrStartsWith(csptr, (const UTF8Char*)"&nbsp;"))
+						if (Text::StrStartsWithC(csptr, (UOSInt)(csptrEnd - csptr), UTF8STRC("&nbsp;")))
 						{
 							if (singleLine)
 							{

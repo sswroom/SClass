@@ -533,7 +533,7 @@ Bool IO::FileAnalyse::JPGFileAnalyse::GetFrameDetail(UOSInt index, Text::StringB
 				}
 			}
 		}
-		else if (Text::StrEquals((Char*)&tagData[4], "http://ns.adobe.com/xap/1.0/"))
+		else if (Text::StrStartsWithC(&tagData[4], tag->size - 4, UTF8STRC("http://ns.adobe.com/xap/1.0/")))
 		{
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC((const UTF8Char*)&tagData[33], tag->size - 33);
@@ -546,7 +546,7 @@ Bool IO::FileAnalyse::JPGFileAnalyse::GetFrameDetail(UOSInt index, Text::StringB
 		this->fd->GetRealData(tag->ofst, tag->size, tagData);
 		sb->AppendC(UTF8STRC("\r\nIdentifier = "));
 		sb->Append((UTF8Char*)&tagData[4]);
-		if (Text::StrEquals((Char*)&tagData[4], "ICC_PROFILE"))
+		if (Text::StrStartsWithC(&tagData[4], tag->size, UTF8STRC("ICC_PROFILE")))
 		{
 			Media::ICCProfile *icc = Media::ICCProfile::Parse(&tagData[18], tag->size - 18);
 			if (icc)
@@ -862,7 +862,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::JPGFileAnalyse::GetFrameDetail(UO
 				}
 			}
 		}
-		else if (Text::StrEquals((Char*)&tagData[4], "http://ns.adobe.com/xap/1.0/"))
+		else if (Text::StrStartsWithC(&tagData[4], tag->size - 4, UTF8STRC("http://ns.adobe.com/xap/1.0/")))
 		{
 			frame->AddStrC(33, tag->size - 33, "Data", &tagData[33]);
 		}
@@ -875,7 +875,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::JPGFileAnalyse::GetFrameDetail(UO
 		frame->AddUInt(2, 2, "Tag Length", ReadMUInt16(&tagData[2]));
 		i = Text::StrCharCnt(&tagData[4]);
 		frame->AddStrC(4, i + 1, "Identifier", &tagData[4]);
-		if (Text::StrEquals((Char*)&tagData[4], "ICC_PROFILE"))
+		if (Text::StrStartsWithC(&tagData[4], tag->size - 4, UTF8STRC("ICC_PROFILE")))
 		{
 			Media::ICCProfile *icc = Media::ICCProfile::Parse(&tagData[18], tag->size - 18);
 			if (icc)

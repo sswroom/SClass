@@ -250,7 +250,7 @@ Bool Net::HTTPOSClient::Connect(const UTF8Char *url, UOSInt urlLen, const Char *
 
 	SDEL_STRING(this->url);
 	this->url = Text::String::New(url, urlLen);
-	if (Text::StrStartsWith(url, (const UTF8Char*)"http://"))
+	if (Text::StrStartsWithC(url, urlLen, UTF8STRC("http://")))
 	{
 		ptr1 = &url[7];
 		i = Text::StrIndexOf(ptr1, '/');
@@ -270,7 +270,7 @@ Bool Net::HTTPOSClient::Connect(const UTF8Char *url, UOSInt urlLen, const Char *
 		Text::TextBinEnc::URIEncoding::URIDecode(urltmp, urltmp);
 		defPort = 80;
 	}
-	else if (Text::StrStartsWith(url, (const UTF8Char*)"https://"))
+	else if (Text::StrStartsWithC(url, urlLen, UTF8STRC("https://")))
 	{
 		ptr1 = &url[8];
 		i = Text::StrIndexOf(ptr1, '/');
@@ -345,7 +345,7 @@ Bool Net::HTTPOSClient::Connect(const UTF8Char *url, UOSInt urlLen, const Char *
 	if (this->cliHost == 0)
 	{
 		this->cliHost = Text::StrCopyNew(urltmp);
-		if (Text::StrEqualsICasC(svrname, (UOSInt)(svrnameEnd - svrname), UTF8STRC("localhost")))
+		if (Text::StrEqualsICaseC(svrname, (UOSInt)(svrnameEnd - svrname), UTF8STRC("localhost")))
 		{
 			this->svrAddr.addrType = Net::AddrType::IPv4;
 			*(UInt32*)this->svrAddr.addr = Net::SocketUtil::GetIPAddr(UTF8STRC("127.0.0.1"));

@@ -1,11 +1,13 @@
 #ifndef _SM_NET_MQTTBROKER
 #define _SM_NET_MQTTBROKER
+#include "Data/FastStringMap.h"
 #include "Data/StringUTF8Map.h"
 #include "IO/ProtoHdlr/ProtoMQTTHandler.h"
 #include "Net/SocketFactory.h"
 #include "Net/SSLEngine.h"
 #include "Net/TCPClientMgr.h"
 #include "Net/TCPServer.h"
+#include "Text/String.h"
 
 namespace Net
 {
@@ -29,7 +31,7 @@ namespace Net
 
 		struct TopicInfo
 		{
-			const UTF8Char *topic;
+			Text::String *topic;
 			UInt8 *message;
 			UOSInt msgSize;
 		};
@@ -54,7 +56,7 @@ namespace Net
 		Net::TCPClientMgr *cliMgr;
 		IO::ProtoHdlr::ProtoMQTTHandler *protoHdlr;
 		Sync::Mutex *topicMut;
-		Data::StringUTF8Map<TopicInfo*> *topicMap;
+		Data::FastStringMap<TopicInfo*> *topicMap;
 		Sync::Mutex *subscribeMut;
 		Data::ArrayList<SubscribeInfo*> *subscribeList;
 		Int64 infoTotalRecv;

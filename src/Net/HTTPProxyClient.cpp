@@ -37,7 +37,7 @@ Net::HTTPProxyClient::~HTTPProxyClient()
 	}
 }
 
-Bool Net::HTTPProxyClient::Connect(const UTF8Char *url, const Char *method, Double *timeDNS, Double *timeConn)
+Bool Net::HTTPProxyClient::Connect(const UTF8Char *url, UOSInt urlLen, const Char *method, Double *timeDNS, Double *timeConn, Bool defHeaders)
 {
 	UTF8Char urltmp[256];
 	UTF8Char svrname[256];
@@ -48,7 +48,7 @@ Bool Net::HTTPProxyClient::Connect(const UTF8Char *url, const Char *method, Doub
 	UTF8Char *ptrs[2];
 	UTF8Char *cptr;
 
-	if (Text::StrStartsWith(url, (const UTF8Char*)"http://"))
+	if (Text::StrStartsWithC(url, urlLen, UTF8STRC("http://")))
 	{
 		ptr1 = &url[7];
 		i = Text::StrIndexOf(ptr1, '/');

@@ -31,7 +31,7 @@ namespace Text
 			Text::Cpp::CppEnv *env;
 			
 			static UTF8Char *RemoveSpace(UTF8Char *sptr);
-			void LogError(Text::Cpp::CppParseStatus *status, const UTF8Char *errMsg, Data::ArrayListStrUTF8 *errMsgs);
+			void LogError(Text::Cpp::CppParseStatus *status, const UTF8Char *errMsg, UOSInt msgLen, Data::ArrayListStrUTF8 *errMsgs);
 			Bool ParseSharpIfParam(const UTF8Char *cond, Text::Cpp::CppParseStatus *status, Data::ArrayListStrUTF8 *errMsgs, Data::ArrayList<const UTF8Char *> *codePhases, UOSInt cpIndex);
 			Bool EvalSharpIfVal(Data::ArrayList<const UTF8Char *> *codePhases, Text::Cpp::CppParseStatus *status, Data::ArrayListStrUTF8 *errMsgs, UOSInt cpIndex, Int32 *outVal, OSInt priority);
 			Bool EvalSharpIf(const UTF8Char *cond, Text::Cpp::CppParseStatus *status, Data::ArrayListStrUTF8 *errMsgs, Bool *result);

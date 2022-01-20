@@ -137,7 +137,7 @@ Bool IO::BTDevLog::LoadFile(const UTF8Char *fileName)
 	Text::StringBuilderUTF8 sb;
 	IO::FileStream *fs;
 	Text::UTF8Reader *reader;
-	UTF8Char *sarr[9];
+	Text::PString sarr[9];
 	UOSInt colCnt;
 	UInt8 macBuff[8];
 	UInt64 macInt;
@@ -151,19 +151,19 @@ Bool IO::BTDevLog::LoadFile(const UTF8Char *fileName)
 	NEW_CLASS(reader, Text::UTF8Reader(fs));
 	while (reader->ReadLine(&sb, 512))
 	{
-		colCnt = Text::StrSplit(sarr, 9, sb.ToString(), '\t');
-		if ((colCnt == 4 || colCnt == 6 || colCnt == 7 || colCnt == 8) && Text::StrCharCnt(sarr[0]) == 17)
+		colCnt = Text::StrSplitP(sarr, 9, sb.ToString(), sb.GetLength(), '\t');
+		if ((colCnt == 4 || colCnt == 6 || colCnt == 7 || colCnt == 8) && sarr[0].len == 17)
 		{
 			macBuff[0] = 0;
 			macBuff[1] = 0;
-			macBuff[2] = Text::StrHex2UInt8C(&sarr[0][0]);
-			macBuff[3] = Text::StrHex2UInt8C(&sarr[0][3]);
-			macBuff[4] = Text::StrHex2UInt8C(&sarr[0][6]);
-			macBuff[5] = Text::StrHex2UInt8C(&sarr[0][9]);
-			macBuff[6] = Text::StrHex2UInt8C(&sarr[0][12]);
-			macBuff[7] = Text::StrHex2UInt8C(&sarr[0][15]);
+			macBuff[2] = Text::StrHex2UInt8C(&sarr[0].v[0]);
+			macBuff[3] = Text::StrHex2UInt8C(&sarr[0].v[3]);
+			macBuff[4] = Text::StrHex2UInt8C(&sarr[0].v[6]);
+			macBuff[5] = Text::StrHex2UInt8C(&sarr[0].v[9]);
+			macBuff[6] = Text::StrHex2UInt8C(&sarr[0].v[12]);
+			macBuff[7] = Text::StrHex2UInt8C(&sarr[0].v[15]);
 			macInt = ReadMUInt64(macBuff);
-			const UTF8Char *name = sarr[1];
+			const UTF8Char *name = sarr[1].v;
 			if (name[0] == 0)
 			{
 				name = 0;
@@ -174,45 +174,45 @@ Bool IO::BTDevLog::LoadFile(const UTF8Char *fileName)
 			advType = 0;
 			if (colCnt >= 6)
 			{
-				if (Text::StrEquals(sarr[4], (const UTF8Char*)"HCI"))
+				if (Text::StrEqualsC(sarr[4].v, sarr[4].len, UTF8STRC("HCI")))
 				{
 					radioType = IO::BTScanLog::RT_HCI;
 				}
-				else if (Text::StrEquals(sarr[4], (const UTF8Char*)"LE"))
+				else if (Text::StrEqualsC(sarr[4].v, sarr[4].len, UTF8STRC("LE")))
 				{
 					radioType = IO::BTScanLog::RT_LE;
 				}
 
-				if (Text::StrEquals(sarr[5], (const UTF8Char*)"Public"))
+				if (Text::StrEqualsC(sarr[5].v, sarr[5].len, UTF8STRC("Public")))
 				{
 					addrType = IO::BTScanLog::AT_PUBLIC;
 				}
-				else if (Text::StrEquals(sarr[5], (const UTF8Char*)"Random"))
+				else if (Text::StrEqualsC(sarr[5].v, sarr[5].len, UTF8STRC("Random")))
 				{
 					addrType = IO::BTScanLog::AT_RANDOM;
 				}
 			}
 			if (colCnt >= 7)
 			{
-				measurePower = (Int8)Text::StrToInt32(sarr[6]);
+				measurePower = (Int8)Text::StrToInt32(sarr[6].v);
 			}
 			if (colCnt >= 8)
 			{
-				advType = Text::StrToUInt32(sarr[7]);
+				advType = Text::StrToUInt32(sarr[7].v);
 			}
 			UInt16 company = 0;
-			if (sarr[3][0])
+			if (sarr[3].v[0])
 			{
 				sarr[1] = sarr[3];
 				UOSInt i = 2;
 				while (i == 2)
 				{
-					i = Text::StrSplit(sarr, 2, sarr[1], ',');
-					company = Text::StrHex2UInt16C(sarr[0]);
+					i = Text::StrSplitP(sarr, 2, sarr[1].v, sarr[1].len, ',');
+					company = Text::StrHex2UInt16C(sarr[0].v);
 				}
 			}
 			Text::String *nameStr = Text::String::NewOrNull(name);
-			this->AddEntry(macInt, nameStr, (Int8)Text::StrToInt32(sarr[2]), measurePower, radioType, addrType, company, (IO::BTScanLog::AdvType)advType);
+			this->AddEntry(macInt, nameStr, (Int8)Text::StrToInt32(sarr[2].v), measurePower, radioType, addrType, company, (IO::BTScanLog::AdvType)advType);
 			SDEL_STRING(nameStr);
 		}
 		sb.ClearStr();

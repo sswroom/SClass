@@ -27,15 +27,16 @@ extern "C"
 	Text::StringBuilderUTF8 sb;
 	Data::ArrayList<const UTF8Char *> files;
 	sb.Append((const UTF8Char*)gtk_selection_data_get_data(data));
-	UTF8Char *sarr[2];
+	Text::PString sarr[2];
 	UTF8Char sbuff[512];
 	OSInt i;
 	OSInt j;
-	sarr[1] = sb.ToString();
+	sarr[1].v = sb.ToString();
+	sarr[1].len = sb.GetLength();
 	while (true)
 	{
-		i = Text::StrSplit(sarr, 2, sarr[1], '\n');
-		if (Text::StrStartsWith(sarr[0], (const UTF8Char*)"file://"))
+		i = Text::StrSplitP(sarr, 2, sarr[1].v, sarr[1].len, '\n');
+		if (Text::StrStartsWithC(sarr[0].v, sarr[0].len, UTf8STRC("file://")))
 		{
 			j = Text::StrCharCnt(sarr[0]);
 			if (sarr[0][j - 1] == '\r')

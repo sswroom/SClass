@@ -11,7 +11,7 @@
 #include "Text/Encoding.h"
 #include "Text/MyString.h"
 #include "Text/UTF8Reader.h"
-#include "Text/TextEnc/Punycode.h"
+#include "Text/TextBinEnc/Punycode.h"
 
 #include <winsock2.h>
 #include <ws2tcpip.h>

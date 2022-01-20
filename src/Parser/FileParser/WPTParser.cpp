@@ -2,7 +2,6 @@
 #include "MyMemory.h"
 #include "Data/DateTime.h"
 #include "IO/StreamDataStream.h"
-#include "IO/StreamReader.h"
 #include "Map/VectorLayer.h"
 #include "Math/CoordinateSystemManager.h"
 #include "Math/Math.h"
@@ -10,6 +9,7 @@
 #include "Parser/FileParser/WPTParser.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
+#include "Text/UTF8Reader.h"
 
 Parser::FileParser::WPTParser::WPTParser()
 {
@@ -40,6 +40,7 @@ IO::ParserType Parser::FileParser::WPTParser::GetParserType()
 IO::ParsedObject *Parser::FileParser::WPTParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
 	UTF8Char sbuff[1024];
+	UTF8Char *sptr;
 	UTF8Char *tmpArr[16];
 	Map::VectorLayer *lyr = 0;
 	Math::Point3D *pt;
@@ -49,23 +50,23 @@ IO::ParsedObject *Parser::FileParser::WPTParser::ParseFile(IO::IStreamData *fd, 
 		return 0;
 
 	IO::StreamDataStream *stm;
-	IO::StreamReader *reader;
+	Text::UTF8Reader *reader;
 	NEW_CLASS(stm, IO::StreamDataStream(fd));
-	NEW_CLASS(reader, IO::StreamReader(stm, 65001));
+	NEW_CLASS(reader, Text::UTF8Reader(stm));
 
 	valid = true;
-	reader->ReadLine(sbuff, 1024);
-	if (!Text::StrStartsWith(sbuff, (const UTF8Char*)"OziExplorer Waypoint File Version "))
+	sptr = reader->ReadLine(sbuff, 1024);
+	if (sptr == 0 || !Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("OziExplorer Waypoint File Version ")))
 	{
 		valid = false;
 	}
-	reader->ReadLine(sbuff, 1024);
-	if (Text::StrCompare(sbuff, (const UTF8Char*)"WGS 84") != 0)
+	sptr = reader->ReadLine(sbuff, 1024);
+	if (sptr == 0 || !Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("WGS 84")))
 	{
 		valid = false;
 	}
-	reader->ReadLine(sbuff, 1024);
-	if (!Text::StrStartsWith(sbuff, (const UTF8Char*)"Reserved "))
+	sptr = reader->ReadLine(sbuff, 1024);
+	if (sptr == 0 || !Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("Reserved ")))
 	{
 		valid = false;
 	}

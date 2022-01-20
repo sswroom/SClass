@@ -52,7 +52,8 @@ IO::ParsedObject *Parser::FileParser::OziMapParser::ParseFile(IO::IStreamData *f
 {
 	UInt8 buff[40];
 	UTF8Char sbuff[1024];
-	const UTF8Char *fileName;
+	UTF8Char *sptr;
+	const UTF8Char *fileName = 0;
 	UTF8Char *tmpArr[6];
 	Map::VectorLayer *lyr = 0;
 	Bool valid;
@@ -62,7 +63,7 @@ IO::ParsedObject *Parser::FileParser::OziMapParser::ParseFile(IO::IStreamData *f
 
 	fd->GetRealData(0, 34, buff);
 	buff[34] = 0;
-	if (Text::StrCompareICase((Char*)buff, "OziExplorer Map Data File Version ") != 0)
+	if (!Text::StrEqualsC(buff, 34, UTF8STRC("OziExplorer Map Data File Version ")))
 		return 0;
 
 	IO::StreamDataStream *stm;
@@ -71,22 +72,29 @@ IO::ParsedObject *Parser::FileParser::OziMapParser::ParseFile(IO::IStreamData *f
 	NEW_CLASS(reader, Text::UTF8Reader(stm));
 
 	valid = true;
-	reader->ReadLine(sbuff, 1024);
-	if (!Text::StrStartsWith(sbuff, (const UTF8Char*)"OziExplorer Map Data File Version "))
+	sptr = reader->ReadLine(sbuff, 1024);
+	if (!Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("OziExplorer Map Data File Version ")))
 	{
 		valid = false;
 	}
-	reader->ReadLine(sbuff, 1024); //File Name
-	fileName = Text::StrCopyNew(sbuff);
+	sptr = reader->ReadLine(sbuff, 1024); //File Name
+	if (sptr)
+	{
+		fileName = Text::StrCopyNewC(sbuff, (UOSInt)(sptr - sbuff));
+	}
+	else
+	{
+		valid = false;
+	}
 	reader->ReadLine(sbuff, 1024); //Full Path
 	reader->ReadLine(sbuff, 1024); //?
-	reader->ReadLine(sbuff, 1024);
-	if (!Text::StrStartsWith(sbuff, (const UTF8Char*)"WGS 84"))
+	sptr = reader->ReadLine(sbuff, 1024);
+	if (sptr == 0 || !Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("WGS 84")))
 	{
 		valid = false;
 	}
-	reader->ReadLine(sbuff, 1024);
-	if (!Text::StrStartsWith(sbuff, (const UTF8Char*)"Reserved "))
+	sptr = reader->ReadLine(sbuff, 1024);
+	if (sptr == 0 || !Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("Reserved ")))
 	{
 		valid = false;
 	}
@@ -98,9 +106,9 @@ IO::ParsedObject *Parser::FileParser::OziMapParser::ParseFile(IO::IStreamData *f
 		Int32 *ptStatus = 0;
 		Double imgW = 0;
 		Double imgH = 0;
-		while (reader->ReadLine(sbuff, 1024))
+		while ((sptr = reader->ReadLine(sbuff, 1024)) != 0)
 		{
-			if (Text::StrStartsWith(sbuff, (const UTF8Char*)"MMPNUM,"))
+			if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("MMPNUM,")))
 			{
 				if (ptXY == 0)
 				{
@@ -117,7 +125,7 @@ IO::ParsedObject *Parser::FileParser::OziMapParser::ParseFile(IO::IStreamData *f
 					}
 				}
 			}
-			else if (Text::StrStartsWith(sbuff, (const UTF8Char*)"MMPXY,"))
+			else if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("MMPXY,")))
 			{
 				if (ptXY && Text::StrSplitTrim(tmpArr, 6, sbuff, ',') == 4)
 				{
@@ -130,7 +138,7 @@ IO::ParsedObject *Parser::FileParser::OziMapParser::ParseFile(IO::IStreamData *f
 					}
 				}
 			}
-			else if (Text::StrStartsWith(sbuff, (const UTF8Char*)"MMPLL,"))
+			else if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("MMPLL,")))
 			{
 				if (ptXY && Text::StrSplitTrim(tmpArr, 6, sbuff, ',') == 4)
 				{
@@ -143,7 +151,7 @@ IO::ParsedObject *Parser::FileParser::OziMapParser::ParseFile(IO::IStreamData *f
 					}
 				}
 			}
-			else if (Text::StrStartsWith(sbuff, (const UTF8Char*)"IWH,"))
+			else if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("IWH,")))
 			{
 				if (Text::StrSplitTrim(tmpArr, 6, sbuff, ',') == 4)
 				{
@@ -208,7 +216,7 @@ IO::ParsedObject *Parser::FileParser::OziMapParser::ParseFile(IO::IStreamData *f
 			MemFree(ptStatus);
 		}
 	}
-	Text::StrDelNew(fileName);
+	SDEL_TEXT(fileName);
 	DEL_CLASS(reader);
 	DEL_CLASS(stm);
 	return lyr;

@@ -47,7 +47,7 @@ namespace SSWR
 			static void __stdcall On30MinutesClicked(void *userObj);
 			static void __stdcall OnFileEnd(void *userObj, Int32 fileId, Int32 webType);
 
-			static Int32 ParseURL(const UTF8Char *url, Int32 *webType);
+			static Int32 ParseURL(const UTF8Char *url, UOSInt urlLen, Int32 *webType);
 			void LoadList();
 			void SaveList();
 		public:

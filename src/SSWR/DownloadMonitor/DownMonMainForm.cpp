@@ -104,24 +104,25 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnPasteTableClicked(void 
 	Text::StringBuilderUTF8 sb;
 	Win32::Clipboard::GetString(me->GetHandle(), &sb);
 	UTF8Char sbuff[32];
-	UTF8Char *sarr[2];
-	UTF8Char *sarr2[2];
+	Text::PString sarr[2];
+	Text::PString sarr2[2];
 	Bool changed = false;
 	UOSInt i;
 	UOSInt j;
-	sarr[1] = sb.ToString();
+	sarr[1].v = sb.ToString();
+	sarr[1].len = sb.GetLength();
 	while (true)
 	{
-		i = Text::StrSplitLine(sarr, 2, sarr[1]);
-		if (Text::StrStartsWith(sarr[0], (const UTF8Char*)"https://") && Text::StrSplit(sarr2, 2, sarr[0], '\t') == 2)
+		i = Text::StrSplitLineP(sarr, 2, sarr[1].v, sarr[1].len);
+		if (Text::StrStartsWithC(sarr[0].v, sarr[0].len, UTF8STRC("https://")) && Text::StrSplitP(sarr2, 2, sarr[0].v, sarr[0].len, '\t') == 2)
 		{
 			Int32 id = 0;
 			Int32 webType = 0;
-			id = ParseURL(sarr[0], &webType);
+			id = ParseURL(sarr[0].v, sarr[0].len, &webType);
 
 			if (id != 0)
 			{
-				Text::String *s = Text::String::NewNotNull(sarr2[1]);
+				Text::String *s = Text::String::New(sarr2[1].v, sarr2[1].len);
 				if (me->core->FileAdd(id, webType, s))
 				{
 					Sync::MutexUsage mutUsage;
@@ -155,8 +156,11 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnPasteHTMLClicked(void *
 	UOSInt j;
 	UInt32 fmtId = (UInt32)-1;
 	UTF8Char sbuff[512];
-	UTF8Char *sarr[2];
-	Data::ArrayList<const UTF8Char *> urlList;
+	const UTF8Char *url;
+	UOSInt urlLen;
+	Text::PString sarr[2];
+	Data::ArrayList<const UTF8Char *> urlStrList;
+	Data::ArrayList<UOSInt> urlLenList;
 	Data::ArrayList<const UTF8Char *> descList;
 	Win32::Clipboard clipboard(me->GetHandle());
 	clipboard.GetDataFormats(&formats);
@@ -174,46 +178,47 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnPasteHTMLClicked(void *
 	if (fmtId != (UInt32)-1)
 	{
 		const UTF8Char *desc;
-		const UTF8Char *url;
 		Text::StringBuilderUTF8 sb;
 		if (clipboard.GetDataText(fmtId, &sb))
 		{
-			sarr[1] = sb.ToString();
+			sarr[1].v = sb.ToString();
+			sarr[1].len = sb.GetLength();
 			while (true)
 			{
-				i = Text::StrSplitLine(sarr, 2, sarr[1]);
-				if (i == 2 && Text::StrIndexOf(sarr[0], (const UTF8Char*)"<div class=\"post-thumb\">") != INVALID_INDEX)
+				i = Text::StrSplitLineP(sarr, 2, sarr[1].v, sarr[1].len);
+				if (i == 2 && Text::StrIndexOfC(sarr[0].v, sarr[0].len, UTF8STRC("<div class=\"post-thumb\">")) != INVALID_INDEX)
 				{
 					desc = 0;
-					i = Text::StrSplitLine(sarr, 2, sarr[1]);
-					j = Text::StrIndexOf(sarr[0], (const UTF8Char*)"<img class=\"lazyload\" ");
+					i = Text::StrSplitLineP(sarr, 2, sarr[1].v, sarr[1].len);
+					j = Text::StrIndexOfC(sarr[0].v, sarr[0].len, UTF8STRC("<img class=\"lazyload\" "));
 					if (i == 2 && j != INVALID_INDEX)
 					{
-						sarr[0] = &sarr[0][j + 22];
-						j = Text::StrIndexOf(sarr[0], (const UTF8Char*)"alt=\"");
+						UTF8Char *linePtr = &sarr[0].v[j + 22];
+						j = Text::StrIndexOf(linePtr, (const UTF8Char*)"alt=\"");
 						if (j != INVALID_INDEX)
 						{
-							sarr[0] = &sarr[0][j + 5];
-							j = Text::StrIndexOf(sarr[0], '\"');
+							linePtr = &linePtr[j + 5];
+							j = Text::StrIndexOf(linePtr, '\"');
 							if (j != INVALID_INDEX)
 							{
-								sarr[0][j] = 0;
-								desc = sarr[0];
+								linePtr[j] = 0;
+								desc = linePtr;
 							}
 						}
 					}
 					if (desc)
 					{
-						i = Text::StrSplitLine(sarr, 2, sarr[1]);
-						j = Text::StrIndexOf(sarr[0], (const UTF8Char*)"<a href=\"");
+						i = Text::StrSplitLineP(sarr, 2, sarr[1].v, sarr[1].len);
+						j = Text::StrIndexOfC(sarr[0].v, sarr[0].len, UTF8STRC("<a href=\""));
 						if (i == 2 && j != INVALID_INDEX)
 						{
-							sarr[0] = &sarr[0][j + 9];
-							j = Text::StrIndexOf(sarr[0], '\"');
+							UTF8Char *linePtr = &sarr[0].v[j + 9];
+							j = Text::StrIndexOf(linePtr, '\"');
 							if (j != INVALID_INDEX)
 							{
-								sarr[0][j] = 0;
-								urlList.Add(sarr[0]);
+								linePtr[j] = 0;
+								urlStrList.Add(linePtr);
+								urlLenList.Add(j);
 								descList.Add(desc);
 							}
 						}
@@ -225,20 +230,21 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnPasteHTMLClicked(void *
 				}
 			}
 
-			if (urlList.GetCount() > 0)
+			if (urlStrList.GetCount() > 0)
 			{
 				Bool changed = false;
 				Int32 id;
 				Int32 webType;
-				i = urlList.GetCount();
+				i = urlStrList.GetCount();
 				while (i-- > 0)
 				{
-					url = urlList.GetItem(i);
+					url = urlStrList.GetItem(i);
+					urlLen = urlLenList.GetItem(i);
 					desc = descList.GetItem(i);
 
 					id = 0;
 					webType = 0;
-					id = ParseURL(url, &webType);
+					id = ParseURL(url, urlLen, &webType);
 
 					if (id != 0)
 					{
@@ -432,25 +438,25 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnFileEnd(void *userObj, 
 	mutUsage.EndUse();
 }
 
-Int32 SSWR::DownloadMonitor::DownMonMainForm::ParseURL(const UTF8Char *url, Int32 *webType)
+Int32 SSWR::DownloadMonitor::DownMonMainForm::ParseURL(const UTF8Char *url, UOSInt urlLen, Int32 *webType)
 {
 	Int32 id;
-	if (Text::StrStartsWith(url, (const UTF8Char*)"https://48idol.com/video/"))
+	if (Text::StrStartsWithC(url, urlLen, UTF8STRC("https://48idol.com/video/")))
 	{
 		id = Text::StrToInt32(&url[25]);
 		*webType = 1;
 	}
-	else if (Text::StrStartsWith(url, (const UTF8Char*)"https://48idol.net/video/"))
+	else if (Text::StrStartsWithC(url, urlLen, UTF8STRC("https://48idol.net/video/")))
 	{
 		id = Text::StrToInt32(&url[25]);
 		*webType = 2;
 	}
-	else if (Text::StrStartsWith(url, (const UTF8Char*)"https://48idol.tv/archive/video/"))
+	else if (Text::StrStartsWithC(url, urlLen, UTF8STRC("https://48idol.tv/archive/video/")))
 	{
 		id = Text::StrToInt32(&url[32]);
 		*webType = 3;
 	}
-	else if (Text::StrStartsWith(url, (const UTF8Char*)"https://48idol.tv/video/"))
+	else if (Text::StrStartsWithC(url, urlLen, UTF8STRC("https://48idol.tv/video/")))
 	{
 		id = Text::StrToInt32(&url[24]);
 		*webType = 4;
@@ -477,21 +483,21 @@ void SSWR::DownloadMonitor::DownMonMainForm::LoadList()
 	Bool updated = false;
 
 	UTF8Char sbuff[32];
-	UTF8Char *sarr[2];
+	Text::PString sarr[2];
 	UOSInt i;
 	NEW_CLASS(fs, IO::FileStream(this->core->GetListFile(), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	NEW_CLASS(reader, Text::UTF8Reader(fs));
 	while (reader->ReadLine(&sb, 4096))
 	{
-		if (Text::StrStartsWith(sb.ToString(), (const UTF8Char*)"https://") && Text::StrSplit(sarr, 2, sb.ToString(), '\t') == 2)
+		if (sb.StartsWithC(UTF8STRC("https://")) && Text::StrSplitP(sarr, 2, sb.ToString(), sb.GetLength(), '\t') == 2)
 		{
 			Int32 id = 0;
 			Int32 webType = 0;
-			id = ParseURL(sarr[0], &webType);
+			id = ParseURL(sarr[0].v, sarr[0].len, &webType);
 
 			if (id != 0)
 			{
-				if (!Text::UTF8Util::ValidStr(sarr[1]))
+				if (!Text::UTF8Util::ValidStr(sarr[1].v))
 				{
 					printf("Invalid char found, id = %d\r\n", id);
 					if (ctrl == 0)
@@ -503,11 +509,12 @@ void SSWR::DownloadMonitor::DownMonMainForm::LoadList()
 					if (ctrl->GetVideoName(id, &sb2))
 					{
 						printf("Name of id %d updated\r\n", id);
-						sarr[1] = sb2.ToString();
+						sarr[1].v = sb2.ToString();
+						sarr[1].len = sb2.GetLength();
 						updated = true;
 					}
 				}
-				Text::String *s = Text::String::NewNotNull(sarr[1]);
+				Text::String *s = Text::String::New(sarr[1].v, sarr[1].len);
 				if (this->core->FileAdd(id, webType, s))
 				{
 					Sync::MutexUsage mutUsage;

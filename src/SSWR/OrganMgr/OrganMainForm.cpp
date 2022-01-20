@@ -831,17 +831,17 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImageClipboardClicked(void *user
 				while (i < j)
 				{
 					fmt = formats.GetItem(i);
-					if (Win32::Clipboard::GetFormatName(fmt, sbuff, 256))
+					if ((sptr = Win32::Clipboard::GetFormatName(fmt, sbuff, 256)) != 0)
 					{
-						if (Text::StrEquals(sbuff, (const UTF8Char*)"application/x-moz-file-promise-url"))
+						if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("application/x-moz-file-promise-url")))
 						{
 							urlFmt = fmt;
 						}
-						else if (Text::StrEquals(sbuff, (const UTF8Char*)"HDROP"))
+						else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("HDROP")))
 						{
 							filePathFmt = fmt;
 						}
-						else if (Text::StrEquals(sbuff, (const UTF8Char*)"URIs"))
+						else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("URIs")))
 						{
 							filePathFmt = fmt;
 						}
@@ -3284,44 +3284,45 @@ UI::GUIDropHandler::DragEffect SSWR::OrganMgr::OrganMainForm::DragEnter(UI::GUID
 				while (j-- > 0)
 				{
 					name = data->GetName(j);
+					UOSInt nameLen = Text::StrCharCnt(name);
 					printf("Drag Enter: %s\r\n", name);
-					if (Text::StrEquals(name, (const UTF8Char*)"HTML Format"))
+					if (Text::StrEqualsC(name, nameLen, UTF8STRC("HTML Format")))
 					{
 						fmtSURL = j;
 					}
-					else if (Text::StrEquals(name, (const UTF8Char*)"application/x-moz-file-promise-url"))
+					else if (Text::StrEqualsC(name, nameLen, UTF8STRC("application/x-moz-file-promise-url")))
 					{
 						fmtIURL = j;
 					}
-					else if (Text::StrEquals(name, (const UTF8Char*)"text/url-list"))
+					else if (Text::StrEqualsC(name, nameLen, UTF8STRC("text/url-list")))
 					{
 						fmtIURL = j;
 					}
-					else if (Text::StrEquals(name, (const UTF8Char*)"text/x-moz-url-data"))
+					else if (Text::StrEqualsC(name, nameLen, UTF8STRC("text/x-moz-url-data")))
 					{
 						fmtIURL = j;
 					}
-					else if (Text::StrEquals(name, (const UTF8Char*)"text/x-moz-url-desc"))
+					else if (Text::StrEqualsC(name, nameLen, UTF8STRC("text/x-moz-url-desc")))
 					{
 						fmtIURL = j;
 					}
-					else if (Text::StrEquals(name, (const UTF8Char*)"UniformResourceLocatorW"))
+					else if (Text::StrEqualsC(name, nameLen, UTF8STRC("UniformResourceLocatorW")))
 					{
 						fmtIURL = j;
 					}
-					else if (Text::StrEquals(name, (const UTF8Char*)"text/x-moz-url"))
+					else if (Text::StrEqualsC(name, nameLen, UTF8STRC("text/x-moz-url")))
 					{
 						fmtIURL = j;
 					}
-					else if (Text::StrEquals(name, (const UTF8Char*)"FileContents"))
+					else if (Text::StrEqualsC(name, nameLen, UTF8STRC("FileContents")))
 					{
 						fmtFile = j;
 					}
-					else if (Text::StrEquals(name, (const UTF8Char*)"HDROP"))
+					else if (Text::StrEqualsC(name, nameLen, UTF8STRC("HDROP")))
 					{
 						fmtHDROP = j;
 					}
-					else if (Text::StrEquals(name, (const UTF8Char*)"text/uri-list"))
+					else if (Text::StrEqualsC(name, nameLen, UTF8STRC("text/uri-list")))
 					{
 						fmtHDROP = j;
 					}
@@ -3419,11 +3420,11 @@ void SSWR::OrganMgr::OrganMainForm::DropData(UI::GUIDropData *data, OSInt x, OSI
 						Text::UTF8Reader *reader;
 						NEW_CLASS(mstm, IO::MemoryStream(sb.ToString(), sb.GetLength(), UTF8STRC("MainForm.Drop")));
 						NEW_CLASS(reader, Text::UTF8Reader(mstm));
-						while (reader->ReadLine(sbuff, 511))
+						while ((sptr = reader->ReadLine(sbuff, 511)) != 0)
 						{
-							if (Text::StrStartsWith(sbuff, (const UTF8Char*)"SourceURL:"))
+							if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("SourceURL:")))
 							{
-								sURL.Append(&sbuff[10]);
+								sURL.AppendC(&sbuff[10], (UOSInt)(sptr - &sbuff[10]));
 								hasSURL = true;
 								break;
 							}

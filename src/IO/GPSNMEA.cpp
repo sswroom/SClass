@@ -39,7 +39,7 @@ IO::GPSNMEA::ParseStatus IO::GPSNMEA::ParseNMEALine(UTF8Char *line, Map::GPSTrac
 		}
 	}
 
-	if (Text::StrStartsWith(line, (const UTF8Char*)"$GPGGA"))
+	if (Text::StrStartsWithC(line, slen, UTF8STRC("$GPGGA")))
 	{
 		scnt = Text::StrSplit(sarr, 32, line, ',');
 		if (scnt >= 15)
@@ -53,7 +53,7 @@ IO::GPSNMEA::ParseStatus IO::GPSNMEA::ParseNMEALine(UTF8Char *line, Map::GPSTrac
 		}
 		return PS_HANDLED;
 	}
-	else if (Text::StrStartsWith(line, (const UTF8Char*)"$GPGSA"))
+	else if (Text::StrStartsWithC(line, slen, UTF8STRC("$GPGSA")))
 	{
 		scnt = Text::StrSplit(sarr, 32, line, ',');
 		if (scnt >= 18)
@@ -69,12 +69,12 @@ IO::GPSNMEA::ParseStatus IO::GPSNMEA::ParseNMEALine(UTF8Char *line, Map::GPSTrac
 		}
 		return PS_HANDLED;
 	}
-	else if (Text::StrStartsWith(line, (const UTF8Char*)"$GPGSV"))
+	else if (Text::StrStartsWithC(line, slen, UTF8STRC("$GPGSV")))
 	{
 		scnt = Text::StrSplit(sarr, 32, line, ',');
 		return PS_HANDLED;
 	}
-	else if (Text::StrStartsWith(line, (const UTF8Char*)"$GPRMC"))
+	else if (Text::StrStartsWithC(line, slen, UTF8STRC("$GPRMC")))
 	{
 		scnt = Text::StrSplit(sarr, 32, line, ',');
 		if (scnt >= 12)

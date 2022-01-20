@@ -13,7 +13,7 @@ namespace IO
 	{
 	public:
 		typedef void (__stdcall *EventHandler)(void *userObj, UInt8 eventType);
-		typedef Bool (__stdcall *CommandHandler)(void *userObj, const Char *cmd);
+		typedef Bool (__stdcall *CommandHandler)(void *userObj, const UTF8Char *cmd, UOSInt cmdLen);
 
 	private:
 		IO::Stream *stm;
@@ -26,7 +26,7 @@ namespace IO
 		void *cmdHdlrObj;
 		IO::ILogger *log;
 
-		Data::ArrayList<const Char *> *cmdResults;
+		Data::ArrayList<Text::String *> *cmdResults;
 		Sync::Mutex *cmdResultMut;
 
 		Bool threadRunning;
@@ -40,13 +40,13 @@ namespace IO
 
 		IO::Stream *GetStream();
 
-		UOSInt SendATCommand(Data::ArrayList<const Char *> *retArr, const Char *atCmd, Int32 timeoutMS);
-		UOSInt SendATCommands(Data::ArrayList<const Char *> *retArr, const Char *atCmd, const Char *atCmdSub, Int32 timeoutMS);
-		UOSInt SendDialCommand(Data::ArrayList<const Char *> *retArr, const Char *atCmd, Int32 timeoutMS);
+		UOSInt SendATCommand(Data::ArrayList<Text::String *> *retArr, const UTF8Char *atCmd, UOSInt atCmdLen, Int32 timeoutMS);
+		UOSInt SendATCommands(Data::ArrayList<Text::String *> *retArr, const UTF8Char *atCmd, UOSInt atCmdLen, const UTF8Char *atCmdSub, Int32 timeoutMS);
+		UOSInt SendDialCommand(Data::ArrayList<Text::String *> *retArr, const UTF8Char *atCmd, UOSInt atCmdLen, Int32 timeoutMS);
 
 		Bool UseCmd(Sync::MutexUsage *mutUsage);
 		UOSInt CmdSend(const UInt8 *data, UOSInt dataSize);
-		const Char *CmdGetNextResult(UOSInt timeoutMS);
+		Text::String *CmdGetNextResult(UOSInt timeoutMS);
 
 		void Close();
 

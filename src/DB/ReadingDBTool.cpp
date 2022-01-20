@@ -818,9 +818,9 @@ DB::TableDef *DB::ReadingDBTool::GetTableDef(const UTF8Char *tableName)
 				{
 					col->SetDefVal((const UTF8Char*)0);
 				}
-				if (r->GetStr(5, buff, sizeof(buff)))
+				if ((ptr = r->GetStr(5, buff, sizeof(buff))) != 0)
 				{
-					if (Text::StrEquals(buff, (const UTF8Char*)"auto_increment"))
+					if (Text::StrEqualsC(buff, (UOSInt)(ptr - buff), UTF8STRC("auto_increment")))
 					{
 						col->SetAutoInc(true);
 						col->SetAttr((const UTF8Char*)0);

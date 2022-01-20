@@ -1088,7 +1088,7 @@ void Text::XML::ParseStr(WChar *out, const WChar *xmlStart, const WChar *xmlEnd)
 	*currPtr = 0;
 }
 
-Bool Text::XML::HTMLAppendCharRef(const UTF8Char *chrRef, OSInt refSize, IO::Stream *stm)
+Bool Text::XML::HTMLAppendCharRef(const UTF8Char *chrRef, UOSInt refSize, IO::Stream *stm)
 {
 	UTF8Char sbuff[6];
 	UTF32Char wcs;
@@ -1106,12 +1106,12 @@ Bool Text::XML::HTMLAppendCharRef(const UTF8Char *chrRef, OSInt refSize, IO::Str
 			stm->Write(sbuff, 1);
 			return true;
 		}
-		else if (Text::StrStartsWith(chrRef, (const UTF8Char*)"&lt;"))
+		else if (Text::StrStartsWithC(chrRef, refSize, UTF8STRC("&lt;")))
 		{
 			stm->Write((const UInt8*)"<", 1);
 			return true;
 		}
-		else if (Text::StrStartsWith(chrRef, (const UTF8Char*)"&gt;"))
+		else if (Text::StrStartsWithC(chrRef, refSize, UTF8STRC("&gt;")))
 		{
 			stm->Write((const UInt8*)">", 1);
 			return true;
@@ -1136,7 +1136,7 @@ Bool Text::XML::HTMLAppendCharRef(const UTF8Char *chrRef, OSInt refSize, IO::Str
 				return WriteUTF8Char(stm, wcs);
 			}
 		}
-		else if (Text::StrStartsWith(chrRef, (const UTF8Char*)"&amp;"))
+		else if (Text::StrStartsWithC(chrRef, refSize, UTF8STRC("&amp;")))
 		{
 			stm->Write((const UInt8*)"&", 1);
 			return true;
@@ -1160,16 +1160,16 @@ Bool Text::XML::HTMLAppendCharRef(const UTF8Char *chrRef, OSInt refSize, IO::Str
 			}
 			return WriteUTF8Char(stm, wcs);
 		}
-		else if (Text::StrStartsWith(chrRef, (const UTF8Char*)"&apos;"))
+		else if (Text::StrStartsWithC(chrRef, refSize, UTF8STRC("&apos;")))
 		{
 			stm->Write((const UInt8*)"\'", 1);
 			return true;
 		}
-		else if (Text::StrStartsWith(chrRef, (const UTF8Char*)"&bull;"))
+		else if (Text::StrStartsWithC(chrRef, refSize, UTF8STRC("&bull;")))
 		{
 			return WriteUTF8Char(stm, 0x2022);
 		}
-		else if (Text::StrStartsWith(chrRef, (const UTF8Char*)"&quot;"))
+		else if (Text::StrStartsWithC(chrRef, refSize, UTF8STRC("&quot;")))
 		{
 			stm->Write((const UInt8*)"\"", 1);
 			return true;
@@ -1206,7 +1206,7 @@ Bool Text::XML::HTMLAppendCharRef(const UTF8Char *chrRef, OSInt refSize, IO::Str
 			}
 			return WriteUTF8Char(stm, wcs);
 		}
-		else if (Text::StrStartsWith(chrRef, (const UTF8Char*)"&raquo;"))
+		else if (Text::StrStartsWithC(chrRef, refSize, UTF8STRC("&raquo;")))
 		{
 			return WriteUTF8Char(stm, 0xbb);
 		}

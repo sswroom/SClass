@@ -76,20 +76,25 @@ const UTF8Char *Manage::OSInfo::GetDefName(OSType osType)
 
 void Manage::OSInfo::GetCommonName(Text::StringBuilderUTF *sb, OSType osType, const UTF8Char *osVer)
 {
+	UOSInt osVerLen;
+	if (osVer)
+		osVerLen = Text::StrCharCnt(osVer);
+	else
+		osVerLen = 0;
 	if (osType == Manage::OSInfo::OT_DARWIN)
 	{
 		if (osVer == 0)
 		{
 			sb->AppendC(UTF8STRC("Mac OS"));
 		}
-		else if (Text::StrEquals(osVer, (const UTF8Char*)"18.7.0"))
+		else if (Text::StrEqualsC(osVer, osVerLen, UTF8STRC("18.7.0")))
 		{
 			sb->AppendC(UTF8STRC("Mac OS 10.14.6"));
 		}
 		else
 		{
 			sb->AppendC(UTF8STRC("Mac OS (Darwin "));
-			sb->Append(osVer);
+			sb->AppendC(osVer, osVerLen);
 			sb->AppendChar(')', 1);
 		}
 	}
@@ -102,7 +107,7 @@ void Manage::OSInfo::GetCommonName(Text::StringBuilderUTF *sb, OSType osType, co
 		else
 		{
 			sb->AppendC(UTF8STRC("Mac OS "));
-			sb->Append(osVer);
+			sb->AppendC(osVer, osVerLen);
 		}
 	}
 	else if (osType == OT_WINDOWS_NT)
@@ -111,38 +116,38 @@ void Manage::OSInfo::GetCommonName(Text::StringBuilderUTF *sb, OSType osType, co
 		{
 			sb->AppendC(UTF8STRC("Windows NT (32-bit)"));
 		}
-		else if (Text::StrEquals(osVer, (const UTF8Char*)"5.0"))
+		else if (Text::StrEqualsC(osVer, osVerLen, UTF8STRC("5.0")))
 		{
 			sb->AppendC(UTF8STRC("Windows 2000"));
 		}
-		else if (Text::StrEquals(osVer, (const UTF8Char*)"5.1"))
+		else if (Text::StrEqualsC(osVer, osVerLen, UTF8STRC("5.1")))
 		{
 			sb->AppendC(UTF8STRC("Windows XP"));
 		}
-		else if (Text::StrEquals(osVer, (const UTF8Char*)"6.0"))
+		else if (Text::StrEqualsC(osVer, osVerLen, UTF8STRC("6.0")))
 		{
 			sb->AppendC(UTF8STRC("Windows Vista"));
 		}
-		else if (Text::StrEquals(osVer, (const UTF8Char*)"6.1"))
+		else if (Text::StrEqualsC(osVer, osVerLen, UTF8STRC("6.1")))
 		{
 			sb->AppendC(UTF8STRC("Windows 7 (32-bit)"));
 		}
-		else if (Text::StrEquals(osVer, (const UTF8Char*)"6.2"))
+		else if (Text::StrEqualsC(osVer, osVerLen, UTF8STRC("6.2")))
 		{
 			sb->AppendC(UTF8STRC("Windows 8 (32-bit)"));
 		}
-		else if (Text::StrEquals(osVer, (const UTF8Char*)"6.3"))
+		else if (Text::StrEqualsC(osVer, osVerLen, UTF8STRC("6.3")))
 		{
 			sb->AppendC(UTF8STRC("Windows 8.1 (32-bit)"));
 		}
-		else if (Text::StrEquals(osVer, (const UTF8Char*)"10.0"))
+		else if (Text::StrEqualsC(osVer, osVerLen, UTF8STRC("10.0")))
 		{
 			sb->AppendC(UTF8STRC("Windows 10 (32-bit)"));
 		}
 		else
 		{
 			sb->AppendC(UTF8STRC("Windows NT "));
-			sb->Append(osVer);
+			sb->AppendC(osVer, osVerLen);
 			sb->AppendC(UTF8STRC(" (32-bit)"));
 		}
 	}
@@ -155,7 +160,7 @@ void Manage::OSInfo::GetCommonName(Text::StringBuilderUTF *sb, OSType osType, co
 		else
 		{
 			sb->AppendC(UTF8STRC("Windows CE "));
-			sb->Append(osVer);
+			sb->AppendC(osVer, osVerLen);
 		}
 	}
 	else if (osType == OT_WINDOWS_SVR)
@@ -167,7 +172,7 @@ void Manage::OSInfo::GetCommonName(Text::StringBuilderUTF *sb, OSType osType, co
 		else
 		{
 			sb->AppendC(UTF8STRC("Windows "));
-			sb->Append(osVer);
+			sb->AppendC(osVer, osVerLen);
 			sb->AppendC(UTF8STRC(" Server"));
 		}
 	}
@@ -180,7 +185,7 @@ void Manage::OSInfo::GetCommonName(Text::StringBuilderUTF *sb, OSType osType, co
 		else
 		{
 			sb->AppendC(UTF8STRC("Linux x86_64 "));
-			sb->Append(osVer);
+			sb->AppendC(osVer, osVerLen);
 		}
 	}
 	else if (osType == OT_LINUX_I686)
@@ -192,7 +197,7 @@ void Manage::OSInfo::GetCommonName(Text::StringBuilderUTF *sb, OSType osType, co
 		else
 		{
 			sb->AppendC(UTF8STRC("Linux i686 "));
-			sb->Append(osVer);
+			sb->AppendC(osVer, osVerLen);
 		}
 	}
 	else if (osType == OT_ANDROID)
@@ -204,7 +209,7 @@ void Manage::OSInfo::GetCommonName(Text::StringBuilderUTF *sb, OSType osType, co
 		else
 		{
 			sb->AppendC(UTF8STRC("Android "));
-			sb->Append(osVer);
+			sb->AppendC(osVer, osVerLen);
 		}
 	}
 	else if (osType == OT_IPAD)
@@ -216,7 +221,7 @@ void Manage::OSInfo::GetCommonName(Text::StringBuilderUTF *sb, OSType osType, co
 		else
 		{
 			sb->AppendC(UTF8STRC("iPad "));
-			sb->Append(osVer);
+			sb->AppendC(osVer, osVerLen);
 		}
 	}
 	else if (osType == OT_IPHONE)
@@ -228,7 +233,7 @@ void Manage::OSInfo::GetCommonName(Text::StringBuilderUTF *sb, OSType osType, co
 		else
 		{
 			sb->AppendC(UTF8STRC("iPhone "));
-			sb->Append(osVer);
+			sb->AppendC(osVer, osVerLen);
 		}
 	}
 	else if (osType == OT_WINDOWS_NT64)
@@ -237,30 +242,30 @@ void Manage::OSInfo::GetCommonName(Text::StringBuilderUTF *sb, OSType osType, co
 		{
 			sb->AppendC(UTF8STRC("Windows NT (64-bit)"));
 		}
-		else if (Text::StrEquals(osVer, (const UTF8Char*)"5.2"))
+		else if (Text::StrEqualsC(osVer, osVerLen, UTF8STRC("5.2")))
 		{
 			sb->AppendC(UTF8STRC("Windows XP x64 Edition"));
 		}
-		else if (Text::StrEquals(osVer, (const UTF8Char*)"6.1"))
+		else if (Text::StrEqualsC(osVer, osVerLen, UTF8STRC("6.1")))
 		{
 			sb->AppendC(UTF8STRC("Windows 7 (64-bit)"));
 		}
-		else if (Text::StrEquals(osVer, (const UTF8Char*)"6.2"))
+		else if (Text::StrEqualsC(osVer, osVerLen, UTF8STRC("6.2")))
 		{
 			sb->AppendC(UTF8STRC("Windows 8 (64-bit)"));
 		}
-		else if (Text::StrEquals(osVer, (const UTF8Char*)"6.3"))
+		else if (Text::StrEqualsC(osVer, osVerLen, UTF8STRC("6.3")))
 		{
 			sb->AppendC(UTF8STRC("Windows 8.1 (64-bit)"));
 		}
-		else if (Text::StrEquals(osVer, (const UTF8Char*)"10.0"))
+		else if (Text::StrEqualsC(osVer, osVerLen, UTF8STRC("10.0")))
 		{
 			sb->AppendC(UTF8STRC("Windows 10 (64-bit)"));
 		}
 		else
 		{
 			sb->AppendC(UTF8STRC("Windows NT "));
-			sb->Append(osVer);
+			sb->AppendC(osVer, osVerLen);
 			sb->AppendC(UTF8STRC(" (64-bit)"));
 		}
 	}
@@ -270,7 +275,7 @@ void Manage::OSInfo::GetCommonName(Text::StringBuilderUTF *sb, OSType osType, co
 		if (osVer)
 		{
 			sb->AppendChar(' ', 1);
-			sb->Append(osVer);
+			sb->AppendC(osVer, osVerLen);
 		}
 	}
 	else if (osType == OT_NETCAST)
@@ -279,7 +284,7 @@ void Manage::OSInfo::GetCommonName(Text::StringBuilderUTF *sb, OSType osType, co
 		if (osVer)
 		{
 			sb->AppendChar(' ', 1);
-			sb->Append(osVer);
+			sb->AppendC(osVer, osVerLen);
 		}
 	}
 	else
@@ -288,7 +293,7 @@ void Manage::OSInfo::GetCommonName(Text::StringBuilderUTF *sb, OSType osType, co
 		if (osVer)
 		{
 			sb->AppendChar(' ', 1);
-			sb->Append(osVer);
+			sb->AppendC(osVer, osVerLen);
 		}
 	}
 }

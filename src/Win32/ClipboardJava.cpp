@@ -131,12 +131,12 @@ Win32::Clipboard::FilePasteType Win32::Clipboard::GetDataFiles(Data::ArrayList<c
 				{
 					gint leng;
 					const guchar *rawdata = gtk_selection_data_get_data_with_length(data, &leng);
-					if (Text::StrStartsWith((const UTF8Char*)rawdata, (const UTF8Char*)"copy"))
+					if (Text::StrStartsWithC((const UTF8Char*)rawdata, (UOSInt)leng, UTF8STRC("copy")))
 					{
 						ret = Win32::Clipboard::FPT_COPY;
 						i = 5;
 					}
-					else if (Text::StrStartsWith((const UTF8Char*)rawdata, (const UTF8Char*)"cut"))
+					else if (Text::StrStartsWithC((const UTF8Char*)rawdata, (UOSInt)leng, UTF8STRC("cut")))
 					{
 						ret = Win32::Clipboard::FPT_MOVE;
 						i = 4;

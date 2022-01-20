@@ -2592,11 +2592,11 @@ void SSWR::SMonitor::SMonitorSvrCore::UserAgentStore()
 
 void SSWR::SMonitor::SMonitorSvrCore::RefererLog(const UTF8Char *referer, UOSInt len)
 {
-	if (Text::StrStartsWith(referer, (const UTF8Char*)"http://sswroom.no-ip.org"))
+	if (Text::StrStartsWithC(referer, len, UTF8STRC("http://sswroom.no-ip.org")))
 	{
 		return;
 	}
-	else if (Text::StrStartsWith(referer, (const UTF8Char*)"http://192.168.0.15"))
+	else if (Text::StrStartsWithC(referer, len, UTF8STRC("http://192.168.0.15")))
 	{
 		return;
 	}

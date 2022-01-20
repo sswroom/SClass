@@ -60,8 +60,8 @@ namespace IO
 			UTF8Char *VoiceGetCompression(UTF8Char *comp);
 			Bool VoiceGetVoiceLineType(VoiceLineType *voiceLineType);
 			Bool VoiceSetVoiceLineType(VoiceLineType voiceLineType);
-			DialResult VoiceToneDial(Char *phoneNum);
-			DialResult VoicePulseDial(Char *phoneNum);
+			DialResult VoiceToneDial(const UTF8Char *phoneNum);
+			DialResult VoicePulseDial(const UTF8Char *phoneNum);
 
 		public:
 			static UTF8Char *GetVoiceTypeString(UTF8Char *buff, VoiceType voiceType);

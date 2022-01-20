@@ -64,7 +64,14 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	{
 		return 1;
 	}
-	// Text::STrEndsWithICase
+	if (!Text::StrEndsWithICaseC(UTF8STRC("aBcDe1FgHiJk"), UTF8STRC("fGhIjK")))
+	{
+		return 1;
+	}
+	if (Text::StrEndsWithICaseC(UTF8STRC("aBcDe1FgHiJk"), UTF8STRC("fGhIjL")))
+	{
+		return 1;
+	}
 	// Text::StrIndexOfICase
 	// Text::StrReplaceICase
 	// Text::StrCompareICase

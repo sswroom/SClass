@@ -301,7 +301,7 @@ void Net::WebSite::WebSite48IdolControl::Title2DisplayName(Text::String *title, 
 		i = sb.LastIndexOf('(');
 		if (i == INVALID_INDEX)
 			break;
-		if (Text::StrStartsWith(&sb.ToString()[i], (const UTF8Char*)"(GYAO"))
+		if (Text::StrStartsWithC(&sb.ToString()[i], sb.GetLength() - i, UTF8STRC("(GYAO")))
 		{
 			break;
 		}
@@ -330,7 +330,7 @@ void Net::WebSite::WebSite48IdolControl::Title2DisplayName(Text::String *title, 
 		i = sb.LastIndexOf('(');
 		if (i == INVALID_INDEX)
 			break;
-		if (Text::StrStartsWith(&sb.ToString()[i], (const UTF8Char*)"(GYAO"))
+		if (Text::StrStartsWithC(&sb.ToString()[i], sb.GetLength(), UTF8STRC("(GYAO")))
 		{
 			break;
 		}

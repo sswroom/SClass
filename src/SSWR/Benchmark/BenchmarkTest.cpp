@@ -17,9 +17,9 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::UploadReq(SSWR::Benchmark::
 		valid = false;
 	}
 	Text::StringBuilderUTF8 sb;
-	if (req->GetHeader(&sb, (const UTF8Char*)"Content-Type"))
+	if (req->GetHeaderC(&sb, UTF8STRC("Content-Type")))
 	{
-		if (!sb.Equals((const UTF8Char*)"text/plain"))
+		if (!sb.EqualsC(UTF8STRC("text/plain")))
 		{
 			printf("Content-Type invalid\r\n");
 			valid = false;
@@ -48,7 +48,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::UploadReq(SSWR::Benchmark::
 			Text::UTF8Reader *reader;
 			UTF8Char sbuff[512];
 			UTF8Char *sptr;
-			NEW_CLASS(mstm, IO::MemoryStream(leng, (const UTF8Char*)"BenchmarkWebHandler.UploadReq.mstm"));
+			NEW_CLASS(mstm, IO::MemoryStream(leng, UTF8STRC("BenchmarkWebHandler.UploadReq.mstm")));
 			mstm->Write(data, leng);
 			mstm->SeekFromBeginning(0);
 			NEW_CLASS(reader, Text::UTF8Reader(mstm));
@@ -188,6 +188,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(SSWR::Benchmark:
 	UTF8Char fileName[512];
 	UTF8Char path[512];
 	UTF8Char *u8ptr;
+	UTF8Char *u8ptr2;
 	if (req->GetQueryValueStr(UTF8STRC("model"), fileName, 512))
 	{
 		UOSInt fileSize;
@@ -283,7 +284,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(SSWR::Benchmark:
 			else
 			{
 				IO::MemoryStream *mstm;
-				NEW_CLASS(mstm, IO::MemoryStream(fileSize, (const UTF8Char*)"SSWR.Benchmark.BenchmarkWebHandler.CPUInfoReq.mstm"));
+				NEW_CLASS(mstm, IO::MemoryStream(fileSize, UTF8STRC("SSWR.Benchmark.BenchmarkWebHandler.CPUInfoReq.mstm")));
 				mstm->Write(fileBuff, fileSize);
 				mstm->SeekFromBeginning(0);
 				const UTF8Char *cpuModel = Manage::CPUDB::ParseCPUInfo(mstm);
@@ -360,11 +361,11 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(SSWR::Benchmark:
 	if (sess)
 	{
 		IO::Path::PathType pt;
-		while (IO::Path::FindNextFile(u8ptr, sess, 0, &pt, 0))
+		while ((u8ptr2 = IO::Path::FindNextFile(u8ptr, sess, 0, &pt, 0)) != 0)
 		{
 			if (pt == IO::Path::PathType::File)
 			{
-				if (Text::StrStartsWith(u8ptr, (const UTF8Char*)"Unknown"))
+				if (Text::StrStartsWithC(u8ptr, (UOSInt)(u8ptr2 - u8ptr), UTF8STRC("Unknown")))
 				{
 					sbOut.AppendC(UTF8STRC("<tr><td>"));
 					sbOut.AppendC(UTF8STRC("<a href=\"cpuinfo?model="));

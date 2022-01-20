@@ -705,16 +705,14 @@ void Net::MQTTBroker::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, I
 				this->subscribeList->Add(subscribe);
 				subscribeMutUsage.EndUse();
 
-				Data::ArrayList<TopicInfo*> *topicList;
 				TopicInfo *topicInfo;
 				Sync::MutexUsage topicMutUsage(this->topicMut);
-				topicList = this->topicMap->GetValues();
 				i = 0;
-				j = topicList->GetCount();
+				j = this->topicMap->GetCount();
 				while (i < j)
 				{
-					topicInfo = topicList->GetItem(i);
-					if (Net::MQTTUtil::TopicMatch(topicInfo->topic, sbTopic.ToString()))
+					topicInfo = this->topicMap->GetItem(i);
+					if (Net::MQTTUtil::TopicMatch(topicInfo->topic->v, topicInfo->topic->leng, sbTopic.ToString()))
 					{
 						this->TopicSend(stm, data->cliData, topicInfo);
 					}
@@ -814,17 +812,18 @@ void Net::MQTTBroker::DataSkipped(IO::Stream *stm, void *stmObj, const UInt8 *bu
 void Net::MQTTBroker::UpdateTopic(const UTF8Char *topic, const UInt8 *message, UOSInt msgSize, Bool suppressUnchg)
 {
 	TopicInfo *topicInfo;
+	UOSInt topicLen = Text::StrCharCnt(topic);
 	Bool unchanged = false;
 	Sync::MutexUsage topicMutUsage(this->topicMut);
-	topicInfo = this->topicMap->Get(topic);
+	topicInfo = this->topicMap->GetC(topic, topicLen);
 	if (topicInfo == 0)
 	{
 		topicInfo = MemAlloc(TopicInfo, 1);
-		topicInfo->topic = Text::StrCopyNew(topic);
+		topicInfo->topic = Text::String::New(topic, topicLen);
 		topicInfo->message = MemAlloc(UInt8, msgSize);
 		MemCopyNO(topicInfo->message, message, msgSize);
 		topicInfo->msgSize = msgSize;
-		this->topicMap->Put(topic, topicInfo);
+		this->topicMap->Put(topicInfo->topic, topicInfo);
 	}
 	else
 	{
@@ -875,7 +874,7 @@ void Net::MQTTBroker::UpdateTopic(const UTF8Char *topic, const UInt8 *message, U
 	while (i-- > 0)
 	{
 		subscribe = this->subscribeList->GetItem(i);
-		if (Net::MQTTUtil::TopicMatch(topic, subscribe->topic))
+		if (Net::MQTTUtil::TopicMatch(topic, topicLen, subscribe->topic))
 		{
 			topicMutUsage.BeginUse();
 			this->TopicSend(subscribe->cli, ((ClientData*)subscribe->cliData)->cliData, topicInfo);
@@ -893,13 +892,13 @@ Bool Net::MQTTBroker::TopicSend(IO::Stream *stm, void *stmData, const TopicInfo 
 	UInt8 *packetBuff2;
 	UOSInt i;
 	UOSInt sent;
-	UOSInt topicLen = Text::StrCharCnt(topic->topic);
+	UOSInt topicLen = topic->topic->leng;
 	Sync::Interlocked::Increment(&this->infoPubSent);
 	Sync::Interlocked::Increment(&this->infoMsgSent);
 	if (topicLen + topic->msgSize + 4 <= 128)
 	{
 		WriteMInt16(&packet1[0], topicLen);
-		Text::StrConcat(&packet1[2], topic->topic);
+		topic->topic->ConcatTo(&packet1[2]);
 		MemCopyNO(&packet1[2 + topicLen], topic->message, topic->msgSize);
 		i = this->protoHdlr->BuildPacket(packet2, 0x30, 0, packet1, 2 + topicLen + topic->msgSize, stmData);
 		sent = stm->Write(packet2, i);
@@ -911,7 +910,7 @@ Bool Net::MQTTBroker::TopicSend(IO::Stream *stm, void *stmData, const TopicInfo 
 		packetBuff1 = MemAlloc(UInt8, topicLen + topic->msgSize + 3);
 		packetBuff2 = MemAlloc(UInt8, topicLen + topic->msgSize + 7);
 		WriteMInt16(&packetBuff1[0], topicLen);
-		Text::StrConcat(&packetBuff1[2], topic->topic);
+		topic->topic->ConcatTo(&packetBuff1[2]);
 		MemCopyNO(&packetBuff1[2 + topicLen], topic->message, topic->msgSize);
 		i = this->protoHdlr->BuildPacket(packetBuff2, 0x30, 0, packetBuff1, 2 + topicLen + topic->msgSize, stmData);
 		sent = stm->Write(packetBuff2, i);
@@ -953,7 +952,7 @@ Net::MQTTBroker::MQTTBroker(Net::SocketFactory *sockf, Net::SSLEngine *ssl, UInt
 	this->infoStartTime = dt.ToTicks();
 
 	NEW_CLASS(this->topicMut, Sync::Mutex());
-	NEW_CLASS(this->topicMap, Data::StringUTF8Map<TopicInfo*>());
+	NEW_CLASS(this->topicMap, Data::FastStringMap<TopicInfo*>());
 	NEW_CLASS(this->subscribeMut, Sync::Mutex());
 	NEW_CLASS(this->subscribeList, Data::ArrayList<SubscribeInfo*>());
 	NEW_CLASS(this->protoHdlr, IO::ProtoHdlr::ProtoMQTTHandler(this));
@@ -996,13 +995,12 @@ Net::MQTTBroker::~MQTTBroker()
 	}
 	DEL_CLASS(this->sysInfoEvt);
 	DEL_CLASS(this->protoHdlr);
-	Data::ArrayList<TopicInfo*> *topicList = this->topicMap->GetValues();
 	TopicInfo *topic;
-	UOSInt i = topicList->GetCount();
+	UOSInt i = this->topicMap->GetCount();
 	while (i-- > 0)
 	{
-		topic = topicList->GetItem(i);
-		Text::StrDelNew(topic->topic);
+		topic = this->topicMap->GetItem(i);
+		topic->topic->Release();
 		MemFree(topic->message);
 		MemFree(topic);
 	}
@@ -1051,18 +1049,16 @@ void Net::MQTTBroker::HandleTopicUpdate(TopicUpdateHandler topicUpdHdlr, void *u
 
 	if (this->topicUpdHdlr)
 	{
-		Data::ArrayList<TopicInfo*> *topicList;
 		TopicInfo *topic;
 		UOSInt i;
 		UOSInt j;
 		Sync::MutexUsage mutUsage(this->topicMut);
-		topicList = this->topicMap->GetValues();
 		i = 0;
-		j = topicList->GetCount();
+		j = this->topicMap->GetCount();
 		while (i < j)
 		{
-			topic = topicList->GetItem(i);
-			this->topicUpdHdlr(this->topicUpdObj, topic->topic, topic->message, topic->msgSize);
+			topic = this->topicMap->GetItem(i);
+			this->topicUpdHdlr(this->topicUpdObj, topic->topic->v, topic->message, topic->msgSize);
 			i++;
 		}
 		mutUsage.EndUse();

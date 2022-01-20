@@ -48,7 +48,7 @@ namespace Text
 		static const UTF8Char *ClearWS(const UTF8Char *jsonStr);
 		static const UTF8Char *ParseJSString(const UTF8Char *jsonStr, Text::StringBuilderUTF *sb);
 		static const UTF8Char *ParseJSNumber(const UTF8Char *jsonStr, Double *val);
-		static JSONBase *ParseJSONStr2(const UTF8Char *jsonStr, const UTF8Char **jsonStrEnd);
+		static JSONBase *ParseJSONStr2(const UTF8Char *jsonStr, const UTF8Char *jsonStrEnd, const UTF8Char **jsonStrEndOut);
 	};
 
 	class JSONNumber : public JSONBase

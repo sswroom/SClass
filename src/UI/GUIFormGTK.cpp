@@ -34,21 +34,23 @@ void GUIForm_OnFileDrop(GtkWidget *widget, GdkDragContext *context, gint x, gint
 	Text::StringBuilderUTF8 sb;
 	Data::ArrayList<const UTF8Char *> files;
 	sb.Append((const UTF8Char*)gtk_selection_data_get_data(data));
-	UTF8Char *sarr[2];
+	Text::PString sarr[2];
 	UTF8Char sbuff[512];
+	UTF8Char *sptr;
 	UOSInt i;
 	UOSInt j;
-	sarr[1] = sb.ToString();
+	sarr[1].v = sb.ToString();
+	sarr[1].len = sb.GetLength();
 	while (true)
 	{
-		i = Text::StrSplit(sarr, 2, sarr[1], '\n');
-		if (Text::StrStartsWith(sarr[0], (const UTF8Char*)"file://"))
+		i = Text::StrSplitP(sarr, 2, sarr[1].v, sarr[1].len, '\n');
+		if (Text::StrStartsWithC(sarr[0].v, sarr[0].len, UTF8STRC("file://")))
 		{
-			j = Text::StrCharCnt(sarr[0]);
-			if (sarr[0][j - 1] == '\r')
-				sarr[0][j - 1] = 0;
-			Text::TextBinEnc::URIEncoding::URIDecode(sbuff, &sarr[0][7]);
-			files.Add(Text::StrCopyNew(sbuff));
+			j = sarr[0].len;
+			if (sarr[0].v[j - 1] == '\r')
+				sarr[0].v[j - 1] = 0;
+			sptr = Text::TextBinEnc::URIEncoding::URIDecode(sbuff, &sarr[0].v[7]);
+			files.Add(Text::StrCopyNewC(sbuff, (UOSInt)(sptr - sbuff)));
 		}
 		if (i <= 1)
 			break;

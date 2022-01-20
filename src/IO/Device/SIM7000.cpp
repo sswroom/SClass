@@ -6,7 +6,7 @@
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 
-Bool __stdcall IO::Device::SIM7000::CheckATCommand(void *userObj, const Char *cmd)
+Bool __stdcall IO::Device::SIM7000::CheckATCommand(void *userObj, const UTF8Char *cmd, UOSInt cmdLen)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sarr[4];
@@ -25,9 +25,9 @@ Bool __stdcall IO::Device::SIM7000::CheckATCommand(void *userObj, const Char *cm
 		}
 		return true;
 	}
-	if (Text::StrStartsWith(cmd, "+CDNSGIP: "))
+	if (Text::StrStartsWithC(cmd, cmdLen, UTF8STRC("+CDNSGIP: ")))
 	{
-		Text::StrConcat(sbuff, (const UTF8Char*)&cmd[10]);
+		Text::StrConcatC(sbuff, &cmd[10], cmdLen - 10);
 		i = Text::StrSplit(sarr, 4, sbuff, ',');
 		if (sarr[0][0] == '1' && i >= 3)
 		{
@@ -56,10 +56,10 @@ Bool __stdcall IO::Device::SIM7000::CheckATCommand(void *userObj, const Char *cm
 		}
 		return true;
 	}
-	if (Text::StrStartsWith(cmd, "+RECEIVE,"))
+	if (Text::StrStartsWithC(cmd, cmdLen, UTF8STRC("+RECEIVE,")))
 	{
 		me->nextReceive = true;
-		Text::StrConcat(sbuff, (const UTF8Char*)&cmd[9]);
+		Text::StrConcatC(sbuff, &cmd[9], cmdLen - 9);
 		if (Text::StrSplit(sarr, 4, sbuff, ',') == 3)
 		{
 			me->recvIndex = Text::StrToUInt32(sarr[0]);
@@ -91,7 +91,7 @@ Bool __stdcall IO::Device::SIM7000::CheckATCommand(void *userObj, const Char *cm
 	if (cmd[0] >= '0' && cmd[0] <= '7' && cmd[1] == ',' && cmd[2] == ' ')
 	{
 		i = (UOSInt)cmd[0] - 48;
-		if (Text::StrEquals(&cmd[3], "CONNECT OK"))
+		if (Text::StrEqualsC(&cmd[3], cmdLen - 3, UTF8STRC("CONNECT OK")))
 		{
 			if (i == me->connInd)
 			{
@@ -100,7 +100,7 @@ Bool __stdcall IO::Device::SIM7000::CheckATCommand(void *userObj, const Char *cm
 			}
 			return true;
 		}
-		else if (Text::StrEquals(&cmd[3], "ALREADY CONNECT"))
+		else if (Text::StrEqualsC(&cmd[3], cmdLen - 3, UTF8STRC("ALREADY CONNECT")))
 		{
 			if (i == me->connInd)
 			{
@@ -109,7 +109,7 @@ Bool __stdcall IO::Device::SIM7000::CheckATCommand(void *userObj, const Char *cm
 			}
 			return true;
 		}
-		else if (Text::StrEquals(&cmd[3], "CONNECT FAIL"))
+		else if (Text::StrEqualsC(&cmd[3], cmdLen - 3, UTF8STRC("CONNECT FAIL")))
 		{
 			if (i == me->connInd)
 			{
@@ -154,13 +154,13 @@ void IO::Device::SIM7000::SetReceiveHandler(ReceiveHandler recvHdlr, void *userO
 Bool IO::Device::SIM7000::SIMCOMPowerDown()
 {
 	Sync::MutexUsage mutUsage(this->cmdMut);
-	this->channel->SendATCommand(this->cmdResults, "AT+CPOWD=1", 2000);
+	this->channel->SendATCommand(this->cmdResults, UTF8STRC("AT+CPOWD=1"), 2000);
 	UOSInt i = this->cmdResults->GetCount();
-	const Char *val;
+	Text::String *val;
 	if (i > 1)
 	{
 		val = this->cmdResults->GetItem(i - 1);
-		if (Text::StrEquals(val, "OK") || Text::StrEquals(val, "NORMAL POWER DOWN"))
+		if (val->Equals(UTF8STRC("OK")) || val->Equals(UTF8STRC("NORMAL POWER DOWN")))
 		{
 			ClearCmdResult();
 			return true;
@@ -181,8 +181,8 @@ Bool IO::Device::SIM7000::SIMCOMPowerDown()
 Bool IO::Device::SIM7000::SIMCOMReadADC(Int32 *adc)
 {
 	UTF8Char sbuff[256];
-	UTF8Char *sptr = this->SendStringCommand(sbuff, "AT+CADC?", 3000);
-	if (sptr && Text::StrStartsWith(sbuff, (const UTF8Char*)"+CADC: "))
+	UTF8Char *sptr = this->SendStringCommand(sbuff, UTF8STRC("AT+CADC?"), 3000);
+	if (sptr && Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("+CADC: ")))
 	{
 		if (sbuff[7] == '1')
 		{
@@ -194,29 +194,29 @@ Bool IO::Device::SIM7000::SIMCOMReadADC(Int32 *adc)
 
 UTF8Char *IO::Device::SIM7000::SIMCOMGetICCID(UTF8Char *ccid)
 {
-	return this->SendStringCommand(ccid, "AT+CCID", 3000);
+	return this->SendStringCommand(ccid, UTF8STRC("AT+CCID"), 3000);
 }
 
 Bool IO::Device::SIM7000::SIMCOMGetFlashDeviceType(Text::StringBuilderUTF *sb)
 {
-	return this->SendStringListCommand(sb, "AT+CDEVICE?");
+	return this->SendStringListCommand(sb, UTF8STRC("AT+CDEVICE?"));
 }
 
 Bool IO::Device::SIM7000::SIMCOMGetDeviceProductID(Text::StringBuilderUTF *sb)
 {
-	return this->SendStringListCommand(sb, "AT+GSV");
+	return this->SendStringListCommand(sb, UTF8STRC("AT+GSV"));
 }
 
 UTF8Char *IO::Device::SIM7000::SIMCOMGetUESysInfo(UTF8Char *buff)
 {
-	return this->SendStringCommand(buff, "AT+CPSI?", 3000);
+	return this->SendStringCommand(buff, UTF8STRC("AT+CPSI?"), 3000);
 }
 
 UTF8Char *IO::Device::SIM7000::SIMCOMGetNetworkAPN(UTF8Char *apn)
 {
 	UTF8Char sbuff[256];
-	UTF8Char *sptr = this->SendStringCommand(sbuff, "AT+CGNAPN", 3000);
-	if (sptr && Text::StrStartsWith(sbuff, (const UTF8Char*)"+CGNAPN: "))
+	UTF8Char *sptr = this->SendStringCommand(sbuff, UTF8STRC("AT+CGNAPN"), 3000);
+	if (sptr && Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("+CGNAPN: ")))
 	{
 		if (sbuff[9] == '1')
 		{
@@ -241,22 +241,29 @@ UTF8Char *IO::Device::SIM7000::SIMCOMGetNetworkAPN(UTF8Char *apn)
 
 Bool IO::Device::SIM7000::NetSetMultiIP(Bool multiIP)
 {
-	return this->SendBoolCommand(multiIP?"AT+CIPMUX=1":"AT+CIPMUX=0");
+	if (multiIP)
+	{
+		return this->SendBoolCommandC(UTF8STRC("AT+CIPMUX=1"));
+	}
+	else
+	{
+		return this->SendBoolCommandC(UTF8STRC("AT+CIPMUX=0"));
+	}
 }
 
 Bool IO::Device::SIM7000::NetIPStartTCP(UOSInt index, UInt32 ip, UInt16 port)
 {
-	Char sbuff[256];
-	Char *sptr = Text::StrConcat(sbuff, "AT+CIPSTART=");
+	UTF8Char sbuff[256];
+	UTF8Char *sptr = Text::StrConcatC(sbuff, UTF8STRC("AT+CIPSTART="));
 	sptr = Text::StrUOSInt(sptr, index);
-	sptr = Text::StrConcat(sptr, ",\"TCP\",\"");
-	sptr = (Char*)Net::SocketUtil::GetIPv4Name((UTF8Char*)sptr, ip);
-	sptr = Text::StrConcat(sptr, "\",");
+	sptr = Text::StrConcatC(sptr, UTF8STRC(",\"TCP\",\""));
+	sptr = Net::SocketUtil::GetIPv4Name(sptr, ip);
+	sptr = Text::StrConcatC(sptr, UTF8STRC("\","));
 	sptr = Text::StrUInt16(sptr, port);
 	this->connInd = index;
 	this->connResult = 0;
 	this->respEvt->Clear();
-	if (this->SendBoolCommand(sbuff))
+	if (this->SendBoolCommandC(sbuff, (UOSInt)(sptr - sbuff)))
 	{
 		this->respEvt->Wait(30000);
 		if (this->connResult == 1 || this->connResult == 2)
@@ -273,17 +280,17 @@ Bool IO::Device::SIM7000::NetIPStartTCP(UOSInt index, UInt32 ip, UInt16 port)
 
 Bool IO::Device::SIM7000::NetIPStartUDP(UOSInt index, UInt32 ip, UInt16 port)
 {
-	Char sbuff[256];
-	Char *sptr = Text::StrConcat(sbuff, "AT+CIPSTART=");
+	UTF8Char sbuff[256];
+	UTF8Char *sptr = Text::StrConcatC(sbuff, UTF8STRC("AT+CIPSTART="));
 	sptr = Text::StrUOSInt(sptr, index);
-	sptr = Text::StrConcat(sptr, ",\"UDP\",\"");
-	sptr = (Char*)Net::SocketUtil::GetIPv4Name((UTF8Char*)sptr, ip);
-	sptr = Text::StrConcat(sptr, "\",");
+	sptr = Text::StrConcatC(sptr, UTF8STRC(",\"UDP\",\""));
+	sptr = Net::SocketUtil::GetIPv4Name(sptr, ip);
+	sptr = Text::StrConcatC(sptr, UTF8STRC("\","));
 	sptr = Text::StrUInt16(sptr, port);
 	this->connInd = index;
 	this->connResult = 0;
 	this->respEvt->Clear();
-	if (this->SendBoolCommand(sbuff))
+	if (this->SendBoolCommandC(sbuff, (UOSInt)(sptr - sbuff)))
 	{
 		this->respEvt->Wait(30000);
 		if (this->connResult == 1 || this->connResult == 2)
@@ -302,7 +309,7 @@ Bool IO::Device::SIM7000::NetIPSend(UOSInt index, const UInt8 *buff, UOSInt buff
 {
 	Text::StringBuilderUTF8 sb;
 	Sync::MutexUsage mutUsage;
-	const Char *cmdRes;
+	Text::String *cmdRes;
 	if (!this->channel->UseCmd(&mutUsage))
 		return false;
 	sb.AppendC(UTF8STRC("AT+CIPSEND="));
@@ -319,11 +326,11 @@ Bool IO::Device::SIM7000::NetIPSend(UOSInt index, const UInt8 *buff, UOSInt buff
 	Bool ret = false;
 	while ((cmdRes = this->channel->CmdGetNextResult(5000)) != 0)
 	{
-		if (Text::StrEndsWith(cmdRes, ", SEND OK"))
+		if (cmdRes->EndsWith(UTF8STRC(", SEND OK")))
 		{
 			ret = true;
 		}
-		Text::StrDelNew(cmdRes);
+		cmdRes->Release();
 		if (ret)
 			break;
 	}
@@ -333,73 +340,73 @@ Bool IO::Device::SIM7000::NetIPSend(UOSInt index, const UInt8 *buff, UOSInt buff
 Bool IO::Device::SIM7000::NetCloseSocket(UOSInt index)
 {
 	UTF8Char sbuff[256];
-	Char *sptr = Text::StrConcat((Char*)sbuff, "AT+CIPCLOSE=");
+	UTF8Char *sptr = Text::StrConcatC(sbuff, UTF8STRC("AT+CIPCLOSE="));
 	sptr = Text::StrUOSInt(sptr, index);
-	if (this->SendStringCommandDirect(sbuff, (const Char*)sbuff, 1000) == 0)
+	if ((sptr = this->SendStringCommandDirect(sbuff, sbuff, (UOSInt)(sptr - sbuff), 1000)) == 0)
 	{
 		return false;
 	}
-	return Text::StrEndsWith(sbuff, (const UTF8Char*)"OK");
+	return Text::StrEndsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("OK"));
 }
 
 Bool IO::Device::SIM7000::NetSetLocalPortTCP(UOSInt index, UInt16 port)
 {
-	Char sbuff[256];
-	Char *sptr = Text::StrConcat(sbuff, "AT+CLPORT=");
+	UTF8Char sbuff[256];
+	UTF8Char *sptr = Text::StrConcatC(sbuff, UTF8STRC("AT+CLPORT="));
 	sptr = Text::StrUOSInt(sptr, index);
-	sptr = Text::StrConcat(sptr, ",\"TCP\",");
+	sptr = Text::StrConcatC(sptr, UTF8STRC(",\"TCP\","));
 	sptr = Text::StrUInt16(sptr, port);
-	return this->SendBoolCommand(sbuff);
+	return this->SendBoolCommandC(sbuff, (UOSInt)(sptr - sbuff));
 }
 
 Bool IO::Device::SIM7000::NetSetLocalPortUDP(UOSInt index, UInt16 port)
 {
-	Char sbuff[256];
-	Char *sptr = Text::StrConcat(sbuff, "AT+CLPORT=");
+	UTF8Char sbuff[256];
+	UTF8Char *sptr = Text::StrConcatC(sbuff, UTF8STRC("AT+CLPORT="));
 	sptr = Text::StrUOSInt(sptr, index);
-	sptr = Text::StrConcat(sptr, ",\"UDP\",");
+	sptr = Text::StrConcatC(sptr, UTF8STRC(",\"UDP\","));
 	sptr = Text::StrUInt16(sptr, port);
-	return this->SendBoolCommand(sbuff);
+	return this->SendBoolCommandC(sbuff, (UOSInt)(sptr - sbuff));
 }
 
 Bool IO::Device::SIM7000::NetSetAPN(const UTF8Char *apn)
 {
-	Char sbuff[256];
-	Char *sptr = Text::StrConcat(sbuff, "AT+CSTT=\"");
-	sptr = Text::StrConcat(sptr, (const Char*)apn);
+	UTF8Char sbuff[256];
+	UTF8Char *sptr = Text::StrConcatC(sbuff, UTF8STRC("AT+CSTT=\""));
+	sptr = Text::StrConcat(sptr, apn);
 	*sptr++ = '"';
 	*sptr = 0;
-	return this->SendBoolCommand(sbuff);
+	return this->SendBoolCommandC(sbuff, (UOSInt)(sptr - sbuff));
 }
 
 Bool IO::Device::SIM7000::NetDataStart()
 {
-	return this->SendBoolCommand("AT+CIICR");
+	return this->SendBoolCommandC(UTF8STRC("AT+CIICR"));
 }
 
 UTF8Char *IO::Device::SIM7000::NetGetIFAddr(UTF8Char *addr)
 {
-	return this->SendStringCommandDirect(addr, "AT+CIFSR", 1000);
+	return this->SendStringCommandDirect(addr, UTF8STRC("AT+CIFSR"), 1000);
 }
 
 Bool IO::Device::SIM7000::NetGetDNSList(Data::ArrayList<UInt32> *dnsList)
 {
-	Data::ArrayList<const Char*> resList;
-	if (this->SendStringCommand(&resList, "AT+CDNSCFG?", 3000))
+	Data::ArrayList<Text::String*> resList;
+	if (this->SendStringCommand(&resList, UTF8STRC("AT+CDNSCFG?"), 3000))
 	{
 		UOSInt i = 0;
 		UOSInt j = resList.GetCount();
 		UOSInt k;
 		while (i < j)
 		{
-			const Char *sptr;
-			sptr = resList.GetItem(i);
-			k = Text::StrIndexOf(sptr, "Dns: ");
+			Text::String *s;
+			s = resList.GetItem(i);
+			k = s->IndexOf(UTF8STRC("Dns: "));
 			if (k != INVALID_INDEX && k > 0)
 			{
-				dnsList->Add(Net::SocketUtil::GetIPAddr(&sptr[k + 5]));
+				dnsList->Add(Net::SocketUtil::GetIPAddr(&s->v[k + 5], s->leng - k - 5));
 			}
-			Text::StrDelNew(sptr);
+			s->Release();
 			i++;
 		}
 		return true;
@@ -410,8 +417,8 @@ Bool IO::Device::SIM7000::NetGetDNSList(Data::ArrayList<UInt32> *dnsList)
 Bool IO::Device::SIM7000::NetDNSResolveIP(const UTF8Char *domain, Net::SocketUtil::AddressInfo *addr)
 {
 	UTF8Char sbuff[256];
-	Char *sptr = Text::StrConcat((Char*)sbuff, "AT+CDNSGIP=\"");
-	sptr = Text::StrConcat(sptr, (const Char*)domain);
+	UTF8Char *sptr = Text::StrConcatC(sbuff, UTF8STRC("AT+CDNSGIP=\""));
+	sptr = Text::StrConcat(sptr, domain);
 	*sptr++ = '"';
 	*sptr = 0;
 	Sync::MutexUsage mutUsage(this->dnsMut);
@@ -426,7 +433,7 @@ Bool IO::Device::SIM7000::NetDNSResolveIP(const UTF8Char *domain, Net::SocketUti
 	this->dnsResp = addr;
 	this->respEvt->Clear();
 	mutUsage.EndUse();
-	if (!this->SendBoolCommand((const Char*)sbuff, 3000))
+	if (!this->SendBoolCommandC(sbuff, (UOSInt)(sptr - sbuff), 3000))
 	{
 		return false;
 	}
@@ -442,36 +449,64 @@ Bool IO::Device::SIM7000::NetDNSResolveIP(const UTF8Char *domain, Net::SocketUti
 
 Bool IO::Device::SIM7000::NetShowRemoteIP(Bool show)
 {
-	return this->SendBoolCommand(show?"AT+CIPSRIP=1":"AT+CIPSRIP=0");
+	if (show)
+	{
+		return this->SendBoolCommandC(UTF8STRC("AT+CIPSRIP=1"));
+	}
+	else
+	{
+		return this->SendBoolCommandC(UTF8STRC("AT+CIPSRIP=0"));
+	}
 }
 
 Bool IO::Device::SIM7000::NetSetSendHex(Bool hexSend)
 {
-	return this->SendBoolCommand(hexSend?"AT+CIPSENDHEX=1":"AT+CIPSENDHEX=0");
+	if (hexSend)
+	{
+		return this->SendBoolCommandC(UTF8STRC("AT+CIPSENDHEX=1"));
+	}
+	else
+	{
+		return this->SendBoolCommandC(UTF8STRC("AT+CIPSENDHEX=0"));
+	}
 }
 
 Bool IO::Device::SIM7000::NetSetOutputHex(Bool hexOutput)
 {
-	return this->SendBoolCommand(hexOutput?"AT+CIPHEXS=2":"AT+CIPHEXS=1");
+	if (hexOutput)
+	{
+		return this->SendBoolCommandC(UTF8STRC("AT+CIPHEXS=2"));
+	}
+	else
+	{
+		return this->SendBoolCommandC(UTF8STRC("AT+CIPHEXS=1"));
+	}
 }
 
 Bool IO::Device::SIM7000::NetSetDisableNagle(Bool disable)
 {
-	return this->SendBoolCommand(disable?"AT+CIPOPTION=1":"AT+CIPOPTION=0");
+	if (disable)
+	{
+		return this->SendBoolCommandC(UTF8STRC("AT+CIPOPTION=1"));
+	}
+	else
+	{
+		return this->SendBoolCommandC(UTF8STRC("AT+CIPOPTION=0"));
+	}
 }
 
 Bool IO::Device::SIM7000::NetPing(const UTF8Char *addr, UInt32 *respTime, UInt32 *ttl)
 {
 	UTF8Char sbuff[256];
-	Char *sptr = (Char*)sbuff;
-	sptr = Text::StrConcat(sptr, "AT+CIPPING=\"");
-	sptr = Text::StrConcat(sptr, (const Char*)addr);
-	sptr = Text::StrConcat(sptr, "\",1");
-	if (this->SendStringCommand(sbuff, (const Char*)sbuff, 10000) == 0)
+	UTF8Char *sptr = sbuff;
+	sptr = Text::StrConcatC(sptr, UTF8STRC("AT+CIPPING=\""));
+	sptr = Text::StrConcat(sptr, addr);
+	sptr = Text::StrConcatC(sptr, UTF8STRC("\",1"));
+	if ((sptr = this->SendStringCommand(sbuff, sbuff, (UOSInt)(sptr - sbuff), 10000)) == 0)
 	{
 		return false;
 	}
-	if (!Text::StrStartsWith(sbuff, (const UTF8Char*)"+CIPPING: "))
+	if (!Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("+CIPPING: ")))
 	{
 		return false;
 	}

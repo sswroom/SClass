@@ -28,7 +28,7 @@ namespace IO
 			ReceiveHandler recvHdlr;
 			void *recvHdlrObj;
 
-			static Bool __stdcall CheckATCommand(void *userObj, const Char *cmd);
+			static Bool __stdcall CheckATCommand(void *userObj, const UTF8Char *cmd, UOSInt cmdLen);
 		public:
 			SIM7000(IO::ATCommandChannel *channel, Bool needRelease);
 			virtual ~SIM7000();

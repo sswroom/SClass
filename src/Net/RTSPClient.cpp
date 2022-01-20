@@ -118,24 +118,25 @@ UInt32 __stdcall Net::RTSPClient::ControlThread(void *userObj)
 						sptr = reader->ReadLine(sbuff, 1021);
 						if (sptr == 0 || sptr == sbuff)
 							break;
-						if (Text::StrStartsWith(sbuff, (const UTF8Char*)"Content-Length: "))
+						if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("Content-Length: ")))
 						{
 							cliData->reqReplySize = Text::StrToUInt32(&sbuff[16]);
 						}
-						else if (Text::StrStartsWith(sbuff, (const UTF8Char*)"Session: "))
+						else if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("Session: ")))
 						{
 							SDEL_TEXT(cliData->reqStrs);
 							k = Text::StrIndexOf(&sbuff[9], ';');
 							if (k != INVALID_INDEX)
 							{
 								sbuff[9 + k] = 0;
+								sptr = &sbuff[9 + k];
 							}
-							cliData->reqStrs = Text::StrCopyNew(&sbuff[9]);
+							cliData->reqStrs = Text::StrCopyNewC(&sbuff[9], (UOSInt)(sptr - &sbuff[9]));
 						}
-						else if (Text::StrStartsWith(sbuff, (const UTF8Char*)"Public: "))
+						else if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("Public: ")))
 						{
 							SDEL_TEXT(cliData->reqStrs);
-							cliData->reqStrs = Text::StrCopyNew(&sbuff[8]);
+							cliData->reqStrs = Text::StrCopyNewC(&sbuff[8], (UOSInt)(sptr - &sbuff[8]));
 						}
 					}
 					if (cliData->reqReplySize == 0)

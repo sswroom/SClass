@@ -208,31 +208,31 @@ void Net::WebServer::WebRequest::ParseFormPart(UInt8 *data, UOSInt dataSize, UOS
 				break;
 			}
 			
-			if (Text::StrStartsWith((Char*)&data[lineStart], "Content-Disposition: form-data;"))
+			if (Text::StrStartsWithC(&data[lineStart], i - lineStart, UTF8STRC("Content-Disposition: form-data;")))
 			{
-				Char *line;
-				Char *lineStrs[10];
+				UTF8Char *line;
+				Text::PString lineStrs[10];
 				UOSInt strCnt;
 				contType = 1;
 
-				line = MemAlloc(Char, i - lineStart - 30);
+				line = MemAlloc(UTF8Char, i - lineStart - 30);
 				MemCopyNO(line, &data[lineStart + 31], i - lineStart - 31);
 				line[i - lineStart - 31] = 0;
 
-				strCnt = Text::StrSplitTrim(lineStrs, 10, line, ';');
+				strCnt = Text::StrSplitTrimP(lineStrs, 10, line, i - lineStart - 31, ';');
 				j = strCnt;
 				while (j-- > 0)
 				{
-					if (Text::StrStartsWith(lineStrs[j], "name="))
+					if (Text::StrStartsWithC(lineStrs[j].v, lineStrs[j].len, UTF8STRC("name=")))
 					{
 						SDEL_TEXT(formName);
-						formName = ParseHeaderVal(&lineStrs[j][5]);
+						formName = ParseHeaderVal(&lineStrs[j].v[5], lineStrs[j].len - 5);
 					}
-					else if (Text::StrStartsWith(lineStrs[j], "filename="))
+					else if (Text::StrStartsWithC(lineStrs[j].v, lineStrs[j].len, UTF8STRC("filename=")))
 					{
 						SDEL_TEXT(fileName);
 						contType = 2;
-						fileName = ParseHeaderVal(&lineStrs[j][9]);
+						fileName = ParseHeaderVal(&lineStrs[j].v[9], lineStrs[j].len - 9);
 					}
 				}
 				MemFree(line);
@@ -276,21 +276,20 @@ void Net::WebServer::WebRequest::ParseFormPart(UInt8 *data, UOSInt dataSize, UOS
 	SDEL_TEXT(fileName);
 }
 
-const UTF8Char *Net::WebServer::WebRequest::ParseHeaderVal(Char *headerData)
+const UTF8Char *Net::WebServer::WebRequest::ParseHeaderVal(UTF8Char *headerData, UOSInt dataLen)
 {
 	UTF8Char *outStr;
-	UOSInt charCnt = Text::StrCharCnt(headerData);
-	if (headerData[0] == '"' && headerData[charCnt-1] == '"')
+	if (headerData[0] == '"' && headerData[dataLen-1] == '"')
 	{
-		outStr = MemAlloc(UTF8Char, charCnt - 1);
-		MemCopyNO(outStr, &headerData[1], charCnt - 2);
-		outStr[charCnt - 2] = 0;
+		outStr = MemAlloc(UTF8Char, dataLen - 1);
+		MemCopyNO(outStr, &headerData[1], dataLen - 2);
+		outStr[dataLen - 2] = 0;
 	}
 	else
 	{
-		outStr = MemAlloc(UTF8Char, charCnt + 1);
-		MemCopyNO(outStr, &headerData[1], charCnt);
-		outStr[charCnt] = 0;
+		outStr = MemAlloc(UTF8Char, dataLen + 1);
+		MemCopyNO(outStr, &headerData[1], dataLen);
+		outStr[dataLen] = 0;
 	}
 	return outStr;
 }

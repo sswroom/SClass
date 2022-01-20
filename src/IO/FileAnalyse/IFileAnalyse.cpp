@@ -104,7 +104,7 @@ IO::FileAnalyse::IFileAnalyse *IO::FileAnalyse::IFileAnalyse::AnalyseFile(IO::IS
 	{
 		NEW_CLASS(analyse, IO::FileAnalyse::FGDBFileAnalyse(fd));
 	}
-	else if (ReadUInt32(buff) == 0x100 && (Text::StrEquals((const UTF8Char*)"Standard Jet DB", &buff[4]) || Text::StrEquals((const UTF8Char*)"Standard ACE DB", &buff[4])))
+	else if (ReadUInt32(buff) == 0x100 && (Text::StrStartsWithC(&buff[4], 252, UTF8STRC("Standard Jet DB")) || Text::StrStartsWithC(&buff[4], 252, UTF8STRC("Standard ACE DB"))))
 	{
 		NEW_CLASS(analyse, IO::FileAnalyse::MDBFileAnalyse(fd));
 	}

@@ -35,8 +35,8 @@ void __stdcall SSWR::AVIRead::AVIRVoiceModemForm::OnDialClicked(void *userObj)
 	if (!me->isConnected)
 	{
 		Text::StringBuilderUTF8 sb;
-		Char phoneBuff[21];
-		Char *cptr;
+		UTF8Char phoneBuff[21];
+		UTF8Char *cptr;
 		UTF8Char *sptr;
 		UTF8Char c;
 		me->txtDialNum->GetText(&sb);
@@ -62,11 +62,11 @@ void __stdcall SSWR::AVIRead::AVIRVoiceModemForm::OnDialClicked(void *userObj)
 			}
 			else if (c == '*' || c == '#')
 			{
-				*cptr++ = (Char)c;
+				*cptr++ = c;
 			}
 			else if (c >= '0' && c <= '9')
 			{
-				*cptr++ = (Char)c;
+				*cptr++ = c;
 			}
 			else
 			{
