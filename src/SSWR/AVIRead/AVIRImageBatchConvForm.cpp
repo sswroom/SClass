@@ -46,7 +46,7 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchConvForm::OnConvertClicked(void *use
 		return;
 	}
 	sptr = me->txtDir->GetText(sbuff);
-	if (IO::Path::GetPathType(sbuff) != IO::Path::PathType::Directory)
+	if (IO::Path::GetPathType(sbuff, (UOSInt)(sptr - sbuff)) != IO::Path::PathType::Directory)
 	{
 		UI::MessageDialog::ShowDialog((const UTF8Char*)"Not a directory", (const UTF8Char*)"Error", me);
 		return;

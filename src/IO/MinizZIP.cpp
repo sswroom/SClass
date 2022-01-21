@@ -90,14 +90,14 @@ IO::MinizZIP::~MinizZIP()
 	}
 }
 
-Bool IO::MinizZIP::AddFile(const UTF8Char *sourceFile)
+Bool IO::MinizZIP::AddFile(const UTF8Char *sourceFile, UOSInt fileLen)
 {
 	mz_zip_archive *zip = (mz_zip_archive *)this->hand;
 	IO::Path::PathType pt;
 	if (zip == 0)
 		return false;
 
-	pt = IO::Path::GetPathType(sourceFile);
+	pt = IO::Path::GetPathType(sourceFile, fileLen);
 	if (pt == IO::Path::PathType::File)
 	{
 		Char sbuff[512];
@@ -109,14 +109,14 @@ Bool IO::MinizZIP::AddFile(const UTF8Char *sourceFile)
 	else if (pt == IO::Path::PathType::Directory)
 	{
 		UTF8Char sbuff[512];
-		Text::StrConcat(sbuff, sourceFile);
+		Text::StrConcatC(sbuff, sourceFile, fileLen);
 		UOSInt i = Text::StrLastIndexOfChar(sbuff, IO::Path::PATH_SEPERATOR);
 		return this->AddDir(&sbuff[i + 1], sbuff);
 	}
 	return false;
 }
 
-Bool IO::MinizZIP::AddFiles(Data::ArrayList<const UTF8Char *> *files)
+Bool IO::MinizZIP::AddFiles(Data::ArrayList<Text::String *> *files)
 {
 	UOSInt i;
 	UOSInt j;
@@ -125,7 +125,8 @@ Bool IO::MinizZIP::AddFiles(Data::ArrayList<const UTF8Char *> *files)
 	j = files->GetCount();
 	while (succ && i < j)
 	{
-		succ = succ & AddFile(files->GetItem(i));
+		Text::String *s = files->GetItem(i);
+		succ = succ & AddFile(s->v, s->leng);
 		i++;
 	}
 	return succ;

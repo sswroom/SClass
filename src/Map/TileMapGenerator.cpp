@@ -85,10 +85,11 @@ void Map::TileMapGenerator::AppendDBFile(IO::Writer *writer, Int32 x, Int32 y, U
 Bool Map::TileMapGenerator::GenerateDBFile(Int32 x, Int32 y, UInt32 scale, Map::MapScheduler *mapSch)
 {
 	UTF8Char sbuff[512];
+	UTF8Char *sptr;
 	Map::MapConfig2TGen::DrawParam params;
 	Media::DrawImage *dimg2;
 	Bool isLayerEmpty;
-	GenFileName(sbuff, x, y, scale, (const UTF8Char*)".db");
+	sptr = GenFileName(sbuff, x, y, scale, (const UTF8Char*)".db");
 
 	Int64 id = ((Int64)x) << 32 | (UInt32)y;
 	Bool generating;
@@ -99,7 +100,7 @@ Bool Map::TileMapGenerator::GenerateDBFile(Int32 x, Int32 y, UInt32 scale, Map::
 		mutUsage.EndUse();
 		return true;
 	}
-	if (IO::Path::GetPathType(sbuff) == IO::Path::PathType::File)
+	if (IO::Path::GetPathType(sbuff, (UOSInt)(sptr - sbuff)) == IO::Path::PathType::File)
 	{
 		mutUsage.EndUse();
 		return true;
@@ -162,6 +163,7 @@ Int64 Map::TileMapGenerator::GetTileID(Double lat, Double lon, UInt32 scale, UIn
 Bool Map::TileMapGenerator::GenerateTile(Int64 tileId, UInt32 scale, Map::MapScheduler *mapSch)
 {
 	UTF8Char sbuff2[512];
+	UTF8Char *sptr;
 	IO::FileStream *dfs;
 	IO::MemoryStream *mstm;
 	IO::StreamWriter *writer;
@@ -174,8 +176,8 @@ Bool Map::TileMapGenerator::GenerateTile(Int64 tileId, UInt32 scale, Map::MapSch
 	GenerateDBFile(x, y - 1, scale, mapSch);
 	GenerateDBFile(x, y + 1, scale, mapSch);
 
-	GenFileName(sbuff2, x, y, scale, (const UTF8Char*)".png");
-	if (IO::Path::GetPathType(sbuff2) == IO::Path::PathType::File)
+	sptr = GenFileName(sbuff2, x, y, scale, (const UTF8Char*)".png");
+	if (IO::Path::GetPathType(sbuff2, (UOSInt)(sptr - sbuff2)) == IO::Path::PathType::File)
 		return true;
 
 	NEW_CLASS(mstm, IO::MemoryStream(1048576, UTF8STRC("Map.TileMapGenerator.GenerateTile")));

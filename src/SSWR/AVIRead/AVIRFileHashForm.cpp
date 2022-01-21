@@ -78,6 +78,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRFileHashForm::HashThread(void *userObj)
 	Bool found;
 	FileStatus *status = 0;
 	UTF8Char sbuff[512];
+	UTF8Char *sptr;
 	UOSInt i;
 	UOSInt j;
 	IO::FileExporter *exporter;
@@ -107,21 +108,26 @@ UInt32 __stdcall SSWR::AVIRead::AVIRFileHashForm::HashThread(void *userObj)
 			chkType = me->currHashType;
 			if (chkType == IO::FileCheck::CheckType::MD5)
 			{
-				Text::StrConcatC(Text::StrConcat(sbuff, status->fileName), UTF8STRC(".md5"));
+				sptr = Text::StrConcatC(Text::StrConcat(sbuff, status->fileName), UTF8STRC(".md5"));
 			}
 			else if (chkType == IO::FileCheck::CheckType::CRC32)
 			{
-				Text::StrConcatC(Text::StrConcat(sbuff, status->fileName), UTF8STRC(".sfv"));
+				sptr = Text::StrConcatC(Text::StrConcat(sbuff, status->fileName), UTF8STRC(".sfv"));
 			}
 			else if (chkType == IO::FileCheck::CheckType::SHA1)
 			{
-				Text::StrConcatC(Text::StrConcat(sbuff, status->fileName), UTF8STRC(".sha1"));
+				sptr = Text::StrConcatC(Text::StrConcat(sbuff, status->fileName), UTF8STRC(".sha1"));
 			}
 			else if (chkType == IO::FileCheck::CheckType::MD4)
 			{
-				Text::StrConcatC(Text::StrConcat(sbuff, status->fileName), UTF8STRC(".md4"));
+				sptr = Text::StrConcatC(Text::StrConcat(sbuff, status->fileName), UTF8STRC(".md4"));
 			}
-			if (IO::Path::GetPathType(sbuff) == IO::Path::PathType::Unknown)
+			else
+			{
+				*sbuff = 0;
+				sptr = sbuff;
+			}
+			if (IO::Path::GetPathType(sbuff, (UOSInt)(sptr - sbuff)) == IO::Path::PathType::Unknown)
 			{
 				IO::FileCheck *fchk = IO::FileCheck::CreateCheck(status->fileName, chkType, me, false);
 				IO::FileStream *fs;

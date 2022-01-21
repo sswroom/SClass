@@ -13,7 +13,7 @@ void __stdcall SSWR::AVIRead::AVIRFileExForm::OnSrcChanged(void *userObj)
 	UInt64 fileSize;
 	IO::Path::PathType pt;
 	me->txtSrc->GetText(&sb);
-	pt = IO::Path::GetPathType(sb.ToString());
+	pt = IO::Path::GetPathType(sb.ToString(), sb.GetLength());
 	if (pt == IO::Path::PathType::File)
 	{
 		fileSize = IO::Path::GetFileSize(sb.ToString());

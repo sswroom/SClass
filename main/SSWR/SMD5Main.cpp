@@ -219,14 +219,15 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		UOSInt j = Text::StrIndexOfChar(cmdLines[1], '?');
 		if (i == INVALID_INDEX && j == INVALID_INDEX)
 		{
-			IO::Path::PathType pt = IO::Path::GetPathType(cmdLines[1]);
+			UOSInt cmdLen = Text::StrCharCnt(cmdLines[1]);
+			IO::Path::PathType pt = IO::Path::GetPathType(cmdLines[1], cmdLen);
 			if (pt == IO::Path::PathType::Unknown)
 			{
 				console->WriteLineC(UTF8STRC("File not found"));
 			}
 			else
 			{
-				ParseFile(cmdLines[1], Text::StrCharCnt(cmdLines[1]));
+				ParseFile(cmdLines[1], cmdLen);
 			}
 		}
 		else

@@ -148,14 +148,15 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	NEW_CLASS(console, IO::ConsoleWriter());
 	if (cmdCnt == 2)
 	{
-		IO::Path::PathType pt = IO::Path::GetPathType(cmdLines[1]);
+		UOSInt cmdLen = Text::StrCharCnt(cmdLines[1]);
+		IO::Path::PathType pt = IO::Path::GetPathType(cmdLines[1], cmdLen);
 		if (pt == IO::Path::PathType::Unknown)
 		{
 			console->WriteLineC(UTF8STRC("File not found"));
 		}
 		else
 		{
-			if (Text::StrEndsWithICase(cmdLines[1], (const UTF8Char*)".SFV"))
+			if (Text::StrEndsWithICaseC(cmdLines[1], cmdLen, UTF8STRC(".SFV")))
 			{
 				Parser::FileParser::SFVParser parser;
 				IO::StmData::FileData *fd;

@@ -28,7 +28,7 @@ void __stdcall SSWR::AVIRead::AVIROpenFileForm::OnOKClicked(void *userObj)
 	SSWR::AVIRead::AVIROpenFileForm *me = (SSWR::AVIRead::AVIROpenFileForm*)userObj;
 	Text::StringBuilderUTF8 sb;
 	me->txtName->GetText(&sb);
-	me->fileName = Text::StrCopyNew(sb.ToString());
+	me->fileName = Text::String::New(sb.ToString(), sb.GetLength());
 	me->SetDialogResult(UI::GUIForm::DR_OK);
 }
 
@@ -68,7 +68,7 @@ SSWR::AVIRead::AVIROpenFileForm::AVIROpenFileForm(UI::GUIClientControl *parent, 
 
 SSWR::AVIRead::AVIROpenFileForm::~AVIROpenFileForm()
 {
-	SDEL_TEXT(this->fileName);
+	SDEL_STRING(this->fileName);
 }
 
 void SSWR::AVIRead::AVIROpenFileForm::OnMonitorChanged()
@@ -76,7 +76,7 @@ void SSWR::AVIRead::AVIROpenFileForm::OnMonitorChanged()
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 }
 
-const UTF8Char *SSWR::AVIRead::AVIROpenFileForm::GetFileName()
+Text::String *SSWR::AVIRead::AVIROpenFileForm::GetFileName()
 {
 	return this->fileName;
 }

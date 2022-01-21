@@ -148,7 +148,7 @@ void SSWR::AVIRead::AVIRFileSizePackForm::GenList()
 		this->txtDir->Focus();
 		return;
 	}
-	if (IO::Path::GetPathType(sb.ToString()) != IO::Path::PathType::Directory)
+	if (IO::Path::GetPathType(sb.ToString(), sb.GetLength()) != IO::Path::PathType::Directory)
 	{
 		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please input directory", (const UTF8Char*)"Error", this);
 		this->txtDir->Focus();

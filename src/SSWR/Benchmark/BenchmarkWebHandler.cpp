@@ -302,7 +302,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(SSWR::Benchmark:
 					*u8ptr++ = IO::Path::PATH_SEPERATOR;
 					u8ptr = Text::StrConcat(u8ptr, cpuModel);
 
-					if (IO::Path::GetPathType(path) == IO::Path::PathType::Unknown)
+					if (IO::Path::GetPathType(path, (UOSInt)(u8ptr - path)) == IO::Path::PathType::Unknown)
 					{
 						NEW_CLASS(fs, IO::FileStream(path, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 						if (fileSize == fs->Write(fileBuff, fileSize))

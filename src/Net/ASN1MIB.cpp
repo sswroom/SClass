@@ -1681,21 +1681,24 @@ Bool Net::ASN1MIB::LoadFileInner(const UTF8Char *fileName, Text::StringBuilderUT
 	Net::MIBReader *reader;
 	ModuleInfo *module;
 	Bool succ;
-	if (IO::Path::GetPathType(fileName) != IO::Path::PathType::File)
+	UOSInt fileNameLen = Text::StrCharCnt(fileName);
+	if (IO::Path::GetPathType(fileName, fileNameLen) != IO::Path::PathType::File)
 	{
 		sbFileName.ClearStr();
-		sbFileName.Append(fileName);
+		sbFileName.AppendC(fileName, fileNameLen);
 		sbFileName.AppendC(UTF8STRC(".asn"));
-		if (IO::Path::GetPathType(sbFileName.ToString()) == IO::Path::PathType::File)
+		if (IO::Path::GetPathType(sbFileName.ToString(), sbFileName.GetLength()) == IO::Path::PathType::File)
 		{
 			fileName = sbFileName.ToString();
+			fileNameLen = sbFileName.GetLength();
 		}
 		else
 		{
 			sbFileName.ClearStr();
-			sbFileName.Append(fileName);
+			sbFileName.AppendC(fileName, fileNameLen);
 			sbFileName.AppendC(UTF8STRC(".mib"));
 			fileName = sbFileName.ToString();
+			fileNameLen = sbFileName.GetLength();
 		}
 	}
 	NEW_CLASS(fs, IO::FileStream(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
@@ -1703,7 +1706,7 @@ Bool Net::ASN1MIB::LoadFileInner(const UTF8Char *fileName, Text::StringBuilderUT
 	{
 		DEL_CLASS(fs);
 		errMessage->AppendC(UTF8STRC("Error in opening file "));
-		errMessage->Append(fileName);
+		errMessage->AppendC(fileName, fileNameLen);
 		return false;
 	}
 	succ = false;
@@ -1802,8 +1805,8 @@ Bool Net::ASN1MIB::LoadFileInner(const UTF8Char *fileName, Text::StringBuilderUT
 	if (succ)
 	{
 		module = MemAlloc(ModuleInfo, 1);
-		module->moduleName = Text::StrCopyNew(sbModuleName.ToString());
-		module->moduleFileName = Text::StrCopyNew(fileName);
+		module->moduleName = Text::StrCopyNewC(sbModuleName.ToString(), sbModuleName.GetLength());
+		module->moduleFileName = Text::StrCopyNewC(fileName, fileNameLen);
 		NEW_CLASS(module->objKeys, Data::ArrayListStrUTF8());
 		NEW_CLASS(module->objValues, Data::ArrayList<ObjectInfo*>());
 		NEW_CLASS(module->oidList, Data::ArrayList<ObjectInfo*>());

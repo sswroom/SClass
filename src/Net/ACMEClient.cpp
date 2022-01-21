@@ -9,9 +9,10 @@ Net::ACMEClient::ACMEClient(Net::SocketFactory *sockf, const UTF8Char *serverHos
 	this->accReady = false;
 	if (!this->acme->IsError())
 	{
-		if (IO::Path::GetPathType(keyFile) == IO::Path::PathType::File)
+		UOSInt keyFileLen = Text::StrCharCnt(keyFile);
+		if (IO::Path::GetPathType(keyFile, keyFileLen) == IO::Path::PathType::File)
 		{
-			this->keyReady = this->acme->LoadKey(keyFile);
+			this->keyReady = this->acme->LoadKey(keyFile, keyFileLen);
 			if (this->keyReady)
 			{
 				this->accReady = this->acme->NewNonce() && this->acme->AccountRetr();
@@ -19,7 +20,7 @@ Net::ACMEClient::ACMEClient(Net::SocketFactory *sockf, const UTF8Char *serverHos
 		}
 		else
 		{
-			this->keyReady = (this->acme->NewKey() && this->acme->SaveKey(keyFile));
+			this->keyReady = (this->acme->NewKey() && this->acme->SaveKey(keyFile, keyFileLen));
 			if (this->keyReady)
 			{
 				this->accReady = this->acme->NewNonce() && this->acme->AccountNew();

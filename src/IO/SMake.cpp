@@ -669,7 +669,7 @@ Bool IO::SMake::ParseHeader(Data::ArrayListString *objList, Data::ArrayListStrin
 		sb2.Append(headerFile);
 		sptr = IO::Path::GetRealPath(sbuff, sb2.ToString());
 
-		if (IO::Path::GetPathType(sbuff) == IO::Path::PathType::File)
+		if (IO::Path::GetPathType(sbuff, (UOSInt)(sptr - sbuff)) == IO::Path::PathType::File)
 		{
 			if (headerList && headerList->SortedIndexOf(headerFile) < 0)
 			{
@@ -702,7 +702,7 @@ Bool IO::SMake::ParseHeader(Data::ArrayListString *objList, Data::ArrayListStrin
 	sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
 	sb.AppendC(currHeader, (UOSInt)(currHeaderEnd - currHeader));
 	sptr = IO::Path::GetRealPath(sbuff, sb.ToString());
-	if (IO::Path::GetPathType(sbuff) == IO::Path::PathType::File)
+	if (IO::Path::GetPathType(sbuff, (UOSInt)(sptr - sbuff)) == IO::Path::PathType::File)
 	{
 		if (headerList && headerList->SortedIndexOf(headerFile) < 0)
 		{

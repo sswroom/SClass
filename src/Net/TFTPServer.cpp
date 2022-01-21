@@ -71,7 +71,7 @@ void __stdcall Net::TFTPServer::OnCommandPacket(const Net::SocketUtil::AddressIn
 	sb.Append(fileName);
 	IO::Path::PathType pt;
 	IO::FileStream *fs;
-	pt = IO::Path::GetPathType(sb.ToString());
+	pt = IO::Path::GetPathType(sb.ToString(), sb.GetLength());
 	if (opcode == 1)
 	{
 		if (pt == IO::Path::PathType::File)

@@ -22,7 +22,7 @@ namespace IO
 
 		static UTF8Char *GetTempFile(UTF8Char *buff, const UTF8Char *fileName);
 		static WChar *GetTempFileW(WChar *buff, const WChar *fileName);
-		static Bool IsDirectoryExist(const UTF8Char *dir);
+		static Bool IsDirectoryExist(const UTF8Char *dir, UOSInt dirLen);
 		static Bool IsDirectoryExistW(const WChar *dir);
 		static Bool CreateDirectory(const UTF8Char *dir);
 		static Bool CreateDirectoryW(const WChar *dir);

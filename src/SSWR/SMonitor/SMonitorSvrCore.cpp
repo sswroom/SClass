@@ -1245,7 +1245,7 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(IO::Writer *writer, Media::Draw
 		s2 = cfg->GetValue(UTF8STRC("HTTPFiles"));
 		if (s)
 		{
-			if (s2 && IO::Path::GetPathType(s2->v) == IO::Path::PathType::Directory)
+			if (s2 && IO::Path::GetPathType(s2->v, s2->leng) == IO::Path::PathType::Directory)
 			{
 				if (s->ToUInt16(&port) && port > 0)
 				{

@@ -2254,6 +2254,7 @@ Bool SSWR::OrganMgr::OrganMainForm::ToSaveSpecies()
 {
 	UTF8Char u8buff[512];
 	UTF8Char u8buff2[512];
+	UTF8Char *sptr;
 	UOSInt i;
 	if (this->lastSpeciesObj == 0)
 		return false;
@@ -2268,11 +2269,11 @@ Bool SSWR::OrganMgr::OrganMainForm::ToSaveSpecies()
 			if (!Text::StrEquals(this->lastSpeciesObj->GetDirName(), u8buff))
 			{
 				this->env->GetSpeciesDir(this->lastSpeciesObj, u8buff2);
-				Text::StrConcat(u8buff, u8buff2);
+				sptr = Text::StrConcat(u8buff, u8buff2);
 				i = Text::StrLastIndexOfChar(u8buff2, IO::Path::PATH_SEPERATOR);
 				this->txtSpeciesDName->GetText(&u8buff2[i + 1]);
 				
-				if (IO::Path::GetPathType(u8buff) == IO::Path::PathType::Directory)
+				if (IO::Path::GetPathType(u8buff, (UOSInt)(sptr - u8buff)) == IO::Path::PathType::Directory)
 				{
 					if (IO::FileUtil::MoveFile(u8buff, u8buff2, IO::FileUtil::FileExistAction::Fail, 0, 0))
 					{

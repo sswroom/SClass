@@ -16,7 +16,7 @@ namespace SSWR
 			typedef struct
 			{
 				const UTF8Char *logName;
-				Data::ArrayList<const UTF8Char *> *fileNames;
+				Data::ArrayList<Text::String *> *fileNames;
 			} LogGroup;
 		private:
 			SSWR::AVIRead::AVIRCore *core;

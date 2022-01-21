@@ -135,7 +135,8 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::FileHandler(void *userObj, const UTF8
 	UOSInt i = 0;
 	while (i < nFiles)
 	{
-		IO::Path::PathType pathType = IO::Path::GetPathType(files[i]);
+		UOSInt fileNameLen = Text::StrCharCnt(files[i]);
+		IO::Path::PathType pathType = IO::Path::GetPathType(files[i], fileNameLen);
 		pobj = 0;
 		if (pathType == IO::Path::PathType::File)
 		{
@@ -1299,8 +1300,8 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 			NEW_CLASS(frm, SSWR::AVIRead::AVIROpenFileForm(0, this->ui, this->core, IO::ParserType::Unknown));
 			if (frm->ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
-				const UTF8Char *fname = frm->GetFileName();
-				UOSInt i = Text::StrIndexOfChar(fname, ':');
+				Text::String *fname = frm->GetFileName();
+				UOSInt i = fname->IndexOf(':');
 				if (i == INVALID_INDEX || i == 1)
 				{
 					IO::StmData::FileData *fd;
@@ -1317,7 +1318,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 				}
 				else
 				{
-					this->OpenURL(fname, 0);
+					this->OpenURL(fname->v, 0);
 				}
 			}
 			DEL_CLASS(frm);

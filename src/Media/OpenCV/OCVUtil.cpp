@@ -21,7 +21,7 @@ UTF8Char *OCVUtil_TestDataPath(UTF8Char *sbuff, const UTF8Char *basePath, const 
 	sptr = Text::StrConcat(sbuff, basePath);
 	*sptr++ = IO::Path::PATH_SEPERATOR;
 	sptr = Text::StrConcat(sptr, dataFile);
-	if (IO::Path::GetPathType(sbuff) != IO::Path::PathType::Unknown)
+	if (IO::Path::GetPathType(sbuff, (UOSInt)(sptr - sbuff)) != IO::Path::PathType::Unknown)
 	{
 		return sptr;
 	}

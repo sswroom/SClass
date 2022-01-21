@@ -1057,7 +1057,7 @@ Bool SSWR::OrganMgr::OrganWebHandler::BookFileExist(BookInfo *book)
 	*sptr++ = IO::Path::PATH_SEPERATOR;
 	sptr = Text::StrInt32(sptr, book->id);
 	sptr = Text::StrConcatC(sptr, UTF8STRC(".pdf"));
-	return IO::Path::GetPathType(sbuff) == IO::Path::PathType::File;
+	return IO::Path::GetPathType(sbuff, (UOSInt)(sptr - sbuff)) == IO::Path::PathType::File;
 }
 
 Bool SSWR::OrganMgr::OrganWebHandler::UserGPSGetPos(Int32 userId, Data::DateTime *t, Double *lat, Double *lon)
@@ -3470,8 +3470,8 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpecies(Net::WebServer::IWebR
 			}
 			IO::Path::FindFileClose(sess);
 		}
-		Text::StrConcatC(sptr, UTF8STRC("web.txt"));
-		if (IO::Path::GetPathType(sbuff) == IO::Path::PathType::File)
+		sptr2 = Text::StrConcatC(sptr, UTF8STRC("web.txt"));
+		if (IO::Path::GetPathType(sbuff, (UOSInt)(sptr2 - sbuff)) == IO::Path::PathType::File)
 		{
 			Text::UTF8Reader *reader;
 			IO::FileStream *fs;
@@ -7865,15 +7865,15 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhoto(Net::WebServer::IWebRequest 
 			}
 			sb.AppendC(UTF8STRC(".jpg"));
 			this->dataMut->UnlockRead();
-			if (IO::Path::GetPathType(sb.ToString()) != IO::Path::PathType::File)
+			if (IO::Path::GetPathType(sb.ToString(), sb.GetLength()) != IO::Path::PathType::File)
 			{
 				sb.RemoveChars(4);
 				sb.AppendC(UTF8STRC(".pcx"));
-				if (IO::Path::GetPathType(sb.ToString()) != IO::Path::PathType::File)
+				if (IO::Path::GetPathType(sb.ToString(), sb.GetLength()) != IO::Path::PathType::File)
 				{
 					sb.RemoveChars(4);
 					sb.AppendC(UTF8STRC(".tif"));
-					if (IO::Path::GetPathType(sb.ToString()) != IO::Path::PathType::File)
+					if (IO::Path::GetPathType(sb.ToString(), sb.GetLength()) != IO::Path::PathType::File)
 					{
 						sb.RemoveChars(4);
 						sb.AppendC(UTF8STRC(".png"));

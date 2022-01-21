@@ -14,11 +14,12 @@
 
 Bool IO::FileUtil::DeleteFile(const UTF8Char *file, Bool deleteRdonlyFile)
 {
-	IO::Path::PathType pt = IO::Path::GetPathType(file);
+	UOSInt fileLen = Text::StrCharCnt(file);
+	IO::Path::PathType pt = IO::Path::GetPathType(file, fileLen);
 	if (pt == IO::Path::PathType::Directory)
 	{
 		UTF8Char sbuff[512];
-		Text::StrConcat(sbuff, file);
+		Text::StrConcatC(sbuff, file, fileLen);
 		return DeleteDir(sbuff, deleteRdonlyFile);
 	}
 
@@ -169,7 +170,7 @@ Bool IO::FileUtil::CopyFile(const UTF8Char *file1, const UTF8Char *file2, FileEx
 	IO::ActiveStreamReader *asr;
 	if (fea == FileExistAction::Fail)
 	{
-		if (IO::Path::GetPathType(file2) != IO::Path::PathType::Unknown)
+		if (IO::Path::GetPathType(file2, Text::StrCharCnt(file2)) != IO::Path::PathType::Unknown)
 			return false;
 	}
 	NEW_CLASS(fs1, IO::FileStream(file1, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));

@@ -99,8 +99,8 @@ namespace Net
 
 		Bool NewKey();
 		Bool SetKey(Crypto::Cert::X509Key *key);
-		Bool LoadKey(const UTF8Char *fileName);
-		Bool SaveKey(const UTF8Char *fileName);
+		Bool LoadKey(const UTF8Char *fileName, UOSInt fileNameLen);
+		Bool SaveKey(const UTF8Char *fileName, UOSInt fileNameLen);
 
 		static ACMEStatus ACMEStatusFromString(Text::String* status);
 		static Text::CString AuthorizeTypeGetName(AuthorizeType authType);

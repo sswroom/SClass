@@ -163,15 +163,15 @@ void SSWR::DownloadMonitor::DownMonCore::ProcessDir(Text::String *downPath, Text
 			if (Text::StrEndsWithICaseC(sptr, (UOSInt)(sptr2 - sptr), UTF8STRC(" - DASH.MP4")))
 			{
 				sptr2 = Text::StrConcat(sbuff2, sbuff);
-				Text::StrConcatC(sptr2, UTF8STRC(".part"));
-				if (IO::Path::GetPathType(sbuff2) == IO::Path::PathType::File)
+				sptr2 = Text::StrConcatC(sptr2, UTF8STRC(".part"));
+				if (IO::Path::GetPathType(sbuff2, (UOSInt)(sptr2 - sbuff2)) == IO::Path::PathType::File)
 				{
 				}
 				else
 				{
 					sptr2 = Text::StrConcat(sbuff2, sbuff) - 4;
-					Text::StrConcatC(sptr2, UTF8STRC(".aac"));
-					if (IO::Path::GetPathType(sbuff2) == IO::Path::PathType::File)
+					sptr2 = Text::StrConcatC(sptr2, UTF8STRC(".aac"));
+					if (IO::Path::GetPathType(sbuff2, (UOSInt)(sptr2 - sbuff2)) == IO::Path::PathType::File)
 					{
 						fileSize = IO::Path::GetFileSize(sbuff);
 						fileSize2 = IO::Path::GetFileSize(sbuff2);
@@ -218,15 +218,15 @@ void SSWR::DownloadMonitor::DownMonCore::ProcessDir(Text::String *downPath, Text
 			else if (Text::StrEndsWithICaseC(sptr, (UOSInt)(sptr2 - sptr), UTF8STRC(" - DASH.WEBM")))
 			{
 				sptr2 = Text::StrConcat(sbuff2, sbuff);
-				Text::StrConcatC(sptr2, UTF8STRC(".part"));
-				if (IO::Path::GetPathType(sbuff2) == IO::Path::PathType::File)
+				sptr2 = Text::StrConcatC(sptr2, UTF8STRC(".part"));
+				if (IO::Path::GetPathType(sbuff2, (UOSInt)(sptr2 - sbuff2)) == IO::Path::PathType::File)
 				{
 				}
 				else
 				{
 					sptr2 = Text::StrConcat(sbuff2, sbuff) - 5;
-					Text::StrConcatC(sptr2, UTF8STRC(".opus"));
-					if (IO::Path::GetPathType(sbuff2) == IO::Path::PathType::File)
+					sptr2 = Text::StrConcatC(sptr2, UTF8STRC(".opus"));
+					if (IO::Path::GetPathType(sbuff2, (UOSInt)(sptr2 - sbuff2)) == IO::Path::PathType::File)
 					{
 						fileSize = IO::Path::GetFileSize(sbuff);
 						fileSize2 = IO::Path::GetFileSize(sbuff2);
@@ -283,8 +283,8 @@ void SSWR::DownloadMonitor::DownMonCore::ProcessDir(Text::String *downPath, Text
 			{
 //				printf("MP4 found: %s\r\n", sptr);
 				sptr2 = Text::StrConcat(sbuff2, sbuff);
-				Text::StrConcatC(sptr2, UTF8STRC(".part"));
-				if (IO::Path::GetPathType(sbuff2) == IO::Path::PathType::File)
+				sptr2 = Text::StrConcatC(sptr2, UTF8STRC(".part"));
+				if (IO::Path::GetPathType(sbuff2, (UOSInt)(sptr2 - sbuff2)) == IO::Path::PathType::File)
 				{
 					downFound = true;
 				}
@@ -322,14 +322,14 @@ void SSWR::DownloadMonitor::DownMonCore::ProcessDir(Text::String *downPath, Text
 			else if (Text::StrEndsWithICaseC(sptr, (UOSInt)(sptr2 - sptr), UTF8STRC(".ZIP")))
 			{
 				sptr2 = Text::StrConcat(sbuff2, sbuff);
-				Text::StrConcatC(sptr2, UTF8STRC(".part"));
-				if (IO::Path::GetPathType(sbuff2) == IO::Path::PathType::File)
+				sptr2 = Text::StrConcatC(sptr2, UTF8STRC(".part"));
+				if (IO::Path::GetPathType(sbuff2, (UOSInt)(sptr2 - sbuff2)) == IO::Path::PathType::File)
 				{
 				}
 				else
 				{
 					sptr2 = Text::StrConcat(sbuff2, sbuff) - 4;
-					Text::StrConcatC(sptr2, UTF8STRC(".mp4"));
+					sptr2 = Text::StrConcatC(sptr2, UTF8STRC(".mp4"));
 					this->chkStatus = CS_EXTRACTING;
 					if (ExtractZIP(sbuff, sbuff2))
 					{
@@ -337,7 +337,7 @@ void SSWR::DownloadMonitor::DownMonCore::ProcessDir(Text::String *downPath, Text
 						if (VideoValid(sbuff2))
 						{
 							IO::Path::DeleteFile(sbuff);
-							Text::StrConcat(sbuff, sbuff2);
+							Text::StrConcatC(sbuff, sbuff2, (UOSInt)(sptr2 - sbuff2));
 
 							Int32 webType = 0;
 							Int32 id = this->FileGetByName(sptr, &webType);
@@ -386,8 +386,8 @@ void SSWR::DownloadMonitor::DownMonCore::ProcessDir(Text::String *downPath, Text
 				else
 				{
 					sptr2 = Text::StrConcat(sbuff2, sbuff);
-					Text::StrConcatC(sptr2, UTF8STRC(".part"));
-					if (IO::Path::GetPathType(sbuff2) == IO::Path::PathType::File)
+					sptr2 = Text::StrConcatC(sptr2, UTF8STRC(".part"));
+					if (IO::Path::GetPathType(sbuff2, (UOSInt)(sptr2 - sbuff2)) == IO::Path::PathType::File)
 					{
 					}
 					else

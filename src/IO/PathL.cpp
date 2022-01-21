@@ -42,9 +42,9 @@ WChar *IO::Path::GetTempFileW(WChar *buff, const WChar *fileName)
 	return Text::StrConcat(Text::StrConcat(buff, L"/tmp/"), fileName);
 }
 
-Bool IO::Path::IsDirectoryExist(const UTF8Char *dir)
+Bool IO::Path::IsDirectoryExist(const UTF8Char *dir, UOSInt dirLen)
 {
-	return GetPathType(dir) == PathType::Directory;
+	return GetPathType(dir, dirLen) == PathType::Directory;
 }
 
 Bool IO::Path::IsDirectoryExistW(const WChar *dir)
@@ -59,7 +59,7 @@ Bool IO::Path::CreateDirectory(const UTF8Char *dirInput)
 	{
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(dirInput, (UOSInt)i);
-		if (GetPathType(sb.ToString()) == PathType::Unknown)
+		if (GetPathType(sb.ToString(), sb.GetLength()) == PathType::Unknown)
 		{
 			CreateDirectory(sb.ToString());
 		}
@@ -74,12 +74,12 @@ Bool IO::Path::CreateDirectoryW(const WChar *dirInput)
 	if (i != INVALID_INDEX && i > 0)
 	{
 		const WChar *wptr = Text::StrCopyNewC(dirInput, (UOSInt)i);
-		const UTF8Char *csptr = Text::StrToUTF8New(wptr);
-		if (GetPathType(csptr) == PathType::Unknown)
+		Text::String *s = Text::String::NewNotNull(wptr);
+		if (GetPathType(s->v, s->leng) == PathType::Unknown)
 		{
-			CreateDirectory(csptr);
+			CreateDirectory(s->v);
 		}
-		Text::StrDelNew(csptr);
+		s->Release();
 		Text::StrDelNew(wptr);
 	}
 	const UTF8Char *utfPath = Text::StrToUTF8New(dirInput);
@@ -280,7 +280,7 @@ UTF8Char *IO::Path::AppendPath(UTF8Char *path, const UTF8Char *toAppend)
 		return Text::StrConcatC(path, toAppend, toAppendLen);
 	UOSInt i = Text::StrLastIndexOfChar(path, '/');
 	UOSInt j = Text::StrCharCnt(path);
-	IO::Path::PathType pt = GetPathType(path);
+	IO::Path::PathType pt = GetPathType(path, j);
 	if (pt == PathType::File && i != INVALID_INDEX)
 	{
 		path[i] = 0;
@@ -314,7 +314,7 @@ UTF8Char *IO::Path::AppendPathC(UTF8Char *path, UTF8Char *pathEnd, const UTF8Cha
 		return Text::StrConcatC(path, toAppend, toAppendLen);
 	UOSInt i = Text::StrLastIndexOfChar(path, '/');
 	UOSInt j = (UOSInt)(pathEnd - path);
-	IO::Path::PathType pt = GetPathType(path);
+	IO::Path::PathType pt = GetPathType(path, j);
 	if (pt == PathType::File && i != INVALID_INDEX)
 	{
 		path[i] = 0;
@@ -376,7 +376,7 @@ Bool IO::Path::AppendPath(Text::StringBuilderUTF8 *sb, const UTF8Char *toAppend,
 	}
 	UTF8Char *sptr = sb->ToString();
 	UOSInt i = Text::StrLastIndexOfChar(sptr, '/');
-	if (GetPathType(sptr) == PathType::File && i != INVALID_INDEX)
+	if (GetPathType(sptr, sb->GetLength()) == PathType::File && i != INVALID_INDEX)
 	{
 		sb->RemoveChars(sb->GetLength() - i);
 		i = Text::StrLastIndexOfChar(sptr, '/');
@@ -635,9 +635,9 @@ IO::Path::PathType IO::Path::GetPathType(const UTF8Char *path, UOSInt pathLen)
 
 IO::Path::PathType IO::Path::GetPathTypeW(const WChar *path)
 {
-	const UTF8Char *utfPath = Text::StrToUTF8New(path);
-	IO::Path::PathType pt = IO::Path::GetPathType(utfPath);
-	Text::StrDelNew(utfPath);
+	Text::String *utfPath = Text::String::NewNotNull(path);
+	IO::Path::PathType pt = IO::Path::GetPathType(utfPath->v, utfPath->leng);
+	utfPath->Release();
 	return pt;
 }
 

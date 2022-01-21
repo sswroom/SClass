@@ -34,37 +34,38 @@ IO::ParserType Parser::FileParser::CIPParser::GetParserType()
 IO::ParsedObject *Parser::FileParser::CIPParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
 	UTF8Char sbuff[1024];
+	UTF8Char *sptr;
 	UOSInt i;
 	if (!fd->IsFullFile())
 		return 0;
-	fd->GetFullFileName()->ConcatTo(sbuff);
+	sptr = fd->GetFullFileName()->ConcatTo(sbuff);
 	i = Text::StrLastIndexOfChar(sbuff, '.');
-	if (i == INVALID_INDEX || Text::StrCompareICase(&sbuff[i], (const UTF8Char*)".CIP") != 0)
+	if (i == INVALID_INDEX || !Text::StrEqualsICase(&sbuff[i], (const UTF8Char*)".CIP"))
 	{
 		return 0;
 	}
-	if (IO::Path::GetPathType(sbuff) != IO::Path::PathType::File)
+	if (IO::Path::GetPathType(sbuff, (UOSInt)(sptr - sbuff)) != IO::Path::PathType::File)
 	{
 		return 0;
 	}
-	Text::StrConcatC(&sbuff[i], UTF8STRC(".ciu"));
-	if (IO::Path::GetPathType(sbuff) != IO::Path::PathType::File)
+	sptr = Text::StrConcatC(&sbuff[i], UTF8STRC(".ciu"));
+	if (IO::Path::GetPathType(sbuff, (UOSInt)(sptr - sbuff)) != IO::Path::PathType::File)
 	{
 		return 0;
 	}
-	Text::StrConcatC(&sbuff[i], UTF8STRC(".cix"));
-	if (IO::Path::GetPathType(sbuff) != IO::Path::PathType::File)
+	sptr = Text::StrConcatC(&sbuff[i], UTF8STRC(".cix"));
+	if (IO::Path::GetPathType(sbuff, (UOSInt)(sptr - sbuff)) != IO::Path::PathType::File)
 	{
 		return 0;
 	}
-	Text::StrConcatC(&sbuff[i], UTF8STRC(".blk"));
-	if (IO::Path::GetPathType(sbuff) != IO::Path::PathType::File)
+	sptr = Text::StrConcatC(&sbuff[i], UTF8STRC(".blk"));
+	if (IO::Path::GetPathType(sbuff, (UOSInt)(sptr - sbuff)) != IO::Path::PathType::File)
 	{
 		return 0;
 	}
 
 	Map::CIPLayer2 *layer;
-	Text::StrConcatC(&sbuff[i], UTF8STRC(".cip"));
+	sptr = Text::StrConcatC(&sbuff[i], UTF8STRC(".cip"));
 	NEW_CLASS(layer, Map::CIPLayer2(sbuff));
 	if (layer->IsError())
 	{

@@ -2,6 +2,7 @@
 #define _SM_IO_MINIZZIP
 #include "Data/ArrayList.h"
 #include "Text/Encoding.h"
+#include "Text/String.h"
 
 namespace IO
 {
@@ -18,8 +19,8 @@ namespace IO
 		MinizZIP(const UTF8Char *zipFile);
 		~MinizZIP();
 
-		Bool AddFile(const UTF8Char *sourceFile);
-		Bool AddFiles(Data::ArrayList<const UTF8Char *> *files);
+		Bool AddFile(const UTF8Char *sourceFile, UOSInt fileLen);
+		Bool AddFiles(Data::ArrayList<Text::String *> *files);
 		Bool AddContent(const UInt8 *content, UOSInt contLeng, const UTF8Char *fileName);
 	};
 }

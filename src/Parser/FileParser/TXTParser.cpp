@@ -365,8 +365,8 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 	else if (fd->IsFullFile() && Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("OBJECTID,")) && Text::StrEndsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC(",")))
 	{
 		fileName = fd->GetFullName()->ConcatTo(u8buff);
-		Text::StrConcatC(&fileName[-4], UTF8STRC("_Coord.txt"));
-		if (IO::Path::GetPathType(u8buff) != IO::Path::PathType::File)
+		fileName = Text::StrConcatC(&fileName[-4], UTF8STRC("_Coord.txt"));
+		if (IO::Path::GetPathType(u8buff, (UOSInt)(fileName - u8buff)) != IO::Path::PathType::File)
 		{
 			DEL_CLASS(reader);
 			DEL_CLASS(stm);

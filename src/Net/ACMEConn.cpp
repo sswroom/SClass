@@ -725,7 +725,7 @@ Bool Net::ACMEConn::SetKey(Crypto::Cert::X509Key *key)
 	return false;
 }
 
-Bool Net::ACMEConn::LoadKey(const UTF8Char *fileName)
+Bool Net::ACMEConn::LoadKey(const UTF8Char *fileName, UOSInt fileNameLen)
 {
 	UInt8 keyPEM[4096];
 	UOSInt keyPEMSize = IO::FileStream::LoadFile(fileName, keyPEM, 4096);
@@ -733,7 +733,7 @@ Bool Net::ACMEConn::LoadKey(const UTF8Char *fileName)
 	{
 		return false;
 	}
-	Text::String *s = Text::String::NewNotNull(fileName);
+	Text::String *s = Text::String::New(fileName, fileNameLen);
 	Crypto::Cert::X509File *x509 = Parser::FileParser::X509Parser::ParseBuff(keyPEM, keyPEMSize, s);
 	s->Release();
 	if (x509 == 0)
@@ -750,7 +750,7 @@ Bool Net::ACMEConn::LoadKey(const UTF8Char *fileName)
 	return false;
 }
 
-Bool Net::ACMEConn::SaveKey(const UTF8Char *fileName)
+Bool Net::ACMEConn::SaveKey(const UTF8Char *fileName, UOSInt fileNameLen)
 {
 	if (this->key == 0)
 	{

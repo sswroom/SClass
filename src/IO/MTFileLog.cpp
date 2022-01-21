@@ -19,7 +19,7 @@ UTF8Char *IO::MTFileLog::GetNewName(UTF8Char *buff, Data::DateTime *time)
 	else if (this->groupStyle == IO::ILogHandler::LOG_GROUP_TYPE_PER_YEAR)
 	{
 		currName = time->ToString(this->fileName->ConcatTo(buff), "yyyy");
-		if (!IO::Path::IsDirectoryExist(buff))
+		if (!IO::Path::IsDirectoryExist(buff, (UOSInt)(currName - buff)))
 		{
 			IO::Path::CreateDirectory(buff);
 		}
@@ -29,7 +29,7 @@ UTF8Char *IO::MTFileLog::GetNewName(UTF8Char *buff, Data::DateTime *time)
 	else if (this->groupStyle == IO::ILogHandler::LOG_GROUP_TYPE_PER_MONTH)
 	{
 		currName = time->ToString(this->fileName->ConcatTo(buff), "yyyyMM");
-		if (!IO::Path::IsDirectoryExist(buff))
+		if (!IO::Path::IsDirectoryExist(buff, (UOSInt)(currName - buff)))
 		{
 			IO::Path::CreateDirectory(buff);
 		}
@@ -39,7 +39,7 @@ UTF8Char *IO::MTFileLog::GetNewName(UTF8Char *buff, Data::DateTime *time)
 	else if (this->groupStyle == IO::ILogHandler::LOG_GROUP_TYPE_PER_DAY)
 	{
 		currName = time->ToString(this->fileName->ConcatTo(buff), "yyyyMMdd");
-		if (!IO::Path::IsDirectoryExist(buff))
+		if (!IO::Path::IsDirectoryExist(buff, (UOSInt)(currName - buff)))
 		{
 			IO::Path::CreateDirectory(buff);
 		}
@@ -238,7 +238,7 @@ void IO::MTFileLog::Init(LogType style, LogGroup groupStyle, const Char *dateFor
 		if (i != INVALID_INDEX)
 		{
 			this->fileName->v[i] = 0;
-			if (!IO::Path::IsDirectoryExist(this->fileName->v))
+			if (!IO::Path::IsDirectoryExist(this->fileName->v, this->fileName->leng))
 			{
 				IO::Path::CreateDirectory(this->fileName->v);
 			}

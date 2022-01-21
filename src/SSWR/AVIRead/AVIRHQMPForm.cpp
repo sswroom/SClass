@@ -821,15 +821,15 @@ void SSWR::AVIRead::AVIRHQMPForm::EventMenuClicked(UInt16 cmdId)
 			NEW_CLASS(dlg, SSWR::AVIRead::AVIROpenFileForm(0, this->ui, this->core, IO::ParserType::MediaFile));
 			if (dlg->ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
-				const UTF8Char *fname = dlg->GetFileName();
-				UOSInt i = Text::StrIndexOfChar(fname, ':');
+				Text::String *fname = dlg->GetFileName();
+				UOSInt i = fname->IndexOf(':');
 				if (i == 1 || i == INVALID_INDEX)
 				{
-					this->OpenFile(dlg->GetFileName());
+					this->OpenFile(fname->v);
 				}
 				else
 				{
-					IO::ParsedObject *pobj = Net::URL::OpenObject(fname, 0, 0, this->core->GetSocketFactory(), this->ssl);
+					IO::ParsedObject *pobj = Net::URL::OpenObject(fname->v, 0, 0, this->core->GetSocketFactory(), this->ssl);
 					if (pobj == 0)
 					{
 						UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in loading file", (const UTF8Char*)"HQMP", this);

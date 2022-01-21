@@ -68,7 +68,8 @@ IO::IStreamData *Net::WebBrowser::GetData(const UTF8Char *url, Bool forceReload,
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	IO::Path::PathType pt = IO::Path::GetPathType(url);
+	UOSInt urlLen = Text::StrCharCnt(url);
+	IO::Path::PathType pt = IO::Path::GetPathType(url, urlLen);
 	/////////////////////////////////////////////
 	if (pt == IO::Path::PathType::File)
 	{
@@ -85,7 +86,7 @@ IO::IStreamData *Net::WebBrowser::GetData(const UTF8Char *url, Bool forceReload,
 		return 0;
 	if (Text::StrEqualsICaseC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("FILE")))
 	{
-		Text::URLString::GetURLFilePath(sbuff, url, Text::StrCharCnt(url));
+		Text::URLString::GetURLFilePath(sbuff, url, urlLen);
 		IO::StmData::FileData *fd;
 		NEW_CLASS(fd, IO::StmData::FileData(sbuff, false));
 		if (contentType)
@@ -122,6 +123,7 @@ IO::IStreamData *Net::WebBrowser::GetData(const UTF8Char *url, Bool forceReload,
 	{
 		IO::StmData::MemoryData2 *fd;
 		WChar c;
+		const UTF8Char *urlEnd = &url[urlLen];
 		url = &url[5];
 		if (contentType)
 		{
@@ -158,7 +160,7 @@ IO::IStreamData *Net::WebBrowser::GetData(const UTF8Char *url, Bool forceReload,
 				}
 			}
 		}
-		if (Text::StrStartsWith(url, (const UTF8Char*)"base64,"))
+		if (Text::StrStartsWithC(url, (UOSInt)(urlEnd - url), UTF8STRC("base64,")))
 		{
 			Text::TextBinEnc::Base64Enc b64;
 			UOSInt textSize;
@@ -166,7 +168,7 @@ IO::IStreamData *Net::WebBrowser::GetData(const UTF8Char *url, Bool forceReload,
 			UTF8Char *strTemp;
 			UTF8Char *sptr;
 			UInt8 *binTemp;
-			textSize = Text::StrCharCnt(url + 7);
+			textSize = (UOSInt)(urlEnd - url + 7);
 			strTemp = MemAlloc(UTF8Char, textSize + 1);
 			sptr = Text::TextBinEnc::URIEncoding::URIDecode(strTemp, url + 7);
 			binSize = b64.CalcBinSize(strTemp, (UOSInt)(sptr - strTemp));

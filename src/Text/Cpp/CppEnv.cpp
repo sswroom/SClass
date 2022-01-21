@@ -206,8 +206,8 @@ UTF8Char *Text::Cpp::CppEnv::GetIncludeFilePath(UTF8Char *buff, const UTF8Char *
 	{
 		sourceFile->ConcatTo(buff);
 		i = Text::StrLastIndexOfChar(buff, IO::Path::PATH_SEPERATOR);
-		sptr2 = Text::StrConcat(&buff[i + 1], includeFile);
-		if (IO::Path::GetPathType(buff) == IO::Path::PathType::File)
+		sptr2 = Text::StrConcatC(&buff[i + 1], includeFile, includeFileLen);
+		if (IO::Path::GetPathType(buff, (UOSInt)(sptr2 - buff)) == IO::Path::PathType::File)
 			return sptr2;
 	}
 	i = 0;
@@ -225,10 +225,10 @@ UTF8Char *Text::Cpp::CppEnv::GetIncludeFilePath(UTF8Char *buff, const UTF8Char *
 			sptr = Text::StrConcat(buff, this->includePaths->GetItem(i));
 			*sptr++ = IO::Path::PATH_SEPERATOR;
 		}
-		sptr2 = Text::StrConcat(sptr, includeFile);
+		sptr2 = Text::StrConcatC(sptr, includeFile, includeFileLen);
 		if (IO::Path::PATH_SEPERATOR != '/')
 			Text::StrReplace(sptr, '/', IO::Path::PATH_SEPERATOR);
-		if (IO::Path::GetPathType(buff) == IO::Path::PathType::File)
+		if (IO::Path::GetPathType(buff, (UOSInt)(sptr2 - buff)) == IO::Path::PathType::File)
 			return sptr2;
 		i++;
 	}

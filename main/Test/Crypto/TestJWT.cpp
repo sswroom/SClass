@@ -69,7 +69,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 
 	IO::Path::GetProcessFileName(sbuff);
 	sptr = IO::Path::AppendPath(sbuff, (const UTF8Char*)"jwtrsa.key");
-	if (IO::Path::GetPathType(sbuff) == IO::Path::PathType::File)
+	if (IO::Path::GetPathType(sbuff, (UOSInt)(sptr - sbuff)) == IO::Path::PathType::File)
 	{
 		UInt8 keyBuff[4096];
 		UOSInt keySize;

@@ -37,7 +37,7 @@ void __stdcall SSWR::AVIRead::AVIRLogBackupForm::OnStartClicked(void *userObj)
 		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter Log Dir", (const UTF8Char*)"Log Backup", me);
 		return;
 	}
-	if (IO::Path::GetPathType(sbuff) != IO::Path::PathType::Directory)
+	if (IO::Path::GetPathType(sbuff, (UOSInt)(filePath - sbuff)) != IO::Path::PathType::Directory)
 	{
 		UI::MessageDialog::ShowDialog((const UTF8Char*)"Invalid Log Dir", (const UTF8Char*)"Log Backup", me);
 		return;
@@ -72,10 +72,10 @@ void __stdcall SSWR::AVIRead::AVIRLogBackupForm::OnStartClicked(void *userObj)
 						{
 							logGrp = MemAlloc(LogGroup, 1);
 							logGrp->logName = Text::StrCopyNew(sbuff2);
-							NEW_CLASS(logGrp->fileNames, Data::ArrayList<const UTF8Char*>());
+							NEW_CLASS(logGrp->fileNames, Data::ArrayList<Text::String*>());
 							logGrps.Put(sbuff2, logGrp);
 						}
-						logGrp->fileNames->Add(Text::StrCopyNew(sbuff));
+						logGrp->fileNames->Add(Text::String::NewNotNull(sbuff));
 					}
 				}
 			}
@@ -97,7 +97,8 @@ void __stdcall SSWR::AVIRead::AVIRLogBackupForm::OnStartClicked(void *userObj)
 		l = logGrp->fileNames->GetCount();
 		while (succ && k < l)
 		{
-			succ = succ & zip->AddFile(logGrp->fileNames->GetItem(k));
+			Text::String *s = logGrp->fileNames->GetItem(k);
+			succ = succ & zip->AddFile(s->v, s->leng);
 			k++;
 		}
 		DEL_CLASS(zip);
@@ -108,16 +109,17 @@ void __stdcall SSWR::AVIRead::AVIRLogBackupForm::OnStartClicked(void *userObj)
 			l = logGrp->fileNames->GetCount();
 			while (k < l)
 			{
-				pt = IO::Path::GetPathType(logGrp->fileNames->GetItem(k));
+				Text::String *s = logGrp->fileNames->GetItem(k);
+				pt = IO::Path::GetPathType(s->v, s->leng);
 				if (pt == IO::Path::PathType::File)
 				{
-					IO::Path::DeleteFile(logGrp->fileNames->GetItem(k));
+					IO::Path::DeleteFile(s->v);
 				}
 				else if (pt == IO::Path::PathType::Directory)
 				{
-					IO::FileUtil::DeleteFile(logGrp->fileNames->GetItem(k), true);
+					IO::FileUtil::DeleteFile(s->v, true);
 				}
-				Text::StrDelNew(logGrp->fileNames->GetItem(k));
+				s->Release();
 				k++;
 			}
 		}
@@ -128,7 +130,7 @@ void __stdcall SSWR::AVIRead::AVIRLogBackupForm::OnStartClicked(void *userObj)
 			l = logGrp->fileNames->GetCount();
 			while (k < l)
 			{
-				Text::StrDelNew(logGrp->fileNames->GetItem(k));
+				logGrp->fileNames->GetItem(k)->Release();
 				k++;
 			}
 		}

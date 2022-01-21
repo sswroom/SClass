@@ -425,17 +425,18 @@ void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(void *userObj, const UTF
 	UOSInt i = 0;
 	while (i < nFiles)
 	{
-		pt = IO::Path::GetPathType(files[i]);
+		UOSInt fileNameLen = Text::StrCharCnt(files[i]);
+		pt = IO::Path::GetPathType(files[i], fileNameLen);
 		if (pt == IO::Path::PathType::Directory)
 		{
 			Bool valid = false;
 #if defined(WIN32) || defined(_WIN64) || (defined(_MSC_VER) && defined(_WIN32))
-			if (Text::StrEndsWithICase(files[i], (const UTF8Char*)".GDB"))
+			if (Text::StrEndsWithICaseC(files[i], fileNameLen, UTF8STRC(".GDB")))
 			{
 				DB::OLEDBConn *conn;
 				Text::StringBuilderUTF8 sb;
 				sb.AppendC(UTF8STRC("Provider=ESRI.GeoDB.OleDB.1;Data Source="));
-				sb.Append(files[i]);
+				sb.AppendC(files[i], fileNameLen);
 				sb.AppendC(UTF8STRC(";Extended Properties=workspacetype=esriDataSourcesGDB.FileGDBWorkspaceFactory.1"));
 				sb.AppendC(UTF8STRC(";Geometry=OBJECT"));
 				const WChar *wptr = Text::StrToWCharNew(sb.ToString());
@@ -475,7 +476,7 @@ void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(void *userObj, const UTF
 			if (!me->core->LoadData(fd, 0))
 			{
 				sb.AppendC(UTF8STRC("\n"));
-				sb.Append(files[i]);
+				sb.AppendC(files[i], fileNameLen);
 				found = true;
 			}
 			DEL_CLASS(fd);
@@ -1007,11 +1008,11 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 			NEW_CLASS(frm, SSWR::AVIRead::AVIROpenFileForm(0, this->ui, this->core, IO::ParserType::Unknown));
 			if (frm->ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
-				const UTF8Char *fname = frm->GetFileName();
-				UOSInt i = Text::StrIndexOfChar(fname, ':');
+				Text::String *fname = frm->GetFileName();
+				UOSInt i = fname->IndexOf(':');
 				if (i == INVALID_INDEX || i == 1)
 				{
-					if (IO::Path::GetPathType(fname) == IO::Path::PathType::Directory)
+					if (IO::Path::GetPathType(fname->v, fname->leng) == IO::Path::PathType::Directory)
 					{
 						IO::DirectoryPackage *dp;
 						NEW_CLASS(dp, IO::DirectoryPackage(fname));
@@ -1034,7 +1035,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 				}
 				else
 				{
-					IO::ParsedObject *pobj = Net::URL::OpenObject(fname, 0, 0, this->core->GetSocketFactory(), this->ssl);
+					IO::ParsedObject *pobj = Net::URL::OpenObject(fname->v, 0, 0, this->core->GetSocketFactory(), this->ssl);
 					if (pobj == 0)
 					{
 						UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in loading file", (const UTF8Char*)"AVIRead", this);

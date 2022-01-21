@@ -19,7 +19,7 @@ namespace SSWR
 			UI::GUIButton *btnBrowse;
 			UI::GUIButton *btnOK;
 			UI::GUIButton *btnCancel;
-			const UTF8Char *fileName;
+			Text::String *fileName;
 			SSWR::AVIRead::AVIRCore *core;
 			IO::ParserType t;
 
@@ -32,8 +32,8 @@ namespace SSWR
 
 			virtual void OnMonitorChanged();
 
-			const UTF8Char *GetFileName();
+			Text::String *GetFileName();
 		};
-	};
-};
+	}
+}
 #endif
