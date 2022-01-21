@@ -46,13 +46,14 @@ Net::SDPFile::SDPFile(UInt8 *buff, UOSInt buffSize)
 	MemCopyNO(this->buff, buff, buffSize);
 
 	UTF8Char sbuff[256];
+	UTF8Char *sptr;
 	UTF8Char *sarr[7];
 	Data::ArrayListStrUTF8 *currMedia = 0;
 	IO::MemoryStream *mstm;
 	Text::UTF8Reader *reader;
 	NEW_CLASS(mstm, IO::MemoryStream(this->buff, this->buffSize, UTF8STRC("Net.SDPFile.SDPFile")));
 	NEW_CLASS(reader, Text::UTF8Reader(mstm));
-	while (reader->ReadLine(sbuff, 255))
+	while ((sptr = reader->ReadLine(sbuff, 255)) != 0)
 	{
 		if (sbuff[1] == '=')
 		{
@@ -78,22 +79,22 @@ Net::SDPFile::SDPFile(UInt8 *buff, UOSInt buffSize)
 				break;
 			case 's': //session name
 				SDEL_TEXT(this->sessName);
-				this->sessName = Text::StrCopyNew(&sbuff[2]);
+				this->sessName = Text::StrCopyNewC(&sbuff[2], (UOSInt)(sptr - &sbuff[2]));
 				break;
 			case 'i': //session information
-				this->sessDesc->Add(Text::StrCopyNew(&sbuff[2]));
+				this->sessDesc->Add(Text::StrCopyNewC(&sbuff[2], (UOSInt)(sptr - &sbuff[2])));
 				this->sessDescType->Add('i');
 				break;
 			case 'u': //URI of description
-				this->sessDesc->Add(Text::StrCopyNew(&sbuff[2]));
+				this->sessDesc->Add(Text::StrCopyNewC(&sbuff[2], (UOSInt)(sptr - &sbuff[2])));
 				this->sessDescType->Add('u');
 				break;
 			case 'e': //email address
-				this->sessDesc->Add(Text::StrCopyNew(&sbuff[2]));
+				this->sessDesc->Add(Text::StrCopyNewC(&sbuff[2], (UOSInt)(sptr - &sbuff[2])));
 				this->sessDescType->Add('e');
 				break;
 			case 'p': //phone number
-				this->sessDesc->Add(Text::StrCopyNew(&sbuff[2]));
+				this->sessDesc->Add(Text::StrCopyNewC(&sbuff[2], (UOSInt)(sptr - &sbuff[2])));
 				this->sessDescType->Add('p');
 				break;
 			case 'c': //connection information - not required if included in all media
@@ -101,7 +102,7 @@ Net::SDPFile::SDPFile(UInt8 *buff, UOSInt buffSize)
 			case 'b': //bandwidth information
 				if (currMedia)
 				{
-					currMedia->Add(Text::StrCopyNew(sbuff));
+					currMedia->Add(Text::StrCopyNewC(sbuff, (UOSInt)(sptr - sbuff)));
 				}
 				break;
 			case 'z': //time zone adjustments
@@ -111,41 +112,41 @@ Net::SDPFile::SDPFile(UInt8 *buff, UOSInt buffSize)
 			case 'a': //zero or more session attribute lines
 				if (currMedia)
 				{
-					currMedia->Add(Text::StrCopyNew(sbuff));
+					currMedia->Add(Text::StrCopyNewC(sbuff, (UOSInt)(sptr - sbuff)));
 				}
 				else
 				{
-					if (Text::StrStartsWith(sbuff, (const UTF8Char*)"a=tool:"))
+					if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("a=tool:")))
 					{
 						SDEL_TEXT(this->sessTool);
 						this->sessTool = Text::StrCopyNew(&sbuff[7]);
 					}
-					else if (Text::StrCompare(sbuff, (const UTF8Char*)"a=recvonly") == 0)
+					else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("a=recvonly")))
 					{
 						this->sessSend = false;
 						this->sessRecv = true;
 					}
-					else if (Text::StrCompare(sbuff, (const UTF8Char*)"a=sendonly") == 0)
+					else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("a=sendonly")))
 					{
 						this->sessSend = true;
 						this->sessRecv = false;
 					}
-					else if (Text::StrCompare(sbuff, (const UTF8Char*)"a=sendrecv") == 0)
+					else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("a=sendrecv")))
 					{
 						this->sessSend = true;
 						this->sessRecv = true;
 					}
-					else if (Text::StrStartsWith(sbuff, (const UTF8Char*)"a=type:"))
+					else if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("a=type:")))
 					{
 						SDEL_TEXT(this->sessType);
 						this->sessType = Text::StrCopyNew(&sbuff[7]);
 					}
-					else if (Text::StrStartsWith(sbuff, (const UTF8Char*)"a=charset:"))
+					else if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("a=charset:")))
 					{
 						SDEL_TEXT(this->sessCharset);
 						this->sessCharset = Text::StrCopyNew(&sbuff[10]);
 					}
-					else if (Text::StrStartsWith(sbuff, (const UTF8Char*)"a=control:"))
+					else if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("a=control:")))
 					{
 						SDEL_TEXT(this->sessControl);
 						this->sessControl = Text::StrCopyNew(&sbuff[10]);

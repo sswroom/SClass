@@ -112,7 +112,7 @@ Bool Map::DrawMapRenderer::AddLabel(MapLabels *labels, UOSInt maxLabel, UOSInt *
 		{
 			if (recType == labels[i].layerType)
 			{
-				if (Text::StrCompare(labels[i].label, label) == 0)
+				if (Text::StrEquals(labels[i].label, label))
 				{
 					found = 1;
 
@@ -297,7 +297,7 @@ Bool Map::DrawMapRenderer::AddLabel(MapLabels *labels, UOSInt maxLabel, UOSInt *
 		{
 			if (recType == labels[i].layerType)
 			{
-				if (Text::StrCompare(labels[i].label, label) == 0)
+				if (Text::StrEquals(labels[i].label, label))
 				{
 					found++;
 					if (totalSize == 0)
@@ -485,7 +485,7 @@ Bool Map::DrawMapRenderer::AddLabel(MapLabels *labels, UOSInt maxLabel, UOSInt *
 			{
 				if (recType == labels[i].layerType)
 				{
-					if (Text::StrCompare(labels[i].label, label) == 0)
+					if (Text::StrEquals(labels[i].label, label))
 					{
 						found = 1;
 						break;
@@ -799,7 +799,7 @@ void Map::DrawMapRenderer::DrawLabels(Map::DrawMapRenderer::DrawEnv *denv)
 
 				if (lastLbl)
 				{
-					if (Text::StrCompare(lastLbl, denv->labels[i].label) != 0)
+					if (!Text::StrEquals(lastLbl, denv->labels[i].label))
 					{
 						thisCnt = 0;
 					}

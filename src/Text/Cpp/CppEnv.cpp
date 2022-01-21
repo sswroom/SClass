@@ -192,13 +192,13 @@ void Text::Cpp::CppEnv::AddIncludePath(const UTF8Char *includePath)
 	this->includePaths->Add(Text::StrCopyNew(includePath));
 }
 
-UTF8Char *Text::Cpp::CppEnv::GetIncludeFilePath(UTF8Char *buff, const UTF8Char *includeFile, Text::String *sourceFile)
+UTF8Char *Text::Cpp::CppEnv::GetIncludeFilePath(UTF8Char *buff, const UTF8Char *includeFile, UOSInt includeFileLen, Text::String *sourceFile)
 {
 	UTF8Char *sptr;
 	UTF8Char *sptr2;
 	UOSInt i;
 	UOSInt j;
-	if (Text::StrIndexOf(includeFile, (const UTF8Char*)"opengl.hpp") != INVALID_INDEX)
+	if (Text::StrIndexOfC(includeFile, includeFileLen, UTF8STRC("opengl.hpp")) != INVALID_INDEX)
 	{
 		i = 0;
 	}

@@ -269,6 +269,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnPublishMessage(void *user
 		topicSt->topic = Text::StrCopyNew(topic);
 		topicSt->currValue = MemAlloc(UTF8Char, msgSize + 1);
 		Text::StrConcatC(topicSt->currValue, message, msgSize);
+		topicSt->currValueLen = msgSize;
 		topicSt->updated = true;
 		topicSt->recvCnt = 1;
 		topicSt->lastRecvTime = dt.ToTicks();
@@ -280,6 +281,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnPublishMessage(void *user
 		MemFree(topicSt->currValue);
 		topicSt->currValue = MemAlloc(UTF8Char, msgSize + 1);
 		Text::StrConcatC(topicSt->currValue, message, msgSize);	
+		topicSt->currValueLen = msgSize;
 		topicSt->updated = true;
 		topicSt->recvCnt++;
 		topicSt->lastRecvTime = dt.ToTicks();
@@ -294,7 +296,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnPublishMessage(void *user
 	else
 	{
 		dVal = 0;
-		i = Text::StrIndexOf(topicSt->currValue, (const UTF8Char*)" seconds");
+		i = Text::StrIndexOfC(topicSt->currValue, topicSt->currValueLen, UTF8STRC(" seconds"));
 		if (i != INVALID_INDEX && i > 0)
 		{
 			sb.ClearStr();

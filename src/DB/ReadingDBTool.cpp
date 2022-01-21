@@ -449,15 +449,15 @@ DB::DBUtil::ServerType DB::ReadingDBTool::GetSvrType()
 	return this->svrType;
 }
 
-Bool DB::ReadingDBTool::IsDataError(UTF8Char *errCode)
+Bool DB::ReadingDBTool::IsDataError(const UTF8Char *errCode)
 {
 	if (errCode == 0)
 		return false;
-	if (Text::StrCompare(errCode, (const UTF8Char*)"23000") == 0)
+	if (Text::StrEqualsC(errCode, 5, UTF8STRC("23000")))
 		return true;
-	if (Text::StrCompare(errCode, (const UTF8Char*)"42000") == 0)
+	if (Text::StrEqualsC(errCode, 5, UTF8STRC("42000")))
 		return true;
-	if (Text::StrCompare(errCode, (const UTF8Char*)"HY000") == 0)
+	if (Text::StrEqualsC(errCode, 5, UTF8STRC("HY000")))
 		return true;
 	return false;
 }

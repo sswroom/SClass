@@ -36,7 +36,7 @@ IO::ParsedObject *Parser::FileParser::SQLiteParser::ParseFile(IO::IStreamData *f
 {
 	UInt8 hdr[32];
 	fd->GetRealData(0, 32, hdr);
-	if (Text::StrCompare((Char*)hdr, "SQLite format 3") != 0)
+	if (!Text::StrStartsWithC(hdr, 32, UTF8STRC("SQLite format 3")))
 		return 0;
 	if (fd->IsFullFile())
 	{

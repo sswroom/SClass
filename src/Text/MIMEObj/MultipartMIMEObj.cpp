@@ -473,7 +473,7 @@ Text::MIMEObj::MultipartMIMEObj *Text::MIMEObj::MultipartMIMEObj::ParseFile(cons
 		}
 		while (true)
 		{
-			k = Text::StrIndexOf(&buff[i], boundary.ToString());
+			k = Text::StrIndexOfC(&buff[i], buffSize - i, boundary.ToString(), boundary.GetLength());
 			if (k == INVALID_INDEX)
 				break;
 			k += i;

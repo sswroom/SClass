@@ -537,17 +537,18 @@ Bool Net::RTPCliChannel::MapPayloadType(Int32 payloadType, const UTF8Char *typ, 
 	}
 	if (this->chData->mediaType == Media::MEDIA_TYPE_AUDIO)
 	{
-		if (Text::StrCompare(typ, (const UTF8Char*)"PCMU") == 0)
+		UOSInt typLen = Text::StrCharCnt(typ);
+		if (Text::StrEqualsC(typ, typLen, UTF8STRC("PCMU")))
 		{
 			//////////////////////////
 			return false;
 		}
-		else if (Text::StrCompare(typ, (const UTF8Char*)"telephone-event") == 0)
+		else if (Text::StrEqualsC(typ, typLen, UTF8STRC("telephone-event")))
 		{
 			//////////////////////////
 			return false;
 		}
-		else if (Text::StrCompare(typ, (const UTF8Char*)"mpeg4-generic") == 0)
+		else if (Text::StrEqualsC(typ, typLen, UTF8STRC("mpeg4-generic")))
 		{
 			NEW_CLASS(hdlr, Net::RTPAACHandler(payloadType, freq, nChannel));
 			this->chData->payloadMap->Put(payloadType, hdlr);
@@ -556,7 +557,7 @@ Bool Net::RTPCliChannel::MapPayloadType(Int32 payloadType, const UTF8Char *typ, 
 	}
 	else if (this->chData->mediaType == Media::MEDIA_TYPE_VIDEO)
 	{
-		if (Text::StrCompare(typ, (const UTF8Char*)"H264") == 0)
+		if (Text::StrEquals(typ, (const UTF8Char*)"H264"))
 		{
 			NEW_CLASS(hdlr, Net::RTPH264Handler(payloadType));
 			this->chData->payloadMap->Put(payloadType, hdlr);

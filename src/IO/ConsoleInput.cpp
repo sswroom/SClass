@@ -12,7 +12,7 @@ IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputInt32(IO::ConsoleWriter
 	{
 		WChar sbuff[256];
 		console->ReadLine(sbuff, 256);
-		if (Text::StrCompare(sbuff, L"0") == 0)
+		if (Text::StrEquals(sbuff, L"0"))
 		{
 			*output = 0;
 			return IRT_ENTER;

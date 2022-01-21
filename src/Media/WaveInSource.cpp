@@ -121,7 +121,7 @@ Media::WaveInSource::WaveInSource(const UTF8Char *devName, UInt32 freq, UInt16 n
 	while (i-- > 0)
 	{
 		GetDeviceName(u8buff, i);
-		if (Text::StrCompare(u8buff, devName) == 0)
+		if (Text::StrEquals(u8buff, devName))
 		{
 			this->devId = i;
 			break;

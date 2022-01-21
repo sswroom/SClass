@@ -135,47 +135,49 @@ void Net::RTPAACHandler::MediaDataReceived(UInt8 *buff, UOSInt dataSize, UInt32 
 void Net::RTPAACHandler::SetFormat(const UTF8Char *fmtStr)
 {
 	UTF8Char sbuff[256];
-	UTF8Char *sarr[2];
+	UTF8Char *sptr;
+	Text::PString sarr[2];
 	UOSInt i;
-	Text::StrConcat(sbuff, fmtStr);
-	sarr[1] = sbuff;
+	sptr = Text::StrConcat(sbuff, fmtStr);
+	sarr[1].v = sbuff;
+	sarr[1].len = (UOSInt)(sptr - sbuff);
 	while (true)
 	{
-		i = Text::StrSplitTrim(sarr, 2, sarr[1], ';');
-		if (Text::StrStartsWith(sarr[0], (const UTF8Char*)"mode="))
+		i = Text::StrSplitTrimP(sarr, 2, sarr[1].v, sarr[1].len, ';');
+		if (Text::StrStartsWithC(sarr[0].v, sarr[0].len, UTF8STRC("mode=")))
 		{
-			if (Text::StrCompare(sarr[0], (const UTF8Char*)"mode=generic") == 0)
+			if (Text::StrEqualsC(sarr[0].v, sarr[0].len, UTF8STRC("mode=generic")))
 			{
 				this->aacm = AACM_GENERIC;
 			}
-			else if (Text::StrCompare(sarr[0], (const UTF8Char*)"mode=CELP-cbr") == 0)
+			else if (Text::StrEqualsC(sarr[0].v, sarr[0].len, UTF8STRC("mode=CELP-cbr")))
 			{
 				this->aacm = AACM_CELP_CBR;
 			}
-			else if (Text::StrCompare(sarr[0], (const UTF8Char*)"mode=CELP-vbr") == 0)
+			else if (Text::StrEqualsC(sarr[0].v, sarr[0].len, UTF8STRC("mode=CELP-vbr")))
 			{
 				this->aacm = AACM_CELP_VBR;
 			}
-			else if (Text::StrCompare(sarr[0], (const UTF8Char*)"mode=AAC-lbr") == 0)
+			else if (Text::StrEqualsC(sarr[0].v, sarr[0].len, UTF8STRC("mode=AAC-lbr")))
 			{
 				this->aacm = AACM_AAC_LBR;
 			}
-			else if (Text::StrCompare(sarr[0], (const UTF8Char*)"mode=AAC-hbr") == 0)
+			else if (Text::StrEqualsC(sarr[0].v, sarr[0].len, UTF8STRC("mode=AAC-hbr")))
 			{
 				this->aacm = AACM_AAC_HBR;
 			}
 		}
-		else if (Text::StrStartsWith(sarr[0], (const UTF8Char*)"streamType="))
+		else if (Text::StrStartsWithC(sarr[0].v, sarr[0].len, UTF8STRC("streamType=")))
 		{
-			this->streamType = Text::StrToInt32(&sarr[0][11]);
+			this->streamType = Text::StrToInt32(&sarr[0].v[11]);
 		}
-		else if (Text::StrStartsWith(sarr[0], (const UTF8Char*)"profile-level-id="))
+		else if (Text::StrStartsWithC(sarr[0].v, sarr[0].len, UTF8STRC("profile-level-id=")))
 		{
-			this->profileId = Text::StrToInt32(&sarr[0][17]);
+			this->profileId = Text::StrToInt32(&sarr[0].v[17]);
 		}
-		else if (Text::StrStartsWith(sarr[0], (const UTF8Char*)"config="))
+		else if (Text::StrStartsWithC(sarr[0].v, sarr[0].len, UTF8STRC("config=")))
 		{
-			this->config = Text::StrHex2Int32C(&sarr[0][7]);
+			this->config = Text::StrHex2Int32C(&sarr[0].v[7]);
 		}
 		else
 		{

@@ -67,7 +67,7 @@ namespace Net
 		const Net::SocketUtil::AddressInfo *GetSvrAddr();
 		Double GetTotalTime();
 
-		static void ParseDateStr(Data::DateTime *dt, const UTF8Char *dateStr);
+		static void ParseDateStr(Data::DateTime *dt, const UTF8Char *dateStr, UOSInt dateStrLen);
 		static UTF8Char *Date2Str(UTF8Char *sbuff, Data::DateTime *dt);
 		static Net::HTTPClient *CreateClient(Net::SocketFactory *sockf, Net::SSLEngine *ssl, const UTF8Char *userAgent, UOSInt uaLen, Bool kaConn, Bool isSecure);
 		static Net::HTTPClient *CreateConnect(Net::SocketFactory *sockf, Net::SSLEngine *ssl, const UTF8Char *url, const Char *method, Bool kaConn);

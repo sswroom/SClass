@@ -28,6 +28,7 @@ namespace SSWR
 			{
 				const UTF8Char *topic;
 				UTF8Char *currValue;
+				UOSInt currValueLen;
 				Bool updated;
 				UOSInt recvCnt;
 				Int64 lastRecvTime;

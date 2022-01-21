@@ -128,7 +128,7 @@ a:hover {color:#FF00FF;}
 	j = doc->GetCount();
 	while (i < j)
 	{
-		WriteItems(writer, doc->GetItem(i), (const UTF8Char*)"body");
+		WriteItems(writer, doc->GetItem(i), UTF8STRC("body"));
 		i++;
 	}
 
@@ -149,7 +149,7 @@ void Exporter::DocHTMLExporter::WriteColor(IO::Writer *writer, UInt32 color)
 	writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff)); 
 }
 
-void Exporter::DocHTMLExporter::WriteItems(IO::Writer *writer, Data::ReadingList<Text::Doc::DocItem *> *items, const UTF8Char *parentNodeName)
+void Exporter::DocHTMLExporter::WriteItems(IO::Writer *writer, Data::ReadingList<Text::Doc::DocItem *> *items, const UTF8Char *parentNodeName, UOSInt nameLen)
 {
 	Text::Doc::DocItem *item;
 	UOSInt i = 0;
@@ -163,7 +163,7 @@ void Exporter::DocHTMLExporter::WriteItems(IO::Writer *writer, Data::ReadingList
 		switch (item->GetItemType())
 		{
 		case Text::Doc::DocItem::DIT_URL:
-			if (Text::StrCompare(parentNodeName, (const UTF8Char*)"body") == 0)
+			if (Text::StrEqualsC(parentNodeName, nameLen, UTF8STRC("body")))
 			{
 				writer->WriteStrC(UTF8STRC("<p>"));
 			}
@@ -172,9 +172,9 @@ void Exporter::DocHTMLExporter::WriteItems(IO::Writer *writer, Data::ReadingList
 			writer->WriteStrC(s->v, s->leng);
 			s->Release();
 			writer->WriteStrC(UTF8STRC(">"));
-			WriteItems(writer, item, (const UTF8Char*)"a");
+			WriteItems(writer, item, UTF8STRC("a"));
 			writer->WriteStrC(UTF8STRC("</a>"));
-			if (Text::StrCompare(parentNodeName, (const UTF8Char*)"body") == 0)
+			if (Text::StrEqualsC(parentNodeName, nameLen, UTF8STRC("body")))
 			{
 				writer->WriteStrC(UTF8STRC("</p>"));
 			}
@@ -193,7 +193,7 @@ void Exporter::DocHTMLExporter::WriteItems(IO::Writer *writer, Data::ReadingList
 				break;
 			}
 			writer->WriteStrC(UTF8STRC(">"));
-			WriteItems(writer, heading, (const UTF8Char*)"h1");
+			WriteItems(writer, heading, UTF8STRC("h1"));
 			writer->WriteStrC(UTF8STRC("</h1>"));
 			break;
 		case Text::Doc::DocItem::DIT_TEXT:

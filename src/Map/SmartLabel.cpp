@@ -204,10 +204,10 @@ void Map::SmartLabel::DrawImage(void *sess, Media::DrawImage *img)
 	Int32 j;
 	WChar *dest;
 	WChar *lastLbl = 0;
-	Double leftLon = ses->view->GetLeftLon();
-	Double topLat = ses->view->GetTopLat();
-	Double rightLon = ses->view->GetRightLon();
-	Double bottomLat = ses->view->GetBottomLat();
+	Double leftLon = ses->view->GetLeftX();
+	Double topLat = ses->view->GetTopY();
+	Double rightLon = ses->view->GetRightX();
+	Double bottomLat = ses->view->GetBottomY();
 	Int32 scnWidth = img->GetWidth();
 	Int32 scnHeight = img->GetHeight();
 
@@ -269,9 +269,9 @@ void Map::SmartLabel::DrawImage(void *sess, Media::DrawImage *img)
 			Double scnYD;
 //			GetCharsSize(img, szThis, ses->labels[i].label, fonts[ses->labels[i].fontStyle], ses->labels[i].scaleW, ses->labels[i].scaleH);
 			ses->func2(ses->userObj, ses->labels[i].label, ses->labels[i].scaleW, ses->labels[i].scaleH, ses->labels[i].fontStyle, &szThis[0], &szThis[1], ses->labels[i].flags);
-			ses->view->LatLonToScnXY(ses->labels[i].yPos / ses->labels[i].mapRate, ses->labels[i].xPos / ses->labels[i].mapRate, &scnXD, &scnYD);
-			scnPtX = Math::Double2Int(scnXD);
-			scnPtY = Math::Double2Int(scnYD);
+			ses->view->MapXYToScnXY(ses->labels[i].xPos / ses->labels[i].mapRate, ses->labels[i].yPos / ses->labels[i].mapRate, &scnXD, &scnYD);
+			scnPtX = Double2Int32(scnXD);
+			scnPtY = Double2Int32(scnYD);
 
 			
 		//	labels[i].shapeType = 0;
@@ -458,46 +458,46 @@ void Map::SmartLabel::DrawImage(void *sess, Media::DrawImage *img)
 							thisPtY = ptInt[3];
 							if (leftLon * ses->labels[i].mapRate > lastPtX)
 							{
-								lastPtY += MulDiv(Math::Double2Int(leftLon * ses->labels[i].mapRate - lastPtX), thisPtY - lastPtY, thisPtX - lastPtX);
-								lastPtX = Math::Double2Int(leftLon * ses->labels[i].mapRate);
+								lastPtY += MulDiv(Double2Int32(leftLon * ses->labels[i].mapRate - lastPtX), thisPtY - lastPtY, thisPtX - lastPtX);
+								lastPtX = Double2Int32(leftLon * ses->labels[i].mapRate);
 							}
 							else if (lastPtX > rightLon * ses->labels[i].mapRate)
 							{
-								lastPtY += MulDiv(Math::Double2Int(rightLon * ses->labels[i].mapRate - lastPtX), thisPtY - lastPtY, thisPtX - lastPtX);
-								lastPtX = Math::Double2Int(rightLon * ses->labels[i].mapRate);
+								lastPtY += MulDiv(Double2Int32(rightLon * ses->labels[i].mapRate - lastPtX), thisPtY - lastPtY, thisPtX - lastPtX);
+								lastPtX = Double2Int32(rightLon * ses->labels[i].mapRate);
 							}
 
 							if (topLat * ses->labels[i].mapRate > lastPtY)
 							{
-								lastPtX += MulDiv(Math::Double2Int(topLat * ses->labels[i].mapRate - lastPtY), thisPtX - lastPtX, thisPtY - lastPtY);
-								lastPtY = Math::Double2Int(topLat * ses->labels[i].mapRate);
+								lastPtX += MulDiv(Double2Int32(topLat * ses->labels[i].mapRate - lastPtY), thisPtX - lastPtX, thisPtY - lastPtY);
+								lastPtY = Double2Int32(topLat * ses->labels[i].mapRate);
 							}
 							else if (lastPtY > bottomLat * ses->labels[i].mapRate)
 							{
-								lastPtX += MulDiv(Math::Double2Int(bottomLat * ses->labels[i].mapRate - lastPtY), thisPtX - lastPtX, thisPtY - lastPtY);
-								lastPtY = Math::Double2Int(bottomLat * ses->labels[i].mapRate);
+								lastPtX += MulDiv(Double2Int32(bottomLat * ses->labels[i].mapRate - lastPtY), thisPtX - lastPtX, thisPtY - lastPtY);
+								lastPtY = Double2Int32(bottomLat * ses->labels[i].mapRate);
 							}
 
 							if (thisPtX < leftLon * ses->labels[i].mapRate)
 							{
-								thisPtY += MulDiv(Math::Double2Int(leftLon * ses->labels[i].mapRate - thisPtX), thisPtY - lastPtY, thisPtX - lastPtX);
-								thisPtX = Math::Double2Int(leftLon * ses->labels[i].mapRate);
+								thisPtY += MulDiv(Double2Int32(leftLon * ses->labels[i].mapRate - thisPtX), thisPtY - lastPtY, thisPtX - lastPtX);
+								thisPtX = Double2Int32(leftLon * ses->labels[i].mapRate);
 							}
 							else if (rightLon * ses->labels[i].mapRate < thisPtX)
 							{
-								thisPtY += MulDiv(Math::Double2Int(rightLon * ses->labels[i].mapRate - thisPtX), thisPtY - lastPtY, thisPtX - lastPtX);
-								thisPtX = Math::Double2Int(rightLon * ses->labels[i].mapRate);
+								thisPtY += MulDiv(Double2Int32(rightLon * ses->labels[i].mapRate - thisPtX), thisPtY - lastPtY, thisPtX - lastPtX);
+								thisPtX = Double2Int32(rightLon * ses->labels[i].mapRate);
 							}
 
 							if (topLat * ses->labels[i].mapRate > thisPtY)
 							{
-								thisPtX += MulDiv(Math::Double2Int(topLat * ses->labels[i].mapRate - thisPtY), thisPtX - lastPtX, thisPtY - lastPtY);
-								thisPtY = Math::Double2Int(topLat * ses->labels[i].mapRate);
+								thisPtX += MulDiv(Double2Int32(topLat * ses->labels[i].mapRate - thisPtY), thisPtX - lastPtX, thisPtY - lastPtY);
+								thisPtY = Double2Int32(topLat * ses->labels[i].mapRate);
 							}
 							else if (bottomLat * ses->labels[i].mapRate < thisPtY)
 							{
-								thisPtX += MulDiv(Math::Double2Int(bottomLat * ses->labels[i].mapRate - thisPtY), thisPtX - lastPtX, thisPtY - lastPtY);
-								thisPtY = Math::Double2Int(bottomLat * ses->labels[i].mapRate);
+								thisPtX += MulDiv(Double2Int32(bottomLat * ses->labels[i].mapRate - thisPtY), thisPtX - lastPtX, thisPtY - lastPtY);
+								thisPtY = Double2Int32(bottomLat * ses->labels[i].mapRate);
 							}
 
 							ses->labels[i].scaleW = 0;
@@ -511,9 +511,9 @@ void Map::SmartLabel::DrawImage(void *sess, Media::DrawImage *img)
 								ses->labels[i].scaleH = ptInt[3] - ptInt[1];
 							}
 
-							ses->view->LatLonToScnXY(scnPtY / ses->labels[i].mapRate, scnPtX / ses->labels[i].mapRate, &scnXD, &scnYD);
-							scnPtX = Math::Double2Int(scnXD);
-							scnPtY = Math::Double2Int(scnYD);
+							ses->view->MapXYToScnXY(scnPtX / ses->labels[i].mapRate, scnPtY / ses->labels[i].mapRate, &scnXD, &scnYD);
+							scnPtX = Double2Int32(scnXD);
+							scnPtY = Double2Int32(scnYD);
 
 //							GetCharsSize(img, szThis, ses->labels[i].label, fonts[ses->labels[i].fontStyle], ses->labels[i].scaleW, ses->labels[i].scaleH);
 							ses->func2(ses->userObj, ses->labels[i].label, ses->labels[i].scaleW, ses->labels[i].scaleH, ses->labels[i].fontStyle, &szThis[0], &szThis[1], ses->labels[i].flags);
@@ -676,8 +676,8 @@ Bool Map::SmartLabel::AddPointLabel(void *sess, Int32 priority, Int32 fontStyle,
 	Int32 *pInt;
 	Double scnX;
 	Double scnY;
-	Double mapPosLon = ses->view->GetCenterLon();
-	Double mapPosLat = ses->view->GetCenterLat();
+	Double mapPosLon = ses->view->GetCenterX();
+	Double mapPosLat = ses->view->GetCenterY();
 
 	found = 0;
 	i = 0;
@@ -685,7 +685,7 @@ Bool Map::SmartLabel::AddPointLabel(void *sess, Int32 priority, Int32 fontStyle,
 	{
 		if (ses->labels[i].shapeType == PointType)
 		{
-			if (Text::StrCompare(ses->labels[i].label, label) == 0)
+			if (Text::StrEquals(ses->labels[i].label, label))
 			{
 				found = 1;
 
@@ -723,7 +723,7 @@ Bool Map::SmartLabel::AddPointLabel(void *sess, Int32 priority, Int32 fontStyle,
 		j = nPoints;
 		while (j--)
 		{
-			if (ses->view->InViewLatLon(pInt[1] / mapRate, pInt[0] / mapRate))
+			if (ses->view->InViewXY(pInt[1] / mapRate, pInt[0] / mapRate))
 			{
 				found = 1;
 
@@ -798,10 +798,10 @@ Bool Map::SmartLabel::AddPolylineLabel(void *sess, Int32 priority, Int32 fontSty
 	Int32 visibleSize = 0;
 	Int32 size = 0;
 
-	Int32 left = Math::Double2Int(ses->view->GetLeftLon() * mapRate);
-	Int32 top = Math::Double2Int(ses->view->GetTopLat() * mapRate);
-	Int32 right = Math::Double2Int(ses->view->GetRightLon() * mapRate);
-	Int32 bottom = Math::Double2Int(ses->view->GetBottomLat() * mapRate);
+	Int32 left = Double2Int32(ses->view->GetLeftX() * mapRate);
+	Int32 top = Double2Int32(ses->view->GetTopY() * mapRate);
+	Int32 right = Double2Int32(ses->view->GetRightX() * mapRate);
+	Int32 bottom = Double2Int32(ses->view->GetBottomY() * mapRate);
 
 	i = 1;
 	while (i < nPoints)
@@ -870,7 +870,7 @@ Bool Map::SmartLabel::AddPolylineLabel(void *sess, Int32 priority, Int32 fontSty
 	{
 		if (ses->labels[i].shapeType == PolylineType)
 		{
-			if (Text::StrCompare(ses->labels[i].label, label) == 0)
+			if (Text::StrEquals(ses->labels[i].label, label))
 			{
 				found++;
 
@@ -1195,10 +1195,10 @@ Bool Map::SmartLabel::AddPolygonLabel(void *sess, Int32 priority, Int32 fontStyl
 
 	LabelSession *ses = (LabelSession*)sess;
 
-	Int32 left = Math::Double2Int(ses->view->GetLeftLon() * mapRate);
-	Int32 top = Math::Double2Int(ses->view->GetTopLat() * mapRate);
-	Int32 right = Math::Double2Int(ses->view->GetRightLon() * mapRate);
-	Int32 bottom = Math::Double2Int(ses->view->GetBottomLat() * mapRate);
+	Int32 left = Double2Int32(ses->view->GetLeftX() * mapRate);
+	Int32 top = Double2Int32(ses->view->GetTopY() * mapRate);
+	Int32 right = Double2Int32(ses->view->GetRightX() * mapRate);
+	Int32 bottom = Double2Int32(ses->view->GetBottomY() * mapRate);
 
 	if (nPoints <= 2)
 		return false;
@@ -1209,7 +1209,7 @@ Bool Map::SmartLabel::AddPolygonLabel(void *sess, Int32 priority, Int32 fontStyl
 	{
 		if (PolygonType == ses->labels[i].shapeType)
 		{
-			if (Text::StrCompare(ses->labels[i].label, label) == 0)
+			if (Text::StrEquals(ses->labels[i].label, label))
 			{
 				found = 1;
 				break;

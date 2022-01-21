@@ -605,12 +605,12 @@ Bool Map::SPCFile::AddLabel(SPCLabels *labels, Int32 maxLabel, Int32 *labelCnt, 
 	Int32 scnY;
 	Int32 found;
 
-	Int32 left = Math::Double2Int(view->GetLeftX() / mapRate);
-	Int32 right = Math::Double2Int(view->GetRightX() / mapRate);
-	Int32 top = Math::Double2Int(view->GetTopY() / mapRate);
-	Int32 bottom = Math::Double2Int(view->GetBottomY() / mapRate);
-	Int32 mapPosX = Math::Double2Int(view->GetCenterX() / mapRate);
-	Int32 mapPosY = Math::Double2Int(view->GetCenterY() / mapRate);
+	Int32 left = Double2Int32(view->GetLeftX() / mapRate);
+	Int32 right = Double2Int32(view->GetRightX() / mapRate);
+	Int32 top = Double2Int32(view->GetTopY() / mapRate);
+	Int32 bottom = Double2Int32(view->GetBottomY() / mapRate);
+	Int32 mapPosX = Double2Int32(view->GetCenterX() / mapRate);
+	Int32 mapPosY = Double2Int32(view->GetCenterY() / mapRate);
 
 	if (recType == 1) //Point
 	{
@@ -620,7 +620,7 @@ Bool Map::SPCFile::AddLabel(SPCLabels *labels, Int32 maxLabel, Int32 *labelCnt, 
 		{
 			if (recType == labels[i].shapeType)
 			{
-				if (Text::StrCompare(labels[i].label, labelt) == 0)
+				if (Text::StrEquals(labels[i].label, labelt))
 				{
 					found = 1;
 
@@ -794,7 +794,7 @@ Bool Map::SPCFile::AddLabel(SPCLabels *labels, Int32 maxLabel, Int32 *labelCnt, 
 		{
 			if (recType == labels[i].shapeType)
 			{
-				if (Text::StrCompare(labels[i].label, labelt) == 0)
+				if (Text::StrEquals(labels[i].label, labelt))
 				{
 					found++;
 
@@ -1127,7 +1127,7 @@ Bool Map::SPCFile::AddLabel(SPCLabels *labels, Int32 maxLabel, Int32 *labelCnt, 
 		{
 			if (recType == labels[i].shapeType)
 			{
-				if (Text::StrCompare(labels[i].label, labelt) == 0)
+				if (Text::StrEquals(labels[i].label, labelt))
 				{
 					found = 1;
 					break;

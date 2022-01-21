@@ -436,7 +436,7 @@ UInt32 __stdcall UI::GUITextFileView::ProcThread(void *userObj)
 						break;
 					}
 
-					srchIndex = Text::StrIndexOf((Char*)srchBuff, (Char*)srchTxt);
+					srchIndex = Text::StrIndexOfC(srchBuff, currSize, srchTxt, srchTxtLen);
 					if (srchIndex != INVALID_INDEX)
 					{
 						me->GetPosFromByteOfst(currOfst + srchIndex, &srchCaretX, &srchCaretY);
@@ -445,7 +445,7 @@ UInt32 __stdcall UI::GUITextFileView::ProcThread(void *userObj)
 							UOSInt tmpIndex;
 							while (true)
 							{
-								tmpIndex = Text::StrIndexOf((Char*)srchBuff + srchIndex + 1, (Char*)srchTxt);
+								tmpIndex = Text::StrIndexOfC(srchBuff + srchIndex + 1, currSize - srchIndex - 1, srchTxt, srchTxtLen);
 								if (tmpIndex == INVALID_INDEX)
 									break;
 								
@@ -513,7 +513,7 @@ UInt32 __stdcall UI::GUITextFileView::ProcThread(void *userObj)
 							break;
 						}
 
-						srchIndex = Text::StrIndexOf((Char*)srchBuff, (Char*)srchTxt);
+						srchIndex = Text::StrIndexOfC(srchBuff, currSize, srchTxt, srchTxtLen);
 						if (srchIndex != INVALID_INDEX)
 						{
 							me->GetPosFromByteOfst(currOfst + srchIndex, &srchCaretX, &srchCaretY);

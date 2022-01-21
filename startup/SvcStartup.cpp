@@ -169,12 +169,12 @@ int main(int argc, char *argv[])
 		return 1;
 	}
 
-	if(argc == 2 && Text::StrCompare(argv[1], "install") == 0)
+	if(argc == 2 && Text::StrEquals(argv[1], "install"))
 	{
 		SvcInstall(svcName, svcDesc);
 		return 0;
 	}
-	else if (argc == 2 && Text::StrCompare(argv[1], "uninstall") == 0)
+	else if (argc == 2 && Text::StrEquals(argv[1], "uninstall"))
 	{
 		SvcUninstall(svcName);
 		return 0;

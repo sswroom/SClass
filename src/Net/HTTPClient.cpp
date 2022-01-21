@@ -182,10 +182,11 @@ UInt32 Net::HTTPClient::GetContentCodePage()
 Bool Net::HTTPClient::GetLastModified(Data::DateTime *dt)
 {
 	UTF8Char sbuff[64];
+	UTF8Char *sptr;
 	this->EndRequest(0, 0);
-	if (this->GetRespHeader(UTF8STRC("Last-Modified"), sbuff))
+	if ((sptr = this->GetRespHeader(UTF8STRC("Last-Modified"), sbuff)) != 0)
 	{
-		ParseDateStr(dt, sbuff);
+		ParseDateStr(dt, sbuff, (UOSInt)(sptr - sbuff));
 		return true;
 	}
 	return false;
@@ -212,7 +213,7 @@ const Net::SocketUtil::AddressInfo *Net::HTTPClient::GetSvrAddr()
 	return &this->svrAddr;
 }
 
-void Net::HTTPClient::ParseDateStr(Data::DateTime *dt, const UTF8Char *dateStr)
+void Net::HTTPClient::ParseDateStr(Data::DateTime *dt, const UTF8Char *dateStr, UOSInt dateStrLen)
 {
 	UTF8Char *tmps;
 	Text::PString ptrs[6];
@@ -222,9 +223,9 @@ void Net::HTTPClient::ParseDateStr(Data::DateTime *dt, const UTF8Char *dateStr)
 	UTF8Char *sptr;
 	UOSInt i;
 	UOSInt j;
-	if ((i = Text::StrIndexOf(dateStr, (const UTF8Char*)", ")) != INVALID_INDEX)
+	if ((i = Text::StrIndexOfC(dateStr, dateStrLen, UTF8STRC(", "))) != INVALID_INDEX)
 	{
-		sptr = Text::StrConcat(sbuff, &dateStr[i + 2]);
+		sptr = Text::StrConcatC(sbuff, &dateStr[i + 2], dateStrLen - i - 2);
 		tmps = sbuff;
 		if (Text::StrIndexOfChar(tmps, '-') == INVALID_INDEX)
 		{
@@ -251,7 +252,7 @@ void Net::HTTPClient::ParseDateStr(Data::DateTime *dt, const UTF8Char *dateStr)
 	}
 	else
 	{
-		sptr = Text::StrConcat(sbuff, dateStr);
+		sptr = Text::StrConcatC(sbuff, dateStr, dateStrLen);
 		i = Text::StrSplitP(ptrs, 6, sbuff, (UOSInt)(sptr - sbuff), ' ');
 		if (i > 3)
 		{

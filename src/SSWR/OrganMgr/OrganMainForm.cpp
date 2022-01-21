@@ -122,7 +122,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnGroupAddClicked(void *userObj)
 				if (gi->GetItemType() == OrganGroupItem::IT_GROUP)
 				{
 					grp = (OrganGroup*)gi;
-					if (Text::StrCompare(newGrp->GetEName(), grp->GetEName()) == 0)
+					if (Text::StrEquals(newGrp->GetEName(), grp->GetEName()))
 					{
 						if (grp->GetGroupId() > matchGrpId)
 						{
@@ -2265,7 +2265,7 @@ Bool SSWR::OrganMgr::OrganMainForm::ToSaveSpecies()
 //			Int32 id = this->lastSpeciesObj->GetSpeciesId();
 			
 			this->txtSpeciesDName->GetText(u8buff);
-			if (Text::StrCompare(this->lastSpeciesObj->GetDirName(), u8buff) != 0)
+			if (!Text::StrEquals(this->lastSpeciesObj->GetDirName(), u8buff))
 			{
 				this->env->GetSpeciesDir(this->lastSpeciesObj, u8buff2);
 				Text::StrConcat(u8buff, u8buff2);

@@ -1833,7 +1833,7 @@ void Map::MapConfig2TGen::DrawCharsL(Media::DrawImage *img, const UTF8Char *str1
 
 	fntCount = fontStyle->GetCount();
 	font = (Map::MapFontStyle*)fontStyle->GetItem(0);
-	if (Text::StrCompare(str1, (const UTF8Char*)"King Cho Road") == 0)
+	if (Text::StrEquals(str1, (const UTF8Char*)"King Cho Road"))
 	{
 		i = 0;
 	}
@@ -2812,7 +2812,7 @@ Bool Map::MapConfig2TGen::AddLabel(MapLabels2 *labels, UOSInt maxLabel, UOSInt *
 		{
 			if (recType == labels[i].shapeType)
 			{
-				if (Text::StrCompare(labels[i].label, labelt) == 0)
+				if (Text::StrEquals(labels[i].label, labelt))
 				{
 					found = 1;
 
@@ -3010,7 +3010,7 @@ Bool Map::MapConfig2TGen::AddLabel(MapLabels2 *labels, UOSInt maxLabel, UOSInt *
 		{
 			if (recType == labels[i].shapeType)
 			{
-				if (Text::StrCompare(labels[i].label, labelt) == 0)
+				if (Text::StrEquals(labels[i].label, labelt))
 				{
 					found++;
 					if (totalSize == 0)
@@ -3201,7 +3201,7 @@ Bool Map::MapConfig2TGen::AddLabel(MapLabels2 *labels, UOSInt maxLabel, UOSInt *
 			{
 				if (recType == labels[i].shapeType)
 				{
-					if (Text::StrCompare(labels[i].label, labelt) == 0)
+					if (Text::StrEquals(labels[i].label, labelt))
 					{
 						found = 1;
 						break;
@@ -3581,7 +3581,7 @@ void Map::MapConfig2TGen::DrawLabels(Media::DrawImage *img, MapLabels2 *labels, 
 
 				if (lastLbl)
 				{
-					if (Text::StrCompare(lastLbl, labels[i].label) != 0)
+					if (!Text::StrEquals(lastLbl, labels[i].label))
 					{
 						thisCnt = 0;
 					}

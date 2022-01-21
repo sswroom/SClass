@@ -24,7 +24,7 @@ namespace Text
 			~CppEnv();
 
 			void AddIncludePath(const UTF8Char *includePath);
-			UTF8Char *GetIncludeFilePath(UTF8Char *buff, const UTF8Char *includeFile, Text::String *sourceFile);
+			UTF8Char *GetIncludeFilePath(UTF8Char *buff, const UTF8Char *includeFile, UOSInt includeFileLen, Text::String *sourceFile);
 
 			void InitEnvStatus(Text::Cpp::CppParseStatus *status);
 

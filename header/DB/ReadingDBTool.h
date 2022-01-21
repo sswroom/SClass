@@ -60,7 +60,7 @@ namespace DB
 		DB::DBReader *ExecuteReaderC(const UTF8Char *sqlCmd, UOSInt len);
 		void CloseReader(DB::DBReader *r);
 		DB::DBUtil::ServerType GetSvrType();
-		Bool IsDataError(UTF8Char *errCode);
+		Bool IsDataError(const UTF8Char *errCode);
 		void GetLastErrorMsg(Text::StringBuilderUTF *sb);
 		DB::DBConn *GetDBConn();
 		Int8 GetTzQhr();

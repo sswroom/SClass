@@ -87,7 +87,7 @@ Net::ConnectionInfo::ConnectionInfo(void *info)
 Bool Net::ConnectionInfo::SetInfo(void *info)
 {
 	IP_ADAPTER_INFO *inf = (IP_ADAPTER_INFO*)info;
-	if (Text::StrCompare(inf->AdapterName, this->ent.internalName) != 0)
+	if (!Text::StrEquals(inf->AdapterName, this->ent.internalName))
 	{
 		return false;
 	}

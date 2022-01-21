@@ -103,7 +103,7 @@ UInt32 __stdcall Net::RTSPClient::ControlThread(void *userObj)
 					cliData->reqSuccess = true;
 					cliData->reqEvt->Set();
 				}
-				else if (Text::StrCompare(sarr[0], (const UTF8Char*)"RTSP/1.0") != 0)
+				else if (!Text::StrEquals(sarr[0], (const UTF8Char*)"RTSP/1.0"))
 				{
 					cliData->reqReplyStatus = 0;
 					cliData->reqSuccess = true;

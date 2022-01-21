@@ -924,7 +924,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, Text::Cpp::CppParse
 						continue;
 
 					sptr[-1] = 0;
-					if (Text::StrCompare(wordStart, (const UTF8Char*)"include") == 0)
+					if (Text::StrEqualsC(wordStart, (UOSInt)(sptr - wordStart - 1), UTF8STRC("include")))
 					{
 						if (valid)
 						{
@@ -975,7 +975,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, Text::Cpp::CppParse
 							break;
 						}
 					}
-					else if (Text::StrCompare(wordStart, (const UTF8Char*)"pragma") == 0)
+					else if (Text::StrEqualsC(wordStart, (UOSInt)(sptr - wordStart - 1), UTF8STRC("pragma")))
 					{
 						if (valid)
 						{
@@ -1011,7 +1011,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, Text::Cpp::CppParse
 							break;
 						}
 					}
-					else if (Text::StrCompare(wordStart, (const UTF8Char*)"ifndef") == 0)
+					else if (Text::StrEqualsC(wordStart, (UOSInt)(sptr - wordStart - 1), UTF8STRC("ifndef")))
 					{
 						fileStatus->modeStatus = 0;
 						if (c == '/' && *sptr == '*')
@@ -1043,7 +1043,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, Text::Cpp::CppParse
 							break;
 						}
 					}
-					else if (Text::StrCompare(wordStart, (const UTF8Char*)"ifdef") == 0)
+					else if (Text::StrEqualsC(wordStart, (UOSInt)(sptr - wordStart - 1), UTF8STRC("ifdef")))
 					{
 						fileStatus->modeStatus = 0;
 						if (c == '/' && *sptr == '*')
@@ -1075,7 +1075,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, Text::Cpp::CppParse
 							break;
 						}
 					}
-					else if (Text::StrCompare(wordStart, (const UTF8Char*)"if") == 0)
+					else if (Text::StrEqualsC(wordStart, (UOSInt)(sptr - wordStart - 1), UTF8STRC("if")))
 					{
 						fileStatus->modeStatus = 0;
 						if (c == '/' && *sptr == '*')
@@ -1107,7 +1107,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, Text::Cpp::CppParse
 							break;
 						}
 					}
-					else if (Text::StrCompare(wordStart, (const UTF8Char*)"elif") == 0)
+					else if (Text::StrEqualsC(wordStart, (UOSInt)(sptr - wordStart - 1), UTF8STRC("elif")))
 					{
 						fileStatus->modeStatus = 0;
 						if (c == '/' && *sptr == '*')
@@ -1137,7 +1137,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, Text::Cpp::CppParse
 							break;
 						}
 					}
-					else if (Text::StrCompare(wordStart, (const UTF8Char*)"define") == 0)
+					else if (Text::StrEqualsC(wordStart, (UOSInt)(sptr - wordStart - 1), UTF8STRC("define")))
 					{
 						fileStatus->modeStatus = 0;
 						if (c == '/' && *sptr == '*')
@@ -1166,7 +1166,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, Text::Cpp::CppParse
 							break;
 						}
 					}
-					else if (Text::StrCompare(wordStart, (const UTF8Char*)"undef") == 0)
+					else if (Text::StrEqualsC(wordStart, (UOSInt)(sptr - wordStart - 1), UTF8STRC("undef")))
 					{
 						if (valid)
 						{
@@ -1203,7 +1203,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, Text::Cpp::CppParse
 							break;
 						}
 					}
-					else if (Text::StrCompare(wordStart, (const UTF8Char*)"else") == 0)
+					else if (Text::StrEqualsC(wordStart, (UOSInt)(sptr - wordStart - 1), UTF8STRC("else")))
 					{
 						i = fileStatus->ifValid->GetCount();
 						if (i == 0)
@@ -1259,7 +1259,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, Text::Cpp::CppParse
 							}
 						}
 					}
-					else if (Text::StrCompare(wordStart, (const UTF8Char*)"endif") == 0)
+					else if (Text::StrEqualsC(wordStart, (UOSInt)(sptr - wordStart - 1), UTF8STRC("endif")))
 					{
 						i = fileStatus->ifValid->GetCount();
 						if (i == 0)
@@ -1302,7 +1302,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, Text::Cpp::CppParse
 							}
 						}
 					}
-					else if (Text::StrCompare(wordStart, (const UTF8Char*)"error") == 0)
+					else if (Text::StrEqualsC(wordStart, (UOSInt)(sptr - wordStart - 1), UTF8STRC("error")))
 					{
 						if (valid)
 						{
@@ -1424,7 +1424,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, Text::Cpp::CppParse
 				{
 					sptr[-1] = 0;
 					u8buff[0] = 0;
-					sptr2 = this->env->GetIncludeFilePath(u8buff, wordStart, status->GetCurrCodeFile());
+					sptr2 = this->env->GetIncludeFilePath(u8buff, wordStart, (UOSInt)(sptr - wordStart - 1), status->GetCurrCodeFile());
 					sptr[-1] = c;
 
 					if (u8buff[0] == 0)
@@ -1467,13 +1467,13 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, Text::Cpp::CppParse
 				if (c == '>')
 				{
 					sptr[-1] = 0;
-					sptr2 = this->env->GetIncludeFilePath(u8buff, wordStart, 0);
+					sptr2 = this->env->GetIncludeFilePath(u8buff, wordStart, (UOSInt)(sptr - wordStart - 1), 0);
 					sptr[-1] = c;
 
 					if (u8buff[0] == 0)
 					{
 						parseStatus = false;
-						sptr2 = Text::StrConcatC(Text::StrConcat(Text::StrConcatC(sbuff, UTF8STRC("Include file ")), wordStart), UTF8STRC(" not found"));
+						sptr2 = Text::StrConcatC(Text::StrConcatC(Text::StrConcatC(sbuff, UTF8STRC("Include file ")), wordStart, (UOSInt)(sptr - wordStart - 1)), UTF8STRC(" not found"));
 						this->LogError(status, sbuff, (UOSInt)(sptr2 - sbuff), errMsgs);
 					}
 					else

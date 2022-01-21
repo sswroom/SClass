@@ -80,47 +80,48 @@ Net::Email::EmailTemplate::EmailTemplate(const UTF8Char *tpl, Data::StringUTF8Ma
 
 	Text::StringBuilderUTF8 sb;
 	NEW_CLASS(this->sbSubj, Text::StringBuilderUTF8());
-	UTF8Char *sarr[2];
+	Text::PString sarr[2];
 	sb.Append(tpl);
-	UOSInt i = Text::StrSplitLine(sarr, 2, sb.ToString());
+	UOSInt i = Text::StrSplitLineP(sarr, 2, sb.ToString(), sb.GetLength());
 	if (i == 1)
 	{
 		this->error = true;
 		return;
 	}
-	if (!this->ParseTemplate(sarr[0], this->sbSubj, vars))
+	if (!this->ParseTemplate(sarr[0].v, this->sbSubj, vars))
 	{
 		this->error = true;
 		return;
 	}
-	this->itemOfst = Text::StrIndexOf(sarr[1], (const UTF8Char*)"[item]");
+	this->itemOfst = Text::StrIndexOfC(sarr[1].v, sarr[1].len, UTF8STRC("[item]"));
 	if (this->itemOfst == INVALID_INDEX)
 	{
 		NEW_CLASS(this->sbPre, Text::StringBuilderUTF8());
-		if (!this->ParseTemplate(sarr[1], this->sbPre, vars))
+		if (!this->ParseTemplate(sarr[1].v, this->sbPre, vars))
 		{
 			this->error = true;
 		}
 	}
 	else
 	{
-		i = Text::StrIndexOf(sarr[1], (const UTF8Char*)"[/item]");
+		i = Text::StrIndexOfC(sarr[1].v, sarr[1].len, UTF8STRC("[/item]"));
 		if (i == INVALID_INDEX || i < this->itemOfst)
 		{
 			this->error = true;
 			return;
 		}
-		this->itemTemplate = Text::StrCopyNewC(sarr[1] + this->itemOfst + 6, i - this->itemOfst - 6);
+		this->itemTemplate = Text::StrCopyNewC(sarr[1].v + this->itemOfst + 6, i - this->itemOfst - 6);
 		NEW_CLASS(this->sbPre, Text::StringBuilderUTF8());
 		NEW_CLASS(this->sbPost, Text::StringBuilderUTF8());
 		NEW_CLASS(this->sbItem, Text::StringBuilderUTF8());
 		
-		sarr[1][this->itemOfst] = 0;
-		if (!this->ParseTemplate(sarr[1], this->sbPre, vars))
+		sarr[1].v[this->itemOfst] = 0;
+		sarr[1].len = this->itemOfst;
+		if (!this->ParseTemplate(sarr[1].v, this->sbPre, vars))
 		{
 			this->error = true;
 		}
-		if (!this->ParseTemplate(sarr[1] + i + 7, this->sbPost, vars))
+		if (!this->ParseTemplate(sarr[1].v + i + 7, this->sbPost, vars))
 		{
 			this->error = true;
 		}

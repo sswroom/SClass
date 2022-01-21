@@ -48,7 +48,7 @@ Text::IMIMEObj *Text::IMIMEObj::ParseFromData(IO::IStreamData *data, const UTF8C
 	}
 	else if (Text::StrStartsWithC(contentType, typeLen, UTF8STRC("text/plain")))
 	{
-		UOSInt i = Text::StrIndexOf(contentType, (const UTF8Char*)"charset=");
+		UOSInt i = Text::StrIndexOfC(contentType, typeLen, UTF8STRC("charset="));
 		UInt32 codePage = 0;
 		if (i != INVALID_INDEX && i > 0)
 		{

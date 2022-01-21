@@ -855,7 +855,7 @@ Bool Map::MapConfig::AddLabel(MapLabels *labels, Int32 maxLabel, Int32 *labelCnt
 		{
 			if (recType == labels[i].shapeType)
 			{
-				if (Text::StrCompare(labels[i].label, labelt) == 0)
+				if (Text::StrEquals(labels[i].label, labelt))
 				{
 					found = 1;
 
@@ -1028,7 +1028,7 @@ Bool Map::MapConfig::AddLabel(MapLabels *labels, Int32 maxLabel, Int32 *labelCnt
 		{
 			if (recType == labels[i].shapeType)
 			{
-				if (Text::StrCompare(labels[i].label, labelt) == 0)
+				if (Text::StrEquals(labels[i].label, labelt))
 				{
 					found++;
 
@@ -1360,7 +1360,7 @@ Bool Map::MapConfig::AddLabel(MapLabels *labels, Int32 maxLabel, Int32 *labelCnt
 		{
 			if (recType == labels[i].shapeType)
 			{
-				if (Text::StrCompare(labels[i].label, labelt) == 0)
+				if (Text::StrEquals(labels[i].label, labelt))
 				{
 					found = 1;
 					break;
