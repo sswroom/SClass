@@ -2251,13 +2251,13 @@ void __stdcall SSWR::SMonitor::SMonitorWebHandler::WriteJSText(IO::Writer *write
 	jsTxt->Release();
 }
 
-Bool SSWR::SMonitor::SMonitorWebHandler::ProcessRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *subReq)
+Bool SSWR::SMonitor::SMonitorWebHandler::ProcessRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *subReq, UOSInt subReqLen)
 {
-	if (this->DoRequest(req, resp, subReq))
+	if (this->DoRequest(req, resp, subReq, subReqLen))
 	{
 		return true;
 	}
-	RequestHandler reqHdlr = this->reqMap->Get(subReq);
+	RequestHandler reqHdlr = this->reqMap->GetC(subReq, subReqLen);
 	if (reqHdlr)
 	{
 		return reqHdlr(this, req, resp);
@@ -2269,24 +2269,24 @@ Bool SSWR::SMonitor::SMonitorWebHandler::ProcessRequest(Net::WebServer::IWebRequ
 SSWR::SMonitor::SMonitorWebHandler::SMonitorWebHandler(SSWR::SMonitor::ISMonitorCore *core)
 {
 	this->core = core;
-	NEW_CLASS(this->reqMap, Data::StringUTF8Map<RequestHandler>());
+	NEW_CLASS(this->reqMap, Data::FastStringMap<RequestHandler>());
 	NEW_CLASS(this->sessMgr, Net::WebServer::MemoryWebSessionManager((const UTF8Char*)"/monitor", OnSessDeleted, this, 60000, OnSessCheck, this));
-	this->reqMap->Put((const UTF8Char*)"", DefaultReq);
-	this->reqMap->Put((const UTF8Char*)"/index", IndexReq);
-	this->reqMap->Put((const UTF8Char*)"/login", LoginReq);
-	this->reqMap->Put((const UTF8Char*)"/logout", LogoutReq);
-	this->reqMap->Put((const UTF8Char*)"/device", DeviceReq);
-	this->reqMap->Put((const UTF8Char*)"/devedit", DeviceEditReq);
-	this->reqMap->Put((const UTF8Char*)"/devreading", DeviceReadingReq);
-	this->reqMap->Put((const UTF8Char*)"/devdigitals", DeviceDigitalsReq);
-	this->reqMap->Put((const UTF8Char*)"/devreadingimg", DeviceReadingImgReq);
-	this->reqMap->Put((const UTF8Char*)"/pastdata", DevicePastDataReq);
-	this->reqMap->Put((const UTF8Char*)"/pastdataimg", DevicePastDataImgReq);
-	this->reqMap->Put((const UTF8Char*)"/userpassword", UserPasswordReq);
-	this->reqMap->Put((const UTF8Char*)"/users", UsersReq);
-	this->reqMap->Put((const UTF8Char*)"/useradd", UserAddReq);
-//	this->reqMap->Put((const UTF8Char*)"/userreset", UserResetReq);
-	this->reqMap->Put((const UTF8Char*)"/userassign", UserAssignReq);
+	this->reqMap->PutC(UTF8STRC(""), DefaultReq);
+	this->reqMap->PutC(UTF8STRC("/index"), IndexReq);
+	this->reqMap->PutC(UTF8STRC("/login"), LoginReq);
+	this->reqMap->PutC(UTF8STRC("/logout"), LogoutReq);
+	this->reqMap->PutC(UTF8STRC("/device"), DeviceReq);
+	this->reqMap->PutC(UTF8STRC("/devedit"), DeviceEditReq);
+	this->reqMap->PutC(UTF8STRC("/devreading"), DeviceReadingReq);
+	this->reqMap->PutC(UTF8STRC("/devdigitals"), DeviceDigitalsReq);
+	this->reqMap->PutC(UTF8STRC("/devreadingimg"), DeviceReadingImgReq);
+	this->reqMap->PutC(UTF8STRC("/pastdata"), DevicePastDataReq);
+	this->reqMap->PutC(UTF8STRC("/pastdataimg"), DevicePastDataImgReq);
+	this->reqMap->PutC(UTF8STRC("/userpassword"), UserPasswordReq);
+	this->reqMap->PutC(UTF8STRC("/users"), UsersReq);
+	this->reqMap->PutC(UTF8STRC("/useradd"), UserAddReq);
+//	this->reqMap->PutC(UTF8STRC("/userreset"), UserResetReq);
+	this->reqMap->PutC(UTF8STRC("/userassign"), UserAssignReq);
 }
 
 SSWR::SMonitor::SMonitorWebHandler::~SMonitorWebHandler()

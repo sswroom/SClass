@@ -12,9 +12,9 @@ Net::WebServer::EGaugeHandler::~EGaugeHandler()
 {
 }
 
-Bool Net::WebServer::EGaugeHandler::ProcessRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *subReq)
+Bool Net::WebServer::EGaugeHandler::ProcessRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *subReq, UOSInt subReqLen)
 {
-	if (this->DoRequest(req, resp, subReq))
+	if (this->DoRequest(req, resp, subReq, subReqLen))
 	{
 		return true;
 	}

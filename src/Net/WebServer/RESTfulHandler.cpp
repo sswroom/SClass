@@ -151,10 +151,10 @@ Net::WebServer::RESTfulHandler::~RESTfulHandler()
 {
 }
 
-Bool Net::WebServer::RESTfulHandler::ProcessRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *subReq)
+Bool Net::WebServer::RESTfulHandler::ProcessRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *subReq, UOSInt subReqLen)
 {
 	UTF8Char sbuff[256];
-	if (this->DoRequest(req, resp, subReq))
+	if (this->DoRequest(req, resp, subReq, subReqLen))
 	{
 		return true;
 	}

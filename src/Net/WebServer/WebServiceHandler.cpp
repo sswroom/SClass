@@ -17,18 +17,18 @@ Net::WebServer::WebServiceHandler::~WebServiceHandler()
 	DEL_CLASS(this->services);
 }
 
-Bool Net::WebServer::WebServiceHandler::ProcessRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *subReq)
+Bool Net::WebServer::WebServiceHandler::ProcessRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *subReq, UOSInt subReqLen)
 {
 	Net::WebServer::WebServiceHandler::ServiceInfo *service;
-	service = this->services->Get(subReq);
-	if (service == 0 && (Text::StrEquals(subReq, (const UTF8Char*)"/") || Text::StrEquals(subReq, (const UTF8Char*)"")))
+	service = this->services->GetC(subReq, subReqLen);
+	if (service == 0 && (Text::StrEqualsC(subReq, subReqLen, UTF8STRC("/")) || (subReqLen == 0)))
 	{
-		if (service == 0) service = this->services->Get((const UTF8Char*)"/Default.htm");
-		if (service == 0) service = this->services->Get((const UTF8Char*)"/Default.asp");
-		if (service == 0) service = this->services->Get((const UTF8Char*)"/index.htm");
-		if (service == 0) service = this->services->Get((const UTF8Char*)"/index.html");
-		if (service == 0) service = this->services->Get((const UTF8Char*)"/iisstart.htm");
-		if (service == 0) service = this->services->Get((const UTF8Char*)"/default.aspx");
+		if (service == 0) service = this->services->GetC(UTF8STRC("/Default.htm"));
+		if (service == 0) service = this->services->GetC(UTF8STRC("/Default.asp"));
+		if (service == 0) service = this->services->GetC(UTF8STRC("/index.htm"));
+		if (service == 0) service = this->services->GetC(UTF8STRC("/index.html"));
+		if (service == 0) service = this->services->GetC(UTF8STRC("/iisstart.htm"));
+		if (service == 0) service = this->services->GetC(UTF8STRC("/default.aspx"));
 	}
 	if (service != 0)
 	{
@@ -58,7 +58,7 @@ Bool Net::WebServer::WebServiceHandler::ProcessRequest(Net::WebServer::IWebReque
 			return true;
 		}
 	}
-	return this->DoRequest(req, resp, subReq);
+	return this->DoRequest(req, resp, subReq, subReqLen);
 }
 
 Net::WebServer::WebServiceHandler::WebServiceHandler()

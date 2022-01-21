@@ -13,9 +13,9 @@ Net::WebServer::SiteRootHandler::~SiteRootHandler()
 	}
 }
 
-Bool Net::WebServer::SiteRootHandler::ProcessRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *subReq)
+Bool Net::WebServer::SiteRootHandler::ProcessRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *subReq, UOSInt subReqLen)
 {
-	if (Text::StrEquals(subReq, (const UTF8Char*)"/favicon.ico"))
+	if (Text::StrEqualsC(subReq, subReqLen, UTF8STRC("/favicon.ico")))
 	{
 		if (this->faviconBuff)
 		{
@@ -33,7 +33,7 @@ Bool Net::WebServer::SiteRootHandler::ProcessRequest(Net::WebServer::IWebRequest
 		}
 	}
 
-	return this->DoRequest(req, resp, subReq);
+	return this->DoRequest(req, resp, subReq, subReqLen);
 }
 
 Net::WebServer::SiteRootHandler::SiteRootHandler(const UTF8Char *faviconPath)

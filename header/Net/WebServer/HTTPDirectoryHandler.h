@@ -63,7 +63,7 @@ namespace Net
 
 			void AddCacheHeader(Net::WebServer::IWebResponse *resp);
 			Bool MIMEToCompress(const UTF8Char *mime);
-			void ResponsePackageFile(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *subReq, IO::PackageFile *packageFile);
+			void ResponsePackageFile(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *subReq, UOSInt subReqLen, IO::PackageFile *packageFile);
 
 			void StatLoad(StatInfo *stat);
 			void StatSave(StatInfo *stat);
@@ -74,7 +74,7 @@ namespace Net
 		protected:
 			virtual ~HTTPDirectoryHandler();
 		public:
-			virtual Bool ProcessRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *subReq);
+			virtual Bool ProcessRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *subReq, UOSInt subReqLen);
 			void SetCacheType(CacheType ctype);
 			void SetExpirePeriod(Int32 periodSec);
 			void SetAllowOrigin(const UTF8Char *origin);

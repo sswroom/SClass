@@ -1260,9 +1260,9 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(IO::Writer *writer, Media::Draw
 					IO::Path::GetProcessFileName(&sb);
 					IO::Path::AppendPath(&sb, UTF8STRC("files"));
 					NEW_CLASS(fileshdlr, Net::WebServer::HTTPDirectoryHandler(sb.ToString(), false, 0, false));
-					shdlr->HandlePath((const UTF8Char*)"/files", fileshdlr, true);
-					hdlr->HandlePath((const UTF8Char*)"/monitor", shdlr, true);
-					hdlr->HandlePath((const UTF8Char*)"/benchmark", benchhdlr, true);
+					shdlr->HandlePath(UTF8STRC("/files"), fileshdlr, true);
+					hdlr->HandlePath(UTF8STRC("/monitor"), shdlr, true);
+					hdlr->HandlePath(UTF8STRC("/benchmark"), benchhdlr, true);
 					hdlr->ExpandPackageFiles(this->parsers);
 					this->webHdlr = hdlr;
 					NEW_CLASS(this->listener, Net::WebServer::WebListener(this->sockf, 0, hdlr, port, 60, 4, (const UTF8Char*)"SSWRServer/1.0", false, true));

@@ -21,12 +21,12 @@ Net::WebServer::WebStandardHandler::~WebStandardHandler()
 	DEL_CLASS(this->relHdlrs);
 }
 
-Bool Net::WebServer::WebStandardHandler::ProcessRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *subReq)
+Bool Net::WebServer::WebStandardHandler::ProcessRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *subReq, UOSInt subReqLen)
 {
-	return DoRequest(req, resp, subReq);
+	return DoRequest(req, resp, subReq, subReqLen);
 }
 
-Bool Net::WebServer::WebStandardHandler::DoRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *subReq)
+Bool Net::WebServer::WebStandardHandler::DoRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *subReq, UOSInt subReqLen)
 {
 	if (subReq[0] != '/')
 		return false;
@@ -43,14 +43,16 @@ Bool Net::WebServer::WebStandardHandler::DoRequest(Net::WebServer::IWebRequest *
 		{
 			if (i == 1)
 			{
-				subHdlr = this->hdlrs->Get(&subReq[1]);
+				subHdlr = this->hdlrs->GetC(&subReq[1], i - 1);
 				subReq = &subReq[i];
+				subReqLen -= 1;
 				break;
 			}
 			else
 			{
-				subHdlr = this->hdlrs->Get(&subReq[1]);
+				subHdlr = this->hdlrs->GetC(&subReq[1], i - 1);
 				subReq = &subReq[i];
+				subReqLen -= 1;
 				break;
 			}
 		}
@@ -61,29 +63,30 @@ Bool Net::WebServer::WebStandardHandler::DoRequest(Net::WebServer::IWebRequest *
 				sbuff = MemAlloc(UTF8Char, i);
 				MemCopyNO(sbuff, &subReq[1], (i - 1) * sizeof(UTF8Char));
 				sbuff[i - 1] = 0;
-				subHdlr = this->hdlrs->Get(sbuff);
+				subHdlr = this->hdlrs->GetC(sbuff, i - 1);
 				MemFree(sbuff);
 			}
 			else
 			{
 				Text::StrConcatC(tmpBuff, &subReq[1], (i - 1));
-				subHdlr = this->hdlrs->Get(tmpBuff);
+				subHdlr = this->hdlrs->GetC(tmpBuff, i - 1);
 			}
 			subReq = &subReq[i];
+			subReqLen -= i;
 			break;
 		}
 		i++;
 	}
 	if (subHdlr)
 	{
-		return subHdlr->ProcessRequest(req, resp, subReq);
+		return subHdlr->ProcessRequest(req, resp, subReq, subReqLen);
 	}
 	return false;
 }
 
 Net::WebServer::WebStandardHandler::WebStandardHandler()
 {
-	NEW_CLASS(this->hdlrs, Data::StringUTF8Map<Net::WebServer::WebStandardHandler*>());
+	NEW_CLASS(this->hdlrs, Data::FastStringMap<Net::WebServer::WebStandardHandler*>());
 	NEW_CLASS(this->relHdlrs, Data::ArrayList<Net::WebServer::WebStandardHandler*>());
 }
 
@@ -106,8 +109,9 @@ void Net::WebServer::WebStandardHandler::WebRequest(Net::WebServer::IWebRequest 
 	else
 	{
 		UTF8Char sbuff[512];
-		Text::URLString::GetURLPathSvr(sbuff, reqURL->v, reqURL->leng);
-		if (!this->ProcessRequest(req, resp, sbuff))
+		UTF8Char *sptr;
+		sptr = Text::URLString::GetURLPathSvr(sbuff, reqURL->v, reqURL->leng);
+		if (!this->ProcessRequest(req, resp, sbuff, (UOSInt)(sptr - sbuff)))
 		{
 			resp->SetStatusCode(Net::WebStatus::SC_NOT_FOUND);
 			if (req->GetProtocol() == Net::WebServer::IWebRequest::RequestProtocol::HTTP1_0 || req->GetProtocol() == Net::WebServer::IWebRequest::RequestProtocol::HTTP1_1)
@@ -142,7 +146,7 @@ void Net::WebServer::WebStandardHandler::Release()
 	DEL_CLASS(this);
 }
 
-void Net::WebServer::WebStandardHandler::HandlePath(const UTF8Char *absolutePath, Net::WebServer::WebStandardHandler *hdlr, Bool needRelease)
+void Net::WebServer::WebStandardHandler::HandlePath(const UTF8Char *absolutePath, UOSInt pathLen, Net::WebServer::WebStandardHandler *hdlr, Bool needRelease)
 {
 	Net::WebServer::WebStandardHandler *subHdlr;
 	if (hdlr == 0)
@@ -159,7 +163,7 @@ void Net::WebServer::WebStandardHandler::HandlePath(const UTF8Char *absolutePath
 	UTF8Char *sbuff;
 	if (i == INVALID_INDEX)
 	{
-		this->hdlrs->Put(&absolutePath[1], hdlr);
+		this->hdlrs->PutC(&absolutePath[1], pathLen - 1, hdlr);
 		if (needRelease)
 		{
 			this->relHdlrs->Add(hdlr);
@@ -171,7 +175,7 @@ void Net::WebServer::WebStandardHandler::HandlePath(const UTF8Char *absolutePath
 		MemCopyNO(sbuff, &absolutePath[1], sizeof(UTF8Char) * i);
 		sbuff[i] = 0;
 
-		subHdlr = this->hdlrs->Get(sbuff);
+		subHdlr = this->hdlrs->GetC(sbuff, i);
 		if (subHdlr == 0)
 		{
 			NEW_CLASS(subHdlr, Net::WebServer::WebStandardHandler());
@@ -179,6 +183,6 @@ void Net::WebServer::WebStandardHandler::HandlePath(const UTF8Char *absolutePath
 			this->relHdlrs->Add(subHdlr);
 		}
 		MemFree(sbuff);
-		subHdlr->HandlePath(&absolutePath[i + 1], hdlr, needRelease);
+		subHdlr->HandlePath(&absolutePath[i + 1], pathLen - i - 1, hdlr, needRelease);
 	}
 }

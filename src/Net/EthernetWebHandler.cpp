@@ -946,43 +946,43 @@ Bool __stdcall Net::EthernetWebHandler::IPLogReq(EthernetWebHandler *me, Net::We
 	return true;
 }
 
-Bool Net::EthernetWebHandler::ProcessRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *subReq)
+Bool Net::EthernetWebHandler::ProcessRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *subReq, UOSInt subReqLen)
 {
-	if (this->DoRequest(req, resp, subReq))
+	if (this->DoRequest(req, resp, subReq, subReqLen))
 	{
 		return true;
 	}
-	RequestHandler reqHdlr = this->reqMap->Get(subReq);
+	RequestHandler reqHdlr = this->reqMap->GetC(subReq, subReqLen);
 	if (reqHdlr)
 	{
 		return reqHdlr(this, req, resp);
 	}
-	return this->reqMap->GetValues()->GetItem(0)(this, req, resp);
+	return this->reqMap->GetItem(0)(this, req, resp);
 }
 
 Net::EthernetWebHandler::EthernetWebHandler(Net::EthernetAnalyzer *analyzer)
 {
 	this->analyzer = analyzer;
 	Net::EthernetAnalyzer::AnalyzeType atype = this->analyzer->GetAnalyzeType();
-	NEW_CLASS(this->reqMap, Data::StringUTF8Map<RequestHandler>());
+	NEW_CLASS(this->reqMap, Data::FastStringMap<RequestHandler>());
 	if (atype & Net::EthernetAnalyzer::AT_DEVICE)
-		this->reqMap->Put((const UTF8Char*)"/device", DeviceReq);
+		this->reqMap->PutC(UTF8STRC("/device"), DeviceReq);
 	if (atype & Net::EthernetAnalyzer::AT_IPTRANSFER)
-		this->reqMap->Put((const UTF8Char*)"/iptransfer", IPTransferReq);
+		this->reqMap->PutC(UTF8STRC("/iptransfer"), IPTransferReq);
 	if (atype & Net::EthernetAnalyzer::AT_DNSREQ)
-		this->reqMap->Put((const UTF8Char*)"/dnsreqv4", DNSReqv4Req);
+		this->reqMap->PutC(UTF8STRC("/dnsreqv4"), DNSReqv4Req);
 	if (atype & Net::EthernetAnalyzer::AT_DNSREQ)
-		this->reqMap->Put((const UTF8Char*)"/dnsreqv6", DNSReqv6Req);
+		this->reqMap->PutC(UTF8STRC("/dnsreqv6"), DNSReqv6Req);
 	if (atype & Net::EthernetAnalyzer::AT_DNSREQ)
-		this->reqMap->Put((const UTF8Char*)"/dnsreqoth", DNSReqOthReq);
+		this->reqMap->PutC(UTF8STRC("/dnsreqoth"), DNSReqOthReq);
 	if (atype & Net::EthernetAnalyzer::AT_DNSTARGET)
-		this->reqMap->Put((const UTF8Char*)"/dnstarget", DNSTargetReq);
+		this->reqMap->PutC(UTF8STRC("/dnstarget"), DNSTargetReq);
 	if (atype & Net::EthernetAnalyzer::AT_DNSCLI)
-		this->reqMap->Put((const UTF8Char*)"/dnsclient", DNSClientReq);
+		this->reqMap->PutC(UTF8STRC("/dnsclient"), DNSClientReq);
 	if (atype & Net::EthernetAnalyzer::AT_DHCP)
-		this->reqMap->Put((const UTF8Char*)"/dhcp", DHCPReq);
+		this->reqMap->PutC(UTF8STRC("/dhcp"), DHCPReq);
 	if (atype & Net::EthernetAnalyzer::AT_IPLOG)
-		this->reqMap->Put((const UTF8Char*)"/iplog", IPLogReq);
+		this->reqMap->PutC(UTF8STRC("/iplog"), IPLogReq);
 }
 
 Net::EthernetWebHandler::~EthernetWebHandler()

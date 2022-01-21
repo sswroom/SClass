@@ -1,6 +1,6 @@
 #ifndef _SM_SSWR_SMONITOR_SMONITORWEBHANDLER
 #define _SM_SSWR_SMONITOR_SMONITORWEBHANDLER
-#include "Data/StringUTF8Map.h"
+#include "Data/FastStringMap.h"
 #include "IO/Writer.h"
 #include "Net/WebServer/MemoryWebSessionManager.h"
 #include "Net/WebServer/WebStandardHandler.h"
@@ -16,7 +16,7 @@ namespace SSWR
 			typedef Bool (__stdcall *RequestHandler)(SSWR::SMonitor::SMonitorWebHandler *me, Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp);
 		private:
 			SSWR::SMonitor::ISMonitorCore *core;
-			Data::StringUTF8Map<RequestHandler> *reqMap;
+			Data::FastStringMap<RequestHandler> *reqMap;
 			Net::WebServer::MemoryWebSessionManager *sessMgr;
 
 			static Bool __stdcall OnSessDeleted(Net::WebServer::IWebSession* sess, void *userObj);
@@ -45,7 +45,7 @@ namespace SSWR
 			static void __stdcall WriteAttrText(IO::Writer *writer, const UTF8Char *txt);
 			static void __stdcall WriteJSText(IO::Writer *writer, const UTF8Char *txt);
 
-			virtual Bool ProcessRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *subReq);
+			virtual Bool ProcessRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *subReq, UOSInt subReqLen);
 
 		public:
 			SMonitorWebHandler(SSWR::SMonitor::ISMonitorCore *core);

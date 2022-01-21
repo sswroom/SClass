@@ -445,13 +445,13 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(SSWR::Benchmark:
 	return true;
 }
 
-Bool SSWR::Benchmark::BenchmarkWebHandler::ProcessRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *subReq)
+Bool SSWR::Benchmark::BenchmarkWebHandler::ProcessRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *subReq, UOSInt subReqLen)
 {
-	if (this->DoRequest(req, resp, subReq))
+	if (this->DoRequest(req, resp, subReq, subReqLen))
 	{
 		return true;
 	}
-	RequestHandler reqHdlr = this->reqMap->Get(subReq);
+	RequestHandler reqHdlr = this->reqMap->GetC(subReq, subReqLen);
 	if (reqHdlr)
 	{
 		return reqHdlr(this, req, resp);
@@ -462,9 +462,9 @@ Bool SSWR::Benchmark::BenchmarkWebHandler::ProcessRequest(Net::WebServer::IWebRe
 
 SSWR::Benchmark::BenchmarkWebHandler::BenchmarkWebHandler()
 {
-	NEW_CLASS(this->reqMap, Data::StringUTF8Map<RequestHandler>());
-	this->reqMap->Put((const UTF8Char*)"/upload", UploadReq);
-	this->reqMap->Put((const UTF8Char*)"/cpuinfo", CPUInfoReq);
+	NEW_CLASS(this->reqMap, Data::FastStringMap<RequestHandler>());
+	this->reqMap->PutC(UTF8STRC("/upload"), UploadReq);
+	this->reqMap->PutC(UTF8STRC("/cpuinfo"), CPUInfoReq);
 }
 
 SSWR::Benchmark::BenchmarkWebHandler::~BenchmarkWebHandler()

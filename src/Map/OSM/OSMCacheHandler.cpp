@@ -170,12 +170,16 @@ void Map::OSM::OSMCacheHandler::SetIOMut(Sync::Mutex *ioMut)
 	this->ioMut = ioMut;
 }
 
-Bool Map::OSM::OSMCacheHandler::ProcessRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *subReq)
+Bool Map::OSM::OSMCacheHandler::ProcessRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *subReq, UOSInt subReqLen)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sarr[5];
 	UOSInt i;
-	Text::StrConcatS(sbuff, subReq, 255);
+	if (subReqLen > 255)
+	{
+		subReqLen = 255;
+	}
+	Text::StrConcatC(sbuff, subReq, subReqLen);
 	i = Text::StrSplit(sarr, 5, sbuff, '/');
 
 	if (i != 4)

@@ -1,6 +1,6 @@
 #ifndef _SM_NET_ETHERNETWEBHANDLER
 #define _SM_NET_ETHERNETWEBHANDLER
-#include "Data/StringUTF8Map.h"
+#include "Data/FastStringMap.h"
 #include "Net/EthernetAnalyzer.h"
 #include "Net/WebServer/WebStandardHandler.h"
 
@@ -13,7 +13,7 @@ namespace Net
 
 	private:
 		Net::EthernetAnalyzer *analyzer;
-		Data::StringUTF8Map<RequestHandler> *reqMap;
+		Data::FastStringMap<RequestHandler> *reqMap;
 
 		static void AppendHeader(Text::StringBuilderUTF *sbOut);
 		void AppendMenu(Text::StringBuilderUTF *sbOut);
@@ -30,7 +30,7 @@ namespace Net
 		static Bool __stdcall IPLogReq(EthernetWebHandler *me, Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp);
 
 	private:
-		virtual Bool ProcessRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *subReq);
+		virtual Bool ProcessRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *subReq, UOSInt subReqLen);
 
 	public:
 		EthernetWebHandler(Net::EthernetAnalyzer *analyzer);

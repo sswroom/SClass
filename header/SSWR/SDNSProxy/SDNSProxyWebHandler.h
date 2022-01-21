@@ -38,7 +38,7 @@ namespace SSWR
 			static void AppendMenu(Text::StringBuilderUTF *sbOut);
 			static void AppendFooter(Text::StringBuilderUTF *sbOut);
 
-			virtual Bool ProcessRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *subReq);
+			virtual Bool ProcessRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *subReq, UOSInt subReqLen);
 
 		public:
 			SDNSProxyWebHandler(Net::DNSProxy *proxy, IO::LogTool *log, SDNSProxyCore *core);

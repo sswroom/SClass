@@ -627,13 +627,13 @@ void SSWR::SDNSProxy::SDNSProxyWebHandler::AppendFooter(Text::StringBuilderUTF *
 	sbOut->AppendC(UTF8STRC("</body></html>"));
 }
 
-Bool SSWR::SDNSProxy::SDNSProxyWebHandler::ProcessRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *subReq)
+Bool SSWR::SDNSProxy::SDNSProxyWebHandler::ProcessRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *subReq, UOSInt subReqLen)
 {
-	if (this->DoRequest(req, resp, subReq))
+	if (this->DoRequest(req, resp, subReq, subReqLen))
 	{
 		return true;
 	}
-	RequestHandler reqHdlr = this->reqMap->Get(subReq);
+	RequestHandler reqHdlr = this->reqMap->GetC(subReq, subReqLen);
 	if (reqHdlr)
 	{
 		return reqHdlr(this, req, resp);
@@ -650,15 +650,15 @@ SSWR::SDNSProxy::SDNSProxyWebHandler::SDNSProxyWebHandler(Net::DNSProxy *proxy, 
 	this->log = log;
 	NEW_CLASS(this->logBuff, IO::CyclicLogBuffer(LOGSIZE));
 
-	this->reqMap->Put((const UTF8Char*)"/", StatusReq);
-	this->reqMap->Put((const UTF8Char*)"/reqv4", ReqV4Req);
-	this->reqMap->Put((const UTF8Char*)"/reqv6", ReqV6Req);
-	this->reqMap->Put((const UTF8Char*)"/reqoth", ReqOthReq);
-	this->reqMap->Put((const UTF8Char*)"/target", TargetReq);
-	this->reqMap->Put((const UTF8Char*)"/blacklist", BlacklistReq);
-	this->reqMap->Put((const UTF8Char*)"/log", LogReq);
-	this->reqMap->Put((const UTF8Char*)"/client", ClientReq);
-	this->reqMap->Put((const UTF8Char*)"/reqpm", ReqPerMinReq);
+	this->reqMap->PutC(UTF8STRC("/"), StatusReq);
+	this->reqMap->PutC(UTF8STRC("/reqv4"), ReqV4Req);
+	this->reqMap->PutC(UTF8STRC("/reqv6"), ReqV6Req);
+	this->reqMap->PutC(UTF8STRC("/reqoth"), ReqOthReq);
+	this->reqMap->PutC(UTF8STRC("/target"), TargetReq);
+	this->reqMap->PutC(UTF8STRC("/blacklist"), BlacklistReq);
+	this->reqMap->PutC(UTF8STRC("/log"), LogReq);
+	this->reqMap->PutC(UTF8STRC("/client"), ClientReq);
+	this->reqMap->PutC(UTF8STRC("/reqpm"), ReqPerMinReq);
 
 	this->log->AddLogHandler(this->logBuff, IO::ILogHandler::LOG_LEVEL_RAW);
 }
