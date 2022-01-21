@@ -56,7 +56,7 @@ void __stdcall SSWR::AVIRead::AVIRLineCounterForm::OnCalcClicked(void *userObj)
 	{
 		return;
 	}
-	if (sb.EndsWith((Char)IO::Path::PATH_SEPERATOR))
+	if (sb.EndsWith(IO::Path::PATH_SEPERATOR))
 	{
 		sb.RemoveChars(1);
 	}

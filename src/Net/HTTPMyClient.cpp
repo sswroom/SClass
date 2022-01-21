@@ -15,7 +15,7 @@
 #include "Text/TextBinEnc/URIEncoding.h"
 
 //#define LOGREPLY
-//#define SHOWDEBUG
+#define SHOWDEBUG
 //#define DEBUGSPEED
 #if defined(SHOWDEBUG) || defined(DEBUGSPEED)
 #include <stdio.h>
@@ -913,7 +913,7 @@ void Net::HTTPMyClient::AddHeaderC(const UTF8Char *name, UOSInt nameLen, const U
 			this->reqMstm->Write(value, valueLen);
 			this->reqMstm->Write(UTF8STRC("\r\n"));
 #ifdef SHOWDEBUG
-			printf("Add Header: %s", cbuff);
+			printf("Add Header: %s: %s\r\n", name, value);
 #endif
 		}
 		else
@@ -1068,7 +1068,7 @@ void Net::HTTPMyClient::EndRequest(Double *timeReq, Double *timeResp)
 						s = Text::String::New(ptr, i);
 					}
 #ifdef SHOWDEBUG
-					printf("Read Header: %s\r\n", s->V#pragma endregion);
+					printf("Read Header: %s\r\n", s->v);
 #endif
 					this->headers->Add(s);
 

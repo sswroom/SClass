@@ -3479,7 +3479,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::GetUserFilePath(UserFileInfo *userFile, Text::S
 	dt.SetTicks(userFile->fileTimeTicks);
 	dt.ToUTCTime();
 	sb->Append(this->cfgDataPath);
-	if (!sb->EndsWith((Char)IO::Path::PATH_SEPERATOR))
+	if (!sb->EndsWith(IO::Path::PATH_SEPERATOR))
 	{
 		sb->AppendChar(IO::Path::PATH_SEPERATOR, 1);
 	}

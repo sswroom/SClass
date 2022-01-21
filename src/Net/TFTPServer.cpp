@@ -369,7 +369,7 @@ Net::TFTPServer::TFTPServer(Net::SocketFactory *sockf, UInt16 port, IO::LogTool 
 	NEW_CLASS(this->sessMap, Data::UInt64Map<SessionInfo*>());
 	Text::StringBuilderUTF8 sb;
 	sb.Append(path);
-	if (!sb.EndsWith((Char)IO::Path::PATH_SEPERATOR))
+	if (!sb.EndsWith(IO::Path::PATH_SEPERATOR))
 	{
 		sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
 	}

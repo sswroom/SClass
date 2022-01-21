@@ -616,7 +616,7 @@ Bool IO::PackageFile::CopyTo(UOSInt index, const UTF8Char *destPath, Bool fullFi
 		Text::StringBuilderUTF8 sb;
 		Bool succ = true;
 		sb.Append(destPath);
-		if (sb.EndsWith((Char)IO::Path::PATH_SEPERATOR))
+		if (sb.EndsWith(IO::Path::PATH_SEPERATOR))
 		{
 			sb.Append(item->name);
 		}

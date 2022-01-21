@@ -643,7 +643,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 	{
 		Text::StringBuilderUTF8 sb2;
 		sb2.AppendC(sb.ToString(), sb.GetLength());
-		if (sb.EndsWith((Char)IO::Path::PATH_SEPERATOR))
+		if (sb.EndsWith(IO::Path::PATH_SEPERATOR))
 		{
 			sb2.AppendC(UTF8STRC("index.html"));
 		}

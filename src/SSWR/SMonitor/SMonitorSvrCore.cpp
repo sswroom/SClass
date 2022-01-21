@@ -1175,7 +1175,7 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(IO::Writer *writer, Media::Draw
 		{
 			sb.ClearStr();
 			sb.Append(s);
-			if (!sb.EndsWith((Char)IO::Path::PATH_SEPERATOR))
+			if (!sb.EndsWith(IO::Path::PATH_SEPERATOR))
 			{
 				sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
 			}

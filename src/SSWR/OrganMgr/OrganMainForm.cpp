@@ -789,7 +789,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImageSaveAllClicked(void *userOb
 					{
 						sb2.ClearStr();
 						sb2.Append(dlg->GetFolder());
-						if (!sb2.EndsWith((Char)IO::Path::PATH_SEPERATOR))
+						if (!sb2.EndsWith(IO::Path::PATH_SEPERATOR))
 						{
 							sb2.AppendChar(IO::Path::PATH_SEPERATOR, 1);
 						}

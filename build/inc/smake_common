@@ -1323,6 +1323,8 @@ DB/ReadingDB.h: ../../src/DB/ReadingDB.cpp
 @ReadingDB.o
 DB/ReadingDBTool.h: ../../src/DB/ReadingDBTool.cpp
 @ReadingDBTool.o
+DB/SDFFile.h: ../../src/DB/SDFFile.cpp
+@SDFFile.o
 DB/SharedDBConn.h: ../../src/DB/SharedDBConn.cpp
 @SharedDBConn.o
 DB/SharedReadingDB.h: ../../src/DB/SharedReadingDB.cpp
@@ -3999,6 +4001,7 @@ MySQLMaintance.o: ../../src/DB/MySQLMaintance.cpp
 PageRequest.o: ../../src/DB/PageRequest.cpp
 ReadingDB.o: ../../src/DB/ReadingDB.cpp
 ReadingDBTool.o: ../../src/DB/ReadingDBTool.cpp
+SDFFile.o: ../../src/DB/SDFFile.cpp
 SharedDBConn.o: ../../src/DB/SharedDBConn.cpp
 SharedReadingDB.o: ../../src/DB/SharedReadingDB.cpp
 SortableDBReader.o: ../../src/DB/SortableDBReader.cpp
