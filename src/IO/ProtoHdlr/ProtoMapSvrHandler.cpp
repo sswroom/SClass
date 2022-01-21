@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "IO/ProtoHdlr/ProtoMapSvrHandler.h"
 
-UInt16 IO::ProtoHdlr::ProtoMapSvrHandler::CalCheck(UInt8 *buff, Int32 sz)
+UInt16 IO::ProtoHdlr::ProtoMapSvrHandler::CalCheck(const UInt8 *buff, Int32 sz)
 {
 #ifndef HAS_ASM32
 	UInt8 ChkDigit1;
@@ -61,7 +61,7 @@ void IO::ProtoHdlr::ProtoMapSvrHandler::DeleteStreamData(IO::Stream *stm, void *
 {
 }
 
-UOSInt IO::ProtoHdlr::ProtoMapSvrHandler::ParseProtocol(IO::Stream *stm, void *stmObj, void *stmData, UInt8 *buff, UOSInt buffSize)
+UOSInt IO::ProtoHdlr::ProtoMapSvrHandler::ParseProtocol(IO::Stream *stm, void *stmObj, void *stmData, const UInt8 *buff, UOSInt buffSize)
 {
 	Bool found;
 	UInt32 crcVal;
@@ -120,7 +120,7 @@ UOSInt IO::ProtoHdlr::ProtoMapSvrHandler::ParseProtocol(IO::Stream *stm, void *s
 	return buffSize;
 }
 
-UOSInt IO::ProtoHdlr::ProtoMapSvrHandler::BuildPacket(UInt8 *buff, Int32 cmdType, Int32 seqId, UInt8 *cmd, UOSInt cmdSize, void *stmData)
+UOSInt IO::ProtoHdlr::ProtoMapSvrHandler::BuildPacket(UInt8 *buff, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize, void *stmData)
 {
 	*(Int16*)&buff[2] = (Int16)(cmdSize + 8);
 	*(Int16*)&buff[4] = cmdType;
