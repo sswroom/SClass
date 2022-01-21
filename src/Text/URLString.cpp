@@ -198,6 +198,7 @@ UTF8Char *Text::URLString::AppendURLPath(UTF8Char *sbuff, const UTF8Char *path)
 	{
 		return Text::StrConcat(sbuff, path);
 	}
+	UTF8Char* sbuffEnd = &sbuff[Text::StrCharCnt(sbuff)];
 	if (sbuff[0] != 0)
 	{
 		if (sbuff[1] == ':' && sbuff[2] == '\\')
@@ -206,7 +207,7 @@ UTF8Char *Text::URLString::AppendURLPath(UTF8Char *sbuff, const UTF8Char *path)
 			Text::StrReplace(sbuff, '/', '\\');
 			return sptr;
 		}
-		IO::Path::PathType pt = IO::Path::GetPathType(sbuff);
+		IO::Path::PathType pt = IO::Path::GetPathType(sbuff, (UOSInt)(sbuffEnd - sbuff));
 		if (pt != IO::Path::PathType::Unknown)
 		{
 			return IO::Path::AppendPath(sbuff, path);
@@ -221,7 +222,7 @@ UTF8Char *Text::URLString::AppendURLPath(UTF8Char *sbuff, const UTF8Char *path)
 		i = Text::StrIndexOfChar(sbuff, '/');
 		if (i == INVALID_INDEX)
 		{
-			return Text::StrConcat(&sbuff[Text::StrCharCnt(sbuff)], path);
+			return Text::StrConcat(sbuffEnd, path);
 		}
 		else
 		{
@@ -236,13 +237,14 @@ UTF8Char *Text::URLString::AppendURLPath(UTF8Char *sbuff, const UTF8Char *path)
 			if (i != INVALID_INDEX)
 			{
 				sbuff[i] = 0;
+				sbuffEnd = &sbuff[i];
 			}
 			path = &path[3];
 		}
 		i = Text::StrLastIndexOfChar(sbuff, '/');
 		if (i == INVALID_INDEX)
 		{
-			return Text::StrConcat(&sbuff[Text::StrCharCnt(sbuff)], path);
+			return Text::StrConcat(sbuffEnd, path);
 		}
 		else
 		{

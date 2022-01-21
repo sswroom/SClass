@@ -22,11 +22,12 @@
 
 Bool IO::FileUtil::DeleteFile(const UTF8Char *file, Bool deleteRdonlyFile)
 {
-	IO::Path::PathType pt = IO::Path::GetPathType(file);
+	UOSInt fileLen = Text::StrCharCnt(file);
+	IO::Path::PathType pt = IO::Path::GetPathType(file, fileLen);
 	if (pt == IO::Path::PathType::Directory)
 	{
 		UTF8Char sbuff[512];
-		Text::StrConcat(sbuff, file);
+		Text::StrConcatC(sbuff, file, fileLen);
 		return DeleteDir(sbuff, deleteRdonlyFile);
 	}
 	const WChar *wptr = Text::StrToWCharNew(file);

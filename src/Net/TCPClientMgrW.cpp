@@ -199,7 +199,7 @@ UInt32 __stdcall Net::TCPClientMgr::WorkerThread(void *o)
 				((Sync::Event*)me->clsData)->Set();
 			}
 		}
-		stat->evt->Wait(700);
+		stat->evt->Wait(7700);
 	}
 	DEL_CLASS(dt);
 	stat->running = false;

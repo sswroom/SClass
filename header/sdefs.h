@@ -334,6 +334,33 @@ UOSInt __inline MulDivUOS(UOSInt x, UOSInt y, UOSInt z)
 	 return (UInt32)(((UInt64)x * (UInt64)y) / z);
 }
 #else
+#if defined(_MSC_VER)
+#include <stdlib.h>
+
+#define BSWAP32(v) (Int32)_byteswap_ulong((UInt32)(v))
+#define BSWAPU32(v) _byteswap_ulong(v)
+#define BSWAP64(v) (Int64)_byteswap_uint64((UInt64)(v))
+#elif defined(__APPLE__)
+#include <libkern/OSByteOrder.h>
+#define BSWAP32(x) OSSwapInt32(x)
+#define BSWAPU32(x) OSSwapInt32(x)
+#define BSWAP64(x) OSSwapInt64(x)
+#elif defined(__sun) || defined(sun)
+#include <sys/byteorder.h>
+#define BSWAP32(x) BSWAP_32(x)
+#define BSWAPU32(x) BSWAP_32(x)
+#define BSWAP64(x) BSWAP_64(x)
+#elif defined(__FreeBSD__)
+#include <sys/endian.h>
+#define BSWAP32(x) bswap32(x)
+#define BSWAPU32(x) bswap32(x)
+#define BSWAP64(x) bswap64(x)
+#elif defined(__OpenBSD__)
+#include <sys/types.h>
+#define BSWAP32(x) swap32(x)
+#define BSWAPU32(x) swap32(x)
+#define BSWAP64(x) swap64(x)
+#else
 #define BSWAP32(x) \
     ((Int32)( (( (UInt32)x          ) << 24) | \
       ((((UInt32)x)&0xff00  ) << 8 ) | \
@@ -344,6 +371,7 @@ UOSInt __inline MulDivUOS(UOSInt x, UOSInt y, UOSInt z)
       ((((UInt32)x)&0xff00  ) << 8 ) | \
       ((((UInt32)x)&0xff0000) >> 8 ) | \
       (( (UInt32)x          ) >> 24)  ))
+#endif
 #define MulDiv32(x, y, z) (Int32)((Int64)(x) * (Int64)(y) / (z))
 #define MulDivU32(x, y, z) (UInt32)((UInt64)(x) * (UInt64)(y) / (z))
 #define MulDivOS(x, y, z) ((x) * (y) / (z))

@@ -542,8 +542,8 @@ Bool Text::Cpp::CppEnv::IsCompilerExist(Text::VSProject::VisualStudioVersion vsv
 	sptr = GetVCInstallDir(sbuff, vsv);
 	if (sptr == 0)
 		return false;
-	Text::StrConcatC(sptr, UTF8STRC("bin\\ml.exe"));
-	return IO::Path::GetPathType(sbuff) == IO::Path::PathType::File;
+	sptr = Text::StrConcatC(sptr, UTF8STRC("bin\\ml.exe"));
+	return IO::Path::GetPathType(sbuff, (UOSInt)(sptr - sbuff)) == IO::Path::PathType::File;
 }
 
 /*

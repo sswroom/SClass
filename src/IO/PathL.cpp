@@ -585,7 +585,7 @@ void IO::Path::FindFileClose(IO::Path::FindFileSession *sess)
 	MemFree(sess);
 }
 
-IO::Path::PathType IO::Path::GetPathType(const UTF8Char *path)
+IO::Path::PathType IO::Path::GetPathType(const UTF8Char *path, UOSInt pathLen)
 {
 #if defined(__USE_LARGEFILE64)
 	struct stat64 s;
@@ -617,17 +617,18 @@ IO::Path::PathType IO::Path::GetPathType(const UTF8Char *path)
 	else if (S_ISLNK(s.st_mode))
 	{
 		UTF8Char pathBuff[512];
+		UTF8Char *pathBuffEnd;
 		Char cbuff[512];
 		ssize_t size = readlink((const Char*)path, cbuff, 511);
 		cbuff[size] = 0;
-		Text::StrConcat(pathBuff, path);
+		pathBuffEnd = Text::StrConcatC(pathBuff, path, pathLen);
 		UOSInt i = Text::StrLastIndexOfChar(pathBuff, '/');
 		if (i != INVALID_INDEX)
 		{
 			pathBuff[i + 1] = 0;
-			IO::Path::AppendPath(pathBuff, (const UTF8Char*)cbuff);
+			pathBuffEnd = IO::Path::AppendPath(pathBuff, (const UTF8Char*)cbuff);
 		}
-		return GetPathType((const UTF8Char*)pathBuff);
+		return GetPathType(pathBuff, (UOSInt)(pathBuffEnd - pathBuff));
 	}
 	return PathType::Unknown;
 }

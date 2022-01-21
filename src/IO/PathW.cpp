@@ -408,7 +408,7 @@ UTF8Char *IO::Path::AppendPathC(UTF8Char *path, UTF8Char *pathEnd, const UTF8Cha
 		if (Text::StrIndexOfChar(lastSep, '*') != INVALID_INDEX)
 		{
 		}
-		else if (IO::Path::GetPathType(path) == PathType::Directory)
+		else if (IO::Path::GetPathType(path, (UOSInt)(pathEnd - path)) == PathType::Directory)
 		{
 			lastSep = pathEnd;
 			*lastSep = '\\';
@@ -693,7 +693,7 @@ Bool IO::Path::AppendPath(Text::StringBuilderUTF8 *sb, const UTF8Char *toAppend,
 		if (Text::StrIndexOfChar(lastSep, '*') != INVALID_INDEX)
 		{
 		}
-		else if (IO::Path::GetPathType(path) == PathType::Directory)
+		else if (IO::Path::GetPathType(path, (UOSInt)(pathEnd - path)) == PathType::Directory)
 		{
 			lastSep = pathEnd;
 			*lastSep = '\\';
@@ -919,11 +919,21 @@ void IO::Path::FindFileClose(IO::Path::FindFileSession *sess)
 	MemFree(sess);
 }
 
-IO::Path::PathType IO::Path::GetPathType(const UTF8Char *path)
+IO::Path::PathType IO::Path::GetPathType(const UTF8Char *path, UOSInt pathLen)
 {
-	const WChar *wpath = Text::StrToWCharNew(path);
-	UInt32 fatt = GetFileAttributesW(wpath);
-	Text::StrDelNew(wpath);
+	WChar wbuff[256];
+	UInt32 fatt;
+	if (pathLen < 256)
+	{
+		Text::StrUTF8_WChar(wbuff, path, 0);
+		fatt = GetFileAttributesW(wbuff);
+	}
+	else
+	{
+		const WChar* wpath = Text::StrToWCharNew(path);
+		fatt = GetFileAttributesW(wpath);
+		Text::StrDelNew(wpath);
+	}
 	if (fatt == INVALID_FILE_ATTRIBUTES)
 	{
 		return PathType::Unknown;

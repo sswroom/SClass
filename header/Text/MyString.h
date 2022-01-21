@@ -61,7 +61,7 @@ extern "C"
 
 namespace Text
 {
-	typedef struct
+	struct PString
 	{
 		UTF8Char *v;
 		UOSInt len;
@@ -79,7 +79,7 @@ namespace Text
 				this->len = 0;
 			}
 		}
-	} PString;
+	};
 
 	UTF8Char *StrConcat(UTF8Char *oriStr, const UTF8Char *strToJoin);
 	UTF8Char *StrConcatC(UTF8Char *oriStr, const UTF8Char *strToJoin, UOSInt charCnt);
@@ -363,8 +363,7 @@ namespace Text
 	FORCEINLINE Char *StrRemoveANSIEscapes(Char *str1) { return (Char*)StrRemoveANSIEscapes((UTF8Char*)str1); };
 
 
-
-	typedef struct
+	struct CString
 	{
 		const UTF8Char *v;
 		UOSInt len;
@@ -378,6 +377,6 @@ namespace Text
 		{
 			return Text::StrStartsWithC(v, this->len, s, len);
 		}
-	} CString;
+	};
 }
 #endif

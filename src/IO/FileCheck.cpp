@@ -63,7 +63,8 @@ IO::FileCheck *IO::FileCheck::CreateCheck(const UTF8Char *path, IO::FileCheck::C
 		return 0;
 	}
 
-	pt = IO::Path::GetPathType(path);
+	UOSInt pathLen = Text::StrCharCnt(path);
+	pt = IO::Path::GetPathType(path, pathLen);
 	if (pt == IO::Path::PathType::File)
 	{
 		NEW_CLASS(fchk, IO::FileCheck(path, chkType));
@@ -119,7 +120,7 @@ IO::FileCheck *IO::FileCheck::CreateCheck(const UTF8Char *path, IO::FileCheck::C
 	else if (pt == IO::Path::PathType::Directory)
 	{
 		NEW_CLASS(fchk, IO::FileCheck(path, chkType));
-		UOSInt i = (UOSInt)(Text::StrConcat(&sbuff[2], path) - sbuff);
+		UOSInt i = (UOSInt)(Text::StrConcatC(&sbuff[2], path, pathLen) - sbuff);
 		sbuff[0] = '.';
 		sbuff[1] = IO::Path::PATH_SEPERATOR;
 		if (sbuff[i - 1] == IO::Path::PATH_SEPERATOR)

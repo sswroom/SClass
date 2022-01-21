@@ -4311,43 +4311,31 @@ UTF16Char *Text::StrUTF8_UTF16(UTF16Char *buff, const UTF8Char *bytes, UOSInt *b
 	const UInt8 *oriBytes = bytes;
 	UTF32Char code;
 	UInt8 b;
-	while ((b = *bytes++) != 0)
+	while ((b = *bytes) != 0)
 	{
 		if (b < 0x80)
 		{
 			*buff++ = b;
+			bytes++;
 		}
 		else if ((b & 0xe0) == 0xc0)
 		{
-			*buff++ = (UTF16Char)(((b & 0x1f) << 6) | (*bytes & 0x3f));
-			bytes++;
+			*buff++ = (UTF16Char)(((b & 0x1f) << 6) | (bytes[1] & 0x3f));
+			bytes += 2;
 		}
 		else if ((b & 0xf0) == 0xe0)
 		{
-			*buff++ = (UTF16Char)(((b & 0x0f) << 12) | ((bytes[0] & 0x3f) << 6) | (bytes[1] & 0x3f));
-			bytes += 2;
+			*buff++ = (UTF16Char)(((b & 0x0f) << 12) | ((bytes[1] & 0x3f) << 6) | (bytes[2] & 0x3f));
+			bytes += 3;
 		}
 		else if ((b & 0xf8) == 0xf0)
 		{
-			code = (((UTF32Char)b & 0x7) << 18) | (((UTF32Char)bytes[0] & 0x3f) << 12) | ((bytes[1] & 0x3f) << 6) | (bytes[2] & 0x3f);
+			code = (((UTF32Char)b & 0x7) << 18) | (((UTF32Char)bytes[1] & 0x3f) << 12) | ((bytes[2] & 0x3f) << 6) | (bytes[3] & 0x3f);
 			if (code >= 0x10000)
 			{
-				*buff++ = (UTF16Char)(((code - 0x10000) >> 10) + 0xd800);
-				*buff++ = (UTF16Char)((code & 0x3ff) + 0xdc00);
-			}
-			else
-			{
-				*buff++ = (UTF16Char)code;
-			}
-			bytes += 3;
-		}
-		else if ((b & 0xfc) == 0xf8)
-		{
-			code = (((UTF32Char)b & 0x3) << 24) | (((UTF32Char)bytes[0] & 0x3f) << 18) | (((UTF32Char)bytes[1] & 0x3f) << 12) | ((bytes[2] & 0x3f) << 6) | (bytes[3] & 0x3f);
-			if (code >= 0x10000)
-			{
-				*buff++ = (UTF16Char)(((code - 0x10000) >> 10) + 0xd800);
-				*buff++ = (UTF16Char)((code & 0x3ff) + 0xdc00);
+				buff[0] = (UTF16Char)(((code - 0x10000) >> 10) + 0xd800);
+				buff[1] = (UTF16Char)((code & 0x3ff) + 0xdc00);
+				buff += 2;
 			}
 			else
 			{
@@ -4355,17 +4343,14 @@ UTF16Char *Text::StrUTF8_UTF16(UTF16Char *buff, const UTF8Char *bytes, UOSInt *b
 			}
 			bytes += 4;
 		}
-		else if ((b & 0xc0) == 0x80)
+		else if ((b & 0xfc) == 0xf8)
 		{
-			*buff++ = b;
-		}
-		else if ((b & 0xfe) == 0xfc)
-		{
-			code = (((UTF32Char)b & 0x1) << 30) | (((UTF32Char)bytes[0] & 0x3f) << 24) | (((UTF32Char)bytes[1] & 0x3f) << 18) | (((UTF32Char)bytes[2] & 0x3f) << 12) | ((bytes[3] & 0x3f) << 6) | (bytes[4] & 0x3f);
+			code = (((UTF32Char)b & 0x3) << 24) | (((UTF32Char)bytes[1] & 0x3f) << 18) | (((UTF32Char)bytes[2] & 0x3f) << 12) | ((bytes[3] & 0x3f) << 6) | (bytes[4] & 0x3f);
 			if (code >= 0x10000)
 			{
-				*buff++ = (UTF16Char)(((code - 0x10000) >> 10) + 0xd800);
-				*buff++ = (UTF16Char)((code & 0x3ff) + 0xdc00);
+				buff[0] = (UTF16Char)(((code - 0x10000) >> 10) + 0xd800);
+				buff[1] = (UTF16Char)((code & 0x3ff) + 0xdc00);
+				buff += 2;
 			}
 			else
 			{
@@ -4373,10 +4358,30 @@ UTF16Char *Text::StrUTF8_UTF16(UTF16Char *buff, const UTF8Char *bytes, UOSInt *b
 			}
 			bytes += 5;
 		}
+		else if ((b & 0xc0) == 0x80)
+		{
+			*buff++ = b;
+			bytes += 1;
+		}
+		else if ((b & 0xfe) == 0xfc)
+		{
+			code = (((UTF32Char)b & 0x1) << 30) | (((UTF32Char)bytes[1] & 0x3f) << 24) | (((UTF32Char)bytes[2] & 0x3f) << 18) | (((UTF32Char)bytes[3] & 0x3f) << 12) | ((bytes[4] & 0x3f) << 6) | (bytes[5] & 0x3f);
+			if (code >= 0x10000)
+			{
+				buff[0] = (UTF16Char)(((code - 0x10000) >> 10) + 0xd800);
+				buff[1] = (UTF16Char)((code & 0x3ff) + 0xdc00);
+				buff += 2;
+			}
+			else
+			{
+				*buff++ = (UTF16Char)code;
+			}
+			bytes += 6;
+		}
 	}
 	if (byteConv)
 	{
-		*byteConv = (UOSInt)(bytes - oriBytes);
+		*byteConv = (UOSInt)(bytes - oriBytes + 1);
 	}
 	*buff = 0;
 	return buff;
