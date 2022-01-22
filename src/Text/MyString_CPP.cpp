@@ -113,8 +113,8 @@ extern "C" OSInt MyString_StrCompareICase(const UTF8Char *str1, const UTF8Char *
 
 extern "C" OSInt MyString_StrCompareUTF16(const UTF16Char *str1, const UTF16Char *str2)
 {
-	OSInt i = 0;
-	OSInt j = 0;
+	UOSInt i = 0;
+	UOSInt j = 0;
 	while (1)
 	{
 		if (*str1 == 0 && *str2 == 0)

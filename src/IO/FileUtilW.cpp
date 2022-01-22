@@ -329,9 +329,11 @@ Bool IO::FileUtil::CopyFile(const UTF8Char *file1, const UTF8Char *file2, FileEx
 	IO::FileStream *fs1;
 	IO::FileStream *fs2;
 	IO::ActiveStreamReader *asr;
+	WChar wfile2[MAX_PATH];
+	Text::StrUTF8_WChar(wfile2, file2, 0);
 	if (fea == IO::FileUtil::FileExistAction::Fail)
 	{
-		if (IO::Path::GetPathType(file2) != IO::Path::PathType::Unknown)
+		if (IO::Path::GetPathTypeW(wfile2) != IO::Path::PathType::Unknown)
 			return false;
 	}
 	NEW_CLASS(fs1, IO::FileStream(file1, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
@@ -461,9 +463,7 @@ Bool IO::FileUtil::CopyFile(const UTF8Char *file1, const UTF8Char *file2, FileEx
 	const WChar *wptr = Text::StrToWCharNew(file1);
 	UInt32 attr = GetFileAttributesW(wptr);
 	Text::StrDelNew(wptr);
-	wptr = Text::StrToWCharNew(file2);
-	SetFileAttributesW(wptr, attr);
-	Text::StrDelNew(wptr);
+	SetFileAttributesW(wfile2, attr);
 	return writeSize == fileSize;
 }
 

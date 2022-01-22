@@ -59,11 +59,21 @@ WChar *IO::Path::GetTempFileW(WChar *buff, const WChar *fileName)
 	return Text::StrConcat(Text::StrConcat(buff, tmpBuff), fileName);
 }
 
-Bool IO::Path::IsDirectoryExist(const UTF8Char *dir)
+Bool IO::Path::IsDirectoryExist(const UTF8Char *dir, UOSInt dirLen)
 {
-	const WChar *wdir = Text::StrToWCharNew(dir);
-	UInt32 ret = GetFileAttributesW(wdir);
-	Text::StrDelNew(wdir);
+	WChar wbuff[256];
+	UInt32 ret;
+	if (dirLen < 256)
+	{
+		Text::StrUTF8_WCharC(wbuff, dir, dirLen, 0);
+		ret = GetFileAttributesW(wbuff);
+	}
+	else
+	{
+		const WChar *wdir = Text::StrToWCharNew(dir);
+		ret = GetFileAttributesW(wdir);
+		Text::StrDelNew(wdir);
+	}
 	if (ret == INVALID_FILE_ATTRIBUTES)
 		return false;
 	else
@@ -82,9 +92,9 @@ Bool IO::Path::IsDirectoryExistW(const WChar *dir)
 Bool IO::Path::CreateDirectory(const UTF8Char *dirInput)
 {
 	WChar dir[MAX_PATH];
-	if (IsDirectoryExist(dirInput))
-		return true;
 	Text::StrUTF8_WChar(dir, dirInput, 0);
+	if (IsDirectoryExistW(dir))
+		return true;
 	UOSInt i = Text::StrLastIndexOfChar(dir, '\\');
 	if (i == INVALID_INDEX)
 		return ::CreateDirectoryW(dir, 0) != 0;
@@ -784,12 +794,12 @@ Bool IO::Path::AppendPath(Text::StringBuilderUTF8 *sb, const UTF8Char *toAppend,
 
 IO::Path::FindFileSession *IO::Path::FindFile(const UTF8Char *path)
 {
+	WChar wbuff[MAX_PATH];
 	FindFileSession *sess;
 	sess = MemAlloc(FindFileSession, 1);
 	sess->lastFound = true;
-	const WChar *wpath = Text::StrToWCharNew(path);
-	sess->handle = FindFirstFileW(wpath, &sess->findData);
-	Text::StrDelNew(wpath);
+	Text::StrUTF8_WChar(wbuff, path, 0);
+	sess->handle = FindFirstFileW(wbuff, &sess->findData);
 	if (sess->handle != INVALID_HANDLE_VALUE)
 	{
 		return sess;
@@ -841,10 +851,7 @@ UTF8Char *IO::Path::FindNextFile(UTF8Char *buff, IO::Path::FindFileSession *sess
 		outPtr = Text::StrWChar_UTF8(buff, sess->findData.cFileName);
 		if (modTime)
 		{
-			SYSTEMTIME st;
-			FileTimeToSystemTime(&sess->findData.ftLastWriteTime, &st);
-			modTime->ToUTCTime();
-			modTime->SetValue(st.wYear, (UInt8)st.wMonth, (UInt8)st.wDay, (UInt8)st.wHour, (UInt8)st.wMinute, (UInt8)st.wSecond, st.wMilliseconds);
+			modTime->SetValueFILETIME(&sess->findData.ftLastWriteTime);
 		}
 		if (pt)
 		{
@@ -883,10 +890,7 @@ WChar *IO::Path::FindNextFileW(WChar *buff, IO::Path::FindFileSession *sess, Dat
 		outPtr = Text::StrConcat(buff, sess->findData.cFileName);
 		if (modTime)
 		{
-			SYSTEMTIME st;
-			FileTimeToSystemTime(&sess->findData.ftLastWriteTime, &st);
-			modTime->ToUTCTime();
-			modTime->SetValue(st.wYear, (UInt8)st.wMonth, (UInt8)st.wDay, (UInt8)st.wHour, (UInt8)st.wMinute, (UInt8)st.wSecond, st.wMilliseconds);
+			modTime->SetValueFILETIME(&sess->findData.ftLastWriteTime);
 		}
 		if (pt)
 		{
@@ -922,23 +926,37 @@ void IO::Path::FindFileClose(IO::Path::FindFileSession *sess)
 IO::Path::PathType IO::Path::GetPathType(const UTF8Char *path, UOSInt pathLen)
 {
 	WChar wbuff[256];
-	UInt32 fatt;
+	
 	if (pathLen < 256)
 	{
 		Text::StrUTF8_WChar(wbuff, path, 0);
-		fatt = GetFileAttributesW(wbuff);
+		return GetPathTypeW(wbuff);
 	}
 	else
 	{
 		const WChar* wpath = Text::StrToWCharNew(path);
-		fatt = GetFileAttributesW(wpath);
+		PathType ret = GetPathTypeW(wpath);
 		Text::StrDelNew(wpath);
+		return ret;
 	}
-	if (fatt == INVALID_FILE_ATTRIBUTES)
+}
+
+IO::Path::PathType IO::Path::GetPathTypeW(const WChar *path)
+{
+#if (_WIN32_WINNT >= 0x0600)
+	FILE_BASIC_INFO info;
+	HANDLE handle = CreateFileW(path, 0, FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE, 0, OPEN_EXISTING, FILE_FLAG_OPEN_REPARSE_POINT | FILE_FLAG_BACKUP_SEMANTICS | FILE_FLAG_OVERLAPPED, 0);
+	if (handle == INVALID_HANDLE_VALUE)
 	{
 		return PathType::Unknown;
 	}
-	else if (fatt & FILE_ATTRIBUTE_DIRECTORY)
+	if (!GetFileInformationByHandleEx(handle, FileBasicInfo, &info, sizeof(info)))
+	{
+		CloseHandle(handle);
+		return PathType::Unknown;
+	}
+	CloseHandle(handle);
+	if (info.FileAttributes & FILE_ATTRIBUTE_DIRECTORY)
 	{
 		return PathType::Directory;
 	}
@@ -946,10 +964,7 @@ IO::Path::PathType IO::Path::GetPathType(const UTF8Char *path, UOSInt pathLen)
 	{
 		return PathType::File;
 	}
-}
-
-IO::Path::PathType IO::Path::GetPathTypeW(const WChar *path)
-{
+#else
 	UInt32 fatt = GetFileAttributesW(path);
 	if (fatt == INVALID_FILE_ATTRIBUTES)
 	{
@@ -963,6 +978,7 @@ IO::Path::PathType IO::Path::GetPathTypeW(const WChar *path)
 	{
 		return PathType::File;
 	}
+#endif
 }
 
 Bool IO::Path::FileNameMatch(const UTF8Char *path, const UTF8Char *searchPattern)
