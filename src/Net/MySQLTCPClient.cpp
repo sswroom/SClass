@@ -1674,9 +1674,16 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(void *userObj)
 							me->cmdEvt->Set();
 							break;
 						case CmdResultType::BinaryResultReady:
+							WriteUInt32(&sbuff[0], 5);
+							sbuff[3] = 0;
+							sbuff[4] = 0x19; //COM_STMT_CLOSE
+							WriteUInt32(&sbuff[5], ((MySQLTCPBinaryReader*)me->cmdReader)->GetStmtId());
+							me->cli->Write(sbuff, 9);
+
 							me->cmdResultType = CmdResultType::ResultEnd;
 							((MySQLTCPBinaryReader*)me->cmdReader)->EndData();
 							me->cmdEvt->Set();
+
 							break;
 						case CmdResultType::ResultEnd:
 						case CmdResultType::ResultReady:
