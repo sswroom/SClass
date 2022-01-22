@@ -35,7 +35,7 @@ UTF8Char *IO::ModemController::SendStringCommand(UTF8Char *buff, const UTF8Char 
 	if (i > 1)
 	{
 		val = this->cmdResults->GetItem(i - 1);
-		if (val->Equals(UTF8STRC("OK")) == 0)
+		if (val->Equals(UTF8STRC("OK")))
 		{
 			j = i - 2;
 			UTF8Char *sptr = buff;

@@ -358,9 +358,9 @@ Bool UI::FileDialog::ShowDialog(ControlHandle *ownerHandle)
 		}
 		else if (!isSave && this->allowMulti)
 		{
-			const UTF8Char *u8ptr = Text::StrToUTF8New(fnameBuff);
-			IO::Path::PathType pt = IO::Path::GetPathType(u8ptr);
-			Text::StrDelNew(u8ptr);
+			Text::String *s = Text::String::NewNotNull(fnameBuff);
+			IO::Path::PathType pt = IO::Path::GetPathType(s->v, s->leng);
+			s->Release();
 			if (pt == IO::Path::PathType::Directory)
 			{
 				dptr = Text::StrConcat(fname, fnameBuff);

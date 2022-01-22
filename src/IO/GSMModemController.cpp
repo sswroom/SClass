@@ -656,7 +656,7 @@ Bool IO::GSMModemController::SMSListMessages(Data::ArrayList<IO::GSMModemControl
 	if (j > 1)
 	{
 		val = this->cmdResults->GetItem(j - 1);
-		if (val->Equals(UTF8STRC("OK")) == 0)
+		if (val->Equals(UTF8STRC("OK")))
 		{
 			j -= 2;
 			i = 1;
