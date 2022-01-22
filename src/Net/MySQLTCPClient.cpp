@@ -614,6 +614,11 @@ public:
 		{
 			return 0;
 		}
+		Data::VariItem::ItemType itemType = item.GetItemType();
+		if (itemType == Data::VariItem::ItemType::Null)
+		{
+			return 0;
+		}
 		Text::StringBuilderUTF8 sb;
 		item.GetAsString(&sb);
 		return Text::StrUTF8_WChar(buff, sb.ToString(), 0);
@@ -623,6 +628,11 @@ public:
 	{
 		Data::VariItem item;
 		if (!this->GetVariItem(colIndex, &item))
+		{
+			return false;
+		}
+		Data::VariItem::ItemType itemType = item.GetItemType();
+		if (itemType == Data::VariItem::ItemType::Null)
 		{
 			return false;
 		}
@@ -637,9 +647,14 @@ public:
 		{
 			return 0;
 		}
-		if (item.GetItemType() == Data::VariItem::ItemType::Str)
+		Data::VariItem::ItemType itemType = item.GetItemType();
+		if (itemType == Data::VariItem::ItemType::Str)
 		{
 			return item.GetItemValue().str->Clone();
+		}
+		else if (itemType == Data::VariItem::ItemType::Null)
+		{
+			return 0;
 		}
 		else
 		{
@@ -653,6 +668,10 @@ public:
 	{
 		Data::VariItem item;
 		if (!this->GetVariItem(colIndex, &item))
+		{
+			return 0;
+		}
+		if (item.GetItemType() == Data::VariItem::ItemType::Null)
 		{
 			return 0;
 		}
@@ -773,13 +792,11 @@ public:
 		case Net::MySQLUtil::MYSQL_TYPE_STRING:
 		case Net::MySQLUtil::MYSQL_TYPE_VARCHAR:
 		case Net::MySQLUtil::MYSQL_TYPE_VAR_STRING:
-			item->SetStr(&this->currRow->rowBuff[col->ofst], col->len);
-			return true;
 		case Net::MySQLUtil::MYSQL_TYPE_LONG_BLOB:
 		case Net::MySQLUtil::MYSQL_TYPE_MEDIUM_BLOB:
 		case Net::MySQLUtil::MYSQL_TYPE_BLOB:
 		case Net::MySQLUtil::MYSQL_TYPE_TINY_BLOB:
-			item->SetByteArr(&this->currRow->rowBuff[col->ofst], col->len);
+			item->SetStr(&this->currRow->rowBuff[col->ofst], col->len);
 			return true;
 
 		case Net::MySQLUtil::MYSQL_TYPE_LONGLONG:
@@ -1169,9 +1186,12 @@ public:
 		this->nextRowReady = true;
 		this->rowEvt->Set();
 
-		MemFree(row->cols);
-		MemFree(row->rowBuff);
-		MemFree(row);
+		if (row)
+		{
+			MemFree(row->cols);
+			MemFree(row->rowBuff);
+			MemFree(row);
+		}
 	}
 
 	void SetStmtId(UInt32 stmtId)
