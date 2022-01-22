@@ -12,6 +12,17 @@ namespace Net
 	class MySQLTCPClient : public DB::DBConn
 	{
 	private:
+		enum class CmdResultType
+		{
+			Processing,
+			ResultReady,
+			Error,
+			ResultEnd,
+			ProcessingBinary,
+			BinaryExecuting,
+			BinaryResultReady
+		};
+	private:
 		Net::SocketFactory *sockf;
 		Net::SocketUtil::AddressInfo addr;
 		UInt16 port;
@@ -38,7 +49,7 @@ namespace Net
 		Sync::Event *cmdEvt;
 		UOSInt cmdSeqNum;
 		DB::DBReader *cmdReader;
-		OSInt cmdResultType; // 0 = processing, 1 = result ready, 2 = error, 3 = result end
+		CmdResultType cmdResultType;
 
 		static UInt32 __stdcall RecvThread(void *userObj);
 		void SetLastError(const UTF8Char *errMsg, UOSInt msgLen);
@@ -59,6 +70,8 @@ namespace Net
 		virtual OSInt ExecuteNonQueryC(const UTF8Char *sql, UOSInt sqlLen);
 		virtual DB::DBReader *ExecuteReader(const UTF8Char *sql);
 		virtual DB::DBReader *ExecuteReaderC(const UTF8Char *sql, UOSInt sqlLen);
+		DB::DBReader *ExecuteReaderTextC(const UTF8Char *sql, UOSInt sqlLen);
+		DB::DBReader *ExecuteReaderBinaryC(const UTF8Char *sql, UOSInt sqlLen);
 		virtual void CloseReader(DB::DBReader *r);
 		virtual void GetErrorMsg(Text::StringBuilderUTF *str);
 		virtual Bool IsLastDataError();

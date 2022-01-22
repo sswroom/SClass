@@ -129,3 +129,73 @@ Net::MySQLUtil::MySQLType Net::MySQLUtil::ColType2MySQLType(DB::DBUtil::ColType 
 			return Net::MySQLUtil::MYSQL_TYPE_NULL;
 	}
 }
+
+
+DB::DBUtil::ColType Net::MySQLUtil::MySQLType2ColType(Net::MySQLUtil::MySQLType colType)
+{
+	switch (colType)
+	{
+		case Net::MySQLUtil::MYSQL_TYPE_DECIMAL:
+			return DB::DBUtil::CT_Double;
+		case Net::MySQLUtil::MYSQL_TYPE_TINY:
+			return DB::DBUtil::CT_Byte;
+		case Net::MySQLUtil::MYSQL_TYPE_SHORT:
+			return DB::DBUtil::CT_Int16;
+		case Net::MySQLUtil::MYSQL_TYPE_LONG:
+			return DB::DBUtil::CT_Int32;
+		case Net::MySQLUtil::MYSQL_TYPE_FLOAT:
+			return DB::DBUtil::CT_Float;
+		case Net::MySQLUtil::MYSQL_TYPE_DOUBLE:
+			return DB::DBUtil::CT_Double;
+		case Net::MySQLUtil::MYSQL_TYPE_NULL:
+			return DB::DBUtil::CT_Unknown;
+		case Net::MySQLUtil::MYSQL_TYPE_TIMESTAMP:
+			return DB::DBUtil::CT_DateTime;
+		case Net::MySQLUtil::MYSQL_TYPE_LONGLONG:
+			return DB::DBUtil::CT_Int64;
+		case Net::MySQLUtil::MYSQL_TYPE_INT24:
+			return DB::DBUtil::CT_Int32;
+		case Net::MySQLUtil::MYSQL_TYPE_DATE:
+			return DB::DBUtil::CT_DateTime;
+		case Net::MySQLUtil::MYSQL_TYPE_TIME:
+			return DB::DBUtil::CT_DateTime;
+		case Net::MySQLUtil::MYSQL_TYPE_DATETIME:
+			return DB::DBUtil::CT_DateTime;
+		case Net::MySQLUtil::MYSQL_TYPE_YEAR:
+			return DB::DBUtil::CT_DateTime;
+		case Net::MySQLUtil::MYSQL_TYPE_NEWDATE:
+			return DB::DBUtil::CT_DateTime;
+		case Net::MySQLUtil::MYSQL_TYPE_VARCHAR:
+			return DB::DBUtil::CT_VarChar;
+		case Net::MySQLUtil::MYSQL_TYPE_BIT:
+			return DB::DBUtil::CT_Bool;
+		case Net::MySQLUtil::MYSQL_TYPE_TIMESTAMP2:
+			return DB::DBUtil::CT_DateTime;
+		case Net::MySQLUtil::MYSQL_TYPE_DATETIME2:
+			return DB::DBUtil::CT_DateTime;
+		case Net::MySQLUtil::MYSQL_TYPE_TIME2:
+			return DB::DBUtil::CT_DateTime;
+		case Net::MySQLUtil::MYSQL_TYPE_NEWDECIMAL:
+			return DB::DBUtil::CT_Double;
+		case Net::MySQLUtil::MYSQL_TYPE_ENUM:
+			return DB::DBUtil::CT_Int32;
+		case Net::MySQLUtil::MYSQL_TYPE_SET:
+			return DB::DBUtil::CT_Unknown;
+		case Net::MySQLUtil::MYSQL_TYPE_TINY_BLOB:
+			return DB::DBUtil::CT_Binary;
+		case Net::MySQLUtil::MYSQL_TYPE_MEDIUM_BLOB:
+			return DB::DBUtil::CT_Binary;
+		case Net::MySQLUtil::MYSQL_TYPE_LONG_BLOB:
+			return DB::DBUtil::CT_Binary;
+		case Net::MySQLUtil::MYSQL_TYPE_BLOB:
+			return DB::DBUtil::CT_Binary;
+		case Net::MySQLUtil::MYSQL_TYPE_VAR_STRING:
+			return DB::DBUtil::CT_VarChar;
+		case Net::MySQLUtil::MYSQL_TYPE_STRING:
+			return DB::DBUtil::CT_VarChar;
+		case Net::MySQLUtil::MYSQL_TYPE_GEOMETRY:
+			return DB::DBUtil::CT_Vector;
+		default:
+			return DB::DBUtil::CT_Unknown;
+	}
+}

@@ -77,6 +77,7 @@ namespace Data
 		UInt64 GetAsU64();
 		Bool GetAsBool();
 		void GetAsString(Text::StringBuilderUTF *sb);
+		UTF8Char *GetAsStringS(UTF8Char *buff, UOSInt buffSize);
 		Data::DateTime *GetAsNewDate();
 		Data::ReadonlyArray<UInt8> *GetAsNewByteArr();
 		Math::Vector2D *GetAsNewVector();
@@ -89,6 +90,7 @@ namespace Data
 
 		void SetNull();
 		void SetStr(const UTF8Char *str);
+		void SetStr(const UTF8Char *str, UOSInt strLen);
 		void SetStr(Text::String *str);
 		void SetDate(Data::DateTime *dt);
 		void SetF32(Single val);

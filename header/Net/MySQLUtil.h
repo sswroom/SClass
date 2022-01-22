@@ -75,6 +75,7 @@ namespace Net
 		static UInt8 *AppendLenencInt(UInt8 *buff, UInt64 val);
 		static UInt8 *AppendLenencStrC(UInt8 *buff, const UTF8Char *s, UOSInt len);
 		static MySQLType ColType2MySQLType(DB::DBUtil::ColType colType);
+		static DB::DBUtil::ColType MySQLType2ColType(MySQLType mysqlType);
 	};
 }
 #endif

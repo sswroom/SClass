@@ -17,6 +17,7 @@
 #define CLIVERSION "1.0.0"
 #define BUFFSIZE 65536
 
+#include <stdio.h>
 //#define VERBOSE
 #if defined(VERBOSE)
 #include "Text/StringBuilderUTF8.h"
@@ -86,75 +87,6 @@ public:
 		DEL_CLASS(this->rowEvt);
 		DEL_CLASS(this->nextRowEvt);
 		DEL_CLASS(this->mutUsage);
-	}
-
-	static DB::DBUtil::ColType DBType2ColType(Net::MySQLUtil::MySQLType colType)
-	{
-		switch (colType)
-		{
-			case Net::MySQLUtil::MYSQL_TYPE_DECIMAL:
-				return DB::DBUtil::CT_Double;
-			case Net::MySQLUtil::MYSQL_TYPE_TINY:
-				return DB::DBUtil::CT_Byte;
-			case Net::MySQLUtil::MYSQL_TYPE_SHORT:
-				return DB::DBUtil::CT_Int16;
-			case Net::MySQLUtil::MYSQL_TYPE_LONG:
-				return DB::DBUtil::CT_Int32;
-			case Net::MySQLUtil::MYSQL_TYPE_FLOAT:
-				return DB::DBUtil::CT_Float;
-			case Net::MySQLUtil::MYSQL_TYPE_DOUBLE:
-				return DB::DBUtil::CT_Double;
-			case Net::MySQLUtil::MYSQL_TYPE_NULL:
-				return DB::DBUtil::CT_Unknown;
-			case Net::MySQLUtil::MYSQL_TYPE_TIMESTAMP:
-				return DB::DBUtil::CT_DateTime;
-			case Net::MySQLUtil::MYSQL_TYPE_LONGLONG:
-				return DB::DBUtil::CT_Int64;
-			case Net::MySQLUtil::MYSQL_TYPE_INT24:
-				return DB::DBUtil::CT_Int32;
-			case Net::MySQLUtil::MYSQL_TYPE_DATE:
-				return DB::DBUtil::CT_DateTime;
-			case Net::MySQLUtil::MYSQL_TYPE_TIME:
-				return DB::DBUtil::CT_DateTime;
-			case Net::MySQLUtil::MYSQL_TYPE_DATETIME:
-				return DB::DBUtil::CT_DateTime;
-			case Net::MySQLUtil::MYSQL_TYPE_YEAR:
-				return DB::DBUtil::CT_DateTime;
-			case Net::MySQLUtil::MYSQL_TYPE_NEWDATE:
-				return DB::DBUtil::CT_DateTime;
-			case Net::MySQLUtil::MYSQL_TYPE_VARCHAR:
-				return DB::DBUtil::CT_VarChar;
-			case Net::MySQLUtil::MYSQL_TYPE_BIT:
-				return DB::DBUtil::CT_Bool;
-			case Net::MySQLUtil::MYSQL_TYPE_TIMESTAMP2:
-				return DB::DBUtil::CT_DateTime;
-			case Net::MySQLUtil::MYSQL_TYPE_DATETIME2:
-				return DB::DBUtil::CT_DateTime;
-			case Net::MySQLUtil::MYSQL_TYPE_TIME2:
-				return DB::DBUtil::CT_DateTime;
-			case Net::MySQLUtil::MYSQL_TYPE_NEWDECIMAL:
-				return DB::DBUtil::CT_Double;
-			case Net::MySQLUtil::MYSQL_TYPE_ENUM:
-				return DB::DBUtil::CT_Int32;
-			case Net::MySQLUtil::MYSQL_TYPE_SET:
-				return DB::DBUtil::CT_Unknown;
-			case Net::MySQLUtil::MYSQL_TYPE_TINY_BLOB:
-				return DB::DBUtil::CT_Binary;
-			case Net::MySQLUtil::MYSQL_TYPE_MEDIUM_BLOB:
-				return DB::DBUtil::CT_Binary;
-			case Net::MySQLUtil::MYSQL_TYPE_LONG_BLOB:
-				return DB::DBUtil::CT_Binary;
-			case Net::MySQLUtil::MYSQL_TYPE_BLOB:
-				return DB::DBUtil::CT_Binary;
-			case Net::MySQLUtil::MYSQL_TYPE_VAR_STRING:
-				return DB::DBUtil::CT_VarChar;
-			case Net::MySQLUtil::MYSQL_TYPE_STRING:
-				return DB::DBUtil::CT_VarChar;
-			case Net::MySQLUtil::MYSQL_TYPE_GEOMETRY:
-				return DB::DBUtil::CT_Vector;
-			default:
-				return DB::DBUtil::CT_Unknown;
-		}
 	}
 
 	virtual Bool ReadNext()
@@ -424,7 +356,7 @@ public:
 			colDef->SetColName(col->name);
 			colDef->SetColDP(col->decimals);
 			colDef->SetColSize(col->colLen);
-			colDef->SetColType(DBType2ColType(col->colType));
+			colDef->SetColType(Net::MySQLUtil::MySQLType2ColType(col->colType));
 			return true;
 		}
 		return false;
@@ -464,7 +396,7 @@ public:
 		col->charSet = ReadUInt16(&colDef[0]);
 		col->colLen = ReadUInt32(&colDef[2]);
 		col->colType = (Net::MySQLUtil::MySQLType)colDef[6];
-		col->dbColType = DBType2ColType(col->colType);
+		col->dbColType = Net::MySQLUtil::MySQLType2ColType(col->colType);
 		col->flags = ReadUInt16(&colDef[7]);
 		col->decimals = colDef[9];
 		colDef += 12;
@@ -524,6 +456,732 @@ public:
 		this->nextRow = 0;
 		this->nextRowReady = true;
 		this->rowEvt->Set();
+	}
+};
+
+
+class MySQLTCPBinaryReader : public DB::DBReader
+{
+private:
+	typedef struct
+	{
+		Text::String *name;
+		Text::String *defValues;
+		UInt32 colLen;
+		UInt16 charSet;
+		UInt16 flags;
+		Net::MySQLUtil::MySQLType colType;
+		DB::DBUtil::ColType dbColType;
+		UInt8 decimals;
+	} ColumnDef;
+
+	typedef struct
+	{
+		UOSInt len;
+		UOSInt ofst;
+		Bool isNull;
+	} RowColumn;
+
+	typedef struct
+	{
+		UInt8 *rowBuff;
+		UOSInt rowBuffCapacity;
+		RowColumn *cols;
+	} RowData;	
+
+	Data::ArrayList<ColumnDef*> *cols;
+	Net::MySQLUtil::MySQLType *colTypes;
+	UOSInt colCount;
+	OSInt rowChanged;
+	RowData *currRow;
+	RowData *nextRow;
+	Bool nextRowReady;
+	Sync::Event *rowEvt;
+	Sync::Event *nextRowEvt;
+	Sync::MutexUsage *mutUsage;
+	UInt32 stmtId;
+public:
+	MySQLTCPBinaryReader(Sync::MutexUsage *mutUsage)
+	{
+		this->mutUsage = mutUsage;
+		NEW_CLASS(this->cols, Data::ArrayList<ColumnDef*>());
+		this->colTypes = 0;
+		this->rowChanged = -1;
+		this->currRow = 0;
+		this->nextRow = 0;
+		this->colCount = 0;
+		this->nextRowReady = false;
+		this->stmtId = 0;
+		NEW_CLASS(this->nextRowEvt, Sync::Event(true, (const UTF8Char*)"MySQLTCPBinaryReader.nextRowEvt"));
+		NEW_CLASS(this->rowEvt, Sync::Event(true, (const UTF8Char*)"MySQLTCPBinaryReader.nextRowEvt"));
+	}
+
+	virtual ~MySQLTCPBinaryReader()
+	{
+		ColumnDef *col;
+		while (this->ReadNext())
+		{
+
+		}
+		UOSInt i = this->cols->GetCount();
+		while (i-- > 0)
+		{
+			col = this->cols->GetItem(i);
+			col->name->Release();
+			SDEL_STRING(col->defValues);
+			MemFree(col); 
+		}
+		DEL_CLASS(this->cols);
+		if (this->nextRow)
+		{
+			MemFree(this->nextRow->cols);
+			MemFree(this->nextRow->rowBuff);
+			MemFree(this->nextRow);
+			this->nextRow = 0;
+		}
+		if (this->currRow)
+		{
+			MemFree(this->currRow->cols);
+			MemFree(this->currRow->rowBuff);
+			MemFree(this->currRow);
+			this->currRow = 0;
+		}
+		DEL_CLASS(this->rowEvt);
+		DEL_CLASS(this->nextRowEvt);
+		DEL_CLASS(this->mutUsage);
+		if (this->colTypes)
+		{
+			MemFree(this->colTypes);
+			this->colTypes = 0;
+		}
+	}
+
+	virtual Bool ReadNext()
+	{
+		while (!this->nextRowReady)
+		{
+			this->rowEvt->Wait(1000);
+		}
+		if (this->nextRow)
+		{
+			RowData *row = this->currRow;
+			this->currRow = this->nextRow;
+			this->nextRow = row;
+			this->nextRowReady = false;
+			this->nextRowEvt->Set();
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	virtual UOSInt ColCount()
+	{
+		return this->colCount;
+	}
+
+	virtual OSInt GetRowChanged()
+	{
+		return this->rowChanged;
+	}
+
+	virtual Int32 GetInt32(UOSInt colIndex)
+	{
+		Data::VariItem item;
+		if (!this->GetVariItem(colIndex, &item))
+		{
+			return 0;
+		}
+		return item.GetAsI32();
+	}
+
+	virtual Int64 GetInt64(UOSInt colIndex)
+	{
+		Data::VariItem item;
+		if (!this->GetVariItem(colIndex, &item))
+		{
+			return 0;
+		}
+		return item.GetAsI64();
+	}
+
+	virtual WChar *GetStr(UOSInt colIndex, WChar *buff)
+	{
+		Data::VariItem item;
+		if (!this->GetVariItem(colIndex, &item))
+		{
+			return 0;
+		}
+		Text::StringBuilderUTF8 sb;
+		item.GetAsString(&sb);
+		return Text::StrUTF8_WChar(buff, sb.ToString(), 0);
+	}
+
+	virtual Bool GetStr(UOSInt colIndex, Text::StringBuilderUTF *sb)
+	{
+		Data::VariItem item;
+		if (!this->GetVariItem(colIndex, &item))
+		{
+			return false;
+		}
+		item.GetAsString(sb);
+		return true;
+	}
+
+	virtual Text::String *GetNewStr(UOSInt colIndex)
+	{
+		Data::VariItem item;
+		if (!this->GetVariItem(colIndex, &item))
+		{
+			return 0;
+		}
+		if (item.GetItemType() == Data::VariItem::ItemType::Str)
+		{
+			return item.GetItemValue().str->Clone();
+		}
+		else
+		{
+			Text::StringBuilderUTF8 sb;
+			item.GetAsString(&sb);
+			return Text::String::New(sb.ToString(), sb.GetLength());
+		}
+	}
+
+	virtual UTF8Char *GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSize)
+	{
+		Data::VariItem item;
+		if (!this->GetVariItem(colIndex, &item))
+		{
+			return 0;
+		}
+		return item.GetAsStringS(buff, buffSize);
+	}
+
+	virtual DateErrType GetDate(UOSInt colIndex, Data::DateTime *outVal)
+	{
+		if (this->IsNull(colIndex))
+		{
+			return DET_NULL;
+		}
+		Data::VariItem item;
+		if (!this->GetVariItem(colIndex, &item))
+		{
+			return DET_ERROR;
+		}
+		else
+		{
+			if (item.GetItemType() == Data::VariItem::ItemType::Date)
+			{
+				outVal->SetValue(item.GetItemValue().date);
+				return DET_OK;
+			}
+			else
+			{
+				return DET_ERROR;
+			}
+		}
+	}
+
+	virtual Double GetDbl(UOSInt colIndex)
+	{
+		Data::VariItem item;
+		if (!this->GetVariItem(colIndex, &item))
+		{
+			return 0;
+		}
+		return item.GetAsF64();
+	}
+
+	virtual Bool GetBool(UOSInt colIndex)
+	{
+		Data::VariItem item;
+		if (!this->GetVariItem(colIndex, &item))
+		{
+			return 0;
+		}
+		return item.GetAsBool();
+	}
+
+	virtual UOSInt GetBinarySize(UOSInt colIndex)
+	{
+		if (this->currRow == 0)
+		{
+			return 0;
+		}
+		if (colIndex >= this->colCount)
+		{
+			return 0;
+		}
+		return this->currRow->cols[colIndex].len;
+	}
+
+	virtual UOSInt GetBinary(UOSInt colIndex, UInt8 *buff)
+	{
+		if (this->currRow == 0)
+		{
+			return 0;
+		}
+		if (colIndex >= this->colCount)
+		{
+			return 0;
+		}
+		UOSInt len = this->currRow->cols[colIndex].len;
+		MemCopyNO(buff, &this->currRow->rowBuff[this->currRow->cols[colIndex].ofst], len);
+		return len;
+	}
+
+	virtual Math::Vector2D *GetVector(UOSInt colIndex)
+	{
+		Data::VariItem item;
+		if (!this->GetVariItem(colIndex, &item))
+		{
+			return 0;
+		}
+		return item.GetAndRemoveVector();
+	}
+
+	virtual Bool GetUUID(UOSInt colIndex, Data::UUID *uuid)
+	{
+		Data::VariItem item;
+		if (!this->GetVariItem(colIndex, &item))
+		{
+			return 0;
+		}
+		return item.GetAndRemoveUUID();
+	}
+
+	virtual Bool GetVariItem(UOSInt colIndex, Data::VariItem *item)
+	{
+		if (this->currRow == 0)
+		{
+			return false;
+		}
+		if (colIndex >= this->colCount)
+		{
+			return false;
+		}
+		RowColumn *col = &this->currRow->cols[colIndex];
+		if (col->isNull)
+		{
+			item->SetNull();
+			return true;
+		}
+		switch (this->colTypes[colIndex])
+		{
+		case Net::MySQLUtil::MYSQL_TYPE_STRING:
+		case Net::MySQLUtil::MYSQL_TYPE_VARCHAR:
+		case Net::MySQLUtil::MYSQL_TYPE_VAR_STRING:
+			item->SetStr(&this->currRow->rowBuff[col->ofst], col->len);
+			return true;
+		case Net::MySQLUtil::MYSQL_TYPE_LONG_BLOB:
+		case Net::MySQLUtil::MYSQL_TYPE_MEDIUM_BLOB:
+		case Net::MySQLUtil::MYSQL_TYPE_BLOB:
+		case Net::MySQLUtil::MYSQL_TYPE_TINY_BLOB:
+			item->SetByteArr(&this->currRow->rowBuff[col->ofst], col->len);
+			return true;
+
+		case Net::MySQLUtil::MYSQL_TYPE_LONGLONG:
+			item->SetI64(ReadInt64(&this->currRow->rowBuff[col->ofst]));
+			return true;
+
+		case Net::MySQLUtil::MYSQL_TYPE_LONG:
+		case Net::MySQLUtil::MYSQL_TYPE_INT24:
+			item->SetI32(ReadInt32(&this->currRow->rowBuff[col->ofst]));
+			return true;
+
+		case Net::MySQLUtil::MYSQL_TYPE_SHORT:
+		case Net::MySQLUtil::MYSQL_TYPE_YEAR:
+			item->SetI16(ReadInt16(&this->currRow->rowBuff[col->ofst]));
+			return true;
+
+		case Net::MySQLUtil::MYSQL_TYPE_TINY:
+			item->SetI8((Int8)this->currRow->rowBuff[col->ofst]);
+			return true;
+
+		case Net::MySQLUtil::MYSQL_TYPE_DOUBLE:
+			item->SetF64(ReadDouble(&this->currRow->rowBuff[col->ofst]));
+			return true;
+
+		case Net::MySQLUtil::MYSQL_TYPE_FLOAT:
+			item->SetF32(ReadFloat(&this->currRow->rowBuff[col->ofst]));
+			return true;
+
+		case Net::MySQLUtil::MYSQL_TYPE_DATE:
+		case Net::MySQLUtil::MYSQL_TYPE_DATETIME:
+		case Net::MySQLUtil::MYSQL_TYPE_TIMESTAMP:
+		{
+			Data::DateTime *dt;
+			switch (col->len)
+			{
+			case 0:
+				NEW_CLASS(dt, Data::DateTime());
+				dt->SetTicks(0);
+				item->SetDateDirect(dt);
+				return true;
+			case 4:
+				NEW_CLASS(dt, Data::DateTime());
+				dt->SetValueNoFix(ReadUInt16(&this->currRow->rowBuff[col->ofst]), this->currRow->rowBuff[col->ofst + 2], this->currRow->rowBuff[col->ofst + 3], 0, 0, 0, 0, 0);
+				item->SetDateDirect(dt);
+				return true;
+			case 7:
+				NEW_CLASS(dt, Data::DateTime());
+				dt->SetValueNoFix(ReadUInt16(&this->currRow->rowBuff[col->ofst]), this->currRow->rowBuff[col->ofst + 2], this->currRow->rowBuff[col->ofst + 3],
+					this->currRow->rowBuff[col->ofst + 4], this->currRow->rowBuff[col->ofst + 5], this->currRow->rowBuff[col->ofst + 6], 0, 0);
+				item->SetDateDirect(dt);
+				return true;
+			case 11:
+				NEW_CLASS(dt, Data::DateTime());
+				dt->SetValueNoFix(ReadUInt16(&this->currRow->rowBuff[col->ofst]), this->currRow->rowBuff[col->ofst + 2], this->currRow->rowBuff[col->ofst + 3],
+					this->currRow->rowBuff[col->ofst + 4], this->currRow->rowBuff[col->ofst + 5], this->currRow->rowBuff[col->ofst + 6], (UInt16)(ReadUInt32(&this->currRow->rowBuff[col->ofst + 7]) / 1000), 0);
+				item->SetDateDirect(dt);
+				return true;
+			default:
+				//////////////////////////////////////
+				printf("Unknown binary date format\r\n");
+				item->SetNull();
+				return true;
+			}
+		}
+		case Net::MySQLUtil::MYSQL_TYPE_TIME:
+		{
+			Double v;
+			switch (col->len)
+			{
+			case 0:
+				item->SetF64(0);
+				return true;
+			case 8:
+				v = ReadUInt32(&this->currRow->rowBuff[col->ofst + 1]) * 86400 + this->currRow->rowBuff[col->ofst + 5] * 3600 + this->currRow->rowBuff[col->ofst + 6] * 60 + this->currRow->rowBuff[col->ofst + 7];
+				if (this->currRow->rowBuff[col->ofst])
+				{
+					item->SetF64(-v);
+				}
+				else
+				{
+					item->SetF64(v);
+				}
+				return true;
+			case 12:
+				v = ReadUInt32(&this->currRow->rowBuff[col->ofst + 1]) * 86400 + this->currRow->rowBuff[col->ofst + 5] * 3600 + this->currRow->rowBuff[col->ofst + 6] * 60 + this->currRow->rowBuff[col->ofst + 7] + (ReadUInt32(&this->currRow->rowBuff[col->ofst + 1]) / 1000000);
+				if (this->currRow->rowBuff[col->ofst])
+				{
+					item->SetF64(-v);
+				}
+				else
+				{
+					item->SetF64(v);
+				}
+				return true;
+			default:
+				//////////////////////////////////////
+				printf("Unknown binary time format\r\n");
+				item->SetNull();
+				return true;
+			}
+		}
+
+		case Net::MySQLUtil::MYSQL_TYPE_NEWDATE:
+		case Net::MySQLUtil::MYSQL_TYPE_TIMESTAMP2:
+		case Net::MySQLUtil::MYSQL_TYPE_DATETIME2:
+		case Net::MySQLUtil::MYSQL_TYPE_TIME2:
+			//////////////////////////////////////
+			printf("Unknown binary date2 format\r\n");
+			item->SetNull();
+			return true;
+
+		case Net::MySQLUtil::MYSQL_TYPE_NULL:
+			item->SetNull();
+			return true;
+
+		case Net::MySQLUtil::MYSQL_TYPE_ENUM:
+		case Net::MySQLUtil::MYSQL_TYPE_SET:
+		case Net::MySQLUtil::MYSQL_TYPE_GEOMETRY:
+		case Net::MySQLUtil::MYSQL_TYPE_BIT:
+		case Net::MySQLUtil::MYSQL_TYPE_DECIMAL:
+		case Net::MySQLUtil::MYSQL_TYPE_NEWDECIMAL:
+		default:
+			////////////////////////////////////
+			printf("Unknown binary other format\r\n");
+			item->SetNull();
+			return true;
+		}
+	}
+
+	virtual Bool IsNull(UOSInt colIndex)
+	{
+		if (this->currRow == 0)
+		{
+			return true;
+		}
+		if (colIndex >= this->colCount)
+		{
+			return true;
+		}
+		return this->currRow->cols[colIndex].isNull;
+	}
+
+	virtual UTF8Char *GetName(UOSInt colIndex, UTF8Char *buff)
+	{
+		ColumnDef *col = this->cols->GetItem(colIndex);
+		if (col)
+		{
+			return Text::StrConcat(buff, col->name->v);
+		}
+		return 0;
+	}
+
+	virtual DB::DBUtil::ColType GetColType(UOSInt colIndex, UOSInt *colSize)
+	{
+		ColumnDef *col = this->cols->GetItem(colIndex);
+		if (col)
+		{
+			*colSize = col->colLen;
+			return col->dbColType;
+		}
+		return DB::DBUtil::CT_Unknown;
+	}
+
+	virtual Bool GetColDef(UOSInt colIndex, DB::ColDef *colDef)
+	{
+		ColumnDef *col = this->cols->GetItem(colIndex);
+		if (col)
+		{
+			colDef->SetColName(col->name);
+			colDef->SetColDP(col->decimals);
+			colDef->SetColSize(col->colLen);
+			colDef->SetColType(Net::MySQLUtil::MySQLType2ColType(col->colType));
+			return true;
+		}
+		return false;
+	}
+
+	void SetRowChanged(Int64 val)
+	{
+		this->rowChanged = (OSInt)val;
+		this->nextRowReady = true;
+	}
+
+	void AddColumnDef41(const UInt8 *colDef, UOSInt buffSize)
+	{
+		UInt64 v;
+		ColumnDef *col = MemAlloc(ColumnDef, 1);
+		const UInt8 *colEnd = colDef + buffSize;
+		colDef = Net::MySQLUtil::ReadLenencInt(colDef, &v); //catalog
+		colDef += v;
+		colDef = Net::MySQLUtil::ReadLenencInt(colDef, &v); //schema
+		colDef += v;
+		colDef = Net::MySQLUtil::ReadLenencInt(colDef, &v); //table
+		colDef += v;
+		colDef = Net::MySQLUtil::ReadLenencInt(colDef, &v); //org_table
+		colDef += v;
+		colDef = Net::MySQLUtil::ReadLenencInt(colDef, &v); //name
+		col->name = Text::String::New(colDef, (UOSInt)v);
+		colDef += v;
+		colDef = Net::MySQLUtil::ReadLenencInt(colDef, &v); //org_name
+		colDef += v;
+		if (colDef[0] != 12)
+		{
+			col->name->Release();
+			MemFree(col);
+			return;
+		}
+		colDef += 1;
+		col->charSet = ReadUInt16(&colDef[0]);
+		col->colLen = ReadUInt32(&colDef[2]);
+		col->colType = (Net::MySQLUtil::MySQLType)colDef[6];
+		col->dbColType = Net::MySQLUtil::MySQLType2ColType(col->colType);
+		col->flags = ReadUInt16(&colDef[7]);
+		col->decimals = colDef[9];
+		colDef += 12;
+		col->defValues = 0;
+		if (colDef < colEnd)
+		{
+			colDef = Net::MySQLUtil::ReadLenencInt(colDef, &v); //catalog
+			if ((colDef + v) <= colEnd)
+			{
+				col->defValues = Text::String::New(colDef, (UOSInt)v);
+			}
+		}
+		this->cols->Add(col);
+		this->colCount++;
+	}
+
+	void AddRowData(const UInt8 *rowData, UOSInt dataSize)
+	{
+		while (this->nextRowReady)
+		{
+			this->nextRowEvt->Wait(1000);
+		}
+		if (this->nextRow == 0)
+		{
+			this->nextRow = MemAlloc(RowData, 1);
+			this->nextRow->cols = MemAlloc(RowColumn, this->colCount);
+			this->nextRow->rowBuffCapacity = dataSize * 2;
+			this->nextRow->rowBuff = MemAlloc(UInt8, dataSize * 2);
+		}
+		else if (this->nextRow->rowBuffCapacity < dataSize)
+		{
+			this->nextRow->rowBuffCapacity = dataSize;
+			MemFree(this->nextRow->rowBuff);
+			this->nextRow->rowBuff = MemAlloc(UInt8, dataSize);
+		}
+		MemCopyNO(this->nextRow->rowBuff, rowData, dataSize);
+		UOSInt i = 0;
+		UOSInt j = this->colCount;
+		UInt64 v;
+		UOSInt nullOfst = 1;
+		UOSInt nullBitOfst = 2;
+		UOSInt tableOfst = 1 + ((j + 2 + 7) >> 3);
+		RowColumn *col;
+		while (i < j)
+		{
+			col = &this->nextRow->cols[i];
+			if (rowData[nullOfst] & (1 << nullBitOfst))
+			{
+				col->isNull = true;
+				col->ofst = 0;
+				col->len = 0;
+			}
+			else
+			{
+				col->isNull = false;
+				col->ofst = tableOfst;
+				switch (this->colTypes[i])
+				{
+				case Net::MySQLUtil::MYSQL_TYPE_STRING:
+				case Net::MySQLUtil::MYSQL_TYPE_VARCHAR:
+				case Net::MySQLUtil::MYSQL_TYPE_VAR_STRING:
+				case Net::MySQLUtil::MYSQL_TYPE_ENUM:
+				case Net::MySQLUtil::MYSQL_TYPE_SET:
+				case Net::MySQLUtil::MYSQL_TYPE_LONG_BLOB:
+				case Net::MySQLUtil::MYSQL_TYPE_MEDIUM_BLOB:
+				case Net::MySQLUtil::MYSQL_TYPE_BLOB:
+				case Net::MySQLUtil::MYSQL_TYPE_TINY_BLOB:
+				case Net::MySQLUtil::MYSQL_TYPE_GEOMETRY:
+				case Net::MySQLUtil::MYSQL_TYPE_BIT:
+				case Net::MySQLUtil::MYSQL_TYPE_DECIMAL:
+				case Net::MySQLUtil::MYSQL_TYPE_NEWDECIMAL:
+					col->ofst = (UOSInt)(Net::MySQLUtil::ReadLenencInt(&rowData[tableOfst], &v) - rowData);
+					col->len = (UOSInt)v;
+					tableOfst = col->ofst + (UOSInt)v;
+					break;
+
+				case Net::MySQLUtil::MYSQL_TYPE_LONGLONG:
+					tableOfst += 8;
+					col->len = 8;
+					break;
+
+				case Net::MySQLUtil::MYSQL_TYPE_LONG:
+				case Net::MySQLUtil::MYSQL_TYPE_INT24:
+					tableOfst += 4;
+					col->len = 4;
+					break;
+
+				case Net::MySQLUtil::MYSQL_TYPE_SHORT:
+				case Net::MySQLUtil::MYSQL_TYPE_YEAR:
+					tableOfst += 2;
+					col->len = 2;
+					break;
+
+				case Net::MySQLUtil::MYSQL_TYPE_TINY:
+					tableOfst += 1;
+					col->len = 1;
+					break;
+
+				case Net::MySQLUtil::MYSQL_TYPE_DOUBLE:
+					tableOfst += 8;
+					col->len = 8;
+					break;
+
+				case Net::MySQLUtil::MYSQL_TYPE_FLOAT:
+					tableOfst += 4;
+					col->len = 4;
+					break;
+
+				case Net::MySQLUtil::MYSQL_TYPE_DATE:
+				case Net::MySQLUtil::MYSQL_TYPE_DATETIME:
+				case Net::MySQLUtil::MYSQL_TYPE_TIMESTAMP:
+					col->len = rowData[tableOfst];
+					tableOfst += (UOSInt)col->len + 1;
+					col->ofst += 1;
+					break;
+
+				case Net::MySQLUtil::MYSQL_TYPE_TIME:
+					col->len = rowData[tableOfst];
+					tableOfst += (UOSInt)col->len + 1;
+					col->ofst += 1;
+					break;
+
+				case Net::MySQLUtil::MYSQL_TYPE_NEWDATE:
+				case Net::MySQLUtil::MYSQL_TYPE_TIMESTAMP2:
+				case Net::MySQLUtil::MYSQL_TYPE_DATETIME2:
+				case Net::MySQLUtil::MYSQL_TYPE_TIME2:
+					col->len = rowData[tableOfst];
+					tableOfst += (UOSInt)col->len + 1;
+					col->ofst += 1;
+					break;
+
+				case Net::MySQLUtil::MYSQL_TYPE_NULL:
+				default:
+					col->len = 0;
+					col->isNull = true;
+					break;
+				}
+			}
+			if (++nullBitOfst >= 8)
+			{
+				nullBitOfst -= 8;
+				nullOfst++;
+			}
+			i++;
+		}
+		this->nextRowReady = true;
+		this->rowEvt->Set();
+	}
+
+	void EndCols()
+	{
+		if (this->colTypes == 0)
+		{
+			this->colTypes = MemAlloc(Net::MySQLUtil::MySQLType, this->colCount);
+			UOSInt i = this->colCount;
+			while (i-- > 0)
+			{
+				this->colTypes[i] = this->cols->GetItem(i)->colType;
+			}
+		}
+	}
+
+	void EndData()
+	{
+		if (this->nextRow == 0 && this->nextRowReady)
+		{
+			return;
+		}
+		while (this->nextRowReady)
+		{
+			this->nextRowEvt->Wait(1000);
+		}
+		RowData *row = this->nextRow;
+		this->nextRow = 0;
+		this->nextRowReady = true;
+		this->rowEvt->Set();
+
+		MemFree(row->cols);
+		MemFree(row->rowBuff);
+		MemFree(row);
+	}
+
+	void SetStmtId(UInt32 stmtId)
+	{
+		this->stmtId = stmtId;
+	}
+
+	UInt32 GetStmtId()
+	{
+		return this->stmtId;
 	}
 };
 
@@ -607,7 +1265,7 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(void *userObj)
 								me->mode = 1;
 								////////////////////////////////
 #if defined(VERBOSE)
-								printf("MySQLTCP Server ver = %s\r\n", me->svrVer);
+								printf("MySQLTCP Server ver = %s\r\n", me->svrVer->v);
 								printf("MySQLTCP Conn Id = %d\r\n", me->connId);
 								sb->ClearStr();
 								sb->AppendHexBuff(me->authPluginData, me->authPluginDataSize, ' ', Text::LineBreakType::None);
@@ -623,7 +1281,7 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(void *userObj)
 							ptrCurr = &buff[6] + (sptr - sbuff);
 							me->svrVer = Text::String::NewNotNull(sbuff);
 #if defined(VERBOSE)
-							printf("MySQLTCP Server ver = %s\r\n", me->svrVer);
+							printf("MySQLTCP Server ver = %s\r\n", me->svrVer->v);
 #endif
 							if (ptrEnd - ptrCurr >= 15)
 							{
@@ -846,45 +1504,119 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(void *userObj)
 				{
 					break;
 				}
-				if (buff[readSize + 3] == (me->cmdSeqNum & 0xff) && me->cmdReader)
+				if (buff[readSize + 4] == 0xFF || (buff[readSize + 3] == (me->cmdSeqNum & 0xff) && me->cmdReader))
 				{
 					if (me->cmdSeqNum == 1)
 					{
-						if (buff[readSize + 4] == 0) //OK
+						if (me->cmdResultType == CmdResultType::ProcessingBinary)
 						{
-							Net::MySQLUtil::ReadLenencInt(&buff[readSize + 5], &val);
-							((MySQLTCPReader*)me->cmdReader)->SetRowChanged((Int64)val);
-							me->cmdResultType = 3;
-							me->cmdEvt->Set();
-#if defined(VERBOSE)
-							printf("MySQLTCP Command OK, row changed = %lld\r\n", val);
-#endif
-						}
-						else if (buff[readSize + 4] == 0xFF) //ERR
-						{
-							me->SetLastError(&buff[readSize + 7], packetSize - 3);
-							if (me->cmdReader)
+							if (buff[readSize + 4] == 0) //OK
 							{
-								if (me->cmdResultType == 0)
+								UInt32 stmtId = ReadUInt32(&buff[readSize + 5]);
+								((MySQLTCPBinaryReader*)me->cmdReader)->SetStmtId(stmtId);
+#if defined(VERBOSE)
+								UInt16 numColumns = ReadUInt16(&buff[readSize + 9]);
+								UInt16 numParams = ReadUInt16(&buff[readSize + 11]);
+								printf("MySQLTCP COM_STMT_PREPARE OK, stmt id = %d, num_columns = %d, num_params = %d\r\n", stmtId, numColumns, numParams);
+#endif
+							}
+							else if (buff[readSize + 4] == 0xFF) //ERR
+							{
+								me->SetLastError(&buff[readSize + 7], packetSize - 3);
+								if (me->cmdReader)
 								{
-									me->cmdResultType = 2;
+									me->cmdResultType = CmdResultType::Error;
+									me->cmdEvt->Set();
+									((MySQLTCPBinaryReader*)me->cmdReader)->EndData();
+								}
+								else
+								{
+									me->cmdResultType = CmdResultType::Error;
 									me->cmdEvt->Set();
 								}
-								((MySQLTCPReader*)me->cmdReader)->EndData();
+#if defined(VERBOSE)
+								printf("MySQLTCP COM_STMT_PREPARE Error\r\n");
+#endif
 							}
 							else
 							{
-								me->cmdResultType = 2;
+								me->cmdResultType = CmdResultType::Error;
 								me->cmdEvt->Set();
+								if (me->cmdReader)
+								{
+									((MySQLTCPBinaryReader*)me->cmdReader)->EndData();
+								}
+#if defined(VERBOSE)
+								printf("MySQLTCP COM_STMT_PREPARE Error\r\n");
+#endif
 							}
-//							me->cli->Close();
+						}
+						else if (me->cmdResultType == CmdResultType::BinaryExecuting)
+						{
+							if (buff[readSize + 4] == 0xFF) //ERR
+							{
+								me->SetLastError(&buff[readSize + 7], packetSize - 3);
+								if (me->cmdReader)
+								{
+									me->cmdResultType = CmdResultType::Error;
+									me->cmdEvt->Set();
+									((MySQLTCPBinaryReader*)me->cmdReader)->EndData();
+								}
+								else
+								{
+									me->cmdResultType = CmdResultType::Error;
+									me->cmdEvt->Set();
+								}
+#if defined(VERBOSE)
+								printf("MySQLTCP COM_STMT_EXECUTE Error\r\n");
+#endif
+							}
+							else
+							{
+								Net::MySQLUtil::ReadLenencInt(&buff[readSize + 4], &val);
+#if defined(VERBOSE)
+								printf("MySQLTCP COM_STMT_EXECUTE executed, column cnt = %lld\r\n", val);
+#endif
+							}
 						}
 						else
 						{
-							Net::MySQLUtil::ReadLenencInt(&buff[readSize + 4], &val);
+							if (buff[readSize + 4] == 0) //OK
+							{
+								Net::MySQLUtil::ReadLenencInt(&buff[readSize + 5], &val);
+								((MySQLTCPReader*)me->cmdReader)->SetRowChanged((Int64)val);
+								me->cmdResultType = CmdResultType::ResultEnd;
+								me->cmdEvt->Set();
 #if defined(VERBOSE)
-							printf("MySQLTCP Command executed, column cnt = %lld\r\n", val);
+								printf("MySQLTCP Command OK, row changed = %lld\r\n", val);
 #endif
+							}
+							else if (buff[readSize + 4] == 0xFF) //ERR
+							{
+								me->SetLastError(&buff[readSize + 7], packetSize - 3);
+								if (me->cmdReader)
+								{
+									if (me->cmdResultType == CmdResultType::Processing)
+									{
+										me->cmdResultType = CmdResultType::Error;
+										me->cmdEvt->Set();
+									}
+									((MySQLTCPReader*)me->cmdReader)->EndData();
+								}
+								else
+								{
+									me->cmdResultType = CmdResultType::Error;
+									me->cmdEvt->Set();
+								}
+	//							me->cli->Close();
+							}
+							else
+							{
+								Net::MySQLUtil::ReadLenencInt(&buff[readSize + 4], &val);
+#if defined(VERBOSE)
+								printf("MySQLTCP Command executed, column cnt = %lld\r\n", val);
+#endif
+							}
 						}
 					}
 					else if (buff[readSize + 4] == 0xFE) //EOF
@@ -892,30 +1624,87 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(void *userObj)
 #if defined(VERBOSE)
 						printf("MySQLTCP EOF found, curr result type = %d\r\n", (int)me->cmdResultType);
 #endif
-						if (me->cmdResultType == 0)
+						switch (me->cmdResultType)
 						{
-							me->cmdResultType = 1;
-						}
-						else
+						case CmdResultType::Processing:
+							me->cmdResultType = CmdResultType::ResultReady;
+							me->cmdEvt->Set();
+							break;
+						case CmdResultType::ProcessingBinary:
 						{
-							me->cmdResultType = 3;
-							((MySQLTCPReader*)me->cmdReader)->EndData();
-						}
-						me->cmdEvt->Set();
-					}
-					else if (me->cmdResultType == 0) //ColumnDef
-					{
+							UInt32 stmtId = ((MySQLTCPBinaryReader*)me->cmdReader)->GetStmtId();
+							me->cmdSeqNum = 0;
+							WriteUInt32(&sbuff[0], 10);
+							sbuff[3] = 0;
+							sbuff[4] = 0x17;
+							WriteUInt32(&sbuff[5], stmtId);
+							sbuff[9] = 0;
+							WriteUInt32(&sbuff[10], 1);
+							me->cli->Write(sbuff, 14);
 #if defined(VERBOSE)
-						printf("MySQLTCP Seq %d Column found\r\n", buff[readSize + 3]);
+							printf("MySQLTCP EOF found, execute statment id %d\r\n", stmtId);
 #endif
-						((MySQLTCPReader*)me->cmdReader)->AddColumnDef41(&buff[readSize + 4], packetSize);
+							me->cmdResultType = CmdResultType::BinaryExecuting;
+							me->cmdEvt->Set();
+							break;
+						}
+						case CmdResultType::BinaryExecuting:
+							me->cmdResultType = CmdResultType::BinaryResultReady;
+							((MySQLTCPBinaryReader*)me->cmdReader)->EndCols();
+							me->cmdEvt->Set();
+							break;
+						case CmdResultType::BinaryResultReady:
+							me->cmdResultType = CmdResultType::ResultEnd;
+							((MySQLTCPBinaryReader*)me->cmdReader)->EndData();
+							me->cmdEvt->Set();
+							break;
+						case CmdResultType::ResultEnd:
+						case CmdResultType::ResultReady:
+						case CmdResultType::Error:
+						default:
+							me->cmdResultType = CmdResultType::ResultEnd;
+							((MySQLTCPReader*)me->cmdReader)->EndData();
+							me->cmdEvt->Set();
+							break;
+						}
 					}
 					else
 					{
+						switch (me->cmdResultType)
+						{
+						case CmdResultType::Processing: //ColumnDef
 #if defined(VERBOSE)
-						printf("MySQLTCP Seq %d Row found\r\n", buff[readSize + 3]);
+							printf("MySQLTCP Seq %d Column found\r\n", buff[readSize + 3]);
 #endif
-						((MySQLTCPReader*)me->cmdReader)->AddRowData(&buff[readSize + 4], packetSize);
+							((MySQLTCPReader*)me->cmdReader)->AddColumnDef41(&buff[readSize + 4], packetSize);
+							break;
+						case CmdResultType::ProcessingBinary: //ColumnDefinition
+#if defined(VERBOSE)
+							printf("MySQLTCP Seq %d Statement Column found\r\n", buff[readSize + 3]);
+#endif
+							break;
+						case CmdResultType::BinaryExecuting:
+#if defined(VERBOSE)
+							printf("MySQLTCP Seq %d Binary Column found\r\n", buff[readSize + 3]);
+#endif
+							((MySQLTCPBinaryReader*)me->cmdReader)->AddColumnDef41(&buff[readSize + 4], packetSize);
+							break;
+						case CmdResultType::BinaryResultReady:
+#if defined(VERBOSE)
+							printf("MySQLTCP Seq %d Binary Row found\r\n", buff[readSize + 3]);
+#endif
+							((MySQLTCPBinaryReader*)me->cmdReader)->AddRowData(&buff[readSize + 4], packetSize);
+							break;
+						case CmdResultType::ResultEnd:
+						case CmdResultType::Error:
+						case CmdResultType::ResultReady:
+						default:
+#if defined(VERBOSE)
+							printf("MySQLTCP Seq %d Text Row found\r\n", buff[readSize + 3]);
+#endif
+							((MySQLTCPReader*)me->cmdReader)->AddRowData(&buff[readSize + 4], packetSize);
+							break;
+						}
 					}
 					me->cmdSeqNum++;
 				}
@@ -943,12 +1732,12 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(void *userObj)
 
 	if (me->cmdReader)
 	{
-		if (me->cmdResultType == 0)
+		if (me->cmdResultType == CmdResultType::Processing)
 		{
 #if defined(VERBOSE)	
 			printf("MySQLTCP End Conn: signal waiting\r\n");
 #endif
-			me->cmdResultType = 2;
+			me->cmdResultType = CmdResultType::Error;
 			me->cmdEvt->Set();
 		}
 		else
@@ -1011,7 +1800,7 @@ Net::MySQLTCPClient::MySQLTCPClient(Net::SocketFactory *sockf, const Net::Socket
 	NEW_CLASS(this->cmdEvt, Sync::Event(true, (const UTF8Char*)"Net.MySQLTCPCLient.cmdEvt"));
 	this->cmdSeqNum = 0;
 	this->cmdReader = 0;
-	this->cmdResultType = 0;
+	this->cmdResultType = CmdResultType::Processing;
 	NEW_CLASS(this->cliMut, Sync::Mutex());
 	this->cli = 0;
 	this->Reconnect();
@@ -1038,7 +1827,7 @@ Net::MySQLTCPClient::MySQLTCPClient(Net::SocketFactory *sockf, const Net::Socket
 	NEW_CLASS(this->cmdEvt, Sync::Event(true, (const UTF8Char*)"Net.MySQLTCPCLient.cmdEvt"));
 	this->cmdSeqNum = 0;
 	this->cmdReader = 0;
-	this->cmdResultType = 0;
+	this->cmdResultType = CmdResultType::Processing;
 	NEW_CLASS(this->cliMut, Sync::Mutex());
 	this->cli = 0;
 	this->Reconnect();
@@ -1128,7 +1917,7 @@ OSInt Net::MySQLTCPClient::ExecuteNonQuery(const UTF8Char *sql)
 
 OSInt Net::MySQLTCPClient::ExecuteNonQueryC(const UTF8Char *sql, UOSInt sqlLen)
 {
-	DB::DBReader *reader = ExecuteReaderC(sql, sqlLen);
+	DB::DBReader *reader = ExecuteReaderTextC(sql, sqlLen);
 	if (reader == 0)
 	{
 		return -2;
@@ -1148,6 +1937,11 @@ DB::DBReader *Net::MySQLTCPClient::ExecuteReader(const UTF8Char *sql)
 
 DB::DBReader *Net::MySQLTCPClient::ExecuteReaderC(const UTF8Char *sql, UOSInt sqlLen)
 {
+	return ExecuteReaderBinaryC(sql, sqlLen);
+}
+
+DB::DBReader *Net::MySQLTCPClient::ExecuteReaderTextC(const UTF8Char *sql, UOSInt sqlLen)
+{
 	if (this->cli == 0 || !this->recvRunning)
 	{
 		this->lastDataError = DE_CONN_ERROR;
@@ -1164,7 +1958,7 @@ DB::DBReader *Net::MySQLTCPClient::ExecuteReaderC(const UTF8Char *sql, UOSInt sq
 	MySQLTCPReader *reader;
 	Sync::MutexUsage *mutUsage;
 	NEW_CLASS(mutUsage, Sync::MutexUsage(this->cmdMut));
-	this->cmdResultType = 0;
+	this->cmdResultType = CmdResultType::Processing;
 	this->cmdSeqNum = 1;
 	NEW_CLASS(reader, MySQLTCPReader(mutUsage));
 	this->cmdReader = reader;
@@ -1186,11 +1980,67 @@ DB::DBReader *Net::MySQLTCPClient::ExecuteReaderC(const UTF8Char *sql, UOSInt sq
 #endif
 //	dt.SetCurrTimeUTC();
 //	startTime = dt.ToTicks();
-	while (this->cmdResultType == 0)
+	while (this->cmdResultType == CmdResultType::Processing)
 	{
 		this->cmdEvt->Wait(10000);
 	}
-	if (this->cmdResultType == 2)
+	if (this->cmdResultType == CmdResultType::Error)
+	{
+		this->cmdReader = 0;
+		reader->EndData();
+		DEL_CLASS(reader);
+		this->lastDataError = DE_EXEC_SQL_ERROR;
+		return 0;
+	}
+	this->lastDataError = DE_NO_ERROR;
+	return reader;
+}
+
+DB::DBReader *Net::MySQLTCPClient::ExecuteReaderBinaryC(const UTF8Char *sql, UOSInt sqlLen)
+{
+	if (this->cli == 0 || !this->recvRunning)
+	{
+		this->lastDataError = DE_CONN_ERROR;
+		return 0;
+	}
+	while (this->mode != 2)
+	{
+		if (this->cli == 0 || !this->recvRunning)
+		{
+			return 0;
+		}
+		Sync::Thread::Sleep(10);
+	}
+	MySQLTCPBinaryReader *reader;
+	Sync::MutexUsage *mutUsage;
+	NEW_CLASS(mutUsage, Sync::MutexUsage(this->cmdMut));
+	this->cmdResultType = CmdResultType::ProcessingBinary;
+	this->cmdSeqNum = 1;
+	NEW_CLASS(reader, MySQLTCPBinaryReader(mutUsage));
+	this->cmdReader = reader;
+	UInt8 *buff = MemAlloc(UInt8, sqlLen + 5);
+	WriteInt32(buff, (Int32)(sqlLen + 1));
+	buff[4] = 22;
+	MemCopyNO(&buff[5], sql, sqlLen);
+	if (this->cli->Write(buff, 5 + sqlLen) != 5 + sqlLen)
+	{
+		this->cmdReader = 0;
+		DEL_CLASS(reader);
+		MemFree(buff);
+		this->lastDataError = DE_CONN_ERROR;
+		return 0;
+	}
+	MemFree(buff);
+#if defined(VERBOSE)
+	printf("MySQLTCP Sent Prepare Stmt: %s\r\n", sql);
+#endif
+//	dt.SetCurrTimeUTC();
+//	startTime = dt.ToTicks();
+	while (this->cmdResultType == CmdResultType::ProcessingBinary || this->cmdResultType == CmdResultType::BinaryExecuting)
+	{
+		this->cmdEvt->Wait(10000);
+	}
+	if (this->cmdResultType == CmdResultType::Error)
 	{
 		this->cmdReader = 0;
 		reader->EndData();
@@ -1207,7 +2057,7 @@ void Net::MySQLTCPClient::CloseReader(DB::DBReader *r)
 	while (r->ReadNext())
 	{
 	}
-	while (this->cmdResultType != 3)
+	while (this->cmdResultType != CmdResultType::ResultEnd && this->cmdResultType != CmdResultType::Error)
 	{
 		this->cmdEvt->Wait(10000);
 	}

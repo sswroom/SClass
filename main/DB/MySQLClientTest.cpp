@@ -380,6 +380,71 @@ Data::NamedClass<Userfile> *Userfile::CreateClass()
 	return cls;
 }
 
+IO::ConsoleWriter *console;
+
+void TextReadAll(DB::DBTool *db)
+{
+	Data::ArrayList<Userfile*> dataList;
+	DB::DBReader *r = db->GetTableData((const UTF8Char*)"userfile", 0, 0, 0, 0, 0);
+	if (r)
+	{
+		Data::NamedClass<Userfile> *cls = Userfile().CreateClass();
+		r->ReadAll(&dataList, cls);
+		db->CloseReader(r);
+		DEL_CLASS(cls);
+
+		Userfile *userfile;
+		UOSInt i = dataList.GetCount();
+		while (i-- > 0)
+		{
+			userfile = dataList.GetItem(i);
+			DEL_CLASS(userfile);
+		}
+
+	}
+	else
+	{
+		console->WriteLineC(UTF8STRC("Error in loading reading table"));
+	}
+}
+
+void TestBinaryRead(DB::DBTool *db)
+{
+	Data::ArrayList<Userfile*> dataList;
+	Net::MySQLTCPClient *conn = (Net::MySQLTCPClient*)db->GetDBConn();
+	DB::DBReader *r = conn->ExecuteReaderBinaryC(UTF8STRC("select * from userfile"));
+	if (r)
+	{
+		Data::NamedClass<Userfile> *cls = Userfile().CreateClass();
+		r->ReadAll(&dataList, cls);
+		db->CloseReader(r);
+		DEL_CLASS(cls);
+
+		Userfile *userfile;
+		UOSInt i = dataList.GetCount();
+		while (i-- > 0)
+		{
+			userfile = dataList.GetItem(i);
+			DEL_CLASS(userfile);
+		}
+/*
+		UOSInt rowCnt = 0;
+		UTF8Char sbuff[64];
+		UTF8Char *sptr;
+		while (r->ReadNext())
+		{
+			rowCnt++;
+			sptr = Text::StrConcatC(Text::StrUOSInt(sbuff, rowCnt), UTF8STRC(" rows read"));
+			console->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
+		}
+		conn->CloseReader(r);*/
+	}
+	else
+	{
+		console->WriteLineC(UTF8STRC("Error in loading reading table"));
+	}
+}
+
 Int32 MyMain(Core::IProgControl *progCtrl)
 {
 	const UTF8Char *mysqlServer;
@@ -388,45 +453,27 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	const UTF8Char *mysqlPWD;
 	mysqlServer = (const UTF8Char*)"192.168.0.15";
 	mysqlDB = (const UTF8Char*)"organism";
-	mysqlUID = (const UTF8Char*)"";
-	mysqlPWD = (const UTF8Char*)"";
+	mysqlUID = (const UTF8Char*)"sswr";
+	mysqlPWD = (const UTF8Char*)"simon5";
 
 	IO::LogTool log;
 	Net::SocketFactory *sockf;
 	DB::DBTool *db;
-	IO::ConsoleWriter console;
+	NEW_CLASS(console, IO::ConsoleWriter());
 	NEW_CLASS(sockf, Net::OSSocketFactory(false));
 	db = Net::MySQLTCPClient::CreateDBTool(sockf, mysqlServer, mysqlDB, mysqlUID, mysqlPWD, &log, (const UTF8Char*)"DB: ");
 	if (db)
 	{
-		Data::ArrayList<Userfile*> dataList;
-		DB::DBReader *r = db->GetTableData((const UTF8Char*)"userfile", 0, 0, 0, 0, 0);
-		if (r)
-		{
-			Data::NamedClass<Userfile> *cls = Userfile().CreateClass();
-			r->ReadAll(&dataList, cls);
-			db->CloseReader(r);
-			DEL_CLASS(cls);
+		TestBinaryRead(db);
+		TextReadAll(db);
 
-			Userfile *userfile;
-			UOSInt i = dataList.GetCount();
-			while (i-- > 0)
-			{
-				userfile = dataList.GetItem(i);
-				DEL_CLASS(userfile);
-			}
-
-		}
-		else
-		{
-			console.WriteLineC(UTF8STRC("Error in loading reading table"));
-		}
 		DEL_CLASS(db);
 	}
 	else
 	{
-		console.WriteLineC(UTF8STRC("Error in opening database"));
+		console->WriteLineC(UTF8STRC("Error in opening database"));
 	}
 	DEL_CLASS(sockf);
+	DEL_CLASS(console);
 	return 0;
 }

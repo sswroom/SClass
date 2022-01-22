@@ -542,6 +542,69 @@ void Data::VariItem::GetAsString(Text::StringBuilderUTF *sb)
 	}
 }
 
+UTF8Char *Data::VariItem::GetAsStringS(UTF8Char *sbuff, UOSInt buffSize)
+{
+	switch (this->itemType)
+	{
+	case ItemType::Unknown:
+	case ItemType::Null:
+		return Text::StrConcatC(sbuff, UTF8STRC("null"));
+	case ItemType::F32:
+		return Text::StrDouble(sbuff, this->val.f32);
+	case ItemType::F64:
+		return Text::StrDouble(sbuff, this->val.f64);
+	case ItemType::I8:
+		return Text::StrInt16(sbuff, this->val.i8);
+	case ItemType::U8:
+		return Text::StrUInt16(sbuff, this->val.u8);
+	case ItemType::I16:
+		return Text::StrInt16(sbuff, this->val.i16);
+	case ItemType::U16:
+		return Text::StrUInt16(sbuff, this->val.u16);
+	case ItemType::I32:
+		return Text::StrInt32(sbuff, this->val.i32);
+	case ItemType::U32:
+		return Text::StrUInt32(sbuff, this->val.u32);
+	case ItemType::I64:
+		return Text::StrInt64(sbuff, this->val.i64);
+	case ItemType::U64:
+		return Text::StrUInt64(sbuff, this->val.u64);
+	case ItemType::BOOL:
+		if (this->val.boolean)
+		{
+			return Text::StrConcatC(sbuff, UTF8STRC("true"));
+		}
+		else
+		{
+			return Text::StrConcatC(sbuff, UTF8STRC("false"));
+		}
+		break;
+	case ItemType::Str:
+		return this->val.str->ConcatToS(sbuff, buffSize);
+	case ItemType::Date:
+		return this->val.date->ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
+	case ItemType::ByteArr:
+		if (buffSize > (this->val.byteArr->GetCount() << 1))
+		{
+			return Text::StrHexBytes(sbuff, this->val.byteArr->GetArray(), this->val.byteArr->GetCount(), 0);
+		}
+		else
+		{
+			return Text::StrHexBytes(sbuff, this->val.byteArr->GetArray(), (buffSize - 1) >> 1, 0);
+		}
+	case ItemType::Vector:
+		*sbuff = 0;
+		return sbuff;
+	case ItemType::UUID:
+		{
+			return Text::StrConcatC(this->val.uuid->ToString(Text::StrConcatC(sbuff, UTF8STRC("{"))), UTF8STRC("}"));
+		}
+	default:
+		*sbuff = 0;
+		return sbuff;
+	}
+}
+
 Data::DateTime *Data::VariItem::GetAsNewDate()
 {
 	Data::DateTime *date;
@@ -642,6 +705,21 @@ void Data::VariItem::SetStr(const UTF8Char *str)
 	if (str)
 	{
 		this->val.str = Text::String::NewNotNull(str);
+		this->itemType = ItemType::Str;
+	}
+	else
+	{
+		this->val.str = 0;
+		this->itemType = ItemType::Null;
+	}
+}
+
+void Data::VariItem::SetStr(const UTF8Char *str, UOSInt strLen)
+{
+	this->FreeItem();
+	if (str)
+	{
+		this->val.str = Text::String::New(str, strLen);
 		this->itemType = ItemType::Str;
 	}
 	else
