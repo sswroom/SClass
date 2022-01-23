@@ -9,6 +9,7 @@
 UInt32 __stdcall Media::Batch::BatchLoader::ThreadProc(void *userObj)
 {
 	UTF8Char sbuff[256];
+	UTF8Char *sptr;
 	const UTF8Char *fileName = 0;
 	DataInfo *info = 0;
 	Bool found;
@@ -66,8 +67,8 @@ UInt32 __stdcall Media::Batch::BatchLoader::ThreadProc(void *userObj)
 						}
 						mutUsage.EndUse();
 						
-						Text::StrConcat(sbuff, fileName);
-						i = Text::StrLastIndexOfChar(sbuff, '.');
+						sptr = Text::StrConcat(sbuff, fileName);
+						i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), '.');
 						if (i != INVALID_INDEX)
 						{
 							sbuff[i] = 0;

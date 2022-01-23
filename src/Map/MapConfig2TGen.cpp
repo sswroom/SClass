@@ -4197,10 +4197,10 @@ void Map::MapConfig2TGen::LoadLabels(Media::DrawImage *img, Map::MapConfig2TGen:
 	else
 	{
 		sptr = Text::StrConcat(sbuff, fileName);
-		i = Text::StrLastIndexOfChar(sbuff, IO::Path::PATH_SEPERATOR);
+		i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
 		UTF8Char *fname = &sbuff[i + 1];
 		fname[-1] = 0;
-		i = Text::StrLastIndexOfChar(sbuff, IO::Path::PATH_SEPERATOR);
+		i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(fname - sbuff - 1), IO::Path::PATH_SEPERATOR);
 		UTF8Char *fpath = &sbuff[i + 1];
 		sptr = Text::StrInt32(fpath, xId >> 5);
 		sptr = Text::StrConcatC(sptr, UTF8STRC("_"));

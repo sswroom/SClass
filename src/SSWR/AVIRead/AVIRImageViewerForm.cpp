@@ -390,7 +390,7 @@ void SSWR::AVIRead::AVIRImageViewerForm::SetImage(Media::ImageList *imgList, Boo
 		{
 			this->fileIndex = INVALID_INDEX;
 			sptr = this->imgList->GetSourceName(sbuff);
-			i = Text::StrLastIndexOfChar(sbuff, IO::Path::PATH_SEPERATOR);
+			i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
 			if (i != INVALID_INDEX)
 			{
 				sbuff[i] = 0;

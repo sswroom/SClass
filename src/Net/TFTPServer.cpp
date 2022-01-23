@@ -96,7 +96,7 @@ void __stdcall Net::TFTPServer::OnCommandPacket(const Net::SocketUtil::AddressIn
 			sess->isWrite = false;
 			sess->isLast = false;
 			sess->currBlock = 1;
-			sess->fileName = Text::StrCopyNew(sb.ToString());
+			sess->fileName = Text::String::New(sb.ToString(), sb.GetLength());
 			Sync::MutexUsage mutUsage(me->mut);
 			me->sessMap->Put(sess->sessId, sess);
 
@@ -171,7 +171,7 @@ void __stdcall Net::TFTPServer::OnCommandPacket(const Net::SocketUtil::AddressIn
 			sess->isWrite = true;
 			sess->isLast = false;
 			sess->currBlock = 0;
-			sess->fileName = Text::StrCopyNew(sb.ToString());
+			sess->fileName = Text::String::New(sb.ToString(), sb.GetLength());
 			Sync::MutexUsage mutUsage(me->mut);
 			me->sessMap->Put(sess->sessId, sess);
 			mutUsage.EndUse();
@@ -247,8 +247,8 @@ void __stdcall Net::TFTPServer::OnDataPacket(const Net::SocketUtil::AddressInfo 
 						Text::StringBuilderUTF8 sb;
 						UOSInt i;
 						sb.AppendC(UTF8STRC("End receiving "));
-						i = Text::StrLastIndexOfChar(sess->fileName, IO::Path::PATH_SEPERATOR);
-						sb.Append(&sess->fileName[i + 1]);
+						i = sess->fileName->LastIndexOf(IO::Path::PATH_SEPERATOR);
+						sb.Append(&sess->fileName->v[i + 1]);
 						sb.AppendC(UTF8STRC(" to "));
 						Net::SocketUtil::GetAddrName(repBuff, addr, port);
 						sb.Append(repBuff);
@@ -278,8 +278,8 @@ void __stdcall Net::TFTPServer::OnDataPacket(const Net::SocketUtil::AddressInfo 
 						Text::StringBuilderUTF8 sb;
 						UOSInt i;
 						sb.AppendC(UTF8STRC("End sending "));
-						i = Text::StrLastIndexOfChar(sess->fileName, IO::Path::PATH_SEPERATOR);
-						sb.Append(&sess->fileName[i + 1]);
+						i = sess->fileName->LastIndexOf(IO::Path::PATH_SEPERATOR);
+						sb.Append(&sess->fileName->v[i + 1]);
 						sb.AppendC(UTF8STRC(" to "));
 						Net::SocketUtil::GetAddrName(repBuff, addr, port);
 						sb.Append(repBuff);
@@ -337,7 +337,7 @@ UInt32 __stdcall Net::TFTPServer::CheckThread(void *userObj)
 				if (sess->isWrite)
 				{
 					sess->stm->Close();
-					IO::Path::DeleteFile(sess->fileName);
+					IO::Path::DeleteFile(sess->fileName->v);
 				}
 				me->ReleaseSess(sess);
 			}
@@ -352,7 +352,7 @@ UInt32 __stdcall Net::TFTPServer::CheckThread(void *userObj)
 
 void Net::TFTPServer::ReleaseSess(SessionInfo *sess)
 {
-	Text::StrDelNew(sess->fileName);
+	sess->fileName->Release();
 	DEL_CLASS(sess->stm);
 	MemFree(sess);
 }

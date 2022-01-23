@@ -38,7 +38,7 @@ IO::FileFindRecur::~FileFindRecur()
 	MemFree(this->srcStrs);
 }
 
-const UTF8Char *IO::FileFindRecur::NextFile(IO::Path::PathType *pt)
+Text::CString IO::FileFindRecur::NextFile(IO::Path::PathType *pt)
 {
 	UOSInt i;
 	IO::Path::PathType thisPt;
@@ -60,7 +60,7 @@ const UTF8Char *IO::FileFindRecur::NextFile(IO::Path::PathType *pt)
 			{
 				if (i == 0)
 				{
-					return 0;
+					return {0, 0};
 				}
 				i--;
 				if (IO::Path::IsSearchPattern(this->srcStrs[i]))
@@ -105,7 +105,7 @@ const UTF8Char *IO::FileFindRecur::NextFile(IO::Path::PathType *pt)
 						{
 							if (i == 0)
 							{
-								return 0;
+								return {0, 0};
 							}
 							i--;
 							if (IO::Path::IsSearchPattern(this->srcStrs[i]))
@@ -130,7 +130,7 @@ const UTF8Char *IO::FileFindRecur::NextFile(IO::Path::PathType *pt)
 					{
 						if (i == 0)
 						{
-							return 0;
+							return {0, 0};
 						}
 						i--;
 						if (IO::Path::IsSearchPattern(this->srcStrs[i]))
@@ -151,14 +151,15 @@ const UTF8Char *IO::FileFindRecur::NextFile(IO::Path::PathType *pt)
 			}
 			i++;
 		}
-		thisPt = IO::Path::GetPathType(this->currBuff, Text::StrCharCnt(this->currBuff));
+		UOSInt buffLen = Text::StrCharCnt(this->currBuff);
+		thisPt = IO::Path::GetPathType(this->currBuff, buffLen);
 		if (thisPt != IO::Path::PathType::Unknown)
 		{
 			if (pt)
 			{
 				*pt = thisPt;
 			}
-			return this->currBuff;
+			return {this->currBuff, buffLen};
 		}
 	}
 }

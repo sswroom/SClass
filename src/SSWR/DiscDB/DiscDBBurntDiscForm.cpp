@@ -887,7 +887,7 @@ void __stdcall SSWR::DiscDB::DiscDBBurntDiscForm::OnBrowseClicked(void *userObj)
 		me->selectedFile = 0;
 		me->pnlFile->SetEnabled(false);
 		me->SearchSubDir(sbBasePath.ToString(), (const UTF8Char*)"", 50000000000LL);
-		i = Text::StrLastIndexOfChar(sbBasePath.ToString(), IO::Path::PATH_SEPERATOR);
+		i = Text::StrLastIndexOfCharC(sbBasePath.ToString(), sbBasePath.GetLength(), IO::Path::PATH_SEPERATOR);
 		me->txtDiscId->SetText(sbBasePath.ToString() + i + 1);
 	}
 	DEL_CLASS(ofd);

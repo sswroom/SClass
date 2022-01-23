@@ -270,6 +270,7 @@ void SSWR::AVIRead::AVIRCoreWin::SaveData(UI::GUIForm *ownerForm, IO::ParsedObje
 		UTF8Char sbuff1[256];
 		UTF8Char sbuff2[256];
 		UTF8Char u8buff[256];
+		UTF8Char *u8ptr;
 		Text::StringBuilderUTF8 *sb;
 		NEW_CLASS(exp2, Data::ArrayList<IO::FileExporter*>());
 		NEW_CLASS(sb, Text::StringBuilderUTF8());
@@ -290,9 +291,9 @@ void SSWR::AVIRead::AVIRCoreWin::SaveData(UI::GUIForm *ownerForm, IO::ParsedObje
 			}
 			i++;
 		}
-		if (pobj->GetSourceName(u8buff))
+		if ((u8ptr = pobj->GetSourceName(u8buff)) != 0)
 		{
-			if ((i = Text::StrLastIndexOfChar(u8buff, '.')) != INVALID_INDEX)
+			if ((i = Text::StrLastIndexOfCharC(u8buff, (UOSInt)(u8ptr - u8buff), '.')) != INVALID_INDEX)
 			{
 				u8buff[i] = 0;
 			}

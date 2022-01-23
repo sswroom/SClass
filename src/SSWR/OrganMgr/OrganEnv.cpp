@@ -314,6 +314,7 @@ Data::ArrayList<SSWR::OrganMgr::OrganGroupType*> *SSWR::OrganMgr::OrganEnv::GetG
 Bool SSWR::OrganMgr::OrganEnv::SetSpeciesImg(OrganSpecies *sp, OrganImageItem *img)
 {
 	UTF8Char sbuff[512];
+	UTF8Char *sptr;
 	UOSInt i;
 	if (img->GetFileType() == OrganImageItem::FT_USERFILE)
 	{
@@ -327,8 +328,8 @@ Bool SSWR::OrganMgr::OrganEnv::SetSpeciesImg(OrganSpecies *sp, OrganImageItem *i
 	}
 	else
 	{
-		img->GetDispName()->ConcatTo(sbuff);
-		i = Text::StrLastIndexOfChar(sbuff, '.');
+		sptr = img->GetDispName()->ConcatTo(sbuff);
+		i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), '.');
 		if (i != INVALID_INDEX)
 		{
 			sbuff[i] = 0;

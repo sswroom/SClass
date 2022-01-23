@@ -54,7 +54,7 @@ IO::ParsedObject *Parser::FileParser::SPREDParser::ParseFile(IO::IStreamData *fd
 	Int32 cmdType;
 	UInt32 cmdSize;
 	Text::String *s = fd->GetFullName();
-	i = Text::StrLastIndexOfChar(s->v, IO::Path::PATH_SEPERATOR);
+	i = Text::StrLastIndexOfCharC(s->v, s->leng, IO::Path::PATH_SEPERATOR);
 	sptr = Text::StrConcatC(u8buff, &s->v[i + 1], s->leng - i - 1);
 	if (!Text::StrStartsWithICaseC(u8buff, (UOSInt)(sptr - u8buff), UTF8STRC("RED")))
 	{

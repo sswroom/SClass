@@ -968,9 +968,10 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 							else
 							{
 								UTF8Char sbuff[512];
-								Text::StrConcat(sbuff, module->moduleFileName);
-								j = Text::StrLastIndexOfChar(sbuff, IO::Path::PATH_SEPERATOR);
-								Text::StrConcat(&sbuff[j + 1], sb.ToString());
+								UTF8Char *sptr;
+								sptr = Text::StrConcat(sbuff, module->moduleFileName);
+								j = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
+								Text::StrConcatC(&sbuff[j + 1], sb.ToString(), sb.GetLength());
 								succ = LoadFileInner(sbuff, errMessage, false);
 								if (!succ)
 								{

@@ -362,8 +362,8 @@ void __stdcall SSWR::AVIRead::AVIRHQMPForm::OnTimerTick(void *userObj)
 		UOSInt j;
 		UTF8Char *u8ptr;
 		Int32 partNum;
-		me->GetOpenedFile()->GetSourceName(u8buff);
-		i = Text::StrLastIndexOfChar(u8buff, '.');
+		u8ptr = me->GetOpenedFile()->GetSourceName(u8buff);
+		i = Text::StrLastIndexOfCharC(u8buff, (UOSInt)(u8ptr - u8buff), '.');
 		j = Text::StrIndexOfICase(u8buff, (const UTF8Char*)"part");
 		if (i > j && i != INVALID_INDEX && j != INVALID_INDEX)
 		{

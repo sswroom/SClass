@@ -512,8 +512,8 @@ Crypto::Cert::X509Cert *Crypto::Cert::CertUtil::FindIssuer(Crypto::Cert::X509Cer
 		Crypto::Cert::CertExtensions::FreeExtensions(&ext);
 		return 0;
 	}
-	cert->GetSourceNameObj()->ConcatTo(sbuff);
-	UOSInt i = Text::StrLastIndexOfChar(sbuff, IO::Path::PATH_SEPERATOR);
+	sptr = cert->GetSourceNameObj()->ConcatTo(sbuff);
+	UOSInt i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
 	if (i == INVALID_INDEX)
 	{
 		Crypto::Cert::CertExtensions::FreeExtensions(&ext);

@@ -436,6 +436,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::EventMenuClicked(UInt16 cmdId)
 {
 	UTF8Char sbuff[512];
 	UTF8Char sbuff2[512];
+	UTF8Char *sptr;
 	switch (cmdId)
 	{
 	case MNU_CONN_ODBCDSN:
@@ -532,12 +533,12 @@ void SSWR::AVIRead::AVIRDBManagerForm::EventMenuClicked(UInt16 cmdId)
 		}
 		break;
 	case MNU_TABLE_CPP_HEADER:
-		if (this->lbTable->GetSelectedItemText(sbuff))
+		if ((sptr = this->lbTable->GetSelectedItemText(sbuff)) != 0)
 		{
 			Data::Class *cls = this->CreateTableClass(sbuff);
 			if (cls)
 			{
-				UOSInt i = Text::StrLastIndexOfChar(sbuff, '.');
+				UOSInt i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), '.');
 				DB::DBUtil::DB2FieldName(sbuff2, &sbuff[i + 1]);
 				sbuff2[0] = Text::CharUtil::ToUpper(sbuff2[0]);
 				Text::StringBuilderUTF8 sb;
@@ -548,12 +549,12 @@ void SSWR::AVIRead::AVIRDBManagerForm::EventMenuClicked(UInt16 cmdId)
 		}
 		break;
 	case MNU_TABLE_CPP_SOURCE:
-		if (this->lbTable->GetSelectedItemText(sbuff))
+		if ((sptr = this->lbTable->GetSelectedItemText(sbuff)) != 0)
 		{
 			Data::Class *cls = this->CreateTableClass(sbuff);
 			if (cls)
 			{
-				UOSInt i = Text::StrLastIndexOfChar(sbuff, '.');
+				UOSInt i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), '.');
 				DB::DBUtil::DB2FieldName(sbuff2, &sbuff[i + 1]);
 				sbuff2[0] = Text::CharUtil::ToUpper(sbuff2[0]);
 				Text::StringBuilderUTF8 sb;

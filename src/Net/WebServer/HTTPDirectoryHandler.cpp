@@ -1152,8 +1152,8 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 				}
 				NEW_CLASS(stat->cntMap, Data::FastStringMap<UInt32>());
 				stat->updated = true;
-				Text::StrConcatC(sbuff, sptr, sptrLen);
-				i = Text::StrLastIndexOfChar(sbuff, IO::Path::PATH_SEPERATOR);
+				sptr3 = Text::StrConcatC(sbuff, sptr, sptrLen);
+				i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr3 - sbuff), IO::Path::PATH_SEPERATOR);
 				sptr3 = Text::StrConcatC(&sbuff[i + 1], UTF8STRC(".counts"));
 				stat->statFileName = Text::String::New(sbuff, (UOSInt)(sptr3 - sbuff));
 				this->statMap->Put(stat->reqPath, stat);
@@ -1391,7 +1391,7 @@ void Net::WebServer::HTTPDirectoryHandler::ExpandPackageFiles(Parser::ParserList
 		UOSInt i;
 		PackageInfo *package;
 
-		while (IO::Path::FindNextFile(sptr, sess, &dt, &pt, 0))
+		while ((sptr2 = IO::Path::FindNextFile(sptr, sess, &dt, &pt, 0)) != 0)
 		{
 			if (pt == IO::Path::PathType::File)
 			{
@@ -1403,7 +1403,7 @@ void Net::WebServer::HTTPDirectoryHandler::ExpandPackageFiles(Parser::ParserList
 					package = MemAlloc(PackageInfo, 1);
 					package->packageFile = pf;
 					package->modTime = dt.ToTicks();
-					i = Text::StrLastIndexOfChar(sptr, '.');
+					i = Text::StrLastIndexOfCharC(sptr, (UOSInt)(sptr2 - sptr), '.');
 					if (i != INVALID_INDEX)
 					{
 						sptr[i] = 0;

@@ -224,7 +224,7 @@ IO::ParsedObject *Parser::FileParser::SLOCParser::ParseFile(IO::IStreamData *fd,
 	UInt64 fileSize;
 	Int64 devId;
 	Text::String *s = fd->GetFullName();
-	i = Text::StrLastIndexOfChar(s->v, IO::Path::PATH_SEPERATOR);
+	i = Text::StrLastIndexOfCharC(s->v, s->leng, IO::Path::PATH_SEPERATOR);
 	sptr = Text::StrConcatC(sbuff, &s->v[i + 1], s->leng - i - 1);
 	if (!Text::StrStartsWithICaseC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("LOC")))
 	{

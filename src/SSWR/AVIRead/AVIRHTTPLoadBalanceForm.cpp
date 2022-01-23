@@ -276,6 +276,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnSSLCertClicked(void *us
 SSWR::AVIRead::AVIRHTTPLoadBalanceForm::AVIRHTTPLoadBalanceForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	UTF8Char sbuff[512];
+	UTF8Char *sptr;
 	UOSInt i;
 	this->core = core;
 	this->SetText((const UTF8Char*)"HTTP Load Balance");
@@ -312,8 +313,8 @@ SSWR::AVIRead::AVIRHTTPLoadBalanceForm::AVIRHTTPLoadBalanceForm(UI::GUIClientCon
 	this->txtPort->SetRect(108, 8, 50, 23, false);
 	NEW_CLASS(this->lblLogDir, UI::GUILabel(ui, this->grpParam, (const UTF8Char*)"Log Path"));
 	this->lblLogDir->SetRect(8, 32, 100, 23, false);
-	IO::Path::GetProcessFileName(sbuff);
-	i = Text::StrLastIndexOfChar(sbuff, IO::Path::PATH_SEPERATOR);
+	sptr = IO::Path::GetProcessFileName(sbuff);
+	i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
 	Text::StrConcatC(&sbuff[i + 1], UTF8STRC("log"));
 	NEW_CLASS(this->txtLogDir, UI::GUITextBox(ui, this->grpParam, sbuff));
 	this->txtLogDir->SetRect(108, 32, 500, 23, false);

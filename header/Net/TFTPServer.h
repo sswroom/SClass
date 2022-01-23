@@ -19,7 +19,7 @@ namespace Net
 			Bool isWrite;
 			Bool isLast;
 			UInt16 currBlock;
-			const UTF8Char *fileName;
+			Text::String *fileName;
 		} SessionInfo;
 		
 	private:

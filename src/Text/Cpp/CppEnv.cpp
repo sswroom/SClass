@@ -204,8 +204,8 @@ UTF8Char *Text::Cpp::CppEnv::GetIncludeFilePath(UTF8Char *buff, const UTF8Char *
 	}
 	if (sourceFile)
 	{
-		sourceFile->ConcatTo(buff);
-		i = Text::StrLastIndexOfChar(buff, IO::Path::PATH_SEPERATOR);
+		sptr = sourceFile->ConcatTo(buff);
+		i = Text::StrLastIndexOfCharC(buff, (UOSInt)(sptr - buff), IO::Path::PATH_SEPERATOR);
 		sptr2 = Text::StrConcatC(&buff[i + 1], includeFile, includeFileLen);
 		if (IO::Path::GetPathType(buff, (UOSInt)(sptr2 - buff)) == IO::Path::PathType::File)
 			return sptr2;

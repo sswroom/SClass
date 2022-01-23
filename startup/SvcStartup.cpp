@@ -102,11 +102,12 @@ VOID WINAPI SvcCtrlHandler( DWORD dwCtrl )
 VOID SvcInit( DWORD dwArgc, LPWSTR *lpszArgv)
 {
 	UTF8Char sbuff[512];
+	UTF8Char *sptr;
 	ReportSvcStatus( SERVICE_RUNNING, NO_ERROR, 0 );
 
 	UOSInt i;
-	IO::Path::GetProcessFileName(sbuff);
-	i = Text::StrLastIndexOfChar(sbuff, '\\');
+	sptr = IO::Path::GetProcessFileName(sbuff);
+	i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), '\\');
 	if (i != INVALID_INDEX)
 	{
 		sbuff[i] = 0;

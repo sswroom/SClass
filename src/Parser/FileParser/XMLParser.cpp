@@ -90,8 +90,8 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseFile(IO::IStreamData *fd, 
 	Bool valid = false;
 
 	sptr = fd->GetFullName()->ConcatTo(sbuff);
-	i = Text::StrLastIndexOfChar(sbuff, '.');
-	j = Text::StrIndexOfChar(&sbuff[i + 1], '?');
+	i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), '.');
+	j = Text::StrIndexOfCharC(&sbuff[i + 1], (UOSInt)(sptr - &sbuff[i + 1]), '?');
 	if (j != INVALID_INDEX)
 	{
 		sbuff[i + j + 1] = 0;
@@ -155,6 +155,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 			break;
 		}
 	}
+	UOSInt fileNameLen = Text::StrCharCnt(fileName);
 
 	if (reader->GetNodeText()->Equals(UTF8STRC("kml")))
 	{
@@ -191,10 +192,10 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 /*		UOSInt i;
 		UOSInt j;
 		const UTF8Char *shortName;
-		i = Text::StrLastIndexOfChar(fileName, IO::Path::PATH_SEPERATOR);
+		i = Text::StrLastIndexOfCharC(fileName, IO::Path::PATH_SEPERATOR);
 		if (IO::Path::PATH_SEPERATOR == '\\')
 		{
-			j = Text::StrLastIndexOfChar(fileName, '/');
+			j = Text::StrLastIndexOfCharC(fileName, '/');
 			if (i == INVALID_INDEX || (j != INVALID_INDEX && j > i))
 			{
 				i = j;
@@ -238,10 +239,10 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 		UOSInt i;
 		UOSInt j;
 		const UTF8Char *shortName;
-		i = Text::StrLastIndexOfChar(fileName, IO::Path::PATH_SEPERATOR);
+		i = Text::StrLastIndexOfCharC(fileName, fileNameLen, IO::Path::PATH_SEPERATOR);
 		if (IO::Path::PATH_SEPERATOR == '\\')
 		{
-			j = Text::StrLastIndexOfChar(fileName, '/');
+			j = Text::StrLastIndexOfCharC(fileName, fileNameLen, '/');
 			if (i == INVALID_INDEX || (j != INVALID_INDEX && j > i))
 			{
 				i = j;
@@ -1106,10 +1107,10 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 		UOSInt i;
 		UOSInt j;
 		const UTF8Char *shortName;
-		i = Text::StrLastIndexOfChar(fileName, IO::Path::PATH_SEPERATOR);
+		i = Text::StrLastIndexOfCharC(fileName, fileNameLen, IO::Path::PATH_SEPERATOR);
 		if (IO::Path::PATH_SEPERATOR == '\\')
 		{
-			j = Text::StrLastIndexOfChar(fileName, '/');
+			j = Text::StrLastIndexOfCharC(fileName, fileNameLen, '/');
 			if (i == INVALID_INDEX || (j != INVALID_INDEX && j > i))
 			{
 				i = j;
@@ -1619,12 +1620,12 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLContainer(Text::XMLRe
 	Text::StringBuilderUTF8 containerNameSb;
 	containerNameSb.Append(sourceName);
 	Map::IMapDrawLayer *lyr;
-	i = Text::StrLastIndexOfChar(containerNameSb.ToString(), '/');
+	i = Text::StrLastIndexOfCharC(containerNameSb.ToString(), containerNameSb.GetLength(), '/');
 	if (i != INVALID_INDEX)
 	{
 		containerNameSb.SetSubstr(i + 1);
 	}
-	i = Text::StrLastIndexOfChar(containerNameSb.ToString(), '\\');
+	i = Text::StrLastIndexOfCharC(containerNameSb.ToString(), containerNameSb.GetLength(), '\\');
 	if (i != INVALID_INDEX)
 	{
 		containerNameSb.SetSubstr(i + 1);

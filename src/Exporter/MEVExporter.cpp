@@ -73,8 +73,8 @@ Bool Exporter::MEVExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 	while (i-- > 0)
 	{
 		env->GetImageFileInfo(i, &imgInfo);
-		imgInfo.fileName->ConcatTo(u8buff);
-		j = Text::StrLastIndexOfChar(u8buff, IO::Path::PATH_SEPERATOR);
+		u8ptr = imgInfo.fileName->ConcatTo(u8buff);
+		j = Text::StrLastIndexOfCharC(u8buff, (UOSInt)(u8ptr - u8buff), IO::Path::PATH_SEPERATOR);
 		if (j != INVALID_INDEX)
 		{
 			u8buff[j] = 0;
@@ -129,8 +129,8 @@ Bool Exporter::MEVExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 	while (i < j)
 	{
 		env->GetImageFileInfo(i, &imgInfo);
-		imgInfo.fileName->ConcatTo(u8buff);
-		k = Text::StrLastIndexOfChar(u8buff, IO::Path::PATH_SEPERATOR);
+		u8ptr = imgInfo.fileName->ConcatTo(u8buff);
+		k = Text::StrLastIndexOfCharC(u8buff, (UOSInt)(u8ptr - u8buff), IO::Path::PATH_SEPERATOR);
 
 		*(Int32*)&buff[0] = 0;
 		WriteUInt32(&buff[4], AddString(strArr, &u8buff[k + 1], imgInfo.fileName->leng - k - 1, stmPos));
@@ -272,6 +272,7 @@ void Exporter::MEVExporter::GetMapDirs(Map::MapEnv *env, Data::ArrayListString *
 	UOSInt k;
 	OSInt si;
 	UTF8Char sbuff[256];
+	UTF8Char *sptr;
 
 	while (i < j)
 	{
@@ -284,9 +285,9 @@ void Exporter::MEVExporter::GetMapDirs(Map::MapEnv *env, Data::ArrayListString *
 		{
 			Map::MapEnv::LayerItem *lyr = (Map::MapEnv::LayerItem*)item;
 			Map::IMapDrawLayer *layer = lyr->layer;
-			if (layer->GetSourceName(sbuff))
+			if ((sptr = layer->GetSourceName(sbuff)) != 0)
 			{
-				k = Text::StrLastIndexOfChar(sbuff, '\\');
+				k = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), '\\');
 				if (k != INVALID_INDEX)
 				{
 					sbuff[k] = 0;
@@ -375,7 +376,7 @@ void Exporter::MEVExporter::WriteGroupItems(Map::MapEnv *env, Map::MapEnv::Group
 			*(Int32*)&buff[0] = item->itemType;
 			u8ptr = layer->GetSourceName(u8buff);
 			*(Int32*)&buff[4] = 0;
-			k = Text::StrLastIndexOfChar(u8buff, IO::Path::PATH_SEPERATOR);
+			k = Text::StrLastIndexOfCharC(u8buff, (UOSInt)(u8ptr - u8buff), IO::Path::PATH_SEPERATOR);
 			*(UInt32*)&buff[8] = AddString(strArr, &u8buff[k + 1], (UOSInt)(u8ptr - &u8buff[k + 1]), 4 + *stmPos);
 			if (k != INVALID_INDEX)
 			{

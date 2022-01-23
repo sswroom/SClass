@@ -32,7 +32,7 @@ Bool SearchProcId(ProgInfo *prog)
 	UOSInt i;
 	Bool ret = false;
 	Manage::Process::ProcessInfo info;
-	i = Text::StrLastIndexOfChar(prog->progPath->v, IO::Path::PATH_SEPERATOR);
+	i = Text::StrLastIndexOfCharC(prog->progPath->v, prog->progPath->leng, IO::Path::PATH_SEPERATOR);
 	Manage::Process::FindProcSess *sess = Manage::Process::FindProcess(&prog->progPath->v[i + 1]);
 	if (sess)
 	{

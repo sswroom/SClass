@@ -101,17 +101,18 @@ Bool IO::MinizZIP::AddFile(const UTF8Char *sourceFile, UOSInt fileLen)
 	pt = IO::Path::GetPathType(sourceFile, fileLen);
 	if (pt == IO::Path::PathType::File)
 	{
-		Char sbuff[512];
+		UTF8Char sbuff[512];
+		UOSInt len;
 		UOSInt i;
-		this->enc->UTF8ToBytes((UInt8*)sbuff, sourceFile);
-		i = Text::StrLastIndexOfChar(sbuff, (Char)IO::Path::PATH_SEPERATOR);
-		return mz_zip_writer_add_file(zip, &sbuff[i + 1], sbuff, 0, 0, MZ_BEST_COMPRESSION) != MZ_FALSE;
+		len = this->enc->UTF8ToBytes((UInt8*)sbuff, sourceFile);
+		i = Text::StrLastIndexOfCharC(sbuff, len, IO::Path::PATH_SEPERATOR);
+		return mz_zip_writer_add_file(zip, (const Char*)&sbuff[i + 1], (const Char*)sbuff, 0, 0, MZ_BEST_COMPRESSION) != MZ_FALSE;
 	}
 	else if (pt == IO::Path::PathType::Directory)
 	{
 		UTF8Char sbuff[512];
-		Text::StrConcatC(sbuff, sourceFile, fileLen);
-		UOSInt i = Text::StrLastIndexOfChar(sbuff, IO::Path::PATH_SEPERATOR);
+		UTF8Char *sptr = Text::StrConcatC(sbuff, sourceFile, fileLen);
+		UOSInt i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
 		return this->AddDir(&sbuff[i + 1], sbuff);
 	}
 	return false;

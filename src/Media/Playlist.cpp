@@ -18,7 +18,7 @@ void Media::Playlist::FreeEntry(PlaylistEntry* ent)
 {
 	SDEL_TEXT(ent->title);
 	SDEL_TEXT(ent->artist);
-	SDEL_TEXT(ent->fileName);
+	SDEL_STRING(ent->fileName);
 	MemFree(ent);
 }
 
@@ -89,7 +89,7 @@ Bool Media::Playlist::AddFile(const UTF8Char *fileName)
 			}
 
 			ent = MemAlloc(PlaylistEntry, 1);
-			ent->fileName = Text::StrCopyNew(fileName);
+			ent->fileName = Text::String::NewNotNull(fileName);
 			ent->title = Text::StrCopyNew(chap->GetChapterName(i));
 			artist = chap->GetChapterArtist(i);
 			if (artist)
@@ -110,8 +110,8 @@ Bool Media::Playlist::AddFile(const UTF8Char *fileName)
 	else
 	{
 		ent = MemAlloc(PlaylistEntry, 1);
-		ent->fileName = Text::StrCopyNew(fileName);
-		i = Text::StrLastIndexOfChar(fileName, IO::Path::PATH_SEPERATOR);
+		ent->fileName = Text::String::NewNotNull(fileName);
+		i = Text::StrLastIndexOfCharC(fileName, ent->fileName->leng, IO::Path::PATH_SEPERATOR);
 		ent->title = Text::StrCopyNew(&fileName[i + 1]);
 		ent->artist = 0;
 		ent->timeStart = 0;
@@ -143,7 +143,7 @@ Bool Media::Playlist::AppendPlaylist(Media::Playlist *playlist)
 	{
 		plent = playlist->entries->GetItem(i);
 		ent = MemAlloc(PlaylistEntry, 1);
-		ent->fileName = Text::StrCopyNew(plent->fileName);
+		ent->fileName = plent->fileName->Clone();
 		ent->title = Text::StrCopyNew(plent->title);
 		if (plent->artist)
 		{
@@ -194,7 +194,7 @@ const UTF8Char *Media::Playlist::GetArtist(UOSInt index)
 	return ent->artist;
 }
 
-const UTF8Char *Media::Playlist::GetFileName(UOSInt index)
+Text::String *Media::Playlist::GetFileName(UOSInt index)
 {
 	PlaylistEntry *ent = this->entries->GetItem(index);
 	if (ent == 0)

@@ -63,6 +63,7 @@ Manage::Process::Process(const UTF8Char *ccmdLine)
 	Bool argStart = false;
 
 
+	UOSInt progNameLen = 0;
 	UTF8Char *pptr = progName;
 	Bool isQuote = false;
 	UTF8Char c;
@@ -77,6 +78,10 @@ Manage::Process::Process(const UTF8Char *ccmdLine)
 			{
 				*pptr++ = 0;
 				argStart = true;
+				if (argc == 0)
+				{
+					progNameLen = (UOSInt)(pptr - progName);
+				}
 			}
 		}
 		else
@@ -91,12 +96,16 @@ Manage::Process::Process(const UTF8Char *ccmdLine)
 		}
 	}
 	*pptr = 0;
+	if (argc == 0)
+	{
+		progNameLen = (UOSInt)(pptr - progName);
+	}
 	args[++argc] = 0;
 
 	pid_t pid = fork();
 	if (pid == 0)
 	{
-		UOSInt i = Text::StrLastIndexOfChar(progName, IO::Path::PATH_SEPERATOR);
+		UOSInt i = Text::StrLastIndexOfCharC(progName, progNameLen, IO::Path::PATH_SEPERATOR);
 		if (i != INVALID_INDEX)
 		{
 			progName[i] = 0;
@@ -123,7 +132,7 @@ Manage::Process::Process(const WChar *cmdLine)
 	Int32 argc = 0;
 	Bool argStart = false;
 
-
+	UOSInt progNameLen = 0;
 	UTF8Char *pptr = progName;
 	Bool isQuote = false;
 	UTF8Char c;
@@ -138,6 +147,10 @@ Manage::Process::Process(const WChar *cmdLine)
 			{
 				*pptr++ = 0;
 				argStart = true;
+				if (argc == 0)
+				{
+					progNameLen = (UOSInt)(pptr - progName);
+				}
 			}
 		}
 		else
@@ -152,12 +165,16 @@ Manage::Process::Process(const WChar *cmdLine)
 		}
 	}
 	*pptr = 0;
+	if (argc == 0)
+	{
+		progNameLen = (UOSInt)(pptr - progName);
+	}
 	args[++argc] = 0;
 
 	pid_t pid = fork();
 	if (pid == 0)
 	{
-		UOSInt i = Text::StrLastIndexOfChar(progName, IO::Path::PATH_SEPERATOR);
+		UOSInt i = Text::StrLastIndexOfCharC(progName, progNameLen, IO::Path::PATH_SEPERATOR);
 		if (i != INVALID_INDEX)
 		{
 			progName[i] = 0;

@@ -433,6 +433,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnSSLCertClicked(void *userObj)
 SSWR::AVIRead::AVIRHTTPSvrForm::AVIRHTTPSvrForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	UTF8Char sbuff[512];
+	UTF8Char *sptr;
 	UOSInt i;
 	this->core = core;
 	this->SetText((const UTF8Char*)"HTTP Server");
@@ -469,8 +470,8 @@ SSWR::AVIRead::AVIRHTTPSvrForm::AVIRHTTPSvrForm(UI::GUIClientControl *parent, UI
 	this->txtPort->SetRect(108, 8, 50, 23, false);
 	NEW_CLASS(this->lblDocDir, UI::GUILabel(ui, this->grpParam, (const UTF8Char*)"Doc Path"));
 	this->lblDocDir->SetRect(8, 32, 100, 23, false);
-	IO::Path::GetProcessFileName(sbuff);
-	i = Text::StrLastIndexOfChar(sbuff, IO::Path::PATH_SEPERATOR);
+	sptr = IO::Path::GetProcessFileName(sbuff);
+	i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
 	if (i != INVALID_INDEX)
 	{
 		sbuff[i] = 0;

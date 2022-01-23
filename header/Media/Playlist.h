@@ -14,7 +14,7 @@ namespace Media
 		{
 			const UTF8Char *title;
 			const UTF8Char *artist;
-			const UTF8Char *fileName;
+			Text::String *fileName;
 			UInt32 timeStart;
 			Int32 timeEnd;
 		} PlaylistEntry;
@@ -40,7 +40,7 @@ namespace Media
 		UOSInt GetCount();
 		const UTF8Char *GetTitle(UOSInt index);
 		const UTF8Char *GetArtist(UOSInt index);
-		const UTF8Char *GetFileName(UOSInt index);
+		Text::String *GetFileName(UOSInt index);
 		UInt32 GetTimeStart(UOSInt index);
 		Int32 GetTimeEnd(UOSInt index);
 

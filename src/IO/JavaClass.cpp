@@ -3991,49 +3991,49 @@ void IO::JavaClass::MethodFree(MethodInfo *method)
 
 void IO::JavaClass::AppendCodeClassName(Text::StringBuilderUTF *sb, const UTF8Char *className, Data::ArrayListStrUTF8 *importList, const UTF8Char *packageName)
 {
-	UOSInt i = Text::StrLastIndexOfChar(className, '.');
+	UOSInt classNameLen = Text::StrCharCnt(className);
+	UOSInt i = Text::StrLastIndexOfCharC(className, classNameLen, '.');
 	if (i == INVALID_INDEX)
 	{
-		sb->Append(className);
+		sb->AppendC(className, classNameLen);
 		return;
 	}
 	if (packageName && Text::StrStartsWith(className, packageName) && i == Text::StrCharCnt(packageName))
 	{
-		sb->Append(className + i + 1);
+		sb->AppendC(className + i + 1, classNameLen - i - 1);
 		return;
 	}
-	if (Text::StrStartsWith(className, (const UTF8Char*)"java.lang.") && i == 9)
+	if (Text::StrStartsWithC(className, classNameLen, UTF8STRC("java.lang.")) && i == 9)
 	{
-		sb->Append(className + i + 1);
+		sb->AppendC(className + i + 1, classNameLen - i - 1);
 		return;
 	}
 	if (importList == 0)
 	{
-		sb->Append(className);
+		sb->AppendC(className, classNameLen);
 		return;
 	}
-	if (Text::StrEndsWith(className, (const UTF8Char*)"[]"))
+	if (Text::StrEndsWithC(className, classNameLen, UTF8STRC("[]")))
 	{
 		Text::StringBuilderUTF8 sbCls;
-		sbCls.Append(className);
-		sbCls.RemoveChars(2);
+		sbCls.AppendC(className, classNameLen - 2);
 		if (importList->SortedIndexOf(sbCls.ToString()) >= 0)
 		{
-			sb->Append(className + i + 1);
+			sb->AppendC(className + i + 1, classNameLen - i - 1);
 			return;
 		}
 		importList->SortedInsert(Text::StrCopyNew(sbCls.ToString()));
-		sb->Append(className + i + 1);
+		sb->AppendC(className + i + 1, classNameLen - i - 1);
 	}
 	else
 	{
 		if (importList->SortedIndexOf(className) >= 0)
 		{
-			sb->Append(className + i + 1);
+			sb->AppendC(className + i + 1, classNameLen - i - 1);
 			return;
 		}
 		importList->SortedInsert(Text::StrCopyNew(className));
-		sb->Append(className + i + 1);
+		sb->AppendC(className + i + 1, classNameLen - i - 1);
 	}
 }
 
@@ -4738,16 +4738,19 @@ const UTF8Char *IO::JavaClass::AppendCodeType2String(Text::StringBuilderUTF *sb,
 				}
 			}
 			UTF8Char *sptr = sbTmp.ToString();
+			UOSInt sptrLen = sbTmp.GetLength();
 			UOSInt i;
 			if (subcls != INVALID_INDEX)
 			{
 				sptr[subcls] = 0;
+				sptrLen = subcls;
 			}
 			else if (tmpIndex != INVALID_INDEX)
 			{
 				sptr[tmpIndex] = 0;
+				sptrLen = tmpIndex;
 			}
-			i = Text::StrLastIndexOfChar(sptr, '.');
+			i = Text::StrLastIndexOfCharC(sptr, sptrLen, '.');
 			if (i == INVALID_INDEX)
 			{
 				if (subcls != INVALID_INDEX)

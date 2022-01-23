@@ -41,7 +41,7 @@ namespace IO
 		virtual void ErrorRecover();
 		virtual ServiceType GetServiceType();
 
-		static UOSInt GenNMEACommand(const UTF8Char *cmd, UInt8 *buff);
+		static UOSInt GenNMEACommand(const UTF8Char *cmd, UOSInt cmdLen, UInt8 *buff);
 		static Map::GPSTrack *NMEA2Track(IO::Stream *stm, const UTF8Char *sourceName);
 	};
 }

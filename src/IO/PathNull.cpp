@@ -157,18 +157,18 @@ Bool IO::Path::AppendPath(Text::StringBuilderUTF8 *sb, const UTF8Char *toAppend,
 		sb->Append(toAppend);
 		return true;
 	}
-	UOSInt i = Text::StrLastIndexOfChar(sb->ToString(), '/');
+	UOSInt i = Text::StrLastIndexOfCharC(sb->ToString(), sb->GetLength(), '/');
 	if (GetPathType(sb->ToString(), sb->GetLength()) == IO::Path::PathType::File && i != INVALID_INDEX)
 	{
 		sb->RemoveChars(sb->GetLength() - i);
-		i = Text::StrLastIndexOfChar(sb->ToString(), '/');
+		i = Text::StrLastIndexOfCharC(sb->ToString(), sb->GetLength(), '/');
 	}
 	while (Text::StrStartsWith(toAppend, (const UTF8Char*)"../"))
 	{
 		if (i != INVALID_INDEX)
 		{
 			sb->RemoveChars(sb->GetLength() - i);
-			i = Text::StrLastIndexOfChar(sb->ToString(), '/');
+			i = Text::StrLastIndexOfCharC(sb->ToString(), sb->GetLength(), '/');
 		}
 		toAppend += 3;
 	}

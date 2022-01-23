@@ -119,7 +119,7 @@ public:
 		Sync::MutexUsage mutUsage(this->mut);
 		SDEL_STRING(this->name);
 		this->name = Text::String::NewNotNull(name);
-		i = Text::StrLastIndexOfChar(this->name->v, IO::Path::PATH_SEPERATOR);
+		i = Text::StrLastIndexOfCharC(this->name->v, this->name->leng, IO::Path::PATH_SEPERATOR);
 		this->fileName = &this->name->v[i + 1];
 		this->lastCount = 0;
 		mutUsage.EndUse();

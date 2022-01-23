@@ -278,68 +278,68 @@ UTF8Char *IO::Path::AppendPath(UTF8Char *path, const UTF8Char *toAppend)
 	UOSInt toAppendLen = Text::StrCharCnt(toAppend);
 	if (toAppend[0] == '/')
 		return Text::StrConcatC(path, toAppend, toAppendLen);
-	UOSInt i = Text::StrLastIndexOfChar(path, '/');
-	UOSInt j = Text::StrCharCnt(path);
-	IO::Path::PathType pt = GetPathType(path, j);
+	UOSInt pathLen = Text::StrCharCnt(path);
+	UOSInt i = Text::StrLastIndexOfCharC(path, pathLen, '/');
+	IO::Path::PathType pt = GetPathType(path, pathLen);
 	if (pt == PathType::File && i != INVALID_INDEX)
 	{
 		path[i] = 0;
-		j = i;
-		i = Text::StrLastIndexOfChar(path, '/');
+		pathLen = i;
+		i = Text::StrLastIndexOfCharC(path, pathLen, '/');
 	}
-	else if (i == j - 1)
+	else if (i == pathLen - 1)
 	{
 		path[i] = 0;
-		j = i;
-		i = Text::StrLastIndexOfChar(path, '/');
+		pathLen = i;
+		i = Text::StrLastIndexOfCharC(path, pathLen, '/');
 	}
 	while (Text::StrStartsWithC(toAppend, toAppendLen, UTF8STRC("../")))
 	{
 		if (i != INVALID_INDEX)
 		{
 			path[i] = 0;
-			j = i;
-			i = Text::StrLastIndexOfChar(path, '/');
+			pathLen = i;
+			i = Text::StrLastIndexOfCharC(path, pathLen, '/');
 		}
 		toAppend += 3;
 		toAppendLen -= 3;
 	}
-	path[j] = '/';
-	return Text::StrConcatC(&path[j + 1], toAppend, toAppendLen);
+	path[pathLen] = '/';
+	return Text::StrConcatC(&path[pathLen + 1], toAppend, toAppendLen);
 }
 
 UTF8Char *IO::Path::AppendPathC(UTF8Char *path, UTF8Char *pathEnd, const UTF8Char *toAppend, UOSInt toAppendLen)
 {
 	if (toAppend[0] == '/')
 		return Text::StrConcatC(path, toAppend, toAppendLen);
-	UOSInt i = Text::StrLastIndexOfChar(path, '/');
-	UOSInt j = (UOSInt)(pathEnd - path);
-	IO::Path::PathType pt = GetPathType(path, j);
+	UOSInt pathLen = (UOSInt)(pathEnd - path);
+	UOSInt i = Text::StrLastIndexOfCharC(path, pathLen, '/');
+	IO::Path::PathType pt = GetPathType(path, pathLen);
 	if (pt == PathType::File && i != INVALID_INDEX)
 	{
 		path[i] = 0;
-		j = i;
-		i = Text::StrLastIndexOfChar(path, '/');
+		pathLen = i;
+		i = Text::StrLastIndexOfCharC(path, pathLen, '/');
 	}
-	else if (i == j - 1)
+	else if (i == pathLen - 1)
 	{
 		path[i] = 0;
-		j = i;
-		i = Text::StrLastIndexOfChar(path, '/');
+		pathLen = i;
+		i = Text::StrLastIndexOfCharC(path, pathLen, '/');
 	}
 	while (Text::StrStartsWithC(toAppend, toAppendLen, UTF8STRC("../")))
 	{
 		if (i != INVALID_INDEX)
 		{
 			path[i] = 0;
-			j = i;
-			i = Text::StrLastIndexOfChar(path, '/');
+			pathLen = i;
+			i = Text::StrLastIndexOfCharC(path, pathLen, '/');
 		}
 		toAppend += 3;
 		toAppendLen -= 3;
 	}
-	path[j] = '/';
-	return Text::StrConcatC(&path[j + 1], toAppend, toAppendLen);
+	path[pathLen] = '/';
+	return Text::StrConcatC(&path[pathLen + 1], toAppend, toAppendLen);
 }
 
 WChar *IO::Path::AppendPathW(WChar *path, const WChar *toAppend)
@@ -375,23 +375,23 @@ Bool IO::Path::AppendPath(Text::StringBuilderUTF8 *sb, const UTF8Char *toAppend,
 		return true;
 	}
 	UTF8Char *sptr = sb->ToString();
-	UOSInt i = Text::StrLastIndexOfChar(sptr, '/');
+	UOSInt i = Text::StrLastIndexOfCharC(sptr, sb->GetLength(), '/');
 	if (GetPathType(sptr, sb->GetLength()) == PathType::File && i != INVALID_INDEX)
 	{
 		sb->RemoveChars(sb->GetLength() - i);
-		i = Text::StrLastIndexOfChar(sptr, '/');
+		i = Text::StrLastIndexOfCharC(sptr, sb->GetLength(), '/');
 	}
 	else if (i == sb->GetCharCnt() - 1)
 	{
 		sb->RemoveChars(1);
-		i = Text::StrLastIndexOfChar(sptr, '/');
+		i = Text::StrLastIndexOfCharC(sptr, sb->GetLength(), '/');
 	}
 	while (Text::StrStartsWithC(toAppend, toAppendLen, UTF8STRC("../")))
 	{
 		if (i != INVALID_INDEX)
 		{
 			sb->RemoveChars(sb->GetLength() - (UOSInt)i);
-			i = Text::StrLastIndexOfChar(sptr, '/');
+			i = Text::StrLastIndexOfCharC(sptr, sb->GetLength(), '/');
 		}
 		toAppend += 3;
 		toAppendLen -= 3;
@@ -448,33 +448,33 @@ IO::Path::FindFileSession *IO::Path::FindFile(const UTF8Char *utfPath, UOSInt pa
 IO::Path::FindFileSession *IO::Path::FindFileW(const WChar *path)
 {
 	FindFileSession *sess = 0;
-	const UTF8Char *utfPath = Text::StrToUTF8New(path);
+	Text::String *utfPath = Text::String::NewNotNull(path);
 	const UTF8Char *searchPattern;
 	Text::String *searchDir;
-	UOSInt i = Text::StrLastIndexOfChar(utfPath, '/');
+	UOSInt i = Text::StrLastIndexOfCharC(utfPath->v, utfPath->leng, '/');
 	DIR *dirObj;
 	if (i == INVALID_INDEX)
 	{
 		dirObj = opendir(".");
-		searchPattern = utfPath;
+		searchPattern = utfPath->v;
 		searchDir = Text::String::New(UTF8STRC("./"));
 	}
 	else if (i == 0)
 	{
 		dirObj = opendir("/");
-		searchPattern = utfPath + 1;
+		searchPattern = utfPath->v + 1;
 		searchDir = Text::String::New(UTF8STRC("/"));
 	}
 	else
 	{
-		*(UTF8Char*)&utfPath[i] = 0;
-		dirObj = opendir((const Char*)utfPath);
-		searchPattern = utfPath + i + 1;
-		UTF8Char c = utfPath[i + 1];
-		*(UTF8Char*)&utfPath[i + 1] = 0;
-		*(UTF8Char*)&utfPath[i] = '/';
-		searchDir = Text::String::NewNotNull(utfPath);
-		*(UTF8Char*)&utfPath[i + 1] = c;
+		utfPath->v[i] = 0;
+		dirObj = opendir((const Char*)utfPath->v);
+		searchPattern = utfPath->v + i + 1;
+		UTF8Char c = utfPath->v[i + 1];
+		utfPath->v[i + 1] = 0;
+		utfPath->v[i] = '/';
+		searchDir = Text::String::New(utfPath->v, i + 1);
+		utfPath->v[i + 1] = c;
 	}
 	if (dirObj)
 	{
@@ -487,7 +487,7 @@ IO::Path::FindFileSession *IO::Path::FindFileW(const WChar *path)
 	{
 		searchDir->Release();
 	}
-	Text::StrDelNew(utfPath);
+	utfPath->Release();
 	return sess;
 }
 
@@ -623,7 +623,7 @@ IO::Path::PathType IO::Path::GetPathType(const UTF8Char *path, UOSInt pathLen)
 		ssize_t size = readlink((const Char*)path, cbuff, 511);
 		cbuff[size] = 0;
 		pathBuffEnd = Text::StrConcatC(pathBuff, path, pathLen);
-		UOSInt i = Text::StrLastIndexOfChar(pathBuff, '/');
+		UOSInt i = Text::StrLastIndexOfCharC(pathBuff, (UOSInt)(pathBuffEnd - pathBuff), '/');
 		if (i != INVALID_INDEX)
 		{
 			pathBuff[i + 1] = 0;
@@ -665,9 +665,9 @@ Bool IO::Path::PathExistsW(const WChar *path)
 WChar *IO::Path::GetFullPathW(WChar *buff, const WChar *path)
 {
 	Text::StringBuilderUTF8 sb;
-	const UTF8Char *csptr = Text::StrToUTF8New(path);
-	sb.Append(csptr);
-	Text::StrDelNew(csptr);
+	Text::String *str = Text::String::NewNotNull(path);
+	sb.Append(str);
+	str->Release();
 	sb.AllocLeng(512);
 	Char cbuff[512];
 	UTF8Char *u8ptr = sb.ToString();
@@ -684,7 +684,7 @@ WChar *IO::Path::GetFullPathW(WChar *buff, const WChar *path)
 #endif
 	if (status != 0)
 	{
-		i = Text::StrLastIndexOfChar(u8ptr, '/');
+		i = Text::StrLastIndexOfCharC(u8ptr, sb.GetLength(), '/');
 		while (true)
 		{
 //			printf("GetFullPath: Loop i = %d\r\n", i);
@@ -717,7 +717,7 @@ WChar *IO::Path::GetFullPathW(WChar *buff, const WChar *path)
 			else
 			{
 				j = i;
-				i = Text::StrLastIndexOfChar(u8ptr, '/');
+				i = Text::StrLastIndexOfCharC(u8ptr, i, '/');
 				u8ptr[j] = '/';
 			}
 		}
@@ -1058,7 +1058,7 @@ UTF8Char *IO::Path::GetRealPath(UTF8Char *sbuff, const UTF8Char *path)
 		if (sptr2[0] == '.' && sptr2[1] == '.' && sptr2[2] == 0)
 		{
 			sptr2[-1] = 0;
-			i = Text::StrLastIndexOfChar(sbuff, IO::Path::PATH_SEPERATOR);
+			i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr2 - sbuff - 1), IO::Path::PATH_SEPERATOR);
 			if (i != INVALID_INDEX)
 			{
 				if (sbuff[i + 1] == '.' && sbuff[i + 2] == '.')
@@ -1080,7 +1080,7 @@ UTF8Char *IO::Path::GetRealPath(UTF8Char *sbuff, const UTF8Char *path)
 		else if (sptr2[0] == '.' && sptr2[1] == '.' && sptr2[2] == IO::Path::PATH_SEPERATOR)
 		{
 			sptr2[-1] = 0;
-			i = Text::StrLastIndexOfChar(sbuff, IO::Path::PATH_SEPERATOR);
+			i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr2 - sbuff - 1), IO::Path::PATH_SEPERATOR);
 			if (i != INVALID_INDEX)
 			{
 				if (sbuff[i + 1] == '.' && sbuff[i + 2] == '.')

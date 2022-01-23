@@ -113,8 +113,8 @@ void IO::LogTool::AddLogHandler(ILogHandler *hdlr, IO::ILogHandler::LogLevel log
 	dt.SetCurrTime();
 
 	Data::DateTime dt2;
-	IO::Path::GetProcessFileName(buff);
-	sptr = &buff[Text::StrLastIndexOfChar(buff, IO::Path::PATH_SEPERATOR) + 1];
+	sptr = IO::Path::GetProcessFileName(buff);
+	sptr = &buff[Text::StrLastIndexOfCharC(buff, (UOSInt)(sptr - buff), IO::Path::PATH_SEPERATOR) + 1];
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("Program "));
 	sb.Append(sptr);

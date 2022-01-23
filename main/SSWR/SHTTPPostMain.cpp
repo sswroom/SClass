@@ -127,7 +127,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 					{
 						sb.TrimToLength(sb.GetLength() - 1);
 					}
-					j = Text::StrLastIndexOfChar(sb.ToString(), '/');
+					j = Text::StrLastIndexOfCharC(sb.ToString(), sb.GetLength(), '/');
 					if (j != INVALID_INDEX && j >= 8)
 					{
 						fileName = Text::String::New(sb.ToString() + j + 1, sb.GetLength() - j - 1);

@@ -289,6 +289,7 @@ void SSWR::AVIReadCE::AVIRCEProcInfoForm::UpdateProcThreads()
 		Data::ArrayList<Manage::ThreadInfo *> threadList;
 		Manage::ThreadInfo *t;
 		UTF8Char sbuff[512];
+		UTF8Char *sptr;
 		UOSInt i;
 		UOSInt j;
 		UUOSInt k;
@@ -310,8 +311,8 @@ void SSWR::AVIReadCE::AVIRCEProcInfoForm::UpdateProcThreads()
 
 			if (this->currProcRes)
 			{
-				this->currProcRes->ResolveName(sbuff, addr);
-				l = Text::StrLastIndexOfChar(sbuff, '\\');
+				sptr = this->currProcRes->ResolveName(sbuff, addr);
+				l = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), '\\');
 				this->lvDetThread->SetSubItem(k, 2, &sbuff[l + 1]);
 			}
 			DEL_CLASS(t);

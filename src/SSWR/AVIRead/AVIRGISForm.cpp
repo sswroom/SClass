@@ -1526,7 +1526,7 @@ void SSWR::AVIRead::AVIRGISForm::AddLayers(::Data::ArrayList<Map::IMapDrawLayer*
 	WChar sbuff[512];
 	WChar *sptr;
 	lyrColl->GetSourceName(sbuff);
-	sptr = &sbuff[Text::StrLastIndexOfChar(sbuff, '\\') + 1];
+	sptr = &sbuff[Text::StrLastIndexOfCharC(sbuff, '\\') + 1];
 	void *grp = this->env->AddGroup(0, sptr);
 
 	Map::IMapDrawLayer *layer;

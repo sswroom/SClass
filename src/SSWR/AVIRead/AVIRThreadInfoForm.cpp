@@ -193,6 +193,7 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(UI::GUIClientControl *pare
 	Manage::ThreadInfo *thread;
 	Manage::ThreadContext *context;
 	UTF8Char sbuff[512];
+	UTF8Char *sptr;
 	UInt64 startAddr;
 	UOSInt i;
 	UOSInt j;
@@ -203,8 +204,8 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(UI::GUIClientControl *pare
 	this->txtThreadId->SetText(sbuff);
 	Text::StrHexVal64(sbuff, startAddr);
 	this->txtStartAddr->SetText(sbuff);
-	symbol->ResolveName(sbuff, startAddr);
-	i = Text::StrLastIndexOfChar(sbuff, '\\');
+	sptr = symbol->ResolveName(sbuff, startAddr);
+	i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), '\\');
 	this->txtStartName->SetText(&sbuff[i + 1]);
 
 	if (thread->IsCurrThread())
@@ -224,8 +225,8 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(UI::GUIClientControl *pare
 			currAddr = tracer->GetCurrentAddr();
 			Text::StrHexVal64(sbuff, currAddr);
 			i = this->lvStack->AddItem(sbuff, 0, 0);
-			symbol->ResolveName(sbuff, currAddr);
-			j = Text::StrLastIndexOfChar(sbuff, '\\');
+			sptr = symbol->ResolveName(sbuff, currAddr);
+			j = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), '\\');
 			this->lvStack->SetSubItem(i, 1, &sbuff[j + 1]);
 			if (!tracer->GoToNextLevel())
 				break;
@@ -281,8 +282,8 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(UI::GUIClientControl *pare
 				sb.ClearStr();
 				sb.AppendHex32(eip);
 				sb.AppendC(UTF8STRC(" "));
-				symbol->ResolveName(sbuff, eip);
-				i  = Text::StrLastIndexOfChar(sbuff, '\\');
+				sptr = symbol->ResolveName(sbuff, eip);
+				i  = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), '\\');
 				sb.Append(&sbuff[i + 1]);
 				i = this->lbMyStack->AddItem(sb.ToString(), 0);
 				sb.ClearStr();
@@ -378,8 +379,8 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(UI::GUIClientControl *pare
 				sb.ClearStr();
 				sb.AppendHex64(rip);
 				sb.AppendC(UTF8STRC(" "));
-				symbol->ResolveName(sbuff, rip);
-				i  = Text::StrLastIndexOfChar(sbuff, '\\');
+				sptr = symbol->ResolveName(sbuff, rip);
+				i  = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), '\\');
 				sb.Append(&sbuff[i + 1]);
 				i = this->lbMyStack->AddItem(sb.ToString(), 0);
 				sb.ClearStr();

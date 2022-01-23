@@ -113,8 +113,8 @@ void Media::VideoRenderer::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, Vid
 			NEW_CLASS(simg, Media::StaticImage(info->dispWidth, info->dispHeight, 0, 32, Media::PF_B8G8R8A8, 0, &color, yuvType, Media::AT_NO_ALPHA, vbuff->ycOfst));
 			csconv->ConvertV2(&vbuff->srcBuff, simg->data, info->dispWidth, info->dispHeight, info->storeWidth, info->storeHeight, (OSInt)simg->GetDataBpl(), vbuff->frameType, vbuff->ycOfst);
 			ImageUtil_ImageFillAlpha32(simg->data, info->dispWidth, info->dispHeight, simg->GetDataBpl(), 0xff);
-			this->video->GetSourceName(sbuff);
-			i = Text::StrLastIndexOfChar(sbuff, IO::Path::PATH_SEPERATOR);
+			sptr = this->video->GetSourceName(sbuff);
+			i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
 			sptr = &sbuff[i + 1];
 			Data::DateTime dt;
 			dt.SetCurrTime();

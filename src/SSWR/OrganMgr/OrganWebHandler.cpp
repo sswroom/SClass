@@ -1334,41 +1334,41 @@ Int32 SSWR::OrganMgr::OrganWebHandler::UserfileAdd(Int32 userId, Int32 spId, con
 	UOSInt j;
 	UOSInt i;
 	Int32 fileType = 0;
-	i = Text::StrLastIndexOfChar(fileName, '.');
+	UOSInt fileNameLen = Text::StrCharCnt(fileName);
+	i = Text::StrLastIndexOfCharC(fileName, fileNameLen, '.');
 	if (i == INVALID_INDEX)
 	{
 		return 0;
 	}
-	UOSInt fileNameLen = Text::StrCharCnt(&fileName[i + 1]);
-	if (Text::StrEqualsICaseC(&fileName[i + 1], fileNameLen, UTF8STRC("JPG")))
+	if (Text::StrEqualsICaseC(&fileName[i + 1], fileNameLen - i - 1, UTF8STRC("JPG")))
 	{
 		fileType = 1;
 	}
-	else if (Text::StrEqualsICaseC(&fileName[i + 1], fileNameLen, UTF8STRC("TIF")))
+	else if (Text::StrEqualsICaseC(&fileName[i + 1], fileNameLen - i - 1, UTF8STRC("TIF")))
 	{
 		fileType = 1;
 	}
-	else if (Text::StrEqualsICaseC(&fileName[i + 1], fileNameLen, UTF8STRC("PCX")))
+	else if (Text::StrEqualsICaseC(&fileName[i + 1], fileNameLen - i - 1, UTF8STRC("PCX")))
 	{
 		fileType = 1;
 	}
-	else if (Text::StrEqualsICaseC(&fileName[i + 1], fileNameLen, UTF8STRC("GIF")))
+	else if (Text::StrEqualsICaseC(&fileName[i + 1], fileNameLen - i - 1, UTF8STRC("GIF")))
 	{
 		fileType = 1;
 	}
-	else if (Text::StrEqualsICaseC(&fileName[i + 1], fileNameLen, UTF8STRC("PNG")))
+	else if (Text::StrEqualsICaseC(&fileName[i + 1], fileNameLen - i - 1, UTF8STRC("PNG")))
 	{
 		fileType = 1;
 	}
-	else if (Text::StrEqualsICaseC(&fileName[i + 1], fileNameLen, UTF8STRC("AVI")))
+	else if (Text::StrEqualsICaseC(&fileName[i + 1], fileNameLen - i - 1, UTF8STRC("AVI")))
 	{
 		fileType = 2;
 	}
-	else if (Text::StrEqualsICaseC(&fileName[i + 1], fileNameLen, UTF8STRC("MOV")))
+	else if (Text::StrEqualsICaseC(&fileName[i + 1], fileNameLen - i - 1, UTF8STRC("MOV")))
 	{
 		fileType = 2;
 	}
-	else if (Text::StrEqualsICaseC(&fileName[i + 1], fileNameLen, UTF8STRC("WAV")))
+	else if (Text::StrEqualsICaseC(&fileName[i + 1], fileNameLen - i - 1, UTF8STRC("WAV")))
 	{
 		fileType = 3;
 	}
@@ -1508,10 +1508,10 @@ Int32 SSWR::OrganMgr::OrganWebHandler::UserfileAdd(Int32 userId, Int32 spId, con
 				sptr = Text::StrInt64(sptr, ticks);
 				sptr = Text::StrConcatC(sptr, UTF8STRC("_"));
 				sptr = Text::StrHexVal32(sptr, crcVal);
-				i = Text::StrLastIndexOfChar(fileName, '.');
+				i = Text::StrLastIndexOfCharC(fileName, fileNameLen, '.');
 				if (i != INVALID_INDEX)
 				{
-					sptr = Text::StrConcat(sptr, &fileName[i]);
+					sptr = Text::StrConcatC(sptr, &fileName[i], fileNameLen - i);
 				}
 
 				IO::FileStream *fs;
@@ -1557,7 +1557,7 @@ Int32 SSWR::OrganMgr::OrganWebHandler::UserfileAdd(Int32 userId, Int32 spId, con
 						userFile = MemAlloc(SSWR::OrganMgr::OrganWebHandler::UserFileInfo, 1);
 						userFile->id = this->db->GetLastIdentity32();
 						userFile->fileType = fileType;
-						userFile->oriFileName = Text::String::NewNotNull(fileName);
+						userFile->oriFileName = Text::String::New(fileName, fileNameLen);
 						userFile->fileTimeTicks = fileTime.ToTicks();
 						userFile->lat = lat;
 						userFile->lon = lon;
@@ -1713,10 +1713,10 @@ Int32 SSWR::OrganMgr::OrganWebHandler::UserfileAdd(Int32 userId, Int32 spId, con
 				sptr = Text::StrInt64(sptr, ticks);
 				sptr = Text::StrConcatC(sptr, UTF8STRC("_"));
 				sptr = Text::StrHexVal32(sptr, crcVal);
-				i = Text::StrLastIndexOfChar(fileName, '.');
+				i = Text::StrLastIndexOfCharC(fileName, fileNameLen, '.');
 				if (i != INVALID_INDEX)
 				{
-					sptr = Text::StrConcat(sptr, &fileName[i]);
+					sptr = Text::StrConcatC(sptr, &fileName[i], fileNameLen - i);
 				}
 				IO::FileStream *fs;
 				NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
@@ -1753,7 +1753,7 @@ Int32 SSWR::OrganMgr::OrganWebHandler::UserfileAdd(Int32 userId, Int32 spId, con
 						userFile = MemAlloc(SSWR::OrganMgr::OrganWebHandler::UserFileInfo, 1);
 						userFile->id = this->db->GetLastIdentity32();
 						userFile->fileType = fileType;
-						userFile->oriFileName = Text::String::NewNotNull(fileName);
+						userFile->oriFileName = Text::String::New(fileName, fileNameLen);
 						userFile->fileTimeTicks = fileTime.ToTicks();
 						userFile->lat = 0;
 						userFile->lon = 0;
@@ -3490,7 +3490,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpecies(Net::WebServer::IWebR
 					sptr2 = Text::StrConcatC(sptr, UTF8STRC("web"));
 					*sptr2++ = IO::Path::PATH_SEPERATOR;
 					sptr2 = Text::StrConcatC(sptr2, sarr[0].v, sarr[0].len);
-					i = Text::StrLastIndexOfChar(sptr, '.');
+					i = Text::StrLastIndexOfCharC(sptr, (UOSInt)(sptr2 - sptr), '.');
 					if (i != INVALID_INDEX)
 					{
 						sptr[i] = 0;
@@ -4555,8 +4555,8 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 								found = true;
 								u8ptr2 = Text::StrConcatC(u8buff2, UTF8STRC("web"));
 								*u8ptr2++ = IO::Path::PATH_SEPERATOR;
-								Text::StrConcatC(u8ptr2, sarr[0].v, sarr[0].len);
-								i = Text::StrLastIndexOfChar(u8buff2, '.');
+								u8ptr2 = Text::StrConcatC(u8ptr2, sarr[0].v, sarr[0].len);
+								i = Text::StrLastIndexOfCharC(u8buff2, (UOSInt)(u8ptr2 - u8buff2), '.');
 								if (i != INVALID_INDEX)
 									u8buff2[i] = 0;
 								break;
@@ -4915,8 +4915,8 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 								found = true;
 								u8ptr2 = Text::StrConcatC(u8buff2, UTF8STRC("web"));
 								*u8ptr2++ = IO::Path::PATH_SEPERATOR;
-								Text::StrConcatC(u8ptr2, sarr[0].v, sarr[0].len);
-								i = Text::StrLastIndexOfChar(u8buff2, '.');
+								u8ptr2 = Text::StrConcatC(u8ptr2, sarr[0].v, sarr[0].len);
+								i = Text::StrLastIndexOfCharC(u8buff2, (UOSInt)(u8ptr2 - u8buff2), '.');
 								if (i != INVALID_INDEX)
 									u8buff2[i] = 0;
 								break;
@@ -5106,8 +5106,8 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 						sb.AppendC(UTF8STRC("&file="));
 						u8ptr2 = Text::StrConcatC(u8buff, UTF8STRC("web"));
 						*u8ptr2++ = IO::Path::PATH_SEPERATOR;
-						Text::StrConcat(u8ptr2, u8buff2);
-						i = Text::StrLastIndexOfChar(u8buff, '.');
+						u8ptr2 = Text::StrConcat(u8ptr2, u8buff2);
+						i = Text::StrLastIndexOfCharC(u8buff, (UOSInt)(u8ptr2 - u8buff), '.');
 						if (i != INVALID_INDEX)
 							u8buff[i] = 0;
 						Text::TextBinEnc::URIEncoding::URIEncode(u8buff2, u8buff);
@@ -5279,8 +5279,8 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 								found = true;
 								u8ptr2 = Text::StrConcatC(u8buff2, UTF8STRC("web"));
 								*u8ptr2++ = IO::Path::PATH_SEPERATOR;
-								Text::StrConcatC(u8ptr2, sarr[0].v, sarr[0].len);
-								i = Text::StrLastIndexOfChar(u8buff2, '.');
+								u8ptr2 = Text::StrConcatC(u8ptr2, sarr[0].v, sarr[0].len);
+								i = Text::StrLastIndexOfCharC(u8buff2, (UOSInt)(u8ptr2 - u8buff2), '.');
 								if (i != INVALID_INDEX)
 									u8buff2[i] = 0;
 								break;

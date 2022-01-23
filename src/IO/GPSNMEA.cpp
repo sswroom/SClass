@@ -256,14 +256,14 @@ Map::ILocationService::ServiceType IO::GPSNMEA::GetServiceType()
 	return Map::ILocationService::ST_NMEA;
 }
 
-UOSInt IO::GPSNMEA::GenNMEACommand(const UTF8Char *cmd, UInt8 *buff)
+UOSInt IO::GPSNMEA::GenNMEACommand(const UTF8Char *cmd, UOSInt cmdLen, UInt8 *buff)
 {
 	UOSInt size;
 	UInt8 chk;
 	UOSInt i;
 	if (cmd[0] != '$')
 		return 0;
-	size = (UOSInt)(Text::StrConcat(buff, cmd) - buff);
+	size = (UOSInt)(Text::StrConcatC(buff, cmd, cmdLen) - buff);
 	i = size;
 	chk = 0;
 	while (i-- > 1)

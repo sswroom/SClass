@@ -81,16 +81,18 @@ void Text::VSContainer::AddChild(Text::CodeObject *obj)
 Text::VSProject::VSProject(const UTF8Char *name, VisualStudioVersion ver) : Text::CodeProject(name)
 {
 	UTF8Char sbuff[512];
+	UTF8Char *sptr;
 	UOSInt i;
 	i = Text::StrLastIndexOfChar(name, IO::Path::PATH_SEPERATOR);
-	Text::StrConcat(sbuff, &name[i + 1]);
-	i = Text::StrLastIndexOfChar(sbuff, '.');
+	sptr = Text::StrConcat(sbuff, &name[i + 1]);
+	i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), '.');
 	if (i != INVALID_INDEX)
 	{
 		sbuff[i] = 0;
+		sptr = &sbuff[i];
 	}
 	this->ver = ver;
-	this->projName = Text::String::NewNotNull(sbuff);
+	this->projName = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 	NEW_CLASS(this->childList, Data::ArrayList<Text::CodeObject*>());
 }
 

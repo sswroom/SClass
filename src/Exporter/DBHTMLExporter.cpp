@@ -81,9 +81,9 @@ Bool Exporter::DBHTMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8Cha
 	writer->WriteLineC(UTF8STRC("<html>"));
 	writer->WriteLineC(UTF8STRC("<head>"));
 	writer->WriteStrC(UTF8STRC("<title>"));
-	db->GetSourceName(lineBuff1);
+	sptr2 = db->GetSourceName(lineBuff1);
 	sptr = lineBuff1;
-	if ((i = Text::StrLastIndexOfChar(sptr, '\\')) != INVALID_INDEX)
+	if ((i = Text::StrLastIndexOfCharC(sptr, (UOSInt)(sptr2 - sptr), '\\')) != INVALID_INDEX)
 		sptr = &sptr[i + 1];
 	sptr2 = Text::XML::ToXMLText(lineBuff2, sptr);
 	writer->WriteLineC(lineBuff2, (UOSInt)(sptr2 - lineBuff2));
@@ -91,9 +91,9 @@ Bool Exporter::DBHTMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8Cha
 	sptr = Text::StrConcatC(Text::EncodingFactory::GetInternetName(Text::StrConcatC(lineBuff1, UTF8STRC("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=")), this->codePage), UTF8STRC("\">"));
 	writer->WriteLineC(lineBuff1, (UOSInt)(sptr - lineBuff1));
 	writer->WriteLineC(UTF8STRC("</head>"));
-	db->GetSourceName(lineBuff2);
+	sptr2 = db->GetSourceName(lineBuff2);
 	sptr = lineBuff2;
-	if ((i = Text::StrLastIndexOfChar(sptr, '\\')) != INVALID_INDEX)
+	if ((i = Text::StrLastIndexOfCharC(sptr, (UOSInt)(sptr2 - sptr), '\\')) != INVALID_INDEX)
 		sptr = &sptr[i + 1];
 	sptr = Text::XML::ToXMLText(Text::StrConcatC(lineBuff1, UTF8STRC("<body><h1>")), sptr);
 	writer->WriteLineC(lineBuff1, (UOSInt)(sptr - lineBuff1));

@@ -302,12 +302,12 @@ Bool IO::SerialPort::ResetPort(UOSInt portNum)
 			return false;
 		}
 		sbuff2[si] = 0;
-		IO::Path::AppendPath(sbuff, sbuff2);
-		i = Text::StrLastIndexOfChar(sbuff, '/');
+		sptr = IO::Path::AppendPath(sbuff, sbuff2);
+		i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), '/');
 		if (i == INVALID_INDEX)
 			return false;
 		sbuff[i] = 0;
-		i = Text::StrLastIndexOfChar(sbuff, '/');
+		i = Text::StrLastIndexOfCharC(sbuff, i, '/');
 		if (i == INVALID_INDEX)
 			return false;
 		sptr = &sbuff[i + 1];

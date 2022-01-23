@@ -60,6 +60,7 @@ void __stdcall SSWR::AVIRead::AVIRTFTPServerForm::OnTimerTick(void *userObj)
 SSWR::AVIRead::AVIRTFTPServerForm::AVIRTFTPServerForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	UTF8Char sbuff[512];
+	UTF8Char *sptr;
 	UOSInt i;
 	this->core = core;
 	this->SetText((const UTF8Char*)"TFTP Server");
@@ -79,8 +80,8 @@ SSWR::AVIRead::AVIRTFTPServerForm::AVIRTFTPServerForm(UI::GUIClientControl *pare
 	this->txtPort->SetRect(108, 8, 50, 23, false);
 	NEW_CLASS(this->lblFilePath, UI::GUILabel(ui, this->tpControl, (const UTF8Char*)"File Path"));
 	this->lblFilePath->SetRect(8, 32, 100, 23, false);
-	IO::Path::GetProcessFileName(sbuff);
-	i = Text::StrLastIndexOfChar(sbuff, IO::Path::PATH_SEPERATOR);
+	sptr = IO::Path::GetProcessFileName(sbuff);
+	i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
 	if (i != INVALID_INDEX)
 	{
 		sbuff[i] = 0;

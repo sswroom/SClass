@@ -24,7 +24,7 @@ namespace IO
 		FileFindRecur(const UTF8Char *path);
 		~FileFindRecur();
 
-		const UTF8Char *NextFile(IO::Path::PathType *pt);
+		Text::CString NextFile(IO::Path::PathType *pt);
 	};
 }
 #endif

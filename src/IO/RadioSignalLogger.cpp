@@ -86,7 +86,7 @@ IO::RadioSignalLogger::RadioSignalLogger()
 	Data::DateTime dt;
 	dt.SetCurrTime();
 	sptr = IO::Path::GetProcessFileName(sbuff);
-	i = Text::StrLastIndexOfChar(sbuff, IO::Path::PATH_SEPERATOR);
+	i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
 	sptr = &sbuff[i + 1];
 	sptr = Text::StrConcatC(sptr, UTF8STRC("radio"));
 	sptr = dt.ToString(sptr, "yyyyMMddHHmmss");

@@ -54,8 +54,8 @@ IO::ParsedObject *Parser::FileParser::MD5Parser::ParseFile(IO::IStreamData *fd, 
 	{
 		return 0;
 	}
-	fd->GetFullName()->ConcatTo(u8buff);
-	i = Text::StrLastIndexOfChar(u8buff, '.');
+	sptr = fd->GetFullName()->ConcatTo(u8buff);
+	i = Text::StrLastIndexOfCharC(u8buff, (UOSInt)(sptr - u8buff), '.');
 	if (i == INVALID_INDEX)
 	{
 		return 0;

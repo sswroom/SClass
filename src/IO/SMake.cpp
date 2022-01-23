@@ -141,7 +141,7 @@ Bool IO::SMake::ExecuteCmd(const UTF8Char *cmd, UOSInt cmdLen)
 	return true;
 }
 
-Bool IO::SMake::LoadConfigFile(const UTF8Char *cfgFile)
+Bool IO::SMake::LoadConfigFile(const UTF8Char *cfgFile, UOSInt cfgFileLen)
 {
 	IO::FileStream *fs;
 	Text::UTF8Reader *reader;
@@ -150,7 +150,7 @@ Bool IO::SMake::LoadConfigFile(const UTF8Char *cfgFile)
 	{
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(UTF8STRC("Loading "));
-		sb.Append(cfgFile);
+		sb.AppendC(cfgFile, cfgFileLen);
 		this->messageWriter->WriteLineC(sb.ToString(), sb.GetLength());
 	}
 	NEW_CLASS(fs, IO::FileStream(cfgFile, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
@@ -159,7 +159,7 @@ Bool IO::SMake::LoadConfigFile(const UTF8Char *cfgFile)
 		DEL_CLASS(fs);
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(UTF8STRC("Error in opening "));
-		sb.Append(cfgFile);
+		sb.AppendC(cfgFile, cfgFileLen);
 		this->SetErrorMsg(sb.ToString(), sb.GetLength());
 		return false;
 	}
@@ -464,10 +464,13 @@ Bool IO::SMake::LoadConfigFile(const UTF8Char *cfgFile)
 			if (IO::Path::IsSearchPattern(sptr1))
 			{
 				IO::FileFindRecur srch(sptr1);
-				const UTF8Char *csptr;
-				while ((csptr = srch.NextFile(0)) != 0)
+				Text::CString cstr;
+				while (true)
 				{
-					if (!LoadConfigFile(csptr))
+					cstr = srch.NextFile(0);
+					if (cstr.v == 0)
+						break;
+					if (!LoadConfigFile(cstr.v, cstr.len))
 					{
 						ret = false;
 						break;
@@ -481,7 +484,7 @@ Bool IO::SMake::LoadConfigFile(const UTF8Char *cfgFile)
 			}
 			else
 			{
-				if (!LoadConfigFile(sptr1))
+				if (!LoadConfigFile(sptr1, sb.GetLength() - 8))
 				{
 					ret = false;
 					break;
@@ -1235,7 +1238,8 @@ IO::SMake::SMake(const UTF8Char *cfgFile, UOSInt threadCnt, IO::Writer *messageW
 	NEW_CLASS(this->tasks, Sync::ParallelTask(threadCnt, false));
 	NEW_CLASS(this->errorMsgMut, Sync::Mutex());
 	this->errorMsg = 0;
-	UOSInt i = Text::StrLastIndexOfChar(cfgFile, IO::Path::PATH_SEPERATOR);
+	UOSInt cfgFileLen = Text::StrCharCnt(cfgFile);
+	UOSInt i = Text::StrLastIndexOfCharC(cfgFile, cfgFileLen, IO::Path::PATH_SEPERATOR);
 	UTF8Char sbuff[512];
 	if (i != INVALID_INDEX)
 	{
@@ -1254,7 +1258,7 @@ IO::SMake::SMake(const UTF8Char *cfgFile, UOSInt threadCnt, IO::Writer *messageW
 	this->messageWriter = messageWriter;
 	this->debugObj = 0;
 
-	this->LoadConfigFile(cfgFile);
+	this->LoadConfigFile(cfgFile, cfgFileLen);
 }
 
 IO::SMake::~SMake()

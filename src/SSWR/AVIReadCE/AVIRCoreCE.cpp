@@ -198,6 +198,7 @@ void SSWR::AVIReadCE::AVIRCoreCE::SaveData(UI::GUIForm *ownerForm, IO::ParsedObj
 		Data::ArrayList<IO::FileExporter*> *exp2;
 		IO::FileExporter *fileExp;
 		UTF8Char sbuff1[256];
+		UTF8Char *sptr;
 		UTF8Char sbuff2[256];
 		Text::StringBuilderUTF8 *sb;
 		NEW_CLASS(exp2, Data::ArrayList<IO::FileExporter*>());
@@ -219,9 +220,9 @@ void SSWR::AVIReadCE::AVIRCoreCE::SaveData(UI::GUIForm *ownerForm, IO::ParsedObj
 			}
 			i++;
 		}
-		if (pobj->GetSourceName(sbuff1))
+		if ((sptr = pobj->GetSourceName(sbuff1)) != 0)
 		{
-			if ((i = Text::StrLastIndexOfChar(sbuff1, '.')) != INVALID_INDEX)
+			if ((i = Text::StrLastIndexOfCharC(sbuff1, (UOSInt)(sptr - sbuff1), '.')) != INVALID_INDEX)
 			{
 				sbuff1[i] = 0;
 			}

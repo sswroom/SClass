@@ -88,11 +88,11 @@ Bool Media::MediaPlayerInterface::OpenVideo(Media::MediaFile *mf)
 	}
 	if (hasVideo && !hasAudio)
 	{
-		mf->GetSourceNameObj()->ConcatTo(sbuff);
-		i = Text::StrLastIndexOfChar(sbuff, IO::Path::PATH_SEPERATOR);
+		sptr = mf->GetSourceNameObj()->ConcatTo(sbuff);
+		i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
 		if (i != INVALID_INDEX)
 		{
-			j = Text::StrLastIndexOfChar(&sbuff[i + 1], '.');
+			j = Text::StrLastIndexOfCharC(&sbuff[i + 1], (UOSInt)(sptr - &sbuff[i + 1]), '.');
 			if (j != INVALID_INDEX)
 			{
 				sptr = Text::StrConcatC(&sbuff[i + j + 1], IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
@@ -101,7 +101,7 @@ Bool Media::MediaPlayerInterface::OpenVideo(Media::MediaFile *mf)
 				{
 					while ((sptr = IO::Path::FindNextFile(&sbuff[i + 1], sess, 0, &pt, &fileSize)) != 0)
 					{
-						j = Text::StrLastIndexOfChar(&sbuff[i + 1], '.');
+						j = Text::StrLastIndexOfCharC(&sbuff[i + 1], (UOSInt)(sptr - &sbuff[i + 1]), '.');
 						if (j != INVALID_INDEX)
 						{
 							Bool audFile = false;

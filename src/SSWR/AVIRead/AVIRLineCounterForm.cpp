@@ -155,7 +155,7 @@ void SSWR::AVIRead::AVIRLineCounterForm::CalcDir(UTF8Char *pathBuff, UTF8Char *p
 			else if (pt == IO::Path::PathType::File)
 			{
 				found = false;
-				i = Text::StrLastIndexOfChar(pathBuffEnd, '.') + 1;
+				i = Text::StrLastIndexOfCharC(pathBuffEnd, (UOSInt)(sptr - pathBuffEnd), '.') + 1;
 				j = this->extList->GetCount();
 				while (j-- > 0)
 				{

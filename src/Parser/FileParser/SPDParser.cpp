@@ -39,7 +39,7 @@ IO::ParsedObject *Parser::FileParser::SPDParser::ParseFile(IO::IStreamData *fd, 
 	if (!fd->IsFullFile())
 		return 0;
 	sptr = fd->GetFullFileName()->ConcatTo(sbuff);
-	i = Text::StrLastIndexOfChar(sbuff, '.');
+	i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), '.');
 	if (i == INVALID_INDEX || !Text::StrEqualsICaseC(&sbuff[i], (UOSInt)(sptr - &sbuff[i]), UTF8STRC(".SPD")))
 	{
 		return 0;

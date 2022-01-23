@@ -981,12 +981,12 @@ IO::Path::PathType IO::Path::GetPathTypeW(const WChar *path)
 #endif
 }
 
-Bool IO::Path::FileNameMatch(const UTF8Char *path, const UTF8Char *searchPattern)
+Bool IO::Path::FileNameMatch(const UTF8Char *path, UOSInt pathLen, const UTF8Char *searchPattern, UOSInt patternLen)
 {
 	UTF8Char sbuff[256];
-	UOSInt i = Text::StrLastIndexOfChar(path, '\\');
+	UOSInt i = Text::StrLastIndexOfCharC(path, pathLen, '\\');
 	const UTF8Char *fileName = &path[i + 1];
-	Text::StrConcat(sbuff, searchPattern);
+	Text::StrConcatC(sbuff, searchPattern, patternLen);
 	Bool isWC = false;
 	UTF8Char *patternStart = 0;
 	UTF8Char *currPattern = sbuff;

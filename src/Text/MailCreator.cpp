@@ -126,7 +126,7 @@ Text::IMIMEObj *Text::MailCreator::ParseContentHTML(UInt8 *buff, UOSInt buffSize
 					UOSInt tmpI;
 					found = false;
 					sptr = Text::StrConcat(sbuff, htmlPath);
-					l = Text::StrLastIndexOfChar(sbuff, IO::Path::PATH_SEPERATOR );
+					l = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), IO::Path::PATH_SEPERATOR );
 					sptr = &sbuff[l + 1];
 					tmpI = i;
 					if (buff[i] == '/' || buff[i] == '\\')

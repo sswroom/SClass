@@ -37,8 +37,8 @@ void Net::OSMGPXDownloader::ItemAdded(Net::RSSItem *item)
 	UOSInt i;
 	IO::Path::PathType pt;
 
-	item->link->ConcatTo(sbuff);
-	i = Text::StrLastIndexOfChar(sbuff, '/');
+	sptr = item->link->ConcatTo(sbuff);
+	i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), '/');
 	sptr = &sbuff[i + 1];
 	Text::StrConcat(gpxId, sptr);
 	sptr2 = Text::StrConcatC(sbuff2, UTF8STRC("http://www.openstreetmap.org/trace/"));
@@ -47,7 +47,7 @@ void Net::OSMGPXDownloader::ItemAdded(Net::RSSItem *item)
 
 	sptr = Text::StrConcat(sbuff, this->storeDir);
 	sptr = item->author->ConcatTo(sptr);
-	pt = IO::Path::GetPathType(sbuff);
+	pt = IO::Path::GetPathType(sbuff, (UOSInt)(sptr - sbuff));
 	if (pt == IO::Path::PathType::Unknown)
 	{
 		IO::Path::CreateDirectory(sbuff);
@@ -55,7 +55,7 @@ void Net::OSMGPXDownloader::ItemAdded(Net::RSSItem *item)
 	*sptr++ = IO::Path::PATH_SEPERATOR;
 	sptr = Text::StrConcat(sptr, gpxId);
 	sptr = Text::StrConcatC(sptr, UTF8STRC(".gpx"));
-	pt = IO::Path::GetPathType(sbuff);
+	pt = IO::Path::GetPathType(sbuff, (UOSInt)(sptr - sbuff));
 	if (pt == IO::Path::PathType::File)
 	{
 	}
@@ -70,13 +70,13 @@ void Net::OSMGPXDownloader::ItemAdded(Net::RSSItem *item)
 		UOSInt retryCnt = 3;
 
 		sb.AppendC(UTF8STRC("Downloading: "));
-		sb.Append(sbuff2);
+		sb.AppendC(sbuff2, (UOSInt)(sptr2 - sbuff2));
 		this->writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 		while (retryCnt-- > 0)
 		{
 			NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
-			cli = Net::HTTPClient::CreateConnect(sockf, 0, sbuff2, "GET", true);
+			cli = Net::HTTPClient::CreateConnect(sockf, 0, sbuff2, Net::WebUtil::RequestMethod::HTTP_GET, true);
 
 			totalSize = 0;
 			while (true)

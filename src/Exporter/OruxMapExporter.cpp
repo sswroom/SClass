@@ -105,16 +105,19 @@ Bool Exporter::OruxMapExporter::ExportFile(IO::SeekableStream *stm, const UTF8Ch
 	Double maxLon;
 	Double boundsXY[4];
 	Bool succ;
-	i = Text::StrLastIndexOfChar(fileName, IO::Path::PATH_SEPERATOR);
-	Text::StrConcat(fileName2, &fileName[i + 1]);
-	i = Text::StrLastIndexOfChar(fileName2, '.');
+	UOSInt fileNameLen = Text::StrCharCnt(fileName);
+	i = Text::StrLastIndexOfCharC(fileName, fileNameLen, IO::Path::PATH_SEPERATOR);
+	sptr = Text::StrConcatC(fileName2, &fileName[i + 1], fileNameLen - i - 1);
+	i = Text::StrLastIndexOfCharC(fileName2, (UOSInt)(sptr - fileName2), '.');
 	if (i != INVALID_INDEX)
 	{
 		fileName2[i] = 0;
+		sptr = &fileName2[i];
 	}
-	if (Text::StrEndsWith(fileName2, (const UTF8Char*)".otrk2"))
+	if (Text::StrEndsWithC(fileName2, (UOSInt)(sptr - fileName2), UTF8STRC(".otrk2")))
 	{
-		fileName2[Text::StrCharCnt(fileName2) - 6] = 0;
+		sptr -= 6;
+		*sptr = 0;
 	}
 
 	if (ttype == Map::TileMap::TT_OSMLOCAL)
@@ -123,7 +126,7 @@ Bool Exporter::OruxMapExporter::ExportFile(IO::SeekableStream *stm, const UTF8Ch
 		s = Text::XML::ToNewXMLText(fileName2);
 		succ = false;
 
-		Text::StrConcat(u8fileName, fileName);
+		Text::StrConcatC(u8fileName, fileName, fileNameLen);
 		IO::Path::AppendPath(u8fileName, (const UTF8Char*)"OruxMapsImages.db");
 		NEW_CLASS(db, DB::SQLiteFile(u8fileName));
 		if (!db->IsError())
