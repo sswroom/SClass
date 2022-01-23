@@ -23,7 +23,7 @@ namespace Net
 
 		private:
 			Text::String *requestURI;
-			RequestMethod reqMeth;
+			Net::WebUtil::RequestMethod reqMeth;
 			Data::FastStringMap<Text::String*> *headers;
 			Data::FastStringMap<Text::String*> *queryMap;
 			Net::SocketUtil::AddressInfo cliAddr;
@@ -45,7 +45,7 @@ namespace Net
 			void ParseFormPart(UInt8 *data, UOSInt dataSize, UOSInt startOfst);
 			const UTF8Char *ParseHeaderVal(UTF8Char *headerData, UOSInt dataLen);
 		public:
-			WebRequest(const UTF8Char *requestURI, UOSInt uriLen, RequestMethod reqMeth, RequestProtocol reqProto, Bool secureConn, const Net::SocketUtil::AddressInfo *cliAddr, UInt16 cliPort, UInt16 svrPort);
+			WebRequest(const UTF8Char *requestURI, UOSInt uriLen, Net::WebUtil::RequestMethod reqMeth, RequestProtocol reqProto, Bool secureConn, const Net::SocketUtil::AddressInfo *cliAddr, UInt16 cliPort, UInt16 svrPort);
 			virtual ~WebRequest();
 
 			void AddHeaderC(const UTF8Char *name, UOSInt nameLen, const UTF8Char *value, UOSInt valueLen);
@@ -61,7 +61,7 @@ namespace Net
 			virtual RequestProtocol GetProtocol();
 			virtual Text::String *GetQueryValue(const UTF8Char *name, UOSInt nameLen);
 			virtual Bool HasQuery(const UTF8Char *name, UOSInt nameLen);
-			virtual RequestMethod GetReqMethod();
+			virtual Net::WebUtil::RequestMethod GetReqMethod();
 			virtual void ParseHTTPForm();
 			virtual Text::String *GetHTTPFormStr(const UTF8Char *name, UOSInt nameLen);
 			virtual const UInt8 *GetHTTPFormFile(const UTF8Char *formName, UOSInt index, UTF8Char *fileName, UOSInt fileNameBuffSize, UOSInt *fileSize);

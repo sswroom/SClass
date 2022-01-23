@@ -159,7 +159,7 @@ Bool Net::WebServer::RESTfulHandler::ProcessRequest(Net::WebServer::IWebRequest 
 		return true;
 	}
 
-	if (req->GetReqMethod() == Net::WebServer::IWebRequest::RequestMethod::HTTP_GET)
+	if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_GET)
 	{
 		UOSInt i = Text::StrIndexOfChar(&subReq[1], '/');
 		if (i != INVALID_INDEX)
@@ -337,19 +337,19 @@ Bool Net::WebServer::RESTfulHandler::ProcessRequest(Net::WebServer::IWebRequest 
 			return true;
 		}
 	}
-	else if (req->GetReqMethod() == Net::WebServer::IWebRequest::RequestMethod::HTTP_POST)
+	else if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_POST)
 	{
 
 	}
-	else if (req->GetReqMethod() == Net::WebServer::IWebRequest::RequestMethod::HTTP_PUT)
+	else if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_PUT)
 	{
 
 	}
-	else if (req->GetReqMethod() == Net::WebServer::IWebRequest::RequestMethod::HTTP_PATCH)
+	else if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_PATCH)
 	{
 
 	}
-	else if (req->GetReqMethod() == Net::WebServer::IWebRequest::RequestMethod::HTTP_DELETE)
+	else if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_DELETE)
 	{
 
 	}

@@ -444,7 +444,7 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::TargetReq(SSWR::SDNSProxy::
 
 Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::BlacklistReq(SSWR::SDNSProxy::SDNSProxyWebHandler *me, Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp)
 {
-	if (req->GetReqMethod() == Net::WebServer::IWebRequest::RequestMethod::HTTP_POST)
+	if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_POST)
 	{
 		req->ParseHTTPForm();
 		Text::String *blackList = req->GetHTTPFormStr(UTF8STRC("blacklist"));

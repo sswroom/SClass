@@ -44,7 +44,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPTestForm::OnStartClicked(void *userObj)
 	me->kaConn = me->chkKAConn->IsChecked();
 	if (me->cboMethod->GetSelectedIndex() == 1)
 	{
-		me->method = "POST";
+		me->method = Net::WebUtil::RequestMethod::HTTP_POST;
 		sb.ClearStr();
 		me->txtPostSize->GetText(&sb);
 		if (!sb.ToUInt32(&me->postSize) || me->postSize <= 0)
@@ -57,7 +57,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPTestForm::OnStartClicked(void *userObj)
 	}
 	else
 	{
-		me->method = "GET";
+		me->method = Net::WebUtil::RequestMethod::HTTP_GET;
 		me->postSize = 0;
 	}
 	
@@ -141,7 +141,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPTestForm::ProcessThread(void *userObj)
 			if (cli->Connect(url->v, url->leng, status->me->method, &timeDNS, &timeConn, false))
 			{
 				cli->AddHeaderC(UTF8STRC("Connection"), UTF8STRC("keep-alive"));
-				if (Text::StrEquals(status->me->method, "POST"))
+				if (status->me->method == Net::WebUtil::RequestMethod::HTTP_POST)
 				{
 					i = status->me->postSize;
 					sptr = Text::StrUOSInt(buff, i);
@@ -204,7 +204,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPTestForm::ProcessThread(void *userObj)
 			if (url == 0)
 				break;
 			cli = Net::HTTPClient::CreateClient(status->me->sockf, status->me->ssl, 0, 0, true, url->StartsWith(UTF8STRC("https://")));
-			if (cli->Connect(url->v, url->leng, "GET", &timeDNS, &timeConn, false))
+			if (cli->Connect(url->v, url->leng, Net::WebUtil::RequestMethod::HTTP_GET, &timeDNS, &timeConn, false))
 			{
 				cli->AddHeaderC(UTF8STRC("Connection"), UTF8STRC("keep-alive"));
 				cli->EndRequest(&timeReq, &timeResp);
@@ -330,7 +330,7 @@ SSWR::AVIRead::AVIRHTTPTestForm::AVIRHTTPTestForm(UI::GUIClientControl *parent, 
 	this->failCnt = 0;
 	this->t = 0;
 	this->kaConn = false;
-	this->method = "GET";
+	this->method = Net::WebUtil::RequestMethod::HTTP_GET;
 	this->postSize = 0;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 

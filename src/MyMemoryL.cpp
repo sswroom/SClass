@@ -163,7 +163,7 @@ void *MAlloc(UOSInt size)
 {
 	Interlocked_IncrementI32(&mcMemoryCnt);
 
-	void *ptr = malloc(size + 4);
+	REGVAR void *ptr = malloc(size + 4);
 	if ((OSInt)ptr == 0)
 	{
 		printf("Out of Memory: size = %d\n", (UInt32)size);
@@ -177,8 +177,8 @@ void *MAllocA(UOSInt size)
 {
 	Interlocked_IncrementI32(&mcMemoryCnt);
 
-	UInt8 *mptr = (UInt8*)malloc(size + 32);
-	UInt8 *sptr = mptr;
+	REGVAR UInt8 *mptr = (UInt8*)malloc(size + 32);
+	REGVAR UInt8 *sptr = mptr;
 	if ((OSInt)mptr == 0)
 	{
 		printf("Out of Memory: Asize = %d\n", (UInt32)size);
@@ -194,8 +194,8 @@ void *MAllocA64(UOSInt size)
 {
 	Interlocked_IncrementI32(&mcMemoryCnt);
 
-	UInt8 *mptr = (UInt8*)malloc(size + 80);
-	UInt8 *sptr = mptr;
+	REGVAR UInt8 *mptr = (UInt8*)malloc(size + 80);
+	REGVAR UInt8 *sptr = mptr;
 	if ((OSInt)mptr == 0)
 	{
 		printf("Out of Memory: A64size = %d\n", (UInt32)size);

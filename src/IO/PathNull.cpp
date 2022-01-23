@@ -158,7 +158,7 @@ Bool IO::Path::AppendPath(Text::StringBuilderUTF8 *sb, const UTF8Char *toAppend,
 		return true;
 	}
 	UOSInt i = Text::StrLastIndexOfChar(sb->ToString(), '/');
-	if (GetPathType(sb->ToString()) == IO::Path::PathType::File && i != INVALID_INDEX)
+	if (GetPathType(sb->ToString(), sb->GetLength()) == IO::Path::PathType::File && i != INVALID_INDEX)
 	{
 		sb->RemoveChars(sb->GetLength() - i);
 		i = Text::StrLastIndexOfChar(sb->ToString(), '/');
@@ -204,6 +204,16 @@ void IO::Path::FindFileClose(IO::Path::FindFileSession *session)
 IO::Path::PathType IO::Path::GetPathTypeW(const WChar *path)
 {
 	return IO::Path::PathType::Unknown;
+}
+
+Bool IO::Path::PathExists(const UTF8Char *path, UOSInt pathLen)
+{
+	return false;
+}
+
+Bool IO::Path::PathExistsW(const WChar *path)
+{
+	return false;
 }
 
 WChar *IO::Path::GetFullPathW(WChar *buff, const WChar *path)

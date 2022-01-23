@@ -641,6 +641,26 @@ IO::Path::PathType IO::Path::GetPathTypeW(const WChar *path)
 	return pt;
 }
 
+Bool IO::Path::PathExists(const UTF8Char *path, UOSInt pathLen)
+{
+#if defined(__USE_LARGEFILE64)
+	struct stat64 s;
+	int status = lstat64((const Char*)path, &s);
+#else
+	struct stat s;
+	int status = lstat((const Char*)path, &s);
+#endif
+	return status == 0;
+}
+
+Bool IO::Path::PathExistsW(const WChar *path)
+{
+	Text::String *utfPath = Text::String::NewNotNull(path);
+	Bool ret = IO::Path::PathExists(utfPath->v, utfPath->leng);
+	utfPath->Release();
+	return ret;
+}
+
 WChar *IO::Path::GetFullPathW(WChar *buff, const WChar *path)
 {
 	Text::StringBuilderUTF8 sb;

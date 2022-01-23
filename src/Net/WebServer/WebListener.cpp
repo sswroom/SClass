@@ -194,7 +194,8 @@ void Net::WebServer::WebListener::LogAccess(Net::WebServer::IWebRequest *req, Ne
 		Net::SocketUtil::GetAddrName(sbuff, req->GetClientAddr(), req->GetClientPort());
 		sb.Append(sbuff);
 		sb.AppendC(UTF8STRC(" "));
-		sb.Append((const UTF8Char*)req->GetReqMethodStr());
+		Text::CString reqMeth = req->GetReqMethodStr();
+		sb.AppendC(reqMeth.v, reqMeth.len);
 		sb.AppendC(UTF8STRC(" "));
 		sb.Append(req->GetRequestURI());
 		sb.AppendC(UTF8STRC(" \""));

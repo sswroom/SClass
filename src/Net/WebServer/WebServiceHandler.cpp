@@ -50,7 +50,8 @@ Bool Net::WebServer::WebServiceHandler::ProcessRequest(Net::WebServer::IWebReque
 				{
 					sb.AppendC(UTF8STRC(", "));
 				}
-				sb.Append((const UTF8Char*)Net::WebServer::IWebRequest::RequestMethodGetName((Net::WebServer::IWebRequest::RequestMethod)methods->GetItem(i)));
+				Text::CString name = Net::WebUtil::RequestMethodGetName((Net::WebUtil::RequestMethod)methods->GetItem(i));
+				sb.AppendC(name.v, name.len);
 				i++;
 			}
 			resp->AddHeaderC(UTF8STRC("Allow"), sb.ToString(), sb.GetLength());
@@ -66,7 +67,7 @@ Net::WebServer::WebServiceHandler::WebServiceHandler()
 	NEW_CLASS(this->services, Data::FastStringMap<Net::WebServer::WebServiceHandler::ServiceInfo*>());
 }
 
-void Net::WebServer::WebServiceHandler::AddService(const UTF8Char *svcPath, UOSInt svcPathLen, Net::WebServer::IWebRequest::RequestMethod reqMeth, ServiceFunc func)
+void Net::WebServer::WebServiceHandler::AddService(const UTF8Char *svcPath, UOSInt svcPathLen, Net::WebUtil::RequestMethod reqMeth, ServiceFunc func)
 {
 	Net::WebServer::WebServiceHandler::ServiceInfo *service;
 	if (svcPath[0] != '/')

@@ -82,7 +82,7 @@ void __stdcall SSWR::AVIRead::AVIRSSDPClientForm::OnServiceSelChg(void *userObj)
 			Net::SSDPClient::SSDPRoot *root = me->rootMap->Get(svc->location);
 			if (root == 0)
 			{
-				Net::HTTPClient *cli = Net::HTTPClient::CreateConnect(me->sockf, me->ssl, svc->location, "GET", true);
+				Net::HTTPClient *cli = Net::HTTPClient::CreateConnect(me->sockf, me->ssl, svc->location, Net::WebUtil::RequestMethod::HTTP_GET, true);
 				if (cli == 0)
 				{
 					root = MemAlloc(Net::SSDPClient::SSDPRoot, 1);

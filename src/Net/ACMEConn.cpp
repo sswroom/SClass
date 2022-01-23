@@ -153,7 +153,7 @@ Net::HTTPClient *Net::ACMEConn::ACMEPost(Text::String *url, const Char *data)
 	}
 	UOSInt jwsLen = jws->leng;
 	Net::HTTPClient *cli = 0;
-	cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, url->v, "POST", true);
+	cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, url->v, Net::WebUtil::RequestMethod::HTTP_POST, true);
 	if (cli)
 	{
 		cli->AddContentType(UTF8STRC("application/jose+json"));
@@ -277,7 +277,7 @@ Net::ACMEConn::ACMEConn(Net::SocketFactory *sockf, const UTF8Char *serverHost, U
 		sb.AppendU16(port);
 	}
 	sb.AppendC(UTF8STRC("/directory"));
-	Net::HTTPClient *cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, sb.ToString(), "GET", true);
+	Net::HTTPClient *cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, sb.ToString(), Net::WebUtil::RequestMethod::HTTP_GET, true);
 	if (cli)
 	{
 		IO::MemoryStream *mstm;
@@ -401,7 +401,7 @@ Bool Net::ACMEConn::NewNonce()
 	{
 		return false;
 	}
-	Net::HTTPClient *cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, this->urlNewNonce->v, "GET", true);
+	Net::HTTPClient *cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, this->urlNewNonce->v, Net::WebUtil::RequestMethod::HTTP_GET, true);
 	if (cli == 0)
 	{
 		return false;

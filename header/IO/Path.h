@@ -52,6 +52,8 @@ namespace IO
 		static void FindFileClose(FindFileSession *session);
 		static PathType GetPathType(const UTF8Char *path, UOSInt pathLen);
 		static PathType GetPathTypeW(const WChar *path);
+		static Bool PathExists(const UTF8Char *path, UOSInt pathLen);
+		static Bool PathExistsW(const WChar *path);
 		static WChar *GetFullPathW(WChar *buff, const WChar *path);
 		static Bool FileNameMatch(const UTF8Char *path, const UTF8Char *searchPattern);
 		static Bool FileNameMatchW(const WChar *path, const WChar *searchPattern);

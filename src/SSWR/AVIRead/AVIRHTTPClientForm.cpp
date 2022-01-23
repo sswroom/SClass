@@ -68,10 +68,9 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnRequestClicked(void *userObj
 
 
 	me->noShutdown = me->chkNoShutdown->IsChecked();
-	me->reqMeth = (const Char*)me->cboMethod->GetSelectedItem();
+	me->reqMeth = (Net::WebUtil::RequestMethod)(OSInt)me->cboMethod->GetSelectedItem();
 	me->reqOSClient = me->chkOSClient->IsChecked();
-	UOSInt methodLen = Text::StrCharCnt(me->reqMeth);
-	if (Text::StrEqualsICaseC((const UTF8Char*)me->reqMeth, methodLen, UTF8STRC("GET")) || Text::StrEqualsICaseC((const UTF8Char*)me->reqMeth, methodLen, UTF8STRC("DELETE")))
+	if ((me->reqMeth == Net::WebUtil::RequestMethod::HTTP_GET) || (me->reqMeth == Net::WebUtil::RequestMethod::HTTP_DELETE))
 	{
 		UOSInt i = 0;
 		UOSInt j = me->params->GetCount();
@@ -473,7 +472,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 	const UTF8Char *currUserName;
 	const UTF8Char *currPassword;
 	const UTF8Char *currHeaders;
-	const Char *currMeth;
+	Net::WebUtil::RequestMethod currMeth;
 	Bool currOSClient;
 	UInt8 buff[4096];
 	UTF8Char *sbuff;
@@ -530,7 +529,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 					cli->AddHeaderC(UTF8STRC("Cookie"), sbuff, (UOSInt)(sptr - sbuff));
 				}
 
-				if (!Text::StrEquals(currMeth, "GET") && currBody)
+				if (currMeth != Net::WebUtil::RequestMethod::HTTP_GET && currBody)
 				{
 					sptr = Text::StrUOSInt(sbuff, currBodyLen);
 					cli->AddHeaderC(UTF8STRC("Content-Length"), sbuff, (UOSInt)(sptr - sbuff));
@@ -593,7 +592,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 							cli->AddHeaderC(UTF8STRC("Cookie"), sbuff, (UOSInt)(sptr - sbuff));
 						}
 
-						if (!Text::StrEquals(currMeth, "GET") && currBody)
+						if (currMeth != Net::WebUtil::RequestMethod::HTTP_GET && currBody)
 						{
 							sptr = Text::StrUOSInt(sbuff, currBodyLen);
 							cli->AddHeaderC(UTF8STRC("Content-Length"), sbuff, (UOSInt)(sptr - sbuff));
@@ -1111,11 +1110,11 @@ SSWR::AVIRead::AVIRHTTPClientForm::AVIRHTTPClientForm(UI::GUIClientControl *pare
 	this->lblMethod->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(cboMethod, UI::GUIComboBox(ui, this->pnlRequest, false));
 	this->cboMethod->SetRect(104, 28, 100, 23, false);
-	this->cboMethod->AddItem((const UTF8Char*)"GET", (void*)"GET");
-	this->cboMethod->AddItem((const UTF8Char*)"POST", (void*)"POST");
-	this->cboMethod->AddItem((const UTF8Char*)"PUT", (void*)"PUT");
-	this->cboMethod->AddItem((const UTF8Char*)"PATCH", (void*)"PATCH");
-	this->cboMethod->AddItem((const UTF8Char*)"DELETE", (void*)"DELETE");
+	this->cboMethod->AddItem((const UTF8Char*)"GET", (void*)Net::WebUtil::RequestMethod::HTTP_GET);
+	this->cboMethod->AddItem((const UTF8Char*)"POST", (void*)Net::WebUtil::RequestMethod::HTTP_POST);
+	this->cboMethod->AddItem((const UTF8Char*)"PUT", (void*)Net::WebUtil::RequestMethod::HTTP_PUT);
+	this->cboMethod->AddItem((const UTF8Char*)"PATCH", (void*)Net::WebUtil::RequestMethod::HTTP_PATCH);
+	this->cboMethod->AddItem((const UTF8Char*)"DELETE", (void*)Net::WebUtil::RequestMethod::HTTP_DELETE);
 	this->cboMethod->SetSelectedIndex(0);
 	NEW_CLASS(this->chkOSClient, UI::GUICheckBox(ui, this->pnlRequest, (const UTF8Char*)"OS Client", false));
 	this->chkOSClient->SetRect(204, 28, 100, 23, false);

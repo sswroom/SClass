@@ -159,7 +159,7 @@ void Net::WebServer::HTTPDirectoryHandler::ResponsePackageFile(Net::WebServer::I
 	{
 		sb.Append(IO::Path::PATH_SEPERATOR, 1);
 	}*/
-/*	if (this->allowUpload && req->GetReqMethod() == Net::WebServer::IWebRequest::RequestMethod::HTTP_POST)
+/*	if (this->allowUpload && req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_POST)
 	{
 		const UInt8 *uplfile;
 		OSInt uplSize;
@@ -740,7 +740,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 				{
 					sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
 				}
-				if (this->allowUpload && req->GetReqMethod() == Net::WebServer::IWebRequest::RequestMethod::HTTP_POST)
+				if (this->allowUpload && req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_POST)
 				{
 					const UInt8 *uplfile;
 					UOSInt uplSize;

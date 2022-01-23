@@ -93,8 +93,8 @@ Net::WebServer::WebStandardHandler::WebStandardHandler()
 void Net::WebServer::WebStandardHandler::WebRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp)
 {
 	Text::String *reqURL = req->GetRequestURI();
-	Net::WebServer::IWebRequest::RequestMethod reqMeth = req->GetReqMethod();
-	if (reqMeth == Net::WebServer::IWebRequest::RequestMethod::RTSP_OPTIONS)
+	Net::WebUtil::RequestMethod reqMeth = req->GetReqMethod();
+	if (reqMeth == Net::WebUtil::RequestMethod::RTSP_OPTIONS)
 	{
 		UTF8Char sbuff[512];
 		UTF8Char *sptr;

@@ -21,7 +21,8 @@ void __stdcall OnForwardRequest(void *userObj, Net::WebServer::IWebRequest *req,
 	sb.ClearStr();
 	sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 	sb.AppendC(UTF8STRC(" Req "));
-	sb.Append((const UTF8Char*)req->GetReqMethodStr());
+	Text::CString reqMeth = req->GetReqMethodStr();
+	sb.AppendC(reqMeth.v, reqMeth.len);
 	sb.AppendChar(' ', 1);
 	sb.Append(req->GetRequestURI());
 	logger->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_ACTION);

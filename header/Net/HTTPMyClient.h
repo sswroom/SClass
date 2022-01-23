@@ -52,7 +52,7 @@ namespace Net
 		virtual void Close();
 		virtual Bool Recover();
 
-		virtual Bool Connect(const UTF8Char *url, UOSInt urlLen, const Char *method, Double *timeDNS, Double *timeConn, Bool defHeaders);
+		virtual Bool Connect(const UTF8Char *url, UOSInt urlLen, Net::WebUtil::RequestMethod method, Double *timeDNS, Double *timeConn, Bool defHeaders);
 		virtual void AddHeaderC(const UTF8Char *name, UOSInt nameLen, const UTF8Char *value, UOSInt valueLen);
 		virtual void EndRequest(Double *timeReq, Double *timeResp);
 		virtual void SetTimeout(Int32 ms);

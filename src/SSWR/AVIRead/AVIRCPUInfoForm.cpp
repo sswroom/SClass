@@ -37,7 +37,7 @@ void __stdcall SSWR::AVIRead::AVIRCPUInfoForm::OnUploadClick(void *userObj)
 
 			sbData.Append(u8buff);
 			Net::HTTPClient *cli;
-			cli = Net::HTTPClient::CreateConnect(sockf, me->ssl, sbURL.ToString(), "POST", false);
+			cli = Net::HTTPClient::CreateConnect(sockf, me->ssl, sbURL.ToString(), Net::WebUtil::RequestMethod::HTTP_POST, false);
 			cli->AddContentLength(sbData.GetLength());
 			cli->Write(sbData.ToString(), sbData.GetLength());
 			respStatus = cli->GetRespStatus();

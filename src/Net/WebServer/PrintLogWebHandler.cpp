@@ -20,7 +20,8 @@ void Net::WebServer::PrintLogWebHandler::WebRequest(IWebRequest *req, IWebRespon
 	sptr = Text::StrConcatC(Net::SocketUtil::GetAddrName(sbuff, req->GetClientAddr(), req->GetClientPort()), UTF8STRC(": "));
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
-	sb.Append((const UTF8Char*)req->GetReqMethodStr());
+	Text::CString reqMeth = req->GetReqMethodStr();
+	sb.AppendC(reqMeth.v, reqMeth.len);
 	sb.AppendChar(' ', 1);
 	sb.Append(req->GetRequestURI());
 	sb.AppendChar(' ', 1);

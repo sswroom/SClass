@@ -24,7 +24,7 @@ Bool Net::WebServer::EGaugeHandler::ProcessRequest(Net::WebServer::IWebRequest *
 		resp->ResponseError(req, Net::WebStatus::SC_METHOD_NOT_ALLOWED);
 		return true;
 	}
-	if (req->GetReqMethod() != Net::WebServer::IWebRequest::RequestMethod::HTTP_POST)
+	if (req->GetReqMethod() != Net::WebUtil::RequestMethod::HTTP_POST)
 	{
 		resp->ResponseError(req, Net::WebStatus::SC_NOT_ACCEPTABLE);
 		return true;

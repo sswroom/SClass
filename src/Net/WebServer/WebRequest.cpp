@@ -294,7 +294,7 @@ const UTF8Char *Net::WebServer::WebRequest::ParseHeaderVal(UTF8Char *headerData,
 	return outStr;
 }
 
-Net::WebServer::WebRequest::WebRequest(const UTF8Char *requestURI, UOSInt uriLen, RequestMethod reqMeth, RequestProtocol reqProto, Bool secureConn, const Net::SocketUtil::AddressInfo *cliAddr, UInt16 cliPort, UInt16 svrPort)
+Net::WebServer::WebRequest::WebRequest(const UTF8Char *requestURI, UOSInt uriLen, Net::WebUtil::RequestMethod reqMeth, RequestProtocol reqProto, Bool secureConn, const Net::SocketUtil::AddressInfo *cliAddr, UInt16 cliPort, UInt16 svrPort)
 {
 	this->requestURI = Text::String::New(requestURI, uriLen);
 	this->reqMeth = reqMeth;
@@ -439,7 +439,7 @@ Bool Net::WebServer::WebRequest::HasQuery(const UTF8Char *name, UOSInt nameLen)
 	return sptr != 0;
 }
 
-Net::WebServer::IWebRequest::RequestMethod Net::WebServer::WebRequest::GetReqMethod()
+Net::WebUtil::RequestMethod Net::WebServer::WebRequest::GetReqMethod()
 {
 	return this->reqMeth;
 }
@@ -630,7 +630,7 @@ Bool Net::WebServer::WebRequest::HasData()
 	contLeng = this->GetSHeader(UTF8STRC("Content-Length"));
 	if (contLeng == 0)
 	{
-		if (this->GetReqMethod() != Net::WebServer::IWebRequest::RequestMethod::HTTP_POST)
+		if (this->GetReqMethod() != Net::WebUtil::RequestMethod::HTTP_POST)
 		{
 			return false;
 		}

@@ -15,9 +15,9 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	Net::HTTPClient *cli;
 	NEW_CLASS(sockf, Net::OSSocketFactory(false));
 	ssl = Net::SSLEngineFactory::Create(sockf, true);
-	cli = Net::HTTPClient::CreateClient(sockf, ssl, 0, 0, true, Text::StrStartsWith(url.v, (const UTF8Char*)"https://"));
+	cli = Net::HTTPClient::CreateClient(sockf, ssl, 0, 0, true, Text::StrStartsWithC(url.v, url.len, UTF8STRC("https://")));
 	printf("Connecting to %s\r\n", url.v);
-	cli->Connect(url.v, url.len, "GET", 0, 0, true);
+	cli->Connect(url.v, url.len, Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, true);
 	while ((readSize = cli->Read(buff, 2048)) > 0)
 	{
 		printf("Read %d bytes\r\n", (Int32)readSize);

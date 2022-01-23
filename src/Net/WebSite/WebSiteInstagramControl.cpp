@@ -14,7 +14,7 @@ Text::JSONBase *Net::WebSite::WebSiteInstagramControl::ParsePageJSON(const UTF8C
 	Text::JSONBase *baseData = 0;
 	Text::XMLReader *reader;
 	Net::HTTPClient *cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, STR_PTRC(this->userAgent), true, true);
-	cli->Connect(url, urlLen, "GET", 0, 0, true);
+	cli->Connect(url, urlLen, Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, true);
 	NEW_CLASS(reader, Text::XMLReader(this->encFact, cli, Text::XMLReader::PM_HTML));
 	while (reader->ReadNext())
 	{

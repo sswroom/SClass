@@ -4,6 +4,7 @@
 #include "Manage/OSInfo.h"
 #include "Net/BrowserInfo.h"
 #include "Net/SocketFactory.h"
+#include "Net/WebUtil.h"
 #include "Text/StringBuilderUTF.h"
 
 namespace Net
@@ -13,27 +14,6 @@ namespace Net
 		class IWebRequest
 		{
 		public:
-			enum class RequestMethod
-			{
-				HTTP_GET,
-				HTTP_POST,
-				HTTP_PUT,
-				HTTP_PATCH,
-				HTTP_DELETE,
-				HTTP_CONNECT,
-				RTSP_DESCRIBE,
-				RTSP_ANNOUNCE,
-				RTSP_GET_PARAMETER,
-				RTSP_OPTIONS,
-				RTSP_PAUSE,
-				RTSP_PLAY,
-				RTSP_RECORD,
-				RTSP_REDIRECT,
-				RTSP_SETUP,
-				RTSP_SET_PARAMETER,
-				RTSP_TEARDOWN
-			};
-
 			enum class RequestProtocol
 			{
 				HTTP1_0,
@@ -76,7 +56,7 @@ namespace Net
 			Bool GetQueryValueI64(const UTF8Char *name, UOSInt nameLen, Int64 *val);
 			Bool GetQueryValueF64(const UTF8Char *name, UOSInt nameLen, Double *val);
 			virtual Bool HasQuery(const UTF8Char *name, UOSInt nameLen) = 0;
-			virtual RequestMethod GetReqMethod() = 0;
+			virtual Net::WebUtil::RequestMethod GetReqMethod() = 0;
 			virtual void ParseHTTPForm() = 0;
 			virtual Text::String *GetHTTPFormStr(const UTF8Char *name, UOSInt nameLen) = 0;
 			virtual const UInt8 *GetHTTPFormFile(const UTF8Char *formName, UOSInt index, UTF8Char *fileName, UOSInt fileNameBuffSize, UOSInt *fileSize) = 0;
@@ -93,13 +73,12 @@ namespace Net
 			virtual Bool IsSecure() = 0;
 			virtual const UInt8 *GetReqData(UOSInt *dataSize) = 0;
 
-			const Char *GetReqMethodStr();
+			Text::CString GetReqMethodStr();
 			Net::BrowserInfo::BrowserType GetBrowser();
 			const UTF8Char *GetBrowserVer();
 			Manage::OSInfo::OSType GetOS();
 			const UTF8Char *GetOSVer();
 
-			static const Char *RequestMethodGetName(RequestMethod reqMeth);
 			static const Char *RequestProtocolGetName(RequestProtocol reqProto);
 		};
 	}

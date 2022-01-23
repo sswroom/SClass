@@ -11,7 +11,7 @@
 #define THREADCNT 10
 #define CONNCNT 100000
 #define KACONN true
-#define METHOD "GET"
+#define METHOD Net::WebUtil::RequestMethod::HTTP_GET
 #define POSTSIZE 1048576
 
 UInt32 threadCurrCnt;
@@ -121,7 +121,7 @@ UInt32 __stdcall ProcessThread(void *userObj)
 			if (Sync::Interlocked::Decrement(&connLeft) < 0)
 				break;
 			cli = Net::HTTPClient::CreateClient(sockf, ssl, 0, 0, true, Text::StrStartsWithC(url.v, url.len, UTF8STRC("https://")));
-			if (cli->Connect(url.v, url.len, "GET", &timeDNS, &timeConn, false))
+			if (cli->Connect(url.v, url.len, Net::WebUtil::RequestMethod::HTTP_GET, &timeDNS, &timeConn, false))
 			{
 				cli->AddHeaderC(UTF8STRC("Connection"), UTF8STRC("keep-alive"));
 				cli->EndRequest(&timeReq, &timeResp);

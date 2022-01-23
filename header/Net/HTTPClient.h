@@ -10,6 +10,7 @@
 #include "Net/SSLEngine.h"
 #include "Net/TCPClient.h"
 #include "Net/WebStatus.h"
+#include "Net/WebUtil.h"
 #include "Text/StringBuilderUTF.h"
 #include "Text/StringBuilderUTF8.h"
 
@@ -39,7 +40,7 @@ namespace Net
 
 		virtual Bool IsError() = 0;
 
-		virtual Bool Connect(const UTF8Char *url, UOSInt urlLen, const Char *method, Double *timeDNS, Double *timeConn, Bool defHeaders) = 0;
+		virtual Bool Connect(const UTF8Char *url, UOSInt urlLen, Net::WebUtil::RequestMethod method, Double *timeDNS, Double *timeConn, Bool defHeaders) = 0;
 		virtual void AddHeaderC(const UTF8Char *name, UOSInt nameLen, const UTF8Char *value, UOSInt valueLen) = 0;
 		virtual void EndRequest(Double *timeReq, Double *timeResp) = 0;
 		virtual void SetTimeout(Int32 ms) = 0;
@@ -70,7 +71,7 @@ namespace Net
 		static void ParseDateStr(Data::DateTime *dt, const UTF8Char *dateStr, UOSInt dateStrLen);
 		static UTF8Char *Date2Str(UTF8Char *sbuff, Data::DateTime *dt);
 		static Net::HTTPClient *CreateClient(Net::SocketFactory *sockf, Net::SSLEngine *ssl, const UTF8Char *userAgent, UOSInt uaLen, Bool kaConn, Bool isSecure);
-		static Net::HTTPClient *CreateConnect(Net::SocketFactory *sockf, Net::SSLEngine *ssl, const UTF8Char *url, const Char *method, Bool kaConn);
+		static Net::HTTPClient *CreateConnect(Net::SocketFactory *sockf, Net::SSLEngine *ssl, const UTF8Char *url, Net::WebUtil::RequestMethod method, Bool kaConn);
 		static Bool IsHTTPURL(const UTF8Char *url);
 		static void PrepareSSL(Net::SSLEngine *ssl);
 	};

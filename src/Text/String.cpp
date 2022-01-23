@@ -260,7 +260,44 @@ Bool Text::String::StartsWith(UOSInt startIndex, const UTF8Char *s, UOSInt len)
 
 Bool Text::String::StartsWithICase(const UTF8Char *str2, UOSInt len)
 {
-	return Text::StrStartsWithICaseC(this->v, this->leng, str2, len);
+	if (this->leng < len)
+	{
+		return false;
+	}
+	REGVAR UInt8 *upperArr = MyString_StrUpperArr;
+	const UTF8Char *str1 = this->v;
+	while (len >= 4)
+	{
+		REGVAR UInt32 v1 = ReadNUInt32(str1);
+		REGVAR UInt32 v2 = ReadNUInt32(str2);
+		if (upperArr[v1 & 0xff] != upperArr[v2 & 0xff])
+			return false;
+		if (upperArr[(v1 >> 8) & 0xff] != upperArr[(v2 >> 8) & 0xff])
+			return false;
+		if (upperArr[(v1 >> 16) & 0xff] != upperArr[(v2 >> 16) & 0xff])
+			return false;
+		if (upperArr[(v1 >> 24)] != upperArr[(v2 >> 24)])
+			return false;
+		str1 += 4;
+		str2 += 4;
+		len -= 4;
+	}
+	if (len >= 2)
+	{
+		REGVAR UInt16 v1 = ReadNUInt16(str1);
+		REGVAR UInt16 v2 = ReadNUInt16(str2);
+		if (upperArr[v1 & 0xff] != upperArr[v2 & 0xff] ||
+			upperArr[(v1 >> 8)] != upperArr[(v2 >> 8)])
+			return false;
+		str1 += 2;
+		str2 += 2;
+		len -= 2;
+	}
+	if (len > 0)
+	{
+		return upperArr[*str1] == upperArr[*str2];
+	}
+	return true;
 }
 
 Bool Text::String::EndsWith(UTF8Char c)
@@ -317,7 +354,14 @@ UOSInt Text::String::IndexOf(const UTF8Char *s, UOSInt len)
 
 UOSInt Text::String::IndexOf(UTF8Char c)
 {
-	return Text::StrIndexOfChar(this->v, c);
+	REGVAR const UTF8Char *ptr = this->v;
+	REGVAR UTF8Char c2;
+	while ((c2 = *ptr) != 0)
+		if (c2 == c)
+			return (UOSInt)(ptr - this->v);
+		else
+			ptr++;
+	return INVALID_INDEX;
 }
 
 UOSInt Text::String::IndexOfICase(const UTF8Char *s)

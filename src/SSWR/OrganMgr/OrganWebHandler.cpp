@@ -2465,7 +2465,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroup(Net::WebServer::IWebReq
 			return true;
 		}
 
-		if (req->GetReqMethod() == Net::WebServer::IWebRequest::RequestMethod::HTTP_POST && env.user != 0 && env.user->userType == 0)
+		if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_POST && env.user != 0 && env.user->userType == 0)
 		{
 			req->ParseHTTPForm();
 			Text::String *action = req->GetHTTPFormStr(UTF8STRC("action"));
@@ -2929,7 +2929,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroupMod(Net::WebServer::IWeb
 				groupTypeId = modGroup->groupType;
 			}
 		}
-		if (req->GetReqMethod() == Net::WebServer::IWebRequest::RequestMethod::HTTP_POST)
+		if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_POST)
 		{
 			req->ParseHTTPForm();
 			Text::String *task = req->GetHTTPFormStr(UTF8STRC("task"));
@@ -3234,7 +3234,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpecies(Net::WebServer::IWebR
 			return true;
 		}
 
-		if (req->GetReqMethod() == Net::WebServer::IWebRequest::RequestMethod::HTTP_POST && env.user != 0 && env.user->userType == 0)
+		if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_POST && env.user != 0 && env.user->userType == 0)
 		{
 			req->ParseHTTPForm();
 			Text::String *action = req->GetHTTPFormStr(UTF8STRC("action"));
@@ -3939,7 +3939,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpeciesMod(Net::WebServer::IW
 				descr = species->descript;
 			}
 		}
-		if (req->GetReqMethod() == Net::WebServer::IWebRequest::RequestMethod::HTTP_POST)
+		if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_POST)
 		{
 			req->ParseHTTPForm();
 			Text::String *task = req->GetHTTPFormStr(UTF8STRC("task"));
@@ -4442,7 +4442,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 			}
 			if (found)
 			{
-				if (req->GetReqMethod() == Net::WebServer::IWebRequest::RequestMethod::HTTP_POST && env.user && (env.user->userType == 0 || env.user->id == userFile->webuserId))
+				if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_POST && env.user && (env.user->userType == 0 || env.user->id == userFile->webuserId))
 				{
 					req->ParseHTTPForm();
 					Text::String *action = req->GetHTTPFormStr(UTF8STRC("action"));
@@ -7326,7 +7326,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcLogin(Net::WebServer::IWebReq
 		resp->RedirectURL(req, UTF8STRC("/"), 0);
 		return true;
 	}
-	if (req->GetReqMethod() == Net::WebServer::IWebRequest::RequestMethod::HTTP_POST)
+	if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_POST)
 	{
 		req->ParseHTTPForm();
 		Text::String *userName = req->GetHTTPFormStr(UTF8STRC("userName"));
@@ -7429,7 +7429,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcReload(Net::WebServer::IWebRe
 		writer->WriteLineC(UTF8STRC("<center><h1>Reload</h1></center>"));
 
 		Bool showPwd = true;;
-		if (req->GetReqMethod() == Net::WebServer::IWebRequest::RequestMethod::HTTP_POST)
+		if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_POST)
 		{
 			Text::String *pwd;
 			req->ParseHTTPForm();
@@ -7491,7 +7491,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcRestart(Net::WebServer::IWebR
 		writer->WriteLineC(UTF8STRC("<center><h1>Restart</h1></center>"));
 
 		Bool showPwd = true;;
-		if (req->GetReqMethod() == Net::WebServer::IWebRequest::RequestMethod::HTTP_POST)
+		if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_POST)
 		{
 			Text::String *pwd;
 			req->ParseHTTPForm();
@@ -9536,42 +9536,42 @@ SSWR::OrganMgr::OrganWebHandler::OrganWebHandler(Net::SocketFactory *sockf, Net:
 	}
 	else
 	{
-		this->AddService(UTF8STRC("/photo.html"), Net::WebServer::IWebRequest::RequestMethod::HTTP_GET, SvcPhoto);
-		this->AddService(UTF8STRC("/photodown.html"), Net::WebServer::IWebRequest::RequestMethod::HTTP_GET, SvcPhotoDown);
-		this->AddService(UTF8STRC("/group.html"), Net::WebServer::IWebRequest::RequestMethod::HTTP_GET, SvcGroup);
-		this->AddService(UTF8STRC("/group.html"), Net::WebServer::IWebRequest::RequestMethod::HTTP_POST, SvcGroup);
-		this->AddService(UTF8STRC("/groupmod.html"), Net::WebServer::IWebRequest::RequestMethod::HTTP_GET, SvcGroupMod);
-		this->AddService(UTF8STRC("/groupmod.html"), Net::WebServer::IWebRequest::RequestMethod::HTTP_POST, SvcGroupMod);
-		this->AddService(UTF8STRC("/species.html"), Net::WebServer::IWebRequest::RequestMethod::HTTP_GET, SvcSpecies);
-		this->AddService(UTF8STRC("/species.html"), Net::WebServer::IWebRequest::RequestMethod::HTTP_POST, SvcSpecies);
-		this->AddService(UTF8STRC("/speciesmod.html"), Net::WebServer::IWebRequest::RequestMethod::HTTP_GET, SvcSpeciesMod);
-		this->AddService(UTF8STRC("/speciesmod.html"), Net::WebServer::IWebRequest::RequestMethod::HTTP_POST, SvcSpeciesMod);
-		this->AddService(UTF8STRC("/list.html"), Net::WebServer::IWebRequest::RequestMethod::HTTP_GET, SvcList);
-		this->AddService(UTF8STRC("/listimage.html"), Net::WebServer::IWebRequest::RequestMethod::HTTP_GET, SvcList);
-		this->AddService(UTF8STRC("/photodetail.html"), Net::WebServer::IWebRequest::RequestMethod::HTTP_GET, SvcPhotoDetail);
-		this->AddService(UTF8STRC("/photodetail.html"), Net::WebServer::IWebRequest::RequestMethod::HTTP_POST, SvcPhotoDetail);
-		this->AddService(UTF8STRC("/photodetaild.html"), Net::WebServer::IWebRequest::RequestMethod::HTTP_GET, SvcPhotoDetailD);
-		this->AddService(UTF8STRC("/photoyear.html"), Net::WebServer::IWebRequest::RequestMethod::HTTP_GET, SvcPhotoYear);
-		this->AddService(UTF8STRC("/photoday.html"), Net::WebServer::IWebRequest::RequestMethod::HTTP_GET, SvcPhotoDay);
-		this->AddService(UTF8STRC("/photoupload.html"), Net::WebServer::IWebRequest::RequestMethod::HTTP_POST, SvcPhotoUpload);
-		this->AddService(UTF8STRC("/photouploadd.html"), Net::WebServer::IWebRequest::RequestMethod::HTTP_POST, SvcPhotoUploadD);
-		this->AddService(UTF8STRC("/searchinside.html"), Net::WebServer::IWebRequest::RequestMethod::HTTP_POST, SvcSearchInside);
-		this->AddService(UTF8STRC("/searchinsidemores.html"), Net::WebServer::IWebRequest::RequestMethod::HTTP_GET, SvcSearchInsideMoreS);
-		this->AddService(UTF8STRC("/searchinsidemoreg.html"), Net::WebServer::IWebRequest::RequestMethod::HTTP_GET, SvcSearchInsideMoreG);
-		this->AddService(UTF8STRC("/booklist.html"), Net::WebServer::IWebRequest::RequestMethod::HTTP_GET, SvcBookList);
-		this->AddService(UTF8STRC("/book.html"), Net::WebServer::IWebRequest::RequestMethod::HTTP_GET, SvcBook);
-		this->AddService(UTF8STRC("/bookview.html"), Net::WebServer::IWebRequest::RequestMethod::HTTP_GET, SvcBookView);
-		this->AddService(UTF8STRC("/login.html"), Net::WebServer::IWebRequest::RequestMethod::HTTP_GET, SvcLogin);
-		this->AddService(UTF8STRC("/login.html"), Net::WebServer::IWebRequest::RequestMethod::HTTP_POST, SvcLogin);
-		this->AddService(UTF8STRC("/logout"), Net::WebServer::IWebRequest::RequestMethod::HTTP_GET, SvcLogout);
-		this->AddService(UTF8STRC("/reload"), Net::WebServer::IWebRequest::RequestMethod::HTTP_GET, SvcReload);
-		this->AddService(UTF8STRC("/reload"), Net::WebServer::IWebRequest::RequestMethod::HTTP_POST, SvcReload);
-		this->AddService(UTF8STRC("/restart"), Net::WebServer::IWebRequest::RequestMethod::HTTP_GET, SvcRestart);
-		this->AddService(UTF8STRC("/restart"), Net::WebServer::IWebRequest::RequestMethod::HTTP_POST, SvcRestart);
-		this->AddService(UTF8STRC("/"), Net::WebServer::IWebRequest::RequestMethod::HTTP_GET, SvcIndex);
-		this->AddService(UTF8STRC("/index.html"), Net::WebServer::IWebRequest::RequestMethod::HTTP_GET, SvcIndex);
-		this->AddService(UTF8STRC("/cate.html"), Net::WebServer::IWebRequest::RequestMethod::HTTP_GET, SvcCate);
-		this->AddService(UTF8STRC("/favicon.ico"), Net::WebServer::IWebRequest::RequestMethod::HTTP_GET, SvcFavicon);
+		this->AddService(UTF8STRC("/photo.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcPhoto);
+		this->AddService(UTF8STRC("/photodown.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcPhotoDown);
+		this->AddService(UTF8STRC("/group.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcGroup);
+		this->AddService(UTF8STRC("/group.html"), Net::WebUtil::RequestMethod::HTTP_POST, SvcGroup);
+		this->AddService(UTF8STRC("/groupmod.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcGroupMod);
+		this->AddService(UTF8STRC("/groupmod.html"), Net::WebUtil::RequestMethod::HTTP_POST, SvcGroupMod);
+		this->AddService(UTF8STRC("/species.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcSpecies);
+		this->AddService(UTF8STRC("/species.html"), Net::WebUtil::RequestMethod::HTTP_POST, SvcSpecies);
+		this->AddService(UTF8STRC("/speciesmod.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcSpeciesMod);
+		this->AddService(UTF8STRC("/speciesmod.html"), Net::WebUtil::RequestMethod::HTTP_POST, SvcSpeciesMod);
+		this->AddService(UTF8STRC("/list.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcList);
+		this->AddService(UTF8STRC("/listimage.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcList);
+		this->AddService(UTF8STRC("/photodetail.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcPhotoDetail);
+		this->AddService(UTF8STRC("/photodetail.html"), Net::WebUtil::RequestMethod::HTTP_POST, SvcPhotoDetail);
+		this->AddService(UTF8STRC("/photodetaild.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcPhotoDetailD);
+		this->AddService(UTF8STRC("/photoyear.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcPhotoYear);
+		this->AddService(UTF8STRC("/photoday.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcPhotoDay);
+		this->AddService(UTF8STRC("/photoupload.html"), Net::WebUtil::RequestMethod::HTTP_POST, SvcPhotoUpload);
+		this->AddService(UTF8STRC("/photouploadd.html"), Net::WebUtil::RequestMethod::HTTP_POST, SvcPhotoUploadD);
+		this->AddService(UTF8STRC("/searchinside.html"), Net::WebUtil::RequestMethod::HTTP_POST, SvcSearchInside);
+		this->AddService(UTF8STRC("/searchinsidemores.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcSearchInsideMoreS);
+		this->AddService(UTF8STRC("/searchinsidemoreg.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcSearchInsideMoreG);
+		this->AddService(UTF8STRC("/booklist.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcBookList);
+		this->AddService(UTF8STRC("/book.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcBook);
+		this->AddService(UTF8STRC("/bookview.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcBookView);
+		this->AddService(UTF8STRC("/login.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcLogin);
+		this->AddService(UTF8STRC("/login.html"), Net::WebUtil::RequestMethod::HTTP_POST, SvcLogin);
+		this->AddService(UTF8STRC("/logout"), Net::WebUtil::RequestMethod::HTTP_GET, SvcLogout);
+		this->AddService(UTF8STRC("/reload"), Net::WebUtil::RequestMethod::HTTP_GET, SvcReload);
+		this->AddService(UTF8STRC("/reload"), Net::WebUtil::RequestMethod::HTTP_POST, SvcReload);
+		this->AddService(UTF8STRC("/restart"), Net::WebUtil::RequestMethod::HTTP_GET, SvcRestart);
+		this->AddService(UTF8STRC("/restart"), Net::WebUtil::RequestMethod::HTTP_POST, SvcRestart);
+		this->AddService(UTF8STRC("/"), Net::WebUtil::RequestMethod::HTTP_GET, SvcIndex);
+		this->AddService(UTF8STRC("/index.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcIndex);
+		this->AddService(UTF8STRC("/cate.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcCate);
+		this->AddService(UTF8STRC("/favicon.ico"), Net::WebUtil::RequestMethod::HTTP_GET, SvcFavicon);
 
 		NEW_CLASS(this->listener, Net::WebServer::WebListener(this->sockf, this->ssl, this, port, 30, 10, (const UTF8Char*)"OrganWeb/1.0", false, true));
 		this->Reload();

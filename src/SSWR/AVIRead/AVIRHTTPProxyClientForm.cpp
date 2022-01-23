@@ -68,7 +68,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPProxyClientForm::ProcessThread(void *use
 			me->reqURL = 0;
 
 			NEW_CLASS(cli, Net::HTTPProxyClient(me->core->GetSocketFactory(), false, me->proxyIP, me->proxyPort));
-			cli->Connect(currURL->v, currURL->leng, "GET", &me->respTimeDNS, &me->respTimeConn, false);
+			cli->Connect(currURL->v, currURL->leng, Net::WebUtil::RequestMethod::HTTP_GET, &me->respTimeDNS, &me->respTimeConn, false);
 			cli->AddHeaderC(UTF8STRC("User-Agent"), UTF8STRC("Test/1.0"));
 			cli->AddHeaderC(UTF8STRC("Accept"), UTF8STRC("*/*"));
 			cli->AddHeaderC(UTF8STRC("Accept-Charset"), UTF8STRC("*"));

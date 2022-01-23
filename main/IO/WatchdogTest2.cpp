@@ -86,7 +86,7 @@ UInt32 __stdcall HTTPThread(void *userObj)
 		consoleWriter->WriteStrC(UTF8STRC("Requesting to "));
 		consoleWriter->WriteLineC(UTF8STRC(TESTURL));
 		cli = Net::HTTPClient::CreateClient(sockf, ssl, UTF8STRC(USERAGENT), false, Text::StrStartsWith((const UTF8Char*)TESTURL, (const UTF8Char*)"https://"));
-		cli->Connect(UTF8STRC(TESTURL), "GET", 0, 0, false);
+		cli->Connect(UTF8STRC(TESTURL), Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, false);
 		cli->AddHeaderC(UTF8STRC("User-Agent"), UTF8STRC(USERAGENT));
 		cli->AddHeaderC(UTF8STRC("Accept"), UTF8STRC("*/*"));
 		cli->AddHeaderC(UTF8STRC("Accept-Charset"), UTF8STRC("*"));

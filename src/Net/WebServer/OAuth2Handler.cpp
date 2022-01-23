@@ -18,9 +18,9 @@ Bool __stdcall Net::WebServer::OAuth2Handler::UserInfoHandler(Net::WebServer::IW
 
 Net::WebServer::OAuth2Handler::OAuth2Handler(const UTF8Char *authPath, const UTF8Char *tokenPath, const UTF8Char *userinfoPath)
 {
-	this->AddService(authPath, Text::StrCharCnt(authPath), Net::WebServer::IWebRequest::RequestMethod::HTTP_POST, AuthHandler);
-	this->AddService(tokenPath, Text::StrCharCnt(tokenPath), Net::WebServer::IWebRequest::RequestMethod::HTTP_POST, TokenHandler);
-	this->AddService(userinfoPath, Text::StrCharCnt(userinfoPath), Net::WebServer::IWebRequest::RequestMethod::HTTP_POST, UserInfoHandler);
+	this->AddService(authPath, Text::StrCharCnt(authPath), Net::WebUtil::RequestMethod::HTTP_POST, AuthHandler);
+	this->AddService(tokenPath, Text::StrCharCnt(tokenPath), Net::WebUtil::RequestMethod::HTTP_POST, TokenHandler);
+	this->AddService(userinfoPath, Text::StrCharCnt(userinfoPath), Net::WebUtil::RequestMethod::HTTP_POST, UserInfoHandler);
 }
 
 Net::WebServer::OAuth2Handler::~OAuth2Handler()

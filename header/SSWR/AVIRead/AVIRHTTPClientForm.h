@@ -117,7 +117,7 @@ namespace SSWR
 			const UTF8Char *reqPassword;
 			const UTF8Char *reqHeaders;
 			UOSInt reqBodyLen;
-			const Char *reqMeth;
+			Net::WebUtil::RequestMethod reqMeth;
 			Bool reqOSClient;
 			Bool noShutdown;
 			Text::String *userAgent;

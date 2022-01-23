@@ -2671,6 +2671,8 @@ Net/WebBrowser.h: ../../src/Net/WebBrowser.cpp
 @WebBrowser.o
 Net/WebStatus.h: ../../src/Net/WebStatus.cpp
 @WebStatus.o
+Net/WebUtil.h: ../../src/Net/WebUtil.cpp
+@WebUtil.o
 Net/WhoisClient.h: ../../src/Net/WhoisClient.cpp
 @WhoisClient.o
 Net/WhoisGlobalClient.h: ../../src/Net/WhoisGlobalClient.cpp
@@ -4623,6 +4625,7 @@ URL.o: ../../src/Net/URL.cpp
 UserAgentDB.o: ../../src/Net/UserAgentDB.cpp
 WebBrowser.o: ../../src/Net/WebBrowser.cpp
 WebStatus.o: ../../src/Net/WebStatus.cpp
+WebUtil.o: ../../src/Net/WebUtil.cpp
 WhoisClient.o: ../../src/Net/WhoisClient.cpp
 WhoisGlobalClient.o: ../../src/Net/WhoisGlobalClient.cpp
 WhoisHandler.o: ../../src/Net/WhoisHandler.cpp

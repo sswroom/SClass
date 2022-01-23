@@ -189,7 +189,7 @@ Bool Net::HTTPOSClient::Recover()
 	return false;
 }
 
-Bool Net::HTTPOSClient::Connect(const UTF8Char *url, UOSInt urlLen, const Char *method, Double *timeDNS, Double *timeConn, Bool defHeaders)
+Bool Net::HTTPOSClient::Connect(const UTF8Char *url, UOSInt urlLen, Net::WebUtil::RequestMethod method, Double *timeDNS, Double *timeConn, Bool defHeaders)
 {
 	UTF8Char urltmp[256];
 	UTF8Char svrname[256];
@@ -366,45 +366,45 @@ Bool Net::HTTPOSClient::Connect(const UTF8Char *url, UOSInt urlLen, const Char *
 		return false;
 	}
 
-	if (method)
+	switch (method)
 	{
-		UOSInt methodLen = Text::StrCharCnt(method);
-		if (Text::StrEqualsICaseC((const UTF8Char*)method, methodLen, UTF8STRC("POST")))
-		{
+		case Net::WebUtil::RequestMethod::HTTP_POST:
 			this->canWrite = true;
 			this->writing = false;
-		}
-		else if (Text::StrEqualsICaseC((const UTF8Char*)method, methodLen, UTF8STRC("PUT")))
-		{
+			break;
+		case Net::WebUtil::RequestMethod::HTTP_PUT:
 			this->canWrite = true;
 			this->writing = false;
 			curl_easy_setopt(this->clsData->curl, CURLOPT_CUSTOMREQUEST, "PUT");
-		}
-		else if (Text::StrEqualsICaseC((const UTF8Char*)method, methodLen, UTF8STRC("PATCH")))
-		{
+			break;
+		case Net::WebUtil::RequestMethod::HTTP_PATCH:
 			this->canWrite = true;
 			this->writing = false;
 			curl_easy_setopt(this->clsData->curl, CURLOPT_CUSTOMREQUEST, UTF8STRC("PATCH"));
-		}
-		else if (Text::StrEqualsICaseC((const UTF8Char*)method, methodLen, UTF8STRC("DELETE")))
-		{
+			break;
+		case Net::WebUtil::RequestMethod::HTTP_DELETE:
 			curl_easy_setopt(this->clsData->curl, CURLOPT_CUSTOMREQUEST, UTF8STRC("DELETE"));
 			this->canWrite = false;
 			this->writing = false;
-		}
-		else
-		{
+			break;
+		case Net::WebUtil::RequestMethod::Unknown:
+		case Net::WebUtil::RequestMethod::HTTP_GET:
+		case Net::WebUtil::RequestMethod::HTTP_CONNECT:
+		case Net::WebUtil::RequestMethod::RTSP_DESCRIBE:
+		case Net::WebUtil::RequestMethod::RTSP_ANNOUNCE:
+		case Net::WebUtil::RequestMethod::RTSP_GET_PARAMETER:
+		case Net::WebUtil::RequestMethod::RTSP_OPTIONS:
+		case Net::WebUtil::RequestMethod::RTSP_PAUSE:
+		case Net::WebUtil::RequestMethod::RTSP_PLAY:
+		case Net::WebUtil::RequestMethod::RTSP_RECORD:
+		case Net::WebUtil::RequestMethod::RTSP_REDIRECT:
+		case Net::WebUtil::RequestMethod::RTSP_SETUP:
+		case Net::WebUtil::RequestMethod::RTSP_SET_PARAMETER:
+		case Net::WebUtil::RequestMethod::RTSP_TEARDOWN:
+		default:
 			this->canWrite = false;
 			this->writing = false;
-		}
-	}
-	else
-	{
-		this->canWrite = false;
-		this->writing = false;
-	}
-	if (method)
-	{
+			break;
 	}
 	//curl_easy_setopt(data->curl, CURLOPT_VERBOSE, 1);
 	curl_easy_setopt(this->clsData->curl, CURLOPT_URL, url);

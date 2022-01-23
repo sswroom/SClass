@@ -15,13 +15,13 @@ IO::ParsedObject *Net::URL::OpenObject(const UTF8Char *url, const UTF8Char *user
 	if (Text::StrStartsWithICaseC(url, urlLen, UTF8STRC("http://")))
 	{
 		Net::HTTPClient *cli = Net::HTTPClient::CreateClient(sockf, ssl, userAgent, uaLen, true, false);
-		cli->Connect(url, urlLen, "GET", 0, 0, true);
+		cli->Connect(url, urlLen, Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, true);
 		return cli;
 	}
 	else if (Text::StrStartsWithICaseC(url, urlLen, UTF8STRC("https://")))
 	{
 		Net::HTTPClient *cli = Net::HTTPClient::CreateClient(sockf, ssl, userAgent, uaLen, true, true);
-		cli->Connect(url, urlLen, "GET", 0, 0, true);
+		cli->Connect(url, urlLen, Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, true);
 		return cli;
 	}
 	else if (Text::StrStartsWithICaseC(url, urlLen, UTF8STRC("file:///")))

@@ -51,7 +51,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::IndexReq(SSWR::SMonitor::SMon
 
 	if (!me->core->UserExist())
 	{
-		if (req->GetReqMethod() == Net::WebServer::IWebRequest::RequestMethod::HTTP_POST)
+		if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_POST)
 		{
 			req->ParseHTTPForm();
 			Text::String *pwd = req->GetHTTPFormStr(UTF8STRC("password"));
@@ -296,7 +296,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::LoginReq(SSWR::SMonitor::SMon
 		sess->EndUse();
 		return resp->RedirectURL(req, UTF8STRC("index"), 0);
 	}
-	if (req->GetReqMethod() == Net::WebServer::IWebRequest::RequestMethod::HTTP_POST)
+	if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_POST)
 	{
 		req->ParseHTTPForm();
 		Text::String *s = req->GetHTTPFormStr(UTF8STRC("action"));
@@ -571,7 +571,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceEditReq(SSWR::SMonitor:
 		return resp->RedirectURL(req, UTF8STRC("device"), 0);
 	}
 
-	if (req->GetReqMethod() == Net::WebServer::IWebRequest::RequestMethod::HTTP_POST)
+	if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_POST)
 	{
 		req->ParseHTTPForm();
 		Text::String *action = req->GetHTTPFormStr(UTF8STRC("action"));
@@ -697,7 +697,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingReq(SSWR::SMonit
 	}
 
 	dev = me->core->DeviceGet(cliId);
-	if (req->GetReqMethod() == Net::WebServer::IWebRequest::RequestMethod::HTTP_POST)
+	if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_POST)
 	{
 		req->ParseHTTPForm();
 		Text::String *action = req->GetHTTPFormStr(UTF8STRC("action"));
@@ -841,7 +841,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceDigitalsReq(SSWR::SMoni
 	}
 
 	dev = me->core->DeviceGet(cliId);
-	if (req->GetReqMethod() == Net::WebServer::IWebRequest::RequestMethod::HTTP_POST)
+	if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_POST)
 	{
 		req->ParseHTTPForm();
 		Text::String *action = req->GetHTTPFormStr(UTF8STRC("action"));
@@ -1831,7 +1831,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserPasswordReq(SSWR::SMonito
 		return resp->RedirectURL(req, UTF8STRC("index"), 0);
 	}
 
-	if (req->GetReqMethod() == Net::WebServer::IWebRequest::RequestMethod::HTTP_POST)
+	if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_POST)
 	{
 		req->ParseHTTPForm();
 		Text::String *pwd = req->GetHTTPFormStr(UTF8STRC("password"));
@@ -1992,7 +1992,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserAddReq(SSWR::SMonitor::SM
 		return resp->RedirectURL(req, UTF8STRC("index"), 0);
 	}
 
-	if (req->GetReqMethod() == Net::WebServer::IWebRequest::RequestMethod::HTTP_POST)
+	if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_POST)
 	{
 		req->ParseHTTPForm();
 		Text::String *action;
@@ -2075,7 +2075,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserAssignReq(SSWR::SMonitor:
 		return resp->RedirectURL(req, UTF8STRC("index"), 0);
 	}
 
-	if (req->GetReqMethod() == Net::WebServer::IWebRequest::RequestMethod::HTTP_POST)
+	if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_POST)
 	{
 		req->ParseHTTPForm();
 		Text::String *action;

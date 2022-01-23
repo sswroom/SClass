@@ -168,21 +168,21 @@ Net::OpenSSLEngine::OpenSSLEngine(Net::SocketFactory *sockf, Method method) : Ne
 		m = TLS_method();
 		break;
 	case Method::TLSV1:
-#ifdef OPENSSL_NO_TLS1_METHOD
+#if defined(OPENSSL_NO_TLS1_METHOD) || defined(DEPRECATEDIN_1_1_0)
 		m = TLS_method();
 #else
 		m = TLSv1_method();
 #endif
 		break;
 	case Method::TLSV1_1:
-#ifdef OPENSSL_NO_TLS1_1_METHOD
+#if defined(OPENSSL_NO_TLS1_1_METHOD) || defined(DEPRECATEDIN_1_1_0)
 		m = TLS_method();
 #else
 		m = TLSv1_1_method();
 #endif
 		break;
 	case Method::TLSV1_2:
-#ifdef OPENSSL_NO_TLS1_2_METHOD
+#if defined(OPENSSL_NO_TLS1_2_METHOD) || defined(DEPRECATEDIN_1_1_0)
 		m = TLS_method();
 #else
 		m = TLSv1_2_method();
@@ -192,14 +192,14 @@ Net::OpenSSLEngine::OpenSSLEngine(Net::SocketFactory *sockf, Method method) : Ne
 		m = DTLS_method();
 		break;
 	case Method::DTLSV1:
-#ifdef OPENSSL_NO_DTLS1_METHOD
+#if defined(OPENSSL_NO_DTLS1_METHOD) || defined(DEPRECATEDIN_1_1_0)
 		m = DTLS_method();
 #else
 		m = DTLSv1_method();
 #endif
 		break;
 	case Method::DTLSV1_2:
-#ifdef OPENSSL_NO_DTLS1_2_METHOD
+#if defined(OPENSSL_NO_DTLS1_2_METHOD) || defined(DEPRECATEDIN_1_1_0)
 		m = DTLS_method();
 #else
 		m = DTLSv1_2_method();

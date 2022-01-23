@@ -37,7 +37,7 @@ namespace SSWR
 			ThreadStatus *threadStatus;
 			Sync::Mutex *connMut;
 			Data::ArrayList<Text::String *> *connURLs;
-			const Char *method;
+			Net::WebUtil::RequestMethod method;
 			UInt32 postSize;
 			UOSInt connCurrIndex;
 			UInt32 connLeftCnt;

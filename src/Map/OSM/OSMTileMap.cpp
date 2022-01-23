@@ -338,7 +338,7 @@ Media::ImageList *Map::OSM::OSMTileMap::LoadTileImage(UOSInt level, Int64 imgId,
 
 //	printf("Request URL: %s\r\n", urlSb.ToString());
 	cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, UTF8STRC("OSMTileMap/1.0 SSWR/1.0"), true, urlSb.StartsWith((const UTF8Char*)"https://"));
-	cli->Connect(urlSb.ToString(), urlSb.GetLength(), "GET", 0, 0, true);
+	cli->Connect(urlSb.ToString(), urlSb.GetLength(), Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, true);
 	if (hasTime)
 	{
 		sptr = Net::HTTPClient::Date2Str(u8buff, &dt);
@@ -546,7 +546,7 @@ IO::IStreamData *Map::OSM::OSMTileMap::LoadTileImageData(UOSInt level, Int64 img
 	urlSb.AppendC(UTF8STRC(".png"));
 
 	cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, UTF8STRC("OSMTileMap/1.0 SSWR/1.0"), true, urlSb.StartsWith((const UTF8Char*)"https://"));
-	cli->Connect(urlSb.ToString(), urlSb.GetLength(), "GET", 0, 0, true);
+	cli->Connect(urlSb.ToString(), urlSb.GetLength(), Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, true);
 	if (hasTime)
 	{
 		sptr = Net::HTTPClient::Date2Str(u8buff, &dt);

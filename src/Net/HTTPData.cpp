@@ -16,12 +16,12 @@ UInt32 __stdcall Net::HTTPData::LoadThread(void *userObj)
 	if (fdh->queue)
 	{
 		Sync::MutexUsage mutUsage(fdh->mut);
-		fdh->cli = fdh->queue->MakeRequest(fdh->url->v, "GET", true);
+		fdh->cli = fdh->queue->MakeRequest(fdh->url->v, Net::WebUtil::RequestMethod::HTTP_GET, true);
 		mutUsage.EndUse();
 	}
 	else
 	{
-		fdh->cli = Net::HTTPClient::CreateConnect(fdh->sockf, fdh->ssl, fdh->url->v, "GET", true);
+		fdh->cli = Net::HTTPClient::CreateConnect(fdh->sockf, fdh->ssl, fdh->url->v, Net::WebUtil::RequestMethod::HTTP_GET, true);
 	}
 	fdh->evtTmp->Set();
 	if (IO::Path::GetPathType(fdh->localFile->v, fdh->localFile->leng) == IO::Path::PathType::File)
@@ -46,13 +46,13 @@ UInt32 __stdcall Net::HTTPData::LoadThread(void *userObj)
 			{
 				Sync::MutexUsage mutUsage(fdh->mut);
 				fdh->queue->EndRequest(fdh->cli);
-				fdh->cli = fdh->queue->MakeRequest(sb.ToString(), "GET", true);
+				fdh->cli = fdh->queue->MakeRequest(sb.ToString(), Net::WebUtil::RequestMethod::HTTP_GET, true);
 				mutUsage.EndUse();
 			}
 			else
 			{
 				DEL_CLASS(fdh->cli);
-				fdh->cli = Net::HTTPClient::CreateConnect(fdh->sockf, fdh->ssl, sb.ToString(), "GET", true);
+				fdh->cli = Net::HTTPClient::CreateConnect(fdh->sockf, fdh->ssl, sb.ToString(), Net::WebUtil::RequestMethod::HTTP_GET, true);
 			}
 		}
 		else

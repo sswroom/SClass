@@ -289,12 +289,8 @@ Net::HTTPClient *Net::HTTPClient::CreateClient(Net::SocketFactory *sockf, Net::S
 	return cli;
 }
 
-Net::HTTPClient *Net::HTTPClient::CreateConnect(Net::SocketFactory *sockf, Net::SSLEngine *ssl, const UTF8Char *url, const Char *method, Bool kaConn)
+Net::HTTPClient *Net::HTTPClient::CreateConnect(Net::SocketFactory *sockf, Net::SSLEngine *ssl, const UTF8Char *url, Net::WebUtil::RequestMethod method, Bool kaConn)
 {
-	if (method == 0)
-	{
-		method = "GET";
-	}
 	UOSInt urlLen = Text::StrCharCnt(url);
 	Net::HTTPClient *cli = Net::HTTPClient::CreateClient(sockf, ssl, 0, 0, kaConn, Text::StrStartsWithICaseC(url, urlLen, UTF8STRC("HTTPS://")));
 	cli->Connect(url, urlLen, method, 0, 0, true);

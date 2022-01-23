@@ -259,9 +259,9 @@ Bool Net::WebServer::IWebRequest::GetHTTPFormUInt64(const UTF8Char *name, UOSInt
 	return s->ToUInt64(valOut);
 }
 
-const Char *Net::WebServer::IWebRequest::GetReqMethodStr()
+Text::CString Net::WebServer::IWebRequest::GetReqMethodStr()
 {
-	return RequestMethodGetName(GetReqMethod());
+	return Net::WebUtil::RequestMethodGetName(GetReqMethod());
 }
 
 Net::BrowserInfo::BrowserType Net::WebServer::IWebRequest::GetBrowser()
@@ -297,49 +297,6 @@ const UTF8Char *Net::WebServer::IWebRequest::GetOSVer()
 	if (!this->uaParsed)
 		this->ParseUserAgent();
 	return this->reqOSVer;
-}
-
-const Char *Net::WebServer::IWebRequest::RequestMethodGetName(RequestMethod reqMeth)
-{
-	switch (reqMeth)
-	{
-	case RequestMethod::HTTP_GET:
-		return "GET";
-	case RequestMethod::HTTP_POST:
-		return "POST";
-	case RequestMethod::HTTP_PUT:
-		return "PUT";
-	case RequestMethod::HTTP_PATCH:
-		return "PATCH";
-	case RequestMethod::HTTP_DELETE:
-		return "DELETE";
-	case RequestMethod::HTTP_CONNECT:
-		return "CONNECT";
-	case RequestMethod::RTSP_DESCRIBE:
-		return "DESCRIBE";
-	case RequestMethod::RTSP_ANNOUNCE:
-		return "ANNOUNCE";
-	case RequestMethod::RTSP_GET_PARAMETER:
-		return "GET_PARAMETER";
-	case RequestMethod::RTSP_OPTIONS:
-		return "OPTIONS";
-	case RequestMethod::RTSP_PAUSE:
-		return "PAUSE";
-	case RequestMethod::RTSP_PLAY:
-		return "PLAY";
-	case RequestMethod::RTSP_RECORD:
-		return "RECORD";
-	case RequestMethod::RTSP_REDIRECT:
-		return "REDIRECT";
-	case RequestMethod::RTSP_SETUP:
-		return "SETUP";
-	case RequestMethod::RTSP_SET_PARAMETER:
-		return "SET_PARAMETER";
-	case RequestMethod::RTSP_TEARDOWN:
-		return "TEARDOWN";
-	default:
-		return "?";
-	}
 }
 
 const Char *Net::WebServer::IWebRequest::RequestProtocolGetName(RequestProtocol reqProto)

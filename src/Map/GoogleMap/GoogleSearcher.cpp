@@ -148,7 +148,7 @@ UTF8Char *Map::GoogleMap::GoogleSearcher::SearchName(UTF8Char *buff, UOSInt buff
 	{
 		sptr = Text::StrConcatC(sptr, UTF8STRC("&key="));
 	}
-	cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, url, 0, true);
+	cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, url, Net::WebUtil::RequestMethod::HTTP_GET, true);
 	if (!cli->IsError())
 	{
 		if (lang)

@@ -16,6 +16,8 @@ extern "C"
 {
 	extern Char MyString_STRHEXARR[];
 	extern Char MyString_STRhexarr[];
+	extern UInt8 MyString_StrUpperArr[];
+	extern UInt8 MyString_StrLowerArr[];
 	extern UTF8Char MyString_StrDigit100U8[];
 	extern UTF16Char MyString_StrDigit100U16[];
 	extern UTF32Char MyString_StrDigit100U32[];

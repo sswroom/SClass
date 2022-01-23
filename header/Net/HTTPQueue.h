@@ -27,7 +27,7 @@ namespace Net
 		HTTPQueue(Net::SocketFactory *sockf, Net::SSLEngine *ssl);
 		~HTTPQueue();
 
-		Net::HTTPClient *MakeRequest(const UTF8Char *url, const Char *method, Bool noShutdown);
+		Net::HTTPClient *MakeRequest(const UTF8Char *url, Net::WebUtil::RequestMethod method, Bool noShutdown);
 		void EndRequest(Net::HTTPClient *cli);
 	};
 }

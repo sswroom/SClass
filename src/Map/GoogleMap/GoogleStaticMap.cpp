@@ -218,7 +218,7 @@ UOSInt Map::GoogleMap::GoogleStaticMap::GetMap(UInt8 *buff, Double lat, Double l
 	}
 
 //	wprintf(L"%s\r\n", url);
-	cli = Net::HTTPClient::CreateConnect(sockf, ssl, url, 0, true);
+	cli = Net::HTTPClient::CreateConnect(sockf, ssl, url, Net::WebUtil::RequestMethod::HTTP_GET, true);
 	if (!cli->IsError())
 	{
 		if (lang)

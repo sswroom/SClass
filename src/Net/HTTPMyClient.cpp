@@ -528,7 +528,7 @@ Bool Net::HTTPMyClient::Recover()
 	return false;
 }
 
-Bool Net::HTTPMyClient::Connect(const UTF8Char *url, UOSInt urlLen, const Char *method, Double *timeDNS, Double *timeConn, Bool defHeaders)
+Bool Net::HTTPMyClient::Connect(const UTF8Char *url, UOSInt urlLen, Net::WebUtil::RequestMethod method, Double *timeDNS, Double *timeConn, Bool defHeaders)
 {
 	UTF8Char urltmp[256];
 	UOSInt urltmpLen;
@@ -829,54 +829,64 @@ Bool Net::HTTPMyClient::Connect(const UTF8Char *url, UOSInt urlLen, const Char *
 		MemFree(this->dataBuff);
 		this->dataBuff = MemAlloc(UInt8, (i + 16));
 	}
-	if (method)
+	switch (method)
 	{
-		UOSInt methodLen = Text::StrCharCnt(method);
-		if (Text::StrEqualsC((const UTF8Char*)method, methodLen, UTF8STRC("GET")))
-		{
-			this->canWrite = false;
-			this->writing = false;
-			cptr = Text::StrConcatC(dataBuff, UTF8STRC("GET "));
-		}
-		else if (Text::StrEqualsC((const UTF8Char*)method, methodLen, UTF8STRC("POST")))
-		{
-			this->canWrite = true;
-			this->writing = false;
-			cptr = Text::StrConcatC(dataBuff, UTF8STRC("POST "));
-		}
-		else if (Text::StrEqualsC((const UTF8Char*)method, methodLen, UTF8STRC("PUT")))
-		{
-			this->canWrite = true;
-			this->writing = false;
-			cptr = Text::StrConcatC(dataBuff, UTF8STRC("PUT "));
-		}
-		else if (Text::StrEqualsC((const UTF8Char*)method, methodLen, UTF8STRC("PATCH")))
-		{
-			this->canWrite = true;
-			this->writing = false;
-			cptr = Text::StrConcatC(dataBuff, UTF8STRC("PATCH "));
-		}
-		else if (Text::StrEqualsC((const UTF8Char*)method, methodLen, UTF8STRC("DELETE")))
-		{
-			this->canWrite = false;
-			this->writing = false;
-			cptr = Text::StrConcatC(dataBuff, UTF8STRC("DELETE "));
-		}
-		else
-		{
-			this->canWrite = false;
-			this->writing = false;
-			cptr = Text::StrConcatC(dataBuff, UTF8STRC("GET "));
-		}
-	}
-	else
-	{
+	case Net::WebUtil::RequestMethod::HTTP_POST:
+		this->canWrite = true;
+		this->writing = false;
+		cptr = Text::StrConcatC(dataBuff, UTF8STRC("POST "));
+		cptr = Text::StrConcatC(cptr, ptr2, ptr2Len);
+		cptr = Text::StrConcatC(cptr, UTF8STRC(" HTTP/1.1\r\n"));
+		break;
+	case Net::WebUtil::RequestMethod::HTTP_PUT:
+		this->canWrite = true;
+		this->writing = false;
+		cptr = Text::StrConcatC(dataBuff, UTF8STRC("PUT "));
+		cptr = Text::StrConcatC(cptr, ptr2, ptr2Len);
+		cptr = Text::StrConcatC(cptr, UTF8STRC(" HTTP/1.1\r\n"));
+		break;
+	case Net::WebUtil::RequestMethod::HTTP_PATCH:
+		this->canWrite = true;
+		this->writing = false;
+		cptr = Text::StrConcatC(dataBuff, UTF8STRC("PATCH "));
+		cptr = Text::StrConcatC(cptr, ptr2, ptr2Len);
+		cptr = Text::StrConcatC(cptr, UTF8STRC(" HTTP/1.1\r\n"));
+		break;
+	case Net::WebUtil::RequestMethod::HTTP_DELETE:
+		this->canWrite = false;
+		this->writing = false;
+		cptr = Text::StrConcatC(dataBuff, UTF8STRC("DELETE "));
+		cptr = Text::StrConcatC(cptr, ptr2, ptr2Len);
+		cptr = Text::StrConcatC(cptr, UTF8STRC(" HTTP/1.1\r\n"));
+		break;
+	case Net::WebUtil::RequestMethod::HTTP_CONNECT:
+	case Net::WebUtil::RequestMethod::Unknown:
+	case Net::WebUtil::RequestMethod::HTTP_GET:
 		this->canWrite = false;
 		this->writing = false;
 		cptr = Text::StrConcatC(dataBuff, UTF8STRC("GET "));
+		cptr = Text::StrConcatC(cptr, ptr2, ptr2Len);
+		cptr = Text::StrConcatC(cptr, UTF8STRC(" HTTP/1.1\r\n"));
+		break;
+
+	case Net::WebUtil::RequestMethod::RTSP_DESCRIBE:
+	case Net::WebUtil::RequestMethod::RTSP_ANNOUNCE:
+	case Net::WebUtil::RequestMethod::RTSP_GET_PARAMETER:
+	case Net::WebUtil::RequestMethod::RTSP_OPTIONS:
+	case Net::WebUtil::RequestMethod::RTSP_PAUSE:
+	case Net::WebUtil::RequestMethod::RTSP_PLAY:
+	case Net::WebUtil::RequestMethod::RTSP_RECORD:
+	case Net::WebUtil::RequestMethod::RTSP_REDIRECT:
+	case Net::WebUtil::RequestMethod::RTSP_SETUP:
+	case Net::WebUtil::RequestMethod::RTSP_SET_PARAMETER:
+	case Net::WebUtil::RequestMethod::RTSP_TEARDOWN:
+		this->canWrite = false;
+		this->writing = false;
+		cptr = Text::StrConcatC(dataBuff, UTF8STRC("TEARDOWN "));
+		cptr = Text::StrConcatC(cptr, ptr2, ptr2Len);
+		cptr = Text::StrConcatC(cptr, UTF8STRC(" RTSP/1.0\r\n"));
+		break;
 	}
-	cptr = Text::StrConcatC(cptr, ptr2, ptr2Len);
-	cptr = Text::StrConcatC(cptr, UTF8STRC(" HTTP/1.1\r\n"));
 	this->reqMstm->Write(dataBuff, (UOSInt)(cptr - (UTF8Char*)dataBuff));
 	this->reqMstm->Write((UInt8*)host, hostLen);
 

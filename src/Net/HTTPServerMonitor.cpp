@@ -18,7 +18,7 @@ UInt32 __stdcall Net::HTTPServerMonitor::ThreadProc(void *userObj)
 
 Bool Net::HTTPServerMonitor::CheckOnline()
 {
-	Net::HTTPClient *cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, this->url->v, "GET", false);
+	Net::HTTPClient *cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, this->url->v, Net::WebUtil::RequestMethod::HTTP_GET, false);
 	Net::WebStatus::StatusCode status = cli->GetRespStatus();
 	DEL_CLASS(cli);
 	return status == Net::WebStatus::SC_OK;

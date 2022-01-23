@@ -557,7 +557,7 @@ void SSWR::AVIRead::AVIRGISForm::HKOPortal(const UTF8Char *listFile, const UTF8C
 	sb.Append(listFile);
 	sb.AppendC(UTF8STRC("?t="));
 	sb.AppendI64(dt.ToTicks());
-	cli = Net::HTTPClient::CreateConnect(this->core->GetSocketFactory(), this->ssl, sb.ToString(), "GET", false);
+	cli = Net::HTTPClient::CreateConnect(this->core->GetSocketFactory(), this->ssl, sb.ToString(), Net::WebUtil::RequestMethod::HTTP_GET, false);
 	NEW_CLASS(reader, Text::UTF8Reader(cli));
 	dateStr = 0;
 	timeStr = 0;
@@ -1342,7 +1342,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 			UTF8Char sbuff[10];
 			UOSInt i;
 			Data::DateTime dt;
-			cli = Net::HTTPClient::CreateConnect(this->core->GetSocketFactory(), this->ssl, (const UTF8Char*)"https://www.weather.gov.hk/wxinfo/currwx/tc_gis_list.xml", "GET", false);
+			cli = Net::HTTPClient::CreateConnect(this->core->GetSocketFactory(), this->ssl, (const UTF8Char*)"https://www.weather.gov.hk/wxinfo/currwx/tc_gis_list.xml", Net::WebUtil::RequestMethod::HTTP_GET, false);
 			NEW_CLASS(reader, Text::UTF8Reader(cli));
 			reader->ReadLine(&sb, 4096);
 			while (true)

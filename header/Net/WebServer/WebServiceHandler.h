@@ -27,7 +27,7 @@ namespace Net
 		public:
 			WebServiceHandler();
 
-			void AddService(const UTF8Char *svcPath, UOSInt svcPathLen, Net::WebServer::IWebRequest::RequestMethod reqMeth, ServiceFunc func);
+			void AddService(const UTF8Char *svcPath, UOSInt svcPathLen, Net::WebUtil::RequestMethod reqMeth, ServiceFunc func);
 		};
 	}
 }

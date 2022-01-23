@@ -188,7 +188,7 @@ void Net::SNS::SNSManager::ChannelAddMessage(Net::SNS::SNSManager::ChannelData *
 			while (retryCnt < 3)
 			{
 				cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, STR_PTRC(this->userAgent), true, Text::StrStartsWithC(sarr[0].v, sarr[0].len, UTF8STRC("https://")));
-				if (cli->Connect(sarr[0].v, sarr[0].len, "GET", 0, 0, true))
+				if (cli->Connect(sarr[0].v, sarr[0].len, Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, true))
 				{
 					if (Text::StrEndsWithC(sarr[0].v, sarr[0].len, UTF8STRC(".mp4")))
 					{
@@ -256,7 +256,7 @@ void Net::SNS::SNSManager::ChannelAddMessage(Net::SNS::SNSManager::ChannelData *
 			{
 				j = Text::StrSplitP(sarr, 2, sarr[1].v, sarr[1].len, ' ');
 				cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, STR_PTRC(this->userAgent), true, Text::StrStartsWithC(sarr[0].v, sarr[0].len, UTF8STRC("https://")));
-				if (cli->Connect(sarr[0].v, sarr[0].len, "GET", 0, 0, true))
+				if (cli->Connect(sarr[0].v, sarr[0].len, Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, true))
 				{
 					Text::StrConcatC(Text::StrUOSInt(sptr, i), UTF8STRC(".mp4"));
 					leng = 0;

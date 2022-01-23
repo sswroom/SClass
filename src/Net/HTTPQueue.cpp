@@ -44,7 +44,7 @@ Net::HTTPQueue::~HTTPQueue()
 	DEL_CLASS(this->statusEvt);
 }
 
-Net::HTTPClient *Net::HTTPQueue::MakeRequest(const UTF8Char *url, const Char *method, Bool noShutdown)
+Net::HTTPClient *Net::HTTPQueue::MakeRequest(const UTF8Char *url, Net::WebUtil::RequestMethod method, Bool noShutdown)
 {
 	UTF8Char sbuff[512];
 	Text::URLString::GetURLDomain(sbuff, url, 0);

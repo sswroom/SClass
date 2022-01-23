@@ -220,7 +220,7 @@ Bool Net::HTTPOSClient::Recover()
 	return false;
 }
 
-Bool Net::HTTPOSClient::Connect(const UTF8Char *url, UOSInt urlLen, const Char *method, Double *timeDNS, Double *timeConn, Bool defHeaders)
+Bool Net::HTTPOSClient::Connect(const UTF8Char *url, UOSInt urlLen, Net::WebUtil::RequestMethod method, Double *timeDNS, Double *timeConn, Bool defHeaders)
 {
 	UTF8Char urltmp[256];
 	UTF8Char svrname[256];
@@ -427,7 +427,7 @@ Bool Net::HTTPOSClient::Connect(const UTF8Char *url, UOSInt urlLen, const Char *
 
 	const WChar *target = Text::StrToWCharNew(ptr2);
 	const WChar *wmethod;
-	if (method && Text::StrEqualsICase(method, "POST"))
+	if (method == Net::WebUtil::RequestMethod::HTTP_POST)
 	{
 		wmethod = L"POST";
 		this->canWrite = true;

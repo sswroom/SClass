@@ -1,6 +1,7 @@
 /* Defines
 REGCALL
 FORCEINLINE
+REGVAR
 _WCHAR_SIZE
 _OSINT_SIZE
 CPU_X86_32
@@ -403,4 +404,10 @@ typedef UInt32 UTF32Char;
 #define ROR64(x, n) ((x >> n) | (x << (64 - n)))
 #define INVALID_INDEX ((UOSInt)-1)
 #define UTF8STRC(s) (const UTF8Char*)s, (sizeof(s) - 1)
+
+#if defined(__GNUC__)
+#define REGVAR register
+#else
+#define REGVAR
+#endif
 #endif

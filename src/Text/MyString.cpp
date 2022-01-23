@@ -2324,9 +2324,10 @@ UOSInt Text::StrIndexOf(const UTF8Char *str1, const UTF8Char *str2)
 
 UOSInt Text::StrIndexOfChar(const UTF8Char *str1, UTF8Char c)
 {
-	const UTF8Char *ptr = str1;
-	while (*ptr)
-		if (*ptr == c)
+	REGVAR const UTF8Char *ptr = str1;
+	REGVAR UTF8Char c2;
+	while ((c2 = *ptr) != 0)
+		if (c2 == c)
 			return (UOSInt)(ptr - str1);
 		else
 			ptr++;
@@ -2764,17 +2765,18 @@ Bool Text::StrStartsWithICaseC(const UTF8Char *str1, UOSInt len1, const UTF8Char
 	{
 		return false;
 	}
+	REGVAR UInt8 *upperArr = MyString_StrUpperArr;
 	while (len2 >= 4)
 	{
-		UInt32 v1 = ReadNUInt32(str1);
-		UInt32 v2 = ReadNUInt32(str2);
-		if (MyString_StrUpperArr[v1 & 0xff] != MyString_StrUpperArr[v2 & 0xff])
+		REGVAR UInt32 v1 = ReadNUInt32(str1);
+		REGVAR UInt32 v2 = ReadNUInt32(str2);
+		if (upperArr[v1 & 0xff] != upperArr[v2 & 0xff])
 			return false;
-		if (MyString_StrUpperArr[(v1 >> 8) & 0xff] != MyString_StrUpperArr[(v2 >> 8) & 0xff])
+		if (upperArr[(v1 >> 8) & 0xff] != upperArr[(v2 >> 8) & 0xff])
 			return false;
-		if (MyString_StrUpperArr[(v1 >> 16) & 0xff] != MyString_StrUpperArr[(v2 >> 16) & 0xff])
+		if (upperArr[(v1 >> 16) & 0xff] != upperArr[(v2 >> 16) & 0xff])
 			return false;
-		if (MyString_StrUpperArr[(v1 >> 24)] != MyString_StrUpperArr[(v2 >> 24)])
+		if (upperArr[(v1 >> 24)] != upperArr[(v2 >> 24)])
 			return false;
 		str1 += 4;
 		str2 += 4;
@@ -2782,10 +2784,10 @@ Bool Text::StrStartsWithICaseC(const UTF8Char *str1, UOSInt len1, const UTF8Char
 	}
 	if (len2 >= 2)
 	{
-		UInt16 v1 = ReadNUInt16(str1);
-		UInt16 v2 = ReadNUInt16(str2);
-		if (MyString_StrUpperArr[v1 & 0xff] != MyString_StrUpperArr[v2 & 0xff] ||
-			MyString_StrUpperArr[(v1 >> 8)] != MyString_StrUpperArr[(v2 >> 8)])
+		REGVAR UInt16 v1 = ReadNUInt16(str1);
+		REGVAR UInt16 v2 = ReadNUInt16(str2);
+		if (upperArr[v1 & 0xff] != upperArr[v2 & 0xff] ||
+			upperArr[(v1 >> 8)] != upperArr[(v2 >> 8)])
 			return false;
 		str1 += 2;
 		str2 += 2;
@@ -2793,7 +2795,7 @@ Bool Text::StrStartsWithICaseC(const UTF8Char *str1, UOSInt len1, const UTF8Char
 	}
 	if (len2 > 0)
 	{
-		return MyString_StrUpperArr[*str1] == MyString_StrUpperArr[*str2];
+		return upperArr[*str1] == upperArr[*str2];
 	}
 	return true;
 }
