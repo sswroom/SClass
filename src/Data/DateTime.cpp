@@ -1244,10 +1244,20 @@ Int64 Data::DateTime::ToNTPTime()
 
 Char *Data::DateTime::ToString(Char *buff)
 {
-	return ToString(buff, "yyyy-MM-dd HH:mm:ss.fff zzzz");
+	return (Char*)ToString((UTF8Char*)buff);
 }
 
 Char *Data::DateTime::ToString(Char *buff, const Char *pattern)
+{
+	return (Char*)ToString((UTF8Char*)buff, pattern);
+}
+
+UTF8Char *Data::DateTime::ToString(UTF8Char *buff)
+{
+	return ToString(buff, "yyyy-MM-dd HH:mm:ss.fff zzzz");
+}
+
+UTF8Char *Data::DateTime::ToString(UTF8Char *buff, const Char *pattern)
 {
 	TimeValue *tval = this->GetTimeValue();
 	while (*pattern)
@@ -1257,17 +1267,18 @@ Char *Data::DateTime::ToString(Char *buff, const Char *pattern)
 		case 'y':
 		{
 			UInt16 thisVal = tval->year;
-			UInt8 digiCnt = 0;
+			UInt8 digiCnt = 1;
+			pattern++;
 			while (*pattern == 'y')
 			{
 				digiCnt++;
 				pattern++;
 			}
 			buff += digiCnt;
-			Char *src = buff;
+			UTF8Char *src = buff;
 			while (digiCnt-- > 0)
 			{
-				*--src = (Char)((thisVal % 10) + 0x30);
+				*--src = (UTF8Char)((thisVal % 10) + 0x30);
 				thisVal = thisVal / 10;
 			}
 			break;
@@ -1278,19 +1289,21 @@ Char *Data::DateTime::ToString(Char *buff, const Char *pattern)
 			{
 				if (tval->minute < 10)
 				{
-					*buff++ = (Char)(tval->minute + 0x30);
+					*buff++ = (UTF8Char)(tval->minute + 0x30);
 				}
 				else
 				{
-					*buff++ = (Char)((tval->minute / 10) + 0x30);
-					*buff++ = (Char)((tval->minute % 10) + 0x30);
+					buff[0] = (UTF8Char)((tval->minute / 10) + 0x30);
+					buff[1] = (UTF8Char)((tval->minute % 10) + 0x30);
+					buff += 2;
 				}
 				pattern += 1;
 			}
 			else
 			{
-				*buff++ = (Char)((tval->minute / 10) + 0x30);
-				*buff++ = (Char)((tval->minute % 10) + 0x30);
+				buff[0] = (UTF8Char)((tval->minute / 10) + 0x30);
+				buff[1] = (UTF8Char)((tval->minute % 10) + 0x30);
+				buff += 2;
 
 				while (*pattern == 'm')
 					pattern++;
@@ -1303,19 +1316,21 @@ Char *Data::DateTime::ToString(Char *buff, const Char *pattern)
 			{
 				if (tval->second < 10)
 				{
-					*buff++ = (Char)(tval->second + 0x30);
+					*buff++ = (UTF8Char)(tval->second + 0x30);
 				}
 				else
 				{
-					*buff++ = (Char)((tval->second / 10) + 0x30);
-					*buff++ = (Char)((tval->second % 10) + 0x30);
+					buff[0] = (UTF8Char)((tval->second / 10) + 0x30);
+					buff[1] = (UTF8Char)((tval->second % 10) + 0x30);
+					buff += 2;
 				}
 				pattern += 1;
 			}
 			else
 			{
-				*buff++ = (Char)((tval->second / 10) + 0x30);
-				*buff++ = (Char)((tval->second % 10) + 0x30);
+				buff[0] = (UTF8Char)((tval->second / 10) + 0x30);
+				buff[1] = (UTF8Char)((tval->second % 10) + 0x30);
+				buff += 2;
 
 				while (*pattern == 's')
 					pattern++;
@@ -1328,19 +1343,21 @@ Char *Data::DateTime::ToString(Char *buff, const Char *pattern)
 			{
 				if (tval->day < 10)
 				{
-					*buff++ = (Char)(tval->day + 0x30);
+					*buff++ = (UTF8Char)(tval->day + 0x30);
 				}
 				else
 				{
-					*buff++ = 0x31;
-					*buff++ = (Char)((tval->day % 10) + 0x30);
+					buff[0] = 0x31;
+					buff[1] = (UTF8Char)((tval->day % 10) + 0x30);
+					buff += 2;
 				}
 				pattern += 1;
 			}
 			else
 			{
-				*buff++ = (Char)((tval->day / 10) + 0x30);
-				*buff++ = (Char)((tval->day % 10) + 0x30);
+				buff[0] = (UTF8Char)((tval->day / 10) + 0x30);
+				buff[1] = (UTF8Char)((tval->day % 10) + 0x30);
+				buff += 2;
 
 				while (*pattern == 'd')
 					pattern++;
@@ -1371,10 +1388,10 @@ Char *Data::DateTime::ToString(Char *buff, const Char *pattern)
 			}
 
 			buff += digiCnt;
-			Char *src = buff;
+			UTF8Char *src = buff;
 			while (digiCnt-- > 0)
 			{
-				*--src = (Char)((thisMS % 10) + 0x30);
+				*--src = (UTF8Char)((thisMS % 10) + 0x30);
 				thisMS = thisMS / 10;
 			}
 			break;
@@ -1409,10 +1426,10 @@ Char *Data::DateTime::ToString(Char *buff, const Char *pattern)
 					break;
 			}
 			buff += digiCnt;
-			Char *src = buff;
+			UTF8Char *src = buff;
 			while (digiCnt-- > 0)
 			{
-				*--src = (Char)((thisMS % 10) + 0x30);
+				*--src = (UTF8Char)((thisMS % 10) + 0x30);
 				thisMS = thisMS / 10;
 			}
 			break;
@@ -1424,19 +1441,21 @@ Char *Data::DateTime::ToString(Char *buff, const Char *pattern)
 			{
 				if (thisH < 10)
 				{
-					*buff++ = (Char)(thisH + 0x30);
+					*buff++ = (UTF8Char)(thisH + 0x30);
 				}
 				else
 				{
-					*buff++ = (Char)((thisH / 10) + 0x30);
-					*buff++ = (Char)((thisH % 10) + 0x30);
+					buff[0] = (UTF8Char)((thisH / 10) + 0x30);
+					buff[1] = (UTF8Char)((thisH % 10) + 0x30);
+					buff += 2;
 				}
 				pattern += 1;
 			}
 			else
 			{
-				*buff++ = (Char)((thisH / 10) + 0x30);
-				*buff++ = (Char)((thisH % 10) + 0x30);
+				buff[0] = (UTF8Char)((thisH / 10) + 0x30);
+				buff[1] = (UTF8Char)((thisH % 10) + 0x30);
+				buff += 2;
 
 				while (*pattern == 'h')
 					pattern++;
@@ -1449,19 +1468,21 @@ Char *Data::DateTime::ToString(Char *buff, const Char *pattern)
 			{
 				if (tval->hour < 10)
 				{
-					*buff++ = (Char)(tval->hour + 0x30);
+					*buff++ = (UTF8Char)(tval->hour + 0x30);
 				}
 				else
 				{
-					*buff++ = (Char)((tval->hour / 10) + 0x30);
-					*buff++ = (Char)((tval->hour % 10) + 0x30);
+					buff[0] = (UTF8Char)((tval->hour / 10) + 0x30);
+					buff[1] = (UTF8Char)((tval->hour % 10) + 0x30);
+					buff += 2;
 				}
 				pattern += 1;
 			}
 			else
 			{
-				*buff++ = (Char)((tval->hour / 10) + 0x30);
-				*buff++ = (Char)((tval->hour % 10) + 0x30);
+				buff[0] = (UTF8Char)((tval->hour / 10) + 0x30);
+				buff[1] = (UTF8Char)((tval->hour % 10) + 0x30);
+				buff += 2;
 
 				while (*pattern == 'H')
 					pattern++;
@@ -1474,12 +1495,13 @@ Char *Data::DateTime::ToString(Char *buff, const Char *pattern)
 			{
 				if (tval->month < 10)
 				{
-					*buff++ = (Char)(tval->month + 0x30);
+					*buff++ = (UTF8Char)(tval->month + 0x30);
 				}
 				else
 				{
-					*buff++ = 0x31;
-					*buff++ = (Char)(tval->month + 38);
+					buff[0] = 0x31;
+					buff[1] = (UTF8Char)(tval->month + 38);
+					buff += 2;
 				}
 				pattern += 1;
 			}
@@ -1487,96 +1509,101 @@ Char *Data::DateTime::ToString(Char *buff, const Char *pattern)
 			{
 				if (tval->month < 10)
 				{
-					*buff++ = 0x30;
-					*buff++ = (Char)(tval->month + 0x30);
+					buff[0] = 0x30;
+					buff[1] = (UTF8Char)(tval->month + 0x30);
 				}
 				else
 				{
-					*buff++ = 0x31;
-					*buff++ = (Char)(tval->month + 38);
+					buff[0] = 0x31;
+					buff[1] = (UTF8Char)(tval->month + 38);
 				}
+				buff += 2;
 				pattern += 2;
 			}
 			else if (pattern[3] != 'M')
 			{
-				if (tval->month == 1)
+				switch (tval->month)
 				{
-					*buff++ = 'J';
-					*buff++ = 'a';
-					*buff++ = 'n';
-				}
-				else if (tval->month == 2)
-				{
-					*buff++ = 'F';
-					*buff++ = 'e';
-					*buff++ = 'b';
-				}
-				else if (tval->month == 3)
-				{
-					*buff++ = 'M';
-					*buff++ = 'a';
-					*buff++ = 'r';
-				}
-				else if (tval->month == 4)
-				{
-					*buff++ = 'A';
-					*buff++ = 'p';
-					*buff++ = 'r';
-				}
-				else if (tval->month == 5)
-				{
-					*buff++ = 'M';
-					*buff++ = 'a';
-					*buff++ = 'y';
-				}
-				else if (tval->month == 6)
-				{
-					*buff++ = 'J';
-					*buff++ = 'u';
-					*buff++ = 'n';
-				}
-				else if (tval->month == 7)
-				{
-					*buff++ = 'J';
-					*buff++ = 'u';
-					*buff++ = 'l';
-				}
-				else if (tval->month == 8)
-				{
-					*buff++ = 'A';
-					*buff++ = 'u';
-					*buff++ = 'g';
-				}
-				else if (tval->month == 9)
-				{
-					*buff++ = 'S';
-					*buff++ = 'e';
-					*buff++ = 'p';
-				}
-				else if (tval->month == 10)
-				{
-					*buff++ = 'O';
-					*buff++ = 'c';
-					*buff++ = 't';
-				}
-				else if (tval->month == 11)
-				{
-					*buff++ = 'N';
-					*buff++ = 'o';
-					*buff++ = 'v';
-				}
-				else if (tval->month == 12)
-				{
-					*buff++ = 'D';
-					*buff++ = 'e';
-					*buff++ = 'c';
+				case 1:
+					buff[0] = 'J';
+					buff[1] = 'a';
+					buff[2] = 'n';
+					buff += 3;
+					break;
+				case 2:
+					buff[0] = 'F';
+					buff[1] = 'e';
+					buff[2] = 'b';
+					buff += 3;
+					break;
+				case 3:
+					buff[0] = 'M';
+					buff[1] = 'a';
+					buff[2] = 'r';
+					buff += 3;
+					break;
+				case 4:
+					buff[0] = 'A';
+					buff[1] = 'p';
+					buff[2] = 'r';
+					buff += 3;
+					break;
+				case 5:
+					buff[0] = 'M';
+					buff[1] = 'a';
+					buff[2] = 'y';
+					buff += 3;
+					break;
+				case 6:
+					buff[0] = 'J';
+					buff[1] = 'u';
+					buff[2] = 'n';
+					buff += 3;
+					break;
+				case 7:
+					buff[0] = 'J';
+					buff[1] = 'u';
+					buff[2] = 'l';
+					buff += 3;
+					break;
+				case 8:
+					buff[0] = 'A';
+					buff[1] = 'u';
+					buff[2] = 'g';
+					buff += 3;
+					break;
+				case 9:
+					buff[0] = 'S';
+					buff[1] = 'e';
+					buff[2] = 'p';
+					buff += 3;
+					break;
+				case 10:
+					buff[0] = 'O';
+					buff[1] = 'c';
+					buff[2] = 't';
+					buff += 3;
+					break;
+				case 11:
+					buff[0] = 'N';
+					buff[1] = 'o';
+					buff[2] = 'v';
+					buff += 3;
+					break;
+				case 12:
+					buff[0] = 'D';
+					buff[1] = 'e';
+					buff[2] = 'c';
+					buff += 3;
+					break;
 				}
 				pattern += 3;
 			}
 			else
 			{
-				if (tval->month == 1)
+				switch (tval->month)
 				{
+				case 1:
 					*buff++ = 'J';
 					*buff++ = 'a';
 					*buff++ = 'n';
@@ -1584,9 +1611,8 @@ Char *Data::DateTime::ToString(Char *buff, const Char *pattern)
 					*buff++ = 'a';
 					*buff++ = 'r';
 					*buff++ = 'y';
-				}
-				else if (tval->month == 2)
-				{
+					break;
+				case 2:
 					*buff++ = 'F';
 					*buff++ = 'e';
 					*buff++ = 'b';
@@ -1595,54 +1621,47 @@ Char *Data::DateTime::ToString(Char *buff, const Char *pattern)
 					*buff++ = 'a';
 					*buff++ = 'r';
 					*buff++ = 'y';
-				}
-				else if (tval->month == 3)
-				{
+					break;
+				case 3:
 					*buff++ = 'M';
 					*buff++ = 'a';
 					*buff++ = 'r';
 					*buff++ = 'c';
 					*buff++ = 'h';
-				}
-				else if (tval->month == 4)
-				{
+					break;
+				case 4:
 					*buff++ = 'A';
 					*buff++ = 'p';
 					*buff++ = 'r';
 					*buff++ = 'i';
 					*buff++ = 'l';
-				}
-				else if (tval->month == 5)
-				{
+					break;
+				case 5:
 					*buff++ = 'M';
 					*buff++ = 'a';
 					*buff++ = 'y';
-				}
-				else if (tval->month == 6)
-				{
+					break;
+				case 6:
 					*buff++ = 'J';
 					*buff++ = 'u';
 					*buff++ = 'n';
 					*buff++ = 'e';
-				}
-				else if (tval->month == 7)
-				{
+					break;
+				case 7:
 					*buff++ = 'J';
 					*buff++ = 'u';
 					*buff++ = 'l';
 					*buff++ = 'y';
-				}
-				else if (tval->month == 8)
-				{
+					break;
+				case 8:
 					*buff++ = 'A';
 					*buff++ = 'u';
 					*buff++ = 'g';
 					*buff++ = 'u';
 					*buff++ = 's';
 					*buff++ = 't';
-				}
-				else if (tval->month == 9)
-				{
+					break;
+				case 9:
 					*buff++ = 'S';
 					*buff++ = 'e';
 					*buff++ = 'p';
@@ -1652,9 +1671,8 @@ Char *Data::DateTime::ToString(Char *buff, const Char *pattern)
 					*buff++ = 'b';
 					*buff++ = 'e';
 					*buff++ = 'r';
-				}
-				else if (tval->month == 10)
-				{
+					break;
+				case 10:
 					*buff++ = 'O';
 					*buff++ = 'c';
 					*buff++ = 't';
@@ -1662,9 +1680,8 @@ Char *Data::DateTime::ToString(Char *buff, const Char *pattern)
 					*buff++ = 'b';
 					*buff++ = 'e';
 					*buff++ = 'r';
-				}
-				else if (tval->month == 11)
-				{
+					break;
+				case 11:
 					*buff++ = 'N';
 					*buff++ = 'o';
 					*buff++ = 'v';
@@ -1673,9 +1690,8 @@ Char *Data::DateTime::ToString(Char *buff, const Char *pattern)
 					*buff++ = 'b';
 					*buff++ = 'e';
 					*buff++ = 'r';
-				}
-				else if (tval->month == 12)
-				{
+					break;
+				case 12:
 					*buff++ = 'D';
 					*buff++ = 'e';
 					*buff++ = 'c';
@@ -1684,6 +1700,7 @@ Char *Data::DateTime::ToString(Char *buff, const Char *pattern)
 					*buff++ = 'b';
 					*buff++ = 'e';
 					*buff++ = 'r';
+					break;
 				}
 
 				while (*pattern == 'M')
@@ -1709,13 +1726,14 @@ Char *Data::DateTime::ToString(Char *buff, const Char *pattern)
 			{
 				if (tval->hour >= 12)
 				{
-					*buff++ = 'P';
+					buff[0] = 'P';
 				}
 				else
 				{
-					*buff++ = 'A';
+					buff[0] = 'A';
 				}
-				*buff++ = 'M';
+				buff[1] = 'M';
+				buff += 2;
 				while (*pattern == 't')
 					pattern++;
 			}
@@ -1729,21 +1747,23 @@ Char *Data::DateTime::ToString(Char *buff, const Char *pattern)
 			{
 				if (hr >= 0)
 				{
-					*buff++ = '+';
+					buff[0] = '+';
 				}
 				else
 				{
-					*buff++ = '-';
+					buff[0] = '-';
 					hr = -hr;
 				}
 				if (hr >= 10)
 				{
-					*buff++ = (Char)((hr / 10) + 0x30);
-					*buff++ = (Char)((hr % 10) + 0x30);
+					buff[1] = (UTF8Char)((hr / 10) + 0x30);
+					buff[2] = (UTF8Char)((hr % 10) + 0x30);
+					buff += 3;
 				}
 				else
 				{
-					*buff++ = (Char)(hr + 0x30);
+					buff[1] = (UTF8Char)(hr + 0x30);
+					buff += 2;
 				}
 				pattern++;
 			}
@@ -1751,50 +1771,53 @@ Char *Data::DateTime::ToString(Char *buff, const Char *pattern)
 			{
 				if (hr >= 0)
 				{
-					*buff++ = '+';
+					buff[0] = '+';
 				}
 				else
 				{
-					*buff++ = '-';
+					buff[0] = '-';
 					hr = -hr;
 				}
-				*buff++ = (Char)((hr / 10) + 0x30);
-				*buff++ = (Char)((hr % 10) + 0x30);
+				buff[1] = (UTF8Char)((hr / 10) + 0x30);
+				buff[2] = (UTF8Char)((hr % 10) + 0x30);
+				buff += 3;
 				pattern += 2;
 			}
 			else if (pattern[3] != 'z')
 			{
 				if (hr >= 0)
 				{
-					*buff++ = '+';
+					buff[0] = '+';
 				}
 				else
 				{
-					*buff++ = '-';
+					buff[0] = '-';
 					hr = -hr;
 				}
-				*buff++ = (Char)((hr / 10) + 0x30);
-				*buff++ = (Char)((hr % 10) + 0x30);
-				*buff++ = (Char)((min / 10) + 0x30);
-				*buff++ = (Char)((min % 10) + 0x30);
+				buff[1] = (UTF8Char)((hr / 10) + 0x30);
+				buff[2] = (UTF8Char)((hr % 10) + 0x30);
+				buff[3] = (UTF8Char)((min / 10) + 0x30);
+				buff[4] = (UTF8Char)((min % 10) + 0x30);
+				buff += 5;
 				pattern += 3;
 			}
 			else
 			{
 				if (hr >= 0)
 				{
-					*buff++ = '+';
+					buff[0] = '+';
 				}
 				else
 				{
-					*buff++ = '-';
+					buff[0] = '-';
 					hr = -hr;
 				}
-				*buff++ = (Char)((hr / 10) + 0x30);
-				*buff++ = (Char)((hr % 10) + 0x30);
-				*buff++ = ':';
-				*buff++ = (Char)((min / 10) + 0x30);
-				*buff++ = (Char)((min % 10) + 0x30);
+				buff[1] = (UTF8Char)((hr / 10) + 0x30);
+				buff[2] = (UTF8Char)((hr % 10) + 0x30);
+				buff[3] = ':';
+				buff[4] = (UTF8Char)((min / 10) + 0x30);
+				buff[5] = (UTF8Char)((min % 10) + 0x30);
+				buff += 6;
 				
 				while (*pattern == 'z')
 					pattern++;
@@ -1804,31 +1827,21 @@ Char *Data::DateTime::ToString(Char *buff, const Char *pattern)
 		case '\\':
 		{
 			if (pattern[1] == 0)
-				*buff++ = *pattern++;
+				*buff++ = (UTF8Char)*pattern++;
 			else
 			{
 				pattern++;
-				*buff++ = *pattern++;
+				*buff++ = (UTF8Char)*pattern++;
 			}
 			break;
 		}
 		default:
-			*buff++ = *pattern++;
+			*buff++ = (UTF8Char)*pattern++;
 			break;
 		}
 	}
 	*buff = 0;
 	return buff;
-}
-
-UTF8Char *Data::DateTime::ToString(UTF8Char *buff)
-{
-	return (UTF8Char*)ToString((Char*)buff);
-}
-
-UTF8Char *Data::DateTime::ToString(UTF8Char *buff, const Char *pattern)
-{
-	return (UTF8Char*)ToString((Char*)buff, pattern);
 }
 
 Data::DateTime Data::DateTime::operator=(Data::DateTime dt)

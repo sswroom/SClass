@@ -77,7 +77,7 @@ IO::IStreamData *Net::WebBrowser::GetData(const UTF8Char *url, UOSInt urlLen, Bo
 		NEW_CLASS(fd, IO::StmData::FileData(url, false));
 		if (contentType)
 		{
-			Text::CString mime = Net::MIME::GetMIMEFromExt(url);
+			Text::CString mime = Net::MIME::GetMIMEFromFileName(url, urlLen);
 			Text::StrConcatC(contentType, mime.v, mime.len);
 		}
 		return fd;

@@ -91,8 +91,9 @@ Text::IMIMEObj *Text::IMIMEObj::ParseFromFile(const UTF8Char *fileName)
 	IO::StmData::FileData *fd;
 	Text::IMIMEObj *obj;
 	UTF8Char sbuff[64];
-	IO::Path::GetFileExt(sbuff, fileName, Text::StrCharCnt(fileName));
-	contentType = Net::MIME::GetMIMEFromExt(sbuff);
+	UTF8Char *sptr;
+	sptr = IO::Path::GetFileExt(sbuff, fileName, Text::StrCharCnt(fileName));
+	contentType = Net::MIME::GetMIMEFromExt(sbuff, (UOSInt)(sptr - sbuff));
 	NEW_CLASS(fd, IO::StmData::FileData(fileName, false));
 	if (fd->GetDataSize() <= 0)
 	{

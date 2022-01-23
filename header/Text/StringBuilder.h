@@ -139,8 +139,8 @@ namespace Text
 
 	template <class T> Text::StringBuilder<T> *Text::StringBuilder<T>::AppendDate(Data::DateTime *dt)
 	{
-		Char sbuff[30];
-		Char *sptr;
+		UTF8Char sbuff[30];
+		UTF8Char *sptr;
 		sptr = dt->ToString(sbuff, "yyyy-MM-dd HH:mm:ss");
 		this->AllocLeng(19);
 		this->buffEnd = Text::StrConcatC(this->buffEnd, (const T*)sbuff, (UOSInt)(sptr - sbuff));
@@ -526,12 +526,12 @@ namespace Text
 
 	template<class T> UOSInt Text::StringBuilder<T>::IndexOf(T c)
 	{
-		return Text::StrIndexOfChar(this->buff, c);
+		return Text::StrIndexOfCharC(this->buff, (UOSInt)(this->buffEnd - this->buff), c);
 	}
 
 	template<class T> UOSInt Text::StringBuilder<T>::LastIndexOf(T c)
 	{
-		return Text::StrLastIndexOfChar(this->buff, c);
+		return Text::StrLastIndexOfCharC(this->buff, (UOSInt)(this->buffEnd - this->buff), c);
 	}
 
 	template<class T> Bool Text::StringBuilder<T>::Equals(const T *s)

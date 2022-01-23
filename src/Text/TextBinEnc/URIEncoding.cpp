@@ -24,7 +24,7 @@ static UInt8 URIAllowRes[] = {
 
 UTF8Char *Text::TextBinEnc::URIEncoding::URIEncode(UTF8Char *buff, const UTF8Char *uri)
 {
-	UInt8 b;
+	UOSInt b;
 	UTF8Char *dest;
 
 	dest = buff;
@@ -36,10 +36,11 @@ UTF8Char *Text::TextBinEnc::URIEncoding::URIEncode(UTF8Char *buff, const UTF8Cha
 		}
 		else
 		{
-			*dest++ = '%';
+			dest[0] = '%';
 			b = *uri++;
-			*dest++ = (UTF8Char)MyString_STRHEXARR[b >> 4];
-			*dest++ = (UTF8Char)MyString_STRHEXARR[b & 15];
+			dest[1] = (UTF8Char)MyString_STRHEXARR[b >> 4];
+			dest[2] = (UTF8Char)MyString_STRHEXARR[b & 15];
+			dest += 3;
 		}
 	}
 	*dest = 0;
@@ -78,9 +79,10 @@ UTF8Char *Text::TextBinEnc::URIEncoding::URIDecode(UTF8Char *buff, const UTF8Cha
 				}
 				else
 				{
-					*dest++ = '%';
-					*dest++ = c;
+					dest[0] = '%';
+					dest[1] = c;
 					c = 0;
+					dest += 2;
 				}
 				if (c)
 				{
@@ -99,9 +101,10 @@ UTF8Char *Text::TextBinEnc::URIEncoding::URIDecode(UTF8Char *buff, const UTF8Cha
 					}
 					else
 					{
-						*dest++ = '%';
-						*dest++ = uri[-2];
-						*dest++ = c;
+						dest[0] = '%';
+						dest[1] = uri[-2];
+						dest[2] = c;
+						dest += 3;
 					}
 				}
 			}

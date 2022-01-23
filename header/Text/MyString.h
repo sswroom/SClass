@@ -115,6 +115,7 @@ namespace Text
 
 	FORCEINLINE OSInt StrCompare(const UTF8Char *str1, const UTF8Char *str2) { return MyString_StrCompare(str1, str2); }
 	FORCEINLINE OSInt StrCompareICase(const UTF8Char *str1, const UTF8Char *str2) { return MyString_StrCompareICase(str1, str2); }
+	OSInt StrCompareFastC(const UTF8Char *str1, UOSInt len1, const UTF8Char *str2, UOSInt len2);
 
 	FORCEINLINE UOSInt StrCharCnt(const UTF8Char *str) { return MyString_StrCharCnt(str); }
 	UOSInt StrCharCntS(const UTF8Char *str, UOSInt maxLen);

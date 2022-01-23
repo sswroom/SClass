@@ -110,15 +110,16 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnRequestClicked(void *userObj
 	{
 		Text::String *fileName = me->fileList->GetItem(0);
 		UTF8Char sbuff[32];
+		UTF8Char *sptr;
 		IO::FileStream *fs;
 		NEW_CLASS(fs, IO::FileStream(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		me->reqBodyLen = (UOSInt)fs->GetLength();
 		me->reqBody = MemAlloc(UInt8, me->reqBodyLen);
 		fs->Read((UInt8*)me->reqBody, me->reqBodyLen);
 		DEL_CLASS(fs);
-		if (IO::Path::GetFileExt(sbuff, fileName->v, fileName->leng))
+		if ((sptr = IO::Path::GetFileExt(sbuff, fileName->v, fileName->leng)) != 0)
 		{
-			mime = Net::MIME::GetMIMEFromExt(sbuff);
+			mime = Net::MIME::GetMIMEFromExt(sbuff, (UOSInt)(sptr - sbuff));
 			me->reqBodyType = Text::String::New(mime.v, mime.len);
 		}
 		else
@@ -189,8 +190,8 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnRequestClicked(void *userObj
 				mstm.Write(sbuff, (UOSInt)(sptr - sbuff));
 				mstm.Write((const UInt8*)"\"\r\n", 3);
 
-				IO::Path::GetFileExt(sbuff, &s->v[k], s->leng - k);
-				mime = Net::MIME::GetMIMEFromExt(sbuff);
+				sptr = IO::Path::GetFileExt(sbuff, &s->v[k], s->leng - k);
+				mime = Net::MIME::GetMIMEFromExt(sbuff, (UOSInt)(sptr - sbuff));
 				mstm.Write((const UInt8*)"Content-Type: ", 14);
 				mstm.Write(mime.v, mime.len);
 				mstm.Write((const UInt8*)"\r\n\r\n", 4);

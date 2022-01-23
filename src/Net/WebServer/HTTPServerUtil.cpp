@@ -254,6 +254,7 @@ Bool Net::WebServer::HTTPServerUtil::ResponseFile(Net::WebServer::IWebRequest *r
 	UInt64 sizeLeft;
 	UInt8 sbuff[32];
 	UTF8Char *sptr;
+	UTF8Char *sptr2;
 	UOSInt nameLen = Text::StrCharCnt(fileName);
 	NEW_CLASS(fs, IO::FileStream(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
 	fs->GetFileTimes(0, 0, &t);
@@ -275,7 +276,7 @@ Bool Net::WebServer::HTTPServerUtil::ResponseFile(Net::WebServer::IWebRequest *r
 		}
 	}
 
-	IO::Path::GetFileExt(sbuff, fileName, nameLen);
+	sptr2 = IO::Path::GetFileExt(sbuff, fileName, nameLen);
 
 	sizeLeft = fs->GetLength();
 	sb2.ClearStr();
@@ -370,7 +371,7 @@ Bool Net::WebServer::HTTPServerUtil::ResponseFile(Net::WebServer::IWebRequest *r
 	resp->AddDefHeaders(req);
 	resp->AddCacheControl(cacheAge);
 	resp->AddLastModified(&t);
-	mime = Net::MIME::GetMIMEFromExt(sbuff);
+	mime = Net::MIME::GetMIMEFromExt(sbuff, (UOSInt)(sptr2 - sbuff));
 	resp->AddContentType(mime.v, mime.len);
 	resp->AddHeaderC(UTF8STRC("Accept-Ranges"), UTF8STRC("bytes"));
 	if (sizeLeft <= 0)

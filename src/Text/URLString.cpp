@@ -167,7 +167,6 @@ UTF8Char *Text::URLString::GetURLPath(UTF8Char *sbuff, const UTF8Char *url, UOSI
 UTF8Char *Text::URLString::GetURLPathSvr(UTF8Char *sbuff, const UTF8Char *url, UOSInt urlLen)
 {
 	UOSInt i;
-	UTF8Char *tmpBuff;
 	i = Text::StrIndexOfC(url, urlLen, UTF8STRC("://"));
 	if (i != INVALID_INDEX)
 	{
@@ -177,17 +176,31 @@ UTF8Char *Text::URLString::GetURLPathSvr(UTF8Char *sbuff, const UTF8Char *url, U
 	i = Text::StrIndexOfCharC(url, urlLen, '/');
 	if (i != INVALID_INDEX)
 	{
-		tmpBuff = MemAlloc(UTF8Char, urlLen + 1);
-		UTF8Char *sptr = Text::TextBinEnc::URIEncoding::URIDecode(tmpBuff, &url[i]);
-		i = Text::StrIndexOfCharC(tmpBuff, (UOSInt)(sptr - tmpBuff), '?');
-		if (i != INVALID_INDEX)
+		if (urlLen < 256)
 		{
-			sptr = &tmpBuff[i];
-			*sptr = 0;
+			UTF8Char *sptr = Text::TextBinEnc::URIEncoding::URIDecode(sbuff, &url[i]);
+			i = Text::StrIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), '?');
+			if (i != INVALID_INDEX)
+			{
+				sptr = &sbuff[i];
+				*sptr = 0;
+			}
+			return sptr;
 		}
-		sptr = Text::StrConcatC(sbuff, tmpBuff, (UOSInt)(sptr - tmpBuff));
-		MemFree(tmpBuff);
-		return sptr;
+		else
+		{
+			UTF8Char *tmpbuff = MemAlloc(UTF8Char, urlLen - i + 1);
+			UTF8Char *sptr = Text::TextBinEnc::URIEncoding::URIDecode(tmpbuff, &url[i]);
+			i = Text::StrIndexOfCharC(tmpbuff, (UOSInt)(sptr - tmpbuff), '?');
+			if (i != INVALID_INDEX)
+			{
+				sptr = &tmpbuff[i];
+				*sptr = 0;
+			}
+			sptr = Text::StrConcatC(sbuff, tmpbuff, (UOSInt)(sptr - tmpbuff));
+			MemFree(tmpbuff);
+			return sptr;
+		}
 	}
 	else
 	{

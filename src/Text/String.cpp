@@ -197,9 +197,11 @@ Text::String *Text::String::Clone()
 
 UTF8Char *Text::String::ConcatTo(UTF8Char *sbuff)
 {
-	MemCopyNO(sbuff, this->v, this->leng);
-	sbuff[this->leng] = 0;
-	return &sbuff[this->leng];
+	REGVAR UOSInt len = this->leng;
+	MemCopyNO(sbuff, this->v, len);
+	sbuff += len;
+	*sbuff = 0;
+	return sbuff;
 }
 
 UTF8Char *Text::String::ConcatToS(UTF8Char *sbuff, UOSInt buffSize)
@@ -207,8 +209,9 @@ UTF8Char *Text::String::ConcatToS(UTF8Char *sbuff, UOSInt buffSize)
 	if (buffSize > this->leng)
 	{
 		MemCopyNO(sbuff, this->v, this->leng);
-		sbuff[this->leng] = 0;
-		return &sbuff[this->leng];
+		sbuff += this->leng;
+		*sbuff = 0;
+		return sbuff;
 	}
 	else
 	{
@@ -302,25 +305,28 @@ Bool Text::String::StartsWithICase(const UTF8Char *str2, UOSInt len)
 
 Bool Text::String::EndsWith(UTF8Char c)
 {
-	return this->leng > 0 && this->v[this->leng - 1] == c;
+	REGVAR UOSInt len = this->leng;
+	return len > 0 && this->v[len - 1] == c;
 }
 
-Bool Text::String::EndsWith(const UTF8Char *s, UOSInt len)
+Bool Text::String::EndsWith(const UTF8Char *s, UOSInt len2)
 {
-	if (len > this->leng)
+	REGVAR UOSInt len1 = this->leng;
+	if (len2 > len1)
 	{
 		return false;
 	}
-	return Text::StrEqualsC(&this->v[this->leng - len], len, s, len);
+	return Text::StrEqualsC(&this->v[len1 - len2], len2, s, len2);
 }
 
-Bool Text::String::EndsWithICase(const UTF8Char *s, UOSInt len)
+Bool Text::String::EndsWithICase(const UTF8Char *s, UOSInt len2)
 {
-	if (len > this->leng)
+	UOSInt len1 = this->leng;
+	if (len2 > len1)
 	{
 		return false;
 	}
-	return Text::StrEqualsICaseC(&this->v[this->leng - len], len, s, len);
+	return Text::StrEqualsICaseC(&this->v[len1 - len2], len2, s, len2);
 }
 
 Bool Text::String::HasUpperCase()
@@ -337,8 +343,9 @@ Text::String *Text::String::ToLower()
 {
 	if (this->HasUpperCase())
 	{
-		Text::String *s = Text::String::New(this->leng);
-		Text::StrToLowerC(s->v, this->v, this->leng);
+		UOSInt len = this->leng;
+		Text::String *s = Text::String::New(len);
+		Text::StrToLowerC(s->v, this->v, len);
 		return s;
 	}
 	else
@@ -360,9 +367,9 @@ UOSInt Text::String::IndexOf(UTF8Char c)
 	while (len1 >= 2)
 	{
 		c2 = ReadUInt16(ptr);
-		if ((c2 & 0xff) == c)
+		if ((UTF8Char)(c2 & 0xff) == c)
 			return (UOSInt)(ptr - this->v);
-		if ((c2 >> 8) == c)
+		if ((UTF8Char)(c2 >> 8) == c)
 			return (UOSInt)(ptr - this->v + 1);
 		ptr += 2;
 		len1 -= 2;
@@ -381,7 +388,7 @@ UOSInt Text::String::IndexOfICase(const UTF8Char *s)
 
 UOSInt Text::String::LastIndexOf(UTF8Char c)
 {
-	UOSInt l = this->leng;
+	REGVAR UOSInt l = this->leng;
 	while (l-- > 0)
 	{
 		if (this->v[l] == c)
@@ -410,31 +417,28 @@ OSInt Text::String::CompareToICase(const UTF8Char *s)
 	return MyString_StrCompareICase(this->v, s);
 }
 
-OSInt Text::String::CompareToFast(const UTF8Char *s, UOSInt len)
+OSInt Text::String::CompareToFast(const UTF8Char *str2, UOSInt len2)
 {
 	const UTF8Char *s0 = this->v;
+	UOSInt len1 = this->leng;
 	OSInt defRet;
-	if (this->leng > len)
+	if (len1 > len2)
 	{
 		defRet = 1;
 	}
-	else if (this->leng == len)
+	else if (len1 == len2)
 	{
 		defRet = 0;
 	}
 	else
 	{
 		defRet = -1;
-		len = this->leng;
+		len2 = len1;
 	}
-	UInt32 v1;
-	UInt32 v2;
-	UTF8Char c1;
-	UTF8Char c2;
-	while (len >= 4)
+	while (len2 >= 4)
 	{
-		v1 = ReadMUInt32(s0);
-		v2 = ReadMUInt32(s);
+		REGVAR UInt32 v1 = ReadMUInt32(s0);
+		REGVAR UInt32 v2 = ReadMUInt32(str2);
 		if (v1 > v2)
 		{
 			return 1;
@@ -443,14 +447,14 @@ OSInt Text::String::CompareToFast(const UTF8Char *s, UOSInt len)
 		{
 			return -1;
 		}
-		len -= 4;
+		len2 -= 4;
 		s0 += 4;
-		s += 4;
+		str2 += 4;
 	}
-	while (len > 0)
+	while (len2 > 0)
 	{
-		c1 = *s0;
-		c2 = *s;
+		REGVAR UTF8Char c1 = *s0;
+		REGVAR UTF8Char c2 = *str2;
 		if (c1 > c2)
 		{
 			return 1;
@@ -459,28 +463,30 @@ OSInt Text::String::CompareToFast(const UTF8Char *s, UOSInt len)
 		{
 			return -1;
 		}
-		len--;
+		len2--;
 		s0++;
-		s++;
+		str2++;
 	}
 	return defRet;
 }
 
 void Text::String::RTrim()
 {
-	while (this->leng > 0)
+	UOSInt len = this->leng;
+	while (len > 0)
 	{
-		UTF8Char c = this->v[this->leng - 1];
+		UTF8Char c = this->v[len - 1];
 		if (c == ' ' || c == '\t')
 		{
-			this->leng--;
+			len--;
 		}
 		else
 		{
 			break;
 		}
 	}
-	this->v[this->leng] = 0;
+	this->v[len] = 0;
+	this->leng = len;
 }
 
 Int32 Text::String::ToInt32()

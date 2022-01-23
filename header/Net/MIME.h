@@ -8,14 +8,15 @@ namespace Net
 	private:
 		typedef struct
 		{
-			const Char *ext;
+			const UTF8Char *ext;
+			UOSInt extLen;
 			const UTF8Char *mime;
 			UOSInt mimeLen;
 		} MIMEEntry;
 
 		static MIMEEntry mimeList[];
 	public:
-		static Text::CString GetMIMEFromExt(const UTF8Char *ext);
+		static Text::CString GetMIMEFromExt(const UTF8Char *ext, UOSInt extLen);
 		static Text::CString GetMIMEFromFileName(const UTF8Char *fileName, UOSInt nameLen);
 	};
 }

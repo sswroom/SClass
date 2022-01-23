@@ -143,8 +143,9 @@ UTF8Char *Text::StrConcatS(UTF8Char *oriStr, const UTF8Char *strToJoin, UOSInt b
 UTF8Char *Text::StrConcatC(UTF8Char *oriStr, const UTF8Char *strToJoin, UOSInt charCnt)
 {
 	MemCopyO(oriStr, strToJoin, charCnt);
-	oriStr[charCnt] = 0;
-	return &oriStr[charCnt];
+	oriStr += charCnt;
+	*oriStr = 0;
+	return oriStr;
 }
 
 UTF8Char *Text::StrConcatASCII(UTF8Char *oriStr, const Char *strToJoin)
@@ -1017,6 +1018,57 @@ Bool Text::StrEqualsICaseC(const UTF8Char *str1, UOSInt str1Len, const UTF8Char 
 		str2++;
 	}
 	return true;
+}
+
+OSInt Text::StrCompareFastC(const UTF8Char *str1, UOSInt len1, const UTF8Char *str2, UOSInt len2)
+{
+	OSInt defRet;
+	if (len1 > len2)
+	{
+		defRet = 1;
+	}
+	else if (len1 == len2)
+	{
+		defRet = 0;
+	}
+	else
+	{
+		defRet = -1;
+		len2 = len1;
+	}
+	while (len2 >= 4)
+	{
+		REGVAR UInt32 v1 = ReadMUInt32(str1);
+		REGVAR UInt32 v2 = ReadMUInt32(str2);
+		if (v1 > v2)
+		{
+			return 1;
+		}
+		else if (v1 < v2)
+		{
+			return -1;
+		}
+		len2 -= 4;
+		str1 += 4;
+		str2 += 4;
+	}
+	while (len2 > 0)
+	{
+		REGVAR UTF8Char c1 = *str1;
+		REGVAR UTF8Char c2 = *str2;
+		if (c1 > c2)
+		{
+			return 1;
+		}
+		else if (c1 < c2)
+		{
+			return -1;
+		}
+		len2--;
+		str1++;
+		str2++;
+	}
+	return defRet;
 }
 
 UOSInt Text::StrCharCntS(const UTF8Char *str, UOSInt maxLen)
