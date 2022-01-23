@@ -139,8 +139,8 @@ void SSWR::AVIRead::AVIRLineCounterForm::CalcDir(UTF8Char *pathBuff, UTF8Char *p
 	FileInfo *fi;
 
 	*pathBuffEnd++ = IO::Path::PATH_SEPERATOR;
-	Text::StrConcatC(pathBuffEnd, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
-	sess = IO::Path::FindFile(pathBuff);
+	sptr = Text::StrConcatC(pathBuffEnd, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
+	sess = IO::Path::FindFile(pathBuff, (UOSInt)(sptr - pathBuff));
 	if (sess)
 	{
 		while ((sptr = IO::Path::FindNextFile(pathBuffEnd, sess, 0, &pt, 0)) != 0)

@@ -7,12 +7,13 @@ void __stdcall SSWR::AVIRead::AVIRRSSItemForm::OnImageSelChg(void *userObj)
 {
 	SSWR::AVIRead::AVIRRSSItemForm *me = (SSWR::AVIRead::AVIRRSSItemForm *)userObj;
 	UTF8Char sbuff[512];
+	UTF8Char *sptr;
 	UOSInt i = me->cboImage->GetSelectedIndex();
 	if (i == INVALID_INDEX)
 		return;
-	me->cboImage->GetItemText(sbuff, i);
+	sptr = me->cboImage->GetItemText(sbuff, i);
 	Net::WebBrowser *browser = me->core->GetWebBrowser();
-	IO::IStreamData *fd = browser->GetData(sbuff, false, sbuff);
+	IO::IStreamData *fd = browser->GetData(sbuff, (UOSInt)(sptr - sbuff), false, sbuff);
 	if (fd)
 	{
 		Media::ImageList *imgList = (Media::ImageList*)me->core->GetParserList()->ParseFile(fd, 0, 0, IO::ParserType::ImageList);

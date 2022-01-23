@@ -44,10 +44,10 @@ Net::HTTPQueue::~HTTPQueue()
 	DEL_CLASS(this->statusEvt);
 }
 
-Net::HTTPClient *Net::HTTPQueue::MakeRequest(const UTF8Char *url, Net::WebUtil::RequestMethod method, Bool noShutdown)
+Net::HTTPClient *Net::HTTPQueue::MakeRequest(const UTF8Char *url, UOSInt urlLen, Net::WebUtil::RequestMethod method, Bool noShutdown)
 {
 	UTF8Char sbuff[512];
-	Text::URLString::GetURLDomain(sbuff, url, 0);
+	Text::URLString::GetURLDomain(sbuff, url, urlLen, 0);
 	Bool found = false;;
 	DomainStatus *status;
 	Net::HTTPClient *cli;
@@ -92,7 +92,8 @@ void Net::HTTPQueue::EndRequest(Net::HTTPClient *cli)
 {
 	UTF8Char sbuff[512];
 	DomainStatus *status;
-	Text::URLString::GetURLDomain(sbuff, cli->GetURL()->v, 0);
+	Text::String *url = cli->GetURL();
+	Text::URLString::GetURLDomain(sbuff, url->v, url->leng, 0);
 
 	Sync::MutexUsage mutUsage(this->statusMut);
 	status = this->statusMap->Get(sbuff);

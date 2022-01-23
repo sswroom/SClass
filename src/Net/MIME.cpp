@@ -112,3 +112,13 @@ Text::CString Net::MIME::GetMIMEFromExt(const UTF8Char *ext)
 	}
 	return {UTF8STRC("application/octet-stream")};
 }
+
+Text::CString Net::MIME::GetMIMEFromFileName(const UTF8Char *fileName, UOSInt nameLen)
+{
+	UOSInt i = Text::StrLastIndexOfCharC(fileName, nameLen, '.');
+	if (i == INVALID_INDEX)
+	{
+		return {UTF8STRC("application/octet-stream")};
+	}
+	return GetMIMEFromExt(&fileName[i + 1]);
+}

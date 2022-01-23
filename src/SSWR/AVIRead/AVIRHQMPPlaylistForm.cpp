@@ -111,8 +111,8 @@ Bool SSWR::AVIRead::AVIRHQMPPlaylistForm::AddFolder(UTF8Char *folderBuff, UTF8Ch
 	Bool changed = false;
 	UTF8Char *sptr;
 	IO::Path::PathType pt;
-	Text::StrConcatC(folderBuffEnd, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
-	IO::Path::FindFileSession *sess = IO::Path::FindFile(folderBuff);
+	sptr = Text::StrConcatC(folderBuffEnd, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
+	IO::Path::FindFileSession *sess = IO::Path::FindFile(folderBuff, (UOSInt)(sptr - folderBuff));
 	if (sess)
 	{
 		while ((sptr = IO::Path::FindNextFile(folderBuffEnd, sess, 0, &pt, 0)) != 0)

@@ -526,11 +526,12 @@ UOSInt Media::V4LVideoCaptureMgr::GetDeviceList(Data::ArrayList<UInt32> *devList
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr = Text::StrConcatC(sbuff, UTF8STRC("/dev/"));
+	UTF8Char *sptr2;
 	UOSInt ret = 0;
 	UInt32 devId;
 	IO::Path::PathType pt;
-	Text::StrConcatC(sptr, UTF8STRC("video*"));
-	IO::Path::FindFileSession *sess = IO::Path::FindFile(sbuff);
+	sptr2 = Text::StrConcatC(sptr, UTF8STRC("video*"));
+	IO::Path::FindFileSession *sess = IO::Path::FindFile(sbuff, (UOSInt)(sptr2 - sbuff));
 	if (sess)
 	{
 		while (IO::Path::FindNextFile(sptr, sess, 0, &pt, 0))

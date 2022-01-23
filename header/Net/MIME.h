@@ -16,6 +16,7 @@ namespace Net
 		static MIMEEntry mimeList[];
 	public:
 		static Text::CString GetMIMEFromExt(const UTF8Char *ext);
+		static Text::CString GetMIMEFromFileName(const UTF8Char *fileName, UOSInt nameLen);
 	};
-};
+}
 #endif

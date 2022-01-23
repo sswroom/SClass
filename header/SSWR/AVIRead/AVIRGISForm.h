@@ -93,7 +93,7 @@ namespace SSWR
 			void CloseCtrlForm();
 			void SetCtrlForm(UI::GUIForm *frm, UI::GUITreeView::TreeItem *item);
 			Bool ParseObject(IO::ParsedObject *pobj);
-			void OpenURL(const UTF8Char *url, const UTF8Char *customName);
+			void OpenURL(const UTF8Char *url, UOSInt urlLen, const UTF8Char *customName);
 			void HKOPortal(const UTF8Char *listFile, const UTF8Char *filePath);
 		public:
 			AVIRGISForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Map::MapEnv *env, Map::MapView *view);

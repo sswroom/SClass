@@ -705,7 +705,7 @@ struct Manage::Process::FindProcSess
 
 Manage::Process::FindProcSess *Manage::Process::FindProcess(const UTF8Char *processName)
 {
-	IO::Path::FindFileSession *ffsess = IO::Path::FindFile((const UTF8Char*)"/proc/*");
+	IO::Path::FindFileSession *ffsess = IO::Path::FindFile(UTF8STRC("/proc/*"));
 	FindProcSess *sess;
 	if (ffsess == 0)
 	{
@@ -726,7 +726,7 @@ Manage::Process::FindProcSess *Manage::Process::FindProcess(const UTF8Char *proc
 
 Manage::Process::FindProcSess *Manage::Process::FindProcessW(const WChar *processName)
 {
-	IO::Path::FindFileSession *ffsess = IO::Path::FindFile((const UTF8Char*)"/proc/*");
+	IO::Path::FindFileSession *ffsess = IO::Path::FindFile(UTF8STRC("/proc/*"));
 	FindProcSess *sess;
 	if (ffsess == 0)
 	{

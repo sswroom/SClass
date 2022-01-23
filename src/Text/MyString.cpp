@@ -2334,6 +2334,27 @@ UOSInt Text::StrIndexOfChar(const UTF8Char *str1, UTF8Char c)
 	return INVALID_INDEX;
 }
 
+UOSInt Text::StrIndexOfCharC(const UTF8Char *str1, UOSInt len1, UTF8Char c)
+{
+	REGVAR const UTF8Char *ptr = str1;
+	REGVAR UInt16 c2;
+	while (len1 >= 2)
+	{
+		c2 = ReadUInt16(ptr);
+		if ((UTF8Char)(c2 & 0xff) == c)
+			return (UOSInt)(ptr - str1);
+		if ((UTF8Char)(c2 >> 8) == c)
+			return (UOSInt)(ptr - str1 + 1);
+		ptr += 2;
+		len1 -= 2;
+	}
+	if (len1 && (*ptr == c))
+	{
+		return (UOSInt)(ptr - str1);
+	}
+	return INVALID_INDEX;
+}
+
 UOSInt Text::StrIndexOfC(const UTF8Char *str1, UOSInt len1, const UTF8Char *str2, UOSInt len2)
 {
 	if (len1 < len2)
@@ -2464,6 +2485,23 @@ UOSInt Text::StrLastIndexOfChar(const UTF8Char *str1, UTF8Char c)
 			cpos = &sptr[-1];
 	}
 	return (UOSInt)(cpos - str1);
+}
+
+UOSInt Text::StrLastIndexOfCharC(const UTF8Char *str1, UOSInt len1, UTF8Char c)
+{
+	UInt16 c2;
+	while (len1 >= 2)
+	{
+		len1 -= 2;
+		c2 = ReadUInt16(&str1[len1]);
+		if ((UTF8Char)(c2 >> 8) == c)
+			return len1 + 1;
+		if ((UTF8Char)(c2 & 0xff) == c)
+			return len1;
+	}
+	if (len1 && *str1 == c)
+		return 0;
+	return INVALID_INDEX;
 }
 
 UOSInt Text::StrLastIndexOfC(const UTF8Char *str1, UOSInt len1, UTF8Char c)

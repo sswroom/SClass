@@ -418,7 +418,7 @@ UTF8Char *Net::RTSPClient::SetupRTP(UTF8Char *sessIdOut, const UTF8Char *url, Ne
 	return ret;
 }
 
-IO::ParsedObject *Net::RTSPClient::ParseURL(Net::SocketFactory *sockf, const UTF8Char *url)
+IO::ParsedObject *Net::RTSPClient::ParseURL(Net::SocketFactory *sockf, const UTF8Char *url, UOSInt urlLen)
 {
 	UTF8Char sbuff[512];
 	Net::RTSPClient *cli;
@@ -427,7 +427,7 @@ IO::ParsedObject *Net::RTSPClient::ParseURL(Net::SocketFactory *sockf, const UTF
 	UOSInt k;
 
 	UInt16 port = 554;
-	Text::URLString::GetURLDomain(sbuff, url, &port);
+	Text::URLString::GetURLDomain(sbuff, url, urlLen, &port);
 	if (port == 0)
 	{
 		port = 554;

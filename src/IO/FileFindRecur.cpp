@@ -90,7 +90,7 @@ const UTF8Char *IO::FileFindRecur::NextFile(IO::Path::PathType *pt)
 			sptr = Text::StrConcat(sptr, this->srcStrs[i]);
 			if (IO::Path::IsSearchPattern(this->srcStrs[i]))
 			{
-				this->srchParts[i].sess = IO::Path::FindFile(this->currBuff);
+				this->srchParts[i].sess = IO::Path::FindFile(this->currBuff, (UOSInt)(sptr - this->currBuff));
 				if (this->srchParts[i].sess)
 				{
 					sptr = IO::Path::FindNextFile(this->srchParts[i].buffPtr, this->srchParts[i].sess, 0, &thisPt, 0);

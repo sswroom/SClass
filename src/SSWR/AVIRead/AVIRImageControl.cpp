@@ -168,8 +168,8 @@ void SSWR::AVIRead::AVIRImageControl::InitDir()
 	}
 	DEL_CLASS(fs);
 
-	Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
-	sess = IO::Path::FindFile(sbuff);
+	sptr2 = Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
+	sess = IO::Path::FindFile(sbuff, (UOSInt)(sptr2 - sbuff));
 	if (sess)
 	{
 		Media::ColorProfile srcProfile(Media::ColorProfile::CPT_SRGB);
@@ -354,6 +354,7 @@ void SSWR::AVIRead::AVIRImageControl::EndFolder()
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
+	UTF8Char *sptr2;
 	IO::Path::FindFileSession *sess;
 	IO::Path::PathType pt;
 	UOSInt i;
@@ -366,8 +367,8 @@ void SSWR::AVIRead::AVIRImageControl::EndFolder()
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 	sptr = Text::StrConcatC(sptr, UTF8STRC("Cache"));
 	*sptr++ = IO::Path::PATH_SEPERATOR;
-	Text::StrConcatC(sptr, UTF8STRC("*.png"));
-	sess = IO::Path::FindFile(sbuff);
+	sptr2 = Text::StrConcatC(sptr, UTF8STRC("*.png"));
+	sess = IO::Path::FindFile(sbuff, (UOSInt)(sptr2 - sbuff));
 	if (sess)
 	{
 		while (IO::Path::FindNextFile(sptr, sess, 0, &pt, 0))

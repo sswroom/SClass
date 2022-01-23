@@ -37,7 +37,7 @@ IO::ParsedObject *Net::URL::OpenObject(const UTF8Char *url, const UTF8Char *user
 	}
 	else if (Text::StrStartsWithICaseC(url, urlLen, UTF8STRC("rtsp://")))
 	{
-		pobj = Net::RTSPClient::ParseURL(sockf, url);
+		pobj = Net::RTSPClient::ParseURL(sockf, url, urlLen);
 		return pobj;
 	}
 	return 0;

@@ -45,7 +45,7 @@ namespace IO
 		static UTF8Char *AppendPathC(UTF8Char *path, UTF8Char *pathEnd, const UTF8Char *toAppend, UOSInt toAppendLen);
 		static WChar *AppendPathW(WChar *path, const WChar *toAppend);
 		static Bool AppendPath(Text::StringBuilderUTF8 *sb, const UTF8Char *toAppend, UOSInt toAppendLen);
-		static FindFileSession *FindFile(const UTF8Char *path);
+		static FindFileSession *FindFile(const UTF8Char *path, UOSInt pathLen);
 		static FindFileSession *FindFileW(const WChar *path);
 		static UTF8Char *FindNextFile(UTF8Char *buff, FindFileSession *session, Data::DateTime *modTime, IO::Path::PathType *pt, UInt64 *fileSize);
 		static WChar *FindNextFileW(WChar *buff, FindFileSession *session, Data::DateTime *modTime, IO::Path::PathType *pt, UInt64 *fileSize);
@@ -55,7 +55,7 @@ namespace IO
 		static Bool PathExists(const UTF8Char *path, UOSInt pathLen);
 		static Bool PathExistsW(const WChar *path);
 		static WChar *GetFullPathW(WChar *buff, const WChar *path);
-		static Bool FileNameMatch(const UTF8Char *path, const UTF8Char *searchPattern);
+		static Bool FileNameMatch(const UTF8Char *path, UOSInt pathLen, const UTF8Char *searchPattern, UOSInt patternLen);
 		static Bool FileNameMatchW(const WChar *path, const WChar *searchPattern);
 		static UInt64 GetFileSize(const UTF8Char *path);
 		static UInt64 GetFileSizeW(const WChar *path);

@@ -124,6 +124,7 @@ void SSWR::AVIRead::AVIRFileSizePackForm::GenList()
 	UInt64 fileSize;
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
+	UTF8Char *sptr2;
 	SSWR::AVIRead::AVIRFileSizePackForm::MyFile *file;
 	IO::Path::FindFileSession *sess;
 	UOSInt i;
@@ -167,8 +168,8 @@ void SSWR::AVIRead::AVIRFileSizePackForm::GenList()
 
 	UInt64 totalFileSize = 0;
 	this->filePath = Text::StrCopyNew(sbuff);
-	Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
-	sess = IO::Path::FindFile(sbuff);
+	sptr2 = Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
+	sess = IO::Path::FindFile(sbuff, (UOSInt)(sptr2 - sbuff));
 	if (sess)
 	{
 		while (IO::Path::FindNextFile(sptr, sess, 0, &pt, &fileSize))

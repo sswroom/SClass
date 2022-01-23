@@ -15,7 +15,7 @@ namespace IO
 		Data::ArrayListInt64 *fileTimes;
 		Text::String *dirName;
 
-		void AddFile(const UTF8Char *fileName);
+		void AddFile(const UTF8Char *fileName, UOSInt fileNameLen);
 		void Init();
 	public:
 		DirectoryPackage(Text::String *dirName);

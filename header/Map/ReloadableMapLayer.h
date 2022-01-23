@@ -1,9 +1,10 @@
 #ifndef _SM_MAP_RELOADABLEMAPLAYER
 #define _SM_MAP_RELOADABLEMAPLAYER
-#include "Sync/RWMutex.h"
 #include "Map/IMapDrawLayer.h"
 #include "Net/WebBrowser.h"
 #include "Parser/ParserList.h"
+#include "Sync/RWMutex.h"
+#include "Text/String.h"
 
 namespace Map
 {
@@ -13,7 +14,7 @@ namespace Map
 		typedef struct
 		{
 			const UTF8Char *layerName;
-			const UTF8Char *url;
+			Text::String *url;
 			Map::IMapDrawLayer *innerLayer;
 			Map::DrawLayerType innerLayerType;
 			Int32 reloadInterval;

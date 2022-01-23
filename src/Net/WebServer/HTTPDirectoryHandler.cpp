@@ -146,14 +146,14 @@ void Net::WebServer::HTTPDirectoryHandler::ResponsePackageFile(Net::WebServer::I
 	sb2.ClearStr();
 	sb2.Append(req->GetRequestURI());
 	sptr = sb2.ToString();
-	i = Text::StrIndexOfChar(sptr, '?');
+	i = Text::StrIndexOfCharC(sptr, sb2.GetLength(), '?');
 	if (i != INVALID_INDEX)
 	{
 		sptr[i] = 0;
 	}
 	else
 	{
-		i = Text::StrCharCnt(sptr);
+		i = sb2.GetLength();
 	}
 /*	if (sptr[i - 1] != '/')
 	{
@@ -424,7 +424,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 	}
 	if (this->packageMap)
 	{
-		i = Text::StrIndexOfChar(subReq, '?');
+		i = Text::StrIndexOfCharC(subReq, subReqLen, '?');
 		if (i != INVALID_INDEX)
 		{
 			sb.ClearStr();
@@ -434,7 +434,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 		{
 			sb.AppendC(subReq, subReqLen);
 		}
-		i = Text::StrIndexOfChar(&sb.ToString()[1], '/');
+		i = Text::StrIndexOfCharC(&sb.ToString()[1], sb.GetLength() - 1, '/');
 		if (i != INVALID_INDEX)
 		{
 			sb.ToString()[i + 1] = 0;
@@ -575,7 +575,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 		t.SetTicks(cache->t);
 		t.ToLocalTime();
 		resp->AddLastModified(&t);
-		i = Text::StrIndexOfChar(subReq, '?');
+		i = Text::StrIndexOfCharC(subReq, subReqLen, '?');
 		if (i != INVALID_INDEX)
 		{
 			Text::StringBuilderUTF8 sbc;
@@ -586,7 +586,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 			}
 			else
 			{
-				i = Text::StrLastIndexOfChar(sbc.ToString(), '.');
+				i = Text::StrLastIndexOfCharC(sbc.ToString(), sbc.GetLength(), '.');
 				mime = Net::MIME::GetMIMEFromExt(sbc.ToString() + i + 1);
 			}
 		}
@@ -598,7 +598,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 			}
 			else
 			{
-				i = Text::StrLastIndexOfChar(subReq, '.');
+				i = Text::StrLastIndexOfCharC(subReq, subReqLen, '.');
 				mime = Net::MIME::GetMIMEFromExt(subReq + i + 1);
 			}
 		}
@@ -621,7 +621,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 	sptr = sb.ToString();
 	sptrLen = sb.GetLength();
 	UTF8Char *sptr2 = 0;
-	i = Text::StrIndexOfChar(sptr, '?');
+	i = Text::StrIndexOfCharC(sptr, sptrLen, '?');
 	if (i != INVALID_INDEX)
 	{
 		sptr2 = &sptr[i + 1];
@@ -874,8 +874,8 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 				}
 
 				sptr2 = Text::StrConcatC(sbuff, sb.ToString(), sb.GetLength());
-				Text::StrConcatC(sptr2, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
-				IO::Path::FindFileSession *sess = IO::Path::FindFile(sbuff);
+				sptr3 = Text::StrConcatC(sptr2, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
+				IO::Path::FindFileSession *sess = IO::Path::FindFile(sbuff, (UOSInt)(sptr3 - sbuff));
 				if (sess)
 				{
 					Sync::MutexUsage mutUsage(this->statMut);
@@ -1367,6 +1367,7 @@ void Net::WebServer::HTTPDirectoryHandler::ExpandPackageFiles(Parser::ParserList
 	}
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
+	UTF8Char *sptr2;
 	IO::Path::FindFileSession *sess;
 	NEW_CLASS(this->packageMut, Sync::RWMutex());
 	this->packageMut->LockWrite();
@@ -1379,8 +1380,8 @@ void Net::WebServer::HTTPDirectoryHandler::ExpandPackageFiles(Parser::ParserList
 	{
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 	}
-	Text::StrConcatC(sptr, UTF8STRC("*.spk"));
-	sess = IO::Path::FindFile(sbuff);
+	sptr2 = Text::StrConcatC(sptr, UTF8STRC("*.spk"));
+	sess = IO::Path::FindFile(sbuff, (UOSInt)(sptr2 - sbuff));
 	if (sess)
 	{
 		Data::DateTime dt;

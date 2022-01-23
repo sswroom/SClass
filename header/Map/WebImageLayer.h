@@ -18,7 +18,7 @@ namespace Map
 		{
 		public:
 			Int32 id;
-			const UTF8Char *url;
+			Text::String *url;
 			Media::SharedImage *simg;
 			IO::IStreamData *data;
 			const UTF8Char *name;

@@ -792,13 +792,13 @@ Bool IO::Path::AppendPath(Text::StringBuilderUTF8 *sb, const UTF8Char *toAppend,
 	}
 }
 
-IO::Path::FindFileSession *IO::Path::FindFile(const UTF8Char *path)
+IO::Path::FindFileSession *IO::Path::FindFile(const UTF8Char *path, UOSInt pathLen)
 {
 	WChar wbuff[MAX_PATH];
 	FindFileSession *sess;
 	sess = MemAlloc(FindFileSession, 1);
 	sess->lastFound = true;
-	Text::StrUTF8_WChar(wbuff, path, 0);
+	Text::StrUTF8_WCharC(wbuff, path, pathLen, 0);
 	sess->handle = FindFirstFileW(wbuff, &sess->findData);
 	if (sess->handle != INVALID_HANDLE_VALUE)
 	{

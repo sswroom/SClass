@@ -18,7 +18,7 @@ namespace Parser
 			{
 				UInt32 lineColor;
 				UInt32 lineWidth;
-				const UTF8Char *iconURL;
+				Text::String *iconURL;
 				Int32 iconSpotX;
 				Int32 iconSpotY;
 				UInt32 iconColor;

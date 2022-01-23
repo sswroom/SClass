@@ -206,7 +206,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 		while (ui-- > 0)
 		{
 			style = styleList->GetItem(ui);
-			SDEL_TEXT(style->iconURL);
+			SDEL_STRING(style->iconURL);
 			MemFree(style);
 		}
 
@@ -1809,8 +1809,8 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLContainer(Text::XMLRe
 												reader->ReadNodeText(&sb);
 												if (sb.GetLength() > 0)
 												{
-													SDEL_TEXT(style->iconURL);
-													style->iconURL = Text::StrCopyNew(sb.ToString());
+													SDEL_STRING(style->iconURL);
+													style->iconURL = Text::String::New(sb.ToString(), sb.GetLength());
 												}
 											}
 											else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT)
@@ -1881,7 +1881,7 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLContainer(Text::XMLRe
 				}				
 				if (style)
 				{
-					SDEL_TEXT(style->iconURL);
+					SDEL_STRING(style->iconURL);
 					MemFree(style);
 					style = 0;
 				}
@@ -1948,11 +1948,8 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLContainer(Text::XMLRe
 											style->iconSpotY = style2->iconSpotY;
 											style->lineColor = style2->lineColor;
 											style->lineWidth = style2->lineWidth;
-											SDEL_TEXT(style->iconURL);
-											if (style2->iconURL)
-											{
-												style->iconURL = Text::StrCopyNew(style2->iconURL);
-											}
+											SDEL_STRING(style->iconURL);
+											style->iconURL = SCOPY_STRING(style2->iconURL);
 											style->fillColor = style2->fillColor;
 											style->flags = style2->flags;
 										}
@@ -1978,7 +1975,7 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLContainer(Text::XMLRe
 				}
 				if (style)
 				{
-					SDEL_TEXT(style->iconURL);
+					SDEL_STRING(style->iconURL);
 					MemFree(style);
 					style = 0;
 				}
@@ -3090,11 +3087,11 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLPlacemarkLyr(Text::XM
 					IO::IStreamData *fd = 0;
 					if (basePF)
 					{
-						fd = basePF->OpenStreamData(style->iconURL);
+						fd = basePF->OpenStreamData(style->iconURL->v);
 					}
 					if (fd == 0 && browser)
 					{
-						fd = browser->GetData(style->iconURL, false, 0);
+						fd = browser->GetData(style->iconURL->v, style->iconURL->leng, false, 0);
 					}
 					if (fd)
 					{

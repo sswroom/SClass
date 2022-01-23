@@ -39,8 +39,8 @@ UOSInt IO::SDCardMgr::GetCardList(Data::ArrayList<IO::SDCardInfo*> *cardList)
 	IO::SDCardInfo *sdcard;
 
 	sptr = Text::StrConcatC(sbuff, UTF8STRC("/sys/class/mmc_host/"));
-	Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
-	IO::Path::FindFileSession *sess = IO::Path::FindFile(sbuff);
+	sptr2 = Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
+	IO::Path::FindFileSession *sess = IO::Path::FindFile(sbuff, (UOSInt)(sptr2 - sbuff));
 	if (sess)
 	{
 		while ((sptr2 = IO::Path::FindNextFile(sptr, sess, 0, &pt, 0)) != 0)
@@ -48,8 +48,8 @@ UOSInt IO::SDCardMgr::GetCardList(Data::ArrayList<IO::SDCardInfo*> *cardList)
 			if (sptr[0] != '.' && pt != IO::Path::PathType::File)
 			{
 				sptr2 = Text::StrConcatC(sptr2, UTF8STRC("/"));
-				Text::StrConcatC(sptr2, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
-				IO::Path::FindFileSession *sess2 = IO::Path::FindFile(sbuff);
+				sptr3 = Text::StrConcatC(sptr2, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
+				IO::Path::FindFileSession *sess2 = IO::Path::FindFile(sbuff, (UOSInt)(sptr3 - sbuff));
 				if (sess2)
 				{
 					while ((sptr3 = IO::Path::FindNextFile(sptr2, sess2, 0, &pt, 0)) != 0)

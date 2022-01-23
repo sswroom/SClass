@@ -235,9 +235,9 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			IO::Path::FindFileSession *sess;
 			Text::StringBuilderUTF8 sb;
 			IO::Path::PathType pt;
-			Text::StrConcat(sbuff, cmdLines[1]);
-			i = Text::StrLastIndexOfChar(sbuff, IO::Path::PATH_SEPERATOR);
-			sess = IO::Path::FindFile(sbuff);
+			sptr = Text::StrConcat(sbuff, cmdLines[1]);
+			i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
+			sess = IO::Path::FindFile(sbuff, (UOSInt)(sptr - sbuff));
 			if (sess)
 			{
 				while ((sptr = IO::Path::FindNextFile(&sbuff[i + 1], sess, 0, &pt, 0)) != 0)

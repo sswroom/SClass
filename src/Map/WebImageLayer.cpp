@@ -84,17 +84,14 @@ Map::WebImageLayer::ImageStat *Map::WebImageLayer::GetImageStat(Int32 id)
 
 void Map::WebImageLayer::LoadImage(Map::WebImageLayer::ImageStat *stat)
 {
-	stat->data = this->browser->GetData(stat->url, false, 0);
+	stat->data = this->browser->GetData(stat->url->v, stat->url->leng, false, 0);
 	if (stat->data == 0)
 	{
 		if (stat->name)
 		{
 			Text::StrDelNew(stat->name);
 		}
-		if (stat->url)
-		{
-			Text::StrDelNew(stat->url);
-		}
+		SDEL_STRING(stat->url);
 		DEL_CLASS(stat);
 	}
 	else if (stat->data->IsLoading())
@@ -114,10 +111,7 @@ void Map::WebImageLayer::LoadImage(Map::WebImageLayer::ImageStat *stat)
 			{
 				Text::StrDelNew(stat->name);
 			}
-			if (stat->url)
-			{
-				Text::StrDelNew(stat->url);
-			}
+			SDEL_STRING(stat->url);
 			DEL_CLASS(stat);
 			if (pobj)
 			{
@@ -176,10 +170,7 @@ UInt32 __stdcall Map::WebImageLayer::LoadThread(void *userObj)
 					{
 						Text::StrDelNew(stat->name);
 					}
-					if (stat->url)
-					{
-						Text::StrDelNew(stat->url);
-					}
+					SDEL_STRING(stat->url);
 					DEL_CLASS(stat);
 					if (pobj)
 					{
@@ -279,10 +270,7 @@ Map::WebImageLayer::~WebImageLayer()
 		{
 			Text::StrDelNew(stat->name);
 		}
-		if (stat->url)
-		{
-			Text::StrDelNew(stat->url);
-		}
+		SDEL_STRING(stat->url);
 		DEL_CLASS(stat);
 	}
 	DEL_CLASS(this->pendingList);
@@ -295,10 +283,7 @@ Map::WebImageLayer::~WebImageLayer()
 		{
 			Text::StrDelNew(stat->name);
 		}
-		if (stat->url)
-		{
-			Text::StrDelNew(stat->url);
-		}
+		SDEL_STRING(stat->url);
 		if (stat->data)
 		{
 			DEL_CLASS(stat->data);
@@ -315,10 +300,7 @@ Map::WebImageLayer::~WebImageLayer()
 		{
 			Text::StrDelNew(stat->name);
 		}
-		if (stat->url)
-		{
-			Text::StrDelNew(stat->url);
-		}
+		SDEL_STRING(stat->url);
 		if (stat->simg)
 		{
 			DEL_CLASS(stat->simg);
@@ -696,7 +678,7 @@ void Map::WebImageLayer::AddImage(const UTF8Char *name, const UTF8Char *url, Int
 	ImageStat *stat;
 	NEW_CLASS(stat, ImageStat());
 	stat->id = this->nextId++;
-	stat->url = Text::StrCopyNew(url);
+	stat->url = Text::String::NewNotNull(url);
 	stat->simg = 0;
 	stat->data = 0;
 	if (name)

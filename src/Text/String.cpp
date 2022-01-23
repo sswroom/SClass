@@ -355,12 +355,22 @@ UOSInt Text::String::IndexOf(const UTF8Char *s, UOSInt len)
 UOSInt Text::String::IndexOf(UTF8Char c)
 {
 	REGVAR const UTF8Char *ptr = this->v;
-	REGVAR UTF8Char c2;
-	while ((c2 = *ptr) != 0)
-		if (c2 == c)
+	REGVAR UOSInt len1 = this->leng;
+	REGVAR UInt16 c2;
+	while (len1 >= 2)
+	{
+		c2 = ReadUInt16(ptr);
+		if ((c2 & 0xff) == c)
 			return (UOSInt)(ptr - this->v);
-		else
-			ptr++;
+		if ((c2 >> 8) == c)
+			return (UOSInt)(ptr - this->v + 1);
+		ptr += 2;
+		len1 -= 2;
+	}
+	if (len1 && (*ptr == c))
+	{
+		return (UOSInt)(ptr - this->v);
+	}
 	return INVALID_INDEX;
 }
 

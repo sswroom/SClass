@@ -50,7 +50,7 @@ namespace Net
 		Bool GetOptions(const UTF8Char *url, Data::ArrayList<const UTF8Char *> *options);
 		Net::SDPFile *GetMediaInfo(const UTF8Char *url);
 
-		static IO::ParsedObject *ParseURL(Net::SocketFactory *sockf, const UTF8Char *url);
+		static IO::ParsedObject *ParseURL(Net::SocketFactory *sockf, const UTF8Char *url, UOSInt urlLen);
 
 	private:
 		UTF8Char *SetupRTP(UTF8Char *sessIdOut, const UTF8Char *url, Net::RTPCliChannel *rtpChannel);

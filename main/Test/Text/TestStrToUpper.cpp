@@ -72,6 +72,22 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	{
 		return 1;
 	}
+	if (Text::StrIndexOfCharC(UTF8STRC("abcde/defgh/akfsd"), '/') != 5)
+	{
+		return 1;
+	}
+	if (Text::StrIndexOfChar((const UTF8Char*)"abcde/defgh/akfsd", '/') != 5)
+	{
+		return 1;
+	}
+	if (Text::StrLastIndexOfCharC(UTF8STRC("abcde/defgh/akfsd"), '/') != 11)
+	{
+		return 1;
+	}
+	if (Text::StrLastIndexOfChar((const UTF8Char*)"abcde/defgh/akfsd", '/') != 11)
+	{
+		return 1;
+	}
 	// Text::StrIndexOfICase
 	// Text::StrReplaceICase
 	// Text::StrCompareICase

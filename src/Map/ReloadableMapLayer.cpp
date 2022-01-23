@@ -41,7 +41,7 @@ Map::ReloadableMapLayer::~ReloadableMapLayer()
 	{
 		innerLayer = this->innerLayers->GetItem(i);
 		SDEL_CLASS(innerLayer->innerLayer);
-		SDEL_TEXT(innerLayer->url);
+		SDEL_STRING(innerLayer->url);
 		SDEL_TEXT(innerLayer->layerName);
 		MemFree(innerLayer);
 	}
@@ -620,7 +620,7 @@ void Map::ReloadableMapLayer::AddInnerLayer(const UTF8Char *name, const UTF8Char
 	innerLayer = MemAlloc(InnerLayerInfo, 1);
 	innerLayer->innerLayer = 0;
 	innerLayer->innerLayerType = Map::DRAW_LAYER_UNKNOWN;
-	innerLayer->url = Text::StrCopyNew(sb.ToString());
+	innerLayer->url = Text::String::New(sb.ToString(), sb.GetLength());
 	if (name)
 	{
 		innerLayer->layerName = Text::StrCopyNew(name);
@@ -681,7 +681,7 @@ void Map::ReloadableMapLayer::Reload()
 		innerLayer = this->innerLayers->GetItem(i);
 		if (innerLayer->innerLayer == 0 || innerLayer->reloadInterval != 0)
 		{
-			data = this->browser->GetData(innerLayer->url, innerLayer->reloadInterval != 0, 0);
+			data = this->browser->GetData(innerLayer->url->v, innerLayer->url->leng, innerLayer->reloadInterval != 0, 0);
 		}
 		this->innerLayerMut->UnlockRead();
 		if (data)

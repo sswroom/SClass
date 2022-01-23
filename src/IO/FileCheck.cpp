@@ -172,6 +172,7 @@ void __stdcall IO::FileCheck::CheckData(const UInt8 *buff, UOSInt buffSize, void
 Bool IO::FileCheck::CheckDir(UTF8Char *fullPath, UTF8Char *hashPath, Crypto::Hash::IHash *hash, IO::FileCheck *fchk, IO::IProgressHandler *progress, Bool skipError)
 {
 	UTF8Char *sptr = &hashPath[Text::StrCharCnt(hashPath)];
+	UTF8Char *sptr2;
 	IO::Path::FindFileSession *sess;
 	IO::Path::PathType pt;
 	IO::FileStream *fs;
@@ -182,8 +183,8 @@ Bool IO::FileCheck::CheckDir(UTF8Char *fullPath, UTF8Char *hashPath, Crypto::Has
 	IO::ActiveStreamReader::BottleNeckType bnt;
 
 	*sptr++ = IO::Path::PATH_SEPERATOR;
-	Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
-	sess = IO::Path::FindFile(fullPath);
+	sptr2 = Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
+	sess = IO::Path::FindFile(fullPath, (UOSInt)(sptr2 - fullPath));
 	if (sess)
 	{
 		while (IO::Path::FindNextFile(sptr, sess, 0, &pt, 0))

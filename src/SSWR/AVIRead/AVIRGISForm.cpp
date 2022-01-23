@@ -515,10 +515,10 @@ Bool SSWR::AVIRead::AVIRGISForm::ParseObject(IO::ParsedObject *pobj)
 	return false;
 }
 
-void SSWR::AVIRead::AVIRGISForm::OpenURL(const UTF8Char *url, const UTF8Char *customName)
+void SSWR::AVIRead::AVIRGISForm::OpenURL(const UTF8Char *url, UOSInt urlLen, const UTF8Char *customName)
 {
 	Net::WebBrowser *browser = this->core->GetWebBrowser();
-	IO::IStreamData *fd = browser->GetData(url, false, 0);
+	IO::IStreamData *fd = browser->GetData(url, urlLen, false, 0);
 	if (fd)
 	{
 		if (customName)
@@ -584,7 +584,7 @@ void SSWR::AVIRead::AVIRGISForm::HKOPortal(const UTF8Char *listFile, const UTF8C
 		sb.Append(timeStr);
 		sb.AppendC(UTF8STRC("/index.kml?t="));
 		sb.AppendI64(dt.ToTicks());
-		this->OpenURL(sb.ToString(), (const UTF8Char*)"https://maps.weather.gov.hk/gis-portal/web/index.kml");
+		this->OpenURL(sb.ToString(), sb.GetLength(), (const UTF8Char*)"https://maps.weather.gov.hk/gis-portal/web/index.kml");
 	}
 }
 
@@ -1318,20 +1318,20 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 				}
 				else
 				{
-					this->OpenURL(fname->v, 0);
+					this->OpenURL(fname->v, fname->leng, 0);
 				}
 			}
 			DEL_CLASS(frm);
 		}
 		break;
 	case MNU_HKO_RADAR_64:
-		this->OpenURL((const UTF8Char*)"http://www.weather.gov.hk/wxinfo/radars/radar_064_kml/Radar_064k.kml", 0);
+		this->OpenURL(UTF8STRC("http://www.weather.gov.hk/wxinfo/radars/radar_064_kml/Radar_064k.kml"), 0);
 		break;
 	case MNU_HKO_RADAR_128:
-		this->OpenURL((const UTF8Char*)"http://www.weather.gov.hk/wxinfo/radars/radar_128_kml/Radar_128k.kml", 0);
+		this->OpenURL(UTF8STRC("http://www.weather.gov.hk/wxinfo/radars/radar_128_kml/Radar_128k.kml"), 0);
 		break;
 	case MNU_HKO_RADAR_256:
-		this->OpenURL((const UTF8Char*)"http://www.weather.gov.hk/wxinfo/radars/radar_256_kml/Radar_256k.kml", 0);
+		this->OpenURL(UTF8STRC("http://www.weather.gov.hk/wxinfo/radars/radar_256_kml/Radar_256k.kml"), 0);
 		break;
 	case MNU_HKO_CYCLONE:
 		{
@@ -1366,13 +1366,13 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 						sb.Append(sbuff);
 						sb.AppendC(UTF8STRC(".kml?rand="));
 						sb.AppendI64(dt.ToTicks());
-						this->OpenURL(sb.ToString(), 0);
+						this->OpenURL(sb.ToString(), sb.GetLength(), 0);
 						sb.ClearStr();
 						sb.AppendC(UTF8STRC("https://www.weather.gov.hk/wxinfo/currwx/tc_gis_track_15a_e_"));
 						sb.Append(sbuff);
 						sb.AppendC(UTF8STRC(".xml?rand="));
 						sb.AppendI64(dt.ToTicks());
-						this->OpenURL(sb.ToString(), 0);
+						this->OpenURL(sb.ToString(), sb.GetLength(), 0);
 					}
 				}
 			}

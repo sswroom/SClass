@@ -590,7 +590,7 @@ Bool Net::HTTPMyClient::Connect(const UTF8Char *url, UOSInt urlLen, Net::WebUtil
 #ifdef SHOWDEBUG
 	printf("Request URL: %s %s\r\n", method, url);
 #endif
-	i = Text::StrIndexOfChar(ptr1, '/');
+	i = Text::StrIndexOfCharC(ptr1, ptr1Len, '/');
 	if (i != INVALID_INDEX)
 	{
 		MemCopyNO(urltmp, ptr1, i * sizeof(UTF8Char));
@@ -613,7 +613,7 @@ Bool Net::HTTPMyClient::Connect(const UTF8Char *url, UOSInt urlLen, Net::WebUtil
 	hostLen = (UOSInt)(cptr - host);
 	if (urltmp[0] == '[')
 	{
-		i = Text::StrIndexOfChar(urltmp, ']');
+		i = Text::StrIndexOfCharC(urltmp, urltmpLen, ']');
 		if (i == INVALID_INDEX)
 		{
 			this->cli = 0;
@@ -1037,6 +1037,7 @@ void Net::HTTPMyClient::EndRequest(Double *timeReq, Double *timeResp)
 			UTF8Char buff[256];
 			UTF8Char *ptrs[3];
 			UTF8Char *ptr;
+			UTF8Char *ptrEnd;
 			Text::String *s;
 			UOSInt i;
 			i = Text::StrIndexOfC(this->dataBuff, this->buffSize, UTF8STRC("\r\n"));
@@ -1054,6 +1055,7 @@ void Net::HTTPMyClient::EndRequest(Double *timeReq, Double *timeResp)
 			}
 
 			ptr = (UTF8Char*)&this->dataBuff[i + 2];
+			ptrEnd = &this->dataBuff[this->buffSize];
 			this->contLeng = 0x7fffffff;
 			this->contRead = 0;
 			Bool header = true;
@@ -1061,7 +1063,7 @@ void Net::HTTPMyClient::EndRequest(Double *timeReq, Double *timeResp)
 			UInt32 keepAliveTO = 0;
 			while (header)
 			{
-				while ((i = Text::StrIndexOfChar(ptr, '\n')) != INVALID_INDEX && i > 0)
+				while ((i = Text::StrIndexOfCharC(ptr, (UOSInt)(ptrEnd - ptr), '\n')) != INVALID_INDEX && i > 0)
 				{
 					if (i == 1 && ptr[0] == '\r')
 					{

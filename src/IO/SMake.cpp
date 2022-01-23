@@ -1411,11 +1411,12 @@ void IO::SMake::CleanFiles()
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
+	UTF8Char *sptr2;
 	IO::Path::PathType pt;
 	sptr = Text::StrConcatC(this->basePath->ConcatTo(sbuff), UTF8STRC(OBJECTPATH));
 	*sptr++ = IO::Path::PATH_SEPERATOR;
-	Text::StrConcatC(sptr, UTF8STRC("*.o"));
-	IO::Path::FindFileSession *sess = IO::Path::FindFile(sbuff);
+	sptr2 = Text::StrConcatC(sptr, UTF8STRC("*.o"));
+	IO::Path::FindFileSession *sess = IO::Path::FindFile(sbuff, (UOSInt)(sptr2 - sbuff));
 	if (sess)
 	{
 		while (IO::Path::FindNextFile(sptr, sess, 0, &pt, 0))

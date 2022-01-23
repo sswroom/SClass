@@ -22,6 +22,7 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnFolderClicked(void *userObj)
 	const UTF8Char *path;
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
+	UTF8Char *sptr2;
 	UI::FolderDialog *dlg;
 	path = me->icMain->GetFolder();
 	NEW_CLASS(dlg, UI::FolderDialog(L"SSWR", L"AVIRead", L"ImageBatch"));
@@ -37,9 +38,9 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnFolderClicked(void *userObj)
 		{
 			*sptr++ = IO::Path::PATH_SEPERATOR;
 		}
-		Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
+		sptr2 = Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
 		UOSInt fileCnt = 0;
-		IO::Path::FindFileSession *sess = IO::Path::FindFile(sbuff);
+		IO::Path::FindFileSession *sess = IO::Path::FindFile(sbuff, (UOSInt)(sptr2 - sbuff));
 		if (sess)
 		{
 			IO::Path::PathType pt;

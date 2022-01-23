@@ -244,7 +244,7 @@ void Net::WebServer::WebConnection::ReceivedData(const UInt8 *buff, UOSInt size)
 				}
 				else
 				{
-					strIndex = Text::StrIndexOfChar(&this->dataBuff[lineStart], ':');
+					strIndex = Text::StrIndexOfCharC(&this->dataBuff[lineStart], this->buffSize - lineStart, ':');
 					if (strIndex != INVALID_INDEX)
 					{
 						UOSInt nameLen = strIndex;
@@ -409,9 +409,10 @@ void Net::WebServer::WebConnection::ProcessResponse()
 	{
 		Net::TCPClient *proxyCli;
 		UTF8Char sbuff[512];
+		UTF8Char *sptr;
 		UOSInt i;
-		reqURI->ConcatTo(sbuff);
-		i = Text::StrIndexOfChar(sbuff, ':');
+		sptr = reqURI->ConcatTo(sbuff);
+		i = Text::StrIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), ':');
 		if (i == INVALID_INDEX || i == 0)
 		{
 			this->respStatus = Net::WebStatus::SC_BAD_REQUEST;

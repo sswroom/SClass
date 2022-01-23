@@ -498,6 +498,7 @@ Crypto::Cert::X509Cert *Crypto::Cert::CertUtil::FindIssuer(Crypto::Cert::X509Cer
 	UInt8 dataBuff[8192];
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
+	UTF8Char *sptr2;
 	UInt8 keyId[20];
 	
 	Crypto::Cert::CertExtensions ext;
@@ -529,9 +530,9 @@ Crypto::Cert::X509Cert *Crypto::Cert::CertUtil::FindIssuer(Crypto::Cert::X509Cer
 		return 0;
 	}
 	sptr = &sbuff[i + 1];
-	Text::StrConcat(sptr, IO::Path::ALL_FILES);
+	sptr2 = Text::StrConcat(sptr, IO::Path::ALL_FILES);
 	Parser::FileParser::X509Parser parser;
-	IO::Path::FindFileSession *sess = IO::Path::FindFile(sbuff);
+	IO::Path::FindFileSession *sess = IO::Path::FindFile(sbuff, (UOSInt)(sptr2 - sbuff));
 	IO::Path::PathType pt;
 	UInt64 fileSize;
 	Crypto::Cert::X509File *x509;

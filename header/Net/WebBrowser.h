@@ -17,12 +17,12 @@ namespace Net
 		Crypto::Hash::IHash *hash;
 		Net::HTTPQueue *queue;
 
-		UTF8Char *GetLocalFileName(UTF8Char *sbuff, const UTF8Char *url);
+		UTF8Char *GetLocalFileName(UTF8Char *sbuff, const UTF8Char *url, UOSInt urlLen);
 	public:
 		WebBrowser(Net::SocketFactory *sockf, Net::SSLEngine *ssl, const UTF8Char *cacheDir);
 		~WebBrowser();
 
-		IO::IStreamData *GetData(const UTF8Char *url, Bool forceReload, UTF8Char *contentType);
+		IO::IStreamData *GetData(const UTF8Char *url, UOSInt urlLen, Bool forceReload, UTF8Char *contentType);
 	};
 }
 #endif

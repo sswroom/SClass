@@ -95,8 +95,8 @@ Bool Media::MediaPlayerInterface::OpenVideo(Media::MediaFile *mf)
 			j = Text::StrLastIndexOfChar(&sbuff[i + 1], '.');
 			if (j != INVALID_INDEX)
 			{
-				Text::StrConcatC(&sbuff[i + j + 1], IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
-				sess = IO::Path::FindFile(sbuff);
+				sptr = Text::StrConcatC(&sbuff[i + j + 1], IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
+				sess = IO::Path::FindFile(sbuff, (UOSInt)(sptr - sbuff));
 				if (sess)
 				{
 					while ((sptr = IO::Path::FindNextFile(&sbuff[i + 1], sess, 0, &pt, &fileSize)) != 0)

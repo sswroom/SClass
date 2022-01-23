@@ -401,12 +401,12 @@ Bool IO::Path::AppendPath(Text::StringBuilderUTF8 *sb, const UTF8Char *toAppend,
 	return true;
 }
 
-IO::Path::FindFileSession *IO::Path::FindFile(const UTF8Char *utfPath)
+IO::Path::FindFileSession *IO::Path::FindFile(const UTF8Char *utfPath, UOSInt pathLen)
 {
 	FindFileSession *sess = 0;
 	const UTF8Char *searchPattern;
 	Text::String *searchDir;
-	UOSInt i = Text::StrLastIndexOfChar(utfPath, '/');
+	UOSInt i = Text::StrLastIndexOfCharC(utfPath, pathLen, '/');
 	DIR *dirObj;
 	if (i == INVALID_INDEX)
 	{
@@ -497,9 +497,9 @@ UTF8Char *IO::Path::FindNextFile(UTF8Char *buff, IO::Path::FindFileSession *sess
 	struct dirent *ent;
 	while ((ent = readdir(sess->dirObj)) != 0)
 	{
-		if (FileNameMatch((const UTF8Char*)ent->d_name, sess->searchPattern->v))
+		UOSInt len = Text::StrCharCnt(ent->d_name);
+		if (FileNameMatch((const UTF8Char*)ent->d_name, len, sess->searchPattern->v, sess->searchPattern->leng))
 		{
-			UOSInt len = Text::StrCharCnt(ent->d_name);
 			Text::StrConcatC(sess->searchDir->ConcatTo(sbuff), (const UTF8Char*)ent->d_name, len);
 #if defined(__USE_LARGEFILE64)
 			struct stat64 s;
@@ -541,9 +541,10 @@ WChar *IO::Path::FindNextFileW(WChar *buff, IO::Path::FindFileSession *sess, Dat
 	struct dirent *ent;
 	while ((ent = readdir(sess->dirObj)) != 0)
 	{
-		if (FileNameMatch((const UTF8Char*)ent->d_name, sess->searchPattern->v))
+		UOSInt len = Text::StrCharCnt(ent->d_name);
+		if (FileNameMatch((const UTF8Char*)ent->d_name, len, sess->searchPattern->v, sess->searchPattern->leng))
 		{
-			Text::StrConcat(sess->searchDir->ConcatTo(sbuff), (const UTF8Char*)ent->d_name);
+			Text::StrConcatC(sess->searchDir->ConcatTo(sbuff), (const UTF8Char*)ent->d_name, len);
 #if defined(__USE_LARGEFILE64)
 			struct stat64 s;
 			int status = lstat64((const Char*)sbuff, &s);
@@ -748,13 +749,13 @@ WChar *IO::Path::GetFullPathW(WChar *buff, const WChar *path)
 	}
 }
 
-Bool IO::Path::FileNameMatch(const UTF8Char *path, const UTF8Char *searchPattern)
+Bool IO::Path::FileNameMatch(const UTF8Char *path, UOSInt pathLen, const UTF8Char *searchPattern, UOSInt patternLen)
 {
 	UTF8Char sbuff[256];
-	UOSInt i = Text::StrLastIndexOfChar(path, '/');
+	UOSInt i = Text::StrLastIndexOfCharC(path, pathLen, '/');
 	const UTF8Char *fileName = &path[i + 1];
-	const UTF8Char *fileNameEnd = &fileName[Text::StrCharCnt(fileName)];
-	Text::StrConcat(sbuff, searchPattern);
+	const UTF8Char *fileNameEnd = &path[pathLen];
+	Text::StrConcatC(sbuff, searchPattern, patternLen);
 	Bool isWC = false;
 	UTF8Char *patternStart = 0;
 	UTF8Char *currPattern = sbuff;
