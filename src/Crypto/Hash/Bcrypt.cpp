@@ -59,7 +59,7 @@ Bool Crypto::Hash::Bcrypt::Matches(const UTF8Char *hash, UOSInt hashLen, const U
 		MemFree(hashBuff);
 		return false;
 	}
-	if (sarr[0].v[0] == '2' && sarr[2].len == 53)
+	if (sarr[0].v[0] == '2' && sarr[2].leng == 53)
 	{
 		UInt8 salt[16];
 		UInt8 hashCTxt[24];

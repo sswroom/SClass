@@ -1,6 +1,6 @@
 #ifndef _SM_IO_ZIPBUILDER
 #define _SM_IO_ZIPBUILDER
-#include "Crypto/Hash/CRC32R.h"
+#include "Crypto/Hash/CRC32RIEEE.h"
 #include "Data/ArrayList.h"
 #include "IO/SeekableStream.h"
 
@@ -22,7 +22,7 @@ namespace IO
 		
 	private:
 		IO::SeekableStream *stm;
-		Crypto::Hash::CRC32R *crc;
+		Crypto::Hash::CRC32RIEEE *crc;
 		UInt64 baseOfst;
 		UInt64 currOfst;
 		Data::ArrayList<FileInfo*> *files;

@@ -43,9 +43,9 @@ namespace Exporter
 		static void AppendShapeProp(Text::StringBuilderUTF *sb, Text::SpreadSheet::OfficeShapeProp *shapeProp);
 		static void AppendAxis(Text::StringBuilderUTF *sb, Text::SpreadSheet::OfficeChartAxis *axis, UOSInt index);
 		static void AppendSeries(Text::StringBuilderUTF *sb, Text::SpreadSheet::OfficeChartSeries *series, UOSInt index);
-		static void AppendBorder(Text::StringBuilderUTF *sb, Text::SpreadSheet::CellStyle::BorderStyle *border, const UTF8Char *name);
+		static void AppendBorder(Text::StringBuilderUTF *sb, Text::SpreadSheet::CellStyle::BorderStyle *border, const UTF8Char *name, UOSInt nameLen);
 
-		static const Char *PresetColorCode(Text::SpreadSheet::PresetColor color);
+		static Text::CString PresetColorCode(Text::SpreadSheet::PresetColor color);
 		static UTF8Char *ToFormatCode(UTF8Char *sbuff, const UTF8Char *dataFormat);
 	};
 }

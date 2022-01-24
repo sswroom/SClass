@@ -34,11 +34,11 @@ UInt32 __stdcall IO::ProgCtrl::BluetoothCtlProgCtrl::ReadThread(void *obj)
 		sbBuff->AppendC(buff, readSize);
 		sbBuff->RemoveANSIEscapes();
 		sarr[1].v = sbBuff->ToString();
-		sarr[1].len = sbBuff->GetLength();
-		while ((i = Text::StrSplitLineP(sarr, 2, sarr[1].v, sarr[1].len)) == 2)
+		sarr[1].leng = sbBuff->GetLength();
+		while ((i = Text::StrSplitLineP(sarr, 2, sarr[1].v, sarr[1].leng)) == 2)
 		{
 			Sync::MutexUsage mutUsage(me->lastCmdMut);
-			if (me->lastCmd && Text::StrEqualsC(me->lastCmd->v, me->lastCmd->leng, sarr[0].v, sarr[0].len))
+			if (me->lastCmd && Text::StrEqualsC(me->lastCmd->v, me->lastCmd->leng, sarr[0].v, sarr[0].leng))
 			{
 				me->cmdReady = true;
 			}
@@ -49,58 +49,58 @@ UInt32 __stdcall IO::ProgCtrl::BluetoothCtlProgCtrl::ReadThread(void *obj)
 				{
 
 				}
-				else if (Text::StrEqualsC(sarr[0].v, sarr[0].len, UTF8STRC("Agent registered")))
+				else if (Text::StrEqualsC(sarr[0].v, sarr[0].leng, UTF8STRC("Agent registered")))
 				{
 					me->agentOn = true;
 				}
-				else if (Text::StrEqualsC(sarr[0].v, sarr[0].len, UTF8STRC("Agent is already registered")))
+				else if (Text::StrEqualsC(sarr[0].v, sarr[0].leng, UTF8STRC("Agent is already registered")))
 				{
 					me->agentOn = true;
 				}
-				else if (Text::StrEqualsC(sarr[0].v, sarr[0].len, UTF8STRC("Agent unregistered")))
+				else if (Text::StrEqualsC(sarr[0].v, sarr[0].leng, UTF8STRC("Agent unregistered")))
 				{
 					me->agentOn = false;
 				}
-				else if (Text::StrEqualsC(sarr[0].v, sarr[0].len, UTF8STRC("No agent is registered")))
+				else if (Text::StrEqualsC(sarr[0].v, sarr[0].leng, UTF8STRC("No agent is registered")))
 				{
 					me->agentOn = false;
 				}
-				else if (Text::StrEqualsC(sarr[0].v, sarr[0].len, UTF8STRC("Discovery started")))
+				else if (Text::StrEqualsC(sarr[0].v, sarr[0].leng, UTF8STRC("Discovery started")))
 				{
 					me->scanOn = true;
 				}
-				else if (Text::StrEqualsC(sarr[0].v, sarr[0].len, UTF8STRC("Discovery stopped")))
+				else if (Text::StrEqualsC(sarr[0].v, sarr[0].leng, UTF8STRC("Discovery stopped")))
 				{
 					me->scanOn = false;
 				}
-				else if (Text::StrStartsWithC(sarr[0].v, sarr[0].len, UTF8STRC("[CHG] Controller ")))
+				else if (Text::StrStartsWithC(sarr[0].v, sarr[0].leng, UTF8STRC("[CHG] Controller ")))
 				{
 					//[CHG] Controller 04:EA:56:8E:0C:46 Discovering: yes
-					if (Text::StrStartsWithC(&sarr[0].v[35], sarr[0].len - 35, UTF8STRC("Discovering: ")))
+					if (Text::StrStartsWithC(&sarr[0].v[35], sarr[0].leng - 35, UTF8STRC("Discovering: ")))
 					{
 						
 					}
 					//[CHG] Controller 04:EA:56:8E:0C:46 Class: 0x0000010c
-					else if (Text::StrStartsWithC(&sarr[0].v[35], sarr[0].len - 35, UTF8STRC("Class: ")))
+					else if (Text::StrStartsWithC(&sarr[0].v[35], sarr[0].leng - 35, UTF8STRC("Class: ")))
 					{
 						
 					}
 					//[CHG] Controller 04:EA:56:8E:0C:46 UUIDs: 00001112-0000-1000-8000-00805f9b34fb
-					else if (Text::StrStartsWithC(&sarr[0].v[35], sarr[0].len - 35, UTF8STRC("UUIDs: ")))
+					else if (Text::StrStartsWithC(&sarr[0].v[35], sarr[0].leng - 35, UTF8STRC("UUIDs: ")))
 					{
 						
 					}
 					//[CHG] Controller 04:EA:56:8E:0C:46 Alias: BlueZ 5.50
-					else if (Text::StrStartsWithC(&sarr[0].v[35], sarr[0].len - 35, UTF8STRC("Alias: ")))
+					else if (Text::StrStartsWithC(&sarr[0].v[35], sarr[0].leng - 35, UTF8STRC("Alias: ")))
 					{
 						
 					}
 					//[CHG] Controller 04:EA:56:8E:0C:46 Name: debiandell
-					else if (Text::StrStartsWithC(&sarr[0].v[35], sarr[0].len - 35, UTF8STRC("Name: ")))
+					else if (Text::StrStartsWithC(&sarr[0].v[35], sarr[0].leng - 35, UTF8STRC("Name: ")))
 					{
 						
 					}
-					else if (Text::StrStartsWithC(&sarr[0].v[35], sarr[0].len - 35, UTF8STRC("Pairable: ")))
+					else if (Text::StrStartsWithC(&sarr[0].v[35], sarr[0].leng - 35, UTF8STRC("Pairable: ")))
 					{
 						
 					}
@@ -109,7 +109,7 @@ UInt32 __stdcall IO::ProgCtrl::BluetoothCtlProgCtrl::ReadThread(void *obj)
 						printf("Unknown Line: %s\r\n", sarr[0].v);
 					}
 				}
-				else if (Text::StrStartsWithC(sarr[0].v, sarr[0].len, UTF8STRC("[NEW] Device ")))
+				else if (Text::StrStartsWithC(sarr[0].v, sarr[0].leng, UTF8STRC("[NEW] Device ")))
 				{
 					//[NEW] Device 51:87:A3:4B:EA:4E Sabbat E16
 					sarr[0].v[30] = 0;
@@ -117,7 +117,7 @@ UInt32 __stdcall IO::ProgCtrl::BluetoothCtlProgCtrl::ReadThread(void *obj)
 					if (dev)
 					{
 						SDEL_STRING(dev->name);
-						dev->name = Text::String::New(&sarr[0].v[31], sarr[0].len - 31);
+						dev->name = Text::String::New(&sarr[0].v[31], sarr[0].leng - 31);
 						dev->inRange = true;
 						dt->SetCurrTimeUTC();
 						dev->lastSeenTime = dt->ToTicks();
@@ -128,19 +128,19 @@ UInt32 __stdcall IO::ProgCtrl::BluetoothCtlProgCtrl::ReadThread(void *obj)
 						printf("Error in getting device \"%s\"\r\n", &sarr[0].v[13]);
 					}
 				}
-				else if (Text::StrStartsWithC(sarr[0].v, sarr[0].len, UTF8STRC("[NEW] Primary Service")))
+				else if (Text::StrStartsWithC(sarr[0].v, sarr[0].leng, UTF8STRC("[NEW] Primary Service")))
 				{
 
 				}
-				else if (Text::StrStartsWithC(sarr[0].v, sarr[0].len, UTF8STRC("[NEW] Characteristic")))
+				else if (Text::StrStartsWithC(sarr[0].v, sarr[0].leng, UTF8STRC("[NEW] Characteristic")))
 				{
 					
 				}
-				else if (Text::StrStartsWithC(sarr[0].v, sarr[0].len, UTF8STRC("[NEW] Descriptor")))
+				else if (Text::StrStartsWithC(sarr[0].v, sarr[0].leng, UTF8STRC("[NEW] Descriptor")))
 				{
 					
 				}
-				else if (Text::StrStartsWithC(sarr[0].v, sarr[0].len, UTF8STRC("[CHG] Device ")))
+				else if (Text::StrStartsWithC(sarr[0].v, sarr[0].leng, UTF8STRC("[CHG] Device ")))
 				{
 					//[CHG] Device ED:8E:0E:77:6E:15 ManufacturerData Key: 0x3512
 					sarr[0].v[30] = 0;
@@ -152,39 +152,39 @@ UInt32 __stdcall IO::ProgCtrl::BluetoothCtlProgCtrl::ReadThread(void *obj)
 						dev->lastSeenTime = dt->ToTicks();
 						//[CHG] Device ED:8E:0E:77:6E:15 Connected: yes
 						//[CHG] Device ED:8E:0E:77:6E:15 Connected: no
-						if (Text::StrStartsWithC(&sarr[0].v[31], sarr[0].len - 31, UTF8STRC("Connected: ")))
+						if (Text::StrStartsWithC(&sarr[0].v[31], sarr[0].leng - 31, UTF8STRC("Connected: ")))
 						{
-							dev->connected = Text::StrEqualsC(&sarr[0].v[42], sarr[0].len - 42, UTF8STRC("yes"));
+							dev->connected = Text::StrEqualsC(&sarr[0].v[42], sarr[0].leng - 42, UTF8STRC("yes"));
 							if (me->recHdlr) me->recHdlr(dev, UT_CONNECT, me->recHdlrObj);
 						}
 						//[CHG] Device 19:08:19:32:09:3A Name: Ble T70939
-						else if (Text::StrStartsWithC(&sarr[0].v[31], sarr[0].len - 31, UTF8STRC("Name: ")))
+						else if (Text::StrStartsWithC(&sarr[0].v[31], sarr[0].leng - 31, UTF8STRC("Name: ")))
 						{
 							SDEL_STRING(dev->name);
-							dev->name = Text::String::New(&sarr[0].v[37], sarr[0].len - 37);
+							dev->name = Text::String::New(&sarr[0].v[37], sarr[0].leng - 37);
 							if (me->recHdlr) me->recHdlr(dev, UT_NAME, me->recHdlrObj);
 						}
 						//[CHG] Device 19:08:19:32:09:3A Alias: Ble T70939
-						else if (Text::StrStartsWithC(&sarr[0].v[31], sarr[0].len - 31, UTF8STRC("Alias: ")))
+						else if (Text::StrStartsWithC(&sarr[0].v[31], sarr[0].leng - 31, UTF8STRC("Alias: ")))
 						{
 							SDEL_STRING(dev->name);
-							dev->name = Text::String::New(&sarr[0].v[38], sarr[0].len - 38);
+							dev->name = Text::String::New(&sarr[0].v[38], sarr[0].leng - 38);
 							if (me->recHdlr) me->recHdlr(dev, UT_NAME, me->recHdlrObj);
 						}
 						//[CHG] Device ED:8E:0E:77:6E:15 RSSI: -64
-						else if (Text::StrStartsWithC(&sarr[0].v[31], sarr[0].len - 31, UTF8STRC("RSSI: ")))
+						else if (Text::StrStartsWithC(&sarr[0].v[31], sarr[0].leng - 31, UTF8STRC("RSSI: ")))
 						{
 							dev->rssi = (Int8)Text::StrToInt32(&sarr[0].v[37]);
 							if (me->recHdlr) me->recHdlr(dev, UT_RSSI, me->recHdlrObj);
 						}
 						//[CHG] Device 90:DD:5D:C2:E6:DA TxPower: 12
-						else if (Text::StrStartsWithC(&sarr[0].v[31], sarr[0].len - 31, UTF8STRC("TxPower: ")))
+						else if (Text::StrStartsWithC(&sarr[0].v[31], sarr[0].leng - 31, UTF8STRC("TxPower: ")))
 						{
 							dev->txPower = (Int8)Text::StrToInt32(&sarr[0].v[40]);
 							if (me->recHdlr) me->recHdlr(dev, UT_TXPOWER, me->recHdlrObj);
 						}
 						//[CHG] Device ED:8E:0E:77:6E:15 ManufacturerData Key: 0x3512
-						else if (Text::StrStartsWithC(&sarr[0].v[31], sarr[0].len - 31, UTF8STRC("ManufacturerData Key: ")))
+						else if (Text::StrStartsWithC(&sarr[0].v[31], sarr[0].leng - 31, UTF8STRC("ManufacturerData Key: ")))
 						{
 							UInt16 key;
 							if (Text::StrToUInt16(&sarr[0].v[53], &key))
@@ -194,62 +194,62 @@ UInt32 __stdcall IO::ProgCtrl::BluetoothCtlProgCtrl::ReadThread(void *obj)
 							}
 						}
 						//[CHG] Device E8:50:BD:A8:07:D4 ManufacturerData Value:
-						else if (Text::StrStartsWithC(&sarr[0].v[31], sarr[0].len - 31, UTF8STRC("ManufacturerData Value:")))
+						else if (Text::StrStartsWithC(&sarr[0].v[31], sarr[0].leng - 31, UTF8STRC("ManufacturerData Value:")))
 						{
 
 						}
 						//[CHG] Device E8:50:BD:A8:07:D4 UUIDs: 0000180a-0000-1000-8000-00805f9b34fb
-						else if (Text::StrStartsWithC(&sarr[0].v[31], sarr[0].len - 31, UTF8STRC("UUIDs: ")))
+						else if (Text::StrStartsWithC(&sarr[0].v[31], sarr[0].leng - 31, UTF8STRC("UUIDs: ")))
 						{
 
 						}
 						//[CHG] Device ED:8E:0E:77:6E:15 ServicesResolved: yes
-						else if (Text::StrStartsWithC(&sarr[0].v[31], sarr[0].len - 31, UTF8STRC("ServicesResolved: ")))
+						else if (Text::StrStartsWithC(&sarr[0].v[31], sarr[0].leng - 31, UTF8STRC("ServicesResolved: ")))
 						{
 
 						}
 						//[CHG] Device 00:1C:88:30:A0:B9 LegacyPairing: yes
-						else if (Text::StrStartsWithC(&sarr[0].v[31], sarr[0].len - 31, UTF8STRC("LegacyPairing: ")))
+						else if (Text::StrStartsWithC(&sarr[0].v[31], sarr[0].leng - 31, UTF8STRC("LegacyPairing: ")))
 						{
 
 						}
 						//[CHG] Device D8:16:35:2D:60:F3 Appearance: 0x00c0
-						else if (Text::StrStartsWithC(&sarr[0].v[31], sarr[0].len - 31, UTF8STRC("Appearance: ")))
+						else if (Text::StrStartsWithC(&sarr[0].v[31], sarr[0].leng - 31, UTF8STRC("Appearance: ")))
 						{
 
 						}
 						//[CHG] Device A4:30:7A:91:5E:EF Icon: audio-card
-						else if (Text::StrStartsWithC(&sarr[0].v[31], sarr[0].len - 31, UTF8STRC("Icon: ")))
+						else if (Text::StrStartsWithC(&sarr[0].v[31], sarr[0].leng - 31, UTF8STRC("Icon: ")))
 						{
 
 						}
 						//[CHG] Device FF:02:2F:D2:23:49 ServiceData Key: 000002a0-0000-1000-8000-00805f9b34fb
-						else if (Text::StrStartsWithC(&sarr[0].v[31], sarr[0].len - 31, UTF8STRC("ServiceData Key: ")))
+						else if (Text::StrStartsWithC(&sarr[0].v[31], sarr[0].leng - 31, UTF8STRC("ServiceData Key: ")))
 						{
 
 						}
 						//[CHG] Device C9:CE:83:47:9A:0E ServiceData Value:
-						else if (Text::StrStartsWithC(&sarr[0].v[31], sarr[0].len - 31, UTF8STRC("ServiceData Value:")))
+						else if (Text::StrStartsWithC(&sarr[0].v[31], sarr[0].leng - 31, UTF8STRC("ServiceData Value:")))
 						{
 
 						}
 						//[CHG] Device 04:23:09:C3:75:46 Class: 0x00040424
-						else if (Text::StrStartsWithC(&sarr[0].v[31], sarr[0].len - 31, UTF8STRC("Class: ")))
+						else if (Text::StrStartsWithC(&sarr[0].v[31], sarr[0].leng - 31, UTF8STRC("Class: ")))
 						{
 
 						}
 						//[CHG] Device 00:7C:2D:08:6B:8D Modalias: bluetooth:v04E8p8080d0000
-						else if (Text::StrStartsWithC(&sarr[0].v[31], sarr[0].len - 31, UTF8STRC("Modalias: ")))
+						else if (Text::StrStartsWithC(&sarr[0].v[31], sarr[0].leng - 31, UTF8STRC("Modalias: ")))
 						{
 
 						}
 						//[CHG] Device 10:00:18:28:57:54 RSSI is nil
-						else if (Text::StrStartsWithC(&sarr[0].v[31], sarr[0].len - 31, UTF8STRC("RSSI is nil")))
+						else if (Text::StrStartsWithC(&sarr[0].v[31], sarr[0].leng - 31, UTF8STRC("RSSI is nil")))
 						{
 
 						}
 						//[CHG] Device 68:BF:A1:3A:57:F1 TxPower is nil
-						else if (Text::StrStartsWithC(&sarr[0].v[31], sarr[0].len - 31, UTF8STRC("TxPower is nil")))
+						else if (Text::StrStartsWithC(&sarr[0].v[31], sarr[0].leng - 31, UTF8STRC("TxPower is nil")))
 						{
 
 						}
@@ -264,7 +264,7 @@ UInt32 __stdcall IO::ProgCtrl::BluetoothCtlProgCtrl::ReadThread(void *obj)
 						printf("Error in getting device \"%s\"\r\n", &sarr[0].v[13]);
 					}
 				}
-				else if (Text::StrStartsWithC(sarr[0].v, sarr[0].len, UTF8STRC("[DEL] Device ")))
+				else if (Text::StrStartsWithC(sarr[0].v, sarr[0].leng, UTF8STRC("[DEL] Device ")))
 				{
 					//[DEL] Device ED:8E:0E:77:6D:15 RAPOO BT4.0 MS
 					sarr[0].v[30] = 0;
@@ -279,7 +279,7 @@ UInt32 __stdcall IO::ProgCtrl::BluetoothCtlProgCtrl::ReadThread(void *obj)
 						printf("Error in getting device \"%s\"\r\n", &sarr[0].v[13]);
 					}
 				}
-				else if (sarr[0].v[0] == '[' && Text::StrIndexOfC(sarr[0].v, sarr[0].len, UTF8STRC("]# ")) != INVALID_INDEX)
+				else if (sarr[0].v[0] == '[' && Text::StrIndexOfC(sarr[0].v, sarr[0].leng, UTF8STRC("]# ")) != INVALID_INDEX)
 				{
 					if (!me->cmdReady)
 					{
@@ -294,7 +294,7 @@ UInt32 __stdcall IO::ProgCtrl::BluetoothCtlProgCtrl::ReadThread(void *obj)
 			}
 		}
 
-		if (sarr[0].v[0] == '[' && Text::StrIndexOfC(sarr[0].v, sarr[0].len, UTF8STRC("]# ")) != INVALID_INDEX)
+		if (sarr[0].v[0] == '[' && Text::StrIndexOfC(sarr[0].v, sarr[0].leng, UTF8STRC("]# ")) != INVALID_INDEX)
 		{
 			if (!me->cmdReady)
 			{

@@ -2,6 +2,7 @@
 #include "MyMemory.h"
 #include "Net/GoogleQRCode.h"
 #include "Text/MyString.h"
+#include "Text/String.h"
 #include "Text/TextBinEnc/FormEncoding.h"
 
 Net::GoogleQRCode::GoogleQRCode(UOSInt width, UOSInt height, const UTF8Char *dataStr)

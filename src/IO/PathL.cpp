@@ -4,6 +4,7 @@
 #include "IO/Path.h"
 #include "Text/MyString.h"
 #include "Text/MyStringW.h"
+#include "Text/String.h"
 #include "Text/StringBuilderUTF8.h"
 #include <dirent.h>
 #include <unistd.h>
@@ -1033,10 +1034,9 @@ Bool IO::Path::IsSearchPattern(const UTF8Char *path)
 	return isSrch;
 }
 
-UTF8Char *IO::Path::GetRealPath(UTF8Char *sbuff, const UTF8Char *path)
+UTF8Char *IO::Path::GetRealPath(UTF8Char *sbuff, const UTF8Char *path, UOSInt pathLen)
 {
 	UTF8Char *sptr;
-	UOSInt pathLen = Text::StrCharCnt(path);
 	if (Text::StrStartsWithC(path, pathLen, UTF8STRC("~/")))
 	{
 		sptr = Text::StrConcatC(IO::Path::GetUserHome(sbuff), path + 1, pathLen);
@@ -1049,7 +1049,7 @@ UTF8Char *IO::Path::GetRealPath(UTF8Char *sbuff, const UTF8Char *path)
 	UOSInt i;
 	while (true)
 	{
-		i = Text::StrIndexOfChar(sptr2, IO::Path::PATH_SEPERATOR);
+		i = Text::StrIndexOfCharC(sptr2, (UOSInt)(sptr - sptr2), IO::Path::PATH_SEPERATOR);
 		if (i == INVALID_INDEX)
 		{
 			break;
@@ -1057,13 +1057,11 @@ UTF8Char *IO::Path::GetRealPath(UTF8Char *sbuff, const UTF8Char *path)
 		sptr2 = &sptr2[i + 1];
 		if (sptr2[0] == '.' && sptr2[1] == '.' && sptr2[2] == 0)
 		{
-			sptr2[-1] = 0;
 			i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr2 - sbuff - 1), IO::Path::PATH_SEPERATOR);
 			if (i != INVALID_INDEX)
 			{
 				if (sbuff[i + 1] == '.' && sbuff[i + 2] == '.')
 				{
-					sptr2[-1] = IO::Path::PATH_SEPERATOR;
 				}
 				else
 				{
@@ -1071,31 +1069,21 @@ UTF8Char *IO::Path::GetRealPath(UTF8Char *sbuff, const UTF8Char *path)
 					*sptr = 0;
 				}
 			}
-			else
-			{
-				sptr2[-1] = IO::Path::PATH_SEPERATOR;
-			}
 			return sptr;
 		}
 		else if (sptr2[0] == '.' && sptr2[1] == '.' && sptr2[2] == IO::Path::PATH_SEPERATOR)
 		{
-			sptr2[-1] = 0;
 			i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr2 - sbuff - 1), IO::Path::PATH_SEPERATOR);
 			if (i != INVALID_INDEX)
 			{
 				if (sbuff[i + 1] == '.' && sbuff[i + 2] == '.')
 				{
-					sptr2[-1] = IO::Path::PATH_SEPERATOR;
 				}
 				else
 				{
 					sptr = Text::StrConcatC(&sbuff[i + 1], &sptr2[3], (UOSInt)(sptr - &sptr2[3]));
 					sptr2 = &sbuff[i + 1];
 				}
-			}
-			else
-			{
-				sptr2[-1] = IO::Path::PATH_SEPERATOR;
 			}
 		}
 	}

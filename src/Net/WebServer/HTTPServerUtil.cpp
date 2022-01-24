@@ -79,7 +79,7 @@ Bool Net::WebServer::HTTPServerUtil::SendContent(Net::WebServer::IWebRequest *re
 			i = 0;
 			while (i < j)
 			{
-				if (Text::StrEqualsICaseC(sarr[i].v, sarr[i].len, UTF8STRC("gzip")))
+				if (Text::StrEqualsICaseC(sarr[i].v, sarr[i].leng, UTF8STRC("gzip")))
 				{
 					if (browser != Net::BrowserInfo::BT_IE && browser != Net::BrowserInfo::BT_SAFARI && os != Manage::OSInfo::OT_IPHONE && os != Manage::OSInfo::OT_IPAD)
 					{
@@ -114,7 +114,7 @@ Bool Net::WebServer::HTTPServerUtil::SendContent(Net::WebServer::IWebRequest *re
 						break;
 					}
 				}
-				else if (Text::StrEqualsICaseC(sarr[i].v, sarr[i].len, UTF8STRC("deflate")))
+				else if (Text::StrEqualsICaseC(sarr[i].v, sarr[i].leng, UTF8STRC("deflate")))
 				{
 					if (browser != Net::BrowserInfo::BT_IE)
 					{
@@ -183,7 +183,7 @@ Bool Net::WebServer::HTTPServerUtil::SendContent(Net::WebServer::IWebRequest *re
 			i = 0;
 			while (i < j)
 			{
-				if (Text::StrEqualsICaseC(sarr[i].v, sarr[i].len, UTF8STRC("gzip")))
+				if (Text::StrEqualsICaseC(sarr[i].v, sarr[i].leng, UTF8STRC("gzip")))
 				{
 					resp->AddHeaderC(UTF8STRC("Content-Encoding"), UTF8STRC("gzip"));
 					resp->AddHeaderC(UTF8STRC("Transfer-Encoding"), UTF8STRC("chunked"));
@@ -215,7 +215,7 @@ Bool Net::WebServer::HTTPServerUtil::SendContent(Net::WebServer::IWebRequest *re
 					contSent = true;
 					break;
 				}
-				else if (Text::StrEqualsICaseC(sarr[i].v, sarr[i].len, UTF8STRC("deflate")))
+				else if (Text::StrEqualsICaseC(sarr[i].v, sarr[i].leng, UTF8STRC("deflate")))
 				{
 					if (browser != Net::BrowserInfo::BT_IE)
 					{

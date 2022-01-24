@@ -40,11 +40,11 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			Text::StringBuilderUTF8 sb;
 			sb.Append(s);
 			sarr[1].v = sb.ToString();
-			sarr[1].len = sb.GetLength();
+			sarr[1].leng = sb.GetLength();
 			while (true)
 			{
-				i = Text::StrSplitTrimP(sarr, 2, sarr[1].v, sarr[1].len, ',');
-				ip = Net::SocketUtil::GetIPAddr(sarr[0].v, sarr[0].len);
+				i = Text::StrSplitTrimP(sarr, 2, sarr[1].v, sarr[1].leng, ',');
+				ip = Net::SocketUtil::GetIPAddr(sarr[0].v, sarr[0].leng);
 				if (ip)
 				{
 					dnsList.Add(ip);
@@ -67,10 +67,10 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			Text::StringBuilderUTF8 sb;
 			sb.Append(s);
 			sarr[1].v = sb.ToString();
-			sarr[1].len = sb.GetLength();
+			sarr[1].leng = sb.GetLength();
 			while (true)
 			{
-				i = Text::StrSplitTrimP(sarr, 2, sarr[1].v, sarr[1].len, ',');
+				i = Text::StrSplitTrimP(sarr, 2, sarr[1].v, sarr[1].leng, ',');
 				frm->AddBlacklist(sarr[0].v);
 				if (i <= 1)
 					break;

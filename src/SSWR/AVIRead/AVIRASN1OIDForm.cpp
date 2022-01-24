@@ -19,11 +19,11 @@ void __stdcall SSWR::AVIRead::AVIRASN1OIDForm::OnConvertClicked(void *userObj)
 	UOSInt nameCol;
 	UInt8 oid[32];
 	UOSInt oidLen;
-	firstRowCnt = Text::StrSplitTrimP(sarr, 10, lines[0].v, lines[0].len, '\t');
+	firstRowCnt = Text::StrSplitTrimP(sarr, 10, lines[0].v, lines[0].leng, '\t');
 	rowCnt = 0;
 	while (rowCnt < firstRowCnt)
 	{
-		oidLen = Net::ASN1Util::OIDText2PDU(sarr[rowCnt].v, sarr[rowCnt].len, oid);
+		oidLen = Net::ASN1Util::OIDText2PDU(sarr[rowCnt].v, sarr[rowCnt].leng, oid);
 		if (oidLen != 0)
 		{
 			oidCol = rowCnt;
@@ -47,11 +47,11 @@ void __stdcall SSWR::AVIRead::AVIRASN1OIDForm::OnConvertClicked(void *userObj)
 	Net::ASN1Util::OIDToCPPCode(oid, oidLen, sarr[nameCol].v, &sbCPP);
 	while (lineCnt == 2)
 	{
-		lineCnt = Text::StrSplitLineP(lines, 2, lines[1].v, lines[1].len);
-		rowCnt = Text::StrSplitTrimP(sarr, 10, lines[0].v, lines[0].len, '\t');
+		lineCnt = Text::StrSplitLineP(lines, 2, lines[1].v, lines[1].leng);
+		rowCnt = Text::StrSplitTrimP(sarr, 10, lines[0].v, lines[0].leng, '\t');
 		if (rowCnt == firstRowCnt)
 		{
-			oidLen = Net::ASN1Util::OIDText2PDU(sarr[oidCol].v, sarr[oidCol].len, oid);
+			oidLen = Net::ASN1Util::OIDText2PDU(sarr[oidCol].v, sarr[oidCol].leng, oid);
 			if (oidLen != 0)
 			{
 				Net::ASN1Util::OIDToCPPCode(oid, oidLen, sarr[nameCol].v, &sbCPP);

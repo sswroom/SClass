@@ -180,21 +180,21 @@ void Net::SNS::SNSManager::ChannelAddMessage(Net::SNS::SNSManager::ChannelData *
 		sb.ClearStr();
 		sb.Append(item->imgURL);
 		sarr[1].v = sb.ToString();
-		sarr[1].len = sb.GetLength();
+		sarr[1].leng = sb.GetLength();
 		while (true)
 		{
-			j = Text::StrSplitP(sarr, 2, sarr[1].v, sarr[1].len, ' ');
+			j = Text::StrSplitP(sarr, 2, sarr[1].v, sarr[1].leng, ' ');
 			retryCnt = 0;
 			while (retryCnt < 3)
 			{
-				cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, STR_PTRC(this->userAgent), true, Text::StrStartsWithC(sarr[0].v, sarr[0].len, UTF8STRC("https://")));
-				if (cli->Connect(sarr[0].v, sarr[0].len, Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, true))
+				cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, STR_PTRC(this->userAgent), true, Text::StrStartsWithC(sarr[0].v, sarr[0].leng, UTF8STRC("https://")));
+				if (cli->Connect(sarr[0].v, sarr[0].leng, Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, true))
 				{
-					if (Text::StrEndsWithC(sarr[0].v, sarr[0].len, UTF8STRC(".mp4")))
+					if (Text::StrEndsWithC(sarr[0].v, sarr[0].leng, UTF8STRC(".mp4")))
 					{
 						Text::StrConcatC(Text::StrUOSInt(sptr, i), UTF8STRC(".mp4"));
 					}
-					else if (Text::StrEndsWithC(sarr[0].v, sarr[0].len, UTF8STRC(".png")))
+					else if (Text::StrEndsWithC(sarr[0].v, sarr[0].leng, UTF8STRC(".png")))
 					{
 						Text::StrConcatC(Text::StrUOSInt(sptr, i), UTF8STRC(".png"));
 					}
@@ -251,12 +251,12 @@ void Net::SNS::SNSManager::ChannelAddMessage(Net::SNS::SNSManager::ChannelData *
 			sb.ClearStr();
 			sb.Append(item->videoURL);
 			sarr[1].v = sb.ToString();
-			sarr[1].len = sb.GetLength();
+			sarr[1].leng = sb.GetLength();
 			while (true)
 			{
-				j = Text::StrSplitP(sarr, 2, sarr[1].v, sarr[1].len, ' ');
-				cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, STR_PTRC(this->userAgent), true, Text::StrStartsWithC(sarr[0].v, sarr[0].len, UTF8STRC("https://")));
-				if (cli->Connect(sarr[0].v, sarr[0].len, Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, true))
+				j = Text::StrSplitP(sarr, 2, sarr[1].v, sarr[1].leng, ' ');
+				cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, STR_PTRC(this->userAgent), true, Text::StrStartsWithC(sarr[0].v, sarr[0].leng, UTF8STRC("https://")));
+				if (cli->Connect(sarr[0].v, sarr[0].leng, Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, true))
 				{
 					Text::StrConcatC(Text::StrUOSInt(sptr, i), UTF8STRC(".mp4"));
 					leng = 0;

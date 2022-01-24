@@ -792,7 +792,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				sb.AppendC(UTF8STRC(" rows of records loaded"));
 				console.WriteLineC(sb.ToString(), sb.GetLength());
 
-				IO::Path::GetRealPath(sbuff, (const UTF8Char*)"~/Progs/Temp/LamppostData.ddf");
+				IO::Path::GetRealPath(sbuff, UTF8STRC("~/Progs/Temp/LamppostData.ddf"));
 				if (DB::DBDataFile<LamppostData>::SaveFile(sbuff, &dataList, cls))
 				{
 					console.WriteLineC(UTF8STRC("File saved"));

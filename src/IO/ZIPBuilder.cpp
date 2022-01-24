@@ -12,7 +12,7 @@ IO::ZIPBuilder::ZIPBuilder(IO::SeekableStream *stm)
 	this->stm = stm;
 	this->baseOfst = this->stm->GetPosition();
 	this->currOfst = 0;
-	NEW_CLASS(this->crc, Crypto::Hash::CRC32R());
+	NEW_CLASS(this->crc, Crypto::Hash::CRC32RIEEE());
 	NEW_CLASS(this->files, Data::ArrayList<IO::ZIPBuilder::FileInfo*>());
 }
 

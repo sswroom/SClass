@@ -1,5 +1,6 @@
 #ifndef _SM_CRYPTO_TOKEN_JWTPARAM
 #define _SM_CRYPTO_TOKEN_JWTPARAM
+#include "Text/String.h"
 #include "Text/StringBuilderUTF.h"
 
 namespace Crypto

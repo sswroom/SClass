@@ -522,15 +522,15 @@ Net::ACMEConn::Order *Net::ACMEConn::OrderNew(const UTF8Char *domainNames)
 	sb.AppendC(UTF8STRC("{\"identifiers\":["));
 	sbNames.Append(domainNames);
 	sarr[1].v = sbNames.ToString();
-	sarr[1].len = sbNames.GetLength();
+	sarr[1].leng = sbNames.GetLength();
 	i = 2;
 	while (i == 2)
 	{
-		i = Text::StrSplitP(sarr, 2, sarr[1].v, sarr[1].len, ',');
+		i = Text::StrSplitP(sarr, 2, sarr[1].v, sarr[1].leng, ',');
 		if (found)
 			sb.AppendChar(',', 1);
 		sb.AppendC(UTF8STRC("{\"type\":\""));
-		if (Net::SocketUtil::GetIPAddr(sarr[0].v, sarr[0].len, &addr))
+		if (Net::SocketUtil::GetIPAddr(sarr[0].v, sarr[0].leng, &addr))
 		{
 			sb.AppendC(UTF8STRC("ip"));
 		}
@@ -539,7 +539,7 @@ Net::ACMEConn::Order *Net::ACMEConn::OrderNew(const UTF8Char *domainNames)
 			sb.AppendC(UTF8STRC("dns"));
 		}
 		sb.AppendC(UTF8STRC("\",\"value\":\""));
-		sb.AppendC(sarr[0].v, sarr[0].len);
+		sb.AppendC(sarr[0].v, sarr[0].leng);
 		sb.AppendC(UTF8STRC("\"}"));
 	}
 	sb.AppendC(UTF8STRC("]}"));

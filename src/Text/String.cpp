@@ -1,26 +1,23 @@
 #include "Stdafx.h"
-#include "MemTool.h"
 #include "MyMemory.h"
-#include "Data/ByteTool.h"
-#include "Math/Math.h"
 #include "Sync/Interlocked.h"
 #include "Text/MyString.h"
-#include "Text/MyStringFloat.h"
 #include "Text/MyStringW.h"
 #include "Text/String.h"
 
 //#define THREADSAFE
 //#define MEMDEBUG
 
-Text::String Text::String::emptyStr = {0, 1048576, {0}};
+Text::String Text::String::emptyStr(1048576);
 
 Text::String *Text::String::NewOrNull(const UTF8Char *str)
 {
 	if (str == 0) return 0;
 	UOSInt len = Text::StrCharCnt(str);
 	Text::String *s = (Text::String*)MAlloc(len + sizeof(String));
+	s->v = s->vbuff;
 	s->leng = len;
-	s->cnt = 1;
+	s->useCnt = 1;
 	MemCopyNO(s->v, str, len + 1);
 	return s;
 }
@@ -29,8 +26,9 @@ Text::String *Text::String::NewNotNull(const UTF8Char *str)
 {
 	UOSInt len = Text::StrCharCnt(str);
 	Text::String *s = (Text::String*)MAlloc(len + sizeof(String));
+	s->v = s->vbuff;
 	s->leng = len;
-	s->cnt = 1;
+	s->useCnt = 1;
 	MemCopyNO(s->v, str, len + 1);
 	return s;
 }
@@ -39,8 +37,9 @@ Text::String *Text::String::New(const UTF8Char *str, UOSInt len)
 {
 	if (len == 0) return NewEmpty();
 	Text::String *s = (Text::String*)MAlloc(len + sizeof(String));
+	s->v = s->vbuff;
 	s->leng = len;
-	s->cnt = 1;
+	s->useCnt = 1;
 	MemCopyNO(s->v, str, len);
 	s->v[len] = 0;
 	return s;
@@ -49,8 +48,9 @@ Text::String *Text::String::New(const UTF8Char *str, UOSInt len)
 Text::String *Text::String::New(UOSInt len)
 {
 	Text::String *s = (Text::String*)MAlloc(len + sizeof(String));
+	s->v = s->vbuff;
 	s->leng = len;
-	s->cnt = 1;
+	s->useCnt = 1;
 	s->v[0] = 0;
 	return s;
 }
@@ -170,8 +170,8 @@ void Text::String::Release()
 		MemFree(this);
 	}
 #else
-	this->cnt--;
-	if (this->cnt == 0)
+	this->useCnt--;
+	if (this->useCnt == 0)
 	{
 		MemFree(this);
 	}
@@ -190,153 +190,9 @@ Text::String *Text::String::Clone()
 	#endif
 	return this;
 #else
-	this->cnt++;
+	this->useCnt++;
 	return this;
 #endif
-}
-
-UTF8Char *Text::String::ConcatTo(UTF8Char *sbuff)
-{
-	REGVAR UOSInt len = this->leng;
-	MemCopyNO(sbuff, this->v, len);
-	sbuff += len;
-	*sbuff = 0;
-	return sbuff;
-}
-
-UTF8Char *Text::String::ConcatToS(UTF8Char *sbuff, UOSInt buffSize)
-{
-	if (buffSize > this->leng)
-	{
-		MemCopyNO(sbuff, this->v, this->leng);
-		sbuff += this->leng;
-		*sbuff = 0;
-		return sbuff;
-	}
-	else
-	{
-		buffSize--;
-		MemCopyNO(sbuff, this->v, buffSize);
-		sbuff[buffSize] = 0;
-		return &sbuff[buffSize];
-	}
-}
-
-Bool Text::String::Equals(const UTF8Char *s, UOSInt len)
-{
-	return Text::StrEqualsC(this->v, this->leng, s, len);
-}
-
-Bool Text::String::Equals(Text::String *s)
-{
-	return Text::StrEqualsC(this->v, this->leng, s->v, s->leng);
-}
-
-Bool Text::String::EqualsICase(const UTF8Char *s, UOSInt len)
-{
-	return Text::StrEqualsICaseC(this->v, this->leng, s, len);
-}
-
-Bool Text::String::EqualsICase(Text::String *s)
-{
-	return Text::StrEqualsICaseC(this->v, this->leng, s->v, s->leng);
-}
-
-Bool Text::String::StartsWith(Text::String *s)
-{
-	return Text::StrStartsWithC(this->v, this->leng, s->v, s->leng);
-}
-
-Bool Text::String::StartsWith(const UTF8Char *s, UOSInt len)
-{
-	return Text::StrStartsWithC(this->v, this->leng, s, len);
-}
-
-Bool Text::String::StartsWith(UOSInt startIndex, const UTF8Char *s, UOSInt len)
-{
-	if (startIndex > this->leng)
-	{
-		return false;
-	}
-	return Text::StrStartsWithC(&this->v[startIndex], this->leng - startIndex, s, len);
-}
-
-Bool Text::String::StartsWithICase(const UTF8Char *str2, UOSInt len)
-{
-	if (this->leng < len)
-	{
-		return false;
-	}
-	REGVAR UInt8 *upperArr = MyString_StrUpperArr;
-	const UTF8Char *str1 = this->v;
-	while (len >= 4)
-	{
-		REGVAR UInt32 v1 = ReadNUInt32(str1);
-		REGVAR UInt32 v2 = ReadNUInt32(str2);
-		if (upperArr[v1 & 0xff] != upperArr[v2 & 0xff])
-			return false;
-		if (upperArr[(v1 >> 8) & 0xff] != upperArr[(v2 >> 8) & 0xff])
-			return false;
-		if (upperArr[(v1 >> 16) & 0xff] != upperArr[(v2 >> 16) & 0xff])
-			return false;
-		if (upperArr[(v1 >> 24)] != upperArr[(v2 >> 24)])
-			return false;
-		str1 += 4;
-		str2 += 4;
-		len -= 4;
-	}
-	if (len >= 2)
-	{
-		REGVAR UInt16 v1 = ReadNUInt16(str1);
-		REGVAR UInt16 v2 = ReadNUInt16(str2);
-		if (upperArr[v1 & 0xff] != upperArr[v2 & 0xff] ||
-			upperArr[(v1 >> 8)] != upperArr[(v2 >> 8)])
-			return false;
-		str1 += 2;
-		str2 += 2;
-		len -= 2;
-	}
-	if (len > 0)
-	{
-		return upperArr[*str1] == upperArr[*str2];
-	}
-	return true;
-}
-
-Bool Text::String::EndsWith(UTF8Char c)
-{
-	REGVAR UOSInt len = this->leng;
-	return len > 0 && this->v[len - 1] == c;
-}
-
-Bool Text::String::EndsWith(const UTF8Char *s, UOSInt len2)
-{
-	REGVAR UOSInt len1 = this->leng;
-	if (len2 > len1)
-	{
-		return false;
-	}
-	return Text::StrEqualsC(&this->v[len1 - len2], len2, s, len2);
-}
-
-Bool Text::String::EndsWithICase(const UTF8Char *s, UOSInt len2)
-{
-	UOSInt len1 = this->leng;
-	if (len2 > len1)
-	{
-		return false;
-	}
-	return Text::StrEqualsICaseC(&this->v[len1 - len2], len2, s, len2);
-}
-
-Bool Text::String::HasUpperCase()
-{
-	return Text::StrHasUpperCase(this->v);
-}
-
-Bool Text::String::ContainChars(const UTF8Char *chars)
-{
-	return Text::StrContainChars(this->v, chars);
 }
 
 Text::String *Text::String::ToLower()
@@ -354,243 +210,12 @@ Text::String *Text::String::ToLower()
 	}
 }
 
-UOSInt Text::String::IndexOf(const UTF8Char *s, UOSInt len)
+Text::String::String(UOSInt cnt)
 {
-	return Text::StrIndexOfC(this->v, this->leng, s, len);
-}
-
-UOSInt Text::String::IndexOf(UTF8Char c)
-{
-	REGVAR const UTF8Char *ptr = this->v;
-	REGVAR UOSInt len1 = this->leng;
-	REGVAR UInt16 c2;
-	while (len1 >= 2)
-	{
-		c2 = ReadUInt16(ptr);
-		if ((UTF8Char)(c2 & 0xff) == c)
-			return (UOSInt)(ptr - this->v);
-		if ((UTF8Char)(c2 >> 8) == c)
-			return (UOSInt)(ptr - this->v + 1);
-		ptr += 2;
-		len1 -= 2;
-	}
-	if (len1 && (*ptr == c))
-	{
-		return (UOSInt)(ptr - this->v);
-	}
-	return INVALID_INDEX;
-}
-
-UOSInt Text::String::IndexOfICase(const UTF8Char *s)
-{
-	return Text::StrIndexOfICase(this->v, s);
-}
-
-UOSInt Text::String::LastIndexOf(UTF8Char c)
-{
-	REGVAR UOSInt l = this->leng;
-	while (l-- > 0)
-	{
-		if (this->v[l] == c)
-			return l;
-	}
-	return INVALID_INDEX;
-}
-
-OSInt Text::String::CompareTo(String *s)
-{
-	return MyString_StrCompare(this->v, s->v);
-}
-
-OSInt Text::String::CompareTo(const UTF8Char *s)
-{
-	return MyString_StrCompare(this->v, s);
-}
-
-OSInt Text::String::CompareToICase(Text::String *s)
-{
-	return MyString_StrCompareICase(this->v, s->v);
-}
-
-OSInt Text::String::CompareToICase(const UTF8Char *s)
-{
-	return MyString_StrCompareICase(this->v, s);
-}
-
-OSInt Text::String::CompareToFast(const UTF8Char *str2, UOSInt len2)
-{
-	const UTF8Char *s0 = this->v;
-	UOSInt len1 = this->leng;
-	OSInt defRet;
-	if (len1 > len2)
-	{
-		defRet = 1;
-	}
-	else if (len1 == len2)
-	{
-		defRet = 0;
-	}
-	else
-	{
-		defRet = -1;
-		len2 = len1;
-	}
-	while (len2 >= 4)
-	{
-		REGVAR UInt32 v1 = ReadMUInt32(s0);
-		REGVAR UInt32 v2 = ReadMUInt32(str2);
-		if (v1 > v2)
-		{
-			return 1;
-		}
-		else if (v1 < v2)
-		{
-			return -1;
-		}
-		len2 -= 4;
-		s0 += 4;
-		str2 += 4;
-	}
-	while (len2 > 0)
-	{
-		REGVAR UTF8Char c1 = *s0;
-		REGVAR UTF8Char c2 = *str2;
-		if (c1 > c2)
-		{
-			return 1;
-		}
-		else if (c1 < c2)
-		{
-			return -1;
-		}
-		len2--;
-		s0++;
-		str2++;
-	}
-	return defRet;
-}
-
-void Text::String::RTrim()
-{
-	UOSInt len = this->leng;
-	while (len > 0)
-	{
-		UTF8Char c = this->v[len - 1];
-		if (c == ' ' || c == '\t')
-		{
-			len--;
-		}
-		else
-		{
-			break;
-		}
-	}
-	this->v[len] = 0;
-	this->leng = len;
-}
-
-Int32 Text::String::ToInt32()
-{
-	return Text::StrToInt32(this->v);
-}
-
-UInt32 Text::String::ToUInt32()
-{
-	return Text::StrToUInt32(this->v);
-}
-
-Int64 Text::String::ToInt64()
-{
-	return Text::StrToInt64(this->v);
-}
-
-UInt64 Text::String::ToUInt64()
-{
-	return Text::StrToUInt64(this->v);
-}
-
-OSInt Text::String::ToOSInt()
-{
-	return Text::StrToOSInt(this->v);
-}
-
-UOSInt Text::String::ToUOSInt()
-{
-	return Text::StrToUOSInt(this->v);
-}
-
-Double Text::String::ToDouble()
-{
-	return Text::StrToDouble(this->v);
-}
-
-Bool Text::String::ToUInt8(UInt8 *outVal)
-{
-	return Text::StrToUInt8(this->v, outVal);
-}
-
-Bool Text::String::ToInt16(Int16 *outVal)
-{
-	return Text::StrToInt16(this->v, outVal);
-}
-
-Bool Text::String::ToUInt16(UInt16 *outVal)
-{
-	return Text::StrToUInt16(this->v, outVal);
-}
-
-Bool Text::String::ToInt32(Int32 *outVal)
-{
-	return Text::StrToInt32(this->v, outVal);
-}
-
-Bool Text::String::ToUInt32(UInt32 *outVal)
-{
-	return Text::StrToUInt32(this->v, outVal);
-}
-
-Bool Text::String::ToInt64(Int64 *outVal)
-{
-	return Text::StrToInt64(this->v, outVal);
-}
-
-Bool Text::String::ToUInt64(UInt64 *outVal)
-{
-	return Text::StrToUInt64(this->v, outVal);
-}
-
-Bool Text::String::ToDouble(Double *outVal)
-{
-	return Text::StrToDouble(this->v, outVal);
-}
-
-Bool Text::String::ToUInt16S(UInt16 *outVal, UInt16 failVal)
-{
-	return Text::StrToUInt16S(this->v, outVal, failVal);
-}
-
-Double Text::String::MatchRating(Text::String *s)
-{
-	if (this->IndexOf(s->v, s->leng) != INVALID_INDEX)
-	{
-		return UOSInt2Double(s->leng) / UOSInt2Double(this->leng);
-	}
-	else
-	{
-		return 0.0;
-	}
-}
-
-Double Text::String::MatchRating(const UTF8Char *targetStr, UOSInt strLen)
-{
-	if (this->IndexOf(targetStr, strLen) != INVALID_INDEX)
-	{
-		return UOSInt2Double(strLen) / UOSInt2Double(this->leng);
-	}
-	else
-	{
-		return 0.0;
-	}
+	this->v = this->vbuff;
+	this->useCnt = cnt;
+	this->leng = 0;
+	this->vbuff[0] = 0;
 }
 
 Text::String::~String()

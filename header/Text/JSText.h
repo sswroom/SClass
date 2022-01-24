@@ -1,5 +1,6 @@
 #ifndef _SM_TEXT_JSTEXT
 #define _SM_TEXT_JSTEXT
+#include "Text/String.h"
 #include "Text/StringBuilderUTF.h"
 
 namespace Text

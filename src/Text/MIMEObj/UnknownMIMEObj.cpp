@@ -19,10 +19,10 @@ Text::MIMEObj::UnknownMIMEObj::UnknownMIMEObj(UInt8 *dataBuff, UOSInt buffSize, 
 	i = Text::StrSplitTrimP(sarr, 2, (UTF8Char*)tmpPtr, this->contType->leng, ';');
 	while (i == 2)
 	{
-		i = Text::StrSplitTrimP(sarr, 2, sarr[1].v, sarr[1].len, ';');
-		if (Text::StrStartsWithC(sarr[0].v, sarr[0].len, UTF8STRC("name=")))
+		i = Text::StrSplitTrimP(sarr, 2, sarr[1].v, sarr[1].leng, ';');
+		if (Text::StrStartsWithC(sarr[0].v, sarr[0].leng, UTF8STRC("name=")))
 		{
-			j = sarr[0].len;
+			j = sarr[0].leng;
 			if (sarr[0].v[5] == '"' && sarr[0].v[j - 1] == '"')
 			{
 				sarr[0].v[j - 1] = 0;

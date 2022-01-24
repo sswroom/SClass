@@ -106,13 +106,13 @@ void LoadProgList()
 				break;
 			if (Text::StrSplitP(sarr, 2, sb.ToString(), sb.GetLength(), ',') == 2)
 			{
-				if (sarr[1].len > 0)
+				if (sarr[1].leng > 0)
 				{
-					AddProg(sarr[0].v, sarr[0].len, sarr[1].v, sarr[1].len);
+					AddProg(sarr[0].v, sarr[0].leng, sarr[1].v, sarr[1].leng);
 				}
 				else
 				{
-					AddProg(sarr[0].v, sarr[0].len, sarr[1].v, sarr[1].len);
+					AddProg(sarr[0].v, sarr[0].leng, sarr[1].v, sarr[1].leng);
 				}
 			}
 		}

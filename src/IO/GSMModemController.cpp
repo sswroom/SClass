@@ -843,13 +843,13 @@ Bool IO::GSMModemController::SMSGetStorageInfo(SMSStorageInfo *reading, SMSStora
 		return false;
 	if (reading)
 	{
-		if (Text::StrEqualsC(buffs[0].v, buffs[0].len, UTF8STRC("\"SM\"")))
+		if (Text::StrEqualsC(buffs[0].v, buffs[0].leng, UTF8STRC("\"SM\"")))
 			reading->storage = IO::GSMModemController::SMSSTORE_SIM;
-		else if (Text::StrEqualsC(buffs[0].v, buffs[0].len, UTF8STRC("\"ME\"")))
+		else if (Text::StrEqualsC(buffs[0].v, buffs[0].leng, UTF8STRC("\"ME\"")))
 			reading->storage = IO::GSMModemController::SMSSTORE_FLASH;
-		else if (Text::StrEqualsC(buffs[0].v, buffs[0].len, UTF8STRC("\"SR\"")))
+		else if (Text::StrEqualsC(buffs[0].v, buffs[0].leng, UTF8STRC("\"SR\"")))
 			reading->storage = IO::GSMModemController::SMSSTORE_STATUSREPORT;
-		else if (Text::StrEqualsC(buffs[0].v, buffs[0].len, UTF8STRC("\"BM\"")))
+		else if (Text::StrEqualsC(buffs[0].v, buffs[0].leng, UTF8STRC("\"BM\"")))
 			reading->storage = IO::GSMModemController::SMSSTORE_CBMMESSAGE;
 		else
 			reading->storage = IO::GSMModemController::SMSSTORE_UNCHANGE;
@@ -858,13 +858,13 @@ Bool IO::GSMModemController::SMSGetStorageInfo(SMSStorageInfo *reading, SMSStora
 	}
 	if (writing)
 	{
-		if (Text::StrEqualsC(buffs[3].v, buffs[3].len, UTF8STRC("\"SM\"")))
+		if (Text::StrEqualsC(buffs[3].v, buffs[3].leng, UTF8STRC("\"SM\"")))
 			writing->storage = IO::GSMModemController::SMSSTORE_SIM;
-		else if (Text::StrEqualsC(buffs[3].v, buffs[3].len, UTF8STRC("\"ME\"")))
+		else if (Text::StrEqualsC(buffs[3].v, buffs[3].leng, UTF8STRC("\"ME\"")))
 			writing->storage = IO::GSMModemController::SMSSTORE_FLASH;
-		else if (Text::StrEqualsC(buffs[3].v, buffs[3].len, UTF8STRC("\"SR\"")))
+		else if (Text::StrEqualsC(buffs[3].v, buffs[3].leng, UTF8STRC("\"SR\"")))
 			writing->storage = IO::GSMModemController::SMSSTORE_STATUSREPORT;
-		else if (Text::StrEqualsC(buffs[3].v, buffs[3].len, UTF8STRC("\"BM\"")))
+		else if (Text::StrEqualsC(buffs[3].v, buffs[3].leng, UTF8STRC("\"BM\"")))
 			writing->storage = IO::GSMModemController::SMSSTORE_CBMMESSAGE;
 		else
 			writing->storage = IO::GSMModemController::SMSSTORE_UNCHANGE;
@@ -873,13 +873,13 @@ Bool IO::GSMModemController::SMSGetStorageInfo(SMSStorageInfo *reading, SMSStora
 	}
 	if (store)
 	{
-		if (Text::StrEqualsC(buffs[6].v, buffs[6].len, UTF8STRC("\"SM\"")))
+		if (Text::StrEqualsC(buffs[6].v, buffs[6].leng, UTF8STRC("\"SM\"")))
 			store->storage = IO::GSMModemController::SMSSTORE_SIM;
-		else if (Text::StrEqualsC(buffs[6].v, buffs[6].len, UTF8STRC("\"ME\"")))
+		else if (Text::StrEqualsC(buffs[6].v, buffs[6].leng, UTF8STRC("\"ME\"")))
 			store->storage = IO::GSMModemController::SMSSTORE_FLASH;
-		else if (Text::StrEqualsC(buffs[6].v, buffs[6].len, UTF8STRC("\"SR\"")))
+		else if (Text::StrEqualsC(buffs[6].v, buffs[6].leng, UTF8STRC("\"SR\"")))
 			store->storage = IO::GSMModemController::SMSSTORE_STATUSREPORT;
-		else if (Text::StrEqualsC(buffs[6].v, buffs[6].len, UTF8STRC("\"BM\"")))
+		else if (Text::StrEqualsC(buffs[6].v, buffs[6].leng, UTF8STRC("\"BM\"")))
 			store->storage = IO::GSMModemController::SMSSTORE_CBMMESSAGE;
 		else
 			store->storage = IO::GSMModemController::SMSSTORE_UNCHANGE;
@@ -989,25 +989,25 @@ Bool IO::GSMModemController::PBGetStorage(PBStorage *storage, Int32 *usedEntry, 
 		return false;
 	if (storage)
 	{
-		if (Text::StrEqualsC(buffs[0].v, buffs[0].len, UTF8STRC("\"SM\"")))
+		if (Text::StrEqualsC(buffs[0].v, buffs[0].leng, UTF8STRC("\"SM\"")))
 			*storage = IO::GSMModemController::PBSTORE_SIM;
-		else if (Text::StrEqualsC(buffs[0].v, buffs[0].len, UTF8STRC("\"FD\"")))
+		else if (Text::StrEqualsC(buffs[0].v, buffs[0].leng, UTF8STRC("\"FD\"")))
 			*storage = IO::GSMModemController::PBSTORE_SIM_RESTRICTED;
-		else if (Text::StrEqualsC(buffs[0].v, buffs[0].len, UTF8STRC("\"ON\"")))
+		else if (Text::StrEqualsC(buffs[0].v, buffs[0].leng, UTF8STRC("\"ON\"")))
 			*storage = IO::GSMModemController::PBSTORE_SIM_OWN_NUMBERS;
-		else if (Text::StrEqualsC(buffs[0].v, buffs[0].len, UTF8STRC("\"EN\"")))
+		else if (Text::StrEqualsC(buffs[0].v, buffs[0].leng, UTF8STRC("\"EN\"")))
 			*storage = IO::GSMModemController::PBSTORE_EMERGENCY;
-		else if (Text::StrEqualsC(buffs[0].v, buffs[0].len, UTF8STRC("\"LD\"")))
+		else if (Text::StrEqualsC(buffs[0].v, buffs[0].leng, UTF8STRC("\"LD\"")))
 			*storage = IO::GSMModemController::PBSTORE_LASTNUMDIAL;
-		else if (Text::StrEqualsC(buffs[0].v, buffs[0].len, UTF8STRC("\"MC\"")))
+		else if (Text::StrEqualsC(buffs[0].v, buffs[0].leng, UTF8STRC("\"MC\"")))
 			*storage = IO::GSMModemController::PBSTORE_UNANSWERED;
-		else if (Text::StrEqualsC(buffs[0].v, buffs[0].len, UTF8STRC("\"ME\"")))
+		else if (Text::StrEqualsC(buffs[0].v, buffs[0].leng, UTF8STRC("\"ME\"")))
 			*storage = IO::GSMModemController::PBSTORE_ME;
-		else if (Text::StrEqualsC(buffs[0].v, buffs[0].len, UTF8STRC("\"MT\"")))
+		else if (Text::StrEqualsC(buffs[0].v, buffs[0].leng, UTF8STRC("\"MT\"")))
 			*storage = IO::GSMModemController::PBSTORE_ME_SIM;
-		else if (Text::StrEqualsC(buffs[0].v, buffs[0].len, UTF8STRC("\"RC\"")))
+		else if (Text::StrEqualsC(buffs[0].v, buffs[0].leng, UTF8STRC("\"RC\"")))
 			*storage = IO::GSMModemController::PBSTORE_RECEIVED_CALL;
-		else if (Text::StrEqualsC(buffs[0].v, buffs[0].len, UTF8STRC("\"SN\"")))
+		else if (Text::StrEqualsC(buffs[0].v, buffs[0].leng, UTF8STRC("\"SN\"")))
 			*storage = IO::GSMModemController::PBSTORE_SERVICE_DIALING_NUMBERS;
 		else
 			*storage = IO::GSMModemController::PBSTORE_UNKNOWN;
@@ -1032,10 +1032,10 @@ Bool IO::GSMModemController::PBGetStorageStatus(Int32 *startEntry, Int32 *endEnt
 	sptr = this->SendStringCommand(sbuff, UTF8STRC("AT+CPBR=?"), 3000);
 	if (sptr && Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("+CPBR: ")) && Text::StrSplitP(sarr, 4, &sbuff[7], (UOSInt)(sptr - &sbuff[7]), ',') == 3)
 	{
-		if (sarr[0].v[0] == '(' && Text::StrEndsWithC(sarr[0].v, sarr[0].len, UTF8STRC(")")) && Text::StrSplitP(sarr2, 3, &sarr[0].v[1], sarr[0].len - 1, '-') == 2)
+		if (sarr[0].v[0] == '(' && Text::StrEndsWithC(sarr[0].v, sarr[0].leng, UTF8STRC(")")) && Text::StrSplitP(sarr2, 3, &sarr[0].v[1], sarr[0].leng - 1, '-') == 2)
 		{
-			sarr2[1].v[sarr2[1].len - 1] = 0;
-			sarr2[1].len -= 1;
+			sarr2[1].v[sarr2[1].leng - 1] = 0;
+			sarr2[1].leng -= 1;
 			if (startEntry)
 			{
 				*startEntry = Text::StrToInt32(sarr2[0].v);

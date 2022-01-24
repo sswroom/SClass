@@ -87,8 +87,8 @@ void Text::MIMEObj::MultipartMIMEObj::ParsePart(UInt8 *buff, UOSInt buffSize)
 						lineStart = 0;
 						break;
 					}
-					j = hdrNames.SortedInsert(Text::String::New(sarr[0].v, sarr[0].len));
-					hdrValues.Insert(j, Text::String::New(sarr[1].v, sarr[1].len));
+					j = hdrNames.SortedInsert(Text::String::New(sarr[0].v, sarr[0].leng));
+					hdrValues.Insert(j, Text::String::New(sarr[1].v, sarr[1].leng));
 					sb.ClearStr();
 				}
 			}

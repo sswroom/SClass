@@ -763,13 +763,13 @@ Bool Net::OSSocketFactory::IcmpSendEcho2(const Net::SocketUtil::AddressInfo *add
 			UOSInt i = Text::StrSplitLineP(sarr, 3, sb.ToString(), sb.GetLength());
 			if (i == 3)
 			{
-				i = Text::StrIndexOfC(sarr[1].v, sarr[1].len, UTF8STRC(": "));
+				i = Text::StrIndexOfC(sarr[1].v, sarr[1].leng, UTF8STRC(": "));
 				UTF8Char *linePtr = sarr[1].v;
-				UOSInt lineLen = sarr[1].len;
+				UOSInt lineLen = sarr[1].leng;
 				if (i != INVALID_INDEX)
 				{
 					linePtr = &sarr[1].v[i + 2];
-					lineLen = sarr[1].len - i - 2;
+					lineLen = sarr[1].leng - i - 2;
 				}
 				if (Text::StrStartsWithC(linePtr, lineLen, UTF8STRC("icmp_seq=")))
 				{
@@ -949,9 +949,9 @@ Bool Net::OSSocketFactory::GetDefDNS(Net::SocketUtil::AddressInfo *addr)
 		{
 			if (Text::StrSplitTrimP(sarr, 3, sb.ToString(), sb.GetLength(), ' ') == 2)
 			{
-				if (Text::StrEqualsC(sarr[0].v, sarr[0].len, UTF8STRC("nameserver")))
+				if (sarr[0].Equals(UTF8STRC("nameserver")))
 				{
-					if (Net::SocketUtil::GetIPAddr(sarr[1].v, sarr[1].len, addr))
+					if (Net::SocketUtil::GetIPAddr(sarr[1].v, sarr[1].leng, addr))
 					{
 						ret = true;
 						break;
@@ -996,9 +996,9 @@ UOSInt Net::OSSocketFactory::GetDNSList(Data::ArrayList<UInt32> *dnsList)
 		{
 			if (Text::StrSplitTrimP(sarr, 3, sb.ToString(), sb.GetLength(), ' ') == 2)
 			{
-				if (Text::StrEqualsC(sarr[0].v, sarr[0].len, UTF8STRC("nameserver")))
+				if (sarr[0].Equals(UTF8STRC("nameserver")))
 				{
-					if (Net::SocketUtil::GetIPAddr(sarr[1].v, sarr[1].len, &addr))
+					if (Net::SocketUtil::GetIPAddr(sarr[1].v, sarr[1].leng, &addr))
 					{
 						if (addr.addrType == Net::AddrType::IPv4)
 						{

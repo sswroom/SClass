@@ -999,7 +999,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			t1 = clk.GetTimeDiff();
 			fileGDB->CloseReader(r);
 
-			IO::Path::GetRealPath(sbuff, (const UTF8Char*)"~/Progs/Temp/Lamppost.csv");
+			IO::Path::GetRealPath(sbuff, UTF8STRC("~/Progs/Temp/Lamppost.csv"));
 			IO::FileStream *fs;
 			NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 			clk.Start();

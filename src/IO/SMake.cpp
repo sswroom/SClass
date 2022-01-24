@@ -661,16 +661,16 @@ Bool IO::SMake::ParseHeader(Data::ArrayListString *objList, Data::ArrayListStrin
 	UOSInt i;
 	sb.Append(cfg->value);
 	sarr[1].v = sb.ToString();
-	sarr[1].len = sb.GetLength();
+	sarr[1].leng = sb.GetLength();
 	i = 2;
 	while (i == 2)
 	{
-		i = Text::StrSplitTrimP(sarr, 2, sarr[1].v, sarr[1].len, ':');
+		i = Text::StrSplitTrimP(sarr, 2, sarr[1].v, sarr[1].leng, ':');
 		sb2.ClearStr();
-		sb2.AppendC(sarr[0].v, sarr[0].len);
+		sb2.AppendC(sarr[0].v, sarr[0].leng);
 		sb2.AppendChar(IO::Path::PATH_SEPERATOR, 1);
 		sb2.Append(headerFile);
-		sptr = IO::Path::GetRealPath(sbuff, sb2.ToString());
+		sptr = IO::Path::GetRealPath(sbuff, sb2.ToString(), sb2.GetLength());
 
 		if (IO::Path::GetPathType(sbuff, (UOSInt)(sptr - sbuff)) == IO::Path::PathType::File)
 		{
@@ -704,7 +704,7 @@ Bool IO::SMake::ParseHeader(Data::ArrayListString *objList, Data::ArrayListStrin
 	}
 	sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
 	sb.AppendC(currHeader, (UOSInt)(currHeaderEnd - currHeader));
-	sptr = IO::Path::GetRealPath(sbuff, sb.ToString());
+	sptr = IO::Path::GetRealPath(sbuff, sb.ToString(), sb.GetLength());
 	if (IO::Path::GetPathType(sbuff, (UOSInt)(sptr - sbuff)) == IO::Path::PathType::File)
 	{
 		if (headerList && headerList->SortedIndexOf(headerFile) < 0)

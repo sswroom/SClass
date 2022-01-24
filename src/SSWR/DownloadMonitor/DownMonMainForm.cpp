@@ -110,19 +110,19 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnPasteTableClicked(void 
 	UOSInt i;
 	UOSInt j;
 	sarr[1].v = sb.ToString();
-	sarr[1].len = sb.GetLength();
+	sarr[1].leng = sb.GetLength();
 	while (true)
 	{
-		i = Text::StrSplitLineP(sarr, 2, sarr[1].v, sarr[1].len);
-		if (Text::StrStartsWithC(sarr[0].v, sarr[0].len, UTF8STRC("https://")) && Text::StrSplitP(sarr2, 2, sarr[0].v, sarr[0].len, '\t') == 2)
+		i = Text::StrSplitLineP(sarr, 2, sarr[1].v, sarr[1].leng);
+		if (Text::StrStartsWithC(sarr[0].v, sarr[0].leng, UTF8STRC("https://")) && Text::StrSplitP(sarr2, 2, sarr[0].v, sarr[0].leng, '\t') == 2)
 		{
 			Int32 id = 0;
 			Int32 webType = 0;
-			id = ParseURL(sarr[0].v, sarr[0].len, &webType);
+			id = ParseURL(sarr[0].v, sarr[0].leng, &webType);
 
 			if (id != 0)
 			{
-				Text::String *s = Text::String::New(sarr2[1].v, sarr2[1].len);
+				Text::String *s = Text::String::New(sarr2[1].v, sarr2[1].leng);
 				if (me->core->FileAdd(id, webType, s))
 				{
 					Sync::MutexUsage mutUsage;
@@ -182,15 +182,15 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnPasteHTMLClicked(void *
 		if (clipboard.GetDataText(fmtId, &sb))
 		{
 			sarr[1].v = sb.ToString();
-			sarr[1].len = sb.GetLength();
+			sarr[1].leng = sb.GetLength();
 			while (true)
 			{
-				i = Text::StrSplitLineP(sarr, 2, sarr[1].v, sarr[1].len);
-				if (i == 2 && Text::StrIndexOfC(sarr[0].v, sarr[0].len, UTF8STRC("<div class=\"post-thumb\">")) != INVALID_INDEX)
+				i = Text::StrSplitLineP(sarr, 2, sarr[1].v, sarr[1].leng);
+				if (i == 2 && Text::StrIndexOfC(sarr[0].v, sarr[0].leng, UTF8STRC("<div class=\"post-thumb\">")) != INVALID_INDEX)
 				{
 					desc = 0;
-					i = Text::StrSplitLineP(sarr, 2, sarr[1].v, sarr[1].len);
-					j = Text::StrIndexOfC(sarr[0].v, sarr[0].len, UTF8STRC("<img class=\"lazyload\" "));
+					i = Text::StrSplitLineP(sarr, 2, sarr[1].v, sarr[1].leng);
+					j = Text::StrIndexOfC(sarr[0].v, sarr[0].leng, UTF8STRC("<img class=\"lazyload\" "));
 					if (i == 2 && j != INVALID_INDEX)
 					{
 						UTF8Char *linePtr = &sarr[0].v[j + 22];
@@ -208,8 +208,8 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnPasteHTMLClicked(void *
 					}
 					if (desc)
 					{
-						i = Text::StrSplitLineP(sarr, 2, sarr[1].v, sarr[1].len);
-						j = Text::StrIndexOfC(sarr[0].v, sarr[0].len, UTF8STRC("<a href=\""));
+						i = Text::StrSplitLineP(sarr, 2, sarr[1].v, sarr[1].leng);
+						j = Text::StrIndexOfC(sarr[0].v, sarr[0].leng, UTF8STRC("<a href=\""));
 						if (i == 2 && j != INVALID_INDEX)
 						{
 							UTF8Char *linePtr = &sarr[0].v[j + 9];
@@ -493,7 +493,7 @@ void SSWR::DownloadMonitor::DownMonMainForm::LoadList()
 		{
 			Int32 id = 0;
 			Int32 webType = 0;
-			id = ParseURL(sarr[0].v, sarr[0].len, &webType);
+			id = ParseURL(sarr[0].v, sarr[0].leng, &webType);
 
 			if (id != 0)
 			{
@@ -510,11 +510,11 @@ void SSWR::DownloadMonitor::DownMonMainForm::LoadList()
 					{
 						printf("Name of id %d updated\r\n", id);
 						sarr[1].v = sb2.ToString();
-						sarr[1].len = sb2.GetLength();
+						sarr[1].leng = sb2.GetLength();
 						updated = true;
 					}
 				}
-				Text::String *s = Text::String::New(sarr[1].v, sarr[1].len);
+				Text::String *s = Text::String::New(sarr[1].v, sarr[1].leng);
 				if (this->core->FileAdd(id, webType, s))
 				{
 					Sync::MutexUsage mutUsage;

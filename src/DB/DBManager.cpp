@@ -166,29 +166,29 @@ DB::DBTool *DB::DBManager::OpenConn(const UTF8Char *connStr, IO::LogTool *log, N
 			sb.Append(connStr + 5);
 			Text::PString sarr[2];
 			sarr[1].v = sb.ToString();
-			sarr[1].len = sb.GetLength();
+			sarr[1].leng = sb.GetLength();
 			while (true)
 			{
-				cnt = Text::StrSplitP(sarr, 2, sarr[1].v, sarr[1].len, ';');
-				if (Text::StrStartsWithICaseC(sarr[0].v, sarr[0].len, UTF8STRC("DSN=")))
+				cnt = Text::StrSplitP(sarr, 2, sarr[1].v, sarr[1].leng, ';');
+				if (Text::StrStartsWithICaseC(sarr[0].v, sarr[0].leng, UTF8STRC("DSN=")))
 				{
 					SDEL_TEXT(dsn);
-					dsn = Text::StrCopyNewC(sarr[0].v + 4, sarr[0].len - 4);
+					dsn = Text::StrCopyNewC(sarr[0].v + 4, sarr[0].leng - 4);
 				}
-				else if (Text::StrStartsWithICaseC(sarr[0].v, sarr[0].len, UTF8STRC("UID=")))
+				else if (Text::StrStartsWithICaseC(sarr[0].v, sarr[0].leng, UTF8STRC("UID=")))
 				{
 					SDEL_TEXT(uid);
-					uid = Text::StrCopyNewC(sarr[0].v + 4, sarr[0].len - 4);
+					uid = Text::StrCopyNewC(sarr[0].v + 4, sarr[0].leng - 4);
 				}
-				else if (Text::StrStartsWithICaseC(sarr[0].v, sarr[0].len, UTF8STRC("PWD=")))
+				else if (Text::StrStartsWithICaseC(sarr[0].v, sarr[0].leng, UTF8STRC("PWD=")))
 				{
 					SDEL_TEXT(pwd);
-					pwd = Text::StrCopyNewC(sarr[0].v + 4, sarr[0].len - 4);
+					pwd = Text::StrCopyNewC(sarr[0].v + 4, sarr[0].leng - 4);
 				}
-				else if (Text::StrStartsWithICaseC(sarr[0].v, sarr[0].len, UTF8STRC("SCHEMA=")))
+				else if (Text::StrStartsWithICaseC(sarr[0].v, sarr[0].leng, UTF8STRC("SCHEMA=")))
 				{
 					SDEL_TEXT(schema);
-					schema = Text::StrCopyNewC(sarr[0].v + 7, sarr[0].len - 7);
+					schema = Text::StrCopyNewC(sarr[0].v + 7, sarr[0].leng - 7);
 				}
 				if (cnt != 2)
 				{
@@ -228,29 +228,29 @@ DB::DBTool *DB::DBManager::OpenConn(const UTF8Char *connStr, IO::LogTool *log, N
 		sb.Append(connStr + 6);
 		Text::PString sarr[2];
 		sarr[1].v = sb.ToString();
-		sarr[1].len = sb.GetLength();
+		sarr[1].leng = sb.GetLength();
 		while (true)
 		{
-			cnt = Text::StrSplitP(sarr, 2, sarr[1].v, sarr[1].len, ';');
-			if (Text::StrStartsWithICaseC(sarr[0].v, sarr[0].len, UTF8STRC("SERVER=")))
+			cnt = Text::StrSplitP(sarr, 2, sarr[1].v, sarr[1].leng, ';');
+			if (Text::StrStartsWithICaseC(sarr[0].v, sarr[0].leng, UTF8STRC("SERVER=")))
 			{
 				SDEL_TEXT(server);
-				server = Text::StrCopyNewC(sarr[0].v + 7, sarr[0].len - 7);
+				server = Text::StrCopyNewC(sarr[0].v + 7, sarr[0].leng - 7);
 			}
-			else if (Text::StrStartsWithICaseC(sarr[0].v, sarr[0].len, UTF8STRC("UID=")))
+			else if (Text::StrStartsWithICaseC(sarr[0].v, sarr[0].leng, UTF8STRC("UID=")))
 			{
 				SDEL_TEXT(uid);
-				uid = Text::StrCopyNewC(sarr[0].v + 4, sarr[0].len - 4);
+				uid = Text::StrCopyNewC(sarr[0].v + 4, sarr[0].leng - 4);
 			}
-			else if (Text::StrStartsWithICaseC(sarr[0].v, sarr[0].len, UTF8STRC("PWD=")))
+			else if (Text::StrStartsWithICaseC(sarr[0].v, sarr[0].leng, UTF8STRC("PWD=")))
 			{
 				SDEL_TEXT(pwd);
-				pwd = Text::StrCopyNewC(sarr[0].v + 4, sarr[0].len - 4);
+				pwd = Text::StrCopyNewC(sarr[0].v + 4, sarr[0].leng - 4);
 			}
-			else if (Text::StrStartsWithICaseC(sarr[0].v, sarr[0].len, UTF8STRC("DATABASE=")))
+			else if (Text::StrStartsWithICaseC(sarr[0].v, sarr[0].leng, UTF8STRC("DATABASE=")))
 			{
 				SDEL_TEXT(schema);
-				schema = Text::StrCopyNewC(sarr[0].v + 9, sarr[0].len - 9);
+				schema = Text::StrCopyNewC(sarr[0].v + 9, sarr[0].leng - 9);
 			}
 			if (cnt != 2)
 			{
@@ -324,32 +324,32 @@ DB::DBTool *DB::DBManager::OpenConn(const UTF8Char *connStr, IO::LogTool *log, N
 		sb.Append(connStr + 9);
 		Text::PString sarr[2];
 		sarr[1].v = sb.ToString();
-		sarr[1].len = sb.GetLength();
+		sarr[1].leng = sb.GetLength();
 		while (true)
 		{
-			cnt = Text::StrSplitP(sarr, 2, sarr[1].v, sarr[1].len, ';');
-			if (Text::StrStartsWithICaseC(sarr[0].v, sarr[0].len, UTF8STRC("SERVER=")))
+			cnt = Text::StrSplitP(sarr, 2, sarr[1].v, sarr[1].leng, ';');
+			if (Text::StrStartsWithICaseC(sarr[0].v, sarr[0].leng, UTF8STRC("SERVER=")))
 			{
-				Net::SocketUtil::GetIPAddr(sarr[0].v + 7, sarr[0].len - 7, &addr);
+				Net::SocketUtil::GetIPAddr(sarr[0].v + 7, sarr[0].leng - 7, &addr);
 			}
-			else if (Text::StrStartsWithICaseC(sarr[0].v, sarr[0].len, UTF8STRC("PORT=")))
+			else if (Text::StrStartsWithICaseC(sarr[0].v, sarr[0].leng, UTF8STRC("PORT=")))
 			{
 				Text::StrToUInt16(sarr[0].v + 5, &port);
 			}
-			else if (Text::StrStartsWithICaseC(sarr[0].v, sarr[0].len, UTF8STRC("UID=")))
+			else if (Text::StrStartsWithICaseC(sarr[0].v, sarr[0].leng, UTF8STRC("UID=")))
 			{
 				SDEL_TEXT(uid);
-				uid = Text::StrCopyNewC(sarr[0].v + 4, sarr[0].len - 4);
+				uid = Text::StrCopyNewC(sarr[0].v + 4, sarr[0].leng - 4);
 			}
-			else if (Text::StrStartsWithICaseC(sarr[0].v, sarr[0].len, UTF8STRC("PWD=")))
+			else if (Text::StrStartsWithICaseC(sarr[0].v, sarr[0].leng, UTF8STRC("PWD=")))
 			{
 				SDEL_TEXT(pwd);
-				pwd = Text::StrCopyNewC(sarr[0].v + 4, sarr[0].len - 4);
+				pwd = Text::StrCopyNewC(sarr[0].v + 4, sarr[0].leng - 4);
 			}
-			else if (Text::StrStartsWithICaseC(sarr[0].v, sarr[0].len, UTF8STRC("DATABASE=")))
+			else if (Text::StrStartsWithICaseC(sarr[0].v, sarr[0].leng, UTF8STRC("DATABASE=")))
 			{
 				SDEL_TEXT(schema);
-				schema = Text::StrCopyNewC(sarr[0].v + 9, sarr[0].len - 9);
+				schema = Text::StrCopyNewC(sarr[0].v + 9, sarr[0].leng - 9);
 			}
 			if (cnt != 2)
 			{

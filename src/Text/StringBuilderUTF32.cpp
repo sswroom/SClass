@@ -12,7 +12,7 @@ Text::StringBuilderUTF32::~StringBuilderUTF32()
 {
 }
 
-Text::StringBuilderUTF *Text::StringBuilderUTF32::Append(Text::String *s)
+Text::StringBuilderUTF *Text::StringBuilderUTF32::Append(Text::PString *s)
 {
 	UOSInt slen = Text::StrUTF8_UTF32CntC(s->v, s->leng);
 	if (slen > 0)

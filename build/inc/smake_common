@@ -3680,6 +3680,8 @@ Text/MyStringFloat.h: ../../src/Text/MyStringFloat.cpp
 @MyStringFloat.o
 Text/MyStringW.h: ../../src/Text/MyStringW.cpp
 @MyStringW.o
+Text/PString.h: ../../src/Text/PString.cpp
+@PString.o
 Text/ReportBuilder.h: ../../src/Text/ReportBuilder.cpp
 @ReportBuilder.o
 Text/SearchIndexer.h: ../../src/Text/SearchIndexer.cpp
@@ -5119,6 +5121,7 @@ MailBase64Stream.o: ../../src/Text/MailBase64Stream.cpp
 MyString.o: ../../src/Text/MyString.cpp
 MyStringFloat.o: ../../src/Text/MyStringFloat.cpp
 MyStringW.o: ../../src/Text/MyStringW.cpp
+PString.o: ../../src/Text/PString.cpp
 ReportBuilder.o: ../../src/Text/ReportBuilder.cpp
 SearchIndexer.o: ../../src/Text/SearchIndexer.cpp
 SMSMessage.o: ../../src/Text/SMSMessage.cpp

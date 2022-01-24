@@ -71,7 +71,7 @@ namespace IO
 		static Bool SetCurrDirectory(const UTF8Char *path);
 		static Bool SetCurrDirectoryW(const WChar *path);
 		static Bool IsSearchPattern(const UTF8Char *path);
-		static UTF8Char *GetRealPath(UTF8Char *sbuff, const UTF8Char *path);
+		static UTF8Char *GetRealPath(UTF8Char *sbuff, const UTF8Char *path, UOSInt pathLen);
 	};
 }
 #endif

@@ -647,8 +647,8 @@ Bool Net::HTTPMyClient::Connect(const UTF8Char *url, UOSInt urlLen, Net::WebUtil
 		if (i == 2)
 		{
 			Text::StrToUInt16S(ptrs[1].v, &port, 0);
-			svrnameEnd = Text::StrConcatC(svrname, ptrs[0].v, ptrs[0].len);
-			urltmpLen = ptrs[0].len;
+			svrnameEnd = Text::StrConcatC(svrname, ptrs[0].v, ptrs[0].leng);
+			urltmpLen = ptrs[0].leng;
 		}
 		else
 		{
@@ -660,7 +660,7 @@ Bool Net::HTTPMyClient::Connect(const UTF8Char *url, UOSInt urlLen, Net::WebUtil
 			{
 				port = 80;
 			}
-			svrnameEnd = Text::StrConcatC(svrname, ptrs[0].v, ptrs[0].len);
+			svrnameEnd = Text::StrConcatC(svrname, ptrs[0].v, ptrs[0].leng);
 		}
 	}
 

@@ -907,7 +907,7 @@ void Manage::Process::FindProcessClose(Manage::Process::FindProcSess *fpsess)
 	MemFree(fpsess);
 }
 
-Int32 Manage::Process::ExecuteProcess(Text::String *cmd, Text::StringBuilderUTF *result)
+Int32 Manage::Process::ExecuteProcess(Text::PString *cmd, Text::StringBuilderUTF *result)
 {
 	UTF8Char progName[64];
 	UTF8Char *progBuff = 0;

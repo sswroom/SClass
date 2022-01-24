@@ -213,10 +213,10 @@ Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(Net::WebServer::IWebRequ
 		sbHeader.Append(hdr);
 		if (Text::StrSplitP(sarr, 2, sbHeader.ToString(), sbHeader.GetLength(), ':') == 2)
 		{
-			sarr[1].len = (UOSInt)(Text::StrTrimC(sarr[1].v, sarr[1].len) - sarr[1].v);
-			if (this->fwdType == ForwardType::Transparent && Text::StrEqualsICaseC(sarr[0].v, sarr[0].len, UTF8STRC("LOCATION")))
+			sarr[1].leng = (UOSInt)(Text::StrTrimC(sarr[1].v, sarr[1].leng) - sarr[1].v);
+			if (this->fwdType == ForwardType::Transparent && Text::StrEqualsICaseC(sarr[0].v, sarr[0].leng, UTF8STRC("LOCATION")))
 			{
-				if (Text::StrStartsWithC(sarr[1].v, sarr[1].len, fwdBaseUrl->v, fwdBaseUrl->leng))
+				if (Text::StrStartsWithC(sarr[1].v, sarr[1].leng, fwdBaseUrl->v, fwdBaseUrl->leng))
 				{
 					sb.ClearStr();
 					if (req->IsSecure())
@@ -231,22 +231,22 @@ Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(Net::WebServer::IWebRequ
 					UOSInt urlLen = fwdBaseUrl->leng;
 					if (fwdBaseUrl->v[urlLen - 1] == '/')
 					{
-						sb.AppendC(&sarr[1].v[urlLen - 1], sarr[1].len - urlLen - 1);
+						sb.AppendC(&sarr[1].v[urlLen - 1], sarr[1].leng - urlLen - 1);
 					}
 					else
 					{
-						sb.AppendC(&sarr[1].v[urlLen], sarr[1].len - urlLen);
+						sb.AppendC(&sarr[1].v[urlLen], sarr[1].leng - urlLen);
 					}
-					resp->AddHeaderC(sarr[0].v, sarr[0].len, sb.ToString(), sb.GetLength());
+					resp->AddHeaderC(sarr[0].v, sarr[0].leng, sb.ToString(), sb.GetLength());
 				}
 				else
 				{
-					resp->AddHeaderC(sarr[0].v, sarr[0].len, sarr[1].v, sarr[1].len);
+					resp->AddHeaderC(sarr[0].v, sarr[0].leng, sarr[1].v, sarr[1].leng);
 				}
 			}
 			else
 			{
-				resp->AddHeaderC(sarr[0].v, sarr[0].len, sarr[1].v, sarr[1].len);
+				resp->AddHeaderC(sarr[0].v, sarr[0].leng, sarr[1].v, sarr[1].leng);
 			}
 		}
 		i++;
@@ -259,9 +259,9 @@ Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(Net::WebServer::IWebRequ
 		sbHeader.Append(this->injHeaders->GetItem(i));
 		if (Text::StrSplitP(sarr, 2, sbHeader.ToString(), sbHeader.GetLength(), ':') == 2)
 		{
-			UTF8Char *sptr = Text::StrTrimC(sarr[1].v, sarr[1].len);
-			sarr[1].len = (UOSInt)(sptr - sarr[1].v);
-			resp->AddHeaderC(sarr[0].v, sarr[0].len, sarr[1].v, sarr[1].len);
+			UTF8Char *sptr = Text::StrTrimC(sarr[1].v, sarr[1].leng);
+			sarr[1].leng = (UOSInt)(sptr - sarr[1].v);
+			resp->AddHeaderC(sarr[0].v, sarr[0].leng, sarr[1].v, sarr[1].leng);
 		}
 		i++;
 	}

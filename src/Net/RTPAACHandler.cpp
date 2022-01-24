@@ -140,48 +140,49 @@ void Net::RTPAACHandler::SetFormat(const UTF8Char *fmtStr)
 	UOSInt i;
 	sptr = Text::StrConcat(sbuff, fmtStr);
 	sarr[1].v = sbuff;
-	sarr[1].len = (UOSInt)(sptr - sbuff);
+	sarr[1].leng = (UOSInt)(sptr - sbuff);
 	while (true)
 	{
-		i = Text::StrSplitTrimP(sarr, 2, sarr[1].v, sarr[1].len, ';');
-		if (Text::StrStartsWithC(sarr[0].v, sarr[0].len, UTF8STRC("mode=")))
+		i = Text::StrSplitTrimP(sarr, 2, sarr[1].v, sarr[1].leng, ';');
+		if (Text::StrStartsWithC(sarr[0].v, sarr[0].leng, UTF8STRC("mode=")))
 		{
-			if (Text::StrEqualsC(sarr[0].v, sarr[0].len, UTF8STRC("mode=generic")))
+			if (Text::StrEqualsC(sarr[0].v, sarr[0].leng, UTF8STRC("mode=generic")))
 			{
 				this->aacm = AACM_GENERIC;
 			}
-			else if (Text::StrEqualsC(sarr[0].v, sarr[0].len, UTF8STRC("mode=CELP-cbr")))
+			else if (Text::StrEqualsC(sarr[0].v, sarr[0].leng, UTF8STRC("mode=CELP-cbr")))
 			{
 				this->aacm = AACM_CELP_CBR;
 			}
-			else if (Text::StrEqualsC(sarr[0].v, sarr[0].len, UTF8STRC("mode=CELP-vbr")))
+			else if (Text::StrEqualsC(sarr[0].v, sarr[0].leng, UTF8STRC("mode=CELP-vbr")))
 			{
 				this->aacm = AACM_CELP_VBR;
 			}
-			else if (Text::StrEqualsC(sarr[0].v, sarr[0].len, UTF8STRC("mode=AAC-lbr")))
+			else if (Text::StrEqualsC(sarr[0].v, sarr[0].leng, UTF8STRC("mode=AAC-lbr")))
 			{
 				this->aacm = AACM_AAC_LBR;
 			}
-			else if (Text::StrEqualsC(sarr[0].v, sarr[0].len, UTF8STRC("mode=AAC-hbr")))
+			else if (Text::StrEqualsC(sarr[0].v, sarr[0].leng, UTF8STRC("mode=AAC-hbr")))
 			{
 				this->aacm = AACM_AAC_HBR;
 			}
 		}
-		else if (Text::StrStartsWithC(sarr[0].v, sarr[0].len, UTF8STRC("streamType=")))
+		else if (Text::StrStartsWithC(sarr[0].v, sarr[0].leng, UTF8STRC("streamType=")))
 		{
 			this->streamType = Text::StrToInt32(&sarr[0].v[11]);
 		}
-		else if (Text::StrStartsWithC(sarr[0].v, sarr[0].len, UTF8STRC("profile-level-id=")))
+		else if (Text::StrStartsWithC(sarr[0].v, sarr[0].leng, UTF8STRC("profile-level-id=")))
 		{
 			this->profileId = Text::StrToInt32(&sarr[0].v[17]);
 		}
-		else if (Text::StrStartsWithC(sarr[0].v, sarr[0].len, UTF8STRC("config=")))
+		else if (Text::StrStartsWithC(sarr[0].v, sarr[0].leng, UTF8STRC("config=")))
 		{
 			this->config = Text::StrHex2Int32C(&sarr[0].v[7]);
 		}
 		else
 		{
-			sarr[0] = 0;
+			sarr[0].v = 0;
+			sarr[0].leng = 0;
 		}
 		
 		if (i == 1)

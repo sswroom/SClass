@@ -164,12 +164,12 @@ UInt32 Net::HTTPClient::GetContentCodePage()
 	if ((sptr = this->GetRespHeader(UTF8STRC("Content-Type"), sbuff)) != 0)
 	{
 		sarr[1].v = sbuff;
-		sarr[1].len = (UOSInt)(sptr - sbuff);
+		sarr[1].leng = (UOSInt)(sptr - sbuff);
 		arrCnt = 2;
 		while (arrCnt > 1)
 		{
-			arrCnt = Text::StrSplitP(sarr, 2, sarr[1].v, sarr[1].len, ';');
-			if (Text::StrStartsWithC(sarr[0].v, sarr[0].len, UTF8STRC("charset=")))
+			arrCnt = Text::StrSplitP(sarr, 2, sarr[1].v, sarr[1].leng, ';');
+			if (Text::StrStartsWithC(sarr[0].v, sarr[0].leng, UTF8STRC("charset=")))
 			{
 				Text::EncodingFactory encFact;
 				return encFact.GetCodePage(&sarr[0].v[8]);
@@ -232,10 +232,10 @@ void Net::HTTPClient::ParseDateStr(Data::DateTime *dt, const UTF8Char *dateStr, 
 			i = Text::StrSplitP(ptrs, 6, tmps, (UOSInt)(sptr - sbuff), ' ');
 			if (i >= 4)
 			{
-				j = Text::StrSplitP(ptrs2, 3, ptrs[3].v, ptrs[3].len, ':');
+				j = Text::StrSplitP(ptrs2, 3, ptrs[3].v, ptrs[3].leng, ':');
 				if (j == 3)
 				{
-					dt->SetValue((UInt16)Text::StrToUInt32(ptrs[2].v), Data::DateTime::ParseMonthStr(ptrs[1].v, ptrs[1].len), Text::StrToInt32(ptrs[0].v), Text::StrToInt32(ptrs2[0].v), Text::StrToInt32(ptrs2[1].v), Text::StrToInt32(ptrs2[2].v), 0);
+					dt->SetValue((UInt16)Text::StrToUInt32(ptrs[2].v), Data::DateTime::ParseMonthStr(ptrs[1].v, ptrs[1].leng), Text::StrToInt32(ptrs[0].v), Text::StrToInt32(ptrs2[0].v), Text::StrToInt32(ptrs2[1].v), Text::StrToInt32(ptrs2[2].v), 0);
 				}
 			}
 		}
@@ -244,9 +244,9 @@ void Net::HTTPClient::ParseDateStr(Data::DateTime *dt, const UTF8Char *dateStr, 
 			i = Text::StrSplitP(ptrs, 6, tmps, (UOSInt)(sptr - sbuff), ' ');
 			if (i >= 2)
 			{
-				Text::StrSplitP(ptrs2, 3, ptrs[1].v, ptrs[1].len, ':');
-				Text::StrSplitP(ptrs3, 3, ptrs[0].v, ptrs[0].len, '-');
-				dt->SetValue((UInt16)(Text::StrToUInt32(ptrs3[2].v) + (UInt32)((dt->GetYear() / 100) * 100)), Data::DateTime::ParseMonthStr(ptrs3[1].v, ptrs3[1].len), Text::StrToInt32(ptrs3[0].v), Text::StrToInt32(ptrs2[0].v), Text::StrToInt32(ptrs2[1].v), Text::StrToInt32(ptrs2[2].v), 0);
+				Text::StrSplitP(ptrs2, 3, ptrs[1].v, ptrs[1].leng, ':');
+				Text::StrSplitP(ptrs3, 3, ptrs[0].v, ptrs[0].leng, '-');
+				dt->SetValue((UInt16)(Text::StrToUInt32(ptrs3[2].v) + (UInt32)((dt->GetYear() / 100) * 100)), Data::DateTime::ParseMonthStr(ptrs3[1].v, ptrs3[1].leng), Text::StrToInt32(ptrs3[0].v), Text::StrToInt32(ptrs2[0].v), Text::StrToInt32(ptrs2[1].v), Text::StrToInt32(ptrs2[2].v), 0);
 			}
 		}
 	}
@@ -256,10 +256,10 @@ void Net::HTTPClient::ParseDateStr(Data::DateTime *dt, const UTF8Char *dateStr, 
 		i = Text::StrSplitP(ptrs, 6, sbuff, (UOSInt)(sptr - sbuff), ' ');
 		if (i > 3)
 		{
-			j = Text::StrSplitP(ptrs2, 3, ptrs[i - 2].v, ptrs[i - 2].len, ':');
+			j = Text::StrSplitP(ptrs2, 3, ptrs[i - 2].v, ptrs[i - 2].leng, ':');
 			if (j == 3)
 			{
-				dt->SetValue((UInt16)Text::StrToUInt32(ptrs[i - 1].v), Data::DateTime::ParseMonthStr(ptrs[1].v, ptrs[1].len), Text::StrToInt32(ptrs[i - 3].v), Text::StrToInt32(ptrs2[0].v), Text::StrToInt32(ptrs2[1].v), Text::StrToInt32(ptrs2[2].v), 0);
+				dt->SetValue((UInt16)Text::StrToUInt32(ptrs[i - 1].v), Data::DateTime::ParseMonthStr(ptrs[1].v, ptrs[1].leng), Text::StrToInt32(ptrs[i - 3].v), Text::StrToInt32(ptrs2[0].v), Text::StrToInt32(ptrs2[1].v), Text::StrToInt32(ptrs2[2].v), 0);
 			}
 		}
 	}

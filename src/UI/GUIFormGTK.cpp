@@ -40,13 +40,13 @@ void GUIForm_OnFileDrop(GtkWidget *widget, GdkDragContext *context, gint x, gint
 	UOSInt i;
 	UOSInt j;
 	sarr[1].v = sb.ToString();
-	sarr[1].len = sb.GetLength();
+	sarr[1].leng = sb.GetLength();
 	while (true)
 	{
-		i = Text::StrSplitP(sarr, 2, sarr[1].v, sarr[1].len, '\n');
-		if (Text::StrStartsWithC(sarr[0].v, sarr[0].len, UTF8STRC("file://")))
+		i = Text::StrSplitP(sarr, 2, sarr[1].v, sarr[1].leng, '\n');
+		if (Text::StrStartsWithC(sarr[0].v, sarr[0].leng, UTF8STRC("file://")))
 		{
-			j = sarr[0].len;
+			j = sarr[0].leng;
 			if (sarr[0].v[j - 1] == '\r')
 				sarr[0].v[j - 1] = 0;
 			sptr = Text::TextBinEnc::URIEncoding::URIDecode(sbuff, &sarr[0].v[7]);

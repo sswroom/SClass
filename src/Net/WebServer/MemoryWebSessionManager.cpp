@@ -82,11 +82,11 @@ Int64 Net::WebServer::MemoryWebSessionManager::GetSessId(Net::WebServer::IWebReq
 	cookie->ConcatTo(sbuff);
 
 	strs[1].v = sbuff;
-	strs[1].len = cookie->leng;
+	strs[1].leng = cookie->leng;
 	while (strCnt >= 2)
 	{
-		strCnt = Text::StrSplitTrimP(strs, 2, strs[1].v, strs[1].len, ';');
-		if (Text::StrStartsWithC(strs[0].v, strs[0].len, UTF8STRC("WebSessId=")))
+		strCnt = Text::StrSplitTrimP(strs, 2, strs[1].v, strs[1].leng, ';');
+		if (Text::StrStartsWithC(strs[0].v, strs[0].leng, UTF8STRC("WebSessId=")))
 		{
 			sessId = Text::StrToInt64(&strs[0].v[10]);
 			break;

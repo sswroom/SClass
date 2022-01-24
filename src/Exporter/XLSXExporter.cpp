@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Data/FastStringMap.h"
 #include "Exporter/XLSXExporter.h"
 #include "IO/BuildTime.h"
 #include "IO/ZIPBuilder.h"
@@ -58,6 +59,7 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char 
 	Text::StringBuilderUTF8 sb;
 	Text::StringBuilderUTF8 sbContTypes;
 	UTF8Char sbuff[256];
+	UTF8Char *sptr;
 	Data::DateTime dt;
 	Data::DateTime dt2;
 	Data::DateTime *t;
@@ -74,7 +76,7 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char 
 	UOSInt drawingCnt = 0;
 	UOSInt chartCnt = 0;
 	Data::ArrayList<Text::String*> sharedStrings;
-	Data::StringUTF8Map<UOSInt> stringMap;
+	Data::FastStringMap<UOSInt> stringMap;
 	dt.SetCurrTimeUTC();
 	NEW_CLASS(zip, IO::ZIPBuilder(stm));
 
@@ -205,8 +207,8 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char 
 						if (cell && cell->cellValue && cell->cdt != Text::SpreadSheet::CellDataType::MergedLeft && cell->cdt != Text::SpreadSheet::CellDataType::MergedTop)
 						{
 							sb.AppendC(UTF8STRC("<c r=\""));
-							Text::StrUOSInt(Text::SpreadSheet::Workbook::ColCode(sbuff, m), k + 1);
-							sb.Append(sbuff);
+							sptr = Text::StrUOSInt(Text::SpreadSheet::Workbook::ColCode(sbuff, m), k + 1);
+							sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 							sb.AppendChar('"', 1);
 							if (cell->style)
 							{
@@ -232,11 +234,11 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char 
 							{
 							case Text::SpreadSheet::CellDataType::String:
 								{
-									UOSInt sIndex = stringMap.Get(cell->cellValue->v);
-									if (sIndex == 0 && !stringMap.ContainsKey(cell->cellValue->v))
+									UOSInt sIndex = stringMap.Get(cell->cellValue);
+									if (sIndex == 0 && stringMap.IndexOf(cell->cellValue) >= 0)
 									{
 										sIndex = sharedStrings.Add(cell->cellValue);
-										stringMap.Put(cell->cellValue->v, sIndex);
+										stringMap.Put(cell->cellValue, sIndex);
 									}
 									sb.AppendUOSInt(sIndex);
 								}
@@ -287,8 +289,8 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char 
 				{
 					link = links.GetItem(m);
 					sb.AppendC(UTF8STRC("<hyperlink ref=\""));
-					Text::SpreadSheet::Workbook::ColCode(sbuff, link->col);
-					sb.Append(sbuff);
+					sptr = Text::SpreadSheet::Workbook::ColCode(sbuff, link->col);
+					sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 					sb.AppendUOSInt(link->row + 1);
 					sb.AppendC(UTF8STRC("\" r:id=\"rId"));
 					sb.AppendUOSInt(idBase + m);
@@ -335,10 +337,10 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char 
 			k++;
 		}
 		sb.AppendC(UTF8STRC("</worksheet>"));
-		Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("xl/worksheets/sheet")), i + 1), UTF8STRC(".xml"));
+		sptr = Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("xl/worksheets/sheet")), i + 1), UTF8STRC(".xml"));
 		zip->AddFile(sbuff, sb.ToString(), sb.GetLength(), dt.ToTicks(), false);
 		sbContTypes.AppendC(UTF8STRC("<Override PartName=\"/"));
-		sbContTypes.Append(sbuff);
+		sbContTypes.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 		sbContTypes.AppendC(UTF8STRC("\" ContentType=\"application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml\"/>"));
 
 		if (sheet->GetDrawingCount() > 0 || links.GetCount() > 0)
@@ -374,10 +376,10 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char 
 			}
 			sb.AppendC(UTF8STRC("</Relationships>"));
 
-			Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("xl/worksheets/_rels/sheet")), i + 1), UTF8STRC(".xml.rels"));
+			sptr = Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("xl/worksheets/_rels/sheet")), i + 1), UTF8STRC(".xml.rels"));
 			zip->AddFile(sbuff, sb.ToString(), sb.GetLength(), dt.ToTicks(), false);
 			sbContTypes.AppendC(UTF8STRC("<Override PartName=\"/"));
-			sbContTypes.Append(sbuff);
+			sbContTypes.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 			sbContTypes.AppendC(UTF8STRC("\" ContentType=\"application/vnd.openxmlformats-package.relationships+xml\"/>"));
 
 			k = 0;
@@ -508,10 +510,10 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char 
 				}
 				sb.AppendC(UTF8STRC("</xdr:wsDr>"));
 				drawingCnt++;
-				Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("xl/drawings/drawing")), drawingCnt), UTF8STRC(".xml"));
+				sptr = Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("xl/drawings/drawing")), drawingCnt), UTF8STRC(".xml"));
 				zip->AddFile(sbuff, sb.ToString(), sb.GetLength(), dt.ToTicks(), false);
 				sbContTypes.AppendC(UTF8STRC("<Override PartName=\"/"));
-				sbContTypes.Append(sbuff);
+				sbContTypes.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 				sbContTypes.AppendC(UTF8STRC("\" ContentType=\"application/vnd.openxmlformats-officedocument.drawing+xml\"/>"));
 
 				if (drawing->chart)
@@ -524,10 +526,10 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char 
 					sb.AppendC(UTF8STRC(".xml\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/chart\"/>"));
 					sb.AppendC(UTF8STRC("</Relationships>"));
 
-					Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("xl/drawings/_rels/drawing")), drawingCnt), UTF8STRC(".xml.rels"));
+					sptr = Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("xl/drawings/_rels/drawing")), drawingCnt), UTF8STRC(".xml.rels"));
 					zip->AddFile(sbuff, sb.ToString(), sb.GetLength(), dt.ToTicks(), false);
 					sbContTypes.AppendC(UTF8STRC("<Override PartName=\"/"));
-					sbContTypes.Append(sbuff);
+					sbContTypes.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 					sbContTypes.AppendC(UTF8STRC("\" ContentType=\"application/vnd.openxmlformats-package.relationships+xml\"/>"));
 
 					chartCnt++;
@@ -627,10 +629,10 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char 
 					//////////////////////////////////////
 					sb.AppendC(UTF8STRC("</c:chartSpace>"));
 
-					Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("xl/charts/chart")), chartCnt), UTF8STRC(".xml"));
+					sptr = Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("xl/charts/chart")), chartCnt), UTF8STRC(".xml"));
 					zip->AddFile(sbuff, sb.ToString(), sb.GetLength(), dt.ToTicks(), false);
 					sbContTypes.AppendC(UTF8STRC("<Override PartName=\"/"));
-					sbContTypes.Append(sbuff);
+					sbContTypes.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 					sbContTypes.AppendC(UTF8STRC("\" ContentType=\"application/vnd.openxmlformats-officedocument.drawingml.chart+xml\"/>"));
 				}
 				k++;
@@ -834,10 +836,10 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char 
 		{
 			border = borders.GetItem(i);
 			sb.AppendC(UTF8STRC("<border diagonalUp=\"false\" diagonalDown=\"false\">"));
-			AppendBorder(&sb, border->left, (const UTF8Char*)"left");
-			AppendBorder(&sb, border->right, (const UTF8Char*)"right");
-			AppendBorder(&sb, border->top, (const UTF8Char*)"top");
-			AppendBorder(&sb, border->bottom, (const UTF8Char*)"bottom");
+			AppendBorder(&sb, border->left, UTF8STRC("left"));
+			AppendBorder(&sb, border->right, UTF8STRC("right"));
+			AppendBorder(&sb, border->top, UTF8STRC("top"));
+			AppendBorder(&sb, border->bottom, UTF8STRC("bottom"));
 			sb.AppendC(UTF8STRC("<diagonal/>"));
 			sb.AppendC(UTF8STRC("</border>"));
 			i++;
@@ -988,7 +990,10 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char 
 					break;
 				}
 				sb.AppendC(UTF8STRC("\" textRotation=\"0\" wrapText=\""));
-				sb.Append(style->GetWordWrap()?(const UTF8Char*)"true":(const UTF8Char*)"false");
+				if (style->GetWordWrap())
+					sb.AppendC(UTF8STRC("true"));
+				else
+					sb.AppendC(UTF8STRC("false"));
 				sb.AppendC(UTF8STRC("\" indent=\"0\" shrinkToFit=\"false\"/>"));
 				sb.AppendC(UTF8STRC("<protection locked=\"true\" hidden=\"false\"/>"));
 				sb.AppendC(UTF8STRC("</xf>"));
@@ -1075,11 +1080,11 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char 
 	t = workbook->GetCreateTime();
 	if (t)
 	{
-		t->ToString(sbuff, "yyyy-MM-dd");
-		sb.Append(sbuff);
+		sptr = t->ToString(sbuff, "yyyy-MM-dd");
+		sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 		sb.AppendChar('T', 1);
-		t->ToString(sbuff, "HH:mm:ss");
-		sb.Append(sbuff);
+		sptr = t->ToString(sbuff, "HH:mm:ss");
+		sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 		sb.AppendChar('Z', 1);
 	}
 	sb.AppendC(UTF8STRC("</dcterms:created>"));
@@ -1124,11 +1129,11 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char 
 	t = workbook->GetModifyTime();
 	if (t)
 	{
-		t->ToString(sbuff, "yyyy-MM-dd");
-		sb.Append(sbuff);
+		sptr = t->ToString(sbuff, "yyyy-MM-dd");
+		sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 		sb.AppendChar('T', 1);
-		t->ToString(sbuff, "HH:mm:ss");
-		sb.Append(sbuff);
+		sptr = t->ToString(sbuff, "HH:mm:ss");
+		sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 		sb.AppendChar('Z', 1);
 	}
 	sb.AppendC(UTF8STRC("</dcterms:modified>"));
@@ -1165,8 +1170,8 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char 
 	sb.AppendC(UTF8STRC("<Application>"));
 	sb.AppendC(UTF8STRC("AVIRead/"));
 	IO::BuildTime::GetBuildTime(&dt2);
-	dt2.ToString(sbuff, "yyyyMMdd_HHmmss");
-	sb.Append(sbuff);
+	sptr = dt2.ToString(sbuff, "yyyyMMdd_HHmmss");
+	sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 	sb.AppendC(UTF8STRC("</Application>"));
 	sb.AppendC(UTF8STRC("</Properties>"));
 	zip->AddFile((const UTF8Char*)"docProps/app.xml", sb.ToString(), sb.GetLength(), dt.ToTicks(), false);
@@ -1197,7 +1202,8 @@ void Exporter::XLSXExporter::AppendFill(Text::StringBuilderUTF *sb, OfficeFill *
 			if (color->GetColorType() == ColorType::Preset)
 			{
 				sb->AppendC(UTF8STRC("<a:prstClr val=\""));
-				sb->Append((const UTF8Char*)PresetColorCode(color->GetPresetColor()));
+				Text::CString col = PresetColorCode(color->GetPresetColor());
+				sb->AppendC(col.v, col.len);
 				sb->AppendC(UTF8STRC("\"/>"));
 			}
 			sb->AppendC(UTF8STRC("</a:solidFill>"));
@@ -1503,15 +1509,18 @@ void Exporter::XLSXExporter::AppendSeries(Text::StringBuilderUTF *sb, Text::Spre
 	sb->AppendC(UTF8STRC("</c:val>"));
 
 	sb->AppendC(UTF8STRC("<c:smooth val=\""));
-	sb->Append((const UTF8Char*)(series->IsSmooth()?"true":"false"));
+	if (series->IsSmooth())
+		sb->AppendC(UTF8STRC("true"));
+	else
+		sb->AppendC(UTF8STRC("false"));
 	sb->AppendC(UTF8STRC("\"/>"));
 	sb->AppendC(UTF8STRC("</c:ser>"));
 }
 
-void Exporter::XLSXExporter::AppendBorder(Text::StringBuilderUTF *sb, Text::SpreadSheet::CellStyle::BorderStyle *border, const UTF8Char *name)
+void Exporter::XLSXExporter::AppendBorder(Text::StringBuilderUTF *sb, Text::SpreadSheet::CellStyle::BorderStyle *border, const UTF8Char *name, UOSInt nameLen)
 {
 	sb->AppendChar('<', 1);
-	sb->Append(name);
+	sb->AppendC(name, nameLen);
 	if (border->borderType == BorderType::None)
 	{
 		sb->AppendC(UTF8STRC("/>"));
@@ -1566,299 +1575,300 @@ void Exporter::XLSXExporter::AppendBorder(Text::StringBuilderUTF *sb, Text::Spre
 		sb->AppendHex32(border->borderColor);
 		sb->AppendC(UTF8STRC("\"/>"));
 		sb->AppendC(UTF8STRC("</"));
-		sb->Append(name);
+		sb->AppendC(name, nameLen);
 		sb->AppendChar('>', 1);
 	}
 }
 
-const Char *Exporter::XLSXExporter::PresetColorCode(PresetColor color)
+Text::CString Exporter::XLSXExporter::PresetColorCode(PresetColor color)
 {
 	switch (color)
 	{
 	case PresetColor::AliceBlue:
-		return "aliceBlue";		
+		return {UTF8STRC("aliceBlue")};
 	case PresetColor::AntiqueWhite:
-		return "antiqueWhite";		
+		return {UTF8STRC("antiqueWhite")};		
 	case PresetColor::Aqua:
-		return "aqua";		
+		return {UTF8STRC("aqua")};		
 	case PresetColor::Aquamarine:
-		return "aquamarine";		
+		return {UTF8STRC("aquamarine")};		
 	case PresetColor::Azure:
-		return "azure";		
+		return {UTF8STRC("azure")};		
 	case PresetColor::Beige:
-		return "beige";		
+		return {UTF8STRC("beige")};		
 	case PresetColor::Bisque:
-		return "bisque";		
+		return {UTF8STRC("bisque")};		
 	case PresetColor::Black:
-		return "black";		
+		return {UTF8STRC("black")};		
 	case PresetColor::BlanchedAlmond:
-		return "blanchedAlmond";		
+		return {UTF8STRC("blanchedAlmond")};		
 	case PresetColor::Blue:
-		return "blue";		
+		return {UTF8STRC("blue")};		
 	case PresetColor::BlueViolet:
-		return "blueViolet";		
+		return {UTF8STRC("blueViolet")};		
 	case PresetColor::Brown:
-		return "brown";		
+		return {UTF8STRC("brown")};		
 	case PresetColor::BurlyWood:
-		return "burlyWood";		
+		return {UTF8STRC("burlyWood")};		
 	case PresetColor::CadetBlue:
-		return "cadetBlue";		
+		return {UTF8STRC("cadetBlue")};		
 	case PresetColor::Chartreuse:
-		return "chartreuse";		
+		return {UTF8STRC("chartreuse")};		
 	case PresetColor::Chocolate:
-		return "chocolate";		
+		return {UTF8STRC("chocolate")};		
 	case PresetColor::Coral:
-		return "coral";		
+		return {UTF8STRC("coral")};		
 	case PresetColor::CornflowerBlue:
-		return "cornflowerBlue";		
+		return {UTF8STRC("cornflowerBlue")};		
 	case PresetColor::Cornsilk:
-		return "cornsilk";		
+		return {UTF8STRC("cornsilk")};		
 	case PresetColor::Crimson:
-		return "crimson";		
+		return {UTF8STRC("crimson")};		
 	case PresetColor::Cyan:
-		return "cyan";		
+		return {UTF8STRC("cyan")};		
 	case PresetColor::DeepPink:
-		return "deepPink";		
+		return {UTF8STRC("deepPink")};		
 	case PresetColor::DeepSkyBlue:
-		return "deepSkyBlue";		
+		return {UTF8STRC("deepSkyBlue")};		
 	case PresetColor::DimGray:
-		return "dimGray";		
+		return {UTF8STRC("dimGray")};		
 	case PresetColor::DarkBlue:
-		return "dkBlue";		
+		return {UTF8STRC("dkBlue")};		
 	case PresetColor::DarkCyan:
-		return "dkCyan";		
+		return {UTF8STRC("dkCyan")};		
 	case PresetColor::DarkGoldenrod:
-		return "dkGoldenrod";		
+		return {UTF8STRC("dkGoldenrod")};		
 	case PresetColor::DarkGray:
-		return "dkGray";		
+		return {UTF8STRC("dkGray")};		
 	case PresetColor::DarkGreen:
-		return "dkGreen";		
+		return {UTF8STRC("dkGreen")};		
 	case PresetColor::DarkKhaki:
-		return "dkKhaki";		
+		return {UTF8STRC("dkKhaki")};		
 	case PresetColor::DarkMagenta:
-		return "dkMagenta";		
+		return {UTF8STRC("dkMagenta")};		
 	case PresetColor::DarkOliveGreen:
-		return "dkOliveGreen";		
+		return {UTF8STRC("dkOliveGreen")};		
 	case PresetColor::DarkOrange:
-		return "dkOrange";		
+		return {UTF8STRC("dkOrange")};		
 	case PresetColor::DarkOrchid:
-		return "dkOrchid";		
+		return {UTF8STRC("dkOrchid")};		
 	case PresetColor::DarkRed:
-		return "dkRed";		
+		return {UTF8STRC("dkRed")};		
 	case PresetColor::DarkSalmon:
-		return "dkSalmon";		
+		return {UTF8STRC("dkSalmon")};		
 	case PresetColor::DarkSeaGreen:
-		return "dkSeaGreen";		
+		return {UTF8STRC("dkSeaGreen")};		
 	case PresetColor::DarkSlateBlue:
-		return "dkSlateBlue";		
+		return {UTF8STRC("dkSlateBlue")};		
 	case PresetColor::DarkSlateGray:
-		return "dkSlateGray";		
+		return {UTF8STRC("dkSlateGray")};		
 	case PresetColor::DarkTurquoise:
-		return "dkTurquoise";		
+		return {UTF8STRC("dkTurquoise")};		
 	case PresetColor::DarkViolet:
-		return "dkViolet";		
+		return {UTF8STRC("dkViolet")};		
 	case PresetColor::DodgerBlue:
-		return "dodgerBlue";		
+		return {UTF8STRC("dodgerBlue")};		
 	case PresetColor::Firebrick:
-		return "firebrick";		
+		return {UTF8STRC("firebrick")};		
 	case PresetColor::FloralWhite:
-		return "floralWhite";		
+		return {UTF8STRC("floralWhite")};		
 	case PresetColor::ForestGreen:
-		return "forestGreen";		
+		return {UTF8STRC("forestGreen")};		
 	case PresetColor::Fuchsia:
-		return "fuchsia";		
+		return {UTF8STRC("fuchsia")};		
 	case PresetColor::Gainsboro:
-		return "gainsboro";		
+		return {UTF8STRC("gainsboro")};		
 	case PresetColor::GhostWhite:
-		return "ghostWhite";		
+		return {UTF8STRC("ghostWhite")};		
 	case PresetColor::Gold:
-		return "gold";		
+		return {UTF8STRC("gold")};		
 	case PresetColor::Goldenrod:
-		return "goldenrod";		
+		return {UTF8STRC("goldenrod")};		
 	case PresetColor::Gray:
-		return "gray";		
+		return {UTF8STRC("gray")};		
 	case PresetColor::Green:
-		return "green";		
+		return {UTF8STRC("green")};		
 	case PresetColor::GreenYellow:
-		return "greenYellow";		
+		return {UTF8STRC("greenYellow")};		
 	case PresetColor::Honeydew:
-		return "honeydew";		
+		return {UTF8STRC("honeydew")};		
 	case PresetColor::HotPink:
-		return "hotPink";		
+		return {UTF8STRC("hotPink")};		
 	case PresetColor::IndianRed:
-		return "indianRed";		
+		return {UTF8STRC("indianRed")};		
 	case PresetColor::Indigo:
-		return "indigo";		
+		return {UTF8STRC("indigo")};		
 	case PresetColor::Ivory:
-		return "ivory";		
+		return {UTF8STRC("ivory")};		
 	case PresetColor::Khaki:
-		return "khaki";		
+		return {UTF8STRC("khaki")};		
 	case PresetColor::Lavender:
-		return "lavender";		
+		return {UTF8STRC("lavender")};		
 	case PresetColor::LavenderBlush:
-		return "lavenderBlush";		
+		return {UTF8STRC("lavenderBlush")};		
 	case PresetColor::LawnGreen:
-		return "lawnGreen";		
+		return {UTF8STRC("lawnGreen")};		
 	case PresetColor::LemonChiffon:
-		return "lemonChiffon";		
+		return {UTF8STRC("lemonChiffon")};		
 	case PresetColor::Lime:
-		return "lime";		
+		return {UTF8STRC("lime")};		
 	case PresetColor::LimeGreen:
-		return "limeGreen";		
+		return {UTF8STRC("limeGreen")};		
 	case PresetColor::Linen:
-		return "linen";		
+		return {UTF8STRC("linen")};		
 	case PresetColor::LightBlue:
-		return "ltBlue";		
+		return {UTF8STRC("ltBlue")};		
 	case PresetColor::LightCoral:
-		return "ltCoral";		
+		return {UTF8STRC("ltCoral")};		
 	case PresetColor::LightCyan:
-		return "ltCyan";		
+		return {UTF8STRC("ltCyan")};		
 	case PresetColor::LightGoldenrodYellow:
-		return "ltGoldenrodYellow";		
+		return {UTF8STRC("ltGoldenrodYellow")};		
 	case PresetColor::LightGray:
-		return "ltGray";		
+		return {UTF8STRC("ltGray")};		
 	case PresetColor::LightGreen:
-		return "ltGreen";		
+		return {UTF8STRC("ltGreen")};		
 	case PresetColor::LightPink:
-		return "ltPink";		
+		return {UTF8STRC("ltPink")};		
 	case PresetColor::LightSalmon:
-		return "ltSalmon";		
+		return {UTF8STRC("ltSalmon")};		
 	case PresetColor::LightSeaGreen:
-		return "ltSeaGreen";		
+		return {UTF8STRC("ltSeaGreen")};		
 	case PresetColor::LightSkyBlue:
-		return "ltSkyBlue";		
+		return {UTF8STRC("ltSkyBlue")};		
 	case PresetColor::LightSlateGray:
-		return "ltSlateGray";		
+		return {UTF8STRC("ltSlateGray")};		
 	case PresetColor::LightSteelBlue:
-		return "ltSteelBlue";		
+		return {UTF8STRC("ltSteelBlue")};		
 	case PresetColor::LightYellow:
-		return "ltYellow";		
+		return {UTF8STRC("ltYellow")};		
 	case PresetColor::Magenta:
-		return "magenta";		
+		return {UTF8STRC("magenta")};		
 	case PresetColor::Maroon:
-		return "maroon";		
+		return {UTF8STRC("maroon")};		
 	case PresetColor::MediumAquamarine:
-		return "medAquamarine";		
+		return {UTF8STRC("medAquamarine")};		
 	case PresetColor::MediumBlue:
-		return "medBlue";		
+		return {UTF8STRC("medBlue")};		
 	case PresetColor::MediumOrchid:
-		return "medOrchid";		
+		return {UTF8STRC("medOrchid")};		
 	case PresetColor::MediumPurple:
-		return "medPurple";		
+		return {UTF8STRC("medPurple")};		
 	case PresetColor::MediumSeaGreen:
-		return "medSeaGreen";		
+		return {UTF8STRC("medSeaGreen")};		
 	case PresetColor::MediumSlateBlue:
-		return "medSlateBlue";		
+		return {UTF8STRC("medSlateBlue")};		
 	case PresetColor::MediumSpringGreen:
-		return "medSpringGreen";		
+		return {UTF8STRC("medSpringGreen")};		
 	case PresetColor::MediumTurquoise:
-		return "medTurquoise";		
+		return {UTF8STRC("medTurquoise")};		
 	case PresetColor::MediumVioletRed:
-		return "medVioletRed";		
+		return {UTF8STRC("medVioletRed")};		
 	case PresetColor::MidnightBlue:
-		return "midnightBlue";		
+		return {UTF8STRC("midnightBlue")};		
 	case PresetColor::MintCream:
-		return "mintCream";		
+		return {UTF8STRC("mintCream")};		
 	case PresetColor::MistyRose:
-		return "mistyRose";		
+		return {UTF8STRC("mistyRose")};		
 	case PresetColor::Moccasin:
-		return "moccasin";		
+		return {UTF8STRC("moccasin")};		
 	case PresetColor::NavajoWhite:
-		return "navajoWhite";		
+		return {UTF8STRC("navajoWhite")};		
 	case PresetColor::Navy:
-		return "navy";		
+		return {UTF8STRC("navy")};		
 	case PresetColor::OldLace:
-		return "oldLace";		
+		return {UTF8STRC("oldLace")};		
 	case PresetColor::Olive:
-		return "olive";		
+		return {UTF8STRC("olive")};		
 	case PresetColor::OliveDrab:
-		return "oliveDrab";		
+		return {UTF8STRC("oliveDrab")};		
 	case PresetColor::Orange:
-		return "orange";		
+		return {UTF8STRC("orange")};		
 	case PresetColor::OrangeRed:
-		return "orangeRed";		
+		return {UTF8STRC("orangeRed")};		
 	case PresetColor::Orchid:
-		return "orchid";		
+		return {UTF8STRC("orchid")};		
 	case PresetColor::PaleGoldenrod:
-		return "paleGoldenrod";		
+		return {UTF8STRC("paleGoldenrod")};		
 	case PresetColor::PaleGreen:
-		return "paleGreen";		
+		return {UTF8STRC("paleGreen")};		
 	case PresetColor::PaleTurquoise:
-		return "paleTurquoise";		
+		return {UTF8STRC("paleTurquoise")};		
 	case PresetColor::PaleVioletRed:
-		return "paleVioletRed";		
+		return {UTF8STRC("paleVioletRed")};		
 	case PresetColor::PapayaWhip:
-		return "papayaWhip";		
+		return {UTF8STRC("papayaWhip")};		
 	case PresetColor::PeachPuff:
-		return "peachPuff";		
+		return {UTF8STRC("peachPuff")};		
 	case PresetColor::Peru:
-		return "peru";		
+		return {UTF8STRC("peru")};		
 	case PresetColor::Pink:
-		return "pink";		
+		return {UTF8STRC("pink")};		
 	case PresetColor::Plum:
-		return "plum";		
+		return {UTF8STRC("plum")};		
 	case PresetColor::PowderBlue:
-		return "powderBlue";		
+		return {UTF8STRC("powderBlue")};		
 	case PresetColor::Purple:
-		return "purple";		
+		return {UTF8STRC("purple")};		
 	case PresetColor::Red:
-		return "red";		
+		return {UTF8STRC("red")};		
 	case PresetColor::RosyBrown:
-		return "rosyBrown";		
+		return {UTF8STRC("rosyBrown")};		
 	case PresetColor::RoyalBlue:
-		return "royalBlue";		
+		return {UTF8STRC("royalBlue")};		
 	case PresetColor::SaddleBrown:
-		return "saddleBrown";		
+		return {UTF8STRC("saddleBrown")};		
 	case PresetColor::Salmon:
-		return "salmon";		
+		return {UTF8STRC("salmon")};		
 	case PresetColor::SandyBrown:
-		return "sandyBrown";		
+		return {UTF8STRC("sandyBrown")};		
 	case PresetColor::SeaGreen:
-		return "seaGreen";		
+		return {UTF8STRC("seaGreen")};		
 	case PresetColor::SeaShell:
-		return "seaShell";		
+		return {UTF8STRC("seaShell")};		
 	case PresetColor::Sienna:
-		return "sienna";		
+		return {UTF8STRC("sienna")};		
 	case PresetColor::Silver:
-		return "silver";		
+		return {UTF8STRC("silver")};		
 	case PresetColor::SkyBlue:
-		return "skyBlue";		
+		return {UTF8STRC("skyBlue")};		
 	case PresetColor::SlateBlue:
-		return "slateBlue";		
+		return {UTF8STRC("slateBlue")};		
 	case PresetColor::SlateGray:
-		return "slateGray";		
+		return {UTF8STRC("slateGray")};		
 	case PresetColor::Snow:
-		return "snow";		
+		return {UTF8STRC("snow")};		
 	case PresetColor::SpringGreen:
-		return "springGreen";		
+		return {UTF8STRC("springGreen")};		
 	case PresetColor::SteelBlue:
-		return "steelBlue";		
+		return {UTF8STRC("steelBlue")};		
 	case PresetColor::Tan:
-		return "tan";		
+		return {UTF8STRC("tan")};		
 	case PresetColor::Teal:
-		return "teal";		
+		return {UTF8STRC("teal")};		
 	case PresetColor::Thistle:
-		return "thistle";		
+		return {UTF8STRC("thistle")};		
 	case PresetColor::Tomato:
-		return "tomato";		
+		return {UTF8STRC("tomato")};		
 	case PresetColor::Turquoise:
-		return "turquoise";		
+		return {UTF8STRC("turquoise")};		
 	case PresetColor::Violet:
-		return "violet";		
+		return {UTF8STRC("violet")};		
 	case PresetColor::Wheat:
-		return "wheat";		
+		return {UTF8STRC("wheat")};		
 	case PresetColor::White:
-		return "white";		
+		return {UTF8STRC("white")};		
 	case PresetColor::WhiteSmoke:
-		return "whiteSmoke";		
+		return {UTF8STRC("whiteSmoke")};		
 	case PresetColor::Yellow:
-		return "yellow";		
+		return {UTF8STRC("yellow")};		
 	case PresetColor::YellowGreen:
-		return "yellowGreen";		
+		return {UTF8STRC("yellowGreen")};		
 	default:
-		return "Unknown";		
+		return {UTF8STRC("Unknown")};
 	}
 }
+
 UTF8Char *Exporter::XLSXExporter::ToFormatCode(UTF8Char *sbuff, const UTF8Char *dataFormat)
 {
 	UTF8Char c;

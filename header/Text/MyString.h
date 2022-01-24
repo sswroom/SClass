@@ -63,26 +63,6 @@ extern "C"
 
 namespace Text
 {
-	struct PString
-	{
-		UTF8Char *v;
-		UOSInt len;
-
-		void operator =(UTF8Char *v)
-		{
-			this->v = v;
-			if (v)
-			{
-				while (*v++)
-				this->len = (UOSInt)(v - this->v - 1);
-			}
-			else
-			{
-				this->len = 0;
-			}
-		}
-	};
-
 	UTF8Char *StrConcat(UTF8Char *oriStr, const UTF8Char *strToJoin);
 	UTF8Char *StrConcatC(UTF8Char *oriStr, const UTF8Char *strToJoin, UOSInt charCnt);
 	UTF8Char *StrConcatS(UTF8Char *oriStr, const UTF8Char *strToJoin, UOSInt buffSize);
@@ -170,13 +150,9 @@ namespace Text
 #endif
 
 	UOSInt StrSplit(UTF8Char **strs, UOSInt maxStrs, UTF8Char *str, UTF8Char splitChar); //Optimized
-	UOSInt StrSplitP(PString *strs, UOSInt maxStrs, UTF8Char *str, UOSInt strLen, UTF8Char splitChar); //Optimized
 	UOSInt StrSplitTrim(UTF8Char **strs, UOSInt maxStrs, UTF8Char *str, UTF8Char splitChar); //Optimized
-	UOSInt StrSplitTrimP(PString *strs, UOSInt maxStrs, UTF8Char *str, UOSInt strLen, UTF8Char splitChar); //Optimized
 	UOSInt StrSplitLine(UTF8Char **strs, UOSInt maxStrs, UTF8Char *str); //Optimized
-	UOSInt StrSplitLineP(PString *strs, UOSInt maxStrs, UTF8Char *str, UOSInt strLen); //Optimized
 	UOSInt StrSplitWS(UTF8Char **strs, UOSInt maxStrs, UTF8Char *str); //Optimized
-	UOSInt StrSplitWSP(PString *strs, UOSInt maxStrs, UTF8Char *str, UOSInt strLen); //Optimized
 	Bool StrToUInt8(const UTF8Char *intStr, UInt8 *outVal);
 	UInt8 StrToUInt8(const UTF8Char *intStr);
 	Bool StrToUInt16(const UTF8Char *intStr, UInt16 *outVal);
@@ -236,7 +212,6 @@ namespace Text
 	UTF8Char *StrToCSVRec(UTF8Char *oriStr, const UTF8Char *str1);
 	const UTF8Char *StrToNewCSVRec(const UTF8Char *str1);
 	UOSInt StrCSVSplit(UTF8Char **strs, UOSInt maxStrs, UTF8Char *strToSplit);
-	UOSInt StrCSVSplitP(Text::PString *strs, UOSInt maxStrs, UTF8Char *strToSplit);
 	UTF8Char *StrCSVJoin(UTF8Char *oriStr, const UTF8Char **strs, UOSInt nStrs);
 	UOSInt StrCountChar(const UTF8Char *str1, UTF8Char c);
 	UTF8Char *StrRemoveANSIEscapes(UTF8Char *str1);

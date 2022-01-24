@@ -3485,11 +3485,11 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpecies(Net::WebServer::IWebR
 				{
 					if (refURLList->SortedIndexOfPtr(sarr[2].v) < 0)
 					{
-						refURLList->SortedInsert(Text::String::New(sarr[2].v, sarr[2].len));
+						refURLList->SortedInsert(Text::String::New(sarr[2].v, sarr[2].leng));
 					}
 					sptr2 = Text::StrConcatC(sptr, UTF8STRC("web"));
 					*sptr2++ = IO::Path::PATH_SEPERATOR;
-					sptr2 = Text::StrConcatC(sptr2, sarr[0].v, sarr[0].len);
+					sptr2 = Text::StrConcatC(sptr2, sarr[0].v, sarr[0].leng);
 					i = Text::StrLastIndexOfCharC(sptr, (UOSInt)(sptr2 - sptr), '.');
 					if (i != INVALID_INDEX)
 					{
@@ -4555,7 +4555,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 								found = true;
 								u8ptr2 = Text::StrConcatC(u8buff2, UTF8STRC("web"));
 								*u8ptr2++ = IO::Path::PATH_SEPERATOR;
-								u8ptr2 = Text::StrConcatC(u8ptr2, sarr[0].v, sarr[0].len);
+								u8ptr2 = Text::StrConcatC(u8ptr2, sarr[0].v, sarr[0].leng);
 								i = Text::StrLastIndexOfCharC(u8buff2, (UOSInt)(u8ptr2 - u8buff2), '.');
 								if (i != INVALID_INDEX)
 									u8buff2[i] = 0;
@@ -4915,7 +4915,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 								found = true;
 								u8ptr2 = Text::StrConcatC(u8buff2, UTF8STRC("web"));
 								*u8ptr2++ = IO::Path::PATH_SEPERATOR;
-								u8ptr2 = Text::StrConcatC(u8ptr2, sarr[0].v, sarr[0].len);
+								u8ptr2 = Text::StrConcatC(u8ptr2, sarr[0].v, sarr[0].leng);
 								i = Text::StrLastIndexOfCharC(u8buff2, (UOSInt)(u8ptr2 - u8buff2), '.');
 								if (i != INVALID_INDEX)
 									u8buff2[i] = 0;
@@ -5053,18 +5053,18 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 						if (found)
 						{
 							foundNext = true;
-							Text::StrConcatC(u8buff2, sarr[0].v, sarr[0].len);
+							Text::StrConcatC(u8buff2, sarr[0].v, sarr[0].leng);
 							break;
 						}
 						else
 						{
-							Text::StrToUpperC(sarr[0].v, sarr[0].v, sarr[0].len);
-							if (Text::StrStartsWithC(sarr[0].v, sarr[0].len, u8buff2, (UOSInt)(u8ptr2 - u8buff2)))
+							Text::StrToUpperC(sarr[0].v, sarr[0].v, sarr[0].leng);
+							if (Text::StrStartsWithC(sarr[0].v, sarr[0].leng, u8buff2, (UOSInt)(u8ptr2 - u8buff2)))
 							{
 								found = true;
 								foundNext = false;
-								srcURL = Text::String::New(sarr[2].v, sarr[2].len);
-								imgURL = Text::String::New(sarr[1].v, sarr[1].len);
+								srcURL = Text::String::New(sarr[2].v, sarr[2].leng);
+								imgURL = Text::String::New(sarr[1].v, sarr[1].leng);
 							}
 						}
 					}
@@ -5279,7 +5279,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 								found = true;
 								u8ptr2 = Text::StrConcatC(u8buff2, UTF8STRC("web"));
 								*u8ptr2++ = IO::Path::PATH_SEPERATOR;
-								u8ptr2 = Text::StrConcatC(u8ptr2, sarr[0].v, sarr[0].len);
+								u8ptr2 = Text::StrConcatC(u8ptr2, sarr[0].v, sarr[0].leng);
 								i = Text::StrLastIndexOfCharC(u8buff2, (UOSInt)(u8ptr2 - u8buff2), '.');
 								if (i != INVALID_INDEX)
 									u8buff2[i] = 0;
@@ -7840,7 +7840,7 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhoto(Net::WebServer::IWebRequest 
 				{
 					if (Text::StrSplitP(sarr, 3, u8buff2, (UOSInt)(sptr2 - u8buff2), '\t') == 2)
 					{
-						if (Text::StrStartsWithICaseC(sarr[0].v, sarr[0].len, sb.ToString(), sb.GetLength()))
+						if (Text::StrStartsWithICaseC(sarr[0].v, sarr[0].leng, sb.ToString(), sb.GetLength()))
 						{
 							if (sarr[1].v[0] == 'R')
 							{

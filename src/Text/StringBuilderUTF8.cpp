@@ -32,7 +32,7 @@ Text::StringBuilderUTF8::~StringBuilderUTF8()
 {
 }
 
-Text::StringBuilderUTF *Text::StringBuilderUTF8::Append(Text::String *s)
+Text::StringBuilderUTF *Text::StringBuilderUTF8::Append(Text::PString *s)
 {
 	if (s == 0)
 	{

@@ -3,6 +3,7 @@
 #include "Data/ArrayList.h"
 #include "IO/Library.h"
 #include "Net/WirelessLANIE.h"
+#include "Text/String.h"
 
 #define WLAN_OUI_CNT 3
 

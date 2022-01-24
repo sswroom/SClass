@@ -3,7 +3,7 @@
 #include "Text/LineBreakType.h"
 #include "Text/MyString.h"
 #include "Text/MyStringW.h"
-#include "Text/String.h"
+#include "Text/PString.h"
 #include "Text/StringBuilder.h"
 
 namespace Text
@@ -39,7 +39,7 @@ namespace Text
 		virtual StringBuilderUTF *AppendHexOS(UOSInt iVal) = 0;
 		virtual StringBuilderUTF *AppendHexBuff(const UInt8 *buff, UOSInt buffSize, UTF32Char seperator, Text::LineBreakType lineBreak) = 0;
 
-		virtual StringBuilderUTF *Append(Text::String *s) = 0;
+		virtual StringBuilderUTF *Append(Text::PString *s) = 0;
 		virtual StringBuilderUTF *Append(const UTF8Char *s) = 0;
 		virtual StringBuilderUTF *AppendC(const UTF8Char *s, UOSInt charCnt) = 0;
 		virtual StringBuilderUTF *AppendS(const UTF8Char *s, UOSInt maxLen) = 0;

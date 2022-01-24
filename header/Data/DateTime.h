@@ -1,7 +1,7 @@
 #ifndef _SM_DATA_DATETIME
 #define _SM_DATA_DATETIME
 #include "Data/IComparable.h"
-#include "Text/MyString.h"
+#include "Text/PString.h"
 
 #define DATETIME_TICK_PER_SECOND 1000
 #define DATETIME_TICK_PER_HOUR 3600000

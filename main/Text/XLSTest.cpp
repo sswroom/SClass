@@ -13,7 +13,7 @@ using namespace Text::SpreadSheet;
 void TestEmpty()
 {
 	UTF8Char fileName[512];
-	IO::Path::GetRealPath(fileName, (const UTF8Char*)"~/Progs/Temp/EmptyMe.xlsx");
+	IO::Path::GetRealPath(fileName, UTF8STRC("~/Progs/Temp/EmptyMe.xlsx"));
 	Workbook *wb;
 	NEW_CLASS(wb, Workbook());
 	wb->AddWorksheet((const UTF8Char*)"Sheet1");
@@ -32,7 +32,7 @@ void TestChart()
 	UOSInt testRowCnt = 2;
 	UTF8Char fileName[512];
 	UTF8Char sbuff2[32];
-	IO::Path::GetRealPath(fileName, (const UTF8Char*)"~/Progs/Temp/XLSXTest.xlsx");
+	IO::Path::GetRealPath(fileName, UTF8STRC("~/Progs/Temp/XLSXTest.xlsx"));
 
 	Workbook *wb;
 	NEW_CLASS(wb, Workbook());
@@ -77,7 +77,7 @@ void TestChart()
 			{
 				if (i != 5)
 				{
-					dataSheet->SetCellDouble(rowNum, i + 1, numStyle, rowNum * 0.2 + UOSInt2Double(i) * 0.1);
+					dataSheet->SetCellDouble(rowNum, i + 1, numStyle, UOSInt2Double(rowNum) * 0.2 + UOSInt2Double(i) * 0.1);
 				}
 				i++;
 			}
@@ -100,7 +100,7 @@ void TestChart()
 void TestCols()
 {
 	UTF8Char fileName[512];
-	IO::Path::GetRealPath(fileName, (const UTF8Char*)"~/Progs/Temp/ColsMe.xlsx");
+	IO::Path::GetRealPath(fileName, UTF8STRC("~/Progs/Temp/ColsMe.xlsx"));
 	Workbook *wb;
 	NEW_CLASS(wb, Workbook());
 	WorkbookFont *font10 = wb->NewFont((const UTF8Char*)"Arial", 10, false);
@@ -127,7 +127,7 @@ void TestCols()
 void TestColWidth()
 {
 	UTF8Char fileName[512];
-	IO::Path::GetRealPath(fileName, (const UTF8Char*)"~/Progs/Temp/ColWidthMe.xlsx");
+	IO::Path::GetRealPath(fileName, UTF8STRC("~/Progs/Temp/ColWidthMe.xlsx"));
 	Workbook *wb;
 	NEW_CLASS(wb, Workbook());
 	Worksheet *sheet = wb->AddWorksheet((const UTF8Char*)"Sheet1");
@@ -153,7 +153,7 @@ void TestColWidth()
 void TestBorder()
 {
 	UTF8Char fileName[512];
-	IO::Path::GetRealPath(fileName, (const UTF8Char*)"~/Progs/Temp/BorderMe.xlsx");
+	IO::Path::GetRealPath(fileName, UTF8STRC("~/Progs/Temp/BorderMe.xlsx"));
 	Workbook *wb;
 	NEW_CLASS(wb, Workbook());
 	Worksheet *sheet = wb->AddWorksheet((const UTF8Char*)"Sheet1");

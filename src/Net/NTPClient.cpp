@@ -6,6 +6,7 @@
 #include "Net/NTPServer.h"
 #include "Net/NTPClient.h"
 #include "Sync/MutexUsage.h"
+#include "Text/MyString.h"
 
 void __stdcall Net::NTPClient::PacketHdlr(const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData)
 {

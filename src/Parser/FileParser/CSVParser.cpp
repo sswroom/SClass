@@ -183,11 +183,11 @@ IO::ParsedObject *Parser::FileParser::CSVParser::ParseFile(IO::IStreamData *fd, 
 			{
 				if (dtCol != INVALID_INDEX)
 				{
-					dt.SetValue(tmpArr2[dtCol].v, tmpArr2[dtCol].len);
+					dt.SetValue(tmpArr2[dtCol].v, tmpArr2[dtCol].leng);
 				}
 				else
 				{
-					sptr2 = Text::StrConcatC(Text::StrConcatC(Text::StrConcatC(sbuff2, tmpArr2[dateCol].v, tmpArr2[dateCol].len), UTF8STRC(" ")), tmpArr2[timeCol].v, tmpArr2[timeCol].len);
+					sptr2 = Text::StrConcatC(Text::StrConcatC(Text::StrConcatC(sbuff2, tmpArr2[dateCol].v, tmpArr2[dateCol].leng), UTF8STRC(" ")), tmpArr2[timeCol].v, tmpArr2[timeCol].leng);
 					dt.SetValue(sbuff2, (UOSInt)(sptr2 - sbuff2));
 				}
 				rec.utcTimeTicks = dt.ToTicks();
@@ -205,11 +205,11 @@ IO::ParsedObject *Parser::FileParser::CSVParser::ParseFile(IO::IStreamData *fd, 
 				}
 				if (validCol != INVALID_INDEX)
 				{
-					if (Text::StrEqualsICaseC(tmpArr2[validCol].v, tmpArr2[validCol].len, UTF8STRC("DGPS")))
+					if (Text::StrEqualsICaseC(tmpArr2[validCol].v, tmpArr2[validCol].leng, UTF8STRC("DGPS")))
 					{
 						rec.valid = 2;
 					}
-					else if (Text::StrEqualsICaseC(tmpArr2[validCol].v, tmpArr2[validCol].len, UTF8STRC("SPS")))
+					else if (Text::StrEqualsICaseC(tmpArr2[validCol].v, tmpArr2[validCol].leng, UTF8STRC("SPS")))
 					{
 						rec.valid = 1;
 					}
@@ -263,7 +263,7 @@ IO::ParsedObject *Parser::FileParser::CSVParser::ParseFile(IO::IStreamData *fd, 
 					{
 						tmpArr2[nSateCol].v[i] = 0;
 						Text::StrTrimC(tmpArr2[nSateCol].v, i);
-						Text::StrTrimC(&tmpArr2[nSateCol].v[i + 1], tmpArr2[nSateCol].len - i - 1);
+						Text::StrTrimC(&tmpArr2[nSateCol].v[i + 1], tmpArr2[nSateCol].leng - i - 1);
 						rec.nSateUsed = Text::StrToInt32(tmpArr2[nSateCol].v);
 						rec.nSateView = Text::StrToInt32(&tmpArr2[nSateCol].v[i + 1]);
 					}

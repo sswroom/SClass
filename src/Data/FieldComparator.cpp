@@ -18,24 +18,24 @@ Data::FieldComparator::FieldComparator(const UTF8Char *compareConds)
 	UOSInt len;
 	sb.Append(compareConds);
 	sarr[1].v = sb.ToString();
-	sarr[1].len = sb.GetLength();
+	sarr[1].leng = sb.GetLength();
 	while (i == 2)
 	{
-		i = Text::StrSplitTrimP(sarr, 2, sarr[1].v, sarr[1].len, ',');
+		i = Text::StrSplitTrimP(sarr, 2, sarr[1].v, sarr[1].leng, ',');
 		dir = 1;
-		len = sarr[0].len;
+		len = sarr[0].leng;
 		if (Text::StrEqualsICaseC(&sarr[0].v[len - 4], 4, UTF8STRC(" ASC")))
 		{
 			sarr[0].v[len - 4] = 0;
-			sarr[0].len -= 4;
+			sarr[0].leng -= 4;
 		}
 		else if (Text::StrEqualsICaseC(&sarr[0].v[len - 5], 5, UTF8STRC(" DESC")))
 		{
 			sarr[0].v[len - 5] = 0;
-			sarr[0].len -= 5;
+			sarr[0].leng -= 5;
 			dir = (Int8)-1;
 		}
-		this->fieldNames->Add(Text::String::New(sarr[0].v, sarr[0].len));
+		this->fieldNames->Add(Text::String::New(sarr[0].v, sarr[0].leng));
 		this->dirs->Add(dir);
 	}
 }

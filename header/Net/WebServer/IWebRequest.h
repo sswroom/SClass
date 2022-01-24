@@ -5,6 +5,7 @@
 #include "Net/BrowserInfo.h"
 #include "Net/SocketFactory.h"
 #include "Net/WebUtil.h"
+#include "Text/String.h"
 #include "Text/StringBuilderUTF.h"
 
 namespace Net

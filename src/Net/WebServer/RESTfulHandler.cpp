@@ -382,16 +382,16 @@ DB::PageRequest *Net::WebServer::RESTfulHandler::ParsePageReq(Net::WebServer::IW
 		UOSInt j;
 		Bool desc;
 		sarr[1].v = sb.ToString();
-		sarr[1].len = sb.GetLength();
+		sarr[1].leng = sb.GetLength();
 		while (true)
 		{
-			i = Text::StrSplitP(sarr, 2, sarr[1].v, sarr[1].len, Net::WebServer::IWebRequest::PARAM_SEPERATOR);
+			i = Text::StrSplitP(sarr, 2, sarr[1].v, sarr[1].leng, Net::WebServer::IWebRequest::PARAM_SEPERATOR);
 			j = Text::StrIndexOfChar(sarr[0].v, ',');
 			desc = false;
 			if (j != INVALID_INDEX)
 			{
 				sarr[0].v[j] = 0;
-				desc = Text::StrEqualsICaseC(&sarr[0].v[j + 1], sarr[0].len - j - 1, UTF8STRC("DESC"));
+				desc = Text::StrEqualsICaseC(&sarr[0].v[j + 1], sarr[0].leng - j - 1, UTF8STRC("DESC"));
 			}
 			page->Sort(sarr[0].v, desc);
 			if (i != 2)

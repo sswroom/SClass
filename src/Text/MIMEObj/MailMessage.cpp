@@ -355,7 +355,7 @@ Text::MIMEObj::MailMessage *Text::MIMEObj::MailMessage::ParseFile(IO::IStreamDat
 							lineStart = 0;
 							break;
 						}
-						mail->AddHeader(sarr[0].v, sarr[0].len, sarr[1].v, sarr[1].len);
+						mail->AddHeader(sarr[0].v, sarr[0].leng, sarr[1].v, sarr[1].leng);
 						sb.ClearStr();
 					}
 				}
@@ -399,7 +399,7 @@ Text::MIMEObj::MailMessage *Text::MIMEObj::MailMessage::ParseFile(IO::IStreamDat
 							lineStart = 0;
 							break;
 						}
-						mail->AddHeader(sarr[0].v, sarr[0].len, sarr[1].v, sarr[1].len);
+						mail->AddHeader(sarr[0].v, sarr[0].leng, sarr[1].v, sarr[1].leng);
 						sb.ClearStr();
 					}
 				}

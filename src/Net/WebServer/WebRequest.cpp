@@ -26,13 +26,13 @@ void Net::WebServer::WebRequest::ParseQuery()
 		UOSInt scnt;
 		Bool hasMore;
 		strs1[1].v = sbuff;
-		strs1[1].len = (UOSInt)(sptr - sbuff);
+		strs1[1].leng = (UOSInt)(sptr - sbuff);
 		hasMore = true;
 		while (hasMore)
 		{
-			hasMore = (Text::StrSplitP(strs1, 2, strs1[1].v, strs1[1].len, '&') == 2);
+			hasMore = (Text::StrSplitP(strs1, 2, strs1[1].v, strs1[1].leng, '&') == 2);
 
-			scnt = Text::StrSplitP(strs2, 2, strs1[0].v, strs1[0].len, '=');
+			scnt = Text::StrSplitP(strs2, 2, strs1[0].v, strs1[0].leng, '=');
 			if (scnt == 2)
 			{
 				sptr = Text::TextBinEnc::URIEncoding::URIDecode(sbuff2, strs2[1].v);
@@ -42,18 +42,18 @@ void Net::WebServer::WebRequest::ParseQuery()
 				sbuff2[0] = 0;
 				sptr = sbuff2;
 			}
-			s = this->queryMap->GetC(strs2[0].v, strs2[0].len);
+			s = this->queryMap->GetC(strs2[0].v, strs2[0].leng);
 			if (s)
 			{
 				Text::StringBuilderUTF8 sb;
 				sb.Append(s);
 				sb.AppendChar(PARAM_SEPERATOR, 1);
 				sb.AppendC(sbuff2, (UOSInt)(sptr - sbuff2));
-				s = this->queryMap->PutC(strs2[0].v, strs2[0].len, Text::String::New(sb.ToString(), sb.GetLength()));
+				s = this->queryMap->PutC(strs2[0].v, strs2[0].leng, Text::String::New(sb.ToString(), sb.GetLength()));
 			}
 			else
 			{
-				s = this->queryMap->PutC(strs2[0].v, strs2[0].len, Text::String::New(sbuff2, (UOSInt)(sptr - sbuff2)));
+				s = this->queryMap->PutC(strs2[0].v, strs2[0].leng, Text::String::New(sbuff2, (UOSInt)(sptr - sbuff2)));
 			}
 			if (s)
 			{
@@ -223,16 +223,16 @@ void Net::WebServer::WebRequest::ParseFormPart(UInt8 *data, UOSInt dataSize, UOS
 				j = strCnt;
 				while (j-- > 0)
 				{
-					if (Text::StrStartsWithC(lineStrs[j].v, lineStrs[j].len, UTF8STRC("name=")))
+					if (Text::StrStartsWithC(lineStrs[j].v, lineStrs[j].leng, UTF8STRC("name=")))
 					{
 						SDEL_TEXT(formName);
-						formName = ParseHeaderVal(&lineStrs[j].v[5], lineStrs[j].len - 5);
+						formName = ParseHeaderVal(&lineStrs[j].v[5], lineStrs[j].leng - 5);
 					}
-					else if (Text::StrStartsWithC(lineStrs[j].v, lineStrs[j].len, UTF8STRC("filename=")))
+					else if (Text::StrStartsWithC(lineStrs[j].v, lineStrs[j].leng, UTF8STRC("filename=")))
 					{
 						SDEL_TEXT(fileName);
 						contType = 2;
-						fileName = ParseHeaderVal(&lineStrs[j].v[9], lineStrs[j].len - 9);
+						fileName = ParseHeaderVal(&lineStrs[j].v[9], lineStrs[j].leng - 9);
 					}
 				}
 				MemFree(line);

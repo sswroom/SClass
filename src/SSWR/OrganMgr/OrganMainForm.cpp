@@ -885,18 +885,18 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImageClipboardClicked(void *user
 						SDEL_STRING(me->initSelImg);
 						Text::PString sarr[2];
 						sarr[1].v = sb.ToString();
-						sarr[1].len = sb.GetLength();
+						sarr[1].leng = sb.GetLength();
 						printf("HDROP: %s\r\n", sb.ToString());
 						j = 2;
 						while (j == 2)
 						{
-							j = Text::StrSplitLineP(sarr, 2, sarr[1].v, sarr[1].len);
+							j = Text::StrSplitLineP(sarr, 2, sarr[1].v, sarr[1].leng);
 							OrganEnv::FileStatus fs;
-							if (Text::StrStartsWithC(sarr[0].v, sarr[0].len, UTF8STRC("file://")))
+							if (Text::StrStartsWithC(sarr[0].v, sarr[0].leng, UTF8STRC("file://")))
 							{
-								sptr = Text::URLString::GetURLFilePath(sbuff, sarr[0].v, sarr[0].len);
+								sptr = Text::URLString::GetURLFilePath(sbuff, sarr[0].v, sarr[0].leng);
 								sarr[0].v = sbuff;
-								sarr[0].len = (UOSInt)(sptr - sbuff);
+								sarr[0].leng = (UOSInt)(sptr - sbuff);
 							}
 							fs = me->env->AddSpeciesFile((OrganSpecies*)gi, sarr[0].v, firstPhoto, false, 0);
 							if (fs == OrganEnv::FS_SUCCESS)
@@ -904,7 +904,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImageClipboardClicked(void *user
 								if (!chg)
 								{
 									UOSInt tmp = Text::StrLastIndexOfChar(sarr[0].v, IO::Path::PATH_SEPERATOR);
-									me->initSelImg = Text::String::New(&sarr[0].v[tmp + 1], sarr[0].len - tmp - 1);
+									me->initSelImg = Text::String::New(&sarr[0].v[tmp + 1], sarr[0].leng - tmp - 1);
 								}
 								chg = true;
 								firstPhoto = false;
@@ -3485,18 +3485,18 @@ void SSWR::OrganMgr::OrganMainForm::DropData(UI::GUIDropData *data, OSInt x, OSI
 					{
 						Text::PString sarr[2];
 						sarr[1].v = sb.ToString();
-						sarr[1].len = sb.GetLength();
+						sarr[1].leng = sb.GetLength();
 						printf("HDROP: %s\r\n", sb.ToString());
 						j = 2;
 						while (j == 2)
 						{
-							j = Text::StrSplitLineP(sarr, 2, sarr[1].v, sarr[1].len);
+							j = Text::StrSplitLineP(sarr, 2, sarr[1].v, sarr[1].leng);
 							OrganEnv::FileStatus fs;
-							if (Text::StrStartsWithC(sarr[0].v, sarr[0].len, UTF8STRC("file://")))
+							if (Text::StrStartsWithC(sarr[0].v, sarr[0].leng, UTF8STRC("file://")))
 							{
-								sptr = Text::URLString::GetURLFilePath(sbuff, sarr[0].v, sarr[0].len);
+								sptr = Text::URLString::GetURLFilePath(sbuff, sarr[0].v, sarr[0].leng);
 								sarr[0].v = sbuff;
-								sarr[0].len = (UOSInt)(sptr - sbuff);
+								sarr[0].leng = (UOSInt)(sptr - sbuff);
 							}
 							fs = this->env->AddSpeciesFile((OrganSpecies*)gi, sarr[0].v, firstPhoto, false, 0);
 							if (fs == OrganEnv::FS_SUCCESS)
@@ -3504,7 +3504,7 @@ void SSWR::OrganMgr::OrganMainForm::DropData(UI::GUIDropData *data, OSInt x, OSI
 								if (!chg)
 								{
 									UOSInt tmp = Text::StrLastIndexOfChar(sarr[0].v, IO::Path::PATH_SEPERATOR);
-									this->initSelImg = Text::String::New(&sarr[0].v[tmp + 1], sarr[0].len - tmp - 1);
+									this->initSelImg = Text::String::New(&sarr[0].v[tmp + 1], sarr[0].leng - tmp - 1);
 								}
 								chg = true;
 								firstPhoto = false;
@@ -3521,7 +3521,7 @@ void SSWR::OrganMgr::OrganMainForm::DropData(UI::GUIDropData *data, OSInt x, OSI
 								s = Text::String::NewNotNull(L"不能複製檔案: ");
 								sb.Append(s);
 								s->Release();
-								sb.AppendC(&sarr[0].v[i + 1], sarr[0].len - i - 1);
+								sb.AppendC(&sarr[0].v[i + 1], sarr[0].leng - i - 1);
 								s = Text::String::NewNotNull(L", 要繼續?");
 								sb.Append(s);
 								s->Release();

@@ -118,11 +118,11 @@ SSWR::SDNSProxy::SDNSProxyCore::SDNSProxyCore(IO::ConfigFile *cfg, IO::Writer *c
 			Text::StringBuilderUTF8 sb;
 			sb.Append(s);
 			sarr[1].v = sb.ToString();
-			sarr[1].len = sb.GetLength();
+			sarr[1].leng = sb.GetLength();
 			while (true)
 			{
-				i = Text::StrSplitTrimP(sarr, 2, sarr[1].v, sarr[1].len, ',');
-				ip = Net::SocketUtil::GetIPAddr(sarr[0].v, sarr[0].len);
+				i = Text::StrSplitTrimP(sarr, 2, sarr[1].v, sarr[1].leng, ',');
+				ip = Net::SocketUtil::GetIPAddr(sarr[0].v, sarr[0].leng);
 				if (ip)
 				{
 					dnsList.Add(ip);
@@ -161,10 +161,10 @@ SSWR::SDNSProxy::SDNSProxyCore::SDNSProxyCore(IO::ConfigFile *cfg, IO::Writer *c
 			Text::StringBuilderUTF8 sb;
 			sb.Append(s);
 			sarr[1].v = sb.ToString();
-			sarr[1].len = sb.GetLength();
+			sarr[1].leng = sb.GetLength();
 			while (true)
 			{
-				i = Text::StrSplitTrimP(sarr, 2, sarr[1].v, sarr[1].len, ',');
+				i = Text::StrSplitTrimP(sarr, 2, sarr[1].v, sarr[1].leng, ',');
 				if (sarr[0].v[0])
 				{
 					this->proxy->AddBlackList(sarr[0].v);

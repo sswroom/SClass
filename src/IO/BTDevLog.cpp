@@ -152,7 +152,7 @@ Bool IO::BTDevLog::LoadFile(const UTF8Char *fileName)
 	while (reader->ReadLine(&sb, 512))
 	{
 		colCnt = Text::StrSplitP(sarr, 9, sb.ToString(), sb.GetLength(), '\t');
-		if ((colCnt == 4 || colCnt == 6 || colCnt == 7 || colCnt == 8) && sarr[0].len == 17)
+		if ((colCnt == 4 || colCnt == 6 || colCnt == 7 || colCnt == 8) && sarr[0].leng == 17)
 		{
 			macBuff[0] = 0;
 			macBuff[1] = 0;
@@ -174,20 +174,20 @@ Bool IO::BTDevLog::LoadFile(const UTF8Char *fileName)
 			advType = 0;
 			if (colCnt >= 6)
 			{
-				if (Text::StrEqualsC(sarr[4].v, sarr[4].len, UTF8STRC("HCI")))
+				if (sarr[4].Equals(UTF8STRC("HCI")))
 				{
 					radioType = IO::BTScanLog::RT_HCI;
 				}
-				else if (Text::StrEqualsC(sarr[4].v, sarr[4].len, UTF8STRC("LE")))
+				else if (sarr[4].Equals(UTF8STRC("LE")))
 				{
 					radioType = IO::BTScanLog::RT_LE;
 				}
 
-				if (Text::StrEqualsC(sarr[5].v, sarr[5].len, UTF8STRC("Public")))
+				if (sarr[5].Equals(UTF8STRC("Public")))
 				{
 					addrType = IO::BTScanLog::AT_PUBLIC;
 				}
-				else if (Text::StrEqualsC(sarr[5].v, sarr[5].len, UTF8STRC("Random")))
+				else if (sarr[5].Equals(UTF8STRC("Random")))
 				{
 					addrType = IO::BTScanLog::AT_RANDOM;
 				}
@@ -207,7 +207,7 @@ Bool IO::BTDevLog::LoadFile(const UTF8Char *fileName)
 				UOSInt i = 2;
 				while (i == 2)
 				{
-					i = Text::StrSplitP(sarr, 2, sarr[1].v, sarr[1].len, ',');
+					i = Text::StrSplitP(sarr, 2, sarr[1].v, sarr[1].leng, ',');
 					company = Text::StrHex2UInt16C(sarr[0].v);
 				}
 			}

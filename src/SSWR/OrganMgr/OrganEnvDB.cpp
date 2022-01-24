@@ -2321,13 +2321,13 @@ Bool SSWR::OrganMgr::OrganEnvDB::UpdateSpeciesWebFileOld(OrganSpecies *sp, const
 		sb2.AppendC(sb.ToString(), sb.GetLength());
 		if (Text::StrSplitP(sarr, 3, sb.ToString(), sb.GetLength(), '\t') == 3)
 		{
-			if (Text::StrEqualsC(sarr[0].v, sarr[0].len, webFileName, webFileNameLen))
+			if (Text::StrEqualsC(sarr[0].v, sarr[0].leng, webFileName, webFileNameLen))
 			{
 				found = true;
 				sb2.ClearStr();
-				sb2.AppendC(sarr[0].v, sarr[0].len);
+				sb2.AppendC(sarr[0].v, sarr[0].leng);
 				sb2.AppendC(UTF8STRC("\t"));
-				sb2.AppendC(sarr[1].v, sarr[1].len);
+				sb2.AppendC(sarr[1].v, sarr[1].leng);
 				sb2.AppendC(UTF8STRC("\t"));
 				sb2.AppendC(srcURL, srcURLLen);
 			}
@@ -2761,7 +2761,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::MoveImages(Data::ArrayList<OrganImages*> *imgLi
 						img = imgList->GetItem(i);
 						if (img->GetImgItem()->GetFileType() == OrganImageItem::FT_WEB_IMAGE)
 						{
-							if (img->GetImgItem()->GetDispName()->EndsWith(sarr[0].v, sarr[0].len))
+							if (img->GetImgItem()->GetDispName()->EndsWith(sarr[0].v, sarr[0].leng))
 							{
 								found = true;
 								break;

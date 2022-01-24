@@ -24,32 +24,32 @@ void __stdcall Net::SSDPClient::OnPacketRecv(const Net::SocketUtil::AddressInfo 
 			Text::PString sarr[2];
 			UOSInt lineCnt;
 			sarr[1].v = sb.ToString();
-			sarr[1].len = sb.GetLength();
+			sarr[1].leng = sb.GetLength();
 			while (true)
 			{
-				lineCnt = Text::StrSplitLineP(sarr, 2, sarr[1].v, sarr[1].len);
-				if (Text::StrStartsWithICaseC(sarr[0].v, sarr[0].len, UTF8STRC("DATE: ")))
+				lineCnt = Text::StrSplitLineP(sarr, 2, sarr[1].v, sarr[1].leng);
+				if (Text::StrStartsWithICaseC(sarr[0].v, sarr[0].leng, UTF8STRC("DATE: ")))
 				{
 					time = &sarr[0].v[6];
-					timeLen = sarr[0].len - 6;
+					timeLen = sarr[0].leng - 6;
 				}
-				else if (Text::StrStartsWithICaseC(sarr[0].v, sarr[0].len, UTF8STRC("LOCATION: ")))
+				else if (Text::StrStartsWithICaseC(sarr[0].v, sarr[0].leng, UTF8STRC("LOCATION: ")))
 				{
 					location = &sarr[0].v[10];
 				}
-				else if (Text::StrStartsWithICaseC(sarr[0].v, sarr[0].len, UTF8STRC("OPT: ")))
+				else if (Text::StrStartsWithICaseC(sarr[0].v, sarr[0].leng, UTF8STRC("OPT: ")))
 				{
 					opt = &sarr[0].v[5];
 				}
-				else if (Text::StrStartsWithICaseC(sarr[0].v, sarr[0].len, UTF8STRC("ST: ")))
+				else if (Text::StrStartsWithICaseC(sarr[0].v, sarr[0].leng, UTF8STRC("ST: ")))
 				{
 					st = &sarr[0].v[4];
 				}
-				else if (Text::StrStartsWithICaseC(sarr[0].v, sarr[0].len, UTF8STRC("USN: ")))
+				else if (Text::StrStartsWithICaseC(sarr[0].v, sarr[0].leng, UTF8STRC("USN: ")))
 				{
 					usn = &sarr[0].v[5];
 				}
-				else if (Text::StrStartsWithICaseC(sarr[0].v, sarr[0].len, UTF8STRC("X-USER-AGENT: ")))
+				else if (Text::StrStartsWithICaseC(sarr[0].v, sarr[0].leng, UTF8STRC("X-USER-AGENT: ")))
 				{
 					userAgent = &sarr[0].v[14];
 				}

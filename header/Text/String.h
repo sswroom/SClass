@@ -1,16 +1,16 @@
 #ifndef _SM_TEXT_STRING
 #define _SM_TEXT_STRING
+#include "Text/PString.h"
 
 namespace Text
 {
-	struct String
+	struct String : public PString
 	{
 	private:
 		static String emptyStr;
 	public:
-		UOSInt leng;
-		UOSInt cnt;
-		UTF8Char v[1];
+		UOSInt useCnt;
+		UTF8Char vbuff[1];
 
 		static String *NewOrNull(const UTF8Char *str);
 		static String *NewNotNull(const UTF8Char *str);
@@ -28,54 +28,10 @@ namespace Text
 		void Release();
 		String *Clone();
 
-		UTF8Char *ConcatTo(UTF8Char *sbuff);
-		UTF8Char *ConcatToS(UTF8Char *sbuff, UOSInt buffSize);
-		Bool Equals(const UTF8Char *s, UOSInt len);
-		Bool Equals(Text::String *s);
-		Bool EqualsICase(const UTF8Char *s, UOSInt len);
-		Bool EqualsICase(Text::String *s);
-		Bool StartsWith(Text::String *s);
-		Bool StartsWith(const UTF8Char *s, UOSInt len);
-		Bool StartsWith(UOSInt startIndex, const UTF8Char *s, UOSInt len);
-		Bool StartsWithICase(const UTF8Char *s, UOSInt len);
-		Bool EndsWith(UTF8Char c);
-		Bool EndsWith(const UTF8Char *s, UOSInt len);
-		Bool EndsWithICase(const UTF8Char *s, UOSInt len);
-		Bool HasUpperCase();
-		Bool ContainChars(const UTF8Char *chars);
 		String *ToLower();
-		UOSInt IndexOf(const UTF8Char *s, UOSInt len);
-		UOSInt IndexOf(UTF8Char c);
-		UOSInt IndexOfICase(const UTF8Char *s);
-		UOSInt LastIndexOf(UTF8Char c);
-		OSInt CompareTo(String *s);
-		OSInt CompareTo(const UTF8Char *s);
-		OSInt CompareToICase(Text::String *s);
-		OSInt CompareToICase(const UTF8Char *s);
-		OSInt CompareToFast(const UTF8Char *s, UOSInt len);
-		void RTrim();
-
-		Int32 ToInt32();
-		UInt32 ToUInt32();
-		Int64 ToInt64();
-		UInt64 ToUInt64();
-		OSInt ToOSInt();
-		UOSInt ToUOSInt();
-		Double ToDouble();
-		Bool ToUInt8(UInt8 *outVal);
-		Bool ToInt16(Int16 *outVal);
-		Bool ToUInt16(UInt16 *outVal);
-		Bool ToInt32(Int32 *outVal);
-		Bool ToUInt32(UInt32 *outVal);
-		Bool ToInt64(Int64 *outVal);
-		Bool ToUInt64(UInt64 *outVal);
-		Bool ToDouble(Double *outVal);
-		Bool ToUInt16S(UInt16 *outVal, UInt16 failVal);
-
-		Double MatchRating(Text::String *s);
-		Double MatchRating(const UTF8Char *targetStr, UOSInt strLen);
 
 	private:
+		String(UOSInt cnt);
 		~String();
 	};
 }

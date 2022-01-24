@@ -165,7 +165,7 @@ Bool Text::JSONBuilder::ArrayAddFloat64(Double val)
 	return true;
 }
 
-Bool Text::JSONBuilder::ArrayAddStr(Text::String *val)
+Bool Text::JSONBuilder::ArrayAddStr(Text::PString *val)
 {
 	if (this->currType != OT_ARRAY)
 		return false;
@@ -318,7 +318,7 @@ Bool Text::JSONBuilder::ObjectAddUInt64(const UTF8Char *name, UInt64 val)
 	return true;
 }
 
-Bool Text::JSONBuilder::ObjectAddStr(const UTF8Char *name, Text::String *val)
+Bool Text::JSONBuilder::ObjectAddStr(const UTF8Char *name, Text::PString *val)
 {
 	if (this->currType != OT_OBJECT)
 		return false;

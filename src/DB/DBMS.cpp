@@ -1058,84 +1058,84 @@ Bool DB::DBMS::SysVarSet(DB::DBMS::SessionInfo *sess, Bool isGlobal, const UTF8C
 		UOSInt i;
 		sb.Append(val);
 		sarr[1].v = sb.ToString();
-		sarr[1].len = sb.GetLength();
+		sarr[1].leng = sb.GetLength();
 		i = 2;
 		while (i == 2)
 		{
-			i = Text::StrSplitTrimP(sarr, 2, sarr[1].v, sarr[1].len, ',');
-			if (Text::StrEqualsICaseC(sarr[0].v, sarr[0].len, UTF8STRC("ALLOW_INVALID_DATES")))
+			i = Text::StrSplitTrimP(sarr, 2, sarr[1].v, sarr[1].leng, ',');
+			if (Text::StrEqualsICaseC(sarr[0].v, sarr[0].leng, UTF8STRC("ALLOW_INVALID_DATES")))
 			{
 				sqlMode = (SQLMODE)(sqlMode | SQLM_ALLOW_INVALID_DATES);
 			}
-			if (Text::StrEqualsICaseC(sarr[0].v, sarr[0].len, UTF8STRC("ANSI_QUOTES")))
+			if (Text::StrEqualsICaseC(sarr[0].v, sarr[0].leng, UTF8STRC("ANSI_QUOTES")))
 			{
 				sqlMode = (SQLMODE)(sqlMode | SQLM_ANSI_QUOTES);
 			}
-			if (Text::StrEqualsICaseC(sarr[0].v, sarr[0].len, UTF8STRC("ERROR_FOR_DIVISION_BY_ZERO")))
+			if (Text::StrEqualsICaseC(sarr[0].v, sarr[0].leng, UTF8STRC("ERROR_FOR_DIVISION_BY_ZERO")))
 			{
 				sqlMode = (SQLMODE)(sqlMode | SQLM_ERROR_FOR_DIVISION_BY_ZERO);
 			}
-			if (Text::StrEqualsICaseC(sarr[0].v, sarr[0].len, UTF8STRC("HIGH_NOT_PRECEDENCE")))
+			if (Text::StrEqualsICaseC(sarr[0].v, sarr[0].leng, UTF8STRC("HIGH_NOT_PRECEDENCE")))
 			{
 				sqlMode = (SQLMODE)(sqlMode | SQLM_HIGH_NOT_PRECEDENCE);
 			}
-			if (Text::StrEqualsICaseC(sarr[0].v, sarr[0].len, UTF8STRC("IGNORE_SPACE")))
+			if (Text::StrEqualsICaseC(sarr[0].v, sarr[0].leng, UTF8STRC("IGNORE_SPACE")))
 			{
 				sqlMode = (SQLMODE)(sqlMode | SQLM_IGNORE_SPACE);
 			}
-			if (Text::StrEqualsICaseC(sarr[0].v, sarr[0].len, UTF8STRC("NO_AUTO_VALUE_ON_ZERO")))
+			if (Text::StrEqualsICaseC(sarr[0].v, sarr[0].leng, UTF8STRC("NO_AUTO_VALUE_ON_ZERO")))
 			{
 				sqlMode = (SQLMODE)(sqlMode | SQLM_NO_AUTO_VALUE_ON_ZERO);
 			}
-			if (Text::StrEqualsICaseC(sarr[0].v, sarr[0].len, UTF8STRC("NO_BACKSLASH_ESCAPES")))
+			if (Text::StrEqualsICaseC(sarr[0].v, sarr[0].leng, UTF8STRC("NO_BACKSLASH_ESCAPES")))
 			{
 				sqlMode = (SQLMODE)(sqlMode | SQLM_NO_BACKSLASH_ESCAPES);
 			}
-			if (Text::StrEqualsICaseC(sarr[0].v, sarr[0].len, UTF8STRC("NO_DIR_IN_CREATE")))
+			if (Text::StrEqualsICaseC(sarr[0].v, sarr[0].leng, UTF8STRC("NO_DIR_IN_CREATE")))
 			{
 				sqlMode = (SQLMODE)(sqlMode | SQLM_NO_DIR_IN_CREATE);
 			}
-			if (Text::StrEqualsICaseC(sarr[0].v, sarr[0].len, UTF8STRC("NO_ENGINE_SUBSTITUTION")))
+			if (Text::StrEqualsICaseC(sarr[0].v, sarr[0].leng, UTF8STRC("NO_ENGINE_SUBSTITUTION")))
 			{
 				sqlMode = (SQLMODE)(sqlMode | SQLM_NO_ENGINE_SUBSTITUTION);
 			}
-			if (Text::StrEqualsICaseC(sarr[0].v, sarr[0].len, UTF8STRC("NO_UNSIGNED_SUBTRACTION")))
+			if (Text::StrEqualsICaseC(sarr[0].v, sarr[0].leng, UTF8STRC("NO_UNSIGNED_SUBTRACTION")))
 			{
 				sqlMode = (SQLMODE)(sqlMode | SQLM_NO_UNSIGNED_SUBTRACTION);
 			}
-			if (Text::StrEqualsICaseC(sarr[0].v, sarr[0].len, UTF8STRC("NO_ZERO_DATE")))
+			if (Text::StrEqualsICaseC(sarr[0].v, sarr[0].leng, UTF8STRC("NO_ZERO_DATE")))
 			{
 				sqlMode = (SQLMODE)(sqlMode | SQLM_NO_ZERO_DATE);
 			}
-			if (Text::StrEqualsICaseC(sarr[0].v, sarr[0].len, UTF8STRC("NO_ZERO_IN_DATE")))
+			if (Text::StrEqualsICaseC(sarr[0].v, sarr[0].leng, UTF8STRC("NO_ZERO_IN_DATE")))
 			{
 				sqlMode = (SQLMODE)(sqlMode | SQLM_NO_ZERO_IN_DATE);
 			}
-			if (Text::StrEqualsICaseC(sarr[0].v, sarr[0].len, UTF8STRC("ONLY_FULL_GROUP_BY")))
+			if (Text::StrEqualsICaseC(sarr[0].v, sarr[0].leng, UTF8STRC("ONLY_FULL_GROUP_BY")))
 			{
 				sqlMode = (SQLMODE)(sqlMode | SQLM_ONLY_FULL_GROUP_BY);
 			}
-			if (Text::StrEqualsICaseC(sarr[0].v, sarr[0].len, UTF8STRC("PAD_CHAR_TO_FULL_LENGTH")))
+			if (Text::StrEqualsICaseC(sarr[0].v, sarr[0].leng, UTF8STRC("PAD_CHAR_TO_FULL_LENGTH")))
 			{
 				sqlMode = (SQLMODE)(sqlMode | SQLM_PAD_CHAR_TO_FULL_LENGTH);
 			}
-			if (Text::StrEqualsICaseC(sarr[0].v, sarr[0].len, UTF8STRC("PIPES_AS_CONCAT")))
+			if (Text::StrEqualsICaseC(sarr[0].v, sarr[0].leng, UTF8STRC("PIPES_AS_CONCAT")))
 			{
 				sqlMode = (SQLMODE)(sqlMode | SQLM_PIPES_AS_CONCAT);
 			}
-			if (Text::StrEqualsICaseC(sarr[0].v, sarr[0].len, UTF8STRC("REAL_AS_FLOAT")))
+			if (Text::StrEqualsICaseC(sarr[0].v, sarr[0].leng, UTF8STRC("REAL_AS_FLOAT")))
 			{
 				sqlMode = (SQLMODE)(sqlMode | SQLM_REAL_AS_FLOAT);
 			}
-			if (Text::StrEqualsICaseC(sarr[0].v, sarr[0].len, UTF8STRC("STRICT_ALL_TABLES")))
+			if (Text::StrEqualsICaseC(sarr[0].v, sarr[0].leng, UTF8STRC("STRICT_ALL_TABLES")))
 			{
 				sqlMode = (SQLMODE)(sqlMode | SQLM_STRICT_ALL_TABLES);
 			}
-			if (Text::StrEqualsICaseC(sarr[0].v, sarr[0].len, UTF8STRC("STRICT_TRANS_TABLES")))
+			if (Text::StrEqualsICaseC(sarr[0].v, sarr[0].leng, UTF8STRC("STRICT_TRANS_TABLES")))
 			{
 				sqlMode = (SQLMODE)(sqlMode | SQLM_STRICT_TRANS_TABLES);
 			}
-			if (Text::StrEqualsICaseC(sarr[0].v, sarr[0].len, UTF8STRC("TIME_TRUNCATE_FRACTIONAL")))
+			if (Text::StrEqualsICaseC(sarr[0].v, sarr[0].leng, UTF8STRC("TIME_TRUNCATE_FRACTIONAL")))
 			{
 				sqlMode = (SQLMODE)(sqlMode | SQLM_TIME_TRUNCATE_FRACTIONAL);
 			}
