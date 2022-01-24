@@ -310,6 +310,16 @@ Text::String *DB::ODBCConn::GetConnSchema()
 	return this->schema;
 }
 
+UOSInt DB::ODBCConn::GetDriverList(Data::ArrayList<Text::String*> *driverList)
+{
+	return 0;
+}
+
+IO::ConfigFile *DB::ODBCConn::GetDriverInfo(const UTF8Char *driverName, UOSInt nameLen)
+{
+	return 0;
+}
+
 DB::DBTool *DB::ODBCConn::CreateDBTool(Text::String *dsn, Text::String *uid, Text::String *pwd, Text::String *schema, IO::LogTool *log, const UTF8Char *logPrefix)
 {
 	return 0;
