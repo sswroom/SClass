@@ -17,24 +17,25 @@ UTF8Char *IO::OS::GetVersion(UTF8Char *sbuff)
 	IO::ConfigFile *cfg = IO::UnixConfigFile::Parse((const UTF8Char*)"/system/build.prop");
 	if (cfg == 0)
 	{
-		UTF8Char *u8arr[2];
-		UTF8Char *u8arr2[2];
+		Text::PString u8arr[2];
+		Text::PString u8arr2[2];
 		sb.ClearStr();
-		Manage::Process::ExecuteProcess((const UTF8Char*)"getprop", &sb);
-		u8arr[1] = sb.ToString();
+		Manage::Process::ExecuteProcess(UTF8STRC("getprop"), &sb);
+		u8arr[1].v = sb.ToString();
+		u8arr[1].len = sb.GetLength();
 		NEW_CLASS(cfg, IO::ConfigFile());
 		while (1)
 		{
-			i = Text::StrSplit(u8arr, 2, u8arr[1], '\n');
-			if (Text::StrSplitTrim(u8arr2, 2, u8arr[0], ':') == 2)
+			i = Text::StrSplitP(u8arr, 2, u8arr[1].v, u8arr[1].len, '\n');
+			if (Text::StrSplitTrimP(u8arr2, 2, u8arr[0].v, u8arr[0].len, ':') == 2)
 			{
-				if (Text::StrEndsWith(u8arr2[0], (const UTF8Char*)"]") && Text::StrEndsWith(u8arr2[1], (const UTF8Char*)"]"))
+				if (Text::StrEndsWithC(u8arr2[0].v, u8arr2[0].len, UTF8STRC("]")) && Text::StrEndsWithC(u8arr2[1].v, u8arr2[1].len, UTF8STRC("]")))
 				{
-					u8arr2[0][Text::StrCharCnt(u8arr2[0]) - 1] = 0;
-					u8arr2[1][Text::StrCharCnt(u8arr2[1]) - 1] = 0;
-					if (u8arr2[0][0] == '[' && u8arr2[1][0] == '[')
+					u8arr2[0].v[u8arr2[0].len - 1] = 0;
+					u8arr2[1].v[u8arr2[1].len - 1] = 0;
+					if (u8arr2[0].v[0] == '[' && u8arr2[1].v[0] == '[')
 					{
-						cfg->SetValue(0, &u8arr2[0][1], &u8arr2[1][1]);
+						cfg->SetValue(0, 0, &u8arr2[0].v[1], u8arr2[0].len - 2, &u8arr2[1].v[1], u8arr2[1].len - 2);
 					}
 				}
 			}
@@ -45,10 +46,10 @@ UTF8Char *IO::OS::GetVersion(UTF8Char *sbuff)
 	if (cfg)
 	{
 		UTF8Char *ret = 0;
-		const UTF8Char *version = cfg->GetValue((const UTF8Char*)"ro.build.version.sdk");
+		Text::String *version = cfg->GetValue(UTF8STRC("ro.build.version.sdk"));
 		if (version)
 		{
-			ret = Text::StrConcat(sbuff, version);
+			ret = version->ConcatTo(sbuff);
 		}
 		DEL_CLASS(cfg);
 		return ret;
