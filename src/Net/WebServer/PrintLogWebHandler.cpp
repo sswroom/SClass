@@ -21,7 +21,7 @@ void Net::WebServer::PrintLogWebHandler::WebRequest(IWebRequest *req, IWebRespon
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 	Text::CString reqMeth = req->GetReqMethodStr();
-	sb.AppendC(reqMeth.v, reqMeth.len);
+	sb.AppendC(reqMeth.v, reqMeth.leng);
 	sb.AppendChar(' ', 1);
 	sb.Append(req->GetRequestURI());
 	sb.AppendChar(' ', 1);

@@ -32,11 +32,11 @@ Bool Net::WebServer::IWebResponse::ResponseError(Net::WebServer::IWebRequest *re
 	sb.AppendI32(code);
 	sb.AppendC(UTF8STRC(" "));
 	Text::CString codeName = Net::WebStatus::GetCodeName(code);
-	sb.AppendC(codeName.v, codeName.len);
+	sb.AppendC(codeName.v, codeName.leng);
 	sb.AppendC(UTF8STRC("</title>\r\n"));
 	sb.AppendC(UTF8STRC("</head><body>\r\n"));
 	sb.AppendC(UTF8STRC("<h1>"));
-	sb.AppendC(codeName.v, codeName.len);
+	sb.AppendC(codeName.v, codeName.leng);
 	sb.AppendC(UTF8STRC("</h1>\r\n"));
 	sb.AppendC(UTF8STRC("</body></html>\r\n"));
 	this->AddContentLength(sb.GetLength());

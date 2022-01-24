@@ -579,7 +579,7 @@ Net::ACMEConn::Challenge *Net::ACMEConn::OrderAuthorize(Text::String *authorizeU
 		DEL_CLASS(cli);
 
 		Text::CString sAuthType = AuthorizeTypeGetName(authType);
-		if (sAuthType.v == 0 || Text::StrEqualsICaseC(sAuthType.v, sAuthType.len, UTF8STRC("UNKNOWN")))
+		if (sAuthType.v == 0 || Text::StrEqualsICaseC(sAuthType.v, sAuthType.leng, UTF8STRC("UNKNOWN")))
 		{
 			return 0;
 		}
@@ -611,7 +611,7 @@ Net::ACMEConn::Challenge *Net::ACMEConn::OrderAuthorize(Text::String *authorizeU
 				if (json)
 				{
 					s = json->GetString(UTF8STRC("type"));
-					if (s && s->EqualsICase(sAuthType.v, sAuthType.len))
+					if (s && s->EqualsICase(sAuthType.v, sAuthType.leng))
 					{
 						ret = ChallengeJSON(json);
 						break;

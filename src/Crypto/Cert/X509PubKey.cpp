@@ -90,7 +90,7 @@ Crypto::Cert::X509PubKey *Crypto::Cert::X509PubKey::CreateFromKeyBuff(KeyType ke
 	keyPDU.BeginSequence();
 	keyPDU.BeginSequence();
 	Text::CString oidStr = KeyTypeGetOID(keyType);
-	keyPDU.AppendOIDString(oidStr.v, oidStr.len);
+	keyPDU.AppendOIDString(oidStr.v, oidStr.leng);
 	keyPDU.AppendNull();
 	keyPDU.EndLevel();
 	if (keyType == KeyType::RSAPublic)

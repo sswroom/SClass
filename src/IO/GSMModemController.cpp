@@ -2,6 +2,7 @@
 #include "MyMemory.h"
 #include "IO/GSMModemController.h"
 #include "Sync/MutexUsage.h"
+#include "Text/CString.h"
 #include "Text/MyString.h"
 
 Bool IO::GSMModemController::SetSMSFormat(IO::GSMModemController::SMSFormat smsFormat)
@@ -973,7 +974,7 @@ Bool IO::GSMModemController::PBSetStorage(PBStorage storage)
 	default:
 		return false;
 	}
-	return this->SendBoolCommandC(cmd.v, cmd.len);
+	return this->SendBoolCommandC(cmd.v, cmd.leng);
 }
 
 Bool IO::GSMModemController::PBGetStorage(PBStorage *storage, Int32 *usedEntry, Int32 *freeEntry)

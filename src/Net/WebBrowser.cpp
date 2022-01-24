@@ -78,7 +78,7 @@ IO::IStreamData *Net::WebBrowser::GetData(const UTF8Char *url, UOSInt urlLen, Bo
 		if (contentType)
 		{
 			Text::CString mime = Net::MIME::GetMIMEFromFileName(url, urlLen);
-			Text::StrConcatC(contentType, mime.v, mime.len);
+			Text::StrConcatC(contentType, mime.v, mime.leng);
 		}
 		return fd;
 	}
@@ -92,7 +92,7 @@ IO::IStreamData *Net::WebBrowser::GetData(const UTF8Char *url, UOSInt urlLen, Bo
 		if (contentType)
 		{
 			Text::CString mime = Net::MIME::GetMIMEFromFileName(url, urlLen);
-			Text::StrConcatC(contentType, mime.v, mime.len);
+			Text::StrConcatC(contentType, mime.v, mime.leng);
 		}
 		return fd;
 	}

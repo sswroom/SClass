@@ -55,7 +55,7 @@ UInt32 __stdcall ProcessThread(void *userObj)
 			url = {UTF8STRC(URL)};
 			if (Interlocked_DecrementI32(&connLeft) < 0)
 				break;
-			if (cli->Connect(url.v, url.len, METHOD, &timeDNS, &timeConn, false))
+			if (cli->Connect(url.v, url.leng, METHOD, &timeDNS, &timeConn, false))
 			{
 				cli->AddHeaderC(UTF8STRC("Connection"), UTF8STRC("keep-alive"));
 				if (Text::StrEqualsC(UTF8STRC(METHOD), UTF8STRC("POST")))
@@ -101,13 +101,13 @@ UInt32 __stdcall ProcessThread(void *userObj)
 				if (cli->IsError())
 				{
 					DEL_CLASS(cli);
-					cli = Net::HTTPClient::CreateClient(sockf, ssl, 0, 0, true, Text::StrStartsWithC(url.v, url.len, UTF8STRC("https://")));
+					cli = Net::HTTPClient::CreateClient(sockf, ssl, 0, 0, true, Text::StrStartsWithC(url.v, url.leng, UTF8STRC("https://")));
 				}
 			}
 			else
 			{
 				DEL_CLASS(cli);
-				cli = Net::HTTPClient::CreateClient(sockf, ssl, 0, 0, true, Text::StrStartsWithC(url.v, url.len, UTF8STRC("https://")));
+				cli = Net::HTTPClient::CreateClient(sockf, ssl, 0, 0, true, Text::StrStartsWithC(url.v, url.leng, UTF8STRC("https://")));
 				Interlocked_IncrementU32(&failCnt);
 			}
 		}
@@ -120,8 +120,8 @@ UInt32 __stdcall ProcessThread(void *userObj)
 			url = {UTF8STRC(URL)};
 			if (Sync::Interlocked::Decrement(&connLeft) < 0)
 				break;
-			cli = Net::HTTPClient::CreateClient(sockf, ssl, 0, 0, true, Text::StrStartsWithC(url.v, url.len, UTF8STRC("https://")));
-			if (cli->Connect(url.v, url.len, Net::WebUtil::RequestMethod::HTTP_GET, &timeDNS, &timeConn, false))
+			cli = Net::HTTPClient::CreateClient(sockf, ssl, 0, 0, true, Text::StrStartsWithC(url.v, url.leng, UTF8STRC("https://")));
+			if (cli->Connect(url.v, url.leng, Net::WebUtil::RequestMethod::HTTP_GET, &timeDNS, &timeConn, false))
 			{
 				cli->AddHeaderC(UTF8STRC("Connection"), UTF8STRC("keep-alive"));
 				cli->EndRequest(&timeReq, &timeResp);

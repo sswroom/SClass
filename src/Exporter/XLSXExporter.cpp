@@ -1203,7 +1203,7 @@ void Exporter::XLSXExporter::AppendFill(Text::StringBuilderUTF *sb, OfficeFill *
 			{
 				sb->AppendC(UTF8STRC("<a:prstClr val=\""));
 				Text::CString col = PresetColorCode(color->GetPresetColor());
-				sb->AppendC(col.v, col.len);
+				sb->AppendC(col.v, col.leng);
 				sb->AppendC(UTF8STRC("\"/>"));
 			}
 			sb->AppendC(UTF8STRC("</a:solidFill>"));

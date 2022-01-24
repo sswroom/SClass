@@ -1,6 +1,6 @@
 #ifndef _SM_TEXT_TEXTBINENC_ITEXTBINENC
 #define _SM_TEXT_TEXTBINENC_ITEXTBINENC
-#include "Text/MyString.h"
+#include "Text/CString.h"
 #include "Text/StringBuilderUTF.h"
 
 namespace Text

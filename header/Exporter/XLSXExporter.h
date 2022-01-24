@@ -2,6 +2,7 @@
 #define _SM_EXPORTER_XLSXEXPORTER
 #include "Data/DateTime.h"
 #include "IO/FileExporter.h"
+#include "Text/CString.h"
 #include "Text/StringBuilderUTF.h"
 #include "Text/SpreadSheet/OfficeChartAxis.h"
 #include "Text/SpreadSheet/OfficeChartSeries.h"

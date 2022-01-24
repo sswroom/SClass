@@ -120,7 +120,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnRequestClicked(void *userObj
 		if ((sptr = IO::Path::GetFileExt(sbuff, fileName->v, fileName->leng)) != 0)
 		{
 			mime = Net::MIME::GetMIMEFromExt(sbuff, (UOSInt)(sptr - sbuff));
-			me->reqBodyType = Text::String::New(mime.v, mime.len);
+			me->reqBodyType = Text::String::New(mime.v, mime.leng);
 		}
 		else
 		{
@@ -193,7 +193,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnRequestClicked(void *userObj
 				sptr = IO::Path::GetFileExt(sbuff, &s->v[k], s->leng - k);
 				mime = Net::MIME::GetMIMEFromExt(sbuff, (UOSInt)(sptr - sbuff));
 				mstm.Write((const UInt8*)"Content-Type: ", 14);
-				mstm.Write(mime.v, mime.len);
+				mstm.Write(mime.v, mime.leng);
 				mstm.Write((const UInt8*)"\r\n\r\n", 4);
 
 				ofst = 0;

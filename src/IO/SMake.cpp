@@ -470,7 +470,7 @@ Bool IO::SMake::LoadConfigFile(const UTF8Char *cfgFile, UOSInt cfgFileLen)
 					cstr = srch.NextFile(0);
 					if (cstr.v == 0)
 						break;
-					if (!LoadConfigFile(cstr.v, cstr.len))
+					if (!LoadConfigFile(cstr.v, cstr.leng))
 					{
 						ret = false;
 						break;

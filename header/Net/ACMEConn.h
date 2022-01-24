@@ -6,6 +6,7 @@
 #include "Net/HTTPClient.h"
 #include "Net/SocketFactory.h"
 #include "Net/SSLEngine.h"
+#include "Text/CString.h"
 #include "Text/JSON.h"
 #include "Text/String.h"
 

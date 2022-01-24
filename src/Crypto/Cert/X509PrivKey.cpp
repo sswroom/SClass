@@ -86,7 +86,7 @@ Crypto::Cert::X509PrivKey *Crypto::Cert::X509PrivKey::CreateFromKeyBuff(KeyType 
 	keyPDU.AppendInt32(0);
 	keyPDU.BeginSequence();
 	Text::CString oidStr = KeyTypeGetOID(keyType);
-	keyPDU.AppendOIDString(oidStr.v, oidStr.len);
+	keyPDU.AppendOIDString(oidStr.v, oidStr.leng);
 	keyPDU.AppendNull();
 	keyPDU.EndLevel();
 	keyPDU.AppendOctetString(buff, buffSize);

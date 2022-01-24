@@ -3,7 +3,7 @@
 #include "IO/IStreamData.h"
 #include "IO/ParsedObject.h"
 #include "IO/Stream.h"
-#include "Text/MyString.h"
+#include "Text/CString.h"
 
 namespace Text
 {

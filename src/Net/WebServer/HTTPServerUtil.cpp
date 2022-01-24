@@ -372,7 +372,7 @@ Bool Net::WebServer::HTTPServerUtil::ResponseFile(Net::WebServer::IWebRequest *r
 	resp->AddCacheControl(cacheAge);
 	resp->AddLastModified(&t);
 	mime = Net::MIME::GetMIMEFromExt(sbuff, (UOSInt)(sptr2 - sbuff));
-	resp->AddContentType(mime.v, mime.len);
+	resp->AddContentType(mime.v, mime.leng);
 	resp->AddHeaderC(UTF8STRC("Accept-Ranges"), UTF8STRC("bytes"));
 	if (sizeLeft <= 0)
 	{
@@ -381,7 +381,7 @@ Bool Net::WebServer::HTTPServerUtil::ResponseFile(Net::WebServer::IWebRequest *r
 		readSize = fs->Read(buff, BUFFSIZE);
 		if (readSize == 0)
 		{
-			Net::WebServer::HTTPServerUtil::SendContent(req, resp, mime.v, mime.len, sizeLeft, fs);
+			Net::WebServer::HTTPServerUtil::SendContent(req, resp, mime.v, mime.leng, sizeLeft, fs);
 		}
 		else
 		{
@@ -392,12 +392,12 @@ Bool Net::WebServer::HTTPServerUtil::ResponseFile(Net::WebServer::IWebRequest *r
 				readSize = fs->Read(buff, BUFFSIZE);
 			}
 			mstm.SeekFromBeginning(0);
-			Net::WebServer::HTTPServerUtil::SendContent(req, resp, mime.v, mime.len, sizeLeft, &mstm);
+			Net::WebServer::HTTPServerUtil::SendContent(req, resp, mime.v, mime.leng, sizeLeft, &mstm);
 		}
 	}
 	else
 	{
-		Net::WebServer::HTTPServerUtil::SendContent(req, resp, mime.v, mime.len, sizeLeft, fs);
+		Net::WebServer::HTTPServerUtil::SendContent(req, resp, mime.v, mime.leng, sizeLeft, fs);
 	}
 	DEL_CLASS(fs);
 	return true;

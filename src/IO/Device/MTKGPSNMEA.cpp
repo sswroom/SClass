@@ -6,7 +6,7 @@
 #include "IO/Device/MTKGPSNMEA.h"
 #include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
-#include "Text/MyString.h"
+#include "Text/CString.h"
 
 #include <stdio.h>
 
@@ -396,7 +396,7 @@ Bool IO::Device::MTKGPSNMEA::SetLogMode(LogMode lm)
 	{
 		return false;
 	}
-	UOSInt cmdSize = GenNMEACommand(cmd.v, cmd.len, buff);
+	UOSInt cmdSize = GenNMEACommand(cmd.v, cmd.leng, buff);
 	Text::String *result = SendMTKCommand(buff, cmdSize, UTF8STRC("$PMTK001,182,1,3"), 2000);
 	if (result == 0)
 		return false;

@@ -774,6 +774,7 @@ StrInt64WSpd:
 @ConsoleStartup.o
 StrRetTest:
 @StrRetTest.o
+@StrRetTestFuncs.o
 @ConsoleStartup.o
 UTF8ReaderTest:
 @UTF8ReaderTest.o
@@ -992,6 +993,7 @@ StrInt32WSpd.o: ../../main/Text/StrInt32WSpd.cpp
 StrInt64CSpd.o: ../../main/Text/StrInt64CSpd.cpp
 StrInt64WSpd.o: ../../main/Text/StrInt64WSpd.cpp
 StrRetTest.o: ../../main/Text/StrRetTest.cpp
+StrRetTestFuncs.o: ../../main/Text/StrRetTestFuncs.cpp
 UTF8ReaderTest.o: ../../main/Text/UTF8ReaderTest.cpp
 XLSTest.o: ../../main/Text/XLSTest.cpp
 GUITest1.o: ../../main/UI/GUITest1.cpp
@@ -3649,6 +3651,7 @@ Text/CodeProject.h: ../../src/Text/CodeProject.cpp
 @CodeProject.o
 Text/CSSBuilder.h: ../../src/Text/CSSBuilder.cpp
 @CSSBuilder.o
+Text/CString.h:
 Text/Encoding.h: ../../src/Text/Encoding.cpp
 @Encoding.o
 Text/EncodingFactory.h: ../../src/Text/EncodingFactory.cpp

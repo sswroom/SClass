@@ -101,7 +101,7 @@ Text::IMIMEObj *Text::IMIMEObj::ParseFromFile(const UTF8Char *fileName)
 	}
 	else
 	{
-		obj = ParseFromData(fd, contentType.v, contentType.len);
+		obj = ParseFromData(fd, contentType.v, contentType.leng);
 	}
 	DEL_CLASS(fd);
 	return obj;

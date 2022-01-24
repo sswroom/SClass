@@ -1,6 +1,6 @@
 #ifndef _SM_NET_WEBSERVER_WEBSTATUS
 #define _SM_NET_WEBSERVER_WEBSTATUS
-#include "Text/MyString.h"
+#include "Text/CString.h"
 
 namespace Net
 {

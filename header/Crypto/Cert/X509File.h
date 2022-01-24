@@ -2,6 +2,7 @@
 #define _SM_CRYPTO_CERT_X509FILE
 #include "Data/ArrayList.h"
 #include "Net/ASN1Data.h"
+#include "Text/CString.h"
 
 namespace Net
 {

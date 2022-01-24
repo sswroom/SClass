@@ -8,6 +8,7 @@
 #include "Sync/Interlocked.h"
 #include "Sync/Mutex.h"
 #include "Sync/MutexUsage.h"
+#include "Text/CString.h"
 #include "Text/MyString.h"
 #include "Text/MyStringW.h"
 
@@ -204,7 +205,7 @@ IO::Registry::Registry(void *hand)
 	Registry_Param *param = (Registry_Param *)hand;
 	this->clsData = MemAlloc(ClassData, 1);
 	this->clsData->reg = param->reg;
-	this->clsData->cate = Text::String::New(param->currCate.v, param->currCate.len);
+	this->clsData->cate = Text::String::New(param->currCate.v, param->currCate.leng);
 }
 
 IO::Registry::~Registry()

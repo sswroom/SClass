@@ -341,22 +341,5 @@ namespace Text
 	FORCEINLINE Char *StrCSVJoin(Char *oriStr, const Char **strs, UOSInt nStrs) { return (Char*)StrCSVJoin((UTF8Char*)oriStr, (const UTF8Char**)strs, nStrs); };
 	FORCEINLINE UOSInt StrCountChar(const Char *str1, Char c) { return StrCountChar((const UTF8Char*)str1, (UTF8Char)c); };
 	FORCEINLINE Char *StrRemoveANSIEscapes(Char *str1) { return (Char*)StrRemoveANSIEscapes((UTF8Char*)str1); };
-
-
-	struct CString
-	{
-		const UTF8Char *v;
-		UOSInt len;
-
-		FORCEINLINE Bool Equals(const UTF8Char *s, UOSInt len)
-		{
-			return Text::StrEqualsC(v, this->len, s, len);
-		}
-
-		FORCEINLINE Bool StartsWith(const UTF8Char *s, UOSInt len)
-		{
-			return Text::StrStartsWithC(v, this->len, s, len);
-		}
-	};
 }
 #endif

@@ -214,7 +214,7 @@ Text::IMIMEObj *Text::MIMEObj::MailMessage::GetAttachment(OSInt index, Text::Str
 	if (this->content->GetClassName().Equals(UTF8STRC("MultipartMIMEObj")))
 	{
 		Text::CString contType = this->content->GetContentType();
-		if (Text::StrStartsWithC(contType.v, contType.len, UTF8STRC("multipart/mixed")))
+		if (Text::StrStartsWithC(contType.v, contType.leng, UTF8STRC("multipart/mixed")))
 		{
 			Text::MIMEObj::MultipartMIMEObj *mpart = (Text::MIMEObj::MultipartMIMEObj*)this->content;
 			i = 0;

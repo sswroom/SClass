@@ -1,6 +1,6 @@
 #ifndef _SM_NET_MIME
 #define _SM_NET_MIME
-#include "Text/MyString.h"
+#include "Text/CString.h"
 namespace Net
 {
 	class MIME

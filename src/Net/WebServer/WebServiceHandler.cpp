@@ -51,7 +51,7 @@ Bool Net::WebServer::WebServiceHandler::ProcessRequest(Net::WebServer::IWebReque
 					sb.AppendC(UTF8STRC(", "));
 				}
 				Text::CString name = Net::WebUtil::RequestMethodGetName((Net::WebUtil::RequestMethod)methods->GetItem(i));
-				sb.AppendC(name.v, name.len);
+				sb.AppendC(name.v, name.leng);
 				i++;
 			}
 			resp->AddHeaderC(UTF8STRC("Allow"), sb.ToString(), sb.GetLength());

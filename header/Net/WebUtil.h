@@ -1,5 +1,6 @@
 #ifndef _SM_NET_WEBUTIL
 #define _SM_NET_WEBUTIL
+#include "Text/CString.h"
 #include "Text/MyString.h"
 
 namespace Net

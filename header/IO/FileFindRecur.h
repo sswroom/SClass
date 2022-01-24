@@ -1,6 +1,7 @@
 #ifndef _SM_IO_FILEFINDRECUR
 #define _SM_IO_FILEFINDRECUR
 #include "IO/Path.h"
+#include "Text/CString.h"
 
 namespace IO
 {

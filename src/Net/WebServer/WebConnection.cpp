@@ -373,7 +373,7 @@ void Net::WebServer::WebConnection::SendHeaders(Net::WebServer::IWebRequest::Req
 	sptr = Text::StrInt32(sptr, this->respStatus);
 	*sptr++ = ' ';
 	Text::CString codeName = Net::WebStatus::GetCodeName(this->respStatus);
-	sptr = Text::StrConcatC((UTF8Char*)sptr, codeName.v, codeName.len);
+	sptr = Text::StrConcatC((UTF8Char*)sptr, codeName.v, codeName.leng);
 	sptr = Text::StrConcatC(sptr, UTF8STRC("\r\n"));
 
 	sptr = Text::StrConcatC(sptr, this->respHeaders->ToString(), this->respHeaders->GetLength());

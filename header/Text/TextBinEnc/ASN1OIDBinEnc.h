@@ -1,5 +1,6 @@
 #ifndef _SM_TEXT_TEXTBINENC_ASN1OIDBINENC
 #define _SM_TEXT_TEXTBINENC_ASN1OIDBINENC
+#include "Text/CString.h"
 #include "Text/TextBinEnc/ITextBinEnc.h"
 
 namespace Text
