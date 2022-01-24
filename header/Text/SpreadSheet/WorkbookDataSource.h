@@ -20,6 +20,11 @@ namespace Text
 			~WorkbookDataSource();
 
 			UTF8Char *ToCodeRange(UTF8Char *sbuff);
+			Worksheet *GetSheet();
+			UOSInt GetFirstRow();
+			UOSInt GetLastRow();
+			UOSInt GetFirstCol();
+			UOSInt GetLastCol();
 		};
 	}
 }

@@ -77,7 +77,7 @@ void TestChart()
 			{
 				if (i != 5)
 				{
-					dataSheet->SetCellDouble(rowNum, i + 1, numStyle, UOSInt2Double(i) * 0.1);
+					dataSheet->SetCellDouble(rowNum, i + 1, numStyle, rowNum * 0.2 + UOSInt2Double(i) * 0.1);
 				}
 				i++;
 			}

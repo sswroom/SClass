@@ -49,8 +49,8 @@ UI::FileDialog::FileDialog(const WChar *compName, const WChar *appName, const WC
 		this->lastName = Text::StrCopyNew(buff);
 	}
 	NEW_CLASS(this->fileNames, Data::ArrayListStrUTF8());
-	NEW_CLASS(this->names, Data::ArrayListStrUTF8());
-	NEW_CLASS(this->patterns, Data::ArrayListStrUTF8());
+	NEW_CLASS(this->names, Data::ArrayListString());
+	NEW_CLASS(this->patterns, Data::ArrayListString());
 }
 
 UI::FileDialog::~FileDialog()
@@ -71,8 +71,8 @@ UI::FileDialog::~FileDialog()
 	i = this->patterns->GetCount();
 	while (i-- > 0)
 	{
-		Text::StrDelNew(this->patterns->RemoveAt(i));
-		Text::StrDelNew(this->names->RemoveAt(i));
+		this->patterns->RemoveAt(i)->Release();
+		this->names->RemoveAt(i)->Release();
 	}
 	this->ClearFileNames();
 	DEL_CLASS(this->fileNames);
@@ -82,8 +82,8 @@ UI::FileDialog::~FileDialog()
 
 void UI::FileDialog::AddFilter(const UTF8Char *pattern, const UTF8Char *name)
 {
-	this->patterns->Add(Text::StrCopyNew(pattern));
-	this->names->Add(Text::StrCopyNew(name));
+	this->patterns->Add(Text::String::NewNotNull(pattern));
+	this->names->Add(Text::String::NewNotNull(name));
 }
 
 UOSInt UI::FileDialog::GetFilterIndex()
@@ -278,27 +278,28 @@ Bool UI::FileDialog::ShowDialog(ControlHandle *ownerHandle)
 		{
 			Bool found = false;
 			UOSInt foundIndexLeng = 0;
-			const UTF8Char *u8fname = Text::StrToUTF8New(fnameBuff);
+			Text::String *u8fname = Text::String::NewNotNull(fnameBuff);
 			i = 0;
 			while (i < filterCnt)
 			{
-				if (IO::Path::FileNameMatch(u8fname, this->patterns->GetItem(i)))
+				Text::String *pattern = this->patterns->GetItem(i);
+				if (IO::Path::FileNameMatch(u8fname->v, u8fname->leng, pattern->v, pattern->leng))
 				{
 					if (!found)
 					{
 						found = true;
 						ofn.nFilterIndex = (UInt32)(i + 1);
-						foundIndexLeng = Text::StrCharCnt(this->patterns->GetItem(i));
+						foundIndexLeng = pattern->leng;
 					}
-					else if (Text::StrCharCnt(this->patterns->GetItem(i)) > foundIndexLeng)
+					else if (pattern->leng > foundIndexLeng)
 					{
 						ofn.nFilterIndex = (UInt32)(i + 1);
-						foundIndexLeng = Text::StrCharCnt(this->patterns->GetItem(i));
+						foundIndexLeng = pattern->leng;
 					}
 				}
 				i++;
 			}
-			Text::StrDelNew(u8fname);
+			u8fname->Release();
 			if (!found)
 			{
 				ofn.nFilterIndex = 1;
@@ -349,10 +350,10 @@ Bool UI::FileDialog::ShowDialog(ControlHandle *ownerHandle)
 		this->filterIndex = ofn.nFilterIndex - 1;
 		if (isSave && ofn.nFileExtension == 0)
 		{
-			const UTF8Char *pattern = this->patterns->GetItem(this->filterIndex);
-			if (pattern && Text::StrStartsWith(pattern, (const UTF8Char*)"*."))
+			Text::String *pattern = this->patterns->GetItem(this->filterIndex);
+			if (pattern && Text::StrStartsWithC(pattern->v, pattern->leng, UTF8STRC("*.")))
 			{
-				Text::StrUTF8_WChar(&fnameBuff[Text::StrCharCnt(fnameBuff)], &pattern[1], 0);
+				Text::StrUTF8_WChar(&fnameBuff[Text::StrCharCnt(fnameBuff)], &pattern->v[1], 0);
 			}
 			this->fileName = Text::StrToUTF8New(fnameBuff);
 		}

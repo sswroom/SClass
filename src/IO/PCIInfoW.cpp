@@ -140,8 +140,8 @@ UOSInt IO::PCIInfo::GetPCIList(Data::ArrayList<PCIInfo*> *pciList)
 		IO::Path::PathType pt;
 		clsData.dispName = (const UTF8Char*)"PCI Device";
 		sptr = Text::StrConcatC(sbuff, UTF8STRC("Z:\\sys\\bus\\pci\\devices\\"));
-		Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
-		sess = IO::Path::FindFile(sbuff);
+		sptr2 = Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
+		sess = IO::Path::FindFile(sbuff, (UOSInt)(sptr2 - sbuff));
 		if (sess)
 		{
 			while ((sptr2 = IO::Path::FindNextFile(sptr, sess, 0, &pt, 0)) != 0)

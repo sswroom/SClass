@@ -539,6 +539,7 @@ Bool IO::FileUtil::CopyDir(const UTF8Char *srcDir, const UTF8Char *destDir, File
 	UTF8Char sbuff[512];
 	UTF8Char dbuff[512];
 	UTF8Char *sptr;
+	UTF8Char *sptr2;
 	UTF8Char *dptr;
 	IO::Path::FindFileSession *sess;
 	const WChar *wptr;
@@ -562,8 +563,8 @@ Bool IO::FileUtil::CopyDir(const UTF8Char *srcDir, const UTF8Char *destDir, File
 	{
 		*dptr++ = IO::Path::PATH_SEPERATOR;
 	}
-	Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
-	sess = IO::Path::FindFile(sbuff);
+	sptr2 = Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
+	sess = IO::Path::FindFile(sbuff, (UOSInt)(sptr2 - sbuff));
 	if (sess)
 	{
 		IO::Path::PathType pt;
@@ -759,6 +760,7 @@ Bool IO::FileUtil::MoveDir(const UTF8Char *srcDir, const UTF8Char *destDir, File
 	UTF8Char sbuff[512];
 	UTF8Char dbuff[512];
 	UTF8Char *sptr;
+	UTF8Char *sptr2;
 	UTF8Char *dptr;
 	IO::Path::FindFileSession *sess;
 	Bool succ;
@@ -787,8 +789,8 @@ Bool IO::FileUtil::MoveDir(const UTF8Char *srcDir, const UTF8Char *destDir, File
 	{
 		*dptr++ = IO::Path::PATH_SEPERATOR;
 	}
-	Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
-	sess = IO::Path::FindFile(sbuff);
+	sptr2 = Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
+	sess = IO::Path::FindFile(sbuff, (UOSInt)(sptr2 - sbuff));
 	succ = true;
 	if (sess)
 	{
@@ -851,14 +853,15 @@ void __stdcall IO::FileUtil::CopyHdlr(const UInt8 *buff, UOSInt buffSize, void *
 Bool IO::FileUtil::DeleteDir(UTF8Char *dir, Bool deleteRdonlyFile)
 {
 	UTF8Char *sptr = &dir[Text::StrCharCnt(dir)];
+	UTF8Char *sptr2;
 	if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 	{
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 	}
-	Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
+	sptr2 = Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
 	Bool succ = true;
 	IO::Path::PathType pt;
-	IO::Path::FindFileSession *sess = IO::Path::FindFile(dir);
+	IO::Path::FindFileSession *sess = IO::Path::FindFile(dir, (UOSInt)(sptr2 - dir));
 	if (sess == 0)
 		return false;
 	while (succ && IO::Path::FindNextFile(sptr, sess, 0, &pt, 0))

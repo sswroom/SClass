@@ -34,3 +34,28 @@ UTF8Char *Text::SpreadSheet::WorkbookDataSource::ToCodeRange(UTF8Char *sbuff)
 	sbuff = Text::StrUOSInt(sbuff, this->lastRow + 1);
 	return sbuff;
 }
+
+Text::SpreadSheet::Worksheet *Text::SpreadSheet::WorkbookDataSource::GetSheet()
+{
+	return this->sheet;
+}
+
+UOSInt Text::SpreadSheet::WorkbookDataSource::GetFirstRow()
+{
+	return this->firstRow;
+}
+
+UOSInt Text::SpreadSheet::WorkbookDataSource::GetLastRow()
+{
+	return this->lastRow;
+}
+
+UOSInt Text::SpreadSheet::WorkbookDataSource::GetFirstCol()
+{
+	return this->firstCol;
+}
+
+UOSInt Text::SpreadSheet::WorkbookDataSource::GetLastCol()
+{
+	return this->lastCol;
+}

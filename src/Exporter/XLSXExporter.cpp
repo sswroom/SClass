@@ -1431,7 +1431,74 @@ void Exporter::XLSXExporter::AppendSeries(Text::StringBuilderUTF *sb, Text::Spre
 	sb->Append(s);
 	s->Release();
 	sb->AppendC(UTF8STRC("</c:f>"));
-	sb->AppendC(UTF8STRC("<c:numCache/>"));
+	UOSInt firstRow = valData->GetFirstRow();
+	UOSInt lastRow = valData->GetLastRow();
+	UOSInt firstCol = valData->GetFirstCol();
+	UOSInt lastCol = valData->GetLastCol();
+	if (firstRow == lastRow)
+	{
+		Worksheet *sheet = valData->GetSheet();
+		sb->AppendC(UTF8STRC("<c:numCache>"));
+		sb->AppendC(UTF8STRC("<c:ptCount val=\""));
+		sb->AppendUOSInt(lastCol - firstCol + 1);
+		sb->AppendC(UTF8STRC("\"/>"));
+		Worksheet::RowData *row = sheet->GetItem(firstRow);
+		Worksheet::CellData *cell;
+		UOSInt i;
+		if (row)
+		{
+			i = firstCol;
+			while (i <= lastCol)
+			{
+				cell = row->cells->GetItem(i);
+				if (cell && cell->cellValue && (cell->cdt == CellDataType::DateTime || cell->cdt == CellDataType::Number))
+				{
+					sb->AppendC(UTF8STRC("<c:pt idx=\""));
+					sb->AppendUOSInt(i - firstCol);
+					sb->AppendC(UTF8STRC("\"><c:v>"));
+					sb->Append(cell->cellValue);
+					sb->AppendC(UTF8STRC("</c:v></c:pt>"));
+				}
+				i++;
+			}
+		}
+		sb->AppendC(UTF8STRC("</c:numCache>"));
+	}
+	else if (firstCol == lastCol)
+	{
+		Worksheet *sheet = valData->GetSheet();
+		sb->AppendC(UTF8STRC("<c:numCache>"));
+		sb->AppendC(UTF8STRC("<c:ptCount val=\""));
+		sb->AppendUOSInt(lastRow - firstRow + 1);
+		sb->AppendC(UTF8STRC("\"/>"));
+		Worksheet::RowData *row;
+		Worksheet::CellData *cell;
+		UOSInt i;
+		i = firstRow;
+		while (i <= lastRow)
+		{
+			row = sheet->GetItem(i);
+			if (row)
+			{
+				cell = row->cells->GetItem(firstCol);
+				if (cell && cell->cellValue && (cell->cdt == CellDataType::DateTime || cell->cdt == CellDataType::Number))
+				{
+					sb->AppendC(UTF8STRC("<c:pt idx=\""));
+					sb->AppendUOSInt(i - firstRow);
+					sb->AppendC(UTF8STRC("\"><c:v>"));
+					sb->Append(cell->cellValue);
+					sb->AppendC(UTF8STRC("</c:v></c:pt>"));
+				}
+				i++;
+			}
+			i++;	
+		}
+		sb->AppendC(UTF8STRC("</c:numCache>"));
+	}
+	else
+	{
+		sb->AppendC(UTF8STRC("<c:numCache/>"));
+	}
 	sb->AppendC(UTF8STRC("</c:numRef>"));
 	sb->AppendC(UTF8STRC("</c:val>"));
 

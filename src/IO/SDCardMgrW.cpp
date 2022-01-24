@@ -93,7 +93,7 @@ IO::SDCardInfo *SDCardMgr_ReadInfo(const WChar *path)
 	Bool valid = true;
 	IO::SDCardInfo *sdcard = 0;
 
-	HANDLE hDevice = CreateFile(path, GENERIC_READ | GENERIC_WRITE, FILE_SHARE_DELETE | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+	HANDLE hDevice = CreateFileW(path, GENERIC_READ | GENERIC_WRITE, FILE_SHARE_DELETE | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 	if (hDevice == INVALID_HANDLE_VALUE)
 	{
 		return 0;
@@ -256,8 +256,8 @@ UOSInt IO::SDCardMgr::GetCardList(Data::ArrayList<IO::SDCardInfo*> *cardList)
 		IO::Path::PathType pt;
 
 		sptr = Text::StrConcatC(sbuff, UTF8STRC("Z:\\sys\\class\\mmc_host\\"));
-		Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
-		IO::Path::FindFileSession *sess = IO::Path::FindFile(sbuff);
+		sptr2 = Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
+		IO::Path::FindFileSession *sess = IO::Path::FindFile(sbuff, (UOSInt)(sptr2 - sbuff));
 		if (sess)
 		{
 			while ((sptr2 = IO::Path::FindNextFile(sptr, sess, 0, &pt, 0)) != 0)
@@ -265,8 +265,8 @@ UOSInt IO::SDCardMgr::GetCardList(Data::ArrayList<IO::SDCardInfo*> *cardList)
 				if (sptr[0] != '.' && pt != IO::Path::PathType::File)
 				{
 					sptr2 = Text::StrConcatC(sptr2, UTF8STRC("\\"));
-					Text::StrConcatC(sptr2, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
-					IO::Path::FindFileSession *sess2 = IO::Path::FindFile(sbuff);
+					sptr3 = Text::StrConcatC(sptr2, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
+					IO::Path::FindFileSession *sess2 = IO::Path::FindFile(sbuff, (UOSInt)(sptr3 - sbuff));
 					if (sess2)
 					{
 						while ((sptr3 = IO::Path::FindNextFile(sptr2, sess2, 0, &pt, 0)) != 0)

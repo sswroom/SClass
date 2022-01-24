@@ -146,13 +146,14 @@ OSInt IO::HIDInfo::GetHIDList(Data::ArrayList<HIDInfo*> *hidList)
 		UTF8Char sbuff2[512];
 		UTF8Char *sptr;
 		UTF8Char *sptr2;
+		UTF8Char *sptr3;
 		IO::Path::FindFileSession *sess;
 		IO::Path::FindFileSession *sess2;
 		IO::Path::PathType pt;
 		Int32 busType;
 		sptr = Text::StrConcatC(sbuff, UTF8STRC("/sys/bus/hid/devices/"));
-		Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
-		sess = IO::Path::FindFile(sbuff);
+		sptr2 = Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
+		sess = IO::Path::FindFile(sbuff, (UOSInt)(sptr2 - sbuff));
 		if (sess)
 		{
 			while ((sptr2 = IO::Path::FindNextFile(sptr, sess, 0, &pt, 0)) != 0)
@@ -182,8 +183,8 @@ OSInt IO::HIDInfo::GetHIDList(Data::ArrayList<HIDInfo*> *hidList)
 						break;
 					}
 					sptr2 = Text::StrConcatC(sptr2, UTF8STRC("/hidraw/"));
-					Text::StrConcatC(sptr2, UTF8STRC("hidraw*"));
-					sess2 = IO::Path::FindFile(sbuff);
+					sptr3 = Text::StrConcatC(sptr2, UTF8STRC("hidraw*"));
+					sess2 = IO::Path::FindFile(sbuff, (UOSInt)(sptr3 - sbuff));
 					if (sess2)
 					{
 						if (IO::Path::FindNextFile(sptr2, sess2, 0, &pt, 0))
