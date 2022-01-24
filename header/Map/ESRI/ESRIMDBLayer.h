@@ -59,7 +59,7 @@ namespace Map
 			virtual void RemoveUpdatedHandler(UpdatedHandler hdlr, void *obj);
 
 			virtual UOSInt GetTableNames(Data::ArrayList<const UTF8Char*> *names); // no need to release
-			virtual DB::DBReader *GetTableData(const UTF8Char *name);
+			virtual DB::DBReader *GetTableData(const UTF8Char *name, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, const UTF8Char *ordering, Data::QueryConditions *condition);
 			virtual void CloseReader(DB::DBReader *r);
 			virtual void GetErrorMsg(Text::StringBuilderUTF *str);
 			virtual void Reconnect();

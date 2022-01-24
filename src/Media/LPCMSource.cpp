@@ -415,15 +415,15 @@ Bool Media::LPCMSource::SupportSampleRead()
 	return true;
 }
 
-UOSInt Media::LPCMSource::ReadSample(Int64 sampleOfst, UOSInt sampleCount, UInt8 *buff)
+UOSInt Media::LPCMSource::ReadSample(UInt64 sampleOfst, UOSInt sampleCount, UInt8 *buff)
 {
 	UOSInt blk = (this->format.nChannels * (UInt32)this->format.bitpersample >> 3);
 	if (sampleOfst < 0)
 	{
-		if (sampleOfst + (OSInt)sampleCount > 0)
+		if (sampleOfst + sampleCount > 0)
 		{
 			MemClear(buff, (UOSInt)-sampleOfst * blk);
-			return (UOSInt)((OSInt)(this->data->GetRealData(0, (UOSInt)((OSInt)sampleCount + sampleOfst) * blk, buff - sampleOfst * (OSInt)blk) / blk) - sampleOfst);
+			return (UOSInt)((this->data->GetRealData(0, (UOSInt)(sampleCount + sampleOfst) * blk, buff - sampleOfst * blk) / blk) - sampleOfst);
 		}
 		else
 		{
@@ -433,7 +433,7 @@ UOSInt Media::LPCMSource::ReadSample(Int64 sampleOfst, UOSInt sampleCount, UInt8
 	}
 	else
 	{
-		return this->data->GetRealData((UInt64)sampleOfst * blk, sampleCount * blk, buff) / blk;
+		return this->data->GetRealData(sampleOfst * blk, sampleCount * blk, buff) / blk;
 	}
 }
 

@@ -40,7 +40,7 @@ namespace Media
 		virtual Bool IsEnd();
 
 		virtual Bool SupportSampleRead();
-		virtual UOSInt ReadSample(Int64 sampleOfst, UOSInt sampleCount, UInt8 *buff);
+		virtual UOSInt ReadSample(UInt64 sampleOfst, UOSInt sampleCount, UInt8 *buff);
 		virtual Int64 GetSampleCount();
 	};
 }

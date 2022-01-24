@@ -262,7 +262,7 @@ UOSInt DB::ODBCConn::GetTableNames(Data::ArrayList<const UTF8Char*> *names)
 	return 0;
 }
 
-DB::DBReader *DB::ODBCConn::GetTableData(const UTF8Char *name, Data::ArrayList<const UTF8Char*> *columnNames, UOSInt ofst, UOSInt maxCnt, const UTF8Char *ordering, Data::QueryConditions *condition)
+DB::DBReader *DB::ODBCConn::GetTableData(const UTF8Char *name, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, const UTF8Char *ordering, Data::QueryConditions *condition)
 {
 	return 0;
 }
@@ -271,13 +271,13 @@ void DB::ODBCConn::ShowSQLError(const UInt16 *state, const UInt16 *errMsg)
 {
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("ODBC Error: ["));
-	const UTF8Char *csptr = Text::StrToUTF8New(state);
-	sb.Append(csptr);
-	Text::StrDelNew(csptr);
+	Text::String *s = Text::String::NewNotNull(state);
+	sb.Append(s);
+	s->Release();
 	sb.AppendC(UTF8STRC("] "));
-	csptr = Text::StrToUTF8New(errMsg);
-	sb.Append(csptr);
-	Text::StrDelNew(csptr);
+	s = Text::String::NewNotNull(errMsg);
+	sb.Append(s);
+	s->Release();
 	this->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_ERR_DETAIL);
 }
 

@@ -63,8 +63,12 @@ void *IO::BufferedInputStream::BeginRead(UInt8 *buff, UOSInt size, Sync::Event *
 	return (void*)sz;
 }
 
-UOSInt IO::BufferedInputStream::EndRead(void *reqData, Bool toWait)
+UOSInt IO::BufferedInputStream::EndRead(void *reqData, Bool toWait, Bool *incomplete)
 {
+	if (incomplete)
+	{
+		*incomplete = false;
+	}
 	return (UOSInt)reqData;
 }
 

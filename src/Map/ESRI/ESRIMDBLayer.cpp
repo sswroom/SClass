@@ -411,13 +411,13 @@ UOSInt Map::ESRI::ESRIMDBLayer::GetTableNames(Data::ArrayList<const UTF8Char*> *
 	return 1;
 }
 
-DB::DBReader *Map::ESRI::ESRIMDBLayer::GetTableData(const UTF8Char *name)
+DB::DBReader *Map::ESRI::ESRIMDBLayer::GetTableData(const UTF8Char *name, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, const UTF8Char *ordering, Data::QueryConditions *condition)
 {
 	Sync::MutexUsage *mutUsage;
 	NEW_CLASS(mutUsage, Sync::MutexUsage());
 	this->currDB = this->conn->UseConn(mutUsage);
 	this->lastDB = this->currDB;
-	DB::DBReader *rdr = this->currDB->GetTableData(name, 0, 0, 0, 0, 0);
+	DB::DBReader *rdr = this->currDB->GetTableData(name, columnNames, ofst, maxCnt, ordering, condition);
 	if (rdr)
 	{
 		Map::ESRI::ESRIMDBReader *r;

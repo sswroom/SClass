@@ -709,7 +709,7 @@ UOSInt Map::GPSTrack::GetTableNames(Data::ArrayList<const UTF8Char*> *names)
 	return 2;
 }
 
-DB::DBReader *Map::GPSTrack::GetTableData(const UTF8Char *tableName, Data::ArrayList<const UTF8Char *> *columnName, UOSInt ofst, UOSInt maxCnt, const UTF8Char *ordering, Data::QueryConditions *condition)
+DB::DBReader *Map::GPSTrack::GetTableData(const UTF8Char *tableName, Data::ArrayList<Text::String *> *columnName, UOSInt ofst, UOSInt maxCnt, const UTF8Char *ordering, Data::QueryConditions *condition)
 {
 	DB::DBReader *r;
 	if (tableName != 0 && Text::StrEquals(tableName, (const UTF8Char*)"GPSData"))
