@@ -3697,6 +3697,7 @@ Text/SMSUtil.h: ../../src/Text/SMSUtil.cpp
 @SMSUtil.o
 Text/String.h: ../../src/Text/String.cpp
 @String.o
+Text/StringBase.h:
 Text/StringBuilder.h:
 Text/StringBuilderC.h: ../../src/Text/StringBuilderC.cpp
 @StringBuilderC.o

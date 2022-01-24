@@ -928,11 +928,17 @@ void Net::HTTPMyClient::AddHeaderC(const UTF8Char *name, UOSInt nameLen, const U
 		}
 		else
 		{
-			sptr = Text::StrConcatC((UTF8Char*)buff, name, nameLen);
-			sptr = Text::StrConcatC(sptr, UTF8STRC(": "));
-			sptr = Text::StrConcatC(sptr, value, valueLen);
-			sptr = Text::StrConcatC(sptr, UTF8STRC("\r\n"));
+			sptr = buff;
+			MemCopyNO(sptr, name, nameLen);
+			sptr += nameLen;
+			WriteNUInt16(sptr, ReadNUInt16(": "));
+			sptr += 2;
+			MemCopyNO(sptr, value, valueLen);
+			sptr += valueLen;
+			WriteNUInt16(sptr, ReadNUInt16("\r\n"));
+			sptr += 2;
 #ifdef SHOWDEBUG
+			*sptr = 0;
 			printf("Add Header: %s", buff);
 #endif
 			this->reqMstm->Write(buff, (UOSInt)(sptr - (UTF8Char*)buff));

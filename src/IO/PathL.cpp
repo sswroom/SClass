@@ -501,7 +501,7 @@ UTF8Char *IO::Path::FindNextFile(UTF8Char *buff, IO::Path::FindFileSession *sess
 		UOSInt len = Text::StrCharCnt(ent->d_name);
 		if (FileNameMatch((const UTF8Char*)ent->d_name, len, sess->searchPattern->v, sess->searchPattern->leng))
 		{
-			Text::StrConcatC(sess->searchDir->ConcatTo(sbuff), (const UTF8Char*)ent->d_name, len);
+			sess->searchDir->ConcatWith(sbuff, (const UTF8Char*)ent->d_name, len);
 #if defined(__USE_LARGEFILE64)
 			struct stat64 s;
 			int status = lstat64((const Char*)sbuff, &s);
@@ -752,20 +752,19 @@ WChar *IO::Path::GetFullPathW(WChar *buff, const WChar *path)
 
 Bool IO::Path::FileNameMatch(const UTF8Char *path, UOSInt pathLen, const UTF8Char *searchPattern, UOSInt patternLen)
 {
-	UTF8Char sbuff[256];
 	UOSInt i = Text::StrLastIndexOfCharC(path, pathLen, '/');
 	const UTF8Char *fileName = &path[i + 1];
 	const UTF8Char *fileNameEnd = &path[pathLen];
-	Text::StrConcatC(sbuff, searchPattern, patternLen);
 	Bool isWC = false;
-	UTF8Char *patternStart = 0;
-	UTF8Char *currPattern = sbuff;
+	const UTF8Char *patternStart = 0;
+	const UTF8Char *currPattern = searchPattern;
 	UTF8Char c;
 	while (true)
 	{
 		c = *currPattern;
-		if (c == 0)
+		switch (c)
 		{
+		case 0:
 			if (isWC)
 			{
 				if (patternStart == 0)
@@ -780,14 +779,12 @@ Bool IO::Path::FileNameMatch(const UTF8Char *path, UOSInt pathLen, const UTF8Cha
 			{
 				return *fileName == 0;
 			}
-		}
-		else if (c == '?' || c == '*')
-		{
+		case '?':
+		case '*':
 			if (isWC)
 			{
 				if (patternStart == 0)
 					return false;
-				*currPattern = 0;
 				if ((i = Text::StrIndexOfC(fileName, (UOSInt)(fileNameEnd - fileName), patternStart, (UOSInt)(currPattern - patternStart))) == INVALID_INDEX)
 					return false;
 				fileName += i + currPattern - patternStart;
@@ -796,7 +793,6 @@ Bool IO::Path::FileNameMatch(const UTF8Char *path, UOSInt pathLen, const UTF8Cha
 			}
 			else if (patternStart)
 			{
-				*currPattern = 0;
 				if (!Text::StrStartsWithC(fileName, (UOSInt)(fileNameEnd - fileName), patternStart, (UOSInt)(currPattern - patternStart)))
 					return false;
 				fileName += currPattern - patternStart;
@@ -816,14 +812,14 @@ Bool IO::Path::FileNameMatch(const UTF8Char *path, UOSInt pathLen, const UTF8Cha
 				patternStart = 0;
 				currPattern++;
 			}
-		}
-		else
-		{
+			break;
+		default:
 			if (patternStart == 0)
 			{
 				patternStart = currPattern;
 			}
 			currPattern++;
+			break;
 		}
 	}
 }

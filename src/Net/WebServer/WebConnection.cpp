@@ -695,12 +695,10 @@ Bool Net::WebServer::WebConnection::AddHeaderC(const UTF8Char *name, UOSInt name
 {
 	if (this->respHeaderSent)
 		return false;
-	this->respHeaders->AppendC(name, nameLen);
-	this->respHeaders->AppendC(UTF8STRC(": "));
-	this->respHeaders->AppendC(value, valueLen);
-	this->respHeaders->AppendC(UTF8STRC("\r\n"));
+	this->respHeaders->AppendC2(name, nameLen, UTF8STRC(": "));
+	this->respHeaders->AppendC2(value, valueLen, UTF8STRC("\r\n"));
 
-	if (Text::StrEqualsICaseC(name, nameLen, UTF8STRC("Transfer-Encoding")) && Text::StrEqualsC(value, valueLen, UTF8STRC("chunked")))
+	if (Text::StrEqualsC(value, valueLen, UTF8STRC("chunked")) && Text::StrEqualsICaseC(name, nameLen, UTF8STRC("Transfer-Encoding")))
 	{
 		this->respTranEnc = 1;
 		this->cli->SetNoDelay(false);

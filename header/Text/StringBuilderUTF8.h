@@ -16,6 +16,7 @@ namespace Text
 		virtual StringBuilderUTF *AppendC(const UTF8Char *s, UOSInt charCnt);
 		virtual StringBuilderUTF *AppendS(const UTF8Char *s, UOSInt maxLen);
 		virtual StringBuilderUTF *AppendChar(UTF32Char c, UOSInt repCnt);
+		StringBuilderUTF8 *AppendC2(const UTF8Char *str1, UOSInt len1, const UTF8Char *str2, UOSInt len2);
 
 		StringBuilderUTF8 *AppendCSV(const UTF8Char **sarr, UOSInt nStr);
 		StringBuilderUTF8 *AppendToUpper(const UTF8Char *s);

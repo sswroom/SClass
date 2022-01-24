@@ -775,8 +775,8 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 				Text::TextBinEnc::URIEncoding::URIDecode(sbuff, sb2.ToString());
 				s = Text::XML::ToNewHTMLText(sbuff);
 				sbOut.Append(s);
-				sbOut.AppendC(UTF8STRC("</title></head>\r\n<body>\r\n"));
-				sbOut.AppendC(UTF8STRC("<h2>Index Of "));
+				sbOut.AppendC2(UTF8STRC("</title></head>\r\n<body>\r\n"),
+							   UTF8STRC("<h2>Index Of "));
 				sbOut.Append(s);
 				s->Release();
 				sbOut.AppendC(UTF8STRC("</h2>\r\n"));
@@ -795,8 +795,8 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 					sbOut.Append(s);
 					sbOut.AppendC(UTF8STRC(" enctype=\"multipart/form-data\">"));
 					s->Release();
-					sbOut.AppendC(UTF8STRC("Upload: <input type=\"file\" name=\"uploadfile\" multiple/><br/><input type=\"submit\"/>"));
-					sbOut.AppendC(UTF8STRC("</form>"));
+					sbOut.AppendC2(UTF8STRC("Upload: <input type=\"file\" name=\"uploadfile\" multiple/><br/><input type=\"submit\"/>"),
+								   UTF8STRC("</form>"));
 				}
 
 				s = req->GetQueryValue(UTF8STRC("sort"));
@@ -814,8 +814,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 				s->Release();
 				sbOut.AppendC(UTF8STRC(">Name</a></th><th>MIME</th><th><a href="));
 				sb3.ClearStr();
-				sb3.AppendC(sb2.ToString(), sb2.GetLength());
-				sb3.AppendC(UTF8STRC("?sort=2"));
+				sb3.AppendC2(sb2.ToString(), sb2.GetLength(), UTF8STRC("?sort=2"));
 				s = Text::XML::ToNewAttrText(sb3.ToString());
 				sbOut.Append(s);
 				s->Release();
@@ -824,8 +823,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 				{
 					sbOut.AppendC(UTF8STRC("<th><a href="));
 					sb3.ClearStr();
-					sb3.AppendC(sb2.ToString(), sb2.GetLength());
-					sb3.AppendC(UTF8STRC("?sort=3"));
+					sb3.AppendC2(sb2.ToString(), sb2.GetLength(), UTF8STRC("?sort=3"));
 					s = Text::XML::ToNewAttrText(sb3.ToString());
 					sbOut.Append(s);
 					s->Release();
@@ -847,17 +845,14 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 						while (i < j)
 						{
 							package = this->packageMap->GetItem(i);
-							sbOut.AppendC(UTF8STRC("<tr><td>"));
-							sbOut.AppendC(UTF8STRC("<a href=\""));
+							sbOut.AppendC(UTF8STRC("<tr><td><a href=\""));
 							sptr2 = Text::TextBinEnc::URIEncoding::URIEncode(sbuff2, package->fileName->v);
 							sbOut.AppendC(sbuff2, (UOSInt)(sptr2 - sbuff2));
 							sbOut.AppendChar('/', 1);
 							sbOut.AppendC(UTF8STRC("\">"));
 							sptr2 = Text::XML::ToXMLText(sbuff2, package->fileName->v);
-							sbOut.AppendC(sbuff2, (UOSInt)(sptr2 - sbuff2));
-							sbOut.AppendC(UTF8STRC("</a></td><td>"));
-							sbOut.AppendC(UTF8STRC("Directory"));
-							sbOut.AppendC(UTF8STRC("</td><td>"));
+							sbOut.AppendC2(sbuff2, (UOSInt)(sptr2 - sbuff2), UTF8STRC("</a></td><td>"));
+							sbOut.AppendC2(UTF8STRC("Directory"), UTF8STRC("</td><td>"));
 							sbOut.AppendChar('-', 1);
 							if (this->statMap)
 							{
@@ -894,8 +889,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 							NEW_CLASS(stat->cntMap, Data::FastStringMap<UInt32>());
 							stat->updated = true;
 							sb2.ClearStr();
-							sb2.AppendC(sb.ToString(), sb.GetLength());
-							sb2.AppendC(UTF8STRC(".counts"));
+							sb2.AppendC2(sb.ToString(), sb.GetLength(), UTF8STRC(".counts"));
 							stat->statFileName = Text::String::New(sb2.ToString(), sb2.GetLength());
 							this->statMap->Put(stat->reqPath, stat);
 							this->StatLoad(stat);
@@ -927,8 +921,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 								{
 									cnt = 0;
 								}
-								sbOut.AppendC(UTF8STRC("<tr><td>"));
-								sbOut.AppendC(UTF8STRC("<a href=\""));
+								sbOut.AppendC(UTF8STRC("<tr><td><a href=\""));
 								sptr4 = Text::TextBinEnc::URIEncoding::URIEncode(sbuff2, sptr2);
 								sbOut.AppendC(sbuff2, (UOSInt)(sptr4 - sbuff2));
 								if (pt == IO::Path::PathType::Directory)
@@ -949,16 +942,14 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 								sbOut.AppendC(UTF8STRC("</a></td><td>"));
 								if (pt == IO::Path::PathType::Directory)
 								{
-									sbOut.AppendC(UTF8STRC("Directory"));
-									sbOut.AppendC(UTF8STRC("</td><td>"));
+									sbOut.AppendC2(UTF8STRC("Directory"), UTF8STRC("</td><td>"));
 									sbOut.AppendChar('-', 1);
 								}
 								else
 								{
 									sptr4 = IO::Path::GetFileExt(sbuff2, sptr2, (UOSInt)(sptr3 - sptr2));
 									mime = Net::MIME::GetMIMEFromExt(sbuff2, (UOSInt)(sptr4 - sbuff2));
-									sbOut.AppendC(mime.v, mime.leng);
-									sbOut.AppendC(UTF8STRC("</td><td>"));
+									sbOut.AppendC2(mime.v, mime.leng, UTF8STRC("</td><td>"));
 									sbOut.AppendU64(fileSize);
 								}
 								if (this->statMap)
@@ -1030,8 +1021,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 						while (i < j)
 						{
 							ent = entList.GetItem(i);
-							sbOut.AppendC(UTF8STRC("<tr><td>"));
-							sbOut.AppendC(UTF8STRC("<a href=\""));
+							sbOut.AppendC(UTF8STRC("<tr><td><a href=\""));
 							sptr3 = Text::TextBinEnc::URIEncoding::URIEncode(sbuff2, ent->fileName->v);
 							sbOut.AppendC(sbuff2, (UOSInt)(sptr3 - sbuff2));
 							if (ent->pt == IO::Path::PathType::Directory)
@@ -1052,16 +1042,14 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 							sbOut.AppendC(UTF8STRC("</a></td><td>"));
 							if (ent->pt == IO::Path::PathType::Directory)
 							{
-								sbOut.AppendC(UTF8STRC("Directory"));
-								sbOut.AppendC(UTF8STRC("</td><td>"));
-								sbOut.AppendC(UTF8STRC("-"));
+								sbOut.AppendC2(UTF8STRC("Directory"), UTF8STRC("</td><td>"));
+								sbOut.AppendChar('-', 1);
 							}
 							else
 							{
 								sptr3 = IO::Path::GetFileExt(sbuff2, ent->fileName->v, ent->fileName->leng);
 								mime = Net::MIME::GetMIMEFromExt(sbuff2, (UOSInt)(sptr3 - sbuff2));
-								sbOut.AppendC(mime.v, mime.leng);
-								sbOut.AppendC(UTF8STRC("</td><td>"));
+								sbOut.AppendC2(mime.v, mime.leng, UTF8STRC("</td><td>"));
 								sbOut.AppendU64(ent->fileSize);
 							}
 							if (this->statMap)

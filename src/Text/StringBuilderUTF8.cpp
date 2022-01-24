@@ -181,6 +181,23 @@ Text::StringBuilderUTF *Text::StringBuilderUTF8::AppendChar(UTF32Char c, UOSInt 
 	return this;
 }
 
+Text::StringBuilderUTF8 *Text::StringBuilderUTF8::AppendC2(const UTF8Char *str1, UOSInt len1, const UTF8Char *str2, UOSInt len2)
+{
+	UOSInt tlen = len1 + len2;
+	if (tlen > 0)
+	{
+		STRINGBUILDER_ALLOCLENG(tlen);
+		UTF8Char *dptr = this->buffEnd;
+		MemCopyNO(dptr, str1, len1);
+		dptr += len1;
+		MemCopyNO(dptr, str2, len2);
+		dptr += len2;
+		*dptr = 0;
+		this->buffEnd = dptr;
+	}
+	return this;
+}
+
 Text::StringBuilderUTF8 *Text::StringBuilderUTF8::AppendCSV(const UTF8Char **sarr, UOSInt nStr)
 {
 	Text::String *s;
