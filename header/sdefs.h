@@ -405,7 +405,7 @@ typedef UInt32 UTF32Char;
 #define INVALID_INDEX ((UOSInt)-1)
 #define UTF8STRC(s) (const UTF8Char*)s, (sizeof(s) - 1)
 
-#if defined(__GNUC__) && __cplusplus < 201703L
+#if defined(__GNUC__) && (__cplusplus < 201703L) && (__STDC_VERSION__ < 201703L) && !defined(__clang__)
 #define REGVAR register
 #else
 #define REGVAR

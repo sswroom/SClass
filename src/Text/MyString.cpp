@@ -698,7 +698,7 @@ UTF8Char *Text::StrUInt64S(UTF8Char *oriStr, UInt64 val, UTF8Char seperator, UOS
 
 UTF8Char *Text::StrToUpper(UTF8Char *oriStr, const UTF8Char *strToJoin)
 {
-	UTF8Char c;
+	UOSInt c;
 	while ((c = *strToJoin++) != 0)
 	{
 /*		if (c >= 'a' && c <= 'z')
@@ -778,7 +778,7 @@ UTF8Char *Text::StrToUpperC(UTF8Char *oriStr, const UTF8Char *strToJoin, UOSInt 
 
 UTF8Char *Text::StrToLower(UTF8Char *oriStr, const UTF8Char *strToJoin)
 {
-	UTF8Char c;
+	UOSInt c;
 	while ((c = *strToJoin++) != 0)
 	{
 		*oriStr++ = MyString_StrLowerArr[c];
@@ -965,7 +965,7 @@ Bool Text::StrEqualsC(const UTF8Char *str1, UOSInt len1, const UTF8Char *str2, U
 
 Bool Text::StrEqualsICase(const UTF8Char *str1, const UTF8Char *str2)
 {
-	UTF8Char c1;
+	UOSInt c1;
 	while ((c1 = *str1++) != 0)
 	{
 		if (MyString_StrUpperArr[c1] != MyString_StrUpperArr[*str2])
