@@ -42,7 +42,7 @@ namespace IO
 		Bool HasData();
 
 		virtual void *BeginRead(UInt8 *buff, UOSInt size, Sync::Event *evt);
-		virtual UOSInt EndRead(void *reqData, Bool toWait);
+		virtual UOSInt EndRead(void *reqData, Bool toWait, Bool *incomplete);
 		virtual void CancelRead(void *reqData);
 		virtual void *BeginWrite(const UInt8 *buff, UOSInt size, Sync::Event *evt);
 		virtual UOSInt EndWrite(void *reqData, Bool toWait);

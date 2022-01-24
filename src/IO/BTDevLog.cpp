@@ -277,7 +277,7 @@ Bool IO::BTDevLog::StoreFile(const UTF8Char *fileName)
 		case IO::BTScanLog::AT_RANDOM:
 			sb.AppendC(UTF8STRC("Random"));
 			break;
-		case IO::BTScanLog::RT_UNKNOWN:
+		case IO::BTScanLog::AT_UNKNOWN:
 		default:
 			sb.AppendC(UTF8STRC("Unknown"));
 			break;

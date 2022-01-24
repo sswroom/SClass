@@ -239,8 +239,12 @@ void *IO::RS232GPIO::BeginRead(UInt8 *buff, UOSInt size, Sync::Event *evt)
 	return ret;
 }
 
-UOSInt IO::RS232GPIO::EndRead(void *reqData, Bool toWait)
+UOSInt IO::RS232GPIO::EndRead(void *reqData, Bool toWait, Bool *incomplete)
 {
+	if (incomplete)
+	{
+		*incomplete = false;
+	}
 	return (UOSInt)reqData;
 }
 

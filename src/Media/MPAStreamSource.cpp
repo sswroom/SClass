@@ -45,7 +45,7 @@ Bool Media::MPAStreamSource::ParseHeader(UInt8 *buff, UOSInt buffSize)
 			{
 				static UInt32 freq[4] = {44100, 48000, 32000, 0};
 				this->fmt->frequency = freq[(buff[2] >> 2) & 3];
-				if ((buff[3] & 0xc0) == 3)
+				if ((buff[3] & 0xc0) == 0xc0)
 					this->fmt->nChannels = 1;
 				else
 					this->fmt->nChannels = 2;
