@@ -137,7 +137,7 @@ UOSInt Sync::Thread::GetThreadCnt()
 	return 1;
 #else
 	cpu_set_t set;
-	if (pthread_getaffinity_np (pthread_self (), sizeof (set), &set) == 0)
+	if (sched_getaffinity(getpid(), sizeof (set), &set) == 0)
     {
 		UInt32 count;
 # ifdef CPU_COUNT
