@@ -136,7 +136,7 @@ void Sync::Mutex_Lock(Sync::MutexData *data)
 	if (data->lockId == (UInt32)currTID)
 	{
 		data->locked++;
-//		wprintf(L"Mutex Relocked cnt = %d, tid = %d\r\n", mut->lockCnt, currTID);
+//		printf("Mutex Relocked cnt = %d, tid = %d\r\n", mut->lockCnt, currTID);
 	}
 	else
 	{
@@ -156,7 +156,7 @@ void Sync::Mutex_Unlock(Sync::MutexData *data)
 	}
 	else
 	{
-//		wprintf(L"Mutex Relock released\r\n");
+//		printf("Mutex Relock released\r\n");
 	}
 }
 
@@ -166,7 +166,7 @@ Bool Sync::Mutex_TryLock(Sync::MutexData *data)
 	if (data->lockId == (UInt32)currTID)
 	{
 		data->locked++;
-//		wprintf(L"Mutex Relocked cnt = %d, tid = %d\r\n", mut->lockCnt, currTID);
+//		printf("Mutex Relocked cnt = %d, tid = %d\r\n", mut->lockCnt, currTID);
 		return true;
 	}
 	else
@@ -220,7 +220,7 @@ void Sync::Mutex_Lock(Sync::MutexData *data)
 	if (mut->lockTID == currTID)
 	{
 		mut->lockCnt++;
-		wprintf(L"Mutex Relocked cnt = %d, tid = %d\r\n", mut->lockCnt, currTID);
+		printf("Mutex Relocked cnt = %d, tid = %d\r\n", mut->lockCnt, currTID);
 	}
 	else
 	{
@@ -241,7 +241,7 @@ void Sync::Mutex_Unlock(Sync::MutexData *data)
 	}
 	else
 	{
-		wprintf(L"Mutex Relock released\r\n");
+		printf("Mutex Relock released\r\n");
 	}
 }
 
@@ -252,7 +252,7 @@ Bool Sync::Mutex_TryLock(Sync::MutexData *data)
 	if (mut->lockTID == currTID)
 	{
 		mut->lockCnt++;
-		wprintf(L"Mutex Relocked cnt = %d, tid = %d\r\n", mut->lockCnt, currTID);
+		printf("Mutex Relocked cnt = %d, tid = %d\r\n", mut->lockCnt, currTID);
 		return true;
 	}
 	else

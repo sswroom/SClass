@@ -8,11 +8,12 @@ UOSInt Text::XML::GetXMLTextLen(const UTF8Char *text)
 {
 	UOSInt cnt = 0;
 	const UTF8Char *sptr = text;
-	UTF8Char c;
-	while ((c = *sptr++) != 0)
+	while (true)
 	{
-		switch (c)
+		switch (*sptr++)
 		{
+		case 0:
+			return cnt;
 		case '&':
 			cnt += 5;
 			break;
@@ -36,7 +37,6 @@ UOSInt Text::XML::GetXMLTextLen(const UTF8Char *text)
 			break;
 		}
 	}
-	return cnt;
 }
 
 UOSInt Text::XML::GetXMLTextLen(const WChar *text)
@@ -131,10 +131,12 @@ UOSInt Text::XML::GetHTMLTextLen(const UTF8Char *text)
 	UOSInt cnt = 0;
 	const UTF8Char *sptr = text;
 	UTF8Char c;
-	while ((c = *sptr++) != 0)
+	while (true)
 	{
-		switch (c)
+		switch ((c = *sptr++))
 		{
+		case 0:
+			return cnt;
 		case '&':
 			cnt += 5;
 			break;
@@ -160,7 +162,6 @@ UOSInt Text::XML::GetHTMLTextLen(const UTF8Char *text)
 			break;
 		}
 	}
-	return cnt;
 }
 
 UOSInt Text::XML::GetHTMLTextLen(const WChar *text)
@@ -255,69 +256,46 @@ UTF8Char *Text::XML::ToXMLText(UTF8Char *buff, const UTF8Char *text)
 	UTF8Char *dptr = buff;
 	const UTF8Char *sptr = text;
 	UTF8Char c;
-	while ((c = *sptr++) != 0)
+	while (true)
 	{
-		if (c == '&')
+		switch ((c = *sptr++))
 		{
-			dptr[0] = '&';
-			dptr[1] = 'a';
-			dptr[2] = 'm';
-			dptr[3] = 'p';
+		case 0:
+			*dptr = 0;
+			return dptr;
+		case '&':
+			WriteNUInt32(dptr, ReadNUInt32("&amp"));
 			dptr[4] = ';';
 			dptr += 5;
-		}
-		else if (c == '<')
-		{
-			dptr[0] = '&';
-			dptr[1] = 'l';
-			dptr[2] = 't';
-			dptr[3] = ';';
+			break;
+		case '<':
+			WriteNUInt32(dptr, ReadNUInt32("&lt;"));
 			dptr += 4;
-		}
-		else if (c == '>')
-		{
-			dptr[0] = '&';
-			dptr[1] = 'g';
-			dptr[2] = 't';
-			dptr[3] = ';';
+			break;
+		case '>':
+			WriteNUInt32(dptr, ReadNUInt32("&gt;"));
 			dptr += 4;
-		}
-		else if (c == '\'')
-		{
-			dptr[0] = '&';
-			dptr[1] = 'a';
-			dptr[2] = 'p';
-			dptr[3] = 'o';
-			dptr[4] = 's';
-			dptr[5] = ';';
+			break;
+		case '\'':
+			WriteNUInt32(dptr, ReadNUInt32("&apo"));
+			WriteNUInt16(&dptr[4], ReadNUInt16("s;"));
 			dptr += 6;
-		}
-		else if (c == '"')
-		{
-			dptr[0] = '&';
-			dptr[1] = 'q';
-			dptr[2] = 'u';
-			dptr[3] = 'o';
-			dptr[4] = 't';
-			dptr[5] = ';';
+			break;
+		case '"':
+			WriteNUInt32(dptr, ReadNUInt32("&quo"));
+			WriteNUInt16(&dptr[4], ReadNUInt16("t;"));
 			dptr += 6;
-		}
-		else if (c == '\n')
-		{
-			dptr[0] = '&';
-			dptr[1] = '#';
-			dptr[2] = '1';
-			dptr[3] = '0';
+			break;
+		case '\n':
+			WriteNUInt32(dptr, ReadNUInt32("&#10"));
 			dptr[4] = ';';
 			dptr += 5;
-		}
-		else
-		{
+			break;
+		default:
 			*dptr++ = c;
+			break;
 		}
 	}
-	*dptr = 0;
-	return dptr;
 }
 
 WChar *Text::XML::ToXMLText(WChar *buff, const WChar *text)
@@ -395,40 +373,40 @@ UTF8Char *Text::XML::ToXMLTextLite(UTF8Char *buff, const UTF8Char *text)
 	UTF8Char *dptr = buff;
 	const UTF8Char *sptr = text;
 	UTF8Char c;
-	while ((c = *sptr++) != 0)
+	while (true)
 	{
-		if (c == '&')
+		switch ((c = *sptr++))
 		{
+		case 0:
+			*dptr = 0;
+			return dptr;
+		case '&':
 			dptr[0] = '&';
 			dptr[1] = 'a';
 			dptr[2] = 'm';
 			dptr[3] = 'p';
 			dptr[4] = ';';
 			dptr += 5;
-		}
-		else if (c == '<')
-		{
+			break;
+		case '<':
 			dptr[0] = '&';
 			dptr[1] = 'l';
 			dptr[2] = 't';
 			dptr[3] = ';';
 			dptr += 4;
-		}
-		else if (c == '>')
-		{
+			break;
+		case '>':
 			dptr[0] = '&';
 			dptr[1] = 'g';
 			dptr[2] = 't';
 			dptr[3] = ';';
 			dptr += 4;
-		}
-		else
-		{
+			break;
+		default:
 			*dptr++ = c;
+			break;
 		}
 	}
-	*dptr = 0;
-	return dptr;
 }
 
 WChar *Text::XML::ToXMLTextLite(WChar *buff, const WChar *text)
@@ -477,44 +455,44 @@ UTF8Char *Text::XML::ToHTMLText(UTF8Char *buff, const UTF8Char *text)
 	UTF8Char *dptr = buff;
 	const UTF8Char *sptr = text;
 	UTF8Char c;
-	while ((c = *sptr++) != 0)
+	while (true)
 	{
-		if (c == '&')
+		switch (c = *sptr++)
 		{
+		case 0:
+			*dptr = 0;
+			return dptr;
+		case '&':
 			dptr[0] = '&';
 			dptr[1] = '#';
 			dptr[2] = '3';
 			dptr[3] = '8';
 			dptr[4] = ';';
 			dptr += 5;
-		}
-		else if (c == '<')
-		{
+			break;
+		case '<':
 			dptr[0] = '&';
 			dptr[1] = 'l';
 			dptr[2] = 't';
 			dptr[3] = ';';
 			dptr += 4;
-		}
-		else if (c == '>')
-		{
+			break;
+		case '>':
 			dptr[0] = '&';
 			dptr[1] = 'g';
 			dptr[2] = 't';
 			dptr[3] = ';';
 			dptr += 4;
-		}
-		else if (c == '\'')
-		{
+			break;
+		case '\'':
 			dptr[0] = '&';
 			dptr[1] = '#';
 			dptr[2] = '3';
 			dptr[3] = '9';
 			dptr[4] = ';';
 			dptr += 5;
-		}
-		else if (c == '"')
-		{
+			break;
+		case '"':
 			dptr[0] = '&';
 			dptr[1] = 'q';
 			dptr[2] = 'u';
@@ -522,27 +500,22 @@ UTF8Char *Text::XML::ToHTMLText(UTF8Char *buff, const UTF8Char *text)
 			dptr[4] = 't';
 			dptr[5] = ';';
 			dptr += 6;
-		}
-		else if (c == '\r')
-		{
-
-		}
-		else if (c == '\n')
-		{
+			break;
+		case '\r':
+			break;
+		case '\n':
 			dptr[0] = '<';
 			dptr[1] = 'b';
 			dptr[2] = 'r';
 			dptr[3] = '/';
 			dptr[4] = '>';
 			dptr += 5;
-		}
-		else
-		{
+			break;
+		default:
 			*dptr++ = c;
+			break;
 		}
 	}
-	*dptr = 0;
-	return dptr;
 }
 
 WChar *Text::XML::ToHTMLText(WChar *buff, const WChar *text)
@@ -690,7 +663,7 @@ Text::String *Text::XML::ToNewAttrText(const UTF8Char *text)
 	UTF8Char *buff;
 	if (text == 0)
 	{
-		return Text::String::New((const UTF8Char*)"\"\"", 2);
+		return Text::String::New(UTF8STRC("\"\""));
 	}
 	else
 	{

@@ -28,20 +28,20 @@ UTF8Char *Text::TextBinEnc::URIEncoding::URIEncode(UTF8Char *buff, const UTF8Cha
 	UTF8Char *dest;
 
 	dest = buff;
-	while (*uri)
+	while ((b = *uri) != 0)
 	{
-		if (URIAllowRes[*uri])
+		if (URIAllowRes[b])
 		{
-			*dest++ = *uri++;
+			*dest++ = (UTF8Char)b;
 		}
 		else
 		{
 			dest[0] = '%';
-			b = *uri++;
 			dest[1] = (UTF8Char)MyString_STRHEXARR[b >> 4];
 			dest[2] = (UTF8Char)MyString_STRHEXARR[b & 15];
 			dest += 3;
 		}
+		uri++;
 	}
 	*dest = 0;
 	return dest;
