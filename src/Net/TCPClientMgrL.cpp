@@ -270,7 +270,7 @@ UInt32 __stdcall Net::TCPClientMgr::WorkerThread(void *o)
 	NEW_CLASS(dt, Data::DateTime());
 	while (!stat->toStop)
 	{
-		while ((stat->cliStat = (Net::TCPClientMgr::TCPClientStatus*)me->workerTasks->Get()) != 0)
+		while ((stat->cliStat = me->workerTasks->Get()) != 0)
 		{
 			cliStat = stat->cliStat;
 			dt->SetCurrTimeUTC();
@@ -347,7 +347,7 @@ Net::TCPClientMgr::TCPClientMgr(Int32 timeOutSeconds, TCPClientEvent evtHdlr, TC
 	NEW_CLASS(cliArr, Data::ArrayList<Net::TCPClientMgr::TCPClientStatus*>());
 	NEW_CLASS(cliIdArr, Data::ArrayListUInt64());
 	NEW_CLASS(cliMut, Sync::Mutex());
-	NEW_CLASS(this->workerTasks, Data::SyncLinkedList());
+	NEW_CLASS(this->workerTasks, Data::SyncCircularBuff<TCPClientStatus*>());
 	this->clsData = clsData;
 	if (clsData == 0)
 	{

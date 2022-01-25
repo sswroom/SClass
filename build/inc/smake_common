@@ -1225,6 +1225,7 @@ Data/StringHashMap.h:
 Data/StringMap.h:
 Data/StringUTF8Map.h:
 Data/SyncArrayList.h:
+Data/SyncCircularBuff.h:
 Data/SyncLinkedList.h: ../../src/Data/SyncLinkedList.cpp
 @SyncLinkedList.o
 Data/UInt32Map.h:

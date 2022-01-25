@@ -4,6 +4,7 @@
 #include "Sync/Mutex.h"
 #include "Data/ArrayList.h"
 #include "Data/ArrayListUInt64.h"
+#include "Data/SyncCircularBuff.h"
 #include "Data/SyncLinkedList.h"
 #include "Net/TCPClient.h"
 #include "Sync/MutexUsage.h"
@@ -70,7 +71,8 @@ namespace Net
 
 		WorkerStatus *workers;
 		UOSInt workerCnt;
-		Data::SyncLinkedList *workerTasks;
+//		Data::SyncLinkedList *workerTasks;
+		Data::SyncCircularBuff<TCPClientStatus*> *workerTasks;
 
 		static UInt32 __stdcall ClientThread(void *o);
 		static UInt32 __stdcall WorkerThread(void *o);

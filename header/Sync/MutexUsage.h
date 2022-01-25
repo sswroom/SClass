@@ -10,14 +10,52 @@ namespace Sync
 		Sync::Mutex *mut;
 		Bool used;
 	public:
-		MutexUsage();
-		MutexUsage(Sync::Mutex *mut);
-		~MutexUsage();
+		MutexUsage()
+		{
+			this->mut = 0;
+			this->used = false;
+		}
 
-		void BeginUse();
-		void EndUse();
+		MutexUsage(Sync::Mutex *mut)
+		{
+			this->mut = mut;
+			this->used = false;
+			if (this->mut)
+			{
+				this->used = true;
+				this->mut->Lock();
+			}
+		}
 
-		void ReplaceMutex(Sync::Mutex *mut);
+		~MutexUsage()
+		{
+			this->EndUse();
+		}
+
+		void BeginUse()
+		{
+			if (this->mut && !this->used)
+			{
+				this->mut->Lock();
+				this->used = true;
+			}
+		}
+
+		void EndUse()
+		{
+			if (this->mut && this->used)
+			{
+				this->mut->Unlock();
+				this->used = false;
+			}
+		}
+
+		void ReplaceMutex(Sync::Mutex *mut)
+		{
+			this->EndUse();
+			this->mut = mut;
+			this->BeginUse();
+		}
 	};
 }
 #endif
