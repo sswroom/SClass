@@ -1,13 +1,13 @@
 #ifndef _SM_DATA_STRINGUTF8MAP
 #define _SM_DATA_STRINGUTF8MAP
 #include "MyMemory.h"
-#include "Text/MyString.h"
+#include "Data/ArrayCmpMap.h"
 #include "Data/ArrayListStrUTF8.h"
-#include "Data/ArrayMap.h"
+#include "Text/MyString.h"
 
 namespace Data
 {
-	template <class T> class StringUTF8Map : public ArrayMap<const UTF8Char*, T>
+	template <class T> class StringUTF8Map : public ArrayCmpMap<const UTF8Char*, T>
 	{
 	public:
 		StringUTF8Map();
@@ -21,7 +21,7 @@ namespace Data
 	};
 
 
-	template <class T> StringUTF8Map<T>::StringUTF8Map() : ArrayMap<const UTF8Char*, T>()
+	template <class T> StringUTF8Map<T>::StringUTF8Map() : ArrayCmpMap<const UTF8Char*, T>()
 	{
 		NEW_CLASS(this->keys, Data::ArrayListStrUTF8());
 	}

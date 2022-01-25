@@ -2,6 +2,7 @@
 #include "MyMemory.h"
 #include "Net/WebServer/WebListener.h"
 #include "Net/WebServer/WebConnection.h"
+#include "Sync/Interlocked.h"
 #include "Sync/MutexUsage.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
@@ -28,9 +29,7 @@ void __stdcall Net::WebServer::WebListener::ConnHdlr(Socket *s, void *userObj)
 		NEW_CLASS(cli, Net::TCPClient(me->sockf, s));
 		ClientReady(cli, me);
 	}
-	Sync::MutexUsage mutUsage(me->statusMut);
-	me->status.connCnt++;
-	mutUsage.EndUse();
+	Interlocked_IncrementU32(&me->status.connCnt);
 }
 
 void __stdcall Net::WebServer::WebListener::ClientEvent(Net::TCPClient *cli, void *userObj, void *cliData, Net::TCPClientMgr::TCPEventType evtType)
@@ -53,9 +52,7 @@ void __stdcall Net::WebServer::WebListener::ClientData(Net::TCPClient *cli, void
 	Net::WebServer::WebListener *me = (Net::WebServer::WebListener*)userObj;
 	Net::WebServer::WebConnection *conn = (Net::WebServer::WebConnection*)cliData;
 	conn->ReceivedData(buff, size);
-	Sync::MutexUsage mutUsage(me->statusMut);
-	me->status.totalRead += size;
-	mutUsage.EndUse();
+	Interlocked_AddU64(&me->status.totalRead, size);
 }
 
 void __stdcall Net::WebServer::WebListener::ClientTimeout(Net::TCPClient *cli, void *userObj, void *cliData)
@@ -99,9 +96,7 @@ void __stdcall Net::WebServer::WebListener::ProxyTimeout(Net::TCPClient *cli, vo
 void __stdcall Net::WebServer::WebListener::OnDataSent(void *userObj, UOSInt buffSize)
 {
 	Net::WebServer::WebListener *me = (Net::WebServer::WebListener*)userObj;
-	Sync::MutexUsage mutUsage(me->statusMut);
-	me->status.totalWrite += buffSize;
-	mutUsage.EndUse();
+	Interlocked_AddU64(&me->status.totalWrite, buffSize);
 }
 
 Net::WebServer::WebListener::WebListener(Net::SocketFactory *sockf, Net::SSLEngine *ssl, IWebHandler *hdlr, UInt16 port, Int32 timeoutSeconds, UOSInt workerCnt, const UTF8Char *svrName, Bool allowProxy, Bool allowKA)
@@ -130,7 +125,6 @@ Net::WebServer::WebListener::WebListener(Net::SocketFactory *sockf, Net::SSLEngi
 	this->status.reqCnt = 0;
 	this->status.totalRead = 0;
 	this->status.totalWrite = 0;
-	NEW_CLASS(this->statusMut, Sync::Mutex());
 	NEW_CLASS(this->accLogMut, Sync::Mutex());
 	NEW_CLASS(this->log, IO::LogTool());
 	NEW_CLASS(this->cliMgr, Net::TCPClientMgr(timeoutSeconds, ClientEvent, ClientData, this, workerCnt, ClientTimeout));
@@ -148,7 +142,6 @@ Net::WebServer::WebListener::~WebListener()
 	SDEL_CLASS(this->proxyCliMgr);
 	DEL_CLASS(this->log);
 	DEL_CLASS(this->accLogMut);
-	DEL_CLASS(this->statusMut);
 	this->svrName->Release();
 }
 
@@ -180,9 +173,7 @@ void Net::WebServer::WebListener::LogAccess(Net::WebServer::IWebRequest *req, Ne
 {
 	UTF8Char sbuff[128];
 	const UTF8Char *csptr;
-	Sync::MutexUsage mutUsage(this->statusMut);
-	this->status.reqCnt++;
-	mutUsage.EndUse();
+	Interlocked_IncrementU32(&this->status.reqCnt);
 	Sync::MutexUsage accLogMutUsage(this->accLogMut);
 	if (this->reqLog)
 	{
@@ -281,8 +272,6 @@ void Net::WebServer::WebListener::ExtendTimeout(Net::TCPClient *cli)
 
 void Net::WebServer::WebListener::GetStatus(SERVER_STATUS *status)
 {
-	Sync::MutexUsage mutUsage(this->statusMut);
 	MemCopyNO(status, &this->status, sizeof(SERVER_STATUS));
-	mutUsage.EndUse();
 	status->currConn = (UInt32)this->cliMgr->GetClientCount();
 }

@@ -1,12 +1,12 @@
 #ifndef _SM_DATA_STRINGMAP
 #define _SM_DATA_STRINGMAP
 #include "MyMemory.h"
+#include "Data/ArrayCmpMap.h"
 #include "Data/ArrayListString.h"
-#include "Data/ArrayMap.h"
 
 namespace Data
 {
-	template <class T> class StringMap : public ArrayMap<Text::String*, T>
+	template <class T> class StringMap : public ArrayCmpMap<Text::String*, T>
 	{
 	public:
 		StringMap();
@@ -25,12 +25,12 @@ namespace Data
 	};
 
 
-	template <class T> StringMap<T>::StringMap() : ArrayMap<Text::String*, T>()
+	template <class T> StringMap<T>::StringMap() : ArrayCmpMap<Text::String*, T>()
 	{
 		NEW_CLASS(this->keys, Data::ArrayListString());
 	}
 
-	template <class T> StringMap<T>::StringMap(StringMap<T> *map) : ArrayMap<Text::String*, T>()
+	template <class T> StringMap<T>::StringMap(StringMap<T> *map) : ArrayCmpMap<Text::String*, T>()
 	{
 		NEW_CLASS(this->keys, Data::ArrayListString());
 		UOSInt i = 0;

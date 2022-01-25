@@ -245,6 +245,7 @@ Net::TCPClientMgr::TCPClientMgr(Int32 timeOutSeconds, TCPClientEvent evtHdlr, TC
 	{
 		this->workers[workerCnt].running = false;
 		this->workers[workerCnt].toStop = false;
+		this->workers[workerCnt].isPrimary = (workerCnt == 0);
 		this->workers[workerCnt].cliStat = 0;
 		this->workers[workerCnt].me = this;
 		NEW_CLASS(this->workers[workerCnt].evt, Sync::Event(true, (const UTF8Char*)"Net.TCPClientMgr.workers.evt"));

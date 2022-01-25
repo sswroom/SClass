@@ -40,7 +40,6 @@ namespace Net
 			Bool allowProxy;
 			Bool allowKA;
 			SERVER_STATUS status;
-			Sync::Mutex *statusMut;
 
 			Sync::Mutex *accLogMut;
 			IO::LogTool *accLog;

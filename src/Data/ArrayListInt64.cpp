@@ -3,11 +3,11 @@
 #include "Data/ArrayListInt64.h"
 #include "Data/IComparable.h"
 
-Data::ArrayListInt64::ArrayListInt64() : Data::SortableArrayList<Int64>()
+Data::ArrayListInt64::ArrayListInt64() : Data::SortableArrayListNative<Int64>()
 {
 }
 
-Data::ArrayListInt64::ArrayListInt64(UOSInt capacity) : Data::SortableArrayList<Int64>(capacity)
+Data::ArrayListInt64::ArrayListInt64(UOSInt capacity) : Data::SortableArrayListNative<Int64>(capacity)
 {
 }
 
@@ -17,22 +17,6 @@ Data::ArrayList<Int64> *Data::ArrayListInt64::Clone()
 	NEW_CLASS(newArr, Data::ArrayListInt64(this->capacity));
 	newArr->AddAll(this);
 	return newArr;
-}
-
-OSInt Data::ArrayListInt64::CompareItem(Int64 obj1, Int64 obj2)
-{
-	if (obj1 > obj2)
-	{
-		return 1;
-	}
-	else if (obj1 < obj2)
-	{
-		return -1;
-	}
-	else
-	{
-		return 0;
-	}
 }
 
 void Data::ArrayListInt64::AddRangeI32(Int32 *arr, UOSInt cnt)

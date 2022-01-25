@@ -259,7 +259,7 @@ UOSInt Map::ESRI::ESRIMDBLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, 
 	}
 	UOSInt cnt = 0;
 	Data::ArrayList<Math::Vector2D*> *vecList = this->objects->GetValues();
-	Data::SortableArrayList<Int32> *vecKeys = this->objects->GetKeys();
+	Data::SortableArrayListNative<Int32> *vecKeys = this->objects->GetKeys();
 	Double minX;
 	Double minY;
 	Double maxX;

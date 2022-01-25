@@ -4,11 +4,11 @@
 #include "Data/IComparable.h"
 #include <stdlib.h>
 
-Data::ArrayListSng::ArrayListSng() : Data::SortableArrayList<Single>()
+Data::ArrayListSng::ArrayListSng() : Data::SortableArrayListNative<Single>()
 {
 }
 
-Data::ArrayListSng::ArrayListSng(OSInt Capacity) : Data::SortableArrayList<Single>(Capacity)
+Data::ArrayListSng::ArrayListSng(OSInt Capacity) : Data::SortableArrayListNative<Single>(Capacity)
 {
 }
 
@@ -18,20 +18,4 @@ Data::ArrayList<Single> *Data::ArrayListSng::Clone()
 	NEW_CLASS(newArr, Data::ArrayListSng(this->capacity));
 	newArr->AddAll(this);
 	return newArr;
-}
-
-OSInt Data::ArrayListSng::CompareItem(Single obj1, Single obj2)
-{
-	if (obj1 > obj2)
-	{
-		return 1;
-	}
-	else if (obj1 < obj2)
-	{
-		return -1;
-	}
-	else
-	{
-		return 0;
-	}
 }

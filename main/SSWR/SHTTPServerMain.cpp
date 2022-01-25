@@ -65,5 +65,6 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	hdlr->Release();
 	DEL_CLASS(sockf);
 	DEL_CLASS(console);
+
 	return 0;
 }

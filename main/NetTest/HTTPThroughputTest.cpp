@@ -8,7 +8,7 @@
 #include <stdio.h>
 
 #define URL "http://127.0.0.1:8080"
-#define THREADCNT 10
+#define THREADCNT 16
 #define CONNCNT 100000
 #define KACONN true
 #define METHOD Net::WebUtil::RequestMethod::HTTP_GET

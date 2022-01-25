@@ -3,6 +3,7 @@
 #include "Sync/Event.h"
 #include "Sync/Interlocked.h"
 #include "Sync/Thread.h"
+
 #if defined(_MSC_VER) || defined(__MINGW32__)
 #include <windows.h>
 

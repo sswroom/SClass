@@ -1153,6 +1153,7 @@ Crypto/Token/JWTHandler.h: ../../src/Crypto/Token/JWTHandler.cpp
 Crypto/Token/JWTParam.h: ../../src/Crypto/Token/JWTHandler.cpp
 @JWTParam.o
 
+Data/ArrayCmpMap.h:
 Data/ArrayCollection.h:
 Data/ArrayList.h:
 Data/ArrayListCmp.h: ../../src/Data/ArrayListCmp.cpp
@@ -1220,6 +1221,7 @@ Data/RandomOS.h: ../../src/Data/RandomOS.cpp
 Data/ReadingList.h:
 Data/ReadonlyArray.h:
 Data/SortableArrayList.h:
+Data/SortableArrayListNative.h:
 Data/StringCMap.h:
 Data/StringHashMap.h:
 Data/StringMap.h:

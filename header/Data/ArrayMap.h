@@ -1,14 +1,14 @@
 #ifndef _SM_DATA_ARRAYMAP
 #define _SM_DATA_ARRAYMAP
 #include "Data/IMap.h"
-#include "Data/SortableArrayList.h"
+#include "Data/SortableArrayListNative.h"
 
 namespace Data
 {
 	template <class T, class V> class ArrayMap : public IMap<T, V>
 	{
 	protected:
-		Data::SortableArrayList<T> *keys;
+		Data::SortableArrayListNative<T> *keys;
 		Data::ArrayList<V> *vals;
 
 	public:
@@ -25,7 +25,7 @@ namespace Data
 
 		void AllocSize(UOSInt cnt);
 		Data::ArrayList<V> *GetValues();
-		Data::SortableArrayList<T> *GetKeys();
+		Data::SortableArrayListNative<T> *GetKeys();
 		UOSInt GetCount();
 		virtual Bool IsEmpty();
 		virtual V *ToArray(UOSInt *objCnt);
@@ -132,7 +132,7 @@ namespace Data
 		return this->vals;
 	}
 
-	template <class T, class V> Data::SortableArrayList<T> *ArrayMap<T, V>::GetKeys()
+	template <class T, class V> Data::SortableArrayListNative<T> *ArrayMap<T, V>::GetKeys()
 	{
 		return this->keys;
 	}

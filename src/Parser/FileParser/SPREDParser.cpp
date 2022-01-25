@@ -203,7 +203,7 @@ IO::ParsedObject *Parser::FileParser::SPREDParser::ParseFile(IO::IStreamData *fd
 	Map::GPSTrack *track;
 	UTF8Char sbuff[12];
 	NEW_CLASS(track, Map::GPSTrack(fd->GetFullName(), true, 0, 0));
-	Data::SortableArrayList<Int32> *keys = devRecs->GetKeys();
+	Data::SortableArrayListNative<Int32> *keys = devRecs->GetKeys();
 	i = keys->GetCount();
 	while (i-- > 0)
 	{
