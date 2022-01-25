@@ -997,7 +997,7 @@ void Net::HTTPMyClient::EndRequest(Double *timeReq, Double *timeResp)
 		this->reqMstm->Clear();
 
 		this->sockf->SetLinger(cli->GetSocket(), 0);
-		if (!this->kaConn)
+		if (!this->kaConn && !this->cli->IsSSL())
 			this->cli->ShutdownSend();
 		this->cli->SetTimeout(this->timeOutMS);
 		t1 = this->clk->GetTimeDiff();
@@ -1123,7 +1123,7 @@ void Net::HTTPMyClient::EndRequest(Double *timeReq, Double *timeResp)
 					header = false;
 					break;
 				}
-				this->buffSize = Text::StrCharCnt(ptr);
+				this->buffSize = (UOSInt)(ptrEnd - ptr);
 				MemCopyO(this->dataBuff, ptr, this->buffSize);
 				i = cli->Read(&this->dataBuff[this->buffSize], BUFFSIZE - 1 - this->buffSize);
 				if (i <= 0)
@@ -1142,6 +1142,7 @@ void Net::HTTPMyClient::EndRequest(Double *timeReq, Double *timeResp)
 					this->buffSize += i;
 					this->dataBuff[this->buffSize] = 0;
 					ptr = (UTF8Char*)this->dataBuff;
+					ptrEnd = &this->dataBuff[this->buffSize];
 				}
 			}
 			if (eventStream && keepAliveTO != 0)

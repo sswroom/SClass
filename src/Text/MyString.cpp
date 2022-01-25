@@ -276,9 +276,24 @@ UTF8Char *Text::StrInt32(UTF8Char *oriStr, Int32 val)
 		}
 #endif
 	}
-	while (str < &buff[10])
+	UOSInt len = (UOSInt)(&buff[10] - str);
+	while (len >= 4)
 	{
-		*oriStr++ = *str++;
+		WriteNUInt32(oriStr, ReadNUInt32(str));
+		oriStr += 4;
+		str += 4;
+		len -= 4;
+	}
+	if (len >= 2)
+	{
+		WriteNUInt16(oriStr, ReadNUInt16(str));
+		oriStr += 2;
+		str += 2;
+		len -= 2;
+	}
+	if (len)
+	{
+		*oriStr++ = *str;
 	}
 	*oriStr = 0;
 	return oriStr;
@@ -1776,14 +1791,15 @@ UOSInt Text::StrSplitWS(UTF8Char **strs, UOSInt maxStrs, UTF8Char *strToSplit)
 Bool Text::StrToUInt8(const UTF8Char *intStr, UInt8 *outVal)
 {
 	UInt32 retVal = 0;
-	while (*intStr)
+	UInt32 c;
+	while ((c = *intStr) != 0)
 	{
-		if (*intStr < '0' || *intStr > '9')
+		if (c < '0' || c > '9')
 			return false;
-		retVal = retVal * 10 + (UInt32)*intStr - 48;
-		intStr++;
+		retVal = retVal * 10 + c - 48;
 		if (retVal & 0xffffff00)
 			return false;
+		intStr++;
 	}
 	*outVal = (UInt8)retVal;
 	return true;
@@ -1792,14 +1808,15 @@ Bool Text::StrToUInt8(const UTF8Char *intStr, UInt8 *outVal)
 UInt8 Text::StrToUInt8(const UTF8Char *intStr)
 {
 	UInt32 retVal = 0;
-	while (*intStr)
+	UInt32 c;
+	while ((c = *intStr) != 0)
 	{
-		if (*intStr < '0' || *intStr > '9')
+		if (c < '0' || c > '9')
 			return 0;
-		retVal = retVal * 10 + (UInt32)*intStr - 48;
-		intStr++;
+		retVal = retVal * 10 + c - 48;
 		if (retVal & 0xffffff00)
 			return 0;
+		intStr++;
 	}
 	return (UInt8)retVal;
 }
@@ -1813,14 +1830,15 @@ Bool Text::StrToUInt16(const UTF8Char *intStr, UInt16 *outVal)
 	}
 	else
 	{
-		while (*intStr)
+		UInt32 c;
+		while ((c = *intStr) != 0)
 		{
-			if (*intStr < '0' || *intStr > '9')
+			if (c < '0' || c > '9')
 				return false;
-			retVal = retVal * 10 + (UInt32)*intStr - 48;
-			intStr++;
+			retVal = retVal * 10 + c - 48;
 			if (retVal & 0xffff0000)
 				return false;
+			intStr++;
 		}
 	}
 	*outVal = (UInt16)retVal;
@@ -1836,20 +1854,21 @@ Bool Text::StrToUInt16S(const UTF8Char *intStr, UInt16 *outVal, UInt16 failVal)
 	}
 	else
 	{
-		while (*intStr)
+		UInt32 c;
+		while ((c = *intStr) != 0)
 		{
-			if (*intStr < '0' || *intStr > '9')
+			if (c < '0' || c > '9')
 			{
 				*outVal = failVal;
 				return false;
 			}
-			retVal = retVal * 10 + (UInt32)*intStr - 48;
-			intStr++;
+			retVal = retVal * 10 + c - 48;
 			if (retVal & 0xffff0000)
 			{
 				*outVal = failVal;
 				return false;
 			}
+			intStr++;
 		}
 	}
 	*outVal = (UInt16)retVal;
@@ -1875,11 +1894,12 @@ Bool Text::StrToInt16(const UTF8Char *intStr, Int16 *outVal)
 	}
 	else
 	{
-		while (*intStr)
+		UInt32 c;
+		while ((c = *intStr) != 0)
 		{
-			if (*intStr < '0' || *intStr > '9')
+			if (c < '0' || c > '9')
 				return false;
-			retVal = retVal * 10 + (Int32)*intStr - 48;
+			retVal = retVal * 10 + (Int32)c - 48;
 			intStr++;
 		}
 	}
@@ -1965,15 +1985,16 @@ UInt32 Text::StrToUInt32(const UTF8Char *intStr)
 {
 	UInt32 retVal = 0;
 	UInt32 newVal;
-	while (*intStr)
+	UInt32 c;
+	while ((c = *intStr) != 0)
 	{
-		if (*intStr < '0' || *intStr > '9')
+		if (c < '0' || c > '9')
 			return 0;
-		newVal = retVal * 10 + (UInt32)*intStr - 48;
-		intStr++;
+		newVal = retVal * 10 + c - 48;
 		if (newVal < retVal)
 			return 0;
 		retVal = newVal;
+		intStr++;
 	}
 	return retVal;
 }
@@ -1997,11 +2018,12 @@ Bool Text::StrToInt32(const UTF8Char *intStr, Int32 *outVal)
 	}
 	else
 	{
-		while (*intStr)
+		UInt32 c;
+		while ((c = *intStr) != 0)
 		{
-			if (*intStr < '0' || *intStr > '9')
+			if (c < '0' || c > '9')
 				return false;
-			retVal = retVal * 10 + (Int32)*intStr - 48;
+			retVal = retVal * 10 + (Int32)c - 48;
 			intStr++;
 		}
 	}
@@ -2031,11 +2053,12 @@ Int32 Text::StrToInt32(const UTF8Char *intStr)
 	}
 	else
 	{
-		while (*intStr)
+		UInt32 c;
+		while ((c = *intStr) != 0)
 		{
-			if (*intStr < '0' || *intStr > '9')
+			if (c < '0' || c > '9')
 				return 0;
-			retVal = retVal * 10 + (Int32)*intStr - 48;
+			retVal = retVal * 10 + (Int32)c - 48;
 			intStr++;
 		}
 	}
@@ -2065,13 +2088,13 @@ Bool Text::StrToUInt64(const UTF8Char *intStr, UInt64 *outVal)
 	{
 		return Text::StrHex2UInt64C(intStr + 2, outVal);
 	}
-	UTF8Char c;
+	UInt64 c;
 	UInt64 v = 0;
 	while ((c = *intStr++) != 0)
 	{
 		if (c < '0' || c > '9')
 			return false;
-		v = v * 10 + (UInt64)(c - '0');
+		v = v * 10 + c - '0';
 	}
 	*outVal = v;
 	return true;
@@ -2088,7 +2111,7 @@ Bool Text::StrToUInt64S(const UTF8Char *intStr, UInt64 *outVal, UInt64 failVal)
 	{
 		return Text::StrHex2UInt64S(intStr + 2, outVal, failVal);
 	}
-	UTF8Char c;
+	UInt64 c;
 	UInt64 v = 0;
 	while ((c = *intStr++) != 0)
 	{
@@ -2097,7 +2120,7 @@ Bool Text::StrToUInt64S(const UTF8Char *intStr, UInt64 *outVal, UInt64 failVal)
 			*outVal = failVal;
 			return false;
 		}
-		v = v * 10 + (UInt64)(c - '0');
+		v = v * 10 + c - '0';
 	}
 	*outVal = v;
 	return true;
