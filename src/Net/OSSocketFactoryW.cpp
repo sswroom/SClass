@@ -842,11 +842,11 @@ Bool Net::OSSocketFactory::LoadHosts(Net::DNSHandler *dnsHdlr)
 			i = Text::StrSplitWSP(sarr, 2, sb.ToString(), sb.GetLength());
 			if (i == 2)
 			{
-				if (Net::SocketUtil::GetIPAddr(sarr[0].v, sarr[0].len, &addr))
+				if (Net::SocketUtil::GetIPAddr(sarr[0].v, sarr[0].leng, &addr))
 				{
 					while (true)
 					{
-						i = Text::StrSplitWSP(sarr, 2, sarr[1].v, sarr[1].len);
+						i = Text::StrSplitWSP(sarr, 2, sarr[1].v, sarr[1].leng);
 						dnsHdlr->AddHost(&addr, sarr[0].v);
 						if (i != 2)
 							break;

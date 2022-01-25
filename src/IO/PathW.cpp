@@ -469,13 +469,13 @@ UTF8Char *IO::Path::AppendPathC(UTF8Char *path, UTF8Char *pathEnd, const UTF8Cha
 			{
 				if (lastSep[0] == '\\')
 				{
-					lastSep = Text::StrConcatC(&lastSep[1], pathArr[i].v, pathArr[i].len);
+					lastSep = Text::StrConcatC(&lastSep[1], pathArr[i].v, pathArr[i].leng);
 					lastSep[0] = '\\';
 					lastSep[1] = 0;
 				}
 				else
 				{
-					lastSep = Text::StrConcatC(lastSep, pathArr[i].v, pathArr[i].len);
+					lastSep = Text::StrConcatC(lastSep, pathArr[i].v, pathArr[i].leng);
 					lastSep[0] = '\\';
 					lastSep[1] = 0;
 				}
@@ -485,7 +485,7 @@ UTF8Char *IO::Path::AppendPathC(UTF8Char *path, UTF8Char *pathEnd, const UTF8Cha
 
 		if (pathCnt == 5)
 		{
-			pathCnt = Text::StrSplitP(pathArr, 5, pathArr[4].v, pathArr[4].len, '\\');
+			pathCnt = Text::StrSplitP(pathArr, 5, pathArr[4].v, pathArr[4].leng, '\\');
 		}
 		else
 		{
@@ -756,14 +756,14 @@ Bool IO::Path::AppendPath(Text::StringBuilderUTF8 *sb, const UTF8Char *toAppend,
 				if (lastSep[0] == '\\')
 				{
 					sb->SetEndPtr(&lastSep[1]);
-					sb->AppendC(pathArr[i].v, pathArr[i].len);
+					sb->AppendC(pathArr[i].v, pathArr[i].leng);
 					sb->AppendC(UTF8STRC("\\"));
 					lastSep = sb->GetEndPtr() - 1;
 				}
 				else
 				{
 					sb->SetEndPtr(lastSep);
-					sb->AppendC(pathArr[i].v, pathArr[i].len);
+					sb->AppendC(pathArr[i].v, pathArr[i].leng);
 					sb->AppendC(UTF8STRC("\\"));
 					lastSep = sb->GetEndPtr() - 1;
 				}
@@ -773,7 +773,7 @@ Bool IO::Path::AppendPath(Text::StringBuilderUTF8 *sb, const UTF8Char *toAppend,
 
 		if (pathCnt == 5)
 		{
-			pathCnt = Text::StrSplitP(pathArr, 5, pathArr[4].v, pathArr[4].len, '\\');
+			pathCnt = Text::StrSplitP(pathArr, 5, pathArr[4].v, pathArr[4].leng, '\\');
 		}
 		else
 		{
@@ -1309,23 +1309,23 @@ Bool IO::Path::IsSearchPattern(const UTF8Char *path)
 	return isSrch;
 }
 
-UTF8Char *IO::Path::GetRealPath(UTF8Char *sbuff, const UTF8Char *path)
+UTF8Char *IO::Path::GetRealPath(UTF8Char *sbuff, const UTF8Char *path, UOSInt pathLen)
 {
 	UTF8Char *sptr;
-	if (Text::StrStartsWith(path, (const UTF8Char*)"~/"))
+	if (Text::StrStartsWithC(path, pathLen, UTF8STRC("~/")))
 	{
-		sptr = Text::StrConcat(IO::Path::GetUserHome(sbuff), path + 1);
+		sptr = Text::StrConcatC(IO::Path::GetUserHome(sbuff), path + 1, pathLen - 1);
 	}
 	else
 	{
-		sptr = Text::StrConcat(sbuff, path);
+		sptr = Text::StrConcatC(sbuff, path, pathLen);
 	}
 	Text::StrReplace(sbuff, '/', '\\');
 	UTF8Char *sptr2 = sbuff;
 	UOSInt i;
 	while (true)
 	{
-		i = Text::StrIndexOfChar(sptr2, IO::Path::PATH_SEPERATOR);
+		i = Text::StrIndexOfCharC(sptr2, (UOSInt)(sptr - sptr2), IO::Path::PATH_SEPERATOR);
 		if (i == INVALID_INDEX)
 		{
 			break;
@@ -1333,13 +1333,11 @@ UTF8Char *IO::Path::GetRealPath(UTF8Char *sbuff, const UTF8Char *path)
 		sptr2 = &sptr2[i + 1];
 		if (sptr2[0] == '.' && sptr2[1] == '.' && sptr2[2] == 0)
 		{
-			sptr2[-1] = 0;
-			i = Text::StrLastIndexOfChar(sbuff, IO::Path::PATH_SEPERATOR);
+			i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr2 - sbuff - 1), IO::Path::PATH_SEPERATOR);
 			if (i != INVALID_INDEX)
 			{
 				if (sbuff[i + 1] == '.' && sbuff[i + 2] == '.')
 				{
-					sptr2[-1] = IO::Path::PATH_SEPERATOR;
 				}
 				else
 				{
@@ -1347,31 +1345,21 @@ UTF8Char *IO::Path::GetRealPath(UTF8Char *sbuff, const UTF8Char *path)
 					*sptr = 0;
 				}
 			}
-			else
-			{
-				sptr2[-1] = IO::Path::PATH_SEPERATOR;
-			}
 			return sptr;
 		}
 		else if (sptr2[0] == '.' && sptr2[1] == '.' && sptr2[2] == IO::Path::PATH_SEPERATOR)
 		{
-			sptr2[-1] = 0;
-			i = Text::StrLastIndexOfChar(sbuff, IO::Path::PATH_SEPERATOR);
+			i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr2 - sbuff - 1), IO::Path::PATH_SEPERATOR);
 			if (i != INVALID_INDEX)
 			{
 				if (sbuff[i + 1] == '.' && sbuff[i + 2] == '.')
 				{
-					sptr2[-1] = IO::Path::PATH_SEPERATOR;
 				}
 				else
 				{
-					sptr = Text::StrConcat(&sbuff[i + 1], &sptr2[3]);
+					sptr = Text::StrConcatC(&sbuff[i + 1], &sptr2[3], (UOSInt)(sptr - &sptr2[3]));
 					sptr2 = &sbuff[i + 1];
 				}
-			}
-			else
-			{
-				sptr2[-1] = IO::Path::PATH_SEPERATOR;
 			}
 		}
 	}
